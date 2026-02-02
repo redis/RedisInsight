@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import React, { useEffect, useState } from 'react'
 import { monaco } from 'react-monaco-editor'
 import parse from 'html-react-parser'
@@ -39,7 +38,7 @@ import { Title } from 'uiSrc/components/base/text/Title'
 import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 
 import { RunConfirmationPopover } from './components'
-import styles from './styles.module.scss'
+import * as S from './CodeButtonBlock.styles'
 
 export interface Props {
   content: string
@@ -175,76 +174,82 @@ const CodeButtonBlock = (props: Props) => {
   }
 
   return (
-    <div className={styles.wrapper}>
+    <S.Wrapper>
       <Row align="center">
         <FlexItem grow>
           {!!label && (
-            <Title
-              size="XS"
-              className={styles.label}
-              data-testid="code-button-block-label"
-            >
+            <Title size="XS" data-testid="code-button-block-label">
               {truncateText(label, 86)}
             </Title>
           )}
         </FlexItem>
-        <FlexItem className={styles.actions}>
-          <EmptyButton
-            onClick={handleCopy}
-            icon={isCopied ? ToastCheckIcon : CopyIcon}
-            disabled={isCopied}
-            size="small"
-            className={cx(styles.actionBtn, styles.copyBtn)}
-            data-testid={`copy-btn-${label}`}
-          >
-            Copy
-          </EmptyButton>
+        <S.Actions>
+          <S.CopyBtn>
+            <S.ActionBtn>
+              <EmptyButton
+                onClick={handleCopy}
+                icon={isCopied ? ToastCheckIcon : CopyIcon}
+                disabled={isCopied}
+                size="small"
+                data-testid={`copy-btn-${label}`}
+              >
+                Copy
+              </EmptyButton>
+            </S.ActionBtn>
+          </S.CopyBtn>
           {!isRunButtonHidden && (
             <RiPopover
               ownFocus
-              panelClassName={cx('popoverLikeTooltip', styles.popover)}
-              anchorClassName={styles.popoverAnchor}
+              panelClassName="popoverLikeTooltip"
+              minWidth={S.POPOVER_MIN_WIDTH}
               anchorPosition="upLeft"
               isOpen={isPopoverOpen}
               panelPaddingSize="m"
               closePopover={handleClosePopover}
               button={
-                <RiTooltip
-                  content={
-                    isPopoverOpen
-                      ? undefined
-                      : 'Open Workbench in the left menu to see the command results.'
-                  }
-                  data-testid="run-btn-open-workbench-tooltip"
-                >
-                  <EmptyButton
-                    onClick={handleRunClicked}
-                    icon={isRan ? CheckBoldIcon : PlayIcon}
-                    iconSide="right"
-                    size="small"
-                    disabled={isLoading || isRan}
-                    loading={isLoading}
-                    className={cx(styles.actionBtn, styles.runBtn)}
-                    {...rest}
-                    data-testid={`run-btn-${label}`}
+                <S.PopoverAnchor>
+                  <RiTooltip
+                    content={
+                      isPopoverOpen
+                        ? undefined
+                        : 'Open Workbench in the left menu to see the command results.'
+                    }
+                    data-testid="run-btn-open-workbench-tooltip"
                   >
-                    Run
-                  </EmptyButton>
-                </RiTooltip>
+                    <S.RunBtn>
+                      <S.ActionBtn>
+                        <EmptyButton
+                          onClick={handleRunClicked}
+                          icon={isRan ? CheckBoldIcon : PlayIcon}
+                          iconSide="right"
+                          size="small"
+                          disabled={isLoading || isRan}
+                          loading={isLoading}
+                          {...rest}
+                          data-testid={`run-btn-${label}`}
+                        >
+                          Run
+                        </EmptyButton>
+                      </S.ActionBtn>
+                    </S.RunBtn>
+                  </RiTooltip>
+                </S.PopoverAnchor>
               }
             >
               {getPopoverMessage()}
             </RiPopover>
           )}
-        </FlexItem>
+        </S.Actions>
       </Row>
-      <div className={styles.content} data-testid="code-button-block-content">
-        <CodeBlock className={styles.code}>
-          {highlightedContent ? parse(highlightedContent) : content}
-        </CodeBlock>
-      </div>
+      <S.Content data-testid="code-button-block-content">
+        <S.Code>
+          <CodeBlock>
+            {highlightedContent ? parse(highlightedContent) : content}
+          </CodeBlock>
+        </S.Code>
+      </S.Content>
       <Spacer size="s" />
-    </div>
+    </S.Wrapper>
   )
 }
 

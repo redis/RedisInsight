@@ -2,7 +2,7 @@ import {
     SampleDataContent,
     SampleDataType,
     SearchIndexType,
-} from 'uiSrc/pages/vector-search/create-index/types'
+} from 'uiSrc/pages/vector-search-deprecated/create-index/types'
 import { VectorSearchPage } from '../../pageObjects/pages/vector-search/vector-search-page'
 import { test } from '../../fixtures/test'
 import {

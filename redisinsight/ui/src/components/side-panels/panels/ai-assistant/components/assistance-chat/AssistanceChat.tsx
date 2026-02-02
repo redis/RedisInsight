@@ -31,7 +31,7 @@ import {
   RestartChat,
 } from '../shared'
 
-import styles from './styles.module.scss'
+import * as S from './AssistanceChat.styles'
 
 const AssistanceChat = () => {
   const { id, messages, agreements, loading } = useSelector(
@@ -169,23 +169,24 @@ const AssistanceChat = () => {
   }, [])
 
   return (
-    <div className={styles.wrapper} data-testid="ai-general-chat">
-      <div className={styles.header}>
+    <S.Wrapper data-testid="ai-general-chat">
+      <S.Header>
         <span />
         <RestartChat
           button={
-            <EmptyButton
-              disabled={!!inProgressMessage || !messages?.length}
-              icon={EraserIcon}
-              size="small"
-              className={styles.headerBtn}
-              data-testid="ai-general-restart-session-btn"
-            />
+            <S.HeaderBtn>
+              <EmptyButton
+                disabled={!!inProgressMessage || !messages?.length}
+                icon={EraserIcon}
+                size="small"
+                data-testid="ai-general-restart-session-btn"
+              />
+            </S.HeaderBtn>
           }
           onConfirm={onClearSession}
         />
-      </div>
-      <div className={styles.chatHistory}>
+      </S.Header>
+      <S.ChatHistory>
         <ChatHistory
           autoScroll
           isLoading={loading}
@@ -196,8 +197,8 @@ const AssistanceChat = () => {
           onRunCommand={onRunCommand}
           onRestart={onClearSession}
         />
-      </div>
-      <div className={styles.chatForm}>
+      </S.ChatHistory>
+      <S.ChatForm>
         <ChatForm
           onAgreementsDisplayed={handleAgreementsDisplay}
           agreements={!agreements ? ASSISTANCE_CHAT_AGREEMENTS : undefined}
@@ -205,8 +206,8 @@ const AssistanceChat = () => {
           isDisabled={inProgressMessage?.content === ''}
           onSubmit={handleSubmit}
         />
-      </div>
-    </div>
+      </S.ChatForm>
+    </S.Wrapper>
   )
 }
 

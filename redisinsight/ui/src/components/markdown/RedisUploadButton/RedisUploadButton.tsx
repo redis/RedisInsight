@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
 import React, { useEffect, useState } from 'react'
-import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { AxiosError } from 'axios'
 import { truncateText } from 'uiSrc/utils'
@@ -31,7 +30,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+import * as S from './RedisUploadButton.styles'
 
 export interface Props {
   label: string
@@ -107,73 +106,76 @@ const RedisUploadButton = ({ label, path }: Props) => {
   }
 
   return (
-    <div className={cx(styles.wrapper, 'mb-s mt-s')}>
+    <S.Wrapper className="mb-s mt-s">
       <RiPopover
         ownFocus
         id="upload-data-bulk-btn"
         anchorPosition="downLeft"
         isOpen={isPopoverOpen}
         closePopover={() => setIsPopoverOpen(false)}
-        panelClassName={cx('popoverLikeTooltip', styles.popover)}
-        anchorClassName={styles.popoverAnchor}
+        panelClassName="popoverLikeTooltip"
+        minWidth={S.POPOVER_MIN_WIDTH}
         panelPaddingSize="none"
         button={
-          <SecondaryButton
-            loading={isLoading}
-            iconSide="right"
-            icon={ContractsIcon}
-            size="s"
-            className={styles.button}
-            onClick={openPopover}
-            color="secondary"
-            data-testid="upload-data-bulk-btn"
-          >
-            {truncateText(label, 86)}
-          </SecondaryButton>
+          <S.PopoverAnchor>
+            <S.Button>
+              <SecondaryButton
+                loading={isLoading}
+                iconSide="right"
+                icon={ContractsIcon}
+                size="s"
+                onClick={openPopover}
+                color="secondary"
+                data-testid="upload-data-bulk-btn"
+              >
+                {truncateText(label, 86)}
+              </SecondaryButton>
+            </S.Button>
+          </S.PopoverAnchor>
         }
       >
         {instanceId ? (
-          <Text
-            color="subdued"
-            className={styles.containerPopover}
-            data-testid="upload-data-bulk-tooltip"
-          >
-            <RiIcon type="ToastDangerIcon" className={styles.popoverIcon} />
-            <div className={cx(styles.popoverItem, styles.popoverItemTitle)}>
-              Execute commands in bulk
-            </div>
-            <Spacer size="s" />
-            <div className={styles.popoverItem}>
-              All commands from the file in your tutorial will be automatically
-              executed against your database. Avoid executing them in production
-              databases.
-            </div>
-            <Spacer size="m" />
-            <div className={styles.popoverActions}>
-              <Link
-                onClick={handleDownload}
-                className={styles.link}
-                data-testid="download-redis-upload-file"
-              >
-                Download file
-              </Link>
-              <PrimaryButton
-                size="s"
-                icon={PlayFilledIcon}
-                iconSide="right"
-                className={styles.uploadApproveBtn}
-                onClick={uploadData}
-                data-testid="upload-data-bulk-apply-btn"
-              >
-                Execute
-              </PrimaryButton>
-            </div>
+          <Text color="subdued" data-testid="upload-data-bulk-tooltip">
+            <S.ContainerPopover>
+              <S.PopoverIcon>
+                <RiIcon type="ToastDangerIcon" />
+              </S.PopoverIcon>
+              <S.PopoverItemTitle>Execute commands in bulk</S.PopoverItemTitle>
+              <Spacer size="s" />
+              <S.PopoverItem>
+                All commands from the file in your tutorial will be
+                automatically executed against your database. Avoid executing
+                them in production databases.
+              </S.PopoverItem>
+              <Spacer size="m" />
+              <S.PopoverActions>
+                <S.Link>
+                  <Link
+                    onClick={handleDownload}
+                    data-testid="download-redis-upload-file"
+                  >
+                    Download file
+                  </Link>
+                </S.Link>
+                <S.UploadApproveBtn>
+                  <PrimaryButton
+                    size="s"
+                    icon={PlayFilledIcon}
+                    iconSide="right"
+                    onClick={uploadData}
+                    data-testid="upload-data-bulk-apply-btn"
+                  >
+                    Execute
+                  </PrimaryButton>
+                </S.UploadApproveBtn>
+              </S.PopoverActions>
+            </S.ContainerPopover>
           </Text>
         ) : (
           <DatabaseNotOpened />
         )}
       </RiPopover>
-    </div>
+    </S.Wrapper>
   )
 }
 

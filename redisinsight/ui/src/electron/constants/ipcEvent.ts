@@ -11,6 +11,7 @@ enum IpcInvokeEvent {
 enum IpcOnEvent {
   sendWindowId = 'window:send:id',
   cloudOauthCallback = 'cloud:oauth:callback',
+  azureOauthCallback = 'azure:oauth:callback',
   deepLinkAction = 'deep-link:action',
   appUpdateAvailable = 'app:update:available',
 }

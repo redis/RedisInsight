@@ -6,7 +6,6 @@ import {
   PropertySort,
   EuiBasicTableProps,
 } from '@elastic/eui'
-import cx from 'classnames'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { DatabaseListColumn } from 'uiSrc/constants'
 import { Maybe } from 'uiSrc/utils'
@@ -14,7 +13,7 @@ import { findColumn, getColumnWidth, hideColumn } from './utils'
 
 import { ActionBar, DeleteAction, ExportAction } from './components'
 
-import styles from './styles.module.scss'
+import * as S from './ItemList.styles'
 
 export interface Props<T> {
   width: number
@@ -169,10 +168,10 @@ function ItemList<T extends { id: string; visible?: boolean }>({
 
     if (instances.length && instances.every(({ visible }) => !visible)) {
       setMessage(
-        <div className={styles.noResults}>
-          <div className={styles.tableMsgTitle}>No results found</div>
+        <S.NoResults>
+          <S.TableMsgTitle>No results found</S.TableMsgTitle>
           <div>No results matched your search. Try reducing the criteria.</div>
-        </div>,
+        </S.NoResults>,
       )
     }
   }, [instances, loading])
@@ -224,7 +223,7 @@ function ItemList<T extends { id: string; visible?: boolean }>({
         selection={selectionValue}
         onWheel={onWheel}
         onTableChange={onTableChange}
-        className={cx('stickyHeader', styles.table)}
+        className="stickyHeader"
         isSelectable
       />
 

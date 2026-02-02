@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import cx from 'classnames'
 import { useSelector } from 'react-redux'
 
 import MobileIcon from 'uiSrc/assets/img/icons/mobile_module_not_loaded.svg?react'
@@ -22,7 +21,7 @@ import { Title } from 'uiSrc/components/base/text/Title'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { Spacer } from 'uiSrc/components/base/layout'
 import ModuleNotLoadedButton from './ModuleNotLoadedButton'
-import styles from './styles.module.scss'
+import * as S from './ModuleNotLoaded.styles'
 
 export const MODULE_OAUTH_SOURCE_MAP: {
   [key in RedisDefaultModules]?: String
@@ -43,21 +42,40 @@ export interface IProps {
 const MIN_ELEMENT_WIDTH = 1210
 const MAX_ELEMENT_WIDTH = 1440
 
-const renderTitle = (width: number, moduleName?: string) => (
-  <Title size="M" className={styles.title} data-testid="welcome-page-title">
-    {`${moduleName?.substring(0, 1).toUpperCase()}${moduleName?.substring(1)} ${[MODULE_TEXT_VIEW.redisgears, MODULE_TEXT_VIEW.bf].includes(moduleName) ? 'are' : 'is'} not available `}
-    {width > MAX_ELEMENT_WIDTH && <br />}
-    for this database
+const renderTitle = (
+  width: number,
+  moduleName?: string,
+  fullScreen?: boolean,
+  modal?: boolean,
+) => (
+  <Title size="M" data-testid="welcome-page-title">
+    <S.ModuleTitle $fullScreen={fullScreen} $modal={modal}>
+      {`${moduleName?.substring(0, 1).toUpperCase()}${moduleName?.substring(1)} ${[MODULE_TEXT_VIEW.redisgears, MODULE_TEXT_VIEW.bf].includes(moduleName) ? 'are' : 'is'} not available `}
+      {width > MAX_ELEMENT_WIDTH && <br />}
+      for this database
+    </S.ModuleTitle>
   </Title>
 )
 
-const ListItem = ({ item }: { item: string }) => (
-  <li className={styles.listItem}>
-    <div className={styles.iconWrapper}>
-      <CheerIcon className={styles.listIcon} />
-    </div>
-    <ColorText className={styles.text}>{item}</ColorText>
-  </li>
+const ListItemComponent = ({
+  item,
+  fullScreen,
+  bloom,
+}: {
+  item: string
+  fullScreen?: boolean
+  bloom?: boolean
+}) => (
+  <S.ListItem $fullScreen={fullScreen} $bloom={bloom}>
+    <S.IconWrapper>
+      <S.ListIcon>
+        <CheerIcon />
+      </S.ListIcon>
+    </S.IconWrapper>
+    <ColorText>
+      <S.ModuleText $fullScreen={fullScreen}>{item}</S.ModuleText>
+    </ColorText>
+  </S.ListItem>
 )
 
 const ModuleNotLoaded = ({
@@ -89,108 +107,131 @@ const ModuleNotLoaded = ({
     }
   })
 
+  const isFullScreen = width > MAX_ELEMENT_WIDTH || type === 'browser'
+  const isModal = type === 'browser'
+  const isBloom = moduleName === RedisDefaultModules.Bloom
+
   const renderText = useCallback(
-    (moduleName?: string) => {
+    (moduleNameText?: string) => {
       if (!cloudAdsFeature?.flag) {
         return (
-          <Text className={cx(styles.text, styles.marginBottom)}>
-            Open a database with {moduleName}.
+          <Text>
+            <S.MarginBottom>
+              <S.ModuleText $fullScreen={isFullScreen}>
+                Open a database with {moduleNameText}.
+              </S.ModuleText>
+            </S.MarginBottom>
           </Text>
         )
       }
 
       return !freeDbWithModule ? (
-        <Text className={cx(styles.text, styles.marginBottom)}>
-          Create a free all-in-one Redis Cloud database to start exploring these
-          capabilities.
+        <Text>
+          <S.MarginBottom>
+            <S.ModuleText $fullScreen={isFullScreen}>
+              Create a free all-in-one Redis Cloud database to start exploring
+              these capabilities.
+            </S.ModuleText>
+          </S.MarginBottom>
         </Text>
       ) : (
-        <Text
-          className={cx(styles.text, styles.marginBottom, styles.textFooter)}
-        >
-          Use your free all-in-one Redis Cloud database to start exploring these
-          capabilities.
+        <Text>
+          <S.MarginBottom>
+            <S.ModuleText $fullScreen={isFullScreen}>
+              <S.TextFooter>
+                Use your free all-in-one Redis Cloud database to start exploring
+                these capabilities.
+              </S.TextFooter>
+            </S.ModuleText>
+          </S.MarginBottom>
         </Text>
       )
     },
-    [freeDbWithModule],
+    [freeDbWithModule, isFullScreen],
   )
 
   return (
-    <div
-      className={cx(styles.container, {
-        [styles.fullScreen]: width > MAX_ELEMENT_WIDTH || type === 'browser',
-        [styles.modal]: type === 'browser',
-      })}
-    >
-      <div className={styles.flex}>
+    <S.Container $fullScreen={isFullScreen} $modal={isModal}>
+      <S.FlexRow $fullScreen={isFullScreen}>
         <div>
           {type !== 'browser' &&
             (width > MAX_ELEMENT_WIDTH ? (
-              <DesktopIcon className={styles.bigIcon} />
+              <S.BigIcon>
+                <DesktopIcon />
+              </S.BigIcon>
             ) : (
-              <MobileIcon className={styles.icon} />
+              <S.Icon>
+                <MobileIcon />
+              </S.Icon>
             ))}
           {type === 'browser' && (
-            <TelescopeImg className={styles.iconTelescope} />
+            <S.IconTelescope>
+              <TelescopeImg />
+            </S.IconTelescope>
           )}
         </div>
-        <div
-          className={styles.contentWrapper}
+        <S.ContentWrapper
+          $fullScreen={isFullScreen}
           data-testid="module-not-loaded-content"
         >
-          {renderTitle(width, MODULE_TEXT_VIEW[moduleName])}
+          {renderTitle(
+            width,
+            MODULE_TEXT_VIEW[moduleName],
+            isFullScreen,
+            isModal,
+          )}
           <Spacer size="l" />
-          <Text className={styles.bigText}>
-            {CONTENT[moduleName]?.text.map((item: string) =>
-              width > MIN_ELEMENT_WIDTH ? (
-                <>
-                  {item}
-                  <br />
-                </>
-              ) : (
-                item
-              ),
-            )}
+          <Text>
+            <S.BigText $fullScreen={isFullScreen} $modal={isModal}>
+              {CONTENT[moduleName]?.text.map((item: string) =>
+                width > MIN_ELEMENT_WIDTH ? (
+                  <span key={item}>
+                    {item}
+                    <br />
+                  </span>
+                ) : (
+                  item
+                ),
+              )}
+            </S.BigText>
           </Text>
           <Spacer size="m" />
-          <ul
-            className={cx(styles.list, {
-              [styles.bloomList]: moduleName === RedisDefaultModules.Bloom,
-            })}
-          >
+          <S.List $bloom={isBloom} $fullScreen={isFullScreen}>
             {CONTENT[moduleName]?.improvements.map((item: string) => (
-              <ListItem key={item} item={item} />
+              <ListItemComponent
+                key={item}
+                item={item}
+                fullScreen={isFullScreen}
+                bloom={isBloom}
+              />
             ))}
-          </ul>
+          </S.List>
           {!!CONTENT[moduleName]?.additionalText && (
             <>
               <Spacer size="l" />
-              <Text
-                className={cx(
-                  styles.text,
-                  styles.additionalText,
-                  styles.marginBottom,
-                )}
-              >
-                {CONTENT[moduleName]?.additionalText.map((item: string) =>
-                  width > MIN_ELEMENT_WIDTH ? (
-                    <>
-                      {item}
-                      <br />
-                    </>
-                  ) : (
-                    item
-                  ),
-                )}
+              <Text>
+                <S.MarginBottom>
+                  <S.ModuleText $fullScreen={isFullScreen}>
+                    {CONTENT[moduleName]?.additionalText.map((item: string) =>
+                      width > MIN_ELEMENT_WIDTH ? (
+                        <span key={item}>
+                          {item}
+                          <br />
+                        </span>
+                      ) : (
+                        item
+                      ),
+                    )}
+                  </S.ModuleText>
+                </S.MarginBottom>
               </Text>
             </>
           )}
           {renderText(MODULE_TEXT_VIEW[moduleName])}
-        </div>
-      </div>
-      <div
-        className={styles.linksWrapper}
+        </S.ContentWrapper>
+      </S.FlexRow>
+      <S.LinksWrapper
+        $fullScreen={isFullScreen}
         data-testid="module-not-loaded-cta-wrapper"
       >
         {freeDbWithModule ? (
@@ -203,8 +244,8 @@ const ModuleNotLoaded = ({
             onClose={onClose}
           />
         )}
-      </div>
-    </div>
+      </S.LinksWrapper>
+    </S.Container>
   )
 }
 

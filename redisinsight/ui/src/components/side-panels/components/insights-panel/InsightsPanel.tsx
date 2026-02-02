@@ -18,9 +18,9 @@ import {
   TELEMETRY_EMPTY_VALUE,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
-import styles from 'uiSrc/components/side-panels/styles.module.scss'
+import * as S from 'uiSrc/components/side-panels/SidePanels.styles'
 
 export interface Props {
   isFullScreen: boolean
@@ -60,7 +60,6 @@ const InsightsPanel = (props: Props) => {
           <OnboardingTour
             options={ONBOARDING_FEATURES.EXPLORE_REDIS}
             anchorPosition={isFullScreen ? 'rightUp' : 'leftUp'}
-            anchorWrapperClassName={styles.onboardingAnchorWrapper}
             fullSize
           >
             <span>Tutorials</span>
@@ -97,19 +96,19 @@ const InsightsPanel = (props: Props) => {
           </Text>
         </Row>
       </Header>
-      <Col className={styles.body}>
-        <Tabs
+      <S.Body>
+        <S.Tabs
+          as={Tabs}
           tabs={tabs}
           value={tabSelected}
           onChange={handleTabChange}
-          className={styles.tabs}
           data-testid="insights-tabs"
         />
         {tabSelected === InsightsPanelTabs.Explore && <EnablementAreaWrapper />}
         {tabSelected === InsightsPanelTabs.Recommendations && (
           <LiveTimeRecommendations />
         )}
-      </Col>
+      </S.Body>
     </>
   )
 }

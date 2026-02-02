@@ -21,7 +21,7 @@ import { Title } from 'uiSrc/components/base/text/Title'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { Props as OnboardingWrapperProps } from './OnboardingTourWrapper'
 
-import styles from './styles.module.scss'
+import * as S from './OnboardingTour.styles'
 
 export interface Props extends OnboardingWrapperProps {
   isActive: boolean
@@ -81,20 +81,20 @@ const OnboardingTour = (props: Props) => {
   }
 
   const Header = (
-    <Col className={styles.header}>
+    <S.Header as={Col}>
       {!isLastStep ? (
-        <EmptyButton
+        <S.SkipTourBtn
+          as={EmptyButton}
           onClick={handleSkip}
-          className={styles.skipTourBtn}
           size="small"
           data-testid="skip-tour-btn"
         >
           Skip tour
-        </EmptyButton>
+        </S.SkipTourBtn>
       ) : (
-        <IconButton
+        <S.SkipTourBtn
+          as={IconButton}
           icon={CancelSlimIcon}
-          className={styles.skipTourBtn}
           onClick={handleSkip}
           size="S"
           aria-label="close-tour"
@@ -104,14 +104,12 @@ const OnboardingTour = (props: Props) => {
       <Title size="XS" data-testid="step-title">
         {title}
       </Title>
-    </Col>
+    </S.Header>
   )
 
   const StepContent = (
     <Col>
-      <div className={styles.content} data-testid="step-content">
-        {content}
-      </div>
+      <S.Content data-testid="step-content">{content}</S.Content>
       <Spacer />
       <Row align="center" justify="between">
         <ColorText>
@@ -140,29 +138,28 @@ const OnboardingTour = (props: Props) => {
   )
 
   return (
-    <div
+    <S.Wrapper
       onClick={handleWrapperClick}
-      className={cx(styles.wrapper, anchorWrapperClassName, {
-        [styles.fullSize]: fullSize,
-      })}
+      className={cx(anchorWrapperClassName)}
+      $fullSize={fullSize}
       role="presentation"
     >
-      <TourStep
+      <S.PopoverPanel
+        as={TourStep}
         content={StepContent}
         open={isOpen}
         minWidth={300}
         maxWidth={360}
         title={Header}
         placement={anchorPosition}
-        className={cx(styles.popoverPanel, panelClassName, {
-          [styles.lastStep]: isLastStep,
-        })}
+        className={cx(panelClassName)}
+        $isLastStep={isLastStep}
         offset={5}
         data-testid="onboarding-tour"
       >
         {children}
-      </TourStep>
-    </div>
+      </S.PopoverPanel>
+    </S.Wrapper>
   )
 }
 

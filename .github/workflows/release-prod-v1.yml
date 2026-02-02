@@ -1,0 +1,56 @@
+name: ❗ Release (prod)
+
+on:
+  push:
+    branches:
+      - "latest"
+
+jobs:
+  tests-prod:
+    name: Run all tests
+    uses: ./.github/workflows/tests.yml
+    secrets: inherit
+    with:
+      short_rte_list: false
+      pre_release: true
+
+  builds-prod:
+    name: Create all builds for release
+    uses: ./.github/workflows/build.yml
+    needs: tests-prod
+    secrets: inherit
+    with:
+      environment: "production"
+      target: "all"
+
+  virustotal-prod:
+    name: Virustotal
+    uses: ./.github/workflows/virustotal.yml
+    needs: builds-prod
+    secrets: inherit
+    with:
+      skip_report: true
+
+  aws-upload-prod:
+    name: Realse to AWS S3
+    uses: ./.github/workflows/aws-upload-prod.yml
+    needs: virustotal-prod
+    secrets: inherit
+
+  publish-stores:
+    name: Publish to stores
+    uses: ./.github/workflows/publish-stores.yml
+    needs: aws-upload-prod
+    secrets: inherit
+
+  # Remove artifacts from github actions
+  remove-artifacts:
+    name: Remove artifacts
+    needs: [aws-upload-prod]
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove all artifacts
+        uses: ./.github/actions/remove-artifacts

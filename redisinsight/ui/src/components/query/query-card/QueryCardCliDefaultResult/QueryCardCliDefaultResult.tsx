@@ -3,7 +3,7 @@ import cx from 'classnames'
 
 import VirtualList from 'uiSrc/components/virtual-list'
 
-import styles from './styles.module.scss'
+import * as S from './QueryCardCliDefaultResult.styles'
 
 export interface Props {
   items: (string | JSX.Element)[]
@@ -17,8 +17,8 @@ const QueryCardCliDefaultResult = (props: Props) => {
   const { items = [], isFullScreen } = props
 
   return (
-    <div
-      className={cx(styles.container, 'query-card-output-response-success', {
+    <S.Container
+      className={cx('query-card-output-response-success', {
         fullscreen: isFullScreen,
       })}
       data-testid="query-cli-card-result"
@@ -31,7 +31,7 @@ const QueryCardCliDefaultResult = (props: Props) => {
             : undefined
         }
       />
-    </div>
+    </S.Container>
   )
 }
 

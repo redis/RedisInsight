@@ -26,8 +26,7 @@ import DatabasePanelDialog from 'uiSrc/pages/home/components/database-panel-dial
 import { Page, PageBody } from 'uiSrc/components/base/layout/page'
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
 
-import './styles.scss'
-import styles from './styles.module.scss'
+import * as S from './EditConnection.styles'
 
 interface IState {
   loading: boolean
@@ -116,22 +115,24 @@ const EditConnection = () => {
       <PageHeader title="Redis Stack" />
       <div />
       <Page className="homePage redisStackConnection">
-        <PageBody component="div" className={styles.container}>
-          {createDbContent?.cloud && (
-            <FlexItem style={{ margin: '20px 0' }}>
-              <CreateCloudBtn content={createDbContent.cloud} />
-            </FlexItem>
-          )}
-          <div className={styles.formContainer}>
-            <div className={styles.form}>
-              <DatabasePanelDialog
-                editMode
-                editedInstance={state.data}
-                onDbEdited={onInstanceChanged}
-                onClose={onClose}
-              />
-            </div>
-          </div>
+        <PageBody component="div">
+          <S.Container>
+            {createDbContent?.cloud && (
+              <FlexItem style={{ margin: '20px 0' }}>
+                <CreateCloudBtn content={createDbContent.cloud} />
+              </FlexItem>
+            )}
+            <S.FormContainer>
+              <S.Form>
+                <DatabasePanelDialog
+                  editMode
+                  editedInstance={state.data}
+                  onDbEdited={onInstanceChanged}
+                  onClose={onClose}
+                />
+              </S.Form>
+            </S.FormContainer>
+          </S.Container>
         </PageBody>
       </Page>
     </>

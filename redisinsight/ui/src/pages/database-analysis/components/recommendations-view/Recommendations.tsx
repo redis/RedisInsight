@@ -2,8 +2,6 @@ import React, { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { isNull } from 'lodash'
-import cx from 'classnames'
-import styled from 'styled-components'
 
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import {
@@ -26,21 +24,14 @@ import { recommendationsSelector } from 'uiSrc/slices/recommendations/recommenda
 import { sortRecommendations } from 'uiSrc/utils/recommendation'
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
 import { findTutorialPath } from 'uiSrc/utils'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
-import { Link } from 'uiSrc/components/base/link/Link'
-import { Card } from 'uiSrc/components/base/layout'
 import { RediStackMinIcon } from 'uiSrc/components/base/icons'
 
-import styles from './styles.module.scss'
-
-const RecommendationContent = styled(Card)`
-  padding: ${({ theme }) => theme.core.space.space150};
-`
+import * as S from './Recommendations.styles'
 
 const Recommendations = () => {
   const { data, loading } = useSelector(dbAnalysisSelector)
@@ -91,19 +82,12 @@ const Recommendations = () => {
     </FlexItem>
   )
   const renderLabel = (redisStack: boolean, title: string, id: string) => (
-    <Row
-      className={cx(styles.accordionBtn, styles.accordionButton)}
-      align="center"
-      justify="start"
-      gap="m"
-      data-test-subj={`${id}-label`}
-    >
+    <S.AccordionLabel data-test-subj={`${id}-label`}>
       {redisStack && (
         <FlexItem onClick={onRedisStackClick}>
-          <Link
+          <S.RedisStackLink
             target="_blank"
             href={EXTERNAL_LINKS.redisStack}
-            className={styles.redisStackLink}
             data-testid={`${id}-redis-stack-link`}
           >
             <RiTooltip
@@ -111,54 +95,44 @@ const Recommendations = () => {
               position="top"
               anchorClassName="flex-row"
             >
-              <RediStackMinIcon
-                className={styles.redisStackIcon}
-                data-testid={`${id}-redis-stack-icon`}
-              />
+              <S.RedisStackIcon data-testid={`${id}-redis-stack-icon`}>
+                <RediStackMinIcon />
+              </S.RedisStackIcon>
             </RiTooltip>
-          </Link>
+          </S.RedisStackLink>
         </FlexItem>
       )}
       <FlexItem>{title}</FlexItem>
-    </Row>
+    </S.AccordionLabel>
   )
 
   if (loading) {
-    return (
-      <div
-        className={styles.loadingWrapper}
-        data-testid="recommendations-loader"
-      />
-    )
+    return <S.LoadingWrapper data-testid="recommendations-loader" />
   }
 
   if (isNull(recommendations) || !recommendations.length) {
     return (
-      <div
-        className={styles.container}
-        data-testid="empty-recommendations-message"
-      >
-        <RiIcon
+      <S.EmptyContainer data-testid="empty-recommendations-message">
+        <S.NoRecommendationsIcon
           type={
             theme === Theme.Dark
               ? 'NoRecommendationsDarkIcon'
               : 'NoRecommendationsLightIcon'
           }
-          className={styles.noRecommendationsIcon}
           data-testid="no=recommendations-icon"
         />
-        <Text className={styles.bigText}>AMAZING JOB!</Text>
+        <S.BigText>AMAZING JOB!</S.BigText>
         <Text size="m">No Tips at the moment,</Text>
         <br />
         <Text size="m">keep up the good work!</Text>
-      </div>
+      </S.EmptyContainer>
     )
   }
 
   return (
-    <div className={styles.wrapper}>
+    <S.Wrapper>
       <RecommendationBadgesLegend />
-      <div className={styles.recommendationsContainer}>
+      <S.RecommendationsContainer>
         {sortRecommendations(recommendations, recommendationsContent).map(
           ({ name, params, vote }) => {
             const {
@@ -176,22 +150,17 @@ const Recommendations = () => {
             }
 
             return (
-              <div
-                key={id}
-                className={styles.recommendation}
-                data-testid={`${id}-recommendation`}
-              >
+              <S.Recommendation key={id} data-testid={`${id}-recommendation`}>
                 <RiAccordion
                   id={name}
                   key={`${name}-accordion`}
                   label={renderLabel(redisStack, title, id)}
                   actions={renderButtonContent(badges, id)}
-                  className={styles.accordion}
                   defaultOpen
                   onOpenChange={(isOpen) => handleToggle(isOpen, id)}
                   data-testid={`${id}-accordion`}
                 >
-                  <RecommendationContent>
+                  <S.RecommendationContent>
                     <RecommendationBody
                       elements={content}
                       params={params}
@@ -206,9 +175,9 @@ const Recommendations = () => {
                         }
                       />
                     )}
-                  </RecommendationContent>
+                  </S.RecommendationContent>
                 </RiAccordion>
-                <div className={styles.footer}>
+                <S.Footer>
                   <FeatureFlagComponent name={FeatureFlags.envDependent}>
                     <RecommendationVoting vote={vote as Vote} name={name} />
                   </FeatureFlagComponent>
@@ -221,13 +190,13 @@ const Recommendations = () => {
                       Tutorial
                     </PrimaryButton>
                   )}
-                </div>
-              </div>
+                </S.Footer>
+              </S.Recommendation>
             )
           },
         )}
-      </div>
-    </div>
+      </S.RecommendationsContainer>
+    </S.Wrapper>
   )
 }
 

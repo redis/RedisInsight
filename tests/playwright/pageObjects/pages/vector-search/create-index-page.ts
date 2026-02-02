@@ -5,12 +5,12 @@ import {
     SampleDataContent,
     SampleDataType,
     SearchIndexType,
-} from 'uiSrc/pages/vector-search/create-index/types'
+} from 'uiSrc/pages/vector-search-deprecated/create-index/types'
 import {
     indexDataContent,
     indexType as indexTypesData,
     sampleDatasetOptions,
-} from 'uiSrc/pages/vector-search/create-index/steps/config'
+} from 'uiSrc/pages/vector-search-deprecated/create-index/steps/config'
 import { BasePage } from '../../base-page'
 import { Toast } from '../../components/common/toast'
 

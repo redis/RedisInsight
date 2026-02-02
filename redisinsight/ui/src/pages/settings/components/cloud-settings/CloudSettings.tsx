@@ -14,7 +14,6 @@ import {
   DestructiveButton,
   PrimaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiPopover } from 'uiSrc/components/base'
@@ -22,7 +21,7 @@ import { EXTERNAL_LINKS, UTM_MEDIUMS } from 'uiSrc/constants/links'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import UserApiKeysTable from './components/user-api-keys-table'
 
-import styles from './styles.module.scss'
+import * as S from './CloudSettings.styles'
 
 const CloudSettings = () => {
   const { loading, data } = useSelector(oauthCapiKeysSelector)
@@ -53,21 +52,19 @@ const CloudSettings = () => {
   }
 
   return (
-    <div className={styles.container}>
-      <Title className={styles.title} size="XS">
-        API user keys
-      </Title>
+    <S.Container>
+      <S.SectionTitle size="XS">API user keys</S.SectionTitle>
       <Spacer size="s" />
       <Row gap="m" responsive>
         <FlexItem grow>
-          <Text size="m" className={styles.smallText} color="primary">
+          <S.SmallText>
             The list of API user keys that are stored locally in Redis Insight.
-          </Text>
+          </S.SmallText>
           <Spacer size="xs" />
-          <Text size="m" className={styles.smallText} color="primary">
+          <S.SmallText>
             API user keys grant programmatic access to Redis Cloud.
-          </Text>
-          <Text size="m" className={styles.smallText} color="primary">
+          </S.SmallText>
+          <S.SmallText>
             To delete API keys from Redis Cloud,
             <Link
               color="primary"
@@ -80,7 +77,7 @@ const CloudSettings = () => {
               sign in to Redis Cloud
             </Link>
             and delete them manually.
-          </Text>
+          </S.SmallText>
         </FlexItem>
         <FlexItem grow={false}>
           <RiPopover
@@ -89,7 +86,7 @@ const CloudSettings = () => {
             isOpen={isDeleteOpen}
             closePopover={() => setIsDeleteOpen(false)}
             panelPaddingSize="l"
-            panelClassName={styles.deletePopover}
+            maxWidth="420px"
             button={
               <PrimaryButton
                 size="small"
@@ -101,7 +98,7 @@ const CloudSettings = () => {
               </PrimaryButton>
             }
           >
-            <div className={styles.popoverDeleteContainer}>
+            <S.PopoverDeleteContainer>
               <Text size="m" component="div">
                 <h4>All API user keys will be removed from Redis Insight.</h4>
                 {'To delete API keys from Redis Cloud, '}
@@ -116,24 +113,23 @@ const CloudSettings = () => {
                 {' and delete them manually.'}
               </Text>
               <Spacer />
-              <div className={styles.popoverFooter}>
+              <S.PopoverFooter>
                 <DestructiveButton
                   size="small"
                   icon={DeleteIcon}
                   onClick={handleDeleteAllKeys}
-                  className={styles.popoverDeleteBtn}
                   data-testid="delete-key-confirm-btn"
                 >
                   Remove all API keys
                 </DestructiveButton>
-              </div>
-            </div>
+              </S.PopoverFooter>
+            </S.PopoverDeleteContainer>
           </RiPopover>
         </FlexItem>
       </Row>
       <Spacer />
       <UserApiKeysTable items={data} loading={loading} />
-    </div>
+    </S.Container>
   )
 }
 

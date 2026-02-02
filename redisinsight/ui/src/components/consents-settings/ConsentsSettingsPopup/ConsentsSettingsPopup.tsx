@@ -12,7 +12,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Modal } from 'uiSrc/components/base/display'
-import styles from '../styles.module.scss'
+import * as S from '../ConsentsSettings.styles'
 
 const ConsentsSettingsPopup = () => {
   const history = useHistory()
@@ -35,11 +35,11 @@ const ConsentsSettingsPopup = () => {
   }, [])
 
   return (
-    <Modal
+    <S.ConsentsPopup
+      as={Modal}
       open
       persistent
       width="600px"
-      className={styles.consentsPopup}
       data-testid="consents-settings-popup"
       title={
         <Row justify="between">
@@ -49,7 +49,9 @@ const ConsentsSettingsPopup = () => {
             </Title>
           </FlexItem>
           <FlexItem>
-            <RiIcon className={styles.redisIcon} type="RedisLogoFullIcon" />
+            <S.RedisIcon>
+              <RiIcon type="RedisLogoFullIcon" />
+            </S.RedisIcon>
           </FlexItem>
         </Row>
       }

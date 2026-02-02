@@ -5,10 +5,13 @@ import { VectorSearchCreateIndexPage, VectorSearchPage } from 'uiSrc/pages'
 import { LAZY_LOAD } from '../../config'
 
 const LazyVectorSearchPage = lazy(
-  () => import('uiSrc/pages/vector-search/pages/VectorSearchPage'),
+  () => import('uiSrc/pages/vector-search-deprecated/pages/VectorSearchPage'),
 )
 const LazyVectorSearchCreateIndexPage = lazy(
-  () => import('uiSrc/pages/vector-search/pages/VectorSearchCreateIndexPage'),
+  () =>
+    import(
+      'uiSrc/pages/vector-search-deprecated/pages/VectorSearchCreateIndexPage'
+    ),
 )
 
 export const VECTOR_SEARCH_ROUTES: IRoute[] = [

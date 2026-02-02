@@ -45,7 +45,7 @@ import {
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Modal } from 'uiSrc/components/base/display'
 import { CancelIcon } from 'uiSrc/components/base/icons'
-import styles from './styles.module.scss'
+import * as S from './OAuthSelectAccountDialog.styles'
 
 interface FormValues {
   accountId: Nullable<string>
@@ -184,8 +184,8 @@ const OAuthSelectAccountDialog = () => {
 
   return (
     <Modal.Compose open>
-      <Modal.Content.Compose
-        className={styles.container}
+      <S.Container
+        as={Modal.Content.Compose}
         data-testid="oauth-select-account-dialog"
       >
         <Modal.Content.Close
@@ -197,9 +197,9 @@ const OAuthSelectAccountDialog = () => {
           Connect to Redis Cloud
         </Modal.Content.Header.Title>
         <Modal.Content.Body.Compose>
-          <section className={styles.content}>
-            <Text className={styles.subTitle}>
-              Select an account to connect to:
+          <S.Content>
+            <Text>
+              <S.SubTitle>Select an account to connect to:</S.SubTitle>
             </Text>
             <Spacer size="xl" />
             <RiRadioGroupRoot
@@ -213,29 +213,31 @@ const OAuthSelectAccountDialog = () => {
                 </RiRadioGroupItemRoot>
               ))}
             </RiRadioGroupRoot>
-          </section>
-          <div className={styles.footer}>
-            <SecondaryButton
-              className={styles.button}
-              onClick={handleOnClose}
-              data-testid="close-oauth-select-account-dialog"
-              aria-labelledby="close oauth select account dialog"
-            >
-              Cancel
-            </SecondaryButton>
-            <PrimaryButton
-              disabled={loading || plansLoadings}
-              loading={loading || plansLoadings}
-              className={styles.button}
-              onClick={() => formik.handleSubmit()}
-              data-testid="submit-oauth-select-account-dialog"
-              aria-labelledby="submit oauth select account dialog"
-            >
-              Select account
-            </PrimaryButton>
-          </div>
+          </S.Content>
+          <S.Footer>
+            <S.Button>
+              <SecondaryButton
+                onClick={handleOnClose}
+                data-testid="close-oauth-select-account-dialog"
+                aria-labelledby="close oauth select account dialog"
+              >
+                Cancel
+              </SecondaryButton>
+            </S.Button>
+            <S.Button>
+              <PrimaryButton
+                disabled={loading || plansLoadings}
+                loading={loading || plansLoadings}
+                onClick={() => formik.handleSubmit()}
+                data-testid="submit-oauth-select-account-dialog"
+                aria-labelledby="submit oauth select account dialog"
+              >
+                Select account
+              </PrimaryButton>
+            </S.Button>
+          </S.Footer>
         </Modal.Content.Body.Compose>
-      </Modal.Content.Compose>
+      </S.Container>
     </Modal.Compose>
   )
 }

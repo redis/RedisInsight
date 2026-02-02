@@ -1,5 +1,4 @@
 import React from 'react'
-import cx from 'classnames'
 import { isArray } from 'lodash'
 
 import { LoadingContent } from 'uiSrc/components/base/layout'
@@ -14,11 +13,10 @@ import {
 } from 'uiSrc/utils'
 
 import { CommandExecutionStatus } from 'uiSrc/slices/interfaces/cli'
-import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import QueryCardCliDefaultResult from '../QueryCardCliDefaultResult'
 import QueryCardCliGroupResult from '../QueryCardCliGroupResult'
-import styles from './styles.module.scss'
+import * as S from './QueryCardCliResultWrapper.styles'
 
 export interface Props {
   query: string
@@ -42,18 +40,20 @@ const QueryCardCliResultWrapper = (props: Props) => {
   } = props
 
   return (
-    <div
+    <S.Container
       data-testid="query-cli-result-wrapper"
-      className={cx('queryResultsContainer', styles.container)}
+      className="queryResultsContainer"
     >
       {!loading && (
-        <div data-testid="query-cli-result" className={cx(styles.content)}>
+        <S.Content data-testid="query-cli-result">
           {isNotStored && (
-            <Text className={styles.alert} data-testid="query-cli-warning">
-              <RiIcon type="ToastDangerIcon" className={styles.alertIcon} />
+            <S.Alert data-testid="query-cli-warning">
+              <S.AlertIcon>
+                <RiIcon type="ToastDangerIcon" />
+              </S.AlertIcon>
               The result is too big to be saved. It will be deleted after the
               application is closed.
-            </Text>
+            </S.Alert>
           )}
           {isGroupResults(resultsMode) && isArray(result[0]?.response) ? (
             <QueryCardCliGroupResult
@@ -80,14 +80,14 @@ const QueryCardCliResultWrapper = (props: Props) => {
               }
             />
           )}
-        </div>
+        </S.Content>
       )}
       {loading && (
-        <div className={styles.loading} data-testid="query-cli-loader">
+        <S.Loading data-testid="query-cli-loader">
           <LoadingContent lines={1} />
-        </div>
+        </S.Loading>
       )}
-    </div>
+    </S.Container>
   )
 }
 

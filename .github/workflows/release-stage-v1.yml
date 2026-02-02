@@ -1,0 +1,45 @@
+name: 📖 Release (stage) [v1 - DISABLED]
+
+# This workflow is disabled to prevent conflicts with release-stage.yml
+# It needs to be triggered manually instead of when pushing to a release branch
+# to be deleted once release-stage.yml is tested and working
+on:
+  workflow_call:
+
+jobs:
+  tests:
+    name: Release stage tests
+    uses: ./.github/workflows/tests.yml
+    secrets: inherit
+    with:
+      short_rte_list: false
+      pre_release: true
+
+  builds:
+    name: Release stage builds
+    uses: ./.github/workflows/build.yml
+    needs: tests
+    secrets: inherit
+    with:
+      environment: "staging"
+      target: "all"
+
+  aws:
+    uses: ./.github/workflows/aws-upload-dev.yml
+    needs: [builds]
+    secrets: inherit
+    if: always()
+    with:
+      pre-release: true
+
+  # Remove artifacts from github actions
+  remove-artifacts:
+    name: Remove artifacts
+    needs: [aws]
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove all artifacts
+        uses: ./.github/actions/remove-artifacts # Remove artifacts from github actions

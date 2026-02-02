@@ -63,7 +63,7 @@
     "buffer": "^6.0.3",
     "classnames": "^2.3.1",
     "json-bigint": "^1.0.0",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "redisinsight-plugin-sdk": "^1.1.0"

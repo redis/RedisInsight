@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react'
-import cx from 'classnames'
 import { isNil } from 'lodash'
 import { ChevronLeftIcon, ChevronRightIcon } from 'uiSrc/components/base/icons'
 import { IEnablementAreaItem } from 'uiSrc/slices/interfaces'
@@ -15,7 +14,7 @@ import {
   MenuTrigger,
 } from 'uiSrc/components/base/layout/menu'
 import { Text } from 'uiSrc/components/base/text'
-import styles from './styles.module.scss'
+import * as S from '../../../../../SidePanels.styles'
 
 export interface Props {
   items: IEnablementAreaItem[]
@@ -80,9 +79,7 @@ const Pagination = ({
           onClick={toggleMenuOpen}
         >
           <Text size="S">
-            <strong
-              className={styles.underline}
-            >{`${activePage + 1} of ${items.length}`}</strong>
+            <S.Underline>{`${activePage + 1} of ${items.length}`}</S.Underline>
           </Text>
         </button>
       </MenuTrigger>
@@ -97,7 +94,6 @@ const Pagination = ({
             key={item.id}
             onClick={() => handleOpenPage(index)}
             text={item.label}
-            className={cx({ [styles.activeMenuItem]: activePage === index })}
           />
         ))}
         <MenuDropdownArrow />
@@ -107,26 +103,20 @@ const Pagination = ({
 
   const size = compressed ? 'small' : 'medium'
   return (
-    <div
-      className={cx(styles.pagination, {
-        [styles.paginationCompressed]: compressed,
-      })}
-    >
+    <S.Pagination $compressed={compressed}>
       <div>
         {activePage > 0 && (
-          <PrimaryButton
+          <S.PrevPage
+            as={PrimaryButton}
             aria-label="Previous page"
             data-testid="enablement-area__prev-page-btn"
             icon={ChevronLeftIcon}
             iconSide="left"
             onClick={() => handleOpenPage(activePage - 1)}
             size={size}
-            className={cx(styles.prevPage, {
-              [styles.prevPageCompressed]: compressed,
-            })}
           >
             Back
-          </PrimaryButton>
+          </S.PrevPage>
         )}
       </div>
       <div>
@@ -134,22 +124,20 @@ const Pagination = ({
       </div>
       <div>
         {activePage < items.length - 1 && (
-          <PrimaryButton
+          <S.NextPage
+            as={PrimaryButton}
             aria-label="Next page"
             data-testid="enablement-area__next-page-btn"
             icon={ChevronRightIcon}
             iconSide="right"
             onClick={() => handleOpenPage(activePage + 1)}
-            className={cx(styles.nextPage, {
-              [styles.nextPageCompressed]: compressed,
-            })}
             size={size}
           >
             Next
-          </PrimaryButton>
+          </S.NextPage>
         )}
       </div>
-    </div>
+    </S.Pagination>
   )
 }
 

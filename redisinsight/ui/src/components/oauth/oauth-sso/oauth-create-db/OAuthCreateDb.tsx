@@ -37,7 +37,7 @@ import {
   OAuthAgreement,
   OAuthRecommendedSettings,
 } from '../../shared'
-import styles from './styles.module.scss'
+import * as S from '../../OAuth.styles'
 import { StyledAdvantagesContainerAbsolute } from '../../shared/styles'
 
 export interface Props {
@@ -113,17 +113,16 @@ const OAuthCreateDb = (props: Props) => {
   }
 
   return (
-    <div className={styles.container} data-testid="oauth-container-create-db">
+    <S.SsoContainer data-testid="oauth-container-create-db">
       <Row>
-        <FlexItem grow className={styles.advantagesContainer}>
+        <S.SsoAdvantagesContainer as={FlexItem} grow>
           <StyledAdvantagesContainerAbsolute>
             <OAuthAdvantages />
           </StyledAdvantagesContainerAbsolute>
-        </FlexItem>
-        <FlexItem grow className={styles.socialContainer}>
+        </S.SsoAdvantagesContainer>
+        <S.SsoSocialContainer as={FlexItem} grow>
           {!data ? (
             <OAuthForm
-              className={styles.socialButtons}
               onClick={handleSocialButtonClick}
               action={OAuthSocialAction.Create}
             >
@@ -133,12 +132,12 @@ const OAuthCreateDb = (props: Props) => {
                     <Text color="primary" size="L">
                       Get started with
                     </Text>
-                    <Title size="XL" color="primary" className={styles.title}>
+                    <S.SsoTitle as={Title} size="XL" color="primary">
                       Free Redis Cloud database
-                    </Title>
+                    </S.SsoTitle>
                   </Col>
 
-                  {form}
+                  <S.SsoSocialButtons>{form}</S.SsoSocialButtons>
                   <div>
                     <OAuthRecommendedSettings
                       value={isRecommended}
@@ -155,9 +154,9 @@ const OAuthCreateDb = (props: Props) => {
                 <Text color="primary" size="L">
                   Get your
                 </Text>
-                <Title size="XL" color="primary" className={styles.title}>
+                <S.SsoTitle as={Title} size="XL" color="primary">
                   Free Redis Cloud database
-                </Title>
+                </S.SsoTitle>
               </Col>
               <Spacer size="xl" />
               <Text textAlign="center" color="primary">
@@ -178,9 +177,9 @@ const OAuthCreateDb = (props: Props) => {
               </PrimaryButton>
             </>
           )}
-        </FlexItem>
+        </S.SsoSocialContainer>
       </Row>
-    </div>
+    </S.SsoContainer>
   )
 }
 

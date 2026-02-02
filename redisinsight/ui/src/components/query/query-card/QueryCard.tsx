@@ -38,7 +38,7 @@ import QueryCardCommonResult, {
   CommonErrorResponse,
 } from './QueryCardCommonResult'
 
-import styles from './styles.module.scss'
+import * as S from './QueryCard.styles'
 
 export interface Props {
   id: string
@@ -194,15 +194,14 @@ const QueryCard = (props: Props) => {
   }
 
   return (
-    <div
-      className={cx(styles.containerWrapper, {
-        fullscreen: isFullScreen,
-        [styles.isOpen]: isOpen,
-      })}
+    <S.ContainerWrapper
+      $isOpen={isOpen}
+      $isFullscreen={isFullScreen}
+      className={cx({ fullscreen: isFullScreen, isOpen })}
       id={id}
     >
-      <div
-        className={cx(styles.container)}
+      <S.Container
+        className="container"
         data-testid={`query-card-container-${id}`}
       >
         <QueryCardHeader
@@ -275,12 +274,12 @@ const QueryCard = (props: Props) => {
                                 commandId={id}
                               />
                             ) : (
-                              <div className={styles.loading}>
+                              <S.Loading>
                                 <LoadingContent
                                   lines={5}
                                   data-testid="loading-content"
                                 />
-                              </div>
+                              </S.Loading>
                             )}
                           </>
                         )}
@@ -302,8 +301,8 @@ const QueryCard = (props: Props) => {
             )}
           </>
         )}
-      </div>
-    </div>
+      </S.Container>
+    </S.ContainerWrapper>
   )
 }
 

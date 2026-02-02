@@ -23,7 +23,7 @@ import NotificationMenu from './components/notifications-center'
 import { RedisLogo } from './components/redis-logo/RedisLogo'
 import { useNavigation } from './hooks/useNavigation'
 import HighlightedFeature from '../hightlighted-feature/HighlightedFeature'
-import styles from './styles.module.scss'
+import * as S from './NavigationMenu.styles'
 
 const NavigationMenu = () => {
   const { isRdiWorkspace, publicRoutes, highlightedPages } = useNavigation()
@@ -33,14 +33,12 @@ const NavigationMenu = () => {
       <HighlightedFeature
         key={nav.tooltipText}
         isHighlight={!!highlightedPages[nav.pageName]?.length}
-        dotClassName={styles.highlightDot}
         transformOnHover
       >
         <SideBarItem
           tooltipProps={{ text: nav.tooltipText, placement: 'right' }}
           onClick={nav.onClick}
           isActive={nav.isActivePage}
-          className={styles.sideBarItem}
         >
           <SideBarItemIcon
             icon={nav.iconType}
@@ -65,16 +63,16 @@ const NavigationMenu = () => {
   }
 
   return (
-    <SideBar
+    <S.MainNavbar
+      as={SideBar}
       isExpanded={false}
       aria-label="Main navigation"
       data-testid="main-navigation-sidebar"
-      className={styles.mainNavbar}
     >
       <SideBarContainer>
         <RedisLogo isRdiWorkspace={isRdiWorkspace} />
       </SideBarContainer>
-      <SideBarFooter className={styles.footer}>
+      <S.Footer as={SideBarFooter}>
         <FeatureFlagComponent name={FeatureFlags.envDependent} enabledByDefault>
           <CreateCloud />
           <NotificationMenu />
@@ -93,7 +91,6 @@ const NavigationMenu = () => {
             target="_blank"
           >
             <SideBarItem
-              className={styles.githubNavItem}
               tooltipProps={{
                 text: 'Star us on GitHub',
                 placement: 'right',
@@ -107,8 +104,8 @@ const NavigationMenu = () => {
             </SideBarItem>
           </SideBarFooter.Link>
         </FeatureFlagComponent>
-      </SideBarFooter>
-    </SideBar>
+      </S.Footer>
+    </S.MainNavbar>
   )
 }
 

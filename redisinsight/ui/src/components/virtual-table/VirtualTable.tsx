@@ -8,7 +8,6 @@ import {
   IndexRange,
   InfiniteLoader,
   RowMouseEventHandlerParams,
-  Table,
   TableCellProps,
 } from 'react-virtualized'
 import TableColumnSearchTrigger from 'uiSrc/components/table-column-search-trigger/TableColumnSearchTrigger'
@@ -32,7 +31,7 @@ import {
 } from './interfaces'
 import KeysSummary from '../keys-summary'
 
-import styles from './styles.module.scss'
+import * as S from './VirtualTable.styles'
 
 // this is needed to align content when scrollbar appears
 const TABLE_OUTSIDE_WIDTH = 24
@@ -353,8 +352,7 @@ const VirtualTable = (props: IProps) => {
           parent={parent}
           key={rowIndex + columnIndex + dataKey}
         >
-          <div
-            className={styles.tableRowCell}
+          <S.TableRowCell
             style={{
               justifyContent: column.alignment,
               wordBreak: 'break-word',
@@ -367,7 +365,7 @@ const VirtualTable = (props: IProps) => {
               expandedRows.indexOf(rowIndex) !== -1,
               rowIndex,
             )}
-          </div>
+          </S.TableRowCell>
         </CellMeasurer>
       )
     }
@@ -379,8 +377,7 @@ const VirtualTable = (props: IProps) => {
         parent={parent}
         key={rowIndex + columnIndex + dataKey}
       >
-        <div
-          className={styles.tableRowCell}
+        <S.TableRowCell
           style={{ justifyContent: column.alignment, whiteSpace: 'normal' }}
         >
           <Text component="div" style={{ maxWidth: '100%' }}>
@@ -391,7 +388,7 @@ const VirtualTable = (props: IProps) => {
               {cellData}
             </div>
           </Text>
-        </div>
+        </S.TableRowCell>
       </CellMeasurer>
     )
   }
@@ -421,30 +418,24 @@ const VirtualTable = (props: IProps) => {
         style={{ justifyContent: column.alignment, position: 'relative' }}
       >
         {column.isSortable && !searching && (
-          <div
-            className={styles.headerCell}
-            style={{ justifyContent: column.alignment }}
-          >
-            <button
+          <S.HeaderCell style={{ justifyContent: column.alignment }}>
+            <S.HeaderButton
               type="button"
               onClick={() => changeSorting(column.id)}
-              className={cx(
-                cellClass,
-                styles.headerButton,
-                isColumnSorted ? styles.headerButtonSorted : null,
-              )}
+              className={cellClass}
+              $isSorted={isColumnSorted}
               data-testid="score-button"
               style={{ justifyContent: column.alignment }}
             >
               <Text size="m" className={cellClass} variant="semiBold">
                 <span>{column.label}</span>
               </Text>
-            </button>
-          </div>
+            </S.HeaderButton>
+          </S.HeaderCell>
         )}
         {(!column.isSortable || (column.isSortable && searching)) && (
-          <div
-            className={cx(styles.headerCell, cellClass, 'relative')}
+          <S.HeaderCell
+            className={cx(cellClass, 'relative')}
             style={{ flex: '1' }}
           >
             <div
@@ -459,17 +450,14 @@ const VirtualTable = (props: IProps) => {
               </Text>
             </div>
             {column.isSearchable && searchRenderer(column)}
-          </div>
+          </S.HeaderCell>
         )}
         {isColumnSorted && !searching && (
-          <div className={styles.headerCell} style={{ paddingLeft: 0 }}>
-            <button
+          <S.HeaderCell style={{ paddingLeft: 0 }}>
+            <S.HeaderButton
               type="button"
               onClick={() => changeSorting(column.id)}
-              className={cx(
-                styles.headerButton,
-                isColumnSorted ? styles.headerButtonSorted : null,
-              )}
+              $isSorted={isColumnSorted}
               data-testid="header-sorting-button"
             >
               <RiIcon
@@ -481,12 +469,11 @@ const VirtualTable = (props: IProps) => {
                     : 'ArrowUpIcon'
                 }
               />
-            </button>
-          </div>
+            </S.HeaderButton>
+          </S.HeaderCell>
         )}
         {column.isResizable && (
-          <div
-            className={styles.resizeTrigger}
+          <S.ResizeTrigger
             onMouseDown={(e) => onDragColumnStart(e, column)}
             data-testid={`resize-trigger-${column.id}`}
             role="presentation"
@@ -499,11 +486,11 @@ const VirtualTable = (props: IProps) => {
   const noRowsRenderer = () => (
     <>
       {noItemsMessage && (
-        <div className={styles.placeholder}>
+        <S.Placeholder>
           <Text textAlign="center" size="m">
             {loading ? 'loading...' : noItemsMessage}
           </Text>
-        </div>
+        </S.Placeholder>
       )}
     </>
   )
@@ -589,11 +576,9 @@ const VirtualTable = (props: IProps) => {
   return (
     <RIResizeObserver onResize={onResize}>
       {(resizeRef) => (
-        <div
+        <S.Container
           ref={resizeRef}
-          className={cx(styles.container, {
-            [styles.isResizing]: isColResizing,
-          })}
+          $isResizing={isColResizing}
           onWheel={onWheel}
           onMouseMove={onDragColumn}
           onMouseUp={onDragColumnEnd}
@@ -616,7 +601,7 @@ const VirtualTable = (props: IProps) => {
             rowCount={totalItemsCount || undefined}
           >
             {({ onRowsRendered, registerChild }) => (
-              <Table
+              <S.StyledTable
                 onRowClick={onRowSelect}
                 onRowDoubleClick={() => clearSelectTimeout()}
                 estimatedRowSize={rowHeight}
@@ -632,22 +617,20 @@ const VirtualTable = (props: IProps) => {
                 width={tableWidth > width ? tableWidth : width}
                 noRowsRenderer={noRowsRenderer}
                 height={height}
-                className={cx(styles.table, {
-                  [styles.autoHeight]: autoHeight,
-                })}
-                gridClassName={cx(styles.customScroll, styles.grid, {
-                  [styles.disableScroll]: disableScroll,
+                $autoHeight={autoHeight}
+                gridClassName={cx({
+                  'virtual-table-disable-scroll': disableScroll,
                 })}
                 rowClassName={({ index }) =>
                   cx([
-                    styles.tableRow,
+                    'virtual-table-row',
                     {
                       'table-row-selected': selectedRowIndex === index,
-                      [styles.tableRowEven]: index % 2 === 0,
+                      'virtual-table-row-even': index % 2 === 0,
                     },
                   ])
                 }
-                headerClassName={styles.headerColumn}
+                headerClassName="virtual-table-header-column"
                 rowCount={items.length}
                 rowGetter={({ index }) => items[index]}
                 onScroll={onScroll}
@@ -683,17 +666,17 @@ const VirtualTable = (props: IProps) => {
                     cellRenderer={cellRenderer}
                     headerClassName={column.headerClassName ?? ''}
                     className={cx(
-                      styles.tableRowColumn,
+                      'virtual-table-row-column',
                       column.className ?? '',
                     )}
                     key={column.id}
                   />
                 ))}
-              </Table>
+              </S.StyledTable>
             )}
           </InfiniteLoader>
           {!hideFooter && (
-            <div className={cx(styles.tableFooter)}>
+            <S.TableFooter>
               <KeysSummary
                 scanned={scanned}
                 totalItemsCount={totalItemsCount || undefined}
@@ -701,9 +684,9 @@ const VirtualTable = (props: IProps) => {
                 loadMoreItems={loadMoreItems}
                 items={items}
               />
-            </div>
+            </S.TableFooter>
           )}
-        </div>
+        </S.Container>
       )}
     </RIResizeObserver>
   )

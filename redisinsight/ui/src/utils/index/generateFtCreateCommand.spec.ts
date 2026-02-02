@@ -1,4 +1,4 @@
-import { SampleDataContent } from 'uiSrc/pages/vector-search/create-index/types'
+import { SampleDataContent } from 'uiSrc/pages/vector-search-deprecated/create-index/types'
 import { generateFtCreateCommand } from './generateFtCreateCommand'
 
 describe('generateFtCreateCommand', () => {

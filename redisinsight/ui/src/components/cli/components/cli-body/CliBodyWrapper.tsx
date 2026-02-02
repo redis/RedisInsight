@@ -46,7 +46,7 @@ import {
 } from 'uiSrc/utils/cliOutputActions'
 import CliBody from './CliBody'
 
-import styles from './CliBody/styles.module.scss'
+import * as S from '../../Cli.styles'
 
 const CliBodyWrapper = () => {
   const [command, setCommand] = useState('')
@@ -220,7 +220,7 @@ const CliBodyWrapper = () => {
   }
 
   return (
-    <section ref={refHotkeys} className={styles.section}>
+    <S.Section ref={refHotkeys}>
       <CliBody
         data={data}
         command={command}
@@ -228,7 +228,7 @@ const CliBodyWrapper = () => {
         setCommand={setCommand}
         onSubmit={handleSubmit}
       />
-    </section>
+    </S.Section>
   )
 }
 

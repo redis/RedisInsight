@@ -8,8 +8,8 @@ import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiPopover } from 'uiSrc/components/base'
 
-import * as S from './DeleteTutorialButton.styles'
-import styles from './styles.module.scss'
+import * as LocalS from './DeleteTutorialButton.styles'
+import * as S from '../../../../../SidePanels.styles'
 
 export interface Props {
   id: string
@@ -37,25 +37,25 @@ const DeleteTutorialButton = (props: Props) => {
       closePopover={() => setIsPopoverDeleteOpen(false)}
       panelPaddingSize="l"
       button={
-        <S.GroupHeaderButton
+        <LocalS.GroupHeaderButton
           role="presentation"
           onClick={handleClickDelete}
           data-testid={`delete-tutorial-icon-${id}`}
         >
           <RiIcon size="m" type="DeleteIcon" />
-        </S.GroupHeaderButton>
+        </LocalS.GroupHeaderButton>
       }
       onClick={(e) => e.stopPropagation()}
       data-testid={`delete-tutorial-popover-${id}`}
     >
-      <div className={styles.popoverDeleteContainer}>
+      <S.PopoverDeleteContainer>
         <Text size="m" component="div">
           <h4 style={{ wordBreak: 'break-all' }}>
             <b>{formatLongName(label)}</b>
           </h4>
           <Text size="s">will be deleted.</Text>
         </Text>
-        <div className={styles.popoverFooter}>
+        <S.PopoverFooter>
           <DestructiveButton
             size="s"
             icon={DeleteIcon}
@@ -65,8 +65,8 @@ const DeleteTutorialButton = (props: Props) => {
           >
             Delete
           </DestructiveButton>
-        </div>
-      </div>
+        </S.PopoverFooter>
+      </S.PopoverDeleteContainer>
     </RiPopover>
   )
 }

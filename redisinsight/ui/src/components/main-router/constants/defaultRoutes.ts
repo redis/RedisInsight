@@ -25,7 +25,8 @@ import { VECTOR_SEARCH_ROUTES } from './sub-routes/vectorSearchRoutes'
 
 const LazyBrowserPage = lazy(() => import('uiSrc/pages/browser'))
 const LazyVectorSearchPageRouter = lazy(
-  () => import('uiSrc/pages/vector-search/pages/VectorSearchPageRouter'),
+  () =>
+    import('uiSrc/pages/vector-search-deprecated/pages/VectorSearchPageRouter'),
 )
 const LazyHomePage = lazy(() => import('uiSrc/pages/home'))
 const LazyWorkbenchPage = lazy(() => import('uiSrc/pages/workbench'))

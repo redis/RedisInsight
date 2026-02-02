@@ -20,7 +20,6 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import DeleteTutorialButton from '../DeleteTutorialButton'
 
 import * as S from './Group.styles'
-import './styles.scss'
 
 export interface Props {
   id: string
@@ -119,7 +118,7 @@ const Group = (props: Props) => {
       label={
         <Row align="end" justify="start" gap="s">
           {isShowFolder && (
-            <RiIcon type={isGroupOpen ? 'KnowledgeBaseIcon' : 'FolderIcon'} />
+            <RiIcon type={isGroupOpen ? 'FolderOpenIcon' : 'FolderIcon'} />
           )}
 
           <Text className="group-header" size="m">

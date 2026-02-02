@@ -15,7 +15,7 @@ import {
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import styles from '../styles.module.scss'
+import * as S from '../CodeButtonBlock.styles'
 
 interface Props {
   onApply: () => void
@@ -57,38 +57,41 @@ const RunConfirmationPopover = ({ onApply }: Props) => {
         to run commands in this database?
       </Text>
       <Spacer size="s" />
-      <Checkbox
-        id="showAgain"
-        name="showAgain"
-        label="Don't show again for this database"
-        checked={notShowAgain}
-        className={styles.showAgainCheckBox}
-        onChange={(e) => setNotShowAgain(e.target.checked)}
-        data-testid="checkbox-show-again"
-        aria-label="checkbox do not show agan"
-      />
-      <div className={styles.popoverFooter}>
+      <S.ShowAgainCheckBox>
+        <Checkbox
+          id="showAgain"
+          name="showAgain"
+          label="Don't show again for this database"
+          checked={notShowAgain}
+          onChange={(e) => setNotShowAgain(e.target.checked)}
+          data-testid="checkbox-show-again"
+          aria-label="checkbox do not show agan"
+        />
+      </S.ShowAgainCheckBox>
+      <S.PopoverFooter>
         <Row gap="m" justify="end">
           <FeatureFlagComponent name={FeatureFlags.envDependent}>
-            <SecondaryButton
-              size="s"
-              className={styles.popoverBtn}
-              onClick={handleChangeDatabase}
-              data-testid="tutorial-popover-change-db"
-            >
-              Change Database
-            </SecondaryButton>
+            <S.PopoverBtn>
+              <SecondaryButton
+                size="s"
+                onClick={handleChangeDatabase}
+                data-testid="tutorial-popover-change-db"
+              >
+                Change Database
+              </SecondaryButton>
+            </S.PopoverBtn>
           </FeatureFlagComponent>
-          <PrimaryButton
-            size="s"
-            className={styles.popoverBtn}
-            onClick={handleApply}
-            data-testid="tutorial-popover-apply-run"
-          >
-            Run
-          </PrimaryButton>
+          <S.PopoverBtn>
+            <PrimaryButton
+              size="s"
+              onClick={handleApply}
+              data-testid="tutorial-popover-apply-run"
+            >
+              Run
+            </PrimaryButton>
+          </S.PopoverBtn>
         </Row>
-      </div>
+      </S.PopoverFooter>
     </>
   )
 }
