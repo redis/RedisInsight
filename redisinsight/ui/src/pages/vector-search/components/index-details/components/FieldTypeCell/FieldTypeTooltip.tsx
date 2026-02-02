@@ -1,9 +1,10 @@
 import React from 'react'
 import { Text } from 'uiSrc/components/base/text'
-import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { Col } from 'uiSrc/components/base/layout/flex'
 import { FieldTag } from 'uiSrc/components/new-index/create-index-step/field-box/FieldTag'
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { Spacer } from 'uiSrc/components/base/layout'
+import * as S from './FieldTypeTooltip.styles'
 
 const FIELD_TYPE_DESCRIPTIONS: { type: FieldTypes; description: string }[] = [
   {
@@ -32,10 +33,10 @@ export const FieldTypeTooltip = () => (
 
     <Spacer size="s" />
     {FIELD_TYPE_DESCRIPTIONS.map(({ type, description }) => (
-      <Row key={type} gap="s" style={{ whiteSpace: 'nowrap' }}>
+      <S.TooltipTypeRow key={type} gap="s">
         <FieldTag tag={type} />
         <Text>{description}</Text>
-      </Row>
+      </S.TooltipTypeRow>
     ))}
     <Spacer size="s" />
 
