@@ -6,8 +6,9 @@ import { useLocation, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import { ChevronLeftIcon, RocketIcon } from 'uiSrc/components/base/icons'
-import { ExternalLink, HorizontalRule, LoadingContent } from 'uiSrc/components'
+import { HorizontalRule, LoadingContent } from 'uiSrc/components'
 import { RiPopover } from 'uiSrc/components/base'
+import { Link } from 'uiSrc/components/base/link/Link'
 import { IEnablementAreaItem } from 'uiSrc/slices/interfaces'
 import {
   sendEventTelemetry,
@@ -73,7 +74,7 @@ const InternalPage = (props: Props) => {
     RedisUploadButton,
     CloudLink,
     RedisInsightLink,
-    ExternalLink,
+    Link,
   }
   const containerRef = useRef<HTMLDivElement>(null)
   const { instanceId = '' } = useParams<{ instanceId: string }>()

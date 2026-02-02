@@ -11,7 +11,6 @@ import {
 import { freeInstancesSelector } from 'uiSrc/slices/instances/instances'
 
 import {
-  ExternalLink,
   FeatureFlagComponent,
   OAuthConnectFreeDb,
   OAuthSsoHandlerDialog,
@@ -29,6 +28,7 @@ import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
+import { Link } from 'uiSrc/components/base/link/Link'
 import {
   MODULE_CAPABILITY_TEXT_NOT_AVAILABLE,
   MODULE_CAPABILITY_TEXT_NOT_AVAILABLE_ENTERPRISE,
@@ -92,7 +92,8 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
               <Spacer size="s" />
               <OAuthSsoHandlerDialog>
                 {(ssoCloudHandlerClick) => (
-                  <ExternalLink
+                  <Link
+                    external
                     href={getUtmExternalLink(EXTERNAL_LINKS.tryFree, {
                       campaign: UTM_CAMPAINGS[source] ?? source,
                     })}
@@ -110,7 +111,7 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
                     data-testid="tutorials-get-started-link"
                   >
                     Start with Cloud for free
-                  </ExternalLink>
+                  </Link>
                 )}
               </OAuthSsoHandlerDialog>
             </>
