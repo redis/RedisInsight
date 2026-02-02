@@ -337,4 +337,15 @@ export default {
   SUCCESS_TAGS_UPDATED: () => ({
     title: 'Tags updated successfully.',
   }),
+  AZURE_AUTH_SUCCESS: (username: string) => ({
+    title: 'Azure authentication successful',
+    message: (
+      <Text component="span">
+        Signed in as{' '}
+        <Text variant="semiBold" component="span">
+          {username}
+        </Text>
+      </Text>
+    ),
+  }),
 }

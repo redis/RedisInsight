@@ -3,6 +3,7 @@ export enum AddDbType {
   cloud,
   sentinel,
   software,
+  azure,
   import,
 }
 

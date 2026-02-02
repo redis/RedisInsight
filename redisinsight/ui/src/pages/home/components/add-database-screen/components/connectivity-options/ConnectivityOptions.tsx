@@ -10,7 +10,8 @@ import { Col, FlexItem, Grid, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Text } from 'uiSrc/components/base/text/Text'
 import { RiIcon } from 'uiSrc/components/base/icons'
-import { CONNECTIVITY_OPTIONS } from '../../constants'
+import { Loader } from 'uiSrc/components/base/display'
+import { useConnectivityOptions } from '../../hooks/useConnectivityOptions'
 
 import {
   StyledBadge,
@@ -25,6 +26,7 @@ export interface Props {
 
 const ConnectivityOptions = (props: Props) => {
   const { onClickOption, onClose } = props
+  const connectivityOptions = useConnectivityOptions({ onClickOption })
 
   return (
     <>
@@ -78,16 +80,20 @@ const ConnectivityOptions = (props: Props) => {
       <section>
         <Text color="primary">More connectivity options</Text>
         <Spacer />
-        <Grid gap="l" responsive columns={3}>
-          {CONNECTIVITY_OPTIONS.map(({ id, type, title, icon }) => (
-            <FlexItem key={id}>
+        <Grid gap="l" responsive columns={4}>
+          {connectivityOptions.map((option) => (
+            <FlexItem key={option.id}>
               <StyledConnectivityLink
-                onClick={() => onClickOption(type)}
-                data-testid={`option-btn-${id}`}
+                onClick={() => !option.loading && option.onClick()}
+                data-testid={`option-btn-${option.id}`}
               >
                 <Row gap="s" align="center" justify="center">
-                  <RiIcon type={icon} size="xl" />
-                  <Text color="primary">{title}</Text>
+                  {option.loading ? (
+                    <Loader size="xl" />
+                  ) : (
+                    <RiIcon type={option.icon} size="xl" />
+                  )}
+                  <Text color="primary">{option.title}</Text>
                 </Row>
               </StyledConnectivityLink>
             </FlexItem>

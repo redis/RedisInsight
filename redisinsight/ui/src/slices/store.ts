@@ -33,6 +33,7 @@ import appsSocketConnectionReducer from './app/socket-connection'
 import appFeaturesReducer from './app/features'
 import appUrlHandlingReducer from './app/url-handling'
 import appOauthReducer from './oauth/cloud'
+import azureAuthReducer from './oauth/azure'
 import workbenchResultsReducer from './workbench/wb-results'
 import workbenchTutorialsReducer from './workbench/wb-tutorials'
 import workbenchCustomTutorialsReducer from './workbench/wb-custom-tutorials'
@@ -125,6 +126,7 @@ export const rootReducer = combineReducers({
   recommendations: recommendationsReducer,
   oauth: combineReducers({
     cloud: appOauthReducer,
+    azure: azureAuthReducer,
   }),
   panels: combineReducers({
     sidePanels: sidePanelsReducer,
