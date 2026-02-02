@@ -118,7 +118,6 @@ export class ApiV2RdiClient extends ApiRdiClient {
 
   async getPipelineStatus(): Promise<RdiPipelineStatus> {
     try {
-      await super.getPipelineStatus();
       const { data } = await this.client.get<GetStatusResponse>(
         RdiUrlV2.GetPipelineStatus(this.selectedPipeline),
       );
