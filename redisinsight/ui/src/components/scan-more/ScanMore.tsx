@@ -4,8 +4,8 @@ import styled from 'styled-components'
 
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { RiTooltip } from 'uiSrc/components'
+import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { TextButton } from '@redis-ui/components'
 import { Text } from 'uiSrc/components/base/text'
 import { Theme } from 'uiSrc/components/base/theme/types'
 import * as S from './ScanMore.styles'
@@ -26,7 +26,7 @@ export interface Props {
 const WARNING_MESSAGE =
   'Scanning additional keys may decrease performance and memory available.'
 
-const ScanMoreButton = styled(TextButton)`
+const ScanMoreButton = styled(EmptyButton)`
   color: ${({ theme }: { theme: Theme }) =>
     theme.semantic.color.text.primary400} !important;
   line-height: inherit;

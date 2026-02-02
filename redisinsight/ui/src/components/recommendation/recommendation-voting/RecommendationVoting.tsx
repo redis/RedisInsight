@@ -5,6 +5,7 @@ import { Vote } from 'uiSrc/constants/recommendations'
 import { Nullable } from 'uiSrc/utils'
 
 import { Text } from 'uiSrc/components/base/text'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import VoteOption from './components/vote-option'
 import * as S from './RecommendationVoting.styles'
 
@@ -27,7 +28,7 @@ const RecommendationVoting = ({
   const [popover, setPopover] = useState<string>('')
 
   return (
-    <S.VotingContainer
+    <Row
       align="center"
       className={containerClass}
       gap={live ? 'none' : 'l'}
@@ -49,7 +50,7 @@ const RecommendationVoting = ({
           />
         ))}
       </S.VoteContent>
-    </S.VotingContainer>
+    </Row>
   )
 }
 

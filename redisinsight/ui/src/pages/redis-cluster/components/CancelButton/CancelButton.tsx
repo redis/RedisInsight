@@ -6,9 +6,8 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
-import { CANCEL_POPOVER_WIDTH } from '../../RedisCluster.styles'
-
 import type { CancelButtonProps } from './CancelButton.types'
+import { CANCEL_POPOVER_WIDTH } from '../../RedisCluster.styles'
 
 export const CancelButton = ({
   isPopoverOpen,

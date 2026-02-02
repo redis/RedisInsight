@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react'
 
-import { FormatedDate } from '../formated-date'
 import * as S from './RangeFilter.styles'
+import { FormatedDate } from '../formated-date'
 
 const buttonString = 'Reset Filter'
 

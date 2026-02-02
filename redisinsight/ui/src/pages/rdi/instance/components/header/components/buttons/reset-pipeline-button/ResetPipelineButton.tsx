@@ -1,9 +1,9 @@
 import React from 'react'
 
+import { Button, TextButton } from '@redis-ui/components'
+import { ResetIcon } from 'uiSrc/components/base/icons'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { RiTooltip } from 'uiSrc/components'
-import { Button, TextButton } from '@redis-ui/components'
-import { ResetIcon } from '@redis-ui/icons'
 import * as S from '../Buttons.styles'
 
 export interface PipelineButtonProps {

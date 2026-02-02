@@ -5,7 +5,6 @@ import LoadSampleData from 'uiSrc/pages/browser/components/load-sample-data'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Text } from 'uiSrc/components/base/text'
 import { Link } from 'uiSrc/components/base/link/Link'
-import * as S from './NoIndexesInitialMessage.styles'
 
 export interface Props {
   onSuccess?: () => void
@@ -43,9 +42,7 @@ const NoIndexesInitialMessage = (props: Props) => {
         ) to see what Redis Copilot can help you do?
       </Text>
       <Spacer />
-      <S.AnchorWrapper>
-        <LoadSampleData onSuccess={onSuccess} />
-      </S.AnchorWrapper>
+      <LoadSampleData onSuccess={onSuccess} />
       <Spacer />
     </div>
   )

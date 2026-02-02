@@ -4,10 +4,6 @@ import { type Theme } from 'uiSrc/components/base/theme/types'
 export const Wrapper = styled.div`
   width: 100%;
   max-width: 480px;
-
-  .euiPopover {
-    width: 100%;
-  }
 `
 
 export const Button = styled.span``
