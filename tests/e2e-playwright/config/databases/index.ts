@@ -18,20 +18,6 @@ import { sentinelConfig } from './sentinel';
 
 import { sshConfig } from './ssh';
 
-// Re-export individual configs
-export {
-  standaloneConfig,
-  standaloneV5Config,
-  standaloneV7Config,
-  standaloneV8Config,
-  standaloneEmptyConfig,
-  standaloneBigConfig,
-  clusterConfig,
-  sentinelConfig,
-  sshConfig,
-};
-
-// Backward compatibility - aggregated config object
 export const redisConfig = {
   standalone: standaloneConfig,
   standaloneV5: standaloneV5Config,
