@@ -107,7 +107,7 @@ describe('VirtualTable', () => {
       },
     ]
     const onChangeSorting = jest.fn()
-    const { container } = render(
+    render(
       <VirtualTable
         {...instance(mockedProps)}
         items={members}
@@ -122,7 +122,7 @@ describe('VirtualTable', () => {
 
     fireEvent.click(screen.getByTestId('score-button'))
 
-    expect(onChangeSorting).toBeCalled()
+    expect(onChangeSorting).toHaveBeenCalled()
   })
 
   it('should call onRowClick by clicking row', () => {
@@ -141,7 +141,7 @@ describe('VirtualTable', () => {
     const firstRow = screen.getAllByLabelText(/row/)[0]
     fireEvent.click(firstRow)
 
-    expect(onRowClick).toBeCalled()
+    expect(onRowClick).toHaveBeenCalled()
   })
 
   describe('Scan more', () => {
@@ -201,7 +201,7 @@ describe('VirtualTable', () => {
       fireEvent.click(scanMoreBtn)
 
       expect(scanMoreBtn).toBeInTheDocument()
-      expect(onLoadMoreItems).toBeCalledWith(argMock)
+      expect(onLoadMoreItems).toHaveBeenCalledWith(argMock)
     })
   })
 
