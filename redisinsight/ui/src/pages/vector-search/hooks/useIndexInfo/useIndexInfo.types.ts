@@ -35,3 +35,18 @@ export interface IndexInfo {
   numRecords: number
   numTerms: number
 }
+
+/**
+ * Hook options and result types.
+ */
+
+export interface UseIndexInfoOptions {
+  indexName: string
+}
+
+export interface UseIndexInfoResult {
+  indexInfo: IndexInfo | null
+  loading: boolean
+  error: string | null
+  refetch: () => void
+}
