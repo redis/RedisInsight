@@ -1,6 +1,6 @@
 export enum ComponentMetricsCollections {
-  processorMetrics = 'processor-metrics',
-  collectorMetrics = 'collector-metrics',
+  ProcessorMetrics = 'processor-metrics',
+  CollectorMetrics = 'collector-metrics',
 }
 export interface ComponentMetricsResponse {
   name: ComponentMetricsCollections;
@@ -9,7 +9,7 @@ export interface ComponentMetricsResponse {
 }
 
 export interface ProcessorMetricsResponse extends ComponentMetricsResponse {
-  name: ComponentMetricsCollections.processorMetrics;
+  name: ComponentMetricsCollections.ProcessorMetrics;
   metrics: {
     processing_performance: {
       total_batches: number;
@@ -80,7 +80,7 @@ export interface ProcessorMetricsResponse extends ComponentMetricsResponse {
 }
 
 export interface CollectorMetricsResponse extends ComponentMetricsResponse {
-  name: ComponentMetricsCollections.collectorMetrics;
+  name: ComponentMetricsCollections.CollectorMetrics;
   metrics: object;
 }
 
