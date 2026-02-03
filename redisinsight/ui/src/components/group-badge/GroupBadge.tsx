@@ -16,6 +16,7 @@ export interface Props {
   onDelete?: (type: string) => void
 }
 
+// TODO: Replace GroupBadge with RiChip component and implement new custom colors for different key types as part of the Redis UI migration.
 const GroupBadge = ({
   type,
   name = '',
