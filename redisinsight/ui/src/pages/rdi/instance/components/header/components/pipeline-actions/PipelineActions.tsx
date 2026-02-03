@@ -17,7 +17,6 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { validatePipeline } from 'uiSrc/components/yaml-validator'
 import {
-  CollectorStatus,
   IActionPipelineResultProps,
   PipelineAction,
   PipelineStatus,
@@ -30,6 +29,7 @@ import ResetPipelineButton from '../buttons/reset-pipeline-button'
 import RdiConfigFileActionMenu from '../rdi-config-file-action-menu'
 import StopPipelineButton from '../buttons/stop-pipeline-button'
 import StartPipelineButton from '../buttons/start-pipeline-button/StartPipelineButton'
+import { getActionButtonState } from './utils'
 
 const VerticalDelimiter = styled(FlexItem)`
   border: ${({ theme }: { theme: Theme }) => theme.components.appBar.separator};
@@ -37,11 +37,10 @@ const VerticalDelimiter = styled(FlexItem)`
 `
 
 export interface Props {
-  collectorStatus?: CollectorStatus
   pipelineStatus?: PipelineStatus
 }
 
-const PipelineActions = ({ collectorStatus, pipelineStatus }: Props) => {
+const PipelineActions = ({ pipelineStatus }: Props) => {
   const {
     loading: deployLoading,
     schema,
@@ -155,6 +154,12 @@ const PipelineActions = ({ collectorStatus, pipelineStatus }: Props) => {
     action === actionBtn && actionLoading
   const disabled = deployLoading || actionLoading
 
+  const actionButtonState = getActionButtonState(
+    action,
+    pipelineStatus,
+    disabled,
+  )
+
   return (
     <Row gap="l" justify="end" align="center">
       <FlexItem>
@@ -166,18 +171,16 @@ const PipelineActions = ({ collectorStatus, pipelineStatus }: Props) => {
       </FlexItem>
       <VerticalDelimiter />
       <FlexItem>
-        {collectorStatus === CollectorStatus.Ready &&
-        action !== PipelineAction.Start ? (
+        {actionButtonState.button === 'stop' ? (
           <StopPipelineButton
             onClick={onStopPipeline}
-            disabled={disabled}
+            disabled={actionButtonState.disabled}
             loading={isLoadingBtn(PipelineAction.Stop)}
           />
-        ) : collectorStatus !== CollectorStatus.Ready &&
-          action !== PipelineAction.Stop ? (
+        ) : actionButtonState.button === 'start' ? (
           <StartPipelineButton
             onClick={onStartPipeline}
-            disabled={disabled}
+            disabled={actionButtonState.disabled}
             loading={isLoadingBtn(PipelineAction.Start)}
           />
         ) : null}

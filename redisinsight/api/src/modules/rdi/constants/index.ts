@@ -24,6 +24,7 @@ export const RdiUrlV2 = {
   GetPipelines: 'api/v2/pipelines',
   GetMetricsCollections: (name: string) =>
     `api/v2/pipelines/${name}/metric-collections`,
+  GetPipelineStatus: (name: string) => `api/v2/pipelines/${name}/status`,
 };
 
 export const IDLE_THRESHOLD = 10 * 60 * 1000; // 10 min
@@ -40,3 +41,5 @@ export enum PipelineActions {
   Start = 'Start',
   Stop = 'Stop',
 }
+
+export const DEFAULT_RDI_VERSION = '-';

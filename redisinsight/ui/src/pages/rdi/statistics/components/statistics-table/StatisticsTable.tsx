@@ -24,14 +24,14 @@ const StatisticsTable = ({ data }: Props) => {
   return (
     <Section.Compose collapsible defaultOpen id={name.toLowerCase()}>
       <Section.Header label={name} />
-      <S.SectionBody
-        content={
-          <S.StatisticsTable columns={tableColumns} data={dataWithFooter}>
+      <S.SectionBody>
+        <S.StatisticsTable columns={tableColumns} data={dataWithFooter}>
+          <Table.Root>
             <Table.Header />
             <Table.Body />
-          </S.StatisticsTable>
-        }
-      />
+          </Table.Root>
+        </S.StatisticsTable>
+      </S.SectionBody>
     </Section.Compose>
   )
 }

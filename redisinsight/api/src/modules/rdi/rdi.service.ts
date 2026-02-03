@@ -21,8 +21,6 @@ import { deepMerge } from 'src/common/utils';
 import { RdiAnalytics } from './rdi.analytics';
 import { RdiClient } from './client/rdi.client';
 
-const DEFAULT_RDI_VERSION = '-';
-
 @Injectable()
 export class RdiService {
   private logger = new Logger('RdiService');
@@ -43,10 +41,7 @@ export class RdiService {
   }
 
   private static async getRdiVersion(client: RdiClient): Promise<string> {
-    const pipelineStatus = await client.getPipelineStatus();
-    const version =
-      pipelineStatus?.components?.processor?.version || DEFAULT_RDI_VERSION;
-    return version;
+    return client.getVersion();
   }
 
   async list(): Promise<Rdi[]> {

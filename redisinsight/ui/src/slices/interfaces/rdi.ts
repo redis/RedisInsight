@@ -131,13 +131,22 @@ export enum FileChangeType {
 }
 
 export enum PipelineStatus {
-  Validating = 'validating',
-  Starting = 'starting',
-  Stopping = 'stopping',
-  Resetting = 'resetting',
+  // v1 statuses
   Ready = 'ready',
   NotReady = 'not-ready',
+  // v1/v2 intersection
+  Stopping = 'stopping',
+  // v2 statuses
+  Started = 'started',
   Stopped = 'stopped',
+  Error = 'error',
+  Creating = 'creating',
+  Updating = 'updating',
+  Deleting = 'deleting',
+  Starting = 'starting',
+  Resetting = 'resetting',
+  Pending = 'pending',
+  Unknown = 'unknown',
 }
 
 export enum PipelineState {
@@ -146,21 +155,21 @@ export enum PipelineState {
   NotRunning = 'not-running',
 }
 
-export enum CollectorStatus {
-  Ready = 'ready',
-  Stopped = 'stopped',
-  NotReady = 'not-ready',
+export interface IComponentStatus {
+  name: string
+  type: string
+  status: string
+  version: string
+  errors: string[]
+  metric_collections?: string[]
 }
 
+// Flexible interface - supports both V1 and V2 formats
 export interface IPipelineStatus {
-  components: Record<string, unknown>
-  pipelines: {
-    default?: {
-      status: PipelineStatus
-      state: PipelineState
-      tasks: unknown
-    }
-  }
+  status: PipelineStatus
+  state?: PipelineState
+  errors?: string[]
+  components?: IComponentStatus[]
 }
 
 export enum PipelineAction {

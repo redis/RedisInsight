@@ -3,7 +3,7 @@ import { Section } from '@redis-ui/components'
 import { Table } from 'uiSrc/components/base/layout/table'
 
 export const SectionBody = styled(Section.Body)`
-  padding: 0;
+  padding: 1px 0 0 0;
 `
 
 export const StatisticsTable = styled(Table.Compose)`
