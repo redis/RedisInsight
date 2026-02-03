@@ -166,10 +166,6 @@ describe('ApiV2RdiClient', () => {
 
   describe('getPipelineStatus', () => {
     it('should return RdiPipelineStatus when API call is successful', async () => {
-      const mockV1Response = {
-        pipelines: { default: { status: 'ready', state: 'cdc' } },
-        components: {},
-      };
       const mockV2Response = {
         status: 'started',
         errors: [],
@@ -185,9 +181,6 @@ describe('ApiV2RdiClient', () => {
         current: true,
       };
 
-      // First call is to super.getPipelineStatus() (V1)
-      mockedAxios.get.mockResolvedValueOnce({ data: mockV1Response });
-      // Second call is to V2 endpoint
       mockedAxios.get.mockResolvedValueOnce({ data: mockV2Response });
 
       const result = await client.getPipelineStatus();
@@ -200,11 +193,6 @@ describe('ApiV2RdiClient', () => {
     });
 
     it('should throw wrapped error when API call fails', async () => {
-      // First call to super succeeds
-      mockedAxios.get.mockResolvedValueOnce({
-        data: { pipelines: { default: {} }, components: {} },
-      });
-      // Second call fails
       mockedAxios.get.mockRejectedValueOnce(mockRdiUnauthorizedError);
 
       await expect(client.getPipelineStatus()).rejects.toThrow(
@@ -215,10 +203,6 @@ describe('ApiV2RdiClient', () => {
     it('should use selectedPipeline in the URL', async () => {
       client['selectedPipeline'] = 'my-pipeline';
 
-      const mockV1Response = {
-        pipelines: { default: { status: 'ready', state: 'cdc' } },
-        components: {},
-      };
       const mockV2Response = {
         status: 'started',
         errors: [],
@@ -226,7 +210,6 @@ describe('ApiV2RdiClient', () => {
         current: true,
       };
 
-      mockedAxios.get.mockResolvedValueOnce({ data: mockV1Response });
       mockedAxios.get.mockResolvedValueOnce({ data: mockV2Response });
 
       await client.getPipelineStatus();
