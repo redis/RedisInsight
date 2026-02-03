@@ -125,6 +125,10 @@
     "databasesListV2": {
       "flag": true,
       "perc": [[0, 100]]
+    },
+    "azureEntraId": {
+      "flag": false,
+      "perc": [[0, 100]]
     }
   }
 }

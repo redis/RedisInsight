@@ -7,3 +7,8 @@ export enum AppAnalyticsEvents {
 export enum AppRedisInstanceEvents {
   Deleted = 'instance.deleted',
 }
+
+export enum RedisClientEvents {
+  ClientStored = 'redis.client.stored',
+  ClientRemoved = 'redis.client.removed',
+}

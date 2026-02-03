@@ -41,6 +41,10 @@ jobs:
 
           aws s3 cp release/ s3://${AWS_BUCKET_NAME}/private/${applicationVersion} --recursive
 
+      - name: Generate checksums summary
+        continue-on-error: true
+        run: node ./.github/generate-checksums-summary.js
+
   release-public:
     name: Release s3 public
     runs-on: ubuntu-latest

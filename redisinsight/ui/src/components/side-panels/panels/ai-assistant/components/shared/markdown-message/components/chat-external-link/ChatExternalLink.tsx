@@ -1,13 +1,15 @@
 import React from 'react'
-import { Props as ExternalLinkProps } from 'uiSrc/components/base/external-link/ExternalLink'
-import { ExternalLink } from 'uiSrc/components'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
+import { Link, LinkProps } from 'uiSrc/components/base/link/Link'
 
-const ChatExternalLink = (props: ExternalLinkProps) => {
+const ChatExternalLink = (props: LinkProps) => {
   const { href } = props
   return (
-    <ExternalLink
+    <Link
+      external
+      variant="inline"
+      allowWrap={true}
       {...props}
       data-testid="chat-external-link"
       href={getUtmExternalLink(href || EXTERNAL_LINKS.redisIo, {

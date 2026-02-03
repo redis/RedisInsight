@@ -42,7 +42,7 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
 import { Link } from 'uiSrc/components/base/link/Link'
-import { Title } from 'uiSrc/pages/vector-search/manage-indexes/styles'
+import { Title } from 'uiSrc/pages/vector-search-deprecated/manage-indexes/styles'
 
 import styles from './styles.module.scss'
 

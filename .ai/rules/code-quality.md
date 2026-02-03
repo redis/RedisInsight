@@ -64,6 +64,21 @@ alwaysApply: true
 - Clean up subscriptions and timers
 - Use constants instead of magic numbers
 
+## Vite Cache Management
+
+When updating npm packages (especially `@redis-ui/*` packages):
+
+1. **Clear Vite cache** after `yarn install`:
+
+   ```bash
+   rm -rf node_modules/.vite
+   rm -rf redisinsight/ui/node_modules/.vite
+   ```
+
+2. **Restart dev server** to rebuild dependencies
+
+3. This ensures new package versions are properly loaded
+
 ## Pre-Commit Checklist
 
 - [ ] `yarn lint` passes
@@ -75,3 +90,4 @@ alwaysApply: true
 - [ ] Descriptive variable names
 - [ ] Low cognitive complexity
 - [ ] No duplicate code
+- [ ] Vite cache cleared (if updated dependencies)

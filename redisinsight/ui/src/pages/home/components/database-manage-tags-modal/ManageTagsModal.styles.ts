@@ -31,8 +31,8 @@ export const WarningBannerWrapper = styled(Row)`
   gap: ${({ theme }) => theme.core.space.space100};
   padding: 6px 12px;
   margin: ${({ theme }) => theme.core.space.space200};
-  border: 1px solid ${({ theme }) => theme.color.purple300};
-  background-color: ${({ theme }) => theme.color.purple100};
+  border: 1px solid ${({ theme }) => theme.semantic.color.border.notice300};
+  background-color: ${({ theme }) => theme.semantic.color.background.notice100};
   border-radius: ${({ theme }) => theme.core.space.space100};
 `
 

@@ -45,6 +45,7 @@ export interface RedisInsight {
 export interface WindowApp {
   sendWindowId: any
   cloudOauthCallback: any
+  azureOauthCallback: any
   deepLinkAction: any
   updateAvailable: any
   ipc: IPCHandler
