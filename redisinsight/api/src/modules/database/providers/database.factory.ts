@@ -24,6 +24,7 @@ import {
 } from 'src/modules/redis/utils';
 import { RedisClient } from 'src/modules/redis/client';
 import { ReplyError } from 'src/models';
+import { CredentialStrategyProvider } from 'src/modules/database/credentials';
 
 @Injectable()
 export class DatabaseFactory {
@@ -34,6 +35,7 @@ export class DatabaseFactory {
     private databaseInfoProvider: DatabaseInfoProvider,
     private caCertificateService: CaCertificateService,
     private clientCertificateService: ClientCertificateService,
+    private credentialProvider: CredentialStrategyProvider,
   ) {}
 
   /**
@@ -49,6 +51,9 @@ export class DatabaseFactory {
   ): Promise<Database> {
     let model = await this.createStandaloneDatabaseModel(database);
 
+    // Resolve credentials for the standalone client
+    const resolvedDatabase = await this.credentialProvider.resolve(model);
+
     const client = await this.redisClientFactory
       .getConnectionStrategy()
       .createStandaloneClient(
@@ -57,7 +62,7 @@ export class DatabaseFactory {
           databaseId: database.id || uuidv4(), // we assume that if no database id defined we are in creation process
           context: ClientContext.Common,
         },
-        database,
+        resolvedDatabase,
         { ...options, useRetry: true },
       );
 
@@ -66,21 +71,21 @@ export class DatabaseFactory {
     }
 
     if (await isSentinel(client)) {
-      if (!database.sentinelMaster) {
+      if (!resolvedDatabase.sentinelMaster) {
         throw getRedisConnectionException(
           new ReplyError(RedisErrorCodes.SentinelParamsRequired),
-          database,
+          resolvedDatabase,
         );
       }
       model = await this.createSentinelDatabaseModel(
         sessionMetadata,
-        database,
+        resolvedDatabase,
         client,
       );
-    } else if (!database.forceStandalone && (await isCluster(client))) {
+    } else if (!resolvedDatabase.forceStandalone && (await isCluster(client))) {
       model = await this.createClusterDatabaseModel(
         sessionMetadata,
-        database,
+        resolvedDatabase,
         client,
       );
     }
