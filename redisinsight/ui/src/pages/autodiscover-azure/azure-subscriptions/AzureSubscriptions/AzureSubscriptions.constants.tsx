@@ -1,0 +1,42 @@
+import React from 'react'
+
+import { type ColumnDef, Table } from 'uiSrc/components/base/layout/table'
+import { AzureSubscription } from 'uiSrc/slices/interfaces'
+import { Text } from 'uiSrc/components/base/text'
+
+export const AZURE_SUBSCRIPTIONS_COLUMNS: ColumnDef<AzureSubscription>[] = [
+  {
+    id: 'row-selection',
+    maxSize: 50,
+    size: 50,
+    isHeaderCustom: true,
+    header: '#',
+    cell: ({ row }) => (
+      <Table.RowSelectionButton
+        row={row}
+        data-testid={`row-selection-${row.id}`}
+      />
+    ),
+  },
+  {
+    id: 'displayName',
+    header: 'Subscription Name',
+    accessorKey: 'displayName',
+    enableSorting: true,
+    cell: ({ getValue }) => <Text size="M">{getValue() as string}</Text>,
+  },
+  {
+    id: 'subscriptionId',
+    header: 'Subscription ID',
+    accessorKey: 'subscriptionId',
+    enableSorting: true,
+    cell: ({ getValue }) => <Text size="M">{getValue() as string}</Text>,
+  },
+  {
+    id: 'state',
+    header: 'State',
+    accessorKey: 'state',
+    enableSorting: true,
+    cell: ({ getValue }) => <Text size="M">{getValue() as string}</Text>,
+  },
+]

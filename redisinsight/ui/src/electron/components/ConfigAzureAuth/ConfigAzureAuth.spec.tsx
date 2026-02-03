@@ -38,22 +38,31 @@ afterEach(() => {
 const renderConfigAzureAuth = () => render(<ConfigAzureAuth />, { store })
 
 describe('ConfigAzureAuth', () => {
-  const mockAccount = {
-    id: faker.string.uuid(),
+  const mockMsalAccount = {
+    homeAccountId: faker.string.uuid(),
     username: faker.internet.email(),
     name: faker.person.fullName(),
   }
 
+  const expectedAccount = {
+    id: mockMsalAccount.homeAccountId,
+    username: mockMsalAccount.username,
+    name: mockMsalAccount.name,
+  }
+
   it('should call proper actions on success', () => {
     window.app?.azureOauthCallback?.mockImplementation((cb: any) =>
-      cb(undefined, { status: AzureAuthStatus.Succeed, account: mockAccount }),
+      cb(undefined, {
+        status: AzureAuthStatus.Succeed,
+        account: mockMsalAccount,
+      }),
     )
     renderConfigAzureAuth()
 
     const expectedActions = [
-      azureOAuthCallbackSuccess(mockAccount),
+      azureOAuthCallbackSuccess(expectedAccount),
       addMessageNotification(
-        successMessages.AZURE_AUTH_SUCCESS(mockAccount.username),
+        successMessages.AZURE_AUTH_SUCCESS(mockMsalAccount.username),
       ),
     ]
     expect(store.getActions()).toEqual(expectedActions)

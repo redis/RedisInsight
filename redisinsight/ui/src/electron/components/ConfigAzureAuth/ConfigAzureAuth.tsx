@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
 import {
   handleAzureOAuthSuccess,
@@ -12,19 +13,23 @@ import {
 import { AzureAuthStatus } from 'apiSrc/modules/azure/constants'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { AppDispatch } from 'uiSrc/slices/store'
+import { Pages } from 'uiSrc/constants'
+
+interface MsalAccountInfo {
+  homeAccountId: string
+  username: string
+  name?: string
+}
 
 interface AzureAuthCallbackResponse {
   status: string
-  account?: {
-    id: string
-    username: string
-    name?: string
-  }
+  account?: MsalAccountInfo
   error?: string
 }
 
 const ConfigAzureAuth = () => {
   const dispatch = useDispatch<AppDispatch>()
+  const history = useHistory()
 
   useEffect(() => {
     window.app?.azureOauthCallback?.(azureOauthCallback)
@@ -35,12 +40,18 @@ const ConfigAzureAuth = () => {
     { status, account, error }: AzureAuthCallbackResponse,
   ) => {
     if (status === AzureAuthStatus.Succeed && account) {
-      dispatch(handleAzureOAuthSuccess(account))
+      const azureAccount = {
+        id: account.homeAccountId,
+        username: account.username,
+        name: account.name,
+      }
+      dispatch(handleAzureOAuthSuccess(azureAccount))
       dispatch(
         addMessageNotification(
           successMessages.AZURE_AUTH_SUCCESS(account.username),
         ),
       )
+      history.push(Pages.azureSubscriptions)
       return
     }
 

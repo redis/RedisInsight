@@ -1,9 +1,11 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { useAzureAuth } from 'uiSrc/components/hooks/useAzureAuth'
 import { AddDbType } from 'uiSrc/pages/home/constants'
+import { Pages } from 'uiSrc/constants'
 import {
   CONNECTIVITY_OPTIONS_CONFIG,
   ConnectivityOption,
@@ -17,13 +19,22 @@ interface UseConnectivityOptionsProps {
 export const useConnectivityOptions = ({
   onClickOption,
 }: UseConnectivityOptionsProps): ConnectivityOption[] => {
+  const history = useHistory()
   const featureFlags = useSelector(appFeatureFlagsFeaturesSelector)
-  const { initiateLogin, loading: azureLoading } = useAzureAuth()
+  const { initiateLogin, loading: azureLoading, account } = useAzureAuth()
+
+  const handleAzureClick = useCallback(() => {
+    if (account) {
+      history.push(Pages.azureSubscriptions)
+    } else {
+      initiateLogin()
+    }
+  }, [account, history, initiateLogin])
 
   return useMemo(() => {
     const getClickHandler = (option: ConnectivityOptionConfig) => {
       if (option.type === AddDbType.azure) {
-        return initiateLogin
+        return handleAzureClick
       }
       return () => onClickOption(option.type)
     }
@@ -47,5 +58,5 @@ export const useConnectivityOptions = ({
         loading: getLoadingState(config),
       }),
     )
-  }, [featureFlags, initiateLogin, azureLoading, onClickOption])
+  }, [featureFlags, handleAzureClick, azureLoading, onClickOption])
 }
