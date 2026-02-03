@@ -119,6 +119,7 @@ const AzureDatabases = ({
           <Row gap="m" grow={false}>
             <SecondaryButton onClick={onClose}>Cancel</SecondaryButton>
             <PrimaryButton
+              data-testid="btn-submit"
               disabled={selectedDatabases.length === 0 || loading}
               loading={loading}
               onClick={onSubmit}
