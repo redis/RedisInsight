@@ -11,9 +11,10 @@ import {
   render,
   screen,
 } from 'uiSrc/utils/test-utils'
-import { PipelineStatus } from 'uiSrc/slices/interfaces'
+import { PipelineAction, PipelineStatus } from 'uiSrc/slices/interfaces'
 import { validatePipeline } from 'uiSrc/components/yaml-validator'
 import {
+  rdiPipelineActionSelector,
   rdiPipelineSelector,
   setConfigValidationErrors,
   setIsPipelineValid,
@@ -34,6 +35,10 @@ jest.mock('uiSrc/slices/rdi/pipeline', () => ({
   ...jest.requireActual('uiSrc/slices/rdi/pipeline'),
   rdiPipelineSelector: jest.fn().mockReturnValue({
     loading: false,
+  }),
+  rdiPipelineActionSelector: jest.fn().mockReturnValue({
+    loading: false,
+    action: null,
   }),
 }))
 
@@ -201,6 +206,60 @@ describe('PipelineActions', () => {
       schema: null,
       config: 'test-config',
       jobs: 'test-jobs',
+    })
+
+    render(
+      <PipelineActions
+        {...mockedProps}
+        pipelineStatus={PipelineStatus.Stopped}
+      />,
+    )
+    expect(screen.getByText('Start')).toBeInTheDocument()
+    expect(screen.getByTestId('start-pipeline-btn')).toBeDisabled()
+  })
+
+  it('should display disabled stopBtn when Reset action is in progress', () => {
+    ;(validatePipeline as jest.Mock).mockReturnValue({
+      result: true,
+      configValidationErrors: [],
+      jobsValidationErrors: {},
+    })
+    ;(rdiPipelineSelector as jest.Mock).mockReturnValueOnce({
+      loading: false,
+      schema: null,
+      config: 'test-config',
+      jobs: 'test-jobs',
+    })
+    ;(rdiPipelineActionSelector as jest.Mock).mockReturnValueOnce({
+      loading: true,
+      action: PipelineAction.Reset,
+    })
+
+    render(
+      <PipelineActions
+        {...mockedProps}
+        pipelineStatus={PipelineStatus.Started}
+      />,
+    )
+    expect(screen.getByText('Stop')).toBeInTheDocument()
+    expect(screen.getByTestId('stop-pipeline-btn')).toBeDisabled()
+  })
+
+  it('should display disabled startBtn when Reset action is in progress', () => {
+    ;(validatePipeline as jest.Mock).mockReturnValue({
+      result: true,
+      configValidationErrors: [],
+      jobsValidationErrors: {},
+    })
+    ;(rdiPipelineSelector as jest.Mock).mockReturnValueOnce({
+      loading: false,
+      schema: null,
+      config: 'test-config',
+      jobs: 'test-jobs',
+    })
+    ;(rdiPipelineActionSelector as jest.Mock).mockReturnValueOnce({
+      loading: true,
+      action: PipelineAction.Reset,
     })
 
     render(

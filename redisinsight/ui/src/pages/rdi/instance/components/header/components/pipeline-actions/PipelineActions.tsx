@@ -175,7 +175,7 @@ const PipelineActions = ({ pipelineStatus }: Props) => {
       case PipelineStatus.NotReady: // v1 status
       case PipelineStatus.Stopped:
         return {
-          disabled: false,
+          disabled: disabled,
           button: 'start',
         }
       case PipelineStatus.Ready: // v1 status
@@ -183,7 +183,7 @@ const PipelineActions = ({ pipelineStatus }: Props) => {
       case PipelineStatus.Error:
       case PipelineStatus.Started:
         return {
-          disabled: false,
+          disabled: disabled,
           button: 'stop',
         }
       case PipelineStatus.Stopping:
@@ -221,13 +221,13 @@ const PipelineActions = ({ pipelineStatus }: Props) => {
         {actionButtonState.button === 'stop' ? (
           <StopPipelineButton
             onClick={onStopPipeline}
-            disabled={actionButtonState.disabled || deployLoading}
+            disabled={actionButtonState.disabled}
             loading={isLoadingBtn(PipelineAction.Stop)}
           />
         ) : actionButtonState.button === 'start' ? (
           <StartPipelineButton
             onClick={onStartPipeline}
-            disabled={actionButtonState.disabled || deployLoading}
+            disabled={actionButtonState.disabled}
             loading={isLoadingBtn(PipelineAction.Start)}
           />
         ) : null}
