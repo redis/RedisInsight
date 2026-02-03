@@ -146,33 +146,34 @@ export const AzureAutodiscoveryProvider: React.FC<{
     }
 
     setState((prev) => ({ ...prev, loading: true, error: '' }))
-    const results: AzureAutodiscoveryState['addedDatabases'] = []
 
-    for (const database of state.selectedDatabases) {
-      try {
-        const { data, status } = await apiService.get<AzureConnectionDetails>(
-          ApiEndpoints.AZURE_CONNECTION_DETAILS,
-          {
-            params: {
-              accountId: account.id,
-              databaseId: database.id,
+    const results = await Promise.all(
+      state.selectedDatabases.map(async (database) => {
+        try {
+          const { data, status } = await apiService.get<AzureConnectionDetails>(
+            ApiEndpoints.AZURE_CONNECTION_DETAILS,
+            {
+              params: {
+                accountId: account.id,
+                databaseId: database.id,
+              },
             },
-          },
-        )
+          )
 
-        if (isStatusSuccessful(status) && data) {
-          // TODO: add database using connection details
-          console.log(JSON.stringify(data))
-          results.push({ database, success: true })
+          if (isStatusSuccessful(status) && data) {
+            // TODO: add database using connection details
+            return { database, success: true }
+          }
+          return { database, success: false }
+        } catch (error) {
+          return {
+            database,
+            success: false,
+            message: getApiErrorMessage(error as AxiosError),
+          }
         }
-      } catch (error) {
-        results.push({
-          database,
-          success: false,
-          message: getApiErrorMessage(error as AxiosError),
-        })
-      }
-    }
+      }),
+    )
 
     setState((prev) => ({
       ...prev,
