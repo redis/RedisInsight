@@ -29,6 +29,7 @@ describe('AzureSubscriptions', () => {
     onBack: jest.fn(),
     onClose: jest.fn(),
     onSubmit: jest.fn(),
+    onSwitchAccount: jest.fn(),
   }
 
   const renderComponent = (propsOverride?: Partial<Props>) => {
@@ -53,6 +54,14 @@ describe('AzureSubscriptions', () => {
     renderComponent()
     expect(screen.getByText('Signed in as')).toBeInTheDocument()
     expect(screen.getByText('test@example.com')).toBeInTheDocument()
+  })
+
+  it('should call onSwitchAccount when switch account button is clicked', () => {
+    const onSwitchAccount = jest.fn()
+    renderComponent({ onSwitchAccount })
+
+    fireEvent.click(screen.getByTestId('btn-switch-account'))
+    expect(onSwitchAccount).toHaveBeenCalledTimes(1)
   })
 
   it('should render subscriptions in table', () => {

@@ -19,6 +19,7 @@ import { AzureSubscription } from 'uiSrc/slices/interfaces'
 import { azureAuthAccountSelector } from 'uiSrc/slices/oauth/azure'
 import { Text } from 'uiSrc/components/base/text'
 import {
+  EmptyButton,
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
@@ -33,6 +34,7 @@ export interface Props {
   onBack: () => void
   onClose: () => void
   onSubmit: (subscription: AzureSubscription) => void
+  onSwitchAccount: () => void
 }
 
 const AzureSubscriptions = ({
@@ -42,6 +44,7 @@ const AzureSubscriptions = ({
   onBack,
   onClose,
   onSubmit,
+  onSwitchAccount,
 }: Props) => {
   const account = useSelector(azureAuthAccountSelector)
   const [items, setItems] = useState<AzureSubscription[]>(subscriptions)
@@ -85,12 +88,21 @@ const AzureSubscriptions = ({
           onQueryChange={onQueryChange}
           subTitle={
             account && (
-              <Text size="M">
-                Signed in as{' '}
-                <Text component="span" variant="semiBold">
-                  {account.username}
+              <Row gap="s" align="center">
+                <Text size="M">
+                  Signed in as{' '}
+                  <Text component="span" variant="semiBold">
+                    {account.username}
+                  </Text>
                 </Text>
-              </Text>
+                <EmptyButton
+                  variant="primary-inline"
+                  onClick={onSwitchAccount}
+                  data-testid="btn-switch-account"
+                >
+                  Switch account
+                </EmptyButton>
+              </Row>
             )
           }
         />
