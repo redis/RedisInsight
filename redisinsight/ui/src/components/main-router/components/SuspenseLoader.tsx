@@ -1,11 +1,15 @@
 import React from 'react'
-import { Loader } from 'uiSrc/components/base/display'
-import styles from './loader.module.scss'
+import * as S from './SuspenseLoader.styles'
 
 const SuspenseLoader = () => (
-  <div className={styles.cover} data-testid="suspense-loader">
-    <Loader size="xl" className={styles.loader} />
-  </div>
+  <S.Cover
+    data-testid="suspense-loader"
+    grow={false}
+    justify="center"
+    align="center"
+  >
+    <S.StyledLoader size="xl" />
+  </S.Cover>
 )
 
 export default SuspenseLoader
