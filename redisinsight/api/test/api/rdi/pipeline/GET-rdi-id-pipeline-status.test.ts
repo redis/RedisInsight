@@ -1,5 +1,13 @@
 import { RdiUrl, RdiUrlV2 } from 'src/modules/rdi/constants';
 import { sign } from 'jsonwebtoken';
+import {
+  V1PipelineStatusApiResponseFactory,
+  V1PipelineDefaultFactory,
+  V2RdiInfoApiResponseFactory,
+  V2PipelineInfoFactory,
+  V2PipelineStatusApiResponseFactory,
+  V2ComponentStatusFactory,
+} from 'src/__mocks__';
 import { describe, expect, deps, getMainCheckFn } from '../../deps';
 import { nock } from '../../../helpers/test';
 
@@ -18,69 +26,46 @@ const mockedAccessToken = sign(
 const endpoint = (id: string) =>
   request(server).get(`/${constants.API.RDI}/${id}/pipeline/status`);
 
-// V1 API response structure
-const mockV1ApiResponse = {
-  components: {
-    'collector-source': {
-      status: 'running',
-      connected: true,
-      version: '1.0.0',
-    },
-    processor: { status: 'running', version: '1.0.0' },
-  },
+const mockV1ApiResponse = V1PipelineStatusApiResponseFactory.build({
   pipelines: {
-    default: {
-      status: 'ready',
-      state: 'cdc',
-      tasks: [],
-    },
+    default: V1PipelineDefaultFactory.build({ status: 'ready', state: 'cdc' }),
   },
-};
+});
 
-// Expected transformed response for V1
 const mockV1ResponseSuccess = {
   status: 'ready',
   state: 'cdc',
 };
 
-// V2 API response structure
-const mockV2InfoResponse = {
-  version: '2.0.0',
-};
+const mockV2InfoResponse = V2RdiInfoApiResponseFactory.build();
 
 const mockV2PipelinesResponse = [
-  {
-    name: 'test-pipeline',
-    active: true,
-    status: 'started',
-  },
+  V2PipelineInfoFactory.build({ name: 'test-pipeline' }),
 ];
 
-const mockV2StatusResponse = {
+const mockV2Component = V2ComponentStatusFactory.build({
+  name: 'processor',
+  type: 'stream-processor',
+  version: '2.0.0',
+  status: 'running',
+});
+
+const mockV2StatusResponse = V2PipelineStatusApiResponseFactory.build({
   status: 'started',
-  errors: [],
-  components: [
-    {
-      name: 'processor',
-      type: 'stream-processor',
-      version: '2.0.0',
-      status: 'running',
-      errors: [],
-    },
-  ],
-};
+  components: [mockV2Component],
+});
 
 // Expected transformed response for V2
 const mockV2ResponseSuccess = {
-  status: 'started',
-  errors: [],
+  status: mockV2StatusResponse.status,
+  errors: mockV2StatusResponse.errors,
   components: [
     {
-      name: 'processor',
-      type: 'stream-processor',
-      version: '2.0.0',
-      status: 'running',
-      errors: [],
+      name: mockV2Component.name,
+      type: mockV2Component.type,
+      version: mockV2Component.version,
+      status: mockV2Component.status,
+      errors: mockV2Component.errors,
     },
   ],
 };

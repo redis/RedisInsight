@@ -1,8 +1,12 @@
 import axios from 'axios';
 import {
-  mockRdi,
-  mockRdiClientMetadata,
   mockRdiUnauthorizedError,
+  RdiFactory,
+  RdiClientMetadataFactory,
+  V2RdiInfoApiResponseFactory,
+  V2PipelineInfoFactory,
+  V2PipelineStatusApiResponseFactory,
+  RdiInfoFactory,
 } from 'src/__mocks__';
 import { ApiV2RdiClient } from 'src/modules/rdi/client/api/v2/api.v2.rdi.client';
 import { RdiUrlV2 } from 'src/modules/rdi/constants';
@@ -15,6 +19,8 @@ mockedAxios.create = jest.fn(() => mockedAxios);
 
 describe('ApiV2RdiClient', () => {
   let client: ApiV2RdiClient;
+  const mockRdiClientMetadata = RdiClientMetadataFactory.build();
+  const mockRdi = RdiFactory.build();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -23,10 +29,10 @@ describe('ApiV2RdiClient', () => {
 
   describe('getInfo', () => {
     it('should return RDI info when API call is successful', async () => {
-      const mockInfoResponse = { version: '2.0.1' };
-      const expectedRdiInfo = Object.assign(new RdiInfo(), {
+      const mockInfoResponse = V2RdiInfoApiResponseFactory.build({
         version: '2.0.1',
       });
+      const expectedRdiInfo = RdiInfoFactory.build({ version: '2.0.1' });
       mockedAxios.get.mockResolvedValueOnce({ data: mockInfoResponse });
 
       const result = await client.getInfo();
@@ -45,7 +51,9 @@ describe('ApiV2RdiClient', () => {
     });
 
     it('should transform response data to RdiInfo instance', async () => {
-      const mockInfoResponse = { version: '2.1.0' };
+      const mockInfoResponse = V2RdiInfoApiResponseFactory.build({
+        version: '2.1.0',
+      });
       mockedAxios.get.mockResolvedValueOnce({ data: mockInfoResponse });
 
       const result = await client.getInfo();
@@ -58,24 +66,8 @@ describe('ApiV2RdiClient', () => {
   describe('selectPipeline', () => {
     it('should select first pipeline when pipelines are available', async () => {
       const mockPipelinesResponse = [
-        {
-          name: 'pipeline-1',
-          active: true,
-          config: {},
-          status: 'running',
-          errors: [],
-          components: [],
-          current: true,
-        },
-        {
-          name: 'pipeline-2',
-          active: false,
-          config: {},
-          status: 'stopped',
-          errors: [],
-          components: [],
-          current: false,
-        },
+        V2PipelineInfoFactory.build({ name: 'pipeline-1' }),
+        V2PipelineInfoFactory.build({ name: 'pipeline-2' }),
       ];
       mockedAxios.get.mockResolvedValueOnce({ data: mockPipelinesResponse });
 
@@ -128,33 +120,9 @@ describe('ApiV2RdiClient', () => {
 
     it('should select first pipeline even when multiple pipelines exist', async () => {
       const mockPipelinesResponse = [
-        {
-          name: 'first',
-          active: false,
-          config: {},
-          status: 'stopped',
-          errors: [],
-          components: [],
-          current: false,
-        },
-        {
-          name: 'second',
-          active: true,
-          config: {},
-          status: 'running',
-          errors: [],
-          components: [],
-          current: true,
-        },
-        {
-          name: 'third',
-          active: false,
-          config: {},
-          status: 'stopped',
-          errors: [],
-          components: [],
-          current: false,
-        },
+        V2PipelineInfoFactory.build({ name: 'first' }),
+        V2PipelineInfoFactory.build({ name: 'second' }),
+        V2PipelineInfoFactory.build({ name: 'third' }),
       ];
       mockedAxios.get.mockResolvedValueOnce({ data: mockPipelinesResponse });
 
@@ -166,20 +134,9 @@ describe('ApiV2RdiClient', () => {
 
   describe('getPipelineStatus', () => {
     it('should return RdiPipelineStatus when API call is successful', async () => {
-      const mockV2Response = {
+      const mockV2Response = V2PipelineStatusApiResponseFactory.build({
         status: 'started',
-        errors: [],
-        components: [
-          {
-            name: 'processor',
-            type: 'stream-processor',
-            version: '0.0.202512301417',
-            status: 'started',
-            errors: [],
-          },
-        ],
-        current: true,
-      };
+      });
 
       mockedAxios.get.mockResolvedValueOnce({ data: mockV2Response });
 
@@ -202,13 +159,7 @@ describe('ApiV2RdiClient', () => {
 
     it('should use selectedPipeline in the URL', async () => {
       client['selectedPipeline'] = 'my-pipeline';
-
-      const mockV2Response = {
-        status: 'started',
-        errors: [],
-        components: [],
-        current: true,
-      };
+      const mockV2Response = V2PipelineStatusApiResponseFactory.build();
 
       mockedAxios.get.mockResolvedValueOnce({ data: mockV2Response });
 
@@ -222,7 +173,9 @@ describe('ApiV2RdiClient', () => {
 
   describe('getVersion', () => {
     it('should return version from info endpoint', async () => {
-      const mockInfoResponse = { version: '2.1.0' };
+      const mockInfoResponse = V2RdiInfoApiResponseFactory.build({
+        version: '2.1.0',
+      });
       mockedAxios.get.mockResolvedValueOnce({ data: mockInfoResponse });
 
       const result = await client.getVersion();

@@ -1,14 +1,18 @@
-import {
-  Rdi,
-  RdiClientMetadata,
-  RdiPipeline,
-  RdiStatisticsData,
-} from 'src/modules/rdi/models';
+import { RdiClientMetadata } from 'src/modules/rdi/models';
 import { ApiRdiClient } from 'src/modules/rdi/client/api/v1/api.rdi.client';
 import { RdiEntity } from 'src/modules/rdi/entities/rdi.entity';
 import { EncryptionStrategy } from 'src/modules/encryption/models';
 import { RdiDryRunJobDto } from 'src/modules/rdi/dto';
 import { sign } from 'jsonwebtoken';
+import {
+  RdiFactory,
+  RdiClientMetadataFactory,
+  RdiPipelineFactory,
+  RdiDryRunJobFactory,
+  RdiStatisticsDataFactory,
+} from './factories/rdi';
+
+export * from './factories/rdi';
 
 export const mockRdiId = 'rdiId';
 export const mockRdiPasswordEncrypted = 'password_ENCRYPTED';
@@ -66,12 +70,14 @@ export const generateMockRdiClient = (
   client = jest.fn(),
 ): MockRdiClient => new MockRdiClient(metadata as RdiClientMetadata, client);
 
-export const mockRdiClientMetadata: RdiClientMetadata = {
-  sessionMetadata: undefined,
-  id: mockRdiId,
-};
+// Backward compatible mocks using factories with fixed values for deterministic tests
+export const mockRdiClientMetadata: RdiClientMetadata =
+  RdiClientMetadataFactory.build({
+    sessionMetadata: undefined,
+    id: mockRdiId,
+  });
 
-export const mockRdi = Object.assign(new Rdi(), {
+export const mockRdi = RdiFactory.build({
   name: 'name',
   version: '1.2',
   url: 'http://localhost:4000',
@@ -79,22 +85,19 @@ export const mockRdi = Object.assign(new Rdi(), {
   username: 'user',
 });
 
-export const mockRdiPipeline = Object.assign(new RdiPipeline(), {
+export const mockRdiPipeline = RdiPipelineFactory.build({
   jobs: { some_job: {} },
   config: {},
 });
 
-export const mockRdiDryRunJob: RdiDryRunJobDto = Object.assign(
-  new RdiDryRunJobDto(),
-  {
-    input_data: {},
-    job: {},
-  },
-);
+export const mockRdiDryRunJob: RdiDryRunJobDto = RdiDryRunJobFactory.build({
+  input_data: {},
+  job: {},
+});
 
-export const mockRdiStatisticsData = Object.assign(new RdiStatisticsData(), {});
+export const mockRdiStatisticsData = RdiStatisticsDataFactory.build();
 
-export const mockRdiDecrypted = Object.assign(new Rdi(), {
+export const mockRdiDecrypted = RdiFactory.build({
   id: '1',
   name: 'name',
   version: '1.0',
