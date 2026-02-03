@@ -44,6 +44,7 @@
     "package:mac": "yarn build:prod && electron-builder build --mac -p never",
     "package:mac:arm": "yarn build:prod && electron-builder build --mac --arm64 -p never",
     "package:linux": "yarn build:prod && electron-builder build --linux -p never",
+    "preinstall": "yarn --cwd redisinsight/api install",
     "postinstall": "patch-package && vite optimize -c ./redisinsight/ui/vite.config.mjs && skip-postinstall || yarn-deduplicate yarn.lock",
     "test": "jest ./redisinsight/ui -w 1",
     "test:api": "yarn --cwd redisinsight/api test",
