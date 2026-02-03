@@ -97,12 +97,8 @@ jobs:
         with:
           detached: true
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+      - name: Install application dependencies
+        uses: ./.github/actions/install-all-build-libs
 
       - name: Install E2E test dependencies
         working-directory: ${{ env.E2E_DIR }}
@@ -111,11 +107,6 @@ jobs:
       - name: Install Playwright browsers
         working-directory: ${{ env.E2E_DIR }}
         run: npx playwright install chromium --with-deps
-
-      - name: Install application dependencies
-        uses: ./.github/actions/install-all-build-libs
-        with:
-          skip-system-deps: '1'
 
       - name: Start Redis test environment
         run: |
