@@ -79,11 +79,16 @@ const CurrentPipelineStatus = ({
       case PipelineStatus.Starting:
       case PipelineStatus.Stopping:
       case PipelineStatus.Updating:
-      case PipelineStatus.Stopped:
       case PipelineStatus.NotReady:
         return {
           label,
           icon: IndicatorSyncingIcon,
+          iconColor: 'attention500',
+        }
+      case PipelineStatus.Stopped:
+        return {
+          label,
+          icon: IndicatorSyncstoppedIcon,
           iconColor: 'attention500',
         }
       case PipelineStatus.Started:
