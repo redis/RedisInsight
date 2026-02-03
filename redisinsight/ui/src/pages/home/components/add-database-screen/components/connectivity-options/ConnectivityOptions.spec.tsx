@@ -92,7 +92,7 @@ describe('ConnectivityOptions', () => {
   })
 
   it('should not should create free db button if cloud ads feature flag is disabled', () => {
-    ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValueOnce({
+    ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValue({
       cloudSso: {
         flag: true,
       },
