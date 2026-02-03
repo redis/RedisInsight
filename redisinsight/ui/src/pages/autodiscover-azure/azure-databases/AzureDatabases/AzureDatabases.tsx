@@ -77,6 +77,7 @@ const AzureDatabases = ({
           title="Azure Redis Databases"
           onBack={onBack}
           onQueryChange={onQueryChange}
+          backButtonText="Subscriptions"
           subTitle={
             <Text size="M">
               Subscription:{' '}
