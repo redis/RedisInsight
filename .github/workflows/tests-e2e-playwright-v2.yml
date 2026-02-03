@@ -37,8 +37,21 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: '22.12.0'
   E2E_DIR: './tests/e2e-playwright'
+  E2E_CLOUD_DATABASE_USERNAME: ${{ secrets.E2E_CLOUD_DATABASE_USERNAME }}
+  E2E_CLOUD_DATABASE_PASSWORD: ${{ secrets.E2E_CLOUD_DATABASE_PASSWORD }}
+  E2E_CLOUD_API_ACCESS_KEY: ${{ secrets.E2E_CLOUD_API_ACCESS_KEY }}
+  E2E_CLOUD_DATABASE_HOST: ${{ secrets.E2E_CLOUD_DATABASE_HOST }}
+  E2E_CLOUD_DATABASE_PORT: ${{ secrets.E2E_CLOUD_DATABASE_PORT }}
+  E2E_CLOUD_DATABASE_NAME: ${{ secrets.E2E_CLOUD_DATABASE_NAME }}
+  E2E_CLOUD_API_SECRET_KEY: ${{ secrets.E2E_CLOUD_API_SECRET_KEY }}
+
+  E2E_RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
+  RI_ENCRYPTION_KEY: ${{ secrets.RI_ENCRYPTION_KEY }}
+  RI_SERVER_TLS_CERT: ${{ secrets.RI_SERVER_TLS_CERT }}
+  RI_SERVER_TLS_KEY: ${{ secrets.RI_SERVER_TLS_KEY }}
+  TEST_BIG_DB_DUMP: ${{ secrets.TEST_BIG_DB_DUMP }}
+  E2E_VOLUME_PATH: '/usr/src/app'
 
 jobs:
   # Check if workflow should run (for PR label trigger)
@@ -87,7 +100,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version-file: '.nvmrc'
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
 
@@ -174,7 +187,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version-file: '.nvmrc'
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
 
