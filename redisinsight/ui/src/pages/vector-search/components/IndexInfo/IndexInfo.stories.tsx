@@ -32,11 +32,11 @@ export const Default: Story = {
 
 // HASH index type
 export const HashIndex: Story = {
-  name: 'HASH index',
+  name: 'Hash index',
   args: {
     indexInfo: indexInfoFactory.build({
       indexDefinition: {
-        keyType: 'HASH',
+        keyType: 'hash',
         prefixes: ['bike:'],
       },
       attributes: [
@@ -73,7 +73,7 @@ export const JsonIndex: Story = {
   args: {
     indexInfo: indexInfoFactory.build({
       indexDefinition: {
-        keyType: 'JSON',
+        keyType: 'json',
         prefixes: ['json:bikes:'],
       },
       attributes: [
@@ -104,7 +104,7 @@ export const WithOptions: Story = {
   args: {
     indexInfo: indexInfoFactory.build({
       indexDefinition: {
-        keyType: 'HASH',
+        keyType: 'hash',
         prefixes: ['product:'],
       },
       indexOptions: {

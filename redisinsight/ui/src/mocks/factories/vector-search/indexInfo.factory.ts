@@ -1,6 +1,7 @@
 import { Factory } from 'fishery'
 import { faker } from '@faker-js/faker'
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+import { KeyTypes } from 'uiSrc/constants'
 import {
   IndexInfo,
   IndexAttribute,
@@ -36,7 +37,7 @@ export const indexAttributeFactory = Factory.define<IndexAttribute>(
  * Factory for frontend IndexDefinition type.
  */
 export const indexDefinitionFactory = Factory.define<IndexDefinition>(() => ({
-  keyType: faker.helpers.arrayElement(['HASH', 'JSON']),
+  keyType: faker.helpers.arrayElement([KeyTypes.Hash, KeyTypes.JSON]),
   prefixes: [`${faker.word.noun()}:`],
 }))
 

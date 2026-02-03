@@ -29,7 +29,7 @@ export const IndexInfo = ({ indexInfo, dataTestId }: IndexInfoProps) => {
   const showOptions = hasIndexOptions(indexOptions)
 
   return (
-    <IndexInfoContainer gap="s" data-testid={dataTestId}>
+    <IndexInfoContainer gap="s" data-testid={dataTestId ?? 'index-info'}>
       {/* Index Definition Header */}
       <Row
         gap="s"
