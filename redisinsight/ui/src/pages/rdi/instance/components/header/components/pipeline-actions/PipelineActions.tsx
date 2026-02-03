@@ -29,6 +29,7 @@ import ResetPipelineButton from '../buttons/reset-pipeline-button'
 import RdiConfigFileActionMenu from '../rdi-config-file-action-menu'
 import StopPipelineButton from '../buttons/stop-pipeline-button'
 import StartPipelineButton from '../buttons/start-pipeline-button/StartPipelineButton'
+import { getActionButtonState } from './utils'
 
 const VerticalDelimiter = styled(FlexItem)`
   border: ${({ theme }: { theme: Theme }) => theme.components.appBar.separator};
@@ -153,59 +154,11 @@ const PipelineActions = ({ pipelineStatus }: Props) => {
     action === actionBtn && actionLoading
   const disabled = deployLoading || actionLoading
 
-  const getActionButtonState = (): {
-    button: 'start' | 'stop' | null
-    disabled: boolean
-  } => {
-    if (action === PipelineAction.Stop) {
-      return {
-        disabled: true,
-        button: 'stop',
-      }
-    }
-
-    if (action === PipelineAction.Start) {
-      return {
-        disabled: true,
-        button: 'start',
-      }
-    }
-
-    switch (pipelineStatus) {
-      case PipelineStatus.NotReady: // v1 status
-      case PipelineStatus.Stopped:
-        return {
-          disabled: disabled,
-          button: 'start',
-        }
-      case PipelineStatus.Ready: // v1 status
-      case PipelineStatus.Unknown:
-      case PipelineStatus.Error:
-      case PipelineStatus.Started:
-        return {
-          disabled: disabled,
-          button: 'stop',
-        }
-      case PipelineStatus.Stopping:
-      case PipelineStatus.Starting:
-      case PipelineStatus.Creating:
-      case PipelineStatus.Updating:
-      case PipelineStatus.Deleting:
-      case PipelineStatus.Resetting:
-      case PipelineStatus.Pending:
-        return {
-          disabled: true,
-          button: 'stop',
-        }
-      default:
-        return {
-          disabled: true,
-          button: null,
-        }
-    }
-  }
-
-  const actionButtonState = getActionButtonState()
+  const actionButtonState = getActionButtonState(
+    action,
+    pipelineStatus,
+    disabled,
+  )
 
   return (
     <Row gap="l" justify="end" align="center">
