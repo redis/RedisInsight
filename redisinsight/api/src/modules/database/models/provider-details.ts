@@ -45,5 +45,3 @@ export class AzureProviderDetails {
   @IsString()
   azureAccountId?: string;
 }
-
-export type ProviderDetails = AzureProviderDetails;
