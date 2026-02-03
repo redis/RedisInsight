@@ -4,7 +4,22 @@ import { type Theme } from 'uiSrc/components/base/theme/types'
 
 type DivProps = HTMLAttributes<HTMLDivElement>
 
-interface ContainerWrapperProps extends DivProps {
+// Reusable themed props - include this in any interface that needs theme access
+interface ThemedProps {
+  theme: Theme
+}
+
+export const Container = styled.div<DivProps & ThemedProps>`
+  border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
+`
+
+// Base component for query results containers - used by child components
+export const QueryResultsContainer = styled.div<DivProps>``
+
+// Plugin variant with different max-height in fullscreen
+export const PluginResultsContainer = styled(QueryResultsContainer)``
+
+interface ContainerWrapperProps extends DivProps, ThemedProps {
   $isOpen?: boolean
   $isFullscreen?: boolean
   $odd?: boolean
@@ -20,23 +35,21 @@ export const ContainerWrapper = styled.div<ContainerWrapperProps>`
   ${({ $odd, theme }) =>
     $odd
       ? css`
-          background-color: ${(theme as Theme).semantic.color.background
-            .neutral100};
+          background-color: ${theme.semantic.color.background.neutral100};
         `
       : css`
-          background-color: ${(theme as Theme).semantic.color.background
-            .neutral200};
+          background-color: ${theme.semantic.color.background.neutral200};
         `}
 
   ${({ $isOpen, theme }) =>
     $isOpen &&
     css`
-      & + &.isOpen .container {
+      & + &.isOpen ${Container} {
         border-top-width: 0;
       }
 
-      .container {
-        border-color: ${(theme as Theme).semantic.color.border.primary500};
+      ${Container} {
+        border-color: ${theme.semantic.color.border.primary500};
       }
     `}
 
@@ -49,33 +62,27 @@ export const ContainerWrapper = styled.div<ContainerWrapperProps>`
       width: 100%;
       height: 100%;
       z-index: 110;
-      background-color: ${(theme as Theme).semantic.color.background
-        .neutral100};
+      background-color: ${theme.semantic.color.background.neutral100};
 
-      .queryResultsContainer {
+      ${QueryResultsContainer} {
         max-height: calc(100% - 45px);
       }
 
-      .queryResultsContainer.pluginStyles {
+      ${PluginResultsContainer} {
         max-height: calc(100vh - 45px);
       }
 
-      .container {
-        border-color: ${(theme as Theme).semantic.color.border.neutral300};
+      ${Container} {
+        border-color: ${theme.semantic.color.border.neutral300};
         display: flex;
         flex-direction: column;
         height: 100%;
       }
 
-      &.isOpen .container {
+      &.isOpen ${Container} {
         border: none;
       }
     `}
-`
-
-export const Container = styled.div<DivProps>`
-  border: 1px solid
-    ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral500};
 `
 
 export const Loading = styled.div<DivProps>`
@@ -84,20 +91,18 @@ export const Loading = styled.div<DivProps>`
 `
 
 // Global styles for query card output responses
-export const QueryCardOutputSuccess = styled.div`
+export const QueryCardOutputSuccess = styled.div<ThemedProps>`
   scrollbar-width: thin;
   display: block;
   max-height: 210px;
   overflow: auto;
   white-space: pre-wrap;
   word-break: break-all;
-  color: ${({ theme }: { theme: Theme }) =>
-    theme.semantic.color.text.success500};
+  color: ${({ theme }) => theme.semantic.color.text.success500};
 `
 
-export const QueryCardOutputFail = styled.span`
-  color: ${({ theme }: { theme: Theme }) =>
-    theme.semantic.color.text.danger500};
+export const QueryCardOutputFail = styled.span<ThemedProps>`
+  color: ${({ theme }) => theme.semantic.color.text.danger500};
 
   span {
     vertical-align: text-top;

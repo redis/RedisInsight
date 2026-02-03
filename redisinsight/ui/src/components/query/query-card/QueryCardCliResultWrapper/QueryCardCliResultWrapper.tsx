@@ -40,10 +40,7 @@ const QueryCardCliResultWrapper = (props: Props) => {
   } = props
 
   return (
-    <S.Container
-      data-testid="query-cli-result-wrapper"
-      className="queryResultsContainer"
-    >
+    <S.Container data-testid="query-cli-result-wrapper">
       {!loading && (
         <S.Content data-testid="query-cli-result">
           {isNotStored && (

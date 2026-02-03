@@ -1,7 +1,8 @@
 import styled from 'styled-components'
 import { type Theme } from 'uiSrc/components/base/theme/types'
+import { QueryResultsContainer } from '../QueryCard.styles'
 
-export const Container = styled.div`
+export const Container = styled(QueryResultsContainer)`
   scrollbar-width: thin;
   flex: auto;
   padding: 9px 20px;

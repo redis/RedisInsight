@@ -327,7 +327,7 @@ const QueryCardCliPlugin = (props: Props) => {
   }, [result, id])
 
   return (
-    <S.PluginWrapperResult className="queryResultsContainer pluginStyles">
+    <S.PluginWrapperResult>
       <div data-testid="query-plugin-result">
         <S.PluginIframe
           as="iframe"

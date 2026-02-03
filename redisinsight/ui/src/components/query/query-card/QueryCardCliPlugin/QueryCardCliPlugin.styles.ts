@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components'
 import { type Theme } from 'uiSrc/components/base/theme/types'
+import { PluginResultsContainer } from '../QueryCard.styles'
 
 export const Container = styled.div`
   scrollbar-width: thin;
@@ -40,7 +41,7 @@ export const PluginIframe = styled.iframe<{ $hidden?: boolean }>`
     `}
 `
 
-export const PluginWrapperResult = styled.div`
+export const PluginWrapperResult = styled(PluginResultsContainer)`
   scrollbar-width: thin;
   max-height: 600px;
   overflow: auto;
