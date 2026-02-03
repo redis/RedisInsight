@@ -1,0 +1,32 @@
+.pageHeader {
+  display: flex;
+  align-items: center;
+
+  min-height: 56px;
+}
+
+.pageHeaderTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 8px 16px;
+  min-height: 70px;
+}
+
+
+
+.logo {
+  transition: transform 0.1s linear;
+  padding-left: 6px;
+  margin-top: 14px;
+
+  &:hover {
+    transform: translateY(-1px) !important;
+  }
+
+  svg {
+    height: 50px;
+    width: 90px;
+  }
+}

@@ -2,7 +2,6 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
-import cx from 'classnames'
 import { Pages, FeatureFlags } from 'uiSrc/constants'
 import { resetDataRedisCloud } from 'uiSrc/slices/instances/cloud'
 import { resetDataRedisCluster } from 'uiSrc/slices/instances/cluster'
@@ -15,20 +14,12 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { RedisLogoFullIcon } from 'uiSrc/components/base/icons'
-import styles from './PageHeader.module.scss'
 import { ColorText } from 'uiSrc/components/base/text'
+import * as S from './PageHeader.styles'
+import { PageHeaderProps } from './PageHeader.types'
 
-interface Props {
-  title?: string
-  subtitle?: string
-  children?: React.ReactNode
-  showInsights?: boolean
-  className?: string
-}
-
-const PageHeader = (props: Props) => {
+const PageHeader = (props: PageHeaderProps) => {
   const { title, subtitle, showInsights, children, className } = props
 
   const {
@@ -55,8 +46,8 @@ const PageHeader = (props: Props) => {
   }
 
   return (
-    <div className={cx(styles.pageHeader, className)}>
-      <div className={styles.pageHeaderTop}>
+    <S.PageHeaderWrapper align="center" className={className} grow={false}>
+      <S.PageHeaderTop align="center" justify="between" grow={false}>
         <div>
           {title && (
             <Title size="L" data-testid="page-title">
@@ -91,20 +82,20 @@ const PageHeader = (props: Props) => {
             </FeatureFlagComponent>
           </Row>
         ) : (
-          <div className={styles.pageHeaderLogo}>
-            <EmptyButton
+          <div>
+            <S.LogoButton
               aria-label="redisinsight"
               onClick={goHome}
               onKeyDown={goHome}
-              className={styles.logo}
               tabIndex={0}
-              icon={RedisLogoFullIcon}
               data-testid="redis-logo-home"
-            />
+            >
+              <RedisLogoFullIcon />
+            </S.LogoButton>
           </div>
         )}
-      </div>
-    </div>
+      </S.PageHeaderTop>
+    </S.PageHeaderWrapper>
   )
 }
 
