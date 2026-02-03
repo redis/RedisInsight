@@ -108,6 +108,9 @@ jobs:
         working-directory: ${{ env.E2E_DIR }}
         run: npx playwright install chromium --with-deps
 
+      - name: Build statics
+        run: yarn build:statics
+
       - name: Start Redis test environment
         run: |
           docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml up --detach --force-recreate
