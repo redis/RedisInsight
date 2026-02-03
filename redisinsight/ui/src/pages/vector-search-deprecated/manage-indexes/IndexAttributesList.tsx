@@ -59,6 +59,10 @@ export interface IndexAttributesListProps {
   indexInfo: IndexInfoDto | undefined
 }
 
+/**
+ * @deprecated This component is deprecated. Use the new IndexInfo component instead.
+ * @see redisinsight/ui/src/pages/vector-search/components/IndexInfo
+ */
 export const IndexAttributesList = ({
   indexInfo,
 }: IndexAttributesListProps) => {
