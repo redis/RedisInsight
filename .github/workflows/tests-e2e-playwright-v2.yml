@@ -106,7 +106,7 @@ jobs:
 
       - name: Start Redis test environment
         run: |
-          docker compose -f tests/e2e/rte.docker-compose.yml up -d redis-standalone
+          docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml up --detach --force-recreate
 
       - name: Start application (dev mode)
         run: |
@@ -134,7 +134,7 @@ jobs:
       - name: Stop Redis test environment
         if: always()
         run: |
-          docker compose -f tests/e2e/rte.docker-compose.yml down -v
+          docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml down --volumes --remove-orphans
 
   # Build Linux AppImage for Electron tests
   build-linux:
@@ -197,7 +197,7 @@ jobs:
 
       - name: Start Redis test environment
         run: |
-          docker compose -f tests/e2e/rte.docker-compose.yml up -d redis-standalone
+          docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml up --detach --force-recreate
 
       - name: Run Playwright tests (Electron Linux)
         working-directory: ${{ env.E2E_DIR }}
@@ -219,4 +219,4 @@ jobs:
       - name: Stop Redis test environment
         if: always()
         run: |
-          docker compose -f tests/e2e/rte.docker-compose.yml down -v
+          docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml down --volumes --remove-orphans
