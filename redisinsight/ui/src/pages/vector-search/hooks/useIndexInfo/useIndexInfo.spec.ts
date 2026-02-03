@@ -228,4 +228,43 @@ describe('useIndexInfo', () => {
     expect(result.current.indexInfo?.numDocs).toBe(200)
     expect(result.current.loading).toBe(false)
   })
+
+  it('should reset state when indexName changes to empty string', async () => {
+    const mockApiResponse = indexInfoApiResponseFactory.build()
+
+    mswServer.use(
+      http.post(
+        getMswURL(getUrl(instanceId, ApiEndpoints.REDISEARCH_INFO)),
+        async () => HttpResponse.json(mockApiResponse, { status: 200 }),
+      ),
+    )
+
+    const { result, rerender } = renderHook(
+      (initialProps) =>
+        useIndexInfo({
+          indexName: (initialProps as { name: string })?.name ?? '',
+        }),
+      {
+        store: getMockedStore(),
+        initialProps: { name: indexName },
+      },
+    )
+
+    // Wait for fetch to complete
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
+    })
+
+    // Verify we have data
+    expect(result.current.indexInfo).not.toBeNull()
+    expect(result.current.error).toBeNull()
+
+    // Change indexName to empty string
+    rerender({ name: '' })
+
+    // State should be reset to initial values
+    expect(result.current.indexInfo).toBeNull()
+    expect(result.current.error).toBeNull()
+    expect(result.current.loading).toBe(false)
+  })
 })

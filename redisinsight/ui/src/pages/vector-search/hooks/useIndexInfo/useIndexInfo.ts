@@ -76,6 +76,10 @@ export const useIndexInfo = ({
   useEffect(() => {
     if (indexName) {
       fetchIndexInfo()
+    } else {
+      // Reset state when indexName becomes empty
+      setIndexInfo(null)
+      setError(null)
     }
 
     return () => {
