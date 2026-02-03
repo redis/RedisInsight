@@ -2,8 +2,8 @@ import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
 import {
-  azureOAuthCallbackSuccess,
-  azureOAuthCallbackFailure,
+  handleAzureOAuthSuccess,
+  handleAzureOAuthFailure,
 } from 'uiSrc/slices/oauth/azure'
 import {
   addErrorNotification,
@@ -11,6 +11,7 @@ import {
 } from 'uiSrc/slices/app/notifications'
 import { AzureAuthStatus } from 'apiSrc/modules/azure/constants'
 import successMessages from 'uiSrc/components/notifications/success-messages'
+import { AppDispatch } from 'uiSrc/slices/store'
 
 interface AzureAuthCallbackResponse {
   status: string
@@ -23,7 +24,7 @@ interface AzureAuthCallbackResponse {
 }
 
 const ConfigAzureAuth = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
     window.app?.azureOauthCallback?.(azureOauthCallback)
@@ -34,7 +35,7 @@ const ConfigAzureAuth = () => {
     { status, account, error }: AzureAuthCallbackResponse,
   ) => {
     if (status === AzureAuthStatus.Succeed && account) {
-      dispatch(azureOAuthCallbackSuccess(account))
+      dispatch(handleAzureOAuthSuccess(account))
       dispatch(
         addMessageNotification(
           successMessages.AZURE_AUTH_SUCCESS(account.username),
@@ -49,7 +50,7 @@ const ConfigAzureAuth = () => {
       status === AzureAuthStatus.Succeed
     ) {
       const errorMessage = error || 'Azure authentication failed'
-      dispatch(azureOAuthCallbackFailure(errorMessage))
+      dispatch(handleAzureOAuthFailure(errorMessage))
       dispatch(
         addErrorNotification({
           response: {

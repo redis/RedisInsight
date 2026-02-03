@@ -6,6 +6,9 @@ import { getApiErrorMessage, isStatusSuccessful } from 'uiSrc/utils'
 import { AppDispatch, RootState } from 'uiSrc/slices/store'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 
+const OAUTH_TIMEOUT_MS = 60 * 1000
+let oauthTimeoutId: ReturnType<typeof setTimeout> | null = null
+
 export interface AzureAccount {
   id: string
   username: string
@@ -26,6 +29,13 @@ export const initialState: StateAzureAuth = {
   loading: false,
   account: null,
   error: '',
+}
+
+const clearOAuthTimeout = () => {
+  if (oauthTimeoutId) {
+    clearTimeout(oauthTimeoutId)
+    oauthTimeoutId = null
+  }
 }
 
 const azureAuthSlice = createSlice({
@@ -101,6 +111,12 @@ export function initiateAzureLoginAction(
       if (isStatusSuccessful(status)) {
         dispatch(azureAuthLoginSuccess())
         onSuccess?.(data.url)
+
+        // Start timeout to reset loading state if OAuth flow is abandoned
+        clearOAuthTimeout()
+        oauthTimeoutId = setTimeout(() => {
+          dispatch(setAzureAuthInitialState())
+        }, OAUTH_TIMEOUT_MS)
       }
     } catch (error) {
       const errorMessage = getApiErrorMessage(error as AxiosError)
@@ -108,5 +124,19 @@ export function initiateAzureLoginAction(
       dispatch(addErrorNotification(error as AxiosError))
       onFail?.()
     }
+  }
+}
+
+export function handleAzureOAuthSuccess(account: AzureAccount) {
+  return (dispatch: AppDispatch) => {
+    clearOAuthTimeout()
+    dispatch(azureOAuthCallbackSuccess(account))
+  }
+}
+
+export function handleAzureOAuthFailure(errorMessage: string) {
+  return (dispatch: AppDispatch) => {
+    clearOAuthTimeout()
+    dispatch(azureOAuthCallbackFailure(errorMessage))
   }
 }
