@@ -1,11 +1,16 @@
+import { HTMLAttributes } from 'react'
 import styled, { css } from 'styled-components'
 import { type Theme } from 'uiSrc/components/base/theme/types'
 
-export const ContainerWrapper = styled.div<{
+type DivProps = HTMLAttributes<HTMLDivElement>
+
+interface ContainerWrapperProps extends DivProps {
   $isOpen?: boolean
   $isFullscreen?: boolean
   $odd?: boolean
-}>`
+}
+
+export const ContainerWrapper = styled.div<ContainerWrapperProps>`
   min-width: 662px;
 
   @media (min-width: 1050px) {
@@ -68,18 +73,14 @@ export const ContainerWrapper = styled.div<{
     `}
 `
 
-export const Container = styled.div`
+export const Container = styled.div<DivProps>`
   border: 1px solid
     ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral500};
 `
 
-export const Loading = styled.div`
+export const Loading = styled.div<DivProps>`
   height: 17px;
   max-width: 600px;
-
-  .euiLoadingContent__singleLine {
-    margin-bottom: 0;
-  }
 `
 
 // Global styles for query card output responses

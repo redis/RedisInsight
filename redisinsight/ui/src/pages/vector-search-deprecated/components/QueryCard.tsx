@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { isNull } from 'lodash'
 import { KeyboardKeys as keys } from 'uiSrc/constants/keys'
@@ -34,8 +33,8 @@ import QueryCardCommonResult, {
 } from 'uiSrc/components/query/query-card/QueryCardCommonResult'
 import QueryCardCliResultWrapper from 'uiSrc/components/query/query-card/QueryCardCliResultWrapper'
 import QueryCardCliPlugin from 'uiSrc/components/query/query-card/QueryCardCliPlugin'
-import queryStyles from 'uiSrc/components/query/query-card/styles.module.scss'
 import QueryCardHeader from 'uiSrc/components/query/query-card/QueryCardHeader'
+import * as S from 'uiSrc/components/query/query-card/QueryCard.styles'
 import { collectQueryToggleFullScreenTelemetry } from '../telemetry'
 
 export interface Props {
@@ -185,15 +184,8 @@ const QueryCard = (props: Props) => {
   }
 
   return (
-    <div
-      className={cx(queryStyles.containerWrapper, {
-        fullscreen: isFullScreen,
-        [queryStyles.isOpen]: isOpen,
-      })}
-      id={id}
-    >
-      <div
-        className={cx(queryStyles.container)}
+    <S.ContainerWrapper $isOpen={isOpen} $isFullscreen={isFullScreen} id={id}>
+      <S.Container
         data-testid={`query-card-container-${id}`}
         data-full-screen={isFullScreen}
       >
@@ -205,7 +197,6 @@ const QueryCard = (props: Props) => {
           clearing={clearing}
           createdAt={createdAt}
           message={message}
-          queryType={queryType}
           selectedValue={selectedViewValue}
           activeMode={activeMode}
           mode={mode}
@@ -268,12 +259,12 @@ const QueryCard = (props: Props) => {
                                 commandId={id}
                               />
                             ) : (
-                              <div className={queryStyles.loading}>
+                              <S.Loading>
                                 <LoadingContent
                                   lines={5}
                                   data-testid="loading-content"
                                 />
-                              </div>
+                              </S.Loading>
                             )}
                           </>
                         )}
@@ -295,8 +286,8 @@ const QueryCard = (props: Props) => {
             )}
           </>
         )}
-      </div>
-    </div>
+      </S.Container>
+    </S.ContainerWrapper>
   )
 }
 
