@@ -2,7 +2,7 @@ import React, { createContext, useContext, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { AxiosError } from 'axios'
 
-import { apiService } from 'uiSrc/services'
+import { apiService, instancesService } from 'uiSrc/services'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { getApiErrorMessage, isStatusSuccessful } from 'uiSrc/utils'
 import { azureAuthAccountSelector } from 'uiSrc/slices/oauth/azure'
@@ -10,6 +10,9 @@ import {
   AzureSubscription,
   AzureRedisDatabase,
   AzureConnectionDetails,
+  AzureProviderDetails,
+  CloudProvider,
+  ConnectionProvider,
 } from 'uiSrc/slices/interfaces'
 
 interface AddDatabaseResult {
@@ -138,8 +141,28 @@ export const AzureAutodiscoveryProvider: React.FC<{
           )
 
           if (isStatusSuccessful(status) && data) {
-            // TODO: add database using connection details
-            return { database, success: true }
+            const providerDetails: AzureProviderDetails = {
+              provider: CloudProvider.Azure,
+              authType: data.authType,
+              azureAccountId: data.azureAccountId,
+            }
+
+            const result = await instancesService.createInstance({
+              host: data.host,
+              port: data.port,
+              name: database.name,
+              username: data.username,
+              password: data.password,
+              tls: data.tls,
+              provider: ConnectionProvider.AZURE,
+              nameFromProvider: database.name,
+              providerDetails,
+            })
+
+            if (result) {
+              return { database, success: true }
+            }
+            return { database, success: false }
           }
           return { database, success: false }
         } catch (error) {

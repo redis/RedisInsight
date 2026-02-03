@@ -52,3 +52,13 @@ export interface AzureConnectionDetails {
   resourceGroup: string
   resourceId: string
 }
+
+export enum CloudProvider {
+  Azure = 'azure',
+}
+
+export interface AzureProviderDetails {
+  provider: CloudProvider.Azure
+  authType: AzureAuthType
+  azureAccountId?: string
+}

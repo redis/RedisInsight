@@ -98,7 +98,7 @@ export async function listDatabases() {
   return isStatusSuccessful(status) ? data : null
 }
 
-export async function createInstance(instance: Instance) {
+export async function createInstance(instance: Partial<Instance>) {
   const { data, status } = await apiService.post(endpoint, instance)
 
   return isStatusSuccessful(status) ? data : null
