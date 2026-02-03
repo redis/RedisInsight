@@ -5,6 +5,7 @@ import {
   RdiStatisticsViewType,
 } from 'src/modules/rdi/models';
 import {
+  CollectorMetricsResponse,
   GetMetricsCollectionResponse,
   ProcessorMetricsResponse,
 } from 'src/modules/rdi/client/api/v2/responses';
@@ -98,7 +99,7 @@ describe('metrics-collections.transformer', () => {
 
   describe('transformMetricsCollectionResponse', () => {
     const mockProcessorMetrics: ProcessorMetricsResponse = {
-      name: 'processor_metrics' as any,
+      name: 'processor_metrics',
       component: 'processor',
       metrics: {
         processing_performance: {
@@ -166,7 +167,7 @@ describe('metrics-collections.transformer', () => {
       },
     };
 
-    const mockCollectorMetrics = {
+    const mockCollectorMetrics: CollectorMetricsResponse = {
       name: 'collector-source_metrics',
       component: 'collector-source',
       metrics: {
@@ -177,7 +178,7 @@ describe('metrics-collections.transformer', () => {
 
     it('should return array of 5 sections in correct order', () => {
       const response: GetMetricsCollectionResponse = [
-        mockCollectorMetrics as any,
+        mockCollectorMetrics,
         mockProcessorMetrics,
       ];
 
@@ -222,9 +223,7 @@ describe('metrics-collections.transformer', () => {
     });
 
     it('should return empty array when no processor metrics found', () => {
-      const response: GetMetricsCollectionResponse = [
-        mockCollectorMetrics as any,
-      ];
+      const response: GetMetricsCollectionResponse = [mockCollectorMetrics];
 
       const result = transformMetricsCollectionResponse(response);
 
