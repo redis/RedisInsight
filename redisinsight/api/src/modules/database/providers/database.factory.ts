@@ -71,23 +71,31 @@ export class DatabaseFactory {
     }
 
     if (await isSentinel(client)) {
-      if (!resolvedDatabase.sentinelMaster) {
+      if (!model.sentinelMaster) {
         throw getRedisConnectionException(
           new ReplyError(RedisErrorCodes.SentinelParamsRequired),
-          resolvedDatabase,
+          model,
         );
       }
-      model = await this.createSentinelDatabaseModel(
+      // Pass resolvedDatabase for client creation (has credentials)
+      // but copy only discovered properties back to model (no credentials)
+      const sentinelResult = await this.createSentinelDatabaseModel(
         sessionMetadata,
         resolvedDatabase,
         client,
       );
-    } else if (!resolvedDatabase.forceStandalone && (await isCluster(client))) {
-      model = await this.createClusterDatabaseModel(
+      model.nodes = sentinelResult.nodes;
+      model.connectionType = sentinelResult.connectionType;
+    } else if (!model.forceStandalone && (await isCluster(client))) {
+      // Pass resolvedDatabase for client creation (has credentials)
+      // but copy only discovered properties back to model (no credentials)
+      const clusterResult = await this.createClusterDatabaseModel(
         sessionMetadata,
         resolvedDatabase,
         client,
       );
+      model.nodes = clusterResult.nodes;
+      model.connectionType = clusterResult.connectionType;
     }
 
     model.modules =
