@@ -1,6 +1,6 @@
 import { test as base, ElectronApplication, _electron as electron } from '@playwright/test';
 import { BrowserPage, CliPanel } from 'e2eSrc/pages';
-import { ApiHelper } from 'e2eSrc/helpers/api';
+import { ApiHelper, retry } from 'e2eSrc/helpers';
 
 /**
  * Test-scoped fixtures
@@ -63,22 +63,15 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
 
       // Wait for API to be available
       const apiHelper = new ApiHelper({ apiUrl });
-      let apiReady = false;
-      for (let i = 0; i < 30; i++) {
-        try {
-          await apiHelper.getDatabases();
-          apiReady = true;
-          console.log('Electron API is ready');
-          break;
-        } catch {
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        }
-      }
+      const checkApi = async () => {
+        await apiHelper.getDatabases();
+        console.log('Electron API is ready');
+      };
+      await retry(checkApi, {
+        maxAttempts: 5,
+        errorMessage: 'Electron API did not become available',
+      });
       await apiHelper.dispose();
-
-      if (!apiReady) {
-        throw new Error('Electron API did not become available within 30 seconds');
-      }
 
       await use(electronApp);
 
