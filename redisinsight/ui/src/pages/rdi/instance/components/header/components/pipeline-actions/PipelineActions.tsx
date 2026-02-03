@@ -221,13 +221,13 @@ const PipelineActions = ({ pipelineStatus }: Props) => {
         {actionButtonState.button === 'stop' ? (
           <StopPipelineButton
             onClick={onStopPipeline}
-            disabled={actionButtonState.disabled}
+            disabled={actionButtonState.disabled || deployLoading}
             loading={isLoadingBtn(PipelineAction.Stop)}
           />
         ) : actionButtonState.button === 'start' ? (
           <StartPipelineButton
             onClick={onStartPipeline}
-            disabled={actionButtonState.disabled}
+            disabled={actionButtonState.disabled || deployLoading}
             loading={isLoadingBtn(PipelineAction.Start)}
           />
         ) : null}
