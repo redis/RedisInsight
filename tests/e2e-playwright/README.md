@@ -198,13 +198,33 @@ tests/e2e-playwright/
 
 Page objects are organized into component-based POMs for better maintainability:
 
-- **Page-level POMs** (`DatabasesPage`) - High-level page actions
-- **Component POMs** (`AddDatabaseDialog`, `DatabaseList`) - Reusable UI components
+```
+BasePage (abstract)
+  ├── DatabasesPage           # Databases list page
+  ├── SettingsPage            # Settings page
+  └── InstancePage (abstract) # Base for all database instance pages
+        ├── instanceHeader    # Database name, stats, breadcrumb
+        ├── navigationTabs    # Browse, Workbench, Analyze, Pub/Sub
+        ├── bottomPanel       # CLI, Command Helper, Profiler
+        └── BrowserPage       # Browser-specific (extends InstancePage)
+              └── WorkbenchPage (future)
+              └── AnalyzePage (future)
+              └── PubSubPage (future)
+```
+
+- **BasePage** - Common navigation methods for all pages
+- **InstancePage** - Base class for pages within a connected database (provides shared header, tabs, bottom panel)
+- **Component POMs** (`AddDatabaseDialog`, `KeyList`) - Reusable UI components
 
 ```typescript
 // Access component POMs through the page
 await databasesPage.addDatabaseDialog.fillForm(config);
-await databasesPage.databaseList.getRow(name);
+await browserPage.keyList.selectKey(keyName);
+
+// InstancePage provides common components
+await browserPage.instanceHeader.getDatabaseName();
+await browserPage.navigationTabs.gotoWorkbench();
+await browserPage.bottomPanel.openCli();
 ```
 
 ### Test Structure

@@ -24,7 +24,9 @@ tests/e2e-playwright/
 ├── helpers/             # API helpers for setup/teardown
 ├── pages/               # Page Object Models
 │   ├── BasePage.ts      # Base class for all pages
-│   └── {feature}/       # Feature-specific pages
+│   ├── InstancePage.ts  # Base class for database instance pages
+│   ├── components/      # Shared components (InstanceHeader, NavigationTabs, BottomPanel)
+│   └── {feature}/       # Feature-specific pages (browser/, cli/, etc.)
 ├── test-data/           # Test data factories
 ├── tests/               # Test specs organized by project
 │   ├── main/            # Default parallel tests
@@ -80,26 +82,48 @@ Create a new project folder when tests:
 
 ## Page Objects
 
-### Always Extend BasePage
+### Page Object Hierarchy
+
+```
+BasePage (abstract)
+  ├── DatabasesPage           # Databases list page
+  ├── SettingsPage            # Settings page
+  └── InstancePage (abstract) # Base for all database instance pages
+        ├── instanceHeader    # Database name, stats, breadcrumb
+        ├── navigationTabs    # Browse, Workbench, Analyze, Pub/Sub
+        ├── bottomPanel       # CLI, Command Helper, Profiler
+        └── BrowserPage       # Browser-specific (extends InstancePage)
+              └── WorkbenchPage (future)
+              └── AnalyzePage (future)
+              └── PubSubPage (future)
+```
+
+### Extend the Appropriate Base Class
+
+- **BasePage** - For standalone pages (DatabasesPage, SettingsPage)
+- **InstancePage** - For pages within a connected database (BrowserPage, WorkbenchPage, etc.)
 
 Page objects are **stateless** - they don't store database objects. Pass `databaseId` to navigation methods.
 
 ```typescript
+// For database instance pages - extend InstancePage
 import { Page, Locator } from '@playwright/test';
-import { BasePage } from '../BasePage';
+import { InstancePage } from '../InstancePage';
 
-export class MyPage extends BasePage {
-  readonly myButton: Locator;
+export class WorkbenchPage extends InstancePage {
+  readonly editor: Locator;
 
   constructor(page: Page) {
     super(page);
-    this.myButton = page.getByTestId('my-button');
+    this.editor = page.getByTestId('workbench-editor');
   }
 
-  // Pass databaseId as parameter - don't store it in the class
+  // InstancePage provides: instanceHeader, navigationTabs, bottomPanel
+  // Plus navigation methods: navigateToBrowser(), openCli(), etc.
+
   async goto(databaseId: string): Promise<void> {
-    await this.gotoHome();
-    await this.connectToDatabase(databaseId);
+    await this.gotoDatabase(databaseId);
+    await this.navigationTabs.gotoWorkbench();
     await this.waitForLoad();
   }
 }
@@ -111,7 +135,7 @@ Break large pages into components:
 
 ```typescript
 // pages/feature/FeaturePage.ts
-export class FeaturePage extends BasePage {
+export class FeaturePage extends InstancePage {
   readonly dialog: FeatureDialog;
   readonly list: FeatureList;
 
