@@ -31,20 +31,6 @@ export const AZURE_DATABASES_COLUMNS: ColumnDef<AzureRedisDatabase>[] = [
     cell: ({ getValue }) => <Text size="M">{getValue() as string}</Text>,
   },
   {
-    id: 'host',
-    header: 'Host',
-    accessorKey: 'host',
-    enableSorting: true,
-    cell: ({ getValue }) => <Text size="M">{getValue() as string}</Text>,
-  },
-  {
-    id: 'port',
-    header: 'Port',
-    accessorKey: 'port',
-    enableSorting: true,
-    cell: ({ getValue }) => <Text size="M">{getValue() as number}</Text>,
-  },
-  {
     id: 'type',
     header: 'Type',
     accessorKey: 'type',

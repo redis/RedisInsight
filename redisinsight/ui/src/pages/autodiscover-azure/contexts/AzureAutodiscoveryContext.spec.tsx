@@ -59,10 +59,12 @@ describe('AzureAutodiscoveryContext', () => {
     it('should return initial state', () => {
       const { result } = renderHook(() => useAzureAutodiscovery(), { wrapper })
 
-      expect(result.current.loading).toBe(true)
-      expect(result.current.error).toBe('')
+      expect(result.current.subscriptionsLoading).toBe(true)
+      expect(result.current.subscriptionsError).toBe('')
       expect(result.current.subscriptions).toEqual([])
       expect(result.current.selectedSubscription).toBeNull()
+      expect(result.current.databasesLoading).toBe(false)
+      expect(result.current.databasesError).toBe('')
       expect(result.current.databases).toEqual([])
       expect(result.current.selectedDatabases).toEqual([])
       expect(result.current.addedDatabases).toEqual([])
@@ -92,7 +94,7 @@ describe('AzureAutodiscoveryContext', () => {
       })
 
       await waitFor(() => {
-        expect(result.current.loading).toBe(false)
+        expect(result.current.subscriptionsLoading).toBe(false)
         expect(result.current.subscriptions).toEqual(mockSubscriptions)
       })
     })
@@ -109,8 +111,8 @@ describe('AzureAutodiscoveryContext', () => {
       })
 
       await waitFor(() => {
-        expect(result.current.loading).toBe(false)
-        expect(result.current.error).toBe('Failed to fetch')
+        expect(result.current.subscriptionsLoading).toBe(false)
+        expect(result.current.subscriptionsError).toBe('Failed to fetch')
       })
     })
   })

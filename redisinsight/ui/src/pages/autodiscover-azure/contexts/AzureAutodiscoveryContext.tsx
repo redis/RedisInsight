@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from 'react'
+import React, { createContext, useContext, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { AxiosError } from 'axios'
 
@@ -18,37 +12,30 @@ import {
   AzureConnectionDetails,
 } from 'uiSrc/slices/interfaces'
 
-export interface AzureAutodiscoveryState {
-  loading: boolean
-  error: string
+interface AddDatabaseResult {
+  database: AzureRedisDatabase
+  success: boolean
+  message?: string
+}
+
+export interface AzureAutodiscoveryContextType {
+  // Subscriptions
   subscriptions: AzureSubscription[]
   selectedSubscription: AzureSubscription | null
-  databases: AzureRedisDatabase[]
-  selectedDatabases: AzureRedisDatabase[]
-  addedDatabases: {
-    database: AzureRedisDatabase
-    success: boolean
-    message?: string
-  }[]
-}
-
-export interface AzureAutodiscoveryContextType extends AzureAutodiscoveryState {
+  subscriptionsLoading: boolean
+  subscriptionsError: string
   fetchSubscriptions: () => Promise<void>
   selectSubscription: (subscription: AzureSubscription) => void
-  fetchDatabases: (subscriptionId: string) => Promise<void>
+
+  // Databases
+  databases: AzureRedisDatabase[]
+  selectedDatabases: AzureRedisDatabase[]
+  databasesLoading: boolean
+  databasesError: string
+  addedDatabases: AddDatabaseResult[]
+  fetchDatabases: () => Promise<void>
   setSelectedDatabases: (databases: AzureRedisDatabase[]) => void
   addDatabases: () => Promise<boolean>
-  reset: () => void
-}
-
-const initialState: AzureAutodiscoveryState = {
-  loading: true,
-  error: '',
-  subscriptions: [],
-  selectedSubscription: null,
-  databases: [],
-  selectedDatabases: [],
-  addedDatabases: [],
 }
 
 const AzureAutodiscoveryContext = createContext<
@@ -59,15 +46,31 @@ export const AzureAutodiscoveryProvider: React.FC<{
   children: React.ReactNode
 }> = ({ children }) => {
   const account = useSelector(azureAuthAccountSelector)
-  const [state, setState] = useState<AzureAutodiscoveryState>(initialState)
 
-  const fetchSubscriptions = useCallback(async () => {
+  // Subscriptions state
+  const [subscriptions, setSubscriptions] = useState<AzureSubscription[]>([])
+  const [selectedSubscription, setSelectedSubscription] =
+    useState<AzureSubscription | null>(null)
+  const [subscriptionsLoading, setSubscriptionsLoading] = useState(true)
+  const [subscriptionsError, setSubscriptionsError] = useState('')
+
+  // Databases state
+  const [databases, setDatabases] = useState<AzureRedisDatabase[]>([])
+  const [selectedDatabases, setSelectedDatabases] = useState<
+    AzureRedisDatabase[]
+  >([])
+  const [databasesLoading, setDatabasesLoading] = useState(false)
+  const [databasesError, setDatabasesError] = useState('')
+  const [addedDatabases, setAddedDatabases] = useState<AddDatabaseResult[]>([])
+
+  const fetchSubscriptions = async () => {
     if (!account?.id) {
-      setState((prev) => ({ ...prev, error: 'No Azure account found' }))
+      setSubscriptionsError('No Azure account found')
       return
     }
 
-    setState((prev) => ({ ...prev, loading: true, error: '' }))
+    setSubscriptionsLoading(true)
+    setSubscriptionsError('')
 
     try {
       const { data, status } = await apiService.get<AzureSubscription[]>(
@@ -76,88 +79,62 @@ export const AzureAutodiscoveryProvider: React.FC<{
       )
 
       if (isStatusSuccessful(status)) {
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-          subscriptions: data,
-        }))
+        setSubscriptions(data)
       }
     } catch (error) {
-      setState((prev) => ({
-        ...prev,
-        loading: false,
-        error: getApiErrorMessage(error as AxiosError),
-      }))
+      setSubscriptionsError(getApiErrorMessage(error as AxiosError))
+    } finally {
+      setSubscriptionsLoading(false)
     }
-  }, [account?.id])
+  }
 
-  const selectSubscription = useCallback((subscription: AzureSubscription) => {
-    setState((prev) => ({
-      ...prev,
-      selectedSubscription: subscription,
-      databases: [],
-      selectedDatabases: [],
-    }))
-  }, [])
+  const selectSubscription = (subscription: AzureSubscription) => {
+    setSelectedSubscription(subscription)
+    // Reset databases when subscription changes
+    setDatabases([])
+    setSelectedDatabases([])
+    setDatabasesError('')
+  }
 
-  const fetchDatabases = useCallback(
-    async (subscriptionId: string) => {
-      if (!account?.id) {
-        setState((prev) => ({ ...prev, error: 'No Azure account found' }))
-        return
+  const fetchDatabases = async () => {
+    if (!account?.id || !selectedSubscription) {
+      setDatabasesError('No subscription selected')
+      return
+    }
+
+    setDatabasesLoading(true)
+    setDatabasesError('')
+
+    try {
+      const { data, status } = await apiService.get<AzureRedisDatabase[]>(
+        `${ApiEndpoints.AZURE_DATABASES}/${selectedSubscription.subscriptionId}/databases`,
+        { params: { accountId: account.id } },
+      )
+
+      if (isStatusSuccessful(status)) {
+        setDatabases(data)
       }
+    } catch (error) {
+      setDatabasesError(getApiErrorMessage(error as AxiosError))
+    } finally {
+      setDatabasesLoading(false)
+    }
+  }
 
-      setState((prev) => ({ ...prev, loading: true, error: '' }))
-
-      try {
-        const { data, status } = await apiService.get<AzureRedisDatabase[]>(
-          `${ApiEndpoints.AZURE_DATABASES}/${subscriptionId}/databases`,
-          { params: { accountId: account.id } },
-        )
-
-        if (isStatusSuccessful(status)) {
-          setState((prev) => ({
-            ...prev,
-            loading: false,
-            databases: data,
-          }))
-        }
-      } catch (error) {
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-          error: getApiErrorMessage(error as AxiosError),
-        }))
-      }
-    },
-    [account?.id],
-  )
-
-  const setSelectedDatabases = useCallback(
-    (databases: AzureRedisDatabase[]) => {
-      setState((prev) => ({ ...prev, selectedDatabases: databases }))
-    },
-    [],
-  )
-
-  const addDatabases = useCallback(async (): Promise<boolean> => {
-    if (!account?.id || state.selectedDatabases.length === 0) {
+  const addDatabases = async (): Promise<boolean> => {
+    if (!account?.id || selectedDatabases.length === 0) {
       return false
     }
 
-    setState((prev) => ({ ...prev, loading: true, error: '' }))
+    setDatabasesLoading(true)
+    setDatabasesError('')
 
     const results = await Promise.all(
-      state.selectedDatabases.map(async (database) => {
+      selectedDatabases.map(async (database) => {
         try {
           const { data, status } = await apiService.get<AzureConnectionDetails>(
             ApiEndpoints.AZURE_CONNECTION_DETAILS,
-            {
-              params: {
-                accountId: account.id,
-                databaseId: database.id,
-              },
-            },
+            { params: { accountId: account.id, databaseId: database.id } },
           )
 
           if (isStatusSuccessful(status) && data) {
@@ -175,37 +152,39 @@ export const AzureAutodiscoveryProvider: React.FC<{
       }),
     )
 
-    setState((prev) => ({
-      ...prev,
-      loading: false,
-      addedDatabases: results,
-    }))
+    setDatabasesLoading(false)
+    setAddedDatabases(results)
 
     return results.some((r) => r.success)
-  }, [account?.id, state.selectedDatabases])
-
-  const reset = useCallback(() => {
-    setState(initialState)
-  }, [])
+  }
 
   const value = useMemo<AzureAutodiscoveryContextType>(
     () => ({
-      ...state,
+      subscriptions,
+      selectedSubscription,
+      subscriptionsLoading,
+      subscriptionsError,
       fetchSubscriptions,
       selectSubscription,
+      databases,
+      selectedDatabases,
+      databasesLoading,
+      databasesError,
+      addedDatabases,
       fetchDatabases,
       setSelectedDatabases,
       addDatabases,
-      reset,
     }),
     [
-      state,
-      fetchSubscriptions,
-      selectSubscription,
-      fetchDatabases,
-      setSelectedDatabases,
-      addDatabases,
-      reset,
+      subscriptions,
+      selectedSubscription,
+      subscriptionsLoading,
+      subscriptionsError,
+      databases,
+      selectedDatabases,
+      databasesLoading,
+      databasesError,
+      addedDatabases,
     ],
   )
 

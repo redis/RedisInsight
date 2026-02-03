@@ -15,15 +15,14 @@ const AzureDatabasesPage = () => {
   const history = useHistory()
   const dispatch = useDispatch<AppDispatch>()
   const {
-    loading,
-    error,
+    databasesLoading,
+    databasesError,
     databases,
     selectedSubscription,
     selectedDatabases,
     fetchDatabases,
     setSelectedDatabases,
     addDatabases,
-    reset,
   } = useAzureAutodiscovery()
 
   useEffect(() => {
@@ -34,7 +33,7 @@ const AzureDatabasesPage = () => {
       return
     }
 
-    fetchDatabases(selectedSubscription.subscriptionId)
+    fetchDatabases()
   }, [selectedSubscription])
 
   const handleBack = () => {
@@ -43,7 +42,6 @@ const AzureDatabasesPage = () => {
   }
 
   const handleClose = () => {
-    reset()
     history.push(Pages.home)
   }
 
@@ -60,7 +58,6 @@ const AzureDatabasesPage = () => {
           ),
         ),
       )
-      reset()
       history.push(Pages.home)
     }
   }
@@ -70,8 +67,8 @@ const AzureDatabasesPage = () => {
       databases={databases}
       selectedDatabases={selectedDatabases}
       subscriptionName={selectedSubscription?.displayName || ''}
-      loading={loading}
-      error={error}
+      loading={databasesLoading}
+      error={databasesError}
       onBack={handleBack}
       onClose={handleClose}
       onSubmit={handleSubmit}

@@ -114,6 +114,8 @@ const AzureDatabases = ({
         </DatabaseWrapper>
       </DatabaseContainer>
 
+      <Spacer size="l" />
+
       <Footer>
         <Row justify="end">
           <Row gap="m" grow={false}>

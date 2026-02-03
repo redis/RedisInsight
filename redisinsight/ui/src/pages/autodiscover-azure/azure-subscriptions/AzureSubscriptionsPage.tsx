@@ -10,12 +10,11 @@ import { AzureSubscription } from 'uiSrc/slices/interfaces'
 const AzureSubscriptionsPage = () => {
   const history = useHistory()
   const {
-    loading,
-    error,
+    subscriptionsLoading,
+    subscriptionsError,
     subscriptions,
     fetchSubscriptions,
     selectSubscription,
-    reset,
   } = useAzureAutodiscovery()
 
   useEffect(() => {
@@ -24,12 +23,10 @@ const AzureSubscriptionsPage = () => {
   }, [])
 
   const handleBack = () => {
-    reset()
     history.push(Pages.home)
   }
 
   const handleClose = () => {
-    reset()
     history.push(Pages.home)
   }
 
@@ -41,8 +38,8 @@ const AzureSubscriptionsPage = () => {
   return (
     <AzureSubscriptions
       subscriptions={subscriptions}
-      loading={loading}
-      error={error}
+      loading={subscriptionsLoading}
+      error={subscriptionsError}
       onBack={handleBack}
       onClose={handleClose}
       onSubmit={handleSubmit}
