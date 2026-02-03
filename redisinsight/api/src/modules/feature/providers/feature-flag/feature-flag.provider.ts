@@ -95,6 +95,10 @@ export class FeatureFlagProvider {
       KnownFeatures.DatabasesListV2,
       new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
     );
+    this.strategies.set(
+      KnownFeatures.AzureEntraId,
+      new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
+    );
   }
 
   getStrategy(name: string): FeatureFlagStrategy {

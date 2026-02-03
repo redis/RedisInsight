@@ -98,8 +98,8 @@ const Recommendations = () => {
       gap="m"
       data-test-subj={`${id}-label`}
     >
-      <FlexItem onClick={onRedisStackClick}>
-        {redisStack && (
+      {redisStack && (
+        <FlexItem onClick={onRedisStackClick}>
           <Link
             target="_blank"
             href={EXTERNAL_LINKS.redisStack}
@@ -117,8 +117,8 @@ const Recommendations = () => {
               />
             </RiTooltip>
           </Link>
-        )}
-      </FlexItem>
+        </FlexItem>
+      )}
       <FlexItem>{title}</FlexItem>
     </Row>
   )

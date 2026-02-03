@@ -35,6 +35,10 @@ jest.mock('uiSrc/slices/rdi/pipeline', () => ({
   rdiPipelineSelector: jest.fn().mockReturnValue({
     loading: false,
   }),
+  rdiPipelineActionSelector: jest.fn().mockReturnValue({
+    loading: false,
+    action: null,
+  }),
 }))
 
 jest.mock('formik')

@@ -21,10 +21,9 @@ const renderMessageBar = async (
   if (!opened) {
     return { ...screen }
   }
-  await waitFor(
-    () => expect(screen.queryByTestId('redisui-toast')).toBeInTheDocument(),
-    { timeout: 1000 },
-  )
+  await waitFor(() => expect(screen.queryByRole('alert')).toBeInTheDocument(), {
+    timeout: 1000,
+  })
   return { ...screen }
 }
 
@@ -42,24 +41,24 @@ describe('MessageBar', () => {
   })
 
   it('should display toast with success variant by default', async () => {
-    const { getByTestId, getByText } = await renderMessageBar(
+    const { getByRole, getByText } = await renderMessageBar(
       <p data-testid="default-variant">Default variant test</p>,
     )
 
-    const toast = getByTestId('redisui-toast')
+    const toast = getByRole('alert')
 
     expect(getByText('Default variant test')).toBeInTheDocument()
     expect(toast.closest(TOASTIFY_SUCCESS_CLASS)).toBeInTheDocument()
   })
 
   it('should display toast with attention variant when specified', async () => {
-    const { getByTestId } = await renderMessageBar(
+    const { getByRole } = await renderMessageBar(
       <p data-testid="attention-variant">Attention variant test</p>,
       true,
       riToast.Variant.Attention,
     )
 
-    const toast = getByTestId('redisui-toast')
+    const toast = getByRole('alert')
     expect(toast.closest(TOASTIFY_ATTENTION_CLASS)).toBeInTheDocument()
   })
 
