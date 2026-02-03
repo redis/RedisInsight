@@ -159,4 +159,73 @@ describe('useIndexInfo', () => {
       expect(callCount).toBe(2)
     })
   })
+
+  it('should ignore stale responses when indexName changes rapidly', async () => {
+    const firstIndexResponse = indexInfoApiResponseFactory.build({
+      index_name: 'idx:first',
+      num_docs: '100',
+    })
+    const secondIndexResponse = indexInfoApiResponseFactory.build({
+      index_name: 'idx:second',
+      num_docs: '200',
+    })
+
+    let resolveFirst: () => void
+    const firstRequestPromise = new Promise<void>((resolve) => {
+      resolveFirst = resolve
+    })
+
+    mswServer.use(
+      http.post(
+        getMswURL(getUrl(instanceId, ApiEndpoints.REDISEARCH_INFO)),
+        async ({ request }) => {
+          const body = (await request.json()) as { index: string }
+
+          if (body.index === 'first-index') {
+            // First request is delayed
+            await firstRequestPromise
+            return HttpResponse.json(firstIndexResponse, { status: 200 })
+          }
+          // Second request returns immediately
+          return HttpResponse.json(secondIndexResponse, { status: 200 })
+        },
+      ),
+    )
+
+    const { result, rerender } = renderHook(
+      (initialProps) =>
+        useIndexInfo({
+          indexName: (initialProps as { name: string })?.name ?? '',
+        }),
+      {
+        store: getMockedStore(),
+        initialProps: { name: 'first-index' },
+      },
+    )
+
+    // First fetch starts
+    expect(result.current.loading).toBe(true)
+
+    // Change indexName before first request completes
+    rerender({ name: 'second-index' })
+
+    // Wait for second request to complete
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
+    })
+
+    // Should have data from second request
+    expect(result.current.indexInfo?.numDocs).toBe(200)
+
+    // Now complete the first (stale) request
+    await act(async () => {
+      resolveFirst!()
+      // Give time for the stale response to be processed (and ignored)
+      await new Promise((resolve) => setTimeout(resolve, 50))
+    })
+
+    // Should still have data from second request (stale response ignored)
+    expect(result.current.indexInfo?.numDocs).toBe(200)
+    expect(result.current.loading).toBe(false)
+  })
 })
