@@ -1,7 +1,6 @@
 import React from 'react'
 import { find } from 'lodash'
 import { CloudJobName, CloudJobStep } from 'uiSrc/electron/constants'
-import ExternalLink from 'uiSrc/components/base/external-link'
 import Divider from 'uiSrc/components/divider/Divider'
 import { OAuthProviders } from 'uiSrc/components/oauth/oauth-select-plan/constants'
 import { LoaderLargeIcon } from 'uiSrc/components/base/icons'
@@ -20,6 +19,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { Link } from 'uiSrc/components/base/link/Link'
 
 import styles from './styles.module.scss'
 
@@ -165,9 +165,14 @@ export const INFINITE_MESSAGES: InfiniteMessagesType = {
           <Spacer size="m" />
           <Row justify="between" align="center">
             <FlexItem>
-              <ExternalLink href={MANAGE_DB_LINK} iconSize="S" variant="inline">
+              <Link
+                external
+                target="_blank"
+                href={MANAGE_DB_LINK}
+                variant="inline"
+              >
                 Manage DB
-              </ExternalLink>
+              </Link>
             </FlexItem>
             <FlexItem>
               <PrimaryButton
@@ -202,10 +207,10 @@ export const INFINITE_MESSAGES: InfiniteMessagesType = {
         setting restricting database connection management.
         <Spacer size="m" />
         Log in to{' '}
-        <ExternalLink
+        <Link
+          external
           target="_blank"
           variant="inline"
-          iconSize="XS"
           tabIndex={-1}
           href={getUtmExternalLink(EXTERNAL_LINKS.cloudConsole, {
             medium: UTM_MEDIUMS.Main,
@@ -213,7 +218,7 @@ export const INFINITE_MESSAGES: InfiniteMessagesType = {
           })}
         >
           Redis Cloud
-        </ExternalLink>{' '}
+        </Link>{' '}
         to check your database.
       </>
     ),

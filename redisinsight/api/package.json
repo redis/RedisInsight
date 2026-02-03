@@ -56,6 +56,7 @@
     "**/multer": "^2.0.2"
   },
   "dependencies": {
+    "@azure/msal-node": "^5.0.2",
     "@nestjs/common": "^11.0.20",
     "@nestjs/core": "^11.0.20",
     "@nestjs/event-emitter": "^3.0.1",
@@ -67,6 +68,7 @@
     "@nestjs/websockets": "^11.0.20",
     "@okta/okta-auth-js": "^7.12.1",
     "@segment/analytics-node": "^2.1.3",
+    "@supercharge/promise-pool": "^3.2.0",
     "@types/json-bigint": "^1.0.4",
     "adm-zip": "^0.5.9",
     "axios": "^1.12.2",
@@ -86,7 +88,7 @@
     "json-bigint": "^1.0.0",
     "jsonwebtoken": "^9.0.2",
     "keytar": "^7.9.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.23",
     "nest-winston": "^1.10.2",
     "nestjs-form-data": "~1.9.93",
     "node-version-compare": "^1.0.3",

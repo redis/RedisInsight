@@ -1,16 +1,6 @@
-import React, { ComponentProps, isValidElement, ReactNode } from 'react'
-import { Section, SectionProps } from '@redis-ui/components'
-
-export type RiAccordionProps = Omit<ComponentProps<typeof Section>, 'label'> & {
-  label: ReactNode
-  actions?: ReactNode
-  collapsible?: SectionProps['collapsible']
-  actionButtonText?: SectionProps['actionButtonText']
-  collapsedInfo?: SectionProps['collapsedInfo']
-  content?: SectionProps['content']
-  children?: SectionProps['content']
-  onAction?: SectionProps['onAction']
-}
+import React, { isValidElement } from 'react'
+import { Section } from '@redis-ui/components'
+import { RiAccordionActionsProps, RiAccordionProps } from './RiAccordion.types'
 
 const RiAccordionLabel = ({ label }: Pick<RiAccordionProps, 'label'>) => {
   if (!label) {
@@ -23,11 +13,6 @@ const RiAccordionLabel = ({ label }: Pick<RiAccordionProps, 'label'>) => {
   return isValidElement(label) ? label : <>{label}</>
 }
 
-type RiAccordionActionsProps = Pick<
-  RiAccordionProps,
-  'actionButtonText' | 'actions' | 'onAction'
->
-
 const RiAccordionActions = ({
   actionButtonText,
   actions,
@@ -38,7 +23,7 @@ const RiAccordionActions = ({
       {actionButtonText}
     </Section.Header.ActionButton>
     {actions}
-    <Section.Header.CollapseIndicator />
+    <Section.Header.CollapseButton />
   </Section.Header.Group>
 )
 
@@ -48,7 +33,6 @@ export const RiAccordion = ({
   label,
   onAction,
   actionButtonText,
-  collapsedInfo,
   children,
   actions,
   collapsible = true,
@@ -61,7 +45,6 @@ export const RiAccordion = ({
     collapsible={collapsible}
   >
     <Section.Header.Compose
-      collapsedInfo={collapsedInfo}
       id={`ri-accordion-${id}`}
       data-testid={`ri-accordion-header-${id}`}
     >
@@ -76,9 +59,8 @@ export const RiAccordion = ({
         data-testid={`ri-accordion-actions-${id}`}
       />
     </Section.Header.Compose>
-    <Section.Body
-      content={children ?? content}
-      data-testid={`ri-accordion-body-${id}`}
-    />
+    <Section.Body data-testid={`ri-accordion-body-${id}`}>
+      {children ?? content}
+    </Section.Body>
   </Section.Compose>
 )

@@ -1,4 +1,4 @@
-import { PresetDataType } from 'uiSrc/pages/vector-search/create-index/types'
+import { PresetDataType } from 'uiSrc/pages/vector-search-deprecated/create-index/types'
 import { VectorSearchPage } from '../../pageObjects/pages/vector-search/vector-search-page'
 import { test, expect } from '../../fixtures/test'
 import {

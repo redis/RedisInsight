@@ -4,6 +4,7 @@ import { wrapErrorMessageSensitiveData } from 'desktopSrc/utils'
 import { configMain as config } from 'desktopSrc/config'
 import { createAuthStrategy } from 'desktopSrc/lib/auth/auth.factory'
 import { AuthStrategy } from 'desktopSrc/lib/auth/auth.interface'
+import { initAzureAuthServiceProvider } from 'desktopSrc/lib/azure'
 import { AbstractWindowAuthStrategy } from 'apiSrc/modules/auth/window-auth/strategies/abstract.window.auth.strategy'
 // eslint-disable-next-line import/extensions -- api/dist doesn't exist in CI
 import { WindowAuthModule } from '../../../../api/dist/src/modules/auth/window-auth/window-auth.module'
@@ -60,6 +61,9 @@ export const launchApiServer = async () => {
       // Pass the service instance to the auth strategy
       authStrategy = createAuthStrategy(apiApp)
       await authStrategy.initialize()
+
+      initAzureAuthServiceProvider(apiApp)
+
       log.info('[Server] Production server initialized')
     } else {
       authStrategy = createAuthStrategy()

@@ -11,6 +11,6 @@ export const InfoIcon = styled(RiIcon).attrs({
   size: 'S',
   color: 'custom',
 })`
-  color: ${({ theme }) => theme.color.orange500};
+  color: ${({ theme }) => theme.semantic.color.icon.attention500};
   margin-left: -1px;
 `

@@ -65,6 +65,9 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.databasesListV2]: {
         flag: false,
       },
+      [FeatureFlags.azureEntraId]: {
+        flag: false,
+      },
     },
   },
 }

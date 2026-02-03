@@ -48,7 +48,7 @@
     "@elastic/datemath": "^5.0.3",
     "@elastic/eui": "34.6.0",
     "classnames": "^2.3.1",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "redisinsight-plugin-sdk": "^1.0.0"

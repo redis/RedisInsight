@@ -2,7 +2,7 @@ import React from 'react'
 import type { Parameters, Preview } from '@storybook/react-vite'
 import { withThemeFromJSXProvider } from '@storybook/addon-themes'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
-import { CommonStyles, themeDark, themeLight } from '@redis-ui/styles'
+import { CommonStyles, themesDefault, themesRebrand } from '@redis-ui/styles'
 import 'modern-normalize/modern-normalize.css'
 import '@redis-ui/styles/normalized-styles.css'
 import '@redis-ui/styles/fonts.css'
@@ -68,8 +68,10 @@ const preview: Preview = {
     ),
     withThemeFromJSXProvider({
       themes: {
-        light: themeLight,
-        dark: themeDark,
+        light: themesDefault.light,
+        dark: themesDefault.dark,
+        'light-rebrand': themesRebrand.light,
+        'dark-rebrand': themesRebrand.dark,
       },
       defaultTheme: 'light',
       Provider: StyledThemeProvider,

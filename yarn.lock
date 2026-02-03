@@ -2556,10 +2556,10 @@
     "@react-hook/latest" "^1.0.2"
     "@react-hook/passive-layout-effect" "^1.2.0"
 
-"@redis-ui/components@^39.18.0":
-  version "39.18.0"
-  resolved "https://registry.yarnpkg.com/@redis-ui/components/-/components-39.18.0.tgz#b5fb63e4fbcf9e25d9c56eb7bcd3232b539a37c4"
-  integrity sha512-o+I8nN+S4C++924w/hy6q4RyfEwvWqb7c+6vr1QxxZ9+aZcBMatyw/QW8yKnGHhP5IOB4Dm4SHIVYisTXbaSuA==
+"@redis-ui/components@^42.0.0":
+  version "42.0.0"
+  resolved "https://registry.yarnpkg.com/@redis-ui/components/-/components-42.0.0.tgz#3a0015ae8c11ee1ac729bff2b6e5f13192deff03"
+  integrity sha512-uJDhBpu+ZIQADSwA3EHrMjgsqO3ugoqU94TXqNz19b9KVZ7+zuePFTVqyLkQWIFpZ7sIDEsdVyuxgeILOC5qUw==
   dependencies:
     "@radix-ui/react-checkbox" "^1.0.3"
     "@radix-ui/react-collapsible" "^1.0.3"
@@ -2579,31 +2579,30 @@
     react-day-picker "^8.6.0"
     react-hotkeys-hook "^4.6.1"
     react-loading-skeleton "^3.3.1"
-    react-toastify "^9.1.3"
+    react-toastify "10.0.4"
     type-fest "^3.13.1"
     virtua "^0.36.3"
 
-"@redis-ui/icons@^6.1.1":
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/@redis-ui/icons/-/icons-6.1.1.tgz#100dfb7fdb4fa810ab85d9ddbd6ed75ed755f1fe"
-  integrity sha512-KzxU7cCcArOfE3cGX59Dd3FDDkQAp1QLupcj9nvXj+zOoPkaCdGELeAFL5l8glo7eY/6pyQl5VTR4XQ3d12mjQ==
+"@redis-ui/icons@^6.6.0", "@redis-ui/icons@^6.7.0":
+  version "6.7.0"
+  resolved "https://registry.yarnpkg.com/@redis-ui/icons/-/icons-6.7.0.tgz#7f53cb6ca2aeeb569bc355f8a87420fcdf3879c4"
+  integrity sha512-XcEV6oVk/ZntgdNyqeuMAs5cU1jqFZzWZWMpfCLU48boSEQM3/Ox1qHkkSFm2m2ObiQSI90z61vAhkZkKReweA==
 
-"@redis-ui/styles@^12.8.0", "@redis-ui/styles@^12.9.0":
-  version "12.9.0"
-  resolved "https://registry.yarnpkg.com/@redis-ui/styles/-/styles-12.9.0.tgz#41dc32db88079e79e61d99676f3c1116b4d6fdf9"
-  integrity sha512-tHiRisLBJNQBAEuxyTIIs2HLSVI3kB53AZp+L22T7aJCBqJ/P24jwfsSI4znUzH4aN3yEyXBwaDclPXuq986ew==
+"@redis-ui/styles@^14.6.0":
+  version "14.6.0"
+  resolved "https://registry.yarnpkg.com/@redis-ui/styles/-/styles-14.6.0.tgz#54fb4b7e12d63a0a950d0f38ceecec89fc0c432f"
+  integrity sha512-SMByS2sLVSWqUwQrIvVv8dMdpGsW8k8ZUHbk1c/J9906Mzkc3F2sBDCwNdOVsr4qSuzcEsnfqvOs4ITWfIXB7g==
   dependencies:
     color-alpha "^2.0.0"
     polished "^4.3.1"
 
-"@redis-ui/table@^2.18.0":
-  version "2.18.0"
-  resolved "https://registry.yarnpkg.com/@redis-ui/table/-/table-2.18.0.tgz#d8f22a3902a72ff7e140a2e3b77d6941bd6b6bc2"
-  integrity sha512-LkU0oco+uOfGCHi6n3yqwTgQP4i0xPbeF5k5heDRynmX55P9pOtNR6qxzSBu/gV5IQGOGVzfjcgHY/oFdSHqvA==
+"@redis-ui/table@^3.4.1":
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/@redis-ui/table/-/table-3.4.1.tgz#5c881bb9f0e2ed26d78039efaf0dbee2b294e066"
+  integrity sha512-sDF4qriLdtEotnjzUPv0ncOin9bsaPp6U9X0QvRdXuM207TITvLP8TlK3zSUm7N0aUH6ATJTxr5wczuHYATmqw==
   dependencies:
-    "@redis-ui/components" "^39.18.0"
-    "@redis-ui/icons" "^6.1.1"
-    "@redis-ui/styles" "^12.8.0"
+    "@redis-ui/components" "^42.0.0"
+    "@redis-ui/icons" "^6.6.0"
     "@tanstack/react-table" "^8.9.8"
     type-fest "^3.13.1"
 
@@ -5641,6 +5640,11 @@ clsx@^1.0.4, clsx@^1.1.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.2.1.tgz#0ddc4a20a549b59c93a4116bb26f5294ca17dc12"
   integrity sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==
+
+clsx@^2.1.0:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/clsx/-/clsx-2.1.1.tgz#eed397c9fd8bd882bfb18deab7102049a2f32999"
+  integrity sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==
 
 co@^4.6.0:
   version "4.6.0"
@@ -10401,9 +10405,9 @@ locate-path@^7.2.0:
     p-locate "^6.0.0"
 
 lodash-es@^4.17.21:
-  version "4.17.21"
-  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
-  integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
+  version "4.17.23"
+  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.23.tgz#58c4360fd1b5d33afc6c0bbd3d1149349b1138e0"
+  integrity sha512-kVI48u3PZr38HdYz98UmfPnXl2DXrpdctLrFLCd3kOx1xUkOmpFPx7gCWWM5MPkL/fD8zb+Ph0QzjGFs4+hHWg==
 
 lodash.debounce@^4.0.8:
   version "4.0.8"
@@ -10450,10 +10454,10 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha512-xfBaXQd9ryd9dlSDvnvI0lvxfLJlYAZzXomUYzLKtUeOQvOP5piqAWuGtrhWeqaXK9hhoM/iyJc5AV+XfsX3HQ==
 
-lodash@^4.17.15, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.5:
-  version "4.17.21"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
-  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
+lodash@^4.17.15, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.23, lodash@^4.17.5:
+  version "4.17.23"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.23.tgz#f113b0378386103be4f6893388c73d0bde7f2c5a"
+  integrity sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==
 
 log-symbols@^4.0.0, log-symbols@^4.1.0:
   version "4.1.0"
@@ -12932,12 +12936,12 @@ react-style-singleton@^2.2.1, react-style-singleton@^2.2.2, react-style-singleto
     get-nonce "^1.0.0"
     tslib "^2.0.0"
 
-react-toastify@^9.1.3:
-  version "9.1.3"
-  resolved "https://registry.yarnpkg.com/react-toastify/-/react-toastify-9.1.3.tgz#1e798d260d606f50e0fab5ee31daaae1d628c5ff"
-  integrity sha512-fPfb8ghtn/XMxw3LkxQBk3IyagNpF/LIKjOBflbexr2AWxAH1MJgvnESwEwBn9liLFXgTKWgBSdZpw9m4OTHTg==
+react-toastify@10.0.4:
+  version "10.0.4"
+  resolved "https://registry.yarnpkg.com/react-toastify/-/react-toastify-10.0.4.tgz#6ecdbbf923a07fc45850e69b0566efc7bf733283"
+  integrity sha512-etR3RgueY8pe88SA67wLm8rJmL1h+CLqUGHuAoNsseW35oTGJEri6eBTyaXnFKNQ80v/eO10hBYLgz036XRGgA==
   dependencies:
-    clsx "^1.1.1"
+    clsx "^2.1.0"
 
 react-virtualized-auto-sizer@^1.0.2, react-virtualized-auto-sizer@^1.0.6:
   version "1.0.15"
