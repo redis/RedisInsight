@@ -7,14 +7,10 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { AzureAuthType } from 'src/modules/azure/constants';
 
 export enum CloudProvider {
   Azure = 'azure',
-}
-
-export enum AzureAuthType {
-  EntraId = 'entra-id',
-  AccessKey = 'access-key',
 }
 
 export class AzureProviderDetails {
