@@ -17,6 +17,7 @@ import {
   mockClientCertificateService,
   mockClusterDatabaseWithTlsAuth,
   mockClusterRedisClient,
+  mockCredentialProvider,
   mockDatabase,
   mockDatabaseInfoProvider,
   mockDatabaseWithTlsAuth,
@@ -35,9 +36,11 @@ import { ConnectionType } from 'src/modules/database/entities/database.entity';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { NotFoundException } from '@nestjs/common';
 import { RedisClientFactory } from 'src/modules/redis/redis.client.factory';
+import { CredentialStrategyProvider } from 'src/modules/database/credentials';
 
 describe('DatabaseFactory', () => {
   let service: DatabaseFactory;
+  let credentialProvider;
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -61,10 +64,15 @@ describe('DatabaseFactory', () => {
           provide: ClientCertificateService,
           useFactory: mockClientCertificateService,
         },
+        {
+          provide: CredentialStrategyProvider,
+          useFactory: mockCredentialProvider,
+        },
       ],
     }).compile();
 
     service = await module.get(DatabaseFactory);
+    credentialProvider = await module.get(CredentialStrategyProvider);
   });
 
   describe('createDatabaseModel', () => {
@@ -127,6 +135,43 @@ describe('DatabaseFactory', () => {
         forceStandalone: true,
         connectionType: ConnectionType.STANDALONE,
       });
+    });
+
+    it('should resolve credentials before creating standalone client', async () => {
+      mockRedisSentinelUtil.isSentinel.mockResolvedValue(false);
+      mockRedisClusterUtil.isCluster.mockResolvedValue(false);
+
+      await service.createDatabaseModel(mockSessionMetadata, mockDatabase);
+
+      expect(credentialProvider.resolve).toHaveBeenCalledWith(mockDatabase);
+    });
+
+    it('should resolve credentials before creating cluster client', async () => {
+      mockRedisSentinelUtil.isSentinel.mockResolvedValue(false);
+      mockRedisClusterUtil.isCluster.mockResolvedValue(true);
+
+      await service.createDatabaseModel(
+        mockSessionMetadata,
+        mockClusterDatabaseWithTlsAuth,
+      );
+
+      expect(credentialProvider.resolve).toHaveBeenCalledWith(
+        mockClusterDatabaseWithTlsAuth,
+      );
+    });
+
+    it('should resolve credentials before creating sentinel client', async () => {
+      mockRedisSentinelUtil.isSentinel.mockResolvedValue(true);
+      mockRedisClusterUtil.isCluster.mockResolvedValue(false);
+
+      await service.createDatabaseModel(
+        mockSessionMetadata,
+        mockSentinelDatabaseWithTlsAuth,
+      );
+
+      expect(credentialProvider.resolve).toHaveBeenCalledWith(
+        mockSentinelDatabaseWithTlsAuth,
+      );
     });
   });
 
