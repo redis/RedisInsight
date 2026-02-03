@@ -113,9 +113,9 @@ describe('AzureEntraIdCredentialStrategy', () => {
 
       expect(result.username).toBe(tokenResult.account.localAccountId);
       expect(result.password).toBe(tokenResult.token);
-      expect(mockAzureAuthService.getRedisTokenByAccountId).toHaveBeenCalledWith(
-        database.providerDetails?.azureAccountId,
-      );
+      expect(
+        mockAzureAuthService.getRedisTokenByAccountId,
+      ).toHaveBeenCalledWith(database.providerDetails?.azureAccountId);
     });
 
     it('should preserve other database properties', async () => {
@@ -134,4 +134,3 @@ describe('AzureEntraIdCredentialStrategy', () => {
     });
   });
 });
-
