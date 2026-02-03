@@ -1,8 +1,8 @@
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import {
-  indexInfoApiResponseFactory,
-  indexInfoApiAttributeFactory,
-} from 'uiSrc/mocks/factories/vector-search/indexInfoApi.factory'
+  indexInfoFactory,
+  indexInfoAttributeFactory,
+} from 'uiSrc/mocks/factories/redisearch/IndexInfo.factory'
 
 import { normalizeFieldType, transformIndexInfo } from './useIndexInfo.utils'
 
@@ -22,7 +22,7 @@ describe('useIndexInfo.utils', () => {
 
   describe('transformIndexInfo', () => {
     it('should transform API response to frontend model', () => {
-      const apiResponse = indexInfoApiResponseFactory.build()
+      const apiResponse = indexInfoFactory.build()
 
       const result = transformIndexInfo(apiResponse)
 
@@ -60,7 +60,7 @@ describe('useIndexInfo.utils', () => {
     })
 
     it('should handle missing index options', () => {
-      const apiResponse = indexInfoApiResponseFactory.build({
+      const apiResponse = indexInfoFactory.build({
         index_options: undefined,
       })
 
@@ -70,7 +70,7 @@ describe('useIndexInfo.utils', () => {
     })
 
     it('should handle empty attributes array', () => {
-      const apiResponse = indexInfoApiResponseFactory.build({
+      const apiResponse = indexInfoFactory.build({
         attributes: [],
       })
 
@@ -80,9 +80,9 @@ describe('useIndexInfo.utils', () => {
     })
 
     it('should handle attributes without weight', () => {
-      const apiResponse = indexInfoApiResponseFactory.build({
+      const apiResponse = indexInfoFactory.build({
         attributes: [
-          indexInfoApiAttributeFactory.build(
+          indexInfoAttributeFactory.build(
             { type: 'TAG' },
             { transient: { includeWeight: false } },
           ),
@@ -95,11 +95,11 @@ describe('useIndexInfo.utils', () => {
     })
 
     it('should normalize all field types to lowercase', () => {
-      const apiResponse = indexInfoApiResponseFactory.build({
+      const apiResponse = indexInfoFactory.build({
         attributes: [
-          indexInfoApiAttributeFactory.build({ type: 'TEXT' }),
-          indexInfoApiAttributeFactory.build({ type: 'TAG' }),
-          indexInfoApiAttributeFactory.build({ type: 'NUMERIC' }),
+          indexInfoAttributeFactory.build({ type: 'TEXT' }),
+          indexInfoAttributeFactory.build({ type: 'TAG' }),
+          indexInfoAttributeFactory.build({ type: 'NUMERIC' }),
         ],
       })
 

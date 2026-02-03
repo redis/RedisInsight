@@ -10,7 +10,7 @@ import {
   initialStateDefault,
 } from 'uiSrc/utils/test-utils'
 import { getUrl } from 'uiSrc/utils'
-import { indexInfoApiResponseFactory } from 'uiSrc/mocks/factories/vector-search/indexInfoApi.factory'
+import { indexInfoFactory } from 'uiSrc/mocks/factories/redisearch/IndexInfo.factory'
 
 import { useIndexInfo } from './useIndexInfo'
 
@@ -67,7 +67,7 @@ describe('useIndexInfo', () => {
   })
 
   it('should fetch index info successfully', async () => {
-    const mockApiResponse = indexInfoApiResponseFactory.build()
+    const mockApiResponse = indexInfoFactory.build()
 
     mswServer.use(
       http.post(
@@ -128,7 +128,7 @@ describe('useIndexInfo', () => {
 
   it('should refetch when refetch is called', async () => {
     let callCount = 0
-    const mockApiResponse = indexInfoApiResponseFactory.build()
+    const mockApiResponse = indexInfoFactory.build()
 
     mswServer.use(
       http.post(
@@ -161,11 +161,11 @@ describe('useIndexInfo', () => {
   })
 
   it('should ignore stale responses when indexName changes rapidly', async () => {
-    const firstIndexResponse = indexInfoApiResponseFactory.build({
+    const firstIndexResponse = indexInfoFactory.build({
       index_name: 'idx:first',
       num_docs: '100',
     })
-    const secondIndexResponse = indexInfoApiResponseFactory.build({
+    const secondIndexResponse = indexInfoFactory.build({
       index_name: 'idx:second',
       num_docs: '200',
     })
@@ -230,7 +230,7 @@ describe('useIndexInfo', () => {
   })
 
   it('should reset state when indexName changes to empty string', async () => {
-    const mockApiResponse = indexInfoApiResponseFactory.build()
+    const mockApiResponse = indexInfoFactory.build()
 
     mswServer.use(
       http.post(
