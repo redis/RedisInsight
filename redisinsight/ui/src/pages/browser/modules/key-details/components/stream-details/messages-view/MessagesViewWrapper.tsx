@@ -34,7 +34,7 @@ import MessagesView from './MessagesView'
 import MessageClaimPopover from './MessageClaimPopover'
 import MessageAckPopover from './MessageAckPopover'
 
-import styles from './MessagesView/styles.module.scss'
+import * as S from './MessagesViewWrapper.styles'
 
 const actionsWidth = 150
 const minColumnWidth = 195
@@ -119,7 +119,7 @@ const MessagesViewWrapper = (props: Props) => {
       label: 'Entry ID',
       absoluteWidth: minColumnWidth,
       minWidth: minColumnWidth,
-      className: styles.cell,
+      className: S.cellClassName,
       headerClassName: 'streamItemHeader',
       render: function Id(_name: string, { id }: PendingEntryDto) {
         const timestamp = id?.split('-')?.[0]
@@ -174,7 +174,7 @@ const MessagesViewWrapper = (props: Props) => {
       label: 'Times Message Delivered',
       minWidth: 106,
       truncateText: true,
-      headerClassName: cx('streamItemHeader', styles.deliveredHeaderCell),
+      headerClassName: cx('streamItemHeader', S.deliveredHeaderCellClassName),
       headerCellClassName: 'truncateText',
       render: (cellData: number) => <Text color="secondary">{cellData}</Text>,
     },
@@ -182,7 +182,7 @@ const MessagesViewWrapper = (props: Props) => {
       id: 'actions',
       label: '',
       headerClassName: 'streamItemHeader',
-      className: styles.actionCell,
+      className: S.actionCellClassName,
       minWidth: actionsWidth,
       absoluteWidth: actionsWidth,
       render: function Actions(_act: any, { id }: PendingEntryDto) {
@@ -210,7 +210,7 @@ const MessagesViewWrapper = (props: Props) => {
   ]
 
   return (
-    <>
+    <S.ClassStyles>
       <MessagesView
         data={loadedMessages}
         total={pending}
@@ -222,7 +222,7 @@ const MessagesViewWrapper = (props: Props) => {
           isTruncatedConsumerName ? TEXT_CONSUMER_NAME_TOO_LONG : undefined
         }
       />
-    </>
+    </S.ClassStyles>
   )
 }
 

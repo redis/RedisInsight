@@ -19,7 +19,7 @@ import { PlayFilledIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
+import * as S from './LoadSampleData.styles'
 
 export interface Props {
   anchorClassName?: string
@@ -48,57 +48,58 @@ const LoadSampleData = (props: Props) => {
   }
 
   return (
-    <RiPopover
-      ownFocus
-      id="load-sample-data-popover"
-      anchorPosition="upCenter"
-      isOpen={isConfirmationOpen}
-      closePopover={() => setIsConfirmationOpen(false)}
-      panelClassName={cx('popoverLikeTooltip', styles.popover)}
-      panelPaddingSize="none"
-      anchorClassName={cx(styles.buttonWrapper, anchorClassName)}
-      button={
-        <SecondaryButton
-          filled
-          onClick={() => setIsConfirmationOpen(true)}
-          className={styles.loadDataBtn}
-          loading={loading}
-          disabled={loading}
-          data-testid="load-sample-data-btn"
-        >
-          Load sample data
-        </SecondaryButton>
-      }
-    >
-      <Row gap="m" responsive={false} style={{ padding: 15 }}>
-        <FlexItem>
-          <RiIcon size="m" type="ToastDangerIcon" color="attention500" />
-        </FlexItem>
-        <FlexItem>
-          <Text variant="semiBold">Execute commands in bulk</Text>
-          <Spacer size="m" />
-          <Text size="s">
-            All commands from the file will be automatically executed against
-            your database. Avoid executing them in production databases.
-          </Text>
-          <Spacer size="l" />
-          <Row justify="end">
-            <FlexItem>
-              <PrimaryButton
-                size="s"
-                icon={PlayFilledIcon}
-                iconSide="right"
-                color="secondary"
-                onClick={handleSampleData}
-                data-testid="load-sample-data-btn-confirm"
-              >
-                Execute
-              </PrimaryButton>
-            </FlexItem>
-          </Row>
-        </FlexItem>
-      </Row>
-    </RiPopover>
+    <S.PopoverStyles>
+      <RiPopover
+        ownFocus
+        id="load-sample-data-popover"
+        anchorPosition="upCenter"
+        isOpen={isConfirmationOpen}
+        closePopover={() => setIsConfirmationOpen(false)}
+        panelClassName={cx('popoverLikeTooltip', S.popoverClassName)}
+        panelPaddingSize="none"
+        anchorClassName={anchorClassName}
+        button={
+          <SecondaryButton
+            filled
+            onClick={() => setIsConfirmationOpen(true)}
+            loading={loading}
+            disabled={loading}
+            data-testid="load-sample-data-btn"
+          >
+            Load sample data
+          </SecondaryButton>
+        }
+      >
+        <Row gap="m" responsive={false} style={{ padding: 15 }}>
+          <FlexItem>
+            <RiIcon size="m" type="ToastDangerIcon" color="attention500" />
+          </FlexItem>
+          <FlexItem>
+            <Text variant="semiBold">Execute commands in bulk</Text>
+            <Spacer size="m" />
+            <Text size="s">
+              All commands from the file will be automatically executed against
+              your database. Avoid executing them in production databases.
+            </Text>
+            <Spacer size="l" />
+            <Row justify="end">
+              <FlexItem>
+                <PrimaryButton
+                  size="s"
+                  icon={PlayFilledIcon}
+                  iconSide="right"
+                  color="secondary"
+                  onClick={handleSampleData}
+                  data-testid="load-sample-data-btn-confirm"
+                >
+                  Execute
+                </PrimaryButton>
+              </FlexItem>
+            </Row>
+          </FlexItem>
+        </Row>
+      </RiPopover>
+    </S.PopoverStyles>
   )
 }
 

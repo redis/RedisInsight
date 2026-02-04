@@ -15,7 +15,7 @@ import { TextArea } from 'uiSrc/components/base/inputs'
 import { isValidJSON } from '../../utils'
 import { JSONErrors } from '../../constants'
 
-import styles from '../../styles.module.scss'
+import * as S from '../../Rejson.styles'
 import ConfirmOverwrite from '../add-item/ConfirmOverwrite'
 
 export interface Props {
@@ -61,8 +61,8 @@ const EditEntireItemAction = (props: Props) => {
   }
 
   return (
-    <div className={styles.row}>
-      <div className={styles.fullWidthContainer}>
+    <S.Row>
+      <S.FullWidthContainer>
         <OutsideClickDetector onOutsideClick={() => onCancel?.()}>
           <div>
             <WindowEvent event="keydown" handler={(e) => handleOnEsc(e)} />
@@ -76,7 +76,7 @@ const EditEntireItemAction = (props: Props) => {
                 <FlexItem grow>
                   <TextArea
                     valid={!error}
-                    className={styles.fullWidthTextArea}
+                    className={S.fullWidthTextAreaClassName}
                     value={value}
                     placeholder="Enter JSON value"
                     onChange={setValue}
@@ -88,11 +88,11 @@ const EditEntireItemAction = (props: Props) => {
                   onCancel={() => setIsConfirmationVisible(false)}
                   onConfirm={confirmApply}
                 >
-                  <div className={cx(styles.controls, styles.controlsBottom)}>
+                  <S.ControlsBottom>
                     <IconButton
                       icon={CancelSlimIcon}
                       aria-label="Cancel add"
-                      className={styles.declineBtn}
+                      className="rejson-decline-btn"
                       onClick={onCancel}
                       data-testid="cancel-edit-btn"
                     />
@@ -101,19 +101,14 @@ const EditEntireItemAction = (props: Props) => {
                       color="primary"
                       type="submit"
                       aria-label="Apply"
-                      className={styles.applyBtn}
+                      className="rejson-apply-btn"
                       data-testid="apply-edit-btn"
                     />
-                  </div>
+                  </S.ControlsBottom>
                 </ConfirmOverwrite>
               </form>
               {error && (
-                <div
-                  className={cx(
-                    styles.errorMessage,
-                    styles.errorMessageForTextArea,
-                  )}
-                >
+                <S.ErrorMessage>
                   <FieldMessage
                     scrollViewOnAppear
                     icon="ToastDangerIcon"
@@ -121,13 +116,13 @@ const EditEntireItemAction = (props: Props) => {
                   >
                     {error}
                   </FieldMessage>
-                </div>
+                </S.ErrorMessage>
               )}
             </FocusTrap>
           </div>
         </OutsideClickDetector>
-      </div>
-    </div>
+      </S.FullWidthContainer>
+    </S.Row>
   )
 }
 

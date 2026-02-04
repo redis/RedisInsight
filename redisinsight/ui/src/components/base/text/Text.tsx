@@ -1,6 +1,7 @@
 import React from 'react'
 import cn from 'classnames'
-import { mapSize, StyledText, TextProps } from './text.styles'
+import * as S from './text.styles'
+import { TextProps } from './text.types'
 
 export const Text = ({
   className,
@@ -10,12 +11,12 @@ export const Text = ({
   ...rest
 }: TextProps) => {
   return (
-    <StyledText
+    <S.StyledText
       {...rest}
       className={cn(className, 'RI-text')}
       $color={color}
       $align={textAlign}
-      size={mapSize(size)}
+      size={S.mapSize(size)}
     />
   )
 }

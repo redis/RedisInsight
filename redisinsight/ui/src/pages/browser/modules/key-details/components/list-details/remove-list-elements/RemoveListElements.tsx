@@ -50,9 +50,9 @@ import {
   TAIL_DESTINATION,
 } from '../add-list-elements/AddListElements'
 
-import styles from './styles.module.scss'
 import { Panel } from 'uiSrc/components/panel'
 import { EntryContent } from 'uiSrc/pages/browser/modules/key-details/components/common/AddKeysContainer.styled'
+import * as S from './RemoveListElements.styles'
 
 export interface Props {
   closePanel: (isCancelled?: boolean) => void
@@ -172,7 +172,6 @@ const RemoveListElements = (props: Props) => {
       anchorPosition="upCenter"
       isOpen={isPopoverOpen}
       closePopover={closePopover}
-      panelClassName={styles.panelCancelBtn}
       panelPaddingSize="l"
       button={
         <PrimaryButton
@@ -184,7 +183,7 @@ const RemoveListElements = (props: Props) => {
         </PrimaryButton>
       }
     >
-      <div className={styles.popover}>
+      <S.Popover>
         <Text size="m" component="div">
           <h4 style={{ marginTop: 0 }}>
             <b>{count}</b> Element(s)
@@ -194,7 +193,7 @@ const RemoveListElements = (props: Props) => {
             <b>{formatNameShort(bufferToString(selectedKey))}</b>
           </Text>
           {(!length || length <= +count) && (
-            <div className={styles.appendInfo}>
+            <S.AppendInfo>
               <RiIcon
                 type="ToastDangerIcon"
                 style={{ marginRight: '1rem', marginTop: '4px' }}
@@ -202,7 +201,7 @@ const RemoveListElements = (props: Props) => {
               <Text size="s">
                 If you remove all Elements, the whole Key will be deleted.
               </Text>
-            </div>
+            </S.AppendInfo>
           )}
         </Text>
         <Spacer />
@@ -216,7 +215,7 @@ const RemoveListElements = (props: Props) => {
             Remove
           </DestructiveButton>
         </Row>
-      </div>
+      </S.Popover>
     </RiPopover>
   )
 
@@ -226,12 +225,7 @@ const RemoveListElements = (props: Props) => {
       position="left"
       content={HelpTexts.REMOVING_MULTIPLE_ELEMENTS_NOT_SUPPORT}
     >
-      <RiIcon
-        className={styles.infoIcon}
-        type="InfoIcon"
-        style={{ cursor: 'pointer' }}
-        data-testid="info-tooltip-icon"
-      />
+      <S.InfoIcon type="InfoIcon" data-testid="info-tooltip-icon" />
     </RiTooltip>
   )
 
@@ -239,7 +233,7 @@ const RemoveListElements = (props: Props) => {
     <Col gap="m">
       <EntryContent gap="m">
         <FlexItem grow>
-          <Row align="start" gap="m" className={styles.formFieldsRow}>
+          <Row align="start" gap="m">
             <FlexItem style={{ minWidth: '220px' }}>
               <FormField>
                 <RiSelect

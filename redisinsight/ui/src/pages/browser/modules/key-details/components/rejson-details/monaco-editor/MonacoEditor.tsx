@@ -17,7 +17,7 @@ import { Spacer } from 'uiSrc/components/base/layout'
 import { BaseProps } from '../interfaces'
 import { useChangeEditorType } from '../../change-editor-type-button'
 
-import styles from '../styles.module.scss'
+import * as S from '../Rejson.styles'
 
 const ROOT_PATH = '$'
 
@@ -51,7 +51,7 @@ const MonacoEditor = (props: BaseProps) => {
 
   return (
     <div
-      className={styles.monacoEditorJsonData}
+      className={S.monacoEditorJsonDataClassName}
       id="monaco-editor-json-data"
       data-testid="monaco-editor-json-data"
     >
@@ -61,12 +61,12 @@ const MonacoEditor = (props: BaseProps) => {
         isEditable
         onChange={setValue}
         data-testid="json-data-editor"
-        wrapperClassName={styles.editor}
-        editorWrapperClassName={styles.editorWrapper}
+        wrapperClassName={S.editorClassName}
+        editorWrapperClassName={S.editorWrapperClassName}
         onEditorDidMount={onEditorDidMount}
       />
       <Spacer size="m" />
-      <Row justify="end" gap="m" className={styles.actions}>
+      <Row justify="end" gap="m" className={S.actionButtonsClassName}>
         <SecondaryButton
           onClick={switchEditorType}
           data-testid="json-data-cancel-btn"

@@ -1,14 +1,14 @@
 import { isArray, isNull, isString } from 'lodash'
 import JSONBigInt from 'json-bigint'
 import { JSONScalarValue, ObjectTypes } from '../interfaces'
-import styles from '../styles.module.scss'
+import * as S from '../Rejson.styles'
 
-enum ClassNames {
-  string = 'jsonString',
-  number = 'jsonNumber',
-  object = 'jsonNull',
-  boolean = 'jsonBoolean',
-  others = 'jsonNonStringPrimitive',
+const classNameMap: Record<string, string> = {
+  string: S.jsonStringClassName,
+  number: S.jsonNumberClassName,
+  object: S.jsonNullClassName,
+  boolean: S.jsonBooleanClassName,
+  others: S.jsonNonStringPrimitiveClassName,
 }
 
 export function isScalar(x: JSONScalarValue) {
@@ -46,9 +46,7 @@ export const wrapPath = (key: string, path: string = '') => {
 
 export const getClassNameByValue = (value: any) => {
   const type = typeof value
-  // @ts-ignore
-  const className = type in ClassNames ? ClassNames[type] : ClassNames.others
-  return styles[className]
+  return classNameMap[type] || classNameMap.others
 }
 
 export const isRealObject = (data: any, knownType?: string) => {

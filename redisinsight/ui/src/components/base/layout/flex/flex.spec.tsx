@@ -1,6 +1,11 @@
 import React from 'react'
 import { render } from 'uiSrc/utils/test-utils'
-import { alignValues, dirValues, gapSizes, justifyValues } from './flex.styles'
+import {
+  alignValues,
+  dirValues,
+  gapSizes,
+  justifyValues,
+} from './flex.constants'
 import { Col, FlexGroup as Flex, FlexItem, Grid, Row } from './flex'
 
 const gapStyles = {

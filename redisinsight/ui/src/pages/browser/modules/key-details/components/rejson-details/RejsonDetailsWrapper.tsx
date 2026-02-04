@@ -25,7 +25,7 @@ import { ProgressBarLoader } from 'uiSrc/components/base/display'
 import RejsonDetails from './rejson-details'
 import MonacoEditor from './monaco-editor'
 import { parseJsonData } from './utils'
-import styles from './styles.module.scss'
+import * as S from './Rejson.styles'
 
 export interface Props extends KeyDetailsHeaderProps {}
 
@@ -114,7 +114,7 @@ const RejsonDetailsWrapper = (props: Props) => {
 
       <div className={keyDetailsBodyName} key={keyDetailsBodyName}>
         <div className="flex-column" style={{ flex: '1', height: '100%' }}>
-          <div data-testid="json-details" className={styles.container}>
+          <S.Container data-testid="json-details">
             {loading && (
               <ProgressBarLoader
                 color="primary"
@@ -147,7 +147,7 @@ const RejsonDetailsWrapper = (props: Props) => {
                 isDownloaded={downloaded}
               />
             )}
-          </div>
+          </S.Container>
         </div>
       </div>
     </div>

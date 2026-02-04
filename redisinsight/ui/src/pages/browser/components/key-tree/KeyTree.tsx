@@ -189,7 +189,7 @@ const KeyTree = forwardRef((props: KeyTreeProps, ref) => {
   }
 
   const handleDeleteClicked = (type: KeyTypes | ModulesKeyTypes) => {
-    sendEventTelemetry({
+    void sendEventTelemetry({
       event: TelemetryEvent.TREE_VIEW_KEY_DELETE_CLICKED,
       eventData: {
         databaseId: instanceId,

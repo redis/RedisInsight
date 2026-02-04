@@ -7,8 +7,7 @@ import { IGlobalNotification } from 'uiSrc/slices/interfaces'
 import { truncateText } from 'uiSrc/utils'
 
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
-import { TitleSize, Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
+import { type TitleSize, Title, Text } from 'uiSrc/components/base/text'
 import { Spacer } from 'uiSrc/components/base/layout'
 
 import * as S from '../NotificationsCenter.styles'

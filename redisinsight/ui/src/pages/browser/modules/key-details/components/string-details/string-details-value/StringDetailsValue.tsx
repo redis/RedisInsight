@@ -55,12 +55,10 @@ import { IFetchKeyArgs } from 'uiSrc/constants/prop-types/keys'
 
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { DownloadIcon } from 'uiSrc/components/base/icons'
-import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
-import { Text } from 'uiSrc/components/base/text'
 import { TextArea } from 'uiSrc/components/base/inputs'
 import { RiTooltip } from 'uiSrc/components'
 import { ProgressBarLoader } from 'uiSrc/components/base/display'
-import styles from './styles.module.scss'
+import * as S from './StringDetailsValue.styles'
 
 const MIN_ROWS = 8
 const APPROXIMATE_WIDTH_OF_SIGN = 8.6
@@ -239,9 +237,8 @@ const StringDetailsValue = (props: Props) => {
 
   const renderValue = (value: string) => {
     const textEl = (
-      <Text
+      <S.StringValue
         color="secondary"
-        className={styles.stringValue}
         onClick={() => isEditable && setIsEdit(true)}
         style={{ whiteSpace: 'break-spaces' }}
         data-testid="string-value"
@@ -249,29 +246,25 @@ const StringDetailsValue = (props: Props) => {
         {areaValue !== ''
           ? value
           : !isLoading && <span style={{ fontStyle: 'italic' }}>Empty</span>}
-      </Text>
+      </S.StringValue>
     )
 
     return (
-      <RiTooltip
-        title={!isValid ? noEditableText : undefined}
-        anchorClassName={styles.tooltipAnchor}
-        className={styles.tooltip}
-        position="left"
-        data-testid="string-value-tooltip"
-      >
-        {textEl}
-      </RiTooltip>
+      <S.TooltipAnchor>
+        <RiTooltip
+          title={!isValid ? noEditableText : undefined}
+          position="left"
+          data-testid="string-value-tooltip"
+        >
+          {textEl}
+        </RiTooltip>
+      </S.TooltipAnchor>
     )
   }
 
   return (
     <>
-      <div
-        className={styles.container}
-        ref={containerRef}
-        data-testid="string-details"
-      >
+      <S.Container ref={containerRef} data-testid="string-details">
         {isLoading && (
           <ProgressBarLoader
             color="primary"
@@ -313,27 +306,25 @@ const StringDetailsValue = (props: Props) => {
             />
           </InlineItemEditor>
         )}
-      </div>
+      </S.Container>
 
       {length > MAX_LENGTH && (
         <div className="key-details-footer" key="key-details-footer">
           <Row justify="between" align="center">
             <FlexItem>
               {!isFullStringLoaded(initialValue?.data?.length, length) && (
-                <SecondaryButton
-                  className={styles.stringFooterBtn}
+                <S.StringFooterBtn
                   size="small"
                   data-testid="load-all-value-btn"
                   onClick={() => handleLoadAll(key, keyType)}
                 >
                   Load all
-                </SecondaryButton>
+                </S.StringFooterBtn>
               )}
             </FlexItem>
             {!isTruncatedValue && (
               <FlexItem>
-                <SecondaryButton
-                  className={styles.stringFooterBtn}
+                <S.StringFooterBtn
                   size="small"
                   icon={DownloadIcon}
                   iconSide="right"
@@ -342,7 +333,7 @@ const StringDetailsValue = (props: Props) => {
                   disabled={isTruncatedValue}
                 >
                   Download
-                </SecondaryButton>
+                </S.StringFooterBtn>
               </FlexItem>
             )}
           </Row>

@@ -36,10 +36,7 @@ const MessagesView = (props: Props) => {
 
   return (
     <>
-      <S.Container
-        className="key-details-table stream-details-table"
-        data-testid="stream-messages-container"
-      >
+      <S.Container data-testid="stream-messages-container">
         <VirtualTable
           autoHeight
           hideProgress

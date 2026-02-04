@@ -27,7 +27,6 @@ import { Modal } from 'uiSrc/components/base/display'
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
 
 import * as S from './BrowserSearchPanel.styles'
-import styles from './styles.module.scss'
 
 interface ISwitchType<T> {
   tooltipText: string
@@ -154,37 +153,39 @@ const BrowserSearchPanel = (props: Props) => {
   )
 
   return (
-    <S.Content>
-      <Modal
-        open={isPopoverOpen}
-        onCancel={hidePopover}
-        className={styles.moduleNotLoaded}
-        content={
-          <ModuleNotLoaded
-            moduleName={RedisDefaultModules.Search}
-            type="browser"
-            id="0"
-            onClose={hidePopover}
-          />
-        }
-        title={null}
-      />
-      <S.SearchWrapper gap="m" align="center">
-        <OnboardingTour
-          options={ONBOARDING_FEATURES.BROWSER_FILTER_SEARCH}
-          anchorPosition="downLeft"
-          panelClassName={styles.browserFilterOnboard}
-        >
-          {SearchModeSwitch()}
-        </OnboardingTour>
-        {searchMode === SearchMode.Pattern ? (
-          <FilterKeyType modules={modules} />
-        ) : (
-          <RediSearchIndexesList onCreateIndex={handleCreateIndexPanel} />
-        )}
-        <SearchKeyList />
-      </S.SearchWrapper>
-    </S.Content>
+    <S.ClassStyles>
+      <S.Content>
+        <Modal
+          open={isPopoverOpen}
+          onCancel={hidePopover}
+          className={S.moduleNotLoadedClassName}
+          content={
+            <ModuleNotLoaded
+              moduleName={RedisDefaultModules.Search}
+              type="browser"
+              id="0"
+              onClose={hidePopover}
+            />
+          }
+          title={null}
+        />
+        <S.SearchWrapper gap="m" align="center">
+          <OnboardingTour
+            options={ONBOARDING_FEATURES.BROWSER_FILTER_SEARCH}
+            anchorPosition="downLeft"
+            panelClassName={S.browserFilterOnboardClassName}
+          >
+            {SearchModeSwitch()}
+          </OnboardingTour>
+          {searchMode === SearchMode.Pattern ? (
+            <FilterKeyType modules={modules} />
+          ) : (
+            <RediSearchIndexesList onCreateIndex={handleCreateIndexPanel} />
+          )}
+          <SearchKeyList />
+        </S.SearchWrapper>
+      </S.Content>
+    </S.ClassStyles>
   )
 }
 

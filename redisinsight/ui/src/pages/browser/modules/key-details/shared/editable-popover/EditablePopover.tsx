@@ -1,5 +1,4 @@
 import React, { FormEvent, useEffect, useState } from 'react'
-import cx from 'classnames'
 
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
@@ -8,9 +7,8 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { EditIcon } from 'uiSrc/components/base/icons'
-import { Loader } from 'uiSrc/components/base/display'
 import { RiPopover } from 'uiSrc/components/base'
-import styles from './styles.module.scss'
+import * as S from './EditablePopover.styles'
 
 export interface Props {
   content: React.ReactElement
@@ -116,66 +114,60 @@ const EditablePopover = (props: Props) => {
   )
 
   return (
-    <RiPopover
-      ownFocus
-      anchorPosition="downLeft"
-      isOpen={isPopoverOpen}
-      anchorClassName={className}
-      panelClassName={cx(styles.popoverWrapper, {
-        [styles.isDelayed]: isDelayed,
-      })}
-      closePopover={handleDecline}
-      button={
-        <Row
-          align="center"
-          className={styles.contentWrapper}
-          onMouseEnter={() => setIsHovering(!isDisabledEditButton)}
-          onMouseLeave={() => setIsHovering(false)}
-          onClick={(e) => e.stopPropagation()}
-          data-testid={`${prefix}_content-value-${field}`}
-        >
-          {content}
-          <FlexItem style={{ marginLeft: '-19px' }}>
-            {isDelayed && (
-              <Loader
-                className={cx(editBtnClassName, styles.spinner)}
-                size="m"
-              />
-            )}
-            {(isPopoverOpen || isHovering) && !isDelayed && button}
-          </FlexItem>
-        </Row>
-      }
-      data-testid="popover-item-editor"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <form onSubmit={onFormSubmit}>
-        <Col gap="l">
-          <Row>{children}</Row>
-          <Row justify="end" gap="m">
-            <FlexItem>
-              <SecondaryButton
-                size="s"
-                onClick={() => handleDecline()}
-                data-testid="cancel-btn"
-              >
-                Cancel
-              </SecondaryButton>
-            </FlexItem>
-            <FlexItem>
-              <PrimaryButton
-                size="s"
-                type="submit"
-                disabled={isDisabledApply()}
-                data-testid="save-btn"
-              >
-                Save
-              </PrimaryButton>
+    <S.PopoverStyles $isDelayed={isDelayed}>
+      <RiPopover
+        ownFocus
+        anchorPosition="downLeft"
+        isOpen={isPopoverOpen}
+        anchorClassName={className}
+        panelClassName={S.popoverWrapperClassName}
+        closePopover={handleDecline}
+        button={
+          <Row
+            align="center"
+            onMouseEnter={() => setIsHovering(!isDisabledEditButton)}
+            onMouseLeave={() => setIsHovering(false)}
+            onClick={(e) => e.stopPropagation()}
+            data-testid={`${prefix}_content-value-${field}`}
+          >
+            {content}
+            <FlexItem style={{ marginLeft: '-19px' }}>
+              {isDelayed && <S.Spinner className={editBtnClassName} size="m" />}
+              {(isPopoverOpen || isHovering) && !isDelayed && button}
             </FlexItem>
           </Row>
-        </Col>
-      </form>
-    </RiPopover>
+        }
+        data-testid="popover-item-editor"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <form onSubmit={onFormSubmit}>
+          <Col gap="l">
+            <Row>{children}</Row>
+            <Row justify="end" gap="m">
+              <FlexItem>
+                <SecondaryButton
+                  size="s"
+                  onClick={() => handleDecline()}
+                  data-testid="cancel-btn"
+                >
+                  Cancel
+                </SecondaryButton>
+              </FlexItem>
+              <FlexItem>
+                <PrimaryButton
+                  size="s"
+                  type="submit"
+                  disabled={isDisabledApply()}
+                  data-testid="save-btn"
+                >
+                  Save
+                </PrimaryButton>
+              </FlexItem>
+            </Row>
+          </Col>
+        </form>
+      </RiPopover>
+    </S.PopoverStyles>
   )
 }
 

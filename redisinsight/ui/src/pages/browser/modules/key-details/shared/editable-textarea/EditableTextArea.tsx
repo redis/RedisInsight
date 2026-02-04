@@ -9,7 +9,6 @@ import { EditIcon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { TextArea } from 'uiSrc/components/base/inputs'
 import * as S from './EditableTextArea.styles'
-import styles from './styles.module.scss'
 
 export interface Props {
   children: React.ReactNode
@@ -100,24 +99,25 @@ const EditableTextArea = (props: Props) => {
           {children}
         </Text>
         {isHovering && (
-          <RiTooltip
-            content={editToolTipContent}
-            anchorClassName={styles.editBtnAnchor}
-            data-testid={`${testIdPrefix}_edit-tooltip-${field}`}
-          >
-            <IconButton
-              icon={EditIcon}
-              aria-label="Edit field"
-              className="editFieldBtn"
-              disabled={isEditDisabled}
-              onClick={(e: React.MouseEvent) => {
-                e.stopPropagation()
-                onEdit?.(true)
-                setIsHovering(false)
-              }}
-              data-testid={`${testIdPrefix}_edit-btn-${field}`}
-            />
-          </RiTooltip>
+          <S.EditBtnAnchor>
+            <RiTooltip
+              content={editToolTipContent}
+              data-testid={`${testIdPrefix}_edit-tooltip-${field}`}
+            >
+              <IconButton
+                icon={EditIcon}
+                aria-label="Edit field"
+                className="editFieldBtn"
+                disabled={isEditDisabled}
+                onClick={(e: React.MouseEvent) => {
+                  e.stopPropagation()
+                  onEdit?.(true)
+                  setIsHovering(false)
+                }}
+                data-testid={`${testIdPrefix}_edit-btn-${field}`}
+              />
+            </RiTooltip>
+          </S.EditBtnAnchor>
         )}
       </S.ContentWrapper>
     )
@@ -144,7 +144,6 @@ const EditableTextArea = (props: Props) => {
               isDisabled={isDisabled}
               isInvalid={isInvalid}
               disabledTooltipText={disabledTooltipText}
-              controlsClassName={styles.textAreaControls}
               onDecline={(event) => {
                 onDecline(event)
                 setValue(initialValue)

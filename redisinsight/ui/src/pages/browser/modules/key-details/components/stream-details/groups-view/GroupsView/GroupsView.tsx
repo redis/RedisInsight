@@ -60,10 +60,7 @@ const ConsumerGroups = (props: Props) => {
 
   return (
     <>
-      <S.Container
-        className="key-details-table stream-details-table"
-        data-testid="stream-groups-container"
-      >
+      <S.Container data-testid="stream-groups-container">
         <VirtualTable
           autoHeight
           hideProgress

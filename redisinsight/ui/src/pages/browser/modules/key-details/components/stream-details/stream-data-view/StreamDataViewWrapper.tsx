@@ -40,7 +40,7 @@ import { FormatedDate } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
 import { StreamEntryDto } from 'apiSrc/modules/browser/stream/dto'
 import StreamDataView from './StreamDataView'
-import styles from './StreamDataView/styles.module.scss'
+import * as S from './StreamDataViewWrapper.styles'
 import {
   MAX_FORMAT_LENGTH_STREAM_TIMESTAMP,
   MAX_VISIBLE_LENGTH_STREAM_TIMESTAMP,
@@ -257,7 +257,7 @@ const StreamDataViewWrapper = (props: Props) => {
     label: name,
     minWidth: minColumnWidth,
     isSortable: false,
-    className: styles.cell,
+    className: S.cellClassName,
     headerClassName: 'streamItemHeader',
     render: function Id({ id, fields }: StreamEntryDto, expanded: boolean) {
       const index = toNumber(last(label.split('-')))
@@ -287,11 +287,7 @@ const StreamDataViewWrapper = (props: Props) => {
           component="div"
           color="secondary"
         >
-          <div
-            style={{ display: 'flex', whiteSpace: 'break-spaces' }}
-            className="streamItem"
-            data-testid={`stream-entry-field-${id}`}
-          >
+          <S.StreamItem data-testid={`stream-entry-field-${id}`}>
             <FormattedValue
               value={formattedValue}
               title={
@@ -302,9 +298,9 @@ const StreamDataViewWrapper = (props: Props) => {
               tooltipContent={tooltipContent}
               expanded={expanded}
               truncateLength={650}
-              anchorClassName="streamItem line-clamp-2"
+              anchorClassName="line-clamp-2"
             />
-          </div>
+          </S.StreamItem>
         </Text>
       )
     },
@@ -316,7 +312,7 @@ const StreamDataViewWrapper = (props: Props) => {
     maxWidth: minColumnWidth,
     minWidth: minColumnWidth,
     isSortable: true,
-    className: styles.cell,
+    className: S.cellClassName,
     headerClassName: 'streamItemHeader',
     render: function Id({ id }: StreamEntryDto) {
       const idStr = bufferToString(id, viewFormat)
@@ -331,9 +327,8 @@ const StreamDataViewWrapper = (props: Props) => {
               style={{ maxWidth: '100%' }}
               component="div"
             >
-              <div
-                className="streamItem truncateText"
-                style={{ display: 'flex' }}
+              <S.StreamItem
+                className="truncateText"
                 data-testid={`stream-entry-${id}-date`}
               >
                 {timestamp.length > MAX_FORMAT_LENGTH_STREAM_TIMESTAMP ? (
@@ -341,7 +336,7 @@ const StreamDataViewWrapper = (props: Props) => {
                 ) : (
                   <FormatedDate date={timestamp} />
                 )}
-              </div>
+              </S.StreamItem>
             </Text>
           )}
           <Text
@@ -350,13 +345,13 @@ const StreamDataViewWrapper = (props: Props) => {
             style={{ maxWidth: '100%' }}
             className="truncateText"
           >
-            <div
-              className="streamItemId truncateText"
+            <S.StreamItemId
+              className="truncateText"
               data-testid={`stream-entry-${id}`}
               title={idStr}
             >
               {id}
-            </div>
+            </S.StreamItemId>
           </Text>
         </div>
       )
@@ -365,7 +360,7 @@ const StreamDataViewWrapper = (props: Props) => {
   const actionsColumn: ITableColumn = {
     id: 'actions',
     label: '',
-    headerClassName: styles.actionsHeader,
+    headerClassName: S.actionsHeaderClassName,
     textAlignment: TableCellTextAlignment.Left,
     absoluteWidth: actionsWidth,
     maxWidth: actionsWidth,
@@ -392,12 +387,14 @@ const StreamDataViewWrapper = (props: Props) => {
   }
 
   return (
-    <StreamDataView
-      data={entries}
-      columns={columns}
-      onClosePopover={closePopover}
-      {...props}
-    />
+    <S.ClassStyles>
+      <StreamDataView
+        data={entries}
+        columns={columns}
+        onClosePopover={closePopover}
+        {...props}
+      />
+    </S.ClassStyles>
   )
 }
 

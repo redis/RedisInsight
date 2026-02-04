@@ -9,7 +9,6 @@ import { Text } from 'uiSrc/components/base/text'
 import { EditIcon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import * as S from './EditableInput.styles'
-import styles from './styles.module.scss'
 
 export interface Props {
   children: React.ReactNode
@@ -61,53 +60,56 @@ const EditableInput = (props: Props) => {
           <div style={{ display: 'flex' }}>{children}</div>
         </Text>
         {isHovering && (
-          <RiTooltip
-            content={editToolTipContent}
-            anchorClassName={styles.editBtnAnchor}
-            data-testid={`${testIdPrefix}_edit-tooltip-${field}`}
-          >
-            <IconButton
-              icon={EditIcon}
-              aria-label="Edit field"
-              className="editFieldBtn"
-              disabled={isEditDisabled}
-              onClick={(e: React.MouseEvent) => {
-                e.stopPropagation()
-                onEdit?.(true)
-                setIsHovering(false)
-              }}
-              data-testid={`${testIdPrefix}_edit-btn-${field}`}
-            />
-          </RiTooltip>
+          <S.EditBtnAnchor>
+            <RiTooltip
+              content={editToolTipContent}
+              data-testid={`${testIdPrefix}_edit-tooltip-${field}`}
+            >
+              <IconButton
+                icon={EditIcon}
+                aria-label="Edit field"
+                className="editFieldBtn"
+                disabled={isEditDisabled}
+                onClick={(e: React.MouseEvent) => {
+                  e.stopPropagation()
+                  onEdit?.(true)
+                  setIsHovering(false)
+                }}
+                data-testid={`${testIdPrefix}_edit-btn-${field}`}
+              />
+            </RiTooltip>
+          </S.EditBtnAnchor>
         )}
       </S.ContentWrapper>
     )
   }
 
   return (
-    <StopPropagation>
-      <S.InputWrapper>
-        <InlineItemEditor
-          initialValue={initialValue}
-          controlsPosition="right"
-          controlsClassName={styles.controls}
-          placeholder={placeholder}
-          fieldName={field}
-          expandable
-          iconSize="M"
-          onDecline={(event) => {
-            onDecline(event)
-            onEdit?.(false)
-          }}
-          onApply={(value, event) => {
-            onApply(value, event)
-            onEdit?.(false)
-          }}
-          validation={validation}
-          variant={variant}
-        />
-      </S.InputWrapper>
-    </StopPropagation>
+    <S.ControlsStyles>
+      <StopPropagation>
+        <S.InputWrapper>
+          <InlineItemEditor
+            initialValue={initialValue}
+            controlsPosition="right"
+            controlsClassName={S.controlsClassName}
+            placeholder={placeholder}
+            fieldName={field}
+            expandable
+            iconSize="M"
+            onDecline={(event) => {
+              onDecline(event)
+              onEdit?.(false)
+            }}
+            onApply={(value, event) => {
+              onApply(value, event)
+              onEdit?.(false)
+            }}
+            validation={validation}
+            variant={variant}
+          />
+        </S.InputWrapper>
+      </StopPropagation>
+    </S.ControlsStyles>
   )
 }
 

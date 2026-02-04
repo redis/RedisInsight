@@ -11,12 +11,11 @@ import { Text } from 'uiSrc/components/base/text'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { streamIDTooltipText } from 'uiSrc/constants/texts'
 import { EntryIdContainer, FieldsWrapper } from '../AddStreamEntries.styles'
-import { InlineRow } from './StreamEntryFields.styles'
+import * as S from './StreamEntryFields.styles'
 import {
   StreamGroupContent,
   TimeStampInfoIcon,
 } from '../../add-stream-group/AddStreamGroup.styles'
-import styles from '../styles.module.scss'
 
 export interface Props {
   entryIdError?: string
@@ -118,16 +117,17 @@ const StreamEntryFields = (props: Props) => {
         <FormField
           label={config.entryId.label}
           additionalText={
-            <InlineRow align="center" gap="s">
-              <RiTooltip
-                anchorClassName="inputAppendIcon"
-                className={styles.entryIdTooltip}
-                position="left"
-                title="Enter Valid ID or *"
-                content={streamIDTooltipText}
-              >
-                <TimeStampInfoIcon />
-              </RiTooltip>
+            <S.InlineRow align="center" gap="s">
+              <S.EntryIdTooltipWrapper>
+                <RiTooltip
+                  anchorClassName="inputAppendIcon"
+                  position="left"
+                  title="Enter Valid ID or *"
+                  content={streamIDTooltipText}
+                >
+                  <TimeStampInfoIcon />
+                </RiTooltip>
+              </S.EntryIdTooltipWrapper>
               {!showEntryError && (
                 <Text component="span" size="XS" color="primary">
                   Timestamp - Sequence Number or *
@@ -143,7 +143,7 @@ const StreamEntryFields = (props: Props) => {
                   {entryIdError}
                 </Text>
               )}
-            </InlineRow>
+            </S.InlineRow>
           }
         >
           <TextInput

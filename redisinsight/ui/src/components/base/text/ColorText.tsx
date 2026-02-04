@@ -1,6 +1,7 @@
 import React from 'react'
 import cn from 'classnames'
-import { ColorTextProps, mapSize, StyledColorText } from './text.styles'
+import * as S from './text.styles'
+import { type ColorTextProps } from './text.types'
 
 export const ColorText = ({
   color,
@@ -9,9 +10,9 @@ export const ColorText = ({
   size,
   ...rest
 }: ColorTextProps) => (
-  <StyledColorText
+  <S.StyledColorText
     {...rest}
-    size={mapSize(size)}
+    size={S.mapSize(size)}
     component={component}
     $color={color}
     className={cn(className, { [`color__${color}`]: !!color }, 'RI-color-text')}

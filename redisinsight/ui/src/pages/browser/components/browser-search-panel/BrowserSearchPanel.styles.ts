@@ -26,3 +26,18 @@ export const SwitchSearchModeButtonGroup = styled(ButtonGroup)`
     }
   }
 `
+
+// Class names for components that expect string className props
+export const moduleNotLoadedClassName = 'module-not-loaded-modal'
+export const browserFilterOnboardClassName = 'browser-filter-onboard'
+
+export const ClassStyles = styled.div`
+  .${moduleNotLoadedClassName} {
+    max-width: 520px;
+    z-index: 10000;
+  }
+
+  .${browserFilterOnboardClassName} {
+    margin-left: -5px;
+  }
+`

@@ -1,22 +1,20 @@
 import React from 'react'
 import classNames from 'classnames'
-import {
-  dirValues,
+import * as S from './flex.styles'
+import type {
   FlexItemProps,
   FlexProps,
   GridProps,
   PaddingType,
-  StyledFlex,
-  StyledFlexItem,
-  StyledGrid,
-} from 'uiSrc/components/base/layout/flex/flex.styles'
+} from './flex.types'
+import { dirValues } from './flex.constants'
 
 export const Grid = ({ children, className, ...rest }: GridProps) => {
   const classes = classNames('RI-flex-grid', className)
   return (
-    <StyledGrid {...rest} className={classes}>
+    <S.StyledGrid {...rest} className={classes}>
       {children}
-    </StyledGrid>
+    </S.StyledGrid>
   )
 }
 
@@ -55,7 +53,7 @@ export const FlexGroup = ({
 }: FlexProps) => {
   const classes = classNames('RI-flex-group', className)
   return (
-    <StyledFlex
+    <S.StyledFlex
       {...rest}
       className={classes}
       $grow={grow}
@@ -69,7 +67,7 @@ export const FlexGroup = ({
       $centered={centered}
     >
       {children}
-    </StyledFlex>
+    </S.StyledFlex>
   )
 }
 
@@ -159,7 +157,7 @@ export const FlexItem = ({
 }) => {
   const classes = classNames('RI-flex-item', className)
   return (
-    <StyledFlexItem
+    <S.StyledFlexItem
       {...rest}
       grow={grow}
       $padding={padding}
@@ -167,6 +165,6 @@ export const FlexItem = ({
       className={classes}
     >
       {children}
-    </StyledFlexItem>
+    </S.StyledFlexItem>
   )
 }

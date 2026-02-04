@@ -1,5 +1,4 @@
 import React from 'react'
-import cx from 'classnames'
 
 import { RiTooltip } from 'uiSrc/components'
 import { MIDDLE_SCREEN_RESOLUTION } from 'uiSrc/constants'
@@ -8,7 +7,7 @@ import {
   IconButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import styles from '../styles.module.scss'
+import * as S from '../KeyDetailsActions.styles'
 
 export interface Props {
   width: number
@@ -17,17 +16,10 @@ export interface Props {
 }
 
 const StreamItemsAction = ({ width, title, openAddItemPanel }: Props) => (
-  <RiTooltip
-    content={width > MIDDLE_SCREEN_RESOLUTION ? '' : title}
-    position="left"
-    anchorClassName={cx(styles.actionBtn, {
-      [styles.withText]: width > MIDDLE_SCREEN_RESOLUTION,
-    })}
-  >
-    <span
-      className={cx(styles.actionBtn, {
-        [styles.withText]: width > MIDDLE_SCREEN_RESOLUTION,
-      })}
+  <S.ActionBtn $withText={width > MIDDLE_SCREEN_RESOLUTION}>
+    <RiTooltip
+      content={width > MIDDLE_SCREEN_RESOLUTION ? '' : title}
+      position="left"
     >
       {width > MIDDLE_SCREEN_RESOLUTION ? (
         <SecondaryButton
@@ -47,8 +39,8 @@ const StreamItemsAction = ({ width, title, openAddItemPanel }: Props) => (
           data-testid="add-key-value-items-btn"
         />
       )}
-    </span>
-  </RiTooltip>
+    </RiTooltip>
+  </S.ActionBtn>
 )
 
 export { StreamItemsAction }

@@ -18,7 +18,7 @@ import {
   EditItemFieldAction,
 } from '../components'
 
-import styles from '../styles.module.scss'
+import * as S from '../Rejson.styles'
 
 const defaultValue: [] = []
 
@@ -159,25 +159,21 @@ const RejsonObject = (props: JSONObjectProps) => {
 
   return (
     <>
-      <div className={styles.row} key={keyName + parentPath}>
-        <div className={styles.rowContainer}>
-          <div
-            className={styles.quotedKeyName}
-            style={{ paddingLeft: `${leftPadding}em` }}
-          >
-            <span
-              className={cx(styles.quoted, styles.keyName)}
+      <S.Row key={keyName + parentPath}>
+        <S.RowContainer>
+          <S.QuotedKeyName style={{ paddingLeft: `${leftPadding}em` }}>
+            <S.Quoted
+              as={S.KeyName}
               onClick={() => onClickExpandCollapse(path)}
               role="presentation"
             >
               {keyName}
-            </span>
+            </S.Quoted>
             <div style={{ paddingLeft: '0.2em', display: 'inline-block' }}>
               :
             </div>
             {!isExpanded && !editEntireObject && (
-              <div
-                className={styles.defaultFontExpandArray}
+              <S.DefaultFontExpandArray
                 onClick={() => onClickExpandCollapse(path)}
                 data-testid="expand-object"
                 role="presentation"
@@ -185,14 +181,14 @@ const RejsonObject = (props: JSONObjectProps) => {
                 {getBrackets(type, 'start')}
                 {cardinality ? '...' : ''}
                 {getBrackets(type, 'end')}
-              </div>
+              </S.DefaultFontExpandArray>
             )}
             {isExpanded && !editEntireObject && (
-              <span className={styles.defaultFontOpenIndex}>
+              <S.DefaultFontOpenIndex>
                 {getBrackets(type, 'start')}
-              </span>
+              </S.DefaultFontOpenIndex>
             )}
-          </div>
+          </S.QuotedKeyName>
           {!editEntireObject && !loading && (
             <EditItemFieldAction
               keyName={keyName.toString()}
@@ -203,17 +199,14 @@ const RejsonObject = (props: JSONObjectProps) => {
             />
           )}
           {loading && (
-            <div
-              className={styles.actionButtons}
-              style={{ justifyContent: 'flex-end' }}
-            >
-              <div className={styles.spinner}>
+            <S.ActionButtons style={{ justifyContent: 'flex-end' }}>
+              <S.Spinner>
                 <Loader size="m" />
-              </div>
-            </div>
+              </S.Spinner>
+            </S.ActionButtons>
           )}
-        </div>
-      </div>
+        </S.RowContainer>
+      </S.Row>
       {editEntireObject ? (
         <EditEntireItemAction
           initialValue={valueOfEntireObject}

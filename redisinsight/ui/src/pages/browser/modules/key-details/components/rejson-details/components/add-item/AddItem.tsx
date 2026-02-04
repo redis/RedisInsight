@@ -19,9 +19,9 @@ import ConfirmOverwrite from './ConfirmOverwrite'
 import { isValidJSON, isValidKey, parseJsonData, wrapPath } from '../../utils'
 import { JSONErrors } from '../../constants'
 
-import styles from '../../styles.module.scss'
+import * as S from '../../Rejson.styles'
 
-const ControlsWrapper = styled.div.attrs({ className: styles.controls })`
+const ControlsWrapper = styled(S.Controls)`
   height: 34px;
   min-height: 34px;
 `
@@ -85,7 +85,7 @@ const AddItem = (props: Props) => {
 
   return (
     <div
-      className={styles.row}
+      className={S.rowClassName}
       style={{
         display: 'flex',
         flexDirection: 'row',
@@ -135,7 +135,7 @@ const AddItem = (props: Props) => {
                     icon={CancelSlimIcon}
                     color="primary"
                     aria-label="Cancel editing"
-                    className={styles.declineBtn}
+                    className="rejson-decline-btn"
                     onClick={() => onCancel?.()}
                   />
 
@@ -145,14 +145,14 @@ const AddItem = (props: Props) => {
                     color="primary"
                     type="submit"
                     aria-label="Apply"
-                    className={styles.applyBtn}
+                    className="rejson-apply-btn"
                     data-testid="apply-btn"
                   />
                 </ControlsWrapper>
               </ConfirmOverwrite>
             </form>
             {!!error && (
-              <div className={cx(styles.errorMessage)}>
+              <S.ErrorMessage>
                 <FieldMessage
                   scrollViewOnAppear
                   icon="ToastDangerIcon"
@@ -160,7 +160,7 @@ const AddItem = (props: Props) => {
                 >
                   {error}
                 </FieldMessage>
-              </div>
+              </S.ErrorMessage>
             )}
           </FocusTrap>
         </div>
