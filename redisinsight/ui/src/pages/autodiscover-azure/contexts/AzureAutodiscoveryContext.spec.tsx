@@ -22,6 +22,7 @@ jest.mock('uiSrc/slices/oauth/azure', () => ({
 jest.mock('uiSrc/services', () => ({
   apiService: {
     get: jest.fn(),
+    post: jest.fn(),
   },
 }))
 
@@ -161,6 +162,106 @@ describe('AzureAutodiscoveryContext', () => {
       })
 
       expect(result.current.selectedDatabases).toEqual(databases)
+    })
+  })
+
+  describe('addDatabases', () => {
+    const createMockDatabase = () => ({
+      id: faker.string.uuid(),
+      name: faker.internet.domainWord(),
+      host: faker.internet.domainName(),
+      port: 6379,
+      type: 'standard',
+      location: faker.location.city(),
+      provisioningState: 'Succeeded',
+      resourceGroup: faker.string.alphanumeric(10),
+      subscriptionId: faker.string.uuid(),
+    })
+
+    it('should return empty array when no databases selected', async () => {
+      const { result } = renderHook(() => useAzureAutodiscovery(), { wrapper })
+
+      let results: unknown[] = []
+      await act(async () => {
+        results = await result.current.addDatabases()
+      })
+
+      expect(results).toEqual([])
+    })
+
+    it('should add databases successfully', async () => {
+      const mockDatabase = createMockDatabase()
+
+      mockApiService.post.mockResolvedValueOnce({
+        data: [{ id: mockDatabase.id, status: 'success', message: 'Added' }],
+        status: 201,
+      })
+
+      const { result } = renderHook(() => useAzureAutodiscovery(), { wrapper })
+
+      act(() => {
+        result.current.setSelectedDatabases([mockDatabase])
+      })
+
+      let results: unknown[] = []
+      await act(async () => {
+        results = await result.current.addDatabases()
+      })
+
+      await waitFor(() => {
+        expect(results).toHaveLength(1)
+        expect(result.current.addedDatabases).toHaveLength(1)
+        expect(result.current.addedDatabases[0].success).toBe(true)
+      })
+    })
+
+    it('should handle failed database additions', async () => {
+      const mockDatabase = createMockDatabase()
+
+      mockApiService.post.mockResolvedValueOnce({
+        data: [
+          { id: mockDatabase.id, status: 'fail', message: 'Connection failed' },
+        ],
+        status: 200,
+      })
+
+      const { result } = renderHook(() => useAzureAutodiscovery(), { wrapper })
+
+      act(() => {
+        result.current.setSelectedDatabases([mockDatabase])
+      })
+
+      let results: unknown[] = []
+      await act(async () => {
+        results = await result.current.addDatabases()
+      })
+
+      await waitFor(() => {
+        expect(results).toHaveLength(1)
+        expect(result.current.addedDatabases[0].success).toBe(false)
+      })
+    })
+
+    it('should handle API error', async () => {
+      const mockDatabase = createMockDatabase()
+
+      mockApiService.post.mockRejectedValueOnce({
+        response: { data: { message: 'API Error' } },
+      })
+
+      const { result } = renderHook(() => useAzureAutodiscovery(), { wrapper })
+
+      act(() => {
+        result.current.setSelectedDatabases([mockDatabase])
+      })
+
+      await act(async () => {
+        await result.current.addDatabases()
+      })
+
+      await waitFor(() => {
+        expect(result.current.databasesError).toBe('API Error')
+      })
     })
   })
 })

@@ -2,17 +2,15 @@ import React, { createContext, useContext, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { AxiosError } from 'axios'
 
-import { apiService, instancesService } from 'uiSrc/services'
+import { apiService } from 'uiSrc/services'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { getApiErrorMessage, isStatusSuccessful } from 'uiSrc/utils'
 import { azureAuthAccountSelector } from 'uiSrc/slices/oauth/azure'
 import {
+  ActionStatus,
   AzureSubscription,
   AzureRedisDatabase,
-  AzureConnectionDetails,
-  AzureProviderDetails,
-  CloudProvider,
-  ConnectionProvider,
+  ImportAzureDatabaseResponse,
 } from 'uiSrc/slices/interfaces'
 
 interface AddDatabaseResult {
@@ -38,7 +36,7 @@ export interface AzureAutodiscoveryContextType {
   addedDatabases: AddDatabaseResult[]
   fetchDatabases: () => Promise<void>
   setSelectedDatabases: (databases: AzureRedisDatabase[]) => void
-  addDatabases: () => Promise<boolean>
+  addDatabases: () => Promise<AddDatabaseResult[]>
 }
 
 const AzureAutodiscoveryContext = createContext<
@@ -124,61 +122,45 @@ export const AzureAutodiscoveryProvider: React.FC<{
     }
   }
 
-  const addDatabases = async (): Promise<boolean> => {
+  const addDatabases = async (): Promise<AddDatabaseResult[]> => {
     if (!account?.id || selectedDatabases.length === 0) {
-      return false
+      return []
     }
 
     setDatabasesLoading(true)
     setDatabasesError('')
 
-    const results = await Promise.all(
-      selectedDatabases.map(async (database) => {
-        try {
-          const { data, status } = await apiService.get<AzureConnectionDetails>(
-            ApiEndpoints.AZURE_CONNECTION_DETAILS,
-            { params: { accountId: account.id, databaseId: database.id } },
-          )
+    try {
+      const { data, status } = await apiService.post<
+        ImportAzureDatabaseResponse[]
+      >(ApiEndpoints.AZURE_AUTODISCOVERY_DATABASES, {
+        accountId: account.id,
+        databases: selectedDatabases.map((db) => ({ id: db.id })),
+      })
 
-          if (isStatusSuccessful(status) && data) {
-            const providerDetails: AzureProviderDetails = {
-              provider: CloudProvider.Azure,
-              authType: data.authType,
-              azureAccountId: data.azureAccountId,
-            }
-
-            const result = await instancesService.createInstance({
-              host: data.host,
-              port: data.port,
-              name: database.name,
-              username: data.username,
-              password: data.password,
-              tls: data.tls,
-              provider: ConnectionProvider.AZURE,
-              nameFromProvider: database.name,
-              providerDetails,
-            })
-
-            if (result) {
-              return { database, success: true }
-            }
-            return { database, success: false }
-          }
-          return { database, success: false }
-        } catch (error) {
+      if (isStatusSuccessful(status)) {
+        const results: AddDatabaseResult[] = data.map((response) => {
+          const database = selectedDatabases.find((db) => db.id === response.id)
           return {
-            database,
-            success: false,
-            message: getApiErrorMessage(error as AxiosError),
+            database: database!,
+            success: response.status === ActionStatus.Success,
+            message: response.message,
           }
-        }
-      }),
-    )
+        })
 
-    setDatabasesLoading(false)
-    setAddedDatabases(results)
+        setAddedDatabases(results)
+        setDatabasesLoading(false)
 
-    return results.some((r) => r.success)
+        return results
+      }
+
+      setDatabasesLoading(false)
+      return []
+    } catch (error) {
+      setDatabasesError(getApiErrorMessage(error as AxiosError))
+      setDatabasesLoading(false)
+      return []
+    }
   }
 
   const value = useMemo<AzureAutodiscoveryContextType>(

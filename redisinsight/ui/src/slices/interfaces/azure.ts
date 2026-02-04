@@ -62,3 +62,16 @@ export interface AzureProviderDetails {
   authType: AzureAuthType
   azureAccountId?: string
 }
+
+export enum ActionStatus {
+  Success = 'success',
+  Fail = 'fail',
+}
+
+export interface ImportAzureDatabaseResponse {
+  id: string
+  status: ActionStatus
+  message: string
+  databaseDetails?: AzureRedisDatabase
+  error?: string | object
+}

@@ -7,6 +7,9 @@ import { setTitle } from 'uiSrc/utils'
 import { fetchInstancesAction } from 'uiSrc/slices/instances/instances'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import successMessages from 'uiSrc/components/notifications/success-messages'
+import errorMessages from 'uiSrc/components/notifications/error-messages'
+import { riToast } from 'uiSrc/components/base/display/toast'
+import { defaultContainerId } from 'uiSrc/components/notifications/constants'
 import { AppDispatch } from 'uiSrc/slices/store'
 import { useAzureAutodiscovery } from '../contexts'
 import AzureDatabases from './AzureDatabases/AzureDatabases'
@@ -46,18 +49,53 @@ const AzureDatabasesPage = () => {
   }
 
   const handleSubmit = async () => {
-    const success = await addDatabases()
-    if (success) {
+    const results = await addDatabases()
+
+    const successResults = results.filter((r) => r.success)
+    const failedResults = results.filter((r) => !r.success)
+
+    // Refresh instances list if any were added
+    if (successResults.length > 0) {
       dispatch(fetchInstancesAction())
       dispatch(
         addMessageNotification(
           successMessages.ADDED_NEW_INSTANCE(
-            selectedDatabases.length > 1
-              ? `${selectedDatabases.length} databases`
-              : selectedDatabases[0]?.name || 'Database',
+            successResults.length > 1
+              ? `${successResults.length} databases`
+              : successResults[0]?.database?.name || 'Database',
           ),
         ),
       )
+    }
+
+    // Show single grouped error toast for all failed databases
+    if (failedResults.length > 0) {
+      const failedNames = failedResults
+        .map((r) => r.database?.name || 'database')
+        .join(', ')
+
+      console.log(JSON.stringify(failedResults, null, 2))
+      // Get the first error message to show as main message
+      const firstErrorMessage =
+        failedResults[0]?.message || 'Failed to add database'
+
+      riToast(
+        errorMessages.DEFAULT(
+          failedResults.length === 1
+            ? firstErrorMessage
+            : `${failedResults.length} databases failed. ${firstErrorMessage}`,
+          () => {},
+          `Failed to add: ${failedNames}`,
+        ),
+        {
+          variant: riToast.Variant.Danger,
+          containerId: defaultContainerId,
+        },
+      )
+    }
+
+    // Navigate home if at least one database was added successfully
+    if (successResults.length > 0) {
       history.push(Pages.home)
     }
   }
