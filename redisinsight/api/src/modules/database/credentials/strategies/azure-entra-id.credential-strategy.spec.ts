@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UnauthorizedException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { faker } from '@faker-js/faker';
 import { mockDatabase } from 'src/__mocks__';
 import { AzureAuthService } from 'src/modules/azure/auth/azure-auth.service';
@@ -156,7 +156,7 @@ describe('AzureEntraIdCredentialStrategy', () => {
   });
 
   describe('resolve', () => {
-    it('should throw UnauthorizedException when azureAccountId is missing', async () => {
+    it('should throw BadRequestException when azureAccountId is missing', async () => {
       const database = createMockAzureDatabase({
         providerDetails: {
           provider: CloudProvider.Azure,
@@ -166,16 +166,16 @@ describe('AzureEntraIdCredentialStrategy', () => {
       });
 
       await expect(strategy.resolve(database)).rejects.toThrow(
-        UnauthorizedException,
+        BadRequestException,
       );
     });
 
-    it('should throw UnauthorizedException when token acquisition fails', async () => {
+    it('should throw BadRequestException when token acquisition fails', async () => {
       const database = createMockAzureDatabase();
       mockAzureAuthService.getRedisTokenByAccountId.mockResolvedValue(null);
 
       await expect(strategy.resolve(database)).rejects.toThrow(
-        UnauthorizedException,
+        BadRequestException,
       );
     });
 

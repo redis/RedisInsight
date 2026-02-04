@@ -1,4 +1,4 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { Database } from 'src/modules/database/models/database';
 import {
@@ -48,8 +48,8 @@ export class AzureEntraIdCredentialStrategy implements ICredentialStrategy {
       this.logger.warn(
         `Database ${database.id} has Entra ID auth but no azureAccountId`,
       );
-      throw new UnauthorizedException(
-        'Azure account ID not found - please re-authenticate',
+      throw new BadRequestException(
+        'Azure account not found. Please remove this database and re-add it through Azure autodiscovery.',
       );
     }
 
@@ -61,8 +61,8 @@ export class AzureEntraIdCredentialStrategy implements ICredentialStrategy {
       this.logger.warn(
         `Failed to acquire token for database ${database.id} - re-authentication needed`,
       );
-      throw new UnauthorizedException(
-        'Failed to acquire Azure token - please re-authenticate',
+      throw new BadRequestException(
+        'Azure Entra ID token expired. Please sign in to Azure again through the autodiscovery flow.',
       );
     }
 
