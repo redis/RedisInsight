@@ -112,10 +112,14 @@ jobs:
         run: yarn build:statics
 
       - name: Start API server
-        run: yarn dev:api &
+        run: |
+          yarn dev:api > /tmp/api-server.log 2>&1 &
+          echo "API server started in background, logging to /tmp/api-server.log"
 
       - name: Start UI dev server
-        run: yarn dev:ui &
+        run: |
+          yarn dev:ui > /tmp/ui-server.log 2>&1 &
+          echo "UI server started in background, logging to /tmp/ui-server.log"
 
       - name: Wait for servers to be ready
         run: |
@@ -126,7 +130,7 @@ jobs:
           echo "Waiting for API server..."
           # Use http-get:// prefix and force IPv4 with 127.0.0.1
           # Also try multiple endpoints and use verbose mode
-          for i in {1..60}; do
+          for i in {1..30}; do
             echo "Attempt $i: Checking API health..."
             if curl -s -f http://127.0.0.1:5540/api/health > /dev/null 2>&1; then
               echo "API server is ready!"
@@ -141,6 +145,14 @@ jobs:
       - name: Debug - Check server status
         if: ${{ failure() }}
         run: |
+          echo "=== API Server Log (last 200 lines) ==="
+          tail -200 /tmp/api-server.log || echo "No API log file found"
+
+          echo ""
+          echo "=== UI Server Log (last 50 lines) ==="
+          tail -50 /tmp/ui-server.log || echo "No UI log file found"
+
+          echo ""
           echo "=== Checking running processes ==="
           ps aux | grep -E "(node|nest|vite)" || true
 
@@ -150,19 +162,9 @@ jobs:
 
           echo ""
           echo "=== Trying to curl the endpoints ==="
-          curl -v http://127.0.0.1:8080 2>&1 | head -30 || true
+          curl -v http://localhost:8080 2>&1 | head -30 || true
           echo ""
           curl -v http://127.0.0.1:5540/api/health 2>&1 | head -50 || true
-          echo ""
-          curl -v http://127.0.0.1:5540/api/info 2>&1 | head -50 || true
-
-          echo ""
-          echo "=== Check if API process is still running ==="
-          pgrep -f "dist/src/main" && echo "API process is running" || echo "API process NOT running"
-
-          echo ""
-          echo "=== Check API process memory/CPU ==="
-          ps aux | grep "dist/src/main" | grep -v grep || true
 
       - name: Start Redis test environment
         run: |
