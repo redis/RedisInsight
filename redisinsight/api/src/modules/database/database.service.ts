@@ -196,7 +196,8 @@ export class DatabaseService {
 
       // todo: clarify if we need this and if yes - rethink implementation
       try {
-        database = await this.credentialProvider.resolve(database);
+        const databaseWithCredentials =
+          await this.credentialProvider.resolve(database);
 
         const client = await this.redisClientFactory.createClient(
           {
@@ -204,7 +205,7 @@ export class DatabaseService {
             databaseId: database.id,
             context: ClientContext.Common,
           },
-          database,
+          databaseWithCredentials,
         );
         const redisInfo =
           await this.databaseInfoProvider.getRedisGeneralInfo(client);
