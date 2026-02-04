@@ -1,10 +1,6 @@
 import styled from 'styled-components'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import { Container as StreamDataViewContainer } from '../stream-data-view/StreamDataView/StreamDataView.styles'
-import {
-  StreamItem,
-  StreamItemId,
-} from '../stream-data-view/StreamDataViewWrapper.styles'
 import { Container as MessagesViewContainer } from '../messages-view/MessagesView/MessagesView.styles'
 import { Container as GroupsViewContainer } from '../groups-view/GroupsView/GroupsView.styles'
 import { Container as ConsumersViewContainer } from '../consumers-view/ConsumersView/ConsumersView.styles'
@@ -43,19 +39,6 @@ export const Container = styled(Col)`
 
     & > div:hover {
       background: ${({ theme }) => theme.semantic.color.background.neutral100};
-
-      .value-table-actions {
-        background-color: ${({ theme }) =>
-          theme.semantic.color.background.neutral100};
-      }
-
-      ${StreamItem} {
-        color: ${({ theme }) => theme.semantic.color.text.neutral700};
-      }
-
-      ${StreamItemId} {
-        color: ${({ theme }) => theme.semantic.color.text.neutral600};
-      }
     }
   }
 

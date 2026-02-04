@@ -1,7 +1,7 @@
 export enum TableCellAlignment {
-  Left = 'flex-start',
+  Left = 'start',
   Center = 'center',
-  Right = 'flex-end',
+  Right = 'end',
 }
 
 export enum TableCellTextAlignment {

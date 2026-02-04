@@ -275,7 +275,7 @@ const SetDetailsTable = (props: Props) => {
       render: function Actions(_act: any, memberItem: RedisResponseBuffer) {
         const member = bufferToString(memberItem, viewFormat)
         return (
-          <div className="value-table-actions">
+          <S.ValueTableActions>
             <PopoverDelete
               header={createDeleteFieldHeader(memberItem)}
               text={createDeleteFieldMessage(key ?? '')}
@@ -291,7 +291,7 @@ const SetDetailsTable = (props: Props) => {
               testid={`set-remove-btn-${member}`}
               appendInfo={length === 1 ? HelpTexts.REMOVE_LAST_ELEMENT() : null}
             />
-          </div>
+          </S.ValueTableActions>
         )
       },
     },
