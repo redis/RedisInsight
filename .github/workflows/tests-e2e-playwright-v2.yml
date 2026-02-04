@@ -123,9 +123,30 @@ jobs:
           npx wait-on http://localhost:8080 --timeout 60000
           echo "UI server is ready!"
 
-          echo "Waiting for API server (http://localhost:5540/api/docs)..."
-          npx wait-on http://localhost:5540/api/docs --timeout 60000
+          echo "Waiting for API server (http://localhost:5540/api/health)..."
+          npx wait-on http://localhost:5540/api/health --timeout 60000
           echo "API server is ready!"
+
+      - name: Debug - Check server status
+        if: ${{ failure() }}
+        run: |
+          echo "=== Checking running processes ==="
+          ps aux | grep -E "(node|nest|vite)" || true
+
+          echo ""
+          echo "=== Checking listening ports ==="
+          ss -tlnp | grep -E "(8080|5540)" || netstat -tlnp 2>/dev/null | grep -E "(8080|5540)" || true
+
+          echo ""
+          echo "=== Trying to curl the endpoints ==="
+          curl -v http://localhost:8080 2>&1 | head -30 || true
+          echo ""
+          curl -v http://localhost:5540/api/health 2>&1 | head -30 || true
+
+          echo ""
+          echo "=== Last 100 lines of any node output ==="
+          # Check if there are any log files
+          find /tmp -name "*.log" -mmin -5 2>/dev/null | head -5 | xargs cat 2>/dev/null || true
 
       - name: Start Redis test environment
         run: |
