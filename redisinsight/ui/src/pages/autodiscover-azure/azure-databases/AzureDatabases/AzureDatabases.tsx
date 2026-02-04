@@ -65,9 +65,22 @@ const AzureDatabases = ({
     setItems(filtered)
   }
 
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+
   const handleSelectionChange = (state: RowSelectionState) => {
-    const selected = databases.filter((db) => state[db.id])
-    onSelectionChange(selected)
+    setRowSelection(state)
+    onSelectionChange(databases.filter((db) => state[db.id]))
+  }
+
+  const handleRowClick = (database: AzureRedisDatabase) => {
+    const isSelected = rowSelection[database.id]
+    const newSelection = { ...rowSelection, [database.id]: !isSelected }
+
+    if (isSelected) {
+      delete newSelection[database.id]
+    }
+
+    handleSelectionChange(newSelection)
   }
 
   return (
@@ -91,7 +104,9 @@ const AzureDatabases = ({
         <DatabaseWrapper>
           <Table
             rowSelectionMode="multiple"
+            rowSelection={rowSelection}
             onRowSelectionChange={handleSelectionChange}
+            onRowClick={handleRowClick}
             getRowId={(row) => row.id}
             columns={AZURE_DATABASES_COLUMNS}
             data={items}

@@ -7,8 +7,8 @@ import { Text } from 'uiSrc/components/base/text'
 export const AZURE_SUBSCRIPTIONS_COLUMNS: ColumnDef<AzureSubscription>[] = [
   {
     id: 'row-selection',
-    maxSize: 50,
-    size: 50,
+    maxSize: 15,
+    size: 15,
     isHeaderCustom: true,
     header: '#',
     cell: ({ row }) => (

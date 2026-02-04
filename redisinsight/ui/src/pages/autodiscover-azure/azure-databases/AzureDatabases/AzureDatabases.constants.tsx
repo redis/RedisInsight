@@ -7,8 +7,8 @@ import { Text } from 'uiSrc/components/base/text'
 export const AZURE_DATABASES_COLUMNS: ColumnDef<AzureRedisDatabase>[] = [
   {
     id: 'row-selection',
-    maxSize: 50,
-    size: 50,
+    maxSize: 20,
+    size: 20,
     isHeaderCustom: true,
     header: ({ table }) => (
       <Table.HeaderMultiRowSelectionButton

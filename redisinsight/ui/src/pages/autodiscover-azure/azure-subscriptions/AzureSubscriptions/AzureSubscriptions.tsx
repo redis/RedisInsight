@@ -70,6 +70,12 @@ const AzureSubscriptions = ({
     setSelectedId(selectedId || null)
   }
 
+  const handleRowClick = (subscription: AzureSubscription) => {
+    setSelectedId((prev) =>
+      prev === subscription.subscriptionId ? null : subscription.subscriptionId,
+    )
+  }
+
   const handleSubmit = () => {
     if (selectedId) {
       const selected = subscriptions.find(
@@ -110,7 +116,9 @@ const AzureSubscriptions = ({
         <DatabaseWrapper>
           <Table
             rowSelectionMode="single"
+            rowSelection={selectedId ? { [selectedId]: true } : {}}
             onRowSelectionChange={handleSelectionChange}
+            onRowClick={handleRowClick}
             getRowId={(row) => row.subscriptionId}
             columns={AZURE_SUBSCRIPTIONS_COLUMNS}
             data={items}
