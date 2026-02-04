@@ -1,23 +1,29 @@
 import {
   Controller,
   Get,
+  Post,
+  Body,
   Query,
   Param,
+  Res,
   HttpStatus,
   HttpException,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import { Response } from 'express';
 import { AzureAutodiscoveryService } from './azure-autodiscovery.service';
 import { AzureAuthService } from '../auth/azure-auth.service';
 import { AZURE_SUBSCRIPTION_ID_REGEX } from '../constants';
-import {
-  AzureSubscription,
-  AzureRedisDatabase,
-  AzureConnectionDetails,
-} from '../models';
+import { AzureSubscription, AzureRedisDatabase } from '../models';
+import { ImportAzureDatabasesDto, ImportAzureDatabaseResponse } from './dto';
+import { ActionStatus, SessionMetadata } from 'src/common/models';
+import { RequestSessionMetadata } from 'src/common/decorators';
 
 @ApiTags('Azure')
 @Controller('azure')
+@UsePipes(new ValidationPipe({ transform: true }))
 export class AzureAutodiscoveryController {
   constructor(
     private readonly autodiscoveryService: AzureAutodiscoveryService,
@@ -98,41 +104,37 @@ export class AzureAutodiscoveryController {
     );
   }
 
-  @Get('databases/connection-details')
-  @ApiOperation({ summary: 'Get connection details for a database' })
-  @ApiQuery({
-    name: 'accountId',
-    description: 'Azure account ID (homeAccountId)',
-  })
-  @ApiQuery({
-    name: 'databaseId',
-    description: 'Azure resource ID of the database',
-  })
+  @Post('autodiscovery/databases')
+  @ApiOperation({ summary: 'Add Azure databases from autodiscovery' })
   @ApiResponse({
-    status: 200,
-    description: 'Returns connection details',
-    type: AzureConnectionDetails,
+    status: 201,
+    description: 'Added databases list',
+    type: ImportAzureDatabaseResponse,
+    isArray: true,
   })
   @ApiResponse({ status: 401, description: 'Not authenticated' })
-  @ApiResponse({ status: 404, description: 'Failed to get connection details' })
-  async getConnectionDetails(
-    @Query('accountId') accountId: string,
-    @Query('databaseId') databaseId: string,
-  ): Promise<AzureConnectionDetails> {
-    await this.ensureAuthenticated(accountId);
+  async addDiscoveredDatabases(
+    @RequestSessionMetadata() sessionMetadata: SessionMetadata,
+    @Body() dto: ImportAzureDatabasesDto,
+    @Res() res: Response,
+  ): Promise<Response> {
+    await this.ensureAuthenticated(dto.accountId);
 
-    const details = await this.autodiscoveryService.getConnectionDetails(
-      accountId,
-      databaseId,
+    const result = await this.autodiscoveryService.addDatabases(
+      sessionMetadata,
+      dto.accountId,
+      dto.databases,
     );
 
-    if (!details) {
-      throw new HttpException(
-        'Failed to get connection details',
-        HttpStatus.NOT_FOUND,
-      );
+    const hasSuccessResult = result.some(
+      (addResponse: ImportAzureDatabaseResponse) =>
+        addResponse.status === ActionStatus.Success,
+    );
+
+    if (!hasSuccessResult) {
+      return res.status(200).json(result);
     }
 
-    return details;
+    return res.json(result);
   }
 }

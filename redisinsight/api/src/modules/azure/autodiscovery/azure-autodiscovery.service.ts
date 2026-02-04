@@ -15,12 +15,37 @@ import {
   AzureRedisDatabase,
   AzureConnectionDetails,
 } from '../models';
+import { DatabaseService } from 'src/modules/database/database.service';
+import { ActionStatus, SessionMetadata } from 'src/common/models';
+import { HostingProvider } from 'src/modules/database/entities/database.entity';
+import { CloudProvider } from 'src/modules/database/models/provider-details';
+import { ImportAzureDatabaseDto, ImportAzureDatabaseResponse } from './dto';
 
 @Injectable()
 export class AzureAutodiscoveryService {
   private readonly logger = new Logger(AzureAutodiscoveryService.name);
 
-  constructor(private readonly authService: AzureAuthService) {}
+  constructor(
+    private readonly authService: AzureAuthService,
+    private readonly databaseService: DatabaseService,
+  ) {}
+
+  /**
+   * Maps raw error messages to user-friendly messages
+   */
+  private getUserFriendlyErrorMessage(error: Error): string {
+    const message = error?.message?.toLowerCase() || '';
+
+    if (
+      message.includes('wrongpass') ||
+      message.includes('noauth') ||
+      message.includes('please check the username or password')
+    ) {
+      return 'Failed to authenticate with Entra ID. Please make sure your user has the correct permissions (Data Owner, Data Contributor, or Data Reader role).';
+    }
+
+    return error?.message || 'An unexpected error occurred';
+  }
 
   private isValidSubscriptionId(subscriptionId: string): boolean {
     return !!subscriptionId && AZURE_SUBSCRIPTION_ID_REGEX.test(subscriptionId);
@@ -126,26 +151,9 @@ export class AzureAutodiscoveryService {
       return null;
     }
 
-    // Try Entra ID first
-    const entraIdDetails = await this.getEntraIdConnectionDetails(
-      accountId,
-      database,
-    );
-
-    if (entraIdDetails) {
-      return entraIdDetails;
-    }
-
-    // Fall back to Access Key
-    this.logger.debug('Entra ID auth failed, falling back to Access Key');
-
-    const client = await this.getAuthenticatedClient(accountId);
-
-    if (!client) {
-      return null;
-    }
-
-    return this.getAccessKeyConnectionDetails(client, database);
+    // Use Entra ID authentication (Microsoft's recommended approach)
+    // Access Keys support will be added in a future update with proper UX
+    return this.getEntraIdConnectionDetails(accountId, database);
   }
 
   private async findDatabaseById(
@@ -315,63 +323,6 @@ export class AzureAutodiscoveryService {
     return match ? match[1] : '';
   }
 
-  private async getAccessKeyConnectionDetails(
-    client: AxiosInstance,
-    database: AzureRedisDatabase,
-  ): Promise<AzureConnectionDetails | null> {
-    try {
-      let keysUrl: string;
-
-      if (database.type === AzureRedisType.Standard) {
-        keysUrl = AzureApiUrls.postStandardRedisKeys(
-          database.subscriptionId,
-          database.resourceGroup,
-          database.name,
-        );
-      } else {
-        const [clusterName, databaseName = 'default'] =
-          database.name.split('/');
-        this.logger.debug(
-          `Fetching enterprise keys for cluster=${clusterName}, database=${databaseName}`,
-        );
-        keysUrl = AzureApiUrls.postEnterpriseRedisKeys(
-          database.subscriptionId,
-          database.resourceGroup,
-          clusterName,
-          databaseName,
-        );
-      }
-
-      const response = await client.post(keysUrl);
-      const primaryKey =
-        response.data.primaryKey || response.data.keys?.[0]?.value;
-
-      if (!primaryKey) {
-        this.logger.warn(
-          `No access key found in response for ${database.name}`,
-        );
-        return null;
-      }
-
-      return {
-        host: database.host,
-        port: this.getTlsPort(database),
-        password: primaryKey,
-        tls: true,
-        authType: AzureAuthType.AccessKey,
-        subscriptionId: database.subscriptionId,
-        resourceGroup: database.resourceGroup,
-        resourceId: database.id,
-      };
-    } catch (error: any) {
-      this.logger.warn(
-        `Failed to get access keys for ${database.name}`,
-        error?.message,
-      );
-      return null;
-    }
-  }
-
   private async getEntraIdConnectionDetails(
     accountId: string,
     database: AzureRedisDatabase,
@@ -405,10 +356,108 @@ export class AzureAutodiscoveryService {
   }
 
   private getTlsPort(database: AzureRedisDatabase): number {
-    // Standard Redis uses sslPort (6380) for TLS, Enterprise uses port (10000)
+    // Standard Redis uses sslPort (6380) for TLS
+    // Enterprise Redis uses port 10000 for BOTH TLS and non-TLS connections
+    // See: https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-tls-configuration
     if (database.type === AzureRedisType.Standard) {
       return database.sslPort || 6380;
     }
-    return database.port;
+    return database.port || 10000;
+  }
+
+  /**
+   * Add Azure databases from autodiscovery
+   * Fetches connection details and creates databases
+   */
+  async addDatabases(
+    sessionMetadata: SessionMetadata,
+    accountId: string,
+    databases: ImportAzureDatabaseDto[],
+  ): Promise<ImportAzureDatabaseResponse[]> {
+    this.logger.debug(
+      `Adding ${databases.length} Azure database(s) for account ${accountId}`,
+    );
+
+    return Promise.all(
+      databases.map(async (dto): Promise<ImportAzureDatabaseResponse> => {
+        try {
+          this.logger.debug(`[${dto.id}] Fetching connection details...`);
+
+          const connectionDetails = await this.getConnectionDetails(
+            accountId,
+            dto.id,
+          );
+
+          if (!connectionDetails) {
+            this.logger.debug(
+              `[${dto.id}] Failed to get connection details - no details returned`,
+            );
+            return {
+              id: dto.id,
+              status: ActionStatus.Fail,
+              message: 'Failed to get connection details',
+            };
+          }
+
+          // Find database details for name and type
+          const databaseDetails = await this.findDatabaseById(
+            accountId,
+            dto.id,
+          );
+
+          this.logger.debug(
+            `[${dto.id}] Connection details: host=${connectionDetails.host}, port=${connectionDetails.port}, authType=${connectionDetails.authType}, tls=${connectionDetails.tls}`,
+          );
+
+          const providerDetails =
+            connectionDetails.authType === AzureAuthType.EntraId
+              ? {
+                  provider: CloudProvider.Azure,
+                  authType: connectionDetails.authType,
+                  azureAccountId: connectionDetails.azureAccountId,
+                }
+              : undefined;
+
+          // Determine the hosting provider based on database type
+          const provider =
+            databaseDetails?.type === AzureRedisType.Enterprise
+              ? HostingProvider.AZURE_CACHE_REDIS_ENTERPRISE
+              : HostingProvider.AZURE_CACHE;
+
+          this.logger.debug(
+            `[${dto.id}] Creating database: name=${databaseDetails?.name}, type=${databaseDetails?.type}, provider=${provider}`,
+          );
+
+          await this.databaseService.create(sessionMetadata, {
+            host: connectionDetails.host,
+            port: connectionDetails.port,
+            name: databaseDetails?.name || 'Azure Redis',
+            nameFromProvider: databaseDetails?.name,
+            username: connectionDetails.username,
+            password: connectionDetails.password,
+            tls: connectionDetails.tls,
+            provider,
+            providerDetails,
+          });
+
+          this.logger.debug(`[${dto.id}] Successfully added database`);
+
+          return {
+            id: dto.id,
+            status: ActionStatus.Success,
+            message: 'Added',
+          };
+        } catch (error) {
+          this.logger.error(
+            `[${dto.id}] Failed to add database: ${error.message}`,
+          );
+          return {
+            id: dto.id,
+            status: ActionStatus.Fail,
+            message: this.getUserFriendlyErrorMessage(error),
+          };
+        }
+      }),
+    );
   }
 }
