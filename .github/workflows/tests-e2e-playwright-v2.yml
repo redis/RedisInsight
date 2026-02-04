@@ -194,7 +194,7 @@ jobs:
       - name: Install system dependencies for Electron/AppImage
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y kmod libfuse2 xvfb net-tools xdotool desktop-file-utils fluxbox netcat
+          sudo apt-get install -y kmod libfuse2 xvfb net-tools xdotool desktop-file-utils fluxbox netcat-openbsd
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
