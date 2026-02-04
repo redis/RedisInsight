@@ -1,0 +1,83 @@
+name: 🚀 Release
+
+on:
+  push:
+    branches:
+      - 'release/**'
+
+jobs:
+  tests:
+    name: Run all tests
+    uses: ./.github/workflows/tests.yml
+    secrets: inherit
+    with:
+      short_rte_list: false
+      pre_release: true
+
+  staging-builds:
+    name: Staging - Create builds
+    uses: ./.github/workflows/build.yml
+    needs: tests
+    secrets: inherit
+    with:
+      environment: 'staging'
+      target: 'all'
+
+  staging-aws-upload:
+    name: Staging - Upload to AWS
+    uses: ./.github/workflows/aws-upload-dev.yml
+    needs: staging-builds
+    secrets: inherit
+    if: always() && needs.staging-builds.result == 'success'
+    with:
+      pre-release: true
+
+  staging-remove-artifacts:
+    name: Staging - Remove artifacts
+    needs: staging-aws-upload
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove all artifacts
+        uses: ./.github/actions/remove-artifacts
+
+  prod-builds:
+    name: Prod - Create builds
+    uses: ./.github/workflows/build.yml
+    needs: tests
+    secrets: inherit
+    with:
+      environment: 'production'
+      target: 'all'
+
+  prod-virustotal:
+    name: Prod - Virustotal
+    uses: ./.github/workflows/virustotal.yml
+    needs: prod-builds
+    secrets: inherit
+    with:
+      skip_report: true
+
+  prod-aws-upload:
+    name: Prod - Release to AWS S3
+    uses: ./.github/workflows/aws-upload-prod.yml
+    needs: prod-virustotal
+    secrets: inherit
+
+  prod-publish-stores:
+    name: Prod - Publish to stores
+    uses: ./.github/workflows/publish-stores.yml
+    needs: prod-aws-upload
+    secrets: inherit
+
+  prod-remove-artifacts:
+    name: Prod - Remove artifacts
+    needs: prod-aws-upload
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove all artifacts
+        uses: ./.github/actions/remove-artifacts
+
