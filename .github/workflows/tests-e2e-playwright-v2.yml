@@ -111,16 +111,25 @@ jobs:
       - name: Build statics
         run: yarn build:statics
 
+      - name: Start API server
+        run: yarn dev:api &
+
+      - name: Start UI dev server
+        run: yarn dev:ui &
+
+      - name: Wait for servers to be ready
+        run: |
+          echo "Waiting for UI server (http://localhost:8080)..."
+          npx wait-on http://localhost:8080 --timeout 60000
+          echo "UI server is ready!"
+
+          echo "Waiting for API server (http://localhost:5540/api/docs)..."
+          npx wait-on http://localhost:5540/api/docs --timeout 60000
+          echo "API server is ready!"
+
       - name: Start Redis test environment
         run: |
           docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml up --detach --force-recreate
-
-      - name: Start application (dev mode)
-        run: |
-          yarn dev:api &
-          yarn dev:ui &
-          # Wait for the app to be ready
-          npx wait-on http://localhost:8080 http://localhost:5540/api/info --timeout 120000
 
       - name: Run Playwright tests (Chromium)
         working-directory: ${{ env.E2E_DIR }}
@@ -137,6 +146,13 @@ jobs:
             ${{ env.E2E_DIR }}/test-results
             ${{ env.E2E_DIR }}/playwright-report
           retention-days: 14
+
+      - name: Stop application
+        if: always()
+        run: |
+          # Kill any node processes running the app
+          pkill -f "nest start" || true
+          pkill -f "vite dev" || true
 
       - name: Stop Redis test environment
         if: always()
