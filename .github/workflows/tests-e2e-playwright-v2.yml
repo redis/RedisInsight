@@ -111,10 +111,15 @@ jobs:
       - name: Build statics
         run: yarn build:statics
 
+      - name: Build API
+        run: yarn --cwd redisinsight/api build
+
       - name: Start API server
         run: |
-          yarn dev:api > /tmp/api-server.log 2>&1 &
-          echo "API server started in background, logging to /tmp/api-server.log"
+          # Run the built API directly (not in watch mode) to avoid potential issues
+          # with nest --watch in background/CI environments
+          NODE_ENV=development node redisinsight/api/dist/src/main.js > /tmp/api-server.log 2>&1 &
+          echo "API server started in background (pid: $!), logging to /tmp/api-server.log"
 
       - name: Start UI dev server
         run: |
@@ -127,10 +132,8 @@ jobs:
           npx wait-on http://localhost:8080 --timeout 120000
           echo "UI server is ready!"
 
-          echo "Waiting for API server..."
-          # Use http-get:// prefix and force IPv4 with 127.0.0.1
-          # Also try multiple endpoints and use verbose mode
-          for i in {1..30}; do
+          echo "Waiting for API server (http://127.0.0.1:5540/api/health)..."
+          for i in {1..60}; do
             echo "Attempt $i: Checking API health..."
             if curl -s -f http://127.0.0.1:5540/api/health > /dev/null 2>&1; then
               echo "API server is ready!"
@@ -190,7 +193,7 @@ jobs:
         if: always()
         run: |
           # Kill any node processes running the app
-          pkill -f "nest start" || true
+          pkill -f "dist/src/main" || true
           pkill -f "vite dev" || true
 
       - name: Stop Redis test environment
