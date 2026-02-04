@@ -411,17 +411,14 @@ export class AzureAutodiscoveryService {
           }
 
           this.logger.debug(
-            `[${dto.id}] Connection details: host=${connectionDetails.host}, port=${connectionDetails.port}, authType=${connectionDetails.authType}, tls=${connectionDetails.tls}`,
+            `[${dto.id}] Connection details: host=${connectionDetails.host}, port=${connectionDetails.port}, tls=${connectionDetails.tls}`,
           );
 
-          const providerDetails =
-            connectionDetails.authType === AzureAuthType.EntraId
-              ? {
-                  provider: CloudProvider.Azure,
-                  authType: connectionDetails.authType,
-                  azureAccountId: connectionDetails.azureAccountId,
-                }
-              : undefined;
+          const providerDetails = {
+            provider: CloudProvider.Azure,
+            authType: connectionDetails.authType,
+            azureAccountId: connectionDetails.azureAccountId,
+          };
 
           const provider =
             database.type === AzureRedisType.Enterprise
