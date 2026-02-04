@@ -1,3 +1,5 @@
+import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+
 /**
  * Frontend types for index information.
  * The hook transforms API response (DTO) to these types.
@@ -6,7 +8,7 @@
 export interface IndexAttribute {
   identifier: string
   attribute: string
-  type: string
+  type: FieldTypes
   weight?: string
 }
 

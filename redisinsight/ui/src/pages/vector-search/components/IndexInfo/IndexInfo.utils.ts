@@ -1,4 +1,3 @@
-import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import {
   IndexInfo,
   IndexOptions,
@@ -16,7 +15,7 @@ export const parseIndexAttributes = (
   indexInfo.attributes.map((field) => ({
     identifier: field.identifier,
     attribute: field.attribute,
-    type: field.type as FieldTypes,
+    type: field.type,
     weight: field.weight,
   }))
 
