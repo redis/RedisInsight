@@ -26,6 +26,7 @@ import {
   mockRedisClientFactory,
   mockRedisClientStorage,
   mockSessionMetadata,
+  mockCredentialProvider,
 } from 'src/__mocks__';
 import { DatabaseAnalytics } from 'src/modules/database/database.analytics';
 import { DatabaseService } from 'src/modules/database/database.service';
@@ -41,6 +42,7 @@ import {
   RedisConnectionSentinelMasterRequiredException,
   RedisConnectionUnavailableException,
 } from 'src/modules/redis/exceptions/connection';
+import { CredentialStrategyProvider } from 'src/modules/database/credentials';
 import { ExportDatabase } from './models/export-database';
 
 const updateDatabaseTests = [
@@ -105,6 +107,10 @@ describe('DatabaseService', () => {
         {
           provide: DatabaseAnalytics,
           useFactory: mockDatabaseAnalytics,
+        },
+        {
+          provide: CredentialStrategyProvider,
+          useFactory: mockCredentialProvider,
         },
       ],
     }).compile();

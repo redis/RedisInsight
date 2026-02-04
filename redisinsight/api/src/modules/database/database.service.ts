@@ -28,6 +28,7 @@ import {
 } from 'src/modules/redis/redis.client.factory';
 import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
 import { RedisConnectionSentinelMasterRequiredException } from 'src/modules/redis/exceptions/connection';
+import { CredentialStrategyProvider } from 'src/modules/database/credentials';
 
 @Injectable()
 export class DatabaseService {
@@ -68,6 +69,7 @@ export class DatabaseService {
     private databaseFactory: DatabaseFactory,
     private analytics: DatabaseAnalytics,
     private eventEmitter: EventEmitter2,
+    private credentialProvider: CredentialStrategyProvider,
   ) {}
 
   static isConnectionAffected(dto: object) {
@@ -179,7 +181,7 @@ export class DatabaseService {
     try {
       this.logger.debug('Creating new database.', sessionMetadata);
 
-      const database = await this.repository.create(
+      let database = await this.repository.create(
         sessionMetadata,
         {
           ...(await this.databaseFactory.createDatabaseModel(
@@ -194,6 +196,8 @@ export class DatabaseService {
 
       // todo: clarify if we need this and if yes - rethink implementation
       try {
+        database = await this.credentialProvider.resolve(database);
+
         const client = await this.redisClientFactory.createClient(
           {
             sessionMetadata,
