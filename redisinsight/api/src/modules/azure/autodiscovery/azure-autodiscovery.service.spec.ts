@@ -9,6 +9,7 @@ import { AzureRedisDatabase } from '../models';
 import { ActionStatus } from 'src/common/models';
 import { HostingProvider } from 'src/modules/database/entities/database.entity';
 import { CloudProvider } from 'src/modules/database/models/provider-details';
+import ERROR_MESSAGES from 'src/constants/error-messages';
 
 jest.mock('axios');
 
@@ -566,7 +567,7 @@ describe('AzureAutodiscoveryService', () => {
       expect(result).toHaveLength(1);
       expect(result[0].id).toBe(databaseId);
       expect(result[0].status).toBe(ActionStatus.Fail);
-      expect(result[0].message).toBe('Database not found');
+      expect(result[0].message).toBe(ERROR_MESSAGES.AZURE_DATABASE_NOT_FOUND);
       expect(mockDatabaseService.create).not.toHaveBeenCalled();
     });
 
@@ -590,7 +591,9 @@ describe('AzureAutodiscoveryService', () => {
 
       expect(result).toHaveLength(1);
       expect(result[0].status).toBe(ActionStatus.Fail);
-      expect(result[0].message).toBe('Failed to get connection details');
+      expect(result[0].message).toBe(
+        ERROR_MESSAGES.AZURE_FAILED_TO_GET_CONNECTION_DETAILS,
+      );
       expect(mockDatabaseService.create).not.toHaveBeenCalled();
     });
 
@@ -622,7 +625,7 @@ describe('AzureAutodiscoveryService', () => {
 
       expect(result).toHaveLength(1);
       expect(result[0].status).toBe(ActionStatus.Fail);
-      expect(result[0].message).toContain('Failed to authenticate');
+      expect(result[0].message).toBe(ERROR_MESSAGES.AZURE_ENTRA_ID_AUTH_FAILED);
     });
 
     it('should handle multiple databases with mixed results', async () => {
@@ -657,7 +660,7 @@ describe('AzureAutodiscoveryService', () => {
       expect(result).toHaveLength(2);
       expect(result[0].status).toBe(ActionStatus.Success);
       expect(result[1].status).toBe(ActionStatus.Fail);
-      expect(result[1].message).toBe('Database not found');
+      expect(result[1].message).toBe(ERROR_MESSAGES.AZURE_DATABASE_NOT_FOUND);
     });
   });
 });

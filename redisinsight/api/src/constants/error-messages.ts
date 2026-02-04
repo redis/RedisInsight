@@ -167,4 +167,11 @@ export default {
 
   // database settings
   DATABASE_SETTINGS_NOT_FOUND: 'Could not find settings for this database',
+
+  // Azure autodiscovery
+  AZURE_DATABASE_NOT_FOUND: 'Database not found',
+  AZURE_FAILED_TO_GET_CONNECTION_DETAILS: 'Failed to get connection details',
+  AZURE_ENTRA_ID_AUTH_FAILED:
+    'Failed to authenticate with Entra ID. Please make sure your user has the correct permissions (Data Owner, Data Contributor, or Data Reader role).',
+  AZURE_UNEXPECTED_ERROR: 'An unexpected error occurred',
 };

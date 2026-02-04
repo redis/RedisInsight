@@ -20,6 +20,7 @@ import { ActionStatus, SessionMetadata } from 'src/common/models';
 import { HostingProvider } from 'src/modules/database/entities/database.entity';
 import { CloudProvider } from 'src/modules/database/models/provider-details';
 import { ImportAzureDatabaseDto, ImportAzureDatabaseResponse } from './dto';
+import ERROR_MESSAGES from 'src/constants/error-messages';
 
 @Injectable()
 export class AzureAutodiscoveryService {
@@ -41,10 +42,10 @@ export class AzureAutodiscoveryService {
       message.includes('noauth') ||
       message.includes('please check the username or password')
     ) {
-      return 'Failed to authenticate with Entra ID. Please make sure your user has the correct permissions (Data Owner, Data Contributor, or Data Reader role).';
+      return ERROR_MESSAGES.AZURE_ENTRA_ID_AUTH_FAILED;
     }
 
-    return error?.message || 'An unexpected error occurred';
+    return error?.message || ERROR_MESSAGES.AZURE_UNEXPECTED_ERROR;
   }
 
   private isValidSubscriptionId(subscriptionId: string): boolean {
@@ -390,7 +391,7 @@ export class AzureAutodiscoveryService {
             return {
               id: dto.id,
               status: ActionStatus.Fail,
-              message: 'Database not found',
+              message: ERROR_MESSAGES.AZURE_DATABASE_NOT_FOUND,
             };
           }
 
@@ -406,7 +407,7 @@ export class AzureAutodiscoveryService {
             return {
               id: dto.id,
               status: ActionStatus.Fail,
-              message: 'Failed to get connection details',
+              message: ERROR_MESSAGES.AZURE_FAILED_TO_GET_CONNECTION_DETAILS,
             };
           }
 
