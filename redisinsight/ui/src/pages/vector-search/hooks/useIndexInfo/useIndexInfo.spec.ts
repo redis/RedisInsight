@@ -229,13 +229,20 @@ describe('useIndexInfo', () => {
     expect(result.current.loading).toBe(false)
   })
 
-  it('should reset state when indexName changes to empty string', async () => {
+  it('should not get stuck in loading state when indexName becomes empty while fetch is in progress', async () => {
+    let resolveRequest: () => void
+    const requestPromise = new Promise<void>((resolve) => {
+      resolveRequest = resolve
+    })
     const mockApiResponse = indexInfoFactory.build()
 
     mswServer.use(
       http.post(
         getMswURL(getUrl(instanceId, ApiEndpoints.REDISEARCH_INFO)),
-        async () => HttpResponse.json(mockApiResponse, { status: 200 }),
+        async () => {
+          await requestPromise
+          return HttpResponse.json(mockApiResponse, { status: 200 })
+        },
       ),
     )
 
@@ -250,21 +257,21 @@ describe('useIndexInfo', () => {
       },
     )
 
-    // Wait for fetch to complete
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false)
-    })
+    expect(result.current.loading).toBe(true)
 
-    // Verify we have data
-    expect(result.current.indexInfo).not.toBeNull()
-    expect(result.current.error).toBeNull()
-
-    // Change indexName to empty string
+    // Change indexName to empty while fetch is in progress
     rerender({ name: '' })
 
-    // State should be reset to initial values
-    expect(result.current.indexInfo).toBeNull()
-    expect(result.current.error).toBeNull()
+    // Loading should be reset (not stuck)
+    expect(result.current.loading).toBe(false)
+
+    // Complete the in-flight request
+    await act(async () => {
+      resolveRequest!()
+      await new Promise((resolve) => setTimeout(resolve, 50))
+    })
+
+    // Should remain stable
     expect(result.current.loading).toBe(false)
   })
 })

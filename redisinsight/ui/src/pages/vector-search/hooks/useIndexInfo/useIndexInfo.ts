@@ -77,8 +77,9 @@ export const useIndexInfo = ({
     if (indexName) {
       fetchIndexInfo()
     } else {
-      // Reset state when indexName becomes empty
-      setIndexInfo(null)
+      // Reset loading and error when indexName becomes empty
+      // (prevents stuck loading if a fetch was in progress)
+      setLoading(false)
       setError(null)
     }
 
