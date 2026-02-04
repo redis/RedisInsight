@@ -117,60 +117,12 @@ jobs:
       - name: Build API
         run: yarn --cwd redisinsight/api build
 
-      - name: Start API server
+      - name: Start application (dev mode)
         run: |
-          # Run the built API directly (not in watch mode) to avoid potential issues
-          # with nest --watch in background/CI environments
-          NODE_ENV=development node redisinsight/api/dist/src/main.js > /tmp/api-server.log 2>&1 &
-          echo "API server started in background (pid: $!), logging to /tmp/api-server.log"
-
-      - name: Start UI dev server
-        run: |
-          yarn dev:ui > /tmp/ui-server.log 2>&1 &
-          echo "UI server started in background, logging to /tmp/ui-server.log"
-
-      - name: Wait for servers to be ready
-        run: |
-          echo "Waiting for UI server (http://localhost:8080)..."
-          npx wait-on http://localhost:8080 --timeout 120000
-          echo "UI server is ready!"
-
-          echo "Waiting for API server (http://127.0.0.1:5540/api/health)..."
-          for i in {1..60}; do
-            echo "Attempt $i: Checking API health..."
-            if curl -s -f http://127.0.0.1:5540/api/health > /dev/null 2>&1; then
-              echo "API server is ready!"
-              exit 0
-            fi
-            echo "API not ready yet, waiting 2 seconds..."
-            sleep 2
-          done
-          echo "API server failed to start within 120 seconds"
-          exit 1
-
-      - name: Debug - Check server status
-        if: ${{ failure() }}
-        run: |
-          echo "=== API Server Log (last 200 lines) ==="
-          tail -200 /tmp/api-server.log || echo "No API log file found"
-
-          echo ""
-          echo "=== UI Server Log (last 50 lines) ==="
-          tail -50 /tmp/ui-server.log || echo "No UI log file found"
-
-          echo ""
-          echo "=== Checking running processes ==="
-          ps aux | grep -E "(node|nest|vite)" || true
-
-          echo ""
-          echo "=== Checking listening ports ==="
-          ss -tlnp | grep -E "(8080|5540)" || netstat -tlnp 2>/dev/null | grep -E "(8080|5540)" || true
-
-          echo ""
-          echo "=== Trying to curl the endpoints ==="
-          curl -v http://localhost:8080 2>&1 | head -30 || true
-          echo ""
-          curl -v http://127.0.0.1:5540/api/health 2>&1 | head -50 || true
+            yarn dev:api &
+            yarn dev:ui &
+            # Wait for the app to be ready
+            npx wait-on http://localhost:8080 http://localhost:5540/api/health --timeout 60000
 
       - name: Start Redis test environment
         run: |
