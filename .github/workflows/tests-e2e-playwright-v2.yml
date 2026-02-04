@@ -120,12 +120,23 @@ jobs:
       - name: Wait for servers to be ready
         run: |
           echo "Waiting for UI server (http://localhost:8080)..."
-          npx wait-on http://localhost:8080 --timeout 60000
+          npx wait-on http://localhost:8080 --timeout 120000
           echo "UI server is ready!"
 
-          echo "Waiting for API server (http://localhost:5540/api/health)..."
-          npx wait-on http://localhost:5540/api/health --timeout 60000
-          echo "API server is ready!"
+          echo "Waiting for API server..."
+          # Use http-get:// prefix and force IPv4 with 127.0.0.1
+          # Also try multiple endpoints and use verbose mode
+          for i in {1..60}; do
+            echo "Attempt $i: Checking API health..."
+            if curl -s -f http://127.0.0.1:5540/api/health > /dev/null 2>&1; then
+              echo "API server is ready!"
+              exit 0
+            fi
+            echo "API not ready yet, waiting 2 seconds..."
+            sleep 2
+          done
+          echo "API server failed to start within 120 seconds"
+          exit 1
 
       - name: Debug - Check server status
         if: ${{ failure() }}
@@ -139,14 +150,19 @@ jobs:
 
           echo ""
           echo "=== Trying to curl the endpoints ==="
-          curl -v http://localhost:8080 2>&1 | head -30 || true
+          curl -v http://127.0.0.1:8080 2>&1 | head -30 || true
           echo ""
-          curl -v http://localhost:5540/api/health 2>&1 | head -30 || true
+          curl -v http://127.0.0.1:5540/api/health 2>&1 | head -50 || true
+          echo ""
+          curl -v http://127.0.0.1:5540/api/info 2>&1 | head -50 || true
 
           echo ""
-          echo "=== Last 100 lines of any node output ==="
-          # Check if there are any log files
-          find /tmp -name "*.log" -mmin -5 2>/dev/null | head -5 | xargs cat 2>/dev/null || true
+          echo "=== Check if API process is still running ==="
+          pgrep -f "dist/src/main" && echo "API process is running" || echo "API process NOT running"
+
+          echo ""
+          echo "=== Check API process memory/CPU ==="
+          ps aux | grep "dist/src/main" | grep -v grep || true
 
       - name: Start Redis test environment
         run: |
