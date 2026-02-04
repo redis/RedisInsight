@@ -54,7 +54,6 @@ import KeyRowType from 'uiSrc/pages/browser/components/key-row-type'
 import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
 
 import * as S from './KeyList.styles'
-import styles from './styles.module.scss'
 import NoKeysMessage from '../no-keys-message'
 import { DeleteKeyPopover } from '../delete-key-popover/DeleteKeyPopover'
 import { useKeyFormat } from '../use-key-format'
@@ -506,7 +505,7 @@ const KeyList = forwardRef((props: Props, ref) => {
   return (
     <S.Page>
       <S.Content>
-        <S.TableContainer className={styles.table}>
+        <S.TableContainer>
           <div className="key-list-table" data-testid="keyList-table">
             {searchMode === SearchMode.Pattern && VirtualizeTable()}
             {searchMode !== SearchMode.Pattern && VirtualizeTable()}

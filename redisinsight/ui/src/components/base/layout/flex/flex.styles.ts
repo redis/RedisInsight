@@ -1,21 +1,7 @@
-import React, { HTMLAttributes, PropsWithChildren, ReactNode } from 'react'
-
 import styled, { css } from 'styled-components'
-import { CommonProps, Theme } from 'uiSrc/components/base/theme/types'
-
-export const gapSizes = ['none', 'xs', 's', 'm', 'l', 'xl', 'xxl'] as const
-export type GapSizeType = (typeof gapSizes)[number]
-export const columnCount = [1, 2, 3, 4] as const
-export type ColumnCountType = (typeof columnCount)[number]
-
-export type GridProps = HTMLAttributes<HTMLDivElement> & {
-  children: ReactNode
-  columns?: ColumnCountType
-  className?: string
-  gap?: GapSizeType
-  centered?: boolean
-  responsive?: boolean
-}
+import { Theme } from 'uiSrc/components/base/theme/types'
+import { flexItemStyles } from './flex.constants'
+import { FlexItemProps, GridProps, StyledFlexProps } from './flex.types'
 
 const flexGridStyles = {
   columns: {
@@ -34,37 +20,6 @@ const flexGridStyles = {
     place-content: center;
   `,
 }
-
-export const StyledGrid = styled.div<GridProps>`
-  display: grid;
-  grid-template-columns: ${({ columns = 1 }) =>
-    flexGridStyles.columns[columns] ?? flexGridStyles.columns['1']};
-  gap: ${({ gap = 'none' }) => flexGroupStyles.gapSizes[gap] ?? '0'};
-  ${({ centered = false }) => (centered ? flexGroupStyles.centered : '')}
-  ${({ responsive = false }) => (responsive ? flexGridStyles.responsive : '')}
-`
-
-export const alignValues = [
-  'center',
-  'stretch',
-  'baseline',
-  'start',
-  'end',
-] as const
-export const justifyValues = [
-  'center',
-  'start',
-  'end',
-  'between',
-  'around',
-  'evenly',
-] as const
-export const dirValues = [
-  'row',
-  'rowReverse',
-  'column',
-  'columnReverse',
-] as const
 
 const flexGroupStyles = {
   wrap: css`
@@ -123,42 +78,15 @@ const flexGroupStyles = {
   `,
 }
 
-export type FlexProps = PropsWithChildren &
-  CommonProps &
-  React.HTMLAttributes<HTMLDivElement> & {
-    gap?: GapSizeType
-    align?: (typeof alignValues)[number]
-    direction?: (typeof dirValues)[number]
-    justify?: (typeof justifyValues)[number]
-    centered?: boolean
-    responsive?: boolean
-    wrap?: boolean
-    grow?: boolean
-    full?: boolean
-  }
+export const StyledGrid = styled.div<GridProps>`
+  display: grid;
+  grid-template-columns: ${({ columns = 1 }) =>
+    flexGridStyles.columns[columns] ?? flexGridStyles.columns['1']};
+  gap: ${({ gap = 'none' }) => flexGroupStyles.gapSizes[gap] ?? '0'};
+  ${({ centered = false }) => (centered ? flexGroupStyles.centered : '')}
+  ${({ responsive = false }) => (responsive ? flexGridStyles.responsive : '')}
+`
 
-type StyledFlexProps = Omit<
-  FlexProps,
-  | 'grow'
-  | 'full'
-  | 'gap'
-  | 'align'
-  | 'direction'
-  | 'justify'
-  | 'centered'
-  | 'responsive'
-  | 'wrap'
-> & {
-  $grow?: boolean
-  $gap?: GapSizeType
-  $align?: FlexProps['align']
-  $direction?: FlexProps['direction']
-  $justify?: FlexProps['justify']
-  $centered?: boolean
-  $responsive?: boolean
-  $wrap?: boolean
-  $full?: boolean
-}
 export const StyledFlex = styled.div<StyledFlexProps>`
   display: flex;
   flex-grow: ${({ $grow = true }) => ($grow ? 1 : 0)};
@@ -180,126 +108,6 @@ export const StyledFlex = styled.div<StyledFlexProps>`
         : 'height: 100%;' // else, make it full height
       : ''}
 `
-export const flexItemStyles = {
-  growZero: css`
-    flex-grow: 0;
-    flex-basis: auto;
-  `,
-  grow: css`
-    flex-basis: 0;
-    min-width: 0;
-  `,
-  growSizes: {
-    '1': css`
-      flex-grow: 1;
-    `,
-    '2': css`
-      flex-grow: 2;
-    `,
-    '3': css`
-      flex-grow: 3;
-    `,
-    '4': css`
-      flex-grow: 4;
-    `,
-    '5': css`
-      flex-grow: 5;
-    `,
-    '6': css`
-      flex-grow: 6;
-    `,
-    '7': css`
-      flex-grow: 7;
-    `,
-    '8': css`
-      flex-grow: 8;
-    `,
-    '9': css`
-      flex-grow: 9;
-    `,
-    '10': css`
-      flex-grow: 10;
-    `,
-  },
-  padding: {
-    0: css`
-      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space000};
-    `,
-    1: css`
-      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space010};
-    `,
-    2: css`
-      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space025};
-    `,
-    3: css`
-      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space050};
-    `,
-    4: css`
-      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
-    `,
-    5: css`
-      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space150};
-    `,
-    6: css`
-      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space200};
-    `,
-    7: css`
-      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space250};
-    `,
-    8: css`
-      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space300};
-    `,
-    9: css`
-      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space400};
-    `,
-    10: css`
-      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space500};
-    `,
-    11: css`
-      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space550};
-    `,
-    12: css`
-      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space600};
-    `,
-    13: css`
-      padding: ${({ theme }: { theme: Theme }) => theme.core.space.space800};
-    `,
-  },
-}
-
-export const VALID_GROW_VALUES = [
-  null,
-  undefined,
-  true,
-  false,
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-] as const
-
-export type PaddingType =
-  | keyof typeof flexItemStyles.padding
-  | null
-  | undefined
-  | true
-  | false
-
-export type FlexItemProps = React.HTMLAttributes<HTMLDivElement> &
-  PropsWithChildren &
-  CommonProps & {
-    grow?: (typeof VALID_GROW_VALUES)[number]
-    $direction?: (typeof dirValues)[number]
-    $padding?: PaddingType
-    $gap?: GapSizeType
-  }
 
 export const StyledFlexItem = styled.div<FlexItemProps>`
   display: flex;

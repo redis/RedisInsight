@@ -1,40 +1,8 @@
-import React, { HTMLAttributes } from 'react'
 import { useTheme } from '@redis-ui/styles'
 import { Typography } from '@redis-ui/components'
 import styled, { css } from 'styled-components'
 import { CommonProps } from 'uiSrc/components/base/theme/types'
-
-export type BodyProps = React.ComponentProps<typeof Typography.Body>
-
-export type EuiColorNames =
-  | 'default'
-  | 'subdued'
-  | 'danger'
-  | 'ghost'
-  | 'accent'
-  | 'warning'
-  | 'success'
-
-export type ColorType = BodyProps['color'] | EuiColorNames | (string & {})
-export interface MapProps extends HTMLAttributes<HTMLElement> {
-  $color?: ColorType
-  $align?: 'left' | 'center' | 'right'
-}
-type BodySizesLowerCaseType = 'm' | 's' | 'xs'
-type TextSizeType = BodyProps['size'] | BodySizesLowerCaseType
-
-export type ColorTextProps = Omit<BodyProps, 'color' | 'size' | 'component'> & {
-  color?: ColorType
-  size?: TextSizeType
-  component?: 'div' | 'span'
-}
-
-export type TextProps = Omit<BodyProps, 'color' | 'size'> &
-  CommonProps & {
-    color?: ColorType
-    size?: TextSizeType
-    textAlign?: 'left' | 'center' | 'right'
-  }
+import type { BodyProps, ColorType, MapProps, TextSizeType } from './text.types'
 
 export const useColorTextStyles = ({ $color }: MapProps = {}) => {
   const theme = useTheme()

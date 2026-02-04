@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { isNull, last, toString } from 'lodash'
-import cx from 'classnames'
 
 import {
   streamSelector,
@@ -33,7 +32,7 @@ import StreamDataViewWrapper from '../stream-data-view'
 import StreamTabs from '../stream-tabs'
 import { MAX_FORMAT_LENGTH_STREAM_TIMESTAMP } from '../constants'
 
-import styles from './styles.module.scss'
+import * as S from './StreamDetailsBody.styles'
 
 export interface Props {}
 
@@ -198,7 +197,7 @@ const StreamDetailsBody = (props: Props) => {
   }, [])
 
   return (
-    <Col data-testid="stream-details" className={styles.container} gap="m">
+    <S.Container data-testid="stream-details" gap="m">
       {(loading || loadingGroups) && (
         <ProgressBarLoader color="primary" data-testid="progress-key-stream" />
       )}
@@ -216,9 +215,9 @@ const StreamDetailsBody = (props: Props) => {
           handleUpdateRangeMin={handleUpdateRangeMin}
         />
       ) : (
-        <div className={styles.rangeWrapper}>
-          <div className={cx(styles.sliderTrack, styles.mockRange)} />
-        </div>
+        <S.RangeWrapper>
+          <S.MockRange />
+        </S.RangeWrapper>
       )}
       <StreamTabs />
       {viewType === StreamViewType.Data && (
@@ -231,7 +230,7 @@ const StreamDetailsBody = (props: Props) => {
       {viewType === StreamViewType.Messages && (
         <MessagesViewWrapper {...props} />
       )}
-    </Col>
+    </S.Container>
   )
 }
 

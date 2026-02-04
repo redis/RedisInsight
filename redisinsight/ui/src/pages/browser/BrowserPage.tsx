@@ -1,9 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
 import { isNumber } from 'lodash'
-import styled from 'styled-components'
 
 import {
   formatLongName,
@@ -22,11 +20,11 @@ import {
   toggleBrowserFullScreen,
 } from 'uiSrc/slices/browser/keys'
 import {
-  setBrowserSelectedKey,
   appContextBrowser,
-  setBrowserPanelSizes,
-  setBrowserBulkActionOpen,
   appContextSelector,
+  setBrowserBulkActionOpen,
+  setBrowserPanelSizes,
+  setBrowserSelectedKey,
 } from 'uiSrc/slices/app/context'
 import { resetErrors } from 'uiSrc/slices/app/notifications'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
@@ -43,12 +41,9 @@ import {
 import OnboardingStartPopover from 'uiSrc/pages/browser/components/onboarding-start-popover'
 import { sidePanelsSelector } from 'uiSrc/slices/panels/sidePanels'
 import { useStateWithContext } from 'uiSrc/services/hooks'
-
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
 import {
   ResizableContainer,
-  ResizablePanel,
   ResizablePanelHandle,
 } from 'uiSrc/components/base/layout'
 
@@ -58,18 +53,13 @@ import BrowserSearchPanel from './components/browser-search-panel'
 import BrowserLeftPanel from './components/browser-left-panel'
 import BrowserRightPanel from './components/browser-right-panel'
 
-import styles from './styles.module.scss'
+import * as S from './BrowserPage.styles'
 
 const widthResponsiveSize = 1280
 const widthExplorePanel = 460
 
 export const firstPanelId = 'keys'
 export const secondPanelId = 'keyDetails'
-
-const BorderedResizablePanel = styled(ResizablePanel)`
-  border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
-`
 
 const isOneSideMode = (isInsightsOpen: boolean) =>
   globalThis.innerWidth <
@@ -300,43 +290,33 @@ const BrowserPage = () => {
     (arePanelsCollapsed && isRightPanelOpen)
 
   return (
-    <div
-      className={`browserPage ${styles.container}`}
-      data-testid="browser-page"
-    >
+    <S.Container className="browserPage" data-testid="browser-page">
       {arePanelsCollapsed && isRightPanelOpen && !isBrowserFullScreen && (
-        <EmptyButton
+        <S.BackBtn
           icon={ArrowLeftIcon}
           size="small"
           onClick={closePanel}
-          className={styles.backBtn}
           data-testid="back-right-panel-btn"
         >
           Back
-        </EmptyButton>
+        </S.BackBtn>
       )}
-      <div
-        className={cx({
-          [styles.hidden]: isRightPanelFullScreen,
-        })}
-      >
+      <S.HiddenWrapper $hidden={isRightPanelFullScreen}>
         <BrowserSearchPanel handleCreateIndexPanel={handleCreateIndexPanel} />
-      </div>
-      <div className={cx(styles.main)}>
-        <ResizableContainer
-          className={styles.resizableContainer}
+      </S.HiddenWrapper>
+      <S.Main>
+        <S.ResizableContainer
+          as={ResizableContainer}
           direction="horizontal"
           onLayout={onPanelWidthChange}
         >
-          <BorderedResizablePanel
+          <S.BorderedResizablePanel
             defaultSize={sizes && sizes[0] ? sizes[0] : 50}
             minSize={45}
             id={firstPanelId}
-            className={cx({
-              [styles.fullWidth]:
-                arePanelsCollapsed ||
-                (isBrowserFullScreen && !isRightPanelOpen),
-            })}
+            $isFullWidth={
+              arePanelsCollapsed || (isBrowserFullScreen && !isRightPanelOpen)
+            }
           >
             <BrowserLeftPanel
               selectedKey={selectedKey}
@@ -344,21 +324,21 @@ const BrowserPage = () => {
               removeSelectedKey={handleRemoveSelectedKey}
               handleAddKeyPanel={handleAddKeyPanel}
             />
-          </BorderedResizablePanel>
+          </S.BorderedResizablePanel>
           {!arePanelsCollapsed && !isBrowserFullScreen && (
             <ResizablePanelHandle />
           )}
-          <BorderedResizablePanel
+          <S.BorderedResizablePanel
             defaultSize={sizes && sizes[1] ? sizes[1] : 50}
             minSize={45}
             id={secondPanelId}
-            className={cx({
-              [styles.keyDetailsOpen]: isRightPanelOpen,
-              [styles.fullWidth]:
-                arePanelsCollapsed || (isRightPanelOpen && isBrowserFullScreen),
-              [styles.keyDetails]:
-                arePanelsCollapsed || (isRightPanelOpen && isBrowserFullScreen),
-            })}
+            $isFullWidth={
+              arePanelsCollapsed || (isRightPanelOpen && isBrowserFullScreen)
+            }
+            $isKeyDetailsOpen={isRightPanelOpen}
+            $showKeyDetails={
+              arePanelsCollapsed || (isRightPanelOpen && isBrowserFullScreen)
+            }
           >
             <BrowserRightPanel
               arePanelsCollapsed={arePanelsCollapsed}
@@ -371,11 +351,11 @@ const BrowserPage = () => {
               handleBulkActionsPanel={handleBulkActionsPanel}
               closeRightPanels={closeRightPanels}
             />
-          </BorderedResizablePanel>
-        </ResizableContainer>
-      </div>
+          </S.BorderedResizablePanel>
+        </S.ResizableContainer>
+      </S.Main>
       <OnboardingStartPopover />
-    </div>
+    </S.Container>
   )
 }
 

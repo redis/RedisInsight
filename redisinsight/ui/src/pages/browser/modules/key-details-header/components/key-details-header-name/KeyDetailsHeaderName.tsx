@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { isNull } from 'lodash'
-import styled from 'styled-components'
 import { useSelector } from 'react-redux'
 
 import { formatLongName, isEqualBuffers, stringToBuffer } from 'uiSrc/utils'
@@ -22,21 +21,11 @@ import {
   sendEventTelemetry,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
 import { CopyButton } from 'uiSrc/components/copy-button'
-import { TextInput } from 'uiSrc/components/base/inputs'
-import styles from './styles.module.scss'
-
-const StyledInputWrapper = styled(Row)`
-  min-width: 150px;
-`
-
-const StyledFlexWrapper = styled(FlexItem)`
-  max-width: 450px;
-  gap: ${({ theme }) => theme.core.space.space050};
-`
+import * as S from './KeyDetailsHeaderName.styles'
 
 export interface Props {
   onEditKey: (
@@ -135,65 +124,60 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
   }, [keyIsEditing, viewType, instanceId, type])
 
   return (
-    <StyledFlexWrapper
+    <S.FlexWrapper
       direction="row"
       onMouseEnter={onMouseEnterKey}
       onMouseLeave={onMouseLeaveKey}
       onClick={onClickKey}
       data-testid="edit-key-btn"
     >
-      <RiTooltip
-        title="Key Name"
-        position="left"
-        content={tooltipContent}
-        anchorClassName={styles.toolTipAnchorKey}
-      >
-        <InlineItemEditor
-          onApply={() => applyEditKey()}
-          isDisabled={!keyIsEditable}
-          disabledTooltipText={TEXT_UNPRINTABLE_CHARACTERS}
-          onDecline={(event) => cancelEditKey(event)}
-          viewChildrenMode={!keyIsEditing}
-          isLoading={loading}
-          declineOnUnmount={false}
-        >
-          <StyledInputWrapper align="center" style={{ maxWidth: 420 }}>
-            <TextInput
-              autoSize
-              name="key"
-              id="key"
-              ref={keyNameRef}
-              className={cx(styles.keyInput, {
-                [styles.keyInputEditing]: keyIsEditing,
-                'input-warning': !keyIsEditable,
-              })}
-              placeholder={AddCommonFieldsFormConfig?.keyName?.placeholder}
-              value={key!}
-              loading={loading}
-              onChange={onChangeKey}
-              readOnly={!keyIsEditing}
-              autoComplete="off"
-              data-testid="edit-key-input"
-              // todo: do not hardcode. align with other components in a single place
-              style={{ paddingLeft: 9, lineHeight: '31px' }}
-            />
-          </StyledInputWrapper>
-        </InlineItemEditor>
-      </RiTooltip>
+      <S.TooltipAnchorKey>
+        <RiTooltip title="Key Name" position="left" content={tooltipContent}>
+          <InlineItemEditor
+            onApply={() => applyEditKey()}
+            isDisabled={!keyIsEditable}
+            disabledTooltipText={TEXT_UNPRINTABLE_CHARACTERS}
+            onDecline={(event) => cancelEditKey(event)}
+            viewChildrenMode={!keyIsEditing}
+            isLoading={loading}
+            declineOnUnmount={false}
+          >
+            <S.InputWrapper align="center" style={{ maxWidth: 420 }}>
+              <S.StyledTextInput
+                autoSize
+                name="key"
+                id="key"
+                ref={keyNameRef}
+                $isEditing={keyIsEditing}
+                className={cx({ 'input-warning': !keyIsEditable })}
+                placeholder={AddCommonFieldsFormConfig?.keyName?.placeholder}
+                value={key!}
+                loading={loading}
+                onChange={onChangeKey}
+                readOnly={!keyIsEditing}
+                autoComplete="off"
+                data-testid="edit-key-input"
+                style={{ paddingLeft: 9, lineHeight: '31px' }}
+              />
+            </S.InputWrapper>
+          </InlineItemEditor>
+        </RiTooltip>
+      </S.TooltipAnchorKey>
       {!keyIsEditing && keyIsHovering && (
         <Row align="center">
           <RiIcon size="M" type="EditIcon" />
-          <CopyButton
-            copy={key!}
-            onCopy={handleCopy}
-            id={COPY_KEY_NAME_ICON}
-            tooltipConfig={{ anchorClassName: styles.copyKey }}
-            data-testid="copy-key-name"
-            aria-label="Copy Key Name"
-          />
+          <S.CopyKeyWrapper>
+            <CopyButton
+              copy={key!}
+              onCopy={handleCopy}
+              id={COPY_KEY_NAME_ICON}
+              data-testid="copy-key-name"
+              aria-label="Copy Key Name"
+            />
+          </S.CopyKeyWrapper>
         </Row>
       )}
-    </StyledFlexWrapper>
+    </S.FlexWrapper>
   )
 }
 

@@ -33,27 +33,18 @@ import {
   ConsumerDto,
 } from 'apiSrc/modules/browser/stream/dto'
 
-import styles from './styles.module.scss'
+import * as S from './MessageClaimPopover.styles'
 
 const getConsumersOptions = (consumers: ConsumerDto[]) =>
   consumers.map((consumer) => ({
     value: consumer.name?.viewValue,
     inputDisplay: (
-      <Text
-        size="m"
-        className={styles.option}
-        data-testid="consumer-option"
-        component="div"
-      >
-        <Text className={styles.consumerName}>{consumer.name?.viewValue}</Text>
-        <Text
-          size="s"
-          className={styles.pendingCount}
-          data-testid="pending-count"
-        >
+      <S.Option as={Text} size="m" data-testid="consumer-option">
+        <S.ConsumerName as={Text}>{consumer.name?.viewValue}</S.ConsumerName>
+        <S.PendingCount as={Text} size="s" data-testid="pending-count">
           {`pending: ${consumer.pending}`}
-        </Text>
-      </Text>
+        </S.PendingCount>
+      </S.Option>
     ),
   }))
 
@@ -175,7 +166,7 @@ const MessageClaimPopover = (props: Props) => {
       aria-label="Claim pending message"
       onClick={showPopover}
       data-testid="claim-pending-message"
-      className={styles.claimBtn}
+      className={S.claimBtnClassName}
       disabled={consumerOptions.length < 1}
     >
       CLAIM
@@ -194,148 +185,155 @@ const MessageClaimPopover = (props: Props) => {
   )
 
   return (
-    <RiPopover
-      key={id}
-      onWheel={(e) => e.stopPropagation()}
-      anchorPosition="leftCenter"
-      ownFocus
-      isOpen={isOpen}
-      panelPaddingSize="m"
-      anchorClassName="claimPendingMessage"
-      panelClassName={styles.popoverWrapper}
-      closePopover={() => {}}
-      button={consumerOptions.length < 1 ? buttonTooltip : button}
-    >
-      <form>
-        <Row responsive gap="m">
-          <FlexItem>
-            <FormField label="Consumer">
-              <RiSelect
-                value={formik.values.consumerName}
-                options={consumerOptions}
-                valueRender={({ option }) => option.inputDisplay as JSX.Element}
-                className={styles.consumerField}
-                name="consumerName"
-                onChange={(value) =>
-                  formik.setFieldValue('consumerName', value)
-                }
-                data-testid="destination-select"
-              />
-            </FormField>
-          </FlexItem>
-          <FlexItem grow>
-            <FormField label="Min Idle Time">
-              <div className={styles.timeWrapper}>
-                <NumericInput
-                  autoValidate
-                  min={0}
-                  name="minIdleTime"
-                  id="minIdleTime"
-                  data-testid="min-idle-time"
-                  placeholder="0"
-                  className={styles.fieldWithAppend}
-                  value={Number(formik.values.minIdleTime)}
-                  onChange={(value) =>
-                    formik.setFieldValue('minIdleTime', value)
+    <S.ClassStyles>
+      <RiPopover
+        key={id}
+        onWheel={(e) => e.stopPropagation()}
+        anchorPosition="leftCenter"
+        ownFocus
+        isOpen={isOpen}
+        panelPaddingSize="m"
+        anchorClassName="claimPendingMessage"
+        panelClassName={S.popoverWrapperClassName}
+        closePopover={() => {}}
+        button={consumerOptions.length < 1 ? buttonTooltip : button}
+      >
+        <form>
+          <Row responsive gap="m">
+            <FlexItem>
+              <FormField label="Consumer">
+                <RiSelect
+                  value={formik.values.consumerName}
+                  options={consumerOptions}
+                  valueRender={({ option }) =>
+                    option.inputDisplay as JSX.Element
                   }
+                  className={S.consumerFieldClassName}
+                  name="consumerName"
+                  onChange={(value) =>
+                    formik.setFieldValue('consumerName', value)
+                  }
+                  data-testid="destination-select"
                 />
-                <div className={styles.timeUnit}>msec</div>
-              </div>
-            </FormField>
-          </FlexItem>
-        </Row>
-        {isOptionalShow && (
-          <>
-            <Spacer size="xl" />
-            <Row align="center" justify="between" gap="m">
-              <FlexItem grow>
-                <FormField label="Idle Time">
-                  <div className={styles.timeWrapper}>
-                    <NumericInput
-                      autoValidate
-                      min={0}
-                      name="timeCount"
-                      id="timeCount"
-                      data-testid="time-count"
-                      placeholder="0"
-                      className={styles.fieldWithAppend}
-                      value={Number(formik.values.timeCount)}
-                      onChange={(value) =>
-                        formik.setFieldValue('timeCount', value)
-                      }
-                    />
-                    <div className={styles.timeUnit}>msec</div>
-                  </div>
-                </FormField>
-              </FlexItem>
-              <FlexItem className={styles.timeSelect}>
-                <FormField label="Time">
-                  <RiSelect
-                    value={formik.values.timeOption}
-                    options={timeOptions}
-                    className={styles.timeOptionField}
-                    name="consumerName"
-                    onChange={handleChangeTimeFormat}
-                    data-testid="time-option-select"
-                  />
-                </FormField>
-              </FlexItem>
-              <FlexItem>
-                <FormField label="Retry Count">
+              </FormField>
+            </FlexItem>
+            <FlexItem grow>
+              <FormField label="Min Idle Time">
+                <S.TimeWrapper>
                   <NumericInput
                     autoValidate
                     min={0}
-                    name="retryCount"
-                    id="retryCount"
-                    data-testid="retry-count"
+                    name="minIdleTime"
+                    id="minIdleTime"
+                    data-testid="min-idle-time"
                     placeholder="0"
-                    className={styles.retryCountField}
-                    value={Number(formik.values.retryCount)}
+                    className={S.fieldWithAppendClassName}
+                    value={Number(formik.values.minIdleTime)}
                     onChange={(value) =>
-                      formik.setFieldValue('retryCount', value)
+                      formik.setFieldValue('minIdleTime', value)
                     }
                   />
-                </FormField>
-              </FlexItem>
-              <FlexItem grow={2}>
-                <FormField className={styles.hiddenLabel} label="Force">
-                  <Checkbox
-                    id="force_claim"
-                    name="force"
-                    label="Force Claim"
-                    checked={formik.values.force}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                      formik.setFieldValue(e.target.name, !formik.values.force)
-                    }}
-                    data-testid="force-claim-checkbox"
-                  />
-                </FormField>
-              </FlexItem>
-            </Row>
-          </>
-        )}
-        <Spacer size="xl" />
-        <Row responsive justify="between" align="center">
-          <FlexItem>
-            <SwitchInput
-              title="Optional Parameters"
-              checked={isOptionalShow}
-              onCheckedChange={setIsOptionalShow}
-              data-testid="optional-parameters-switcher"
-            />
-          </FlexItem>
-          <Row grow={false} gap="m">
-            <SecondaryButton onClick={handleCancel}>Cancel</SecondaryButton>
-            <PrimaryButton
-              onClick={() => formik.handleSubmit()}
-              data-testid="btn-submit"
-            >
-              Claim
-            </PrimaryButton>
+                  <S.TimeUnit>msec</S.TimeUnit>
+                </S.TimeWrapper>
+              </FormField>
+            </FlexItem>
           </Row>
-        </Row>
-      </form>
-    </RiPopover>
+          {isOptionalShow && (
+            <>
+              <Spacer size="xl" />
+              <Row align="center" justify="between" gap="m">
+                <FlexItem grow>
+                  <FormField label="Idle Time">
+                    <S.TimeWrapper>
+                      <NumericInput
+                        autoValidate
+                        min={0}
+                        name="timeCount"
+                        id="timeCount"
+                        data-testid="time-count"
+                        placeholder="0"
+                        className={S.fieldWithAppendClassName}
+                        value={Number(formik.values.timeCount)}
+                        onChange={(value) =>
+                          formik.setFieldValue('timeCount', value)
+                        }
+                      />
+                      <S.TimeUnit>msec</S.TimeUnit>
+                    </S.TimeWrapper>
+                  </FormField>
+                </FlexItem>
+                <FlexItem className={S.timeSelectClassName}>
+                  <FormField label="Time">
+                    <RiSelect
+                      value={formik.values.timeOption}
+                      options={timeOptions}
+                      className={S.timeOptionFieldClassName}
+                      name="consumerName"
+                      onChange={handleChangeTimeFormat}
+                      data-testid="time-option-select"
+                    />
+                  </FormField>
+                </FlexItem>
+                <FlexItem>
+                  <FormField label="Retry Count">
+                    <NumericInput
+                      autoValidate
+                      min={0}
+                      name="retryCount"
+                      id="retryCount"
+                      data-testid="retry-count"
+                      placeholder="0"
+                      className={S.retryCountFieldClassName}
+                      value={Number(formik.values.retryCount)}
+                      onChange={(value) =>
+                        formik.setFieldValue('retryCount', value)
+                      }
+                    />
+                  </FormField>
+                </FlexItem>
+                <FlexItem grow={2}>
+                  <FormField className={S.hiddenLabelClassName} label="Force">
+                    <Checkbox
+                      id="force_claim"
+                      name="force"
+                      label="Force Claim"
+                      checked={formik.values.force}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        formik.setFieldValue(
+                          e.target.name,
+                          !formik.values.force,
+                        )
+                      }}
+                      data-testid="force-claim-checkbox"
+                    />
+                  </FormField>
+                </FlexItem>
+              </Row>
+            </>
+          )}
+          <Spacer size="xl" />
+          <Row responsive justify="between" align="center">
+            <FlexItem>
+              <SwitchInput
+                title="Optional Parameters"
+                checked={isOptionalShow}
+                onCheckedChange={setIsOptionalShow}
+                data-testid="optional-parameters-switcher"
+              />
+            </FlexItem>
+            <Row grow={false} gap="m">
+              <SecondaryButton onClick={handleCancel}>Cancel</SecondaryButton>
+              <PrimaryButton
+                onClick={() => formik.handleSubmit()}
+                data-testid="btn-submit"
+              >
+                Claim
+              </PrimaryButton>
+            </Row>
+          </Row>
+        </form>
+      </RiPopover>
+    </S.ClassStyles>
   )
 }
 

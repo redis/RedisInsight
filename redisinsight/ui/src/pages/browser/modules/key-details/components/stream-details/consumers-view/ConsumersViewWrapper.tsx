@@ -29,8 +29,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { ConsumerDto } from 'apiSrc/modules/browser/stream/dto'
 import ConsumersView from './ConsumersView'
-
-import styles from './ConsumersView/styles.module.scss'
+import * as S from './ConsumersViewWrapper.styles'
 
 const suffix = '_stream_consumer'
 const actionsWidth = 50
@@ -133,14 +132,15 @@ const ConsumersViewWrapper = (props: Props) => {
               className="truncateText"
               data-testid={`stream-consumer-${viewName}`}
             >
-              <RiTooltip
-                className={styles.tooltipName}
-                anchorClassName="truncateText"
-                position="bottom"
-                content={tooltipContent}
-              >
-                <>{cellContent}</>
-              </RiTooltip>
+              <S.TooltipName>
+                <RiTooltip
+                  anchorClassName="truncateText"
+                  position="bottom"
+                  content={tooltipContent}
+                >
+                  <>{cellContent}</>
+                </RiTooltip>
+              </S.TooltipName>
             </div>
           </Text>
         )
@@ -166,7 +166,7 @@ const ConsumersViewWrapper = (props: Props) => {
       absoluteWidth: 140,
       isSortable: true,
       alignment: TableCellAlignment.Right,
-      className: styles.cell,
+      className: S.cellClassName,
       headerClassName: 'streamItemHeader',
       headerCellClassName: 'truncateText',
       render: (cellData: number) => (
@@ -210,7 +210,7 @@ const ConsumersViewWrapper = (props: Props) => {
   ]
 
   return (
-    <>
+    <S.ClassStyles>
       <ConsumersView
         data={loadedConsumers}
         columns={columns}
@@ -221,7 +221,7 @@ const ConsumersViewWrapper = (props: Props) => {
           isTruncatedGroupName ? TEXT_CONSUMER_GROUP_NAME_TOO_LONG : undefined
         }
       />
-    </>
+    </S.ClassStyles>
   )
 }
 

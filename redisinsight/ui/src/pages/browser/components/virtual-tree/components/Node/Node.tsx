@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { NodePublicState } from 'react-vtree/dist/es/Tree'
-import cx from 'classnames'
 import { useSelector } from 'react-redux'
 
 import * as keys from 'uiSrc/constants/keys'
@@ -15,9 +14,9 @@ import { appContextDbConfig } from 'uiSrc/slices/app/context'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
 import { Flex, Row } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
+import { ColorText, Text } from 'uiSrc/components/base/text'
 import * as S from './Node.styles'
-import styles from './styles.module.scss'
+import { AnchorContent } from './Node.styles'
 import { TreeData } from '../../interfaces'
 import { DeleteKeyPopover } from '../../../delete-key-popover/DeleteKeyPopover'
 
@@ -115,8 +114,12 @@ const Node = ({
   }
   const tooltipContent = (
     <>
-      <S.FolderTooltipHeader>
-        <S.FolderPattern>{`${fullName + delimiterView}*`}</S.FolderPattern>
+      <S.FolderTooltipHeader align="center" wrap>
+        <ColorText
+          size="M"
+          variant="semiBold"
+          color="secondary"
+        >{`${fullName + delimiterView}*`}</ColorText>
         {delimiters.length > 1 && (
           <S.Delimiters>
             {delimiters.map((delimiter) => (
@@ -130,43 +133,53 @@ const Node = ({
   )
 
   const Folder = () => (
-    <RiTooltip
-      content={tooltipContent}
-      position="bottom"
-      anchorClassName={styles.anchorTooltipNode}
-    >
-      <Row align="center">
-        <Flex align="center">
-          <S.NodeIconArrow>
-            <RiIcon
-              size="xs"
-              type={isOpen ? 'ChevronDownIcon' : 'ChevronRightIcon'}
-              data-test-subj={`node-arrow-icon_${fullName}`}
-            />
-          </S.NodeIconArrow>
-          <S.NodeIcon>
-            <RiIcon
-              size="m"
-              type="FolderIcon"
-              data-test-subj={`node-folder-icon_${fullName}`}
-            />
-          </S.NodeIcon>
-          <Text className="truncateText" data-testid={`folder-${nameString}`}>
-            {nameString}
-          </Text>
-        </Flex>
-        <Flex justify="end">
-          <S.Approximate data-testid={`percentage_${fullName}`}>
-            {keyApproximate
-              ? `${keyApproximate < 1 ? '<1' : Math.round(keyApproximate)}%`
-              : ''}
-          </S.Approximate>
-          <S.KeyCount data-testid={`count_${fullName}`}>
-            {keyCount ?? ''}
-          </S.KeyCount>
-        </Flex>
-      </Row>
-    </RiTooltip>
+    <S.AnchorTooltipNode align="center">
+      <RiTooltip
+        content={tooltipContent}
+        anchorClassName="tooltip-anchor"
+        position="bottom"
+      >
+        <S.AnchorContent align="center" full>
+          <Row align="center" justify="start" gap="s">
+            <S.NodeIconArrow>
+              <RiIcon
+                size="s"
+                type={isOpen ? 'ChevronDownIcon' : 'ChevronRightIcon'}
+                data-test-subj={`node-arrow-icon_${fullName}`}
+              />
+            </S.NodeIconArrow>
+            <S.NodeIcon>
+              <RiIcon
+                size="s"
+                type="FolderIcon"
+                data-test-subj={`node-folder-icon_${fullName}`}
+              />
+            </S.NodeIcon>
+            <Text
+              color="secondary"
+              ellipsis
+              className="truncateText"
+              data-testid={`folder-${nameString}`}
+            >
+              {nameString}
+            </Text>
+          </Row>
+          <Row justify="end" grow={false} align="center">
+            <S.Approximate
+              color="secondary"
+              data-testid={`percentage_${fullName}`}
+            >
+              {keyApproximate
+                ? `${keyApproximate < 1 ? '<1' : Math.round(keyApproximate)}%`
+                : ''}
+            </S.Approximate>
+            <S.KeyCount color="secondary" data-testid={`count_${fullName}`}>
+              {keyCount ?? ''}
+            </S.KeyCount>
+          </Row>
+        </S.AnchorContent>
+      </RiTooltip>
+    </S.AnchorTooltipNode>
   )
 
   const Leaf = () => (
@@ -204,10 +217,12 @@ const Node = ({
 
   const NodeElement = (
     <S.NodeContent
-      className={cx('rowKey', {
-        [styles.nodeContentOpen]: isOpen && !isLeaf,
-      })}
-      $isOpen={isOpen && !isLeaf}
+      align="center"
+      grow
+      className="rowKey"
+      $isOpen={isOpen}
+      $isLeaf={isLeaf}
+      justify="between"
       role="treeitem"
       onClick={handleClick}
       onKeyDown={handleKeyDown}

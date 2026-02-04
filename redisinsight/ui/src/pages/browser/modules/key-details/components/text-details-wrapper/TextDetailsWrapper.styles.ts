@@ -22,6 +22,12 @@ export const TextWrapper = styled(FlexItem)`
   top: -7%;
 `
 
+export const CloseRightPanel = styled.div`
+  position: absolute;
+  top: ${({ theme }) => theme.core.space.space250};
+  right: ${({ theme }) => theme.core.space.space200};
+`
+
 export const CloseBtn = styled(IconButton)`
   svg {
     width: 20px;

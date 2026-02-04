@@ -23,8 +23,7 @@ import {
 } from '../utils'
 import { JSONErrors } from '../constants'
 
-import styles from '../styles.module.scss'
-import '../styles.scss'
+import * as S from '../Rejson.styles'
 
 const RejsonScalar = (props: JSONScalarProps) => {
   const {
@@ -79,17 +78,17 @@ const RejsonScalar = (props: JSONScalarProps) => {
       {isRoot ? (
         <p className={getClassNameByValue(value)}>{`${changedValue}`}</p>
       ) : (
-        <div className={styles.row}>
-          <div className={styles.rowContainer}>
+        <S.Row>
+          <S.RowContainer>
             <div
               style={{ display: 'flex', alignItems: 'flex-start', flexGrow: 1 }}
             >
-              <span
-                className={cx(styles.quoted, styles.keyName)}
+              <S.Quoted
+                as={S.KeyName}
                 style={{ paddingLeft: `${leftPadding}em` }}
               >
                 {keyName}
-              </span>
+              </S.Quoted>
               <div style={{ paddingLeft: '0.2em', display: 'inline-block' }}>
                 :
               </div>
@@ -119,7 +118,7 @@ const RejsonScalar = (props: JSONScalarProps) => {
                     iconSize="M"
                   />
                   {!!error && (
-                    <div className={cx(styles.errorMessage)}>
+                    <S.ErrorMessage>
                       <FieldMessage
                         scrollViewOnAppear
                         icon="ToastDangerIcon"
@@ -127,22 +126,22 @@ const RejsonScalar = (props: JSONScalarProps) => {
                       >
                         {error}
                       </FieldMessage>
-                    </div>
+                    </S.ErrorMessage>
                   )}
                 </div>
               ) : (
-                <span
-                  className={cx(styles.jsonValue, getClassNameByValue(value))}
+                <S.JsonValue
+                  className={getClassNameByValue(value)}
                   onClick={() => setEditing(!isTruncatedString(changedValue))}
                   style={{ flexGrow: 1 }}
                   data-testid="json-scalar-value"
                   role="presentation"
                 >
                   {String(changedValue)}
-                </span>
+                </S.JsonValue>
               )}
             </div>
-            <div className={styles.deleteBtn}>
+            <S.DeleteBtn>
               <PopoverDelete
                 header={createDeleteFieldHeader(keyName.toString())}
                 text={createDeleteFieldMessage(bufferToString(selectedKey))}
@@ -156,9 +155,9 @@ const RejsonScalar = (props: JSONScalarProps) => {
                   handleSubmitRemoveKey(path, keyName.toString())
                 }
               />
-            </div>
-          </div>
-        </div>
+            </S.DeleteBtn>
+          </S.RowContainer>
+        </S.Row>
       )}
     </>
   )

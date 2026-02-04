@@ -11,3 +11,10 @@ export const ContentWrapper = styled.div<HTMLAttributes<HTMLDivElement>>`
   min-height: 42px;
   padding-right: 32px;
 `
+
+export const EditBtnAnchor = styled.div`
+  position: absolute;
+  right: 4px;
+`
+
+export const TextAreaControls = styled.div``

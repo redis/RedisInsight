@@ -15,7 +15,7 @@ import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover } from 'uiSrc/components/base'
 import { Row } from 'uiSrc/components/base/layout/flex'
-import styles from './styles.module.scss'
+import * as S from './OnboardingStartPopover.styles'
 
 const OnboardingStartPopover = () => {
   const { id: connectedInstanceId = '' } = useSelector(
@@ -45,42 +45,45 @@ const OnboardingStartPopover = () => {
   }
 
   return (
-    <RiPopover
-      button={<></>}
-      isOpen={isActive && currentStep === OnboardingSteps.Start}
-      ownFocus={false}
-      closePopover={() => {}}
-      panelClassName={styles.onboardingStartPopover}
-      anchorPosition="downRight"
-      data-testid="onboarding-start-popover"
-    >
-      <Title size="S">Take a quick tour of Redis Insight?</Title>
-      <Spacer size="s" />
-      <Text data-testid="onboarding-start-content">
-        Hi! Redis Insight has many tools that can help you to optimize the
-        development process.
-        <br />
-        Would you like us to show them to you?
-      </Text>
-      <Spacer />
-      <Row justify="between">
-        <EmptyButton
-          onClick={handleSkip}
-          size="small"
-          data-testid="skip-tour-btn"
-        >
-          Skip tour
-        </EmptyButton>
-        <PrimaryButton
-          onClick={handleStart}
-          color="secondary"
-          size="s"
-          data-testid="start-tour-btn"
-        >
-          Show me around
-        </PrimaryButton>
-      </Row>
-    </RiPopover>
+    <S.PopoverStyles>
+      <RiPopover
+        button={<></>}
+        isOpen={isActive && currentStep === OnboardingSteps.Start}
+        ownFocus={false}
+        closePopover={() => {}}
+        panelClassName={S.popoverClassName}
+        anchorPosition="downRight"
+        data-testid="onboarding-start-popover"
+        style={{ display: 'none' }}
+      >
+        <Title size="S">Take a quick tour of Redis Insight?</Title>
+        <Spacer size="s" />
+        <Text data-testid="onboarding-start-content">
+          Hi! Redis Insight has many tools that can help you to optimize the
+          development process.
+          <br />
+          Would you like us to show them to you?
+        </Text>
+        <Spacer />
+        <Row justify="between">
+          <EmptyButton
+            onClick={handleSkip}
+            size="small"
+            data-testid="skip-tour-btn"
+          >
+            Skip tour
+          </EmptyButton>
+          <PrimaryButton
+            onClick={handleStart}
+            color="secondary"
+            size="s"
+            data-testid="start-tour-btn"
+          >
+            Show me around
+          </PrimaryButton>
+        </Row>
+      </RiPopover>
+    </S.PopoverStyles>
   )
 }
 

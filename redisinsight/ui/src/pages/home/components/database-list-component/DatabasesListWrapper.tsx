@@ -87,7 +87,7 @@ import DbStatus from '../db-status'
 import { TagsCell } from '../tags-cell/TagsCell'
 import { TagsCellHeader } from '../tags-cell/TagsCellHeader'
 
-import styles from './styles.module.scss'
+import * as S from './DatabasesListWrapper.styles'
 
 export interface Props {
   instances: Instance[]
@@ -344,9 +344,9 @@ const DatabasesListWrapper = (props: Props) => {
         render: function InstanceCell(name: string = '', instance: Instance) {
           if (isCreateCloudDb(instance.id)) {
             return (
-              <Text className={cx(styles.tooltipAnchorColumnName)}>
+              <S.TooltipAnchorColumnName as={Text}>
                 {instance.name}
-              </Text>
+              </S.TooltipAnchorColumnName>
             )
           }
 
@@ -372,11 +372,11 @@ const DatabasesListWrapper = (props: Props) => {
               <RiTooltip
                 position="bottom"
                 title="Database Alias"
-                className={styles.tooltipColumnName}
+                className={S.tooltipColumnNameClassName}
                 content={`${formatLongName(name)} ${getDbIndex(db)}`}
               >
                 <Text
-                  className={styles.tooltipAnchorColumnName}
+                  as={S.TooltipAnchorColumnName}
                   data-testid={`instance-name-${id}`}
                   onClick={(e: React.MouseEvent) =>
                     handleCheckConnectToInstance(e, instance)
@@ -386,9 +386,9 @@ const DatabasesListWrapper = (props: Props) => {
                   }
                 >
                   <ColorText
-                    className={cx(styles.tooltipColumnNameText, {
-                      [styles.withDb]: db,
-                    })}
+                    as={S.TooltipColumnNameText}
+                    $withDb={!!db}
+                    className={cx({})}
                   >
                     {cellContent}
                   </ColorText>
@@ -452,7 +452,7 @@ const DatabasesListWrapper = (props: Props) => {
       },
       {
         field: DatabaseListColumn.Modules,
-        className: styles.columnModules,
+        className: S.columnModulesClassName,
         name: COLUMN_FIELD_NAME_MAP.get(DatabaseListColumn.Modules), // Capabilities
         width: '110%',
         dataType: 'string',
@@ -476,7 +476,7 @@ const DatabasesListWrapper = (props: Props) => {
                                 ? 'RediStackDarkLogoIcon'
                                 : 'RediStackLightLogoIcon'
                             }
-                            className={styles.tooltipLogo}
+                            className={S.tooltipLogoClassName}
                             data-testid="tooltip-redis-stack-icon"
                           />
                           <Text
@@ -548,7 +548,7 @@ const DatabasesListWrapper = (props: Props) => {
                 <RiTooltip content="Manage Tags">
                   <IconButton
                     icon={TagIcon}
-                    className={styles.tagsButton}
+                    className={S.tagsButtonClassName}
                     aria-label="Manage Instance Tags"
                     data-testid={`manage-instance-tags-${instance.id}`}
                     onClick={() => handleManageInstanceTags(instance)}
@@ -563,7 +563,10 @@ const DatabasesListWrapper = (props: Props) => {
                     onClick={handleClickGoToCloud}
                     data-testid={`cloud-link-${instance.id}`}
                   >
-                    <RiIcon type="CloudLinkIcon" className={styles.cloudIcon} />
+                    <RiIcon
+                      type="CloudLinkIcon"
+                      className={S.cloudIconClassName}
+                    />
                   </Link>
                 </RiTooltip>
               )}
@@ -640,7 +643,7 @@ const DatabasesListWrapper = (props: Props) => {
   return (
     <RIResizeObserver onResize={onResize}>
       {(resizeRef) => (
-        <div className={styles.container} ref={resizeRef}>
+        <S.Container ref={resizeRef}>
           <ItemList<Instance>
             width={width}
             columns={columns}
@@ -657,7 +660,7 @@ const DatabasesListWrapper = (props: Props) => {
             sort={sortingRef.current}
             hideSelectableCheckboxes={!databaseManagementFeature?.flag}
           />
-        </div>
+        </S.Container>
       )}
     </RIResizeObserver>
   )

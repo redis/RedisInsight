@@ -1,6 +1,9 @@
+import { HTMLAttributes } from 'react'
 import styled, { css } from 'styled-components'
 
-export const Wrapper = styled.div<{ $fullSize?: boolean }>`
+export const Wrapper = styled.div<
+  HTMLAttributes<HTMLDivElement> & { $fullSize?: boolean }
+>`
   ${({ $fullSize }) =>
     $fullSize &&
     css`

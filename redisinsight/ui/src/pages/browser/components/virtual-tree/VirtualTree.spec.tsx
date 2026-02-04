@@ -2,9 +2,10 @@ import React from 'react'
 import { mock, instance } from 'ts-mockito'
 
 import { render } from 'uiSrc/utils/test-utils'
-import VirtualTree, { Props } from './VirtualTree'
+import { type VirtualTreeProps } from './VirtualTree.types'
+import VirtualTree from './VirtualTree'
 
-const mockedProps = mock<Props>()
+const mockedProps = mock<VirtualTreeProps>()
 
 const mockedItems = [
   {

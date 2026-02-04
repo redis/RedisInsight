@@ -90,10 +90,7 @@ const StreamDataView = (props: Props) => {
 
   return (
     <>
-      <S.Container
-        className="key-details-table stream-details-table"
-        data-testid="stream-entries-container"
-      >
+      <S.Container data-testid="stream-entries-container">
         <VirtualGrid
           hideProgress
           stickLastColumnHeaderCell

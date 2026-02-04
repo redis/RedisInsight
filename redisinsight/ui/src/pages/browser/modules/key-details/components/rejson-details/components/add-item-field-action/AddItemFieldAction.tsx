@@ -2,7 +2,7 @@ import React from 'react'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { PlusIcon } from 'uiSrc/components/base/icons'
 import { getBrackets } from '../../utils'
-import styles from '../../styles.module.scss'
+import * as S from '../../Rejson.styles'
 
 export interface Props {
   leftPadding: number
@@ -11,17 +11,17 @@ export interface Props {
 }
 
 const AddItemFieldAction = ({ leftPadding, type, onClickSetKVPair }: Props) => (
-  <div className={styles.row} style={{ paddingLeft: `${leftPadding}em` }}>
-    <span className={styles.defaultFont}>{getBrackets(type, 'end')}</span>
+  <S.Row style={{ paddingLeft: `${leftPadding}em` }}>
+    <S.DefaultFont>{getBrackets(type, 'end')}</S.DefaultFont>
     <IconButton
       icon={PlusIcon}
       size="S"
-      className={styles.jsonButtonStyle}
+      className={S.actionButtonsClassName}
       onClick={onClickSetKVPair}
       aria-label="Add field"
       data-testid="add-field-btn"
     />
-  </div>
+  </S.Row>
 )
 
 export default AddItemFieldAction

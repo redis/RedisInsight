@@ -47,7 +47,7 @@ import {
 
 import GroupsView from './GroupsView'
 
-import styles from './GroupsView/styles.module.scss'
+import * as S from './GroupsViewWrapper.styles'
 
 export interface IConsumerGroup extends ConsumerGroupDto {
   editing: boolean
@@ -229,7 +229,7 @@ const GroupsViewWrapper = (props: Props) => {
               data-testid={`stream-group-name-${viewName}`}
             >
               <RiTooltip
-                className={styles.tooltipName}
+                className={S.cellClassName}
                 anchorClassName="truncateText"
                 position="bottom"
                 content={tooltipContent}
@@ -262,7 +262,7 @@ const GroupsViewWrapper = (props: Props) => {
       maxWidth: 95,
       absoluteWidth: 95,
       isSortable: true,
-      className: styles.cell,
+      className: S.cellClassName,
       headerClassName: 'streamItemHeader',
       headerCellClassName: 'truncateText',
       render: function P(
@@ -291,7 +291,7 @@ const GroupsViewWrapper = (props: Props) => {
               {!!pending && (
                 <RiTooltip
                   title={`${pending} Pending Messages`}
-                  className={styles.tooltip}
+                  className={S.cellClassName}
                   anchorClassName="truncateText"
                   position="bottom"
                   content={tooltipContent}
@@ -312,7 +312,7 @@ const GroupsViewWrapper = (props: Props) => {
       maxWidth: 200,
       absoluteWidth: 200,
       isSortable: true,
-      className: cx(styles.cell, 'noPadding'),
+      className: cx(S.cellClassName, 'noPadding'),
       headerClassName: 'streamItemHeader',
       headerCellClassName: 'truncateText',
       render: function Id(
@@ -326,7 +326,7 @@ const GroupsViewWrapper = (props: Props) => {
         return (
           <EditablePopover
             content={
-              <div className={styles.editableCell}>
+              <div className={S.cellClassName}>
                 <Text
                   color="secondary"
                   size="s"
@@ -360,12 +360,12 @@ const GroupsViewWrapper = (props: Props) => {
               handleApplyEditId(name)
               dispatch(setSelectedKeyRefreshDisabled(false))
             }}
-            className={styles.editLastId}
+            className={S.editLastIdClassName}
             isDisabled={!editValue.length || !!idError}
             isDisabledEditButton={isTruncatedGroupName}
             isLoading={loading}
             delay={500}
-            editBtnClassName={styles.editBtn}
+            editBtnClassName={S.editBtnClassName}
           >
             <FormField>
               <ComposedInput
@@ -393,14 +393,12 @@ const GroupsViewWrapper = (props: Props) => {
                 }
               />
               {!showIdError && (
-                <span className={styles.idText} data-testid="id-help-text">
+                <S.IdText data-testid="id-help-text">
                   Timestamp - Sequence Number or $
-                </span>
+                </S.IdText>
               )}
               {showIdError && (
-                <span className={styles.error} data-testid="id-error">
-                  {idError}
-                </span>
+                <S.ErrorText data-testid="id-error">{idError}</S.ErrorText>
               )}
             </FormField>
           </EditablePopover>
@@ -410,7 +408,7 @@ const GroupsViewWrapper = (props: Props) => {
     {
       id: 'actions',
       label: '',
-      headerClassName: styles.actionsHeader,
+      headerClassName: S.actionsHeaderClassName,
       textAlignment: TableCellTextAlignment.Left,
       absoluteWidth: actionsWidth,
       maxWidth: actionsWidth,
@@ -444,7 +442,7 @@ const GroupsViewWrapper = (props: Props) => {
   ]
 
   return (
-    <>
+    <S.ClassStyles>
       <GroupsView
         data={groups}
         columns={columns}
@@ -452,7 +450,7 @@ const GroupsViewWrapper = (props: Props) => {
         onSelectGroup={handleSelectGroup}
         {...props}
       />
-    </>
+    </S.ClassStyles>
   )
 }
 

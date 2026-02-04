@@ -18,8 +18,6 @@ import {
 import { isContainJSONModule, Maybe, stringToBuffer } from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
-
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { HealthText } from 'uiSrc/components/base/text/HealthText'
 import { Title } from 'uiSrc/components/base/text/Title'
@@ -122,14 +120,17 @@ const AddKey = (props: Props) => {
 
   return (
     <S.Page>
-      <S.ContentWrapper justify="center" className="relative" gap="none">
+      <S.ContentWrapper justify="center" gap="none">
         <S.Content justify="center">
-          <FlexItem grow style={{ marginBottom: '36px' }}>
-            <Title size="M">New Key</Title>
+          <S.ContentHeader grow={false}>
+            <Title size="M" color="secondary">
+              New Key
+            </Title>
             {!arePanelsCollapsed && (
               <S.CloseKeyTooltip>
                 <RiTooltip content="Close" position="left">
                   <S.CloseBtn
+                    size="S"
                     icon={CancelSlimIcon}
                     aria-label="Close key"
                     onClick={() => closeKey()}
@@ -137,8 +138,8 @@ const AddKey = (props: Props) => {
                 </RiTooltip>
               </S.CloseKeyTooltip>
             )}
-          </FlexItem>
-          <S.ScrollContainer>
+          </S.ContentHeader>
+          <S.ScrollContainer grow={1}>
             <S.ContentFields>
               <AddKeyCommonFields
                 typeSelected={typeSelected}
@@ -175,7 +176,10 @@ const AddKey = (props: Props) => {
               {typeSelected === KeyTypes.ReJSON && (
                 <>
                   {!isContainJSONModule(modules) && (
-                    <S.HelpText data-testid="json-not-loaded-text">
+                    <S.HelpText
+                      color="secondary"
+                      data-testid="json-not-loaded-text"
+                    >
                       {HelpTexts.REJSON_SHOULD_BE_LOADED}
                     </S.HelpText>
                   )}
@@ -191,7 +195,7 @@ const AddKey = (props: Props) => {
             </S.ContentFields>
           </S.ScrollContainer>
         </S.Content>
-        <div id="formFooterBar" className="formFooterBar" />
+        <S.FormFooter id="formFooterBar" />
       </S.ContentWrapper>
     </S.Page>
   )

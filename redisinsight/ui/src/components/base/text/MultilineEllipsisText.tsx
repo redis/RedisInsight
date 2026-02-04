@@ -1,7 +1,7 @@
 import styled from 'styled-components'
+import { theme } from '@redis-ui/styles'
 
 import { ColorText } from './ColorText'
-import { theme } from '@redis-ui/styles'
 
 export const lineHeightSizes = ['xs', 's', 'm', 'l'] as const
 export type LineHeightType = (typeof lineHeightSizes)[number]

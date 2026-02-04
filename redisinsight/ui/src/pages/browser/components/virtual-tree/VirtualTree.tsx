@@ -1,59 +1,25 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { debounce, get, set } from 'lodash'
-import { TreeWalker, TreeWalkerValue, FixedSizeTree as Tree } from 'react-vtree'
+import { FixedSizeTree as Tree, TreeWalker, TreeWalkerValue } from 'react-vtree'
 import { useDispatch } from 'react-redux'
 
-import { bufferToString, Maybe, Nullable } from 'uiSrc/utils'
+import { bufferToString, Nullable } from 'uiSrc/utils'
 import { useDisposableWebworker } from 'uiSrc/services'
-import { IKeyPropTypes } from 'uiSrc/constants/prop-types/keys'
-import {
-  DEFAULT_TREE_SORTING,
-  KeyTypes,
-  ModulesKeyTypes,
-  SortOrder,
-} from 'uiSrc/constants'
-import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces'
+import { DEFAULT_TREE_SORTING, KeyTypes } from 'uiSrc/constants'
+import { RedisString } from 'uiSrc/slices/interfaces'
 import { fetchKeysMetadataTree } from 'uiSrc/slices/browser/keys'
-import {
-  Loader,
-  ProgressBarLoader,
-  RiImage,
-} from 'uiSrc/components/base/display'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { ProgressBarLoader } from 'uiSrc/components/base/display'
 import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
 
 import { Node } from './components/Node'
 import { NodeMeta, TreeData, TreeNode } from './interfaces'
-
-import styles from './styles.module.scss'
-
-export interface Props {
-  items: IKeyPropTypes[]
-  delimiterPattern: string
-  delimiters: string[]
-  loadingIcon?: string
-  loading: boolean
-  deleting: boolean
-  sorting: Maybe<SortOrder>
-  commonFilterType: Nullable<KeyTypes>
-  statusSelected: Nullable<string>
-  statusOpen: OpenedNodes
-  webworkerFn: (...args: any) => any
-  onStatusOpen?: (name: string, value: boolean) => void
-  onStatusSelected?: (key: RedisString) => void
-  setConstructingTree: (status: boolean) => void
-  onDeleteLeaf: (key: RedisResponseBuffer) => void
-  onDeleteClicked: (type: KeyTypes | ModulesKeyTypes) => void
-}
-
-interface OpenedNodes {
-  [key: string]: boolean
-}
+import * as S from './VirtualTree.styles'
+import { VirtualTreeProps } from './VirtualTree.types'
 
 export const KEYS = 'keys'
 
-const VirtualTree = (props: Props) => {
+const VirtualTree = (props: VirtualTreeProps) => {
   const {
     items,
     delimiterPattern,
@@ -273,7 +239,7 @@ const VirtualTree = (props: Props) => {
       {({ height, width }) => (
         <div data-testid="virtual-tree" style={{ position: 'relative' }}>
           {nodes.current.length > 0 && (
-            <>
+            <S.TreeWrapper>
               {loading && (
                 <ProgressBarLoader
                   color="primary"
@@ -283,39 +249,32 @@ const VirtualTree = (props: Props) => {
                 />
               )}
               <Tree
+                className={S.customScrollClassName}
                 async
                 height={height}
                 width={width}
                 itemSize={42}
                 treeWalker={treeWalker}
-                className={styles.customScroll}
               >
                 {Node}
               </Tree>
-            </>
+            </S.TreeWrapper>
           )}
           {nodes.current.length === 0 && loading && (
-            <div
-              className={styles.loadingContainer}
+            <S.LoadingContainer
+              align="center"
               style={{ width, height }}
               data-testid="virtual-tree-spinner"
             >
-              <div className={styles.loadingBody}>
-                <Loader size="xl" className={styles.loadingSpinner} />
+              <S.LoadingBody>
+                <S.LoadingSpinner size="xl" />
                 {loadingIcon ? (
-                  <RiImage
-                    className={styles.loadingIcon}
-                    src={loadingIcon}
-                    alt="loading"
-                  />
+                  <S.LoadingIcon src={loadingIcon} alt="loading" />
                 ) : (
-                  <RiIcon
-                    type="LoaderLargeIcon"
-                    className={styles.loadingIcon}
-                  />
+                  <S.LoadingRiIcon type="LoaderLargeIcon" />
                 )}
-              </div>
-            </div>
+              </S.LoadingBody>
+            </S.LoadingContainer>
           )}
         </div>
       )}

@@ -11,9 +11,9 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { mergeRedisCommandsSpecs } from 'uiSrc/utils/transformers/redisCommands'
 import SEARCH_COMMANDS_SPEC from 'uiSrc/pages/workbench/data/supported_commands.json'
-import styles from './Query/styles.module.scss'
 import Query from './Query'
 import { Props as BaseQueryProps } from './Query/Query'
+import * as S from './Query/Query.styles'
 
 type QueryProps = Pick<BaseQueryProps, 'useLiteActions'>
 
@@ -65,11 +65,11 @@ const QueryWrapper = (props: Props) => {
   }, [connectedIndstanceId])
 
   const Placeholder = (
-    <div className={styles.containerPlaceholder}>
+    <S.ContainerPlaceholder>
       <div>
         <LoadingContent lines={2} className="fluid" />
       </div>
-    </div>
+    </S.ContainerPlaceholder>
   )
   return isCommandsLoading ? (
     Placeholder

@@ -55,10 +55,7 @@ const ConsumersView = (props: Props) => {
 
   return (
     <>
-      <S.Container
-        className="key-details-table stream-details-table"
-        data-testid="stream-consumers-container"
-      >
+      <S.Container data-testid="stream-consumers-container">
         <VirtualTable
           autoHeight
           hideProgress

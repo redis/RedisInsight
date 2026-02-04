@@ -2,10 +2,10 @@ import React from 'react'
 import { PageHeader } from 'uiSrc/components'
 import ExplorePanelTemplate from 'uiSrc/templates/explore-panel/ExplorePanelTemplate'
 
-import { Page, PageBody } from 'uiSrc/components/base/layout/page'
-import styles from './styles.module.scss'
+import { PageBody } from 'uiSrc/components/base/layout/page'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { Col } from 'uiSrc/components/base/layout/flex'
+import * as S from './AutodiscoveryPageTemplate.styles'
 
 export interface Props {
   children: React.ReactNode
@@ -17,12 +17,12 @@ const AutodiscoveryPageTemplate = (props: Props) => {
     <>
       <PageHeader showInsights />
       <Spacer size="s" />
-      <ExplorePanelTemplate panelClassName={styles.explorePanel}>
-        <Page className={styles.page}>
+      <ExplorePanelTemplate>
+        <S.StyledPage>
           <PageBody component="div">
             <Col>{children}</Col>
           </PageBody>
-        </Page>
+        </S.StyledPage>
       </ExplorePanelTemplate>
     </>
   )

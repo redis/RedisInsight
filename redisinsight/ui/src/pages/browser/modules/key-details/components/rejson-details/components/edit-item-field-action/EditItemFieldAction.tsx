@@ -8,7 +8,7 @@ import {
 } from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import styles from '../../styles.module.scss'
+import * as S from '../../Rejson.styles'
 
 export interface Props {
   keyName: string
@@ -30,10 +30,10 @@ const EditItemFieldAction = ({
   const [deleting, setDeleting] = useState<string>('')
 
   return (
-    <div className={styles.actionButtons}>
+    <S.ActionButtons>
       <IconButton
         icon={EditIcon}
-        className={styles.jsonButtonStyle}
+        className={S.actionButtonsClassName}
         onClick={onClickEditEntireItem}
         aria-label="Edit field"
         size="S"
@@ -50,7 +50,7 @@ const EditItemFieldAction = ({
         handleDeleteItem={() => handleSubmitRemoveKey(path, keyName)}
         testid="remove-json-field"
       />
-    </div>
+    </S.ActionButtons>
   )
 }
 

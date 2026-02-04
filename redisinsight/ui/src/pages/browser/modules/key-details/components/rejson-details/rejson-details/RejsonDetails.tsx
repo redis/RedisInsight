@@ -19,7 +19,7 @@ import RejsonDynamicTypes from '../rejson-dynamic-types'
 import { AddItem } from '../components'
 import ChangeEditorTypeButton from '../../change-editor-type-button'
 
-import styles from '../styles.module.scss'
+import * as S from '../Rejson.styles'
 
 const RejsonDetails = (props: BaseProps) => {
   const {
@@ -89,10 +89,10 @@ const RejsonDetails = (props: BaseProps) => {
   const isArray = isRealArray(data, dataType)
 
   return (
-    <div className={styles.jsonData} id="jsonData" data-testid="json-data">
+    <S.JsonData id="jsonData" data-testid="json-data">
       <>
         {(isObject || isArray) && (
-          <div className={cx(styles.row, styles.topRow)}>
+          <S.TopRow>
             <span>
               {getBrackets(
                 isObject ? ObjectTypes.Object : ObjectTypes.Array,
@@ -100,7 +100,7 @@ const RejsonDetails = (props: BaseProps) => {
               )}
             </span>
             <ChangeEditorTypeButton />
-          </div>
+          </S.TopRow>
         )}
         <RejsonDynamicTypes
           data={data}
@@ -123,7 +123,7 @@ const RejsonDetails = (props: BaseProps) => {
           />
         )}
         {(isObject || isArray) && (
-          <div className={styles.row}>
+          <S.Row>
             <span>
               {getBrackets(
                 isObject ? ObjectTypes.Object : ObjectTypes.Array,
@@ -134,16 +134,16 @@ const RejsonDetails = (props: BaseProps) => {
               <IconButton
                 icon={PlusIcon}
                 size="S"
-                className={styles.buttonStyle}
+                className={S.actionButtonsClassName}
                 onClick={onClickSetRootKVPair}
                 aria-label="Add field"
                 data-testid={isObject ? 'add-object-btn' : 'add-array-btn'}
               />
             )}
-          </div>
+          </S.Row>
         )}
       </>
-    </div>
+    </S.JsonData>
   )
 }
 

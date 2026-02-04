@@ -6,6 +6,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { Maybe, formatLongName, replaceSpaces } from 'uiSrc/utils'
 
+import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import * as S from './KeyRowName.styles'
 
 export interface Props {
@@ -30,25 +31,21 @@ const KeyRowName = (props: Props) => {
 
   return (
     <S.KeyName>
-      <Text
-        component="div"
-        color="secondary"
-        style={{ maxWidth: '100%', display: 'flex', paddingRight: 16 }}
+      <RiTooltip
+        title="Key Name"
+        position="bottom"
+        content={nameTooltipContent}
       >
-        <div
-          style={{ display: 'flex' }}
-          className="truncateText"
+        <Text
+          component="div"
           data-testid={`key-${shortName}`}
+          ellipsis
+          color="secondary"
+          style={{ maxWidth: '100%', display: 'flex', paddingRight: 16 }}
         >
-          <RiTooltip
-            title="Key Name"
-            position="bottom"
-            content={nameTooltipContent}
-          >
-            <>{nameContent}</>
-          </RiTooltip>
-        </div>
-      </Text>
+          {nameContent}
+        </Text>
+      </RiTooltip>
     </S.KeyName>
   )
 }
