@@ -46,13 +46,12 @@ export class DatabaseFactory {
    */
   async createDatabaseModel(
     sessionMetadata: SessionMetadata,
-    database: Database,
+    originalDatabase: Database,
     options: IRedisConnectionOptions = {},
   ): Promise<Database> {
-    let model = await this.createStandaloneDatabaseModel(database);
+    const database = await this.credentialProvider.resolve(originalDatabase);
 
-    // Resolve credentials for the standalone client
-    const resolvedDatabase = await this.credentialProvider.resolve(model);
+    let model = await this.createStandaloneDatabaseModel(database);
 
     const client = await this.redisClientFactory
       .getConnectionStrategy()
@@ -62,7 +61,7 @@ export class DatabaseFactory {
           databaseId: database.id || uuidv4(), // we assume that if no database id defined we are in creation process
           context: ClientContext.Common,
         },
-        resolvedDatabase,
+        database,
         { ...options, useRetry: true },
       );
 
@@ -71,31 +70,23 @@ export class DatabaseFactory {
     }
 
     if (await isSentinel(client)) {
-      if (!model.sentinelMaster) {
+      if (!database.sentinelMaster) {
         throw getRedisConnectionException(
           new ReplyError(RedisErrorCodes.SentinelParamsRequired),
-          model,
+          database,
         );
       }
-      // Pass resolvedDatabase for client creation (has credentials)
-      // but copy only discovered properties back to model (no credentials)
-      const sentinelResult = await this.createSentinelDatabaseModel(
+      model = await this.createSentinelDatabaseModel(
         sessionMetadata,
-        resolvedDatabase,
+        database,
         client,
       );
-      model.nodes = sentinelResult.nodes;
-      model.connectionType = sentinelResult.connectionType;
-    } else if (!model.forceStandalone && (await isCluster(client))) {
-      // Pass resolvedDatabase for client creation (has credentials)
-      // but copy only discovered properties back to model (no credentials)
-      const clusterResult = await this.createClusterDatabaseModel(
+    } else if (!database.forceStandalone && (await isCluster(client))) {
+      model = await this.createClusterDatabaseModel(
         sessionMetadata,
-        resolvedDatabase,
+        database,
         client,
       );
-      model.nodes = clusterResult.nodes;
-      model.connectionType = clusterResult.connectionType;
     }
 
     model.modules =
