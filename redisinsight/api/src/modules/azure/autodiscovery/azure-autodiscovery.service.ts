@@ -381,11 +381,22 @@ export class AzureAutodiscoveryService {
     return Promise.all(
       databases.map(async (dto): Promise<ImportAzureDatabaseResponse> => {
         try {
-          this.logger.debug(`[${dto.id}] Fetching connection details...`);
+          this.logger.debug(`[${dto.id}] Fetching database details...`);
 
-          const connectionDetails = await this.getConnectionDetails(
+          const database = await this.findDatabaseById(accountId, dto.id);
+
+          if (!database) {
+            this.logger.debug(`[${dto.id}] Database not found`);
+            return {
+              id: dto.id,
+              status: ActionStatus.Fail,
+              message: 'Database not found',
+            };
+          }
+
+          const connectionDetails = await this.getEntraIdConnectionDetails(
             accountId,
-            dto.id,
+            database,
           );
 
           if (!connectionDetails) {
@@ -398,12 +409,6 @@ export class AzureAutodiscoveryService {
               message: 'Failed to get connection details',
             };
           }
-
-          // Find database details for name and type
-          const databaseDetails = await this.findDatabaseById(
-            accountId,
-            dto.id,
-          );
 
           this.logger.debug(
             `[${dto.id}] Connection details: host=${connectionDetails.host}, port=${connectionDetails.port}, authType=${connectionDetails.authType}, tls=${connectionDetails.tls}`,
@@ -418,21 +423,20 @@ export class AzureAutodiscoveryService {
                 }
               : undefined;
 
-          // Determine the hosting provider based on database type
           const provider =
-            databaseDetails?.type === AzureRedisType.Enterprise
+            database.type === AzureRedisType.Enterprise
               ? HostingProvider.AZURE_CACHE_REDIS_ENTERPRISE
               : HostingProvider.AZURE_CACHE;
 
           this.logger.debug(
-            `[${dto.id}] Creating database: name=${databaseDetails?.name}, type=${databaseDetails?.type}, provider=${provider}`,
+            `[${dto.id}] Creating database: name=${database.name}, type=${database.type}, provider=${provider}`,
           );
 
           await this.databaseService.create(sessionMetadata, {
             host: connectionDetails.host,
             port: connectionDetails.port,
-            name: databaseDetails?.name || 'Azure Redis',
-            nameFromProvider: databaseDetails?.name,
+            name: database.name,
+            nameFromProvider: database.name,
             username: connectionDetails.username,
             password: connectionDetails.password,
             tls: connectionDetails.tls,
