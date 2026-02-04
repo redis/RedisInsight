@@ -41,19 +41,3 @@ export class AzureProviderDetails {
   @IsString()
   azureAccountId?: string;
 }
-
-export const isAzureProviderDetails = (
-  details: AzureProviderDetails | null | undefined,
-): details is AzureProviderDetails => {
-  if (!details) return false;
-  return (
-    'provider' in details &&
-    details.provider === CloudProvider.Azure &&
-    'authType' in details
-  );
-};
-
-export const isAzureEntraIdAuth = (
-  details: AzureProviderDetails | null | undefined,
-): boolean =>
-  isAzureProviderDetails(details) && details.authType === AzureAuthType.EntraId;

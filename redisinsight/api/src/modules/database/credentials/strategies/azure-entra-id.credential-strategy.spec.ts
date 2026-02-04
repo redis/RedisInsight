@@ -55,6 +55,83 @@ describe('AzureEntraIdCredentialStrategy', () => {
     strategy = module.get(AzureEntraIdCredentialStrategy);
   });
 
+  describe('isAzureProviderDetails', () => {
+    it('should return true for valid Azure provider details', () => {
+      const details = {
+        provider: CloudProvider.Azure,
+        authType: AzureAuthType.EntraId,
+      };
+
+      expect(
+        AzureEntraIdCredentialStrategy.isAzureProviderDetails(details),
+      ).toBe(true);
+    });
+
+    it('should return false for null', () => {
+      expect(AzureEntraIdCredentialStrategy.isAzureProviderDetails(null)).toBe(
+        false,
+      );
+    });
+
+    it('should return false for undefined', () => {
+      expect(
+        AzureEntraIdCredentialStrategy.isAzureProviderDetails(undefined),
+      ).toBe(false);
+    });
+
+    it('should return false for details without provider', () => {
+      const details = { authType: AzureAuthType.EntraId } as any;
+
+      expect(
+        AzureEntraIdCredentialStrategy.isAzureProviderDetails(details),
+      ).toBe(false);
+    });
+
+    it('should return false for details without authType', () => {
+      const details = { provider: CloudProvider.Azure } as any;
+
+      expect(
+        AzureEntraIdCredentialStrategy.isAzureProviderDetails(details),
+      ).toBe(false);
+    });
+  });
+
+  describe('isAzureEntraIdAuth', () => {
+    it('should return true for Azure Entra ID auth', () => {
+      const details = {
+        provider: CloudProvider.Azure,
+        authType: AzureAuthType.EntraId,
+      };
+
+      expect(AzureEntraIdCredentialStrategy.isAzureEntraIdAuth(details)).toBe(
+        true,
+      );
+    });
+
+    it('should return false for Azure Access Key auth', () => {
+      const details = {
+        provider: CloudProvider.Azure,
+        authType: AzureAuthType.AccessKey,
+      };
+
+      expect(AzureEntraIdCredentialStrategy.isAzureEntraIdAuth(details)).toBe(
+        false,
+      );
+    });
+
+    it('should return false for null', () => {
+      expect(AzureEntraIdCredentialStrategy.isAzureEntraIdAuth(null)).toBe(
+        false,
+      );
+    });
+
+    it('should return false for undefined', () => {
+      expect(AzureEntraIdCredentialStrategy.isAzureEntraIdAuth(undefined)).toBe(
+        false,
+      );
+    });
+  });
+
   describe('canHandle', () => {
     it('should return true for database with Azure Entra ID auth', () => {
       const database = createMockAzureDatabase();
