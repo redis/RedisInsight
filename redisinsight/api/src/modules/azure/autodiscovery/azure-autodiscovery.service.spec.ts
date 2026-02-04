@@ -6,6 +6,9 @@ import { AzureAuthService } from '../auth/azure-auth.service';
 import { DatabaseService } from 'src/modules/database/database.service';
 import { AzureRedisType, AzureAuthType } from '../constants';
 import { AzureRedisDatabase } from '../models';
+import { ActionStatus } from 'src/common/models';
+import { HostingProvider } from 'src/modules/database/entities/database.entity';
+import { CloudProvider } from 'src/modules/database/models/provider-details';
 
 jest.mock('axios');
 
@@ -439,6 +442,222 @@ describe('AzureAutodiscoveryService', () => {
 
       expect(result).not.toBeNull();
       expect(result!.authType).toBe(AzureAuthType.EntraId);
+    });
+  });
+
+  describe('addDatabases', () => {
+    const accountId = 'account-id';
+    const sessionMetadata = {
+      userId: 'user-id',
+      sessionId: 'session-id',
+      accountId: 'session-account-id',
+    };
+
+    beforeEach(() => {
+      mockDatabaseService.create.mockReset();
+    });
+
+    it('should successfully add a standard Redis database', async () => {
+      const database = createMockDatabase(AzureRedisType.Standard);
+      const mockAccount = createMockAccount();
+      const apiResponse = createStandardRedisApiResponse(database);
+
+      mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
+        token: 'mock-token',
+        expiresOn: new Date(),
+        account: mockAccount,
+      });
+      mockAxiosInstance.get
+        .mockResolvedValueOnce({ data: { value: [apiResponse] } })
+        .mockResolvedValueOnce({ data: { value: [] } });
+      mockAuthService.getRedisTokenByAccountId.mockResolvedValue({
+        token: 'redis-token',
+        expiresOn: new Date(),
+        account: mockAccount,
+      });
+      mockDatabaseService.create.mockResolvedValue({ id: 'new-db-id' });
+
+      const result = await service.addDatabases(sessionMetadata, accountId, [
+        { id: database.id },
+      ]);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe(database.id);
+      expect(result[0].status).toBe(ActionStatus.Success);
+      expect(result[0].message).toBe('Added');
+      expect(mockDatabaseService.create).toHaveBeenCalledWith(
+        sessionMetadata,
+        expect.objectContaining({
+          host: database.host,
+          port: database.sslPort,
+          name: database.name,
+          tls: true,
+          provider: HostingProvider.AZURE_CACHE,
+          providerDetails: {
+            provider: CloudProvider.Azure,
+            authType: AzureAuthType.EntraId,
+            azureAccountId: accountId,
+          },
+        }),
+      );
+    });
+
+    it('should successfully add an enterprise Redis database', async () => {
+      const subscriptionId = faker.string.uuid();
+      const mockCluster = createMockEnterpriseCluster(subscriptionId);
+      const resourceGroup = mockCluster.id.match(
+        /resourceGroups\/([^/]+)/i,
+      )?.[1];
+      const mockDb = createMockEnterpriseDatabase(
+        subscriptionId,
+        resourceGroup!,
+        mockCluster.name,
+      );
+      const mockAccount = createMockAccount();
+
+      mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
+        token: 'mock-token',
+        expiresOn: new Date(),
+        account: mockAccount,
+      });
+      // Mock: empty standard, then cluster, then database within cluster
+      mockAxiosInstance.get
+        .mockResolvedValueOnce({ data: { value: [] } })
+        .mockResolvedValueOnce({ data: { value: [mockCluster] } })
+        .mockResolvedValueOnce({ data: { value: [mockDb] } });
+      mockAuthService.getRedisTokenByAccountId.mockResolvedValue({
+        token: 'redis-token',
+        expiresOn: new Date(),
+        account: mockAccount,
+      });
+      mockDatabaseService.create.mockResolvedValue({ id: 'new-db-id' });
+
+      const result = await service.addDatabases(sessionMetadata, accountId, [
+        { id: mockDb.id },
+      ]);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].status).toBe(ActionStatus.Success);
+      expect(mockDatabaseService.create).toHaveBeenCalledWith(
+        sessionMetadata,
+        expect.objectContaining({
+          provider: HostingProvider.AZURE_CACHE_REDIS_ENTERPRISE,
+        }),
+      );
+    });
+
+    it('should return fail status when database is not found', async () => {
+      const databaseId =
+        '/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Cache/redis/not-found';
+
+      mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
+        token: 'mock-token',
+        expiresOn: new Date(),
+        account: createMockAccount(),
+      });
+      mockAxiosInstance.get
+        .mockResolvedValueOnce({ data: { value: [] } })
+        .mockResolvedValueOnce({ data: { value: [] } });
+
+      const result = await service.addDatabases(sessionMetadata, accountId, [
+        { id: databaseId },
+      ]);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe(databaseId);
+      expect(result[0].status).toBe(ActionStatus.Fail);
+      expect(result[0].message).toBe('Database not found');
+      expect(mockDatabaseService.create).not.toHaveBeenCalled();
+    });
+
+    it('should return fail status when connection details are not available', async () => {
+      const database = createMockDatabase(AzureRedisType.Standard);
+      const apiResponse = createStandardRedisApiResponse(database);
+
+      mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
+        token: 'mock-token',
+        expiresOn: new Date(),
+        account: createMockAccount(),
+      });
+      mockAxiosInstance.get
+        .mockResolvedValueOnce({ data: { value: [apiResponse] } })
+        .mockResolvedValueOnce({ data: { value: [] } });
+      mockAuthService.getRedisTokenByAccountId.mockResolvedValue(null);
+
+      const result = await service.addDatabases(sessionMetadata, accountId, [
+        { id: database.id },
+      ]);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].status).toBe(ActionStatus.Fail);
+      expect(result[0].message).toBe('Failed to get connection details');
+      expect(mockDatabaseService.create).not.toHaveBeenCalled();
+    });
+
+    it('should return fail status with user-friendly error message on creation error', async () => {
+      const database = createMockDatabase(AzureRedisType.Standard);
+      const mockAccount = createMockAccount();
+      const apiResponse = createStandardRedisApiResponse(database);
+
+      mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
+        token: 'mock-token',
+        expiresOn: new Date(),
+        account: mockAccount,
+      });
+      mockAxiosInstance.get
+        .mockResolvedValueOnce({ data: { value: [apiResponse] } })
+        .mockResolvedValueOnce({ data: { value: [] } });
+      mockAuthService.getRedisTokenByAccountId.mockResolvedValue({
+        token: 'redis-token',
+        expiresOn: new Date(),
+        account: mockAccount,
+      });
+      mockDatabaseService.create.mockRejectedValue(
+        new Error('WRONGPASS invalid username-password pair'),
+      );
+
+      const result = await service.addDatabases(sessionMetadata, accountId, [
+        { id: database.id },
+      ]);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].status).toBe(ActionStatus.Fail);
+      expect(result[0].message).toContain('Failed to authenticate');
+    });
+
+    it('should handle multiple databases with mixed results', async () => {
+      const database1 = createMockDatabase(AzureRedisType.Standard);
+      const database2 = createMockDatabase(AzureRedisType.Standard);
+      const mockAccount = createMockAccount();
+      const apiResponse1 = createStandardRedisApiResponse(database1);
+
+      mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
+        token: 'mock-token',
+        expiresOn: new Date(),
+        account: mockAccount,
+      });
+      // First database found, second not found
+      mockAxiosInstance.get
+        .mockResolvedValueOnce({ data: { value: [apiResponse1] } })
+        .mockResolvedValueOnce({ data: { value: [] } })
+        .mockResolvedValueOnce({ data: { value: [] } })
+        .mockResolvedValueOnce({ data: { value: [] } });
+      mockAuthService.getRedisTokenByAccountId.mockResolvedValue({
+        token: 'redis-token',
+        expiresOn: new Date(),
+        account: mockAccount,
+      });
+      mockDatabaseService.create.mockResolvedValue({ id: 'new-db-id' });
+
+      const result = await service.addDatabases(sessionMetadata, accountId, [
+        { id: database1.id },
+        { id: database2.id },
+      ]);
+
+      expect(result).toHaveLength(2);
+      expect(result[0].status).toBe(ActionStatus.Success);
+      expect(result[1].status).toBe(ActionStatus.Fail);
+      expect(result[1].message).toBe('Database not found');
     });
   });
 });
