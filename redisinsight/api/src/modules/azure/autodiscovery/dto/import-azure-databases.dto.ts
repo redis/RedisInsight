@@ -28,7 +28,7 @@ export class ImportAzureDatabasesDto {
   @IsDefined()
   @IsArray()
   @ArrayNotEmpty()
-  @ValidateNested()
+  @ValidateNested({ each: true })
   @Type(() => ImportAzureDatabaseDto)
   databases: ImportAzureDatabaseDto[];
 }
