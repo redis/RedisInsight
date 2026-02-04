@@ -47,7 +47,6 @@ env:
   E2E_CLOUD_API_SECRET_KEY: ${{ secrets.E2E_CLOUD_API_SECRET_KEY }}
 
   E2E_RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
-  # Use E2E_RI_ENCRYPTION_KEY for RI_ENCRYPTION_KEY (same pattern as docker.web.docker-compose.yml)
   RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
   RI_ENCRYPTION_KEYTAR: 'false'  # Disable keytar to use KEY strategy instead (keytar unavailable on Linux CI)
   # Note: RI_SERVER_TLS_CERT and RI_SERVER_TLS_KEY are intentionally NOT set here
@@ -192,6 +191,11 @@ jobs:
         with:
           detached: true
 
+      - name: Install system dependencies for Electron/AppImage
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y kmod libfuse2 xvfb net-tools xdotool desktop-file-utils fluxbox netcat
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -213,20 +217,35 @@ jobs:
           name: linux-builds
           path: ./release
 
-      - name: Make AppImage executable
-        run: chmod +x ./release/Redis-Insight*.AppImage
+      - name: Make AppImage executable and set path
+        id: appimage
+        run: |
+          ls -la ./release/
+          chmod +x ./release/Redis-Insight*.AppImage
+          # Find the actual AppImage file and export its absolute path
+          APPIMAGE_PATH=$(realpath ./release/Redis-Insight*.AppImage | head -1)
+          echo "path=$APPIMAGE_PATH" >> $GITHUB_OUTPUT
+          echo "Found AppImage: $APPIMAGE_PATH"
 
       - name: Start Redis test environment
         run: |
           TEST_BIG_DB_DUMP=$TEST_BIG_DB_DUMP \
           docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml up --detach --force-recreate
 
+      - name: Start Xvfb
+        run: |
+          if [ -f /tmp/.X99-lock ]; then rm /tmp/.X99-lock; fi
+          Xvfb :99 -ac -screen 0 1920x1080x24 &
+          sleep 3
+          fluxbox &
+
       - name: Run Playwright tests (Electron Linux)
         working-directory: ${{ env.E2E_DIR }}
         run: npx playwright test --project=electron
         env:
           CI: true
-          ELECTRON_EXECUTABLE_PATH: ${{ github.workspace }}/release/Redis-Insight.AppImage
+          DISPLAY: ':99'
+          ELECTRON_EXECUTABLE_PATH: ${{ steps.appimage.outputs.path }}
 
       - name: Upload test results
         if: ${{ !cancelled() }}
