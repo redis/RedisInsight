@@ -81,35 +81,35 @@ const OnboardingTour = (props: Props) => {
   }
 
   const Header = (
-    <S.Header as={Col}>
-      {!isLastStep ? (
-        <S.SkipTourBtn
-          as={EmptyButton}
-          onClick={handleSkip}
-          size="small"
-          data-testid="skip-tour-btn"
-        >
-          Skip tour
-        </S.SkipTourBtn>
-      ) : (
-        <S.SkipTourBtn
-          as={IconButton}
-          icon={CancelSlimIcon}
-          onClick={handleSkip}
-          size="S"
-          aria-label="close-tour"
-          data-testid="close-tour-btn"
-        />
-      )}
+    <Col>
+      <S.SkipTourBtn>
+        {!isLastStep ? (
+          <EmptyButton
+            onClick={handleSkip}
+            size="small"
+            data-testid="skip-tour-btn"
+          >
+            Skip tour
+          </EmptyButton>
+        ) : (
+          <IconButton
+            icon={CancelSlimIcon}
+            onClick={handleSkip}
+            size="S"
+            aria-label="close-tour"
+            data-testid="close-tour-btn"
+          />
+        )}
+      </S.SkipTourBtn>
       <Title size="XS" data-testid="step-title">
         {title}
       </Title>
-    </S.Header>
+    </Col>
   )
 
   const StepContent = (
     <Col>
-      <S.Content data-testid="step-content">{content}</S.Content>
+      <div data-testid="step-content">{content}</div>
       <Spacer />
       <Row align="center" justify="between">
         <ColorText>
@@ -144,20 +144,20 @@ const OnboardingTour = (props: Props) => {
       $fullSize={fullSize}
       role="presentation"
     >
-      <S.PopoverPanel
-        as={TourStep}
-        content={StepContent}
-        open={isOpen}
-        minWidth={300}
-        maxWidth={360}
-        title={Header}
-        placement={anchorPosition}
-        className={cx(panelClassName)}
-        $isLastStep={isLastStep}
-        offset={5}
-        data-testid="onboarding-tour"
-      >
-        {children}
+      <S.PopoverPanel $isLastStep={isLastStep}>
+        <TourStep
+          content={StepContent}
+          open={isOpen}
+          minWidth={300}
+          maxWidth={360}
+          title={Header}
+          placement={anchorPosition}
+          className={cx(panelClassName)}
+          offset={5}
+          data-testid="onboarding-tour"
+        >
+          {children}
+        </TourStep>
       </S.PopoverPanel>
     </S.Wrapper>
   )

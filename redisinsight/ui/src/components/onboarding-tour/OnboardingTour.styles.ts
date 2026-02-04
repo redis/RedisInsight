@@ -12,7 +12,9 @@ export const Wrapper = styled.div<
     `}
 `
 
-export const PopoverPanel = styled.div<{ $isLastStep?: boolean }>`
+export const PopoverPanel = styled.div<
+  HTMLAttributes<HTMLDivElement> & { $isLastStep?: boolean }
+>`
   ${({ $isLastStep }) =>
     $isLastStep &&
     css`
@@ -22,13 +24,7 @@ export const PopoverPanel = styled.div<{ $isLastStep?: boolean }>`
     `}
 `
 
-export const Header = styled.div``
-
-export const SkipTourBtn = styled.span`
+export const SkipTourBtn = styled.div`
   display: flex;
   align-self: flex-end;
-  font-size: 11px;
-  line-height: 14px;
 `
-
-export const Content = styled.div``

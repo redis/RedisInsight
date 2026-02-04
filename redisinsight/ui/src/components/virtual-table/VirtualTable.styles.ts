@@ -1,6 +1,8 @@
 import styled, { css, keyframes } from 'styled-components'
 import { Table as VirtualizedTable } from 'react-virtualized'
+import { HTMLAttributes } from 'react'
 import { type Theme } from 'uiSrc/components/base/theme/types'
+import { Row } from 'uiSrc/components/base/layout/flex'
 
 const HEADER_HEIGHT = '44px'
 const FOOTER_HEIGHT = '38px'
@@ -29,7 +31,7 @@ export const Container = styled.div<{ $isResizing?: boolean }>`
 
   ${({ $isResizing }) =>
     $isResizing &&
-    css`
+    `
       user-select: none;
       cursor: col-resize;
     `}
@@ -125,15 +127,15 @@ export const StyledTable = styled(VirtualizedTable)<{ $autoHeight?: boolean }>`
   }
 `
 
-export const TableRowCell = styled.div`
-  display: flex;
-  align-items: center;
+export const TableRowCell = styled(Row)`
+  word-break: break-word;
   box-sizing: border-box;
-  padding: 8px 18px;
+  padding: ${({ theme }: { theme: Theme }) =>
+    `${theme.core.space.space100} ${theme.core.space.space200}`};
   min-height: 43px;
 `
 
-export const HeaderCell = styled.div`
+export const HeaderCell = styled(Row)`
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -143,7 +145,7 @@ export const HeaderCell = styled.div`
   white-space: nowrap;
 `
 
-export const HeaderButton = styled.button<{ $isSorted?: boolean }>`
+export const HeaderButton = styled.button`
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -201,7 +203,7 @@ export const Loading = styled.span<{ $show?: boolean }>`
   }
 `
 
-export const ResizeTrigger = styled.div`
+export const ResizeTrigger = styled.div<HTMLAttributes<HTMLDivElement>>`
   position: absolute;
   height: 100%;
   right: -4px;

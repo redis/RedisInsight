@@ -342,16 +342,13 @@ const StreamDataViewWrapper = (props: Props) => {
           <Text
             component="div"
             size="s"
+            ellipsis
             style={{ maxWidth: '100%' }}
-            className="truncateText"
+            data-testid={`stream-entry-${id}`}
+            color="secondary"
+            title={idStr}
           >
-            <S.StreamItemId
-              className="truncateText"
-              data-testid={`stream-entry-${id}`}
-              title={idStr}
-            >
-              {id}
-            </S.StreamItemId>
+            {id}
           </Text>
         </div>
       )

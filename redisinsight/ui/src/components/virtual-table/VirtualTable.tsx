@@ -29,9 +29,8 @@ import {
   ITableColumn,
   ResizableState,
 } from './interfaces'
-import KeysSummary from '../keys-summary'
-
 import * as S from './VirtualTable.styles'
+import KeysSummary from '../keys-summary'
 
 // this is needed to align content when scrollbar appears
 const TABLE_OUTSIDE_WIDTH = 24
@@ -353,10 +352,8 @@ const VirtualTable = (props: IProps) => {
           key={rowIndex + columnIndex + dataKey}
         >
           <S.TableRowCell
-            style={{
-              justifyContent: column.alignment,
-              wordBreak: 'break-word',
-            }}
+            align="center"
+            justify={column.alignment}
             role="presentation"
           >
             {column?.render?.(
@@ -377,16 +374,9 @@ const VirtualTable = (props: IProps) => {
         parent={parent}
         key={rowIndex + columnIndex + dataKey}
       >
-        <S.TableRowCell
-          style={{ justifyContent: column.alignment, whiteSpace: 'normal' }}
-        >
-          <Text component="div" style={{ maxWidth: '100%' }}>
-            <div
-              style={{ display: 'flex' }}
-              className={column.truncateText ? 'truncateText' : ''}
-            >
-              {cellData}
-            </div>
+        <S.TableRowCell justify={column.alignment}>
+          <Text component="div" style={{ maxWidth: '100%' }} ellipsis>
+            {cellData}
           </Text>
         </S.TableRowCell>
       </CellMeasurer>
@@ -423,7 +413,6 @@ const VirtualTable = (props: IProps) => {
               type="button"
               onClick={() => changeSorting(column.id)}
               className={cellClass}
-              $isSorted={isColumnSorted}
               data-testid="score-button"
               style={{ justifyContent: column.alignment }}
             >
@@ -457,7 +446,6 @@ const VirtualTable = (props: IProps) => {
             <S.HeaderButton
               type="button"
               onClick={() => changeSorting(column.id)}
-              $isSorted={isColumnSorted}
               data-testid="header-sorting-button"
             >
               <RiIcon

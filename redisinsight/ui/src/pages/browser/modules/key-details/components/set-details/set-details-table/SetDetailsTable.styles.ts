@@ -8,3 +8,9 @@ export const Container = styled.div`
   background-color: ${({ theme }) =>
     theme.semantic.color.background.neutral100};
 `
+export const ValueTableActions = styled.div`
+  &:hover {
+    background-color: ${({ theme }) =>
+      theme.semantic.color.background.neutral100};
+  }
+`

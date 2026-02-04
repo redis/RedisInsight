@@ -425,7 +425,7 @@ const ZSetDetailsTable = (props: Props) => {
         const name = bufferToString(nameItem, viewFormat)
         return (
           <StopPropagation>
-            <div className="value-table-actions">
+            <S.ValueTableActions>
               <PopoverDelete
                 header={createDeleteFieldHeader(nameItem)}
                 text={createDeleteFieldMessage(key ?? '')}
@@ -443,7 +443,7 @@ const ZSetDetailsTable = (props: Props) => {
                   length === 1 ? HelpTexts.REMOVE_LAST_ELEMENT() : null
                 }
               />
-            </div>
+            </S.ValueTableActions>
           </StopPropagation>
         )
       },

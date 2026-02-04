@@ -11,10 +11,6 @@ export const StreamItem = styled(Row)`
   word-break: break-all;
 `
 
-export const StreamItemId = styled(Row)`
-  color: ${({ theme }) => theme.semantic.color.text.neutral500};
-`
-
 export const ClassStyles = styled.div`
   .${cellClassName} {
     overflow: hidden;
