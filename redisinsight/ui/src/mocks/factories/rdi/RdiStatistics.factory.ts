@@ -4,7 +4,6 @@ import {
   IStatisticsInfoSection,
   IStatisticsBlocksSection,
   IStatisticsTableSection,
-  IStatisticsColumn,
   RdiStatisticsViewType,
   StatisticsCellType,
 } from 'uiSrc/slices/interfaces'
@@ -44,13 +43,6 @@ export const StatisticsBlocksSectionFactory =
       faker.number.int({ min: 1, max: 7 }),
     ),
   }))
-
-export const StatisticsColumnFactory = Factory.define<IStatisticsColumn>(
-  () => ({
-    id: faker.string.alpha(10),
-    header: faker.lorem.word(),
-  }),
-)
 
 export const StatisticsTableSectionFactory =
   Factory.define<IStatisticsTableSection>(() => {
