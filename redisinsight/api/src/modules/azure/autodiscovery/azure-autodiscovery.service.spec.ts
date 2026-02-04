@@ -485,7 +485,7 @@ describe('AzureAutodiscoveryService', () => {
       expect(result).toHaveLength(1);
       expect(result[0].id).toBe(database.id);
       expect(result[0].status).toBe(ActionStatus.Success);
-      expect(result[0].message).toBe('Added');
+      expect(result[0].message).toBeUndefined();
       expect(mockDatabaseService.create).toHaveBeenCalledWith(
         sessionMetadata,
         expect.objectContaining({

@@ -135,6 +135,6 @@ export class AzureAutodiscoveryController {
       return res.status(200).json(result);
     }
 
-    return res.json(result);
+    return res.status(201).json(result);
   }
 }

@@ -447,7 +447,6 @@ export class AzureAutodiscoveryService {
           return {
             id: dto.id,
             status: ActionStatus.Success,
-            message: 'Added',
           };
         } catch (error) {
           this.logger.error(

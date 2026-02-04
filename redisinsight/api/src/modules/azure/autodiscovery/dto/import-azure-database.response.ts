@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ActionStatus } from 'src/common/models';
 
 export class ImportAzureDatabaseResponse {
@@ -15,9 +15,9 @@ export class ImportAzureDatabaseResponse {
   })
   status: ActionStatus;
 
-  @ApiProperty({
-    description: 'Message',
+  @ApiPropertyOptional({
+    description: 'Error message (only present when status is Fail)',
     type: String,
   })
-  message: string;
+  message?: string;
 }
