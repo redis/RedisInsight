@@ -47,7 +47,8 @@ env:
   E2E_CLOUD_API_SECRET_KEY: ${{ secrets.E2E_CLOUD_API_SECRET_KEY }}
 
   E2E_RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
-  RI_ENCRYPTION_KEY: ${{ secrets.RI_ENCRYPTION_KEY }}
+  # Use E2E_RI_ENCRYPTION_KEY for RI_ENCRYPTION_KEY (same pattern as docker.web.docker-compose.yml)
+  RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
   RI_ENCRYPTION_KEYTAR: 'false'  # Disable keytar to use KEY strategy instead (keytar unavailable on Linux CI)
   # Note: RI_SERVER_TLS_CERT and RI_SERVER_TLS_KEY are intentionally NOT set here
   # Setting them would cause the API server to start in HTTPS mode, which breaks
