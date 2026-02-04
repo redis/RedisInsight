@@ -48,6 +48,7 @@ env:
 
   E2E_RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
   RI_ENCRYPTION_KEY: ${{ secrets.RI_ENCRYPTION_KEY }}
+  RI_ENCRYPTION_KEYTAR: 'false'  # Disable keytar to use KEY strategy instead (keytar unavailable on Linux CI)
   # Note: RI_SERVER_TLS_CERT and RI_SERVER_TLS_KEY are intentionally NOT set here
   # Setting them would cause the API server to start in HTTPS mode, which breaks
   # the health check that uses HTTP. These are only needed for TLS-specific tests.
