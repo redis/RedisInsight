@@ -6,7 +6,7 @@ import { IndexInfo } from './useIndexInfo.types'
 /**
  * Converts API field type (uppercase) to FieldTypes enum (lowercase).
  */
-export const normalizeFieldType = (type: string): string =>
+export const normalizeFieldType = (type: string): FieldTypes =>
   type.toLowerCase() as FieldTypes
 
 /**
