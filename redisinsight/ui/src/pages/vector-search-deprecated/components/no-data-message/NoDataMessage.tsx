@@ -15,6 +15,10 @@ export interface NoDataMessageProps {
   variant: NoDataMessageKeys
 }
 
+/**
+ * @deprecated This component is deprecated. Use the new NewSearchResults component instead.
+ * @see redisinsight/ui/src/pages/vector-search/components/no-search-results
+ */
 const NoDataMessage = ({ variant }: NoDataMessageProps) => {
   const { [FeatureFlags.vectorSearch]: vectorSearchFeature } = useSelector(
     appFeatureFlagsFeaturesSelector,
