@@ -274,36 +274,8 @@ jobs:
           sleep 3
           fluxbox &
 
-      - name: Test Electron app launch
-        env:
-          APPIMAGE: ${{ steps.appimage.outputs.appimage_file }}
-        run: |
-          echo "=== Testing Electron executable ==="
-          echo "Executable path: ${{ steps.appimage.outputs.path }}"
-          echo "APPIMAGE env: $APPIMAGE"
-          echo "DISPLAY env: $DISPLAY"
-          echo "DBUS_SESSION_BUS_ADDRESS env: $DBUS_SESSION_BUS_ADDRESS"
-          ls -la ${{ steps.appimage.outputs.path }}
-
-          echo "=== Starting Electron app manually for 15 seconds ==="
-          ${{ steps.appimage.outputs.path }} --no-sandbox --disable-gpu &
-          ELECTRON_PID=$!
-          echo "Electron PID: $ELECTRON_PID"
-
-          sleep 15
-
-          echo "=== Checking if Electron process is running ==="
-          ps aux | grep -i redis || echo "No Redis process found"
-
-          echo "=== Checking open ports ==="
-          netstat -tlnp 2>/dev/null || ss -tlnp || echo "Could not check ports"
-
-          echo "=== Trying to reach API ==="
-          curl -v http://localhost:5530/api/health 2>&1 || echo "API not responding"
-
-          echo "=== Killing test Electron process ==="
-          kill $ELECTRON_PID 2>/dev/null || echo "Process already dead"
-          sleep 2
+      # Note: Debug step removed - it was causing issues with port conflicts
+      # If debugging is needed, run with SSH debug enabled
 
       - name: Run Playwright tests (Electron Linux)
         working-directory: ${{ env.E2E_DIR }}
