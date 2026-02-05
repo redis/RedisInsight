@@ -25,6 +25,7 @@ export const MODULE_NOT_LOADED_CONTENT: { [key in RedisDefaultModules]?: any } =
       link: 'https://redis.io/docs/latest/develop/data-types/timeseries/',
     },
     [RedisDefaultModules.Search]: {
+      title: ['Redis Query Engine is not available for this database'],
       text: ['Redis Query Engine allows to:'],
       improvements: ['Query', 'Secondary index', 'Full-text search'],
       additionalText: [

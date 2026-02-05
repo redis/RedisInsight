@@ -10,6 +10,7 @@ import {
   Ref,
 } from 'react'
 
+import { useTheme } from '@redis-ui/styles'
 import { AllIconsType } from 'uiSrc/components/base/icons/RiIcon'
 import { IconProps } from 'uiSrc/components/base/icons'
 import { Theme } from 'uiSrc/components/base/theme/types'
@@ -233,8 +234,10 @@ export const StyledItem = styled.li<
 const listItemInnerStyles = {
   base: css`
     padding: var(--size-xs) var(--size-s);
+    gap: 1rem;
     display: flex;
     align-items: center;
+    justify-content: start;
     flex-grow: 1;
     max-inline-size: 100%;
     overflow: hidden;
@@ -266,16 +269,16 @@ const listItemInnerStyles = {
   colors: {
     // Colors
     primary: css`
-      color: var(--color-primary-text);
+      color: ${() => useTheme().components.typography.colors.primary};
     `,
     text: css`
-      color: var(--color-text-text);
+      color: ${() => useTheme().components.typography.colors.secondary};
     `,
     subdued: css`
-      color: var(--euiTextSubduedColor);
+      color: ${() => useTheme().components.typography.colors.primary};
     `,
     ghost: css`
-      color: var(--color-ghost-text);
+      color: ${() => useTheme().components.typography.colors.secondary};
     `,
   },
   variants: {
