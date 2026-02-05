@@ -63,25 +63,6 @@ export abstract class BasePage {
     await this.gotoHome();
     await this.page.getByTestId(`instance-name-${databaseId}`).click();
     await this.waitForLoad();
-    // Dismiss onboarding popover if it appears (first-time user experience)
-    await this.dismissOnboarding();
-  }
-
-  /**
-   * Dismiss onboarding tour popover if visible
-   * The onboarding popover appears on first database connection and blocks UI interactions
-   */
-  async dismissOnboarding(): Promise<void> {
-    const skipTourButton = this.page.getByTestId('skip-tour-btn');
-    try {
-      // Wait briefly for the popover to appear
-      await skipTourButton.waitFor({ state: 'visible', timeout: 3000 });
-      await skipTourButton.click();
-      // Wait for popover to close
-      await skipTourButton.waitFor({ state: 'hidden', timeout: 2000 });
-    } catch {
-      // Onboarding popover not visible, which is fine
-    }
   }
 
   /**

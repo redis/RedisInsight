@@ -116,6 +116,11 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
         await page.goto(baseURL);
         await page.waitForLoadState('domcontentloaded');
       }
+      // Skip onboarding by setting localStorage (faster than waiting for UI)
+      // Setting to null marks onboarding as completed/skipped
+      await page.evaluate(() => {
+        localStorage.setItem('onboardingStep', 'null');
+      });
       await use(page);
       return;
     }
@@ -125,6 +130,10 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
     // Reload to pick up any data created in beforeAll (e.g., databases via API)
     await electronPage.reload();
     await electronPage.waitForLoadState('domcontentloaded');
+    // Skip onboarding by setting localStorage (faster than waiting for UI)
+    await electronPage.evaluate(() => {
+      localStorage.setItem('onboardingStep', 'null');
+    });
 
     await use(electronPage);
   },
