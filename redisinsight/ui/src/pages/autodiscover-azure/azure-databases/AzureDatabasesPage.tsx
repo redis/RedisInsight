@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { Pages } from 'uiSrc/constants'
 import { setTitle } from 'uiSrc/utils'
+import { Text } from 'uiSrc/components/base/text'
 import { fetchInstancesAction } from 'uiSrc/slices/instances/instances'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import successMessages from 'uiSrc/components/notifications/success-messages'
@@ -20,6 +21,7 @@ import {
   fetchDatabasesAzure,
 } from 'uiSrc/slices/instances/azure'
 import AzureDatabases from './AzureDatabases/AzureDatabases'
+import { Spacer } from 'uiSrc/components/base/layout'
 
 const AzureDatabasesPage = () => {
   const history = useHistory()
@@ -93,23 +95,41 @@ const AzureDatabasesPage = () => {
 
     // Show single grouped error toast for all failed databases
     if (failedResults.length > 0) {
-      const failedNames = failedResults
-        .map((r) => {
+      // Group databases by error message
+      const errorGroups = failedResults.reduce<Record<string, string[]>>(
+        (acc, r) => {
           const db = selectedDatabases.find((db) => db.id === r.id)
-          return db?.name || 'database'
-        })
-        .join(', ')
+          const dbName = db?.name || 'database'
+          const errorMessage = r.message || 'Failed to add database'
 
-      const firstErrorMessage =
-        failedResults[0]?.message || 'Failed to add database'
+          if (!acc[errorMessage]) {
+            acc[errorMessage] = []
+          }
+          acc[errorMessage].push(dbName)
+          return acc
+        },
+        {},
+      )
+
+      const errorList = Object.entries(errorGroups).map(
+        ([errorMessage, dbNames]) => (
+          <>
+            <div key={errorMessage}>
+              <Text variant="semiBold" component="span">
+                {dbNames.join(', ')}
+              </Text>{' '}
+              - {errorMessage}
+            </div>
+            <Spacer size="m" />
+          </>
+        ),
+      )
 
       riToast(
         errorMessages.DEFAULT(
-          failedResults.length === 1
-            ? firstErrorMessage
-            : `${failedResults.length} databases failed. ${firstErrorMessage}`,
+          <>{errorList}</>,
           () => {},
-          `Failed to add: ${failedNames}`,
+          `Failed to add ${failedResults.length} database${failedResults.length > 1 ? 's' : ''}`,
         ),
         {
           variant: riToast.Variant.Danger,
