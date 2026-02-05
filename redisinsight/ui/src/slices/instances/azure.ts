@@ -155,6 +155,7 @@ const azureSlice = createSlice({
 
     clearSubscriptionsAzure: (state) => {
       state.subscriptions = null
+      state.selectedSubscription = null
       state.databases = null
       state.databasesAdded = []
       state.loaded[LoadedAzure.Subscriptions] = false

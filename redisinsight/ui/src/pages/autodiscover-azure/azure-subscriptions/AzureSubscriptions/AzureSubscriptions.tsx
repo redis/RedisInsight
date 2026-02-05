@@ -58,6 +58,16 @@ const AzureSubscriptions = ({
     setItems(subscriptions)
   }, [subscriptions, loading])
 
+  // Reset selection if selected subscription no longer exists (e.g., after refresh)
+  useEffect(() => {
+    if (
+      selectedId &&
+      !subscriptions.some((s) => s.subscriptionId === selectedId)
+    ) {
+      setSelectedId(null)
+    }
+  }, [subscriptions, selectedId])
+
   const onQueryChange = (term: string) => {
     const value = term?.toLowerCase()
     const filtered = subscriptions.filter(

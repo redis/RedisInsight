@@ -409,6 +409,7 @@ describe('azure slice', () => {
       const stateWithData = {
         ...initialState,
         subscriptions,
+        selectedSubscription: subscriptions[0],
         databases,
         databasesAdded: databases,
         loaded: {
@@ -421,6 +422,7 @@ describe('azure slice', () => {
       const nextState = reducer(stateWithData, clearSubscriptionsAzure())
 
       expect(nextState.subscriptions).toBeNull()
+      expect(nextState.selectedSubscription).toBeNull()
       expect(nextState.databases).toBeNull()
       expect(nextState.databasesAdded).toEqual([])
       expect(nextState.loaded[LoadedAzure.Subscriptions]).toBe(false)
