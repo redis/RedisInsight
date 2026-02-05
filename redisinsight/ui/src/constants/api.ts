@@ -147,7 +147,6 @@ enum ApiEndpoints {
 
   AZURE_AUTH_LOGIN = 'azure/auth/login',
   AZURE_SUBSCRIPTIONS = 'azure/subscriptions',
-  AZURE_DATABASES = 'azure/subscriptions',
   AZURE_AUTODISCOVERY_DATABASES = 'azure/autodiscovery/databases',
 
   RDI_INSTANCES = 'rdi',

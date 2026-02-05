@@ -200,7 +200,7 @@ export function fetchDatabasesAzure(accountId: string, subscriptionId: string) {
 
     try {
       const { data, status } = await apiService.get<AzureRedisDatabase[]>(
-        `${ApiEndpoints.AZURE_DATABASES}/${subscriptionId}/databases`,
+        `${ApiEndpoints.AZURE_SUBSCRIPTIONS}/${subscriptionId}/databases`,
         { params: { accountId } },
       )
 
