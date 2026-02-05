@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Col } from 'uiSrc/components/base/layout/flex'
+import { Col, FlexGroup } from 'uiSrc/components/base/layout/flex'
 import Eyeglass from 'uiSrc/assets/img/vector-search/Eyeglass.svg'
 import EyeglassDark from 'uiSrc/assets/img/vector-search/EyeglassDark.svg'
 
@@ -15,6 +15,10 @@ export const Content = styled(Col)`
   position: relative;
   z-index: 1;
   flex-grow: 0;
+`
+
+export const FeaturesContainer = styled(FlexGroup)`
+  max-width: 704px; /* Two columns */
 `
 
 export const FeatureItem = styled(Col)`

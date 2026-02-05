@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Col, Row, FlexGroup } from 'uiSrc/components/base/layout/flex'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Text, Title } from 'uiSrc/components/base/text'
 import { RiIcon, AllIconsType } from 'uiSrc/components/base/icons'
@@ -42,7 +42,11 @@ export const WelcomeScreen = ({
 
         <Spacer size="7.2rem" />
 
-        <FlexGroup wrap gap="xl" data-testid="welcome-screen--features">
+        <S.FeaturesContainer
+          wrap
+          gap="xl"
+          data-testid="welcome-screen--features"
+        >
           {FEATURES.map((feature) => (
             <S.FeatureItem
               key={feature.title}
@@ -63,7 +67,7 @@ export const WelcomeScreen = ({
               </Text>
             </S.FeatureItem>
           ))}
-        </FlexGroup>
+        </S.FeaturesContainer>
 
         <Spacer size="11.2rem" />
 
