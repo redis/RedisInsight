@@ -87,13 +87,18 @@ describe('ConfigAzureAuth', () => {
     expect(actions[1].type).toEqual(addErrorNotification({} as any).type)
   })
 
-  it('should not dispatch any actions for unknown status', () => {
+  it('should call failure actions for unknown status', () => {
     window.app?.azureOauthCallback?.mockImplementation((cb: any) =>
       cb(undefined, { status: 'unknown' }),
     )
     renderConfigAzureAuth()
 
-    expect(store.getActions()).toEqual([])
+    const actions = store.getActions()
+
+    expect(actions[0]).toEqual(
+      azureOAuthCallbackFailure('Azure authentication failed'),
+    )
+    expect(actions[1].type).toEqual(addErrorNotification({} as any).type)
   })
 
   it('should call failure actions when success status but account is missing', () => {
