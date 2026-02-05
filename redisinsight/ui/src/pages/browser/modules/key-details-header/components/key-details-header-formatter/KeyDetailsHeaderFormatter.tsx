@@ -23,12 +23,7 @@ import { stringDataSelector } from 'uiSrc/slices/browser/string'
 import { isFullStringLoaded } from 'uiSrc/utils'
 import { RiTooltip } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
-import {
-  Container,
-  ControlsIcon,
-  KeyDetailsSelect,
-  OptionText,
-} from 'uiSrc/pages/browser/modules/key-details-header/components/key-details-header-formatter/KeyDetailsHeaderFormatter.styles'
+import * as S from './KeyDetailsHeaderFormatter.styles'
 import { getKeyValueFormatterOptions } from './constants'
 
 export interface Props {
@@ -72,9 +67,9 @@ const KeyDetailsHeaderFormatter = (props: Props) => {
           >
             <>
               {width >= MIDDLE_SCREEN_RESOLUTION ? (
-                <OptionText>{text}</OptionText>
+                <S.OptionText>{text}</S.OptionText>
               ) : (
-                <ControlsIcon
+                <S.ControlsIcon
                   size="m"
                   type="FormatterIcon"
                   data-testid={`key-value-formatter-option-selected-${value}`}
@@ -123,9 +118,11 @@ const KeyDetailsHeaderFormatter = (props: Props) => {
   }
 
   return (
-    <Container className={width >= MIDDLE_SCREEN_RESOLUTION ? 'fullWidth' : ''}>
+    <S.Container
+      className={width >= MIDDLE_SCREEN_RESOLUTION ? 'fullWidth' : ''}
+    >
       <div className="selectWrapper">
-        <KeyDetailsSelect
+        <S.KeyDetailsSelect
           $fullWidth={width >= MIDDLE_SCREEN_RESOLUTION}
           disabled={!isStringFormattingEnabled}
           defaultOpen={isSelectOpen}
@@ -141,7 +138,7 @@ const KeyDetailsHeaderFormatter = (props: Props) => {
           data-testid="select-format-key-value"
         />
       </div>
-    </Container>
+    </S.Container>
   )
 }
 

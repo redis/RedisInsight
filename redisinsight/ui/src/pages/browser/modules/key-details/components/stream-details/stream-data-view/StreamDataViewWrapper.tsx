@@ -76,11 +76,27 @@ const StreamDataViewWrapper = (props: Props) => {
   const [deleting, setDeleting] = useState<string>('')
   const [viewFormat, setViewFormat] = useState(viewFormatProp)
 
+  const formatItem = useCallback(
+    (field) => ({
+      name: field.name,
+      value: field.value,
+    }),
+    [viewFormatProp],
+  )
+
   useEffect(() => {
     dispatch(updateSelectedKeyRefreshTime(lastRefreshTime))
   }, [])
 
   useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log('🔍 StreamDataViewWrapper received:', {
+      loadedEntries,
+      entriesCount: loadedEntries?.length,
+      viewFormatProp,
+      compressor,
+    })
+
     const fieldsNames: {
       [key: string]: { index: number; name: RedisResponseBuffer }
     } = {}
@@ -113,6 +129,11 @@ const StreamDataViewWrapper = (props: Props) => {
       }
     })
 
+    // eslint-disable-next-line no-console
+    console.log('📋 fieldsNames generated:', fieldsNames)
+    // eslint-disable-next-line no-console
+    console.log('📋 fieldsNames keys:', Object.keys(fieldsNames))
+
     const columnsNames = Object.keys(fieldsNames).reduce((acc, field) => {
       let names = {}
       // add index to each field name
@@ -144,13 +165,7 @@ const StreamDataViewWrapper = (props: Props) => {
               return (
                 <>
                   {formattedValue ? (
-                    <div
-                      style={{
-                        display: 'flex',
-                        whiteSpace: 'break-spaces',
-                        wordBreak: 'break-all',
-                        width: 'max-content',
-                      }}
+                    <S.FieldNameWrapper
                       data-testid={`stream-field-name-${field}`}
                     >
                       <Text variant="semiBold" color="primary">
@@ -164,7 +179,7 @@ const StreamDataViewWrapper = (props: Props) => {
                           tooltipContent={tooltipContent}
                         />
                       </Text>
-                    </div>
+                    </S.FieldNameWrapper>
                   ) : (
                     <div>&nbsp;</div>
                   )}
@@ -176,6 +191,11 @@ const StreamDataViewWrapper = (props: Props) => {
       }
       return { ...acc, ...names }
     }, {})
+
+    // eslint-disable-next-line no-console
+    console.log('📊 columnsNames created:', columnsNames)
+    // eslint-disable-next-line no-console
+    console.log('📊 columnsNames keys:', Object.keys(columnsNames))
 
     // for Manager columns
     // setUniqFields(fields)
@@ -209,14 +229,6 @@ const StreamDataViewWrapper = (props: Props) => {
   const showPopover = useCallback((entry = '') => {
     setDeleting(`${entry + suffix}`)
   }, [])
-
-  const formatItem = useCallback(
-    (field) => ({
-      name: field.name,
-      value: field.value,
-    }),
-    [viewFormatProp],
-  )
 
   const onSuccessRemoved = () => {
     sendEventTelemetry({
@@ -389,7 +401,7 @@ const StreamDataViewWrapper = (props: Props) => {
         data={entries}
         columns={columns}
         onClosePopover={closePopover}
-        {...props}
+        loadMoreItems={props.loadMoreItems}
       />
     </S.ClassStyles>
   )

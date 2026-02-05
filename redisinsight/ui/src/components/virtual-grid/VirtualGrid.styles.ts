@@ -1,32 +1,35 @@
 import styled from 'styled-components'
+import { ComponentPropsWithRef } from 'react'
 import { type Theme } from 'uiSrc/components/base/theme/types'
 
 const PADDING_CELL = '12px'
 
-export const Container = styled.div`
+export const Container = styled.div<ComponentPropsWithRef<'div'>>`
   position: relative;
   height: 100%;
   width: 100%;
 `
 
-export const Grid = styled.div`
+export const Grid = styled.div<ComponentPropsWithRef<'div'>>`
   scrollbar-width: thin;
   position: relative;
 `
 
-export const GridItem = styled.div<{ $odd?: boolean }>`
+export const GridItem = styled.div<
+  ComponentPropsWithRef<'div'> & { $odd?: boolean }
+>`
   z-index: 1;
   padding: ${PADDING_CELL};
   border: 1px solid
-    ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral500};
+    ${({ theme }: { theme: Theme }) => theme.semantic.color.border.secondary700};
   border-left-width: 0;
   border-top-width: 0;
   cursor: pointer;
 
   background-color: ${({ $odd, theme }: { $odd?: boolean; theme: Theme }) =>
     $odd
-      ? theme.semantic.color.background.neutral200
-      : theme.semantic.color.background.neutral100};
+      ? theme.semantic.color.background.secondary800
+      : theme.semantic.color.background.secondary900};
 
   &.penult {
     border-right: 0;
@@ -38,12 +41,12 @@ export const GridItemLast = styled(GridItem)`
   margin-top: -50px;
   padding-top: 16px;
   border-left: 1px solid
-    ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral500};
+    ${({ theme }: { theme: Theme }) => theme.semantic.color.border.secondary700};
 `
 
-export const GridHeaderCell = styled.hgroup`
+export const GridHeaderCell = styled.hgroup<ComponentPropsWithRef<'hgroup'>>`
   border: 1px solid
-    ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral300};
+    ${({ theme }: { theme: Theme }) => theme.semantic.color.border.secondary700};
 
   &:not(:last-of-type) {
     border-right: 0;
@@ -51,7 +54,8 @@ export const GridHeaderCell = styled.hgroup`
 
   &:first-of-type {
     border-right: 1px solid
-      ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral300};
+      ${({ theme }: { theme: Theme }) =>
+        theme.semantic.color.border.secondary700};
   }
 
   &:last-of-type,
@@ -61,11 +65,14 @@ export const GridHeaderCell = styled.hgroup`
 
   &:last-of-type {
     border-left: 1px solid
-      ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral300};
+      ${({ theme }: { theme: Theme }) =>
+        theme.semantic.color.border.secondary700};
   }
 `
 
-export const GridHeaderItem = styled.div<{ $isLast?: boolean }>`
+export const GridHeaderItem = styled.div<
+  ComponentPropsWithRef<'div'> & { $isLast?: boolean }
+>`
   overflow: hidden;
   align-items: center;
   line-height: 38px;
@@ -73,11 +80,11 @@ export const GridHeaderItem = styled.div<{ $isLast?: boolean }>`
   text-transform: none;
   z-index: 5;
   padding: ${PADDING_CELL};
-  background-color: ${({ theme }: { theme: Theme }) =>
-    theme.semantic.color.background.neutral100};
 `
 
-export const GridHeaderItemSortable = styled.button`
+export const GridHeaderItemSortable = styled.button<
+  ComponentPropsWithRef<'button'>
+>`
   background: none;
   border: none;
   padding: 0;
@@ -88,14 +95,12 @@ export const GridHeaderItemSortable = styled.button`
   }
 `
 
-export const NoItems = styled.div`
+export const NoItems = styled.div<ComponentPropsWithRef<'div'>>`
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 1px solid
-    ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral500};
+    ${({ theme }: { theme: Theme }) => theme.semantic.color.border.secondary700};
 `
-
-export const Progress = styled.span``

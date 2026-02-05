@@ -9,5 +9,5 @@ export const Container = styled.div<HTMLAttributes<HTMLDivElement>>`
   position: relative;
   padding-top: 3px;
   background-color: ${({ theme }) =>
-    theme.semantic.color.background.neutral100};
+    theme.semantic.color.background.secondary990};
 `

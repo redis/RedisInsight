@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { Row } from 'uiSrc/components/base/layout/flex'
+import { HTMLAttributes } from 'react'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
 
 // Class names for VirtualTable column configuration
 export const cellClassName = 'stream-data-cell'
@@ -11,7 +12,8 @@ export const StreamItem = styled(Row)`
   word-break: break-all;
 `
 
-export const ClassStyles = styled.div`
+export const ClassStyles = styled(Col)`
+  background-color: yellow;
   .${cellClassName} {
     overflow: hidden;
   }
@@ -19,4 +21,11 @@ export const ClassStyles = styled.div`
   .${actionsHeaderClassName} {
     width: 54px;
   }
+`
+
+export const FieldNameWrapper = styled.div<HTMLAttributes<HTMLDivElement>>`
+  display: flex;
+  white-space: break-spaces;
+  word-break: break-all;
+  width: max-content;
 `

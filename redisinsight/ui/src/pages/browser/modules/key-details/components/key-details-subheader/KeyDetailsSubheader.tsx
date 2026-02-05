@@ -13,16 +13,16 @@ export interface Props {
 }
 
 export const KeyDetailsSubheader = ({ keyType, Actions }: Props) => (
-  <S.SubheaderContainer>
+  <S.SubHeaderContainer>
     <AutoSizer disableHeight>
       {({ width = 0 }) => (
         <div style={{ width }}>
           <Row justify="end" align="center">
             {Object.values(KeyTypes).includes(keyType as KeyTypes) && (
               <>
-                <S.KeyFormatterItem>
+                <div>
                   <KeyDetailsHeaderFormatter width={width} />
-                </S.KeyFormatterItem>
+                </div>
                 <S.StyledDivider orientation="vertical" />
               </>
             )}
@@ -31,7 +31,7 @@ export const KeyDetailsSubheader = ({ keyType, Actions }: Props) => (
         </div>
       )}
     </AutoSizer>
-  </S.SubheaderContainer>
+  </S.SubHeaderContainer>
 )
 
 export default KeyDetailsSubheader

@@ -44,7 +44,7 @@ const RangeFilter = (props: Props) => {
   const [endVal, setEndVal] = useState(end)
 
   const getPercent = useCallback(
-    (value) => Math.round(((value - min) / (max - min)) * 100),
+    (value: number) => Math.round(((value - min) / (max - min)) * 100),
     [min, max],
   )
 
@@ -54,24 +54,32 @@ const RangeFilter = (props: Props) => {
 
   const prevValue = usePrevious({ max, min }) ?? { max: 0, min: 0 }
 
-  const onChangeStart = useCallback(
-    ({ target: { value } }) => {
+  const onChangeStart: React.FormEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      const value = (e.target as HTMLInputElement).value
       const newValue = Math.min(+value, endVal - 1)
       setStartVal(newValue)
     },
     [endVal],
   )
 
-  const onMouseUpStart = useCallback(({ target: { value } }) => {
-    handleChangeStart(value, true)
-  }, [])
+  const onMouseUpStart: React.MouseEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      handleChangeStart(+(e.target as HTMLInputElement).value, true)
+    },
+    [],
+  )
 
-  const onMouseUpEnd = useCallback(({ target: { value } }) => {
-    handleChangeEnd(value, true)
-  }, [])
+  const onMouseUpEnd: React.MouseEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      handleChangeEnd(+(e.target as HTMLInputElement).value, true)
+    },
+    [],
+  )
 
-  const onChangeEnd = useCallback(
-    ({ target: { value } }) => {
+  const onChangeEnd: React.FormEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      const value = (e.target as HTMLInputElement).value
       const newValue = Math.max(+value, startVal + 1)
       setEndVal(newValue)
     },

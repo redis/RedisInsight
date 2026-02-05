@@ -34,11 +34,12 @@ import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import EditablePopover from 'uiSrc/pages/browser/modules/key-details/shared/editable-popover'
 
 import { FormatedDate, RiTooltip } from 'uiSrc/components'
-import { Text } from 'uiSrc/components/base/text'
+import { ColorText, Text } from 'uiSrc/components/base/text'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { ComposedInput } from 'uiSrc/components/base/inputs'
 
+import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import {
   ConsumerDto,
   ConsumerGroupDto,
@@ -56,9 +57,7 @@ export interface IConsumerGroup extends ConsumerGroupDto {
 const suffix = '_stream_group'
 const actionsWidth = 48
 
-export interface Props {}
-
-const GroupsViewWrapper = (props: Props) => {
+const GroupsViewWrapper = () => {
   const {
     lastRefreshTime,
     data: loadedGroups = [],
@@ -222,22 +221,19 @@ const GroupsViewWrapper = (props: Props) => {
         const cellContent = viewName.substring(0, 200)
         const tooltipContent = formatLongName(viewName)
         return (
-          <Text component="div" style={{ maxWidth: '100%' }} color="secondary">
-            <div
-              style={{ display: 'flex' }}
-              className="truncateText"
-              data-testid={`stream-group-name-${viewName}`}
-            >
+          <S.CellWrapper>
+            <FlexItem data-testid={`stream-group-name-${viewName}`}>
               <RiTooltip
-                className={S.cellClassName}
                 anchorClassName="truncateText"
                 position="bottom"
                 content={tooltipContent}
               >
-                <>{cellContent}</>
+                <ColorText color="secondary" ellipsis>
+                  {cellContent}
+                </ColorText>
               </RiTooltip>
-            </div>
-          </Text>
+            </FlexItem>
+          </S.CellWrapper>
         )
       },
     },
@@ -282,12 +278,8 @@ const GroupsViewWrapper = (props: Props) => {
         )
 
         return (
-          <Text component="div" style={{ maxWidth: '100%' }} color="secondary">
-            <div
-              style={{ display: 'flex' }}
-              className="truncateText"
-              data-testid={`group-pending-${viewName}`}
-            >
+          <S.CellWrapper>
+            <FlexItem data-testid={`group-pending-${viewName}`}>
               {!!pending && (
                 <RiTooltip
                   title={`${pending} Pending Messages`}
@@ -296,12 +288,14 @@ const GroupsViewWrapper = (props: Props) => {
                   position="bottom"
                   content={tooltipContent}
                 >
-                  <>{pending}</>
+                  <ColorText color="secondary" ellipsis>
+                    {pending}
+                  </ColorText>
                 </RiTooltip>
               )}
               {!pending && pending}
-            </div>
-          </Text>
+            </FlexItem>
+          </S.CellWrapper>
         )
       },
     },
@@ -312,7 +306,7 @@ const GroupsViewWrapper = (props: Props) => {
       maxWidth: 200,
       absoluteWidth: 200,
       isSortable: true,
-      className: cx(S.cellClassName, 'noPadding'),
+      className: cx('noPadding'),
       headerClassName: 'streamItemHeader',
       headerCellClassName: 'truncateText',
       render: function Id(
@@ -326,30 +320,28 @@ const GroupsViewWrapper = (props: Props) => {
         return (
           <EditablePopover
             content={
-              <div className={S.cellClassName}>
+              <S.GroupsCell>
                 <Text
                   color="secondary"
                   size="s"
                   style={{ maxWidth: '100%' }}
                   component="div"
+                  ellipsis
                 >
-                  <div
-                    className="truncateText streamItem"
-                    style={{ display: 'flex', maxWidth: '190px' }}
-                    data-testid={`stream-group-date-${id}`}
-                  >
+                  <S.DateWrapper data-testid={`stream-group-date-${id}`}>
                     <FormatedDate date={timestamp} />
-                  </div>
+                  </S.DateWrapper>
                 </Text>
-                <Text size="s" style={{ maxWidth: '100%' }} component="div">
-                  <div
-                    className="streamItemId"
-                    data-testid={`stream-group-id-${id}`}
-                  >
-                    {id}
-                  </div>
+                <Text
+                  size="s"
+                  style={{ maxWidth: '100%' }}
+                  component="div"
+                  color="primary"
+                  data-testid={`stream-group-id-${id}`}
+                >
+                  {id}
                 </Text>
-              </div>
+              </S.GroupsCell>
             }
             field={id}
             prefix="stream-group"
@@ -393,12 +385,18 @@ const GroupsViewWrapper = (props: Props) => {
                 }
               />
               {!showIdError && (
-                <S.IdText data-testid="id-help-text">
+                <ColorText
+                  color="secondary"
+                  size="S"
+                  data-testid="id-help-text"
+                >
                   Timestamp - Sequence Number or $
-                </S.IdText>
+                </ColorText>
               )}
               {showIdError && (
-                <S.ErrorText data-testid="id-error">{idError}</S.ErrorText>
+                <ColorText color="danger" size="S" data-testid="id-error">
+                  {idError}
+                </ColorText>
               )}
             </FormField>
           </EditablePopover>
@@ -420,10 +418,10 @@ const GroupsViewWrapper = (props: Props) => {
             <PopoverDelete
               header={viewName}
               text={
-                <>
+                <ColorText color="secondary">
                   and all its consumers will be removed from{' '}
                   <b>{selectedKeyString}</b>
-                </>
+                </ColorText>
               }
               item={viewName}
               suffix={suffix}
@@ -448,7 +446,6 @@ const GroupsViewWrapper = (props: Props) => {
         columns={columns}
         onClosePopover={closePopover}
         onSelectGroup={handleSelectGroup}
-        {...props}
       />
     </S.ClassStyles>
   )

@@ -1,12 +1,17 @@
 import { HTMLAttributes } from 'react'
 import styled from 'styled-components'
-
 import { StyledDividerProps } from './Divider.types'
 
 const dividerStyles = {
   orientation: {
-    horizontal: 'width: 100%; height: 1px;',
-    vertical: 'width: 1px; height: 100%;',
+    horizontal: `
+      width: 100%;
+      height: 1px;
+    `,
+    vertical: `
+      width: 1px;
+      height: 100%;
+    `,
   },
   variant: {
     fullWidth: {
@@ -14,8 +19,12 @@ const dividerStyles = {
       vertical: '',
     },
     half: {
-      horizontal: 'width: 50%;',
-      vertical: 'height: 50%;',
+      horizontal: `
+        width: 50%;
+      `,
+      vertical: `
+        height: 50%;
+      `,
     },
   },
 }

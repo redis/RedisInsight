@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { Col } from 'uiSrc/components/base/layout/flex'
+import { Theme } from 'uiSrc/components/base/theme/types'
 import { Container as StreamDataViewContainer } from '../stream-data-view/StreamDataView/StreamDataView.styles'
 import { Container as MessagesViewContainer } from '../messages-view/MessagesView/MessagesView.styles'
 import { Container as GroupsViewContainer } from '../groups-view/GroupsView/GroupsView.styles'
@@ -8,7 +9,7 @@ import { Container as ConsumersViewContainer } from '../consumers-view/Consumers
 const CELL_PADDING_WIDTH = '12px'
 
 export const Container = styled(Col)`
-  padding: 0 18px;
+  padding: 0 ${({ theme }: { theme: Theme }) => theme.core.space.space200};
   height: 100%;
   position: relative;
 
