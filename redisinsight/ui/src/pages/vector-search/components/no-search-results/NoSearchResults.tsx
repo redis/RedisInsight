@@ -1,5 +1,4 @@
 import React from 'react'
-import { Col } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import NoQueryResultsIcon from 'uiSrc/assets/img/vector-search/no-query-results.svg'
 
@@ -13,10 +12,8 @@ export const NoSearchResults = () => (
     justify="center"
   >
     <S.Image as="img" src={NoQueryResultsIcon} alt="No search results" />
-    <Col gap="m">
-      <Text size="M">
-        Your query results will appear here once you run a query.
-      </Text>
-    </Col>
+    <Text size="M">
+      Your query results will appear here once you run a query.
+    </Text>
   </S.Container>
 )
