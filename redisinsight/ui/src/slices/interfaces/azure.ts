@@ -71,7 +71,33 @@ export enum ActionStatus {
 export interface ImportAzureDatabaseResponse {
   id: string
   status: ActionStatus
-  message: string
+  message?: string
   databaseDetails?: AzureRedisDatabase
   error?: string | object
+}
+
+// Azure autodiscovery slice interfaces
+export enum LoadedAzure {
+  Subscriptions = 'subscriptions',
+  Databases = 'databases',
+  DatabasesAdded = 'databasesAdded',
+}
+
+export interface AzureDatabaseWithStatus extends AzureRedisDatabase {
+  statusAdded?: ActionStatus
+  messageAdded?: string
+}
+
+export interface InitialStateAzure {
+  loading: boolean
+  error: string
+  subscriptions: AzureSubscription[] | null
+  selectedSubscription: AzureSubscription | null
+  databases: AzureRedisDatabase[] | null
+  databasesAdded: AzureDatabaseWithStatus[]
+  loaded: {
+    [LoadedAzure.Subscriptions]: boolean
+    [LoadedAzure.Databases]: boolean
+    [LoadedAzure.DatabasesAdded]: boolean
+  }
 }

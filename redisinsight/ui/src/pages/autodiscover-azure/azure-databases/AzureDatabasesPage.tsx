@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { Pages } from 'uiSrc/constants'
 import { setTitle } from 'uiSrc/utils'
@@ -11,22 +11,26 @@ import errorMessages from 'uiSrc/components/notifications/error-messages'
 import { riToast } from 'uiSrc/components/base/display/toast'
 import { defaultContainerId } from 'uiSrc/components/notifications/constants'
 import { AppDispatch } from 'uiSrc/slices/store'
-import { useAzureAutodiscovery } from '../contexts'
+import { ActionStatus, AzureRedisDatabase } from 'uiSrc/slices/interfaces'
+import { azureAuthAccountSelector } from 'uiSrc/slices/oauth/azure'
+import {
+  addDatabasesAzureAction,
+  azureSelector,
+  fetchDatabasesAzure,
+} from 'uiSrc/slices/instances/azure'
 import AzureDatabases from './AzureDatabases/AzureDatabases'
 
 const AzureDatabasesPage = () => {
   const history = useHistory()
   const dispatch = useDispatch<AppDispatch>()
-  const {
-    databasesLoading,
-    databasesError,
-    databases,
-    selectedSubscription,
-    selectedDatabases,
-    fetchDatabases,
-    setSelectedDatabases,
-    addDatabases,
-  } = useAzureAutodiscovery()
+  const account = useSelector(azureAuthAccountSelector)
+  const { loading, error, databases, selectedSubscription, loaded } =
+    useSelector(azureSelector)
+
+  // Local state for selected databases (UI state)
+  const [selectedDatabases, setSelectedDatabases] = useState<
+    AzureRedisDatabase[]
+  >([])
 
   useEffect(() => {
     setTitle('Azure Databases')
@@ -36,8 +40,13 @@ const AzureDatabasesPage = () => {
       return
     }
 
-    fetchDatabases()
-  }, [selectedSubscription])
+    // Only fetch if not already loaded
+    if (account?.id && !loaded.databases) {
+      dispatch(
+        fetchDatabasesAzure(account.id, selectedSubscription.subscriptionId),
+      )
+    }
+  }, [selectedSubscription, account?.id, loaded.databases])
 
   const handleBack = () => {
     setSelectedDatabases([])
@@ -49,20 +58,33 @@ const AzureDatabasesPage = () => {
   }
 
   const handleSubmit = async () => {
-    const results = await addDatabases()
+    if (!account?.id || selectedDatabases.length === 0) {
+      return
+    }
 
-    const successResults = results.filter((r) => r.success)
-    const failedResults = results.filter((r) => !r.success)
+    const databaseIds = selectedDatabases.map((db) => db.id)
+    const results = await dispatch(
+      addDatabasesAzureAction(account.id, databaseIds),
+    )
+
+    const successResults = results.filter(
+      (r) => r.status === ActionStatus.Success,
+    )
+    const failedResults = results.filter((r) => r.status === ActionStatus.Fail)
 
     // Refresh instances list if any were added
     if (successResults.length > 0) {
       dispatch(fetchInstancesAction())
+
+      const successDb = selectedDatabases.find(
+        (db) => db.id === successResults[0]?.id,
+      )
       dispatch(
         addMessageNotification(
           successMessages.ADDED_NEW_INSTANCE(
             successResults.length > 1
               ? `${successResults.length} databases`
-              : successResults[0]?.database?.name || 'Database',
+              : successDb?.name || 'Database',
           ),
         ),
       )
@@ -71,11 +93,12 @@ const AzureDatabasesPage = () => {
     // Show single grouped error toast for all failed databases
     if (failedResults.length > 0) {
       const failedNames = failedResults
-        .map((r) => r.database?.name || 'database')
+        .map((r) => {
+          const db = selectedDatabases.find((db) => db.id === r.id)
+          return db?.name || 'database'
+        })
         .join(', ')
 
-      console.log(JSON.stringify(failedResults, null, 2))
-      // Get the first error message to show as main message
       const firstErrorMessage =
         failedResults[0]?.message || 'Failed to add database'
 
@@ -102,11 +125,11 @@ const AzureDatabasesPage = () => {
 
   return (
     <AzureDatabases
-      databases={databases}
+      databases={databases || []}
       selectedDatabases={selectedDatabases}
       subscriptionName={selectedSubscription?.displayName || ''}
-      loading={databasesLoading}
-      error={databasesError}
+      loading={loading}
+      error={error}
       onBack={handleBack}
       onClose={handleClose}
       onSubmit={handleSubmit}
