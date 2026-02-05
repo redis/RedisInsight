@@ -165,6 +165,37 @@ describe('AzureDatabases', () => {
     expect(refreshButton).toBeDisabled()
   })
 
+  it('should sync rowSelection with selectedDatabases prop changes', () => {
+    const databases = [mockDatabase(), mockDatabase()]
+    const { rerender } = render(
+      <AzureDatabases
+        {...defaultProps}
+        databases={databases}
+        selectedDatabases={databases}
+      />,
+    )
+
+    // Initially both databases are selected, so max message should not show
+    expect(
+      screen.queryByTestId('max-selection-message'),
+    ).not.toBeInTheDocument()
+
+    // Simulate parent resetting selectedDatabases (e.g., on refresh)
+    rerender(
+      <AzureDatabases
+        {...defaultProps}
+        databases={databases}
+        selectedDatabases={[]}
+      />,
+    )
+
+    // After reset, no databases should be selected
+    expect(
+      screen.queryByTestId('max-selection-message'),
+    ).not.toBeInTheDocument()
+    expect(screen.getByText(/Add Database/)).toBeInTheDocument()
+  })
+
   it('should show max selection message when 10 databases are selected', () => {
     // Use exactly 10 databases so pagination doesn't kick in (pagination at > 10)
     const databases = Array.from({ length: 10 }, () => mockDatabase())

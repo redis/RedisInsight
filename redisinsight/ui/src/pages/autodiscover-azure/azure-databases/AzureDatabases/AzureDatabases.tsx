@@ -74,6 +74,15 @@ const AzureDatabases = ({
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
 
+  // Sync rowSelection with selectedDatabases prop (e.g., when parent resets on refresh)
+  useEffect(() => {
+    const newSelection: RowSelectionState = {}
+    selectedDatabases.forEach((db) => {
+      newSelection[db.id] = true
+    })
+    setRowSelection(newSelection)
+  }, [selectedDatabases])
+
   const selectedCount = Object.keys(rowSelection).length
   const isMaxSelected = selectedCount >= MAX_DATABASES_SELECTION
 
