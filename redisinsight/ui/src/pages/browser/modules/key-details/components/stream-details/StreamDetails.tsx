@@ -17,6 +17,7 @@ import { StreamViewType } from 'uiSrc/slices/interfaces/stream'
 import { StreamDetailsBody } from './stream-details-body'
 import AddStreamEntries from './add-stream-entity'
 import AddStreamGroup from './add-stream-group'
+import * as S from './StreamDetails.styles'
 import { StreamItemsAction } from '../key-details-actions'
 import { KeyDetailsSubheader } from '../key-details-subheader/KeyDetailsSubheader'
 import { AddKeysContainer } from '../common/AddKeysContainer.styled'
@@ -64,14 +65,14 @@ const StreamDetails = (props: Props) => {
   )
 
   return (
-    <div className="fluid flex-column relative">
+    <S.Container grow>
       <KeyDetailsHeader {...props} key="key-details-header" />
       <KeyDetailsSubheader keyType={keyType} Actions={Actions} />
-      <div className="key-details-body" key="key-details-body">
+      <S.KeyDetailsBody key="key-details-body">
         {!loading && (
-          <div className="flex-column" style={{ flex: '1', height: '100%' }}>
+          <S.StreamDetailsWrapper>
             <StreamDetailsBody />
-          </div>
+          </S.StreamDetailsWrapper>
         )}
         {isAddItemPanelOpen && (
           <AddKeysContainer>
@@ -83,8 +84,8 @@ const StreamDetails = (props: Props) => {
             )}
           </AddKeysContainer>
         )}
-      </div>
-    </div>
+      </S.KeyDetailsBody>
+    </S.Container>
   )
 }
 

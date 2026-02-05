@@ -217,7 +217,6 @@ const MessagesViewWrapper = (props: Props) => {
         columns={columns}
         onClosePopover={closePopover}
         loadMoreItems={loadMoreItems}
-        {...props}
         noItemsMessageString={
           isTruncatedConsumerName ? TEXT_CONSUMER_NAME_TOO_LONG : undefined
         }

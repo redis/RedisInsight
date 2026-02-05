@@ -292,12 +292,12 @@ const VirtualGrid = (props: IProps) => {
   return (
     <S.Container onWheel={onWheel} data-testid="virtual-grid-container">
       {loading && !hideProgress && (
-        <S.Progress>
+        <span>
           <ProgressBarLoader
             color="primary"
             data-testid="progress-entry-list"
           />
-        </S.Progress>
+        </span>
       )}
       {items.length > 1 && (
         <AutoSizer onResize={onResize}>
@@ -356,7 +356,7 @@ const VirtualGrid = (props: IProps) => {
       )}
       {items.length === 1 && (
         <S.NoItems>
-          <Text>{loading ? loadingMsg : noItemsMessage}</Text>
+          <Text color="primary">{loading ? loadingMsg : noItemsMessage}</Text>
         </S.NoItems>
       )}
     </S.Container>

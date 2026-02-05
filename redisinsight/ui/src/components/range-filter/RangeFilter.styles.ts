@@ -1,49 +1,39 @@
 import styled, { css } from 'styled-components'
+import { ComponentPropsWithRef, HTMLAttributes } from 'react'
 import { type Theme } from 'uiSrc/components/base/theme/types'
+import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 
-export const RangeWrapper = styled.div`
-  margin: 30px 30px 26px;
-  padding: 12px 0;
+export const RangeWrapper = styled.div<HTMLAttributes<HTMLDivElement>>`
+  margin: ${({ theme }: { theme: Theme }) =>
+    `${theme.core.space.space300} ${theme.core.space.space300} ${theme.core.space.space250}`};
+  padding: ${({ theme }: { theme: Theme }) =>
+    `${theme.core.space.space150} ${theme.core.space.space000}`};
 
   &:hover {
     .slider-range:not(.disabled) {
-      height: 5px;
+      height: ${({ theme }: { theme: Theme }) => theme.core.space.space050};
       transform: translateY(0px);
 
       &:before {
-        width: 2px;
-        height: 12px;
+        width: ${({ theme }: { theme: Theme }) => theme.core.space.space025};
+        height: ${({ theme }: { theme: Theme }) => theme.core.space.space150};
         top: -7px;
       }
 
       &:after {
-        width: 2px;
-        height: 12px;
+        width: ${({ theme }: { theme: Theme }) => theme.core.space.space025};
+        height: ${({ theme }: { theme: Theme }) => theme.core.space.space150};
       }
     }
   }
 `
 
-export const ResetButton = styled.button`
+export const ResetButton = styled(EmptyButton)`
   position: absolute;
-  right: 30px;
-  top: 80px;
+  right: ${({ theme }: { theme: Theme }) => theme.core.space.space300};
+  top: ${({ theme }: { theme: Theme }) => theme.core.space.space800};
   z-index: 10;
-  text-decoration: underline;
-  color: ${({ theme }: { theme: Theme }) =>
-    theme.components.typography.colors.secondary};
-  background: none;
-  border: none;
   cursor: pointer;
-  font:
-    normal normal 500 13px/18px Graphik,
-    sans-serif;
-
-  &:hover,
-  &:focus {
-    color: ${({ theme }: { theme: Theme }) =>
-      theme.components.typography.colors.primary};
-  }
 `
 
 export const Slider = styled.div`
@@ -54,10 +44,10 @@ export const Slider = styled.div`
 export const SliderTrack = styled.div<{ $mock?: boolean }>`
   position: absolute;
   background-color: ${({ theme }: { theme: Theme }) =>
-    theme.semantic.color.border.neutral500};
+    theme.semantic.color.background.primary400};
   width: 100%;
-  height: 1px;
-  margin-top: 2px;
+  height: ${({ theme }: { theme: Theme }) => theme.core.space.space010};
+  margin-top: ${({ theme }: { theme: Theme }) => theme.core.space.space025};
   z-index: 1;
 
   ${({ $mock }) =>
@@ -68,22 +58,24 @@ export const SliderTrack = styled.div<{ $mock?: boolean }>`
     `}
 `
 
-export const SliderRange = styled.div<{
-  $leftPosition?: boolean
-  $disabled?: boolean
-  $mock?: boolean
-}>`
+export const SliderRange = styled.div<
+  ComponentPropsWithRef<'div'> & {
+    $leftPosition?: boolean
+    $disabled?: boolean
+    $mock?: boolean
+  }
+>`
   position: absolute;
   background-color: ${({ theme }: { theme: Theme }) =>
     theme.semantic.color.background.primary400};
-  height: 1px;
+  height: ${({ theme }: { theme: Theme }) => theme.core.space.space010};
   z-index: 2;
   transform: translateY(2px);
 
   &:before {
     content: '';
-    width: 1px;
-    height: 6px;
+    width: ${({ theme }: { theme: Theme }) => theme.core.space.space010};
+    height: ${({ theme }: { theme: Theme }) => theme.core.space.space050};
     position: absolute;
     top: -5px;
     left: -1px;
@@ -93,8 +85,8 @@ export const SliderRange = styled.div<{
 
   &:after {
     content: '';
-    width: 1px;
-    height: 6px;
+    width: ${({ theme }: { theme: Theme }) => theme.core.space.space010};
+    height: ${({ theme }: { theme: Theme }) => theme.core.space.space050};
     position: absolute;
     right: -1px;
     background-color: ${({ theme }: { theme: Theme }) =>
@@ -109,17 +101,16 @@ export const SliderRange = styled.div<{
     `}
 `
 
-export const SliderLeftValue = styled.div<{
-  $leftPosition?: boolean
-  $disabled?: boolean
-}>`
+export const SliderLeftValue = styled.div<
+  HTMLAttributes<HTMLDivElement> & {
+    $leftPosition?: boolean
+    $disabled?: boolean
+  }
+>`
   position: absolute;
   width: max-content;
   color: ${({ theme }: { theme: Theme }) =>
-    theme.semantic.color.text.neutral600};
-  font:
-    normal normal normal 12px/18px Graphik,
-    sans-serif;
+    theme.semantic.color.text.primary400};
   margin-top: -25px;
   left: 0;
 
@@ -130,18 +121,17 @@ export const SliderLeftValue = styled.div<{
     `}
 `
 
-export const SliderRightValue = styled.div<{
-  $rightPosition?: boolean
-  $disabled?: boolean
-}>`
+export const SliderRightValue = styled.div<
+  HTMLAttributes<HTMLDivElement> & {
+    $rightPosition?: boolean
+    $disabled?: boolean
+  }
+>`
   position: absolute;
   width: max-content;
   color: ${({ theme }: { theme: Theme }) =>
-    theme.semantic.color.text.neutral600};
-  font:
-    normal normal normal 12px/18px Graphik,
-    sans-serif;
-  margin-top: 8px;
+    theme.semantic.color.text.primary400};
+  margin-top: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
   right: -4px;
 
   ${({ $rightPosition }) =>
@@ -151,9 +141,13 @@ export const SliderRightValue = styled.div<{
     `}
 `
 
-export const Thumb = styled.input<{ $zIndex3?: boolean; $zIndex4?: boolean }>`
-  -webkit-appearance: none;
-  -webkit-tap-highlight-color: transparent;
+export const Thumb = styled.input<
+  ComponentPropsWithRef<'input'> & {
+    $zIndex3?: boolean
+    $zIndex4?: boolean
+  }
+>`
+  appearance: none;
   pointer-events: none;
   position: absolute;
   height: 0;
@@ -174,12 +168,12 @@ export const Thumb = styled.input<{ $zIndex3?: boolean; $zIndex4?: boolean }>`
 
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 24px;
-    height: 24px;
+    width: ${({ theme }: { theme: Theme }) => theme.core.space.space300};
+    height: ${({ theme }: { theme: Theme }) => theme.core.space.space300};
     border: none;
     border-radius: 0;
     cursor: ew-resize;
-    margin-top: 4px;
+    margin-top: ${({ theme }: { theme: Theme }) => theme.core.space.space050};
     pointer-events: all;
     position: relative;
     background: transparent;
@@ -190,12 +184,12 @@ export const Thumb = styled.input<{ $zIndex3?: boolean; $zIndex4?: boolean }>`
   }
 
   &::-moz-range-thumb {
-    width: 24px;
-    height: 24px;
+    width: ${({ theme }: { theme: Theme }) => theme.core.space.space300};
+    height: ${({ theme }: { theme: Theme }) => theme.core.space.space300};
     border: none;
     border-radius: 0;
     cursor: ew-resize;
-    margin-top: 4px;
+    margin-top: ${({ theme }: { theme: Theme }) => theme.core.space.space050};
     pointer-events: all;
     position: relative;
     background: transparent;
@@ -209,10 +203,16 @@ export const Thumb = styled.input<{ $zIndex3?: boolean; $zIndex4?: boolean }>`
     $zIndex3 &&
     css`
       &::-webkit-slider-thumb {
-        transform: translate(-18px, -4px);
+        transform: translate(
+          ${({ theme }: { theme: Theme }) => theme.core.space.space250},
+          -${({ theme }: { theme: Theme }) => theme.core.space.space050}
+        );
       }
       &::-moz-range-thumb {
-        transform: translate(-18px, -4px);
+        transform: translate(
+          ${({ theme }: { theme: Theme }) => theme.core.space.space250},
+          -${({ theme }: { theme: Theme }) => theme.core.space.space050}
+        );
       }
     `}
 
@@ -220,10 +220,18 @@ export const Thumb = styled.input<{ $zIndex3?: boolean; $zIndex4?: boolean }>`
     $zIndex4 &&
     css`
       &::-webkit-slider-thumb {
-        transform: translate(-20px, 8px) rotate(180deg);
+        transform: translate(
+            -${({ theme }: { theme: Theme }) => theme.core.space.space250},
+            ${({ theme }: { theme: Theme }) => theme.core.space.space050}
+          )
+          rotate(180deg);
       }
       &::-moz-range-thumb {
-        transform: translate(-20px, 8px) rotate(180deg);
+        transform: translate(
+            -${({ theme }: { theme: Theme }) => theme.core.space.space250},
+            ${({ theme }: { theme: Theme }) => theme.core.space.space050}
+          )
+          rotate(180deg);
       }
     `}
 `

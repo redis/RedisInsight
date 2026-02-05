@@ -22,9 +22,10 @@ import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import RangeFilter from 'uiSrc/components/range-filter'
 import { ProgressBarLoader } from 'uiSrc/components/base/display'
-import { Col } from 'uiSrc/components/base/layout/flex'
+import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { GetStreamEntriesResponse } from 'apiSrc/modules/browser/stream/dto'
 
+import * as S from './StreamDetailsBody.styles'
 import ConsumersViewWrapper from '../consumers-view'
 import GroupsViewWrapper from '../groups-view'
 import MessagesViewWrapper from '../messages-view'
@@ -32,11 +33,7 @@ import StreamDataViewWrapper from '../stream-data-view'
 import StreamTabs from '../stream-tabs'
 import { MAX_FORMAT_LENGTH_STREAM_TIMESTAMP } from '../constants'
 
-import * as S from './StreamDetailsBody.styles'
-
-export interface Props {}
-
-const StreamDetailsBody = (props: Props) => {
+const StreamDetailsBody = () => {
   const {
     viewType,
     loading,
@@ -122,7 +119,7 @@ const StreamDetailsBody = (props: Props) => {
     if (shouldLoadMore()) {
       dispatch(
         fetchMoreStreamEntries(
-          key,
+          key as RedisResponseBuffer,
           entryColumnSortOrder === SortOrder.DESC ? start : nextId,
           entryColumnSortOrder === SortOrder.DESC ? nextId : end,
           SCAN_COUNT_DEFAULT,
@@ -157,7 +154,7 @@ const StreamDetailsBody = (props: Props) => {
   ) => {
     dispatch(
       fetchStreamEntries(
-        key,
+        key as RedisResponseBuffer,
         SCAN_COUNT_DEFAULT,
         entryColumnSortOrder,
         false,
@@ -197,7 +194,7 @@ const StreamDetailsBody = (props: Props) => {
   }, [])
 
   return (
-    <S.Container data-testid="stream-details" gap="m">
+    <S.Container data-testid="stream-details" gap="m" grow>
       {(loading || loadingGroups) && (
         <ProgressBarLoader color="primary" data-testid="progress-key-stream" />
       )}
@@ -221,15 +218,11 @@ const StreamDetailsBody = (props: Props) => {
       )}
       <StreamTabs />
       {viewType === StreamViewType.Data && (
-        <StreamDataViewWrapper loadMoreItems={loadMoreItems} {...props} />
+        <StreamDataViewWrapper loadMoreItems={loadMoreItems} />
       )}
-      {viewType === StreamViewType.Groups && <GroupsViewWrapper {...props} />}
-      {viewType === StreamViewType.Consumers && (
-        <ConsumersViewWrapper {...props} />
-      )}
-      {viewType === StreamViewType.Messages && (
-        <MessagesViewWrapper {...props} />
-      )}
+      {viewType === StreamViewType.Groups && <GroupsViewWrapper />}
+      {viewType === StreamViewType.Consumers && <ConsumersViewWrapper />}
+      {viewType === StreamViewType.Messages && <MessagesViewWrapper />}
     </S.Container>
   )
 }

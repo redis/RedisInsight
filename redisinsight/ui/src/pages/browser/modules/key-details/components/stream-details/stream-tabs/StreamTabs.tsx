@@ -16,6 +16,7 @@ import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { SortOrder } from 'uiSrc/constants'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
+import { RedisResponseBuffer } from 'uiSrc/slices/interfaces/app'
 import { ConsumerGroupDto } from 'apiSrc/modules/browser/stream/dto'
 
 const StreamTabs = () => {
@@ -43,7 +44,12 @@ const StreamTabs = () => {
   const onSelectedTabChanged = (id: StreamViewType) => {
     if (id === StreamViewType.Data) {
       dispatch<any>(
-        fetchStreamEntries(key, SCAN_COUNT_DEFAULT, SortOrder.DESC, true),
+        fetchStreamEntries(
+          key as RedisResponseBuffer,
+          SCAN_COUNT_DEFAULT,
+          SortOrder.DESC,
+          true,
+        ),
       )
     }
     if (id === StreamViewType.Groups) {

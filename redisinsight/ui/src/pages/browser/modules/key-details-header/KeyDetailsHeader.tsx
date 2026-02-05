@@ -125,10 +125,7 @@ const KeyDetailsHeader = ({
   }
 
   return (
-    <S.Container
-      className="key-details-header"
-      data-testid="key-details-header"
-    >
+    <S.Container data-testid="key-details-header">
       {loading ? (
         <div>
           <LoadingContent lines={2} />

@@ -1,18 +1,7 @@
 import React from 'react'
 
-import {
-  StyledDividerWrapper,
-  StyledDivider,
-  DividerVariant,
-  DividerOrientation,
-} from './Divider.styles'
-
-export interface DividerProps {
-  orientation?: DividerOrientation
-  variant?: DividerVariant
-  color?: string
-  className?: string
-}
+import * as S from './Divider.styles'
+import { DividerProps } from './Divider.types'
 
 const Divider = ({
   orientation,
@@ -21,13 +10,14 @@ const Divider = ({
   className: _className,
   ...props
 }: DividerProps) => (
-  <StyledDividerWrapper {...props}>
-    <StyledDivider
+  <S.DividerWrapper {...props}>
+    <S.Divider
+      className={_className}
       $variant={variant}
       $orientation={orientation}
       $color={color}
     />
-  </StyledDividerWrapper>
+  </S.DividerWrapper>
 )
 
 export default Divider

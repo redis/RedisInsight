@@ -216,7 +216,6 @@ const ConsumersViewWrapper = (props: Props) => {
         columns={columns}
         onClosePopover={closePopover}
         onSelectConsumer={handleSelectConsumer}
-        {...props}
         noItemsMessageString={
           isTruncatedGroupName ? TEXT_CONSUMER_GROUP_NAME_TOO_LONG : undefined
         }
