@@ -2,7 +2,7 @@ import React from 'react'
 import { faker } from '@faker-js/faker'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 
-import { AzureRedisDatabase } from 'uiSrc/slices/interfaces'
+import { AzureRedisDatabase, AzureRedisType } from 'uiSrc/slices/interfaces'
 import AzureDatabases, { Props } from './AzureDatabases'
 
 const mockDatabase = (): AzureRedisDatabase => ({
@@ -10,7 +10,7 @@ const mockDatabase = (): AzureRedisDatabase => ({
   name: faker.internet.domainWord(),
   host: faker.internet.domainName(),
   port: 6379,
-  type: 'redis',
+  type: AzureRedisType.Standard,
   location: faker.location.city(),
   provisioningState: 'Succeeded',
   resourceGroup: faker.string.alphanumeric(10),

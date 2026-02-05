@@ -29,7 +29,9 @@ import reducer, {
 } from '../../instances/azure'
 import {
   ActionStatus,
+  AzureAccessKeysStatus,
   AzureRedisDatabase,
+  AzureRedisType,
   AzureSubscription,
   LoadedAzure,
 } from '../../interfaces'
@@ -68,9 +70,11 @@ beforeEach(() => {
     {
       id: faker.string.uuid(),
       name: faker.internet.domainWord(),
-      hostName: faker.internet.domainName(),
+      host: faker.internet.domainName(),
       port: 6379,
-      accessKeys: { primaryKey: faker.string.alphanumeric(32) },
+      location: 'eastus',
+      type: AzureRedisType.Standard,
+      accessKeysAuthentication: AzureAccessKeysStatus.Enabled,
       provisioningState: 'Succeeded',
       resourceGroup: faker.string.alphanumeric(10),
       subscriptionId: subscriptions[0].subscriptionId,
@@ -78,9 +82,11 @@ beforeEach(() => {
     {
       id: faker.string.uuid(),
       name: faker.internet.domainWord(),
-      hostName: faker.internet.domainName(),
+      host: faker.internet.domainName(),
       port: 6380,
-      accessKeys: { primaryKey: faker.string.alphanumeric(32) },
+      location: 'westus',
+      type: AzureRedisType.Enterprise,
+      accessKeysAuthentication: AzureAccessKeysStatus.Disabled,
       provisioningState: 'Succeeded',
       resourceGroup: faker.string.alphanumeric(10),
       subscriptionId: subscriptions[0].subscriptionId,
