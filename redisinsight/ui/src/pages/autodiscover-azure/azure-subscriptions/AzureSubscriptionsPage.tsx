@@ -22,13 +22,19 @@ const AzureSubscriptionsPage = () => {
   const { loading, error, subscriptions, loaded } = useSelector(azureSelector)
 
   useEffect(() => {
+    // Redirect to home if not authenticated
+    if (!account) {
+      history.push(Pages.home)
+      return
+    }
+
     setTitle('Azure Subscriptions')
 
     // Only fetch if not already loaded or if account changed
-    if (account?.id && !loaded.subscriptions) {
+    if (!loaded.subscriptions) {
       dispatch(fetchSubscriptionsAzure(account.id))
     }
-  }, [account?.id, loaded.subscriptions])
+  }, [account, loaded.subscriptions])
 
   const handleBack = () => {
     history.push(Pages.home)

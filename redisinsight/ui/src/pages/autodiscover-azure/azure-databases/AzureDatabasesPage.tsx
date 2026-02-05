@@ -89,20 +89,27 @@ const AzureDatabasesPage = () => {
   >([])
 
   useEffect(() => {
-    setTitle('Azure Databases')
+    // Redirect to home if not authenticated
+    if (!account) {
+      history.push(Pages.home)
+      return
+    }
 
+    // Redirect to subscriptions if no subscription selected
     if (!selectedSubscription) {
       history.push(Pages.azureSubscriptions)
       return
     }
 
+    setTitle('Azure Databases')
+
     // Only fetch if not already loaded
-    if (account?.id && !loaded.databases) {
+    if (!loaded.databases) {
       dispatch(
         fetchDatabasesAzure(account.id, selectedSubscription.subscriptionId),
       )
     }
-  }, [selectedSubscription, account?.id, loaded.databases])
+  }, [account, selectedSubscription, loaded.databases])
 
   const handleBack = () => {
     setSelectedDatabases([])

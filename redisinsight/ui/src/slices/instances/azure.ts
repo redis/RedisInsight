@@ -10,6 +10,7 @@ import {
 } from 'uiSrc/utils'
 import {
   AzureRedisDatabase,
+  AzureRedisType,
   AzureSubscription,
   EnhancedAxiosError,
   ImportAzureDatabaseResponse,
@@ -111,10 +112,31 @@ const azureSlice = createSlice({
       state.loaded[LoadedAzure.DatabasesAdded] = true
 
       // Map responses to databases with status
+      // Use databaseDetails from response, fallback to local state lookup
       state.databasesAdded = payload.map((response) => {
-        const database = state.databases?.find((db) => db.id === response.id)
+        const database =
+          response.databaseDetails ??
+          state.databases?.find((db) => db.id === response.id)
+
+        if (!database) {
+          // Should not happen, but handle gracefully
+          return {
+            id: response.id,
+            name: response.id,
+            subscriptionId: '',
+            resourceGroup: '',
+            location: '',
+            type: AzureRedisType.Standard,
+            host: '',
+            port: 0,
+            provisioningState: '',
+            statusAdded: response.status,
+            messageAdded: response.message,
+          }
+        }
+
         return {
-          ...database!,
+          ...database,
           statusAdded: response.status,
           messageAdded: response.message,
         }
