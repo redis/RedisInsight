@@ -13,7 +13,6 @@ export const StreamItem = styled(Row)`
 `
 
 export const ClassStyles = styled(Col)`
-  background-color: yellow;
   .${cellClassName} {
     overflow: hidden;
   }
