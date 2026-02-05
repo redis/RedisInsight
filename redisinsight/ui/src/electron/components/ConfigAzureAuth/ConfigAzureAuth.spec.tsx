@@ -12,6 +12,7 @@ import {
   azureOAuthCallbackSuccess,
   azureOAuthCallbackFailure,
 } from 'uiSrc/slices/oauth/azure'
+import { resetDataAzure } from 'uiSrc/slices/instances/azure'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 
 import ConfigAzureAuth from './ConfigAzureAuth'
@@ -55,7 +56,10 @@ describe('ConfigAzureAuth', () => {
     )
     renderConfigAzureAuth()
 
-    const expectedActions = [azureOAuthCallbackSuccess(expectedAccount)]
+    const expectedActions = [
+      resetDataAzure(),
+      azureOAuthCallbackSuccess(expectedAccount),
+    ]
     expect(store.getActions()).toEqual(expectedActions)
   })
 
