@@ -34,20 +34,13 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: yarn install --frozen-lockfile
 
-    - name: Get Playwright version
-      id: playwright-version
-      shell: bash
-      working-directory: ${{ inputs.working-directory }}
-      run: |
-        PLAYWRIGHT_VERSION=$(node -e "console.log(require('./node_modules/@playwright/test/package.json').version)")
-        echo "version=$PLAYWRIGHT_VERSION" >> $GITHUB_OUTPUT
-
     - name: Cache Playwright browsers
       id: cache-playwright
       uses: actions/cache@v4
       with:
         path: ~/.cache/ms-playwright
-        key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}-${{ inputs.browsers }}
+        # Use yarn.lock hash as cache key - it changes when Playwright version changes
+        key: playwright-${{ runner.os }}-${{ hashFiles('tests/e2e-playwright/yarn.lock') }}-${{ inputs.browsers }}
 
     - name: Install Playwright browsers
       if: steps.cache-playwright.outputs.cache-hit != 'true'
