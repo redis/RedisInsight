@@ -59,16 +59,18 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
 
       // Wait for app to fully initialize and API to be ready
       console.log('Waiting for Electron app to initialize...');
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 5000));
 
-      // Wait for API to be available
+      // Wait for API to be available with more retries for CI environments
       const apiHelper = new ApiHelper({ apiUrl });
       const checkApi = async () => {
+        console.log(`Checking API at ${apiUrl}...`);
         await apiHelper.getDatabases();
         console.log('Electron API is ready');
       };
       await retry(checkApi, {
         maxAttempts: 5,
+        delayMs: 2000,
         errorMessage: 'Electron API did not become available',
       });
       await apiHelper.dispose();

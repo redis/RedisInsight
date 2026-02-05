@@ -268,6 +268,9 @@ jobs:
           CI: true
           DISPLAY: ':99'
           ELECTRON_EXECUTABLE_PATH: ${{ steps.appimage.outputs.path }}
+          RI_SOCKETS_CORS: 'true'
+          RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
+          RI_ENCRYPTION_KEYTAR: 'false'
 
       - name: Upload test results
         if: ${{ !cancelled() }}
