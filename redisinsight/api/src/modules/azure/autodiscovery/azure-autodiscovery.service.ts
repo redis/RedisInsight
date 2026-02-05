@@ -45,6 +45,10 @@ export class AzureAutodiscoveryService {
       return ERROR_MESSAGES.AZURE_ENTRA_ID_AUTH_FAILED;
     }
 
+    if (message.includes('please check the ca or client certificate')) {
+      return ERROR_MESSAGES.AZURE_TLS_CERTIFICATE_ERROR;
+    }
+
     return error?.message || ERROR_MESSAGES.AZURE_UNEXPECTED_ERROR;
   }
 
