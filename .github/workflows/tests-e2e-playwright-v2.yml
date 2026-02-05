@@ -268,6 +268,12 @@ jobs:
             exit 1
           fi
 
+      # Create folders before tests run to prevent permissions issues (like the old workflow)
+      - name: Create test folders
+        run: |
+          mkdir -p tests/e2e/remote
+          mkdir -p tests/e2e/rdi
+
       - name: Start Redis test environment
         run: |
           TEST_BIG_DB_DUMP=$TEST_BIG_DB_DUMP \
@@ -299,6 +305,8 @@ jobs:
           RI_SOCKETS_CORS: 'true'
           RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
           RI_ENCRYPTION_KEYTAR: 'false'
+          # Disable TLS certificate validation for self-signed certs (like old tests do)
+          NODE_TLS_REJECT_UNAUTHORIZED: '0'
 
       - name: Upload test results
         if: ${{ !cancelled() }}
