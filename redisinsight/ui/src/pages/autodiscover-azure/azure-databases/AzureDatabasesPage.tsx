@@ -160,7 +160,8 @@ const AzureDatabasesPage = () => {
       showErrorToast(failedResults, selectedDatabases)
     }
 
-    if (failedResults.length === 0) {
+    // Only navigate home if all databases were added successfully
+    if (successResults.length > 0 && failedResults.length === 0) {
       history.push(Pages.home)
     }
   }
