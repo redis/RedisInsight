@@ -28,6 +28,7 @@ describe('AzureDatabases', () => {
     onClose: jest.fn(),
     onSubmit: jest.fn(),
     onSelectionChange: jest.fn(),
+    onRefresh: jest.fn(),
   }
 
   const renderComponent = (propsOverride?: Partial<Props>) => {
@@ -147,5 +148,20 @@ describe('AzureDatabases', () => {
 
     fireEvent.click(screen.getByTestId('btn-submit'))
     expect(onSubmit).toHaveBeenCalledTimes(1)
+  })
+
+  it('should call onRefresh when refresh button is clicked', () => {
+    const onRefresh = jest.fn()
+    renderComponent({ onRefresh })
+
+    fireEvent.click(screen.getByTestId('btn-refresh-databases'))
+    expect(onRefresh).toHaveBeenCalledTimes(1)
+  })
+
+  it('should have disabled refresh button when loading', () => {
+    renderComponent({ loading: true })
+
+    const refreshButton = screen.getByTestId('btn-refresh-databases')
+    expect(refreshButton).toBeDisabled()
   })
 })

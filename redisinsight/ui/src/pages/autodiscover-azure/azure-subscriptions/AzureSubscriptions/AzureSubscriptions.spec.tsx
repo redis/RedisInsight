@@ -30,6 +30,7 @@ describe('AzureSubscriptions', () => {
     onClose: jest.fn(),
     onSubmit: jest.fn(),
     onSwitchAccount: jest.fn(),
+    onRefresh: jest.fn(),
   }
 
   const renderComponent = (propsOverride?: Partial<Props>) => {
@@ -136,5 +137,20 @@ describe('AzureSubscriptions', () => {
     expect(
       screen.queryByText('Development Subscription'),
     ).not.toBeInTheDocument()
+  })
+
+  it('should call onRefresh when refresh button is clicked', () => {
+    const onRefresh = jest.fn()
+    renderComponent({ onRefresh })
+
+    fireEvent.click(screen.getByTestId('btn-refresh-subscriptions'))
+    expect(onRefresh).toHaveBeenCalledTimes(1)
+  })
+
+  it('should have disabled refresh button when loading', () => {
+    renderComponent({ loading: true })
+
+    const refreshButton = screen.getByTestId('btn-refresh-subscriptions')
+    expect(refreshButton).toBeDisabled()
   })
 })

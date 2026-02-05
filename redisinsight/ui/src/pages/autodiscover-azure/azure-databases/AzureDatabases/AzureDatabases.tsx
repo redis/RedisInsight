@@ -17,10 +17,12 @@ import {
 import { AzureRedisDatabase } from 'uiSrc/slices/interfaces'
 import { Text } from 'uiSrc/components/base/text'
 import {
+  IconButton,
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { Loader } from 'uiSrc/components/base/display'
+import { RefreshIcon } from 'uiSrc/components/base/icons'
 
 import { AZURE_DATABASES_COLUMNS } from './AzureDatabases.constants'
 
@@ -34,6 +36,7 @@ export interface Props {
   onClose: () => void
   onSubmit: () => void
   onSelectionChange: (databases: AzureRedisDatabase[]) => void
+  onRefresh: () => void
 }
 
 const AzureDatabases = ({
@@ -46,6 +49,7 @@ const AzureDatabases = ({
   onClose,
   onSubmit,
   onSelectionChange,
+  onRefresh,
 }: Props) => {
   const [items, setItems] = useState<AzureRedisDatabase[]>(databases)
 
@@ -92,12 +96,21 @@ const AzureDatabases = ({
           onQueryChange={onQueryChange}
           backButtonText="Subscriptions"
           subTitle={
-            <Text size="M">
-              Subscription:{' '}
-              <Text component="span" variant="semiBold">
-                {subscriptionName}
+            <Row gap="l" align="center">
+              <Text size="M">
+                Subscription:{' '}
+                <Text component="span" variant="semiBold">
+                  {subscriptionName}
+                </Text>
               </Text>
-            </Text>
+              <IconButton
+                icon={RefreshIcon}
+                onClick={onRefresh}
+                disabled={loading}
+                aria-label="Refresh databases"
+                data-testid="btn-refresh-databases"
+              />
+            </Row>
           }
         />
         <Spacer size="m" />

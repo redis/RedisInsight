@@ -127,6 +127,21 @@ const azureSlice = createSlice({
     resetLoadedAzure: (state, { payload }: PayloadAction<LoadedAzure>) => {
       state.loaded[payload] = false
     },
+
+    clearSubscriptionsAzure: (state) => {
+      state.subscriptions = null
+      state.databases = null
+      state.databasesAdded = []
+      state.loaded[LoadedAzure.Subscriptions] = false
+      state.loaded[LoadedAzure.Databases] = false
+      state.loaded[LoadedAzure.DatabasesAdded] = false
+    },
+    clearDatabasesAzure: (state) => {
+      state.databases = null
+      state.databasesAdded = []
+      state.loaded[LoadedAzure.Databases] = false
+      state.loaded[LoadedAzure.DatabasesAdded] = false
+    },
   },
 })
 
@@ -143,6 +158,8 @@ export const {
   addDatabasesAzureFailure,
   resetDataAzure,
   resetLoadedAzure,
+  clearSubscriptionsAzure,
+  clearDatabasesAzure,
 } = azureSlice.actions
 
 // Selectors

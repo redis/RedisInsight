@@ -9,6 +9,7 @@ import { AzureSubscription } from 'uiSrc/slices/interfaces'
 import { AppDispatch } from 'uiSrc/slices/store'
 import {
   azureSelector,
+  clearSubscriptionsAzure,
   fetchSubscriptionsAzure,
   setSelectedSubscriptionAzure,
 } from 'uiSrc/slices/instances/azure'
@@ -42,6 +43,13 @@ const AzureSubscriptionsPage = () => {
     history.push(Pages.azureDatabases)
   }
 
+  const handleRefresh = () => {
+    if (account?.id) {
+      dispatch(clearSubscriptionsAzure())
+      dispatch(fetchSubscriptionsAzure(account.id))
+    }
+  }
+
   return (
     <AzureSubscriptions
       subscriptions={subscriptions || []}
@@ -51,6 +59,7 @@ const AzureSubscriptionsPage = () => {
       onClose={handleClose}
       onSubmit={handleSubmit}
       onSwitchAccount={initiateLogin}
+      onRefresh={handleRefresh}
     />
   )
 }

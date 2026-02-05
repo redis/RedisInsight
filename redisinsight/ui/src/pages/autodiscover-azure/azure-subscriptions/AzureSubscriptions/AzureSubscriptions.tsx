@@ -20,10 +20,12 @@ import { azureAuthAccountSelector } from 'uiSrc/slices/oauth/azure'
 import { Text } from 'uiSrc/components/base/text'
 import {
   EmptyButton,
+  IconButton,
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { Loader } from 'uiSrc/components/base/display'
+import { RefreshIcon } from 'uiSrc/components/base/icons'
 
 import { AZURE_SUBSCRIPTIONS_COLUMNS } from './AzureSubscriptions.constants'
 
@@ -35,6 +37,7 @@ export interface Props {
   onClose: () => void
   onSubmit: (subscription: AzureSubscription) => void
   onSwitchAccount: () => void
+  onRefresh: () => void
 }
 
 const AzureSubscriptions = ({
@@ -45,6 +48,7 @@ const AzureSubscriptions = ({
   onClose,
   onSubmit,
   onSwitchAccount,
+  onRefresh,
 }: Props) => {
   const account = useSelector(azureAuthAccountSelector)
   const [items, setItems] = useState<AzureSubscription[]>(subscriptions)
@@ -94,7 +98,7 @@ const AzureSubscriptions = ({
           onQueryChange={onQueryChange}
           subTitle={
             account && (
-              <Row gap="s" align="center">
+              <Row gap="l" align="center">
                 <Text size="M">
                   Signed in as{' '}
                   <Text component="span" variant="semiBold">
@@ -108,6 +112,13 @@ const AzureSubscriptions = ({
                 >
                   Switch account
                 </EmptyButton>
+                <IconButton
+                  icon={RefreshIcon}
+                  onClick={onRefresh}
+                  disabled={loading}
+                  aria-label="Refresh subscriptions"
+                  data-testid="btn-refresh-subscriptions"
+                />
               </Row>
             )
           }

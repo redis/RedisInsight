@@ -16,6 +16,7 @@ import { azureAuthAccountSelector } from 'uiSrc/slices/oauth/azure'
 import {
   addDatabasesAzureAction,
   azureSelector,
+  clearDatabasesAzure,
   fetchDatabasesAzure,
 } from 'uiSrc/slices/instances/azure'
 import AzureDatabases from './AzureDatabases/AzureDatabases'
@@ -123,6 +124,16 @@ const AzureDatabasesPage = () => {
     }
   }
 
+  const handleRefresh = () => {
+    if (account?.id && selectedSubscription) {
+      dispatch(clearDatabasesAzure())
+      dispatch(
+        fetchDatabasesAzure(account.id, selectedSubscription.subscriptionId),
+      )
+      setSelectedDatabases([])
+    }
+  }
+
   return (
     <AzureDatabases
       databases={databases || []}
@@ -134,6 +145,7 @@ const AzureDatabasesPage = () => {
       onClose={handleClose}
       onSubmit={handleSubmit}
       onSelectionChange={setSelectedDatabases}
+      onRefresh={handleRefresh}
     />
   )
 }
