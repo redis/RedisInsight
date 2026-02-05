@@ -4,6 +4,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Button } from 'uiSrc/components/base/forms/buttons'
 import { useAzureAuth } from 'uiSrc/components/hooks/useAzureAuth'
+import { AzureLoginSource } from 'uiSrc/slices/interfaces'
 
 export interface Props {
   text: string | JSX.Element | JSX.Element[]
@@ -14,7 +15,7 @@ const AzureTokenExpiredErrorContent = ({ text, onClose = () => {} }: Props) => {
   const { initiateLogin, loading } = useAzureAuth()
 
   const handleSignIn = () => {
-    initiateLogin()
+    initiateLogin(AzureLoginSource.TokenRefresh)
     onClose?.()
   }
 
