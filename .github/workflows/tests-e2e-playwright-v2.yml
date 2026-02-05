@@ -181,6 +181,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment || 'staging' }}
     timeout-minutes: 60
+    env:
+      # Environment variables needed for Electron/AppImage on Linux (from repository variables)
+      DBUS_SESSION_BUS_ADDRESS: ${{ vars.DBUS_SESSION_BUS_ADDRESS }}
+      DISPLAY: ${{ vars.DISPLAY }}
 
     steps:
       - uses: actions/checkout@v4
@@ -223,6 +227,11 @@ jobs:
           ls -la ./release/
           chmod +x ./release/Redis-Insight*.AppImage
 
+          # Get the original AppImage file path
+          APPIMAGE_FILE=$(realpath ./release/Redis-Insight*.AppImage | head -1)
+          echo "appimage_file=$APPIMAGE_FILE" >> $GITHUB_OUTPUT
+          echo "Original AppImage: $APPIMAGE_FILE"
+
           # Mount the AppImage and capture the mount path
           rm -f appimage_mount_path
           ./release/Redis-Insight*.AppImage --appimage-mount > appimage_mount_path &
@@ -256,18 +265,53 @@ jobs:
 
       - name: Start Xvfb
         run: |
-          if [ -f /tmp/.X99-lock ]; then rm /tmp/.X99-lock; fi
-          Xvfb :99 -ac -screen 0 1920x1080x24 &
+          # Extract display number from DISPLAY env var (e.g., ":99" -> "99")
+          DISPLAY_NUM="${DISPLAY#:}"
+          DISPLAY_NUM="${DISPLAY_NUM:-99}"
+          echo "Starting Xvfb on display :$DISPLAY_NUM"
+          if [ -f /tmp/.X${DISPLAY_NUM}-lock ]; then rm /tmp/.X${DISPLAY_NUM}-lock; fi
+          Xvfb :${DISPLAY_NUM} -ac -screen 0 1920x1080x24 &
           sleep 3
           fluxbox &
+
+      - name: Test Electron app launch
+        env:
+          APPIMAGE: ${{ steps.appimage.outputs.appimage_file }}
+        run: |
+          echo "=== Testing Electron executable ==="
+          echo "Executable path: ${{ steps.appimage.outputs.path }}"
+          echo "APPIMAGE env: $APPIMAGE"
+          echo "DISPLAY env: $DISPLAY"
+          echo "DBUS_SESSION_BUS_ADDRESS env: $DBUS_SESSION_BUS_ADDRESS"
+          ls -la ${{ steps.appimage.outputs.path }}
+
+          echo "=== Starting Electron app manually for 15 seconds ==="
+          ${{ steps.appimage.outputs.path }} --no-sandbox --disable-gpu &
+          ELECTRON_PID=$!
+          echo "Electron PID: $ELECTRON_PID"
+
+          sleep 15
+
+          echo "=== Checking if Electron process is running ==="
+          ps aux | grep -i redis || echo "No Redis process found"
+
+          echo "=== Checking open ports ==="
+          netstat -tlnp 2>/dev/null || ss -tlnp || echo "Could not check ports"
+
+          echo "=== Trying to reach API ==="
+          curl -v http://localhost:5530/api/health 2>&1 || echo "API not responding"
+
+          echo "=== Killing test Electron process ==="
+          kill $ELECTRON_PID 2>/dev/null || echo "Process already dead"
+          sleep 2
 
       - name: Run Playwright tests (Electron Linux)
         working-directory: ${{ env.E2E_DIR }}
         run: npx playwright test --project=electron
         env:
           CI: true
-          DISPLAY: ':99'
           ELECTRON_EXECUTABLE_PATH: ${{ steps.appimage.outputs.path }}
+          APPIMAGE: ${{ steps.appimage.outputs.appimage_file }}
           RI_SOCKETS_CORS: 'true'
           RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
           RI_ENCRYPTION_KEYTAR: 'false'
