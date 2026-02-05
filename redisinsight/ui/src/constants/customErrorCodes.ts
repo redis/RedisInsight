@@ -29,6 +29,7 @@ export enum CustomErrorCodes {
   CloudCapiUnauthorized = 11_021,
   CloudCapiKeyUnauthorized = 11_022,
   CloudCapiKeyNotFound = 11_023,
+  AzureEntraIdTokenExpired = 11_024,
 
   // Cloud Job errors [11100, 11199]
   CloudJobUnexpectedError = 11_100,

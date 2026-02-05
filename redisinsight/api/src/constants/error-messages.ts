@@ -176,4 +176,6 @@ export default {
   AZURE_UNEXPECTED_ERROR: 'An unexpected error occurred',
   AZURE_TLS_CERTIFICATE_ERROR:
     'Could not establish a secure connection. The server certificate could not be verified.',
+  AZURE_ENTRA_ID_TOKEN_EXPIRED:
+    'Azure Entra ID token expired. Sign in to Azure again to continue.',
 };

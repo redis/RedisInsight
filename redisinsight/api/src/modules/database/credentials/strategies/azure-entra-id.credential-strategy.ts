@@ -8,6 +8,7 @@ import {
 import { AzureAuthType } from 'src/modules/azure/constants';
 import { AzureAuthService } from 'src/modules/azure/auth/azure-auth.service';
 import { ICredentialStrategy } from '../credential-strategy.provider';
+import { AzureEntraIdTokenExpiredException } from 'src/modules/azure/exceptions';
 
 @Injectable()
 export class AzureEntraIdCredentialStrategy implements ICredentialStrategy {
@@ -61,9 +62,7 @@ export class AzureEntraIdCredentialStrategy implements ICredentialStrategy {
       this.logger.warn(
         `Failed to acquire token for database ${database.id} - re-authentication needed`,
       );
-      throw new BadRequestException(
-        'Azure Entra ID token expired. Please sign in to Azure again through the autodiscovery flow.',
-      );
+      throw new AzureEntraIdTokenExpiredException();
     }
 
     // Use plainToInstance to ensure the result is a proper Database class instance

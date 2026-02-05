@@ -62,6 +62,14 @@ export const useErrorNotifications = () => {
             { title, message },
             () => removeToast(id),
           )
+        } else if (
+          additionalInfo?.errorCode ===
+          CustomErrorCodes.AzureEntraIdTokenExpired
+        ) {
+          errorMessage = errorMessages.AZURE_TOKEN_EXPIRED(
+            { message, title },
+            () => removeToast(id),
+          )
         } else {
           errorMessage = errorMessages.DEFAULT(
             message,
