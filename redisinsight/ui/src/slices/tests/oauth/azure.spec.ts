@@ -15,9 +15,11 @@ import reducer, {
   azureAuthAccountSelector,
   azureAuthLoadingSelector,
   initiateAzureLoginAction,
+  handleAzureOAuthSuccess,
   AzureAccount,
 } from 'uiSrc/slices/oauth/azure'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
+import { resetDataAzure } from 'uiSrc/slices/instances/azure'
 import { apiService } from 'uiSrc/services'
 import {
   cleanup,
@@ -231,6 +233,16 @@ describe('azure auth slice', () => {
         expect(actions[0]).toEqual(azureAuthLogin())
         expect(actions[1]).toEqual(azureAuthLoginFailure(errorMessage))
         expect(actions[2].type).toEqual(addErrorNotification({} as any).type)
+      })
+    })
+
+    describe('handleAzureOAuthSuccess', () => {
+      it('should dispatch resetDataAzure to clear stale data when switching accounts', () => {
+        store.dispatch<any>(handleAzureOAuthSuccess(mockAccount))
+
+        const actions = store.getActions()
+        expect(actions).toContainEqual(resetDataAzure())
+        expect(actions).toContainEqual(azureOAuthCallbackSuccess(mockAccount))
       })
     })
   })

@@ -8,6 +8,7 @@ import {
   addErrorNotification,
   IAddInstanceErrorPayload,
 } from 'uiSrc/slices/app/notifications'
+import { resetDataAzure } from 'uiSrc/slices/instances/azure'
 
 const OAUTH_TIMEOUT_MS = 60 * 1000
 let oauthTimeoutId: ReturnType<typeof setTimeout> | null = null
@@ -133,6 +134,8 @@ export function initiateAzureLoginAction(
 export function handleAzureOAuthSuccess(account: AzureAccount) {
   return (dispatch: AppDispatch) => {
     clearOAuthTimeout()
+    // Clear stale subscriptions/databases data from previous account
+    dispatch(resetDataAzure())
     dispatch(azureOAuthCallbackSuccess(account))
   }
 }
