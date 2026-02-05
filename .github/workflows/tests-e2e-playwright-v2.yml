@@ -10,14 +10,6 @@ on:
         options:
           - staging
         default: 'staging'
-      project:
-        description: 'Playwright project to run'
-        type: choice
-        options:
-          - all
-          - chromium
-          - electron-linux
-        default: 'all'
       debug:
         description: 'Enable SSH debugging'
         type: boolean
@@ -48,7 +40,6 @@ env:
 
   E2E_RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
   RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
-  RI_ENCRYPTION_KEYTAR: 'false'  # Disable keytar to use KEY strategy instead (keytar unavailable on Linux CI)
   # Note: RI_SERVER_TLS_CERT and RI_SERVER_TLS_KEY are intentionally NOT set here
   # Setting them would cause the API server to start in HTTPS mode, which breaks
   # the health check that uses HTTP. These are only needed for TLS-specific tests.
@@ -83,9 +74,7 @@ jobs:
   e2e-dev-chromium:
     name: E2E Chromium (Local Dev)
     needs: check-trigger
-    if: |
-      needs.check-trigger.outputs.should_run == 'true' &&
-      (github.event.inputs.project == 'all' || github.event.inputs.project == 'chromium' || github.event.inputs.project == '')
+    if: needs.check-trigger.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment || 'staging' }}
     timeout-minutes: 60
@@ -160,9 +149,7 @@ jobs:
   build-linux:
     name: Build Linux AppImage
     needs: check-trigger
-    if: |
-      needs.check-trigger.outputs.should_run == 'true' &&
-      (github.event.inputs.project == 'all' || github.event.inputs.project == 'electron-linux' || github.event.inputs.project == '')
+    if: needs.check-trigger.outputs.should_run == 'true'
     uses: ./.github/workflows/pipeline-build-linux.yml
     secrets: inherit
     with:
@@ -175,9 +162,7 @@ jobs:
   e2e-electron-linux:
     name: E2E Electron (Linux)
     needs: [check-trigger, build-linux]
-    if: |
-      needs.check-trigger.outputs.should_run == 'true' &&
-      (github.event.inputs.project == 'all' || github.event.inputs.project == 'electron-linux' || github.event.inputs.project == '')
+    if: needs.check-trigger.outputs.should_run == 'true'
     # Use ubuntu-22.04 to match the old workflow (ubuntu-latest is 24.04)
     runs-on: ubuntu-22.04
     environment: ${{ github.event.inputs.environment || 'staging' }}
