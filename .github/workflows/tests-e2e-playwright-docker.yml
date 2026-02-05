@@ -90,6 +90,15 @@ jobs:
           # Override URLs to point to Docker container (serves both client and API on 5540)
           RI_CLIENT_URL: 'http://localhost:5540'
           RI_API_URL: 'http://localhost:5540'
+          # Use host.docker.internal for Redis hosts so the Docker container can reach them
+          # The Redis test environment exposes ports to the host, and the Docker container
+          # uses extra_hosts to map host.docker.internal to the host gateway
+          OSS_STANDALONE_HOST: 'host.docker.internal'
+          OSS_STANDALONE_V5_HOST: 'host.docker.internal'
+          OSS_STANDALONE_V7_HOST: 'host.docker.internal'
+          OSS_STANDALONE_V8_HOST: 'host.docker.internal'
+          OSS_STANDALONE_EMPTY_HOST: 'host.docker.internal'
+          OSS_STANDALONE_BIG_HOST: 'host.docker.internal'
 
       - name: Upload test results
         if: ${{ !cancelled() }}

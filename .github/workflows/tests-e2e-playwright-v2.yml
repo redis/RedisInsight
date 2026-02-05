@@ -52,8 +52,15 @@ jobs:
             echo "should_run=false" >> $GITHUB_OUTPUT
           fi
 
+  # Lint and type-check E2E code
+  lint:
+    name: Lint
+    needs: check-trigger
+    if: needs.check-trigger.outputs.should_run == 'true'
+    uses: ./.github/workflows/tests-e2e-playwright-lint.yml
+
   # Chromium tests (local dev mode) - no build required
-  e2e-chromium:
+  e2e-dev-chromium:
     name: Chromium (Dev)
     needs: check-trigger
     if: needs.check-trigger.outputs.should_run == 'true'

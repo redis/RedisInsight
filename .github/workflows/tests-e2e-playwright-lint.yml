@@ -1,0 +1,31 @@
+name: E2E Playwright - Lint & Type Check
+
+on:
+  workflow_call:
+
+jobs:
+  lint:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
+
+      - name: Install E2E dependencies
+        working-directory: ./tests/e2e-playwright
+        run: yarn install --frozen-lockfile
+
+      - name: Lint E2E code
+        working-directory: ./tests/e2e-playwright
+        run: npm run lint
+
+      - name: Type check E2E code
+        working-directory: ./tests/e2e-playwright
+        run: npx tsc --noEmit
+
