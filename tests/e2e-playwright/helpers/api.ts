@@ -18,6 +18,8 @@ export class ApiHelper {
     if (!this.context) {
       this.context = await request.newContext({
         baseURL: this.apiUrl,
+        // Ignore HTTPS certificate errors for self-signed certificates (used in Electron tests)
+        ignoreHTTPSErrors: true,
       });
     }
     return this.context;

@@ -178,13 +178,17 @@ jobs:
     if: |
       needs.check-trigger.outputs.should_run == 'true' &&
       (github.event.inputs.project == 'all' || github.event.inputs.project == 'electron-linux' || github.event.inputs.project == '')
-    runs-on: ubuntu-latest
+    # Use ubuntu-22.04 to match the old workflow (ubuntu-latest is 24.04)
+    runs-on: ubuntu-22.04
     environment: ${{ github.event.inputs.environment || 'staging' }}
     timeout-minutes: 60
     env:
       # Environment variables needed for Electron/AppImage on Linux (from repository variables)
       DBUS_SESSION_BUS_ADDRESS: ${{ vars.DBUS_SESSION_BUS_ADDRESS }}
       DISPLAY: ${{ vars.DISPLAY }}
+      # TLS certificates for Electron (uses HTTPS)
+      RI_SERVER_TLS_CERT: ${{ secrets.RI_SERVER_TLS_CERT }}
+      RI_SERVER_TLS_KEY: ${{ secrets.RI_SERVER_TLS_KEY }}
 
     steps:
       - uses: actions/checkout@v4
@@ -195,10 +199,16 @@ jobs:
         with:
           detached: true
 
+      # Kill any existing Redis processes (like the old workflow does)
+      - name: Clean up any existing processes
+        run: |
+          pkill -f Redis* || true
+          pkill -f redisinsight || true
+
       - name: Install system dependencies for Electron/AppImage
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y kmod libfuse2 xvfb net-tools xdotool desktop-file-utils fluxbox netcat-openbsd
+          sudo apt-get install -y kmod libfuse2 xvfb net-tools xdotool desktop-file-utils fluxbox netcat
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -284,6 +294,8 @@ jobs:
           CI: true
           ELECTRON_EXECUTABLE_PATH: ${{ steps.appimage.outputs.path }}
           APPIMAGE: ${{ steps.appimage.outputs.appimage_file }}
+          # Electron uses HTTPS (with TLS certificates)
+          RI_ELECTRON_API_URL: 'https://localhost:5530'
           RI_SOCKETS_CORS: 'true'
           RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
           RI_ENCRYPTION_KEYTAR: 'false'
