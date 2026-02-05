@@ -9,9 +9,11 @@ import { TEST_DB_PREFIX } from 'e2eSrc/test-data/databases';
 export class ApiHelper {
   private context: APIRequestContext | null = null;
   private readonly apiUrl: string;
+  private readonly windowId?: string;
 
-  constructor(options: { apiUrl: string }) {
+  constructor(options: { apiUrl: string; windowId?: string }) {
     this.apiUrl = options.apiUrl;
+    this.windowId = options.windowId;
   }
 
   private async getContext(): Promise<APIRequestContext> {
@@ -20,6 +22,8 @@ export class ApiHelper {
         baseURL: this.apiUrl,
         // Ignore HTTPS certificate errors for self-signed certificates (used in Electron tests)
         ignoreHTTPSErrors: true,
+        // Include X-Window-Id header for Electron app authentication
+        extraHTTPHeaders: this.windowId ? { 'X-Window-Id': this.windowId } : undefined,
       });
     }
     return this.context;
