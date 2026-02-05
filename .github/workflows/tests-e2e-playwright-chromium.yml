@@ -45,13 +45,11 @@ jobs:
       - name: Install application dependencies
         uses: ./.github/actions/install-all-build-libs
 
-      - name: Install E2E test dependencies
-        working-directory: ${{ env.E2E_DIR }}
-        run: yarn install --frozen-lockfile
-
-      - name: Install Playwright browsers
-        working-directory: ${{ env.E2E_DIR }}
-        run: npx playwright install chromium --with-deps
+      - name: Setup E2E environment
+        uses: ./.github/actions/setup-e2e-playwright
+        with:
+          browsers: 'chromium'
+          working-directory: ${{ env.E2E_DIR }}
 
       - name: Build statics
         run: yarn build:statics

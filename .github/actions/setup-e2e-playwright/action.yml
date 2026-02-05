@@ -1,0 +1,74 @@
+name: 'Setup E2E Playwright'
+description: 'Setup Node.js, E2E dependencies, and Playwright browsers with caching'
+
+inputs:
+  browsers:
+    description: 'Playwright browsers to install (chromium, firefox, webkit, all)'
+    required: false
+    default: 'chromium'
+  working-directory:
+    description: 'E2E tests directory'
+    required: false
+    default: './tests/e2e-playwright'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: '.nvmrc'
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: Cache E2E node_modules
+      id: cache-e2e-deps
+      uses: actions/cache@v4
+      with:
+        path: ${{ inputs.working-directory }}/node_modules
+        key: e2e-node-modules-${{ runner.os }}-${{ hashFiles('tests/e2e-playwright/yarn.lock') }}
+
+    - name: Install E2E dependencies
+      if: steps.cache-e2e-deps.outputs.cache-hit != 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: yarn install --frozen-lockfile
+
+    - name: Get Playwright version
+      id: playwright-version
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        PLAYWRIGHT_VERSION=$(node -e "console.log(require('./node_modules/@playwright/test/package.json').version)")
+        echo "version=$PLAYWRIGHT_VERSION" >> $GITHUB_OUTPUT
+
+    - name: Cache Playwright browsers
+      id: cache-playwright
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}-${{ inputs.browsers }}
+
+    - name: Install Playwright browsers
+      if: steps.cache-playwright.outputs.cache-hit != 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        if [ "${{ inputs.browsers }}" == "all" ]; then
+          npx playwright install --with-deps
+        else
+          npx playwright install ${{ inputs.browsers }} --with-deps
+        fi
+
+    - name: Install Playwright system dependencies (cache hit)
+      if: steps.cache-playwright.outputs.cache-hit == 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        # When cache hits, browsers are restored but system deps may be missing
+        if [ "${{ inputs.browsers }}" == "all" ]; then
+          npx playwright install-deps
+        else
+          npx playwright install-deps ${{ inputs.browsers }}
+        fi
+

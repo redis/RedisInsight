@@ -3,6 +3,9 @@ name: E2E Playwright - Lint & Type Check
 on:
   workflow_call:
 
+env:
+  E2E_DIR: './tests/e2e-playwright'
+
 jobs:
   lint:
     name: Lint & Type Check
@@ -10,22 +13,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup E2E environment
+        uses: ./.github/actions/setup-e2e-playwright
         with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
-
-      - name: Install E2E dependencies
-        working-directory: ./tests/e2e-playwright
-        run: yarn install --frozen-lockfile
+          browsers: 'chromium'
+          working-directory: ${{ env.E2E_DIR }}
 
       - name: Lint E2E code
-        working-directory: ./tests/e2e-playwright
+        working-directory: ${{ env.E2E_DIR }}
         run: npm run lint
 
       - name: Type check E2E code
-        working-directory: ./tests/e2e-playwright
+        working-directory: ${{ env.E2E_DIR }}
         run: npx tsc --noEmit
 

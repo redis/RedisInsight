@@ -25,7 +25,7 @@ on:
 
 # Cancel in-progress runs for the same PR/branch
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -62,8 +62,7 @@ jobs:
   # Chromium tests (local dev mode) - no build required
   e2e-dev-chromium:
     name: Chromium (Dev)
-    needs: check-trigger
-    if: needs.check-trigger.outputs.should_run == 'true'
+    needs: lint
     uses: ./.github/workflows/tests-e2e-playwright-chromium.yml
     secrets: inherit
     with:
@@ -73,8 +72,7 @@ jobs:
   # Build Docker image for Docker tests
   build-docker:
     name: Build Docker
-    needs: check-trigger
-    if: needs.check-trigger.outputs.should_run == 'true'
+    needs: lint
     uses: ./.github/workflows/pipeline-build-docker.yml
     secrets: inherit
     with:
@@ -84,8 +82,7 @@ jobs:
   # Docker tests (Chromium against Docker image)
   e2e-docker:
     name: Docker
-    needs: [check-trigger, build-docker]
-    if: needs.check-trigger.outputs.should_run == 'true'
+    needs: build-docker
     uses: ./.github/workflows/tests-e2e-playwright-docker.yml
     secrets: inherit
     with:
@@ -95,8 +92,7 @@ jobs:
   # Build Linux AppImage for Electron tests
   build-linux:
     name: Build Linux
-    needs: check-trigger
-    if: needs.check-trigger.outputs.should_run == 'true'
+    needs: lint
     uses: ./.github/workflows/pipeline-build-linux.yml
     secrets: inherit
     with:
@@ -108,8 +104,7 @@ jobs:
   # Electron tests (Linux AppImage)
   e2e-electron:
     name: Electron (Linux)
-    needs: [check-trigger, build-linux]
-    if: needs.check-trigger.outputs.should_run == 'true'
+    needs: build-linux
     uses: ./.github/workflows/tests-e2e-playwright-electron.yml
     secrets: inherit
     with:
