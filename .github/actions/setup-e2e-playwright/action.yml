@@ -46,22 +46,26 @@ runs:
       if: steps.cache-playwright.outputs.cache-hit != 'true'
       shell: bash
       working-directory: ${{ inputs.working-directory }}
+      env:
+        BROWSERS: ${{ inputs.browsers }}
       run: |
-        if [ "${{ inputs.browsers }}" == "all" ]; then
+        if [ "$BROWSERS" == "all" ]; then
           npx playwright install --with-deps
         else
-          npx playwright install ${{ inputs.browsers }} --with-deps
+          npx playwright install "$BROWSERS" --with-deps
         fi
 
     - name: Install Playwright system dependencies (cache hit)
       if: steps.cache-playwright.outputs.cache-hit == 'true'
       shell: bash
       working-directory: ${{ inputs.working-directory }}
+      env:
+        BROWSERS: ${{ inputs.browsers }}
       run: |
         # When cache hits, browsers are restored but system deps may be missing
-        if [ "${{ inputs.browsers }}" == "all" ]; then
+        if [ "$BROWSERS" == "all" ]; then
           npx playwright install-deps
         else
-          npx playwright install-deps ${{ inputs.browsers }}
+          npx playwright install-deps "$BROWSERS"
         fi
 

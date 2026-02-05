@@ -37,13 +37,16 @@ jobs:
     steps:
       - name: Check trigger conditions
         id: check
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          HAS_E2E_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'e2e-tests') }}
         run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
             echo "should_run=true" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.event_name }}" == "schedule" ]]; then
+          elif [[ "$EVENT_NAME" == "schedule" ]]; then
             echo "should_run=true" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            if [[ "${{ contains(github.event.pull_request.labels.*.name, 'e2e-tests') }}" == "true" ]]; then
+          elif [[ "$EVENT_NAME" == "pull_request" ]]; then
+            if [[ "$HAS_E2E_LABEL" == "true" ]]; then
               echo "should_run=true" >> $GITHUB_OUTPUT
             else
               echo "should_run=false" >> $GITHUB_OUTPUT
