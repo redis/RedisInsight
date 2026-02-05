@@ -1,0 +1,178 @@
+name: E2E Playwright - Electron (Linux)
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Environment to run tests'
+        type: string
+        default: 'staging'
+      debug:
+        description: 'Enable SSH debugging'
+        type: boolean
+        default: false
+
+env:
+  E2E_DIR: './tests/e2e-playwright'
+
+jobs:
+  e2e-electron:
+    name: E2E Electron (Linux)
+    # Use ubuntu-22.04 to match the old workflow (ubuntu-latest is 24.04)
+    runs-on: ubuntu-22.04
+    environment: ${{ inputs.environment }}
+    timeout-minutes: 60
+    env:
+      E2E_CLOUD_DATABASE_USERNAME: ${{ secrets.E2E_CLOUD_DATABASE_USERNAME }}
+      E2E_CLOUD_DATABASE_PASSWORD: ${{ secrets.E2E_CLOUD_DATABASE_PASSWORD }}
+      E2E_CLOUD_API_ACCESS_KEY: ${{ secrets.E2E_CLOUD_API_ACCESS_KEY }}
+      E2E_CLOUD_DATABASE_HOST: ${{ secrets.E2E_CLOUD_DATABASE_HOST }}
+      E2E_CLOUD_DATABASE_PORT: ${{ secrets.E2E_CLOUD_DATABASE_PORT }}
+      E2E_CLOUD_DATABASE_NAME: ${{ secrets.E2E_CLOUD_DATABASE_NAME }}
+      E2E_CLOUD_API_SECRET_KEY: ${{ secrets.E2E_CLOUD_API_SECRET_KEY }}
+      E2E_RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
+      RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
+      TEST_BIG_DB_DUMP: ${{ secrets.TEST_BIG_DB_DUMP }}
+      # Environment variables needed for Electron/AppImage on Linux (from repository variables)
+      DBUS_SESSION_BUS_ADDRESS: ${{ vars.DBUS_SESSION_BUS_ADDRESS }}
+      DISPLAY: ${{ vars.DISPLAY }}
+      # TLS certificates for Electron (uses HTTPS)
+      RI_SERVER_TLS_CERT: ${{ secrets.RI_SERVER_TLS_CERT }}
+      RI_SERVER_TLS_KEY: ${{ secrets.RI_SERVER_TLS_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable SSH Debug
+        if: ${{ inputs.debug }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          detached: true
+
+      # Kill any existing Redis processes (like the old workflow does)
+      - name: Clean up any existing processes
+        run: |
+          pkill -f Redis* || true
+          pkill -f redisinsight || true
+
+      - name: Install system dependencies for Electron/AppImage
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y kmod libfuse2 xvfb net-tools xdotool desktop-file-utils fluxbox netcat
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
+
+      - name: Install E2E test dependencies
+        working-directory: ${{ env.E2E_DIR }}
+        run: yarn install --frozen-lockfile
+
+      - name: Install Playwright browsers (Electron deps)
+        working-directory: ${{ env.E2E_DIR }}
+        run: npx playwright install --with-deps
+
+      - name: Download Linux build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-builds
+          path: ./release
+
+      - name: Mount AppImage and get executable path
+        id: appimage
+        run: |
+          ls -la ./release/
+          chmod +x ./release/Redis-Insight*.AppImage
+
+          # Get the original AppImage file path
+          APPIMAGE_FILE=$(realpath ./release/Redis-Insight*.AppImage | head -1)
+          echo "appimage_file=$APPIMAGE_FILE" >> $GITHUB_OUTPUT
+          echo "Original AppImage: $APPIMAGE_FILE"
+
+          # Mount the AppImage and capture the mount path
+          rm -f appimage_mount_path
+          ./release/Redis-Insight*.AppImage --appimage-mount > appimage_mount_path &
+          APPIMAGE_PID=$!
+          sleep 3
+
+          # Get the mount path and construct the executable path
+          MOUNT_PATH=$(cat appimage_mount_path)
+          echo "AppImage mounted at: $MOUNT_PATH"
+          ls -la "$MOUNT_PATH"
+
+          # The actual electron executable is inside the mounted AppImage
+          ELECTRON_PATH="$MOUNT_PATH/redisinsight"
+          echo "path=$ELECTRON_PATH" >> $GITHUB_OUTPUT
+          echo "pid=$APPIMAGE_PID" >> $GITHUB_OUTPUT
+          echo "Found Electron executable: $ELECTRON_PATH"
+
+          # Verify the executable exists
+          if [ -f "$ELECTRON_PATH" ]; then
+            echo "✓ Electron executable exists"
+          else
+            echo "✗ Electron executable not found!"
+            ls -la "$MOUNT_PATH"
+            exit 1
+          fi
+
+      # Create folders before tests run to prevent permissions issues (like the old workflow)
+      - name: Create test folders
+        run: |
+          mkdir -p tests/e2e/remote
+          mkdir -p tests/e2e/rdi
+
+      - name: Start Redis test environment
+        run: |
+          TEST_BIG_DB_DUMP=$TEST_BIG_DB_DUMP \
+          docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml up --detach --force-recreate
+
+      - name: Start Xvfb
+        run: |
+          # Extract display number from DISPLAY env var (e.g., ":99" -> "99")
+          DISPLAY_NUM="${DISPLAY#:}"
+          DISPLAY_NUM="${DISPLAY_NUM:-99}"
+          echo "Starting Xvfb on display :$DISPLAY_NUM"
+          if [ -f /tmp/.X${DISPLAY_NUM}-lock ]; then rm /tmp/.X${DISPLAY_NUM}-lock; fi
+          Xvfb :${DISPLAY_NUM} -ac -screen 0 1920x1080x24 &
+          sleep 3
+          fluxbox &
+
+      - name: Run Playwright tests (Electron Linux)
+        working-directory: ${{ env.E2E_DIR }}
+        run: npx playwright test --project=electron
+        env:
+          CI: true
+          ELECTRON_EXECUTABLE_PATH: ${{ steps.appimage.outputs.path }}
+          APPIMAGE: ${{ steps.appimage.outputs.appimage_file }}
+          # Electron uses HTTPS (with TLS certificates)
+          RI_ELECTRON_API_URL: 'https://localhost:5530'
+          RI_SOCKETS_CORS: 'true'
+          RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
+          RI_ENCRYPTION_KEYTAR: 'false'
+          # Disable TLS certificate validation for self-signed certs (like old tests do)
+          NODE_TLS_REJECT_UNAUTHORIZED: '0'
+
+      - name: Upload test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-electron-linux
+          path: |
+            ${{ env.E2E_DIR }}/test-results
+            ${{ env.E2E_DIR }}/playwright-report
+          retention-days: 14
+
+      - name: Unmount AppImage
+        if: always()
+        run: |
+          # Kill the AppImage mount process
+          kill ${{ steps.appimage.outputs.pid }} || true
+
+      - name: Stop Redis test environment
+        if: always()
+        run: |
+          docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml down --volumes --remove-orphans
+
