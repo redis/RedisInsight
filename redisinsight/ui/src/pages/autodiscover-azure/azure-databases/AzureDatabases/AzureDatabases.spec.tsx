@@ -164,4 +164,55 @@ describe('AzureDatabases', () => {
     const refreshButton = screen.getByTestId('btn-refresh-databases')
     expect(refreshButton).toBeDisabled()
   })
+
+  it('should show max selection message when 10 databases are selected', () => {
+    // Use exactly 10 databases so pagination doesn't kick in (pagination at > 10)
+    const databases = Array.from({ length: 10 }, () => mockDatabase())
+    renderComponent({ databases })
+
+    // Select all 10 databases by clicking on their rows
+    databases.forEach((db) => {
+      fireEvent.click(screen.getByText(db.name))
+    })
+
+    expect(screen.getByTestId('max-selection-message')).toBeInTheDocument()
+    expect(
+      screen.getByText(/Maximum of 10 databases can be added at a time/),
+    ).toBeInTheDocument()
+  })
+
+  it('should not show max selection message when less than 10 databases are selected', () => {
+    const databases = Array.from({ length: 10 }, () => mockDatabase())
+    renderComponent({ databases })
+
+    // Select only 5 databases
+    databases.slice(0, 5).forEach((db) => {
+      fireEvent.click(screen.getByText(db.name))
+    })
+
+    expect(
+      screen.queryByTestId('max-selection-message'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should not allow selecting more than 10 databases', () => {
+    // Use exactly 10 databases so pagination doesn't kick in
+    const databases = Array.from({ length: 10 }, () => mockDatabase())
+    const onSelectionChange = jest.fn()
+    renderComponent({ databases, onSelectionChange })
+
+    // Select all 10 databases
+    databases.forEach((db) => {
+      fireEvent.click(screen.getByText(db.name))
+    })
+
+    // Verify 10 databases were selected
+    const lastCall = onSelectionChange.mock.calls.at(-1)?.[0]
+    expect(lastCall?.length).toBe(10)
+
+    // Clicking an already selected database should deselect it
+    fireEvent.click(screen.getByText(databases[0].name))
+    const afterDeselect = onSelectionChange.mock.calls.at(-1)?.[0]
+    expect(afterDeselect?.length).toBe(9)
+  })
 })

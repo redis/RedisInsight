@@ -4,6 +4,8 @@ import { type ColumnDef, Table } from 'uiSrc/components/base/layout/table'
 import { AzureRedisDatabase } from 'uiSrc/slices/interfaces'
 import { Text } from 'uiSrc/components/base/text'
 
+export const MAX_DATABASES_SELECTION = 10
+
 export const AZURE_DATABASES_COLUMNS: ColumnDef<AzureRedisDatabase>[] = [
   {
     id: 'row-selection',

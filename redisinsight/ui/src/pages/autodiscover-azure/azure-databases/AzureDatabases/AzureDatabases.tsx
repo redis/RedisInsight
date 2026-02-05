@@ -24,7 +24,10 @@ import {
 import { Loader } from 'uiSrc/components/base/display'
 import { RefreshIcon } from 'uiSrc/components/base/icons'
 
-import { AZURE_DATABASES_COLUMNS } from './AzureDatabases.constants'
+import {
+  AZURE_DATABASES_COLUMNS,
+  MAX_DATABASES_SELECTION,
+} from './AzureDatabases.constants'
 
 export interface Props {
   databases: AzureRedisDatabase[]
@@ -71,13 +74,36 @@ const AzureDatabases = ({
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
 
+  const selectedCount = Object.keys(rowSelection).length
+  const isMaxSelected = selectedCount >= MAX_DATABASES_SELECTION
+
   const handleSelectionChange = (state: RowSelectionState) => {
+    const selectedIds = Object.keys(state).filter((id) => state[id])
+
+    // If trying to select more than max, limit to max
+    if (selectedIds.length > MAX_DATABASES_SELECTION) {
+      const limitedIds = selectedIds.slice(0, MAX_DATABASES_SELECTION)
+      const limitedState: RowSelectionState = {}
+      limitedIds.forEach((id) => {
+        limitedState[id] = true
+      })
+      setRowSelection(limitedState)
+      onSelectionChange(databases.filter((db) => limitedState[db.id]))
+      return
+    }
+
     setRowSelection(state)
     onSelectionChange(databases.filter((db) => state[db.id]))
   }
 
   const handleRowClick = (database: AzureRedisDatabase) => {
     const isSelected = rowSelection[database.id]
+
+    // Don't allow selecting more if max is reached
+    if (!isSelected && isMaxSelected) {
+      return
+    }
+
     const newSelection = { ...rowSelection, [database.id]: !isSelected }
 
     if (isSelected) {
@@ -86,6 +112,9 @@ const AzureDatabases = ({
 
     handleSelectionChange(newSelection)
   }
+
+  const canSelectRow = (row: { original: AzureRedisDatabase }) =>
+    rowSelection[row.original.id] || !isMaxSelected
 
   return (
     <AutodiscoveryPageTemplate>
@@ -121,6 +150,7 @@ const AzureDatabases = ({
             onRowSelectionChange={handleSelectionChange}
             onRowClick={handleRowClick}
             getRowId={(row) => row.id}
+            getRowCanSelect={canSelectRow}
             columns={AZURE_DATABASES_COLUMNS}
             data={items}
             defaultSorting={[{ id: 'name', desc: false }]}
@@ -146,7 +176,15 @@ const AzureDatabases = ({
       <Spacer size="l" />
 
       <Footer>
-        <Row justify="end">
+        <Row justify="between" align="center">
+          {isMaxSelected ? (
+            <Text size="S" data-testid="max-selection-message">
+              Maximum of {MAX_DATABASES_SELECTION} databases can be added at a
+              time.
+            </Text>
+          ) : (
+            <div />
+          )}
           <Row gap="m" grow={false}>
             <SecondaryButton onClick={onClose}>Cancel</SecondaryButton>
             <PrimaryButton
