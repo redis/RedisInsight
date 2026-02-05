@@ -16,7 +16,10 @@ import {
   InitialStateAzure,
   LoadedAzure,
 } from '../interfaces'
-import { addErrorNotification } from '../app/notifications'
+import {
+  addErrorNotification,
+  IAddInstanceErrorPayload,
+} from '../app/notifications'
 import { AppDispatch, RootState } from '../store'
 
 export const initialState: InitialStateAzure = {
@@ -186,7 +189,7 @@ export function fetchSubscriptionsAzure(accountId: string) {
       const err = getAxiosError(error as EnhancedAxiosError)
 
       dispatch(loadSubscriptionsAzureFailure(errorMessage))
-      dispatch(addErrorNotification(err))
+      dispatch(addErrorNotification(err as IAddInstanceErrorPayload))
     }
   }
 }
@@ -209,7 +212,7 @@ export function fetchDatabasesAzure(accountId: string, subscriptionId: string) {
       const err = getAxiosError(error as EnhancedAxiosError)
 
       dispatch(loadDatabasesAzureFailure(errorMessage))
-      dispatch(addErrorNotification(err))
+      dispatch(addErrorNotification(err as IAddInstanceErrorPayload))
     }
   }
 }
@@ -239,7 +242,7 @@ export function addDatabasesAzureAction(
       const err = getAxiosError(error as EnhancedAxiosError)
 
       dispatch(addDatabasesAzureFailure(errorMessage))
-      dispatch(addErrorNotification(err))
+      dispatch(addErrorNotification(err as IAddInstanceErrorPayload))
       return []
     }
   }

@@ -4,7 +4,10 @@ import { ApiEndpoints } from 'uiSrc/constants'
 import { apiService } from 'uiSrc/services'
 import { getApiErrorMessage, isStatusSuccessful } from 'uiSrc/utils'
 import { AppDispatch, RootState } from 'uiSrc/slices/store'
-import { addErrorNotification } from 'uiSrc/slices/app/notifications'
+import {
+  addErrorNotification,
+  IAddInstanceErrorPayload,
+} from 'uiSrc/slices/app/notifications'
 
 const OAUTH_TIMEOUT_MS = 60 * 1000
 let oauthTimeoutId: ReturnType<typeof setTimeout> | null = null
@@ -121,7 +124,7 @@ export function initiateAzureLoginAction(
     } catch (error) {
       const errorMessage = getApiErrorMessage(error as AxiosError)
       dispatch(azureAuthLoginFailure(errorMessage))
-      dispatch(addErrorNotification(error as AxiosError))
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
       onFail?.()
     }
   }
