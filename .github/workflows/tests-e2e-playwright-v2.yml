@@ -145,6 +145,106 @@ jobs:
         run: |
           docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml down --volumes --remove-orphans
 
+  # Build Docker image for Docker tests
+  build-docker:
+    name: Build Docker Image
+    needs: check-trigger
+    if: needs.check-trigger.outputs.should_run == 'true'
+    uses: ./.github/workflows/pipeline-build-docker.yml
+    secrets: inherit
+    with:
+      debug: ${{ github.event.inputs.debug == 'true' }}
+      for_e2e_tests: true
+
+  # Docker tests (Chromium against Docker image)
+  e2e-docker:
+    name: E2E Docker (Chromium)
+    needs: [check-trigger, build-docker]
+    if: needs.check-trigger.outputs.should_run == 'true'
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'staging' }}
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable SSH Debug
+        if: ${{ github.event.inputs.debug == 'true' }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          detached: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
+
+      - name: Install E2E test dependencies
+        working-directory: ${{ env.E2E_DIR }}
+        run: yarn install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        working-directory: ${{ env.E2E_DIR }}
+        run: npx playwright install chromium --with-deps
+
+      - name: Download Docker Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-builds
+          path: ./release
+
+      - name: Load built docker image
+        run: |
+          docker image load -i ./release/docker/docker-linux-alpine.amd64.tar
+
+      - name: Start Redis test environment
+        run: |
+          TEST_BIG_DB_DUMP=$TEST_BIG_DB_DUMP \
+          docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml up --detach --force-recreate
+
+      - name: Start RedisInsight Docker container
+        run: |
+          E2E_RI_ENCRYPTION_KEY="$E2E_RI_ENCRYPTION_KEY" \
+          docker compose -p e2e-ri-docker \
+          -f tests/e2e/docker.web.docker-compose.yml \
+          up --detach --force-recreate
+          # Wait for the app to be ready
+          sleep 10
+          npx wait-on http://localhost:5540/api/health --timeout 60000
+
+      - name: Run Playwright tests (Chromium - Docker)
+        working-directory: ${{ env.E2E_DIR }}
+        run: npx playwright test --project=chromium
+        env:
+          CI: true
+          # Override URLs to point to Docker container (serves both client and API on 5540)
+          RI_CLIENT_URL: 'http://localhost:5540'
+          RI_API_URL: 'http://localhost:5540'
+
+      - name: Upload test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-docker
+          path: |
+            ${{ env.E2E_DIR }}/test-results
+            ${{ env.E2E_DIR }}/playwright-report
+          retention-days: 14
+
+      - name: Stop RedisInsight Docker container
+        if: always()
+        run: |
+          docker compose -p e2e-ri-docker \
+          -f tests/e2e/docker.web.docker-compose.yml \
+          down --volumes --remove-orphans
+
+      - name: Stop Redis test environment
+        if: always()
+        run: |
+          docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml down --volumes --remove-orphans
+
   # Build Linux AppImage for Electron tests
   build-linux:
     name: Build Linux AppImage
