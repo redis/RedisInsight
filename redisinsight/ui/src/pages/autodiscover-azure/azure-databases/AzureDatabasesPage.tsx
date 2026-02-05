@@ -12,7 +12,11 @@ import errorMessages from 'uiSrc/components/notifications/error-messages'
 import { riToast } from 'uiSrc/components/base/display/toast'
 import { defaultContainerId } from 'uiSrc/components/notifications/constants'
 import { AppDispatch } from 'uiSrc/slices/store'
-import { ActionStatus, AzureRedisDatabase } from 'uiSrc/slices/interfaces'
+import {
+  ActionStatus,
+  AzureRedisDatabase,
+  ImportAzureDatabaseResponse,
+} from 'uiSrc/slices/interfaces'
 import { azureAuthAccountSelector } from 'uiSrc/slices/oauth/azure'
 import {
   addDatabasesAzureAction,
@@ -22,6 +26,55 @@ import {
 } from 'uiSrc/slices/instances/azure'
 import AzureDatabases from './AzureDatabases/AzureDatabases'
 import { Spacer } from 'uiSrc/components/base/layout'
+
+const groupErrorsByMessage = (
+  failedResults: ImportAzureDatabaseResponse[],
+  selectedDatabases: AzureRedisDatabase[],
+): Record<string, string[]> =>
+  failedResults.reduce<Record<string, string[]>>((acc, r) => {
+    const db = selectedDatabases.find((db) => db.id === r.id)
+    const dbName = db?.name || 'database'
+    const errorMessage = r.message || 'Failed to add database'
+
+    if (!acc[errorMessage]) {
+      acc[errorMessage] = []
+    }
+    acc[errorMessage].push(dbName)
+    return acc
+  }, {})
+
+const renderErrorList = (errorGroups: Record<string, string[]>) =>
+  Object.entries(errorGroups).map(([errorMessage, dbNames]) => (
+    <React.Fragment key={errorMessage}>
+      <div>
+        <Text variant="semiBold" component="span">
+          {dbNames.join(', ')}
+        </Text>{' '}
+        - {errorMessage}
+      </div>
+      <Spacer size="m" />
+    </React.Fragment>
+  ))
+
+const showErrorToast = (
+  failedResults: ImportAzureDatabaseResponse[],
+  selectedDatabases: AzureRedisDatabase[],
+) => {
+  const errorGroups = groupErrorsByMessage(failedResults, selectedDatabases)
+  const errorList = renderErrorList(errorGroups)
+
+  riToast(
+    errorMessages.DEFAULT(
+      <>{errorList}</>,
+      () => {},
+      `Failed to add ${failedResults.length} database${failedResults.length > 1 ? 's' : ''}`,
+    ),
+    {
+      variant: riToast.Variant.Danger,
+      containerId: defaultContainerId,
+    },
+  )
+}
 
 const AzureDatabasesPage = () => {
   const history = useHistory()
@@ -60,6 +113,23 @@ const AzureDatabasesPage = () => {
     history.push(Pages.home)
   }
 
+  const handleSuccess = (successResults: ImportAzureDatabaseResponse[]) => {
+    dispatch(fetchInstancesAction())
+
+    const successDb = selectedDatabases.find(
+      (db) => db.id === successResults[0]?.id,
+    )
+    dispatch(
+      addMessageNotification(
+        successMessages.ADDED_NEW_INSTANCE(
+          successResults.length > 1
+            ? `${successResults.length} databases`
+            : successDb?.name || 'Database',
+        ),
+      ),
+    )
+  }
+
   const handleSubmit = async () => {
     if (!account?.id || selectedDatabases.length === 0) {
       return
@@ -75,71 +145,15 @@ const AzureDatabasesPage = () => {
     )
     const failedResults = results.filter((r) => r.status === ActionStatus.Fail)
 
-    // Refresh instances list if any were added
     if (successResults.length > 0) {
-      dispatch(fetchInstancesAction())
-
-      const successDb = selectedDatabases.find(
-        (db) => db.id === successResults[0]?.id,
-      )
-      dispatch(
-        addMessageNotification(
-          successMessages.ADDED_NEW_INSTANCE(
-            successResults.length > 1
-              ? `${successResults.length} databases`
-              : successDb?.name || 'Database',
-          ),
-        ),
-      )
+      handleSuccess(successResults)
     }
 
-    // Show single grouped error toast for all failed databases
     if (failedResults.length > 0) {
-      // Group databases by error message
-      const errorGroups = failedResults.reduce<Record<string, string[]>>(
-        (acc, r) => {
-          const db = selectedDatabases.find((db) => db.id === r.id)
-          const dbName = db?.name || 'database'
-          const errorMessage = r.message || 'Failed to add database'
-
-          if (!acc[errorMessage]) {
-            acc[errorMessage] = []
-          }
-          acc[errorMessage].push(dbName)
-          return acc
-        },
-        {},
-      )
-
-      const errorList = Object.entries(errorGroups).map(
-        ([errorMessage, dbNames]) => (
-          <>
-            <div key={errorMessage}>
-              <Text variant="semiBold" component="span">
-                {dbNames.join(', ')}
-              </Text>{' '}
-              - {errorMessage}
-            </div>
-            <Spacer size="m" />
-          </>
-        ),
-      )
-
-      riToast(
-        errorMessages.DEFAULT(
-          <>{errorList}</>,
-          () => {},
-          `Failed to add ${failedResults.length} database${failedResults.length > 1 ? 's' : ''}`,
-        ),
-        {
-          variant: riToast.Variant.Danger,
-          containerId: defaultContainerId,
-        },
-      )
+      showErrorToast(failedResults, selectedDatabases)
     }
 
-    // Navigate home if at least one database was added successfully
-    if (successResults.length > 0) {
+    if (failedResults.length === 0) {
       history.push(Pages.home)
     }
   }
