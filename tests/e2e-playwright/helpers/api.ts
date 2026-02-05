@@ -187,7 +187,11 @@ export class ApiHelper {
    * Create a Sorted Set (ZSet) key via API
    * Uses the POST /zSet endpoint with members array containing {name, score}
    */
-  async createZSetKey(databaseId: string, keyName: string, members: { member: string; score: string }[]): Promise<void> {
+  async createZSetKey(
+    databaseId: string,
+    keyName: string,
+    members: { member: string; score: string }[],
+  ): Promise<void> {
     const ctx = await this.getContext();
     const response = await ctx.post(`/api/databases/${databaseId}/zSet`, {
       data: { keyName, members: members.map((m) => ({ name: m.member, score: parseFloat(m.score) })) },
@@ -319,11 +323,7 @@ export class ApiHelper {
   /**
    * Accept EULA and set agreements via API
    */
-  async acceptEula(options?: {
-    analytics?: boolean;
-    encryption?: boolean;
-    notifications?: boolean;
-  }): Promise<void> {
+  async acceptEula(options?: { analytics?: boolean; encryption?: boolean; notifications?: boolean }): Promise<void> {
     const ctx = await this.getContext();
     const response = await ctx.patch('/api/settings', {
       data: {

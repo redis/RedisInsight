@@ -3,6 +3,13 @@ import { BrowserPage, CliPanel } from 'e2eSrc/pages';
 import { ApiHelper, retry } from 'e2eSrc/helpers';
 
 /**
+ * Extended ElectronApplication with windowId for API authentication
+ */
+interface ElectronAppWithWindowId extends ElectronApplication {
+  windowId?: string;
+}
+
+/**
  * Test-scoped fixtures
  */
 type Fixtures = {
@@ -22,7 +29,7 @@ type WorkerFixtures = {
   /** Path to Electron executable - when set, tests run in Electron mode */
   electronExecutablePath: string | undefined;
   apiUrl: string;
-  electronApp: ElectronApplication | undefined;
+  electronApp: ElectronAppWithWindowId | undefined;
 };
 
 /**
@@ -57,30 +64,23 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
         console.log(`[Electron] ${msg.type()}: ${msg.text()}`);
       });
 
-      // Wait for app to fully initialize
-      // AppImage apps may take longer to start in CI environments
+      // Wait for app to fully initialize and API to be ready
       console.log('Waiting for Electron app to initialize...');
-      await new Promise((resolve) => setTimeout(resolve, 10000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
 
       // Get the first window and extract windowId for API authentication
       const firstWindow = await electronApp.firstWindow();
       await firstWindow.waitForLoadState('domcontentloaded');
 
       // Extract windowId from the Electron app's window object
-      // The Electron app sets window.windowId after initialization
-      let windowId: string | undefined;
-      const getWindowId = async () => {
-        windowId = await firstWindow.evaluate(() => (window as any).windowId);
-        if (!windowId) {
-          throw new Error('windowId not yet available');
-        }
-        console.log(`Got Electron windowId: ${windowId}`);
-      };
-      await retry(getWindowId, {
-        maxAttempts: 10,
-        delayMs: 1000,
-        errorMessage: 'Failed to get windowId from Electron app',
-      });
+      // The windowId is set via IPC before React renders, so it should be available
+      const windowId = await firstWindow.evaluate(
+        () => (window as Window & { windowId?: string }).windowId,
+      );
+      if (!windowId) {
+        throw new Error('windowId not available - Electron app may not have initialized correctly');
+      }
+      console.log(`Got Electron windowId: ${windowId}`);
 
       // Wait for API to be available with windowId for authentication
       const apiHelper = new ApiHelper({ apiUrl, windowId });
@@ -90,16 +90,17 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
         console.log('Electron API is ready');
       };
       await retry(checkApi, {
-        maxAttempts: 10,
-        delayMs: 3000,
+        maxAttempts: 5,
         errorMessage: 'Electron API did not become available',
       });
       await apiHelper.dispose();
 
-      // Store windowId on the electronApp for later use
-      (electronApp as any).windowId = windowId;
+      // Create extended electronApp with windowId
+      const electronAppWithWindowId: ElectronAppWithWindowId = Object.assign(electronApp, {
+        windowId: windowId,
+      });
 
-      await use(electronApp);
+      await use(electronAppWithWindowId);
 
       console.log('Closing Electron app...');
       await electronApp.close();
@@ -130,7 +131,7 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
 
   apiHelper: async ({ apiUrl, electronApp }, use) => {
     // Get windowId from electronApp if available (for Electron API authentication)
-    const windowId = electronApp ? (electronApp as any).windowId : undefined;
+    const windowId = electronApp?.windowId;
 
     const helper = new ApiHelper({ apiUrl, windowId });
     await helper.ensureEulaAccepted();
