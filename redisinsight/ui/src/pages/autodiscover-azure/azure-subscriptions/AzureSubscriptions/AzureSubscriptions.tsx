@@ -56,7 +56,7 @@ const AzureSubscriptions = ({
 
   useEffect(() => {
     setItems(subscriptions)
-  }, [subscriptions, loading])
+  }, [subscriptions])
 
   // Reset selection if selected subscription no longer exists (e.g., after refresh)
   useEffect(() => {

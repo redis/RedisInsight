@@ -141,6 +141,23 @@ describe('AzureDatabases', () => {
     expect(screen.queryByText('development-redis')).not.toBeInTheDocument()
   })
 
+  it('should preserve search filter when loading state changes', () => {
+    const databases = [
+      { ...mockDatabase(), name: 'production-redis' },
+      { ...mockDatabase(), name: 'development-redis' },
+    ]
+    const { rerender } = renderComponent({ databases, loading: false })
+
+    // Filter the list
+    const searchInput = screen.getByTestId('search')
+    fireEvent.change(searchInput, { target: { value: 'production' } })
+    expect(screen.queryByText('development-redis')).not.toBeInTheDocument()
+
+    // Rerender with loading=true - filter should still be applied
+    rerender(<AzureDatabases {...defaultProps} databases={databases} loading />)
+    expect(screen.queryByText('development-redis')).not.toBeInTheDocument()
+  })
+
   it('should call onSubmit when submit button is clicked', () => {
     const databases = [mockDatabase()]
     const onSubmit = jest.fn()

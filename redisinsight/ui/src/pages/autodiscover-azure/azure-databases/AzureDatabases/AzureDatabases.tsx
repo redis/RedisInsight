@@ -58,7 +58,7 @@ const AzureDatabases = ({
 
   useEffect(() => {
     setItems(databases)
-  }, [databases, loading])
+  }, [databases])
 
   const onQueryChange = (term: string) => {
     const value = term?.toLowerCase()
