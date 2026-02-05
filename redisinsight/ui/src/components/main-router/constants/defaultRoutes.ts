@@ -18,6 +18,7 @@ import RdiPage from 'uiSrc/pages/rdi/home'
 import RdiInstancePage from 'uiSrc/pages/rdi/instance'
 import RdiStatisticsPage from 'uiSrc/pages/rdi/statistics'
 import PipelineManagementPage from 'uiSrc/pages/rdi/pipeline-management'
+import PipelinePocPage from 'uiSrc/pages/rdi/pipeline-poc'
 import { ANALYTICS_ROUTES, RDI_PIPELINE_MANAGEMENT_ROUTES } from './sub-routes'
 import COMMON_ROUTES from './commonRoutes'
 import { getRouteIncludedByEnv, LAZY_LOAD } from '../config'
@@ -53,6 +54,9 @@ const LazyRdiInstancePage = lazy(() => import('uiSrc/pages/rdi/instance'))
 const LazyRdiStatisticsPage = lazy(() => import('uiSrc/pages/rdi/statistics'))
 const LazyPipelineManagementPage = lazy(
   () => import('uiSrc/pages/rdi/pipeline-management'),
+)
+const LazyPipelinePocPage = lazy(
+  () => import('uiSrc/pages/rdi/pipeline-poc'),
 )
 
 const INSTANCE_ROUTES: IRoute[] = [
@@ -143,6 +147,12 @@ const ROUTES: IRoute[] = [
       path: Pages.rdi,
       component: LAZY_LOAD ? LazyRdiPage : RdiPage,
       exact: true,
+      featureFlag: FeatureFlags.rdi,
+    },
+    // Pipeline POC - standalone route for the package (no nested RI navigation)
+    {
+      path: Pages.rdiPipelinePoc(':rdiInstanceId'),
+      component: LAZY_LOAD ? LazyPipelinePocPage : PipelinePocPage,
       featureFlag: FeatureFlags.rdi,
     },
     {

@@ -65,10 +65,8 @@ export function useNavigation() {
       ({ path }) => `/${last(path.split('/'))}` === activePage,
     )
 
-  const isPipelineManagementPath = () =>
-    location.pathname?.startsWith(
-      Pages.rdiPipelineManagement(connectedRdiInstanceId),
-    )
+  const isPipelinePocPath = () =>
+    location.pathname?.startsWith(Pages.rdiPipelinePoc(connectedRdiInstanceId))
 
   const isVectorSearchPath = () =>
     location.pathname.split('/')[2] === PageNames.vectorSearch
@@ -148,12 +146,11 @@ export function useNavigation() {
   const privateRdiRoutes: INavigations[] = [
     {
       tooltipText: 'Pipeline',
-      pageName: PageNames.rdiPipelineManagement,
-      ariaLabel: 'Pipeline Management page button',
-      onClick: () =>
-        handleGoPage(Pages.rdiPipelineManagement(connectedRdiInstanceId)),
-      dataTestId: 'pipeline-management-page-btn',
-      isActivePage: isPipelineManagementPath(),
+      pageName: PageNames.rdiPipelinePoc,
+      ariaLabel: 'Pipeline POC page button',
+      onClick: () => handleGoPage(Pages.rdiPipelinePoc(connectedRdiInstanceId)),
+      dataTestId: 'pipeline-poc-page-btn',
+      isActivePage: isPipelinePocPath(),
       iconType: PipelineManagementIcon,
     },
     {

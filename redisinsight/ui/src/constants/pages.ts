@@ -30,6 +30,7 @@ export enum PageNames {
   rdiPipelineConfig = 'config',
   rdiPipelineJobs = 'jobs',
   rdiStatistics = 'statistics',
+  rdiPipelinePoc = 'pipeline-poc',
 }
 
 const redisCloud = '/redis-cloud'
@@ -75,4 +76,6 @@ export const Pages = {
   rdiPipelineJobs: (rdiInstance: string, jobName: string) =>
     `${rdi}/${rdiInstance}/${PageNames.rdiPipelineManagement}/${PageNames.rdiPipelineJobs}/${jobName}`,
   rdiStatistics: (rdiInstance: string) => `${rdi}/${rdiInstance}/statistics`,
+  // Package route: /integrate/:rdiInstanceId/pipeline (package takes over entirely)
+  rdiPipelinePoc: (rdiInstance: string) => `${rdi}/${rdiInstance}/pipeline`,
 }

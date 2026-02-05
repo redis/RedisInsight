@@ -41,7 +41,7 @@ export const handleCheckConnectToRdiInstance = (instance: RdiInstance) => {
   dispatch(
     checkConnectToRdiInstanceAction(
       id,
-      (rdiId: string) => navigate(Pages.rdiPipeline(rdiId)),
+      (rdiId: string) => navigate(Pages.rdiPipelinePoc(rdiId)),
       () => dispatch(setAppContextConnectedRdiInstanceId('')),
     ),
   )
