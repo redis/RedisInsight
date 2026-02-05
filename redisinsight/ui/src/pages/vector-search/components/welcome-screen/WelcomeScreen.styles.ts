@@ -29,8 +29,8 @@ export const BackgroundImage = styled.div`
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 490px;
-  height: 475px;
+  width: 584px;
+  height: 567px;
   pointer-events: none;
   z-index: 0;
   background-image: url(${({ theme }) =>
@@ -39,7 +39,7 @@ export const BackgroundImage = styled.div`
   background-position: bottom right;
   background-size: contain;
 
-  @media (max-width: 900px) {
+  @media (max-width: 900px), ((max-height: 700px) and (max-width: 1200px)) {
     opacity: 0.1;
   }
 `
