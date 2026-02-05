@@ -6,12 +6,8 @@ import {
   handleAzureOAuthSuccess,
   handleAzureOAuthFailure,
 } from 'uiSrc/slices/oauth/azure'
-import {
-  addErrorNotification,
-  addMessageNotification,
-} from 'uiSrc/slices/app/notifications'
+import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { AzureAuthStatus } from 'apiSrc/modules/azure/constants'
-import successMessages from 'uiSrc/components/notifications/success-messages'
 import { AppDispatch } from 'uiSrc/slices/store'
 import { Pages } from 'uiSrc/constants'
 
@@ -46,11 +42,6 @@ const ConfigAzureAuth = () => {
         name: account.name,
       }
       dispatch(handleAzureOAuthSuccess(azureAccount))
-      dispatch(
-        addMessageNotification(
-          successMessages.AZURE_AUTH_SUCCESS(account.username),
-        ),
-      )
       history.push(Pages.azureSubscriptions)
       return
     }

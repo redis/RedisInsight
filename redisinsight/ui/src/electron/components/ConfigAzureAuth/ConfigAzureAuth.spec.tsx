@@ -12,11 +12,7 @@ import {
   azureOAuthCallbackSuccess,
   azureOAuthCallbackFailure,
 } from 'uiSrc/slices/oauth/azure'
-import {
-  addErrorNotification,
-  addMessageNotification,
-} from 'uiSrc/slices/app/notifications'
-import successMessages from 'uiSrc/components/notifications/success-messages'
+import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 
 import ConfigAzureAuth from './ConfigAzureAuth'
 
@@ -59,12 +55,7 @@ describe('ConfigAzureAuth', () => {
     )
     renderConfigAzureAuth()
 
-    const expectedActions = [
-      azureOAuthCallbackSuccess(expectedAccount),
-      addMessageNotification(
-        successMessages.AZURE_AUTH_SUCCESS(mockMsalAccount.username),
-      ),
-    ]
+    const expectedActions = [azureOAuthCallbackSuccess(expectedAccount)]
     expect(store.getActions()).toEqual(expectedActions)
   })
 
