@@ -92,7 +92,7 @@ const VirtualGrid = (props: IProps) => {
   }, [forceScrollTop])
 
   const onScroll = useCallback(
-    ({ scrollTop }) => {
+    ({ scrollTop }: { scrollTop: number }) => {
       scrollTopRef.current = scrollTop
     },
     [scrollTopRef],
@@ -131,6 +131,11 @@ const VirtualGrid = (props: IProps) => {
     setWidth(width)
   }
 
+  const clearSelectTimeout = (timer: number = 0) => {
+    clearTimeout(timer || selectTimer)
+    preventSelect = true
+  }
+
   const onCellClick = (event: React.MouseEvent, rowIndex: number) => {
     selectTimer = window.setTimeout(() => {
       const textSelected = window.getSelection()?.toString()
@@ -146,11 +151,6 @@ const VirtualGrid = (props: IProps) => {
       clearSelectTimeout(selectTimer)
       preventSelect = false
     }
-  }
-
-  const clearSelectTimeout = (timer: number = 0) => {
-    clearTimeout(timer || selectTimer)
-    preventSelect = true
   }
 
   const renderNotEmptyContent = (text: string) => (
@@ -171,7 +171,7 @@ const VirtualGrid = (props: IProps) => {
 
     const expanded = expandedRows.indexOf(rowIndex) !== -1
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (cellRef.current) {
         const paddingSize = 24
         const cellHeight =
@@ -310,44 +310,48 @@ const VirtualGrid = (props: IProps) => {
               itemCount={totalItemsCount}
             >
               {({ onItemsRendered, ref }) => (
-                <S.Grid
-                  as={Grid}
-                  ref={(list: any) => {
-                    ref(list)
-                    gridRef.current = list
-                  }}
-                  onItemsRendered={(props: any) =>
-                    onItemsRendered({
-                      visibleStartIndex: props.visibleRowStartIndex || 0,
-                      visibleStopIndex: props.visibleRowStopIndex || 0,
-                      overscanStartIndex: props.overscanRowStartIndex || 0,
-                      overscanStopIndex: props.overscanRowStopIndex || 0,
-                    })
-                  }
-                  columnCount={columns.length}
-                  columnWidth={(i: number) => getColumnWidth(i, width, columns)}
-                  height={height}
-                  rowCount={items.length}
-                  rowHeight={getRowHeight}
-                  width={width}
-                  innerElementType={innerElementType}
-                  onScroll={onScroll}
-                  initialScrollTop={forceScrollTop}
-                  itemData={items}
-                >
-                  {({ data, rowIndex, columnIndex, style }: any) => (
-                    <div
-                      onClick={(e) => onCellClick(e, rowIndex)}
-                      role="presentation"
-                    >
-                      <Cell
-                        style={style}
-                        data={data}
-                        columnIndex={columnIndex}
-                        rowIndex={rowIndex}
-                      />
-                    </div>
-                  )}
+                <S.Grid>
+                  <Grid
+                    ref={(list: any) => {
+                      ref(list)
+                      gridRef.current = list
+                    }}
+                    onItemsRendered={(props: any) =>
+                      onItemsRendered({
+                        visibleStartIndex: props.visibleRowStartIndex || 0,
+                        visibleStopIndex: props.visibleRowStopIndex || 0,
+                        overscanStartIndex: props.overscanRowStartIndex || 0,
+                        overscanStopIndex: props.overscanRowStopIndex || 0,
+                      })
+                    }
+                    columnCount={columns.length}
+                    columnWidth={(i: number) =>
+                      getColumnWidth(i, width, columns)
+                    }
+                    height={height}
+                    rowCount={items.length}
+                    rowHeight={getRowHeight}
+                    width={width}
+                    innerElementType={innerElementType}
+                    onScroll={onScroll}
+                    initialScrollTop={forceScrollTop}
+                    itemData={items}
+                  >
+                    {({ data, rowIndex, columnIndex, style }: any) => (
+                      <div
+                        data-testid="virtual-grid-item"
+                        onClick={(e) => onCellClick(e, rowIndex)}
+                        role="presentation"
+                      >
+                        <Cell
+                          style={style}
+                          data={data}
+                          columnIndex={columnIndex}
+                          rowIndex={rowIndex}
+                        />
+                      </div>
+                    )}
+                  </Grid>
                 </S.Grid>
               )}
             </InfiniteLoader>
