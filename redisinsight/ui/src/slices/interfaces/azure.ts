@@ -19,12 +19,6 @@ export interface AzureSubscription {
   state: string
 }
 
-export interface AzureRedisSku {
-  name: string
-  family?: string
-  capacity?: number
-}
-
 export interface AzureRedisDatabase {
   id: string
   name: string
@@ -36,7 +30,6 @@ export interface AzureRedisDatabase {
   port: number
   sslPort?: number
   provisioningState: string
-  sku?: AzureRedisSku
   accessKeysAuthentication?: AzureAccessKeysStatus
 }
 
