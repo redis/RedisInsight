@@ -81,12 +81,17 @@ const AzureSubscriptions = ({
   }
 
   const handleSubmit = () => {
-    if (selectedId) {
-      const selected = subscriptions.find(
-        (s) => s.subscriptionId === selectedId,
-      )
-      onSubmit(selected!)
+    if (!selectedId) return
+
+    const selected = subscriptions.find((s) => s.subscriptionId === selectedId)
+
+    if (!selected) {
+      // Subscription no longer exists (e.g., after refresh), reset selection
+      setSelectedId(null)
+      return
     }
+
+    onSubmit(selected)
   }
 
   return (
