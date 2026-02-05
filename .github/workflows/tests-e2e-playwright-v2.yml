@@ -217,15 +217,37 @@ jobs:
           name: linux-builds
           path: ./release
 
-      - name: Make AppImage executable and set path
+      - name: Mount AppImage and get executable path
         id: appimage
         run: |
           ls -la ./release/
           chmod +x ./release/Redis-Insight*.AppImage
-          # Find the actual AppImage file and export its absolute path
-          APPIMAGE_PATH=$(realpath ./release/Redis-Insight*.AppImage | head -1)
-          echo "path=$APPIMAGE_PATH" >> $GITHUB_OUTPUT
-          echo "Found AppImage: $APPIMAGE_PATH"
+
+          # Mount the AppImage and capture the mount path
+          rm -f appimage_mount_path
+          ./release/Redis-Insight*.AppImage --appimage-mount > appimage_mount_path &
+          APPIMAGE_PID=$!
+          sleep 3
+
+          # Get the mount path and construct the executable path
+          MOUNT_PATH=$(cat appimage_mount_path)
+          echo "AppImage mounted at: $MOUNT_PATH"
+          ls -la "$MOUNT_PATH"
+
+          # The actual electron executable is inside the mounted AppImage
+          ELECTRON_PATH="$MOUNT_PATH/redisinsight"
+          echo "path=$ELECTRON_PATH" >> $GITHUB_OUTPUT
+          echo "pid=$APPIMAGE_PID" >> $GITHUB_OUTPUT
+          echo "Found Electron executable: $ELECTRON_PATH"
+
+          # Verify the executable exists
+          if [ -f "$ELECTRON_PATH" ]; then
+            echo "✓ Electron executable exists"
+          else
+            echo "✗ Electron executable not found!"
+            ls -la "$MOUNT_PATH"
+            exit 1
+          fi
 
       - name: Start Redis test environment
         run: |
@@ -256,6 +278,12 @@ jobs:
             ${{ env.E2E_DIR }}/test-results
             ${{ env.E2E_DIR }}/playwright-report
           retention-days: 14
+
+      - name: Unmount AppImage
+        if: always()
+        run: |
+          # Kill the AppImage mount process
+          kill ${{ steps.appimage.outputs.pid }} || true
 
       - name: Stop Redis test environment
         if: always()
