@@ -83,7 +83,7 @@ const AzureDatabases = ({
     setRowSelection(newSelection)
   }, [selectedDatabases])
 
-  const selectedCount = Object.keys(rowSelection).length
+  const selectedCount = Object.values(rowSelection).filter(Boolean).length
   const isMaxSelected = selectedCount >= MAX_DATABASES_SELECTION
 
   const handleSelectionChange = (state: RowSelectionState) => {
