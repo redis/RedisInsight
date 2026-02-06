@@ -36,6 +36,7 @@ export class ImportDatabaseDto extends PickType(Database, [
   'ssh',
   'sshOptions',
   'provider',
+  'providerDetails',
   'compressor',
   'modules',
   'tlsServername',
