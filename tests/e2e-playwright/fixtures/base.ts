@@ -65,7 +65,7 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
           console.log(`[Electron] ${msg.type()}: ${msg.text()}`);
         });
 
-        // Wait for app to fully initialize and API to be ready
+        // Wait for app to fully initialize
         console.log('Waiting for Electron app to initialize...');
         await new Promise((resolve) => setTimeout(resolve, 3000));
 
@@ -74,13 +74,20 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
         await firstWindow.waitForLoadState('domcontentloaded');
 
         // Extract windowId from the Electron app's window object
-        // The windowId is set via IPC before React renders, so it should be available
-        const windowId = await firstWindow.evaluate(
-          () => (window as Window & { windowId?: string }).windowId,
-        );
-        if (!windowId) {
-          throw new Error('windowId not available - Electron app may not have initialized correctly');
-        }
+        // The windowId is set via IPC and may take a moment to be available
+        let windowId: string | undefined;
+        const getWindowId = async () => {
+          windowId = await firstWindow.evaluate(
+            () => (window as Window & { windowId?: string }).windowId,
+          );
+          if (!windowId) {
+            throw new Error('windowId not yet available');
+          }
+        };
+        await retry(getWindowId, {
+          maxAttempts: 5,
+          errorMessage: 'windowId not available - Electron app may not have initialized correctly',
+        });
         console.log(`Got Electron windowId: ${windowId}`);
 
         // Wait for API to be available with windowId for authentication
