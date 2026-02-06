@@ -3,11 +3,6 @@ export enum AzureRedisType {
   Enterprise = 'enterprise',
 }
 
-export enum AzureAuthType {
-  AccessKey = 'accessKey',
-  EntraId = 'entraId',
-}
-
 export enum AzureAccessKeysStatus {
   Enabled = 'Enabled',
   Disabled = 'Disabled',
@@ -31,29 +26,6 @@ export interface AzureRedisDatabase {
   sslPort?: number
   provisioningState: string
   accessKeysAuthentication?: AzureAccessKeysStatus
-}
-
-export interface AzureConnectionDetails {
-  host: string
-  port: number
-  password?: string
-  username?: string
-  tls: boolean
-  authType: AzureAuthType
-  azureAccountId?: string
-  subscriptionId: string
-  resourceGroup: string
-  resourceId: string
-}
-
-export enum CloudProvider {
-  Azure = 'azure',
-}
-
-export interface AzureProviderDetails {
-  provider: CloudProvider.Azure
-  authType: AzureAuthType
-  azureAccountId?: string
 }
 
 export enum ActionStatus {
