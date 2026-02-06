@@ -2,7 +2,7 @@ import React from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { Col } from 'uiSrc/components/base/layout/flex'
-import { indexListRowFactory } from 'uiSrc/mocks/factories/vector-search/IndexListRow.factory'
+import { indexListRowFactory } from 'uiSrc/mocks/factories/vector-search/indexList.factory'
 import IndexesList from './IndexesList'
 import { IndexListRow, IndexesListProps } from './IndexesList.types'
 
@@ -71,7 +71,6 @@ export const Default: Story = {
 export const Loading: Story = {
   args: {
     data: [],
-    loading: true,
     onQueryClick: handleQueryClick,
   },
 }
@@ -79,7 +78,6 @@ export const Loading: Story = {
 export const Empty: Story = {
   args: {
     data: [],
-    loading: false,
     onQueryClick: handleQueryClick,
   },
 }
@@ -111,7 +109,7 @@ export const AllFieldTypes: Story = {
           FieldTypes.NUMERIC,
           FieldTypes.GEO,
           FieldTypes.VECTOR,
-          FieldTypes.GEOSHAPE,
+          FieldTypes.GEO,
         ],
         numDocs: 999999,
         numRecords: 2999997,
