@@ -36,7 +36,7 @@ export class BrowserPage extends InstancePage {
     this.keyList = new KeyList(page);
 
     // Browser-specific action buttons
-    this.addKeyButton = page.getByRole('button', { name: 'Add key' });
+    this.addKeyButton = page.getByText('Add key', { exact: true });
     this.bulkActionsButton = page.getByRole('button', { name: /bulk actions/i });
 
     // Browser-specific key details panel
