@@ -82,6 +82,11 @@ const responseSchema = Joi.array()
           }),
         )
         .allow(null),
+      providerDetails: Joi.object({
+        provider: Joi.string().required(),
+        authType: Joi.string().required(),
+        azureAccountId: Joi.string(),
+      }).allow(null),
       isPreSetup: Joi.boolean().allow(null),
     }),
   )
