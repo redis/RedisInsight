@@ -106,6 +106,27 @@ describe('VectorSearchPage', () => {
     expect(loader).toBeInTheDocument()
   })
 
+  it('should render loader when compatibility is uninitialized (undefined) even if indexes are not loading', () => {
+    mockUseRedisInstanceCompatibility.mockReturnValue({
+      loading: undefined,
+      hasRedisearch: undefined,
+      hasSupportedVersion: undefined,
+    })
+    mockUseRedisearchListData.mockReturnValue({
+      loading: false,
+      data: [],
+      stringData: [],
+    })
+
+    renderComponent()
+
+    const loader = screen.getByTestId('vector-search-loader')
+    expect(loader).toBeInTheDocument()
+
+    const welcomeScreen = screen.queryByTestId('vector-search--welcome-screen')
+    expect(welcomeScreen).not.toBeInTheDocument()
+  })
+
   it('should render RQE not available screen when RediSearch is not available', () => {
     mockUseRedisInstanceCompatibility.mockReturnValue({
       loading: false,

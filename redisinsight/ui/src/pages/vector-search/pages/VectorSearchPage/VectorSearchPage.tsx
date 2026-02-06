@@ -41,7 +41,8 @@ export const VectorSearchPage = () => {
     `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)} - Vector Search`,
   )
 
-  const isLoading = compatibilityLoading || indexesLoading
+  // Treat undefined (uninitialized) as loading so we don't render WelcomeScreen before compatibility is known
+  const isLoading = compatibilityLoading !== false || indexesLoading
 
   // Show loader while checking compatibility or loading indexes
   if (isLoading) {
