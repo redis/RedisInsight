@@ -63,7 +63,7 @@ jobs:
       - name: Setup E2E environment
         uses: ./.github/actions/setup-e2e-playwright
         with:
-          browsers: 'none'
+          browsers: 'chromium'
           working-directory: ${{ env.E2E_DIR }}
 
       - name: Download Linux build artifacts
