@@ -80,14 +80,17 @@ const AzureSubscriptions = ({
   }
 
   const handleSelectionChange = (state: RowSelectionState) => {
-    const selectedId = Object.keys(state).find((key) => state[key])
-    setSelectedId(selectedId || null)
+    const newSelectedId = Object.keys(state).find((key) => state[key])
+    setSelectedId(newSelectedId || null)
   }
 
   const handleRowClick = (subscription: AzureSubscription) => {
-    setSelectedId((prev) =>
-      prev === subscription.subscriptionId ? null : subscription.subscriptionId,
-    )
+    const isSelected = selectedId === subscription.subscriptionId
+    const newState: RowSelectionState = isSelected
+      ? {}
+      : { [subscription.subscriptionId]: true }
+
+    handleSelectionChange(newState)
   }
 
   const handleSubmit = () => {
