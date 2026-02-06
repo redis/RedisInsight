@@ -1,48 +1,25 @@
 import styled, { css } from 'styled-components'
-import { Link as RedisUiLink, LinkProps } from '@redis-ui/components'
+import { Link as RedisUiLink } from '@redis-ui/components'
 import { useTheme } from '@redis-ui/styles'
+import { ColorType, MapProps } from './link.types'
 
-// TODO [DA]: Export the color functionality and use both for Link and Text
-export type EuiColorNames =
-  | 'inherit'
-  | 'default'
-  | 'primary'
-  | 'text'
-  | 'subdued'
-  | 'danger'
-  | 'ghost'
-  | 'accent'
-  | 'warning'
-  | 'success'
-
-export type ColorType = LinkProps['color'] | EuiColorNames | (string & {})
-
-export type RiLinkProps = Omit<LinkProps, 'color'> & {
-  color?: ColorType
-  underline?: boolean
-}
-
-type MapProps = RiLinkProps & {
-  $color?: ColorType
-  $underline?: boolean
-}
-
-export const useColorTextStyles = ({ $color }: MapProps = {}) => {
+const useColorTextStyles = ({ $color }: MapProps = {}) => {
   const theme = useTheme()
   const colors = theme.semantic.color
+  const textColors = theme.components.typography.colors
 
   const getColorValue = (color?: ColorType) => {
     if (!color) {
-      return colors.text.primary500
+      return textColors.primary
     }
     switch (color) {
       case 'inherit':
         return 'inherit'
       case 'default':
       case 'primary':
-        return colors.text.primary500
+        return textColors.primary
       case 'text':
-        return colors.text.neutral700
+        return textColors.secondary
       case 'subdued':
         return colors.text.informative400
       case 'danger':

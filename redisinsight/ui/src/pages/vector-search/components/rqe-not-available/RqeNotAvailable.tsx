@@ -75,6 +75,7 @@ export const RqeNotAvailable = () => {
                   <OAuthSsoHandlerDialog>
                     {(ssoCloudHandlerClick) => (
                       <Link
+                        variant="inline"
                         target="_blank"
                         href={getUtmExternalLink(EXTERNAL_LINKS.tryFree, {
                           campaign: utmCampaign,
@@ -96,6 +97,7 @@ export const RqeNotAvailable = () => {
                 </FeatureFlagComponent>
 
                 <Link
+                  variant="inline"
                   target="_blank"
                   href={getUtmExternalLink(EXTERNAL_LINKS.redisQueryEngine, {
                     campaign: utmCampaign,
