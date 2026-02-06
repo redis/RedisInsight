@@ -652,7 +652,7 @@ describe('DatabaseService', () => {
       }
     });
 
-    it('should return Azure Entra ID database without credentials and with providerDetails', async () => {
+    it('should return Azure Entra ID database without credentials and with providerDetails (withSecrets = false)', async () => {
       databaseRepository.get.mockResolvedValueOnce(
         mockDatabaseWithProviderDetails,
       );
@@ -660,7 +660,7 @@ describe('DatabaseService', () => {
       const result = await service.export(
         mockSessionMetadata,
         [mockDatabaseWithProviderDetails.id],
-        true, // withSecrets = true, but credentials should still be stripped for Azure Entra ID
+        false,
       );
 
       expect(result).toHaveLength(1);
@@ -688,6 +688,10 @@ describe('DatabaseService', () => {
       // Credentials should always be stripped for Azure Entra ID
       expect(result[0].username).toBeUndefined();
       expect(result[0].password).toBeUndefined();
+      // Should include providerDetails
+      expect(result[0].providerDetails).toEqual(
+        mockDatabaseWithProviderDetails.providerDetails,
+      );
     });
   });
 
