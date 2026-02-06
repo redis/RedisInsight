@@ -9,8 +9,11 @@ import {
   Logger,
   NestApplicationOptions,
 } from '@nestjs/common';
-import * as bodyParser from 'body-parser';
 import bodyParserMiddleware from 'src/common/middlewares/body-parser.middleware';
+import {
+  conditionalJsonParser,
+  conditionalUrlencodedParser,
+} from 'src/common/middlewares/conditional-body-parser.middleware';
 import { GlobalExceptionFilter } from 'src/exceptions/global-exception.filter';
 import { get, Config } from 'src/utils';
 import { migrateHomeFolder, removeOldFolders } from 'src/init-helper';
@@ -62,13 +65,9 @@ export default async function bootstrap(apiPort?: number): Promise<IApp> {
   app.useGlobalFilters(new GlobalExceptionFilter(app.getHttpAdapter()));
   // set qs as parser to support nested objects in the query string
   app.set('query parser', qs.parse);
-  app.use(bodyParser.json({ limit: serverConfig.maxPayloadSize }));
-  app.use(
-    bodyParser.urlencoded({
-      limit: serverConfig.maxPayloadSize,
-      extended: true,
-    }),
-  );
+  // Use conditional body parsers to skip parsing for proxy routes (streaming)
+  app.use(conditionalJsonParser);
+  app.use(conditionalUrlencodedParser);
   app.use(bodyParserMiddleware);
   app.enableCors();
 
