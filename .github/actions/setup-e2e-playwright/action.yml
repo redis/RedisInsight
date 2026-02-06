@@ -18,8 +18,9 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version-file: '.nvmrc'
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
+        # Note: We don't use setup-node's yarn cache here because:
+        # 1. We cache node_modules directly (more effective)
+        # 2. The '**/yarn.lock' glob can fail on nested packages
 
     - name: Cache E2E node_modules
       id: cache-e2e-deps
