@@ -115,6 +115,122 @@ describe('POST /databases/:id/redisearch', () => {
       ].map(mainCheckFn);
     });
 
+    describe('Client Errors (400 Bad Request)', () => {
+      beforeEach(rte.data.truncate);
+
+      [
+        {
+          name: 'Should return 400 for Invalid JSONPath error (JSON type with invalid path)',
+          data: {
+            index: constants.getRandomString(),
+            type: 'json',
+            prefixes: ['test:'],
+            fields: [
+              {
+                name: 'embedding', // Missing $ prefix for JSONPath
+                type: 'vector',
+                algorithm: 'FLAT',
+                dim: 3,
+                distanceMetric: 'L2',
+              },
+            ],
+          },
+          statusCode: 400,
+          responseBody: {
+            statusCode: 400,
+            error: 'Bad Request',
+          },
+          checkFn: ({ body }) => {
+            expect(body.message).to.satisfy((msg: string) =>
+              msg.startsWith('Invalid'),
+            );
+          },
+        },
+        {
+          name: 'Should return 400 for Invalid field type error (VECTOR without DIM)',
+          data: {
+            index: constants.getRandomString(),
+            type: 'hash',
+            prefixes: ['test:'],
+            fields: [
+              {
+                name: 'embedding',
+                type: 'vector',
+                algorithm: 'FLAT',
+                // Missing 'dim' which is mandatory for VECTOR
+                distanceMetric: 'L2',
+              },
+            ],
+          },
+          statusCode: 400,
+          responseBody: {
+            statusCode: 400,
+            error: 'Bad Request',
+          },
+          checkFn: ({ body }) => {
+            expect(body.message).to.satisfy((msg: string) =>
+              msg.startsWith('Invalid'),
+            );
+          },
+        },
+        {
+          name: 'Should return 400 for Invalid field type error (VECTOR with invalid algorithm)',
+          data: {
+            index: constants.getRandomString(),
+            type: 'hash',
+            prefixes: ['test:'],
+            fields: [
+              {
+                name: 'embedding',
+                type: 'vector',
+                algorithm: 'INVALID_ALGO', // Invalid algorithm
+                dim: 3,
+                distanceMetric: 'L2',
+              },
+            ],
+          },
+          statusCode: 400,
+          responseBody: {
+            statusCode: 400,
+            error: 'Bad Request',
+          },
+          checkFn: ({ body }) => {
+            expect(body.message).to.satisfy((msg: string) =>
+              msg.startsWith('Invalid'),
+            );
+          },
+        },
+        {
+          name: 'Should return 400 for Duplicate field error',
+          data: {
+            index: constants.getRandomString(),
+            type: 'hash',
+            prefixes: ['test:'],
+            fields: [
+              {
+                name: 'field1',
+                type: 'text',
+              },
+              {
+                name: 'field1', // Duplicate field name
+                type: 'text',
+              },
+            ],
+          },
+          statusCode: 400,
+          responseBody: {
+            statusCode: 400,
+            error: 'Bad Request',
+          },
+          checkFn: ({ body }) => {
+            expect(body.message).to.satisfy((msg: string) =>
+              msg.startsWith('Duplicate'),
+            );
+          },
+        },
+      ].map(mainCheckFn);
+    });
+
     describe('ACL', () => {
       requirements('rte.acl');
       before(async () => rte.data.setAclUserRules('~* +@all'));
