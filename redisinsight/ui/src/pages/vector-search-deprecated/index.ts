@@ -1,3 +1,3 @@
-export { default as VectorSearchCreateIndexPage } from './pages/VectorSearchCreateIndexPage'
-export { default as VectorSearchPage } from './pages/VectorSearchPage'
-export { default as VectorSearchPageRouter } from './pages/VectorSearchPageRouter'
+export { default as VectorSearchCreateIndexPageDeprecated } from './pages/VectorSearchCreateIndexPage'
+export { default as VectorSearchPageDeprecated } from './pages/VectorSearchPage'
+export { default as VectorSearchPageRouterDeprecated } from './pages/VectorSearchPageRouter'
