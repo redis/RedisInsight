@@ -321,6 +321,31 @@ describe('DatabaseImportService', () => {
         false,
       );
     });
+
+    it('should create database with providerDetails for Azure Entra ID', async () => {
+      const providerDetails = {
+        provider: 'azure',
+        authType: 'entraId',
+        azureAccountId: 'test-account-123',
+      };
+
+      await service['createDatabase'](
+        mockSessionMetadata,
+        {
+          ...mockDatabase,
+          providerDetails,
+        },
+        0,
+      );
+
+      expect(databaseRepository.create).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        expect.objectContaining({
+          providerDetails,
+        }),
+        false,
+      );
+    });
   });
 
   describe('determineConnectionType', () => {

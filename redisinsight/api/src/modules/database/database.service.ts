@@ -29,6 +29,7 @@ import {
 import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
 import { RedisConnectionSentinelMasterRequiredException } from 'src/modules/redis/exceptions/connection';
 import { CredentialStrategyProvider } from 'src/modules/database/credentials';
+import { AzureEntraIdCredentialStrategy } from 'src/modules/database/credentials/strategies/azure-entra-id.credential-strategy';
 
 @Injectable()
 export class DatabaseService {
@@ -440,8 +441,6 @@ export class DatabaseService {
     ids: string[],
     withSecrets = false,
   ): Promise<ExportDatabase[]> {
-    const paths = !withSecrets ? this.exportSecurityFields : [];
-
     this.logger.debug(`Exporting many database: ${ids}`, sessionMetadata);
 
     if (!ids.length) {
@@ -449,7 +448,7 @@ export class DatabaseService {
       throw new NotFoundException(ERROR_MESSAGES.INVALID_DATABASE_INSTANCE_ID);
     }
 
-    const entities: ExportDatabase[] = reject(
+    const entities: Database[] = reject(
       await Promise.all(
         ids.map(async (id) => {
           try {
@@ -462,10 +461,24 @@ export class DatabaseService {
       isEmpty,
     );
 
-    return entities.map((database) =>
-      classToClass(ExportDatabase, omit(database, paths), {
+    return entities.map((database) => {
+      // For Azure Entra ID databases, always strip credentials
+      // (username/password are temporary tokens) and include providerDetails
+      const isAzureEntraId = AzureEntraIdCredentialStrategy.isAzureEntraIdAuth(
+        database.providerDetails,
+      );
+
+      let paths: string[];
+      if (isAzureEntraId) {
+        // Always strip credentials for Azure Entra ID databases
+        paths = [...this.exportSecurityFields, 'username'];
+      } else {
+        paths = !withSecrets ? this.exportSecurityFields : [];
+      }
+
+      return classToClass(ExportDatabase, omit(database, paths), {
         groups: ['security'],
-      }),
-    );
+      });
+    });
   }
 }

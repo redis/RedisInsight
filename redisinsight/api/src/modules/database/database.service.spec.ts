@@ -651,6 +651,48 @@ describe('DatabaseService', () => {
         );
       }
     });
+
+    it('should return Azure Entra ID database without credentials and with providerDetails (withSecrets = false)', async () => {
+      databaseRepository.get.mockResolvedValueOnce(
+        mockDatabaseWithProviderDetails,
+      );
+
+      const result = await service.export(
+        mockSessionMetadata,
+        [mockDatabaseWithProviderDetails.id],
+        false,
+      );
+
+      expect(result).toHaveLength(1);
+      // Should strip username and password for Azure Entra ID databases
+      expect(result[0].username).toBeUndefined();
+      expect(result[0].password).toBeUndefined();
+      // Should include providerDetails
+      expect(result[0].providerDetails).toEqual(
+        mockDatabaseWithProviderDetails.providerDetails,
+      );
+    });
+
+    it('should return Azure Entra ID database without credentials even when withSecrets is true', async () => {
+      databaseRepository.get.mockResolvedValueOnce(
+        mockDatabaseWithProviderDetails,
+      );
+
+      const result = await service.export(
+        mockSessionMetadata,
+        [mockDatabaseWithProviderDetails.id],
+        true,
+      );
+
+      expect(result).toHaveLength(1);
+      // Credentials should always be stripped for Azure Entra ID
+      expect(result[0].username).toBeUndefined();
+      expect(result[0].password).toBeUndefined();
+      // Should include providerDetails
+      expect(result[0].providerDetails).toEqual(
+        mockDatabaseWithProviderDetails.providerDetails,
+      );
+    });
   });
 
   describe('clone', () => {
