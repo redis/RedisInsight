@@ -178,28 +178,15 @@ export class KeyList {
       // Escape special regex characters in key name
       const escapedKeyName = keyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-      // Try grid cell first (list view) - look for exact key name in gridcell
+      // Try grid cell (list view) - look for exact key name in gridcell
       const gridCell = this.page.getByRole('gridcell', { name: keyName });
 
       // Try treeitem (tree view) - key name appears in the treeitem accessible name
       const treeItem = this.page.getByRole('treeitem', { name: new RegExp(escapedKeyName) });
 
-      // Wait briefly for either to appear using waitFor
-      try {
-        await gridCell.waitFor({ state: 'visible', timeout });
-        return true;
-      } catch {
-        // Grid cell not found, try treeitem
-      }
-
-      try {
-        await treeItem.waitFor({ state: 'visible', timeout });
-        return true;
-      } catch {
-        // Treeitem not found either
-      }
-
-      return false;
+      const keyElement = gridCell.or(treeItem);
+      await keyElement.waitFor({ state: 'visible', timeout });
+      return true;
     } catch {
       return false;
     }
