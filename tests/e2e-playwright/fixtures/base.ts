@@ -59,51 +59,53 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
         timeout: 60000,
       });
 
-      // Log Electron console messages for debugging
-      electronApp.on('console', (msg) => {
-        console.log(`[Electron] ${msg.type()}: ${msg.text()}`);
-      });
+      try {
+        // Log Electron console messages for debugging
+        electronApp.on('console', (msg) => {
+          console.log(`[Electron] ${msg.type()}: ${msg.text()}`);
+        });
 
-      // Wait for app to fully initialize and API to be ready
-      console.log('Waiting for Electron app to initialize...');
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+        // Wait for app to fully initialize and API to be ready
+        console.log('Waiting for Electron app to initialize...');
+        await new Promise((resolve) => setTimeout(resolve, 3000));
 
-      // Get the first window and extract windowId for API authentication
-      const firstWindow = await electronApp.firstWindow();
-      await firstWindow.waitForLoadState('domcontentloaded');
+        // Get the first window and extract windowId for API authentication
+        const firstWindow = await electronApp.firstWindow();
+        await firstWindow.waitForLoadState('domcontentloaded');
 
-      // Extract windowId from the Electron app's window object
-      // The windowId is set via IPC before React renders, so it should be available
-      const windowId = await firstWindow.evaluate(
-        () => (window as Window & { windowId?: string }).windowId,
-      );
-      if (!windowId) {
-        throw new Error('windowId not available - Electron app may not have initialized correctly');
+        // Extract windowId from the Electron app's window object
+        // The windowId is set via IPC before React renders, so it should be available
+        const windowId = await firstWindow.evaluate(
+          () => (window as Window & { windowId?: string }).windowId,
+        );
+        if (!windowId) {
+          throw new Error('windowId not available - Electron app may not have initialized correctly');
+        }
+        console.log(`Got Electron windowId: ${windowId}`);
+
+        // Wait for API to be available with windowId for authentication
+        const apiHelper = new ApiHelper({ apiUrl, windowId });
+        const checkApi = async () => {
+          console.log(`Checking API at ${apiUrl} with windowId...`);
+          await apiHelper.getDatabases();
+          console.log('Electron API is ready');
+        };
+        await retry(checkApi, {
+          maxAttempts: 5,
+          errorMessage: 'Electron API did not become available',
+        });
+        await apiHelper.dispose();
+
+        // Create extended electronApp with windowId
+        const electronAppWithWindowId: ElectronAppWithWindowId = Object.assign(electronApp, {
+          windowId: windowId,
+        });
+
+        await use(electronAppWithWindowId);
+      } finally {
+        console.log('Closing Electron app...');
+        await electronApp.close();
       }
-      console.log(`Got Electron windowId: ${windowId}`);
-
-      // Wait for API to be available with windowId for authentication
-      const apiHelper = new ApiHelper({ apiUrl, windowId });
-      const checkApi = async () => {
-        console.log(`Checking API at ${apiUrl} with windowId...`);
-        await apiHelper.getDatabases();
-        console.log('Electron API is ready');
-      };
-      await retry(checkApi, {
-        maxAttempts: 5,
-        errorMessage: 'Electron API did not become available',
-      });
-      await apiHelper.dispose();
-
-      // Create extended electronApp with windowId
-      const electronAppWithWindowId: ElectronAppWithWindowId = Object.assign(electronApp, {
-        windowId: windowId,
-      });
-
-      await use(electronAppWithWindowId);
-
-      console.log('Closing Electron app...');
-      await electronApp.close();
     },
     { scope: 'worker' },
   ],
