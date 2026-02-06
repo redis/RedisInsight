@@ -40,13 +40,14 @@ jobs:
         env:
           EVENT_NAME: ${{ github.event_name }}
           HAS_E2E_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'e2e-tests') }}
+          HAS_RUN_ALL_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'run-all-tests') }}
         run: |
           if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
             echo "should_run=true" >> $GITHUB_OUTPUT
           elif [[ "$EVENT_NAME" == "schedule" ]]; then
             echo "should_run=true" >> $GITHUB_OUTPUT
           elif [[ "$EVENT_NAME" == "pull_request" ]]; then
-            if [[ "$HAS_E2E_LABEL" == "true" ]]; then
+            if [[ "$HAS_E2E_LABEL" == "true" || "$HAS_RUN_ALL_LABEL" == "true" ]]; then
               echo "should_run=true" >> $GITHUB_OUTPUT
             else
               echo "should_run=false" >> $GITHUB_OUTPUT
