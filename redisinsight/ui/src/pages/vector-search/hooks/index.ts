@@ -7,3 +7,9 @@ export type {
   UseIndexInfoOptions,
   UseIndexInfoResult,
 } from './useIndexInfo'
+
+export { useRedisInstanceCompatibility } from './useRedisInstanceCompatibility'
+export type { UseRedisInstanceCompatibilityReturn } from './useRedisInstanceCompatibility'
+
+export { useRedisearchListData } from './useRedisearchListData'
+export type { UseRedisearchListDataReturn } from './useRedisearchListData'

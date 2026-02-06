@@ -8,10 +8,6 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { bufferToString, isRedisearchAvailable } from 'uiSrc/utils'
 
-/**
- * @deprecated Use `useRedisearchListData` from `uiSrc/pages/vector-search/hooks` instead.
- * This hook is part of the deprecated vector-search module and will be removed in a future release.
- */
 export const useRedisearchListData = () => {
   const dispatch = useDispatch()
   const { loading, data } = useSelector(redisearchListSelector)
