@@ -163,14 +163,7 @@ describe('RdiService', () => {
   });
 
   describe('create', () => {
-    const validGetPipelineStatus = () =>
-      Promise.resolve({
-        components: {
-          processor: {
-            version: 'test-version',
-          },
-        },
-      });
+    const validGetVersion = () => Promise.resolve('test-version');
 
     it('should create an Rdi instance', async () => {
       const dto: CreateRdiDto = {
@@ -181,7 +174,7 @@ describe('RdiService', () => {
       };
       repository.create.mockResolvedValue(mockRdi);
       rdiClientFactory.createClient.mockReturnValue({
-        getPipelineStatus: validGetPipelineStatus,
+        getVersion: validGetVersion,
       });
 
       const result = await service.create(mockSessionMetadata, dto);
@@ -219,7 +212,7 @@ describe('RdiService', () => {
 
       repository.create.mockResolvedValue(mockRdi);
       rdiClientFactory.createClient.mockReturnValue({
-        getPipelineStatus: validGetPipelineStatus,
+        getVersion: validGetVersion,
       });
 
       await service.create(mockSessionMetadata, dto);
@@ -231,7 +224,7 @@ describe('RdiService', () => {
       );
     });
 
-    it('should get the default RDI version when other information is missing', async () => {
+    it('should get the default RDI version when getVersion fails', async () => {
       const dto: CreateRdiDto = {
         name: 'name',
         url: 'http://localhost:4000',
@@ -241,21 +234,10 @@ describe('RdiService', () => {
 
       repository.create.mockResolvedValue(mockRdi);
       rdiClientFactory.createClient.mockResolvedValue({
-        getPipelineStatus: () =>
-          Promise.resolve({
-            components: {
-              // missing processor.version
-            },
-          }),
+        getVersion: () => Promise.reject(new Error('Version not available')),
       });
 
-      await service.create(mockSessionMetadata, dto);
-
-      expect(repository.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          version: '-',
-        }),
-      );
+      await expect(service.create(mockSessionMetadata, dto)).rejects.toThrow();
     });
   });
 

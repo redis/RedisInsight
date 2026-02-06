@@ -1,5 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { RdiClientMetadata, RdiPipeline } from 'src/modules/rdi/models';
+import {
+  RdiClientMetadata,
+  RdiPipeline,
+  RdiPipelineStatus,
+} from 'src/modules/rdi/models';
 import { RdiClientProvider } from 'src/modules/rdi/providers/rdi.client.provider';
 import {
   RdiDryRunJobDto,
@@ -163,7 +167,7 @@ export class RdiPipelineService {
 
   async getPipelineStatus(
     rdiClientMetadata: RdiClientMetadata,
-  ): Promise<unknown> {
+  ): Promise<RdiPipelineStatus> {
     this.logger.debug('Getting RDI pipeline status', rdiClientMetadata);
 
     const client = await this.rdiClientProvider.getOrCreate(rdiClientMetadata);

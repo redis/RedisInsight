@@ -4,3 +4,6 @@ export * from './rdi-pipeline.internal-server-error.exception';
 export * from './rdi-pipeline.not-found.exception';
 export * from './rdi-pipeline.unauthorized.exception';
 export * from './rdi-pipeline.validation.exception';
+export * from './rdi-reset-pipeline-failed.exception';
+export * from './rdi-start-pipeline-failed.exception';
+export * from './rdi-stop-pipeline-failed.exception';

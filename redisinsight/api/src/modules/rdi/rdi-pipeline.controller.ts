@@ -9,7 +9,11 @@ import {
   ValidationPipe,
   Param,
 } from '@nestjs/common';
-import { RdiPipeline, RdiClientMetadata } from 'src/modules/rdi/models';
+import {
+  RdiPipeline,
+  RdiClientMetadata,
+  RdiPipelineStatus,
+} from 'src/modules/rdi/models';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiEndpoint } from 'src/decorators/api-endpoint.decorator';
 import { RdiPipelineService } from 'src/modules/rdi/rdi-pipeline.service';
@@ -168,7 +172,7 @@ export class RdiPipelineController {
   })
   async getPipelineStatus(
     @RequestRdiClientMetadata() rdiClientMetadata: RdiClientMetadata,
-  ): Promise<unknown> {
+  ): Promise<RdiPipelineStatus> {
     return this.rdiPipelineService.getPipelineStatus(rdiClientMetadata);
   }
 
