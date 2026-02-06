@@ -17,6 +17,7 @@ import {
   getFormUpdates,
   transformQueryParamsObject,
   getDiffKeysOfObjectValues,
+  isAzureDatabase,
 } from 'uiSrc/utils'
 import { BuildType } from 'uiSrc/constants/env'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -308,6 +309,8 @@ const ManualConnectionWrapper = (props: Props) => {
       InstanceType.Standalone,
     )
 
+  const isFromAzure = isAzureDatabase(editedInstance)
+
   return (
     <ManualConnectionForm
       formFields={formFields}
@@ -324,6 +327,7 @@ const ManualConnectionWrapper = (props: Props) => {
       setIsCloneMode={setIsCloneMode}
       onAliasEdited={onAliasEdited}
       onClickBack={onClickBack}
+      isFromAzure={isFromAzure}
     />
   )
 }

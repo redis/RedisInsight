@@ -45,6 +45,7 @@ export interface Props {
   buildType?: BuildType
   isEditMode: boolean
   isCloneMode: boolean
+  isFromAzure?: boolean
   setIsCloneMode: (value: boolean) => void
   onSubmit: (values: DbConnectionInfo) => void
   onTestConnection: (values: DbConnectionInfo) => void
@@ -72,6 +73,7 @@ const ManualConnectionForm = (props: Props) => {
     isEditMode,
     isCloneMode,
     setIsCloneMode,
+    isFromAzure = false,
   } = props
 
   const {
@@ -285,6 +287,7 @@ const ManualConnectionForm = (props: Props) => {
                   isCloneMode={isCloneMode}
                   isEditMode={isEditMode}
                   isFromCloud={isFromCloud}
+                  isFromAzure={isFromAzure}
                   formik={formik}
                   onKeyDown={onKeyDown}
                   onHostNamePaste={onHostNamePaste}

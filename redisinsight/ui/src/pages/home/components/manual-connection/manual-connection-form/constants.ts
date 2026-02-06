@@ -15,3 +15,5 @@ export const MANUAL_FORM_TABS: TabInfo[] = [
     content: null,
   },
 ]
+
+export const AZURE_READONLY_FIELDS = ['host', 'port', 'username', 'password']
