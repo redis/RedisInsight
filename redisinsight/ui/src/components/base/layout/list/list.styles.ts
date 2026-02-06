@@ -10,7 +10,6 @@ import {
   Ref,
 } from 'react'
 
-import { useTheme } from '@redis-ui/styles'
 import { AllIconsType } from 'uiSrc/components/base/icons/RiIcon'
 import { IconProps } from 'uiSrc/components/base/icons'
 import { Theme } from 'uiSrc/components/base/theme/types'
@@ -267,16 +266,20 @@ const listItemInnerStyles = {
   colors: {
     // Colors
     primary: css`
-      color: ${() => useTheme().components.typography.colors.primary};
+      color: ${({ theme }: { theme: Theme }) =>
+        theme.components.typography.colors.primary};
     `,
     text: css`
-      color: ${() => useTheme().components.typography.colors.secondary};
+      color: ${({ theme }: { theme: Theme }) =>
+        theme.components.typography.colors.secondary};
     `,
     subdued: css`
-      color: ${() => useTheme().semantic.color.text.informative400};
+      color: ${({ theme }: { theme: Theme }) =>
+        theme.semantic.color.text.informative400};
     `,
     ghost: css`
-      color: ${() => useTheme().semantic.color.text.neutral600};
+      color: ${({ theme }: { theme: Theme }) =>
+        theme.semantic.color.text.neutral600};
     `,
   },
   variants: {
