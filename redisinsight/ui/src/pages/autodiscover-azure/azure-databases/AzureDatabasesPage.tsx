@@ -109,7 +109,8 @@ const AzureDatabasesPage = () => {
         fetchDatabasesAzure(account.id, selectedSubscription.subscriptionId),
       )
     }
-  }, [account, selectedSubscription, loaded.databases])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, selectedSubscription])
 
   const handleBack = () => {
     setSelectedDatabases([])

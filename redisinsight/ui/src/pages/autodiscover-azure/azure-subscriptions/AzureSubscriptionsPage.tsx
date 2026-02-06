@@ -34,7 +34,8 @@ const AzureSubscriptionsPage = () => {
     if (!loaded.subscriptions) {
       dispatch(fetchSubscriptionsAzure(account.id))
     }
-  }, [account, loaded.subscriptions])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account])
 
   const handleBack = () => {
     history.push(Pages.home)
