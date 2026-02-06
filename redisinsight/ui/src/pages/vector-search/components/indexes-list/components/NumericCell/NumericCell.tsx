@@ -11,7 +11,7 @@ export interface NumericCellProps {
 
 const NumericCell = ({ value, testId }: NumericCellProps) => (
   <Text size="s" data-testid={testId}>
-    {value.toLocaleString()}
+    {value}
   </Text>
 )
 
