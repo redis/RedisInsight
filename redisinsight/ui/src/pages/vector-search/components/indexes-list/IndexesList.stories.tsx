@@ -68,13 +68,6 @@ export const Default: Story = {
   },
 }
 
-export const Loading: Story = {
-  args: {
-    data: [],
-    onQueryClick: handleQueryClick,
-  },
-}
-
 export const Empty: Story = {
   args: {
     data: [],
