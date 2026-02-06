@@ -20,7 +20,6 @@ import reducer, {
   addDatabasesAzureSuccess,
   addDatabasesAzureFailure,
   resetDataAzure,
-  resetLoadedAzure,
   clearSubscriptionsAzure,
   clearDatabasesAzure,
   fetchSubscriptionsAzure,
@@ -385,28 +384,6 @@ describe('azure slice', () => {
       const nextState = reducer(stateWithData, resetDataAzure())
 
       expect(nextState).toEqual(initialState)
-    })
-  })
-
-  describe('resetLoadedAzure', () => {
-    it('should reset specific loaded flag', () => {
-      const stateWithLoaded = {
-        ...initialState,
-        loaded: {
-          [LoadedAzure.Subscriptions]: true,
-          [LoadedAzure.Databases]: true,
-          [LoadedAzure.DatabasesAdded]: true,
-        },
-      }
-
-      const nextState = reducer(
-        stateWithLoaded,
-        resetLoadedAzure(LoadedAzure.Databases),
-      )
-
-      expect(nextState.loaded[LoadedAzure.Subscriptions]).toBe(true)
-      expect(nextState.loaded[LoadedAzure.Databases]).toBe(false)
-      expect(nextState.loaded[LoadedAzure.DatabasesAdded]).toBe(true)
     })
   })
 

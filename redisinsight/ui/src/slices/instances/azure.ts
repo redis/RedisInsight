@@ -149,9 +149,6 @@ const azureSlice = createSlice({
 
     // Reset
     resetDataAzure: () => cloneDeep(initialState),
-    resetLoadedAzure: (state, { payload }: PayloadAction<LoadedAzure>) => {
-      state.loaded[payload] = false
-    },
 
     clearSubscriptionsAzure: (state) => {
       state.subscriptions = null
@@ -183,7 +180,6 @@ export const {
   addDatabasesAzureSuccess,
   addDatabasesAzureFailure,
   resetDataAzure,
-  resetLoadedAzure,
   clearSubscriptionsAzure,
   clearDatabasesAzure,
 } = azureSlice.actions
