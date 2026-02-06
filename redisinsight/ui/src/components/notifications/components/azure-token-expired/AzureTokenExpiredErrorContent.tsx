@@ -29,7 +29,6 @@ const AzureTokenExpiredErrorContent = ({ text, onClose = () => {} }: Props) => {
             size="s"
             onClick={handleSignIn}
             loading={loading}
-            className="toast-danger-btn"
             data-testid="azure-sign-in-btn"
           >
             Sign in to Azure
