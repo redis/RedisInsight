@@ -13,13 +13,14 @@ import { BuildType } from 'uiSrc/constants/env'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import DecompressionAndFormatters from './DecompressionAndFormatters'
 
-import { ManualFormTab } from '../constants'
+import { AZURE_READONLY_FIELDS, ManualFormTab } from '../constants'
 
 export interface Props {
   activeTab: ManualFormTab
   isEditMode: boolean
   isCloneMode: boolean
   isFromCloud: boolean
+  isFromAzure?: boolean
   formik: FormikProps<DbConnectionInfo>
   onKeyDown: (event: React.KeyboardEvent<HTMLFormElement>) => void
   onHostNamePaste: (content: string) => boolean
@@ -34,6 +35,7 @@ const EditConnection = (props: Props) => {
     isCloneMode,
     isEditMode,
     isFromCloud,
+    isFromAzure = false,
     formik,
     onKeyDown,
     onHostNamePaste,
@@ -41,6 +43,10 @@ const EditConnection = (props: Props) => {
     caCertificates,
     buildType,
   } = props
+
+  // For Azure databases in edit mode (not clone)
+  const readOnlyFields =
+    isFromAzure && isEditMode && !isCloneMode ? AZURE_READONLY_FIELDS : []
 
   return (
     <form
@@ -61,6 +67,7 @@ const EditConnection = (props: Props) => {
             }}
             autoFocus={!isCloneMode && isEditMode}
             onHostNamePaste={onHostNamePaste}
+            readyOnlyFields={readOnlyFields}
           />
           <Spacer size="l" />
           <Divider />

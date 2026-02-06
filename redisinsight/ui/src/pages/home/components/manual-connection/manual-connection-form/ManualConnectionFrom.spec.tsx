@@ -1313,6 +1313,77 @@ describe('InstanceForm', () => {
     })
   })
 
+  describe('Azure databases', () => {
+    beforeEach(() => {
+      // Reset appRedirectionSelector mock to ensure isFromCloud = false
+      ;(appRedirectionSelector as jest.Mock).mockImplementation(() => ({
+        action: null,
+      }))
+    })
+
+    it('should disable connection fields when editing Azure database', () => {
+      render(
+        <ManualConnectionForm
+          {...instance(mockedProps)}
+          isEditMode
+          isFromAzure
+          formFields={{
+            ...formFields,
+            connectionType: ConnectionType.Standalone,
+          }}
+        />,
+      )
+
+      // Host is not shown in edit mode (shown as info above form)
+      expect(screen.queryByTestId('host')).not.toBeInTheDocument()
+      // Port, username, password should be disabled
+      expect(screen.getByTestId('port')).toBeDisabled()
+      expect(screen.getByTestId('username')).toBeDisabled()
+      expect(screen.getByTestId('password')).toBeDisabled()
+    })
+
+    it('should not disable connection fields when cloning Azure database', () => {
+      render(
+        <ManualConnectionForm
+          {...instance(mockedProps)}
+          isEditMode
+          isCloneMode
+          isFromAzure
+          formFields={{
+            ...formFields,
+            connectionType: ConnectionType.Standalone,
+          }}
+        />,
+      )
+
+      // In clone mode, all fields should be shown and enabled
+      expect(screen.getByTestId('host')).not.toBeDisabled()
+      expect(screen.getByTestId('port')).not.toBeDisabled()
+      expect(screen.getByTestId('username')).not.toBeDisabled()
+      expect(screen.getByTestId('password')).not.toBeDisabled()
+    })
+
+    it('should not disable connection fields for non-Azure database in edit mode', () => {
+      render(
+        <ManualConnectionForm
+          {...instance(mockedProps)}
+          isEditMode
+          formFields={{
+            ...formFields,
+            connectionType: ConnectionType.Standalone,
+          }}
+        />,
+      )
+
+      // Host is not shown in edit mode (shown as info above form)
+      expect(screen.queryByTestId('host')).not.toBeInTheDocument()
+      // Port, username, password should NOT be disabled for non-Azure databases
+      expect(screen.getByTestId('port')).not.toBeDisabled()
+      expect(screen.getByTestId('username')).not.toBeDisabled()
+      expect(screen.getByTestId('password')).not.toBeDisabled()
+    })
+  })
+
   it('should call submit on press Enter', async () => {
     const handleSubmit = jest.fn()
     render(
