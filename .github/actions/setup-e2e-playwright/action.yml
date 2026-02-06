@@ -18,22 +18,22 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version-file: '.nvmrc'
-        # Note: We don't use setup-node's yarn cache here because:
+        # Note: We don't use setup-node's npm cache here because:
         # 1. We cache node_modules directly (more effective)
-        # 2. The '**/yarn.lock' glob can fail on nested packages
+        # 2. Direct node_modules caching is faster than npm cache
 
     - name: Cache E2E node_modules
       id: cache-e2e-deps
       uses: actions/cache@v4
       with:
         path: ${{ inputs.working-directory }}/node_modules
-        key: e2e-node-modules-${{ runner.os }}-${{ hashFiles(format('{0}/yarn.lock', inputs.working-directory)) }}
+        key: e2e-node-modules-${{ runner.os }}-${{ hashFiles(format('{0}/package-lock.json', inputs.working-directory)) }}
 
     - name: Install E2E dependencies
       if: steps.cache-e2e-deps.outputs.cache-hit != 'true'
       shell: bash
       working-directory: ${{ inputs.working-directory }}
-      run: yarn install --frozen-lockfile
+      run: npm ci
 
     - name: Cache Playwright browsers
       if: inputs.browsers != 'none'
@@ -41,8 +41,8 @@ runs:
       uses: actions/cache@v4
       with:
         path: ~/.cache/ms-playwright
-        # Use yarn.lock hash as cache key - it changes when Playwright version changes
-        key: playwright-${{ runner.os }}-${{ hashFiles(format('{0}/yarn.lock', inputs.working-directory)) }}-${{ inputs.browsers }}
+        # Use package-lock.json hash as cache key - it changes when Playwright version changes
+        key: playwright-${{ runner.os }}-${{ hashFiles(format('{0}/package-lock.json', inputs.working-directory)) }}-${{ inputs.browsers }}
 
     - name: Install Playwright browsers
       if: inputs.browsers != 'none' && steps.cache-playwright.outputs.cache-hit != 'true'
