@@ -268,6 +268,14 @@ export const parseCustomError = (
       }
       break
 
+    case CustomErrorCodes.AzureEntraIdTokenExpired:
+      title = 'Azure session expired'
+      message =
+        err?.message ||
+        'Azure Entra ID token expired. Sign in to Azure again to continue.'
+      additionalInfo.errorCode = err.errorCode
+      break
+
     default:
       title = 'Error'
       message = err?.message || DEFAULT_ERROR_MESSAGE

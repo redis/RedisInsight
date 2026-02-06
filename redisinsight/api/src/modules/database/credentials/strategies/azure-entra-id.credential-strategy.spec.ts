@@ -4,6 +4,7 @@ import { faker } from '@faker-js/faker';
 import { mockDatabase } from 'src/__mocks__';
 import { AzureAuthService } from 'src/modules/azure/auth/azure-auth.service';
 import { AzureAuthType } from 'src/modules/azure/constants';
+import { AzureEntraIdTokenExpiredException } from 'src/modules/azure/exceptions';
 import { CloudProvider } from 'src/modules/database/models/provider-details';
 import { Database } from 'src/modules/database/models/database';
 import { AzureEntraIdCredentialStrategy } from './azure-entra-id.credential-strategy';
@@ -170,12 +171,12 @@ describe('AzureEntraIdCredentialStrategy', () => {
       );
     });
 
-    it('should throw BadRequestException when token acquisition fails', async () => {
+    it('should throw AzureEntraIdTokenExpiredException when token acquisition fails', async () => {
       const database = createMockAzureDatabase();
       mockAzureAuthService.getRedisTokenByAccountId.mockResolvedValue(null);
 
       await expect(strategy.resolve(database)).rejects.toThrow(
-        BadRequestException,
+        AzureEntraIdTokenExpiredException,
       );
     });
 

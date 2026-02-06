@@ -6,6 +6,7 @@ import {
   azureAuthSelector,
   initiateAzureLoginAction,
 } from 'uiSrc/slices/oauth/azure'
+import { AzureLoginSource } from 'uiSrc/slices/interfaces'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { AppDispatch } from 'uiSrc/slices/store'
 
@@ -21,22 +22,25 @@ export const useAzureAuth = () => {
     window.open(url, '_blank')
   }, [])
 
-  const initiateLogin = useCallback(() => {
-    if (!isElectron) {
-      if (isDevelopment) {
-        dispatch(
-          addMessageNotification({
-            title: 'Azure OAuth requires Electron',
-            message:
-              'Run the app with `yarn dev:desktop` to use Azure authentication.',
-          }),
-        )
+  const initiateLogin = useCallback(
+    (source: AzureLoginSource = AzureLoginSource.Autodiscovery) => {
+      if (!isElectron) {
+        if (isDevelopment) {
+          dispatch(
+            addMessageNotification({
+              title: 'Azure OAuth requires Electron',
+              message:
+                'Run the app with `yarn dev:desktop` to use Azure authentication.',
+            }),
+          )
+        }
+        return
       }
-      return
-    }
 
-    dispatch(initiateAzureLoginAction(openAuthUrl))
-  }, [dispatch, openAuthUrl])
+      dispatch(initiateAzureLoginAction(source, openAuthUrl))
+    },
+    [dispatch, openAuthUrl],
+  )
 
   return {
     loading,

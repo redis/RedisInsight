@@ -11,6 +11,7 @@ import reducer, {
   azureOAuthCallbackFailure,
   azureAuthLogout,
   setAzureAuthInitialState,
+  setAzureLoginSource,
   azureAuthSelector,
   azureAuthAccountSelector,
   azureAuthLoadingSelector,
@@ -18,6 +19,7 @@ import reducer, {
   handleAzureOAuthSuccess,
   AzureAccount,
 } from 'uiSrc/slices/oauth/azure'
+import { AzureLoginSource } from 'uiSrc/slices/interfaces'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { resetDataAzure } from 'uiSrc/slices/instances/azure'
 import { apiService } from 'uiSrc/services'
@@ -56,6 +58,33 @@ describe('azure auth slice', () => {
       }
       const result = reducer(modifiedState, setAzureAuthInitialState())
       expect(result).toEqual(initialState)
+    })
+  })
+
+  describe('setAzureLoginSource', () => {
+    it('should set source to autodiscovery', () => {
+      const nextState = reducer(
+        initialState,
+        setAzureLoginSource(AzureLoginSource.Autodiscovery),
+      )
+      expect(nextState.source).toEqual(AzureLoginSource.Autodiscovery)
+    })
+
+    it('should set source to token-refresh', () => {
+      const nextState = reducer(
+        initialState,
+        setAzureLoginSource(AzureLoginSource.TokenRefresh),
+      )
+      expect(nextState.source).toEqual(AzureLoginSource.TokenRefresh)
+    })
+
+    it('should reset source to null', () => {
+      const prevState = {
+        ...initialState,
+        source: AzureLoginSource.Autodiscovery,
+      }
+      const nextState = reducer(prevState, setAzureLoginSource(null))
+      expect(nextState.source).toBeNull()
     })
   })
 
@@ -132,6 +161,21 @@ describe('azure auth slice', () => {
         oauth: { azure: nextState },
       })
       expect(azureAuthSelector(rootState)).toEqual(state)
+    })
+
+    it('should not reset source (ConfigAzureAuth needs it for redirect decision)', () => {
+      const prevState = {
+        ...initialState,
+        loading: true,
+        source: AzureLoginSource.Autodiscovery,
+      }
+
+      const nextState = reducer(
+        prevState,
+        azureOAuthCallbackSuccess(mockAccount),
+      )
+
+      expect(nextState.source).toEqual(AzureLoginSource.Autodiscovery)
     })
   })
 
@@ -212,9 +256,15 @@ describe('azure auth slice', () => {
 
         apiService.get = jest.fn().mockResolvedValue(responsePayload)
 
-        await store.dispatch<any>(initiateAzureLoginAction(onSuccess))
+        await store.dispatch<any>(
+          initiateAzureLoginAction(AzureLoginSource.Autodiscovery, onSuccess),
+        )
 
-        const expectedActions = [azureAuthLogin(), azureAuthLoginSuccess()]
+        const expectedActions = [
+          setAzureLoginSource(AzureLoginSource.Autodiscovery),
+          azureAuthLogin(),
+          azureAuthLoginSuccess(),
+        ]
         expect(store.getActions()).toEqual(expectedActions)
         expect(onSuccess).toHaveBeenCalledWith(authUrl)
       })
@@ -227,12 +277,36 @@ describe('azure auth slice', () => {
 
         apiService.get = jest.fn().mockRejectedValue(error)
 
-        await store.dispatch<any>(initiateAzureLoginAction(jest.fn()))
+        await store.dispatch<any>(
+          initiateAzureLoginAction(AzureLoginSource.Autodiscovery, jest.fn()),
+        )
 
         const actions = store.getActions()
-        expect(actions[0]).toEqual(azureAuthLogin())
-        expect(actions[1]).toEqual(azureAuthLoginFailure(errorMessage))
-        expect(actions[2].type).toEqual(addErrorNotification({} as any).type)
+        expect(actions[0]).toEqual(
+          setAzureLoginSource(AzureLoginSource.Autodiscovery),
+        )
+        expect(actions[1]).toEqual(azureAuthLogin())
+        expect(actions[2]).toEqual(azureAuthLoginFailure(errorMessage))
+        expect(actions[3].type).toEqual(addErrorNotification({} as any).type)
+      })
+
+      it('should set source to token-refresh when initiated from error notification', async () => {
+        const authUrl = faker.internet.url()
+        const responsePayload = { data: { url: authUrl }, status: 200 }
+        const onSuccess = jest.fn()
+
+        apiService.get = jest.fn().mockResolvedValue(responsePayload)
+
+        await store.dispatch<any>(
+          initiateAzureLoginAction(AzureLoginSource.TokenRefresh, onSuccess),
+        )
+
+        const expectedActions = [
+          setAzureLoginSource(AzureLoginSource.TokenRefresh),
+          azureAuthLogin(),
+          azureAuthLoginSuccess(),
+        ]
+        expect(store.getActions()).toEqual(expectedActions)
       })
     })
 

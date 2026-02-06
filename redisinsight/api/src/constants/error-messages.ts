@@ -174,4 +174,8 @@ export default {
   AZURE_ENTRA_ID_AUTH_FAILED:
     'Failed to authenticate with Entra ID. Please make sure your user has the correct permissions (Data Owner, Data Contributor, or Data Reader role).',
   AZURE_UNEXPECTED_ERROR: 'An unexpected error occurred',
+  AZURE_TLS_CERTIFICATE_ERROR:
+    'Could not establish a secure connection. The server certificate could not be verified.',
+  AZURE_ENTRA_ID_TOKEN_EXPIRED:
+    'Azure Entra ID token expired. Sign in to Azure again to continue.',
 };

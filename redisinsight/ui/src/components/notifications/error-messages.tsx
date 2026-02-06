@@ -5,6 +5,7 @@ import { InfoIcon, ToastDangerIcon } from 'uiSrc/components/base/icons'
 import RdiDeployErrorContent from './components/rdi-deploy-error-content'
 import { EncryptionErrorContent, DefaultErrorContent } from './components'
 import CloudCapiUnAuthorizedErrorContent from './components/cloud-capi-unauthorized'
+import { AzureTokenExpiredErrorContent } from './components/azure-token-expired'
 import { NotificationTextLengthThreshold } from 'uiSrc/components/notifications/constants'
 import { handleDownloadButton } from 'uiSrc/utils'
 
@@ -73,5 +74,17 @@ export default {
     onClose,
     message: title,
     description: <RdiDeployErrorContent message={message} onClose={onClose} />,
+  }),
+  AZURE_TOKEN_EXPIRED: (
+    { message, title }: { message: string | JSX.Element; title?: string },
+    onClose: () => void,
+  ) => ({
+    'data-testid': 'toast-error-azure-token-expired',
+    customIcon: ToastDangerIcon,
+    message: title,
+    showCloseButton: false,
+    description: (
+      <AzureTokenExpiredErrorContent text={message} onClose={onClose} />
+    ),
   }),
 }

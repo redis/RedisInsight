@@ -9,6 +9,7 @@ import {
   IAddInstanceErrorPayload,
 } from 'uiSrc/slices/app/notifications'
 import { resetDataAzure } from 'uiSrc/slices/instances/azure'
+import { AzureLoginSource } from 'uiSrc/slices/interfaces'
 
 const OAUTH_TIMEOUT_MS = 60 * 1000
 let oauthTimeoutId: ReturnType<typeof setTimeout> | null = null
@@ -27,12 +28,14 @@ export interface StateAzureAuth {
   loading: boolean
   account: AzureAccount | null
   error: string
+  source: AzureLoginSource | null
 }
 
 export const initialState: StateAzureAuth = {
   loading: false,
   account: null,
   error: '',
+  source: null,
 }
 
 const clearOAuthTimeout = () => {
@@ -47,6 +50,12 @@ const azureAuthSlice = createSlice({
   initialState,
   reducers: {
     setAzureAuthInitialState: () => initialState,
+    setAzureLoginSource: (
+      state,
+      { payload }: PayloadAction<AzureLoginSource | null>,
+    ) => {
+      state.source = payload
+    },
     azureAuthLogin: (state) => {
       state.loading = true
       state.error = ''
@@ -59,6 +68,7 @@ const azureAuthSlice = createSlice({
     azureAuthLoginFailure: (state, { payload }: PayloadAction<string>) => {
       state.loading = false
       state.error = payload
+      state.source = null
     },
     azureOAuthCallbackSuccess: (
       state,
@@ -71,16 +81,19 @@ const azureAuthSlice = createSlice({
     azureOAuthCallbackFailure: (state, { payload }: PayloadAction<string>) => {
       state.loading = false
       state.error = payload
+      state.source = null
     },
     azureAuthLogout: (state) => {
       state.account = null
       state.error = ''
+      state.source = null
     },
   },
 })
 
 export const {
   setAzureAuthInitialState,
+  setAzureLoginSource,
   azureAuthLogin,
   azureAuthLoginSuccess,
   azureAuthLoginFailure,
@@ -95,16 +108,20 @@ export const azureAuthAccountSelector = (state: RootState) =>
   state.oauth.azure?.account
 export const azureAuthLoadingSelector = (state: RootState) =>
   state.oauth.azure?.loading
+export const azureAuthSourceSelector = (state: RootState) =>
+  state.oauth.azure?.source
 
 // The reducer
 export default azureAuthSlice.reducer
 
 // Thunk action to initiate Azure login
 export function initiateAzureLoginAction(
+  source: AzureLoginSource,
   onSuccess?: (url: string) => void,
   onFail?: () => void,
 ) {
   return async (dispatch: AppDispatch) => {
+    dispatch(setAzureLoginSource(source))
     dispatch(azureAuthLogin())
 
     try {

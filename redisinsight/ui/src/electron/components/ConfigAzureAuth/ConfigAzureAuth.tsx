@@ -1,12 +1,18 @@
-import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useEffect, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
 import {
+  azureAuthSourceSelector,
   handleAzureOAuthSuccess,
   handleAzureOAuthFailure,
+  setAzureLoginSource,
 } from 'uiSrc/slices/oauth/azure'
-import { addErrorNotification } from 'uiSrc/slices/app/notifications'
+import { AzureLoginSource } from 'uiSrc/slices/interfaces'
+import {
+  addErrorNotification,
+  addMessageNotification,
+} from 'uiSrc/slices/app/notifications'
 import { AzureAuthStatus } from 'apiSrc/modules/azure/constants'
 import { AppDispatch } from 'uiSrc/slices/store'
 import { Pages } from 'uiSrc/constants'
@@ -26,6 +32,9 @@ interface AzureAuthCallbackResponse {
 const ConfigAzureAuth = () => {
   const dispatch = useDispatch<AppDispatch>()
   const history = useHistory()
+  const source = useSelector(azureAuthSourceSelector)
+  const sourceRef = useRef(source)
+  sourceRef.current = source
 
   useEffect(() => {
     window.app?.azureOauthCallback?.(azureOauthCallback)
@@ -41,8 +50,24 @@ const ConfigAzureAuth = () => {
         username: account.username,
         name: account.name,
       }
+      const currentSource = sourceRef.current
       dispatch(handleAzureOAuthSuccess(azureAccount))
-      history.push(Pages.azureSubscriptions)
+      dispatch(setAzureLoginSource(null))
+
+      // Only redirect to autodiscovery flow if login was initiated from there
+      if (currentSource === AzureLoginSource.Autodiscovery) {
+        history.push(Pages.azureSubscriptions)
+      }
+
+      // Show success notification only for token refresh (login from error notification)
+      if (currentSource === AzureLoginSource.TokenRefresh) {
+        dispatch(
+          addMessageNotification({
+            title: 'Signed in to Azure',
+            message: 'You can now connect to your Azure database.',
+          }),
+        )
+      }
       return
     }
 

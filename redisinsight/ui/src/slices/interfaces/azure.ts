@@ -1,3 +1,8 @@
+export enum AzureLoginSource {
+  Autodiscovery = 'autodiscovery',
+  TokenRefresh = 'token-refresh',
+}
+
 export enum AzureRedisType {
   Standard = 'standard',
   Enterprise = 'enterprise',
