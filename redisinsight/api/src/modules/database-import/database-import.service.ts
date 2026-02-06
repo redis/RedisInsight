@@ -113,6 +113,7 @@ export class DatabaseImportService {
     ['modules', ['modules']],
     ['forceStandalone', ['forceStandalone']],
     ['tags', ['tags']],
+    ['providerDetails', ['providerDetails']],
   ];
 
   constructor(
