@@ -147,7 +147,7 @@ describe('POST /databases/:id/redisearch', () => {
           },
         },
         {
-          name: 'Should return 400 for Missing mandatory parameter error (VECTOR without DIM)',
+          name: 'Should return 400 for Invalid field type error (VECTOR without DIM)',
           data: {
             index: constants.getRandomString(),
             type: 'hash',
@@ -169,12 +169,12 @@ describe('POST /databases/:id/redisearch', () => {
           },
           checkFn: ({ body }) => {
             expect(body.message).to.satisfy((msg: string) =>
-              msg.startsWith('Missing'),
+              msg.startsWith('Invalid'),
             );
           },
         },
         {
-          name: 'Should return 400 for Bad arguments error (VECTOR with invalid algorithm)',
+          name: 'Should return 400 for Invalid field type error (VECTOR with invalid algorithm)',
           data: {
             index: constants.getRandomString(),
             type: 'hash',
@@ -196,7 +196,7 @@ describe('POST /databases/:id/redisearch', () => {
           },
           checkFn: ({ body }) => {
             expect(body.message).to.satisfy((msg: string) =>
-              msg.startsWith('Bad arguments'),
+              msg.startsWith('Invalid'),
             );
           },
         },
