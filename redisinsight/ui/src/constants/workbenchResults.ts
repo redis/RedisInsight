@@ -32,6 +32,9 @@ export const MODULE_NOT_LOADED_CONTENT: { [key in RedisDefaultModules]?: any } =
         'These features enable multi-field queries, aggregation, exact phrase matching, numeric filtering, ',
         'geo filtering and vector similarity semantic search on top of text queries.',
       ],
+      ctaText: [
+        'Use your free trial all-in-one Redis Cloud database to start exploring these capabilities',
+      ],
       link: EXTERNAL_LINKS.redisQueryEngine,
     },
     [RedisDefaultModules.ReJSON]: {

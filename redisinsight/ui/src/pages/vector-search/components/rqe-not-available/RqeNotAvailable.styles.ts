@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { Card } from 'uiSrc/components/base/layout'
 import { Row, Col } from 'uiSrc/components/base/layout/flex'
 import { Group, Item } from 'uiSrc/components/base/layout/list'
+import { Text } from 'uiSrc/components/base/text'
 
 export const StyledCard = styled(Card)`
   height: 100%;
@@ -21,16 +22,30 @@ export const StyledCardBody = styled(Row).attrs({
 `
 
 export const ContentSection = styled(Col).attrs({
-  gap: 'xxl',
+  gap: 'xl',
 })`
   flex: 1;
+  max-width: 550px;
+`
+
+export const CtaText = styled(Text).attrs({
+  color: 'primary',
+})`
+  max-width: 350px;
+`
+
+export const DescriptionText = styled(Text).attrs({
+  color: 'primary',
+})`
+  max-width: 450px;
 `
 
 export const IllustrationSection = styled(Row).attrs({
-  align: 'center',
+  align: 'end',
   justify: 'center',
   grow: false,
 })`
+  height: 100%;
   flex-shrink: 0;
 
   svg {

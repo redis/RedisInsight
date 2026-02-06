@@ -14,7 +14,7 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { MODULE_NOT_LOADED_CONTENT } from 'uiSrc/constants/workbenchResults'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { ColorText, Text } from 'uiSrc/components/base/text'
+import { ColorText } from 'uiSrc/components/base/text'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Link } from 'uiSrc/components/base/link/Link'
@@ -32,7 +32,11 @@ export const RqeNotAvailable = () => {
     <S.StyledCard data-testid="rqe-not-available">
       <S.StyledCardBody>
         <S.ContentSection>
-          <Title color="primary" size="L" data-testid="rqe-not-available-title">
+          <Title
+            color="primary"
+            size="XL"
+            data-testid="rqe-not-available-title"
+          >
             {rqeContent?.title?.[0]}
           </Title>
 
@@ -53,18 +57,15 @@ export const RqeNotAvailable = () => {
             ))}
           </S.FeatureList>
 
-          <Spacer size="m" />
+          <S.DescriptionText color="primary" data-testid="rqe-description">
+            {rqeContent?.additionalText}
+          </S.DescriptionText>
 
-          <Text color="primary" data-testid="rqe-description">
-            {rqeContent?.additionalText?.join('')}
-          </Text>
+          <Spacer size="xl" />
 
-          <Spacer size="l" />
-
-          <Text color="primary" data-testid="rqe-cta-text">
-            Use your free trial all-in-one Redis Cloud database to start
-            exploring these capabilities
-          </Text>
+          <S.CtaText data-testid="rqe-cta-text">
+            {rqeContent?.ctaText?.[0]}
+          </S.CtaText>
 
           {envDependentFeature?.flag && (
             <S.CTAWrapper data-testid="rqe-cta-wrapper">
