@@ -126,7 +126,7 @@
       "flag": true,
       "perc": [[0, 100]]
     },
-    "azureEntraId": {
+    "dev-azureEntraId": {
       "flag": false,
       "perc": [[0, 100]]
     }
