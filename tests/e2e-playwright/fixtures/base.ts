@@ -65,13 +65,18 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
           console.log(`[Electron] ${msg.type()}: ${msg.text()}`);
         });
 
-        // Wait for app to fully initialize
-        console.log('Waiting for Electron app to initialize...');
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-
-        // Get the first window and extract windowId for API authentication
+        // Get the first window
         const firstWindow = await electronApp.firstWindow();
-        await firstWindow.waitForLoadState('domcontentloaded');
+
+        // Wait for the page to fully load (not just domcontentloaded)
+        // The windowId is set via IPC after 'did-finish-load' event in the main process
+        // which corresponds to the 'load' event in the renderer
+        console.log('Waiting for Electron app to fully load...');
+        await firstWindow.waitForLoadState('load');
+
+        // Additional wait for React to render and IPC to complete
+        // The windowId is set in indexElectron.tsx after the IPC message is received
+        await new Promise((resolve) => setTimeout(resolve, 2000));
 
         // Extract windowId from the Electron app's window object
         // The windowId is set via IPC and may take a moment to be available
