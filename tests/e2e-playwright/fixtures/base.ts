@@ -65,14 +65,19 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
           console.log(`[Electron] ${msg.type()}: ${msg.text()}`);
         });
 
-        // Get the first window
-        const firstWindow = await electronApp.firstWindow();
+        // Wait for the main window (not the splash screen)
+        let mainWindow = await electronApp.firstWindow();
 
-        // Wait for the page to fully load (not just domcontentloaded)
-        // The windowId is set via IPC after 'did-finish-load' event in the main process
-        // which corresponds to the 'load' event in the renderer
-        console.log('Waiting for Electron app to fully load...');
-        await firstWindow.waitForLoadState('load');
+        // If we got the splash screen, wait for the main window
+        if (mainWindow.url().includes('splash')) {
+          console.log('Waiting for main window (splash detected)...');
+          mainWindow = await electronApp.waitForEvent('window', {
+            timeout: 5000,
+          });
+        }
+
+        // Wait for the page to fully load
+        await mainWindow.waitForLoadState('load');
 
         // Additional wait for React to render and IPC to complete
         // The windowId is set in indexElectron.tsx after the IPC message is received
@@ -82,7 +87,10 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
         // The windowId is set via IPC and may take a moment to be available
         let windowId: string | undefined;
         const getWindowId = async () => {
-          windowId = await firstWindow.evaluate(
+          if (mainWindow.isClosed()) {
+            throw new Error('Window was closed unexpectedly');
+          }
+          windowId = await mainWindow.evaluate(
             () => (window as Window & { windowId?: string }).windowId,
           );
           if (!windowId) {
