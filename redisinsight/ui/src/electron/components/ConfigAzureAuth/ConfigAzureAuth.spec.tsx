@@ -63,14 +63,10 @@ describe('ConfigAzureAuth', () => {
     )
     renderConfigAzureAuth()
 
-    const expectedActions = [
-      resetDataAzure(),
-      azureOAuthCallbackSuccess(expectedAccount),
-    ]
-    expect(store.getActions()).toEqual(expectedActions)
     const actions = store.getActions()
-    expect(actions[0]).toEqual(azureOAuthCallbackSuccess(expectedAccount))
-    expect(actions[1]).toEqual(setAzureLoginSource(null))
+    expect(actions[0]).toEqual(resetDataAzure())
+    expect(actions[1]).toEqual(azureOAuthCallbackSuccess(expectedAccount))
+    expect(actions[2]).toEqual(setAzureLoginSource(null))
   })
 
   it('should call proper actions on failure with error message', () => {
@@ -154,9 +150,10 @@ describe('ConfigAzureAuth', () => {
     render(<ConfigAzureAuth />, { store })
 
     const actions = store.getActions()
-    expect(actions[0]).toEqual(azureOAuthCallbackSuccess(expectedAccount))
-    expect(actions[1]).toEqual(setAzureLoginSource(null))
-    expect(actions[2].type).toEqual(addMessageNotification({} as any).type)
+    expect(actions[0]).toEqual(resetDataAzure())
+    expect(actions[1]).toEqual(azureOAuthCallbackSuccess(expectedAccount))
+    expect(actions[2]).toEqual(setAzureLoginSource(null))
+    expect(actions[3].type).toEqual(addMessageNotification({} as any).type)
   })
 
   it('should not show success notification when source is autodiscovery', () => {
@@ -184,9 +181,10 @@ describe('ConfigAzureAuth', () => {
     render(<ConfigAzureAuth />, { store })
 
     const actions = store.getActions()
-    expect(actions[0]).toEqual(azureOAuthCallbackSuccess(expectedAccount))
-    expect(actions[1]).toEqual(setAzureLoginSource(null))
+    expect(actions[0]).toEqual(resetDataAzure())
+    expect(actions[1]).toEqual(azureOAuthCallbackSuccess(expectedAccount))
+    expect(actions[2]).toEqual(setAzureLoginSource(null))
     // No message notification should be dispatched
-    expect(actions.length).toBe(2)
+    expect(actions.length).toBe(3)
   })
 })
