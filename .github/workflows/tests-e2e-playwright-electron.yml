@@ -34,8 +34,8 @@ jobs:
       RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
       TEST_BIG_DB_DUMP: ${{ secrets.TEST_BIG_DB_DUMP }}
       # Environment variables needed for Electron/AppImage on Linux (from repository variables)
-      DBUS_SESSION_BUS_ADDRESS: ${{ vars.DBUS_SESSION_BUS_ADDRESS }}
-      DISPLAY: ${{ vars.DISPLAY }}
+      DBUS_SESSION_BUS_ADDRESS: ${{ vars.DBUS_SESSION_BUS_ADDRESS || 'unix:path=/dev/null' }}
+      DISPLAY: ${{ vars.DISPLAY || ':99' }}
       # TLS certificates for Electron (uses HTTPS)
       RI_SERVER_TLS_CERT: ${{ secrets.RI_SERVER_TLS_CERT }}
       RI_SERVER_TLS_KEY: ${{ secrets.RI_SERVER_TLS_KEY }}

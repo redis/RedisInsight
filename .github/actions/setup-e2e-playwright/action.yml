@@ -3,7 +3,7 @@ description: 'Setup Node.js, E2E dependencies, and Playwright browsers with cach
 
 inputs:
   browsers:
-    description: 'Playwright browsers to install (chromium, firefox, webkit, all)'
+    description: 'Playwright browsers to install (chromium, firefox, webkit, all, none)'
     required: false
     default: 'chromium'
   working-directory:
@@ -36,6 +36,7 @@ runs:
       run: yarn install --frozen-lockfile
 
     - name: Cache Playwright browsers
+      if: inputs.browsers != 'none'
       id: cache-playwright
       uses: actions/cache@v4
       with:
@@ -44,7 +45,7 @@ runs:
         key: playwright-${{ runner.os }}-${{ hashFiles(format('{0}/yarn.lock', inputs.working-directory)) }}-${{ inputs.browsers }}
 
     - name: Install Playwright browsers
-      if: steps.cache-playwright.outputs.cache-hit != 'true'
+      if: inputs.browsers != 'none' && steps.cache-playwright.outputs.cache-hit != 'true'
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       env:
@@ -57,7 +58,7 @@ runs:
         fi
 
     - name: Install Playwright system dependencies (cache hit)
-      if: steps.cache-playwright.outputs.cache-hit == 'true'
+      if: inputs.browsers != 'none' && steps.cache-playwright.outputs.cache-hit == 'true'
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       env:

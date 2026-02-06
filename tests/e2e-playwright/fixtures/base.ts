@@ -136,13 +136,15 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
 
     // Electron mode - get page from Electron app
     const electronPage = await electronApp.firstWindow();
-    // Reload to pick up any data created in beforeAll (e.g., databases via API)
-    await electronPage.reload();
-    await electronPage.waitForLoadState('domcontentloaded');
-    // Skip onboarding by setting localStorage (faster than waiting for UI)
+    // Skip onboarding by setting localStorage before reload
+    // This ensures the app reads the value when it initializes
     await electronPage.evaluate(() => {
       localStorage.setItem('onboardingStep', 'null');
     });
+    // Reload to pick up any data created in beforeAll (e.g., databases via API)
+    // and to apply the localStorage setting
+    await electronPage.reload();
+    await electronPage.waitForLoadState('domcontentloaded');
 
     await use(electronPage);
   },
