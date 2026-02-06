@@ -234,10 +234,8 @@ export const StyledItem = styled.li<
 const listItemInnerStyles = {
   base: css`
     padding: var(--size-xs) var(--size-s);
-    gap: 1rem;
     display: flex;
     align-items: center;
-    justify-content: start;
     flex-grow: 1;
     max-inline-size: 100%;
     overflow: hidden;

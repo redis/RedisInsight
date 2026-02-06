@@ -62,7 +62,13 @@ export const FeatureList = styled(Group).attrs({
   margin: 0;
 `
 
-export const FeatureListItem = styled(Item)``
+export const FeatureListItem = styled(Item)`
+  & > button,
+  & > span {
+    gap: ${({ theme }) => theme.core.space.space100};
+    justify-content: start;
+  }
+`
 
 export const CTAWrapper = styled(Col)``
 
