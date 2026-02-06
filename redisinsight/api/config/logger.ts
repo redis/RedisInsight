@@ -7,9 +7,15 @@ import {
 import { join } from 'path';
 import config from 'src/utils/config';
 import { prepareLogsData, prettyFileFormat } from 'src/utils/logsFormatter';
+import { ensureLogsDir } from 'src/utils/ensureLogsDir';
 
 const PATH_CONFIG = config.get('dir_path');
 const LOGGER_CONFIG = config.get('logger');
+
+// Ensure logs directory exists before creating file transports
+// This prevents ENOENT errors on first run when .redis-insight folder doesn't exist yet
+// If creation fails, file logging will be disabled to prevent app crash
+const canUseFileLogging = ensureLogsDir(PATH_CONFIG.logs, LOGGER_CONFIG.files);
 
 const transportsConfig = [];
 
@@ -32,7 +38,7 @@ if (LOGGER_CONFIG.stdout) {
   );
 }
 
-if (LOGGER_CONFIG.files) {
+if (LOGGER_CONFIG.files && canUseFileLogging) {
   transportsConfig.push(
     new transports.DailyRotateFile({
       dirname: join(PATH_CONFIG.logs),
