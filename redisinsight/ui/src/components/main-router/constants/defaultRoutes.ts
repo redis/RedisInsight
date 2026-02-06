@@ -93,7 +93,7 @@ const INSTANCE_ROUTES: IRoute[] = [
     path: Pages.vectorSearch(':instanceId'),
     component: LAZY_LOAD ? LazyVectorSearchPageRouter : VectorSearchPageRouter,
     routes: VECTOR_SEARCH_ROUTES,
-    featureFlag: FeatureFlags.vectorSearch,
+    featureFlag: FeatureFlags.devVectorSearch,
   },
   {
     pageName: PageNames.workbench,

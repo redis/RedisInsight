@@ -92,6 +92,13 @@ export class FeatureFlagProvider {
       ),
     );
     this.strategies.set(
+      KnownFeatures.DevVectorSearch,
+      new SwitchableFlagStrategy(
+        this.featuresConfigService,
+        this.settingsService,
+      ),
+    );
+    this.strategies.set(
       KnownFeatures.DatabasesListV2,
       new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
     );
