@@ -24,7 +24,7 @@ try {
     JavaDate.SerialVersionUID,
   )
   // eslint-disable-next-line no-empty
-} catch (e) {}
+} catch (_e) {}
 
 const defaultValues = [
   {

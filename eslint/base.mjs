@@ -19,6 +19,7 @@ export const noUnusedVarsConfig = [
     argsIgnorePattern: '^_',
     varsIgnorePattern: '^_',
     destructuredArrayIgnorePattern: '^_',
+    caughtErrorsIgnorePattern: '^_',
   },
 ];
 
