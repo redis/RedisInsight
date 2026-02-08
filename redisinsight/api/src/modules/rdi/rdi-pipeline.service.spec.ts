@@ -206,7 +206,7 @@ describe('RdiPipelineService', () => {
       client.deploy.mockRejectedValueOnce(error);
       try {
         await service.deploy(rdiClientMetadata, dto);
-      } catch (e) {
+      } catch {
         expect(analytics.sendRdiPipelineDeployFailed).toHaveBeenCalledWith(
           mockSessionMetadata,
           error,

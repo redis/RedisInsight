@@ -34,6 +34,7 @@ const apiRules = {
   'no-unneeded-ternary': 'off', // TODO: Enable gradually
   'no-underscore-dangle': 'off',
   'max-len': 'off',
+  '@typescript-eslint/no-unused-vars': 'off',
 };
 
 // API source files configuration

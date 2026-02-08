@@ -104,7 +104,7 @@ describe('LogFile', () => {
   it('destroy', async () => {
     try {
       fs.unlinkSync(logFile['filePath']);
-    } catch (e) {
+    } catch {
       // ignore file not found
     }
     expect(logFile['writeStream']).toEqual(undefined);

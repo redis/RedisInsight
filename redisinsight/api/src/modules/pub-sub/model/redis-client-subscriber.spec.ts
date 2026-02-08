@@ -66,7 +66,7 @@ describe('RedisClient', () => {
         );
         expect(await redisClientSubscriber.getClient()).toEqual(nodeClient);
         fail();
-      } catch (e) {
+      } catch {
         expect(connectSpy).toHaveBeenCalledTimes(1);
         expect(redisClientSubscriber['status']).toEqual(
           RedisClientSubscriberStatus.Error,

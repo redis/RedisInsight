@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/quotes */
 import { randomBytes } from 'crypto';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import {
