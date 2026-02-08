@@ -9,8 +9,10 @@ import {
   commonRules,
   noUnusedVarsConfig,
   linterOptions,
-  legacyPlugins,
-  legacyDisabledRules,
+  plugins,
+  sonarjsRulesDisabled,
+  importRulesDisabled,
+  deprecatedRules,
 } from './base.mjs';
 
 // Desktop-specific rules
@@ -38,7 +40,7 @@ export const desktopConfig = {
   linterOptions,
   plugins: {
     '@typescript-eslint': tseslint.plugin,
-    ...legacyPlugins,
+    ...plugins,
   },
   languageOptions: {
     ecmaVersion: 2022,
@@ -55,6 +57,11 @@ export const desktopConfig = {
   },
   rules: {
     ...desktopRules,
-    ...legacyDisabledRules,
+    // SonarJS - TODO: Enable gradually
+    ...sonarjsRulesDisabled,
+    // Import - TODO: Enable gradually
+    ...importRulesDisabled,
+    // Deprecated rules
+    ...deprecatedRules,
   },
 };

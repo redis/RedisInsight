@@ -11,8 +11,11 @@ import {
   commonRules,
   noUnusedVarsConfig,
   linterOptions,
-  legacyPlugins,
-  legacyDisabledRules,
+  plugins,
+  sonarjsRulesDisabled,
+  importRulesDisabled,
+  jsxA11yRules,
+  deprecatedRules,
 } from './base.mjs';
 
 // UI-specific rules matching current .eslintrc.js behavior
@@ -65,7 +68,7 @@ export const uiConfig = {
     '@typescript-eslint': tseslint.plugin,
     react: reactPlugin,
     'react-hooks': reactHooksPlugin,
-    ...legacyPlugins,
+    ...plugins,
   },
   languageOptions: {
     ecmaVersion: 2022,
@@ -90,7 +93,14 @@ export const uiConfig = {
   },
   rules: {
     ...uiRules,
-    ...legacyDisabledRules,
+    // SonarJS - TODO: Enable gradually
+    ...sonarjsRulesDisabled,
+    // Import - TODO: Enable gradually
+    ...importRulesDisabled,
+    // JSX A11y
+    ...jsxA11yRules,
+    // Deprecated rules
+    ...deprecatedRules,
   },
 };
 
@@ -105,7 +115,7 @@ export const uiTestConfig = {
     '@typescript-eslint': tseslint.plugin,
     react: reactPlugin,
     'react-hooks': reactHooksPlugin,
-    ...legacyPlugins,
+    ...plugins,
   },
   languageOptions: {
     ecmaVersion: 2022,
@@ -131,7 +141,14 @@ export const uiTestConfig = {
   },
   rules: {
     ...uiRules,
-    ...legacyDisabledRules,
+    // SonarJS - TODO: Enable gradually
+    ...sonarjsRulesDisabled,
+    // Import - TODO: Enable gradually
+    ...importRulesDisabled,
+    // JSX A11y
+    ...jsxA11yRules,
+    // Deprecated rules
+    ...deprecatedRules,
     // Even more relaxed for tests
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',

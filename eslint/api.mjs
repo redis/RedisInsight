@@ -9,8 +9,10 @@ import {
   commonRules,
   noUnusedVarsConfig,
   linterOptions,
-  legacyPlugins,
-  legacyDisabledRules,
+  plugins,
+  sonarjsRulesDisabled,
+  importRulesDisabled,
+  deprecatedRules,
 } from './base.mjs';
 
 // API-specific rules matching current .eslintrc.js behavior
@@ -44,7 +46,7 @@ export const apiConfig = {
   linterOptions,
   plugins: {
     '@typescript-eslint': tseslint.plugin,
-    ...legacyPlugins,
+    ...plugins,
   },
   languageOptions: {
     ecmaVersion: 2022,
@@ -61,7 +63,12 @@ export const apiConfig = {
   },
   rules: {
     ...apiRules,
-    ...legacyDisabledRules,
+    // SonarJS - TODO: Enable gradually
+    ...sonarjsRulesDisabled,
+    // Import - TODO: Enable gradually
+    ...importRulesDisabled,
+    // Deprecated rules
+    ...deprecatedRules,
   },
 };
 
@@ -71,7 +78,7 @@ export const apiUnitTestConfig = {
   linterOptions,
   plugins: {
     '@typescript-eslint': tseslint.plugin,
-    ...legacyPlugins,
+    ...plugins,
   },
   languageOptions: {
     ecmaVersion: 2022,
@@ -89,7 +96,12 @@ export const apiUnitTestConfig = {
   },
   rules: {
     ...apiRules,
-    ...legacyDisabledRules,
+    // SonarJS - TODO: Enable gradually
+    ...sonarjsRulesDisabled,
+    // Import - TODO: Enable gradually
+    ...importRulesDisabled,
+    // Deprecated rules
+    ...deprecatedRules,
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/no-unused-vars': noUnusedVarsConfig,
@@ -102,7 +114,7 @@ export const apiIntegrationTestConfig = {
   linterOptions,
   plugins: {
     '@typescript-eslint': tseslint.plugin,
-    ...legacyPlugins,
+    ...plugins,
   },
   languageOptions: {
     ecmaVersion: 2022,
@@ -120,7 +132,12 @@ export const apiIntegrationTestConfig = {
   },
   rules: {
     ...apiRules,
-    ...legacyDisabledRules,
+    // SonarJS - TODO: Enable gradually
+    ...sonarjsRulesDisabled,
+    // Import - TODO: Enable gradually
+    ...importRulesDisabled,
+    // Deprecated rules
+    ...deprecatedRules,
     // Even more relaxed for integration tests (matching current config)
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',

@@ -5,9 +5,7 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import prettierConfig from 'eslint-config-prettier';
-// Legacy plugins - kept only to prevent "Definition for rule was not found" errors
-// from old eslint-disable comments in the codebase. All rules are disabled.
-// TODO: Remove these plugins after cleaning up old eslint-disable comments
+// Additional plugins
 import sonarjsPlugin from 'eslint-plugin-sonarjs';
 import importPlugin from 'eslint-plugin-import';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
@@ -69,33 +67,75 @@ export const linterOptions = {
   reportUnusedDisableDirectives: 'off',
 };
 
-// Legacy plugins - registered but with all rules disabled
-// This prevents "Definition for rule was not found" errors from old eslint-disable comments
-// TODO: Remove after cleaning up old eslint-disable comments in a separate PR
-export const legacyPlugins = {
+// Plugin exports
+export const plugins = {
   sonarjs: sonarjsPlugin,
   import: importPlugin,
   'jsx-a11y': jsxA11yPlugin,
 };
 
-// Generate rules to disable all legacy plugin rules
-const disableLegacyRules = (pluginName, plugin) => {
-  const rules = {};
-  if (plugin.rules) {
-    Object.keys(plugin.rules).forEach((ruleName) => {
-      rules[`${pluginName}/${ruleName}`] = 'off';
-    });
-  }
-  return rules;
+// SonarJS rules (matching old config behavior)
+export const sonarjsRules = {
+  'sonarjs/cognitive-complexity': ['error', 15],
+  'sonarjs/no-duplicate-string': 'error',
+  'sonarjs/no-identical-functions': 'error',
+  'sonarjs/prefer-immediate-return': 'error',
+  'sonarjs/no-small-switch': 'error',
+  'sonarjs/no-nested-template-literals': 'off',
 };
 
-// All legacy plugin rules disabled
-export const legacyDisabledRules = {
-  ...disableLegacyRules('sonarjs', sonarjsPlugin),
-  ...disableLegacyRules('import', importPlugin),
-  ...disableLegacyRules('jsx-a11y', jsxA11yPlugin),
-  // Also disable @typescript-eslint/quotes which was removed in v8
-  '@typescript-eslint/quotes': 'off',
+// SonarJS rules - temporarily disabled (TODO: Enable gradually)
+export const sonarjsRulesDisabled = {
+  'sonarjs/cognitive-complexity': 'off',
+  'sonarjs/no-duplicate-string': 'off',
+  'sonarjs/no-identical-functions': 'off',
+  'sonarjs/prefer-immediate-return': 'off',
+  'sonarjs/no-small-switch': 'off',
+  'sonarjs/no-nested-template-literals': 'off',
+};
+
+// Import plugin rules (matching old config behavior)
+export const importRules = {
+  'import/no-duplicates': 'error',
+  'import/order': [
+    'warn',
+    {
+      groups: ['external', 'builtin', 'internal', 'sibling', 'parent', 'index'],
+      pathGroups: [
+        { pattern: 'desktopSrc/**', group: 'internal', position: 'after' },
+        { pattern: 'uiSrc/**', group: 'internal', position: 'after' },
+        { pattern: 'apiSrc/**', group: 'internal', position: 'after' },
+        { pattern: '{.,..}/*.scss', group: 'object', position: 'after' },
+      ],
+      warnOnUnassignedImports: true,
+      pathGroupsExcludedImportTypes: ['builtin'],
+    },
+  ],
+  'import/no-extraneous-dependencies': 'off',
+  'import/prefer-default-export': 'off',
+  'import/no-cycle': 'off',
+  'import/no-named-as-default-member': 'off',
+  'import/extensions': 'off',
+  'import/first': 'off',
+};
+
+// Import rules - temporarily disabled (TODO: Enable gradually)
+export const importRulesDisabled = {
+  'import/no-duplicates': 'off',
+  'import/order': 'off',
+};
+
+// JSX A11y rules (matching old config - mostly disabled)
+export const jsxA11yRules = {
+  'jsx-a11y/anchor-is-valid': 'off',
+  'jsx-a11y/no-access-key': 'off',
+  'jsx-a11y/control-has-associated-label': 'off',
+};
+
+// Deprecated rules that need to be explicitly disabled
+// (prevents "Definition for rule was not found" errors)
+export const deprecatedRules = {
+  '@typescript-eslint/quotes': 'off', // Removed in typescript-eslint v8
 };
 
 // Global ignores for all configs
