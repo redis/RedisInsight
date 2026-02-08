@@ -46,7 +46,7 @@ export const initAppHandlers = () => {
   app.on('quit', () => {
     try {
       getBackendGracefulShutdown?.()
-    } catch (e) {
+    } catch {
       // ignore any error
     }
   })

@@ -23,7 +23,7 @@ export const resolveHtmlPath = (
       ])
 
       resolved += `${resolved.indexOf('?') !== -1 ? '&' : '?'}${queryParameters.toString()}`
-    } catch (e) {
+    } catch (_e) {
       // todo: log error
     }
   }
