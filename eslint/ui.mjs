@@ -2,10 +2,10 @@
  * ESLint configuration for Frontend (React/UI)
  * Path: redisinsight/ui/
  */
-import tseslint from 'typescript-eslint'
-import reactPlugin from 'eslint-plugin-react'
-import reactHooksPlugin from 'eslint-plugin-react-hooks'
-import globals from 'globals'
+import tseslint from 'typescript-eslint';
+import reactPlugin from 'eslint-plugin-react';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
+import globals from 'globals';
 import {
   relaxedTypeScriptRules,
   commonRules,
@@ -13,7 +13,7 @@ import {
   linterOptions,
   legacyPlugins,
   legacyDisabledRules,
-} from './base.mjs'
+} from './base.mjs';
 
 // UI-specific rules matching current .eslintrc.js behavior
 const uiRules = {
@@ -30,7 +30,7 @@ const uiRules = {
   // The new react-hooks v7 has stricter rules that would break the build
   'react-hooks/rules-of-hooks': 'error',
   'react-hooks/exhaustive-deps': 'off', // TODO: Enable gradually (323 warnings)
-  
+
   // Disable new strict react-hooks v7 rules for now
   'react-hooks/set-state-in-effect': 'off', // TODO: Enable gradually (67 errors)
   'react-hooks/immutability': 'off', // TODO: Enable gradually (82 errors)
@@ -45,16 +45,21 @@ const uiRules = {
   // General rules
   ...commonRules,
   'no-console': ['error', { allow: ['warn', 'error'] }],
-  
+
   // Disabled to match current behavior
   'prefer-const': 'off', // TODO: Enable gradually
   'prefer-destructuring': 'off', // TODO: Enable gradually
-}
+  '@typescript-eslint/no-unused-vars': 'off',
+  'react/no-unescaped-entities': 'off',
+};
 
 // UI source files configuration
 export const uiConfig = {
   files: ['redisinsight/ui/**/*.{ts,tsx}'],
-  ignores: ['redisinsight/ui/**/*.spec.{ts,tsx}', 'redisinsight/ui/**/*.test.{ts,tsx}'],
+  ignores: [
+    'redisinsight/ui/**/*.spec.{ts,tsx}',
+    'redisinsight/ui/**/*.test.{ts,tsx}',
+  ],
   linterOptions,
   plugins: {
     '@typescript-eslint': tseslint.plugin,
@@ -87,11 +92,14 @@ export const uiConfig = {
     ...uiRules,
     ...legacyDisabledRules,
   },
-}
+};
 
 // UI test files - more relaxed rules
 export const uiTestConfig = {
-  files: ['redisinsight/ui/**/*.spec.{ts,tsx}', 'redisinsight/ui/**/*.test.{ts,tsx}'],
+  files: [
+    'redisinsight/ui/**/*.spec.{ts,tsx}',
+    'redisinsight/ui/**/*.test.{ts,tsx}',
+  ],
   linterOptions,
   plugins: {
     '@typescript-eslint': tseslint.plugin,
@@ -129,5 +137,4 @@ export const uiTestConfig = {
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/no-unused-vars': noUnusedVarsConfig,
   },
-}
-
+};

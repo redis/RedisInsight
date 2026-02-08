@@ -2,8 +2,8 @@
  * ESLint configuration for Desktop (Electron main process)
  * Path: redisinsight/desktop/
  */
-import tseslint from 'typescript-eslint'
-import globals from 'globals'
+import tseslint from 'typescript-eslint';
+import globals from 'globals';
 import {
   relaxedTypeScriptRules,
   commonRules,
@@ -11,7 +11,7 @@ import {
   linterOptions,
   legacyPlugins,
   legacyDisabledRules,
-} from './base.mjs'
+} from './base.mjs';
 
 // Desktop-specific rules
 const desktopRules = {
@@ -22,11 +22,11 @@ const desktopRules = {
   // General rules
   ...commonRules,
   'no-console': ['error', { allow: ['warn', 'error'] }],
-  
+
   // Disabled to match current behavior
   'prefer-const': 'off', // TODO: Enable gradually
   'prefer-destructuring': 'off', // TODO: Enable gradually
-}
+};
 
 // Desktop source files configuration
 export const desktopConfig = {
@@ -57,5 +57,4 @@ export const desktopConfig = {
     ...desktopRules,
     ...legacyDisabledRules,
   },
-}
-
+};

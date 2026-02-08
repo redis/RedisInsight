@@ -2,8 +2,8 @@
  * ESLint configuration for Backend (NestJS/API)
  * Path: redisinsight/api/
  */
-import tseslint from 'typescript-eslint'
-import globals from 'globals'
+import tseslint from 'typescript-eslint';
+import globals from 'globals';
 import {
   relaxedTypeScriptRules,
   commonRules,
@@ -11,7 +11,7 @@ import {
   linterOptions,
   legacyPlugins,
   legacyDisabledRules,
-} from './base.mjs'
+} from './base.mjs';
 
 // API-specific rules matching current .eslintrc.js behavior
 // Note: Many rules are disabled to match current "temporary disable" section
@@ -25,7 +25,7 @@ const apiRules = {
 
   // General rules
   ...commonRules,
-  
+
   // Disabled to match current behavior (from "Temporary disable some rules for API")
   'no-console': 'off', // TODO: Enable gradually
   'prefer-const': 'off', // TODO: Enable gradually
@@ -34,7 +34,7 @@ const apiRules = {
   'no-unneeded-ternary': 'off', // TODO: Enable gradually
   'no-underscore-dangle': 'off',
   'max-len': 'off',
-}
+};
 
 // API source files configuration
 export const apiConfig = {
@@ -62,7 +62,7 @@ export const apiConfig = {
     ...apiRules,
     ...legacyDisabledRules,
   },
-}
+};
 
 // API unit test files (src/**/*.spec.ts)
 export const apiUnitTestConfig = {
@@ -93,7 +93,7 @@ export const apiUnitTestConfig = {
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/no-unused-vars': noUnusedVarsConfig,
   },
-}
+};
 
 // API integration test files (test/**/*.ts)
 export const apiIntegrationTestConfig = {
@@ -126,5 +126,4 @@ export const apiIntegrationTestConfig = {
     '@typescript-eslint/no-unused-vars': noUnusedVarsConfig,
     '@typescript-eslint/naming-convention': 'off',
   },
-}
-
+};
