@@ -122,7 +122,7 @@
       "flag": false,
       "perc": [[0, 100]]
     },
-    "devVectorSearch": {
+    "dev-vectorSearch": {
       "flag": false,
       "perc": [[0, 100]]
     },

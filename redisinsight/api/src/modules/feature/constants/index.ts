@@ -32,7 +32,7 @@ export enum KnownFeatures {
   EnhancedCloudUI = 'enhancedCloudUI',
   DatabaseManagement = 'databaseManagement',
   VectorSearch = 'vectorSearch',
-  DevVectorSearch = 'devVectorSearch',
+  DevVectorSearch = 'dev-vectorSearch',
   DatabasesListV2 = 'databasesListV2',
   AzureEntraId = 'dev-azureEntraId',
 }
