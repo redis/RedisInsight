@@ -8,6 +8,7 @@ import {
   render,
   screen,
 } from 'uiSrc/utils/test-utils'
+import { QueryEditorContextProvider } from 'uiSrc/components/query'
 import Query, { Props } from './Query'
 
 const mockedProps = mock<Props>()
@@ -38,25 +39,47 @@ jest.mock('uiSrc/services', () => ({
   },
 }))
 
+const defaultContextValue = {
+  query: '',
+  setQuery: jest.fn(),
+  isLoading: false,
+  commands: [],
+  indexes: [],
+  onSubmit: jest.fn(),
+}
+
+const renderWithContext = (props: Props, contextOverrides = {}) =>
+  render(
+    <QueryEditorContextProvider
+      value={{ ...defaultContextValue, ...contextOverrides }}
+    >
+      <Query {...props} />
+    </QueryEditorContextProvider>,
+  )
+
 describe('Query', () => {
   it('should render', () => {
-    expect(render(<Query {...instance(mockedProps)} />)).toBeTruthy()
+    expect(renderWithContext(instance(mockedProps))).toBeTruthy()
   })
 
   it('should call onClear when clear button is clicked', async () => {
+    const setQueryMock = jest.fn()
+    const onClearMock = jest.fn()
+
     const props: Props = {
       ...instance(mockedProps),
-      query: 'test query',
       useLiteActions: true,
-      setQuery: jest.fn(),
-      onClear: jest.fn(),
+      onClear: onClearMock,
     }
 
-    render(<Query {...props} />)
+    renderWithContext(props, {
+      query: 'test query',
+      setQuery: setQueryMock,
+    })
 
     // Ensure we start with the query input populated
     const queryInput = screen.getByTestId('monaco')
-    expect(queryInput).toHaveValue(props.query)
+    expect(queryInput).toHaveValue('test query')
 
     // Find the clear button and click it
     const clearButton = screen.getByTestId('btn-clear')
@@ -65,7 +88,7 @@ describe('Query', () => {
     fireEvent.click(clearButton)
 
     // Verify that the onClear function was called and the query input is cleared
-    expect(props.setQuery).toHaveBeenCalled()
-    expect(props.onClear).toHaveBeenCalled()
+    expect(setQueryMock).toHaveBeenCalled()
+    expect(onClearMock).toHaveBeenCalled()
   })
 })

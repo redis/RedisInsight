@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { LoadingContent } from 'uiSrc/components/base/layout'
+import { IRedisCommand } from 'uiSrc/constants'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 import {
@@ -11,6 +12,8 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { mergeRedisCommandsSpecs } from 'uiSrc/utils/transformers/redisCommands'
 import SEARCH_COMMANDS_SPEC from 'uiSrc/pages/workbench/data/supported_commands.json'
+import { QueryEditorContextProvider } from 'uiSrc/components/query'
+
 import styles from './Query/styles.module.scss'
 import Query from './Query'
 import { Props as BaseQueryProps } from './Query/Query'
@@ -36,33 +39,37 @@ const QueryWrapper = (props: Props) => {
     query = '',
     activeMode,
     resultsMode,
-    setQuery,
+    setQuery = () => {},
     setQueryEl,
     onKeyDown,
-    onSubmit,
+    onSubmit = () => {},
     onQueryChangeMode,
     onChangeGroupMode,
     onClear,
     queryProps = {},
   } = props
   const { loading: isCommandsLoading } = useSelector(appRedisCommandsSelector)
-  const { id: connectedIndstanceId } = useSelector(connectedInstanceSelector)
+  const { id: connectedInstanceId } = useSelector(connectedInstanceSelector)
   const { data: indexes = [] } = useSelector(redisearchListSelector)
   const { spec: COMMANDS_SPEC } = useSelector(appRedisCommandsSelector)
 
   const REDIS_COMMANDS = useMemo(
-    () => mergeRedisCommandsSpecs(COMMANDS_SPEC, SEARCH_COMMANDS_SPEC),
+    () =>
+      mergeRedisCommandsSpecs(
+        COMMANDS_SPEC,
+        SEARCH_COMMANDS_SPEC,
+      ) as IRedisCommand[],
     [COMMANDS_SPEC, SEARCH_COMMANDS_SPEC],
   )
 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (!connectedIndstanceId) return
+    if (!connectedInstanceId) return
 
     // fetch indexes
     dispatch(fetchRedisearchListAction(undefined, undefined, false))
-  }, [connectedIndstanceId])
+  }, [connectedInstanceId])
 
   const Placeholder = (
     <div className={styles.containerPlaceholder}>
@@ -71,24 +78,33 @@ const QueryWrapper = (props: Props) => {
       </div>
     </div>
   )
-  return isCommandsLoading ? (
-    Placeholder
-  ) : (
-    <Query
-      query={query}
-      commands={REDIS_COMMANDS}
-      indexes={indexes}
-      activeMode={activeMode}
-      resultsMode={resultsMode}
-      setQuery={setQuery}
-      setQueryEl={setQueryEl}
-      onKeyDown={onKeyDown}
-      onSubmit={onSubmit}
-      onQueryChangeMode={onQueryChangeMode}
-      onChangeGroupMode={onChangeGroupMode}
-      onClear={onClear}
-      {...queryProps}
-    />
+
+  if (isCommandsLoading) {
+    return Placeholder
+  }
+
+  return (
+    <QueryEditorContextProvider
+      value={{
+        query,
+        setQuery,
+        commands: REDIS_COMMANDS,
+        indexes,
+        isLoading: false,
+        onSubmit,
+      }}
+    >
+      <Query
+        activeMode={activeMode}
+        resultsMode={resultsMode}
+        setQueryEl={setQueryEl}
+        onKeyDown={onKeyDown}
+        onQueryChangeMode={onQueryChangeMode}
+        onChangeGroupMode={onChangeGroupMode}
+        onClear={onClear}
+        {...queryProps}
+      />
+    </QueryEditorContextProvider>
   )
 }
 
