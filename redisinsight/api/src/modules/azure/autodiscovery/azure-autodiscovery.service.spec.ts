@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { faker } from '@faker-js/faker';
 import axios from 'axios';
 import { AzureAutodiscoveryService } from './azure-autodiscovery.service';
+import { AzureAutodiscoveryAnalytics } from './azure-autodiscovery.analytics';
 import { AzureAuthService } from '../auth/azure-auth.service';
 import { DatabaseService } from 'src/modules/database/database.service';
 import { AzureRedisType, AzureAuthType } from '../constants';
@@ -15,6 +16,11 @@ jest.mock('axios');
 
 const mockDatabaseService = {
   create: jest.fn(),
+};
+
+const mockAnalytics = {
+  sendAzureDatabaseAdded: jest.fn(),
+  sendAzureDatabaseAddFailed: jest.fn(),
 };
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -143,6 +149,7 @@ describe('AzureAutodiscoveryService', () => {
         AzureAutodiscoveryService,
         { provide: AzureAuthService, useValue: mockAuthService },
         { provide: DatabaseService, useValue: mockDatabaseService },
+        { provide: AzureAutodiscoveryAnalytics, useValue: mockAnalytics },
       ],
     }).compile();
 

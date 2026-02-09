@@ -77,14 +77,19 @@ export class AzureAutodiscoveryController {
     @RequestSessionMetadata() sessionMetadata: SessionMetadata,
     @Query('accountId') accountId: string,
   ): Promise<AzureSubscription[]> {
-    await this.ensureAuthenticated(accountId);
-    const subscriptions =
-      await this.autodiscoveryService.listSubscriptions(accountId);
-    this.analytics.sendAzureSubscriptionsDiscoverySucceeded(
-      sessionMetadata,
-      subscriptions,
-    );
-    return subscriptions;
+    try {
+      await this.ensureAuthenticated(accountId);
+      const subscriptions =
+        await this.autodiscoveryService.listSubscriptions(accountId);
+      this.analytics.sendAzureSubscriptionsDiscoverySucceeded(
+        sessionMetadata,
+        subscriptions,
+      );
+      return subscriptions;
+    } catch (e) {
+      this.analytics.sendAzureSubscriptionsDiscoveryFailed(sessionMetadata, e);
+      throw e;
+    }
   }
 
   @Get('subscriptions/:subscriptionId/databases')
@@ -106,18 +111,23 @@ export class AzureAutodiscoveryController {
     @Query('accountId') accountId: string,
     @Param('subscriptionId') subscriptionId: string,
   ): Promise<AzureRedisDatabase[]> {
-    this.validateSubscriptionId(subscriptionId);
-    await this.ensureAuthenticated(accountId);
-    const databases =
-      await this.autodiscoveryService.listDatabasesInSubscription(
-        accountId,
-        subscriptionId,
+    try {
+      this.validateSubscriptionId(subscriptionId);
+      await this.ensureAuthenticated(accountId);
+      const databases =
+        await this.autodiscoveryService.listDatabasesInSubscription(
+          accountId,
+          subscriptionId,
+        );
+      this.analytics.sendAzureDatabasesDiscoverySucceeded(
+        sessionMetadata,
+        databases,
       );
-    this.analytics.sendAzureDatabasesDiscoverySucceeded(
-      sessionMetadata,
-      databases,
-    );
-    return databases;
+      return databases;
+    } catch (e) {
+      this.analytics.sendAzureDatabasesDiscoveryFailed(sessionMetadata, e);
+      throw e;
+    }
   }
 
   @Post('autodiscovery/databases')
