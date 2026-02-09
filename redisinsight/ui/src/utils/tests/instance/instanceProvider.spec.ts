@@ -1,40 +1,36 @@
-import { faker } from '@faker-js/faker'
 import { isAzureDatabase } from 'uiSrc/utils'
-import { Instance } from 'uiSrc/slices/interfaces'
+import { DBInstanceFactory } from 'uiSrc/mocks/factories/database/DBInstance.factory'
 
-const createMockInstance = (
-  providerDetails?: Instance['providerDetails'],
-): Partial<Instance> => ({
-  id: faker.string.uuid(),
-  host: faker.internet.domainName(),
-  port: 6379,
-  name: faker.company.name(),
-  modules: [],
-  version: '7.0.0',
-  providerDetails,
-})
-
+// "as any" is used for providerDetails because Instance extends Partial<DatabaseInstanceResponse>
+// from the API, which types providerDetails with CloudProvider and AzureAuthType enums.
+// These enums can't be imported directly in UI tests due to API module path resolution issues.
 describe('isAzureDatabase', () => {
   it('should return true when providerDetails.provider is "azure"', () => {
-    const instance = createMockInstance({
-      provider: 'azure',
-      authType: 'entra-id',
+    const instance = DBInstanceFactory.build({
+      providerDetails: {
+        provider: 'azure',
+        authType: 'entraId',
+      } as any,
     })
 
     expect(isAzureDatabase(instance)).toBe(true)
   })
 
   it('should return true when providerDetails.provider is "azure" with access-key auth', () => {
-    const instance = createMockInstance({
-      provider: 'azure',
-      authType: 'access-key',
+    const instance = DBInstanceFactory.build({
+      providerDetails: {
+        provider: 'azure',
+        authType: 'accessKey',
+      } as any,
     })
 
     expect(isAzureDatabase(instance)).toBe(true)
   })
 
   it('should return false when providerDetails is undefined', () => {
-    const instance = createMockInstance(undefined)
+    const instance = DBInstanceFactory.build({
+      providerDetails: undefined,
+    })
 
     expect(isAzureDatabase(instance)).toBe(false)
   })
@@ -44,13 +40,15 @@ describe('isAzureDatabase', () => {
   })
 
   it('should return false when instance is undefined', () => {
-    expect(isAzureDatabase(undefined)).toBe(false)
+    expect(isAzureDatabase(undefined as any)).toBe(false)
   })
 
   it('should return false when providerDetails has different provider', () => {
-    const instance = createMockInstance({
-      provider: 'aws',
-      authType: 'some-auth',
+    const instance = DBInstanceFactory.build({
+      providerDetails: {
+        provider: 'aws',
+        authType: 'some-auth',
+      } as any,
     })
 
     expect(isAzureDatabase(instance)).toBe(false)
