@@ -54,14 +54,22 @@ export class DatabaseList {
   }
 
   /**
+   * Escape special regex characters in a string
+   */
+  private escapeRegex(str: string): string {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  /**
    * Get a database row by name
    * Uses a strict text match in the database alias column (2nd column)
    */
   getRow(name: string): Locator {
+    const escapedName = this.escapeRegex(name);
     return this.page
       .locator('table tbody tr')
       .filter({
-        has: this.page.locator('td:nth-child(2)').filter({ hasText: new RegExp(`^${name}\\s*$`) }),
+        has: this.page.locator('td:nth-child(2)').filter({ hasText: new RegExp(`^${escapedName}\\s*$`) }),
       })
       .first();
   }
@@ -129,7 +137,7 @@ export class DatabaseList {
   }
 
   /**
-   * Get the visible row count
+   * Get the visible row count in the current page
    */
   async getVisibleRowCount(): Promise<number> {
     const rows = this.page.locator('table tbody tr');
@@ -137,11 +145,13 @@ export class DatabaseList {
   }
 
   /**
-   * Get the total count from header if available
+   * Get the total count from the pagination info (e.g., "Showing X out of Y rows")
+   * Returns the total number of databases, not just visible rows
    */
   async getTotalCount(): Promise<number> {
-    const rows = await this.page.locator('table tbody tr').all();
-    return rows.length;
+    const text = await this.paginationRowCount.textContent();
+    const match = text?.match(/out of (\d+) rows/);
+    return match ? parseInt(match[1], 10) : await this.getVisibleRowCount();
   }
 
   // ==================== SEARCH ====================

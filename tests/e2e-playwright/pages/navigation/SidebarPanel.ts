@@ -8,7 +8,6 @@ import { BasePage } from '../BasePage';
 export class SidebarPanel extends BasePage {
   // Main navigation
   readonly mainNavigation: Locator;
-  readonly redisLogo: Locator;
   readonly cloudLink: Locator;
   readonly notificationMenuButton: Locator;
   readonly helpMenuButton: Locator;
@@ -73,7 +72,6 @@ export class SidebarPanel extends BasePage {
 
     // Main navigation
     this.mainNavigation = page.getByRole('navigation', { name: 'Main navigation' });
-    this.redisLogo = page.getByRole('link', { name: 'Redis Logo Dark Min' });
     this.cloudLink = page.getByRole('link', { name: 'cloud-db-icon' });
     this.notificationMenuButton = page.getByTestId('notification-menu-button');
     this.helpMenuButton = page.getByTestId('help-menu-button');

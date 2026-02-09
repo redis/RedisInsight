@@ -136,12 +136,5 @@ export class EulaPage extends BasePage {
     const ariaChecked = await switchLocator.getAttribute('aria-checked');
     return ariaChecked === 'true';
   }
-
-  /**
-   * Get the switch element (button with role="switch")
-   */
-  getSwitch(switchLocator: Locator): Locator {
-    return switchLocator;
-  }
 }
 

@@ -77,8 +77,13 @@ export class AnalyticsPage extends InstancePage {
     this.tipsTab = page.getByRole('tab', { name: /Tips/ });
     this.topNamespacesTable = page.locator('table').filter({ hasText: 'Key Pattern' });
     this.topKeysTable = page.locator('table').filter({ hasText: 'Key Name' });
-    this.memoryChart = page.locator('img').filter({ hasText: /Memory/ }).first();
-    this.keysChart = page.locator('img').filter({ hasText: /Keys/ }).first();
+    // Charts are in containers with text labels, not on img elements directly
+    this.memoryChart = page.locator('[data-testid="analysis-memory"]').or(
+      page.locator('div').filter({ hasText: /Memory/ }).locator('canvas, svg').first(),
+    );
+    this.keysChart = page.locator('[data-testid="analysis-keys"]').or(
+      page.locator('div').filter({ hasText: /Keys/ }).locator('canvas, svg').first(),
+    );
     this.scannedKeysText = page.getByText(/Scanned \d+%/);
     this.ttlDistributionChart = page.getByTestId('analysis-ttl');
     this.showNoExpirySwitch = page.getByTestId('show-no-expiry-switch');
@@ -91,8 +96,8 @@ export class AnalyticsPage extends InstancePage {
     this.recommendationAccordions = page.locator('[data-testid$="-accordion"]');
     this.tutorialButton = page.getByRole('button', { name: 'Tutorial' });
     this.votingSection = page.getByText('Is this useful?');
-    this.likeButton = page.getByRole('button', { name: 'vote useful' }).first();
-    this.dislikeButton = page.getByRole('button', { name: 'vote useful' }).last();
+    this.likeButton = page.getByTestId('like-vote-btn');
+    this.dislikeButton = page.getByTestId('dislike-vote-btn');
   }
 
   /**
