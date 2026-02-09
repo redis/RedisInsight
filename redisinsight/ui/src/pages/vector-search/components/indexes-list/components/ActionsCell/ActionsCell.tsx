@@ -19,7 +19,7 @@ export const ActionsCell = ({
   onQueryClick,
   actions = [],
 }: ActionsCellProps) => {
-  const { id, name } = row.original
+  const { id, name } = row
 
   const handleQueryClick = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -69,5 +69,3 @@ export const ActionsCell = ({
     </Row>
   )
 }
-
-export default ActionsCell

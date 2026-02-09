@@ -1,5 +1,3 @@
-import { ReactElement } from 'react'
-import { CellContext } from 'uiSrc/components/base/layout/table'
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 
 /**
@@ -71,15 +69,7 @@ export interface IndexListAction {
  * Props for the actions column cell.
  */
 export interface ActionsCellProps {
-  row: CellContext<IndexListRow, unknown>['row']
+  row: IndexListRow
   onQueryClick?: (indexName: string) => void
   actions?: IndexListAction[]
 }
-
-/**
- * Type for cell components in the IndexesList.
- * Receives the full CellContext from the table.
- */
-export type IIndexesListCell = (
-  props: CellContext<IndexListRow, unknown>,
-) => ReactElement<any, any> | null

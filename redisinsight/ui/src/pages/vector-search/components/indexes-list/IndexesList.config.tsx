@@ -11,11 +11,11 @@ import {
   INDEXES_LIST_COLUMN_HEADERS,
   INDEXES_LIST_COLUMN_TOOLTIPS,
 } from './constants'
-import { NameCell } from './components/NameCell'
-import { PrefixCell } from './components/PrefixCell'
-import { FieldTypesCell } from './components/FieldTypesCell'
-import { NumericCell } from './components/NumericCell'
-import { ActionsCell } from './components/ActionsCell'
+import { NameCell } from './components/NameCell/NameCell'
+import { PrefixCell } from './components/PrefixCell/PrefixCell'
+import { FieldTypesCell } from './components/FieldTypesCell/FieldTypesCell'
+import { NumericCell } from './components/NumericCell/NumericCell'
+import { ActionsCell } from './components/ActionsCell/ActionsCell'
 import { ColumnHeader } from './components/ColumnHeader/ColumnHeader'
 
 const createActionsColumn = (
@@ -27,7 +27,11 @@ const createActionsColumn = (
   enableSorting: false,
   size: 150,
   cell: ({ row }: { row: Row<IndexListRow> }) => (
-    <ActionsCell row={row} onQueryClick={onQueryClick} actions={actions} />
+    <ActionsCell
+      row={row.original}
+      onQueryClick={onQueryClick}
+      actions={actions}
+    />
   ),
 })
 
@@ -38,7 +42,9 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
     header: INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Name],
     enableSorting: true,
     size: 200,
-    cell: NameCell,
+    cell: ({ row }: { row: Row<IndexListRow> }) => (
+      <NameCell row={row.original} />
+    ),
     sortingFn: (rowA, rowB) =>
       rowA.original.name
         .toLowerCase()
@@ -54,7 +60,9 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
       />
     ),
     enableSorting: false,
-    cell: PrefixCell,
+    cell: ({ row }: { row: Row<IndexListRow> }) => (
+      <PrefixCell row={row.original} />
+    ),
     size: 170,
   },
   {
@@ -63,7 +71,9 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
     header: INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.FieldTypes],
     enableSorting: false,
     size: 200,
-    cell: FieldTypesCell,
+    cell: ({ row }: { row: Row<IndexListRow> }) => (
+      <FieldTypesCell row={row.original} />
+    ),
   },
   {
     id: IndexesListColumn.Docs,
