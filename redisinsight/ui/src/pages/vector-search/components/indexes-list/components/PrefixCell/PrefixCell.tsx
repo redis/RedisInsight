@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
@@ -6,7 +6,10 @@ import { IndexListRow } from '../../IndexesList.types'
 import { formatPrefixes } from 'uiSrc/pages/vector-search/utils'
 
 export const PrefixCell = ({ row }: { row: IndexListRow }) => {
-  const formattedPrefixes = formatPrefixes(row.prefixes)
+  const formattedPrefixes = useMemo(
+    () => formatPrefixes(row.prefixes),
+    [row.prefixes],
+  )
 
   return (
     <RiTooltip content={formattedPrefixes} position="bottom">

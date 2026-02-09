@@ -18,7 +18,7 @@ export const IndexesList = memo(
       [onQueryClick, actions],
     )
 
-    const hasIndexes = !!data?.length
+    const hasIndexes = useMemo(() => !!data?.length, [data])
 
     const emptyMessage = useMemo(() => {
       if (loading) {

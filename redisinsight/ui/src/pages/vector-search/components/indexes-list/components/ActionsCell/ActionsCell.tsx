@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
 import { Button } from 'uiSrc/components/base/forms/buttons'
 import { IconButton } from '@redis-ui/components'
@@ -21,10 +21,15 @@ export const ActionsCell = ({
 }: ActionsCellProps) => {
   const { id, name } = row
 
-  const handleQueryClick = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    onQueryClick?.(name)
-  }
+  const handleQueryClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+
+      onQueryClick?.(name)
+    },
+    [onQueryClick, name],
+  )
 
   return (
     <Row
@@ -44,7 +49,7 @@ export const ActionsCell = ({
       )}
       {actions.length > 0 && (
         <Menu data-testid={`index-actions-menu-${id}`}>
-          <MenuTrigger onClick={(e) => e.stopPropagation()}>
+          <MenuTrigger>
             <IconButton icon={MoreactionsIcon} size="L" />
           </MenuTrigger>
           <MenuContent placement="right" align="start">
