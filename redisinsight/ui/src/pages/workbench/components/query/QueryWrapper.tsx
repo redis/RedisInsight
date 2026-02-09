@@ -11,7 +11,10 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { mergeRedisCommandsSpecs } from 'uiSrc/utils/transformers/redisCommands'
 import SEARCH_COMMANDS_SPEC from 'uiSrc/pages/workbench/data/supported_commands.json'
-import { QueryEditorContextProvider } from 'uiSrc/components/query'
+import {
+  QueryEditorContextProvider,
+  LoadingContainer,
+} from 'uiSrc/components/query'
 
 import Query from './Query'
 import { Props } from './QueryWrapper.types'
@@ -54,16 +57,14 @@ const QueryWrapper = (props: Props) => {
     dispatch(fetchRedisearchListAction(undefined, undefined, false))
   }, [connectedInstanceId])
 
-  const Placeholder = (
-    <S.ContainerPlaceholder>
-      <div>
-        <LoadingContent lines={2} className="fluid" />
-      </div>
-    </S.ContainerPlaceholder>
-  )
-
   if (isCommandsLoading) {
-    return Placeholder
+    return (
+      <S.ContainerPlaceholder>
+        <LoadingContainer>
+          <LoadingContent lines={2} className="fluid" />
+        </LoadingContainer>
+      </S.ContainerPlaceholder>
+    )
   }
 
   return (

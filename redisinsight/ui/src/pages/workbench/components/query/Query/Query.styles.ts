@@ -4,6 +4,7 @@ import { Col, Row } from 'uiSrc/components/base/layout/flex'
 
 export const Wrapper = styled.div<ComponentPropsWithRef<'div'>>`
   position: relative;
+  width: 100%;
   height: 100%;
 
   .editorBounder {
@@ -24,7 +25,7 @@ export const Container = styled(Col)<{
   letter-spacing: 0;
   background-color: ${({ theme }) => theme.components.card.bgColor};
   border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
-  border-radius: ${({ theme }) => theme.core.borderRadius.borderRadius200};
+  border-radius: ${({ theme }) => theme.components.card.borderRadius};
 
   ${({ $disabled }) =>
     $disabled &&

@@ -21,9 +21,10 @@ const defaultContextValue: QueryEditorContextValue = {
 const QueryEditorContext =
   createContext<QueryEditorContextValue>(defaultContextValue)
 
-export const QueryEditorContextProvider: React.FC<
-  QueryEditorContextProviderProps
-> = ({ children, value }) => {
+export const QueryEditorContextProvider = ({
+  children,
+  value,
+}: QueryEditorContextProviderProps) => {
   const monacoObjects = useRef<Nullable<IEditorMount>>(null)
 
   return (

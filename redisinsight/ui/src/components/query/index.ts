@@ -18,3 +18,5 @@ export {
   useCommandHistory,
   useDslSyntax,
 } from './hooks'
+
+export { LoadingContainer } from './query.styles'

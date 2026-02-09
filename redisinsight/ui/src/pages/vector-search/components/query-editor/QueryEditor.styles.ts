@@ -1,21 +1,25 @@
 import React from 'react'
 import styled from 'styled-components'
-import { FlexGroup } from 'uiSrc/components/base/layout/flex'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
 
-export const EditorWrapper = styled(FlexGroup)`
-  flex-direction: column;
+export const EditorWrapper = styled(Col)`
   height: 100%;
   width: 100%;
   overflow: hidden;
+  border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
+  border-radius: ${({ theme }) => theme.components.card.borderRadius};
 `
 
-export const ToggleBar = styled(FlexGroup)`
-  padding: ${({ theme }) => theme.core.space.space100}
-    ${({ theme }) => theme.core.space.space200};
+export const ToggleBar = styled(Row).attrs({
+  align: 'center',
+  justify: 'between',
+  gap: 'l',
+  grow: false,
+})`
+  padding: ${({ theme }) =>
+    `${theme.core.space.space100} ${theme.core.space.space200}`};
   border-bottom: 1px solid
     ${({ theme }) => theme.semantic.color.border.neutral500};
-  align-items: center;
-  gap: ${({ theme }) => theme.core.space.space200};
   flex-shrink: 0;
 `
 
@@ -25,11 +29,14 @@ export const EditorContainer = styled.div<{ children?: React.ReactNode }>`
   position: relative;
 `
 
-export const ActionsBar = styled(FlexGroup)`
-  padding: ${({ theme }) => theme.core.space.space100}
-    ${({ theme }) => theme.core.space.space200};
+export const ActionsBar = styled(Row).attrs({
+  align: 'center',
+  justify: 'end',
+  gap: 'l',
+  grow: false,
+})`
+  padding: ${({ theme }) =>
+    `${theme.core.space.space100} ${theme.core.space.space200}`};
   border-top: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
-  align-items: center;
-  justify-content: flex-end;
   flex-shrink: 0;
 `

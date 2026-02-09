@@ -11,7 +11,10 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { mergeRedisCommandsSpecs } from 'uiSrc/utils/transformers/redisCommands'
 import SEARCH_COMMANDS_SPEC from 'uiSrc/pages/workbench/data/supported_commands.json'
-import { QueryEditorContextProvider } from 'uiSrc/components/query'
+import {
+  QueryEditorContextProvider,
+  LoadingContainer,
+} from 'uiSrc/components/query'
 
 import { EditorTab, QueryEditorWrapperProps } from './QueryEditor.types'
 import { EditorLibraryToggle } from './EditorLibraryToggle'
@@ -31,6 +34,7 @@ export const QueryEditorWrapper = ({
 }: QueryEditorWrapperProps) => {
   const [activeTab, setActiveTab] = useState<EditorTab>(EditorTab.Editor)
 
+  const dispatch = useDispatch()
   const { loading: isCommandsLoading, spec: COMMANDS_SPEC } = useSelector(
     appRedisCommandsSelector,
   )
@@ -46,8 +50,6 @@ export const QueryEditorWrapper = ({
     [COMMANDS_SPEC, SEARCH_COMMANDS_SPEC],
   )
 
-  const dispatch = useDispatch()
-
   useEffect(() => {
     if (!connectedInstanceId) return
     dispatch(fetchRedisearchListAction(undefined, undefined, false))
@@ -56,7 +58,9 @@ export const QueryEditorWrapper = ({
   if (isCommandsLoading) {
     return (
       <S.EditorWrapper>
-        <LoadingContent lines={2} className="fluid" />
+        <LoadingContainer>
+          <LoadingContent lines={2} className="fluid" />
+        </LoadingContainer>
       </S.EditorWrapper>
     )
   }
