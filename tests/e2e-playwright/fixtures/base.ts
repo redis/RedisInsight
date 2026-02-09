@@ -1,5 +1,15 @@
 import { test as base, ElectronApplication, _electron as electron } from '@playwright/test';
-import { BrowserPage, CliPanel } from 'e2eSrc/pages';
+import {
+  BrowserPage,
+  CliPanel,
+  DatabasesPage,
+  WorkbenchPage,
+  AnalyticsPage,
+  SettingsPage,
+  PubSubPage,
+  EulaPage,
+  SidebarPanel,
+} from 'e2eSrc/pages';
 import { ApiHelper, retry } from 'e2eSrc/helpers';
 
 /**
@@ -20,6 +30,13 @@ type Fixtures = {
    */
   browserPage: BrowserPage;
   cliPanel: CliPanel;
+  databasesPage: DatabasesPage;
+  workbenchPage: WorkbenchPage;
+  analyticsPage: AnalyticsPage;
+  settingsPage: SettingsPage;
+  pubSubPage: PubSubPage;
+  eulaPage: EulaPage;
+  sidebarPanel: SidebarPanel;
 };
 
 /**
@@ -90,9 +107,7 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
           if (mainWindow.isClosed()) {
             throw new Error('Window was closed unexpectedly');
           }
-          windowId = await mainWindow.evaluate(
-            () => (window as Window & { windowId?: string }).windowId,
-          );
+          windowId = await mainWindow.evaluate(() => (window as Window & { windowId?: string }).windowId);
           if (!windowId) {
             throw new Error('windowId not yet available');
           }
@@ -178,6 +193,34 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
 
   cliPanel: async ({ page }, use) => {
     await use(new CliPanel(page));
+  },
+
+  databasesPage: async ({ page }, use) => {
+    await use(new DatabasesPage(page));
+  },
+
+  workbenchPage: async ({ page }, use) => {
+    await use(new WorkbenchPage(page));
+  },
+
+  analyticsPage: async ({ page }, use) => {
+    await use(new AnalyticsPage(page));
+  },
+
+  settingsPage: async ({ page }, use) => {
+    await use(new SettingsPage(page));
+  },
+
+  pubSubPage: async ({ page }, use) => {
+    await use(new PubSubPage(page));
+  },
+
+  eulaPage: async ({ page }, use) => {
+    await use(new EulaPage(page));
+  },
+
+  sidebarPanel: async ({ page }, use) => {
+    await use(new SidebarPanel(page));
   },
 });
 
