@@ -45,7 +45,7 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
   },
   {
     id: IndexesListColumn.Prefix,
-    accessorKey: 'prefixes',
+    accessorKey: IndexesListColumn.Prefix,
     header: () => (
       <ColumnHeader
         label={INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Prefix]}
@@ -65,7 +65,7 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
   },
   {
     id: IndexesListColumn.Docs,
-    accessorKey: 'numDocs',
+    accessorKey: IndexesListColumn.Docs,
     header: () => (
       <ColumnHeader
         label={INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Docs]}
@@ -83,7 +83,7 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
   },
   {
     id: IndexesListColumn.Records,
-    accessorKey: 'numRecords',
+    accessorKey: IndexesListColumn.Records,
     header: () => (
       <ColumnHeader
         label={INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Records]}
@@ -102,7 +102,7 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
   },
   {
     id: IndexesListColumn.Terms,
-    accessorKey: 'numTerms',
+    accessorKey: IndexesListColumn.Terms,
     header: () => (
       <ColumnHeader
         label={INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Terms]}
@@ -120,7 +120,7 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
   },
   {
     id: IndexesListColumn.Fields,
-    accessorKey: 'numFields',
+    accessorKey: IndexesListColumn.Fields,
     header: () => (
       <ColumnHeader
         label={INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Fields]}

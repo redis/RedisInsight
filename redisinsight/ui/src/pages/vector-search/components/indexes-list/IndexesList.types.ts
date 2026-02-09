@@ -46,12 +46,12 @@ export interface IndexesListProps {
  */
 export enum IndexesListColumn {
   Name = 'name',
-  Prefix = 'prefix',
+  Prefix = 'prefixes',
   FieldTypes = 'fieldTypes',
-  Docs = 'docs',
-  Records = 'records',
-  Terms = 'terms',
-  Fields = 'fields',
+  Docs = 'numDocs',
+  Records = 'numRecords',
+  Terms = 'numTerms',
+  Fields = 'numFields',
   Actions = 'actions',
 }
 
