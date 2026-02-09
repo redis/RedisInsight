@@ -78,7 +78,6 @@ export const AllFieldTypes: Story = {
           FieldTypes.TAG,
           FieldTypes.NUMERIC,
           FieldTypes.GEO,
-          FieldTypes.GEOSHAPE,
           FieldTypes.VECTOR,
         ],
       }),

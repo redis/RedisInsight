@@ -8,7 +8,6 @@ const FIELD_TYPES = [
   FieldTypes.TAG,
   FieldTypes.NUMERIC,
   FieldTypes.GEO,
-  FieldTypes.GEOSHAPE,
   FieldTypes.VECTOR,
 ]
 
@@ -90,13 +89,12 @@ export const exampleIndexListRows = {
       FieldTypes.TAG,
       FieldTypes.NUMERIC,
       FieldTypes.GEO,
-      FieldTypes.GEOSHAPE,
       FieldTypes.VECTOR,
     ],
     numDocs: 500,
     numRecords: 1000,
     numTerms: 200,
-    numFields: 6,
+    numFields: 5,
   }),
   empty: indexListRowFactory.build({
     id: 'idx-empty',
