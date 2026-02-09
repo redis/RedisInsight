@@ -41,7 +41,7 @@ const meta: Meta<typeof IndexesList> = {
     },
     actions: {
       description:
-        'Array of { name, callback } for menu items. callback receives the index name.',
+        'Array of { name, callback } for menu items. name is the display name of the action and callback is the function to call when the action is clicked.',
     },
   },
 }
@@ -53,6 +53,41 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {
     data: mockIndexListData,
+  },
+}
+
+/**
+ * Custom `onQueryClick` and `actions` are passed. Use the Actions panel to see
+ * callbacks when you click Query or open the menu and choose Edit or Delete.
+ */
+export const WithActionsCallbacks: Story = {
+  args: {
+    data: mockIndexListData,
+    onQueryClick: (_indexName: string) => {},
+    actions: [
+      {
+        name: 'Edit',
+        callback: (_indexName: string) => {
+          // eslint-disable-next-line no-console
+          console.log('Edit')
+        },
+      },
+      {
+        name: 'Delete',
+        callback: (_indexName: string) => {
+          // eslint-disable-next-line no-console
+          console.log('Delete')
+        },
+      },
+    ] satisfies IndexListAction[],
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Pass `onQueryClick` and `actions` to handle row actions. Check the Actions panel when clicking Query (if connected) or menu items.',
+      },
+    },
   },
 }
 
@@ -128,52 +163,5 @@ export const NoPrefixes: Story = {
         prefixes: [],
       }),
     ],
-  },
-}
-
-export const ZeroDocuments: Story = {
-  args: {
-    data: [
-      indexListRowFactory.build({
-        numDocs: 0,
-        numRecords: 0,
-        numTerms: 0,
-      }),
-    ],
-  },
-}
-
-/**
- * Custom `onQueryClick` and `actions` are passed. Use the Actions panel to see
- * callbacks when you click Query or open the menu and choose Edit or Delete.
- */
-export const WithActionsCallbacks: Story = {
-  args: {
-    data: mockIndexListData,
-    onQueryClick: (_indexName: string) => {},
-    actions: [
-      {
-        name: 'Edit',
-        callback: (_indexName: string) => {
-          // eslint-disable-next-line no-console
-          console.log('Edit')
-        },
-      },
-      {
-        name: 'Delete',
-        callback: (_indexName: string) => {
-          // eslint-disable-next-line no-console
-          console.log('Delete')
-        },
-      },
-    ] satisfies IndexListAction[],
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Pass `onQueryClick` and `actions` to handle row actions. Check the Actions panel when clicking Query (if connected) or menu items.',
-      },
-    },
   },
 }
