@@ -1,6 +1,20 @@
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 
 /**
+ * Enum representing the column identifiers for the IndexesList.
+ */
+export enum IndexesListColumn {
+  Name = 'name',
+  Prefix = 'prefixes',
+  FieldTypes = 'fieldTypes',
+  Docs = 'numDocs',
+  Records = 'numRecords',
+  Terms = 'numTerms',
+  Fields = 'numFields',
+  Actions = 'actions',
+}
+
+/**
  * Represents a single row in the IndexesList.
  * Contains all the data needed to display an index in the list.
  */
@@ -39,20 +53,6 @@ export interface IndexesListProps {
   onQueryClick?: (indexName: string) => void
   /** Actions to render in the row actions menu (e.g. Edit, Delete) */
   actions?: IndexListAction[]
-}
-
-/**
- * Enum representing the column identifiers for the IndexesList.
- */
-export enum IndexesListColumn {
-  Name = 'name',
-  Prefix = 'prefixes',
-  FieldTypes = 'fieldTypes',
-  Docs = 'numDocs',
-  Records = 'numRecords',
-  Terms = 'numTerms',
-  Fields = 'numFields',
-  Actions = 'actions',
 }
 
 /**
