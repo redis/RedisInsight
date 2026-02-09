@@ -112,8 +112,8 @@ export class DatabaseList {
     const row = this.getRow(name);
     await row.hover();
     await row.getByTestId(/controls-button/).click();
-    await this.page.getByRole('menuitem', { name: /remove database/i }).click();
-    await this.page.getByRole('button', { name: 'Delete' }).click();
+    await this.page.getByRole('button', { name: 'Remove field' }).click();
+    await this.page.getByRole('button', { name: 'Remove' }).click();
   }
 
   /**

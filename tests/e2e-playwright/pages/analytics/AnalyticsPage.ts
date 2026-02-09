@@ -200,8 +200,7 @@ export class AnalyticsPage extends InstancePage {
    * Refresh slow log
    */
   async refreshSlowLog(): Promise<void> {
-    const refreshBtn = this.page.locator('[data-testid*="refresh"]').first();
-    await refreshBtn.click();
+    await this.refreshButton.click();
     await this.page.getByText(/Last refresh:.*now/).waitFor({ state: 'visible', timeout: 5000 });
   }
 
