@@ -3,7 +3,11 @@ import React from 'react'
 import { ColumnDef } from 'uiSrc/components/base/layout/table'
 
 import { IndexListRow, IndexesListColumn } from './IndexesList.types'
-import { INDEXES_LIST_COLUMN_HEADERS } from './constants'
+import {
+  INDEXES_LIST_COLUMN_HEADERS,
+  INDEXES_LIST_COLUMN_TOOLTIPS,
+} from './constants'
+import { ColumnHeader } from '../index-details/components/ColumnHeader/ColumnHeader'
 import { NameCell } from './components/NameCell'
 import { PrefixCell } from './components/PrefixCell'
 import { FieldTypesCell } from './components/FieldTypesCell'
@@ -25,9 +29,15 @@ export const INDEXES_LIST_COLUMNS: ColumnDef<IndexListRow>[] = [
   {
     id: IndexesListColumn.Prefix,
     accessorKey: 'prefixes',
-    header: INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Prefix],
+    header: () => (
+      <ColumnHeader
+        label={INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Prefix]}
+        tooltip={INDEXES_LIST_COLUMN_TOOLTIPS[IndexesListColumn.Prefix]}
+      />
+    ),
     enableSorting: false,
     cell: PrefixCell,
+    size: 170,
   },
   {
     id: IndexesListColumn.FieldTypes,
@@ -39,7 +49,12 @@ export const INDEXES_LIST_COLUMNS: ColumnDef<IndexListRow>[] = [
   {
     id: IndexesListColumn.Docs,
     accessorKey: 'numDocs',
-    header: INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Docs],
+    header: () => (
+      <ColumnHeader
+        label={INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Docs]}
+        tooltip={INDEXES_LIST_COLUMN_TOOLTIPS[IndexesListColumn.Docs]}
+      />
+    ),
     enableSorting: true,
     cell: ({ row }) => (
       <NumericCell
@@ -52,7 +67,12 @@ export const INDEXES_LIST_COLUMNS: ColumnDef<IndexListRow>[] = [
   {
     id: IndexesListColumn.Records,
     accessorKey: 'numRecords',
-    header: INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Records],
+    header: () => (
+      <ColumnHeader
+        label={INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Records]}
+        tooltip={INDEXES_LIST_COLUMN_TOOLTIPS[IndexesListColumn.Records]}
+      />
+    ),
     enableSorting: true,
     cell: ({ row }) => (
       <NumericCell
@@ -66,7 +86,12 @@ export const INDEXES_LIST_COLUMNS: ColumnDef<IndexListRow>[] = [
   {
     id: IndexesListColumn.Terms,
     accessorKey: 'numTerms',
-    header: INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Terms],
+    header: () => (
+      <ColumnHeader
+        label={INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Terms]}
+        tooltip={INDEXES_LIST_COLUMN_TOOLTIPS[IndexesListColumn.Terms]}
+      />
+    ),
     enableSorting: true,
     cell: ({ row }) => (
       <NumericCell
@@ -79,7 +104,12 @@ export const INDEXES_LIST_COLUMNS: ColumnDef<IndexListRow>[] = [
   {
     id: IndexesListColumn.Fields,
     accessorKey: 'numFields',
-    header: INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Fields],
+    header: () => (
+      <ColumnHeader
+        label={INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Fields]}
+        tooltip={INDEXES_LIST_COLUMN_TOOLTIPS[IndexesListColumn.Fields]}
+      />
+    ),
     enableSorting: true,
     cell: ({ row }) => (
       <NumericCell

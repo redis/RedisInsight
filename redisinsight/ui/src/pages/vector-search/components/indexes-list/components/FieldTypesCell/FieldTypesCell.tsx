@@ -11,7 +11,7 @@ const FieldTypesCell: IIndexesListCell = ({ row }) => {
     <FieldTypesWrapper data-testid={`index-field-types-${id}`}>
       {fieldTypes.map((type) => (
         <FieldTag
-          key={type}
+          key={`index-field-types-${id}--tag-${type}`}
           tag={type}
           dataTestId={`index-field-types-${id}--tag-${type}`}
         />
