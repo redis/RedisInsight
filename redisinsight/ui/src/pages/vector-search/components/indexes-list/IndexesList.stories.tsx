@@ -36,7 +36,7 @@ const meta: Meta<typeof IndexesList> = {
     },
     actions: {
       description:
-        'Array of { name, callback, variant? } for menu items. callback receives the index name.',
+        'Array of { name, callback } for menu items. callback receives the index name.',
     },
   },
 }
@@ -78,7 +78,6 @@ export const AllFieldTypes: Story = {
           FieldTypes.TAG,
           FieldTypes.NUMERIC,
           FieldTypes.GEO,
-          FieldTypes.GEOSHAPE,
           FieldTypes.VECTOR,
         ],
       }),

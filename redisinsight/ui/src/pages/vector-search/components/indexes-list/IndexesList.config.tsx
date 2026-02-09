@@ -18,7 +18,7 @@ import { NumericCell } from './components/NumericCell'
 import { ActionsCell } from './components/ActionsCell'
 import { ColumnHeader } from './components/ColumnHeader/ColumnHeader'
 
-export const createActionsColumn = (
+const createActionsColumn = (
   onQueryClick?: (indexName: string) => void,
   actions?: IndexListAction[],
 ): ColumnDef<IndexListRow> => ({
