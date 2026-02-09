@@ -94,7 +94,7 @@ export const INDEXES_LIST_COLUMNS: ColumnDef<IndexListRow>[] = [
     id: IndexesListColumn.Actions,
     header: INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Actions],
     enableSorting: false,
-    size: 100,
+    size: 150,
     cell: ActionsCell,
   },
 ]
