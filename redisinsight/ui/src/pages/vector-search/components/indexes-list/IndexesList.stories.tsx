@@ -7,7 +7,7 @@ import {
   mockIndexListData,
 } from 'uiSrc/mocks/factories/vector-search/indexList.factory'
 import IndexesList from './IndexesList'
-import { IndexesListProps } from './IndexesList.types'
+import { IndexesListProps, IndexListAction } from './IndexesList.types'
 
 // Simple wrapper for stories
 const IndexesListWrapper = (props: IndexesListProps) => (
@@ -24,8 +24,19 @@ const meta: Meta<typeof IndexesList> = {
     docs: {
       description: {
         component:
-          'Table of vector search indexes. Column headers for Index prefix, Docs, Records, Terms, and Fields show an info icon; hover or focus the icon to see a tooltip with the column description.',
+          'Table of vector search indexes. Pass `onQueryClick` and `actions` to handle the Query button and the row actions menu (e.g. Edit, Delete). Column headers for Index prefix, Docs, Records, Terms, and Fields show an info icon; hover or focus the icon to see a tooltip.',
       },
+    },
+  },
+  argTypes: {
+    onQueryClick: {
+      description:
+        'Called with the index name when the Query button is clicked.',
+      action: 'onQueryClick',
+    },
+    actions: {
+      description:
+        'Array of { name, callback, variant? } for menu items. callback receives the index name.',
     },
   },
 }
@@ -126,6 +137,41 @@ export const WithColumnTooltips: Story = {
       description: {
         story:
           'Use the info icons next to Index prefix, Docs, Records, Terms, and Fields to see tooltips explaining each column.',
+      },
+    },
+  },
+}
+
+/**
+ * Custom `onQueryClick` and `actions` are passed. Use the Actions panel to see
+ * callbacks when you click Query or open the menu and choose Edit or Delete.
+ */
+export const WithActionsCallbacks: Story = {
+  args: {
+    data: mockIndexListData,
+    onQueryClick: (_indexName: string) => {},
+    actions: [
+      {
+        name: 'Edit',
+        callback: (_indexName: string) => {
+          // eslint-disable-next-line no-console
+          console.log('Edit')
+        },
+      },
+      {
+        name: 'Delete',
+        callback: (_indexName: string) => {
+          // eslint-disable-next-line no-console
+          console.log('Delete')
+        },
+      },
+    ] satisfies IndexListAction[],
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Pass `onQueryClick` and `actions` to handle row actions. Check the Actions panel when clicking Query (if connected) or menu items.',
       },
     },
   },

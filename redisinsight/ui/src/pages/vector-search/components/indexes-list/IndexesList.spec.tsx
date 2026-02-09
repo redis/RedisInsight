@@ -5,7 +5,9 @@ import {
   fireEvent,
   render,
   screen,
+  userEvent,
   waitForRiTooltipVisible,
+  within,
 } from 'uiSrc/utils/test-utils'
 import {
   indexListRowFactory,
@@ -13,7 +15,7 @@ import {
   mockIndexListData,
 } from 'uiSrc/mocks/factories/vector-search/indexList.factory'
 import IndexesList from './IndexesList'
-import { IndexesListProps } from './IndexesList.types'
+import { IndexesListProps, IndexListAction } from './IndexesList.types'
 
 const defaultProps: IndexesListProps = {
   data: mockIndexListData,
@@ -192,6 +194,26 @@ describe('IndexesList', () => {
   })
 
   describe('Column header tooltips', () => {
+    it('should show default Edit and Delete actions when menu is opened', async () => {
+      const defaultActions: IndexListAction[] = [
+        { name: 'Edit', callback: () => {} },
+        { name: 'Delete', callback: () => {} },
+      ]
+      renderComponent({ actions: defaultActions })
+
+      const firstRow = mockIndexListData[0]
+      const actionsCell = screen.getByTestId(`index-actions-${firstRow.id}`)
+      const buttons = within(actionsCell).getAllByRole('button')
+      await userEvent.click(buttons[1])
+
+      expect(
+        screen.getByTestId(`index-actions-edit-btn-${firstRow.id}`),
+      ).toBeInTheDocument()
+      expect(
+        screen.getByTestId(`index-actions-delete-btn-${firstRow.id}`),
+      ).toBeInTheDocument()
+    })
+
     it('should show tooltip content when focusing info icon for each column with tooltip', async () => {
       renderComponent()
 
@@ -228,6 +250,76 @@ describe('IndexesList', () => {
         'Fields',
         /Total number of fields defined in the index schema/,
       )
+    })
+  })
+
+  describe('Actions column callbacks', () => {
+    it('should call onQueryClick with index name when Query button is clicked', async () => {
+      const onQueryClick = jest.fn()
+      renderComponent({ data: mockIndexListData, onQueryClick })
+
+      const firstRow = mockIndexListData[0]
+      const queryBtn = screen.getByTestId(`index-query-btn-${firstRow.id}`)
+
+      await userEvent.click(queryBtn)
+
+      expect(onQueryClick).toHaveBeenCalledTimes(1)
+      expect(onQueryClick).toHaveBeenCalledWith(firstRow.name)
+    })
+
+    it('should call action callback with index name when menu action is clicked', async () => {
+      const onEdit = jest.fn()
+      const onDelete = jest.fn()
+      const actions: IndexListAction[] = [
+        { name: 'Edit', callback: onEdit },
+        { name: 'Delete', callback: onDelete },
+      ]
+      renderComponent({
+        data: mockIndexListData,
+        actions,
+      })
+
+      const firstRow = mockIndexListData[0]
+      const actionsCell = screen.getByTestId(`index-actions-${firstRow.id}`)
+      const buttons = within(actionsCell).getAllByRole('button')
+      const menuTrigger = buttons[1]
+
+      await userEvent.click(menuTrigger)
+
+      const editBtn = screen.getByTestId(
+        `index-actions-edit-btn-${firstRow.id}`,
+      )
+      await userEvent.click(editBtn)
+      expect(onEdit).toHaveBeenCalledTimes(1)
+      expect(onEdit).toHaveBeenCalledWith(firstRow.name)
+
+      await userEvent.click(buttons[1])
+      const deleteBtn = screen.getByTestId(
+        `index-actions-delete-btn-${firstRow.id}`,
+      )
+      await userEvent.click(deleteBtn)
+      expect(onDelete).toHaveBeenCalledTimes(1)
+      expect(onDelete).toHaveBeenCalledWith(firstRow.name)
+    })
+
+    it('should render custom actions in the menu', async () => {
+      const actions: IndexListAction[] = [
+        { name: 'CustomOne', callback: () => {} },
+        { name: 'CustomTwo', callback: () => {} },
+      ]
+      renderComponent({ data: mockIndexListData, actions })
+
+      const firstRow = mockIndexListData[0]
+      const actionsCell = screen.getByTestId(`index-actions-${firstRow.id}`)
+      const buttons = within(actionsCell).getAllByRole('button')
+      await userEvent.click(buttons[1])
+
+      expect(
+        screen.getByTestId(`index-actions-customone-btn-${firstRow.id}`),
+      ).toBeInTheDocument()
+      expect(
+        screen.getByTestId(`index-actions-customtwo-btn-${firstRow.id}`),
+      ).toBeInTheDocument()
     })
   })
 })
