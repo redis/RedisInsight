@@ -8,6 +8,7 @@ import { Theme } from 'uiSrc/components/base/theme/types'
 
 export const ModalContent = styled(Modal.Content.Compose)`
   width: 660px;
+  max-height: calc(100vh - 100px);
   border-radius: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
 `
 
@@ -25,6 +26,8 @@ export const VisuallyHiddenTitle = styled(Modal.Content.Header.Title)`
 
 export const ModalBody = styled(Col)`
   padding: ${({ theme }: { theme: Theme }) => theme.core.space.space500};
+  overflow-y: auto;
+  flex: 1 1 auto;
 `
 
 export const Illustration = styled(Row)`
