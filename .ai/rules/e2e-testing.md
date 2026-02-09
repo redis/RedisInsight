@@ -379,21 +379,41 @@ this.searchInput = page.getByPlaceholder('Search...');
 
 Tests must work in both browser mode (http://localhost:8080) and Electron mode (no baseURL). Direct `page.goto()` calls fail in Electron because there's no baseURL.
 
+### Navigation Architecture
+
+**BasePage** provides only fundamental navigation:
+```typescript
+await this.gotoHome();              // Click Redis logo → databases list
+await this.gotoDatabase(dbId);      // Click database → Browser page (default)
+```
+
+**Each page owns its navigation** via its `goto()` method:
+```typescript
+await settingsPage.goto();           // Settings page
+await browserPage.goto(dbId);        // Browser page for database
+await workbenchPage.goto(dbId);      // Workbench page for database
+await analyticsPage.goto(dbId);      // Analytics page for database
+await pubSubPage.goto(dbId);         // Pub/Sub page for database
+```
+
+**NavigationTabs component** handles tab switching within a connected database:
+```typescript
+await browserPage.navigationTabs.gotoBrowser();
+await browserPage.navigationTabs.gotoWorkbench();
+await browserPage.navigationTabs.gotoAnalyze();
+await browserPage.navigationTabs.gotoPubSub();
+```
+
 ### ✅ Correct Navigation Pattern
 
 ```typescript
-// Use Page Object's goto() method
-test.beforeEach(async ({ createBrowserPage }) => {
-  browserPage = createBrowserPage(database);
-  await browserPage.goto();  // Uses UI navigation internally
+// Use Page Object's goto() method in beforeEach
+test.beforeEach(async ({ browserPage }) => {
+  await browserPage.goto(database.id);  // Navigates and waits for page load
 });
 
-// Use BasePage navigation methods
-await browserPage.gotoHome();       // Click Redis logo
-await browserPage.gotoWorkbench();  // Click Workbench tab
-await browserPage.gotoBrowser();    // Click Browse tab
-await browserPage.gotoPubSub();     // Click Pub/Sub tab
-await browserPage.gotoSettings();   // Navigate to settings via UI
+// Switch tabs when already connected
+await browserPage.navigationTabs.gotoWorkbench();
 ```
 
 ### ❌ Incorrect Navigation Pattern

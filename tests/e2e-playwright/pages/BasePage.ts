@@ -47,55 +47,14 @@ export abstract class BasePage {
   }
 
   /**
-   * Navigate to the settings page
-   * Uses UI navigation for cross-platform compatibility
-   */
-  async gotoSettings(): Promise<void> {
-    await this.page.getByTestId('settings-page-btn').click();
-    await this.waitForLoad();
-  }
-
-  /**
-   * Navigate to a specific database instance (opens Browser page)
+   * Navigate to a specific database instance (opens Browser page by default)
+   * Waits for database to be connected (navigation tabs visible)
    * @param databaseId - ID of the database to connect to
    */
   async gotoDatabase(databaseId: string): Promise<void> {
     await this.gotoHome();
     await this.page.getByTestId(`instance-name-${databaseId}`).click();
-    await this.waitForLoad();
-  }
-
-  /**
-   * Navigate to Workbench for the currently connected database
-   */
-  async gotoWorkbench(): Promise<void> {
-    await this.page.getByRole('tab', { name: 'Workbench' }).click();
-    await this.waitForLoad();
-  }
-
-  /**
-   * Navigate to Browser for the currently connected database
-   */
-  async gotoBrowser(): Promise<void> {
-    await this.page.getByRole('tab', { name: 'Browse' }).click();
-    await this.waitForLoad();
-  }
-
-  /**
-   * Navigate to Pub/Sub for the currently connected database
-   */
-  async gotoPubSub(): Promise<void> {
-    await this.page.getByRole('tab', { name: 'Pub/Sub' }).click();
-    await this.waitForLoad();
-  }
-
-  /**
-   * Navigate to Analytics page (from within a connected database)
-   * Clicks the "Analyze" tab in the database navigation
-   */
-  async gotoAnalytics(): Promise<void> {
-    await this.page.getByRole('tab', { name: 'Analyze' }).click();
-    await this.waitForLoad();
+    await this.page.getByRole('tab', { name: 'Browse' }).waitFor({ state: 'visible' });
   }
 
   /**

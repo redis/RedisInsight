@@ -125,26 +125,31 @@ Default paths by platform:
 
 #### Navigation Methods
 
-All navigation is UI-based for consistency across platforms. `BasePage` provides:
+All navigation is UI-based for consistency across platforms.
 
+**BasePage** provides fundamental navigation:
 ```typescript
-// Available in all page objects:
-await this.gotoHome();              // Databases list
-await this.gotoSettings();          // Settings page
-await this.gotoDatabase('mydb');    // Connect to specific database
-await this.gotoBrowser();           // Browser (within connected db)
-await this.gotoWorkbench();         // Workbench (within connected db)
-await this.gotoPubSub();            // Pub/Sub (within connected db)
-await this.gotoAnalytics();         // Analytics (within connected db)
+await this.gotoHome();              // Click Redis logo → databases list
+await this.gotoDatabase(dbId);      // Click database → Browser page (default)
 ```
 
-Page-specific `goto()` methods use these centralized methods:
-
+**Each page has its own `goto()` method** that handles navigation + waiting:
 ```typescript
-// SettingsPage.ts
-async goto(): Promise<void> {
-  await this.gotoSettings();
-}
+// Navigate to specific pages
+await settingsPage.goto();           // Settings page
+await browserPage.goto(dbId);        // Browser page for database
+await workbenchPage.goto(dbId);      // Workbench page for database
+await analyticsPage.goto(dbId);      // Analytics page for database
+await pubSubPage.goto(dbId);         // Pub/Sub page for database
+```
+
+**InstancePage** provides tab switching within a connected database:
+```typescript
+// Switch tabs (when already connected to a database)
+await browserPage.navigationTabs.gotoBrowser();
+await browserPage.navigationTabs.gotoWorkbench();
+await browserPage.navigationTabs.gotoAnalyze();
+await browserPage.navigationTabs.gotoPubSub();
 ```
 
 ## Multi-Environment Support
