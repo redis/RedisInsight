@@ -150,5 +150,3 @@ export const getIndexesListColumns = (options?: {
     createActionsColumn(onQueryClick, actions),
   ]
 }
-
-export const INDEXES_LIST_COLUMNS = getIndexesListColumns()
