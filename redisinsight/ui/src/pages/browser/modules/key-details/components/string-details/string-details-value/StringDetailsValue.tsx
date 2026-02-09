@@ -64,6 +64,8 @@ import styles from './styles.module.scss'
 
 const MIN_ROWS = 8
 const APPROXIMATE_WIDTH_OF_SIGN = 8.6
+const APPROXIMATE_ROW_HEIGHT = 17
+const TEXTAREA_PADDING = 80
 const MAX_LENGTH = STRING_MAX_LENGTH + 1
 
 export interface Props {
@@ -103,7 +105,6 @@ const StringDetailsValue = (props: Props) => {
   )
 
   const textAreaRef: Ref<HTMLTextAreaElement> = useRef(null)
-  const viewValueRef: Ref<HTMLPreElement> = useRef(null)
   const containerRef: Ref<HTMLDivElement> = useRef(null)
 
   const dispatch = useDispatch()
@@ -164,7 +165,7 @@ const StringDetailsValue = (props: Props) => {
   }, [initialValue, viewFormatProp, compressor, length])
 
   useEffect(() => {
-    // Approximate calculation of textarea rows by initialValue
+    // Approximate calculation of textarea rows by areaValue
     if (!isEditItem || !textAreaRef.current || value === null) {
       return
     }
@@ -173,10 +174,16 @@ const StringDetailsValue = (props: Props) => {
       textAreaRef.current.clientWidth,
       APPROXIMATE_WIDTH_OF_SIGN,
     )
-    if (calculatedRows > MIN_ROWS) {
-      setRows(calculatedRows)
-    }
-  }, [viewValueRef, isEditItem])
+
+    // Calculate max rows based on container height
+    const containerHeight = containerRef.current?.clientHeight || 0
+    const availableHeight = containerHeight - TEXTAREA_PADDING
+    const maxRows = Math.floor(availableHeight / APPROXIMATE_ROW_HEIGHT)
+
+    // Clamp rows between MIN_ROWS and maxRows
+    const newRows = Math.max(MIN_ROWS, Math.min(calculatedRows, maxRows))
+    setRows(newRows)
+  }, [areaValue, isEditItem])
 
   useMemo(() => {
     if (isEditItem && initialValue) {
@@ -301,11 +308,7 @@ const StringDetailsValue = (props: Props) => {
               onChange={setAreaValue}
               disabled={loading}
               ref={textAreaRef}
-              style={{
-                maxHeight: containerRef.current
-                  ? containerRef.current?.clientHeight - 80
-                  : '100%',
-              }}
+              height="100%"
               data-testid="string-value"
             />
           </InlineItemEditor>
