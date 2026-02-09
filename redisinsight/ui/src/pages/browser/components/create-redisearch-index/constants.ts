@@ -5,6 +5,7 @@ export enum FieldTypes {
   TAG = 'tag',
   NUMERIC = 'numeric',
   GEO = 'geo',
+  GEOSHAPE = 'geoshape',
   VECTOR = 'vector',
 }
 

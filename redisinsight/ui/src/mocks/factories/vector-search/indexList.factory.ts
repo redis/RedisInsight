@@ -8,8 +8,8 @@ const FIELD_TYPES = [
   FieldTypes.TAG,
   FieldTypes.NUMERIC,
   FieldTypes.GEO,
+  FieldTypes.GEOSHAPE,
   FieldTypes.VECTOR,
-  FieldTypes.GEO,
 ]
 
 /**
