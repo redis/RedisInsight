@@ -7,6 +7,10 @@ import { useRedisearchListData } from '../useRedisearchListData'
 import NoDataMessage from '../components/no-data-message/NoDataMessage'
 import { NoDataMessageKeys } from '../components/no-data-message/data'
 
+/**
+ * @deprecated This component is deprecated. Use the new IndexesList component instead.
+ * @see redisinsight/ui/src/pages/vector-search/components/indexes-list/IndexesList
+ */
 export const ManageIndexesList = () => {
   const { stringData: data, loading } = useRedisearchListData()
   const hasIndexes = !!data?.length
