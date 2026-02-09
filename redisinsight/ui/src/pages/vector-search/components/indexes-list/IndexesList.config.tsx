@@ -1,20 +1,16 @@
 import React from 'react'
 
 import { ColumnDef } from 'uiSrc/components/base/layout/table'
-import { Button } from 'uiSrc/components/base/forms/buttons'
 
-import {
-  IndexListRow,
-  IndexesListColumn,
-  GetColumnsOptions,
-} from './IndexesList.types'
+import { IndexListRow, IndexesListColumn } from './IndexesList.types'
 import { INDEXES_LIST_COLUMN_HEADERS } from './constants'
 import { NameCell } from './components/NameCell'
 import { PrefixCell } from './components/PrefixCell'
 import { FieldTypesCell } from './components/FieldTypesCell'
 import { NumericCell } from './components/NumericCell'
+import { ActionsCell } from './components/ActionsCell'
 
-export const BASE_COLUMNS: ColumnDef<IndexListRow>[] = [
+export const INDEXES_LIST_COLUMNS: ColumnDef<IndexListRow>[] = [
   {
     id: IndexesListColumn.Name,
     accessorKey: IndexesListColumn.Name,
@@ -94,47 +90,11 @@ export const BASE_COLUMNS: ColumnDef<IndexListRow>[] = [
     sortingFn: (rowA, rowB) =>
       rowA.original.numFields - rowB.original.numFields,
   },
-]
-
-/**
- * Creates the Actions column with the Query button and placeholder for future actions.
- */
-const createActionsColumn = (
-  onQueryClick?: (indexName: string) => void,
-): ColumnDef<IndexListRow> => ({
-  id: IndexesListColumn.Actions,
-  header: INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Actions],
-  enableSorting: false,
-  size: 100,
-  cell: ({ row }) => {
-    const { id, name } = row.original
-
-    const handleQueryClick = (e: React.MouseEvent) => {
-      e.stopPropagation()
-      onQueryClick?.(name)
-    }
-
-    return (
-      <div data-testid={`index-actions-${id}`}>
-        <Button
-          size="small"
-          onClick={handleQueryClick}
-          data-testid={`index-query-btn-${id}`}
-        >
-          Query
-        </Button>
-        {/* TODO[DA]: Add menu actions */}
-      </div>
-    )
+  {
+    id: IndexesListColumn.Actions,
+    header: INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Actions],
+    enableSorting: false,
+    size: 100,
+    cell: ActionsCell,
   },
-})
-
-/**
- * Returns the column definitions for the IndexesList.
- */
-export const getIndexesListColumns = ({
-  onQueryClick,
-}: GetColumnsOptions = {}): ColumnDef<IndexListRow>[] => [
-  ...BASE_COLUMNS,
-  createActionsColumn(onQueryClick),
 ]

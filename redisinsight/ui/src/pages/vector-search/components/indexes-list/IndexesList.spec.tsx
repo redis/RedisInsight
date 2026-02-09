@@ -1,5 +1,5 @@
 import React from 'react'
-import { cleanup, fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import { cleanup, render, screen } from 'uiSrc/utils/test-utils'
 import {
   indexListRowFactory,
   exampleIndexListRows,
@@ -10,7 +10,6 @@ import { IndexesListProps } from './IndexesList.types'
 
 const defaultProps: IndexesListProps = {
   data: mockIndexListData,
-  onQueryClick: jest.fn(),
   dataTestId: 'indexes-list',
 }
 
@@ -124,34 +123,6 @@ describe('IndexesList', () => {
           screen.getByTestId(`index-query-btn-${row.id}`),
         ).toBeInTheDocument()
       })
-    })
-  })
-
-  describe('Interactions', () => {
-    it('should call onQueryClick with correct index name when query button clicked', () => {
-      const onQueryClick = jest.fn()
-      renderComponent({ onQueryClick })
-
-      const firstRow = mockIndexListData[0]
-      const queryButton = screen.getByTestId(`index-query-btn-${firstRow.id}`)
-      fireEvent.click(queryButton)
-
-      expect(onQueryClick).toHaveBeenCalledTimes(1)
-      expect(onQueryClick).toHaveBeenCalledWith(firstRow.name)
-    })
-
-    it('should call onQueryClick for different indexes', () => {
-      const onQueryClick = jest.fn()
-      renderComponent({ onQueryClick })
-
-      const secondRow = mockIndexListData[1]
-      const thirdRow = mockIndexListData[2]
-
-      fireEvent.click(screen.getByTestId(`index-query-btn-${secondRow.id}`))
-      expect(onQueryClick).toHaveBeenCalledWith(secondRow.name)
-
-      fireEvent.click(screen.getByTestId(`index-query-btn-${thirdRow.id}`))
-      expect(onQueryClick).toHaveBeenCalledWith(thirdRow.name)
     })
   })
 

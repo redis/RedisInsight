@@ -31,20 +31,10 @@ export interface IndexListRow {
 export interface IndexesListProps {
   /** Array of index data to display in the list */
   data: IndexListRow[]
-  /** Callback when Query button is clicked */
-  onQueryClick?: (indexName: string) => void
   /** Test ID for the list container */
   dataTestId?: string
   /** Empty message to display when no data is available */
   emptyMessage?: string
-}
-
-/**
- * Options for generating list columns.
- */
-export interface GetColumnsOptions {
-  /** Callback when Query button is clicked */
-  onQueryClick?: (indexName: string) => void
 }
 
 /**
