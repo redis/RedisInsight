@@ -19,9 +19,9 @@ const renderComponent = (props: Partial<ColumnHeaderProps> = {}) =>
 
 describe('ColumnHeader', () => {
   it('should render the label', () => {
-    renderComponent({ label: 'Field name' })
+    renderComponent({ label: 'Index name' })
 
-    const label = screen.getByText('Field name')
+    const label = screen.getByText('Index name')
     expect(label).toBeInTheDocument()
   })
 
