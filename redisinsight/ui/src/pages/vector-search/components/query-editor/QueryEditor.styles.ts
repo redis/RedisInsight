@@ -12,7 +12,7 @@ export const EditorWrapper = styled(Col)`
 
 export const ToggleBar = styled(Row).attrs({
   align: 'center',
-  justify: 'between',
+  justify: 'start',
   gap: 'l',
   grow: false,
 })`

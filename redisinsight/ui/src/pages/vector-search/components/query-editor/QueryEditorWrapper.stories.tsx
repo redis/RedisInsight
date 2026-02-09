@@ -56,6 +56,9 @@ const meta: Meta<typeof QueryEditorWrapper> = {
   component: QueryEditorWrapper,
   tags: ['autodocs'],
   decorators: [WithMonacoSetup],
+  args: {
+    onSubmit: fn(),
+  },
   parameters: {
     layout: 'centered',
     docs: {
@@ -78,11 +81,9 @@ type Story = StoryObj<typeof meta>
  * Default empty editor.
  */
 export const Default: Story = {
-  render: () => {
+  render: (args) => {
     const [query, setQuery] = useState('')
-    return (
-      <QueryEditorWrapper query={query} setQuery={setQuery} onSubmit={fn()} />
-    )
+    return <QueryEditorWrapper {...args} query={query} setQuery={setQuery} />
   },
 }
 
@@ -91,13 +92,11 @@ export const Default: Story = {
  */
 export const WithQuery: Story = {
   name: 'With pre-filled query',
-  render: () => {
+  render: (args) => {
     const [query, setQuery] = useState(
       'FT.SEARCH idx:bikes "*=>[KNN 10 @vector $blob]" PARAMS 2 blob "..." DIALECT 2',
     )
-    return (
-      <QueryEditorWrapper query={query} setQuery={setQuery} onSubmit={fn()} />
-    )
+    return <QueryEditorWrapper {...args} query={query} setQuery={setQuery} />
   },
 }
 
@@ -108,10 +107,8 @@ export const Loading: Story = {
   parameters: {
     loadingState: true,
   },
-  render: () => {
+  render: (args) => {
     const [query, setQuery] = useState('')
-    return (
-      <QueryEditorWrapper query={query} setQuery={setQuery} onSubmit={fn()} />
-    )
+    return <QueryEditorWrapper {...args} query={query} setQuery={setQuery} />
   },
 }

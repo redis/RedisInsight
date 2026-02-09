@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import type { Meta, StoryObj, StoryContext } from '@storybook/react-vite'
 import { useDispatch } from 'react-redux'
+import { fn } from 'storybook/test'
 
 import { MOCK_COMMANDS_SPEC } from 'uiSrc/constants'
 import {
@@ -56,6 +57,13 @@ const meta: Meta<typeof QueryWrapper> = {
   component: QueryWrapper,
   tags: ['autodocs'],
   decorators: [WithMonacoSetup],
+  args: {
+    setQueryEl: fn(),
+    onSubmit: fn(),
+    onQueryChangeMode: fn(),
+    onChangeGroupMode: fn(),
+    onClear: fn(),
+  },
   parameters: {
     layout: 'fullscreen',
     docs: {
@@ -64,8 +72,8 @@ const meta: Meta<typeof QueryWrapper> = {
           'Workbench Query Editor with full autocomplete, command history, DSL syntax widget, raw/group mode toggle, and tutorials.',
       },
       story: {
-        inline: false,
-        iframeHeight: 400,
+        // inline: false,
+        // iframeHeight: 400,
       },
     },
   },
@@ -78,21 +86,15 @@ type Story = StoryObj<typeof meta>
  * Default empty editor with full actions (tutorials + raw/group/run).
  */
 export const Default: Story = {
-  render: () => {
+  render: (args) => {
     const [query, setQuery] = useState('')
     return (
       <QueryWrapper
+        {...args}
         query={query}
         setQuery={setQuery}
         activeMode={RunQueryMode.ASCII}
         resultsMode={ResultsMode.Default}
-        setQueryEl={() => {}}
-        onSubmit={(value) => {
-          // eslint-disable-next-line no-console
-          console.log('Submit:', value)
-        }}
-        onQueryChangeMode={() => {}}
-        onChangeGroupMode={() => {}}
       />
     )
   },
@@ -103,20 +105,14 @@ export const Default: Story = {
  */
 export const LiteActions: Story = {
   name: 'Lite actions mode',
-  render: () => {
+  render: (args) => {
     const [query, setQuery] = useState('')
     return (
       <QueryWrapper
+        {...args}
         query={query}
         setQuery={setQuery}
         activeMode={RunQueryMode.ASCII}
-        setQueryEl={() => {}}
-        onSubmit={(value) => {
-          // eslint-disable-next-line no-console
-          console.log('Submit:', value)
-        }}
-        onQueryChangeMode={() => {}}
-        onChangeGroupMode={() => {}}
         queryProps={{ useLiteActions: true }}
       />
     )
@@ -128,7 +124,7 @@ export const LiteActions: Story = {
  */
 export const WithQuery: Story = {
   name: 'With pre-filled query',
-  render: () => {
+  render: (args) => {
     const [query, setQuery] = useState(
       'FT.CREATE idx:bikes_vss ON HASH PREFIX 1 "bikes:"\n' +
         'SCHEMA "model" TEXT NOSTEM SORTABLE\n' +
@@ -137,17 +133,11 @@ export const WithQuery: Story = {
     )
     return (
       <QueryWrapper
+        {...args}
         query={query}
         setQuery={setQuery}
         activeMode={RunQueryMode.ASCII}
         resultsMode={ResultsMode.Default}
-        setQueryEl={() => {}}
-        onSubmit={(value) => {
-          // eslint-disable-next-line no-console
-          console.log('Submit:', value)
-        }}
-        onQueryChangeMode={() => {}}
-        onChangeGroupMode={() => {}}
       />
     )
   },
@@ -160,15 +150,7 @@ export const Loading: Story = {
   parameters: {
     loadingState: true,
   },
-  render: () => (
-    <QueryWrapper
-      query=""
-      setQuery={() => {}}
-      activeMode={RunQueryMode.ASCII}
-      setQueryEl={() => {}}
-      onSubmit={() => {}}
-      onQueryChangeMode={() => {}}
-      onChangeGroupMode={() => {}}
-    />
+  render: (args) => (
+    <QueryWrapper {...args} query="" activeMode={RunQueryMode.ASCII} />
   ),
 }
