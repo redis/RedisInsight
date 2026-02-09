@@ -1,22 +1,31 @@
-import React, { memo } from 'react'
+import React, { memo, useMemo } from 'react'
 
 import { Table } from 'uiSrc/components/base/layout/table'
 
 import { IndexesListProps } from './IndexesList.types'
-import { INDEXES_LIST_COLUMNS } from './IndexesList.config'
+import { getIndexesListColumns } from './IndexesList.config'
 
 const IndexesList = ({
   data,
   emptyMessage,
   dataTestId = 'indexes-list',
-}: IndexesListProps) => (
-  <Table
-    data={data}
-    columns={INDEXES_LIST_COLUMNS}
-    stripedRows
-    emptyState={emptyMessage}
-    data-testid={dataTestId}
-  />
-)
+  onQueryClick,
+  actions,
+}: IndexesListProps) => {
+  const columns = useMemo(
+    () => getIndexesListColumns({ onQueryClick, actions }),
+    [onQueryClick, actions],
+  )
+
+  return (
+    <Table
+      data={data}
+      columns={columns}
+      stripedRows
+      emptyState={emptyMessage}
+      data-testid={dataTestId}
+    />
+  )
+}
 
 export default memo(IndexesList)

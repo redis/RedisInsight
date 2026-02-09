@@ -35,6 +35,10 @@ export interface IndexesListProps {
   dataTestId?: string
   /** Empty message to display when no data is available */
   emptyMessage?: string
+  /** Callback when the Query button is clicked (index name is passed) */
+  onQueryClick?: (indexName: string) => void
+  /** Actions to render in the row actions menu (e.g. Edit, Delete) */
+  actions?: IndexListAction[]
 }
 
 /**
@@ -49,6 +53,25 @@ export enum IndexesListColumn {
   Terms = 'terms',
   Fields = 'fields',
   Actions = 'actions',
+}
+
+/**
+ * Action item for the index actions menu (e.g. Edit, Delete).
+ */
+export interface IndexListAction {
+  /** Display name in the menu */
+  name: string
+  /** Callback invoked with the index name when the action is clicked */
+  callback: (indexName: string) => void
+}
+
+/**
+ * Props for the actions column cell.
+ */
+export interface ActionsCellProps {
+  row: CellContext<IndexListRow, unknown>['row']
+  onQueryClick?: (indexName: string) => void
+  actions?: IndexListAction[]
 }
 
 /**

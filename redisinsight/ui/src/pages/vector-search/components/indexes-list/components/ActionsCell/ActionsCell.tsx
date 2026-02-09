@@ -3,7 +3,7 @@ import React from 'react'
 import { Button } from 'uiSrc/components/base/forms/buttons'
 import { IconButton } from '@redis-ui/components'
 
-import { IIndexesListCell } from '../../IndexesList.types'
+import { ActionsCellProps } from '../../IndexesList.types'
 import {
   Menu,
   MenuContent,
@@ -14,24 +14,17 @@ import {
 import { MoreactionsIcon } from 'uiSrc/components/base/icons'
 import { Row } from 'uiSrc/components/base/layout/flex'
 
-// TODO: Replace with actual navigation/query handler
-const handleQueryClick = (e: React.MouseEvent, _indexName: string) => {
-  e.stopPropagation()
-  // Placeholder for future implementation
-}
-
-const handleEditClick = (e: React.MouseEvent, _indexName: string) => {
-  e.stopPropagation()
-  // Placeholder for future implementation
-}
-
-const handleDeleteClick = (e: React.MouseEvent, _indexName: string) => {
-  e.stopPropagation()
-  // Placeholder for future implementation
-}
-
-const ActionsCell: IIndexesListCell = ({ row }) => {
+export const ActionsCell = ({
+  row,
+  onQueryClick,
+  actions = [],
+}: ActionsCellProps) => {
   const { id, name } = row.original
+
+  const handleQueryClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    onQueryClick?.(name)
+  }
 
   return (
     <Row
@@ -40,33 +33,39 @@ const ActionsCell: IIndexesListCell = ({ row }) => {
       align="center"
       justify="center"
     >
-      <Button
-        size="small"
-        onClick={(e) => handleQueryClick(e, name)}
-        data-testid={`index-query-btn-${id}`}
-      >
-        Query
-      </Button>
-      <Menu>
-        <MenuTrigger>
-          <IconButton icon={MoreactionsIcon} size="L" />
-        </MenuTrigger>
-        <MenuContent placement="right" align="start">
-          <MenuItem
-            variant="primary"
-            text="Edit"
-            onClick={(e) => handleEditClick(e, name)}
-            data-testid={`index-actions-edit-btn-${id}`}
-          />
-          <MenuItem
-            variant="destructive"
-            text="Delete"
-            onClick={(e) => handleDeleteClick(e, name)}
-            data-testid={`index-actions-delete-btn-${id}`}
-          />
-          <MenuDropdownArrow />
-        </MenuContent>
-      </Menu>
+      {onQueryClick && (
+        <Button
+          size="small"
+          onClick={handleQueryClick}
+          data-testid={`index-query-btn-${id}`}
+        >
+          Query
+        </Button>
+      )}
+      {actions.length > 0 && (
+        <Menu data-testid={`index-actions-menu-${id}`}>
+          <MenuTrigger onClick={(e) => e.stopPropagation()}>
+            <IconButton icon={MoreactionsIcon} size="L" />
+          </MenuTrigger>
+          <MenuContent placement="right" align="start">
+            {actions.map((action) => {
+              const handleActionClick = (e: React.MouseEvent) => {
+                e.stopPropagation()
+                action.callback(name)
+              }
+              return (
+                <MenuItem
+                  key={action.name}
+                  text={action.name}
+                  onClick={handleActionClick}
+                  data-testid={`index-actions-${action.name.toLowerCase()}-btn-${id}`}
+                />
+              )
+            })}
+            <MenuDropdownArrow />
+          </MenuContent>
+        </Menu>
+      )}
     </Row>
   )
 }

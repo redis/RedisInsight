@@ -1,8 +1,12 @@
 import React from 'react'
 
-import { ColumnDef } from 'uiSrc/components/base/layout/table'
+import { ColumnDef, Row } from 'uiSrc/components/base/layout/table'
 
-import { IndexListRow, IndexesListColumn } from './IndexesList.types'
+import {
+  IndexListRow,
+  IndexesListColumn,
+  IndexListAction,
+} from './IndexesList.types'
 import {
   INDEXES_LIST_COLUMN_HEADERS,
   INDEXES_LIST_COLUMN_TOOLTIPS,
@@ -14,7 +18,20 @@ import { NumericCell } from './components/NumericCell'
 import { ActionsCell } from './components/ActionsCell'
 import { ColumnHeader } from './components/ColumnHeader/ColumnHeader'
 
-export const INDEXES_LIST_COLUMNS: ColumnDef<IndexListRow>[] = [
+export const createActionsColumn = (
+  onQueryClick?: (indexName: string) => void,
+  actions?: IndexListAction[],
+): ColumnDef<IndexListRow> => ({
+  id: IndexesListColumn.Actions,
+  header: INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Actions],
+  enableSorting: false,
+  size: 150,
+  cell: ({ row }: { row: Row<IndexListRow> }) => (
+    <ActionsCell row={row} onQueryClick={onQueryClick} actions={actions} />
+  ),
+})
+
+const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
   {
     id: IndexesListColumn.Name,
     accessorKey: IndexesListColumn.Name,
@@ -120,11 +137,18 @@ export const INDEXES_LIST_COLUMNS: ColumnDef<IndexListRow>[] = [
     sortingFn: (rowA, rowB) =>
       rowA.original.numFields - rowB.original.numFields,
   },
-  {
-    id: IndexesListColumn.Actions,
-    header: INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Actions],
-    enableSorting: false,
-    size: 150,
-    cell: ActionsCell,
-  },
 ]
+
+export const getIndexesListColumns = (options?: {
+  onQueryClick?: (indexName: string) => void
+  actions?: IndexListAction[]
+}): ColumnDef<IndexListRow>[] => {
+  const onQueryClick = options?.onQueryClick ?? (() => {})
+  const actions = options?.actions ?? []
+  return [
+    ...INDEXES_LIST_COLUMNS_BASE,
+    createActionsColumn(onQueryClick, actions),
+  ]
+}
+
+export const INDEXES_LIST_COLUMNS = getIndexesListColumns()
