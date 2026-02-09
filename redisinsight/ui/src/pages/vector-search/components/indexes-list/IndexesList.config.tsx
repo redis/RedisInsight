@@ -7,12 +7,12 @@ import {
   INDEXES_LIST_COLUMN_HEADERS,
   INDEXES_LIST_COLUMN_TOOLTIPS,
 } from './constants'
-import { ColumnHeader } from '../index-details/components/ColumnHeader/ColumnHeader'
 import { NameCell } from './components/NameCell'
 import { PrefixCell } from './components/PrefixCell'
 import { FieldTypesCell } from './components/FieldTypesCell'
 import { NumericCell } from './components/NumericCell'
 import { ActionsCell } from './components/ActionsCell'
+import { ColumnHeader } from './components/ColumnHeader/ColumnHeader'
 
 export const INDEXES_LIST_COLUMNS: ColumnDef<IndexListRow>[] = [
   {
