@@ -30,16 +30,15 @@ const uiRules = {
   'react/jsx-key': 'warn', // TODO: Change to error (20 errors)
 
   // React Hooks - using relaxed config to match current behavior
-  // The new react-hooks v7 has stricter rules that would break the build
   'react-hooks/rules-of-hooks': 'error',
-  'react-hooks/exhaustive-deps': 'off', // TODO: Enable gradually (323 warnings)
+  'react-hooks/exhaustive-deps': 'off', // TODO: Enable gradually
 
   // Disable new strict react-hooks v7 rules for now
-  'react-hooks/set-state-in-effect': 'off', // TODO: Enable gradually (67 errors)
-  'react-hooks/immutability': 'off', // TODO: Enable gradually (82 errors)
-  'react-hooks/preserve-manual-memoization': 'off', // TODO: Enable gradually (38 errors)
-  'react-hooks/refs': 'off', // TODO: Enable gradually (23 errors)
-  'react-hooks/static-components': 'off', // TODO: Enable gradually (20 errors)
+  'react-hooks/set-state-in-effect': 'off', // TODO: Enable gradually
+  'react-hooks/immutability': 'off', // TODO: Enable gradually
+  'react-hooks/preserve-manual-memoization': 'off', // TODO: Enable gradually
+  'react-hooks/refs': 'off', // TODO: Enable gradually
+  'react-hooks/static-components': 'off', // TODO: Enable gradually
 
   // TypeScript rules (relaxed to match current)
   ...relaxedTypeScriptRules,
@@ -53,7 +52,7 @@ const uiRules = {
   'prefer-const': 'off', // TODO: Enable gradually
   'prefer-destructuring': 'off', // TODO: Enable gradually
   '@typescript-eslint/no-unused-vars': 'off',
-  'react/no-unescaped-entities': 'off',
+  'react/no-unescaped-entities': 'off', // TODO: Enable gradually
 };
 
 // UI source files configuration
