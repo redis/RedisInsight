@@ -6,6 +6,7 @@ import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { useAzureAuth } from 'uiSrc/components/hooks/useAzureAuth'
 import { AddDbType } from 'uiSrc/pages/home/constants'
 import { Pages } from 'uiSrc/constants'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   CONNECTIVITY_OPTIONS_CONFIG,
   ConnectivityOption,
@@ -24,6 +25,9 @@ export const useConnectivityOptions = ({
   const { initiateLogin, loading: azureLoading, account } = useAzureAuth()
 
   const handleAzureClick = useCallback(() => {
+    sendEventTelemetry({
+      event: TelemetryEvent.AZURE_IMPORT_DATABASES_CLICKED,
+    })
     if (account) {
       history.push(Pages.azureSubscriptions)
     } else {

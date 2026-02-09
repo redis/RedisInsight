@@ -12,6 +12,7 @@ import errorMessages from 'uiSrc/components/notifications/error-messages'
 import { riToast } from 'uiSrc/components/base/display/toast'
 import { defaultContainerId } from 'uiSrc/components/notifications/constants'
 import { AppDispatch } from 'uiSrc/slices/store'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   ActionStatus,
   AzureRedisDatabase,
@@ -118,6 +119,9 @@ const AzureDatabasesPage = () => {
   }
 
   const handleClose = () => {
+    sendEventTelemetry({
+      event: TelemetryEvent.AZURE_IMPORT_DATABASES_CANCELLED,
+    })
     history.push(Pages.home)
   }
 
@@ -142,6 +146,13 @@ const AzureDatabasesPage = () => {
     if (!account?.id || selectedDatabases.length === 0) {
       return
     }
+
+    sendEventTelemetry({
+      event: TelemetryEvent.AZURE_IMPORT_DATABASES_SUBMITTED,
+      eventData: {
+        totalDatabases: selectedDatabases.length,
+      },
+    })
 
     const databaseIds = selectedDatabases.map((db) => db.id)
     const results = await dispatch(
@@ -168,6 +179,9 @@ const AzureDatabasesPage = () => {
   }
 
   const handleRefresh = () => {
+    sendEventTelemetry({
+      event: TelemetryEvent.AZURE_DATABASES_REFRESH_CLICKED,
+    })
     if (account?.id && selectedSubscription) {
       dispatch(clearDatabasesAzure())
       dispatch(

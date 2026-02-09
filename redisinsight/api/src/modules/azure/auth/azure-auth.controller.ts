@@ -7,10 +7,14 @@ import {
   UsePipes,
   ValidationPipe,
   Logger,
+  BadRequestException,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { AzureAuthService } from './azure-auth.service';
+import { AzureAuthAnalytics } from './azure-auth.analytics';
 import { AzureAuthStatus } from '../constants';
+import { RequestSessionMetadata } from 'src/common/decorators';
+import { SessionMetadata } from 'src/common/models';
 
 @ApiTags('Azure Auth')
 @Controller('azure/auth')
@@ -18,7 +22,10 @@ import { AzureAuthStatus } from '../constants';
 export class AzureAuthController {
   private readonly logger = new Logger(AzureAuthController.name);
 
-  constructor(private readonly azureAuthService: AzureAuthService) {}
+  constructor(
+    private readonly azureAuthService: AzureAuthService,
+    private readonly analytics: AzureAuthAnalytics,
+  ) {}
 
   @Get('login')
   @ApiOperation({
@@ -46,6 +53,7 @@ export class AzureAuthController {
     description: 'Callback handled successfully',
   })
   async callback(
+    @RequestSessionMetadata() sessionMetadata: SessionMetadata,
     @Query('code') code: string,
     @Query('state') state: string,
     @Query('error') error: string,
@@ -56,6 +64,10 @@ export class AzureAuthController {
     // Handle OAuth errors from Azure (user denial, consent issues, etc.)
     if (error) {
       this.logger.error(`Azure OAuth error: ${error}, ${errorDescription}`);
+      this.analytics.sendAzureSignInFailed(
+        sessionMetadata,
+        new BadRequestException(errorDescription || error),
+      );
       return {
         status: AzureAuthStatus.Failed,
         error: errorDescription || error,
@@ -63,13 +75,28 @@ export class AzureAuthController {
     }
 
     if (!code || !state) {
+      this.analytics.sendAzureSignInFailed(
+        sessionMetadata,
+        new BadRequestException('Missing code or state parameter'),
+      );
       return {
         status: AzureAuthStatus.Failed,
         error: 'Missing code or state parameter',
       };
     }
 
-    return this.azureAuthService.handleCallback(code, state);
+    const result = await this.azureAuthService.handleCallback(code, state);
+
+    if (result.status === AzureAuthStatus.Succeed) {
+      this.analytics.sendAzureSignInSucceeded(sessionMetadata);
+    } else {
+      this.analytics.sendAzureSignInFailed(
+        sessionMetadata,
+        new BadRequestException(result.error || 'Authentication failed'),
+      );
+    }
+
+    return result;
   }
 
   @Get('status')

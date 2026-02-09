@@ -10,6 +10,7 @@ import {
 } from 'uiSrc/slices/app/notifications'
 import { resetDataAzure } from 'uiSrc/slices/instances/azure'
 import { AzureLoginSource } from 'uiSrc/slices/interfaces'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 const OAUTH_TIMEOUT_MS = 60 * 1000
 let oauthTimeoutId: ReturnType<typeof setTimeout> | null = null
@@ -122,6 +123,9 @@ export function initiateAzureLoginAction(
 ) {
   return async (dispatch: AppDispatch) => {
     dispatch(setAzureLoginSource(source))
+    sendEventTelemetry({
+      event: TelemetryEvent.AZURE_SIGN_IN_CLICKED,
+    })
     dispatch(azureAuthLogin())
 
     try {

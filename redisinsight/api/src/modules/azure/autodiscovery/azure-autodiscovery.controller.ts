@@ -14,6 +14,7 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AzureAutodiscoveryService } from './azure-autodiscovery.service';
+import { AzureAutodiscoveryAnalytics } from './azure-autodiscovery.analytics';
 import { AzureAuthService } from '../auth/azure-auth.service';
 import { AZURE_SUBSCRIPTION_ID_REGEX } from '../constants';
 import { AzureSubscription, AzureRedisDatabase } from '../models';
@@ -28,6 +29,7 @@ export class AzureAutodiscoveryController {
   constructor(
     private readonly autodiscoveryService: AzureAutodiscoveryService,
     private readonly authService: AzureAuthService,
+    private readonly analytics: AzureAutodiscoveryAnalytics,
   ) {}
 
   private validateSubscriptionId(subscriptionId: string): void {
@@ -72,10 +74,17 @@ export class AzureAutodiscoveryController {
   })
   @ApiResponse({ status: 401, description: 'Not authenticated' })
   async listSubscriptions(
+    @RequestSessionMetadata() sessionMetadata: SessionMetadata,
     @Query('accountId') accountId: string,
   ): Promise<AzureSubscription[]> {
     await this.ensureAuthenticated(accountId);
-    return this.autodiscoveryService.listSubscriptions(accountId);
+    const subscriptions =
+      await this.autodiscoveryService.listSubscriptions(accountId);
+    this.analytics.sendAzureSubscriptionsDiscoverySucceeded(
+      sessionMetadata,
+      subscriptions,
+    );
+    return subscriptions;
   }
 
   @Get('subscriptions/:subscriptionId/databases')
@@ -93,15 +102,22 @@ export class AzureAutodiscoveryController {
   @ApiResponse({ status: 400, description: 'Invalid subscription ID format' })
   @ApiResponse({ status: 401, description: 'Not authenticated' })
   async listDatabasesInSubscription(
+    @RequestSessionMetadata() sessionMetadata: SessionMetadata,
     @Query('accountId') accountId: string,
     @Param('subscriptionId') subscriptionId: string,
   ): Promise<AzureRedisDatabase[]> {
     this.validateSubscriptionId(subscriptionId);
     await this.ensureAuthenticated(accountId);
-    return this.autodiscoveryService.listDatabasesInSubscription(
-      accountId,
-      subscriptionId,
+    const databases =
+      await this.autodiscoveryService.listDatabasesInSubscription(
+        accountId,
+        subscriptionId,
+      );
+    this.analytics.sendAzureDatabasesDiscoverySucceeded(
+      sessionMetadata,
+      databases,
     );
+    return databases;
   }
 
   @Post('autodiscovery/databases')

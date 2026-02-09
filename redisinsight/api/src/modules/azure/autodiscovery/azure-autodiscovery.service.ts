@@ -1,7 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import axios, { AxiosInstance } from 'axios';
 import { PromisePool } from '@supercharge/promise-pool';
 import { AzureAuthService } from '../auth/azure-auth.service';
+import { AzureAutodiscoveryAnalytics } from './azure-autodiscovery.analytics';
 import {
   AZURE_API_BASE,
   AUTODISCOVERY_MAX_CONCURRENT_REQUESTS,
@@ -29,6 +30,7 @@ export class AzureAutodiscoveryService {
   constructor(
     private readonly authService: AzureAuthService,
     private readonly databaseService: DatabaseService,
+    private readonly analytics: AzureAutodiscoveryAnalytics,
   ) {}
 
   /**
@@ -392,6 +394,10 @@ export class AzureAutodiscoveryService {
 
           if (!database) {
             this.logger.debug(`[${dto.id}] Database not found`);
+            this.analytics.sendAzureDatabaseAddFailed(
+              sessionMetadata,
+              new BadRequestException(ERROR_MESSAGES.AZURE_DATABASE_NOT_FOUND),
+            );
             return {
               id: dto.id,
               status: ActionStatus.Fail,
@@ -407,6 +413,13 @@ export class AzureAutodiscoveryService {
           if (!connectionDetails) {
             this.logger.debug(
               `[${dto.id}] Failed to get connection details - no details returned`,
+            );
+            this.analytics.sendAzureDatabaseAddFailed(
+              sessionMetadata,
+              new BadRequestException(
+                ERROR_MESSAGES.AZURE_FAILED_TO_GET_CONNECTION_DETAILS,
+              ),
+              database.type,
             );
             return {
               id: dto.id,
@@ -447,6 +460,7 @@ export class AzureAutodiscoveryService {
           });
 
           this.logger.debug(`[${dto.id}] Successfully added database`);
+          this.analytics.sendAzureDatabaseAdded(sessionMetadata, database.type);
 
           return {
             id: dto.id,
@@ -455,6 +469,10 @@ export class AzureAutodiscoveryService {
         } catch (error) {
           this.logger.error(
             `[${dto.id}] Failed to add database: ${error.message}`,
+          );
+          this.analytics.sendAzureDatabaseAddFailed(
+            sessionMetadata,
+            new BadRequestException(this.getUserFriendlyErrorMessage(error)),
           );
           return {
             id: dto.id,

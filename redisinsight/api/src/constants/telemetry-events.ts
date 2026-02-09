@@ -36,6 +36,18 @@ export enum TelemetryEvents {
   CloudFreeDatabaseCreated = 'CLOUD_FREE_DATABASE_CREATED',
   CloudFreeDatabaseFailed = 'CLOUD_FREE_DATABASE_FAILED',
 
+  // Events for Azure oauth
+  AzureSignInSucceeded = 'AZURE_SIGN_IN_SUCCEEDED',
+  AzureSignInFailed = 'AZURE_SIGN_IN_FAILED',
+
+  // Events for Azure autodiscovery
+  AzureSubscriptionsDiscoverySucceeded = 'AZURE_SUBSCRIPTIONS_AUTODISCOVERY_SUCCEEDED',
+  AzureSubscriptionsDiscoveryFailed = 'AZURE_SUBSCRIPTIONS_AUTODISCOVERY_FAILED',
+  AzureDatabasesDiscoverySucceeded = 'AZURE_DATABASES_AUTODISCOVERY_SUCCEEDED',
+  AzureDatabasesDiscoveryFailed = 'AZURE_DATABASES_AUTODISCOVERY_FAILED',
+  AzureDatabaseAdded = 'AZURE_DATABASE_ADDED',
+  AzureDatabaseAddFailed = 'AZURE_DATABASE_ADD_FAILED',
+
   // Event for cloud CAPI keys
   CloudAccountKeyGenerated = 'CLOUD_ACCOUNT_KEY_GENERATED',
   CloudAccountKeyGenerationFailed = 'CLOUD_ACCOUNT_KEY_GENERATION_FAILED',
