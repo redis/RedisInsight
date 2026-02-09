@@ -31,6 +31,8 @@ export interface IndexListRow {
 export interface IndexesListProps {
   /** Array of index data to display in the list */
   data: IndexListRow[]
+  /** Whether the list data is currently loading */
+  loading?: boolean
   /** Test ID for the list container */
   dataTestId?: string
   /** Empty message to display when no data is available */

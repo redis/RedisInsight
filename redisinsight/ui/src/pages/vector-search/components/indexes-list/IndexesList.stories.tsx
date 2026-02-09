@@ -29,6 +29,11 @@ const meta: Meta<typeof IndexesList> = {
     },
   },
   argTypes: {
+    loading: {
+      description:
+        'When true, empty state shows "Loading..." instead of "No indexes found".',
+      control: 'boolean',
+    },
     onQueryClick: {
       description:
         'Called with the index name when the Query button is clicked.',
@@ -54,6 +59,21 @@ export const Default: Story = {
 export const Empty: Story = {
   args: {
     data: [],
+  },
+}
+
+export const Loading: Story = {
+  args: {
+    data: [],
+    loading: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Empty list while loading. The table shows "Loading..." in the empty state.',
+      },
+    },
   },
 }
 

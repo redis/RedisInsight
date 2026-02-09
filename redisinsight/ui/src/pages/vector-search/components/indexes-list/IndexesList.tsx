@@ -7,7 +7,7 @@ import { getIndexesListColumns } from './IndexesList.config'
 
 const IndexesList = ({
   data,
-  emptyMessage,
+  loading,
   dataTestId = 'indexes-list',
   onQueryClick,
   actions,
@@ -16,6 +16,18 @@ const IndexesList = ({
     () => getIndexesListColumns({ onQueryClick, actions }),
     [onQueryClick, actions],
   )
+
+  const hasIndexes = !!data?.length
+
+  const emptyMessage = useMemo(() => {
+    if (loading) {
+      return 'Loading...'
+    }
+    if (!hasIndexes) {
+      return 'No indexes found'
+    }
+    return 'No results found'
+  }, [loading, hasIndexes])
 
   return (
     <Table

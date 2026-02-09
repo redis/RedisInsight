@@ -148,6 +148,26 @@ describe('IndexesList', () => {
     })
   })
 
+  describe('Loading and empty state', () => {
+    it('should show Loading... when loading is true and data is empty', () => {
+      renderComponent({ data: [], loading: true })
+
+      expect(screen.getByText('Loading...')).toBeInTheDocument()
+    })
+
+    it('should show No indexes found when loading is false and data is empty', () => {
+      renderComponent({ data: [], loading: false })
+
+      expect(screen.getByText('No indexes found')).toBeInTheDocument()
+    })
+
+    it('should show index data when loading is true but data is provided', () => {
+      renderComponent({ data: mockIndexListData, loading: true })
+
+      expect(screen.getByText(mockIndexListData[0].name)).toBeInTheDocument()
+    })
+  })
+
   describe('Edge cases', () => {
     it('should handle single index', () => {
       renderComponent({ data: [exampleIndexListRows.products] })
