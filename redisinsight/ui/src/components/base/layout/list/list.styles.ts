@@ -266,16 +266,20 @@ const listItemInnerStyles = {
   colors: {
     // Colors
     primary: css`
-      color: var(--color-primary-text);
+      color: ${({ theme }: { theme: Theme }) =>
+        theme.components.typography.colors.primary};
     `,
     text: css`
-      color: var(--color-text-text);
+      color: ${({ theme }: { theme: Theme }) =>
+        theme.components.typography.colors.secondary};
     `,
     subdued: css`
-      color: var(--euiTextSubduedColor);
+      color: ${({ theme }: { theme: Theme }) =>
+        theme.semantic.color.text.informative400};
     `,
     ghost: css`
-      color: var(--color-ghost-text);
+      color: ${({ theme }: { theme: Theme }) =>
+        theme.semantic.color.text.neutral600};
     `,
   },
   variants: {

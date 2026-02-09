@@ -5,7 +5,7 @@ import { isNull } from 'lodash'
 import { getRedirectionPage } from 'uiSrc/utils/routing'
 import DatabaseNotOpened from 'uiSrc/components/messages/database-not-opened'
 
-import { Link, RiLinkProps } from 'uiSrc/components/base/link/Link'
+import { Link, RiLinkProps } from 'uiSrc/components/base/link'
 import { RiPopover } from 'uiSrc/components/base'
 import styles from './styles.module.scss'
 

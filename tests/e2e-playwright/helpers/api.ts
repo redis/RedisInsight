@@ -9,15 +9,21 @@ import { TEST_DB_PREFIX } from 'e2eSrc/test-data/databases';
 export class ApiHelper {
   private context: APIRequestContext | null = null;
   private readonly apiUrl: string;
+  private readonly windowId?: string;
 
-  constructor(options: { apiUrl: string }) {
+  constructor(options: { apiUrl: string; windowId?: string }) {
     this.apiUrl = options.apiUrl;
+    this.windowId = options.windowId;
   }
 
   private async getContext(): Promise<APIRequestContext> {
     if (!this.context) {
       this.context = await request.newContext({
         baseURL: this.apiUrl,
+        // Ignore HTTPS certificate errors for self-signed certificates (used in Electron tests)
+        ignoreHTTPSErrors: true,
+        // Include X-Window-Id header for Electron app authentication
+        extraHTTPHeaders: this.windowId ? { 'X-Window-Id': this.windowId } : undefined,
       });
     }
     return this.context;
@@ -181,7 +187,11 @@ export class ApiHelper {
    * Create a Sorted Set (ZSet) key via API
    * Uses the POST /zSet endpoint with members array containing {name, score}
    */
-  async createZSetKey(databaseId: string, keyName: string, members: { member: string; score: string }[]): Promise<void> {
+  async createZSetKey(
+    databaseId: string,
+    keyName: string,
+    members: { member: string; score: string }[],
+  ): Promise<void> {
     const ctx = await this.getContext();
     const response = await ctx.post(`/api/databases/${databaseId}/zSet`, {
       data: { keyName, members: members.map((m) => ({ name: m.member, score: parseFloat(m.score) })) },
@@ -313,11 +323,7 @@ export class ApiHelper {
   /**
    * Accept EULA and set agreements via API
    */
-  async acceptEula(options?: {
-    analytics?: boolean;
-    encryption?: boolean;
-    notifications?: boolean;
-  }): Promise<void> {
+  async acceptEula(options?: { analytics?: boolean; encryption?: boolean; notifications?: boolean }): Promise<void> {
     const ctx = await this.getContext();
     const response = await ctx.patch('/api/settings', {
       data: {

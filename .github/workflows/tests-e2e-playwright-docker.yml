@@ -1,0 +1,115 @@
+name: E2E Playwright - Docker
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Environment to run tests'
+        type: string
+        default: 'staging'
+      debug:
+        description: 'Enable SSH debugging'
+        type: boolean
+        default: false
+
+env:
+  E2E_DIR: './tests/e2e-playwright'
+
+jobs:
+  e2e-docker:
+    name: E2E Docker (Chromium)
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    timeout-minutes: 60
+    env:
+      E2E_CLOUD_DATABASE_USERNAME: ${{ secrets.E2E_CLOUD_DATABASE_USERNAME }}
+      E2E_CLOUD_DATABASE_PASSWORD: ${{ secrets.E2E_CLOUD_DATABASE_PASSWORD }}
+      E2E_CLOUD_API_ACCESS_KEY: ${{ secrets.E2E_CLOUD_API_ACCESS_KEY }}
+      E2E_CLOUD_DATABASE_HOST: ${{ secrets.E2E_CLOUD_DATABASE_HOST }}
+      E2E_CLOUD_DATABASE_PORT: ${{ secrets.E2E_CLOUD_DATABASE_PORT }}
+      E2E_CLOUD_DATABASE_NAME: ${{ secrets.E2E_CLOUD_DATABASE_NAME }}
+      E2E_CLOUD_API_SECRET_KEY: ${{ secrets.E2E_CLOUD_API_SECRET_KEY }}
+      E2E_RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
+      RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
+      TEST_BIG_DB_DUMP: ${{ secrets.TEST_BIG_DB_DUMP }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable SSH Debug
+        if: ${{ inputs.debug }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          detached: true
+
+      - name: Setup E2E environment
+        uses: ./.github/actions/setup-e2e-playwright
+        with:
+          browsers: 'chromium'
+          working-directory: ${{ env.E2E_DIR }}
+
+      - name: Download Docker Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-builds
+          path: ./release
+
+      - name: Load built docker image
+        run: |
+          docker image load -i ./release/docker/docker-linux-alpine.amd64.tar
+
+      - name: Start Redis test environment
+        run: |
+          TEST_BIG_DB_DUMP=$TEST_BIG_DB_DUMP \
+          docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml up --detach --force-recreate
+
+      - name: Start RedisInsight Docker container
+        run: |
+          E2E_RI_ENCRYPTION_KEY="$E2E_RI_ENCRYPTION_KEY" \
+          docker compose -p e2e-ri-docker \
+          -f tests/e2e/docker.web.docker-compose.yml \
+          up --detach --force-recreate
+          # Wait for the app to be ready
+          sleep 10
+          npx wait-on http://localhost:5540/api/health --timeout 60000
+
+      - name: Run Playwright tests (Chromium - Docker)
+        working-directory: ${{ env.E2E_DIR }}
+        run: npx playwright test --project=chromium
+        env:
+          CI: true
+          # Override URLs to point to Docker container (serves both client and API on 5540)
+          RI_CLIENT_URL: 'http://localhost:5540'
+          RI_API_URL: 'http://localhost:5540'
+          # Use host.docker.internal for Redis hosts so the Docker container can reach them
+          # The Redis test environment exposes ports to the host, and the Docker container
+          # uses extra_hosts to map host.docker.internal to the host gateway
+          OSS_STANDALONE_HOST: 'host.docker.internal'
+          OSS_STANDALONE_V5_HOST: 'host.docker.internal'
+          OSS_STANDALONE_V7_HOST: 'host.docker.internal'
+          OSS_STANDALONE_V8_HOST: 'host.docker.internal'
+          OSS_STANDALONE_EMPTY_HOST: 'host.docker.internal'
+          OSS_STANDALONE_BIG_HOST: 'host.docker.internal'
+
+      - name: Upload test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-docker
+          path: |
+            ${{ env.E2E_DIR }}/test-results
+            ${{ env.E2E_DIR }}/playwright-report
+          retention-days: 14
+
+      - name: Stop RedisInsight Docker container
+        if: always()
+        run: |
+          docker compose -p e2e-ri-docker \
+          -f tests/e2e/docker.web.docker-compose.yml \
+          down --volumes --remove-orphans
+
+      - name: Stop Redis test environment
+        if: always()
+        run: |
+          docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml down --volumes --remove-orphans
+

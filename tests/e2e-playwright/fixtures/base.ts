@@ -3,6 +3,13 @@ import { BrowserPage, CliPanel } from 'e2eSrc/pages';
 import { ApiHelper, retry } from 'e2eSrc/helpers';
 
 /**
+ * Extended ElectronApplication with windowId for API authentication
+ */
+interface ElectronAppWithWindowId extends ElectronApplication {
+  windowId?: string;
+}
+
+/**
  * Test-scoped fixtures
  */
 type Fixtures = {
@@ -22,7 +29,7 @@ type WorkerFixtures = {
   /** Path to Electron executable - when set, tests run in Electron mode */
   electronExecutablePath: string | undefined;
   apiUrl: string;
-  electronApp: ElectronApplication | undefined;
+  electronApp: ElectronAppWithWindowId | undefined;
 };
 
 /**
@@ -52,31 +59,73 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
         timeout: 60000,
       });
 
-      // Log Electron console messages for debugging
-      electronApp.on('console', (msg) => {
-        console.log(`[Electron] ${msg.type()}: ${msg.text()}`);
-      });
+      try {
+        // Log Electron console messages for debugging
+        electronApp.on('console', (msg) => {
+          console.log(`[Electron] ${msg.type()}: ${msg.text()}`);
+        });
 
-      // Wait for app to fully initialize and API to be ready
-      console.log('Waiting for Electron app to initialize...');
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+        // Wait for the main window (not the splash screen)
+        let mainWindow = await electronApp.firstWindow();
 
-      // Wait for API to be available
-      const apiHelper = new ApiHelper({ apiUrl });
-      const checkApi = async () => {
-        await apiHelper.getDatabases();
-        console.log('Electron API is ready');
-      };
-      await retry(checkApi, {
-        maxAttempts: 5,
-        errorMessage: 'Electron API did not become available',
-      });
-      await apiHelper.dispose();
+        // If we got the splash screen, wait for the main window
+        if (mainWindow.url().includes('splash')) {
+          console.log('Waiting for main window (splash detected)...');
+          mainWindow = await electronApp.waitForEvent('window', {
+            timeout: 5000,
+          });
+        }
 
-      await use(electronApp);
+        // Wait for the page to fully load
+        await mainWindow.waitForLoadState('load');
 
-      console.log('Closing Electron app...');
-      await electronApp.close();
+        // Additional wait for React to render and IPC to complete
+        // The windowId is set in indexElectron.tsx after the IPC message is received
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        // Extract windowId from the Electron app's window object
+        // The windowId is set via IPC and may take a moment to be available
+        let windowId: string | undefined;
+        const getWindowId = async () => {
+          if (mainWindow.isClosed()) {
+            throw new Error('Window was closed unexpectedly');
+          }
+          windowId = await mainWindow.evaluate(
+            () => (window as Window & { windowId?: string }).windowId,
+          );
+          if (!windowId) {
+            throw new Error('windowId not yet available');
+          }
+        };
+        await retry(getWindowId, {
+          maxAttempts: 5,
+          errorMessage: 'windowId not available - Electron app may not have initialized correctly',
+        });
+        console.log(`Got Electron windowId: ${windowId}`);
+
+        // Wait for API to be available with windowId for authentication
+        const apiHelper = new ApiHelper({ apiUrl, windowId });
+        const checkApi = async () => {
+          console.log(`Checking API at ${apiUrl} with windowId...`);
+          await apiHelper.getDatabases();
+          console.log('Electron API is ready');
+        };
+        await retry(checkApi, {
+          maxAttempts: 5,
+          errorMessage: 'Electron API did not become available',
+        });
+        await apiHelper.dispose();
+
+        // Create extended electronApp with windowId
+        const electronAppWithWindowId: ElectronAppWithWindowId = Object.assign(electronApp, {
+          windowId: windowId,
+        });
+
+        await use(electronAppWithWindowId);
+      } finally {
+        console.log('Closing Electron app...');
+        await electronApp.close();
+      }
     },
     { scope: 'worker' },
   ],
@@ -89,13 +138,24 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
         await page.goto(baseURL);
         await page.waitForLoadState('domcontentloaded');
       }
+      // Skip onboarding by setting localStorage (faster than waiting for UI)
+      // Setting to null marks onboarding as completed/skipped
+      await page.evaluate(() => {
+        localStorage.setItem('onboardingStep', 'null');
+      });
       await use(page);
       return;
     }
 
     // Electron mode - get page from Electron app
     const electronPage = await electronApp.firstWindow();
+    // Skip onboarding by setting localStorage before reload
+    // This ensures the app reads the value when it initializes
+    await electronPage.evaluate(() => {
+      localStorage.setItem('onboardingStep', 'null');
+    });
     // Reload to pick up any data created in beforeAll (e.g., databases via API)
+    // and to apply the localStorage setting
     await electronPage.reload();
     await electronPage.waitForLoadState('domcontentloaded');
 
@@ -103,9 +163,10 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
   },
 
   apiHelper: async ({ apiUrl, electronApp }, use) => {
-    void electronApp; // Ensure Electron app is ready before making API calls
+    // Get windowId from electronApp if available (for Electron API authentication)
+    const windowId = electronApp?.windowId;
 
-    const helper = new ApiHelper({ apiUrl });
+    const helper = new ApiHelper({ apiUrl, windowId });
     await helper.ensureEulaAccepted();
     await use(helper);
     await helper.dispose();

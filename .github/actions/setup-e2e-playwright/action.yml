@@ -1,0 +1,73 @@
+name: 'Setup E2E Playwright'
+description: 'Setup Node.js, E2E dependencies, and Playwright browsers with caching'
+
+inputs:
+  browsers:
+    description: 'Playwright browsers to install (chromium, firefox, webkit, all, none)'
+    required: false
+    default: 'chromium'
+  working-directory:
+    description: 'E2E tests directory'
+    required: false
+    default: './tests/e2e-playwright'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: '.nvmrc'
+        # Note: We don't use setup-node's npm cache here because:
+        # 1. We cache node_modules directly (more effective)
+        # 2. Direct node_modules caching is faster than npm cache
+
+    - name: Cache E2E node_modules
+      id: cache-e2e-deps
+      uses: actions/cache@v4
+      with:
+        path: ${{ inputs.working-directory }}/node_modules
+        key: e2e-node-modules-${{ runner.os }}-${{ hashFiles(format('{0}/package-lock.json', inputs.working-directory)) }}
+
+    - name: Install E2E dependencies
+      if: steps.cache-e2e-deps.outputs.cache-hit != 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: npm ci
+
+    - name: Cache Playwright browsers
+      if: inputs.browsers != 'none'
+      id: cache-playwright
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/ms-playwright
+        # Use package-lock.json hash as cache key - it changes when Playwright version changes
+        key: playwright-${{ runner.os }}-${{ hashFiles(format('{0}/package-lock.json', inputs.working-directory)) }}-${{ inputs.browsers }}
+
+    - name: Install Playwright browsers
+      if: inputs.browsers != 'none' && steps.cache-playwright.outputs.cache-hit != 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        BROWSERS: ${{ inputs.browsers }}
+      run: |
+        if [ "$BROWSERS" == "all" ]; then
+          npx playwright install --with-deps
+        else
+          npx playwright install "$BROWSERS" --with-deps
+        fi
+
+    - name: Install Playwright system dependencies (cache hit)
+      if: inputs.browsers != 'none' && steps.cache-playwright.outputs.cache-hit == 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        BROWSERS: ${{ inputs.browsers }}
+      run: |
+        # When cache hits, browsers are restored but system deps may be missing
+        if [ "$BROWSERS" == "all" ]; then
+          npx playwright install-deps
+        else
+          npx playwright install-deps "$BROWSERS"
+        fi
+

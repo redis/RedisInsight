@@ -131,7 +131,6 @@ import PipelineManagementSvg from 'uiSrc/assets/img/sidebar/pipeline.svg?react'
 import PipelineStatisticsSvg from 'uiSrc/assets/img/sidebar/pipeline_statistics.svg?react'
 import PubSubSvg from 'uiSrc/assets/img/sidebar/pubsub.svg?react'
 import SlowLogSvg from 'uiSrc/assets/img/sidebar/slowlog.svg?react'
-import WorkbenchSvg from 'uiSrc/assets/img/sidebar/workbench.svg?react'
 
 import ShieldSvg from 'uiSrc/assets/img/shield.svg?react'
 import RedisSoftwareSvg from 'uiSrc/assets/img/redis-software.svg?react'
@@ -308,7 +307,6 @@ export const PipelineManagementIcon = createIconComponent(PipelineManagementSvg)
 export const PipelineStatisticsIcon = createIconComponent(PipelineStatisticsSvg)
 export const PubSubIcon = createIconComponent(PubSubSvg)
 export const SlowLogIcon = createIconComponent(SlowLogSvg)
-export const WorkbenchIcon = createIconComponent(WorkbenchSvg)
 
 export const ShieldIcon = createIconComponent(ShieldSvg)
 export const RedisSoftwareIcon = createIconComponent(RedisSoftwareSvg)

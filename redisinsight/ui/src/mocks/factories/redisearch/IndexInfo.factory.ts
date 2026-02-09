@@ -98,7 +98,7 @@ export const indexInfoAttributeFactory = Factory.define<
   return {
     identifier: `$.${name}`,
     attribute: name,
-    type: faker.helpers.enumValue(FieldTypes).toString(),
+    type: faker.helpers.enumValue(FieldTypes).toString().toUpperCase(),
 
     // Optional fields
     ...(includeWeight && {

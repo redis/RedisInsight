@@ -1,0 +1,99 @@
+name: E2E Playwright - Chromium (Dev)
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Environment to run tests'
+        type: string
+        default: 'staging'
+      debug:
+        description: 'Enable SSH debugging'
+        type: boolean
+        default: false
+
+env:
+  E2E_DIR: './tests/e2e-playwright'
+
+jobs:
+  e2e-chromium:
+    name: E2E Chromium (Local Dev)
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    timeout-minutes: 60
+    env:
+      E2E_CLOUD_DATABASE_USERNAME: ${{ secrets.E2E_CLOUD_DATABASE_USERNAME }}
+      E2E_CLOUD_DATABASE_PASSWORD: ${{ secrets.E2E_CLOUD_DATABASE_PASSWORD }}
+      E2E_CLOUD_API_ACCESS_KEY: ${{ secrets.E2E_CLOUD_API_ACCESS_KEY }}
+      E2E_CLOUD_DATABASE_HOST: ${{ secrets.E2E_CLOUD_DATABASE_HOST }}
+      E2E_CLOUD_DATABASE_PORT: ${{ secrets.E2E_CLOUD_DATABASE_PORT }}
+      E2E_CLOUD_DATABASE_NAME: ${{ secrets.E2E_CLOUD_DATABASE_NAME }}
+      E2E_CLOUD_API_SECRET_KEY: ${{ secrets.E2E_CLOUD_API_SECRET_KEY }}
+      E2E_RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
+      RI_ENCRYPTION_KEY: ${{ secrets.E2E_RI_ENCRYPTION_KEY }}
+      TEST_BIG_DB_DUMP: ${{ secrets.TEST_BIG_DB_DUMP }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable SSH Debug
+        if: ${{ inputs.debug }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          detached: true
+
+      - name: Install application dependencies
+        uses: ./.github/actions/install-all-build-libs
+
+      - name: Setup E2E environment
+        uses: ./.github/actions/setup-e2e-playwright
+        with:
+          browsers: 'chromium'
+          working-directory: ${{ env.E2E_DIR }}
+
+      - name: Build statics
+        run: yarn build:statics
+
+      - name: Build API
+        run: yarn --cwd redisinsight/api build
+
+      - name: Start application (dev mode)
+        run: |
+          yarn dev:api &
+          yarn dev:ui &
+          # Wait for the app to be ready
+          npx wait-on http://localhost:8080 http://localhost:5540/api/health --timeout 60000
+
+      - name: Start Redis test environment
+        run: |
+          TEST_BIG_DB_DUMP=$TEST_BIG_DB_DUMP \
+          docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml up --detach --force-recreate
+
+      - name: Run Playwright tests (Chromium)
+        working-directory: ${{ env.E2E_DIR }}
+        run: npx playwright test --project=chromium
+        env:
+          CI: true
+
+      - name: Upload test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-chromium
+          path: |
+            ${{ env.E2E_DIR }}/test-results
+            ${{ env.E2E_DIR }}/playwright-report
+          retention-days: 14
+
+      - name: Stop application
+        if: always()
+        run: |
+          # Kill any node processes running the app
+          pkill -f "dist/src/main" || true
+          pkill -f "vite dev" || true
+
+      - name: Stop Redis test environment
+        if: always()
+        run: |
+          docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml down --volumes --remove-orphans
+

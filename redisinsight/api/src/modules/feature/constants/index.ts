@@ -33,7 +33,7 @@ export enum KnownFeatures {
   DatabaseManagement = 'databaseManagement',
   VectorSearch = 'vectorSearch',
   DatabasesListV2 = 'databasesListV2',
-  AzureEntraId = 'azureEntraId',
+  AzureEntraId = 'dev-azureEntraId',
 }
 
 export interface IFeatureFlag {

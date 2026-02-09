@@ -7,6 +7,7 @@ import clientCertsReducer from './instances/clientCerts'
 import clusterReducer from './instances/cluster'
 import cloudReducer from './instances/cloud'
 import sentinelReducer from './instances/sentinel'
+import azureReducer from './instances/azure'
 import keysReducer from './browser/keys'
 import stringReducer from './browser/string'
 import zsetReducer from './browser/zset'
@@ -81,6 +82,7 @@ export const rootReducer = combineReducers({
     cluster: clusterReducer,
     cloud: cloudReducer,
     sentinel: sentinelReducer,
+    azure: azureReducer,
     tags: tagsReducer,
   }),
   browser: combineReducers({

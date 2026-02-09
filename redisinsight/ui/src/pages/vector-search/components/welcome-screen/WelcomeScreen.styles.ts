@@ -1,0 +1,45 @@
+import styled from 'styled-components'
+import { Col, FlexGroup } from 'uiSrc/components/base/layout/flex'
+import Eyeglass from 'uiSrc/assets/img/vector-search/Eyeglass.svg'
+import EyeglassDark from 'uiSrc/assets/img/vector-search/EyeglassDark.svg'
+
+export const Container = styled(Col)`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: ${({ theme }) => theme.core.space.space300};
+`
+
+export const Content = styled(Col)`
+  position: relative;
+  z-index: 1;
+  flex-grow: 0;
+`
+
+export const FeaturesContainer = styled(FlexGroup)`
+  max-width: 704px; /* Two columns */
+`
+
+export const FeatureItem = styled(Col)`
+  max-width: 320px;
+`
+
+export const BackgroundImage = styled.div`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 584px;
+  height: 567px;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url(${({ theme }) =>
+    theme.name === 'dark' ? EyeglassDark : Eyeglass});
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  background-size: contain;
+
+  @media (max-width: 900px), ((max-height: 700px) and (max-width: 1200px)) {
+    opacity: 0.1;
+  }
+`

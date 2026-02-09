@@ -1,12 +1,9 @@
 name: ❗ Release (prod)
 
 on:
-  workflow_call:
-    inputs:
-      release_ref:
-        description: 'Branch to release from'
-        required: true
-        type: string
+  push:
+    branches:
+      - "latest"
 
 jobs:
   tests-prod:

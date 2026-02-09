@@ -10,6 +10,9 @@ import {
   RedisCloudPage,
   RedisCloudSubscriptionsPage,
   RedisClusterDatabasesPage,
+  AzurePage,
+  AzureSubscriptionsPage,
+  AzureDatabasesPage,
 } from 'uiSrc/pages'
 import WorkbenchPage from 'uiSrc/pages/workbench'
 import PubSubPage from 'uiSrc/pages/pub-sub'
@@ -47,6 +50,13 @@ const LazyRedisClusterDatabasesPage = lazy(
 const LazyAnalyticsPage = lazy(() => import('uiSrc/pages/analytics'))
 const LazyRedisCloudPage = lazy(
   () => import('uiSrc/pages/autodiscover-cloud/redis-cloud'),
+)
+const LazyAzurePage = lazy(() => import('uiSrc/pages/autodiscover-azure/azure'))
+const LazyAzureSubscriptionsPage = lazy(
+  () => import('uiSrc/pages/autodiscover-azure/azure-subscriptions'),
+)
+const LazyAzureDatabasesPage = lazy(
+  () => import('uiSrc/pages/autodiscover-azure/azure-databases'),
 )
 const LazyRdiPage = lazy(() => import('uiSrc/pages/rdi/home'))
 const LazyRdiInstancePage = lazy(() => import('uiSrc/pages/rdi/instance'))
@@ -136,6 +146,22 @@ const ROUTES: IRoute[] = [
           component: LAZY_LOAD
             ? LazyRedisCloudDatabasesResultPage
             : RedisCloudDatabasesResultPage,
+        },
+      ],
+    },
+    {
+      path: Pages.azure,
+      component: LAZY_LOAD ? LazyAzurePage : AzurePage,
+      routes: [
+        {
+          path: Pages.azureSubscriptions,
+          component: LAZY_LOAD
+            ? LazyAzureSubscriptionsPage
+            : AzureSubscriptionsPage,
+        },
+        {
+          path: Pages.azureDatabases,
+          component: LAZY_LOAD ? LazyAzureDatabasesPage : AzureDatabasesPage,
         },
       ],
     },

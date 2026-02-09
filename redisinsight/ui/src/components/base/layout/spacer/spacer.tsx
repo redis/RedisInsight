@@ -10,6 +10,7 @@ import { SpacerProps, StyledSpacer } from './spacer.styles'
  *   - Theme spacing sizes: Any key from theme.semantic.core.space (e.g., 'space000', 'space010',
  *     'space025', 'space050', 'space100', 'space150', 'space200', 'space250', 'space300',
  *     'space400', 'space500', 'space550', 'space600', 'space800', etc.)
+ *   - Custom CSS value: Any valid CSS size string (e.g., '7.2rem', '72px')
  *
  *   The theme spacing tokens are dynamically extracted from the theme, ensuring consistency
  *   and automatic updates when the theme changes.
