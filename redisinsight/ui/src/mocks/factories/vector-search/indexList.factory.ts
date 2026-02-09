@@ -90,6 +90,7 @@ export const exampleIndexListRows = {
       FieldTypes.TAG,
       FieldTypes.NUMERIC,
       FieldTypes.GEO,
+      FieldTypes.GEOSHAPE,
       FieldTypes.VECTOR,
     ],
     numDocs: 500,

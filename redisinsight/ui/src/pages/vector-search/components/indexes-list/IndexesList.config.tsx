@@ -37,6 +37,7 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
     accessorKey: IndexesListColumn.Name,
     header: INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Name],
     enableSorting: true,
+    size: 200,
     cell: NameCell,
     sortingFn: (rowA, rowB) =>
       rowA.original.name
@@ -61,6 +62,7 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
     accessorKey: IndexesListColumn.FieldTypes,
     header: INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.FieldTypes],
     enableSorting: false,
+    size: 200,
     cell: FieldTypesCell,
   },
   {
