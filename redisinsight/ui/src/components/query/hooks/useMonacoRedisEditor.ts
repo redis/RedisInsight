@@ -1,31 +1,15 @@
-import { useContext, useEffect, useRef } from 'react'
+import { useContext, useRef } from 'react'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
-import { MonacoLanguage, Theme } from 'uiSrc/constants'
+import { Theme } from 'uiSrc/constants'
 import { getMonacoAction, MonacoAction, Nullable } from 'uiSrc/utils'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
-import { IEditorMount, ISnippetController } from 'uiSrc/pages/workbench/interfaces'
+import { ISnippetController } from 'uiSrc/pages/workbench/interfaces'
 
-export interface UseMonacoRedisEditorProps {
-  monacoObjects: React.RefObject<Nullable<IEditorMount>>
-  onSubmit: (value?: string) => void
-  onSetup?: (
-    editor: monacoEditor.editor.IStandaloneCodeEditor,
-    monaco: typeof monacoEditor,
-  ) => void
-}
-
-export interface UseMonacoRedisEditorReturn {
-  monacoTheme: string
-  editorDidMount: (
-    editor: monacoEditor.editor.IStandaloneCodeEditor,
-    monaco: typeof monacoEditor,
-  ) => void
-  onExitSnippetMode: () => void
-  triggerUpdateCursorPosition: (
-    editor: monacoEditor.editor.IStandaloneCodeEditor,
-  ) => void
-}
+import {
+  UseMonacoRedisEditorProps,
+  UseMonacoRedisEditorReturn,
+} from './useMonacoRedisEditor.types'
 
 /**
  * Core editor lifecycle management:

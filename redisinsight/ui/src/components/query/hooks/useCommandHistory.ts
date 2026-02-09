@@ -1,14 +1,8 @@
 import { useEffect, useRef } from 'react'
-import { monaco as monacoEditor } from 'react-monaco-editor'
 
-import { Nullable } from 'uiSrc/utils'
 import { CommandExecutionUI } from 'uiSrc/slices/interfaces'
-import { IEditorMount } from 'uiSrc/pages/workbench/interfaces'
 
-export interface UseCommandHistoryProps {
-  monacoObjects: React.RefObject<Nullable<IEditorMount>>
-  historyItems: CommandExecutionUI[]
-}
+import { UseCommandHistoryProps } from './useCommandHistory.types'
 
 /**
  * Provides command history navigation via Up arrow key

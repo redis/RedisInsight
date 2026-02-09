@@ -1,6 +1,3 @@
-import { IRedisCommand } from 'uiSrc/constants'
-import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
-
 export interface QueryEditorWrapperProps {
   query: string
   setQuery: (script: string) => void

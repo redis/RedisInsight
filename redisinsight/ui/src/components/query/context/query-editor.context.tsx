@@ -8,7 +8,7 @@ import { IEditorMount } from 'uiSrc/pages/workbench/interfaces'
 
 export interface QueryEditorContextValue {
   // Editor instance
-  monacoObjects: React.RefObject<Nullable<IEditorMount>>
+  monacoObjects: React.MutableRefObject<Nullable<IEditorMount>>
 
   // State
   query: string

@@ -8,12 +8,8 @@ import {
   Nullable,
   toModelDeltaDecoration,
 } from 'uiSrc/utils'
-import { IEditorMount } from 'uiSrc/pages/workbench/interfaces'
 
-export interface UseQueryDecorationsProps {
-  monacoObjects: React.RefObject<Nullable<IEditorMount>>
-  query: string
-}
+import { UseQueryDecorationsProps } from './useQueryDecorations.types'
 
 /**
  * Manages multi-line command decorations and params line highlighting
