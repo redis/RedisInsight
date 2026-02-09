@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
 import { MonacoLanguage } from 'uiSrc/constants'
-import { Nullable } from 'uiSrc/utils'
+import {
+  Nullable,
+  actionTriggerParameterHints,
+  findCompleteQuery,
+} from 'uiSrc/utils'
+import { IMonacoQuery } from 'uiSrc/utils/monaco/monacoInterfaces'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import {
@@ -24,7 +29,6 @@ import {
 import { useDebouncedEffect } from 'uiSrc/services'
 import { fetchRedisearchInfoAction } from 'uiSrc/slices/browser/redisearch'
 import { findSuggestionsByArg } from 'uiSrc/pages/workbench/utils/searchSuggestions'
-import { actionTriggerParameterHints, findCompleteQuery } from 'uiSrc/utils'
 
 import {
   UseRedisCompletionsProps,
@@ -289,7 +293,9 @@ export const useRedisCompletions = ({
     )
   }
 
-  const setSuggestionsData = (data: monacoEditor.languages.CompletionItem[]) => {
+  const setSuggestionsData = (
+    data: monacoEditor.languages.CompletionItem[],
+  ) => {
     suggestionsRef.current = data
   }
 
@@ -299,7 +305,10 @@ export const useRedisCompletions = ({
 
   return {
     selectedIndex,
-    helpWidgetRef: helpWidgetRef as React.MutableRefObject<{ isOpen: boolean; data: any }>,
+    helpWidgetRef: helpWidgetRef as React.MutableRefObject<{
+      isOpen: boolean
+      data: any
+    }>,
     compositeTokens,
     getSuggestions,
     handleSuggestions,
@@ -309,6 +318,7 @@ export const useRedisCompletions = ({
     setupProviders,
     disposeProviders,
     handleCursorChange,
+    setupSuggestionWidgetListener,
     setSuggestionsData,
     setEscapedSuggestions,
   }

@@ -130,7 +130,10 @@ export const WithQuery: Story = {
   },
   render: () => {
     const [query, setQuery] = useState(
-      `FT.CREATE idx:bikes_vss ON HASH PREFIX 1 "bikes:"\nSCHEMA "model" TEXT NOSTEM SORTABLE\n"brand" TEXT NOSTEM SORTABLE\n"price" NUMERIC SORTABLE`,
+      'FT.CREATE idx:bikes_vss ON HASH PREFIX 1 "bikes:"\n' +
+        'SCHEMA "model" TEXT NOSTEM SORTABLE\n' +
+        '"brand" TEXT NOSTEM SORTABLE\n' +
+        '"price" NUMERIC SORTABLE',
     )
     return (
       <QueryWrapper

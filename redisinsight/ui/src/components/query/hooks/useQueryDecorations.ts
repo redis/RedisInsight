@@ -19,7 +19,8 @@ export const useQueryDecorations = ({
   monacoObjects,
   query,
 }: UseQueryDecorationsProps) => {
-  const decorationCollection = useRef<Nullable<monacoEditor.editor.IEditorDecorationsCollection>>(null)
+  const decorationCollection =
+    useRef<Nullable<monacoEditor.editor.IEditorDecorationsCollection>>(null)
 
   // Initialize decoration collection when editor becomes available
   useEffect(() => {

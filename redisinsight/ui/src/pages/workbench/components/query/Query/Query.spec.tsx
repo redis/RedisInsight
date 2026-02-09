@@ -9,7 +9,8 @@ import {
   screen,
 } from 'uiSrc/utils/test-utils'
 import { QueryEditorContextProvider } from 'uiSrc/components/query'
-import Query, { Props } from './Query'
+import Query from './Query'
+import { Props } from './Query.types'
 
 const mockedProps = mock<Props>()
 const redisCommandsPath = 'uiSrc/slices/app/redis-commands'

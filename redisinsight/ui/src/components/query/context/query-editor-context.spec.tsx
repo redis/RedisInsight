@@ -34,9 +34,7 @@ describe('QueryEditorContext', () => {
       </QueryEditorContextProvider>,
     )
 
-    expect(screen.getByTestId('query')).toHaveTextContent(
-      'FT.SEARCH idx "*"',
-    )
+    expect(screen.getByTestId('query')).toHaveTextContent('FT.SEARCH idx "*"')
     expect(screen.getByTestId('is-loading')).toHaveTextContent('false')
   })
 
@@ -56,9 +54,7 @@ describe('QueryEditorContext', () => {
   it('provides monacoObjects ref', () => {
     const RefTestComponent: React.FC = () => {
       const { monacoObjects } = useQueryEditorContext()
-      return (
-        <p data-testid="has-ref">{String(monacoObjects !== undefined)}</p>
-      )
+      return <p data-testid="has-ref">{String(monacoObjects !== undefined)}</p>
     }
 
     render(

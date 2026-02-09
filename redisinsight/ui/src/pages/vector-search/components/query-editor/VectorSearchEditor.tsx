@@ -9,7 +9,7 @@ import {
   useQueryDecorations,
 } from 'uiSrc/components/query'
 
-import { editorOptions } from './QueryEditor.constants'
+import { EDITOR_OPTIONS } from './QueryEditor.constants'
 import * as S from './QueryEditor.styles'
 
 /**
@@ -17,24 +17,8 @@ import * as S from './QueryEditor.styles'
  * Uses a subset of the hooks (no DSL syntax, no command history).
  */
 export const VectorSearchEditor = () => {
-  const {
-    monacoObjects,
-    query,
-    setQuery,
-    commands,
-    indexes,
-    onSubmit,
-  } = useQueryEditorContext()
-
-  // Core editor lifecycle
-  const {
-    monacoTheme,
-    editorDidMount: baseEditorDidMount,
-  } = useMonacoRedisEditor({
-    monacoObjects,
-    onSubmit,
-    onSetup: handleEditorSetup,
-  })
+  const { monacoObjects, query, setQuery, commands, indexes, onSubmit } =
+    useQueryEditorContext()
 
   // Autocomplete & suggestions
   const completions = useRedisCompletions({
@@ -42,17 +26,6 @@ export const VectorSearchEditor = () => {
     commands,
     indexes,
   })
-
-  // Decorations
-  useQueryDecorations({ monacoObjects, query })
-
-  // Cleanup on unmount
-  useEffect(
-    () => () => {
-      completions.disposeProviders()
-    },
-    [],
-  )
 
   function handleEditorSetup(
     editor: monacoEditor.editor.IStandaloneCodeEditor,
@@ -73,12 +46,8 @@ export const VectorSearchEditor = () => {
       if (
         e.keyCode === monacoEditor.KeyCode.Tab ||
         e.keyCode === monacoEditor.KeyCode.Enter ||
-        (e.keyCode === monacoEditor.KeyCode.Space &&
-          e.ctrlKey &&
-          e.shiftKey) ||
-        (e.keyCode === monacoEditor.KeyCode.Space &&
-          !e.ctrlKey &&
-          !e.shiftKey)
+        (e.keyCode === monacoEditor.KeyCode.Space && e.ctrlKey && e.shiftKey) ||
+        (e.keyCode === monacoEditor.KeyCode.Space && !e.ctrlKey && !e.shiftKey)
       ) {
         completions.onTriggerParameterHints()
       }
@@ -87,6 +56,25 @@ export const VectorSearchEditor = () => {
     // Initial suggestions
     completions.setSuggestionsData(completions.getSuggestions(editor).data)
   }
+
+  // Core editor lifecycle
+  const { monacoTheme, editorDidMount: baseEditorDidMount } =
+    useMonacoRedisEditor({
+      monacoObjects,
+      onSubmit,
+      onSetup: handleEditorSetup,
+    })
+
+  // Decorations
+  useQueryDecorations({ monacoObjects, query })
+
+  // Cleanup on unmount
+  useEffect(
+    () => () => {
+      completions.disposeProviders()
+    },
+    [],
+  )
 
   const onChange = (value: string = '') => {
     setQuery(value)
@@ -98,7 +86,7 @@ export const VectorSearchEditor = () => {
         language={MonacoLanguage.Redis as string}
         theme={monacoTheme}
         value={query}
-        options={editorOptions}
+        options={EDITOR_OPTIONS}
         className={`${MonacoLanguage.Redis}-editor`}
         onChange={onChange}
         editorDidMount={baseEditorDidMount}

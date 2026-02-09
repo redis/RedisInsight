@@ -22,9 +22,7 @@ describe('QueryEditorWrapper', () => {
   it('should render the editor wrapper', () => {
     renderComponent()
 
-    expect(
-      screen.getByTestId('vector-search-query-editor'),
-    ).toBeInTheDocument()
+    expect(screen.getByTestId('vector-search-query-editor')).toBeInTheDocument()
   })
 
   it('should render editor/library toggle', () => {
@@ -50,9 +48,7 @@ describe('QueryEditorWrapper', () => {
     expect(
       screen.getByTestId('vector-search-library-placeholder'),
     ).toBeInTheDocument()
-    expect(
-      screen.queryByTestId('vector-search-editor'),
-    ).not.toBeInTheDocument()
+    expect(screen.queryByTestId('vector-search-editor')).not.toBeInTheDocument()
   })
 
   it('should switch back to editor view when Editor toggle is clicked', () => {
@@ -60,9 +56,7 @@ describe('QueryEditorWrapper', () => {
 
     // Switch to library
     fireEvent.click(screen.getByTestId('toggle-library'))
-    expect(
-      screen.queryByTestId('vector-search-editor'),
-    ).not.toBeInTheDocument()
+    expect(screen.queryByTestId('vector-search-editor')).not.toBeInTheDocument()
 
     // Switch back to editor
     fireEvent.click(screen.getByTestId('toggle-editor'))

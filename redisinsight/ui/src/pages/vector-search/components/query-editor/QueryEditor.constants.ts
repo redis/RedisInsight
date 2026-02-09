@@ -1,7 +1,7 @@
 import { merge } from 'lodash'
 import { defaultMonacoOptions } from 'uiSrc/constants'
 
-export const editorOptions = merge({}, defaultMonacoOptions, {
+export const EDITOR_OPTIONS = merge({}, defaultMonacoOptions, {
   suggest: {
     showWords: false,
     showIcons: true,
@@ -22,8 +22,7 @@ export const RQE_QUERY_TEMPLATES = [
   {
     label: 'FT.AGGREGATE',
     detail: 'Run aggregation query',
-    documentation:
-      'FT.AGGREGATE {index} {query} [GROUPBY nargs property ...]',
+    documentation: 'FT.AGGREGATE {index} {query} [GROUPBY nargs property ...]',
     insertText: 'FT.AGGREGATE ${1:index} "${2:*}"',
   },
   {

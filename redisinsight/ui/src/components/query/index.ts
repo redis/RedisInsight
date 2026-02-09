@@ -9,7 +9,7 @@ export {
   QueryEditorContextProvider,
   useQueryEditorContext,
 } from './context/query-editor.context'
-export type { QueryEditorContextValue } from './context/query-editor.context'
+export type { QueryEditorContextValue } from './context/query-editor.context.types'
 
 export {
   useMonacoRedisEditor,

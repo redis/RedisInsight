@@ -4,6 +4,7 @@ import { monaco as monacoEditor } from 'react-monaco-editor'
 
 import { DSLNaming } from 'uiSrc/constants'
 import { createSyntaxWidget, Nullable } from 'uiSrc/utils'
+import { IMonacoQuery } from 'uiSrc/utils/monaco/monacoInterfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { findSuggestionsByQueryArgs } from 'uiSrc/pages/workbench/utils/query'
 
@@ -29,7 +30,8 @@ export const useDslSyntax = ({
   const isWidgetEscaped = useRef(false)
   const selectedArg = useRef('')
   const syntaxCommand = useRef<any>(null)
-  const syntaxWidgetContextRef = useRef<Nullable<monacoEditor.editor.IContextKey<boolean>>>(null)
+  const syntaxWidgetContextRef =
+    useRef<Nullable<monacoEditor.editor.IContextKey<boolean>>>(null)
 
   const { instanceId = '' } = useParams<{ instanceId: string }>()
 
@@ -120,7 +122,8 @@ export const useDslSyntax = ({
           syntaxCommand.current.commandPosition.startLine,
           0,
           syntaxCommand.current.commandPosition.endLine,
-          model.getLineLength(syntaxCommand.current.commandPosition.endLine) + 1,
+          model.getLineLength(syntaxCommand.current.commandPosition.endLine) +
+            1,
         ),
         text: replaceCommand,
       },
@@ -183,7 +186,10 @@ export const useDslSyntax = ({
     editor: monacoEditor.editor.IStandaloneCodeEditor,
     monaco: typeof monacoEditor,
   ) => {
-    syntaxWidgetContextRef.current = editor.createContextKey(SYNTAX_CONTEXT_ID, false)
+    syntaxWidgetContextRef.current = editor.createContextKey(
+      SYNTAX_CONTEXT_ID,
+      false,
+    )
 
     editor.addCommand(
       monaco.KeyMod.Shift | monaco.KeyCode.Space,

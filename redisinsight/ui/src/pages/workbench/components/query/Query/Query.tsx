@@ -1,10 +1,8 @@
 import React, { useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
 import MonacoEditor, { monaco as monacoEditor } from 'react-monaco-editor'
 
 import { MonacoLanguage } from 'uiSrc/constants'
-import { EmptySuggestionsIds } from 'uiSrc/pages/workbench/constants'
 import {
   stopProcessing,
   workbenchResultsSelector,
@@ -21,21 +19,9 @@ import {
   useCommandHistory,
   useDslSyntax,
 } from 'uiSrc/components/query'
-import { ResultsMode, RunQueryMode } from 'uiSrc/slices/interfaces/workbench'
-
 import { aroundQuotesRegExp, options, TUTORIALS } from './constants'
-import styles from './styles.module.scss'
-
-export interface Props {
-  activeMode: RunQueryMode
-  resultsMode?: ResultsMode
-  useLiteActions?: boolean
-  setQueryEl?: Function
-  onKeyDown?: (e: React.KeyboardEvent, script: string) => void
-  onQueryChangeMode: () => void
-  onChangeGroupMode: () => void
-  onClear?: () => void
-}
+import { Props } from './Query.types'
+import * as S from './Query.styles'
 
 const Query = (props: Props) => {
   const {
@@ -68,28 +54,6 @@ const Query = (props: Props) => {
   const input = useRef<HTMLDivElement>(null)
   const dispatch = useDispatch()
 
-  // Core editor lifecycle
-  const {
-    monacoTheme,
-    editorDidMount: baseEditorDidMount,
-    onExitSnippetMode,
-    triggerUpdateCursorPosition,
-  } = useMonacoRedisEditor({
-    monacoObjects,
-    onSubmit: handleSubmit,
-    onSetup: handleEditorSetup,
-  })
-
-  // Autocomplete & suggestions
-  const completions = useRedisCompletions({
-    monacoObjects,
-    commands,
-    indexes,
-  })
-
-  // Decorations
-  useQueryDecorations({ monacoObjects, query })
-
   // Command history
   const { onQuickHistoryAccess, resetHistoryPos, isHistoryScrolled } =
     useCommandHistory({
@@ -97,20 +61,25 @@ const Query = (props: Props) => {
       historyItems: execHistoryItems,
     })
 
-  // DSL syntax widget (Workbench-only)
-  const dsl = useDslSyntax({
-    monacoObjects,
-    triggerUpdateCursorPosition,
-  })
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    onKeyDown?.(e, query)
+  }
 
-  // Cleanup on unmount
-  React.useEffect(
-    () => () => {
-      dispatch(stopProcessing())
-      completions.disposeProviders()
-    },
-    [],
-  )
+  function handleSubmit(value?: string) {
+    resetHistoryPos()
+    onSubmit(value)
+  }
+
+  const handleClear = () => {
+    setQuery('')
+    onClear?.()
+  }
+  // Autocomplete & suggestions
+  const completions = useRedisCompletions({
+    monacoObjects,
+    commands,
+    indexes,
+  })
 
   function handleEditorSetup(
     editor: monacoEditor.editor.IStandaloneCodeEditor,
@@ -129,24 +98,41 @@ const Query = (props: Props) => {
     editor.onDidChangeCursorPosition(onKeyChangeCursorMonaco)
 
     // Suggestion widget listener
-    const suggestionWidget = editor.getContribution<any>(
-      'editor.contrib.suggestController',
-    )
-    suggestionWidget?.onWillInsertSuggestItem(
-      ({ item }: Record<'item', any>) => {
-        if (item.completion.id === EmptySuggestionsIds.NoIndexes) {
-          if (completions.helpWidgetRef.current) {
-            completions.helpWidgetRef.current.isOpen = true
-          }
-          editor.trigger('', 'hideSuggestWidget', null)
-          editor.trigger('', 'editor.action.triggerParameterHints', '')
-        }
-      },
-    )
+    completions.setupSuggestionWidgetListener(editor)
 
     // Initial suggestions
     completions.setSuggestionsData(completions.getSuggestions(editor).data)
   }
+
+  // Core editor lifecycle
+  const {
+    monacoTheme,
+    editorDidMount: baseEditorDidMount,
+    onExitSnippetMode,
+    triggerUpdateCursorPosition,
+  } = useMonacoRedisEditor({
+    monacoObjects,
+    onSubmit: handleSubmit,
+    onSetup: handleEditorSetup,
+  })
+
+  // Decorations
+  useQueryDecorations({ monacoObjects, query })
+
+  // DSL syntax widget (Workbench-only)
+  const dsl = useDslSyntax({
+    monacoObjects,
+    triggerUpdateCursorPosition,
+  })
+
+  // Cleanup on unmount
+  React.useEffect(
+    () => () => {
+      dispatch(stopProcessing())
+      completions.disposeProviders()
+    },
+    [],
+  )
 
   const onChange = (value: string = '') => {
     setQuery(value)
@@ -157,7 +143,7 @@ const Query = (props: Props) => {
     }
   }
 
-  const onKeyDownMonaco = (e: monacoEditor.IKeyboardEvent) => {
+  function onKeyDownMonaco(e: monacoEditor.IKeyboardEvent) {
     // trigger parameter hints
     if (
       e.keyCode === monacoEditor.KeyCode.Tab ||
@@ -189,9 +175,9 @@ const Query = (props: Props) => {
     }
   }
 
-  const onKeyChangeCursorMonaco = (
+  function onKeyChangeCursorMonaco(
     e: monacoEditor.editor.ICursorPositionChangedEvent,
-  ) => {
+  ) {
     if (!monacoObjects.current) return
 
     const command = completions.handleCursorChange(
@@ -203,38 +189,18 @@ const Query = (props: Props) => {
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    onKeyDown?.(e, query)
-  }
-
-  function handleSubmit(value?: string) {
-    resetHistoryPos()
-    onSubmit(value)
-  }
-
-  const handleClear = () => {
-    setQuery('')
-    onClear?.()
-  }
-
   const combinedIsLoading = isLoading || loading || processing
 
   return (
-    <div className={styles.wrapper}>
-      <div
-        className={cx(styles.container, {
-          [styles.disabled]: dsl.isDedicatedEditorOpen,
-        })}
+    <S.Wrapper>
+      <S.Container
+        $disabled={dsl.isDedicatedEditorOpen}
         onKeyDown={handleKeyDown}
         role="textbox"
         tabIndex={0}
         data-testid="main-input-container-area"
       >
-        <div
-          className={styles.input}
-          data-testid="query-input-container"
-          ref={input}
-        >
+        <S.InputContainer data-testid="query-input-container" ref={input}>
           <MonacoEditor
             language={MonacoLanguage.Redis as string}
             theme={monacoTheme}
@@ -244,8 +210,8 @@ const Query = (props: Props) => {
             onChange={onChange}
             editorDidMount={baseEditorDidMount}
           />
-        </div>
-        <div className={styles.queryFooter}>
+        </S.InputContainer>
+        <S.QueryFooter>
           {useLiteActions ? (
             <QueryLiteActions
               isLoading={combinedIsLoading}
@@ -268,8 +234,8 @@ const Query = (props: Props) => {
               />
             </>
           )}
-        </div>
-      </div>
+        </S.QueryFooter>
+      </S.Container>
       {dsl.isDedicatedEditorOpen && (
         <DedicatedEditor
           initialHeight={input?.current?.scrollHeight || 0}
@@ -282,7 +248,7 @@ const Query = (props: Props) => {
           onCancel={dsl.onCancelDedicatedEditor}
         />
       )}
-    </div>
+    </S.Wrapper>
   )
 }
 

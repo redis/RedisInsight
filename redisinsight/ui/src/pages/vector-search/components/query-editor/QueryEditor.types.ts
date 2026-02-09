@@ -8,3 +8,8 @@ export enum EditorTab {
   Editor = 'editor',
   Library = 'library',
 }
+
+export interface EditorLibraryToggleProps {
+  activeTab: EditorTab
+  onChangeTab: (tab: EditorTab) => void
+}

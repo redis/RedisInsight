@@ -36,8 +36,9 @@ export interface UseRedisCompletionsReturn {
     e: monacoEditor.editor.ICursorPositionChangedEvent,
     isDedicatedEditorOpen?: boolean,
   ) => Nullable<IMonacoQuery>
-  setSuggestionsData: (
-    data: monacoEditor.languages.CompletionItem[],
+  setupSuggestionWidgetListener: (
+    editor: monacoEditor.editor.IStandaloneCodeEditor,
   ) => void
+  setSuggestionsData: (data: monacoEditor.languages.CompletionItem[]) => void
   setEscapedSuggestions: (value: boolean) => void
 }

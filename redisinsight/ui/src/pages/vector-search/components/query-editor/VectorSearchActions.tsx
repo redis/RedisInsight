@@ -14,10 +14,7 @@ export const VectorSearchActions = () => {
 
   return (
     <S.ActionsBar data-testid="vector-search-actions">
-      <RunButton
-        isLoading={isLoading}
-        onSubmit={() => onSubmit()}
-      />
+      <RunButton isLoading={isLoading} onSubmit={() => onSubmit()} />
     </S.ActionsBar>
   )
 }

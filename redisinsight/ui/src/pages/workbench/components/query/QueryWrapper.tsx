@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { LoadingContent } from 'uiSrc/components/base/layout'
 import { IRedisCommand } from 'uiSrc/constants'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
-import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 import {
   fetchRedisearchListAction,
   redisearchListSelector,
@@ -14,25 +13,9 @@ import { mergeRedisCommandsSpecs } from 'uiSrc/utils/transformers/redisCommands'
 import SEARCH_COMMANDS_SPEC from 'uiSrc/pages/workbench/data/supported_commands.json'
 import { QueryEditorContextProvider } from 'uiSrc/components/query'
 
-import styles from './Query/styles.module.scss'
 import Query from './Query'
-import { Props as BaseQueryProps } from './Query/Query'
-
-type QueryProps = Pick<BaseQueryProps, 'useLiteActions'>
-
-export interface Props {
-  query: string
-  activeMode: RunQueryMode
-  resultsMode?: ResultsMode
-  queryProps?: QueryProps
-  setQuery: (script: string) => void
-  setQueryEl: Function
-  onKeyDown?: (e: React.KeyboardEvent, script: string) => void
-  onSubmit: (value?: string) => void
-  onQueryChangeMode: () => void
-  onChangeGroupMode: () => void
-  onClear?: () => void
-}
+import { Props } from './QueryWrapper.types'
+import * as S from './QueryWrapper.styles'
 
 const QueryWrapper = (props: Props) => {
   const {
@@ -72,11 +55,11 @@ const QueryWrapper = (props: Props) => {
   }, [connectedInstanceId])
 
   const Placeholder = (
-    <div className={styles.containerPlaceholder}>
+    <S.ContainerPlaceholder>
       <div>
         <LoadingContent lines={2} className="fluid" />
       </div>
-    </div>
+    </S.ContainerPlaceholder>
   )
 
   if (isCommandsLoading) {

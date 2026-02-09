@@ -31,8 +31,9 @@ export const QueryEditorWrapper = ({
 }: QueryEditorWrapperProps) => {
   const [activeTab, setActiveTab] = useState<EditorTab>(EditorTab.Editor)
 
-  const { loading: isCommandsLoading, spec: COMMANDS_SPEC } =
-    useSelector(appRedisCommandsSelector)
+  const { loading: isCommandsLoading, spec: COMMANDS_SPEC } = useSelector(
+    appRedisCommandsSelector,
+  )
   const { id: connectedInstanceId } = useSelector(connectedInstanceSelector)
   const { data: indexes = [] } = useSelector(redisearchListSelector)
 
@@ -72,10 +73,7 @@ export const QueryEditorWrapper = ({
       }}
     >
       <S.EditorWrapper data-testid="vector-search-query-editor">
-        <EditorLibraryToggle
-          activeTab={activeTab}
-          onChangeTab={setActiveTab}
-        />
+        <EditorLibraryToggle activeTab={activeTab} onChangeTab={setActiveTab} />
         {activeTab === EditorTab.Editor && (
           <>
             <VectorSearchEditor />
