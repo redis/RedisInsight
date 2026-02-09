@@ -121,8 +121,8 @@ describe('IndexesList', () => {
       })
     })
 
-    it('should render actions column with query buttons', () => {
-      renderComponent()
+    it('should render actions column with query buttons when onQueryClick is provided', () => {
+      renderComponent({ onQueryClick: () => {} })
 
       mockIndexListData.forEach((row) => {
         expect(
@@ -131,6 +131,19 @@ describe('IndexesList', () => {
         expect(
           screen.getByTestId(`index-query-btn-${row.id}`),
         ).toBeInTheDocument()
+      })
+    })
+
+    it('should not render Query button when onQueryClick is omitted', () => {
+      renderComponent()
+
+      mockIndexListData.forEach((row) => {
+        expect(
+          screen.getByTestId(`index-actions-${row.id}`),
+        ).toBeInTheDocument()
+        expect(
+          screen.queryByTestId(`index-query-btn-${row.id}`),
+        ).not.toBeInTheDocument()
       })
     })
   })
@@ -204,7 +217,8 @@ describe('IndexesList', () => {
       const firstRow = mockIndexListData[0]
       const actionsCell = screen.getByTestId(`index-actions-${firstRow.id}`)
       const buttons = within(actionsCell).getAllByRole('button')
-      await userEvent.click(buttons[1])
+      const menuTrigger = buttons[buttons.length - 1]
+      await userEvent.click(menuTrigger)
 
       expect(
         screen.getByTestId(`index-actions-edit-btn-${firstRow.id}`),
@@ -282,7 +296,7 @@ describe('IndexesList', () => {
       const firstRow = mockIndexListData[0]
       const actionsCell = screen.getByTestId(`index-actions-${firstRow.id}`)
       const buttons = within(actionsCell).getAllByRole('button')
-      const menuTrigger = buttons[1]
+      const menuTrigger = buttons[buttons.length - 1]
 
       await userEvent.click(menuTrigger)
 
@@ -293,7 +307,7 @@ describe('IndexesList', () => {
       expect(onEdit).toHaveBeenCalledTimes(1)
       expect(onEdit).toHaveBeenCalledWith(firstRow.name)
 
-      await userEvent.click(buttons[1])
+      await userEvent.click(menuTrigger)
       const deleteBtn = screen.getByTestId(
         `index-actions-delete-btn-${firstRow.id}`,
       )
@@ -312,7 +326,8 @@ describe('IndexesList', () => {
       const firstRow = mockIndexListData[0]
       const actionsCell = screen.getByTestId(`index-actions-${firstRow.id}`)
       const buttons = within(actionsCell).getAllByRole('button')
-      await userEvent.click(buttons[1])
+      const menuTrigger = buttons[buttons.length - 1]
+      await userEvent.click(menuTrigger)
 
       expect(
         screen.getByTestId(`index-actions-customone-btn-${firstRow.id}`),

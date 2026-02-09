@@ -91,6 +91,7 @@ export const exampleIndexListRows = {
       FieldTypes.TAG,
       FieldTypes.NUMERIC,
       FieldTypes.GEO,
+      FieldTypes.GEOSHAPE,
       FieldTypes.VECTOR,
     ],
     numDocs: faker.number.int({ min: 100, max: 1000 }),

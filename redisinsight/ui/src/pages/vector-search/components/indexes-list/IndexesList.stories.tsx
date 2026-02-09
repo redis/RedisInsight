@@ -78,8 +78,8 @@ export const AllFieldTypes: Story = {
           FieldTypes.TAG,
           FieldTypes.NUMERIC,
           FieldTypes.GEO,
+          FieldTypes.GEOSHAPE,
           FieldTypes.VECTOR,
-          FieldTypes.GEO,
         ],
       }),
     ],
@@ -121,24 +121,6 @@ export const ZeroDocuments: Story = {
         numTerms: 0,
       }),
     ],
-  },
-}
-
-/**
- * Column headers for Index prefix, Docs, Records, Terms, and Fields include
- * an info icon. Hover or focus the icon to see a tooltip describing the column.
- */
-export const WithColumnTooltips: Story = {
-  args: {
-    data: mockIndexListData,
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Use the info icons next to Index prefix, Docs, Records, Terms, and Fields to see tooltips explaining each column.',
-      },
-    },
   },
 }
 

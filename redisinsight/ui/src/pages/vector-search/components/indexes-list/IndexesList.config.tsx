@@ -143,10 +143,9 @@ export const getIndexesListColumns = (options?: {
   onQueryClick?: (indexName: string) => void
   actions?: IndexListAction[]
 }): ColumnDef<IndexListRow>[] => {
-  const onQueryClick = options?.onQueryClick ?? (() => {})
   const actions = options?.actions ?? []
   return [
     ...INDEXES_LIST_COLUMNS_BASE,
-    createActionsColumn(onQueryClick, actions),
+    createActionsColumn(options?.onQueryClick, actions),
   ]
 }
