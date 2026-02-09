@@ -11,11 +11,8 @@ import {
   useRedisInstanceCompatibility,
   useRedisearchListData,
 } from '../../hooks'
-import {
-  RqeNotAvailableScreen,
-  WelcomeScreen,
-  IndexListScreen,
-} from '../components'
+import { RqeNotAvailable } from '../../components/rqe-not-available'
+import { WelcomeScreen, IndexListScreen } from '../components'
 import * as S from '../styles'
 
 /**
@@ -61,7 +58,7 @@ export const VectorSearchPage = () => {
   if (compatibilityLoading === false && hasRedisearch === false) {
     return (
       <S.PageWrapper data-testid="vector-search-page--rqe-not-available">
-        <RqeNotAvailableScreen />
+        <RqeNotAvailable />
       </S.PageWrapper>
     )
   }

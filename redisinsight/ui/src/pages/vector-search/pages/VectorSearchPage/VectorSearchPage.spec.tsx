@@ -137,7 +137,7 @@ describe('VectorSearchPage', () => {
     renderComponent()
 
     const rqeScreen = screen.getByTestId(
-      'vector-search--rqe-not-available-screen',
+      'vector-search-page--rqe-not-available',
     )
     expect(rqeScreen).toBeInTheDocument()
   })
