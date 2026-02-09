@@ -20,6 +20,14 @@ const meta: Meta<typeof IndexesList> = {
   component: IndexesList,
   tags: ['autodocs'],
   render: (args) => <IndexesListWrapper {...args} />,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'Table of vector search indexes. Column headers for Index prefix, Docs, Records, Terms, and Fields show an info icon; hover or focus the icon to see a tooltip with the column description.',
+      },
+    },
+  },
 }
 
 export default meta
@@ -102,5 +110,23 @@ export const ZeroDocuments: Story = {
         numTerms: 0,
       }),
     ],
+  },
+}
+
+/**
+ * Column headers for Index prefix, Docs, Records, Terms, and Fields include
+ * an info icon. Hover or focus the icon to see a tooltip describing the column.
+ */
+export const WithColumnTooltips: Story = {
+  args: {
+    data: mockIndexListData,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Use the info icons next to Index prefix, Docs, Records, Terms, and Fields to see tooltips explaining each column.',
+      },
+    },
   },
 }

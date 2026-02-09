@@ -1,5 +1,12 @@
 import React from 'react'
-import { cleanup, render, screen } from 'uiSrc/utils/test-utils'
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitForRiTooltipVisible,
+} from 'uiSrc/utils/test-utils'
 import {
   indexListRowFactory,
   exampleIndexListRows,
@@ -181,6 +188,46 @@ describe('IndexesList', () => {
       expect(
         screen.getByTestId(`index-prefix-${noPrefixRow.id}`),
       ).toHaveTextContent('')
+    })
+  })
+
+  describe('Column header tooltips', () => {
+    it('should show tooltip content when focusing info icon for each column with tooltip', async () => {
+      renderComponent()
+
+      const verifyTooltip = async (
+        headerText: string,
+        tooltipPattern: RegExp,
+      ) => {
+        const header = screen.getByText(headerText)
+        const infoIcon = header.parentElement?.querySelector('svg') as Element
+
+        await act(async () => {
+          fireEvent.focus(infoIcon)
+        })
+        await waitForRiTooltipVisible()
+
+        const tooltipContent = screen.getAllByText(tooltipPattern)[0]
+        expect(tooltipContent).toBeInTheDocument()
+      }
+
+      await verifyTooltip(
+        'Index prefix',
+        /Keys matching this prefix are automatically indexed/,
+      )
+      await verifyTooltip('Docs', /Number of documents currently indexed/)
+      await verifyTooltip(
+        'Records',
+        /Total indexed field-value pairs across all documents/,
+      )
+      await verifyTooltip(
+        'Terms',
+        /Unique words extracted from TEXT fields for full-text search/,
+      )
+      await verifyTooltip(
+        'Fields',
+        /Total number of fields defined in the index schema/,
+      )
     })
   })
 })
