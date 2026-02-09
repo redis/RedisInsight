@@ -1,1 +1,1 @@
-export { default as IndexesList } from './IndexesList'
+export { IndexesList } from './IndexesList'

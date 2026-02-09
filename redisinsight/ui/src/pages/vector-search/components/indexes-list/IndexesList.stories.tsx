@@ -6,7 +6,7 @@ import {
   indexListRowFactory,
   mockIndexListData,
 } from 'uiSrc/mocks/factories/vector-search/indexList.factory'
-import IndexesList from './IndexesList'
+import { IndexesList } from './IndexesList'
 import { IndexesListProps, IndexListAction } from './IndexesList.types'
 
 // Simple wrapper for stories

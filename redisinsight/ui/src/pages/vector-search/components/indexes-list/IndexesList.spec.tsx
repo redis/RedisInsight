@@ -10,7 +10,7 @@ import {
   within,
 } from 'uiSrc/utils/test-utils'
 import { mockIndexListData } from 'uiSrc/mocks/factories/vector-search/indexList.factory'
-import IndexesList from './IndexesList'
+import { IndexesList } from './IndexesList'
 import { IndexesListProps } from './IndexesList.types'
 
 const defaultProps: IndexesListProps = {
