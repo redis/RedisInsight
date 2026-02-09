@@ -33,6 +33,7 @@ export const ActionsCell = ({
 
   return (
     <Row
+      wrap
       data-testid={`index-actions-${id}`}
       gap="m"
       align="center"

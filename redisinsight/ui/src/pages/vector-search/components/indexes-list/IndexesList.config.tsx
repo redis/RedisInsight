@@ -41,7 +41,7 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
     accessorKey: IndexesListColumn.Name,
     header: INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Name],
     enableSorting: true,
-    size: 200,
+    size: 240,
     cell: ({ row }: { row: Row<IndexListRow> }) => (
       <NameCell row={row.original} />
     ),
@@ -63,14 +63,14 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
     cell: ({ row }: { row: Row<IndexListRow> }) => (
       <PrefixCell row={row.original} />
     ),
-    size: 170,
+    size: 200,
   },
   {
     id: IndexesListColumn.FieldTypes,
     accessorKey: IndexesListColumn.FieldTypes,
     header: INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.FieldTypes],
     enableSorting: false,
-    size: 200,
+    size: 220,
     cell: ({ row }: { row: Row<IndexListRow> }) => (
       <FieldTypesCell row={row.original} />
     ),
@@ -85,6 +85,7 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
       />
     ),
     enableSorting: true,
+    size: 110,
     cell: ({ row }) => (
       <NumericCell
         value={row.original.numDocs}
@@ -103,6 +104,7 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
       />
     ),
     enableSorting: true,
+    size: 130,
     cell: ({ row }) => (
       <NumericCell
         value={row.original.numRecords}
@@ -122,6 +124,7 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
       />
     ),
     enableSorting: true,
+    size: 120,
     cell: ({ row }) => (
       <NumericCell
         value={row.original.numTerms}
@@ -140,6 +143,7 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
       />
     ),
     enableSorting: true,
+    size: 120,
     cell: ({ row }) => (
       <NumericCell
         value={row.original.numFields}
