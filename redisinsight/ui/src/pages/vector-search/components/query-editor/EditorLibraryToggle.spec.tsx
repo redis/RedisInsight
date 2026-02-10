@@ -30,10 +30,7 @@ describe('EditorLibraryToggle', () => {
 
   it('should call onChangeTab with Editor when Editor toggle is clicked', () => {
     render(
-      <EditorLibraryToggle
-        {...defaultProps}
-        activeTab={EditorTab.Library}
-      />,
+      <EditorLibraryToggle {...defaultProps} activeTab={EditorTab.Library} />,
     )
 
     fireEvent.mouseDown(screen.getByRole('tab', { name: 'Editor' }))
