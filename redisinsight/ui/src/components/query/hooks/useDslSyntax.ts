@@ -144,6 +144,12 @@ export const useDslSyntax = ({
     command: Nullable<IMonacoQuery>,
   ) => {
     const { editor } = monacoObjects?.current || {}
+
+    // Always hide the widget before potentially re-showing at a new position
+    if (editor && isWidgetOpen.current) {
+      hideSyntaxWidget(editor)
+    }
+
     if (!command?.info || !editor) {
       isWidgetEscaped.current = false
       return

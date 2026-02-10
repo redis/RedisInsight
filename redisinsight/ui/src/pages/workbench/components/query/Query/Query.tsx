@@ -184,9 +184,7 @@ const Query = (props: Props) => {
       e,
       dsl.isDedicatedEditorOpenRef.current ?? false,
     )
-    if (command) {
-      dsl.handleDslSyntax(e, command)
-    }
+    dsl.handleDslSyntax(e, command)
   }
 
   const combinedIsLoading = isLoading || loading || processing
