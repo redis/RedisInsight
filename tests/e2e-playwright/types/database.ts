@@ -3,6 +3,7 @@
  */
 export enum ConnectionType {
   Standalone = 'STANDALONE',
+  StandaloneBig = 'STANDALONE_BIG',
   Cluster = 'CLUSTER',
   Sentinel = 'SENTINEL',
 }

@@ -1,8 +1,7 @@
 import { test, expect } from 'e2eSrc/fixtures/base';
-import { StandaloneConfigFactory, TEST_DB_PREFIX } from 'e2eSrc/test-data/databases';
-import { standaloneBigConfig } from 'e2eSrc/config/databases/standalone';
+import { databaseFactories } from 'e2eSrc/test-data/databases';
 import { TEST_KEY_PREFIX } from 'e2eSrc/test-data/browser';
-import { DatabaseInstance } from 'e2eSrc/types';
+import { ConnectionType, DatabaseInstance } from 'e2eSrc/types';
 
 /**
  * Analytics > Database Analysis Tests
@@ -23,7 +22,7 @@ test.describe('Analytics > Database Analysis', () => {
 
   test.beforeAll(async ({ apiHelper }) => {
     // Create a test database with unique name
-    const config = StandaloneConfigFactory.build({ name: `test-db-analysis-${uniqueSuffix}` });
+    const config = databaseFactories[ConnectionType.Standalone].build({ name: `test-db-analysis-${uniqueSuffix}` });
     database = await apiHelper.createDatabase(config);
 
     // Seed keys with different types and namespace patterns for meaningful analysis
@@ -356,11 +355,8 @@ test.describe('Analytics > Database Analysis (Large Dataset)', () => {
   let bigDatabase: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
-    bigDatabase = await apiHelper.createDatabase({
-      name: `${TEST_DB_PREFIX}big-db-analysis`,
-      host: standaloneBigConfig.host,
-      port: standaloneBigConfig.port,
-    });
+    const config = databaseFactories[ConnectionType.StandaloneBig].build();
+    bigDatabase = await apiHelper.createDatabase(config);
   });
 
   test.afterAll(async ({ apiHelper }) => {
