@@ -422,24 +422,15 @@ test.describe('Analytics > Database Analysis (Large Dataset)', () => {
       await expect(keyPatternHeader).toBeVisible();
 
       // Default sort is by Memory desc, so Key Pattern shows "activate to sort ascending"
-      await expect(keyPatternHeader).toHaveAttribute(
-        'aria-description',
-        /activate to sort ascending/,
-      );
+      await expect(keyPatternHeader).toHaveAttribute('aria-description', /activate to sort ascending/);
 
       // Click to sort ascending — description now offers "sort descending"
       await keyPatternHeader.click();
-      await expect(keyPatternHeader).toHaveAttribute(
-        'aria-description',
-        /activate to sort descending/,
-      );
+      await expect(keyPatternHeader).toHaveAttribute('aria-description', /activate to sort descending/);
 
       // Click again to sort descending — description now offers "unsort"
       await keyPatternHeader.click();
-      await expect(keyPatternHeader).toHaveAttribute(
-        'aria-description',
-        /activate to unsort/,
-      );
+      await expect(keyPatternHeader).toHaveAttribute('aria-description', /activate to unsort/);
     });
   });
 
@@ -451,9 +442,7 @@ test.describe('Analytics > Database Analysis (Large Dataset)', () => {
 
     test('should filter namespace to Browser view', async ({ browserPage, analyticsPage, page }) => {
       // Find the first namespace cell in the Key Pattern column (first data row)
-      const firstRow = analyticsPage.nspTableMemory
-        .getByRole('row')
-        .nth(1);
+      const firstRow = analyticsPage.nspTableMemory.getByRole('row').nth(1);
 
       // The Key Pattern cell contains a button (TableTextBtn) with the namespace name
       const namespaceButton = firstRow.getByRole('cell').first().getByRole('button');

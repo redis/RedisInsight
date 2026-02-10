@@ -263,9 +263,9 @@ export class AnalyticsPage extends InstancePage {
    * Get last refresh time text
    */
   async getLastRefreshText(): Promise<string> {
-    const lastRefreshElement = this.page.locator('[class*="last-refresh"]').or(
-      this.page.getByText(/Last refresh:/).locator('..'),
-    );
+    const lastRefreshElement = this.page
+      .locator('[class*="last-refresh"]')
+      .or(this.page.getByText(/Last refresh:/).locator('..'));
     return (await lastRefreshElement.textContent()) || '';
   }
 
@@ -489,4 +489,3 @@ export class AnalyticsPage extends InstancePage {
     return count > 0;
   }
 }
-

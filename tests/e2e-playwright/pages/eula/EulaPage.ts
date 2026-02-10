@@ -137,4 +137,3 @@ export class EulaPage extends BasePage {
     return ariaChecked === 'true';
   }
 }
-

@@ -48,4 +48,3 @@ export type KeyData =
   | ZSetKeyData
   | StreamKeyData
   | JsonKeyData;
-

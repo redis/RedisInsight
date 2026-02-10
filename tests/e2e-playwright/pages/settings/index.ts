@@ -1,2 +1,1 @@
 export { SettingsPage } from './SettingsPage';
-

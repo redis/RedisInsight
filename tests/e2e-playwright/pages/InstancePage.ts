@@ -114,4 +114,3 @@ export abstract class InstancePage extends BasePage {
     await this.instanceHeader.goToDatabases();
   }
 }
-

@@ -97,4 +97,3 @@ export class TagsDialog {
     await expect(this.dialog).not.toBeVisible();
   }
 }
-

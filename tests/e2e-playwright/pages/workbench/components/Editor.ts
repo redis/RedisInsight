@@ -62,4 +62,3 @@ export class Editor {
     return this.container.isVisible();
   }
 }
-

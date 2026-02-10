@@ -23,7 +23,11 @@ jobs:
         working-directory: ${{ env.E2E_DIR }}
         run: npm run lint
 
+      - name: Check formatting
+        working-directory: ${{ env.E2E_DIR }}
+        run: npm run format:check
+
       - name: Type check E2E code
         working-directory: ${{ env.E2E_DIR }}
-        run: npx tsc --noEmit
+        run: npm run type-check
 

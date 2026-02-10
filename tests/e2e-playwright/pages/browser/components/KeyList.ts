@@ -78,9 +78,7 @@ export class KeyList {
     // - "Total:" (List view with keys)
     // - "Results:" (Tree view or filtered results)
     // - "Let's start working" (empty database)
-    await expect(
-      this.page.getByText(/Total:|Results:|Let's start working/).first(),
-    ).toBeVisible({ timeout });
+    await expect(this.page.getByText(/Total:|Results:|Let's start working/).first()).toBeVisible({ timeout });
   }
 
   /**
@@ -299,7 +297,9 @@ export class KeyList {
     const folder = this.getFolderByName(folderName);
     await folder.click();
     // Wait for chevron to change to down
-    await this.page.getByRole('treeitem', { name: new RegExp(`Chevron Down.*${folderName}`) }).waitFor({ state: 'visible' });
+    await this.page
+      .getByRole('treeitem', { name: new RegExp(`Chevron Down.*${folderName}`) })
+      .waitFor({ state: 'visible' });
   }
 
   /**
@@ -309,7 +309,9 @@ export class KeyList {
     const folder = this.getFolderByName(folderName);
     await folder.click();
     // Wait for chevron to change to right
-    await this.page.getByRole('treeitem', { name: new RegExp(`Chevron Right.*${folderName}`) }).waitFor({ state: 'visible' });
+    await this.page
+      .getByRole('treeitem', { name: new RegExp(`Chevron Right.*${folderName}`) })
+      .waitFor({ state: 'visible' });
   }
 
   /**
@@ -325,7 +327,10 @@ export class KeyList {
    */
   async getFolderPercentage(folderName: string): Promise<string | null> {
     const folder = this.getFolderByName(folderName);
-    const percentageElement = folder.locator('div').filter({ hasText: /\d+%|<1%/ }).first();
+    const percentageElement = folder
+      .locator('div')
+      .filter({ hasText: /\d+%|<1%/ })
+      .first();
     return percentageElement.textContent();
   }
 
@@ -392,4 +397,3 @@ export class KeyList {
     await this.page.getByRole('option', { name: option }).click();
   }
 }
-

@@ -79,4 +79,3 @@ export class BrowserPage extends InstancePage {
     expect(exists).toBe(false);
   }
 }
-

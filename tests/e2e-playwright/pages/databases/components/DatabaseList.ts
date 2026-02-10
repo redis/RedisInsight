@@ -316,10 +316,7 @@ export class DatabaseList {
    * Assert database is visible
    * Waits for the database to appear in the list (useful after API creation)
    */
-  async expectDatabaseVisible(
-    name: string,
-    options: { timeout?: number; searchFirst?: boolean } = {},
-  ): Promise<void> {
+  async expectDatabaseVisible(name: string, options: { timeout?: number; searchFirst?: boolean } = {}): Promise<void> {
     const { timeout = 15000, searchFirst = false } = options;
 
     if (searchFirst) {
@@ -455,4 +452,3 @@ export class DatabaseList {
     await this.page.getByRole('option', { name: pageNumber }).click();
   }
 }
-

@@ -130,4 +130,3 @@ export class AddDatabaseDialog {
     await this.testConnectionButton.click();
   }
 }
-

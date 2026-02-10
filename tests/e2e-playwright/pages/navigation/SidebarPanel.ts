@@ -145,4 +145,3 @@ export class SidebarPanel extends BasePage {
     await this.mainNavigation.waitFor({ state: 'visible' });
   }
 }
-

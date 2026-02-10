@@ -126,4 +126,3 @@ export class WorkbenchPage extends InstancePage {
     return this.resultsPanel.getResultCount();
   }
 }
-
