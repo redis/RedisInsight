@@ -43,12 +43,6 @@
     "figma": {
       "url": "https://mcp.figma.com/mcp",
       "description": "Figma MCP server for accessing design files, frames, and layers. Copy a Figma frame/layer link to provide design context in prompts."
-    },
-    "playwright": {
-      "command": "npx",
-      "args": [
-        "@playwright/mcp@latest"
-      ]
     }
   }
 }
