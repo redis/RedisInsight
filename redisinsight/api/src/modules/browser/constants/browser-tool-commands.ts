@@ -6,6 +6,7 @@ export enum BrowserToolKeysCommands {
   Expire = 'expire',
   Persist = 'persist',
   Del = 'del',
+  Unlink = 'unlink',
   Rename = 'rename',
   RenameNX = 'renamenx',
   MemoryUsage = 'memory usage',
