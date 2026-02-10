@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
-import { IndexListRow } from '../../IndexesList.types'
+import { IndexListRow } from '../../IndexList.types'
 import { formatPrefixes } from 'uiSrc/pages/vector-search/utils'
 
 export const PrefixCell = ({ row }: { row: IndexListRow }) => {

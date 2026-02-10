@@ -4,12 +4,12 @@ import { ColumnDef, Row } from 'uiSrc/components/base/layout/table'
 
 import {
   IndexListRow,
-  IndexesListColumn,
+  IndexListColumn,
   IndexListAction,
-} from './IndexesList.types'
+} from './IndexList.types'
 import {
-  INDEXES_LIST_COLUMN_HEADERS,
-  INDEXES_LIST_COLUMN_TOOLTIPS,
+  INDEX_LIST_COLUMN_HEADERS,
+  INDEX_LIST_COLUMN_TOOLTIPS,
 } from './constants'
 import { NameCell } from './components/NameCell/NameCell'
 import { PrefixCell } from './components/PrefixCell/PrefixCell'
@@ -22,8 +22,8 @@ const createActionsColumn = (
   onQueryClick?: (indexName: string) => void,
   actions?: IndexListAction[],
 ): ColumnDef<IndexListRow> => ({
-  id: IndexesListColumn.Actions,
-  header: INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Actions],
+  id: IndexListColumn.Actions,
+  header: INDEX_LIST_COLUMN_HEADERS[IndexListColumn.Actions],
   enableSorting: false,
   size: 150,
   cell: ({ row }: { row: Row<IndexListRow> }) => (
@@ -35,11 +35,11 @@ const createActionsColumn = (
   ),
 })
 
-const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
+const INDEX_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
   {
-    id: IndexesListColumn.Name,
-    accessorKey: IndexesListColumn.Name,
-    header: INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Name],
+    id: IndexListColumn.Name,
+    accessorKey: IndexListColumn.Name,
+    header: INDEX_LIST_COLUMN_HEADERS[IndexListColumn.Name],
     enableSorting: true,
     size: 240,
     cell: ({ row }: { row: Row<IndexListRow> }) => (
@@ -51,12 +51,12 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
         .localeCompare(rowB.original.name.toLowerCase()),
   },
   {
-    id: IndexesListColumn.Prefix,
-    accessorKey: IndexesListColumn.Prefix,
+    id: IndexListColumn.Prefix,
+    accessorKey: IndexListColumn.Prefix,
     header: () => (
       <ColumnHeader
-        label={INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Prefix]}
-        tooltip={INDEXES_LIST_COLUMN_TOOLTIPS[IndexesListColumn.Prefix]}
+        label={INDEX_LIST_COLUMN_HEADERS[IndexListColumn.Prefix]}
+        tooltip={INDEX_LIST_COLUMN_TOOLTIPS[IndexListColumn.Prefix]}
       />
     ),
     enableSorting: false,
@@ -66,9 +66,9 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
     size: 200,
   },
   {
-    id: IndexesListColumn.FieldTypes,
-    accessorKey: IndexesListColumn.FieldTypes,
-    header: INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.FieldTypes],
+    id: IndexListColumn.FieldTypes,
+    accessorKey: IndexListColumn.FieldTypes,
+    header: INDEX_LIST_COLUMN_HEADERS[IndexListColumn.FieldTypes],
     enableSorting: false,
     size: 220,
     cell: ({ row }: { row: Row<IndexListRow> }) => (
@@ -76,12 +76,12 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
     ),
   },
   {
-    id: IndexesListColumn.Docs,
-    accessorKey: IndexesListColumn.Docs,
+    id: IndexListColumn.Docs,
+    accessorKey: IndexListColumn.Docs,
     header: () => (
       <ColumnHeader
-        label={INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Docs]}
-        tooltip={INDEXES_LIST_COLUMN_TOOLTIPS[IndexesListColumn.Docs]}
+        label={INDEX_LIST_COLUMN_HEADERS[IndexListColumn.Docs]}
+        tooltip={INDEX_LIST_COLUMN_TOOLTIPS[IndexListColumn.Docs]}
       />
     ),
     enableSorting: true,
@@ -95,12 +95,12 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
     sortingFn: (rowA, rowB) => rowA.original.numDocs - rowB.original.numDocs,
   },
   {
-    id: IndexesListColumn.Records,
-    accessorKey: IndexesListColumn.Records,
+    id: IndexListColumn.Records,
+    accessorKey: IndexListColumn.Records,
     header: () => (
       <ColumnHeader
-        label={INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Records]}
-        tooltip={INDEXES_LIST_COLUMN_TOOLTIPS[IndexesListColumn.Records]}
+        label={INDEX_LIST_COLUMN_HEADERS[IndexListColumn.Records]}
+        tooltip={INDEX_LIST_COLUMN_TOOLTIPS[IndexListColumn.Records]}
       />
     ),
     enableSorting: true,
@@ -115,12 +115,12 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
       rowA.original.numRecords - rowB.original.numRecords,
   },
   {
-    id: IndexesListColumn.Terms,
-    accessorKey: IndexesListColumn.Terms,
+    id: IndexListColumn.Terms,
+    accessorKey: IndexListColumn.Terms,
     header: () => (
       <ColumnHeader
-        label={INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Terms]}
-        tooltip={INDEXES_LIST_COLUMN_TOOLTIPS[IndexesListColumn.Terms]}
+        label={INDEX_LIST_COLUMN_HEADERS[IndexListColumn.Terms]}
+        tooltip={INDEX_LIST_COLUMN_TOOLTIPS[IndexListColumn.Terms]}
       />
     ),
     enableSorting: true,
@@ -134,12 +134,12 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
     sortingFn: (rowA, rowB) => rowA.original.numTerms - rowB.original.numTerms,
   },
   {
-    id: IndexesListColumn.Fields,
-    accessorKey: IndexesListColumn.Fields,
+    id: IndexListColumn.Fields,
+    accessorKey: IndexListColumn.Fields,
     header: () => (
       <ColumnHeader
-        label={INDEXES_LIST_COLUMN_HEADERS[IndexesListColumn.Fields]}
-        tooltip={INDEXES_LIST_COLUMN_TOOLTIPS[IndexesListColumn.Fields]}
+        label={INDEX_LIST_COLUMN_HEADERS[IndexListColumn.Fields]}
+        tooltip={INDEX_LIST_COLUMN_TOOLTIPS[IndexListColumn.Fields]}
       />
     ),
     enableSorting: true,
@@ -155,13 +155,13 @@ const INDEXES_LIST_COLUMNS_BASE: ColumnDef<IndexListRow>[] = [
   },
 ]
 
-export const getIndexesListColumns = (options?: {
+export const getIndexListColumns = (options?: {
   onQueryClick?: (indexName: string) => void
   actions?: IndexListAction[]
 }): ColumnDef<IndexListRow>[] => {
   const actions = options?.actions ?? []
   return [
-    ...INDEXES_LIST_COLUMNS_BASE,
+    ...INDEX_LIST_COLUMNS_BASE,
     createActionsColumn(options?.onQueryClick, actions),
   ]
 }

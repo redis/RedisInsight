@@ -6,20 +6,20 @@ import {
   indexListRowFactory,
   mockIndexListData,
 } from 'uiSrc/mocks/factories/vector-search/indexList.factory'
-import { IndexesList } from './IndexesList'
-import { IndexesListProps, IndexListAction } from './IndexesList.types'
+import { IndexList } from './IndexList'
+import { IndexListProps, IndexListAction } from './IndexList.types'
 
 // Simple wrapper for stories
-const IndexesListWrapper = (props: IndexesListProps) => (
+const IndexListWrapper = (props: IndexListProps) => (
   <Col style={{ maxWidth: '1200px' }}>
-    <IndexesList {...props} />
+    <IndexList {...props} />
   </Col>
 )
 
-const meta: Meta<typeof IndexesList> = {
-  component: IndexesList,
+const meta: Meta<typeof IndexList> = {
+  component: IndexList,
   tags: ['autodocs'],
-  render: (args) => <IndexesListWrapper {...args} />,
+  render: (args) => <IndexListWrapper {...args} />,
   parameters: {
     docs: {
       description: {

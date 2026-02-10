@@ -2,19 +2,19 @@ import React, { memo, useMemo } from 'react'
 
 import { Table } from 'uiSrc/components/base/layout/table'
 
-import { IndexesListProps } from './IndexesList.types'
-import { getIndexesListColumns } from './IndexesList.config'
+import { IndexListProps } from './IndexList.types'
+import { getIndexListColumns } from './IndexList.config'
 
-export const IndexesList = memo(
+export const IndexList = memo(
   ({
     data,
     loading,
-    dataTestId = 'indexes-list',
+    dataTestId = 'index-list',
     onQueryClick,
     actions,
-  }: IndexesListProps) => {
+  }: IndexListProps) => {
     const columns = useMemo(
-      () => getIndexesListColumns({ onQueryClick, actions }),
+      () => getIndexListColumns({ onQueryClick, actions }),
       [onQueryClick, actions],
     )
 

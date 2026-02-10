@@ -8,8 +8,8 @@ import NoDataMessage from '../components/no-data-message/NoDataMessage'
 import { NoDataMessageKeys } from '../components/no-data-message/data'
 
 /**
- * @deprecated This component is deprecated. Use the new IndexesList component instead.
- * @see redisinsight/ui/src/pages/vector-search/components/indexes-list/IndexesList
+ * @deprecated This component is deprecated. Use the new IndexList component instead.
+ * @see redisinsight/ui/src/pages/vector-search/components/index-list/IndexList
  */
 export const ManageIndexesList = () => {
   const { stringData: data, loading } = useRedisearchListData()

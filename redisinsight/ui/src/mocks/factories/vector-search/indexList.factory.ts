@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
-import { IndexListRow } from 'uiSrc/pages/vector-search/components/indexes-list/IndexesList.types'
+import { IndexListRow } from 'uiSrc/pages/vector-search/components/index-list/IndexList.types'
 
 const FIELD_TYPES = Object.values(FieldTypes)
 
@@ -34,7 +34,7 @@ export const indexListRowFactory = Factory.define<IndexListRow>(
       fieldTypes,
       numDocs: faker.number.int({ min: 0, max: 1000000 }),
       numRecords: faker.number.int({ min: 1000001, max: 2000000 }),
-      numTerms: faker.number.int({ min: 2000001, max: 300000 }),
+      numTerms: faker.number.int({ min: 2000001, max: 3000000 }),
       numFields,
     }
   },

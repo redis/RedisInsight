@@ -3,7 +3,7 @@ import React, { useCallback } from 'react'
 import { Button } from 'uiSrc/components/base/forms/buttons'
 import { IconButton } from '@redis-ui/components'
 
-import { ActionsCellProps } from '../../IndexesList.types'
+import { ActionsCellProps } from '../../IndexList.types'
 import {
   Menu,
   MenuContent,

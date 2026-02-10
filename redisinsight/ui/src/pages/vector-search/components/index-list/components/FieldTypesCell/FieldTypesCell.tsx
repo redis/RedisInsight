@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 
 import { FieldTag } from 'uiSrc/components/new-index/create-index-step/field-box/FieldTag'
 import { FlexGroup } from 'uiSrc/components/base/layout/flex'
-import { IndexListRow } from '../../IndexesList.types'
+import { IndexListRow } from '../../IndexList.types'
 
 export const FieldTypesCell = ({ row }: { row: IndexListRow }) => {
   const fieldTags = useMemo(

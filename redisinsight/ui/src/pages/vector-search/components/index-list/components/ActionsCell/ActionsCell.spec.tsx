@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, userEvent, within } from 'uiSrc/utils/test-utils'
 import { ActionsCell } from './ActionsCell'
-import { ActionsCellProps, IndexListRow } from '../../IndexesList.types'
+import { ActionsCellProps, IndexListRow } from '../../IndexList.types'
 
 const mockRow = {
   id: 'idx-products',

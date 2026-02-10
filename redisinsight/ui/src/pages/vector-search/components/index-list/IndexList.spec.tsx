@@ -10,18 +10,18 @@ import {
   within,
 } from 'uiSrc/utils/test-utils'
 import { mockIndexListData } from 'uiSrc/mocks/factories/vector-search/indexList.factory'
-import { IndexesList } from './IndexesList'
-import { IndexesListProps } from './IndexesList.types'
+import { IndexList } from './IndexList'
+import { IndexListProps } from './IndexList.types'
 
-const defaultProps: IndexesListProps = {
+const defaultProps: IndexListProps = {
   data: mockIndexListData,
-  dataTestId: 'indexes-list',
+  dataTestId: 'index-list',
 }
 
-const renderComponent = (props: Partial<IndexesListProps> = {}) =>
-  render(<IndexesList {...defaultProps} {...props} />)
+const renderComponent = (props: Partial<IndexListProps> = {}) =>
+  render(<IndexList {...defaultProps} {...props} />)
 
-describe('IndexesList', () => {
+describe('IndexList', () => {
   beforeEach(() => {
     cleanup()
     jest.clearAllMocks()
@@ -31,7 +31,7 @@ describe('IndexesList', () => {
     it('should render list with correct columns', () => {
       renderComponent()
 
-      expect(screen.getByTestId('indexes-list')).toBeInTheDocument()
+      expect(screen.getByTestId('index-list')).toBeInTheDocument()
       expect(screen.getByText('Index name')).toBeInTheDocument()
       expect(screen.getByText('Index prefix')).toBeInTheDocument()
       expect(screen.getByText('Index fields')).toBeInTheDocument()

@@ -1,9 +1,9 @@
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 
 /**
- * Enum representing the column identifiers for the IndexesList.
+ * Enum representing the column identifiers for the IndexList.
  */
-export enum IndexesListColumn {
+export enum IndexListColumn {
   Name = 'name',
   Prefix = 'prefixes',
   FieldTypes = 'fieldTypes',
@@ -15,7 +15,7 @@ export enum IndexesListColumn {
 }
 
 /**
- * Represents a single row in the IndexesList.
+ * Represents a single row in the IndexList.
  * Contains all the data needed to display an index in the list.
  */
 export interface IndexListRow {
@@ -38,9 +38,9 @@ export interface IndexListRow {
 }
 
 /**
- * Props for the IndexesList component.
+ * Props for the IndexList component.
  */
-export interface IndexesListProps {
+export interface IndexListProps {
   /** Array of index data to display in the list */
   data: IndexListRow[]
   /** Whether the list data is currently loading */

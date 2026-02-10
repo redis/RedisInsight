@@ -1,1 +1,0 @@
-export { IndexesList } from './IndexesList'
