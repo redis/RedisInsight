@@ -82,7 +82,7 @@ describe('IndexesList', () => {
 
       mockIndexListData.forEach((row) => {
         expect(screen.getByTestId(`index-docs-${row.id}`)).toHaveTextContent(
-          row.numDocs.toLocaleString(),
+          row.numDocs.toString(),
         )
       })
     })
@@ -92,7 +92,7 @@ describe('IndexesList', () => {
 
       mockIndexListData.forEach((row) => {
         expect(screen.getByTestId(`index-records-${row.id}`)).toHaveTextContent(
-          row.numRecords.toLocaleString(),
+          row.numRecords.toString(),
         )
       })
     })
@@ -102,7 +102,7 @@ describe('IndexesList', () => {
 
       mockIndexListData.forEach((row) => {
         expect(screen.getByTestId(`index-terms-${row.id}`)).toHaveTextContent(
-          row.numTerms.toLocaleString(),
+          row.numTerms.toString(),
         )
       })
     })
@@ -112,7 +112,7 @@ describe('IndexesList', () => {
 
       mockIndexListData.forEach((row) => {
         expect(screen.getByTestId(`index-fields-${row.id}`)).toHaveTextContent(
-          row.numFields.toLocaleString(),
+          row.numFields.toString(),
         )
       })
     })
