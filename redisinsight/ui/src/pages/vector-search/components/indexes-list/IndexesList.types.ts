@@ -47,8 +47,6 @@ export interface IndexesListProps {
   loading?: boolean
   /** Test ID for the list container */
   dataTestId?: string
-  /** Empty message to display when no data is available */
-  emptyMessage?: string
   /** Callback when the Query button is clicked (index name is passed) */
   onQueryClick?: (indexName: string) => void
   /** Actions to render in the row actions menu (e.g. Edit, Delete) */
