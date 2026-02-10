@@ -602,30 +602,30 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 6.2 Database Analysis
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Run database analysis |
-| 🔲 | main | View analysis results |
-| 🔲 | main | View top keys table |
-| 🔲 | main | View top namespaces |
-| 🔲 | main | View TTL distribution |
-| 🔲 | main | View recommendations (Tips tab) |
-| 🔲 | main | History of analyses |
-| 🔲 | main | Confirm charts for data types, namespaces, expirations render |
-| 🔲 | main | Confirm extrapolation toggle adjusts charted values |
-| 🔲 | main | Confirm analysis distinguishes between scanned and estimated data |
-| 🔲 | main | Confirm responsiveness on large datasets |
-| 🔲 | main | Sort namespaces by key pattern |
-| 🔲 | main | Sort namespaces by memory |
-| 🔲 | main | Sort namespaces by number of keys |
-| 🔲 | main | Filter namespace to Browser view |
+| ✅ | main | Run database analysis |
+| ✅ | main | View analysis results |
+| ✅ | main | View top keys table |
+| ✅ | main | View top namespaces |
+| ✅ | main | View TTL distribution |
+| ✅ | main | View recommendations (Tips tab) |
+| ✅ | main | History of analyses |
+| ✅ | main | Confirm charts for data types, namespaces, expirations render |
+| ✅ | main | Confirm extrapolation toggle adjusts charted values | Uses pre-seeded big database (port 8103) for partial scan |
+| ✅ | main | Confirm analysis distinguishes between scanned and estimated data |
+| ✅ | main | Confirm responsiveness on large datasets |
+| ✅ | main | Sort namespaces by key pattern |
+| ✅ | main | Sort namespaces by memory |
+| ✅ | main | Sort namespaces by number of keys |
+| ✅ | main | Filter namespace to Browser view |
 | 🔲 | main | Display "No namespaces" message with Tree View link |
-| 🔲 | main | Toggle "No Expiry" in TTL distribution graph |
-| 🔲 | main | View analysis history (up to 5 reports) |
-| 🔲 | main | View voting section for recommendations |
+| ✅ | main | Toggle "No Expiry" in TTL distribution graph |
+| ✅ | main | View analysis history (up to 5 reports) |
+| ✅ | main | View voting section for recommendations |
 | 🔲 | main | Vote recommendation as useful | Voting buttons disabled - requires telemetry enabled |
 | 🔲 | main | Vote recommendation as not useful | Voting buttons disabled - requires telemetry enabled |
-| 🔲 | main | Expand/collapse recommendation details |
-| 🔲 | main | View recommendation labels (code changes, configuration changes) |
-| 🔲 | main | Open tutorial from recommendation |
+| ✅ | main | Expand/collapse recommendation details |
+| ✅ | main | View recommendation labels (code changes, configuration changes) |
+| ✅ | main | Open tutorial from recommendation |
 
 ### 6.2.1 Profiler
 | Status | Group | Test Case |
