@@ -41,7 +41,7 @@ export const VectorSearchEditor = () => {
       },
     )
 
-    // Key handler for parameter hints
+    // Key handler for parameter hints and snippet mode exit
     editor.onKeyDown((e: monacoEditor.IKeyboardEvent) => {
       if (
         e.keyCode === monacoEditor.KeyCode.Tab ||
@@ -51,6 +51,14 @@ export const VectorSearchEditor = () => {
       ) {
         completions.onTriggerParameterHints()
       }
+
+      // Workaround for Monaco issue #2756: exit snippet mode on Enter/Space
+      if (
+        e.keyCode === monacoEditor.KeyCode.Enter ||
+        e.keyCode === monacoEditor.KeyCode.Space
+      ) {
+        onExitSnippetMode()
+      }
     })
 
     // Initial suggestions
@@ -58,12 +66,15 @@ export const VectorSearchEditor = () => {
   }
 
   // Core editor lifecycle
-  const { monacoTheme, editorDidMount: baseEditorDidMount } =
-    useMonacoRedisEditor({
-      monacoObjects,
-      onSubmit,
-      onSetup: handleEditorSetup,
-    })
+  const {
+    monacoTheme,
+    editorDidMount: baseEditorDidMount,
+    onExitSnippetMode,
+  } = useMonacoRedisEditor({
+    monacoObjects,
+    onSubmit,
+    onSetup: handleEditorSetup,
+  })
 
   // Decorations
   useQueryDecorations({ monacoObjects, query })
