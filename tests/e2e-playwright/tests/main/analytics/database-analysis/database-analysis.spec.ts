@@ -413,7 +413,7 @@ test.describe('Analytics > Database Analysis (Large Dataset)', () => {
     });
 
     test('should sort namespaces by key pattern', async ({ analyticsPage }) => {
-      // The namespace table header has sortable button elements with aria-sort
+      // The namespace table header has sortable button elements with aria-description
       const keyPatternHeader = analyticsPage.nspTableMemory
         .getByRole('columnheader')
         .filter({ hasText: 'Key Pattern' })
@@ -421,16 +421,25 @@ test.describe('Analytics > Database Analysis (Large Dataset)', () => {
 
       await expect(keyPatternHeader).toBeVisible();
 
-      // Default sort is by Memory desc, so Key Pattern has no aria-sort attribute
-      await expect(keyPatternHeader).not.toHaveAttribute('aria-sort');
+      // Default sort is by Memory desc, so Key Pattern shows "activate to sort ascending"
+      await expect(keyPatternHeader).toHaveAttribute(
+        'aria-description',
+        /activate to sort ascending/,
+      );
 
-      // Click to sort ascending
+      // Click to sort ascending — description now offers "sort descending"
       await keyPatternHeader.click();
-      await expect(keyPatternHeader).toHaveAttribute('aria-sort', 'ascending');
+      await expect(keyPatternHeader).toHaveAttribute(
+        'aria-description',
+        /activate to sort descending/,
+      );
 
-      // Click again to sort descending
+      // Click again to sort descending — description now offers "unsort"
       await keyPatternHeader.click();
-      await expect(keyPatternHeader).toHaveAttribute('aria-sort', 'descending');
+      await expect(keyPatternHeader).toHaveAttribute(
+        'aria-description',
+        /activate to unsort/,
+      );
     });
   });
 
