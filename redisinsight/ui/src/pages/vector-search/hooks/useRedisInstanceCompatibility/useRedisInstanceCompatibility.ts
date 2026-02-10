@@ -7,20 +7,12 @@ import {
 import { REDISEARCH_MODULES } from 'uiSrc/slices/interfaces'
 import { isRedisVersionSupported } from 'uiSrc/utils/comparisons/compareVersions'
 
-export type UseRedisInstanceCompatibilityReturn = {
-  loading: boolean | undefined
-  hasRedisearch: boolean | undefined
-  hasSupportedVersion: boolean | undefined
-}
+import { UseRedisInstanceCompatibilityReturn } from './useRedisInstanceCompatibility.types'
 
 const MIN_SUPPORTED_REDIS_VERSION = '7.2.0'
 const REDISEARCH_MODULE_SET = new Set(REDISEARCH_MODULES)
 
-/**
- * @deprecated Use `useRedisInstanceCompatibility` from `uiSrc/pages/vector-search/hooks` instead.
- * This hook is part of the deprecated vector-search module and will be removed in a future release.
- */
-const useRedisInstanceCompatibility =
+export const useRedisInstanceCompatibility =
   (): UseRedisInstanceCompatibilityReturn => {
     const { version } = useSelector(connectedInstanceInfoSelector)
 
@@ -42,5 +34,3 @@ const useRedisInstanceCompatibility =
           : undefined,
     }
   }
-
-export default useRedisInstanceCompatibility

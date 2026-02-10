@@ -73,11 +73,36 @@ export class AnalyticsPage extends InstancePage {
   readonly votingSection: Locator;
   readonly usefulVoteButton: Locator;
   readonly notUsefulVoteButton: Locator;
+  // Database Analysis elements
+  readonly newReportButton: Locator;
+  readonly reportDropdown: Locator;
+  readonly noReportsMessage: Locator;
+  readonly dataSummaryTab: Locator;
+  readonly tipsTab: Locator;
+  readonly topNamespacesTable: Locator;
+  readonly topKeysTable: Locator;
+  readonly memoryChart: Locator;
+  readonly keysChart: Locator;
+  readonly scannedKeysText: Locator;
+  readonly ttlDistributionChart: Locator;
+  readonly showNoExpirySwitch: Locator;
+  readonly reportHistorySelect: Locator;
+
+  // Tips/Recommendations elements
+  readonly codeChangesLabel: Locator;
+  readonly configChangesLabel: Locator;
+  readonly upgradeLabel: Locator;
+  readonly recommendationAccordions: Locator;
+  readonly tutorialButton: Locator;
+  readonly votingSection: Locator;
+  readonly likeButton: Locator;
+  readonly dislikeButton: Locator;
 
   constructor(page: Page) {
     super(page);
 
     // Sub-page tabs (rendered by @redis-ui/components Tabs with role="tab")
+    // Sub-page tabs
     this.databaseAnalysisTab = page.getByRole('tab', { name: 'Database Analysis' });
     this.slowLogTab = page.getByRole('tab', { name: 'Slow Log' });
 
@@ -139,6 +164,35 @@ export class AnalyticsPage extends InstancePage {
     this.votingSection = page.getByTestId('recommendation-voting');
     this.usefulVoteButton = page.getByTestId('useful-vote-btn');
     this.notUsefulVoteButton = page.getByTestId('not useful-vote-btn');
+    // Database Analysis elements
+    this.newReportButton = page.getByTestId('start-database-analysis-btn');
+    this.reportDropdown = page.getByRole('combobox').filter({ hasText: /\d{1,2}:\d{2}:\d{2}/ });
+    this.noReportsMessage = page.getByText('No Reports found');
+    this.dataSummaryTab = page.getByRole('tab', { name: 'Data Summary' });
+    this.tipsTab = page.getByRole('tab', { name: /Tips/ });
+    this.topNamespacesTable = page.locator('table').filter({ hasText: 'Key Pattern' });
+    this.topKeysTable = page.locator('table').filter({ hasText: 'Key Name' });
+    // Charts are in containers with text labels, not on img elements directly
+    this.memoryChart = page.locator('[data-testid="analysis-memory"]').or(
+      page.locator('div').filter({ hasText: /Memory/ }).locator('canvas, svg').first(),
+    );
+    this.keysChart = page.locator('[data-testid="analysis-keys"]').or(
+      page.locator('div').filter({ hasText: /Keys/ }).locator('canvas, svg').first(),
+    );
+    this.scannedKeysText = page.getByText(/Scanned \d+%/);
+    this.ttlDistributionChart = page.getByTestId('analysis-ttl');
+    this.showNoExpirySwitch = page.getByTestId('show-no-expiry-switch');
+    this.reportHistorySelect = page.getByTestId('select-report');
+
+    // Tips/Recommendations elements
+    this.codeChangesLabel = page.getByText('Code Changes');
+    this.configChangesLabel = page.getByText('Configuration Changes');
+    this.upgradeLabel = page.getByText('Upgrade');
+    this.recommendationAccordions = page.locator('[data-testid$="-accordion"]');
+    this.tutorialButton = page.getByRole('button', { name: 'Tutorial' });
+    this.votingSection = page.getByText('Is this useful?');
+    this.likeButton = page.getByTestId('like-vote-btn');
+    this.dislikeButton = page.getByTestId('dislike-vote-btn');
   }
 
   /**
@@ -215,6 +269,9 @@ export class AnalyticsPage extends InstancePage {
    */
   async waitForReportGenerated(timeout = 30000): Promise<void> {
     await this.analysisProgress.waitFor({ state: 'visible', timeout });
+   */
+  async waitForReportGenerated(): Promise<void> {
+    await this.scannedKeysText.waitFor({ state: 'visible', timeout: 30000 });
   }
 
   /**
@@ -223,6 +280,7 @@ export class AnalyticsPage extends InstancePage {
   async isReportVisible(): Promise<boolean> {
     try {
       await this.analysisProgress.waitFor({ state: 'visible', timeout: 5000 });
+      await this.scannedKeysText.waitFor({ state: 'visible', timeout: 5000 });
       return true;
     } catch {
       return false;
@@ -248,6 +306,7 @@ export class AnalyticsPage extends InstancePage {
   async getTipsCount(): Promise<number> {
     const tabText = await this.tipsTab.textContent();
     const match = tabText?.match(/Tips\s*\((\d+)\)/);
+    const match = tabText?.match(/Tips \((\d+)\)/);
     return match ? parseInt(match[1], 10) : 0;
   }
 
@@ -445,6 +504,18 @@ export class AnalyticsPage extends InstancePage {
    */
   async isBadgesLegendVisible(): Promise<boolean> {
     return this.badgesLegend.isVisible();
+   * Check if recommendation labels are visible
+   */
+  async areRecommendationLabelsVisible(): Promise<{
+    codeChanges: boolean;
+    configChanges: boolean;
+    upgrade: boolean;
+  }> {
+    return {
+      codeChanges: await this.codeChangesLabel.isVisible(),
+      configChanges: await this.configChangesLabel.isVisible(),
+      upgrade: await this.upgradeLabel.isVisible(),
+    };
   }
 
   /**
@@ -483,6 +554,7 @@ export class AnalyticsPage extends InstancePage {
 
   /**
    * Check if voting section is visible for any recommendation
+   * Check if voting section is visible
    */
   async isVotingSectionVisible(): Promise<boolean> {
     const count = await this.votingSection.count();
