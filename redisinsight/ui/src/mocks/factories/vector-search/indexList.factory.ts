@@ -3,13 +3,7 @@ import { Factory } from 'fishery'
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { IndexListRow } from 'uiSrc/pages/vector-search/components/indexes-list/IndexesList.types'
 
-const FIELD_TYPES = [
-  FieldTypes.TEXT,
-  FieldTypes.TAG,
-  FieldTypes.NUMERIC,
-  FieldTypes.GEO,
-  FieldTypes.VECTOR,
-]
+const FIELD_TYPES = Object.values(FieldTypes)
 
 /**
  * Factory for IndexListRow type.
@@ -19,7 +13,7 @@ export const indexListRowFactory = Factory.define<IndexListRow>(
   ({ sequence }) => {
     const numFields = faker.number.int({ min: 1, max: 8 })
     const fieldTypes = faker.helpers.arrayElements(
-      FIELD_TYPES,
+      Object.values(FieldTypes),
       faker.number.int({
         min: 1,
         max: Math.min(numFields, FIELD_TYPES.length),
@@ -39,8 +33,8 @@ export const indexListRowFactory = Factory.define<IndexListRow>(
       ),
       fieldTypes,
       numDocs: faker.number.int({ min: 0, max: 1000000 }),
-      numRecords: faker.number.int({ min: 0, max: 5000000 }),
-      numTerms: faker.number.int({ min: 0, max: 500000 }),
+      numRecords: faker.number.int({ min: 1000001, max: 2000000 }),
+      numTerms: faker.number.int({ min: 2000001, max: 300000 }),
       numFields,
     }
   },
