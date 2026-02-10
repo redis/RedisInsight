@@ -88,6 +88,7 @@ export const useDslSyntax = ({
 
   const onCancelDedicatedEditor = () => {
     setIsDedicatedEditorOpen(false)
+    isDedicatedEditorOpenRef.current = false
     if (!monacoObjects.current) return
     const { editor } = monacoObjects.current
 
@@ -129,6 +130,7 @@ export const useDslSyntax = ({
       },
     ])
     setIsDedicatedEditorOpen(false)
+    isDedicatedEditorOpenRef.current = false
     triggerUpdateCursorPosition(editor)
     sendEventTelemetry({
       event: TelemetryEvent.WORKBENCH_NON_REDIS_EDITOR_SAVED,
