@@ -29,8 +29,8 @@ describe('QueryEditorWrapper', () => {
     renderComponent()
 
     expect(screen.getByTestId('editor-library-toggle')).toBeInTheDocument()
-    expect(screen.getByTestId('toggle-editor')).toBeInTheDocument()
-    expect(screen.getByTestId('toggle-library')).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Editor' })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Library' })).toBeInTheDocument()
   })
 
   it('should render editor view by default', () => {
@@ -43,7 +43,7 @@ describe('QueryEditorWrapper', () => {
   it('should switch to library view when Library toggle is clicked', () => {
     renderComponent()
 
-    fireEvent.click(screen.getByTestId('toggle-library'))
+    fireEvent.mouseDown(screen.getByRole('tab', { name: 'Library' }))
 
     expect(
       screen.getByTestId('vector-search-library-placeholder'),
@@ -55,11 +55,11 @@ describe('QueryEditorWrapper', () => {
     renderComponent()
 
     // Switch to library
-    fireEvent.click(screen.getByTestId('toggle-library'))
+    fireEvent.mouseDown(screen.getByRole('tab', { name: 'Library' }))
     expect(screen.queryByTestId('vector-search-editor')).not.toBeInTheDocument()
 
     // Switch back to editor
-    fireEvent.click(screen.getByTestId('toggle-editor'))
+    fireEvent.mouseDown(screen.getByRole('tab', { name: 'Editor' }))
     expect(screen.getByTestId('vector-search-editor')).toBeInTheDocument()
   })
 })
