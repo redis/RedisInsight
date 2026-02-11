@@ -19,3 +19,6 @@ export type { CreateIndexParams, UseCreateIndexResult } from './useCreateIndex'
 
 export { useCreateIndexCommand } from './useCreateIndexCommand'
 export type { UseCreateIndexCommandResult } from './useCreateIndexCommand'
+
+export { useCreateIndexFlow } from './useCreateIndexFlow'
+export type { UseCreateIndexFlowResult } from './useCreateIndexFlow'
