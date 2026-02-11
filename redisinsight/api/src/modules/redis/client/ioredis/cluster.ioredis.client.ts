@@ -42,11 +42,16 @@ export class ClusterIoredisClient extends IoredisClient {
           }
         }
 
-        return new StandaloneIoredisClient(this.clientMetadata, node, {
-          host: node.options.host,
-          port: node.options.port,
-          ...natAddress,
-        });
+        return new StandaloneIoredisClient(
+          this.clientMetadata,
+          node,
+          {
+            host: node.options.host,
+            port: node.options.port,
+            ...natAddress,
+          },
+          this.database,
+        );
       });
   }
 }

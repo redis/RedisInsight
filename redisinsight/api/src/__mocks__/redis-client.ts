@@ -1,12 +1,18 @@
 import { ClientMetadata } from 'src/common/models';
 import {
+  ClientDatabase,
   RedisClient,
   RedisClientConnectionType,
 } from 'src/modules/redis/client';
 import { RedisClientLib } from 'src/modules/redis/redis.client.factory';
 import { mockCommonClientMetadata } from 'src/__mocks__/common';
+import { mockDatabase } from 'src/__mocks__/databases';
 import { BadRequestException } from '@nestjs/common';
 import ERROR_MESSAGES from 'src/constants/error-messages';
+
+export const mockClientDatabase: ClientDatabase = {
+  providerDetails: mockDatabase.providerDetails,
+};
 
 export interface IRedisClientInstance {
   id: string;
@@ -28,8 +34,9 @@ export class MockRedisClient extends RedisClient {
     clientMetadata: ClientMetadata,
     client: any = jest.fn(),
     options = {},
+    database: ClientDatabase = mockClientDatabase,
   ) {
-    super(clientMetadata, client, options);
+    super(clientMetadata, client, options, database);
   }
 
   public isConnected = jest.fn().mockReturnValue(true);
@@ -111,8 +118,14 @@ export const generateMockRedisClient = (
   clientMetadata: Partial<ClientMetadata>,
   client = jest.fn(),
   options = {},
+  database: Partial<ClientDatabase> = {},
 ): MockRedisClient =>
-  new MockRedisClient(clientMetadata as ClientMetadata, client, options);
+  new MockRedisClient(
+    clientMetadata as ClientMetadata,
+    client,
+    options,
+    { ...mockClientDatabase, ...database },
+  );
 
 export const mockRedisClientInstance: IRedisClientInstance = {
   id: RedisClient.generateId(mockCommonClientMetadata),

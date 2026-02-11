@@ -1,6 +1,7 @@
 import { get, isNumber } from 'lodash';
 import Redis, { Cluster, Command } from 'ioredis';
 import {
+  ClientDatabase,
   IRedisClientCommandOptions,
   IRedisClientOptions,
   RedisClient,
@@ -22,8 +23,9 @@ export abstract class IoredisClient extends RedisClient {
     public readonly clientMetadata: ClientMetadata,
     protected readonly client: Redis | Cluster,
     public readonly options: IRedisClientOptions,
+    database: ClientDatabase,
   ) {
-    super(clientMetadata, client, options);
+    super(clientMetadata, client, options, database);
     client.addBuiltinCommand(BrowserToolHashCommands.HExpire);
     client.addBuiltinCommand(BrowserToolHashCommands.HTtl);
     client.addBuiltinCommand(BrowserToolHashCommands.HPersist);

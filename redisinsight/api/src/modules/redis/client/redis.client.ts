@@ -8,6 +8,7 @@ import { convertArrayReplyToObject } from '../utils';
 import * as semverCompare from 'node-version-compare';
 import { RedisDatabaseHelloResponse } from 'src/modules/database/dto/redis-info.dto';
 import { plainToClass } from 'class-transformer';
+import { ClientDatabase } from './client-database';
 
 const REDIS_CLIENTS_CONFIG = apiConfig.get('redis_clients');
 
@@ -60,6 +61,8 @@ export enum RedisFeature {
 export abstract class RedisClient extends EventEmitter2 {
   public readonly id: string;
 
+  public readonly database: ClientDatabase;
+
   protected _redisVersion: string | undefined;
 
   protected _isInfoCommandDisabled: boolean | undefined;
@@ -70,9 +73,11 @@ export abstract class RedisClient extends EventEmitter2 {
     public readonly clientMetadata: ClientMetadata,
     protected readonly client: unknown,
     public readonly options: IRedisClientOptions,
+    database: ClientDatabase,
   ) {
     super();
     this.clientMetadata = RedisClient.prepareClientMetadata(clientMetadata);
+    this.database = database;
     this.lastTimeUsed = Date.now();
     this.id = RedisClient.generateId(this.clientMetadata);
   }
