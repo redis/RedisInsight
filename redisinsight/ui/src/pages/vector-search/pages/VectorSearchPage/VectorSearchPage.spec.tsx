@@ -30,6 +30,12 @@ jest.mock('../../hooks/useRedisearchListData', () => ({
   useRedisearchListData: jest.fn(),
 }))
 
+jest.mock('../../context/vector-search', () => ({
+  useVectorSearch: jest.fn(() => ({
+    openPickSampleDataModal: jest.fn(),
+  })),
+}))
+
 const getTestState = (): RootState => ({
   ...initialStateDefault,
   connections: {
@@ -123,7 +129,7 @@ describe('VectorSearchPage', () => {
     const loader = screen.getByTestId('vector-search-loader')
     expect(loader).toBeInTheDocument()
 
-    const welcomeScreen = screen.queryByTestId('vector-search--welcome-screen')
+    const welcomeScreen = screen.queryByTestId('welcome-screen')
     expect(welcomeScreen).not.toBeInTheDocument()
   })
 
@@ -151,7 +157,7 @@ describe('VectorSearchPage', () => {
 
     renderComponent()
 
-    const welcomeScreen = screen.getByTestId('vector-search--welcome-screen')
+    const welcomeScreen = screen.getByTestId('welcome-screen')
     expect(welcomeScreen).toBeInTheDocument()
   })
 

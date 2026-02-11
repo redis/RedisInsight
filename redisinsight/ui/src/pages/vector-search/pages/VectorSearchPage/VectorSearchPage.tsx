@@ -12,7 +12,8 @@ import {
   useRedisearchListData,
 } from '../../hooks'
 import { RqeNotAvailable } from '../../components/rqe-not-available'
-import { WelcomeScreen, IndexListScreen } from '../components'
+import { VectorSearchWelcomePage } from '../VectorSearchWelcomePage'
+import { IndexListScreen } from '../components'
 import * as S from '../styles'
 
 /**
@@ -67,7 +68,7 @@ export const VectorSearchPage = () => {
   if (indexes.length === 0) {
     return (
       <S.PageWrapper data-testid="vector-search-page--welcome">
-        <WelcomeScreen />
+        <VectorSearchWelcomePage />
       </S.PageWrapper>
     )
   }
