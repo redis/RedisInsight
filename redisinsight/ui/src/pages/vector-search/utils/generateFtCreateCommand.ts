@@ -1,7 +1,7 @@
 // TODO: Since v1 would use predefined data, return a hardcoded command
 // instead of generating it dynamically.
 
-import { SampleDataContent } from 'uiSrc/pages/vector-search-deprecated/create-index/types'
+import { SampleDataContent } from '../components/pick-sample-data-modal/PickSampleDataModal.types'
 
 type FtCreateCommandParams = {
   indexName: string

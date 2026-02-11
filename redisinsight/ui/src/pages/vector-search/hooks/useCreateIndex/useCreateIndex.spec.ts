@@ -1,11 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks'
-import {
-  CreateSearchIndexParameters,
-  SampleDataContent,
-  SampleDataType,
-  SearchIndexType,
-} from '../types'
-import { useCreateIndex } from './useCreateIndex'
+import { SampleDataContent } from '../../components/pick-sample-data-modal/PickSampleDataModal.types'
+import { useCreateIndex, CreateIndexParams } from './useCreateIndex'
 
 const mockLoad = jest.fn()
 const mockAddCommandsToHistory = jest.fn()
@@ -16,7 +11,7 @@ jest.mock('uiSrc/services/hooks', () => ({
   }),
 }))
 
-jest.mock('uiSrc/pages/vector-search/utils/generateFtCreateCommand', () => ({
+jest.mock('../../utils/generateFtCreateCommand', () => ({
   generateFtCreateCommand: () => 'FT.CREATE idx:bikes_vss ...',
 }))
 
@@ -35,14 +30,10 @@ describe('useCreateIndex', () => {
     jest.clearAllMocks()
   })
 
-  const defaultParams: CreateSearchIndexParameters = {
+  const defaultParams: CreateIndexParams = {
     instanceId: 'test-instance-id',
     dataContent: SampleDataContent.E_COMMERCE_DISCOVERY,
-    sampleDataType: SampleDataType.PRESET_DATA,
-    searchIndexType: SearchIndexType.REDIS_QUERY_ENGINE,
-    usePresetVectorIndex: true,
     indexName: 'bikes',
-    indexFields: [],
   }
 
   it('should complete flow successfully', async () => {
@@ -129,7 +120,7 @@ describe('useCreateIndex', () => {
 
     const { result } = renderHook(() => useCreateIndex())
 
-    const moviesParams = {
+    const moviesParams: CreateIndexParams = {
       ...defaultParams,
       dataContent: SampleDataContent.CONTENT_RECOMMENDATIONS,
     }

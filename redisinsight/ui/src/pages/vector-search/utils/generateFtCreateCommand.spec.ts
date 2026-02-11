@@ -1,4 +1,4 @@
-import { SampleDataContent } from 'uiSrc/pages/vector-search-deprecated/create-index/types'
+import { SampleDataContent } from '../components/pick-sample-data-modal/PickSampleDataModal.types'
 import { generateFtCreateCommand } from './generateFtCreateCommand'
 
 describe('generateFtCreateCommand', () => {

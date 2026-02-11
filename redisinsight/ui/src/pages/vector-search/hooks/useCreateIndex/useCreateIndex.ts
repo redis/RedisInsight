@@ -1,12 +1,6 @@
-/**
- * @deprecated Use `useCreateIndex` from `uiSrc/pages/vector-search/hooks/useCreateIndex` instead.
- */
-
 import { useCallback, useRef, useState } from 'react'
 import { useLoadData } from 'uiSrc/services/hooks'
-import { generateFtCreateCommand } from 'uiSrc/pages/vector-search/utils/generateFtCreateCommand'
-import { CreateSearchIndexParameters, SampleDataContent } from '../types'
-import executeQuery from 'uiSrc/services/executeQuery'
+import { generateFtCreateCommand } from '../../utils/generateFtCreateCommand'
 import {
   CommandExecutionType,
   ResultsMode,
@@ -14,20 +8,24 @@ import {
 } from 'uiSrc/slices/interfaces'
 import CommandsHistoryService from 'uiSrc/services/commands-history/commandsHistoryService'
 
-interface UseCreateIndexResult {
+import { SampleDataContent } from '../../components/pick-sample-data-modal/PickSampleDataModal.types'
+import { getCollectionNameBySampleData } from '../../utils/sampleData'
+
+export interface CreateIndexParams {
+  instanceId: string
+  indexName: string
+  dataContent: SampleDataContent
+}
+
+export interface UseCreateIndexResult {
   run: (
-    params: CreateSearchIndexParameters,
+    params: CreateIndexParams,
     onSuccess?: () => void,
     onError?: () => void,
   ) => Promise<void>
   loading: boolean
   error: Error | null
   success: boolean
-}
-
-const collectionNameByPresetDataChoiceMap = {
-  [SampleDataContent.E_COMMERCE_DISCOVERY]: 'bikes',
-  [SampleDataContent.CONTENT_RECOMMENDATIONS]: 'movies',
 }
 
 export const useCreateIndex = (): UseCreateIndexResult => {
@@ -43,16 +41,16 @@ export const useCreateIndex = (): UseCreateIndexResult => {
 
   const run = useCallback(
     async (
-      { instanceId, indexName, dataContent }: CreateSearchIndexParameters,
-      onSuccess: () => void,
-      onError: () => void,
+      { instanceId, indexName, dataContent }: CreateIndexParams,
+      onSuccess?: () => void,
+      onError?: () => void,
     ) => {
       setSuccess(false)
       setError(null)
       setLoading(true)
 
       try {
-        const collectionName = collectionNameByPresetDataChoiceMap[dataContent]
+        const collectionName = getCollectionNameBySampleData(dataContent)
 
         if (!instanceId) {
           throw new Error('Instance ID is required')
@@ -61,13 +59,13 @@ export const useCreateIndex = (): UseCreateIndexResult => {
         // Step 1: Load the vector collection data
         await load(instanceId, collectionName)
 
-        // Step 2: Create the search index
+        // Step 2: Create the search index command
         const cmd = generateFtCreateCommand({
           indexName,
           dataContent,
         })
 
-        // Step 3: Persist results so Vector Search history (CommandsView) shows it
+        // Step 3: Persist results so Vector Search history shows it
         await commandsHistoryService.addCommandsToHistory(instanceId, [cmd], {
           activeRunQueryMode: RunQueryMode.Raw,
           resultsMode: ResultsMode.Default,
@@ -82,7 +80,7 @@ export const useCreateIndex = (): UseCreateIndexResult => {
         setLoading(false)
       }
     },
-    [load, executeQuery],
+    [load],
   )
 
   return {
