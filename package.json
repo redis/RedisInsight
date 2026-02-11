@@ -259,7 +259,7 @@
     "@stablelib/snappy": "^1.0.2",
     "@types/json-dup-key-validator": "^1.0.2",
     "ajv": "^8.17.1",
-    "axios": "^1.12.2",
+    "axios": "^1.13.5",
     "brotli-dec-wasm": "^2.3.0",
     "buffer": "^6.0.3",
     "classnames": "^2.3.1",
