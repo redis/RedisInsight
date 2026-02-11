@@ -26,7 +26,6 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { Loader } from 'uiSrc/components/base/display'
 import { RefreshIcon } from 'uiSrc/components/base/icons'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { AZURE_SUBSCRIPTIONS_COLUMNS } from './AzureSubscriptions.constants'
 
@@ -76,15 +75,6 @@ const AzureSubscriptions = ({
         item.displayName?.toLowerCase().includes(value) ||
         item.subscriptionId?.toLowerCase().includes(value),
     )
-
-    if (term) {
-      sendEventTelemetry({
-        event: TelemetryEvent.AZURE_SUBSCRIPTIONS_SEARCHED,
-        eventData: {
-          resultsCount: filtered.length,
-        },
-      })
-    }
 
     setItems(filtered)
   }
