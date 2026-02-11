@@ -230,11 +230,17 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
               'Successfully connected to the redis database',
               clientMetadata,
             );
+
             resolve(
-              new StandaloneIoredisClient(clientMetadata, connection, {
-                host: database.host,
-                port: database.port,
-              }),
+              new StandaloneIoredisClient(
+                clientMetadata,
+                connection,
+                {
+                  host: database.host,
+                  port: database.port,
+                },
+                this.getClientDatabase(database),
+              ),
             );
           });
           connection.on('reconnecting', (): void => {
@@ -345,11 +351,17 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
               'Successfully connected to the redis oss cluster.',
               clientMetadata,
             );
+
             resolve(
-              new ClusterIoredisClient(clientMetadata, cluster, {
-                host: database.host,
-                port: database.port,
-              }),
+              new ClusterIoredisClient(
+                clientMetadata,
+                cluster,
+                {
+                  host: database.host,
+                  port: database.port,
+                },
+                this.getClientDatabase(database),
+              ),
             );
           });
         } catch (e) {
@@ -409,11 +421,17 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
             'Successfully connected to the redis oss sentinel.',
             clientMetadata,
           );
+
           resolve(
-            new SentinelIoredisClient(clientMetadata, client, {
-              host: database.host,
-              port: database.port,
-            }),
+            new SentinelIoredisClient(
+              clientMetadata,
+              client,
+              {
+                host: database.host,
+                port: database.port,
+              },
+              this.getClientDatabase(database),
+            ),
           );
         });
       } catch (e) {

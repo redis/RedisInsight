@@ -219,11 +219,16 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
         })
         .connect();
 
-      return new StandaloneNodeRedisClient(clientMetadata, client, {
-        host: database.host,
-        port: database.port,
-        connectTimeout: database.timeout,
-      });
+      return new StandaloneNodeRedisClient(
+        clientMetadata,
+        client,
+        {
+          host: database.host,
+          port: database.port,
+          connectTimeout: database.timeout,
+        },
+        this.getClientDatabase(database),
+      );
     } catch (e) {
       tnl?.close?.();
       throw e;
@@ -304,11 +309,16 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
       // connect() doesn't return the client instance
       await client.connect();
 
-      return new ClusterNodeRedisClient(clientMetadata, client, {
-        host: database.host,
-        port: database.port,
-        connectTimeout: database.timeout,
-      });
+      return new ClusterNodeRedisClient(
+        clientMetadata,
+        client,
+        {
+          host: database.host,
+          port: database.port,
+          connectTimeout: database.timeout,
+        },
+        this.getClientDatabase(database),
+      );
     } catch (e) {
       tnls?.forEach((tnl) => tnl?.close?.());
       // TODO: node-redis issue

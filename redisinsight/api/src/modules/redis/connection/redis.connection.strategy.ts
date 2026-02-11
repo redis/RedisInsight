@@ -1,10 +1,13 @@
+import { pick } from 'lodash';
 import { ClientMetadata } from 'src/common/models';
 import { Database } from 'src/modules/database/models/database';
 import { SshTunnelProvider } from 'src/modules/ssh/ssh-tunnel.provider';
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { IRedisConnectionOptions } from 'src/modules/redis/redis.client.factory';
-import { RedisClient } from 'src/modules/redis/client';
+import { ClientDatabase, RedisClient } from 'src/modules/redis/client';
 import { CONNECTION_NAME_GLOBAL_PREFIX, CustomErrorCodes } from 'src/constants';
+
+const CLIENT_DATABASE_FIELDS: (keyof ClientDatabase)[] = ['providerDetails'];
 
 @Injectable()
 export abstract class RedisConnectionStrategy {
@@ -102,5 +105,9 @@ export abstract class RedisConnectionStrategy {
     this.resetConnectionErrors();
 
     return connectionErrors;
+  }
+
+  protected getClientDatabase(database: Database): ClientDatabase {
+    return pick(database, CLIENT_DATABASE_FIELDS);
   }
 }
