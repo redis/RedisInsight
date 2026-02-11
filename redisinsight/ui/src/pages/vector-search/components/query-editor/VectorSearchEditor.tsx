@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
-import MonacoEditor, { monaco as monacoEditor } from 'react-monaco-editor'
+import { monaco as monacoEditor } from 'react-monaco-editor'
 
 import { MonacoLanguage } from 'uiSrc/constants'
+import { CodeEditor } from 'uiSrc/components/base/code-editor'
 import {
   useQueryEditorContext,
   useMonacoRedisEditor,
@@ -41,7 +42,7 @@ export const VectorSearchEditor = () => {
       },
     )
 
-    // Key handler for parameter hints and snippet mode exit
+    // Key handler for parameter hints, snippet mode exit, and escape
     editor.onKeyDown((e: monacoEditor.IKeyboardEvent) => {
       if (
         e.keyCode === monacoEditor.KeyCode.Tab ||
@@ -59,6 +60,14 @@ export const VectorSearchEditor = () => {
       ) {
         onExitSnippetMode()
       }
+
+      // Dismiss suggestions on Escape so they don't reappear on next cursor change
+      if (
+        e.keyCode === monacoEditor.KeyCode.Escape &&
+        completions.isSuggestionsOpened()
+      ) {
+        completions.setEscapedSuggestions(true)
+      }
     })
 
     // Initial suggestions
@@ -66,15 +75,12 @@ export const VectorSearchEditor = () => {
   }
 
   // Core editor lifecycle
-  const {
-    monacoTheme,
-    editorDidMount: baseEditorDidMount,
-    onExitSnippetMode,
-  } = useMonacoRedisEditor({
-    monacoObjects,
-    onSubmit,
-    onSetup: handleEditorSetup,
-  })
+  const { editorDidMount: baseEditorDidMount, onExitSnippetMode } =
+    useMonacoRedisEditor({
+      monacoObjects,
+      onSubmit,
+      onSetup: handleEditorSetup,
+    })
 
   // Decorations
   useQueryDecorations({ monacoObjects, query })
@@ -93,9 +99,8 @@ export const VectorSearchEditor = () => {
 
   return (
     <S.EditorContainer data-testid="vector-search-editor">
-      <MonacoEditor
+      <CodeEditor
         language={MonacoLanguage.Redis as string}
-        theme={monacoTheme}
         value={query}
         options={EDITOR_OPTIONS}
         className={`${MonacoLanguage.Redis}-editor`}

@@ -17,14 +17,14 @@ describe('EditorLibraryToggle', () => {
   it('should render toggle buttons', () => {
     render(<EditorLibraryToggle {...defaultProps} />)
 
-    expect(screen.getByRole('tab', { name: 'Editor' })).toBeInTheDocument()
-    expect(screen.getByRole('tab', { name: 'Library' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Editor' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Library' })).toBeInTheDocument()
   })
 
   it('should call onChangeTab with Library when Library toggle is clicked', () => {
     render(<EditorLibraryToggle {...defaultProps} />)
 
-    fireEvent.mouseDown(screen.getByRole('tab', { name: 'Library' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Library' }))
     expect(defaultProps.onChangeTab).toHaveBeenCalledWith(EditorTab.Library)
   })
 
@@ -33,7 +33,7 @@ describe('EditorLibraryToggle', () => {
       <EditorLibraryToggle {...defaultProps} activeTab={EditorTab.Library} />,
     )
 
-    fireEvent.mouseDown(screen.getByRole('tab', { name: 'Editor' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Editor' }))
     expect(defaultProps.onChangeTab).toHaveBeenCalledWith(EditorTab.Editor)
   })
 })

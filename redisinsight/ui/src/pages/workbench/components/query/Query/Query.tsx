@@ -151,7 +151,7 @@ const Query = (props: Props) => {
       (e.keyCode === monacoEditor.KeyCode.Space && e.ctrlKey && e.shiftKey) ||
       (e.keyCode === monacoEditor.KeyCode.Space && !e.ctrlKey && !e.shiftKey)
     ) {
-      if (!dsl.isDedicatedEditorOpenRef.current) {
+      if (!dsl.isDedicatedEditorOpenRef.current && !dsl.isWidgetOpen.current) {
         completions.onTriggerParameterHints()
       }
     }

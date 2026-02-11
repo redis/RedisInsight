@@ -229,6 +229,7 @@ export const useDslSyntax = ({
   return {
     isDedicatedEditorOpen,
     isDedicatedEditorOpenRef,
+    isWidgetOpen,
     selectedArg,
     syntaxCommand,
     aroundQuotesRegExp,
