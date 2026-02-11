@@ -17,6 +17,7 @@ export {
   useQueryDecorations,
   useCommandHistory,
   useDslSyntax,
+  useQueryEditor,
 } from './hooks'
 
 export { LoadingContainer } from './query.styles'

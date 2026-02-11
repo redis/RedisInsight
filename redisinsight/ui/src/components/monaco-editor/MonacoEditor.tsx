@@ -14,6 +14,7 @@ import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { EditIcon } from 'uiSrc/components/base/icons'
 import { ActionIconButton } from 'uiSrc/components/base/forms/buttons'
+import { MonacoGlobalStyles } from 'uiSrc/components/base/code-editor/CodeEditor.styles'
 import DedicatedEditor from './components/dedicated-editor'
 import styles from './styles.module.scss'
 
@@ -260,6 +261,7 @@ const MonacoEditor = (props: Props) => {
       })}
       style={fullHeight ? { flex: '1 1 auto' } : undefined}
     >
+      <MonacoGlobalStyles />
       <InlineItemEditor
         onApply={handleApply}
         onDecline={handleDecline}

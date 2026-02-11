@@ -144,6 +144,27 @@ export const WithQuery: Story = {
 }
 
 /**
+ * Editor pre-populated with a GRAPH.QUERY that triggers the DSL syntax widget.
+ * Place the cursor inside the quoted Cypher expression to see the
+ * "Use Cypher Editor  Shift+Space" tooltip.
+ */
+export const DslSyntaxWidget: Story = {
+  name: 'DSL syntax widget (Cypher)',
+  render: (args) => {
+    const [query, setQuery] = useState('GRAPH.QUERY graph "MATCH (n) RETURN n"')
+    return (
+      <QueryWrapper
+        {...args}
+        query={query}
+        setQuery={setQuery}
+        activeMode={RunQueryMode.ASCII}
+        resultsMode={ResultsMode.Default}
+      />
+    )
+  },
+}
+
+/**
  * Loading state while Redis commands are being fetched.
  */
 export const Loading: Story = {
