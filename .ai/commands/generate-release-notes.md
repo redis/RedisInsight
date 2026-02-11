@@ -84,8 +84,10 @@ For each ticket, analyze its essence to categorize it:
 
 * **Only tickets with the "Github-Issue" label should be included in the Bugs/Bug fixes section**
 * When processing tickets from JIRA query or CSV, filter bugs to only include those with the "Github-Issue" label
+* **Include all bugs that have the "Github-Issue" label**—every such ticket must appear in the Bugs section with no limit or additional filtering
 * Other bug tickets (without this label) should be excluded from the Bugs/Bug fixes section
 * **Bugs with Github-Issue label should ONLY appear in the Bugs section, NOT in Headlines or Details sections**
+* **Always list each of these bugs with the GitHub issue link**: For every ticket in the Bugs section (tickets with "Github-Issue" label), output the line in the form `[#ISSUE-NUMBER](https://github.com/redis/RedisInsight/issues/ISSUE-NUMBER) [Short description]`. Resolve the GitHub issue number from: (1) JIRA labels such as `Github-4658` (use the number part), (2) JIRA description or linked PR body (e.g. "References #5381", "Closes #5382"), or (3) search on GitHub (repo: redis/RedisInsight) for the issue or PR that matches the bug (e.g. by JIRA key like RI-7894 or by summary). If the number cannot be determined, still include the short description but add a note to look up the link.
 
 **Feature indicators:**
 
@@ -105,9 +107,9 @@ Use the template from `docs/release-notes/RELEASE_NOTES_TEMPLATE.md` as a refere
 
 ### Format Selection
 
-* **If only bugs (with "Github-Issue" label)**: Use simple "Bug fixes" section only
+* **If only bugs (with "Github-Issue" label)**: Use simple "Bug fixes" section only; include every ticket that has the "Github-Issue" label
 * **If features/improvements exist**: Use full format with "Headlines", "Details", and "Bugs" sections
-  * Note: The "Bugs" section should only include tickets with the "Github-Issue" label
+  * Note: The "Bugs" section must include all tickets with the "Github-Issue" label (include every one)
 
 ### Section Organization Rules
 
@@ -137,9 +139,9 @@ Use the template from `docs/release-notes/RELEASE_NOTES_TEMPLATE.md` as a refere
 * [#ISSUE-NUMBER](https://github.com/redis/RedisInsight/issues/ISSUE-NUMBER) [Summary] (for GitHub issues, use link format)
 
 ### Bugs (if features exist) OR Bug fixes (if only bugs - see 3.0.2 example)
-* **IMPORTANT: Only include tickets with the "Github-Issue" label in this section**
-* [Short description of problem and fix] (for JIRA tickets, don't include ticket ID)
-* [#ISSUE-NUMBER](https://github.com/redis/RedisInsight/issues/ISSUE-NUMBER) [Summary] (for GitHub issues, use link format)
+* **IMPORTANT: Include all tickets with the "Github-Issue" label in this section (every one, no limit). Always list each bug with its GitHub issue link.**
+* Each line must be: `[#ISSUE-NUMBER](https://github.com/redis/RedisInsight/issues/ISSUE-NUMBER) [Short description of problem and fix]`
+* Resolve ISSUE-NUMBER from JIRA labels (e.g. Github-4658 → 4658), ticket/PR references, or GitHub search if needed.
 
 **SHA-512 Checksums**
 
@@ -150,8 +152,9 @@ https://redis.io/docs/latest/develop/tools/insight/release-notes/v.[VERSION]/
 
 **Important formatting notes from GitHub releases:**
 
-* **For JIRA tickets**: Do NOT include ticket IDs (like `#<ticket-number>` or `#<ticket-key>`). Instead, provide a very short description of what was the problem and what was fixed. This information can be found in the JIRA ticket description or the GitHub pull request linked to the ticket.
-* **For GitHub issues**: Use actual links in format `[#<issue-number>](https://github.com/redis/RedisInsight/issues/<issue-number>)` (not just `#<issue-number>` or `#<ticket-key>`)
+* **For the Bugs section (tickets with "Github-Issue" label)**: Always list each bug with its GitHub issue link: `[#<issue-number>](https://github.com/redis/RedisInsight/issues/<issue-number>) [Short description]`. Resolve the issue number from JIRA labels (e.g. `Github-4658`), from "References #NNNN" / "Closes #NNNN" in linked PRs or descriptions, or by searching GitHub (repo: redis/RedisInsight) for the matching issue.
+* **For other JIRA tickets** (Headlines/Details): Do NOT include ticket IDs. Provide a very short description of what was added or fixed.
+* **For GitHub issues** (when referenced elsewhere): Use actual links in format `[#<issue-number>](https://github.com/redis/RedisInsight/issues/<issue-number>)` (not just `#<issue-number>` or `#<ticket-key>`).
 * Use "SHA-512 Checksums" for all releases
 * Keep descriptions concise and user-focused
 * Headlines should highlight the most impactful user-facing changes
