@@ -410,5 +410,50 @@ describe('statistics.transformers', () => {
       expect(result[3]).toBeInstanceOf(RdiStatisticsTableSection);
       expect(result[4]).toBeInstanceOf(RdiStatisticsTableSection);
     });
+
+    it('should filter out table sections with empty data', () => {
+      const responseWithEmptyData: GetStatisticsResponse = {
+        rdi_pipeline_status: {
+          rdi_version: '1.0.0',
+          address: '127.0.0.1:6379',
+          run_status: 'started',
+          sync_mode: 'cdc',
+        },
+        processing_performance: {
+          total_batches: 100,
+          batch_size_avg: 1.5,
+          read_time_avg: 10,
+          process_time_avg: 50,
+          ack_time_avg: 0.5,
+          total_time_avg: 60,
+          rec_per_sec_avg: 1000,
+        },
+        data_streams: {
+          streams: {},
+          totals: {
+            total: 0,
+            pending: 0,
+            inserted: 0,
+            updated: 0,
+            deleted: 0,
+            filtered: 0,
+            rejected: 0,
+            deduplicated: 0,
+          },
+        },
+        connections: {},
+        clients: {},
+        offsets: {},
+        snapshot_status: '',
+      };
+
+      const result = transformStatisticsResponse(responseWithEmptyData);
+
+      // Should only include General info and Processing performance (non-empty sections)
+      // Target Connections, Data Streams, and Clients should be filtered out
+      expect(result).toHaveLength(2);
+      expect(result[0].name).toBe('General info');
+      expect(result[1].name).toBe('Processing performance information');
+    });
   });
 });

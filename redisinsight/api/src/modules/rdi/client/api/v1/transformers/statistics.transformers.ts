@@ -8,7 +8,10 @@ import {
   RdiStatisticsViewType,
 } from 'src/modules/rdi/models';
 import { GetStatisticsResponse } from 'src/modules/rdi/client/api/v1/responses';
-import { generateColumns } from 'src/modules/rdi/utils/transformer.util';
+import {
+  generateColumns,
+  hasData,
+} from 'src/modules/rdi/utils/transformer.util';
 
 export const transformProcessingPerformance = (
   data: GetStatisticsResponse['processing_performance'],
@@ -192,11 +195,14 @@ export const transformConnectionsStatistics = (
 export const transformStatisticsResponse = (
   data: GetStatisticsResponse,
 ): RdiStatisticsSection[] => {
-  return [
+  const sections = [
     transformGeneralInfo(data.rdi_pipeline_status),
     transformProcessingPerformance(data.processing_performance),
     transformConnectionsStatistics(data.connections),
     transformDataStreamsStatistics(data.data_streams),
     transformClientStatistics(data.clients),
   ];
+
+  // Filter out sections with no data
+  return sections.filter(hasData);
 };

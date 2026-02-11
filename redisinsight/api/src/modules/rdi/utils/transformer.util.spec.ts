@@ -1,6 +1,13 @@
 import {
+  RdiStatisticsBlocksSection,
+  RdiStatisticsInfoSection,
+  RdiStatisticsTableSection,
+  RdiStatisticsViewType,
+} from 'src/modules/rdi/models';
+import {
   generateHeaderFromFieldName,
   generateColumns,
+  hasData,
 } from './transformer.util';
 
 describe('transformer.util', () => {
@@ -217,6 +224,98 @@ describe('transformer.util', () => {
         'a_field',
         'm_field',
       ]);
+    });
+  });
+
+  describe('hasData', () => {
+    describe('table sections', () => {
+      it('should return true when table section has columns and data', () => {
+        const section: RdiStatisticsTableSection = {
+          name: 'Test',
+          view: RdiStatisticsViewType.Table,
+          columns: [{ id: 'name', header: 'Name' }],
+          data: [{ name: 'test' }],
+        };
+
+        expect(hasData(section)).toBe(true);
+      });
+
+      it('should return false when table section has empty columns', () => {
+        const section: RdiStatisticsTableSection = {
+          name: 'Test',
+          view: RdiStatisticsViewType.Table,
+          columns: [],
+          data: [{ name: 'test' }],
+        };
+
+        expect(hasData(section)).toBe(false);
+      });
+
+      it('should return false when table section has empty data', () => {
+        const section: RdiStatisticsTableSection = {
+          name: 'Test',
+          view: RdiStatisticsViewType.Table,
+          columns: [{ id: 'name', header: 'Name' }],
+          data: [],
+        };
+
+        expect(hasData(section)).toBe(false);
+      });
+
+      it('should return false when table section has both empty columns and data', () => {
+        const section: RdiStatisticsTableSection = {
+          name: 'Test',
+          view: RdiStatisticsViewType.Table,
+          columns: [],
+          data: [],
+        };
+
+        expect(hasData(section)).toBe(false);
+      });
+    });
+
+    describe('blocks sections', () => {
+      it('should return true when blocks section has data', () => {
+        const section: RdiStatisticsBlocksSection = {
+          name: 'Test',
+          view: RdiStatisticsViewType.Blocks,
+          data: [{ label: 'Count', value: 10, units: 'Total' }],
+        };
+
+        expect(hasData(section)).toBe(true);
+      });
+
+      it('should return false when blocks section has empty data', () => {
+        const section: RdiStatisticsBlocksSection = {
+          name: 'Test',
+          view: RdiStatisticsViewType.Blocks,
+          data: [],
+        };
+
+        expect(hasData(section)).toBe(false);
+      });
+    });
+
+    describe('info sections', () => {
+      it('should return true for info sections regardless of data', () => {
+        const section: RdiStatisticsInfoSection = {
+          name: 'Test',
+          view: RdiStatisticsViewType.Info,
+          data: [],
+        };
+
+        expect(hasData(section)).toBe(true);
+      });
+
+      it('should return true for info sections with data', () => {
+        const section: RdiStatisticsInfoSection = {
+          name: 'Test',
+          view: RdiStatisticsViewType.Info,
+          data: [{ label: 'Version', value: '1.0.0' }],
+        };
+
+        expect(hasData(section)).toBe(true);
+      });
     });
   });
 });

@@ -1,3 +1,10 @@
+import {
+  RdiStatisticsBlocksSection,
+  RdiStatisticsSection,
+  RdiStatisticsTableSection,
+  RdiStatisticsViewType,
+} from 'src/modules/rdi/models';
+
 interface ColumnConfig {
   header?: string;
   type?: string;
@@ -8,6 +15,27 @@ interface Column {
   header: string;
   type?: string;
 }
+
+/**
+ * Checks if a statistics section has meaningful data to display.
+ * Returns false for table sections with empty columns or data arrays.
+ * Returns false for blocks sections with empty data arrays.
+ * Info sections are always considered to have data.
+ */
+export const hasData = (section: RdiStatisticsSection): boolean => {
+  if (section.view === RdiStatisticsViewType.Table) {
+    const tableSection = section as RdiStatisticsTableSection;
+    return tableSection.columns?.length > 0 && tableSection.data?.length > 0;
+  }
+
+  if (section.view === RdiStatisticsViewType.Blocks) {
+    const blocksSection = section as RdiStatisticsBlocksSection;
+    return blocksSection.data?.length > 0;
+  }
+
+  // Info sections are always shown
+  return true;
+};
 
 /**
  * Generates a human-readable header from a field name

@@ -12,7 +12,10 @@ import {
   GetStatusResponse,
   ProcessorMetricsResponse,
 } from 'src/modules/rdi/client/api/v2/responses';
-import { generateColumns } from 'src/modules/rdi/utils/transformer.util';
+import {
+  generateColumns,
+  hasData,
+} from 'src/modules/rdi/utils/transformer.util';
 
 type ProcessingPerformance =
   ProcessorMetricsResponse['metrics']['processing_performance'];
@@ -128,5 +131,6 @@ export const transformMetricsCollectionResponse = (
     ),
   );
 
-  return sections;
+  // Filter out sections with no data
+  return sections.filter(hasData);
 };
