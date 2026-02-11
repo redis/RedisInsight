@@ -85,18 +85,24 @@ export class AzureAuthController {
       };
     }
 
-    const result = await this.azureAuthService.handleCallback(code, state);
+    try {
+      const result = await this.azureAuthService.handleCallback(code, state);
 
-    if (result.status === AzureAuthStatus.Succeed) {
-      this.analytics.sendAzureSignInSucceeded(sessionMetadata);
-    } else {
-      this.analytics.sendAzureSignInFailed(
-        sessionMetadata,
-        new BadRequestException(result.error || 'Authentication failed'),
-      );
+      if (result.status === AzureAuthStatus.Succeed) {
+        this.analytics.sendAzureSignInSucceeded(sessionMetadata);
+      } else {
+        this.analytics.sendAzureSignInFailed(
+          sessionMetadata,
+          new BadRequestException(result.error || 'Authentication failed'),
+        );
+      }
+
+      return result;
+    } catch (e) {
+      this.logger.error('Azure OAuth callback failed', e);
+      this.analytics.sendAzureSignInFailed(sessionMetadata, e);
+      throw e;
     }
-
-    return result;
   }
 
   @Get('status')

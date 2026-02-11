@@ -28,8 +28,7 @@ export class AzureAutodiscoveryAnalytics extends TelemetryBaseService {
         {
           totalSubscriptions: subscriptions.length,
           activeSubscriptions: subscriptions.filter(
-            (sub) =>
-              sub.state?.toLowerCase() === AzureSubscriptionState.Enabled,
+            (sub) => sub.state === AzureSubscriptionState.Enabled,
           ).length,
         },
       );
@@ -64,9 +63,7 @@ export class AzureAutodiscoveryAnalytics extends TelemetryBaseService {
           standardDatabases: typeCount[AzureRedisType.Standard] || 0,
           enterpriseDatabases: typeCount[AzureRedisType.Enterprise] || 0,
           activeDatabases: databases.filter(
-            (db) =>
-              db.provisioningState?.toLowerCase() ===
-              AzureProvisioningState.Succeeded,
+            (db) => db.provisioningState === AzureProvisioningState.Succeeded,
           ).length,
         },
       );
