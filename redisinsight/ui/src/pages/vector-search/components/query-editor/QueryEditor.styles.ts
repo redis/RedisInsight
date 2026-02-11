@@ -29,6 +29,33 @@ export const EditorContainer = styled.div<{ children?: React.ReactNode }>`
   position: relative;
 `
 
+/**
+ * Placeholder overlay for the Monaco editor.
+ * The `left` offset is set via inline style from `editor.getLayoutInfo().contentLeft`
+ * so it always aligns with the actual content area regardless of glyph margin
+ * or line-number gutter width. Top padding matches `defaultMonacoOptions.padding.top`.
+ * `pointer-events: none` lets clicks pass through to the editor underneath.
+ */
+export const EditorPlaceholder = styled.div<{
+  children?: React.ReactNode
+  $contentLeft?: number
+}>`
+  position: absolute;
+  top: 10px;
+  left: ${({ $contentLeft }) => $contentLeft ?? 0}px;
+  right: 0;
+  pointer-events: none;
+  z-index: 1;
+  color: ${({ theme }) => theme.semantic.color.text.neutral500};
+  font-family: Menlo, Monaco, 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.7;
+`
+
 export const ActionsBar = styled(Row).attrs({
   align: 'center',
   justify: 'end',

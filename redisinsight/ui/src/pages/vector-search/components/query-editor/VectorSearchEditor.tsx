@@ -1,39 +1,34 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
 import { MonacoLanguage } from 'uiSrc/constants'
 import { CodeEditor } from 'uiSrc/components/base/code-editor'
 import { useQueryEditorContext, useQueryEditor } from 'uiSrc/components/query'
 import { UseRedisCompletionsReturn } from 'uiSrc/components/query/hooks/useRedisCompletions.types'
-import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
-import { EDITOR_OPTIONS } from './QueryEditor.constants'
+import { EDITOR_OPTIONS, EDITOR_PLACEHOLDER } from './QueryEditor.constants'
 import { getOnboardingSuggestions } from './onboardingSuggestions'
 import * as S from './QueryEditor.styles'
 
 /**
- * Shows the onboarding suggestions panel when the editor is empty.
+ * Auto-opens the suggestion widget when the editor is empty.
  *
- * Both `setSuggestionsData` and `editor.trigger` happen inside the
- * **same** `setTimeout` callback so that cursor-change handlers
- * (which run synchronously after mount/focus and would overwrite
- * `suggestionsRef` with generic commands) cannot interleave.
+ * This only **triggers** the widget; the actual FT.* onboarding data
+ * is provided by a dedicated completion provider registered in `onSetup`.
+ * That provider is independent of `suggestionsRef`, so the templates are
+ * always present regardless of whether cursor-change handlers overwrite
+ * the main suggestions list.
  */
-const showOnboardingSuggestions = (
+const triggerEmptySuggestions = (
   editor: monacoEditor.editor.IStandaloneCodeEditor,
   completions: UseRedisCompletionsReturn,
-  indexes: RedisResponseBuffer[],
 ) => {
   if (editor.getValue()?.trim()) return
 
-  const suggestions = getOnboardingSuggestions(indexes)
   completions.setEscapedSuggestions(false)
 
   setTimeout(() => {
-    // Re-check: editor may have received content in the meantime
     if (editor.getValue()?.trim()) return
-
-    completions.setSuggestionsData(suggestions)
     editor.trigger('', 'editor.action.triggerSuggest', { auto: false })
   })
 }
@@ -58,25 +53,76 @@ const showOnboardingSuggestions = (
  */
 export const VectorSearchEditor = () => {
   const { query, onSubmit, indexes } = useQueryEditorContext()
+  // Start as true because useMonacoRedisEditor auto-focuses the editor on mount
+  const [focused, setFocused] = useState(true)
+  const [contentLeft, setContentLeft] = useState(0)
+  const disposeOnboardingRef = useRef<(() => void) | null>(null)
+
+  // Dispose the onboarding completion provider on unmount
+  useEffect(
+    () => () => {
+      disposeOnboardingRef.current?.()
+    },
+    [],
+  )
 
   const { editorDidMount, onChange } = useQueryEditor({
     onSubmit,
-    onSetup: (editor, _monaco, completions) => {
+    onSetup: (editor, monaco, completions) => {
       // Handle "No indexes" suggestion interaction
       completions.setupSuggestionWidgetListener(editor)
 
-      // Onboarding: show predefined FT.* templates on initial mount
-      showOnboardingSuggestions(editor, completions, indexes)
+      // Read Monaco's layout so the placeholder aligns with the content area
+      setContentLeft(editor.getLayoutInfo().contentLeft)
+      editor.onDidLayoutChange((info) => setContentLeft(info.contentLeft))
 
-      // Re-show templates when the editor regains focus while still empty
+      // Register an additional completion provider that returns FT.*
+      // onboarding templates when the editor is empty.  Monaco merges
+      // results from all providers; the templates sort first via sortText.
+      disposeOnboardingRef.current?.()
+      disposeOnboardingRef.current =
+        monaco.languages.registerCompletionItemProvider(
+          MonacoLanguage.Redis as string,
+          {
+            provideCompletionItems: (model) => {
+              if (model.getValue().trim()) return { suggestions: [] }
+              return { suggestions: getOnboardingSuggestions(indexes) }
+            },
+          },
+        ).dispose
+
+      // Auto-open the suggestion widget on initial mount
+      triggerEmptySuggestions(editor, completions)
+
+      // Re-open when content is deleted back to empty
+      editor.onDidChangeModelContent(() => {
+        if (!editor.getValue()?.trim()) {
+          triggerEmptySuggestions(editor, completions)
+        }
+      })
+
+      // Re-open when the editor regains focus while still empty
       editor.onDidFocusEditorWidget(() => {
-        showOnboardingSuggestions(editor, completions, indexes)
+        setFocused(true)
+        triggerEmptySuggestions(editor, completions)
+      })
+
+      editor.onDidBlurEditorWidget(() => {
+        setFocused(false)
       })
     },
   })
 
   return (
     <S.EditorContainer data-testid="vector-search-editor">
+      {!query && !focused && (
+        <S.EditorPlaceholder
+          $contentLeft={contentLeft}
+          data-testid="editor-placeholder"
+        >
+          {EDITOR_PLACEHOLDER}
+        </S.EditorPlaceholder>
+      )}
       <CodeEditor
         language={MonacoLanguage.Redis as string}
         value={query}

@@ -1,19 +1,87 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
+import { RiTooltip } from 'uiSrc/components'
+import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import RunButton from 'uiSrc/components/query/components/RunButton'
 import { useQueryEditorContext } from 'uiSrc/components/query'
 
+import {
+  TOOLTIP_EXPLAIN,
+  TOOLTIP_PROFILE,
+  TOOLTIP_DISABLED_SUFFIX,
+} from './QueryEditor.constants'
+import {
+  parseExplainableCommand,
+  buildExplainQuery,
+  buildProfileQuery,
+} from './QueryEditor.utils'
 import * as S from './QueryEditor.styles'
 
 /**
  * Actions bar for Vector Search editor.
- * Contains only a Run button.
+ *
+ * Contains:
+ * - **Explain** – submits the query wrapped in FT.EXPLAIN
+ * - **Profile** – submits the query wrapped in FT.PROFILE
+ * - **Run** – submits the query as-is
+ *
+ * Explain and Profile are enabled only when the editor contains
+ * a single FT.SEARCH or FT.AGGREGATE command.
  */
 export const VectorSearchActions = () => {
-  const { isLoading, onSubmit } = useQueryEditorContext()
+  const { query, isLoading, onSubmit } = useQueryEditorContext()
+
+  const parsed = useMemo(() => parseExplainableCommand(query), [query])
+  const isExplainEnabled = !!parsed && !isLoading
+
+  const handleExplain = () => {
+    if (!parsed) return
+    onSubmit(buildExplainQuery(parsed))
+  }
+
+  const handleProfile = () => {
+    if (!parsed) return
+    onSubmit(buildProfileQuery(parsed))
+  }
 
   return (
     <S.ActionsBar data-testid="vector-search-actions">
+      <RiTooltip
+        position="top"
+        content={
+          isExplainEnabled
+            ? TOOLTIP_EXPLAIN
+            : `${TOOLTIP_EXPLAIN}${TOOLTIP_DISABLED_SUFFIX}`
+        }
+        data-testid="explain-tooltip"
+      >
+        <EmptyButton
+          onClick={handleExplain}
+          disabled={!isExplainEnabled}
+          aria-label="explain"
+          data-testid="btn-explain"
+        >
+          Explain
+        </EmptyButton>
+      </RiTooltip>
+      <RiTooltip
+        position="top"
+        content={
+          isExplainEnabled
+            ? TOOLTIP_PROFILE
+            : `${TOOLTIP_PROFILE}${TOOLTIP_DISABLED_SUFFIX}`
+        }
+        data-testid="profile-tooltip"
+      >
+        <EmptyButton
+          onClick={handleProfile}
+          disabled={!isExplainEnabled}
+          aria-label="profile"
+          data-testid="btn-profile"
+        >
+          Profile
+        </EmptyButton>
+      </RiTooltip>
       <RunButton isLoading={isLoading} onSubmit={() => onSubmit()} />
     </S.ActionsBar>
   )

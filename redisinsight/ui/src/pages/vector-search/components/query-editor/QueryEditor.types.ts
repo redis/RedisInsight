@@ -1,3 +1,7 @@
+import { EXPLAINABLE_COMMANDS } from './QueryEditor.constants'
+
+export type ExplainableCommand = (typeof EXPLAINABLE_COMMANDS)[number]
+
 export interface OnboardingTemplate {
   /** The Redis command name (used as the suggestion label). */
   command: string
