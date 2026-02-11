@@ -4,8 +4,15 @@ import { PublicClientApplication } from '@azure/msal-node';
 import { AzureAuthService } from './azure-auth.service';
 import { AzureAuthStatus } from '../constants';
 import { AzureOAuthPrompt } from './dto';
+import { AzureTokenRefreshManager } from '../azure-token-refresh.manager';
 
 jest.mock('@azure/msal-node');
+
+const mockTokenRefreshManager = {
+  scheduleRefresh: jest.fn(),
+  clearTimer: jest.fn(),
+  clearAllTimers: jest.fn(),
+};
 
 const MockedPublicClientApplication =
   PublicClientApplication as jest.MockedClass<typeof PublicClientApplication>;
@@ -45,7 +52,13 @@ describe('AzureAuthService', () => {
     MockedPublicClientApplication.mockImplementation(() => mockPca);
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AzureAuthService],
+      providers: [
+        AzureAuthService,
+        {
+          provide: AzureTokenRefreshManager,
+          useValue: mockTokenRefreshManager,
+        },
+      ],
     }).compile();
 
     service = module.get<AzureAuthService>(AzureAuthService);

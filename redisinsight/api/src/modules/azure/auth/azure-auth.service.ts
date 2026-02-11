@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import * as crypto from 'crypto';
 import {
   PublicClientApplication,
@@ -16,6 +16,7 @@ import {
 } from '../constants';
 import { AzureTokenResult, AzureAuthStatusResponse } from './models';
 import { AzureOAuthPrompt } from './dto';
+import { AzureTokenRefreshManager } from '../azure-token-refresh.manager';
 
 /**
  * PKCE (Proof Key for Code Exchange) utilities.
@@ -58,6 +59,11 @@ export class AzureAuthService {
    * Map of state -> PKCE verifier for pending auth requests
    */
   private authRequests: Map<string, string> = new Map();
+
+  constructor(
+    @Inject(forwardRef(() => AzureTokenRefreshManager))
+    private readonly tokenRefreshManager: AzureTokenRefreshManager,
+  ) {}
 
   private getMsalClient(): PublicClientApplication {
     if (this.pca) {
@@ -212,7 +218,19 @@ export class AzureAuthService {
   async getRedisTokenByAccountId(
     accountId: string,
   ): Promise<AzureTokenResult | null> {
-    return this.getTokenByAccountId(accountId, AZURE_REDIS_SCOPE);
+    const tokenResult = await this.getTokenByAccountId(
+      accountId,
+      AZURE_REDIS_SCOPE,
+    );
+
+    if (tokenResult) {
+      this.tokenRefreshManager.scheduleRefresh(
+        accountId,
+        tokenResult.expiresOn,
+      );
+    }
+
+    return tokenResult;
   }
 
   /**
