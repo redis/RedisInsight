@@ -9,6 +9,7 @@ import {
 import CommandsHistoryService from 'uiSrc/services/commands-history/commandsHistoryService'
 
 import { SampleDataContent } from '../../components/pick-sample-data-modal/PickSampleDataModal.types'
+import { getCollectionNameBySampleData } from '../../utils/sampleData'
 
 export interface CreateIndexParams {
   instanceId: string
@@ -25,11 +26,6 @@ export interface UseCreateIndexResult {
   loading: boolean
   error: Error | null
   success: boolean
-}
-
-const collectionNameByPresetDataChoiceMap = {
-  [SampleDataContent.E_COMMERCE_DISCOVERY]: 'bikes',
-  [SampleDataContent.CONTENT_RECOMMENDATIONS]: 'movies',
 }
 
 export const useCreateIndex = (): UseCreateIndexResult => {
@@ -54,7 +50,7 @@ export const useCreateIndex = (): UseCreateIndexResult => {
       setLoading(true)
 
       try {
-        const collectionName = collectionNameByPresetDataChoiceMap[dataContent]
+        const collectionName = getCollectionNameBySampleData(dataContent)
 
         if (!instanceId) {
           throw new Error('Instance ID is required')
