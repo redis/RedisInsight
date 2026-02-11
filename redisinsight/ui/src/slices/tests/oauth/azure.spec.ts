@@ -257,7 +257,10 @@ describe('azure auth slice', () => {
         apiService.get = jest.fn().mockResolvedValue(responsePayload)
 
         await store.dispatch<any>(
-          initiateAzureLoginAction(AzureLoginSource.Autodiscovery, onSuccess),
+          initiateAzureLoginAction({
+            source: AzureLoginSource.Autodiscovery,
+            onSuccess,
+          }),
         )
 
         const expectedActions = [
@@ -278,7 +281,10 @@ describe('azure auth slice', () => {
         apiService.get = jest.fn().mockRejectedValue(error)
 
         await store.dispatch<any>(
-          initiateAzureLoginAction(AzureLoginSource.Autodiscovery, jest.fn()),
+          initiateAzureLoginAction({
+            source: AzureLoginSource.Autodiscovery,
+            onSuccess: jest.fn(),
+          }),
         )
 
         const actions = store.getActions()
@@ -298,7 +304,10 @@ describe('azure auth slice', () => {
         apiService.get = jest.fn().mockResolvedValue(responsePayload)
 
         await store.dispatch<any>(
-          initiateAzureLoginAction(AzureLoginSource.TokenRefresh, onSuccess),
+          initiateAzureLoginAction({
+            source: AzureLoginSource.TokenRefresh,
+            onSuccess,
+          }),
         )
 
         const expectedActions = [
