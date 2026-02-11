@@ -74,10 +74,6 @@ export class CloudApiProvider {
       headers['x-csrf-token'] = credentials.csrf;
     }
 
-    if (credentials?.idToken) {
-      headers['Sm-Id-Token'] = credentials.idToken;
-    }
-
     return {
       headers,
     };

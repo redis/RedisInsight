@@ -89,7 +89,6 @@ export const mockCloudApiHeaders = {
     authorization: `Bearer ${mockCloudApiAuthDto.accessToken}`,
     'x-csrf-token': mockCloudApiAuthDto.csrf,
     cookie: `JSESSIONID=${mockCloudApiAuthDto.apiSessionId}`,
-    'Sm-Id-Token': mockCloudApiAuthDto.idToken,
   },
 };
 

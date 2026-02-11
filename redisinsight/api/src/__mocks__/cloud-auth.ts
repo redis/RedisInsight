@@ -176,19 +176,14 @@ export const mockCloudAuthGithubAuthUrl =
   `&${new URLSearchParams({ scope: mockCloudAuthGithubRequest.scopes.join(' ') }).toString()}` +
   '&prompt=login';
 
-export const mockCloudIdToken = 'id_token_p6vA6A5tF36Jf6twH2cBOqtt7n';
-export const mockCloudIdTokenNew = 'id_token_p6vA6A5tF36Jf6twH2cBOqtt7n-new';
-
 export const mockTokenResponse = {
   access_token: mockCloudAccessToken,
   refresh_token: mockCloudRefreshToken,
-  id_token: mockCloudIdToken,
 };
 
 export const mockTokenResponseNew = {
   access_token: mockCloudAccessTokenNew,
   refresh_token: mockCloudRefreshTokenNew,
-  id_token: mockCloudIdTokenNew,
 };
 
 export const mockCloudAuthGoogleCallbackQueryObject = {

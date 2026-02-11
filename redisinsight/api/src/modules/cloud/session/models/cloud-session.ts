@@ -10,9 +10,6 @@ export class CloudSession {
   refreshToken?: string;
 
   @Expose()
-  idToken?: string;
-
-  @Expose()
   idpType?: CloudAuthIdpType;
 
   @Expose()
