@@ -104,24 +104,19 @@ export class AzureAutodiscoveryService {
     const client = await this.getAuthenticatedClient(accountId);
 
     if (!client) {
-      return [];
+      throw new BadRequestException('Failed to get authenticated client');
     }
 
-    try {
-      const subscriptions = await this.fetchAllPages<any>(
-        client,
-        AzureApiUrls.getSubscriptions(),
-      );
+    const subscriptions = await this.fetchAllPages<any>(
+      client,
+      AzureApiUrls.getSubscriptions(),
+    );
 
-      return subscriptions.map((sub: any) => ({
-        subscriptionId: sub.subscriptionId,
-        displayName: sub.displayName,
-        state: sub.state,
-      }));
-    } catch (error: any) {
-      this.logger.warn('Failed to list subscriptions', error?.message);
-      return [];
-    }
+    return subscriptions.map((sub: any) => ({
+      subscriptionId: sub.subscriptionId,
+      displayName: sub.displayName,
+      state: sub.state,
+    }));
   }
 
   async listDatabasesInSubscription(
@@ -129,14 +124,15 @@ export class AzureAutodiscoveryService {
     subscriptionId: string,
   ): Promise<AzureRedisDatabase[]> {
     if (!this.isValidSubscriptionId(subscriptionId)) {
-      this.logger.warn(`Invalid subscription ID format: ${subscriptionId}`);
-      return [];
+      throw new BadRequestException(
+        `Invalid subscription ID format: ${subscriptionId}`,
+      );
     }
 
     const client = await this.getAuthenticatedClient(accountId);
 
     if (!client) {
-      return [];
+      throw new BadRequestException('Failed to get authenticated client');
     }
 
     const [standardDatabases, enterpriseDatabases] = await Promise.all([
@@ -197,58 +193,42 @@ export class AzureAutodiscoveryService {
     client: AxiosInstance,
     subscriptionId: string,
   ): Promise<AzureRedisDatabase[]> {
-    try {
-      const redisInstances = await this.fetchAllPages<any>(
-        client,
-        AzureApiUrls.getStandardRedisInSubscription(subscriptionId),
-      );
+    const redisInstances = await this.fetchAllPages<any>(
+      client,
+      AzureApiUrls.getStandardRedisInSubscription(subscriptionId),
+    );
 
-      return redisInstances.map((redis: any) =>
-        this.mapStandardRedis(redis, subscriptionId),
-      );
-    } catch (error: any) {
-      this.logger.warn(
-        `Failed to list standard Redis in subscription ${subscriptionId}`,
-        error?.message,
-      );
-      return [];
-    }
+    return redisInstances.map((redis: any) =>
+      this.mapStandardRedis(redis, subscriptionId),
+    );
   }
 
   private async fetchEnterpriseRedis(
     client: AxiosInstance,
     subscriptionId: string,
   ): Promise<AzureRedisDatabase[]> {
-    try {
-      const clusters = await this.fetchAllPages<any>(
-        client,
-        AzureApiUrls.getEnterpriseRedisInSubscription(subscriptionId),
-      );
+    const clusters = await this.fetchAllPages<any>(
+      client,
+      AzureApiUrls.getEnterpriseRedisInSubscription(subscriptionId),
+    );
 
-      if (clusters.length === 0) {
-        return [];
-      }
-
-      const { results } = await PromisePool.for(clusters)
-        .withConcurrency(AUTODISCOVERY_MAX_CONCURRENT_REQUESTS)
-        .handleError((error, cluster: any) => {
-          this.logger.warn(
-            `Failed to fetch databases for cluster ${cluster?.name}`,
-            error?.message,
-          );
-        })
-        .process((cluster: any) =>
-          this.listEnterpriseDatabases(client, cluster, subscriptionId),
-        );
-
-      return results.flat();
-    } catch (error: any) {
-      this.logger.warn(
-        `Failed to list enterprise Redis in subscription ${subscriptionId}`,
-        error?.message,
-      );
+    if (clusters.length === 0) {
       return [];
     }
+
+    const { results } = await PromisePool.for(clusters)
+      .withConcurrency(AUTODISCOVERY_MAX_CONCURRENT_REQUESTS)
+      .handleError((error, cluster: any) => {
+        this.logger.warn(
+          `Failed to fetch databases for cluster ${cluster?.name}`,
+          error?.message,
+        );
+      })
+      .process((cluster: any) =>
+        this.listEnterpriseDatabases(client, cluster, subscriptionId),
+      );
+
+    return results.flat();
   }
 
   private mapStandardRedis(

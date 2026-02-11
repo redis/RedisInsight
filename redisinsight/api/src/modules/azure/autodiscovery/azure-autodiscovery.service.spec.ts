@@ -162,12 +162,12 @@ describe('AzureAutodiscoveryService', () => {
   });
 
   describe('listSubscriptions', () => {
-    it('should return empty array when no token available', async () => {
+    it('should throw error when no token available', async () => {
       mockAuthService.getManagementTokenByAccountId.mockResolvedValue(null);
 
-      const result = await service.listSubscriptions('account-id');
-
-      expect(result).toEqual([]);
+      await expect(service.listSubscriptions('account-id')).rejects.toThrow(
+        'Failed to get authenticated client',
+      );
     });
 
     it('should return subscriptions on success', async () => {
@@ -186,7 +186,7 @@ describe('AzureAutodiscoveryService', () => {
       expect(result[0].displayName).toBe(mockSubs[0].displayName);
     });
 
-    it('should return empty array on API error', async () => {
+    it('should throw error on API error', async () => {
       mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
         token: 'mock-token',
         expiresOn: new Date(),
@@ -194,9 +194,9 @@ describe('AzureAutodiscoveryService', () => {
       });
       mockAxiosInstance.get.mockRejectedValue(new Error('API error'));
 
-      const result = await service.listSubscriptions('account-id');
-
-      expect(result).toEqual([]);
+      await expect(service.listSubscriptions('account-id')).rejects.toThrow(
+        'API error',
+      );
     });
 
     it('should handle paginated responses', async () => {
@@ -228,27 +228,21 @@ describe('AzureAutodiscoveryService', () => {
   describe('listDatabasesInSubscription', () => {
     const subscriptionId = faker.string.uuid();
 
-    it('should return empty array when subscription ID is invalid', async () => {
-      const result = await service.listDatabasesInSubscription(
-        'account-id',
-        'invalid-subscription-id',
-      );
-
-      expect(result).toEqual([]);
+    it('should throw error when subscription ID is invalid', async () => {
+      await expect(
+        service.listDatabasesInSubscription('account-id', 'invalid-sub-id'),
+      ).rejects.toThrow('Invalid subscription ID format');
       expect(
         mockAuthService.getManagementTokenByAccountId,
       ).not.toHaveBeenCalled();
     });
 
-    it('should return empty array when no token available', async () => {
+    it('should throw error when no token available', async () => {
       mockAuthService.getManagementTokenByAccountId.mockResolvedValue(null);
 
-      const result = await service.listDatabasesInSubscription(
-        'account-id',
-        subscriptionId,
-      );
-
-      expect(result).toEqual([]);
+      await expect(
+        service.listDatabasesInSubscription('account-id', subscriptionId),
+      ).rejects.toThrow('Failed to get authenticated client');
     });
 
     it('should return standard Redis databases', async () => {
@@ -303,7 +297,7 @@ describe('AzureAutodiscoveryService', () => {
       expect(result[0].name).toBe(`${mockCluster.name}/default`);
     });
 
-    it('should return empty array on API error', async () => {
+    it('should throw error on API error', async () => {
       mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
         token: 'mock-token',
         expiresOn: new Date(),
@@ -311,26 +305,20 @@ describe('AzureAutodiscoveryService', () => {
       });
       mockAxiosInstance.get.mockRejectedValue(new Error('API error'));
 
-      const result = await service.listDatabasesInSubscription(
-        'account-id',
-        subscriptionId,
-      );
-
-      expect(result).toEqual([]);
+      await expect(
+        service.listDatabasesInSubscription('account-id', subscriptionId),
+      ).rejects.toThrow('API error');
     });
   });
 
   describe('getConnectionDetails', () => {
-    it('should return null when no token available', async () => {
+    it('should throw error when no token available', async () => {
       mockAuthService.getManagementTokenByAccountId.mockResolvedValue(null);
       const database = createMockDatabase();
 
-      const result = await service.getConnectionDetails(
-        'account-id',
-        database.id,
-      );
-
-      expect(result).toBeNull();
+      await expect(
+        service.getConnectionDetails('account-id', database.id),
+      ).rejects.toThrow('Failed to get authenticated client');
     });
 
     it('should return Entra ID connection details when Redis token available', async () => {
@@ -560,8 +548,8 @@ describe('AzureAutodiscoveryService', () => {
     });
 
     it('should return fail status when database is not found', async () => {
-      const databaseId =
-        '/subscriptions/sub-id/resourceGroups/rg/providers/Microsoft.Cache/redis/not-found';
+      const testSubscriptionId = faker.string.uuid();
+      const databaseId = `/subscriptions/${testSubscriptionId}/resourceGroups/rg/providers/Microsoft.Cache/redis/not-found`;
 
       mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
         token: 'mock-token',
