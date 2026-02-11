@@ -46,6 +46,7 @@ export interface IMessage {
   id: string
   title: string
   message: string | JSX.Element
+  variant?: ToastVariant
   group?: string
   className?: string
   showCloseButton?: boolean

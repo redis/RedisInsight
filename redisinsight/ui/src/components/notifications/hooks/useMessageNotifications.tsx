@@ -1,11 +1,17 @@
 import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { ToastVariant } from '@redis-ui/components'
 import { riToast } from 'uiSrc/components/base/display/toast'
 import { messagesSelector, removeMessage } from 'uiSrc/slices/app/notifications'
 import { IMessage } from 'uiSrc/slices/interfaces'
 import { setReleaseNotesViewed } from 'uiSrc/slices/app/info'
 import { ColorText } from 'uiSrc/components/base/text'
 import { defaultContainerId } from '../constants'
+
+const getDescriptionText = (
+  text: string | JSX.Element | JSX.Element[],
+  variant: ToastVariant = 'success',
+) => <ColorText color={variant}>{text}</ColorText>
 
 export const useMessageNotifications = () => {
   const messagesData = useSelector(messagesSelector)
@@ -26,15 +32,13 @@ export const useMessageNotifications = () => {
     dispatch(removeMessage(id))
   }
 
-  const getSuccessText = (text: string | JSX.Element | JSX.Element[]) => (
-    <ColorText color="success">{text}</ColorText>
-  )
-  const showSuccessToasts = (data: IMessage[]) =>
+  const showToasts = (data: IMessage[]) =>
     data.forEach(
       ({
         id = '',
         title = '',
         message = '',
+        variant,
         showCloseButton = true,
         actions,
         className,
@@ -48,11 +52,13 @@ export const useMessageNotifications = () => {
           removeToast(id)
           return
         }
+
+        const toastVariant = variant ?? riToast.Variant.Success
         const toastId = riToast(
           {
             className,
             message: title,
-            description: getSuccessText(message),
+            description: getDescriptionText(message, toastVariant),
             actions: actions ?? {
               primary: {
                 closes: true,
@@ -63,7 +69,7 @@ export const useMessageNotifications = () => {
             showCloseButton,
           },
           {
-            variant: riToast.Variant.Success,
+            variant: toastVariant,
             toastId: id,
             containerId: defaultContainerId,
           },
@@ -73,6 +79,6 @@ export const useMessageNotifications = () => {
     )
 
   useEffect(() => {
-    showSuccessToasts(messagesData)
+    showToasts(messagesData)
   }, [messagesData])
 }
