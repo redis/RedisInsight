@@ -11,7 +11,11 @@ import {
 import { isNumber } from 'lodash';
 import { IRedisConnectionOptions } from 'src/modules/redis/redis.client.factory';
 import { ConnectionOptions } from 'tls';
-import { ClusterNodeRedisClient, RedisClient } from 'src/modules/redis/client';
+import {
+  ClusterNodeRedisClient,
+  createClientDatabase,
+  RedisClient,
+} from 'src/modules/redis/client';
 import { StandaloneNodeRedisClient } from 'src/modules/redis/client/node-redis/standalone.node-redis.client';
 import { SshTunnel } from 'src/modules/ssh/models/ssh-tunnel';
 import { discoverClusterNodes } from 'src/modules/redis/utils';
@@ -219,11 +223,16 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
         })
         .connect();
 
-      return new StandaloneNodeRedisClient(clientMetadata, client, {
-        host: database.host,
-        port: database.port,
-        connectTimeout: database.timeout,
-      });
+      return new StandaloneNodeRedisClient(
+        clientMetadata,
+        client,
+        {
+          host: database.host,
+          port: database.port,
+          connectTimeout: database.timeout,
+        },
+        createClientDatabase(database),
+      );
     } catch (e) {
       tnl?.close?.();
       throw e;
@@ -304,11 +313,16 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
       // connect() doesn't return the client instance
       await client.connect();
 
-      return new ClusterNodeRedisClient(clientMetadata, client, {
-        host: database.host,
-        port: database.port,
-        connectTimeout: database.timeout,
-      });
+      return new ClusterNodeRedisClient(
+        clientMetadata,
+        client,
+        {
+          host: database.host,
+          port: database.port,
+          connectTimeout: database.timeout,
+        },
+        createClientDatabase(database),
+      );
     } catch (e) {
       tnls?.forEach((tnl) => tnl?.close?.());
       // TODO: node-redis issue

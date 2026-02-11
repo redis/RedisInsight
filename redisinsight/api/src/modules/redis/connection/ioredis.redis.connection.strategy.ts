@@ -10,6 +10,7 @@ import { ClusterOptions } from 'ioredis/built/cluster/ClusterOptions';
 import { ConnectionOptions } from 'tls';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import {
+  createClientDatabase,
   RedisClient,
   StandaloneIoredisClient,
   SentinelIoredisClient,
@@ -230,11 +231,17 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
               'Successfully connected to the redis database',
               clientMetadata,
             );
+
             resolve(
-              new StandaloneIoredisClient(clientMetadata, connection, {
-                host: database.host,
-                port: database.port,
-              }),
+              new StandaloneIoredisClient(
+                clientMetadata,
+                connection,
+                {
+                  host: database.host,
+                  port: database.port,
+                },
+                createClientDatabase(database),
+              ),
             );
           });
           connection.on('reconnecting', (): void => {
@@ -345,11 +352,17 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
               'Successfully connected to the redis oss cluster.',
               clientMetadata,
             );
+
             resolve(
-              new ClusterIoredisClient(clientMetadata, cluster, {
-                host: database.host,
-                port: database.port,
-              }),
+              new ClusterIoredisClient(
+                clientMetadata,
+                cluster,
+                {
+                  host: database.host,
+                  port: database.port,
+                },
+                createClientDatabase(database),
+              ),
             );
           });
         } catch (e) {
@@ -409,11 +422,17 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
             'Successfully connected to the redis oss sentinel.',
             clientMetadata,
           );
+
           resolve(
-            new SentinelIoredisClient(clientMetadata, client, {
-              host: database.host,
-              port: database.port,
-            }),
+            new SentinelIoredisClient(
+              clientMetadata,
+              client,
+              {
+                host: database.host,
+                port: database.port,
+              },
+              createClientDatabase(database),
+            ),
           );
         });
       } catch (e) {
