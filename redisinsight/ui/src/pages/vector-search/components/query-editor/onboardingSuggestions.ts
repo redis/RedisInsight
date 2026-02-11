@@ -3,15 +3,7 @@ import * as monacoEditor from 'monaco-editor'
 import { bufferToString, formatLongName } from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
-
-export interface OnboardingTemplate {
-  /** The Redis command name (used as the suggestion label). */
-  command: string
-  /** Short description shown as the suggestion detail. */
-  detail: string
-  /** Whether the template includes an index argument placeholder. */
-  usesIndex: boolean
-}
+import { OnboardingTemplate } from './QueryEditor.types'
 
 /**
  * Predefined RQE query templates for the Vector Search onboarding panel.
