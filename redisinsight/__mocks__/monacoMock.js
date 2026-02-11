@@ -11,6 +11,7 @@ const editor = {
   createContextKey: jest.fn(),
   focus: jest.fn(),
   onDidChangeCursorPosition: jest.fn(),
+  onDidFocusEditorWidget: jest.fn(),
   onDidAttemptReadOnlyEdit: jest.fn(),
   executeEdits: jest.fn(),
   updateOptions: jest.fn(),

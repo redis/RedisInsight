@@ -63,8 +63,47 @@ const meta: Meta<typeof QueryEditorWrapper> = {
     layout: 'centered',
     docs: {
       description: {
-        component:
-          'Vector Search Query Editor with Editor/Library toggle, Monaco editor with RQE autocomplete, and Run action button.',
+        component: `Vector Search Query Editor with Editor/Library toggle, Monaco editor
+with RQE autocomplete, and Run action button.
+
+### Onboarding suggestions
+
+When the editor is **empty** and receives **focus**, a suggestions panel
+is shown with a predefined list of RQE query templates:
+
+| Command | Description |
+|---------|-------------|
+| \`FT.SEARCH\` | Find documents by text or filters |
+| \`FT.AGGREGATE\` | Group and summarize results |
+| \`FT.SUGGET\` | Retrieve autocomplete suggestions |
+| \`FT.SPELLCHECK\` | Suggest corrections for typos |
+| \`FT.EXPLAIN\` | See execution plan |
+| \`FT.PROFILE\` | Analyze performance |
+| \`FT._LIST\` | View index schema and stats |
+
+Each suggestion shows the **query detail first** (\`detail\` property),
+and users can expand the **full documentation** via the Monaco details
+panel.
+
+### Index-aware autocomplete
+
+Templates are **index-aware**: when available indexes exist, the first
+index name is **preselected** in snippet tab-stop placeholders. As the
+user types, the selected index is used in suggestions.
+
+### How it works
+
+The behaviour is driven by \`VectorSearchEditor\`'s \`onSetup\` callback:
+
+1. On mount (and on every subsequent focus of an empty editor),
+   \`getOnboardingSuggestions()\` builds the 7 template completion items.
+2. The items are set via \`completions.setSuggestionsData()\` and the
+   suggest widget is triggered.
+3. Once the user picks a template or starts typing, the normal
+   autocomplete flow takes over with all Redis commands available.
+
+This behaviour is **unique to Vector Search** — the Workbench editor
+does not auto-show suggestions.`,
       },
       story: {
         inline: false,
@@ -78,7 +117,17 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 /**
- * Default empty editor.
+ * Default empty editor — demonstrates the **onboarding** flow.
+ *
+ * 1. Click into the editor area.
+ * 2. A suggestions panel appears with 7 predefined FT.* templates,
+ *    each showing its description as the detail text.
+ * 3. Expand the documentation panel to see the full docs for each
+ *    command.
+ * 4. Pick a template — the snippet is inserted with the preselected
+ *    index (if available) and autocomplete continues normally.
+ * 5. All Redis commands remain available if you start typing
+ *    something else.
  */
 export const Default: Story = {
   render: (args) => {
@@ -89,6 +138,10 @@ export const Default: Story = {
 
 /**
  * Editor pre-populated with a KNN search query.
+ *
+ * Because the editor is not blank, the onboarding suggestions popup
+ * does **not** appear automatically — regular code completion is used
+ * instead.
  */
 export const WithQuery: Story = {
   name: 'With pre-filled query',
