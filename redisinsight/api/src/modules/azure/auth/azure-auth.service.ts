@@ -79,8 +79,15 @@ export class AzureAuthService {
   /**
    * Generate authorization URL for OAuth flow.
    * Returns URL to redirect user to Microsoft login.
+   * @param prompt - Optional prompt parameter to control login behavior:
+   *   - 'select_account': Force account picker (for switching accounts)
+   *   - 'login': Force re-authentication
+   *   - 'consent': Force consent dialog
+   * @see https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-auth-code-flow#request-an-authorization-code
    */
-  async getAuthorizationUrl(): Promise<{ url: string; state: string }> {
+  async getAuthorizationUrl(
+    prompt?: string,
+  ): Promise<{ url: string; state: string }> {
     const pca = this.getMsalClient();
 
     const verifier = generateCodeVerifier();
@@ -96,6 +103,7 @@ export class AzureAuthService {
       codeChallenge: challenge,
       codeChallengeMethod: 'S256',
       state,
+      ...(prompt && { prompt }),
     });
 
     this.logger.debug('Generated authorization URL');
