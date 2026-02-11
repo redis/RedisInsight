@@ -5,7 +5,12 @@ import { AzureAutodiscoveryService } from './azure-autodiscovery.service';
 import { AzureAutodiscoveryAnalytics } from './azure-autodiscovery.analytics';
 import { AzureAuthService } from '../auth/azure-auth.service';
 import { DatabaseService } from 'src/modules/database/database.service';
-import { AzureRedisType, AzureAuthType } from '../constants';
+import {
+  AzureRedisType,
+  AzureAuthType,
+  AzureSubscriptionState,
+  AzureProvisioningState,
+} from '../constants';
 import { AzureRedisDatabase } from '../models';
 import { ActionStatus } from 'src/common/models';
 import { HostingProvider } from 'src/modules/database/entities/database.entity';
@@ -37,7 +42,7 @@ const createMockAccount = () => ({
 const createMockSubscription = () => ({
   subscriptionId: faker.string.uuid(),
   displayName: faker.company.name(),
-  state: 'Enabled',
+  state: AzureSubscriptionState.Enabled,
 });
 
 const createMockStandardRedis = (subscriptionId: string) => {
@@ -51,7 +56,7 @@ const createMockStandardRedis = (subscriptionId: string) => {
       hostName: `${name}.redis.cache.windows.net`,
       port: 6379,
       sslPort: 6380,
-      provisioningState: 'Succeeded',
+      provisioningState: AzureProvisioningState.Succeeded,
       sku: { name: 'Basic', family: 'C', capacity: 0 },
     },
   };
@@ -77,7 +82,7 @@ const createMockEnterpriseDatabase = (
   name: 'default',
   properties: {
     port: 10000,
-    provisioningState: 'Succeeded',
+    provisioningState: AzureProvisioningState.Succeeded,
   },
 });
 
@@ -103,7 +108,7 @@ const createMockDatabase = (
     host: faker.internet.domainName(),
     port: type === AzureRedisType.Standard ? 6379 : 10000,
     sslPort: type === AzureRedisType.Standard ? 6380 : undefined,
-    provisioningState: 'Succeeded',
+    provisioningState: AzureProvisioningState.Succeeded,
   };
 };
 

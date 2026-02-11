@@ -65,6 +65,22 @@ export enum AzureAccessKeysStatus {
   Disabled = 'Disabled',
 }
 
+/**
+ * Azure subscription states from Azure Resource Manager API.
+ * @see https://learn.microsoft.com/en-us/rest/api/resources/subscriptions/list#subscriptionstate
+ */
+export enum AzureSubscriptionState {
+  Enabled = 'enabled',
+}
+
+/**
+ * Azure resource provisioning states.
+ * @see https://learn.microsoft.com/en-us/rest/api/redis/redis/get#provisioningstate
+ */
+export enum AzureProvisioningState {
+  Succeeded = 'succeeded',
+}
+
 export const AZURE_API_BASE = 'https://management.azure.com';
 
 // API versions - latest stable as of January 2025

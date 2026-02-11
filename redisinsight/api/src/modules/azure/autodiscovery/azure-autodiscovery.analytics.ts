@@ -5,7 +5,11 @@ import { TelemetryEvents } from 'src/constants';
 import { TelemetryBaseService } from 'src/modules/analytics/telemetry.base.service';
 import { SessionMetadata } from 'src/common/models';
 import { AzureSubscription, AzureRedisDatabase } from '../models';
-import { AzureRedisType } from '../constants';
+import {
+  AzureRedisType,
+  AzureSubscriptionState,
+  AzureProvisioningState,
+} from '../constants';
 
 @Injectable()
 export class AzureAutodiscoveryAnalytics extends TelemetryBaseService {
@@ -24,7 +28,8 @@ export class AzureAutodiscoveryAnalytics extends TelemetryBaseService {
         {
           totalSubscriptions: subscriptions.length,
           activeSubscriptions: subscriptions.filter(
-            (sub) => sub.state?.toLowerCase() === 'enabled',
+            (sub) =>
+              sub.state?.toLowerCase() === AzureSubscriptionState.Enabled,
           ).length,
         },
       );
@@ -59,7 +64,9 @@ export class AzureAutodiscoveryAnalytics extends TelemetryBaseService {
           standardDatabases: typeCount[AzureRedisType.Standard] || 0,
           enterpriseDatabases: typeCount[AzureRedisType.Enterprise] || 0,
           activeDatabases: databases.filter(
-            (db) => db.provisioningState?.toLowerCase() === 'succeeded',
+            (db) =>
+              db.provisioningState?.toLowerCase() ===
+              AzureProvisioningState.Succeeded,
           ).length,
         },
       );
