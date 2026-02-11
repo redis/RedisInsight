@@ -135,12 +135,31 @@ export class AzureAutodiscoveryService {
       throw new BadRequestException('Failed to get authenticated client');
     }
 
-    const [standardDatabases, enterpriseDatabases] = await Promise.all([
+    const results = await Promise.allSettled([
       this.fetchStandardRedis(client, subscriptionId),
       this.fetchEnterpriseRedis(client, subscriptionId),
     ]);
 
-    return [...standardDatabases, ...enterpriseDatabases];
+    const databases: AzureRedisDatabase[] = [];
+    const errors: Error[] = [];
+
+    results.forEach((result) => {
+      if (result.status === 'fulfilled') {
+        databases.push(...result.value);
+      } else {
+        errors.push(result.reason);
+      }
+    });
+
+    errors.forEach((error) => {
+      this.logger.error('Failed to fetch some Azure databases', error);
+    });
+
+    if (databases.length === 0 && errors.length > 0) {
+      throw errors[0];
+    }
+
+    return databases;
   }
 
   async getConnectionDetails(
