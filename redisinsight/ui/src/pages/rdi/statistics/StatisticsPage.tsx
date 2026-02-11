@@ -137,10 +137,9 @@ const StatisticsPage = () => {
   }
 
   const sections = statisticsResults.data?.sections || []
-
   return (
     <S.Container>
-      <S.ContentWrapper gap="xxl">
+      <S.ContentWrapper gap="xxl" grow={false}>
         {pageLoading && (
           <S.LoadingState centered>
             <Loader size="xl" />
