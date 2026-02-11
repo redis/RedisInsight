@@ -1,0 +1,121 @@
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  Logger,
+  OnModuleDestroy,
+} from '@nestjs/common';
+import { AzureAuthService } from './auth/azure-auth.service';
+import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
+import { TOKEN_REFRESH_BUFFER_MS } from './constants';
+
+/**
+ * Manages automatic token refresh for Azure Entra ID authenticated Redis clients.
+ *
+ * When a token is acquired via getRedisTokenByAccountId, this manager schedules
+ * a timer to refresh the token before it expires. When the timer fires:
+ * 1. Acquire a fresh token
+ * 2. Find all Redis clients using that Azure account
+ * 3. Re-authenticate each client with the new token
+ * 4. Schedule the next refresh
+ */
+@Injectable()
+export class AzureTokenRefreshManager implements OnModuleDestroy {
+  private readonly logger = new Logger(AzureTokenRefreshManager.name);
+
+  private readonly timers: Map<string, NodeJS.Timeout> = new Map();
+
+  constructor(
+    @Inject(forwardRef(() => AzureAuthService))
+    private readonly azureAuthService: AzureAuthService,
+    private readonly redisClientStorage: RedisClientStorage,
+  ) {}
+
+  onModuleDestroy(): void {
+    this.clearAllTimers();
+  }
+
+  scheduleRefresh(azureAccountId: string, expiresOn: Date): void {
+    this.clearTimer(azureAccountId);
+
+    const now = Date.now();
+    const expiresAt = expiresOn.getTime();
+    const refreshAt = expiresAt - TOKEN_REFRESH_BUFFER_MS;
+    const delay = refreshAt - now;
+
+    this.logger.debug(
+      `Scheduling token refresh for account ${azureAccountId} in ${Math.round(delay / 1000)}s (expires: ${expiresOn.toISOString()})`,
+    );
+
+    const timer = setTimeout(() => {
+      this.refreshTokenAndReauth(azureAccountId).catch((error) => {
+        this.logger.error(
+          `Token refresh failed for account ${azureAccountId}: ${error.message}`,
+        );
+      });
+    }, delay);
+
+    this.timers.set(azureAccountId, timer);
+  }
+
+  clearTimer(azureAccountId: string): void {
+    const existingTimer = this.timers.get(azureAccountId);
+    if (existingTimer) {
+      clearTimeout(existingTimer);
+      this.timers.delete(azureAccountId);
+    }
+  }
+
+  clearAllTimers(): void {
+    this.timers.forEach((timer) => clearTimeout(timer));
+    this.timers.clear();
+  }
+
+  private async refreshTokenAndReauth(azureAccountId: string): Promise<void> {
+    this.logger.debug(`Refreshing token for account ${azureAccountId}`);
+
+    this.timers.delete(azureAccountId);
+
+    const tokenResult =
+      await this.azureAuthService.getRedisTokenByAccountId(azureAccountId);
+
+    if (!tokenResult) {
+      this.logger.warn(
+        `Failed to get fresh token for account ${azureAccountId}`,
+      );
+      return;
+    }
+
+    const clients = this.redisClientStorage.getClientsByDatabaseField(
+      'providerDetails.azureAccountId',
+      azureAccountId,
+    );
+
+    if (clients.length === 0) {
+      this.logger.debug(
+        `No active clients for account ${azureAccountId}, skipping re-auth`,
+      );
+      return;
+    }
+
+    this.logger.debug(
+      `Re-authenticating ${clients.length} client(s) for account ${azureAccountId}`,
+    );
+
+    await Promise.all(
+      clients.map(async (client) => {
+        try {
+          await client.call([
+            'AUTH',
+            tokenResult.account.localAccountId,
+            tokenResult.token,
+          ]);
+        } catch (error) {
+          this.logger.warn(
+            `Failed to re-authenticate client ${client.id}: ${error.message}`,
+          );
+        }
+      }),
+    );
+  }
+}

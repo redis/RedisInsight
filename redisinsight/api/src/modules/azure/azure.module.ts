@@ -5,6 +5,7 @@ import { AzureAuthAnalytics } from './auth/azure-auth.analytics';
 import { AzureAutodiscoveryService } from './autodiscovery/azure-autodiscovery.service';
 import { AzureAutodiscoveryController } from './autodiscovery/azure-autodiscovery.controller';
 import { AzureAutodiscoveryAnalytics } from './autodiscovery/azure-autodiscovery.analytics';
+import { AzureTokenRefreshManager } from './azure-token-refresh.manager';
 import { DatabaseModule } from '../database/database.module';
 
 @Global()
@@ -15,8 +16,14 @@ import { DatabaseModule } from '../database/database.module';
     AzureAuthAnalytics,
     AzureAutodiscoveryService,
     AzureAutodiscoveryAnalytics,
+    AzureAutodiscoveryService,
+    AzureTokenRefreshManager,
   ],
   controllers: [AzureAuthController, AzureAutodiscoveryController],
-  exports: [AzureAuthService, AzureAutodiscoveryService],
+  exports: [
+    AzureAuthService,
+    AzureAutodiscoveryService,
+    AzureTokenRefreshManager,
+  ],
 })
 export class AzureModule {}
