@@ -39,6 +39,7 @@ export const createIndexNotifications = {
   createFailed: (): NotificationMessage => ({
     title: 'Failed to create index',
     message: 'An error occurred while creating the index. Please try again.',
+    variant: 'error' as ToastVariant,
   }),
 
   // TODO: Use when creating an index from existing database keys (not sample data).
