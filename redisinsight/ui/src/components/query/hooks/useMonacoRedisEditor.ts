@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
 import {
@@ -26,6 +26,14 @@ export const useMonacoRedisEditor = ({
   onSetup,
 }: UseMonacoRedisEditorProps): UseMonacoRedisEditorReturn => {
   const contributionRef = useRef<Nullable<ISnippetController>>(null)
+
+  // Dispose the snippet controller on unmount (mirrors original Query.tsx cleanup)
+  useEffect(
+    () => () => {
+      contributionRef.current?.dispose?.()
+    },
+    [],
+  )
 
   const editorDidMount = (
     editor: monacoEditor.editor.IStandaloneCodeEditor,
