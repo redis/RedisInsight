@@ -317,6 +317,45 @@ describe('azure auth slice', () => {
         ]
         expect(store.getActions()).toEqual(expectedActions)
       })
+
+      it('should pass prompt parameter as query param to API', async () => {
+        const authUrl = faker.internet.url()
+        const responsePayload = { data: { url: authUrl }, status: 200 }
+        const onSuccess = jest.fn()
+
+        apiService.get = jest.fn().mockResolvedValue(responsePayload)
+
+        await store.dispatch<any>(
+          initiateAzureLoginAction({
+            source: AzureLoginSource.Autodiscovery,
+            onSuccess,
+            prompt: 'select_account',
+          }),
+        )
+
+        expect(apiService.get).toHaveBeenCalledWith(expect.any(String), {
+          params: { prompt: 'select_account' },
+        })
+      })
+
+      it('should not pass params when prompt is not provided', async () => {
+        const authUrl = faker.internet.url()
+        const responsePayload = { data: { url: authUrl }, status: 200 }
+        const onSuccess = jest.fn()
+
+        apiService.get = jest.fn().mockResolvedValue(responsePayload)
+
+        await store.dispatch<any>(
+          initiateAzureLoginAction({
+            source: AzureLoginSource.Autodiscovery,
+            onSuccess,
+          }),
+        )
+
+        expect(apiService.get).toHaveBeenCalledWith(expect.any(String), {
+          params: undefined,
+        })
+      })
     })
 
     describe('handleAzureOAuthSuccess', () => {

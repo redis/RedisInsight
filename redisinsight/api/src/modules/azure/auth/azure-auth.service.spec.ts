@@ -64,6 +64,26 @@ describe('AzureAuthService', () => {
       const result = await service.handleCallback('auth-code', firstState);
       expect(result.status).toBe(AzureAuthStatus.Failed);
     });
+
+    it('should pass prompt parameter to MSAL when provided', async () => {
+      await service.getAuthorizationUrl('select_account');
+
+      expect(mockPca.getAuthCodeUrl).toHaveBeenCalledWith(
+        expect.objectContaining({
+          prompt: 'select_account',
+        }),
+      );
+    });
+
+    it('should not include prompt parameter when not provided', async () => {
+      await service.getAuthorizationUrl();
+
+      expect(mockPca.getAuthCodeUrl).toHaveBeenCalledWith(
+        expect.not.objectContaining({
+          prompt: expect.anything(),
+        }),
+      );
+    });
   });
 
   describe('handleCallback', () => {
