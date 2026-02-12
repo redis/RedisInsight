@@ -327,7 +327,9 @@ describe('ApiV2RdiClient', () => {
       const result = await client.getStatistics();
 
       expect(result.status).toBe(RdiStatisticsStatus.Success);
-      expect(result.data?.sections).toHaveLength(6);
+      // 4 sections: General info, Processing performance, Target Connections, Component Status
+      // (Data Streams and Clients are filtered out because they have empty data)
+      expect(result.data?.sections).toHaveLength(4);
       expect(result.data?.sections[3].name).toBe('Component Status');
     });
 
@@ -345,7 +347,9 @@ describe('ApiV2RdiClient', () => {
       const result = await client.getStatistics();
 
       expect(result.status).toBe(RdiStatisticsStatus.Success);
-      expect(result.data?.sections).toHaveLength(5);
+      // 3 sections: General info, Processing performance, Target Connections
+      // (Data Streams and Clients are filtered out because they have empty data)
+      expect(result.data?.sections).toHaveLength(3);
       expect(result.data?.sections.map((s) => s.name)).not.toContain(
         'Component Status',
       );

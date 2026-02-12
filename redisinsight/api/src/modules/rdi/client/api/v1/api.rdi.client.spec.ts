@@ -677,7 +677,9 @@ describe('ApiRdiClient', () => {
       expect(mockedAxios.get).toHaveBeenCalledWith(RdiUrl.GetStatistics);
       expect(result.status).toBe(RdiStatisticsStatus.Success);
       expect(result.data).toBeDefined();
-      expect(result.data.sections).toHaveLength(5);
+      // 2 sections: General info, Processing performance
+      // (Target Connections, Data Streams, and Clients are filtered out because they have empty data)
+      expect(result.data.sections).toHaveLength(2);
     });
 
     it('should return fail status and error message when API call fails', async () => {
