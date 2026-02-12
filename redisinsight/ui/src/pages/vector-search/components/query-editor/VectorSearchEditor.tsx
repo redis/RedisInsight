@@ -57,6 +57,9 @@ export const VectorSearchEditor = () => {
   const [focused, setFocused] = useState(true)
   const [contentLeft, setContentLeft] = useState(0)
   const disposeOnboardingRef = useRef<(() => void) | null>(null)
+  // Keep a ref to always read the latest indexes inside mount-time closures
+  const indexesRef = useRef(indexes)
+  indexesRef.current = indexes
 
   // Dispose the onboarding completion provider on unmount
   useEffect(
@@ -86,7 +89,9 @@ export const VectorSearchEditor = () => {
           {
             provideCompletionItems: (model) => {
               if (model.getValue().trim()) return { suggestions: [] }
-              return { suggestions: getOnboardingSuggestions(indexes) }
+              return {
+                suggestions: getOnboardingSuggestions(indexesRef.current),
+              }
             },
           },
         ).dispose

@@ -13,7 +13,6 @@ export interface UseMonacoRedisEditorProps {
 }
 
 export interface UseMonacoRedisEditorReturn {
-  monacoTheme: string
   editorDidMount: (
     editor: monacoEditor.editor.IStandaloneCodeEditor,
     monaco: typeof monacoEditor,

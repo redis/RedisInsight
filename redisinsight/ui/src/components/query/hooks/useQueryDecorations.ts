@@ -22,7 +22,10 @@ export const useQueryDecorations = ({
   const decorationCollection =
     useRef<Nullable<monacoEditor.editor.IEditorDecorationsCollection>>(null)
 
-  // Initialize decoration collection when editor becomes available
+  // Update decorations whenever query changes.
+  // Lazily initializes the decoration collection on first run after
+  // the editor mounts, avoiding the anti-pattern of using a ref's
+  // .current value as a useEffect dependency.
   useEffect(() => {
     if (!monacoObjects.current) return
     const { editor } = monacoObjects.current
@@ -30,11 +33,6 @@ export const useQueryDecorations = ({
     if (!decorationCollection.current) {
       decorationCollection.current = editor.createDecorationsCollection()
     }
-  }, [monacoObjects.current])
-
-  // Update decorations whenever query changes
-  useEffect(() => {
-    if (!monacoObjects.current || !decorationCollection.current) return
 
     const { monaco } = monacoObjects.current
     const lines = query.split('\n')

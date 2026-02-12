@@ -13,7 +13,6 @@ import { UseDslSyntaxProps, UseDslSyntaxReturn } from './useDslSyntax.types'
 const SYNTAX_CONTEXT_ID = 'syntaxWidgetContext'
 const SYNTAX_WIDGET_ID = 'syntax.content.widget'
 const argInQuotesRegExp = /^['"](.|[\r\n])*['"]$/
-const aroundQuotesRegExp = /(^["']|["']$)/g
 
 /**
  * Manages the DSL syntax widget for Cypher, JMESPath, SQLite expressions.
@@ -232,7 +231,6 @@ export const useDslSyntax = ({
     isWidgetOpen,
     selectedArg,
     syntaxCommand,
-    aroundQuotesRegExp,
     setupDslCommands,
     handleDslSyntax,
     onPressWidget,

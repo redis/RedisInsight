@@ -17,7 +17,6 @@ export interface UseDslSyntaxReturn {
   isWidgetOpen: MutableRefObject<boolean>
   selectedArg: MutableRefObject<string>
   syntaxCommand: MutableRefObject<Nullable<IMonacoQuery>>
-  aroundQuotesRegExp: RegExp
   setupDslCommands: (
     editor: monacoEditor.editor.IStandaloneCodeEditor,
     monaco: typeof monacoEditor,

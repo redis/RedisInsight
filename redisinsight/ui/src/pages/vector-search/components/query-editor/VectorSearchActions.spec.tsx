@@ -93,9 +93,7 @@ describe('VectorSearchActions', () => {
       renderComponent({ query: 'FT.SEARCH idx "*" LIMIT 0 10' })
 
       fireEvent.click(screen.getByTestId('btn-explain'))
-      expect(mockOnSubmit).toHaveBeenCalledWith(
-        'FT.EXPLAIN idx "*" LIMIT 0 10',
-      )
+      expect(mockOnSubmit).toHaveBeenCalledWith('FT.EXPLAIN idx "*" LIMIT 0 10')
     })
   })
 

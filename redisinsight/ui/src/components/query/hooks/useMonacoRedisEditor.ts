@@ -1,9 +1,7 @@
-import { useContext, useRef } from 'react'
+import { useRef } from 'react'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
-import { Theme } from 'uiSrc/constants'
 import { getMonacoAction, MonacoAction, Nullable } from 'uiSrc/utils'
-import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import { ISnippetController } from 'uiSrc/pages/workbench/interfaces'
 
 import {
@@ -16,7 +14,6 @@ import {
  * - editorDidMount handler (stores refs, registers submit action, focus)
  * - snippet mode exit
  * - cursor position triggering
- * - theme resolution
  */
 export const useMonacoRedisEditor = ({
   monacoObjects,
@@ -24,9 +21,6 @@ export const useMonacoRedisEditor = ({
   onSetup,
 }: UseMonacoRedisEditorProps): UseMonacoRedisEditorReturn => {
   const contributionRef = useRef<Nullable<ISnippetController>>(null)
-  const { theme } = useContext(ThemeContext)
-
-  const monacoTheme = theme === Theme.Dark ? 'dark' : 'light'
 
   const editorDidMount = (
     editor: monacoEditor.editor.IStandaloneCodeEditor,
@@ -79,7 +73,6 @@ export const useMonacoRedisEditor = ({
   }
 
   return {
-    monacoTheme,
     editorDidMount,
     onExitSnippetMode,
     triggerUpdateCursorPosition,
