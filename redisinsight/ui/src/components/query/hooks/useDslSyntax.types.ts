@@ -1,8 +1,8 @@
+import { MutableRefObject, RefObject } from 'react'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
 import { IMonacoQuery, Nullable } from 'uiSrc/utils'
 import { IEditorMount } from 'uiSrc/pages/workbench/interfaces'
-import { MutableRefObject, RefObject } from 'react'
 
 export interface UseDslSyntaxProps {
   monacoObjects: RefObject<Nullable<IEditorMount>>
