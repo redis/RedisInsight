@@ -50,14 +50,60 @@ export const buildProfileQuery = (parsed: {
   afterCommand: string
 }): string => {
   const rest = parsed.afterCommand.trimStart()
-  // Split: first token is the index, remainder is the query args
-  const spaceIdx = rest.search(/\s/)
-  if (spaceIdx === -1) {
-    // Only index, no query args
-    return `FT.PROFILE ${rest} ${parsed.command === 'FT.SEARCH' ? 'SEARCH' : 'AGGREGATE'} QUERY`
-  }
-  const index = rest.slice(0, spaceIdx)
-  const queryArgs = rest.slice(spaceIdx)
   const subcommand = parsed.command === 'FT.SEARCH' ? 'SEARCH' : 'AGGREGATE'
-  return `FT.PROFILE ${index} ${subcommand} QUERY${queryArgs}`
+
+  // Extract the first token (index name), respecting quotes.
+  const { index, remainder } = extractFirstToken(rest)
+
+  if (remainder === null) {
+    // Only index, no query args
+    return `FT.PROFILE ${index} ${subcommand} QUERY`
+  }
+
+  return `FT.PROFILE ${index} ${subcommand} QUERY${remainder}`
+}
+
+/**
+ * Extracts the first whitespace-delimited token from a string,
+ * respecting single and double-quoted tokens that may contain spaces.
+ *
+ * Returns the token (including its quotes) and the remainder of the
+ * string (starting from the whitespace after the token), or
+ * `{ index: input, remainder: null }` when there is no second token.
+ */
+export const extractFirstToken = (
+  input: string,
+): { index: string; remainder: string | null } => {
+  if (!input) return { index: '', remainder: null }
+
+  const quote = input[0]
+  if (quote === '"' || quote === "'") {
+    // Find the matching closing quote (skip escaped quotes)
+    let i = 1
+    while (i < input.length) {
+      if (input[i] === '\\') {
+        i += 2 // skip escaped character
+        continue
+      }
+      if (input[i] === quote) {
+        // Token ends at closing quote
+        const endIdx = i + 1
+        const index = input.slice(0, endIdx)
+        const after = input.slice(endIdx)
+        return after.length === 0 || !/\s/.test(after[0])
+          ? { index, remainder: after || null }
+          : { index, remainder: after }
+      }
+      i++
+    }
+    // Unterminated quote – treat entire input as the token
+    return { index: input, remainder: null }
+  }
+
+  // Unquoted token – split on first whitespace
+  const spaceIdx = input.search(/\s/)
+  if (spaceIdx === -1) {
+    return { index: input, remainder: null }
+  }
+  return { index: input.slice(0, spaceIdx), remainder: input.slice(spaceIdx) }
 }
