@@ -9,6 +9,7 @@ import {
   redisearchListSelector,
 } from 'uiSrc/slices/browser/redisearch'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { searchAndQuerySelector } from 'uiSrc/slices/search/searchAndQuery'
 import { mergeRedisCommandsSpecs } from 'uiSrc/utils/transformers/redisCommands'
 import SEARCH_COMMANDS_SPEC from 'uiSrc/pages/workbench/data/supported_commands.json'
 import {
@@ -40,6 +41,7 @@ export const QueryEditorWrapper = ({
   )
   const { id: connectedInstanceId } = useSelector(connectedInstanceSelector)
   const { data: indexes = [] } = useSelector(redisearchListSelector)
+  const { loading, processing } = useSelector(searchAndQuerySelector)
 
   const REDIS_COMMANDS = useMemo(
     () =>
@@ -72,7 +74,7 @@ export const QueryEditorWrapper = ({
         setQuery,
         commands: REDIS_COMMANDS,
         indexes,
-        isLoading: false,
+        isLoading: loading || processing,
         onSubmit,
       }}
     >
