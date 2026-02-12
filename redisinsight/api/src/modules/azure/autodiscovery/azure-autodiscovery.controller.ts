@@ -21,6 +21,7 @@ import { AzureSubscription, AzureRedisDatabase } from '../models';
 import { ImportAzureDatabasesDto, ImportAzureDatabaseResponse } from './dto';
 import { ActionStatus, SessionMetadata } from 'src/common/models';
 import { RequestSessionMetadata } from 'src/common/decorators';
+import { wrapHttpError } from 'src/common/utils';
 
 @ApiTags('Azure')
 @Controller('azure')
@@ -87,7 +88,10 @@ export class AzureAutodiscoveryController {
       );
       return subscriptions;
     } catch (e) {
-      this.analytics.sendAzureSubscriptionsDiscoveryFailed(sessionMetadata, e);
+      this.analytics.sendAzureSubscriptionsDiscoveryFailed(
+        sessionMetadata,
+        wrapHttpError(e),
+      );
       throw e;
     }
   }
@@ -125,7 +129,10 @@ export class AzureAutodiscoveryController {
       );
       return databases;
     } catch (e) {
-      this.analytics.sendAzureDatabasesDiscoveryFailed(sessionMetadata, e);
+      this.analytics.sendAzureDatabasesDiscoveryFailed(
+        sessionMetadata,
+        wrapHttpError(e),
+      );
       throw e;
     }
   }

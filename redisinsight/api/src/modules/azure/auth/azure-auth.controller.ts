@@ -15,6 +15,7 @@ import { AzureAuthAnalytics } from './azure-auth.analytics';
 import { AzureAuthStatus } from '../constants';
 import { RequestSessionMetadata } from 'src/common/decorators';
 import { SessionMetadata } from 'src/common/models';
+import { wrapHttpError } from 'src/common/utils';
 
 @ApiTags('Azure Auth')
 @Controller('azure/auth')
@@ -100,7 +101,7 @@ export class AzureAuthController {
       return result;
     } catch (e) {
       this.logger.error('Azure OAuth callback failed', e);
-      this.analytics.sendAzureSignInFailed(sessionMetadata, e);
+      this.analytics.sendAzureSignInFailed(sessionMetadata, wrapHttpError(e));
       throw e;
     }
   }
