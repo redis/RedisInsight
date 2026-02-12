@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 
@@ -23,7 +22,7 @@ export const ToggleBar = styled(Row).attrs({
   flex-shrink: 0;
 `
 
-export const EditorContainer = styled.div<{ children?: React.ReactNode }>`
+export const EditorContainer = styled.div`
   flex: 1;
   min-height: 0;
   position: relative;
@@ -37,7 +36,6 @@ export const EditorContainer = styled.div<{ children?: React.ReactNode }>`
  * `pointer-events: none` lets clicks pass through to the editor underneath.
  */
 export const EditorPlaceholder = styled.div<{
-  children?: React.ReactNode
   $contentLeft?: number
 }>`
   position: absolute;
