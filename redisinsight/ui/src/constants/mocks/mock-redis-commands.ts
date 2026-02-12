@@ -897,7 +897,7 @@ export const MOCK_COMMANDS_SPEC = {
       },
     ],
     since: '1.0.0',
-    group: 'graph',
+    group: 'generic',
   },
   'GRAPH.RO_QUERY': {
     provider: 'graph',
@@ -920,7 +920,7 @@ export const MOCK_COMMANDS_SPEC = {
       },
     ],
     since: '2.2.8',
-    group: 'graph',
+    group: 'generic',
   },
 }
 
