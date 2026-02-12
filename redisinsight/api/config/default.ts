@@ -345,11 +345,12 @@ export default {
   },
   cloud: {
     apiUrl:
-      process.env.RI_CLOUD_API_URL || 'https://app-qa.qa.redislabs.com/api/v1',
+      process.env.RI_CLOUD_API_URL ||
+      'https://app-sm.k8s-cloudapi.sm-qa.qa.redislabs.com/api/v1',
     apiToken: process.env.RI_CLOUD_API_TOKEN || 'token',
     capiUrl:
       process.env.RI_CLOUD_CAPI_URL ||
-      'https://capi.k8s-dev-uirefresh.sm-qa.qa.redislabs.com/v1',
+      'https://api-k8s-cloudapi.qa.redislabs.com/v1',
     capiKeyName: process.env.RI_CLOUD_CAPI_KEY_NAME || 'RedisInsight',
     freeSubscriptionName:
       process.env.RI_CLOUD_FREE_SUBSCRIPTION_NAME || 'My free subscription',
