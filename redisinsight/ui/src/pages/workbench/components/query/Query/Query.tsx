@@ -80,6 +80,8 @@ const Query = (props: Props) => {
 
     isDedicatedEditorOpen: () => dsl.isDedicatedEditorOpenRef.current ?? false,
 
+    beforeCursorChange: () => dsl.hideWidget(),
+
     onSetup: (editor, monaco, completionsRef) => {
       setQueryEl(editor)
       dsl.setupDslCommands(editor, monaco)

@@ -29,6 +29,7 @@ export const useQueryEditor = (
     onSubmit,
     onSetup,
     onKeyDown,
+    beforeCursorChange,
     onCursorChange,
     onQueryChange,
     onCleanup,
@@ -93,6 +94,10 @@ export const useQueryEditor = (
     // Base cursor change handler
     editor.onDidChangeCursorPosition(
       (e: monacoEditor.editor.ICursorPositionChangedEvent) => {
+        // Allow consumers to clean up state (e.g. hide DSL widget)
+        // before suggestion logic runs.
+        beforeCursorChange?.()
+
         const command = completions.handleCursorChange(
           e,
           isDedicatedEditorOpen?.() ?? false,

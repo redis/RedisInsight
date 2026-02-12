@@ -143,16 +143,23 @@ export const useDslSyntax = ({
     })
   }
 
+  /**
+   * Hide the DSL syntax widget if it is currently visible.
+   * Intended to be called *before* suggestion logic runs so that
+   * `isWidgetOpen.current` is already `false` during `handleSuggestions`.
+   */
+  const hideWidget = () => {
+    const { editor } = monacoObjects?.current || {}
+    if (editor && isWidgetOpen.current) {
+      hideSyntaxWidget(editor)
+    }
+  }
+
   const handleDslSyntax = (
     e: monacoEditor.editor.ICursorPositionChangedEvent,
     command: Nullable<IMonacoQuery>,
   ) => {
     const { editor } = monacoObjects?.current || {}
-
-    // Always hide the widget before potentially re-showing at a new position
-    if (editor && isWidgetOpen.current) {
-      hideSyntaxWidget(editor)
-    }
 
     if (!command?.info || !editor) {
       isWidgetEscaped.current = false
@@ -235,6 +242,7 @@ export const useDslSyntax = ({
     selectedArg,
     syntaxCommand,
     setupDslCommands,
+    hideWidget,
     handleDslSyntax,
     onPressWidget,
     onCancelDedicatedEditor,

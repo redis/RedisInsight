@@ -18,6 +18,8 @@ export interface UseDslSyntaxReturn {
     editor: monacoEditor.editor.IStandaloneCodeEditor,
     monaco: typeof monacoEditor,
   ) => void
+  /** Hide the DSL widget if visible. Call before suggestion logic. */
+  hideWidget: () => void
   handleDslSyntax: (
     e: monacoEditor.editor.ICursorPositionChangedEvent,
     command: Nullable<IMonacoQuery>,

@@ -36,6 +36,13 @@ export interface UseQueryEditorOptions {
   ) => void
 
   /**
+   * Called before cursor-change suggestion logic runs.
+   * Use to hide widgets (e.g. DSL syntax widget) so that
+   * `handleSuggestions` sees consistent state.
+   */
+  beforeCursorChange?: () => void
+
+  /**
    * Additional cursor change handler, called after base cursor handling.
    * Receives the cursor event and the resolved command (if any).
    */
