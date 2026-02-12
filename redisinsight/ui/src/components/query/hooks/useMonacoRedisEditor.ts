@@ -1,7 +1,12 @@
 import { useRef } from 'react'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
-import { getMonacoAction, MonacoAction, Nullable } from 'uiSrc/utils'
+import {
+  getMonacoAction,
+  MonacoAction,
+  Nullable,
+  triggerUpdateCursorPosition,
+} from 'uiSrc/utils'
 import { ISnippetController } from 'uiSrc/pages/workbench/interfaces'
 
 import {
@@ -59,17 +64,6 @@ export const useMonacoRedisEditor = ({
       )
       contributionRef.current?.cancel?.()
     }
-  }
-
-  const triggerUpdateCursorPosition = (
-    editor: monacoEditor.editor.IStandaloneCodeEditor,
-  ) => {
-    const position = editor.getPosition()
-    editor.trigger('mouse', '_moveTo', {
-      position: { lineNumber: 1, column: 1 },
-    })
-    editor.trigger('mouse', '_moveTo', { position })
-    editor.focus()
   }
 
   return {

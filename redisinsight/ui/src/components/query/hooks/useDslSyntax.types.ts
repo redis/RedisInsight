@@ -6,9 +6,6 @@ import { IEditorMount } from 'uiSrc/pages/workbench/interfaces'
 
 export interface UseDslSyntaxProps {
   monacoObjects: RefObject<Nullable<IEditorMount>>
-  triggerUpdateCursorPosition: (
-    editor: monacoEditor.editor.IStandaloneCodeEditor,
-  ) => void
 }
 
 export interface UseDslSyntaxReturn {

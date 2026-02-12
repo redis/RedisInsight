@@ -409,6 +409,21 @@ export const getCommandsFromQuery = (
   return listOfCommands.length ? listOfCommands.join(';') : null
 }
 
+/**
+ * Force a cursor position update by moving to (1,1) and back.
+ * This is a stateless utility — it only needs the editor instance.
+ */
+export const triggerUpdateCursorPosition = (
+  editor: monacoEditor.editor.IStandaloneCodeEditor,
+) => {
+  const position = editor.getPosition()
+  editor.trigger('mouse', '_moveTo', {
+    position: { lineNumber: 1, column: 1 },
+  })
+  editor.trigger('mouse', '_moveTo', { position })
+  editor.focus()
+}
+
 export const parseJMESPathFunctions = (functions: TJMESPathFunctions) =>
   Object.entries(functions).map(([label, func]) => {
     const { arguments: args } = func

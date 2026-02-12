@@ -3,7 +3,11 @@ import { useParams } from 'react-router-dom'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
 import { DSLNaming } from 'uiSrc/constants'
-import { createSyntaxWidget, Nullable } from 'uiSrc/utils'
+import {
+  createSyntaxWidget,
+  Nullable,
+  triggerUpdateCursorPosition,
+} from 'uiSrc/utils'
 import { IMonacoQuery } from 'uiSrc/utils/monaco/monacoInterfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { findSuggestionsByQueryArgs } from 'uiSrc/pages/workbench/utils/query'
@@ -21,7 +25,6 @@ const argInQuotesRegExp = /^['"](.|[\r\n])*['"]$/
  */
 export const useDslSyntax = ({
   monacoObjects,
-  triggerUpdateCursorPosition,
 }: UseDslSyntaxProps): UseDslSyntaxReturn => {
   const [isDedicatedEditorOpen, setIsDedicatedEditorOpen] = useState(false)
   const isDedicatedEditorOpenRef = useRef<boolean>(false)

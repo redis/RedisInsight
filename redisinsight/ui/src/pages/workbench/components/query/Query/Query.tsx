@@ -67,49 +67,42 @@ const Query = (props: Props) => {
     onKeyDown?.(e, query)
   }
 
+  // DSL syntax widget (Workbench-only) — called before useQueryEditor
+  // so that dsl values are available synchronously in callbacks below.
+  const dsl = useDslSyntax({ monacoObjects })
+
   // Shared editor lifecycle with Workbench-specific extensions.
-  // Note: dsl is declared after useQueryEditor but the callbacks below
-  // only reference it lazily (at event time, not at call time), so the
-  // closure captures the variable correctly after it's assigned.
-  const { editorDidMount, onChange, triggerUpdateCursorPosition } =
-    useQueryEditor({
-      onSubmit: handleSubmit,
+  const { editorDidMount, onChange } = useQueryEditor({
+    onSubmit: handleSubmit,
 
-      shouldTriggerParameterHints: () =>
-        !dsl.isDedicatedEditorOpenRef.current && !dsl.isWidgetOpen.current,
+    shouldTriggerParameterHints: () =>
+      !dsl.isDedicatedEditorOpenRef.current && !dsl.isWidgetOpen.current,
 
-      isDedicatedEditorOpen: () =>
-        dsl.isDedicatedEditorOpenRef.current ?? false,
+    isDedicatedEditorOpen: () => dsl.isDedicatedEditorOpenRef.current ?? false,
 
-      onSetup: (editor, monaco, completionsRef) => {
-        setQueryEl(editor)
-        dsl.setupDslCommands(editor, monaco)
-        completionsRef.setupSuggestionWidgetListener(editor)
-      },
+    onSetup: (editor, monaco, completionsRef) => {
+      setQueryEl(editor)
+      dsl.setupDslCommands(editor, monaco)
+      completionsRef.setupSuggestionWidgetListener(editor)
+    },
 
-      onKeyDown: (e) => {
-        if (e.keyCode === monacoEditor.KeyCode.UpArrow) {
-          onQuickHistoryAccess()
-        }
-      },
+    onKeyDown: (e) => {
+      if (e.keyCode === monacoEditor.KeyCode.UpArrow) {
+        onQuickHistoryAccess()
+      }
+    },
 
-      onCursorChange: (e, command) => {
-        dsl.handleDslSyntax(e, command)
-      },
+    onCursorChange: (e, command) => {
+      dsl.handleDslSyntax(e, command)
+    },
 
-      onQueryChange: (value) => {
-        if (value === '' && isHistoryScrolled()) {
-          resetHistoryPos()
-        }
-      },
+    onQueryChange: (value) => {
+      if (value === '' && isHistoryScrolled()) {
+        resetHistoryPos()
+      }
+    },
 
-      onCleanup: () => dispatch(stopProcessing()),
-    })
-
-  // DSL syntax widget (Workbench-only)
-  const dsl = useDslSyntax({
-    monacoObjects,
-    triggerUpdateCursorPosition,
+    onCleanup: () => dispatch(stopProcessing()),
   })
 
   const combinedIsLoading = isLoading || loading || processing
