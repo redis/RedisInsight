@@ -3,7 +3,7 @@ import { defaultMonacoOptions, TutorialsIds } from 'uiSrc/constants'
 
 export const aroundQuotesRegExp = /(^["']|["']$)/g
 
-export const options = merge(defaultMonacoOptions, {
+export const options = merge({}, defaultMonacoOptions, {
   suggest: {
     showWords: false,
     showIcons: true,
