@@ -386,10 +386,12 @@ export class AzureAutodiscoveryService {
 
     return Promise.all(
       databases.map(async (dto): Promise<ImportAzureDatabaseResponse> => {
+        let database: AzureRedisDatabase | null = null;
+
         try {
           this.logger.debug(`[${dto.id}] Fetching database details...`);
 
-          const database = await this.findDatabaseById(accountId, dto.id);
+          database = await this.findDatabaseById(accountId, dto.id);
 
           if (!database) {
             this.logger.debug(`[${dto.id}] Database not found`);
@@ -472,6 +474,7 @@ export class AzureAutodiscoveryService {
           this.analytics.sendAzureDatabaseAddFailed(
             sessionMetadata,
             new BadRequestException(this.getUserFriendlyErrorMessage(error)),
+            database?.type,
           );
           return {
             id: dto.id,
