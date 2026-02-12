@@ -32,9 +32,13 @@ describe('parseExplainableCommand', () => {
     expect(parseExplainableCommand('')).toBeNull()
   })
 
-  it('handles command with no args', () => {
-    const result = parseExplainableCommand('FT.SEARCH')
-    expect(result).toEqual({ command: 'FT.SEARCH', afterCommand: '' })
+  it('returns null for command with no args', () => {
+    expect(parseExplainableCommand('FT.SEARCH')).toBeNull()
+  })
+
+  it('returns null for command with only whitespace after', () => {
+    expect(parseExplainableCommand('FT.SEARCH   ')).toBeNull()
+    expect(parseExplainableCommand('FT.AGGREGATE  ')).toBeNull()
   })
 })
 

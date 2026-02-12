@@ -17,8 +17,9 @@ export const parseExplainableCommand = (
   for (const cmd of EXPLAINABLE_COMMANDS) {
     if (upper.startsWith(cmd)) {
       const rest = trimmed.slice(cmd.length)
-      // Must be followed by whitespace or end-of-string
-      if (rest.length === 0 || /^\s/.test(rest)) {
+      // Must be followed by whitespace and at least one argument
+      // (FT.SEARCH/FT.AGGREGATE always require an index name)
+      if (/^\s/.test(rest) && rest.trim().length > 0) {
         return { command: cmd, afterCommand: rest }
       }
     }
