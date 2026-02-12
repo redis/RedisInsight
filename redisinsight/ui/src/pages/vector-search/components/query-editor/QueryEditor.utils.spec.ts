@@ -118,9 +118,7 @@ describe('buildProfileQuery', () => {
       command: 'FT.AGGREGATE',
       afterCommand: ' "my idx" "*" GROUPBY 1 @f',
     })
-    expect(result).toBe(
-      'FT.PROFILE "my idx" AGGREGATE QUERY "*" GROUPBY 1 @f',
-    )
+    expect(result).toBe('FT.PROFILE "my idx" AGGREGATE QUERY "*" GROUPBY 1 @f')
   })
 })
 
