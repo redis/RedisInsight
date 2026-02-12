@@ -83,17 +83,19 @@ jobs:
         env:
           PRERELEASE_CONDITION: ${{ inputs.pre_release == true }}
         run: |
-          RESULT=$(cat <<EOF
-          $PRERELEASE_CONDITION || ${{ github.event_name == 'workflow_dispatch' ||
+          OTHER_CONDITIONS="${{ github.event_name == 'workflow_dispatch' ||
               startsWith(github.ref_name, 'feature/') ||
               startsWith(github.ref_name, 'bugfix/') ||
               startsWith(github.ref_name, 'ric/') ||
               startsWith(github.ref_name, 'release/') ||
               github.ref_name == 'latest' ||
-              contains(github.event.pull_request.labels.*.name, 'run-all-tests') }}
-          EOF
-          )
-          echo "result=$RESULT" >> $GITHUB_OUTPUT
+              contains(github.event.pull_request.labels.*.name, 'run-all-tests') }}"
+
+          if [[ "$PRERELEASE_CONDITION" == "true" ]] || [[ "$OTHER_CONDITIONS" == "true" ]]; then
+            echo "result=true" >> $GITHUB_OUTPUT
+          else
+            echo "result=false" >> $GITHUB_OUTPUT
+          fi
 
   lint:
     uses: ./.github/workflows/lint.yml
