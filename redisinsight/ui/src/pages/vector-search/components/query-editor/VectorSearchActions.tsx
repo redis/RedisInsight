@@ -8,7 +8,8 @@ import { useQueryEditorContext } from 'uiSrc/components/query'
 import {
   TOOLTIP_EXPLAIN,
   TOOLTIP_PROFILE,
-  TOOLTIP_DISABLED_SUFFIX,
+  TOOLTIP_DISABLED_NO_QUERY,
+  TOOLTIP_DISABLED_LOADING,
 } from './QueryEditor.constants'
 import {
   parseExplainableCommand,
@@ -32,7 +33,14 @@ export const VectorSearchActions = () => {
   const { query, isLoading, onSubmit } = useQueryEditorContext()
 
   const parsed = useMemo(() => parseExplainableCommand(query), [query])
-  const isExplainEnabled = !!parsed && !isLoading
+  const hasValidCommand = !!parsed
+  const isExplainEnabled = hasValidCommand && !isLoading
+
+  const getDisabledSuffix = () => {
+    if (!hasValidCommand) return TOOLTIP_DISABLED_NO_QUERY
+    if (isLoading) return TOOLTIP_DISABLED_LOADING
+    return ''
+  }
 
   const handleExplain = () => {
     if (!parsed) return
@@ -48,11 +56,7 @@ export const VectorSearchActions = () => {
     <S.ActionsBar data-testid="vector-search-actions">
       <RiTooltip
         position="top"
-        content={
-          isExplainEnabled
-            ? TOOLTIP_EXPLAIN
-            : `${TOOLTIP_EXPLAIN}${TOOLTIP_DISABLED_SUFFIX}`
-        }
+        content={`${TOOLTIP_EXPLAIN}${getDisabledSuffix()}`}
         data-testid="explain-tooltip"
       >
         <EmptyButton
@@ -66,11 +70,7 @@ export const VectorSearchActions = () => {
       </RiTooltip>
       <RiTooltip
         position="top"
-        content={
-          isExplainEnabled
-            ? TOOLTIP_PROFILE
-            : `${TOOLTIP_PROFILE}${TOOLTIP_DISABLED_SUFFIX}`
-        }
+        content={`${TOOLTIP_PROFILE}${getDisabledSuffix()}`}
         data-testid="profile-tooltip"
       >
         <EmptyButton
