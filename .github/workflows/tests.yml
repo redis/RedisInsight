@@ -77,18 +77,23 @@ jobs:
   should-run-all-tests:
     runs-on: ubuntu-latest
     outputs:
-      result: ${{
-        inputs.pre_release == true ||
-        github.event_name == 'workflow_dispatch' ||
-        startsWith(github.ref_name, 'feature/') ||
-        startsWith(github.ref_name, 'bugfix/') ||
-        startsWith(github.ref_name, 'ric/') ||
-        startsWith(github.ref_name, 'release/') ||
-        github.ref_name == 'latest' ||
-        contains(github.event.pull_request.labels.*.name, 'run-all-tests')
-      }}
+      result: ${{ steps.check.outputs.result }}
     steps:
-      - run: echo "Checking if all tests should run"
+      - id: check
+        env:
+          PRERELEASE_CONDITION: ${{ inputs.pre_release == true }}
+        run: |
+          RESULT=$(cat <<EOF
+          $PRERELEASE_CONDITION || ${{ github.event_name == 'workflow_dispatch' ||
+              startsWith(github.ref_name, 'feature/') ||
+              startsWith(github.ref_name, 'bugfix/') ||
+              startsWith(github.ref_name, 'ric/') ||
+              startsWith(github.ref_name, 'release/') ||
+              github.ref_name == 'latest' ||
+              contains(github.event.pull_request.labels.*.name, 'run-all-tests') }}
+          EOF
+          )
+          echo "result=$RESULT" >> $GITHUB_OUTPUT
 
   lint:
     uses: ./.github/workflows/lint.yml
