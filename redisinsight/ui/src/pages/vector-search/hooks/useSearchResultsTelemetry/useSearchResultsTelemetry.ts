@@ -29,6 +29,12 @@ export const useSearchResultsTelemetry = (): QueryResultsTelemetry =>
           eventData: { databaseId, command },
         })
       },
+      onResultViewChanged: (params) => {
+        sendEventTelemetry({
+          event: TelemetryEvent.SEARCH_RESULT_VIEW_CHANGED,
+          eventData: params,
+        })
+      },
       onFullScreenToggled: ({ state, databaseId }) => {
         sendEventTelemetry({
           event: TelemetryEvent.SEARCH_RESULTS_IN_FULL_SCREEN,
