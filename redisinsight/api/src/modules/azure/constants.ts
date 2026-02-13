@@ -87,6 +87,11 @@ export const AZURE_API_BASE = 'https://management.azure.com';
 
 export const TOKEN_REFRESH_BUFFER_MS = 5 * 60 * 1000;
 
+/**
+ * Delay before retrying token refresh if first attempt fails
+ */
+export const TOKEN_REFRESH_RETRY_DELAY_MS = 30 * 1000;
+
 // API versions - latest stable as of January 2025
 
 // https://learn.microsoft.com/en-us/rest/api/resources/subscriptions/list
