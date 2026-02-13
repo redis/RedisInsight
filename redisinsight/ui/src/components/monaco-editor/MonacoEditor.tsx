@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { merge } from 'lodash'
 
 import { MonacoThemes, darkTheme, lightTheme } from 'uiSrc/constants/monaco'
-import { Nullable } from 'uiSrc/utils'
+import { Nullable, triggerUpdateCursorPosition } from 'uiSrc/utils'
 import {
   IEditorMount,
   ISnippetController,
@@ -166,17 +166,6 @@ const MonacoEditor = (props: Props) => {
     setIsDedicatedEditorOpen(true)
     onOpenDedicatedEditor?.()
     editor.updateOptions({ readOnly: true })
-  }
-
-  const triggerUpdateCursorPosition = (
-    editor: monacoEditor.editor.IStandaloneCodeEditor,
-  ) => {
-    const position = editor.getPosition()
-    editor.trigger('mouse', '_moveTo', {
-      position: { lineNumber: 1, column: 1 },
-    })
-    editor.trigger('mouse', '_moveTo', { position })
-    editor.focus()
   }
 
   const updateArgFromDedicatedEditor = (value: string, selectedLang: DSL) => {
