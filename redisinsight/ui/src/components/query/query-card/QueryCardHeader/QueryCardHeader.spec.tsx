@@ -12,7 +12,7 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
-import QueryCardHeader, { HIDE_FIELDS, Props } from './QueryCardHeader'
+import QueryCardHeader, { Props } from './QueryCardHeader'
 import {
   ViewMode,
   ViewModeContextProvider,
@@ -119,28 +119,6 @@ describe('QueryCardHeader', () => {
     })
 
     expect(screen.getByTestId('copy-command-btn')).toBeDisabled()
-  })
-
-  it('should hide Profiler button', async () => {
-    renderQueryCardHeaderComponent({
-      ...instance(mockedProps),
-      query: 'FT.GET something',
-      isOpen: true,
-      hideFields: [HIDE_FIELDS.profiler],
-    })
-
-    expect(screen.queryByTestId('run-profile-type')).not.toBeInTheDocument()
-  })
-
-  it('should hide Change View Type button', async () => {
-    renderQueryCardHeaderComponent({
-      ...instance(mockedProps),
-      query: 'FT.SEARCH index somethingCool',
-      isOpen: true,
-      hideFields: [HIDE_FIELDS.viewType],
-    })
-
-    expect(screen.queryByTestId('select-view-type')).not.toBeInTheDocument()
   })
 
   describe('Workbech View Mode', () => {
