@@ -28,7 +28,6 @@ import {
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import { appPluginsSelector } from 'uiSrc/slices/app/plugins'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   getProfileViewTypeOptions,
   getViewTypeOptions,
@@ -51,7 +50,10 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import QueryCardTooltip from '../QueryCardTooltip'
 
 import styles from './styles.module.scss'
-import { useViewModeContext, ViewMode } from '../../context/view-mode.context'
+import {
+  QueryCardField,
+  useQueryResultsContext,
+} from '../../context/query-results.context'
 import { ProfileSelect } from './QueryCardHeader.styles'
 
 export interface Props {
@@ -72,18 +74,12 @@ export interface Props {
   executionTime?: number
   emptyCommand?: boolean
   db?: number
-  hideFields?: string[]
   toggleOpen: () => void
   toggleFullScreen: () => void
   setSelectedValue: (type: WBQueryType, value: string) => void
   onQueryDelete: () => void
   onQueryReRun: () => void
   onQueryProfile: (type: ProfileQueryType) => void
-}
-
-export const HIDE_FIELDS = {
-  viewType: 'viewType',
-  profiler: 'profiler',
 }
 
 const getExecutionTimeString = (value: number): string => {
@@ -126,7 +122,6 @@ const QueryCardHeader = (props: Props) => {
     onQueryReRun,
     onQueryProfile,
     db,
-    hideFields = [],
   } = props
 
   const { visualizations = [] } = useSelector(appPluginsSelector)
@@ -134,35 +129,22 @@ const QueryCardHeader = (props: Props) => {
   const { instanceId = '' } = useParams<{ instanceId: string }>()
 
   const { theme } = useContext(ThemeContext)
-  const { viewMode } = useViewModeContext()
+  const { telemetry, config } = useQueryResultsContext()
+  const showFields = config.showFields ?? []
 
   const eventStop = (event: React.MouseEvent) => {
     event.preventDefault()
     event.stopPropagation()
   }
 
-  const sendEvent = (
-    event: TelemetryEvent,
-    query: string,
-    additionalData: object = {},
-  ) => {
-    sendEventTelemetry({
-      event,
-      eventData: {
-        databaseId: instanceId,
-        command: getCommandNameFromQuery(query, COMMANDS_SPEC),
-        ...additionalData,
-      },
-    })
-  }
+  const getCommandName = () =>
+    getCommandNameFromQuery(query, COMMANDS_SPEC) ?? ''
 
   const handleCopy = () => {
-    const telemetryEvent =
-      viewMode === ViewMode.Workbench
-        ? TelemetryEvent.WORKBENCH_COMMAND_COPIED
-        : TelemetryEvent.SEARCH_COMMAND_COPIED
-
-    sendEvent(telemetryEvent, query)
+    telemetry.onCommandCopied?.({
+      command: getCommandName(),
+      databaseId: instanceId,
+    })
   }
 
   const onDropDownViewClick = (event: React.MouseEvent) => {
@@ -175,7 +157,9 @@ const QueryCardHeader = (props: Props) => {
     const previousView = options.find(({ id }) => id === selectedValue)
     const type = currentView.value
     setSelectedValue(type as WBQueryType, initValue)
-    sendEvent(TelemetryEvent.WORKBENCH_RESULT_VIEW_CHANGED, query, {
+    telemetry.onResultViewChanged?.({
+      databaseId: instanceId,
+      command: getCommandName(),
       rawMode: isRawMode(activeMode),
       group: isGroupMode(activeResultsMode),
       previousView: previousView?.name,
@@ -189,12 +173,10 @@ const QueryCardHeader = (props: Props) => {
     eventStop(event)
     onQueryDelete()
 
-    const telemetryEvent =
-      viewMode === ViewMode.Workbench
-        ? TelemetryEvent.WORKBENCH_CLEAR_RESULT_CLICKED
-        : TelemetryEvent.SEARCH_CLEAR_RESULT_CLICKED
-
-    sendEvent(telemetryEvent, query)
+    telemetry.onResultCleared?.({
+      command: getCommandName(),
+      databaseId: instanceId,
+    })
   }
 
   const handleQueryReRun = (event: React.MouseEvent) => {
@@ -207,16 +189,16 @@ const QueryCardHeader = (props: Props) => {
       !isFullScreen &&
       !isSilentModeWithoutError(resultsMode, summary?.fail)
     ) {
-      const telemetryEvent =
-        viewMode === ViewMode.Workbench
-          ? isOpen
-            ? TelemetryEvent.WORKBENCH_RESULTS_COLLAPSED
-            : TelemetryEvent.WORKBENCH_RESULTS_EXPANDED
-          : isOpen
-            ? TelemetryEvent.SEARCH_RESULTS_COLLAPSED
-            : TelemetryEvent.SEARCH_RESULTS_EXPANDED
+      const telemetryParams = {
+        command: getCommandName(),
+        databaseId: instanceId,
+      }
 
-      sendEvent(telemetryEvent, query)
+      if (isOpen) {
+        telemetry.onResultCollapsed?.(telemetryParams)
+      } else {
+        telemetry.onResultExpanded?.(telemetryParams)
+      }
     }
     toggleOpen()
   }
@@ -407,7 +389,7 @@ const QueryCardHeader = (props: Props) => {
               )}
             </FlexItem>
             <Row align="center" justify="end" gap="s" grow={false}>
-              {!hideFields?.includes(HIDE_FIELDS.profiler) && (
+              {showFields.includes(QueryCardField.Profiler) && (
                 <FlexItem
                   className={cx(styles.buttonIcon, styles.viewTypeIcon)}
                   onClick={onDropDownViewClick}
@@ -431,7 +413,7 @@ const QueryCardHeader = (props: Props) => {
                   )}
                 </FlexItem>
               )}
-              {!hideFields?.includes(HIDE_FIELDS.viewType) && (
+              {showFields.includes(QueryCardField.ViewType) && (
                 <FlexItem
                   className={cx(styles.buttonIcon, styles.viewTypeIcon)}
                   onClick={onDropDownViewClick}
