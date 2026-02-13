@@ -40,6 +40,8 @@ import {
   SCAN_COUNT_DEFAULT,
   SCAN_TREE_COUNT_DEFAULT,
 } from 'uiSrc/constants/api'
+import { FeatureFlags } from 'uiSrc/constants/featureFlags'
+import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import OnboardingStartPopover from 'uiSrc/pages/browser/components/onboarding-start-popover'
 import { sidePanelsSelector } from 'uiSrc/slices/panels/sidePanels'
 import { useStateWithContext } from 'uiSrc/services/hooks'
@@ -97,6 +99,8 @@ const BrowserPage = () => {
   const { viewType, searchMode } = useSelector(keysSelector)
   const { openedPanel: openedSidePanel } = useSelector(sidePanelsSelector)
   const overview = useSelector(connectedInstanceOverviewSelector)
+  const featureFlags = useSelector(appFeatureFlagsFeaturesSelector)
+  const isDevBrowser = featureFlags?.[FeatureFlags.devBrowser]?.flag ?? false
 
   const [isPageViewSent, setIsPageViewSent] = useState(false)
   const [arePanelsCollapsed, setArePanelsCollapsed] = useState(
@@ -330,7 +334,7 @@ const BrowserPage = () => {
         >
           <BorderedResizablePanel
             defaultSize={sizes && sizes[0] ? sizes[0] : 50}
-            minSize={45}
+            minSize={isDevBrowser ? 20 : 45}
             id={firstPanelId}
             className={cx({
               [styles.fullWidth]:
