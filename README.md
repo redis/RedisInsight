@@ -7,7 +7,7 @@
 
 Redis Insight is a visual tool that provides capabilities to design, develop, and optimize your Redis application.
 Query, analyse and interact with your Redis data. [Download it here](https://redis.io/insight/#insight-form)!
-
+.
 ![Redis Insight Browser screenshot](/.github/screenshots/Redis-Insight-Browser.png)
 
 | Workbench | Analysis | Slow Log | CLI |
