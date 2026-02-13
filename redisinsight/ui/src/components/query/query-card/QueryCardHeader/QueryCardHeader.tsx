@@ -50,10 +50,7 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import QueryCardTooltip from '../QueryCardTooltip'
 
 import styles from './styles.module.scss'
-import {
-  QueryCardField,
-  useQueryResultsContext,
-} from '../../context/query-results.context'
+import { useQueryResultsContext } from '../../context/query-results.context'
 import { ProfileSelect } from './QueryCardHeader.styles'
 
 export interface Props {
@@ -129,8 +126,7 @@ const QueryCardHeader = (props: Props) => {
   const { instanceId = '' } = useParams<{ instanceId: string }>()
 
   const { theme } = useContext(ThemeContext)
-  const { telemetry, config } = useQueryResultsContext()
-  const showFields = config.showFields ?? []
+  const { telemetry } = useQueryResultsContext()
 
   const eventStop = (event: React.MouseEvent) => {
     event.preventDefault()
@@ -389,52 +385,48 @@ const QueryCardHeader = (props: Props) => {
               )}
             </FlexItem>
             <Row align="center" justify="end" gap="s" grow={false}>
-              {showFields.includes(QueryCardField.Profiler) && (
-                <FlexItem
-                  className={cx(styles.buttonIcon, styles.viewTypeIcon)}
-                  onClick={onDropDownViewClick}
-                >
-                  {isOpen && canCommandProfile && !summaryText && (
-                    <ProfileSelect
-                      placeholder={profileOptions[0].inputDisplay}
-                      onChange={(value: ProfileQueryType | string) =>
-                        onQueryProfile(value as ProfileQueryType)
+              <FlexItem
+                className={cx(styles.buttonIcon, styles.viewTypeIcon)}
+                onClick={onDropDownViewClick}
+              >
+                {isOpen && canCommandProfile && !summaryText && (
+                  <ProfileSelect
+                    placeholder={profileOptions[0].inputDisplay}
+                    onChange={(value: ProfileQueryType | string) =>
+                      onQueryProfile(value as ProfileQueryType)
+                    }
+                    className="profiler"
+                    options={profileOptions}
+                    data-testid="run-profile-type"
+                    valueRender={({ option, isOptionValue }) => {
+                      if (isOptionValue) {
+                        return option.dropdownDisplay as JSX.Element
                       }
-                      className="profiler"
-                      options={profileOptions}
-                      data-testid="run-profile-type"
-                      valueRender={({ option, isOptionValue }) => {
-                        if (isOptionValue) {
-                          return option.dropdownDisplay as JSX.Element
-                        }
-                        return option.inputDisplay as JSX.Element
-                      }}
-                    />
-                  )}
-                </FlexItem>
-              )}
-              {showFields.includes(QueryCardField.ViewType) && (
-                <FlexItem
-                  className={cx(styles.buttonIcon, styles.viewTypeIcon)}
-                  onClick={onDropDownViewClick}
-                >
-                  {isOpen && options.length > 1 && !summaryText && (
-                    <ProfileSelect
-                      options={modifiedOptions}
-                      valueRender={({ option, isOptionValue }) => {
-                        if (isOptionValue) {
-                          return option.dropdownDisplay as JSX.Element
-                        }
-                        return option.inputDisplay as JSX.Element
-                      }}
-                      value={selectedValue}
-                      onChange={(value: string) => onChangeView(value)}
-                      className="toggle-view"
-                      data-testid="select-view-type"
-                    />
-                  )}
-                </FlexItem>
-              )}
+                      return option.inputDisplay as JSX.Element
+                    }}
+                  />
+                )}
+              </FlexItem>
+              <FlexItem
+                className={cx(styles.buttonIcon, styles.viewTypeIcon)}
+                onClick={onDropDownViewClick}
+              >
+                {isOpen && options.length > 1 && !summaryText && (
+                  <ProfileSelect
+                    options={modifiedOptions}
+                    valueRender={({ option, isOptionValue }) => {
+                      if (isOptionValue) {
+                        return option.dropdownDisplay as JSX.Element
+                      }
+                      return option.inputDisplay as JSX.Element
+                    }}
+                    value={selectedValue}
+                    onChange={(value: string) => onChangeView(value)}
+                    className="toggle-view"
+                    data-testid="select-view-type"
+                  />
+                )}
+              </FlexItem>
               <FlexItem
                 className={styles.buttonIcon}
                 onClick={onDropDownViewClick}

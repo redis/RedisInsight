@@ -32,5 +32,9 @@ export { LoadingContainer } from './query.styles'
 export {
   QueryResultsProvider,
   useQueryResultsContext,
-  QueryCardField,
 } from './context/query-results.context'
+export type {
+  QueryResultsTelemetry,
+  QueryResultsContextValue,
+} from './context/query-results.context'
+export type { QueryResultsProps } from './query-results'

@@ -5,10 +5,7 @@ import { CommandExecutionUI } from 'uiSrc/slices/interfaces'
 import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 import { CodeButtonParams } from 'uiSrc/constants'
 import { toggleOpenWBResult } from 'uiSrc/slices/workbench/wb-results'
-import {
-  QueryResultsProvider,
-  QueryCardField,
-} from 'uiSrc/components/query/context/query-results.context'
+import { QueryResultsProvider } from 'uiSrc/components/query/context/query-results.context'
 import { QueryResults } from 'uiSrc/components/query/query-results'
 import { useWorkbenchResultsTelemetry } from '../../hooks/useWorkbenchResultsTelemetry'
 import WbNoResultsMessage from '../wb-no-results-message'
@@ -36,8 +33,6 @@ export interface Props {
   ) => void
 }
 
-const WORKBENCH_SHOW_FIELDS = [QueryCardField.Profiler, QueryCardField.ViewType]
-
 const WBResultsWrapper = (props: Props) => {
   const dispatch = useDispatch()
   const telemetry = useWorkbenchResultsTelemetry()
@@ -47,10 +42,7 @@ const WBResultsWrapper = (props: Props) => {
   }
 
   return (
-    <QueryResultsProvider
-      telemetry={telemetry}
-      config={{ showFields: WORKBENCH_SHOW_FIELDS }}
-    >
+    <QueryResultsProvider telemetry={telemetry}>
       <QueryResults
         {...props}
         onToggleOpen={handleToggleOpen}
