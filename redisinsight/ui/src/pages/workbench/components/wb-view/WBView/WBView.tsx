@@ -28,8 +28,12 @@ import {
   ResizablePanel,
   ResizablePanelHandle,
 } from 'uiSrc/components/base/layout'
+import { QueryResultsProvider } from 'uiSrc/components/query/context/query-results.context'
+import { QueryResults } from 'uiSrc/components/query/query-results'
+import { toggleOpenWBResult } from 'uiSrc/slices/workbench/wb-results'
 import QueryWrapper from '../../query'
-import WBResultsWrapper from '../../wb-results'
+import { useWorkbenchResultsTelemetry } from '../../../hooks/useWorkbenchResultsTelemetry'
+import WbNoResultsMessage from '../../wb-no-results-message'
 
 import styles from './styles.module.scss'
 
@@ -98,6 +102,7 @@ const WBView = (props: Props) => {
 
   const { instanceId = '' } = useParams<{ instanceId: string }>()
   const { panelSizes } = useSelector(appContextWorkbench)
+  const telemetry = useWorkbenchResultsTelemetry()
   const { commandsArray: REDIS_COMMANDS_ARRAY } = useSelector(
     appRedisCommandsSelector,
   )
@@ -118,6 +123,13 @@ const WBView = (props: Props) => {
   const onVerticalPanelWidthChange = useCallback((newSizes: any) => {
     verticalPanelSizesRef.current = newSizes
   }, [])
+
+  const handleToggleOpen = useCallback(
+    (id: string) => {
+      dispatch(toggleOpenWBResult(id))
+    },
+    [dispatch],
+  )
 
   const handleSubmit = (value?: string) => {
     sendEventSubmitTelemetry(TelemetryEvent.WORKBENCH_COMMAND_SUBMITTED, value)
@@ -232,20 +244,24 @@ const WBView = (props: Props) => {
               defaultSize={panelSizes && panelSizes[1] ? panelSizes[1] : 80}
               className={cx(styles.queryResults, styles.queryResultsPanel)}
             >
-              <WBResultsWrapper
-                items={items}
-                clearing={clearing}
-                processing={processing}
-                isResultsLoaded={isResultsLoaded}
-                activeMode={activeMode}
-                activeResultsMode={resultsMode}
-                scrollDivRef={scrollDivRef}
-                onQueryReRun={handleReRun}
-                onQueryProfile={handleProfile}
-                onQueryOpen={onQueryOpen}
-                onQueryDelete={onQueryDelete}
-                onAllQueriesDelete={onAllQueriesDelete}
-              />
+              <QueryResultsProvider telemetry={telemetry}>
+                <QueryResults
+                  items={items}
+                  clearing={clearing}
+                  processing={processing}
+                  isResultsLoaded={isResultsLoaded}
+                  activeMode={activeMode}
+                  activeResultsMode={resultsMode}
+                  scrollDivRef={scrollDivRef}
+                  onToggleOpen={handleToggleOpen}
+                  onQueryReRun={handleReRun}
+                  onQueryProfile={handleProfile}
+                  onQueryOpen={onQueryOpen}
+                  onQueryDelete={onQueryDelete}
+                  onAllQueriesDelete={onAllQueriesDelete}
+                  noResultsPlaceholder={<WbNoResultsMessage />}
+                />
+              </QueryResultsProvider>
             </ResizablePanel>
           </ResizableContainer>
         </div>
