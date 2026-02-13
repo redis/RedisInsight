@@ -3,6 +3,7 @@ import { faker } from '@faker-js/faker';
 import { PublicClientApplication } from '@azure/msal-node';
 import { AzureAuthService } from './azure-auth.service';
 import { AzureAuthStatus } from '../constants';
+import { AzureOAuthPrompt } from './dto';
 
 jest.mock('@azure/msal-node');
 
@@ -66,7 +67,7 @@ describe('AzureAuthService', () => {
     });
 
     it('should pass prompt parameter to MSAL when provided', async () => {
-      await service.getAuthorizationUrl('select_account');
+      await service.getAuthorizationUrl(AzureOAuthPrompt.SelectAccount);
 
       expect(mockPca.getAuthCodeUrl).toHaveBeenCalledWith(
         expect.objectContaining({

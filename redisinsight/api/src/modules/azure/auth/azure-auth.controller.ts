@@ -19,6 +19,7 @@ import {
 import { AzureAuthService } from './azure-auth.service';
 import { AzureAuthAnalytics } from './azure-auth.analytics';
 import { AzureAuthStatus } from '../constants';
+import { AzureAuthLoginDto, AzureOAuthPrompt } from './dto';
 import { RequestSessionMetadata } from 'src/common/decorators';
 import { SessionMetadata } from 'src/common/models';
 import { wrapHttpError } from 'src/common/utils';
@@ -43,16 +44,17 @@ export class AzureAuthController {
   @ApiQuery({
     name: 'prompt',
     required: false,
+    enum: AzureOAuthPrompt,
     description:
-      'OAuth prompt parameter: "select_account" to show account picker, "login" to force re-auth',
+      'OAuth prompt parameter: "select_account" to show account picker, "login" to force re-auth, "consent" to force consent dialog',
   })
   @ApiResponse({
     status: 200,
     description: 'Authorization URL generated successfully',
   })
-  async login(@Query('prompt') prompt?: string): Promise<{ url: string }> {
+  async login(@Query() dto: AzureAuthLoginDto): Promise<{ url: string }> {
     this.logger.log('Initiating Azure OAuth login');
-    const { url } = await this.azureAuthService.getAuthorizationUrl(prompt);
+    const { url } = await this.azureAuthService.getAuthorizationUrl(dto.prompt);
     return { url };
   }
 

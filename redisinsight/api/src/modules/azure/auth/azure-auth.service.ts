@@ -15,6 +15,7 @@ import {
   AzureAuthStatus,
 } from '../constants';
 import { AzureTokenResult, AzureAuthStatusResponse } from './models';
+import { AzureOAuthPrompt } from './dto';
 
 /**
  * PKCE (Proof Key for Code Exchange) utilities.
@@ -79,14 +80,11 @@ export class AzureAuthService {
   /**
    * Generate authorization URL for OAuth flow.
    * Returns URL to redirect user to Microsoft login.
-   * @param prompt - Optional prompt parameter to control login behavior:
-   *   - 'select_account': Force account picker (for switching accounts)
-   *   - 'login': Force re-authentication
-   *   - 'consent': Force consent dialog
+   * @param prompt - Optional prompt parameter to control login behavior.
    * @see https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-auth-code-flow#request-an-authorization-code
    */
   async getAuthorizationUrl(
-    prompt?: string,
+    prompt?: AzureOAuthPrompt,
   ): Promise<{ url: string; state: string }> {
     const pca = this.getMsalClient();
 
