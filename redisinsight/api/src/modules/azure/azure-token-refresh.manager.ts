@@ -7,7 +7,10 @@ import {
 } from '@nestjs/common';
 import { AzureAuthService } from './auth/azure-auth.service';
 import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
-import { TOKEN_REFRESH_BUFFER_MS } from './constants';
+import {
+  TOKEN_REFRESH_BUFFER_MS,
+  TOKEN_REFRESH_RETRY_DELAY_MS,
+} from './constants';
 
 /**
  * Manages automatic token refresh for Azure Entra ID authenticated Redis clients.
@@ -76,16 +79,8 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
 
     this.timers.delete(azureAccountId);
 
-    const tokenResult =
-      await this.azureAuthService.getRedisTokenByAccountId(azureAccountId);
-
-    if (!tokenResult) {
-      this.logger.warn(
-        `Failed to get fresh token for account ${azureAccountId}`,
-      );
-      return;
-    }
-
+    // Check for active clients FIRST to avoid scheduling unnecessary refreshes
+    // This prevents refresh loops when all clients have disconnected
     const clients = this.redisClientStorage.getClientsByDatabaseField(
       'providerDetails.azureAccountId',
       azureAccountId,
@@ -93,8 +88,21 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
 
     if (clients.length === 0) {
       this.logger.debug(
-        `No active clients for account ${azureAccountId}, skipping re-auth`,
+        `No active clients for account ${azureAccountId}, stopping refresh cycle`,
       );
+      return;
+    }
+
+    const tokenResult =
+      await this.azureAuthService.getRedisTokenByAccountId(azureAccountId);
+
+    if (!tokenResult) {
+      this.logger.warn(
+        `Failed to get fresh token for account ${azureAccountId}, scheduling retry`,
+      );
+      // Schedule a retry to handle transient auth failures
+      // This prevents permanent loss of token renewal for active clients
+      this.scheduleRetry(azureAccountId);
       return;
     }
 
@@ -117,5 +125,21 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
         }
       }),
     );
+  }
+
+  private scheduleRetry(azureAccountId: string): void {
+    this.logger.debug(
+      `Scheduling token refresh retry for account ${azureAccountId} in ${TOKEN_REFRESH_RETRY_DELAY_MS / 1000}s`,
+    );
+
+    const timer = setTimeout(() => {
+      this.refreshTokenAndReauth(azureAccountId).catch((error) => {
+        this.logger.error(
+          `Token refresh retry failed for account ${azureAccountId}: ${error.message}`,
+        );
+      });
+    }, TOKEN_REFRESH_RETRY_DELAY_MS);
+
+    this.timers.set(azureAccountId, timer);
   }
 }
