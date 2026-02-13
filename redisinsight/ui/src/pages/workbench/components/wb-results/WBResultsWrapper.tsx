@@ -1,13 +1,17 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
 import { Nullable } from 'uiSrc/utils'
 import { CommandExecutionUI } from 'uiSrc/slices/interfaces'
 import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 import { CodeButtonParams } from 'uiSrc/constants'
-import WBResults from './WBResults'
+import { toggleOpenWBResult } from 'uiSrc/slices/workbench/wb-results'
 import {
-  ViewMode,
-  ViewModeContextProvider,
-} from 'uiSrc/components/query/context/view-mode.context'
+  QueryResultsProvider,
+  QueryCardField,
+} from 'uiSrc/components/query/context/query-results.context'
+import { QueryResults } from 'uiSrc/components/query/query-results'
+import { useWorkbenchResultsTelemetry } from '../../hooks/useWorkbenchResultsTelemetry'
+import WbNoResultsMessage from '../wb-no-results-message'
 
 export interface Props {
   isResultsLoaded: boolean
@@ -32,10 +36,28 @@ export interface Props {
   ) => void
 }
 
-const WBResultsWrapper = (props: Props) => (
-  <ViewModeContextProvider viewMode={ViewMode.Workbench}>
-    <WBResults {...props} />
-  </ViewModeContextProvider>
-)
+const WORKBENCH_SHOW_FIELDS = [QueryCardField.Profiler, QueryCardField.ViewType]
+
+const WBResultsWrapper = (props: Props) => {
+  const dispatch = useDispatch()
+  const telemetry = useWorkbenchResultsTelemetry()
+
+  const handleToggleOpen = (id: string) => {
+    dispatch(toggleOpenWBResult(id))
+  }
+
+  return (
+    <QueryResultsProvider
+      telemetry={telemetry}
+      config={{ showFields: WORKBENCH_SHOW_FIELDS }}
+    >
+      <QueryResults
+        {...props}
+        onToggleOpen={handleToggleOpen}
+        noResultsPlaceholder={<WbNoResultsMessage />}
+      />
+    </QueryResultsProvider>
+  )
+}
 
 export default React.memo(WBResultsWrapper)
