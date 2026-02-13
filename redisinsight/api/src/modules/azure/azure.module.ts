@@ -16,7 +16,6 @@ import { DatabaseModule } from '../database/database.module';
     AzureAuthAnalytics,
     AzureAutodiscoveryService,
     AzureAutodiscoveryAnalytics,
-    AzureAutodiscoveryService,
     AzureTokenRefreshManager,
   ],
   controllers: [AzureAuthController, AzureAutodiscoveryController],
