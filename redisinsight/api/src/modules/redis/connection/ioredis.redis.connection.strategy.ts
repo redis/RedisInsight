@@ -239,7 +239,7 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
                   host: database.host,
                   port: database.port,
                 },
-                this.getClientDatabase(database),
+                database,
               ),
             );
           });
@@ -360,7 +360,7 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
                   host: database.host,
                   port: database.port,
                 },
-                this.getClientDatabase(database),
+                database,
               ),
             );
           });
@@ -430,7 +430,7 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
                 host: database.host,
                 port: database.port,
               },
-              this.getClientDatabase(database),
+              database,
             ),
           );
         });
