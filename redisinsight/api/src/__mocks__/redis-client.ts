@@ -1,6 +1,5 @@
 import { ClientMetadata } from 'src/common/models';
 import {
-  ClientDatabase,
   RedisClient,
   RedisClientConnectionType,
 } from 'src/modules/redis/client';
@@ -9,8 +8,9 @@ import { mockCommonClientMetadata } from 'src/__mocks__/common';
 import { mockDatabase } from 'src/__mocks__/databases';
 import { BadRequestException } from '@nestjs/common';
 import ERROR_MESSAGES from 'src/constants/error-messages';
+import { Database } from 'src/modules/database/models/database';
 
-export const mockClientDatabase: ClientDatabase = {
+export const mockClientDatabase: Partial<Database> = {
   providerDetails: mockDatabase.providerDetails,
 };
 
@@ -34,7 +34,7 @@ export class MockRedisClient extends RedisClient {
     clientMetadata: ClientMetadata,
     client: any = jest.fn(),
     options = {},
-    database: ClientDatabase = mockClientDatabase,
+    database: Partial<Database> = mockClientDatabase,
   ) {
     super(clientMetadata, client, options, database);
   }
@@ -118,7 +118,7 @@ export const generateMockRedisClient = (
   clientMetadata: Partial<ClientMetadata>,
   client = jest.fn(),
   options = {},
-  database: Partial<ClientDatabase> = {},
+  database: Partial<Database> = {},
 ): MockRedisClient =>
   new MockRedisClient(
     clientMetadata as ClientMetadata,
