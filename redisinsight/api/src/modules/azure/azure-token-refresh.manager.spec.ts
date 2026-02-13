@@ -196,7 +196,9 @@ describe('AzureTokenRefreshManager', () => {
 
       await jest.advanceTimersByTimeAsync(1000);
 
-      expect(mockRedisClientStorage.getClientsByDatabaseField).toHaveBeenCalled();
+      expect(
+        mockRedisClientStorage.getClientsByDatabaseField,
+      ).toHaveBeenCalled();
       expect(mockAzureAuthService.getRedisTokenByAccountId).toHaveBeenCalled();
       // Should have scheduled a retry timer
       expect(jest.getTimerCount()).toBe(1);
@@ -220,12 +222,16 @@ describe('AzureTokenRefreshManager', () => {
 
       // First timer fires - token refresh fails
       await jest.advanceTimersByTimeAsync(1000);
-      expect(mockAzureAuthService.getRedisTokenByAccountId).toHaveBeenCalledTimes(1);
+      expect(
+        mockAzureAuthService.getRedisTokenByAccountId,
+      ).toHaveBeenCalledTimes(1);
       expect(mockClient.call).not.toHaveBeenCalled();
 
       // Retry timer fires - token refresh succeeds
       await jest.advanceTimersByTimeAsync(TOKEN_REFRESH_RETRY_DELAY_MS);
-      expect(mockAzureAuthService.getRedisTokenByAccountId).toHaveBeenCalledTimes(2);
+      expect(
+        mockAzureAuthService.getRedisTokenByAccountId,
+      ).toHaveBeenCalledTimes(2);
       expect(mockClient.call).toHaveBeenCalled();
     });
 
@@ -240,9 +246,13 @@ describe('AzureTokenRefreshManager', () => {
       await jest.advanceTimersByTimeAsync(1000);
 
       // Should check for clients first
-      expect(mockRedisClientStorage.getClientsByDatabaseField).toHaveBeenCalled();
+      expect(
+        mockRedisClientStorage.getClientsByDatabaseField,
+      ).toHaveBeenCalled();
       // Should NOT call getRedisTokenByAccountId since no clients exist
-      expect(mockAzureAuthService.getRedisTokenByAccountId).not.toHaveBeenCalled();
+      expect(
+        mockAzureAuthService.getRedisTokenByAccountId,
+      ).not.toHaveBeenCalled();
       // Should NOT schedule another timer
       expect(jest.getTimerCount()).toBe(0);
     });
