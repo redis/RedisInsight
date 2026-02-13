@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { isNull } from 'lodash'
@@ -28,8 +28,6 @@ import {
   CommandExecutionResult,
   IPluginVisualization,
 } from 'uiSrc/slices/interfaces'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { toggleOpenWBResult } from 'uiSrc/slices/workbench/wb-results'
 
 import QueryCardHeader from './QueryCardHeader'
 import QueryCardCliResultWrapper from './QueryCardCliResultWrapper'
@@ -39,6 +37,7 @@ import QueryCardCommonResult, {
 } from './QueryCardCommonResult'
 
 import styles from './styles.module.scss'
+import { useQueryResultsContext } from '../context/query-results.context'
 
 export interface Props {
   id: string
@@ -57,6 +56,7 @@ export interface Props {
   isNotStored?: boolean
   executionTime?: number
   db?: number
+  onToggleOpen?: (id: string, isOpen: boolean) => void
   onQueryDelete: () => void
   onQueryReRun: () => void
   onQueryOpen: () => void
@@ -94,6 +94,7 @@ const QueryCard = (props: Props) => {
     summary,
     isOpen,
     createdAt,
+    onToggleOpen,
     onQueryOpen,
     onQueryDelete,
     onQueryProfile,
@@ -120,7 +121,7 @@ const QueryCard = (props: Props) => {
     getDefaultPlugin(visualizations, command || '') || queryType,
   )
 
-  const dispatch = useDispatch()
+  const { telemetry } = useQueryResultsContext()
 
   useEffect(() => {
     window.addEventListener('keydown', handleEscFullScreen)
@@ -137,12 +138,9 @@ const QueryCard = (props: Props) => {
 
   const toggleFullScreen = () => {
     setIsFullScreen((isFull) => {
-      sendEventTelemetry({
-        event: TelemetryEvent.WORKBENCH_RESULTS_IN_FULL_SCREEN,
-        eventData: {
-          databaseId: instanceId,
-          state: isFull ? 'Close' : 'Open',
-        },
+      telemetry.onFullScreenToggled?.({
+        databaseId: instanceId,
+        state: isFull ? 'Close' : 'Open',
       })
 
       return !isFull
@@ -168,7 +166,7 @@ const QueryCard = (props: Props) => {
     if (isFullScreen || isSilentModeWithoutError(resultsMode, summary?.fail))
       return
 
-    dispatch(toggleOpenWBResult(id))
+    onToggleOpen?.(id, !isOpen)
 
     if (!isOpen && !result) {
       onQueryOpen()
