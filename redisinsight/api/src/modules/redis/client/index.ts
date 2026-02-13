@@ -1,5 +1,4 @@
 export * from './redis.client';
-export * from './client-database';
 export * from './ioredis/ioredis.client';
 export * from './ioredis/standalone.ioredis.client';
 export * from './ioredis/sentinel.ioredis.client';

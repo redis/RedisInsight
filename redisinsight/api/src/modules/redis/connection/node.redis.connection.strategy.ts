@@ -227,7 +227,7 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
           port: database.port,
           connectTimeout: database.timeout,
         },
-        this.getClientDatabase(database),
+        database,
       );
     } catch (e) {
       tnl?.close?.();
@@ -317,7 +317,7 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
           port: database.port,
           connectTimeout: database.timeout,
         },
-        this.getClientDatabase(database),
+        database,
       );
     } catch (e) {
       tnls?.forEach((tnl) => tnl?.close?.());
