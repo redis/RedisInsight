@@ -151,6 +151,7 @@ const QueryResults = (props: QueryResultsProps) => {
                     })
                   }
                   onQueryDelete={() => onQueryDelete(id)}
+                  data-testid={`query-card-${id}`}
                 />
               ),
             )
