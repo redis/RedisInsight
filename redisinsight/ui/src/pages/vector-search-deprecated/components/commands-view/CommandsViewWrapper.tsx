@@ -5,6 +5,7 @@ import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 import { CodeButtonParams } from 'uiSrc/constants'
 import CommandsView from './CommandsView'
 
+/** @deprecated Use QueryResultsProps from 'uiSrc/components/query/query-results' instead. */
 export interface Props {
   isResultsLoaded: boolean
   items: CommandExecutionUI[]
@@ -30,6 +31,7 @@ export interface Props {
   ) => void
 }
 
+/** @deprecated Use QueryResults wrapped in QueryResultsProvider instead. */
 const CommandsViewWrapper = (props: Props) => <CommandsView {...props} />
 
 export default React.memo(CommandsViewWrapper)
