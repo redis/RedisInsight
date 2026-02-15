@@ -7,6 +7,7 @@ export interface QueryResultsTelemetry {
   onResultExpanded?: (params: { command: string; databaseId: string }) => void
   onResultViewChanged?: (params: Record<string, unknown>) => void
   onFullScreenToggled?: (params: { state: string; databaseId: string }) => void
+  onQueryReRun?: (params: { command: string; databaseId: string }) => void
 }
 
 export interface QueryResultsContextValue {

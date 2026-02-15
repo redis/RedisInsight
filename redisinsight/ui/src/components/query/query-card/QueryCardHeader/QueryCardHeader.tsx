@@ -178,6 +178,11 @@ const QueryCardHeader = (props: Props) => {
   const handleQueryReRun = (event: React.MouseEvent) => {
     eventStop(event)
     onQueryReRun()
+
+    telemetry.onQueryReRun?.({
+      command: getCommandName(),
+      databaseId: instanceId,
+    })
   }
 
   const handleToggleOpen = () => {
