@@ -1,5 +1,4 @@
 import { cloneDeep } from 'lodash'
-import { faker } from '@faker-js/faker'
 
 import { cleanup, mockedStore, renderHook, act } from 'uiSrc/utils/test-utils'
 import { AzureLoginSource } from 'uiSrc/slices/interfaces'
@@ -7,6 +6,7 @@ import {
   azureAuthSelector,
   initiateAzureLoginAction,
 } from 'uiSrc/slices/oauth/azure'
+import { AzureAccountFactory } from 'uiSrc/mocks/factories/cloud/AzureAccount.factory'
 
 import { useAzureAuth } from './useAzureAuth'
 
@@ -35,11 +35,7 @@ const mockedInitiateAzureLoginAction = initiateAzureLoginAction as jest.Mock
 
 let store: typeof mockedStore
 
-const mockAccount = {
-  id: faker.string.uuid(),
-  username: faker.internet.email(),
-  name: faker.person.fullName(),
-}
+const mockAccount = AzureAccountFactory.build()
 
 beforeEach(() => {
   cleanup()
