@@ -1,26 +1,14 @@
 import React, { Ref, useCallback, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
-import { isEmpty } from 'lodash'
-import { useParams } from 'react-router-dom'
 
-import {
-  Maybe,
-  Nullable,
-  getParsedParamsInQuery,
-  getCommandsFromQuery,
-} from 'uiSrc/utils'
+import { Nullable } from 'uiSrc/utils'
 import {
   setWorkbenchVerticalPanelSizes,
   appContextWorkbench,
 } from 'uiSrc/slices/app/context'
 import { CommandExecutionUI } from 'uiSrc/slices/interfaces'
 import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces/workbench'
-
-import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
-import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
-import { userSettingsConfigSelector } from 'uiSrc/slices/user/user-settings'
-import { PIPELINE_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { CodeButtonParams } from 'uiSrc/constants'
 
 import {
@@ -65,16 +53,6 @@ export interface Props {
   onChangeGroupMode: () => void
 }
 
-interface IState {
-  activeMode: RunQueryMode
-  resultsMode?: ResultsMode
-}
-
-let state: IState = {
-  activeMode: RunQueryMode.ASCII,
-  resultsMode: ResultsMode.Default,
-}
-
 const WBView = (props: Props) => {
   const {
     script = '',
@@ -95,19 +73,8 @@ const WBView = (props: Props) => {
     scrollDivRef,
   } = props
 
-  state = {
-    activeMode,
-    resultsMode,
-  }
-
-  const { instanceId = '' } = useParams<{ instanceId: string }>()
   const { panelSizes } = useSelector(appContextWorkbench)
   const telemetry = useWorkbenchResultsTelemetry()
-  const { commandsArray: REDIS_COMMANDS_ARRAY } = useSelector(
-    appRedisCommandsSelector,
-  )
-  const { batchSize = PIPELINE_COUNT_DEFAULT } =
-    useSelector(userSettingsConfigSelector) ?? {}
 
   const verticalPanelSizesRef = useRef(panelSizes)
 
@@ -132,7 +99,6 @@ const WBView = (props: Props) => {
   )
 
   const handleSubmit = (value?: string) => {
-    sendEventSubmitTelemetry(TelemetryEvent.WORKBENCH_COMMAND_SUBMITTED, value)
     onSubmit(value)
   }
 
@@ -141,11 +107,6 @@ const WBView = (props: Props) => {
     commandId?: Nullable<string>,
     executeParams: CodeButtonParams = {},
   ) => {
-    sendEventSubmitTelemetry(
-      TelemetryEvent.WORKBENCH_COMMAND_RUN_AGAIN,
-      query,
-      executeParams,
-    )
     onSubmit(query, commandId, executeParams)
   }
 
@@ -154,56 +115,7 @@ const WBView = (props: Props) => {
     commandId?: Nullable<string>,
     executeParams: CodeButtonParams = {},
   ) => {
-    sendEventSubmitTelemetry(
-      TelemetryEvent.WORKBENCH_COMMAND_PROFILE,
-      query,
-      executeParams,
-    )
     onSubmit(query, commandId, executeParams)
-  }
-
-  const sendEventSubmitTelemetry = (
-    event: TelemetryEvent,
-    commandInit = script,
-    executeParams?: CodeButtonParams,
-  ) => {
-    const eventData = (() => {
-      const parsedParams: Maybe<CodeButtonParams> = isEmpty(executeParams)
-        ? getParsedParamsInQuery(commandInit)
-        : executeParams
-
-      const command =
-        getCommandsFromQuery(commandInit, REDIS_COMMANDS_ARRAY) || ''
-      const pipeline =
-        TelemetryEvent.WORKBENCH_COMMAND_RUN_AGAIN !== event
-          ? (parsedParams?.pipeline || batchSize) > 1
-          : undefined
-      const isMultiple = command.includes(';')
-
-      return {
-        command: command?.toUpperCase(),
-        pipeline,
-        databaseId: instanceId,
-        multiple: isMultiple ? 'Multiple' : 'Single',
-        rawMode:
-          (parsedParams?.mode?.toUpperCase() || state.activeMode) ===
-          RunQueryMode.Raw,
-        results: ResultsMode.GroupMode.startsWith?.(
-          parsedParams?.results?.toUpperCase() || state.resultsMode || 'GROUP',
-        )
-          ? 'group'
-          : parsedParams?.results?.toLowerCase() === 'silent'
-            ? 'silent'
-            : 'single',
-      }
-    })()
-
-    if (eventData.command) {
-      sendEventTelemetry({
-        event,
-        eventData,
-      })
-    }
   }
 
   return (

@@ -41,6 +41,12 @@ export const useWorkbenchResultsTelemetry = (): QueryResultsTelemetry =>
           eventData: { databaseId, state },
         })
       },
+      onQueryReRun: ({ command, databaseId }) => {
+        sendEventTelemetry({
+          event: TelemetryEvent.WORKBENCH_COMMAND_RUN_AGAIN,
+          eventData: { databaseId, command },
+        })
+      },
     }),
     [],
   )
