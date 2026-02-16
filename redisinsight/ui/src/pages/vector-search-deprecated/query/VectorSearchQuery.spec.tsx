@@ -1,9 +1,10 @@
 import React from 'react'
 import { faker } from '@faker-js/faker'
-import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import { fireEvent, render, screen, act } from 'uiSrc/utils/test-utils'
 import { TelemetryEvent } from 'uiSrc/telemetry/events'
 import { sendEventTelemetry } from 'uiSrc/telemetry'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
+import { CommandExecutionUI } from 'uiSrc/slices/interfaces'
 import { VectorSearchQuery, VectorSearchQueryProps } from './VectorSearchQuery'
 
 // Mock the telemetry module, so we don't send actual telemetry data during tests
@@ -23,7 +24,6 @@ jest.mock('uiSrc/slices/browser/redisearch', () => ({
     .fn()
     .mockReturnValue({ type: 'FETCH_REDISEARCH_LIST' }),
 }))
-
 // Mock the CommandsHistoryService
 const mockGetCommandsHistory = jest.fn()
 const mockAddCommandsToHistory = jest.fn()
@@ -44,9 +44,28 @@ const DEFAULT_PROPS: VectorSearchQueryProps = {
   defaultSavedQueriesIndex: undefined,
 }
 
-const renderVectorSearchQueryComponent = (
+const mockHistoryItems: CommandExecutionUI[] = [
+  {
+    id: 'cmd-1',
+    command: 'FT.SEARCH idx *',
+    isOpen: false,
+    result: [{ response: 'OK', status: 'success' }],
+    loading: false,
+    createdAt: new Date(),
+  } as CommandExecutionUI,
+]
+
+const renderVectorSearchQueryComponent = async (
   props: VectorSearchQueryProps = DEFAULT_PROPS,
-) => render(<VectorSearchQuery {...props} />)
+) => {
+  let result: ReturnType<typeof render>
+
+  await act(async () => {
+    result = render(<VectorSearchQuery {...props} />)
+  })
+
+  return result!
+}
 
 describe('VectorSearchQuery', () => {
   beforeEach(() => {
@@ -58,22 +77,22 @@ describe('VectorSearchQuery', () => {
     mockClearCommandsHistory.mockResolvedValue(undefined)
   })
 
-  it('should render correctly', () => {
-    const { container } = renderVectorSearchQueryComponent()
+  it('should render correctly', async () => {
+    const { container } = await renderVectorSearchQueryComponent()
 
     expect(container).toBeTruthy()
     expect(container).toBeInTheDocument()
   })
 
-  it('should not render Saved Queries screen by default', () => {
-    renderVectorSearchQueryComponent()
+  it('should not render Saved Queries screen by default', async () => {
+    await renderVectorSearchQueryComponent()
 
     const savedQueriesScreen = screen.queryByTestId('saved-queries-screen')
     expect(savedQueriesScreen).not.toBeInTheDocument()
   })
 
-  it('can close the Saved Queries screen', () => {
-    renderVectorSearchQueryComponent({
+  it('can close the Saved Queries screen', async () => {
+    await renderVectorSearchQueryComponent({
       ...DEFAULT_PROPS,
       defaultSavedQueriesIndex: faker.string.uuid(),
     })
@@ -92,14 +111,9 @@ describe('VectorSearchQuery', () => {
   })
 
   it('should render "No query results" message if there are no results', async () => {
-    // Mock getCommandsHistory to return empty array
-    // This ensures isResultsLoaded becomes true and items remains empty
     mockGetCommandsHistory.mockResolvedValueOnce([])
 
-    renderVectorSearchQueryComponent()
-
-    // Wait for the component to load (for the useEffect in useQuery to complete)
-    await screen.findByTestId('no-data-message')
+    await renderVectorSearchQueryComponent()
 
     const noResultsMessage = screen.getByTestId('no-data-message')
     const noResultsMessageTitle = screen.getByText('No search results.')
@@ -108,9 +122,19 @@ describe('VectorSearchQuery', () => {
     expect(noResultsMessageTitle).toBeInTheDocument()
   })
 
+  it('should render QueryResults with items when history is loaded', async () => {
+    mockGetCommandsHistory.mockResolvedValueOnce(mockHistoryItems)
+
+    await renderVectorSearchQueryComponent()
+
+    expect(screen.getByTestId('query-results')).toBeInTheDocument()
+    expect(screen.getByTestId('query-card-container-cmd-1')).toBeInTheDocument()
+    expect(screen.queryByTestId('no-data-message')).not.toBeInTheDocument()
+  })
+
   describe('Telemetry', () => {
-    it('should collect telemetry when inserting a saved query', () => {
-      renderVectorSearchQueryComponent()
+    it('should collect telemetry when inserting a saved query', async () => {
+      await renderVectorSearchQueryComponent()
 
       // Open the saved queries screen
       const savedQueriesButton = screen.getByText('Sample queries')
@@ -131,9 +155,9 @@ describe('VectorSearchQuery', () => {
       })
     })
 
-    // TODO: We have hardocked mockSavedIndexes with only one index, so we cannot test index change telemetry at the moment
-    it.skip('should collect telemetry when changing the index for the saved queries', () => {
-      renderVectorSearchQueryComponent()
+    // TODO: We have hardcoded mockSavedIndexes with only one index, so we cannot test index change telemetry at the moment
+    it.skip('should collect telemetry when changing the index for the saved queries', async () => {
+      await renderVectorSearchQueryComponent()
 
       // Open the saved queries screen
       const savedQueriesButton = screen.getByText('Sample queries')
@@ -158,10 +182,10 @@ describe('VectorSearchQuery', () => {
       })
     })
 
-    it('should collect telemetry on query submit', () => {
+    it('should collect telemetry on query submit', async () => {
       const mockQuery = faker.lorem.sentence()
 
-      renderVectorSearchQueryComponent()
+      await renderVectorSearchQueryComponent()
 
       // Enter a dummy query
       const queryInput = screen.getByTestId('monaco')
@@ -171,7 +195,9 @@ describe('VectorSearchQuery', () => {
       const runQueryButton = screen.getByText('Run')
       expect(runQueryButton).toBeInTheDocument()
 
-      fireEvent.click(runQueryButton)
+      await act(async () => {
+        fireEvent.click(runQueryButton)
+      })
 
       // Verify telemetry event was sent
       expect(sendEventTelemetry).toHaveBeenCalledWith({
@@ -180,16 +206,18 @@ describe('VectorSearchQuery', () => {
       })
     })
 
-    // Note: Enable this test once you implement the other tests and find a way to render the component with items
-    it.skip('should collect telemetry on clear results', () => {
-      // TODO: Find a way to mock the items in the useQuery hook, so we have what to clear
-      renderVectorSearchQueryComponent()
+    it('should collect telemetry on clear results', async () => {
+      mockGetCommandsHistory.mockResolvedValueOnce(mockHistoryItems)
+      mockClearCommandsHistory.mockResolvedValueOnce(undefined)
 
-      // Find and click the "Clear Results" button
-      const clearResultsButton = screen.getByText('Clear Results')
+      await renderVectorSearchQueryComponent()
+
+      const clearResultsButton = screen.getByTestId('clear-history-btn')
       expect(clearResultsButton).toBeInTheDocument()
 
-      fireEvent.click(clearResultsButton)
+      await act(async () => {
+        fireEvent.click(clearResultsButton)
+      })
 
       // Verify telemetry event was sent
       expect(sendEventTelemetry).toHaveBeenCalledWith({
@@ -198,8 +226,8 @@ describe('VectorSearchQuery', () => {
       })
     })
 
-    it('should collect telemetry on query clear', () => {
-      renderVectorSearchQueryComponent()
+    it('should collect telemetry on query clear', async () => {
+      await renderVectorSearchQueryComponent()
 
       // Find and click the "Clear" button
       const clearButton = screen.getByTestId('btn-clear')
