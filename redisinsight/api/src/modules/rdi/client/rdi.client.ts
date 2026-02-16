@@ -2,6 +2,7 @@ import {
   Rdi,
   RdiClientMetadata,
   RdiPipeline,
+  RdiPipelineStatus,
   RdiStatisticsResult,
 } from 'src/modules/rdi/models';
 import {
@@ -57,9 +58,11 @@ export abstract class RdiClient {
     config: object,
   ): Promise<RdiTestConnectionsResponseDto>;
 
-  abstract getStatistics(sections?: string): Promise<RdiStatisticsResult>;
+  abstract getStatistics(): Promise<RdiStatisticsResult>;
 
-  abstract getPipelineStatus(): Promise<any>;
+  abstract getPipelineStatus(): Promise<RdiPipelineStatus>;
+
+  abstract getVersion(): Promise<string>;
 
   abstract getJobFunctions(): Promise<object>;
 

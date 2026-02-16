@@ -10,19 +10,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check branch name
+        env:
+          BRANCH_NAME: ${{ github.head_ref }}
         run: |
-          echo "Source branch: ${{ github.head_ref }}"
-          if [[ "${{ github.head_ref }}" != feature/* && \
-                "${{ github.head_ref }}" != bugfix/* && \
-                "${{ github.head_ref }}" != release/* && \
-                "${{ github.head_ref }}" != dependabot/* && \
-                "${{ github.head_ref }}" != latest && \
-                "${{ github.head_ref }}" != fe/* && \
-                "${{ github.head_ref }}" != be/* && \
-                "${{ github.head_ref }}" != e2e/* && \
-                "${{ github.head_ref }}" != test/* && \
-                "${{ github.head_ref }}" != docs/* && \
-                "${{ github.head_ref }}" != ric/* ]]; then
+          echo "Source branch: $BRANCH_NAME"
+          if [[ "$BRANCH_NAME" != feature/* && \
+                "$BRANCH_NAME" != bugfix/* && \
+                "$BRANCH_NAME" != release/* && \
+                "$BRANCH_NAME" != dependabot/* && \
+                "$BRANCH_NAME" != latest && \
+                "$BRANCH_NAME" != fe/* && \
+                "$BRANCH_NAME" != be/* && \
+                "$BRANCH_NAME" != e2e/* && \
+                "$BRANCH_NAME" != test/* && \
+                "$BRANCH_NAME" != docs/* && \
+                "$BRANCH_NAME" != ric/* ]]; then
             echo "❌ Pull requests to 'main' are only allowed from 'feature/**', 'bugfix/**', 'release/**', 'dependabot/**', 'latest', 'test/**', 'docs/**', or 'ric/**' branches."
             exit 1
           fi

@@ -10,6 +10,7 @@ import {
 } from 'uiSrc/slices/app/notifications'
 import { resetDataAzure } from 'uiSrc/slices/instances/azure'
 import { AzureLoginSource } from 'uiSrc/slices/interfaces'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 const OAUTH_TIMEOUT_MS = 60 * 1000
 let oauthTimeoutId: ReturnType<typeof setTimeout> | null = null
@@ -114,19 +115,29 @@ export const azureAuthSourceSelector = (state: RootState) =>
 // The reducer
 export default azureAuthSlice.reducer
 
+export interface InitiateAzureLoginOptions {
+  source: AzureLoginSource
+  prompt?: 'select_account' | 'login' | 'consent'
+  onSuccess?: (url: string) => void
+  onFail?: () => void
+}
+
 // Thunk action to initiate Azure login
-export function initiateAzureLoginAction(
-  source: AzureLoginSource,
-  onSuccess?: (url: string) => void,
-  onFail?: () => void,
-) {
+export function initiateAzureLoginAction(options: InitiateAzureLoginOptions) {
+  const { source, prompt, onSuccess, onFail } = options
+
   return async (dispatch: AppDispatch) => {
     dispatch(setAzureLoginSource(source))
+    sendEventTelemetry({
+      event: TelemetryEvent.AZURE_SIGN_IN_CLICKED,
+    })
     dispatch(azureAuthLogin())
 
     try {
+      const params = prompt ? { prompt } : undefined
       const { data, status } = await apiService.get<AzureAuthLoginResponse>(
         ApiEndpoints.AZURE_AUTH_LOGIN,
+        { params },
       )
 
       if (isStatusSuccessful(status)) {

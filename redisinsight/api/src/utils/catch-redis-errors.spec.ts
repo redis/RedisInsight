@@ -8,11 +8,19 @@ import {
   RedisConnectionUnauthorizedException,
   RedisConnectionUnavailableException,
 } from 'src/modules/redis/exceptions/connection';
-import { getRedisConnectionException } from 'src/utils/catch-redis-errors';
+import {
+  catchRedisSearchError,
+  getRedisConnectionException,
+} from 'src/utils/catch-redis-errors';
 import { ReplyError } from 'src/models';
 import { CertificatesErrorCodes, RedisErrorCodes } from 'src/constants';
 import ERROR_MESSAGES from 'src/constants/error-messages';
-import { BadRequestException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 
 describe('catch-redis-errors', () => {
   describe('getRedisConnectionExceptions', () => {
@@ -152,6 +160,127 @@ describe('catch-redis-errors', () => {
       expect(
         getRedisConnectionException(error as ReplyError, database),
       ).toEqual(output);
+    });
+  });
+
+  describe('catchRedisSearchError', () => {
+    it('should throw BadRequestException for Invalid JSONPath error', () => {
+      const error = {
+        name: 'ReplyError',
+        message:
+          "Invalid JSONPath 'embedding' in attribute 'embedding' in index 'test_chatbot'",
+      } as ReplyError;
+
+      expect(() => catchRedisSearchError(error)).toThrow(BadRequestException);
+      expect(() => catchRedisSearchError(error)).toThrow(error.message);
+    });
+
+    it('should throw BadRequestException for Bad arguments error', () => {
+      const error = {
+        name: 'ReplyError',
+        message: 'Bad arguments for VECTOR field',
+      } as ReplyError;
+
+      expect(() => catchRedisSearchError(error)).toThrow(BadRequestException);
+      expect(() => catchRedisSearchError(error)).toThrow(error.message);
+    });
+
+    it('should throw BadRequestException for duplicate field error', () => {
+      // Actual Redis error: "Duplicate field in schema - title"
+      const error = {
+        name: 'ReplyError',
+        message: 'Duplicate field in schema - title',
+      } as ReplyError;
+
+      expect(() => catchRedisSearchError(error)).toThrow(BadRequestException);
+      expect(() => catchRedisSearchError(error)).toThrow(error.message);
+    });
+
+    it('should throw BadRequestException for missing mandatory parameter error', () => {
+      // Actual Redis error: "Missing mandatory parameter: cannot create FLAT index without specifying DIM argument"
+      const error = {
+        name: 'ReplyError',
+        message:
+          'Missing mandatory parameter: cannot create FLAT index without specifying DIM argument',
+      } as ReplyError;
+
+      expect(() => catchRedisSearchError(error)).toThrow(BadRequestException);
+      expect(() => catchRedisSearchError(error)).toThrow(error.message);
+    });
+
+    it('should throw BadRequestException for wrong number of arguments error', () => {
+      // Actual Redis error: "ERR wrong number of arguments for 'FT.CREATE' command"
+      const error = {
+        name: 'ReplyError',
+        message: "ERR wrong number of arguments for 'FT.CREATE' command",
+      } as ReplyError;
+
+      expect(() => catchRedisSearchError(error)).toThrow(BadRequestException);
+      expect(() => catchRedisSearchError(error)).toThrow(error.message);
+    });
+
+    it('should throw NotFoundException for unknown index error', () => {
+      const error = {
+        name: 'ReplyError',
+        message: 'Unknown index name',
+      } as ReplyError;
+
+      expect(() => catchRedisSearchError(error)).toThrow(NotFoundException);
+      expect(() => catchRedisSearchError(error)).toThrow(error.message);
+    });
+
+    it('should throw NotFoundException for no such index error', () => {
+      const error = {
+        name: 'ReplyError',
+        message: 'idx: no such index',
+      } as ReplyError;
+
+      expect(() => catchRedisSearchError(error)).toThrow(NotFoundException);
+      expect(() => catchRedisSearchError(error)).toThrow(error.message);
+    });
+
+    it('should throw ForbiddenException for NOPERM error', () => {
+      const error = {
+        name: 'ReplyError',
+        message: 'NOPERM this user has no permissions',
+      } as ReplyError;
+
+      expect(() => catchRedisSearchError(error)).toThrow(ForbiddenException);
+      expect(() => catchRedisSearchError(error)).toThrow(error.message);
+    });
+
+    it('should throw InternalServerErrorException for unknown server error', () => {
+      const error = {
+        name: 'ReplyError',
+        message: 'Some unexpected server error',
+      } as ReplyError;
+
+      expect(() => catchRedisSearchError(error)).toThrow(
+        InternalServerErrorException,
+      );
+      expect(() => catchRedisSearchError(error)).toThrow(error.message);
+    });
+
+    it('should throw BadRequestException for RedisearchLimit error', () => {
+      const error = {
+        name: 'ReplyError',
+        message: RedisErrorCodes.RedisearchLimit,
+      } as ReplyError;
+
+      expect(() =>
+        catchRedisSearchError(error, { searchLimit: 10000 }),
+      ).toThrow(BadRequestException);
+    });
+
+    it('should re-throw HttpException if already an HttpException', () => {
+      const error = new BadRequestException('Already a bad request');
+
+      expect(() =>
+        catchRedisSearchError(error as unknown as ReplyError),
+      ).toThrow(BadRequestException);
+      expect(() =>
+        catchRedisSearchError(error as unknown as ReplyError),
+      ).toThrow('Already a bad request');
     });
   });
 });

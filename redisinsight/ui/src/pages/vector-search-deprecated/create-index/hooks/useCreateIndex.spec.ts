@@ -16,7 +16,7 @@ jest.mock('uiSrc/services/hooks', () => ({
   }),
 }))
 
-jest.mock('uiSrc/utils/index/generateFtCreateCommand', () => ({
+jest.mock('uiSrc/pages/vector-search/utils/generateFtCreateCommand', () => ({
   generateFtCreateCommand: () => 'FT.CREATE idx:bikes_vss ...',
 }))
 

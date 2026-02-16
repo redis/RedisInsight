@@ -876,6 +876,52 @@ export const MOCK_COMMANDS_SPEC = {
     since: '1.0.0',
     group: 'timeseries',
   },
+  'GRAPH.QUERY': {
+    provider: 'graph',
+    summary: 'Executes the given query against a specified graph',
+    arguments: [
+      {
+        name: 'graph',
+        type: 'key',
+      },
+      {
+        name: 'query',
+        type: 'string',
+        dsl: 'cypher',
+      },
+      {
+        name: 'timeout',
+        type: 'integer',
+        optional: true,
+        token: 'TIMEOUT',
+      },
+    ],
+    since: '1.0.0',
+    group: 'generic',
+  },
+  'GRAPH.RO_QUERY': {
+    provider: 'graph',
+    summary: 'Executes a given read only query against a specified graph',
+    arguments: [
+      {
+        name: 'graph',
+        type: 'key',
+      },
+      {
+        name: 'query',
+        type: 'string',
+        dsl: 'cypher',
+      },
+      {
+        name: 'timeout',
+        type: 'integer',
+        optional: true,
+        token: 'TIMEOUT',
+      },
+    ],
+    since: '2.2.8',
+    group: 'generic',
+  },
 }
 
 export const MOCK_COMMANDS_ARRAY = Object.keys(MOCK_COMMANDS_SPEC).sort()

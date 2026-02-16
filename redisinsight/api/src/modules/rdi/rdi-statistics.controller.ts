@@ -2,12 +2,11 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
-  Query,
   UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { ApiEndpoint } from 'src/decorators/api-endpoint.decorator';
 import { RequestRdiClientMetadata } from 'src/modules/rdi/decorators';
 import { RdiClientMetadata, RdiStatisticsResult } from 'src/modules/rdi/models';
@@ -25,11 +24,9 @@ export class RdiStatisticsController {
     description: 'Get statistics',
     responses: [{ status: 200, type: RdiStatisticsResult }],
   })
-  @ApiQuery({ name: 'sections', required: false, type: String })
   async getStatistics(
     @RequestRdiClientMetadata() rdiClientMetadata: RdiClientMetadata,
-    @Query('sections') sections?: string,
   ): Promise<RdiStatisticsResult> {
-    return this.rdiStatisticsService.getStatistics(rdiClientMetadata, sections);
+    return this.rdiStatisticsService.getStatistics(rdiClientMetadata);
   }
 }

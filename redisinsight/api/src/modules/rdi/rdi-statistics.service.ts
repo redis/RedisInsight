@@ -10,12 +10,11 @@ export class RdiStatisticsService {
 
   async getStatistics(
     rdiClientMetadata: RdiClientMetadata,
-    sections?: string,
   ): Promise<RdiStatisticsResult> {
     this.logger.debug('Getting RDI statistics', rdiClientMetadata);
 
     const client = await this.rdiClientProvider.getOrCreate(rdiClientMetadata);
 
-    return await client.getStatistics(sections);
+    return await client.getStatistics();
   }
 }

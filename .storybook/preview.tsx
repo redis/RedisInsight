@@ -16,6 +16,7 @@ import { store } from 'uiSrc/slices/store'
 import Router from 'uiSrc/Router'
 import { StyledContainer } from './helpers/styles'
 import { GlobalStyles } from 'uiSrc/styles/globalStyles'
+import { ThemeContextBridge } from './ThemeContextBridge'
 
 const parameters: Parameters = {
   parameters: {
@@ -50,21 +51,23 @@ const preview: Preview = {
   parameters,
   decorators: [
     (Story) => (
-      <StoryContextProvider value={useStoryContext()}>
-        <Router>
-          <Provider store={store}>
-            <TooltipProvider>
-              <RootStoryLayout storyContext={useStoryContext()}>
-                <CommonStyles />
-                <GlobalStyles />
-                <StyledContainer>
-                  <Story />
-                </StyledContainer>
-              </RootStoryLayout>
-            </TooltipProvider>
-          </Provider>
-        </Router>
-      </StoryContextProvider>
+      <ThemeContextBridge>
+        <StoryContextProvider value={useStoryContext()}>
+          <Router>
+            <Provider store={store}>
+              <TooltipProvider>
+                <RootStoryLayout storyContext={useStoryContext()}>
+                  <CommonStyles />
+                  <GlobalStyles />
+                  <StyledContainer>
+                    <Story />
+                  </StyledContainer>
+                </RootStoryLayout>
+              </TooltipProvider>
+            </Provider>
+          </Router>
+        </StoryContextProvider>
+      </ThemeContextBridge>
     ),
     withThemeFromJSXProvider({
       themes: {

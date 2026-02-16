@@ -65,6 +65,9 @@ export const defaultMonacoOptions: monacoEditor.editor.IStandaloneEditorConstruc
       showStatusBar: true,
       showIcons: false,
     },
+    minimap: {
+      enabled: false,
+    },
     lineNumbersMinChars: 4,
   }
 

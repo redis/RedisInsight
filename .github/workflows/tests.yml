@@ -73,19 +73,40 @@ jobs:
             desktop:
               - 'redisinsight/desktop/**'
 
+  # Check common conditions that trigger all test suites
+  should-run-all-tests:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.check.outputs.result }}
+    steps:
+      - id: check
+        env:
+          PRERELEASE_CONDITION: ${{ inputs.pre_release == true }}
+        run: |
+          OTHER_CONDITIONS="${{ github.event_name == 'workflow_dispatch' ||
+              startsWith(github.ref_name, 'feature/') ||
+              startsWith(github.ref_name, 'bugfix/') ||
+              startsWith(github.ref_name, 'ric/') ||
+              startsWith(github.ref_name, 'release/') ||
+              github.ref_name == 'latest' ||
+              contains(github.event.pull_request.labels.*.name, 'run-all-tests') }}"
+
+          if [[ "$PRERELEASE_CONDITION" == "true" ]] || [[ "$OTHER_CONDITIONS" == "true" ]]; then
+            echo "result=true" >> $GITHUB_OUTPUT
+          else
+            echo "result=false" >> $GITHUB_OUTPUT
+          fi
+
   lint:
     uses: ./.github/workflows/lint.yml
     secrets: inherit
 
   frontend-tests:
-    needs: [changes, lint]
+    needs: [changes, lint, should-run-all-tests]
     if: |
+      needs.should-run-all-tests.outputs.result == 'true' ||
       startsWith(github.ref_name, 'fe/') ||
       startsWith(github.ref_name, 'fe-be/') ||
-      startsWith(github.ref_name, 'feature/') ||
-      startsWith(github.ref_name, 'bugfix/') ||
-      startsWith(github.ref_name, 'ric/') ||
-      contains(github.event.pull_request.labels.*.name, 'run-all-tests') ||
       contains(github.event.pull_request.labels.*.name, 'run-frontend-tests')
     uses: ./.github/workflows/tests-frontend.yml
     secrets: inherit
@@ -99,14 +120,11 @@ jobs:
       type: unit
 
   backend-tests:
-    needs: [changes, lint]
+    needs: [changes, lint, should-run-all-tests]
     if: |
+      needs.should-run-all-tests.outputs.result == 'true' ||
       startsWith(github.ref_name, 'be/') ||
       startsWith(github.ref_name, 'fe-be/') ||
-      startsWith(github.ref_name, 'feature/') ||
-      startsWith(github.ref_name, 'bugfix/') ||
-      startsWith(github.ref_name, 'ric/') ||
-      contains(github.event.pull_request.labels.*.name, 'run-all-tests') ||
       contains(github.event.pull_request.labels.*.name, 'run-backend-tests')
     uses: ./.github/workflows/tests-backend.yml
     secrets: inherit
@@ -120,14 +138,11 @@ jobs:
       type: unit
 
   integration-tests:
-    needs: [changes, lint]
+    needs: [changes, lint, should-run-all-tests]
     if: |
+      needs.should-run-all-tests.outputs.result == 'true' ||
       startsWith(github.ref_name, 'be/') ||
       startsWith(github.ref_name, 'fe-be/') ||
-      startsWith(github.ref_name, 'feature/') ||
-      startsWith(github.ref_name, 'bugfix/') ||
-      startsWith(github.ref_name, 'ric/') ||
-      contains(github.event.pull_request.labels.*.name, 'run-all-tests') ||
       contains(github.event.pull_request.labels.*.name, 'run-integration-tests')
     uses: ./.github/workflows/tests-integration.yml
     secrets: inherit

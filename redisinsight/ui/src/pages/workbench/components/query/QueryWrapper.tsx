@@ -2,8 +2,8 @@ import React, { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { LoadingContent } from 'uiSrc/components/base/layout'
+import { IRedisCommand } from 'uiSrc/constants'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
-import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 import {
   fetchRedisearchListAction,
   redisearchListSelector,
@@ -11,84 +11,84 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { mergeRedisCommandsSpecs } from 'uiSrc/utils/transformers/redisCommands'
 import SEARCH_COMMANDS_SPEC from 'uiSrc/pages/workbench/data/supported_commands.json'
-import styles from './Query/styles.module.scss'
+import {
+  QueryEditorContextProvider,
+  LoadingContainer,
+} from 'uiSrc/components/query'
+
 import Query from './Query'
-import { Props as BaseQueryProps } from './Query/Query'
-
-type QueryProps = Pick<BaseQueryProps, 'useLiteActions'>
-
-export interface Props {
-  query: string
-  activeMode: RunQueryMode
-  resultsMode?: ResultsMode
-  queryProps?: QueryProps
-  setQuery: (script: string) => void
-  setQueryEl: Function
-  onKeyDown?: (e: React.KeyboardEvent, script: string) => void
-  onSubmit: (value?: string) => void
-  onQueryChangeMode: () => void
-  onChangeGroupMode: () => void
-  onClear?: () => void
-}
+import { Props } from './QueryWrapper.types'
+import * as S from './QueryWrapper.styles'
 
 const QueryWrapper = (props: Props) => {
   const {
     query = '',
     activeMode,
     resultsMode,
-    setQuery,
+    setQuery = () => {},
     setQueryEl,
     onKeyDown,
-    onSubmit,
+    onSubmit = () => {},
     onQueryChangeMode,
     onChangeGroupMode,
     onClear,
     queryProps = {},
   } = props
   const { loading: isCommandsLoading } = useSelector(appRedisCommandsSelector)
-  const { id: connectedIndstanceId } = useSelector(connectedInstanceSelector)
+  const { id: connectedInstanceId } = useSelector(connectedInstanceSelector)
   const { data: indexes = [] } = useSelector(redisearchListSelector)
   const { spec: COMMANDS_SPEC } = useSelector(appRedisCommandsSelector)
 
   const REDIS_COMMANDS = useMemo(
-    () => mergeRedisCommandsSpecs(COMMANDS_SPEC, SEARCH_COMMANDS_SPEC),
+    () =>
+      mergeRedisCommandsSpecs(
+        COMMANDS_SPEC,
+        SEARCH_COMMANDS_SPEC,
+      ) as IRedisCommand[],
     [COMMANDS_SPEC, SEARCH_COMMANDS_SPEC],
   )
 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (!connectedIndstanceId) return
+    if (!connectedInstanceId) return
 
     // fetch indexes
     dispatch(fetchRedisearchListAction(undefined, undefined, false))
-  }, [connectedIndstanceId])
+  }, [connectedInstanceId])
 
-  const Placeholder = (
-    <div className={styles.containerPlaceholder}>
-      <div>
-        <LoadingContent lines={2} className="fluid" />
-      </div>
-    </div>
-  )
-  return isCommandsLoading ? (
-    Placeholder
-  ) : (
-    <Query
-      query={query}
-      commands={REDIS_COMMANDS}
-      indexes={indexes}
-      activeMode={activeMode}
-      resultsMode={resultsMode}
-      setQuery={setQuery}
-      setQueryEl={setQueryEl}
-      onKeyDown={onKeyDown}
-      onSubmit={onSubmit}
-      onQueryChangeMode={onQueryChangeMode}
-      onChangeGroupMode={onChangeGroupMode}
-      onClear={onClear}
-      {...queryProps}
-    />
+  if (isCommandsLoading) {
+    return (
+      <S.ContainerPlaceholder>
+        <LoadingContainer>
+          <LoadingContent lines={2} className="fluid" />
+        </LoadingContainer>
+      </S.ContainerPlaceholder>
+    )
+  }
+
+  return (
+    <QueryEditorContextProvider
+      value={{
+        query,
+        setQuery,
+        commands: REDIS_COMMANDS,
+        indexes,
+        isLoading: false,
+        onSubmit,
+      }}
+    >
+      <Query
+        activeMode={activeMode}
+        resultsMode={resultsMode}
+        setQueryEl={setQueryEl}
+        onKeyDown={onKeyDown}
+        onQueryChangeMode={onQueryChangeMode}
+        onChangeGroupMode={onChangeGroupMode}
+        onClear={onClear}
+        {...queryProps}
+      />
+    </QueryEditorContextProvider>
   )
 }
 

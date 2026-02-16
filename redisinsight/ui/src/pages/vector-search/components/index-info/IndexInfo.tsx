@@ -11,10 +11,10 @@ import { TABLE_COLUMNS } from './IndexInfo.constants'
 import {
   parseIndexAttributes,
   formatOptions,
-  formatPrefixes,
   hasIndexOptions,
 } from './IndexInfo.utils'
 import { IndexInfoContainer } from './IndexInfo.styles'
+import { formatPrefixes } from 'uiSrc/pages/vector-search/utils'
 
 export const IndexInfo = ({ indexInfo, dataTestId }: IndexInfoProps) => {
   if (!indexInfo) {

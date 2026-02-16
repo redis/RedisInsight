@@ -8,7 +8,8 @@ import {
   render,
   screen,
 } from 'uiSrc/utils/test-utils'
-import QueryWrapper, { Props } from './QueryWrapper'
+import QueryWrapper from './QueryWrapper'
+import { type Props } from './QueryWrapper.types'
 
 const mockedProps = mock<Props>()
 const redisCommandsPath = 'uiSrc/slices/app/redis-commands'

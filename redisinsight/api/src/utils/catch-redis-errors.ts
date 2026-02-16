@@ -6,7 +6,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ReplyError } from 'src/models';
-import { RedisErrorCodes, CertificatesErrorCodes } from 'src/constants';
+import {
+  RedisErrorCodes,
+  RedisearchErrorCodes,
+  CertificatesErrorCodes,
+} from 'src/constants';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { RedisClientCommandReply } from 'src/modules/redis/client';
 import {
@@ -162,6 +166,14 @@ export const catchMultiTransactionError = (
   });
 };
 
+const REDISEARCH_CLIENT_ERROR_PATTERNS = [
+  RedisearchErrorCodes.Invalid,
+  RedisearchErrorCodes.BadArguments,
+  RedisearchErrorCodes.Duplicate,
+  RedisearchErrorCodes.Missing,
+  RedisearchErrorCodes.WrongNumberOfArguments,
+];
+
 export const catchRedisSearchError = (
   error: ReplyError,
   options?: { searchLimit?: number },
@@ -181,6 +193,16 @@ export const catchRedisSearchError = (
     error.message?.toLowerCase()?.includes('no such index')
   ) {
     throw new NotFoundException(error.message);
+  }
+
+  // Check for client-side errors (invalid input, bad arguments, etc.)
+  // These should return 400 Bad Request, not 500 Internal Server Error
+  if (
+    REDISEARCH_CLIENT_ERROR_PATTERNS.some((pattern) =>
+      error.message?.startsWith(pattern),
+    )
+  ) {
+    throw new BadRequestException(error.message);
   }
 
   throw catchAclError(error);

@@ -17,7 +17,6 @@ import reducer, {
   azureAuthLoadingSelector,
   initiateAzureLoginAction,
   handleAzureOAuthSuccess,
-  AzureAccount,
 } from 'uiSrc/slices/oauth/azure'
 import { AzureLoginSource } from 'uiSrc/slices/interfaces'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
@@ -28,6 +27,7 @@ import {
   initialStateDefault,
   mockedStore,
 } from 'uiSrc/utils/test-utils'
+import { AzureAccountFactory } from 'uiSrc/mocks/factories/cloud/AzureAccount.factory'
 
 let store: typeof mockedStore
 beforeEach(() => {
@@ -36,11 +36,7 @@ beforeEach(() => {
   store.clearActions()
 })
 
-const mockAccount: AzureAccount = {
-  id: faker.string.uuid(),
-  username: faker.internet.email(),
-  name: faker.person.fullName(),
-}
+const mockAccount = AzureAccountFactory.build()
 
 describe('azure auth slice', () => {
   describe('reducer, actions and selectors', () => {
@@ -257,7 +253,10 @@ describe('azure auth slice', () => {
         apiService.get = jest.fn().mockResolvedValue(responsePayload)
 
         await store.dispatch<any>(
-          initiateAzureLoginAction(AzureLoginSource.Autodiscovery, onSuccess),
+          initiateAzureLoginAction({
+            source: AzureLoginSource.Autodiscovery,
+            onSuccess,
+          }),
         )
 
         const expectedActions = [
@@ -278,7 +277,10 @@ describe('azure auth slice', () => {
         apiService.get = jest.fn().mockRejectedValue(error)
 
         await store.dispatch<any>(
-          initiateAzureLoginAction(AzureLoginSource.Autodiscovery, jest.fn()),
+          initiateAzureLoginAction({
+            source: AzureLoginSource.Autodiscovery,
+            onSuccess: jest.fn(),
+          }),
         )
 
         const actions = store.getActions()
@@ -298,7 +300,10 @@ describe('azure auth slice', () => {
         apiService.get = jest.fn().mockResolvedValue(responsePayload)
 
         await store.dispatch<any>(
-          initiateAzureLoginAction(AzureLoginSource.TokenRefresh, onSuccess),
+          initiateAzureLoginAction({
+            source: AzureLoginSource.TokenRefresh,
+            onSuccess,
+          }),
         )
 
         const expectedActions = [
@@ -307,6 +312,45 @@ describe('azure auth slice', () => {
           azureAuthLoginSuccess(),
         ]
         expect(store.getActions()).toEqual(expectedActions)
+      })
+
+      it('should pass prompt parameter as query param to API', async () => {
+        const authUrl = faker.internet.url()
+        const responsePayload = { data: { url: authUrl }, status: 200 }
+        const onSuccess = jest.fn()
+
+        apiService.get = jest.fn().mockResolvedValue(responsePayload)
+
+        await store.dispatch<any>(
+          initiateAzureLoginAction({
+            source: AzureLoginSource.Autodiscovery,
+            onSuccess,
+            prompt: 'select_account',
+          }),
+        )
+
+        expect(apiService.get).toHaveBeenCalledWith(expect.any(String), {
+          params: { prompt: 'select_account' },
+        })
+      })
+
+      it('should not pass params when prompt is not provided', async () => {
+        const authUrl = faker.internet.url()
+        const responsePayload = { data: { url: authUrl }, status: 200 }
+        const onSuccess = jest.fn()
+
+        apiService.get = jest.fn().mockResolvedValue(responsePayload)
+
+        await store.dispatch<any>(
+          initiateAzureLoginAction({
+            source: AzureLoginSource.Autodiscovery,
+            onSuccess,
+          }),
+        )
+
+        expect(apiService.get).toHaveBeenCalledWith(expect.any(String), {
+          params: undefined,
+        })
       })
     })
 
