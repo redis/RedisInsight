@@ -101,6 +101,8 @@ const BrowserPage = () => {
   const overview = useSelector(connectedInstanceOverviewSelector)
   const featureFlags = useSelector(appFeatureFlagsFeaturesSelector)
   const isDevBrowser = featureFlags?.[FeatureFlags.devBrowser]?.flag ?? false
+  const panelMinSize = isDevBrowser ? 20 : 45
+  const panelDefaultSize = 50
 
   const [isPageViewSent, setIsPageViewSent] = useState(false)
   const [arePanelsCollapsed, setArePanelsCollapsed] = useState(
@@ -333,8 +335,8 @@ const BrowserPage = () => {
           onLayout={onPanelWidthChange}
         >
           <BorderedResizablePanel
-            defaultSize={sizes && sizes[0] ? sizes[0] : 50}
-            minSize={isDevBrowser ? 20 : 45}
+            defaultSize={sizes && sizes[0] ? sizes[0] : panelDefaultSize}
+            minSize={panelMinSize}
             id={firstPanelId}
             className={cx({
               [styles.fullWidth]:
@@ -354,8 +356,8 @@ const BrowserPage = () => {
             <ResizablePanelHandle />
           )}
           <BorderedResizablePanel
-            defaultSize={sizes && sizes[1] ? sizes[1] : 50}
-            minSize={45}
+            defaultSize={sizes && sizes[1] ? sizes[1] : panelDefaultSize}
+            minSize={panelMinSize}
             id={secondPanelId}
             className={cx({
               [styles.keyDetailsOpen]: isRightPanelOpen,
