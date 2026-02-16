@@ -15,6 +15,9 @@ export default {
       ? process.env.RI_DB_MIGRATIONS === 'true'
       : false,
   },
+  analytics: {
+    startEvents: true,
+  },
   logger: {
     logLevel: process.env.RI_LOG_LEVEL || 'debug',
     stdout: process.env.RI_STDOUT_LOGGER
