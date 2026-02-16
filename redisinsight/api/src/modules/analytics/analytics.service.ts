@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { get } from 'lodash';
 import { Analytics } from '@segment/analytics-node';
@@ -41,6 +41,8 @@ export enum Telemetry {
 
 @Injectable()
 export class AnalyticsService {
+  private readonly logger = new Logger('AnalyticsService');
+
   private anonymousId: string;
 
   private sessionId: number = -1;
@@ -107,6 +109,21 @@ export class AnalyticsService {
       firstStart,
       sessionMetadata,
     } = initConfig;
+
+    this.logger.log('Initializing analytics service', {
+      anonymousId,
+      sessionId,
+      appType,
+      controlNumber,
+      controlGroup,
+      appVersion,
+      firstStart,
+      writeKey: ANALYTICS_CONFIG.writeKey,
+      flushInterval: ANALYTICS_CONFIG.flushInterval,
+      startEvents: ANALYTICS_CONFIG.startEvents,
+      serverEnv: SERVER_CONFIG.env,
+    });
+
     this.sessionId = sessionId;
     this.anonymousId = anonymousId;
     this.appType = appType;
@@ -124,7 +141,14 @@ export class AnalyticsService {
         }),
     });
 
+    this.logger.log('Segment Analytics client created successfully');
+
     if (ANALYTICS_CONFIG.startEvents && sessionMetadata) {
+      this.logger.log('Sending application start event', {
+        event: firstStart
+          ? TelemetryEvents.ApplicationFirstStart
+          : TelemetryEvents.ApplicationStarted,
+      });
       this.sendEvent(sessionMetadata, {
         event: firstStart
           ? TelemetryEvents.ApplicationFirstStart
@@ -137,7 +161,14 @@ export class AnalyticsService {
           packageType: ServerService.getPackageType(SERVER_CONFIG.buildType),
         },
         nonTracking: true,
-      }).catch();
+      }).catch((e) => {
+        this.logger.error('Failed to send application start event', e);
+      });
+    } else {
+      this.logger.log('Skipping application start event', {
+        startEvents: ANALYTICS_CONFIG.startEvents,
+        hasSessionMetadata: !!sessionMetadata,
+      });
     }
   }
 
@@ -155,13 +186,22 @@ export class AnalyticsService {
       const trackParams = await this.prepareEventData(sessionMetadata, payload);
 
       if (trackParams) {
+        this.logger.debug('Sending track event', {
+          event: payload.event,
+          anonymousId: trackParams.anonymousId,
+        });
         this.analytics.track({
           ...trackParams,
           event: payload.event,
         });
+      } else {
+        this.logger.debug('Skipping track event (no trackParams)', {
+          event: payload.event,
+          nonTracking: payload.nonTracking,
+        });
       }
     } catch (e) {
-      // continue regardless of error
+      this.logger.error('Error sending track event', e);
     }
   }
 
@@ -231,11 +271,16 @@ export class AnalyticsService {
     return null;
   }
 
-  private async checkIsAnalyticsGranted(sessionMetadata: SessionMetadata) {
-    return !!get(
-      await this.settingsService.getAppSettings(sessionMetadata),
-      'agreements.analytics',
-      false,
-    );
+  private async checkIsAnalyticsGranted(
+    sessionMetadata: SessionMetadata,
+  ): Promise<boolean> {
+    const settings =
+      await this.settingsService.getAppSettings(sessionMetadata);
+    const isGranted = !!get(settings, 'agreements.analytics', false);
+    this.logger.debug('Analytics consent check', {
+      isGranted,
+      agreements: settings?.agreements,
+    });
+    return isGranted;
   }
 }

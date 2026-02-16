@@ -35,6 +35,7 @@ export default {
   analytics: {
     writeKey:
       process.env.RI_SEGMENT_WRITE_KEY || 'Ba1YuGnxzsQN9zjqTSvzPc6f3AvmH1mj',
+    startEvents: true,
   },
   db: {
     database: join(homedir, 'redisinsight.db'),
