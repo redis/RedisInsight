@@ -85,7 +85,7 @@ const QueryResults = (props: QueryResultsProps) => {
         />
       )}
       {!!items?.length && (
-        <S.Header>
+        <S.Header align="center" justify="end" grow={false}>
           <EmptyButton
             size="small"
             icon={DeleteIcon}
@@ -97,7 +97,7 @@ const QueryResults = (props: QueryResultsProps) => {
           </EmptyButton>
         </S.Header>
       )}
-      <S.Container>
+      <S.Container grow>
         <div ref={scrollDivRef} />
         {items?.length
           ? items.map(

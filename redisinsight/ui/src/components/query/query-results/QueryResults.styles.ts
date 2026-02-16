@@ -1,8 +1,9 @@
 import styled from 'styled-components'
+import { Col, Row, FlexItem } from 'uiSrc/components/base/layout/flex'
 
 /* TODO: use theme when it supports theme.semantic.core.radius */
 // to replace var(--border-radius-medium)
-export const Wrapper = styled.div`
+export const Wrapper = styled(Col)`
   flex: 1;
   height: calc(100% - var(--border-radius-medium));
   width: 100%;
@@ -13,24 +14,17 @@ export const Wrapper = styled.div`
   // HACK: to fix rectangle like view in rounded borders wrapper
   padding-bottom: ${({ theme }) => theme.core.space.space050};
 
-  display: flex;
-  flex-direction: column;
-
   position: relative;
 `
 
-export const Container = styled.div`
-  flex: 1;
+export const Container = styled(FlexItem)`
   width: 100%;
   overflow: auto;
   color: ${({ theme }) => theme.semantic.color.text.neutral700};
 `
 
-export const Header = styled.div`
+export const Header = styled(Row)`
   height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
   padding: 0 ${({ theme }) => theme.core.space.space150};
 
   flex-shrink: 0;
