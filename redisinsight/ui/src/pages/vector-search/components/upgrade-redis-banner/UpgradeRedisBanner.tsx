@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+
 import { OAuthSsoHandlerDialog } from 'uiSrc/components'
 import { CallOut } from 'uiSrc/components/base/display/call-out/CallOut'
 import { FeatureFlags } from 'uiSrc/constants'
@@ -9,10 +10,7 @@ import {
   OAuthSocialSource,
 } from 'uiSrc/slices/interfaces/cloud'
 
-/**
- * @deprecated Use `UpgradeRedisBanner` from `uiSrc/pages/vector-search/components/upgrade-redis-banner` instead.
- */
-export const VectorSetNotAvaiallableBanner = () => {
+export const UpgradeRedisBanner = () => {
   const {
     [FeatureFlags.cloudSso]: featureFlagCloudSsl,
     [FeatureFlags.cloudAds]: featureFlagCloudAds,
@@ -39,7 +37,7 @@ export const VectorSetNotAvaiallableBanner = () => {
               },
             },
           })}
-          data-testid="vector-set-not-available-banner"
+          data-testid="upgrade-redis-banner"
         >
           Upgrade to Redis 7.2+ to unlock fast, real-time semantic AI search
           with vector search
