@@ -59,7 +59,6 @@ export interface Props {
   onToggleOpen?: (id: string, isOpen: boolean) => void
   onQueryDelete: () => void
   onQueryReRun: () => void
-  onQueryOpen: () => void
   onQueryProfile: (type: ProfileQueryType) => void
 }
 
@@ -95,7 +94,6 @@ const QueryCard = (props: Props) => {
     isOpen,
     createdAt,
     onToggleOpen,
-    onQueryOpen,
     onQueryDelete,
     onQueryProfile,
     onQueryReRun,
@@ -167,10 +165,6 @@ const QueryCard = (props: Props) => {
       return
 
     onToggleOpen?.(id, !isOpen)
-
-    if (!isOpen && !result) {
-      onQueryOpen()
-    }
   }
 
   const changeViewTypeSelected = (type: WBQueryType, value: string) => {

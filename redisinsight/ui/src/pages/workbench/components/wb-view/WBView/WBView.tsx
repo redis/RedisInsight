@@ -92,10 +92,15 @@ const WBView = (props: Props) => {
   }, [])
 
   const handleToggleOpen = useCallback(
-    (id: string) => {
+    (id: string, isOpen: boolean) => {
       dispatch(toggleOpenWBResult(id))
+
+      const item = items.find((i) => i.id === id)
+      if (isOpen && !item?.result) {
+        onQueryOpen(id)
+      }
     },
-    [dispatch],
+    [dispatch, items, onQueryOpen],
   )
 
   const handleSubmit = (value?: string) => {
@@ -168,7 +173,6 @@ const WBView = (props: Props) => {
                   onToggleOpen={handleToggleOpen}
                   onQueryReRun={handleReRun}
                   onQueryProfile={handleProfile}
-                  onQueryOpen={onQueryOpen}
                   onQueryDelete={onQueryDelete}
                   onAllQueriesDelete={onAllQueriesDelete}
                   noResultsPlaceholder={<WbNoResultsMessage />}

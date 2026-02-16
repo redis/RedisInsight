@@ -247,6 +247,7 @@ const useQuery = () => {
             return {
               ...item,
               ...command,
+              isOpen: !item.isOpen,
               loading: false,
               error: '',
             }
@@ -270,14 +271,6 @@ const useQuery = () => {
     }
   }, [])
 
-  const handleToggleOpen = useCallback((id: string) => {
-    setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, isOpen: !item.isOpen } : item,
-      ),
-    )
-  }, [])
-
   const handleQueryProfile = useCallback(() => {}, [])
   const handleChangeQueryRunMode = useCallback(() => {}, [])
   const handleChangeGroupMode = useCallback(() => {}, [])
@@ -298,7 +291,6 @@ const useQuery = () => {
 
     // Actions
     onSubmit,
-    onToggleOpen: handleToggleOpen,
     onQueryOpen: handleQueryOpen,
     onQueryDelete: handleQueryDelete,
     onAllQueriesDelete: handleAllQueriesDelete,

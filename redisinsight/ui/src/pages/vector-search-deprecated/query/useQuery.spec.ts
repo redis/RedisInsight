@@ -236,29 +236,8 @@ describe('useQuery hook', () => {
     expect(result.current.clearing).toBe(false)
   })
 
-  it('onToggleOpen toggles isOpen', async () => {
-    const historyItems = [
-      commandExecutionUIFactory.build({ id: 'toggle-1', isOpen: false }),
-    ]
-    mockGetCommandsHistory.mockResolvedValue(historyItems)
-
-    const { result } = renderHook(() =>
-      useQuery(),
-    ) as unknown as UseQueryHookResult
-    await waitFor(() => expect(result.current.isResultsLoaded).toBe(true))
-
-    act(() => {
-      result.current.onToggleOpen('toggle-1')
-    })
-
-    expect(result.current.items[0]).toMatchObject({
-      id: 'toggle-1',
-      isOpen: true,
-    })
-  })
-
   describe('onQueryOpen', () => {
-    it('merges command details when found', async () => {
+    it('toggles item open and merges command details when found', async () => {
       const historyItems = [
         commandExecutionUIFactory.build({
           id: 'item-1',
@@ -272,6 +251,7 @@ describe('useQuery hook', () => {
         result: 'data',
         error: '',
         loading: false,
+        isOpen: false,
       })
 
       const { result } = renderHook(() =>
@@ -287,6 +267,7 @@ describe('useQuery hook', () => {
       expect(result.current.items[0]).toMatchObject({
         id: 'item-1',
         loading: false,
+        isOpen: true,
         result: 'data',
       })
     })

@@ -62,7 +62,6 @@ const renderQueryResults = (props: Partial<QueryResultsProps> = {}) => {
     onQueryReRun: jest.fn(),
     onQueryDelete: jest.fn(),
     onAllQueriesDelete: jest.fn(),
-    onQueryOpen: jest.fn(),
     onQueryProfile: jest.fn(),
     ...props,
   }

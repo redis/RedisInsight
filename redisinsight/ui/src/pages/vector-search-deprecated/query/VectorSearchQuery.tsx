@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 
 import {
   ResizableContainer,
@@ -49,7 +49,6 @@ export const VectorSearchQuery = ({
     resultsMode,
     scrollDivRef,
     onSubmit,
-    onToggleOpen,
     onQueryOpen,
     onQueryDelete,
     onAllQueriesDelete,
@@ -82,6 +81,13 @@ export const VectorSearchQuery = ({
   const onQueryClear = () => {
     collectTelemetryQueryClear({ instanceId })
   }
+
+  const handleToggleOpen = useCallback(
+    (id: string) => {
+      onQueryOpen(id)
+    },
+    [items, onQueryOpen],
+  )
 
   const searchTelemetry = useSearchResultsTelemetry()
 
@@ -172,10 +178,9 @@ export const VectorSearchQuery = ({
                   activeMode={activeMode}
                   activeResultsMode={resultsMode}
                   scrollDivRef={scrollDivRef}
-                  onToggleOpen={onToggleOpen}
+                  onToggleOpen={handleToggleOpen}
                   onQueryReRun={onQueryReRun}
                   onQueryProfile={onQueryProfile}
-                  onQueryOpen={onQueryOpen}
                   onQueryDelete={onQueryDelete}
                   onAllQueriesDelete={handleClearResults}
                   noResultsPlaceholder={

@@ -31,7 +31,6 @@ export interface QueryResultsProps {
   ) => void
   onQueryDelete: (commandId: string) => void
   onAllQueriesDelete: () => void
-  onQueryOpen: (commandId: string) => void
   onQueryProfile: (
     query: string,
     commandId?: Nullable<string>,
@@ -53,7 +52,6 @@ const QueryResults = (props: QueryResultsProps) => {
     onQueryProfile,
     onQueryDelete,
     onAllQueriesDelete,
-    onQueryOpen,
     scrollDivRef,
   } = props
 
@@ -135,7 +133,6 @@ const QueryResults = (props: QueryResultsProps) => {
                   resultsMode={resultsMode}
                   db={db}
                   onToggleOpen={onToggleOpen}
-                  onQueryOpen={() => onQueryOpen(id)}
                   onQueryProfile={(profileType) =>
                     handleQueryProfile(profileType, {
                       command,
