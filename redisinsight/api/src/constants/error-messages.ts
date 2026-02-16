@@ -178,4 +178,6 @@ export default {
     'Could not establish a secure connection. The server certificate could not be verified.',
   AZURE_ENTRA_ID_TOKEN_EXPIRED:
     'Azure Entra ID token expired. Sign in to Azure again to continue.',
+  AZURE_OAUTH_INSUFFICIENT_PERMISSIONS:
+    'Your organization has not granted Redis Insight access to Azure Cache for Redis. Please contact your Azure administrator to grant admin consent for the Redis Insight application. (AADSTS650057)',
 };

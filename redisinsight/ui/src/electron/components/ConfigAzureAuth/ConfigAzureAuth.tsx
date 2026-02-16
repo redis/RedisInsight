@@ -27,6 +27,7 @@ interface AzureAuthCallbackResponse {
   status: string
   account?: MsalAccountInfo
   error?: string
+  errorCode?: number
 }
 
 const ConfigAzureAuth = () => {
@@ -42,7 +43,7 @@ const ConfigAzureAuth = () => {
 
   const azureOauthCallback = (
     _e: unknown,
-    { status, account, error }: AzureAuthCallbackResponse,
+    { status, account, error, errorCode }: AzureAuthCallbackResponse,
   ) => {
     if (status === AzureAuthStatus.Succeed && account) {
       const azureAccount = {
@@ -79,6 +80,7 @@ const ConfigAzureAuth = () => {
         response: {
           data: {
             message: errorMessage,
+            additionalInfo: errorCode ? { errorCode } : undefined,
           },
         },
       } as any),

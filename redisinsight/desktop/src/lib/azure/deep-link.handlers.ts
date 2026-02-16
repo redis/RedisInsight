@@ -9,7 +9,30 @@ import {
   AzureAuthStatus,
   AZURE_OAUTH_REDIRECT_PATH,
 } from 'apiSrc/modules/azure/constants'
+import { CustomErrorCodes } from 'apiSrc/constants'
+import ERROR_MESSAGES from 'apiSrc/constants/error-messages'
 import { getAzureAuthService } from './azure-auth.service.provider'
+
+/**
+ * Parse Azure OAuth error and return structured error response.
+ * Detects specific Azure AD error codes like AADSTS650057 (insufficient permissions).
+ */
+const parseAzureOAuthError = (
+  error: string,
+  errorDescription?: string
+): { message: string; errorCode?: number } => {
+  const description = errorDescription || error
+
+  // AADSTS650057: Invalid resource - app doesn't have permission to access the requested resource
+  if (description?.includes('AADSTS650057')) {
+    return {
+      message: ERROR_MESSAGES.AZURE_OAUTH_INSUFFICIENT_PERMISSIONS,
+      errorCode: CustomErrorCodes.AzureOAuthInsufficientPermissions,
+    }
+  }
+
+  return { message: description }
+}
 
 // Extract pathname from redirect URI (e.g., '/oauth/callback' from 'redisinsight://azure/oauth/callback')
 const AZURE_OAUTH_CALLBACK_PATH = new URL(AZURE_OAUTH_REDIRECT_PATH).pathname
@@ -52,9 +75,14 @@ const azureOauthCallback = async (url: UrlWithParsedQuery) => {
     // Handle OAuth errors from Azure
     if (error) {
       log.error('Azure OAuth error:', error, errorDescription)
+      const parsedError = parseAzureOAuthError(
+        error as string,
+        errorDescription as string | undefined
+      )
       currentWindow?.webContents.send(IpcOnEvent.azureOauthCallback, {
         status: AzureAuthStatus.Failed,
-        error: errorDescription || error,
+        error: parsedError.message,
+        errorCode: parsedError.errorCode,
       })
       return
     }

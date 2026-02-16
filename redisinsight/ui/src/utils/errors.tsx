@@ -276,6 +276,14 @@ export const parseCustomError = (
       additionalInfo.errorCode = err.errorCode
       break
 
+    case CustomErrorCodes.AzureOAuthInsufficientPermissions:
+      title = 'Azure permission error'
+      message =
+        err?.message ||
+        'Your organization has not granted Redis Insight access to Azure Cache for Redis. Please contact your Azure administrator to grant admin consent for the Redis Insight application. (AADSTS650057)'
+      additionalInfo.errorCode = err.errorCode
+      break
+
     default:
       title = 'Error'
       message = err?.message || DEFAULT_ERROR_MESSAGE
