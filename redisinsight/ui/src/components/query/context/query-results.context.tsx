@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useContext } from 'react'
+import React, { createContext, ReactNode, useContext, useMemo } from 'react'
 
 export interface QueryResultsTelemetry {
   onCommandCopied?: (params: { command: string; databaseId: string }) => void
@@ -14,8 +14,10 @@ export interface QueryResultsContextValue {
   telemetry: QueryResultsTelemetry
 }
 
+const emptyTelemetry: QueryResultsTelemetry = {}
+
 const defaultContextValue: QueryResultsContextValue = {
-  telemetry: {},
+  telemetry: emptyTelemetry,
 }
 
 const QueryResultsContext =
@@ -28,12 +30,16 @@ interface QueryResultsProviderProps {
 
 export const QueryResultsProvider: React.FC<QueryResultsProviderProps> = ({
   children,
-  telemetry = {},
-}) => (
-  <QueryResultsContext.Provider value={{ telemetry }}>
-    {children}
-  </QueryResultsContext.Provider>
-)
+  telemetry = emptyTelemetry,
+}) => {
+  const value = useMemo(() => ({ telemetry }), [telemetry])
+
+  return (
+    <QueryResultsContext.Provider value={value}>
+      {children}
+    </QueryResultsContext.Provider>
+  )
+}
 
 export const useQueryResultsContext = (): QueryResultsContextValue =>
   useContext(QueryResultsContext)
