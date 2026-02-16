@@ -8,6 +8,7 @@ export const Container = styled.div<{
   ref?: React.Ref<HTMLDivElement>
 }>`
   height: 100%;
+  overflow: hidden;
 `
 
 export const ErrorContainer = styled(Col)`

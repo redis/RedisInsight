@@ -441,6 +441,7 @@ const KeysBrowserPanel = (props: Props) => {
               deleting={deleting}
               onAddKeyPanel={handleAddKeyPanel}
               onBulkActionsPanel={handleBulkActionsPanel}
+              visibleColumns={effectiveColumns}
             />
           )}
         </KeysBrowser.Content>

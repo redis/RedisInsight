@@ -8,6 +8,7 @@ import { bufferToString, Maybe, Nullable } from 'uiSrc/utils'
 import { useDisposableWebworker } from 'uiSrc/services'
 import { IKeyPropTypes } from 'uiSrc/constants/prop-types/keys'
 import {
+  BrowserColumns,
   DEFAULT_TREE_SORTING,
   KeyTypes,
   ModulesKeyTypes,
@@ -46,6 +47,7 @@ export interface Props {
   onDeleteLeaf: (key: RedisResponseBuffer) => void
   onDeleteClicked: (type: KeyTypes | ModulesKeyTypes) => void
   onDeleteFolder?: (pattern: string, fullName: string, keyCount: number) => void
+  visibleColumns?: BrowserColumns[]
 }
 
 interface OpenedNodes {
@@ -73,6 +75,7 @@ const VirtualTree = (props: Props) => {
     onDeleteClicked,
     onDeleteLeaf,
     onDeleteFolder,
+    visibleColumns,
   } = props
 
   const [rerenderState, rerender] = useState({})
@@ -227,6 +230,7 @@ const VirtualTree = (props: Props) => {
       keyApproximate: node.keyApproximate,
       isSelected: !!node.isLeaf && statusSelected === node?.nameString,
       isOpenByDefault: statusOpen[node.fullName],
+      visibleColumns,
     },
     nestingLevel,
     node,
@@ -268,7 +272,7 @@ const VirtualTree = (props: Props) => {
         }
       }
     },
-    [statusSelected, statusOpen, rerenderState],
+    [statusSelected, statusOpen, rerenderState, visibleColumns],
   )
 
   return (

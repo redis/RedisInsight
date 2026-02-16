@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { BrowserColumns } from 'uiSrc/constants'
 
 /**
@@ -56,7 +56,20 @@ export const useResponsiveColumns = (
     }
   }, [handleResize])
 
-  const effectiveColumns = getEffectiveColumns(shownColumns, containerWidth)
+  // Derive a discrete breakpoint level so the memoized result only changes
+  // when crossing a threshold, not on every pixel of resize.
+  const breakpointLevel =
+    containerWidth >= BREAKPOINT_HIDE_SIZE
+      ? 2
+      : containerWidth >= BREAKPOINT_HIDE_TTL
+        ? 1
+        : 0
+
+  const effectiveColumns = useMemo(
+    () => getEffectiveColumns(shownColumns, containerWidth),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [shownColumns, breakpointLevel],
+  )
 
   return { effectiveColumns, containerRef }
 }

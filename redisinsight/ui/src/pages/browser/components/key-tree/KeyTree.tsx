@@ -21,7 +21,7 @@ import TreeViewSVG from 'uiSrc/assets/img/icons/treeview.svg'
 import { KeysStoreData } from 'uiSrc/slices/interfaces/keys'
 import { Nullable, bufferToString, comboBoxToArray } from 'uiSrc/utils'
 import { IKeyPropTypes } from 'uiSrc/constants/prop-types/keys'
-import { BulkActionsType, KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
+import { BrowserColumns, BulkActionsType, KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
 import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces'
 import {
   deleteKeyAction,
@@ -53,6 +53,7 @@ export interface Props {
   onDelete: (key: RedisResponseBuffer) => void
   onAddKeyPanel: (value: boolean) => void
   onBulkActionsPanel: (value: boolean) => void
+  visibleColumns?: BrowserColumns[]
 }
 
 export const firstPanelId = 'tree'
@@ -75,6 +76,7 @@ const KeyTree = forwardRef((props: Props, ref) => {
     deleting,
     onAddKeyPanel,
     onBulkActionsPanel,
+    visibleColumns,
   } = props
 
   const { instanceId } = useParams<{ instanceId: string }>()
@@ -278,6 +280,7 @@ const KeyTree = forwardRef((props: Props, ref) => {
           onDeleteClicked={handleDeleteClicked}
           onDeleteLeaf={handleDeleteLeaf}
           onDeleteFolder={handleDeleteFolder}
+          visibleColumns={visibleColumns}
         />
       </div>
     </div>

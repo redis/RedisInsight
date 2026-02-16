@@ -1,5 +1,5 @@
 import { FixedSizeNodeData } from 'react-vtree'
-import { KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
+import { BrowserColumns, KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
 import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces'
 
 export interface TreeNode {
@@ -56,4 +56,5 @@ export interface TreeData extends FixedSizeNodeData {
   onDelete: (key: RedisResponseBuffer) => void
   onDeleteClicked: (type: KeyTypes | ModulesKeyTypes) => void
   onDeleteFolder?: (pattern: string, fullName: string, keyCount: number) => void
+  visibleColumns?: BrowserColumns[]
 }
