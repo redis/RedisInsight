@@ -4,7 +4,7 @@ import { fireEvent, render, screen, act } from 'uiSrc/utils/test-utils'
 import { TelemetryEvent } from 'uiSrc/telemetry/events'
 import { sendEventTelemetry } from 'uiSrc/telemetry'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
-import { CommandExecutionUI } from 'uiSrc/slices/interfaces'
+import { commandExecutionUIFactory } from 'uiSrc/mocks/factories/workbench/commandExectution.factory'
 import { VectorSearchQuery, VectorSearchQueryProps } from './VectorSearchQuery'
 
 // Mock the telemetry module, so we don't send actual telemetry data during tests
@@ -44,15 +44,12 @@ const DEFAULT_PROPS: VectorSearchQueryProps = {
   defaultSavedQueriesIndex: undefined,
 }
 
-const mockHistoryItems: CommandExecutionUI[] = [
-  {
+const mockHistoryItems = [
+  commandExecutionUIFactory.build({
     id: 'cmd-1',
     command: 'FT.SEARCH idx *',
     isOpen: false,
-    result: [{ response: 'OK', status: 'success' }],
-    loading: false,
-    createdAt: new Date(),
-  } as CommandExecutionUI,
+  }),
 ]
 
 const renderVectorSearchQueryComponent = async (
