@@ -17,6 +17,7 @@ import {
 } from 'uiSrc/slices/instances/azure'
 import { azureAuthAccountSelector } from 'uiSrc/slices/oauth/azure'
 import { AzureRedisDatabase, AzureRedisType } from 'uiSrc/slices/interfaces'
+import { AzureAccountFactory } from 'uiSrc/mocks/factories/cloud/AzureAccount.factory'
 
 import AzureDatabasesPage from './AzureDatabasesPage'
 
@@ -54,11 +55,7 @@ const mockSubscription = {
   state: 'Enabled',
 }
 
-const mockAccount = {
-  id: faker.string.uuid(),
-  username: faker.internet.email(),
-  name: faker.person.fullName(),
-}
+const mockAccount = AzureAccountFactory.build()
 
 const defaultAzureState = {
   loading: false,

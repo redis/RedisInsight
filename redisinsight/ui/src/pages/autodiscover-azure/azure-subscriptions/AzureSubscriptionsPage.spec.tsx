@@ -18,6 +18,7 @@ import {
 import { useAzureAuth } from 'uiSrc/components/hooks/useAzureAuth'
 import { azureAuthAccountSelector } from 'uiSrc/slices/oauth/azure'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { AzureAccountFactory } from 'uiSrc/mocks/factories/cloud/AzureAccount.factory'
 
 import AzureSubscriptionsPage from './AzureSubscriptionsPage'
 
@@ -53,11 +54,7 @@ const mockSubscription = {
   tenantId: faker.string.uuid(),
 }
 
-const mockAccount = {
-  id: faker.string.uuid(),
-  username: faker.internet.email(),
-  name: faker.person.fullName(),
-}
+const mockAccount = AzureAccountFactory.build()
 
 const defaultAzureState = {
   loading: false,

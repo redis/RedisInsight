@@ -17,7 +17,6 @@ import reducer, {
   azureAuthLoadingSelector,
   initiateAzureLoginAction,
   handleAzureOAuthSuccess,
-  AzureAccount,
 } from 'uiSrc/slices/oauth/azure'
 import { AzureLoginSource } from 'uiSrc/slices/interfaces'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
@@ -28,6 +27,7 @@ import {
   initialStateDefault,
   mockedStore,
 } from 'uiSrc/utils/test-utils'
+import { AzureAccountFactory } from 'uiSrc/mocks/factories/cloud/AzureAccount.factory'
 
 let store: typeof mockedStore
 beforeEach(() => {
@@ -36,11 +36,7 @@ beforeEach(() => {
   store.clearActions()
 })
 
-const mockAccount: AzureAccount = {
-  id: faker.string.uuid(),
-  username: faker.internet.email(),
-  name: faker.person.fullName(),
-}
+const mockAccount = AzureAccountFactory.build()
 
 describe('azure auth slice', () => {
   describe('reducer, actions and selectors', () => {
