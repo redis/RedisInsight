@@ -6,11 +6,11 @@ import {
   ResizablePanelHandle,
 } from 'uiSrc/components/base/layout'
 import QueryWrapper from 'uiSrc/pages/workbench/components/query'
-import { HIDE_FIELDS } from 'uiSrc/components/query/query-card/QueryCardHeader/QueryCardHeader'
+import { QueryResultsProvider } from 'uiSrc/components/query/context/query-results.context'
+import { QueryResults } from 'uiSrc/components/query/query-results'
 import { StyledNoResultsWrapper } from './VectorSearchQuery.styles'
 import { useQuery } from './useQuery'
 import { HeaderActions } from './HeaderActions'
-import CommandsViewWrapper from '../components/commands-view'
 import { VectorSearchScreenWrapper } from '../styles'
 import { SavedQueriesScreen } from '../saved-queries/SavedQueriesScreen'
 import { ManageIndexesScreen } from '../manage-indexes/ManageIndexesScreen'
@@ -20,12 +20,9 @@ import {
   collectTelemetryQueryClearAll,
   collectTelemetryQueryRun,
 } from '../telemetry'
-import {
-  ViewMode,
-  ViewModeContextProvider,
-} from 'uiSrc/components/query/context/view-mode.context'
 import NoDataMessage from '../components/no-data-message/NoDataMessage'
 import { NoDataMessageKeys } from '../components/no-data-message/data'
+import { useSearchResultsTelemetry } from 'uiSrc/pages/vector-search/hooks'
 
 enum RightPanelType {
   SAVED_QUERIES = 'saved-queries',
@@ -52,6 +49,7 @@ export const VectorSearchQuery = ({
     resultsMode,
     scrollDivRef,
     onSubmit,
+    onToggleOpen,
     onQueryOpen,
     onQueryDelete,
     onAllQueriesDelete,
@@ -85,6 +83,8 @@ export const VectorSearchQuery = ({
     collectTelemetryQueryClear({ instanceId })
   }
 
+  const searchTelemetry = useSearchResultsTelemetry()
+
   const handleQueryInsert = (query: string) => {
     setQuery(query)
 
@@ -114,57 +114,57 @@ export const VectorSearchQuery = ({
   }
 
   return (
-    <ViewModeContextProvider viewMode={ViewMode.VectorSearch}>
-      <VectorSearchScreenWrapper
-        direction="column"
-        justify="between"
-        data-testid="vector-search-query"
-      >
-        <HeaderActions
-          toggleManageIndexesScreen={toggleManageIndexesScreen}
-          toggleSavedQueriesScreen={toggleSavedQueriesScreen}
-        />
+    <VectorSearchScreenWrapper
+      direction="column"
+      justify="between"
+      data-testid="vector-search-query"
+    >
+      <HeaderActions
+        toggleManageIndexesScreen={toggleManageIndexesScreen}
+        toggleSavedQueriesScreen={toggleSavedQueriesScreen}
+      />
 
-        <ResizableContainer direction="horizontal">
-          <ResizablePanel
-            id="left-panel"
-            minSize={20}
-            order={1}
-            defaultSize={isSavedQueriesOpen ? 70 : 100}
-          >
-            <ResizableContainer direction="vertical">
-              <ResizablePanel
-                id="top-panel"
-                minSize={10}
-                defaultSize={30}
-                data-testid="vector-search-query-editor"
-              >
-                <QueryWrapper
-                  query={query}
-                  activeMode={activeMode}
-                  resultsMode={resultsMode}
-                  setQuery={setQuery}
-                  setQueryEl={() => {}}
-                  onSubmit={onQuerySubmit}
-                  onQueryChangeMode={onQueryChangeMode}
-                  onChangeGroupMode={onChangeGroupMode}
-                  onClear={onQueryClear}
-                  queryProps={{ useLiteActions: true }}
-                />
-              </ResizablePanel>
-
-              <ResizablePanelHandle
-                direction="horizontal"
-                data-test-subj="resize-btn-scripting-area-and-results"
+      <ResizableContainer direction="horizontal">
+        <ResizablePanel
+          id="left-panel"
+          minSize={20}
+          order={1}
+          defaultSize={isSavedQueriesOpen ? 70 : 100}
+        >
+          <ResizableContainer direction="vertical">
+            <ResizablePanel
+              id="top-panel"
+              minSize={10}
+              defaultSize={30}
+              data-testid="vector-search-query-editor"
+            >
+              <QueryWrapper
+                query={query}
+                activeMode={activeMode}
+                resultsMode={resultsMode}
+                setQuery={setQuery}
+                setQueryEl={() => {}}
+                onSubmit={onQuerySubmit}
+                onQueryChangeMode={onQueryChangeMode}
+                onChangeGroupMode={onChangeGroupMode}
+                onClear={onQueryClear}
+                queryProps={{ useLiteActions: true }}
               />
+            </ResizablePanel>
 
-              <ResizablePanel
-                id="bottom-panel"
-                minSize={10}
-                maxSize={80}
-                defaultSize={70}
-              >
-                <CommandsViewWrapper
+            <ResizablePanelHandle
+              direction="horizontal"
+              data-test-subj="resize-btn-scripting-area-and-results"
+            />
+
+            <ResizablePanel
+              id="bottom-panel"
+              minSize={10}
+              maxSize={80}
+              defaultSize={70}
+            >
+              <QueryResultsProvider telemetry={searchTelemetry}>
+                <QueryResults
                   items={items}
                   clearing={clearing}
                   processing={processing}
@@ -172,7 +172,7 @@ export const VectorSearchQuery = ({
                   activeMode={activeMode}
                   activeResultsMode={resultsMode}
                   scrollDivRef={scrollDivRef}
-                  hideFields={[HIDE_FIELDS.profiler, HIDE_FIELDS.viewType]}
+                  onToggleOpen={onToggleOpen}
                   onQueryReRun={onQueryReRun}
                   onQueryProfile={onQueryProfile}
                   onQueryOpen={onQueryOpen}
@@ -186,40 +186,40 @@ export const VectorSearchQuery = ({
                     </StyledNoResultsWrapper>
                   }
                 />
-              </ResizablePanel>
-            </ResizableContainer>
-          </ResizablePanel>
+              </QueryResultsProvider>
+            </ResizablePanel>
+          </ResizableContainer>
+        </ResizablePanel>
 
-          {rightPanel && (
-            <>
-              <ResizablePanelHandle
-                direction="vertical"
-                data-test-subj="resize-btn-scripting-area-and-results"
-              />
+        {rightPanel && (
+          <>
+            <ResizablePanelHandle
+              direction="vertical"
+              data-test-subj="resize-btn-scripting-area-and-results"
+            />
 
-              <ResizablePanel
-                id="right-panel"
-                order={2}
-                minSize={20}
-                defaultSize={30}
-              >
-                {rightPanel === RightPanelType.MANAGE_INDEXES && (
-                  <ManageIndexesScreen onClose={closeRightPanel} />
-                )}
+            <ResizablePanel
+              id="right-panel"
+              order={2}
+              minSize={20}
+              defaultSize={30}
+            >
+              {rightPanel === RightPanelType.MANAGE_INDEXES && (
+                <ManageIndexesScreen onClose={closeRightPanel} />
+              )}
 
-                {rightPanel === RightPanelType.SAVED_QUERIES && (
-                  <SavedQueriesScreen
-                    instanceId={instanceId}
-                    defaultSavedQueriesIndex={defaultSavedQueriesIndex}
-                    onQueryInsert={handleQueryInsert}
-                    onClose={closeRightPanel}
-                  />
-                )}
-              </ResizablePanel>
-            </>
-          )}
-        </ResizableContainer>
-      </VectorSearchScreenWrapper>
-    </ViewModeContextProvider>
+              {rightPanel === RightPanelType.SAVED_QUERIES && (
+                <SavedQueriesScreen
+                  instanceId={instanceId}
+                  defaultSavedQueriesIndex={defaultSavedQueriesIndex}
+                  onQueryInsert={handleQueryInsert}
+                  onClose={closeRightPanel}
+                />
+              )}
+            </ResizablePanel>
+          </>
+        )}
+      </ResizableContainer>
+    </VectorSearchScreenWrapper>
   )
 }
