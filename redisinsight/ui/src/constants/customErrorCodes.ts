@@ -30,7 +30,17 @@ export enum CustomErrorCodes {
   CloudCapiKeyUnauthorized = 11_022,
   CloudCapiKeyNotFound = 11_023,
   AzureEntraIdTokenExpired = 11_024,
-  AzureOAuthInsufficientPermissions = 11_025,
+
+  // Azure OAuth errors [11025, 11039]
+  AzureOAuthPermissionError = 11_025, // AADSTS650057 - Invalid resource / insufficient permissions
+  AzureOAuthConsentRequired = 11_026, // AADSTS65001 - User/admin hasn't consented
+  AzureOAuthAdminConsentRequired = 11_027, // AADSTS90094 - Admin consent required
+  AzureOAuthUserDeclinedConsent = 11_028, // AADSTS65004 - User declined consent
+  AzureOAuthMfaRequired = 11_029, // AADSTS50076 - MFA required
+  AzureOAuthMfaEnrollmentRequired = 11_030, // AADSTS50079 - MFA enrollment required
+  AzureOAuthBlockedByPolicy = 11_031, // AADSTS53003 - Blocked by Conditional Access
+  AzureOAuthAppNotFound = 11_032, // AADSTS700016 - App not found in tenant
+  AzureOAuthUnknownError = 11_039, // Unknown Azure OAuth error
 
   // Cloud Job errors [11100, 11199]
   CloudJobUnexpectedError = 11_100,

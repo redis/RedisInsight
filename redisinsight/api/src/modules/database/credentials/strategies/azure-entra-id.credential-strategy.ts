@@ -8,7 +8,10 @@ import {
 import { AzureAuthType } from 'src/modules/azure/constants';
 import { AzureAuthService } from 'src/modules/azure/auth/azure-auth.service';
 import { ICredentialStrategy } from '../credential-strategy.provider';
-import { AzureEntraIdTokenExpiredException } from 'src/modules/azure/exceptions';
+import {
+  AzureEntraIdTokenExpiredException,
+  AzureOAuthException,
+} from 'src/modules/azure/exceptions';
 
 @Injectable()
 export class AzureEntraIdCredentialStrategy implements ICredentialStrategy {
@@ -54,9 +57,22 @@ export class AzureEntraIdCredentialStrategy implements ICredentialStrategy {
       );
     }
 
-    const tokenResult = await this.azureAuthService.getRedisTokenByAccountId(
-      providerDetails.azureAccountId,
-    );
+    let tokenResult;
+    try {
+      tokenResult = await this.azureAuthService.getRedisTokenByAccountId(
+        providerDetails.azureAccountId,
+      );
+    } catch (error) {
+      // Re-throw Azure OAuth exceptions with specific error codes (MFA, consent, etc.)
+      if (error instanceof AzureOAuthException) {
+        throw error;
+      }
+      // For any other unexpected errors, throw generic token expired exception
+      this.logger.warn(
+        `Failed to acquire token for database ${database.id}: ${(error as Error).message}`,
+      );
+      throw new AzureEntraIdTokenExpiredException();
+    }
 
     if (!tokenResult) {
       this.logger.warn(

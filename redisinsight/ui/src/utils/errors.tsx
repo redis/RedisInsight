@@ -276,11 +276,66 @@ export const parseCustomError = (
       additionalInfo.errorCode = err.errorCode
       break
 
-    case CustomErrorCodes.AzureOAuthInsufficientPermissions:
+    // Azure OAuth errors - use message from backend, provide fallbacks
+    case CustomErrorCodes.AzureOAuthPermissionError:
       title = 'Azure permission error'
       message =
         err?.message ||
-        'Your organization has not granted Redis Insight access to Azure Cache for Redis. Please contact your Azure administrator to grant admin consent for the Redis Insight application. (AADSTS650057)'
+        'Your organization has not granted Redis Insight access to Azure Cache for Redis.'
+      additionalInfo.errorCode = err.errorCode
+      break
+
+    case CustomErrorCodes.AzureOAuthConsentRequired:
+      title = 'Azure consent required'
+      message =
+        err?.message ||
+        'You or your administrator has not consented to use Redis Insight.'
+      additionalInfo.errorCode = err.errorCode
+      break
+
+    case CustomErrorCodes.AzureOAuthAdminConsentRequired:
+      title = 'Admin consent required'
+      message =
+        err?.message || 'Administrator consent is required for Redis Insight.'
+      additionalInfo.errorCode = err.errorCode
+      break
+
+    case CustomErrorCodes.AzureOAuthUserDeclinedConsent:
+      title = 'Consent declined'
+      message =
+        err?.message ||
+        'You declined to grant Redis Insight the required permissions.'
+      additionalInfo.errorCode = err.errorCode
+      break
+
+    case CustomErrorCodes.AzureOAuthMfaRequired:
+    case CustomErrorCodes.AzureOAuthMfaEnrollmentRequired:
+      title = 'MFA required'
+      message =
+        err?.message ||
+        'Multi-factor authentication is required. Please sign in again.'
+      additionalInfo.errorCode = err.errorCode
+      break
+
+    case CustomErrorCodes.AzureOAuthBlockedByPolicy:
+      title = 'Access blocked'
+      message =
+        err?.message || "Access has been blocked by your organization's policy."
+      additionalInfo.errorCode = err.errorCode
+      break
+
+    case CustomErrorCodes.AzureOAuthAppNotFound:
+      title = 'Application not found'
+      message =
+        err?.message ||
+        'Redis Insight application was not found in your Azure directory.'
+      additionalInfo.errorCode = err.errorCode
+      break
+
+    case CustomErrorCodes.AzureOAuthUnknownError:
+      title = 'Azure authentication error'
+      message =
+        err?.message || 'An unexpected Azure authentication error occurred.'
       additionalInfo.errorCode = err.errorCode
       break
 

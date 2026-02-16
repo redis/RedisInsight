@@ -178,6 +178,24 @@ export default {
     'Could not establish a secure connection. The server certificate could not be verified.',
   AZURE_ENTRA_ID_TOKEN_EXPIRED:
     'Azure Entra ID token expired. Sign in to Azure again to continue.',
-  AZURE_OAUTH_INSUFFICIENT_PERMISSIONS:
+
+  // Azure OAuth errors - mapped from MsEntraIdErrorCode
+  AZURE_OAUTH_PERMISSION_ERROR:
     'Your organization has not granted Redis Insight access to Azure Cache for Redis. Please contact your Azure administrator to grant admin consent for the Redis Insight application. (AADSTS650057)',
+  AZURE_OAUTH_CONSENT_REQUIRED:
+    'You or your administrator has not consented to use Redis Insight. Please sign in again to grant the required permissions, or contact your administrator. (AADSTS65001)',
+  AZURE_OAUTH_ADMIN_CONSENT_REQUIRED:
+    'Administrator consent is required for Redis Insight. Please contact your Azure administrator to grant admin consent. (AADSTS90094)',
+  AZURE_OAUTH_USER_DECLINED_CONSENT:
+    'You declined to grant Redis Insight the required permissions. Please try again and accept the consent prompt to continue. (AADSTS65004)',
+  AZURE_OAUTH_MFA_REQUIRED:
+    'Multi-factor authentication is required to access this resource. Please sign in again and complete the MFA challenge. (AADSTS50076)',
+  AZURE_OAUTH_MFA_ENROLLMENT_REQUIRED:
+    'You need to enroll for multi-factor authentication before accessing this resource. Please complete MFA enrollment and try again. (AADSTS50079)',
+  AZURE_OAUTH_BLOCKED_BY_POLICY:
+    "Access has been blocked by your organization's Conditional Access policy. Please contact your administrator for assistance. (AADSTS53003)",
+  AZURE_OAUTH_APP_NOT_FOUND:
+    'Redis Insight application was not found in your Azure directory. The application may not be available in your tenant. (AADSTS700016)',
+  AZURE_OAUTH_UNKNOWN_ERROR:
+    'An unexpected Azure authentication error occurred. Please try again or contact support if the issue persists.',
 };

@@ -50,6 +50,29 @@ export enum AzureAuthStatus {
   Failed = 'failed',
 }
 
+/**
+ * Microsoft Entra ID (Azure AD) error codes.
+ * These are standard AADSTS error codes returned by Microsoft authentication services.
+ * @see https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+ */
+export enum MsEntraIdErrorCode {
+  // Permission/Consent errors
+  InvalidResource = 'AADSTS650057', // App doesn't have permission to resource
+  ConsentRequired = 'AADSTS65001', // User/admin hasn't consented to the app
+  AdminConsentRequired = 'AADSTS90094', // Admin consent required
+  UserDeclinedConsent = 'AADSTS65004', // User declined consent
+
+  // MFA errors
+  MfaRequired = 'AADSTS50076', // Must use MFA to access resource
+  MfaEnrollmentRequired = 'AADSTS50079', // User needs to enroll for MFA
+
+  // Conditional Access errors
+  BlockedByConditionalAccess = 'AADSTS53003', // Blocked by Conditional Access policy
+
+  // App configuration errors
+  AppNotFound = 'AADSTS700016', // App not found in directory/tenant
+}
+
 export enum AzureRedisType {
   Standard = 'standard',
   Enterprise = 'enterprise',

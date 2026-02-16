@@ -16,6 +16,8 @@ import {
 } from '../constants';
 import { AzureTokenResult, AzureAuthStatusResponse } from './models';
 import { AzureOAuthPrompt } from './dto';
+import { parseAzureOAuthError } from '../utils';
+import { AzureOAuthException } from '../exceptions';
 
 /**
  * PKCE (Proof Key for Code Exchange) utilities.
@@ -273,7 +275,13 @@ export class AzureAuthService {
       this.logger.error(
         `Failed to get token for ${accountId}: ${error.message}`,
       );
-      return null;
+
+      // Parse Azure error and throw appropriate exception
+      const parsedError = parseAzureOAuthError(
+        error.errorCode || '',
+        error.message,
+      );
+      throw new AzureOAuthException(parsedError.message, parsedError.errorCode);
     }
   }
 }

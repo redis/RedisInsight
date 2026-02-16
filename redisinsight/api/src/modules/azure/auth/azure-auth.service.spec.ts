@@ -4,6 +4,7 @@ import { PublicClientApplication } from '@azure/msal-node';
 import { AzureAuthService } from './azure-auth.service';
 import { AzureAuthStatus } from '../constants';
 import { AzureOAuthPrompt } from './dto';
+import { AzureOAuthException } from '../exceptions';
 
 jest.mock('@azure/msal-node');
 
@@ -198,16 +199,14 @@ describe('AzureAuthService', () => {
       expect(result).toBeNull();
     });
 
-    it('should return null when token acquisition fails', async () => {
+    it('should throw AzureOAuthException when token acquisition fails', async () => {
       const mockAccount = createMockAccount();
       mockTokenCache.getAllAccounts.mockResolvedValue([mockAccount]);
       mockPca.acquireTokenSilent.mockRejectedValue(new Error('Silent error'));
 
-      const result = await service.getRedisTokenByAccountId(
-        mockAccount.homeAccountId,
-      );
-
-      expect(result).toBeNull();
+      await expect(
+        service.getRedisTokenByAccountId(mockAccount.homeAccountId),
+      ).rejects.toThrow(AzureOAuthException);
     });
 
     it('should return null when result has no accessToken', async () => {
@@ -274,16 +273,14 @@ describe('AzureAuthService', () => {
       expect(result).toBeNull();
     });
 
-    it('should return null when token acquisition fails', async () => {
+    it('should throw AzureOAuthException when token acquisition fails', async () => {
       const mockAccount = createMockAccount();
       mockTokenCache.getAllAccounts.mockResolvedValue([mockAccount]);
       mockPca.acquireTokenSilent.mockRejectedValue(new Error('Silent error'));
 
-      const result = await service.getManagementTokenByAccountId(
-        mockAccount.homeAccountId,
-      );
-
-      expect(result).toBeNull();
+      await expect(
+        service.getManagementTokenByAccountId(mockAccount.homeAccountId),
+      ).rejects.toThrow(AzureOAuthException);
     });
 
     it('should return token result on successful acquisition', async () => {
