@@ -16,6 +16,7 @@ import WbNoResultsMessage from '../../wb-no-results-message'
 
 import styles from './styles.module.scss'
 
+/** @deprecated Use QueryResultsProps from 'uiSrc/components/query/query-results' instead. */
 export interface Props {
   isResultsLoaded: boolean
   items: CommandExecutionUI[]
@@ -38,6 +39,8 @@ export interface Props {
     executeParams?: CodeButtonParams,
   ) => void
 }
+
+/** @deprecated Use QueryResults from 'uiSrc/components/query/query-results' instead. */
 const WBResults = (props: Props) => {
   const {
     isResultsLoaded,
