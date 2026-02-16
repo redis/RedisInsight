@@ -72,6 +72,10 @@ export class AzureEntraIdCredentialStrategy implements ICredentialStrategy {
         ...database,
         username: tokenResult.account.localAccountId,
         password: tokenResult.token,
+        providerDetails: {
+          ...providerDetails,
+          tokenExpiresOn: tokenResult.expiresOn,
+        },
       },
       { groups: ['security'] },
     );

@@ -65,6 +65,10 @@ export enum AzureAccessKeysStatus {
   Disabled = 'Disabled',
 }
 
+export enum AzureRedisTokenEvents {
+  Acquire = 'acquire',
+}
+
 /**
  * Azure subscription states from Azure Resource Manager API.
  * Values match Azure API response casing (PascalCase).
