@@ -170,10 +170,8 @@ describe('VectorSearchPage', () => {
 
     renderComponent()
 
-    const indexListScreen = screen.getByTestId(
-      'vector-search--index-list-screen',
-    )
-    expect(indexListScreen).toBeInTheDocument()
+    const listPage = screen.getByTestId('vector-search--list--page')
+    expect(listPage).toBeInTheDocument()
   })
 
   it('should send page view telemetry on mount', () => {

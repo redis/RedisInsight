@@ -13,7 +13,7 @@ import {
 } from '../../hooks'
 import { RqeNotAvailable } from '../../components/rqe-not-available'
 import { VectorSearchWelcomePage } from '../VectorSearchWelcomePage'
-import { IndexListScreen } from '../components'
+import { VectorSearchListPage } from '../VectorSearchListPage'
 import * as S from '../styles'
 
 /**
@@ -75,8 +75,8 @@ export const VectorSearchPage = () => {
 
   // Show index list when indexes exist
   return (
-    <S.PageWrapper data-testid="vector-search-page">
-      <IndexListScreen indexes={indexes} />
+    <S.PageWrapper data-testid="vector-search-page--list">
+      <VectorSearchListPage />
     </S.PageWrapper>
   )
 }
