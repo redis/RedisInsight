@@ -133,6 +133,10 @@
     "dev-azureEntraId": {
       "flag": false,
       "perc": [[0, 100]]
+    },
+    "dev-browser": {
+      "flag": false,
+      "perc": [[0, 100]]
     }
   }
 }

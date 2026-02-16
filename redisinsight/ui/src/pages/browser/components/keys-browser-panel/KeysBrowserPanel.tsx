@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import styled from 'styled-components'
 
 import {
   appContextBrowser,
@@ -61,26 +60,11 @@ import {
 
 import KeyList from '../key-list'
 import KeyTree from '../key-tree'
+import { Props } from '../browser-left-panel/BrowserLeftPanel'
+
+import * as S from './KeysBrowserPanel.styles'
 
 const HIDE_REFRESH_LABEL_WIDTH = 640
-
-const ErrorContainer = styled.div<{ children?: React.ReactNode }>`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  overflow: hidden;
-  align-items: center;
-  justify-content: center;
-  color: ${({ theme }) => theme.semantic?.color?.text?.warning ?? 'inherit'};
-`
-
-export interface Props {
-  selectedKey: Nullable<RedisResponseBuffer>
-  selectKey: ({ rowData }: { rowData: any }) => void
-  removeSelectedKey: () => void
-  handleAddKeyPanel: (value: boolean) => void
-  handleBulkActionsPanel: (value: boolean) => void
-}
 
 const KeysBrowserPanel = (props: Props) => {
   const {
@@ -125,8 +109,7 @@ const KeysBrowserPanel = (props: Props) => {
   const keyListRef = useRef<any>()
   const dispatch = useDispatch()
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { effectiveColumns, containerRef } = useResponsiveColumns(shownColumns)
+  const { containerRef } = useResponsiveColumns(shownColumns)
 
   const isDataLoaded =
     searchMode === SearchMode.Pattern
@@ -356,7 +339,7 @@ const KeysBrowserPanel = (props: Props) => {
   }
 
   return (
-    <div ref={containerRef} style={{ height: '100%' }}>
+    <S.Container ref={containerRef}>
       <KeysBrowser.Compose data-testid="keys-browser-panel">
         <KeysBrowser.Header>
           <AutoSizer disableHeight>
@@ -427,9 +410,9 @@ const KeysBrowserPanel = (props: Props) => {
 
         <KeysBrowser.Content>
           {keysError && (
-            <ErrorContainer data-testid="keys-error">
+            <S.ErrorContainer data-testid="keys-error">
               <div>{keysError}</div>
-            </ErrorContainer>
+            </S.ErrorContainer>
           )}
           {viewType === KeyViewType.Browser && !keysError && (
             <KeyList
@@ -461,7 +444,7 @@ const KeysBrowserPanel = (props: Props) => {
           )}
         </KeysBrowser.Content>
       </KeysBrowser.Compose>
-    </div>
+    </S.Container>
   )
 }
 
