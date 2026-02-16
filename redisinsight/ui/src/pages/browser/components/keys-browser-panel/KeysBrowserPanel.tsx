@@ -109,7 +109,7 @@ const KeysBrowserPanel = (props: Props) => {
   const keyListRef = useRef<any>()
   const dispatch = useDispatch()
 
-  const { containerRef } = useResponsiveColumns(shownColumns)
+  const { effectiveColumns, containerRef } = useResponsiveColumns(shownColumns)
 
   const isDataLoaded =
     searchMode === SearchMode.Pattern
@@ -421,6 +421,7 @@ const KeysBrowserPanel = (props: Props) => {
               keysState={keysState}
               loading={loading}
               scrollTopPosition={scrollTopPosition}
+              visibleColumns={effectiveColumns}
               commonFilterType={commonFilterType as Nullable<KeyTypes>}
               loadMoreItems={loadMoreItems}
               selectKey={selectKey}
