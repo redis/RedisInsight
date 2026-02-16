@@ -8,6 +8,9 @@ export type {
   UseIndexInfoResult,
 } from './useIndexInfo'
 
+export { useIndexListData } from './useIndexListData'
+export type { UseIndexListDataResult } from './useIndexListData'
+
 export { useRedisInstanceCompatibility } from './useRedisInstanceCompatibility'
 export type { UseRedisInstanceCompatibilityReturn } from './useRedisInstanceCompatibility'
 
