@@ -9,7 +9,7 @@ import {
   screen,
 } from 'uiSrc/utils/test-utils'
 import { RunQueryMode } from 'uiSrc/slices/interfaces/workbench'
-import { CommandExecutionUI } from 'uiSrc/slices/interfaces'
+import { commandExecutionUIFactory } from 'uiSrc/mocks/factories/workbench/commandExectution.factory'
 import { QueryResultsProvider } from '../context/query-results.context'
 import QueryResults, { QueryResultsProps } from './QueryResults'
 
@@ -37,23 +37,17 @@ jest.mock('uiSrc/slices/app/plugins', () => ({
   }),
 }))
 
-const mockItems: CommandExecutionUI[] = [
-  {
+const mockItems = [
+  commandExecutionUIFactory.build({
     id: '1',
     command: 'SET key value',
     isOpen: false,
-    result: [{ response: 'OK', status: 'success' }],
-    loading: false,
-    createdAt: new Date(),
-  } as CommandExecutionUI,
-  {
+  }),
+  commandExecutionUIFactory.build({
     id: '2',
     command: 'GET key',
     isOpen: true,
-    result: [{ response: 'value', status: 'success' }],
-    loading: false,
-    createdAt: new Date(),
-  } as CommandExecutionUI,
+  }),
 ]
 
 const renderQueryResults = (props: Partial<QueryResultsProps> = {}) => {
