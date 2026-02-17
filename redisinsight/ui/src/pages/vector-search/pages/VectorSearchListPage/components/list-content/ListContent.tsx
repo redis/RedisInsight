@@ -6,7 +6,6 @@ import { Pages } from 'uiSrc/constants'
 import { bufferToString, stringToBuffer } from 'uiSrc/utils'
 import {
   deleteRedisearchIndexAction,
-  fetchRedisearchListAction,
   redisearchListSelector,
 } from 'uiSrc/slices/browser/redisearch'
 
@@ -34,16 +33,11 @@ export const ListContent = () => {
     [history, instanceId],
   )
 
-  // TODO: Placeholder method, will be rewoerked later to add confirmation modal and delete index
+  // TODO: Placeholder method, will be reworked later to add confirmation modal and delete index
   const handleDelete = useCallback(
     (indexName: string) => {
       dispatch(
-        deleteRedisearchIndexAction(
-          { index: stringToBuffer(indexName) },
-          () => {
-            dispatch(fetchRedisearchListAction())
-          },
-        ),
+        deleteRedisearchIndexAction({ index: stringToBuffer(indexName) }),
       )
     },
     [dispatch],
