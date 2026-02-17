@@ -82,13 +82,6 @@ export const VectorSearchQuery = ({
     collectTelemetryQueryClear({ instanceId })
   }
 
-  const handleToggleOpen = useCallback(
-    (id: string) => {
-      onQueryOpen(id)
-    },
-    [items, onQueryOpen],
-  )
-
   const searchTelemetry = useSearchResultsTelemetry()
 
   const handleQueryInsert = (query: string) => {
@@ -178,7 +171,7 @@ export const VectorSearchQuery = ({
                   activeMode={activeMode}
                   activeResultsMode={resultsMode}
                   scrollDivRef={scrollDivRef}
-                  onToggleOpen={handleToggleOpen}
+                  onToggleOpen={onQueryOpen}
                   onQueryReRun={onQueryReRun}
                   onQueryProfile={onQueryProfile}
                   onQueryDelete={onQueryDelete}
