@@ -15,12 +15,14 @@ import { IndexListRow } from '../../components/index-list/IndexList.types'
 export const fetchAllIndexesInfo = (
   instanceId: string,
   indexNames: string[],
+  signal?: AbortSignal,
 ): Promise<PromiseSettledResult<AxiosResponse<IndexInfoDto>>[]> =>
   Promise.allSettled(
     indexNames.map((name) =>
       apiService.post<IndexInfoDto>(
         getUrl(instanceId, ApiEndpoints.REDISEARCH_INFO),
         { index: name },
+        { signal },
       ),
     ),
   )

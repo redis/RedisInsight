@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -28,9 +28,6 @@ export const useIndexListData = (
   const connectedInstance = useSelector(connectedInstanceSelector)
   const instanceId = connectedInstance?.id
 
-  // Guards against race conditions: ensures only the response from the
-  // most recent fetch is applied, discarding results from stale requests.
-  const fetchIdRef = useRef(0)
   const indexNamesKey = JSON.stringify(indexNames)
 
   useEffect(() => {
@@ -39,22 +36,24 @@ export const useIndexListData = (
     if (!instanceId || names.length === 0) {
       setData([])
       setLoading(false)
-      return
+      return undefined
     }
 
-    const currentFetchId = ++fetchIdRef.current
+    const controller = new AbortController()
 
     setLoading(true)
 
-    fetchAllIndexesInfo(instanceId, names).then((results) => {
-      if (currentFetchId !== fetchIdRef.current) return
+    fetchAllIndexesInfo(instanceId, names, controller.signal).then(
+      (results) => {
+        if (controller.signal.aborted) return
 
-      setData(transformIndexListRows(names, results))
-      setLoading(false)
-    })
+        setData(transformIndexListRows(names, results))
+        setLoading(false)
+      },
+    )
 
     return () => {
-      fetchIdRef.current++
+      controller.abort()
     }
   }, [instanceId, indexNamesKey])
 
