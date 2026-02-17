@@ -199,10 +199,26 @@ describe('AzureAuthService', () => {
       expect(result).toBeNull();
     });
 
-    it('should throw AzureOAuthException when token acquisition fails', async () => {
+    it('should return null when token acquisition fails with non-AADSTS error', async () => {
       const mockAccount = createMockAccount();
       mockTokenCache.getAllAccounts.mockResolvedValue([mockAccount]);
-      mockPca.acquireTokenSilent.mockRejectedValue(new Error('Silent error'));
+      mockPca.acquireTokenSilent.mockRejectedValue(
+        new Error('no_tokens_found'),
+      );
+
+      const result = await service.getRedisTokenByAccountId(
+        mockAccount.homeAccountId,
+      );
+
+      expect(result).toBeNull();
+    });
+
+    it('should throw AzureOAuthException when token acquisition fails with AADSTS error', async () => {
+      const mockAccount = createMockAccount();
+      mockTokenCache.getAllAccounts.mockResolvedValue([mockAccount]);
+      mockPca.acquireTokenSilent.mockRejectedValue(
+        new Error('AADSTS50076: MFA required'),
+      );
 
       await expect(
         service.getRedisTokenByAccountId(mockAccount.homeAccountId),
@@ -273,10 +289,26 @@ describe('AzureAuthService', () => {
       expect(result).toBeNull();
     });
 
-    it('should throw AzureOAuthException when token acquisition fails', async () => {
+    it('should return null when token acquisition fails with non-AADSTS error', async () => {
       const mockAccount = createMockAccount();
       mockTokenCache.getAllAccounts.mockResolvedValue([mockAccount]);
-      mockPca.acquireTokenSilent.mockRejectedValue(new Error('Silent error'));
+      mockPca.acquireTokenSilent.mockRejectedValue(
+        new Error('no_tokens_found'),
+      );
+
+      const result = await service.getManagementTokenByAccountId(
+        mockAccount.homeAccountId,
+      );
+
+      expect(result).toBeNull();
+    });
+
+    it('should throw AzureOAuthException when token acquisition fails with AADSTS error', async () => {
+      const mockAccount = createMockAccount();
+      mockTokenCache.getAllAccounts.mockResolvedValue([mockAccount]);
+      mockPca.acquireTokenSilent.mockRejectedValue(
+        new Error('AADSTS65001: Consent required'),
+      );
 
       await expect(
         service.getManagementTokenByAccountId(mockAccount.homeAccountId),

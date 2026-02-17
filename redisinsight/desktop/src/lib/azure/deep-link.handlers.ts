@@ -57,11 +57,21 @@ const azureOauthCallback = async (url: UrlWithParsedQuery) => {
         error as string,
         errorDescription as string | undefined,
       )
-      currentWindow?.webContents.send(IpcOnEvent.azureOauthCallback, {
-        status: AzureAuthStatus.Failed,
-        error: parsedError.message,
-        errorCode: parsedError.errorCode,
-      })
+
+      if (parsedError) {
+        // Known AADSTS error - send specific error message and code
+        currentWindow?.webContents.send(IpcOnEvent.azureOauthCallback, {
+          status: AzureAuthStatus.Failed,
+          error: parsedError.message,
+          errorCode: parsedError.errorCode,
+        })
+      } else {
+        // Unknown error - send original error description
+        currentWindow?.webContents.send(IpcOnEvent.azureOauthCallback, {
+          status: AzureAuthStatus.Failed,
+          error: (errorDescription as string) || (error as string),
+        })
+      }
       return
     }
 

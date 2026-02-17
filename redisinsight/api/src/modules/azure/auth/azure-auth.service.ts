@@ -276,12 +276,22 @@ export class AzureAuthService {
         `Failed to get token for ${accountId}: ${error.message}`,
       );
 
-      // Parse Azure error and throw appropriate exception
+      // Parse Azure error - only throw AzureOAuthException for known AADSTS errors
       const parsedError = parseAzureOAuthError(
         error.errorCode || '',
         error.message,
       );
-      throw new AzureOAuthException(parsedError.message, parsedError.errorCode);
+
+      if (parsedError) {
+        // Known AADSTS error - throw specific exception
+        throw new AzureOAuthException(
+          parsedError.message,
+          parsedError.errorCode,
+        );
+      }
+
+      // Non-AADSTS error (e.g., no_tokens_found)
+      return null;
     }
   }
 }

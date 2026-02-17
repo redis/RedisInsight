@@ -53,12 +53,13 @@ const MS_ERROR_MAPPING: Record<
  *
  * @param error - The error string from Azure OAuth response
  * @param errorDescription - Optional error description with more details
- * @returns Parsed error with message, error code, and optionally the MS error code
+ * @returns Parsed error with message, error code, and MS error code if a known
+ *          AADSTS error is found, or null for non-AADSTS errors
  */
 export const parseAzureOAuthError = (
   error: string,
   errorDescription?: string,
-): ParsedAzureOAuthError => {
+): ParsedAzureOAuthError | null => {
   const description = errorDescription || error || '';
 
   for (const msErrorCode of Object.values(MsEntraIdErrorCode)) {
@@ -72,8 +73,7 @@ export const parseAzureOAuthError = (
     }
   }
 
-  return {
-    message: description || ERROR_MESSAGES.AZURE_OAUTH_UNKNOWN_ERROR,
-    errorCode: CustomErrorCodes.AzureOAuthUnknownError,
-  };
+  // Return null for non-AADSTS errors to allow caller to handle them differently
+  // (e.g., token expiry errors should use AzureEntraIdTokenExpiredException)
+  return null;
 };
