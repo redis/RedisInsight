@@ -1,32 +1,14 @@
 import React from 'react'
-import styled from 'styled-components'
 
-import { IconType, EqualIcon, FoldersIcon } from 'uiSrc/components/base/icons'
+import { EqualIcon, FoldersIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components/base'
 import { OnboardingTour } from 'uiSrc/components'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
 import { KeyViewType } from 'uiSrc/slices/interfaces/keys'
 
-const ViewSwitchButton = styled(ButtonGroup.Button)`
-  width: 24px !important;
-  min-width: 24px !important;
-`
-
-interface ISwitchType {
-  tooltipText: string
-  type: KeyViewType
-  disabled?: boolean
-  ariaLabel: string
-  dataTestId: string
-  getIconType: () => IconType
-}
-
-export interface ViewSwitchProps {
-  viewType: KeyViewType
-  isTreeViewDisabled?: boolean
-  onChange: (type: KeyViewType) => void
-}
+import { ISwitchType, ViewSwitchProps } from './ViewSwitch.types'
+import * as S from './ViewSwitch.styles'
 
 const ViewSwitch = ({
   viewType,
@@ -62,7 +44,7 @@ const ViewSwitch = ({
             position="top"
             key={view.tooltipText}
           >
-            <ViewSwitchButton
+            <S.SwitchButton
               aria-label={view.ariaLabel}
               onClick={() => onChange(view.type)}
               isSelected={viewType === view.type}
@@ -70,7 +52,7 @@ const ViewSwitch = ({
               disabled={view.disabled || false}
             >
               <ButtonGroup.Icon icon={view.getIconType()} />
-            </ViewSwitchButton>
+            </S.SwitchButton>
           </RiTooltip>
         ))}
       </ButtonGroup>
