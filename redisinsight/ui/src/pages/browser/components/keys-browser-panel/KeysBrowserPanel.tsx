@@ -47,8 +47,13 @@ import {
 } from 'uiSrc/telemetry'
 import { OnboardingStepName, OnboardingSteps } from 'uiSrc/constants/onboarding'
 import { incrementOnboardStepAction } from 'uiSrc/slices/app/features'
+import { isNull } from 'lodash'
 import { AutoRefresh } from 'uiSrc/components'
-import KeysSummary from 'uiSrc/components/keys-summary'
+import ScanMore from 'uiSrc/components/scan-more'
+import { numberWithSpaces, nullableNumberWithSpaces } from 'uiSrc/utils/numbers'
+import { PlusIcon } from 'uiSrc/components/base/icons'
+import { ActionIconButton } from 'uiSrc/components/base/forms/buttons'
+import { Text, ColorText } from 'uiSrc/components/base/text'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 
 import {
@@ -59,7 +64,7 @@ import {
 } from 'uiSrc/components/browser'
 
 import KeyList from '../key-list'
-import KeyTree from '../key-tree'
+import KeyTree, { KeyTreeSettings } from '../key-tree'
 import { Props } from '../browser-left-panel/BrowserLeftPanel'
 
 import * as S from './KeysBrowserPanel.styles'
@@ -263,6 +268,20 @@ const KeysBrowserPanel = (props: Props) => {
     })
   }
 
+  const openAddKeyPanel = useCallback(() => {
+    handleAddKeyPanel(true)
+    sendEventTelemetry({
+      event: getBasedOnViewTypeEvent(
+        viewType,
+        TelemetryEvent.BROWSER_KEY_ADD_BUTTON_CLICKED,
+        TelemetryEvent.TREE_VIEW_KEY_ADD_BUTTON_CLICKED,
+      ),
+      eventData: {
+        databaseId: connectedInstanceId,
+      },
+    })
+  }, [viewType, connectedInstanceId, handleAddKeyPanel])
+
   const handleSwitchView = useCallback(
     (type: KeyViewType) => {
       sendEventTelemetry({
@@ -338,71 +357,82 @@ const KeysBrowserPanel = (props: Props) => {
     height: '36px !important',
   }
 
+  const footerScanned =
+    isSearched ||
+    (isFiltered && searchMode === SearchMode.Pattern) ||
+    viewType === KeyViewType.Tree
+      ? keysState.scanned
+      : 0
+
+  const footerScannedDisplay =
+    keysState.keys.length > (footerScanned ?? 0)
+      ? keysState.keys.length
+      : (footerScanned ?? 0)
+
+  const footerNotAccurateScanned =
+    keysState.total &&
+    (footerScanned ?? 0) >= keysState.total &&
+    keysState.nextCursor &&
+    keysState.nextCursor !== '0'
+      ? '~'
+      : ''
+
+  const showScanMore = !(
+    searchMode === SearchMode.Redisearch &&
+    keysState.maxResults &&
+    keysState.keys.length >= keysState.maxResults
+  )
+
   return (
     <S.Container ref={containerRef}>
       <KeysBrowser.Compose data-testid="keys-browser-panel">
         <KeysBrowser.Header>
           <AutoSizer disableHeight>
             {({ width }) => (
-              <Row justify="between" style={{ width }}>
-                <FlexItem>
-                  <KeysSummary
-                    items={keysState.keys}
-                    totalItemsCount={keysState.total}
-                    scanned={
-                      isSearched ||
-                      (isFiltered && searchMode === SearchMode.Pattern) ||
-                      viewType === KeyViewType.Tree
-                        ? keysState.scanned
-                        : 0
-                    }
-                    loading={headerLoading}
-                    showScanMore={
-                      !(
-                        searchMode === SearchMode.Redisearch &&
-                        keysState.maxResults &&
-                        keysState.keys.length >= keysState.maxResults
-                      )
-                    }
-                    scanMoreStyle={scanMoreStyle}
-                    loadMoreItems={handleScanMore}
-                    nextCursor={keysState.nextCursor}
-                  />
-                </FlexItem>
-                <FlexItem>
-                  <Row gap="l">
-                    <FlexItem>
-                      <AutoRefresh
-                        disabled={
-                          searchMode === SearchMode.Redisearch && !selectedIndex
-                        }
-                        disabledRefreshButtonMessage="Select an index to refresh keys."
-                        iconSize="S"
-                        postfix="keys"
-                        loading={loading}
-                        lastRefreshTime={keysState.lastRefreshTime}
-                        displayText={(width || 0) > HIDE_REFRESH_LABEL_WIDTH}
-                        onRefresh={handleRefreshKeys}
-                        onEnableAutoRefresh={handleEnableAutoRefresh}
-                        onChangeAutoRefreshRate={handleChangeAutoRefreshRate}
-                        testid="keys"
-                      />
-                    </FlexItem>
-                    <FlexItem>
-                      <ColumnsMenu
-                        shownColumns={shownColumns}
-                        onToggleColumn={handleToggleColumn}
-                      />
-                    </FlexItem>
-                    <FlexItem>
-                      <ViewSwitch
-                        viewType={viewType}
-                        isTreeViewDisabled={isTreeViewDisabled}
-                        onChange={handleSwitchView}
-                      />
-                    </FlexItem>
-                  </Row>
-                </FlexItem>
+              <Row align="center" justify="between" style={{ width }}>
+                <Row gap="l" align="center" grow={false}>
+                  <FlexItem>
+                    <AutoRefresh
+                      disabled={
+                        searchMode === SearchMode.Redisearch && !selectedIndex
+                      }
+                      disabledRefreshButtonMessage="Select an index to refresh keys."
+                      iconSize="S"
+                      postfix="keys"
+                      loading={loading}
+                      lastRefreshTime={keysState.lastRefreshTime}
+                      displayText={(width || 0) > HIDE_REFRESH_LABEL_WIDTH}
+                      onRefresh={handleRefreshKeys}
+                      onEnableAutoRefresh={handleEnableAutoRefresh}
+                      onChangeAutoRefreshRate={handleChangeAutoRefreshRate}
+                      testid="keys"
+                    />
+                  </FlexItem>
+                  <FlexItem>
+                    <ColumnsMenu
+                      shownColumns={shownColumns}
+                      onToggleColumn={handleToggleColumn}
+                    />
+                  </FlexItem>
+                </Row>
+                <Row gap="l" align="center" grow={false}>
+                  <FlexItem>
+                    <ActionIconButton
+                      icon={PlusIcon}
+                      variant="secondary"
+                      aria-label="Add key"
+                      onClick={openAddKeyPanel}
+                      data-testid="btn-add-key"
+                    />
+                  </FlexItem>
+                  <FlexItem>
+                    <ViewSwitch
+                      viewType={viewType}
+                      isTreeViewDisabled={isTreeViewDisabled}
+                      onChange={handleSwitchView}
+                    />
+                  </FlexItem>
+                </Row>
               </Row>
             )}
           </AutoSizer>
@@ -445,6 +475,71 @@ const KeysBrowserPanel = (props: Props) => {
             />
           )}
         </KeysBrowser.Content>
+
+        <KeysBrowser.Footer>
+          <Row align="center" justify="between" grow data-testid="keys-summary">
+            <FlexItem>
+              {headerLoading &&
+                !keysState.total &&
+                !isNull(keysState.total) && (
+                  <Text size="s" data-testid="scanning-text">
+                    Scanning...
+                  </Text>
+                )}
+              {!!footerScanned && (
+                <ColorText size="s" variant="semiBold" component="span">
+                  {'Results: '}
+                  <span data-testid="keys-number-of-results">
+                    {numberWithSpaces(keysState.keys.length)}
+                  </span>
+                </ColorText>
+              )}
+              {!footerScanned &&
+                (!!keysState.total || isNull(keysState.total)) && (
+                  <Text size="s" variant="semiBold" component="span">
+                    {'Total: '}
+                    {nullableNumberWithSpaces(keysState.total)}
+                  </Text>
+                )}
+            </FlexItem>
+            <Row gap="l" align="center" grow={false}>
+              {!!footerScanned && (
+                <FlexItem>
+                  <ColorText size="s" color="secondary" component="span">
+                    {'Scanned '}
+                    <span data-testid="keys-number-of-scanned">
+                      {footerNotAccurateScanned}
+                      {numberWithSpaces(footerScannedDisplay)}
+                    </span>
+                    {' / '}
+                    <span data-testid="keys-total">
+                      {nullableNumberWithSpaces(keysState.total)}
+                    </span>
+                  </ColorText>
+                </FlexItem>
+              )}
+              {showScanMore && (
+                <FlexItem>
+                  <ScanMore
+                    withAlert={false}
+                    fill={false}
+                    style={scanMoreStyle}
+                    scanned={footerScanned}
+                    totalItemsCount={keysState.total}
+                    loading={headerLoading}
+                    loadMoreItems={handleScanMore}
+                    nextCursor={keysState.nextCursor}
+                  />
+                </FlexItem>
+              )}
+              {viewType === KeyViewType.Tree && (
+                <FlexItem>
+                  <KeyTreeSettings loading={headerLoading} />
+                </FlexItem>
+              )}
+            </Row>
+          </Row>
+        </KeysBrowser.Footer>
       </KeysBrowser.Compose>
     </S.Container>
   )
