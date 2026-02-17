@@ -84,7 +84,7 @@ describe('AzureTokenRefreshManager', () => {
       expect(jest.getTimerCount()).toBe(1);
     });
 
-    it('should clear existing timer when scheduling for same account', () => {
+    it('should clear existing timer when scheduling for same account with different expiry', () => {
       const azureAccountId = faker.string.uuid();
       const expiresOn1 = new Date(Date.now() + 60 * 60 * 1000);
       const expiresOn2 = new Date(Date.now() + 2 * 60 * 60 * 1000);
@@ -92,6 +92,18 @@ describe('AzureTokenRefreshManager', () => {
       manager.scheduleRefresh(azureAccountId, expiresOn1);
       manager.scheduleRefresh(azureAccountId, expiresOn2);
 
+      expect(jest.getTimerCount()).toBe(1);
+    });
+
+    it('should skip scheduling when timer already exists for same expiry time', () => {
+      const azureAccountId = faker.string.uuid();
+      const expiresOn = new Date(Date.now() + 60 * 60 * 1000);
+
+      manager.scheduleRefresh(azureAccountId, expiresOn);
+      manager.scheduleRefresh(azureAccountId, expiresOn);
+      manager.scheduleRefresh(azureAccountId, expiresOn);
+
+      // Should still be just 1 timer (not cleared and rescheduled)
       expect(jest.getTimerCount()).toBe(1);
     });
 

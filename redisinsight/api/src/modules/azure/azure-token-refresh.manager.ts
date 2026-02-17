@@ -19,11 +19,16 @@ import { AzureTokenResult } from './auth/models';
  * 3. Re-authenticate each client with the new token
  * 4. Schedule the next refresh
  */
+interface ScheduledTimer {
+  timeout: NodeJS.Timeout;
+  expiresOn: Date;
+}
+
 @Injectable()
 export class AzureTokenRefreshManager implements OnModuleDestroy {
   private readonly logger = new Logger(AzureTokenRefreshManager.name);
 
-  private readonly timers: Map<string, NodeJS.Timeout> = new Map();
+  private readonly timers: Map<string, ScheduledTimer> = new Map();
 
   constructor(
     private readonly azureAuthService: AzureAuthService,
@@ -46,6 +51,13 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
   }
 
   scheduleRefresh(azureAccountId: string, expiresOn: Date): void {
+    const existing = this.timers.get(azureAccountId);
+
+    // Skip if already scheduled for the same expiry time (race condition protection)
+    if (existing?.expiresOn?.getTime() === expiresOn.getTime()) {
+      return;
+    }
+
     this.clearTimer(azureAccountId);
 
     const now = Date.now();
@@ -57,7 +69,7 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
       `Scheduling token refresh for account ${azureAccountId} in ${Math.round(delay / 1000)}s (expires: ${expiresOn.toISOString()})`,
     );
 
-    const timer = setTimeout(() => {
+    const timeout = setTimeout(() => {
       this.refreshTokenAndReauth(azureAccountId).catch((error) => {
         this.logger.error(
           `Token refresh failed for account ${azureAccountId}: ${error.message}`,
@@ -65,19 +77,19 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
       });
     }, delay);
 
-    this.timers.set(azureAccountId, timer);
+    this.timers.set(azureAccountId, { timeout, expiresOn });
   }
 
   clearTimer(azureAccountId: string): void {
-    const existingTimer = this.timers.get(azureAccountId);
-    if (existingTimer) {
-      clearTimeout(existingTimer);
+    const existing = this.timers.get(azureAccountId);
+    if (existing) {
+      clearTimeout(existing.timeout);
       this.timers.delete(azureAccountId);
     }
   }
 
   clearAllTimers(): void {
-    this.timers.forEach((timer) => clearTimeout(timer));
+    this.timers.forEach(({ timeout }) => clearTimeout(timeout));
     this.timers.clear();
   }
 
@@ -139,7 +151,7 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
       `Scheduling token refresh retry for account ${azureAccountId} in ${TOKEN_REFRESH_RETRY_DELAY_MS / 1000}s`,
     );
 
-    const timer = setTimeout(() => {
+    const timeout = setTimeout(() => {
       this.refreshTokenAndReauth(azureAccountId).catch((error) => {
         this.logger.error(
           `Token refresh retry failed for account ${azureAccountId}: ${error.message}`,
@@ -147,6 +159,7 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
       });
     }, TOKEN_REFRESH_RETRY_DELAY_MS);
 
-    this.timers.set(azureAccountId, timer);
+    // Use a past date for retry timers since they don't represent token expiry
+    this.timers.set(azureAccountId, { timeout, expiresOn: new Date(0) });
   }
 }
