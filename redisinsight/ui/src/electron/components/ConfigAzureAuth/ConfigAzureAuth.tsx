@@ -16,6 +16,7 @@ import {
 import { AzureAuthStatus } from 'apiSrc/modules/azure/constants'
 import { AppDispatch } from 'uiSrc/slices/store'
 import { Pages } from 'uiSrc/constants'
+import { CustomError, parseCustomError } from 'uiSrc/utils'
 
 interface MsalAccountInfo {
   homeAccountId: string
@@ -75,16 +76,14 @@ const ConfigAzureAuth = () => {
     // Handle failure or success without account (edge case)
     const errorMessage = error || 'Azure authentication failed'
     dispatch(handleAzureOAuthFailure(errorMessage))
-    dispatch(
-      addErrorNotification({
-        response: {
-          data: {
-            message: errorMessage,
-            additionalInfo: errorCode ? { errorCode } : undefined,
-          },
-        },
-      } as any),
-    )
+
+    // Build error object for parseCustomError to generate custom titles
+    const customError: CustomError = {
+      message: errorMessage,
+      errorCode,
+    }
+    const parsedError = parseCustomError(customError)
+    dispatch(addErrorNotification(parsedError))
   }
 
   return null

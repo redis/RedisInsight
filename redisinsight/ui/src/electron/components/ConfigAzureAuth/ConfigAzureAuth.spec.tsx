@@ -21,6 +21,7 @@ import {
   addErrorNotification,
   addMessageNotification,
 } from 'uiSrc/slices/app/notifications'
+import { CustomErrorCodes } from 'uiSrc/constants'
 
 import ConfigAzureAuth from './ConfigAzureAuth'
 
@@ -123,6 +124,26 @@ describe('ConfigAzureAuth', () => {
       azureOAuthCallbackFailure('Azure authentication failed'),
     )
     expect(actions[1].type).toEqual(addErrorNotification({} as any).type)
+  })
+
+  it('should generate custom title when errorCode is provided', () => {
+    const errorMessage = faker.lorem.sentence()
+
+    window.app?.azureOauthCallback?.mockImplementation((cb: any) =>
+      cb(undefined, {
+        status: AzureAuthStatus.Failed,
+        error: errorMessage,
+        errorCode: CustomErrorCodes.AzureOAuthMfaRequired,
+      }),
+    )
+    renderConfigAzureAuth()
+
+    const actions = store.getActions()
+
+    expect(actions[0]).toEqual(azureOAuthCallbackFailure(errorMessage))
+    expect(actions[1].type).toEqual(addErrorNotification({} as any).type)
+    // Verify the notification has the custom title from parseCustomError
+    expect(actions[1].payload.response.data.title).toEqual('MFA required')
   })
 
   it('should show success notification when source is token-refresh', () => {
