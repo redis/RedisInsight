@@ -31,7 +31,7 @@ import { QueryResultsProvider } from 'uiSrc/components/query/context/query-resul
 import { QueryResults } from 'uiSrc/components/query/query-results'
 import { toggleOpenWBResult } from 'uiSrc/slices/workbench/wb-results'
 import QueryWrapper from '../../query'
-import { useWorkbenchResultsTelemetry } from '../../../hooks/useWorkbenchResultsTelemetry'
+import { workbenchResultsTelemetry } from '../../../telemetry.constants'
 import WbNoResultsMessage from '../../wb-no-results-message'
 
 import styles from './styles.module.scss'
@@ -106,8 +106,6 @@ const WBView = (props: Props) => {
   )
   const { batchSize = PIPELINE_COUNT_DEFAULT } =
     useSelector(userSettingsConfigSelector) ?? {}
-  const telemetry = useWorkbenchResultsTelemetry()
-
   const verticalPanelSizesRef = useRef(panelSizes)
 
   const dispatch = useDispatch()
@@ -247,7 +245,7 @@ const WBView = (props: Props) => {
               defaultSize={panelSizes && panelSizes[1] ? panelSizes[1] : 80}
               className={cx(styles.queryResults, styles.queryResultsPanel)}
             >
-              <QueryResultsProvider telemetry={telemetry}>
+              <QueryResultsProvider telemetry={workbenchResultsTelemetry}>
                 <QueryResults
                   items={items}
                   clearing={clearing}

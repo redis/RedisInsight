@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 
 import {
   ResizableContainer,
@@ -22,7 +22,7 @@ import {
 } from '../telemetry'
 import NoDataMessage from '../components/no-data-message/NoDataMessage'
 import { NoDataMessageKeys } from '../components/no-data-message/data'
-import { useSearchResultsTelemetry } from 'uiSrc/pages/vector-search/hooks'
+import { searchResultsTelemetry } from 'uiSrc/pages/vector-search/telemetry.constants'
 
 enum RightPanelType {
   SAVED_QUERIES = 'saved-queries',
@@ -81,8 +81,6 @@ export const VectorSearchQuery = ({
   const onQueryClear = () => {
     collectTelemetryQueryClear({ instanceId })
   }
-
-  const searchTelemetry = useSearchResultsTelemetry()
 
   const handleQueryInsert = (query: string) => {
     setQuery(query)
@@ -162,7 +160,7 @@ export const VectorSearchQuery = ({
               maxSize={80}
               defaultSize={70}
             >
-              <QueryResultsProvider telemetry={searchTelemetry}>
+              <QueryResultsProvider telemetry={searchResultsTelemetry}>
                 <QueryResults
                   items={items}
                   clearing={clearing}

@@ -1,1 +1,0 @@
-export { useSearchResultsTelemetry } from './useSearchResultsTelemetry'

@@ -1,21 +1,18 @@
-import { renderHook } from 'uiSrc/utils/test-utils'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
-import { useSearchResultsTelemetry } from './useSearchResultsTelemetry'
+import { searchResultsTelemetry } from './telemetry.constants'
 
 jest.mock('uiSrc/telemetry', () => ({
   ...jest.requireActual('uiSrc/telemetry'),
   sendEventTelemetry: jest.fn(),
 }))
 
-describe('useSearchResultsTelemetry', () => {
+describe('searchResultsTelemetry', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
   it('should send SEARCH_COMMAND_COPIED event on onCommandCopied', () => {
-    const { result } = renderHook(() => useSearchResultsTelemetry())
-
-    result.current.onCommandCopied?.({
+    searchResultsTelemetry.onCommandCopied?.({
       command: 'FT.SEARCH idx query',
       databaseId: 'db-123',
     })
@@ -27,9 +24,7 @@ describe('useSearchResultsTelemetry', () => {
   })
 
   it('should send SEARCH_CLEAR_RESULT_CLICKED event on onResultCleared', () => {
-    const { result } = renderHook(() => useSearchResultsTelemetry())
-
-    result.current.onResultCleared?.({
+    searchResultsTelemetry.onResultCleared?.({
       command: 'FT.SEARCH idx query',
       databaseId: 'db-123',
     })
@@ -41,9 +36,7 @@ describe('useSearchResultsTelemetry', () => {
   })
 
   it('should send SEARCH_RESULTS_COLLAPSED event on onResultCollapsed', () => {
-    const { result } = renderHook(() => useSearchResultsTelemetry())
-
-    result.current.onResultCollapsed?.({
+    searchResultsTelemetry.onResultCollapsed?.({
       command: 'FT.SEARCH idx query',
       databaseId: 'db-123',
     })
@@ -55,9 +48,7 @@ describe('useSearchResultsTelemetry', () => {
   })
 
   it('should send SEARCH_RESULTS_EXPANDED event on onResultExpanded', () => {
-    const { result } = renderHook(() => useSearchResultsTelemetry())
-
-    result.current.onResultExpanded?.({
+    searchResultsTelemetry.onResultExpanded?.({
       command: 'FT.SEARCH idx query',
       databaseId: 'db-123',
     })
@@ -69,8 +60,6 @@ describe('useSearchResultsTelemetry', () => {
   })
 
   it('should send SEARCH_RESULT_VIEW_CHANGED event on onResultViewChanged', () => {
-    const { result } = renderHook(() => useSearchResultsTelemetry())
-
     const params = {
       databaseId: 'db-123',
       command: 'FT.SEARCH',
@@ -80,7 +69,7 @@ describe('useSearchResultsTelemetry', () => {
       currentView: 'Plugin',
     }
 
-    result.current.onResultViewChanged?.(params)
+    searchResultsTelemetry.onResultViewChanged?.(params)
 
     expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.SEARCH_RESULT_VIEW_CHANGED,
@@ -89,9 +78,7 @@ describe('useSearchResultsTelemetry', () => {
   })
 
   it('should send SEARCH_RESULTS_IN_FULL_SCREEN event on onFullScreenToggled', () => {
-    const { result } = renderHook(() => useSearchResultsTelemetry())
-
-    result.current.onFullScreenToggled?.({
+    searchResultsTelemetry.onFullScreenToggled?.({
       state: 'Open',
       databaseId: 'db-123',
     })
@@ -103,9 +90,7 @@ describe('useSearchResultsTelemetry', () => {
   })
 
   it('should send SEARCH_COMMAND_RUN_AGAIN event on onQueryReRun', () => {
-    const { result } = renderHook(() => useSearchResultsTelemetry())
-
-    result.current.onQueryReRun?.({
+    searchResultsTelemetry.onQueryReRun?.({
       command: 'FT.SEARCH idx query',
       databaseId: 'db-123',
     })
