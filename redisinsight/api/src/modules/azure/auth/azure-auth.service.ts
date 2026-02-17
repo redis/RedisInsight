@@ -1,10 +1,11 @@
-import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as crypto from 'crypto';
 import {
   PublicClientApplication,
   Configuration,
   AccountInfo,
 } from '@azure/msal-node';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
   AZURE_AUTHORITY,
   AZURE_CLIENT_ID,
@@ -13,10 +14,10 @@ import {
   AZURE_OAUTH_REDIRECT_PATH,
   AZURE_OAUTH_SCOPES,
   AzureAuthStatus,
+  AzureRedisTokenEvents,
 } from '../constants';
 import { AzureTokenResult, AzureAuthStatusResponse } from './models';
 import { AzureOAuthPrompt } from './dto';
-import { AzureTokenRefreshManager } from '../azure-token-refresh.manager';
 
 /**
  * PKCE (Proof Key for Code Exchange) utilities.
@@ -60,10 +61,7 @@ export class AzureAuthService {
    */
   private authRequests: Map<string, string> = new Map();
 
-  constructor(
-    @Inject(forwardRef(() => AzureTokenRefreshManager))
-    private readonly tokenRefreshManager: AzureTokenRefreshManager,
-  ) {}
+  constructor(private readonly eventEmitter: EventEmitter2) {}
 
   private getMsalClient(): PublicClientApplication {
     if (this.pca) {
@@ -224,10 +222,10 @@ export class AzureAuthService {
     );
 
     if (tokenResult) {
-      this.tokenRefreshManager.scheduleRefresh(
+      this.eventEmitter.emit(AzureRedisTokenEvents.Acquired, {
         accountId,
-        tokenResult.expiresOn,
-      );
+        tokenResult,
+      });
     }
 
     return tokenResult;

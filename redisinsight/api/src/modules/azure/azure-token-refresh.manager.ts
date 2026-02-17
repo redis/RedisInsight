@@ -1,16 +1,13 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  Logger,
-  OnModuleDestroy,
-} from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 import { AzureAuthService } from './auth/azure-auth.service';
 import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
 import {
+  AzureRedisTokenEvents,
   TOKEN_REFRESH_BUFFER_MS,
   TOKEN_REFRESH_RETRY_DELAY_MS,
 } from './constants';
+import { AzureTokenResult } from './auth/models';
 
 /**
  * Manages automatic token refresh for Azure Entra ID authenticated Redis clients.
@@ -29,13 +26,23 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
   private readonly timers: Map<string, NodeJS.Timeout> = new Map();
 
   constructor(
-    @Inject(forwardRef(() => AzureAuthService))
     private readonly azureAuthService: AzureAuthService,
     private readonly redisClientStorage: RedisClientStorage,
   ) {}
 
   onModuleDestroy(): void {
     this.clearAllTimers();
+  }
+
+  @OnEvent(AzureRedisTokenEvents.Acquired)
+  handleTokenAcquired({
+    accountId,
+    tokenResult,
+  }: {
+    accountId: string;
+    tokenResult: AzureTokenResult;
+  }): void {
+    this.scheduleRefresh(accountId, tokenResult.expiresOn);
   }
 
   scheduleRefresh(azureAccountId: string, expiresOn: Date): void {

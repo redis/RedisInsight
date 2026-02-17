@@ -85,6 +85,10 @@ export enum AzureProvisioningState {
 
 export const AZURE_API_BASE = 'https://management.azure.com';
 
+export enum AzureRedisTokenEvents {
+  Acquired = 'azure.redis.token.acquired',
+}
+
 export const TOKEN_REFRESH_BUFFER_MS = 5 * 60 * 1000;
 
 /**

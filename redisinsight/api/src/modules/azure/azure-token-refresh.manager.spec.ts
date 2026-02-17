@@ -107,6 +107,17 @@ describe('AzureTokenRefreshManager', () => {
     });
   });
 
+  describe('handleTokenAcquired', () => {
+    it('should schedule refresh when token acquired event is received', () => {
+      const accountId = faker.string.uuid();
+      const tokenResult = createMockTokenResult();
+
+      manager.handleTokenAcquired({ accountId, tokenResult });
+
+      expect(jest.getTimerCount()).toBe(1);
+    });
+  });
+
   describe('clearTimer', () => {
     it('should clear timer for specific account', () => {
       const azureAccountId = faker.string.uuid();
