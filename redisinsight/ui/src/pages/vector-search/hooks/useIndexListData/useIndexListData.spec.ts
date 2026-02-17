@@ -149,6 +149,7 @@ describe('useIndexListData', () => {
     rerender({ names: [] })
 
     expect(result.current.data).toEqual([])
+    expect(result.current.loading).toBe(false)
   })
 
   it('should ignore stale responses when indexNames changes', async () => {

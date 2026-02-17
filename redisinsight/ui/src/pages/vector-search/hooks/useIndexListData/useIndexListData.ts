@@ -38,6 +38,7 @@ export const useIndexListData = (
 
     if (!instanceId || names.length === 0) {
       setData([])
+      setLoading(false)
       return
     }
 
