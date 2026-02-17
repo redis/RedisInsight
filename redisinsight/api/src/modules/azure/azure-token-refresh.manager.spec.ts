@@ -26,12 +26,13 @@ const createMockTokenResult = () => {
   };
 };
 
-const createMockClient = () => ({
+const createMockClient = (tokenExpiresOn?: Date) => ({
   id: faker.string.uuid(),
   call: jest.fn().mockResolvedValue('OK'),
   database: {
     providerDetails: {
       azureAccountId: faker.string.uuid(),
+      tokenExpiresOn,
     },
   },
 });
@@ -303,6 +304,82 @@ describe('AzureTokenRefreshManager', () => {
 
       expect(mockClient1.call).toHaveBeenCalled();
       expect(mockClient2.call).toHaveBeenCalled();
+    });
+
+    it('should skip re-auth for clients that already have current token', async () => {
+      const azureAccountId = faker.string.uuid();
+      const tokenResult = createMockTokenResult();
+      const clientWithCurrentToken = createMockClient(tokenResult.expiresOn);
+      const clientWithOldToken = createMockClient(
+        new Date(Date.now() - 60 * 60 * 1000),
+      );
+
+      mockAzureAuthService.getRedisTokenByAccountId.mockResolvedValue(
+        tokenResult,
+      );
+      mockRedisClientStorage.getClientsByDatabaseField.mockReturnValue([
+        clientWithCurrentToken,
+        clientWithOldToken,
+      ]);
+
+      const expiresOn = new Date(Date.now() + TOKEN_REFRESH_BUFFER_MS + 1000);
+      manager.scheduleRefresh(azureAccountId, expiresOn);
+
+      await jest.advanceTimersByTimeAsync(1000);
+
+      // Client with current token should NOT be re-authenticated
+      expect(clientWithCurrentToken.call).not.toHaveBeenCalled();
+      // Client with old token should be re-authenticated
+      expect(clientWithOldToken.call).toHaveBeenCalledWith([
+        'AUTH',
+        tokenResult.account.localAccountId,
+        tokenResult.token,
+      ]);
+    });
+
+    it('should update tokenExpiresOn after successful re-auth', async () => {
+      const azureAccountId = faker.string.uuid();
+      const tokenResult = createMockTokenResult();
+      const mockClient = createMockClient();
+
+      mockAzureAuthService.getRedisTokenByAccountId.mockResolvedValue(
+        tokenResult,
+      );
+      mockRedisClientStorage.getClientsByDatabaseField.mockReturnValue([
+        mockClient,
+      ]);
+
+      const expiresOn = new Date(Date.now() + TOKEN_REFRESH_BUFFER_MS + 1000);
+      manager.scheduleRefresh(azureAccountId, expiresOn);
+
+      await jest.advanceTimersByTimeAsync(1000);
+
+      expect(mockClient.database.providerDetails.tokenExpiresOn).toBe(
+        tokenResult.expiresOn,
+      );
+    });
+
+    it('should skip all re-auth when all clients have current token', async () => {
+      const azureAccountId = faker.string.uuid();
+      const tokenResult = createMockTokenResult();
+      const client1 = createMockClient(tokenResult.expiresOn);
+      const client2 = createMockClient(tokenResult.expiresOn);
+
+      mockAzureAuthService.getRedisTokenByAccountId.mockResolvedValue(
+        tokenResult,
+      );
+      mockRedisClientStorage.getClientsByDatabaseField.mockReturnValue([
+        client1,
+        client2,
+      ]);
+
+      const expiresOn = new Date(Date.now() + TOKEN_REFRESH_BUFFER_MS + 1000);
+      manager.scheduleRefresh(azureAccountId, expiresOn);
+
+      await jest.advanceTimersByTimeAsync(1000);
+
+      expect(client1.call).not.toHaveBeenCalled();
+      expect(client2.call).not.toHaveBeenCalled();
     });
   });
 });

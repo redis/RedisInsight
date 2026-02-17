@@ -125,18 +125,36 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
       return;
     }
 
+    // Filter out clients that already have the current token
+    const clientsToReauth = clients.filter(
+      (client) =>
+        client.database.providerDetails?.tokenExpiresOn?.getTime() !==
+        tokenResult.expiresOn.getTime(),
+    );
+
+    if (clientsToReauth.length === 0) {
+      this.logger.debug(
+        `All clients for account ${azureAccountId} already have current token`,
+      );
+      return;
+    }
+
     this.logger.debug(
-      `Re-authenticating ${clients.length} client(s) for account ${azureAccountId}`,
+      `Re-authenticating ${clientsToReauth.length} of ${clients.length} client(s) for account ${azureAccountId}`,
     );
 
     await Promise.all(
-      clients.map(async (client) => {
+      clientsToReauth.map(async (client) => {
         try {
           await client.call([
             'AUTH',
             tokenResult.account.localAccountId,
             tokenResult.token,
           ]);
+          // Update the client's token expiry after successful re-auth
+          // eslint-disable-next-line no-param-reassign
+          client.database.providerDetails.tokenExpiresOn =
+            tokenResult.expiresOn;
         } catch (error) {
           this.logger.warn(
             `Failed to re-authenticate client ${client.id}: ${error.message}`,
