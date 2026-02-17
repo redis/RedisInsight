@@ -2,7 +2,6 @@ import React from 'react'
 
 import { KeysBrowser } from 'uiSrc/components/browser'
 
-import { Props } from '../browser-left-panel/BrowserLeftPanel'
 import {
   Context as KeysBrowserPanelProvider,
   useKeysBrowserPanel,
@@ -11,6 +10,7 @@ import Header from './components/Header'
 import Content from './components/Content'
 import Footer from './components/Footer'
 import * as S from './KeysBrowserPanel.styles'
+import { Props } from '../browser-left-panel/BrowserLeftPanel'
 
 const KeysBrowserPanelInner = () => {
   const { containerRef } = useKeysBrowserPanel()
