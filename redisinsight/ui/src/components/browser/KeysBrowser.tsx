@@ -6,12 +6,7 @@ import {
   KeysBrowserContentContainer,
   KeysBrowserFooterContainer,
 } from './KeysBrowser.styles'
-
-export interface KeysBrowserSlotProps {
-  children?: React.ReactNode
-  className?: string
-  'data-testid'?: string
-}
+import { KeysBrowserSlotProps } from './KeysBrowser.types'
 
 const KeysBrowserCompose = ({
   children,
@@ -29,6 +24,7 @@ const KeysBrowserHeader = ({
   'data-testid': testId,
 }: KeysBrowserSlotProps) => (
   <KeysBrowserHeaderContainer
+    grow={false}
     className={className}
     data-testid={testId ?? 'keys-browser-header'}
   >
@@ -55,6 +51,8 @@ const KeysBrowserFooter = ({
   'data-testid': testId,
 }: KeysBrowserSlotProps) => (
   <KeysBrowserFooterContainer
+    align="center"
+    grow={false}
     className={className}
     data-testid={testId ?? 'keys-browser-footer'}
   >

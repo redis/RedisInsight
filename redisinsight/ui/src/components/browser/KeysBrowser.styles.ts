@@ -1,35 +1,25 @@
-import React from 'react'
 import styled from 'styled-components'
 
-type LayoutProps = React.HTMLAttributes<HTMLDivElement> & {
-  children?: React.ReactNode
-}
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
 
-export const KeysBrowserRoot = styled.div<LayoutProps>`
-  display: flex;
-  flex-direction: column;
+export const KeysBrowserRoot = styled(Col)`
   height: 100%;
 `
 
-export const KeysBrowserHeaderContainer = styled.div<LayoutProps>`
+export const KeysBrowserHeaderContainer = styled(Row)`
   width: 100%;
-  padding: 4px 12px;
-  display: flex;
+  padding: ${({ theme }) =>
+    `${theme.core.space.space050} ${theme.core.space.space150}`};
   flex-shrink: 0;
-  flex-direction: column;
   position: relative;
 `
 
-export const KeysBrowserContentContainer = styled.div<LayoutProps>`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
+export const KeysBrowserContentContainer = styled(Col)`
   overflow: hidden;
 `
 
-export const KeysBrowserFooterContainer = styled.div<LayoutProps>`
-  display: flex;
+export const KeysBrowserFooterContainer = styled(Row)`
   flex-shrink: 0;
-  align-items: center;
-  padding: 4px 12px;
+  padding: ${({ theme }) =>
+    `${theme.core.space.space050} ${theme.core.space.space150}`};
 `

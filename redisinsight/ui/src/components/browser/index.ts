@@ -1,5 +1,5 @@
 export { KeysBrowser } from './KeysBrowser'
-export type { KeysBrowserSlotProps } from './KeysBrowser'
+export type { KeysBrowserSlotProps } from './KeysBrowser.types'
 export { ViewSwitch } from './view-switch'
 export type { ViewSwitchProps } from './view-switch'
 export { ColumnsMenu } from './columns-menu'

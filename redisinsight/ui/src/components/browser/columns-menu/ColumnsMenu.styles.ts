@@ -4,7 +4,7 @@ import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 
 export const ColumnsButton = styled(ToggleButton)`
-  padding: 4px 6px 4px 4px;
+  padding: ${({ theme }) => theme.core.space.space050};
   border-color: transparent;
   box-shadow: none;
 `
