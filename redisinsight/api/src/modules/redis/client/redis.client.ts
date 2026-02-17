@@ -1,5 +1,5 @@
 import { ClientContext, ClientMetadata } from 'src/common/models';
-import { isNumber, pick } from 'lodash';
+import { isNumber, pick, set } from 'lodash';
 import { RedisString, UNKNOWN_REDIS_INFO } from 'src/common/constants';
 import apiConfig from 'src/utils/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -107,6 +107,16 @@ export abstract class RedisClient extends EventEmitter2 {
 
   public get isInfoCommandDisabled() {
     return this._isInfoCommandDisabled;
+  }
+
+  public async azureReAuthenticate(
+    username: string,
+    password: string,
+    expiresOn: number,
+  ): Promise<void> {
+    await this.call(['AUTH', username, password]);
+
+    set(this.database, 'providerDetails.tokenExpiresOn', expiresOn);
   }
 
   /**

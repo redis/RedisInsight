@@ -216,10 +216,11 @@ export class AzureAuthService {
     );
 
     if (tokenResult) {
-      this.eventEmitter.emit(AzureRedisTokenEvents.Acquire, {
+      this.eventEmitter.emit(
+        AzureRedisTokenEvents.Acquire,
         accountId,
         tokenResult,
-      });
+      );
     }
 
     return tokenResult;

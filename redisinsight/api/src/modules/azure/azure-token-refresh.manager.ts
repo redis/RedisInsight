@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  Logger,
-  OnModuleDestroy,
-} from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import { AzureAuthService } from './auth/azure-auth.service';
 import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
 import {
@@ -29,7 +25,7 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
 
   private readonly timers: Map<
     string,
-    { timeout: NodeJS.Timeout; expiresOn: Date }
+    { timeout: NodeJS.Timeout; expiresOn: number }
   > = new Map();
 
   constructor(
@@ -47,10 +43,11 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
     token: AzureTokenResult,
   ): Promise<void> {
     try {
+      const expiresOn = token.expiresOn.getTime();
       const timer = this.timers.get(azureAccountId);
 
       // Verify if we already have timer for particular token and cover race condition
-      if (timer?.expiresOn === token.expiresOn) {
+      if (timer?.expiresOn === expiresOn) {
         return;
       }
 
@@ -60,8 +57,7 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
 
       // todo: investigate and cover edge cases
       const now = Date.now();
-      const expiresAt = token.expiresOn.getTime();
-      const refreshAt = expiresAt - TOKEN_REFRESH_BUFFER_MS;
+      const refreshAt = expiresOn - TOKEN_REFRESH_BUFFER_MS;
       const delay = refreshAt - now;
 
       this.logger.debug(
@@ -78,7 +74,7 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
 
       this.timers.set(azureAccountId, {
         timeout,
-        expiresOn: token.expiresOn,
+        expiresOn,
       });
 
       await this.reAuthenticateClients(azureAccountId, token);
@@ -119,7 +115,8 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
       // filter to authenticate only needed clients
       .filter(
         (client) =>
-          client.database.providerDetails.tokenExpiresOn !== token.expiresOn,
+          client.database.providerDetails.tokenExpiresOn !==
+          token.expiresOn.getTime(),
       );
 
     this.logger.debug(
@@ -129,11 +126,11 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
     await Promise.all(
       clients.map(async (client) => {
         try {
-          await client.call([
-            'AUTH',
+          await client.azureReAuthenticate(
             token.account.localAccountId,
             token.token,
-          ]);
+            token.expiresOn.getTime(),
+          );
         } catch (error) {
           this.logger.warn(
             `Failed to re-authenticate client ${client.id}: ${error.message}`,

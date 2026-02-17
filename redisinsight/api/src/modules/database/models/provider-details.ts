@@ -6,7 +6,7 @@
 
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsDate, IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { AzureAuthType } from 'src/modules/azure/constants';
 
 export enum CloudProvider {
@@ -43,12 +43,12 @@ export class AzureProviderDetails {
 
   @ApiPropertyOptional({
     description: 'Expiration time of the token',
-    type: Date,
+    type: Number,
   })
   @Expose()
   @IsOptional()
-  @IsDate()
-  tokenExpiresOn?: Date;
+  @IsNumber()
+  tokenExpiresOn?: number;
 }
 
 export type ProviderDetails = AzureProviderDetails;
