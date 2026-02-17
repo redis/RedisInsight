@@ -1,4 +1,4 @@
-FROM node:20.14-alpine
+FROM node:22.12.0-alpine
 
 # runtime args and environment variables
 ARG DIST=Redis-Insight.tar.gz
