@@ -121,13 +121,49 @@ describe('AzureTokenRefreshManager', () => {
   });
 
   describe('handleTokenAcquired', () => {
-    it('should schedule refresh when token acquired event is received', () => {
+    it('should schedule refresh when token acquired event is received', async () => {
       const accountId = faker.string.uuid();
       const tokenResult = createMockTokenResult();
 
-      manager.handleTokenAcquired({ accountId, tokenResult });
+      mockRedisClientStorage.getClientsByDatabaseField.mockReturnValue([]);
+
+      await manager.handleTokenAcquired({ accountId, tokenResult });
 
       expect(jest.getTimerCount()).toBe(1);
+    });
+
+    it('should immediately re-authenticate clients with different token', async () => {
+      const accountId = faker.string.uuid();
+      const tokenResult = createMockTokenResult();
+      const clientWithOldToken = createMockClient(
+        new Date(Date.now() - 60 * 60 * 1000),
+      );
+
+      mockRedisClientStorage.getClientsByDatabaseField.mockReturnValue([
+        clientWithOldToken,
+      ]);
+
+      await manager.handleTokenAcquired({ accountId, tokenResult });
+
+      expect(clientWithOldToken.call).toHaveBeenCalledWith([
+        'AUTH',
+        tokenResult.account.localAccountId,
+        tokenResult.token,
+      ]);
+    });
+
+    it('should skip immediate re-auth for clients with current token', async () => {
+      const accountId = faker.string.uuid();
+      const tokenResult = createMockTokenResult();
+      const clientWithCurrentToken = createMockClient(tokenResult.expiresOn);
+
+      mockRedisClientStorage.getClientsByDatabaseField.mockReturnValue([
+        clientWithCurrentToken,
+      ]);
+
+      await manager.handleTokenAcquired({ accountId, tokenResult });
+
+      expect(clientWithCurrentToken.call).not.toHaveBeenCalled();
     });
   });
 

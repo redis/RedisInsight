@@ -40,14 +40,15 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
   }
 
   @OnEvent(AzureRedisTokenEvents.Acquired)
-  handleTokenAcquired({
+  async handleTokenAcquired({
     accountId,
     tokenResult,
   }: {
     accountId: string;
     tokenResult: AzureTokenResult;
-  }): void {
+  }): Promise<void> {
     this.scheduleRefresh(accountId, tokenResult.expiresOn);
+    await this.reAuthenticateClients(accountId, tokenResult);
   }
 
   scheduleRefresh(azureAccountId: string, expiresOn: Date): void {
@@ -122,6 +123,22 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
       // Schedule a retry to handle transient auth failures
       // This prevents permanent loss of token renewal for active clients
       this.scheduleRetry(azureAccountId);
+      return;
+    }
+
+    await this.reAuthenticateClients(azureAccountId, tokenResult);
+  }
+
+  private async reAuthenticateClients(
+    azureAccountId: string,
+    tokenResult: AzureTokenResult,
+  ): Promise<void> {
+    const clients = this.redisClientStorage.getClientsByDatabaseField(
+      'providerDetails.azureAccountId',
+      azureAccountId,
+    );
+
+    if (clients.length === 0) {
       return;
     }
 
