@@ -2,11 +2,7 @@ import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { AzureAuthService } from './auth/azure-auth.service';
 import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
-import {
-  AzureRedisTokenEvents,
-  TOKEN_REFRESH_BUFFER_MS,
-  TOKEN_REFRESH_RETRY_DELAY_MS,
-} from './constants';
+import { AzureRedisTokenEvents, TOKEN_REFRESH_BUFFER_MS } from './constants';
 import { AzureTokenResult } from './auth/models';
 
 /**
@@ -118,15 +114,9 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
 
     if (!tokenResult) {
       this.logger.warn(
-        `Failed to get fresh token for account ${azureAccountId}, scheduling retry`,
+        `Failed to get fresh token for account ${azureAccountId}`,
       );
-      // Schedule a retry to handle transient auth failures
-      // This prevents permanent loss of token renewal for active clients
-      this.scheduleRetry(azureAccountId);
     }
-
-    // When token is acquired, AzureAuthService emits an event
-    // which triggers handleTokenAcquired() -> reAuthenticateClients()
   }
 
   private async reAuthenticateClients(
@@ -179,22 +169,5 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
         }
       }),
     );
-  }
-
-  private scheduleRetry(azureAccountId: string): void {
-    this.logger.debug(
-      `Scheduling token refresh retry for account ${azureAccountId} in ${TOKEN_REFRESH_RETRY_DELAY_MS / 1000}s`,
-    );
-
-    const timeout = setTimeout(() => {
-      this.refreshToken(azureAccountId).catch((error) => {
-        this.logger.error(
-          `Token refresh failed for account ${azureAccountId}: ${error.message}`,
-        );
-      });
-    }, TOKEN_REFRESH_RETRY_DELAY_MS);
-
-    // Use a past date for retry timers since they don't represent token expiry
-    this.timers.set(azureAccountId, { timeout, expiresOn: new Date(0) });
   }
 }

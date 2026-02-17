@@ -3,10 +3,7 @@ import { faker } from '@faker-js/faker';
 import { AzureTokenRefreshManager } from './azure-token-refresh.manager';
 import { AzureAuthService } from './auth/azure-auth.service';
 import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
-import {
-  TOKEN_REFRESH_BUFFER_MS,
-  TOKEN_REFRESH_RETRY_DELAY_MS,
-} from './constants';
+import { TOKEN_REFRESH_BUFFER_MS } from './constants';
 
 const createMockAccount = () => ({
   homeAccountId: faker.string.uuid(),
@@ -251,7 +248,7 @@ describe('AzureTokenRefreshManager', () => {
       ]);
     });
 
-    it('should schedule retry when token refresh fails with active clients', async () => {
+    it('should not re-authenticate when token refresh fails', async () => {
       const azureAccountId = faker.string.uuid();
       const mockClient = createMockClient();
 
@@ -269,45 +266,9 @@ describe('AzureTokenRefreshManager', () => {
         mockRedisClientStorage.getClientsByDatabaseField,
       ).toHaveBeenCalled();
       expect(mockAzureAuthService.getRedisTokenByAccountId).toHaveBeenCalled();
-      // Should have scheduled a retry timer
-      expect(jest.getTimerCount()).toBe(1);
-    });
-
-    it('should retry token refresh after delay when initial refresh fails', async () => {
-      const azureAccountId = faker.string.uuid();
-      const mockClient = createMockClient();
-      const tokenResult = createMockTokenResult();
-
-      mockRedisClientStorage.getClientsByDatabaseField.mockReturnValue([
-        mockClient,
-      ]);
-      // First call fails, second succeeds (and triggers event flow)
-      mockAzureAuthService.getRedisTokenByAccountId
-        .mockResolvedValueOnce(null)
-        .mockImplementationOnce(async () => {
-          await manager.handleTokenAcquired({
-            accountId: azureAccountId,
-            tokenResult,
-          });
-          return tokenResult;
-        });
-
-      const expiresOn = new Date(Date.now() + TOKEN_REFRESH_BUFFER_MS + 1000);
-      manager.scheduleRefresh(azureAccountId, expiresOn);
-
-      // First timer fires - token refresh fails
-      await jest.advanceTimersByTimeAsync(1000);
-      expect(
-        mockAzureAuthService.getRedisTokenByAccountId,
-      ).toHaveBeenCalledTimes(1);
+      // No re-auth should happen, no retry timer scheduled
       expect(mockClient.call).not.toHaveBeenCalled();
-
-      // Retry timer fires - token refresh succeeds
-      await jest.advanceTimersByTimeAsync(TOKEN_REFRESH_RETRY_DELAY_MS);
-      expect(
-        mockAzureAuthService.getRedisTokenByAccountId,
-      ).toHaveBeenCalledTimes(2);
-      expect(mockClient.call).toHaveBeenCalled();
+      expect(jest.getTimerCount()).toBe(0);
     });
 
     it('should stop refresh cycle when no clients are using the account', async () => {
