@@ -22,6 +22,7 @@ import { HostingProvider } from 'src/modules/database/entities/database.entity';
 import { CloudProvider } from 'src/modules/database/models/provider-details';
 import { ImportAzureDatabaseDto, ImportAzureDatabaseResponse } from './dto';
 import ERROR_MESSAGES from 'src/constants/error-messages';
+import { AzureOAuthException } from '../exceptions';
 
 @Injectable()
 export class AzureAutodiscoveryService {
@@ -61,8 +62,20 @@ export class AzureAutodiscoveryService {
   private async getAuthenticatedClient(
     accountId: string,
   ): Promise<AxiosInstance | null> {
-    const tokenResult =
-      await this.authService.getManagementTokenByAccountId(accountId);
+    let tokenResult;
+    try {
+      tokenResult =
+        await this.authService.getManagementTokenByAccountId(accountId);
+    } catch (error) {
+      // Re-throw Azure OAuth exceptions (MFA, consent, etc.) to be handled by caller
+      if (error instanceof AzureOAuthException) {
+        throw error;
+      }
+      this.logger.warn(
+        `Failed to get management token: ${(error as Error).message}`,
+      );
+      return null;
+    }
 
     if (!tokenResult) {
       this.logger.warn('No valid management token available');
@@ -333,8 +346,19 @@ export class AzureAutodiscoveryService {
     accountId: string,
     database: AzureRedisDatabase,
   ): Promise<AzureConnectionDetails | null> {
-    const tokenResult =
-      await this.authService.getRedisTokenByAccountId(accountId);
+    let tokenResult;
+    try {
+      tokenResult = await this.authService.getRedisTokenByAccountId(accountId);
+    } catch (error) {
+      // Re-throw Azure OAuth exceptions (MFA, consent, etc.) to be handled by caller
+      if (error instanceof AzureOAuthException) {
+        throw error;
+      }
+      this.logger.debug(
+        `Failed to get Redis token for ${database.name}: ${(error as Error).message}`,
+      );
+      return null;
+    }
 
     if (!tokenResult) {
       this.logger.debug(

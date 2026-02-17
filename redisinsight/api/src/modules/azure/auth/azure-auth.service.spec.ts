@@ -213,11 +213,23 @@ describe('AzureAuthService', () => {
       expect(result).toBeNull();
     });
 
-    it('should throw AzureOAuthException when token acquisition fails with AADSTS error', async () => {
+    it('should throw AzureOAuthException when token acquisition fails with known AADSTS error', async () => {
       const mockAccount = createMockAccount();
       mockTokenCache.getAllAccounts.mockResolvedValue([mockAccount]);
       mockPca.acquireTokenSilent.mockRejectedValue(
         new Error('AADSTS50076: MFA required'),
+      );
+
+      await expect(
+        service.getRedisTokenByAccountId(mockAccount.homeAccountId),
+      ).rejects.toThrow(AzureOAuthException);
+    });
+
+    it('should throw AzureOAuthException when token acquisition fails with unknown AADSTS error', async () => {
+      const mockAccount = createMockAccount();
+      mockTokenCache.getAllAccounts.mockResolvedValue([mockAccount]);
+      mockPca.acquireTokenSilent.mockRejectedValue(
+        new Error('AADSTS50126: Invalid username or password'),
       );
 
       await expect(
@@ -303,11 +315,23 @@ describe('AzureAuthService', () => {
       expect(result).toBeNull();
     });
 
-    it('should throw AzureOAuthException when token acquisition fails with AADSTS error', async () => {
+    it('should throw AzureOAuthException when token acquisition fails with known AADSTS error', async () => {
       const mockAccount = createMockAccount();
       mockTokenCache.getAllAccounts.mockResolvedValue([mockAccount]);
       mockPca.acquireTokenSilent.mockRejectedValue(
         new Error('AADSTS65001: Consent required'),
+      );
+
+      await expect(
+        service.getManagementTokenByAccountId(mockAccount.homeAccountId),
+      ).rejects.toThrow(AzureOAuthException);
+    });
+
+    it('should throw AzureOAuthException when token acquisition fails with unknown AADSTS error', async () => {
+      const mockAccount = createMockAccount();
+      mockTokenCache.getAllAccounts.mockResolvedValue([mockAccount]);
+      mockPca.acquireTokenSilent.mockRejectedValue(
+        new Error('AADSTS50053: Account is locked'),
       );
 
       await expect(

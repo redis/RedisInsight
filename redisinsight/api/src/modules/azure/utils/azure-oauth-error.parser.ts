@@ -46,6 +46,9 @@ const MS_ERROR_MAPPING: Record<
   },
 };
 
+// Regex to detect any AADSTS error code (e.g., AADSTS50126, AADSTS50053)
+const AADSTS_REGEX = /AADSTS\d+/i;
+
 /**
  * Parse an Azure OAuth error string and return structured error information.
  * Detects specific Microsoft Entra ID error codes (AADSTS*) and maps them to
@@ -53,7 +56,7 @@ const MS_ERROR_MAPPING: Record<
  *
  * @param error - The error string from Azure OAuth response
  * @param errorDescription - Optional error description with more details
- * @returns Parsed error with message, error code, and MS error code if a known
+ * @returns Parsed error with message, error code, and MS error code if an
  *          AADSTS error is found, or null for non-AADSTS errors
  */
 export const parseAzureOAuthError = (
@@ -62,6 +65,7 @@ export const parseAzureOAuthError = (
 ): ParsedAzureOAuthError | null => {
   const description = errorDescription || error || '';
 
+  // First, check for known AADSTS errors with specific handling
   for (const msErrorCode of Object.values(MsEntraIdErrorCode)) {
     if (description.includes(msErrorCode)) {
       const mapping = MS_ERROR_MAPPING[msErrorCode];
@@ -71,6 +75,15 @@ export const parseAzureOAuthError = (
         msErrorCode,
       };
     }
+  }
+
+  // Check for any AADSTS error (unknown codes) - these should still be treated
+  // as Azure OAuth errors, not as token expiry
+  if (AADSTS_REGEX.test(description)) {
+    return {
+      message: `${ERROR_MESSAGES.AZURE_OAUTH_UNKNOWN_ERROR} ${description}`,
+      errorCode: CustomErrorCodes.AzureOAuthUnknownError,
+    };
   }
 
   // Return null for non-AADSTS errors to allow caller to handle them differently
