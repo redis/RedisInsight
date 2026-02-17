@@ -71,7 +71,7 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
     );
 
     const timeout = setTimeout(() => {
-      this.refreshTokenAndReauth(azureAccountId).catch((error) => {
+      this.refreshToken(azureAccountId).catch((error) => {
         this.logger.error(
           `Token refresh failed for account ${azureAccountId}: ${error.message}`,
         );
@@ -94,7 +94,7 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
     this.timers.clear();
   }
 
-  private async refreshTokenAndReauth(azureAccountId: string): Promise<void> {
+  private async refreshToken(azureAccountId: string): Promise<void> {
     this.logger.debug(`Refreshing token for account ${azureAccountId}`);
 
     this.timers.delete(azureAccountId);
@@ -123,10 +123,10 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
       // Schedule a retry to handle transient auth failures
       // This prevents permanent loss of token renewal for active clients
       this.scheduleRetry(azureAccountId);
-      return;
     }
 
-    await this.reAuthenticateClients(azureAccountId, tokenResult);
+    // When token is acquired, AzureAuthService emits an event
+    // which triggers handleTokenAcquired() -> reAuthenticateClients()
   }
 
   private async reAuthenticateClients(
@@ -187,9 +187,9 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
     );
 
     const timeout = setTimeout(() => {
-      this.refreshTokenAndReauth(azureAccountId).catch((error) => {
+      this.refreshToken(azureAccountId).catch((error) => {
         this.logger.error(
-          `Token refresh retry failed for account ${azureAccountId}: ${error.message}`,
+          `Token refresh failed for account ${azureAccountId}: ${error.message}`,
         );
       });
     }, TOKEN_REFRESH_RETRY_DELAY_MS);

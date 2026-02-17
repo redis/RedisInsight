@@ -211,14 +211,23 @@ describe('AzureTokenRefreshManager', () => {
     });
   });
 
-  describe('refreshTokenAndReauth (timer callback)', () => {
-    it('should refresh token and re-authenticate clients when timer fires', async () => {
+  describe('refreshToken (timer callback)', () => {
+    it('should refresh token when timer fires (re-auth happens via event)', async () => {
       const azureAccountId = faker.string.uuid();
       const tokenResult = createMockTokenResult();
       const mockClient = createMockClient();
 
-      mockAzureAuthService.getRedisTokenByAccountId.mockResolvedValue(
-        tokenResult,
+      // Simulate event flow: when getRedisTokenByAccountId succeeds,
+      // AzureAuthService emits event -> handleTokenAcquired is called
+      mockAzureAuthService.getRedisTokenByAccountId.mockImplementation(
+        async () => {
+          // Simulate event triggering handleTokenAcquired
+          await manager.handleTokenAcquired({
+            accountId: azureAccountId,
+            tokenResult,
+          });
+          return tokenResult;
+        },
       );
       mockRedisClientStorage.getClientsByDatabaseField.mockReturnValue([
         mockClient,
@@ -272,10 +281,16 @@ describe('AzureTokenRefreshManager', () => {
       mockRedisClientStorage.getClientsByDatabaseField.mockReturnValue([
         mockClient,
       ]);
-      // First call fails, second succeeds
+      // First call fails, second succeeds (and triggers event flow)
       mockAzureAuthService.getRedisTokenByAccountId
         .mockResolvedValueOnce(null)
-        .mockResolvedValueOnce(tokenResult);
+        .mockImplementationOnce(async () => {
+          await manager.handleTokenAcquired({
+            accountId: azureAccountId,
+            tokenResult,
+          });
+          return tokenResult;
+        });
 
       const expiresOn = new Date(Date.now() + TOKEN_REFRESH_BUFFER_MS + 1000);
       manager.scheduleRefresh(azureAccountId, expiresOn);
@@ -325,8 +340,14 @@ describe('AzureTokenRefreshManager', () => {
 
       mockClient1.call.mockRejectedValue(new Error('Auth failed'));
 
-      mockAzureAuthService.getRedisTokenByAccountId.mockResolvedValue(
-        tokenResult,
+      mockAzureAuthService.getRedisTokenByAccountId.mockImplementation(
+        async () => {
+          await manager.handleTokenAcquired({
+            accountId: azureAccountId,
+            tokenResult,
+          });
+          return tokenResult;
+        },
       );
       mockRedisClientStorage.getClientsByDatabaseField.mockReturnValue([
         mockClient1,
@@ -350,8 +371,14 @@ describe('AzureTokenRefreshManager', () => {
         new Date(Date.now() - 60 * 60 * 1000),
       );
 
-      mockAzureAuthService.getRedisTokenByAccountId.mockResolvedValue(
-        tokenResult,
+      mockAzureAuthService.getRedisTokenByAccountId.mockImplementation(
+        async () => {
+          await manager.handleTokenAcquired({
+            accountId: azureAccountId,
+            tokenResult,
+          });
+          return tokenResult;
+        },
       );
       mockRedisClientStorage.getClientsByDatabaseField.mockReturnValue([
         clientWithCurrentToken,
@@ -378,8 +405,14 @@ describe('AzureTokenRefreshManager', () => {
       const tokenResult = createMockTokenResult();
       const mockClient = createMockClient();
 
-      mockAzureAuthService.getRedisTokenByAccountId.mockResolvedValue(
-        tokenResult,
+      mockAzureAuthService.getRedisTokenByAccountId.mockImplementation(
+        async () => {
+          await manager.handleTokenAcquired({
+            accountId: azureAccountId,
+            tokenResult,
+          });
+          return tokenResult;
+        },
       );
       mockRedisClientStorage.getClientsByDatabaseField.mockReturnValue([
         mockClient,
@@ -401,8 +434,14 @@ describe('AzureTokenRefreshManager', () => {
       const client1 = createMockClient(tokenResult.expiresOn);
       const client2 = createMockClient(tokenResult.expiresOn);
 
-      mockAzureAuthService.getRedisTokenByAccountId.mockResolvedValue(
-        tokenResult,
+      mockAzureAuthService.getRedisTokenByAccountId.mockImplementation(
+        async () => {
+          await manager.handleTokenAcquired({
+            accountId: azureAccountId,
+            tokenResult,
+          });
+          return tokenResult;
+        },
       );
       mockRedisClientStorage.getClientsByDatabaseField.mockReturnValue([
         client1,
