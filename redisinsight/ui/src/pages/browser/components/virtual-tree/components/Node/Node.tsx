@@ -23,12 +23,12 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
-import { DeleteKeyPopover } from '../../../delete-key-popover/DeleteKeyPopover'
-import { TreeData } from '../../interfaces'
-import styles from './styles.module.scss'
 import { Flex, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
+import styles from './styles.module.scss'
 import * as S from './Node.styles'
+import { TreeData } from '../../VirtualTree.types'
+import { DeleteKeyPopover } from '../../../delete-key-popover/DeleteKeyPopover'
 
 const MAX_NESTING_LEVEL = 20
 

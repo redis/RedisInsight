@@ -25,7 +25,7 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
 
 import { Node } from './components/Node'
-import { NodeMeta, TreeData, TreeNode } from './interfaces'
+import { NodeMeta, TreeData, TreeNode } from './VirtualTree.types'
 
 import styles from './styles.module.scss'
 

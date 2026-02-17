@@ -72,7 +72,7 @@ export const initialState: StateAppFeatures = {
         flag: false,
       },
       [FeatureFlags.devBrowser]: {
-        flag: false,
+        flag: true,
       },
     },
   },
