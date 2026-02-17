@@ -1,21 +1,16 @@
 import React from 'react'
 
-import {
-  KeysBrowserRoot,
-  KeysBrowserHeaderContainer,
-  KeysBrowserContentContainer,
-  KeysBrowserFooterContainer,
-} from './KeysBrowser.styles'
 import { KeysBrowserSlotProps } from './KeysBrowser.types'
+import * as S from './KeysBrowser.styles'
 
 const KeysBrowserCompose = ({
   children,
   className,
   'data-testid': testId,
 }: KeysBrowserSlotProps) => (
-  <KeysBrowserRoot className={className} data-testid={testId ?? 'keys-browser'}>
+  <S.Root className={className} data-testid={testId ?? 'keys-browser'}>
     {children}
-  </KeysBrowserRoot>
+  </S.Root>
 )
 
 const KeysBrowserHeader = ({
@@ -23,13 +18,13 @@ const KeysBrowserHeader = ({
   className,
   'data-testid': testId,
 }: KeysBrowserSlotProps) => (
-  <KeysBrowserHeaderContainer
+  <S.HeaderContainer
     grow={false}
     className={className}
     data-testid={testId ?? 'keys-browser-header'}
   >
     {children}
-  </KeysBrowserHeaderContainer>
+  </S.HeaderContainer>
 )
 
 const KeysBrowserContent = ({
@@ -37,12 +32,12 @@ const KeysBrowserContent = ({
   className,
   'data-testid': testId,
 }: KeysBrowserSlotProps) => (
-  <KeysBrowserContentContainer
+  <S.ContentContainer
     className={className}
     data-testid={testId ?? 'keys-browser-content'}
   >
     {children}
-  </KeysBrowserContentContainer>
+  </S.ContentContainer>
 )
 
 const KeysBrowserFooter = ({
@@ -50,14 +45,14 @@ const KeysBrowserFooter = ({
   className,
   'data-testid': testId,
 }: KeysBrowserSlotProps) => (
-  <KeysBrowserFooterContainer
+  <S.FooterContainer
     align="center"
     grow={false}
     className={className}
     data-testid={testId ?? 'keys-browser-footer'}
   >
     {children}
-  </KeysBrowserFooterContainer>
+  </S.FooterContainer>
 )
 
 export const KeysBrowser = {
