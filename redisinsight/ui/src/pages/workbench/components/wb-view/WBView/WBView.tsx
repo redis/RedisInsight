@@ -123,17 +123,14 @@ const WBView = (props: Props) => {
     verticalPanelSizesRef.current = newSizes
   }, [])
 
-  const handleToggleOpen = useCallback(
-    (id: string, isOpen: boolean) => {
-      dispatch(toggleOpenWBResult(id))
+  const handleToggleOpen = (id: string, isOpen: boolean) => {
+    dispatch(toggleOpenWBResult(id))
 
-      const item = items.find((i) => i.id === id)
-      if (isOpen && !item?.result) {
-        onQueryOpen(id)
-      }
-    },
-    [dispatch, items, onQueryOpen],
-  )
+    const item = items.find((i) => i.id === id)
+    if (isOpen && !item?.result) {
+      onQueryOpen(id)
+    }
+  }
 
   const handleSubmit = (value?: string) => {
     sendEventSubmitTelemetry(TelemetryEvent.WORKBENCH_COMMAND_SUBMITTED, value)
