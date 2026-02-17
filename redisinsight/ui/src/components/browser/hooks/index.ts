@@ -1,4 +1,1 @@
-export {
-  useResponsiveColumns,
-  getEffectiveColumns,
-} from './useResponsiveColumns'
+export { useResponsiveColumns } from './useResponsiveColumns'

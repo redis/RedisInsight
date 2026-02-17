@@ -11,7 +11,7 @@ import { BrowserColumns } from 'uiSrc/constants'
 const BREAKPOINT_HIDE_SIZE = 500
 const BREAKPOINT_HIDE_TTL = 400
 
-export const getEffectiveColumns = (
+const getEffectiveColumns = (
   shownColumns: BrowserColumns[],
   width: number,
 ): BrowserColumns[] => {

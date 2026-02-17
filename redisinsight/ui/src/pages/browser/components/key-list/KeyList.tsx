@@ -53,12 +53,11 @@ import KeyRowType from 'uiSrc/pages/browser/components/key-row-type'
 
 import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
 
+import * as S from './KeyList.styles'
+import { Props } from './KeyList.types'
 import NoKeysMessage from '../no-keys-message'
 import { DeleteKeyPopover } from '../delete-key-popover/DeleteKeyPopover'
 import { useKeyFormat } from '../use-key-format'
-import * as S from './KeyList.styles'
-
-import { Props } from './KeyList.types'
 
 const cellCache = new CellMeasurerCache({
   fixedWidth: true,

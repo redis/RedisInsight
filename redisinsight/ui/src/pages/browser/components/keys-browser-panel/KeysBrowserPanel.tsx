@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
+import { isNull } from 'lodash'
 import {
   appContextBrowser,
   appContextDbConfig,
@@ -47,7 +48,6 @@ import {
 } from 'uiSrc/telemetry'
 import { OnboardingStepName, OnboardingSteps } from 'uiSrc/constants/onboarding'
 import { incrementOnboardStepAction } from 'uiSrc/slices/app/features'
-import { isNull } from 'lodash'
 import { AutoRefresh } from 'uiSrc/components'
 import ScanMore from 'uiSrc/components/scan-more'
 import { numberWithSpaces, nullableNumberWithSpaces } from 'uiSrc/utils/numbers'
@@ -63,11 +63,10 @@ import {
   useResponsiveColumns,
 } from 'uiSrc/components/browser'
 
+import * as S from './KeysBrowserPanel.styles'
 import KeyList from '../key-list'
 import KeyTree, { KeyTreeSettings } from '../key-tree'
 import { Props } from '../browser-left-panel/BrowserLeftPanel'
-
-import * as S from './KeysBrowserPanel.styles'
 
 const HIDE_REFRESH_LABEL_WIDTH = 640
 
