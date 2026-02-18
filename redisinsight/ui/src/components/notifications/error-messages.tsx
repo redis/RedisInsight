@@ -6,6 +6,7 @@ import RdiDeployErrorContent from './components/rdi-deploy-error-content'
 import { EncryptionErrorContent, DefaultErrorContent } from './components'
 import CloudCapiUnAuthorizedErrorContent from './components/cloud-capi-unauthorized'
 import { AzureTokenExpiredErrorContent } from './components/azure-token-expired'
+import { PersistentErrorContent } from './components/persistent-error-content'
 import { NotificationTextLengthThreshold } from 'uiSrc/components/notifications/constants'
 import { handleDownloadButton } from 'uiSrc/utils'
 
@@ -86,5 +87,14 @@ export default {
     description: (
       <AzureTokenExpiredErrorContent text={message} onClose={onClose} />
     ),
+  }),
+  PERSISTENT: (
+    { message, title }: { message: string; title?: string },
+    onClose: () => void,
+  ) => ({
+    'data-testid': 'toast-error-persistent',
+    customIcon: ToastDangerIcon,
+    message: title,
+    description: <PersistentErrorContent text={message} onClose={onClose} />,
   }),
 }
