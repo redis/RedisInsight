@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 
 import { IRedisCommand } from 'uiSrc/constants'
 import { LoadingContent } from 'uiSrc/components/base/layout'
@@ -33,6 +34,7 @@ export const QueryEditorWrapper = ({
   setQuery,
   onSubmit,
 }: QueryEditorWrapperProps) => {
+  const { indexName } = useParams<{ indexName?: string }>()
   const [activeTab, setActiveTab] = useState<EditorTab>(EditorTab.Editor)
 
   const dispatch = useDispatch()
@@ -74,6 +76,7 @@ export const QueryEditorWrapper = ({
         setQuery,
         commands: REDIS_COMMANDS,
         indexes,
+        activeIndexName: indexName ? decodeURIComponent(indexName) : undefined,
         isLoading: loading || processing,
         onSubmit,
       }}

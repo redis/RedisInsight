@@ -29,6 +29,7 @@ export const findSuggestionsByArg = (
   additionData: {
     indexes?: any[]
     fields?: any[]
+    activeIndexName?: string
   },
   isEscaped: boolean = false,
 ): {
@@ -83,7 +84,7 @@ export const findSuggestionsByArg = (
     )
   }
 
-  const { indexes, fields } = additionData
+  const { indexes, fields, activeIndexName } = additionData
   switch (foundArg?.stopArg?.name) {
     case DefinedArgumentName.index: {
       return handleIndexSuggestions(
@@ -92,6 +93,7 @@ export const findSuggestionsByArg = (
         foundArg,
         currentOffsetArg,
         cursorContext,
+        activeIndexName,
       )
     }
     case DefinedArgumentName.query: {
@@ -128,6 +130,7 @@ const handleIndexSuggestions = (
   foundArg: FoundCommandArgument,
   currentOffsetArg: Nullable<string>,
   cursorContext: CursorContext,
+  activeIndexName?: string,
 ) => {
   const isIndex = indexes.length > 0
   const helpWidget = {
@@ -172,7 +175,12 @@ const handleIndexSuggestions = (
 
   return {
     suggestions: asSuggestionsRef(
-      getIndexesSuggestions(indexes, cursorContext.range, isNextArgQuery),
+      getIndexesSuggestions(
+        indexes,
+        cursorContext.range,
+        isNextArgQuery,
+        activeIndexName,
+      ),
     ),
     helpWidget,
   }
