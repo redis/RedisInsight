@@ -140,13 +140,11 @@ const WBView = (props: Props) => {
     commandId?: Nullable<string>,
     executeParams: CodeButtonParams = {},
   ) => {
-    sendEventTelemetry({
-      event: TelemetryEvent.WORKBENCH_COMMAND_RUN_AGAIN,
-      eventData: {
-        command: query,
-        databaseId: instanceId,
-      },
-    })
+    sendEventSubmitTelemetry(
+      TelemetryEvent.WORKBENCH_COMMAND_RUN_AGAIN,
+      query,
+      executeParams,
+    )
     onSubmit(query, commandId, executeParams)
   }
 
