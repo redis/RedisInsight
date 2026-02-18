@@ -1,24 +1,33 @@
 import styled from 'styled-components'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 
-export const Container = styled.div`
+export const Container = styled(Col)`
   height: 100%;
   overflow: hidden;
 `
 
-export const TabsRow = styled(Row).attrs({ align: 'end', grow: true })`
-  border-bottom: 1px solid
-    ${({ theme }) => theme.semantic?.color?.border?.neutral500};
+export const TabsRow = styled(Row).attrs({ grow: false })`
+  position: relative;
+  flex-shrink: 0;
+  padding-left: ${({ theme }) => theme.core?.space?.space150};
 `
 
-export const TabsWrapper = styled(FlexItem)`
-  min-width: 0;
-`
-
-export const InfoIconWrapper = styled(Col).attrs({
+export const InfoIconWrapper = styled(FlexItem).attrs({
   grow: false,
   align: 'center',
 })`
-  padding: 0 ${({ theme }) => theme.core?.space?.space200};
-  padding-bottom: ${({ theme }) => theme.core?.space?.space100};
+  position: absolute;
+  right: ${({ theme }) => theme.core?.space?.space200};
+  bottom: ${({ theme }) => theme.core?.space?.space100};
+`
+
+export const TreeWrapper = styled(Col)`
+  overflow: hidden;
+`
+
+export const ErrorWrapper = styled(Col).attrs({
+  contentCentered: true,
+})`
+  overflow: auto;
+  padding: ${({ theme }) => theme.core?.space?.space200};
 `

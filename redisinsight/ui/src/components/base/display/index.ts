@@ -11,3 +11,5 @@ export { RICollapsibleNavGroup } from './collapsible-nav-group/RICollapsibleNavG
 
 export type { RICollapsibleNavGroupProps } from './collapsible-nav-group/RICollapsibleNavGroup'
 export * from './section'
+
+export * from './call-out/CallOut'
