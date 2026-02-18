@@ -71,6 +71,15 @@ export const useErrorNotifications = () => {
             { message, title },
             () => removeToast(id),
           )
+          // Show as informative toast, not error
+          const toastId = riToast(errorMessage, {
+            variant: riToast.Variant.Informative,
+            toastId: id,
+            containerId: defaultContainerId,
+            autoClose: false,
+          })
+          toastIdsRef.current.set(id, toastId)
+          return
         } else if (persistent) {
           errorMessage = errorMessages.PERSISTENT({ message, title }, () =>
             removeToast(id),
