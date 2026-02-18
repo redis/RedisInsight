@@ -22,7 +22,7 @@ const TypeTabs = () => {
       onChange={(value: string) => handleTabChange(value as KeyTypes)}
       data-testid="vs-keys-type-tabs"
     >
-      <Tabs.TabBar.Compose>
+      <S.TabBar>
         {TABS.map((tab) => (
           <Tabs.TabBar.Trigger value={tab.value} key={tab.value}>
             {tab.label}
@@ -42,7 +42,7 @@ const TypeTabs = () => {
             />
           </RiTooltip>
         </S.InfoIconWrapper>
-      </Tabs.TabBar.Compose>
+      </S.TabBar>
     </Tabs.Compose>
   )
 }
