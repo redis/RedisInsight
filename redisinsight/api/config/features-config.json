@@ -1,5 +1,5 @@
 {
-  "version": 2.74,
+  "version": 10,
   "features": {
     "redisDataIntegration": {
       "flag": true,
@@ -119,11 +119,11 @@
       "perc": [[0, 100]]
     },
     "vectorSearch": {
-      "flag": false,
+      "flag": true,
       "perc": [[0, 100]]
     },
     "dev-vectorSearch": {
-      "flag": false,
+      "flag": true,
       "perc": [[0, 100]]
     },
     "databasesListV2": {

@@ -274,17 +274,6 @@ const useQuery = () => {
     }
   }, [])
 
-  const handleQueryProfile = useCallback(
-    (
-      queryInit?: string,
-      commandId?: Nullable<string>,
-      executeParams: CodeButtonParams = {},
-    ) => {
-      onSubmit(queryInit, commandId, executeParams)
-    },
-    [onSubmit],
-  )
-
   const handleChangeQueryRunMode = useCallback(() => {
     setActiveRunQueryMode((prev) =>
       prev === RunQueryMode.ASCII ? RunQueryMode.Raw : RunQueryMode.ASCII,
@@ -319,7 +308,7 @@ const useQuery = () => {
     onQueryChangeMode: handleChangeQueryRunMode,
     onChangeGroupMode: handleChangeGroupMode,
     onQueryReRun: onSubmit,
-    onQueryProfile: handleQueryProfile,
+    onQueryProfile: onSubmit,
   }
 }
 
