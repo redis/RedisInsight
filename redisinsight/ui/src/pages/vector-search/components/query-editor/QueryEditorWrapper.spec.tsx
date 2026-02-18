@@ -29,8 +29,12 @@ describe('QueryEditorWrapper', () => {
     renderComponent()
 
     expect(screen.getByTestId('editor-library-toggle')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Editor' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Library' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /Query editor/i }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /Query library/i }),
+    ).toBeInTheDocument()
   })
 
   it('should render editor view by default', () => {
@@ -43,7 +47,7 @@ describe('QueryEditorWrapper', () => {
   it('should switch to library view when Library toggle is clicked', () => {
     renderComponent()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Library' }))
+    fireEvent.click(screen.getByRole('button', { name: /Query library/i }))
 
     expect(
       screen.getByTestId('vector-search-library-placeholder'),
@@ -55,11 +59,11 @@ describe('QueryEditorWrapper', () => {
     renderComponent()
 
     // Switch to library
-    fireEvent.click(screen.getByRole('button', { name: 'Library' }))
+    fireEvent.click(screen.getByRole('button', { name: /Query library/i }))
     expect(screen.queryByTestId('vector-search-editor')).not.toBeInTheDocument()
 
     // Switch back to editor
-    fireEvent.click(screen.getByRole('button', { name: 'Editor' }))
+    fireEvent.click(screen.getByRole('button', { name: /Query editor/i }))
     expect(screen.getByTestId('vector-search-editor')).toBeInTheDocument()
   })
 })
