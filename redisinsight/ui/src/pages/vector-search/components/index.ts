@@ -1,4 +1,5 @@
 export * from './index-details'
+export * from './keys-browser'
 export * from './pick-sample-data-modal'
 export * from './rqe-not-available'
 export * from './index-list'
