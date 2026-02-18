@@ -288,4 +288,15 @@ describe('ERROR_MESSAGES', () => {
       expect(result.description).toBeDefined()
     })
   })
+
+  describe('PERSISTENT', () => {
+    it('should return persistent error notification with correct data-testid', () => {
+      const result = ERROR_MESSAGES.PERSISTENT(
+        { message: 'Error text' },
+        () => {},
+      )
+
+      expect(result['data-testid']).toBe('toast-error-persistent')
+    })
+  })
 })
