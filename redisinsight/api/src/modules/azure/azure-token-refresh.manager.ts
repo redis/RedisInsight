@@ -109,14 +109,7 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
       return;
     }
 
-    const tokenResult =
-      await this.azureAuthService.getRedisTokenByAccountId(azureAccountId);
-
-    if (!tokenResult) {
-      this.logger.warn(
-        `Failed to get fresh token for account ${azureAccountId}`,
-      );
-    }
+    await this.azureAuthService.getRedisTokenByAccountId(azureAccountId);
   }
 
   private async reAuthenticateClients(
