@@ -12,9 +12,7 @@ import * as S from './KeysBrowser.styles'
 const KeysBrowserInner = () => (
   <S.Container>
     <KeysBrowserLayout.Compose data-testid="vs-keys-browser">
-      <KeysBrowserLayout.Header>
-        <Header />
-      </KeysBrowserLayout.Header>
+      <Header />
 
       <KeysBrowserLayout.Content>
         <Content />

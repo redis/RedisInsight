@@ -2,10 +2,11 @@ import React from 'react'
 
 import { AutoRefresh } from 'uiSrc/components'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
+import { Title } from 'uiSrc/components/base/text'
 import { KeyTreeSettings } from 'uiSrc/pages/browser/components/key-tree'
 
 import { useKeysBrowser } from '../hooks/useKeysBrowser'
+import * as S from '../KeysBrowser.styles'
 
 const Header = () => {
   const {
@@ -17,31 +18,33 @@ const Header = () => {
   } = useKeysBrowser()
 
   return (
-    <Row align="center" justify="between">
-      <FlexItem grow={false}>
-        <Text size="m" variant="semiBold">
-          Select key
-        </Text>
-      </FlexItem>
-      <Row gap="m" align="center" grow={false}>
-        <FlexItem>
-          <AutoRefresh
-            iconSize="S"
-            postfix="vs-keys"
-            loading={loading}
-            lastRefreshTime={keysState.lastRefreshTime}
-            displayText={false}
-            onRefresh={handleRefreshKeys}
-            onEnableAutoRefresh={handleEnableAutoRefresh}
-            onChangeAutoRefreshRate={handleChangeAutoRefreshRate}
-            testid="vs-keys"
-          />
+    <S.HeaderWrapper>
+      <Row align="center" justify="between">
+        <FlexItem grow={false}>
+          <Title size="S" variant="semiBold" color="primary">
+            Select key
+          </Title>
         </FlexItem>
-        <FlexItem>
-          <KeyTreeSettings loading={loading} />
-        </FlexItem>
+        <Row gap="m" align="center" grow={false}>
+          <FlexItem>
+            <AutoRefresh
+              iconSize="S"
+              postfix="vs-keys"
+              loading={loading}
+              lastRefreshTime={keysState.lastRefreshTime}
+              displayLastRefresh={false}
+              onRefresh={handleRefreshKeys}
+              onEnableAutoRefresh={handleEnableAutoRefresh}
+              onChangeAutoRefreshRate={handleChangeAutoRefreshRate}
+              testid="vs-keys"
+            />
+          </FlexItem>
+          <FlexItem>
+            <KeyTreeSettings loading={loading} />
+          </FlexItem>
+        </Row>
       </Row>
-    </Row>
+    </S.HeaderWrapper>
   )
 }
 
