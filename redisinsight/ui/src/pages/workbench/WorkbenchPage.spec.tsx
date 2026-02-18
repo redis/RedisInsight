@@ -149,6 +149,56 @@ describe('Telemetry', () => {
     ;(sendEventTelemetry as jest.Mock).mockRestore()
   })
 
+  it('should send proper eventData without Raw mode', async () => {
+    const sendEventTelemetryMock = jest.fn()
+    ;(sendEventTelemetry as jest.Mock).mockImplementation(
+      () => sendEventTelemetryMock,
+    )
+
+    render(<WorkbenchPage />)
+
+    // send command without Raw mode
+    fireEvent.click(screen.getByTestId('btn-submit'))
+
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
+      event: TelemetryEvent.WORKBENCH_COMMAND_SUBMITTED,
+      eventData: {
+        command: 'INFO',
+        databaseId: INSTANCE_ID_MOCK,
+        results: 'single',
+        multiple: 'Single',
+        pipeline: true,
+        rawMode: false,
+      },
+    })
+    ;(sendEventTelemetry as jest.Mock).mockRestore()
+  })
+
+  it('should send proper eventData with Raw mode', async () => {
+    const sendEventTelemetryMock = jest.fn()
+    ;(sendEventTelemetry as jest.Mock).mockImplementation(
+      () => sendEventTelemetryMock,
+    )
+
+    render(<WorkbenchPage />)
+
+    // send command with Raw mode
+    fireEvent.click(screen.getByTestId('btn-submit'))
+
+    expect(sendEventTelemetry).toHaveBeenCalledWith({
+      event: TelemetryEvent.WORKBENCH_COMMAND_SUBMITTED,
+      eventData: {
+        command: 'INFO',
+        databaseId: INSTANCE_ID_MOCK,
+        results: 'single',
+        multiple: 'Single',
+        pipeline: true,
+        rawMode: false,
+      },
+    })
+    ;(sendEventTelemetry as jest.Mock).mockRestore()
+  })
+
   it('Results: should send telemetry on re-run', async () => {
     const sendEventTelemetryMock = jest.fn()
     ;(sendEventTelemetry as jest.Mock).mockImplementation(
@@ -162,8 +212,13 @@ describe('Telemetry', () => {
     expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.WORKBENCH_COMMAND_RUN_AGAIN,
       eventData: {
-        command: 'info',
-        databaseId: 'instanceId',
+        auto: undefined,
+        pipeline: undefined,
+        command: 'INFO',
+        databaseId: INSTANCE_ID_MOCK,
+        multiple: 'Single',
+        results: 'single',
+        rawMode: true,
       },
     })
     ;(sendEventTelemetry as jest.Mock).mockRestore()
