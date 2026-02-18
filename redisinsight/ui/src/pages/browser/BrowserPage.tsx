@@ -1,9 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
 import { isNumber } from 'lodash'
-import styled from 'styled-components'
 
 import {
   formatLongName,
@@ -40,17 +38,15 @@ import {
   SCAN_COUNT_DEFAULT,
   SCAN_TREE_COUNT_DEFAULT,
 } from 'uiSrc/constants/api'
+import { FeatureFlags } from 'uiSrc/constants/featureFlags'
+import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import OnboardingStartPopover from 'uiSrc/pages/browser/components/onboarding-start-popover'
 import { sidePanelsSelector } from 'uiSrc/slices/panels/sidePanels'
 import { useStateWithContext } from 'uiSrc/services/hooks'
 
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { ArrowLeftIcon } from 'uiSrc/components/base/icons'
-import {
-  ResizableContainer,
-  ResizablePanel,
-  ResizablePanelHandle,
-} from 'uiSrc/components/base/layout'
+import { ResizablePanelHandle } from 'uiSrc/components/base/layout'
 
 import { useAppNavigationActions } from 'uiSrc/contexts/AppNavigationActionsProvider'
 import Actions from 'uiSrc/pages/browser/components/actions/Actions'
@@ -58,18 +54,13 @@ import BrowserSearchPanel from './components/browser-search-panel'
 import BrowserLeftPanel from './components/browser-left-panel'
 import BrowserRightPanel from './components/browser-right-panel'
 
-import styles from './styles.module.scss'
+import * as S from './BrowserPage.styles'
 
 const widthResponsiveSize = 1280
 const widthExplorePanel = 460
 
 export const firstPanelId = 'keys'
 export const secondPanelId = 'keyDetails'
-
-const BorderedResizablePanel = styled(ResizablePanel)`
-  border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
-`
 
 const isOneSideMode = (isInsightsOpen: boolean) =>
   globalThis.innerWidth <
@@ -97,6 +88,10 @@ const BrowserPage = () => {
   const { viewType, searchMode } = useSelector(keysSelector)
   const { openedPanel: openedSidePanel } = useSelector(sidePanelsSelector)
   const overview = useSelector(connectedInstanceOverviewSelector)
+  const featureFlags = useSelector(appFeatureFlagsFeaturesSelector)
+  const isDevBrowser = featureFlags?.[FeatureFlags.devBrowser]?.flag ?? false
+  const panelMinSize = isDevBrowser ? 20 : 45
+  const panelDefaultSize = 50
 
   const [isPageViewSent, setIsPageViewSent] = useState(false)
   const [arePanelsCollapsed, setArePanelsCollapsed] = useState(
@@ -300,43 +295,34 @@ const BrowserPage = () => {
     (arePanelsCollapsed && isRightPanelOpen)
 
   return (
-    <div
-      className={`browserPage ${styles.container}`}
-      data-testid="browser-page"
-    >
+    <S.PageContainer className="browserPage" data-testid="browser-page">
       {arePanelsCollapsed && isRightPanelOpen && !isBrowserFullScreen && (
-        <EmptyButton
-          icon={ArrowLeftIcon}
-          size="small"
-          onClick={closePanel}
-          className={styles.backBtn}
-          data-testid="back-right-panel-btn"
-        >
-          Back
-        </EmptyButton>
+        <S.BackButtonWrapper>
+          <EmptyButton
+            icon={ArrowLeftIcon}
+            size="small"
+            onClick={closePanel}
+            data-testid="back-right-panel-btn"
+          >
+            Back
+          </EmptyButton>
+        </S.BackButtonWrapper>
       )}
-      <div
-        className={cx({
-          [styles.hidden]: isRightPanelFullScreen,
-        })}
-      >
+      <S.SearchPanelWrapper $hidden={isRightPanelFullScreen}>
         <BrowserSearchPanel handleCreateIndexPanel={handleCreateIndexPanel} />
-      </div>
-      <div className={cx(styles.main)}>
-        <ResizableContainer
-          className={styles.resizableContainer}
+      </S.SearchPanelWrapper>
+      <S.MainContent grow>
+        <S.StyledResizableContainer
           direction="horizontal"
           onLayout={onPanelWidthChange}
         >
-          <BorderedResizablePanel
-            defaultSize={sizes && sizes[0] ? sizes[0] : 50}
-            minSize={45}
+          <S.BorderedResizablePanel
+            defaultSize={sizes && sizes[0] ? sizes[0] : panelDefaultSize}
+            minSize={panelMinSize}
             id={firstPanelId}
-            className={cx({
-              [styles.fullWidth]:
-                arePanelsCollapsed ||
-                (isBrowserFullScreen && !isRightPanelOpen),
-            })}
+            $fullWidth={
+              arePanelsCollapsed || (isBrowserFullScreen && !isRightPanelOpen)
+            }
           >
             <BrowserLeftPanel
               selectedKey={selectedKey}
@@ -345,21 +331,21 @@ const BrowserPage = () => {
               handleAddKeyPanel={handleAddKeyPanel}
               handleBulkActionsPanel={handleBulkActionsPanel}
             />
-          </BorderedResizablePanel>
+          </S.BorderedResizablePanel>
           {!arePanelsCollapsed && !isBrowserFullScreen && (
             <ResizablePanelHandle />
           )}
-          <BorderedResizablePanel
-            defaultSize={sizes && sizes[1] ? sizes[1] : 50}
-            minSize={45}
+          <S.BorderedResizablePanel
+            defaultSize={sizes && sizes[1] ? sizes[1] : panelDefaultSize}
+            minSize={panelMinSize}
             id={secondPanelId}
-            className={cx({
-              [styles.keyDetailsOpen]: isRightPanelOpen,
-              [styles.fullWidth]:
-                arePanelsCollapsed || (isRightPanelOpen && isBrowserFullScreen),
-              [styles.keyDetails]:
-                arePanelsCollapsed || (isRightPanelOpen && isBrowserFullScreen),
-            })}
+            $keyDetailsOpen={isRightPanelOpen}
+            $fullWidth={
+              arePanelsCollapsed || (isRightPanelOpen && isBrowserFullScreen)
+            }
+            $keyDetails={
+              arePanelsCollapsed || (isRightPanelOpen && isBrowserFullScreen)
+            }
           >
             <BrowserRightPanel
               arePanelsCollapsed={arePanelsCollapsed}
@@ -372,11 +358,11 @@ const BrowserPage = () => {
               handleBulkActionsPanel={handleBulkActionsPanel}
               closeRightPanels={closeRightPanels}
             />
-          </BorderedResizablePanel>
-        </ResizableContainer>
-      </div>
+          </S.BorderedResizablePanel>
+        </S.StyledResizableContainer>
+      </S.MainContent>
       <OnboardingStartPopover />
-    </div>
+    </S.PageContainer>
   )
 }
 

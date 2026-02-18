@@ -71,6 +71,9 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.azureEntraId]: {
         flag: false,
       },
+      [FeatureFlags.devBrowser]: {
+        flag: false,
+      },
     },
   },
 }

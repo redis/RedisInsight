@@ -1,5 +1,12 @@
 import { FixedSizeNodeData } from 'react-vtree'
-import { KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
+import {
+  BrowserColumns,
+  KeyTypes,
+  ModulesKeyTypes,
+  SortOrder,
+} from 'uiSrc/constants'
+import { IKeyPropTypes } from 'uiSrc/constants/prop-types/keys'
+import { Maybe, Nullable } from 'uiSrc/utils'
 import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces'
 
 export interface TreeNode {
@@ -56,4 +63,30 @@ export interface TreeData extends FixedSizeNodeData {
   onDelete: (key: RedisResponseBuffer) => void
   onDeleteClicked: (type: KeyTypes | ModulesKeyTypes) => void
   onDeleteFolder?: (pattern: string, fullName: string, keyCount: number) => void
+  visibleColumns?: BrowserColumns[]
+}
+
+export interface OpenedNodes {
+  [key: string]: boolean
+}
+
+export interface VirtualTreeProps {
+  items: IKeyPropTypes[]
+  delimiterPattern: string
+  delimiters: string[]
+  loadingIcon?: string
+  loading: boolean
+  deleting: boolean
+  sorting: Maybe<SortOrder>
+  commonFilterType: Nullable<KeyTypes>
+  statusSelected: Nullable<string>
+  statusOpen: OpenedNodes
+  webworkerFn: (...args: any) => any
+  onStatusOpen?: (name: string, value: boolean) => void
+  onStatusSelected?: (key: RedisString) => void
+  setConstructingTree: (status: boolean) => void
+  onDeleteLeaf: (key: RedisResponseBuffer) => void
+  onDeleteClicked: (type: KeyTypes | ModulesKeyTypes) => void
+  onDeleteFolder?: (pattern: string, fullName: string, keyCount: number) => void
+  visibleColumns?: BrowserColumns[]
 }

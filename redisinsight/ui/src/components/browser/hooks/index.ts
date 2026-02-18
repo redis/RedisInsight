@@ -1,0 +1,1 @@
+export { useResponsiveColumns } from './useResponsiveColumns'

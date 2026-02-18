@@ -35,6 +35,7 @@ export enum KnownFeatures {
   DevVectorSearch = 'dev-vectorSearch',
   DatabasesListV2 = 'databasesListV2',
   AzureEntraId = 'dev-azureEntraId',
+  DevBrowser = 'dev-browser',
 }
 
 export interface IFeatureFlag {

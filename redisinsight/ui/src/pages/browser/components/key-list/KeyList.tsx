@@ -7,7 +7,6 @@ import React, {
   useState,
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { debounce, findIndex, isUndefined, reject } from 'lodash'
 
@@ -34,7 +33,7 @@ import {
   appContextDbConfig,
 } from 'uiSrc/slices/app/context'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
-import { KeysStoreData, SearchMode } from 'uiSrc/slices/interfaces/keys'
+import { SearchMode } from 'uiSrc/slices/interfaces/keys'
 import VirtualTable from 'uiSrc/components/virtual-table/VirtualTable'
 import { ITableColumn } from 'uiSrc/components/virtual-table/interfaces'
 import {
@@ -54,25 +53,11 @@ import KeyRowType from 'uiSrc/pages/browser/components/key-row-type'
 
 import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
 
+import * as S from './KeyList.styles'
+import { Props } from './KeyList.types'
 import NoKeysMessage from '../no-keys-message'
 import { DeleteKeyPopover } from '../delete-key-popover/DeleteKeyPopover'
 import { useKeyFormat } from '../use-key-format'
-import styles from './styles.module.scss'
-
-export interface Props {
-  keysState: KeysStoreData
-  loading: boolean
-  scrollTopPosition?: number
-  hideFooter?: boolean
-  selectKey: ({ rowData }: { rowData: any }) => void
-  loadMoreItems?: (
-    oldKeys: IKeyPropTypes[],
-    { startIndex, stopIndex }: { startIndex: number; stopIndex: number },
-  ) => void
-  onDelete: (key: RedisResponseBuffer) => void
-  commonFilterType: Nullable<KeyTypes>
-  onAddKeyPanel: (value: boolean) => void
-}
 
 const cellCache = new CellMeasurerCache({
   fixedWidth: true,
@@ -88,6 +73,7 @@ const KeyList = forwardRef((props: Props, ref) => {
     keysState,
     scrollTopPosition,
     hideFooter,
+    visibleColumns: visibleColumnsProp,
     onDelete,
     commonFilterType,
     onAddKeyPanel,
@@ -100,6 +86,7 @@ const KeyList = forwardRef((props: Props, ref) => {
   const { nextCursor, previousResultCount } = useSelector(keysDataSelector)
   const { isSearched, isFiltered, searchMode } = useSelector(keysSelector)
   const { shownColumns } = useSelector(appContextDbConfig)
+  const visibleColumns = visibleColumnsProp ?? shownColumns
   const {
     keyList: { isNotRendered: isNotRenderedContext },
   } = useSelector(appContextBrowser)
@@ -360,7 +347,7 @@ const KeyList = forwardRef((props: Props, ref) => {
     rerender({})
   }
 
-  const isTtlTheLastColumn = !shownColumns.includes(BrowserColumns.Size)
+  const isTtlTheLastColumn = !visibleColumns.includes(BrowserColumns.Size)
   const ttlColumnSize = isTtlTheLastColumn ? 146 : 86
 
   const columns: ITableColumn[] = [
@@ -403,7 +390,7 @@ const KeyList = forwardRef((props: Props, ref) => {
         )
       },
     },
-    shownColumns.includes(BrowserColumns.TTL)
+    visibleColumns.includes(BrowserColumns.TTL)
       ? {
           id: 'ttl',
           label: 'TTL',
@@ -439,7 +426,7 @@ const KeyList = forwardRef((props: Props, ref) => {
           ),
         }
       : null,
-    shownColumns.includes(BrowserColumns.Size)
+    visibleColumns.includes(BrowserColumns.Size)
       ? {
           id: 'size',
           label: 'Size',
@@ -506,20 +493,16 @@ const KeyList = forwardRef((props: Props, ref) => {
   )
 
   return (
-    <div className={styles.page}>
-      <div className={styles.content}>
-        <div
-          className={cx(styles.table, {
-            [styles.table__withoutFooter]: hideFooter,
-          })}
-        >
-          <div className="key-list-table" data-testid="keyList-table">
+    <S.Page>
+      <S.Content>
+        <S.Table $withoutFooter={hideFooter}>
+          <S.KeyListTable data-testid="keyList-table">
             {searchMode === SearchMode.Pattern && VirtualizeTable()}
             {searchMode !== SearchMode.Pattern && VirtualizeTable()}
-          </div>
-        </div>
-      </div>
-    </div>
+          </S.KeyListTable>
+        </S.Table>
+      </S.Content>
+    </S.Page>
   )
 })
 

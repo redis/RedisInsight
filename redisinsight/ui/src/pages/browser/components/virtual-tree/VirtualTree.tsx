@@ -4,16 +4,10 @@ import { debounce, get, set } from 'lodash'
 import { TreeWalker, TreeWalkerValue, FixedSizeTree as Tree } from 'react-vtree'
 import { useDispatch } from 'react-redux'
 
-import { bufferToString, Maybe, Nullable } from 'uiSrc/utils'
+import { bufferToString, Nullable } from 'uiSrc/utils'
 import { useDisposableWebworker } from 'uiSrc/services'
-import { IKeyPropTypes } from 'uiSrc/constants/prop-types/keys'
-import {
-  DEFAULT_TREE_SORTING,
-  KeyTypes,
-  ModulesKeyTypes,
-  SortOrder,
-} from 'uiSrc/constants'
-import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces'
+import { DEFAULT_TREE_SORTING, KeyTypes } from 'uiSrc/constants'
+import { RedisString } from 'uiSrc/slices/interfaces'
 import { fetchKeysMetadataTree } from 'uiSrc/slices/browser/keys'
 import {
   Loader,
@@ -24,37 +18,18 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
 
 import { Node } from './components/Node'
-import { NodeMeta, TreeData, TreeNode } from './interfaces'
+import {
+  NodeMeta,
+  TreeData,
+  TreeNode,
+  VirtualTreeProps,
+} from './VirtualTree.types'
 
 import styles from './styles.module.scss'
 
-export interface Props {
-  items: IKeyPropTypes[]
-  delimiterPattern: string
-  delimiters: string[]
-  loadingIcon?: string
-  loading: boolean
-  deleting: boolean
-  sorting: Maybe<SortOrder>
-  commonFilterType: Nullable<KeyTypes>
-  statusSelected: Nullable<string>
-  statusOpen: OpenedNodes
-  webworkerFn: (...args: any) => any
-  onStatusOpen?: (name: string, value: boolean) => void
-  onStatusSelected?: (key: RedisString) => void
-  setConstructingTree: (status: boolean) => void
-  onDeleteLeaf: (key: RedisResponseBuffer) => void
-  onDeleteClicked: (type: KeyTypes | ModulesKeyTypes) => void
-  onDeleteFolder?: (pattern: string, fullName: string, keyCount: number) => void
-}
-
-interface OpenedNodes {
-  [key: string]: boolean
-}
-
 export const KEYS = 'keys'
 
-const VirtualTree = (props: Props) => {
+const VirtualTree = (props: VirtualTreeProps) => {
   const {
     items,
     delimiterPattern,
@@ -73,6 +48,7 @@ const VirtualTree = (props: Props) => {
     onDeleteClicked,
     onDeleteLeaf,
     onDeleteFolder,
+    visibleColumns,
   } = props
 
   const [rerenderState, rerender] = useState({})
@@ -227,6 +203,7 @@ const VirtualTree = (props: Props) => {
       keyApproximate: node.keyApproximate,
       isSelected: !!node.isLeaf && statusSelected === node?.nameString,
       isOpenByDefault: statusOpen[node.fullName],
+      visibleColumns,
     },
     nestingLevel,
     node,
@@ -268,7 +245,7 @@ const VirtualTree = (props: Props) => {
         }
       }
     },
-    [statusSelected, statusOpen, rerenderState],
+    [statusSelected, statusOpen, rerenderState, visibleColumns],
   )
 
   return (

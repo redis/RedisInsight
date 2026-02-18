@@ -23,12 +23,12 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
-import { DeleteKeyPopover } from '../../../delete-key-popover/DeleteKeyPopover'
-import { TreeData } from '../../interfaces'
-import styles from './styles.module.scss'
 import { Flex, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
+import styles from './styles.module.scss'
 import * as S from './Node.styles'
+import { TreeData } from '../../VirtualTree.types'
+import { DeleteKeyPopover } from '../../../delete-key-popover/DeleteKeyPopover'
 
 const MAX_NESTING_LEVEL = 20
 
@@ -65,13 +65,15 @@ const Node = ({
     onDeleteFolder,
     updateStatusOpen,
     updateStatusSelected,
+    visibleColumns: visibleColumnsProp,
   } = data
 
   const delimiterView = delimiters.length === 1 ? delimiters[0] : '-'
 
   const { shownColumns } = useSelector(appContextDbConfig)
-  const includeSize = shownColumns.includes(BrowserColumns.Size)
-  const includeTTL = shownColumns.includes(BrowserColumns.TTL)
+  const visibleColumns = visibleColumnsProp ?? shownColumns
+  const includeSize = visibleColumns.includes(BrowserColumns.Size)
+  const includeTTL = visibleColumns.includes(BrowserColumns.TTL)
 
   const [deletePopoverId, setDeletePopoverId] =
     useState<Maybe<string>>(undefined)

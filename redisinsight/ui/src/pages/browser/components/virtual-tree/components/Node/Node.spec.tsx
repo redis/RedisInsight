@@ -6,7 +6,7 @@ import { cleanup, mockedStore, render, screen } from 'uiSrc/utils/test-utils'
 import { stringToBuffer } from 'uiSrc/utils'
 import { KeyTypes, BrowserColumns } from 'uiSrc/constants'
 import Node from './Node'
-import { TreeData } from '../../interfaces'
+import { TreeData } from '../../VirtualTree.types'
 import { mockVirtualTreeResult } from '../../VirtualTree.spec'
 
 const mockDataFullName = 'test'
