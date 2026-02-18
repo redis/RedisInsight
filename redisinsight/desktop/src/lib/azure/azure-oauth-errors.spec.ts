@@ -2,25 +2,25 @@ import { mapKnownAzureAdError } from './azure-oauth-errors'
 
 describe('mapKnownAzureAdError', () => {
   describe('known Microsoft AADSTS errors', () => {
-    it('should return user-friendly message for AADSTS650057 (invalid resource)', () => {
+    it('should return user-friendly message with error code for AADSTS650057', () => {
       const microsoftError =
         'AADSTS650057: Invalid resource. The client has requested access to a resource which is not listed. Trace ID: abc123'
 
       const result = mapKnownAzureAdError(microsoftError)
 
       expect(result).toBe(
-        'Azure authentication failed. The application is not properly configured for Azure Redis access. Please contact support.',
+        'Azure authentication failed. The application is not properly configured for Azure Redis access. Please contact your administrator. (AADSTS650057)',
       )
     })
 
-    it('should return user-friendly message for AADSTS65004 (user denied consent)', () => {
+    it('should return user-friendly message with error code for AADSTS65004', () => {
       const microsoftError =
         'AADSTS65004: User declined to consent to access the app.'
 
       const result = mapKnownAzureAdError(microsoftError)
 
       expect(result).toBe(
-        'Azure authentication was cancelled or access was denied.',
+        'Azure authentication was cancelled or access was denied. (AADSTS65004)',
       )
     })
   })
@@ -56,7 +56,7 @@ describe('mapKnownAzureAdError', () => {
       const result = mapKnownAzureAdError(errorArray)
 
       expect(result).toBe(
-        'Azure authentication failed. The application is not properly configured for Azure Redis access. Please contact support.',
+        'Azure authentication failed. The application is not properly configured for Azure Redis access. Please contact your administrator. (AADSTS650057)',
       )
     })
   })

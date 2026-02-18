@@ -47,7 +47,7 @@ export const mapKnownAzureAdError = (
     AZURE_AD_ERROR_MESSAGES,
   )) {
     if (description.includes(errorCode)) {
-      return userFriendlyMessage
+      return `${userFriendlyMessage} (${errorCode})`
     }
   }
 
