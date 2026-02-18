@@ -93,8 +93,6 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
   private async refreshToken(azureAccountId: string): Promise<void> {
     this.logger.debug(`Refreshing token for account ${azureAccountId}`);
 
-    this.timers.delete(azureAccountId);
-
     // Check for active clients FIRST to avoid scheduling unnecessary refreshes
     // This prevents refresh loops when all clients have disconnected
     const clients = this.redisClientStorage.getClientsByDatabaseField(
@@ -106,6 +104,8 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
       this.logger.debug(
         `No active clients for account ${azureAccountId}, stopping refresh cycle`,
       );
+
+      this.clearTimer(azureAccountId);
       return;
     }
 
