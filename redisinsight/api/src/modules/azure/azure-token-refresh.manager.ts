@@ -8,12 +8,12 @@ import { AzureTokenResult } from './auth/models';
 /**
  * Manages automatic token refresh for Azure Entra ID authenticated Redis clients.
  *
- * When a token is acquired via getRedisTokenByAccountId, this manager schedules
- * a timer to refresh the token before it expires. When the timer fires:
- * 1. Acquire a fresh token
- * 2. Find all Redis clients using that Azure account
- * 3. Re-authenticate each client with the new token
- * 4. Schedule the next refresh
+ * When a token is acquired, the AzureRedisTokenEvents.Acquired event triggers:
+ * 1. Schedule a timer to refresh before expiry
+ * 2. Re-authenticate active Redis clients with the new token
+ *
+ * When the timer fires, it acquires a fresh token which emits the event again,
+ * continuing the cycle. The cycle stops when no clients are using the account.
  */
 interface ScheduledTimer {
   timeout: NodeJS.Timeout;
@@ -55,7 +55,11 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
       return;
     }
 
-    this.clearTimer(azureAccountId);
+    // Clear existing timeout but don't remove from map to avoid race conditions
+    // The map entry will be overwritten by timers.set() below
+    if (existing) {
+      clearTimeout(existing.timeout);
+    }
 
     const now = Date.now();
     const expiresAt = expiresOn.getTime();
@@ -93,8 +97,7 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
   private async refreshToken(azureAccountId: string): Promise<void> {
     this.logger.debug(`Refreshing token for account ${azureAccountId}`);
 
-    // Check for active clients FIRST to avoid scheduling unnecessary refreshes
-    // This prevents refresh loops when all clients have disconnected
+    // Stop the refresh cycle if no clients are using this account
     const clients = this.redisClientStorage.getClientsByDatabaseField(
       'providerDetails.azureAccountId',
       azureAccountId,
@@ -104,7 +107,6 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
       this.logger.debug(
         `No active clients for account ${azureAccountId}, stopping refresh cycle`,
       );
-
       this.clearTimer(azureAccountId);
       return;
     }

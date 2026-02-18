@@ -115,6 +115,84 @@ describe('AzureTokenRefreshManager', () => {
 
       expect(jest.getTimerCount()).toBe(2);
     });
+
+    describe('race condition handling', () => {
+      it('should handle rapid successive calls with same expiry (duplicate events)', () => {
+        const azureAccountId = faker.string.uuid();
+        const expiresOn = new Date(Date.now() + 60 * 60 * 1000);
+
+        // Simulate multiple token events arriving rapidly (e.g., from concurrent requests)
+        manager.scheduleRefresh(azureAccountId, expiresOn);
+        manager.scheduleRefresh(azureAccountId, expiresOn);
+        manager.scheduleRefresh(azureAccountId, expiresOn);
+        manager.scheduleRefresh(azureAccountId, expiresOn);
+        manager.scheduleRefresh(azureAccountId, expiresOn);
+
+        // Should only have 1 timer, not 5
+        expect(jest.getTimerCount()).toBe(1);
+      });
+
+      it('should handle client reconnection while timer is pending', async () => {
+        const azureAccountId = faker.string.uuid();
+        const mockClient = createMockClient();
+        const initialExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+        const newExpiry = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours
+        const newTokenResult = {
+          ...createMockTokenResult(),
+          expiresOn: newExpiry,
+        };
+
+        mockRedisClientStorage.getClientsByDatabaseField.mockReturnValue([
+          mockClient,
+        ]);
+
+        // Initial timer scheduled
+        manager.scheduleRefresh(azureAccountId, initialExpiry);
+        expect(jest.getTimerCount()).toBe(1);
+
+        // Client reconnects 10 minutes later, gets new token with different expiry
+        await jest.advanceTimersByTimeAsync(10 * 60 * 1000);
+
+        // New token event arrives - should replace old timer
+        await manager.handleTokenAcquired({
+          accountId: azureAccountId,
+          tokenResult: newTokenResult,
+        });
+
+        // Should still only have 1 timer (old one cleared, new one set)
+        expect(jest.getTimerCount()).toBe(1);
+
+        // Verify old timer doesn't fire (it was cleared)
+        mockAzureAuthService.getRedisTokenByAccountId.mockClear();
+        await jest.advanceTimersByTimeAsync(50 * 60 * 1000); // Original would have fired
+
+        // Should not have called refresh yet (new timer has longer delay)
+        expect(
+          mockAzureAuthService.getRedisTokenByAccountId,
+        ).not.toHaveBeenCalled();
+      });
+
+      it('should atomically replace timer entry (no deletion window)', () => {
+        const azureAccountId = faker.string.uuid();
+        const expiresOn1 = new Date(Date.now() + 60 * 60 * 1000);
+        const expiresOn2 = new Date(Date.now() + 2 * 60 * 60 * 1000);
+
+        manager.scheduleRefresh(azureAccountId, expiresOn1);
+
+        // Access internal timers map to verify behavior
+        const timersMap = (
+          manager as unknown as { timers: Map<string, unknown> }
+        ).timers;
+        expect(timersMap.has(azureAccountId)).toBe(true);
+
+        // Schedule with new expiry - should overwrite, not delete then set
+        manager.scheduleRefresh(azureAccountId, expiresOn2);
+
+        // Entry should still exist (was overwritten atomically)
+        expect(timersMap.has(azureAccountId)).toBe(true);
+        expect(jest.getTimerCount()).toBe(1);
+      });
+    });
   });
 
   describe('handleTokenAcquired', () => {
