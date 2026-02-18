@@ -49,5 +49,3 @@ export class AzureProviderDetails {
   @IsOptional()
   tokenExpiresOn?: Date;
 }
-
-export type ProviderDetails = AzureProviderDetails;
