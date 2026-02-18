@@ -97,6 +97,11 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
   private async refreshToken(azureAccountId: string): Promise<void> {
     this.logger.debug(`Refreshing token for account ${azureAccountId}`);
 
+    // Clear the stale timer entry - the timer has fired, so the entry is no longer valid.
+    // This ensures that when getRedisTokenByAccountId emits the Acquired event,
+    // scheduleRefresh won't skip due to matching expiresOn (e.g., MSAL cached token).
+    this.clearTimer(azureAccountId);
+
     // Stop the refresh cycle if no clients are using this account
     const clients = this.redisClientStorage.getClientsByDatabaseField(
       'providerDetails.azureAccountId',
@@ -107,7 +112,6 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
       this.logger.debug(
         `No active clients for account ${azureAccountId}, stopping refresh cycle`,
       );
-      this.clearTimer(azureAccountId);
       return;
     }
 

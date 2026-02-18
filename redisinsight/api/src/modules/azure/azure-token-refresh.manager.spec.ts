@@ -495,5 +495,49 @@ describe('AzureTokenRefreshManager', () => {
       expect(client1.call).not.toHaveBeenCalled();
       expect(client2.call).not.toHaveBeenCalled();
     });
+
+    it('should reschedule timer when MSAL returns cached token with same expiresOn', async () => {
+      const azureAccountId = faker.string.uuid();
+      const mockClient = createMockClient();
+
+      // Token with same expiry throughout (simulates MSAL returning cached token)
+      const expiresOn = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
+      const tokenResult = {
+        token: faker.string.alphanumeric(100),
+        expiresOn,
+        account: createMockAccount(),
+      };
+
+      // Simulate MSAL returning cached token (same expiresOn after timer fires)
+      mockAzureAuthService.getRedisTokenByAccountId.mockImplementation(
+        async () => {
+          await manager.handleTokenAcquired({
+            accountId: azureAccountId,
+            tokenResult, // Same expiresOn as the original schedule
+          });
+          return tokenResult;
+        },
+      );
+      mockRedisClientStorage.getClientsByDatabaseField.mockReturnValue([
+        mockClient,
+      ]);
+
+      // Schedule refresh with expiresOn that triggers after buffer
+      const scheduleExpiresOn = new Date(
+        Date.now() + TOKEN_REFRESH_BUFFER_MS + 1000,
+      );
+      manager.scheduleRefresh(azureAccountId, scheduleExpiresOn);
+      expect(jest.getTimerCount()).toBe(1);
+
+      // Fire the timer
+      await jest.advanceTimersByTimeAsync(1000);
+
+      // Key assertion: even though MSAL returned same expiresOn, a new timer should be scheduled
+      // This verifies the fix for "stale timer entry prevents refresh cycle rescheduling"
+      expect(jest.getTimerCount()).toBe(1);
+      expect(
+        mockAzureAuthService.getRedisTokenByAccountId,
+      ).toHaveBeenCalledTimes(1);
+    });
   });
 });
