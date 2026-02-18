@@ -53,7 +53,7 @@ const azureOauthCallback = async (url: UrlWithParsedQuery) => {
     // Handle OAuth errors from Azure
     if (error) {
       log.error('Azure OAuth error:', error, errorDescription)
-      const errorMessage = mapKnownAzureAdError(errorDescription)
+      const errorMessage = mapKnownAzureAdError(errorDescription, error)
       currentWindow?.webContents.send(IpcOnEvent.azureOauthCallback, {
         status: AzureAuthStatus.Failed,
         error: errorMessage,

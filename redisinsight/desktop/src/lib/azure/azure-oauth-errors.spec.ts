@@ -23,6 +23,28 @@ describe('mapKnownAzureAdError', () => {
         'Azure authentication was cancelled or access was denied. (AADSTS65004)',
       )
     })
+
+    it('should correctly match AADSTS700016 instead of AADSTS70001', () => {
+      const microsoftError =
+        'AADSTS700016: Application with identifier was not found in the directory.'
+
+      const result = mapKnownAzureAdError(microsoftError)
+
+      expect(result).toBe(
+        'Azure authentication failed. The application is not available in your directory. Please contact your administrator. (AADSTS700016)',
+      )
+    })
+
+    it('should correctly match AADSTS70001 when it is the exact error', () => {
+      const microsoftError =
+        'AADSTS70001: Application is not registered in the tenant.'
+
+      const result = mapKnownAzureAdError(microsoftError)
+
+      expect(result).toBe(
+        'Azure authentication failed. The application is not registered. Please contact your administrator. (AADSTS70001)',
+      )
+    })
   })
 
   describe('non-Microsoft errors', () => {
@@ -44,10 +66,16 @@ describe('mapKnownAzureAdError', () => {
   })
 
   describe('edge cases', () => {
-    it('should return default message for undefined input', () => {
+    it('should return default message for undefined input with no error fallback', () => {
       const result = mapKnownAzureAdError(undefined)
 
       expect(result).toBe('Azure authentication failed. Please try again.')
+    })
+
+    it('should return error code when errorDescription is undefined but error is provided', () => {
+      const result = mapKnownAzureAdError(undefined, 'access_denied')
+
+      expect(result).toBe('access_denied')
     })
 
     it('should handle array input and use first element', () => {
@@ -58,6 +86,15 @@ describe('mapKnownAzureAdError', () => {
       expect(result).toBe(
         'Azure authentication failed. The application is not properly configured for Azure Redis access. Please contact your administrator. (AADSTS650057)',
       )
+    })
+
+    it('should handle array error fallback and use first element', () => {
+      const result = mapKnownAzureAdError(undefined, [
+        'access_denied',
+        'secondary',
+      ])
+
+      expect(result).toBe('access_denied')
     })
   })
 })
