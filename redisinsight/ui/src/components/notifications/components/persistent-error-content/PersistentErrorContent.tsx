@@ -8,13 +8,9 @@ import { handleCopy } from 'uiSrc/utils'
 
 export interface Props {
   text: string
-  onClose?: () => void
 }
 
-const PersistentErrorContent = ({
-  text,
-  onClose: _onClose = () => {},
-}: Props) => {
+const PersistentErrorContent = ({ text }: Props) => {
   const [isCopied, setIsCopied] = useState(false)
 
   const handleCopyClick = () => {

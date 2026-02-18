@@ -94,7 +94,8 @@ export default {
   ) => ({
     'data-testid': 'toast-error-persistent',
     customIcon: ToastDangerIcon,
+    onClose,
     message: title,
-    description: <PersistentErrorContent text={message} onClose={onClose} />,
+    description: <PersistentErrorContent text={message} />,
   }),
 }
