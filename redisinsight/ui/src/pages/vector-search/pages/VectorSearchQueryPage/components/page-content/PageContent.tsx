@@ -10,7 +10,7 @@ import { QueryResultsProvider } from 'uiSrc/components/query/context/query-resul
 import { QueryResults } from 'uiSrc/components/query/query-results'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import { useSearchResultsTelemetry } from '../../../../hooks'
+import { searchResultsTelemetry } from '../../../../telemetry.constants'
 import { useQuery } from '../../hooks/useQuery'
 import { QueryEditorWrapper } from '../../../../components/query-editor'
 import { NoSearchResults } from '../../../../components/no-search-results'
@@ -42,8 +42,6 @@ export const PageContent = ({
     onQueryReRun,
     onQueryProfile,
   } = useQuery()
-
-  const searchTelemetry = useSearchResultsTelemetry()
 
   const handleSubmit = useCallback(
     (value?: string) => {
@@ -103,7 +101,7 @@ export const PageContent = ({
                 maxSize={90}
                 defaultSize={50}
               >
-                <QueryResultsProvider telemetry={searchTelemetry}>
+                <QueryResultsProvider telemetry={searchResultsTelemetry}>
                   <QueryResults
                     items={items}
                     clearing={clearing}
