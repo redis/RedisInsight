@@ -43,5 +43,6 @@ test.describe('Navigation & Global UI > Main Navigation', () => {
 
   test('should show Redis Cloud link', async ({ sidebarPanel }) => {
     await expect(sidebarPanel.cloudLink).toBeVisible();
+    await expect(sidebarPanel.cloudLink).toHaveAttribute('href', /redis\.io\/try-free/i);
   });
 });
