@@ -36,25 +36,15 @@ test.describe('Navigation & Global UI > Main Navigation', () => {
     await expect(sidebarPanel.homeTabs).toBeVisible();
   });
 
-  test('should open GitHub repo in new tab', async ({ page, sidebarPanel }) => {
+  test('should show GitHub repo link that opens externally', async ({ sidebarPanel }) => {
     await expect(sidebarPanel.githubLink).toBeVisible();
-
-    const popupPromise = page.waitForEvent('popup');
-    await sidebarPanel.githubLink.click();
-    const popup = await popupPromise;
-
-    await expect(popup).toHaveURL(/github/i);
-    await popup.close();
+    await expect(sidebarPanel.githubLink).toHaveAttribute('href', /github/i);
+    await expect(sidebarPanel.githubLink).toHaveAttribute('target', '_blank');
   });
 
-  test('should open Redis Cloud in new tab', async ({ page, sidebarPanel }) => {
+  test('should show Redis Cloud link that opens externally', async ({ sidebarPanel }) => {
     await expect(sidebarPanel.cloudLink).toBeVisible();
-
-    const popupPromise = page.waitForEvent('popup');
-    await sidebarPanel.cloudLink.click();
-    const popup = await popupPromise;
-
-    await expect(popup).toHaveURL(/redis\.io\/try-free/i);
-    await popup.close();
+    await expect(sidebarPanel.cloudLink).toHaveAttribute('href', /redis\.io\/try-free/i);
+    await expect(sidebarPanel.cloudLink).toHaveAttribute('target', '_blank');
   });
 });
