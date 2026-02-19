@@ -7,7 +7,6 @@ import {
 } from 'uiSrc/slices/instances/cluster'
 import { setTitle } from 'uiSrc/utils'
 import { HomePageTemplate } from 'uiSrc/templates'
-import { BrowserStorageItem, FeatureFlags } from 'uiSrc/constants'
 import { resetKeys } from 'uiSrc/slices/browser/keys'
 import {
   resetCliHelperSettings,
@@ -33,15 +32,11 @@ import {
   setEditedInstance,
 } from 'uiSrc/slices/instances/instances'
 import { fetchTags } from 'uiSrc/slices/instances/tags'
-import { localStorageService } from 'uiSrc/services'
 import {
   resetDataSentinel,
   sentinelSelector,
 } from 'uiSrc/slices/instances/sentinel'
-import {
-  contentSelector,
-  fetchContentAction as fetchCreateRedisButtonsAction,
-} from 'uiSrc/slices/content/create-redis-buttons'
+import { fetchContentAction as fetchCreateRedisButtonsAction } from 'uiSrc/slices/content/create-redis-buttons'
 import {
   sendEventTelemetry,
   sendPageViewTelemetry,
@@ -53,13 +48,10 @@ import {
   setUrlHandlingInitialState,
 } from 'uiSrc/slices/app/url-handling'
 import { UrlHandlingActions } from 'uiSrc/slices/interfaces/urlHandling'
-import { CREATE_CLOUD_DB_ID } from 'uiSrc/pages/home/constants'
-import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 
 import { Page, PageBody } from 'uiSrc/components/base/layout/page'
 import { Card } from 'uiSrc/components/base/layout'
-import DatabasesList from './components/database-list-component'
-import DatabasesListV2 from './components/databases-list/DatabasesList'
+import DatabasesList from './components/databases-list/DatabasesList'
 import DatabaseListHeader from './components/database-list-header'
 import EmptyMessage from './components/empty-message/EmptyMessage'
 import DatabasePanelDialog from './components/database-panel-dialog'
@@ -87,12 +79,6 @@ const HomePage = () => {
   const { credentials: cloudCredentials } = useSelector(cloudSelector)
   const { instance: sentinelInstance } = useSelector(sentinelSelector)
   const { action, dbConnection } = useSelector(appRedirectionSelector)
-  const { data: createDbContent } = useSelector(contentSelector)
-  const {
-    [FeatureFlags.databasesListV2]: databasesListV2Feature,
-    [FeatureFlags.enhancedCloudUI]: enhancedCloudUIFeature,
-    [FeatureFlags.cloudAds]: cloudAdsFeature,
-  } = useSelector(appFeatureFlagsFeaturesSelector)
 
   const {
     loading,
@@ -106,20 +92,7 @@ const HomePage = () => {
 
   const { contextInstanceId } = useSelector(appContextSelector)
 
-  const predefinedInstances =
-    enhancedCloudUIFeature?.flag &&
-    cloudAdsFeature?.flag &&
-    createDbContent?.cloud_list_of_databases
-      ? [
-          {
-            id: CREATE_CLOUD_DB_ID,
-            ...createDbContent.cloud_list_of_databases,
-          } as Instance,
-        ]
-      : []
-  const isInstanceExists =
-    instances.length > 0 || predefinedInstances.length > 0
-  const hideDbList = !isInstanceExists && !loading && !loadingChanging
+  const hideDbList = instances.length === 0 && !loading && !loadingChanging
 
   useEffect(() => {
     setTitle('Redis databases')
@@ -230,31 +203,6 @@ const HomePage = () => {
     dispatch(setEditedInstance(null))
   }
 
-  const handleManageInstanceTags = (instance: Instance) => {
-    dispatch(setEditedInstance(instance))
-    setOpenDialog(OpenDialogName.ManageTags)
-  }
-
-  const handleEditInstance = (editedInstance: Instance) => {
-    if (editedInstance) {
-      dispatch(fetchEditedInstanceAction(editedInstance))
-      setOpenDialog(OpenDialogName.EditDatabase)
-    }
-  }
-  const handleDeleteInstances = (instances: Instance[]) => {
-    if (
-      instances.find((instance) => instance.id === editedInstance?.id) &&
-      openDialog === OpenDialogName.EditDatabase
-    ) {
-      dispatch(setEditedInstance(null))
-      setOpenDialog(null)
-    }
-
-    instances.forEach((instance) => {
-      localStorageService.remove(BrowserStorageItem.dbConfig + instance.id)
-    })
-  }
-
   return (
     <HomePageTemplate>
       <div className={styles.pageWrapper}>
@@ -293,20 +241,7 @@ const HomePage = () => {
                   <EmptyMessage onAddInstanceClick={handleAddInstance} />
                 </Card>
               )}
-              {!hideDbList && !databasesListV2Feature?.flag && (
-                <DatabasesList
-                  loading={loading}
-                  instances={instances}
-                  predefinedInstances={predefinedInstances}
-                  editedInstance={editedInstance}
-                  onEditInstance={handleEditInstance}
-                  onDeleteInstances={handleDeleteInstances}
-                  onManageInstanceTags={handleManageInstanceTags}
-                />
-              )}
-              {!hideDbList && databasesListV2Feature?.flag && (
-                <DatabasesListV2 />
-              )}
+              {!hideDbList && <DatabasesList />}
             </div>
           </PageBody>
         </Page>
