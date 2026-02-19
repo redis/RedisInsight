@@ -3,7 +3,8 @@ import React from 'react'
 import { type ColumnDef, Table } from 'uiSrc/components/base/layout/table'
 import { AzureRedisDatabase } from 'uiSrc/slices/interfaces'
 import { Text } from 'uiSrc/components/base/text'
-import { HeaderWithTooltip } from 'uiSrc/components/auto-discover'
+import { ColumnHeader } from 'uiSrc/components/column-header'
+import { DescriptionsTooltip } from 'uiSrc/pages/autodiscover-azure/components'
 import {
   AZURE_DATABASE_TYPE_DESCRIPTIONS,
   AZURE_PROVISIONING_STATE_DESCRIPTIONS,
@@ -43,9 +44,13 @@ export const AZURE_DATABASES_COLUMNS: ColumnDef<AzureRedisDatabase>[] = [
     enableSorting: true,
     isHeaderCustom: true,
     header: () => (
-      <HeaderWithTooltip
-        title="Type"
-        descriptions={AZURE_DATABASE_TYPE_DESCRIPTIONS}
+      <ColumnHeader
+        label="Type"
+        tooltip={
+          <DescriptionsTooltip
+            descriptions={AZURE_DATABASE_TYPE_DESCRIPTIONS}
+          />
+        }
       />
     ),
     cell: ({ getValue }) => (
@@ -67,9 +72,13 @@ export const AZURE_DATABASES_COLUMNS: ColumnDef<AzureRedisDatabase>[] = [
     enableSorting: true,
     isHeaderCustom: true,
     header: () => (
-      <HeaderWithTooltip
-        title="Status"
-        descriptions={AZURE_PROVISIONING_STATE_DESCRIPTIONS}
+      <ColumnHeader
+        label="Status"
+        tooltip={
+          <DescriptionsTooltip
+            descriptions={AZURE_PROVISIONING_STATE_DESCRIPTIONS}
+          />
+        }
       />
     ),
     cell: ({ getValue }) => <Text size="M">{getValue() as string}</Text>,
