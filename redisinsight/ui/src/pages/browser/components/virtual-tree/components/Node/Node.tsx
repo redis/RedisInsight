@@ -66,6 +66,7 @@ const Node = ({
     updateStatusOpen,
     updateStatusSelected,
     visibleColumns: visibleColumnsProp,
+    showFolderMetadata: showFolderMetadataProp = true,
   } = data
 
   const delimiterView = delimiters.length === 1 ? delimiters[0] : '-'
@@ -176,26 +177,28 @@ const Node = ({
             {nameString}
           </Text>
         </Flex>
-        <S.FolderActions align="center" justify="end">
-          <S.FolderApproximate data-testid={`percentage_${fullName}`}>
-            {keyApproximate
-              ? `${keyApproximate < 1 ? '<1' : Math.round(keyApproximate)}%`
-              : ''}
-          </S.FolderApproximate>
-          <S.FolderKeyCount data-testid={`count_${fullName}`}>
-            {keyCount ?? ''}
-          </S.FolderKeyCount>
-          <RiTooltip content={deleteTooltip} position="left">
-            <IconButton
-              icon={DeleteIcon}
-              onClick={handleDeleteFolder}
-              disabled={isDeleteDisabled}
-              className="showOnHoverKey"
-              aria-label="Delete Folder Keys"
-              data-testid={`delete-folder-btn-${fullName}`}
-            />
-          </RiTooltip>
-        </S.FolderActions>
+        {showFolderMetadataProp && (
+          <S.FolderActions align="center" justify="end">
+            <S.FolderApproximate data-testid={`percentage_${fullName}`}>
+              {keyApproximate
+                ? `${keyApproximate < 1 ? '<1' : Math.round(keyApproximate)}%`
+                : ''}
+            </S.FolderApproximate>
+            <S.FolderKeyCount data-testid={`count_${fullName}`}>
+              {keyCount ?? ''}
+            </S.FolderKeyCount>
+            <RiTooltip content={deleteTooltip} position="left">
+              <IconButton
+                icon={DeleteIcon}
+                onClick={handleDeleteFolder}
+                disabled={isDeleteDisabled}
+                className="showOnHoverKey"
+                aria-label="Delete Folder Keys"
+                data-testid={`delete-folder-btn-${fullName}`}
+              />
+            </RiTooltip>
+          </S.FolderActions>
+        )}
       </Row>
     </RiTooltip>
   )

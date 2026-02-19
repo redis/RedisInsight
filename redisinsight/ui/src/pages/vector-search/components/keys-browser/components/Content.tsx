@@ -5,9 +5,9 @@ import { Nullable } from 'uiSrc/utils'
 import { CallOut } from 'uiSrc/components/base/display'
 import KeyTree from 'uiSrc/pages/browser/components/key-tree'
 
+import TypeTabs from './TypeTabs'
 import { useKeysBrowser } from '../hooks/useKeysBrowser'
 import * as S from '../KeysBrowser.styles'
-import TypeTabs from './TypeTabs'
 
 const noop = () => {}
 
@@ -46,6 +46,7 @@ const Content = () => {
             onAddKeyPanel={noop}
             onBulkActionsPanel={noop}
             visibleColumns={[]}
+            showFolderMetadata={false}
           />
         )}
       </S.TreeWrapper>

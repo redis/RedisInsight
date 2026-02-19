@@ -18,4 +18,5 @@ export interface KeyTreeProps {
   onAddKeyPanel: (value: boolean) => void
   onBulkActionsPanel: (value: boolean) => void
   visibleColumns?: BrowserColumns[]
+  showFolderMetadata?: boolean
 }
