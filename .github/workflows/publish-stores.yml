@@ -33,6 +33,7 @@ jobs:
         run: |
           appVersion=$(jq -r '.version' redisinsight/package.json)
 
+          # Publish desktop image
           docker login -u $DOCKER_USER -p $DOCKER_PASS
 
           ./.github/build/release-docker.sh \
@@ -40,6 +41,7 @@ jobs:
           -r $DOCKER_REPO \
           -v $appVersion
 
+          # Publish cloud image
           docker login -u $DOCKER_V1_USER -p $DOCKER_V1_PASS
 
           ./.github/build/release-docker.sh \
