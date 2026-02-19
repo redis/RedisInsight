@@ -60,12 +60,12 @@ export class SidebarPanel extends BasePage {
 
     // Main navigation (redisLogo inherited from BasePage)
     this.mainNavigation = page.getByRole('navigation', { name: 'Main navigation' });
-    this.cloudLink = page.getByRole('link', { name: 'cloud-db-icon' });
+    this.cloudLink = page.getByTestId('create-cloud-db-link');
     this.notificationMenuButton = page.getByTestId('notification-menu-button');
     this.settingsButton = page
       .getByTestId('settings-page-btn')
       .or(page.locator('[data-testid="Settings page button"]'));
-    this.githubLink = page.getByRole('link', { name: 'github-repo-icon' });
+    this.githubLink = page.getByTestId('github-repo-btn');
 
     // Help menu component
     this.helpMenu = new HelpMenu(page);
