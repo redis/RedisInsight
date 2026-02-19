@@ -2,8 +2,8 @@ import React from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Route } from 'react-router-dom'
-import Footer from './Footer'
 import { Col } from 'uiSrc/components/base/layout/flex'
+import Footer from './Footer'
 import { StorePopulator } from '../KeysBrowser.stories'
 import { Provider } from '../contexts/Context'
 const FooterContent = () => {
