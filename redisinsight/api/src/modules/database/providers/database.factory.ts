@@ -24,7 +24,7 @@ import {
 } from 'src/modules/redis/utils';
 import { RedisClient } from 'src/modules/redis/client';
 import { ReplyError } from 'src/models';
-import { CredentialStrategyProvider } from 'src/modules/database/credentials';
+import { CredentialStrategyProvider } from 'src/modules/database/credentials/credential-strategy.provider';
 
 @Injectable()
 export class DatabaseFactory {

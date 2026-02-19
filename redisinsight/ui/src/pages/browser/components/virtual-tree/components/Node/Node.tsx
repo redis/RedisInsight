@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { NodePublicState } from 'react-vtree/dist/es/Tree'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
@@ -6,12 +6,13 @@ import { useSelector } from 'react-redux'
 import * as keys from 'uiSrc/constants/keys'
 import { Maybe } from 'uiSrc/utils'
 import {
+  BrowserColumns,
+  FeatureFlags,
   KeyTypes,
   ModulesKeyTypes,
-  BrowserColumns,
-  TEXT_BULK_DELETE_TOOLTIP,
-  TEXT_BULK_DELETE_DISABLED_UNPRINTABLE,
   TEXT_BULK_DELETE_DISABLED_MULTIPLE_DELIMITERS,
+  TEXT_BULK_DELETE_DISABLED_UNPRINTABLE,
+  TEXT_BULK_DELETE_TOOLTIP,
 } from 'uiSrc/constants'
 import KeyRowTTL from 'uiSrc/pages/browser/components/key-row-ttl'
 import KeyRowSize from 'uiSrc/pages/browser/components/key-row-size'
@@ -20,7 +21,7 @@ import KeyRowType from 'uiSrc/pages/browser/components/key-row-type'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { appContextDbConfig } from 'uiSrc/slices/app/context'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { RiTooltip } from 'uiSrc/components'
+import { FeatureFlagComponent, RiTooltip } from 'uiSrc/components'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { Flex, Row } from 'uiSrc/components/base/layout/flex'
@@ -185,16 +186,18 @@ const Node = ({
           <S.FolderKeyCount data-testid={`count_${fullName}`}>
             {keyCount ?? ''}
           </S.FolderKeyCount>
-          <RiTooltip content={deleteTooltip} position="left">
-            <IconButton
-              icon={DeleteIcon}
-              onClick={handleDeleteFolder}
-              disabled={isDeleteDisabled}
-              className="showOnHoverKey"
-              aria-label="Delete Folder Keys"
-              data-testid={`delete-folder-btn-${fullName}`}
-            />
-          </RiTooltip>
+          <FeatureFlagComponent name={FeatureFlags.envDependent}>
+            <RiTooltip content={deleteTooltip} position="left">
+              <IconButton
+                icon={DeleteIcon}
+                onClick={handleDeleteFolder}
+                disabled={isDeleteDisabled}
+                className="showOnHoverKey"
+                aria-label="Delete Folder Keys"
+                data-testid={`delete-folder-btn-${fullName}`}
+              />
+            </RiTooltip>
+          </FeatureFlagComponent>
         </S.FolderActions>
       </Row>
     </RiTooltip>
