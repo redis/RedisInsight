@@ -3,6 +3,8 @@ import React from 'react'
 import { type ColumnDef, Table } from 'uiSrc/components/base/layout/table'
 import { AzureRedisDatabase } from 'uiSrc/slices/interfaces'
 import { Text } from 'uiSrc/components/base/text'
+import { HeaderWithStatusInfo } from 'uiSrc/components/auto-discover'
+import { AZURE_PROVISIONING_STATE_DESCRIPTIONS } from 'uiSrc/pages/autodiscover-azure/constants'
 
 export const MAX_DATABASES_SELECTION = 10
 
@@ -52,9 +54,15 @@ export const AZURE_DATABASES_COLUMNS: ColumnDef<AzureRedisDatabase>[] = [
   },
   {
     id: 'provisioningState',
-    header: 'Status',
     accessorKey: 'provisioningState',
     enableSorting: true,
+    isHeaderCustom: true,
+    header: () => (
+      <HeaderWithStatusInfo
+        title="Status"
+        descriptions={AZURE_PROVISIONING_STATE_DESCRIPTIONS}
+      />
+    ),
     cell: ({ getValue }) => <Text size="M">{getValue() as string}</Text>,
   },
 ]
