@@ -2,7 +2,11 @@ import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { AzureAuthService } from './auth/azure-auth.service';
 import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
-import { AzureRedisTokenEvents, TOKEN_REFRESH_BUFFER_MS } from './constants';
+import {
+  AzureRedisTokenEvents,
+  MIN_REFRESH_DELAY_MS,
+  TOKEN_REFRESH_BUFFER_MS,
+} from './constants';
 import { AzureTokenResult } from './auth/models';
 
 /**
@@ -64,7 +68,18 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
     const now = Date.now();
     const expiresAt = expiresOn.getTime();
     const refreshAt = expiresAt - TOKEN_REFRESH_BUFFER_MS;
-    const delay = refreshAt - now;
+    const calculatedDelay = refreshAt - now;
+
+    // Enforce minimum delay to prevent rapid refresh loops when token is near/past expiry.
+    // This can happen when MSAL returns a cached token with a short remaining lifetime.
+    const delay = Math.max(calculatedDelay, MIN_REFRESH_DELAY_MS);
+
+    if (calculatedDelay < MIN_REFRESH_DELAY_MS) {
+      this.logger.warn(
+        `Token for account ${azureAccountId} expires soon (${Math.round(calculatedDelay / 1000)}s), ` +
+          `using minimum delay of ${MIN_REFRESH_DELAY_MS / 1000}s`,
+      );
+    }
 
     this.logger.debug(
       `Scheduling token refresh for account ${azureAccountId} in ${Math.round(delay / 1000)}s (expires: ${expiresOn.toISOString()})`,
