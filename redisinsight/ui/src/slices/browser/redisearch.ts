@@ -50,7 +50,7 @@ export const initialState: StateRedisearch = {
     lastRefreshTime: null,
   },
   list: {
-    loading: false,
+    loading: undefined,
     error: '',
     data: [],
   },

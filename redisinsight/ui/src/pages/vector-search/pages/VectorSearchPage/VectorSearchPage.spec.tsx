@@ -112,6 +112,22 @@ describe('VectorSearchPage', () => {
     expect(loader).toBeInTheDocument()
   })
 
+  it('should render loader when indexes loading is undefined (not yet fetched)', () => {
+    mockUseRedisearchListData.mockReturnValue({
+      loading: undefined,
+      data: [],
+      stringData: [],
+    })
+
+    renderComponent()
+
+    const loader = screen.getByTestId('vector-search-loader')
+    expect(loader).toBeInTheDocument()
+
+    const welcomeScreen = screen.queryByTestId('welcome-screen')
+    expect(welcomeScreen).not.toBeInTheDocument()
+  })
+
   it('should render loader when compatibility is uninitialized (undefined) even if indexes are not loading', () => {
     mockUseRedisInstanceCompatibility.mockReturnValue({
       loading: undefined,
@@ -119,7 +135,7 @@ describe('VectorSearchPage', () => {
       hasSupportedVersion: undefined,
     })
     mockUseRedisearchListData.mockReturnValue({
-      loading: false,
+      loading: undefined,
       data: [],
       stringData: [],
     })
