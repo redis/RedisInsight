@@ -40,4 +40,12 @@ export class AzureProviderDetails {
   @IsOptional()
   @IsString()
   azureAccountId?: string;
+
+  @ApiPropertyOptional({
+    description: 'Token expiration time for filtering during re-authentication',
+    type: Date,
+  })
+  @Expose()
+  @IsOptional()
+  tokenExpiresOn?: Date;
 }

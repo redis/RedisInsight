@@ -5,6 +5,7 @@ import {
   Configuration,
   AccountInfo,
 } from '@azure/msal-node';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
   AZURE_AUTHORITY,
   AZURE_CLIENT_ID,
@@ -13,6 +14,7 @@ import {
   AZURE_OAUTH_REDIRECT_PATH,
   AZURE_OAUTH_SCOPES,
   AzureAuthStatus,
+  AzureRedisTokenEvents,
 } from '../constants';
 import { AzureTokenResult, AzureAuthStatusResponse } from './models';
 import { AzureOAuthPrompt } from './dto';
@@ -58,6 +60,8 @@ export class AzureAuthService {
    * Map of state -> PKCE verifier for pending auth requests
    */
   private authRequests: Map<string, string> = new Map();
+
+  constructor(private readonly eventEmitter: EventEmitter2) {}
 
   private getMsalClient(): PublicClientApplication {
     if (this.pca) {
@@ -212,7 +216,19 @@ export class AzureAuthService {
   async getRedisTokenByAccountId(
     accountId: string,
   ): Promise<AzureTokenResult | null> {
-    return this.getTokenByAccountId(accountId, AZURE_REDIS_SCOPE);
+    const tokenResult = await this.getTokenByAccountId(
+      accountId,
+      AZURE_REDIS_SCOPE,
+    );
+
+    if (tokenResult) {
+      this.eventEmitter.emit(AzureRedisTokenEvents.Acquired, {
+        accountId,
+        tokenResult,
+      });
+    }
+
+    return tokenResult;
   }
 
   /**
