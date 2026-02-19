@@ -3,10 +3,11 @@ import { test, expect } from 'e2eSrc/fixtures/base';
 /**
  * Navigation & Global UI > Main Navigation
  *
- * Tests for the global sidebar navigation elements including:
- * - Main navigation with Redis logo and navigation to home
- * - Settings button visibility and navigation
- * - GitHub and Redis Cloud external links
+ * Tests for the 4 navigation paths in the sidebar:
+ * - Redis logo navigates to home
+ * - Settings button navigates to Settings page
+ * - GitHub repo link
+ * - Redis Cloud link
  */
 test.describe('Navigation & Global UI > Main Navigation', () => {
   test.beforeEach(async ({ sidebarPanel }) => {
@@ -14,7 +15,7 @@ test.describe('Navigation & Global UI > Main Navigation', () => {
     await sidebarPanel.waitForLoad();
   });
 
-  test('should display main navigation with logo and navigate home', async ({ sidebarPanel, settingsPage }) => {
+  test('should navigate to home via Redis logo', async ({ sidebarPanel, settingsPage }) => {
     await expect(sidebarPanel.mainNavigation).toBeVisible();
     await expect(sidebarPanel.redisLogo).toBeVisible();
 
@@ -27,7 +28,7 @@ test.describe('Navigation & Global UI > Main Navigation', () => {
     await expect(sidebarPanel.homeTabs).toBeVisible();
   });
 
-  test('should show settings button and navigate to Settings page', async ({ sidebarPanel, settingsPage }) => {
+  test('should navigate to Settings page', async ({ sidebarPanel, settingsPage }) => {
     await expect(sidebarPanel.settingsButton).toBeVisible();
 
     await sidebarPanel.settingsButton.click();
@@ -35,9 +36,12 @@ test.describe('Navigation & Global UI > Main Navigation', () => {
     await expect(settingsPage.pageTitle).toBeVisible();
   });
 
-  test('should show GitHub repo and Redis Cloud links', async ({ sidebarPanel }) => {
+  test('should show GitHub repo link', async ({ sidebarPanel }) => {
     await expect(sidebarPanel.githubLink).toBeVisible();
     await expect(sidebarPanel.githubLink).toHaveAttribute('href', /github/i);
+  });
+
+  test('should show Redis Cloud link', async ({ sidebarPanel }) => {
     await expect(sidebarPanel.cloudLink).toBeVisible();
   });
 });
