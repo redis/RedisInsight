@@ -1,18 +1,11 @@
 import { cloneDeep } from 'lodash'
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
-import { toggleOpenWBResult } from 'uiSrc/slices/workbench/wb-results'
 import { ResultsMode } from 'uiSrc/slices/interfaces/workbench'
-import {
-  cleanup,
-  clearStoreActions,
-  fireEvent,
-  mockedStore,
-  render,
-} from 'uiSrc/utils/test-utils'
+import { cleanup, fireEvent, mockedStore, render } from 'uiSrc/utils/test-utils'
 import { CommandExecutionStatus } from 'uiSrc/slices/interfaces/cli'
 import QueryCard, { Props, getSummaryText } from './QueryCard'
-import { ViewMode, ViewModeContextProvider } from '../context/view-mode.context'
+import { QueryResultsProvider } from '../context/query-results.context'
 
 const mockedProps = mock<Props>()
 
@@ -47,9 +40,9 @@ jest.mock('uiSrc/slices/app/plugins', () => ({
 
 const renderQueryCardComponent = (props: Partial<Props> = {}) => {
   return render(
-    <ViewModeContextProvider viewMode={ViewMode.Workbench}>
+    <QueryResultsProvider telemetry={{}}>
       <QueryCard {...instance(mockedProps)} {...props} />
-    </ViewModeContextProvider>,
+    </QueryResultsProvider>,
     {
       store,
     },
@@ -111,23 +104,22 @@ describe('QueryCard', () => {
     expect(cliResultEl).not.toBeInTheDocument()
   })
 
-  it('Click on the header should call toggleOpenWBResult', () => {
+  it('Click on the header should call onToggleOpen', () => {
     const cardHeaderTestId = 'query-card-open'
     const mockId = '123'
+    const mockOnToggleOpen = jest.fn()
 
     const { queryByTestId } = renderQueryCardComponent({
       id: mockId,
       result: mockResult,
+      onToggleOpen: mockOnToggleOpen,
     })
 
     const cardHeaderTestEl = queryByTestId(cardHeaderTestId)
 
     fireEvent.click(cardHeaderTestEl)
 
-    const expectedActions = [toggleOpenWBResult(mockId)]
-    expect(
-      clearStoreActions(store.getActions().slice(0, expectedActions.length)),
-    ).toEqual(clearStoreActions(expectedActions))
+    expect(mockOnToggleOpen).toHaveBeenCalledWith(mockId, true)
   })
 
   it('Should return correct summary string', () => {

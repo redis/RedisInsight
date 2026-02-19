@@ -1,23 +1,20 @@
 import React from 'react'
-import cx from 'classnames'
 
 import { CodeButtonParams } from 'uiSrc/constants'
 import { ProfileQueryType } from 'uiSrc/pages/workbench/constants'
 import { generateProfileQueryForCommand } from 'uiSrc/pages/workbench/utils/profile'
 import { Nullable } from 'uiSrc/utils'
-import { QueryCard } from 'uiSrc/components/query'
 import { CommandExecutionUI } from 'uiSrc/slices/interfaces'
 import { RunQueryMode, ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { ProgressBarLoader } from 'uiSrc/components/base/display'
-import WbNoResultsMessage from '../../wb-no-results-message'
+import QueryCard from '../query-card'
 
-import styles from './styles.module.scss'
+import * as S from './QueryResults.styles'
 
-/** @deprecated Use QueryResultsProps from 'uiSrc/components/query/query-results' instead. */
-export interface Props {
+export interface QueryResultsProps {
   isResultsLoaded: boolean
   items: CommandExecutionUI[]
   clearing: boolean
@@ -25,6 +22,8 @@ export interface Props {
   activeMode: RunQueryMode
   activeResultsMode?: ResultsMode
   scrollDivRef: React.Ref<HTMLDivElement>
+  noResultsPlaceholder?: React.ReactNode
+  onToggleOpen?: (id: string, isOpen: boolean) => void
   onQueryReRun: (
     query: string,
     commandId?: Nullable<string>,
@@ -32,7 +31,6 @@ export interface Props {
   ) => void
   onQueryDelete: (commandId: string) => void
   onAllQueriesDelete: () => void
-  onQueryOpen: (commandId: string) => void
   onQueryProfile: (
     query: string,
     commandId?: Nullable<string>,
@@ -40,8 +38,7 @@ export interface Props {
   ) => void
 }
 
-/** @deprecated Use QueryResults from 'uiSrc/components/query/query-results' instead. */
-const WBResults = (props: Props) => {
+const QueryResults = (props: QueryResultsProps) => {
   const {
     isResultsLoaded,
     items = [],
@@ -49,11 +46,12 @@ const WBResults = (props: Props) => {
     processing,
     activeMode,
     activeResultsMode,
+    noResultsPlaceholder,
+    onToggleOpen,
     onQueryReRun,
     onQueryProfile,
     onQueryDelete,
     onAllQueriesDelete,
-    onQueryOpen,
     scrollDivRef,
   } = props
 
@@ -77,25 +75,27 @@ const WBResults = (props: Props) => {
   }
 
   return (
-    <div className={styles.wrapper}>
+    <S.Wrapper data-testid="query-results">
       {!isResultsLoaded && (
-        <ProgressBarLoader color="primary" data-testid="progress-wb-history" />
+        <ProgressBarLoader
+          color="primary"
+          data-testid="progress-results-history"
+        />
       )}
       {!!items?.length && (
-        <div className={styles.header}>
+        <S.Header align="center" justify="end" grow={false}>
           <EmptyButton
             size="small"
             icon={DeleteIcon}
-            className={styles.clearAllBtn}
             onClick={() => onAllQueriesDelete?.()}
             disabled={clearing || processing}
             data-testid="clear-history-btn"
           >
             Clear Results
           </EmptyButton>
-        </div>
+        </S.Header>
       )}
-      <div className={cx(styles.container)}>
+      <S.Container grow>
         <div ref={scrollDivRef} />
         {items?.length
           ? items.map(
@@ -132,7 +132,7 @@ const WBResults = (props: Props) => {
                   activeResultsMode={activeResultsMode}
                   resultsMode={resultsMode}
                   db={db}
-                  onQueryOpen={() => onQueryOpen(id)}
+                  onToggleOpen={onToggleOpen}
                   onQueryProfile={(profileType) =>
                     handleQueryProfile(profileType, {
                       command,
@@ -148,14 +148,15 @@ const WBResults = (props: Props) => {
                     })
                   }
                   onQueryDelete={() => onQueryDelete(id)}
+                  data-testid={`query-card-${id}`}
                 />
               ),
             )
           : null}
-        {isResultsLoaded && !items.length && <WbNoResultsMessage />}
-      </div>
-    </div>
+        {isResultsLoaded && !items.length && (noResultsPlaceholder ?? null)}
+      </S.Container>
+    </S.Wrapper>
   )
 }
 
-export default React.memo(WBResults)
+export default React.memo(QueryResults)
