@@ -55,7 +55,7 @@ const buildMockKeysResponse = (keys: ReturnType<typeof generateMockKeys>) => ({
   status: 200,
 })
 
-const StorePopulator = ({ children }: { children: React.ReactNode }) => {
+export const StorePopulator = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useDispatch()
   const history = useHistory()
   const [ready, setReady] = useState(false)
@@ -142,7 +142,7 @@ const KeysBrowserContent = () => {
 
   return (
     <Col>
-      <div style={{ width: 300, height: 500, border: '1px solid transparent' }}>
+      <div style={{ width: 300, height: 500, border: '1px solid #ccc' }}>
         <KeysBrowser onSelectKey={handleSelectKey} />
       </div>
 

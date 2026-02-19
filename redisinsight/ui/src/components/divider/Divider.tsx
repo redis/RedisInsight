@@ -14,13 +14,7 @@ export interface DividerProps {
   className?: string
 }
 
-const Divider = ({
-  orientation,
-  variant,
-  color,
-  className: _className,
-  ...props
-}: DividerProps) => (
+const Divider = ({ orientation, variant, color, ...props }: DividerProps) => (
   <StyledDividerWrapper {...props}>
     <StyledDivider
       $variant={variant}
