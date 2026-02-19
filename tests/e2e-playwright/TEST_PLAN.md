@@ -24,8 +24,8 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 0.1 Main Navigation
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| ✅ | main | Navigate to home via Redis logo |
 | ✅ | main | Navigate to Settings page |
+| ✅ | main | Navigate to home via Redis logo |
 | ✅ | main | Show GitHub repo link |
 | ✅ | main | Show Redis Cloud link |
 
