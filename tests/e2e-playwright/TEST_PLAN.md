@@ -35,11 +35,9 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 0.2 Help Menu
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Open Help Center |
-| 🔲 | main | Show Keyboard Shortcuts option |
-| 🔲 | main | Show Reset Onboarding option |
-| 🔲 | main | Show Release Notes link |
-| 🔲 | main | Show Provide Feedback link |
+| ✅ | main | should open Help Center and display all menu options |
+| ✅ | main | should have Release Notes link pointing to GitHub releases |
+| ✅ | main | should have Provide Feedback link pointing to GitHub issues |
 
 ### 0.3 Notification Center
 | Status | Group | Test Case |

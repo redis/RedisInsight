@@ -8,6 +8,7 @@ import { BasePage } from '../BasePage';
 export class SidebarPanel extends BasePage {
   // Main navigation
   readonly mainNavigation: Locator;
+  readonly redisLogo: Locator;
   readonly cloudLink: Locator;
   readonly notificationMenuButton: Locator;
   readonly helpMenuButton: Locator;
@@ -72,6 +73,7 @@ export class SidebarPanel extends BasePage {
 
     // Main navigation
     this.mainNavigation = page.getByRole('navigation', { name: 'Main navigation' });
+    this.redisLogo = page.getByRole('link', { name: 'Redis Logo Dark Min' });
     this.cloudLink = page.getByRole('link', { name: 'cloud-db-icon' });
     this.notificationMenuButton = page.getByTestId('notification-menu-button');
     this.helpMenuButton = page.getByTestId('help-menu-button');
@@ -83,7 +85,7 @@ export class SidebarPanel extends BasePage {
     // Help menu items
     this.helpMenuDialog = page.getByRole('dialog').filter({ hasText: 'Help Center' });
     this.provideFeedbackLink = page.getByRole('link', { name: /Provide Feedback/i });
-    this.keyboardShortcutsButton = page.getByTestId('shortcuts-btn');
+    this.keyboardShortcutsButton = page.getByText('Keyboard Shortcuts');
     this.releaseNotesLink = page.getByRole('link', { name: 'Release Notes' });
     this.resetOnboardingButton = page.getByText('Reset Onboarding');
 
@@ -143,5 +145,54 @@ export class SidebarPanel extends BasePage {
 
   async waitForLoad(): Promise<void> {
     await this.mainNavigation.waitFor({ state: 'visible' });
+  }
+
+  // ===== Help Menu Methods =====
+
+  /**
+   * Open help menu
+   */
+  async openHelpMenu(): Promise<void> {
+    await this.helpMenuButton.click();
+    await this.helpMenuDialog.waitFor({ state: 'visible', timeout: 5000 });
+  }
+
+  /**
+   * Close help menu by pressing Escape
+   */
+  async closeHelpMenu(): Promise<void> {
+    await this.page.keyboard.press('Escape');
+    await this.helpMenuDialog.waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  /**
+   * Check if help menu is open
+   */
+  async isHelpMenuOpen(): Promise<boolean> {
+    return this.helpMenuDialog.isVisible();
+  }
+
+  /**
+   * Open keyboard shortcuts dialog from help menu
+   */
+  async openKeyboardShortcuts(): Promise<void> {
+    await this.openHelpMenu();
+    await this.keyboardShortcutsButton.click();
+    await this.shortcutsDialog.waitFor({ state: 'visible', timeout: 5000 });
+  }
+
+  /**
+   * Close keyboard shortcuts dialog
+   */
+  async closeKeyboardShortcuts(): Promise<void> {
+    await this.shortcutsCloseButton.click();
+    await this.shortcutsDialog.waitFor({ state: 'hidden', timeout: 5000 });
+  }
+
+  /**
+   * Check if keyboard shortcuts dialog is open
+   */
+  async isKeyboardShortcutsOpen(): Promise<boolean> {
+    return this.shortcutsDialog.isVisible();
   }
 }
