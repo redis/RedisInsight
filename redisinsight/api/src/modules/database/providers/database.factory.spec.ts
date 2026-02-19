@@ -36,7 +36,7 @@ import { ConnectionType } from 'src/modules/database/entities/database.entity';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { NotFoundException } from '@nestjs/common';
 import { RedisClientFactory } from 'src/modules/redis/redis.client.factory';
-import { CredentialStrategyProvider } from 'src/modules/database/credentials';
+import { CredentialStrategyProvider } from 'src/modules/database/credentials/credential-strategy.provider';
 
 describe('DatabaseFactory', () => {
   let service: DatabaseFactory;
