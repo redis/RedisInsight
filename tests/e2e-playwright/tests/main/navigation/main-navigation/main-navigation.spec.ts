@@ -4,9 +4,9 @@ import { test, expect } from 'e2eSrc/fixtures/base';
  * Navigation & Global UI > Main Navigation
  *
  * Tests for the global sidebar navigation elements including:
- * - Visibility of main navigation, Redis logo, settings button, links
- * - Navigation to home via Redis logo
- * - Navigation to Settings page
+ * - Main navigation with Redis logo and navigation to home
+ * - Settings button visibility and navigation
+ * - GitHub and Redis Cloud external links
  */
 test.describe('Navigation & Global UI > Main Navigation', () => {
   test.beforeEach(async ({ sidebarPanel }) => {
@@ -14,28 +14,10 @@ test.describe('Navigation & Global UI > Main Navigation', () => {
     await sidebarPanel.waitForLoad();
   });
 
-  test('should display main navigation', async ({ sidebarPanel }) => {
+  test('should display main navigation with logo and navigate home', async ({ sidebarPanel, settingsPage }) => {
     await expect(sidebarPanel.mainNavigation).toBeVisible();
-  });
-
-  test('should show Redis logo', async ({ sidebarPanel }) => {
     await expect(sidebarPanel.redisLogo).toBeVisible();
-  });
 
-  test('should show settings button', async ({ sidebarPanel }) => {
-    await expect(sidebarPanel.settingsButton).toBeVisible();
-  });
-
-  test('should show GitHub repo link', async ({ sidebarPanel }) => {
-    await expect(sidebarPanel.githubLink).toBeVisible();
-    await expect(sidebarPanel.githubLink).toHaveAttribute('href', /github/i);
-  });
-
-  test('should show Redis Cloud link', async ({ sidebarPanel }) => {
-    await expect(sidebarPanel.cloudLink).toBeVisible();
-  });
-
-  test('should navigate to home via Redis logo', async ({ sidebarPanel, settingsPage }) => {
     // Navigate away from home to Settings
     await settingsPage.goto();
     await expect(settingsPage.pageTitle).toBeVisible();
@@ -45,9 +27,17 @@ test.describe('Navigation & Global UI > Main Navigation', () => {
     await expect(sidebarPanel.homeTabs).toBeVisible();
   });
 
-  test('should navigate to Settings page', async ({ sidebarPanel, settingsPage }) => {
+  test('should show settings button and navigate to Settings page', async ({ sidebarPanel, settingsPage }) => {
+    await expect(sidebarPanel.settingsButton).toBeVisible();
+
     await sidebarPanel.settingsButton.click();
     await settingsPage.waitForLoad();
     await expect(settingsPage.pageTitle).toBeVisible();
+  });
+
+  test('should show GitHub repo and Redis Cloud links', async ({ sidebarPanel }) => {
+    await expect(sidebarPanel.githubLink).toBeVisible();
+    await expect(sidebarPanel.githubLink).toHaveAttribute('href', /github/i);
+    await expect(sidebarPanel.cloudLink).toBeVisible();
   });
 });
