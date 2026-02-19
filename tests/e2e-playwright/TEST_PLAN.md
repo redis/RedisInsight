@@ -177,10 +177,11 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 1.6 Database Tags
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Add descriptive tags to a database |
-| 🔲 | main | Remove tags from a database |
-| 🔲 | main | Open tags dialog for a database |
-| 🔲 | main | Cancel adding a tag |
+| ✅ | main | should open tags dialog for a database |
+| ✅ | main | should add descriptive tags to a database |
+| ✅ | main | should remove tags from a database |
+| ✅ | main | should cancel adding a tag without saving |
+| ✅ | main | should persist tags after saving and reopening |
 | 🔲 | main | Import tags automatically from Redis Cloud databases |
 
 ### 1.7 Certificate and Encryption Handling
