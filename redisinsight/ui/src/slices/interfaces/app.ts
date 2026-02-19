@@ -40,6 +40,8 @@ export interface IError extends AxiosError {
   instanceId?: string
   title?: string
   additionalInfo?: Record<string, any>
+  /** If true, the error toast won't auto-dismiss and requires manual close */
+  persistent?: boolean
 }
 
 export interface IMessage {
