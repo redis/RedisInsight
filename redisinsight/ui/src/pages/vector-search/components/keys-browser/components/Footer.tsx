@@ -3,8 +3,9 @@ import { isNull } from 'lodash'
 
 import ScanMore from 'uiSrc/components/scan-more'
 import { numberWithSpaces, nullableNumberWithSpaces } from 'uiSrc/utils/numbers'
-import { Text, ColorText } from 'uiSrc/components/base/text'
+import { ColorText } from 'uiSrc/components/base/text'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import * as S from '../KeysBrowser.styles'
 
 import { useKeysBrowser } from '../hooks/useKeysBrowser'
 
@@ -28,46 +29,49 @@ const Footer = () => {
       : ''
 
   return (
-    <Row align="center" justify="between" grow data-testid="vs-keys-summary">
-      <FlexItem>
-        {headerLoading && !keysState.total && !isNull(keysState.total) && (
-          <Text size="s" data-testid="vs-scanning-text">
-            Scanning...
-          </Text>
-        )}
-        {!!footerScanned && (
-          <ColorText size="s" variant="semiBold" component="span">
-            {'Results: '}
-            <span data-testid="vs-keys-number-of-results">
-              {numberWithSpaces(keysState.keys.length)}
-            </span>
-            {' keys'}
-          </ColorText>
-        )}
-        {!footerScanned && (!!keysState.total || isNull(keysState.total)) && (
-          <Text size="s" variant="semiBold" component="span">
-            {'Total: '}
-            {nullableNumberWithSpaces(keysState.total)}
-          </Text>
-        )}
-      </FlexItem>
-      <Row gap="l" align="center" grow={false}>
-        {!!footerScanned && (
-          <FlexItem>
-            <ColorText size="s" color="secondary" component="span">
-              {'Scanned '}
-              <span data-testid="vs-keys-number-of-scanned">
-                {footerNotAccurateScanned}
-                {numberWithSpaces(footerScannedDisplay)}
-              </span>
-              {' / '}
-              <span data-testid="vs-keys-total">
-                {nullableNumberWithSpaces(keysState.total)}
-              </span>
+    <S.FooterContainer data-testid="keys-browser-footer">
+      <Row align="center" justify="between" grow data-testid="vs-keys-summary">
+        <Row gap="s" align="center" grow={false}>
+          {headerLoading && !keysState.total && !isNull(keysState.total) && (
+            <ColorText
+              size="xs"
+              color="secondary"
+              data-testid="vs-scanning-text"
+            >
+              Scanning...
             </ColorText>
-          </FlexItem>
-        )}
-        <FlexItem>
+          )}
+          {!!footerScanned && (
+            <>
+              <ColorText size="xs" color="secondary" component="span">
+                {'Results: '}
+                <span data-testid="vs-keys-number-of-results">
+                  {numberWithSpaces(keysState.keys.length)}
+                </span>
+                {' keys'}
+              </ColorText>
+              <S.Separator />
+              <ColorText size="xs" color="secondary" component="span">
+                {'Scanned '}
+                <span data-testid="vs-keys-number-of-scanned">
+                  {footerNotAccurateScanned}
+                  {numberWithSpaces(footerScannedDisplay)}
+                </span>
+                {'/'}
+                <span data-testid="vs-keys-total">
+                  {nullableNumberWithSpaces(keysState.total)}
+                </span>
+              </ColorText>
+            </>
+          )}
+          {!footerScanned && (!!keysState.total || isNull(keysState.total)) && (
+            <ColorText size="xs" color="secondary" component="span">
+              {'Total: '}
+              {nullableNumberWithSpaces(keysState.total)}
+            </ColorText>
+          )}
+        </Row>
+        <FlexItem grow={false}>
           <ScanMore
             withAlert={false}
             scanned={footerScanned}
@@ -78,7 +82,7 @@ const Footer = () => {
           />
         </FlexItem>
       </Row>
-    </Row>
+    </S.FooterContainer>
   )
 }
 

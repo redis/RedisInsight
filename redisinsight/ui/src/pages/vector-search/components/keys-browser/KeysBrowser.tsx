@@ -18,9 +18,7 @@ const KeysBrowserInner = () => (
         <Content />
       </KeysBrowserLayout.Content>
 
-      <KeysBrowserLayout.Footer>
-        <Footer />
-      </KeysBrowserLayout.Footer>
+      <Footer />
     </KeysBrowserLayout.Compose>
   </S.Container>
 )
