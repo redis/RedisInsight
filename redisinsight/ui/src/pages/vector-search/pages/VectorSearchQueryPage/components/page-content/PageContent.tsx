@@ -49,7 +49,7 @@ export const PageContent = ({
         event: TelemetryEvent.SEARCH_COMMAND_SUBMITTED,
         eventData: {
           databaseId: instanceId,
-          commands: [value || query],
+          commands: [value ?? query],
         },
       })
       onSubmit(value)
