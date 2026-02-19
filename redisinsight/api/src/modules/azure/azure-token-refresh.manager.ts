@@ -47,8 +47,14 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
     accountId: string;
     tokenResult: AzureTokenResult;
   }): Promise<void> {
-    this.scheduleRefresh(accountId, tokenResult.expiresOn);
-    await this.reAuthenticateClients(accountId, tokenResult);
+    try {
+      this.scheduleRefresh(accountId, tokenResult.expiresOn);
+      await this.reAuthenticateClients(accountId, tokenResult);
+    } catch (error) {
+      this.logger.error(
+        `Failed to handle token acquired event for account ${accountId}: ${error.message}`,
+      );
+    }
   }
 
   scheduleRefresh(azureAccountId: string, expiresOn: Date): void {
