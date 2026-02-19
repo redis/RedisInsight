@@ -50,8 +50,8 @@ describe('HomePage', () => {
     expect(screen.getByTestId('side-panels-insights')).toBeInTheDocument()
   })
 
-  it('should not render free cloud db with enhanced cloud ui feature flag disabled', async () => {
-    ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValueOnce({
+  it('should not render free cloud db button with enhanced cloud ui feature flag disabled', async () => {
+    ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValue({
       enhancedCloudUI: {
         flag: false,
       },
@@ -62,12 +62,12 @@ describe('HomePage', () => {
     await render(<HomePage />)
 
     expect(
-      screen.queryByTestId('db-row_create-free-cloud-db'),
+      screen.queryByTestId('create-free-cloud-db-button'),
     ).not.toBeInTheDocument()
   })
 
-  it('should not render free cloud db with cloud ads feature flag disabled', async () => {
-    ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValueOnce({
+  it('should not render free cloud db button with cloud ads feature flag disabled', async () => {
+    ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValue({
       enhancedCloudUI: {
         flag: true,
       },
@@ -78,12 +78,12 @@ describe('HomePage', () => {
     await render(<HomePage />)
 
     expect(
-      screen.queryByTestId('db-row_create-free-cloud-db'),
+      screen.queryByTestId('create-free-cloud-db-button'),
     ).not.toBeInTheDocument()
   })
 
-  it('should render free cloud db with feature flags enabled', async () => {
-    ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValueOnce({
+  it('should render free cloud db button with feature flags enabled', async () => {
+    ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValue({
       enhancedCloudUI: {
         flag: true,
       },
@@ -94,7 +94,7 @@ describe('HomePage', () => {
     await render(<HomePage />)
 
     expect(
-      screen.getByTestId('db-row_create-free-cloud-db'),
+      screen.getByTestId('create-free-cloud-db-button'),
     ).toBeInTheDocument()
   })
 })

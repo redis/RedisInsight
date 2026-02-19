@@ -33,7 +33,6 @@ export enum KnownFeatures {
   DatabaseManagement = 'databaseManagement',
   VectorSearch = 'vectorSearch',
   DevVectorSearch = 'dev-vectorSearch',
-  DatabasesListV2 = 'databasesListV2',
   AzureEntraId = 'dev-azureEntraId',
   DevBrowser = 'dev-browser',
 }

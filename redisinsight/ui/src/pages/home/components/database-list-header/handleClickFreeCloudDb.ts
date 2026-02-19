@@ -12,7 +12,6 @@ import { HELP_LINKS } from 'uiSrc/pages/home/constants'
 
 import { dispatch, store } from 'uiSrc/slices/store'
 
-// Note: Extracted from DatabasesListWrapper.tsx
 const handleClickFreeCloudDb = () => {
   const { [FeatureFlags.cloudSso]: cloudSsoFeature } =
     appFeatureFlagsFeaturesSelector(store.getState())
