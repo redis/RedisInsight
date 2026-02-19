@@ -43,7 +43,7 @@ import {
   redisConnectionControllers,
 } from './middleware/redis-connection';
 import { DatabaseSettingsModule } from './modules/database-settings/database-settings.module';
-import { CredentialsModule } from './modules/database/credentials';
+import { CredentialsModule } from './modules/database/credentials/credentials.module';
 
 const SERVER_CONFIG = config.get('server') as Config['server'];
 const PATH_CONFIG = config.get('dir_path') as Config['dir_path'];
