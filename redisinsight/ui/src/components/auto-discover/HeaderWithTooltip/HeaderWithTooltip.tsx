@@ -5,15 +5,15 @@ import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { RiTooltip } from 'uiSrc/components'
 
-export interface HeaderWithStatusInfoProps {
+export interface HeaderWithTooltipProps {
   title: string
   descriptions: Record<string, string>
 }
 
-export const HeaderWithStatusInfo = ({
+export const HeaderWithTooltip = ({
   title,
   descriptions,
-}: HeaderWithStatusInfoProps) => (
+}: HeaderWithTooltipProps) => (
   <Row align="center" gap="s">
     <Text size="M" variant="semiBold">
       {title}

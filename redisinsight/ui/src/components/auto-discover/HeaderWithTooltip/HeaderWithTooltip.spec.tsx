@@ -1,10 +1,7 @@
 import React from 'react'
 import { fireEvent, screen, act } from '@testing-library/react'
 import { render, waitForRiTooltipVisible } from 'uiSrc/utils/test-utils'
-import {
-  HeaderWithStatusInfo,
-  HeaderWithStatusInfoProps,
-} from './HeaderWithStatusInfo'
+import { HeaderWithTooltip, HeaderWithTooltipProps } from './HeaderWithTooltip'
 
 const mockDescriptions: Record<string, string> = {
   Active: 'Resource is active and available.',
@@ -12,15 +9,14 @@ const mockDescriptions: Record<string, string> = {
   Failed: 'Resource provisioning failed.',
 }
 
-describe('HeaderWithStatusInfo', () => {
-  const defaultProps: HeaderWithStatusInfoProps = {
+describe('HeaderWithTooltip', () => {
+  const defaultProps: HeaderWithTooltipProps = {
     title: 'Status',
     descriptions: mockDescriptions,
   }
 
-  const renderComponent = (
-    propsOverride?: Partial<HeaderWithStatusInfoProps>,
-  ) => render(<HeaderWithStatusInfo {...defaultProps} {...propsOverride} />)
+  const renderComponent = (propsOverride?: Partial<HeaderWithTooltipProps>) =>
+    render(<HeaderWithTooltip {...defaultProps} {...propsOverride} />)
 
   it('should render', () => {
     expect(renderComponent()).toBeTruthy()

@@ -13,6 +13,17 @@ export const AZURE_SUBSCRIPTION_STATE_DESCRIPTIONS: Record<string, string> = {
 }
 
 /**
+ * Azure database type descriptions.
+ * @see https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview
+ */
+export const AZURE_DATABASE_TYPE_DESCRIPTIONS: Record<string, string> = {
+  Standard:
+    'Azure Cache for Redis with Basic, Standard, or Premium tiers. Suitable for most caching scenarios.',
+  Enterprise:
+    'Azure Cache for Redis Enterprise with dedicated infrastructure, higher performance, and Redis modules support.',
+}
+
+/**
  * Azure database provisioning state descriptions.
  * @see https://learn.microsoft.com/en-us/rest/api/redis/redis/get#provisioningstate
  */

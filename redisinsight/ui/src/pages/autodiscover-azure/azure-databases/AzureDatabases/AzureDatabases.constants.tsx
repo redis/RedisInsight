@@ -3,8 +3,11 @@ import React from 'react'
 import { type ColumnDef, Table } from 'uiSrc/components/base/layout/table'
 import { AzureRedisDatabase } from 'uiSrc/slices/interfaces'
 import { Text } from 'uiSrc/components/base/text'
-import { HeaderWithStatusInfo } from 'uiSrc/components/auto-discover'
-import { AZURE_PROVISIONING_STATE_DESCRIPTIONS } from 'uiSrc/pages/autodiscover-azure/constants'
+import { HeaderWithTooltip } from 'uiSrc/components/auto-discover'
+import {
+  AZURE_DATABASE_TYPE_DESCRIPTIONS,
+  AZURE_PROVISIONING_STATE_DESCRIPTIONS,
+} from 'uiSrc/pages/autodiscover-azure/constants'
 
 export const MAX_DATABASES_SELECTION = 10
 
@@ -36,9 +39,15 @@ export const AZURE_DATABASES_COLUMNS: ColumnDef<AzureRedisDatabase>[] = [
   },
   {
     id: 'type',
-    header: 'Type',
     accessorKey: 'type',
     enableSorting: true,
+    isHeaderCustom: true,
+    header: () => (
+      <HeaderWithTooltip
+        title="Type"
+        descriptions={AZURE_DATABASE_TYPE_DESCRIPTIONS}
+      />
+    ),
     cell: ({ getValue }) => (
       <Text size="M" style={{ textTransform: 'capitalize' }}>
         {getValue() as string}
@@ -58,7 +67,7 @@ export const AZURE_DATABASES_COLUMNS: ColumnDef<AzureRedisDatabase>[] = [
     enableSorting: true,
     isHeaderCustom: true,
     header: () => (
-      <HeaderWithStatusInfo
+      <HeaderWithTooltip
         title="Status"
         descriptions={AZURE_PROVISIONING_STATE_DESCRIPTIONS}
       />
