@@ -158,13 +158,11 @@ export const useQuery = () => {
       handleApiSuccess(data, newCommandId, !commandId)
 
       if (restCommands.length > 0) {
-        const nextCommands = restCommands[0]
-        if (nextCommands?.length) {
-          await executeCommandBatch(
-            nextCommands.join('\n'),
-            undefined,
-            executeParams,
-          )
+        const remainingCommands = restCommands
+          .map((cmds) => cmds.join('\n'))
+          .join('\n')
+        if (remainingCommands) {
+          await executeCommandBatch(remainingCommands, undefined, executeParams)
         }
       } else {
         setProcessing(false)
