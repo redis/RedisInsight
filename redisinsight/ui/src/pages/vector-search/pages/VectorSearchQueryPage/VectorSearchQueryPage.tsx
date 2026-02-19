@@ -40,6 +40,10 @@ export const VectorSearchQueryPage = () => {
     setIsIndexPanelOpen((prev) => !prev)
   }, [])
 
+  const closeIndexPanel = useCallback(() => {
+    setIsIndexPanelOpen(false)
+  }, [])
+
   return (
     <S.PageContainer data-testid="vector-search-query-page">
       <PageHeader
@@ -51,7 +55,7 @@ export const VectorSearchQueryPage = () => {
 
       <PageContent
         isIndexPanelOpen={isIndexPanelOpen}
-        onCloseIndexPanel={toggleIndexPanel}
+        onCloseIndexPanel={closeIndexPanel}
       />
     </S.PageContainer>
   )
