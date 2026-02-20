@@ -3,6 +3,9 @@ import React from 'react'
 import { type ColumnDef, Table } from 'uiSrc/components/base/layout/table'
 import { AzureSubscription } from 'uiSrc/slices/interfaces'
 import { Text } from 'uiSrc/components/base/text'
+import { ColumnHeader } from 'uiSrc/components/column-header'
+import { DescriptionsTooltip } from 'uiSrc/pages/autodiscover-azure/components'
+import { AZURE_SUBSCRIPTION_STATE_DESCRIPTIONS } from 'uiSrc/pages/autodiscover-azure/constants'
 
 export const AZURE_SUBSCRIPTIONS_COLUMNS: ColumnDef<AzureSubscription>[] = [
   {
@@ -34,9 +37,19 @@ export const AZURE_SUBSCRIPTIONS_COLUMNS: ColumnDef<AzureSubscription>[] = [
   },
   {
     id: 'state',
-    header: 'State',
     accessorKey: 'state',
     enableSorting: true,
+    isHeaderCustom: true,
+    header: () => (
+      <ColumnHeader
+        label="State"
+        tooltip={
+          <DescriptionsTooltip
+            descriptions={AZURE_SUBSCRIPTION_STATE_DESCRIPTIONS}
+          />
+        }
+      />
+    ),
     cell: ({ getValue }) => <Text size="M">{getValue() as string}</Text>,
   },
 ]
