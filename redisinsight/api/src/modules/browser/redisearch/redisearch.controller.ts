@@ -62,7 +62,7 @@ export class RedisearchController extends BrowserBaseController {
     @BrowserClientMetadata() clientMetadata: ClientMetadata,
     @Body() dto: CreateRedisearchIndexDto,
   ): Promise<void> {
-    return await this.service.createIndex(clientMetadata, dto);
+    return this.service.createIndex(clientMetadata, dto);
   }
 
   @Post('search')
@@ -75,7 +75,7 @@ export class RedisearchController extends BrowserBaseController {
     @BrowserClientMetadata() clientMetadata: ClientMetadata,
     @Body() dto: SearchRedisearchDto,
   ): Promise<GetKeysWithDetailsResponse> {
-    return await this.service.search(clientMetadata, dto);
+    return this.service.search(clientMetadata, dto);
   }
 
   @Post('info')
@@ -86,7 +86,7 @@ export class RedisearchController extends BrowserBaseController {
     @BrowserClientMetadata() clientMetadata: ClientMetadata,
     @Body() dto: IndexInfoRequestBodyDto,
   ): Promise<IndexInfoDto> {
-    return await this.service.getInfo(clientMetadata, dto);
+    return this.service.getInfo(clientMetadata, dto);
   }
 
   @Delete('')
@@ -96,7 +96,7 @@ export class RedisearchController extends BrowserBaseController {
     @BrowserClientMetadata() clientMetadata: ClientMetadata,
     @Body() dto: IndexDeleteRequestBodyDto,
   ): Promise<void> {
-    return await this.service.deleteIndex(clientMetadata, dto);
+    return this.service.deleteIndex(clientMetadata, dto);
   }
 
   @Post('key-indexes')

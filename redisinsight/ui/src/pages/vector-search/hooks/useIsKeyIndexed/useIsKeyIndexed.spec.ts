@@ -1,5 +1,5 @@
-import { renderHook, act } from 'uiSrc/utils/test-utils'
 import { useSelector, useDispatch } from 'react-redux'
+import { renderHook, act } from 'uiSrc/utils/test-utils'
 
 import { fetchKeyIndexesAction } from 'uiSrc/slices/browser/redisearch'
 
