@@ -8,7 +8,6 @@ import {
   deleteRedisearchIndexAction,
   redisearchListSelector,
 } from 'uiSrc/slices/browser/redisearch'
-import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { collectManageIndexesDeleteTelemetry } from 'uiSrc/pages/vector-search-deprecated/telemetry'
 
 import { IndexList } from '../../../../components/index-list'
@@ -21,7 +20,6 @@ export const ListContent = () => {
   const history = useHistory()
   const { instanceId } = useParams<{ instanceId: string }>()
 
-  const { id: connectedInstanceId } = useSelector(connectedInstanceSelector)
   const { data: rawIndexes } = useSelector(redisearchListSelector)
   const indexes = useMemo(
     () => rawIndexes.map((index) => bufferToString(index)),
@@ -53,13 +51,13 @@ export const ListContent = () => {
         { index: stringToBuffer(pendingDeleteIndex) },
         () => {
           collectManageIndexesDeleteTelemetry({
-            instanceId: connectedInstanceId,
+            instanceId,
           })
         },
       ),
     )
     setPendingDeleteIndex(null)
-  }, [dispatch, connectedInstanceId, pendingDeleteIndex])
+  }, [dispatch, instanceId, pendingDeleteIndex])
 
   const actions: IndexListAction[] = useMemo(
     () => [{ name: 'Delete', callback: handleDelete }],
