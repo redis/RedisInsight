@@ -90,6 +90,8 @@ jobs:
           OSS_STANDALONE_V8_HOST: 'host.docker.internal'
           OSS_STANDALONE_EMPTY_HOST: 'host.docker.internal'
           OSS_STANDALONE_BIG_HOST: 'host.docker.internal'
+          OSS_STANDALONE_TLS_HOST: 'host.docker.internal'
+          OSS_CLUSTER_HOST: 'host.docker.internal'
 
       - name: Upload test results
         if: ${{ !cancelled() }}

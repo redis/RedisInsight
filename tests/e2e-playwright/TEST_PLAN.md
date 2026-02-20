@@ -72,32 +72,25 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 1.1 Add Database
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Add standalone database |
-| 🔲 | main | Add database with no auth |
-| 🔲 | main | Add database with username only |
-| 🔲 | main | Add database with username and password |
-| 🔲 | main | Add cluster database |
-| 🔲 | main | Add database with TLS/SSL |
-| 🔲 | main | Add database with SSH tunnel |
-| 🔲 | main | Validate required fields |
-| 🔲 | main | Test connection before saving |
-| 🔲 | main | Cancel add database |
-| 🔲 | main | Add database via Connection URL |
-| 🔲 | main | Open Connection settings from URL form |
-| 🔲 | main | Configure timeout setting |
-| 🔲 | main | Select logical database |
-| 🔲 | main | Logical database index displayed in database list |
-| 🔲 | main | Logical database index displayed in database header |
-| 🔲 | main | Logical database index displayed in edit form |
-| 🔲 | main | Force standalone connection |
-| 🔲 | main | Enable automatic data decompression |
-| 🔲 | main | Configure key name format (Unicode/ASCII/etc) |
-| 🔲 | main | Add database via Redis Sentinel option |
-| 🔲 | main | Add database via Redis Software option |
-| 🔲 | main | Auto-discover databases from Redis Software |
-| 🔲 | main | Auto-discover Redis Cloud databases after signing in |
-| 🔲 | main | Add databases using Cloud API keys |
-| 🔲 | main | Check connection state persists across app restarts |
+| ✅ | main | should add standalone database |
+| ✅ | main | should add database with no auth |
+| ✅ | main | should add database with username only |
+| ✅ | main | should add database with username and password |
+| ✅ | main | should add cluster database |
+| ✅ | main | should add database with TLS/SSL |
+| ✅ | main | should validate required fields |
+| ✅ | main | should test connection before saving |
+| ✅ | main | should cancel add database |
+| ✅ | main | should add database via Connection URL |
+| ✅ | main | should open Connection settings from URL form |
+| ✅ | main | should configure timeout setting |
+| ✅ | main | should select logical database |
+| ✅ | main | should display logical database index in database list |
+| ✅ | main | should display logical database index in database header |
+| ✅ | main | should display logical database index in edit form |
+| ✅ | main | should enable force standalone connection |
+| ✅ | main | should enable automatic data decompression |
+| ✅ | main | should configure key name format |
 
 ### 1.1.1 Connection Security
 | Status | Group | Test Case |
@@ -105,6 +98,16 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Add database using SSH tunneling |
 | 🔲 | main | Connect using SNI configuration |
 | 🔲 | main | Connect with TLS using CA, client, and private key certificates |
+
+### 1.1.2 Add Database (Advanced)
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| 🔲 | main | should add database with SSH tunnel |
+| 🔲 | main | should add database via Redis Sentinel option |
+| 🔲 | main | should add database via Redis Software option |
+| 🔲 | main | should auto-discover databases from Redis Software |
+| 🔲 | main | should auto-discover Redis Cloud databases after signing in |
+| 🔲 | main | should add databases using Cloud API keys |
 
 ### 1.2 Database List
 | Status | Group | Test Case |

@@ -63,13 +63,16 @@ export class DatabaseList {
   /**
    * Get a database row by name
    * Uses a strict text match in the database alias column (2nd column)
+   * Handles optional [dbX] suffix for logical databases
    */
   getRow(name: string): Locator {
     const escapedName = this.escapeRegex(name);
     return this.page
       .locator('table tbody tr')
       .filter({
-        has: this.page.locator('td:nth-child(2)').filter({ hasText: new RegExp(`^${escapedName}\\s*$`) }),
+        has: this.page
+          .locator('td:nth-child(2)')
+          .filter({ hasText: new RegExp(`^${escapedName}(\\s*\\[db\\d+\\])?\\s*$`) }),
       })
       .first();
   }
@@ -109,11 +112,22 @@ export class DatabaseList {
    * Delete a database using the row controls dropdown
    */
   async delete(name: string): Promise<void> {
+    // Clear search first to ensure the database row is properly visible
+    await this.clearSearch();
+
     const row = this.getRow(name);
     await row.hover();
     await row.getByTestId(/controls-button/).click();
     await this.page.getByRole('button', { name: 'Remove field' }).click();
-    await this.page.getByRole('button', { name: 'Remove' }).click();
+
+    // Wait for confirmation dialog and click Remove
+    // Use exact: true to avoid matching "Remove field" button which is also visible
+    const removeButton = this.page.getByRole('button', { name: 'Remove', exact: true });
+    await removeButton.waitFor({ state: 'visible' });
+    await removeButton.click();
+
+    // Wait for the row to be removed from the DOM
+    await row.waitFor({ state: 'hidden', timeout: 5000 });
   }
 
   /**

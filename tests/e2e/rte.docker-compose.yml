@@ -195,6 +195,8 @@ services:
     build: &cluster-plain-7-build ./rte/oss-cluster-7
     ports:
       - 8200:6379
+      - 18200:16379
+    command: redis-server /etc/redis/redis.conf --cluster-announce-ip host.docker.internal --cluster-announce-port 8200 --cluster-announce-bus-port 18200
     networks:
       default:
         ipv4_address: 172.31.100.211
@@ -203,12 +205,20 @@ services:
   master-plain-7-2:
     logging: *logging
     build: *cluster-plain-7-build
+    ports:
+      - 8201:6379
+      - 18201:16379
+    command: redis-server /etc/redis/redis.conf --cluster-announce-ip host.docker.internal --cluster-announce-port 8201 --cluster-announce-bus-port 18201
     networks:
       default:
         ipv4_address: 172.31.100.212
   master-plain-7-3:
     logging: *logging
     build: *cluster-plain-7-build
+    ports:
+      - 8202:6379
+      - 18202:16379
+    command: redis-server /etc/redis/redis.conf --cluster-announce-ip host.docker.internal --cluster-announce-port 8202 --cluster-announce-bus-port 18202
     networks:
       default:
         ipv4_address: 172.31.100.213
