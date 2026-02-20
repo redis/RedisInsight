@@ -9,20 +9,18 @@ import {
   RedisClientConnectionType,
   RedisClientNodeRole,
 } from 'src/modules/redis/client';
-import { convertIndexInfoReply } from '../utils/redisIndexInfo';
 import {
   IndexSummaryDto,
   KeyIndexesDto,
   KeyIndexesResponse,
 } from './dto/key-indexes.dto';
+import { convertIndexInfoReply } from '../utils/redisIndexInfo';
 
 @Injectable()
 export class KeyIndexesService {
   private logger = new Logger('KeyIndexesService');
 
-  constructor(
-    private databaseClientFactory: DatabaseClientFactory,
-  ) {}
+  constructor(private databaseClientFactory: DatabaseClientFactory) {}
 
   /**
    * Find all indexes whose prefixes cover the given key.
