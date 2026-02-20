@@ -9,6 +9,7 @@ export interface UseRedisCompletionsProps {
   monacoObjects: React.RefObject<Nullable<IEditorMount>>
   commands: IRedisCommand[]
   indexes: RedisResponseBuffer[]
+  activeIndexName?: string
 }
 
 export interface UseRedisCompletionsReturn {

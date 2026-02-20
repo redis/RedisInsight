@@ -1,5 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from '../BasePage';
+import { HelpMenu } from './components/HelpMenu';
 
 /**
  * Page Object for Navigation elements (sidebar, help menu, notifications, panels)
@@ -10,24 +11,11 @@ export class SidebarPanel extends BasePage {
   readonly mainNavigation: Locator;
   readonly cloudLink: Locator;
   readonly notificationMenuButton: Locator;
-  readonly helpMenuButton: Locator;
   readonly settingsButton: Locator;
   readonly githubLink: Locator;
 
-  // Help menu items
-  readonly helpMenuDialog: Locator;
-  readonly provideFeedbackLink: Locator;
-  readonly keyboardShortcutsButton: Locator;
-  readonly releaseNotesLink: Locator;
-  readonly resetOnboardingButton: Locator;
-
-  // Keyboard shortcuts dialog
-  readonly shortcutsDialog: Locator;
-  readonly shortcutsTitle: Locator;
-  readonly shortcutsCloseButton: Locator;
-  readonly shortcutsDesktopSection: Locator;
-  readonly shortcutsCliSection: Locator;
-  readonly shortcutsWorkbenchSection: Locator;
+  // Help menu component
+  readonly helpMenu: HelpMenu;
 
   // Notification center
   readonly notificationDialog: Locator;
@@ -70,30 +58,17 @@ export class SidebarPanel extends BasePage {
   constructor(page: Page) {
     super(page);
 
-    // Main navigation
+    // Main navigation (redisLogo inherited from BasePage)
     this.mainNavigation = page.getByRole('navigation', { name: 'Main navigation' });
-    this.cloudLink = page.getByRole('link', { name: 'cloud-db-icon' });
+    this.cloudLink = page.getByTestId('create-cloud-db-link');
     this.notificationMenuButton = page.getByTestId('notification-menu-button');
-    this.helpMenuButton = page.getByTestId('help-menu-button');
     this.settingsButton = page
       .getByTestId('settings-page-btn')
       .or(page.locator('[data-testid="Settings page button"]'));
-    this.githubLink = page.getByRole('link', { name: 'github-repo-icon' });
+    this.githubLink = page.getByTestId('github-repo-btn');
 
-    // Help menu items
-    this.helpMenuDialog = page.getByRole('dialog').filter({ hasText: 'Help Center' });
-    this.provideFeedbackLink = page.getByRole('link', { name: /Provide Feedback/i });
-    this.keyboardShortcutsButton = page.getByTestId('shortcuts-btn');
-    this.releaseNotesLink = page.getByRole('link', { name: 'Release Notes' });
-    this.resetOnboardingButton = page.getByText('Reset Onboarding');
-
-    // Keyboard shortcuts dialog
-    this.shortcutsDialog = page.getByRole('dialog', { name: 'Shortcuts' });
-    this.shortcutsTitle = this.shortcutsDialog.getByText('Shortcuts', { exact: true });
-    this.shortcutsCloseButton = this.shortcutsDialog.getByRole('button', { name: 'close drawer' });
-    this.shortcutsDesktopSection = this.shortcutsDialog.getByText('Desktop application');
-    this.shortcutsCliSection = this.shortcutsDialog.getByText('CLI', { exact: true });
-    this.shortcutsWorkbenchSection = this.shortcutsDialog.getByText('Workbench', { exact: true });
+    // Help menu component
+    this.helpMenu = new HelpMenu(page);
 
     // Notification center
     this.notificationDialog = page.getByRole('dialog').filter({ hasText: 'Notification Center' });

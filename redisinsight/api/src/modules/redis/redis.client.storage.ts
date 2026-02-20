@@ -1,4 +1,4 @@
-import { isMatch, sum } from 'lodash';
+import { get, isMatch, sum } from 'lodash';
 import { Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { RedisClient } from 'src/modules/redis/client';
@@ -211,5 +211,20 @@ export class RedisClientStorage {
     this.logger.debug(`Trying to remove ${toRemove.length} clients`);
 
     return sum(await Promise.all(toRemove.map(this.remove.bind(this))));
+  }
+
+  /**
+   * Finds all clients whose database field at the given path matches the value.
+   * Uses lodash.get to support nested paths like 'something.otherThing'.
+   * @param fieldPath - Dot-notation path to the database field
+   * @param value - Value to match
+   */
+  public getClientsByDatabaseField(
+    fieldPath: string,
+    value: unknown,
+  ): RedisClient[] {
+    return [...this.clients.values()].filter(
+      (client) => get(client.database, fieldPath) === value,
+    );
   }
 }

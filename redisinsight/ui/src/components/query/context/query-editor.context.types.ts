@@ -17,6 +17,7 @@ export interface QueryEditorContextValue {
   // Data
   commands: IRedisCommand[]
   indexes: RedisResponseBuffer[]
+  activeIndexName?: string
 
   // Callbacks
   onSubmit: (value?: string) => void

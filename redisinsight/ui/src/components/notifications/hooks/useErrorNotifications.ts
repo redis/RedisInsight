@@ -33,6 +33,7 @@ export const useErrorNotifications = () => {
         name,
         title = DEFAULT_ERROR_TITLE,
         additionalInfo,
+        persistent,
       }) => {
         if (toastIdsRef.current.has(id)) {
           removeToast(id)
@@ -70,6 +71,19 @@ export const useErrorNotifications = () => {
             { message, title },
             () => removeToast(id),
           )
+          // Show as informative toast, not error
+          const toastId = riToast(errorMessage, {
+            variant: riToast.Variant.Informative,
+            toastId: id,
+            containerId: defaultContainerId,
+            autoClose: false,
+          })
+          toastIdsRef.current.set(id, toastId)
+          return
+        } else if (persistent) {
+          errorMessage = errorMessages.PERSISTENT({ message, title }, () =>
+            removeToast(id),
+          )
         } else {
           errorMessage = errorMessages.DEFAULT(
             message,
@@ -81,6 +95,7 @@ export const useErrorNotifications = () => {
           variant: riToast.Variant.Danger,
           toastId: id,
           containerId: defaultContainerId,
+          autoClose: persistent ? false : undefined,
         })
         toastIdsRef.current.set(id, toastId)
       },

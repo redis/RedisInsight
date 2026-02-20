@@ -10,6 +10,7 @@ import {
   AZURE_OAUTH_REDIRECT_PATH,
 } from 'apiSrc/modules/azure/constants'
 import { getAzureAuthService } from './azure-auth.service.provider'
+import { mapKnownAzureAdError } from './azure-oauth-errors'
 
 // Extract pathname from redirect URI (e.g., '/oauth/callback' from 'redisinsight://azure/oauth/callback')
 const AZURE_OAUTH_CALLBACK_PATH = new URL(AZURE_OAUTH_REDIRECT_PATH).pathname
@@ -52,9 +53,10 @@ const azureOauthCallback = async (url: UrlWithParsedQuery) => {
     // Handle OAuth errors from Azure
     if (error) {
       log.error('Azure OAuth error:', error, errorDescription)
+      const errorMessage = mapKnownAzureAdError(errorDescription, error)
       currentWindow?.webContents.send(IpcOnEvent.azureOauthCallback, {
         status: AzureAuthStatus.Failed,
-        error: errorDescription || error,
+        error: errorMessage,
       })
       return
     }

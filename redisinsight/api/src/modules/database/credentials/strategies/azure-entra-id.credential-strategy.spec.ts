@@ -210,5 +210,19 @@ describe('AzureEntraIdCredentialStrategy', () => {
       expect(result.port).toBe(database.port);
       expect(result.name).toBe(database.name);
     });
+
+    it('should set tokenExpiresOn in providerDetails', async () => {
+      const database = createMockAzureDatabase();
+      const tokenResult = createMockTokenResult();
+      mockAzureAuthService.getRedisTokenByAccountId.mockResolvedValue(
+        tokenResult,
+      );
+
+      const result = await strategy.resolve(database);
+
+      expect(result.providerDetails?.tokenExpiresOn).toEqual(
+        tokenResult.expiresOn,
+      );
+    });
   });
 });

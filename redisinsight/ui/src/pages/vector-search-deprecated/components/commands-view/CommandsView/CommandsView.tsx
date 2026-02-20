@@ -20,6 +20,7 @@ import {
   StyledWrapper,
 } from './CommandsView.styles'
 
+/** @deprecated Use QueryResultsProps from 'uiSrc/components/query/query-results' instead. */
 export interface Props {
   isResultsLoaded: boolean
   items: CommandExecutionUI[]
@@ -44,6 +45,8 @@ export interface Props {
     executeParams?: CodeButtonParams,
   ) => void
 }
+
+/** @deprecated Use QueryResults from 'uiSrc/components/query/query-results' instead. */
 const CommandsView = (props: Props) => {
   const {
     isResultsLoaded,

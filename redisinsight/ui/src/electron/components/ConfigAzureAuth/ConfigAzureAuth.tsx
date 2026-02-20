@@ -81,6 +81,7 @@ const ConfigAzureAuth = () => {
             message: errorMessage,
           },
         },
+        persistent: true,
       } as any),
     )
   }

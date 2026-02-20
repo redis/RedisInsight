@@ -13,7 +13,7 @@ import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
 import { RedisConnectionFailedException } from 'src/modules/redis/exceptions/connection';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DatabaseConnectionEvent } from 'src/modules/database/constants/events';
-import { CredentialStrategyProvider } from 'src/modules/database/credentials';
+import { CredentialStrategyProvider } from 'src/modules/database/credentials/credential-strategy.provider';
 
 type IsClientConnectingMap = {
   [key: string]: boolean;

@@ -34,7 +34,7 @@ import { RedisConnectionTimeoutException } from 'src/modules/redis/exceptions/co
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DatabaseConnectionEvent } from 'src/modules/database/constants/events';
 import { InternalServerErrorException } from '@nestjs/common';
-import { CredentialStrategyProvider } from 'src/modules/database/credentials';
+import { CredentialStrategyProvider } from 'src/modules/database/credentials/credential-strategy.provider';
 
 describe('DatabaseClientFactory', () => {
   let service: DatabaseClientFactory;

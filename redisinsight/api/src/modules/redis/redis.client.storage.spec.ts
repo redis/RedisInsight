@@ -453,6 +453,104 @@ describe('RedisClientStorage', () => {
     // todo: add prepareMetadata check test
   });
 
+  describe('getClientsByDatabaseField', () => {
+    beforeEach(() => {
+      // @ts-ignore
+      service['clients'] = new Map();
+    });
+
+    it('should find clients by nested database field path', async () => {
+      const clientWithField = generateMockRedisClient(
+        mockClientMetadata1,
+        jest.fn(),
+        {},
+        {
+          providerDetails: { customField: 'value-123' } as any,
+        },
+      );
+      const clientWithoutField = generateMockRedisClient({
+        ...mockClientMetadata1,
+        sessionMetadata: { userId: 'u2', sessionId: 's2', accountId: 'a2' },
+      });
+
+      service['clients'].set(clientWithField.id, clientWithField);
+      service['clients'].set(clientWithoutField.id, clientWithoutField);
+
+      const result = service.getClientsByDatabaseField(
+        'providerDetails.customField',
+        'value-123',
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe(clientWithField.id);
+    });
+
+    it('should return multiple clients matching the same field value', async () => {
+      const client1 = generateMockRedisClient(
+        mockClientMetadata1,
+        jest.fn(),
+        {},
+        {
+          providerDetails: { customField: 'shared-value' } as any,
+        },
+      );
+      const client2 = generateMockRedisClient(
+        {
+          ...mockClientMetadata1,
+          sessionMetadata: { userId: 'u2', sessionId: 's2', accountId: 'a2' },
+        },
+        jest.fn(),
+        {},
+        {
+          providerDetails: { customField: 'shared-value' } as any,
+        },
+      );
+
+      service['clients'].set(client1.id, client1);
+      service['clients'].set(client2.id, client2);
+
+      const result = service.getClientsByDatabaseField(
+        'providerDetails.customField',
+        'shared-value',
+      );
+
+      expect(result).toHaveLength(2);
+    });
+
+    it('should return empty array when no clients match', async () => {
+      const client = generateMockRedisClient(
+        mockClientMetadata1,
+        jest.fn(),
+        {},
+        {
+          providerDetails: { customField: 'some-value' } as any,
+        },
+      );
+
+      service['clients'].set(client.id, client);
+
+      const result = service.getClientsByDatabaseField(
+        'providerDetails.customField',
+        'non-existent-value',
+      );
+
+      expect(result).toHaveLength(0);
+    });
+
+    it('should return empty array when field path does not exist', async () => {
+      const client = generateMockRedisClient(mockClientMetadata1);
+
+      service['clients'].set(client.id, client);
+
+      const result = service.getClientsByDatabaseField(
+        'providerDetails.customField',
+        'any-value',
+      );
+
+      expect(result).toHaveLength(0);
+    });
+  });
+
   describe('findClients + removeManyByMetadata', () => {
     it('should correctly find clients for particular database', async () => {
       const query = {

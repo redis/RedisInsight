@@ -24,22 +24,17 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 0.1 Main Navigation
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Navigate to home via Redis logo |
-| 🔲 | main | Navigate to Settings page |
-| 🔲 | main | Show GitHub repo link |
-| 🔲 | main | Show Redis Cloud link |
-| 🔲 | main | Display main navigation |
-| 🔲 | main | Show Redis logo |
-| 🔲 | main | Show settings button |
+| ✅ | main | Navigate to Settings page |
+| ✅ | main | Navigate to home via Redis logo |
+| ✅ | main | Show GitHub repo link |
+| ✅ | main | Show Redis Cloud link |
 
 ### 0.2 Help Menu
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Open Help Center |
-| 🔲 | main | Show Keyboard Shortcuts option |
-| 🔲 | main | Show Reset Onboarding option |
-| 🔲 | main | Show Release Notes link |
-| 🔲 | main | Show Provide Feedback link |
+| ✅ | main | should open Help Center and display all menu options |
+| ✅ | main | should have Release Notes link pointing to GitHub releases |
+| ✅ | main | should have Provide Feedback link pointing to GitHub issues |
 
 ### 0.3 Notification Center
 | Status | Group | Test Case |
@@ -179,10 +174,11 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 1.6 Database Tags
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Add descriptive tags to a database |
-| 🔲 | main | Remove tags from a database |
-| 🔲 | main | Open tags dialog for a database |
-| 🔲 | main | Cancel adding a tag |
+| ✅ | main | should open tags dialog for a database |
+| ✅ | main | should add descriptive tags to a database |
+| ✅ | main | should remove tags from a database |
+| ✅ | main | should cancel adding a tag without saving |
+| ✅ | main | should persist tags after saving and reopening |
 | 🔲 | main | Import tags automatically from Redis Cloud databases |
 
 ### 1.7 Certificate and Encryption Handling

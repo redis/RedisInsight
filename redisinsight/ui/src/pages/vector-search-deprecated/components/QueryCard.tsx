@@ -38,6 +38,7 @@ import queryStyles from 'uiSrc/components/query/query-card/styles.module.scss'
 import QueryCardHeader from 'uiSrc/components/query/query-card/QueryCardHeader'
 import { collectQueryToggleFullScreenTelemetry } from '../telemetry'
 
+/** @deprecated Use QueryCardProps from 'uiSrc/components/query/query-card' instead. */
 export interface Props {
   id: string
   command: string
@@ -81,6 +82,7 @@ export const getSummaryText = (
   return summary
 }
 
+/** @deprecated Use QueryCard from 'uiSrc/components/query/query-card' instead. */
 const QueryCard = (props: Props) => {
   const {
     id,

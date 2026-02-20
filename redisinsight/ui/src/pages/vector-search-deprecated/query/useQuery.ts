@@ -5,6 +5,7 @@ import {
   Nullable,
   getCommandsForExecution,
   getExecuteParams,
+  isGroupMode,
   isGroupResults,
   isSilentMode,
 } from 'uiSrc/utils'
@@ -41,8 +42,10 @@ const useQuery = () => {
     new CommandsHistoryService(CommandExecutionType.Search),
   ).current
 
-  const resultsMode = ResultsMode.Default
-  const activeRunQueryMode = RunQueryMode.ASCII
+  const [activeRunQueryMode, setActiveRunQueryMode] = useState(
+    RunQueryMode.ASCII,
+  )
+  const [resultsMode, setResultsMode] = useState(ResultsMode.Default)
 
   useEffect(() => {
     const loadHistory = async () => {
@@ -247,8 +250,8 @@ const useQuery = () => {
             return {
               ...item,
               ...command,
-              loading: false,
               isOpen: !item.isOpen,
+              loading: false,
               error: '',
             }
           }
@@ -271,9 +274,17 @@ const useQuery = () => {
     }
   }, [])
 
-  const handleQueryProfile = useCallback(() => {}, [])
-  const handleChangeQueryRunMode = useCallback(() => {}, [])
-  const handleChangeGroupMode = useCallback(() => {}, [])
+  const handleChangeQueryRunMode = useCallback(() => {
+    setActiveRunQueryMode((prev) =>
+      prev === RunQueryMode.ASCII ? RunQueryMode.Raw : RunQueryMode.ASCII,
+    )
+  }, [])
+
+  const handleChangeGroupMode = useCallback(() => {
+    setResultsMode((prev) =>
+      isGroupMode(prev) ? ResultsMode.Default : ResultsMode.GroupMode,
+    )
+  }, [])
 
   return {
     // State
@@ -297,7 +308,7 @@ const useQuery = () => {
     onQueryChangeMode: handleChangeQueryRunMode,
     onChangeGroupMode: handleChangeGroupMode,
     onQueryReRun: onSubmit,
-    onQueryProfile: handleQueryProfile,
+    onQueryProfile: onSubmit,
   }
 }
 
