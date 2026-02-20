@@ -1,9 +1,10 @@
-import { DynamicModule, Module, Type } from '@nestjs/common';
+import { DynamicModule, Global, Module, Type } from '@nestjs/common';
 import { QueryLibraryController } from './query-library.controller';
 import { QueryLibraryService } from './query-library.service';
 import { QueryLibraryRepository } from './repositories/query-library.repository';
 import { LocalQueryLibraryRepository } from './repositories/local-query-library.repository';
 
+@Global()
 @Module({})
 export class QueryLibraryModule {
   static register(
