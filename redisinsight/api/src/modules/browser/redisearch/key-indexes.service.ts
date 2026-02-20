@@ -10,10 +10,11 @@ import {
   RedisClientNodeRole,
 } from 'src/modules/redis/client';
 import {
+  IndexInfoDto,
   IndexSummaryDto,
   KeyIndexesDto,
   KeyIndexesResponse,
-} from './dto/key-indexes.dto';
+} from './dto';
 import { convertIndexInfoReply } from '../utils/redisIndexInfo';
 
 @Injectable()
@@ -45,7 +46,7 @@ export class KeyIndexesService {
       );
 
       const indexNames: string[] = uniq(
-        [].concat(...listResults).map((idx) => idx.toString('utf8')),
+        (listResults.flat() as Buffer[]).map((idx) => idx.toString('utf8')),
       );
 
       const matchingIndexes: IndexSummaryDto[] = [];
@@ -56,7 +57,10 @@ export class KeyIndexesService {
             replyEncoding: 'utf8',
           })) as string[][];
 
-          return { name, info: convertIndexInfoReply(infoReply) };
+          return {
+            name,
+            info: convertIndexInfoReply(infoReply) as IndexInfoDto,
+          };
         }),
       );
 
@@ -66,9 +70,13 @@ export class KeyIndexesService {
         }
 
         const { name, info } = result.value;
-        const definition = (info as any).index_definition || {};
-        const prefixes: string[] = definition.prefixes || [];
-        const keyType: string = definition.key_type || '';
+        const { index_definition: definition } = info;
+
+        if (!definition) {
+          continue;
+        }
+
+        const { prefixes = [], key_type: keyType = '' } = definition;
 
         const isMatch =
           prefixes.length === 0 || prefixes.some((p) => keyStr.startsWith(p));
