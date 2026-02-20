@@ -9,7 +9,7 @@ import { getEnvNumber, getEnvOptional } from '../env';
 const CERTS_PATH = path.resolve(__dirname, '../../../e2e/rte/oss-standalone-tls/certs');
 
 /**
- * Read certificate file content
+ * Read certificate file content (lazy - only when called)
  */
 function readCertFile(filename: string): string {
   const filePath = path.join(CERTS_PATH, filename);
@@ -32,24 +32,44 @@ export const tlsRedisConfig = {
   port: getEnvOptional('REDIS_TLS_PORT') ? getEnvNumber('REDIS_TLS_PORT') : 8104,
 };
 
-// Generate unique names once per test run to avoid "already in use" errors
-const uniqueSuffix = generateUniqueSuffix();
+// Lazy-loaded TLS certificates to avoid crashing tests that don't need TLS
+// if the cert files don't exist (e.g., RTE not started yet)
+let _tlsCaCert: TlsCertConfig | null = null;
+let _tlsClientCert: TlsClientCertConfig | null = null;
+let _uniqueSuffix: string | null = null;
+
+function getUniqueSuffix(): string {
+  if (!_uniqueSuffix) {
+    _uniqueSuffix = generateUniqueSuffix();
+  }
+  return _uniqueSuffix;
+}
 
 /**
- * CA Certificate for TLS connection
+ * Get CA Certificate for TLS connection (lazy-loaded)
  * Uses unique name to avoid conflicts with existing certificates
  */
-export const tlsCaCert: TlsCertConfig = {
-  name: getEnvOptional('TLS_CA_CERT_NAME') || `test-ca-${uniqueSuffix}`,
-  certificate: getEnvOptional('TLS_CA_CERT') || readCertFile('redisCA.crt'),
-};
+export function getTlsCaCert(): TlsCertConfig {
+  if (!_tlsCaCert) {
+    _tlsCaCert = {
+      name: getEnvOptional('TLS_CA_CERT_NAME') || `test-ca-${getUniqueSuffix()}`,
+      certificate: getEnvOptional('TLS_CA_CERT') || readCertFile('redisCA.crt'),
+    };
+  }
+  return _tlsCaCert;
+}
 
 /**
- * Client Certificate for TLS connection (mutual TLS)
+ * Get Client Certificate for TLS connection (lazy-loaded)
  * Uses unique name to avoid conflicts with existing certificates
  */
-export const tlsClientCert: TlsClientCertConfig = {
-  name: getEnvOptional('TLS_CLIENT_CERT_NAME') || `test-client-${uniqueSuffix}`,
-  certificate: getEnvOptional('TLS_CLIENT_CERT') || readCertFile('user.crt'),
-  key: getEnvOptional('TLS_CLIENT_KEY') || readCertFile('user.key'),
-};
+export function getTlsClientCert(): TlsClientCertConfig {
+  if (!_tlsClientCert) {
+    _tlsClientCert = {
+      name: getEnvOptional('TLS_CLIENT_CERT_NAME') || `test-client-${getUniqueSuffix()}`,
+      certificate: getEnvOptional('TLS_CLIENT_CERT') || readCertFile('user.crt'),
+      key: getEnvOptional('TLS_CLIENT_KEY') || readCertFile('user.key'),
+    };
+  }
+  return _tlsClientCert;
+}

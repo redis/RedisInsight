@@ -18,7 +18,7 @@ import { sentinelConfig } from './sentinel';
 
 import { sshRedisConfig, sshTunnelConfig } from './ssh';
 
-import { tlsRedisConfig, tlsCaCert, tlsClientCert } from './tls';
+import { tlsRedisConfig, getTlsCaCert, getTlsClientCert } from './tls';
 
 export const redisConfig = {
   standalone: standaloneConfig,
@@ -32,6 +32,7 @@ export const redisConfig = {
   sshRedis: sshRedisConfig,
   sshTunnel: sshTunnelConfig,
   tlsRedis: tlsRedisConfig,
-  tlsCaCert,
-  tlsClientCert,
+  // TLS certs are lazy-loaded to avoid crashing tests that don't need TLS
+  getTlsCaCert,
+  getTlsClientCert,
 };
