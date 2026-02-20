@@ -18,11 +18,7 @@ body:json {
   }
 }
 
-script:post-response {
-  const data = res.body;
-  bru.setEnvVar("QUERY_LIBRARY_ID", data.id)
-}
-
 settings {
   encodeUrl: true
+  timeout: 0
 }
