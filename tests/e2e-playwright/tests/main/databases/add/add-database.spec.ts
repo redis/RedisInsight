@@ -391,8 +391,8 @@ test.describe('Add Database', () => {
     await addDatabaseDialog.configureTls({
       enabled: true,
       verifyServerCert: false,
-      caCert: redisConfig.getTlsCaCert(),
-      clientCert: redisConfig.getTlsClientCert(),
+      caCert: redisConfig.tlsCaCert,
+      clientCert: redisConfig.tlsClientCert,
     });
 
     // Go back to General tab and submit
