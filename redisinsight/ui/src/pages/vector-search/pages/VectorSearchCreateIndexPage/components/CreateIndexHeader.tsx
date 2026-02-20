@@ -10,7 +10,11 @@ export const CreateIndexHeader = () => {
 
   return (
     <S.TitleRow data-testid="vector-search--create-index--header">
-      <Title size="S" data-testid="vector-search--create-index--title">
+      <Title
+        size="M"
+        color="primary"
+        data-testid="vector-search--create-index--title"
+      >
         View sample data index: {displayName}
       </Title>
     </S.TitleRow>

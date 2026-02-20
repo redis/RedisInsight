@@ -12,6 +12,7 @@ export const useRedisearchListData = () => {
   const dispatch = useDispatch()
   const { loading, data } = useSelector(redisearchListSelector)
   const { modules, host: instanceHost } = useSelector(connectedInstanceSelector)
+
   const stringData = useMemo(
     () => data.map((index) => bufferToString(index)),
     [data],

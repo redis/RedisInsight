@@ -40,7 +40,7 @@ describe('useRedisearchListData', () => {
   })
 
   const setupMocks = (
-    redisearchState: { loading: boolean; data: any[] },
+    redisearchState: { loading: boolean | undefined; data: any[] },
     instanceState: { modules?: any[]; host?: string },
   ) => {
     mockUseSelector.mockImplementation((selector: any) => {
@@ -54,13 +54,16 @@ describe('useRedisearchListData', () => {
     })
   }
 
-  it('should return loading state and data', () => {
-    setupMocks({ loading: true, data: [] }, { modules: [], host: 'localhost' })
+  it('should return undefined loading when Redux initial state has not been updated', () => {
+    setupMocks(
+      { loading: undefined, data: [] },
+      { modules: [], host: 'localhost' },
+    )
     mockIsRedisearchAvailable.mockReturnValue(false)
 
     const { result } = renderHook(() => useRedisearchListData())
 
-    expect(result.current.loading).toBe(true)
+    expect(result.current.loading).toBeUndefined()
     expect(result.current.data).toEqual([])
     expect(result.current.stringData).toEqual([])
   })

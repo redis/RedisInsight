@@ -1,7 +1,7 @@
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 export interface UseRedisearchListDataReturn {
-  loading: boolean
+  loading: boolean | undefined
   data: RedisResponseBuffer[]
   stringData: string[]
 }
