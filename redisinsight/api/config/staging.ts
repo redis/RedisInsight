@@ -11,7 +11,7 @@ export default {
   dir_path: {
     homedir,
     prevHomedir,
-    logs: join(homedir, 'logs'),
+    logs: '/non-existing-folder/another-level/logs',
     customConfig: join(homedir, 'config.json'),
     preSetupDatabases:
       process.env.RI_PRE_SETUP_DATABASES_PATH ||
