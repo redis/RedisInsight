@@ -56,6 +56,12 @@ import reducer, {
   deleteRedisearchHistoryAction,
   fetchRedisearchInfoAction,
   deleteRedisearchIndexAction,
+  loadKeyIndexes,
+  loadKeyIndexesSuccess,
+  loadKeyIndexesFailure,
+  resetKeyIndexes,
+  keyIndexesSelector,
+  fetchKeyIndexesAction,
 } from '../../browser/redisearch'
 
 let store: typeof mockedStore
@@ -1471,6 +1477,188 @@ describe('redisearch slice', () => {
         expect(store.getActions()).toEqual(expectedActions)
         expect(mockSuccessCallback).not.toHaveBeenCalled()
         expect(mockErrorCallback).toHaveBeenCalled()
+      })
+    })
+
+    describe('fetchKeyIndexesAction', () => {
+      it('should dispatch loadKeyIndexes and loadKeyIndexesSuccess on success', async () => {
+        const keyName = 'movie:1'
+        const responseData = {
+          indexes: [
+            { name: 'idx:movie', prefixes: ['movie:'], key_type: 'HASH' },
+          ],
+        }
+        const responsePayload = { data: responseData, status: 200 }
+
+        apiService.post = jest.fn().mockResolvedValue(responsePayload)
+
+        await store.dispatch<any>(fetchKeyIndexesAction(keyName))
+
+        const expectedActions = [
+          loadKeyIndexes(keyName),
+          loadKeyIndexesSuccess([
+            keyName,
+            [{ name: 'idx:movie', prefixes: ['movie:'], keyType: 'HASH' }],
+          ]),
+        ]
+
+        expect(store.getActions()).toEqual(expectedActions)
+      })
+
+      it('should dispatch loadKeyIndexesFailure on error', async () => {
+        const keyName = 'movie:1'
+        const errorMessage = 'Request failed with status code 500'
+        apiService.post = jest
+          .fn()
+          .mockRejectedValue(new AxiosError(errorMessage))
+
+        await store.dispatch<any>(fetchKeyIndexesAction(keyName))
+
+        const actions = store.getActions()
+        expect(actions[0]).toEqual(loadKeyIndexes(keyName))
+        expect(actions[1].type).toEqual(loadKeyIndexesFailure.type)
+        expect(actions[1].payload[0]).toEqual(keyName)
+      })
+
+      it('should not dispatch when entry is already loaded', async () => {
+        const keyName = 'movie:1'
+        const storeWithEntry = mockStore({
+          ...initialStateDefault,
+          browser: {
+            ...initialStateDefault.browser,
+            redisearch: {
+              ...initialState,
+              keyIndexes: {
+                [keyName]: {
+                  loading: false,
+                  data: [
+                    {
+                      name: 'idx:movie',
+                      prefixes: ['movie:'],
+                      keyType: 'HASH',
+                    },
+                  ],
+                  error: '',
+                },
+              },
+            },
+          },
+        })
+
+        await storeWithEntry.dispatch<any>(fetchKeyIndexesAction(keyName))
+
+        expect(storeWithEntry.getActions()).toEqual([])
+      })
+
+      it('should re-fetch when force=true even if already loaded', async () => {
+        const keyName = 'movie:1'
+        const responseData = {
+          indexes: [
+            { name: 'idx:movie', prefixes: ['movie:'], key_type: 'HASH' },
+          ],
+        }
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ data: responseData, status: 200 })
+
+        const storeWithEntry = mockStore({
+          ...initialStateDefault,
+          browser: {
+            ...initialStateDefault.browser,
+            redisearch: {
+              ...initialState,
+              keyIndexes: {
+                [keyName]: {
+                  loading: false,
+                  data: [
+                    {
+                      name: 'idx:movie',
+                      prefixes: ['movie:'],
+                      keyType: 'HASH',
+                    },
+                  ],
+                  error: '',
+                },
+              },
+            },
+          },
+        })
+
+        await storeWithEntry.dispatch<any>(fetchKeyIndexesAction(keyName, true))
+
+        expect(storeWithEntry.getActions().length).toBeGreaterThan(0)
+        expect(storeWithEntry.getActions()[0]).toEqual(loadKeyIndexes(keyName))
+      })
+    })
+  })
+
+  describe('keyIndexes reducers', () => {
+    describe('loadKeyIndexes', () => {
+      it('should set loading state for a key', () => {
+        const nextState = reducer(initialState, loadKeyIndexes('movie:1'))
+
+        const rootState = Object.assign(initialStateDefault, {
+          browser: { redisearch: nextState },
+        })
+        const entry = keyIndexesSelector(rootState)['movie:1']
+        expect(entry.loading).toBe(true)
+        expect(entry.data).toEqual([])
+        expect(entry.error).toBe('')
+      })
+    })
+
+    describe('loadKeyIndexesSuccess', () => {
+      it('should set data for a key', () => {
+        const indexes = [
+          { name: 'idx:movie', prefixes: ['movie:'], keyType: 'HASH' },
+        ]
+        const nextState = reducer(
+          initialState,
+          loadKeyIndexesSuccess(['movie:1', indexes]),
+        )
+
+        const rootState = Object.assign(initialStateDefault, {
+          browser: { redisearch: nextState },
+        })
+        const entry = keyIndexesSelector(rootState)['movie:1']
+        expect(entry.loading).toBe(false)
+        expect(entry.data).toEqual(indexes)
+        expect(entry.error).toBe('')
+      })
+    })
+
+    describe('loadKeyIndexesFailure', () => {
+      it('should set error for a key', () => {
+        const nextState = reducer(
+          initialState,
+          loadKeyIndexesFailure(['movie:1', 'Failed to fetch']),
+        )
+
+        const rootState = Object.assign(initialStateDefault, {
+          browser: { redisearch: nextState },
+        })
+        const entry = keyIndexesSelector(rootState)['movie:1']
+        expect(entry.loading).toBe(false)
+        expect(entry.data).toEqual([])
+        expect(entry.error).toBe('Failed to fetch')
+      })
+    })
+
+    describe('resetKeyIndexes', () => {
+      it('should clear all key indexes', () => {
+        const stateWithData = reducer(
+          initialState,
+          loadKeyIndexesSuccess([
+            'movie:1',
+            [{ name: 'idx:movie', prefixes: ['movie:'], keyType: 'HASH' }],
+          ]),
+        )
+        const nextState = reducer(stateWithData, resetKeyIndexes())
+
+        const rootState = Object.assign(initialStateDefault, {
+          browser: { redisearch: nextState },
+        })
+        expect(keyIndexesSelector(rootState)).toEqual({})
       })
     })
   })
