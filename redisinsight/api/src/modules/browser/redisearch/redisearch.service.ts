@@ -20,10 +20,9 @@ import { DatabaseClientFactory } from 'src/modules/database/providers/database.c
 import {
   RedisClient,
   RedisClientCommandArgument,
-  RedisClientConnectionType,
-  RedisClientNodeRole,
 } from 'src/modules/redis/client';
 import { convertIndexInfoReply } from '../utils/redisIndexInfo';
+import { getShards } from '../utils';
 import { IndexDeleteRequestBodyDto } from './dto/index.delete.dto';
 
 @Injectable()
@@ -49,7 +48,7 @@ export class RedisearchService {
     try {
       const client: RedisClient =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
-      const nodes = (await this.getShards(client)) as RedisClient[];
+      const nodes = await getShards(client);
 
       const res = await Promise.all(
         nodes.map(async (node) => node.sendCommand(['FT._LIST'])),
@@ -110,7 +109,7 @@ export class RedisearchService {
         }
       }
 
-      const nodes = (await this.getShards(client)) as RedisClient[];
+      const nodes = await getShards(client);
 
       const commandArgs: any[] = [index, 'ON', type];
 
@@ -300,19 +299,5 @@ export class RedisearchService {
 
       throw catchRedisSearchError(error);
     }
-  }
-
-  /**
-   * Get array of shards (client per each master node)
-   * for STANDALONE will return array with a single shard
-   * @param client
-   * @private
-   */
-  private async getShards(client: RedisClient): Promise<RedisClient[]> {
-    if (client.getConnectionType() === RedisClientConnectionType.CLUSTER) {
-      return client.nodes(RedisClientNodeRole.PRIMARY);
-    }
-
-    return [client];
   }
 }

@@ -4,11 +4,7 @@ import { catchRedisSearchError } from 'src/utils';
 import { ClientMetadata } from 'src/common/models';
 import { plainToInstance } from 'class-transformer';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
-import {
-  RedisClient,
-  RedisClientConnectionType,
-  RedisClientNodeRole,
-} from 'src/modules/redis/client';
+import { RedisClient } from 'src/modules/redis/client';
 import {
   IndexInfoDto,
   IndexSummaryDto,
@@ -16,6 +12,7 @@ import {
   KeyIndexesResponse,
 } from './dto';
 import { convertIndexInfoReply } from '../utils/redisIndexInfo';
+import { getShards } from '../utils';
 
 interface IndexEntry {
   name: string;
@@ -58,15 +55,15 @@ export class KeyIndexesService {
   }
 
   private async listIndexNames(client: RedisClient): Promise<string[]> {
-    const nodes = (await this.getShards(client)) as RedisClient[];
+    const nodes = await getShards(client);
 
     const listResults = await Promise.all(
       nodes.map(async (node) => node.sendCommand(['FT._LIST'])),
     );
 
     return uniq(
-      (listResults.flat() as Buffer[]).map((idx) => idx.toString('utf8')),
-    );
+      (listResults.flat() as Buffer[]).map((idx) => idx.toString('hex')),
+    ).map((hex) => Buffer.from(hex, 'hex').toString('utf8'));
   }
 
   private async fetchIndexesInfo(
@@ -124,13 +121,5 @@ export class KeyIndexesService {
     }
 
     return matching;
-  }
-
-  private async getShards(client: RedisClient): Promise<RedisClient[]> {
-    if (client.getConnectionType() === RedisClientConnectionType.CLUSTER) {
-      return client.nodes(RedisClientNodeRole.PRIMARY);
-    }
-
-    return [client];
   }
 }
