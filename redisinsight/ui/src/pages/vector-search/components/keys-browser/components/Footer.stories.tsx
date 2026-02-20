@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Route } from 'react-router-dom'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import Footer from './Footer'
-import { StorePopulator } from '../KeysBrowser.stories'
+import { StorePopulator } from '../__stories__/StorePopulator'
 import { Provider } from '../contexts/Context'
 const FooterContent = () => {
   return (

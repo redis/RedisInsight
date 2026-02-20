@@ -2,7 +2,7 @@ import React from 'react'
 import { render, screen } from 'uiSrc/utils/test-utils'
 
 import Header from './Header'
-import { createMockKeysBrowserContext } from '../__mocks__/contextMock'
+import { createMockKeysBrowserContext } from '../__stories__/contextMock'
 
 let mockContextValue = createMockKeysBrowserContext()
 
