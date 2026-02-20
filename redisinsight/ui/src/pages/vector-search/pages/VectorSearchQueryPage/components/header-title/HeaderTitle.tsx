@@ -37,7 +37,7 @@ export const HeaderTitle = ({
       <Breadcrumbs.List>
         <Breadcrumbs.Item>
           <S.BreadcrumbLink
-            as="a"
+            as="button"
             onClick={handleNavigateToList}
             data-testid="breadcrumb-search-indexes-link"
           >
