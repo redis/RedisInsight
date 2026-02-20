@@ -74,9 +74,7 @@ export class AddDatabaseDialog {
     this.portInput = page.getByRole('spinbutton', { name: /port/i });
     this.usernameInput = page.getByPlaceholder('Enter Username');
     this.passwordInput = page.getByPlaceholder('Enter Password');
-    this.addRedisDatabaseButton = page.getByRole('button', {
-      name: 'Add Redis Database',
-    });
+    this.addRedisDatabaseButton = page.getByTestId('btn-submit');
 
     // Additional settings
     this.timeoutInput = page.getByRole('spinbutton', { name: /timeout/i });

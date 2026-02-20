@@ -53,12 +53,6 @@ export abstract class BasePage {
    */
   async gotoDatabase(databaseId: string): Promise<void> {
     await this.gotoHome();
-    // Clear any search filter that might be hiding the database
-    // This is important for Electron where state persists between tests
-    const searchInput = this.page.getByTestId('search-database-list');
-    if (await searchInput.isVisible({ timeout: 1000 }).catch(() => false)) {
-      await searchInput.clear();
-    }
     await this.page.getByTestId(`instance-name-${databaseId}`).click();
     await this.page.getByRole('tab', { name: 'Browse' }).waitFor({ state: 'visible' });
   }
