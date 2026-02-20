@@ -1,0 +1,28 @@
+meta {
+  name: Update Query
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{API_URL}}/databases/{{DB_INTANCE_ID}}/query-library/{{QUERY_LIBRARY_ID}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Vector Search - Bikes",
+    "description": "Hello world",
+    "query": "FT.SEARCH idx:bikes_vss \"*\""
+  }
+}
+
+script:post-response {
+  const data = res.body;
+  bru.setEnvVar("QUERY_LIBRARY_ID", data.id)
+}
+
+settings {
+  encodeUrl: true
+}

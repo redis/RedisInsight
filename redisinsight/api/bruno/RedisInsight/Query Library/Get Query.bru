@@ -1,0 +1,23 @@
+meta {
+  name: Get Query
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{API_URL}}/databases/{{DB_INTANCE_ID}}/query-library/{{QUERY_LIBRARY_ID}}
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {
+    "indexName": "idx:bikes_vss",
+    "name": "Vector Search - Bikes",
+    "query": "FT.SEARCH idx:bikes_vss \"*\""
+  }
+}
+
+settings {
+  encodeUrl: true
+}
