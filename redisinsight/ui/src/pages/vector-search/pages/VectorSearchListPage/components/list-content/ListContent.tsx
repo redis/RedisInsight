@@ -60,7 +60,7 @@ export const ListContent = () => {
   }, [dispatch, instanceId, pendingDeleteIndex])
 
   const actions: IndexListAction[] = useMemo(
-    () => [{ name: 'Delete', callback: handleDelete }],
+    () => [{ name: 'Delete', callback: handleDelete }], // TODO: Add more actions later (e.g. Browse dataset and View index)
     [handleDelete],
   )
 
