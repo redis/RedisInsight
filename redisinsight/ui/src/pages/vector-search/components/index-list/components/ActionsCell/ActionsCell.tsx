@@ -51,7 +51,11 @@ export const ActionsCell = ({
       {actions.length > 0 && (
         <Menu data-testid={`index-actions-menu-${id}`}>
           <MenuTrigger>
-            <IconButton icon={MoreactionsIcon} size="L" />
+            <IconButton
+              icon={MoreactionsIcon}
+              size="L"
+              data-testid={`index-actions-menu-trigger-${id}`}
+            />
           </MenuTrigger>
           <MenuContent placement="right" align="start">
             {actions.map((action) => {
