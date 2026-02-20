@@ -63,41 +63,62 @@ const getDocUrl = (command: string): string =>
   })
 
 /**
- * Builds the snippet insert-text for a given command.
- * When `indexSnippet` is provided, it is substituted into templates
- * that use an index argument.
+ * Resolves the preferred index into a snippet string.
+ *
+ * When `activeIndexName` is provided (the index from the current URL),
+ * it is inserted as **fixed text** so that Tab skips straight to the
+ * query placeholder.  Otherwise the index is an editable tab-stop.
+ *
+ * Returns `{ snippet, isFixed }` so that `getInsertText` can number
+ * subsequent tab-stops correctly.
  */
-const getInsertText = (command: string, indexSnippet: string): string => {
+const getIndexSnippet = (
+  indexes: RedisResponseBuffer[],
+  activeIndexName?: string,
+): { snippet: string; isFixed: boolean } => {
+  if (activeIndexName) {
+    return { snippet: `'${activeIndexName}'`, isFixed: true }
+  }
+  if (indexes.length === 0) {
+    return { snippet: '${1:index}', isFixed: false }
+  }
+
+  const name = formatLongName(bufferToString(indexes[0]))
+  return { snippet: `'\${1:${name}}'`, isFixed: false }
+}
+
+/**
+ * Builds the snippet insert-text for a given command.
+ *
+ * When the index is fixed (active index from the URL), subsequent
+ * tab-stops start at `$1`.  When the index itself is a tab-stop,
+ * they start at `$2`.
+ */
+const getInsertText = (
+  command: string,
+  indexSnippet: string,
+  isIndexFixed: boolean,
+): string => {
+  const n = isIndexFixed ? 1 : 2
+
   switch (command) {
     case 'FT.SEARCH':
-      return `FT.SEARCH ${indexSnippet} "\${2:*}"`
+      return `FT.SEARCH ${indexSnippet} "\${${n}:*}"`
     case 'FT.AGGREGATE':
-      return `FT.AGGREGATE ${indexSnippet} "\${2:*}"`
+      return `FT.AGGREGATE ${indexSnippet} "\${${n}:*}"`
     case 'FT.SUGGET':
       return 'FT.SUGGET ${1:key} ${2:prefix}'
     case 'FT.SPELLCHECK':
-      return `FT.SPELLCHECK ${indexSnippet} "\${2:query}"`
+      return `FT.SPELLCHECK ${indexSnippet} "\${${n}:query}"`
     case 'FT.EXPLAIN':
-      return `FT.EXPLAIN ${indexSnippet} "\${2:*}"`
+      return `FT.EXPLAIN ${indexSnippet} "\${${n}:*}"`
     case 'FT.PROFILE':
-      return `FT.PROFILE ${indexSnippet} SEARCH QUERY "\${2:*}"`
+      return `FT.PROFILE ${indexSnippet} SEARCH QUERY "\${${n}:*}"`
     case 'FT._LIST':
       return 'FT._LIST'
     default:
       return command
   }
-}
-
-/**
- * Resolves the first available index into a snippet tab-stop string.
- * - With an index: `'${1:myindex}'`
- * - Without:       `${1:index}`
- */
-const getIndexSnippet = (indexes: RedisResponseBuffer[]): string => {
-  if (indexes.length === 0) return '${1:index}'
-
-  const name = formatLongName(bufferToString(indexes[0]))
-  return `'\${1:${name}}'`
 }
 
 /**
@@ -113,8 +134,9 @@ const getIndexSnippet = (indexes: RedisResponseBuffer[]): string => {
  */
 export const getOnboardingSuggestions = (
   indexes: RedisResponseBuffer[] = [],
+  activeIndexName?: string,
 ): monacoEditor.languages.CompletionItem[] => {
-  const indexSnippet = getIndexSnippet(indexes)
+  const { snippet, isFixed } = getIndexSnippet(indexes, activeIndexName)
 
   return ONBOARDING_TEMPLATES.map((t, i) => ({
     label: t.command,
@@ -123,7 +145,11 @@ export const getOnboardingSuggestions = (
     documentation: {
       value: `**${t.command}** — ${t.detail}\n\n[Documentation](${getDocUrl(t.command)})`,
     },
-    insertText: getInsertText(t.command, t.usesIndex ? indexSnippet : ''),
+    insertText: getInsertText(
+      t.command,
+      t.usesIndex ? snippet : '',
+      t.usesIndex && isFixed,
+    ),
     insertTextRules:
       monacoEditor.languages.CompletionItemInsertTextRule.InsertAsSnippet,
     range: EMPTY_EDITOR_RANGE,

@@ -43,6 +43,7 @@ export const useRedisCompletions = ({
   monacoObjects,
   commands,
   indexes,
+  activeIndexName,
 }: UseRedisCompletionsProps): UseRedisCompletionsReturn => {
   const [selectedIndex, setSelectedIndex] = useState('')
 
@@ -199,7 +200,11 @@ export const useRedisCompletions = ({
       commands,
       command,
       cursorContext,
-      { fields: attributesRef.current, indexes: indexesRef.current },
+      {
+        fields: attributesRef.current,
+        indexes: indexesRef.current,
+        activeIndexName,
+      },
       isEscapedSuggestions.current,
     )
 

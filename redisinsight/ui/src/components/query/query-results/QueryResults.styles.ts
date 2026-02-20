@@ -5,14 +5,13 @@ import { Col, Row, FlexItem } from 'uiSrc/components/base/layout/flex'
 // to replace var(--border-radius-medium)
 export const Wrapper = styled(Col)`
   flex: 1;
-  height: calc(100% - var(--border-radius-medium));
+  height: 100%;
   width: 100%;
   background-color: ${({ theme }) =>
     theme.semantic?.color.background.neutral100};
   border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
   border-radius: var(--border-radius-medium);
-  // HACK: to fix rectangle like view in rounded borders wrapper
-  padding-bottom: ${({ theme }) => theme.core.space.space050};
+  overflow: hidden;
 
   position: relative;
 `

@@ -17,23 +17,27 @@ describe('EditorLibraryToggle', () => {
   it('should render toggle buttons', () => {
     render(<EditorLibraryToggle {...defaultProps} />)
 
-    expect(screen.getByRole('button', { name: 'Editor' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Library' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /Query editor/i }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /Query library/i }),
+    ).toBeInTheDocument()
   })
 
-  it('should call onChangeTab with Library when Library toggle is clicked', () => {
+  it('should call onChangeTab with Library when Query library toggle is clicked', () => {
     render(<EditorLibraryToggle {...defaultProps} />)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Library' }))
+    fireEvent.click(screen.getByRole('button', { name: /Query library/i }))
     expect(defaultProps.onChangeTab).toHaveBeenCalledWith(EditorTab.Library)
   })
 
-  it('should call onChangeTab with Editor when Editor toggle is clicked', () => {
+  it('should call onChangeTab with Editor when Query editor toggle is clicked', () => {
     render(
       <EditorLibraryToggle {...defaultProps} activeTab={EditorTab.Library} />,
     )
 
-    fireEvent.click(screen.getByRole('button', { name: 'Editor' }))
+    fireEvent.click(screen.getByRole('button', { name: /Query editor/i }))
     expect(defaultProps.onChangeTab).toHaveBeenCalledWith(EditorTab.Editor)
   })
 })

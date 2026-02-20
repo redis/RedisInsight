@@ -74,6 +74,7 @@ let state: IState = {
   resultsMode: ResultsMode.Default,
 }
 
+/** @deprecated Use PageContent from 'pages/vector-search/pages/VectorSearchQueryPage/components/page-content' instead. */
 const WBView = (props: Props) => {
   const {
     script = '',

@@ -56,10 +56,12 @@ export const getIndexesSuggestions = (
   indexes: RedisResponseBuffer[],
   range: monaco.IRange,
   isNextArgQuery = true,
+  activeIndexName?: string,
 ) =>
   indexes.map((index) => {
     const value = formatLongName(bufferToString(index))
     const insertQueryQuotes = isNextArgQuery ? " '\${1:query to search}'" : ''
+    const isActive = !!activeIndexName && value === activeIndexName
 
     return {
       label: value || ' ',
@@ -69,6 +71,8 @@ export const getIndexesSuggestions = (
         monacoEditor.languages.CompletionItemInsertTextRule.InsertAsSnippet,
       range,
       detail: value || ' ',
+      preselect: isActive,
+      sortText: isActive ? `0_${value}` : `1_${value}`,
     }
   })
 

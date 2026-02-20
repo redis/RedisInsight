@@ -52,14 +52,18 @@ const triggerEmptySuggestions = (
  * autocomplete behaviour takes over with all Redis commands available.
  */
 export const VectorSearchEditor = () => {
-  const { query, onSubmit, indexes } = useQueryEditorContext()
+  const { query, onSubmit, indexes, activeIndexName } = useQueryEditorContext()
   // Start as true because useMonacoRedisEditor auto-focuses the editor on mount
   const [focused, setFocused] = useState(true)
   const [contentLeft, setContentLeft] = useState(0)
   const disposeOnboardingRef = useRef<(() => void) | null>(null)
-  // Keep a ref to always read the latest indexes inside mount-time closures
+  // Keep refs to always read the latest values inside mount-time closures
   const indexesRef = useRef(indexes)
   indexesRef.current = indexes
+  const activeIndexNameRef = useRef(activeIndexName)
+  activeIndexNameRef.current = activeIndexName
+  // Track whether the user has interacted with the editor
+  const hasInteractedRef = useRef(false)
 
   // Dispose the onboarding completion provider on unmount
   useEffect(
@@ -90,26 +94,37 @@ export const VectorSearchEditor = () => {
             provideCompletionItems: (model) => {
               if (model.getValue().trim()) return { suggestions: [] }
               return {
-                suggestions: getOnboardingSuggestions(indexesRef.current),
+                suggestions: getOnboardingSuggestions(
+                  indexesRef.current,
+                  activeIndexNameRef.current,
+                ),
               }
             },
           },
         ).dispose
 
-      // Auto-open the suggestion widget on initial mount
-      triggerEmptySuggestions(editor, completions)
-
-      // Re-open when content is deleted back to empty
+      // Re-open when content is deleted back to empty (only after first interaction)
       editor.onDidChangeModelContent(() => {
+        hasInteractedRef.current = true
         if (!editor.getValue()?.trim()) {
           triggerEmptySuggestions(editor, completions)
         }
       })
 
-      // Re-open when the editor regains focus while still empty
+      // Open suggestions on click when the editor is empty
+      editor.onMouseDown(() => {
+        if (!hasInteractedRef.current) {
+          hasInteractedRef.current = true
+          triggerEmptySuggestions(editor, completions)
+        }
+      })
+
+      // Re-open when the editor regains focus while still empty (only after first interaction)
       editor.onDidFocusEditorWidget(() => {
         setFocused(true)
-        triggerEmptySuggestions(editor, completions)
+        if (hasInteractedRef.current) {
+          triggerEmptySuggestions(editor, completions)
+        }
       })
 
       editor.onDidBlurEditorWidget(() => {
@@ -119,9 +134,10 @@ export const VectorSearchEditor = () => {
   })
 
   return (
-    <S.EditorContainer data-testid="vector-search-editor">
+    <S.EditorContainer as="div" data-testid="vector-search-editor">
       {!query && !focused && (
         <S.EditorPlaceholder
+          as="div"
           $contentLeft={contentLeft}
           data-testid="editor-placeholder"
         >

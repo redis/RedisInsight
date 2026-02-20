@@ -26,6 +26,11 @@ export const EditorContainer = styled.div`
   flex: 1;
   min-height: 0;
   position: relative;
+  background-color: ${({ theme }) =>
+    theme.semantic?.color.background.neutral200};
+
+  --monaco-color-bg: ${({ theme }) =>
+    theme.semantic?.color.background.neutral200};
 `
 
 /**

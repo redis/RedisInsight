@@ -2635,10 +2635,10 @@
   resolved "https://registry.yarnpkg.com/@redis-ui/icons/-/icons-6.7.1.tgz#e1fc3bb041429319b982fd880b3cbfa86d12a8d7"
   integrity sha512-Ht1lDSN53W0Z72k0j+L8LoYP113S/3wBdoXHuCwk2r7akiofmcu5zGdwjgOjAsHZYrlzj2jci5k8zrbB3oBwNg==
 
-"@redis-ui/styles@^14.6.0":
-  version "14.6.0"
-  resolved "https://registry.yarnpkg.com/@redis-ui/styles/-/styles-14.6.0.tgz#54fb4b7e12d63a0a950d0f38ceecec89fc0c432f"
-  integrity sha512-SMByS2sLVSWqUwQrIvVv8dMdpGsW8k8ZUHbk1c/J9906Mzkc3F2sBDCwNdOVsr4qSuzcEsnfqvOs4ITWfIXB7g==
+"@redis-ui/styles@^14.9.3":
+  version "14.9.3"
+  resolved "https://registry.yarnpkg.com/@redis-ui/styles/-/styles-14.9.3.tgz#c3674a9349ec79eb1d5b496ce103de31dad3d0c3"
+  integrity sha512-0lbKjd4dMUHU7i81W+sK+lJZK8Gdqx7lmHfTGvPusfk7mt3VCDmbgJX+Z0KY+Gcq1JcxRkDo794bKHoPSG8WCg==
   dependencies:
     color-alpha "^2.0.0"
     polished "^4.3.1"

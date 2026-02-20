@@ -37,7 +37,7 @@ export const useQueryEditor = (
     isDedicatedEditorOpen,
   } = options
 
-  const { monacoObjects, query, setQuery, commands, indexes } =
+  const { monacoObjects, query, setQuery, commands, indexes, activeIndexName } =
     useQueryEditorContext()
 
   // Autocomplete & suggestions
@@ -45,6 +45,7 @@ export const useQueryEditor = (
     monacoObjects,
     commands,
     indexes,
+    activeIndexName,
   })
 
   function handleEditorSetup(
