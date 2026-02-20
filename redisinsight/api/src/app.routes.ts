@@ -6,6 +6,7 @@ import { ClusterMonitorModule } from 'src/modules/cluster-monitor/cluster-monito
 import { DatabaseAnalysisModule } from 'src/modules/database-analysis/database-analysis.module';
 import { BulkActionsModule } from 'src/modules/bulk-actions/bulk-actions.module';
 import { DatabaseRecommendationModule } from 'src/modules/database-recommendation/database-recommendation.module';
+import { QueryLibraryModule } from 'src/modules/query-library/query-library.module';
 
 export const routes = [
   {
@@ -42,6 +43,10 @@ export const routes = [
       {
         path: '/:dbInstance',
         module: DatabaseRecommendationModule,
+      },
+      {
+        path: '/:dbInstance',
+        module: QueryLibraryModule,
       },
     ],
   },
