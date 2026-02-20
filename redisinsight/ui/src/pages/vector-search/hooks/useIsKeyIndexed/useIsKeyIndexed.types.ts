@@ -1,8 +1,4 @@
-export interface IndexSummary {
-  name: string
-  prefixes: string[]
-  keyType: string
-}
+import { IndexSummary } from 'uiSrc/slices/interfaces/redisearch'
 
 export enum UseIsKeyIndexedStatus {
   Idle = 'idle',

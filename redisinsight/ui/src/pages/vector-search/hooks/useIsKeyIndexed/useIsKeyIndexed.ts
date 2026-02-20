@@ -1,111 +1,62 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
-import { useSelector } from 'react-redux'
-
-import { apiService } from 'uiSrc/services'
-import { ApiEndpoints } from 'uiSrc/constants'
-import { getUrl, isStatusSuccessful } from 'uiSrc/utils'
-import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-import { KeyIndexesResponse } from 'apiSrc/modules/browser/redisearch/dto/key-indexes.dto'
+import { useEffect, useCallback } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
 import {
-  IndexSummary,
+  keyIndexesSelector,
+  fetchKeyIndexesAction,
+} from 'uiSrc/slices/browser/redisearch'
+import { AppDispatch } from 'uiSrc/slices/store'
+
+import {
   UseIsKeyIndexedResult,
   UseIsKeyIndexedStatus,
 } from './useIsKeyIndexed.types'
 
-const transformResponse = (data: KeyIndexesResponse): IndexSummary[] =>
-  (data.indexes || []).map((idx) => ({
-    name: idx.name,
-    prefixes: idx.prefixes,
-    keyType: idx.key_type,
-  }))
-
 /**
  * Hook to determine if a given key is covered by one or more search indexes.
+ * Thin wrapper around Redux state -- dispatches a thunk on mount and reads from the store.
  *
  * @param keyName - The key name to check
  * @returns { isIndexed, indexes, status, refresh }
  */
 export const useIsKeyIndexed = (keyName: string): UseIsKeyIndexedResult => {
-  const [indexes, setIndexes] = useState<IndexSummary[]>([])
-  const [status, setStatus] = useState<UseIsKeyIndexedStatus>(
-    UseIsKeyIndexedStatus.Idle,
-  )
-
-  const connectedInstance = useSelector(connectedInstanceSelector)
-  const instanceId = connectedInstance?.id
-
-  const fetchIdRef = useRef(0)
-  const cacheRef = useRef<Map<string, IndexSummary[]>>(new Map())
-
-  const fetchKeyIndexes = useCallback(
-    async (skipCache = false) => {
-      if (!instanceId || !keyName) {
-        return
-      }
-
-      if (!skipCache) {
-        const cached = cacheRef.current.get(keyName)
-        if (cached) {
-          setIndexes(cached)
-          setStatus(UseIsKeyIndexedStatus.Ready)
-          return
-        }
-      }
-
-      const currentFetchId = ++fetchIdRef.current
-
-      setStatus(UseIsKeyIndexedStatus.Loading)
-
-      try {
-        const { data, status: httpStatus } =
-          await apiService.post<KeyIndexesResponse>(
-            getUrl(instanceId, ApiEndpoints.REDISEARCH_KEY_INDEXES),
-            { key: keyName },
-          )
-
-        if (currentFetchId !== fetchIdRef.current) {
-          return
-        }
-
-        if (isStatusSuccessful(httpStatus)) {
-          const result = transformResponse(data)
-          cacheRef.current.set(keyName, result)
-          setIndexes(result)
-          setStatus(UseIsKeyIndexedStatus.Ready)
-        }
-      } catch {
-        if (currentFetchId !== fetchIdRef.current) {
-          return
-        }
-        setIndexes([])
-        setStatus(UseIsKeyIndexedStatus.Error)
-      }
-    },
-    [instanceId, keyName],
-  )
+  const dispatch = useDispatch<AppDispatch>()
+  const keyIndexes = useSelector(keyIndexesSelector)
+  const entry = keyName ? keyIndexes[keyName] : undefined
 
   useEffect(() => {
     if (keyName) {
-      fetchKeyIndexes()
-    } else {
-      setIndexes([])
-      setStatus(UseIsKeyIndexedStatus.Idle)
+      dispatch(fetchKeyIndexesAction(keyName))
     }
-
-    return () => {
-      fetchIdRef.current++
-    }
-  }, [keyName, fetchKeyIndexes])
+  }, [keyName, dispatch])
 
   const refresh = useCallback(async () => {
-    cacheRef.current.delete(keyName)
-    await fetchKeyIndexes(true)
-  }, [keyName, fetchKeyIndexes])
+    if (keyName) {
+      await dispatch(fetchKeyIndexesAction(keyName, true))
+    }
+  }, [keyName, dispatch])
+
+  if (!keyName || !entry) {
+    return {
+      isIndexed: false,
+      indexes: [],
+      status: UseIsKeyIndexedStatus.Idle,
+      refresh,
+    }
+  }
+
+  let status: UseIsKeyIndexedStatus
+  if (entry.loading) {
+    status = UseIsKeyIndexedStatus.Loading
+  } else if (entry.error) {
+    status = UseIsKeyIndexedStatus.Error
+  } else {
+    status = UseIsKeyIndexedStatus.Ready
+  }
 
   return {
-    isIndexed: indexes.length > 0,
-    indexes,
+    isIndexed: entry.data.length > 0,
+    indexes: entry.data,
     status,
     refresh,
   }
