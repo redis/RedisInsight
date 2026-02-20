@@ -287,6 +287,48 @@ describe('Node', () => {
     })
   })
 
+  describe('showFolderMetadata', () => {
+    it('should hide folder actions when showFolderMetadata is false', () => {
+      const mockData: TreeData = {
+        ...mockedData,
+        isLeaf: false,
+        fullName: 'folder',
+        keyCount: 100,
+        keyApproximate: 50,
+        delimiters: [':'],
+        onDeleteFolder: jest.fn(),
+        showFolderMetadata: false,
+      }
+
+      render(<Node {...instance(mockedProps)} data={mockData} />)
+
+      expect(screen.queryByTestId('percentage_folder')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('count_folder')).not.toBeInTheDocument()
+      expect(
+        screen.queryByTestId('delete-folder-btn-folder'),
+      ).not.toBeInTheDocument()
+    })
+
+    it('should show folder actions when showFolderMetadata is true', () => {
+      const mockData: TreeData = {
+        ...mockedData,
+        isLeaf: false,
+        fullName: 'folder',
+        keyCount: 100,
+        keyApproximate: 50,
+        delimiters: [':'],
+        onDeleteFolder: jest.fn(),
+        showFolderMetadata: true,
+      }
+
+      render(<Node {...instance(mockedProps)} data={mockData} />)
+
+      expect(screen.getByTestId('percentage_folder')).toBeInTheDocument()
+      expect(screen.getByTestId('count_folder')).toBeInTheDocument()
+      expect(screen.getByTestId('delete-folder-btn-folder')).toBeInTheDocument()
+    })
+  })
+
   describe('Node metadata and column visibility', () => {
     it('should call getMetadata when node is clicked and TTL column is visible', () => {
       const mockGetMetadata = jest.fn()
