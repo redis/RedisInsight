@@ -106,13 +106,9 @@ describe('ListContent', () => {
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     renderComponent()
 
-    const actionsCell = screen.getByTestId('index-actions-test-index')
-    const buttons = within(actionsCell).getAllByRole('button')
-    const menuTrigger = buttons[buttons.length - 1]
-    await user.click(menuTrigger)
-
-    const deleteBtn = screen.getByTestId('index-actions-delete-btn-test-index')
-    await user.click(deleteBtn)
+    const actionsMenu = screen.getByTestId('index-actions-menu-test-index')
+    await user.click(within(actionsMenu).getByRole('button'))
+    await user.click(screen.getByText('Delete'))
 
     expect(
       screen.getByText('Are you sure you want to delete this index?'),
@@ -124,16 +120,11 @@ describe('ListContent', () => {
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     renderComponent()
 
-    const actionsCell = screen.getByTestId('index-actions-test-index')
-    const buttons = within(actionsCell).getAllByRole('button')
-    const menuTrigger = buttons[buttons.length - 1]
-    await user.click(menuTrigger)
+    const actionsMenu = screen.getByTestId('index-actions-menu-test-index')
+    await user.click(within(actionsMenu).getByRole('button'))
+    await user.click(screen.getByText('Delete'))
 
-    const deleteBtn = screen.getByTestId('index-actions-delete-btn-test-index')
-    await user.click(deleteBtn)
-
-    const confirmBtn = screen.getByTestId('delete-index-modal-confirm')
-    await user.click(confirmBtn)
+    await user.click(screen.getByTestId('delete-index-modal-confirm'))
 
     expect(deleteRedisearchIndexAction).toHaveBeenCalled()
   })
@@ -142,16 +133,11 @@ describe('ListContent', () => {
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     renderComponent()
 
-    const actionsCell = screen.getByTestId('index-actions-test-index')
-    const buttons = within(actionsCell).getAllByRole('button')
-    const menuTrigger = buttons[buttons.length - 1]
-    await user.click(menuTrigger)
+    const actionsMenu = screen.getByTestId('index-actions-menu-test-index')
+    await user.click(within(actionsMenu).getByRole('button'))
+    await user.click(screen.getByText('Delete'))
 
-    const deleteBtn = screen.getByTestId('index-actions-delete-btn-test-index')
-    await user.click(deleteBtn)
-
-    const cancelBtn = screen.getByTestId('delete-index-modal-cancel')
-    await user.click(cancelBtn)
+    await user.click(screen.getByTestId('delete-index-modal-cancel'))
 
     expect(deleteRedisearchIndexAction).not.toHaveBeenCalled()
   })
