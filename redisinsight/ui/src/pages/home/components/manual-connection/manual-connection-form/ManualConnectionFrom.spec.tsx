@@ -1342,7 +1342,7 @@ describe('InstanceForm', () => {
       expect(screen.getByTestId('password')).toBeDisabled()
     })
 
-    it('should not disable connection fields when cloning Azure database', () => {
+    it('should disable connection fields when cloning Azure database', () => {
       render(
         <ManualConnectionForm
           {...instance(mockedProps)}
@@ -1356,11 +1356,10 @@ describe('InstanceForm', () => {
         />,
       )
 
-      // In clone mode, all fields should be shown and enabled
-      expect(screen.getByTestId('host')).not.toBeDisabled()
-      expect(screen.getByTestId('port')).not.toBeDisabled()
-      expect(screen.getByTestId('username')).not.toBeDisabled()
-      expect(screen.getByTestId('password')).not.toBeDisabled()
+      expect(screen.getByTestId('host')).toBeDisabled()
+      expect(screen.getByTestId('port')).toBeDisabled()
+      expect(screen.getByTestId('username')).toBeDisabled()
+      expect(screen.getByTestId('password')).toBeDisabled()
     })
 
     it('should not disable connection fields for non-Azure database in edit mode', () => {
