@@ -54,6 +54,7 @@ describe('CommandsView', () => {
     it('should call telemetry onQueryReRun when clicking the re-run button', () => {
       const mockCommand = commandExecutionUIFactory.build({
         isOpen: false,
+        emptyCommand: false,
       })
 
       const props: Partial<Props> = {
