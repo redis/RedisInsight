@@ -72,7 +72,7 @@ if (LOGGER_CONFIG.files) {
   } catch (error) {
     // Log to console but don't crash the app if file logging setup fails
     console.warn(
-      'Failed to initialize file logging, falling back to console only:',
+      'Failed to initialize file logging',
       error instanceof Error ? error.message : error,
     );
   }
