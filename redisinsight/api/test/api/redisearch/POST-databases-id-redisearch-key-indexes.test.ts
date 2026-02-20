@@ -27,7 +27,7 @@ const validInputData = {
 
 const INDEX_SUMMARY_SCHEMA = Joi.object({
   name: Joi.string().required(),
-  prefixes: Joi.array().items(Joi.string()).required(),
+  prefixes: Joi.array().items(Joi.string().allow('')).required(),
   key_type: Joi.string().required(),
 }).required();
 
@@ -69,7 +69,7 @@ describe('POST /databases/:id/redisearch/key-indexes', () => {
         },
       },
       {
-        name: 'Should return empty indexes for a key that matches no prefix',
+        name: 'Should still return indexes with no prefix for an unrelated key',
         data: {
           key: 'nonexistent_prefix_zzz:1',
         },
