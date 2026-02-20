@@ -258,7 +258,7 @@
     "@reduxjs/toolkit": "^1.6.2",
     "@stablelib/snappy": "^1.0.2",
     "@types/json-dup-key-validator": "^1.0.2",
-    "ajv": "^8.17.1",
+    "ajv": "^8.18.0",
     "axios": "^1.13.5",
     "brotli-dec-wasm": "^2.3.0",
     "buffer": "^6.0.3",
