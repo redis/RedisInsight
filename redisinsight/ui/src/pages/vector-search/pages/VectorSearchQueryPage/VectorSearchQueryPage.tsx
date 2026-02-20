@@ -1,25 +1,62 @@
-import React from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useCallback, useMemo, useState } from 'react'
+import { useHistory, useParams } from 'react-router-dom'
 
-import { Text } from 'uiSrc/components/base/text'
-import { Col } from 'uiSrc/components/base/layout/flex'
+import { RiSelectOption } from 'uiSrc/components/base/forms/select/RiSelect'
+import { Pages } from 'uiSrc/constants'
 
-import * as S from '../styles'
+import { useRedisearchListData } from '../../hooks'
 import { VectorSearchQueryPageParams } from './VectorSearchQueryPage.types'
+import { PageHeader, PageContent } from './components'
 
-/**
- * Vector Search Query page placeholder.
- * Will be enhanced later per RI-7913.
- */
+import * as S from './VectorSearchQueryPage.styles'
+
 export const VectorSearchQueryPage = () => {
-  const { indexName } = useParams<VectorSearchQueryPageParams>()
+  const { instanceId, indexName } = useParams<VectorSearchQueryPageParams>()
+  const history = useHistory()
+
+  const [isIndexPanelOpen, setIsIndexPanelOpen] = useState(false)
+
+  const { stringData: indexes } = useRedisearchListData()
+
+  const indexOptions: RiSelectOption[] = useMemo(
+    () =>
+      indexes.map((name) => ({
+        value: name,
+        label: name,
+      })),
+    [indexes],
+  )
+
+  const handleIndexChange = useCallback(
+    (value: string) => {
+      history.push(
+        Pages.vectorSearchQuery(instanceId, encodeURIComponent(value)),
+      )
+    },
+    [instanceId, history],
+  )
+
+  const toggleIndexPanel = useCallback(() => {
+    setIsIndexPanelOpen((prev) => !prev)
+  }, [])
+
+  const closeIndexPanel = useCallback(() => {
+    setIsIndexPanelOpen(false)
+  }, [])
 
   return (
-    <S.PageWrapper data-testid="vector-search-query-page">
-      <Col align="center" justify="center" style={{ flex: 1 }}>
-        <Text size="L">Query Page</Text>
-        <Text size="S">Index: {indexName}</Text>
-      </Col>
-    </S.PageWrapper>
+    <S.PageContainer data-testid="vector-search-query-page">
+      <PageHeader
+        indexName={decodeURIComponent(indexName)}
+        indexOptions={indexOptions}
+        onIndexChange={handleIndexChange}
+        onToggleIndexPanel={toggleIndexPanel}
+      />
+
+      <PageContent
+        isIndexPanelOpen={isIndexPanelOpen}
+        onCloseIndexPanel={closeIndexPanel}
+      />
+    </S.PageContainer>
   )
 }
