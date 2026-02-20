@@ -102,18 +102,58 @@ describe('ListContent', () => {
     expect(emptyMessage).toBeInTheDocument()
   })
 
-  it('should dispatch deleteRedisearchIndexAction when delete action is clicked', async () => {
+  it('should open delete confirmation modal when delete action is clicked', async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 })
     renderComponent()
 
     const actionsCell = screen.getByTestId('index-actions-test-index')
     const buttons = within(actionsCell).getAllByRole('button')
     const menuTrigger = buttons[buttons.length - 1]
-    await userEvent.click(menuTrigger)
+    await user.click(menuTrigger)
 
     const deleteBtn = screen.getByTestId('index-actions-delete-btn-test-index')
-    await userEvent.click(deleteBtn)
+    await user.click(deleteBtn)
+
+    expect(
+      screen.getByText('Are you sure you want to delete this index?'),
+    ).toBeInTheDocument()
+    expect(deleteRedisearchIndexAction).not.toHaveBeenCalled()
+  })
+
+  it('should dispatch deleteRedisearchIndexAction after confirmation', async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 })
+    renderComponent()
+
+    const actionsCell = screen.getByTestId('index-actions-test-index')
+    const buttons = within(actionsCell).getAllByRole('button')
+    const menuTrigger = buttons[buttons.length - 1]
+    await user.click(menuTrigger)
+
+    const deleteBtn = screen.getByTestId('index-actions-delete-btn-test-index')
+    await user.click(deleteBtn)
+
+    const confirmBtn = screen.getByTestId('delete-index-modal-confirm')
+    await user.click(confirmBtn)
 
     expect(deleteRedisearchIndexAction).toHaveBeenCalled()
+  })
+
+  it('should not dispatch deleteRedisearchIndexAction when cancel is clicked', async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 })
+    renderComponent()
+
+    const actionsCell = screen.getByTestId('index-actions-test-index')
+    const buttons = within(actionsCell).getAllByRole('button')
+    const menuTrigger = buttons[buttons.length - 1]
+    await user.click(menuTrigger)
+
+    const deleteBtn = screen.getByTestId('index-actions-delete-btn-test-index')
+    await user.click(deleteBtn)
+
+    const cancelBtn = screen.getByTestId('delete-index-modal-cancel')
+    await user.click(cancelBtn)
+
+    expect(deleteRedisearchIndexAction).not.toHaveBeenCalled()
   })
 
   it('should navigate to query page when query button is clicked', async () => {

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 
@@ -8,9 +8,12 @@ import {
   deleteRedisearchIndexAction,
   redisearchListSelector,
 } from 'uiSrc/slices/browser/redisearch'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { collectManageIndexesDeleteTelemetry } from 'uiSrc/pages/vector-search-deprecated/telemetry'
 
 import { IndexList } from '../../../../components/index-list'
 import { IndexListAction } from '../../../../components/index-list/IndexList.types'
+import { DeleteIndexConfirmation } from '../delete-index-confirmation/DeleteIndexConfirmation'
 import { useIndexListData } from '../../../../hooks/useIndexListData'
 
 export const ListContent = () => {
@@ -18,6 +21,7 @@ export const ListContent = () => {
   const history = useHistory()
   const { instanceId } = useParams<{ instanceId: string }>()
 
+  const { id: connectedInstanceId } = useSelector(connectedInstanceSelector)
   const { data: rawIndexes } = useSelector(redisearchListSelector)
   const indexes = useMemo(
     () => rawIndexes.map((index) => bufferToString(index)),
@@ -26,6 +30,10 @@ export const ListContent = () => {
 
   const { data, loading } = useIndexListData(indexes)
 
+  const [pendingDeleteIndex, setPendingDeleteIndex] = useState<string | null>(
+    null,
+  )
+
   const handleQueryClick = useCallback(
     (indexName: string) => {
       history.push(Pages.vectorSearchQuery(instanceId, indexName))
@@ -33,28 +41,45 @@ export const ListContent = () => {
     [history, instanceId],
   )
 
-  // TODO: Placeholder method, will be reworked later to add confirmation modal and delete index
-  const handleDelete = useCallback(
-    (indexName: string) => {
-      dispatch(
-        deleteRedisearchIndexAction({ index: stringToBuffer(indexName) }),
-      )
-    },
-    [dispatch],
-  )
+  const handleDelete = useCallback((indexName: string) => {
+    setPendingDeleteIndex(indexName)
+  }, [])
+
+  const handleConfirmDelete = useCallback(() => {
+    if (!pendingDeleteIndex) return
+
+    dispatch(
+      deleteRedisearchIndexAction(
+        { index: stringToBuffer(pendingDeleteIndex) },
+        () => {
+          collectManageIndexesDeleteTelemetry({
+            instanceId: connectedInstanceId,
+          })
+        },
+      ),
+    )
+    setPendingDeleteIndex(null)
+  }, [dispatch, connectedInstanceId, pendingDeleteIndex])
 
   const actions: IndexListAction[] = useMemo(
-    () => [{ name: 'Delete', callback: handleDelete }], // TODO: Add more actions later (e.g. Browse dataset and View index)
+    () => [{ name: 'Delete', callback: handleDelete }],
     [handleDelete],
   )
 
   return (
-    <IndexList
-      data={data}
-      loading={loading}
-      onQueryClick={handleQueryClick}
-      actions={actions}
-      dataTestId="vector-search--list--table"
-    />
+    <>
+      <IndexList
+        data={data}
+        loading={loading}
+        onQueryClick={handleQueryClick}
+        actions={actions}
+        dataTestId="vector-search--list--table"
+      />
+      <DeleteIndexConfirmation
+        isOpen={!!pendingDeleteIndex}
+        onConfirm={handleConfirmDelete}
+        onClose={() => setPendingDeleteIndex(null)}
+      />
+    </>
   )
 }
