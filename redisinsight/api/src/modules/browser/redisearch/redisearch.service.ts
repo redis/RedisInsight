@@ -17,6 +17,7 @@ import { BrowserHistoryMode, RedisString } from 'src/common/constants';
 import { CreateBrowserHistoryDto } from 'src/modules/browser/browser-history/dto';
 import { BrowserHistoryService } from 'src/modules/browser/browser-history/browser-history.service';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
+import { QueryLibraryService } from 'src/modules/query-library/query-library.service';
 import {
   RedisClient,
   RedisClientCommandArgument,
@@ -35,6 +36,7 @@ export class RedisearchService {
   constructor(
     private databaseClientFactory: DatabaseClientFactory,
     private browserHistory: BrowserHistoryService,
+    private queryLibraryService: QueryLibraryService,
   ) {}
 
   /**
@@ -286,6 +288,22 @@ export class RedisearchService {
       await client.sendCommand(['FT.DROPINDEX', index], {
         replyEncoding: 'utf8',
       });
+
+      try {
+        const indexName =
+          index instanceof Buffer ? index.toString('utf8') : String(index);
+        await this.queryLibraryService.deleteByIndex(
+          clientMetadata.sessionMetadata,
+          clientMetadata.databaseId,
+          indexName,
+        );
+      } catch (e) {
+        this.logger.error(
+          'Failed to cleanup query library items after index deletion',
+          e,
+          clientMetadata,
+        );
+      }
 
       this.logger.debug(
         'Successfully deleted redisearch index ',

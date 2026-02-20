@@ -25,6 +25,7 @@ import { DatabaseSettingsEntity } from 'src/modules/database-settings/entities/d
 import migrations from '../migration';
 import * as config from '../src/utils/config';
 import { TagEntity } from 'src/modules/tag/entities/tag.entity';
+import { QueryLibraryEntity } from 'src/modules/query-library/entities/query-library.entity';
 
 const dbConfig = config.get('db');
 
@@ -57,6 +58,7 @@ const ormConfig = {
     CloudSessionEntity,
     DatabaseSettingsEntity,
     TagEntity,
+    QueryLibraryEntity,
   ],
   migrations,
 };
