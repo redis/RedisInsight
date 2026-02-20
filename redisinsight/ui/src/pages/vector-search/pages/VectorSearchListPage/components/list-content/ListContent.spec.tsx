@@ -101,7 +101,7 @@ describe('ListContent', () => {
     expect(emptyMessage).toBeInTheDocument()
   })
 
-  it('should open delete confirmation modal when delete action is clicked', async () => {
+  it('should show confirmation modal and dispatch delete after confirming', async () => {
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     renderComponent()
 
@@ -114,20 +114,13 @@ describe('ListContent', () => {
       screen.getByText('Are you sure you want to delete this index?'),
     ).toBeInTheDocument()
     expect(deleteRedisearchIndexAction).not.toHaveBeenCalled()
-  })
-
-  it('should dispatch deleteRedisearchIndexAction after confirmation', async () => {
-    const user = userEvent.setup({ pointerEventsCheck: 0 })
-    renderComponent()
-
-    await user.click(
-      screen.getByTestId('index-actions-menu-trigger-test-index'),
-    )
-    await user.click(screen.getByText('Delete'))
 
     await user.click(screen.getByRole('button', { name: 'Delete index' }))
 
     expect(deleteRedisearchIndexAction).toHaveBeenCalled()
+    expect(
+      screen.queryByText('Are you sure you want to delete this index?'),
+    ).not.toBeInTheDocument()
   })
 
   it('should not dispatch deleteRedisearchIndexAction when cancel is clicked', async () => {
@@ -142,6 +135,9 @@ describe('ListContent', () => {
     await user.click(screen.getByRole('button', { name: 'Keep index' }))
 
     expect(deleteRedisearchIndexAction).not.toHaveBeenCalled()
+    expect(
+      screen.queryByText('Are you sure you want to delete this index?'),
+    ).not.toBeInTheDocument()
   })
 
   it('should navigate to query page when query button is clicked', async () => {
