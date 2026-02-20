@@ -211,11 +211,11 @@ describe('LocalQueryLibraryRepository', () => {
       expect(typeormRepo.save).toHaveBeenCalled();
     });
 
-    it('should decrypt existing entity before merging partial update', async () => {
+    it('should preserve existing encrypted fields when updating non-encrypted fields', async () => {
       const entity = queryLibraryEntityFactory.build({
         databaseId: mockDatabaseId,
-        query: 'encrypted_query_value',
-        description: 'encrypted_desc_value',
+        query: 'stored_encrypted_query',
+        description: 'stored_encrypted_description',
         encryption: 'KEYTAR',
       });
       typeormRepo.findOneBy.mockResolvedValueOnce(entity);
@@ -226,8 +226,28 @@ describe('LocalQueryLibraryRepository', () => {
       });
 
       const savedEntity = typeormRepo.save.mock.calls[0][0];
-      expect(savedEntity.name).not.toBe(entity.name);
-      expect(typeormRepo.save).toHaveBeenCalledTimes(1);
+      expect(savedEntity.name).toBe(updatedName);
+      expect(savedEntity.query).toBe(entity.query);
+      expect(savedEntity.description).toBe(entity.description);
+      expect(savedEntity.encryption).toBe(entity.encryption);
+    });
+
+    it('should re-encrypt only updated encrypted fields', async () => {
+      const entity = queryLibraryEntityFactory.build({
+        databaseId: mockDatabaseId,
+        query: 'old_encrypted_query',
+        description: 'old_encrypted_description',
+        encryption: 'KEYTAR',
+      });
+      typeormRepo.findOneBy.mockResolvedValueOnce(entity);
+
+      await repository.update(mockSessionMetadata, mockDatabaseId, entity.id, {
+        query: 'FT.SEARCH idx:bikes "*"',
+      });
+
+      const savedEntity = typeormRepo.save.mock.calls[0][0];
+      expect(savedEntity.query).toBe(mockEncryptResult.data);
+      expect(savedEntity.description).toBe(entity.description);
     });
 
     it('should throw NotFoundException when item not found', async () => {
