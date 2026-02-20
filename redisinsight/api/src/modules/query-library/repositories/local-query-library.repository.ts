@@ -151,18 +151,30 @@ export class LocalQueryLibraryRepository extends QueryLibraryRepository {
       );
     }
 
-    const decrypted = await this.modelEncryptor.decryptEntity(existing, true);
+    const updateData = omitBy(data, isUndefined);
+
+    // Encrypt only the provided update fields to avoid decrypting the existing
+    // entity, which could silently null out fields with corrupted ciphertext
+    const encryptedUpdateEntity = await this.modelEncryptor.encryptEntity(
+      plainToInstance(QueryLibraryEntity, updateData),
+    );
+
+    const encryptedUpdateFields: Record<string, any> = {};
+    for (const key of Object.keys(updateData)) {
+      encryptedUpdateFields[key] = encryptedUpdateEntity[key];
+    }
+    if (encryptedUpdateEntity['encryption'] !== undefined) {
+      encryptedUpdateFields.encryption = encryptedUpdateEntity['encryption'];
+    }
 
     const merged = plainToInstance(QueryLibraryEntity, {
-      ...decrypted,
-      ...omitBy(data, isUndefined),
+      ...existing,
+      ...encryptedUpdateFields,
       id,
       databaseId,
     });
 
-    const saved = await this.repository.save(
-      await this.modelEncryptor.encryptEntity(merged),
-    );
+    const saved = await this.repository.save(merged);
 
     this.logger.debug('Query library item updated', sessionMetadata);
 
