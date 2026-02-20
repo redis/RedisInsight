@@ -10,6 +10,7 @@ import { StringController } from 'src/modules/browser/string/string.controller';
 import { ZSetController } from 'src/modules/browser/z-set/z-set.controller';
 import { CliController } from 'src/modules/cli/controllers/cli.controller';
 import { WorkbenchController } from 'src/modules/workbench/workbench.controller';
+import { QueryLibraryController } from 'src/modules/query-library/query-library.controller';
 
 export const redisConnectionControllers = [
   HashController,
@@ -24,4 +25,5 @@ export const redisConnectionControllers = [
   ZSetController,
   CliController,
   WorkbenchController,
+  QueryLibraryController,
 ];
