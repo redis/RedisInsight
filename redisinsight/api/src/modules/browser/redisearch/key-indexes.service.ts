@@ -17,6 +17,11 @@ import {
 } from './dto';
 import { convertIndexInfoReply } from '../utils/redisIndexInfo';
 
+interface IndexEntry {
+  name: string;
+  info: IndexInfoDto;
+}
+
 @Injectable()
 export class KeyIndexesService {
   private logger = new Logger('KeyIndexesService');
@@ -39,58 +44,10 @@ export class KeyIndexesService {
 
       const client: RedisClient =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
-      const nodes = (await this.getShards(client)) as RedisClient[];
 
-      const listResults = await Promise.all(
-        nodes.map(async (node) => node.sendCommand(['FT._LIST'])),
-      );
-
-      const indexNames: string[] = uniq(
-        (listResults.flat() as Buffer[]).map((idx) => idx.toString('utf8')),
-      );
-
-      const matchingIndexes: IndexSummaryDto[] = [];
-
-      const infoResults = await Promise.allSettled(
-        indexNames.map(async (name) => {
-          const infoReply = (await client.sendCommand(['FT.INFO', name], {
-            replyEncoding: 'utf8',
-          })) as string[][];
-
-          return {
-            name,
-            info: convertIndexInfoReply(infoReply) as IndexInfoDto,
-          };
-        }),
-      );
-
-      for (const result of infoResults) {
-        if (result.status !== 'fulfilled') {
-          continue;
-        }
-
-        const { name, info } = result.value;
-        const { index_definition: definition } = info;
-
-        if (!definition) {
-          continue;
-        }
-
-        const { prefixes = [], key_type: keyType = '' } = definition;
-
-        const isMatch =
-          prefixes.length === 0 || prefixes.some((p) => keyStr.startsWith(p));
-
-        if (isMatch) {
-          matchingIndexes.push(
-            plainToInstance(IndexSummaryDto, {
-              name,
-              prefixes,
-              key_type: keyType,
-            }),
-          );
-        }
-      }
+      const indexNames = await this.listIndexNames(client);
+      const entries = await this.fetchIndexesInfo(client, indexNames);
+      const matchingIndexes = this.findMatchingIndexes(keyStr, entries);
 
       return plainToInstance(KeyIndexesResponse, { indexes: matchingIndexes });
     } catch (e) {
@@ -98,6 +55,75 @@ export class KeyIndexesService {
 
       throw catchRedisSearchError(e);
     }
+  }
+
+  private async listIndexNames(client: RedisClient): Promise<string[]> {
+    const nodes = (await this.getShards(client)) as RedisClient[];
+
+    const listResults = await Promise.all(
+      nodes.map(async (node) => node.sendCommand(['FT._LIST'])),
+    );
+
+    return uniq(
+      (listResults.flat() as Buffer[]).map((idx) => idx.toString('utf8')),
+    );
+  }
+
+  private async fetchIndexesInfo(
+    client: RedisClient,
+    indexNames: string[],
+  ): Promise<IndexEntry[]> {
+    const results = await Promise.allSettled(
+      indexNames.map(async (name) => {
+        const infoReply = (await client.sendCommand(['FT.INFO', name], {
+          replyEncoding: 'utf8',
+        })) as string[][];
+
+        return {
+          name,
+          info: convertIndexInfoReply(infoReply) as IndexInfoDto,
+        };
+      }),
+    );
+
+    return results
+      .filter(
+        (r): r is PromiseFulfilledResult<IndexEntry> =>
+          r.status === 'fulfilled',
+      )
+      .map((r) => r.value);
+  }
+
+  private findMatchingIndexes(
+    keyStr: string,
+    entries: IndexEntry[],
+  ): IndexSummaryDto[] {
+    const matching: IndexSummaryDto[] = [];
+
+    for (const { name, info } of entries) {
+      const { index_definition: definition } = info;
+
+      if (!definition) {
+        continue;
+      }
+
+      const { prefixes = [], key_type: keyType = '' } = definition;
+
+      const isMatch =
+        prefixes.length === 0 || prefixes.some((p) => keyStr.startsWith(p));
+
+      if (isMatch) {
+        matching.push(
+          plainToInstance(IndexSummaryDto, {
+            name,
+            prefixes,
+            key_type: keyType,
+          }),
+        );
+      }
+    }
+
+    return matching;
   }
 
   private async getShards(client: RedisClient): Promise<RedisClient[]> {
