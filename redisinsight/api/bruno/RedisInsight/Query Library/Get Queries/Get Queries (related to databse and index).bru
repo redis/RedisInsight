@@ -1,0 +1,27 @@
+meta {
+  name: Get Queries (related to databse and index)
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{API_URL}}/databases/{{DB_INTANCE_ID}}/query-library/?indexName={{RQE_INDEX_NAME}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  indexName: {{RQE_INDEX_NAME}}
+}
+
+body:json {
+  {
+    "indexName": "idx:bikes_vss",
+    "name": "Vector Search - Bikes",
+    "query": "FT.SEARCH idx:bikes_vss \"*\""
+  }
+}
+
+settings {
+  encodeUrl: true
+}

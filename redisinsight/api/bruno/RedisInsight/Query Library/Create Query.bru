@@ -1,0 +1,28 @@
+meta {
+  name: Create Query
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INTANCE_ID}}/query-library
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "indexName": "{{RQE_INDEX_NAME}}",
+    "name": "Vector Search - Bikes",
+    "query": "FT.SEARCH idx:bikes_vss \"*\""
+  }
+}
+
+script:post-response {
+  const data = res.body;
+  bru.setEnvVar("QUERY_LIBRARY_ID", data.id)
+}
+
+settings {
+  encodeUrl: true
+}
