@@ -17,11 +17,14 @@ import {
   CreateRedisearchIndexDto,
   IndexInfoDto,
   IndexInfoRequestBodyDto,
+  KeyIndexesDto,
+  KeyIndexesResponse,
   ListRedisearchIndexesResponse,
   SearchRedisearchDto,
 } from 'src/modules/browser/redisearch/dto';
 import { GetKeysWithDetailsResponse } from 'src/modules/browser/keys/dto';
 import { RedisearchService } from 'src/modules/browser/redisearch/redisearch.service';
+import { KeyIndexesService } from 'src/modules/browser/redisearch/key-indexes.service';
 import { ClientMetadata } from 'src/common/models';
 import { BrowserSerializeInterceptor } from 'src/common/interceptors';
 import { BrowserBaseController } from 'src/modules/browser/browser.base.controller';
@@ -32,7 +35,10 @@ import { IndexDeleteRequestBodyDto } from './dto/index.delete.dto';
 @Controller('redisearch')
 @UsePipes(new ValidationPipe({ transform: true }))
 export class RedisearchController extends BrowserBaseController {
-  constructor(private service: RedisearchService) {
+  constructor(
+    private service: RedisearchService,
+    private keyIndexesService: KeyIndexesService,
+  ) {
     super();
   }
 
@@ -91,5 +97,16 @@ export class RedisearchController extends BrowserBaseController {
     @Body() dto: IndexDeleteRequestBodyDto,
   ): Promise<void> {
     return await this.service.deleteIndex(clientMetadata, dto);
+  }
+
+  @Post('key-indexes')
+  @HttpCode(200)
+  @ApiOperation({ description: 'Get indexes that cover a given key' })
+  @ApiOkResponse({ type: KeyIndexesResponse })
+  async getKeyIndexes(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: KeyIndexesDto,
+  ): Promise<KeyIndexesResponse> {
+    return this.keyIndexesService.getKeyIndexes(clientMetadata, dto);
   }
 }
