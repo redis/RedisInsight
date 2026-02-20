@@ -17,8 +17,8 @@ const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(2, 8)
  * TLS Redis connection configuration
  */
 export const tlsRedisConfig = {
-  host: getEnvOptional('REDIS_TLS_HOST') || '127.0.0.1',
-  port: getEnvOptional('REDIS_TLS_PORT') ? getEnvNumber('REDIS_TLS_PORT') : 8104,
+  host: getEnvOptional('OSS_STANDALONE_TLS_HOST') || '127.0.0.1',
+  port: getEnvNumber('OSS_STANDALONE_TLS_PORT', 8104),
 };
 
 /**
