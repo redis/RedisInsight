@@ -1,5 +1,35 @@
 import { IndexInfoDto } from 'src/modules/browser/redisearch/dto';
 
+interface IndexInfoRawOverrides {
+  indexName?: string;
+  keyType?: string;
+  prefixes?: string[];
+  attributes?: string[][];
+  numDocs?: string;
+}
+
+export const buildIndexInfoRaw = (overrides: IndexInfoRawOverrides = {}) => [
+  'index_name',
+  overrides.indexName ?? 'idx:test',
+  'index_options',
+  [],
+  'index_definition',
+  [
+    'key_type',
+    overrides.keyType ?? 'HASH',
+    'prefixes',
+    overrides.prefixes ?? ['test:'],
+    'default_score',
+    '1',
+  ],
+  'attributes',
+  overrides.attributes ?? [
+    ['identifier', 'field', 'attribute', 'field', 'type', 'TEXT'],
+  ],
+  'num_docs',
+  overrides.numDocs ?? '0',
+];
+
 export const mockIndexInfoRaw = [
   'index_name',
   'idx:movie',

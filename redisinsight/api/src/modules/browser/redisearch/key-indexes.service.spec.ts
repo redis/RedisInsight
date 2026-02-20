@@ -8,60 +8,35 @@ import {
   mockRedisNoPermError,
   mockStandaloneRedisClient,
 } from 'src/__mocks__';
+import { buildIndexInfoRaw } from 'src/__mocks__/redisearch';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { KeyIndexesService } from 'src/modules/browser/redisearch/key-indexes.service';
 
-const mockMovieIndexInfoRaw = [
-  'index_name',
-  'idx:movie',
-  'index_options',
-  [],
-  'index_definition',
-  ['key_type', 'HASH', 'prefixes', ['movie:'], 'default_score', '1'],
-  'attributes',
-  [['identifier', 'title', 'attribute', 'title', 'type', 'TEXT']],
-  'num_docs',
-  '10',
-];
+const mockMovieInfoRaw = buildIndexInfoRaw({
+  indexName: 'idx:movie',
+  prefixes: ['movie:'],
+  numDocs: '10',
+});
 
-const mockUserIndexInfoRaw = [
-  'index_name',
-  'idx:user',
-  'index_options',
-  [],
-  'index_definition',
-  ['key_type', 'HASH', 'prefixes', ['user:'], 'default_score', '1'],
-  'attributes',
-  [['identifier', 'name', 'attribute', 'name', 'type', 'TEXT']],
-  'num_docs',
-  '5',
-];
+const mockUserInfoRaw = buildIndexInfoRaw({
+  indexName: 'idx:user',
+  prefixes: ['user:'],
+  numDocs: '5',
+});
 
-const mockGlobalIndexInfoRaw = [
-  'index_name',
-  'idx:global',
-  'index_options',
-  [],
-  'index_definition',
-  ['key_type', 'HASH', 'prefixes', [], 'default_score', '1'],
-  'attributes',
-  [['identifier', 'data', 'attribute', 'data', 'type', 'TEXT']],
-  'num_docs',
-  '100',
-];
+const mockGlobalInfoRaw = buildIndexInfoRaw({
+  indexName: 'idx:global',
+  prefixes: [],
+  numDocs: '100',
+});
 
-const mockMultiPrefixIndexInfoRaw = [
-  'index_name',
-  'idx:multi',
-  'index_options',
-  [],
-  'index_definition',
-  ['key_type', 'JSON', 'prefixes', ['product:', 'item:'], 'default_score', '1'],
-  'attributes',
-  [['identifier', 'sku', 'attribute', 'sku', 'type', 'TAG']],
-  'num_docs',
-  '20',
-];
+const mockMultiPrefixInfoRaw = buildIndexInfoRaw({
+  indexName: 'idx:multi',
+  keyType: 'JSON',
+  prefixes: ['product:', 'item:'],
+  attributes: [['identifier', 'sku', 'attribute', 'sku', 'type', 'TAG']],
+  numDocs: '20',
+});
 
 describe('KeyIndexesService', () => {
   const standaloneClient = mockStandaloneRedisClient;
@@ -96,7 +71,7 @@ describe('KeyIndexesService', () => {
         .mockResolvedValue([Buffer.from('idx:movie')]);
       when(standaloneClient.sendCommand)
         .calledWith(['FT.INFO', 'idx:movie'], expect.anything())
-        .mockResolvedValue(mockMovieIndexInfoRaw);
+        .mockResolvedValue(mockMovieInfoRaw);
 
       const result = await service.getKeyIndexes(mockBrowserClientMetadata, {
         key: 'movie:1',
@@ -114,7 +89,7 @@ describe('KeyIndexesService', () => {
         .mockResolvedValue([Buffer.from('idx:movie')]);
       when(standaloneClient.sendCommand)
         .calledWith(['FT.INFO', 'idx:movie'], expect.anything())
-        .mockResolvedValue(mockMovieIndexInfoRaw);
+        .mockResolvedValue(mockMovieInfoRaw);
 
       const result = await service.getKeyIndexes(mockBrowserClientMetadata, {
         key: 'session:abc',
@@ -132,10 +107,10 @@ describe('KeyIndexesService', () => {
         ]);
       when(standaloneClient.sendCommand)
         .calledWith(['FT.INFO', 'idx:user'], expect.anything())
-        .mockResolvedValue(mockUserIndexInfoRaw);
+        .mockResolvedValue(mockUserInfoRaw);
       when(standaloneClient.sendCommand)
         .calledWith(['FT.INFO', 'idx:global'], expect.anything())
-        .mockResolvedValue(mockGlobalIndexInfoRaw);
+        .mockResolvedValue(mockGlobalInfoRaw);
 
       const result = await service.getKeyIndexes(mockBrowserClientMetadata, {
         key: 'user:42',
@@ -153,7 +128,7 @@ describe('KeyIndexesService', () => {
         .mockResolvedValue([Buffer.from('idx:global')]);
       when(standaloneClient.sendCommand)
         .calledWith(['FT.INFO', 'idx:global'], expect.anything())
-        .mockResolvedValue(mockGlobalIndexInfoRaw);
+        .mockResolvedValue(mockGlobalInfoRaw);
 
       const result = await service.getKeyIndexes(mockBrowserClientMetadata, {
         key: 'anything:here',
@@ -169,7 +144,7 @@ describe('KeyIndexesService', () => {
         .mockResolvedValue([Buffer.from('idx:multi')]);
       when(standaloneClient.sendCommand)
         .calledWith(['FT.INFO', 'idx:multi'], expect.anything())
-        .mockResolvedValue(mockMultiPrefixIndexInfoRaw);
+        .mockResolvedValue(mockMultiPrefixInfoRaw);
 
       const result = await service.getKeyIndexes(mockBrowserClientMetadata, {
         key: 'item:99',
@@ -201,7 +176,7 @@ describe('KeyIndexesService', () => {
         ]);
       when(standaloneClient.sendCommand)
         .calledWith(['FT.INFO', 'idx:movie'], expect.anything())
-        .mockResolvedValue(mockMovieIndexInfoRaw);
+        .mockResolvedValue(mockMovieInfoRaw);
       when(standaloneClient.sendCommand)
         .calledWith(['FT.INFO', 'idx:broken'], expect.anything())
         .mockRejectedValue(new Error('Unknown index'));
@@ -223,7 +198,7 @@ describe('KeyIndexesService', () => {
         .mockResolvedValue([Buffer.from('idx:movie')]);
       when(clusterClient.sendCommand)
         .calledWith(['FT.INFO', 'idx:movie'], expect.anything())
-        .mockResolvedValue(mockMovieIndexInfoRaw);
+        .mockResolvedValue(mockMovieInfoRaw);
 
       const result = await service.getKeyIndexes(mockBrowserClientMetadata, {
         key: 'movie:1',
@@ -246,7 +221,7 @@ describe('KeyIndexesService', () => {
         .mockResolvedValue([Buffer.from('idx:movie')]);
       when(standaloneClient.sendCommand)
         .calledWith(['FT.INFO', 'idx:movie'], expect.anything())
-        .mockResolvedValue(mockMovieIndexInfoRaw);
+        .mockResolvedValue(mockMovieInfoRaw);
 
       const result = await service.getKeyIndexes(mockBrowserClientMetadata, {
         key: Buffer.from('movie:1'),
