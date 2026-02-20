@@ -1,8 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  ForbiddenException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { ForbiddenException } from '@nestjs/common';
 import { when } from 'jest-when';
 import {
   mockBrowserClientMetadata,
@@ -15,35 +12,55 @@ import { DatabaseClientFactory } from 'src/modules/database/providers/database.c
 import { KeyIndexesService } from 'src/modules/browser/redisearch/key-indexes.service';
 
 const mockMovieIndexInfoRaw = [
-  'index_name', 'idx:movie',
-  'index_options', [],
-  'index_definition', ['key_type', 'HASH', 'prefixes', ['movie:'], 'default_score', '1'],
-  'attributes', [['identifier', 'title', 'attribute', 'title', 'type', 'TEXT']],
-  'num_docs', '10',
+  'index_name',
+  'idx:movie',
+  'index_options',
+  [],
+  'index_definition',
+  ['key_type', 'HASH', 'prefixes', ['movie:'], 'default_score', '1'],
+  'attributes',
+  [['identifier', 'title', 'attribute', 'title', 'type', 'TEXT']],
+  'num_docs',
+  '10',
 ];
 
 const mockUserIndexInfoRaw = [
-  'index_name', 'idx:user',
-  'index_options', [],
-  'index_definition', ['key_type', 'HASH', 'prefixes', ['user:'], 'default_score', '1'],
-  'attributes', [['identifier', 'name', 'attribute', 'name', 'type', 'TEXT']],
-  'num_docs', '5',
+  'index_name',
+  'idx:user',
+  'index_options',
+  [],
+  'index_definition',
+  ['key_type', 'HASH', 'prefixes', ['user:'], 'default_score', '1'],
+  'attributes',
+  [['identifier', 'name', 'attribute', 'name', 'type', 'TEXT']],
+  'num_docs',
+  '5',
 ];
 
 const mockGlobalIndexInfoRaw = [
-  'index_name', 'idx:global',
-  'index_options', [],
-  'index_definition', ['key_type', 'HASH', 'prefixes', [], 'default_score', '1'],
-  'attributes', [['identifier', 'data', 'attribute', 'data', 'type', 'TEXT']],
-  'num_docs', '100',
+  'index_name',
+  'idx:global',
+  'index_options',
+  [],
+  'index_definition',
+  ['key_type', 'HASH', 'prefixes', [], 'default_score', '1'],
+  'attributes',
+  [['identifier', 'data', 'attribute', 'data', 'type', 'TEXT']],
+  'num_docs',
+  '100',
 ];
 
 const mockMultiPrefixIndexInfoRaw = [
-  'index_name', 'idx:multi',
-  'index_options', [],
-  'index_definition', ['key_type', 'JSON', 'prefixes', ['product:', 'item:'], 'default_score', '1'],
-  'attributes', [['identifier', 'sku', 'attribute', 'sku', 'type', 'TAG']],
-  'num_docs', '20',
+  'index_name',
+  'idx:multi',
+  'index_options',
+  [],
+  'index_definition',
+  ['key_type', 'JSON', 'prefixes', ['product:', 'item:'], 'default_score', '1'],
+  'attributes',
+  [['identifier', 'sku', 'attribute', 'sku', 'type', 'TAG']],
+  'num_docs',
+  '20',
 ];
 
 describe('KeyIndexesService', () => {
@@ -81,10 +98,9 @@ describe('KeyIndexesService', () => {
         .calledWith(['FT.INFO', 'idx:movie'], expect.anything())
         .mockResolvedValue(mockMovieIndexInfoRaw);
 
-      const result = await service.getKeyIndexes(
-        mockBrowserClientMetadata,
-        { key: 'movie:1' },
-      );
+      const result = await service.getKeyIndexes(mockBrowserClientMetadata, {
+        key: 'movie:1',
+      });
 
       expect(result.indexes).toHaveLength(1);
       expect(result.indexes[0].name).toBe('idx:movie');
@@ -100,10 +116,9 @@ describe('KeyIndexesService', () => {
         .calledWith(['FT.INFO', 'idx:movie'], expect.anything())
         .mockResolvedValue(mockMovieIndexInfoRaw);
 
-      const result = await service.getKeyIndexes(
-        mockBrowserClientMetadata,
-        { key: 'session:abc' },
-      );
+      const result = await service.getKeyIndexes(mockBrowserClientMetadata, {
+        key: 'session:abc',
+      });
 
       expect(result.indexes).toHaveLength(0);
     });
@@ -122,10 +137,9 @@ describe('KeyIndexesService', () => {
         .calledWith(['FT.INFO', 'idx:global'], expect.anything())
         .mockResolvedValue(mockGlobalIndexInfoRaw);
 
-      const result = await service.getKeyIndexes(
-        mockBrowserClientMetadata,
-        { key: 'user:42' },
-      );
+      const result = await service.getKeyIndexes(mockBrowserClientMetadata, {
+        key: 'user:42',
+      });
 
       expect(result.indexes).toHaveLength(2);
       const names = result.indexes.map((i) => i.name);
@@ -141,10 +155,9 @@ describe('KeyIndexesService', () => {
         .calledWith(['FT.INFO', 'idx:global'], expect.anything())
         .mockResolvedValue(mockGlobalIndexInfoRaw);
 
-      const result = await service.getKeyIndexes(
-        mockBrowserClientMetadata,
-        { key: 'anything:here' },
-      );
+      const result = await service.getKeyIndexes(mockBrowserClientMetadata, {
+        key: 'anything:here',
+      });
 
       expect(result.indexes).toHaveLength(1);
       expect(result.indexes[0].name).toBe('idx:global');
@@ -158,10 +171,9 @@ describe('KeyIndexesService', () => {
         .calledWith(['FT.INFO', 'idx:multi'], expect.anything())
         .mockResolvedValue(mockMultiPrefixIndexInfoRaw);
 
-      const result = await service.getKeyIndexes(
-        mockBrowserClientMetadata,
-        { key: 'item:99' },
-      );
+      const result = await service.getKeyIndexes(mockBrowserClientMetadata, {
+        key: 'item:99',
+      });
 
       expect(result.indexes).toHaveLength(1);
       expect(result.indexes[0].name).toBe('idx:multi');
@@ -173,10 +185,9 @@ describe('KeyIndexesService', () => {
         .calledWith(['FT._LIST'])
         .mockResolvedValue([]);
 
-      const result = await service.getKeyIndexes(
-        mockBrowserClientMetadata,
-        { key: 'movie:1' },
-      );
+      const result = await service.getKeyIndexes(mockBrowserClientMetadata, {
+        key: 'movie:1',
+      });
 
       expect(result.indexes).toHaveLength(0);
     });
@@ -195,10 +206,9 @@ describe('KeyIndexesService', () => {
         .calledWith(['FT.INFO', 'idx:broken'], expect.anything())
         .mockRejectedValue(new Error('Unknown index'));
 
-      const result = await service.getKeyIndexes(
-        mockBrowserClientMetadata,
-        { key: 'movie:1' },
-      );
+      const result = await service.getKeyIndexes(mockBrowserClientMetadata, {
+        key: 'movie:1',
+      });
 
       expect(result.indexes).toHaveLength(1);
       expect(result.indexes[0].name).toBe('idx:movie');
@@ -215,18 +225,15 @@ describe('KeyIndexesService', () => {
         .calledWith(['FT.INFO', 'idx:movie'], expect.anything())
         .mockResolvedValue(mockMovieIndexInfoRaw);
 
-      const result = await service.getKeyIndexes(
-        mockBrowserClientMetadata,
-        { key: 'movie:1' },
-      );
+      const result = await service.getKeyIndexes(mockBrowserClientMetadata, {
+        key: 'movie:1',
+      });
 
       expect(result.indexes).toHaveLength(1);
     });
 
     it('should throw when FT._LIST fails', async () => {
-      standaloneClient.sendCommand.mockRejectedValue(
-        mockRedisNoPermError,
-      );
+      standaloneClient.sendCommand.mockRejectedValue(mockRedisNoPermError);
 
       await expect(
         service.getKeyIndexes(mockBrowserClientMetadata, { key: 'movie:1' }),
@@ -241,10 +248,9 @@ describe('KeyIndexesService', () => {
         .calledWith(['FT.INFO', 'idx:movie'], expect.anything())
         .mockResolvedValue(mockMovieIndexInfoRaw);
 
-      const result = await service.getKeyIndexes(
-        mockBrowserClientMetadata,
-        { key: Buffer.from('movie:1') },
-      );
+      const result = await service.getKeyIndexes(mockBrowserClientMetadata, {
+        key: Buffer.from('movie:1'),
+      });
 
       expect(result.indexes).toHaveLength(1);
       expect(result.indexes[0].name).toBe('idx:movie');
