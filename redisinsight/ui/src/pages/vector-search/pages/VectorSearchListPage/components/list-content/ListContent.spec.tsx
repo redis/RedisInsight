@@ -106,8 +106,9 @@ describe('ListContent', () => {
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     renderComponent()
 
-    const actionsMenu = screen.getByTestId('index-actions-menu-test-index')
-    await user.click(within(actionsMenu).getByRole('button'))
+    await user.click(
+      screen.getByTestId('index-actions-menu-trigger-test-index'),
+    )
     await user.click(screen.getByText('Delete'))
 
     expect(
@@ -120,11 +121,12 @@ describe('ListContent', () => {
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     renderComponent()
 
-    const actionsMenu = screen.getByTestId('index-actions-menu-test-index')
-    await user.click(within(actionsMenu).getByRole('button'))
+    await user.click(
+      screen.getByTestId('index-actions-menu-trigger-test-index'),
+    )
     await user.click(screen.getByText('Delete'))
 
-    await user.click(screen.getByTestId('delete-index-modal-confirm'))
+    await user.click(screen.getByRole('button', { name: 'Delete index' }))
 
     expect(deleteRedisearchIndexAction).toHaveBeenCalled()
   })
@@ -133,11 +135,12 @@ describe('ListContent', () => {
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     renderComponent()
 
-    const actionsMenu = screen.getByTestId('index-actions-menu-test-index')
-    await user.click(within(actionsMenu).getByRole('button'))
+    await user.click(
+      screen.getByTestId('index-actions-menu-trigger-test-index'),
+    )
     await user.click(screen.getByText('Delete'))
 
-    await user.click(screen.getByTestId('delete-index-modal-cancel'))
+    await user.click(screen.getByRole('button', { name: 'Keep index' }))
 
     expect(deleteRedisearchIndexAction).not.toHaveBeenCalled()
   })
