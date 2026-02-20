@@ -211,6 +211,25 @@ describe('LocalQueryLibraryRepository', () => {
       expect(typeormRepo.save).toHaveBeenCalled();
     });
 
+    it('should decrypt existing entity before merging partial update', async () => {
+      const entity = queryLibraryEntityFactory.build({
+        databaseId: mockDatabaseId,
+        query: 'encrypted_query_value',
+        description: 'encrypted_desc_value',
+        encryption: 'KEYTAR',
+      });
+      typeormRepo.findOneBy.mockResolvedValueOnce(entity);
+
+      const updatedName = faker.lorem.words(2);
+      await repository.update(mockSessionMetadata, mockDatabaseId, entity.id, {
+        name: updatedName,
+      });
+
+      const savedEntity = typeormRepo.save.mock.calls[0][0];
+      expect(savedEntity.name).not.toBe(entity.name);
+      expect(typeormRepo.save).toHaveBeenCalledTimes(1);
+    });
+
     it('should throw NotFoundException when item not found', async () => {
       typeormRepo.findOneBy.mockResolvedValueOnce(null);
 

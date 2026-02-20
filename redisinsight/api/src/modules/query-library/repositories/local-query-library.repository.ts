@@ -150,8 +150,10 @@ export class LocalQueryLibraryRepository extends QueryLibraryRepository {
       );
     }
 
+    const decrypted = await this.modelEncryptor.decryptEntity(existing, true);
+
     const merged = plainToInstance(QueryLibraryEntity, {
-      ...existing,
+      ...decrypted,
       ...data,
       id,
       databaseId,
