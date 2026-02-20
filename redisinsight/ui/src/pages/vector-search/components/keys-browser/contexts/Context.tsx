@@ -20,6 +20,7 @@ import {
   fetchMoreKeys,
   keysDataSelector,
   keysSelector,
+  loadKeyInfoSuccess,
   resetKeyInfo,
   resetKeysData,
   setFilter,
@@ -99,6 +100,7 @@ export const Provider = ({
 
     return () => {
       dispatch(setFilter(null))
+      dispatch(resetKeyInfo())
       dispatch(resetKeysData(SearchMode.Pattern))
       dispatch(resetBrowserTree())
       dispatch(setBrowserKeyListDataLoaded(SearchMode.Pattern, false))
@@ -185,6 +187,7 @@ export const Provider = ({
 
   const selectKey = useCallback(
     ({ rowData }: { rowData: { name: RedisResponseBuffer } }) => {
+      dispatch(loadKeyInfoSuccess({ name: rowData.name }))
       onSelectKey(rowData.name)
     },
     [onSelectKey],

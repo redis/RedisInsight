@@ -47,6 +47,7 @@ const Content = () => {
             onBulkActionsPanel={noop}
             visibleColumns={[]}
             showFolderMetadata={false}
+            showSelectedIndicator
           />
         )}
       </S.TreeWrapper>
