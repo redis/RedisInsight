@@ -135,7 +135,7 @@ describe('VectorSearchPage', () => {
       hasSupportedVersion: undefined,
     })
     mockUseRedisearchListData.mockReturnValue({
-      loading: undefined,
+      loading: false,
       data: [],
       stringData: [],
     })
