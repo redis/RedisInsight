@@ -2,33 +2,9 @@ import React from 'react'
 import { render, screen } from 'uiSrc/utils/test-utils'
 
 import Header from './Header'
+import { createMockKeysBrowserContext } from '../__mocks__/contextMock'
 
-const mockContextValue = {
-  loading: false,
-  headerLoading: false,
-  keysState: {
-    keys: [],
-    nextCursor: '0',
-    total: 0,
-    scanned: 0,
-    lastRefreshTime: null,
-    previousResultCount: 0,
-  },
-  keysError: '',
-  commonFilterType: null,
-  scrollTopPosition: 0,
-  activeTab: 'hash',
-  isSearched: false,
-  isFiltered: false,
-  keyListRef: { current: null },
-  selectKey: jest.fn(),
-  handleRefreshKeys: jest.fn(),
-  handleEnableAutoRefresh: jest.fn(),
-  handleChangeAutoRefreshRate: jest.fn(),
-  handleTabChange: jest.fn(),
-  loadMoreItems: jest.fn(),
-  handleScanMore: jest.fn(),
-}
+let mockContextValue = createMockKeysBrowserContext()
 
 jest.mock('../hooks/useKeysBrowser', () => ({
   useKeysBrowser: () => mockContextValue,

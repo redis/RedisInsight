@@ -3,7 +3,6 @@ import Tabs from 'uiSrc/components/base/layout/tabs'
 import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { KeysBrowser } from 'uiSrc/components/browser'
 import { Theme } from 'uiSrc/components/base/theme/types'
-import Divider from 'uiSrc/components/divider/Divider'
 
 export const Container = styled(Col)`
   height: 100%;
@@ -49,9 +48,10 @@ export const FooterContainer = styled(KeysBrowser.Footer)`
     theme.semantic?.color?.background.neutral100};
 `
 
-export const Separator = styled(Divider).attrs({
-  orientation: 'vertical',
-  variant: 'fullWidth',
-})`
+export const Separator = styled.hr`
+  border: none;
+  width: 1px;
   height: ${({ theme }) => theme.core?.space?.space150};
+  background-color: ${({ theme }: { theme: Theme }) =>
+    theme.semantic?.color?.background?.neutral500};
 `

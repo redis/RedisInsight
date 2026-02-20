@@ -2,10 +2,9 @@ import React from 'react'
 import { render, screen } from 'uiSrc/utils/test-utils'
 
 import Footer from './Footer'
+import { createMockKeysBrowserContext } from '../__mocks__/contextMock'
 
-const mockContextValue = {
-  loading: false,
-  headerLoading: false,
+let mockContextValue = createMockKeysBrowserContext({
   keysState: {
     keys: [],
     nextCursor: '0',
@@ -13,22 +12,9 @@ const mockContextValue = {
     scanned: 0,
     lastRefreshTime: null,
     previousResultCount: 0,
+    shardsMeta: {},
   },
-  keysError: '',
-  commonFilterType: null,
-  scrollTopPosition: 0,
-  activeTab: 'hash',
-  isSearched: false,
-  isFiltered: false,
-  keyListRef: { current: null },
-  selectKey: jest.fn(),
-  handleRefreshKeys: jest.fn(),
-  handleEnableAutoRefresh: jest.fn(),
-  handleChangeAutoRefreshRate: jest.fn(),
-  handleTabChange: jest.fn(),
-  loadMoreItems: jest.fn(),
-  handleScanMore: jest.fn(),
-}
+})
 
 jest.mock('../hooks/useKeysBrowser', () => ({
   useKeysBrowser: () => mockContextValue,

@@ -17,13 +17,13 @@ const meta = {
   component: Footer,
   decorators: [
     () => (
-      <Provider onSelectKey={() => {}}>
-        <StorePopulator>
-          <Route path="/:instanceId/vector-search">
+      <StorePopulator>
+        <Route path="/:instanceId/vector-search">
+          <Provider onSelectKey={() => {}}>
             <FooterContent />
-          </Route>
-        </StorePopulator>
-      </Provider>
+          </Provider>
+        </Route>
+      </StorePopulator>
     ),
   ],
 } satisfies Meta<typeof Footer>

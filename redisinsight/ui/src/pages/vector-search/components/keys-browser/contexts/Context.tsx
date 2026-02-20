@@ -25,6 +25,7 @@ import {
   setFilter,
 } from 'uiSrc/slices/browser/keys'
 import { SearchMode } from 'uiSrc/slices/interfaces/keys'
+import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { IKeyPropTypes } from 'uiSrc/constants/prop-types/keys'
 import {
   setConnectedInstanceId,
@@ -36,7 +37,11 @@ import { Nullable } from 'uiSrc/utils'
 import { KeyTypes } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import { KeysBrowserContextValue, KeysBrowserProps } from '../KeysBrowser.types'
+import {
+  KeysBrowserContextValue,
+  KeysBrowserProps,
+  KeyTreeHandle,
+} from '../KeysBrowser.types'
 
 export const KeysBrowserContext = createContext<KeysBrowserContextValue | null>(
   null,
@@ -66,7 +71,7 @@ export const Provider = ({
 
   const [activeTab, setActiveTab] = useState<KeyTypes>(SUPPORTED_TABS[0])
 
-  const keyListRef = useRef<any>()
+  const keyListRef = useRef<KeyTreeHandle | null>(null)
 
   const loadKeys = useCallback(() => {
     dispatch(
@@ -172,18 +177,21 @@ export const Provider = ({
   )
 
   const selectKey = useCallback(
-    ({ rowData }: { rowData: any }) => {
+    ({ rowData }: { rowData: { name: RedisResponseBuffer } }) => {
       onSelectKey(rowData.name)
     },
     [onSelectKey],
   )
 
-  const handleScanMore = useCallback((config: any) => {
-    keyListRef.current?.handleLoadMoreItems?.({
-      ...config,
-      stopIndex: SCAN_TREE_COUNT_DEFAULT - 1,
-    })
-  }, [])
+  const handleScanMore = useCallback(
+    (config: { startIndex: number; stopIndex: number }) => {
+      keyListRef.current?.handleLoadMoreItems?.({
+        ...config,
+        stopIndex: SCAN_TREE_COUNT_DEFAULT - 1,
+      })
+    },
+    [],
+  )
 
   const value: KeysBrowserContextValue = {
     loading,

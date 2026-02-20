@@ -24,9 +24,9 @@ export interface KeysBrowserContextValue {
   isSearched: boolean
   isFiltered: boolean
 
-  keyListRef: React.RefObject<any>
+  keyListRef: React.RefObject<KeyTreeHandle | null>
 
-  selectKey: ({ rowData }: { rowData: any }) => void
+  selectKey: ({ rowData }: { rowData: { name: RedisResponseBuffer } }) => void
 
   handleRefreshKeys: () => void
   handleEnableAutoRefresh: (
@@ -42,5 +42,12 @@ export interface KeysBrowserContextValue {
     oldKeys: IKeyPropTypes[],
     range: { startIndex: number; stopIndex: number },
   ) => void
-  handleScanMore: (config: any) => void
+  handleScanMore: (config: { startIndex: number; stopIndex: number }) => void
+}
+
+export interface KeyTreeHandle {
+  handleLoadMoreItems: (config: {
+    startIndex: number
+    stopIndex: number
+  }) => void
 }
