@@ -27,7 +27,4 @@ export { useCreateIndexFlow } from './useCreateIndexFlow'
 export type { UseCreateIndexFlowResult } from './useCreateIndexFlow'
 
 export { useIsKeyIndexed, UseIsKeyIndexedStatus } from './useIsKeyIndexed'
-export type {
-  IndexSummary,
-  UseIsKeyIndexedResult,
-} from './useIsKeyIndexed'
+export type { UseIsKeyIndexedResult } from './useIsKeyIndexed'
