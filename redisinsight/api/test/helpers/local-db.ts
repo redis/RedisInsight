@@ -801,6 +801,7 @@ export const setAppSettings = async (data: object) => {
 };
 
 const truncateAll = async () => {
+  await (await getRepository(repositories.QUERY_LIBRARY)).clear();
   await (await getRepository(repositories.TAG)).clear();
   await (await getRepository(repositories.DATABASE)).clear();
   await (await getRepository(repositories.FEATURE)).clear();
