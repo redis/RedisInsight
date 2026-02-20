@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { filter, isNull } from 'lodash';
+import { filter, isNull, omitBy, isUndefined } from 'lodash';
 import { plainToInstance } from 'class-transformer';
 import { EncryptionService } from 'src/modules/encryption/encryption.service';
 import { ModelEncryptor } from 'src/modules/encryption/model.encryptor';
@@ -154,7 +154,7 @@ export class LocalQueryLibraryRepository extends QueryLibraryRepository {
 
     const merged = plainToInstance(QueryLibraryEntity, {
       ...decrypted,
-      ...data,
+      ...omitBy(data, isUndefined),
       id,
       databaseId,
     });
