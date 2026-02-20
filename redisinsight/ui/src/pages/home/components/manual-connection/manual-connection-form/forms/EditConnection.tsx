@@ -44,9 +44,8 @@ const EditConnection = (props: Props) => {
     buildType,
   } = props
 
-  // For Azure databases in edit mode (not clone)
-  const readOnlyFields =
-    isFromAzure && isEditMode && !isCloneMode ? AZURE_READONLY_FIELDS : []
+  // For Azure databases in edit/clone mode, disable connection fields
+  const readOnlyFields = isFromAzure && isEditMode ? AZURE_READONLY_FIELDS : []
 
   return (
     <form
