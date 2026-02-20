@@ -105,6 +105,11 @@ test.describe('Add Database', () => {
   });
 
   test('should add cluster database', async ({ databasesPage }) => {
+    test.skip(
+      process.env.OSS_CLUSTER_HOST === 'host.docker.internal',
+      'Cluster test skipped in Docker - cluster nodes advertise unreachable addresses',
+    );
+
     const { addDatabaseDialog, databaseList } = databasesPage;
     const config = ClusterConfigFactory.build();
     createdDatabaseNames.push(config.name);
