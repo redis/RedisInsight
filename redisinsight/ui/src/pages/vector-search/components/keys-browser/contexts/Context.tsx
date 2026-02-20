@@ -96,6 +96,13 @@ export const Provider = ({
     if (!isDataPatternLoaded || contextInstanceId !== instanceId) {
       loadKeys()
     }
+
+    return () => {
+      dispatch(setFilter(null))
+      dispatch(resetKeysData(SearchMode.Pattern))
+      dispatch(resetBrowserTree())
+      dispatch(setBrowserKeyListDataLoaded(SearchMode.Pattern, false))
+    }
   }, [])
 
   const loadMoreItems = useCallback(
