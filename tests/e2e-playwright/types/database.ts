@@ -66,13 +66,6 @@ export interface TlsConfig {
 }
 
 /**
- * Configuration for adding a database with TLS
- */
-export interface AddTlsDatabaseConfig extends AddDatabaseConfig {
-  tls: TlsConfig;
-}
-
-/**
  * Sentinel-specific configuration
  */
 export interface SentinelConfig extends RedisConnectionConfig {

@@ -98,8 +98,6 @@ test.describe('Add Database', () => {
     await databasesPage.openAddDatabaseDialog();
     await addDatabaseDialog.openConnectionSettings();
     await addDatabaseDialog.fillForm(config);
-    await addDatabaseDialog.usernameInput.fill(config.username!);
-    await addDatabaseDialog.passwordInput.fill(config.password!);
 
     await addDatabaseDialog.submit();
     await addDatabaseDialog.waitForHidden();
@@ -301,10 +299,14 @@ test.describe('Add Database', () => {
     await databaseList.search(config.name);
     await databaseList.edit(config.name);
 
-    // Note: Edit dialog doesn't show the db index in the same way as add dialog
-    // The db index is stored but shown differently in the database list/header
+    // Verify edit dialog opens with the correct title showing db index
+    // The edit dialog title includes the database name with db index annotation
     const editDialog = databasesPage.page.getByRole('dialog', { name: /edit database/i });
     await expect(editDialog).toBeVisible();
+
+    // Verify the logical database index is displayed in the edit dialog
+    // The db index is shown as "Database Index: X" in the connection info section
+    await expect(editDialog).toContainText(`Database Index:${dbIndex}`);
 
     // Close the dialog
     await databasesPage.page.getByRole('button', { name: 'Cancel' }).click();
