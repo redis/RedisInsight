@@ -121,6 +121,7 @@ enum ApiEndpoints {
   REDISEARCH = 'redisearch',
   REDISEARCH_SEARCH = 'redisearch/search',
   REDISEARCH_INFO = 'redisearch/info',
+  REDISEARCH_KEY_INDEXES = 'redisearch/key-indexes',
   HISTORY = 'history',
 
   FEATURES = 'features',
