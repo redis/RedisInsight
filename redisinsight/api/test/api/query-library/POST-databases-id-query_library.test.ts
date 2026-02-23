@@ -103,6 +103,7 @@ describe('POST /databases/:instanceId/query-library', () => {
         data: {
           ...validInputData,
           name: 'Another query',
+          type: 'SAMPLE',
         },
         statusCode: 201,
         responseSchema,

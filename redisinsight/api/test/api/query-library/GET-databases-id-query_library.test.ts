@@ -164,7 +164,7 @@ describe('GET /databases/:instanceId/query-library', () => {
         },
       },
       {
-        name: 'Should return all when search does not match',
+        name: 'Should return empty list when search does not match',
         query: { search: 'nonexistent' },
         responseSchema,
         checkFn: async ({ body }) => {
