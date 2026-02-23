@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { faker } from '@faker-js/faker'
 import { useDispatch } from 'react-redux'
 import { MOCK_COMMANDS_SPEC } from 'uiSrc/constants'
 import { getRedisCommandsSuccess } from 'uiSrc/slices/app/redis-commands'
@@ -195,132 +196,19 @@ export const MultipleItems: Story = {
       },
     },
   },
-  render: () => (
-    <MultiItemWrapper
-      items={[
-        {
-          id: 'list-1',
-          name: 'Full-text search',
-          description: 'Search across all text fields',
-          type: QueryLibraryItemType.Sample,
-          query: 'FT.SEARCH idx:bikes "@model:Explorer"',
-          onRun: () => {},
-          onLoad: () => {},
-          onDelete: () => {},
-        },
-        {
-          id: 'list-2',
-          name: 'Vector similarity',
-          description: 'KNN vector search on embeddings',
-          type: QueryLibraryItemType.Saved,
-          query: [
-            'FT.SEARCH idx:products',
-            '"*=>[KNN 5 @embedding $BLOB AS score]"',
-            'PARAMS 2 BLOB "\\x00" RETURN 3 name price score',
-          ].join(' '),
-          onRun: () => {},
-          onLoad: () => {},
-          onDelete: () => {},
-        },
-        {
-          id: 'list-3',
-          name: 'Price range filter',
-          description: 'Filter products within a price range',
-          type: QueryLibraryItemType.Saved,
-          query: [
-            'FT.SEARCH idx:products',
-            '"@price:[100 500]" SORTBY price ASC',
-          ].join(' '),
-          onRun: () => {},
-          onLoad: () => {},
-          onDelete: () => {},
-        },
-        {
-          id: 'list-4',
-          name: 'Tag intersection',
-          type: QueryLibraryItemType.Sample,
-          query: [
-            'FT.SEARCH idx:bikes',
-            '"@type:{mountain} @brand:{Trek|Giant}"',
-          ].join(' '),
-          onRun: () => {},
-          onLoad: () => {},
-          onDelete: () => {},
-        },
-        {
-          id: 'list-5',
-          name: 'Geo radius search',
-          description: 'Find locations within a radius',
-          type: QueryLibraryItemType.Sample,
-          query: [
-            'FT.SEARCH idx:stores',
-            '"@location:[-73.935 40.730 10 km]"',
-          ].join(' '),
-          onRun: () => {},
-          onLoad: () => {},
-          onDelete: () => {},
-        },
-        {
-          id: 'list-6',
-          name: 'Numeric aggregation',
-          description: 'Aggregate sales data by region',
-          type: QueryLibraryItemType.Saved,
-          query: [
-            'FT.AGGREGATE idx:sales "*"',
-            'GROUPBY 1 @region REDUCE SUM 1 @amount AS total',
-          ].join(' '),
-          onRun: () => {},
-          onLoad: () => {},
-          onDelete: () => {},
-        },
-        {
-          id: 'list-7',
-          name: 'Fuzzy text match',
-          type: QueryLibraryItemType.Sample,
-          query: 'FT.SEARCH idx:products "%%laptop%%"',
-          onRun: () => {},
-          onLoad: () => {},
-          onDelete: () => {},
-        },
-        {
-          id: 'list-8',
-          name: 'Multi-field sort',
-          description: 'Sort by category then by price descending',
-          type: QueryLibraryItemType.Saved,
-          query: [
-            'FT.SEARCH idx:products "*"',
-            'SORTBY category ASC price DESC LIMIT 0 50',
-          ].join(' '),
-          onRun: () => {},
-          onLoad: () => {},
-          onDelete: () => {},
-        },
-        {
-          id: 'list-9',
-          name: 'Hybrid vector search',
-          description: 'Combine filters with vector similarity',
-          type: QueryLibraryItemType.Sample,
-          query: [
-            'FT.SEARCH idx:products',
-            '"(@category:{electronics})',
-            '=>[KNN 10 @embedding $BLOB AS score]"',
-            'PARAMS 2 BLOB "\\x00" SORTBY score ASC',
-          ].join(' '),
-          onRun: () => {},
-          onLoad: () => {},
-          onDelete: () => {},
-        },
-        {
-          id: 'list-10',
-          name: 'Prefix autocomplete',
-          description: 'Autocomplete suggestions for product names',
-          type: QueryLibraryItemType.Saved,
-          query: 'FT.SEARCH idx:products "@name:mob*" RETURN 1 name LIMIT 0 10',
-          onRun: () => {},
-          onLoad: () => {},
-          onDelete: () => {},
-        },
-      ]}
-    />
-  ),
+  render: () => {
+    const types = [QueryLibraryItemType.Sample, QueryLibraryItemType.Saved]
+    const items = Array.from({ length: 10 }, (_, i) => ({
+      id: `list-${i + 1}`,
+      name: faker.lorem.words(3),
+      description: i % 3 === 0 ? undefined : faker.lorem.sentence(),
+      type: types[i % 2],
+      query: `FT.SEARCH idx:${faker.word.noun()} "${faker.lorem.words(2)}"`,
+      onRun: () => {},
+      onLoad: () => {},
+      onDelete: () => {},
+    }))
+
+    return <MultiItemWrapper items={items} />
+  },
 }
