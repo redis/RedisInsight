@@ -5,6 +5,7 @@ export enum FieldTypes {
   TAG = 'tag',
   NUMERIC = 'numeric',
   GEO = 'geo',
+  GEOSHAPE = 'geoshape',
   VECTOR = 'vector',
 }
 
@@ -42,6 +43,10 @@ export const FIELD_TYPE_OPTIONS = [
   {
     text: 'GEO',
     value: FieldTypes.GEO,
+  },
+  {
+    text: 'GEOSHAPE',
+    value: FieldTypes.GEOSHAPE,
   },
   {
     text: 'VECTOR',

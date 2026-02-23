@@ -17,6 +17,10 @@ const FIELD_TYPE_DESCRIPTIONS: { type: FieldTypes; description: string }[] = [
     type: FieldTypes.GEO,
     description: 'Geographic distance and radius queries',
   },
+  {
+    type: FieldTypes.GEOSHAPE,
+    description: 'WKT shapes: points, polygons, linestrings and collections',
+  },
   { type: FieldTypes.VECTOR, description: 'Similarity and semantic search' },
 ]
 
