@@ -81,8 +81,9 @@ export const QueryLibraryItem = ({
             <S.CopyButtonWrapper>
               <CopyButton
                 copy={name || ''}
-                aria-label="Copy query"
+                aria-label="Copy query name"
                 data-testid={`${dataTestId}-copy`}
+                withTooltip={false}
               />
             </S.CopyButtonWrapper>
           </S.Name>
