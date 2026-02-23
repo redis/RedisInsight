@@ -49,6 +49,9 @@ const VirtualTree = (props: VirtualTreeProps) => {
     onDeleteLeaf,
     onDeleteFolder,
     visibleColumns,
+    showFolderMetadata,
+    showDeleteAction,
+    showSelectedIndicator,
   } = props
 
   const [rerenderState, rerender] = useState({})
@@ -204,6 +207,9 @@ const VirtualTree = (props: VirtualTreeProps) => {
       isSelected: !!node.isLeaf && statusSelected === node?.nameString,
       isOpenByDefault: statusOpen[node.fullName],
       visibleColumns,
+      showFolderMetadata,
+      showDeleteAction,
+      showSelectedIndicator,
     },
     nestingLevel,
     node,

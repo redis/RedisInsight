@@ -61,6 +61,9 @@ const KeyTree = forwardRef((props: KeyTreeProps, ref) => {
     onAddKeyPanel,
     onBulkActionsPanel,
     visibleColumns,
+    showFolderMetadata,
+    showDeleteAction,
+    showSelectedIndicator,
   } = props
 
   const { instanceId } = useParams<{ instanceId: string }>()
@@ -265,6 +268,9 @@ const KeyTree = forwardRef((props: KeyTreeProps, ref) => {
           onDeleteLeaf={handleDeleteLeaf}
           onDeleteFolder={handleDeleteFolder}
           visibleColumns={visibleColumns}
+          showFolderMetadata={showFolderMetadata}
+          showDeleteAction={showDeleteAction}
+          showSelectedIndicator={showSelectedIndicator}
         />
       </div>
     </div>
