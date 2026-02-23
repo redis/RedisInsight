@@ -147,18 +147,20 @@ export class QueryLibraryIndexedDB implements QueryLibraryDatabase {
       const indexName = items[0].indexName
       const { data: existing } = await this.getList(databaseId, { indexName })
 
-      const hasSamples = existing?.some(
-        (item) => item.type === QueryLibraryType.Sample,
+      const existingSampleNames = new Set(
+        (existing || [])
+          .filter((item) => item.type === QueryLibraryType.Sample)
+          .map((item) => item.name),
       )
 
-      if (hasSamples) {
-        return { success: true, data: existing }
-      }
+      const newItems = items.filter(
+        (item) => !existingSampleNames.has(item.name),
+      )
 
       const now = new Date().toISOString()
       const created: QueryLibraryItem[] = []
 
-      for (const seedItem of items) {
+      for (const seedItem of newItems) {
         const item: QueryLibraryItem = {
           id: uuidv4(),
           databaseId,
@@ -175,7 +177,7 @@ export class QueryLibraryIndexedDB implements QueryLibraryDatabase {
         created.push(item)
       }
 
-      return { success: true, data: created }
+      return { success: true, data: [...(existing || []), ...created] }
     } catch (exception) {
       return { success: false, error: exception as Error }
     }

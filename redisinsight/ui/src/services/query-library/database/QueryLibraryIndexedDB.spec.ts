@@ -332,20 +332,89 @@ describe('QueryLibraryIndexedDB', () => {
       expect(mockedStorage.put).toHaveBeenCalledTimes(2)
     })
 
-    it('should return existing items when samples already exist', async () => {
-      const existingItems = queryLibraryItemFactory.buildList(2, {
+    it('should skip items that already exist by name', async () => {
+      const existingSample = queryLibraryItemFactory.build({
         type: QueryLibraryType.Sample,
         indexName: mockIndexName,
+        name: 'Existing Query',
       })
+      mockedStorage.getAllByIndex.mockResolvedValue([existingSample])
+
+      const seedItems = [
+        seedQueryLibraryItemFactory.build({
+          indexName: mockIndexName,
+          name: 'Existing Query',
+        }),
+        seedQueryLibraryItemFactory.build({
+          indexName: mockIndexName,
+          name: 'New Query',
+        }),
+      ]
+      mockedStorage.put.mockResolvedValue(undefined)
+
+      const result = await indexedDB.seed(mockDatabaseId, seedItems)
+
+      expect(result.success).toBe(true)
+      expect(result.data).toHaveLength(2)
+      expect(mockedStorage.put).toHaveBeenCalledTimes(1)
+      expect(mockedStorage.put).toHaveBeenCalledWith(
+        expect.objectContaining({ name: 'New Query' }),
+      )
+    })
+
+    it('should skip all items when all already exist', async () => {
+      const existingItems = [
+        queryLibraryItemFactory.build({
+          type: QueryLibraryType.Sample,
+          indexName: mockIndexName,
+          name: 'Query A',
+        }),
+        queryLibraryItemFactory.build({
+          type: QueryLibraryType.Sample,
+          indexName: mockIndexName,
+          name: 'Query B',
+        }),
+      ]
       mockedStorage.getAllByIndex.mockResolvedValue(existingItems)
 
-      const result = await indexedDB.seed(mockDatabaseId, [
-        seedQueryLibraryItemFactory.build({ indexName: mockIndexName }),
-      ])
+      const seedItems = [
+        seedQueryLibraryItemFactory.build({
+          indexName: mockIndexName,
+          name: 'Query A',
+        }),
+        seedQueryLibraryItemFactory.build({
+          indexName: mockIndexName,
+          name: 'Query B',
+        }),
+      ]
+
+      const result = await indexedDB.seed(mockDatabaseId, seedItems)
 
       expect(result.success).toBe(true)
       expect(result.data).toEqual(existingItems)
       expect(mockedStorage.put).not.toHaveBeenCalled()
+    })
+
+    it('should not treat Saved items as existing samples', async () => {
+      const savedItem = queryLibraryItemFactory.build({
+        type: QueryLibraryType.Saved,
+        indexName: mockIndexName,
+        name: 'Same Name',
+      })
+      mockedStorage.getAllByIndex.mockResolvedValue([savedItem])
+      mockedStorage.put.mockResolvedValue(undefined)
+
+      const seedItems = [
+        seedQueryLibraryItemFactory.build({
+          indexName: mockIndexName,
+          name: 'Same Name',
+        }),
+      ]
+
+      const result = await indexedDB.seed(mockDatabaseId, seedItems)
+
+      expect(result.success).toBe(true)
+      expect(mockedStorage.put).toHaveBeenCalledTimes(1)
     })
 
     it('should return empty array for empty seed list', async () => {
