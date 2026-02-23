@@ -74,21 +74,20 @@ export const QueryLibraryItem = ({
         grow
       >
         <S.HeaderInfo gap="m" align="center">
-          <S.Name color="primary" ellipsis data-testid={`${dataTestId}-name`}>
+          <S.Name color="primary" data-testid={`${dataTestId}-name`}>
             <RiTooltip position="bottom" content={truncateText(name, 500)}>
               {name}
             </RiTooltip>
+            <CopyButton
+              copy={query}
+              aria-label="Copy query"
+              data-testid={`${dataTestId}-copy`}
+            />
           </S.Name>
-          <CopyButton
-            copy={query}
-            aria-label="Copy query"
-            data-testid={`${dataTestId}-copy`}
-          />
           {description && (
             <S.Description
               color="informative"
               size="s"
-              ellipsis
               data-testid={`${dataTestId}-description`}
             >
               <RiTooltip
