@@ -21,5 +21,5 @@ export const TOOLTIP_EXPLAIN =
   "Shows how your query will run (execution plan) to understand what's used. Acts on FT.SEARCH or FT.AGGREGATE."
 export const TOOLTIP_PROFILE =
   'Profiles your query to show where time is spent and spot bottlenecks. Acts on FT.SEARCH or FT.AGGREGATE.'
-export const TOOLTIP_DISABLED_NO_QUERY = ' Disabled: no query identified.'
-export const TOOLTIP_DISABLED_LOADING = ' Disabled: query is running.'
+export const TOOLTIP_DISABLED_NO_QUERY = 'Disabled: no query identified.'
+export const TOOLTIP_DISABLED_LOADING = 'Disabled: query is running.'
