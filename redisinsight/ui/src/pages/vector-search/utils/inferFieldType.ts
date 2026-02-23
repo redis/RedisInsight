@@ -54,9 +54,17 @@ export const isGeoCoordinates = (value: unknown): boolean => {
   return false
 }
 
+/**
+ * Returns true if value looks like valid WKT (starts with a known type, has content, and a closing paren).
+ * Rejects malformed inputs like "POINT(" or "POINT(1 2" to avoid inferring invalid GEOSHAPE index schemas.
+ */
 export const isGeoShape = (value: string): boolean => {
   const lower = value.trimStart().toLowerCase()
-  return WKT_PREFIXES.some((prefix) => lower.startsWith(prefix))
+  const prefix = WKT_PREFIXES.find((p) => lower.startsWith(p))
+  if (!prefix) return false
+  const afterOpen = lower.slice(prefix.length)
+  const closeIdx = afterOpen.indexOf(')')
+  return closeIdx > 0
 }
 
 const GEO_REGEX = /^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/

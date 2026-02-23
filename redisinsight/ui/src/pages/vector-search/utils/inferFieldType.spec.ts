@@ -40,6 +40,9 @@ describe('isGeoShape', () => {
     { value: '42', desc: 'numeric string' },
     { value: '', desc: 'empty string' },
     { value: 'POINT', desc: 'WKT keyword without parenthesis' },
+    { value: 'POINT(', desc: 'WKT keyword with open paren only (malformed)' },
+    { value: 'POINT(1 2', desc: 'WKT with no closing paren (malformed)' },
+    { value: 'point()', desc: 'empty WKT parentheses (malformed)' },
   ])('should return false for $desc', ({ value }) => {
     expect(isGeoShape(value)).toBe(false)
   })
@@ -221,6 +224,12 @@ describe('inferFieldType', () => {
   describe('priority order', () => {
     it('should prefer GEOSHAPE over GEO for WKT with coordinates', () => {
       expect(inferFieldType('POINT(-122.4 37.7)')).toBe(FieldTypes.GEOSHAPE)
+    })
+
+    it('should not infer GEOSHAPE for malformed WKT (no closing paren or empty)', () => {
+      expect(inferFieldType('POINT(')).toBe(FieldTypes.TAG)
+      expect(inferFieldType('POINT(1 2')).toBe(FieldTypes.TAG)
+      expect(inferFieldType('point()')).toBe(FieldTypes.TAG)
     })
 
     it('should prefer GEO over NUMERIC for coordinate-like values', () => {
