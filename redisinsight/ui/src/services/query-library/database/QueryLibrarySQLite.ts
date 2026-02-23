@@ -130,5 +130,4 @@ export class QueryLibrarySQLite implements QueryLibraryDatabase {
       return { success: false, error: exception as Error }
     }
   }
-
 }

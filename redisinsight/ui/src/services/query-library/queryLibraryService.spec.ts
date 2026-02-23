@@ -424,5 +424,4 @@ describe('QueryLibraryService', () => {
       )
     })
   })
-
 })

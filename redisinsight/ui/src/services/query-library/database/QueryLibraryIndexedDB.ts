@@ -174,5 +174,4 @@ export class QueryLibraryIndexedDB implements QueryLibraryDatabase {
       return { success: false, error: exception as Error }
     }
   }
-
 }

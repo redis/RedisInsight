@@ -340,5 +340,4 @@ describe('QueryLibraryIndexedDB', () => {
       expect(result.error).toBe(mockError)
     })
   })
-
 })

@@ -108,7 +108,6 @@ export class QueryLibraryService {
 
     return data || []
   }
-
 }
 
 export default QueryLibraryService

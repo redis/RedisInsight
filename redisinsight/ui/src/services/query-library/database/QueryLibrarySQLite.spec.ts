@@ -345,5 +345,4 @@ describe('QueryLibrarySQLite', () => {
       expect(result.error?.message).toBe('Network Error')
     })
   })
-
 })
