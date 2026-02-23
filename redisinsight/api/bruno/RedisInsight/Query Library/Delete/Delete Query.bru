@@ -1,21 +1,13 @@
 meta {
   name: Delete Query
   type: http
-  seq: 4
+  seq: 1
 }
 
 delete {
   url: {{API_URL}}/databases/{{DB_INTANCE_ID}}/query-library/{{QUERY_LIBRARY_ID}}
   body: none
   auth: inherit
-}
-
-body:json {
-  {
-    "name": "Vector Search - Bikes",
-    "description": "Hello world",
-    "query": "FT.SEARCH idx:bikes_vss \"*\""
-  }
 }
 
 settings {

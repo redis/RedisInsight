@@ -1,7 +1,7 @@
 meta {
-  name: Get Queries (related to databse and index)
+  name: Get Queries
   type: http
-  seq: 3
+  seq: 1
 }
 
 get {
@@ -12,14 +12,6 @@ get {
 
 params:query {
   indexName: {{RQE_INDEX_NAME}}
-}
-
-body:json {
-  {
-    "indexName": "idx:bikes_vss",
-    "name": "Vector Search - Bikes",
-    "query": "FT.SEARCH idx:bikes_vss \"*\""
-  }
 }
 
 settings {

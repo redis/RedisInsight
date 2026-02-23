@@ -1,23 +1,24 @@
 meta {
-  name: Get Query
+  name: Update Query
   type: http
-  seq: 2
+  seq: 1
 }
 
-get {
+patch {
   url: {{API_URL}}/databases/{{DB_INTANCE_ID}}/query-library/{{QUERY_LIBRARY_ID}}
-  body: none
+  body: json
   auth: inherit
 }
 
 body:json {
   {
-    "indexName": "idx:bikes_vss",
     "name": "Vector Search - Bikes",
+    "description": "Hello world",
     "query": "FT.SEARCH idx:bikes_vss \"*\""
   }
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

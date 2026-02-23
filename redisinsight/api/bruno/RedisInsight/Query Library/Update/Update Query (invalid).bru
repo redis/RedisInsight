@@ -1,0 +1,30 @@
+meta {
+  name: Update Query (invalid)
+  type: http
+  seq: 2
+}
+
+patch {
+  url: {{API_URL}}/databases/{{DB_INTANCE_ID}}/query-library/non-existent-id
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Updated Name",
+    "description": "Updated description",
+    "query": "FT.SEARCH idx:bikes_vss \"*\""
+  }
+}
+
+tests {
+  test("should return 404", function() {
+    expect(res.getStatus()).to.equal(404);
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

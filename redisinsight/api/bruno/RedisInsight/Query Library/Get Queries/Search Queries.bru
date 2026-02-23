@@ -15,14 +15,7 @@ params:query {
   search: bikes
 }
 
-body:json {
-  {
-    "indexName": "idx:bikes_vss",
-    "name": "Vector Search - Bikes",
-    "query": "FT.SEARCH idx:bikes_vss \"*\""
-  }
-}
-
 settings {
   encodeUrl: true
+  timeout: 0
 }
