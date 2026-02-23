@@ -874,6 +874,7 @@ export const generateNQueryLibraryItems = async (
     result.push(
       await rep.save({
         ...entity,
+        name: encryptData(entity.name),
         description: encryptData(entity.description),
         query: encryptData(entity.query),
         encryption: constants.TEST_ENCRYPTION_STRATEGY,

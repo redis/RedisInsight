@@ -211,32 +211,12 @@ describe('LocalQueryLibraryRepository', () => {
       expect(typeormRepo.save).toHaveBeenCalled();
     });
 
-    it('should preserve existing encrypted fields when updating non-encrypted fields', async () => {
+    it('should re-encrypt all fields on partial update to maintain consistent encryption', async () => {
       const entity = queryLibraryEntityFactory.build({
         databaseId: mockDatabaseId,
-        query: 'stored_encrypted_query',
-        description: 'stored_encrypted_description',
-        encryption: 'KEYTAR',
-      });
-      typeormRepo.findOneBy.mockResolvedValueOnce(entity);
-
-      const updatedName = faker.lorem.words(2);
-      await repository.update(mockSessionMetadata, mockDatabaseId, entity.id, {
-        name: updatedName,
-      });
-
-      const savedEntity = typeormRepo.save.mock.calls[0][0];
-      expect(savedEntity.name).toBe(updatedName);
-      expect(savedEntity.query).toBe(entity.query);
-      expect(savedEntity.description).toBe(entity.description);
-      expect(savedEntity.encryption).toBe(entity.encryption);
-    });
-
-    it('should re-encrypt only updated encrypted fields', async () => {
-      const entity = queryLibraryEntityFactory.build({
-        databaseId: mockDatabaseId,
-        query: 'old_encrypted_query',
-        description: 'old_encrypted_description',
+        name: 'encrypted_name',
+        query: 'encrypted_query',
+        description: 'encrypted_description',
         encryption: 'KEYTAR',
       });
       typeormRepo.findOneBy.mockResolvedValueOnce(entity);
@@ -246,8 +226,10 @@ describe('LocalQueryLibraryRepository', () => {
       });
 
       const savedEntity = typeormRepo.save.mock.calls[0][0];
+      expect(savedEntity.encryption).toBe(mockEncryptResult.encryption);
+      expect(savedEntity.name).toBe(mockEncryptResult.data);
       expect(savedEntity.query).toBe(mockEncryptResult.data);
-      expect(savedEntity.description).toBe(entity.description);
+      expect(savedEntity.description).toBe(mockEncryptResult.data);
     });
 
     it('should throw NotFoundException when item not found', async () => {
