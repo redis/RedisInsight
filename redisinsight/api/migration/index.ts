@@ -55,6 +55,7 @@ import { CascadeTags1743432519891 } from './1743432519891-cascade-tags';
 import { EncryptTags1743606395647 } from './1743606395647-encrypt-tags';
 import { UpdateProviderNames1755086732238 } from './1755086732238-update-provider-names';
 import { ProviderDetails1769785218000 } from './1769785218000-provider-details';
+import { QueryLibrary1771500000000 } from './1771500000000-query-library';
 
 export default [
   initialMigration1614164490968,
@@ -114,4 +115,5 @@ export default [
   EncryptTags1743606395647,
   UpdateProviderNames1755086732238,
   ProviderDetails1769785218000,
+  QueryLibrary1771500000000,
 ];
