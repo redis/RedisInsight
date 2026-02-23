@@ -10,7 +10,7 @@ export const Container = styled(Col)`
 
 const HEADER_HEIGHT = '45px'
 
-export const Header = styled(Row)<{ $isOpen?: boolean }>`
+export const Header = styled(Row)`
   height: ${HEADER_HEIGHT};
   max-height: ${HEADER_HEIGHT};
   min-height: ${HEADER_HEIGHT};
@@ -79,9 +79,8 @@ export const Body = styled(Col)`
   overflow: auto;
 `
 
-export const ChevronWrapper = styled(Row)<{ $isOpen?: boolean }>`
+export const ChevronWrapper = styled(Row)`
   padding-left: ${({ theme }) => theme.core.space.space100};
-  transition: transform 0.5s ease;
   border-left: 2px solid
     ${({ theme }) => theme.semantic.color.border.neutral500};
 `

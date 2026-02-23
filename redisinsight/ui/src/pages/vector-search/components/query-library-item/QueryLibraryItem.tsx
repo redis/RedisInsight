@@ -64,7 +64,6 @@ export const QueryLibraryItem = ({
   return (
     <S.Container data-testid={dataTestId}>
       <S.Header
-        $isOpen={isOpen}
         onClick={handleToggle}
         aria-expanded={isOpen}
         data-testid={`${dataTestId}-header`}
