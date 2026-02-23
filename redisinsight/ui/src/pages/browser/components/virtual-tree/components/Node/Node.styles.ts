@@ -34,7 +34,6 @@ export const FOLDER_ANCHOR_CLASS = 'node-folder-anchor'
 export const NodeContent = styled(Row).attrs({
   align: 'center',
   justify: 'between',
-  gap: 'l',
 })`
   height: 100%;
   cursor: pointer;
