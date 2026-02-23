@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { faker } from '@faker-js/faker'
+import styled from 'styled-components'
 import { useDispatch } from 'react-redux'
 import { MOCK_COMMANDS_SPEC } from 'uiSrc/constants'
 import { getRedisCommandsSuccess } from 'uiSrc/slices/app/redis-commands'
@@ -49,11 +50,27 @@ const InteractiveWrapper = (props: QueryLibraryItemProps) => {
   )
 }
 
+const ListWrapper = styled(Col)`
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  justify-content: flex-start;
+
+  & > * {
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+
+  & > *:not(:first-child) {
+    margin-top: -1px;
+  }
+`
+
 const MultiItemWrapper = ({ items }: { items: QueryLibraryItemProps[] }) => {
   const [openId, setOpenId] = useState<string | null>(null)
 
   return (
-    <Col style={{ width: '100%', overflow: 'auto' }}>
+    <ListWrapper justify="start">
       {items.map((item) => (
         <QueryLibraryItem
           key={item.id}
@@ -62,7 +79,7 @@ const MultiItemWrapper = ({ items }: { items: QueryLibraryItemProps[] }) => {
           onToggleOpen={(id) => setOpenId((prev) => (prev === id ? null : id))}
         />
       ))}
-    </Col>
+    </ListWrapper>
   )
 }
 
