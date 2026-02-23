@@ -46,6 +46,7 @@ const truncatedText = css`
 `
 
 export const CopyButtonWrapper = styled.span`
+  padding-left: ${({ theme }) => theme.core.space.space025};
   opacity: 0;
   flex-shrink: 0;
   transition: opacity 250ms ease-in-out;
