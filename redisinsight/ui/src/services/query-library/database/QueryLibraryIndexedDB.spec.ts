@@ -263,21 +263,49 @@ describe('QueryLibraryIndexedDB', () => {
   })
 
   describe('delete', () => {
-    it('should remove item from storage', async () => {
-      const itemId = faker.string.uuid()
+    it('should remove item from storage when databaseId matches', async () => {
+      const mockItem = queryLibraryItemFactory.build({
+        databaseId: mockDatabaseId,
+      })
+      mockedStorage.getById.mockResolvedValue(mockItem)
       mockedStorage.remove.mockResolvedValue(undefined)
 
-      const result = await indexedDB.delete(mockDatabaseId, itemId)
+      const result = await indexedDB.delete(mockDatabaseId, mockItem.id)
 
       expect(result).toEqual({ success: true })
-      expect(mockedStorage.remove).toHaveBeenCalledWith(itemId)
+      expect(mockedStorage.remove).toHaveBeenCalledWith(mockItem.id)
+    })
+
+    it('should return success false when item not found', async () => {
+      mockedStorage.getById.mockResolvedValue(undefined)
+
+      const result = await indexedDB.delete(mockDatabaseId, faker.string.uuid())
+
+      expect(result).toEqual({ success: false })
+      expect(mockedStorage.remove).not.toHaveBeenCalled()
+    })
+
+    it('should return success false when databaseId does not match', async () => {
+      const mockItem = queryLibraryItemFactory.build({
+        databaseId: 'other-db-id',
+      })
+      mockedStorage.getById.mockResolvedValue(mockItem)
+
+      const result = await indexedDB.delete(mockDatabaseId, mockItem.id)
+
+      expect(result).toEqual({ success: false })
+      expect(mockedStorage.remove).not.toHaveBeenCalled()
     })
 
     it('should return error on storage failure', async () => {
+      const mockItem = queryLibraryItemFactory.build({
+        databaseId: mockDatabaseId,
+      })
+      mockedStorage.getById.mockResolvedValue(mockItem)
       const mockError = new Error('IndexedDB error')
       mockedStorage.remove.mockRejectedValue(mockError)
 
-      const result = await indexedDB.delete(mockDatabaseId, faker.string.uuid())
+      const result = await indexedDB.delete(mockDatabaseId, mockItem.id)
 
       expect(result.success).toBe(false)
       expect(result.error).toBe(mockError)

@@ -120,8 +120,14 @@ export class QueryLibraryIndexedDB implements QueryLibraryDatabase {
     }
   }
 
-  async delete(_databaseId: string, id: string): Promise<QueryLibraryResult> {
+  async delete(databaseId: string, id: string): Promise<QueryLibraryResult> {
     try {
+      const { data: existing } = await this.getOne(databaseId, id)
+
+      if (!existing) {
+        return { success: false }
+      }
+
       await queryLibraryStorage.remove(id)
       return { success: true }
     } catch (exception) {
