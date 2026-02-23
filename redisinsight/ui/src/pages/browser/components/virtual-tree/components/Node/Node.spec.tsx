@@ -329,6 +329,71 @@ describe('Node', () => {
     })
   })
 
+  describe('showDeleteAction', () => {
+    it('should hide leaf DeleteKeyPopover when showDeleteAction is false', () => {
+      const mockData: TreeData = {
+        ...mockedDataWithMetadata,
+        onDelete: jest.fn(),
+        onDeleteClicked: jest.fn(),
+        showDeleteAction: false,
+      }
+
+      render(<Node {...instance(mockedProps)} data={mockData} />)
+
+      expect(
+        screen.queryByTestId(`delete-key-btn-${mockDataFullName}`),
+      ).not.toBeInTheDocument()
+    })
+
+    it('should show leaf DeleteKeyPopover when showDeleteAction is true', () => {
+      const mockData: TreeData = {
+        ...mockedDataWithMetadata,
+        onDelete: jest.fn(),
+        onDeleteClicked: jest.fn(),
+        showDeleteAction: true,
+      }
+
+      render(<Node {...instance(mockedProps)} data={mockData} />)
+
+      expect(
+        screen.getByTestId(`delete-key-btn-${mockDataFullName}`),
+      ).toBeInTheDocument()
+    })
+
+    it('should show leaf DeleteKeyPopover by default when showDeleteAction is not set', () => {
+      const mockData: TreeData = {
+        ...mockedDataWithMetadata,
+        onDelete: jest.fn(),
+        onDeleteClicked: jest.fn(),
+      }
+
+      render(<Node {...instance(mockedProps)} data={mockData} />)
+
+      expect(
+        screen.getByTestId(`delete-key-btn-${mockDataFullName}`),
+      ).toBeInTheDocument()
+    })
+
+    it('should still show folder metadata when showDeleteAction is false and showFolderMetadata is true', () => {
+      const mockData: TreeData = {
+        ...mockedData,
+        isLeaf: false,
+        fullName: 'folder',
+        keyCount: 100,
+        keyApproximate: 50,
+        delimiters: [':'],
+        onDeleteFolder: jest.fn(),
+        showFolderMetadata: true,
+        showDeleteAction: false,
+      }
+
+      render(<Node {...instance(mockedProps)} data={mockData} />)
+
+      expect(screen.getByTestId('percentage_folder')).toBeInTheDocument()
+      expect(screen.getByTestId('count_folder')).toBeInTheDocument()
+    })
+  })
+
   describe('Node metadata and column visibility', () => {
     it('should call getMetadata when node is clicked and TTL column is visible', () => {
       const mockGetMetadata = jest.fn()

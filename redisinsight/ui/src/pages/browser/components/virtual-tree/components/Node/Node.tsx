@@ -63,6 +63,7 @@ const Node = ({
     updateStatusSelected,
     visibleColumns: visibleColumnsProp,
     showFolderMetadata: showFolderMetadataProp = true,
+    showDeleteAction: showDeleteActionProp = true,
     showSelectedIndicator: showSelectedIndicatorProp = false,
   } = data
 
@@ -229,7 +230,7 @@ const Node = ({
           rowId={nodeId}
         />
       )}
-      {showFolderMetadataProp && (
+      {showDeleteActionProp && (
         <DeleteKeyPopover
           deletePopoverId={deletePopoverId === nodeId ? nodeId : undefined}
           nameString={nameString}

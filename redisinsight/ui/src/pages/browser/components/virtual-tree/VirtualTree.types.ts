@@ -65,6 +65,7 @@ export interface TreeData extends FixedSizeNodeData {
   onDeleteFolder?: (pattern: string, fullName: string, keyCount: number) => void
   visibleColumns?: BrowserColumns[]
   showFolderMetadata?: boolean
+  showDeleteAction?: boolean
   showSelectedIndicator?: boolean
 }
 
@@ -92,5 +93,6 @@ export interface VirtualTreeProps {
   onDeleteFolder?: (pattern: string, fullName: string, keyCount: number) => void
   visibleColumns?: BrowserColumns[]
   showFolderMetadata?: boolean
+  showDeleteAction?: boolean
   showSelectedIndicator?: boolean
 }

@@ -50,6 +50,7 @@ const VirtualTree = (props: VirtualTreeProps) => {
     onDeleteFolder,
     visibleColumns,
     showFolderMetadata,
+    showDeleteAction,
     showSelectedIndicator,
   } = props
 
@@ -207,6 +208,7 @@ const VirtualTree = (props: VirtualTreeProps) => {
       isOpenByDefault: statusOpen[node.fullName],
       visibleColumns,
       showFolderMetadata,
+      showDeleteAction,
       showSelectedIndicator,
     },
     nestingLevel,
