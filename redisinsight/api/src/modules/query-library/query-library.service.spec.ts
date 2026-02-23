@@ -228,7 +228,7 @@ describe('QueryLibraryService', () => {
         type: QueryLibraryType.Sample,
       });
 
-      repository.countByIndex.mockResolvedValueOnce(0);
+      repository.getList.mockResolvedValueOnce([]);
       repository.createBulk.mockResolvedValueOnce(createdItems);
 
       const result = await service.seed(mockSessionMetadata, mockDatabaseId, {
@@ -236,11 +236,10 @@ describe('QueryLibraryService', () => {
       });
 
       expect(result).toHaveLength(2);
-      expect(repository.countByIndex).toHaveBeenCalledWith(
+      expect(repository.getList).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockDatabaseId,
-        indexName,
-        QueryLibraryType.Sample,
+        { indexName },
       );
       expect(repository.createBulk).toHaveBeenCalledWith(
         mockSessionMetadata,
@@ -252,18 +251,73 @@ describe('QueryLibraryService', () => {
       );
     });
 
-    it('should skip seeding when sample queries already exist', async () => {
+    it('should only seed items that do not already exist by name', async () => {
       const indexName = 'idx:bikes_vss';
-      const existingItems = queryLibraryItemFactory.buildList(3, {
+      const existingSample = queryLibraryItemFactory.build({
         databaseId: mockDatabaseId,
         indexName,
         type: QueryLibraryType.Sample,
+        name: 'Existing Query',
       });
-      const seedItems = seedQueryLibraryItemDtoFactory.buildList(2, {
+      const seedItems = [
+        seedQueryLibraryItemDtoFactory.build({
+          indexName,
+          name: 'Existing Query',
+        }),
+        seedQueryLibraryItemDtoFactory.build({
+          indexName,
+          name: 'New Query',
+        }),
+      ];
+      const createdItem = queryLibraryItemFactory.build({
+        databaseId: mockDatabaseId,
         indexName,
+        type: QueryLibraryType.Sample,
+        name: 'New Query',
       });
 
-      repository.countByIndex.mockResolvedValueOnce(3);
+      repository.getList.mockResolvedValueOnce([existingSample]);
+      repository.createBulk.mockResolvedValueOnce([createdItem]);
+
+      const result = await service.seed(mockSessionMetadata, mockDatabaseId, {
+        items: seedItems,
+      });
+
+      expect(result).toHaveLength(2);
+      expect(result).toEqual([existingSample, createdItem]);
+      expect(repository.createBulk).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        mockDatabaseId,
+        [
+          expect.objectContaining({
+            name: 'New Query',
+            type: QueryLibraryType.Sample,
+          }),
+        ],
+      );
+    });
+
+    it('should skip seeding when all sample queries already exist', async () => {
+      const indexName = 'idx:bikes_vss';
+      const existingItems = [
+        queryLibraryItemFactory.build({
+          databaseId: mockDatabaseId,
+          indexName,
+          type: QueryLibraryType.Sample,
+          name: 'Query A',
+        }),
+        queryLibraryItemFactory.build({
+          databaseId: mockDatabaseId,
+          indexName,
+          type: QueryLibraryType.Sample,
+          name: 'Query B',
+        }),
+      ];
+      const seedItems = [
+        seedQueryLibraryItemDtoFactory.build({ indexName, name: 'Query A' }),
+        seedQueryLibraryItemDtoFactory.build({ indexName, name: 'Query B' }),
+      ];
+
       repository.getList.mockResolvedValueOnce(existingItems);
 
       const result = await service.seed(mockSessionMetadata, mockDatabaseId, {
@@ -280,7 +334,7 @@ describe('QueryLibraryService', () => {
       });
 
       expect(result).toEqual([]);
-      expect(repository.countByIndex).not.toHaveBeenCalled();
+      expect(repository.getList).not.toHaveBeenCalled();
     });
   });
 });
