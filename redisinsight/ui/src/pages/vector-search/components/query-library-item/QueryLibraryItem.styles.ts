@@ -4,8 +4,8 @@ import { Text } from 'uiSrc/components/base/text'
 
 export const Container = styled(Col)`
   border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
-  overflow: auto;
-  height: 100%;
+  min-height: 45px;
+  overflow: hidden;
 `
 
 const HEADER_HEIGHT = '45px'
@@ -17,15 +17,12 @@ export const Header = styled(Row)<{ $isOpen?: boolean }>`
   padding: ${({ theme }) => `0 ${theme.core.space.space200}`};
   cursor: pointer;
   user-select: none;
+  border-bottom: 1px solid
+    ${({ theme }) => theme.semantic.color.border.neutral500};
 
   &:hover {
     background-color: ${({ theme }) =>
       theme.semantic.color.background.neutral200};
-  }
-
-  &:not(:last-child) {
-    border-bottom: 1px solid
-      ${({ theme }) => theme.semantic.color.border.neutral500};
   }
 `
 
@@ -66,7 +63,7 @@ export const BadgeWrapper = styled.span`
 
 export const Body = styled(Col)`
   max-height: calc(100% - ${HEADER_HEIGHT});
-  height: 200px;
+  min-height: 200px;
   overflow: auto;
 `
 
