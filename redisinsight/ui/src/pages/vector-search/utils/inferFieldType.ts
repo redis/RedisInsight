@@ -102,20 +102,18 @@ export const isNumeric = (value: string): boolean => {
   return !Number.isNaN(n) && Number.isFinite(n)
 }
 
-export type JsonType =
-  | 'string'
-  | 'number'
-  | 'integer'
-  | 'boolean'
-  | 'null'
-  | 'array'
-  | 'object'
+export interface InferFieldTypeOptions {
+  /** When true, only typeof value === 'number' yields NUMERIC; numeric strings become TAG/TEXT. Use for JSON. */
+  strictNumbers?: boolean
+}
 
 /**
  * Infers the index field type from a raw value (string, number, boolean, null, array, or object).
- * Used when the key's value is passed directly from the keys browser.
  */
-export const inferFieldType = (value: unknown): FieldTypes => {
+export const inferFieldType = (
+  value: unknown,
+  options?: InferFieldTypeOptions,
+): FieldTypes => {
   if (value === null || value === undefined) {
     return FieldTypes.TAG
   }
@@ -149,7 +147,7 @@ export const inferFieldType = (value: unknown): FieldTypes => {
   if (isVector(str)) {
     return FieldTypes.VECTOR
   }
-  if (isNumeric(str)) {
+  if (!options?.strictNumbers && isNumeric(str)) {
     return FieldTypes.NUMERIC
   }
 
@@ -162,12 +160,6 @@ export const inferFieldType = (value: unknown): FieldTypes => {
 export interface HashFieldInput {
   field: string
   value: string
-}
-
-export interface JsonFieldInput {
-  key: string
-  value: string | number | boolean | null
-  type: JsonType
 }
 
 /** Converts a value to string for IndexField.value (display/storage). */
@@ -186,14 +178,6 @@ export const inferHashKeyFields = (fields: HashFieldInput[]): IndexField[] =>
     id: entry.field,
     name: entry.field,
     value: entry.value,
-    type: inferFieldType(entry.value),
-  }))
-
-export const inferJsonKeyFields = (fields: JsonFieldInput[]): IndexField[] =>
-  fields.map((entry) => ({
-    id: entry.key,
-    name: entry.key,
-    value: valueToString(entry.value),
     type: inferFieldType(entry.value),
   }))
 
@@ -221,17 +205,17 @@ export const inferKeyFields = (
 ): IndexField[] => {
   const entries = Object.entries(data)
   if (keyType === RedisearchIndexKeyType.HASH) {
-    return entries.map(([name, value]) => ({
-      id: name,
-      name,
-      value: value as string,
-      type: inferFieldType(value as string),
-    }))
+    return inferHashKeyFields(
+      entries.map(([field, value]) => ({ field, value: value as string })),
+    )
   }
-  return entries.map(([name, value]) => ({
-    id: name,
-    name,
-    value: valueToString(value),
-    type: inferFieldType(value),
-  }))
+  return entries.map(([key, value]) => {
+    const v = value as string | number | boolean | null
+    return {
+      id: key,
+      name: key,
+      value: valueToString(v),
+      type: inferFieldType(v, { strictNumbers: true }),
+    }
+  })
 }

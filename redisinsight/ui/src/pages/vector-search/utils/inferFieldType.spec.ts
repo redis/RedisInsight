@@ -11,9 +11,7 @@ import {
   isNumeric,
   inferFieldType,
   inferHashKeyFields,
-  inferJsonKeyFields,
   inferKeyFields,
-  JsonType,
 } from './inferFieldType'
 
 describe('isGeoShape', () => {
@@ -305,58 +303,6 @@ describe('inferHashKeyFields', () => {
   })
 })
 
-describe('inferJsonKeyFields', () => {
-  it('should infer types from values', () => {
-    const fields = [
-      { key: 'price', value: 99.99, type: 'number' as JsonType },
-      { key: 'count', value: 5, type: 'integer' as JsonType },
-      { key: 'active', value: true, type: 'boolean' as JsonType },
-      { key: 'name', value: 'bike', type: 'string' as JsonType },
-      { key: 'nested', value: null, type: 'object' as JsonType },
-      { key: 'tags', value: null, type: 'null' as JsonType },
-    ]
-
-    const result = inferJsonKeyFields(fields)
-
-    expect(result).toHaveLength(6)
-    expect(result[0].type).toBe(FieldTypes.NUMERIC)
-    expect(result[1].type).toBe(FieldTypes.NUMERIC)
-    expect(result[2].type).toBe(FieldTypes.TAG)
-    expect(result[3].type).toBe(FieldTypes.TAG)
-    expect(result[4].type).toBe(FieldTypes.TAG)
-    expect(result[5].type).toBe(FieldTypes.TAG)
-  })
-
-  it('should fall through to string detection for string jsonType', () => {
-    const fields = [
-      { key: 'location', value: 'POINT(1 2)', type: 'string' as JsonType },
-      { key: 'coords', value: '10,20', type: 'string' as JsonType },
-    ]
-
-    const result = inferJsonKeyFields(fields)
-
-    expect(result[0].type).toBe(FieldTypes.GEOSHAPE)
-    expect(result[1].type).toBe(FieldTypes.GEO)
-  })
-
-  it('should return empty array for empty input', () => {
-    expect(inferJsonKeyFields([])).toEqual([])
-  })
-
-  it('should handle null values gracefully', () => {
-    const fields = [{ key: 'missing', value: null, type: 'null' as JsonType }]
-
-    const result = inferJsonKeyFields(fields)
-
-    expect(result[0]).toEqual({
-      id: 'missing',
-      name: 'missing',
-      value: '',
-      type: FieldTypes.TAG,
-    })
-  })
-})
-
 describe('inferKeyFields', () => {
   it('should walk Hash key object and infer types when keyType is hash', () => {
     const hashObject = {
@@ -386,12 +332,29 @@ describe('inferKeyFields', () => {
     const result = inferKeyFields(jsonObject, RedisearchIndexKeyType.JSON)
 
     expect(result).toHaveLength(2)
-    expect(result).toEqual(
-      inferJsonKeyFields([
-        { key: 'count', value: 10, type: 'integer' as JsonType },
-        { key: 'label', value: 'active', type: 'string' as JsonType },
-      ]),
-    )
+    expect(result[0]).toEqual({
+      id: 'count',
+      name: 'count',
+      value: '10',
+      type: FieldTypes.NUMERIC,
+    })
+    expect(result[1]).toEqual({
+      id: 'label',
+      name: 'label',
+      value: 'active',
+      type: FieldTypes.TAG,
+    })
+  })
+
+  it('should treat numeric strings as TAG/TEXT for JSON (only actual numbers as NUMERIC)', () => {
+    const jsonObject = {
+      actualNumber: 42,
+      numericString: '1398',
+    }
+
+    const result = inferKeyFields(jsonObject, RedisearchIndexKeyType.JSON)
+
+    expect(result).toHaveLength(2)
     expect(result[0].type).toBe(FieldTypes.NUMERIC)
     expect(result[1].type).toBe(FieldTypes.TAG)
   })
