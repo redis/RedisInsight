@@ -18,7 +18,7 @@ export const FieldTypesCell = ({ row }: { row: IndexListRow }) => {
   )
 
   return (
-    <FlexGroup wrap gap="xs" data-testid={`index-field-types-${row.id}`}>
+    <FlexGroup wrap gap="s" data-testid={`index-field-types-${row.id}`}>
       {fieldTags}
     </FlexGroup>
   )

@@ -32,7 +32,7 @@ export interface StateRedisearch {
   data: KeysStoreData
   selectedIndex: Nullable<RedisResponseBuffer>
   list: {
-    loading: boolean
+    loading: boolean | undefined
     error: string
     data: RedisResponseBuffer[]
   }

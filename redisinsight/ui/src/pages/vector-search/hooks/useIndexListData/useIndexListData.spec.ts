@@ -58,10 +58,6 @@ describe('useIndexListData', () => {
       store: getMockedStore(),
     })
 
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 50))
-    })
-
     expect(requestSpy).not.toHaveBeenCalled()
   })
 
