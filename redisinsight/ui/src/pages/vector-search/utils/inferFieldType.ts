@@ -17,8 +17,6 @@ const WKT_PREFIXES = [
   'geometrycollection(',
 ]
 
-const GEO_REGEX = /^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/
-
 const LON_MIN = -180
 const LON_MAX = 180
 const LAT_MIN = -90
@@ -61,34 +59,33 @@ export const isGeoShape = (value: string): boolean => {
   return WKT_PREFIXES.some((prefix) => lower.startsWith(prefix))
 }
 
-export const isGeo = (value: string): boolean => {
+const GEO_REGEX = /^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/
+
+export const isGeoString = (value: string): boolean => {
   const match = GEO_REGEX.exec(value)
   if (!match) {
     return false
   }
-
   const lon = parseFloat(match[1])
   const lat = parseFloat(match[2])
-
-  if (!Number.isFinite(lon) || !Number.isFinite(lat)) {
-    return false
-  }
-  return lon >= -180 && lon <= 180 && lat >= -90 && lat <= 90
+  return isGeoCoordinates([lon, lat])
 }
 
-export const isVector = (value: string): boolean => {
+/** Returns true if value is an array of at least MIN_VECTOR_LENGTH finite numbers. */
+export const isVector = (value: unknown): boolean =>
+  Array.isArray(value) &&
+  value.length >= MIN_VECTOR_LENGTH &&
+  value.every((item) => typeof item === 'number' && Number.isFinite(item))
+
+/** Returns true if string parses as JSON array that passes isVector (e.g. hash field "[1,2,3]"). */
+export const isVectorLikeString = (value: string): boolean => {
   const trimmed = value.trim()
   if (!trimmed.startsWith('[') || !trimmed.endsWith(']')) {
     return false
   }
-
   try {
     const parsed = JSON.parse(trimmed)
-    return (
-      Array.isArray(parsed) &&
-      parsed.length >= MIN_VECTOR_LENGTH &&
-      parsed.every((item) => typeof item === 'number' && Number.isFinite(item))
-    )
+    return isVector(parsed)
   } catch {
     return false
   }
@@ -127,8 +124,7 @@ export const inferFieldType = (
     if (isGeoCoordinates(value)) {
       return FieldTypes.GEO
     }
-    const s = JSON.stringify(value)
-    return isVector(s) ? FieldTypes.VECTOR : FieldTypes.TAG
+    return isVector(value) ? FieldTypes.VECTOR : FieldTypes.TEXT
   }
   if (typeof value === 'object') {
     if (isGeoCoordinates(value)) {
@@ -141,10 +137,10 @@ export const inferFieldType = (
   if (isGeoShape(str)) {
     return FieldTypes.GEOSHAPE
   }
-  if (isGeo(str)) {
+  if (isGeoString(str)) {
     return FieldTypes.GEO
   }
-  if (isVector(str)) {
+  if (isVectorLikeString(str)) {
     return FieldTypes.VECTOR
   }
   if (!options?.strictNumbers && isNumeric(str)) {

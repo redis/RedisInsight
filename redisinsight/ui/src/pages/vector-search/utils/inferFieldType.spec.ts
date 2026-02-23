@@ -5,9 +5,10 @@ import {
 } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import {
   isGeoShape,
-  isGeo,
+  isGeoString,
   isGeoCoordinates,
   isVector,
+  isVectorLikeString,
   isNumeric,
   inferFieldType,
   inferHashKeyFields,
@@ -44,7 +45,7 @@ describe('isGeoShape', () => {
   })
 })
 
-describe('isGeo', () => {
+describe('isGeoString', () => {
   it.each([
     { value: '-122.4194,37.7749', desc: 'lon,lat' },
     { value: '0,0', desc: 'origin' },
@@ -53,7 +54,7 @@ describe('isGeo', () => {
     { value: ' -122.4194 , 37.7749 ', desc: 'whitespace around values' },
     { value: '0.0,0.0', desc: 'decimal zeros' },
   ])('should return true for $desc', ({ value }) => {
-    expect(isGeo(value)).toBe(true)
+    expect(isGeoString(value)).toBe(true)
   })
 
   it.each([
@@ -67,7 +68,7 @@ describe('isGeo', () => {
     { value: '', desc: 'empty string' },
     { value: ',', desc: 'just comma' },
   ])('should return false for $desc', ({ value }) => {
-    expect(isGeo(value)).toBe(false)
+    expect(isGeoString(value)).toBe(false)
   })
 })
 
@@ -111,12 +112,35 @@ describe('isGeoCoordinates', () => {
 
 describe('isVector', () => {
   it.each([
-    { value: '[1,2,3]', desc: 'integer array' },
-    { value: '[1.5, -2.0, 3.14]', desc: 'float array' },
-    { value: '[0, 0]', desc: 'minimal length array' },
-    { value: ' [1, 2, 3] ', desc: 'surrounding whitespace' },
+    { value: [1, 2, 3], desc: 'integer array' },
+    { value: [1.5, -2.0, 3.14], desc: 'float array' },
+    { value: [0, 0], desc: 'minimal length array' },
   ])('should return true for $desc', ({ value }) => {
     expect(isVector(value)).toBe(true)
+  })
+
+  it.each([
+    { value: [], desc: 'empty array' },
+    { value: [1], desc: 'single element (too short)' },
+    { value: [1, 'a', 3], desc: 'mixed types' },
+    { value: ['a', 'b'], desc: 'string array' },
+    { value: [1, Number.NaN, 3], desc: 'NaN in array' },
+    { value: [1, Number.POSITIVE_INFINITY], desc: 'Infinity in array' },
+    { value: null, desc: 'null' },
+    { value: 'not an array', desc: 'string' },
+  ])('should return false for $desc', ({ value }) => {
+    expect(isVector(value)).toBe(false)
+  })
+})
+
+describe('isVectorLikeString', () => {
+  it.each([
+    { value: '[1,2,3]', desc: 'integer array string' },
+    { value: '[1.5, -2.0, 3.14]', desc: 'float array string' },
+    { value: '[0, 0]', desc: 'minimal length array string' },
+    { value: ' [1, 2, 3] ', desc: 'surrounding whitespace' },
+  ])('should return true for $desc', ({ value }) => {
+    expect(isVectorLikeString(value)).toBe(true)
   })
 
   it.each([
@@ -130,7 +154,7 @@ describe('isVector', () => {
     { value: '[1, NaN, 3]', desc: 'NaN in array' },
     { value: '[1, Infinity]', desc: 'Infinity in array' },
   ])('should return false for $desc', ({ value }) => {
-    expect(isVector(value)).toBe(false)
+    expect(isVectorLikeString(value)).toBe(false)
   })
 })
 
@@ -207,6 +231,11 @@ describe('inferFieldType', () => {
       expect(inferFieldType('[1,2]')).toBe(FieldTypes.VECTOR)
     })
 
+    it('documents inconsistency: 2D numeric array in lon/lat range is GEO, same as string is VECTOR', () => {
+      expect(inferFieldType([1, 2])).toBe(FieldTypes.GEO)
+      expect(inferFieldType('[1,2]')).toBe(FieldTypes.VECTOR)
+    })
+
     it('should prefer NUMERIC over TAG for short numeric strings', () => {
       expect(inferFieldType('42')).toBe(FieldTypes.NUMERIC)
     })
@@ -234,8 +263,8 @@ describe('inferFieldType', () => {
       expect(inferFieldType([1, 2, 3])).toBe(FieldTypes.VECTOR)
     })
 
-    it('should return TAG for array of non-numbers', () => {
-      expect(inferFieldType(['a', 'b'])).toBe(FieldTypes.TAG)
+    it('should return TEXT for array of non-numbers (structured data, not a single tag)', () => {
+      expect(inferFieldType(['a', 'b'])).toBe(FieldTypes.TEXT)
     })
 
     it('should return TEXT for object', () => {
