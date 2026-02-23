@@ -78,11 +78,13 @@ export const QueryLibraryItem = ({
             <RiTooltip position="bottom" content={truncateText(name, 500)}>
               {name}
             </RiTooltip>
-            <CopyButton
-              copy={query}
-              aria-label="Copy query"
-              data-testid={`${dataTestId}-copy`}
-            />
+            <S.CopyButtonWrapper>
+              <CopyButton
+                copy={name || ''}
+                aria-label="Copy query"
+                data-testid={`${dataTestId}-copy`}
+              />
+            </S.CopyButtonWrapper>
           </S.Name>
           {description && (
             <S.Description

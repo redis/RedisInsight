@@ -45,10 +45,22 @@ const truncatedText = css`
   }
 `
 
+export const CopyButtonWrapper = styled.span`
+  opacity: 0;
+  flex-shrink: 0;
+  transition: opacity 250ms ease-in-out;
+`
+
 export const Name = styled(Text)`
   flex-shrink: 0;
   max-width: 80%;
   ${truncatedText}
+
+  &:hover {
+    ${CopyButtonWrapper} {
+      opacity: 1;
+    }
+  }
 `
 
 export const Description = styled(Text)`
