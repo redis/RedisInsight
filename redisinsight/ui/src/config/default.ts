@@ -72,6 +72,8 @@ export const defaultConfig = {
     vectorSearchIndexedDbName:
       process.env.RI_VECTOR_SEARCH_INDEXED_DB_NAME ||
       'RI_VECTOR_SEARCH_STORAGE',
+    queryLibraryIndexedDbName:
+      process.env.RI_QUERY_LIBRARY_INDEXED_DB_NAME || 'RI_QUERY_LIBRARY',
     truncatedStringPrefix:
       process.env.RI_CLIENTS_TRUNCATED_STRING_PREFIX ||
       '[Truncated due to length]',
