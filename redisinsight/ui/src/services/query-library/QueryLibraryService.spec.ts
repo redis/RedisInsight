@@ -11,7 +11,7 @@ import {
   seedQueryLibraryItemFactory,
 } from 'uiSrc/mocks/factories/query-library/queryLibraryItem.factory'
 
-import { QueryLibraryService } from './queryLibraryService'
+import { QueryLibraryService } from './QueryLibraryService'
 import { QueryLibraryDatabase } from './database/interface'
 import { QueryLibrarySQLite } from './database/QueryLibrarySQLite'
 import { QueryLibraryIndexedDB } from './database/QueryLibraryIndexedDB'

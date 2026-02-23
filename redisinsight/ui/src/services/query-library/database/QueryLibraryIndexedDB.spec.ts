@@ -10,10 +10,10 @@ import {
   seedQueryLibraryItemFactory,
 } from 'uiSrc/mocks/factories/query-library/queryLibraryItem.factory'
 
-import { queryLibraryStorage } from './queryLibraryStorage'
+import { queryLibraryStorage } from './QueryLibraryStorage'
 import { QueryLibraryIndexedDB } from './QueryLibraryIndexedDB'
 
-jest.mock('./queryLibraryStorage', () => ({
+jest.mock('./QueryLibraryStorage', () => ({
   queryLibraryStorage: {
     getAllByIndex: jest.fn(),
     getById: jest.fn(),

@@ -12,7 +12,7 @@ import {
   QueryLibraryResult,
   QueryLibraryItemResult,
 } from './interface'
-import { queryLibraryStorage } from './queryLibraryStorage'
+import { queryLibraryStorage } from './QueryLibraryStorage'
 
 export class QueryLibraryIndexedDB implements QueryLibraryDatabase {
   async getList(

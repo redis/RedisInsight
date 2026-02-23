@@ -1,2 +1,2 @@
-export { QueryLibraryService } from './queryLibraryService'
+export { QueryLibraryService } from './QueryLibraryService'
 export * from './types'
