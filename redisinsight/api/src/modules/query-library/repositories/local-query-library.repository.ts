@@ -25,6 +25,7 @@ export class LocalQueryLibraryRepository extends QueryLibraryRepository {
   ) {
     super();
     this.modelEncryptor = new ModelEncryptor(this.encryptionService, [
+      'name',
       'query',
       'description',
     ]);

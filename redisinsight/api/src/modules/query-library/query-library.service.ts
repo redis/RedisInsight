@@ -103,7 +103,7 @@ export class QueryLibraryService {
       return [];
     }
 
-    const indexName = dto.items[0].indexName;
+    const { indexName } = dto.items[0];
 
     const existingCount = await this.queryLibraryRepository.countByIndex(
       sessionMetadata,
