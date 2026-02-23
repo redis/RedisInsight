@@ -424,7 +424,20 @@ describe('QueryLibraryIndexedDB', () => {
       expect(mockedStorage.getAllByIndex).not.toHaveBeenCalled()
     })
 
-    it('should return error on storage failure', async () => {
+    it('should propagate getList failure instead of bypassing deduplication', async () => {
+      const mockError = new Error('IndexedDB error')
+      mockedStorage.getAllByIndex.mockRejectedValue(mockError)
+
+      const result = await indexedDB.seed(mockDatabaseId, [
+        seedQueryLibraryItemFactory.build({ indexName: mockIndexName }),
+      ])
+
+      expect(result.success).toBe(false)
+      expect(result.error).toBe(mockError)
+      expect(mockedStorage.put).not.toHaveBeenCalled()
+    })
+
+    it('should return error on storage failure during put', async () => {
       const mockError = new Error('IndexedDB error')
       mockedStorage.getAllByIndex.mockResolvedValue([])
       mockedStorage.put.mockRejectedValue(mockError)
