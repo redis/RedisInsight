@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { constants } from './constants';
 import { createCipheriv, createDecipheriv, createHash } from 'crypto';
 import { TagEntity } from 'src/modules/tag/entities/tag.entity';
+import { queryLibraryEntityFactory } from 'src/modules/query-library/__tests__/query-library.factory';
 
 export const repositories = {
   DATABASE: 'DatabaseEntity',
@@ -23,6 +24,7 @@ export const repositories = {
   FEATURE: 'FeatureEntity',
   CLOUD_DATABASE_DETAILS: 'CloudDatabaseDetailsEntity',
   RDI: 'RdiEntity',
+  QUERY_LIBRARY: 'QueryLibraryEntity',
 };
 
 let localDbConnection;
@@ -799,6 +801,7 @@ export const setAppSettings = async (data: object) => {
 };
 
 const truncateAll = async () => {
+  await (await getRepository(repositories.QUERY_LIBRARY)).clear();
   await (await getRepository(repositories.TAG)).clear();
   await (await getRepository(repositories.DATABASE)).clear();
   await (await getRepository(repositories.FEATURE)).clear();
@@ -851,4 +854,33 @@ export const createNotExistingNotifications = async (
   ];
 
   await createNotifications(notifications, truncate);
+};
+
+export const generateNQueryLibraryItems = async (
+  partial: Record<string, any>,
+  number: number,
+  truncate: boolean = false,
+) => {
+  const result = [];
+  const rep = await getRepository(repositories.QUERY_LIBRARY);
+
+  if (truncate) {
+    await rep.clear();
+  }
+
+  for (let i = 0; i < number; i++) {
+    const entity = queryLibraryEntityFactory.build(partial);
+
+    result.push(
+      await rep.save({
+        ...entity,
+        name: encryptData(entity.name),
+        description: encryptData(entity.description),
+        query: encryptData(entity.query),
+        encryption: constants.TEST_ENCRYPTION_STRATEGY,
+      }),
+    );
+  }
+
+  return result;
 };
