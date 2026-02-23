@@ -7,4 +7,5 @@ export const FIELD_TYPE_BADGE_VARIANT_MAP: Record<FieldTypes, BadgeVariants> = {
   [FieldTypes.NUMERIC]: 'attention',
   [FieldTypes.VECTOR]: 'success',
   [FieldTypes.GEO]: 'default',
+  [FieldTypes.GEOSHAPE]: 'default',
 }
