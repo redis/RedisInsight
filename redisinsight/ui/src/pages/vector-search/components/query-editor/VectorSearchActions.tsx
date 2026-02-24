@@ -36,11 +36,11 @@ export const VectorSearchActions = () => {
   const hasValidCommand = !!parsed
   const isExplainEnabled = hasValidCommand && !isLoading
 
-  const getDisabledSuffix = () => {
+  const disabledReason = useMemo(() => {
     if (!hasValidCommand) return TOOLTIP_DISABLED_NO_QUERY
     if (isLoading) return TOOLTIP_DISABLED_LOADING
-    return ''
-  }
+    return undefined
+  }, [hasValidCommand, isLoading])
 
   const handleExplain = () => {
     if (!parsed) return
@@ -56,7 +56,8 @@ export const VectorSearchActions = () => {
     <S.ActionsBar data-testid="vector-search-actions">
       <RiTooltip
         position="top"
-        content={`${TOOLTIP_EXPLAIN}${getDisabledSuffix()}`}
+        title={TOOLTIP_EXPLAIN}
+        content={disabledReason}
         data-testid="explain-tooltip"
       >
         <EmptyButton
@@ -70,7 +71,8 @@ export const VectorSearchActions = () => {
       </RiTooltip>
       <RiTooltip
         position="top"
-        content={`${TOOLTIP_PROFILE}${getDisabledSuffix()}`}
+        title={TOOLTIP_PROFILE}
+        content={disabledReason}
         data-testid="profile-tooltip"
       >
         <EmptyButton
