@@ -351,7 +351,7 @@ describe('QueryLibraryService', () => {
       expect(mockedStore.dispatch).not.toHaveBeenCalled()
     })
 
-    it('should dispatch error notification on error', async () => {
+    it('should dispatch error notification and throw on error', async () => {
       const mockError = new Error('Delete failed')
 
       mockedIndexedDB.mockImplementation(() =>
@@ -363,7 +363,9 @@ describe('QueryLibraryService', () => {
       )
 
       const service = new QueryLibraryService()
-      await service.delete(mockDatabaseId, mockItem.id)
+      await expect(service.delete(mockDatabaseId, mockItem.id)).rejects.toThrow(
+        mockError,
+      )
 
       expect(mockedStore.dispatch).toHaveBeenCalledWith(
         mockedAddErrorNotification(mockError),

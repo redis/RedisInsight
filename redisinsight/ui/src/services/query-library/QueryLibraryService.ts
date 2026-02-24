@@ -93,6 +93,7 @@ export class QueryLibraryService {
 
     if (error) {
       store.dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      throw error
     }
   }
 
