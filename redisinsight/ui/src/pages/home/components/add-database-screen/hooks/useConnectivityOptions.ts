@@ -51,8 +51,10 @@ export const useConnectivityOptions = ({
     }
 
     const isFeatureEnabled = (option: ConnectivityOptionConfig) => {
-      if (!option.featureFlag) return true
-      return featureFlags?.[option.featureFlag]?.flag ?? false
+      if (!option.featureFlags?.length) return true
+      return option.featureFlags.every(
+        (flag) => featureFlags?.[flag]?.flag ?? false,
+      )
     }
 
     return CONNECTIVITY_OPTIONS_CONFIG.filter(isFeatureEnabled).map(

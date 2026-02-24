@@ -11,7 +11,7 @@ export interface ConnectivityOptionConfig {
   title: string
   type: AddDbType
   icon: AllIconsType
-  featureFlag?: FeatureFlags
+  featureFlags?: FeatureFlags[]
 }
 
 export interface ConnectivityOption extends ConnectivityOptionConfig {
@@ -37,7 +37,7 @@ export const CONNECTIVITY_OPTIONS_CONFIG: ConnectivityOptionConfig[] = [
     title: 'Azure Managed Redis',
     type: AddDbType.azure,
     icon: 'CloudIcon',
-    featureFlag: FeatureFlags.azureEntraId,
+    featureFlags: [FeatureFlags.azureEntraId, FeatureFlags.envDependent],
   },
   {
     id: 'import',
