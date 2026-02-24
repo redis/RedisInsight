@@ -5,16 +5,21 @@ import { Text } from 'uiSrc/components/base/text'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CancelIcon } from 'uiSrc/components/base/icons'
 
-import { useIndexInfo } from '../../../../hooks'
-import { IndexInfo } from '../../../../components/index-info'
+import { useIndexInfo } from '../../hooks'
+import { IndexInfo } from '../index-info'
 
 import { IndexInfoSidePanelProps } from './IndexInfoSidePanel.types'
 import * as S from './IndexInfoSidePanel.styles'
 
-export const IndexInfoSidePanel = ({ onClose }: IndexInfoSidePanelProps) => {
-  const { indexName } = useParams<{ indexName: string }>()
+export const IndexInfoSidePanel = ({
+  onClose,
+  indexName: indexNameProp,
+}: IndexInfoSidePanelProps) => {
+  const { indexName: indexNameParam } = useParams<{ indexName?: string }>()
+  const resolvedName = indexNameProp ?? decodeURIComponent(indexNameParam ?? '')
+
   const { indexInfo } = useIndexInfo({
-    indexName: decodeURIComponent(indexName),
+    indexName: resolvedName,
   })
 
   return (

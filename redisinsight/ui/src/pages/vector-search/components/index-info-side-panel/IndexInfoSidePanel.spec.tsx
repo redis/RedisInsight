@@ -1,16 +1,19 @@
 import React from 'react'
+import { faker } from '@faker-js/faker'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 
 import { IndexInfoSidePanel } from './IndexInfoSidePanel'
 import { IndexInfoSidePanelProps } from './IndexInfoSidePanel.types'
 
-jest.mock('../../../../hooks', () => ({
-  useIndexInfo: jest.fn().mockReturnValue({
-    indexInfo: null,
-    loading: false,
-    error: null,
-    refetch: jest.fn(),
-  }),
+const mockUseIndexInfo = jest.fn().mockReturnValue({
+  indexInfo: null,
+  loading: false,
+  error: null,
+  refetch: jest.fn(),
+})
+
+jest.mock('../../hooks', () => ({
+  useIndexInfo: (...args: unknown[]) => mockUseIndexInfo(...args),
 }))
 
 describe('IndexInfoSidePanel', () => {
@@ -49,5 +52,12 @@ describe('IndexInfoSidePanel', () => {
     fireEvent.click(closeBtn)
 
     expect(mockOnClose).toHaveBeenCalledTimes(1)
+  })
+
+  it('should use indexName prop when provided', () => {
+    const indexName = faker.string.alphanumeric(10)
+    renderComponent({ indexName })
+
+    expect(mockUseIndexInfo).toHaveBeenCalledWith({ indexName })
   })
 })
