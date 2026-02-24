@@ -1,0 +1,27 @@
+meta {
+  name: Create Query (invalid)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/query-library
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "description": "Missing required fields: indexName, name, query"
+  }
+}
+
+tests {
+  test("should return 400", function() {
+    expect(res.getStatus()).to.equal(400);
+  });
+}
+
+settings {
+  encodeUrl: true
+}

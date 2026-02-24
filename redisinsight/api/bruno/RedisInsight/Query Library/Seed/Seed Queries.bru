@@ -1,0 +1,35 @@
+meta {
+  name: Seed Queries
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/query-library/seed
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "items": [
+      {
+        "indexName": "{{RQE_INDEX_NAME}}",
+        "name": "Vector Search - Bikes",
+        "description": "Retrieve all bikes in the database",
+        "query": "FT.SEARCH idx:bikes_vss \"*\""
+      },
+      {
+        "indexName": "{{RQE_INDEX_NAME}}",
+        "name": "Vector Search - Cheapest Bikes",
+        "description": "Retrieve all bikes which price is between 1200 and 1500",
+        "query": "FT.SEARCH idx:bikes_vss \"@price [1200 1500]\""
+      }
+    ]
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
