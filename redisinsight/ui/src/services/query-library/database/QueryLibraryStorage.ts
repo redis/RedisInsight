@@ -36,14 +36,14 @@ export class QueryLibraryStorage {
       }
 
       request.onupgradeneeded = () => {
-        this.db = request.result
+        const db = request.result
 
-        this.db.onerror = (event) => {
+        db.onerror = (event) => {
           event.preventDefault()
           reject(request.error)
         }
 
-        const store = this.db.createObjectStore(STORE_NAME, { keyPath: 'id' })
+        const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' })
         store.createIndex('databaseId_indexName', ['databaseId', 'indexName'], {
           unique: false,
         })
@@ -53,7 +53,10 @@ export class QueryLibraryStorage {
 
   private async getDb(): Promise<IDBDatabase> {
     if (!this.db) {
-      this.initPromise ??= this.initDb()
+      this.initPromise ??= this.initDb().catch((err) => {
+        this.initPromise = undefined
+        throw err
+      })
       await this.initPromise
     }
     return this.db!
