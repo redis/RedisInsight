@@ -12,6 +12,6 @@ export enum FeatureFlags {
   databaseManagement = 'databaseManagement',
   vectorSearch = 'vectorSearch',
   devVectorSearch = 'dev-vectorSearch',
-  azureEntraId = 'dev-azureEntraId',
+  azureEntraId = 'azureEntraId',
   devBrowser = 'dev-browser',
 }
