@@ -105,32 +105,39 @@ export class QueryLibraryService {
 
     const { indexName } = dto.items[0];
 
-    const existingCount = await this.queryLibraryRepository.countByIndex(
+    const existing = await this.queryLibraryRepository.getList(
       sessionMetadata,
       databaseId,
-      indexName,
-      QueryLibraryType.Sample,
+      { indexName },
     );
 
-    if (existingCount > 0) {
+    const existingSampleNames = new Set(
+      existing
+        .filter((item) => item.type === QueryLibraryType.Sample)
+        .map((item) => item.name),
+    );
+
+    const newItems = dto.items
+      .filter((item) => !existingSampleNames.has(item.name))
+      .map((item) => ({
+        ...item,
+        type: QueryLibraryType.Sample,
+      }));
+
+    if (!newItems.length) {
       this.logger.debug(
-        `Sample queries already exist for index: ${indexName}, skipping seed`,
+        `All sample queries already exist for index: ${indexName}, skipping seed`,
         sessionMetadata,
       );
-      return this.queryLibraryRepository.getList(sessionMetadata, databaseId, {
-        indexName,
-      });
+      return existing;
     }
 
-    const itemsWithType = dto.items.map((item) => ({
-      ...item,
-      type: QueryLibraryType.Sample,
-    }));
-
-    return this.queryLibraryRepository.createBulk(
+    const created = await this.queryLibraryRepository.createBulk(
       sessionMetadata,
       databaseId,
-      itemsWithType,
+      newItems,
     );
+
+    return [...existing, ...created];
   }
 }
