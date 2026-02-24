@@ -2,6 +2,7 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from '../BasePage';
 import { HelpMenu } from './components/HelpMenu';
 import { NotificationCenter } from './components/NotificationCenter';
+import { CopilotPanel } from './components/CopilotPanel';
 
 /**
  * Page Object for Navigation elements (sidebar, help menu, notifications, panels)
@@ -20,16 +21,8 @@ export class SidebarPanel extends BasePage {
   // Notification center component
   readonly notificationCenter: NotificationCenter;
 
-  // Copilot panel
-  readonly copilotTrigger: Locator;
-  readonly copilotPanel: Locator;
-  readonly copilotTitle: Locator;
-  readonly copilotCloseButton: Locator;
-  readonly copilotFullScreenButton: Locator;
-  readonly copilotGoogleSignIn: Locator;
-  readonly copilotGithubSignIn: Locator;
-  readonly copilotSsoSignIn: Locator;
-  readonly copilotTermsCheckbox: Locator;
+  // Copilot panel component
+  readonly copilotPanel: CopilotPanel;
 
   // Insights panel
   readonly insightsTrigger: Locator;
@@ -67,16 +60,8 @@ export class SidebarPanel extends BasePage {
     // Notification center component
     this.notificationCenter = new NotificationCenter(page);
 
-    // Copilot panel
-    this.copilotTrigger = page.getByTestId('copilot-trigger');
-    this.copilotPanel = page.locator('[class*="copilot"]').filter({ hasText: 'Redis Copilot' });
-    this.copilotTitle = page.getByText('Redis Copilot', { exact: true });
-    this.copilotCloseButton = page.getByTestId('close-copilot-btn');
-    this.copilotFullScreenButton = page.getByRole('button', { name: 'Open full screen' });
-    this.copilotGoogleSignIn = page.getByRole('button', { name: /Google Signin/i });
-    this.copilotGithubSignIn = page.getByRole('button', { name: /Github Github/i });
-    this.copilotSsoSignIn = page.getByRole('button', { name: /Sso SSO/i });
-    this.copilotTermsCheckbox = page.getByRole('checkbox', { name: /By signing up/i });
+    // Copilot panel component
+    this.copilotPanel = new CopilotPanel(page);
 
     // Insights panel
     this.insightsTrigger = page.getByTestId('insights-trigger');
