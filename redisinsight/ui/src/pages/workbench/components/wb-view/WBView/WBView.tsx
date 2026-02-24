@@ -29,10 +29,10 @@ import {
 import { QueryResultsProvider } from 'uiSrc/components/query/context/query-results.context'
 import { QueryResults } from 'uiSrc/components/query/query-results'
 import { toggleOpenWBResult } from 'uiSrc/slices/workbench/wb-results'
+import * as S from './WBView.styles'
 import QueryWrapper from '../../query'
 import { workbenchResultsTelemetry } from '../../../telemetry.constants'
 import WbNoResultsMessage from '../../wb-no-results-message'
-import * as S from './WBView.styles'
 
 const verticalPanelIds = {
   firstPanelId: 'scriptingArea',

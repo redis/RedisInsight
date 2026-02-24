@@ -47,11 +47,11 @@ import { FormatedDate, FullScreen, RiTooltip } from 'uiSrc/components'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import styles from './styles.module.scss'
+import { ProfileSelect } from './QueryCardHeader.styles'
 import QueryCardTooltip from '../QueryCardTooltip'
 
-import styles from './styles.module.scss'
 import { useQueryResultsContext } from '../../context/query-results.context'
-import { ProfileSelect } from './QueryCardHeader.styles'
 
 export interface Props {
   query: string
@@ -531,52 +531,6 @@ const QueryCardHeader = (props: Props) => {
         </FlexItem>
       </Row>
     </Row>
-              <FlexItem
-                className={cx(styles.buttonIcon, styles.viewTypeIcon)}
-                onClick={onDropDownViewClick}
-              >
-                {isOpen && canCommandProfile && !summaryText && (
-                  <ProfileSelect
-                    placeholder={profileOptions[0].inputDisplay}
-                    onChange={(value: ProfileQueryType | string) =>
-                      onQueryProfile(value as ProfileQueryType)
-                    }
-                    className="profiler"
-                    options={profileOptions}
-                    data-testid="run-profile-type"
-                    valueRender={({ option, isOptionValue }) => {
-                      if (isOptionValue) {
-                        return option.dropdownDisplay as JSX.Element
-                      }
-                      return option.inputDisplay as JSX.Element
-                    }}
-                  />
-                )}
-              </FlexItem>
-              <FlexItem
-                className={cx(styles.buttonIcon, styles.viewTypeIcon)}
-                onClick={onDropDownViewClick}
-              >
-                {isOpen && options.length > 1 && !summaryText && (
-                  <ProfileSelect
-                    options={modifiedOptions}
-                    valueRender={({ option, isOptionValue }) => {
-                      if (isOptionValue) {
-                        return option.dropdownDisplay as JSX.Element
-                      }
-                      return option.inputDisplay as JSX.Element
-                    }}
-                    value={selectedValue}
-                    onChange={(value: string) => onChangeView(value)}
-                    className="toggle-view"
-                    data-testid="select-view-type"
-                  />
-                )}
-              </FlexItem>
-              <FlexItem
-                className={styles.buttonIcon}
-                onClick={onDropDownViewClick}
-              >
   )
 }
 
