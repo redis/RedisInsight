@@ -1,5 +1,5 @@
 import { Page, Locator } from '@playwright/test';
-import { AddDatabaseConfig } from '../../../types';
+import { AddDatabaseConfig, TlsConfig } from '../../../types';
 
 /**
  * Component Page Object for the Add Database Dialog
@@ -36,6 +36,19 @@ export class AddDatabaseDialog {
   readonly securityTab: Locator;
   readonly decompressionTab: Locator;
 
+  // Security tab
+  readonly useTlsCheckbox: Locator;
+
+  // TLS settings
+  readonly verifyTlsCertCheckbox: Locator;
+  readonly caCertDropdown: Locator;
+  readonly caCertNameInput: Locator;
+  readonly caCertTextarea: Locator;
+  readonly requiresClientAuthCheckbox: Locator;
+  readonly clientCertNameInput: Locator;
+  readonly clientCertTextarea: Locator;
+  readonly clientPrivateKeyTextarea: Locator;
+
   // Decompression & Formatters tab
   readonly enableDecompressionCheckbox: Locator;
   readonly keyNameFormatDropdown: Locator;
@@ -61,20 +74,32 @@ export class AddDatabaseDialog {
     this.portInput = page.getByRole('spinbutton', { name: /port/i });
     this.usernameInput = page.getByPlaceholder('Enter Username');
     this.passwordInput = page.getByPlaceholder('Enter Password');
-    this.addRedisDatabaseButton = page.getByRole('button', {
-      name: 'Add Redis Database',
-    });
+    this.addRedisDatabaseButton = page.getByTestId('btn-submit');
 
     // Additional settings
     this.timeoutInput = page.getByRole('spinbutton', { name: /timeout/i });
     this.selectLogicalDatabaseCheckbox = page.getByTestId('showDb');
     this.databaseIndexInput = page.getByRole('spinbutton', { name: /database index/i });
-    this.forceStandaloneCheckbox = page.getByRole('checkbox', { name: /force standalone/i });
+    this.forceStandaloneCheckbox = page.getByTestId('forceStandalone');
 
     // Tabs
     this.generalTab = page.getByRole('tab', { name: 'General' });
     this.securityTab = page.getByRole('tab', { name: 'Security' });
     this.decompressionTab = page.getByRole('tab', { name: 'Decompression & Formatters' });
+
+    // Security tab
+    this.useTlsCheckbox = page.getByTestId('tls');
+
+    // TLS settings
+    this.verifyTlsCertCheckbox = page.getByRole('checkbox', { name: /verify tls certificate/i });
+    this.caCertDropdown = page.getByTestId('select-ca-cert');
+    this.caCertNameInput = page.getByTestId('qa-ca-cert');
+    this.caCertTextarea = page.getByTestId('new-ca-cert');
+    this.requiresClientAuthCheckbox = page.getByTestId('tls-required-checkbox');
+    // Note: testid has typo in source code (tsl instead of tls)
+    this.clientCertNameInput = page.getByTestId('new-tsl-cert-pair-name');
+    this.clientCertTextarea = page.getByTestId('new-tls-client-cert');
+    this.clientPrivateKeyTextarea = page.getByTestId('new-tls-client-cert-key');
 
     // Decompression & Formatters tab
     this.enableDecompressionCheckbox = page.getByRole('checkbox', { name: /enable automatic data decompression/i });
@@ -128,5 +153,100 @@ export class AddDatabaseDialog {
 
   async testConnection(): Promise<void> {
     await this.testConnectionButton.click();
+  }
+
+  /**
+   * Wait for dialog to close
+   */
+  async waitForHidden(): Promise<void> {
+    await this.dialog.waitFor({ state: 'hidden' });
+  }
+
+  /**
+   * Enable logical database selection with specified index
+   */
+  async setLogicalDatabase(index: number): Promise<void> {
+    const isChecked = await this.selectLogicalDatabaseCheckbox.isChecked();
+    if (!isChecked) {
+      await this.selectLogicalDatabaseCheckbox.click();
+    }
+    await this.databaseIndexInput.fill(index.toString());
+  }
+
+  /**
+   * Configure timeout setting
+   */
+  async setTimeout(seconds: number): Promise<void> {
+    await this.timeoutInput.fill(seconds.toString());
+  }
+
+  /**
+   * Enable force standalone connection
+   */
+  async setForceStandalone(enabled: boolean): Promise<void> {
+    const isChecked = await this.forceStandaloneCheckbox.isChecked();
+    if (enabled !== isChecked) {
+      await this.forceStandaloneCheckbox.click();
+    }
+  }
+
+  /**
+   * Go to decompression tab and enable decompression
+   */
+  async enableDecompression(): Promise<void> {
+    await this.decompressionTab.click();
+    const isChecked = await this.enableDecompressionCheckbox.isChecked();
+    if (!isChecked) {
+      await this.enableDecompressionCheckbox.click();
+    }
+  }
+
+  /**
+   * Configure TLS settings on the Security tab
+   * @param tlsConfig TLS configuration options
+   */
+  async configureTls(tlsConfig: TlsConfig): Promise<void> {
+    // Go to Security tab
+    await this.securityTab.click();
+
+    // Enable TLS
+    const isTlsChecked = await this.useTlsCheckbox.isChecked();
+    if (tlsConfig.enabled && !isTlsChecked) {
+      await this.useTlsCheckbox.click();
+    }
+
+    if (!tlsConfig.enabled) {
+      return;
+    }
+
+    // Configure verify server cert if specified
+    if (tlsConfig.verifyServerCert !== undefined) {
+      const isVerifyChecked = await this.verifyTlsCertCheckbox.isChecked();
+      if (tlsConfig.verifyServerCert !== isVerifyChecked) {
+        await this.verifyTlsCertCheckbox.click();
+      }
+    }
+
+    // Configure CA Certificate if provided
+    if (tlsConfig.caCert) {
+      await this.caCertDropdown.click();
+      await this.page.getByRole('option', { name: 'Add new CA certificate' }).click();
+      await this.caCertNameInput.fill(tlsConfig.caCert.name);
+      await this.caCertTextarea.fill(tlsConfig.caCert.certificate);
+    }
+
+    // Configure Client Certificate if provided (mutual TLS)
+    if (tlsConfig.clientCert) {
+      // First check the "Requires TLS Client Authentication" checkbox
+      const isClientAuthChecked = await this.requiresClientAuthCheckbox.isChecked();
+      if (!isClientAuthChecked) {
+        await this.requiresClientAuthCheckbox.click();
+      }
+
+      // Client cert dropdown should already show "Add new certificate"
+      await this.clientCertNameInput.fill(tlsConfig.clientCert.name);
+      await this.clientCertTextarea.fill(tlsConfig.clientCert.certificate);
+      await this.clientPrivateKeyTextarea.fill(tlsConfig.clientCert.key);
+    }
   }
 }
