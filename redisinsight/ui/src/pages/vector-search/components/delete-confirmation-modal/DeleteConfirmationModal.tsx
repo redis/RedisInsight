@@ -42,8 +42,8 @@ export const DeleteConfirmationModal = ({
         </Modal.Content.Header.Compose>
 
         <Col gap="s" data-testid={`${testId}-message`}>
-          <S.Question>{question}</S.Question>
-          <Text color="primary" variant="semiBold">
+          <Text color="secondary">{question}</Text>
+          <Text color="default" variant="semiBold">
             {message}
           </Text>
         </Col>
