@@ -38,7 +38,7 @@ describe('useQueryLibrary hook', () => {
     expect(result.current.items).toEqual(QUERY_LIBRARY_ITEMS_MOCK)
   })
 
-  it('should set loading to true initially', () => {
+  it('should be loading after mount', () => {
     const { result } = renderHook(() => useQueryLibrary())
 
     expect(result.current.loading).toBe(true)

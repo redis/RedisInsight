@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { debounce } from 'lodash'
@@ -20,16 +20,21 @@ export const useQueryLibrary = () => {
   const indexName = rawIndexName ? decodeURIComponent(rawIndexName) : ''
 
   const [items, setItems] = useState<QueryLibraryItem[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState<boolean>()
   const [error, setError] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [openItemId, setOpenItemId] = useState<string | null>(null)
 
   const serviceRef = useRef(new QueryLibraryService())
+  const abortRef = useRef<AbortController | null>(null)
 
   const fetchItems = useCallback(
     async (searchTerm?: string) => {
       if (!databaseId || !indexName) return
+
+      abortRef.current?.abort()
+      const controller = new AbortController()
+      abortRef.current = controller
 
       setLoading(true)
       setError(null)
@@ -39,23 +44,32 @@ export const useQueryLibrary = () => {
           indexName,
           search: searchTerm || undefined,
         })
+        if (controller.signal.aborted) return
         setItems(data)
       } catch {
+        if (controller.signal.aborted) return
         setError('Failed to load query library')
       } finally {
-        setLoading(false)
+        if (!controller.signal.aborted) {
+          setLoading(false)
+        }
       }
     },
     [databaseId, indexName],
   )
 
-  const debouncedFetch = useRef(
-    debounce((term: string) => {
-      fetchItems(term)
-    }, SEARCH_DEBOUNCE_MS),
-  ).current
+  const debouncedFetch = useMemo(
+    () => debounce((term: string) => fetchItems(term), SEARCH_DEBOUNCE_MS),
+    [fetchItems],
+  )
 
-  useEffect(() => () => debouncedFetch.cancel(), [debouncedFetch])
+  useEffect(
+    () => () => {
+      debouncedFetch.cancel()
+      abortRef.current?.abort()
+    },
+    [debouncedFetch],
+  )
 
   useEffect(() => {
     fetchItems()

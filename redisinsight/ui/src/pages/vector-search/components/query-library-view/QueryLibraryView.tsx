@@ -62,8 +62,8 @@ export const QueryLibraryView = ({ onRun, onLoad }: QueryLibraryViewProps) => {
     setDeletingId(null)
   }, [])
 
-  const isInitialLoading = loading && items.length === 0
-  const isEmpty = !loading && !error && items.length === 0
+  const isInitialLoading = loading === true && items.length === 0
+  const isEmpty = loading === false && !error && items.length === 0
 
   return (
     <S.Container data-testid="query-library-view">
