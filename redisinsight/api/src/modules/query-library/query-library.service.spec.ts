@@ -110,7 +110,7 @@ describe('QueryLibraryService', () => {
       const result = await service.getList(
         mockSessionMetadata,
         mockDatabaseId,
-        {},
+        { indexName: 'idx:empty_vss' },
       );
 
       expect(result).toEqual([]);

@@ -40,6 +40,7 @@ describe('GET /databases/:instanceId/query-library', () => {
       },
       {
         name: 'Should return empty array when no items exist',
+        query: { indexName: 'idx:bikes_vss' },
         responseSchema,
         before: async () => {
           const rep = await localDb.getRepository(
@@ -53,6 +54,7 @@ describe('GET /databases/:instanceId/query-library', () => {
       },
       {
         name: 'Should return items for the database',
+        query: { indexName: 'idx:bikes_vss' },
         responseSchema,
         before: async () => {
           await localDb.generateNQueryLibraryItems(
@@ -120,10 +122,11 @@ describe('GET /databases/:instanceId/query-library', () => {
         },
       },
       {
-        name: 'Should return all items when no indexName filter',
-        responseSchema,
-        checkFn: async ({ body }) => {
-          expect(body).to.have.length(5);
+        name: 'Should return 400 when indexName is not provided',
+        statusCode: 400,
+        responseBody: {
+          statusCode: 400,
+          error: 'Bad Request',
         },
       },
     ].map(mainCheckFn);
@@ -156,7 +159,7 @@ describe('GET /databases/:instanceId/query-library', () => {
     [
       {
         name: 'Should filter by search term matching name',
-        query: { search: 'vector' },
+        query: { indexName: 'idx:bikes_vss', search: 'vector' },
         responseSchema,
         checkFn: async ({ body }) => {
           expect(body).to.have.length(1);
@@ -165,7 +168,7 @@ describe('GET /databases/:instanceId/query-library', () => {
       },
       {
         name: 'Should return empty list when search does not match',
-        query: { search: 'nonexistent' },
+        query: { indexName: 'idx:bikes_vss', search: 'nonexistent' },
         responseSchema,
         checkFn: async ({ body }) => {
           expect(body).to.have.length(0);

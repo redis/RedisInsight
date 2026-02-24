@@ -1,14 +1,14 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class QueryLibraryFilterDto {
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: 'Filter by index name',
     type: String,
   })
   @IsString()
-  @IsOptional()
-  indexName?: string;
+  @IsNotEmpty()
+  indexName: string;
 
   @ApiPropertyOptional({
     description: 'Search by name, description, or query content',

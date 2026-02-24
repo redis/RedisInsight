@@ -101,24 +101,34 @@ describe('LocalQueryLibraryRepository', () => {
       });
     });
 
-    it('should return list without optional filters', async () => {
+    it('should return list with only indexName filter', async () => {
+      const indexName = `idx:${faker.word.noun()}_vss`;
       typeormRepo.find.mockResolvedValueOnce([]);
 
-      await repository.getList(mockSessionMetadata, mockDatabaseId, {});
+      await repository.getList(mockSessionMetadata, mockDatabaseId, {
+        indexName,
+      });
 
       expect(typeormRepo.find).toHaveBeenCalledWith({
-        where: { databaseId: mockDatabaseId },
+        where: { databaseId: mockDatabaseId, indexName },
         order: { createdAt: 'ASC' },
       });
     });
 
     it('should filter results by search term on name', async () => {
+      const indexName = `idx:${faker.word.noun()}_vss`;
       const matchingEntity = Object.assign(new QueryLibraryEntity(), {
-        ...queryLibraryEntityFactory.build({ databaseId: mockDatabaseId }),
+        ...queryLibraryEntityFactory.build({
+          databaseId: mockDatabaseId,
+          indexName,
+        }),
         name: 'Vector similarity search',
       });
       const nonMatchingEntity = Object.assign(new QueryLibraryEntity(), {
-        ...queryLibraryEntityFactory.build({ databaseId: mockDatabaseId }),
+        ...queryLibraryEntityFactory.build({
+          databaseId: mockDatabaseId,
+          indexName,
+        }),
         name: 'Count documents',
       });
       typeormRepo.find.mockResolvedValueOnce([
@@ -129,7 +139,7 @@ describe('LocalQueryLibraryRepository', () => {
       const result = await repository.getList(
         mockSessionMetadata,
         mockDatabaseId,
-        { search: 'similarity' },
+        { indexName, search: 'similarity' },
       );
 
       expect(result).toHaveLength(1);
@@ -137,9 +147,11 @@ describe('LocalQueryLibraryRepository', () => {
     });
 
     it('should return all items when search is not provided', async () => {
+      const indexName = `idx:${faker.word.noun()}_vss`;
       const entities = queryLibraryEntityFactory
         .buildList(3, {
           databaseId: mockDatabaseId,
+          indexName,
         })
         .map((e) => Object.assign(new QueryLibraryEntity(), e));
       typeormRepo.find.mockResolvedValueOnce(entities);
@@ -147,7 +159,7 @@ describe('LocalQueryLibraryRepository', () => {
       const result = await repository.getList(
         mockSessionMetadata,
         mockDatabaseId,
-        {},
+        { indexName },
       );
 
       expect(result).toHaveLength(3);

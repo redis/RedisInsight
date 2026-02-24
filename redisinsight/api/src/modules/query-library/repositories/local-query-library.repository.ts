@@ -62,10 +62,10 @@ export class LocalQueryLibraryRepository extends QueryLibraryRepository {
   ): Promise<QueryLibraryItem[]> {
     this.logger.debug('Getting query library items', sessionMetadata);
 
-    const where: Record<string, any> = { databaseId };
-    if (queryFilter.indexName) {
-      where.indexName = queryFilter.indexName;
-    }
+    const where: Record<string, any> = {
+      databaseId,
+      indexName: queryFilter.indexName,
+    };
 
     const entities = await this.repository.find({
       where,
