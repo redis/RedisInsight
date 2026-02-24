@@ -41,15 +41,15 @@ export const DeleteConfirmationModal = ({
           <Modal.Content.Header.Title>{title}</Modal.Content.Header.Title>
         </Modal.Content.Header.Compose>
 
-        <Col gap="s" data-testid={`${testId}-message`}>
+        <Col gap="m" data-testid={`${testId}-message`}>
           <Text color="secondary">{question}</Text>
-          <Text color="default" variant="semiBold">
+          <Text color="primary" variant="semiBold">
             {message}
           </Text>
+          <Spacer size="xl" />
         </Col>
-        <Spacer size="xl" />
 
-        <Row justify="end" gap="s">
+        <Row justify="end" gap="m">
           <SecondaryButton
             size="large"
             onClick={onCancel}
