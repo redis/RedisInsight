@@ -7,7 +7,6 @@ import {
   render,
   screen,
   userEvent,
-  within,
 } from 'uiSrc/utils/test-utils'
 import { RootState } from 'uiSrc/slices/store'
 import {
@@ -102,18 +101,43 @@ describe('ListContent', () => {
     expect(emptyMessage).toBeInTheDocument()
   })
 
-  it('should dispatch deleteRedisearchIndexAction when delete action is clicked', async () => {
+  it('should show confirmation modal and dispatch delete after confirming', async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 })
     renderComponent()
 
-    const actionsCell = screen.getByTestId('index-actions-test-index')
-    const buttons = within(actionsCell).getAllByRole('button')
-    const menuTrigger = buttons[buttons.length - 1]
-    await userEvent.click(menuTrigger)
+    await user.click(
+      screen.getByTestId('index-actions-menu-trigger-test-index'),
+    )
+    await user.click(screen.getByText('Delete'))
 
-    const deleteBtn = screen.getByTestId('index-actions-delete-btn-test-index')
-    await userEvent.click(deleteBtn)
+    expect(
+      screen.getByText('Are you sure you want to delete this index?'),
+    ).toBeInTheDocument()
+    expect(deleteRedisearchIndexAction).not.toHaveBeenCalled()
+
+    await user.click(screen.getByRole('button', { name: 'Delete index' }))
 
     expect(deleteRedisearchIndexAction).toHaveBeenCalled()
+    expect(
+      screen.queryByText('Are you sure you want to delete this index?'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should not dispatch deleteRedisearchIndexAction when cancel is clicked', async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 })
+    renderComponent()
+
+    await user.click(
+      screen.getByTestId('index-actions-menu-trigger-test-index'),
+    )
+    await user.click(screen.getByText('Delete'))
+
+    await user.click(screen.getByRole('button', { name: 'Keep index' }))
+
+    expect(deleteRedisearchIndexAction).not.toHaveBeenCalled()
+    expect(
+      screen.queryByText('Are you sure you want to delete this index?'),
+    ).not.toBeInTheDocument()
   })
 
   it('should navigate to query page when query button is clicked', async () => {
