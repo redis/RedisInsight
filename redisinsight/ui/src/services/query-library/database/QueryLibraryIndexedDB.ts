@@ -96,14 +96,14 @@ export class QueryLibraryIndexedDB implements QueryLibraryDatabase {
     data: UpdateQueryLibraryItem,
   ): Promise<QueryLibraryItemResult> {
     try {
-      const { data: existing } = await this.getOne(databaseId, id)
+      const getResult = await this.getOne(databaseId, id)
 
-      if (!existing) {
-        return { success: false }
+      if (!getResult.success || !getResult.data) {
+        return { success: false, error: getResult.error }
       }
 
       const updated: QueryLibraryItem = {
-        ...existing,
+        ...getResult.data,
         ...(data.name !== undefined && { name: data.name }),
         ...(data.description !== undefined && {
           description: data.description,
@@ -122,10 +122,10 @@ export class QueryLibraryIndexedDB implements QueryLibraryDatabase {
 
   async delete(databaseId: string, id: string): Promise<QueryLibraryResult> {
     try {
-      const { data: existing } = await this.getOne(databaseId, id)
+      const getResult = await this.getOne(databaseId, id)
 
-      if (!existing) {
-        return { success: false }
+      if (!getResult.success || !getResult.data) {
+        return { success: false, error: getResult.error }
       }
 
       await queryLibraryStorage.remove(id)
