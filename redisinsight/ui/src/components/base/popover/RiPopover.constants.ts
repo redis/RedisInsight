@@ -1,4 +1,4 @@
-export const anchorPositionMap = {
+export const ANCHOR_POSITION_MAP = {
   upCenter: {
     placement: 'top',
     align: 'center',
@@ -49,7 +49,7 @@ export const anchorPositionMap = {
   },
 } as const
 
-export const panelPaddingSizeMap = {
+export const PANEL_PADDING_SIZE_MAP = {
   l: 24,
   m: 18,
   s: 8,
