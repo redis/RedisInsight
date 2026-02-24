@@ -1,0 +1,16 @@
+meta {
+  name: Delete Query
+  type: http
+  seq: 1
+}
+
+delete {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/query-library/{{QUERY_LIBRARY_ID}}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

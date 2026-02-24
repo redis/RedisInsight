@@ -24,6 +24,7 @@ import {
 import { BrowserHistoryService } from 'src/modules/browser/browser-history/browser-history.service';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { mockIndexInfoDto, mockIndexInfoRaw } from 'src/__mocks__/redisearch';
+import { QueryLibraryService } from 'src/modules/query-library/query-library.service';
 
 const keyName1 = Buffer.from('keyName1');
 const keyName2 = Buffer.from('keyName2');
@@ -68,6 +69,12 @@ describe('RedisearchService', () => {
         {
           provide: BrowserHistoryService,
           useFactory: mockBrowserHistoryService,
+        },
+        {
+          provide: QueryLibraryService,
+          useValue: {
+            deleteByIndex: jest.fn().mockResolvedValue(undefined),
+          },
         },
       ],
     }).compile();
