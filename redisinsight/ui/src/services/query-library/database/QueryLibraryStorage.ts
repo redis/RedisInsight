@@ -9,6 +9,8 @@ const STORE_NAME = BrowserStorageItem.queryLibrary
 export class QueryLibraryStorage {
   private db?: IDBDatabase
 
+  private initPromise?: Promise<IDBDatabase>
+
   private initDb(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
       if (!window.indexedDB) {
@@ -28,6 +30,7 @@ export class QueryLibraryStorage {
         this.db.onversionchange = (e) => {
           ;(e.target as IDBDatabase)?.close()
           this.db = undefined
+          this.initPromise = undefined
         }
         resolve(this.db)
       }
@@ -50,7 +53,8 @@ export class QueryLibraryStorage {
 
   private async getDb(): Promise<IDBDatabase> {
     if (!this.db) {
-      await this.initDb()
+      this.initPromise ??= this.initDb()
+      await this.initPromise
     }
     return this.db!
   }
