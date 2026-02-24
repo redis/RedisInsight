@@ -1,3 +1,4 @@
+import { type HTMLAttributes } from 'react'
 import styled, { css } from 'styled-components'
 import { Row, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
@@ -112,7 +113,7 @@ export const ExecutionTimeValue = styled.span`
   }
 `
 
-export const DropdownOption = styled.div`
+export const DropdownOption = styled.div<HTMLAttributes<HTMLDivElement>>`
   display: flex;
   align-items: center;
   position: relative;
@@ -125,6 +126,10 @@ export const DropdownOption = styled.div`
     overflow: hidden;
     max-width: 200px;
   }
+`
+
+export const DropdownProfileOption = styled(DropdownOption)`
+  display: inherit;
 `
 
 export const TitleWrapper = styled(FlexItem)`
@@ -170,7 +175,7 @@ export const PlayIcon = styled(ButtonIcon)`
 
 export const TooltipAnchor = styled.span`
   width: 16px;
-  margin-left: -4px;
+  margin-left: -${({ theme }: { theme: Theme }) => theme.core.space.space025};
   cursor: pointer;
 
   .fullscreen & {

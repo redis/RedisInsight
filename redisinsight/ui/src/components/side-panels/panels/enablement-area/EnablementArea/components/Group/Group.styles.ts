@@ -121,6 +121,25 @@ export const EnablementAreaWrapper = styled.div`
         theme.semantic.color.background.neutral300};
     }
   }
+
+  /* Tutorial items as cards (target design) – RiAccordion/Section body list items */
+  [data-testid^='ri-accordion-body'] .RI-list-group-item {
+    border-radius: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
+    background-color: ${({ theme }: { theme: Theme }) =>
+      theme.semantic.color.background.neutral200};
+    border: 1px solid
+      ${({ theme }: { theme: Theme }) =>
+        theme.semantic.color.border.neutral400};
+    margin-bottom: ${({ theme }: { theme: Theme }) =>
+      theme.core.space.space100};
+    padding: ${({ theme }: { theme: Theme }) => theme.core.space.space100}
+      ${({ theme }: { theme: Theme }) => theme.core.space.space150};
+  }
+
+  [data-testid^='ri-accordion-body'] .RI-list-group-item:hover {
+    background-color: ${({ theme }: { theme: Theme }) =>
+      theme.semantic.color.background.neutral300};
+  }
 `
 
 export const Hide = styled.div`

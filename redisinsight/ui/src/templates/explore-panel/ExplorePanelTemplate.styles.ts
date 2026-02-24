@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components'
+import { HTMLAttributes } from 'react'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 
 export const MainWrapper = styled(Row)`
@@ -26,13 +27,13 @@ export const MainPanel = styled(Col)<MainPanelProps>`
     `}
 `
 
-interface InsightsWrapperProps {
+type InsightsWrapperProps = HTMLAttributes<HTMLDivElement> & {
   $isOpen?: boolean
 }
 
 export const InsightsWrapper = styled.div<InsightsWrapperProps>`
   width: 0;
-
+  position: relative;
   ${({ $isOpen }) =>
     $isOpen &&
     css`

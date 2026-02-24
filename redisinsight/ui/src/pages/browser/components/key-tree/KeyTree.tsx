@@ -35,7 +35,7 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
 
-import styles from './styles.module.scss'
+import * as S from './KeyTree.styles'
 import { KeyTreeProps } from './KeyTree.types'
 import NoKeysMessage from '../no-keys-message'
 
@@ -246,8 +246,8 @@ const KeyTree = forwardRef((props: KeyTreeProps, ref) => {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
+    <S.Container>
+      <S.Content>
         <VirtualTree
           items={items}
           loadingIcon={TreeViewSVG}
@@ -271,8 +271,8 @@ const KeyTree = forwardRef((props: KeyTreeProps, ref) => {
           showDeleteAction={showDeleteAction}
           showSelectedIndicator={showSelectedIndicator}
         />
-      </div>
-    </div>
+      </S.Content>
+    </S.Container>
   )
 })
 

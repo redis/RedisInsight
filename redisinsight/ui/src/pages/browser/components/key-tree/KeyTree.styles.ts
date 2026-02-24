@@ -17,4 +17,8 @@ export const Content = styled(Col)`
   background-color: ${({ theme }) =>
     theme.semantic.color.background.neutral100};
   border-top: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
+
+  .ReactVirtualized__Table__headerRow {
+    border: none;
+  }
 `

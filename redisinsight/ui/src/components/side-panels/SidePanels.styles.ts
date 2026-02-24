@@ -1,19 +1,23 @@
-import styled from 'styled-components'
+import React from 'react'
+import styled, { css } from 'styled-components'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import { type Theme } from 'uiSrc/components/base/theme/types'
 
 // Shared side-panel styles
 export const Body = styled(Col)`
   height: calc(100% - 60px);
+  overflow: hidden;
 `
 
 export const Tabs = styled.div`
   flex-shrink: 0;
   overflow: initial;
   flex-grow: 0;
+  border-bottom: 1px solid
+    ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral400};
 
   & > div {
-    padding: 0 12px;
+    padding: 0 ${({ theme }: { theme: Theme }) => theme.core.space.space200};
   }
 `
 
@@ -30,9 +34,11 @@ export const OnboardingAnchorWrapper = styled.div`
 // Header styles
 export const Header = styled.div`
   position: relative;
-  padding: 12px;
+  padding: ${({ theme }: { theme: Theme }) => theme.core.space.space200};
   display: flex;
   align-items: center;
+  border-bottom: 1px solid
+    ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral400};
 `
 
 export const CloseBtn = styled.span`
@@ -173,7 +179,8 @@ export const EnablementContainer = styled.div`
   overflow: hidden;
   height: 100%;
   flex-grow: 1;
-  margin-top: 8px;
+  margin-top: ${({ theme }: { theme: Theme }) => theme.core.space.space200};
+  padding: 0 ${({ theme }: { theme: Theme }) => theme.core.space.space200};
 `
 
 export const InnerContainerLoader = styled.div`
@@ -203,6 +210,7 @@ export const InnerContainer = styled.div`
   scrollbar-width: thin;
   overflow: auto;
   height: 100%;
+  padding: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
   text-align: left;
   letter-spacing: 0;
   color: ${({ theme }: { theme: Theme }) =>
@@ -379,26 +387,38 @@ export const WelcomeText = styled.span`
   text-align: center;
 `
 
-// Main panel container styles
-export const StyledSidePanel = styled.div<{ isFullScreen?: boolean }>`
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 1000;
+// Main panel container styles (matches original .panel / .panelInner from styles.module.scss)
+export const StyledSidePanel = styled.div<
+  { $isFullScreen?: boolean } & React.ComponentPropsWithoutRef<'div'>
+>`
   height: 100%;
-  width: ${({ isFullScreen }) => (isFullScreen ? '100%' : '460px')};
-  background-color: ${({ theme }: { theme: Theme }) =>
-    theme.semantic.color.background.neutral100};
-  border-left: 1px solid
-    ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral400};
-  box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  padding-right: ${({ theme }: { theme: Theme }) => theme.core.space.space200};
   display: flex;
   flex-direction: column;
+
+  ${({ $isFullScreen, theme }) =>
+    $isFullScreen &&
+    css`
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding-inline: ${theme.core.space.space200};
+      z-index: 1001;
+    `}
 `
 
 export const StyledInnerSidePanel = styled.div`
+  background-color: ${({ theme }: { theme: Theme }) =>
+    theme.semantic.color.background.neutral100};
   height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  border: 1px solid
+    ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral500};
+  border-radius: ${({ theme }: { theme: Theme }) =>
+    theme.components.card.borderRadius};
 `

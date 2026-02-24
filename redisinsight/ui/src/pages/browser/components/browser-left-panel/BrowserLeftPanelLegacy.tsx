@@ -33,7 +33,7 @@ import KeyList from '../key-list'
 import KeyTree from '../key-tree'
 import KeysHeader from '../keys-header'
 
-import styles from './styles.module.scss'
+import * as S from './BrowserLeftPanel.styles'
 
 export interface Props {
   selectedKey: Nullable<RedisResponseBuffer>
@@ -163,7 +163,7 @@ const BrowserLeftPanelLegacy = (props: Props) => {
     [selectedKey],
   )
   return (
-    <div className={styles.container}>
+    <S.Container>
       <KeysHeader
         keysState={keysState}
         loading={headerLoading}
@@ -173,9 +173,9 @@ const BrowserLeftPanelLegacy = (props: Props) => {
         nextCursor={keysState.nextCursor}
       />
       {keysError && (
-        <div className={styles.error}>
+        <S.Error>
           <div>{keysError}</div>
-        </div>
+        </S.Error>
       )}
       {viewType === KeyViewType.Browser && !keysError && (
         <KeyList
@@ -205,7 +205,7 @@ const BrowserLeftPanelLegacy = (props: Props) => {
           onBulkActionsPanel={handleBulkActionsPanel}
         />
       )}
-    </div>
+    </S.Container>
   )
 }
 

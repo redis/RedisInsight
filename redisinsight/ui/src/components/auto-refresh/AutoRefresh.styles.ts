@@ -3,6 +3,7 @@ import { HTMLAttributes, PropsWithChildren } from 'react'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { RiTooltip } from 'uiSrc/components/base'
 import { ColorText } from 'uiSrc/components/base/text'
+import { IconButton } from 'uiSrc/components/base/forms/buttons'
 
 export const Container = styled(Row)`
   line-height: 1;
@@ -23,6 +24,16 @@ export const AutoRefreshInterval = styled(ColorText)<
 
 export const StyledTooltip = styled(RiTooltip)`
   max-width: 372px;
+`
+
+export const AutoRefreshButton = styled(IconButton)<{
+  $enableAutoRefresh?: boolean
+  $disabled?: boolean
+}>`
+  color: ${({ theme, $enableAutoRefresh, $disabled }) =>
+    $enableAutoRefresh && !$disabled
+      ? theme.semantic.color.text.primary400
+      : 'inherit'};
 `
 
 export const PopoverWrapper = styled(Col)`

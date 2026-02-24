@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
 import { compact, findIndex, first, merge } from 'lodash'
 import AutoSizer, { Size } from 'react-virtualized-auto-sizer'
 import ReactMonacoEditor, { monaco as monacoEditor } from 'react-monaco-editor'
@@ -24,24 +23,9 @@ import { ThemeContext } from 'uiSrc/contexts/themeContext'
 
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { MonacoGlobalStyles } from 'uiSrc/components/base/code-editor/CodeEditor.styles'
-import styles from './styles.module.scss'
 
-const LangSelect = styled(RiSelect)`
-  appearance: none;
-  border: 0 none;
-  outline: none;
-  background-color: transparent;
-  max-width: 200px;
-  max-height: 26px;
-  &:active,
-  &:focus,
-  &:hover,
-  &[data-state='open'] {
-    background-color: transparent;
-  }
-`
+import * as S from './DedicatedEditor.styles'
 
 export interface Props {
   query?: string
@@ -261,84 +245,87 @@ const DedicatedEditor = (props: Props) => {
       {() => (
         <div className="editorBounder">
           <MonacoGlobalStyles />
-          <Rnd
-            ref={rndRef}
-            default={{
-              x: 0,
-              y: initialHeight * 0.4 - BOTTOM_INDENT_PADDING,
-              width: '100%',
-              height: '60%',
-            }}
-            minHeight="80px"
-            enableResizing={{
-              top: true,
-              right: false,
-              bottom: true,
-              left: false,
-              topRight: false,
-              bottomRight: false,
-              bottomLeft: false,
-              topLeft: false,
-            }}
-            resizeHandleClasses={{
-              top: 't_resize-top',
-              bottom: 't_resize-bottom',
-            }}
-            dragAxis="y"
-            bounds=".editorBounder"
-            dragHandleClassName="draggable-area"
-            data-testid="draggable-area"
-          >
-            <div
-              className={styles.container}
-              onKeyDown={handleKeyDown}
-              role="textbox"
-              tabIndex={0}
+          <S.Rnd>
+            <Rnd
+              ref={rndRef}
+              default={{
+                x: 0,
+                y: initialHeight * 0.4 - BOTTOM_INDENT_PADDING,
+                width: '100%',
+                height: '60%',
+              }}
+              minHeight="80px"
+              enableResizing={{
+                top: true,
+                right: false,
+                bottom: true,
+                left: false,
+                topRight: false,
+                bottomRight: false,
+                bottomLeft: false,
+                topLeft: false,
+              }}
+              resizeHandleClasses={{
+                top: 't_resize-top',
+                bottom: 't_resize-bottom',
+              }}
+              dragAxis="y"
+              bounds=".editorBounder"
+              dragHandleClassName="draggable-area"
+              data-testid="draggable-area"
             >
-              <div className="draggable-area" />
-              <div className={styles.input} data-testid="query-input-container">
-                <ReactMonacoEditor
-                  language={selectedLang?.language || MonacoLanguage.Cypher}
-                  theme={theme === Theme.Dark ? 'dark' : 'light'}
-                  value={value}
-                  onChange={setValue}
-                  options={options}
-                  className={`${langId}-editor`}
-                  editorDidMount={editorDidMount}
-                />
-              </div>
-              <div className={cx(styles.actions)}>
-                {langs?.length < 2 && <span>{selectedLang?.name}</span>}
-                {langs?.length >= 2 && (
-                  <LangSelect
-                    name="dedicated-editor-language-select"
-                    placeholder="Select language"
-                    value={selectedLang.id}
-                    options={optionsLangs}
-                    onChange={onChangeLanguageSelect}
-                    data-testid="dedicated-editor-language-select"
+              <S.Container
+                onKeyDown={handleKeyDown}
+                role="textbox"
+                tabIndex={0}
+              >
+                <div className="draggable-area" />
+                <S.Input data-testid="query-input-container">
+                  <ReactMonacoEditor
+                    language={selectedLang?.language || MonacoLanguage.Cypher}
+                    theme={theme === Theme.Dark ? 'dark' : 'light'}
+                    value={value}
+                    onChange={setValue}
+                    options={options}
+                    className={`${langId}-editor`}
+                    editorDidMount={editorDidMount}
                   />
-                )}
-                <div>
-                  <IconButton
-                    icon={CancelSlimIcon}
-                    aria-label="Cancel editing"
-                    className={styles.declineBtn}
-                    onClick={() => onCancel(selectedLang.id as DSL)}
-                    data-testid="cancel-btn"
-                  />
-                  <IconButton
-                    icon={CheckThinIcon}
-                    type="submit"
-                    aria-label="Apply"
-                    onClick={handleSubmit}
-                    className={styles.applyBtn}
-                    data-testid="apply-btn"
-                  />
-                </div>
-              </div>
-            </div>
-          </Rnd>
+                </S.Input>
+                <S.Actions>
+                  {langs?.length < 2 && <span>{selectedLang?.name}</span>}
+                  {langs?.length >= 2 && (
+                    <S.LangSelect
+                      name="dedicated-editor-language-select"
+                      placeholder="Select language"
+                      value={selectedLang.id}
+                      options={optionsLangs}
+                      onChange={onChangeLanguageSelect}
+                      data-testid="dedicated-editor-language-select"
+                    />
+                  )}
+                  <div>
+                    <S.DeclineBtn>
+                      <IconButton
+                        icon={CancelSlimIcon}
+                        aria-label="Cancel editing"
+                        onClick={() => onCancel(selectedLang.id as DSL)}
+                        data-testid="cancel-btn"
+                      />
+                    </S.DeclineBtn>
+                    <S.ApplyBtn>
+                      <IconButton
+                        icon={CheckThinIcon}
+                        type="submit"
+                        aria-label="Apply"
+                        onClick={handleSubmit}
+                        data-testid="apply-btn"
+                      />
+                    </S.ApplyBtn>
+                  </div>
+                </S.Actions>
+              </S.Container>
+            </Rnd>
+          </S.Rnd>
         </div>
       )}
     </AutoSizer>

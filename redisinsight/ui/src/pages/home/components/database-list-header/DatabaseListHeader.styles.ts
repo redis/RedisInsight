@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
+import { insightsOpen } from 'uiSrc/styles/mixins'
 
 export const Container = styled.div``
 
@@ -17,7 +18,7 @@ export const SpacerDl = styled(Spacer)`
 export const Promo = styled(FlexItem)`
   display: flex;
 
-  @media only screen and (max-width: 800px) {
+  ${insightsOpen(1350)`
     display: none;
-  }
+  `}
 `

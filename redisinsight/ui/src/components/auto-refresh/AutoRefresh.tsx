@@ -191,7 +191,7 @@ const AutoRefresh = ({
     <S.Container
       justify="start"
       align="center"
-      gap="s"
+      gap="m"
       className={containerClassName}
       data-testid={getTestId('auto-refresh-container')}
     >
@@ -227,7 +227,9 @@ const AutoRefresh = ({
               content={disabled ? disabledRefreshButtonMessage : refreshMessage}
               data-testid={getTestId('refresh-tooltip')}
             >
-              <IconButton
+              <S.AutoRefreshButton
+                $enableAutoRefresh={enableAutoRefresh}
+                $disabled={disabled}
                 size={iconSize}
                 icon={ResetIcon}
                 disabled={loading || disabled}

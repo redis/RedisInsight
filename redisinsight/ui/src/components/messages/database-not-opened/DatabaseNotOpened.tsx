@@ -4,14 +4,13 @@ import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
 import TelescopeImg from 'uiSrc/assets/img/telescope-dark.svg'
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
-import { Col } from 'uiSrc/components/base/layout/flex'
-
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import { Title } from 'uiSrc/components/base/text/Title'
-import { Text } from 'uiSrc/components/base/text'
-import styles from './styles.module.scss'
-import { Link } from 'uiSrc/components/base/link/Link'
+import { Text, Title } from 'uiSrc/components/base/text'
+import { Link } from 'uiSrc/components/base/link'
 import { OAuthSsoHandlerDialog } from 'uiSrc/components/oauth'
+
+import * as S from './DatabaseNotOpened.styles'
 
 export interface Props {
   source?: OAuthSocialSource
@@ -22,11 +21,9 @@ const DatabaseNotOpened = (props: Props) => {
   const { source = OAuthSocialSource.Tutorials, onClose } = props
 
   return (
-    <div className={styles.wrapper} data-testid="database-not-opened-popover">
-      <div>
-        <Title size="S" className={styles.title}>
-          Open a database
-        </Title>
+    <Row data-testid="database-not-opened-popover">
+      <Col>
+        <Title size="S">Open a database</Title>
         <Spacer size="s" />
         <Col>
           <Text size="s">
@@ -68,14 +65,11 @@ const DatabaseNotOpened = (props: Props) => {
             Install using Docker
           </Link>
         </Col>
-      </div>
-      <img
-        src={TelescopeImg}
-        className={styles.img}
-        alt="telescope"
-        loading="lazy"
-      />
-    </div>
+      </Col>
+      <S.ImgWrapper>
+        <img src={TelescopeImg} alt="telescope" loading="lazy" />
+      </S.ImgWrapper>
+    </Row>
   )
 }
 

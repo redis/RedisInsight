@@ -250,7 +250,6 @@ const Navigation = (props: Props) => {
   return (
     <S.InnerContainer
       as={ListGroup}
-      style={{ padding: 5 }}
       gap="m"
       maxWidth="false"
       data-testid="enablementArea-treeView"
