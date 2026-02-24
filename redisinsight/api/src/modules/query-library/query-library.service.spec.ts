@@ -24,7 +24,6 @@ const mockQueryLibraryRepository = () => ({
   delete: jest.fn(),
   deleteByIndex: jest.fn(),
   createBulk: jest.fn(),
-  countByIndex: jest.fn(),
 });
 
 describe('QueryLibraryService', () => {

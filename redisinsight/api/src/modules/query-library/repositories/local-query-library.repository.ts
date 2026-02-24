@@ -241,17 +241,4 @@ export class LocalQueryLibraryRepository extends QueryLibraryRepository {
 
     return decrypted.map((entity) => classToClass(QueryLibraryItem, entity));
   }
-
-  async countByIndex(
-    sessionMetadata: SessionMetadata,
-    databaseId: string,
-    indexName: string,
-    type?: string,
-  ): Promise<number> {
-    const where: Record<string, any> = { databaseId, indexName };
-    if (type) {
-      where.type = type;
-    }
-    return this.repository.count({ where });
-  }
 }

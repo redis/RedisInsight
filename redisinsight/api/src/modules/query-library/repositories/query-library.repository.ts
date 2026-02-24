@@ -45,11 +45,4 @@ export abstract class QueryLibraryRepository {
     databaseId: string,
     items: Partial<QueryLibraryItem>[],
   ): Promise<QueryLibraryItem[]>;
-
-  abstract countByIndex(
-    sessionMetadata: SessionMetadata,
-    databaseId: string,
-    indexName: string,
-    type?: string,
-  ): Promise<number>;
 }

@@ -5,7 +5,6 @@ import { NotFoundException } from '@nestjs/common';
 import { mockSessionMetadata } from 'src/__mocks__';
 import { EncryptionService } from 'src/modules/encryption/encryption.service';
 import { QueryLibraryEntity } from '../entities/query-library.entity';
-import { QueryLibraryType } from '../models/query-library-type.enum';
 import { LocalQueryLibraryRepository } from './local-query-library.repository';
 import {
   queryLibraryEntityFactory,
@@ -307,48 +306,6 @@ describe('LocalQueryLibraryRepository', () => {
 
       expect(result).toHaveLength(3);
       expect(typeormRepo.save).toHaveBeenCalledTimes(3);
-    });
-  });
-
-  describe('countByIndex', () => {
-    it('should count items by index and type', async () => {
-      const indexName = `idx:${faker.word.noun()}_vss`;
-      typeormRepo.count.mockResolvedValueOnce(5);
-
-      const result = await repository.countByIndex(
-        mockSessionMetadata,
-        mockDatabaseId,
-        indexName,
-        QueryLibraryType.Sample,
-      );
-
-      expect(result).toBe(5);
-      expect(typeormRepo.count).toHaveBeenCalledWith({
-        where: {
-          databaseId: mockDatabaseId,
-          indexName,
-          type: QueryLibraryType.Sample,
-        },
-      });
-    });
-
-    it('should count all items by index without type filter', async () => {
-      const indexName = `idx:${faker.word.noun()}_vss`;
-      typeormRepo.count.mockResolvedValueOnce(10);
-
-      const result = await repository.countByIndex(
-        mockSessionMetadata,
-        mockDatabaseId,
-        indexName,
-      );
-
-      expect(result).toBe(10);
-      expect(typeormRepo.count).toHaveBeenCalledWith({
-        where: {
-          databaseId: mockDatabaseId,
-          indexName,
-        },
-      });
     });
   });
 });
