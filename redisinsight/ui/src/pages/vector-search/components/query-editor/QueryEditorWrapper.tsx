@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
@@ -22,6 +22,7 @@ import { EditorTab, QueryEditorWrapperProps } from './QueryEditor.types'
 import { EditorLibraryToggle } from './EditorLibraryToggle'
 import { VectorSearchEditor } from './VectorSearchEditor'
 import { VectorSearchActions } from './VectorSearchActions'
+import { QueryLibraryView } from '../query-library-view'
 import * as S from './QueryEditor.styles'
 
 /**
@@ -36,6 +37,14 @@ export const QueryEditorWrapper = ({
 }: QueryEditorWrapperProps) => {
   const { indexName } = useParams<{ indexName?: string }>()
   const [activeTab, setActiveTab] = useState<EditorTab>(EditorTab.Editor)
+
+  const handleLibraryLoad = useCallback(
+    (queryText: string) => {
+      setQuery(queryText)
+      setActiveTab(EditorTab.Editor)
+    },
+    [setQuery],
+  )
 
   const dispatch = useDispatch()
   const { loading: isCommandsLoading, spec: COMMANDS_SPEC } = useSelector(
@@ -90,9 +99,7 @@ export const QueryEditorWrapper = ({
           </>
         )}
         {activeTab === EditorTab.Library && (
-          <div data-testid="vector-search-library-placeholder">
-            {/* Library view placeholder -- to be implemented */}
-          </div>
+          <QueryLibraryView onRun={onSubmit} onLoad={handleLibraryLoad} />
         )}
       </S.EditorWrapper>
     </QueryEditorContextProvider>

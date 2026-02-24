@@ -80,8 +80,7 @@ export const Body = styled(Col)`
   max-height: 400px;
   min-height: 200px;
   overflow: auto;
-  border-top: 1px solid
-    ${({ theme }) => theme.semantic.color.border.neutral400};
+  border-top: 1px solid ${({ theme }) => theme.semantic.color.border.neutral400};
 `
 
 export const ChevronWrapper = styled(Row)`
