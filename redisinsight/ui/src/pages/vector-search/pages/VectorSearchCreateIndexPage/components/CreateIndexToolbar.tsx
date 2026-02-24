@@ -9,8 +9,13 @@ import { useCreateIndexPage } from '../../../context/create-index-page'
 import * as S from '../VectorSearchCreateIndexPage.styles'
 
 export const CreateIndexToolbar = () => {
-  const { activeTab, setActiveTab, indexPrefix, isReadonly } =
-    useCreateIndexPage()
+  const {
+    activeTab,
+    setActiveTab,
+    indexPrefix,
+    isReadonly,
+    openAddFieldModal,
+  } = useCreateIndexPage()
 
   return (
     <S.ToolbarRow
@@ -41,6 +46,7 @@ export const CreateIndexToolbar = () => {
       >
         <EmptyButton
           disabled={isReadonly}
+          onClick={openAddFieldModal}
           data-testid="vector-search--create-index--add-field-btn"
         >
           + Add field
