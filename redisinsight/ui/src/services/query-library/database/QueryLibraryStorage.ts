@@ -27,6 +27,7 @@ export class QueryLibraryStorage {
         this.db = request.result
         this.db.onversionchange = (e) => {
           ;(e.target as IDBDatabase)?.close()
+          this.db = undefined
         }
         resolve(this.db)
       }
