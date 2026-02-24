@@ -5,6 +5,7 @@ import { Button } from 'uiSrc/components/base/forms/buttons'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import BrowserStorageItem from 'uiSrc/constants/storage'
+import { localStorageService } from 'uiSrc/services'
 import { QueryOnboardingPopoverProps } from './QueryOnboardingPopover.types'
 import * as S from './QueryOnboardingPopover.styles'
 
@@ -13,12 +14,16 @@ export const QueryOnboardingPopover = ({
 }: QueryOnboardingPopoverProps) => {
   const [isOpen, setIsOpen] = useState(
     () =>
-      localStorage.getItem(BrowserStorageItem.vectorSearchQueryOnboarding) !==
-      'true',
+      localStorageService.get(
+        BrowserStorageItem.vectorSearchQueryOnboarding,
+      ) !== true,
   )
 
   const handleDismiss = useCallback(() => {
-    localStorage.setItem(BrowserStorageItem.vectorSearchQueryOnboarding, 'true')
+    localStorageService.set(
+      BrowserStorageItem.vectorSearchQueryOnboarding,
+      true,
+    )
     setIsOpen(false)
   }, [])
 

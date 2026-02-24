@@ -1,8 +1,17 @@
 import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import BrowserStorageItem from 'uiSrc/constants/storage'
+import { localStorageService } from 'uiSrc/services'
 
 import { QueryOnboardingPopover } from './QueryOnboardingPopover'
+
+jest.mock('uiSrc/services', () => ({
+  ...jest.requireActual('uiSrc/services'),
+  localStorageService: {
+    set: jest.fn(),
+    get: jest.fn(),
+  },
+}))
 
 describe('QueryOnboardingPopover', () => {
   const renderComponent = () =>
@@ -19,7 +28,7 @@ describe('QueryOnboardingPopover', () => {
   })
 
   it('should show onboarding popover on first visit', () => {
-    ;(localStorage.getItem as jest.Mock).mockReturnValue(null)
+    ;(localStorageService.get as jest.Mock).mockReturnValue(null)
 
     renderComponent()
 
@@ -33,7 +42,7 @@ describe('QueryOnboardingPopover', () => {
   })
 
   it('should not show onboarding popover when already seen', () => {
-    ;(localStorage.getItem as jest.Mock).mockReturnValue('true')
+    ;(localStorageService.get as jest.Mock).mockReturnValue(true)
 
     renderComponent()
 
@@ -45,7 +54,7 @@ describe('QueryOnboardingPopover', () => {
   })
 
   it('should render children when popover is not shown', () => {
-    ;(localStorage.getItem as jest.Mock).mockReturnValue('true')
+    ;(localStorageService.get as jest.Mock).mockReturnValue(true)
 
     renderComponent()
 
@@ -55,16 +64,16 @@ describe('QueryOnboardingPopover', () => {
   })
 
   it('should mark as seen in localStorage when Got it is clicked', () => {
-    ;(localStorage.getItem as jest.Mock).mockReturnValue(null)
+    ;(localStorageService.get as jest.Mock).mockReturnValue(null)
 
     renderComponent()
 
     const dismissButton = screen.getByTestId('query-library-onboarding-dismiss')
     fireEvent.click(dismissButton)
 
-    expect(localStorage.setItem).toHaveBeenCalledWith(
+    expect(localStorageService.set).toHaveBeenCalledWith(
       BrowserStorageItem.vectorSearchQueryOnboarding,
-      'true',
+      true,
     )
   })
 })
