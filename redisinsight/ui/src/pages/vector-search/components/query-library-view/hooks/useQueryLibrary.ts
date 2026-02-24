@@ -123,6 +123,5 @@ export const useQueryLibrary = () => {
     deleteItem,
     toggleItemOpen,
     getItemById,
-    refreshList: fetchItems,
   }
 }

@@ -17,7 +17,6 @@ const mockUseQueryLibrary = {
   deleteItem: jest.fn(),
   toggleItemOpen: jest.fn(),
   getItemById: jest.fn((id: string) => mockItems.find((i) => i.id === id)),
-  refreshList: jest.fn(),
 }
 
 jest.mock('./hooks/useQueryLibrary', () => ({
