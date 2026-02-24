@@ -51,3 +51,17 @@ export const createIndexNotifications = {
     actions: {},
   }),
 }
+
+export const queryLibraryNotifications = {
+  queryDeleted: (): NotificationMessage => ({
+    title: 'Query has been deleted.',
+    message: '',
+  }),
+
+  cleanupFailed: (): NotificationMessage => ({
+    title: 'Failed to clean up query library',
+    message:
+      'An error occurred while removing saved queries for the deleted index.',
+    variant: 'error' as ToastVariant,
+  }),
+}
