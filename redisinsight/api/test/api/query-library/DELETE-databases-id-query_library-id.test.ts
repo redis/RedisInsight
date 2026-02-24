@@ -32,6 +32,15 @@ describe('DELETE /databases/:instanceId/query-library/:id', () => {
         },
       },
       {
+        name: 'Should return 404 when item does not exist',
+        endpoint: () =>
+          endpoint(
+            constants.TEST_INSTANCE_ID,
+            constants.TEST_NOT_EXISTED_INSTANCE_ID,
+          ),
+        statusCode: 404,
+      },
+      {
         name: 'Should delete a query library item',
         before: async () => {
           await localDb.generateNQueryLibraryItems(

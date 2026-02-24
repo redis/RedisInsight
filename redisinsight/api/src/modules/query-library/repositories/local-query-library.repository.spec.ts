@@ -251,13 +251,30 @@ describe('LocalQueryLibraryRepository', () => {
       const entity = queryLibraryEntityFactory.build({
         databaseId: mockDatabaseId,
       });
+      typeormRepo.findOneBy.mockResolvedValueOnce(entity);
 
       await repository.delete(mockSessionMetadata, mockDatabaseId, entity.id);
 
+      expect(typeormRepo.findOneBy).toHaveBeenCalledWith({
+        id: entity.id,
+        databaseId: mockDatabaseId,
+      });
       expect(typeormRepo.delete).toHaveBeenCalledWith({
         id: entity.id,
         databaseId: mockDatabaseId,
       });
+    });
+
+    it('should throw NotFoundException when item not found', async () => {
+      typeormRepo.findOneBy.mockResolvedValueOnce(null);
+
+      await expect(
+        repository.delete(
+          mockSessionMetadata,
+          mockDatabaseId,
+          faker.string.uuid(),
+        ),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 

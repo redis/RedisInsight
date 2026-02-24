@@ -195,6 +195,18 @@ describe('QueryLibraryService', () => {
         item.id,
       );
     });
+
+    it('should throw NotFoundException if item not found', async () => {
+      repository.delete.mockRejectedValueOnce(new NotFoundException());
+
+      await expect(
+        service.delete(
+          mockSessionMetadata,
+          mockDatabaseId,
+          faker.string.uuid(),
+        ),
+      ).rejects.toThrow(NotFoundException);
+    });
   });
 
   describe('deleteByIndex', () => {

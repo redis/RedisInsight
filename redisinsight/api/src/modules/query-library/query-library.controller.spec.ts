@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { faker } from '@faker-js/faker';
-import { InternalServerErrorException } from '@nestjs/common';
+import {
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { mockSessionMetadata } from 'src/__mocks__';
 import { QueryLibraryController } from './query-library.controller';
 import { QueryLibraryService } from './query-library.service';
@@ -139,6 +142,14 @@ describe('QueryLibraryController', () => {
         mockDatabaseId,
         item.id,
       );
+    });
+
+    it('should throw NotFoundException when item not found', async () => {
+      service.delete.mockRejectedValueOnce(new NotFoundException());
+
+      await expect(
+        controller.delete(mockClientMetadata as any, faker.string.uuid()),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 

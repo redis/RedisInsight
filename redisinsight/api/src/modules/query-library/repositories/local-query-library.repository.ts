@@ -180,6 +180,18 @@ export class LocalQueryLibraryRepository extends QueryLibraryRepository {
   ): Promise<void> {
     this.logger.debug('Deleting query library item', sessionMetadata);
 
+    const existing = await this.repository.findOneBy({ id, databaseId });
+
+    if (!existing) {
+      this.logger.error(
+        `Query library item with id:${id} and databaseId:${databaseId} was not found`,
+        sessionMetadata,
+      );
+      throw new NotFoundException(
+        `Query library item with id ${id} was not found`,
+      );
+    }
+
     await this.repository.delete({ id, databaseId });
 
     this.logger.debug('Query library item deleted', sessionMetadata);
