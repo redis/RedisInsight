@@ -26,15 +26,10 @@ export const useQueryLibrary = () => {
   const [openItemId, setOpenItemId] = useState<string | null>(null)
 
   const serviceRef = useRef(new QueryLibraryService())
-  const abortRef = useRef<AbortController | null>(null)
 
   const fetchItems = useCallback(
     async (searchTerm?: string) => {
       if (!databaseId || !indexName) return
-
-      abortRef.current?.abort()
-      const controller = new AbortController()
-      abortRef.current = controller
 
       setLoading(true)
       setError(null)
@@ -44,16 +39,12 @@ export const useQueryLibrary = () => {
           indexName,
           search: searchTerm || undefined,
         })
-        if (controller.signal.aborted) return
         setItems(data)
       } catch {
-        if (controller.signal.aborted) return
         setItems([])
         setError('Failed to load query library')
       } finally {
-        if (!controller.signal.aborted) {
-          setLoading(false)
-        }
+        setLoading(false)
       }
     },
     [databaseId, indexName],
@@ -67,7 +58,6 @@ export const useQueryLibrary = () => {
   useEffect(
     () => () => {
       debouncedFetch.cancel()
-      abortRef.current?.abort()
     },
     [debouncedFetch],
   )
