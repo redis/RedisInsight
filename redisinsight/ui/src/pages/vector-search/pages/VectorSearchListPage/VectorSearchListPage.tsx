@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { Col } from 'uiSrc/components/base/layout/flex'
-
 import { useRedisInstanceCompatibility } from '../../hooks'
 import { UpgradeRedisBanner } from '../../components/upgrade-redis-banner'
 import { ListHeader } from './components/ListHeader'
 import { ListContent } from './components/list-content'
+
+import * as S from './VectorSearchListPage.styles'
 
 /**
  * Vector Search List Page.
@@ -17,11 +17,11 @@ export const VectorSearchListPage = () => {
   const { hasSupportedVersion } = useRedisInstanceCompatibility()
 
   return (
-    <Col gap="l" data-testid="vector-search--list--page">
+    <S.PageLayout data-testid="vector-search--list--page">
       {hasSupportedVersion === false && <UpgradeRedisBanner />}
 
       <ListHeader />
       <ListContent />
-    </Col>
+    </S.PageLayout>
   )
 }
