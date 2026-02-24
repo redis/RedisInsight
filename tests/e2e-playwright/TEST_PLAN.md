@@ -47,11 +47,8 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 0.4 Copilot Panel
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Open Copilot panel |
-| 🔲 | main | Close Copilot panel |
-| 🔲 | main | Open full screen mode |
-| 🔲 | main | View sign-in options (Google, GitHub, SSO) |
-| 🔲 | main | Accept terms checkbox |
+| ✅ | main | should open Copilot panel and display sign-in options |
+| ✅ | main | should close Copilot panel |
 
 ### 0.5 Insights Panel
 | Status | Group | Test Case |
