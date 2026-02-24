@@ -256,6 +256,8 @@
     "@redis-ui/styles": "^14.9.3",
     "@redis-ui/table": "^3.5.1",
     "@reduxjs/toolkit": "^1.6.2",
+    "@sentry/electron": "^7.8.0",
+    "@sentry/react": "^10.39.0",
     "@stablelib/snappy": "^1.0.2",
     "@types/json-dup-key-validator": "^1.0.2",
     "ajv": "^8.17.1",

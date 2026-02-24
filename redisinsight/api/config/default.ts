@@ -212,6 +212,17 @@ export default {
       ? process.env.RI_ANALYTICS_START_EVENTS === 'true'
       : false,
   },
+  sentry: {
+    dsn: process.env.RI_SENTRY_DSN || '',
+    environment: process.env.RI_SENTRY_ENVIRONMENT || 'development',
+    enabled: process.env.RI_SENTRY_ENABLED
+      ? process.env.RI_SENTRY_ENABLED === 'true'
+      : false,
+    sampleRate: parseFloat(process.env.RI_SENTRY_SAMPLE_RATE || '1.0'),
+    tracesSampleRate: parseFloat(
+      process.env.RI_SENTRY_TRACES_SAMPLE_RATE || '0.1',
+    ),
+  },
   logger: {
     logLevel: process.env.RI_LOG_LEVEL || 'info', // log level
     stdout: process.env.RI_STDOUT_LOGGER

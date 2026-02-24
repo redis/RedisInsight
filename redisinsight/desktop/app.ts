@@ -15,6 +15,7 @@ import {
   launchApiServer,
   initCloudHandlers,
   electronStore,
+  initSentry,
 } from 'desktopSrc/lib'
 import { wrapErrorMessageSensitiveData } from 'desktopSrc/utils'
 import { configMain as config } from 'desktopSrc/config'
@@ -23,6 +24,8 @@ import {
   deepLinkWindowHandler,
 } from 'desktopSrc/lib/app/deep-link.handlers'
 import { ElectronStorageItem } from 'uiSrc/electron/constants'
+
+initSentry()
 
 if (!config.isProduction) {
   const sourceMapSupport = require('source-map-support')

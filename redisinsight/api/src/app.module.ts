@@ -44,6 +44,7 @@ import {
 } from './middleware/redis-connection';
 import { DatabaseSettingsModule } from './modules/database-settings/database-settings.module';
 import { CredentialsModule } from './modules/database/credentials/credentials.module';
+import { SentryModule } from './modules/sentry/sentry.module';
 
 const SERVER_CONFIG = config.get('server') as Config['server'];
 const PATH_CONFIG = config.get('dir_path') as Config['dir_path'];
@@ -51,6 +52,7 @@ const STATICS_CONFIG = config.get('statics') as Config['statics'];
 
 @Module({
   imports: [
+    SentryModule,
     LocalDatabaseModule,
     CoreModule,
     RouterModule.register(routes),

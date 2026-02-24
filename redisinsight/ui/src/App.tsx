@@ -9,6 +9,7 @@ import MonacoLanguages from 'uiSrc/components/monaco-laguages'
 import AppInit from 'uiSrc/components/init/AppInit'
 import { Page, PageBody } from 'uiSrc/components/base/layout/page'
 import { useSystemThemeListener } from 'uiSrc/services/hooks/useSystemThemeListener'
+import { SentryErrorBoundary } from 'uiSrc/components/error-boundary'
 import { Pages, Theme } from './constants'
 import { themeService } from './services'
 import {
@@ -35,11 +36,13 @@ themeService.registerTheme(Theme.Light, themeLight)
 
 const AppWrapper = ({ children }: { children?: ReactElement[] }) => (
   <Provider store={store}>
-    <ThemeProvider>
-      <AppInit>
-        <App>{children}</App>
-      </AppInit>
-    </ThemeProvider>
+    <SentryErrorBoundary>
+      <ThemeProvider>
+        <AppInit>
+          <App>{children}</App>
+        </AppInit>
+      </ThemeProvider>
+    </SentryErrorBoundary>
   </Provider>
 )
 const App = ({ children }: { children?: ReactElement[] }) => {
