@@ -96,6 +96,14 @@ export class QueryLibraryService {
     }
   }
 
+  async deleteByIndex(databaseId: string, indexName: string): Promise<void> {
+    const { error } = await this.database.deleteByIndex(databaseId, indexName)
+
+    if (error) {
+      store.dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+    }
+  }
+
   async seed(
     databaseId: string,
     items: SeedQueryLibraryItem[],
