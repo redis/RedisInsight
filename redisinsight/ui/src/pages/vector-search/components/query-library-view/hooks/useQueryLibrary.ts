@@ -48,6 +48,7 @@ export const useQueryLibrary = () => {
         setItems(data)
       } catch {
         if (controller.signal.aborted) return
+        setItems([])
         setError('Failed to load query library')
       } finally {
         if (!controller.signal.aborted) {

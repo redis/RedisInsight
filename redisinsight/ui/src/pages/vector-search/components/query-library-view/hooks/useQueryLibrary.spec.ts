@@ -76,6 +76,27 @@ describe('useQueryLibrary hook', () => {
     expect(result.current.items).toEqual([])
   })
 
+  it('should clear stale items when a subsequent fetch fails', async () => {
+    const { result } = renderHook(() => useQueryLibrary())
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
+    })
+
+    expect(result.current.items).toEqual(QUERY_LIBRARY_ITEMS_MOCK)
+
+    jest
+      .spyOn(QueryLibraryService.prototype, 'getList')
+      .mockRejectedValueOnce(new Error('Network error'))
+
+    await act(async () => {
+      await result.current.refreshList()
+    })
+
+    expect(result.current.error).toBe('Failed to load query library')
+    expect(result.current.items).toEqual([])
+  })
+
   it('should delete item and update list', async () => {
     const { result } = renderHook(() => useQueryLibrary())
 
