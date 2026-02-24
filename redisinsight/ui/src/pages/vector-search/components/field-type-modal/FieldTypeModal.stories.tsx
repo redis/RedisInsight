@@ -2,7 +2,11 @@ import React, { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 
-import { IndexField, VectorAlgorithm, VectorDistanceMetric } from '../index-details/IndexDetails.types'
+import {
+  IndexField,
+  VectorAlgorithm,
+  VectorDistanceMetric,
+} from '../index-details/IndexDetails.types'
 import { FieldTypeModal } from './FieldTypeModal'
 import { FieldTypeModalMode, FieldTypeModalProps } from './FieldTypeModal.types'
 
