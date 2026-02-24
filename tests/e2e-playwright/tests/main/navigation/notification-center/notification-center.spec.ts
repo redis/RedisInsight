@@ -57,9 +57,9 @@ test.describe('Notification Center', () => {
     const { notificationCenter } = sidebarPanel;
     await notificationCenter.open();
 
-    // Check if there are notifications
-    const hasNotifications = await notificationCenter.notificationsList.isVisible();
-    if (!hasNotifications) {
+    // Check if there are notification items
+    const itemCount = await notificationCenter.notificationItems.count();
+    if (itemCount === 0) {
       test.skip();
       return;
     }

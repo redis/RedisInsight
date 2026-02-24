@@ -39,9 +39,9 @@ export class NotificationCenter {
     this.notificationCenterDialog = page.getByTestId('notification-center');
     this.notificationCenterTitle = this.notificationCenterDialog.getByText('Notification Center');
 
-    // Notification list - the container with notification items
-    this.notificationsList = this.notificationCenterDialog.locator('> div > div');
-    this.notificationItems = this.notificationsList.locator('> div').filter({ has: page.locator('a, p') });
+    // Notification items - use data-testid pattern for notification items
+    this.notificationsList = this.notificationCenterDialog;
+    this.notificationItems = this.notificationCenterDialog.locator('[data-testid^="notification-item"]');
 
     // Notification elements within items
     this.notificationTitles = this.notificationItems.locator('> div:first-child');
