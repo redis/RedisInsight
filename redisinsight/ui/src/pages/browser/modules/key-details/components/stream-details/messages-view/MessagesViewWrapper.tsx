@@ -43,7 +43,7 @@ const ackPrefix = '-ack'
 
 export interface Props {}
 
-const MessagesViewWrapper = (props: Props) => {
+const MessagesViewWrapper = () => {
   const {
     lastRefreshTime,
     data: loadedMessages = [],

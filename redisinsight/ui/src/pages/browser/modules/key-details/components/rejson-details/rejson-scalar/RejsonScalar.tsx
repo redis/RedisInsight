@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import cx from 'classnames'
 
 import { setReJSONDataAction } from 'uiSrc/slices/browser/rejson'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor/InlineItemEditor'

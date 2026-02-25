@@ -6,7 +6,6 @@ import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
 import { Maybe, formatLongName, replaceSpaces } from 'uiSrc/utils'
 
-import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import * as S from './KeyRowName.styles'
 
 export interface Props {

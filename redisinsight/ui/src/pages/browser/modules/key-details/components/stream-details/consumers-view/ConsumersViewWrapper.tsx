@@ -36,7 +36,7 @@ const actionsWidth = 50
 
 export interface Props {}
 
-const ConsumersViewWrapper = (props: Props) => {
+const ConsumersViewWrapper = () => {
   const { name: key = '' } = useSelector(selectedKeyDataSelector) ?? {
     name: '',
   }

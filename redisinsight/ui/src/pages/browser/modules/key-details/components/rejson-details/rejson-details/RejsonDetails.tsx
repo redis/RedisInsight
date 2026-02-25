@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 
 import { useDispatch } from 'react-redux'
 
-import cx from 'classnames'
 import { PlusIcon } from 'uiSrc/components/base/icons'
 import {
   appendReJSONArrayItemAction,

@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import cx from 'classnames'
 import jsonValidator from 'json-dup-key-validator'
 
 import * as keys from 'uiSrc/constants/keys'
