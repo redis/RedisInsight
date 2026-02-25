@@ -211,10 +211,11 @@ describe('useLoadKeyData', () => {
     mswServer.use(
       http.post(
         getMswURL(getUrl(instanceId, ApiEndpoints.HASH_GET_FIELDS)),
-        async () => HttpResponse.json(
-          { message: 'Internal Server Error' },
-          { status: 500 },
-        ),
+        async () =>
+          HttpResponse.json(
+            { message: 'Internal Server Error' },
+            { status: 500 },
+          ),
       ),
     )
 
