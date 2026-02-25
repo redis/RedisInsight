@@ -1,5 +1,6 @@
 import { SampleDataContent } from '../components/pick-sample-data-modal/PickSampleDataModal.types'
 import { IndexField } from '../components/index-details/IndexDetails.types'
+import { SampleQuery } from '../constants/sample-data/types'
 import { SAMPLE_DATASETS } from '../constants'
 
 /**
@@ -29,3 +30,7 @@ export const getDisplayNameBySampleData = (
 export const getIndexPrefixBySampleData = (
   sampleData: SampleDataContent,
 ): string => SAMPLE_DATASETS[sampleData].indexPrefix
+
+export const getSampleQueriesBySampleData = (
+  sampleData: SampleDataContent,
+): SampleQuery[] => SAMPLE_DATASETS[sampleData].sampleQueries
