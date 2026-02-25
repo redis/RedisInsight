@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { isNumber } from 'lodash'
 
@@ -38,7 +38,7 @@ import {
   SCAN_COUNT_DEFAULT,
   SCAN_TREE_COUNT_DEFAULT,
 } from 'uiSrc/constants/api'
-import { FeatureFlags } from 'uiSrc/constants/featureFlags'
+import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import OnboardingStartPopover from 'uiSrc/pages/browser/components/onboarding-start-popover'
 import { sidePanelsSelector } from 'uiSrc/slices/panels/sidePanels'
@@ -90,6 +90,8 @@ const BrowserPage = () => {
   const overview = useSelector(connectedInstanceOverviewSelector)
   const featureFlags = useSelector(appFeatureFlagsFeaturesSelector)
   const isDevBrowser = featureFlags?.[FeatureFlags.devBrowser]?.flag ?? false
+  const isDevVectorSearch =
+    featureFlags?.[FeatureFlags.devVectorSearch]?.flag ?? false
   const panelMinSize = isDevBrowser ? 20 : 45
   const panelDefaultSize = 50
 
@@ -115,6 +117,7 @@ const BrowserPage = () => {
   const isBulkActionsPanelOpenRef = useRef<boolean>(isBulkActionsPanelOpen)
   const isSidePanelOpenRef = useRef<boolean>(!!openedSidePanel)
 
+  const history = useHistory()
   const dispatch = useDispatch()
 
   const dbName = `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)}`
@@ -230,10 +233,17 @@ const BrowserPage = () => {
     handlePanel(true)
   }, [])
 
-  const handleCreateIndexPanel = useCallback((value: boolean) => {
-    handlePanel(value)
-    setIsCreateIndexPanelOpen(value)
-  }, [])
+  const handleCreateIndexPanel = useCallback(
+    (value: boolean) => {
+      if (value && isDevVectorSearch) {
+        history.push(Pages.vectorSearch(instanceId))
+        return
+      }
+      handlePanel(value)
+      setIsCreateIndexPanelOpen(value)
+    },
+    [isDevVectorSearch, instanceId],
+  )
 
   const closeRightPanels = useCallback(() => {
     setIsAddKeyPanelOpen(false)

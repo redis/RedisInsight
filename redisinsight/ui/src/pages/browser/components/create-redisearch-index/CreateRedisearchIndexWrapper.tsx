@@ -33,6 +33,7 @@ export interface Props {
   onCreateIndex?: () => void
 }
 
+/** @deprecated Use the Vector Search page instead (RI-8087). This inline form is replaced by navigation to the Vector Search page when the devVectorSearch feature flag is enabled. */
 const CreateRedisearchIndexWrapper = ({
   arePanelsCollapsed,
   onClosePanel,
