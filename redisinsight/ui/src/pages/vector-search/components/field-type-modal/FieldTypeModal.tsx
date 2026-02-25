@@ -53,6 +53,11 @@ export const FieldTypeModal = ({
     [formik],
   )
 
+  const handleClose = useCallback(() => {
+    formik.resetForm()
+    onClose()
+  }, [formik, onClose])
+
   const isCreateMode = mode === FieldTypeModalMode.Create
   const title = isCreateMode ? 'Add field' : 'Edit field'
 
@@ -60,8 +65,8 @@ export const FieldTypeModal = ({
 
   return (
     <Modal.Compose open={isOpen}>
-      <S.ModalContent persistent onCancel={onClose}>
-        <Modal.Content.Close icon={CancelIcon} onClick={onClose} />
+      <S.ModalContent persistent onCancel={handleClose}>
+        <Modal.Content.Close icon={CancelIcon} onClick={handleClose} />
         <Modal.Content.Header.Compose>
           <Modal.Content.Header.Title>{title}</Modal.Content.Header.Title>
         </Modal.Content.Header.Compose>
@@ -140,7 +145,7 @@ export const FieldTypeModal = ({
           <Row gap="m" justify="end">
             <SecondaryButton
               size="l"
-              onClick={onClose}
+              onClick={handleClose}
               data-testid="field-type-modal-cancel"
             >
               Cancel
