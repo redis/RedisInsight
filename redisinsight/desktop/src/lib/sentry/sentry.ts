@@ -67,7 +67,7 @@ export const initSentry = (): void => {
     return
   }
 
-  const dsn = process.env.RI_SENTRY_DSN
+  const dsn = process.env.RI_SENTRY_ELECTRON_DSN
   const enabled = process.env.RI_SENTRY_ENABLED === 'true'
   const environment = process.env.RI_SENTRY_ENVIRONMENT || 'development'
   const sampleRate = parseFloat(process.env.RI_SENTRY_SAMPLE_RATE || '1.0')
