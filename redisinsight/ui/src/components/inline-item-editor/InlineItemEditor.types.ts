@@ -1,7 +1,6 @@
 import React from 'react'
-import type { FlattenSimpleInterpolation } from 'styled-components'
-
 import { Row } from 'uiSrc/components/base/layout/flex'
+import { Theme } from 'uiSrc/components/base/theme/types'
 
 export type Positions = 'top' | 'bottom' | 'left' | 'right' | 'inside'
 export type Design = 'default' | 'separate'
@@ -57,8 +56,13 @@ export interface InlineItemEditorProps {
 }
 
 export type ActionsContainerProps = React.ComponentProps<typeof Row> & {
-  $positionStyles: FlattenSimpleInterpolation
+  $position?: InlineItemEditorProps['controlsPosition']
   $design?: InlineItemEditorProps['controlsDesign']
   $width?: string
   $height?: string
+}
+
+export type ActionsWrapperProps = {
+  $size?: { width: string; height: string }
+  theme: Theme
 }

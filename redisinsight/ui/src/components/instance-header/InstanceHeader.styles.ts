@@ -99,7 +99,6 @@ export const Controls = styled.span`
 
 export const DbIndexInput = styled.span`
   width: ${({ theme }: { theme: Theme }) => theme.core.space.space600};
-  height: ${({ theme }: { theme: Theme }) => theme.core.space.space400};
 `
 
 export const Divider = styled.span`

@@ -13,7 +13,6 @@ import { DestructiveButton } from 'uiSrc/components/base/forms/buttons'
 import ConfirmationPopover from 'uiSrc/components/confirmation-popover'
 
 import type { InlineItemEditorProps } from './InlineItemEditor.types'
-import { usePositionStyles } from './InlineItemEditor.styles'
 import * as S from './InlineItemEditor.styles'
 
 const POPOVER_PANEL_WIDTH = '296px'
@@ -56,7 +55,6 @@ const InlineItemEditor = (props: InlineItemEditorProps) => {
   const [isError, setIsError] = useState<boolean>(false)
   const [isShowApprovePopover, setIsShowApprovePopover] = useState(false)
   const theme = useTheme()
-  const positionStyles = usePositionStyles(controlsPosition ?? 'bottom')
 
   const size = theme.components.iconButton.sizes[iconSize ?? 'M']
 
@@ -200,7 +198,7 @@ const InlineItemEditor = (props: InlineItemEditorProps) => {
                 <S.ActionsContainer
                   justify="around"
                   gap="m"
-                  $positionStyles={positionStyles}
+                  $position={controlsPosition}
                   $design={controlsDesign}
                   $width={customStyles?.actionsContainer?.width}
                   $height={customStyles?.actionsContainer?.height}

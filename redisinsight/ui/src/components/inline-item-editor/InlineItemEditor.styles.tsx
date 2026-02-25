@@ -1,10 +1,12 @@
-import React, { useMemo } from 'react'
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
+import React from 'react'
+import styled, { css } from 'styled-components'
 import { useTheme } from '@redis-ui/styles'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Theme } from 'uiSrc/components/base/theme/types'
 import type {
   ActionsContainerProps,
+  ActionsWrapperProps,
+  Design,
   Positions,
 } from 'uiSrc/components/inline-item-editor/InlineItemEditor.types'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
@@ -12,57 +14,7 @@ import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
 import { TextInput } from '../base/inputs'
 
 // Above theme.core.space max (space800 = 6.4rem = 64px)
-const SPACE_80PX = '80px'
-
-const getPositionStyles = (
-  position: Positions,
-  theme: Theme,
-): FlattenSimpleInterpolation => {
-  const radius = theme.components.card.borderRadius
-  const shadow = theme.core.shadow.shadow200
-  const positionStyles: Record<Positions, FlattenSimpleInterpolation> = {
-    bottom: css`
-      top: 100%;
-      right: 0;
-      border-radius: 0 0 ${radius} ${radius};
-      box-shadow: ${shadow};
-    `,
-    top: css`
-      bottom: 100%;
-      right: 0;
-      border-radius: ${radius} ${radius} 0 0;
-      box-shadow: ${shadow};
-    `,
-    right: css`
-      top: 0;
-      left: 100%;
-      height: 100%;
-      border-radius: 0 ${radius} ${radius} 0;
-      box-shadow: ${shadow};
-      align-items: center;
-    `,
-    left: css`
-      top: 0;
-      right: 100%;
-      border-radius: ${radius} 0 0 ${radius};
-      box-shadow: ${shadow};
-    `,
-    inside: css`
-      top: calc(100% - ${theme.core.space.space400});
-      right: ${theme.core.space.space050};
-      border-radius: 0 ${radius} ${radius} 0;
-      box-shadow: ${shadow};
-    `,
-  }
-  return positionStyles[position]
-}
-
-export const usePositionStyles = (
-  position: Positions,
-): FlattenSimpleInterpolation => {
-  const theme = useTheme()
-  return useMemo(() => getPositionStyles(position, theme), [position, theme])
-}
+const SPACE_80PX = '70px'
 
 const RefStyledContainer = React.forwardRef<
   HTMLDivElement,
@@ -99,50 +51,91 @@ export const ApplyButton = styled(IconButton).attrs({
   }
 `
 
-const getDesigns = (theme: Theme) => ({
-  default: css``,
-  separate: css`
-    border-radius: 0;
-    box-shadow: none;
-    background-color: inherit !important;
-    width: ${theme.core.space.space600};
-    z-index: 4;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    .popoverWrapper,
-    ${DeclineButton}, ${ApplyButton} {
-      height: ${theme.core.space.space300} !important;
-      width: ${theme.core.space.space300} !important;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    svg {
-      width: ${theme.core.space.space200} !important;
-      height: ${theme.core.space.space200} !important;
-    }
-  `,
-})
-
-type ActionsWrapperProps = {
-  $size?: { width: string; height: string }
-  theme: Theme
-}
-
 export const ActionsWrapper = styled(FlexItem)<{
   $size?: { width: string; height: string }
 }>`
   width: ${({ $size, theme }: ActionsWrapperProps) =>
-    $size?.width ?? theme.core.space.space300} !important;
+    $size?.width ?? theme.core.space.space300};
   height: ${({ $size, theme }: ActionsWrapperProps) =>
-    $size?.height ?? theme.core.space.space300} !important;
+    $size?.height ?? theme.core.space.space300};
 `
+const usePosition = (position: Positions = 'inside') => {
+  const theme = useTheme()
+  const radius = theme.components.card.borderRadius
+  const shadow = theme.core.shadow.shadow200
+  const positionStyles = {
+    bottom: css`
+      top: 100%;
+      right: 0;
+      border-radius: 0 0 ${radius} ${radius};
+      box-shadow: ${shadow};
+    `,
+    top: css`
+      bottom: 100%;
+      right: 0;
+      border-radius: ${radius} ${radius} 0 0;
+      box-shadow: ${shadow};
+    `,
+    right: css`
+      top: 0;
+      left: 100%;
+      height: 100%;
+      border-radius: 0 ${radius} ${radius} 0;
+      box-shadow: ${shadow};
+      align-items: center;
+    `,
+    left: css`
+      top: 0;
+      right: 100%;
+      border-radius: ${radius} 0 0 ${radius};
+      box-shadow: ${shadow};
+    `,
+    inside: css`
+      top: calc(100% - ${theme.core.space.space400});
+      right: ${theme.core.space.space050};
+      border-radius: 0 ${radius} ${radius} 0;
+      box-shadow: ${shadow};
+    `,
+  }
+  return positionStyles[position]
+}
 
-export const ActionsContainer = styled(Row)<ActionsContainerProps>`
+const useDesign = (design: Design = 'default') => {
+  const theme = useTheme()
+  const designStyles = {
+    default: '',
+    separate: css`
+      border-radius: 0;
+      box-shadow: none;
+      background-color: inherit;
+      width: ${theme.core.space.space600};
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .popoverWrapper,
+      ${DeclineButton}, ${ApplyButton} {
+        height: ${theme.core.space.space300};
+        width: ${theme.core.space.space300};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      svg {
+        width: ${theme.core.space.space200};
+        height: ${theme.core.space.space200};
+      }
+    `,
+  }
+  return designStyles[design]
+}
+
+export const ActionsContainer = styled(Row).attrs({
+  align: 'center',
+})<ActionsContainerProps>`
   position: absolute;
   background-color: ${({ theme }: { theme: Theme }) =>
     theme.semantic.color.background.primary200};
@@ -150,10 +143,9 @@ export const ActionsContainer = styled(Row)<ActionsContainerProps>`
   height: ${({ $height, theme }: ActionsContainerProps & { theme: Theme }) =>
     $height ?? theme.core.space.space400};
   padding: ${({ theme }: { theme: Theme }) => theme.core.space.space050};
-  align-items: center;
   z-index: 3;
-  ${({ $positionStyles }) => $positionStyles}
-  ${({ $design, theme }) => getDesigns(theme)[$design || 'default']}
+  ${({ $position = 'inside' }) => usePosition($position)}
+  ${({ $design = 'default' }) => useDesign($design)}
 `
 
 export const StyledTextInput = styled(TextInput)<{
