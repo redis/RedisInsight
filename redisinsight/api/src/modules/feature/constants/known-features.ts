@@ -71,6 +71,10 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
     name: KnownFeatures.AzureEntraId,
     storage: FeatureStorage.Database,
   },
+  [KnownFeatures.DevAzureEntraId]: {
+    name: KnownFeatures.DevAzureEntraId,
+    storage: FeatureStorage.Database,
+  },
   [KnownFeatures.DevBrowser]: {
     name: KnownFeatures.DevBrowser,
     storage: FeatureStorage.Database,
