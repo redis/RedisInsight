@@ -12,8 +12,8 @@ import { useDatabaseOverview } from 'uiSrc/components/database-overview/hooks/us
 import { IMetric } from 'uiSrc/components/database-overview/components/OverviewMetrics'
 import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import AutoRefresh from '../auto-refresh'
 import * as S from './DatabaseOverview.styles'
+import AutoRefresh from '../auto-refresh'
 
 const riConfig = getConfig()
 
@@ -32,73 +32,69 @@ const DatabaseOverview = () => {
 
   return (
     <S.Container>
-      <FlexItem grow key="overview">
-        <S.ItemContainer className="flex-row overview">
-          {connectivityError && (
-            <MetricItem
-              id="connectivityError"
-              tooltipContent={connectivityError}
-              content={
-                <RiIcon size="m" type="ToastInfoIcon" color="danger500" />
-              }
-            />
-          )}
-          {metrics?.length! > 0 && (
-            <>
-              {subscriptionId && subscriptionType === 'fixed' && (
-                <S.UpgradeBtnItem id="upgrade-ri-db-button">
-                  <S.UpgradeBtn>
-                    <SecondaryButton
-                      filled={!!usedMemoryPercent && usedMemoryPercent >= 75}
-                      style={{ fontWeight: '400' }}
-                      onClick={() => {
-                        const upgradeUrl = isBdbPackages
-                          ? `${riConfig.app.returnUrlBase}/databases/upgrade/${subscriptionId}`
-                          : `${riConfig.app.returnUrlBase}/subscription/${subscriptionId}/change-plan`
-                        window.open(upgradeUrl, '_blank')
-                      }}
-                      data-testid="upgrade-ri-db-button"
-                    >
-                      Upgrade plan
-                    </SecondaryButton>
-                  </S.UpgradeBtn>
-                </S.UpgradeBtnItem>
-              )}
-              {metrics?.map((overviewItem) => (
-                <MetricItem
-                  key={overviewItem.id}
-                  {...overviewItem}
-                  tooltipContent={getTooltipContent(overviewItem)}
+      <S.ItemContainer centered gap="m" key="overview" className="overview">
+        {connectivityError && (
+          <MetricItem
+            id="connectivityError"
+            tooltipContent={connectivityError}
+            content={<RiIcon size="m" type="ToastInfoIcon" color="danger500" />}
+          />
+        )}
+        {metrics?.length! > 0 && (
+          <>
+            {subscriptionId && subscriptionType === 'fixed' && (
+              <S.UpgradeBtnItem id="upgrade-ri-db-button">
+                <S.UpgradeBtn>
+                  <SecondaryButton
+                    filled={!!usedMemoryPercent && usedMemoryPercent >= 75}
+                    style={{ fontWeight: '400' }}
+                    onClick={() => {
+                      const upgradeUrl = isBdbPackages
+                        ? `${riConfig.app.returnUrlBase}/databases/upgrade/${subscriptionId}`
+                        : `${riConfig.app.returnUrlBase}/subscription/${subscriptionId}/change-plan`
+                      window.open(upgradeUrl, '_blank')
+                    }}
+                    data-testid="upgrade-ri-db-button"
+                  >
+                    Upgrade plan
+                  </SecondaryButton>
+                </S.UpgradeBtn>
+              </S.UpgradeBtnItem>
+            )}
+            {metrics?.map((overviewItem) => (
+              <MetricItem
+                key={overviewItem.id}
+                {...overviewItem}
+                tooltipContent={getTooltipContent(overviewItem)}
+              />
+            ))}
+            <S.AutoRefresh
+              data-testid="overview-auto-refresh"
+              id="overview-auto-refresh"
+            >
+              <S.OverviewItemContent>
+                <AutoRefresh
+                  displayText={false}
+                  displayLastRefresh={false}
+                  iconSize="S"
+                  loading={false}
+                  enableAutoRefreshDefault
+                  lastRefreshTime={lastRefreshTime}
+                  containerClassName=""
+                  postfix="overview"
+                  testid="auto-refresh-overview"
+                  defaultRefreshRate={DATABASE_OVERVIEW_REFRESH_INTERVAL}
+                  minimumRefreshRate={parseInt(
+                    DATABASE_OVERVIEW_MINIMUM_REFRESH_INTERVAL,
+                  )}
+                  onRefresh={handleRefresh}
+                  onEnableAutoRefresh={handleEnableAutoRefresh}
                 />
-              ))}
-              <S.AutoRefresh
-                data-testid="overview-auto-refresh"
-                id="overview-auto-refresh"
-              >
-                <S.OverviewItemContent>
-                  <AutoRefresh
-                    displayText={false}
-                    displayLastRefresh={false}
-                    iconSize="S"
-                    loading={false}
-                    enableAutoRefreshDefault
-                    lastRefreshTime={lastRefreshTime}
-                    containerClassName=""
-                    postfix="overview"
-                    testid="auto-refresh-overview"
-                    defaultRefreshRate={DATABASE_OVERVIEW_REFRESH_INTERVAL}
-                    minimumRefreshRate={parseInt(
-                      DATABASE_OVERVIEW_MINIMUM_REFRESH_INTERVAL,
-                    )}
-                    onRefresh={handleRefresh}
-                    onEnableAutoRefresh={handleEnableAutoRefresh}
-                  />
-                </S.OverviewItemContent>
-              </S.AutoRefresh>
-            </>
-          )}
-        </S.ItemContainer>
-      </FlexItem>
+              </S.OverviewItemContent>
+            </S.AutoRefresh>
+          </>
+        )}
+      </S.ItemContainer>
     </S.Container>
   )
 }
@@ -106,9 +102,8 @@ const DatabaseOverview = () => {
 const getTooltipContent = (metric: IMetric) => {
   if (!metric.children?.length) {
     return (
-      <Row>
+      <Row gap="m">
         <span>{metric.tooltip?.content}</span>
-        &nbsp;
         <span>{metric.tooltip?.title}</span>
       </Row>
     )
@@ -125,7 +120,7 @@ const getTooltipContent = (metric: IMetric) => {
               </S.MoreInfoOverviewIcon>
             </FlexItem>
           )}
-          <S.MoreInfoOverviewContent direction="row">
+          <S.MoreInfoOverviewContent grow={false}>
             {tooltipItem.content}
           </S.MoreInfoOverviewContent>
           <S.MoreInfoOverviewTitle>{tooltipItem.title}</S.MoreInfoOverviewTitle>

@@ -1,65 +1,18 @@
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { isArray, isUndefined, toNumber } from 'lodash'
 
 import {
   formatBytes,
-  Nullable,
   toBytes,
   truncateNumberToRange,
   truncatePercentage,
 } from 'uiSrc/utils'
 import { Theme } from 'uiSrc/constants'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
-
-import { AllIconsType } from 'uiSrc/components/base/icons/RiIcon'
 import { Loader } from 'uiSrc/components/base/display'
-
-import * as S from 'uiSrc/components/database-overview/DatabaseOverview.styles'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { ColorText } from 'uiSrc/components/base/text'
-
-interface Props {
-  theme: string
-  db?: number
-  items: {
-    version: string
-    usedMemory?: Nullable<number>
-    usedMemoryPercent?: Nullable<number>
-    totalKeys?: Nullable<number>
-    connectedClients?: Nullable<number>
-    opsPerSecond?: Nullable<number>
-    networkInKbps?: Nullable<number>
-    networkOutKbps?: Nullable<number>
-    cpuUsagePercentage?: Nullable<number>
-    maxCpuUsagePercentage?: Nullable<number>
-    totalKeysPerDb?: Nullable<{ [key: string]: number }>
-    cloudDetails?: {
-      cloudId: number
-      subscriptionId: number
-      subscriptionType: 'fixed' | 'flexible'
-      planMemoryLimit: number
-      memoryLimitMeasurementUnit: string
-    }
-  }
-}
-
-export interface IMetric {
-  id: string
-  content: ReactNode
-  value: any
-  unavailableText?: string
-  title: string
-  tooltip?: {
-    title?: string
-    icon?: Nullable<AllIconsType>
-    content: ReactNode | string
-  }
-  loading?: boolean
-  groupId?: string
-  icon?: Nullable<AllIconsType>
-  className?: string
-  children?: Array<IMetric>
-}
+import { GetOverviewMetricsInterface, IMetric } from './OverviewMetrics.types'
 
 export function getCpuDisplayValue(
   cpuUsagePercentage: number | null,
@@ -128,7 +81,7 @@ function getCpuUsage(
       cpuUsagePercentage === null ? (
         <Row align="center" gap="s">
           <Loader size="m" />
-          <ColorText size="m" color="primary">
+          <ColorText size="m" color="primary" variant="semiBold">
             Calculating...
           </ColorText>
         </Row>
@@ -376,7 +329,7 @@ export const getOverviewMetrics = ({
   theme,
   items,
   db = 0,
-}: Props): Array<IMetric> => {
+}: GetOverviewMetricsInterface): Array<IMetric> => {
   const {
     usedMemory,
     usedMemoryPercent,

@@ -9,10 +9,7 @@ import { RiTooltip } from 'uiSrc/components'
 
 import { DatabaseModulesList, DatabaseModuleContent } from './components'
 import { DatabaseListModulesProps } from './DatabaseListModules.types'
-import {
-  AnchorModuleTooltip,
-  StyledContainer,
-} from './DatabaseListModules.styles'
+import * as S from './DatabaseListModules.styles'
 
 export type { DatabaseListModulesProps }
 
@@ -63,19 +60,18 @@ export const DatabaseListModules = React.memo(
     }, [modules, maxViewModules])
 
     return (
-      <StyledContainer
+      <S.StyledContainer
         $unstyled={withoutStyles}
         $highlight={highlight}
         $inCircle={inCircle}
       >
         {inCircle ? (
-          <AnchorModuleTooltip>
-            <DatabaseModulesList
-              modules={newModules}
-              contentItems={contentItems}
-              inCircle={inCircle}
-            />
-          </AnchorModuleTooltip>
+          <DatabaseModulesList
+            modules={newModules}
+            contentItems={contentItems}
+            inCircle={inCircle}
+            anchorClassName={S.ANCHOR_MODULE_TOOLTIP_CLASS}
+          />
         ) : (
           <RiTooltip
             position="bottom"
@@ -94,7 +90,7 @@ export const DatabaseListModules = React.memo(
             </>
           </RiTooltip>
         )}
-      </StyledContainer>
+      </S.StyledContainer>
     )
   },
 )

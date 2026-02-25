@@ -1,10 +1,9 @@
 import styled from 'styled-components'
+import { HTMLAttributes } from 'react'
 import { Row, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { type Theme } from 'uiSrc/components/base/theme/types'
 
-export const Container = styled(Row)`
-  margin: 0;
-
+export const Container = styled(FlexItem)`
   @media only screen and (max-width: 1124px) {
     .modules {
       margin-left: 0;
@@ -19,18 +18,14 @@ export const Container = styled(Row)`
   }
 `
 
-export const ItemContainer = styled.div`
-  display: flex;
+export const ItemContainer = styled(Row)`
   height: ${({ theme }: { theme: Theme }) => theme.core.space.space500};
   border-radius: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
-  align-items: center;
-  justify-content: center;
-  margin-left: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
 `
 
 export const OverviewItem = styled(FlexItem)<{ className?: string }>`
   min-width: ${({ theme }: { theme: Theme }) => theme.core.space.space600};
-  padding: 0 ${({ theme }: { theme: Theme }) => theme.core.space.space150};
+  padding: 0 ${({ theme }: { theme: Theme }) => theme.core.space.space100} 0 0;
   color: ${({ theme }: { theme: Theme }) =>
     theme.components.typography.colors.secondary};
 
@@ -56,11 +51,8 @@ export const OverviewItemContent = styled(FlexItem)`
   font-weight: 400;
 `
 
-export const TOOLTIP_MAX_WIDTH = '372px'
-
-export const CommandsPerSecTip = styled.div`
+export const CommandsPerSecTip = styled.div<HTMLAttributes<HTMLDivElement>>`
   margin-bottom: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
-
   &:last-child {
     margin-bottom: 0;
   }
@@ -75,8 +67,7 @@ export const MoreInfoOverviewIcon = styled.span`
   align-items: center;
 `
 
-export const MoreInfoOverviewContent = styled(FlexItem)`
-  flex-direction: row;
+export const MoreInfoOverviewContent = styled(Row)`
   margin-right: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
   font-size: 12px;
 `

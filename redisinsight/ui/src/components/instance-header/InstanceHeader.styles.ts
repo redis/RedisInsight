@@ -37,10 +37,6 @@ export const DbIndexEditorWrapper = styled.div`
   margin-right: ${({ theme }: { theme: Theme }) => theme.core.space.space600};
 `
 
-export const CenterFlexItem = styled(FlexItem)`
-  text-align: center;
-`
-
 export const LeftMarginFlexItem = styled(FlexItem)`
   margin-left: ${({ theme }: { theme: Theme }) => theme.core.space.space150};
 `

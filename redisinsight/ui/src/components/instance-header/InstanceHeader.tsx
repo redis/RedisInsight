@@ -130,7 +130,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
 
   return (
     <S.Container>
-      <S.HeaderRow responsive align="center" justify="between">
+      <S.HeaderRow responsive align="center" justify="between" gap="m">
         <S.BreadcrumbsWrapper>
           <S.BreadcrumbsContainer
             data-testid="breadcrumbs-container"
@@ -283,25 +283,21 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
           </S.BreadcrumbsContainer>
         </S.BreadcrumbsWrapper>
 
-        <S.CenterFlexItem>
-          <DatabaseOverview />
-        </S.CenterFlexItem>
+        <DatabaseOverview />
 
-        <FlexItem>
-          <Row align="center" justify="end">
-            {isAnyChatAvailable && (
-              <S.LeftMarginFlexItem>
-                <CopilotTrigger />
-              </S.LeftMarginFlexItem>
-            )}
-
+        <Row align="center" justify="end" grow={false}>
+          {isAnyChatAvailable && (
             <S.LeftMarginFlexItem>
-              <InsightsTrigger />
+              <CopilotTrigger />
             </S.LeftMarginFlexItem>
+          )}
 
-            <UserProfile />
-          </Row>
-        </FlexItem>
+          <S.LeftMarginFlexItem>
+            <InsightsTrigger />
+          </S.LeftMarginFlexItem>
+
+          <UserProfile />
+        </Row>
       </S.HeaderRow>
     </S.Container>
   )

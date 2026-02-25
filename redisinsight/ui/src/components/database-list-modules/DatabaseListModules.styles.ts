@@ -1,5 +1,6 @@
-import React from 'react'
 import styled, { css } from 'styled-components'
+
+export const ANCHOR_MODULE_TOOLTIP_CLASS = 'database-list-modules-anchor'
 
 export interface StyledContainerProps {
   $unstyled?: boolean
@@ -18,6 +19,12 @@ const inCircleStyles = css`
   height: ${({ theme }) => theme.core.space.space400};
 `
 
+const anchorModuleTooltipStyles = css`
+  & .${ANCHOR_MODULE_TOOLTIP_CLASS} {
+    margin-right: ${({ theme }) => theme.core.space.space200};
+  }
+`
+
 export const StyledContainer = styled.div<StyledContainerProps>`
   ${({ $unstyled, $highlight, $inCircle }) =>
     !$unstyled &&
@@ -33,8 +40,5 @@ export const StyledContainer = styled.div<StyledContainerProps>`
 
       ${$inCircle && inCircleStyles}
     `}
-`
-
-export const AnchorModuleTooltip = styled.span`
-  margin-right: ${({ theme }) => theme.core.space.space200};
+  ${({ $inCircle }) => $inCircle && anchorModuleTooltipStyles}
 `
