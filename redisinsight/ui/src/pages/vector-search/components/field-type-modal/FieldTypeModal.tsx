@@ -19,6 +19,7 @@ import { FieldTypeFormValues } from './components/FieldTypeForm/FieldTypeForm.ty
 import { useFieldTypeValidation } from './hooks/useFieldTypeValidation'
 import { getInitialValues, buildFieldFromValues } from './FieldTypeModal.utils'
 import * as S from './FieldTypeModal.styles'
+import { Spacer } from 'uiSrc/components/base/layout'
 
 export const FieldTypeModal = ({
   isOpen,
@@ -129,6 +130,7 @@ export const FieldTypeModal = ({
                 dataTestId="field-type-modal-field-type"
               />
 
+              <Spacer size="xs" />
               <FieldTypeForm formik={formik} />
             </Col>
           }
