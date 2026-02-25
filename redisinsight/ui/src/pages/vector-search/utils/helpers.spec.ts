@@ -97,7 +97,10 @@ describe('hasPreselectedKey', () => {
   it('should return true when existing data state has initialKey', () => {
     const state: ExistingDataLocationState = {
       mode: CreateIndexMode.ExistingData,
-      initialKey: { data: [98, 105, 107, 101, 115], type: RedisResponseBufferType.Buffer } as RedisResponseBuffer,
+      initialKey: {
+        data: [98, 105, 107, 101, 115],
+        type: RedisResponseBufferType.Buffer,
+      } as RedisResponseBuffer,
       initialKeyType: RedisearchIndexKeyType.HASH,
     }
 
