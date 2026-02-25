@@ -1,13 +1,14 @@
 import React, { isValidElement } from 'react'
 import { Section } from '@redis-ui/components'
 import { RiAccordionActionsProps, RiAccordionProps } from './RiAccordion.types'
+import * as S from './RiAccordion.styles'
 
 const RiAccordionLabel = ({ label }: Pick<RiAccordionProps, 'label'>) => {
   if (!label) {
     return null
   }
   if (typeof label === 'string') {
-    return <Section.Header.Label label={label} />
+    return <S.StyledLabel label={label} />
   }
   // Ensure we always return a valid JSX element by wrapping non-JSX values
   return isValidElement(label) ? label : <>{label}</>
@@ -28,7 +29,7 @@ const RiAccordionActions = ({
 )
 
 export const RiAccordion = ({
-  id,
+  id = 'default',
   content,
   label,
   onAction,
