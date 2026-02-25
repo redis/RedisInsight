@@ -7,6 +7,7 @@ import { ColorText } from 'uiSrc/components/base/text'
 export const Page = styled(Col)`
   height: 100%;
   overflow: hidden;
+  background-color: ${({ theme }) => theme.globals.body.bgColor};
 `
 
 export const ContentWrapper = styled(Col)`
@@ -16,10 +17,12 @@ export const ContentWrapper = styled(Col)`
 
 export const Content = styled(Col)`
   min-height: 100%;
-  height: 1px;
+  height: ${({ theme }) => theme.core.space.space010};
   width: 100%;
   position: relative;
-  padding: 24px 18px 96px 18px;
+  padding: ${({ theme }) => theme.core.space.space300}
+    ${({ theme }) => theme.core.space.space200} 96px
+    ${({ theme }) => theme.core.space.space200};
   scroll-padding-bottom: 80px;
 
   @media screen and (max-width: 767px) {
@@ -33,8 +36,8 @@ export const ContentHeader = styled(FlexItem)`
 
 export const ScrollContainer = styled(FlexItem)`
   scroll-padding-bottom: 60px;
-  margin: 0 -16px;
-  padding: 0 16px;
+  margin: 0 -${({ theme }) => theme.core.space.space200};
+  padding: 0 ${({ theme }) => theme.core.space.space200};
 `
 
 export const ContentFields = styled.div`
@@ -46,20 +49,18 @@ export const ContentFields = styled.div`
 export const HelpText = styled(ColorText)`
   display: block;
   margin-bottom: ${({ theme }) => theme.core.space.space150};
-  font-size: 14px;
-  line-height: 24px;
 `
 
 export const CloseKeyTooltip = styled.div`
   position: absolute;
-  top: 22px;
-  right: 18px;
+  top: ${({ theme }) => theme.core.space.space250};
+  right: ${({ theme }) => theme.core.space.space200};
 `
 export const FormFooter = styled.div<HTMLAttributes<HTMLDivElement>>`
   position: absolute;
   bottom: 0;
   border: 0 solid ${({ theme }) => theme.semantic.color.border.neutral500};
-  border-top-width: 1px;
+  border-top-width: ${({ theme }) => theme.core.space.space010};
   width: 100%;
 
   z-index: 2;
@@ -70,7 +71,7 @@ export const FormFooter = styled.div<HTMLAttributes<HTMLDivElement>>`
 
 export const CloseBtn = styled(IconButton)`
   svg {
-    width: 20px;
-    height: 20px;
+    width: ${({ theme }) => theme.core.space.space250};
+    height: ${({ theme }) => theme.core.space.space250};
   }
 `

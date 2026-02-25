@@ -177,6 +177,7 @@ const AddKey = (props: Props) => {
                 <>
                   {!isContainJSONModule(modules) && (
                     <S.HelpText
+                      size="S"
                       color="secondary"
                       data-testid="json-not-loaded-text"
                     >
