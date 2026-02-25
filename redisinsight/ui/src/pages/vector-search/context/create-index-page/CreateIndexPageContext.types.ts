@@ -15,6 +15,7 @@ export interface FieldModalState {
   field?: IndexField
 }
 
+// TODO: Think about splitting this into multiple contexts, one for each mode.
 export interface CreateIndexPageContextValue {
   /** Which mode the page is operating in. */
   mode: CreateIndexMode
