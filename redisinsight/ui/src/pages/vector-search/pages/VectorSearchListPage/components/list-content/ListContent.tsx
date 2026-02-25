@@ -8,12 +8,21 @@ import {
   deleteRedisearchIndexAction,
   redisearchListSelector,
 } from 'uiSrc/slices/browser/redisearch'
+import {
+  ResizableContainer,
+  ResizablePanel,
+  ResizablePanelHandle,
+} from 'uiSrc/components/base/layout'
+import { ShowIcon, DeleteIcon } from 'uiSrc/components/base/icons'
 import { collectManageIndexesDeleteTelemetry } from 'uiSrc/pages/vector-search-deprecated/telemetry'
 
 import { IndexList } from '../../../../components/index-list'
 import { IndexListAction } from '../../../../components/index-list/IndexList.types'
+import { IndexInfoSidePanel } from '../../../../components/index-info-side-panel'
 import { DeleteIndexConfirmation } from '../delete-index-confirmation/DeleteIndexConfirmation'
 import { useIndexListData } from '../../../../hooks/useIndexListData'
+
+import * as S from './ListContent.styles'
 
 export const ListContent = () => {
   const dispatch = useDispatch()
@@ -31,6 +40,7 @@ export const ListContent = () => {
   const [pendingDeleteIndex, setPendingDeleteIndex] = useState<string | null>(
     null,
   )
+  const [viewingIndexName, setViewingIndexName] = useState<string | null>(null)
 
   const handleQueryClick = useCallback(
     (indexName: string) => {
@@ -59,25 +69,74 @@ export const ListContent = () => {
     setPendingDeleteIndex(null)
   }, [dispatch, instanceId, pendingDeleteIndex])
 
+  const handleViewIndex = useCallback((indexName: string) => {
+    setViewingIndexName(indexName)
+  }, [])
+
+  const handleCloseViewPanel = useCallback(() => {
+    setViewingIndexName(null)
+  }, [])
+
   const actions: IndexListAction[] = useMemo(
-    () => [{ name: 'Delete', callback: handleDelete }], // TODO: Add more actions later (e.g. Browse dataset and View index)
-    [handleDelete],
+    () => [
+      { name: 'View index', icon: ShowIcon, callback: handleViewIndex },
+      {
+        name: 'Delete',
+        icon: DeleteIcon,
+        variant: 'destructive',
+        callback: handleDelete,
+      },
+    ],
+    [handleViewIndex, handleDelete],
   )
 
   return (
-    <>
-      <IndexList
-        data={data}
-        loading={loading}
-        onQueryClick={handleQueryClick}
-        actions={actions}
-        dataTestId="vector-search--list--table"
-      />
+    <S.ContentArea>
+      <ResizableContainer direction="horizontal">
+        <ResizablePanel
+          id="index-list-panel"
+          order={1}
+          minSize={30}
+          defaultSize={viewingIndexName ? 70 : 100}
+        >
+          <S.TableWrapper>
+            <IndexList
+              data={data}
+              loading={loading}
+              onQueryClick={handleQueryClick}
+              actions={actions}
+              dataTestId="vector-search--list--table"
+            />
+          </S.TableWrapper>
+        </ResizablePanel>
+
+        {viewingIndexName && (
+          <>
+            <ResizablePanelHandle
+              direction="vertical"
+              data-test-subj="resize-btn-view-index-panel"
+            />
+
+            <ResizablePanel
+              id="view-index-panel"
+              order={2}
+              minSize={15}
+              defaultSize={30}
+            >
+              <IndexInfoSidePanel
+                indexName={viewingIndexName}
+                onClose={handleCloseViewPanel}
+              />
+            </ResizablePanel>
+          </>
+        )}
+      </ResizableContainer>
+
       <DeleteIndexConfirmation
         isOpen={!!pendingDeleteIndex}
         onConfirm={handleConfirmDelete}
         onClose={() => setPendingDeleteIndex(null)}
       />
-    </>
+    </S.ContentArea>
   )
 }

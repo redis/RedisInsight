@@ -27,6 +27,15 @@ jest.mock('../../../../hooks/useIndexListData', () => ({
   })),
 }))
 
+jest.mock('../../../../hooks/useIndexInfo/useIndexInfo', () => ({
+  useIndexInfo: jest.fn().mockReturnValue({
+    indexInfo: null,
+    loading: false,
+    error: null,
+    refetch: jest.fn(),
+  }),
+}))
+
 jest.mock('uiSrc/slices/browser/redisearch', () => ({
   ...jest.requireActual('uiSrc/slices/browser/redisearch'),
   deleteRedisearchIndexAction: jest.fn().mockReturnValue({ type: 'delete' }),
@@ -80,9 +89,9 @@ describe('ListContent', () => {
     renderComponent()
 
     const table = screen.getByTestId('vector-search--list--table')
-    expect(table).toBeInTheDocument()
-
     const indexName = screen.getByTestId(`index-name-${mockIndexRow.id}`)
+
+    expect(table).toBeInTheDocument()
     expect(indexName).toBeInTheDocument()
   })
 
@@ -95,9 +104,9 @@ describe('ListContent', () => {
     renderComponent()
 
     const table = screen.getByTestId('vector-search--list--table')
-    expect(table).toBeInTheDocument()
-
     const emptyMessage = screen.getByText('No indexes found')
+
+    expect(table).toBeInTheDocument()
     expect(emptyMessage).toBeInTheDocument()
   })
 
@@ -105,17 +114,22 @@ describe('ListContent', () => {
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     renderComponent()
 
-    await user.click(
-      screen.getByTestId('index-actions-menu-trigger-test-index'),
+    const menuTrigger = screen.getByTestId(
+      'index-actions-menu-trigger-test-index',
     )
-    await user.click(screen.getByText('Delete'))
+    await user.click(menuTrigger)
 
-    expect(
-      screen.getByText('Are you sure you want to delete this index?'),
-    ).toBeInTheDocument()
+    const deleteOption = screen.getByText('Delete')
+    await user.click(deleteOption)
+
+    const confirmationMessage = screen.getByText(
+      'Are you sure you want to delete this index?',
+    )
+    expect(confirmationMessage).toBeInTheDocument()
     expect(deleteRedisearchIndexAction).not.toHaveBeenCalled()
 
-    await user.click(screen.getByRole('button', { name: 'Delete index' }))
+    const confirmBtn = screen.getByRole('button', { name: 'Delete index' })
+    await user.click(confirmBtn)
 
     expect(deleteRedisearchIndexAction).toHaveBeenCalled()
     expect(
@@ -127,12 +141,16 @@ describe('ListContent', () => {
     const user = userEvent.setup({ pointerEventsCheck: 0 })
     renderComponent()
 
-    await user.click(
-      screen.getByTestId('index-actions-menu-trigger-test-index'),
+    const menuTrigger = screen.getByTestId(
+      'index-actions-menu-trigger-test-index',
     )
-    await user.click(screen.getByText('Delete'))
+    await user.click(menuTrigger)
 
-    await user.click(screen.getByRole('button', { name: 'Keep index' }))
+    const deleteOption = screen.getByText('Delete')
+    await user.click(deleteOption)
+
+    const cancelBtn = screen.getByRole('button', { name: 'Keep index' })
+    await user.click(cancelBtn)
 
     expect(deleteRedisearchIndexAction).not.toHaveBeenCalled()
     expect(
@@ -149,5 +167,45 @@ describe('ListContent', () => {
     expect(mockPush).toHaveBeenCalledWith(
       Pages.vectorSearchQuery(mockInstanceId, mockIndexRow.name),
     )
+  })
+
+  it('should open view index panel when View index action is clicked', async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 })
+    renderComponent()
+
+    const viewPanel = screen.queryByTestId('view-index-panel')
+    expect(viewPanel).not.toBeInTheDocument()
+
+    const menuTrigger = screen.getByTestId(
+      'index-actions-menu-trigger-test-index',
+    )
+    await user.click(menuTrigger)
+
+    const viewIndexOption = screen.getByText('View index')
+    await user.click(viewIndexOption)
+
+    const panel = screen.getByTestId('view-index-panel')
+    expect(panel).toBeInTheDocument()
+  })
+
+  it('should close view index panel when close button is clicked', async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 })
+    renderComponent()
+
+    const menuTrigger = screen.getByTestId(
+      'index-actions-menu-trigger-test-index',
+    )
+    await user.click(menuTrigger)
+
+    const viewIndexOption = screen.getByText('View index')
+    await user.click(viewIndexOption)
+
+    const panel = screen.getByTestId('view-index-panel')
+    expect(panel).toBeInTheDocument()
+
+    const closeBtn = screen.getByTestId('close-index-panel-btn')
+    await user.click(closeBtn)
+
+    expect(screen.queryByTestId('view-index-panel')).not.toBeInTheDocument()
   })
 })

@@ -14,7 +14,7 @@ import { searchResultsTelemetry } from '../../../../telemetry.constants'
 import { useQuery } from '../../hooks/useQuery'
 import { QueryEditorWrapper } from '../../../../components/query-editor'
 import { NoSearchResults } from '../../../../components/no-search-results'
-import { IndexInfoSidePanel } from '../index-info-side-panel'
+import { IndexInfoSidePanel } from '../../../../components/index-info-side-panel'
 
 import { PageContentProps } from './PageContent.types'
 import * as S from './PageContent.styles'
