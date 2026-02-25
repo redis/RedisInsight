@@ -9,7 +9,8 @@ export const Container = styled(Row)`
     .modules {
       margin-left: 0;
       border-left: 0;
-      padding-left: 12px;
+      padding-left: ${({ theme }: { theme: Theme }) =>
+        theme.core.space.space150};
     }
 
     .overview {
@@ -20,16 +21,16 @@ export const Container = styled(Row)`
 
 export const ItemContainer = styled.div`
   display: flex;
-  height: 42px;
-  border-radius: 8px;
+  height: ${({ theme }: { theme: Theme }) => theme.core.space.space500};
+  border-radius: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
   align-items: center;
   justify-content: center;
-  margin-left: 6px;
+  margin-left: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
 `
 
 export const OverviewItem = styled(FlexItem)<{ className?: string }>`
-  min-width: 58px;
-  padding: 0 14px;
+  min-width: ${({ theme }: { theme: Theme }) => theme.core.space.space600};
+  padding: 0 ${({ theme }: { theme: Theme }) => theme.core.space.space150};
   color: ${({ theme }: { theme: Theme }) =>
     theme.components.typography.colors.secondary};
 
@@ -42,10 +43,10 @@ export const OverviewItem = styled(FlexItem)<{ className?: string }>`
 export const Icon = styled.span`
   color: ${({ theme }: { theme: Theme }) =>
     theme.semantic.color.icon.neutral600};
-  margin-right: 6px;
+  margin-right: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
   width: auto;
-  height: 14px;
-  max-width: 18px;
+  height: ${({ theme }: { theme: Theme }) => theme.core.space.space150};
+  max-width: ${({ theme }: { theme: Theme }) => theme.core.space.space200};
   display: flex;
   align-items: center;
 `
@@ -58,7 +59,7 @@ export const OverviewItemContent = styled(FlexItem)`
 export const TOOLTIP_MAX_WIDTH = '372px'
 
 export const CommandsPerSecTip = styled.div`
-  margin-bottom: 8px;
+  margin-bottom: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
 
   &:last-child {
     margin-bottom: 0;
@@ -66,22 +67,22 @@ export const CommandsPerSecTip = styled.div`
 `
 
 export const MoreInfoOverviewIcon = styled.span`
-  margin-right: 8px;
+  margin-right: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
   width: auto;
-  max-width: 20px;
-  height: 18px;
+  max-width: ${({ theme }: { theme: Theme }) => theme.core.space.space250};
+  height: ${({ theme }: { theme: Theme }) => theme.core.space.space200};
   display: flex;
   align-items: center;
 `
 
 export const MoreInfoOverviewContent = styled(FlexItem)`
   flex-direction: row;
-  margin-right: 6px;
+  margin-right: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
   font-size: 12px;
 `
 
 export const MoreInfoOverviewTitle = styled(FlexItem)`
-  margin-right: 6px;
+  margin-right: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
   font-size: 12px;
   font-weight: 200;
 `
@@ -89,7 +90,7 @@ export const MoreInfoOverviewTitle = styled(FlexItem)`
 export const AutoRefresh = styled(FlexItem)`
   padding-top: 0;
   padding-bottom: 0;
-  margin-left: -2px;
+  margin-left: -${({ theme }: { theme: Theme }) => theme.core.space.space025};
 
   .popover-without-top-tail {
     margin-top: 0;
@@ -98,26 +99,10 @@ export const AutoRefresh = styled(FlexItem)`
 
 export const UpgradeBtnItem = styled(FlexItem)`
   border-right: none;
-  height: 28px;
+  height: ${({ theme }: { theme: Theme }) => theme.core.space.space300};
 `
 
 export const UpgradeBtn = styled.span`
   padding: 0;
   margin-top: 0;
-`
-
-// OverviewMetrics styles
-export const CpuWrapper = styled.div``
-
-export const OpsPerSecItem = styled.div``
-
-export const CalculationWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`
-
-export const Spinner = styled.span``
-
-export const Calculation = styled.span`
-  font-style: italic;
 `

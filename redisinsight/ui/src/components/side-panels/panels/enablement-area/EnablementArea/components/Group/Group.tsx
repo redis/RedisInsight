@@ -116,14 +116,14 @@ const Group = (props: Props) => {
       defaultOpen={initialIsOpen}
       open={forceState === 'open' || isGroupOpen}
       label={
-        <Row align="end" justify="start" gap="s">
+        <Row align="start" justify="start" gap="m">
           {isShowFolder && (
-            <RiIcon type={isGroupOpen ? 'FolderOpenIcon' : 'FolderIcon'} />
+            <RiIcon
+              type={isGroupOpen ? 'FolderOpenIcon' : 'FolderIcon'}
+              color="primary500"
+            />
           )}
-
-          <Text className="group-header" size="m">
-            {label}
-          </Text>
+          <RiAccordion.StyledLabel label={label} />
         </Row>
       }
       onOpenChange={handleOpen}

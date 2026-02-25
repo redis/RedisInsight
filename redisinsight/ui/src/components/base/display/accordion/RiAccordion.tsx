@@ -67,3 +67,5 @@ export const RiAccordion = ({
     </Section.Body>
   </Section.Compose>
 )
+
+RiAccordion.StyledLabel = S.StyledLabel

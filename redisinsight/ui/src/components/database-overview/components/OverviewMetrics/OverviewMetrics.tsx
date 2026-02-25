@@ -15,6 +15,8 @@ import { AllIconsType } from 'uiSrc/components/base/icons/RiIcon'
 import { Loader } from 'uiSrc/components/base/display'
 
 import * as S from 'uiSrc/components/database-overview/DatabaseOverview.styles'
+import { Row } from 'uiSrc/components/base/layout/flex'
+import { ColorText } from 'uiSrc/components/base/text'
 
 interface Props {
   theme: string
@@ -124,10 +126,12 @@ function getCpuUsage(
         : null,
     content:
       cpuUsagePercentage === null ? (
-        <S.CalculationWrapper>
+        <Row align="center" gap="s">
           <Loader size="m" />
-          <S.Calculation>Calculating...</S.Calculation>
-        </S.CalculationWrapper>
+          <ColorText size="m" color="primary">
+            Calculating...
+          </ColorText>
+        </Row>
       ) : (
         displayValue
       ),
