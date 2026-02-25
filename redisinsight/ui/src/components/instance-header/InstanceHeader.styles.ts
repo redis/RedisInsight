@@ -1,27 +1,81 @@
 import styled from 'styled-components'
+import { HTMLAttributes } from 'react'
 import { type Theme } from 'uiSrc/components/base/theme/types'
+import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { ColorText } from 'uiSrc/components/base/text'
 
-export const Container = styled.div`
-  padding: 0 16px;
-  height: 70px;
+export const Container = styled(Col)`
+  padding: 0 ${({ theme }: { theme: Theme }) => theme.core.space.space200};
+  border-bottom: ${({ theme }: { theme: Theme }) =>
+    theme.components.sideBar.collapsed.borderRight};
+  height: ${({ theme }: { theme: Theme }) => theme.core.space.space800};
 `
 
-export const BreadcrumbsContainer = styled.div`
+export const HeaderRow = styled(Row)`
   height: 100%;
-  display: flex;
-  align-items: center;
+`
+
+export const BreadcrumbsWrapper = styled(FlexItem)`
+  overflow: hidden;
+`
+
+export const BreadcrumbsContent = styled.div`
+  flex: 1;
+  overflow: hidden;
+`
+
+export const BreadcrumbsMaxWidth = styled.div`
+  max-width: 100%;
+`
+
+export const ReturnToItem = styled(FlexItem)`
+  padding: ${({ theme }: { theme: Theme }) =>
+    `${theme.core.space.space050} ${theme.core.space.space200} ${theme.core.space.space050} 0`};
+`
+
+export const DbIndexEditorWrapper = styled.div`
+  margin-right: ${({ theme }: { theme: Theme }) => theme.core.space.space600};
+`
+
+export const CenterFlexItem = styled(FlexItem)`
+  text-align: center;
+`
+
+export const LeftMarginFlexItem = styled(FlexItem)`
+  margin-left: ${({ theme }: { theme: Theme }) => theme.core.space.space150};
+`
+
+export const BreadcrumbsContainer = styled(Row)`
+  height: 100%;
 
   & > div {
     display: flex;
   }
+  & .tooltip-anchor {
+    max-width: 100%;
+    display: block;
+    line-height: 1;
+    height: min-content;
+    cursor: pointer;
+  }
+  & .tooltip-anchor:hover .infoIcon {
+    color: currentColor;
+  }
 `
 
-export const BreadCrumbLink = styled.span`
+export const InfoIcon = styled.span<HTMLAttributes<HTMLSpanElement>>`
   color: ${({ theme }: { theme: Theme }) =>
-    theme.semantic.color.text.primary500};
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
+    theme.semantic.color.icon.neutral600};
+  transition: color ease 0.3s;
+  cursor: pointer;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  justify-content: center;
+`
+
+export const BreadCrumbLink = styled(ColorText)`
   cursor: pointer;
   text-decoration: underline;
 
@@ -31,15 +85,6 @@ export const BreadCrumbLink = styled.span`
 `
 
 export const TOOLTIP_MAX_WIDTH = '400px'
-
-export const TooltipAnchor = styled.span`
-  max-width: 100%;
-  display: inline-flex;
-
-  &:hover .infoIcon {
-    color: currentColor;
-  }
-`
 
 export const DbName = styled.b`
   display: inline-block;
@@ -52,23 +97,13 @@ export const DbName = styled.b`
   white-space: nowrap;
 `
 
-export const InfoIcon = styled.span`
-  color: ${({ theme }: { theme: Theme }) =>
-    theme.semantic.color.icon.neutral600};
-  transition: color ease 0.3s;
-`
-
-export const ButtonDbIndex = styled.span`
-  height: 32px;
-`
-
 export const Controls = styled.span`
-  height: 32px;
+  height: ${({ theme }: { theme: Theme }) => theme.core.space.space400};
 `
 
 export const DbIndexInput = styled.span`
-  width: 60px;
-  height: 32px;
+  width: ${({ theme }: { theme: Theme }) => theme.core.space.space600};
+  height: ${({ theme }: { theme: Theme }) => theme.core.space.space400};
 `
 
 export const Divider = styled.span`
@@ -77,7 +112,6 @@ export const Divider = styled.span`
   font-size: 14px;
   line-height: 20px;
   font-weight: 400;
-  margin: 0 8px;
 `
 
 // InstancesNavigationPopover styles
@@ -101,15 +135,16 @@ export const Wrapper = styled.div`
 `
 
 export const SearchInputContainer = styled.div`
-  padding: 16px;
+  padding: ${({ theme }: { theme: Theme }) => theme.core.space.space200};
 `
 
 export const TabsContainer = styled.div`
-  padding: 0 16px;
+  padding: 0 ${({ theme }: { theme: Theme }) => theme.core.space.space200};
 `
 
 export const FooterContainer = styled.div`
-  padding: 12px 16px;
+  padding: ${({ theme }: { theme: Theme }) =>
+    `${theme.core.space.space150} ${theme.core.space.space200}`};
 `
 
 export const HomePageLink = styled.span`
@@ -134,14 +169,14 @@ export const ListContainer = styled.div`
       theme.semantic.color.background.neutral300};
     color: ${({ theme }: { theme: Theme }) =>
       theme.components.typography.colors.primary};
-    border-left: 3px solid
-      ${({ theme }: { theme: Theme }) => theme.semantic.color.border.primary500};
+    border-left: ${({ theme }: { theme: Theme }) =>
+      `${theme.core.space.space050} solid ${theme.semantic.color.border.primary500}`};
     text-decoration: none;
   }
 `
 
 export const Item = styled.div`
-  padding-left: 10px;
+  padding-left: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
   font-size: 14px;
   line-height: 16.8px;
   color: ${({ theme }: { theme: Theme }) =>
@@ -149,11 +184,11 @@ export const Item = styled.div`
 `
 
 export const Loading = styled.span`
-  margin-right: 8px;
+  margin-right: ${({ theme }: { theme: Theme }) => theme.core.space.space100};
 `
 
 export const EmptyMsg = styled.div`
-  padding: 20px;
+  padding: ${({ theme }: { theme: Theme }) => theme.core.space.space250};
   text-align: center;
   font-size: 14px;
   line-height: 16.8px;

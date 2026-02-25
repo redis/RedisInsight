@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { useTheme } from '@redis-ui/styles'
-
 import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { selectOnFocus } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -45,6 +43,7 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Link } from 'uiSrc/components/base/link/Link'
 import InstancesNavigationPopover from './components/instances-navigation-popover'
 import * as S from './InstanceHeader.styles'
+import { ColorText } from 'uiSrc/components/base/text'
 
 const riConfig = getConfig()
 const { returnUrlBase, returnUrlLabel, returnUrlTooltip } = riConfig.app
@@ -54,7 +53,6 @@ export interface Props {
 }
 
 const InstanceHeader = ({ onChangeDbIndex }: Props) => {
-  const theme = useTheme()
   const {
     name = '',
     host = '',
@@ -131,49 +129,45 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
   }
 
   return (
-    <S.Container
-      style={{
-        borderBottom: theme.components.sideBar.collapsed.borderRight,
-      }}
-    >
-      <Row
-        responsive
-        align="center"
-        justify="between"
-        style={{ height: '100%' }}
-      >
-        <FlexItem style={{ overflow: 'hidden' }} grow={false}>
-          <S.BreadcrumbsContainer data-testid="breadcrumbs-container">
-            <div>
-              <FeatureFlagComponent name={FeatureFlags.envDependent}>
-                <RiTooltip
-                  position="bottom"
-                  content={
-                    server?.buildType === BuildType.RedisStack
-                      ? 'Edit database'
-                      : 'Redis Databases'
-                  }
-                >
-                  <Link
-                    color="subdued"
-                    underline
-                    variant="inline"
-                    aria-label={
+    <S.Container>
+      <S.HeaderRow responsive align="center" justify="between">
+        <S.BreadcrumbsWrapper>
+          <S.BreadcrumbsContainer
+            data-testid="breadcrumbs-container"
+            align="center"
+          >
+            <FlexItem style={{ overflow: 'hidden' }} grow={false}>
+              <S.BreadcrumbsContainer
+                align="center"
+                data-testid="breadcrumbs-container"
+                gap="m"
+              >
+                <FeatureFlagComponent name={FeatureFlags.envDependent}>
+                  <RiTooltip
+                    position="bottom"
+                    content={
                       server?.buildType === BuildType.RedisStack
                         ? 'Edit database'
                         : 'Redis Databases'
                     }
-                    data-testid="my-redis-db-btn"
-                    onClick={goHome}
                   >
-                    Databases
-                  </Link>
-                </RiTooltip>
-              </FeatureFlagComponent>
-            </div>
-            <div style={{ flex: 1, overflow: 'hidden' }}>
-              <div style={{ maxWidth: '100%' }}>
-                <Row align="center">
+                    <Link
+                      color="subdued"
+                      underline
+                      variant="inline"
+                      aria-label={
+                        server?.buildType === BuildType.RedisStack
+                          ? 'Edit database'
+                          : 'Redis Databases'
+                      }
+                      data-testid="my-redis-db-btn"
+                      onClick={goHome}
+                    >
+                      Databases
+                    </Link>
+                  </RiTooltip>
+                </FeatureFlagComponent>
+                <Row align="center" justify="start" gap="s" full>
                   <FeatureFlagComponent name={FeatureFlags.envDependent}>
                     <FlexItem>
                       <S.Divider>/</S.Divider>
@@ -183,15 +177,15 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                     <FeatureFlagComponent
                       name={FeatureFlags.envDependent}
                       otherwise={
-                        <FlexItem
-                          style={{ padding: '4px 24px 4px 0' }}
-                          data-testid="return-to-sm-item"
-                        >
+                        <S.ReturnToItem data-testid="return-to-sm-item">
                           <RiTooltip
                             position="bottom"
                             content={returnUrlTooltip || returnUrlLabel}
                           >
                             <S.BreadCrumbLink
+                              size="m"
+                              color="primary"
+                              variant="semiBold"
                               aria-label={returnUrlTooltip || returnUrlLabel}
                               onClick={goToReturnUrl}
                               onKeyDown={goToReturnUrl}
@@ -199,76 +193,63 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                               &#60; {returnUrlLabel}
                             </S.BreadCrumbLink>
                           </RiTooltip>
-                        </FlexItem>
+                        </S.ReturnToItem>
                       }
                     />
                   )}
-                  <FlexItem grow style={{ overflow: 'hidden' }}>
+                  <S.BreadcrumbsWrapper grow>
                     {isRedisStack || !envDependentFeature?.flag ? (
                       <S.DbName>{name}</S.DbName>
                     ) : (
                       <InstancesNavigationPopover name={name} />
                     )}
-                  </FlexItem>
+                  </S.BreadcrumbsWrapper>
                   {databases > 1 && (
-                    <FlexItem style={{ paddingLeft: 12 }}>
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                        }}
-                      >
-                        {isDbIndexEditing ? (
-                          <div style={{ marginRight: 48 }}>
-                            <InlineItemEditor
-                              controlsPosition="right"
-                              onApply={handleChangeDbIndex}
-                              onDecline={() => setIsDbIndexEditing(false)}
-                              viewChildrenMode={false}
-                            >
-                              <S.DbIndexInput>
-                                <NumericInput
-                                  autoSize
-                                  autoValidate
-                                  min={0}
-                                  onFocus={selectOnFocus}
-                                  onChange={(value) =>
-                                    setDbIndex(value ? value.toString() : '')
-                                  }
-                                  value={Number(dbIndex)}
-                                  placeholder="Database Index"
-                                  data-testid="change-index-input"
-                                />
-                              </S.DbIndexInput>
-                            </InlineItemEditor>
-                          </div>
-                        ) : (
-                          <S.ButtonDbIndex>
-                            <EmptyButton
-                              icon={EditIcon}
-                              iconSide="right"
-                              onClick={() => setIsDbIndexEditing(true)}
-                              disabled={isDbIndexDisabled || instanceLoading}
-                              data-testid="change-index-btn"
-                            >
-                              <span
-                                style={{
-                                  fontSize: 14,
-                                  marginBottom: '-2px',
-                                }}
-                              >
-                                db{db || 0}
-                              </span>
-                            </EmptyButton>
-                          </S.ButtonDbIndex>
-                        )}
-                      </div>
-                    </FlexItem>
+                    <Row align="center" grow={false}>
+                      {isDbIndexEditing ? (
+                        <S.DbIndexEditorWrapper>
+                          <InlineItemEditor
+                            controlsPosition="right"
+                            onApply={handleChangeDbIndex}
+                            onDecline={() => setIsDbIndexEditing(false)}
+                            viewChildrenMode={false}
+                          >
+                            <S.DbIndexInput>
+                              <NumericInput
+                                autoSize
+                                autoValidate
+                                min={0}
+                                onFocus={selectOnFocus}
+                                onChange={(value) =>
+                                  setDbIndex(value ? value.toString() : '')
+                                }
+                                value={Number(dbIndex)}
+                                placeholder="Database Index"
+                                data-testid="change-index-input"
+                              />
+                            </S.DbIndexInput>
+                          </InlineItemEditor>
+                        </S.DbIndexEditorWrapper>
+                      ) : (
+                        <EmptyButton
+                          icon={EditIcon}
+                          iconSide="right"
+                          onClick={() => setIsDbIndexEditing(true)}
+                          disabled={isDbIndexDisabled || instanceLoading}
+                          data-testid="change-index-btn"
+                        >
+                          <ColorText size="m" color="primary">
+                            db{db || 0}
+                          </ColorText>
+                        </EmptyButton>
+                      )}
+                    </Row>
                   )}
-                  <FlexItem style={{ paddingLeft: 6 }}>
+                  <Row align="center" grow={false}>
                     <RiTooltip
                       position="right"
                       maxWidth={S.TOOLTIP_MAX_WIDTH}
+                      anchorClassName="tooltip-anchor"
                       content={
                         <ShortInstanceInfo
                           info={{
@@ -285,44 +266,41 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                         />
                       }
                     >
-                      <S.TooltipAnchor>
-                        <S.InfoIcon className="infoIcon">
-                          <RiIcon
-                            type="InfoIcon"
-                            size="l"
-                            style={{ cursor: 'pointer' }}
-                            data-testid="db-info-icon"
-                          />
-                        </S.InfoIcon>
-                      </S.TooltipAnchor>
+                      <S.InfoIcon className="infoIcon">
+                        <RiIcon
+                          type="InfoIcon"
+                          size="l"
+                          data-testid="db-info-icon"
+                        />
+                      </S.InfoIcon>
                     </RiTooltip>
-                  </FlexItem>
+                  </Row>
                 </Row>
-              </div>
-            </div>
+              </S.BreadcrumbsContainer>
+            </FlexItem>
           </S.BreadcrumbsContainer>
-        </FlexItem>
+        </S.BreadcrumbsWrapper>
 
-        <FlexItem style={{ textAlign: 'center' }}>
+        <S.CenterFlexItem>
           <DatabaseOverview />
-        </FlexItem>
+        </S.CenterFlexItem>
 
         <FlexItem>
           <Row align="center" justify="end">
             {isAnyChatAvailable && (
-              <FlexItem style={{ marginLeft: 12 }}>
+              <S.LeftMarginFlexItem>
                 <CopilotTrigger />
-              </FlexItem>
+              </S.LeftMarginFlexItem>
             )}
 
-            <FlexItem style={{ marginLeft: 12 }}>
+            <S.LeftMarginFlexItem>
               <InsightsTrigger />
-            </FlexItem>
+            </S.LeftMarginFlexItem>
 
             <UserProfile />
           </Row>
         </FlexItem>
-      </Row>
+      </S.HeaderRow>
     </S.Container>
   )
 }
