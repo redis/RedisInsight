@@ -14,10 +14,14 @@ import styles from './styles.module.scss'
 const ClusterDetailsGraphics = ({
   nodes,
   loading,
+  dataLoaded,
 }: {
   nodes: Nullable<ModifiedClusterNodes[]>
   loading: boolean
+  dataLoaded: boolean
 }) => {
+  // Only show loading on initial load, not during refresh polls
+  const showLoading = loading && !dataLoaded
   const [memoryData, setMemoryData] = useState<ChartData[]>([])
   const [memorySum, setMemorySum] = useState(0)
   const [keysData, setKeysData] = useState<ChartData[]>([])
@@ -90,7 +94,7 @@ const ClusterDetailsGraphics = ({
     }
   }, [nodes])
 
-  if (loading && !nodes?.length) {
+  if (showLoading && !nodes?.length) {
     return (
       <div
         className={cx(styles.wrapper, styles.loadingWrapper)}

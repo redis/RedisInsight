@@ -81,12 +81,16 @@ const mockNodes = [
 describe('ClusterDetailsGraphics', () => {
   it('should render', () => {
     expect(
-      render(<ClusterDetailsGraphics nodes={mockNodes} loading={false} />),
+      render(
+        <ClusterDetailsGraphics nodes={mockNodes} loading={false} dataLoaded />,
+      ),
     ).toBeTruthy()
   })
 
   it('should render nothing without nodes', () => {
-    render(<ClusterDetailsGraphics nodes={[]} loading={false} />)
+    render(
+      <ClusterDetailsGraphics nodes={[]} loading={false} dataLoaded={false} />,
+    )
     expect(
       screen.queryByTestId('cluster-details-graphics-loading'),
     ).not.toBeInTheDocument()
@@ -95,8 +99,8 @@ describe('ClusterDetailsGraphics', () => {
     ).not.toBeInTheDocument()
   })
 
-  it('should render loading content', () => {
-    render(<ClusterDetailsGraphics nodes={null} loading />)
+  it('should render loading content on initial load', () => {
+    render(<ClusterDetailsGraphics nodes={null} loading dataLoaded={false} />)
     expect(
       screen.getByTestId('cluster-details-graphics-loading'),
     ).toBeInTheDocument()
@@ -105,8 +109,20 @@ describe('ClusterDetailsGraphics', () => {
     ).not.toBeInTheDocument()
   })
 
+  it('should not show loading during refresh poll when data already loaded', () => {
+    render(<ClusterDetailsGraphics nodes={[]} loading dataLoaded />)
+    expect(
+      screen.queryByTestId('cluster-details-graphics-loading'),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.queryByTestId('cluster-details-charts'),
+    ).not.toBeInTheDocument()
+  })
+
   it('should render donuts', () => {
-    render(<ClusterDetailsGraphics nodes={mockNodes} loading={false} />)
+    render(
+      <ClusterDetailsGraphics nodes={mockNodes} loading={false} dataLoaded />,
+    )
     expect(screen.getByTestId('donut-memory')).toBeInTheDocument()
     expect(screen.queryByTestId('donut-keys')).toBeInTheDocument()
   })
