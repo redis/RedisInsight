@@ -12,62 +12,13 @@ import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { DestructiveButton } from 'uiSrc/components/base/forms/buttons'
 import ConfirmationPopover from 'uiSrc/components/confirmation-popover'
 
+import type { InlineItemEditorProps } from './InlineItemEditor.types'
+import { usePositionStyles } from './InlineItemEditor.styles'
 import * as S from './InlineItemEditor.styles'
 
-type Positions = 'top' | 'bottom' | 'left' | 'right' | 'inside'
-type Design = 'default' | 'separate'
-type InputVariant = 'outline' | 'underline'
+const POPOVER_PANEL_WIDTH = '296px'
 
-export interface Props {
-  onDecline: (event?: React.MouseEvent<HTMLElement>) => void
-  onApply: (value: string, event: React.MouseEvent) => void
-  onChange?: (value: string) => void
-  fieldName?: string
-  initialValue?: string
-  placeholder?: string
-  controlsPosition?: Positions
-  controlsDesign?: Design
-  maxLength?: number
-  expandable?: boolean
-  isLoading?: boolean
-  isDisabled?: boolean
-  isInvalid?: boolean
-  disableEmpty?: boolean
-  disableByValidation?: (value: string) => boolean
-  children?: React.ReactElement
-  validation?: (value: string) => string
-  getError?: (
-    value: string,
-  ) => { title: string; content: string | React.ReactNode } | undefined
-  declineOnUnmount?: boolean
-  iconSize?: 'S' | 'M' | 'L'
-  viewChildrenMode?: boolean
-  autoComplete?: string
-  controlsClassName?: string
-  disabledTooltipText?: { title: string; content: string | React.ReactNode }
-  preventOutsideClick?: boolean
-  disableFocusTrap?: boolean
-  approveByValidation?: (value: string) => boolean
-  approveText?: { title: string; text: string }
-  textFiledClassName?: string
-  variant?: InputVariant
-  styles?: {
-    inputContainer?: {
-      width?: string
-      height?: string
-    }
-    input?: {
-      width?: string
-      height?: string
-    }
-    actionsContainer?: {
-      width?: string
-      height?: string
-    }
-  }
-}
-
-const InlineItemEditor = (props: Props) => {
+const InlineItemEditor = (props: InlineItemEditorProps) => {
   const {
     initialValue = '',
     placeholder = '',
@@ -105,6 +56,7 @@ const InlineItemEditor = (props: Props) => {
   const [isError, setIsError] = useState<boolean>(false)
   const [isShowApprovePopover, setIsShowApprovePopover] = useState(false)
   const theme = useTheme()
+  const positionStyles = usePositionStyles(controlsPosition ?? 'bottom')
 
   const size = theme.components.iconButton.sizes[iconSize ?? 'M']
 
@@ -210,7 +162,7 @@ const InlineItemEditor = (props: Props) => {
           onOutsideClick={handleClickOutside}
           isDisabled={isShowApprovePopover}
         >
-          <S.IIEContainer ref={containerEl}>
+          <S.StyledContainer ref={containerEl}>
             <WindowEvent event="keydown" handler={handleOnEsc} />
             <FocusTrap disabled={disableFocusTrap}>
               <form
@@ -248,7 +200,7 @@ const InlineItemEditor = (props: Props) => {
                 <S.ActionsContainer
                   justify="around"
                   gap="m"
-                  $position={controlsPosition}
+                  $positionStyles={positionStyles}
                   $design={controlsDesign}
                   $width={customStyles?.actionsContainer?.width}
                   $height={customStyles?.actionsContainer?.height}
@@ -275,7 +227,7 @@ const InlineItemEditor = (props: Props) => {
                         isOpen={isShowApprovePopover}
                         closePopover={() => setIsShowApprovePopover(false)}
                         anchorClassName="popoverAnchor"
-                        maxWidth={S.POPOVER_PANEL_WIDTH}
+                        maxWidth={POPOVER_PANEL_WIDTH}
                         button={ApplyBtn}
                         title={approveText?.title}
                         message={approveText?.text}
@@ -296,7 +248,7 @@ const InlineItemEditor = (props: Props) => {
                 </S.ActionsContainer>
               </form>
             </FocusTrap>
-          </S.IIEContainer>
+          </S.StyledContainer>
         </OutsideClickDetector>
       )}
     </>

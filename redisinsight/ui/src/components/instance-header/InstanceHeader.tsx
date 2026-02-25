@@ -41,9 +41,9 @@ import { EditIcon } from 'uiSrc/components/base/icons'
 import { NumericInput } from 'uiSrc/components/base/inputs'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Link } from 'uiSrc/components/base/link/Link'
+import { ColorText } from 'uiSrc/components/base/text'
 import InstancesNavigationPopover from './components/instances-navigation-popover'
 import * as S from './InstanceHeader.styles'
-import { ColorText } from 'uiSrc/components/base/text'
 
 const riConfig = getConfig()
 const { returnUrlBase, returnUrlLabel, returnUrlTooltip } = riConfig.app
@@ -199,7 +199,9 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                   )}
                   <S.BreadcrumbsWrapper grow>
                     {isRedisStack || !envDependentFeature?.flag ? (
-                      <S.DbName>{name}</S.DbName>
+                      <S.DbName ellipsis variant="semiBold" size="s">
+                        {name}
+                      </S.DbName>
                     ) : (
                       <InstancesNavigationPopover name={name} />
                     )}

@@ -86,13 +86,9 @@ export const BreadCrumbLink = styled(ColorText)`
 
 export const TOOLTIP_MAX_WIDTH = '400px'
 
-export const DbName = styled.b`
+export const DbName = styled(ColorText)`
   display: inline-block;
   overflow: hidden;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-  text-overflow: ellipsis;
   max-width: 100%;
   white-space: nowrap;
 `

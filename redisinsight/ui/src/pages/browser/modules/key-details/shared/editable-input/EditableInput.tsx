@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { RiTooltip } from 'uiSrc/components'
 import { StopPropagation } from 'uiSrc/components/virtual-table'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
-import { Props as InlineItemEditorProps } from 'uiSrc/components/inline-item-editor/InlineItemEditor'
+import type { InlineItemEditorProps } from 'uiSrc/components/inline-item-editor/InlineItemEditor.types'
 
 import { Text } from 'uiSrc/components/base/text'
 import { EditIcon } from 'uiSrc/components/base/icons'

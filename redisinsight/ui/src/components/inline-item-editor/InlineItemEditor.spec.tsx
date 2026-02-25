@@ -2,9 +2,10 @@ import React from 'react'
 import { instance, mock } from 'ts-mockito'
 import { render, screen, fireEvent } from 'uiSrc/utils/test-utils'
 import { validateScoreNumber } from 'uiSrc/utils'
-import InlineItemEditor, { Props } from './InlineItemEditor'
+import type { InlineItemEditorProps } from './InlineItemEditor.types'
+import InlineItemEditor from './InlineItemEditor'
 
-const mockedProps = mock<Props>()
+const mockedProps = mock<InlineItemEditorProps>()
 export const INLINE_ITEM_EDITOR = 'inline-item-editor'
 
 describe('InlineItemEditor', () => {

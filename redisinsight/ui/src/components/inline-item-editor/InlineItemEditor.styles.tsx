@@ -1,57 +1,81 @@
-import React from 'react'
-import styled, { css } from 'styled-components'
+import React, { useMemo } from 'react'
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
+import { useTheme } from '@redis-ui/styles'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Theme } from 'uiSrc/components/base/theme/types'
-import { Props } from 'uiSrc/components/inline-item-editor/InlineItemEditor'
+import type {
+  ActionsContainerProps,
+  Positions,
+} from 'uiSrc/components/inline-item-editor/InlineItemEditor.types'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CancelSlimIcon, CheckThinIcon } from 'uiSrc/components/base/icons'
 import { TextInput } from '../base/inputs'
 
-interface ContainerProps {
-  className?: string
-  children?: React.ReactNode
+// Above theme.core.space max (space800 = 6.4rem = 64px)
+const SPACE_80PX = '80px'
+
+const getPositionStyles = (
+  position: Positions,
+  theme: Theme,
+): FlattenSimpleInterpolation => {
+  const radius = theme.components.card.borderRadius
+  const shadow = theme.core.shadow.shadow200
+  const positionStyles: Record<Positions, FlattenSimpleInterpolation> = {
+    bottom: css`
+      top: 100%;
+      right: 0;
+      border-radius: 0 0 ${radius} ${radius};
+      box-shadow: ${shadow};
+    `,
+    top: css`
+      bottom: 100%;
+      right: 0;
+      border-radius: ${radius} ${radius} 0 0;
+      box-shadow: ${shadow};
+    `,
+    right: css`
+      top: 0;
+      left: 100%;
+      height: 100%;
+      border-radius: 0 ${radius} ${radius} 0;
+      box-shadow: ${shadow};
+      align-items: center;
+    `,
+    left: css`
+      top: 0;
+      right: 100%;
+      border-radius: ${radius} 0 0 ${radius};
+      box-shadow: ${shadow};
+    `,
+    inside: css`
+      top: calc(100% - ${theme.core.space.space400});
+      right: ${theme.core.space.space050};
+      border-radius: 0 ${radius} ${radius} 0;
+      box-shadow: ${shadow};
+    `,
+  }
+  return positionStyles[position]
 }
 
-const RefStyledContainer = React.forwardRef(
-  (
-    { className, children }: ContainerProps,
-    ref?: React.Ref<HTMLDivElement>,
-  ) => (
-    <div className={className} ref={ref}>
-      {children}
-    </div>
-  ),
-)
+export const usePositionStyles = (
+  position: Positions,
+): FlattenSimpleInterpolation => {
+  const theme = useTheme()
+  return useMemo(() => getPositionStyles(position, theme), [position, theme])
+}
+
+const RefStyledContainer = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentPropsWithoutRef<'div'>
+>((props, ref) => <div ref={ref} {...props} />)
 
 export const StyledContainer = styled(RefStyledContainer)`
   max-width: 100%;
-
-  & .euiFormControlLayout {
-    max-width: 100% !important;
-  }
 
   & .tooltip {
     display: inline-block;
   }
 `
-
-export const IIEContainer = React.forwardRef<
-  HTMLDivElement,
-  {
-    children?: React.ReactNode
-  }
->(({ children, ...rest }, ref) => (
-  <StyledContainer ref={ref} {...rest}>
-    {children}
-  </StyledContainer>
-))
-
-type ActionsContainerProps = React.ComponentProps<typeof Row> & {
-  $position?: Props['controlsPosition']
-  $design?: Props['controlsDesign']
-  $width?: string
-  $height?: string
-}
 
 export const DeclineButton = styled(IconButton).attrs({
   icon: CancelSlimIcon,
@@ -75,48 +99,13 @@ export const ApplyButton = styled(IconButton).attrs({
   }
 `
 
-const positions = {
-  bottom: css`
-    top: 100%;
-    right: 0;
-    border-radius: 0 0 10px 10px;
-    box-shadow: 0 3px 3px var(--controlsBoxShadowColor);
-  `,
-  top: css`
-    bottom: 100%;
-    right: 0;
-    border-radius: 10px 10px 0 0;
-    box-shadow: 0 -3px 3px var(--controlsBoxShadowColor);
-  `,
-  right: css`
-    top: 0;
-    left: 100%;
-    height: 100%;
-    border-radius: 0 10px 10px 0;
-    box-shadow: 0 3px 3px var(--controlsBoxShadowColor);
-    align-items: center;
-  `,
-  left: css`
-    top: 0;
-    right: 100%;
-    border-radius: 10px 0 0 10px;
-    box-shadow: 0 3px 3px var(--controlsBoxShadowColor);
-  `,
-  inside: css`
-    top: calc(100% - 35px);
-    right: 7px;
-    border-radius: 0 10px 10px 0;
-    box-shadow: 0 3px 3px var(--controlsBoxShadowColor);
-  `,
-}
-
-const designs = {
+const getDesigns = (theme: Theme) => ({
   default: css``,
   separate: css`
     border-radius: 0;
     box-shadow: none;
     background-color: inherit !important;
-    width: 60px;
+    width: ${theme.core.space.space600};
     z-index: 4;
     display: flex;
     align-items: center;
@@ -124,8 +113,8 @@ const designs = {
 
     .popoverWrapper,
     ${DeclineButton}, ${ApplyButton} {
-      height: 24px !important;
-      width: 24px !important;
+      height: ${theme.core.space.space300} !important;
+      width: ${theme.core.space.space300} !important;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -133,30 +122,38 @@ const designs = {
     }
 
     svg {
-      width: 18px !important;
-      height: 18px !important;
+      width: ${theme.core.space.space200} !important;
+      height: ${theme.core.space.space200} !important;
     }
   `,
+})
+
+type ActionsWrapperProps = {
+  $size?: { width: string; height: string }
+  theme: Theme
 }
 
 export const ActionsWrapper = styled(FlexItem)<{
   $size?: { width: string; height: string }
 }>`
-  width: ${({ $size }) => $size?.width ?? '24px'} !important;
-  height: ${({ $size }) => $size?.height ?? '24px'} !important;
+  width: ${({ $size, theme }: ActionsWrapperProps) =>
+    $size?.width ?? theme.core.space.space300} !important;
+  height: ${({ $size, theme }: ActionsWrapperProps) =>
+    $size?.height ?? theme.core.space.space300} !important;
 `
 
 export const ActionsContainer = styled(Row)<ActionsContainerProps>`
   position: absolute;
   background-color: ${({ theme }: { theme: Theme }) =>
     theme.semantic.color.background.primary200};
-  width: ${({ $width }) => $width || '80px'};
-  height: ${({ $height }) => $height || '33px'};
+  width: ${({ $width = SPACE_80PX }) => $width};
+  height: ${({ $height, theme }: ActionsContainerProps & { theme: Theme }) =>
+    $height ?? theme.core.space.space400};
   padding: ${({ theme }: { theme: Theme }) => theme.core.space.space050};
   align-items: center;
   z-index: 3;
-  ${({ $position }) => positions[$position || 'inside']}
-  ${({ $design }) => designs[$design || 'default']}
+  ${({ $positionStyles }) => $positionStyles}
+  ${({ $design, theme }) => getDesigns(theme)[$design || 'default']}
 `
 
 export const StyledTextInput = styled(TextInput)<{
@@ -173,17 +170,17 @@ export const StyledTextInput = styled(TextInput)<{
   input {
     width: 100%;
     height: ${({ $height }) => $height || 'auto'};
-    padding: 0 5px;
+    padding: 0 ${({ theme }: { theme: Theme }) => theme.core.space.space050};
   }
 `
 
 export const KeyHiddenText = styled.p`
   display: inline-block;
   visibility: hidden;
-  height: 1px;
+  height: ${({ theme }: { theme: Theme }) => theme.core.space.space010};
   overflow: hidden;
   max-width: 100%;
-  margin-right: 80px;
+  margin-right: ${SPACE_80PX};
   word-break: break-all;
 `
 
@@ -191,5 +188,3 @@ export const PopoverAnchor = styled.div`
   width: 100%;
   height: 100%;
 `
-
-export const POPOVER_PANEL_WIDTH = '296px'
