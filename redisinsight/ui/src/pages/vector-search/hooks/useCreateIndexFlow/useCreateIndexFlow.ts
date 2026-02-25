@@ -95,7 +95,7 @@ export const useCreateIndexFlow = (): UseCreateIndexFlowResult => {
           await seedSampleQueries(instanceId, indexName, dataset)
           navigateToLibrary(instanceId, indexName)
         },
-        () => {
+        async () => {
           dispatch(
             addMessageNotification(createIndexNotifications.createFailed()),
           )
