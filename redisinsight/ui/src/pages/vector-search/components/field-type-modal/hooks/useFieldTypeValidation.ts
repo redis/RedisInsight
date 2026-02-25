@@ -89,7 +89,7 @@ export const useFieldTypeValidation = (
 
           if (
             values.epsilon !== undefined &&
-            values.epsilon < VECTOR_CONSTRAINTS.EPSILON_MIN
+            values.epsilon <= VECTOR_CONSTRAINTS.EPSILON_MIN
           ) {
             errors.epsilon = VALIDATION_MESSAGES.EPSILON_MIN
           }

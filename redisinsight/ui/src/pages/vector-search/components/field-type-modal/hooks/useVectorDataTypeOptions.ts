@@ -24,7 +24,7 @@ export const useVectorDataTypeOptions = () => {
       isRedisVersionSupported(rqeVersion, MIN_RQE_VERSION_FLOAT16)
 
     return supportsFloat16
-      ? [...VECTOR_DATA_TYPE_FLOAT16_OPTIONS, ...VECTOR_DATA_TYPE_BASE_OPTIONS]
+      ? [...VECTOR_DATA_TYPE_BASE_OPTIONS, ...VECTOR_DATA_TYPE_FLOAT16_OPTIONS]
       : VECTOR_DATA_TYPE_BASE_OPTIONS
   }, [modules])
 }
