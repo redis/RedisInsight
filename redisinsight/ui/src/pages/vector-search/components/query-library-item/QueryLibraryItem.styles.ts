@@ -3,9 +3,11 @@ import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 
 export const Container = styled(Col)`
-  border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
+  border-bottom: 1px solid
+    ${({ theme }) => theme.semantic.color.border.neutral400};
   min-height: 45px;
-  overflow: hidden;
+  flex-grow: 0;
+  flex-shrink: 0;
 `
 
 const HEADER_HEIGHT = '45px'
@@ -17,12 +19,12 @@ export const Header = styled(Row)`
   padding: ${({ theme }) => `0 ${theme.core.space.space200}`};
   cursor: pointer;
   user-select: none;
-  border-bottom: 1px solid
-    ${({ theme }) => theme.semantic.color.border.neutral500};
+  background-color: ${({ theme }) =>
+    theme.semantic.color.background.neutral200};
 
   &:hover {
     background-color: ${({ theme }) =>
-      theme.semantic.color.background.neutral200};
+      theme.semantic.color.background.neutral300};
   }
 `
 
@@ -75,13 +77,14 @@ export const BadgeWrapper = styled.span`
 `
 
 export const Body = styled(Col)`
-  max-height: calc(100% - ${HEADER_HEIGHT});
+  max-height: 400px;
   min-height: 200px;
   overflow: auto;
+  border-top: 1px solid ${({ theme }) => theme.semantic.color.border.neutral400};
 `
 
 export const ChevronWrapper = styled(Row)`
   padding-left: ${({ theme }) => theme.core.space.space100};
   border-left: 2px solid
-    ${({ theme }) => theme.semantic.color.border.neutral500};
+    ${({ theme }) => theme.semantic.color.border.neutral400};
 `

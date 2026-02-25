@@ -123,6 +123,10 @@ describe('InstancePage', () => {
       contextInstanceId: 'prevId',
     })
 
+    // Flush pending async thunks leaked from previous test renders
+    await act(async () => {})
+    store.clearActions()
+
     await act(() => {
       render(
         <BrowserRouter>
