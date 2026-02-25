@@ -19,17 +19,12 @@ export const VECTOR_CONSTRAINTS = {
   CANDIDATE_LIMIT_DEFAULT: 10,
   EPSILON_MIN: 0,
   EPSILON_DEFAULT: 0.01,
-} as const
+}
 
 export const TEXT_CONSTRAINTS = {
   WEIGHT_DEFAULT: 1,
   WEIGHT_MIN: 0,
-} as const
-
-export const SCHEMA_LIMITS = {
-  MAX_FIELDS: 1024,
-  MAX_TEXT_FIELDS: 128,
-} as const
+}
 
 export const VECTOR_ALGORITHM_DEFAULT = VectorAlgorithm.FLAT
 export const VECTOR_DISTANCE_METRIC_DEFAULT = VectorDistanceMetric.COSINE
@@ -90,4 +85,4 @@ export const VALIDATION_MESSAGES = {
     ` and ${VECTOR_CONSTRAINTS.CANDIDATE_LIMIT_MAX}.`,
   EPSILON_MIN: `Epsilon must be ${VECTOR_CONSTRAINTS.EPSILON_MIN} or greater.`,
   WEIGHT_MIN: 'Weight must be greater than 0.',
-} as const
+}
