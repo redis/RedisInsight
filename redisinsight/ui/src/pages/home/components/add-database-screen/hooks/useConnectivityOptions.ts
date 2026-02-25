@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 
-import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
+import { isAzureEntraIdEnabledSelector } from 'uiSrc/slices/app/features'
 import { useAzureAuth } from 'uiSrc/components/hooks/useAzureAuth'
 import { AddDbType } from 'uiSrc/pages/home/constants'
 import { Pages } from 'uiSrc/constants'
@@ -21,7 +21,7 @@ export const useConnectivityOptions = ({
   onClickOption,
 }: UseConnectivityOptionsProps): ConnectivityOption[] => {
   const history = useHistory()
-  const featureFlags = useSelector(appFeatureFlagsFeaturesSelector)
+  const isAzureEntraIdEnabled = useSelector(isAzureEntraIdEnabledSelector)
   const { initiateLogin, loading: azureLoading, account } = useAzureAuth()
 
   const handleAzureClick = useCallback(() => {
@@ -51,8 +51,10 @@ export const useConnectivityOptions = ({
     }
 
     const isFeatureEnabled = (option: ConnectivityOptionConfig) => {
-      if (!option.featureFlag) return true
-      return featureFlags?.[option.featureFlag]?.flag ?? false
+      if (option.type === AddDbType.azure) {
+        return isAzureEntraIdEnabled
+      }
+      return true
     }
 
     return CONNECTIVITY_OPTIONS_CONFIG.filter(isFeatureEnabled).map(
@@ -62,5 +64,5 @@ export const useConnectivityOptions = ({
         loading: getLoadingState(config),
       }),
     )
-  }, [featureFlags, handleAzureClick, azureLoading, onClickOption])
+  }, [isAzureEntraIdEnabled, handleAzureClick, azureLoading, onClickOption])
 }

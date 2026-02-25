@@ -205,6 +205,20 @@ export const appFeatureFlagsSelector = (state: RootState) =>
 export const appFeatureFlagsFeaturesSelector = (state: RootState) =>
   state.app.features.featureFlags.features
 
+const isDevelopment = riConfig.app.env === 'development'
+
+export const isAzureEntraIdEnabledSelector = (state: RootState): boolean => {
+  if (isDevelopment) {
+    return true
+  }
+
+  const features = state.app.features.featureFlags.features
+  const azureEntraIdEnabled = features[FeatureFlags.azureEntraId]?.flag ?? false
+  const envDependentEnabled = features[FeatureFlags.envDependent]?.flag ?? false
+
+  return azureEntraIdEnabled && envDependentEnabled
+}
+
 export default appFeaturesSlice.reducer
 
 export function incrementOnboardStepAction(
