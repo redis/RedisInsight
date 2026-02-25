@@ -1,4 +1,4 @@
-import React, { AnchorHTMLAttributes } from 'react'
+import type { AnchorHTMLAttributes, ReactNode } from 'react'
 import styled, { css } from 'styled-components'
 import { type Theme } from 'uiSrc/components/base/theme/types'
 
@@ -29,7 +29,7 @@ export const SurveyIcon = styled.span`
 
 interface WrapperProps {
   $fullWidth?: boolean
-  children?: React.ReactNode
+  children?: ReactNode
 }
 
 export const HelperWrapper = styled.div<WrapperProps>`
