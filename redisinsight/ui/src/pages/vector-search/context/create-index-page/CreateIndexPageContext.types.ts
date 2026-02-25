@@ -1,6 +1,13 @@
 import { IndexField } from '../../components/index-details/IndexDetails.types'
+import { FieldTypeModalMode } from '../../components/field-type-modal'
 import { SampleDataContent } from '../../components/pick-sample-data-modal/PickSampleDataModal.types'
 import { CreateIndexTab } from '../../pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
+
+export interface FieldModalState {
+  isOpen: boolean
+  mode: FieldTypeModalMode
+  field?: IndexField
+}
 
 export interface CreateIndexPageContextValue {
   /** Currently active tab (table or command). */
@@ -24,6 +31,13 @@ export interface CreateIndexPageContextValue {
   loading: boolean
   handleCreateIndex: () => void
   handleCancel: () => void
+
+  /** Field modal state and handlers. */
+  fieldModal: FieldModalState
+  openAddFieldModal: () => void
+  openEditFieldModal: (field: IndexField) => void
+  closeFieldModal: () => void
+  handleFieldSubmit: (field: IndexField) => void
 }
 
 export interface CreateIndexPageProviderProps {

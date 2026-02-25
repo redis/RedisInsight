@@ -10,4 +10,5 @@ export const ModalContent = styled(Modal.Content.Compose)`
 export const ModalBody = styled(Modal.Content.Body)`
   flex: 1;
   min-height: 0;
+  overflow-y: auto;
 `
