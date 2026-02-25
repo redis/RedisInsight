@@ -14,7 +14,7 @@ export const CommandHelperWrapper = styled.div`
 `
 
 export const Container = styled.div`
-  height: calc(100% - 34px);
+  height: calc(100% - ${({ theme }: { theme: Theme }) => theme.core.space.space400});
   position: relative;
   width: 100%;
   background-color: ${({ theme }: { theme: Theme }) =>
@@ -30,8 +30,9 @@ export const Container = styled.div`
 `
 
 export const Arg = styled(Row)<{ $odd?: boolean }>`
-  padding: 3px 10px;
-  margin: 0 -10px;
+  padding: ${({ theme }) => theme.core.space.space025}
+    ${({ theme }) => theme.core.space.space100};
+  margin: 0 ${({ theme }) => `-${theme.core.space.space100}`};
 
   ${({ $odd, theme }) =>
     $odd &&
@@ -44,20 +45,21 @@ export const Arg = styled(Row)<{ $odd?: boolean }>`
 export const Badge = styled.span`
   background-color: ${({ theme }: { theme: Theme }) =>
     theme.semantic.color.background.neutral300};
-  margin-right: 18px;
-  min-width: 68px;
+  margin-right: ${({ theme }) => theme.core.space.space200};
+  min-width: ${({ theme }) => theme.core.space.space800};
   text-align: center;
 `
 
 // CommandHelperHeader
 export const HeaderContainer = styled(Row)`
-  height: 34px;
-  line-height: 34px;
+  height: ${({ theme }) => theme.core.space.space400};
+  line-height: ${({ theme }) => theme.core.space.space400};
   width: 100%;
   overflow: hidden;
   background-color: ${({ theme }: { theme: Theme }) =>
     theme.semantic.color.background.neutral200};
-  padding: 0 10px 0 16px;
+  padding: 0 ${({ theme }) => theme.core.space.space100} 0
+    ${({ theme }) => theme.core.space.space200};
   z-index: 10;
 `
 
@@ -69,16 +71,40 @@ export const HeaderTitle = styled.div`
   .euiIcon {
     color: ${({ theme }: { theme: Theme }) =>
       theme.semantic.color.icon.primary500};
-    margin-right: 8px;
+    margin-right: ${({ theme }) => theme.core.space.space100};
   }
 `
 
-// CHSearchWrapper
+// Outer padding wrapper for the search area (used by CommandHelper)
+export const SearchSectionWrapper = styled.div`
+  padding: ${({ theme }) => theme.core.space.space100}
+    ${({ theme }) => theme.core.space.space100} 0
+    ${({ theme }) => theme.core.space.space100};
+  background-color: ${({ theme }: { theme: Theme }) =>
+    theme.semantic.color.background.neutral200};
+`
+
+// CHSearchWrapper - inner search controls layout
 export const SearchWrapper = styled.div`
-  margin-bottom: 16px;
+  margin-bottom: ${({ theme }) => theme.core.space.space200};
   position: relative;
   display: flex;
-  gap: 6px;
+  gap: ${({ theme }) => theme.core.space.space050};
+`
+
+// Scrollable output area for command details and search results
+export const OutputWrapper = styled.div`
+  scrollbar-width: thin;
+  display: flex;
+  flex: 1;
+  padding: 0 ${({ theme }) => theme.core.space.space100}
+    ${({ theme }) => theme.core.space.space100}
+    ${({ theme }) => theme.core.space.space100};
+  width: 100%;
+  min-width: ${({ theme }) => `calc(${theme.core.space.space600} * 5)`};
+  overflow: auto;
+  height: 100%;
+  max-height: calc(100% - ${({ theme }) => theme.core.space.space800});
 `
 
 // CHSearchInput
@@ -88,22 +114,22 @@ export const SearchInputContainer = styled.div`
 
 // CHSearchFilter
 export const FilterContainer = styled.div`
-  height: 36px;
+  height: ${({ theme }) => theme.core.space.space400};
 `
 
 export const SelectedType = styled.span`
-  max-width: 74px;
+  max-width: ${({ theme }) => theme.core.space.space800};
   overflow: hidden;
   text-overflow: ellipsis;
-  height: 36px;
+  height: ${({ theme }) => theme.core.space.space400};
   font-weight: 500;
-  line-height: 36px;
+  line-height: ${({ theme }) => theme.core.space.space400};
 `
 
 export const ControlsIcon = styled.span`
   cursor: pointer;
-  height: 20px;
-  width: 20px;
+  height: ${({ theme }) => theme.core.space.space250};
+  width: ${({ theme }) => theme.core.space.space250};
 
   svg {
     color: ${({ theme }: { theme: Theme }) =>
@@ -118,7 +144,7 @@ export const DefaultScreen = styled.div`
   align-items: center;
   justify-content: center;
   flex-grow: 1;
-  line-height: 21px;
+  line-height: ${({ theme }) => theme.core.space.space250};
 `
 
 export const Description = styled.span`
@@ -134,6 +160,8 @@ export const Description = styled.span`
 `
 
 export const Summary = styled(Description)`
+  padding: ${({ theme }) => theme.core.space.space100} 0
+    ${({ theme }) => theme.core.space.space050};
   color: ${({ theme }: { theme: Theme }) =>
     theme.semantic.color.text.neutral500};
 
@@ -143,11 +171,27 @@ export const Summary = styled(Description)`
   }
 `
 
+// CHCommandInfo / CommandHelper - field sections (Arguments, Since, Complexity)
+export const Field = styled.div`
+  padding-top: ${({ theme }) => theme.core.space.space150};
+  font: ${({ theme }) =>
+    `normal normal normal ${theme.core.font.fontSize.s13}/${theme.core.space.space200} Graphik, sans-serif`};
+  letter-spacing: ${({ theme }) => `-${theme.core.space.space010}`};
+`
+
+export const FieldTitle = styled.span`
+  font: ${({ theme }) =>
+    `normal normal 500 ${theme.core.font.fontSize.s14}/${theme.core.space.space200} Graphik, sans-serif`};
+  letter-spacing: ${({ theme }) => `-${theme.core.space.space010}`};
+  color: ${({ theme }: { theme: Theme }) =>
+    theme.components.typography.colors.primary};
+  padding-bottom: ${({ theme }) => theme.core.space.space025};
+`
+
 // CHCommandInfo
 export const InfoContainer = styled.div`
-  font:
-    normal normal 500 14px/21px Graphik,
-    sans-serif;
+  font: ${({ theme }) =>
+    `normal normal 500 ${theme.core.font.fontSize.s14}/${theme.core.space.space250} Graphik, sans-serif`};
 `
 
 export const InfoBadge = styled.span`

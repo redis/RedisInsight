@@ -10,7 +10,7 @@ import CHCommandInfo from '../components/command-helper-info'
 import CHSearchWrapper from '../components/command-helper-search'
 import CHSearchOutput from '../components/command-helper-search-output'
 
-import * as S from './CommandHelper.styles'
+import * as S from '../CommandHelper.styles'
 
 export interface Props {
   commandLine: string
@@ -60,9 +60,9 @@ const CommandHelper = (props: Props) => {
 
   return (
     <S.Container data-testid="cli-helper">
-      <S.SearchWrapper>
+      <S.SearchSectionWrapper>
         <CHSearchWrapper />
-      </S.SearchWrapper>
+      </S.SearchSectionWrapper>
       {isSearching && (
         <S.OutputWrapper>
           <CHSearchOutput searchedCommands={searchedCommands} />
