@@ -3,7 +3,6 @@ import { ModifiedClusterNodes } from '../../ClusterDetailsPage'
 
 export type ClusterNodesTableProps = {
   nodes: ModifiedClusterNodes[]
-  loading: boolean
   dataLoaded: boolean
 }
 

@@ -9,13 +9,9 @@ import {
 import { ClusterNodesEmptyState } from './components/ClusterNodesEmptyState/ClusterNodesEmptyState'
 import { ClusterNodesTableProps } from './ClusterNodesTable.types'
 
-const ClusterNodesTable = ({
-  nodes,
-  loading,
-  dataLoaded,
-}: ClusterNodesTableProps) => {
-  // Only show loading skeleton on initial load, not during refresh polls
-  const showLoading = loading && !dataLoaded
+const ClusterNodesTable = ({ nodes, dataLoaded }: ClusterNodesTableProps) => {
+  // Show loading until data is received; don't show during refresh polls
+  const showLoading = !dataLoaded
 
   const renderEmptyState = useCallback(
     () => <ClusterNodesEmptyState loading={showLoading} />,

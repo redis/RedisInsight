@@ -30,29 +30,19 @@ const mockNodes = [
 describe('ClusterNodesTable', () => {
   it('should render', () => {
     expect(
-      render(
-        <ClusterNodesTable nodes={mockNodes} loading={false} dataLoaded />,
-      ),
+      render(<ClusterNodesTable nodes={mockNodes} dataLoaded />),
     ).toBeTruthy()
   })
 
-  it('should render loading content on initial load', () => {
-    render(<ClusterNodesTable nodes={[]} loading dataLoaded={false} />)
+  it('should render loading content when data not yet loaded', () => {
+    render(<ClusterNodesTable nodes={[]} dataLoaded={false} />)
     expect(
       screen.getByTestId('primary-nodes-table-loading'),
     ).toBeInTheDocument()
   })
 
-  it('should render empty state when not loading and no nodes', () => {
-    render(<ClusterNodesTable nodes={[]} loading={false} dataLoaded />)
-    expect(screen.getByTestId('primary-nodes-table-empty')).toBeInTheDocument()
-    expect(
-      screen.queryByTestId('primary-nodes-table-loading'),
-    ).not.toBeInTheDocument()
-  })
-
-  it('should not show loading skeleton during refresh poll when data already loaded', () => {
-    render(<ClusterNodesTable nodes={[]} loading dataLoaded />)
+  it('should render empty state when data loaded and no nodes', () => {
+    render(<ClusterNodesTable nodes={[]} dataLoaded />)
     expect(screen.getByTestId('primary-nodes-table-empty')).toBeInTheDocument()
     expect(
       screen.queryByTestId('primary-nodes-table-loading'),
@@ -61,7 +51,7 @@ describe('ClusterNodesTable', () => {
 
   it('should render table', () => {
     const { container } = render(
-      <ClusterNodesTable nodes={mockNodes} loading={false} dataLoaded />,
+      <ClusterNodesTable nodes={mockNodes} dataLoaded />,
     )
     expect(container).toBeInTheDocument()
     expect(
@@ -70,26 +60,26 @@ describe('ClusterNodesTable', () => {
   })
 
   it('should render table with 3 items', () => {
-    render(<ClusterNodesTable nodes={mockNodes} loading={false} dataLoaded />)
+    render(<ClusterNodesTable nodes={mockNodes} dataLoaded />)
     expect(screen.getAllByTestId('node-letter')).toHaveLength(3)
   })
 
   it('should highlight max value for total keys', () => {
-    render(<ClusterNodesTable nodes={mockNodes} loading={false} dataLoaded />)
+    render(<ClusterNodesTable nodes={mockNodes} dataLoaded />)
     expect(screen.getByTestId('totalKeys-value-max')).toHaveTextContent(
       mockNodes[2].totalKeys.toString(),
     )
   })
 
   it('should not highlight max value for opsPerSecond with equals values', () => {
-    render(<ClusterNodesTable nodes={mockNodes} loading={false} dataLoaded />)
+    render(<ClusterNodesTable nodes={mockNodes} dataLoaded />)
     expect(
       screen.queryByTestId('opsPerSecond-value-max'),
     ).not.toBeInTheDocument()
   })
 
   it('should render background color for each node', () => {
-    render(<ClusterNodesTable nodes={mockNodes} loading={false} dataLoaded />)
+    render(<ClusterNodesTable nodes={mockNodes} dataLoaded />)
     mockNodes.forEach(({ letter, color }) => {
       expect(screen.getByTestId(`node-color-${letter}`)).toHaveStyle({
         'background-color': rgb(color),

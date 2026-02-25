@@ -13,15 +13,13 @@ import styles from './styles.module.scss'
 
 const ClusterDetailsGraphics = ({
   nodes,
-  loading,
   dataLoaded,
 }: {
   nodes: Nullable<ModifiedClusterNodes[]>
-  loading: boolean
   dataLoaded: boolean
 }) => {
-  // Only show loading on initial load, not during refresh polls
-  const showLoading = loading && !dataLoaded
+  // Show loading until data is received; don't show during refresh polls
+  const showLoading = !dataLoaded
   const [memoryData, setMemoryData] = useState<ChartData[]>([])
   const [memorySum, setMemorySum] = useState(0)
   const [keysData, setKeysData] = useState<ChartData[]>([])
