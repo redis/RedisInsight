@@ -135,6 +135,27 @@ export class QueryLibraryIndexedDB implements QueryLibraryDatabase {
     }
   }
 
+  async deleteByIndex(
+    databaseId: string,
+    indexName: string,
+  ): Promise<QueryLibraryResult> {
+    try {
+      const listResult = await this.getList(databaseId, { indexName })
+
+      if (!listResult.success || !listResult.data) {
+        return { success: false, error: listResult.error }
+      }
+
+      await Promise.all(
+        listResult.data.map((item) => queryLibraryStorage.remove(item.id)),
+      )
+
+      return { success: true }
+    } catch (exception) {
+      return { success: false, error: exception as Error }
+    }
+  }
+
   async seed(
     databaseId: string,
     items: SeedQueryLibraryItem[],

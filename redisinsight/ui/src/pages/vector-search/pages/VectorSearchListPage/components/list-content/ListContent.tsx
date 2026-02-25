@@ -14,7 +14,11 @@ import {
   ResizablePanelHandle,
 } from 'uiSrc/components/base/layout'
 import { ShowIcon, DeleteIcon } from 'uiSrc/components/base/icons'
+import { addMessageNotification } from 'uiSrc/slices/app/notifications'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { collectManageIndexesDeleteTelemetry } from 'uiSrc/pages/vector-search-deprecated/telemetry'
+import { QueryLibraryService } from 'uiSrc/services/query-library/QueryLibraryService'
+import { queryLibraryNotifications } from 'uiSrc/pages/vector-search/constants'
 
 import { IndexList } from '../../../../components/index-list'
 import { IndexListAction } from '../../../../components/index-list/IndexList.types'
@@ -30,6 +34,7 @@ export const ListContent = () => {
   const { instanceId } = useParams<{ instanceId: string }>()
 
   const { data: rawIndexes } = useSelector(redisearchListSelector)
+  const { id: databaseId } = useSelector(connectedInstanceSelector)
   const indexes = useMemo(
     () => rawIndexes.map((index) => bufferToString(index)),
     [rawIndexes],
@@ -49,6 +54,22 @@ export const ListContent = () => {
     [history, instanceId],
   )
 
+  const cleanupQueryLibrary = useCallback(
+    async (indexName: string) => {
+      try {
+        if (databaseId) {
+          const queryLibraryService = new QueryLibraryService()
+          await queryLibraryService.deleteByIndex(databaseId, indexName)
+        }
+      } catch {
+        dispatch(
+          addMessageNotification(queryLibraryNotifications.cleanupFailed()),
+        )
+      }
+    },
+    [databaseId, dispatch],
+  )
+
   const handleDelete = useCallback((indexName: string) => {
     setPendingDeleteIndex(indexName)
   }, [])
@@ -56,18 +77,19 @@ export const ListContent = () => {
   const handleConfirmDelete = useCallback(() => {
     if (!pendingDeleteIndex) return
 
+    const indexName = pendingDeleteIndex
+
     dispatch(
       deleteRedisearchIndexAction(
-        { index: stringToBuffer(pendingDeleteIndex) },
-        () => {
-          collectManageIndexesDeleteTelemetry({
-            instanceId,
-          })
+        { index: stringToBuffer(indexName) },
+        async () => {
+          collectManageIndexesDeleteTelemetry({ instanceId })
+          await cleanupQueryLibrary(indexName)
         },
       ),
     )
     setPendingDeleteIndex(null)
-  }, [dispatch, instanceId, pendingDeleteIndex])
+  }, [dispatch, cleanupQueryLibrary, instanceId, pendingDeleteIndex])
 
   const handleViewIndex = useCallback((indexName: string) => {
     setViewingIndexName(indexName)
