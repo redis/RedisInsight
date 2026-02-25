@@ -18,6 +18,12 @@ jest.mock('../../hooks', () => ({
     stringData: [],
   })),
   useIndexNameValidation: jest.fn(() => null),
+  useLoadKeyData: jest.fn(() => ({
+    loadKeyData: jest.fn(),
+    fields: [],
+    loading: false,
+    error: null,
+  })),
 }))
 
 jest.mock('../../components/index-details', () => {
