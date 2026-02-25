@@ -2,17 +2,16 @@ import { cloneDeep } from 'lodash'
 import reactRouterDom from 'react-router-dom'
 
 import { cleanup, mockedStore, renderHook } from 'uiSrc/utils/test-utils'
-import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
+import { isAzureEntraIdEnabledSelector } from 'uiSrc/slices/app/features'
 import { useAzureAuth } from 'uiSrc/components/hooks/useAzureAuth'
 import { AddDbType } from 'uiSrc/pages/home/constants'
-import { FeatureFlags, Pages } from 'uiSrc/constants'
+import { Pages } from 'uiSrc/constants'
 
 import { useConnectivityOptions } from './useConnectivityOptions'
-import { CONNECTIVITY_OPTIONS_CONFIG } from '../constants'
 
 jest.mock('uiSrc/slices/app/features', () => ({
   ...jest.requireActual('uiSrc/slices/app/features'),
-  appFeatureFlagsFeaturesSelector: jest.fn().mockReturnValue({}),
+  isAzureEntraIdEnabledSelector: jest.fn().mockReturnValue(false),
 }))
 
 jest.mock('uiSrc/components/hooks/useAzureAuth', () => ({
@@ -32,8 +31,8 @@ beforeEach(() => {
   jest.clearAllMocks()
 })
 
-const mockedAppFeatureFlagsFeaturesSelector =
-  appFeatureFlagsFeaturesSelector as jest.Mock
+const mockedIsAzureEntraIdEnabledSelector =
+  isAzureEntraIdEnabledSelector as unknown as jest.Mock
 const mockedUseAzureAuth = useAzureAuth as jest.Mock
 
 describe('useConnectivityOptions', () => {
@@ -48,10 +47,8 @@ describe('useConnectivityOptions', () => {
     })
   })
 
-  it('should return options without Azure when feature flag is disabled', () => {
-    mockedAppFeatureFlagsFeaturesSelector.mockReturnValue({
-      [FeatureFlags.azureEntraId]: { flag: false },
-    })
+  it('should return options without Azure when Azure Entra ID is disabled', () => {
+    mockedIsAzureEntraIdEnabledSelector.mockReturnValue(false)
 
     const { result } = renderHook(() =>
       useConnectivityOptions({ onClickOption: mockOnClickOption }),
@@ -63,11 +60,8 @@ describe('useConnectivityOptions', () => {
     expect(azureOption).toBeUndefined()
   })
 
-  it('should return options with Azure when all feature flags are enabled', () => {
-    mockedAppFeatureFlagsFeaturesSelector.mockReturnValue({
-      [FeatureFlags.azureEntraId]: { flag: true },
-      [FeatureFlags.envDependent]: { flag: true },
-    })
+  it('should return options with Azure when Azure Entra ID is enabled', () => {
+    mockedIsAzureEntraIdEnabledSelector.mockReturnValue(true)
 
     const { result } = renderHook(() =>
       useConnectivityOptions({ onClickOption: mockOnClickOption }),
@@ -80,48 +74,13 @@ describe('useConnectivityOptions', () => {
     expect(azureOption?.title).toBe('Azure Managed Redis')
   })
 
-  it('should return options without Azure when only azureEntraId flag is enabled', () => {
-    mockedAppFeatureFlagsFeaturesSelector.mockReturnValue({
-      [FeatureFlags.azureEntraId]: { flag: true },
-      [FeatureFlags.envDependent]: { flag: false },
-    })
-
-    const { result } = renderHook(() =>
-      useConnectivityOptions({ onClickOption: mockOnClickOption }),
-    )
-
-    const options = result.current
-    const azureOption = options.find((opt) => opt.type === AddDbType.azure)
-
-    expect(azureOption).toBeUndefined()
-  })
-
-  it('should return options without Azure when only envDependent flag is enabled', () => {
-    mockedAppFeatureFlagsFeaturesSelector.mockReturnValue({
-      [FeatureFlags.azureEntraId]: { flag: false },
-      [FeatureFlags.envDependent]: { flag: true },
-    })
-
-    const { result } = renderHook(() =>
-      useConnectivityOptions({ onClickOption: mockOnClickOption }),
-    )
-
-    const options = result.current
-    const azureOption = options.find((opt) => opt.type === AddDbType.azure)
-
-    expect(azureOption).toBeUndefined()
-  })
-
   it('should use initiateLogin for Azure option onClick when not logged in', () => {
     const mockHistoryPush = jest.fn()
     reactRouterDom.useHistory = jest
       .fn()
       .mockReturnValue({ push: mockHistoryPush })
 
-    mockedAppFeatureFlagsFeaturesSelector.mockReturnValue({
-      [FeatureFlags.azureEntraId]: { flag: true },
-      [FeatureFlags.envDependent]: { flag: true },
-    })
+    mockedIsAzureEntraIdEnabledSelector.mockReturnValue(true)
     mockedUseAzureAuth.mockReturnValue({
       initiateLogin: mockInitiateLogin,
       loading: false,
@@ -150,10 +109,7 @@ describe('useConnectivityOptions', () => {
       .mockReturnValue({ push: mockHistoryPush })
 
     const mockAccount = { id: 'test-id', username: 'test@example.com' }
-    mockedAppFeatureFlagsFeaturesSelector.mockReturnValue({
-      [FeatureFlags.azureEntraId]: { flag: true },
-      [FeatureFlags.envDependent]: { flag: true },
-    })
+    mockedIsAzureEntraIdEnabledSelector.mockReturnValue(true)
     mockedUseAzureAuth.mockReturnValue({
       initiateLogin: mockInitiateLogin,
       loading: false,
@@ -176,7 +132,7 @@ describe('useConnectivityOptions', () => {
   })
 
   it('should use onClickOption for non-Azure options', () => {
-    mockedAppFeatureFlagsFeaturesSelector.mockReturnValue({})
+    mockedIsAzureEntraIdEnabledSelector.mockReturnValue(false)
 
     const { result } = renderHook(() =>
       useConnectivityOptions({ onClickOption: mockOnClickOption }),
@@ -193,10 +149,7 @@ describe('useConnectivityOptions', () => {
   })
 
   it('should return Azure loading state from useAzureAuth', () => {
-    mockedAppFeatureFlagsFeaturesSelector.mockReturnValue({
-      [FeatureFlags.azureEntraId]: { flag: true },
-      [FeatureFlags.envDependent]: { flag: true },
-    })
+    mockedIsAzureEntraIdEnabledSelector.mockReturnValue(true)
     mockedUseAzureAuth.mockReturnValue({
       initiateLogin: mockInitiateLogin,
       loading: true,
@@ -214,7 +167,7 @@ describe('useConnectivityOptions', () => {
   })
 
   it('should return loading = false for non-Azure options', () => {
-    mockedAppFeatureFlagsFeaturesSelector.mockReturnValue({})
+    mockedIsAzureEntraIdEnabledSelector.mockReturnValue(false)
 
     const { result } = renderHook(() =>
       useConnectivityOptions({ onClickOption: mockOnClickOption }),
@@ -229,17 +182,25 @@ describe('useConnectivityOptions', () => {
     })
   })
 
-  it('should include options without feature flags', () => {
-    mockedAppFeatureFlagsFeaturesSelector.mockReturnValue({})
+  it('should include all non-Azure options regardless of Azure flag', () => {
+    mockedIsAzureEntraIdEnabledSelector.mockReturnValue(false)
 
     const { result } = renderHook(() =>
       useConnectivityOptions({ onClickOption: mockOnClickOption }),
     )
 
-    const optionsWithoutFeatureFlags = CONNECTIVITY_OPTIONS_CONFIG.filter(
-      (opt) => !opt.featureFlags?.length,
+    const sentinelOption = result.current.find(
+      (opt) => opt.type === AddDbType.sentinel,
+    )
+    const softwareOption = result.current.find(
+      (opt) => opt.type === AddDbType.software,
+    )
+    const importOption = result.current.find(
+      (opt) => opt.type === AddDbType.import,
     )
 
-    expect(result.current.length).toBe(optionsWithoutFeatureFlags.length)
+    expect(sentinelOption).toBeDefined()
+    expect(softwareOption).toBeDefined()
+    expect(importOption).toBeDefined()
   })
 })
