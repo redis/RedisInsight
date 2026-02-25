@@ -39,12 +39,10 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 0.3 Notification Center
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Open Notification Center |
-| 🔲 | main | Show notification center title |
-| 🔲 | main | Close notification center |
-| 🔲 | main | View notification badge count |
-| 🔲 | main | View notification list |
-| 🔲 | main | Click notification links |
+| ✅ | main | should open Notification Center and display notifications |
+| ✅ | main | should close Notification Center |
+| ✅ | main | should display notification links that are clickable |
+| ✅ | main | should show unread badge when there are unread notifications |
 
 ### 0.4 Copilot Panel
 | Status | Group | Test Case |

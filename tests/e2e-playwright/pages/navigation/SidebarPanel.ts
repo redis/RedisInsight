@@ -1,6 +1,7 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from '../BasePage';
 import { HelpMenu } from './components/HelpMenu';
+import { NotificationCenter } from './components/NotificationCenter';
 
 /**
  * Page Object for Navigation elements (sidebar, help menu, notifications, panels)
@@ -10,20 +11,14 @@ export class SidebarPanel extends BasePage {
   // Main navigation
   readonly mainNavigation: Locator;
   readonly cloudLink: Locator;
-  readonly notificationMenuButton: Locator;
   readonly settingsButton: Locator;
   readonly githubLink: Locator;
 
   // Help menu component
   readonly helpMenu: HelpMenu;
 
-  // Notification center
-  readonly notificationDialog: Locator;
-  readonly notificationCenterTitle: Locator;
-  readonly notificationItems: Locator;
-  readonly unreadBadge: Locator;
-  readonly unreadNotifications: Locator;
-  readonly readNotifications: Locator;
+  // Notification center component
+  readonly notificationCenter: NotificationCenter;
 
   // Copilot panel
   readonly copilotTrigger: Locator;
@@ -61,7 +56,6 @@ export class SidebarPanel extends BasePage {
     // Main navigation (redisLogo inherited from BasePage)
     this.mainNavigation = page.getByRole('navigation', { name: 'Main navigation' });
     this.cloudLink = page.getByTestId('create-cloud-db-link');
-    this.notificationMenuButton = page.getByTestId('notification-menu-button');
     this.settingsButton = page
       .getByTestId('settings-page-btn')
       .or(page.locator('[data-testid="Settings page button"]'));
@@ -70,13 +64,8 @@ export class SidebarPanel extends BasePage {
     // Help menu component
     this.helpMenu = new HelpMenu(page);
 
-    // Notification center
-    this.notificationDialog = page.getByRole('dialog').filter({ hasText: 'Notification Center' });
-    this.notificationCenterTitle = page.getByText('Notification Center');
-    this.notificationItems = this.notificationDialog.locator('[class*="notification"]');
-    this.unreadBadge = page.getByTestId('total-unread-badge');
-    this.unreadNotifications = page.locator('[data-testid^="notification-item-unread"]');
-    this.readNotifications = page.locator('[data-testid^="notification-item-read"]');
+    // Notification center component
+    this.notificationCenter = new NotificationCenter(page);
 
     // Copilot panel
     this.copilotTrigger = page.getByTestId('copilot-trigger');
