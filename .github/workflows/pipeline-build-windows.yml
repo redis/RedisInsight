@@ -84,7 +84,8 @@ jobs:
       RI_CLOUD_IDP_REDIRECT_URI: ${{ secrets.RI_CLOUD_IDP_REDIRECT_URI }}
       RI_CLOUD_IDP_TOKEN_URL: ${{ secrets.RI_CLOUD_IDP_TOKEN_URL }}
       RI_SEGMENT_WRITE_KEY: ${{ secrets.RI_SEGMENT_WRITE_KEY }}
-      RI_SENTRY_DSN: ${{ secrets.RI_SENTRY_DSN }}
+      RI_SENTRY_UI_DSN: ${{ secrets.RI_SENTRY_UI_DSN }}
+      RI_SENTRY_ELECTRON_DSN: ${{ secrets.RI_SENTRY_ELECTRON_DSN }}
       RI_SENTRY_ENABLED: ${{ secrets.RI_SENTRY_ENABLED }}
       RI_SENTRY_ENVIRONMENT: ${{ vars.ENV }}
       RI_SERVER_TLS_CERT: ${{ secrets.RI_SERVER_TLS_CERT }}

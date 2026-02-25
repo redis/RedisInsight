@@ -105,7 +105,7 @@ export const defaultConfig = {
     },
   },
   sentry: {
-    dsn: process.env.RI_SENTRY_DSN ?? '',
+    dsn: process.env.RI_SENTRY_UI_DSN ?? '',
     environment: process.env.RI_SENTRY_ENVIRONMENT ?? 'development',
     enabled: booleanEnv('RI_SENTRY_ENABLED', false),
     sampleRate: parseFloat(process.env.RI_SENTRY_SAMPLE_RATE ?? '1.0'),
