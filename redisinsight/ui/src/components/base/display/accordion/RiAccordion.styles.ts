@@ -6,5 +6,6 @@ export const StyledLabel = styled(Section.Header.Label)`
   & label {
     display: inline-block;
     width: 100%;
+    user-select: none;
   }
 `

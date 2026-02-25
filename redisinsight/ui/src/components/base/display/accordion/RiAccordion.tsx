@@ -20,9 +20,11 @@ const RiAccordionActions = ({
   onAction,
 }: RiAccordionActionsProps) => (
   <Section.Header.Group>
-    <Section.Header.ActionButton onClick={onAction}>
-      {actionButtonText}
-    </Section.Header.ActionButton>
+    {actionButtonText && (
+      <Section.Header.ActionButton onClick={onAction}>
+        {actionButtonText}
+      </Section.Header.ActionButton>
+    )}
     {actions}
     <Section.Header.CollapseButton />
   </Section.Header.Group>
