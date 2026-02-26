@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { merge } from 'lodash'
 
 import { MonacoThemes, darkTheme, lightTheme } from 'uiSrc/constants/monaco'
-import { Nullable } from 'uiSrc/utils'
+import { Nullable, triggerUpdateCursorPosition } from 'uiSrc/utils'
 import {
   IEditorMount,
   ISnippetController,
@@ -14,6 +14,7 @@ import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor'
 import { EditIcon } from 'uiSrc/components/base/icons'
 import { ActionIconButton } from 'uiSrc/components/base/forms/buttons'
+import { MonacoGlobalStyles } from 'uiSrc/components/base/code-editor/CodeEditor.styles'
 import DedicatedEditor from './components/dedicated-editor'
 import styles from './styles.module.scss'
 
@@ -167,17 +168,6 @@ const MonacoEditor = (props: Props) => {
     editor.updateOptions({ readOnly: true })
   }
 
-  const triggerUpdateCursorPosition = (
-    editor: monacoEditor.editor.IStandaloneCodeEditor,
-  ) => {
-    const position = editor.getPosition()
-    editor.trigger('mouse', '_moveTo', {
-      position: { lineNumber: 1, column: 1 },
-    })
-    editor.trigger('mouse', '_moveTo', { position })
-    editor.focus()
-  }
-
   const updateArgFromDedicatedEditor = (value: string, selectedLang: DSL) => {
     if (!monacoObjects.current) return
     const { editor } = monacoObjects?.current
@@ -260,6 +250,7 @@ const MonacoEditor = (props: Props) => {
       })}
       style={fullHeight ? { flex: '1 1 auto' } : undefined}
     >
+      <MonacoGlobalStyles />
       <InlineItemEditor
         onApply={handleApply}
         onDecline={handleDecline}

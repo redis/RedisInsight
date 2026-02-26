@@ -78,7 +78,7 @@ export class TrayBuilder {
         label: 'Learn More',
         click() {
           shell.openExternal(
-            'https://redis.io/docs/ui/insight/?utm_source=redisinsight&utm_medium=main&utm_campaign=learn_more',
+            'https://redis.io/docs/latest/develop/tools/insight/?utm_source=redisinsight&utm_medium=main&utm_campaign=learn_more',
           )
         },
       },

@@ -94,4 +94,3 @@ export class ImportDatabaseDialog {
     return { success, failed };
   }
 }
-

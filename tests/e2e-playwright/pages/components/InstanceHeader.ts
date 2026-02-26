@@ -95,4 +95,3 @@ export class InstanceHeader {
     await this.databaseInfoButton.click();
   }
 }
-

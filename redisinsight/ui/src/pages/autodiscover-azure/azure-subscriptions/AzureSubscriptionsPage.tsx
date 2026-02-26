@@ -7,6 +7,7 @@ import { setTitle } from 'uiSrc/utils'
 import { useAzureAuth } from 'uiSrc/components/hooks/useAzureAuth'
 import { AzureSubscription } from 'uiSrc/slices/interfaces'
 import { AppDispatch } from 'uiSrc/slices/store'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   azureSelector,
   clearSubscriptionsAzure,
@@ -18,7 +19,7 @@ import AzureSubscriptions from './AzureSubscriptions/AzureSubscriptions'
 const AzureSubscriptionsPage = () => {
   const history = useHistory()
   const dispatch = useDispatch<AppDispatch>()
-  const { initiateLogin, account } = useAzureAuth()
+  const { switchAccount, account } = useAzureAuth()
   const { loading, error, subscriptions, loaded } = useSelector(azureSelector)
 
   useEffect(() => {
@@ -46,15 +47,28 @@ const AzureSubscriptionsPage = () => {
   }
 
   const handleSubmit = (subscription: AzureSubscription) => {
+    sendEventTelemetry({
+      event: TelemetryEvent.AZURE_SUBSCRIPTION_SELECTED,
+    })
     dispatch(setSelectedSubscriptionAzure(subscription))
     history.push(Pages.azureDatabases)
   }
 
   const handleRefresh = () => {
+    sendEventTelemetry({
+      event: TelemetryEvent.AZURE_SUBSCRIPTIONS_REFRESH_CLICKED,
+    })
     if (account?.id) {
       dispatch(clearSubscriptionsAzure())
       dispatch(fetchSubscriptionsAzure(account.id))
     }
+  }
+
+  const handleSwitchAccount = () => {
+    sendEventTelemetry({
+      event: TelemetryEvent.AZURE_SWITCH_ACCOUNT_CLICKED,
+    })
+    switchAccount()
   }
 
   return (
@@ -65,7 +79,7 @@ const AzureSubscriptionsPage = () => {
       onBack={handleBack}
       onClose={handleClose}
       onSubmit={handleSubmit}
-      onSwitchAccount={initiateLogin}
+      onSwitchAccount={handleSwitchAccount}
       onRefresh={handleRefresh}
     />
   )

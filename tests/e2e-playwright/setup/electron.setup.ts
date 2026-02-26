@@ -12,4 +12,3 @@ setup('electron setup', async () => {
   console.log('   ℹ️  Skipping health checks (app launches via fixtures)');
   console.log('✅ Electron global setup complete\n');
 });
-

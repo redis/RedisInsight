@@ -24,32 +24,25 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 0.1 Main Navigation
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Navigate to home via Redis logo |
-| 🔲 | main | Navigate to Settings page |
-| 🔲 | main | Show GitHub repo link |
-| 🔲 | main | Show Redis Cloud link |
-| 🔲 | main | Display main navigation |
-| 🔲 | main | Show Redis logo |
-| 🔲 | main | Show settings button |
+| ✅ | main | Navigate to Settings page |
+| ✅ | main | Navigate to home via Redis logo |
+| ✅ | main | Show GitHub repo link |
+| ✅ | main | Show Redis Cloud link |
 
 ### 0.2 Help Menu
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Open Help Center |
-| 🔲 | main | Show Keyboard Shortcuts option |
-| 🔲 | main | Show Reset Onboarding option |
-| 🔲 | main | Show Release Notes link |
-| 🔲 | main | Show Provide Feedback link |
+| ✅ | main | should open Help Center and display all menu options |
+| ✅ | main | should have Release Notes link pointing to GitHub releases |
+| ✅ | main | should have Provide Feedback link pointing to GitHub issues |
 
 ### 0.3 Notification Center
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Open Notification Center |
-| 🔲 | main | Show notification center title |
-| 🔲 | main | Close notification center |
-| 🔲 | main | View notification badge count |
-| 🔲 | main | View notification list |
-| 🔲 | main | Click notification links |
+| ✅ | main | should open Notification Center and display notifications |
+| ✅ | main | should close Notification Center |
+| ✅ | main | should display notification links that are clickable |
+| ✅ | main | should show unread badge when there are unread notifications |
 
 ### 0.4 Copilot Panel
 | Status | Group | Test Case |
@@ -77,32 +70,25 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 1.1 Add Database
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Add standalone database |
-| 🔲 | main | Add database with no auth |
-| 🔲 | main | Add database with username only |
-| 🔲 | main | Add database with username and password |
-| 🔲 | main | Add cluster database |
-| 🔲 | main | Add database with TLS/SSL |
-| 🔲 | main | Add database with SSH tunnel |
-| 🔲 | main | Validate required fields |
-| 🔲 | main | Test connection before saving |
-| 🔲 | main | Cancel add database |
-| 🔲 | main | Add database via Connection URL |
-| 🔲 | main | Open Connection settings from URL form |
-| 🔲 | main | Configure timeout setting |
-| 🔲 | main | Select logical database |
-| 🔲 | main | Logical database index displayed in database list |
-| 🔲 | main | Logical database index displayed in database header |
-| 🔲 | main | Logical database index displayed in edit form |
-| 🔲 | main | Force standalone connection |
-| 🔲 | main | Enable automatic data decompression |
-| 🔲 | main | Configure key name format (Unicode/ASCII/etc) |
-| 🔲 | main | Add database via Redis Sentinel option |
-| 🔲 | main | Add database via Redis Software option |
-| 🔲 | main | Auto-discover databases from Redis Software |
-| 🔲 | main | Auto-discover Redis Cloud databases after signing in |
-| 🔲 | main | Add databases using Cloud API keys |
-| 🔲 | main | Check connection state persists across app restarts |
+| ✅ | main | should add standalone database |
+| ✅ | main | should add database with no auth |
+| ✅ | main | should add database with username only |
+| ✅ | main | should add database with username and password |
+| ✅ | main | should add cluster database |
+| ✅ | main | should add database with TLS/SSL |
+| ✅ | main | should validate required fields |
+| ✅ | main | should test connection before saving |
+| ✅ | main | should cancel add database |
+| ✅ | main | should add database via Connection URL |
+| ✅ | main | should open Connection settings from URL form |
+| ✅ | main | should configure timeout setting |
+| ✅ | main | should select logical database |
+| ✅ | main | should display logical database index in database list |
+| ✅ | main | should display logical database index in database header |
+| ✅ | main | should display logical database index in edit form |
+| ✅ | main | should enable force standalone connection |
+| ✅ | main | should enable automatic data decompression |
+| ✅ | main | should configure key name format |
 
 ### 1.1.1 Connection Security
 | Status | Group | Test Case |
@@ -110,6 +96,16 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Add database using SSH tunneling |
 | 🔲 | main | Connect using SNI configuration |
 | 🔲 | main | Connect with TLS using CA, client, and private key certificates |
+
+### 1.1.2 Add Database (Advanced)
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| 🔲 | main | should add database with SSH tunnel |
+| 🔲 | main | should add database via Redis Sentinel option |
+| 🔲 | main | should add database via Redis Software option |
+| 🔲 | main | should auto-discover databases from Redis Software |
+| 🔲 | main | should auto-discover Redis Cloud databases after signing in |
+| 🔲 | main | should add databases using Cloud API keys |
 
 ### 1.2 Database List
 | Status | Group | Test Case |
@@ -179,10 +175,11 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 1.6 Database Tags
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Add descriptive tags to a database |
-| 🔲 | main | Remove tags from a database |
-| 🔲 | main | Open tags dialog for a database |
-| 🔲 | main | Cancel adding a tag |
+| ✅ | main | should open tags dialog for a database |
+| ✅ | main | should add descriptive tags to a database |
+| ✅ | main | should remove tags from a database |
+| ✅ | main | should cancel adding a tag without saving |
+| ✅ | main | should persist tags after saving and reopening |
 | 🔲 | main | Import tags automatically from Redis Cloud databases |
 
 ### 1.7 Certificate and Encryption Handling
@@ -602,30 +599,30 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 6.2 Database Analysis
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Run database analysis |
-| 🔲 | main | View analysis results |
-| 🔲 | main | View top keys table |
-| 🔲 | main | View top namespaces |
-| 🔲 | main | View TTL distribution |
-| 🔲 | main | View recommendations (Tips tab) |
-| 🔲 | main | History of analyses |
-| 🔲 | main | Confirm charts for data types, namespaces, expirations render |
-| 🔲 | main | Confirm extrapolation toggle adjusts charted values |
-| 🔲 | main | Confirm analysis distinguishes between scanned and estimated data |
-| 🔲 | main | Confirm responsiveness on large datasets |
-| 🔲 | main | Sort namespaces by key pattern |
-| 🔲 | main | Sort namespaces by memory |
-| 🔲 | main | Sort namespaces by number of keys |
-| 🔲 | main | Filter namespace to Browser view |
+| ✅ | main | Run database analysis |
+| ✅ | main | View analysis results |
+| ✅ | main | View top keys table |
+| ✅ | main | View top namespaces |
+| ✅ | main | View TTL distribution |
+| ✅ | main | View recommendations (Tips tab) |
+| ✅ | main | History of analyses |
+| ✅ | main | Confirm charts for data types, namespaces, expirations render |
+| ✅ | main | Confirm extrapolation toggle adjusts charted values | Uses pre-seeded big database (port 8103) for partial scan |
+| ✅ | main | Confirm analysis distinguishes between scanned and estimated data |
+| ✅ | main | Confirm responsiveness on large datasets |
+| ✅ | main | Sort namespaces by key pattern |
+| ✅ | main | Sort namespaces by memory |
+| ✅ | main | Sort namespaces by number of keys |
+| ✅ | main | Filter namespace to Browser view |
 | 🔲 | main | Display "No namespaces" message with Tree View link |
-| 🔲 | main | Toggle "No Expiry" in TTL distribution graph |
-| 🔲 | main | View analysis history (up to 5 reports) |
-| 🔲 | main | View voting section for recommendations |
+| ✅ | main | Toggle "No Expiry" in TTL distribution graph |
+| ✅ | main | View analysis history (up to 5 reports) |
+| ✅ | main | View voting section for recommendations |
 | 🔲 | main | Vote recommendation as useful | Voting buttons disabled - requires telemetry enabled |
 | 🔲 | main | Vote recommendation as not useful | Voting buttons disabled - requires telemetry enabled |
-| 🔲 | main | Expand/collapse recommendation details |
-| 🔲 | main | View recommendation labels (code changes, configuration changes) |
-| 🔲 | main | Open tutorial from recommendation |
+| ✅ | main | Expand/collapse recommendation details |
+| ✅ | main | View recommendation labels (code changes, configuration changes) |
+| ✅ | main | Open tutorial from recommendation |
 
 ### 6.2.1 Profiler
 | Status | Group | Test Case |

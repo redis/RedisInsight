@@ -1,5 +1,5 @@
 {
-  "version": 2.74,
+  "version": 3.2,
   "features": {
     "redisDataIntegration": {
       "flag": true,
@@ -130,7 +130,22 @@
       "flag": true,
       "perc": [[0, 100]]
     },
+    "azureEntraId": {
+      "flag": true,
+      "perc": [[0, 100]],
+      "filters": [
+        {
+          "name": "config.server.buildType",
+          "value": "ELECTRON",
+          "cond": "eq"
+        }
+      ]
+    },
     "dev-azureEntraId": {
+      "flag": false,
+      "perc": [[0, 100]]
+    },
+    "dev-browser": {
       "flag": false,
       "perc": [[0, 100]]
     }

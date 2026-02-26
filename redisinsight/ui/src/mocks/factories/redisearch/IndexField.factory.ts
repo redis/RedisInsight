@@ -20,6 +20,8 @@ export const generateValueForType = (type: FieldTypes): IndexFieldValue => {
       ).join(', ')}]`
     case FieldTypes.GEO:
       return `${faker.location.latitude()}, ${faker.location.longitude()}`
+    case FieldTypes.GEOSHAPE:
+      return `POINT(${faker.location.longitude()} ${faker.location.latitude()})`
     default:
       return faker.lorem.words({ min: 1, max: 5 })
   }

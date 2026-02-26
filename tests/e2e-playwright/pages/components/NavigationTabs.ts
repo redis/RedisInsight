@@ -84,4 +84,3 @@ export class NavigationTabs {
     return isSelected === 'true';
   }
 }
-

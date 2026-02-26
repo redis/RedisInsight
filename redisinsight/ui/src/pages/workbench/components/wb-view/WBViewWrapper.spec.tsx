@@ -11,7 +11,7 @@ import {
   act,
 } from 'uiSrc/utils/test-utils'
 import QueryWrapper from 'uiSrc/pages/workbench/components/query'
-import { Props as QueryProps } from 'uiSrc/pages/workbench/components/query/QueryWrapper'
+import { type Props as QueryProps } from 'uiSrc/pages/workbench/components/query/QueryWrapper.types'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import {
   clearWbResults,

@@ -1,10 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { faker } from '@faker-js/faker';
 import { PublicClientApplication } from '@azure/msal-node';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AzureAuthService } from './azure-auth.service';
-import { AzureAuthStatus } from '../constants';
+import { AzureAuthStatus, AzureRedisTokenEvents } from '../constants';
+import { AzureOAuthPrompt } from './dto';
 
 jest.mock('@azure/msal-node');
+
+const mockEventEmitter = {
+  emit: jest.fn(),
+};
 
 const MockedPublicClientApplication =
   PublicClientApplication as jest.MockedClass<typeof PublicClientApplication>;
@@ -44,7 +50,13 @@ describe('AzureAuthService', () => {
     MockedPublicClientApplication.mockImplementation(() => mockPca);
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AzureAuthService],
+      providers: [
+        AzureAuthService,
+        {
+          provide: EventEmitter2,
+          useValue: mockEventEmitter,
+        },
+      ],
     }).compile();
 
     service = module.get<AzureAuthService>(AzureAuthService);
@@ -63,6 +75,26 @@ describe('AzureAuthService', () => {
       // First state should no longer be valid
       const result = await service.handleCallback('auth-code', firstState);
       expect(result.status).toBe(AzureAuthStatus.Failed);
+    });
+
+    it('should pass prompt parameter to MSAL when provided', async () => {
+      await service.getAuthorizationUrl(AzureOAuthPrompt.SelectAccount);
+
+      expect(mockPca.getAuthCodeUrl).toHaveBeenCalledWith(
+        expect.objectContaining({
+          prompt: 'select_account',
+        }),
+      );
+    });
+
+    it('should not include prompt parameter when not provided', async () => {
+      await service.getAuthorizationUrl();
+
+      expect(mockPca.getAuthCodeUrl).toHaveBeenCalledWith(
+        expect.not.objectContaining({
+          prompt: expect.anything(),
+        }),
+      );
     });
   });
 
@@ -241,6 +273,40 @@ describe('AzureAuthService', () => {
         expiresOn: mockExpiresOn,
         account: mockAccount,
       });
+    });
+
+    it('should emit token acquired event on successful acquisition', async () => {
+      const mockAccount = createMockAccount();
+      const mockExpiresOn = new Date();
+      const mockAccessToken = faker.string.alphanumeric(100);
+      mockTokenCache.getAllAccounts.mockResolvedValue([mockAccount]);
+      mockPca.acquireTokenSilent.mockResolvedValue({
+        accessToken: mockAccessToken,
+        expiresOn: mockExpiresOn,
+        account: mockAccount,
+      } as any);
+
+      await service.getRedisTokenByAccountId(mockAccount.homeAccountId);
+
+      expect(mockEventEmitter.emit).toHaveBeenCalledWith(
+        AzureRedisTokenEvents.Acquired,
+        {
+          accountId: mockAccount.homeAccountId,
+          tokenResult: {
+            token: mockAccessToken,
+            expiresOn: mockExpiresOn,
+            account: mockAccount,
+          },
+        },
+      );
+    });
+
+    it('should not emit event when token acquisition fails', async () => {
+      mockTokenCache.getAllAccounts.mockResolvedValue([]);
+
+      await service.getRedisTokenByAccountId('unknown-id');
+
+      expect(mockEventEmitter.emit).not.toHaveBeenCalled();
     });
   });
 

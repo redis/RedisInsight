@@ -9,6 +9,9 @@ import {
   OAuthSocialSource,
 } from 'uiSrc/slices/interfaces/cloud'
 
+/**
+ * @deprecated Use `UpgradeRedisBanner` from `uiSrc/pages/vector-search/components/upgrade-redis-banner` instead.
+ */
 export const VectorSetNotAvaiallableBanner = () => {
   const {
     [FeatureFlags.cloudSso]: featureFlagCloudSsl,

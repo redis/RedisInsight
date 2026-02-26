@@ -17,12 +17,15 @@
     "test:codegen": "playwright codegen http://localhost:8080",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write \"**/*.ts\"",
+    "format:check": "prettier --check \"**/*.ts\"",
     "type-check": "tsc --noEmit",
     "prepare": "cd ../.. && husky tests/e2e-playwright/.husky"
   },
   "lint-staged": {
     "*.ts": [
-      "eslint --cache --fix"
+      "eslint --cache --fix",
+      "prettier --write"
     ]
   },
   "devDependencies": {
@@ -35,6 +38,7 @@
     "fishery": "^2.4.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.10",
+    "prettier": "^3.4.2",
     "typescript": "^5.7.2"
   },
   "dependencies": {

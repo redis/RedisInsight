@@ -1,0 +1,22 @@
+meta {
+  name: Delete Query (invalid)
+  type: http
+  seq: 2
+}
+
+delete {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/query-library/non-existent-id
+  body: none
+  auth: inherit
+}
+
+tests {
+  test("should return 404", function() {
+    expect(res.getStatus()).to.equal(404);
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

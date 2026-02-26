@@ -288,4 +288,25 @@ describe('ERROR_MESSAGES', () => {
       expect(result.description).toBeDefined()
     })
   })
+
+  describe('PERSISTENT', () => {
+    it('should return persistent error notification with correct data-testid', () => {
+      const result = ERROR_MESSAGES.PERSISTENT(
+        { message: 'Error text' },
+        () => {},
+      )
+
+      expect(result['data-testid']).toBe('toast-error-persistent')
+    })
+
+    it('should pass onClose callback for proper toast cleanup', () => {
+      const onClose = jest.fn()
+      const result = ERROR_MESSAGES.PERSISTENT(
+        { message: 'Error text' },
+        onClose,
+      )
+
+      expect(result.onClose).toBe(onClose)
+    })
+  })
 })

@@ -99,11 +99,11 @@ export class FeatureFlagProvider {
       ),
     );
     this.strategies.set(
-      KnownFeatures.DatabasesListV2,
+      KnownFeatures.AzureEntraId,
       new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
     );
     this.strategies.set(
-      KnownFeatures.AzureEntraId,
+      KnownFeatures.DevBrowser,
       new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
     );
   }

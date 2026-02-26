@@ -13,6 +13,7 @@ describe('useIndexInfo.utils', () => {
       ['TAG', FieldTypes.TAG],
       ['NUMERIC', FieldTypes.NUMERIC],
       ['GEO', FieldTypes.GEO],
+      ['GEOSHAPE', FieldTypes.GEOSHAPE],
       ['VECTOR', FieldTypes.VECTOR],
       ['text', FieldTypes.TEXT],
     ])('should convert %s to %s', (input, expected) => {

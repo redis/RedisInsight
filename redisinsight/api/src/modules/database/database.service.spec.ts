@@ -42,7 +42,7 @@ import {
   RedisConnectionSentinelMasterRequiredException,
   RedisConnectionUnavailableException,
 } from 'src/modules/redis/exceptions/connection';
-import { CredentialStrategyProvider } from 'src/modules/database/credentials';
+import { CredentialStrategyProvider } from 'src/modules/database/credentials/credential-strategy.provider';
 import { ExportDatabase } from './models/export-database';
 
 const updateDatabaseTests = [

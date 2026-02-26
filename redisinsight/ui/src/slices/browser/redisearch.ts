@@ -20,6 +20,7 @@ import ApiErrors from 'uiSrc/constants/apiErrors'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { SearchHistoryItem } from 'uiSrc/slices/interfaces/keys'
+import { IndexSummary } from 'uiSrc/slices/interfaces/redisearch'
 import { GetKeysWithDetailsResponse } from 'apiSrc/modules/browser/keys/dto'
 import {
   CreateRedisearchIndexDto,
@@ -28,7 +29,11 @@ import {
 } from 'apiSrc/modules/browser/redisearch/dto'
 
 import { AppDispatch, RootState } from '../store'
-import { RedisResponseBuffer, StateRedisearch } from '../interfaces'
+import {
+  RedisResponseBuffer,
+  StateRedisearch,
+  KeyIndexesApiResponse,
+} from '../interfaces'
 import {
   addErrorNotification,
   addMessageNotification,
@@ -50,7 +55,7 @@ export const initialState: StateRedisearch = {
     lastRefreshTime: null,
   },
   list: {
-    loading: false,
+    loading: undefined,
     error: '',
     data: [],
   },
@@ -62,6 +67,7 @@ export const initialState: StateRedisearch = {
     data: null,
     loading: false,
   },
+  keyIndexes: {},
 }
 
 // A slice for recipes
@@ -262,6 +268,37 @@ const redisearchSlice = createSlice({
     deleteRediSearchHistoryFailure: (state) => {
       state.searchHistory.loading = false
     },
+
+    loadKeyIndexes: (state, { payload }: PayloadAction<string>) => {
+      state.keyIndexes[payload] = {
+        loading: true,
+        data: [],
+        error: '',
+      }
+    },
+    loadKeyIndexesSuccess: (
+      state,
+      { payload: [key, data] }: PayloadAction<[string, IndexSummary[]]>,
+    ) => {
+      state.keyIndexes[key] = {
+        loading: false,
+        data,
+        error: '',
+      }
+    },
+    loadKeyIndexesFailure: (
+      state,
+      { payload: [key, error] }: PayloadAction<[string, string]>,
+    ) => {
+      state.keyIndexes[key] = {
+        loading: false,
+        data: [],
+        error,
+      }
+    },
+    resetKeyIndexes: (state) => {
+      state.keyIndexes = {}
+    },
   },
 })
 
@@ -293,6 +330,10 @@ export const {
   deleteRediSearchHistory,
   deleteRediSearchHistorySuccess,
   deleteRediSearchHistoryFailure,
+  loadKeyIndexes,
+  loadKeyIndexesSuccess,
+  loadKeyIndexesFailure,
+  resetKeyIndexes,
 } = redisearchSlice.actions
 
 // Selectors
@@ -305,6 +346,8 @@ export const createIndexStateSelector = (state: RootState) =>
   state.browser.redisearch.createIndex
 export const redisearchHistorySelector = (state: RootState) =>
   state.browser.redisearch.searchHistory
+export const keyIndexesSelector = (state: RootState) =>
+  state.browser.redisearch.keyIndexes
 
 // The reducer
 export default redisearchSlice.reducer
@@ -623,6 +666,48 @@ export function deleteRedisearchHistoryAction(
     } catch (_err) {
       dispatch(deleteRediSearchHistoryFailure())
       onFailed?.()
+    }
+  }
+}
+
+const transformKeyIndexesResponse = (
+  data: KeyIndexesApiResponse,
+): IndexSummary[] =>
+  (data.indexes || []).map((idx) => ({
+    name: idx.name,
+    prefixes: idx.prefixes,
+    keyType: idx.key_type,
+  }))
+
+export function fetchKeyIndexesAction(keyName: string, force = false) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    const state = stateInit()
+    const existing = state.browser.redisearch.keyIndexes[keyName]
+
+    if (!force && existing && (existing.loading || !existing.error)) {
+      return
+    }
+
+    dispatch(loadKeyIndexes(keyName))
+
+    try {
+      const { data, status } = await apiService.post<KeyIndexesApiResponse>(
+        getUrl(
+          state.connections.instances.connectedInstance?.id,
+          ApiEndpoints.REDISEARCH_KEY_INDEXES,
+        ),
+        { key: keyName },
+      )
+
+      if (isStatusSuccessful(status)) {
+        dispatch(
+          loadKeyIndexesSuccess([keyName, transformKeyIndexesResponse(data)]),
+        )
+      }
+    } catch (_err) {
+      const error = _err as AxiosError
+      const errorMessage = getApiErrorMessage(error)
+      dispatch(loadKeyIndexesFailure([keyName, errorMessage]))
     }
   }
 }

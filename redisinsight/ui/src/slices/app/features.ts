@@ -65,10 +65,10 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.devVectorSearch]: {
         flag: false,
       },
-      [FeatureFlags.databasesListV2]: {
+      [FeatureFlags.azureEntraId]: {
         flag: false,
       },
-      [FeatureFlags.azureEntraId]: {
+      [FeatureFlags.devBrowser]: {
         flag: false,
       },
     },
@@ -204,6 +204,20 @@ export const appFeatureFlagsSelector = (state: RootState) =>
   state.app.features.featureFlags
 export const appFeatureFlagsFeaturesSelector = (state: RootState) =>
   state.app.features.featureFlags.features
+
+const isDevelopment = riConfig.app.env === 'development'
+
+export const isAzureEntraIdEnabledSelector = (state: RootState): boolean => {
+  if (isDevelopment) {
+    return true
+  }
+
+  const features = state.app.features.featureFlags.features
+  const azureEntraIdEnabled = features[FeatureFlags.azureEntraId]?.flag ?? false
+  const envDependentEnabled = features[FeatureFlags.envDependent]?.flag ?? false
+
+  return azureEntraIdEnabled && envDependentEnabled
+}
 
 export default appFeaturesSlice.reducer
 

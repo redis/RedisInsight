@@ -25,7 +25,8 @@ const createActionsColumn = (
   id: IndexListColumn.Actions,
   header: INDEX_LIST_COLUMN_HEADERS[IndexListColumn.Actions],
   enableSorting: false,
-  size: 150,
+  size: 110,
+  sizeUnit: 'px',
   cell: ({ row }: { row: Row<IndexListRow> }) => (
     <ActionsCell
       row={row.original}

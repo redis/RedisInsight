@@ -41,6 +41,7 @@ enum BrowserStorageItem {
   generalChatAgreements = 'generalChatAgreements',
   vectorSearchOnboarding = 'vectorSearchOnboarding',
   tablePaginationState = 'tablePaginationState',
+  queryLibrary = 'query_library',
 }
 
 export default BrowserStorageItem

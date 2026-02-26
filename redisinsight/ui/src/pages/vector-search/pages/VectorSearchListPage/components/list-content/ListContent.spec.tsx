@@ -1,0 +1,211 @@
+import React from 'react'
+import reactRouterDom from 'react-router-dom'
+import {
+  cleanup,
+  initialStateDefault,
+  mockStore,
+  render,
+  screen,
+  userEvent,
+} from 'uiSrc/utils/test-utils'
+import { RootState } from 'uiSrc/slices/store'
+import {
+  INSTANCE_ID_MOCK,
+  INSTANCES_MOCK,
+} from 'uiSrc/mocks/handlers/instances/instancesHandlers'
+import { Pages } from 'uiSrc/constants'
+import { deleteRedisearchIndexAction } from 'uiSrc/slices/browser/redisearch'
+import { indexListRowFactory } from 'uiSrc/mocks/factories/vector-search/indexList.factory'
+
+import { useIndexListData } from '../../../../hooks/useIndexListData'
+import { ListContent } from './ListContent'
+
+jest.mock('../../../../hooks/useIndexListData', () => ({
+  useIndexListData: jest.fn(() => ({
+    data: [],
+    loading: false,
+  })),
+}))
+
+jest.mock('../../../../hooks/useIndexInfo/useIndexInfo', () => ({
+  useIndexInfo: jest.fn().mockReturnValue({
+    indexInfo: null,
+    loading: false,
+    error: null,
+    refetch: jest.fn(),
+  }),
+}))
+
+jest.mock('uiSrc/slices/browser/redisearch', () => ({
+  ...jest.requireActual('uiSrc/slices/browser/redisearch'),
+  deleteRedisearchIndexAction: jest.fn().mockReturnValue({ type: 'delete' }),
+}))
+
+const mockPush = jest.fn()
+const mockInstanceId = INSTANCE_ID_MOCK
+
+const mockIndexRow = indexListRowFactory.build({
+  id: 'test-index',
+  name: 'test-index',
+})
+
+const getTestState = (): RootState => ({
+  ...initialStateDefault,
+  connections: {
+    ...initialStateDefault.connections,
+    instances: {
+      ...initialStateDefault.connections.instances,
+      connectedInstance: {
+        ...initialStateDefault.connections.instances.connectedInstance,
+        ...INSTANCES_MOCK[0],
+      },
+    },
+  },
+})
+
+const renderComponent = () => {
+  const store = mockStore(getTestState())
+  return render(<ListContent />, { store })
+}
+
+describe('ListContent', () => {
+  beforeEach(() => {
+    cleanup()
+    reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: mockPush })
+    reactRouterDom.useParams = jest
+      .fn()
+      .mockReturnValue({ instanceId: mockInstanceId })
+    ;(useIndexListData as jest.Mock).mockReturnValue({
+      data: [mockIndexRow],
+      loading: false,
+    })
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('should render the index list table with data', () => {
+    renderComponent()
+
+    const table = screen.getByTestId('vector-search--list--table')
+    const indexName = screen.getByTestId(`index-name-${mockIndexRow.id}`)
+
+    expect(table).toBeInTheDocument()
+    expect(indexName).toBeInTheDocument()
+  })
+
+  it('should render empty state when no data', () => {
+    ;(useIndexListData as jest.Mock).mockReturnValue({
+      data: [],
+      loading: false,
+    })
+
+    renderComponent()
+
+    const table = screen.getByTestId('vector-search--list--table')
+    const emptyMessage = screen.getByText('No indexes found')
+
+    expect(table).toBeInTheDocument()
+    expect(emptyMessage).toBeInTheDocument()
+  })
+
+  it('should show confirmation modal and dispatch delete after confirming', async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 })
+    renderComponent()
+
+    const menuTrigger = screen.getByTestId(
+      'index-actions-menu-trigger-test-index',
+    )
+    await user.click(menuTrigger)
+
+    const deleteOption = screen.getByText('Delete')
+    await user.click(deleteOption)
+
+    const confirmationMessage = screen.getByText(
+      'Are you sure you want to delete this index?',
+    )
+    expect(confirmationMessage).toBeInTheDocument()
+    expect(deleteRedisearchIndexAction).not.toHaveBeenCalled()
+
+    const confirmBtn = screen.getByRole('button', { name: 'Delete index' })
+    await user.click(confirmBtn)
+
+    expect(deleteRedisearchIndexAction).toHaveBeenCalled()
+    expect(
+      screen.queryByText('Are you sure you want to delete this index?'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should not dispatch deleteRedisearchIndexAction when cancel is clicked', async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 })
+    renderComponent()
+
+    const menuTrigger = screen.getByTestId(
+      'index-actions-menu-trigger-test-index',
+    )
+    await user.click(menuTrigger)
+
+    const deleteOption = screen.getByText('Delete')
+    await user.click(deleteOption)
+
+    const cancelBtn = screen.getByRole('button', { name: 'Keep index' })
+    await user.click(cancelBtn)
+
+    expect(deleteRedisearchIndexAction).not.toHaveBeenCalled()
+    expect(
+      screen.queryByText('Are you sure you want to delete this index?'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should navigate to query page when query button is clicked', async () => {
+    renderComponent()
+
+    const queryBtn = screen.getByTestId(`index-query-btn-${mockIndexRow.id}`)
+    await userEvent.click(queryBtn)
+
+    expect(mockPush).toHaveBeenCalledWith(
+      Pages.vectorSearchQuery(mockInstanceId, mockIndexRow.name),
+    )
+  })
+
+  it('should open view index panel when View index action is clicked', async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 })
+    renderComponent()
+
+    const viewPanel = screen.queryByTestId('view-index-panel')
+    expect(viewPanel).not.toBeInTheDocument()
+
+    const menuTrigger = screen.getByTestId(
+      'index-actions-menu-trigger-test-index',
+    )
+    await user.click(menuTrigger)
+
+    const viewIndexOption = screen.getByText('View index')
+    await user.click(viewIndexOption)
+
+    const panel = screen.getByTestId('view-index-panel')
+    expect(panel).toBeInTheDocument()
+  })
+
+  it('should close view index panel when close button is clicked', async () => {
+    const user = userEvent.setup({ pointerEventsCheck: 0 })
+    renderComponent()
+
+    const menuTrigger = screen.getByTestId(
+      'index-actions-menu-trigger-test-index',
+    )
+    await user.click(menuTrigger)
+
+    const viewIndexOption = screen.getByText('View index')
+    await user.click(viewIndexOption)
+
+    const panel = screen.getByTestId('view-index-panel')
+    expect(panel).toBeInTheDocument()
+
+    const closeBtn = screen.getByTestId('close-index-panel-btn')
+    await user.click(closeBtn)
+
+    expect(screen.queryByTestId('view-index-panel')).not.toBeInTheDocument()
+  })
+})

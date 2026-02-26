@@ -12,7 +12,8 @@ import {
   useRedisearchListData,
 } from '../../hooks'
 import { RqeNotAvailable } from '../../components/rqe-not-available'
-import { WelcomeScreen, IndexListScreen } from '../components'
+import { VectorSearchWelcomePage } from '../VectorSearchWelcomePage'
+import { VectorSearchListPage } from '../VectorSearchListPage'
 import * as S from '../styles'
 
 /**
@@ -38,11 +39,15 @@ export const VectorSearchPage = () => {
     `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)} - Vector Search`,
   )
 
-  // Treat undefined (uninitialized) as loading so we don't render WelcomeScreen before compatibility is known
-  const isLoading = compatibilityLoading !== false || indexesLoading
+  if (hasRedisearch === false && compatibilityLoading === false) {
+    return (
+      <S.PageWrapper data-testid="vector-search-page--rqe-not-available">
+        <RqeNotAvailable />
+      </S.PageWrapper>
+    )
+  }
 
-  // Show loader while checking compatibility or loading indexes
-  if (isLoading) {
+  if (compatibilityLoading !== false || indexesLoading !== false) {
     return (
       <S.PageWrapper
         data-testid="vector-search-page--loading"
@@ -54,28 +59,18 @@ export const VectorSearchPage = () => {
     )
   }
 
-  // Show RQE not available screen if RediSearch module is not loaded
-  if (compatibilityLoading === false && hasRedisearch === false) {
-    return (
-      <S.PageWrapper data-testid="vector-search-page--rqe-not-available">
-        <RqeNotAvailable />
-      </S.PageWrapper>
-    )
-  }
-
-  // Show welcome screen when no indexes exist
   if (indexes.length === 0) {
     return (
       <S.PageWrapper data-testid="vector-search-page--welcome">
-        <WelcomeScreen />
+        <VectorSearchWelcomePage />
       </S.PageWrapper>
     )
   }
 
   // Show index list when indexes exist
   return (
-    <S.PageWrapper data-testid="vector-search-page">
-      <IndexListScreen indexes={indexes} />
+    <S.PageWrapper data-testid="vector-search-page--list">
+      <VectorSearchListPage />
     </S.PageWrapper>
   )
 }

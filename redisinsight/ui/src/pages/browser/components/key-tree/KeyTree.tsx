@@ -11,15 +11,14 @@ import { escapeRegExp } from 'lodash'
 
 import {
   appContextBrowserTree,
-  resetBrowserTree,
   appContextDbConfig,
+  resetBrowserTree,
   setBrowserTreeNodesOpen,
 } from 'uiSrc/slices/app/context'
 import { constructKeysToTree } from 'uiSrc/helpers'
 import VirtualTree from 'uiSrc/pages/browser/components/virtual-tree'
 import TreeViewSVG from 'uiSrc/assets/img/icons/treeview.svg'
-import { KeysStoreData } from 'uiSrc/slices/interfaces/keys'
-import { Nullable, bufferToString, comboBoxToArray } from 'uiSrc/utils'
+import { bufferToString, comboBoxToArray, Nullable } from 'uiSrc/utils'
 import { IKeyPropTypes } from 'uiSrc/constants/prop-types/keys'
 import { BulkActionsType, KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
 import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces'
@@ -34,26 +33,12 @@ import {
   setBulkDeleteSearch,
   setBulkDeleteStartAgain,
 } from 'uiSrc/slices/browser/bulkActions'
-import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
 
-import NoKeysMessage from '../no-keys-message'
 import styles from './styles.module.scss'
-
-export interface Props {
-  keysState: KeysStoreData
-  loading: boolean
-  deleting: boolean
-  commonFilterType: Nullable<KeyTypes>
-  selectKey: ({ rowData }: { rowData: any }) => void
-  loadMoreItems: (
-    oldKeys: IKeyPropTypes[],
-    { startIndex, stopIndex }: { startIndex: number; stopIndex: number },
-  ) => void
-  onDelete: (key: RedisResponseBuffer) => void
-  onAddKeyPanel: (value: boolean) => void
-  onBulkActionsPanel: (value: boolean) => void
-}
+import { KeyTreeProps } from './KeyTree.types'
+import NoKeysMessage from '../no-keys-message'
 
 export const firstPanelId = 'tree'
 export const secondPanelId = 'keys'
@@ -64,7 +49,7 @@ const parseKeyNames = (keys: GetKeyInfoResponse[]) =>
     nameString: item.nameString ?? bufferToString(item.name),
   }))
 
-const KeyTree = forwardRef((props: Props, ref) => {
+const KeyTree = forwardRef((props: KeyTreeProps, ref) => {
   const {
     selectKey,
     loadMoreItems,
@@ -75,6 +60,10 @@ const KeyTree = forwardRef((props: Props, ref) => {
     deleting,
     onAddKeyPanel,
     onBulkActionsPanel,
+    visibleColumns,
+    showFolderMetadata,
+    showDeleteAction,
+    showSelectedIndicator,
   } = props
 
   const { instanceId } = useParams<{ instanceId: string }>()
@@ -278,6 +267,10 @@ const KeyTree = forwardRef((props: Props, ref) => {
           onDeleteClicked={handleDeleteClicked}
           onDeleteLeaf={handleDeleteLeaf}
           onDeleteFolder={handleDeleteFolder}
+          visibleColumns={visibleColumns}
+          showFolderMetadata={showFolderMetadata}
+          showDeleteAction={showDeleteAction}
+          showSelectedIndicator={showSelectedIndicator}
         />
       </div>
     </div>

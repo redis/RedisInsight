@@ -51,9 +51,13 @@ export const ActionsCell = ({
       {actions.length > 0 && (
         <Menu data-testid={`index-actions-menu-${id}`}>
           <MenuTrigger>
-            <IconButton icon={MoreactionsIcon} size="L" />
+            <IconButton
+              icon={MoreactionsIcon}
+              size="L"
+              data-testid={`index-actions-menu-trigger-${id}`}
+            />
           </MenuTrigger>
-          <MenuContent placement="right" align="start">
+          <MenuContent placement="bottom" align="end">
             {actions.map((action) => {
               const handleActionClick = (e: React.MouseEvent) => {
                 e.stopPropagation()
@@ -62,6 +66,8 @@ export const ActionsCell = ({
               return (
                 <MenuItem
                   key={action.name}
+                  icon={action.icon}
+                  variant={action.variant}
                   text={action.name}
                   onClick={handleActionClick}
                   data-testid={`index-actions-${action.name.toLowerCase()}-btn-${id}`}

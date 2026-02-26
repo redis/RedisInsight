@@ -1,15 +1,28 @@
 import { Global, Module } from '@nestjs/common';
 import { AzureAuthService } from './auth/azure-auth.service';
 import { AzureAuthController } from './auth/azure-auth.controller';
+import { AzureAuthAnalytics } from './auth/azure-auth.analytics';
 import { AzureAutodiscoveryService } from './autodiscovery/azure-autodiscovery.service';
 import { AzureAutodiscoveryController } from './autodiscovery/azure-autodiscovery.controller';
+import { AzureAutodiscoveryAnalytics } from './autodiscovery/azure-autodiscovery.analytics';
+import { AzureTokenRefreshManager } from './azure-token-refresh.manager';
 import { DatabaseModule } from '../database/database.module';
 
 @Global()
 @Module({
   imports: [DatabaseModule],
-  providers: [AzureAuthService, AzureAutodiscoveryService],
+  providers: [
+    AzureAuthService,
+    AzureAuthAnalytics,
+    AzureAutodiscoveryService,
+    AzureAutodiscoveryAnalytics,
+    AzureTokenRefreshManager,
+  ],
   controllers: [AzureAuthController, AzureAutodiscoveryController],
-  exports: [AzureAuthService, AzureAutodiscoveryService],
+  exports: [
+    AzureAuthService,
+    AzureAutodiscoveryService,
+    AzureTokenRefreshManager,
+  ],
 })
 export class AzureModule {}

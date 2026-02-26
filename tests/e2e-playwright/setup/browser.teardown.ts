@@ -27,4 +27,3 @@ teardown('browser teardown', async () => {
 
   console.log('✅ Browser global teardown complete\n');
 });
-

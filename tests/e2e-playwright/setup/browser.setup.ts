@@ -58,4 +58,3 @@ setup('browser setup', async () => {
 
   console.log('✅ Browser global setup complete\n');
 });
-

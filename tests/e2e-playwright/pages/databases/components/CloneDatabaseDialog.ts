@@ -112,4 +112,3 @@ export class CloneDatabaseDialog {
     await this.testConnectionButton.click();
   }
 }
-

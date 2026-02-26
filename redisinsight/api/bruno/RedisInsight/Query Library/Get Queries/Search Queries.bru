@@ -1,0 +1,21 @@
+meta {
+  name: Search Queries
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/query-library
+  body: none
+  auth: inherit
+}
+
+params:query {
+  indexName: {{RQE_INDEX_NAME}}
+  search: bikes
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

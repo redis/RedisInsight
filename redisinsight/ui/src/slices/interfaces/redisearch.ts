@@ -2,6 +2,28 @@ import { Nullable } from 'uiSrc/utils'
 import { RedisResponseBuffer } from './app'
 import { KeysStoreData, SearchHistoryItem } from './keys'
 
+export interface IndexSummary {
+  name: string
+  prefixes: string[]
+  keyType: string
+}
+
+export interface KeyIndexesResponseItem {
+  name: string
+  prefixes: string[]
+  key_type: string
+}
+
+export interface KeyIndexesApiResponse {
+  indexes: KeyIndexesResponseItem[]
+}
+
+export interface KeyIndexesEntry {
+  loading: boolean
+  data: IndexSummary[]
+  error: string
+}
+
 export interface StateRedisearch {
   loading: boolean
   error: string
@@ -10,7 +32,7 @@ export interface StateRedisearch {
   data: KeysStoreData
   selectedIndex: Nullable<RedisResponseBuffer>
   list: {
-    loading: boolean
+    loading: boolean | undefined
     error: string
     data: RedisResponseBuffer[]
   }
@@ -22,4 +44,5 @@ export interface StateRedisearch {
     data: null | Array<SearchHistoryItem>
     loading: boolean
   }
+  keyIndexes: Record<string, KeyIndexesEntry>
 }

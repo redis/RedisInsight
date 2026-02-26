@@ -1,17 +1,17 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { NodePublicState } from 'react-vtree/dist/es/Tree'
-import cx from 'classnames'
 import { useSelector } from 'react-redux'
 
 import * as keys from 'uiSrc/constants/keys'
 import { Maybe } from 'uiSrc/utils'
 import {
+  BrowserColumns,
+  FeatureFlags,
   KeyTypes,
   ModulesKeyTypes,
-  BrowserColumns,
-  TEXT_BULK_DELETE_TOOLTIP,
-  TEXT_BULK_DELETE_DISABLED_UNPRINTABLE,
   TEXT_BULK_DELETE_DISABLED_MULTIPLE_DELIMITERS,
+  TEXT_BULK_DELETE_DISABLED_UNPRINTABLE,
+  TEXT_BULK_DELETE_TOOLTIP,
 } from 'uiSrc/constants'
 import KeyRowTTL from 'uiSrc/pages/browser/components/key-row-ttl'
 import KeyRowSize from 'uiSrc/pages/browser/components/key-row-size'
@@ -20,21 +20,17 @@ import KeyRowType from 'uiSrc/pages/browser/components/key-row-type'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { appContextDbConfig } from 'uiSrc/slices/app/context'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { RiTooltip } from 'uiSrc/components'
+import { FeatureFlagComponent, RiTooltip } from 'uiSrc/components'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
-import { DeleteKeyPopover } from '../../../delete-key-popover/DeleteKeyPopover'
-import { TreeData } from '../../interfaces'
-import styles from './styles.module.scss'
-import { Flex, Row } from 'uiSrc/components/base/layout/flex'
-import { Text } from 'uiSrc/components/base/text'
+import { Flex } from 'uiSrc/components/base/layout/flex'
+import { ColorText, Text } from 'uiSrc/components/base/text'
 import * as S from './Node.styles'
+import { TreeData } from '../../VirtualTree.types'
+import { DeleteKeyPopover } from '../../../delete-key-popover/DeleteKeyPopover'
 
 const MAX_NESTING_LEVEL = 20
 
-// Node component receives all the data we created in the `treeWalker` +
-// internal openness state (`isOpen`), function to change internal openness
-// `style` parameter that should be added to the root div.
 const Node = ({
   data,
   isOpen,
@@ -65,13 +61,18 @@ const Node = ({
     onDeleteFolder,
     updateStatusOpen,
     updateStatusSelected,
+    visibleColumns: visibleColumnsProp,
+    showFolderMetadata: showFolderMetadataProp = true,
+    showDeleteAction: showDeleteActionProp = true,
+    showSelectedIndicator: showSelectedIndicatorProp = false,
   } = data
 
   const delimiterView = delimiters.length === 1 ? delimiters[0] : '-'
 
   const { shownColumns } = useSelector(appContextDbConfig)
-  const includeSize = shownColumns.includes(BrowserColumns.Size)
-  const includeTTL = shownColumns.includes(BrowserColumns.TTL)
+  const visibleColumns = visibleColumnsProp ?? shownColumns
+  const includeSize = visibleColumns.includes(BrowserColumns.Size)
+  const includeTTL = visibleColumns.includes(BrowserColumns.TTL)
 
   const [deletePopoverId, setDeletePopoverId] =
     useState<Maybe<string>>(undefined)
@@ -131,12 +132,9 @@ const Node = ({
     onDeleteFolder?.(deletePattern, fullName, keyCount)
   }
 
-  // Check if folder name contains unprintable characters (Unicode replacement character)
-  // These folders may group keys incorrectly, so bulk delete should be disabled
   const hasUnprintableChars =
     fullName?.includes('\uFFFD') || nameString?.includes('\uFFFD')
 
-  // Check if delete should be disabled (multiple delimiters or unprintable chars)
   const isDeleteDisabled = delimiters.length > 1 || hasUnprintableChars
 
   const getDeleteTooltip = () => {
@@ -150,51 +148,65 @@ const Node = ({
   }
   const deleteTooltip = getDeleteTooltip()
 
+  const folderTextColor = isOpen ? 'primary' : 'secondary'
+
   const Folder = () => (
     <RiTooltip
       content={tooltipContent}
       position="bottom"
-      anchorClassName={styles.anchorTooltipNode}
+      anchorClassName={S.FOLDER_ANCHOR_CLASS}
     >
-      <Row align="center">
+      <S.FolderContent align="center">
         <Flex align="center">
-          <RiIcon
-            size="xs"
-            type={isOpen ? 'ChevronDownIcon' : 'ChevronRightIcon'}
-            className={cx(styles.nodeIcon, styles.nodeIconArrow)}
-            data-test-subj={`node-arrow-icon_${fullName}`}
-          />
-          <RiIcon
-            size="m"
-            type="FolderIcon"
-            className={styles.nodeIcon}
-            data-test-subj={`node-folder-icon_${fullName}`}
-          />
-          <Text className="truncateText" data-testid={`folder-${nameString}`}>
+          <S.NodeIconArrow>
+            <RiIcon
+              size="xs"
+              type={isOpen ? 'ChevronDownIcon' : 'ChevronRightIcon'}
+              data-test-subj={`node-arrow-icon_${fullName}`}
+            />
+          </S.NodeIconArrow>
+          <S.NodeIcon>
+            <RiIcon
+              size="m"
+              type="FolderIcon"
+              data-test-subj={`node-folder-icon_${fullName}`}
+            />
+          </S.NodeIcon>
+          <Text
+            color={folderTextColor}
+            className="truncateText"
+            data-testid={`folder-${nameString}`}
+          >
             {nameString}
           </Text>
         </Flex>
-        <S.FolderActions align="center" justify="end">
-          <S.FolderApproximate data-testid={`percentage_${fullName}`}>
-            {keyApproximate
-              ? `${keyApproximate < 1 ? '<1' : Math.round(keyApproximate)}%`
-              : ''}
-          </S.FolderApproximate>
-          <S.FolderKeyCount data-testid={`count_${fullName}`}>
-            {keyCount ?? ''}
-          </S.FolderKeyCount>
-          <RiTooltip content={deleteTooltip} position="left">
-            <IconButton
-              icon={DeleteIcon}
-              onClick={handleDeleteFolder}
-              disabled={isDeleteDisabled}
-              className="showOnHoverKey"
-              aria-label="Delete Folder Keys"
-              data-testid={`delete-folder-btn-${fullName}`}
-            />
-          </RiTooltip>
-        </S.FolderActions>
-      </Row>
+        {showFolderMetadataProp && (
+          <S.FolderActions align="center" justify="end">
+            <S.FolderApproximate data-testid={`percentage_${fullName}`}>
+              <ColorText color="secondary">
+                {keyApproximate
+                  ? `${keyApproximate < 1 ? '<1' : Math.round(keyApproximate)}%`
+                  : ''}
+              </ColorText>
+            </S.FolderApproximate>
+            <S.FolderKeyCount data-testid={`count_${fullName}`}>
+              <ColorText color="secondary">{keyCount ?? ''}</ColorText>
+            </S.FolderKeyCount>
+            <FeatureFlagComponent name={FeatureFlags.envDependent}>
+              <RiTooltip content={deleteTooltip} position="left">
+                <IconButton
+                  icon={DeleteIcon}
+                  onClick={handleDeleteFolder}
+                  disabled={isDeleteDisabled}
+                  className="showOnHoverKey"
+                  aria-label="Delete Folder Keys"
+                  data-testid={`delete-folder-btn-${fullName}`}
+                />
+              </RiTooltip>
+            </FeatureFlagComponent>
+          </S.FolderActions>
+        )}
+      </S.FolderContent>
     </RiTooltip>
   )
 
@@ -218,24 +230,30 @@ const Node = ({
           rowId={nodeId}
         />
       )}
-      <DeleteKeyPopover
-        deletePopoverId={deletePopoverId === nodeId ? nodeId : undefined}
-        nameString={nameString}
-        name={nameBuffer}
-        type={type}
-        rowId={nodeId}
-        deleting={deleting}
-        onDelete={handleDelete}
-        onOpenPopover={handleDeletePopoverOpen}
-      />
+      {showDeleteActionProp && (
+        <DeleteKeyPopover
+          deletePopoverId={deletePopoverId === nodeId ? nodeId : undefined}
+          nameString={nameString}
+          name={nameBuffer}
+          type={type}
+          rowId={nodeId}
+          deleting={deleting}
+          onDelete={handleDelete}
+          onOpenPopover={handleDeletePopoverOpen}
+        />
+      )}
+      {showSelectedIndicatorProp && isSelected && (
+        <RiIcon
+          size="m"
+          type="ChevronRightIcon"
+          data-testid={`selected-indicator_${fullName}`}
+        />
+      )}
     </>
   )
 
-  const Node = (
-    <div
-      className={cx(styles.nodeContent, 'rowKey', {
-        [styles.nodeContentOpen]: isOpen && !isLeaf,
-      })}
+  const NodeItem = (
+    <S.NodeContent
       role="treeitem"
       onClick={handleClick}
       onKeyDown={handleKeyDown}
@@ -245,29 +263,29 @@ const Node = ({
     >
       {!isLeaf && <Folder />}
       {isLeaf && <Leaf />}
-    </div>
+    </S.NodeContent>
   )
 
   const tooltipContent = (
     <>
-      <div className={styles.folderTooltipHeader}>
-        <span
-          className={styles.folderPattern}
-        >{`${fullName + delimiterView}*`}</span>
+      <S.FolderTooltipHeader>
+        <S.FolderPattern>{`${fullName + delimiterView}*`}</S.FolderPattern>
         {delimiters.length > 1 && (
-          <span className={styles.delimiters}>
+          <S.Delimiters>
             {delimiters.map((delimiter) => (
-              <span className={styles.delimiter}>{delimiter}</span>
+              <S.Delimiter key={delimiter}>{delimiter}</S.Delimiter>
             ))}
-          </span>
+          </S.Delimiters>
         )}
-      </div>
-      <span>{`${keyCount} key(s) (${Math.round(keyApproximate * 100) / 100}%)`}</span>
+      </S.FolderTooltipHeader>
+      <ColorText color="secondary">
+        {`${keyCount} key(s) (${Math.round(keyApproximate * 100) / 100}%)`}
+      </ColorText>
     </>
   )
 
   return (
-    <div
+    <S.NodeContainer
       style={{
         ...style,
         paddingLeft:
@@ -275,13 +293,11 @@ const Node = ({
             ? MAX_NESTING_LEVEL
             : nestingLevel) * 8,
       }}
-      className={cx(styles.nodeContainer, {
-        [styles.nodeSelected]: isSelected && isLeaf,
-        [styles.nodeRowEven]: index % 2 === 0,
-      })}
+      $isSelected={isSelected && isLeaf}
+      $isEven={index % 2 === 0}
     >
-      {Node}
-    </div>
+      {NodeItem}
+    </S.NodeContainer>
   )
 }
 

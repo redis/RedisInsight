@@ -104,4 +104,3 @@ export class DatabasesPage extends BasePage {
     return this.databaseList.exists(name);
   }
 }
-

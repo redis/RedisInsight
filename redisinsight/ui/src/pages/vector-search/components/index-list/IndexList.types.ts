@@ -1,4 +1,5 @@
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+import { IconType } from 'uiSrc/components/base/icons'
 
 /**
  * Enum representing the column identifiers for the IndexList.
@@ -59,6 +60,10 @@ export interface IndexListProps {
 export interface IndexListAction {
   /** Display name in the menu */
   name: string
+  /** Optional icon displayed next to the menu item */
+  icon?: IconType
+  /** Visual variant for the menu item (e.g. 'destructive' for delete actions) */
+  variant?: 'primary' | 'destructive'
   /** Callback invoked with the index name when the action is clicked */
   callback: (indexName: string) => void
 }

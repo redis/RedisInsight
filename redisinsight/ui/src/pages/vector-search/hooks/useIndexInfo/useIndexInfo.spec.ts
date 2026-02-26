@@ -58,11 +58,6 @@ describe('useIndexInfo', () => {
       store: getMockedStore(),
     })
 
-    // Wait a bit to ensure no request is made
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 50))
-    })
-
     expect(requestSpy).not.toHaveBeenCalled()
   })
 
@@ -220,8 +215,6 @@ describe('useIndexInfo', () => {
     // Now complete the first (stale) request
     await act(async () => {
       resolveFirst!()
-      // Give time for the stale response to be processed (and ignored)
-      await new Promise((resolve) => setTimeout(resolve, 50))
     })
 
     // Should still have data from second request (stale response ignored)
@@ -268,7 +261,6 @@ describe('useIndexInfo', () => {
     // Complete the in-flight request
     await act(async () => {
       resolveRequest!()
-      await new Promise((resolve) => setTimeout(resolve, 50))
     })
 
     // Should remain stable

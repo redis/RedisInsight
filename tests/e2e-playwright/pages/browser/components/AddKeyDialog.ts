@@ -173,4 +173,3 @@ export class AddKeyDialog {
     await expect(this.addKeyButton).toBeDisabled();
   }
 }
-

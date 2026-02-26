@@ -5,6 +5,7 @@ import {
   Configuration,
   AccountInfo,
 } from '@azure/msal-node';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
   AZURE_AUTHORITY,
   AZURE_CLIENT_ID,
@@ -13,8 +14,10 @@ import {
   AZURE_OAUTH_REDIRECT_PATH,
   AZURE_OAUTH_SCOPES,
   AzureAuthStatus,
+  AzureRedisTokenEvents,
 } from '../constants';
 import { AzureTokenResult, AzureAuthStatusResponse } from './models';
+import { AzureOAuthPrompt } from './dto';
 
 /**
  * PKCE (Proof Key for Code Exchange) utilities.
@@ -58,6 +61,8 @@ export class AzureAuthService {
    */
   private authRequests: Map<string, string> = new Map();
 
+  constructor(private readonly eventEmitter: EventEmitter2) {}
+
   private getMsalClient(): PublicClientApplication {
     if (this.pca) {
       return this.pca;
@@ -79,8 +84,12 @@ export class AzureAuthService {
   /**
    * Generate authorization URL for OAuth flow.
    * Returns URL to redirect user to Microsoft login.
+   * @param prompt - Optional prompt parameter to control login behavior.
+   * @see https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-auth-code-flow#request-an-authorization-code
    */
-  async getAuthorizationUrl(): Promise<{ url: string; state: string }> {
+  async getAuthorizationUrl(
+    prompt?: AzureOAuthPrompt,
+  ): Promise<{ url: string; state: string }> {
     const pca = this.getMsalClient();
 
     const verifier = generateCodeVerifier();
@@ -96,6 +105,7 @@ export class AzureAuthService {
       codeChallenge: challenge,
       codeChallengeMethod: 'S256',
       state,
+      ...(prompt && { prompt }),
     });
 
     this.logger.debug('Generated authorization URL');
@@ -206,7 +216,19 @@ export class AzureAuthService {
   async getRedisTokenByAccountId(
     accountId: string,
   ): Promise<AzureTokenResult | null> {
-    return this.getTokenByAccountId(accountId, AZURE_REDIS_SCOPE);
+    const tokenResult = await this.getTokenByAccountId(
+      accountId,
+      AZURE_REDIS_SCOPE,
+    );
+
+    if (tokenResult) {
+      this.eventEmitter.emit(AzureRedisTokenEvents.Acquired, {
+        accountId,
+        tokenResult,
+      });
+    }
+
+    return tokenResult;
   }
 
   /**

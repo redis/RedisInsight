@@ -8,8 +8,8 @@ export const StyledContainer = styled(PageBody)`
   overflow: hidden;
   overflow-y: auto;
   background-color: ${({ theme }: { theme: Theme }) =>
-    theme.semantic.color.background.neutral100};
-  border: 2px solid
+    theme.globals.body.bgColor};
+  border: 1px dashed
     ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral500};
   align-items: center;
   justify-content: center;

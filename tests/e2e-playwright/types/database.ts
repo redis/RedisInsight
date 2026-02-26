@@ -3,6 +3,7 @@
  */
 export enum ConnectionType {
   Standalone = 'STANDALONE',
+  StandaloneBig = 'STANDALONE_BIG',
   Cluster = 'CLUSTER',
   Sentinel = 'SENTINEL',
 }
@@ -35,6 +36,33 @@ export interface SshTunnelConfig {
   password?: string;
   privateKey?: string;
   passphrase?: string;
+}
+
+/**
+ * TLS certificate configuration
+ */
+export interface TlsCertConfig {
+  name: string;
+  certificate: string;
+}
+
+/**
+ * TLS client certificate configuration (includes private key)
+ */
+export interface TlsClientCertConfig extends TlsCertConfig {
+  key: string;
+}
+
+/**
+ * TLS configuration for database connection
+ */
+export interface TlsConfig {
+  enabled: boolean;
+  verifyServerCert?: boolean;
+  useSni?: boolean;
+  sniHost?: string;
+  caCert?: TlsCertConfig;
+  clientCert?: TlsClientCertConfig;
 }
 
 /**

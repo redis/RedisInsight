@@ -1,0 +1,1 @@
+export { ViewIndexButton } from './ViewIndexButton'

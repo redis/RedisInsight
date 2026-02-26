@@ -57,10 +57,21 @@ export const SentinelConfigFactory = Factory.define<AddDatabaseConfig & { master
 }));
 
 /**
+ * Standalone Big database configuration factory
+ * Uses a pre-seeded large database (port 8103) for tests requiring many keys
+ */
+export const StandaloneBigConfigFactory = Factory.define<AddDatabaseConfig>(() => ({
+  host: redisConfig.standaloneBig.host,
+  port: redisConfig.standaloneBig.port,
+  name: `${TEST_DB_PREFIX}standalone-big-${faker.string.alphanumeric(8)}`,
+}));
+
+/**
  * Database factories by connection type
  */
 export const databaseFactories = {
   [ConnectionType.Standalone]: StandaloneConfigFactory,
   [ConnectionType.Cluster]: ClusterConfigFactory,
   [ConnectionType.Sentinel]: SentinelConfigFactory,
+  [ConnectionType.StandaloneBig]: StandaloneBigConfigFactory,
 };

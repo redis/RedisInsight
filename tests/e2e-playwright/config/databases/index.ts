@@ -18,6 +18,8 @@ import { sentinelConfig } from './sentinel';
 
 import { sshRedisConfig, sshTunnelConfig } from './ssh';
 
+import { tlsRedisConfig, tlsCaCert, tlsClientCert } from './tls';
+
 export const redisConfig = {
   standalone: standaloneConfig,
   standaloneV5: standaloneV5Config,
@@ -29,4 +31,7 @@ export const redisConfig = {
   sentinel: sentinelConfig,
   sshRedis: sshRedisConfig,
   sshTunnel: sshTunnelConfig,
+  tlsRedis: tlsRedisConfig,
+  tlsCaCert,
+  tlsClientCert,
 };

@@ -77,4 +77,3 @@ export class BottomPanel {
     await this.feedbackLink.click();
   }
 }
-

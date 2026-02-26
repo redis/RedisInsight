@@ -240,4 +240,3 @@ export class SettingsPage extends BasePage {
     return checked === 'true';
   }
 }
-

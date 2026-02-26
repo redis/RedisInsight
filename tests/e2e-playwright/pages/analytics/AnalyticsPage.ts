@@ -26,35 +26,58 @@ export class AnalyticsPage extends InstancePage {
   readonly slowLogEmptyState: Locator;
   readonly slowLogEmptyStateMessage: Locator;
 
-  // Database Analysis elements
+  // Database Analysis page and header elements
+  readonly databaseAnalysisPage: Locator;
+  readonly analysisHeader: Locator;
   readonly newReportButton: Locator;
-  readonly reportDropdown: Locator;
+  readonly analysisProgress: Locator;
   readonly noReportsMessage: Locator;
+  readonly reportHistorySelect: Locator;
+  readonly scannedKeysText: Locator;
+
+  // Database Analysis sub-tabs
   readonly dataSummaryTab: Locator;
   readonly tipsTab: Locator;
-  readonly topNamespacesTable: Locator;
-  readonly topKeysTable: Locator;
-  readonly memoryChart: Locator;
-  readonly keysChart: Locator;
-  readonly scannedKeysText: Locator;
+
+  // Summary per data (donut charts)
+  readonly summaryPerData: Locator;
+  readonly summaryPerDataCharts: Locator;
+  readonly memoryChartTitle: Locator;
+  readonly keysChartTitle: Locator;
+  readonly totalMemoryValue: Locator;
+  readonly totalKeysValue: Locator;
+  readonly extrapolateSwitch: Locator;
+
+  // TTL / Expiration
   readonly ttlDistributionChart: Locator;
   readonly showNoExpirySwitch: Locator;
-  readonly reportHistorySelect: Locator;
+
+  // Top Namespaces
+  readonly topNamespacesContainer: Locator;
+  readonly topNamespacesEmpty: Locator;
+  readonly topNamespacesMessage: Locator;
+  readonly treeViewPageLink: Locator;
+  readonly nspTableMemory: Locator;
+  readonly nspTableKeys: Locator;
+
+  // Top Keys
+  readonly topKeysTitle: Locator;
+  readonly topKeysTableMemory: Locator;
+  readonly topKeysTableLength: Locator;
 
   // Tips/Recommendations elements
-  readonly codeChangesLabel: Locator;
-  readonly configChangesLabel: Locator;
-  readonly upgradeLabel: Locator;
+  readonly badgesLegend: Locator;
   readonly recommendationAccordions: Locator;
+  readonly emptyRecommendationsMessage: Locator;
   readonly tutorialButton: Locator;
   readonly votingSection: Locator;
-  readonly likeButton: Locator;
-  readonly dislikeButton: Locator;
+  readonly usefulVoteButton: Locator;
+  readonly notUsefulVoteButton: Locator;
 
   constructor(page: Page) {
     super(page);
 
-    // Sub-page tabs
+    // Sub-page tabs (rendered by @redis-ui/components Tabs with role="tab")
     this.databaseAnalysisTab = page.getByRole('tab', { name: 'Database Analysis' });
     this.slowLogTab = page.getByRole('tab', { name: 'Slow Log' });
 
@@ -69,35 +92,53 @@ export class AnalyticsPage extends InstancePage {
     this.slowLogEmptyState = page.getByText('No Slow Logs found');
     this.slowLogEmptyStateMessage = page.getByText(/Either no commands exceeding/);
 
-    // Database Analysis elements
+    // Database Analysis page and header
+    this.databaseAnalysisPage = page.getByTestId('database-analysis-page');
+    this.analysisHeader = page.getByTestId('db-analysis-header');
     this.newReportButton = page.getByTestId('start-database-analysis-btn');
-    this.reportDropdown = page.getByRole('combobox').filter({ hasText: /\d{1,2}:\d{2}:\d{2}/ });
-    this.noReportsMessage = page.getByText('No Reports found');
+    this.analysisProgress = page.getByTestId('analysis-progress');
+    this.noReportsMessage = page.getByTestId('empty-analysis-no-reports');
+    this.reportHistorySelect = page.getByTestId('select-report');
+    this.scannedKeysText = page.getByText(/Scanned \d+%/);
+
+    // Database Analysis sub-tabs
     this.dataSummaryTab = page.getByRole('tab', { name: 'Data Summary' });
     this.tipsTab = page.getByRole('tab', { name: /Tips/ });
-    this.topNamespacesTable = page.locator('table').filter({ hasText: 'Key Pattern' });
-    this.topKeysTable = page.locator('table').filter({ hasText: 'Key Name' });
-    // Charts are in containers with text labels, not on img elements directly
-    this.memoryChart = page.locator('[data-testid="analysis-memory"]').or(
-      page.locator('div').filter({ hasText: /Memory/ }).locator('canvas, svg').first(),
-    );
-    this.keysChart = page.locator('[data-testid="analysis-keys"]').or(
-      page.locator('div').filter({ hasText: /Keys/ }).locator('canvas, svg').first(),
-    );
-    this.scannedKeysText = page.getByText(/Scanned \d+%/);
+
+    // Summary per data (donut charts)
+    this.summaryPerData = page.getByTestId('summary-per-data');
+    this.summaryPerDataCharts = page.getByTestId('summary-per-data-charts');
+    this.memoryChartTitle = page.getByTestId('donut-title-memory');
+    this.keysChartTitle = page.getByTestId('donut-title-keys');
+    this.totalMemoryValue = page.getByTestId('total-memory-value');
+    this.totalKeysValue = page.getByTestId('total-keys-value');
+    this.extrapolateSwitch = page.getByTestId('extrapolate-results').first();
+
+    // TTL / Expiration
     this.ttlDistributionChart = page.getByTestId('analysis-ttl');
     this.showNoExpirySwitch = page.getByTestId('show-no-expiry-switch');
-    this.reportHistorySelect = page.getByTestId('select-report');
+
+    // Top Namespaces
+    this.topNamespacesContainer = page.getByTestId('top-namespaces');
+    this.topNamespacesEmpty = page.getByTestId('top-namespaces-empty');
+    this.topNamespacesMessage = page.getByTestId('top-namespaces-message');
+    this.treeViewPageLink = page.getByTestId('tree-view-page-link');
+    this.nspTableMemory = page.getByTestId('nsp-table-memory');
+    this.nspTableKeys = page.getByTestId('nsp-table-keys');
+
+    // Top Keys
+    this.topKeysTitle = page.getByTestId('top-keys-title');
+    this.topKeysTableMemory = page.getByTestId('top-keys-table-memory');
+    this.topKeysTableLength = page.getByTestId('top-keys-table-length');
 
     // Tips/Recommendations elements
-    this.codeChangesLabel = page.getByText('Code Changes');
-    this.configChangesLabel = page.getByText('Configuration Changes');
-    this.upgradeLabel = page.getByText('Upgrade');
+    this.badgesLegend = page.getByTestId('badges-legend');
     this.recommendationAccordions = page.locator('[data-testid$="-accordion"]');
-    this.tutorialButton = page.getByRole('button', { name: 'Tutorial' });
-    this.votingSection = page.getByText('Is this useful?');
-    this.likeButton = page.getByTestId('like-vote-btn');
-    this.dislikeButton = page.getByTestId('dislike-vote-btn');
+    this.emptyRecommendationsMessage = page.getByTestId('empty-recommendations-message');
+    this.tutorialButton = page.locator('[data-testid$="-to-tutorial-btn"]');
+    this.votingSection = page.getByTestId('recommendation-voting');
+    this.usefulVoteButton = page.getByTestId('useful-vote-btn');
+    this.notUsefulVoteButton = page.getByTestId('not useful-vote-btn');
   }
 
   /**
@@ -170,9 +211,10 @@ export class AnalyticsPage extends InstancePage {
 
   /**
    * Wait for analysis report to be generated
+   * @param timeout - max wait time in ms (default 30s, use longer for large datasets)
    */
-  async waitForReportGenerated(): Promise<void> {
-    await this.scannedKeysText.waitFor({ state: 'visible', timeout: 30000 });
+  async waitForReportGenerated(timeout = 30000): Promise<void> {
+    await this.analysisProgress.waitFor({ state: 'visible', timeout });
   }
 
   /**
@@ -180,10 +222,23 @@ export class AnalyticsPage extends InstancePage {
    */
   async isReportVisible(): Promise<boolean> {
     try {
-      await this.scannedKeysText.waitFor({ state: 'visible', timeout: 5000 });
+      await this.analysisProgress.waitFor({ state: 'visible', timeout: 5000 });
       return true;
     } catch {
       return false;
+    }
+  }
+
+  /**
+   * Ensure a report has been generated (check first, generate if needed)
+   * Use in beforeEach or at the start of tests that require a report
+   * @param timeout - max wait time in ms (default 30s, use longer for large datasets)
+   */
+  async ensureReportGenerated(timeout = 30000): Promise<void> {
+    const hasReport = await this.isReportVisible();
+    if (!hasReport) {
+      await this.clickNewReport();
+      await this.waitForReportGenerated(timeout);
     }
   }
 
@@ -192,7 +247,7 @@ export class AnalyticsPage extends InstancePage {
    */
   async getTipsCount(): Promise<number> {
     const tabText = await this.tipsTab.textContent();
-    const match = tabText?.match(/Tips \((\d+)\)/);
+    const match = tabText?.match(/Tips\s*\((\d+)\)/);
     return match ? parseInt(match[1], 10) : 0;
   }
 
@@ -208,9 +263,9 @@ export class AnalyticsPage extends InstancePage {
    * Get last refresh time text
    */
   async getLastRefreshText(): Promise<string> {
-    const lastRefreshElement = this.page.locator('[class*="last-refresh"]').or(
-      this.page.getByText(/Last refresh:/).locator('..'),
-    );
+    const lastRefreshElement = this.page
+      .locator('[class*="last-refresh"]')
+      .or(this.page.getByText(/Last refresh:/).locator('..'));
     return (await lastRefreshElement.textContent()) || '';
   }
 
@@ -327,6 +382,47 @@ export class AnalyticsPage extends InstancePage {
     return match ? match[1] : '';
   }
 
+  // ===== Top Namespaces Methods =====
+
+  /**
+   * Switch top namespaces table to view by Memory
+   */
+  async switchTopNamespacesView(view: 'memory' | 'keys'): Promise<void> {
+    const testId = view === 'memory' ? 'btn-change-table-memory' : 'btn-change-table-keys';
+    await this.topNamespacesContainer.getByTestId(testId).click();
+  }
+
+  /**
+   * Get the visible top namespaces table (memory or keys view)
+   */
+  async getVisibleNamespacesTable(): Promise<Locator> {
+    if (await this.nspTableMemory.isVisible()) {
+      return this.nspTableMemory;
+    }
+    return this.nspTableKeys;
+  }
+
+  // ===== Top Keys Methods =====
+
+  /**
+   * Switch top keys table to view by Memory or Length
+   */
+  async switchTopKeysView(view: 'memory' | 'length'): Promise<void> {
+    const testId = view === 'memory' ? 'btn-change-table-memory' : 'btn-change-table-keys';
+    // Scope to the top keys section to avoid conflict with namespace buttons
+    await this.topKeysTitle.locator('..').getByTestId(testId).click();
+  }
+
+  /**
+   * Get the visible top keys table (memory or length view)
+   */
+  async getVisibleTopKeysTable(): Promise<Locator> {
+    if (await this.topKeysTableMemory.isVisible()) {
+      return this.topKeysTableMemory;
+    }
+    return this.topKeysTableLength;
+  }
+
   // ===== Tips/Recommendations Methods =====
 
   /**
@@ -345,18 +441,10 @@ export class AnalyticsPage extends InstancePage {
   }
 
   /**
-   * Check if recommendation labels are visible
+   * Check if badges legend is visible (contains recommendation type labels)
    */
-  async areRecommendationLabelsVisible(): Promise<{
-    codeChanges: boolean;
-    configChanges: boolean;
-    upgrade: boolean;
-  }> {
-    return {
-      codeChanges: await this.codeChangesLabel.isVisible(),
-      configChanges: await this.configChangesLabel.isVisible(),
-      upgrade: await this.upgradeLabel.isVisible(),
-    };
+  async isBadgesLegendVisible(): Promise<boolean> {
+    return this.badgesLegend.isVisible();
   }
 
   /**
@@ -394,11 +482,10 @@ export class AnalyticsPage extends InstancePage {
   }
 
   /**
-   * Check if voting section is visible
+   * Check if voting section is visible for any recommendation
    */
   async isVotingSectionVisible(): Promise<boolean> {
     const count = await this.votingSection.count();
     return count > 0;
   }
 }
-

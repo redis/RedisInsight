@@ -28,6 +28,8 @@ export const EXTERNAL_LINKS = {
   vectorDatabaseGettingStarted:
     'https://redis.io/docs/latest/develop/get-started/vector-database/',
   redisSandbox: 'https://redis.io/try/sandbox/',
+  searchIndexes:
+    'https://redis.io/docs/latest/develop/ai/search-and-query/query/vector-search/',
 }
 
 export const UTM_CAMPAINGS: Record<any, string> = {

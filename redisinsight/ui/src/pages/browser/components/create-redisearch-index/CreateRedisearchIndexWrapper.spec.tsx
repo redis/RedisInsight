@@ -136,14 +136,13 @@ describe('CreateRedisearchIndexWrapper', () => {
     expect(screen.getByTestId('identifier-info-icon')).toBeInTheDocument()
   })
 
-  it('should not have geoshape option', () => {
-    const { queryByText } = render(
+  it('should show GEOSHAPE in field type dropdown', async () => {
+    const { findByText } = render(
       <CreateRedisearchIndexWrapper onClosePanel={onClose} />,
     )
 
-    fireEvent.click(screen.getByTestId('field-type-0'))
+    await userEvent.click(screen.getByTestId('field-type-0'))
 
-    expect(queryByText('GEOSHAPE')).not.toBeInTheDocument()
-    expect(queryByText('VECTOR')).not.toBeInTheDocument()
+    expect(await findByText('GEOSHAPE')).toBeInTheDocument()
   })
 })

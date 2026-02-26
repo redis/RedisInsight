@@ -199,7 +199,7 @@ describe('Telemetry', () => {
     ;(sendEventTelemetry as jest.Mock).mockRestore()
   })
 
-  it('Results: Raw mode', async () => {
+  it('Results: should send telemetry on re-run', async () => {
     const sendEventTelemetryMock = jest.fn()
     ;(sendEventTelemetry as jest.Mock).mockImplementation(
       () => sendEventTelemetryMock,

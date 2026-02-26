@@ -12,4 +12,3 @@ teardown('electron teardown', async () => {
   console.log('   ℹ️  Skipping API cleanup (app already closed)');
   console.log('✅ Electron global teardown complete\n');
 });
-

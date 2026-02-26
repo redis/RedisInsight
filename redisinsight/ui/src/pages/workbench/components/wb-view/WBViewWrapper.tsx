@@ -70,6 +70,7 @@ let state: IState = {
   scriptEl: null,
 }
 
+/** @deprecated Use useQuery hook from 'pages/vector-search/pages/VectorSearchQueryPage/hooks/useQuery' instead. */
 const WBViewWrapper = () => {
   const { instanceId } = useParams<{ instanceId: string }>()
 

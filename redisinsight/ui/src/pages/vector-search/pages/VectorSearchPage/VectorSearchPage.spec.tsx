@@ -30,6 +30,12 @@ jest.mock('../../hooks/useRedisearchListData', () => ({
   useRedisearchListData: jest.fn(),
 }))
 
+jest.mock('../../context/vector-search', () => ({
+  useVectorSearch: jest.fn(() => ({
+    openPickSampleDataModal: jest.fn(),
+  })),
+}))
+
 const getTestState = (): RootState => ({
   ...initialStateDefault,
   connections: {
@@ -106,6 +112,22 @@ describe('VectorSearchPage', () => {
     expect(loader).toBeInTheDocument()
   })
 
+  it('should render loader when indexes loading is undefined (not yet fetched)', () => {
+    mockUseRedisearchListData.mockReturnValue({
+      loading: undefined,
+      data: [],
+      stringData: [],
+    })
+
+    renderComponent()
+
+    const loader = screen.getByTestId('vector-search-loader')
+    expect(loader).toBeInTheDocument()
+
+    const welcomeScreen = screen.queryByTestId('welcome-screen')
+    expect(welcomeScreen).not.toBeInTheDocument()
+  })
+
   it('should render loader when compatibility is uninitialized (undefined) even if indexes are not loading', () => {
     mockUseRedisInstanceCompatibility.mockReturnValue({
       loading: undefined,
@@ -123,7 +145,7 @@ describe('VectorSearchPage', () => {
     const loader = screen.getByTestId('vector-search-loader')
     expect(loader).toBeInTheDocument()
 
-    const welcomeScreen = screen.queryByTestId('vector-search--welcome-screen')
+    const welcomeScreen = screen.queryByTestId('welcome-screen')
     expect(welcomeScreen).not.toBeInTheDocument()
   })
 
@@ -151,7 +173,7 @@ describe('VectorSearchPage', () => {
 
     renderComponent()
 
-    const welcomeScreen = screen.getByTestId('vector-search--welcome-screen')
+    const welcomeScreen = screen.getByTestId('welcome-screen')
     expect(welcomeScreen).toBeInTheDocument()
   })
 
@@ -164,10 +186,8 @@ describe('VectorSearchPage', () => {
 
     renderComponent()
 
-    const indexListScreen = screen.getByTestId(
-      'vector-search--index-list-screen',
-    )
-    expect(indexListScreen).toBeInTheDocument()
+    const listPage = screen.getByTestId('vector-search--list--page')
+    expect(listPage).toBeInTheDocument()
   })
 
   it('should send page view telemetry on mount', () => {

@@ -1,9 +1,6 @@
 name: ✅ E2E Tests
 
 on:
-  push:
-    branches:
-      - 'e2e/**'
   workflow_dispatch:
     inputs:
       debug:

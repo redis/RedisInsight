@@ -28,7 +28,7 @@ import {
 } from 'src/modules/redis/redis.client.factory';
 import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
 import { RedisConnectionSentinelMasterRequiredException } from 'src/modules/redis/exceptions/connection';
-import { CredentialStrategyProvider } from 'src/modules/database/credentials';
+import { CredentialStrategyProvider } from 'src/modules/database/credentials/credential-strategy.provider';
 import { AzureEntraIdCredentialStrategy } from 'src/modules/database/credentials/strategies/azure-entra-id.credential-strategy';
 
 @Injectable()

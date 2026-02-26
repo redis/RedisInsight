@@ -1,6 +1,6 @@
 import VirtualTree from './VirtualTree'
 
-export * from './interfaces'
+export * from './VirtualTree.types'
 
 export { VirtualTree }
 

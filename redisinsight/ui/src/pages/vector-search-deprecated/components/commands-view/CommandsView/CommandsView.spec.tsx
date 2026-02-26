@@ -1,20 +1,22 @@
 import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { RunQueryMode } from 'uiSrc/slices/interfaces'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import { commandExecutionUIFactory } from 'uiSrc/mocks/factories/workbench/commandExectution.factory'
-import CommandsView, { Props } from './CommandsView'
 import {
-  ViewMode,
-  ViewModeContextProvider,
-} from 'uiSrc/components/query/context/view-mode.context'
+  QueryResultsProvider,
+  QueryResultsTelemetry,
+} from 'uiSrc/components/query/context/query-results.context'
+import CommandsView, { Props } from './CommandsView'
 
-// Mock the telemetry module, so we don't send actual telemetry data during tests
-jest.mock('uiSrc/telemetry', () => ({
-  ...jest.requireActual('uiSrc/telemetry'),
-  sendEventTelemetry: jest.fn(),
-}))
+const mockTelemetry: QueryResultsTelemetry = {
+  onCommandCopied: jest.fn(),
+  onResultCleared: jest.fn(),
+  onResultCollapsed: jest.fn(),
+  onResultExpanded: jest.fn(),
+  onResultViewChanged: jest.fn(),
+  onFullScreenToggled: jest.fn(),
+  onQueryReRun: jest.fn(),
+}
 
 const renderCommandsViewComponent = (props?: Partial<Props>) => {
   const defaultProps: Props = {
@@ -32,9 +34,9 @@ const renderCommandsViewComponent = (props?: Partial<Props>) => {
   }
 
   return render(
-    <ViewModeContextProvider viewMode={ViewMode.VectorSearch}>
+    <QueryResultsProvider telemetry={mockTelemetry}>
       <CommandsView {...defaultProps} {...props} />
-    </ViewModeContextProvider>,
+    </QueryResultsProvider>,
   )
 }
 
@@ -46,14 +48,13 @@ describe('CommandsView', () => {
   it('should render', () => {
     const { container } = renderCommandsViewComponent()
     expect(container).toBeInTheDocument()
-
-    // TODO: Verify the rendered content
   })
 
   describe('Telemetry', () => {
-    it('should collect telemetry when clicking the re-run button', () => {
+    it('should call telemetry onQueryReRun when clicking the re-run button', () => {
       const mockCommand = commandExecutionUIFactory.build({
-        isOpen: false, // in order to get only SEARCH_RESULTS_EXPANDED or SEARCH_COMMAND_RUN_AGAIN events
+        isOpen: false,
+        emptyCommand: false,
       })
 
       const props: Partial<Props> = {
@@ -68,22 +69,7 @@ describe('CommandsView', () => {
 
       fireEvent.click(reRunButton)
 
-      // Hack: looks like there is a race condition between the two telemetry events
-      // so until we fix it, we'll just check for either event
-      const calls = (sendEventTelemetry as jest.Mock).mock.calls
-      const hasReRunEvent = calls.some(
-        (call) =>
-          call[0].event === TelemetryEvent.SEARCH_COMMAND_RUN_AGAIN &&
-          call[0].eventData.databaseId === INSTANCE_ID_MOCK &&
-          call[0].eventData.commands?.includes(mockCommand.command),
-      )
-      const hasExpandEvent = calls.some(
-        (call) =>
-          call[0].event === TelemetryEvent.SEARCH_RESULTS_EXPANDED &&
-          call[0].eventData.databaseId === INSTANCE_ID_MOCK,
-      )
-
-      expect(hasReRunEvent || hasExpandEvent).toBe(true)
+      expect(mockTelemetry.onQueryReRun).toHaveBeenCalled()
     })
   })
 })

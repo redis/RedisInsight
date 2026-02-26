@@ -1,6 +1,10 @@
+/**
+ * @deprecated Use `useCreateIndex` from `uiSrc/pages/vector-search/hooks/useCreateIndex` instead.
+ */
+
 import { useCallback, useRef, useState } from 'react'
 import { useLoadData } from 'uiSrc/services/hooks'
-import { generateFtCreateCommand } from 'uiSrc/utils/index/generateFtCreateCommand'
+import { generateFtCreateCommand } from 'uiSrc/pages/vector-search/utils/generateFtCreateCommand'
 import { CreateSearchIndexParameters, SampleDataContent } from '../types'
 import executeQuery from 'uiSrc/services/executeQuery'
 import {

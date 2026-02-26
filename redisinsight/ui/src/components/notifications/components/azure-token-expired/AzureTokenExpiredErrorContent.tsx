@@ -21,7 +21,7 @@ const AzureTokenExpiredErrorContent = ({ text, onClose = () => {} }: Props) => {
 
   return (
     <>
-      <ColorText color="danger">{text}</ColorText>
+      <ColorText color="informative">{text}</ColorText>
       <Spacer />
       <Row justify="end">
         <FlexItem>

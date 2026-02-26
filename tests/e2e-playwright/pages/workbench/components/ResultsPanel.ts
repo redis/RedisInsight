@@ -133,4 +133,3 @@ export class ResultsPanel {
     return this.getDateTimeByIndex(0);
   }
 }
-

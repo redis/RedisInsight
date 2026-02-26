@@ -1,7 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import axios, { AxiosInstance } from 'axios';
 import { PromisePool } from '@supercharge/promise-pool';
 import { AzureAuthService } from '../auth/azure-auth.service';
+import { AzureAutodiscoveryAnalytics } from './azure-autodiscovery.analytics';
 import {
   AZURE_API_BASE,
   AUTODISCOVERY_MAX_CONCURRENT_REQUESTS,
@@ -29,6 +30,7 @@ export class AzureAutodiscoveryService {
   constructor(
     private readonly authService: AzureAuthService,
     private readonly databaseService: DatabaseService,
+    private readonly analytics: AzureAutodiscoveryAnalytics,
   ) {}
 
   /**
@@ -102,24 +104,19 @@ export class AzureAutodiscoveryService {
     const client = await this.getAuthenticatedClient(accountId);
 
     if (!client) {
-      return [];
+      throw new BadRequestException('Failed to get authenticated client');
     }
 
-    try {
-      const subscriptions = await this.fetchAllPages<any>(
-        client,
-        AzureApiUrls.getSubscriptions(),
-      );
+    const subscriptions = await this.fetchAllPages<any>(
+      client,
+      AzureApiUrls.getSubscriptions(),
+    );
 
-      return subscriptions.map((sub: any) => ({
-        subscriptionId: sub.subscriptionId,
-        displayName: sub.displayName,
-        state: sub.state,
-      }));
-    } catch (error: any) {
-      this.logger.warn('Failed to list subscriptions', error?.message);
-      return [];
-    }
+    return subscriptions.map((sub: any) => ({
+      subscriptionId: sub.subscriptionId,
+      displayName: sub.displayName,
+      state: sub.state,
+    }));
   }
 
   async listDatabasesInSubscription(
@@ -127,22 +124,42 @@ export class AzureAutodiscoveryService {
     subscriptionId: string,
   ): Promise<AzureRedisDatabase[]> {
     if (!this.isValidSubscriptionId(subscriptionId)) {
-      this.logger.warn(`Invalid subscription ID format: ${subscriptionId}`);
-      return [];
+      throw new BadRequestException(
+        `Invalid subscription ID format: ${subscriptionId}`,
+      );
     }
 
     const client = await this.getAuthenticatedClient(accountId);
 
     if (!client) {
-      return [];
+      throw new BadRequestException('Failed to get authenticated client');
     }
 
-    const [standardDatabases, enterpriseDatabases] = await Promise.all([
+    const results = await Promise.allSettled([
       this.fetchStandardRedis(client, subscriptionId),
       this.fetchEnterpriseRedis(client, subscriptionId),
     ]);
 
-    return [...standardDatabases, ...enterpriseDatabases];
+    const databases: AzureRedisDatabase[] = [];
+    const errors: Error[] = [];
+
+    results.forEach((result) => {
+      if (result.status === 'fulfilled') {
+        databases.push(...result.value);
+      } else {
+        errors.push(result.reason);
+      }
+    });
+
+    errors.forEach((error) => {
+      this.logger.error('Failed to fetch some Azure databases', error);
+    });
+
+    if (databases.length === 0 && errors.length > 0) {
+      throw errors[0];
+    }
+
+    return databases;
   }
 
   async getConnectionDetails(
@@ -195,58 +212,42 @@ export class AzureAutodiscoveryService {
     client: AxiosInstance,
     subscriptionId: string,
   ): Promise<AzureRedisDatabase[]> {
-    try {
-      const redisInstances = await this.fetchAllPages<any>(
-        client,
-        AzureApiUrls.getStandardRedisInSubscription(subscriptionId),
-      );
+    const redisInstances = await this.fetchAllPages<any>(
+      client,
+      AzureApiUrls.getStandardRedisInSubscription(subscriptionId),
+    );
 
-      return redisInstances.map((redis: any) =>
-        this.mapStandardRedis(redis, subscriptionId),
-      );
-    } catch (error: any) {
-      this.logger.warn(
-        `Failed to list standard Redis in subscription ${subscriptionId}`,
-        error?.message,
-      );
-      return [];
-    }
+    return redisInstances.map((redis: any) =>
+      this.mapStandardRedis(redis, subscriptionId),
+    );
   }
 
   private async fetchEnterpriseRedis(
     client: AxiosInstance,
     subscriptionId: string,
   ): Promise<AzureRedisDatabase[]> {
-    try {
-      const clusters = await this.fetchAllPages<any>(
-        client,
-        AzureApiUrls.getEnterpriseRedisInSubscription(subscriptionId),
-      );
+    const clusters = await this.fetchAllPages<any>(
+      client,
+      AzureApiUrls.getEnterpriseRedisInSubscription(subscriptionId),
+    );
 
-      if (clusters.length === 0) {
-        return [];
-      }
-
-      const { results } = await PromisePool.for(clusters)
-        .withConcurrency(AUTODISCOVERY_MAX_CONCURRENT_REQUESTS)
-        .handleError((error, cluster: any) => {
-          this.logger.warn(
-            `Failed to fetch databases for cluster ${cluster?.name}`,
-            error?.message,
-          );
-        })
-        .process((cluster: any) =>
-          this.listEnterpriseDatabases(client, cluster, subscriptionId),
-        );
-
-      return results.flat();
-    } catch (error: any) {
-      this.logger.warn(
-        `Failed to list enterprise Redis in subscription ${subscriptionId}`,
-        error?.message,
-      );
+    if (clusters.length === 0) {
       return [];
     }
+
+    const { results } = await PromisePool.for(clusters)
+      .withConcurrency(AUTODISCOVERY_MAX_CONCURRENT_REQUESTS)
+      .handleError((error, cluster: any) => {
+        this.logger.warn(
+          `Failed to fetch databases for cluster ${cluster?.name}`,
+          error?.message,
+        );
+      })
+      .process((cluster: any) =>
+        this.listEnterpriseDatabases(client, cluster, subscriptionId),
+      );
+
+    return results.flat();
   }
 
   private mapStandardRedis(
@@ -385,13 +386,19 @@ export class AzureAutodiscoveryService {
 
     return Promise.all(
       databases.map(async (dto): Promise<ImportAzureDatabaseResponse> => {
+        let database: AzureRedisDatabase | null = null;
+
         try {
           this.logger.debug(`[${dto.id}] Fetching database details...`);
 
-          const database = await this.findDatabaseById(accountId, dto.id);
+          database = await this.findDatabaseById(accountId, dto.id);
 
           if (!database) {
             this.logger.debug(`[${dto.id}] Database not found`);
+            this.analytics.sendAzureDatabaseAddFailed(
+              sessionMetadata,
+              new BadRequestException(ERROR_MESSAGES.AZURE_DATABASE_NOT_FOUND),
+            );
             return {
               id: dto.id,
               status: ActionStatus.Fail,
@@ -407,6 +414,13 @@ export class AzureAutodiscoveryService {
           if (!connectionDetails) {
             this.logger.debug(
               `[${dto.id}] Failed to get connection details - no details returned`,
+            );
+            this.analytics.sendAzureDatabaseAddFailed(
+              sessionMetadata,
+              new BadRequestException(
+                ERROR_MESSAGES.AZURE_FAILED_TO_GET_CONNECTION_DETAILS,
+              ),
+              database.type,
             );
             return {
               id: dto.id,
@@ -447,6 +461,7 @@ export class AzureAutodiscoveryService {
           });
 
           this.logger.debug(`[${dto.id}] Successfully added database`);
+          this.analytics.sendAzureDatabaseAdded(sessionMetadata, database.type);
 
           return {
             id: dto.id,
@@ -455,6 +470,11 @@ export class AzureAutodiscoveryService {
         } catch (error) {
           this.logger.error(
             `[${dto.id}] Failed to add database: ${error.message}`,
+          );
+          this.analytics.sendAzureDatabaseAddFailed(
+            sessionMetadata,
+            new BadRequestException(this.getUserFriendlyErrorMessage(error)),
+            database?.type,
           );
           return {
             id: dto.id,

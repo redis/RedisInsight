@@ -38,10 +38,15 @@ export class ClusterNodeRedisClient extends NodeRedisClient {
 
     return nodes.map(
       (node) =>
-        new StandaloneNodeRedisClient(this.clientMetadata, node.client, {
-          host: node.host,
-          port: node.port,
-        }),
+        new StandaloneNodeRedisClient(
+          this.clientMetadata,
+          node.client,
+          {
+            host: node.host,
+            port: node.port,
+          },
+          this.database,
+        ),
     );
   }
 
