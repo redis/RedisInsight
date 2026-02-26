@@ -13,6 +13,8 @@ import { RiToastType } from 'uiSrc/components/base/display/toast/RiToast'
 
 const DEFAULT_ERROR_TITLE = 'Error'
 
+const AZURE_TOKEN_EXPIRED_TOAST_ID = 'azure-token-expired'
+
 export const useErrorNotifications = () => {
   const errorsData = useSelector(errorsSelector)
   const dispatch = useDispatch()
@@ -67,18 +69,17 @@ export const useErrorNotifications = () => {
           additionalInfo?.errorCode ===
           CustomErrorCodes.AzureEntraIdTokenExpired
         ) {
-          errorMessage = errorMessages.AZURE_TOKEN_EXPIRED(
-            { message, title },
-            () => removeToast(id),
+          // Use fixed toastId to prevent duplicate toasts
+          errorMessage = errorMessages.AZURE_TOKEN_EXPIRED({ message }, () =>
+            removeToast(AZURE_TOKEN_EXPIRED_TOAST_ID),
           )
-          // Show as informative toast, not error
           const toastId = riToast(errorMessage, {
             variant: riToast.Variant.Informative,
-            toastId: id,
+            toastId: AZURE_TOKEN_EXPIRED_TOAST_ID,
             containerId: defaultContainerId,
             autoClose: false,
           })
-          toastIdsRef.current.set(id, toastId)
+          toastIdsRef.current.set(AZURE_TOKEN_EXPIRED_TOAST_ID, toastId)
           return
         } else if (persistent) {
           errorMessage = errorMessages.PERSISTENT({ message, title }, () =>
