@@ -5,6 +5,7 @@ import { cleanup, render, screen, fireEvent } from 'uiSrc/utils/test-utils'
 import { VectorSearchCreateIndexPage } from './VectorSearchCreateIndexPage'
 
 jest.mock('../../hooks', () => ({
+  ...jest.requireActual('../../hooks'),
   useCreateIndexCommand: jest.fn(() => ({
     command: 'FT.CREATE idx:bikes_vss ...',
     indexName: 'idx:bikes_vss',
@@ -16,6 +17,7 @@ jest.mock('../../hooks', () => ({
   useRedisearchListData: jest.fn(() => ({
     stringData: [],
   })),
+  useIndexNameValidation: jest.fn(() => null),
 }))
 
 jest.mock('../../components/index-details', () => {
