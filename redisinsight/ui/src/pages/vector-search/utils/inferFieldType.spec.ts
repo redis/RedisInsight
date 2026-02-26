@@ -348,17 +348,17 @@ describe('inferKeyFields', () => {
       name: 'bike',
     }
 
-    const result = inferKeyFields(hashObject, RedisearchIndexKeyType.HASH)
+    const fields = inferKeyFields(hashObject, RedisearchIndexKeyType.HASH)
 
-    expect(result).toHaveLength(2)
-    expect(result).toEqual(
+    expect(fields).toHaveLength(2)
+    expect(fields).toEqual(
       inferHashKeyFields([
         { field: 'price', value: '99' },
         { field: 'name', value: 'bike' },
       ]),
     )
-    expect(result[0].type).toBe(FieldTypes.NUMERIC)
-    expect(result[1].type).toBe(FieldTypes.TAG)
+    expect(fields[0].type).toBe(FieldTypes.NUMERIC)
+    expect(fields[1].type).toBe(FieldTypes.TAG)
   })
 
   it('should walk JSON key object and infer types when keyType is json', () => {
@@ -367,16 +367,16 @@ describe('inferKeyFields', () => {
       label: 'active',
     }
 
-    const result = inferKeyFields(jsonObject, RedisearchIndexKeyType.JSON)
+    const fields = inferKeyFields(jsonObject, RedisearchIndexKeyType.JSON)
 
-    expect(result).toHaveLength(2)
-    expect(result[0]).toEqual({
+    expect(fields).toHaveLength(2)
+    expect(fields[0]).toEqual({
       id: 'count',
       name: 'count',
       value: '10',
       type: FieldTypes.NUMERIC,
     })
-    expect(result[1]).toEqual({
+    expect(fields[1]).toEqual({
       id: 'label',
       name: 'label',
       value: 'active',
@@ -390,11 +390,11 @@ describe('inferKeyFields', () => {
       numericString: '1398',
     }
 
-    const result = inferKeyFields(jsonObject, RedisearchIndexKeyType.JSON)
+    const fields = inferKeyFields(jsonObject, RedisearchIndexKeyType.JSON)
 
-    expect(result).toHaveLength(2)
-    expect(result[0].type).toBe(FieldTypes.NUMERIC)
-    expect(result[1].type).toBe(FieldTypes.TAG)
+    expect(fields).toHaveLength(2)
+    expect(fields[0].type).toBe(FieldTypes.NUMERIC)
+    expect(fields[1].type).toBe(FieldTypes.TAG)
   })
 
   it('should return empty array for empty object', () => {
