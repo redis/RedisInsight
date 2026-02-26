@@ -53,6 +53,11 @@ export const createIndexNotifications = {
 }
 
 export const queryLibraryNotifications = {
+  querySaved: (): NotificationMessage => ({
+    title: 'Query saved.',
+    message: 'You can find it in the Query Library.',
+  }),
+
   queryDeleted: (): NotificationMessage => ({
     title: 'Query has been deleted.',
     message: '',
