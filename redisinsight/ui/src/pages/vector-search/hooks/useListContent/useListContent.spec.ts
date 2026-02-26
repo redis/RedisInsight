@@ -1,7 +1,7 @@
-import { renderHook, act } from 'uiSrc/utils/test-utils'
 import { useDispatch, useSelector } from 'react-redux'
 import reactRouterDom from 'react-router-dom'
 import { faker } from '@faker-js/faker'
+import { renderHook, act } from 'uiSrc/utils/test-utils'
 
 import { Pages } from 'uiSrc/constants'
 import {
@@ -16,8 +16,8 @@ import { SearchMode } from 'uiSrc/slices/interfaces/keys'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { stringToBuffer } from 'uiSrc/utils'
 
-import { useIndexListData } from '../useIndexListData'
 import { useListContent } from './useListContent'
+import { useIndexListData } from '../useIndexListData'
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -44,16 +44,12 @@ jest.mock('uiSrc/slices/browser/redisearch', () => ({
 
 jest.mock('uiSrc/slices/browser/keys', () => ({
   ...jest.requireActual('uiSrc/slices/browser/keys'),
-  changeSearchMode: jest
-    .fn()
-    .mockReturnValue({ type: 'changeSearchMode' }),
+  changeSearchMode: jest.fn().mockReturnValue({ type: 'changeSearchMode' }),
 }))
 
 jest.mock('uiSrc/slices/app/context', () => ({
   ...jest.requireActual('uiSrc/slices/app/context'),
-  resetBrowserTree: jest
-    .fn()
-    .mockReturnValue({ type: 'resetBrowserTree' }),
+  resetBrowserTree: jest.fn().mockReturnValue({ type: 'resetBrowserTree' }),
 }))
 
 jest.mock('uiSrc/slices/instances/instances', () => ({
@@ -193,9 +189,7 @@ describe('useListContent', () => {
       )
       expect(mockDispatch).toHaveBeenCalledWith(resetRedisearchKeysData())
       expect(mockDispatch).toHaveBeenCalledWith(resetBrowserTree())
-      expect(mockPush).toHaveBeenCalledWith(
-        Pages.browser(mockInstanceId),
-      )
+      expect(mockPush).toHaveBeenCalledWith(Pages.browser(mockInstanceId))
     })
   })
 
