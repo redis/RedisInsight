@@ -42,10 +42,7 @@ export const CreateIndexBrowser = () => {
   } | null>(null)
 
   useEffect(() => {
-    if (
-      loadedFields !== prevLoadedFieldsRef.current &&
-      loadedFields.length > 0
-    ) {
+    if (loadedFields !== prevLoadedFieldsRef.current) {
       setFields(loadedFields, loadedSkippedFields)
     }
     prevLoadedFieldsRef.current = loadedFields
