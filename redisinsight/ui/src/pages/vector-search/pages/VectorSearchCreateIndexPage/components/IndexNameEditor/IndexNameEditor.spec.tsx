@@ -2,13 +2,20 @@ import React from 'react'
 import { faker } from '@faker-js/faker'
 import { render, screen, fireEvent } from 'uiSrc/utils/test-utils'
 
+import { useIndexNameValidation } from '../../../../hooks'
 import { IndexNameEditor } from './IndexNameEditor'
 import { IndexNameEditorProps } from './IndexNameEditor.types'
+
+jest.mock('../../../../hooks', () => ({
+  ...jest.requireActual('../../../../hooks'),
+  useIndexNameValidation: jest.fn(() => null),
+}))
+
+const mockUseIndexNameValidation = useIndexNameValidation as jest.Mock
 
 describe('IndexNameEditor', () => {
   const defaultProps: IndexNameEditorProps = {
     indexName: faker.string.alphanumeric(10),
-    indexNameError: null,
     onNameChange: jest.fn(),
   }
 
@@ -115,5 +122,15 @@ describe('IndexNameEditor', () => {
     fireEvent.click(screen.getByTestId('index-name-confirm-btn'))
 
     expect(onNameChange).toHaveBeenCalledWith(newName)
+  })
+
+  it('should validate the draft value, not the committed indexName', () => {
+    const errorMsg = 'An index with this name already exists.'
+    mockUseIndexNameValidation.mockReturnValue(errorMsg)
+    renderComponent()
+
+    fireEvent.click(screen.getByTestId('index-name-display'))
+
+    expect(screen.getByText(errorMsg)).toBeInTheDocument()
   })
 })

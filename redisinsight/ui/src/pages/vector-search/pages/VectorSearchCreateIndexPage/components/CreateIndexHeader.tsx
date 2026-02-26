@@ -14,7 +14,7 @@ const INFO_TOOLTIP =
   'Select a key from the left panel to auto-detect the indexing schema.'
 
 export const CreateIndexHeader = () => {
-  const { mode, displayName, indexName, setIndexName, indexNameError, fields } =
+  const { mode, displayName, indexName, setIndexName, fields } =
     useCreateIndexPage()
 
   const isSampleData = mode === CreateIndexMode.SampleData
@@ -49,11 +49,7 @@ export const CreateIndexHeader = () => {
       )}
 
       {!isSampleData && hasFields && (
-        <IndexNameEditor
-          indexName={indexName}
-          indexNameError={indexNameError}
-          onNameChange={setIndexName}
-        />
+        <IndexNameEditor indexName={indexName} onNameChange={setIndexName} />
       )}
     </S.TitleRow>
   )

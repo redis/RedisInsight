@@ -300,6 +300,7 @@ export const CreateIndexPageProvider = ({
 
   const onRowSelectionChange = useCallback((selection: RowSelectionState) => {
     setRowSelection(selection)
+    setIsFieldsDirty(true)
   }, [])
 
   // --- Context value ---

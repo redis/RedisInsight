@@ -8,17 +8,18 @@ import {
   CheckThinIcon,
 } from 'uiSrc/components/base/icons'
 
+import { useIndexNameValidation } from '../../../../hooks'
 import { IndexNameEditorProps } from './IndexNameEditor.types'
 import * as S from './IndexNameEditor.styles'
 
 export const IndexNameEditor = ({
   indexName,
-  indexNameError,
   onNameChange,
 }: IndexNameEditorProps) => {
   const [isEditing, setIsEditing] = useState(false)
   const [draft, setDraft] = useState(indexName)
   const inputRef = useRef<HTMLInputElement>(null)
+  const draftError = useIndexNameValidation(draft)
 
   useEffect(() => {
     if (isEditing) {
@@ -64,7 +65,7 @@ export const IndexNameEditor = ({
           onChange={(value: string) => setDraft(value)}
           onKeyDown={handleKeyDown}
           ref={inputRef}
-          error={indexNameError || undefined}
+          error={draftError || undefined}
           data-testid="index-name-edit-input"
         />
         <IconButton
