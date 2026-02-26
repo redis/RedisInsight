@@ -37,15 +37,7 @@ export const ViewIndexDataButton = ({
   )
 
   if (indexes.length === 0) {
-    return (
-      <EmptyButton
-        size="small"
-        disabled
-        data-testid="view-index-data-btn-placeholder"
-      >
-        {VIEW_INDEX_LABEL}
-      </EmptyButton>
-    )
+    return null
   }
 
   if (indexes.length === 1) {

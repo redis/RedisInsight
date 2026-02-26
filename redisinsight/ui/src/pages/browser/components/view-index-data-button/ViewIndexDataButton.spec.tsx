@@ -5,7 +5,6 @@ import {
   cleanup,
   render,
   screen,
-  fireEvent,
   userEvent,
 } from 'uiSrc/utils/test-utils'
 import { Pages } from 'uiSrc/constants'
@@ -44,21 +43,11 @@ describe('ViewIndexDataButton', () => {
     jest.clearAllMocks()
   })
 
-  describe('0 indexes (placeholder)', () => {
-    it('should render disabled placeholder button', () => {
-      renderComponent({ indexes: [] })
+  describe('0 indexes', () => {
+    it('should render nothing', () => {
+      const { container } = renderComponent({ indexes: [] })
 
-      const btn = screen.getByTestId('view-index-data-btn-placeholder')
-      expect(btn).toBeInTheDocument()
-      expect(btn).toBeDisabled()
-      expect(btn).toHaveTextContent('View index')
-    })
-
-    it('should not navigate when placeholder is clicked', () => {
-      renderComponent({ indexes: [] })
-
-      fireEvent.click(screen.getByTestId('view-index-data-btn-placeholder'))
-      expect(mockPush).not.toHaveBeenCalled()
+      expect(container.innerHTML).toBe('')
     })
   })
 
