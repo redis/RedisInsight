@@ -1,18 +1,14 @@
 import React from 'react'
 import { TextButton } from '@redis-ui/components'
 import { ButtonIcon } from 'uiSrc/components/base/forms/buttons/Button'
-import { IconType } from 'uiSrc/components/base/icons'
-import { Row } from '../../layout/flex'
-import { FlexProps } from '../../layout/flex/flex.styles'
+import { Row } from 'uiSrc/components/base/layout/flex'
 
-export type ButtonProps = React.ComponentProps<typeof TextButton> & {
-  icon?: IconType
-  iconSide?: 'left' | 'right'
-  loading?: boolean
-  size?: 'small' | 'large' | 'medium'
-  justify?: FlexProps['justify']
-}
-export const EmptyButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
+import { EmptyButtonProps } from './EmptyButton.types'
+
+export const EmptyButton = React.forwardRef<
+  HTMLButtonElement,
+  EmptyButtonProps
+>(
   (
     {
       children,

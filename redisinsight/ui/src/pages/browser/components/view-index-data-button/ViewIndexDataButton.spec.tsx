@@ -80,7 +80,10 @@ describe('ViewIndexDataButton', () => {
       await userEvent.click(screen.getByTestId('view-index-data-btn'))
 
       expect(mockPush).toHaveBeenCalledWith(
-        Pages.vectorSearchQuery(mockInstanceId, encodeURIComponent('movies_index')),
+        Pages.vectorSearchQuery(
+          mockInstanceId,
+          encodeURIComponent('movies_index'),
+        ),
       )
     })
 
@@ -130,10 +133,15 @@ describe('ViewIndexDataButton', () => {
       renderComponent({ indexes })
 
       await userEvent.click(screen.getByTestId('view-index-data-menu-trigger'))
-      await userEvent.click(screen.getByTestId('view-index-data-item-users_index'))
+      await userEvent.click(
+        screen.getByTestId('view-index-data-item-users_index'),
+      )
 
       expect(mockPush).toHaveBeenCalledWith(
-        Pages.vectorSearchQuery(mockInstanceId, encodeURIComponent('users_index')),
+        Pages.vectorSearchQuery(
+          mockInstanceId,
+          encodeURIComponent('users_index'),
+        ),
       )
     })
 
@@ -142,7 +150,9 @@ describe('ViewIndexDataButton', () => {
       renderComponent({ indexes, onNavigate })
 
       await userEvent.click(screen.getByTestId('view-index-data-menu-trigger'))
-      await userEvent.click(screen.getByTestId('view-index-data-item-products_index'))
+      await userEvent.click(
+        screen.getByTestId('view-index-data-item-products_index'),
+      )
 
       expect(onNavigate).toHaveBeenCalledWith('products_index')
       expect(mockPush).not.toHaveBeenCalled()
