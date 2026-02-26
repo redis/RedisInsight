@@ -3,24 +3,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 
 import { BrowserStorageItem, Pages } from 'uiSrc/constants'
-import {
-  SCAN_COUNT_DEFAULT,
-  SCAN_TREE_COUNT_DEFAULT,
-} from 'uiSrc/constants/api'
 import { bufferToString, stringToBuffer } from 'uiSrc/utils'
 import {
   deleteRedisearchIndexAction,
   redisearchListSelector,
-  setSelectedIndex,
-  resetRedisearchKeysData,
 } from 'uiSrc/slices/browser/redisearch'
-import {
-  changeSearchMode,
-  fetchKeys,
-  keysSelector,
-} from 'uiSrc/slices/browser/keys'
-import { resetBrowserTree } from 'uiSrc/slices/app/context'
-import { KeyViewType, SearchMode } from 'uiSrc/slices/interfaces/keys'
+import { SearchMode } from 'uiSrc/slices/interfaces/keys'
 import {
   ShowIcon,
   DeleteIcon,
@@ -43,7 +31,6 @@ export const useListContent = () => {
 
   const { data: rawIndexes } = useSelector(redisearchListSelector)
   const { id: databaseId } = useSelector(connectedInstanceSelector)
-  const { viewType } = useSelector(keysSelector)
   const indexes = useMemo(
     () => rawIndexes.map((index) => bufferToString(index)),
     [rawIndexes],
@@ -73,27 +60,13 @@ export const useListContent = () => {
 
   const handleBrowseDataset = useCallback(
     (indexName: string) => {
-      dispatch(changeSearchMode(SearchMode.Redisearch))
       localStorageService.set(
         BrowserStorageItem.browserSearchMode,
         SearchMode.Redisearch,
       )
-      dispatch(setSelectedIndex(stringToBuffer(indexName)))
-      dispatch(resetRedisearchKeysData())
-      dispatch(resetBrowserTree())
-      dispatch(
-        fetchKeys({
-          searchMode: SearchMode.Redisearch,
-          cursor: '0',
-          count:
-            viewType === KeyViewType.Browser
-              ? SCAN_COUNT_DEFAULT
-              : SCAN_TREE_COUNT_DEFAULT,
-        }),
-      )
-      history.push(Pages.browser(instanceId))
+      history.push(Pages.browser(instanceId), { browseIndex: indexName })
     },
-    [dispatch, history, instanceId, viewType],
+    [history, instanceId],
   )
 
   const cleanupQueryLibrary = useCallback(

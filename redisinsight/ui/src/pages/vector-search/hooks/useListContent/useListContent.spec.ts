@@ -7,18 +7,8 @@ import { Pages } from 'uiSrc/constants'
 import {
   deleteRedisearchIndexAction,
   redisearchListSelector,
-  setSelectedIndex,
-  resetRedisearchKeysData,
 } from 'uiSrc/slices/browser/redisearch'
-import {
-  changeSearchMode,
-  fetchKeys,
-  keysSelector,
-} from 'uiSrc/slices/browser/keys'
-import { resetBrowserTree } from 'uiSrc/slices/app/context'
-import { SearchMode } from 'uiSrc/slices/interfaces/keys'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-import { stringToBuffer } from 'uiSrc/utils'
 
 import { useListContent } from './useListContent'
 import { useIndexListData } from '../useIndexListData'
@@ -40,22 +30,6 @@ jest.mock('uiSrc/slices/browser/redisearch', () => ({
   ...jest.requireActual('uiSrc/slices/browser/redisearch'),
   redisearchListSelector: jest.fn(),
   deleteRedisearchIndexAction: jest.fn().mockReturnValue({ type: 'delete' }),
-  setSelectedIndex: jest.fn().mockReturnValue({ type: 'setSelectedIndex' }),
-  resetRedisearchKeysData: jest
-    .fn()
-    .mockReturnValue({ type: 'resetRedisearchKeysData' }),
-}))
-
-jest.mock('uiSrc/slices/browser/keys', () => ({
-  ...jest.requireActual('uiSrc/slices/browser/keys'),
-  changeSearchMode: jest.fn().mockReturnValue({ type: 'changeSearchMode' }),
-  fetchKeys: jest.fn().mockReturnValue({ type: 'fetchKeys' }),
-  keysSelector: jest.fn(),
-}))
-
-jest.mock('uiSrc/slices/app/context', () => ({
-  ...jest.requireActual('uiSrc/slices/app/context'),
-  resetBrowserTree: jest.fn().mockReturnValue({ type: 'resetBrowserTree' }),
 }))
 
 jest.mock('uiSrc/slices/instances/instances', () => ({
@@ -102,9 +76,6 @@ describe('useListContent', () => {
       }
       if (selector === connectedInstanceSelector) {
         return { id: mockDatabaseId }
-      }
-      if (selector === keysSelector) {
-        return { viewType: 'Browser' }
       }
       return {}
     })
@@ -182,7 +153,7 @@ describe('useListContent', () => {
   })
 
   describe('Browse dataset action', () => {
-    it('should dispatch correct actions and navigate to browser', () => {
+    it('should navigate to browser with browseIndex in location state', () => {
       const { result } = renderHook(() => useListContent())
       const indexName = faker.string.alpha(10)
 
@@ -190,23 +161,9 @@ describe('useListContent', () => {
         result.current.actions[1].callback(indexName)
       })
 
-      expect(mockDispatch).toHaveBeenCalledWith(
-        changeSearchMode(SearchMode.Redisearch),
-      )
-      expect(mockDispatch).toHaveBeenCalledWith(
-        setSelectedIndex(stringToBuffer(indexName)),
-      )
-      expect(mockDispatch).toHaveBeenCalledWith(resetRedisearchKeysData())
-      expect(mockDispatch).toHaveBeenCalledWith(resetBrowserTree())
-      expect(mockDispatch).toHaveBeenCalledWith(
-        fetchKeys(
-          expect.objectContaining({
-            searchMode: SearchMode.Redisearch,
-            cursor: '0',
-          }),
-        ),
-      )
-      expect(mockPush).toHaveBeenCalledWith(Pages.browser(mockInstanceId))
+      expect(mockPush).toHaveBeenCalledWith(Pages.browser(mockInstanceId), {
+        browseIndex: indexName,
+      })
     })
   })
 

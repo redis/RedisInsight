@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { isString } from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory, useLocation } from 'react-router-dom'
 
 import {
   setSelectedIndex,
@@ -64,6 +65,8 @@ const RediSearchIndexesList = (props: Props) => {
   )
 
   const dispatch = useDispatch()
+  const location = useLocation<{ browseIndex?: string }>()
+  const history = useHistory()
 
   useEffect(() => {
     if (!instanceHost) return
@@ -84,6 +87,31 @@ const RediSearchIndexesList = (props: Props) => {
   useEffect(() => {
     setIndex(JSON.stringify(selectedIndex || ''))
   }, [selectedIndex])
+
+  useEffect(() => {
+    const browseIndex = location.state?.browseIndex
+    if (!browseIndex || list.length === 0) return
+
+    const matchingBuffer = list.find(
+      (item) => bufferToString(item) === browseIndex,
+    )
+    if (!matchingBuffer) return
+
+    setIndex(JSON.stringify(matchingBuffer))
+    dispatch(setSelectedIndex(matchingBuffer))
+    dispatch(
+      fetchKeys({
+        searchMode,
+        cursor: '0',
+        count:
+          viewType === KeyViewType.Browser
+            ? SCAN_COUNT_DEFAULT
+            : SCAN_TREE_COUNT_DEFAULT,
+      }),
+    )
+
+    history.replace({ ...location, state: undefined })
+  }, [list])
 
   useEffect(
     () => () => {
