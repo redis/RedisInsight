@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 
 import { IRedisCommand } from 'uiSrc/constants'
 import { LoadingContent } from 'uiSrc/components/base/layout'
@@ -36,7 +36,10 @@ export const QueryEditorWrapper = ({
   onSubmit,
 }: QueryEditorWrapperProps) => {
   const { indexName } = useParams<{ indexName?: string }>()
-  const [activeTab, setActiveTab] = useState<EditorTab>(EditorTab.Editor)
+  const location = useLocation<{ activeTab?: EditorTab }>()
+  const [activeTab, setActiveTab] = useState<EditorTab>(
+    location.state?.activeTab ?? EditorTab.Editor,
+  )
 
   const handleLibraryLoad = useCallback(
     (queryText: string) => {

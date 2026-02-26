@@ -18,6 +18,10 @@ const handlers: HttpHandler[] = [
     getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.QUERY_LIBRARY, ':id')),
     async () => HttpResponse.text('', { status: 200 }),
   ),
+  http.post(
+    getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.QUERY_LIBRARY_SEED)),
+    async () => HttpResponse.json([], { status: 200 }),
+  ),
 ]
 
 export default handlers

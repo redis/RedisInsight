@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from 'uiSrc/utils/test-utils'
 import { QUERY_LIBRARY_ITEMS_MOCK } from 'uiSrc/mocks/handlers/browser/queryLibraryHandlers'
 
 import { QueryEditorWrapper } from './QueryEditorWrapper'
+import { EditorTab } from './QueryEditor.types'
 
 jest.mock('uiSrc/components/base/code-editor', () => {
   const ReactMock = require('react')
@@ -31,6 +32,7 @@ const renderComponent = (props = {}) =>
 
 describe('QueryEditorWrapper', () => {
   const originalUseParams = routerDom.useParams
+  const originalUseLocation = routerDom.useLocation
 
   beforeEach(() => {
     jest.clearAllMocks()
@@ -39,10 +41,17 @@ describe('QueryEditorWrapper', () => {
       instanceId: 'instanceId',
       indexName: 'test-index',
     })
+
+    routerDom.useLocation = () => ({
+      pathname: 'pathname',
+      search: '',
+      state: null,
+    })
   })
 
   afterAll(() => {
     routerDom.useParams = originalUseParams
+    routerDom.useLocation = originalUseLocation
   })
 
   it('should render the editor wrapper', () => {
@@ -155,5 +164,39 @@ describe('QueryEditorWrapper', () => {
 
     const editor = screen.getByTestId('vector-search-editor')
     expect(editor).toBeInTheDocument()
+  })
+
+  it('should open Library tab when location state has activeTab Library', async () => {
+    routerDom.useLocation = () => ({
+      pathname: 'pathname',
+      search: '',
+      state: { activeTab: EditorTab.Library },
+    })
+
+    renderComponent()
+
+    await waitFor(() => {
+      const searchInput = screen.getByPlaceholderText('Search query')
+      expect(searchInput).toBeInTheDocument()
+    })
+
+    const editor = screen.queryByTestId('vector-search-editor')
+    expect(editor).not.toBeInTheDocument()
+  })
+
+  it('should default to Editor tab when location state has no activeTab', () => {
+    routerDom.useLocation = () => ({
+      pathname: 'pathname',
+      search: '',
+      state: null,
+    })
+
+    renderComponent()
+
+    const editor = screen.getByTestId('vector-search-editor')
+    expect(editor).toBeInTheDocument()
+
+    const searchInput = screen.queryByPlaceholderText('Search query')
+    expect(searchInput).not.toBeInTheDocument()
   })
 })

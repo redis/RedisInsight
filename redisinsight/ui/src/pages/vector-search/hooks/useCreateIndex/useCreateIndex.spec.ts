@@ -22,8 +22,8 @@ jest.mock('uiSrc/services/commands-history/commandsHistoryService', () => ({
   })),
 }))
 
-const mockOnSuccess = jest.fn()
-const mockOnError = jest.fn()
+const mockOnSuccess = jest.fn(async () => {})
+const mockOnError = jest.fn(async () => {})
 
 describe('useCreateIndex', () => {
   beforeEach(() => {
@@ -111,6 +111,28 @@ describe('useCreateIndex', () => {
     expect(result.current.success).toBe(false)
     expect(result.current.error).toBeInstanceOf(Error)
     expect(result.current.error?.message).toBe('Command history service failed')
+    expect(result.current.loading).toBe(false)
+  })
+
+  it('should await async onSuccess before setting loading to false', async () => {
+    mockLoad.mockResolvedValue(undefined)
+    mockAddCommandsToHistory.mockResolvedValue([])
+
+    const order: string[] = []
+    const asyncOnSuccess = jest.fn(async () => {
+      order.push('onSuccess:start')
+      await Promise.resolve()
+      order.push('onSuccess:end')
+    })
+
+    const { result } = renderHook(() => useCreateIndex())
+
+    await act(async () => {
+      await result.current.run(defaultParams, asyncOnSuccess)
+    })
+
+    expect(asyncOnSuccess).toHaveBeenCalled()
+    expect(order).toEqual(['onSuccess:start', 'onSuccess:end'])
     expect(result.current.loading).toBe(false)
   })
 

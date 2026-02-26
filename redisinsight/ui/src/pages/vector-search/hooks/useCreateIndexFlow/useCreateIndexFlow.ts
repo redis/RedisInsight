@@ -1,16 +1,22 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 
 import { Pages } from 'uiSrc/constants'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { fetchRedisearchListAction } from 'uiSrc/slices/browser/redisearch'
+import { QueryLibraryService } from 'uiSrc/services/query-library/QueryLibraryService'
+import { SeedQueryLibraryItem } from 'uiSrc/services/query-library/types'
 
 import { SampleDataContent } from '../../components/pick-sample-data-modal/PickSampleDataModal.types'
+import { EditorTab } from '../../components/query-editor/QueryEditor.types'
 import { createIndexNotifications } from '../../constants'
 import { useCreateIndex } from '../useCreateIndex'
 import { useRedisearchListData } from '../useRedisearchListData'
-import { getIndexNameBySampleData } from '../../utils/sampleData'
+import {
+  getIndexNameBySampleData,
+  getSampleQueriesBySampleData,
+} from '../../utils/sampleData'
 
 export interface UseCreateIndexFlowResult {
   /** Trigger index creation; navigates to query page on completion. */
@@ -29,9 +35,40 @@ export const useCreateIndexFlow = (): UseCreateIndexFlowResult => {
 
   const { run: createIndex, loading } = useCreateIndex()
   const { stringData: existingIndexes } = useRedisearchListData()
+  const queryLibraryService = useRef(new QueryLibraryService()).current
+
+  const seedSampleQueries = useCallback(
+    async (
+      instanceId: string,
+      indexName: string,
+      dataset: SampleDataContent,
+    ) => {
+      const seedItems: SeedQueryLibraryItem[] = getSampleQueriesBySampleData(
+        dataset,
+      ).map((sq) => ({
+        indexName,
+        name: sq.name,
+        description: sq.description,
+        query: sq.query,
+      }))
+
+      await queryLibraryService.seed(instanceId, seedItems)
+    },
+    [queryLibraryService],
+  )
+
+  const navigateToLibrary = useCallback(
+    (instanceId: string, indexName: string) => {
+      history.push({
+        pathname: Pages.vectorSearchQuery(instanceId, indexName),
+        state: { activeTab: EditorTab.Library },
+      })
+    },
+    [history],
+  )
 
   const run = useCallback(
-    (instanceId: string, dataset: SampleDataContent) => {
+    async (instanceId: string, dataset: SampleDataContent) => {
       const indexName = getIndexNameBySampleData(dataset)
       const indexAlreadyExists = existingIndexes.includes(indexName)
 
@@ -41,29 +78,37 @@ export const useCreateIndexFlow = (): UseCreateIndexFlowResult => {
             createIndexNotifications.sampleDataAlreadyExists(),
           ),
         )
-        history.push(Pages.vectorSearchQuery(instanceId, indexName))
+        await seedSampleQueries(instanceId, indexName, dataset)
+        navigateToLibrary(instanceId, indexName)
         return
       }
 
       createIndex(
         { instanceId, indexName, dataContent: dataset },
-        () => {
+        async () => {
           dispatch(
             addMessageNotification(
               createIndexNotifications.sampleDataCreated(),
             ),
           )
           dispatch(fetchRedisearchListAction())
-          history.push(Pages.vectorSearchQuery(instanceId, indexName))
+          await seedSampleQueries(instanceId, indexName, dataset)
+          navigateToLibrary(instanceId, indexName)
         },
-        () => {
+        async () => {
           dispatch(
             addMessageNotification(createIndexNotifications.createFailed()),
           )
         },
       )
     },
-    [existingIndexes, createIndex, dispatch, history],
+    [
+      existingIndexes,
+      createIndex,
+      dispatch,
+      seedSampleQueries,
+      navigateToLibrary,
+    ],
   )
 
   return { run, loading }

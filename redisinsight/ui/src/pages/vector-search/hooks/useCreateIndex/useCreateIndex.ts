@@ -20,8 +20,8 @@ export interface CreateIndexParams {
 export interface UseCreateIndexResult {
   run: (
     params: CreateIndexParams,
-    onSuccess?: () => void,
-    onError?: () => void,
+    onSuccess?: () => Promise<void>,
+    onError?: () => Promise<void>,
   ) => Promise<void>
   loading: boolean
   error: Error | null
@@ -42,8 +42,8 @@ export const useCreateIndex = (): UseCreateIndexResult => {
   const run = useCallback(
     async (
       { instanceId, indexName, dataContent }: CreateIndexParams,
-      onSuccess?: () => void,
-      onError?: () => void,
+      onSuccess?: () => Promise<void>,
+      onError?: () => Promise<void>,
     ) => {
       setSuccess(false)
       setError(null)
@@ -72,10 +72,10 @@ export const useCreateIndex = (): UseCreateIndexResult => {
         })
 
         setSuccess(true)
-        onSuccess?.()
+        await onSuccess?.()
       } catch (e) {
         setError(e instanceof Error ? e : new Error(String(e)))
-        onError?.()
+        await onError?.()
       } finally {
         setLoading(false)
       }
