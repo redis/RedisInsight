@@ -199,27 +199,28 @@ export type JsonKeyData = Record<string, unknown>
 
 /**
  * Infers index field types for all top-level fields of a key.
- * Pass the key's value as returned when the user clicks the key in the keys browser:
- * - For Hash keys: the hash content as Record<string, string>.
- * - For JSON keys: the root object as Record<string, unknown>.
+ * - For Hash keys: infers from string values directly.
+ * - For JSON keys: infers from typed values with strict number handling.
+ *
+ * Note: callers should pre-filter complex JSON values via filterJsonData
+ * before passing data to this function.
  */
 export const inferKeyFields = (
   data: HashKeyData | JsonKeyData,
   keyType: RedisearchIndexKeyType,
 ): IndexField[] => {
   const entries = Object.entries(data)
+
   if (keyType === RedisearchIndexKeyType.HASH) {
     return inferHashKeyFields(
       entries.map(([field, value]) => ({ field, value: value as string })),
     )
   }
-  return entries.map(([key, value]) => {
-    const v = value as string | number | boolean | null
-    return {
-      id: key,
-      name: key,
-      value: valueToString(v),
-      type: inferFieldType(v, { strictNumbers: true }),
-    }
-  })
+
+  return entries.map(([key, value]) => ({
+    id: key,
+    name: key,
+    value: valueToString(value),
+    type: inferFieldType(value, { strictNumbers: true }),
+  }))
 }
