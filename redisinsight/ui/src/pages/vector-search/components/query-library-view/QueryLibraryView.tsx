@@ -96,7 +96,7 @@ export const QueryLibraryView = ({ onRun, onLoad }: QueryLibraryViewProps) => {
             <Text data-testid="query-library-empty">
               {search
                 ? 'No queries match your search'
-                : 'No queries in the library yet'}
+                : 'No saved queries yet. Create your query in editor and click Save to add it here.'}
             </Text>
           </S.EmptyState>
         )}

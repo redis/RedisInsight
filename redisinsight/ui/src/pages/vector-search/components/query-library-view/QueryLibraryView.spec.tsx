@@ -128,7 +128,9 @@ describe('QueryLibraryView', () => {
       renderComponent()
 
       const emptyState = screen.getByTestId('query-library-empty')
-      expect(emptyState).toHaveTextContent('No queries in the library yet')
+      expect(emptyState).toHaveTextContent(
+        'No saved queries yet. Create your query in editor and click Save to add it here.',
+      )
     })
 
     it('should show search empty message when no items with search', () => {
