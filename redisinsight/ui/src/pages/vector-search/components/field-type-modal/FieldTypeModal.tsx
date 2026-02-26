@@ -4,6 +4,7 @@ import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-ind
 import { CancelIcon } from 'uiSrc/components/base/icons'
 import { Modal } from 'uiSrc/components/base/display'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { truncateText } from 'uiSrc/utils'
 import { Text } from 'uiSrc/components/base/text'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import TextInput from 'uiSrc/components/base/inputs/TextInput'
@@ -12,6 +13,7 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 
+import { MAX_SAMPLE_VALUE_LENGTH } from './FieldTypeModal.constants'
 import { FieldTypeModalMode, FieldTypeModalProps } from './FieldTypeModal.types'
 import { FieldTypeSelect } from './components/FieldTypeSelect/FieldTypeSelect'
 import { FieldTypeForm } from './components/FieldTypeForm/FieldTypeForm'
@@ -94,32 +96,36 @@ export const FieldTypeModal = ({
                 </FormField>
               ) : (
                 <>
-                  <Row
-                    grow={false}
-                    align="baseline"
-                    gap="m"
+                  <Col
+                    gap="s"
                     data-testid="field-type-modal-field-name-readonly"
                   >
                     <Text color="secondary" component="span">
                       Field name:
                     </Text>
-                    <Text color="primary" component="span">
+                    <S.FieldValue color="primary" component="span">
                       {field?.name}
-                    </Text>
-                  </Row>
-                  <Row
-                    grow={false}
-                    align="baseline"
-                    gap="m"
-                    data-testid="field-type-modal-sample-value"
-                  >
+                    </S.FieldValue>
+                  </Col>
+                  <Col gap="s" data-testid="field-type-modal-sample-value">
                     <Text color="secondary" component="span">
                       Field sample value:
                     </Text>
-                    <Text color="primary" component="span">
-                      {field?.value ?? '—'}
-                    </Text>
-                  </Row>
+                    <S.FieldValue color="primary" component="span">
+                      {truncateText(
+                        String(field?.value ?? ''),
+                        MAX_SAMPLE_VALUE_LENGTH,
+                      )}
+                      {field?.value != null &&
+                        String(field.value).length >=
+                          MAX_SAMPLE_VALUE_LENGTH && (
+                          <S.InlineCopyButton
+                            copy={String(field.value)}
+                            data-testid="field-type-modal-sample-value-copy"
+                          />
+                        )}
+                    </S.FieldValue>
+                  </Col>
                 </>
               )}
 
