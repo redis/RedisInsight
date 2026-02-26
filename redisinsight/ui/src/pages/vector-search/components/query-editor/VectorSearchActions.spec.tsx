@@ -17,11 +17,13 @@ import {
 import { VectorSearchActions } from './VectorSearchActions'
 
 const mockOnSubmit = jest.fn()
+const mockOnSaveClick = jest.fn()
 
 const renderComponent = ({
   query = '',
   isLoading = false,
-}: { query?: string; isLoading?: boolean } = {}) =>
+  onSaveClick = mockOnSaveClick,
+}: { query?: string; isLoading?: boolean; onSaveClick?: () => void } = {}) =>
   render(
     <QueryEditorContextProvider
       value={{
@@ -33,7 +35,7 @@ const renderComponent = ({
         onSubmit: mockOnSubmit,
       }}
     >
-      <VectorSearchActions />
+      <VectorSearchActions onSaveClick={onSaveClick} />
     </QueryEditorContextProvider>,
   )
 
@@ -42,10 +44,11 @@ describe('VectorSearchActions', () => {
     jest.clearAllMocks()
   })
 
-  it('should render actions bar with run, explain, and profile buttons', () => {
+  it('should render actions bar with save, run, explain, and profile buttons', () => {
     renderComponent()
 
     expect(screen.getByTestId('vector-search-actions')).toBeInTheDocument()
+    expect(screen.getByTestId('btn-save-query')).toBeInTheDocument()
     expect(screen.getByTestId('btn-submit')).toBeInTheDocument()
     expect(screen.getByTestId('btn-explain')).toBeInTheDocument()
     expect(screen.getByTestId('btn-profile')).toBeInTheDocument()
@@ -62,6 +65,40 @@ describe('VectorSearchActions', () => {
     renderComponent({ isLoading: true })
 
     expect(screen.getByTestId('btn-submit')).toBeDisabled()
+  })
+
+  describe('Save button', () => {
+    it('should be disabled when query is empty', () => {
+      renderComponent({ query: '' })
+
+      expect(screen.getByTestId('btn-save-query')).toBeDisabled()
+    })
+
+    it('should be disabled when query is whitespace only', () => {
+      renderComponent({ query: '   ' })
+
+      expect(screen.getByTestId('btn-save-query')).toBeDisabled()
+    })
+
+    it('should be enabled when query has content', () => {
+      renderComponent({ query: 'FT.SEARCH idx "*"' })
+
+      expect(screen.getByTestId('btn-save-query')).not.toBeDisabled()
+    })
+
+    it('should be disabled when loading', () => {
+      renderComponent({ query: 'FT.SEARCH idx "*"', isLoading: true })
+
+      expect(screen.getByTestId('btn-save-query')).toBeDisabled()
+    })
+
+    it('should call onSaveClick when clicked', () => {
+      renderComponent({ query: 'FT.SEARCH idx "*"' })
+
+      fireEvent.click(screen.getByTestId('btn-save-query'))
+
+      expect(mockOnSaveClick).toHaveBeenCalledTimes(1)
+    })
   })
 
   describe('Explain button', () => {
