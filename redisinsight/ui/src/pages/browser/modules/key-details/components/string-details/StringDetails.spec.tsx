@@ -44,6 +44,14 @@ jest.mock('uiSrc/slices/browser/keys', () => ({
   }),
 }))
 
+jest.mock('uiSrc/pages/vector-search/hooks/useIsKeyIndexed', () => ({
+  useIsKeyIndexed: jest.fn().mockReturnValue({
+    indexes: [],
+    status: 'idle',
+  }),
+  UseIsKeyIndexedStatus: { Idle: 'idle', Loading: 'loading', Ready: 'ready' },
+}))
+
 let store: typeof mockedStore
 beforeEach(() => {
   cleanup()

@@ -2,6 +2,7 @@ export { ActionIconButton } from 'uiSrc/components/base/forms/buttons/ActionIcon
 export { BaseButton as Button } from 'uiSrc/components/base/forms/buttons/Button'
 export { DestructiveButton } from 'uiSrc/components/base/forms/buttons/DestructiveButton'
 export { EmptyButton } from 'uiSrc/components/base/forms/buttons/EmptyButton'
+export type { EmptyButtonProps } from 'uiSrc/components/base/forms/buttons/EmptyButton.types'
 export { IconButton } from 'uiSrc/components/base/forms/buttons/IconButton'
 export { PrimaryButton } from 'uiSrc/components/base/forms/buttons/PrimaryButton'
 export { SecondaryButton } from 'uiSrc/components/base/forms/buttons/SecondaryButton'
