@@ -22,6 +22,7 @@ export const CreateIndexBrowser = () => {
   const {
     showBrowser,
     isFieldsDirty,
+    resetFieldsDirty,
     setFields,
     setKeyType,
     setIndexPrefix,
@@ -77,11 +78,12 @@ export const CreateIndexBrowser = () => {
   )
 
   const handleConfirmKeyChange = useCallback(() => {
+    resetFieldsDirty()
     if (pendingKey) {
       applyKeySelection(pendingKey.key, pendingKey.keyType)
     }
     setPendingKey(null)
-  }, [pendingKey, applyKeySelection])
+  }, [pendingKey, applyKeySelection, resetFieldsDirty])
 
   const handleCancelKeyChange = useCallback(() => {
     setPendingKey(null)
