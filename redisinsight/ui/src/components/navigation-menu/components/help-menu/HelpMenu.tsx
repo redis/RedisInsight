@@ -40,6 +40,21 @@ const HelpMenu = () => {
 
   const dispatch = useDispatch()
 
+  // TODO: remove changes in this file that crash the app on purpose
+  const [shouldCrash, setShouldCrash] = useState(false)
+
+  if (shouldCrash) {
+    // Logs a Sentry error and crashes the React app
+    // @ts-expect-error
+    crashReactApp()
+  }
+
+  const crashHandler = () => {
+    // Logs a Sentry error and does not crash the React app
+    // @ts-expect-error
+    brokenHandler()
+  }
+
   const onKeyboardShortcutClick = () => {
     setIsHelpMenuActive(false)
     dispatch(setShortcutsFlyoutState(true))
@@ -175,6 +190,8 @@ const HelpMenu = () => {
                 </Text>
               </Row>
             </FeatureFlagComponent>
+            <button onClick={() => crashHandler()}>Crash Handler</button>
+            <button onClick={() => setShouldCrash(true)}>Crash React</button>
           </FlexItem>
         </Row>
       </div>

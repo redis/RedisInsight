@@ -43,6 +43,7 @@ export default defineConfig({
         ...builtinModules,
         ...builtinModules.map((m) => `node:${m}`),
         /^@nestjs\/.*/,
+        /^@sentry\/.*/,
         /^src\//,
         (id) => id.startsWith(apiDistPath),
       ],

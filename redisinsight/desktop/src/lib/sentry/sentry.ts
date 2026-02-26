@@ -1,9 +1,13 @@
 import * as Sentry from '@sentry/electron/main'
+import { IPCMode } from '@sentry/electron/main'
+import { crashReporter } from 'electron'
 import log from 'electron-log'
 import pkg from '../../../../package.json'
+import configInit from '../../../config.json'
 
 /**
- * List of sensitive field names to scrub from error reports
+ * Sensitive field names to scrub from error reports.
+ * Fields containing these substrings (case-insensitive) will be redacted.
  */
 const SENSITIVE_FIELDS = [
   'password',
@@ -22,12 +26,13 @@ const SENSITIVE_FIELDS = [
   'sshPassphrase',
   'sshPrivateKey',
   'sentinelPassword',
+  'passphrase',
 ]
 
 let initialized = false
 
 /**
- * Scrub sensitive data from objects before sending to Sentry
+ * Recursively scrub sensitive data from objects before sending to Sentry.
  */
 const scrubSensitiveData = (obj: unknown): unknown => {
   if (!obj || typeof obj !== 'object') {
@@ -39,12 +44,11 @@ const scrubSensitiveData = (obj: unknown): unknown => {
   }
 
   const scrubbed: Record<string, unknown> = {}
+
   for (const [key, value] of Object.entries(obj)) {
     const lowerKey = key.toLowerCase()
-    const isSensitive = SENSITIVE_FIELDS.some(
-      (field) =>
-        lowerKey.includes(field.toLowerCase()) ||
-        lowerKey === field.toLowerCase(),
+    const isSensitive = SENSITIVE_FIELDS.some((field) =>
+      lowerKey.includes(field),
     )
 
     if (isSensitive) {
@@ -60,7 +64,58 @@ const scrubSensitiveData = (obj: unknown): unknown => {
 }
 
 /**
- * Initialize Sentry for Electron main process
+ * Parse Sentry DSN to extract components for crashReporter.
+ * DSN format: https://{PUBLIC_KEY}@{HOST}/{PROJECT_ID}
+ */
+const parseDsn = (
+  dsn: string,
+): { publicKey: string; host: string; projectId: string } | null => {
+  const match = dsn.match(/https:\/\/([^@]+)@([^/]+)\/(\d+)/)
+  if (!match) return null
+
+  const [, publicKey, host, projectId] = match
+  return { publicKey, host, projectId }
+}
+
+/**
+ * Configure Electron's crashReporter to send native crash minidumps to Sentry.
+ */
+const initCrashReporter = (dsn: string, environment: string): void => {
+  if (!configInit.crashReporter) {
+    log.info('[Sentry] crashReporter disabled in config')
+    return
+  }
+
+  const dsnParts = parseDsn(dsn)
+  if (!dsnParts) {
+    log.warn('[Sentry] Failed to parse DSN for crashReporter')
+    return
+  }
+
+  const { publicKey, host, projectId } = dsnParts
+  const minidumpUrl = `https://${host}/api/${projectId}/minidump/?sentry_key=${publicKey}`
+
+  crashReporter.start({
+    submitURL: minidumpUrl,
+    productName: 'Redis Insight',
+    companyName: 'Redis',
+    uploadToServer: true,
+    extra: {
+      environment,
+      release: pkg.version,
+    },
+  })
+
+  log.info('[Sentry] crashReporter configured for native crash reporting')
+}
+
+/**
+ * Initialize Sentry for Electron main process.
+ *
+ * Configuration via environment variables:
+ * - RI_SENTRY_ENABLED: 'true' to enable
+ * - RI_SENTRY_ELECTRON_DSN: Sentry DSN
+ * - RI_SENTRY_ENVIRONMENT: Environment name (default: 'production')
  */
 export const initSentry = (): void => {
   if (initialized) {
@@ -70,10 +125,6 @@ export const initSentry = (): void => {
   const dsn = process.env.RI_SENTRY_ELECTRON_DSN
   const enabled = process.env.RI_SENTRY_ENABLED === 'true'
   const environment = process.env.RI_SENTRY_ENVIRONMENT || 'development'
-  const sampleRate = parseFloat(process.env.RI_SENTRY_SAMPLE_RATE || '1.0')
-  const tracesSampleRate = parseFloat(
-    process.env.RI_SENTRY_TRACES_SAMPLE_RATE || '0.1',
-  )
 
   if (!enabled || !dsn) {
     log.info('[Sentry] Disabled or DSN not configured')
@@ -85,26 +136,24 @@ export const initSentry = (): void => {
       dsn,
       environment,
       release: pkg.version,
-      sampleRate,
-      tracesSampleRate,
+      ipcMode: IPCMode.Classic,
       beforeSend(event) {
-        // Scrub sensitive data
         if (event.extra) {
           event.extra = scrubSensitiveData(event.extra) as Record<
             string,
             unknown
           >
         }
-
         if (event.contexts) {
           event.contexts = scrubSensitiveData(
             event.contexts,
           ) as typeof event.contexts
         }
-
         return event
       },
     })
+
+    initCrashReporter(dsn, environment)
 
     initialized = true
     log.info(`[Sentry] Initialized for environment: ${environment}`)
@@ -146,3 +195,36 @@ export const setUser = (anonymousId: string): void => {
  * Check if Sentry is initialized
  */
 export const isSentryInitialized = (): boolean => initialized
+
+// =============================================================================
+// Test Helpers (TODO: Remove before production release)
+// =============================================================================
+
+/**
+ * Trigger a test error to verify Sentry integration.
+ * TODO: Remove before production release.
+ */
+export const triggerTestCrash = (): void => {
+  if (!initialized) {
+    log.warn('[Sentry] Cannot trigger test crash - Sentry not initialized')
+    return
+  }
+
+  log.info('[Sentry] Triggering test crash for Electron main process')
+  throw new Error('Sentry test crash - Electron main process')
+}
+
+/**
+ * Trigger a native crash to test crashReporter integration.
+ * WARNING: This will immediately crash the app!
+ * TODO: Remove before production release.
+ */
+export const triggerNativeCrash = (): void => {
+  if (!initialized) {
+    log.warn('[Sentry] Cannot trigger native crash - Sentry not initialized')
+    return
+  }
+
+  log.info('[Sentry] Triggering native crash via process.crash()')
+  process.crash()
+}

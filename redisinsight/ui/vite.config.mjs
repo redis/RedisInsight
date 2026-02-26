@@ -130,6 +130,10 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
+            // Keep all Sentry packages in one chunk to preserve initialization order
+            if (id.includes('@sentry')) {
+              return 'sentry';
+            }
             return id
               .toString()
               .split('node_modules/')[1]

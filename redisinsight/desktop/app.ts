@@ -1,5 +1,5 @@
 /* eslint global-require: off, no-console: off */
-import { app, nativeTheme } from 'electron'
+import { app, globalShortcut, nativeTheme } from 'electron'
 import log from 'electron-log'
 import path from 'path'
 import {
@@ -16,6 +16,9 @@ import {
   initCloudHandlers,
   electronStore,
   initSentry,
+  triggerTestCrash,
+  triggerNativeCrash,
+  isSentryInitialized,
 } from 'desktopSrc/lib'
 import { wrapErrorMessageSensitiveData } from 'desktopSrc/utils'
 import { configMain as config } from 'desktopSrc/config'
@@ -84,6 +87,24 @@ const init = async () => {
         parseInt(process.env.RI_AUTO_UPDATE_INTERVAL ?? '', 10) ||
           84 * 3600 * 1000,
       )
+    }
+
+    // TODO: remove these test shortcuts
+    // Register test crash shortcuts for Sentry testing
+    if (isSentryInitialized()) {
+      // Cmd/Ctrl+Shift+K - Send test error to Sentry (non-crashing)
+      globalShortcut.register('CommandOrControl+Shift+K', () => {
+        log.info('[Sentry] Test crash shortcut triggered')
+        triggerTestCrash()
+      })
+      log.info('[Sentry] Test crash shortcut registered: Cmd/Ctrl+Shift+K')
+
+      // Cmd/Ctrl+Shift+C - Trigger native crash (will crash the app!)
+      globalShortcut.register('CommandOrControl+Shift+C', () => {
+        log.info('[Sentry] Native crash shortcut triggered - app will crash!')
+        triggerNativeCrash()
+      })
+      log.info('[Sentry] Native crash shortcut registered: Cmd/Ctrl+Shift+C')
     }
   } catch (err) {
     log.error(wrapErrorMessageSensitiveData(err as Error))
