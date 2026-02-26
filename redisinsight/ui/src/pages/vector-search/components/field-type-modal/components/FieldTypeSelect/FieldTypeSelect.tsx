@@ -32,16 +32,23 @@ export const FieldTypeSelect = ({
   onChange,
   dataTestId = 'field-type-select',
 }: FieldTypeSelectProps) => {
-  const valueRender = useCallback(({ option }: SelectValueRenderParams) => {
-    const fieldType = option.value as FieldTypes
+  const valueRender = useCallback(
+    ({ option, isOptionValue }: SelectValueRenderParams) => {
+      const fieldType = option.value as FieldTypes
 
-    return (
-      <S.DropdownOption align="center" gap="m">
-        <FieldTag tag={fieldType} />
-        <Text color="ghost">{fieldTypeDescriptions[fieldType]}</Text>
-      </S.DropdownOption>
-    )
-  }, [])
+      if (isOptionValue) {
+        return (
+          <S.DropdownOption align="center" gap="m">
+            <FieldTag tag={fieldType} />
+            <Text color="ghost">{fieldTypeDescriptions[fieldType]}</Text>
+          </S.DropdownOption>
+        )
+      }
+
+      return <FieldTag tag={fieldType} />
+    },
+    [],
+  )
 
   const handleChange = useCallback(
     (selectedValue: string) => {
