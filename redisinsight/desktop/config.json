@@ -35,7 +35,7 @@
       "contextIsolation": true
     }
   },
-  "crashReporter": false,
+  "crashReporter": true,
   "updater": {
     "downloadUrl": ""
   }
