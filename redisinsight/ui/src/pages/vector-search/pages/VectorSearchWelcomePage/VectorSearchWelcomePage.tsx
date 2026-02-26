@@ -16,8 +16,9 @@ export const VectorSearchWelcomePage = () => {
     hasExistingKeysLoading,
   } = useVectorSearch()
 
-  const useMyDatabaseDisabled =
-    hasExistingKeysLoading || !hasExistingKeys
+  const useMyDatabaseDisabled = hasExistingKeysLoading
+    ? { tooltip: 'Checking for existing keys…' }
+    : !hasExistingKeys
       ? { tooltip: 'No Hash or JSON keys found in your database' }
       : undefined
 
