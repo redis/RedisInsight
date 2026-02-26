@@ -32,6 +32,11 @@ import {
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import {
+  useIsKeyIndexed,
+  UseIsKeyIndexedStatus,
+} from 'uiSrc/pages/vector-search/hooks/useIsKeyIndexed'
+import { ViewIndexDataButton } from 'uiSrc/pages/browser/components/view-index-data-button'
 import { KeyDetailsHeaderName } from './components/key-details-header-name'
 import { KeyDetailsHeaderTTL } from './components/key-details-header-ttl'
 import { KeyDetailsHeaderDelete } from './components/key-details-header-delete'
@@ -68,9 +73,12 @@ const KeyDetailsHeader = ({
     type,
     length,
     name: keyBuffer,
+    nameString: keyName,
   } = useSelector(selectedKeyDataSelector) ?? initialKeyInfo
   const { id: instanceId } = useSelector(connectedInstanceSelector)
   const { viewType } = useSelector(keysSelector)
+
+  const { indexes, status: keyIndexedStatus } = useIsKeyIndexed(keyName || '')
 
   const dispatch = useDispatch()
 
@@ -144,6 +152,14 @@ const KeyDetailsHeader = ({
                 </FlexItem>
                 <KeyDetailsHeaderName onEditKey={handleEditKey} />
                 <FlexItem grow />
+                {keyIndexedStatus === UseIsKeyIndexedStatus.Ready && (
+                  <FlexItem>
+                    <ViewIndexDataButton
+                      indexes={indexes}
+                      instanceId={instanceId}
+                    />
+                  </FlexItem>
+                )}
                 {!arePanelsCollapsed && (
                   <FlexItem style={{ marginRight: '8px' }}>
                     <FullScreen
