@@ -1,12 +1,7 @@
 import React from 'react'
 import reactRouterDom from 'react-router-dom'
 import { faker } from '@faker-js/faker'
-import {
-  cleanup,
-  render,
-  screen,
-  userEvent,
-} from 'uiSrc/utils/test-utils'
+import { cleanup, render, screen, userEvent } from 'uiSrc/utils/test-utils'
 import { Pages } from 'uiSrc/constants'
 import { IndexSummary } from 'uiSrc/slices/interfaces/redisearch'
 
