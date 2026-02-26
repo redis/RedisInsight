@@ -3,11 +3,10 @@ import { faker } from '@faker-js/faker'
 import { cleanup, render, screen, userEvent } from 'uiSrc/utils/test-utils'
 import { ShowIcon, DeleteIcon } from 'uiSrc/components/base/icons'
 
-import {
-  useListContent,
-  UseListContentReturn,
-} from 'uiSrc/pages/vector-search/hooks/useListContent'
+import { useListContent } from 'uiSrc/pages/vector-search/hooks/useListContent'
 import { ListContent } from './ListContent'
+
+type UseListContentReturn = ReturnType<typeof useListContent>
 
 jest.mock('uiSrc/pages/vector-search/hooks/useListContent', () => ({
   useListContent: jest.fn(),

@@ -3,6 +3,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 
 import { BrowserStorageItem, Pages } from 'uiSrc/constants'
+import {
+  SCAN_COUNT_DEFAULT,
+  SCAN_TREE_COUNT_DEFAULT,
+} from 'uiSrc/constants/api'
 import { bufferToString, stringToBuffer } from 'uiSrc/utils'
 import {
   deleteRedisearchIndexAction,
@@ -10,9 +14,13 @@ import {
   setSelectedIndex,
   resetRedisearchKeysData,
 } from 'uiSrc/slices/browser/redisearch'
-import { changeSearchMode } from 'uiSrc/slices/browser/keys'
+import {
+  changeSearchMode,
+  fetchKeys,
+  keysSelector,
+} from 'uiSrc/slices/browser/keys'
 import { resetBrowserTree } from 'uiSrc/slices/app/context'
-import { SearchMode } from 'uiSrc/slices/interfaces/keys'
+import { KeyViewType, SearchMode } from 'uiSrc/slices/interfaces/keys'
 import {
   ShowIcon,
   DeleteIcon,
@@ -35,6 +43,7 @@ export const useListContent = () => {
 
   const { data: rawIndexes } = useSelector(redisearchListSelector)
   const { id: databaseId } = useSelector(connectedInstanceSelector)
+  const { viewType } = useSelector(keysSelector)
   const indexes = useMemo(
     () => rawIndexes.map((index) => bufferToString(index)),
     [rawIndexes],
@@ -72,9 +81,19 @@ export const useListContent = () => {
       dispatch(setSelectedIndex(stringToBuffer(indexName)))
       dispatch(resetRedisearchKeysData())
       dispatch(resetBrowserTree())
+      dispatch(
+        fetchKeys({
+          searchMode: SearchMode.Redisearch,
+          cursor: '0',
+          count:
+            viewType === KeyViewType.Browser
+              ? SCAN_COUNT_DEFAULT
+              : SCAN_TREE_COUNT_DEFAULT,
+        }),
+      )
       history.push(Pages.browser(instanceId))
     },
-    [dispatch, history, instanceId],
+    [dispatch, history, instanceId, viewType],
   )
 
   const cleanupQueryLibrary = useCallback(
@@ -148,5 +167,3 @@ export const useListContent = () => {
     onCloseDelete: handleCloseDelete,
   }
 }
-
-export type UseListContentReturn = ReturnType<typeof useListContent>

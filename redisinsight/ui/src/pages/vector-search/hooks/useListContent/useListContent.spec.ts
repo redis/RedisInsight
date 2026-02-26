@@ -10,7 +10,11 @@ import {
   setSelectedIndex,
   resetRedisearchKeysData,
 } from 'uiSrc/slices/browser/redisearch'
-import { changeSearchMode } from 'uiSrc/slices/browser/keys'
+import {
+  changeSearchMode,
+  fetchKeys,
+  keysSelector,
+} from 'uiSrc/slices/browser/keys'
 import { resetBrowserTree } from 'uiSrc/slices/app/context'
 import { SearchMode } from 'uiSrc/slices/interfaces/keys'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -45,6 +49,8 @@ jest.mock('uiSrc/slices/browser/redisearch', () => ({
 jest.mock('uiSrc/slices/browser/keys', () => ({
   ...jest.requireActual('uiSrc/slices/browser/keys'),
   changeSearchMode: jest.fn().mockReturnValue({ type: 'changeSearchMode' }),
+  fetchKeys: jest.fn().mockReturnValue({ type: 'fetchKeys' }),
+  keysSelector: jest.fn(),
 }))
 
 jest.mock('uiSrc/slices/app/context', () => ({
@@ -96,6 +102,9 @@ describe('useListContent', () => {
       }
       if (selector === connectedInstanceSelector) {
         return { id: mockDatabaseId }
+      }
+      if (selector === keysSelector) {
+        return { viewType: 'Browser' }
       }
       return {}
     })
@@ -189,6 +198,14 @@ describe('useListContent', () => {
       )
       expect(mockDispatch).toHaveBeenCalledWith(resetRedisearchKeysData())
       expect(mockDispatch).toHaveBeenCalledWith(resetBrowserTree())
+      expect(mockDispatch).toHaveBeenCalledWith(
+        fetchKeys(
+          expect.objectContaining({
+            searchMode: SearchMode.Redisearch,
+            cursor: '0',
+          }),
+        ),
+      )
       expect(mockPush).toHaveBeenCalledWith(Pages.browser(mockInstanceId))
     })
   })
