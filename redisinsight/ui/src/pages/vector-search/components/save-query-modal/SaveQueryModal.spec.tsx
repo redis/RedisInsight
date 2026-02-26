@@ -25,7 +25,9 @@ describe('SaveQueryModal', () => {
   it('should not render when isOpen is false', () => {
     renderComponent({ isOpen: false })
 
-    expect(screen.queryByTestId('save-query-modal-body')).not.toBeInTheDocument()
+    expect(
+      screen.queryByTestId('save-query-modal-body'),
+    ).not.toBeInTheDocument()
   })
 
   it('should render modal with title, input, and buttons', () => {
@@ -34,7 +36,9 @@ describe('SaveQueryModal', () => {
     const dialog = screen.getByRole('dialog', { name: 'Save query' })
     expect(dialog).toBeInTheDocument()
 
-    expect(screen.getByTestId('save-query-modal-name-input')).toBeInTheDocument()
+    expect(
+      screen.getByTestId('save-query-modal-name-input'),
+    ).toBeInTheDocument()
     expect(screen.getByTestId('save-query-modal-cancel')).toBeInTheDocument()
     expect(screen.getByTestId('save-query-modal-confirm')).toBeInTheDocument()
   })
