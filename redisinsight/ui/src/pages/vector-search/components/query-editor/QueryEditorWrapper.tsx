@@ -85,7 +85,11 @@ export const QueryEditorWrapper = ({
 
         if (result) {
           dispatch(
-            addMessageNotification(queryLibraryNotifications.querySaved()),
+            addMessageNotification(
+              queryLibraryNotifications.querySaved(() => {
+                setActiveTab(EditorTab.Library)
+              }),
+            ),
           )
           setIsSaveModalOpen(false)
         }

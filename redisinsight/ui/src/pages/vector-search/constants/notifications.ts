@@ -53,9 +53,17 @@ export const createIndexNotifications = {
 }
 
 export const queryLibraryNotifications = {
-  querySaved: (): NotificationMessage => ({
-    title: 'Query saved.',
-    message: 'You can find it in the Query Library.',
+  querySaved: (onGoToLibrary?: VoidFunction): NotificationMessage => ({
+    title: 'Query saved to your library.',
+    message: 'You can find it anytime in the Query Library.',
+    showCloseButton: false,
+    actions: {
+      primary: {
+        label: 'Go to Query Library',
+        onClick: onGoToLibrary ?? (() => {}),
+        closes: true,
+      },
+    },
   }),
 
   queryDeleted: (): NotificationMessage => ({
