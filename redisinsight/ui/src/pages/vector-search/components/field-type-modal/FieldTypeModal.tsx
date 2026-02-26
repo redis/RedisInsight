@@ -117,7 +117,7 @@ export const FieldTypeModal = ({
                         MAX_SAMPLE_VALUE_LENGTH,
                       )}
                       {field?.value != null &&
-                        String(field.value).length >
+                        String(field.value).length >=
                           MAX_SAMPLE_VALUE_LENGTH && (
                           <S.InlineCopyButton
                             copy={String(field.value)}
