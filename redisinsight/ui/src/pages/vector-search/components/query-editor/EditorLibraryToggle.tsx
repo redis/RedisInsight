@@ -4,6 +4,7 @@ import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGrou
 import { Icon } from 'uiSrc/components/base/icons'
 import { KnowledgeBaseIcon } from '@redis-ui/icons'
 import { EditorTab, EditorLibraryToggleProps } from './QueryEditor.types'
+import { QueryOnboardingPopover } from './components/query-onboarding-popover'
 import * as S from './QueryEditor.styles'
 
 const tabs = [
@@ -16,18 +17,20 @@ export const EditorLibraryToggle = ({
   onChangeTab,
 }: EditorLibraryToggleProps) => (
   <S.ToggleBar data-testid="editor-library-toggle">
-    <ButtonGroup data-testid="editor-library-tabs">
-      {tabs.map((tab) => (
-        <ButtonGroup.Button
-          key={tab.value}
-          isSelected={activeTab === tab.value}
-          onClick={() => onChangeTab(tab.value)}
-          data-testid={`editor-library-tab-${tab.value}`}
-        >
-          {tab.icon && <Icon icon={tab.icon} size="M" color="currentColor" />}{' '}
-          {tab.label}
-        </ButtonGroup.Button>
-      ))}
-    </ButtonGroup>
+    <QueryOnboardingPopover>
+      <ButtonGroup data-testid="editor-library-tabs">
+        {tabs.map((tab) => (
+          <ButtonGroup.Button
+            key={tab.value}
+            isSelected={activeTab === tab.value}
+            onClick={() => onChangeTab(tab.value)}
+            data-testid={`editor-library-tab-${tab.value}`}
+          >
+            {tab.icon && <Icon icon={tab.icon} size="M" color="currentColor" />}{' '}
+            {tab.label}
+          </ButtonGroup.Button>
+        ))}
+      </ButtonGroup>
+    </QueryOnboardingPopover>
   </S.ToggleBar>
 )
