@@ -1,116 +1,30 @@
-import React, { useCallback, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useHistory, useParams } from 'react-router-dom'
+import React from 'react'
 
-import { Pages } from 'uiSrc/constants'
-import { bufferToString, stringToBuffer } from 'uiSrc/utils'
-import {
-  deleteRedisearchIndexAction,
-  redisearchListSelector,
-} from 'uiSrc/slices/browser/redisearch'
 import {
   ResizableContainer,
   ResizablePanel,
   ResizablePanelHandle,
 } from 'uiSrc/components/base/layout'
-import { ShowIcon, DeleteIcon } from 'uiSrc/components/base/icons'
-import { addMessageNotification } from 'uiSrc/slices/app/notifications'
-import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-import { collectManageIndexesDeleteTelemetry } from 'uiSrc/pages/vector-search-deprecated/telemetry'
-import { QueryLibraryService } from 'uiSrc/services/query-library/QueryLibraryService'
-import { queryLibraryNotifications } from 'uiSrc/pages/vector-search/constants'
 
-import { IndexList } from '../../../../components/index-list'
-import { IndexListAction } from '../../../../components/index-list/IndexList.types'
-import { IndexInfoSidePanel } from '../../../../components/index-info-side-panel'
-import { DeleteIndexConfirmation } from '../delete-index-confirmation/DeleteIndexConfirmation'
-import { useIndexListData } from '../../../../hooks/useIndexListData'
+import { IndexList } from 'uiSrc/pages/vector-search/components/index-list'
+import { IndexInfoSidePanel } from 'uiSrc/pages/vector-search/components/index-info-side-panel'
+import { useListContent } from 'uiSrc/pages/vector-search/hooks/useListContent'
 
 import * as S from './ListContent.styles'
+import { DeleteIndexConfirmation } from '../delete-index-confirmation/DeleteIndexConfirmation'
 
 export const ListContent = () => {
-  const dispatch = useDispatch()
-  const history = useHistory()
-  const { instanceId } = useParams<{ instanceId: string }>()
-
-  const { data: rawIndexes } = useSelector(redisearchListSelector)
-  const { id: databaseId } = useSelector(connectedInstanceSelector)
-  const indexes = useMemo(
-    () => rawIndexes.map((index) => bufferToString(index)),
-    [rawIndexes],
-  )
-
-  const { data, loading } = useIndexListData(indexes)
-
-  const [pendingDeleteIndex, setPendingDeleteIndex] = useState<string | null>(
-    null,
-  )
-  const [viewingIndexName, setViewingIndexName] = useState<string | null>(null)
-
-  const handleQueryClick = useCallback(
-    (indexName: string) => {
-      history.push(Pages.vectorSearchQuery(instanceId, indexName))
-    },
-    [history, instanceId],
-  )
-
-  const cleanupQueryLibrary = useCallback(
-    async (indexName: string) => {
-      try {
-        if (databaseId) {
-          const queryLibraryService = new QueryLibraryService()
-          await queryLibraryService.deleteByIndex(databaseId, indexName)
-        }
-      } catch {
-        dispatch(
-          addMessageNotification(queryLibraryNotifications.cleanupFailed()),
-        )
-      }
-    },
-    [databaseId, dispatch],
-  )
-
-  const handleDelete = useCallback((indexName: string) => {
-    setPendingDeleteIndex(indexName)
-  }, [])
-
-  const handleConfirmDelete = useCallback(() => {
-    if (!pendingDeleteIndex) return
-
-    const indexName = pendingDeleteIndex
-
-    dispatch(
-      deleteRedisearchIndexAction(
-        { index: stringToBuffer(indexName) },
-        async () => {
-          collectManageIndexesDeleteTelemetry({ instanceId })
-          await cleanupQueryLibrary(indexName)
-        },
-      ),
-    )
-    setPendingDeleteIndex(null)
-  }, [dispatch, cleanupQueryLibrary, instanceId, pendingDeleteIndex])
-
-  const handleViewIndex = useCallback((indexName: string) => {
-    setViewingIndexName(indexName)
-  }, [])
-
-  const handleCloseViewPanel = useCallback(() => {
-    setViewingIndexName(null)
-  }, [])
-
-  const actions: IndexListAction[] = useMemo(
-    () => [
-      { name: 'View index', icon: ShowIcon, callback: handleViewIndex },
-      {
-        name: 'Delete',
-        icon: DeleteIcon,
-        variant: 'destructive',
-        callback: handleDelete,
-      },
-    ],
-    [handleViewIndex, handleDelete],
-  )
+  const {
+    data,
+    loading,
+    actions,
+    onQueryClick,
+    viewingIndexName,
+    onCloseViewPanel,
+    pendingDeleteIndex,
+    onConfirmDelete,
+    onCloseDelete,
+  } = useListContent()
 
   return (
     <S.ContentArea>
@@ -125,7 +39,7 @@ export const ListContent = () => {
             <IndexList
               data={data}
               loading={loading}
-              onQueryClick={handleQueryClick}
+              onQueryClick={onQueryClick}
               actions={actions}
               dataTestId="vector-search--list--table"
             />
@@ -147,7 +61,7 @@ export const ListContent = () => {
             >
               <IndexInfoSidePanel
                 indexName={viewingIndexName}
-                onClose={handleCloseViewPanel}
+                onClose={onCloseViewPanel}
               />
             </ResizablePanel>
           </>
@@ -156,8 +70,8 @@ export const ListContent = () => {
 
       <DeleteIndexConfirmation
         isOpen={!!pendingDeleteIndex}
-        onConfirm={handleConfirmDelete}
-        onClose={() => setPendingDeleteIndex(null)}
+        onConfirm={onConfirmDelete}
+        onClose={onCloseDelete}
       />
     </S.ContentArea>
   )
