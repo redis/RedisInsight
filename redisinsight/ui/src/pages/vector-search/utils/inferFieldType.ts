@@ -7,16 +7,6 @@ import { IndexField } from '../components/index-details/IndexDetails.types'
 const TAG_MAX_LENGTH = 50
 const MIN_VECTOR_LENGTH = 2
 
-const WKT_PREFIXES = [
-  'point(',
-  'polygon(',
-  'linestring(',
-  'multipoint(',
-  'multipolygon(',
-  'multilinestring(',
-  'geometrycollection(',
-]
-
 const LON_MIN = -180
 const LON_MAX = 180
 const LAT_MIN = -90
@@ -52,19 +42,6 @@ export const isGeoCoordinates = (value: unknown): boolean => {
     return isLonLatInRange(lon, lat)
   }
   return false
-}
-
-/**
- * Returns true if value looks like valid WKT (starts with a known type, has content, and a closing paren).
- * Rejects malformed inputs like "POINT(" or "POINT(1 2" to avoid inferring invalid GEOSHAPE index schemas.
- */
-export const isGeoShape = (value: string): boolean => {
-  const lower = value.trimStart().toLowerCase()
-  const prefix = WKT_PREFIXES.find((p) => lower.startsWith(p))
-  if (!prefix) return false
-  const afterOpen = lower.slice(prefix.length)
-  const closeIdx = afterOpen.indexOf(')')
-  return closeIdx > 0
 }
 
 const GEO_REGEX = /^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/
@@ -142,9 +119,6 @@ export const inferFieldType = (
   }
 
   const str = String(value)
-  if (isGeoShape(str)) {
-    return FieldTypes.GEOSHAPE
-  }
   if (isGeoString(str)) {
     return FieldTypes.GEO
   }
