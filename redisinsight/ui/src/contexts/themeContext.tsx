@@ -1,11 +1,8 @@
 import React, { useContext } from 'react'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
-import { CommonStyles, themesDefault } from '@redis-ui/styles'
-import 'modern-normalize/modern-normalize.css'
-import '@redis-ui/styles/normalized-styles.css'
-import '@redis-ui/styles/fonts.css'
 
 import { ipcThemeChange } from 'uiSrc/electron/utils/ipcThemeChange'
+import { CommonStyles, themeLight, themeDark } from 'uiSrc/styles/theme'
 import { GlobalStyles } from 'uiSrc/styles/globalStyles'
 import {
   BrowserStorageItem,
@@ -19,8 +16,6 @@ import { localStorageService, themeService } from '../services'
 interface Props {
   children: React.ReactNode
 }
-
-const { light: themeLight, dark: themeDark } = themesDefault
 const THEME_NAMES = THEMES.map(({ value }) => value)
 
 const getQueryTheme = () => {
