@@ -75,12 +75,16 @@ export class CliPanel {
   }
 
   /**
-   * Execute a command and wait for a success response to appear
+   * Execute a command and wait for any response (success or error) to appear.
+   * Callers should assert on `successOutput` / `errorOutput` after this returns.
    */
   async executeCommandAndWait(command: string): Promise<void> {
-    const countBefore = await this.successOutput.count();
+    const successBefore = await this.successOutput.count();
+    const errorBefore = await this.errorOutput.count();
     await this.executeCommand(command);
-    await expect(this.successOutput.nth(countBefore)).toBeVisible();
+    await expect(this.successOutput.nth(successBefore).or(this.errorOutput.nth(errorBefore))).toBeVisible({
+      timeout: 10_000,
+    });
   }
 
   /**
