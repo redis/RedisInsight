@@ -513,17 +513,15 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 4.1 CLI Panel
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Open CLI panel |
-| 🔲 | main | Execute command |
-| 🔲 | main | View command output |
-| 🔲 | main | Close CLI panel |
-| 🔲 | main | Hide CLI panel |
-| 🔲 | main | Handle command errors |
-| 🔲 | main | Execute multiple commands in sequence |
-| 🔲 | main | Command history (up/down arrows) |
-| 🔲 | main | Tab completion |
-| 🔲 | main | Multiple CLI sessions | Feature not available in current UI |
-| 🔲 | main | Run commands on Cluster databases and confirm transparent node redirection |
+| ✅ | main | Open CLI panel |
+| ✅ | main | Execute command |
+| ✅ | main | View command output |
+| ✅ | main | Close CLI panel |
+| ✅ | main | Hide CLI panel |
+| ✅ | main | Handle command errors |
+| ✅ | main | Execute multiple commands in sequence |
+| ✅ | main | Command history (up/down arrows) |
+| ✅ | main | Tab completion |
 
 ### 4.2 Command Helper Integration
 | Status | Group | Test Case |
