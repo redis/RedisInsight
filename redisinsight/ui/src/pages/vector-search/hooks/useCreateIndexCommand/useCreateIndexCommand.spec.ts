@@ -24,6 +24,13 @@ describe('useCreateIndexCommand', () => {
     expect(result.current.command).toContain(PresetIndexName.MOVIES)
   })
 
+  it('should return empty command and indexName when sampleData is undefined', () => {
+    const { result } = renderHook(() => useCreateIndexCommand(undefined))
+
+    expect(result.current.indexName).toBe('')
+    expect(result.current.command).toBe('')
+  })
+
   it('should allow overriding the index name', () => {
     const customName = 'my-custom-index'
     const { result } = renderHook(() =>

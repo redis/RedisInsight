@@ -17,19 +17,23 @@ export interface UseCreateIndexCommandResult {
  * and generate the command dynamically based on existing key fields.
  */
 export const useCreateIndexCommand = (
-  sampleData: SampleDataContent,
+  sampleData?: SampleDataContent,
   indexNameOverride?: string,
 ): UseCreateIndexCommandResult => {
-  const indexName = indexNameOverride ?? getIndexNameBySampleData(sampleData)
+  const indexName =
+    indexNameOverride ??
+    (sampleData ? getIndexNameBySampleData(sampleData) : '')
 
-  const command = useMemo(
-    () =>
-      generateFtCreateCommand({
-        indexName,
-        dataContent: sampleData,
-      }),
-    [indexName, sampleData],
-  )
+  const command = useMemo(() => {
+    if (!sampleData) {
+      return ''
+    }
+
+    return generateFtCreateCommand({
+      indexName,
+      dataContent: sampleData,
+    })
+  }, [indexName, sampleData])
 
   return { command, indexName }
 }
