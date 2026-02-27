@@ -11,7 +11,6 @@ export class CliPanel {
   readonly hideButton: Locator;
   readonly closeButton: Locator;
   readonly commandInput: Locator;
-  readonly cliTextbox: Locator;
   readonly successOutput: Locator;
   readonly errorOutput: Locator;
   readonly commandWrapper: Locator;
@@ -23,8 +22,6 @@ export class CliPanel {
     this.hideButton = page.getByTestId('hide-cli');
     this.closeButton = page.getByTestId('close-cli');
     this.commandInput = page.getByTestId('cli-command');
-    // The CLI uses a custom textbox container
-    this.cliTextbox = this.container.locator('[role="textbox"]');
     this.successOutput = page.getByTestId('cli-output-response-success');
     this.errorOutput = page.getByTestId('cli-output-response-fail');
     this.commandWrapper = page.getByTestId('cli-command-wrapper');
