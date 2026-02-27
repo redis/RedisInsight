@@ -61,7 +61,7 @@ export const getIndexesSuggestions = (
   indexes.map((index) => {
     const value = formatLongName(bufferToString(index))
     const insertQueryQuotes = isNextArgQuery ? " '\${1:query to search}'" : ''
-    const isActive = !!activeIndexName && value === activeIndexName
+    const isActive = activeIndexName !== undefined && value === activeIndexName
 
     return {
       label: value || ' ',

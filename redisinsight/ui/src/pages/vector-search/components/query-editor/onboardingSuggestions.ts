@@ -76,7 +76,7 @@ const getIndexSnippet = (
   indexes: RedisResponseBuffer[],
   activeIndexName?: string,
 ): { snippet: string; isFixed: boolean } => {
-  if (activeIndexName) {
+  if (activeIndexName !== undefined) {
     return { snippet: `'${activeIndexName}'`, isFixed: true }
   }
   if (indexes.length === 0) {

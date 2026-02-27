@@ -4,6 +4,12 @@ import { useHistory, useParams } from 'react-router-dom'
 import { RiSelectOption } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Pages } from 'uiSrc/constants'
 
+import {
+  getIndexDisplayName,
+  resolveIndexName,
+  encodeIndexNameForUrl,
+  decodeIndexNameFromUrl,
+} from '../../utils'
 import { useRedisearchListData } from '../../hooks'
 import { VectorSearchQueryPageParams } from './VectorSearchQueryPage.types'
 import { PageHeader, PageContent } from './components'
@@ -20,17 +26,20 @@ export const VectorSearchQueryPage = () => {
 
   const indexOptions: RiSelectOption[] = useMemo(
     () =>
-      indexes.map((name) => ({
-        value: name,
-        label: name,
-      })),
+      indexes.map((name) => {
+        const displayName = getIndexDisplayName(name)
+        return { value: displayName, label: displayName }
+      }),
     [indexes],
   )
 
   const handleIndexChange = useCallback(
     (value: string) => {
       history.push(
-        Pages.vectorSearchQuery(instanceId, encodeURIComponent(value)),
+        Pages.vectorSearchQuery(
+          instanceId,
+          encodeIndexNameForUrl(resolveIndexName(value)),
+        ),
       )
     },
     [instanceId, history],
@@ -47,7 +56,7 @@ export const VectorSearchQueryPage = () => {
   return (
     <S.PageContainer data-testid="vector-search-query-page">
       <PageHeader
-        indexName={decodeURIComponent(indexName)}
+        indexName={getIndexDisplayName(decodeIndexNameFromUrl(indexName))}
         indexOptions={indexOptions}
         onIndexChange={handleIndexChange}
         onToggleIndexPanel={toggleIndexPanel}

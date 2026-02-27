@@ -18,6 +18,7 @@ import {
   LoadingContainer,
 } from 'uiSrc/components/query'
 
+import { decodeIndexNameFromUrl } from '../../utils'
 import { EditorTab, QueryEditorWrapperProps } from './QueryEditor.types'
 import { EditorLibraryToggle } from './EditorLibraryToggle'
 import { VectorSearchEditor } from './VectorSearchEditor'
@@ -76,7 +77,9 @@ export const QueryEditorWrapper = ({
         setQuery,
         commands: REDIS_COMMANDS,
         indexes,
-        activeIndexName: indexName ? decodeURIComponent(indexName) : undefined,
+        activeIndexName: indexName
+          ? decodeIndexNameFromUrl(indexName)
+          : undefined,
         isLoading: loading || processing,
         onSubmit,
       }}

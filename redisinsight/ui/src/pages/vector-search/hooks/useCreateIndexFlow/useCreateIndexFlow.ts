@@ -11,6 +11,7 @@ import { createIndexNotifications } from '../../constants'
 import { useCreateIndex } from '../useCreateIndex'
 import { useRedisearchListData } from '../useRedisearchListData'
 import { getIndexNameBySampleData } from '../../utils/sampleData'
+import { encodeIndexNameForUrl } from '../../utils'
 
 export interface UseCreateIndexFlowResult {
   /** Trigger index creation; navigates to query page on completion. */
@@ -41,7 +42,9 @@ export const useCreateIndexFlow = (): UseCreateIndexFlowResult => {
             createIndexNotifications.sampleDataAlreadyExists(),
           ),
         )
-        history.push(Pages.vectorSearchQuery(instanceId, indexName))
+        history.push(
+          Pages.vectorSearchQuery(instanceId, encodeIndexNameForUrl(indexName)),
+        )
         return
       }
 
@@ -54,7 +57,12 @@ export const useCreateIndexFlow = (): UseCreateIndexFlowResult => {
             ),
           )
           dispatch(fetchRedisearchListAction())
-          history.push(Pages.vectorSearchQuery(instanceId, indexName))
+          history.push(
+            Pages.vectorSearchQuery(
+              instanceId,
+              encodeIndexNameForUrl(indexName),
+            ),
+          )
         },
         () => {
           dispatch(
