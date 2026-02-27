@@ -25,6 +25,7 @@ import { IndexListAction } from '../../../../components/index-list/IndexList.typ
 import { IndexInfoSidePanel } from '../../../../components/index-info-side-panel'
 import { DeleteIndexConfirmation } from '../delete-index-confirmation/DeleteIndexConfirmation'
 import { useIndexListData } from '../../../../hooks/useIndexListData'
+import { encodeIndexNameForUrl } from '../../../../utils'
 
 import * as S from './ListContent.styles'
 
@@ -49,7 +50,9 @@ export const ListContent = () => {
 
   const handleQueryClick = useCallback(
     (indexName: string) => {
-      history.push(Pages.vectorSearchQuery(instanceId, indexName))
+      history.push(
+        Pages.vectorSearchQuery(instanceId, encodeIndexNameForUrl(indexName)),
+      )
     },
     [history, instanceId],
   )
@@ -75,7 +78,9 @@ export const ListContent = () => {
   }, [])
 
   const handleConfirmDelete = useCallback(() => {
-    if (!pendingDeleteIndex) return
+    if (pendingDeleteIndex === null) {
+      return
+    }
 
     const indexName = pendingDeleteIndex
 
@@ -119,7 +124,7 @@ export const ListContent = () => {
           id="index-list-panel"
           order={1}
           minSize={30}
-          defaultSize={viewingIndexName ? 70 : 100}
+          defaultSize={viewingIndexName !== null ? 70 : 100}
         >
           <S.TableWrapper>
             <IndexList
@@ -132,7 +137,7 @@ export const ListContent = () => {
           </S.TableWrapper>
         </ResizablePanel>
 
-        {viewingIndexName && (
+        {viewingIndexName !== null && (
           <>
             <ResizablePanelHandle
               direction="vertical"
@@ -155,7 +160,7 @@ export const ListContent = () => {
       </ResizableContainer>
 
       <DeleteIndexConfirmation
-        isOpen={!!pendingDeleteIndex}
+        isOpen={pendingDeleteIndex !== null}
         onConfirm={handleConfirmDelete}
         onClose={() => setPendingDeleteIndex(null)}
       />

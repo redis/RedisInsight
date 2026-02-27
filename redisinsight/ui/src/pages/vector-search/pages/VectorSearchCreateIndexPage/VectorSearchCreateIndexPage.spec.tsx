@@ -4,20 +4,6 @@ import { cleanup, render, screen, fireEvent } from 'uiSrc/utils/test-utils'
 
 import { VectorSearchCreateIndexPage } from './VectorSearchCreateIndexPage'
 
-jest.mock('../../hooks', () => ({
-  useCreateIndexCommand: jest.fn(() => ({
-    command: 'FT.CREATE idx:bikes_vss ...',
-    indexName: 'idx:bikes_vss',
-  })),
-  useCreateIndexFlow: jest.fn(() => ({
-    run: jest.fn(),
-    loading: false,
-  })),
-  useRedisearchListData: jest.fn(() => ({
-    stringData: [],
-  })),
-}))
-
 jest.mock('../../components/index-details', () => {
   const MockReact = require('react')
   return {

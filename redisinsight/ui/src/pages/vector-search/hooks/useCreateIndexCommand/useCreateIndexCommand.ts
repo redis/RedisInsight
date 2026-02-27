@@ -13,23 +13,29 @@ export interface UseCreateIndexCommandResult {
  * Hook that derives the FT.CREATE command for a given sample data choice.
  * Returns the command string and the resolved index name.
  *
+ * When sampleData is undefined (e.g. ExistingData mode), returns empty defaults.
+ *
  * Designed to be extensible: later, this can accept a key-based definition
  * and generate the command dynamically based on existing key fields.
  */
 export const useCreateIndexCommand = (
-  sampleData: SampleDataContent,
+  sampleData?: SampleDataContent,
   indexNameOverride?: string,
 ): UseCreateIndexCommandResult => {
-  const indexName = indexNameOverride ?? getIndexNameBySampleData(sampleData)
+  const indexName =
+    indexNameOverride ??
+    (sampleData ? getIndexNameBySampleData(sampleData) : '')
 
-  const command = useMemo(
-    () =>
-      generateFtCreateCommand({
-        indexName,
-        dataContent: sampleData,
-      }),
-    [indexName, sampleData],
-  )
+  const command = useMemo(() => {
+    if (!sampleData) {
+      return ''
+    }
+
+    return generateFtCreateCommand({
+      indexName,
+      dataContent: sampleData,
+    })
+  }, [indexName, sampleData])
 
   return { command, indexName }
 }

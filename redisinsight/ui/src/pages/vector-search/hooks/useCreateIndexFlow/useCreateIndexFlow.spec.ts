@@ -86,7 +86,7 @@ describe('useCreateIndexFlow', () => {
       )
 
       expect(mockPush).toHaveBeenCalledWith({
-        pathname: expect.stringContaining('idx:bikes_vss'),
+        pathname: expect.stringContaining('idx%3Abikes_vss'),
         state: { activeTab: EditorTab.Library },
       })
 
@@ -157,7 +157,7 @@ describe('useCreateIndexFlow', () => {
       mockExistingIndexes = ['idx:bikes_vss']
     })
 
-    it('should seed sample queries and navigate to library tab', async () => {
+    it('should seed sample queries and navigate to query page', async () => {
       const { result } = renderHook(() => useCreateIndexFlow())
 
       await act(async () => {
@@ -170,7 +170,7 @@ describe('useCreateIndexFlow', () => {
       expect(mockCreateIndexRun).not.toHaveBeenCalled()
 
       expect(mockPush).toHaveBeenCalledWith({
-        pathname: expect.stringContaining('idx:bikes_vss'),
+        pathname: expect.stringContaining('idx%3Abikes_vss'),
         state: { activeTab: EditorTab.Library },
       })
 
