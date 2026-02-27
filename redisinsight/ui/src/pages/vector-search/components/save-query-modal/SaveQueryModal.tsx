@@ -32,10 +32,10 @@ export const SaveQueryModal = ({
 
   const isSaveDisabled = !name.trim() || isSaving
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     const trimmed = name.trim()
     if (!trimmed) return
-    onSave(trimmed)
+    await onSave(trimmed)
   }, [name, onSave])
 
   if (!isOpen) return null

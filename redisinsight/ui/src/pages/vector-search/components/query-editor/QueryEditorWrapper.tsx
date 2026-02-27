@@ -93,6 +93,8 @@ export const QueryEditorWrapper = ({
           )
           setIsSaveModalOpen(false)
         }
+      } catch {
+        dispatch(addMessageNotification(queryLibraryNotifications.saveFailed()))
       } finally {
         setIsSaving(false)
       }

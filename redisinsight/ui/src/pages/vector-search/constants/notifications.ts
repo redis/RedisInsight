@@ -66,6 +66,12 @@ export const queryLibraryNotifications = {
     },
   }),
 
+  saveFailed: (): NotificationMessage => ({
+    title: 'Failed to save query',
+    message: 'An error occurred while saving the query. Please try again.',
+    variant: 'error' as ToastVariant,
+  }),
+
   queryDeleted: (): NotificationMessage => ({
     title: 'Query has been deleted.',
     message: '',
