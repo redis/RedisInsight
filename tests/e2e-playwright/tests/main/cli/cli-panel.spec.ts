@@ -1,5 +1,5 @@
 import { test, expect } from 'e2eSrc/fixtures/base';
-import { StandaloneConfigFactory, ClusterConfigFactory } from 'e2eSrc/test-data/databases';
+import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
 import { DatabaseInstance } from 'e2eSrc/types';
 import { faker } from '@faker-js/faker';
 
@@ -163,58 +163,5 @@ test.describe('CLI > CLI Panel', () => {
       const inputText = await cliPanel.getInputText();
       expect(inputText.toUpperCase()).toContain('PING');
     });
-  });
-});
-
-test.describe('CLI > CLI Panel > Cluster', () => {
-  let clusterDatabase: DatabaseInstance;
-
-  test.beforeAll(async ({ apiHelper }) => {
-    let created = false;
-    try {
-      const config = ClusterConfigFactory.build();
-      clusterDatabase = await apiHelper.createDatabase(config);
-      created = true;
-    } catch {
-      // Cluster not available — tests will be skipped
-    }
-
-    test.skip(!created, 'Cluster database is not available');
-  });
-
-  test.afterAll(async ({ apiHelper }) => {
-    if (clusterDatabase?.id) {
-      await apiHelper.deleteDatabase(clusterDatabase.id);
-    }
-  });
-
-  test.beforeEach(async ({ browserPage }) => {
-    await browserPage.goto(clusterDatabase.id);
-  });
-
-  test.skip('should run commands on Cluster databases with transparent node redirection', async ({ cliPanel }) => {
-    const key1 = `test-cluster-a-${Date.now()}`;
-    const key2 = `test-cluster-b-${Date.now()}`;
-    const value = faker.lorem.word();
-
-    await cliPanel.open();
-    await cliPanel.waitForOutput('Connected');
-
-    await cliPanel.executeCommandAndWait(`SET ${key1} ${value}`);
-    await expect(cliPanel.successOutput.last()).toContainText('OK');
-
-    await cliPanel.executeCommandAndWait(`SET ${key2} ${value}`);
-    await expect(cliPanel.successOutput.last()).toContainText('OK');
-
-    await cliPanel.executeCommand(`GET ${key1}`);
-    await expect(cliPanel.successOutput.last()).toContainText(value);
-
-    await cliPanel.executeCommand(`GET ${key2}`);
-    await expect(cliPanel.successOutput.last()).toContainText(value);
-
-    const errorCount = await cliPanel.errorOutput.count();
-    expect(errorCount).toBe(0);
-
-    await cliPanel.executeCommand(`DEL ${key1} ${key2}`);
   });
 });

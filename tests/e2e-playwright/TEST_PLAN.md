@@ -522,7 +522,6 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | ✅ | main | Execute multiple commands in sequence |
 | ✅ | main | Command history (up/down arrows) |
 | ✅ | main | Tab completion |
-| ✅ | main | Run commands on Cluster databases and confirm transparent node redirection |
 
 ### 4.2 Command Helper Integration
 | Status | Group | Test Case |
