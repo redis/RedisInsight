@@ -13,7 +13,10 @@ import { EditorTab } from '../../components/query-editor/QueryEditor.types'
 import { createIndexNotifications } from '../../constants'
 import { useCreateIndex } from '../useCreateIndex'
 import { useRedisearchListData } from '../useRedisearchListData'
-import { getIndexNameBySampleData } from '../../utils/sampleData'
+import {
+  getIndexNameBySampleData,
+  getSampleQueriesBySampleData,
+} from '../../utils/sampleData'
 import { encodeIndexNameForUrl } from '../../utils'
 
 export interface UseCreateIndexFlowResult {
@@ -58,7 +61,10 @@ export const useCreateIndexFlow = (): UseCreateIndexFlowResult => {
   const navigateToLibrary = useCallback(
     (instanceId: string, indexName: string) => {
       history.push({
-        pathname: Pages.vectorSearchQuery(instanceId, indexName),
+        pathname: Pages.vectorSearchQuery(
+          instanceId,
+          encodeIndexNameForUrl(indexName),
+        ),
         state: { activeTab: EditorTab.Library },
       })
     },
@@ -76,9 +82,8 @@ export const useCreateIndexFlow = (): UseCreateIndexFlowResult => {
             createIndexNotifications.sampleDataAlreadyExists(),
           ),
         )
-        history.push(
-          Pages.vectorSearchQuery(instanceId, encodeIndexNameForUrl(indexName)),
-        )
+        await seedSampleQueries(instanceId, indexName, dataset)
+        navigateToLibrary(instanceId, indexName)
         return
       }
 
@@ -91,12 +96,8 @@ export const useCreateIndexFlow = (): UseCreateIndexFlowResult => {
             ),
           )
           dispatch(fetchRedisearchListAction())
-          history.push(
-            Pages.vectorSearchQuery(
-              instanceId,
-              encodeIndexNameForUrl(indexName),
-            ),
-          )
+          await seedSampleQueries(instanceId, indexName, dataset)
+          navigateToLibrary(instanceId, indexName)
         },
         async () => {
           dispatch(
