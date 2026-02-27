@@ -43,8 +43,9 @@ export const FieldTypeModal = ({
     validate,
     enableReinitialize: true,
     validateOnMount: true,
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       onSubmit(buildFieldFromValues(values, mode, field))
+      resetForm()
     },
   })
 
