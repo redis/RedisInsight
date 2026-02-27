@@ -15,8 +15,6 @@ export class CliPanel {
   readonly successOutput: Locator;
   readonly errorOutput: Locator;
   readonly commandWrapper: Locator;
-  readonly autocomplete: Locator;
-  readonly dbIndex: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -30,8 +28,6 @@ export class CliPanel {
     this.successOutput = page.getByTestId('cli-output-response-success');
     this.errorOutput = page.getByTestId('cli-output-response-fail');
     this.commandWrapper = page.getByTestId('cli-command-wrapper');
-    this.autocomplete = page.getByTestId('cli-command-autocomplete');
-    this.dbIndex = page.getByTestId('cli-db-index');
   }
 
   /**
@@ -122,15 +118,6 @@ export class CliPanel {
    */
   async getOutput(): Promise<string> {
     return this.container.innerText();
-  }
-
-  /**
-   * Get the text of the last success response
-   */
-  async getLastSuccessResponse(): Promise<string> {
-    const count = await this.successOutput.count();
-    if (count === 0) return '';
-    return this.successOutput.nth(count - 1).innerText();
   }
 
   /**
