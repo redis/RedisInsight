@@ -17,6 +17,11 @@ import {
   isExistingDataState,
   isSampleDataState,
   hasPreselectedKey,
+  EMPTY_INDEX_NAME_LABEL,
+  getIndexDisplayName,
+  resolveIndexName,
+  encodeIndexNameForUrl,
+  decodeIndexNameFromUrl,
 } from './helpers'
 
 describe('formatPrefixes', () => {
@@ -173,5 +178,46 @@ describe('deriveIndexName', () => {
   it('should fall back to default when namespace is empty', () => {
     const result = deriveIndexName('')
     expect(result).toBe('idx:myindex')
+  })
+})
+
+describe('getIndexDisplayName', () => {
+  it('should return label for empty string', () => {
+    expect(getIndexDisplayName('')).toBe(EMPTY_INDEX_NAME_LABEL)
+  })
+
+  it('should return the name as-is for non-empty string', () => {
+    expect(getIndexDisplayName('idx:test')).toBe('idx:test')
+  })
+})
+
+describe('resolveIndexName', () => {
+  it('should return empty string for the empty-name label', () => {
+    expect(resolveIndexName(EMPTY_INDEX_NAME_LABEL)).toBe('')
+  })
+
+  it('should return the name as-is for a regular name', () => {
+    expect(resolveIndexName('idx:test')).toBe('idx:test')
+  })
+})
+
+describe('encodeIndexNameForUrl / decodeIndexNameFromUrl', () => {
+  it('should round-trip a regular index name', () => {
+    const name = 'idx:bikes'
+    expect(decodeIndexNameFromUrl(encodeIndexNameForUrl(name))).toBe(name)
+  })
+
+  it('should round-trip an empty index name', () => {
+    expect(decodeIndexNameFromUrl(encodeIndexNameForUrl(''))).toBe('')
+  })
+
+  it('should produce a non-empty URL segment for empty name', () => {
+    const encoded = encodeIndexNameForUrl('')
+    expect(encoded).not.toBe('')
+  })
+
+  it('should round-trip a name with special characters', () => {
+    const name = 'idx:special chars/&?#'
+    expect(decodeIndexNameFromUrl(encodeIndexNameForUrl(name))).toBe(name)
   })
 })

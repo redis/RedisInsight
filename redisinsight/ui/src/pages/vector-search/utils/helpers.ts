@@ -57,3 +57,22 @@ export const deriveIndexName = (namespace: string): string => {
   const stripped = namespace.replace(/:$/, '')
   return stripped ? `idx:${stripped}` : 'idx:myindex'
 }
+
+/**
+ * Display label used in place of an empty index name.
+ * Also doubles as the RiSelect value and URL segment, since both
+ * RiSelect and React Router cannot handle empty strings.
+ */
+export const EMPTY_INDEX_NAME_LABEL = '(empty name)'
+
+export const getIndexDisplayName = (name: string): string =>
+  name === '' ? EMPTY_INDEX_NAME_LABEL : name
+
+export const resolveIndexName = (displayName: string): string =>
+  displayName === EMPTY_INDEX_NAME_LABEL ? '' : displayName
+
+export const encodeIndexNameForUrl = (name: string): string =>
+  encodeURIComponent(getIndexDisplayName(name))
+
+export const decodeIndexNameFromUrl = (urlSegment: string): string =>
+  resolveIndexName(decodeURIComponent(urlSegment))

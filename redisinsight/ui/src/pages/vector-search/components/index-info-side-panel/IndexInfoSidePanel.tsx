@@ -6,6 +6,7 @@ import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CancelIcon } from 'uiSrc/components/base/icons'
 
 import { useIndexInfo } from '../../hooks'
+import { decodeIndexNameFromUrl } from '../../utils'
 import { IndexInfo } from '../index-info'
 
 import { IndexInfoSidePanelProps } from './IndexInfoSidePanel.types'
@@ -16,7 +17,8 @@ export const IndexInfoSidePanel = ({
   indexName: indexNameProp,
 }: IndexInfoSidePanelProps) => {
   const { indexName: indexNameParam } = useParams<{ indexName?: string }>()
-  const resolvedName = indexNameProp ?? decodeURIComponent(indexNameParam ?? '')
+  const resolvedName =
+    indexNameProp ?? decodeIndexNameFromUrl(indexNameParam ?? '')
 
   const { indexInfo } = useIndexInfo({
     indexName: resolvedName,

@@ -18,14 +18,14 @@ describe('useIndexNameValidation', () => {
     mockExistingIndexes.length = 0
   })
 
-  it('should return REQUIRED error for empty string', () => {
+  it('should return null for empty string', () => {
     const { result } = renderHook(() => useIndexNameValidation(''))
-    expect(result.current).toBe(INDEX_NAME_ERRORS.REQUIRED)
+    expect(result.current).toBeNull()
   })
 
-  it('should return REQUIRED error for whitespace-only string', () => {
+  it('should return null for whitespace-only string', () => {
     const { result } = renderHook(() => useIndexNameValidation('   '))
-    expect(result.current).toBe(INDEX_NAME_ERRORS.REQUIRED)
+    expect(result.current).toBeNull()
   })
 
   it('should return DUPLICATE error when index name already exists', () => {

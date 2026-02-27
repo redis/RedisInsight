@@ -13,10 +13,8 @@ import { EditorTab } from '../../components/query-editor/QueryEditor.types'
 import { createIndexNotifications } from '../../constants'
 import { useCreateIndex } from '../useCreateIndex'
 import { useRedisearchListData } from '../useRedisearchListData'
-import {
-  getIndexNameBySampleData,
-  getSampleQueriesBySampleData,
-} from '../../utils/sampleData'
+import { getIndexNameBySampleData } from '../../utils/sampleData'
+import { encodeIndexNameForUrl } from '../../utils'
 
 export interface UseCreateIndexFlowResult {
   /** Trigger index creation; navigates to query page on completion. */
@@ -78,8 +76,9 @@ export const useCreateIndexFlow = (): UseCreateIndexFlowResult => {
             createIndexNotifications.sampleDataAlreadyExists(),
           ),
         )
-        await seedSampleQueries(instanceId, indexName, dataset)
-        navigateToLibrary(instanceId, indexName)
+        history.push(
+          Pages.vectorSearchQuery(instanceId, encodeIndexNameForUrl(indexName)),
+        )
         return
       }
 
@@ -92,8 +91,12 @@ export const useCreateIndexFlow = (): UseCreateIndexFlowResult => {
             ),
           )
           dispatch(fetchRedisearchListAction())
-          await seedSampleQueries(instanceId, indexName, dataset)
-          navigateToLibrary(instanceId, indexName)
+          history.push(
+            Pages.vectorSearchQuery(
+              instanceId,
+              encodeIndexNameForUrl(indexName),
+            ),
+          )
         },
         async () => {
           dispatch(

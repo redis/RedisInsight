@@ -35,7 +35,7 @@ export const useIndexInfo = ({
   const fetchIdRef = useRef(0)
 
   const fetchIndexInfo = useCallback(async () => {
-    if (!instanceId || !indexName) {
+    if (!instanceId) {
       return
     }
 
@@ -74,17 +74,9 @@ export const useIndexInfo = ({
   }, [instanceId, indexName])
 
   useEffect(() => {
-    if (indexName) {
-      fetchIndexInfo()
-    } else {
-      // Reset loading and error when indexName becomes empty
-      // (prevents stuck loading if a fetch was in progress)
-      setLoading(false)
-      setError(null)
-    }
+    fetchIndexInfo()
 
     return () => {
-      // Invalidate any in-flight request on cleanup
       fetchIdRef.current++
     }
   }, [indexName, fetchIndexInfo])
