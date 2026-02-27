@@ -38,7 +38,7 @@ export const generateDynamicFtCreateCommand = ({
     .join('\n')
 
   const parts = [
-    `FT.CREATE ${indexName}`,
+    `FT.CREATE "${indexName}"`,
     `  ON ${onClause}`,
     `    PREFIX 1 "${prefix}"`,
     '  SCHEMA',

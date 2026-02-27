@@ -35,7 +35,7 @@ describe('generateDynamicFtCreateCommand', () => {
         }),
       )
 
-      expect(result).toContain('FT.CREATE idx:myindex')
+      expect(result).toContain('FT.CREATE "idx:myindex"')
       expect(result).toContain('ON HASH')
       expect(result).toContain('PREFIX 1 "myprefix:"')
       expect(result).toContain('SCHEMA')
@@ -56,8 +56,17 @@ describe('generateDynamicFtCreateCommand', () => {
     it('should generate command with empty fields', () => {
       const result = generateDynamicFtCreateCommand(buildParams())
 
-      expect(result).toContain('FT.CREATE idx:test')
+      expect(result).toContain('FT.CREATE "idx:test"')
       expect(result).toContain('SCHEMA')
+    })
+
+    it('should generate command with empty index name', () => {
+      const result = generateDynamicFtCreateCommand(
+        buildParams({ indexName: '' }),
+      )
+
+      expect(result).toContain('FT.CREATE ""')
+      expect(result).toContain('ON HASH')
     })
   })
 
@@ -360,7 +369,7 @@ describe('generateDynamicFtCreateCommand', () => {
         }),
       )
 
-      expect(result).toContain('FT.CREATE idx:mixed')
+      expect(result).toContain('FT.CREATE "idx:mixed"')
       expect(result).toContain('PREFIX 1 "item:"')
       expect(result).toContain('"title" TEXT')
       expect(result).toContain('"genre" TAG')

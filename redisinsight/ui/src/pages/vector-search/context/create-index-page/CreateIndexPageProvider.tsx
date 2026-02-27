@@ -29,7 +29,7 @@ import {
   getIndexNameBySampleData,
 } from '../../utils/sampleData'
 import { generateDynamicFtCreateCommand } from '../../utils/generateDynamicFtCreateCommand'
-import { deriveIndexName } from '../../utils'
+import { deriveIndexName, encodeIndexNameForUrl } from '../../utils'
 import {
   CreateIndexTab,
   CreateIndexMode,
@@ -214,7 +214,12 @@ export const CreateIndexPageProvider = ({
 
       dispatch(fetchRedisearchListAction())
       dispatch(addMessageNotification(createIndexNotifications.indexCreated()))
-      history.push(Pages.vectorSearchQuery(instanceId, indexName.trim()))
+      history.push(
+        Pages.vectorSearchQuery(
+          instanceId,
+          encodeIndexNameForUrl(indexName.trim()),
+        ),
+      )
     } catch {
       dispatch(addMessageNotification(createIndexNotifications.createFailed()))
     } finally {
