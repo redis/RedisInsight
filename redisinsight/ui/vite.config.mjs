@@ -86,7 +86,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 8080,
+    port: parseInt(process.env.RI_UI_DEV_PORT, 10) || 8080,
     fs: {
       allow: ['..', '../../node_modules/monaco-editor', 'static', 'defaults'],
     },
