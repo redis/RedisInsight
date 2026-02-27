@@ -45,10 +45,6 @@ export const FIELD_TYPE_OPTIONS = [
     value: FieldTypes.GEO,
   },
   {
-    text: 'GEOSHAPE',
-    value: FieldTypes.GEOSHAPE,
-  },
-  {
     text: 'VECTOR',
     value: FieldTypes.VECTOR,
   },
