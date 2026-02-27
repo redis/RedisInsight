@@ -36,7 +36,12 @@ const JSONView = (props: Props) => {
           <JsonPretty data={result.value} space={2} />
         </div>
       ) : (
-        <div className="cli-output-response-success">{result.value}</div>
+        <div
+          data-testid="cli-output-response-success"
+          className="cli-output-response-success"
+        >
+          {result.value}
+        </div>
       )}
     </>
   )
