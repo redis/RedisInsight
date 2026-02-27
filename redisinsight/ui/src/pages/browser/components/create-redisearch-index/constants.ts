@@ -49,11 +49,6 @@ export const FIELD_TYPE_OPTIONS = [
     description: 'Use GEO for geographic coordinates (latitude and longitude).',
   },
   {
-    text: 'GEOSHAPE',
-    value: FieldTypes.GEOSHAPE,
-    description: 'Use GEOSHAPE for geographic shapes and polygons.',
-  },
-  {
     text: 'VECTOR',
     value: FieldTypes.VECTOR,
     description: 'Use VECTOR for semantic search using vector embeddings.',

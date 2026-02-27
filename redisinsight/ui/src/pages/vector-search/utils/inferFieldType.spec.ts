@@ -4,7 +4,6 @@ import {
   RedisearchIndexKeyType,
 } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import {
-  isGeoShape,
   isGeoString,
   isGeoCoordinates,
   isVector,
@@ -14,39 +13,6 @@ import {
   inferHashKeyFields,
   inferKeyFields,
 } from './inferFieldType'
-
-describe('isGeoShape', () => {
-  it.each([
-    { value: 'POINT(1.5 2.5)', desc: 'POINT' },
-    { value: 'POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))', desc: 'POLYGON' },
-    { value: 'LINESTRING(0 0, 1 1, 2 2)', desc: 'LINESTRING' },
-    { value: 'MULTIPOINT(0 0, 1 1)', desc: 'MULTIPOINT' },
-    { value: 'MULTIPOLYGON(((0 0, 1 0, 1 1, 0 0)))', desc: 'MULTIPOLYGON' },
-    {
-      value: 'MULTILINESTRING((0 0, 1 1), (2 2, 3 3))',
-      desc: 'MULTILINESTRING',
-    },
-    { value: 'GEOMETRYCOLLECTION(POINT(1 1))', desc: 'GEOMETRYCOLLECTION' },
-    { value: 'point(1.5 2.5)', desc: 'lowercase point' },
-    { value: 'Point(1 2)', desc: 'mixed case Point' },
-    { value: '  POINT(1 2)', desc: 'leading whitespace' },
-  ])('should return true for $desc', ({ value }) => {
-    expect(isGeoShape(value)).toBe(true)
-  })
-
-  it.each([
-    { value: 'POINTLESS text', desc: 'word starting with POINT but not WKT' },
-    { value: 'hello world', desc: 'plain string' },
-    { value: '42', desc: 'numeric string' },
-    { value: '', desc: 'empty string' },
-    { value: 'POINT', desc: 'WKT keyword without parenthesis' },
-    { value: 'POINT(', desc: 'WKT keyword with open paren only (malformed)' },
-    { value: 'POINT(1 2', desc: 'WKT with no closing paren (malformed)' },
-    { value: 'point()', desc: 'empty WKT parentheses (malformed)' },
-  ])('should return false for $desc', ({ value }) => {
-    expect(isGeoShape(value)).toBe(false)
-  })
-})
 
 describe('isGeoString', () => {
   it.each([
@@ -190,8 +156,8 @@ describe('isNumeric', () => {
 
 describe('inferFieldType', () => {
   describe('string-based detection', () => {
-    it('should return GEOSHAPE for WKT patterns', () => {
-      expect(inferFieldType('POINT(1 2)')).toBe(FieldTypes.GEOSHAPE)
+    it('should return TAG for WKT patterns (GEOSHAPE not supported)', () => {
+      expect(inferFieldType('POINT(1 2)')).toBe(FieldTypes.TAG)
     })
 
     it('should return GEO for coordinate patterns', () => {
@@ -222,14 +188,8 @@ describe('inferFieldType', () => {
   })
 
   describe('priority order', () => {
-    it('should prefer GEOSHAPE over GEO for WKT with coordinates', () => {
-      expect(inferFieldType('POINT(-122.4 37.7)')).toBe(FieldTypes.GEOSHAPE)
-    })
-
-    it('should not infer GEOSHAPE for malformed WKT (no closing paren or empty)', () => {
-      expect(inferFieldType('POINT(')).toBe(FieldTypes.TAG)
-      expect(inferFieldType('POINT(1 2')).toBe(FieldTypes.TAG)
-      expect(inferFieldType('point()')).toBe(FieldTypes.TAG)
+    it('should return TAG for WKT with coordinates (GEOSHAPE not supported)', () => {
+      expect(inferFieldType('POINT(-122.4 37.7)')).toBe(FieldTypes.TAG)
     })
 
     it('should prefer GEO over NUMERIC for coordinate-like values', () => {
@@ -310,14 +270,13 @@ describe('inferHashKeyFields', () => {
       { field: 'price', value: '1398' },
       { field: 'brand', value: 'Eva' },
       { field: 'coords', value: '-122.4194,37.7749' },
-      { field: 'shape', value: 'POLYGON((0 0, 1 0, 1 1, 0 0))' },
       { field: 'embedding', value: '[0.1, 0.2, 0.3]' },
       { field: 'description', value: faker.string.alpha(100) },
     ]
 
     const result = inferHashKeyFields(fields)
 
-    expect(result).toHaveLength(6)
+    expect(result).toHaveLength(5)
     expect(result[0]).toEqual({
       id: 'price',
       name: 'price',
@@ -331,9 +290,8 @@ describe('inferHashKeyFields', () => {
       type: FieldTypes.TAG,
     })
     expect(result[2].type).toBe(FieldTypes.GEO)
-    expect(result[3].type).toBe(FieldTypes.GEOSHAPE)
-    expect(result[4].type).toBe(FieldTypes.VECTOR)
-    expect(result[5].type).toBe(FieldTypes.TEXT)
+    expect(result[3].type).toBe(FieldTypes.VECTOR)
+    expect(result[4].type).toBe(FieldTypes.TEXT)
   })
 
   it('should return empty array for empty input', () => {

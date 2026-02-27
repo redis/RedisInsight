@@ -65,7 +65,6 @@ describe('generateDynamicFtCreateCommand', () => {
     it.each([
       { type: FieldTypes.NUMERIC, expected: 'NUMERIC' },
       { type: FieldTypes.GEO, expected: 'GEO' },
-      { type: FieldTypes.GEOSHAPE, expected: 'GEOSHAPE' },
     ])('should generate $expected field for HASH key', ({ type, expected }) => {
       const fields: IndexField[] = [
         { id: 'f1', name: 'myfield', value: 'val', type },
@@ -87,7 +86,6 @@ describe('generateDynamicFtCreateCommand', () => {
     it.each([
       { type: FieldTypes.NUMERIC, expected: 'NUMERIC' },
       { type: FieldTypes.GEO, expected: 'GEO' },
-      { type: FieldTypes.GEOSHAPE, expected: 'GEOSHAPE' },
     ])(
       'should generate $expected field with JSONPath alias for JSON key',
       ({ type, expected }) => {

@@ -136,10 +136,9 @@ const getVectorParams = (options?: VectorFieldOptions): [string, string][] => {
 const FIELD_TYPE_ORDER: Record<string, number> = {
   [FieldTypes.NUMERIC]: 0,
   [FieldTypes.GEO]: 1,
-  [FieldTypes.GEOSHAPE]: 2,
-  [FieldTypes.TAG]: 3,
-  [FieldTypes.TEXT]: 4,
-  [FieldTypes.VECTOR]: 5,
+  [FieldTypes.TAG]: 2,
+  [FieldTypes.TEXT]: 3,
+  [FieldTypes.VECTOR]: 4,
 }
 
 const sortFieldsByType = (fields: IndexField[]): IndexField[] =>
