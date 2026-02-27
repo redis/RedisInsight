@@ -1,6 +1,8 @@
 import React from 'react'
+import { faker } from '@faker-js/faker'
 import { render, screen, fireEvent, waitFor } from 'uiSrc/utils/test-utils'
 import { QUERY_LIBRARY_ITEMS_MOCK } from 'uiSrc/mocks/handlers/browser/queryLibraryHandlers'
+import { QueryLibraryService } from 'uiSrc/services/query-library/QueryLibraryService'
 
 import { QueryEditorWrapper } from './QueryEditorWrapper'
 import { EditorTab } from './QueryEditor.types'
@@ -198,5 +200,82 @@ describe('QueryEditorWrapper', () => {
 
     const searchInput = screen.queryByPlaceholderText('Search query')
     expect(searchInput).not.toBeInTheDocument()
+  })
+
+  describe('Save query flow', () => {
+    it('should render save button in actions bar', () => {
+      renderComponent()
+
+      expect(screen.getByTestId('btn-save-query')).toBeInTheDocument()
+    })
+
+    it('should open save modal when save button is clicked', () => {
+      renderComponent({ query: 'FT.SEARCH idx "*"' })
+
+      fireEvent.click(screen.getByTestId('btn-save-query'))
+
+      expect(
+        screen.getByRole('dialog', { name: 'Save query' }),
+      ).toBeInTheDocument()
+      expect(
+        screen.getByTestId('save-query-modal-name-input'),
+      ).toBeInTheDocument()
+    })
+
+    it('should close save modal when cancel is clicked', () => {
+      renderComponent({ query: 'FT.SEARCH idx "*"' })
+
+      fireEvent.click(screen.getByTestId('btn-save-query'))
+      expect(
+        screen.getByRole('dialog', { name: 'Save query' }),
+      ).toBeInTheDocument()
+
+      fireEvent.click(screen.getByTestId('save-query-modal-cancel'))
+
+      expect(
+        screen.queryByTestId('save-query-modal-body'),
+      ).not.toBeInTheDocument()
+    })
+
+    it('should call QueryLibraryService.create and close modal on successful save', async () => {
+      const queryName = faker.lorem.words(3)
+      const mockCreate = jest
+        .spyOn(QueryLibraryService.prototype, 'create')
+        .mockResolvedValueOnce({
+          id: faker.string.uuid(),
+          databaseId: 'instanceId',
+          indexName: 'test-index',
+          type: 'SAVED' as any,
+          name: queryName,
+          query: 'FT.SEARCH idx "*"',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        })
+
+      renderComponent({ query: 'FT.SEARCH idx "*"' })
+
+      fireEvent.click(screen.getByTestId('btn-save-query'))
+
+      const input = screen.getByTestId('save-query-modal-name-input')
+      fireEvent.change(input, { target: { value: queryName } })
+
+      fireEvent.click(screen.getByTestId('save-query-modal-confirm'))
+
+      await waitFor(() => {
+        expect(mockCreate).toHaveBeenCalledWith('instanceId', {
+          indexName: 'test-index',
+          name: queryName,
+          query: 'FT.SEARCH idx "*"',
+        })
+      })
+
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId('save-query-modal-body'),
+        ).not.toBeInTheDocument()
+      })
+
+      mockCreate.mockRestore()
+    })
   })
 })

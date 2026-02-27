@@ -17,11 +17,17 @@ import {
   buildProfileQuery,
 } from './QueryEditor.utils'
 import * as S from './QueryEditor.styles'
+import { SaveIcon } from 'uiSrc/components/base/icons'
+
+interface VectorSearchActionsProps {
+  onSaveClick?: () => void
+}
 
 /**
  * Actions bar for Vector Search editor.
  *
  * Contains:
+ * - **Save** – opens a modal to save the current query to the Query Library
  * - **Explain** – submits the query wrapped in FT.EXPLAIN
  * - **Profile** – submits the query wrapped in FT.PROFILE
  * - **Run** – submits the query as-is
@@ -29,12 +35,17 @@ import * as S from './QueryEditor.styles'
  * Explain and Profile are enabled only when the editor contains
  * a single FT.SEARCH or FT.AGGREGATE command.
  */
-export const VectorSearchActions = () => {
+export const VectorSearchActions = ({
+  onSaveClick,
+}: VectorSearchActionsProps) => {
   const { query, isLoading, onSubmit } = useQueryEditorContext()
 
   const parsed = useMemo(() => parseExplainableCommand(query), [query])
   const hasValidCommand = !!parsed
   const isExplainEnabled = hasValidCommand && !isLoading
+
+  const hasQuery = !!query.trim()
+  const isSaveEnabled = hasQuery && !isLoading
 
   const disabledReason = useMemo(() => {
     if (!hasValidCommand) return TOOLTIP_DISABLED_NO_QUERY
@@ -84,6 +95,15 @@ export const VectorSearchActions = () => {
           Profile
         </EmptyButton>
       </RiTooltip>
+      <EmptyButton
+        icon={SaveIcon}
+        onClick={onSaveClick}
+        disabled={!isSaveEnabled}
+        aria-label="save"
+        data-testid="btn-save-query"
+      >
+        Save
+      </EmptyButton>
       <RunButton isLoading={isLoading} onSubmit={() => onSubmit()} />
     </S.ActionsBar>
   )

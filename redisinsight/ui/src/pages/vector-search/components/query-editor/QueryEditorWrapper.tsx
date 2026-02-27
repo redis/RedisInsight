@@ -11,18 +11,22 @@ import {
 } from 'uiSrc/slices/browser/redisearch'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { searchAndQuerySelector } from 'uiSrc/slices/search/searchAndQuery'
+import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { mergeRedisCommandsSpecs } from 'uiSrc/utils/transformers/redisCommands'
 import SEARCH_COMMANDS_SPEC from 'uiSrc/pages/workbench/data/supported_commands.json'
 import {
   QueryEditorContextProvider,
   LoadingContainer,
 } from 'uiSrc/components/query'
+import { QueryLibraryService } from 'uiSrc/services/query-library/QueryLibraryService'
+import { queryLibraryNotifications } from 'uiSrc/pages/vector-search/constants'
 
 import { EditorTab, QueryEditorWrapperProps } from './QueryEditor.types'
 import { EditorLibraryToggle } from './EditorLibraryToggle'
 import { VectorSearchEditor } from './VectorSearchEditor'
 import { VectorSearchActions } from './VectorSearchActions'
 import { QueryLibraryView } from '../query-library-view'
+import { SaveQueryModal } from '../save-query-modal'
 import * as S from './QueryEditor.styles'
 
 /**
@@ -35,11 +39,16 @@ export const QueryEditorWrapper = ({
   setQuery,
   onSubmit,
 }: QueryEditorWrapperProps) => {
-  const { indexName } = useParams<{ indexName?: string }>()
+  const { instanceId, indexName } = useParams<{
+    instanceId: string
+    indexName?: string
+  }>()
   const location = useLocation<{ activeTab?: EditorTab }>()
   const [activeTab, setActiveTab] = useState<EditorTab>(
     location.state?.activeTab ?? EditorTab.Editor,
   )
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
 
   const handleLibraryLoad = useCallback(
     (queryText: string) => {
@@ -49,7 +58,50 @@ export const QueryEditorWrapper = ({
     [setQuery],
   )
 
+  const handleSaveClick = useCallback(() => {
+    setIsSaveModalOpen(true)
+  }, [])
+
+  const handleSaveClose = useCallback(() => {
+    setIsSaveModalOpen(false)
+  }, [])
+
+  const decodedIndexName = indexName ? decodeURIComponent(indexName) : ''
+
   const dispatch = useDispatch()
+
+  const handleSaveSubmit = useCallback(
+    async (name: string) => {
+      if (!instanceId || !decodedIndexName) return
+
+      setIsSaving(true)
+      try {
+        const queryLibraryService = new QueryLibraryService()
+        const result = await queryLibraryService.create(instanceId, {
+          indexName: decodedIndexName,
+          name,
+          query,
+        })
+
+        if (result) {
+          dispatch(
+            addMessageNotification(
+              queryLibraryNotifications.querySaved(() => {
+                setActiveTab(EditorTab.Library)
+              }),
+            ),
+          )
+          setIsSaveModalOpen(false)
+        }
+      } catch {
+        dispatch(addMessageNotification(queryLibraryNotifications.saveFailed()))
+      } finally {
+        setIsSaving(false)
+      }
+    },
+    [instanceId, decodedIndexName, query, dispatch],
+  )
+
   const { loading: isCommandsLoading, spec: COMMANDS_SPEC } = useSelector(
     appRedisCommandsSelector,
   )
@@ -88,7 +140,7 @@ export const QueryEditorWrapper = ({
         setQuery,
         commands: REDIS_COMMANDS,
         indexes,
-        activeIndexName: indexName ? decodeURIComponent(indexName) : undefined,
+        activeIndexName: decodedIndexName || undefined,
         isLoading: loading || processing,
         onSubmit,
       }}
@@ -98,13 +150,20 @@ export const QueryEditorWrapper = ({
         {activeTab === EditorTab.Editor && (
           <>
             <VectorSearchEditor />
-            <VectorSearchActions />
+            <VectorSearchActions onSaveClick={handleSaveClick} />
           </>
         )}
         {activeTab === EditorTab.Library && (
           <QueryLibraryView onRun={onSubmit} onLoad={handleLibraryLoad} />
         )}
       </S.EditorWrapper>
+
+      <SaveQueryModal
+        isOpen={isSaveModalOpen}
+        isSaving={isSaving}
+        onSave={handleSaveSubmit}
+        onClose={handleSaveClose}
+      />
     </QueryEditorContextProvider>
   )
 }
