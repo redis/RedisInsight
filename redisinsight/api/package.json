@@ -71,7 +71,7 @@
     "@supercharge/promise-pool": "^3.2.0",
     "@types/json-bigint": "^1.0.4",
     "adm-zip": "^0.5.9",
-    "axios": "^1.12.2",
+    "axios": "^1.13.5",
     "body-parser": "^1.20.3",
     "busboy": "^1.6.0",
     "class-transformer": "^0.5.1",
