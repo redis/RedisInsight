@@ -13,6 +13,8 @@ export interface UseCreateIndexCommandResult {
  * Hook that derives the FT.CREATE command for a given sample data choice.
  * Returns the command string and the resolved index name.
  *
+ * When sampleData is undefined (e.g. ExistingData mode), returns empty defaults.
+ *
  * Designed to be extensible: later, this can accept a key-based definition
  * and generate the command dynamically based on existing key fields.
  */
