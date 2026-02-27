@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 
 /**
  * CLI Panel component
@@ -12,6 +12,11 @@ export class CliPanel {
   readonly closeButton: Locator;
   readonly commandInput: Locator;
   readonly cliTextbox: Locator;
+  readonly successOutput: Locator;
+  readonly errorOutput: Locator;
+  readonly commandWrapper: Locator;
+  readonly autocomplete: Locator;
+  readonly dbIndex: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -22,6 +27,11 @@ export class CliPanel {
     this.commandInput = page.getByTestId('cli-command');
     // The CLI uses a custom textbox container
     this.cliTextbox = this.container.locator('[role="textbox"]');
+    this.successOutput = page.getByTestId('cli-output-response-success');
+    this.errorOutput = page.getByTestId('cli-output-response-fail');
+    this.commandWrapper = page.getByTestId('cli-command-wrapper');
+    this.autocomplete = page.getByTestId('cli-command-autocomplete');
+    this.dbIndex = page.getByTestId('cli-db-index');
   }
 
   /**
@@ -72,6 +82,15 @@ export class CliPanel {
   }
 
   /**
+   * Execute a command and wait for a success response to appear
+   */
+  async executeCommandAndWait(command: string): Promise<void> {
+    const countBefore = await this.successOutput.count();
+    await this.executeCommand(command);
+    await expect(this.successOutput.nth(countBefore)).toBeVisible();
+  }
+
+  /**
    * Type a command in the CLI without executing it
    * This triggers the Command Helper integration
    */
@@ -92,10 +111,35 @@ export class CliPanel {
   }
 
   /**
+   * Get the current text in the command input (ContentEditable)
+   */
+  async getInputText(): Promise<string> {
+    return this.commandInput.innerText();
+  }
+
+  /**
    * Get the CLI output text
    */
   async getOutput(): Promise<string> {
     return this.container.innerText();
+  }
+
+  /**
+   * Get the text of the last success response
+   */
+  async getLastSuccessResponse(): Promise<string> {
+    const count = await this.successOutput.count();
+    if (count === 0) return '';
+    return this.successOutput.nth(count - 1).innerText();
+  }
+
+  /**
+   * Get the text of the last error response
+   */
+  async getLastErrorResponse(): Promise<string> {
+    const count = await this.errorOutput.count();
+    if (count === 0) return '';
+    return this.errorOutput.nth(count - 1).innerText();
   }
 
   /**
@@ -121,7 +165,31 @@ export class CliPanel {
   }
 
   /**
-   * Clear the CLI (if supported)
+   * Press ArrowUp to navigate command history (older)
+   */
+  async pressArrowUp(): Promise<void> {
+    await this.commandInput.focus();
+    await this.page.keyboard.press('ArrowUp');
+  }
+
+  /**
+   * Press ArrowDown to navigate command history (newer)
+   */
+  async pressArrowDown(): Promise<void> {
+    await this.commandInput.focus();
+    await this.page.keyboard.press('ArrowDown');
+  }
+
+  /**
+   * Press Tab to trigger command completion
+   */
+  async pressTab(): Promise<void> {
+    await this.commandInput.focus();
+    await this.page.keyboard.press('Tab');
+  }
+
+  /**
+   * Clear the CLI output
    */
   async clear(): Promise<void> {
     await this.executeCommand('CLEAR');
