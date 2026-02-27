@@ -26,8 +26,11 @@ const renderComponent = (props: Partial<IndexDetailsProps> = {}) =>
 
 describe('IndexDetails', () => {
   beforeEach(() => {
-    cleanup()
     jest.clearAllMocks()
+  })
+
+  afterEach(() => {
+    cleanup()
   })
 
   describe('Readonly mode', () => {
