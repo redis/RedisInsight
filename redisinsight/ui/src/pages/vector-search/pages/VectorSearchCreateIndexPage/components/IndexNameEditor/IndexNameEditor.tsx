@@ -3,10 +3,12 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Title } from 'uiSrc/components/base/text'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import {
+  RiIcon,
   PencilIcon,
   CancelSlimIcon,
   CheckThinIcon,
 } from 'uiSrc/components/base/icons'
+import { RiTooltip } from 'uiSrc/components/base/tooltip'
 
 import { useIndexNameValidation } from '../../../../hooks'
 import { IndexNameEditorProps } from './IndexNameEditor.types'
@@ -15,11 +17,13 @@ import * as S from './IndexNameEditor.styles'
 export const IndexNameEditor = ({
   indexName,
   onNameChange,
+  validationError,
 }: IndexNameEditorProps) => {
   const [isEditing, setIsEditing] = useState(false)
   const [draft, setDraft] = useState(indexName)
   const inputRef = useRef<HTMLInputElement>(null)
   const draftError = useIndexNameValidation(draft)
+  const hasError = !!draftError
 
   useEffect(() => {
     if (isEditing) {
@@ -27,6 +31,12 @@ export const IndexNameEditor = ({
       inputRef.current?.select()
     }
   }, [isEditing])
+
+  useEffect(() => {
+    if (isEditing) {
+      inputRef.current?.focus()
+    }
+  }, [isEditing, hasError])
 
   const startEditing = useCallback(() => {
     setDraft(indexName)
@@ -39,9 +49,13 @@ export const IndexNameEditor = ({
   }, [indexName])
 
   const confirmEditing = useCallback(() => {
+    if (draftError) {
+      return
+    }
+
     onNameChange(draft)
     setIsEditing(false)
-  }, [draft, onNameChange])
+  }, [draft, draftError, onNameChange])
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -81,6 +95,7 @@ export const IndexNameEditor = ({
           color="primary"
           aria-label="Confirm index name"
           onClick={confirmEditing}
+          disabled={hasError}
           data-testid="index-name-confirm-btn"
         />
       </S.EditRow>
@@ -89,6 +104,22 @@ export const IndexNameEditor = ({
 
   return (
     <S.DisplayRow onClick={startEditing} data-testid="index-name-display">
+      {validationError && (
+        <RiTooltip
+          position="bottom"
+          content={validationError}
+          data-testid="index-name-error-tooltip"
+        >
+          <S.ErrorIcon>
+            <RiIcon
+              type="ToastDangerIcon"
+              size="l"
+              data-testid="index-name-error-icon"
+            />
+          </S.ErrorIcon>
+        </RiTooltip>
+      )}
+
       <Title size="M" color="primary">
         {indexName}
       </Title>
