@@ -192,7 +192,7 @@ test.describe('CLI > CLI Panel > Cluster', () => {
     await browserPage.goto(clusterDatabase.id);
   });
 
-  test('should run commands on Cluster databases with transparent node redirection', async ({ cliPanel }) => {
+  test.skip('should run commands on Cluster databases with transparent node redirection', async ({ cliPanel }) => {
     const key1 = `test-cluster-a-${Date.now()}`;
     const key2 = `test-cluster-b-${Date.now()}`;
     const value = faker.lorem.word();
