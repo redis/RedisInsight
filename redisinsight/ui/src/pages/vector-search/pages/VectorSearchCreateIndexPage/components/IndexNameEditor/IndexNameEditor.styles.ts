@@ -17,3 +17,7 @@ export const EditRow = styled(Row).attrs({ grow: false })`
 export const NameInput = styled(TextInput)`
   width: 200px;
 `
+
+export const ErrorIcon = styled(Row).attrs({ align: 'center', grow: false })`
+  color: ${({ theme }) => theme.semantic?.color?.text?.danger500};
+`
