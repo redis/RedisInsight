@@ -40,4 +40,11 @@ describe('useCreateIndexCommand', () => {
     expect(result.current.indexName).toBe(customName)
     expect(result.current.command).toContain(customName)
   })
+
+  it('should return empty defaults when sampleData is undefined', () => {
+    const { result } = renderHook(() => useCreateIndexCommand(undefined))
+
+    expect(result.current.indexName).toBe('')
+    expect(result.current.command).toBe('')
+  })
 })

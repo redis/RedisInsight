@@ -5,7 +5,8 @@ import { Pages } from 'uiSrc/constants'
 
 import { PickSampleDataModal } from '../../components/pick-sample-data-modal'
 import { SampleDataContent } from '../../components/pick-sample-data-modal/PickSampleDataModal.types'
-import { useCreateIndexFlow } from '../../hooks'
+import { useCreateIndexFlow, useHasExistingKeys } from '../../hooks'
+import { CreateIndexMode } from '../../pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
 
 import { VectorSearchProviderProps } from './VectorSearchContext.types'
 import { VectorSearchContext } from './VectorSearchContext'
@@ -21,6 +22,8 @@ export const VectorSearchProvider = ({
   const { instanceId } = useParams<{ instanceId: string }>()
 
   const { run: createIndexFlow } = useCreateIndexFlow()
+  const { hasKeys: hasExistingKeys, loading: hasExistingKeysLoading } =
+    useHasExistingKeys()
 
   const openPickSampleDataModal = useCallback(() => {
     setSelectedDataset(null)
@@ -55,12 +58,26 @@ export const VectorSearchProvider = ({
     [closeSampleDataModal, createIndexFlow, instanceId],
   )
 
-  // Only expose stable callbacks so child pages don't re-render on modal state changes
+  const navigateToExistingDataFlow = useCallback(() => {
+    history.push({
+      pathname: Pages.vectorSearchCreateIndex(instanceId),
+      state: { mode: CreateIndexMode.ExistingData },
+    })
+  }, [history, instanceId])
+
   const contextValue = useMemo(
     () => ({
       openPickSampleDataModal,
+      navigateToExistingDataFlow,
+      hasExistingKeys,
+      hasExistingKeysLoading,
     }),
-    [openPickSampleDataModal],
+    [
+      openPickSampleDataModal,
+      navigateToExistingDataFlow,
+      hasExistingKeys,
+      hasExistingKeysLoading,
+    ],
   )
 
   return (
