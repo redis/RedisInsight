@@ -91,11 +91,13 @@ export class CommandHelperPanel {
 
   /**
    * Filter commands by category/group type
+   * @param groupType - The internal group type value (e.g., 'string', 'hash', 'set')
    */
-  async filterByCategory(category: string): Promise<void> {
+  async filterByCategory(groupType: string): Promise<void> {
     await this.filterDropdown.click();
-    // Click on the filter option with the category value
-    await this.page.getByText(category, { exact: false }).first().click();
+    // Use data-test-subj attribute for robust selection (from CHSearchFilter.tsx)
+    // The dropdown options have data-test-subj="filter-option-group-type-{value}"
+    await this.page.locator(`[data-test-subj="filter-option-group-type-${groupType}"]`).click();
   }
 
   /**

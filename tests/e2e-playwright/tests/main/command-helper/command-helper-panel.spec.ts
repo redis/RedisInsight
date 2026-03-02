@@ -78,8 +78,9 @@ test.describe('Command Helper > Command Helper Panel', () => {
       // First search to get some results
       await commandHelperPanel.search('');
 
-      // Filter by a category (e.g., "String")
-      await commandHelperPanel.filterByCategory('String');
+      // Filter by a category using internal group type value (lowercase)
+      // See GROUP_TYPES_DISPLAY in redisinsight/ui/src/constants/keys.ts for mapping
+      await commandHelperPanel.filterByCategory('string');
 
       // Verify filter is applied by checking results
       await expect(commandHelperPanel.searchResultTitles.first()).toBeVisible();
