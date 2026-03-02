@@ -15,7 +15,9 @@ import {
   changeSearchMode,
   fetchKeys,
   keysSelector,
+  resetKeyInfo,
 } from 'uiSrc/slices/browser/keys'
+import { setBrowserSelectedKey } from 'uiSrc/slices/app/context'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   bufferToString,
@@ -89,6 +91,8 @@ const RediSearchIndexesList = (props: Props) => {
     )
     if (!matchingBuffer) return
 
+    dispatch(resetKeyInfo())
+    dispatch(setBrowserSelectedKey(null))
     dispatch(setSelectedIndex(matchingBuffer))
     dispatch(
       fetchKeys({
@@ -169,6 +173,8 @@ const RediSearchIndexesList = (props: Props) => {
     const matchingBuffer = list.find((item) => bufferToString(item) === value)
     if (!matchingBuffer) return
 
+    dispatch(resetKeyInfo())
+    dispatch(setBrowserSelectedKey(null))
     dispatch(setSelectedIndex(matchingBuffer))
     dispatch(
       fetchKeys({

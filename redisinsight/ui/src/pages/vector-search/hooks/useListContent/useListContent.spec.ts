@@ -153,7 +153,7 @@ describe('useListContent', () => {
   })
 
   describe('Browse dataset action', () => {
-    it('should navigate to browser with browseIndex in location state', () => {
+    it('should dispatch changeSearchMode and navigate to browser with browseIndex', () => {
       const { result } = renderHook(() => useListContent())
       const indexName = faker.string.alpha(10)
 
@@ -161,6 +161,7 @@ describe('useListContent', () => {
         result.current.actions[1].callback(indexName)
       })
 
+      expect(mockDispatch).toHaveBeenCalled()
       expect(mockPush).toHaveBeenCalledWith(Pages.browser(mockInstanceId), {
         browseIndex: indexName,
       })

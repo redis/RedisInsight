@@ -9,6 +9,7 @@ import {
   redisearchListSelector,
 } from 'uiSrc/slices/browser/redisearch'
 import { SearchMode } from 'uiSrc/slices/interfaces/keys'
+import { changeSearchMode } from 'uiSrc/slices/browser/keys'
 import {
   ShowIcon,
   DeleteIcon,
@@ -64,9 +65,10 @@ export const useListContent = () => {
         BrowserStorageItem.browserSearchMode,
         SearchMode.Redisearch,
       )
+      dispatch(changeSearchMode(SearchMode.Redisearch))
       history.push(Pages.browser(instanceId), { browseIndex: indexName })
     },
-    [history, instanceId],
+    [dispatch, history, instanceId],
   )
 
   const cleanupQueryLibrary = useCallback(
