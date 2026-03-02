@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { isString } from 'lodash'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 
@@ -22,7 +21,6 @@ import {
   bufferToString,
   formatLongName,
   isRedisearchAvailable,
-  Nullable,
 } from 'uiSrc/utils'
 import {
   SCAN_COUNT_DEFAULT,
@@ -52,7 +50,7 @@ const RediSearchIndexesList = (props: Props) => {
   const { onCreateIndex } = props
 
   const { viewType, searchMode } = useSelector(keysSelector)
-  const { selectedIndex = '' } = useSelector(redisearchSelector)
+  const { selectedIndex } = useSelector(redisearchSelector)
   const { data: list = [], loading } = useSelector(redisearchListSelector)
   const {
     id: instanceId,
@@ -60,9 +58,7 @@ const RediSearchIndexesList = (props: Props) => {
     host: instanceHost,
   } = useSelector(connectedInstanceSelector)
 
-  const [index, setIndex] = useState<Nullable<string>>(
-    JSON.stringify(selectedIndex),
-  )
+  const selectedValue = selectedIndex ? bufferToString(selectedIndex) : ''
 
   const dispatch = useDispatch()
   const location = useLocation<{ browseIndex?: string }>()
@@ -85,10 +81,6 @@ const RediSearchIndexesList = (props: Props) => {
   }, [instanceHost, modules])
 
   useEffect(() => {
-    setIndex(JSON.stringify(selectedIndex || ''))
-  }, [selectedIndex])
-
-  useEffect(() => {
     const browseIndex = location.state?.browseIndex
     if (!browseIndex || list.length === 0) return
 
@@ -97,7 +89,6 @@ const RediSearchIndexesList = (props: Props) => {
     )
     if (!matchingBuffer) return
 
-    setIndex(JSON.stringify(matchingBuffer))
     dispatch(setSelectedIndex(matchingBuffer))
     dispatch(
       fetchKeys({
@@ -120,24 +111,30 @@ const RediSearchIndexesList = (props: Props) => {
     [],
   )
 
-  const options = list.map((index) => {
-    const value = formatLongName(bufferToString(index), 100, 10)
+  const options = list.map((item) => {
+    const stringValue = bufferToString(item)
+    const displayValue = formatLongName(stringValue, 100, 10)
 
     return {
-      value: JSON.stringify(index),
+      value: stringValue,
       inputDisplay: (
-        <Text data-test-subj={`mode-option-type-${value}`}>{value}</Text>
+        <Text data-test-subj={`mode-option-type-${displayValue}`}>
+          {displayValue}
+        </Text>
       ),
       dropdownDisplay: (
-        <Text color="primary" data-test-subj={`mode-option-type-${value}`}>
-          {value}
+        <Text
+          color="primary"
+          data-test-subj={`mode-option-type-${displayValue}`}
+        >
+          {displayValue}
         </Text>
       ),
     }
   })
 
   options.push({
-    value: JSON.stringify(CREATE),
+    value: CREATE,
     inputDisplay: <span>CREATE</span>,
     dropdownDisplay: (
       <Row align="center" justify="start" gap="xs">
@@ -154,10 +151,8 @@ const RediSearchIndexesList = (props: Props) => {
     ),
   })
 
-  const onChangeIndex = (initValue: string) => {
-    const value = JSON.parse(initValue)
-
-    if (isString(value) && value === CREATE) {
+  const onChangeIndex = (value: string) => {
+    if (value === CREATE) {
       onCreateIndex(true)
 
       sendEventTelemetry({
@@ -171,9 +166,10 @@ const RediSearchIndexesList = (props: Props) => {
       return
     }
 
-    setIndex(initValue)
+    const matchingBuffer = list.find((item) => bufferToString(item) === value)
+    if (!matchingBuffer) return
 
-    dispatch(setSelectedIndex(value))
+    dispatch(setSelectedIndex(matchingBuffer))
     dispatch(
       fetchKeys({
         searchMode,
@@ -215,7 +211,7 @@ const RediSearchIndexesList = (props: Props) => {
       <RiSelect.Compose
         disabled={loading}
         options={options}
-        value={index || ''}
+        value={selectedValue}
         onChange={onChangeIndex}
       >
         <RiSelect.Trigger.Compose data-testid="select-search-mode">

@@ -16,7 +16,6 @@ import {
 } from 'uiSrc/utils/test-utils'
 import {
   loadList,
-  loadListSuccess,
   redisearchListSelector,
   setSelectedIndex,
 } from 'uiSrc/slices/browser/redisearch'
@@ -30,7 +29,7 @@ import { BrowserStorageItem } from 'uiSrc/constants'
 import RediSearchIndexesList, { Props } from './RediSearchIndexesList'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import { setStoreRef } from 'uiSrc/utils/test-store'
-import { REDISEARCH_LIST_DATA_MOCK } from 'uiSrc/mocks/handlers/browser/redisearchHandlers'
+
 
 let store: typeof mockedStore
 beforeEach(() => {
@@ -146,7 +145,6 @@ describe('RediSearchIndexesList', () => {
 
     const expectedActions = [
       changeSearchMode(SearchMode.Pattern),
-      changeSearchMode(SearchMode.Pattern),
     ]
 
     expect(clearStoreActions(store.getActions())).toEqual(
@@ -212,8 +210,6 @@ describe('RediSearchIndexesList', () => {
 
     const expectedActions = [
       setSelectedIndex(index),
-      loadList(),
-      loadListSuccess(REDISEARCH_LIST_DATA_MOCK.indexes),
     ]
 
     expect(clearStoreActions(store.getActions())).toEqual(
