@@ -273,6 +273,69 @@ describe('decoder', () => {
       })
     })
 
+    describe('timestamp extension', () => {
+      it('should decode standalone fixext4 timestamp as Date', () => {
+        // fixext4 with type -1 (timestamp), seconds = 1740397416
+        const data = new Uint8Array([
+          0xd6, // fixext4
+          0xff, // type -1 (timestamp)
+          0x67, 0xbc, 0x5b, 0x68, // seconds: 1740397416
+        ])
+
+        const result = decodeMsgpackWithLz4(data)
+        expect(result).toBeInstanceOf(Date)
+        expect((result as Date).toISOString()).toBe('2025-02-24T11:43:36.000Z')
+      })
+
+      it('should preserve timestamp inside an object', () => {
+        // { "created": <fixext4 timestamp> }
+        const data = new Uint8Array([
+          0x81, // fixmap with 1 element
+          0xa7, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, // "created"
+          0xd6, // fixext4
+          0xff, // type -1 (timestamp)
+          0x67, 0xbc, 0x5b, 0x68, // seconds: 1740397416
+        ])
+
+        const result = decodeMsgpackWithLz4(data) as Record<string, unknown>
+        expect(result.created).toBeInstanceOf(Date)
+        expect((result.created as Date).toISOString()).toBe(
+          '2025-02-24T11:43:36.000Z',
+        )
+      })
+
+      it('should decode .NET DateTimeOffset pattern correctly', () => {
+        // Simulates MessagePack-CSharp Class1: [[timestamp, offset], 534, false]
+        // DateTimeOffset is serialized as [timestamp_ext(-1), offset_minutes]
+        const data = new Uint8Array([
+          0x93, // fixarray with 3 elements
+          0x92, // fixarray with 2 elements (DateTimeOffset)
+          0xd6, // fixext4
+          0xff, // type -1 (timestamp)
+          0x67, 0xbc, 0x5b, 0x68, // seconds: 1740397416
+          0x00, // offset: 0 (UTC)
+          0xcd, 0x02, 0x16, // uint16: 534
+          0xc2, // false
+        ])
+
+        const result = decodeMsgpackWithLz4(data) as unknown[]
+        const dateTimeOffset = result[0] as unknown[]
+
+        expect(dateTimeOffset[0]).toBeInstanceOf(Date)
+        expect((dateTimeOffset[0] as Date).toISOString()).toBe(
+          '2025-02-24T11:43:36.000Z',
+        )
+        expect(dateTimeOffset[1]).toBe(0)
+        expect(result[1]).toBe(534)
+        expect(result[2]).toBe(false)
+
+        // Verify JSON stringification produces ISO string, not {}
+        const json = JSON.stringify(result)
+        expect(json).toContain('2025-02-24T11:43:36.000Z')
+        expect(json).not.toContain('{}')
+      })
+    })
+
     describe('error handling', () => {
       it('should throw on invalid msgpack data', () => {
         const invalidData = new Uint8Array([0xff, 0xff, 0xff])
