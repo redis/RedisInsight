@@ -279,7 +279,10 @@ describe('decoder', () => {
         const data = new Uint8Array([
           0xd6, // fixext4
           0xff, // type -1 (timestamp)
-          0x67, 0xbc, 0x5b, 0x68, // seconds: 1740397416
+          0x67,
+          0xbc,
+          0x5b,
+          0x68, // seconds: 1740397416
         ])
 
         const result = decodeMsgpackWithLz4(data)
@@ -291,10 +294,20 @@ describe('decoder', () => {
         // { "created": <fixext4 timestamp> }
         const data = new Uint8Array([
           0x81, // fixmap with 1 element
-          0xa7, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, // "created"
+          0xa7,
+          0x63,
+          0x72,
+          0x65,
+          0x61,
+          0x74,
+          0x65,
+          0x64, // "created"
           0xd6, // fixext4
           0xff, // type -1 (timestamp)
-          0x67, 0xbc, 0x5b, 0x68, // seconds: 1740397416
+          0x67,
+          0xbc,
+          0x5b,
+          0x68, // seconds: 1740397416
         ])
 
         const result = decodeMsgpackWithLz4(data) as Record<string, unknown>
@@ -312,9 +325,14 @@ describe('decoder', () => {
           0x92, // fixarray with 2 elements (DateTimeOffset)
           0xd6, // fixext4
           0xff, // type -1 (timestamp)
-          0x67, 0xbc, 0x5b, 0x68, // seconds: 1740397416
+          0x67,
+          0xbc,
+          0x5b,
+          0x68, // seconds: 1740397416
           0x00, // offset: 0 (UTC)
-          0xcd, 0x02, 0x16, // uint16: 534
+          0xcd,
+          0x02,
+          0x16, // uint16: 534
           0xc2, // false
         ])
 
