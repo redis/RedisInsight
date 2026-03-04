@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 
@@ -66,6 +66,32 @@ const RediSearchIndexesList = (props: Props) => {
   const location = useLocation<{ browseIndex?: string }>()
   const history = useHistory()
 
+  const selectIndex = useCallback(
+    (indexName: string) => {
+      const matchingBuffer = list.find(
+        (item) => bufferToString(item) === indexName,
+      )
+      if (!matchingBuffer) return false
+
+      dispatch(resetKeyInfo())
+      dispatch(setBrowserSelectedKey(null))
+      dispatch(setSelectedIndex(matchingBuffer))
+      dispatch(
+        fetchKeys({
+          searchMode,
+          cursor: '0',
+          count:
+            viewType === KeyViewType.Browser
+              ? SCAN_COUNT_DEFAULT
+              : SCAN_TREE_COUNT_DEFAULT,
+        }),
+      )
+
+      return true
+    },
+    [dispatch, list, searchMode, viewType],
+  )
+
   useEffect(() => {
     if (!instanceHost) return
 
@@ -86,26 +112,9 @@ const RediSearchIndexesList = (props: Props) => {
     const browseIndex = location.state?.browseIndex
     if (!browseIndex || list.length === 0) return
 
-    const matchingBuffer = list.find(
-      (item) => bufferToString(item) === browseIndex,
-    )
-    if (!matchingBuffer) return
-
-    dispatch(resetKeyInfo())
-    dispatch(setBrowserSelectedKey(null))
-    dispatch(setSelectedIndex(matchingBuffer))
-    dispatch(
-      fetchKeys({
-        searchMode,
-        cursor: '0',
-        count:
-          viewType === KeyViewType.Browser
-            ? SCAN_COUNT_DEFAULT
-            : SCAN_TREE_COUNT_DEFAULT,
-      }),
-    )
-
-    history.replace({ ...location, state: undefined })
+    if (selectIndex(browseIndex)) {
+      history.replace({ ...location, state: undefined })
+    }
   }, [list])
 
   useEffect(
@@ -170,22 +179,7 @@ const RediSearchIndexesList = (props: Props) => {
       return
     }
 
-    const matchingBuffer = list.find((item) => bufferToString(item) === value)
-    if (!matchingBuffer) return
-
-    dispatch(resetKeyInfo())
-    dispatch(setBrowserSelectedKey(null))
-    dispatch(setSelectedIndex(matchingBuffer))
-    dispatch(
-      fetchKeys({
-        searchMode,
-        cursor: '0',
-        count:
-          viewType === KeyViewType.Browser
-            ? SCAN_COUNT_DEFAULT
-            : SCAN_TREE_COUNT_DEFAULT,
-      }),
-    )
+    if (!selectIndex(value)) return
 
     sendEventTelemetry({
       event: TelemetryEvent.SEARCH_INDEX_CHANGED,
