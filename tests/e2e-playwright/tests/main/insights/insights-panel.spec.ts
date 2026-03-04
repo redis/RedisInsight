@@ -14,7 +14,9 @@ test.describe('Insights > Insights Panel', () => {
   });
 
   test.afterAll(async ({ apiHelper }) => {
-    await apiHelper.deleteDatabase(database.id);
+    if (database?.id) {
+      await apiHelper.deleteDatabase(database.id);
+    }
   });
 
   test.describe('Panel Lifecycle', () => {
