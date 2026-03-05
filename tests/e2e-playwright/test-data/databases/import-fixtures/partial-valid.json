@@ -1,0 +1,13 @@
+[
+  {
+    "host": "127.0.0.1",
+    "port": 8100,
+    "name": "test-import-partial-ok",
+    "connectionType": "STANDALONE"
+  },
+  {
+    "host": "invalid-host-that-will-never-resolve.example.com",
+    "port": 99999,
+    "name": "test-import-partial-fail"
+  }
+]

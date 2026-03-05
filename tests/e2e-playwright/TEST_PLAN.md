@@ -161,15 +161,15 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 1.5 Import/Export
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Open import dialog |
-| 🔲 | main | Import single database |
-| 🔲 | main | Import multiple databases |
-| 🔲 | main | Show success count after import |
-| 🔲 | main | Cancel import dialog |
-| 🔲 | main | Export databases |
-| 🔲 | main | Import with errors (partial success) |
-| 🔲 | main | Import invalid file format |
-| 🔲 | main | Confirm database tags are exported/imported correctly |
+| ✅ | main | Open import dialog |
+| ✅ | main | Import single database |
+| ✅ | main | Import multiple databases |
+| ✅ | main | Show success count after import |
+| ✅ | main | Cancel import dialog |
+| ✅ | main | Export databases |
+| ✅ | main | Import with errors (partial success) |
+| ✅ | main | Import invalid file format |
+| ✅ | main | Confirm database tags are exported/imported correctly |
 | 🔲 | main | Confirm import summary distinguishes Fully/Partially Imported and Failed |
 
 ### 1.6 Database Tags
