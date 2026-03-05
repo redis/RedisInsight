@@ -4,6 +4,7 @@ import { getConfig } from 'uiSrc/config'
 
 import {
   azureAuthSelector,
+  AzureOAuthPrompt,
   initiateAzureLoginAction,
 } from 'uiSrc/slices/oauth/azure'
 import { AzureLoginSource } from 'uiSrc/slices/interfaces'
@@ -37,7 +38,13 @@ export const useAzureAuth = () => {
         return
       }
 
-      dispatch(initiateAzureLoginAction({ source, onSuccess: openAuthUrl }))
+      dispatch(
+        initiateAzureLoginAction({
+          source,
+          onSuccess: openAuthUrl,
+          prompt: AzureOAuthPrompt.SelectAccount,
+        }),
+      )
     },
     [dispatch, openAuthUrl],
   )
@@ -55,7 +62,7 @@ export const useAzureAuth = () => {
       initiateAzureLoginAction({
         source: AzureLoginSource.Autodiscovery,
         onSuccess: openAuthUrl,
-        prompt: 'select_account',
+        prompt: AzureOAuthPrompt.SelectAccount,
       }),
     )
   }, [dispatch, openAuthUrl])

@@ -4,6 +4,7 @@ import { cleanup, mockedStore, renderHook, act } from 'uiSrc/utils/test-utils'
 import { AzureLoginSource } from 'uiSrc/slices/interfaces'
 import {
   azureAuthSelector,
+  AzureOAuthPrompt,
   initiateAzureLoginAction,
 } from 'uiSrc/slices/oauth/azure'
 import { AzureAccountFactory } from 'uiSrc/mocks/factories/cloud/AzureAccount.factory'
@@ -75,6 +76,7 @@ describe('useAzureAuth', () => {
       expect(mockedInitiateAzureLoginAction).toHaveBeenCalledWith({
         source: AzureLoginSource.Autodiscovery,
         onSuccess: expect.any(Function),
+        prompt: AzureOAuthPrompt.SelectAccount,
       })
     })
 
@@ -88,6 +90,7 @@ describe('useAzureAuth', () => {
       expect(mockedInitiateAzureLoginAction).toHaveBeenCalledWith({
         source: AzureLoginSource.TokenRefresh,
         onSuccess: expect.any(Function),
+        prompt: AzureOAuthPrompt.SelectAccount,
       })
     })
   })
@@ -103,7 +106,7 @@ describe('useAzureAuth', () => {
       expect(mockedInitiateAzureLoginAction).toHaveBeenCalledWith({
         source: AzureLoginSource.Autodiscovery,
         onSuccess: expect.any(Function),
-        prompt: 'select_account',
+        prompt: AzureOAuthPrompt.SelectAccount,
       })
     })
   })
