@@ -11,6 +11,8 @@ export enum FeatureFlags {
   cloudAds = 'cloudAds',
   databaseManagement = 'databaseManagement',
   vectorSearchV2 = 'vectorSearchV2',
+  vectorSearch = 'vectorSearch',
+  devVectorSet = 'dev-vectorSet',
   azureEntraId = 'azureEntraId',
   devBrowser = 'dev-browser',
 }
