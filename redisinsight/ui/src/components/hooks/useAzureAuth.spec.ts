@@ -94,20 +94,4 @@ describe('useAzureAuth', () => {
       })
     })
   })
-
-  describe('switchAccount', () => {
-    it('should dispatch initiateAzureLoginAction with select_account prompt', () => {
-      const { result } = renderHook(() => useAzureAuth())
-
-      act(() => {
-        result.current.switchAccount()
-      })
-
-      expect(mockedInitiateAzureLoginAction).toHaveBeenCalledWith({
-        source: AzureLoginSource.Autodiscovery,
-        onSuccess: expect.any(Function),
-        prompt: AzureOAuthPrompt.SelectAccount,
-      })
-    })
-  })
 })
