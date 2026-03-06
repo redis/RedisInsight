@@ -258,15 +258,10 @@ test.describe('Database List', () => {
   test('should verify Redis Stack icon displayed for databases with modules', async ({ databasesPage }) => {
     const { databaseList } = databasesPage;
 
-    // The standalone database should have Redis Stack modules
     const row = databaseList.getRow(standaloneDb1.name);
     await expect(row).toBeVisible();
 
-    // Redis Stack icon is typically shown as a badge or icon in the row
-    const stackIcon = row.getByTestId(/redis-stack-icon|module/i);
-    // If test-id doesn't exist, skip gracefully
-    const isVisible = await stackIcon.isVisible().catch(() => false);
-    // Some Redis instances may not have modules, so we just verify the assertion doesn't crash
-    expect(typeof isVisible).toBe('boolean');
+    const moduleIcons = row.getByTestId(/_module$/);
+    await expect(moduleIcons.first()).toBeVisible();
   });
 });
