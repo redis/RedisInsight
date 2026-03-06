@@ -7,7 +7,7 @@
   },
   {
     "host": "invalid-host-that-will-never-resolve.example.com",
-    "port": 99999,
+    "port": 65535,
     "name": "test-import-partial-fail"
   }
 ]
