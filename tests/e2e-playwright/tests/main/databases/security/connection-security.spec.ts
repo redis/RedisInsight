@@ -64,6 +64,7 @@ test.describe('Connection Security', () => {
 
   test('should connect using SNI configuration', async ({ databasesPage }) => {
     const { addDatabaseDialog, databaseList } = databasesPage;
+    const { caCert, clientCert } = redisConfig.createUniqueTlsCerts();
     const config = StandaloneConfigFactory.build({
       host: redisConfig.tlsRedis.host,
       port: redisConfig.tlsRedis.port,
@@ -78,8 +79,8 @@ test.describe('Connection Security', () => {
     await addDatabaseDialog.configureTls({
       enabled: true,
       verifyServerCert: false,
-      caCert: redisConfig.tlsCaCert,
-      clientCert: redisConfig.tlsClientCert,
+      caCert,
+      clientCert,
     });
 
     // Enable SNI with the TLS host as servername
@@ -96,6 +97,7 @@ test.describe('Connection Security', () => {
 
   test('should connect with TLS using CA, client, and private key certificates', async ({ databasesPage }) => {
     const { addDatabaseDialog, databaseList } = databasesPage;
+    const { caCert, clientCert } = redisConfig.createUniqueTlsCerts();
     const config = StandaloneConfigFactory.build({
       host: redisConfig.tlsRedis.host,
       port: redisConfig.tlsRedis.port,
@@ -109,8 +111,8 @@ test.describe('Connection Security', () => {
     await addDatabaseDialog.configureTls({
       enabled: true,
       verifyServerCert: false,
-      caCert: redisConfig.tlsCaCert,
-      clientCert: redisConfig.tlsClientCert,
+      caCert,
+      clientCert,
     });
 
     // Verify all TLS fields are populated
