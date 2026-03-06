@@ -29,6 +29,7 @@ test.describe('Decompression', () => {
     const { databaseList, addDatabaseDialog } = databasesPage;
 
     // Open edit dialog for the database
+    await databaseList.search(database.name);
     await databaseList.edit(database.name);
     const editDialog = databasesPage.page.getByRole('dialog', { name: /edit database/i });
     await expect(editDialog).toBeVisible();
@@ -49,6 +50,7 @@ test.describe('Decompression', () => {
     await editDialog.waitFor({ state: 'hidden' });
 
     // Reopen edit dialog and verify the setting persisted
+    await databaseList.search(database.name);
     await databaseList.edit(database.name);
     await expect(editDialog).toBeVisible();
     await addDatabaseDialog.decompressionTab.click();
