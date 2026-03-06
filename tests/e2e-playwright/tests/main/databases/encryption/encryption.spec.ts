@@ -44,7 +44,19 @@ test.describe('Certificate and Encryption Handling', () => {
     await eulaPage.waitForPopup();
 
     // Disable encryption
-    await eulaPage.acceptWithCustomSettings({ encryption: false });
+    await eulaPage.encryptionSwitch.click();
+    const isEncryptionChecked = await eulaPage.isSwitchChecked(eulaPage.encryptionSwitch);
+    expect(isEncryptionChecked).toBe(false);
+
+    // Verify the plain-text storage warning is visible in the dialog
+    await expect(
+      eulaPage.dialog.getByText(/stored locally in plain text/),
+    ).toBeVisible();
+
+    // Accept EULA and submit
+    await eulaPage.eulaSwitch.click();
+    await eulaPage.submitButton.click();
+    await expect(eulaPage.dialog).not.toBeVisible();
 
     // Verify via API that encryption is disabled
     const settings = await apiHelper.getSettings();
