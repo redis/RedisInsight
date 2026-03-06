@@ -17,3 +17,4 @@ export { SettingsPage } from './settings';
 export { PubSubPage } from './pubsub';
 export { SidebarPanel } from './navigation';
 export { EulaPage } from './eula';
+export { InsightsPanel } from './insights';
