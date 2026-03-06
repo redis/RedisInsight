@@ -11,7 +11,7 @@ test.describe('Certificate and Encryption Handling', () => {
   test.describe.configure({ mode: 'serial' });
 
   test.afterAll(async ({ apiHelper }) => {
-    await apiHelper.ensureEulaAccepted();
+    await apiHelper.acceptEula();
   });
 
   test('should store credentials encrypted when encryption enabled', async ({ apiHelper, eulaPage }) => {
@@ -61,11 +61,5 @@ test.describe('Certificate and Encryption Handling', () => {
     // Verify via API that encryption is disabled
     const settings = await apiHelper.getSettings();
     expect(settings.agreements?.encryption).toBe(false);
-
-    // Re-enable encryption for clean state
-    await apiHelper.resetAgreements();
-    await eulaPage.goto();
-    await eulaPage.waitForPopup();
-    await eulaPage.acceptEula();
   });
 });
