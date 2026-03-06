@@ -301,6 +301,8 @@ export class AddDatabaseDialog {
    * Enable SNI on the Security tab (TLS must be enabled first)
    */
   async enableSni(servername: string): Promise<void> {
+    await this.securityTab.click();
+
     const isSniChecked = await this.sniCheckbox.isChecked();
     if (!isSniChecked) {
       await this.sniCheckbox.click();
