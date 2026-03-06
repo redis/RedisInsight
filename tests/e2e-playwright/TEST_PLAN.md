@@ -656,12 +656,12 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 7.1 General Settings
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | View settings page |
-| 🔲 | main | Show theme dropdown |
-| 🔲 | main | Toggle show notifications |
-| 🔲 | main | Show date/time format options |
-| 🔲 | main | Change date/time format (custom) |
-| 🔲 | main | Show time zone dropdown |
+| ✅ | main | View settings page |
+| ✅ | main | Show theme dropdown |
+| ✅ | main | Toggle show notifications |
+| ✅ | main | Show date/time format options |
+| ✅ | main | Change date/time format (custom) |
+| ✅ | main | Show time zone dropdown |
 
 ### 7.2 Privacy Settings
 | Status | Group | Test Case |
