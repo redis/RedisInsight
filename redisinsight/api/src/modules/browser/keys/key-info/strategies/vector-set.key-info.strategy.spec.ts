@@ -18,7 +18,22 @@ const getKeyInfoResponse: GetKeyInfoResponse = {
   ttl: -1,
   size: 50,
   length: 10,
+  quantType: 'int8',
+  vectorDim: 300,
 };
+
+const mockVInfoResponse = [
+  'quant-type',
+  'int8',
+  'hnsw-m',
+  '16',
+  'vector-dim',
+  300,
+  'projection-input-dim',
+  '0',
+  'size',
+  '5',
+];
 
 describe('VectorSetKeyInfoStrategy', () => {
   let strategy: VectorSetKeyInfoStrategy;
@@ -35,17 +50,19 @@ describe('VectorSetKeyInfoStrategy', () => {
     const key = getKeyInfoResponse.name;
 
     describe('when includeSize is true', () => {
-      it('should return all info in single pipeline', async () => {
+      it('should return all info including quantType and vectorDim in single pipeline', async () => {
         when(mockStandaloneRedisClient.sendPipeline)
           .calledWith([
             [BrowserToolKeysCommands.Ttl, key],
             [BrowserToolVectorSetCommands.VCard, key],
             [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],
+            [BrowserToolVectorSetCommands.VInfo, key],
           ])
           .mockResolvedValueOnce([
             [null, -1],
             [null, 10],
             [null, 50],
+            [null, mockVInfoResponse],
           ]);
 
         const result = await strategy.getInfo(
@@ -60,15 +77,17 @@ describe('VectorSetKeyInfoStrategy', () => {
     });
 
     describe('when includeSize is false', () => {
-      it('should return appropriate value', async () => {
+      it('should return appropriate value with quantType and vectorDim', async () => {
         when(mockStandaloneRedisClient.sendPipeline)
           .calledWith([
             [BrowserToolKeysCommands.Ttl, key],
             [BrowserToolVectorSetCommands.VCard, key],
+            [BrowserToolVectorSetCommands.VInfo, key],
           ])
           .mockResolvedValueOnce([
             [null, -1],
             [null, 10],
+            [null, mockVInfoResponse],
           ]);
 
         when(mockStandaloneRedisClient.sendPipeline)
@@ -98,10 +117,12 @@ describe('VectorSetKeyInfoStrategy', () => {
           .calledWith([
             [BrowserToolKeysCommands.Ttl, key],
             [BrowserToolVectorSetCommands.VCard, key],
+            [BrowserToolVectorSetCommands.VInfo, key],
           ])
           .mockResolvedValueOnce([
             [null, -1],
             [null, 10],
+            [null, mockVInfoResponse],
           ]);
 
         when(mockStandaloneRedisClient.sendPipeline)
@@ -125,10 +146,12 @@ describe('VectorSetKeyInfoStrategy', () => {
           .calledWith([
             [BrowserToolKeysCommands.Ttl, key],
             [BrowserToolVectorSetCommands.VCard, key],
+            [BrowserToolVectorSetCommands.VInfo, key],
           ])
           .mockResolvedValueOnce([
             [null, -1],
             [null, 50000],
+            [null, mockVInfoResponse],
           ]);
 
         const result = await strategy.getInfo(
@@ -142,6 +165,39 @@ describe('VectorSetKeyInfoStrategy', () => {
           ...getKeyInfoResponse,
           length: 50000,
           size: -1,
+        });
+      });
+
+      it('should return undefined for quantType and vectorDim when VINFO returns empty array', async () => {
+        when(mockStandaloneRedisClient.sendPipeline)
+          .calledWith([
+            [BrowserToolKeysCommands.Ttl, key],
+            [BrowserToolVectorSetCommands.VCard, key],
+            [BrowserToolVectorSetCommands.VInfo, key],
+          ])
+          .mockResolvedValueOnce([
+            [null, -1],
+            [null, 10],
+            [null, []],
+          ]);
+
+        when(mockStandaloneRedisClient.sendPipeline)
+          .calledWith([
+            [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],
+          ])
+          .mockResolvedValueOnce([[null, 50]]);
+
+        const result = await strategy.getInfo(
+          mockStandaloneRedisClient,
+          key,
+          RedisDataType.VectorSet,
+          false,
+        );
+
+        expect(result).toEqual({
+          ...getKeyInfoResponse,
+          quantType: undefined,
+          vectorDim: undefined,
         });
       });
     });
