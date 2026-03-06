@@ -686,8 +686,8 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 7.5 Advanced Settings
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Show keys to scan setting |
-| 🔲 | main | Show advanced settings warning |
+| ✅ | main | Show keys to scan setting |
+| ✅ | main | Show advanced settings warning |
 
 ---
 
