@@ -673,8 +673,8 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 7.3 Workbench Settings
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Show editor cleanup switch |
-| 🔲 | main | Show pipeline commands setting |
+| ✅ | main | Show editor cleanup switch |
+| ✅ | main | Show pipeline commands setting |
 | 🔲 | main | Configure command timeout (N/A - per-database setting, not in settings page) |
 
 ### 7.4 Redis Cloud Settings
