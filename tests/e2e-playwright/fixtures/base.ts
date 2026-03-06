@@ -2,6 +2,7 @@ import { test as base, ElectronApplication, _electron as electron } from '@playw
 import {
   BrowserPage,
   CliPanel,
+  CommandHelperPanel,
   DatabasesPage,
   WorkbenchPage,
   AnalyticsPage,
@@ -30,6 +31,7 @@ type Fixtures = {
    */
   browserPage: BrowserPage;
   cliPanel: CliPanel;
+  commandHelperPanel: CommandHelperPanel;
   databasesPage: DatabasesPage;
   workbenchPage: WorkbenchPage;
   analyticsPage: AnalyticsPage;
@@ -193,6 +195,10 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
 
   cliPanel: async ({ page }, use) => {
     await use(new CliPanel(page));
+  },
+
+  commandHelperPanel: async ({ page }, use) => {
+    await use(new CommandHelperPanel(page));
   },
 
   databasesPage: async ({ page }, use) => {
