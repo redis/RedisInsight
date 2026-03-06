@@ -2,6 +2,12 @@ import * as path from 'path';
 import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
 import { DatabaseInstance } from 'e2eSrc/types';
+import {
+  generateValidSingle,
+  generateValidMultiple,
+  generatePartialValid,
+  generateWithTags,
+} from 'e2eSrc/test-data/databases/import-fixtures/generate';
 
 const fixturesDir = path.resolve(__dirname, '../../../../test-data/databases/import-fixtures');
 
@@ -39,7 +45,7 @@ test.describe('Import / Export Databases', () => {
   });
 
   test('should import single database', async ({ databasesPage }) => {
-    const filePath = path.join(fixturesDir, 'valid-single.json');
+    const filePath = generateValidSingle();
     importedDbNames.push('test-import-single');
 
     await databasesPage.openImportDialog();
@@ -54,7 +60,7 @@ test.describe('Import / Export Databases', () => {
   });
 
   test('should import multiple databases', async ({ databasesPage }) => {
-    const filePath = path.join(fixturesDir, 'valid-multiple.json');
+    const filePath = generateValidMultiple();
     importedDbNames.push('test-import-multi-1', 'test-import-multi-2');
 
     const result = await databasesPage.importDatabasesFromFile(filePath);
@@ -62,7 +68,7 @@ test.describe('Import / Export Databases', () => {
   });
 
   test('should show success count after import', async ({ databasesPage }) => {
-    const filePath = path.join(fixturesDir, 'valid-single.json');
+    const filePath = generateValidSingle();
     importedDbNames.push('test-import-single');
 
     await databasesPage.openImportDialog();
@@ -87,7 +93,7 @@ test.describe('Import / Export Databases', () => {
   });
 
   test('should import with errors (partial success)', async ({ databasesPage }) => {
-    const filePath = path.join(fixturesDir, 'partial-valid.json');
+    const filePath = generatePartialValid();
     importedDbNames.push('test-import-partial-ok', 'test-import-partial-fail');
 
     await databasesPage.openImportDialog();
@@ -122,7 +128,7 @@ test.describe('Import / Export Databases', () => {
   });
 
   test('should confirm database tags are imported correctly', async ({ databasesPage }) => {
-    const filePath = path.join(fixturesDir, 'with-tags.json');
+    const filePath = generateWithTags();
     importedDbNames.push('test-import-tagged');
 
     const result = await databasesPage.importDatabasesFromFile(filePath);
