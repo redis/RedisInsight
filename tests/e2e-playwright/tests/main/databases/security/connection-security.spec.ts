@@ -32,8 +32,11 @@ test.describe('Connection Security', () => {
     const sshTunnel = redisConfig.sshTunnel;
     const sshRedis = redisConfig.sshRedis;
 
-    // Skip if SSH config is not available
-    test.skip(!sshTunnel.host || !sshRedis.host, 'SSH infrastructure not configured');
+    // Skip if any required SSH config value is missing
+    test.skip(
+      !sshTunnel.host || !sshTunnel.port || !sshTunnel.username || !sshRedis.host || !sshRedis.port,
+      'SSH infrastructure not configured',
+    );
 
     const { addDatabaseDialog, databaseList } = databasesPage;
     const config = StandaloneConfigFactory.build({
