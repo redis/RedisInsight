@@ -8,6 +8,8 @@ export interface IKeyPropTypes {
   ttl: number
   size: number
   length: number
+  quantType?: string
+  vectorDim?: number
 }
 
 export interface IFetchKeyArgs {

@@ -36,6 +36,7 @@ export abstract class IoredisClient extends RedisClient {
     client.addBuiltinCommand(BrowserToolHashCommands.HGETALL);
     // Vector Set commands
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VCard);
+    client.addBuiltinCommand(BrowserToolVectorSetCommands.VInfo);
   }
 
   static prepareCommandOptions(options: IRedisClientCommandOptions): any {

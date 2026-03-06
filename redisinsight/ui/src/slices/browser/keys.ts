@@ -163,6 +163,8 @@ export const initialKeyInfo = {
   type: KeyTypes.String,
   size: 1,
   length: 0,
+  quantType: undefined,
+  vectorDim: undefined,
 }
 
 const getInitialSelectedKeyState = (state: KeysStore) => ({
