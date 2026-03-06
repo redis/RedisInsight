@@ -680,8 +680,8 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 7.4 Redis Cloud Settings
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | View Redis Cloud settings |
-| 🔲 | main | Configure cloud account |
+| ✅ | main | View Redis Cloud settings |
+| ✅ | main | Configure cloud account |
 
 ### 7.5 Advanced Settings
 | Status | Group | Test Case |
