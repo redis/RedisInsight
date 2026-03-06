@@ -149,14 +149,14 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 1.4 Pagination (when > 15 databases)
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Show pagination when > 15 databases |
-| 🔲 | main | Navigate to next page |
-| 🔲 | main | Navigate to previous page |
-| 🔲 | main | Navigate to first/last page |
-| 🔲 | main | Change items per page (10, 25, 50, 100) |
-| 🔲 | main | Select page from dropdown |
-| 🔲 | main | Show correct row count "Showing X out of Y rows" |
-| 🔲 | main | Pagination buttons disabled state (first/previous on page 1) |
+| ✅ | main | Show pagination when > 15 databases |
+| ✅ | main | Navigate to next page |
+| ✅ | main | Navigate to previous page |
+| ✅ | main | Navigate to first/last page |
+| ✅ | main | Change items per page (10, 25, 50, 100) |
+| ✅ | main | Select page from dropdown |
+| ✅ | main | Show correct row count "Showing X out of Y rows" |
+| ✅ | main | Pagination buttons disabled state (first/previous on page 1) |
 
 ### 1.5 Import/Export
 | Status | Group | Test Case |
