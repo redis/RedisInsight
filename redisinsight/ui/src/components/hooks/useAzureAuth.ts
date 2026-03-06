@@ -4,6 +4,7 @@ import { getConfig } from 'uiSrc/config'
 
 import {
   azureAuthSelector,
+  AzureOAuthPrompt,
   initiateAzureLoginAction,
 } from 'uiSrc/slices/oauth/azure'
 import { AzureLoginSource } from 'uiSrc/slices/interfaces'
@@ -37,35 +38,22 @@ export const useAzureAuth = () => {
         return
       }
 
-      dispatch(initiateAzureLoginAction({ source, onSuccess: openAuthUrl }))
+      dispatch(
+        initiateAzureLoginAction({
+          source,
+          onSuccess: openAuthUrl,
+          prompt: AzureOAuthPrompt.SelectAccount,
+        }),
+      )
     },
     [dispatch, openAuthUrl],
   )
-
-  /**
-   * Switch to a different Azure account by showing the account picker.
-   * Uses 'select_account' prompt to force Azure to show account selection.
-   */
-  const switchAccount = useCallback(() => {
-    if (!isElectron) {
-      return
-    }
-
-    dispatch(
-      initiateAzureLoginAction({
-        source: AzureLoginSource.Autodiscovery,
-        onSuccess: openAuthUrl,
-        prompt: 'select_account',
-      }),
-    )
-  }, [dispatch, openAuthUrl])
 
   return {
     loading,
     account,
     error,
     initiateLogin,
-    switchAccount,
   }
 }
 

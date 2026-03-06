@@ -19,7 +19,7 @@ import AzureSubscriptions from './AzureSubscriptions/AzureSubscriptions'
 const AzureSubscriptionsPage = () => {
   const history = useHistory()
   const dispatch = useDispatch<AppDispatch>()
-  const { switchAccount, account } = useAzureAuth()
+  const { initiateLogin, account } = useAzureAuth()
   const { loading, error, subscriptions, loaded } = useSelector(azureSelector)
 
   useEffect(() => {
@@ -68,7 +68,7 @@ const AzureSubscriptionsPage = () => {
     sendEventTelemetry({
       event: TelemetryEvent.AZURE_SWITCH_ACCOUNT_CLICKED,
     })
-    switchAccount()
+    initiateLogin()
   }
 
   return (

@@ -32,6 +32,23 @@ export interface StateAzureAuth {
   source: AzureLoginSource | null
 }
 
+export enum AzureOAuthPrompt {
+  /**
+   * Force the account picker to appear, allowing the user to select a different account.
+   */
+  SelectAccount = 'select_account',
+
+  /**
+   * Force re-authentication, even if the user has a valid session.
+   */
+  Login = 'login',
+
+  /**
+   * Force the consent dialog to appear, even if consent was previously granted.
+   */
+  Consent = 'consent',
+}
+
 export const initialState: StateAzureAuth = {
   loading: false,
   account: null,
@@ -117,7 +134,7 @@ export default azureAuthSlice.reducer
 
 export interface InitiateAzureLoginOptions {
   source: AzureLoginSource
-  prompt?: 'select_account' | 'login' | 'consent'
+  prompt?: AzureOAuthPrompt
   onSuccess?: (url: string) => void
   onFail?: () => void
 }
