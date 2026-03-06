@@ -666,9 +666,9 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 7.2 Privacy Settings
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | View privacy settings |
-| 🔲 | main | Show usage data switch |
-| 🔲 | main | Show privacy policy link |
+| ✅ | main | View privacy settings |
+| ✅ | main | Show usage data switch |
+| ✅ | main | Show privacy policy link |
 
 ### 7.3 Workbench Settings
 | Status | Group | Test Case |
