@@ -21,6 +21,7 @@ import {
 import { QueryLibraryService } from 'uiSrc/services/query-library/QueryLibraryService'
 import { queryLibraryNotifications } from 'uiSrc/pages/vector-search/constants'
 
+import { decodeIndexNameFromUrl } from '../../utils'
 import { EditorTab, QueryEditorWrapperProps } from './QueryEditor.types'
 import { EditorLibraryToggle } from './EditorLibraryToggle'
 import { VectorSearchEditor } from './VectorSearchEditor'
@@ -140,7 +141,9 @@ export const QueryEditorWrapper = ({
         setQuery,
         commands: REDIS_COMMANDS,
         indexes,
-        activeIndexName: decodedIndexName || undefined,
+        activeIndexName: indexName
+          ? decodeIndexNameFromUrl(indexName)
+          : undefined,
         isLoading: loading || processing,
         onSubmit,
       }}

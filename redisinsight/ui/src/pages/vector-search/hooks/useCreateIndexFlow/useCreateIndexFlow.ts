@@ -17,6 +17,7 @@ import {
   getIndexNameBySampleData,
   getSampleQueriesBySampleData,
 } from '../../utils/sampleData'
+import { encodeIndexNameForUrl } from '../../utils'
 
 export interface UseCreateIndexFlowResult {
   /** Trigger index creation; navigates to query page on completion. */
@@ -60,7 +61,10 @@ export const useCreateIndexFlow = (): UseCreateIndexFlowResult => {
   const navigateToLibrary = useCallback(
     (instanceId: string, indexName: string) => {
       history.push({
-        pathname: Pages.vectorSearchQuery(instanceId, indexName),
+        pathname: Pages.vectorSearchQuery(
+          instanceId,
+          encodeIndexNameForUrl(indexName),
+        ),
         state: { activeTab: EditorTab.Library },
       })
     },
