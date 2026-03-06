@@ -35,16 +35,24 @@ test.describe('Clone Database', () => {
     await databasesPage.goto();
   });
 
-  test.afterEach(async ({ databasesPage }) => {
-    for (const name of clonedNames) {
-      try {
-        if (await databasesPage.databaseList.exists(name)) {
-          await databasesPage.databaseList.delete(name);
+  test.afterEach(async ({ apiHelper }) => {
+    if (clonedNames.length === 0) return;
+
+    const knownIds = new Set(
+      [standaloneDb?.id, clusterDb?.id].filter(Boolean),
+    );
+
+    try {
+      const allDbs = await apiHelper.getDatabases();
+      for (const db of allDbs) {
+        if (clonedNames.includes(db.name) && !knownIds.has(db.id)) {
+          await apiHelper.deleteDatabase(db.id);
         }
-      } catch {
-        // Ignore cleanup errors
       }
+    } catch {
+      // Ignore cleanup errors
     }
+
     clonedNames.length = 0;
   });
 
