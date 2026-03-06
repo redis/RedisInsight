@@ -101,7 +101,7 @@ test.describe('Import / Export Databases', () => {
 
     // At least one should succeed and at least one should fail
     expect(successCount).toBeGreaterThanOrEqual(1);
-    expect(failedCount).toBeGreaterThanOrEqual(0);
+    expect(failedCount).toBeGreaterThanOrEqual(1);
 
     await databasesPage.importDatabaseDialog.close();
   });
@@ -116,7 +116,7 @@ test.describe('Import / Export Databases', () => {
     await expect(databasesPage.importDatabaseDialog.okButton).toBeVisible({ timeout: 30000 });
 
     const failedCount = await databasesPage.importDatabaseDialog.getFailedCount();
-    expect(failedCount).toBeGreaterThanOrEqual(0);
+    expect(failedCount).toBeGreaterThanOrEqual(1);
 
     await databasesPage.importDatabaseDialog.close();
   });
