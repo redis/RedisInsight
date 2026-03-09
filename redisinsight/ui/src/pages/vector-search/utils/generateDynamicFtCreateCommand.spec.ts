@@ -105,7 +105,7 @@ describe('generateDynamicFtCreateCommand', () => {
           buildParams({ keyType: RedisearchIndexKeyType.JSON, fields }),
         )
 
-        expect(result).toContain(`$.myfield AS myfield ${expected}`)
+        expect(result).toContain(`$.myfield AS "myfield" ${expected}`)
       },
     )
 
@@ -117,7 +117,7 @@ describe('generateDynamicFtCreateCommand', () => {
         buildParams({ keyType: RedisearchIndexKeyType.JSON, fields }),
       )
 
-      expect(result).toContain('$.myfield AS myfield TAG')
+      expect(result).toContain('$.myfield AS "myfield" TAG')
     })
   })
 
@@ -253,7 +253,7 @@ describe('generateDynamicFtCreateCommand', () => {
         buildParams({ keyType: RedisearchIndexKeyType.JSON, fields }),
       )
 
-      expect(result).toContain('$.embedding AS embedding VECTOR FLAT 6')
+      expect(result).toContain('$.embedding AS "embedding" VECTOR FLAT 6')
       expect(result).toContain('TYPE FLOAT32')
       expect(result).toContain('DIM 8')
       expect(result).toContain('DISTANCE_METRIC COSINE')
@@ -411,9 +411,9 @@ describe('generateDynamicFtCreateCommand', () => {
       )
 
       expect(result).toContain('ON JSON')
-      expect(result).toContain('$.title AS title TEXT')
-      expect(result).toContain('$.tags AS tags TAG')
-      expect(result).toContain('$.year AS year NUMERIC')
+      expect(result).toContain('$.title AS "title" TEXT')
+      expect(result).toContain('$.tags AS "tags" TAG')
+      expect(result).toContain('$.year AS "year" NUMERIC')
     })
   })
 
@@ -488,7 +488,39 @@ describe('generateDynamicFtCreateCommand', () => {
         buildParams({ keyType: RedisearchIndexKeyType.JSON, fields }),
       )
 
-      expect(result).toContain('$.my_field AS my_field TAG')
+      expect(result).toContain('$.my_field AS "my_field" TAG')
+    })
+
+    it('should double-quote the AS alias for JSON fields with reserved word names', () => {
+      const fields: IndexField[] = [
+        {
+          id: 'f1',
+          name: 'WEIGHT',
+          value: '10',
+          type: FieldTypes.NUMERIC,
+        },
+      ]
+      const result = generateDynamicFtCreateCommand(
+        buildParams({ keyType: RedisearchIndexKeyType.JSON, fields }),
+      )
+
+      expect(result).toContain('$.WEIGHT AS "WEIGHT" NUMERIC')
+    })
+
+    it('should double-quote the AS alias for JSON fields with colons and hyphens', () => {
+      const fields: IndexField[] = [
+        {
+          id: 'f1',
+          name: 'geo:location-data',
+          value: '1,2',
+          type: FieldTypes.GEO,
+        },
+      ]
+      const result = generateDynamicFtCreateCommand(
+        buildParams({ keyType: RedisearchIndexKeyType.JSON, fields }),
+      )
+
+      expect(result).toContain('$.geo:location-data AS "geo:location-data" GEO')
     })
   })
 })

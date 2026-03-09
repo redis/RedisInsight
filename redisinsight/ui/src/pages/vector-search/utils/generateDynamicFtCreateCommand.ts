@@ -57,7 +57,7 @@ const buildFieldSchema = (
 ): string => {
   const isJson = keyType === RedisearchIndexKeyType.JSON
   const fieldRef = isJson
-    ? `$.${field.name} AS ${field.name}`
+    ? `$.${field.name} AS "${field.name}"`
     : `"${field.name}"`
 
   if (field.type === FieldTypes.VECTOR) {
