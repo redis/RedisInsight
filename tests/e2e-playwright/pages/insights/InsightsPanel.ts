@@ -22,6 +22,14 @@ export class InsightsPanel {
   // Tutorials tab content
   readonly myTutorialsAccordion: Locator;
   readonly redisTutorialsAccordion: Locator;
+  readonly enablementArea: Locator;
+
+  // Tutorial page content
+  readonly tutorialPageContent: Locator;
+  readonly paginationMenuButton: Locator;
+  readonly paginationMenu: Locator;
+  readonly nextPageButton: Locator;
+  readonly prevPageButton: Locator;
 
   // Tips tab content
   readonly noRecommendationsScreen: Locator;
@@ -47,6 +55,14 @@ export class InsightsPanel {
     this.myTutorialsAccordion = page.getByTestId('ri-accordion-header-custom-tutorials');
     // Main tutorials: id="tutorials", label="Tutorials"
     this.redisTutorialsAccordion = page.getByTestId('ri-accordion-header-tutorials');
+    this.enablementArea = page.getByTestId('enablementArea');
+
+    // Tutorial page content (when viewing a tutorial)
+    this.tutorialPageContent = page.getByTestId('enablement-area__page');
+    this.paginationMenuButton = page.getByTestId('enablement-area__toggle-pagination-menu-btn');
+    this.paginationMenu = page.getByTestId('enablement-area__pagination-menu');
+    this.nextPageButton = page.getByTestId('enablement-area__next-page-btn');
+    this.prevPageButton = page.getByTestId('enablement-area__prev-page-btn');
 
     // Tips tab content
     this.noRecommendationsScreen = page.getByTestId('no-recommendations-screen');
@@ -149,5 +165,74 @@ export class InsightsPanel {
    */
   async isMyTutorialsVisible(): Promise<boolean> {
     return this.myTutorialsAccordion.isVisible();
+  }
+
+  /**
+   * Click on a tutorial link by its data-testid
+   * Tutorial links have data-testid="internal-link-{id}"
+   * @param tutorialId - The tutorial link id (e.g., 'introduction', 'sq-intro')
+   */
+  async openTutorial(tutorialId: string): Promise<void> {
+    const tutorialLink = this.page.getByTestId(`internal-link-${tutorialId}`);
+    await tutorialLink.click();
+    await this.tutorialPageContent.waitFor({ state: 'visible' });
+  }
+
+  /**
+   * Navigate to next page in tutorial pagination
+   */
+  async goToNextPage(): Promise<void> {
+    await this.nextPageButton.click();
+  }
+
+  /**
+   * Navigate to previous page in tutorial pagination
+   */
+  async goToPreviousPage(): Promise<void> {
+    await this.prevPageButton.click();
+  }
+
+  /**
+   * Get current page info from pagination (e.g., "1 of 3")
+   */
+  async getPaginationInfo(): Promise<string> {
+    return (await this.paginationMenuButton.textContent()) || '';
+  }
+
+  /**
+   * Check if next page button is visible (indicates more pages available)
+   */
+  async hasNextPage(): Promise<boolean> {
+    return this.nextPageButton.isVisible();
+  }
+
+  /**
+   * Check if previous page button is visible
+   */
+  async hasPreviousPage(): Promise<boolean> {
+    return this.prevPageButton.isVisible();
+  }
+
+  /**
+   * Run a tutorial command by clicking the run button with specified label
+   * @param label - The label of the run button (from data-testid="run-btn-{label}")
+   */
+  async runCommand(label: string): Promise<void> {
+    const runButton = this.page.getByTestId(`run-btn-${label}`);
+    await runButton.click();
+  }
+
+  /**
+   * Get the first available run button on the tutorial page
+   */
+  getFirstRunButton(): Locator {
+    return this.tutorialPageContent.locator('[data-testid^="run-btn-"]').first();
+  }
+
+  /**
+   * Check if tutorial page content is visible
+   */
+  async isTutorialPageVisible(): Promise<boolean> {
+    return this.tutorialPageContent.isVisible();
   }
 }

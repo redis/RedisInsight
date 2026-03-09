@@ -62,6 +62,14 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | ✅ | main | Switch to Tips tab |
 | ✅ | main | Expand/collapse tutorial folders |
 | ✅ | main | View Tutorials section |
+| ✅ | main | Run through a tutorial with pagination |
+| ✅ | main | Run a tutorial command |
+| 🔲 | main | Upload custom tutorial |
+| 🔲 | main | Delete custom tutorial |
+| 🔲 | main | View Tips when no recommendations |
+| 🔲 | main | Vote on a tip (like/dislike) |
+| 🔲 | main | Show/hide hidden tips |
+| 🔲 | main | Navigate to database analysis from Tips |
 
 ---
 

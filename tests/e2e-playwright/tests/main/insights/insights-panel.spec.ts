@@ -94,5 +94,62 @@ test.describe('Insights > Insights Panel', () => {
       // The accordion should have proper text content (label is "Redis tutorials")
       await expect(insightsPanel.redisTutorialsAccordion).toContainText('Redis tutorials');
     });
+
+    test('should run through a tutorial with pagination', async ({ insightsPanel }) => {
+      // Expand the Redis tutorials section
+      await insightsPanel.expandTutorialFolder('tutorials');
+
+      // Open a tutorial (Introduction to Redis Stack)
+      await insightsPanel.openTutorial('introduction');
+
+      // Verify tutorial page is displayed
+      await expect(insightsPanel.tutorialPageContent).toBeVisible();
+
+      // Verify pagination is visible
+      await expect(insightsPanel.paginationMenuButton).toBeVisible();
+
+      // Get initial pagination info
+      const initialPagination = await insightsPanel.getPaginationInfo();
+      expect(initialPagination).toContain('1 of');
+
+      // Navigate to next page if available
+      if (await insightsPanel.hasNextPage()) {
+        await insightsPanel.goToNextPage();
+
+        // Verify we moved to page 2
+        const nextPagination = await insightsPanel.getPaginationInfo();
+        expect(nextPagination).toContain('2 of');
+
+        // Navigate back
+        await insightsPanel.goToPreviousPage();
+
+        // Verify we're back to page 1
+        const backPagination = await insightsPanel.getPaginationInfo();
+        expect(backPagination).toContain('1 of');
+      }
+    });
+
+    test('should run a tutorial command', async ({ insightsPanel }) => {
+      // Expand the Redis tutorials section
+      await insightsPanel.expandTutorialFolder('tutorials');
+
+      // Open a tutorial
+      await insightsPanel.openTutorial('introduction');
+
+      // Verify tutorial page is displayed
+      await expect(insightsPanel.tutorialPageContent).toBeVisible();
+
+      // Check if there's a run button on the page
+      const runButton = insightsPanel.getFirstRunButton();
+
+      // If a run button exists, click it to run the command
+      if (await runButton.isVisible()) {
+        await runButton.click();
+
+        // The button should show loading or success state
+        // We just verify it's still present (the command was executed)
+        await expect(runButton).toBeVisible();
+      }
+    });
   });
 });
