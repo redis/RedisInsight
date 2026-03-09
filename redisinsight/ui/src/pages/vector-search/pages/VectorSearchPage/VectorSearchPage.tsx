@@ -4,7 +4,12 @@ import { useSelector } from 'react-redux'
 import { TelemetryPageView } from 'uiSrc/telemetry'
 import { usePageViewTelemetry } from 'uiSrc/telemetry/usePageViewTelemetry'
 import { Loader } from 'uiSrc/components/base/display'
-import { formatLongName, getDbIndex, setTitle } from 'uiSrc/utils'
+import {
+  formatLongName,
+  getDbIndex,
+  getRedisearchVersion,
+  setTitle,
+} from 'uiSrc/utils'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 
 import {
@@ -27,12 +32,24 @@ export const VectorSearchPage = () => {
   const { stringData: indexes, loading: indexesLoading } =
     useRedisearchListData()
 
-  const { name: connectedInstanceName, db } = useSelector(
-    connectedInstanceSelector,
-  )
+  const {
+    name: connectedInstanceName,
+    db,
+    provider,
+    modules,
+  } = useSelector(connectedInstanceSelector)
+
+  const isReady = compatibilityLoading === false && indexesLoading === false
 
   usePageViewTelemetry({
     page: TelemetryPageView.VECTOR_SEARCH_PAGE,
+    ready: isReady,
+    eventData: {
+      rqe_version: getRedisearchVersion(modules),
+      provider,
+      number_of_indexes: indexes.length,
+      welcome_page_enabled: indexes.length === 0,
+    },
   })
 
   setTitle(
