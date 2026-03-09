@@ -22,7 +22,7 @@ import {
 } from '../telemetry'
 import NoDataMessage from '../components/no-data-message/NoDataMessage'
 import { NoDataMessageKeys } from '../components/no-data-message/data'
-import { searchResultsTelemetry } from 'uiSrc/pages/vector-search/telemetry.constants'
+import { searchResultsTelemetry } from 'uiSrc/pages/vector-search/utils/telemetry.utils'
 
 enum RightPanelType {
   SAVED_QUERIES = 'saved-queries',
