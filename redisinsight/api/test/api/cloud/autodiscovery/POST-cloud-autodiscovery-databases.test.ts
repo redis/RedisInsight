@@ -173,12 +173,7 @@ describe('POST /cloud/autodiscovery/databases', () => {
             .get(
               `/fixed/subscriptions/${mockImportCloudDatabaseDtoFixed.subscriptionId}/databases/${mockImportCloudDatabaseDtoFixed.databaseId}`,
             )
-            .replyWithError({
-              message: 'Unauthorized for this action',
-              response: {
-                status: 403,
-              },
-            });
+            .reply(403, { message: 'Unauthorized for this action' });
         },
         name: 'Should throw Forbidden error when api returns 403',
         headers,
@@ -205,13 +200,7 @@ describe('POST /cloud/autodiscovery/databases', () => {
             .get(
               `/subscriptions/${mockImportCloudDatabaseDto.subscriptionId}/databases/${mockImportCloudDatabaseDto.databaseId}`,
             )
-            .replyWithError({
-              message: ERROR_MESSAGES.UNAUTHORIZED,
-              response: {
-                status: 401,
-                data: '',
-              },
-            });
+            .reply(401, { message: ERROR_MESSAGES.UNAUTHORIZED });
         },
         name: 'Should throw Forbidden error when api returns 401',
         headers,
@@ -238,13 +227,7 @@ describe('POST /cloud/autodiscovery/databases', () => {
             .get(
               `/subscriptions/${mockImportCloudDatabaseDto.subscriptionId}/databases/${mockImportCloudDatabaseDto.databaseId}`,
             )
-            .replyWithError({
-              message: ERROR_MESSAGES.NOT_FOUND,
-              response: {
-                status: 404,
-                data: ERROR_MESSAGES.NOT_FOUND,
-              },
-            });
+            .reply(404, { message: ERROR_MESSAGES.NOT_FOUND });
         },
         name: 'Should throw Not Found error when subscription id is not found',
         headers,

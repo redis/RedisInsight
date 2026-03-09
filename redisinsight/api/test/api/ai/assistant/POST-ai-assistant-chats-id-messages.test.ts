@@ -31,13 +31,9 @@ describe('POST /ai/assistant/chats/:id/messages', () => {
     {
       name: 'Should return Unauthorized error',
       before: () => {
-        aiAssistantNock
-          .post('/chat')
-          .query(true)
-          .replyWithError({
-            message: 'Custom unauthorized message',
-            response: { status: 401 },
-          });
+        aiAssistantNock.post('/chat').query(true).reply(401, {
+          message: 'Custom unauthorized message',
+        });
       },
       data: {
         content: mockHumanMessage1Response.content,

@@ -153,11 +153,8 @@ describe('POST /cloud/autodiscovery/get-databases', () => {
             .get(
               `/subscriptions/${mockGetCloudSubscriptionDatabasesDto.subscriptionId}/databases`,
             )
-            .replyWithError({
+            .reply(403, {
               message: 'Unauthorized for this action',
-              response: {
-                status: 403,
-              },
             });
         },
         name: 'Should throw Forbidden error when api returns 403',
@@ -179,11 +176,8 @@ describe('POST /cloud/autodiscovery/get-databases', () => {
             .get(
               `/subscriptions/${mockGetCloudSubscriptionDatabasesDto.subscriptionId}/databases`,
             )
-            .replyWithError({
+            .reply(401, {
               message: ERROR_MESSAGES.UNAUTHORIZED,
-              response: {
-                status: 401,
-              },
             });
         },
         name: 'Should throw Forbidden error when api returns 401',
@@ -205,12 +199,9 @@ describe('POST /cloud/autodiscovery/get-databases', () => {
             .get(
               `/subscriptions/${mockGetCloudSubscriptionDatabasesDto.subscriptionId}/databases`,
             )
-            .replyWithError({
+            .reply(404, {
               message: ERROR_MESSAGES.NOT_FOUND,
-              response: {
-                status: 404,
-                data: 'Subscription is not found',
-              },
+              data: 'Subscription is not found',
             });
         },
         name: 'Should throw Not Found error when subscription id is not found',
