@@ -12,7 +12,12 @@ import {
 import { useVectorSearch } from '../../../../context/vector-search'
 
 export const CreateIndexMenu = () => {
-  const { openPickSampleDataModal } = useVectorSearch()
+  const {
+    openPickSampleDataModal,
+    navigateToExistingDataFlow,
+    hasExistingKeys,
+    hasExistingKeysLoading,
+  } = useVectorSearch()
 
   return (
     <Menu>
@@ -29,7 +34,8 @@ export const CreateIndexMenu = () => {
         />
         <MenuItem
           text="Use existing data"
-          disabled
+          disabled={hasExistingKeysLoading || !hasExistingKeys}
+          onClick={navigateToExistingDataFlow}
           data-testid="vector-search--list--create-index--existing-data"
         />
         <MenuDropdownArrow />
