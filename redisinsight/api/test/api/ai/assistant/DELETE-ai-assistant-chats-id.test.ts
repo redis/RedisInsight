@@ -31,7 +31,7 @@ describe('DELETE /ai/assistant/chats/:id', () => {
       responseBody: {
         statusCode: 401,
         error: 'ConvAiUnauthorized',
-        message: 'Custom unauthorized message',
+        message: 'Request failed with status code 401',
         errorCode: 11301,
       },
     },
