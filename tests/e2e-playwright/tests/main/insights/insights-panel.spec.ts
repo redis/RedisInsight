@@ -102,7 +102,7 @@ test.describe('Insights > Insights Panel', () => {
       // Expand the Data Structures nested accordion
       await insightsPanel.expandTutorialFolder('ds');
 
-      // Open a tutorial (Working with Hashes)
+      // Open a tutorial (Working with Hashes) - this tutorial has multiple pages
       await insightsPanel.openTutorial('ds-hashes');
 
       // Verify tutorial page is displayed
@@ -116,32 +116,37 @@ test.describe('Insights > Insights Panel', () => {
       // Match pattern like "1 of 5" or "2 of 5"
       expect(initialPagination).toMatch(/\d+ of \d+/);
 
-      // Extract current page number
+      // Extract current page number and total pages
       const initialPageMatch = initialPagination.match(/(\d+) of (\d+)/);
       expect(initialPageMatch).not.toBeNull();
       const initialPage = parseInt(initialPageMatch![1], 10);
+      const totalPages = parseInt(initialPageMatch![2], 10);
 
-      // Navigate to next page if available
-      if (await insightsPanel.hasNextPage()) {
-        await insightsPanel.goToNextPage();
+      // This tutorial should have multiple pages - fail if it doesn't
+      expect(totalPages).toBeGreaterThan(1);
 
-        // Verify we moved to the next page
-        const nextPagination = await insightsPanel.getPaginationInfo();
-        const nextPageMatch = nextPagination.match(/(\d+) of (\d+)/);
-        expect(nextPageMatch).not.toBeNull();
-        const nextPage = parseInt(nextPageMatch![1], 10);
-        expect(nextPage).toBe(initialPage + 1);
+      // Assert next page button is visible (required for pagination test)
+      await expect(insightsPanel.nextPageButton).toBeVisible();
 
-        // Navigate back
-        await insightsPanel.goToPreviousPage();
+      // Navigate to next page
+      await insightsPanel.goToNextPage();
 
-        // Verify we're back to the initial page
-        const backPagination = await insightsPanel.getPaginationInfo();
-        const backPageMatch = backPagination.match(/(\d+) of (\d+)/);
-        expect(backPageMatch).not.toBeNull();
-        const backPage = parseInt(backPageMatch![1], 10);
-        expect(backPage).toBe(initialPage);
-      }
+      // Verify we moved to the next page
+      const nextPagination = await insightsPanel.getPaginationInfo();
+      const nextPageMatch = nextPagination.match(/(\d+) of (\d+)/);
+      expect(nextPageMatch).not.toBeNull();
+      const nextPage = parseInt(nextPageMatch![1], 10);
+      expect(nextPage).toBe(initialPage + 1);
+
+      // Navigate back
+      await insightsPanel.goToPreviousPage();
+
+      // Verify we're back to the initial page
+      const backPagination = await insightsPanel.getPaginationInfo();
+      const backPageMatch = backPagination.match(/(\d+) of (\d+)/);
+      expect(backPageMatch).not.toBeNull();
+      const backPage = parseInt(backPageMatch![1], 10);
+      expect(backPage).toBe(initialPage);
     });
 
     test('should run a tutorial command', async ({ insightsPanel }) => {
@@ -151,23 +156,21 @@ test.describe('Insights > Insights Panel', () => {
       // Expand the Data Structures nested accordion
       await insightsPanel.expandTutorialFolder('ds');
 
-      // Open a tutorial (Working with Hashes)
+      // Open a tutorial (Working with Hashes) - this tutorial has run buttons
       await insightsPanel.openTutorial('ds-hashes');
 
       // Verify tutorial page is displayed
       await expect(insightsPanel.tutorialPageContent).toBeVisible();
 
-      // Check if there's a run button on the page
+      // Get the first run button - assert it exists (required for this test)
       const runButton = insightsPanel.getFirstRunButton();
+      await expect(runButton).toBeVisible();
 
-      // If a run button exists, click it to run the command
-      if (await runButton.isVisible()) {
-        await runButton.click();
+      // Click the run button to execute the command
+      await runButton.click();
 
-        // The button should show loading or success state
-        // We just verify it's still present (the command was executed)
-        await expect(runButton).toBeVisible();
-      }
+      // The button should still be present after execution
+      await expect(runButton).toBeVisible();
     });
   });
 });
