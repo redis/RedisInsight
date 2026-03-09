@@ -96,45 +96,63 @@ test.describe('Insights > Insights Panel', () => {
     });
 
     test('should run through a tutorial with pagination', async ({ insightsPanel }) => {
-      // Expand the Redis tutorials section
+      // Expand the Redis tutorials section first
       await insightsPanel.expandTutorialFolder('tutorials');
 
-      // Open a tutorial (Introduction to Redis Stack)
-      await insightsPanel.openTutorial('introduction');
+      // Expand the Data Structures nested accordion
+      await insightsPanel.expandTutorialFolder('ds');
+
+      // Open a tutorial (Working with Hashes)
+      await insightsPanel.openTutorial('ds-hashes');
 
       // Verify tutorial page is displayed
       await expect(insightsPanel.tutorialPageContent).toBeVisible();
 
-      // Verify pagination is visible
+      // Verify pagination is visible (tutorials with multiple pages)
       await expect(insightsPanel.paginationMenuButton).toBeVisible();
 
-      // Get initial pagination info
+      // Get initial pagination info (format: "X of Y")
       const initialPagination = await insightsPanel.getPaginationInfo();
-      expect(initialPagination).toContain('1 of');
+      // Match pattern like "1 of 5" or "2 of 5"
+      expect(initialPagination).toMatch(/\d+ of \d+/);
+
+      // Extract current page number
+      const initialPageMatch = initialPagination.match(/(\d+) of (\d+)/);
+      expect(initialPageMatch).not.toBeNull();
+      const initialPage = parseInt(initialPageMatch![1], 10);
 
       // Navigate to next page if available
       if (await insightsPanel.hasNextPage()) {
         await insightsPanel.goToNextPage();
 
-        // Verify we moved to page 2
+        // Verify we moved to the next page
         const nextPagination = await insightsPanel.getPaginationInfo();
-        expect(nextPagination).toContain('2 of');
+        const nextPageMatch = nextPagination.match(/(\d+) of (\d+)/);
+        expect(nextPageMatch).not.toBeNull();
+        const nextPage = parseInt(nextPageMatch![1], 10);
+        expect(nextPage).toBe(initialPage + 1);
 
         // Navigate back
         await insightsPanel.goToPreviousPage();
 
-        // Verify we're back to page 1
+        // Verify we're back to the initial page
         const backPagination = await insightsPanel.getPaginationInfo();
-        expect(backPagination).toContain('1 of');
+        const backPageMatch = backPagination.match(/(\d+) of (\d+)/);
+        expect(backPageMatch).not.toBeNull();
+        const backPage = parseInt(backPageMatch![1], 10);
+        expect(backPage).toBe(initialPage);
       }
     });
 
     test('should run a tutorial command', async ({ insightsPanel }) => {
-      // Expand the Redis tutorials section
+      // Expand the Redis tutorials section first
       await insightsPanel.expandTutorialFolder('tutorials');
 
-      // Open a tutorial
-      await insightsPanel.openTutorial('introduction');
+      // Expand the Data Structures nested accordion
+      await insightsPanel.expandTutorialFolder('ds');
+
+      // Open a tutorial (Working with Hashes)
+      await insightsPanel.openTutorial('ds-hashes');
 
       // Verify tutorial page is displayed
       await expect(insightsPanel.tutorialPageContent).toBeVisible();

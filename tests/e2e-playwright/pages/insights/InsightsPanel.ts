@@ -180,16 +180,24 @@ export class InsightsPanel {
 
   /**
    * Navigate to next page in tutorial pagination
+   * Waits for the pagination text to change after clicking
    */
   async goToNextPage(): Promise<void> {
+    const currentPagination = await this.getPaginationInfo();
     await this.nextPageButton.click();
+    // Wait for pagination text to change
+    await expect(this.paginationMenuButton).not.toHaveText(currentPagination);
   }
 
   /**
    * Navigate to previous page in tutorial pagination
+   * Waits for the pagination text to change after clicking
    */
   async goToPreviousPage(): Promise<void> {
+    const currentPagination = await this.getPaginationInfo();
     await this.prevPageButton.click();
+    // Wait for pagination text to change
+    await expect(this.paginationMenuButton).not.toHaveText(currentPagination);
   }
 
   /**
