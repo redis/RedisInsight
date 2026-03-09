@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux'
 import { Pages } from 'uiSrc/constants'
 import { RowSelectionState } from 'uiSrc/components/base/layout/table'
 import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   CommandExecutionType,
   ResultsMode,
@@ -35,6 +36,11 @@ import {
   CreateIndexMode,
 } from '../../pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
 import { createIndexNotifications } from '../../constants'
+import {
+  SearchTelemetryCancelStep,
+  SearchTelemetryFieldEditAction,
+} from '../../telemetry.constants'
+import { getFieldTypeSummary } from '../../utils/telemetry.utils'
 
 import {
   CreateIndexPageProviderProps,
@@ -60,8 +66,19 @@ export const CreateIndexPageProvider = ({
   const mode = modeProp ?? CreateIndexMode.SampleData
   const isSampleData = mode === CreateIndexMode.SampleData
 
-  const [activeTab, setActiveTab] = useState<CreateIndexTab>(
+  const [activeTab, setActiveTabState] = useState<CreateIndexTab>(
     CreateIndexTab.Table,
+  )
+
+  const setActiveTab = useCallback(
+    (tab: CreateIndexTab) => {
+      setActiveTabState(tab)
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_CREATE_INDEX_TAB_CHANGED,
+        eventData: { databaseId: instanceId, tab },
+      })
+    },
+    [instanceId],
   )
   const [fieldModal, setFieldModal] = useState<FieldModalState>(
     INITIAL_FIELD_MODAL_STATE,
@@ -99,8 +116,19 @@ export const CreateIndexPageProvider = ({
       })
       setRowSelection(initialSelection)
       setIsFieldsDirty(false)
+
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_INDEX_AUTO_SUGGESTION_VIEWED,
+        eventData: {
+          databaseId: instanceId,
+          data_source: mode,
+          field_types: getFieldTypeSummary(newFields),
+          number_of_fields: newFields.length,
+          number_of_skipped: skipped?.length ?? 0,
+        },
+      })
     },
-    [],
+    [instanceId, mode],
   )
 
   // --- Index name ---
@@ -212,6 +240,18 @@ export const CreateIndexPageProvider = ({
         return
       }
 
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_INDEX_CREATED,
+        eventData: {
+          databaseId: instanceId,
+          data_source: mode,
+          number_of_indexed_fields: selectedFields.length,
+          field_types: getFieldTypeSummary(selectedFields),
+          fields_modified: isFieldsDirty,
+          key_type: keyType,
+        },
+      })
+
       dispatch(fetchRedisearchListAction())
       dispatch(addMessageNotification(createIndexNotifications.indexCreated()))
       history.push(
@@ -228,6 +268,7 @@ export const CreateIndexPageProvider = ({
   }, [
     dynamicCommand,
     isCreateDisabled,
+    isFieldsDirty,
     instanceId,
     indexName,
     commandsHistoryService,
@@ -240,21 +281,44 @@ export const CreateIndexPageProvider = ({
 
   const handleCreateIndex = useCallback(() => {
     if (isSampleData && sampleData) {
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_INDEX_CREATED,
+        eventData: {
+          databaseId: instanceId,
+          data_source: mode,
+          number_of_indexed_fields: selectedFields.length,
+          field_types: getFieldTypeSummary(selectedFields),
+          fields_modified: isFieldsDirty,
+        },
+      })
+
       createSampleIndexFlow(instanceId, sampleData)
       return
     }
     handleCreateExistingDataIndex()
   }, [
     isSampleData,
+    isFieldsDirty,
     sampleData,
     createSampleIndexFlow,
     instanceId,
+    mode,
+    selectedFields,
     handleCreateExistingDataIndex,
   ])
 
   const handleCancel = useCallback(() => {
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_CREATE_INDEX_CANCELLED,
+      eventData: {
+        databaseId: instanceId,
+        data_source: mode,
+        step: SearchTelemetryCancelStep.IndexDefinition,
+      },
+    })
+
     history.push(Pages.vectorSearch(instanceId))
-  }, [history, instanceId])
+  }, [history, instanceId, mode])
 
   // --- Field modal ---
   const openAddFieldModal = useCallback(() => {
@@ -279,6 +343,20 @@ export const CreateIndexPageProvider = ({
 
   const handleFieldSubmit = useCallback(
     (updatedField: IndexField) => {
+      const action =
+        fieldModal.mode === FieldTypeModalMode.Create
+          ? SearchTelemetryFieldEditAction.Add
+          : SearchTelemetryFieldEditAction.Edit
+
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_CREATE_INDEX_FIELD_EDITED,
+        eventData: {
+          databaseId: instanceId,
+          field_type: updatedField.type,
+          action,
+        },
+      })
+
       setEditableFields((prev) => {
         const currentFields = isSampleData
           ? (prev ?? sampleFields)
@@ -300,7 +378,7 @@ export const CreateIndexPageProvider = ({
       setFieldModal(INITIAL_FIELD_MODAL_STATE)
       setIsFieldsDirty(true)
     },
-    [fieldModal.mode, sampleFields, isSampleData],
+    [fieldModal.mode, sampleFields, isSampleData, instanceId],
   )
 
   const onRowSelectionChange = useCallback((selection: RowSelectionState) => {
