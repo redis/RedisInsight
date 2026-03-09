@@ -500,11 +500,11 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 3.5 Command Helper (Bottom Panel)
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Open Command Helper panel |
-| 🔲 | main | Search for a command |
-| 🔲 | main | Filter commands by category |
-| 🔲 | main | View command details |
-| 🔲 | main | Hide/close Command Helper panel |
+| ✅ | main | Open Command Helper panel |
+| ✅ | main | Search for a command |
+| ✅ | main | Filter commands by category |
+| ✅ | main | View command details |
+| ✅ | main | Hide/close Command Helper panel |
 
 ---
 
