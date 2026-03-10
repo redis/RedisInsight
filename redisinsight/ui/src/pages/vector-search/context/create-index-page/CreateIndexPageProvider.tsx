@@ -237,6 +237,10 @@ export const CreateIndexPageProvider = ({
             createIndexNotifications.createFailed(errorMessage),
           ),
         )
+        sendEventTelemetry({
+          event: TelemetryEvent.SEARCH_CREATE_INDEX_ERROR,
+          eventData: { databaseId: instanceId, data_source: mode },
+        })
         return
       }
 
@@ -262,6 +266,10 @@ export const CreateIndexPageProvider = ({
       )
     } catch {
       dispatch(addMessageNotification(createIndexNotifications.createFailed()))
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_CREATE_INDEX_ERROR,
+        eventData: { databaseId: instanceId, data_source: mode },
+      })
     } finally {
       setExistingDataLoading(false)
     }
@@ -276,34 +284,46 @@ export const CreateIndexPageProvider = ({
     history,
   ])
 
+  // --- Telemetry callbacks for sample data index creation ---
+  const onSampleIndexCreated = useCallback(() => {
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_INDEX_CREATED,
+      eventData: {
+        databaseId: instanceId,
+        data_source: mode,
+        number_of_indexed_fields: selectedFields.length,
+        field_types: getFieldTypeSummary(selectedFields),
+        fields_modified: isFieldsDirty,
+      },
+    })
+  }, [instanceId, mode, selectedFields, isFieldsDirty])
+
+  const onSampleIndexError = useCallback(() => {
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_CREATE_INDEX_ERROR,
+      eventData: { databaseId: instanceId, data_source: mode },
+    })
+  }, [instanceId, mode])
+
   // --- Actions ---
   const loading = isSampleData ? sampleLoading : existingDataLoading
 
   const handleCreateIndex = useCallback(() => {
     if (isSampleData && sampleData) {
-      sendEventTelemetry({
-        event: TelemetryEvent.SEARCH_INDEX_CREATED,
-        eventData: {
-          databaseId: instanceId,
-          data_source: mode,
-          number_of_indexed_fields: selectedFields.length,
-          field_types: getFieldTypeSummary(selectedFields),
-          fields_modified: isFieldsDirty,
-        },
+      createSampleIndexFlow(instanceId, sampleData, {
+        onSuccess: onSampleIndexCreated,
+        onError: onSampleIndexError,
       })
-
-      createSampleIndexFlow(instanceId, sampleData)
       return
     }
     handleCreateExistingDataIndex()
   }, [
     isSampleData,
-    isFieldsDirty,
     sampleData,
     createSampleIndexFlow,
     instanceId,
-    mode,
-    selectedFields,
+    onSampleIndexCreated,
+    onSampleIndexError,
     handleCreateExistingDataIndex,
   ])
 

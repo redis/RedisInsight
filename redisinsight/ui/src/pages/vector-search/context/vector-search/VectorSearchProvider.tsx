@@ -4,6 +4,7 @@ import { useHistory, useParams } from 'react-router-dom'
 import { Pages } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
+import { IndexField } from '../../components/index-details/IndexDetails.types'
 import { PickSampleDataModal } from '../../components/pick-sample-data-modal'
 import { SampleDataContent } from '../../components/pick-sample-data-modal/PickSampleDataModal.types'
 import { useCreateIndexFlow, useHasExistingKeys } from '../../hooks'
@@ -86,6 +87,32 @@ export const VectorSearchProvider = ({
     [dismissSampleDataModal, history, instanceId],
   )
 
+  const onStartQueryingIndexCreated = useCallback(
+    (fields: IndexField[]) => {
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_INDEX_CREATED,
+        eventData: {
+          databaseId: instanceId,
+          data_source: CreateIndexMode.SampleData,
+          number_of_indexed_fields: fields.length,
+          field_types: getFieldTypeSummary(fields),
+          fields_modified: false,
+        },
+      })
+    },
+    [instanceId],
+  )
+
+  const onStartQueryingIndexError = useCallback(() => {
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_CREATE_INDEX_ERROR,
+      eventData: {
+        databaseId: instanceId,
+        data_source: CreateIndexMode.SampleData,
+      },
+    })
+  }, [instanceId])
+
   const handleStartQuerying = useCallback(
     (dataset: SampleDataContent) => {
       const fields = getFieldsBySampleData(dataset)
@@ -99,21 +126,19 @@ export const VectorSearchProvider = ({
         },
       })
 
-      sendEventTelemetry({
-        event: TelemetryEvent.SEARCH_INDEX_CREATED,
-        eventData: {
-          databaseId: instanceId,
-          data_source: CreateIndexMode.SampleData,
-          number_of_indexed_fields: fields.length,
-          field_types: getFieldTypeSummary(fields),
-          fields_modified: false,
-        },
-      })
-
       dismissSampleDataModal()
-      createIndexFlow(instanceId, dataset)
+      createIndexFlow(instanceId, dataset, {
+        onSuccess: () => onStartQueryingIndexCreated(fields),
+        onError: onStartQueryingIndexError,
+      })
     },
-    [dismissSampleDataModal, createIndexFlow, instanceId],
+    [
+      dismissSampleDataModal,
+      createIndexFlow,
+      instanceId,
+      onStartQueryingIndexCreated,
+      onStartQueryingIndexError,
+    ],
   )
 
   const navigateToExistingDataFlow = useCallback(
