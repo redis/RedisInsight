@@ -32,7 +32,10 @@ export class ApiHelper {
   /**
    * Create a database via API
    */
-  async createDatabase(config: AddDatabaseConfig): Promise<DatabaseInstance> {
+  async createDatabase(
+    config: AddDatabaseConfig,
+    options?: { compressor?: string },
+  ): Promise<DatabaseInstance> {
     const ctx = await this.getContext();
     const response = await ctx.post('/api/databases', {
       data: {
@@ -42,6 +45,7 @@ export class ApiHelper {
         username: config.username || null,
         password: config.password || null,
         db: config.db ?? 0,
+        ...(options?.compressor ? { compressor: options.compressor } : {}),
       },
     });
 
@@ -64,6 +68,24 @@ export class ApiHelper {
       const body = await response.text();
       throw new Error(`Failed to delete database: ${response.status()} - ${body}`);
     }
+  }
+
+  /**
+   * Update a database via API (PATCH)
+   */
+  async updateDatabase(
+    id: string,
+    data: Record<string, unknown>,
+  ): Promise<DatabaseInstance> {
+    const ctx = await this.getContext();
+    const response = await ctx.patch(`/api/databases/${id}`, { data });
+
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`Failed to update database: ${response.status()} - ${body}`);
+    }
+
+    return response.json();
   }
 
   /**
@@ -124,8 +146,13 @@ export class ApiHelper {
 
   /**
    * Create a String key via API
+   * Value can be a string or a Buffer-like object { type: 'Buffer', data: number[] } for binary data
    */
-  async createStringKey(databaseId: string, keyName: string, value: string): Promise<void> {
+  async createStringKey(
+    databaseId: string,
+    keyName: string,
+    value: string | { type: 'Buffer'; data: number[] },
+  ): Promise<void> {
     const ctx = await this.getContext();
     const response = await ctx.post(`/api/databases/${databaseId}/string`, {
       data: { keyName, value },

@@ -1,3 +1,4 @@
+import { gzipSync } from 'zlib';
 import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
 import { DatabaseInstance } from 'e2eSrc/types';
@@ -57,5 +58,38 @@ test.describe('Decompression', () => {
     await addDatabaseDialog.generalTab.click();
     await addDatabaseDialog.submit();
     await editDialog.waitFor({ state: 'hidden' });
+  });
+
+  test('should decompress GZIP-compressed key values in Browser', async ({
+    apiHelper,
+    browserPage,
+  }) => {
+    const originalText = 'Hello, this is decompressed data!';
+    const keyName = `decompression-test:${Date.now()}`;
+    const compressedBuffer = gzipSync(Buffer.from(originalText));
+
+    // Seed a GZIP-compressed key into the database
+    await apiHelper.createStringKey(database.id, keyName, {
+      type: 'Buffer',
+      data: Array.from(compressedBuffer),
+    });
+
+    // Enable GZIP decompression on the database via API
+    await apiHelper.updateDatabase(database.id, { compressor: 'GZIP' });
+
+    try {
+      // Navigate to Browser and verify decompressed value
+      await browserPage.goto(database.id);
+      await browserPage.keyList.searchKeys(keyName);
+      await browserPage.keyList.clickKey(keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      const displayedValue = await browserPage.keyDetails.getStringValue();
+      expect(displayedValue).toContain(originalText);
+    } finally {
+      // Clean up: remove compressor and delete test key
+      await apiHelper.updateDatabase(database.id, { compressor: 'NONE' });
+      await apiHelper.deleteKeysByPattern(database.id, keyName);
+    }
   });
 });
