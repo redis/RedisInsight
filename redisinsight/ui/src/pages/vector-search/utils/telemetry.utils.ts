@@ -1,6 +1,29 @@
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { QueryResultsTelemetry } from 'uiSrc/components/query/context/query-results.context'
 import { IndexField } from '../components/index-details/IndexDetails.types'
+import { SearchCommandType } from '../telemetry.constants'
+
+export const getSearchCommandType = (command: string): SearchCommandType => {
+  const trimmed = command.trimStart().toUpperCase()
+
+  if (trimmed.startsWith('FT.SEARCH')) {
+    return SearchCommandType.Search
+  }
+
+  if (trimmed.startsWith('FT.AGGREGATE')) {
+    return SearchCommandType.Aggregate
+  }
+
+  if (trimmed.startsWith('FT.EXPLAIN')) {
+    return SearchCommandType.Explain
+  }
+
+  if (trimmed.startsWith('FT.PROFILE')) {
+    return SearchCommandType.Profile
+  }
+
+  return SearchCommandType.Other
+}
 
 export const getFieldTypeSummary = (
   fields: IndexField[],
