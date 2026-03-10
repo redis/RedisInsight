@@ -78,7 +78,7 @@ const mockedUseAzureAuth = useAzureAuth as jest.Mock
 const mockedSendEventTelemetry = sendEventTelemetry as jest.Mock
 
 describe('AzureSubscriptionsPage', () => {
-  const mockSwitchAccount = jest.fn()
+  const mockInitiateLogin = jest.fn()
 
   beforeEach(() => {
     cleanup()
@@ -87,20 +87,20 @@ describe('AzureSubscriptionsPage', () => {
     mockedAzureSelector.mockReturnValue(defaultAzureState)
     mockedAzureAuthAccountSelector.mockReturnValue(mockAccount)
     mockedUseAzureAuth.mockReturnValue({
-      switchAccount: mockSwitchAccount,
+      initiateLogin: mockInitiateLogin,
       account: mockAccount,
       loading: false,
       error: '',
     })
     mockedSendEventTelemetry.mockClear()
-    mockSwitchAccount.mockClear()
+    mockInitiateLogin.mockClear()
   })
 
   it('should redirect to home when not authenticated', () => {
     const pushMock = jest.fn()
     reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: pushMock })
     mockedUseAzureAuth.mockReturnValue({
-      switchAccount: mockSwitchAccount,
+      initiateLogin: mockInitiateLogin,
       account: null,
     })
 
@@ -121,12 +121,12 @@ describe('AzureSubscriptionsPage', () => {
   })
 
   describe('switch account', () => {
-    it('should call switchAccount when switch account button is clicked', () => {
+    it('should call initiateLogin when switch account button is clicked', () => {
       render(<AzureSubscriptionsPage />, { store })
 
       fireEvent.click(screen.getByTestId('btn-switch-account'))
 
-      expect(mockSwitchAccount).toHaveBeenCalledTimes(1)
+      expect(mockInitiateLogin).toHaveBeenCalledTimes(1)
     })
 
     it('should send telemetry when switch account is clicked', () => {

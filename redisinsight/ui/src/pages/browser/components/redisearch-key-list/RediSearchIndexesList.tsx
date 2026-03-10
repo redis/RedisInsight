@@ -40,6 +40,7 @@ import {
 } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Text } from 'uiSrc/components/base/text'
 import { Row } from 'uiSrc/components/base/layout/flex'
+import { getIndexDisplayName } from 'uiSrc/pages/vector-search/utils'
 import * as S from './RediSearchIndexesList.styles'
 
 export const CREATE = 'create'
@@ -126,7 +127,11 @@ const RediSearchIndexesList = (props: Props) => {
 
   const options = list.map((item) => {
     const stringValue = bufferToString(item)
-    const displayValue = formatLongName(stringValue, 100, 10)
+    const displayValue = formatLongName(
+      getIndexDisplayName(stringValue),
+      100,
+      10,
+    )
 
     return {
       value: stringValue,

@@ -8,6 +8,12 @@ export const Container = styled(Col)`
   width: 100%;
   height: 100%;
   overflow: hidden;
+`
+
+export const ScrollArea = styled(Col)`
+  position: relative;
+  z-index: 1;
+  overflow-y: auto;
   padding: ${({ theme }) => theme.core.space.space300};
 `
 

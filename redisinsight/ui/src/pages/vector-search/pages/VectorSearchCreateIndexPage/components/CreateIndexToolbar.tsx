@@ -4,18 +4,25 @@ import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
 
-import { CreateIndexTab } from '../VectorSearchCreateIndexPage.types'
+import {
+  CreateIndexTab,
+  CreateIndexMode,
+} from '../VectorSearchCreateIndexPage.types'
 import { useCreateIndexPage } from '../../../context/create-index-page'
 import * as S from '../VectorSearchCreateIndexPage.styles'
 
 export const CreateIndexToolbar = () => {
   const {
+    mode,
     activeTab,
     setActiveTab,
     indexPrefix,
+    setIndexPrefix,
     isReadonly,
     openAddFieldModal,
   } = useCreateIndexPage()
+
+  const isExistingData = mode === CreateIndexMode.ExistingData
 
   return (
     <S.ToolbarRow
@@ -58,13 +65,21 @@ export const CreateIndexToolbar = () => {
           <Text size="S" color="secondary">
             Index prefix:
           </Text>
-          <Text
-            size="S"
-            color="default"
-            data-testid="vector-search--create-index--prefix-value"
-          >
-            {indexPrefix}
-          </Text>
+          {isExistingData ? (
+            <S.IndexPrefixInput
+              value={indexPrefix}
+              onChange={(value: string) => setIndexPrefix(value)}
+              data-testid="vector-search--create-index--prefix-input"
+            />
+          ) : (
+            <Text
+              size="S"
+              color="default"
+              data-testid="vector-search--create-index--prefix-value"
+            >
+              {indexPrefix}
+            </Text>
+          )}
         </S.IndexPrefixRow>
       </S.ToolbarRight>
     </S.ToolbarRow>

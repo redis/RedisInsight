@@ -190,14 +190,50 @@ describe('VectorSearchPage', () => {
     expect(listPage).toBeInTheDocument()
   })
 
-  it('should send page view telemetry on mount', () => {
+  it('should send page view telemetry with enhanced data when ready', () => {
+    mockUseRedisearchListData.mockReturnValue({
+      loading: false,
+      data: [Buffer.from('index1')],
+      stringData: ['index1'],
+    })
+
     renderComponent()
 
     expect(sendPageViewTelemetry).toHaveBeenCalledTimes(1)
     expect(sendPageViewTelemetry).toHaveBeenCalledWith({
       name: TelemetryPageView.VECTOR_SEARCH_PAGE,
-      eventData: { databaseId: INSTANCE_ID_MOCK },
+      eventData: expect.objectContaining({
+        databaseId: INSTANCE_ID_MOCK,
+        number_of_indexes: 1,
+        welcome_page_enabled: false,
+      }),
     })
+  })
+
+  it('should send welcome_page_enabled=true when no indexes', () => {
+    renderComponent()
+
+    expect(sendPageViewTelemetry).toHaveBeenCalledTimes(1)
+    expect(sendPageViewTelemetry).toHaveBeenCalledWith({
+      name: TelemetryPageView.VECTOR_SEARCH_PAGE,
+      eventData: expect.objectContaining({
+        databaseId: INSTANCE_ID_MOCK,
+        number_of_indexes: 0,
+        welcome_page_enabled: true,
+      }),
+    })
+  })
+
+  it('should not send page view telemetry while still loading', () => {
+    mockUseRedisInstanceCompatibility.mockReturnValue({
+      loading: true,
+      hasRedisearch: undefined,
+      hasSupportedVersion: undefined,
+    })
+
+    renderComponent()
+
+    expect(sendPageViewTelemetry).not.toHaveBeenCalled()
   })
 
   it('should set page title correctly', () => {

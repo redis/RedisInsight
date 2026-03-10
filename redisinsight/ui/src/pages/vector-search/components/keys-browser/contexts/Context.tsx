@@ -10,7 +10,6 @@ import { useParams } from 'react-router-dom'
 
 import {
   appContextBrowser,
-  appContextSelector,
   resetBrowserTree,
   setBrowserKeyListDataLoaded,
   setBrowserSelectedKey,
@@ -64,9 +63,8 @@ export const Provider = ({
     error: keysError,
   } = useSelector(keysSelector)
   const { id: connectedInstanceId } = useSelector(connectedInstanceSelector)
-  const { contextInstanceId } = useSelector(appContextSelector)
   const {
-    keyList: { isDataPatternLoaded, scrollPatternTopPosition },
+    keyList: { scrollPatternTopPosition },
   } = useSelector(appContextBrowser)
   const dispatch = useDispatch()
 
@@ -93,10 +91,10 @@ export const Provider = ({
       dispatch(setConnectedInstanceId(instanceId))
     }
 
+    dispatch(resetKeysData(SearchMode.Pattern))
+    dispatch(resetBrowserTree())
     dispatch(setFilter(activeTab))
-    if (!isDataPatternLoaded || contextInstanceId !== instanceId) {
-      loadKeys()
-    }
+    loadKeys()
 
     return () => {
       dispatch(setFilter(null))
@@ -188,9 +186,9 @@ export const Provider = ({
   const selectKey = useCallback(
     ({ rowData }: { rowData: { name: RedisResponseBuffer } }) => {
       dispatch(loadKeyInfoSuccess({ name: rowData.name }))
-      onSelectKey(rowData.name)
+      onSelectKey(rowData.name, activeTab)
     },
-    [onSelectKey],
+    [onSelectKey, activeTab],
   )
 
   const handleScanMore = useCallback(

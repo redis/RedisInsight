@@ -30,6 +30,8 @@ export const VECTOR_ALGORITHM_DEFAULT = VectorAlgorithm.FLAT
 export const VECTOR_DISTANCE_METRIC_DEFAULT = VectorDistanceMetric.COSINE
 export const VECTOR_DATA_TYPE_DEFAULT = VectorDataType.FLOAT32
 
+export const MAX_SAMPLE_VALUE_LENGTH = 500
+
 export const MIN_RQE_VERSION_FLOAT16 = '2.10.0'
 
 export const VECTOR_DATA_TYPE_BASE_OPTIONS = [

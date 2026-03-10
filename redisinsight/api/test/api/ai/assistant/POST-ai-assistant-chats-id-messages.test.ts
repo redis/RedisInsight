@@ -31,13 +31,9 @@ describe('POST /ai/assistant/chats/:id/messages', () => {
     {
       name: 'Should return Unauthorized error',
       before: () => {
-        aiAssistantNock
-          .post('/chat')
-          .query(true)
-          .replyWithError({
-            message: 'Custom unauthorized message',
-            response: { status: 401 },
-          });
+        aiAssistantNock.post('/chat').query(true).reply(401, {
+          message: 'Custom unauthorized message',
+        });
       },
       data: {
         content: mockHumanMessage1Response.content,
@@ -46,7 +42,7 @@ describe('POST /ai/assistant/chats/:id/messages', () => {
       responseBody: {
         statusCode: 401,
         error: 'ConvAiUnauthorized',
-        message: 'Custom unauthorized message',
+        message: 'Request failed with status code 401',
         errorCode: 11301,
       },
     },

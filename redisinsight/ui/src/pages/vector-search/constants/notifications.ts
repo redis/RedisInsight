@@ -36,10 +36,12 @@ export const createIndexNotifications = {
   }),
 
   /** Shown when the index creation request fails. */
-  createFailed: (): NotificationMessage => ({
+  createFailed: (details?: string): NotificationMessage => ({
     title: 'Failed to create index',
-    message: 'An error occurred while creating the index. Please try again.',
-    variant: 'error' as ToastVariant,
+    message:
+      details ||
+      'An error occurred while creating the index. Please try again.',
+    variant: 'danger' as ToastVariant,
   }),
 
   // TODO: Use when creating an index from existing database keys (not sample data).
@@ -53,6 +55,25 @@ export const createIndexNotifications = {
 }
 
 export const queryLibraryNotifications = {
+  querySaved: (onGoToLibrary?: VoidFunction): NotificationMessage => ({
+    title: 'Query saved to your library.',
+    message: 'You can find it anytime in the Query Library.',
+    showCloseButton: false,
+    actions: {
+      primary: {
+        label: 'Go to Query Library',
+        onClick: onGoToLibrary ?? (() => {}),
+        closes: true,
+      },
+    },
+  }),
+
+  saveFailed: (): NotificationMessage => ({
+    title: 'Failed to save query',
+    message: 'An error occurred while saving the query. Please try again.',
+    variant: 'error' as ToastVariant,
+  }),
+
   queryDeleted: (): NotificationMessage => ({
     title: 'Query has been deleted.',
     message: '',

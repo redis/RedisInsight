@@ -13,7 +13,8 @@ import { FieldTypeTooltip } from './components/FieldTypeCell/FieldTypeTooltip'
 
 export const SELECTION_COLUMN: ColumnDef<IndexField> = {
   id: IndexDetailsColumn.Selection,
-  size: 40,
+  size: 50,
+  sizeUnit: 'px',
   enableSorting: false,
   header: Table.HeaderMultiRowSelectionButton,
   cell: ({ row }) => <Table.RowSelectionButton row={row} />,
@@ -46,6 +47,8 @@ export const VALUE_COLUMN: ColumnDef<IndexField> = {
 export const TYPE_COLUMN_READONLY: ColumnDef<IndexField> = {
   id: IndexDetailsColumn.Type,
   accessorKey: IndexDetailsColumn.Type,
+  size: 270,
+  sizeUnit: 'px',
   enableSorting: false,
   header: () => (
     <ColumnHeader label="Indexing type" tooltip={<FieldTypeTooltip />} />
@@ -58,6 +61,8 @@ export const TYPE_COLUMN_READONLY: ColumnDef<IndexField> = {
 export const TYPE_COLUMN_EDITABLE: ColumnDef<IndexField> = {
   id: IndexDetailsColumn.Type,
   accessorKey: IndexDetailsColumn.Type,
+  size: 270,
+  sizeUnit: 'px',
   enableSorting: false,
   header: () => (
     <ColumnHeader
@@ -75,7 +80,8 @@ export const createActionsColumn = (
 ): ColumnDef<IndexField> => ({
   id: IndexDetailsColumn.Actions,
   enableSorting: false,
-  size: 40,
+  size: 50,
+  sizeUnit: 'px',
   header: '',
   cell: ({ row }: { row: Row<IndexField> }) => (
     <FieldActionsCell field={row.original} onEdit={onFieldEdit} />

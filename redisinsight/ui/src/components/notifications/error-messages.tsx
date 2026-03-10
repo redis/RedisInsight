@@ -82,7 +82,8 @@ export default {
   ) => ({
     'data-testid': 'toast-info-azure-token-expired',
     customIcon: InfoIcon,
-    showCloseButton: false,
+    showCloseButton: true,
+    onClose,
     description: (
       <AzureTokenExpiredErrorContent text={message} onClose={onClose} />
     ),

@@ -23,8 +23,7 @@ describe('DELETE /ai/assistant/chats/:id', () => {
     {
       name: 'Should return Unauthorized error',
       before: () => {
-        aiAssistantNock.post('/reset').replyWithError({
-          response: { status: 401 },
+        aiAssistantNock.post('/reset').reply(401, {
           message: 'Custom unauthorized message',
         });
       },
@@ -32,7 +31,7 @@ describe('DELETE /ai/assistant/chats/:id', () => {
       responseBody: {
         statusCode: 401,
         error: 'ConvAiUnauthorized',
-        message: 'Custom unauthorized message',
+        message: 'Request failed with status code 401',
         errorCode: 11301,
       },
     },

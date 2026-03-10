@@ -4,6 +4,7 @@ import { useHistory, useParams } from 'react-router-dom'
 
 import { BrowserStorageItem, Pages } from 'uiSrc/constants'
 import { bufferToString, stringToBuffer } from 'uiSrc/utils'
+import { encodeIndexNameForUrl } from 'uiSrc/pages/vector-search/utils'
 import {
   deleteRedisearchIndexAction,
   redisearchListSelector,
@@ -46,7 +47,9 @@ export const useListContent = () => {
 
   const handleQueryClick = useCallback(
     (indexName: string) => {
-      history.push(Pages.vectorSearchQuery(instanceId, indexName))
+      history.push(
+        Pages.vectorSearchQuery(instanceId, encodeIndexNameForUrl(indexName)),
+      )
     },
     [history, instanceId],
   )

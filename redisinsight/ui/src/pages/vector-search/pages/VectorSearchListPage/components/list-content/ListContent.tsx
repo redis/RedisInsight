@@ -33,7 +33,7 @@ export const ListContent = () => {
           id="index-list-panel"
           order={1}
           minSize={30}
-          defaultSize={viewingIndexName ? 70 : 100}
+          defaultSize={viewingIndexName !== null ? 70 : 100}
         >
           <S.TableWrapper>
             <IndexList
@@ -46,7 +46,7 @@ export const ListContent = () => {
           </S.TableWrapper>
         </ResizablePanel>
 
-        {viewingIndexName && (
+        {viewingIndexName !== null && (
           <>
             <ResizablePanelHandle
               direction="vertical"
