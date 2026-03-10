@@ -103,7 +103,7 @@ export const CreateIndexOnboardingPopover = ({
               </Text>
             </S.StepCounter>
 
-            <Row gap="s" grow={false}>
+            <Row gap="m" grow={false}>
               {!isFirstStep && (
                 <SecondaryButton
                   size="small"

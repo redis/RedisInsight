@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import BrowserStorageItem from 'uiSrc/constants/storage'
 import { localStorageService } from 'uiSrc/services'
@@ -38,6 +38,13 @@ export const CreateIndexOnboardingProvider = ({
   const isActiveRef = useRef(isActive)
   isActiveRef.current = isActive
 
+  useEffect(() => {
+    if (isActive && currentStep === null) {
+      markOnboardingSeen()
+      setIsActive(false)
+    }
+  }, [isActive, currentStep])
+
   const startOnboarding = useCallback(() => {
     if (isActiveRef.current) return
     if (isOnboardingSeen()) return
@@ -64,19 +71,11 @@ export const CreateIndexOnboardingProvider = ({
         prev as (typeof ONBOARDING_STEPS)[number],
       )
 
-      if (currentIndex === -1) {
-        markOnboardingSeen()
-        setIsActive(false)
-        return null
-      }
+      if (currentIndex === -1) return null
 
       const nextIndex = currentIndex + 1
 
-      if (nextIndex >= ONBOARDING_STEPS.length) {
-        markOnboardingSeen()
-        setIsActive(false)
-        return null
-      }
+      if (nextIndex >= ONBOARDING_STEPS.length) return null
 
       return ONBOARDING_STEPS[nextIndex]
     })
