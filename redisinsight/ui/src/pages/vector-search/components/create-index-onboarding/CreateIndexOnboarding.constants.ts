@@ -43,7 +43,7 @@ export const STEP_CONTENT: Record<CreateIndexOnboardingStep, StepContent> = {
       'Controls which keys are included in the index. All keys starting with this prefix will be indexed.',
       React.createElement(
         Text,
-        { size: 'm', color: 'secondary' },
+        { size: 'm', color: 'secondary', children: null },
         'Example: ',
         React.createElement('strong', null, 'bike:'),
         ' will index ',
