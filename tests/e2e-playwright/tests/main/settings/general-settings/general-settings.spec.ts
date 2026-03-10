@@ -24,6 +24,17 @@ test.describe('General Settings', () => {
   test('should toggle show notifications', async ({ settingsPage }) => {
     await settingsPage.expandGeneral();
     await expect(settingsPage.notificationSwitch).toBeVisible();
+
+    const initialState = await settingsPage.areNotificationsEnabled();
+
+    await settingsPage.toggleNotifications();
+    const toggledState = await settingsPage.areNotificationsEnabled();
+    expect(toggledState).toBe(!initialState);
+
+    // Restore original state
+    await settingsPage.toggleNotifications();
+    const restoredState = await settingsPage.areNotificationsEnabled();
+    expect(restoredState).toBe(initialState);
   });
 
   test('should show date/time format options', async ({ settingsPage }) => {
