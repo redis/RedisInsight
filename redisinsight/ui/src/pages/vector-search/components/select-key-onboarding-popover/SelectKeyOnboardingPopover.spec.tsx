@@ -2,6 +2,7 @@ import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import BrowserStorageItem from 'uiSrc/constants/storage'
 import { localStorageService } from 'uiSrc/services'
+import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 
 import { SelectKeyOnboardingPopover } from './SelectKeyOnboardingPopover'
 
@@ -11,6 +12,11 @@ jest.mock('uiSrc/services', () => ({
     set: jest.fn(),
     get: jest.fn(),
   },
+}))
+
+jest.mock('uiSrc/slices/browser/keys', () => ({
+  ...jest.requireActual('uiSrc/slices/browser/keys'),
+  selectedKeyDataSelector: jest.fn().mockReturnValue(null),
 }))
 
 describe('SelectKeyOnboardingPopover', () => {
@@ -25,6 +31,7 @@ describe('SelectKeyOnboardingPopover', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    ;(selectedKeyDataSelector as jest.Mock).mockReturnValue(null)
   })
 
   it('should show popover on first visit', () => {
