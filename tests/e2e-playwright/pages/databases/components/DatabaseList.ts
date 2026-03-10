@@ -448,7 +448,7 @@ export class DatabaseList {
    */
   async setItemsPerPage(value: '10' | '25' | '50' | '100'): Promise<void> {
     await this.paginationItemsPerPage.click();
-    await this.page.getByRole('option', { name: value }).click();
+    await this.page.getByRole('option', { name: value, exact: true }).click();
   }
 
   /**

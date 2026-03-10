@@ -122,9 +122,7 @@ test.describe('Database List Pagination', () => {
   test('should disable pagination buttons on first page', async ({ databasesPage }) => {
     const { databaseList } = databasesPage;
 
-    // Ensure we're on the first page
-    await databaseList.goToFirstPage();
-
+    // We start on the first page (beforeEach navigates to databases page)
     const isPrevEnabled = await databaseList.isPreviousPageEnabled();
     const isFirstEnabled = await databaseList.isFirstPageEnabled();
     expect(isPrevEnabled).toBe(false);
