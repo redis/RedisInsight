@@ -97,6 +97,10 @@ export const QueryEditorWrapper = ({
         })
 
         if (result) {
+          sendEventTelemetry({
+            event: TelemetryEvent.SEARCH_QUERY_SAVED,
+            eventData: { databaseId: instanceId },
+          })
           dispatch(
             addMessageNotification(
               queryLibraryNotifications.querySaved(() => {

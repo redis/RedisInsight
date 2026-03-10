@@ -1,8 +1,10 @@
 import React, { useCallback, useState } from 'react'
+import { useParams } from 'react-router-dom'
 
 import { SearchInput } from 'uiSrc/components/base/inputs'
 import { LoadingContent } from 'uiSrc/components/base/layout'
 import { Text } from 'uiSrc/components/base/text'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { QueryLibraryType } from 'uiSrc/services/query-library/types'
 
 import { QueryLibraryItem, QueryLibraryItemType } from '../query-library-item'
@@ -18,6 +20,7 @@ const SERVICE_TYPE_TO_UI_TYPE: Record<QueryLibraryType, QueryLibraryItemType> =
   }
 
 export const QueryLibraryView = ({ onRun, onLoad }: QueryLibraryViewProps) => {
+  const { instanceId } = useParams<{ instanceId: string }>()
   const {
     items,
     loading,
@@ -35,17 +38,29 @@ export const QueryLibraryView = ({ onRun, onLoad }: QueryLibraryViewProps) => {
   const handleRun = useCallback(
     (id: string) => {
       const item = getItemById(id)
-      if (item) onRun(item.query)
+      if (item) {
+        sendEventTelemetry({
+          event: TelemetryEvent.SEARCH_QUERY_LIBRARY_RUN,
+          eventData: { databaseId: instanceId, query_type: item.type },
+        })
+        onRun(item.query)
+      }
     },
-    [getItemById, onRun],
+    [getItemById, onRun, instanceId],
   )
 
   const handleLoad = useCallback(
     (id: string) => {
       const item = getItemById(id)
-      if (item) onLoad(item.query)
+      if (item) {
+        sendEventTelemetry({
+          event: TelemetryEvent.SEARCH_QUERY_LIBRARY_LOADED,
+          eventData: { databaseId: instanceId, query_type: item.type },
+        })
+        onLoad(item.query)
+      }
     },
-    [getItemById, onLoad],
+    [getItemById, onLoad, instanceId],
   )
 
   const handleDeleteRequest = useCallback((id: string) => {
@@ -55,8 +70,12 @@ export const QueryLibraryView = ({ onRun, onLoad }: QueryLibraryViewProps) => {
   const handleDeleteConfirm = useCallback(async () => {
     if (!deletingId) return
     await deleteItem(deletingId)
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_QUERY_DELETED,
+      eventData: { databaseId: instanceId },
+    })
     setDeletingId(null)
-  }, [deletingId, deleteItem])
+  }, [deletingId, deleteItem, instanceId])
 
   const handleDeleteCancel = useCallback(() => {
     setDeletingId(null)
