@@ -107,6 +107,7 @@ export function useNavigation() {
       connectedInstanceId,
       isActivePage: isVectorSearchPath(),
       iconType: SlowLogIcon,
+      onboard: ONBOARDING_FEATURES.VECTOR_SEARCH_PAGE,
     },
     {
       tooltipText: 'Workbench',
