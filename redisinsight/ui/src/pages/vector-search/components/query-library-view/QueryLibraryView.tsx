@@ -41,7 +41,10 @@ export const QueryLibraryView = ({ onRun, onLoad }: QueryLibraryViewProps) => {
       if (item) {
         sendEventTelemetry({
           event: TelemetryEvent.SEARCH_QUERY_LIBRARY_RUN,
-          eventData: { databaseId: instanceId, query_type: item.type },
+          eventData: {
+            databaseId: instanceId,
+            query_type: SERVICE_TYPE_TO_UI_TYPE[item.type],
+          },
         })
         onRun(item.query)
       }
@@ -55,7 +58,10 @@ export const QueryLibraryView = ({ onRun, onLoad }: QueryLibraryViewProps) => {
       if (item) {
         sendEventTelemetry({
           event: TelemetryEvent.SEARCH_QUERY_LIBRARY_LOADED,
-          eventData: { databaseId: instanceId, query_type: item.type },
+          eventData: {
+            databaseId: instanceId,
+            query_type: SERVICE_TYPE_TO_UI_TYPE[item.type],
+          },
         })
         onLoad(item.query)
       }

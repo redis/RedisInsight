@@ -159,6 +159,11 @@ describe('QueryLibraryView', () => {
       fireEvent.click(runBtn)
 
       expect(defaultProps.onRun).toHaveBeenCalledWith(mockItems[0].query)
+      expect(sendEventTelemetry).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: TelemetryEvent.SEARCH_QUERY_LIBRARY_RUN,
+        }),
+      )
     })
 
     it('should call onLoad with query text when Load is clicked', () => {
@@ -170,6 +175,11 @@ describe('QueryLibraryView', () => {
       fireEvent.click(loadBtn)
 
       expect(defaultProps.onLoad).toHaveBeenCalledWith(mockItems[0].query)
+      expect(sendEventTelemetry).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: TelemetryEvent.SEARCH_QUERY_LIBRARY_LOADED,
+        }),
+      )
     })
 
     it('should show delete confirmation modal when Delete is clicked', () => {
