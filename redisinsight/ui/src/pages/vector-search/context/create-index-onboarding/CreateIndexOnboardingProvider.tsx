@@ -6,7 +6,7 @@ import { localStorageService } from 'uiSrc/services'
 import {
   CreateIndexOnboardingStep,
   ONBOARDING_STEPS,
-} from '../../constants/createIndexOnboarding'
+} from '../../components/create-index-onboarding/CreateIndexOnboarding.constants'
 import {
   CreateIndexOnboardingContext,
   CreateIndexOnboardingContextValue,

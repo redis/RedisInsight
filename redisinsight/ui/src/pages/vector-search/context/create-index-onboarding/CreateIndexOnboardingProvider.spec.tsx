@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import BrowserStorageItem from 'uiSrc/constants/storage'
 import { localStorageService } from 'uiSrc/services'
 
-import { CreateIndexOnboardingStep } from '../../constants/createIndexOnboarding'
+import { CreateIndexOnboardingStep } from '../../components/create-index-onboarding/CreateIndexOnboarding.constants'
 import { CreateIndexOnboardingProvider } from './CreateIndexOnboardingProvider'
 import { useCreateIndexOnboarding } from './CreateIndexOnboardingContext'
 

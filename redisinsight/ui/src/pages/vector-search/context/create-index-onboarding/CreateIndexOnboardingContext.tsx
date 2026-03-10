@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
 
-import { CreateIndexOnboardingStep } from '../../constants/createIndexOnboarding'
+import { CreateIndexOnboardingStep } from '../../components/create-index-onboarding/CreateIndexOnboarding.constants'
 
 export interface CreateIndexOnboardingContextValue {
   currentStep: CreateIndexOnboardingStep | null
