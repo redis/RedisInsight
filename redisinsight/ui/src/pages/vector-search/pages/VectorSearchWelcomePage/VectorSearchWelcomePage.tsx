@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
 import { WelcomeScreen } from '../../components/welcome-screen'
 import { useVectorSearch } from '../../context/vector-search'
+import { SearchTelemetrySource } from '../../telemetry.constants'
 
 /**
  * Vector Search Welcome page.
@@ -22,10 +23,20 @@ export const VectorSearchWelcomePage = () => {
       ? { tooltip: 'No Hash or JSON keys found in your database' }
       : undefined
 
+  const handleTrySampleData = useCallback(
+    () => openPickSampleDataModal(SearchTelemetrySource.Welcome),
+    [openPickSampleDataModal],
+  )
+
+  const handleUseMyDatabase = useCallback(
+    () => navigateToExistingDataFlow(SearchTelemetrySource.Welcome),
+    [navigateToExistingDataFlow],
+  )
+
   return (
     <WelcomeScreen
-      onTrySampleDataClick={openPickSampleDataModal}
-      onUseMyDatabaseClick={navigateToExistingDataFlow}
+      onTrySampleDataClick={handleTrySampleData}
+      onUseMyDatabaseClick={handleUseMyDatabase}
       useMyDatabaseDisabled={useMyDatabaseDisabled}
     />
   )

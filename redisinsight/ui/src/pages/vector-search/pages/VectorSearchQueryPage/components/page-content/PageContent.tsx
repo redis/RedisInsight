@@ -10,7 +10,7 @@ import { QueryResultsProvider } from 'uiSrc/components/query/context/query-resul
 import { QueryResults } from 'uiSrc/components/query/query-results'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import { searchResultsTelemetry } from '../../../../telemetry.constants'
+import { searchResultsTelemetry } from '../../../../utils/telemetry.utils'
 import { useQuery } from '../../hooks/useQuery'
 import { QueryEditorWrapper } from '../../../../components/query-editor'
 import { NoSearchResults } from '../../../../components/no-search-results'
