@@ -117,16 +117,18 @@ export const CreateIndexPageProvider = ({
       setRowSelection(initialSelection)
       setIsFieldsDirty(false)
 
-      sendEventTelemetry({
-        event: TelemetryEvent.SEARCH_INDEX_AUTO_SUGGESTION_VIEWED,
-        eventData: {
-          databaseId: instanceId,
-          data_source: mode,
-          field_types: getFieldTypeSummary(newFields),
-          number_of_fields: newFields.length,
-          number_of_skipped: skipped?.length ?? 0,
-        },
-      })
+      if (newFields.length > 0) {
+        sendEventTelemetry({
+          event: TelemetryEvent.SEARCH_INDEX_AUTO_SUGGESTION_VIEWED,
+          eventData: {
+            databaseId: instanceId,
+            data_source: mode,
+            field_types: getFieldTypeSummary(newFields),
+            number_of_fields: newFields.length,
+            number_of_skipped: skipped?.length ?? 0,
+          },
+        })
+      }
     },
     [instanceId, mode],
   )
