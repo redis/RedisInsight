@@ -48,14 +48,16 @@ export const tlsClientCert: TlsClientCertConfig = {
  */
 export function createUniqueTlsCerts(): { caCert: TlsCertConfig; clientCert: TlsClientCertConfig } {
   const suffix = generateUniqueSuffix();
+  const caBase = getEnvOptional('TLS_CA_CERT_NAME') || 'test-ca';
+  const clientBase = getEnvOptional('TLS_CLIENT_CERT_NAME') || 'test-client';
   return {
     caCert: {
       ...tlsCaCert,
-      name: getEnvOptional('TLS_CA_CERT_NAME') || `test-ca-${suffix}`,
+      name: `${caBase}-${suffix}`,
     },
     clientCert: {
       ...tlsClientCert,
-      name: getEnvOptional('TLS_CLIENT_CERT_NAME') || `test-client-${suffix}`,
+      name: `${clientBase}-${suffix}`,
     },
   };
 }
