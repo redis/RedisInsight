@@ -42,9 +42,7 @@ test.describe('Clone Database', () => {
   test.afterEach(async ({ apiHelper }) => {
     if (clonedNames.length === 0) return;
 
-    const knownIds = new Set(
-      [standaloneDb?.id, clusterDb?.id].filter(Boolean),
-    );
+    const knownIds = new Set([standaloneDb?.id, clusterDb?.id].filter(Boolean));
 
     try {
       const allDbs = await apiHelper.getDatabases();
