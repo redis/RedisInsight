@@ -34,6 +34,39 @@ jest.mock('uiSrc/services', () => ({
   },
 }))
 
+jest.mock('uiSrc/components/base/forms/select/RiSelect', () => {
+  const React = require('react')
+  const actual = jest.requireActual(
+    'uiSrc/components/base/forms/select/RiSelect',
+  )
+  return {
+    ...actual,
+    RiSelect: ({
+      options,
+      value,
+      onChange,
+      'data-testid': testId,
+      className,
+    }: any) =>
+      React.createElement(
+        'select',
+        {
+          'data-testid': testId,
+          className,
+          value: value ?? '',
+          onChange: (e: any) => onChange?.(e.target.value),
+        },
+        options?.map((o: any) =>
+          React.createElement(
+            'option',
+            { key: o.value, value: o.value, disabled: o.disabled },
+            o.label || o.value,
+          ),
+        ),
+      ),
+  }
+})
+
 jest.mock('uiSrc/slices/app/plugins', () => ({
   ...jest.requireActual('uiSrc/slices/app/plugins'),
   appPluginsSelector: jest.fn().mockReturnValue({
@@ -261,9 +294,12 @@ describe('QueryCardHeader', () => {
       ...instance(mockedProps),
       query: 'FT.SEARCH idx *',
       isOpen: true,
-      selectedValue: VIEW_TYPE_SEPARATOR,
+      selectedValue: 'default__Text',
       setSelectedValue: mockSetSelectedValue,
     })
+
+    const select = screen.getByTestId('select-view-type')
+    fireEvent.change(select, { target: { value: VIEW_TYPE_SEPARATOR } })
 
     expect(mockSetSelectedValue).not.toHaveBeenCalled()
   })
