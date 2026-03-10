@@ -391,7 +391,9 @@ export enum TelemetryEvent {
   SEARCH_QUERY_LIBRARY_LOADED = 'SEARCH_QUERY_LIBRARY_LOADED',
   SEARCH_QUERY_DELETED = 'SEARCH_QUERY_DELETED',
 
-  // --- Deprecated v1 events (to be removed in a separate ticket) ---
+  // --- Deprecated v1 events (removed when vector-search-deprecated/ is deleted) ---
+  /** @deprecated Use SEARCH_INDEX_DELETED */
+  SEARCH_MANAGE_INDEX_DELETED = 'SEARCH_MANAGE_INDEX_DELETED_DEPRECATED',
   /** @deprecated Replaced in v2 */
   VECTOR_SEARCH_INITIAL_MESSAGE_DISPLAYED = 'VECTOR_SEARCH_INITIAL_MESSAGE_DISPLAYED_DEPRECATED',
   /** @deprecated Replaced in v2 */
@@ -418,6 +420,4 @@ export enum TelemetryEvent {
   SEARCH_MANAGE_INDEX_DETAILS_OPENED = 'SEARCH_MANAGE_INDEX_DETAILS_OPENED_DEPRECATED',
   /** @deprecated Replaced in v2 */
   SEARCH_MANAGE_INDEX_DETAILS_CLOSED = 'SEARCH_MANAGE_INDEX_DETAILS_CLOSED_DEPRECATED',
-  /** @deprecated Replaced in v2 */
-  SEARCH_MANAGE_INDEX_DELETED = 'SEARCH_MANAGE_INDEX_DELETED_DEPRECATED',
 }
