@@ -3,6 +3,7 @@ import { useHistory, useParams } from 'react-router-dom'
 
 import { RiSelectOption } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Pages } from 'uiSrc/constants'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import {
   getIndexDisplayName,
@@ -35,6 +36,10 @@ export const VectorSearchQueryPage = () => {
 
   const handleIndexChange = useCallback(
     (value: string) => {
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_INDEX_CHANGED,
+        eventData: { databaseId: instanceId },
+      })
       history.push(
         Pages.vectorSearchQuery(
           instanceId,
@@ -46,8 +51,16 @@ export const VectorSearchQueryPage = () => {
   )
 
   const toggleIndexPanel = useCallback(() => {
-    setIsIndexPanelOpen((prev) => !prev)
-  }, [])
+    setIsIndexPanelOpen((prev) => {
+      if (!prev) {
+        sendEventTelemetry({
+          event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
+          eventData: { databaseId: instanceId },
+        })
+      }
+      return !prev
+    })
+  }, [instanceId])
 
   const closeIndexPanel = useCallback(() => {
     setIsIndexPanelOpen(false)

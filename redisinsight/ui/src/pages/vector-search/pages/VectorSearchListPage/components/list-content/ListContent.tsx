@@ -4,6 +4,7 @@ import { useHistory, useParams } from 'react-router-dom'
 
 import { Pages } from 'uiSrc/constants'
 import { bufferToString, stringToBuffer } from 'uiSrc/utils'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   deleteRedisearchIndexAction,
   redisearchListSelector,
@@ -96,9 +97,16 @@ export const ListContent = () => {
     setPendingDeleteIndex(null)
   }, [dispatch, cleanupQueryLibrary, instanceId, pendingDeleteIndex])
 
-  const handleViewIndex = useCallback((indexName: string) => {
-    setViewingIndexName(indexName)
-  }, [])
+  const handleViewIndex = useCallback(
+    (indexName: string) => {
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
+        eventData: { databaseId: instanceId },
+      })
+      setViewingIndexName(indexName)
+    },
+    [instanceId],
+  )
 
   const handleCloseViewPanel = useCallback(() => {
     setViewingIndexName(null)
