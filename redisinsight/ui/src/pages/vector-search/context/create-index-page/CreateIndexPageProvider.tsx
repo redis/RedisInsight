@@ -282,6 +282,9 @@ export const CreateIndexPageProvider = ({
     commandsHistoryService,
     dispatch,
     history,
+    mode,
+    selectedFields,
+    keyType,
   ])
 
   // --- Telemetry callbacks for sample data index creation ---
