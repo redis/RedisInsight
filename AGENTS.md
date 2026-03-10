@@ -131,3 +131,33 @@ All detailed development standards are maintained in `.ai/rules/`:
 - Use Elastic UI for new code (migrating to Redis UI)
 - Use hardcoded pixel values (use theme spacing)
 - Use `any` type without reason
+
+## Learned User Preferences
+
+- Always use the `/theme` skill to verify theme token values instead of guessing paths or values
+- Use existing components (e.g., `Divider.tsx`, Redis UI `Title`) rather than creating new files or custom components
+- Extract types and interfaces to dedicated `ComponentName.types.ts` files, not inline in component files
+- Don't add redundant flex styles to layout components (Row/FlexGroup) since they already have `display: flex`
+- Only use styled-components for styling; if a change can't be done as styled-components, discard it
+- When migrating SCSS to styled-components, don't add properties that weren't in the original SCSS
+- Always call `search()` before `edit()` on database list in E2E tests to ensure row is visible (pagination)
+- Use dynamic config from env vars in E2E test fixtures, never hardcoded host/port values
+- Each Jira ticket gets its own branch and PR; don't combine multiple tickets
+- Prefer concise variable names (e.g., `strictNumbers` over `numbersOnlyFromActualNumbers`)
+- Always run relevant tests after making changes before considering work complete
+- Prefer plain text lists over markdown tables for PR/ticket summaries
+
+## Learned Workspace Facts
+
+- E2E Playwright tests live in `tests/e2e-playwright/` with page objects in `pages/`, factories in `test-data/databases/`
+- Config factories (`StandaloneConfigFactory`, `ClusterConfigFactory`) read host/port from env vars via `redisConfig`
+- Cluster Redis (port 8200) is often unavailable locally; use try/catch and `test.skip` in E2E setup
+- E2E test cleanup should prefer API-based deletion (`apiHelper.deleteDatabase(id)`) over UI-based deletion
+- Use `acceptEula()` (unconditional PATCH) instead of `ensureEulaAccepted()` in `afterAll` cleanup blocks
+- TLS cert names must be unique per test invocation; use `createUniqueTlsCerts()` per test
+- Port values in test data must be within 0-65535 (backend DTO validates with `@Max(65535)`)
+- PRs target `redis/RedisInsight`; the repo moved from `RedisInsight/RedisInsight`
+- E2E branch naming pattern: `e2e/RI-XXXX/<feature-name>`
+- Bugbot comments on PRs should be checked and addressed before merging
+- `exportSelected()` on database list opens a confirmation popover with a second "Export" button
+- Flaky tests exist in CI: `local.features-config.repository.spec.ts`, `CommandsView.spec.tsx`
