@@ -7,18 +7,16 @@ import { test, expect } from '../../../../fixtures/base';
  * Verifies API user keys text and cloud account buttons are displayed.
  *
  * Note: The Redis Cloud section is behind the `cloudSso` feature flag,
- * which is only enabled for the ELECTRON build type. Tests are skipped
- * when the section is not visible (browser mode).
+ * which is only enabled for the ELECTRON build type.
  */
 test.describe('Redis Cloud Settings', () => {
-  test.beforeEach(async ({ settingsPage }) => {
+  test.beforeEach(async ({ settingsPage }, testInfo) => {
+    test.skip(
+      testInfo.project.name !== 'electron',
+      'Redis Cloud settings only available in Electron',
+    );
+
     await settingsPage.goto();
-
-    const isVisible = await settingsPage.redisCloudButton.isVisible();
-    if (!isVisible) {
-      test.skip(true, 'Redis Cloud settings not available (cloudSso feature flag disabled)');
-    }
-
     await settingsPage.expandRedisCloud();
   });
 
