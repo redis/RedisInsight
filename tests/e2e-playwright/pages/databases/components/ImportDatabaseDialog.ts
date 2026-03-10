@@ -15,6 +15,8 @@ export class ImportDatabaseDialog {
   readonly okButton: Locator;
   readonly successAccordion: Locator;
   readonly failedAccordion: Locator;
+  readonly retryButton: Locator;
+  readonly errorMessage: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -25,8 +27,10 @@ export class ImportDatabaseDialog {
     this.closeButton = page.getByTestId('btn-close');
     this.backButton = page.getByRole('button', { name: 'back' });
     this.okButton = page.getByRole('button', { name: 'OK' });
+    this.retryButton = page.getByRole('button', { name: 'Retry' });
     this.successAccordion = page.getByTestId(/ri-accordion-header-success-results/);
     this.failedAccordion = page.getByTestId(/ri-accordion-header-failed-results/);
+    this.errorMessage = this.dialog.getByText(/failed to add database connections/i);
   }
 
   async isVisible(): Promise<boolean> {

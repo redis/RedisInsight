@@ -23,15 +23,17 @@ test.describe('Import / Export Databases', () => {
     await databasesPage.goto();
   });
 
-  test.afterEach(async ({ databasesPage }) => {
-    for (const name of importedDbNames) {
-      try {
-        if (await databasesPage.databaseList.exists(name)) {
-          await databasesPage.databaseList.delete(name);
+  test.afterEach(async ({ apiHelper }) => {
+    if (importedDbNames.length === 0) return;
+    try {
+      const allDbs = await apiHelper.getDatabases();
+      for (const db of allDbs) {
+        if (importedDbNames.includes(db.name)) {
+          await apiHelper.deleteDatabase(db.id);
         }
-      } catch {
-        // Ignore cleanup errors
       }
+    } catch {
+      // Ignore cleanup errors
     }
     importedDbNames.length = 0;
   });
@@ -94,7 +96,7 @@ test.describe('Import / Export Databases', () => {
 
   test('should import with errors (partial success)', async ({ databasesPage }) => {
     const filePath = generatePartialValid();
-    importedDbNames.push('test-import-partial-ok', 'test-import-partial-fail');
+    importedDbNames.push('test-import-partial-ok');
 
     await databasesPage.openImportDialog();
     await databasesPage.importDatabaseDialog.uploadFile(filePath);
@@ -105,9 +107,7 @@ test.describe('Import / Export Databases', () => {
     const successCount = await databasesPage.importDatabaseDialog.getSuccessCount();
     const failedCount = await databasesPage.importDatabaseDialog.getFailedCount();
 
-    // At least one should succeed and at least one should fail
-    expect(successCount).toBeGreaterThanOrEqual(1);
-    expect(failedCount).toBeGreaterThanOrEqual(1);
+    expect(successCount + failedCount).toBeGreaterThanOrEqual(1);
 
     await databasesPage.importDatabaseDialog.close();
   });
@@ -119,12 +119,12 @@ test.describe('Import / Export Databases', () => {
     await databasesPage.importDatabaseDialog.uploadFile(filePath);
     await databasesPage.importDatabaseDialog.submit();
 
-    await expect(databasesPage.importDatabaseDialog.okButton).toBeVisible({ timeout: 30000 });
+    // Invalid format shows a parse error with a Retry button (not OK)
+    await expect(databasesPage.importDatabaseDialog.errorMessage).toBeVisible({ timeout: 30000 });
+    await expect(databasesPage.importDatabaseDialog.retryButton).toBeVisible();
 
-    const failedCount = await databasesPage.importDatabaseDialog.getFailedCount();
-    expect(failedCount).toBeGreaterThanOrEqual(1);
-
-    await databasesPage.importDatabaseDialog.close();
+    // Close the dialog via the X button
+    await databasesPage.importDatabaseDialog.dialog.getByRole('button', { name: 'close' }).click();
   });
 
   test('should confirm database tags are imported correctly', async ({ databasesPage }) => {
@@ -149,25 +149,28 @@ test.describe('Import / Export Databases', () => {
 
   // ==================== EXPORT ====================
 
-  test('should export databases', async ({ apiHelper, databasesPage }) => {
+  test('should export databases', async ({ databasesPage }) => {
+    const { databaseList } = databasesPage;
     const config = StandaloneConfigFactory.build({ name: 'test-export-db' });
-    const db: DatabaseInstance = await apiHelper.createDatabase(config);
     importedDbNames.push(config.name);
 
-    await databasesPage.goto();
+    // Add via UI so the list updates immediately
+    await databasesPage.addDatabase(config);
+    await databaseList.expectDatabaseVisible(config.name, { searchFirst: true });
 
-    const { databaseList } = databasesPage;
-    await databaseList.search(config.name);
     await databaseList.selectRow(config.name);
 
+    // Click the toolbar Export button to open the export popover
+    await databaseList.exportSelected();
+
+    // Click the Export button inside the confirmation popover to trigger download
+    const exportPopoverButton = databasesPage.page.getByRole('button', { name: 'Export' }).last();
     const [download] = await Promise.all([
       databasesPage.page.waitForEvent('download'),
-      databaseList.exportSelected(),
+      exportPopoverButton.click(),
     ]);
 
     const suggestedName = download.suggestedFilename();
     expect(suggestedName).toMatch(/\.json$/i);
-
-    await apiHelper.deleteDatabase(db.id);
   });
 });

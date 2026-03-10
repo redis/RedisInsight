@@ -41,15 +41,10 @@ export function generateValidMultiple(
 
 export function generatePartialValid(
   validName = 'test-import-partial-ok',
-  failName = 'test-import-partial-fail',
 ): string {
   const data = [
     { host, port, name: validName, connectionType: 'STANDALONE' },
-    {
-      host: 'invalid-host-that-will-never-resolve.example.com',
-      port: 65535,
-      name: failName,
-    },
+    { name: 'test-import-partial-fail' },
   ];
   return writeTempFixture('partial-valid.json', data);
 }
