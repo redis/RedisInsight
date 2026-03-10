@@ -11,7 +11,7 @@ import {
   waitForRiTooltipVisible,
 } from 'uiSrc/utils/test-utils'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
-import QueryCardHeader, { Props } from './QueryCardHeader'
+import QueryCardHeader, { Props, VIEW_TYPE_SEPARATOR } from './QueryCardHeader'
 import {
   QueryResultsProvider,
   QueryResultsTelemetry,
@@ -239,5 +239,32 @@ describe('QueryCardHeader', () => {
 
     expect(mockOnQueryDelete).toHaveBeenCalled()
     // Should not throw when telemetry callbacks are undefined
+  })
+
+  it('should render view-type dropdown without crash when external plugins add a separator', () => {
+    expect(() =>
+      renderQueryCardHeaderComponent({
+        ...instance(mockedProps),
+        query: 'FT.SEARCH idx *',
+        isOpen: true,
+        selectedValue: 'default__Text',
+      }),
+    ).not.toThrow()
+
+    expect(screen.getByTestId('select-view-type')).toBeInTheDocument()
+  })
+
+  it('should not change view when separator value is selected', () => {
+    const mockSetSelectedValue = jest.fn()
+
+    renderQueryCardHeaderComponent({
+      ...instance(mockedProps),
+      query: 'FT.SEARCH idx *',
+      isOpen: true,
+      selectedValue: VIEW_TYPE_SEPARATOR,
+      setSelectedValue: mockSetSelectedValue,
+    })
+
+    expect(mockSetSelectedValue).not.toHaveBeenCalled()
   })
 })
