@@ -94,31 +94,7 @@ export const CreateIndexOnboardingPopover = ({
             </Text>
           </Col>
 
-          <Col gap="s">
-            {Array.isArray(content.body) ? (
-              content.body.map((item, index) =>
-                typeof item === 'string' ? (
-                  <Text
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={index}
-                    size="m"
-                    color="secondary"
-                  >
-                    {item}
-                  </Text>
-                ) : (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <React.Fragment key={index}>{item}</React.Fragment>
-                ),
-              )
-            ) : typeof content.body === 'string' ? (
-              <Text size="m" color="secondary">
-                {content.body}
-              </Text>
-            ) : (
-              content.body
-            )}
-          </Col>
+          <Col gap="s">{content.body}</Col>
 
           <Row justify="between" align="center">
             <S.StepCounter>
