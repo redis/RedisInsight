@@ -275,12 +275,7 @@ export class AddDatabaseDialog {
   /**
    * Configure SSH tunnel on the Security tab
    */
-  async configureSsh(sshConfig: {
-    host: string;
-    port: number;
-    username: string;
-    password?: string;
-  }): Promise<void> {
+  async configureSsh(sshConfig: { host: string; port: number; username: string; password?: string }): Promise<void> {
     await this.securityTab.click();
 
     const isSshChecked = await this.useSshCheckbox.isChecked();
