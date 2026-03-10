@@ -66,13 +66,13 @@ export const CreateIndexPageProvider = ({
   const mode = modeProp ?? CreateIndexMode.SampleData
   const isSampleData = mode === CreateIndexMode.SampleData
 
-  const [activeTab, setActiveTabState] = useState<CreateIndexTab>(
+  const [activeTab, setActiveTab] = useState<CreateIndexTab>(
     CreateIndexTab.Table,
   )
 
-  const setActiveTab = useCallback(
+  const changeActiveTab = useCallback(
     (tab: CreateIndexTab) => {
-      setActiveTabState(tab)
+      setActiveTab(tab)
       sendEventTelemetry({
         event: TelemetryEvent.SEARCH_CREATE_INDEX_TAB_CHANGED,
         eventData: { databaseId: instanceId, tab },
@@ -416,7 +416,7 @@ export const CreateIndexPageProvider = ({
     () => ({
       mode,
       activeTab,
-      setActiveTab,
+      setActiveTab: changeActiveTab,
       isReadonly,
       showBrowser,
       displayName,
@@ -449,6 +449,7 @@ export const CreateIndexPageProvider = ({
     [
       mode,
       activeTab,
+      changeActiveTab,
       isReadonly,
       showBrowser,
       displayName,
