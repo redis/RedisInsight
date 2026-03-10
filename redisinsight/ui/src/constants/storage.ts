@@ -43,6 +43,7 @@ enum BrowserStorageItem {
   tablePaginationState = 'tablePaginationState',
   queryLibrary = 'query_library',
   vectorSearchQueryOnboarding = 'vectorSearchQueryOnboarding',
+  vectorSearchSelectKeyOnboarding = 'vectorSearchSelectKeyOnboarding',
 }
 
 export default BrowserStorageItem
