@@ -69,11 +69,13 @@ export const QueryLibraryView = ({ onRun, onLoad }: QueryLibraryViewProps) => {
 
   const handleDeleteConfirm = useCallback(async () => {
     if (!deletingId) return
-    await deleteItem(deletingId)
-    sendEventTelemetry({
-      event: TelemetryEvent.SEARCH_QUERY_DELETED,
-      eventData: { databaseId: instanceId },
-    })
+    const deleted = await deleteItem(deletingId)
+    if (deleted) {
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_QUERY_DELETED,
+        eventData: { databaseId: instanceId },
+      })
+    }
     setDeletingId(null)
   }, [deletingId, deleteItem, instanceId])
 
