@@ -51,16 +51,14 @@ export const VectorSearchQueryPage = () => {
   )
 
   const toggleIndexPanel = useCallback(() => {
-    setIsIndexPanelOpen((prev) => {
-      if (!prev) {
-        sendEventTelemetry({
-          event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
-          eventData: { databaseId: instanceId },
-        })
-      }
-      return !prev
-    })
-  }, [instanceId])
+    if (!isIndexPanelOpen) {
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
+        eventData: { databaseId: instanceId },
+      })
+    }
+    setIsIndexPanelOpen((prev) => !prev)
+  }, [instanceId, isIndexPanelOpen])
 
   const closeIndexPanel = useCallback(() => {
     setIsIndexPanelOpen(false)
