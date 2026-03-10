@@ -49,9 +49,7 @@ test.describe('Certificate and Encryption Handling', () => {
     expect(isEncryptionChecked).toBe(false);
 
     // Verify the plain-text storage warning is visible in the dialog
-    await expect(
-      eulaPage.dialog.getByText(/stored locally in plain text/),
-    ).toBeVisible();
+    await expect(eulaPage.dialog.getByText(/stored locally in plain text/)).toBeVisible();
 
     // Accept EULA and submit
     await eulaPage.eulaSwitch.click();
