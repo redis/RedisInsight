@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Text } from 'uiSrc/components/base/text'
-import { IndexingTypeContent } from './IndexingTypeContent'
+import { IndexingTypeContent } from '../field-type-list'
 
 export enum CreateIndexOnboardingStep {
   DefineIndex = 'defineIndex',
@@ -83,18 +83,7 @@ export const STEP_CONTENT: Record<CreateIndexOnboardingStep, StepContent> = {
   },
   [CreateIndexOnboardingStep.IndexingType]: {
     title: 'Indexing type & options',
-    body: (
-      <>
-        <Text size="m" color="secondary">
-          Defines how Redis searches this field and how it behaves at query
-          time. Available indexing types:
-        </Text>
-        <IndexingTypeContent />
-        <Text size="m" color="secondary">
-          Optional settings may affect performance, storage, or ranking.
-        </Text>
-      </>
-    ),
+    body: <IndexingTypeContent />,
   },
   [CreateIndexOnboardingStep.CommandView]: {
     title: 'Create index command',

@@ -8,7 +8,3 @@ export const Content = styled(Col)`
 export const StepCounter = styled(Row)`
   min-width: 24px;
 `
-
-export const FieldTypeRow = styled(Row)`
-  white-space: nowrap;
-`

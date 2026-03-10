@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { Col } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
+import { Col } from 'uiSrc/components/base/layout/flex'
 import { FieldTag } from 'uiSrc/components/new-index/create-index-step/field-box/FieldTag'
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 
-import * as S from './CreateIndexOnboardingPopover.styles'
+import * as S from './FieldTypeList.styles'
 
 const FIELD_TYPE_DESCRIPTIONS: { type: FieldTypes; description: string }[] = [
   {
@@ -23,11 +23,20 @@ const FIELD_TYPE_DESCRIPTIONS: { type: FieldTypes; description: string }[] = [
 
 export const IndexingTypeContent = () => (
   <Col gap="m" data-testid="create-index-onboarding-indexing-types">
+    <Text size="m" color="secondary">
+      Defines how Redis searches this field and how it behaves at query time.
+      Available indexing types:
+    </Text>
+
     {FIELD_TYPE_DESCRIPTIONS.map(({ type, description }) => (
-      <S.FieldTypeRow key={type} gap="m" align="center">
+      <S.FieldTypeRow key={type} gap="s">
         <FieldTag tag={type} />
         <Text>{description}</Text>
       </S.FieldTypeRow>
     ))}
+
+    <Text size="m" color="secondary">
+      Optional settings may affect performance, storage, or ranking.
+    </Text>
   </Col>
 )
