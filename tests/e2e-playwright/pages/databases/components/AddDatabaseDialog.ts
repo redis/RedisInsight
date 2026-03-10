@@ -51,6 +51,7 @@ export class AddDatabaseDialog {
 
   // Decompression & Formatters tab
   readonly enableDecompressionCheckbox: Locator;
+  readonly compressorDropdown: Locator;
   readonly keyNameFormatDropdown: Locator;
 
   constructor(page: Page) {
@@ -103,6 +104,7 @@ export class AddDatabaseDialog {
 
     // Decompression & Formatters tab
     this.enableDecompressionCheckbox = page.getByRole('checkbox', { name: /enable automatic data decompression/i });
+    this.compressorDropdown = page.getByTestId('select-compressor');
     this.keyNameFormatDropdown = page.getByRole('combobox', { name: /key name format/i });
   }
 
@@ -191,14 +193,30 @@ export class AddDatabaseDialog {
   }
 
   /**
-   * Go to decompression tab and enable decompression
+   * Go to decompression tab and enable decompression with a specific format
    */
-  async enableDecompression(): Promise<void> {
+  async enableDecompression(format: string = 'GZIP'): Promise<void> {
     await this.decompressionTab.click();
     const isChecked = await this.enableDecompressionCheckbox.isChecked();
     if (!isChecked) {
       await this.enableDecompressionCheckbox.click();
     }
+    await this.selectCompressor(format);
+  }
+
+  /**
+   * Select a compressor format from the dropdown
+   */
+  async selectCompressor(format: string): Promise<void> {
+    await this.compressorDropdown.click();
+    await this.page.getByRole('option', { name: format }).click();
+  }
+
+  /**
+   * Get the currently selected compressor value
+   */
+  async getSelectedCompressor(): Promise<string> {
+    return (await this.compressorDropdown.textContent()) || '';
   }
 
   /**

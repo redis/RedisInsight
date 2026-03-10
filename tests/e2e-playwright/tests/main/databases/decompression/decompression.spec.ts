@@ -27,6 +27,7 @@ test.describe('Decompression', () => {
 
   test('should confirm setting a decompression type works', async ({ databasesPage }) => {
     const { databaseList, addDatabaseDialog } = databasesPage;
+    const compressorFormat = 'GZIP';
 
     // Open edit dialog for the database
     await databaseList.search(database.name);
@@ -34,14 +35,8 @@ test.describe('Decompression', () => {
     const editDialog = databasesPage.page.getByRole('dialog', { name: /edit database/i });
     await expect(editDialog).toBeVisible();
 
-    // Navigate to Decompression & Formatters tab
-    await addDatabaseDialog.decompressionTab.click();
-
-    // Enable automatic data decompression
-    const isChecked = await addDatabaseDialog.enableDecompressionCheckbox.isChecked();
-    if (!isChecked) {
-      await addDatabaseDialog.enableDecompressionCheckbox.click();
-    }
+    // Enable decompression with GZIP format
+    await addDatabaseDialog.enableDecompression(compressorFormat);
     await expect(addDatabaseDialog.enableDecompressionCheckbox).toBeChecked();
 
     // Save the changes
@@ -55,8 +50,9 @@ test.describe('Decompression', () => {
     await expect(editDialog).toBeVisible();
     await addDatabaseDialog.decompressionTab.click();
     await expect(addDatabaseDialog.enableDecompressionCheckbox).toBeChecked();
+    await expect(addDatabaseDialog.compressorDropdown).toContainText(compressorFormat);
 
-    // Clean up: uncheck and save
+    // Clean up: disable decompression and save
     await addDatabaseDialog.enableDecompressionCheckbox.click();
     await addDatabaseDialog.generalTab.click();
     await addDatabaseDialog.submit();
