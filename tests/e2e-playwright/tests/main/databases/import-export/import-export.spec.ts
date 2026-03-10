@@ -107,7 +107,8 @@ test.describe('Import / Export Databases', () => {
     const successCount = await databasesPage.importDatabaseDialog.getSuccessCount();
     const failedCount = await databasesPage.importDatabaseDialog.getFailedCount();
 
-    expect(successCount + failedCount).toBeGreaterThanOrEqual(1);
+    expect(successCount).toBeGreaterThanOrEqual(1);
+    expect(failedCount).toBeGreaterThanOrEqual(1);
 
     await databasesPage.importDatabaseDialog.close();
   });
