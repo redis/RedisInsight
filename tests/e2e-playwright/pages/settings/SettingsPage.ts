@@ -38,6 +38,8 @@ export class SettingsPage extends BasePage {
   // Advanced settings
   readonly advancedWarning: Locator;
   readonly keysToScanText: Locator;
+  readonly keysToScanInput: Locator;
+  readonly keysToScanApplyButton: Locator;
 
   // Redis Cloud settings
   readonly apiUserKeysText: Locator;
@@ -92,6 +94,8 @@ export class SettingsPage extends BasePage {
     // Advanced settings
     this.advancedWarning = page.getByRole('alert').filter({ hasText: /Advanced settings/i });
     this.keysToScanText = page.getByRole('heading', { name: 'Keys to Scan in List view' });
+    this.keysToScanInput = page.getByTestId('keys-to-scan-input');
+    this.keysToScanApplyButton = page.getByTestId('keys-to-scan-btn');
 
     // Redis Cloud settings
     this.apiUserKeysText = page.getByText('API user keys', { exact: true });
@@ -238,5 +242,21 @@ export class SettingsPage extends BasePage {
   async areNotificationsEnabled(): Promise<boolean> {
     const checked = await this.notificationSwitch.getAttribute('aria-checked');
     return checked === 'true';
+  }
+
+  /**
+   * Get current keys-to-scan value
+   */
+  async getKeysToScan(): Promise<string> {
+    return this.keysToScanInput.inputValue();
+  }
+
+  /**
+   * Set keys-to-scan value and apply
+   */
+  async setKeysToScan(value: string): Promise<void> {
+    await this.keysToScanInput.clear();
+    await this.keysToScanInput.fill(value);
+    await this.keysToScanApplyButton.click();
   }
 }
