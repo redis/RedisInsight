@@ -20,7 +20,10 @@ describe('JSONViewer', () => {
   })
 
   it('should parse json with "constructor" key without error', () => {
-    const value = JSON.stringify({ constructor: 'value', nested: { constructor: 123 } })
+    const value = JSON.stringify({
+      constructor: 'value',
+      nested: { constructor: 123 },
+    })
     const jsx = JSONViewer({ value })
 
     expect(jsx.isValid).toBeTruthy()
