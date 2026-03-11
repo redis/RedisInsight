@@ -149,7 +149,7 @@ describe('useListContent', () => {
 
       expect(sendEventTelemetry).toHaveBeenCalledWith({
         event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
-        eventData: { databaseId: mockDatabaseId },
+        eventData: { databaseId: mockInstanceId },
       })
     })
 

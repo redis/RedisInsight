@@ -54,13 +54,16 @@ export const useListContent = () => {
     [history, instanceId],
   )
 
-  const handleViewIndex = useCallback((indexName: string) => {
-    setViewingIndexName(indexName)
-    sendEventTelemetry({
-      event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
-      eventData: { databaseId },
-    })
-  }, [databaseId])
+  const handleViewIndex = useCallback(
+    (indexName: string) => {
+      setViewingIndexName(indexName)
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
+        eventData: { databaseId: instanceId },
+      })
+    },
+    [instanceId],
+  )
 
   const handleCloseViewPanel = useCallback(() => {
     setViewingIndexName(null)
