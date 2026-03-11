@@ -32,10 +32,7 @@ export class ApiHelper {
   /**
    * Create a database via API
    */
-  async createDatabase(
-    config: AddDatabaseConfig,
-    options?: { compressor?: string },
-  ): Promise<DatabaseInstance> {
+  async createDatabase(config: AddDatabaseConfig): Promise<DatabaseInstance> {
     const ctx = await this.getContext();
     const response = await ctx.post('/api/databases', {
       data: {
@@ -45,7 +42,6 @@ export class ApiHelper {
         username: config.username || null,
         password: config.password || null,
         db: config.db ?? 0,
-        ...(options?.compressor ? { compressor: options.compressor } : {}),
       },
     });
 
