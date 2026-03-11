@@ -1,22 +1,10 @@
 import React from 'react'
 
-import { Pages } from 'uiSrc/constants'
-import { bufferToString, stringToBuffer } from 'uiSrc/utils'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import {
-  deleteRedisearchIndexAction,
-  redisearchListSelector,
-} from 'uiSrc/slices/browser/redisearch'
 import {
   ResizableContainer,
   ResizablePanel,
   ResizablePanelHandle,
 } from 'uiSrc/components/base/layout'
-import { ShowIcon, DeleteIcon } from 'uiSrc/components/base/icons'
-import { addMessageNotification } from 'uiSrc/slices/app/notifications'
-import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-import { QueryLibraryService } from 'uiSrc/services/query-library/QueryLibraryService'
-import { queryLibraryNotifications } from 'uiSrc/pages/vector-search/constants'
 
 import { IndexList } from 'uiSrc/pages/vector-search/components/index-list'
 import { IndexInfoSidePanel } from 'uiSrc/pages/vector-search/components/index-info-side-panel'
@@ -37,102 +25,7 @@ export const ListContent = () => {
     onConfirmDelete,
     onCloseDelete,
   } = useListContent()
-  const dispatch = useDispatch()
-  const history = useHistory()
-  const { instanceId } = useParams<{ instanceId: string }>()
 
-  const { data: rawIndexes } = useSelector(redisearchListSelector)
-  const { id: databaseId } = useSelector(connectedInstanceSelector)
-  const indexes = useMemo(
-    () => rawIndexes.map((index) => bufferToString(index)),
-    [rawIndexes],
-  )
-
-  const { data, loading } = useIndexListData(indexes)
-
-  const [pendingDeleteIndex, setPendingDeleteIndex] = useState<string | null>(
-    null,
-  )
-  const [viewingIndexName, setViewingIndexName] = useState<string | null>(null)
-
-  const handleQueryClick = useCallback(
-    (indexName: string) => {
-      history.push(
-        Pages.vectorSearchQuery(instanceId, encodeIndexNameForUrl(indexName)),
-      )
-    },
-    [history, instanceId],
-  )
-
-  const cleanupQueryLibrary = useCallback(
-    async (indexName: string) => {
-      try {
-        if (databaseId) {
-          const queryLibraryService = new QueryLibraryService()
-          await queryLibraryService.deleteByIndex(databaseId, indexName)
-        }
-      } catch {
-        dispatch(
-          addMessageNotification(queryLibraryNotifications.cleanupFailed()),
-        )
-      }
-    },
-    [databaseId, dispatch],
-  )
-
-  const handleDelete = useCallback((indexName: string) => {
-    setPendingDeleteIndex(indexName)
-  }, [])
-
-  const handleConfirmDelete = useCallback(() => {
-    if (pendingDeleteIndex === null) {
-      return
-    }
-
-    const indexName = pendingDeleteIndex
-
-    dispatch(
-      deleteRedisearchIndexAction(
-        { index: stringToBuffer(indexName) },
-        async () => {
-          sendEventTelemetry({
-            event: TelemetryEvent.SEARCH_INDEX_DELETED,
-            eventData: { databaseId: instanceId },
-          })
-          await cleanupQueryLibrary(indexName)
-        },
-      ),
-    )
-    setPendingDeleteIndex(null)
-  }, [dispatch, cleanupQueryLibrary, instanceId, pendingDeleteIndex])
-
-  const handleViewIndex = useCallback(
-    (indexName: string) => {
-      sendEventTelemetry({
-        event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
-        eventData: { databaseId: instanceId },
-      })
-      setViewingIndexName(indexName)
-    },
-    [instanceId],
-  )
-
-  const handleCloseViewPanel = useCallback(() => {
-    setViewingIndexName(null)
-  }, [])
-
-  const actions: IndexListAction[] = useMemo(
-    () => [
-      { name: 'View index', icon: ShowIcon, callback: handleViewIndex },
-      {
-        name: 'Delete',
-        icon: DeleteIcon,
-        variant: 'destructive',
-        callback: handleDelete,
-      },
-    ],
-    [handleViewIndex, handleDelete],
-  )
   return (
     <S.ContentArea>
       <ResizableContainer direction="horizontal">
