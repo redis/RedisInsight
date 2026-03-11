@@ -405,7 +405,10 @@ describe('JsonService', () => {
         });
       });
       it('should handle json with "constructor" key when forceRetrieve is true', async () => {
-        const testData = { constructor: 'example value', nested: { constructor: 123 } };
+        const testData = {
+          constructor: 'example value',
+          nested: { constructor: 123 },
+        };
 
         when(client.sendCommand)
           .calledWith(
