@@ -136,15 +136,15 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 1.3 Clone Database
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Clone standalone database with pre-populated form |
-| 🔲 | main | Clone database with same name |
-| 🔲 | main | Clone database with new name |
-| 🔲 | main | Cancel clone operation |
-| 🔲 | main | Go back to edit dialog from clone dialog |
-| 🔲 | main | Clone OSS Cluster database |
+| ✅ | main | Clone standalone database with pre-populated form |
+| ✅ | main | Clone database with same name |
+| ✅ | main | Clone database with new name |
+| ✅ | main | Cancel clone operation |
+| ✅ | main | Go back to edit dialog from clone dialog |
+| ✅ | main | Clone OSS Cluster database |
 | 🔲 | main | Clone Sentinel database |
-| 🔲 | main | Verify "New Connection" badge on cloned database |
-| 🔲 | main | Verify cloned database appears in list after creation |
+| ✅ | main | Verify "New Connection" badge on cloned database |
+| ✅ | main | Verify cloned database appears in list after creation |
 
 ### 1.4 Pagination (when > 15 databases)
 | Status | Group | Test Case |
