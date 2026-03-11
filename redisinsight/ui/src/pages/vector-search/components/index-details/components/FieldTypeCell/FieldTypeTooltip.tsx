@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text } from 'uiSrc/components/base/text'
 import { Col } from 'uiSrc/components/base/layout/flex'
-import { FieldTag } from 'uiSrc/components/new-index/create-index-step/field-box/FieldTag'
+import { FieldTag } from 'uiSrc/pages/vector-search/components/field-tag/FieldTag'
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { Spacer } from 'uiSrc/components/base/layout'
 import * as S from './FieldTypeTooltip.styles'
