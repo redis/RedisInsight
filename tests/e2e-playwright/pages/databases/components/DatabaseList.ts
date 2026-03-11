@@ -463,6 +463,6 @@ export class DatabaseList {
    */
   async selectPage(pageNumber: string): Promise<void> {
     await this.paginationPageSelect.click();
-    await this.page.getByRole('option', { name: pageNumber }).click();
+    await this.page.getByRole('option', { name: pageNumber, exact: true }).click();
   }
 }
