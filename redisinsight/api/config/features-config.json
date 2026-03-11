@@ -118,10 +118,6 @@
       "flag": true,
       "perc": [[0, 100]]
     },
-    "vectorSearch": {
-      "flag": false,
-      "perc": [[0, 100]]
-    },
     "dev-vectorSearch": {
       "flag": false,
       "perc": [[0, 100]]

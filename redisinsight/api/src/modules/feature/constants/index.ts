@@ -31,7 +31,6 @@ export enum KnownFeatures {
   HashFieldExpiration = 'hashFieldExpiration',
   EnhancedCloudUI = 'enhancedCloudUI',
   DatabaseManagement = 'databaseManagement',
-  VectorSearch = 'vectorSearch',
   DevVectorSearch = 'dev-vectorSearch',
   AzureEntraId = 'azureEntraId',
   DevAzureEntraId = 'dev-azureEntraId',

@@ -58,10 +58,6 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
       flag: SERVER_CONFIG.databaseManagement,
     }),
   },
-  [KnownFeatures.VectorSearch]: {
-    name: KnownFeatures.VectorSearch,
-    storage: FeatureStorage.Database,
-  },
   [KnownFeatures.DevVectorSearch]: {
     name: KnownFeatures.DevVectorSearch,
     storage: FeatureStorage.Database,
