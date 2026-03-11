@@ -76,7 +76,7 @@ describe('useQueryLibrary hook', () => {
     expect(result.current.items).toEqual([])
   })
 
-  it('should delete item and update list', async () => {
+  it('should delete item and return true on success', async () => {
     const { result } = renderHook(() => useQueryLibrary())
 
     await waitFor(() => {
@@ -84,13 +84,37 @@ describe('useQueryLibrary hook', () => {
     })
 
     const idToDelete = QUERY_LIBRARY_ITEMS_MOCK[0].id
+    let deleted: boolean | undefined
 
     await act(async () => {
-      await result.current.deleteItem(idToDelete)
+      deleted = await result.current.deleteItem(idToDelete)
     })
 
+    expect(deleted).toBe(true)
     expect(result.current.items).toHaveLength(1)
     expect(result.current.items[0].id).toBe(QUERY_LIBRARY_ITEMS_MOCK[1].id)
+  })
+
+  it('should return false when delete fails', async () => {
+    jest
+      .spyOn(QueryLibraryService.prototype, 'delete')
+      .mockRejectedValueOnce(new Error('Delete failed'))
+
+    const { result } = renderHook(() => useQueryLibrary())
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
+    })
+
+    const idToDelete = QUERY_LIBRARY_ITEMS_MOCK[0].id
+    let deleted: boolean | undefined
+
+    await act(async () => {
+      deleted = await result.current.deleteItem(idToDelete)
+    })
+
+    expect(deleted).toBe(false)
+    expect(result.current.items).toHaveLength(QUERY_LIBRARY_ITEMS_MOCK.length)
   })
 
   it('should toggle item open state', async () => {

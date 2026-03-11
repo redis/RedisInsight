@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useParams } from 'react-router-dom'
 
 import { IRedisCommand } from 'uiSrc/constants'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { LoadingContent } from 'uiSrc/components/base/layout'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import {
@@ -51,6 +52,17 @@ export const QueryEditorWrapper = ({
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
 
+  const changeActiveTab = useCallback(
+    (tab: EditorTab) => {
+      setActiveTab(tab)
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_EDITOR_TAB_CHANGED,
+        eventData: { databaseId: instanceId, tab },
+      })
+    },
+    [instanceId],
+  )
+
   const handleLibraryLoad = useCallback(
     (queryText: string) => {
       setQuery(queryText)
@@ -85,6 +97,10 @@ export const QueryEditorWrapper = ({
         })
 
         if (result) {
+          sendEventTelemetry({
+            event: TelemetryEvent.SEARCH_QUERY_SAVED,
+            eventData: { databaseId: instanceId },
+          })
           dispatch(
             addMessageNotification(
               queryLibraryNotifications.querySaved(() => {
@@ -149,7 +165,10 @@ export const QueryEditorWrapper = ({
       }}
     >
       <S.EditorWrapper data-testid="vector-search-query-editor">
-        <EditorLibraryToggle activeTab={activeTab} onChangeTab={setActiveTab} />
+        <EditorLibraryToggle
+          activeTab={activeTab}
+          onChangeTab={changeActiveTab}
+        />
         {activeTab === EditorTab.Editor && (
           <>
             <VectorSearchEditor />

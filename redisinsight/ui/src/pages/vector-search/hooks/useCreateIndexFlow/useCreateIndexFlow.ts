@@ -19,9 +19,18 @@ import {
 } from '../../utils/sampleData'
 import { encodeIndexNameForUrl } from '../../utils'
 
+export interface CreateIndexFlowCallbacks {
+  onSuccess?: () => void
+  onError?: () => void
+}
+
 export interface UseCreateIndexFlowResult {
   /** Trigger index creation; navigates to query page on completion. */
-  run: (instanceId: string, dataset: SampleDataContent) => void
+  run: (
+    instanceId: string,
+    dataset: SampleDataContent,
+    callbacks?: CreateIndexFlowCallbacks,
+  ) => void
   loading: boolean
 }
 
@@ -72,7 +81,11 @@ export const useCreateIndexFlow = (): UseCreateIndexFlowResult => {
   )
 
   const run = useCallback(
-    async (instanceId: string, dataset: SampleDataContent) => {
+    async (
+      instanceId: string,
+      dataset: SampleDataContent,
+      callbacks?: CreateIndexFlowCallbacks,
+    ) => {
       const indexName = getIndexNameBySampleData(dataset)
       const indexAlreadyExists = existingIndexes.includes(indexName)
 
@@ -83,6 +96,7 @@ export const useCreateIndexFlow = (): UseCreateIndexFlowResult => {
           ),
         )
         await seedSampleQueries(instanceId, indexName, dataset)
+        callbacks?.onSuccess?.()
         navigateToLibrary(instanceId, indexName)
         return
       }
@@ -97,12 +111,14 @@ export const useCreateIndexFlow = (): UseCreateIndexFlowResult => {
           )
           dispatch(fetchRedisearchListAction())
           await seedSampleQueries(instanceId, indexName, dataset)
+          callbacks?.onSuccess?.()
           navigateToLibrary(instanceId, indexName)
         },
         async () => {
           dispatch(
             addMessageNotification(createIndexNotifications.createFailed()),
           )
+          callbacks?.onError?.()
         },
       )
     },

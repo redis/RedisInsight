@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
 import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
 import {
@@ -10,6 +10,7 @@ import {
 } from 'uiSrc/components/base/layout/menu'
 
 import { useVectorSearch } from '../../../../context/vector-search'
+import { SearchTelemetrySource } from '../../../../telemetry.constants'
 
 export const CreateIndexMenu = () => {
   const {
@@ -18,6 +19,16 @@ export const CreateIndexMenu = () => {
     hasExistingKeys,
     hasExistingKeysLoading,
   } = useVectorSearch()
+
+  const handleSampleData = useCallback(
+    () => openPickSampleDataModal(SearchTelemetrySource.List),
+    [openPickSampleDataModal],
+  )
+
+  const handleExistingData = useCallback(
+    () => navigateToExistingDataFlow(SearchTelemetrySource.List),
+    [navigateToExistingDataFlow],
+  )
 
   return (
     <Menu>
@@ -29,13 +40,13 @@ export const CreateIndexMenu = () => {
       <MenuContent align="end">
         <MenuItem
           text="Use sample data"
-          onClick={openPickSampleDataModal}
+          onClick={handleSampleData}
           data-testid="vector-search--list--create-index--sample-data"
         />
         <MenuItem
           text="Use existing data"
           disabled={hasExistingKeysLoading || !hasExistingKeys}
-          onClick={navigateToExistingDataFlow}
+          onClick={handleExistingData}
           data-testid="vector-search--list--create-index--existing-data"
         />
         <MenuDropdownArrow />

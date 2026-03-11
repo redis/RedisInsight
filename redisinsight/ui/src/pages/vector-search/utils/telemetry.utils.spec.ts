@@ -1,10 +1,63 @@
+import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
-import { searchResultsTelemetry } from './telemetry.constants'
+import { IndexField } from '../components/index-details/IndexDetails.types'
+import {
+  getFieldTypeSummary,
+  getSearchCommandType,
+  searchResultsTelemetry,
+} from './telemetry.utils'
 
 jest.mock('uiSrc/telemetry', () => ({
   ...jest.requireActual('uiSrc/telemetry'),
   sendEventTelemetry: jest.fn(),
 }))
+
+describe('getFieldTypeSummary', () => {
+  it('should return empty object for empty fields', () => {
+    const result = getFieldTypeSummary([])
+    expect(result).toEqual({})
+  })
+
+  it('should count field types correctly', () => {
+    const fields: IndexField[] = [
+      { id: '1', name: 'title', value: 'title', type: FieldTypes.TEXT },
+      { id: '2', name: 'tag', value: 'tag', type: FieldTypes.TAG },
+      { id: '3', name: 'desc', value: 'desc', type: FieldTypes.TEXT },
+      { id: '4', name: 'vec', value: 'vec', type: FieldTypes.VECTOR },
+      { id: '5', name: 'tag2', value: 'tag2', type: FieldTypes.TAG },
+    ]
+
+    const result = getFieldTypeSummary(fields)
+    expect(result).toEqual({
+      [FieldTypes.TEXT]: 2,
+      [FieldTypes.TAG]: 2,
+      [FieldTypes.VECTOR]: 1,
+    })
+  })
+
+  it('should handle single field type', () => {
+    const fields: IndexField[] = [
+      { id: '1', name: 'vec', value: 'vec', type: FieldTypes.VECTOR },
+    ]
+
+    const result = getFieldTypeSummary(fields)
+    expect(result).toEqual({ [FieldTypes.VECTOR]: 1 })
+  })
+})
+
+describe('getSearchCommandType', () => {
+  it.each([
+    { input: 'FT.SEARCH idx *', expected: 'search' },
+    { input: 'FT.AGGREGATE idx *', expected: 'aggregate' },
+    { input: 'FT.EXPLAIN idx "*" LIMIT 0 10', expected: 'explain' },
+    { input: 'FT.PROFILE idx SEARCH QUERY "*"', expected: 'profile' },
+    { input: 'FT.INFO idx', expected: 'other' },
+    { input: 'SET key value', expected: 'other' },
+    { input: '', expected: 'other' },
+  ])('should return "$expected" for "$input"', ({ input, expected }) => {
+    expect(getSearchCommandType(input)).toBe(expected)
+  })
+})
 
 describe('searchResultsTelemetry', () => {
   beforeEach(() => {
