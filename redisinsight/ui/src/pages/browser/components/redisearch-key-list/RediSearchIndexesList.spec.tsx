@@ -16,21 +16,24 @@ import {
 } from 'uiSrc/utils/test-utils'
 import {
   loadList,
-  loadListSuccess,
   redisearchListSelector,
   setSelectedIndex,
 } from 'uiSrc/slices/browser/redisearch'
+import {
+  resetKeyInfo,
+  changeSearchMode,
+  fetchKeys,
+} from 'uiSrc/slices/browser/keys'
+import { setBrowserSelectedKey } from 'uiSrc/slices/app/context'
 import { bufferToString, stringToBuffer } from 'uiSrc/utils'
 import { localStorageService } from 'uiSrc/services'
 import { SearchMode } from 'uiSrc/slices/interfaces/keys'
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-import { changeSearchMode, fetchKeys } from 'uiSrc/slices/browser/keys'
-import { BrowserStorageItem } from 'uiSrc/constants'
+import { BrowserStorageItem, FeatureFlags } from 'uiSrc/constants'
 import RediSearchIndexesList, { Props } from './RediSearchIndexesList'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import { setStoreRef } from 'uiSrc/utils/test-store'
-import { REDISEARCH_LIST_DATA_MOCK } from 'uiSrc/mocks/handlers/browser/redisearchHandlers'
 
 let store: typeof mockedStore
 beforeEach(() => {
@@ -121,6 +124,19 @@ describe('RediSearchIndexesList', () => {
               },
             },
           },
+          app: {
+            ...state.app,
+            features: {
+              ...state.app.features,
+              featureFlags: {
+                ...state.app.features.featureFlags,
+                features: {
+                  ...state.app.features.featureFlags?.features,
+                  [FeatureFlags.devVectorSearch]: { flag: true },
+                },
+              },
+            },
+          },
         }),
     )
     ;(connectedInstanceSelector as jest.Mock).mockImplementation(() => ({
@@ -144,10 +160,7 @@ describe('RediSearchIndexesList', () => {
 
     expect(renderRediSearchIndexesList(instance(mockedProps))).toBeTruthy()
 
-    const expectedActions = [
-      changeSearchMode(SearchMode.Pattern),
-      changeSearchMode(SearchMode.Pattern),
-    ]
+    const expectedActions = [changeSearchMode(SearchMode.Pattern)]
 
     expect(clearStoreActions(store.getActions())).toEqual(
       clearStoreActions(expectedActions),
@@ -211,9 +224,9 @@ describe('RediSearchIndexesList', () => {
     await userEvent.click(queryByText(bufferToString(index)) || document)
 
     const expectedActions = [
+      resetKeyInfo(),
+      setBrowserSelectedKey(null),
       setSelectedIndex(index),
-      loadList(),
-      loadListSuccess(REDISEARCH_LIST_DATA_MOCK.indexes),
     ]
 
     expect(clearStoreActions(store.getActions())).toEqual(

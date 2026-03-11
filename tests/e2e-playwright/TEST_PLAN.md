@@ -110,41 +110,41 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 1.2 Database List
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Filter databases by search query |
-| 🔲 | main | Filter with partial match |
-| 🔲 | main | Case-insensitive search |
-| 🔲 | main | Filter by host:port |
-| 🔲 | main | Clear search |
-| 🔲 | main | No results message |
-| 🔲 | main | Show columns button |
-| 🔲 | main | Hide/show columns |
-| 🔲 | main | Select single database |
-| 🔲 | main | Select multiple databases |
-| 🔲 | main | Select all databases |
-| 🔲 | main | Delete multiple databases |
-| 🔲 | main | Edit database connection |
-| 🔲 | main | Clone database connection |
-| 🔲 | main | Connect to database |
+| ✅ | main | Filter databases by search query |
+| ✅ | main | Filter with partial match |
+| ✅ | main | Case-insensitive search |
+| ✅ | main | Filter by host:port |
+| ✅ | main | Clear search |
+| ✅ | main | No results message |
+| ✅ | main | Show columns button |
+| ✅ | main | Hide/show columns |
+| ✅ | main | Select single database |
+| ✅ | main | Select multiple databases |
+| ✅ | main | Select all databases |
+| ✅ | main | Delete multiple databases |
+| ✅ | main | Edit database connection |
+| ✅ | main | Clone database connection |
+| ✅ | main | Connect to database |
 | 🔲 | main | Database connection status indicator |
-| 🔲 | main | Search by database name |
-| 🔲 | main | Search by host |
-| 🔲 | main | Search by port |
+| ✅ | main | Search by database name |
+| ✅ | main | Search by host |
+| ✅ | main | Search by port |
 | 🔲 | main | Search by connection type (OSS Cluster, Sentinel) |
 | 🔲 | main | Search by last connection time |
-| 🔲 | main | Verify Redis Stack icon displayed for databases with modules |
+| ✅ | main | Verify Redis Stack icon displayed for databases with modules |
 
 ### 1.3 Clone Database
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Clone standalone database with pre-populated form |
-| 🔲 | main | Clone database with same name |
-| 🔲 | main | Clone database with new name |
-| 🔲 | main | Cancel clone operation |
-| 🔲 | main | Go back to edit dialog from clone dialog |
-| 🔲 | main | Clone OSS Cluster database |
+| ✅ | main | Clone standalone database with pre-populated form |
+| ✅ | main | Clone database with same name |
+| ✅ | main | Clone database with new name |
+| ✅ | main | Cancel clone operation |
+| ✅ | main | Go back to edit dialog from clone dialog |
+| ✅ | main | Clone OSS Cluster database |
 | 🔲 | main | Clone Sentinel database |
-| 🔲 | main | Verify "New Connection" badge on cloned database |
-| 🔲 | main | Verify cloned database appears in list after creation |
+| ✅ | main | Verify "New Connection" badge on cloned database |
+| ✅ | main | Verify cloned database appears in list after creation |
 
 ### 1.4 Pagination (when > 15 databases)
 | Status | Group | Test Case |
@@ -656,12 +656,12 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 7.1 General Settings
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | View settings page |
-| 🔲 | main | Show theme dropdown |
-| 🔲 | main | Toggle show notifications |
-| 🔲 | main | Show date/time format options |
-| 🔲 | main | Change date/time format (custom) |
-| 🔲 | main | Show time zone dropdown |
+| ✅ | main | View settings page |
+| ✅ | main | Show theme dropdown |
+| ✅ | main | Toggle show notifications |
+| ✅ | main | Show date/time format options |
+| ✅ | main | Change date/time format (custom) |
+| ✅ | main | Show time zone dropdown |
 
 ### 7.2 Privacy Settings
 | Status | Group | Test Case |
