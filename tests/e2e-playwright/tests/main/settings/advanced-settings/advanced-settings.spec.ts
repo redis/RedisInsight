@@ -30,6 +30,7 @@ test.describe('Advanced Settings', () => {
     browserPage,
   }) => {
     let database: DatabaseInstance | undefined;
+    let originalValue: string | undefined;
 
     try {
       const config = StandaloneConfigFactory.build();
@@ -40,7 +41,7 @@ test.describe('Advanced Settings', () => {
         await apiHelper.createStringKey(database.id, `adv-scan-test:key${i}`, `value${i}`);
       }
 
-      const originalValue = await settingsPage.getKeysToScan();
+      originalValue = await settingsPage.getKeysToScan();
 
       // Change scan count to a small number
       await settingsPage.setKeysToScan('5');
@@ -50,12 +51,12 @@ test.describe('Advanced Settings', () => {
       await browserPage.keyList.searchKeys('adv-scan-test:*');
       const scannedText = await browserPage.keyList.getScannedCountText();
       expect(scannedText).toBeTruthy();
-
-      // Restore the original scan count
-      await settingsPage.goto();
-      await settingsPage.expandAdvanced();
-      await settingsPage.setKeysToScan(originalValue);
     } finally {
+      if (originalValue) {
+        await settingsPage.goto();
+        await settingsPage.expandAdvanced();
+        await settingsPage.setKeysToScan(originalValue);
+      }
       if (database?.id) {
         await apiHelper.deleteKeysByPattern(database.id, 'adv-scan-test:*');
         await apiHelper.deleteDatabase(database.id);
