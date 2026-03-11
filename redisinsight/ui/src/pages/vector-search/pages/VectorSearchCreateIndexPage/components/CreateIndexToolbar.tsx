@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
@@ -9,6 +9,7 @@ import {
   CreateIndexMode,
 } from '../VectorSearchCreateIndexPage.types'
 import { useCreateIndexPage } from '../../../context/create-index-page'
+import { useCreateIndexOnboarding } from '../../../context/create-index-onboarding'
 import { CreateIndexOnboardingPopover } from '../../../components/create-index-onboarding'
 import { CreateIndexOnboardingStep } from '../../../components/create-index-onboarding/CreateIndexOnboarding.constants'
 import * as S from '../VectorSearchCreateIndexPage.styles'
@@ -23,6 +24,21 @@ export const CreateIndexToolbar = () => {
     isReadonly,
     openAddFieldModal,
   } = useCreateIndexPage()
+
+  const { currentStep, isActive } = useCreateIndexOnboarding()
+  const tabBeforeOnboardingRef = useRef<CreateIndexTab | null>(null)
+
+  useEffect(() => {
+    if (!isActive) return
+
+    if (currentStep === CreateIndexOnboardingStep.CommandView) {
+      tabBeforeOnboardingRef.current = activeTab
+      setActiveTab(CreateIndexTab.Command)
+    } else if (tabBeforeOnboardingRef.current !== null) {
+      setActiveTab(tabBeforeOnboardingRef.current)
+      tabBeforeOnboardingRef.current = null
+    }
+  }, [currentStep, isActive])
 
   const isExistingData = mode === CreateIndexMode.ExistingData
 
