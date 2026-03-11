@@ -29,9 +29,7 @@ export const CreateIndexToolbar = () => {
   const tabBeforeOnboardingRef = useRef<CreateIndexTab | null>(null)
 
   useEffect(() => {
-    if (!isActive) return
-
-    if (currentStep === CreateIndexOnboardingStep.CommandView) {
+    if (isActive && currentStep === CreateIndexOnboardingStep.CommandView) {
       tabBeforeOnboardingRef.current = activeTab
       setActiveTab(CreateIndexTab.Command)
     } else if (tabBeforeOnboardingRef.current !== null) {
