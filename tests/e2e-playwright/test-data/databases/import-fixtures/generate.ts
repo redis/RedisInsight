@@ -44,7 +44,7 @@ export function generatePartialValid(
 ): string {
   const data = [
     { host, port, name: validName, connectionType: 'STANDALONE' },
-    { name: 'test-import-partial-fail' },
+    { host: 'localhost', port: 99999, name: 'test-import-partial-fail', connectionType: 'STANDALONE' },
   ];
   return writeTempFixture('partial-valid.json', data);
 }

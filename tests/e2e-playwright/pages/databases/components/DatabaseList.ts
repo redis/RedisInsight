@@ -14,6 +14,7 @@ export class DatabaseList {
   // Bulk selection elements
   readonly selectionCounter: Locator;
   readonly exportButton: Locator;
+  readonly exportConfirmButton: Locator;
   readonly bulkDeleteButton: Locator;
   readonly cancelSelectingButton: Locator;
 
@@ -38,6 +39,7 @@ export class DatabaseList {
     // Bulk selection elements
     this.selectionCounter = page.getByText(/You selected: \d+ items?/);
     this.exportButton = page.getByRole('button', { name: 'Export' });
+    this.exportConfirmButton = page.getByRole('button', { name: 'Export' }).last();
     this.bulkDeleteButton = page.getByRole('button', { name: 'Delete' });
     this.cancelSelectingButton = page.getByRole('button', { name: 'Cancel selecting' });
 
@@ -282,10 +284,22 @@ export class DatabaseList {
   }
 
   /**
-   * Export selected databases
+   * Open the export popover for selected databases
    */
   async exportSelected(): Promise<void> {
     await this.exportButton.click();
+  }
+
+  /**
+   * Export selected databases and return the download artifact
+   */
+  async exportSelectedAndDownload(): Promise<import('@playwright/test').Download> {
+    await this.exportSelected();
+    const [download] = await Promise.all([
+      this.page.waitForEvent('download'),
+      this.exportConfirmButton.click(),
+    ]);
+    return download;
   }
 
   /**

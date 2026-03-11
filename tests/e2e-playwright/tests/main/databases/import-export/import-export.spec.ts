@@ -1,7 +1,6 @@
 import * as path from 'path';
 import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
-import { DatabaseInstance } from 'e2eSrc/types';
 import {
   generateValidSingle,
   generateValidMultiple,
@@ -124,8 +123,7 @@ test.describe('Import / Export Databases', () => {
     await expect(databasesPage.importDatabaseDialog.errorMessage).toBeVisible({ timeout: 30000 });
     await expect(databasesPage.importDatabaseDialog.retryButton).toBeVisible();
 
-    // Close the dialog via the X button
-    await databasesPage.importDatabaseDialog.dialog.getByRole('button', { name: 'close' }).click();
+    await databasesPage.importDatabaseDialog.close();
   });
 
   test('should confirm database tags are imported correctly', async ({ databasesPage }) => {
@@ -161,16 +159,7 @@ test.describe('Import / Export Databases', () => {
 
     await databaseList.selectRow(config.name);
 
-    // Click the toolbar Export button to open the export popover
-    await databaseList.exportSelected();
-
-    // Click the Export button inside the confirmation popover to trigger download
-    const exportPopoverButton = databasesPage.page.getByRole('button', { name: 'Export' }).last();
-    const [download] = await Promise.all([
-      databasesPage.page.waitForEvent('download'),
-      exportPopoverButton.click(),
-    ]);
-
+    const download = await databaseList.exportSelectedAndDownload();
     const suggestedName = download.suggestedFilename();
     expect(suggestedName).toMatch(/\.json$/i);
   });
