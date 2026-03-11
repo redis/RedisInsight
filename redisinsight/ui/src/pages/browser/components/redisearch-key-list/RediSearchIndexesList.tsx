@@ -43,7 +43,7 @@ import { Row } from 'uiSrc/components/base/layout/flex'
 import { getIndexDisplayName } from 'uiSrc/pages/vector-search/utils'
 import * as S from './RediSearchIndexesList.styles'
 
-export const CREATE = 'create'
+export const CREATE = JSON.stringify('create')
 
 export interface Props {
   onCreateIndex: (value: boolean) => void
