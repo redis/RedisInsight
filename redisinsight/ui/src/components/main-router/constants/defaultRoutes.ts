@@ -13,7 +13,6 @@ import {
   AzureSubscriptionsPage,
   AzureDatabasesPage,
 } from 'uiSrc/pages'
-import { VectorSearchPageRouterDeprecated } from 'uiSrc/pages/vector-search-deprecated'
 import { VectorSearchPageRouter } from 'uiSrc/pages/vector-search'
 import WorkbenchPage from 'uiSrc/pages/workbench'
 import PubSubPage from 'uiSrc/pages/pub-sub'
@@ -25,18 +24,11 @@ import PipelineManagementPage from 'uiSrc/pages/rdi/pipeline-management'
 import { ANALYTICS_ROUTES, RDI_PIPELINE_MANAGEMENT_ROUTES } from './sub-routes'
 import COMMON_ROUTES from './commonRoutes'
 import { getRouteIncludedByEnv, LAZY_LOAD } from '../config'
-import {
-  VECTOR_SEARCH_ROUTES,
-  VECTOR_SEARCH_DEPRECATED_ROUTES,
-} from './sub-routes/vectorSearchRoutes'
+import { VECTOR_SEARCH_ROUTES } from './sub-routes/vectorSearchRoutes'
 
 const LazyBrowserPage = lazy(() => import('uiSrc/pages/browser'))
 const LazyVectorSearchPageRouter = lazy(
   () => import('uiSrc/pages/vector-search/VectorSearchPageRouter'),
-)
-const LazyVectorSearchPageRouterDeprecated = lazy(
-  () =>
-    import('uiSrc/pages/vector-search-deprecated/pages/VectorSearchPageRouter'),
 )
 const LazyHomePage = lazy(() => import('uiSrc/pages/home'))
 const LazyWorkbenchPage = lazy(() => import('uiSrc/pages/workbench'))
@@ -78,16 +70,7 @@ const INSTANCE_ROUTES: IRoute[] = [
     path: Pages.browser(':instanceId'),
     component: LAZY_LOAD ? LazyBrowserPage : BrowserPage,
   },
-  // Deprecated vector search route - manual access to old implementation
-  {
-    pageName: PageNames.vectorSearchDeprecated,
-    path: Pages.vectorSearchDeprecated(':instanceId'),
-    component: LAZY_LOAD
-      ? LazyVectorSearchPageRouterDeprecated
-      : VectorSearchPageRouterDeprecated,
-    routes: VECTOR_SEARCH_DEPRECATED_ROUTES,
-  },
-  // New vector search route - behind feature flag
+  // Vector search route - behind feature flag
   {
     pageName: PageNames.vectorSearch,
     path: Pages.vectorSearch(':instanceId'),

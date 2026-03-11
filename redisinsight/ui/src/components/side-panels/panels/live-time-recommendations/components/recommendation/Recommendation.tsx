@@ -42,7 +42,7 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
 import { Link } from 'uiSrc/components/base/link/Link'
-import { Title } from 'uiSrc/pages/vector-search-deprecated/manage-indexes/styles'
+import { Text } from 'uiSrc/components/base/text'
 
 import styles from './styles.module.scss'
 
@@ -64,6 +64,13 @@ const RecommendationContent = styled(Card)`
   padding: 0;
   border: none;
   box-shadow: none;
+`
+
+const Title = styled(Text)`
+  margin-top: ${({ theme }) => theme.core?.space.space100};
+  margin-bottom: ${({ theme }) => theme.core?.space.space100};
+  font-weight: bold;
+  color: ${({ theme }) => theme.semantic.color.text.danger500};
 `
 
 const RecommendationTitle = ({
