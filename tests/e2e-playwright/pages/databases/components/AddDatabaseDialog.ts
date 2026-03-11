@@ -213,13 +213,6 @@ export class AddDatabaseDialog {
   }
 
   /**
-   * Get the currently selected compressor value
-   */
-  async getSelectedCompressor(): Promise<string> {
-    return (await this.compressorDropdown.textContent()) || '';
-  }
-
-  /**
    * Configure TLS settings on the Security tab
    * @param tlsConfig TLS configuration options
    */
