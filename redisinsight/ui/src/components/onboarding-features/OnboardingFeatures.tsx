@@ -268,8 +268,7 @@ const ONBOARDING_FEATURES = {
       const { id: connectedInstanceId = '' } = useSelector(
         connectedInstanceSelector,
       )
-      // TODO: remove devVectorSearch flag check once the Search page is always available
-      const { [FeatureFlags.devVectorSearch]: devVectorSearchFeature } =
+      const { [FeatureFlags.vectorSearchV2]: vectorSearchV2Feature } =
         useSelector(appFeatureFlagsFeaturesSelector)
 
       const dispatch = useDispatch()
@@ -297,13 +296,12 @@ const ONBOARDING_FEATURES = {
           dispatch(openCliHelper())
           sendBackTelemetryEvent(...telemetryArgs)
         },
-        // TODO: remove flag check once devVectorSearch is removed — always navigate to vector search
         onNext: () => {
           dispatch(resetCliSettings())
           dispatch(resetCliHelperSettings())
           dispatch(setMonitorInitialState())
 
-          if (devVectorSearchFeature?.flag) {
+          if (vectorSearchV2Feature?.flag) {
             history.push(Pages.vectorSearch(connectedInstanceId))
           } else {
             dispatch(setOnboardNextStep())
@@ -361,8 +359,7 @@ const ONBOARDING_FEATURES = {
       const { id: connectedInstanceId = '' } = useSelector(
         connectedInstanceSelector,
       )
-      // TODO: remove devVectorSearch flag check once the Search page is always available
-      const { [FeatureFlags.devVectorSearch]: devVectorSearchFeature } =
+      const { [FeatureFlags.vectorSearchV2]: vectorSearchV2Feature } =
         useSelector(appFeatureFlagsFeaturesSelector)
       const [firstIndex, setFirstIndex] = useState<Nullable<string>>(null)
 
@@ -447,9 +444,8 @@ const ONBOARDING_FEATURES = {
           </>
         ),
         onSkip: () => sendClosedTelemetryEvent(...telemetryArgs),
-        // TODO: remove flag check once devVectorSearch is removed — always navigate to vector search
         onBack: () => {
-          if (devVectorSearchFeature?.flag) {
+          if (vectorSearchV2Feature?.flag) {
             history.push(Pages.vectorSearch(connectedInstanceId))
           } else {
             history.push(Pages.browser(connectedInstanceId))

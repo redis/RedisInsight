@@ -132,7 +132,7 @@ describe('RediSearchIndexesList', () => {
                 ...state.app.features.featureFlags,
                 features: {
                   ...state.app.features.featureFlags?.features,
-                  [FeatureFlags.devVectorSearch]: { flag: true },
+                  [FeatureFlags.vectorSearchV2]: { flag: true },
                 },
               },
             },

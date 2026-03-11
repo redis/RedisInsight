@@ -602,7 +602,7 @@ describe('ONBOARDING_FEATURES', () => {
       )
     })
 
-    it('should skip vector search step and navigate to workbench on next when devVectorSearch is off', () => {
+    it('should skip vector search step and navigate to workbench on next when vectorSearchV2 is off', () => {
       const pushMock = jest.fn()
       reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: pushMock })
 
@@ -627,10 +627,10 @@ describe('ONBOARDING_FEATURES', () => {
       )
     })
 
-    it('should navigate to vector search on next when devVectorSearch is on', () => {
+    it('should navigate to vector search on next when vectorSearchV2 is on', () => {
       ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValueOnce({
         databaseChat: { flag: false },
-        [FeatureFlags.devVectorSearch]: { flag: true },
+        [FeatureFlags.vectorSearchV2]: { flag: true },
       })
 
       const pushMock = jest.fn()
@@ -905,7 +905,7 @@ describe('ONBOARDING_FEATURES', () => {
       )
     })
 
-    it('should skip vector search step and navigate to browser on back when devVectorSearch is off', () => {
+    it('should skip vector search step and navigate to browser on back when vectorSearchV2 is off', () => {
       const pushMock = jest.fn()
       reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: pushMock })
 
@@ -928,10 +928,10 @@ describe('ONBOARDING_FEATURES', () => {
       )
     })
 
-    it('should navigate to vector search on back when devVectorSearch is on', () => {
+    it('should navigate to vector search on back when vectorSearchV2 is on', () => {
       ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValueOnce({
         databaseChat: { flag: false },
-        [FeatureFlags.devVectorSearch]: { flag: true },
+        [FeatureFlags.vectorSearchV2]: { flag: true },
       })
 
       const pushMock = jest.fn()
