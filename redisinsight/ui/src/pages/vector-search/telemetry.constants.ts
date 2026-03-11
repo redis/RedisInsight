@@ -17,3 +17,11 @@ export enum SearchTelemetryFieldEditAction {
   Add = 'add',
   Edit = 'edit',
 }
+
+export enum SearchCommandType {
+  Search = 'search',
+  Aggregate = 'aggregate',
+  Explain = 'explain',
+  Profile = 'profile',
+  Other = 'other',
+}

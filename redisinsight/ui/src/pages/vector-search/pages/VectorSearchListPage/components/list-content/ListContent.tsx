@@ -4,6 +4,7 @@ import { useHistory, useParams } from 'react-router-dom'
 
 import { Pages } from 'uiSrc/constants'
 import { bufferToString, stringToBuffer } from 'uiSrc/utils'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   deleteRedisearchIndexAction,
   redisearchListSelector,
@@ -16,7 +17,6 @@ import {
 import { ShowIcon, DeleteIcon } from 'uiSrc/components/base/icons'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-import { collectManageIndexesDeleteTelemetry } from 'uiSrc/pages/vector-search-deprecated/telemetry'
 import { QueryLibraryService } from 'uiSrc/services/query-library/QueryLibraryService'
 import { queryLibraryNotifications } from 'uiSrc/pages/vector-search/constants'
 
@@ -88,7 +88,10 @@ export const ListContent = () => {
       deleteRedisearchIndexAction(
         { index: stringToBuffer(indexName) },
         async () => {
-          collectManageIndexesDeleteTelemetry({ instanceId })
+          sendEventTelemetry({
+            event: TelemetryEvent.SEARCH_INDEX_DELETED,
+            eventData: { databaseId: instanceId },
+          })
           await cleanupQueryLibrary(indexName)
         },
       ),
@@ -96,9 +99,16 @@ export const ListContent = () => {
     setPendingDeleteIndex(null)
   }, [dispatch, cleanupQueryLibrary, instanceId, pendingDeleteIndex])
 
-  const handleViewIndex = useCallback((indexName: string) => {
-    setViewingIndexName(indexName)
-  }, [])
+  const handleViewIndex = useCallback(
+    (indexName: string) => {
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
+        eventData: { databaseId: instanceId },
+      })
+      setViewingIndexName(indexName)
+    },
+    [instanceId],
+  )
 
   const handleCloseViewPanel = useCallback(() => {
     setViewingIndexName(null)

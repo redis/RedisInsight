@@ -1,7 +1,11 @@
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { IndexField } from '../components/index-details/IndexDetails.types'
-import { getFieldTypeSummary, searchResultsTelemetry } from './telemetry.utils'
+import {
+  getFieldTypeSummary,
+  getSearchCommandType,
+  searchResultsTelemetry,
+} from './telemetry.utils'
 
 jest.mock('uiSrc/telemetry', () => ({
   ...jest.requireActual('uiSrc/telemetry'),
@@ -38,6 +42,20 @@ describe('getFieldTypeSummary', () => {
 
     const result = getFieldTypeSummary(fields)
     expect(result).toEqual({ [FieldTypes.VECTOR]: 1 })
+  })
+})
+
+describe('getSearchCommandType', () => {
+  it.each([
+    { input: 'FT.SEARCH idx *', expected: 'search' },
+    { input: 'FT.AGGREGATE idx *', expected: 'aggregate' },
+    { input: 'FT.EXPLAIN idx "*" LIMIT 0 10', expected: 'explain' },
+    { input: 'FT.PROFILE idx SEARCH QUERY "*"', expected: 'profile' },
+    { input: 'FT.INFO idx', expected: 'other' },
+    { input: 'SET key value', expected: 'other' },
+    { input: '', expected: 'other' },
+  ])('should return "$expected" for "$input"', ({ input, expected }) => {
+    expect(getSearchCommandType(input)).toBe(expected)
   })
 })
 

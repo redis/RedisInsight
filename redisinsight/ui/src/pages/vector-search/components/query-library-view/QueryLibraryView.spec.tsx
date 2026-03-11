@@ -1,9 +1,15 @@
 import React from 'react'
 import { render, screen, fireEvent, waitFor } from 'uiSrc/utils/test-utils'
 import { queryLibraryItemFactory } from 'uiSrc/mocks/factories/query-library/queryLibraryItem.factory'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { QueryLibraryView } from './QueryLibraryView'
 import { QueryLibraryViewProps } from './QueryLibraryView.types'
+
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
+}))
 
 const mockItems = queryLibraryItemFactory.buildList(2)
 
@@ -153,6 +159,11 @@ describe('QueryLibraryView', () => {
       fireEvent.click(runBtn)
 
       expect(defaultProps.onRun).toHaveBeenCalledWith(mockItems[0].query)
+      expect(sendEventTelemetry).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: TelemetryEvent.SEARCH_QUERY_LIBRARY_RUN,
+        }),
+      )
     })
 
     it('should call onLoad with query text when Load is clicked', () => {
@@ -164,6 +175,11 @@ describe('QueryLibraryView', () => {
       fireEvent.click(loadBtn)
 
       expect(defaultProps.onLoad).toHaveBeenCalledWith(mockItems[0].query)
+      expect(sendEventTelemetry).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: TelemetryEvent.SEARCH_QUERY_LIBRARY_LOADED,
+        }),
+      )
     })
 
     it('should show delete confirmation modal when Delete is clicked', () => {
@@ -180,8 +196,8 @@ describe('QueryLibraryView', () => {
       expect(modalMessage).toBeInTheDocument()
     })
 
-    it('should call deleteItem on confirm', async () => {
-      mockUseQueryLibrary.deleteItem.mockResolvedValue(undefined)
+    it('should call deleteItem and send telemetry on successful delete', async () => {
+      mockUseQueryLibrary.deleteItem.mockResolvedValue(true)
       renderComponent()
 
       const deleteBtn = screen.getByTestId(
@@ -199,6 +215,39 @@ describe('QueryLibraryView', () => {
           mockItems[0].id,
         )
       })
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: TelemetryEvent.SEARCH_QUERY_DELETED,
+        }),
+      )
+    })
+
+    it('should not send telemetry when delete fails', async () => {
+      mockUseQueryLibrary.deleteItem.mockResolvedValue(false)
+      renderComponent()
+
+      const deleteBtn = screen.getByTestId(
+        `query-library-item-${mockItems[0].id}-delete-btn`,
+      )
+      fireEvent.click(deleteBtn)
+
+      const confirmBtn = screen.getByTestId(
+        'query-library-delete-modal-confirm',
+      )
+      fireEvent.click(confirmBtn)
+
+      await waitFor(() => {
+        expect(mockUseQueryLibrary.deleteItem).toHaveBeenCalledWith(
+          mockItems[0].id,
+        )
+      })
+
+      expect(sendEventTelemetry).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: TelemetryEvent.SEARCH_QUERY_DELETED,
+        }),
+      )
     })
 
     it('should close delete modal on cancel', () => {
