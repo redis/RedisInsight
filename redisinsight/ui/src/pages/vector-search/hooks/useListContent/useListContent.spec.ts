@@ -9,6 +9,7 @@ import {
   redisearchListSelector,
 } from 'uiSrc/slices/browser/redisearch'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { useListContent } from './useListContent'
 import { useIndexListData } from '../useIndexListData'
@@ -43,8 +44,9 @@ jest.mock('uiSrc/services', () => ({
   },
 }))
 
-jest.mock('uiSrc/pages/vector-search-deprecated/telemetry', () => ({
-  collectManageIndexesDeleteTelemetry: jest.fn(),
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
 }))
 
 jest.mock('uiSrc/services/query-library/QueryLibraryService', () => ({
@@ -137,6 +139,20 @@ describe('useListContent', () => {
       expect(result.current.viewingIndexName).toBe(indexName)
     })
 
+    it('should send telemetry when viewing index details', () => {
+      const { result } = renderHook(() => useListContent())
+      const indexName = faker.string.alpha(10)
+
+      act(() => {
+        result.current.actions[0].callback(indexName)
+      })
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
+        eventData: { databaseId: mockDatabaseId },
+      })
+    })
+
     it('should clear viewingIndexName when onCloseViewPanel is called', () => {
       const { result } = renderHook(() => useListContent())
 
@@ -196,6 +212,31 @@ describe('useListContent', () => {
 
       expect(deleteRedisearchIndexAction).toHaveBeenCalled()
       expect(result.current.pendingDeleteIndex).toBeNull()
+    })
+
+    it('should send correct telemetry on successful delete', async () => {
+      ;(deleteRedisearchIndexAction as jest.Mock).mockImplementation(
+        (_payload: any, onSuccess: () => Promise<void>) => {
+          onSuccess()
+          return { type: 'delete' }
+        },
+      )
+
+      const { result } = renderHook(() => useListContent())
+      const indexName = faker.string.alpha(10)
+
+      act(() => {
+        result.current.actions[2].callback(indexName)
+      })
+
+      act(() => {
+        result.current.onConfirmDelete()
+      })
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_INDEX_DELETED,
+        eventData: { databaseId: mockInstanceId },
+      })
     })
 
     it('should clear pendingDeleteIndex on close', () => {

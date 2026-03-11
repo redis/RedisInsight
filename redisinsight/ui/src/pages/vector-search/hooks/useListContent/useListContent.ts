@@ -18,7 +18,7 @@ import {
 } from 'uiSrc/components/base/icons'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-import { collectManageIndexesDeleteTelemetry } from 'uiSrc/pages/vector-search-deprecated/telemetry'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { QueryLibraryService } from 'uiSrc/services/query-library/QueryLibraryService'
 import { queryLibraryNotifications } from 'uiSrc/pages/vector-search/constants'
 import { localStorageService } from 'uiSrc/services'
@@ -56,7 +56,11 @@ export const useListContent = () => {
 
   const handleViewIndex = useCallback((indexName: string) => {
     setViewingIndexName(indexName)
-  }, [])
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
+      eventData: { databaseId },
+    })
+  }, [databaseId])
 
   const handleCloseViewPanel = useCallback(() => {
     setViewingIndexName(null)
@@ -103,7 +107,10 @@ export const useListContent = () => {
       deleteRedisearchIndexAction(
         { index: stringToBuffer(indexName) },
         async () => {
-          collectManageIndexesDeleteTelemetry({ instanceId })
+          sendEventTelemetry({
+            event: TelemetryEvent.SEARCH_INDEX_DELETED,
+            eventData: { databaseId: instanceId },
+          })
           await cleanupQueryLibrary(indexName)
         },
       ),
