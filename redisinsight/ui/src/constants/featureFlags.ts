@@ -10,7 +10,7 @@ export enum FeatureFlags {
   enhancedCloudUI = 'enhancedCloudUI',
   cloudAds = 'cloudAds',
   databaseManagement = 'databaseManagement',
-  devVectorSearch = 'dev-vectorSearch',
+  vectorSearchV2 = 'vectorSearchV2',
   azureEntraId = 'azureEntraId',
   devBrowser = 'dev-browser',
 }

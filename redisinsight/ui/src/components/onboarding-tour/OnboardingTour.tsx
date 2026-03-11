@@ -53,16 +53,15 @@ const OnboardingTour = (props: Props) => {
     onSkip = () => {},
   } = Inner ? Inner() : {}
 
-  // TODO: remove devVectorSearch flag check once the Search page is always available
-  const { [FeatureFlags.devVectorSearch]: devVectorSearchFeature } =
-    useSelector(appFeatureFlagsFeaturesSelector)
+  const { [FeatureFlags.vectorSearchV2]: vectorSearchV2Feature } = useSelector(
+    appFeatureFlagsFeaturesSelector,
+  )
 
   const [isOpen, setIsOpen] = useState(step === currentStep && isActive)
   const isLastStep = currentStep === totalSteps
 
-  // TODO: remove once devVectorSearch flag is removed — display step/total directly
   const { displayStep, displayTotalSteps } = useMemo(() => {
-    const skippedSteps = devVectorSearchFeature?.flag ? 0 : 1
+    const skippedSteps = vectorSearchV2Feature?.flag ? 0 : 1
     return {
       displayStep:
         currentStep > OnboardingSteps.VectorSearchPage
@@ -70,7 +69,7 @@ const OnboardingTour = (props: Props) => {
           : currentStep,
       displayTotalSteps: totalSteps - skippedSteps,
     }
-  }, [currentStep, totalSteps, devVectorSearchFeature?.flag])
+  }, [currentStep, totalSteps, vectorSearchV2Feature?.flag])
 
   const dispatch = useDispatch()
 

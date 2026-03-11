@@ -64,8 +64,8 @@ const RediSearchIndexesList = (props: Props) => {
 
   const selectedValue = selectedIndex ? bufferToString(selectedIndex) : ''
   const featureFlags = useSelector(appFeatureFlagsFeaturesSelector)
-  const isDevVectorSearch =
-    featureFlags?.[FeatureFlags.devVectorSearch]?.flag ?? false
+  const isVectorSearchV2 =
+    featureFlags?.[FeatureFlags.vectorSearchV2]?.flag ?? false
 
   const dispatch = useDispatch()
   const location = useLocation<{ browseIndex?: string }>()
@@ -155,7 +155,7 @@ const RediSearchIndexesList = (props: Props) => {
     }
   })
 
-  if (isDevVectorSearch) {
+  if (isVectorSearchV2) {
     options.push({
       value: CREATE,
       inputDisplay: <span>CREATE</span>,

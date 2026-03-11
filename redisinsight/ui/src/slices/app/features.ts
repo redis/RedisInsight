@@ -59,7 +59,7 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.cloudAds]: {
         flag: riConfig.features.cloudAds.defaultFlag,
       },
-      [FeatureFlags.devVectorSearch]: {
+      [FeatureFlags.vectorSearchV2]: {
         flag: false,
       },
       [FeatureFlags.azureEntraId]: {

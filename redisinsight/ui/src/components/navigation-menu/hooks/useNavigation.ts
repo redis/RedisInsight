@@ -48,8 +48,9 @@ export function useNavigation() {
     connectedRdiInstanceSelector,
   )
   const highlightedPages = useSelector(appFeaturePagesHighlightingSelector)
-  const { [FeatureFlags.devVectorSearch]: devVectorSearchFeature } =
-    useSelector(appFeatureFlagsFeaturesSelector)
+  const { [FeatureFlags.vectorSearchV2]: vectorSearchV2Feature } = useSelector(
+    appFeatureFlagsFeaturesSelector,
+  )
 
   const isRdiWorkspace = workspace === AppWorkspace.RDI
 
@@ -98,7 +99,7 @@ export function useNavigation() {
       iconType: BrowserIcon,
       onboard: ONBOARDING_FEATURES.BROWSER_PAGE,
     },
-    devVectorSearchFeature?.flag && {
+    vectorSearchV2Feature?.flag && {
       tooltipText: 'Search',
       pageName: PageNames.vectorSearch,
       ariaLabel: 'Search',
