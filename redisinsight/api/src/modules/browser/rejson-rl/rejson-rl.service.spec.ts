@@ -404,6 +404,49 @@ describe('JsonService', () => {
           data: JSON.stringify(testData),
         });
       });
+      it('should handle json with "constructor" key when forceRetrieve is true', async () => {
+        const testData = { constructor: 'example value', nested: { constructor: 123 } };
+
+        when(client.sendCommand)
+          .calledWith(
+            [BrowserToolRejsonRlCommands.JsonGet, testKey, testPath],
+            { replyEncoding: 'utf8' },
+          )
+          .mockReturnValue(JSON.stringify([testData]));
+
+        const result = await service.getJson(mockBrowserClientMetadata, {
+          keyName: testKey,
+          path: testPath,
+          forceRetrieve: true,
+        });
+
+        expect(result).toEqual({
+          downloaded: true,
+          path: testPath,
+          data: JSON.stringify(testData),
+        });
+      });
+      it('should handle json with "__proto__" key when forceRetrieve is true', async () => {
+        const rawJson = '{"__proto__":"proto_value","normal":"data"}';
+
+        when(client.sendCommand)
+          .calledWith(
+            [BrowserToolRejsonRlCommands.JsonGet, testKey, testPath],
+            { replyEncoding: 'utf8' },
+          )
+          .mockReturnValue(`[${rawJson}]`);
+
+        const result = await service.getJson(mockBrowserClientMetadata, {
+          keyName: testKey,
+          path: testPath,
+          forceRetrieve: true,
+        });
+
+        expect(result.downloaded).toBe(true);
+        expect(result.path).toBe(testPath);
+        expect(result.data).toContain('__proto__');
+        expect(result.data).toContain('proto_value');
+      });
     });
     describe('user has no PERM for JSON.DEBUG', () => {
       beforeEach(() => {
