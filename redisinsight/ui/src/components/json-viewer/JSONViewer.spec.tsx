@@ -18,4 +18,21 @@ describe('JSONViewer', () => {
     expect(jsx.value).toEqual('zxc')
     expect(jsx.isValid).toBeFalsy()
   })
+
+  it('should parse json with "constructor" key without error', () => {
+    const value = JSON.stringify({
+      constructor: 'value',
+      nested: { constructor: 123 },
+    })
+    const jsx = JSONViewer({ value })
+
+    expect(jsx.isValid).toBeTruthy()
+  })
+
+  it('should parse json with "__proto__" key without error', () => {
+    const value = '{"__proto__": "value"}'
+    const jsx = JSONViewer({ value })
+
+    expect(jsx.isValid).toBeTruthy()
+  })
 })
