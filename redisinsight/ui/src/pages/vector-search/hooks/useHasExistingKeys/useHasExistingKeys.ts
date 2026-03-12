@@ -24,7 +24,7 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
   const { id: instanceId } = useSelector(connectedInstanceSelector)
   const { encoding } = useSelector(appInfoSelector)
 
-  const checkForKeys = useCallback(async () => {
+  const checkForKeys = useCallback(async (signal?: AbortSignal) => {
     if (!instanceId) {
       setLoading(false)
       return
@@ -47,10 +47,12 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
               keysInfo: false,
               scanThreshold: 1,
             },
-            { params: { encoding } },
+            { params: { encoding }, signal },
           ),
         ),
       )
+
+      if (signal?.aborted) return
 
       const foundAny = results.some(({ data, status }) => {
         if (!isStatusSuccessful(status)) return false
@@ -61,15 +63,25 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
       })
 
       setHasKeys(foundAny)
-    } catch {
+    } catch (error) {
+      if (signal?.aborted) return
+      console.error('Failed to check for existing keys', error)
       setHasKeys(false)
     } finally {
-      setLoading(false)
+      if (!signal?.aborted) {
+        setLoading(false)
+      }
     }
   }, [instanceId, encoding])
 
   useEffect(() => {
-    checkForKeys()
+    // Abort in-flight requests on unmount to prevent state updates after cleanup
+    const controller = new AbortController()
+    checkForKeys(controller.signal)
+
+    return () => {
+      controller.abort()
+    }
   }, [checkForKeys])
 
   return { hasKeys, loading }
