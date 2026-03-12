@@ -42,7 +42,7 @@ export const VectorSearchCreateIndexPage = () => {
       sampleData={sampleData}
       showBrowser={showBrowser}
     >
-      <CreateIndexOnboardingProvider>
+      <CreateIndexOnboardingProvider instanceId={instanceId}>
         <S.PageWrapper data-testid="vector-search--create-index--page">
           <CreateIndexBrowser />
 

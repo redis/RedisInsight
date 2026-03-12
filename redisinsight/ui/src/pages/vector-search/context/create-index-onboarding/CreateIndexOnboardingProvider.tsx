@@ -2,11 +2,13 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import BrowserStorageItem from 'uiSrc/constants/storage'
 import { localStorageService } from 'uiSrc/services'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import {
   CreateIndexOnboardingStep,
   ONBOARDING_STEPS,
 } from '../../components/create-index-onboarding/CreateIndexOnboarding.constants'
+import { SearchOnboardingAction } from '../../telemetry.constants'
 import {
   CreateIndexOnboardingContext,
   CreateIndexOnboardingContextValue,
@@ -24,11 +26,16 @@ const markOnboardingSeen = () => {
   )
 }
 
+const isLastStep = (step: CreateIndexOnboardingStep | null): boolean =>
+  step === ONBOARDING_STEPS[ONBOARDING_STEPS.length - 1]
+
 export interface CreateIndexOnboardingProviderProps {
+  instanceId: string
   children: React.ReactNode
 }
 
 export const CreateIndexOnboardingProvider = ({
+  instanceId,
   children,
 }: CreateIndexOnboardingProviderProps) => {
   const [currentStep, setCurrentStep] =
@@ -37,6 +44,9 @@ export const CreateIndexOnboardingProvider = ({
 
   const isActiveRef = useRef(isActive)
   isActiveRef.current = isActive
+
+  const currentStepRef = useRef(currentStep)
+  currentStepRef.current = currentStep
 
   useEffect(() => {
     if (isActive && currentStep === null) {
@@ -51,18 +61,50 @@ export const CreateIndexOnboardingProvider = ({
 
     setCurrentStep(ONBOARDING_STEPS[0])
     setIsActive(true)
-  }, [])
+
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_CREATE_INDEX_ONBOARDING_STARTED,
+      eventData: { databaseId: instanceId },
+    })
+  }, [instanceId])
 
   const skipOnboarding = useCallback(() => {
     if (!isActiveRef.current) return
 
+    const step = currentStepRef.current
+
+    if (isLastStep(step)) {
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_CREATE_INDEX_ONBOARDING_COMPLETED,
+        eventData: { databaseId: instanceId },
+      })
+    } else {
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_CREATE_INDEX_ONBOARDING_STEP_CLICKED,
+        eventData: {
+          databaseId: instanceId,
+          step,
+          action: SearchOnboardingAction.Skip,
+        },
+      })
+    }
+
     markOnboardingSeen()
     setIsActive(false)
     setCurrentStep(null)
-  }, [])
+  }, [instanceId])
 
   const nextStep = useCallback(() => {
     if (!isActiveRef.current) return
+
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_CREATE_INDEX_ONBOARDING_STEP_CLICKED,
+      eventData: {
+        databaseId: instanceId,
+        step: currentStepRef.current,
+        action: SearchOnboardingAction.Next,
+      },
+    })
 
     setCurrentStep((prev) => {
       if (!prev) return null
@@ -79,10 +121,19 @@ export const CreateIndexOnboardingProvider = ({
 
       return ONBOARDING_STEPS[nextIndex]
     })
-  }, [])
+  }, [instanceId])
 
   const prevStep = useCallback(() => {
     if (!isActiveRef.current) return
+
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_CREATE_INDEX_ONBOARDING_STEP_CLICKED,
+      eventData: {
+        databaseId: instanceId,
+        step: currentStepRef.current,
+        action: SearchOnboardingAction.Back,
+      },
+    })
 
     setCurrentStep((prev) => {
       if (!prev) return null
@@ -95,7 +146,7 @@ export const CreateIndexOnboardingProvider = ({
 
       return ONBOARDING_STEPS[currentIndex - 1]
     })
-  }, [])
+  }, [instanceId])
 
   const value: CreateIndexOnboardingContextValue = useMemo(
     () => ({

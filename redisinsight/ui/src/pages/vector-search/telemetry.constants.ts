@@ -18,6 +18,12 @@ export enum SearchTelemetryFieldEditAction {
   Edit = 'edit',
 }
 
+export enum SearchOnboardingAction {
+  Next = 'next',
+  Back = 'back',
+  Skip = 'skip',
+}
+
 export enum SearchCommandType {
   Search = 'search',
   Aggregate = 'aggregate',
