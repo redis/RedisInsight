@@ -3,6 +3,10 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { KeyTypes } from 'uiSrc/constants'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+import {
+  KEY_TYPE_MAP,
+  REVERSE_KEY_TYPE_MAP,
+} from 'uiSrc/pages/vector-search/constants'
 import { bufferToString } from 'uiSrc/utils'
 
 import KeysBrowser from '../../../components/keys-browser/KeysBrowser'
@@ -12,16 +16,6 @@ import { extractNamespace, deriveIndexName } from '../../../utils'
 import { useCreateIndexPage } from '../../../context/create-index-page'
 import { ConfirmKeyChangeModal } from './ConfirmKeyChangeModal'
 import * as S from '../VectorSearchCreateIndexPage.styles'
-
-const KEY_TYPE_MAP: Partial<Record<KeyTypes, RedisearchIndexKeyType>> = {
-  [KeyTypes.Hash]: RedisearchIndexKeyType.HASH,
-  [KeyTypes.ReJSON]: RedisearchIndexKeyType.JSON,
-}
-
-const REVERSE_KEY_TYPE_MAP: Record<RedisearchIndexKeyType, KeyTypes> = {
-  [RedisearchIndexKeyType.HASH]: KeyTypes.Hash,
-  [RedisearchIndexKeyType.JSON]: KeyTypes.ReJSON,
-}
 
 export const CreateIndexBrowser = () => {
   const {
