@@ -32,7 +32,7 @@ export const MakeSearchableButton = ({
       initialKeyType: KEY_TYPE_MAP[keyType],
       initialPrefix: extractNamespace(keyNameString),
     })
-  }, [history, instanceId, keyName, keyType])
+  }, [history, instanceId, keyName, keyNameString, keyType])
 
   const prefix = extractNamespace(keyNameString)
 
