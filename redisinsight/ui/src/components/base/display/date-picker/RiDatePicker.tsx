@@ -32,10 +32,11 @@ const RiDatePicker = ({
       <RiPopover
         isOpen={open}
         closePopover={() => setOpen(false)}
-        anchorPosition="downLeft"
+        anchorPosition="downCenter"
+        panelPaddingSize="none"
         trigger={
           <SecondaryButton
-            size="small"
+            size="large"
             icon={ChevronDownIcon}
             iconSide="right"
             onClick={() => setOpen((prev) => !prev)}

@@ -22,7 +22,7 @@ export const Chevron = styled(ChevronRightIcon)<{
 `
 
 export const CalendarRoot = styled.div<HTMLAttributes<HTMLDivElement>>`
-  --cell-size: ${({ theme }) => theme.core.space.space250};
+  --cell-size: ${({ theme }) => theme.core.space.space300};
   --cell-radius: ${({ theme }) => theme.core.space.space050};
 
   .rdp-root {
@@ -31,7 +31,7 @@ export const CalendarRoot = styled.div<HTMLAttributes<HTMLDivElement>>`
     --rdp-accent-background-color: ${({ theme }) =>
       theme.semantic.color.background.primary200};
     background: ${({ theme }) => theme.semantic.color.background.neutral100};
-    padding: ${({ theme }) => theme.core.space.space200};
+    padding: ${({ theme }) => theme.core.space.space150};
     font-family: inherit;
     width: fit-content;
   }
@@ -48,6 +48,7 @@ export const CalendarRoot = styled.div<HTMLAttributes<HTMLDivElement>>`
     flex-direction: column;
     gap: ${({ theme }) => theme.core.space.space200};
     width: 100%;
+    margin: 0;
   }
 
   .rdp-nav {
@@ -152,7 +153,7 @@ export const CalendarRoot = styled.div<HTMLAttributes<HTMLDivElement>>`
   .rdp-week {
     display: flex;
     width: 100%;
-    margin-top: ${({ theme }) => theme.core.space.space050};
+    margin-top: ${({ theme }) => theme.core.space.space025};
   }
 
   .rdp-day {
@@ -175,7 +176,7 @@ export const CalendarRoot = styled.div<HTMLAttributes<HTMLDivElement>>`
     background: none;
     cursor: pointer;
     border-radius: var(--cell-radius);
-    font-size: ${({ theme }) => theme.core.font.fontSize.s12};
+    font-size: ${({ theme }) => theme.core.font.fontSize.s14};
     color: ${({ theme }) => theme.semantic.color.text.neutral700};
     font-family: inherit;
     line-height: 1;
