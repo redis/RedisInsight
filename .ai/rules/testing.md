@@ -1,6 +1,6 @@
 ---
 description: Jest and Testing Library standards, test patterns, faker usage, renderComponent helper, and mocking
-globs: "**/*.spec.{ts,tsx}"
+globs: "redisinsight/**/*.spec.{ts,tsx}"
 alwaysApply: false
 ---
 
