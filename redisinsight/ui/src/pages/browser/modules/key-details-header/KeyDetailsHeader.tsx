@@ -157,7 +157,7 @@ const KeyDetailsHeader = ({
                 </FlexItem>
                 <KeyDetailsHeaderName onEditKey={handleEditKey} />
                 <FlexItem grow />
-                <FeatureFlagComponent name={FeatureFlags.devVectorSearch}>
+                <FeatureFlagComponent name={FeatureFlags.vectorSearchV2}>
                   {(isSearchableType &&
                     keyIndexedStatus === UseIsKeyIndexedStatus.Ready && (
                       <FlexItem>
