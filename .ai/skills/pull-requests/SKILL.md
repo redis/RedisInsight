@@ -1,5 +1,9 @@
 ---
-alwaysApply: true
+name: pull-requests
+description: >-
+  Create and review pull requests following project standards including title
+  format, description template, and review checklist. Use when creating PRs,
+  writing PR descriptions, or reviewing pull requests.
 ---
 
 # Pull Request Guidelines
