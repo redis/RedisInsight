@@ -32,9 +32,9 @@ export const VectorSearchCreateIndexPage = () => {
     return <Redirect to={Pages.vectorSearch(instanceId)} />
   }
 
-  const showBrowser = mode === CreateIndexMode.ExistingData
   const existingState = isExistingDataState(state) ? state : undefined
   const preselected = hasPreselectedKey(state)
+  const showBrowser = mode === CreateIndexMode.ExistingData && !preselected
 
   return (
     <CreateIndexPageProvider
