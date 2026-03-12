@@ -459,6 +459,8 @@ export const CreateIndexPageProvider = ({
       changeActiveTab,
       isReadonly,
       showBrowser,
+      initialKeyProp,
+      initialKeyTypeProp,
       displayName,
       indexName,
       indexPrefix,
