@@ -10,6 +10,7 @@ import {
   PubSubPage,
   EulaPage,
   SidebarPanel,
+  InsightsPanel,
 } from 'e2eSrc/pages';
 import { ApiHelper, retry } from 'e2eSrc/helpers';
 
@@ -39,6 +40,7 @@ type Fixtures = {
   pubSubPage: PubSubPage;
   eulaPage: EulaPage;
   sidebarPanel: SidebarPanel;
+  insightsPanel: InsightsPanel;
 };
 
 /**
@@ -227,6 +229,10 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
 
   sidebarPanel: async ({ page }, use) => {
     await use(new SidebarPanel(page));
+  },
+
+  insightsPanel: async ({ page }, use) => {
+    await use(new InsightsPanel(page));
   },
 });
 

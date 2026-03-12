@@ -53,15 +53,23 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | View sign-in options (Google, GitHub, SSO) |
 | 🔲 | main | Accept terms checkbox |
 
-### 0.5 Insights Panel
+### 0.5 Insights Panel ✅
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Open Insights panel |
-| 🔲 | main | Close Insights panel |
-| 🔲 | main | Switch to Tutorials tab |
-| 🔲 | main | Switch to Tips tab |
-| 🔲 | main | Expand/collapse tutorial folders |
-| 🔲 | main | View My tutorials section |
+| ✅ | main | Open Insights panel |
+| ✅ | main | Close Insights panel |
+| ✅ | main | Switch to Tutorials tab |
+| ✅ | main | Switch to Tips tab |
+| ✅ | main | Expand/collapse tutorial folders |
+| ✅ | main | View Tutorials section |
+| ✅ | main | Run through a tutorial with pagination |
+| ✅ | main | Run a tutorial command |
+| 🔲 | main | Upload custom tutorial |
+| 🔲 | main | Delete custom tutorial |
+| 🔲 | main | View Tips when no recommendations |
+| 🔲 | main | Vote on a tip (like/dislike) |
+| 🔲 | main | Show/hide hidden tips |
+| 🔲 | main | Navigate to database analysis from Tips |
 
 ---
 
