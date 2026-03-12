@@ -24,17 +24,17 @@ export const MakeSearchableButton = ({
   const [isModalOpen, setIsModalOpen] = useState(false)
   const history = useHistory()
 
+  const prefix = extractNamespace(keyNameString)
+
   const handleConfirm = useCallback(() => {
     setIsModalOpen(false)
     history.push(Pages.vectorSearchCreateIndex(instanceId), {
       mode: CreateIndexMode.ExistingData,
       initialKey: keyName,
       initialKeyType: KEY_TYPE_MAP[keyType],
-      initialPrefix: extractNamespace(keyNameString),
+      initialPrefix: prefix,
     })
-  }, [history, instanceId, keyName, keyNameString, keyType])
-
-  const prefix = extractNamespace(keyNameString)
+  }, [history, instanceId, keyName, prefix, keyType])
 
   return (
     <>
