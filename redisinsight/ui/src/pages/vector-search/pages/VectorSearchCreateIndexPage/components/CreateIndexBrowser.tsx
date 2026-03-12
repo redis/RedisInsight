@@ -18,9 +18,16 @@ const KEY_TYPE_MAP: Partial<Record<KeyTypes, RedisearchIndexKeyType>> = {
   [KeyTypes.ReJSON]: RedisearchIndexKeyType.JSON,
 }
 
+const REVERSE_KEY_TYPE_MAP: Record<RedisearchIndexKeyType, KeyTypes> = {
+  [RedisearchIndexKeyType.HASH]: KeyTypes.Hash,
+  [RedisearchIndexKeyType.JSON]: KeyTypes.ReJSON,
+}
+
 export const CreateIndexBrowser = () => {
   const {
     showBrowser,
+    initialKey,
+    initialKeyType,
     isFieldsDirty,
     resetFieldsDirty,
     setFields,
@@ -91,7 +98,13 @@ export const CreateIndexBrowser = () => {
   return (
     <>
       <S.BrowserPanel data-testid="vector-search--create-index--browser-panel">
-        <KeysBrowser onSelectKey={handleSelectKey} />
+        <KeysBrowser
+          onSelectKey={handleSelectKey}
+          initialKey={initialKey}
+          initialKeyType={
+            initialKeyType ? REVERSE_KEY_TYPE_MAP[initialKeyType] : undefined
+          }
+        />
       </S.BrowserPanel>
 
       {pendingKey && (

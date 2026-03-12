@@ -8,6 +8,8 @@ import { KeyTypes } from 'uiSrc/constants'
 
 export interface KeysBrowserProps {
   onSelectKey: (key: RedisResponseBuffer, keyType: KeyTypes) => void
+  initialKey?: RedisResponseBuffer
+  initialKeyType?: KeyTypes
 }
 
 export interface KeysBrowserContextValue {

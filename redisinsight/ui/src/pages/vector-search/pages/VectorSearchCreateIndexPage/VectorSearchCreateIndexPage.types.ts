@@ -22,6 +22,7 @@ export interface ExistingDataLocationState {
   mode: CreateIndexMode.ExistingData
   initialKey?: RedisResponseBuffer
   initialKeyType?: RedisearchIndexKeyType
+  initialPrefix?: string
 }
 
 export type CreateIndexLocationState =

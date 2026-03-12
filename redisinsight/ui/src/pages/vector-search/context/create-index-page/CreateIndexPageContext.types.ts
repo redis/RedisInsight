@@ -1,5 +1,6 @@
 import { RowSelectionState } from 'uiSrc/components/base/layout/table'
 import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 import { IndexField } from '../../components/index-details/IndexDetails.types'
 import { FieldTypeModalMode } from '../../components/field-type-modal'
@@ -32,6 +33,12 @@ export interface CreateIndexPageContextValue {
 
   /** Whether the KeysBrowser panel should be shown (browse mode). */
   showBrowser: boolean
+
+  /** Pre-selected key from navigation (triggers auto-selection on mount). */
+  initialKey?: RedisResponseBuffer
+
+  /** Pre-selected key type from navigation. */
+  initialKeyType?: RedisearchIndexKeyType
 
   /** Display title for the page header. */
   displayName: string
@@ -95,5 +102,8 @@ export interface CreateIndexPageProviderProps {
   mode?: CreateIndexMode
   sampleData?: SampleDataContent
   showBrowser?: boolean
+  initialKey?: RedisResponseBuffer
+  initialKeyType?: RedisearchIndexKeyType
+  initialPrefix?: string
   children: React.ReactNode
 }

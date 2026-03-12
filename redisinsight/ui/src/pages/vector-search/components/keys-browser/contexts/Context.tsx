@@ -51,6 +51,8 @@ const SUPPORTED_TABS = [KeyTypes.Hash, KeyTypes.ReJSON] as const
 
 export const Provider = ({
   onSelectKey,
+  initialKey,
+  initialKeyType,
   children,
 }: KeysBrowserProps & { children: React.ReactNode }) => {
   const { instanceId } = useParams<{ instanceId: string }>()
@@ -68,7 +70,9 @@ export const Provider = ({
   } = useSelector(appContextBrowser)
   const dispatch = useDispatch()
 
-  const [activeTab, setActiveTab] = useState<KeyTypes>(SUPPORTED_TABS[0])
+  const [activeTab, setActiveTab] = useState<KeyTypes>(
+    initialKeyType ?? SUPPORTED_TABS[0],
+  )
 
   const keyListRef = useRef<KeyTreeHandle | null>(null)
 
@@ -104,6 +108,16 @@ export const Provider = ({
       dispatch(setBrowserKeyListDataLoaded(SearchMode.Pattern, false))
     }
   }, [])
+
+  const initialKeyAppliedRef = useRef(false)
+
+  useEffect(() => {
+    if (initialKey && !initialKeyAppliedRef.current && keysState.keys.length) {
+      initialKeyAppliedRef.current = true
+      dispatch(loadKeyInfoSuccess({ name: initialKey }))
+      onSelectKey(initialKey, activeTab)
+    }
+  }, [initialKey, keysState.keys.length, onSelectKey, activeTab])
 
   const loadMoreItems = useCallback(
     (
