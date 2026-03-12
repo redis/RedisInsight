@@ -15,6 +15,7 @@ export interface QueryEditorWrapperProps {
   query: string
   setQuery: (script: string) => void
   onSubmit: (value?: string) => void
+  isLoading?: boolean
 }
 
 export enum EditorTab {
