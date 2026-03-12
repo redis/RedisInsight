@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTheme } from '@redis-ui/styles'
 
 import { Text } from 'uiSrc/components/base/text'
 
@@ -6,7 +7,8 @@ import { IndexDetails } from '../../../components/index-details'
 import { IndexDetailsMode } from '../../../components/index-details/IndexDetails.types'
 import { CommandView } from '../../../components/command-view'
 import { FieldTypeModal } from '../../../components/field-type-modal'
-import SampleDataModalImg from 'uiSrc/assets/img/vector-search/sample-data-modal-img.svg?react'
+import SelectDataImg from 'uiSrc/assets/img/vector-search/vector-search-browser.svg?react'
+import SelectDataImgDark from 'uiSrc/assets/img/vector-search/vector-search-browser-dark.svg?react'
 
 import {
   CreateIndexTab,
@@ -18,6 +20,7 @@ import { CreateIndexFooter } from './CreateIndexFooter'
 import * as S from '../VectorSearchCreateIndexPage.styles'
 
 export const CreateIndexContent = () => {
+  const theme = useTheme()
   const {
     mode,
     activeTab,
@@ -33,6 +36,8 @@ export const CreateIndexContent = () => {
   } = useCreateIndexPage()
 
   const isExistingData = mode === CreateIndexMode.ExistingData
+  const EmptyStateImg =
+    theme.name === 'dark' ? SelectDataImgDark : SelectDataImg
 
   if (isExistingData && fields.length === 0) {
     return (
@@ -43,7 +48,7 @@ export const CreateIndexContent = () => {
             justify="center"
             data-testid="vector-search--create-index--empty-state"
           >
-            <SampleDataModalImg />
+            <EmptyStateImg />
             <Text size="M" color="secondary">
               The indexing schema will appear here once you{'\n'}
               select a key from the browser on the left.
