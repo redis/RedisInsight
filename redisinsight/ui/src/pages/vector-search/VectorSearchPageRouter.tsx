@@ -15,8 +15,8 @@ export const VectorSearchPageRouter = ({
 }: VectorSearchPageRouterProps) => (
   <VectorSearchProvider>
     <Switch>
-      {routes.map((route, i) => (
-        <RouteWithSubRoutes key={i} {...route} />
+      {routes.map((route) => (
+        <RouteWithSubRoutes key={route.path} {...route} />
       ))}
     </Switch>
   </VectorSearchProvider>
