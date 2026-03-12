@@ -1,3 +1,8 @@
+---
+description: Critical safety guardrails for protected branches - prevents direct commits, pushes, and force pushes to main, latest, and release branches
+alwaysApply: true
+---
+
 # Git Safety Rules for AI Agents
 
 ## 🚫 CRITICAL: Protected Branch Rules
