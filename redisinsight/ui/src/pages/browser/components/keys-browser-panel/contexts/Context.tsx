@@ -165,7 +165,7 @@ export const Context = ({
     ) {
       loadKeys(viewType)
     }
-  }, [searchMode])
+  }, [searchMode, isDataLoaded])
 
   const loadMoreItems = useCallback(
     (
