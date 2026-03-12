@@ -11,7 +11,12 @@ import {
   RiTooltip,
   FeatureFlagComponent,
 } from 'uiSrc/components'
-import { HIDE_LAST_REFRESH, FeatureFlags, KeyTypes } from 'uiSrc/constants'
+import {
+  HIDE_LAST_REFRESH,
+  FeatureFlags,
+  KeyTypes,
+  SEARCHABLE_KEY_TYPES,
+} from 'uiSrc/constants'
 import {
   deleteSelectedKeyAction,
   editKey,
@@ -44,6 +49,7 @@ import { KeyDetailsHeaderTTL } from './components/key-details-header-ttl'
 import { KeyDetailsHeaderDelete } from './components/key-details-header-delete'
 import { KeyDetailsHeaderSizeLength } from './components/key-details-header-size-length'
 
+import * as S from './KeyDetailsHeader.styles'
 import styles from './styles.module.scss'
 
 export interface KeyDetailsHeaderProps {
@@ -80,7 +86,7 @@ const KeyDetailsHeader = ({
   const { id: instanceId } = useSelector(connectedInstanceSelector)
   const { viewType } = useSelector(keysSelector)
 
-  const isSearchableType = type === KeyTypes.Hash || type === KeyTypes.ReJSON
+  const isSearchableType = SEARCHABLE_KEY_TYPES.includes(type as KeyTypes)
   const { indexes, status: keyIndexedStatus } = useIsKeyIndexed(
     isSearchableType ? keyName || '' : '',
   )
@@ -157,9 +163,9 @@ const KeyDetailsHeader = ({
                 </FlexItem>
                 <KeyDetailsHeaderName onEditKey={handleEditKey} />
                 <FlexItem grow />
-                <FeatureFlagComponent name={FeatureFlags.vectorSearchV2}>
-                  {(isSearchableType &&
-                    keyIndexedStatus === UseIsKeyIndexedStatus.Ready && (
+                {isSearchableType &&
+                  keyIndexedStatus === UseIsKeyIndexedStatus.Ready && (
+                    <FeatureFlagComponent name={FeatureFlags.vectorSearchV2}>
                       <FlexItem>
                         {indexes.length > 0 ? (
                           <ViewIndexDataButton
@@ -167,19 +173,20 @@ const KeyDetailsHeader = ({
                             instanceId={instanceId}
                           />
                         ) : (
-                          <MakeSearchableButton
-                            keyName={keyBuffer!}
-                            keyNameString={keyName ?? ''}
-                            keyType={type}
-                            instanceId={instanceId}
-                          />
+                          <S.MakeSearchableWrapper>
+                            <MakeSearchableButton
+                              keyName={keyBuffer!}
+                              keyNameString={keyName ?? ''}
+                              keyType={type as KeyTypes}
+                              instanceId={instanceId}
+                            />
+                          </S.MakeSearchableWrapper>
                         )}
                       </FlexItem>
-                    )) ||
-                    undefined}
-                </FeatureFlagComponent>
+                    </FeatureFlagComponent>
+                  )}
                 {!arePanelsCollapsed && (
-                  <FlexItem style={{ marginRight: '8px' }}>
+                  <FlexItem>
                     <FullScreen
                       isFullScreen={isFullScreen}
                       onToggleFullScreen={onToggleFullScreen}
