@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useParams } from 'react-router-dom'
 
@@ -6,11 +6,7 @@ import { IRedisCommand } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { LoadingContent } from 'uiSrc/components/base/layout'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
-import {
-  fetchRedisearchListAction,
-  redisearchListSelector,
-} from 'uiSrc/slices/browser/redisearch'
-import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { redisearchListSelector } from 'uiSrc/slices/browser/redisearch'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { mergeRedisCommandsSpecs } from 'uiSrc/utils/transformers/redisCommands'
 import SEARCH_COMMANDS_SPEC from 'uiSrc/pages/workbench/data/supported_commands.json'
@@ -122,7 +118,6 @@ export const QueryEditorWrapper = ({
   const { loading: isCommandsLoading, spec: COMMANDS_SPEC } = useSelector(
     appRedisCommandsSelector,
   )
-  const { id: connectedInstanceId } = useSelector(connectedInstanceSelector)
   const { data: indexes = [] } = useSelector(redisearchListSelector)
 
   const REDIS_COMMANDS = useMemo(
@@ -133,11 +128,6 @@ export const QueryEditorWrapper = ({
       ) as IRedisCommand[],
     [COMMANDS_SPEC, SEARCH_COMMANDS_SPEC],
   )
-
-  useEffect(() => {
-    if (!connectedInstanceId) return
-    dispatch(fetchRedisearchListAction(undefined, undefined, false))
-  }, [connectedInstanceId])
 
   if (isCommandsLoading) {
     return (
