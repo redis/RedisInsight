@@ -87,6 +87,20 @@ export const CreateIndexBrowser = () => {
     setPendingKey(null)
   }, [])
 
+  const initialKeyLoadedRef = useRef(false)
+
+  useEffect(() => {
+    if (
+      !showBrowser &&
+      initialKey &&
+      initialKeyType &&
+      !initialKeyLoadedRef.current
+    ) {
+      initialKeyLoadedRef.current = true
+      loadKeyData(initialKey, initialKeyType)
+    }
+  }, [showBrowser, initialKey, initialKeyType, loadKeyData])
+
   if (!showBrowser) return null
 
   return (
