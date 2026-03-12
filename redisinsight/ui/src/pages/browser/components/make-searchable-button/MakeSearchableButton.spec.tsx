@@ -65,6 +65,7 @@ describe('MakeSearchableButton', () => {
         mode: CreateIndexMode.ExistingData,
         initialKey: mockKeyBuffer,
         initialKeyType: RedisearchIndexKeyType.HASH,
+        initialPrefix: 'bikes:',
       },
     )
   })
