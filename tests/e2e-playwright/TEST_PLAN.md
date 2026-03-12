@@ -199,7 +199,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 1.8 Decompression
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Confirm setting a decompression type works |
+| ✅ | main | Confirm setting a decompression type works |
 
 ---
 
