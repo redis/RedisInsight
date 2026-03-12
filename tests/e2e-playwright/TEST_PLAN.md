@@ -193,8 +193,8 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 1.7 Certificate and Encryption Handling
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Store credentials encrypted in local keychain when encryption enabled |
-| 🔲 | main | Display warning when encryption disabled and credentials stored as plaintext |
+| ✅ | main | Store credentials encrypted in local keychain when encryption enabled |
+| ✅ | main | Display warning when encryption disabled and credentials stored as plaintext |
 
 ### 1.8 Decompression
 | Status | Group | Test Case |
