@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useParams } from 'react-router-dom'
 
@@ -82,6 +82,7 @@ export const QueryEditorWrapper = ({
   const decodedIndexName = indexName ? decodeURIComponent(indexName) : ''
 
   const dispatch = useDispatch()
+  const queryLibraryService = useRef(new QueryLibraryService()).current
 
   const handleSaveSubmit = useCallback(
     async (name: string) => {
@@ -89,7 +90,6 @@ export const QueryEditorWrapper = ({
 
       setIsSaving(true)
       try {
-        const queryLibraryService = new QueryLibraryService()
         const result = await queryLibraryService.create(instanceId, {
           indexName: decodedIndexName,
           name,
