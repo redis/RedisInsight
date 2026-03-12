@@ -1,5 +1,7 @@
 ---
-alwaysApply: true
+description: Jest and Testing Library standards, test patterns, faker usage, renderComponent helper, and mocking
+globs: "**/*.spec.{ts,tsx}"
+alwaysApply: false
 ---
 
 # Testing Standards and Practices
