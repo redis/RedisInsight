@@ -268,7 +268,7 @@ const ONBOARDING_FEATURES = {
       const { id: connectedInstanceId = '' } = useSelector(
         connectedInstanceSelector,
       )
-      const { [FeatureFlags.vectorSearchV2]: vectorSearchV2Feature } =
+      const { [FeatureFlags.vectorSearchV2]: vectorSearchFeature } =
         useSelector(appFeatureFlagsFeaturesSelector)
 
       const dispatch = useDispatch()
@@ -301,7 +301,7 @@ const ONBOARDING_FEATURES = {
           dispatch(resetCliHelperSettings())
           dispatch(setMonitorInitialState())
 
-          if (vectorSearchV2Feature?.flag) {
+          if (vectorSearchFeature?.flag) {
             history.push(Pages.vectorSearch(connectedInstanceId))
           } else {
             dispatch(setOnboardNextStep())
@@ -359,7 +359,7 @@ const ONBOARDING_FEATURES = {
       const { id: connectedInstanceId = '' } = useSelector(
         connectedInstanceSelector,
       )
-      const { [FeatureFlags.vectorSearchV2]: vectorSearchV2Feature } =
+      const { [FeatureFlags.vectorSearchV2]: vectorSearchFeature } =
         useSelector(appFeatureFlagsFeaturesSelector)
       const [firstIndex, setFirstIndex] = useState<Nullable<string>>(null)
 
@@ -445,7 +445,7 @@ const ONBOARDING_FEATURES = {
         ),
         onSkip: () => sendClosedTelemetryEvent(...telemetryArgs),
         onBack: () => {
-          if (vectorSearchV2Feature?.flag) {
+          if (vectorSearchFeature?.flag) {
             history.push(Pages.vectorSearch(connectedInstanceId))
           } else {
             history.push(Pages.browser(connectedInstanceId))

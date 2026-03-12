@@ -53,7 +53,7 @@ const OnboardingTour = (props: Props) => {
     onSkip = () => {},
   } = Inner ? Inner() : {}
 
-  const { [FeatureFlags.vectorSearchV2]: vectorSearchV2Feature } = useSelector(
+  const { [FeatureFlags.vectorSearchV2]: vectorSearchFeature } = useSelector(
     appFeatureFlagsFeaturesSelector,
   )
 
@@ -61,7 +61,7 @@ const OnboardingTour = (props: Props) => {
   const isLastStep = currentStep === totalSteps
 
   const { displayStep, displayTotalSteps } = useMemo(() => {
-    const skippedSteps = vectorSearchV2Feature?.flag ? 0 : 1
+    const skippedSteps = vectorSearchFeature?.flag ? 0 : 1
     return {
       displayStep:
         currentStep > OnboardingSteps.VectorSearchPage
@@ -69,7 +69,7 @@ const OnboardingTour = (props: Props) => {
           : currentStep,
       displayTotalSteps: totalSteps - skippedSteps,
     }
-  }, [currentStep, totalSteps, vectorSearchV2Feature?.flag])
+  }, [currentStep, totalSteps, vectorSearchFeature?.flag])
 
   const dispatch = useDispatch()
 

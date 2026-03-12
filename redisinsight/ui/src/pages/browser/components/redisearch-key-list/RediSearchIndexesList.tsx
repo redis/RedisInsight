@@ -64,7 +64,7 @@ const RediSearchIndexesList = (props: Props) => {
 
   const selectedValue = selectedIndex ? bufferToString(selectedIndex) : ''
   const featureFlags = useSelector(appFeatureFlagsFeaturesSelector)
-  const isVectorSearchV2 =
+  const isVectorSearch =
     featureFlags?.[FeatureFlags.vectorSearchV2]?.flag ?? false
 
   const dispatch = useDispatch()
@@ -155,7 +155,7 @@ const RediSearchIndexesList = (props: Props) => {
     }
   })
 
-  if (isVectorSearchV2) {
+  if (isVectorSearch) {
     options.push({
       value: CREATE,
       inputDisplay: <span>CREATE</span>,
