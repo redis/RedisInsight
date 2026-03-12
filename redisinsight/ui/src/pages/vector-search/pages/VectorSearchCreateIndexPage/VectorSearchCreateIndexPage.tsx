@@ -11,6 +11,7 @@ import {
   hasPreselectedKey,
 } from '../../utils'
 import { CreateIndexPageProvider } from '../../context/create-index-page'
+import { CreateIndexOnboardingProvider } from '../../context/create-index-onboarding'
 import { CreateIndexHeader } from './components/CreateIndexHeader'
 import { CreateIndexContent } from './components/CreateIndexContent'
 import { CreateIndexBrowser } from './components/CreateIndexBrowser'
@@ -41,14 +42,16 @@ export const VectorSearchCreateIndexPage = () => {
       sampleData={sampleData}
       showBrowser={showBrowser}
     >
-      <S.PageWrapper data-testid="vector-search--create-index--page">
-        <CreateIndexBrowser />
+      <CreateIndexOnboardingProvider>
+        <S.PageWrapper data-testid="vector-search--create-index--page">
+          <CreateIndexBrowser />
 
-        <S.RightPanel>
-          <CreateIndexHeader />
-          <CreateIndexContent />
-        </S.RightPanel>
-      </S.PageWrapper>
+          <S.RightPanel>
+            <CreateIndexHeader />
+            <CreateIndexContent />
+          </S.RightPanel>
+        </S.PageWrapper>
+      </CreateIndexOnboardingProvider>
     </CreateIndexPageProvider>
   )
 }

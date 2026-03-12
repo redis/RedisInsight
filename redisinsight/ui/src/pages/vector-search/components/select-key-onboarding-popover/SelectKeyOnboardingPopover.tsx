@@ -52,7 +52,7 @@ const PopoverContent = ({ children, onDismiss }: PopoverContentProps) => {
             Select a key to get started
           </Text>
         </Col>
-        <Col gap="s">
+        <Col gap="m">
           <Text size="m" color="secondary">
             We&apos;ll use the selected key to generate a suggested indexing
             schema. Redis will index all keys with the same prefix, not just

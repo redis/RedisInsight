@@ -198,7 +198,7 @@ test.describe('Database List', () => {
       await databaseList.cancelSelection();
     });
 
-    test('should delete multiple databases', async ({ apiHelper, databasesPage }) => {
+    test('should delete multiple databases', async ({ databasesPage }) => {
       const { databaseList } = databasesPage;
 
       // Create two temporary databases for deletion

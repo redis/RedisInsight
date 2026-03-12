@@ -87,4 +87,21 @@ describe('SelectKeyOnboardingPopover', () => {
       screen.queryByTestId('select-key-onboarding-content'),
     ).not.toBeInTheDocument()
   })
+
+  it('should auto-dismiss when a key is selected', () => {
+    ;(localStorageService.get as jest.Mock).mockReturnValue(null)
+    ;(selectedKeyDataSelector as jest.Mock).mockReturnValue({
+      name: 'user:1',
+    })
+
+    renderComponent()
+
+    expect(localStorageService.set).toHaveBeenCalledWith(
+      BrowserStorageItem.vectorSearchSelectKeyOnboarding,
+      true,
+    )
+    expect(
+      screen.queryByTestId('select-key-onboarding-content'),
+    ).not.toBeInTheDocument()
+  })
 })
