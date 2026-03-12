@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTheme } from '@redis-ui/styles'
 
 import { Modal } from 'uiSrc/components/base/display'
 import { Text } from 'uiSrc/components/base/text'
@@ -10,6 +11,7 @@ import { CancelIcon } from 'uiSrc/components/base/icons'
 import { Row } from 'uiSrc/components/base/layout/flex'
 
 import MakeSearchableImg from 'uiSrc/assets/img/vector-search/make-searchable-modal-img.svg?react'
+import MakeSearchableImgDark from 'uiSrc/assets/img/vector-search/make-searchable-modal-img-dark.svg?react'
 
 import { MakeSearchableModalProps } from './MakeSearchableModal.types'
 import * as S from './MakeSearchableModal.styles'
@@ -22,6 +24,10 @@ export const MakeSearchableModal = ({
   onConfirm,
   onCancel,
 }: MakeSearchableModalProps) => {
+  const theme = useTheme()
+  const Illustration =
+    theme.name === 'dark' ? MakeSearchableImgDark : MakeSearchableImg
+
   if (!isOpen) return null
 
   return (
@@ -35,7 +41,7 @@ export const MakeSearchableModal = ({
 
         <S.Header>
           <S.Illustration>
-            <MakeSearchableImg />
+            <Illustration />
           </S.Illustration>
 
           <S.Heading

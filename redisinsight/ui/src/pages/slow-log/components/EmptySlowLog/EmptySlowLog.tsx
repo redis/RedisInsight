@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTheme } from '@redis-ui/styles'
 import { DurationUnits } from 'uiSrc/constants'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { convertNumberByUnits } from 'uiSrc/pages/slow-log/utils'
@@ -6,6 +7,7 @@ import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { Text } from 'uiSrc/components/base/text'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import NoQueryResultsIcon from 'uiSrc/assets/img/vector-search/no-query-results.svg'
+import NoQueryResultsIconDark from 'uiSrc/assets/img/vector-search/no-query-results-dark.svg'
 
 import { StyledImage } from './EmptySlowLog.styles'
 
@@ -16,11 +18,14 @@ export interface Props {
 
 const EmptySlowLog = (props: Props) => {
   const { durationUnit, slowlogLogSlowerThan } = props
+  const theme = useTheme()
+  const icon =
+    theme.name === 'dark' ? NoQueryResultsIconDark : NoQueryResultsIcon
 
   return (
     <Col justify="center" grow data-testid="empty-slow-log">
       <Col align="center" justify="center" gap="xxl">
-        <StyledImage as="img" src={NoQueryResultsIcon} alt="No Slow Logs" />
+        <StyledImage as="img" src={icon} alt="No Slow Logs" />
         <Col align="center" gap="m" grow={false}>
           <Title size="M" color="primary">
             No Slow Logs found
