@@ -1,5 +1,7 @@
-import { ToastVariant } from '@redis-ui/components'
-import { RiToastType } from 'uiSrc/components/base/display/toast/RiToast'
+import {
+  RiToastType,
+  ToastVariant,
+} from 'uiSrc/components/base/display/toast/RiToast'
 
 interface NotificationMessage {
   title: string

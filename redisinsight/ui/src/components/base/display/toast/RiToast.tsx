@@ -4,6 +4,7 @@ import {
   toast,
   ToastContentParams,
   ToastOptions,
+  ToastVariant,
 } from '@redis-ui/components'
 import { ToastOptions as RcToastOptions } from 'react-toastify'
 
@@ -54,3 +55,5 @@ riToast.Variant = toast.Variant
 riToast.Position = toast.Position
 riToast.dismiss = toast.dismiss
 riToast.isActive = toast.isActive
+
+export type { ToastVariant }

@@ -1,6 +1,8 @@
 import React from 'react'
-import { Badge } from '@redis-ui/components'
+
+import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import { FIELD_TYPE_OPTIONS } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+
 import { FieldTagProps } from './FieldTag.types'
 import { FIELD_TYPE_BADGE_VARIANT_MAP } from './constants'
 
@@ -10,7 +12,7 @@ export const FieldTag = ({ tag, dataTestId }: FieldTagProps) => {
   )?.text
 
   return tagLabel ? (
-    <Badge
+    <RiBadge
       label={tagLabel}
       data-testid={dataTestId ?? 'field-tag'}
       variant={FIELD_TYPE_BADGE_VARIANT_MAP[tag]}
