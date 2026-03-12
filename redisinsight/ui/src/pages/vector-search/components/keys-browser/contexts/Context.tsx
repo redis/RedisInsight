@@ -2,6 +2,7 @@ import React, {
   createContext,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -103,7 +104,7 @@ export const Provider = ({
       dispatch(resetBrowserTree())
       dispatch(setBrowserKeyListDataLoaded(SearchMode.Pattern, false))
     }
-  }, [])
+  }, [dispatch, loadKeys])
 
   const loadMoreItems = useCallback(
     (
@@ -201,31 +202,50 @@ export const Provider = ({
     [],
   )
 
-  const value: KeysBrowserContextValue = {
-    loading,
-    headerLoading: loading,
+  const value: KeysBrowserContextValue = useMemo(
+    () => ({
+      loading,
+      headerLoading: loading,
 
-    keysState,
-    keysError,
-    commonFilterType: filter as Nullable<KeyTypes>,
-    scrollTopPosition: scrollPatternTopPosition,
+      keysState,
+      keysError,
+      commonFilterType: filter as Nullable<KeyTypes>,
+      scrollTopPosition: scrollPatternTopPosition,
 
-    activeTab,
+      activeTab,
 
-    isSearched,
-    isFiltered,
+      isSearched,
+      isFiltered,
 
-    keyListRef,
+      keyListRef,
 
-    selectKey,
+      selectKey,
 
-    handleRefreshKeys,
-    handleEnableAutoRefresh,
-    handleChangeAutoRefreshRate,
-    handleTabChange,
-    loadMoreItems,
-    handleScanMore,
-  }
+      handleRefreshKeys,
+      handleEnableAutoRefresh,
+      handleChangeAutoRefreshRate,
+      handleTabChange,
+      loadMoreItems,
+      handleScanMore,
+    }),
+    [
+      loading,
+      keysState,
+      keysError,
+      filter,
+      scrollPatternTopPosition,
+      activeTab,
+      isSearched,
+      isFiltered,
+      selectKey,
+      handleRefreshKeys,
+      handleEnableAutoRefresh,
+      handleChangeAutoRefreshRate,
+      handleTabChange,
+      loadMoreItems,
+      handleScanMore,
+    ],
+  )
 
   return (
     <KeysBrowserContext.Provider value={value}>
