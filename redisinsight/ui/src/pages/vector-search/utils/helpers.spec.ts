@@ -17,6 +17,7 @@ import {
   isExistingDataState,
   isSampleDataState,
   hasPreselectedKey,
+  parseCreateIndexSearchParams,
   EMPTY_INDEX_NAME_LABEL,
   getIndexDisplayName,
   resolveIndexName,
@@ -134,6 +135,69 @@ describe('hasPreselectedKey', () => {
     const result = hasPreselectedKey(undefined)
 
     expect(result).toBe(false)
+  })
+})
+
+describe('parseCreateIndexSearchParams', () => {
+  it('should return sampleData state for sampleData param', () => {
+    const result = parseCreateIndexSearchParams(
+      `?sampleData=${SampleDataContent.E_COMMERCE_DISCOVERY}`,
+    )
+
+    expect(result).toEqual({
+      sampleData: SampleDataContent.E_COMMERCE_DISCOVERY,
+    })
+  })
+
+  it('should return existing data state for mode=existingData', () => {
+    const result = parseCreateIndexSearchParams('?mode=existingData')
+
+    expect(result).toEqual({
+      mode: CreateIndexMode.ExistingData,
+      initialKey: undefined,
+      initialKeyType: undefined,
+      initialPrefix: undefined,
+    })
+  })
+
+  it('should parse initialKeyType and initialPrefix', () => {
+    const result = parseCreateIndexSearchParams(
+      `?mode=existingData&initialKeyType=${RedisearchIndexKeyType.JSON}&initialPrefix=bikes:`,
+    )
+
+    expect(result).toEqual({
+      mode: CreateIndexMode.ExistingData,
+      initialKey: undefined,
+      initialKeyType: RedisearchIndexKeyType.JSON,
+      initialPrefix: 'bikes:',
+    })
+  })
+
+  it('should parse initialKey as RedisResponseBuffer', () => {
+    const result = parseCreateIndexSearchParams(
+      '?mode=existingData&initialKey=bikes:1001',
+    )
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        mode: CreateIndexMode.ExistingData,
+        initialKey: expect.objectContaining({
+          type: RedisResponseBufferType.Buffer,
+        }),
+      }),
+    )
+  })
+
+  it('should return undefined for unknown params', () => {
+    const result = parseCreateIndexSearchParams('?unknown=value')
+
+    expect(result).toBeUndefined()
+  })
+
+  it('should return undefined for empty search', () => {
+    const result = parseCreateIndexSearchParams('')
+
+    expect(result).toBeUndefined()
   })
 })
 

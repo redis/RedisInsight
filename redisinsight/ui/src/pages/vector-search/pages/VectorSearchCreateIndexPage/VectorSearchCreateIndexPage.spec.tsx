@@ -36,9 +36,8 @@ const setupRouterMocks = (sampleData?: string) => {
     .fn()
     .mockReturnValue({ instanceId: 'test-instance' })
   reactRouterDom.useLocation = jest.fn().mockReturnValue({
-    state: sampleData ? { sampleData } : undefined,
     pathname: '/test-instance/vector-search/create-index',
-    search: '',
+    search: sampleData ? `?sampleData=${sampleData}` : '',
     hash: '',
   })
 }

@@ -1,9 +1,40 @@
+import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+import { stringToBuffer } from 'uiSrc/utils'
+
+import { SampleDataContent } from '../components/pick-sample-data-modal/PickSampleDataModal.types'
 import {
   CreateIndexLocationState,
   CreateIndexMode,
   ExistingDataLocationState,
   SampleDataLocationState,
 } from '../pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
+
+/**
+ * Parses create-index navigation params from a query string.
+ * HashRouter (Electron) does not support location.state, so callers
+ * encode params in the search string instead.
+ */
+export const parseCreateIndexSearchParams = (
+  search: string,
+): CreateIndexLocationState | undefined => {
+  const params = new URLSearchParams(search)
+  const sampleData = params.get('sampleData') as SampleDataContent | null
+  if (sampleData) return { sampleData }
+
+  const mode = params.get('mode')
+  if (mode === CreateIndexMode.ExistingData) {
+    const initialKeyStr = params.get('initialKey')
+    return {
+      mode: CreateIndexMode.ExistingData,
+      initialKey: initialKeyStr ? stringToBuffer(initialKeyStr) : undefined,
+      initialKeyType:
+        (params.get('initialKeyType') as RedisearchIndexKeyType) || undefined,
+      initialPrefix: params.get('initialPrefix') || undefined,
+    }
+  }
+
+  return undefined
+}
 
 /** Narrows location state to ExistingData mode (user-provided key). */
 export const isExistingDataState = (

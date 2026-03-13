@@ -3,12 +3,12 @@ import { useLocation, useParams, Redirect } from 'react-router-dom'
 
 import { Pages } from 'uiSrc/constants'
 
-import type { CreateIndexLocationState } from './VectorSearchCreateIndexPage.types'
 import { CreateIndexMode } from './VectorSearchCreateIndexPage.types'
 import {
   isExistingDataState,
   isSampleDataState,
   hasPreselectedKey,
+  parseCreateIndexSearchParams,
 } from '../../utils'
 import { CreateIndexPageProvider } from '../../context/create-index-page'
 import { CreateIndexOnboardingProvider } from '../../context/create-index-onboarding'
@@ -18,10 +18,10 @@ import { CreateIndexBrowser } from './components/CreateIndexBrowser'
 import * as S from './VectorSearchCreateIndexPage.styles'
 
 export const VectorSearchCreateIndexPage = () => {
-  const location = useLocation<CreateIndexLocationState>()
+  const { search } = useLocation()
   const { instanceId } = useParams<{ instanceId: string }>()
 
-  const state = location.state
+  const state = parseCreateIndexSearchParams(search)
   const mode = isExistingDataState(state)
     ? CreateIndexMode.ExistingData
     : CreateIndexMode.SampleData
