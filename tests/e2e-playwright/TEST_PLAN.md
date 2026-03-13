@@ -701,21 +701,79 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ## 8. Vector Search
 
-### 8.1 Index Management
+### 8.1 Navigation and RQE Availability
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | View indexes |
-| 🔲 | main | Create index |
-| 🔲 | main | Delete index |
-| 🔲 | main | View index info |
+| 🔲 | main | Navigate to Vector Search page from navbar tab |
+| 🔲 | main | Show RQE not available screen for Redis without search module |
+| 🔲 | main | Show welcome screen when no indexes exist and RQE is available |
 
-### 8.2 Query
+### 8.2 Create Index - Onboarding
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Execute vector search query |
-| 🔲 | main | View search results |
-| 🔲 | main | Save query |
-| 🔲 | main | Load saved query |
+| 🔲 | main | Complete onboarding flow through all steps |
+| 🔲 | main | Skip onboarding |
+| 🔲 | main | Onboarding not shown after completion |
+
+### 8.3 Create Index - Sample Data
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| 🔲 | main | Create index with sample data via "Start querying" and verify navigation to query page |
+| 🔲 | main | Open "See index definition" and verify pre-filled schema on create index page |
+| 🔲 | main | Verify sample queries are seeded after sample data index creation |
+
+### 8.4 Create Index - Existing Data
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| 🔲 | main | Select key and verify schema is inferred from key data |
+| 🔲 | main | Edit key prefix |
+| 🔲 | main | Add field to index schema |
+| 🔲 | main | Remove field from index schema |
+| 🔲 | main | Change field indexing type |
+| 🔲 | main | Toggle between table view and command view |
+| 🔲 | main | Submit index creation and verify navigation to query page |
+
+### 8.5 List Indexes
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| 🔲 | main | View indexes table with columns and create index entry points |
+| 🔲 | main | Query index action navigates to query page |
+| 🔲 | main | Browse index action navigates to browser page |
+| 🔲 | main | View index details in side panel |
+| 🔲 | main | Delete index with confirmation |
+
+### 8.6 Query Page
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| 🔲 | main | Run query and view results |
+| 🔲 | main | Expand and collapse query result card |
+| 🔲 | main | Re-run query from result card |
+| 🔲 | main | Delete individual result card |
+| 🔲 | main | Clear all results |
+| 🔲 | main | Explain query action |
+| 🔲 | main | Profile query action |
+
+### 8.7 Save Query
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| 🔲 | main | Save query and verify it appears in query library |
+| 🔲 | main | Cancel save query modal |
+
+### 8.8 Query Library
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| 🔲 | main | View saved queries and search in library |
+| 🔲 | main | Run query from library |
+| 🔲 | main | Load query into editor from library |
+| 🔲 | main | Delete query from library with confirmation |
+
+### 8.9 Browser Page Integration
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| 🔲 | main | View index data from indexed key (single and multiple indexes) |
+| 🔲 | main | Navigate to create index from non-indexed key header |
+| 🔲 | main | Browse index data from browser |
+| 🔲 | main | Show RQE not available when clicking Make searchable on Redis without search module |
 
 ---
 
