@@ -34,6 +34,7 @@ enum ApiEndpoints {
   KEY_INFO = 'keys/get-info',
   KEY_NAME = 'keys/name',
   KEY_TTL = 'keys/ttl',
+  KEYS_NAMESPACE_SEARCHABLE = 'keys/get-namespace-searchable',
 
   ZSET = 'zSet',
   ZSET_MEMBERS = 'zSet/members',
