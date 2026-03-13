@@ -43,8 +43,8 @@ export const VectorSearchCreateIndexPage = () => {
       sampleData={sampleData}
       showBrowser={showBrowser}
       initialKey={preselected ? existingState?.initialKey : undefined}
-      initialKeyType={existingState?.initialKeyType}
-      initialPrefix={existingState?.initialPrefix}
+      initialKeyType={preselected ? existingState?.initialKeyType : undefined}
+      initialPrefix={preselected ? existingState?.initialPrefix : undefined}
     >
       <CreateIndexOnboardingProvider instanceId={instanceId}>
         <S.PageWrapper data-testid="vector-search--create-index--page">
