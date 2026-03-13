@@ -56,6 +56,7 @@ export type RedisClientCommandReply =
 export enum RedisFeature {
   HashFieldsExpiration = 'HashFieldsExpiration',
   UnlinkCommand = 'UnlinkCommand',
+  ScanTypeFilter = 'ScanTypeFilter',
 }
 
 const CLIENT_DATABASE_FIELDS: (keyof Database)[] = ['providerDetails'];
@@ -186,6 +187,13 @@ export abstract class RedisClient extends EventEmitter2 {
           const redisVersion = await this.getRedisVersion();
           // UNLINK command was introduced in Redis 4.0.0
           return redisVersion && semverCompare('4.0.0', redisVersion) < 1;
+        } catch (e) {
+          return false;
+        }
+      case RedisFeature.ScanTypeFilter:
+        try {
+          const redisVersion = await this.getRedisVersion();
+          return redisVersion && semverCompare('6.0', redisVersion) < 1;
         } catch (e) {
           return false;
         }
