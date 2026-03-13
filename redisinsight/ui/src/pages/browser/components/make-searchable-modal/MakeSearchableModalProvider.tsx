@@ -52,9 +52,6 @@ export const MakeSearchableModalProvider = ({
   )
 
   const handleConfirm = useCallback(() => {
-    if (!config) return
-    setConfig(null)
-
     if (
       !config ||
       !config?.initialKey ||
@@ -63,6 +60,8 @@ export const MakeSearchableModalProvider = ({
     ) {
       return
     }
+
+    setConfig(null)
 
     const search = new URLSearchParams()
     search.set('mode', CreateIndexMode.ExistingData)
