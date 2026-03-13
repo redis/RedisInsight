@@ -1,6 +1,8 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
+import { ICommandTokenType } from 'uiSrc/constants'
+import { REDIS_OPEN_TIMESTAMP_PICKER_COMMAND } from 'uiSrc/pages/workbench/constants'
 import { useQueryEditorContext } from '../context/query-editor.context'
 import { useRedisCompletions } from './useRedisCompletions'
 import { useMonacoRedisEditor } from './useMonacoRedisEditor'
@@ -37,8 +39,20 @@ export const useQueryEditor = (
     isDedicatedEditorOpen,
   } = options
 
-  const { monacoObjects, query, setQuery, commands, indexes, activeIndexName } =
-    useQueryEditorContext()
+  const {
+    monacoObjects,
+    query,
+    setQuery,
+    commands,
+    indexes,
+    activeIndexName,
+    openTimestampPicker,
+  } = useQueryEditorContext()
+
+  const [currentArgIsUnixTime, setCurrentArgIsUnixTime] = useState(false)
+  const onCurrentArgChange = useCallback((arg: { type?: string } | null) => {
+    setCurrentArgIsUnixTime(arg?.type === ICommandTokenType.UnixTime)
+  }, [])
 
   // Autocomplete & suggestions
   const completions = useRedisCompletions({
@@ -46,6 +60,7 @@ export const useQueryEditor = (
     commands,
     indexes,
     activeIndexName,
+    onCurrentArgChange,
   })
 
   function handleEditorSetup(
@@ -54,6 +69,18 @@ export const useQueryEditor = (
   ) {
     // Register language providers
     completions.setupProviders(monaco)
+
+    // Register command for "Insert timestamp..." completion item
+    monaco.editor.registerCommand(REDIS_OPEN_TIMESTAMP_PICKER_COMMAND, () =>
+      openTimestampPicker?.(),
+    )
+
+    // Context menu: Insert timestamp
+    editor.addAction({
+      id: 'redis.insertTimestamp',
+      label: 'Insert timestamp',
+      run: () => openTimestampPicker?.(),
+    })
 
     // Base key handler
     editor.onKeyDown((e: monacoEditor.IKeyboardEvent) => {
@@ -148,5 +175,6 @@ export const useQueryEditor = (
     completions,
     onExitSnippetMode,
     triggerUpdateCursorPosition,
+    currentArgIsUnixTime,
   }
 }

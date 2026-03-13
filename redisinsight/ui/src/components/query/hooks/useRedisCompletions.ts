@@ -44,6 +44,7 @@ export const useRedisCompletions = ({
   commands,
   indexes,
   activeIndexName,
+  onCurrentArgChange,
 }: UseRedisCompletionsProps): UseRedisCompletionsReturn => {
   const [selectedIndex, setSelectedIndex] = useState('')
 
@@ -165,6 +166,7 @@ export const useRedisCompletions = ({
 
     if (position.column === 1) {
       helpWidgetRef.current.isOpen = false
+      onCurrentArgChange?.(null)
       if (command?.info) return asSuggestionsRef([])
       return asSuggestionsRef(
         getCommandsSuggestions(commands, range),
@@ -174,6 +176,7 @@ export const useRedisCompletions = ({
     }
 
     if (!command?.info) {
+      onCurrentArgChange?.(null)
       return asSuggestionsRef(
         getCommandsSuggestions(commands, range),
         false,
@@ -214,6 +217,9 @@ export const useRedisCompletions = ({
         isOpen,
         data: data || helpWidgetRef.current.data,
       }
+      onCurrentArgChange?.(data?.currentArg ?? null)
+    } else {
+      onCurrentArgChange?.(null)
     }
 
     return suggestions

@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { LoadingContent } from 'uiSrc/components/base/layout'
 import { IRedisCommand } from 'uiSrc/constants'
+import { commandHasUnixTimeArgs } from 'uiSrc/components/datetime-picker/utils'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import {
   fetchRedisearchListAction,
@@ -48,6 +49,14 @@ const QueryWrapper = (props: Props) => {
     [COMMANDS_SPEC, SEARCH_COMMANDS_SPEC],
   )
 
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
+  const showTimestampPicker = useMemo(
+    () => commandHasUnixTimeArgs(REDIS_COMMANDS, query),
+    [REDIS_COMMANDS, query],
+  )
+  const openTimestampPicker = useCallback(() => setIsDatePickerOpen(true), [])
+  const onCloseDatePicker = useCallback(() => setIsDatePickerOpen(false), [])
+
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -76,6 +85,10 @@ const QueryWrapper = (props: Props) => {
         indexes,
         isLoading: false,
         onSubmit,
+        openTimestampPicker,
+        onCloseDatePicker,
+        showTimestampPicker,
+        isDatePickerOpen,
       }}
     >
       <Query

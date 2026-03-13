@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback } from 'react'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
 import { ResultsMode, RunQueryMode } from 'uiSrc/slices/interfaces'
@@ -16,7 +16,6 @@ import { Row } from 'uiSrc/components/base/layout/flex'
 import { QADivider } from 'uiSrc/components/query/query-actions/QueryActions.styles'
 import { ToggleButton, EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { DateTimePicker } from 'uiSrc/components/datetime-picker'
-import { commandHasUnixTimeArgs } from 'uiSrc/components/datetime-picker/utils'
 import { useQueryEditorContext } from 'uiSrc/components/query/context/query-editor.context'
 
 export interface Props {
@@ -63,20 +62,20 @@ const QueryActions = (props: Props) => {
     onSubmit,
   } = props
 
-  const { monacoObjects, query, commands } = useQueryEditorContext()
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
-
-  const showTimestampPicker = useMemo(
-    () => commandHasUnixTimeArgs(commands, query),
-    [commands, query],
-  )
+  const {
+    monacoObjects,
+    isDatePickerOpen,
+    onCloseDatePicker,
+    openTimestampPicker,
+    showTimestampPicker,
+  } = useQueryEditorContext()
 
   const handleTimestampInsert = useCallback(
     (timestamp: number) => {
       insertTimestampAtCursor(monacoObjects.current?.editor, timestamp)
-      setIsDatePickerOpen(false)
+      onCloseDatePicker?.()
     },
-    [monacoObjects],
+    [monacoObjects, onCloseDatePicker],
   )
 
   const KeyBoardTooltipContent = KEYBOARD_SHORTCUTS?.workbench?.runQuery && (
@@ -137,8 +136,8 @@ const QueryActions = (props: Props) => {
       {showTimestampPicker && (
         <>
           <RiPopover
-            isOpen={isDatePickerOpen}
-            closePopover={() => setIsDatePickerOpen(false)}
+            isOpen={isDatePickerOpen ?? false}
+            closePopover={() => onCloseDatePicker?.()}
             anchorPosition="upRight"
             trigger={
               <RiTooltip
@@ -147,7 +146,11 @@ const QueryActions = (props: Props) => {
                 data-testid="timestamp-picker-tooltip"
               >
                 <EmptyButton
-                  onClick={() => setIsDatePickerOpen((prev) => !prev)}
+                  onClick={() =>
+                    isDatePickerOpen
+                      ? onCloseDatePicker?.()
+                      : openTimestampPicker?.()
+                  }
                   data-testid="btn-datetime-picker"
                   aria-label="Timestamp picker"
                 >

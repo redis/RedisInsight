@@ -5,7 +5,7 @@ import {
   CursorContext,
   FoundCommandArgument,
 } from 'uiSrc/pages/workbench/types'
-import { IRedisCommand } from 'uiSrc/constants'
+import { IRedisCommand, ICommandTokenType } from 'uiSrc/constants'
 import {
   asSuggestionsRef,
   getFieldsSuggestions,
@@ -19,6 +19,7 @@ import {
   DefinedArgumentName,
   FIELD_START_SYMBOL,
   ModuleCommandPrefix,
+  REDIS_OPEN_TIMESTAMP_PICKER_COMMAND,
 } from 'uiSrc/pages/workbench/constants'
 import { findSuggestionsByQueryArgs } from 'uiSrc/pages/workbench/utils/query'
 
@@ -53,12 +54,26 @@ export const findSuggestionsByArg = (
   const foundArg = findSuggestionsByQueryArgs(listOfCommands, beforeOffsetArgs)
 
   if (!command.name.startsWith(ModuleCommandPrefix.RediSearch)) {
+    const isUnixTimeArg = foundArg?.stopArg?.type === ICommandTokenType.UnixTime
+    const timestampSuggestion = isUnixTimeArg
+      ? [
+          {
+            label: 'Insert timestamp...',
+            kind: monacoEditor.languages.CompletionItemKind.Snippet,
+            range: cursorContext.range,
+            command: {
+              id: REDIS_OPEN_TIMESTAMP_PICKER_COMMAND,
+              title: 'Open date/time picker',
+            },
+          },
+        ]
+      : []
     return {
       helpWidget: {
         isOpen: !!foundArg,
         data: { parent: foundArg?.parent, currentArg: foundArg?.stopArg },
       },
-      suggestions: asSuggestionsRef([]),
+      suggestions: asSuggestionsRef(timestampSuggestion),
     }
   }
 

@@ -18,6 +18,9 @@ import {
   useDslSyntax,
   useQueryEditor,
 } from 'uiSrc/components/query'
+import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { Text } from 'uiSrc/components/base/text'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import { aroundQuotesRegExp, options, TUTORIALS } from './constants'
 import { Props } from './Query.types'
 import * as S from './Query.styles'
@@ -34,8 +37,15 @@ const Query = (props: Props) => {
     onClear = () => {},
   } = props
 
-  const { monacoObjects, query, setQuery, isLoading, onSubmit } =
-    useQueryEditorContext()
+  const {
+    monacoObjects,
+    query,
+    setQuery,
+    isLoading,
+    onSubmit,
+    showTimestampPicker,
+    openTimestampPicker,
+  } = useQueryEditorContext()
 
   const {
     items: execHistoryItems,
@@ -72,7 +82,7 @@ const Query = (props: Props) => {
   const dsl = useDslSyntax({ monacoObjects })
 
   // Shared editor lifecycle with Workbench-specific extensions.
-  const { editorDidMount, onChange } = useQueryEditor({
+  const { editorDidMount, onChange, currentArgIsUnixTime } = useQueryEditor({
     onSubmit: handleSubmit,
 
     shouldTriggerParameterHints: () =>
@@ -141,6 +151,16 @@ const Query = (props: Props) => {
                 tutorials={TUTORIALS}
                 source="advanced_workbench_editor"
               />
+              {showTimestampPicker && currentArgIsUnixTime && (
+                <Row align="center" gap="m">
+                  <EmptyButton
+                    onClick={() => openTimestampPicker?.()}
+                    data-testid="insert-timestamp-help"
+                  >
+                    <Text size="s">Insert timestamp</Text>
+                  </EmptyButton>
+                </Row>
+              )}
               <QueryActions
                 isLoading={combinedIsLoading}
                 activeMode={activeMode}
