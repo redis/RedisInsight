@@ -1,4 +1,10 @@
-import React, { createContext, useCallback, useContext, useState } from 'react'
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react'
 import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
@@ -56,8 +62,13 @@ export const MakeSearchableModalProvider = ({
     })
   }, [config, history, instanceId])
 
+  const contextValue = useMemo(
+    () => ({ openMakeSearchableModal }),
+    [openMakeSearchableModal],
+  )
+
   return (
-    <MakeSearchableModalContext.Provider value={{ openMakeSearchableModal }}>
+    <MakeSearchableModalContext.Provider value={contextValue}>
       {children}
       <MakeSearchableModal
         isOpen={config !== null}
