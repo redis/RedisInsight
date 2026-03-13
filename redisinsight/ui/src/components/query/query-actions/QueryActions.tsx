@@ -31,7 +31,7 @@ const insertTimestampAtCursor = (
   editor?: Nullable<monacoEditor.editor.IStandaloneCodeEditor>,
   timestamp?: number,
 ) => {
-  if (!editor || !timestamp) {
+  if (!editor || timestamp == null) {
     return
   }
 
