@@ -2,6 +2,7 @@ import React from 'react'
 import { useLocation, useParams, Redirect } from 'react-router-dom'
 
 import { Pages } from 'uiSrc/constants'
+import { Loader } from 'uiSrc/components/base/display'
 
 import type { CreateIndexLocationState } from './VectorSearchCreateIndexPage.types'
 import { CreateIndexMode } from './VectorSearchCreateIndexPage.types'
@@ -10,16 +11,41 @@ import {
   isSampleDataState,
   hasPreselectedKey,
 } from '../../utils'
+import { useRedisInstanceCompatibility } from '../../hooks'
+import { RqeNotAvailable } from '../../components/rqe-not-available'
 import { CreateIndexPageProvider } from '../../context/create-index-page'
 import { CreateIndexOnboardingProvider } from '../../context/create-index-onboarding'
 import { CreateIndexHeader } from './components/CreateIndexHeader'
 import { CreateIndexContent } from './components/CreateIndexContent'
 import { CreateIndexBrowser } from './components/CreateIndexBrowser'
 import * as S from './VectorSearchCreateIndexPage.styles'
+import * as PageStyles from '../styles'
 
 export const VectorSearchCreateIndexPage = () => {
   const location = useLocation<CreateIndexLocationState>()
   const { instanceId } = useParams<{ instanceId: string }>()
+  const { hasRedisearch, loading: compatibilityLoading } =
+    useRedisInstanceCompatibility()
+
+  if (hasRedisearch === false && compatibilityLoading === false) {
+    return (
+      <PageStyles.PageWrapper data-testid="vector-search-create-index--rqe-not-available">
+        <RqeNotAvailable />
+      </PageStyles.PageWrapper>
+    )
+  }
+
+  if (compatibilityLoading !== false) {
+    return (
+      <PageStyles.PageWrapper
+        data-testid="vector-search-create-index--loading"
+        align="center"
+        justify="center"
+      >
+        <Loader size="xl" data-testid="vector-search-create-index-loader" />
+      </PageStyles.PageWrapper>
+    )
+  }
 
   const state = location.state
   const mode = isExistingDataState(state)
