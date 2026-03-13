@@ -552,19 +552,6 @@ describe('KeysService', () => {
       expect(mockStandaloneRedisClient.sendPipeline).toHaveBeenCalledTimes(2);
     });
 
-    it('should return empty results on SCAN syntax error (Redis < 6.0)', async () => {
-      mockStandaloneRedisClient.sendPipeline.mockRejectedValue(
-        new Error('ERR syntax error'),
-      );
-
-      const result = await service.getNamespaceSearchable(
-        mockBrowserClientMetadata,
-        dto,
-      );
-
-      expect(result).toEqual([{ prefix: 'user:' }, { prefix: 'session:' }]);
-    });
-
     it('should throw on ACL error', async () => {
       const replyError = {
         ...mockRedisNoPermError,

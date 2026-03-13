@@ -277,8 +277,8 @@ export class KeysService {
 
   /**
    * Check if namespaces contain searchable keys (hash/json)
-   * Uses SCAN with TYPE filter (Redis 6.0+), fully iterating
-   * until a match is found or the keyspace is exhausted
+   * Uses SCAN with TYPE filter, fully iterating until a match
+   * is found or the keyspace is exhausted
    * @param clientMetadata
    * @param dto
    */
