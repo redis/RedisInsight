@@ -107,7 +107,7 @@ const Node = ({
     if (checkSearchable) {
       checkSearchable(folderPrefix, path)
     }
-  }, [checkSearchable])
+  }, [checkSearchable, folderPrefix, path])
 
   const handleClick = () => {
     if (isLeaf) {
