@@ -61,6 +61,9 @@ export const CreateIndexPageProvider = ({
   sampleData,
   mode: modeProp,
   showBrowser: showBrowserProp = true,
+  initialKey: initialKeyProp,
+  initialKeyType: initialKeyTypeProp,
+  initialPrefix: initialPrefixProp,
   children,
 }: CreateIndexPageProviderProps) => {
   const mode = modeProp ?? CreateIndexMode.SampleData
@@ -136,6 +139,7 @@ export const CreateIndexPageProvider = ({
   // --- Index name ---
   const [indexName, setIndexName] = useState<string>(() => {
     if (isSampleData && sampleData) return getIndexNameBySampleData(sampleData)
+    if (initialPrefixProp) return deriveIndexName(initialPrefixProp)
     return deriveIndexName('')
   })
 
@@ -143,12 +147,13 @@ export const CreateIndexPageProvider = ({
   const [indexPrefix, setIndexPrefix] = useState<string>(() => {
     if (isSampleData && sampleData)
       return getIndexPrefixBySampleData(sampleData)
+    if (initialPrefixProp) return initialPrefixProp
     return DEFAULT_INDEX_PREFIX
   })
 
   // --- Key type (only for existing data) ---
   const [keyType, setKeyType] = useState<RedisearchIndexKeyType>(
-    RedisearchIndexKeyType.HASH,
+    initialKeyTypeProp ?? RedisearchIndexKeyType.HASH,
   )
 
   // --- Row selection ---
@@ -419,6 +424,8 @@ export const CreateIndexPageProvider = ({
       setActiveTab: changeActiveTab,
       isReadonly,
       showBrowser,
+      initialKey: initialKeyProp,
+      initialKeyType: initialKeyTypeProp,
       displayName,
       indexName,
       setIndexName,
@@ -452,6 +459,8 @@ export const CreateIndexPageProvider = ({
       changeActiveTab,
       isReadonly,
       showBrowser,
+      initialKeyProp,
+      initialKeyTypeProp,
       displayName,
       indexName,
       indexPrefix,

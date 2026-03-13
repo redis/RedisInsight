@@ -3,6 +3,10 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { KeyTypes } from 'uiSrc/constants'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+import {
+  KEY_TYPE_MAP,
+  REVERSE_KEY_TYPE_MAP,
+} from 'uiSrc/pages/vector-search/constants'
 import { bufferToString } from 'uiSrc/utils'
 
 import KeysBrowser from '../../../components/keys-browser/KeysBrowser'
@@ -13,14 +17,11 @@ import { useCreateIndexPage } from '../../../context/create-index-page'
 import { ConfirmKeyChangeModal } from './ConfirmKeyChangeModal'
 import * as S from '../VectorSearchCreateIndexPage.styles'
 
-const KEY_TYPE_MAP: Partial<Record<KeyTypes, RedisearchIndexKeyType>> = {
-  [KeyTypes.Hash]: RedisearchIndexKeyType.HASH,
-  [KeyTypes.ReJSON]: RedisearchIndexKeyType.JSON,
-}
-
 export const CreateIndexBrowser = () => {
   const {
     showBrowser,
+    initialKey,
+    initialKeyType,
     isFieldsDirty,
     resetFieldsDirty,
     setFields,
@@ -35,6 +36,7 @@ export const CreateIndexBrowser = () => {
     skippedFields: loadedSkippedFields,
   } = useLoadKeyData()
   const prevLoadedFieldsRef = useRef(loadedFields)
+  const initialKeyLoadedRef = useRef(false)
 
   const [pendingKey, setPendingKey] = useState<{
     key: RedisResponseBuffer
@@ -86,12 +88,30 @@ export const CreateIndexBrowser = () => {
     setPendingKey(null)
   }, [])
 
+  useEffect(() => {
+    if (
+      !showBrowser &&
+      initialKey &&
+      initialKeyType &&
+      !initialKeyLoadedRef.current
+    ) {
+      initialKeyLoadedRef.current = true
+      loadKeyData(initialKey, initialKeyType)
+    }
+  }, [showBrowser, initialKey, initialKeyType, loadKeyData])
+
   if (!showBrowser) return null
 
   return (
     <>
       <S.BrowserPanel data-testid="vector-search--create-index--browser-panel">
-        <KeysBrowser onSelectKey={handleSelectKey} />
+        <KeysBrowser
+          onSelectKey={handleSelectKey}
+          initialKey={initialKey}
+          initialKeyType={
+            initialKeyType ? REVERSE_KEY_TYPE_MAP[initialKeyType] : undefined
+          }
+        />
       </S.BrowserPanel>
 
       {pendingKey && (

@@ -32,8 +32,9 @@ export const VectorSearchCreateIndexPage = () => {
     return <Redirect to={Pages.vectorSearch(instanceId)} />
   }
 
-  const showBrowser =
-    mode === CreateIndexMode.ExistingData && !hasPreselectedKey(state)
+  const existingState = isExistingDataState(state) ? state : undefined
+  const preselected = hasPreselectedKey(state)
+  const showBrowser = mode === CreateIndexMode.ExistingData && !preselected
 
   return (
     <CreateIndexPageProvider
@@ -41,6 +42,9 @@ export const VectorSearchCreateIndexPage = () => {
       mode={mode}
       sampleData={sampleData}
       showBrowser={showBrowser}
+      initialKey={preselected ? existingState?.initialKey : undefined}
+      initialKeyType={preselected ? existingState?.initialKeyType : undefined}
+      initialPrefix={preselected ? existingState?.initialPrefix : undefined}
     >
       <CreateIndexOnboardingProvider instanceId={instanceId}>
         <S.PageWrapper data-testid="vector-search--create-index--page">
