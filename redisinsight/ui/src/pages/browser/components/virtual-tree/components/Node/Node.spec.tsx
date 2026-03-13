@@ -473,7 +473,9 @@ describe('Node', () => {
           getMetadata: mockGetMetadata,
         }
 
-        const connectionState = { connections: { instances: { connectedInstance: { id: 'test' } } } }
+        const connectionState = {
+          connections: { instances: { connectedInstance: { id: 'test' } } },
+        }
         const store = {
           getState: () => ({ ...initialState, ...connectionState }),
           subscribe: jest.fn(),
