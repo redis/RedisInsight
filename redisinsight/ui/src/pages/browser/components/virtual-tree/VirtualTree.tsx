@@ -4,7 +4,7 @@ import { debounce, get, set } from 'lodash'
 import { TreeWalker, TreeWalkerValue, FixedSizeTree as Tree } from 'react-vtree'
 import { useDispatch } from 'react-redux'
 
-import { bufferToString, Nullable } from 'uiSrc/utils'
+import { bufferToString, Nullable, stringToBuffer } from 'uiSrc/utils'
 import { useDisposableWebworker } from 'uiSrc/services'
 import { DEFAULT_TREE_SORTING, KeyTypes } from 'uiSrc/constants'
 import { RedisString } from 'uiSrc/slices/interfaces'
@@ -184,7 +184,7 @@ const VirtualTree = (props: VirtualTreeProps) => {
       const update: Record<string, any> = { searchableChecked: true }
       if (item.key) {
         update.firstSearchableKey = {
-          nameBuffer: item.key.name,
+          nameBuffer: stringToBuffer(item.key.name),
           nameString: item.key.name,
           type: item.key.type,
         }
