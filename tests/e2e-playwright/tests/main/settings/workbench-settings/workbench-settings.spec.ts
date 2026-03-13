@@ -1,10 +1,14 @@
 import { test, expect } from '../../../../fixtures/base';
+import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
+import { DatabaseInstance } from 'e2eSrc/types';
 
 /**
  * Workbench Settings tests (TEST_PLAN.md: 7.3 Workbench Settings)
  *
- * Verifies Workbench section controls are visible and that changing
- * editor cleanup and pipeline commands settings persists after navigation.
+ * Verifies Workbench section controls are visible, that changing
+ * editor cleanup and pipeline commands settings persists after navigation,
+ * and that those settings take effect in the Workbench (editor cleanup clears
+ * or keeps the editor after running a command).
  *
  * Note: "Configure command timeout" is N/A -- it's a per-database setting, not on the Settings page.
  */
@@ -68,5 +72,56 @@ test.describe('Workbench Settings', () => {
     await expect(settingsPage.pipelineCommandsValue).toHaveText(
       String(restoreValue),
     );
+  });
+});
+
+test.describe('Workbench Settings take effect', () => {
+  let database: DatabaseInstance;
+
+  test.beforeAll(async ({ apiHelper }) => {
+    const config = StandaloneConfigFactory.build({
+      name: `test-wb-settings-${Date.now().toString(36)}`,
+    });
+    database = await apiHelper.createDatabase(config);
+  });
+
+  test.afterAll(async ({ apiHelper }) => {
+    if (database?.id) {
+      await apiHelper.deleteDatabase(database.id);
+    }
+  });
+
+  test('editor cleanup when enabled clears editor after running command', async ({
+    settingsPage,
+    workbenchPage,
+  }) => {
+    await settingsPage.goto();
+    await settingsPage.expandWorkbench();
+    if (!(await settingsPage.isEditorCleanupEnabled())) {
+      await settingsPage.toggleEditorCleanup();
+    }
+
+    await workbenchPage.goto(database.id);
+    await workbenchPage.executeCommand('PING');
+
+    const editorContent = await workbenchPage.editor.getCommand();
+    expect(editorContent.trim()).toBe('');
+  });
+
+  test('editor cleanup when disabled keeps command in editor after run', async ({
+    settingsPage,
+    workbenchPage,
+  }) => {
+    await settingsPage.goto();
+    await settingsPage.expandWorkbench();
+    if (await settingsPage.isEditorCleanupEnabled()) {
+      await settingsPage.toggleEditorCleanup();
+    }
+
+    await workbenchPage.goto(database.id);
+    await workbenchPage.executeCommand('PING');
+
+    const editorContent = await workbenchPage.editor.getCommand();
+    expect(editorContent.trim()).toContain('PING');
   });
 });
