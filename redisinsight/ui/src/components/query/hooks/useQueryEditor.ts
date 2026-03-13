@@ -51,7 +51,7 @@ export const useQueryEditor = (
 
   const [currentArgIsUnixTime, setCurrentArgIsUnixTime] = useState(false)
   const onCurrentArgChange = useCallback((arg: { type?: string } | null) => {
-    setCurrentArgIsUnixTime(arg?.type === ICommandTokenType.UnixTime)
+    setCurrentArgIsUnixTime(isArgUnixTimePosition(arg))
   }, [])
 
   const openTimestampPickerRef = useRef(openTimestampPicker)
@@ -183,4 +183,16 @@ export const useQueryEditor = (
     triggerUpdateCursorPosition,
     currentArgIsUnixTime,
   }
+}
+
+/** True if the current argument is unix-time or a oneof/block containing unix-time (e.g. SET EXAT/PXAT). */
+function isArgUnixTimePosition(
+  arg: { type?: string; arguments?: Array<{ type?: string }> } | null,
+): boolean {
+  if (!arg) return false
+  if (arg.type === ICommandTokenType.UnixTime) return true
+  return (
+    Array.isArray(arg.arguments) &&
+    arg.arguments.some((a) => a.type === ICommandTokenType.UnixTime)
+  )
 }
