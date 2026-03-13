@@ -81,7 +81,7 @@ export const VectorSearchProvider = ({
       dismissSampleDataModal()
       history.push({
         pathname: Pages.vectorSearchCreateIndex(instanceId),
-        state: { sampleData: dataset },
+        search: `?sampleData=${dataset}`,
       })
     },
     [dismissSampleDataModal, history, instanceId],
@@ -150,7 +150,7 @@ export const VectorSearchProvider = ({
 
       history.push({
         pathname: Pages.vectorSearchCreateIndex(instanceId),
-        state: { mode: CreateIndexMode.ExistingData },
+        search: `?mode=${CreateIndexMode.ExistingData}`,
       })
     },
     [history, instanceId],
