@@ -34,6 +34,9 @@ export class SettingsPage extends BasePage {
   // Workbench settings
   readonly editorCleanupSwitch: Locator;
   readonly pipelineCommandsText: Locator;
+  readonly pipelineCommandsValue: Locator;
+  readonly pipelineCommandsInput: Locator;
+  readonly pipelineApplyButton: Locator;
 
   // Advanced settings
   readonly advancedWarning: Locator;
@@ -88,6 +91,9 @@ export class SettingsPage extends BasePage {
       .locator('[data-testid="switch-workbench-cleanup"]')
       .or(page.getByRole('switch').filter({ hasText: /Clear the Editor/i }));
     this.pipelineCommandsText = page.getByText(/Commands in pipeline/i);
+    this.pipelineCommandsValue = page.getByTestId('pipeline-bunch-value');
+    this.pipelineCommandsInput = page.getByTestId('pipeline-bunch-input');
+    this.pipelineApplyButton = page.getByTestId('apply-btn');
 
     // Advanced settings
     this.advancedWarning = page.getByRole('alert').filter({ hasText: /Advanced settings/i });
@@ -238,5 +244,38 @@ export class SettingsPage extends BasePage {
   async areNotificationsEnabled(): Promise<boolean> {
     const checked = await this.notificationSwitch.getAttribute('aria-checked');
     return checked === 'true';
+  }
+
+  /**
+   * Toggle editor cleanup switch
+   */
+  async toggleEditorCleanup(): Promise<void> {
+    await this.editorCleanupSwitch.click();
+  }
+
+  /**
+   * Check if editor cleanup is enabled (switch is on)
+   */
+  async isEditorCleanupEnabled(): Promise<boolean> {
+    const checked = await this.editorCleanupSwitch.getAttribute('aria-checked');
+    return checked === 'true';
+  }
+
+  /**
+   * Get current pipeline commands value (displayed number)
+   */
+  async getPipelineCommandsValue(): Promise<string> {
+    return (await this.pipelineCommandsValue.textContent()) ?? '';
+  }
+
+  /**
+   * Set pipeline commands value and apply (enters edit mode, fills input, clicks Apply)
+   */
+  async setPipelineCommandsAndApply(value: number): Promise<void> {
+    await this.pipelineCommandsValue.click();
+    await this.pipelineCommandsInput.waitFor({ state: 'visible' });
+    await this.pipelineCommandsInput.clear();
+    await this.pipelineCommandsInput.fill(String(value));
+    await this.pipelineApplyButton.click();
   }
 }
