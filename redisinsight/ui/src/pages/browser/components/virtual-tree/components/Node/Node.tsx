@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { NodePublicState } from 'react-vtree/dist/es/Tree'
 import { useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
 import * as keys from 'uiSrc/constants/keys'
 import { Maybe } from 'uiSrc/utils'
@@ -9,6 +10,7 @@ import {
   FeatureFlags,
   KeyTypes,
   ModulesKeyTypes,
+  Pages,
   TEXT_BULK_DELETE_DISABLED_MULTIPLE_DELIMITERS,
   TEXT_BULK_DELETE_DISABLED_UNPRINTABLE,
   TEXT_BULK_DELETE_TOOLTIP,
@@ -19,15 +21,26 @@ import KeyRowName from 'uiSrc/pages/browser/components/key-row-name'
 import KeyRowType from 'uiSrc/pages/browser/components/key-row-type'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { appContextDbConfig } from 'uiSrc/slices/app/context'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { FeatureFlagComponent, RiTooltip } from 'uiSrc/components'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { Flex } from 'uiSrc/components/base/layout/flex'
 import { ColorText, Text } from 'uiSrc/components/base/text'
+import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+import { CreateIndexMode } from 'uiSrc/pages/vector-search/pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
+import { MakeSearchableModal } from 'uiSrc/pages/browser/components/make-searchable-modal'
 import * as S from './Node.styles'
 import { TreeData } from '../../VirtualTree.types'
 import { DeleteKeyPopover } from '../../../delete-key-popover/DeleteKeyPopover'
+
+const KEY_TYPE_TO_INDEX_TYPE: Partial<
+  Record<KeyTypes, RedisearchIndexKeyType>
+> = {
+  [KeyTypes.Hash]: RedisearchIndexKeyType.HASH,
+  [KeyTypes.ReJSON]: RedisearchIndexKeyType.JSON,
+}
 
 const MAX_NESTING_LEVEL = 20
 
@@ -55,6 +68,9 @@ const Node = ({
     keyApproximate,
     isSelected,
     delimiters = [],
+    hasSearchableKeys,
+    firstSearchableKey,
+    checkSearchable,
     getMetadata,
     onDelete,
     onDeleteClicked,
@@ -68,14 +84,18 @@ const Node = ({
   } = data
 
   const delimiterView = delimiters.length === 1 ? delimiters[0] : '-'
+  const folderPrefix = `${fullName}${delimiterView}`
 
   const { shownColumns } = useSelector(appContextDbConfig)
+  const { id: instanceId } = useSelector(connectedInstanceSelector)
   const visibleColumns = visibleColumnsProp ?? shownColumns
   const includeSize = visibleColumns.includes(BrowserColumns.Size)
   const includeTTL = visibleColumns.includes(BrowserColumns.TTL)
 
   const [deletePopoverId, setDeletePopoverId] =
     useState<Maybe<string>>(undefined)
+  const [isIndexModalOpen, setIsIndexModalOpen] = useState(false)
+  const history = useHistory()
   const prevIncludeSize = useRef(includeSize)
   const prevIncludeTTL = useRef(includeTTL)
 
@@ -94,6 +114,12 @@ const Node = ({
     prevIncludeSize.current = includeSize
     prevIncludeTTL.current = includeTTL
   }, [includeSize, includeTTL, isLeaf, nameBuffer, size, ttl])
+
+  useEffect(() => {
+    if (checkSearchable) {
+      checkSearchable(folderPrefix, path)
+    }
+  }, [checkSearchable])
 
   const handleClick = () => {
     if (isLeaf) {
@@ -130,6 +156,35 @@ const Node = ({
   const handleDeleteFolder = (e: React.MouseEvent) => {
     e.stopPropagation()
     onDeleteFolder?.(deletePattern, fullName, keyCount)
+  }
+
+  const getKeyPrefix = useCallback(
+    (keyName: string) => {
+      const lastDelimiterIndex = keyName.lastIndexOf(delimiterView)
+      if (lastDelimiterIndex === -1) return folderPrefix
+      return keyName.substring(0, lastDelimiterIndex + delimiterView.length)
+    },
+    [delimiterView, folderPrefix],
+  )
+
+  const handleIndexConfirm = useCallback(() => {
+    setIsIndexModalOpen(false)
+    const prefix = firstSearchableKey?.nameString
+      ? getKeyPrefix(firstSearchableKey.nameString)
+      : folderPrefix
+    history.push(Pages.vectorSearchCreateIndex(instanceId), {
+      mode: CreateIndexMode.ExistingData,
+      initialKey: firstSearchableKey?.nameBuffer,
+      initialKeyType: firstSearchableKey
+        ? KEY_TYPE_TO_INDEX_TYPE[firstSearchableKey.type]
+        : undefined,
+      initialPrefix: prefix,
+    })
+  }, [history, instanceId, firstSearchableKey, folderPrefix, getKeyPrefix])
+
+  const handleIndexClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setIsIndexModalOpen(true)
   }
 
   const hasUnprintableChars =
@@ -192,6 +247,16 @@ const Node = ({
             <S.FolderKeyCount data-testid={`count_${fullName}`}>
               <ColorText color="secondary">{keyCount ?? ''}</ColorText>
             </S.FolderKeyCount>
+            {hasSearchableKeys && (
+              <FeatureFlagComponent name={FeatureFlags.vectorSearchV2}>
+                <S.IndexButton
+                  onClick={handleIndexClick}
+                  data-testid={`index-folder-btn-${fullName}`}
+                >
+                  Index
+                </S.IndexButton>
+              </FeatureFlagComponent>
+            )}
             <FeatureFlagComponent name={FeatureFlags.envDependent}>
               <RiTooltip content={deleteTooltip} position="left">
                 <IconButton
@@ -266,6 +331,15 @@ const Node = ({
     </S.NodeContent>
   )
 
+  const indexModal = hasSearchableKeys && (
+    <MakeSearchableModal
+      isOpen={isIndexModalOpen}
+      prefix={folderPrefix}
+      onConfirm={handleIndexConfirm}
+      onCancel={() => setIsIndexModalOpen(false)}
+    />
+  )
+
   const tooltipContent = (
     <>
       <S.FolderTooltipHeader>
@@ -297,6 +371,7 @@ const Node = ({
       $isEven={index % 2 === 0}
     >
       {NodeItem}
+      {indexModal}
     </S.NodeContainer>
   )
 }

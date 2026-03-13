@@ -473,8 +473,9 @@ describe('Node', () => {
           getMetadata: mockGetMetadata,
         }
 
+        const connectionState = { connections: { instances: { connectedInstance: { id: 'test' } } } }
         const store = {
-          getState: () => initialState,
+          getState: () => ({ ...initialState, ...connectionState }),
           subscribe: jest.fn(),
           dispatch: jest.fn(),
         }
@@ -484,7 +485,7 @@ describe('Node', () => {
           { store },
         )
 
-        store.getState = () => updatedState
+        store.getState = () => ({ ...updatedState, ...connectionState })
 
         rerender(<Node {...instance(mockedProps)} data={mockData} />)
 
@@ -517,6 +518,7 @@ describe('Node', () => {
               },
             },
           },
+          connections: { instances: { connectedInstance: { id: 'test' } } },
         }),
         subscribe: jest.fn(),
         dispatch: jest.fn(),
