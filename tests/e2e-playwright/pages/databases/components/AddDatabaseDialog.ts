@@ -49,6 +49,17 @@ export class AddDatabaseDialog {
   readonly clientCertTextarea: Locator;
   readonly clientPrivateKeyTextarea: Locator;
 
+  // SNI settings
+  readonly sniCheckbox: Locator;
+  readonly sniServernameInput: Locator;
+
+  // SSH settings
+  readonly useSshCheckbox: Locator;
+  readonly sshHostInput: Locator;
+  readonly sshPortInput: Locator;
+  readonly sshUsernameInput: Locator;
+  readonly sshPasswordInput: Locator;
+
   // Decompression & Formatters tab
   readonly enableDecompressionCheckbox: Locator;
   readonly compressorDropdown: Locator;
@@ -101,6 +112,17 @@ export class AddDatabaseDialog {
     this.clientCertNameInput = page.getByTestId('new-tsl-cert-pair-name');
     this.clientCertTextarea = page.getByTestId('new-tls-client-cert');
     this.clientPrivateKeyTextarea = page.getByTestId('new-tls-client-cert-key');
+
+    // SNI settings
+    this.sniCheckbox = page.getByTestId('sni');
+    this.sniServernameInput = page.getByTestId('sni-servername');
+
+    // SSH settings
+    this.useSshCheckbox = page.getByTestId('use-ssh');
+    this.sshHostInput = page.getByTestId('sshHost');
+    this.sshPortInput = page.getByTestId('sshPort');
+    this.sshUsernameInput = page.getByTestId('sshUsername');
+    this.sshPasswordInput = page.getByTestId('sshPassword');
 
     // Decompression & Formatters tab
     this.enableDecompressionCheckbox = page.getByRole('checkbox', { name: /enable automatic data decompression/i });
@@ -259,5 +281,38 @@ export class AddDatabaseDialog {
       await this.clientCertTextarea.fill(tlsConfig.clientCert.certificate);
       await this.clientPrivateKeyTextarea.fill(tlsConfig.clientCert.key);
     }
+  }
+
+  /**
+   * Configure SSH tunnel on the Security tab
+   */
+  async configureSsh(sshConfig: { host: string; port: number; username: string; password?: string }): Promise<void> {
+    await this.securityTab.click();
+
+    const isSshChecked = await this.useSshCheckbox.isChecked();
+    if (!isSshChecked) {
+      await this.useSshCheckbox.click();
+    }
+
+    await this.sshHostInput.fill(sshConfig.host);
+    await this.sshPortInput.fill(sshConfig.port.toString());
+    await this.sshUsernameInput.fill(sshConfig.username);
+
+    if (sshConfig.password) {
+      await this.sshPasswordInput.fill(sshConfig.password);
+    }
+  }
+
+  /**
+   * Enable SNI on the Security tab (TLS must be enabled first)
+   */
+  async enableSni(servername: string): Promise<void> {
+    await this.securityTab.click();
+
+    const isSniChecked = await this.sniCheckbox.isChecked();
+    if (!isSniChecked) {
+      await this.sniCheckbox.click();
+    }
+    await this.sniServernameInput.fill(servername);
   }
 }

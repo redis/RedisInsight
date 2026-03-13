@@ -101,9 +101,9 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 1.1.1 Connection Security
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Add database using SSH tunneling |
-| 🔲 | main | Connect using SNI configuration |
-| 🔲 | main | Connect with TLS using CA, client, and private key certificates |
+| ✅ | main | Add database using SSH tunneling |
+| ✅ | main | Connect using SNI configuration |
+| ✅ | main | Connect with TLS using CA, client, and private key certificates |
 
 ### 1.1.2 Add Database (Advanced)
 | Status | Group | Test Case |
