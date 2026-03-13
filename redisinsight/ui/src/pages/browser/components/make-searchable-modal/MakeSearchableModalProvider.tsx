@@ -56,7 +56,16 @@ export const MakeSearchableModalProvider = ({
     setConfig(null)
     const search = new URLSearchParams()
     search.set('mode', CreateIndexMode.ExistingData)
-    if (config.initialKey)
+if (!config || !config?.initialKey || !config?.initialKeyType || !config?.initialPrefix) {
+   return
+}
+
+const search = new URLSearchParams()
+
+search.set('mode', CreateIndexMode.ExistingData)
+search.set('initialKey', bufferToString(config.initialKey))
+search.set('initialKeyType', config.initialKeyType)
+search.set('initialPrefix', config.initialPrefix)
       search.set('initialKey', bufferToString(config.initialKey))
     if (config.initialKeyType)
       search.set('initialKeyType', config.initialKeyType)
