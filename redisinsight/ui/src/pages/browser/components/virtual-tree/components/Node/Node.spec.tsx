@@ -2,7 +2,6 @@ import React from 'react'
 import { NodePublicState } from 'react-vtree/dist/es/Tree'
 import { instance, mock } from 'ts-mockito'
 import { cloneDeep } from 'lodash'
-import reactRouterDom from 'react-router-dom'
 import {
   cleanup,
   mockedStore,
@@ -16,6 +15,14 @@ import { FeatureFlags, KeyTypes, BrowserColumns } from 'uiSrc/constants'
 import Node from './Node'
 import { TreeData } from '../../VirtualTree.types'
 import { mockVirtualTreeResult } from '../../VirtualTree.spec'
+
+const mockOpenMakeSearchableModal = jest.fn()
+
+jest.mock('uiSrc/pages/browser/components/make-searchable-modal', () => ({
+  useMakeSearchableModal: () => ({
+    openMakeSearchableModal: mockOpenMakeSearchableModal,
+  }),
+}))
 
 const mockDataFullName = 'test'
 const mockedProps = mock<NodePublicState<TreeData>>()
@@ -548,7 +555,6 @@ describe('Node', () => {
   })
 
   describe('Index button (folder searchable)', () => {
-    const mockPush = jest.fn()
     const mockFolderName = 'users'
     const mockFirstSearchableKey = {
       nameBuffer: stringToBuffer('users:1'),
@@ -566,12 +572,8 @@ describe('Node', () => {
       showFolderMetadata: true,
     }
 
-    beforeEach(() => {
-      reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: mockPush })
-    })
-
     afterEach(() => {
-      mockPush.mockClear()
+      mockOpenMakeSearchableModal.mockClear()
     })
 
     it('should render Index button when hasSearchableKeys is true and feature flag is on', () => {
@@ -633,7 +635,7 @@ describe('Node', () => {
       spy.mockRestore()
     })
 
-    it('should open MakeSearchableModal on Index button click', () => {
+    it('should call openMakeSearchableModal on Index button click', () => {
       const spy = mockFeatureFlags({
         [FeatureFlags.vectorSearchV2]: { flag: true },
       })
@@ -648,35 +650,12 @@ describe('Node', () => {
 
       fireEvent.click(screen.getByTestId(`index-folder-btn-${mockFolderName}`))
 
-      expect(
-        screen.getByTestId('make-searchable-modal-body'),
-      ).toBeInTheDocument()
-
-      spy.mockRestore()
-    })
-
-    it('should navigate to create index page on modal confirm', () => {
-      const spy = mockFeatureFlags({
-        [FeatureFlags.vectorSearchV2]: { flag: true },
-      })
-
-      const mockData: TreeData = {
-        ...baseFolderData,
-        hasSearchableKeys: true,
-        firstSearchableKey: mockFirstSearchableKey,
-      }
-
-      render(<Node {...instance(mockedProps)} data={mockData} />)
-
-      fireEvent.click(screen.getByTestId(`index-folder-btn-${mockFolderName}`))
-      fireEvent.click(screen.getByTestId('make-searchable-modal-confirm'))
-
-      expect(mockPush).toHaveBeenCalledTimes(1)
-      expect(mockPush).toHaveBeenCalledWith(
-        expect.stringContaining('/vector-search/'),
+      expect(mockOpenMakeSearchableModal).toHaveBeenCalledTimes(1)
+      expect(mockOpenMakeSearchableModal).toHaveBeenCalledWith(
         expect.objectContaining({
-          initialPrefix: 'users:',
+          prefix: 'users:',
           initialKey: mockFirstSearchableKey.nameBuffer,
+          initialPrefix: 'users:',
         }),
       )
 

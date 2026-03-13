@@ -5,5 +5,4 @@ export interface MakeSearchableButtonProps {
   keyName: RedisResponseBuffer
   keyNameString: string
   keyType: KeyTypes
-  instanceId: string
 }
