@@ -54,13 +54,22 @@ export const findSuggestionsByArg = (
   const foundArg = findSuggestionsByQueryArgs(listOfCommands, beforeOffsetArgs)
 
   if (!command.name.startsWith(ModuleCommandPrefix.RediSearch)) {
-    const isUnixTimeArg = foundArg?.stopArg?.type === ICommandTokenType.UnixTime
+    // Direct unix-time arg (e.g. EXPIREAT timestamp) or oneof containing unix-time (e.g. SET ... PXAT)
+    const stopArg = foundArg?.stopArg
+    const isUnixTimeArg =
+      stopArg &&
+      (stopArg.type === ICommandTokenType.UnixTime ||
+        (Array.isArray(stopArg.arguments) &&
+          stopArg.arguments.some(
+            (a: IRedisCommand) => a.type === ICommandTokenType.UnixTime,
+          )))
     const timestampSuggestion = isUnixTimeArg
       ? [
           {
             label: 'Insert timestamp...',
             kind: monacoEditor.languages.CompletionItemKind.Snippet,
             range: cursorContext.range,
+            insertText: '',
             command: {
               id: REDIS_OPEN_TIMESTAMP_PICKER_COMMAND,
               title: 'Open date/time picker',

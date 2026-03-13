@@ -25,6 +25,7 @@ import {
   COMMANDS_TO_GET_INDEX_INFO,
   COMPOSITE_ARGS,
   EmptySuggestionsIds,
+  REDIS_OPEN_TIMESTAMP_PICKER_COMMAND,
 } from 'uiSrc/pages/workbench/constants'
 import { useDebouncedEffect } from 'uiSrc/services'
 import { fetchRedisearchInfoAction } from 'uiSrc/slices/browser/redisearch'
@@ -45,6 +46,7 @@ export const useRedisCompletions = ({
   indexes,
   activeIndexName,
   onCurrentArgChange,
+  onInsertTimestampFromSuggestion,
 }: UseRedisCompletionsProps): UseRedisCompletionsReturn => {
   const [selectedIndex, setSelectedIndex] = useState('')
 
@@ -299,6 +301,11 @@ export const useRedisCompletions = ({
           helpWidgetRef.current.isOpen = true
           editor.trigger('', 'hideSuggestWidget', null)
           editor.trigger('', 'editor.action.triggerParameterHints', '')
+        }
+        if (
+          item.completion.command?.id === REDIS_OPEN_TIMESTAMP_PICKER_COMMAND
+        ) {
+          onInsertTimestampFromSuggestion?.()
         }
       },
     )

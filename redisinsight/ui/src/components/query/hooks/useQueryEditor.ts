@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
 import { ICommandTokenType } from 'uiSrc/constants'
@@ -54,6 +54,9 @@ export const useQueryEditor = (
     setCurrentArgIsUnixTime(arg?.type === ICommandTokenType.UnixTime)
   }, [])
 
+  const openTimestampPickerRef = useRef(openTimestampPicker)
+  openTimestampPickerRef.current = openTimestampPicker
+
   // Autocomplete & suggestions
   const completions = useRedisCompletions({
     monacoObjects,
@@ -61,6 +64,7 @@ export const useQueryEditor = (
     indexes,
     activeIndexName,
     onCurrentArgChange,
+    onInsertTimestampFromSuggestion: () => openTimestampPickerRef.current?.(),
   })
 
   function handleEditorSetup(
@@ -72,14 +76,16 @@ export const useQueryEditor = (
 
     // Register command for "Insert timestamp..." completion item
     monaco.editor.registerCommand(REDIS_OPEN_TIMESTAMP_PICKER_COMMAND, () =>
-      openTimestampPicker?.(),
+      openTimestampPickerRef.current?.(),
     )
 
-    // Context menu: Insert timestamp
+    // Context menu: Insert timestamp (contextMenuGroupId required for item to show)
     editor.addAction({
       id: 'redis.insertTimestamp',
       label: 'Insert timestamp',
-      run: () => openTimestampPicker?.(),
+      contextMenuGroupId: '9_cutcopypaste',
+      contextMenuOrder: 10,
+      run: () => openTimestampPickerRef.current?.(),
     })
 
     // Base key handler
