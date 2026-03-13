@@ -1,19 +1,14 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
-import { KeyTypes, Pages } from 'uiSrc/constants'
+import { Pages } from 'uiSrc/constants'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
-import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+import { KEY_TYPE_MAP } from 'uiSrc/pages/vector-search/constants'
 import { CreateIndexMode } from 'uiSrc/pages/vector-search/pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
 import { extractNamespace } from 'uiSrc/pages/vector-search/utils'
 import { MakeSearchableModal } from 'uiSrc/pages/browser/components/make-searchable-modal'
 
 import { MakeSearchableButtonProps } from './MakeSearchableButton.types'
-
-const KEY_TYPE_MAP: Partial<Record<KeyTypes, RedisearchIndexKeyType>> = {
-  [KeyTypes.Hash]: RedisearchIndexKeyType.HASH,
-  [KeyTypes.ReJSON]: RedisearchIndexKeyType.JSON,
-}
 
 export const MakeSearchableButton = ({
   keyName,
@@ -24,7 +19,10 @@ export const MakeSearchableButton = ({
   const [isModalOpen, setIsModalOpen] = useState(false)
   const history = useHistory()
 
-  const prefix = extractNamespace(keyNameString)
+  const prefix = useMemo(() => extractNamespace(keyNameString), [keyNameString])
+
+  const handleOpen = useCallback(() => setIsModalOpen(true), [])
+  const handleCancel = useCallback(() => setIsModalOpen(false), [])
 
   const handleConfirm = useCallback(() => {
     setIsModalOpen(false)
@@ -40,17 +38,19 @@ export const MakeSearchableButton = ({
     <>
       <PrimaryButton
         size="small"
-        onClick={() => setIsModalOpen(true)}
+        onClick={handleOpen}
         data-testid="make-searchable-btn"
       >
         Make searchable
       </PrimaryButton>
-      <MakeSearchableModal
-        isOpen={isModalOpen}
-        prefix={prefix || undefined}
-        onConfirm={handleConfirm}
-        onCancel={() => setIsModalOpen(false)}
-      />
+      {isModalOpen && (
+        <MakeSearchableModal
+          isOpen
+          prefix={prefix || undefined}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
+      )}
     </>
   )
 }
