@@ -73,21 +73,18 @@ describe('MakeSearchableButton', () => {
     expect(screen.getByTestId('make-searchable-modal-body')).toBeInTheDocument()
   })
 
-  it('should navigate to create index page with correct state on confirm', async () => {
+  it('should navigate to create index page with correct query params on confirm', async () => {
     renderComponent()
 
     await userEvent.click(screen.getByTestId('make-searchable-btn'))
     await userEvent.click(screen.getByTestId('make-searchable-modal-confirm'))
 
-    expect(mockPush).toHaveBeenCalledWith(
-      Pages.vectorSearchCreateIndex(mockInstanceId),
-      {
-        mode: CreateIndexMode.ExistingData,
-        initialKey: mockKeyBuffer,
-        initialKeyType: RedisearchIndexKeyType.HASH,
-        initialPrefix: 'bikes:',
-      },
-    )
+    expect(mockPush).toHaveBeenCalledWith({
+      pathname: Pages.vectorSearchCreateIndex(mockInstanceId),
+      search:
+        `mode=${CreateIndexMode.ExistingData}&initialKey=test` +
+        `&initialKeyType=${RedisearchIndexKeyType.HASH}&initialPrefix=bikes%3A`,
+    })
   })
 
   it('should map JSON key type to RedisearchIndexKeyType.JSON', async () => {
@@ -97,9 +94,10 @@ describe('MakeSearchableButton', () => {
     await userEvent.click(screen.getByTestId('make-searchable-modal-confirm'))
 
     expect(mockPush).toHaveBeenCalledWith(
-      Pages.vectorSearchCreateIndex(mockInstanceId),
       expect.objectContaining({
-        initialKeyType: RedisearchIndexKeyType.JSON,
+        search: expect.stringContaining(
+          `initialKeyType=${RedisearchIndexKeyType.JSON}`,
+        ),
       }),
     )
   })

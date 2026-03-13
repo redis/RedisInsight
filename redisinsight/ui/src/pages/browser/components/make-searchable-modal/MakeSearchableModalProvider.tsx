@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux'
 import { Pages } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
+import { bufferToString } from 'uiSrc/utils'
 import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { CreateIndexMode } from 'uiSrc/pages/vector-search/pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
 
@@ -53,11 +54,16 @@ export const MakeSearchableModalProvider = ({
   const handleConfirm = useCallback(() => {
     if (!config) return
     setConfig(null)
-    history.push(Pages.vectorSearchCreateIndex(instanceId), {
-      mode: CreateIndexMode.ExistingData,
-      initialKey: config.initialKey,
-      initialKeyType: config.initialKeyType,
-      initialPrefix: config.initialPrefix,
+    const search = new URLSearchParams()
+    search.set('mode', CreateIndexMode.ExistingData)
+    if (config.initialKey)
+      search.set('initialKey', bufferToString(config.initialKey))
+    if (config.initialKeyType)
+      search.set('initialKeyType', config.initialKeyType)
+    if (config.initialPrefix) search.set('initialPrefix', config.initialPrefix)
+    history.push({
+      pathname: Pages.vectorSearchCreateIndex(instanceId),
+      search: search.toString(),
     })
   }, [config, history, instanceId])
 
