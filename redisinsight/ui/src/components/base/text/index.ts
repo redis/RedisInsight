@@ -1,4 +1,5 @@
 export { Text } from './Text'
+export { CodeText } from './CodeText'
 export { ColorText } from './ColorText'
 export { HealthText } from './HealthText'
 export { Title } from './Title'

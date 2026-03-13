@@ -21,6 +21,12 @@ export interface QueryEditorContextValue {
 
   // Callbacks
   onSubmit: (value?: string) => void
+
+  // Timestamp picker (workbench)
+  openTimestampPicker?: () => void
+  onCloseDatePicker?: () => void
+  showTimestampPicker?: boolean
+  isDatePickerOpen?: boolean
 }
 
 export interface QueryEditorContextProviderProps {

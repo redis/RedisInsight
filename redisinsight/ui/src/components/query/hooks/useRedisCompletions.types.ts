@@ -10,6 +10,10 @@ export interface UseRedisCompletionsProps {
   commands: IRedisCommand[]
   indexes: RedisResponseBuffer[]
   activeIndexName?: string
+  /** Called when the current argument (for signature help) changes. */
+  onCurrentArgChange?: (arg: IRedisCommand | null) => void
+  /** Called when user accepts "Insert timestamp..." suggestion (fallback if command does not run). */
+  onInsertTimestampFromSuggestion?: () => void
 }
 
 export interface UseRedisCompletionsReturn {

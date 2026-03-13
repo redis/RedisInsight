@@ -297,6 +297,7 @@
     "rawproto": "^0.7.6",
     "react": "^18.2.0",
     "react-contenteditable": "^3.3.5",
+    "react-day-picker": "^9.14.0",
     "react-dom": "^18.2.0",
     "react-focus-on": "^3.9.4",
     "react-hotkeys-hook": "^3.3.1",

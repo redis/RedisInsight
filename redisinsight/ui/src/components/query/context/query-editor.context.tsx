@@ -16,6 +16,10 @@ const defaultContextValue: QueryEditorContextValue = {
   commands: [],
   indexes: [],
   onSubmit: () => {},
+  openTimestampPicker: undefined,
+  onCloseDatePicker: undefined,
+  showTimestampPicker: false,
+  isDatePickerOpen: false,
 }
 
 const QueryEditorContext =

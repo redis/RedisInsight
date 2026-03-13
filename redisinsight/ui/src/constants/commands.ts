@@ -40,6 +40,7 @@ export enum ICommandTokenType {
   Key = 'key',
   POSIXTime = 'posix time',
   Pattern = 'pattern',
+  UnixTime = 'unix-time',
 }
 
 export interface IRedisCommand {
