@@ -36,6 +36,7 @@ export const CreateIndexBrowser = () => {
     skippedFields: loadedSkippedFields,
   } = useLoadKeyData()
   const prevLoadedFieldsRef = useRef(loadedFields)
+  const initialKeyLoadedRef = useRef(false)
 
   const [pendingKey, setPendingKey] = useState<{
     key: RedisResponseBuffer
@@ -86,8 +87,6 @@ export const CreateIndexBrowser = () => {
   const handleCancelKeyChange = useCallback(() => {
     setPendingKey(null)
   }, [])
-
-  const initialKeyLoadedRef = useRef(false)
 
   useEffect(() => {
     if (
