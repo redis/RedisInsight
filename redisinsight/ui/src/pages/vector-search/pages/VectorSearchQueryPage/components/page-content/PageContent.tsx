@@ -92,6 +92,7 @@ export const PageContent = ({
                   query={query}
                   setQuery={setQuery}
                   onSubmit={handleSubmit}
+                  isLoading={processing}
                 />
               </ResizablePanel>
 

@@ -109,9 +109,7 @@ export const CreateIndexOnboardingProvider = ({
     setCurrentStep((prev) => {
       if (!prev) return null
 
-      const currentIndex = ONBOARDING_STEPS.indexOf(
-        prev as (typeof ONBOARDING_STEPS)[number],
-      )
+      const currentIndex = ONBOARDING_STEPS.findIndex((step) => step === prev)
 
       if (currentIndex === -1) return null
 
@@ -138,9 +136,7 @@ export const CreateIndexOnboardingProvider = ({
     setCurrentStep((prev) => {
       if (!prev) return null
 
-      const currentIndex = ONBOARDING_STEPS.indexOf(
-        prev as (typeof ONBOARDING_STEPS)[number],
-      )
+      const currentIndex = ONBOARDING_STEPS.findIndex((step) => step === prev)
 
       if (currentIndex <= 0) return prev
 
