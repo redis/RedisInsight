@@ -3,6 +3,11 @@ import reactRouterDom from 'react-router-dom'
 import { cleanup, render, screen, fireEvent } from 'uiSrc/utils/test-utils'
 
 import { VectorSearchCreateIndexPage } from './VectorSearchCreateIndexPage'
+import { useRedisInstanceCompatibility } from '../../hooks/useRedisInstanceCompatibility'
+
+jest.mock('../../hooks/useRedisInstanceCompatibility', () => ({
+  useRedisInstanceCompatibility: jest.fn(),
+}))
 
 jest.mock('../../components/index-details', () => {
   const MockReact = require('react')
@@ -29,6 +34,8 @@ jest.mock('../../components/command-view', () => {
 })
 
 const mockPush = jest.fn()
+const mockUseRedisInstanceCompatibility =
+  useRedisInstanceCompatibility as jest.Mock
 
 const setupRouterMocks = (sampleData?: string) => {
   reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: mockPush })
@@ -47,6 +54,12 @@ describe('VectorSearchCreateIndexPage', () => {
   beforeEach(() => {
     cleanup()
     jest.clearAllMocks()
+
+    mockUseRedisInstanceCompatibility.mockReturnValue({
+      loading: false,
+      hasRedisearch: true,
+      hasSupportedVersion: true,
+    })
   })
 
   it('should render all page elements', () => {
@@ -130,5 +143,74 @@ describe('VectorSearchCreateIndexPage', () => {
     expect(mockPush).toHaveBeenCalledWith(
       expect.stringContaining('vector-search'),
     )
+  })
+
+  describe('RediSearch module guard', () => {
+    it('should render RqeNotAvailable when RediSearch is not available', () => {
+      mockUseRedisInstanceCompatibility.mockReturnValue({
+        loading: false,
+        hasRedisearch: false,
+        hasSupportedVersion: true,
+      })
+
+      setupRouterMocks('e-commerce-discovery')
+
+      render(<VectorSearchCreateIndexPage />)
+
+      expect(
+        screen.getByTestId('vector-search-create-index--rqe-not-available'),
+      ).toBeInTheDocument()
+      expect(
+        screen.queryByTestId('vector-search--create-index--page'),
+      ).not.toBeInTheDocument()
+    })
+
+    it('should render loader while checking compatibility', () => {
+      mockUseRedisInstanceCompatibility.mockReturnValue({
+        loading: true,
+        hasRedisearch: undefined,
+        hasSupportedVersion: undefined,
+      })
+
+      setupRouterMocks('e-commerce-discovery')
+
+      render(<VectorSearchCreateIndexPage />)
+
+      expect(
+        screen.getByTestId('vector-search-create-index-loader'),
+      ).toBeInTheDocument()
+      expect(
+        screen.queryByTestId('vector-search--create-index--page'),
+      ).not.toBeInTheDocument()
+    })
+
+    it('should render loader when compatibility is uninitialized', () => {
+      mockUseRedisInstanceCompatibility.mockReturnValue({
+        loading: undefined,
+        hasRedisearch: undefined,
+        hasSupportedVersion: undefined,
+      })
+
+      setupRouterMocks('e-commerce-discovery')
+
+      render(<VectorSearchCreateIndexPage />)
+
+      expect(
+        screen.getByTestId('vector-search-create-index-loader'),
+      ).toBeInTheDocument()
+    })
+
+    it('should render create index page when RediSearch is available', () => {
+      setupRouterMocks('e-commerce-discovery')
+
+      render(<VectorSearchCreateIndexPage />)
+
+      expect(
+        screen.getByTestId('vector-search--create-index--page'),
+      ).toBeInTheDocument()
+      expect(
+        screen.queryByTestId('vector-search-create-index--rqe-not-available'),
+      ).not.toBeInTheDocument()
+    })
   })
 })
