@@ -471,6 +471,7 @@ describe('KeysService', () => {
 
     beforeEach(() => {
       mockStandaloneRedisClient.sendPipeline.mockReset();
+      mockStandaloneRedisClient.isFeatureSupported.mockResolvedValue(true);
     });
 
     it('should return searchable key when hash key found', async () => {
@@ -562,6 +563,18 @@ describe('KeysService', () => {
       await expect(
         service.getNamespaceSearchable(mockBrowserClientMetadata, dto),
       ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should return empty results when SCAN TYPE is not supported (Redis < 6)', async () => {
+      mockStandaloneRedisClient.isFeatureSupported.mockResolvedValue(false);
+
+      const result = await service.getNamespaceSearchable(
+        mockBrowserClientMetadata,
+        dto,
+      );
+
+      expect(result).toEqual([{ prefix: 'user:' }, { prefix: 'session:' }]);
+      expect(mockStandaloneRedisClient.sendPipeline).not.toHaveBeenCalled();
     });
   });
 

@@ -26,7 +26,7 @@ import {
 } from 'src/modules/browser/keys/dto';
 import { RedisDataType } from 'src/modules/browser/keys/dto/key.dto';
 import { BrowserToolKeysCommands } from 'src/modules/browser/constants/browser-tool-commands';
-import { RedisClientCommand } from 'src/modules/redis/client';
+import { RedisClientCommand, RedisFeature } from 'src/modules/redis/client';
 import { ClientMetadata } from 'src/common/models';
 import { Scanner } from 'src/modules/browser/keys/scanner/scanner';
 import { BrowserHistoryMode, RedisString } from 'src/common/constants';
@@ -291,6 +291,20 @@ export class KeysService {
 
       const client =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+
+      const isScanTypeSupported = await client.isFeatureSupported(
+        RedisFeature.ScanTypeFilter,
+      );
+
+      if (!isScanTypeSupported) {
+        this.logger.debug(
+          'SCAN TYPE filter not supported (Redis < 6.0). Skipping namespace searchable check.',
+          clientMetadata,
+        );
+        return dto.prefixes.map((prefix) =>
+          plainToInstance(NamespaceSearchableResponse, { prefix }),
+        );
+      }
 
       const results = await Promise.all(
         dto.prefixes.map((prefix) =>
