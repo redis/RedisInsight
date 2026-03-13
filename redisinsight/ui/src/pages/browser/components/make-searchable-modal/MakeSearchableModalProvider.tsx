@@ -27,15 +27,10 @@ const MakeSearchableModalContext = createContext<{
   openMakeSearchableModal: (config: MakeSearchableModalConfig) => void
 } | null>(null)
 
-export const useMakeSearchableModal = () => {
-  const ctx = useContext(MakeSearchableModalContext)
-  if (!ctx) {
-    throw new Error(
-      'useMakeSearchableModal must be used within MakeSearchableModalProvider',
-    )
-  }
-  return ctx
-}
+const noopContext = { openMakeSearchableModal: () => {} } as const
+
+export const useMakeSearchableModal = () =>
+  useContext(MakeSearchableModalContext) ?? noopContext
 
 export const MakeSearchableModalProvider = ({
   children,
