@@ -1316,9 +1316,6 @@ export function fetchNamespaceSearchable(
     } catch (_err) {
       if (axios.isCancel(_err)) return
 
-      const error = _err as AxiosError
-      const errorMessage = getApiErrorMessage(error)
-      console.error(errorMessage)
       onFailAction?.()
     }
   }
