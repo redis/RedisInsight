@@ -2,6 +2,7 @@ import React from 'react'
 import { mock, instance } from 'ts-mockito'
 
 import { render } from 'uiSrc/utils/test-utils'
+import { MakeSearchableModalProvider } from 'uiSrc/pages/browser/components/make-searchable-modal'
 import VirtualTree, { Props } from './VirtualTree'
 
 const mockedProps = mock<Props>()
@@ -73,11 +74,13 @@ describe('VirtualTree', () => {
   it('should render items', async () => {
     const mockFn = jest.fn()
     const { queryByTestId } = render(
-      <VirtualTree
-        {...instance(mockedProps)}
-        items={mockedItems}
-        setConstructingTree={mockFn}
-      />,
+      <MakeSearchableModalProvider>
+        <VirtualTree
+          {...instance(mockedProps)}
+          items={mockedItems}
+          setConstructingTree={mockFn}
+        />
+      </MakeSearchableModalProvider>,
     )
 
     expect(queryByTestId('node-item_test')).toBeInTheDocument()

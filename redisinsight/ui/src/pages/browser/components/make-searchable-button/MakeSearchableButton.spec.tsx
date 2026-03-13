@@ -1,10 +1,18 @@
 import React from 'react'
 import reactRouterDom from 'react-router-dom'
 import { faker } from '@faker-js/faker'
-import { render, screen, userEvent, cleanup } from 'uiSrc/utils/test-utils'
+import { cloneDeep } from 'lodash'
+import {
+  render,
+  screen,
+  userEvent,
+  cleanup,
+  mockedStore,
+} from 'uiSrc/utils/test-utils'
 import { KeyTypes, Pages } from 'uiSrc/constants'
 import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { CreateIndexMode } from 'uiSrc/pages/vector-search/pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
+import { MakeSearchableModalProvider } from 'uiSrc/pages/browser/components/make-searchable-modal'
 
 import { MakeSearchableButton } from './MakeSearchableButton'
 import { MakeSearchableButtonProps } from './MakeSearchableButton.types'
@@ -17,14 +25,26 @@ const defaultProps: MakeSearchableButtonProps = {
   keyName: mockKeyBuffer as any,
   keyNameString: 'bikes:10002',
   keyType: KeyTypes.Hash,
-  instanceId: mockInstanceId,
 }
+
+let store: typeof mockedStore
+beforeEach(() => {
+  store = cloneDeep(mockedStore)
+  store.clearActions()
+  const state = store.getState()
+  state.connections.instances.connectedInstance.id = mockInstanceId
+})
 
 const renderComponent = (
   propsOverride?: Partial<MakeSearchableButtonProps>,
 ) => {
   const props = { ...defaultProps, ...propsOverride }
-  return render(<MakeSearchableButton {...props} />)
+  return render(
+    <MakeSearchableModalProvider>
+      <MakeSearchableButton {...props} />
+    </MakeSearchableModalProvider>,
+    { store },
+  )
 }
 
 describe('MakeSearchableButton', () => {

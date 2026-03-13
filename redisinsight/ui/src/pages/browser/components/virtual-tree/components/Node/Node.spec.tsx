@@ -2,12 +2,27 @@ import React from 'react'
 import { NodePublicState } from 'react-vtree/dist/es/Tree'
 import { instance, mock } from 'ts-mockito'
 import { cloneDeep } from 'lodash'
-import { cleanup, mockedStore, render, screen } from 'uiSrc/utils/test-utils'
+import reactRouterDom from 'react-router-dom'
+import { faker } from '@faker-js/faker'
+import {
+  cleanup,
+  mockedStore,
+  mockFeatureFlags,
+  render,
+  screen,
+  fireEvent,
+} from 'uiSrc/utils/test-utils'
 import { stringToBuffer } from 'uiSrc/utils'
-import { KeyTypes, BrowserColumns } from 'uiSrc/constants'
+import { FeatureFlags, KeyTypes, BrowserColumns, Pages } from 'uiSrc/constants'
+import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+import { CreateIndexMode } from 'uiSrc/pages/vector-search/pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
+import { MakeSearchableModalProvider } from 'uiSrc/pages/browser/components/make-searchable-modal'
 import Node from './Node'
 import { TreeData } from '../../VirtualTree.types'
 import { mockVirtualTreeResult } from '../../VirtualTree.spec'
+
+const mockPush = jest.fn()
+const mockInstanceId = faker.string.uuid()
 
 const mockDataFullName = 'test'
 const mockedProps = mock<NodePublicState<TreeData>>()
@@ -43,13 +58,31 @@ beforeEach(() => {
   cleanup()
   store = cloneDeep(mockedStore)
   store.clearActions()
+  const state = store.getState()
+  state.connections.instances.connectedInstance.id = mockInstanceId
+  reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: mockPush })
 })
+
+afterEach(() => {
+  jest.clearAllMocks()
+})
+
+const renderNode = (
+  props: Partial<NodePublicState<TreeData>> = {},
+  options?: { store?: any },
+) => {
+  const mergedProps = { ...instance(mockedProps), ...props }
+  return render(
+    <MakeSearchableModalProvider>
+      <Node {...mergedProps} />
+    </MakeSearchableModalProvider>,
+    { store: options?.store ?? store },
+  )
+}
 
 describe('Node', () => {
   it('should render', () => {
-    expect(
-      render(<Node {...instance(mockedProps)} data={mockedData} />),
-    ).toBeTruthy()
+    expect(renderNode({ data: mockedData })).toBeTruthy()
   })
 
   it('should render arrow and folder icons for Node properly', () => {
@@ -59,9 +92,7 @@ describe('Node', () => {
       fullName: mockDataFullName,
     }
 
-    const { container } = render(
-      <Node {...instance(mockedProps)} data={mockData} />,
-    )
+    const { container } = renderNode({ data: mockData })
 
     expect(
       container.querySelector(
@@ -88,14 +119,7 @@ describe('Node', () => {
       getMetadata: mockGetMetadata,
     }
 
-    render(
-      <Node
-        {...instance(mockedProps)}
-        setOpen={mockSetOpen}
-        isOpen={false}
-        data={mockData}
-      />,
-    )
+    renderNode({ setOpen: mockSetOpen, isOpen: false, data: mockData })
 
     screen.getByTestId(`node-item_${mockDataFullName}`).click()
 
@@ -118,14 +142,7 @@ describe('Node', () => {
       getMetadata: mockGetMetadata,
     }
 
-    render(
-      <Node
-        {...instance(mockedProps)}
-        setOpen={mockSetOpen}
-        isOpen={false}
-        data={mockData}
-      />,
-    )
+    renderNode({ setOpen: mockSetOpen, isOpen: false, data: mockData })
 
     screen.getByTestId(`node-item_${mockDataFullName}`).click()
 
@@ -136,9 +153,7 @@ describe('Node', () => {
   })
 
   it('name, ttl and size should be rendered', () => {
-    const { getByTestId } = render(
-      <Node {...instance(mockedProps)} data={mockedDataWithMetadata} />,
-    )
+    const { getByTestId } = renderNode({ data: mockedDataWithMetadata })
 
     expect(getByTestId(`node-item_${mockDataFullName}`)).toBeInTheDocument()
     expect(
@@ -162,14 +177,7 @@ describe('Node', () => {
       updateStatusOpen: mockUpdateStatusOpen,
     }
 
-    render(
-      <Node
-        {...instance(mockedProps)}
-        isOpen={false}
-        setOpen={mockSetOpen}
-        data={mockData}
-      />,
-    )
+    renderNode({ isOpen: false, setOpen: mockSetOpen, data: mockData })
 
     screen.getByTestId(`node-item_${mockDataFullName}`).click()
 
@@ -192,7 +200,7 @@ describe('Node', () => {
         onDeleteFolder: jest.fn(),
       }
 
-      render(<Node {...instance(mockedProps)} data={mockData} />)
+      renderNode({ data: mockData })
 
       expect(screen.getByTestId('delete-folder-btn-folder')).toBeInTheDocument()
     })
@@ -208,7 +216,7 @@ describe('Node', () => {
         onDeleteFolder: mockOnDeleteFolder,
       }
 
-      render(<Node {...instance(mockedProps)} data={mockData} />)
+      renderNode({ data: mockData })
 
       screen.getByTestId('delete-folder-btn-user:session').click()
 
@@ -231,7 +239,7 @@ describe('Node', () => {
         onDeleteFolder: mockOnDeleteFolder,
       }
 
-      render(<Node {...instance(mockedProps)} data={mockData} />)
+      renderNode({ data: mockData })
 
       const deleteBtn = screen.getByTestId('delete-folder-btn-folder\uFFFD')
       expect(deleteBtn).toBeDisabled()
@@ -248,7 +256,7 @@ describe('Node', () => {
         onDeleteFolder: mockOnDeleteFolder,
       }
 
-      render(<Node {...instance(mockedProps)} data={mockData} />)
+      renderNode({ data: mockData })
 
       const deleteBtn = screen.getByTestId('delete-folder-btn-folder')
       expect(deleteBtn).toBeDisabled()
@@ -268,21 +276,11 @@ describe('Node', () => {
         updateStatusOpen: mockUpdateStatusOpen,
       }
 
-      render(
-        <Node
-          {...instance(mockedProps)}
-          setOpen={mockSetOpen}
-          isOpen={false}
-          data={mockData}
-        />,
-      )
+      renderNode({ setOpen: mockSetOpen, isOpen: false, data: mockData })
 
-      // Click on delete button
       screen.getByTestId('delete-folder-btn-folder').click()
 
-      // onDeleteFolder should be called
       expect(mockOnDeleteFolder).toHaveBeenCalled()
-      // setOpen should NOT be called (event propagation stopped)
       expect(mockSetOpen).not.toHaveBeenCalled()
     })
   })
@@ -300,7 +298,7 @@ describe('Node', () => {
         showFolderMetadata: false,
       }
 
-      render(<Node {...instance(mockedProps)} data={mockData} />)
+      renderNode({ data: mockData })
 
       expect(screen.queryByTestId('percentage_folder')).not.toBeInTheDocument()
       expect(screen.queryByTestId('count_folder')).not.toBeInTheDocument()
@@ -321,7 +319,7 @@ describe('Node', () => {
         showFolderMetadata: true,
       }
 
-      render(<Node {...instance(mockedProps)} data={mockData} />)
+      renderNode({ data: mockData })
 
       expect(screen.getByTestId('percentage_folder')).toBeInTheDocument()
       expect(screen.getByTestId('count_folder')).toBeInTheDocument()
@@ -338,7 +336,7 @@ describe('Node', () => {
         showDeleteAction: false,
       }
 
-      render(<Node {...instance(mockedProps)} data={mockData} />)
+      renderNode({ data: mockData })
 
       expect(
         screen.queryByTestId(`delete-key-btn-${mockDataFullName}`),
@@ -353,7 +351,7 @@ describe('Node', () => {
         showDeleteAction: true,
       }
 
-      render(<Node {...instance(mockedProps)} data={mockData} />)
+      renderNode({ data: mockData })
 
       expect(
         screen.getByTestId(`delete-key-btn-${mockDataFullName}`),
@@ -367,7 +365,7 @@ describe('Node', () => {
         onDeleteClicked: jest.fn(),
       }
 
-      render(<Node {...instance(mockedProps)} data={mockData} />)
+      renderNode({ data: mockData })
 
       expect(
         screen.getByTestId(`delete-key-btn-${mockDataFullName}`),
@@ -387,7 +385,7 @@ describe('Node', () => {
         showDeleteAction: false,
       }
 
-      render(<Node {...instance(mockedProps)} data={mockData} />)
+      renderNode({ data: mockData })
 
       expect(screen.getByTestId('percentage_folder')).toBeInTheDocument()
       expect(screen.getByTestId('count_folder')).toBeInTheDocument()
@@ -407,7 +405,7 @@ describe('Node', () => {
         updateStatusOpen: mockUpdateStatusOpen,
       }
 
-      render(<Node {...instance(mockedProps)} data={mockData} />)
+      renderNode({ data: mockData })
 
       screen.getByTestId(`node-item_${mockDataFullName}`).click()
 
@@ -431,7 +429,7 @@ describe('Node', () => {
         updateStatusOpen: mockUpdateStatusOpen,
       }
 
-      render(<Node {...instance(mockedProps)} data={mockData} />)
+      renderNode({ data: mockData })
 
       screen.getByTestId(`node-item_${mockDataFullName}`).click()
 
@@ -443,14 +441,14 @@ describe('Node', () => {
     })
 
     it('should render TTL and Size when metadata exists', () => {
-      render(<Node {...instance(mockedProps)} data={mockedDataWithMetadata} />)
+      renderNode({ data: mockedDataWithMetadata })
 
       expect(screen.getByTestId(`ttl-${mockDataFullName}`)).toBeInTheDocument()
       expect(screen.getByTestId(`size-${mockDataFullName}`)).toBeInTheDocument()
     })
 
     it('should not render TTL and Size when metadata does not exist', () => {
-      render(<Node {...instance(mockedProps)} data={mockedData} />)
+      renderNode({ data: mockedData })
 
       expect(
         screen.queryByTestId(`ttl-${mockDataFullName}`),
@@ -473,20 +471,32 @@ describe('Node', () => {
           getMetadata: mockGetMetadata,
         }
 
-        const store = {
-          getState: () => initialState,
+        const connectionState = {
+          connections: {
+            instances: { connectedInstance: { id: mockInstanceId } },
+          },
+        }
+        const customStore = {
+          getState: () => ({ ...initialState, ...connectionState }),
           subscribe: jest.fn(),
           dispatch: jest.fn(),
         }
 
-        const { rerender } = render(
-          <Node {...instance(mockedProps)} data={mockData} />,
-          { store },
+        const { rerender } = renderNode(
+          { data: mockData },
+          { store: customStore },
         )
 
-        store.getState = () => updatedState
+        customStore.getState = () => ({
+          ...updatedState,
+          ...connectionState,
+        })
 
-        rerender(<Node {...instance(mockedProps)} data={mockData} />)
+        rerender(
+          <MakeSearchableModalProvider>
+            <Node {...instance(mockedProps)} data={mockData} />
+          </MakeSearchableModalProvider>,
+        )
 
         expect(mockGetMetadata).toHaveBeenCalledWith(
           mockData.nameBuffer,
@@ -508,7 +518,7 @@ describe('Node', () => {
         onDeleteClicked: jest.fn(),
       }
 
-      const store = {
+      const customStore = {
         getState: () => ({
           app: {
             context: {
@@ -517,20 +527,179 @@ describe('Node', () => {
               },
             },
           },
+          connections: {
+            instances: { connectedInstance: { id: mockInstanceId } },
+          },
         }),
         subscribe: jest.fn(),
         dispatch: jest.fn(),
       }
 
-      const { container } = render(
-        <Node {...instance(mockedProps)} data={mockData} />,
-        { store },
+      const { container } = renderNode(
+        { data: mockData },
+        { store: customStore },
       )
 
       expect(
         container.querySelector(
           `[data-testid="delete-key-btn-${mockData.nameString}"]`,
         ),
+      ).toBeInTheDocument()
+    })
+  })
+
+  describe('Index button (folder searchable)', () => {
+    const mockFolderName = 'users'
+    const mockFirstSearchableKey = {
+      nameBuffer: stringToBuffer('users:1'),
+      nameString: 'users:1',
+      type: KeyTypes.Hash,
+    }
+
+    const baseFolderData: TreeData = {
+      ...mockedData,
+      isLeaf: false,
+      fullName: mockFolderName,
+      keyCount: 10,
+      delimiters: [':'],
+      onDeleteFolder: jest.fn(),
+      showFolderMetadata: true,
+    }
+
+    it('should render Index button when hasSearchableKeys is true and feature flag is on', () => {
+      const spy = mockFeatureFlags({
+        [FeatureFlags.vectorSearchV2]: { flag: true },
+      })
+
+      const mockData: TreeData = {
+        ...baseFolderData,
+        hasSearchableKeys: true,
+        firstSearchableKey: mockFirstSearchableKey,
+      }
+
+      renderNode({ data: mockData })
+
+      expect(
+        screen.getByTestId(`index-folder-btn-${mockFolderName}`),
+      ).toBeInTheDocument()
+
+      spy.mockRestore()
+    })
+
+    it('should not render Index button when hasSearchableKeys is false', () => {
+      const spy = mockFeatureFlags({
+        [FeatureFlags.vectorSearchV2]: { flag: true },
+      })
+
+      const mockData: TreeData = {
+        ...baseFolderData,
+        hasSearchableKeys: false,
+      }
+
+      renderNode({ data: mockData })
+
+      expect(
+        screen.queryByTestId(`index-folder-btn-${mockFolderName}`),
+      ).not.toBeInTheDocument()
+
+      spy.mockRestore()
+    })
+
+    it('should not render Index button when feature flag is off', () => {
+      const spy = mockFeatureFlags({
+        [FeatureFlags.vectorSearchV2]: { flag: false },
+      })
+
+      const mockData: TreeData = {
+        ...baseFolderData,
+        hasSearchableKeys: true,
+        firstSearchableKey: mockFirstSearchableKey,
+      }
+
+      renderNode({ data: mockData })
+
+      expect(
+        screen.queryByTestId(`index-folder-btn-${mockFolderName}`),
+      ).not.toBeInTheDocument()
+
+      spy.mockRestore()
+    })
+
+    it('should open modal on Index button click', () => {
+      const spy = mockFeatureFlags({
+        [FeatureFlags.vectorSearchV2]: { flag: true },
+      })
+
+      const mockData: TreeData = {
+        ...baseFolderData,
+        hasSearchableKeys: true,
+        firstSearchableKey: mockFirstSearchableKey,
+      }
+
+      renderNode({ data: mockData })
+
+      fireEvent.click(screen.getByTestId(`index-folder-btn-${mockFolderName}`))
+
+      expect(
+        screen.getByTestId('make-searchable-modal-body'),
+      ).toBeInTheDocument()
+
+      spy.mockRestore()
+    })
+
+    it('should navigate to create index page with correct state on confirm', () => {
+      const spy = mockFeatureFlags({
+        [FeatureFlags.vectorSearchV2]: { flag: true },
+      })
+
+      const mockData: TreeData = {
+        ...baseFolderData,
+        hasSearchableKeys: true,
+        firstSearchableKey: mockFirstSearchableKey,
+      }
+
+      renderNode({ data: mockData })
+
+      fireEvent.click(screen.getByTestId(`index-folder-btn-${mockFolderName}`))
+      fireEvent.click(screen.getByTestId('make-searchable-modal-confirm'))
+
+      expect(mockPush).toHaveBeenCalledWith(
+        Pages.vectorSearchCreateIndex(mockInstanceId),
+        {
+          mode: CreateIndexMode.ExistingData,
+          initialKey: mockFirstSearchableKey.nameBuffer,
+          initialKeyType: RedisearchIndexKeyType.HASH,
+          initialPrefix: 'users:',
+        },
+      )
+
+      spy.mockRestore()
+    })
+
+    it('should call checkSearchable on mount when prop is provided', () => {
+      const mockCheckSearchable = jest.fn()
+      const mockData: TreeData = {
+        ...baseFolderData,
+        checkSearchable: mockCheckSearchable,
+      }
+
+      renderNode({ data: mockData })
+
+      expect(mockCheckSearchable).toHaveBeenCalledWith(
+        `${mockFolderName}:`,
+        mockData.path,
+      )
+    })
+
+    it('should not call checkSearchable when prop is not provided', () => {
+      const mockData: TreeData = {
+        ...baseFolderData,
+      }
+
+      renderNode({ data: mockData })
+
+      expect(
+        screen.getByTestId(`node-item_${mockFolderName}`),
       ).toBeInTheDocument()
     })
   })

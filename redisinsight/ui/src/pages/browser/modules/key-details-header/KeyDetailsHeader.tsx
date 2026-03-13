@@ -178,7 +178,6 @@ const KeyDetailsHeader = ({
                               keyName={keyBuffer!}
                               keyNameString={keyName ?? ''}
                               keyType={type as KeyTypes}
-                              instanceId={instanceId}
                             />
                           </S.MakeSearchableWrapper>
                         )}

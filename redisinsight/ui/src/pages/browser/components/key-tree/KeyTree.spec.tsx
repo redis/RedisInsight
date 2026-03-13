@@ -6,6 +6,7 @@ import { setBrowserTreeNodesOpen } from 'uiSrc/slices/app/context'
 import { stringToBuffer } from 'uiSrc/utils'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { KeyTypes } from 'uiSrc/constants'
+import { MakeSearchableModalProvider } from 'uiSrc/pages/browser/components/make-searchable-modal'
 import KeyTree from './KeyTree'
 
 let store: typeof mockedStore
@@ -127,13 +128,21 @@ jest.mock('uiSrc/telemetry', () => ({
 
 describe('KeyTree', () => {
   it('should be rendered', () => {
-    expect(render(<KeyTree {...propsMock} />)).toBeTruthy()
+    expect(
+      render(
+        <MakeSearchableModalProvider>
+          <KeyTree {...propsMock} />
+        </MakeSearchableModalProvider>,
+      ),
+    ).toBeTruthy()
   })
 
   it('"setBrowserTreeNodesOpen" to be called after click on folder', () => {
     const onSelectedKeyMock = jest.fn()
     const { getByTestId } = render(
-      <KeyTree {...propsMock} selectKey={onSelectedKeyMock} />,
+      <MakeSearchableModalProvider>
+        <KeyTree {...propsMock} selectKey={onSelectedKeyMock} />
+      </MakeSearchableModalProvider>,
     )
 
     // set open state
@@ -149,7 +158,9 @@ describe('KeyTree', () => {
   it('"selectKey" to be called after click on leaf', async () => {
     const onSelectedKeyMock = jest.fn()
     const { getByTestId } = render(
-      <KeyTree {...propsMock} selectKey={onSelectedKeyMock} />,
+      <MakeSearchableModalProvider>
+        <KeyTree {...propsMock} selectKey={onSelectedKeyMock} />
+      </MakeSearchableModalProvider>,
     )
 
     // open parent folder
@@ -171,7 +182,11 @@ describe('KeyTree', () => {
       selectedKeyDataSelectorMock,
     )
 
-    const { getByTestId } = render(<KeyTree {...propsMock} />)
+    const { getByTestId } = render(
+      <MakeSearchableModalProvider>
+        <KeyTree {...propsMock} />
+      </MakeSearchableModalProvider>,
+    )
 
     expect(getByTestId(`node-item_${leaf2FullName}`)).toBeInTheDocument()
   })
