@@ -647,7 +647,7 @@ describe('Node', () => {
       spy.mockRestore()
     })
 
-    it('should navigate to create index page with correct state on confirm', () => {
+    it('should navigate to create index page with correct query params on confirm', () => {
       const spy = mockFeatureFlags({
         [FeatureFlags.vectorSearchV2]: { flag: true },
       })
@@ -663,15 +663,12 @@ describe('Node', () => {
       fireEvent.click(screen.getByTestId(`index-folder-btn-${mockFolderName}`))
       fireEvent.click(screen.getByTestId('make-searchable-modal-confirm'))
 
-      expect(mockPush).toHaveBeenCalledWith(
-        Pages.vectorSearchCreateIndex(mockInstanceId),
-        {
-          mode: CreateIndexMode.ExistingData,
-          initialKey: mockFirstSearchableKey.nameBuffer,
-          initialKeyType: RedisearchIndexKeyType.HASH,
-          initialPrefix: 'users:',
-        },
-      )
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: Pages.vectorSearchCreateIndex(mockInstanceId),
+        search:
+          `mode=${CreateIndexMode.ExistingData}&initialKey=users%3A1` +
+          `&initialKeyType=${RedisearchIndexKeyType.HASH}&initialPrefix=users%3A`,
+      })
 
       spy.mockRestore()
     })
