@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { debounce, get, set } from 'lodash'
 import { TreeWalker, TreeWalkerValue, FixedSizeTree as Tree } from 'react-vtree'
@@ -196,26 +196,31 @@ const VirtualTree = (props: VirtualTreeProps) => {
 
   const getSearchable = useCallback((entries: [string, string][]): void => {
     dispatch(
-      fetchNamespaceSearchable(
-        entries,
-        controller.current?.signal,
-        onSuccessFetchedSearchable,
+      fetchNamespaceSearchable(entries, controller.current?.signal, (results) =>
+        onSuccessFetchedSearchable(results),
       ),
     )
   }, [])
 
-  const getSearchableDebounced = debounce(() => {
-    const entries = Object.entries(searchableElements.current)
-    if (entries.length === 0) return
+  const getSearchableDebounced = useMemo(
+    () =>
+      debounce(() => {
+        const entries = Object.entries(searchableElements.current)
+        if (entries.length === 0) return
 
-    getSearchable(entries)
-    searchableElements.current = {}
-  }, 100)
+        getSearchable(entries)
+        searchableElements.current = {}
+      }, 100),
+    [getSearchable],
+  )
 
-  const checkSearchable = useCallback((prefix: string, path: string) => {
-    searchableElements.current[path] = prefix
-    getSearchableDebounced()
-  }, [])
+  const checkSearchable = useCallback(
+    (prefix: string, path: string) => {
+      searchableElements.current[path] = prefix
+      getSearchableDebounced()
+    },
+    [getSearchableDebounced],
+  )
 
   // This helper function constructs the object that will be sent back at the step
   // [2] during the treeWalker function work. Except for the mandatory `data`
