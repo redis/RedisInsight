@@ -11,7 +11,7 @@ import {
   waitForRiTooltipVisible,
 } from 'uiSrc/utils/test-utils'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
-import QueryCardHeader, { Props } from './QueryCardHeader'
+import QueryCardHeader, { Props, VIEW_TYPE_SEPARATOR } from './QueryCardHeader'
 import {
   QueryResultsProvider,
   QueryResultsTelemetry,
@@ -33,6 +33,39 @@ jest.mock('uiSrc/services', () => ({
     get: jest.fn(),
   },
 }))
+
+jest.mock('uiSrc/components/base/forms/select/RiSelect', () => {
+  const React = require('react')
+  const actual = jest.requireActual(
+    'uiSrc/components/base/forms/select/RiSelect',
+  )
+  return {
+    ...actual,
+    RiSelect: ({
+      options,
+      value,
+      onChange,
+      'data-testid': testId,
+      className,
+    }: any) =>
+      React.createElement(
+        'select',
+        {
+          'data-testid': testId,
+          className,
+          value: value ?? '',
+          onChange: (e: any) => onChange?.(e.target.value),
+        },
+        options?.map((o: any) =>
+          React.createElement(
+            'option',
+            { key: o.value, value: o.value, disabled: o.disabled },
+            o.label || o.value,
+          ),
+        ),
+      ),
+  }
+})
 
 jest.mock('uiSrc/slices/app/plugins', () => ({
   ...jest.requireActual('uiSrc/slices/app/plugins'),
@@ -239,5 +272,35 @@ describe('QueryCardHeader', () => {
 
     expect(mockOnQueryDelete).toHaveBeenCalled()
     // Should not throw when telemetry callbacks are undefined
+  })
+
+  it('should render view-type dropdown without crash when external plugins add a separator', () => {
+    expect(() =>
+      renderQueryCardHeaderComponent({
+        ...instance(mockedProps),
+        query: 'FT.SEARCH idx *',
+        isOpen: true,
+        selectedValue: 'default__Text',
+      }),
+    ).not.toThrow()
+
+    expect(screen.getByTestId('select-view-type')).toBeInTheDocument()
+  })
+
+  it('should not change view when separator value is selected', () => {
+    const mockSetSelectedValue = jest.fn()
+
+    renderQueryCardHeaderComponent({
+      ...instance(mockedProps),
+      query: 'FT.SEARCH idx *',
+      isOpen: true,
+      selectedValue: 'default__Text',
+      setSelectedValue: mockSetSelectedValue,
+    })
+
+    const select = screen.getByTestId('select-view-type')
+    fireEvent.change(select, { target: { value: VIEW_TYPE_SEPARATOR } })
+
+    expect(mockSetSelectedValue).not.toHaveBeenCalled()
   })
 })
