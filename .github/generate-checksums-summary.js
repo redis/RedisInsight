@@ -10,9 +10,14 @@ const directoryPath = path.join(process.cwd(), 'release');
 // Mapping of file names to friendly package names (matching release notes format)
 const fileMappings = {
   'Redis-Insight-win-installer.exe': 'Windows',
-  'Redis-Insight-linux-x86_64.AppImage': 'Linux AppImage',
-  'Redis-Insight-linux-amd64.deb': 'Linux Debian',
-  'Redis-Insight-linux-x86_64.rpm': 'Linux RPM',
+  'Redis-Insight-linux-x86_64.AppImage': 'Linux AppImage (x64)',
+  'Redis-Insight-linux-arm64.AppImage': 'Linux AppImage (arm64)',
+  'Redis-Insight-linux-amd64.deb': 'Linux Debian (x64)',
+  'Redis-Insight-linux-arm64.deb': 'Linux Debian (arm64)',
+  'Redis-Insight-linux-amd64.snap': 'Linux Snap (x64)',
+  'Redis-Insight-linux-arm64.snap': 'Linux Snap (arm64)',
+  'Redis-Insight-linux-x86_64.rpm': 'Linux RPM (x64)',
+  'Redis-Insight-linux-aarch64.rpm': 'Linux RPM (arm64)',
   'Redis-Insight-mac-x64.dmg': 'MacOS Intel',
   'Redis-Insight-mac-arm64.dmg': 'MacOS Apple silicon',
 };

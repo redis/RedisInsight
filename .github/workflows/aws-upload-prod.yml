@@ -148,6 +148,36 @@ jobs:
             [objectDownload]=${appFileName}'-linux-x86_64.rpm'
           )
 
+          declare -A tag6=(
+            [arch]='arm64'
+            [platform]='linux_AppImage'
+            [objectDownload]=${appFileName}'-linux-arm64.AppImage'
+          )
+
+          declare -A tag7=(
+            [arch]='arm64'
+            [platform]='linux_deb'
+            [objectDownload]=${appFileName}'-linux-arm64.deb'
+          )
+
+          declare -A tag8=(
+            [arch]='arm64'
+            [platform]='linux_rpm'
+            [objectDownload]=${appFileName}'-linux-aarch64.rpm'
+          )
+
+          declare -A tag9=(
+            [arch]='x64'
+            [platform]='linux_snap'
+            [objectDownload]=${appFileName}'-linux-amd64.snap'
+          )
+
+          declare -A tag10=(
+            [arch]='arm64'
+            [platform]='linux_snap'
+            [objectDownload]=${appFileName}'-linux-arm64.snap'
+          )
+
           # loop for add all tags to each app and create metrics
           declare -n tag
           for tag in ${!tag@}; do

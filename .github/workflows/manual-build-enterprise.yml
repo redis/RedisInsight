@@ -31,13 +31,28 @@ on:
         type: boolean
         required: false
 
+      build_linux_appimage_arm64:
+        description: Build Linux AppImage arm64
+        type: boolean
+        required: false
+
       build_linux_deb_x64:
         description: Build Linux deb x64
         type: boolean
         required: false
 
+      build_linux_deb_arm64:
+        description: Build Linux deb arm64
+        type: boolean
+        required: false
+
       build_linux_rpm_x64:
         description: Build Linux rpm x64
+        type: boolean
+        required: false
+
+      build_linux_rpm_arm64:
+        description: Build Linux rpm arm64
         type: boolean
         required: false
 

@@ -73,13 +73,90 @@ jobs:
       - name: Build linux packages (custom)
         if: inputs.target != vars.ALL
         run: |
-          target=$(echo "${{inputs.target}}" | grep -oE 'build_linux_[^_ ]+' | sed 's/build_linux_//' | sort -u | paste -sd ' ' -)
-
+          package_command=(yarn package:stage)
           if [ "${{ vars.ENV == 'production' }}" == "true" ]; then
-            yarn package:prod --linux $target
-          else
-            yarn package:stage --linux $target
+            package_command=(yarn package:prod)
           fi
+
+          declare -a shared_targets=()
+          declare -a x64_targets=()
+          declare -a arm64_targets=()
+
+          add_unique_target() {
+            local -n target_list=$1
+            local target_value=$2
+
+            if [[ " ${target_list[*]} " != *" ${target_value} "* ]]; then
+              target_list+=("$target_value")
+            fi
+          }
+
+          normalize_target() {
+            case "${1,,}" in
+              appimage)
+                echo "AppImage"
+                ;;
+              deb)
+                echo "deb"
+                ;;
+              rpm)
+                echo "rpm"
+                ;;
+              snap)
+                echo "snap"
+                ;;
+              *)
+                return 1
+                ;;
+            esac
+          }
+
+          while IFS= read -r target_spec; do
+            [ -z "$target_spec" ] && continue
+
+            if [[ "$target_spec" =~ ^build_linux_([^_[:space:]]+)(_(x64|arm64))?$ ]]; then
+              target_name=$(normalize_target "${BASH_REMATCH[1]}") || {
+                echo "::error::Unsupported Linux target: ${BASH_REMATCH[1]}"
+                exit 1
+              }
+              arch="${BASH_REMATCH[3]}"
+
+              case "$arch" in
+                x64)
+                  add_unique_target x64_targets "$target_name"
+                  ;;
+                arm64)
+                  add_unique_target arm64_targets "$target_name"
+                  ;;
+                "")
+                  add_unique_target shared_targets "$target_name"
+                  ;;
+              esac
+            fi
+          done < <(printf '%s\n' "${{ inputs.target }}" | tr ' ' '\n')
+
+          if [ ${#shared_targets[@]} -eq 0 ] && [ ${#x64_targets[@]} -eq 0 ] && [ ${#arm64_targets[@]} -eq 0 ]; then
+            echo "::error::No supported Linux targets found in '${{ inputs.target }}'"
+            exit 1
+          fi
+
+          run_build() {
+            local arch_flag=$1
+            shift
+            local targets=("$@")
+
+            [ ${#targets[@]} -eq 0 ] && return 0
+
+            if [ -n "$arch_flag" ]; then
+              "${package_command[@]}" --linux "${targets[@]}" "--${arch_flag}"
+            else
+              "${package_command[@]}" --linux "${targets[@]}"
+            fi
+          }
+
+          run_build "" "${shared_targets[@]}"
+          run_build "x64" "${x64_targets[@]}"
+          run_build "arm64" "${arm64_targets[@]}"
 
       - uses: actions/upload-artifact@v4
         name: Upload vendor for plugins

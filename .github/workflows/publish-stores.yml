@@ -52,8 +52,14 @@ jobs:
   snapcraft:
     runs-on: ubuntu-latest
     name: Publish to Snapcraft
+    strategy:
+      fail-fast: false
+      matrix:
+        snapcraft_file_name:
+          - Redis-Insight-linux-amd64.snap
+          - Redis-Insight-linux-arm64.snap
     env:
-      SNAPCRAFT_FILE_NAME: 'Redis-Insight-linux-amd64.snap'
+      SNAPCRAFT_FILE_NAME: ${{ matrix.snapcraft_file_name }}
       SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
     steps:
       - uses: actions/checkout@v4

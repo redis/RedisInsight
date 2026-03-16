@@ -46,19 +46,35 @@ async function generateBuildSummary() {
         category: Categories.Windows,
       },
       'Redis-Insight-linux-x86_64.AppImage': {
-        name: 'Redis Insight for Linux (AppImage)',
+        name: 'Redis Insight for Linux (x64 AppImage)',
+        category: Categories.Linux,
+      },
+      'Redis-Insight-linux-arm64.AppImage': {
+        name: 'Redis Insight for Linux (arm64 AppImage)',
         category: Categories.Linux,
       },
       'Redis-Insight-linux-amd64.deb': {
-        name: 'Redis Insight for Linux (deb)',
+        name: 'Redis Insight for Linux (x64 deb)',
+        category: Categories.Linux,
+      },
+      'Redis-Insight-linux-arm64.deb': {
+        name: 'Redis Insight for Linux (arm64 deb)',
         category: Categories.Linux,
       },
       'Redis-Insight-linux-amd64.snap': {
-        name: 'Redis Insight for Linux (snap)',
+        name: 'Redis Insight for Linux (x64 snap)',
+        category: Categories.Linux,
+      },
+      'Redis-Insight-linux-arm64.snap': {
+        name: 'Redis Insight for Linux (arm64 snap)',
         category: Categories.Linux,
       },
       'Redis-Insight-linux-x86_64.rpm': {
-        name: 'Redis Insight for Linux (rpm)',
+        name: 'Redis Insight for Linux (x64 rpm)',
+        category: Categories.Linux,
+      },
+      'Redis-Insight-linux-aarch64.rpm': {
+        name: 'Redis Insight for Linux (arm64 rpm)',
         category: Categories.Linux,
       },
       'docker/docker-linux-alpine.amd64.tar': {
