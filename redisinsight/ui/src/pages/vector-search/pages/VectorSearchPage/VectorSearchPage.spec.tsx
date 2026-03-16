@@ -14,16 +14,11 @@ import {
   INSTANCES_MOCK,
 } from 'uiSrc/mocks/handlers/instances/instancesHandlers'
 import { VectorSearchPage } from './VectorSearchPage'
-import { useRedisInstanceCompatibility } from '../../hooks/useRedisInstanceCompatibility'
 import { useRedisearchListData } from '../../hooks/useRedisearchListData'
 
 jest.mock('uiSrc/telemetry', () => ({
   ...jest.requireActual('uiSrc/telemetry'),
   sendPageViewTelemetry: jest.fn(),
-}))
-
-jest.mock('../../hooks/useRedisInstanceCompatibility', () => ({
-  useRedisInstanceCompatibility: jest.fn(),
 }))
 
 jest.mock('../../hooks/useRedisearchListData', () => ({
@@ -56,18 +51,10 @@ const renderComponent = () => {
 }
 
 describe('VectorSearchPage', () => {
-  const mockUseRedisInstanceCompatibility =
-    useRedisInstanceCompatibility as jest.Mock
   const mockUseRedisearchListData = useRedisearchListData as jest.Mock
 
   beforeEach(() => {
     cleanup()
-
-    mockUseRedisInstanceCompatibility.mockReturnValue({
-      loading: false,
-      hasRedisearch: true,
-      hasSupportedVersion: true,
-    })
 
     mockUseRedisearchListData.mockReturnValue({
       loading: false,
@@ -84,19 +71,6 @@ describe('VectorSearchPage', () => {
     const { container } = renderComponent()
 
     expect(container).toBeTruthy()
-  })
-
-  it('should render loader while checking compatibility', () => {
-    mockUseRedisInstanceCompatibility.mockReturnValue({
-      loading: true,
-      hasRedisearch: undefined,
-      hasSupportedVersion: undefined,
-    })
-
-    renderComponent()
-
-    const loader = screen.getByTestId('vector-search-loader')
-    expect(loader).toBeInTheDocument()
   })
 
   it('should render loader while loading indexes', () => {
@@ -126,42 +100,6 @@ describe('VectorSearchPage', () => {
 
     const welcomeScreen = screen.queryByTestId('welcome-screen')
     expect(welcomeScreen).not.toBeInTheDocument()
-  })
-
-  it('should render loader when compatibility is uninitialized (undefined) even if indexes are not loading', () => {
-    mockUseRedisInstanceCompatibility.mockReturnValue({
-      loading: undefined,
-      hasRedisearch: undefined,
-      hasSupportedVersion: undefined,
-    })
-    mockUseRedisearchListData.mockReturnValue({
-      loading: false,
-      data: [],
-      stringData: [],
-    })
-
-    renderComponent()
-
-    const loader = screen.getByTestId('vector-search-loader')
-    expect(loader).toBeInTheDocument()
-
-    const welcomeScreen = screen.queryByTestId('welcome-screen')
-    expect(welcomeScreen).not.toBeInTheDocument()
-  })
-
-  it('should render RQE not available screen when RediSearch is not available', () => {
-    mockUseRedisInstanceCompatibility.mockReturnValue({
-      loading: false,
-      hasRedisearch: false,
-      hasSupportedVersion: true,
-    })
-
-    renderComponent()
-
-    const rqeScreen = screen.getByTestId(
-      'vector-search-page--rqe-not-available',
-    )
-    expect(rqeScreen).toBeInTheDocument()
   })
 
   it('should render welcome screen when no indexes exist', () => {
@@ -225,10 +163,10 @@ describe('VectorSearchPage', () => {
   })
 
   it('should not send page view telemetry while still loading', () => {
-    mockUseRedisInstanceCompatibility.mockReturnValue({
+    mockUseRedisearchListData.mockReturnValue({
       loading: true,
-      hasRedisearch: undefined,
-      hasSupportedVersion: undefined,
+      data: [],
+      stringData: [],
     })
 
     renderComponent()
