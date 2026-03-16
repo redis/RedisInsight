@@ -90,4 +90,20 @@ describe('commandHasUnixTimeArgs', () => {
   it('should return false for empty commands array', () => {
     expect(commandHasUnixTimeArgs([], 'SET mykey myvalue')).toBe(false)
   })
+
+  it('should return true when any line has a unix-time command (multi-line query)', () => {
+    expect(
+      commandHasUnixTimeArgs(mockCommands, 'GET key\nEXPIREAT mykey '),
+    ).toBe(true)
+  })
+
+  it('should return true when first line has unix-time command in multi-line query', () => {
+    expect(
+      commandHasUnixTimeArgs(mockCommands, 'EXPIREAT mykey 0\nGET key'),
+    ).toBe(true)
+  })
+
+  it('should return false when all lines have non-unix-time commands', () => {
+    expect(commandHasUnixTimeArgs(mockCommands, 'GET a\nGET b')).toBe(false)
+  })
 })

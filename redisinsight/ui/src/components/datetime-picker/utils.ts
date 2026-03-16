@@ -11,23 +11,21 @@ const hasUnixTimeArg = (args?: IRedisCommand[]): boolean => {
   )
 }
 
-export const commandHasUnixTimeArgs = (
+const lineCommandHasUnixTimeArgs = (
   commands: IRedisCommand[],
-  query: string,
+  line: string,
 ): boolean => {
-  if (!query.trim()) {
+  const trimmed = line.trim()
+  if (!trimmed) {
     return false
   }
 
-  const parts = query.trim().split(/\s+/)
+  const parts = trimmed.split(/\s+/)
   const firstWord = parts[0]?.toUpperCase()
-
   if (!firstWord) {
     return false
   }
 
-  // Handle sub-commands like "TS.RANGE", "TS.MRANGE"
-  // Also try two-word commands like "CLIENT GETNAME"
   const twoWord =
     parts.length > 1 ? `${firstWord} ${parts[1]?.toUpperCase()}` : ''
 
@@ -41,4 +39,22 @@ export const commandHasUnixTimeArgs = (
   }
 
   return hasUnixTimeArg(command.arguments)
+}
+
+/**
+ * Returns true if the query contains at least one command that has unix-time
+ * arguments. Splits the query by newlines so that multi-line workbench input
+ * (e.g. "GET key\nEXPIREAT mykey") is evaluated per line; the cursor-aware
+ * check (currentArgIsUnixTime) then controls visibility at the argument level.
+ */
+export const commandHasUnixTimeArgs = (
+  commands: IRedisCommand[],
+  query: string,
+): boolean => {
+  if (!query.trim()) {
+    return false
+  }
+
+  const lines = query.split(/\n/)
+  return lines.some((line) => lineCommandHasUnixTimeArgs(commands, line))
 }
