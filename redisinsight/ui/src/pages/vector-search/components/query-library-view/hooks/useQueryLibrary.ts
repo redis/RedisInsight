@@ -89,11 +89,13 @@ export const useQueryLibrary = () => {
 
       try {
         await serviceRef.current.delete(databaseId, id)
-        const remaining = items.filter((item) => item.id !== id)
-        setItems(remaining)
-        if (remaining.length === 0 && !search) {
-          setHasItems(false)
-        }
+        setItems((prev) => {
+          const remaining = prev.filter((item) => item.id !== id)
+          if (remaining.length === 0 && !search) {
+            setHasItems(false)
+          }
+          return remaining
+        })
         setOpenItemId((prev) => (prev === id ? null : prev))
         dispatch(
           addMessageNotification(queryLibraryNotifications.queryDeleted()),
@@ -103,7 +105,7 @@ export const useQueryLibrary = () => {
         return false
       }
     },
-    [databaseId, dispatch, items, search],
+    [databaseId, dispatch, search],
   )
 
   const toggleItemOpen = useCallback((id: string) => {
