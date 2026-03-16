@@ -1,5 +1,8 @@
 ---
-alwaysApply: true
+name: commits
+description: >-
+  Generate commit messages following Conventional Commits format. Use when
+  creating commits, writing commit messages, or the user asks to commit changes.
 ---
 
 # Commit Message Guidelines

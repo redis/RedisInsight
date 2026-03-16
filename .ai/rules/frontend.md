@@ -1,5 +1,7 @@
 ---
-alwaysApply: true
+description: React frontend development patterns, Redux, styled-components, UI components, and hooks
+globs: redisinsight/ui/**/*.{ts,tsx}
+alwaysApply: false
 ---
 
 # Frontend Development (React/Redux)

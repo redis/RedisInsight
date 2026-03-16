@@ -1,5 +1,9 @@
 ---
-alwaysApply: true
+name: branches
+description: >-
+  Create and name git branches following project conventions and GitHub Actions
+  enforcement rules. Use when creating branches, checking out new branches, or
+  the user mentions branch naming.
 ---
 
 # Branch Naming Conventions

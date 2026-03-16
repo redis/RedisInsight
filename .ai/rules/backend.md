@@ -1,5 +1,7 @@
 ---
-alwaysApply: true
+description: NestJS backend development patterns, module structure, services, controllers, DTOs, and error handling
+globs: redisinsight/api/**/*.ts
+alwaysApply: false
 ---
 
 # Backend Development (NestJS/API)
