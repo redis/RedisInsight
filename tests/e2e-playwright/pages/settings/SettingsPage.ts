@@ -9,12 +9,12 @@ export class SettingsPage extends BasePage {
   // Page title
   readonly pageTitle: Locator;
 
-  // Accordion buttons
-  readonly generalButton: Locator;
-  readonly privacyButton: Locator;
-  readonly workbenchButton: Locator;
-  readonly redisCloudButton: Locator;
-  readonly advancedButton: Locator;
+  // Accordion section headers
+  readonly generalSectionHeader: Locator;
+  readonly privacySectionHeader: Locator;
+  readonly workbenchSectionHeader: Locator;
+  readonly redisCloudSectionHeader: Locator;
+  readonly advancedSectionHeader: Locator;
 
   // General settings
   readonly themeDropdown: Locator;
@@ -51,12 +51,12 @@ export class SettingsPage extends BasePage {
     // Page title
     this.pageTitle = page.locator('[data-testid="settings-page-title"]').or(page.getByText('Settings').first());
 
-    // Accordion buttons
-    this.generalButton = page.getByRole('button', { name: 'General' });
-    this.privacyButton = page.getByRole('button', { name: 'Privacy' });
-    this.workbenchButton = page.getByRole('button', { name: 'Workbench' });
-    this.redisCloudButton = page.getByRole('button', { name: 'Redis Cloud', exact: true });
-    this.advancedButton = page.getByRole('button', { name: 'Advanced' });
+    // Accordion headings (clicking the heading label toggles the section)
+    this.generalSectionHeader = page.getByRole('heading', { name: 'General' });
+    this.privacySectionHeader = page.getByRole('heading', { name: 'Privacy' });
+    this.workbenchSectionHeader = page.getByRole('heading', { name: 'Workbench' });
+    this.redisCloudSectionHeader = page.getByRole('heading', { name: 'Redis Cloud', exact: true });
+    this.advancedSectionHeader = page.getByRole('heading', { name: 'Advanced' });
 
     // General settings
     this.themeDropdown = page.getByRole('combobox', { name: /color theme/i });
@@ -116,7 +116,7 @@ export class SettingsPage extends BasePage {
    * Expand General settings section
    */
   async expandGeneral(): Promise<void> {
-    await this.generalButton.click();
+    await this.generalSectionHeader.click();
     await this.themeDropdown.waitFor({ state: 'visible', timeout: 5000 });
   }
 
@@ -124,7 +124,7 @@ export class SettingsPage extends BasePage {
    * Expand Privacy settings section
    */
   async expandPrivacy(): Promise<void> {
-    await this.privacyButton.click();
+    await this.privacySectionHeader.click();
     await this.usageDataSwitch.waitFor({ state: 'visible', timeout: 5000 });
   }
 
@@ -132,7 +132,7 @@ export class SettingsPage extends BasePage {
    * Expand Workbench settings section
    */
   async expandWorkbench(): Promise<void> {
-    await this.workbenchButton.click();
+    await this.workbenchSectionHeader.click();
     await this.editorCleanupSwitch.waitFor({ state: 'visible', timeout: 5000 });
   }
 
@@ -140,7 +140,7 @@ export class SettingsPage extends BasePage {
    * Expand Advanced settings section
    */
   async expandAdvanced(): Promise<void> {
-    await this.advancedButton.click();
+    await this.advancedSectionHeader.click();
     await this.advancedWarning.waitFor({ state: 'visible', timeout: 5000 });
   }
 
@@ -148,7 +148,7 @@ export class SettingsPage extends BasePage {
    * Check if General section is expanded
    */
   async isGeneralExpanded(): Promise<boolean> {
-    const expanded = await this.generalButton.getAttribute('aria-expanded');
+    const expanded = await this.generalSectionHeader.getAttribute('aria-expanded');
     return expanded === 'true';
   }
 
@@ -156,7 +156,7 @@ export class SettingsPage extends BasePage {
    * Check if Privacy section is expanded
    */
   async isPrivacyExpanded(): Promise<boolean> {
-    const expanded = await this.privacyButton.getAttribute('aria-expanded');
+    const expanded = await this.privacySectionHeader.getAttribute('aria-expanded');
     return expanded === 'true';
   }
 
@@ -164,7 +164,7 @@ export class SettingsPage extends BasePage {
    * Check if Workbench section is expanded
    */
   async isWorkbenchExpanded(): Promise<boolean> {
-    const expanded = await this.workbenchButton.getAttribute('aria-expanded');
+    const expanded = await this.workbenchSectionHeader.getAttribute('aria-expanded');
     return expanded === 'true';
   }
 
@@ -172,7 +172,7 @@ export class SettingsPage extends BasePage {
    * Check if Advanced section is expanded
    */
   async isAdvancedExpanded(): Promise<boolean> {
-    const expanded = await this.advancedButton.getAttribute('aria-expanded');
+    const expanded = await this.advancedSectionHeader.getAttribute('aria-expanded');
     return expanded === 'true';
   }
 
@@ -180,7 +180,7 @@ export class SettingsPage extends BasePage {
    * Expand Redis Cloud settings section
    */
   async expandRedisCloud(): Promise<void> {
-    await this.redisCloudButton.click();
+    await this.redisCloudSectionHeader.click();
     await this.apiUserKeysText.waitFor({ state: 'visible', timeout: 5000 });
   }
 
@@ -188,7 +188,7 @@ export class SettingsPage extends BasePage {
    * Check if Redis Cloud section is expanded
    */
   async isRedisCloudExpanded(): Promise<boolean> {
-    const expanded = await this.redisCloudButton.getAttribute('aria-expanded');
+    const expanded = await this.redisCloudSectionHeader.getAttribute('aria-expanded');
     return expanded === 'true';
   }
 
