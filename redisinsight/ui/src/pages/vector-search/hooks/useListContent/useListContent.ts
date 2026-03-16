@@ -76,7 +76,12 @@ export const useListContent = () => {
         SearchMode.Redisearch,
       )
       dispatch(changeSearchMode(SearchMode.Redisearch))
-      history.push(Pages.browser(instanceId), { browseIndex: indexName })
+      const search = new URLSearchParams()
+      search.set('browseIndex', indexName)
+      history.push({
+        pathname: Pages.browser(instanceId),
+        search: search.toString(),
+      })
     },
     [dispatch, history, instanceId],
   )
