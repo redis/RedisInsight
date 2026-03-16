@@ -68,7 +68,7 @@ const RediSearchIndexesList = (props: Props) => {
     featureFlags?.[FeatureFlags.vectorSearchV2]?.flag ?? false
 
   const dispatch = useDispatch()
-  const location = useLocation<{ browseIndex?: string }>()
+  const location = useLocation()
   const history = useHistory()
 
   const selectIndex = useCallback(
@@ -114,11 +114,13 @@ const RediSearchIndexesList = (props: Props) => {
   }, [instanceHost, modules])
 
   useEffect(() => {
-    const browseIndex = location.state?.browseIndex
+    const params = new URLSearchParams(location.search)
+    const browseIndex = params.get('browseIndex')
     if (!browseIndex || list.length === 0) return
 
     if (selectIndex(browseIndex)) {
-      history.replace({ ...location, state: undefined })
+      params.delete('browseIndex')
+      history.replace({ ...location, search: params.toString() })
     }
   }, [list])
 

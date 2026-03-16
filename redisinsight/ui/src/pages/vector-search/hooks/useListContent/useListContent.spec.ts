@@ -178,8 +178,9 @@ describe('useListContent', () => {
       })
 
       expect(mockDispatch).toHaveBeenCalled()
-      expect(mockPush).toHaveBeenCalledWith(Pages.browser(mockInstanceId), {
-        browseIndex: indexName,
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: Pages.browser(mockInstanceId),
+        search: `browseIndex=${indexName}`,
       })
     })
   })
