@@ -102,6 +102,20 @@ describe('MakeSearchableButton', () => {
     )
   })
 
+  it('should navigate with empty prefix when key has no namespace', async () => {
+    renderComponent({ keyNameString: 'simplekey' })
+
+    await userEvent.click(screen.getByTestId('make-searchable-btn'))
+    await userEvent.click(screen.getByTestId('make-searchable-modal-confirm'))
+
+    expect(mockPush).toHaveBeenCalledWith({
+      pathname: Pages.vectorSearchCreateIndex(mockInstanceId),
+      search:
+        `mode=${CreateIndexMode.ExistingData}&initialKey=test` +
+        `&initialKeyType=${RedisearchIndexKeyType.HASH}&initialPrefix=`,
+    })
+  })
+
   it('should close modal on cancel', async () => {
     renderComponent()
 

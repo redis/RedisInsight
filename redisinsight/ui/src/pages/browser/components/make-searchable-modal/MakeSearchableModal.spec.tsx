@@ -45,12 +45,18 @@ describe('MakeSearchableModal', () => {
   it('should show prefix in the body text when provided', () => {
     renderComponent({ prefix: 'bicycle:' })
 
-    expect(screen.getByText('bicycle:')).toBeInTheDocument()
+    expect(screen.getByText("'bicycle:'")).toBeInTheDocument()
     expect(screen.getByText(/All keys starting with/)).toBeInTheDocument()
   })
 
-  it('should not show prefix text when prefix is not provided', () => {
-    renderComponent()
+  it('should show prefix text when prefix is empty string', () => {
+    renderComponent({ prefix: '' })
+
+    expect(screen.getByText(/All keys starting with/)).toBeInTheDocument()
+  })
+
+  it('should not show prefix text when prefix is undefined', () => {
+    renderComponent({ prefix: undefined })
 
     expect(screen.queryByText(/All keys starting with/)).not.toBeInTheDocument()
   })
