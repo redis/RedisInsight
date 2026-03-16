@@ -51,12 +51,12 @@ export class SettingsPage extends BasePage {
     // Page title
     this.pageTitle = page.locator('[data-testid="settings-page-title"]').or(page.getByText('Settings').first());
 
-    // Accordion headings (clicking the heading label toggles the section)
-    this.generalSectionHeader = page.getByRole('heading', { name: 'General' });
-    this.privacySectionHeader = page.getByRole('heading', { name: 'Privacy' });
-    this.workbenchSectionHeader = page.getByRole('heading', { name: 'Workbench' });
-    this.redisCloudSectionHeader = page.getByRole('heading', { name: 'Redis Cloud', exact: true });
-    this.advancedSectionHeader = page.getByRole('heading', { name: 'Advanced' });
+    // The header toggles via its nested collapse trigger button.
+    this.generalSectionHeader = page.locator('[data-test-subj="accordion-appearance"] button[aria-expanded]');
+    this.privacySectionHeader = page.locator('[data-test-subj="accordion-privacy-settings"] button[aria-expanded]');
+    this.workbenchSectionHeader = page.locator('[data-test-subj="accordion-workbench-settings"] button[aria-expanded]');
+    this.redisCloudSectionHeader = page.locator('[data-test-subj="accordion-cloud-settings"] button[aria-expanded]');
+    this.advancedSectionHeader = page.locator('[data-test-subj="accordion-advanced-settings"] button[aria-expanded]');
 
     // General settings
     this.themeDropdown = page.getByRole('combobox', { name: /color theme/i });
