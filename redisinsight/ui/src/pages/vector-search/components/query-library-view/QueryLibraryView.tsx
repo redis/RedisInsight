@@ -23,6 +23,7 @@ export const QueryLibraryView = ({ onRun, onLoad }: QueryLibraryViewProps) => {
   const { instanceId } = useParams<{ instanceId: string }>()
   const {
     items,
+    hasItemsBeforeSearch,
     loading,
     error,
     search,
@@ -91,7 +92,7 @@ export const QueryLibraryView = ({ onRun, onLoad }: QueryLibraryViewProps) => {
 
   const isInitialLoading = loading === true && items.length === 0
   const isEmpty = loading === false && !error && items.length === 0
-  const showSearchBar = items.length > 0 || !!search
+  const showSearchBar = hasItemsBeforeSearch || !!search
 
   return (
     <S.Container data-testid="query-library-view">
