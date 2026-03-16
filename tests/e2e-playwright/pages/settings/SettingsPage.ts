@@ -87,13 +87,17 @@ export class SettingsPage extends BasePage {
     this.privacyPolicyLink = page.getByRole('link', { name: 'Privacy Policy' });
 
     // Workbench settings
+    const workbenchSection = page.getByTestId('accordion-workbench-settings');
+
     this.editorCleanupSwitch = page
       .locator('[data-testid="switch-workbench-cleanup"]')
       .or(page.getByRole('switch').filter({ hasText: /Clear the Editor/i }));
-    this.pipelineCommandsText = page.getByText(/Commands in pipeline/i);
-    this.pipelineCommandsValue = page.getByTestId('pipeline-bunch-value');
-    this.pipelineCommandsInput = page.getByTestId('pipeline-bunch-input');
-    this.pipelineApplyButton = page.getByTestId('apply-btn');
+    this.pipelineCommandsText = workbenchSection.getByText(/Commands in pipeline/i);
+    this.pipelineCommandsValue = workbenchSection.getByTestId('pipeline-bunch-value');
+    this.pipelineCommandsInput = workbenchSection.getByTestId('pipeline-bunch-input');
+    this.pipelineApplyButton = this.pipelineCommandsInput
+      .locator('xpath=ancestor::form')
+      .getByTestId('apply-btn');
 
     // Advanced settings
     this.advancedWarning = page.getByRole('alert').filter({ hasText: /Advanced settings/i });
