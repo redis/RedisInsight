@@ -18,7 +18,7 @@ export const MakeSearchableButton = ({
 
   const handleOpen = useCallback(() => {
     openMakeSearchableModal({
-      prefix: prefix || undefined,
+      prefix,
       initialKey: keyName,
       initialKeyType: KEY_TYPE_MAP[keyType],
       initialPrefix: prefix,

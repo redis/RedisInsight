@@ -29,7 +29,7 @@ export const parseCreateIndexSearchParams = (
       initialKey: initialKeyStr ? stringToBuffer(initialKeyStr) : undefined,
       initialKeyType:
         (params.get('initialKeyType') as RedisearchIndexKeyType) || undefined,
-      initialPrefix: params.get('initialPrefix') || undefined,
+      initialPrefix: params.get('initialPrefix') ?? undefined,
     }
   }
 

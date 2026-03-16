@@ -55,12 +55,12 @@ export const MakeSearchableModal = ({
 
         <S.Description color="secondary" data-testid={`${TEST_ID}-body`}>
           We&rsquo;ll take you to the Search workspace to set up the index.
-          {prefix && (
+          {prefix != null && (
             <>
               {' '}
               All keys starting with{' '}
               <Text color="secondary" variant="semiBold" component="span">
-                {prefix}
+                '{prefix}'
               </Text>{' '}
               will be included.
             </>

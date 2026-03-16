@@ -1481,6 +1481,19 @@ describe('redisearch slice', () => {
     })
 
     describe('fetchKeyIndexesAction', () => {
+      const storeWithSearchModule = () =>
+        mockStore({
+          ...initialStateDefault,
+          connections: {
+            instances: {
+              ...cloneDeep(initialStateInstances),
+              connectedInstance: {
+                modules: [{ name: RedisDefaultModules.Search }],
+              },
+            },
+          },
+        })
+
       it('should dispatch loadKeyIndexes and loadKeyIndexesSuccess on success', async () => {
         const keyName = 'movie:1'
         const responseData = {
@@ -1492,7 +1505,8 @@ describe('redisearch slice', () => {
 
         apiService.post = jest.fn().mockResolvedValue(responsePayload)
 
-        await store.dispatch<any>(fetchKeyIndexesAction(keyName))
+        const searchStore = storeWithSearchModule()
+        await searchStore.dispatch<any>(fetchKeyIndexesAction(keyName))
 
         const expectedActions = [
           loadKeyIndexes(keyName),
@@ -1502,7 +1516,7 @@ describe('redisearch slice', () => {
           ]),
         ]
 
-        expect(store.getActions()).toEqual(expectedActions)
+        expect(searchStore.getActions()).toEqual(expectedActions)
       })
 
       it('should dispatch loadKeyIndexesFailure on error', async () => {
@@ -1512,18 +1526,36 @@ describe('redisearch slice', () => {
           .fn()
           .mockRejectedValue(new AxiosError(errorMessage))
 
-        await store.dispatch<any>(fetchKeyIndexesAction(keyName))
+        const searchStore = storeWithSearchModule()
+        await searchStore.dispatch<any>(fetchKeyIndexesAction(keyName))
 
-        const actions = store.getActions()
+        const actions = searchStore.getActions()
         expect(actions[0]).toEqual(loadKeyIndexes(keyName))
         expect(actions[1].type).toEqual(loadKeyIndexesFailure.type)
         expect(actions[1].payload[0]).toEqual(keyName)
+      })
+
+      it('should dispatch loadKeyIndexesSuccess with empty data when redisearch module is not available', async () => {
+        const keyName = 'movie:1'
+
+        await store.dispatch<any>(fetchKeyIndexesAction(keyName))
+
+        const actions = store.getActions()
+        expect(actions).toEqual([loadKeyIndexesSuccess([keyName, []])])
       })
 
       it('should not dispatch when entry is already loaded', async () => {
         const keyName = 'movie:1'
         const storeWithEntry = mockStore({
           ...initialStateDefault,
+          connections: {
+            instances: {
+              ...cloneDeep(initialStateInstances),
+              connectedInstance: {
+                modules: [{ name: RedisDefaultModules.Search }],
+              },
+            },
+          },
           browser: {
             ...initialStateDefault.browser,
             redisearch: {
@@ -1563,6 +1595,14 @@ describe('redisearch slice', () => {
 
         const storeWithEntry = mockStore({
           ...initialStateDefault,
+          connections: {
+            instances: {
+              ...cloneDeep(initialStateInstances),
+              connectedInstance: {
+                modules: [{ name: RedisDefaultModules.Search }],
+              },
+            },
+          },
           browser: {
             ...initialStateDefault.browser,
             redisearch: {
