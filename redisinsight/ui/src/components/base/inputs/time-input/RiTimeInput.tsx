@@ -2,16 +2,10 @@ import React, { useCallback, useState } from 'react'
 
 import { Text } from 'uiSrc/components/base/text'
 import { Col } from 'uiSrc/components/base/layout/flex'
+import { formatTimeString } from 'uiSrc/utils/transformers/formatDate'
 
 import { RiTimeInputProps } from './RiTimeInput.types'
 import * as S from './RiTimeInput.styles'
-
-const formatCurrentTime = (): string => {
-  const now = new Date()
-  return [now.getHours(), now.getMinutes(), now.getSeconds()]
-    .map((n) => String(n).padStart(2, '0'))
-    .join(':')
-}
 
 const clampTimePart = (val: number, max: number): number =>
   Math.max(0, Math.min(max, val))
@@ -28,7 +22,7 @@ const clampTimeString = (raw: string): string => {
 
 const RiTimeInput = ({ value, onChange, label = 'Time' }: RiTimeInputProps) => {
   const [internalValue, setInternalValue] = useState(
-    () => value ?? formatCurrentTime(),
+    () => value ?? formatTimeString(new Date()),
   )
   const displayValue = value ?? internalValue
 

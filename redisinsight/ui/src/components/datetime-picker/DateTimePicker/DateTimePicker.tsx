@@ -5,15 +5,11 @@ import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGrou
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { RiDatePicker } from 'uiSrc/components/base/display/date-picker'
 import { RiTimeInput } from 'uiSrc/components/base/inputs/time-input'
+import { formatTimeString } from 'uiSrc/utils/transformers/formatDate'
 
 import { DateTimePickerProps } from './DateTimePicker.types'
 import { UNIT_LABELS } from './DateTimePicker.constants'
 import * as S from './DateTimePicker.styles'
-
-const buildTimeString = (date: Date): string =>
-  [date.getHours(), date.getMinutes(), date.getSeconds()]
-    .map((n) => String(n).padStart(2, '0'))
-    .join(':')
 
 const parseTimeString = (time: string) => {
   const parts = time.split(':').map(Number)
@@ -46,7 +42,7 @@ const DateTimePicker = ({
   )
   const [unit, setUnit] = useState<'seconds' | 'milliseconds'>(initialUnit)
   const [time, setTime] = useState<string>(() =>
-    buildTimeString(initialDate ?? new Date()),
+    formatTimeString(initialDate ?? new Date()),
   )
 
   const timestamp = useMemo(

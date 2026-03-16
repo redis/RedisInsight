@@ -11,6 +11,12 @@ import { truncateNumberToFirstUnit } from './truncateTTL'
 import { IS_NUMBER_REGEX, checkTimestamp } from '../validations'
 import { Nullable } from '../types'
 
+/** Formats a Date's time as HH:MM:SS with zero-padding. */
+export const formatTimeString = (date: Date): string =>
+  [date.getHours(), date.getMinutes(), date.getSeconds()]
+    .map((n) => String(n).padStart(2, '0'))
+    .join(':')
+
 export const lastConnectionFormat = (date?: Date) =>
   date ? `${formatDistanceToNow(new Date(date), { addSuffix: true })}` : 'Never'
 
