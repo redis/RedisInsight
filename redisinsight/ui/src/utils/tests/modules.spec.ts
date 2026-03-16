@@ -1,6 +1,7 @@
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
 import {
   getDbWithModuleLoaded,
+  getRedisearchVersion,
   IDatabaseModule,
   isContainJSONModule,
   isRedisearchAvailable,
@@ -132,6 +133,56 @@ const getDbWithModuleLoadedTests: Array<{
     expected: { id: '1', modules: [{ name: 'redisgears' }] },
   },
 ]
+
+describe('getRedisearchVersion', () => {
+  it('should return undefined when modules is empty', () => {
+    const result = getRedisearchVersion([])
+    expect(result).toBeUndefined()
+  })
+
+  it('should return undefined when modules is undefined', () => {
+    const result = getRedisearchVersion()
+    expect(result).toBeUndefined()
+  })
+
+  it('should return semanticVersion when available', () => {
+    const result = getRedisearchVersion([
+      {
+        name: RedisDefaultModules.Search,
+        version: 20800,
+        semanticVersion: '2.8.0',
+      },
+    ])
+    expect(result).toBe('2.8.0')
+  })
+
+  it('should fall back to version number as string', () => {
+    const result = getRedisearchVersion([
+      { name: RedisDefaultModules.Search, version: 20800 },
+    ])
+    expect(result).toBe('20800')
+  })
+
+  it('should find FT module name', () => {
+    const result = getRedisearchVersion([
+      { name: 'ReJSON', version: 20400 },
+      {
+        name: RedisDefaultModules.FT,
+        version: 20800,
+        semanticVersion: '2.8.0',
+      },
+    ])
+    expect(result).toBe('2.8.0')
+  })
+
+  it('should return undefined when no RQE module present', () => {
+    const result = getRedisearchVersion([
+      { name: 'ReJSON', version: 20400 },
+      { name: 'timeseries', version: 10800 },
+    ])
+    expect(result).toBeUndefined()
+  })
+})
 
 describe('getDbWithModuleLoaded', () => {
   it.each(getDbWithModuleLoadedTests)(

@@ -1,8 +1,7 @@
 import React from 'react'
 
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
-import { Icon } from 'uiSrc/components/base/icons'
-import { KnowledgeBaseIcon } from '@redis-ui/icons'
+import { Icon, KnowledgeBaseIcon } from 'uiSrc/components/base/icons'
 import { EditorTab, EditorLibraryToggleProps } from './QueryEditor.types'
 import { QueryOnboardingPopover } from './components/query-onboarding-popover'
 import * as S from './QueryEditor.styles'

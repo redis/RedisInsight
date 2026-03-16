@@ -202,6 +202,20 @@ describe('QueryEditorWrapper', () => {
     expect(searchInput).not.toBeInTheDocument()
   })
 
+  it('should disable run button when isLoading is true', () => {
+    renderComponent({ query: 'FT.SEARCH idx "*"', isLoading: true })
+
+    const submitBtn = screen.getByTestId('btn-submit') as HTMLButtonElement
+    expect(submitBtn.disabled).toBe(true)
+  })
+
+  it('should enable run button when isLoading is false', () => {
+    renderComponent({ query: 'FT.SEARCH idx "*"', isLoading: false })
+
+    const submitBtn = screen.getByTestId('btn-submit') as HTMLButtonElement
+    expect(submitBtn.disabled).toBe(false)
+  })
+
   describe('Save query flow', () => {
     it('should render save button in actions bar', () => {
       renderComponent()

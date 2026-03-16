@@ -1,7 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
-import styled from 'styled-components'
 import { isUndefined } from 'lodash'
 
 import { findTutorialPath, Maybe, Nullable } from 'uiSrc/utils'
@@ -35,16 +34,16 @@ import {
 
 import { openTutorialByPath } from 'uiSrc/slices/panels/sidePanels'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { Card, Spacer } from 'uiSrc/components/base/layout'
+import { Spacer } from 'uiSrc/components/base/layout'
 import {
   IconButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion'
 import { Link } from 'uiSrc/components/base/link/Link'
-import { Title } from 'uiSrc/pages/vector-search-deprecated/manage-indexes/styles'
 
 import styles from './styles.module.scss'
+import { RecommendationContent, Title } from './Recommendation.styles'
 
 const TITLE_TRUNCATE_LENGTH = 30 // Note: Temporary dirty fix for RI-7474, before the full redesign of this component
 
@@ -59,12 +58,6 @@ export interface IProps {
   params: IRecommendationParams
   recommendationsContent: IRecommendationsStatic
 }
-
-const RecommendationContent = styled(Card)`
-  padding: 0;
-  border: none;
-  box-shadow: none;
-`
 
 const RecommendationTitle = ({
   redisStack,

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { ColumnDef } from 'uiSrc/components/base/layout/table'
-import { FieldTag } from 'uiSrc/components/new-index/create-index-step/field-box/FieldTag'
+import { FieldTag } from 'uiSrc/pages/vector-search/components/field-tag/FieldTag'
 
 import { IndexInfoTableData } from './IndexInfo.types'
 

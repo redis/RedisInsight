@@ -2,6 +2,7 @@ import { test as base, ElectronApplication, _electron as electron } from '@playw
 import {
   BrowserPage,
   CliPanel,
+  CommandHelperPanel,
   DatabasesPage,
   WorkbenchPage,
   AnalyticsPage,
@@ -9,6 +10,7 @@ import {
   PubSubPage,
   EulaPage,
   SidebarPanel,
+  InsightsPanel,
 } from 'e2eSrc/pages';
 import { ApiHelper, retry } from 'e2eSrc/helpers';
 
@@ -30,6 +32,7 @@ type Fixtures = {
    */
   browserPage: BrowserPage;
   cliPanel: CliPanel;
+  commandHelperPanel: CommandHelperPanel;
   databasesPage: DatabasesPage;
   workbenchPage: WorkbenchPage;
   analyticsPage: AnalyticsPage;
@@ -37,6 +40,7 @@ type Fixtures = {
   pubSubPage: PubSubPage;
   eulaPage: EulaPage;
   sidebarPanel: SidebarPanel;
+  insightsPanel: InsightsPanel;
 };
 
 /**
@@ -195,6 +199,10 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
     await use(new CliPanel(page));
   },
 
+  commandHelperPanel: async ({ page }, use) => {
+    await use(new CommandHelperPanel(page));
+  },
+
   databasesPage: async ({ page }, use) => {
     await use(new DatabasesPage(page));
   },
@@ -221,6 +229,10 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
 
   sidebarPanel: async ({ page }, use) => {
     await use(new SidebarPanel(page));
+  },
+
+  insightsPanel: async ({ page }, use) => {
+    await use(new InsightsPanel(page));
   },
 });
 

@@ -268,6 +268,8 @@ const ONBOARDING_FEATURES = {
       const { id: connectedInstanceId = '' } = useSelector(
         connectedInstanceSelector,
       )
+      const { [FeatureFlags.vectorSearchV2]: vectorSearchFeature } =
+        useSelector(appFeatureFlagsFeaturesSelector)
 
       const dispatch = useDispatch()
       const history = useHistory()
@@ -299,6 +301,51 @@ const ONBOARDING_FEATURES = {
           dispatch(resetCliHelperSettings())
           dispatch(setMonitorInitialState())
 
+          if (vectorSearchFeature?.flag) {
+            history.push(Pages.vectorSearch(connectedInstanceId))
+          } else {
+            dispatch(setOnboardNextStep())
+            history.push(Pages.workbench(connectedInstanceId))
+          }
+
+          sendNextTelemetryEvent(...telemetryArgs)
+        },
+      }
+    },
+  },
+  VECTOR_SEARCH_PAGE: {
+    step: OnboardingSteps.VectorSearchPage,
+    title: 'Search',
+    Inner: () => {
+      const { id: connectedInstanceId = '' } = useSelector(
+        connectedInstanceSelector,
+      )
+
+      const dispatch = useDispatch()
+      const history = useHistory()
+      const telemetryArgs: TelemetryArgs = [
+        connectedInstanceId,
+        OnboardingStepName.VectorSearchIntro,
+      ]
+
+      return {
+        content: (
+          <>
+            This is Search, where you can index your data and query it using
+            Redis Query Engine. Run full-text search, vector similarity, and
+            filtered queries right from the UI.
+            <Spacer size="xs" />
+            Load sample data to create your first index and run sample queries
+            to see results instantly.
+          </>
+        ),
+        onSkip: () => sendClosedTelemetryEvent(...telemetryArgs),
+        onBack: () => {
+          history.push(Pages.browser(connectedInstanceId))
+          dispatch(showMonitor())
+          sendBackTelemetryEvent(...telemetryArgs)
+        },
+        onNext: () => {
           history.push(Pages.workbench(connectedInstanceId))
           sendNextTelemetryEvent(...telemetryArgs)
         },
@@ -312,6 +359,8 @@ const ONBOARDING_FEATURES = {
       const { id: connectedInstanceId = '' } = useSelector(
         connectedInstanceSelector,
       )
+      const { [FeatureFlags.vectorSearchV2]: vectorSearchFeature } =
+        useSelector(appFeatureFlagsFeaturesSelector)
       const [firstIndex, setFirstIndex] = useState<Nullable<string>>(null)
 
       const dispatch = useDispatch()
@@ -396,8 +445,14 @@ const ONBOARDING_FEATURES = {
         ),
         onSkip: () => sendClosedTelemetryEvent(...telemetryArgs),
         onBack: () => {
-          history.push(Pages.browser(connectedInstanceId))
-          dispatch(showMonitor())
+          if (vectorSearchFeature?.flag) {
+            history.push(Pages.vectorSearch(connectedInstanceId))
+          } else {
+            history.push(Pages.browser(connectedInstanceId))
+            dispatch(setOnboardPrevStep())
+            dispatch(showMonitor())
+          }
+
           sendBackTelemetryEvent(...telemetryArgs)
         },
         onNext: () => {

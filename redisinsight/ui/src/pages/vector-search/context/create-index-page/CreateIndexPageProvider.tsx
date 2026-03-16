@@ -1,17 +1,46 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { useHistory } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 
 import { Pages } from 'uiSrc/constants'
+import { RowSelectionState } from 'uiSrc/components/base/layout/table'
+import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import {
+  CommandExecutionType,
+  ResultsMode,
+  RunQueryMode,
+} from 'uiSrc/slices/interfaces'
+import { CommandExecutionStatus } from 'uiSrc/slices/interfaces/cli'
+import { addMessageNotification } from 'uiSrc/slices/app/notifications'
+import { fetchRedisearchListAction } from 'uiSrc/slices/browser/redisearch'
+import CommandsHistoryService from 'uiSrc/services/commands-history/commandsHistoryService'
 
 import { IndexField } from '../../components/index-details/IndexDetails.types'
 import { FieldTypeModalMode } from '../../components/field-type-modal'
-import { useCreateIndexCommand, useCreateIndexFlow } from '../../hooks'
+import {
+  useCreateIndexCommand,
+  useCreateIndexFlow,
+  useIndexNameValidation,
+} from '../../hooks'
 import {
   getFieldsBySampleData,
   getDisplayNameBySampleData,
   getIndexPrefixBySampleData,
+  getIndexNameBySampleData,
 } from '../../utils/sampleData'
-import { CreateIndexTab } from '../../pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
+import { generateDynamicFtCreateCommand } from '../../utils/generateDynamicFtCreateCommand'
+import { deriveIndexName, encodeIndexNameForUrl } from '../../utils'
+import {
+  CreateIndexTab,
+  CreateIndexMode,
+} from '../../pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
+import { createIndexNotifications } from '../../constants'
+import {
+  SearchTelemetryCancelStep,
+  SearchTelemetryFieldEditAction,
+} from '../../telemetry.constants'
+import { getFieldTypeSummary } from '../../utils/telemetry.utils'
 
 import {
   CreateIndexPageProviderProps,
@@ -25,51 +54,303 @@ const INITIAL_FIELD_MODAL_STATE: FieldModalState = {
   field: undefined,
 }
 
+const DEFAULT_INDEX_PREFIX = ''
+
 export const CreateIndexPageProvider = ({
   instanceId,
   sampleData,
+  mode: modeProp,
+  showBrowser: showBrowserProp = true,
+  initialKey: initialKeyProp,
+  initialKeyType: initialKeyTypeProp,
+  initialPrefix: initialPrefixProp,
   children,
 }: CreateIndexPageProviderProps) => {
+  const mode = modeProp ?? CreateIndexMode.SampleData
+  const isSampleData = mode === CreateIndexMode.SampleData
+
   const [activeTab, setActiveTab] = useState<CreateIndexTab>(
     CreateIndexTab.Table,
   )
-  const [isReadonly] = useState(true)
+
+  const changeActiveTab = useCallback(
+    (tab: CreateIndexTab) => {
+      setActiveTab(tab)
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_CREATE_INDEX_TAB_CHANGED,
+        eventData: { databaseId: instanceId, tab },
+      })
+    },
+    [instanceId],
+  )
   const [fieldModal, setFieldModal] = useState<FieldModalState>(
     INITIAL_FIELD_MODAL_STATE,
   )
 
   const history = useHistory()
+  const dispatch = useDispatch()
 
-  const { command } = useCreateIndexCommand(sampleData)
-  const { run: createIndexFlow, loading } = useCreateIndexFlow()
+  // --- Sample data mode hooks (only meaningful when isSampleData) ---
+  const { command: sampleCommand } = useCreateIndexCommand(sampleData)
+  const { run: createSampleIndexFlow, loading: sampleLoading } =
+    useCreateIndexFlow()
 
+  // --- Fields ---
+  const sampleFields = useMemo(
+    () => (sampleData ? getFieldsBySampleData(sampleData) : []),
+    [sampleData],
+  )
   const [editableFields, setEditableFields] = useState<IndexField[] | null>(
     null,
   )
+  const fields = isSampleData
+    ? (editableFields ?? sampleFields)
+    : (editableFields ?? [])
 
-  const sampleFields = useMemo(
-    () => getFieldsBySampleData(sampleData),
-    [sampleData],
-  )
-  const fields = editableFields ?? sampleFields
+  const [skippedFields, setSkippedFields] = useState<string[]>([])
 
-  const displayName = useMemo(
-    () => getDisplayNameBySampleData(sampleData),
-    [sampleData],
+  const setFields = useCallback(
+    (newFields: IndexField[], skipped?: string[]) => {
+      setEditableFields(newFields)
+      setSkippedFields(skipped ?? [])
+      const initialSelection: RowSelectionState = {}
+      newFields.forEach((f) => {
+        initialSelection[f.id] = true
+      })
+      setRowSelection(initialSelection)
+      setIsFieldsDirty(false)
+
+      if (newFields.length > 0) {
+        sendEventTelemetry({
+          event: TelemetryEvent.SEARCH_INDEX_AUTO_SUGGESTION_VIEWED,
+          eventData: {
+            databaseId: instanceId,
+            data_source: mode,
+            field_types: getFieldTypeSummary(newFields),
+            number_of_fields: newFields.length,
+            number_of_skipped: skipped?.length ?? 0,
+          },
+        })
+      }
+    },
+    [instanceId, mode],
   )
-  const indexPrefix = useMemo(
-    () => getIndexPrefixBySampleData(sampleData),
-    [sampleData],
+
+  // --- Index name ---
+  const [indexName, setIndexName] = useState<string>(() => {
+    if (isSampleData && sampleData) return getIndexNameBySampleData(sampleData)
+    if (initialPrefixProp) return deriveIndexName(initialPrefixProp)
+    return deriveIndexName('')
+  })
+
+  // --- Index prefix ---
+  const [indexPrefix, setIndexPrefix] = useState<string>(() => {
+    if (isSampleData && sampleData)
+      return getIndexPrefixBySampleData(sampleData)
+    if (initialPrefixProp) return initialPrefixProp
+    return DEFAULT_INDEX_PREFIX
+  })
+
+  // --- Key type (only for existing data) ---
+  const [keyType, setKeyType] = useState<RedisearchIndexKeyType>(
+    initialKeyTypeProp ?? RedisearchIndexKeyType.HASH,
   )
+
+  // --- Row selection ---
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+
+  // --- Dirty tracking ---
+  const [isFieldsDirty, setIsFieldsDirty] = useState(false)
+  const resetFieldsDirty = useCallback(() => setIsFieldsDirty(false), [])
+
+  // --- Validation ---
+  const indexNameError = useIndexNameValidation(!isSampleData ? indexName : '')
+
+  // --- Derived values ---
+  const isReadonly = isSampleData
+
+  const displayName = useMemo(() => {
+    if (isSampleData && sampleData)
+      return getDisplayNameBySampleData(sampleData)
+    return 'existing data'
+  }, [isSampleData, sampleData])
+
+  const showBrowser = !isSampleData && showBrowserProp
+
+  const selectedFields = useMemo(() => {
+    if (isSampleData) return fields
+    return fields.filter((f) => rowSelection[f.id])
+  }, [isSampleData, fields, rowSelection])
+
+  const dynamicCommand = useMemo(() => {
+    if (isSampleData) return sampleCommand
+    if (selectedFields.length === 0) return ''
+    return generateDynamicFtCreateCommand({
+      indexName: indexName.trim(),
+      keyType,
+      prefix: indexPrefix,
+      fields: selectedFields,
+    })
+  }, [
+    isSampleData,
+    sampleCommand,
+    selectedFields,
+    indexName,
+    keyType,
+    indexPrefix,
+  ])
+
+  const createDisabledReason = useMemo((): string | null => {
+    if (isSampleData) return null
+    if (selectedFields.length === 0)
+      return 'Select a key and at least one field to index.'
+    if (indexNameError !== null) return indexNameError
+    return null
+  }, [isSampleData, indexNameError, selectedFields])
+
+  const isCreateDisabled = createDisabledReason !== null
+
+  // --- Command execution for existing data ---
+  const commandsHistoryService = useRef(
+    new CommandsHistoryService(CommandExecutionType.Search),
+  ).current
+  const [existingDataLoading, setExistingDataLoading] = useState(false)
+
+  const handleCreateExistingDataIndex = useCallback(async () => {
+    if (!dynamicCommand || isCreateDisabled) return
+
+    setExistingDataLoading(true)
+    try {
+      const results = await commandsHistoryService.addCommandsToHistory(
+        instanceId,
+        [dynamicCommand],
+        {
+          activeRunQueryMode: RunQueryMode.Raw,
+          resultsMode: ResultsMode.Default,
+        },
+      )
+
+      const failedResult = results[0]?.result?.find(
+        (r) => r.status === CommandExecutionStatus.Fail,
+      )
+
+      if (failedResult) {
+        const errorMessage =
+          typeof failedResult.response === 'string'
+            ? failedResult.response
+            : undefined
+        dispatch(
+          addMessageNotification(
+            createIndexNotifications.createFailed(errorMessage),
+          ),
+        )
+        sendEventTelemetry({
+          event: TelemetryEvent.SEARCH_CREATE_INDEX_ERROR,
+          eventData: { databaseId: instanceId, data_source: mode },
+        })
+        return
+      }
+
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_INDEX_CREATED,
+        eventData: {
+          databaseId: instanceId,
+          data_source: mode,
+          number_of_indexed_fields: selectedFields.length,
+          field_types: getFieldTypeSummary(selectedFields),
+          fields_modified: isFieldsDirty,
+          key_type: keyType,
+        },
+      })
+
+      dispatch(fetchRedisearchListAction())
+      dispatch(addMessageNotification(createIndexNotifications.indexCreated()))
+      history.push(
+        Pages.vectorSearchQuery(
+          instanceId,
+          encodeIndexNameForUrl(indexName.trim()),
+        ),
+      )
+    } catch {
+      dispatch(addMessageNotification(createIndexNotifications.createFailed()))
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_CREATE_INDEX_ERROR,
+        eventData: { databaseId: instanceId, data_source: mode },
+      })
+    } finally {
+      setExistingDataLoading(false)
+    }
+  }, [
+    dynamicCommand,
+    isCreateDisabled,
+    isFieldsDirty,
+    instanceId,
+    indexName,
+    commandsHistoryService,
+    dispatch,
+    history,
+    mode,
+    selectedFields,
+    keyType,
+  ])
+
+  // --- Telemetry callbacks for sample data index creation ---
+  const onSampleIndexCreated = useCallback(() => {
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_INDEX_CREATED,
+      eventData: {
+        databaseId: instanceId,
+        data_source: mode,
+        number_of_indexed_fields: selectedFields.length,
+        field_types: getFieldTypeSummary(selectedFields),
+        fields_modified: isFieldsDirty,
+      },
+    })
+  }, [instanceId, mode, selectedFields, isFieldsDirty])
+
+  const onSampleIndexError = useCallback(() => {
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_CREATE_INDEX_ERROR,
+      eventData: { databaseId: instanceId, data_source: mode },
+    })
+  }, [instanceId, mode])
+
+  // --- Actions ---
+  const loading = isSampleData ? sampleLoading : existingDataLoading
 
   const handleCreateIndex = useCallback(() => {
-    createIndexFlow(instanceId, sampleData)
-  }, [createIndexFlow, instanceId, sampleData])
+    if (isSampleData && sampleData) {
+      createSampleIndexFlow(instanceId, sampleData, {
+        onSuccess: onSampleIndexCreated,
+        onError: onSampleIndexError,
+      })
+      return
+    }
+    handleCreateExistingDataIndex()
+  }, [
+    isSampleData,
+    sampleData,
+    createSampleIndexFlow,
+    instanceId,
+    onSampleIndexCreated,
+    onSampleIndexError,
+    handleCreateExistingDataIndex,
+  ])
 
   const handleCancel = useCallback(() => {
-    history.push(Pages.vectorSearch(instanceId))
-  }, [history, instanceId])
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_CREATE_INDEX_CANCELLED,
+      eventData: {
+        databaseId: instanceId,
+        data_source: mode,
+        step: SearchTelemetryCancelStep.IndexDefinition,
+      },
+    })
 
+    history.push(Pages.vectorSearch(instanceId))
+  }, [history, instanceId, mode])
+
+  // --- Field modal ---
   const openAddFieldModal = useCallback(() => {
     setFieldModal({
       isOpen: true,
@@ -92,8 +373,24 @@ export const CreateIndexPageProvider = ({
 
   const handleFieldSubmit = useCallback(
     (updatedField: IndexField) => {
+      const action =
+        fieldModal.mode === FieldTypeModalMode.Create
+          ? SearchTelemetryFieldEditAction.Add
+          : SearchTelemetryFieldEditAction.Edit
+
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_CREATE_INDEX_FIELD_EDITED,
+        eventData: {
+          databaseId: instanceId,
+          field_type: updatedField.type,
+          action,
+        },
+      })
+
       setEditableFields((prev) => {
-        const currentFields = prev ?? sampleFields
+        const currentFields = isSampleData
+          ? (prev ?? sampleFields)
+          : (prev ?? [])
 
         if (fieldModal.mode === FieldTypeModalMode.Create) {
           return [...currentFields, updatedField]
@@ -103,20 +400,50 @@ export const CreateIndexPageProvider = ({
           f.id === updatedField.id ? updatedField : f,
         )
       })
+
+      if (fieldModal.mode === FieldTypeModalMode.Create) {
+        setRowSelection((prev) => ({ ...prev, [updatedField.id]: true }))
+      }
+
       setFieldModal(INITIAL_FIELD_MODAL_STATE)
+      setIsFieldsDirty(true)
     },
-    [fieldModal.mode, sampleFields],
+    [fieldModal.mode, sampleFields, isSampleData, instanceId],
   )
 
+  const onRowSelectionChange = useCallback((selection: RowSelectionState) => {
+    setRowSelection(selection)
+    setIsFieldsDirty(true)
+  }, [])
+
+  // --- Context value ---
   const value = useMemo(
     () => ({
+      mode,
       activeTab,
-      setActiveTab,
+      setActiveTab: changeActiveTab,
       isReadonly,
+      showBrowser,
+      initialKey: initialKeyProp,
+      initialKeyType: initialKeyTypeProp,
       displayName,
+      indexName,
+      setIndexName,
       indexPrefix,
+      setIndexPrefix,
+      keyType,
+      setKeyType,
       fields,
-      command,
+      setFields,
+      skippedFields,
+      rowSelection,
+      onRowSelectionChange,
+      command: dynamicCommand,
+      indexNameError,
+      isFieldsDirty,
+      resetFieldsDirty,
+      isCreateDisabled,
+      createDisabledReason,
       loading,
       handleCreateIndex,
       handleCancel,
@@ -127,12 +454,28 @@ export const CreateIndexPageProvider = ({
       handleFieldSubmit,
     }),
     [
+      mode,
       activeTab,
+      changeActiveTab,
       isReadonly,
+      showBrowser,
+      initialKeyProp,
+      initialKeyTypeProp,
       displayName,
+      indexName,
       indexPrefix,
+      keyType,
       fields,
-      command,
+      setFields,
+      skippedFields,
+      rowSelection,
+      onRowSelectionChange,
+      dynamicCommand,
+      indexNameError,
+      isFieldsDirty,
+      resetFieldsDirty,
+      isCreateDisabled,
+      createDisabledReason,
       loading,
       handleCreateIndex,
       handleCancel,

@@ -41,6 +41,9 @@ export class SettingsPage extends BasePage {
   // Advanced settings
   readonly advancedWarning: Locator;
   readonly keysToScanText: Locator;
+  readonly keysToScanValue: Locator;
+  readonly keysToScanInput: Locator;
+  readonly keysToScanApplyButton: Locator;
 
   // Redis Cloud settings
   readonly apiUserKeysText: Locator;
@@ -102,6 +105,9 @@ export class SettingsPage extends BasePage {
     // Advanced settings
     this.advancedWarning = page.getByRole('alert').filter({ hasText: /Advanced settings/i });
     this.keysToScanText = page.getByRole('heading', { name: 'Keys to Scan in List view' });
+    this.keysToScanValue = page.getByTestId(/keys-to-scan-value/);
+    this.keysToScanInput = page.getByTestId('keys-to-scan-input');
+    this.keysToScanApplyButton = page.getByTestId('apply-btn');
 
     // Redis Cloud settings
     this.apiUserKeysText = page.getByText('API user keys', { exact: true });
@@ -281,5 +287,20 @@ export class SettingsPage extends BasePage {
     await this.pipelineCommandsInput.clear();
     await this.pipelineCommandsInput.fill(String(value));
     await this.pipelineApplyButton.click();
+   * Get current keys-to-scan value
+   */
+  async getKeysToScan(): Promise<string> {
+    return (await this.keysToScanValue.textContent()) || '';
+  }
+
+  /**
+   * Set keys-to-scan value and apply
+   */
+  async setKeysToScan(value: string): Promise<void> {
+    await this.keysToScanValue.click();
+    await this.keysToScanInput.waitFor({ state: 'visible' });
+    await this.keysToScanInput.clear();
+    await this.keysToScanInput.fill(value);
+    await this.keysToScanApplyButton.click();
   }
 }

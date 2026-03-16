@@ -101,4 +101,43 @@ describe('usePageViewTelemetry', () => {
       eventData: { databaseId: customInstanceId },
     })
   })
+
+  it('should include additional eventData when provided', () => {
+    const extra = { rqe_version: '2.8.0', number_of_indexes: 3 }
+
+    renderHook(() => usePageViewTelemetry({ page: mockPage, eventData: extra }))
+
+    expect(sendPageViewTelemetry).toHaveBeenCalledTimes(1)
+    expect(sendPageViewTelemetry).toHaveBeenCalledWith({
+      name: mockPage,
+      eventData: {
+        databaseId: INSTANCE_ID_MOCK,
+        rqe_version: '2.8.0',
+        number_of_indexes: 3,
+      },
+    })
+  })
+
+  it('should not send page view telemetry when ready is false', () => {
+    const { rerender } = renderHook(
+      ({ ready }) => usePageViewTelemetry({ page: mockPage, ready }),
+      { initialProps: { ready: false } },
+    )
+
+    expect(sendPageViewTelemetry).not.toHaveBeenCalled()
+
+    rerender({ ready: true })
+
+    expect(sendPageViewTelemetry).toHaveBeenCalledTimes(1)
+    expect(sendPageViewTelemetry).toHaveBeenCalledWith({
+      name: mockPage,
+      eventData: { databaseId: INSTANCE_ID_MOCK },
+    })
+  })
+
+  it('should default ready to true when not provided', () => {
+    renderHook(() => usePageViewTelemetry({ page: mockPage }))
+
+    expect(sendPageViewTelemetry).toHaveBeenCalledTimes(1)
+  })
 })

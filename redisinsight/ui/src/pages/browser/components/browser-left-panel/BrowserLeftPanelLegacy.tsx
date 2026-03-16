@@ -107,7 +107,7 @@ const BrowserLeftPanelLegacy = (props: Props) => {
     ) {
       loadKeys(viewType)
     }
-  }, [searchMode])
+  }, [searchMode, isDataLoaded])
 
   const loadKeys = useCallback(
     (keyViewType: KeyViewType = KeyViewType.Browser) => {

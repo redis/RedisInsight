@@ -10,7 +10,10 @@ import { QueryResultsProvider } from 'uiSrc/components/query/context/query-resul
 import { QueryResults } from 'uiSrc/components/query/query-results'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
-import { searchResultsTelemetry } from '../../../../telemetry.constants'
+import {
+  getSearchCommandType,
+  searchResultsTelemetry,
+} from '../../../../utils/telemetry.utils'
 import { useQuery } from '../../hooks/useQuery'
 import { QueryEditorWrapper } from '../../../../components/query-editor'
 import { NoSearchResults } from '../../../../components/no-search-results'
@@ -45,11 +48,13 @@ export const PageContent = ({
 
   const handleSubmit = useCallback(
     (value?: string) => {
+      const command = value ?? query
       sendEventTelemetry({
         event: TelemetryEvent.SEARCH_COMMAND_SUBMITTED,
         eventData: {
           databaseId: instanceId,
-          commands: [value ?? query],
+          command_type: getSearchCommandType(command),
+          commands: [command],
         },
       })
       onSubmit(value)
@@ -87,6 +92,7 @@ export const PageContent = ({
                   query={query}
                   setQuery={setQuery}
                   onSubmit={handleSubmit}
+                  isLoading={processing}
                 />
               </ResizablePanel>
 
