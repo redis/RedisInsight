@@ -91,17 +91,20 @@ export const QueryLibraryView = ({ onRun, onLoad }: QueryLibraryViewProps) => {
 
   const isInitialLoading = loading === true && items.length === 0
   const isEmpty = loading === false && !error && items.length === 0
+  const showSearchBar = items.length > 0 || !!search
 
   return (
     <S.Container data-testid="query-library-view">
-      <S.SearchBar>
-        <SearchInput
-          placeholder="Search query"
-          value={search}
-          onChange={onSearchChange}
-          data-testid="query-library-search"
-        />
-      </S.SearchBar>
+      {showSearchBar && (
+        <S.SearchBar>
+          <SearchInput
+            placeholder="Search query"
+            value={search}
+            onChange={onSearchChange}
+            data-testid="query-library-search"
+          />
+        </S.SearchBar>
+      )}
 
       <S.ListContainer>
         {isInitialLoading && (

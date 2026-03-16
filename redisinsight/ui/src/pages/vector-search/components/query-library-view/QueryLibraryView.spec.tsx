@@ -73,7 +73,24 @@ describe('QueryLibraryView', () => {
       expect(container).toBeInTheDocument()
     })
 
-    it('should render search input', () => {
+    it('should render search input when items exist', () => {
+      renderComponent()
+
+      const searchInput = screen.getByTestId('query-library-search')
+      expect(searchInput).toBeInTheDocument()
+    })
+
+    it('should not render search bar when there are no items and no search', () => {
+      mockUseQueryLibrary.items = []
+      renderComponent()
+
+      const searchInput = screen.queryByTestId('query-library-search')
+      expect(searchInput).not.toBeInTheDocument()
+    })
+
+    it('should render search bar when search is active even with no items', () => {
+      mockUseQueryLibrary.items = []
+      mockUseQueryLibrary.search = 'test'
       renderComponent()
 
       const searchInput = screen.getByTestId('query-library-search')
