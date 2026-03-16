@@ -27,7 +27,11 @@ const JSONViewer = (props: Props) => {
     const className = cx('jsonViewer', {
       'jsonViewer-collapsed': !expanded && !tooltip,
     })
-    const data = JSONBigInt({ useNativeBigInt }).parse(value)
+    const data = JSONBigInt({
+      useNativeBigInt,
+      protoAction: 'preserve',
+      constructorAction: 'preserve',
+    }).parse(value)
 
     if (tooltip && value?.length > TOOLTIP_CONTENT_MAX_LENGTH) {
       return { value: formatLongName(value), isValid: true }

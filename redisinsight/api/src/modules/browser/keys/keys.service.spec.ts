@@ -466,6 +466,105 @@ describe('KeysService', () => {
     });
   });
 
+  describe('getNamespaceSearchable', () => {
+    const dto = { prefixes: ['user:', 'session:'] };
+
+    beforeEach(() => {
+      mockStandaloneRedisClient.sendPipeline.mockReset();
+    });
+
+    it('should return searchable key when hash key found', async () => {
+      mockStandaloneRedisClient.sendPipeline
+        .mockResolvedValueOnce([
+          [null, ['0', ['user:1']]],
+          [null, ['0', []]],
+        ])
+        .mockResolvedValueOnce([
+          [null, ['0', []]],
+          [null, ['0', []]],
+        ]);
+
+      const result = await service.getNamespaceSearchable(
+        mockBrowserClientMetadata,
+        dto,
+      );
+
+      expect(result).toEqual([
+        { prefix: 'user:', key: { name: 'user:1', type: 'hash' } },
+        { prefix: 'session:' },
+      ]);
+    });
+
+    it('should return searchable key when json key found', async () => {
+      mockStandaloneRedisClient.sendPipeline
+        .mockResolvedValueOnce([
+          [null, ['0', []]],
+          [null, ['0', ['user:json1']]],
+        ])
+        .mockResolvedValueOnce([
+          [null, ['0', []]],
+          [null, ['0', []]],
+        ]);
+
+      const result = await service.getNamespaceSearchable(
+        mockBrowserClientMetadata,
+        dto,
+      );
+
+      expect(result).toEqual([
+        { prefix: 'user:', key: { name: 'user:json1', type: 'ReJSON-RL' } },
+        { prefix: 'session:' },
+      ]);
+    });
+
+    it('should return empty when no searchable keys found', async () => {
+      mockStandaloneRedisClient.sendPipeline.mockResolvedValue([
+        [null, ['0', []]],
+        [null, ['0', []]],
+      ]);
+
+      const result = await service.getNamespaceSearchable(
+        mockBrowserClientMetadata,
+        dto,
+      );
+
+      expect(result).toEqual([{ prefix: 'user:' }, { prefix: 'session:' }]);
+    });
+
+    it('should iterate scan until key is found', async () => {
+      const singleDto = { prefixes: ['user:'] };
+
+      mockStandaloneRedisClient.sendPipeline
+        .mockResolvedValueOnce([
+          [null, ['42', []]],
+          [null, ['0', []]],
+        ])
+        .mockResolvedValueOnce([[null, ['0', ['user:2']]]]);
+
+      const result = await service.getNamespaceSearchable(
+        mockBrowserClientMetadata,
+        singleDto,
+      );
+
+      expect(result).toEqual([
+        { prefix: 'user:', key: { name: 'user:2', type: 'hash' } },
+      ]);
+      expect(mockStandaloneRedisClient.sendPipeline).toHaveBeenCalledTimes(2);
+    });
+
+    it('should throw on ACL error', async () => {
+      const replyError = {
+        ...mockRedisNoPermError,
+        command: 'SCAN',
+      };
+      mockStandaloneRedisClient.sendPipeline.mockRejectedValue(replyError);
+
+      await expect(
+        service.getNamespaceSearchable(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(ForbiddenException);
+    });
+  });
+
   describe('removeKeyExpiration', () => {
     const keyName = 'testString';
     it('should remove key expiration', async () => {

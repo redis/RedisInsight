@@ -13,6 +13,8 @@ export enum KeyTypes {
   Stream = 'stream',
 }
 
+export const SEARCHABLE_KEY_TYPES: KeyTypes[] = [KeyTypes.Hash, KeyTypes.ReJSON]
+
 export enum ModulesKeyTypes {
   Graph = 'graphdata',
   TimeSeries = 'TSDB-TYPE',

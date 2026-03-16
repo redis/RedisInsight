@@ -63,6 +63,13 @@ export const isRedisearchAvailable = (
   modules: AdditionalRedisModule[],
 ): boolean => modules?.some(({ name }) => isRedisearchModule(name))
 
+export const getRedisearchVersion = (
+  modules: AdditionalRedisModule[] = [],
+): string | undefined => {
+  const mod = modules.find((m) => isRedisearchModule(m.name))
+  return mod?.semanticVersion ?? mod?.version?.toString()
+}
+
 export const isContainJSONModule = (
   modules: AdditionalRedisModule[],
 ): boolean =>

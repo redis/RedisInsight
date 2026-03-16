@@ -34,10 +34,16 @@ export class SettingsPage extends BasePage {
   // Workbench settings
   readonly editorCleanupSwitch: Locator;
   readonly pipelineCommandsText: Locator;
+  readonly pipelineCommandsValue: Locator;
+  readonly pipelineCommandsInput: Locator;
+  readonly pipelineApplyButton: Locator;
 
   // Advanced settings
   readonly advancedWarning: Locator;
   readonly keysToScanText: Locator;
+  readonly keysToScanValue: Locator;
+  readonly keysToScanInput: Locator;
+  readonly keysToScanApplyButton: Locator;
 
   // Redis Cloud settings
   readonly apiUserKeysText: Locator;
@@ -84,14 +90,24 @@ export class SettingsPage extends BasePage {
     this.privacyPolicyLink = page.getByRole('link', { name: 'Privacy Policy' });
 
     // Workbench settings
+    const workbenchSection = page.getByTestId('accordion-workbench-settings');
+
     this.editorCleanupSwitch = page
       .locator('[data-testid="switch-workbench-cleanup"]')
       .or(page.getByRole('switch').filter({ hasText: /Clear the Editor/i }));
-    this.pipelineCommandsText = page.getByText(/Commands in pipeline/i);
+    this.pipelineCommandsText = workbenchSection.getByText(/Commands in pipeline/i);
+    this.pipelineCommandsValue = workbenchSection.getByTestId('pipeline-bunch-value');
+    this.pipelineCommandsInput = workbenchSection.getByTestId('pipeline-bunch-input');
+    this.pipelineApplyButton = this.pipelineCommandsInput
+      .locator('xpath=ancestor::form')
+      .getByTestId('apply-btn');
 
     // Advanced settings
     this.advancedWarning = page.getByRole('alert').filter({ hasText: /Advanced settings/i });
     this.keysToScanText = page.getByRole('heading', { name: 'Keys to Scan in List view' });
+    this.keysToScanValue = page.getByTestId(/keys-to-scan-value/);
+    this.keysToScanInput = page.getByTestId('keys-to-scan-input');
+    this.keysToScanApplyButton = page.getByTestId('apply-btn');
 
     // Redis Cloud settings
     this.apiUserKeysText = page.getByText('API user keys', { exact: true });
@@ -238,5 +254,53 @@ export class SettingsPage extends BasePage {
   async areNotificationsEnabled(): Promise<boolean> {
     const checked = await this.notificationSwitch.getAttribute('aria-checked');
     return checked === 'true';
+  }
+
+  /**
+   * Toggle editor cleanup switch
+   */
+  async toggleEditorCleanup(): Promise<void> {
+    await this.editorCleanupSwitch.click();
+  }
+
+  /**
+   * Check if editor cleanup is enabled (switch is on)
+   */
+  async isEditorCleanupEnabled(): Promise<boolean> {
+    const checked = await this.editorCleanupSwitch.getAttribute('aria-checked');
+    return checked === 'true';
+  }
+
+  /**
+   * Get current pipeline commands value (displayed number)
+   */
+  async getPipelineCommandsValue(): Promise<string> {
+    return (await this.pipelineCommandsValue.textContent()) ?? '';
+  }
+
+  /**
+   * Set pipeline commands value and apply (enters edit mode, fills input, clicks Apply)
+   */
+  async setPipelineCommandsAndApply(value: number): Promise<void> {
+    await this.pipelineCommandsValue.click();
+    await this.pipelineCommandsInput.waitFor({ state: 'visible' });
+    await this.pipelineCommandsInput.clear();
+    await this.pipelineCommandsInput.fill(String(value));
+    await this.pipelineApplyButton.click();
+   * Get current keys-to-scan value
+   */
+  async getKeysToScan(): Promise<string> {
+    return (await this.keysToScanValue.textContent()) || '';
+  }
+
+  /**
+   * Set keys-to-scan value and apply
+   */
+  async setKeysToScan(value: string): Promise<void> {
+    await this.keysToScanValue.click();
+    await this.keysToScanInput.waitFor({ state: 'visible' });
+    await this.keysToScanInput.clear();
+    await this.keysToScanInput.fill(value);
+    await this.keysToScanApplyButton.click();
   }
 }

@@ -50,6 +50,7 @@ import { ResizablePanelHandle } from 'uiSrc/components/base/layout'
 
 import { useAppNavigationActions } from 'uiSrc/contexts/AppNavigationActionsProvider'
 import Actions from 'uiSrc/pages/browser/components/actions/Actions'
+import { MakeSearchableModalProvider } from './components/make-searchable-modal'
 import BrowserSearchPanel from './components/browser-search-panel'
 import BrowserLeftPanel from './components/browser-left-panel'
 import BrowserRightPanel from './components/browser-right-panel'
@@ -90,8 +91,8 @@ const BrowserPage = () => {
   const overview = useSelector(connectedInstanceOverviewSelector)
   const featureFlags = useSelector(appFeatureFlagsFeaturesSelector)
   const isDevBrowser = featureFlags?.[FeatureFlags.devBrowser]?.flag ?? false
-  const isDevVectorSearch =
-    featureFlags?.[FeatureFlags.devVectorSearch]?.flag ?? false
+  const isVectorSearch =
+    featureFlags?.[FeatureFlags.vectorSearchV2]?.flag ?? false
   const panelMinSize = isDevBrowser ? 20 : 45
   const panelDefaultSize = 50
 
@@ -100,7 +101,6 @@ const BrowserPage = () => {
     isOneSideMode(!!openedSidePanel),
   )
   const [isAddKeyPanelOpen, setIsAddKeyPanelOpen] = useState(false)
-  const [isCreateIndexPanelOpen, setIsCreateIndexPanelOpen] = useState(false)
   const [isBulkActionsPanelOpen, setIsBulkActionsPanelOpen] = useState(
     bulkActionOpenContext,
   )
@@ -200,12 +200,7 @@ const BrowserPage = () => {
   }
 
   const handlePanel = (value: boolean, keyName?: RedisResponseBuffer) => {
-    if (
-      value &&
-      !isAddKeyPanelOpen &&
-      !isBulkActionsPanelOpen &&
-      !isCreateIndexPanelOpen
-    ) {
+    if (value && !isAddKeyPanelOpen && !isBulkActionsPanelOpen) {
       dispatch(resetKeyInfo())
     }
 
@@ -235,20 +230,17 @@ const BrowserPage = () => {
 
   const handleCreateIndexPanel = useCallback(
     (value: boolean) => {
-      if (value && isDevVectorSearch) {
+      if (value && isVectorSearch) {
         history.push(Pages.vectorSearch(instanceId))
         return
       }
-      handlePanel(value)
-      setIsCreateIndexPanelOpen(value)
     },
-    [isDevVectorSearch, instanceId],
+    [isVectorSearch, instanceId],
   )
 
   const closeRightPanels = useCallback(() => {
     setIsAddKeyPanelOpen(false)
     setIsBulkActionsPanelOpen(false)
-    setIsCreateIndexPanelOpen(false)
   }, [])
 
   useEffect(() => {
@@ -296,83 +288,81 @@ const BrowserPage = () => {
   }
 
   const isRightPanelOpen =
-    selectedKey !== null ||
-    isAddKeyPanelOpen ||
-    isBulkActionsPanelOpen ||
-    isCreateIndexPanelOpen
+    selectedKey !== null || isAddKeyPanelOpen || isBulkActionsPanelOpen
   const isRightPanelFullScreen =
     (isBrowserFullScreen && isRightPanelOpen) ||
     (arePanelsCollapsed && isRightPanelOpen)
 
   return (
-    <S.PageContainer className="browserPage" data-testid="browser-page">
-      {arePanelsCollapsed && isRightPanelOpen && !isBrowserFullScreen && (
-        <S.BackButtonWrapper>
-          <EmptyButton
-            icon={ArrowLeftIcon}
-            size="small"
-            onClick={closePanel}
-            data-testid="back-right-panel-btn"
+    <MakeSearchableModalProvider>
+      <S.PageContainer className="browserPage" data-testid="browser-page">
+        {arePanelsCollapsed && isRightPanelOpen && !isBrowserFullScreen && (
+          <S.BackButtonWrapper>
+            <EmptyButton
+              icon={ArrowLeftIcon}
+              size="small"
+              onClick={closePanel}
+              data-testid="back-right-panel-btn"
+            >
+              Back
+            </EmptyButton>
+          </S.BackButtonWrapper>
+        )}
+        <S.SearchPanelWrapper $hidden={isRightPanelFullScreen}>
+          <BrowserSearchPanel handleCreateIndexPanel={handleCreateIndexPanel} />
+        </S.SearchPanelWrapper>
+        <S.MainContent grow>
+          <S.StyledResizableContainer
+            direction="horizontal"
+            onLayout={onPanelWidthChange}
           >
-            Back
-          </EmptyButton>
-        </S.BackButtonWrapper>
-      )}
-      <S.SearchPanelWrapper $hidden={isRightPanelFullScreen}>
-        <BrowserSearchPanel handleCreateIndexPanel={handleCreateIndexPanel} />
-      </S.SearchPanelWrapper>
-      <S.MainContent grow>
-        <S.StyledResizableContainer
-          direction="horizontal"
-          onLayout={onPanelWidthChange}
-        >
-          <S.BorderedResizablePanel
-            defaultSize={sizes && sizes[0] ? sizes[0] : panelDefaultSize}
-            minSize={panelMinSize}
-            id={firstPanelId}
-            $fullWidth={
-              arePanelsCollapsed || (isBrowserFullScreen && !isRightPanelOpen)
-            }
-          >
-            <BrowserLeftPanel
-              selectedKey={selectedKey}
-              selectKey={selectKey}
-              removeSelectedKey={handleRemoveSelectedKey}
-              handleAddKeyPanel={handleAddKeyPanel}
-              handleBulkActionsPanel={handleBulkActionsPanel}
-            />
-          </S.BorderedResizablePanel>
-          {!arePanelsCollapsed && !isBrowserFullScreen && (
-            <ResizablePanelHandle />
-          )}
-          <S.BorderedResizablePanel
-            defaultSize={sizes && sizes[1] ? sizes[1] : panelDefaultSize}
-            minSize={panelMinSize}
-            id={secondPanelId}
-            $keyDetailsOpen={isRightPanelOpen}
-            $fullWidth={
-              arePanelsCollapsed || (isRightPanelOpen && isBrowserFullScreen)
-            }
-            $keyDetails={
-              arePanelsCollapsed || (isRightPanelOpen && isBrowserFullScreen)
-            }
-          >
-            <BrowserRightPanel
-              arePanelsCollapsed={arePanelsCollapsed}
-              setSelectedKey={setSelectedKey}
-              selectedKey={selectedKey}
-              isAddKeyPanelOpen={isAddKeyPanelOpen}
-              isCreateIndexPanelOpen={isCreateIndexPanelOpen}
-              isBulkActionsPanelOpen={isBulkActionsPanelOpen}
-              handleAddKeyPanel={handleAddKeyPanel}
-              handleBulkActionsPanel={handleBulkActionsPanel}
-              closeRightPanels={closeRightPanels}
-            />
-          </S.BorderedResizablePanel>
-        </S.StyledResizableContainer>
-      </S.MainContent>
-      <OnboardingStartPopover />
-    </S.PageContainer>
+            <S.BorderedResizablePanel
+              defaultSize={sizes && sizes[0] ? sizes[0] : panelDefaultSize}
+              minSize={panelMinSize}
+              id={firstPanelId}
+              $fullWidth={
+                arePanelsCollapsed || (isBrowserFullScreen && !isRightPanelOpen)
+              }
+            >
+              <BrowserLeftPanel
+                selectedKey={selectedKey}
+                selectKey={selectKey}
+                removeSelectedKey={handleRemoveSelectedKey}
+                handleAddKeyPanel={handleAddKeyPanel}
+                handleBulkActionsPanel={handleBulkActionsPanel}
+              />
+            </S.BorderedResizablePanel>
+            {!arePanelsCollapsed && !isBrowserFullScreen && (
+              <ResizablePanelHandle />
+            )}
+            <S.BorderedResizablePanel
+              defaultSize={sizes && sizes[1] ? sizes[1] : panelDefaultSize}
+              minSize={panelMinSize}
+              id={secondPanelId}
+              $keyDetailsOpen={isRightPanelOpen}
+              $fullWidth={
+                arePanelsCollapsed || (isRightPanelOpen && isBrowserFullScreen)
+              }
+              $keyDetails={
+                arePanelsCollapsed || (isRightPanelOpen && isBrowserFullScreen)
+              }
+            >
+              <BrowserRightPanel
+                arePanelsCollapsed={arePanelsCollapsed}
+                setSelectedKey={setSelectedKey}
+                selectedKey={selectedKey}
+                isAddKeyPanelOpen={isAddKeyPanelOpen}
+                isBulkActionsPanelOpen={isBulkActionsPanelOpen}
+                handleAddKeyPanel={handleAddKeyPanel}
+                handleBulkActionsPanel={handleBulkActionsPanel}
+                closeRightPanels={closeRightPanels}
+              />
+            </S.BorderedResizablePanel>
+          </S.StyledResizableContainer>
+        </S.MainContent>
+        <OnboardingStartPopover />
+      </S.PageContainer>
+    </MakeSearchableModalProvider>
   )
 }
 

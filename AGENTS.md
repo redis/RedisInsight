@@ -93,9 +93,9 @@ All detailed development standards are maintained in `.ai/rules/`:
 - **Frontend**: `.ai/rules/frontend.md` - React, Redux, UI patterns, styled-components
 - **Backend**: `.ai/rules/backend.md` - NestJS, API patterns, dependency injection
 - **Testing**: `.ai/rules/testing.md` - Testing standards, faker usage, test patterns
-- **Branches**: `.ai/rules/branches.md` - Branch naming conventions
-- **Commits**: `.ai/rules/commits.md` - Commit message guidelines
-- **Pull Requests**: `.ai/rules/pull-requests.md` - PR process and review guidelines
+- **Branches**: `.ai/skills/branches/SKILL.md` - Branch naming conventions
+- **Commits**: `.ai/skills/commits/SKILL.md` - Commit message guidelines
+- **Pull Requests**: `.ai/skills/pull-requests/SKILL.md` - PR process and review guidelines
 
 **Refer to these files for comprehensive guidelines on each topic.**
 

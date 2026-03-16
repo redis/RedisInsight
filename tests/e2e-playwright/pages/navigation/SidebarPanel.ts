@@ -31,25 +31,6 @@ export class SidebarPanel extends BasePage {
   readonly copilotSsoSignIn: Locator;
   readonly copilotTermsCheckbox: Locator;
 
-  // Insights panel
-  readonly insightsTrigger: Locator;
-  readonly insightsPanel: Locator;
-  readonly insightsTitle: Locator;
-  readonly insightsCloseButton: Locator;
-  readonly insightsFullScreenButton: Locator;
-  readonly insightsTutorialsTab: Locator;
-  readonly insightsTipsTab: Locator;
-  readonly insightsMyTutorials: Locator;
-  readonly insightsRedisTutorials: Locator;
-
-  // Live Recommendations (Tips tab)
-  readonly noRecommendationsScreen: Locator;
-  readonly showHiddenCheckbox: Locator;
-  readonly analyzeDatabaseLink: Locator;
-  readonly recommendationVoting: Locator;
-  readonly likeVoteButton: Locator;
-  readonly dislikeVoteButton: Locator;
-
   constructor(page: Page) {
     super(page);
 
@@ -77,25 +58,6 @@ export class SidebarPanel extends BasePage {
     this.copilotGithubSignIn = page.getByRole('button', { name: /Github Github/i });
     this.copilotSsoSignIn = page.getByRole('button', { name: /Sso SSO/i });
     this.copilotTermsCheckbox = page.getByRole('checkbox', { name: /By signing up/i });
-
-    // Insights panel
-    this.insightsTrigger = page.getByTestId('insights-trigger');
-    this.insightsPanel = page.locator('[class*="insights"]').filter({ hasText: 'Insights' });
-    this.insightsTitle = page.getByText('Insights').first();
-    this.insightsCloseButton = page.getByTestId('close-insights-btn');
-    this.insightsFullScreenButton = page.getByTestId('fullScreen-insights-btn');
-    this.insightsTutorialsTab = page.getByRole('tab', { name: 'Tutorials' });
-    this.insightsTipsTab = page.getByRole('tab', { name: /Tips/ });
-    this.insightsMyTutorials = page.getByRole('button', { name: 'My tutorials' });
-    this.insightsRedisTutorials = page.getByRole('button', { name: 'Redis tutorials' });
-
-    // Live Recommendations (Tips tab)
-    this.noRecommendationsScreen = page.getByTestId('no-recommendations-screen');
-    this.showHiddenCheckbox = page.getByTestId('checkbox-show-hidden');
-    this.analyzeDatabaseLink = page.getByTestId('insights-db-analysis-link');
-    this.recommendationVoting = page.getByTestId('recommendation-voting');
-    this.likeVoteButton = page.getByTestId('like-vote-btn');
-    this.dislikeVoteButton = page.getByTestId('dislike-vote-btn');
   }
 
   /**

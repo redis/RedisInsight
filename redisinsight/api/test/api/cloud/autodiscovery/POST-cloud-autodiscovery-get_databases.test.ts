@@ -153,11 +153,8 @@ describe('POST /cloud/autodiscovery/get-databases', () => {
             .get(
               `/subscriptions/${mockGetCloudSubscriptionDatabasesDto.subscriptionId}/databases`,
             )
-            .replyWithError({
+            .reply(403, {
               message: 'Unauthorized for this action',
-              response: {
-                status: 403,
-              },
             });
         },
         name: 'Should throw Forbidden error when api returns 403',
@@ -169,7 +166,7 @@ describe('POST /cloud/autodiscovery/get-databases', () => {
         responseBody: {
           statusCode: 403,
           error: 'CloudApiForbidden',
-          message: 'Unauthorized for this action',
+          message: 'Request failed with status code 403',
           errorCode: CustomErrorCodes.CloudApiForbidden,
         },
       },
@@ -179,11 +176,8 @@ describe('POST /cloud/autodiscovery/get-databases', () => {
             .get(
               `/subscriptions/${mockGetCloudSubscriptionDatabasesDto.subscriptionId}/databases`,
             )
-            .replyWithError({
+            .reply(401, {
               message: ERROR_MESSAGES.UNAUTHORIZED,
-              response: {
-                status: 401,
-              },
             });
         },
         name: 'Should throw Forbidden error when api returns 401',
@@ -196,7 +190,7 @@ describe('POST /cloud/autodiscovery/get-databases', () => {
           statusCode: 401,
           error: 'CloudCapiUnauthorized',
           errorCode: CustomErrorCodes.CloudCapiUnauthorized,
-          message: ERROR_MESSAGES.UNAUTHORIZED,
+          message: 'Request failed with status code 401',
         },
       },
       {
@@ -205,12 +199,9 @@ describe('POST /cloud/autodiscovery/get-databases', () => {
             .get(
               `/subscriptions/${mockGetCloudSubscriptionDatabasesDto.subscriptionId}/databases`,
             )
-            .replyWithError({
+            .reply(404, {
               message: ERROR_MESSAGES.NOT_FOUND,
-              response: {
-                status: 404,
-                data: 'Subscription is not found',
-              },
+              data: 'Subscription is not found',
             });
         },
         name: 'Should throw Not Found error when subscription id is not found',
@@ -222,7 +213,7 @@ describe('POST /cloud/autodiscovery/get-databases', () => {
         responseBody: {
           statusCode: 404,
           error: 'CloudApiNotFound',
-          message: ERROR_MESSAGES.NOT_FOUND,
+          message: 'Request failed with status code 404',
           errorCode: CustomErrorCodes.CloudApiNotFound,
         },
       },

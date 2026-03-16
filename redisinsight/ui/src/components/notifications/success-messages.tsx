@@ -13,6 +13,7 @@ import {
   millisecondsFormat,
 } from 'uiSrc/utils'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
+import { getIndexDisplayName } from 'uiSrc/pages/vector-search/utils'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { Spacer } from 'uiSrc/components/base/layout'
@@ -242,7 +243,7 @@ export default {
     message: (
       <Text component="span">
         <Text variant="semiBold" component="span">
-          {formatNameShort(indexName)}
+          {formatNameShort(getIndexDisplayName(indexName))}
         </Text>{' '}
         has been deleted.
       </Text>

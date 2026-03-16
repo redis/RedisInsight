@@ -1,10 +1,10 @@
 # Azure Cache for Redis Setup
 
-Redis Insight supports seamless integration with Azure Cache for Redis using Microsoft Entra ID authentication.
-
 ## Setup Instructions
 
-To use the Azure integration, your Azure tenant administrator may need to grant admin consent for the RedisInsight application.
+To use the Azure integration, your Azure tenant administrator may need to grant admin consent for the RedisInsight application. This is a one-time setup per Azure tenant — once done, all users in your organization can use RedisInsight with Entra ID seamlessly.
+
+> **Why is this needed?** See [Why This Setup is Required](#why-this-setup-is-required) for details on the authentication flow.
 
 ### App Registration Details
 
@@ -76,3 +76,38 @@ az ad sp create --id acca5fbb-b7e4-4009-81f1-37e38fd66d78
 ```
 
 Then grant the permissions using the CLI commands above.
+
+## Why This Setup is Required
+
+### How RedisInsight Authenticates
+
+RedisInsight uses **PKCE (Proof Key for Code Exchange)** OAuth 2.0 flow to authenticate with Azure Cache for Redis. This is a secure, public client flow recommended by Microsoft for desktop and web applications because:
+
+- **No client secrets** — We don't store any secrets in the distributed application
+- **User-delegated access** — Tokens are scoped to what you can access, not a service account
+- **Short-lived tokens** — Access tokens expire and are refreshed automatically
+
+### Why Admin Consent is Needed
+
+Azure uses a multi-tenant security model. When you sign in through RedisInsight:
+
+1. RedisInsight redirects you to Microsoft's login page
+2. You authenticate with your Azure credentials
+3. Azure checks if RedisInsight is allowed to request tokens on behalf of users in your tenant
+
+Because RedisInsight is a third-party application, an Azure AD administrator must grant consent before users in your organization can authenticate through it. This gives organizations control over which applications can access their resources.
+
+### What Permissions Does RedisInsight Get?
+
+RedisInsight uses **delegated permissions** with `user_impersonation` scope. This means:
+
+- RedisInsight can only access resources **you** already have access to
+- We cannot access anything beyond your own permissions
+- All access is auditable in your Azure AD logs
+
+| Permission                                        | Purpose                                              |
+| ------------------------------------------------- | ---------------------------------------------------- |
+| `https://redis.azure.com/user_impersonation`      | Authenticate to Azure Cache for Redis on your behalf |
+| `https://management.azure.com/user_impersonation` | Auto-discover your Azure Redis instances             |
+| `offline_access`                                  | Refresh tokens without re-prompting for login        |
+| `openid`, `profile`                               | Standard user info (name, email)                     |

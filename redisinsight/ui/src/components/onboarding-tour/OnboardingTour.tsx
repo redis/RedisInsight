@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import React, { useEffect, useMemo, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import {
+  appFeatureFlagsFeaturesSelector,
   skipOnboarding,
   setOnboardNextStep,
   setOnboardPrevStep,
 } from 'uiSrc/slices/app/features'
+import { FeatureFlags } from 'uiSrc/constants'
+import { OnboardingSteps } from 'uiSrc/constants/onboarding'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
 import {
   EmptyButton,
@@ -50,8 +53,23 @@ const OnboardingTour = (props: Props) => {
     onSkip = () => {},
   } = Inner ? Inner() : {}
 
+  const { [FeatureFlags.vectorSearchV2]: vectorSearchFeature } = useSelector(
+    appFeatureFlagsFeaturesSelector,
+  )
+
   const [isOpen, setIsOpen] = useState(step === currentStep && isActive)
   const isLastStep = currentStep === totalSteps
+
+  const { displayStep, displayTotalSteps } = useMemo(() => {
+    const skippedSteps = vectorSearchFeature?.flag ? 0 : 1
+    return {
+      displayStep:
+        currentStep > OnboardingSteps.VectorSearchPage
+          ? currentStep - skippedSteps
+          : currentStep,
+      displayTotalSteps: totalSteps - skippedSteps,
+    }
+  }, [currentStep, totalSteps, vectorSearchFeature?.flag])
 
   const dispatch = useDispatch()
 
@@ -114,8 +132,8 @@ const OnboardingTour = (props: Props) => {
       </div>
       <Spacer />
       <Row align="center" justify="between">
-        <ColorText>
-          {currentStep} of {totalSteps}
+        <ColorText data-testid="step-progress">
+          {displayStep} of {displayTotalSteps}
         </ColorText>
         <Row grow={false} gap="m">
           {currentStep > 1 && (

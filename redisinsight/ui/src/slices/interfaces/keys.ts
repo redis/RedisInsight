@@ -88,3 +88,12 @@ export interface KeysStoreData {
   lastRefreshTime: Nullable<number>
   maxResults?: Nullable<number>
 }
+
+export interface NamespaceSearchableResult {
+  prefix: string
+  key?: {
+    name: string
+    type: string
+  }
+  path?: string
+}

@@ -16,6 +16,7 @@ export const CountBadge = styled(Col)`
 `
 
 export const CountBadgeText = styled(ColorText)`
+  color: ${({ theme }) => theme.semantic.color.text.secondary700};
   line-height: normal;
   white-space: nowrap;
   text-align: center;

@@ -26,7 +26,6 @@ describe('BrowserRightPanel', () => {
         handleAddKeyPanel={jest.fn()}
         isBulkActionsPanelOpen
         handleBulkActionsPanel={jest.fn()}
-        isCreateIndexPanelOpen={false}
         closeRightPanels={jest.fn()}
       />,
       {
@@ -52,7 +51,6 @@ describe('BrowserRightPanel', () => {
         handleAddKeyPanel={jest.fn()}
         isBulkActionsPanelOpen
         handleBulkActionsPanel={jest.fn()}
-        isCreateIndexPanelOpen={false}
         closeRightPanels={jest.fn()}
       />,
       {
