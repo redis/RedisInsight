@@ -93,6 +93,7 @@ describe('QueryLibraryView', () => {
 
     it('should render search bar when search is active even with no items', () => {
       mockUseQueryLibrary.items = []
+      mockUseQueryLibrary.hasItemsBeforeSearch = false
       mockUseQueryLibrary.search = 'test'
       renderComponent()
 
