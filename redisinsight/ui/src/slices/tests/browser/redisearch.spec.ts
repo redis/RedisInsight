@@ -1541,9 +1541,7 @@ describe('redisearch slice', () => {
         await store.dispatch<any>(fetchKeyIndexesAction(keyName))
 
         const actions = store.getActions()
-        expect(actions).toEqual([
-          loadKeyIndexesSuccess([keyName, []]),
-        ])
+        expect(actions).toEqual([loadKeyIndexesSuccess([keyName, []])])
       })
 
       it('should not dispatch when entry is already loaded', async () => {
