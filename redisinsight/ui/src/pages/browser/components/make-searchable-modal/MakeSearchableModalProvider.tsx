@@ -56,7 +56,7 @@ export const MakeSearchableModalProvider = ({
       !config ||
       !config?.initialKey ||
       !config?.initialKeyType ||
-      !config?.initialPrefix
+      config?.initialPrefix == null
     ) {
       return
     }
