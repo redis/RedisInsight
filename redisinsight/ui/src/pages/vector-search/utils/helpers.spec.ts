@@ -173,6 +173,19 @@ describe('parseCreateIndexSearchParams', () => {
     })
   })
 
+  it('should preserve empty-string initialPrefix', () => {
+    const result = parseCreateIndexSearchParams(
+      `?mode=existingData&initialKey=simplekey&initialKeyType=${RedisearchIndexKeyType.HASH}&initialPrefix=`,
+    )
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        mode: CreateIndexMode.ExistingData,
+        initialPrefix: '',
+      }),
+    )
+  })
+
   it('should parse initialKey as RedisResponseBuffer', () => {
     const result = parseCreateIndexSearchParams(
       '?mode=existingData&initialKey=bikes:1001',
