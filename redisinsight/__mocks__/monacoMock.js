@@ -21,7 +21,9 @@ const editor = {
   updateOptions: jest.fn(),
   setSelection: jest.fn(),
   setPosition: jest.fn(),
-  createDecorationsCollection: jest.fn().mockReturnValue({ set: jest.fn(), clear: jest.fn() }),
+  createDecorationsCollection: jest
+    .fn()
+    .mockReturnValue({ set: jest.fn(), clear: jest.fn() }),
   getValue: jest.fn().mockReturnValue(''),
   getModel: jest.fn().mockReturnValue({
     getOffsetAt: jest.fn().mockReturnValue(0),
@@ -29,6 +31,14 @@ const editor = {
   }),
   getPosition: jest.fn().mockReturnValue({}),
   trigger: jest.fn(),
+};
+
+const editorApi = {
+  ...editor,
+  registerCommand: jest.fn(),
+  colorize: jest.fn().mockImplementation((data) => Promise.resolve(data)),
+  defineTheme: jest.fn(),
+  setTheme: jest.fn(),
 };
 
 const monacoEditor = {
@@ -61,17 +71,54 @@ const monacoEditor = {
   },
   KeyMod: {},
   KeyCode: {},
+  editor: editorApi,
 };
 
 export default function MonacoEditor(props) {
+  const {
+    editorDidMount,
+    editorWillMount,
+    onChange,
+    value,
+    defaultValue,
+    className,
+    style,
+    disabled,
+    readOnly,
+    placeholder,
+    id,
+    name,
+    autoFocus,
+    ...restProps
+  } = props;
+
+  delete restProps.language;
+  delete restProps.options;
+  delete restProps.theme;
+  delete restProps.width;
+  delete restProps.height;
+  delete restProps.overrideServices;
+  delete restProps['data-testid'];
+
   useEffect(() => {
-    props.editorDidMount && props.editorDidMount(editor, monacoEditor);
-    props.editorWillMount && props.editorWillMount(monacoEditor);
-  }, []);
+    editorDidMount && editorDidMount(editor, monacoEditor);
+    editorWillMount && editorWillMount(monacoEditor);
+  }, [editorDidMount, editorWillMount]);
+
   return (
     <textarea
-      {...props}
-      onChange={(e) => props.onChange && props.onChange(e.target.value)}
+      {...restProps}
+      value={value}
+      defaultValue={defaultValue}
+      className={className}
+      style={style}
+      disabled={disabled}
+      readOnly={readOnly}
+      placeholder={placeholder}
+      id={id}
+      name={name}
+      autoFocus={autoFocus}
+      onChange={(e) => onChange && onChange(e.target.value)}
       data-testid={props['data-testid'] ? props['data-testid'] : 'monaco'}
     />
   );
@@ -90,11 +137,6 @@ export const languages = {
 export const monaco = {
   languages,
   Selection: jest.fn().mockImplementation(() => ({})),
-  editor: {
-    ...editor,
-    colorize: jest.fn().mockImplementation((data) => Promise.resolve(data)),
-    defineTheme: jest.fn(),
-    setTheme: jest.fn(),
-  },
+  editor: editorApi,
   Range: monacoEditor.Range,
 };
