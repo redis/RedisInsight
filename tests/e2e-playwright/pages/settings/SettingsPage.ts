@@ -34,6 +34,9 @@ export class SettingsPage extends BasePage {
   // Workbench settings
   readonly editorCleanupSwitch: Locator;
   readonly pipelineCommandsText: Locator;
+  readonly pipelineCommandsValue: Locator;
+  readonly pipelineCommandsInput: Locator;
+  readonly pipelineApplyButton: Locator;
 
   // Advanced settings
   readonly advancedWarning: Locator;
@@ -54,12 +57,12 @@ export class SettingsPage extends BasePage {
     // Page title
     this.pageTitle = page.locator('[data-testid="settings-page-title"]').or(page.getByText('Settings').first());
 
-    // Accordion buttons
-    this.generalButton = page.getByRole('button', { name: 'General' });
-    this.privacyButton = page.getByRole('button', { name: 'Privacy' });
-    this.workbenchButton = page.getByRole('button', { name: 'Workbench' });
-    this.redisCloudButton = page.getByRole('button', { name: 'Redis Cloud', exact: true });
-    this.advancedButton = page.getByRole('button', { name: 'Advanced' });
+    // Accordion headings (clicking the heading label toggles the section)
+    this.generalButton = page.getByRole('heading', { name: 'General' });
+    this.privacyButton = page.getByRole('heading', { name: 'Privacy' });
+    this.workbenchButton = page.getByRole('heading', { name: 'Workbench' });
+    this.redisCloudButton = page.getByRole('heading', { name: 'Redis Cloud', exact: true });
+    this.advancedButton = page.getByRole('heading', { name: 'Advanced' });
 
     // General settings
     this.themeDropdown = page.getByRole('combobox', { name: /color theme/i });
@@ -87,10 +90,17 @@ export class SettingsPage extends BasePage {
     this.privacyPolicyLink = page.getByRole('link', { name: 'Privacy Policy' });
 
     // Workbench settings
+    const workbenchSection = page.getByTestId('accordion-workbench-settings');
+
     this.editorCleanupSwitch = page
       .locator('[data-testid="switch-workbench-cleanup"]')
       .or(page.getByRole('switch').filter({ hasText: /Clear the Editor/i }));
-    this.pipelineCommandsText = page.getByText(/Commands in pipeline/i);
+    this.pipelineCommandsText = workbenchSection.getByText(/Commands in pipeline/i);
+    this.pipelineCommandsValue = workbenchSection.getByTestId('pipeline-bunch-value');
+    this.pipelineCommandsInput = workbenchSection.getByTestId('pipeline-bunch-input');
+    this.pipelineApplyButton = this.pipelineCommandsInput
+      .locator('xpath=ancestor::form')
+      .getByTestId('apply-btn');
 
     // Advanced settings
     this.advancedWarning = page.getByRole('alert').filter({ hasText: /Advanced settings/i });
@@ -154,32 +164,32 @@ export class SettingsPage extends BasePage {
    * Check if General section is expanded
    */
   async isGeneralExpanded(): Promise<boolean> {
-    const expanded = await this.generalButton.getAttribute('aria-expanded');
-    return expanded === 'true';
+    const state = await this.page.locator('[data-test-subj="accordion-appearance"]').getAttribute('data-state');
+    return state === 'open';
   }
 
   /**
    * Check if Privacy section is expanded
    */
   async isPrivacyExpanded(): Promise<boolean> {
-    const expanded = await this.privacyButton.getAttribute('aria-expanded');
-    return expanded === 'true';
+    const state = await this.page.locator('[data-test-subj="accordion-privacy-settings"]').getAttribute('data-state');
+    return state === 'open';
   }
 
   /**
    * Check if Workbench section is expanded
    */
   async isWorkbenchExpanded(): Promise<boolean> {
-    const expanded = await this.workbenchButton.getAttribute('aria-expanded');
-    return expanded === 'true';
+    const state = await this.page.locator('[data-test-subj="accordion-workbench-settings"]').getAttribute('data-state');
+    return state === 'open';
   }
 
   /**
    * Check if Advanced section is expanded
    */
   async isAdvancedExpanded(): Promise<boolean> {
-    const expanded = await this.advancedButton.getAttribute('aria-expanded');
-    return expanded === 'true';
+    const state = await this.page.locator('[data-test-subj="accordion-advanced-settings"]').getAttribute('data-state');
+    return state === 'open';
   }
 
   /**
@@ -194,8 +204,8 @@ export class SettingsPage extends BasePage {
    * Check if Redis Cloud section is expanded
    */
   async isRedisCloudExpanded(): Promise<boolean> {
-    const expanded = await this.redisCloudButton.getAttribute('aria-expanded');
-    return expanded === 'true';
+    const state = await this.page.locator('[data-test-subj="accordion-cloud-settings"]').getAttribute('data-state');
+    return state === 'open';
   }
 
   /**
@@ -247,6 +257,36 @@ export class SettingsPage extends BasePage {
   }
 
   /**
+   * Toggle editor cleanup switch
+   */
+  async toggleEditorCleanup(): Promise<void> {
+    await this.editorCleanupSwitch.click();
+  }
+
+  /**
+   * Check if editor cleanup is enabled (switch is on)
+   */
+  async isEditorCleanupEnabled(): Promise<boolean> {
+    const checked = await this.editorCleanupSwitch.getAttribute('aria-checked');
+    return checked === 'true';
+  }
+
+  /**
+   * Get current pipeline commands value (displayed number)
+   */
+  async getPipelineCommandsValue(): Promise<string> {
+    return (await this.pipelineCommandsValue.textContent()) ?? '';
+  }
+
+  /**
+   * Set pipeline commands value and apply (enters edit mode, fills input, clicks Apply)
+   */
+  async setPipelineCommandsAndApply(value: number): Promise<void> {
+    await this.pipelineCommandsValue.click();
+    await this.pipelineCommandsInput.waitFor({ state: 'visible' });
+    await this.pipelineCommandsInput.clear();
+    await this.pipelineCommandsInput.fill(String(value));
+    await this.pipelineApplyButton.click();
    * Get current keys-to-scan value
    */
   async getKeysToScan(): Promise<string> {
