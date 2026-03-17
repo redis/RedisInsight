@@ -382,9 +382,25 @@ export class ApiHelper {
    * Builds an `FT.CREATE` command from the provided arguments and sends it
    * through the same send-command helper used for ad-hoc Redis commands.
    */
-  async createIndex(databaseId: string, indexName: string, prefix: string, schema: IndexSchemaField[]): Promise<void> {
+  async createIndex(
+    databaseId: string,
+    indexName: string,
+    prefix: string,
+    schema: IndexSchemaField[],
+    keyType: 'hash' | 'json' = 'hash',
+  ): Promise<void> {
     const schemaArgs = schema.flatMap((f) => [f.name, f.type.toUpperCase()]);
-    const command = ['FT.CREATE', indexName, 'ON', 'HASH', 'PREFIX', '1', prefix, 'SCHEMA', ...schemaArgs].join(' ');
+    const command = [
+      'FT.CREATE',
+      indexName,
+      'ON',
+      keyType.toUpperCase(),
+      'PREFIX',
+      '1',
+      prefix,
+      'SCHEMA',
+      ...schemaArgs,
+    ].join(' ');
 
     await this.sendCommand(databaseId, command);
   }
