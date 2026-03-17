@@ -1,6 +1,13 @@
-import { bufferToString } from 'uiSrc/utils'
+import {
+  bufferToString,
+  isBinaryVector,
+  bufferToFloat32Array,
+} from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
-import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+import {
+  FieldTypes,
+  RedisearchIndexKeyType,
+} from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 
 import {
   inferKeyFields,
@@ -9,6 +16,12 @@ import {
   HashKeyData,
   JsonKeyData,
 } from '../../utils/inferFieldType'
+import {
+  IndexField,
+  VectorAlgorithm,
+  VectorDataType,
+  VectorFlatFieldOptions,
+} from '../../components/index-details/IndexDetails.types'
 import { InferredFieldsResult } from './useLoadKeyData.types'
 
 const EMPTY_RESULT: InferredFieldsResult = { fields: [], skippedFields: [] }
@@ -73,21 +86,63 @@ export const filterJsonData = (data: JsonKeyData): FilterJsonDataResult => {
 // Response → IndexField[] converters
 // ---------------------------------------------------------------------------
 
+const MAX_VECTOR_PREVIEW_ELEMENTS = 4
+
+const formatVectorPreview = (floats: Float32Array): string => {
+  const items = Array.from(floats.slice(0, MAX_VECTOR_PREVIEW_ELEMENTS), (v) =>
+    v.toPrecision(6),
+  )
+  const suffix = floats.length > MAX_VECTOR_PREVIEW_ELEMENTS ? ', ...' : ''
+  return `[${items.join(', ')}${suffix}] (${floats.length} dims)`
+}
+
+/**
+ * Builds an IndexField for a binary float32 vector buffer.
+ * Pre-populates the VECTOR field options with inferred dimensions and data type.
+ */
+const buildBinaryVectorField = (
+  fieldName: string,
+  valueBuf: RedisResponseBuffer,
+): IndexField => {
+  const floats = bufferToFloat32Array(new Uint8Array(valueBuf.data))
+  const options: VectorFlatFieldOptions = {
+    algorithm: VectorAlgorithm.FLAT,
+    dimensions: floats.length,
+    dataType: VectorDataType.FLOAT32,
+  }
+  return {
+    id: fieldName,
+    name: fieldName,
+    value: formatVectorPreview(floats),
+    type: FieldTypes.VECTOR,
+    options,
+  }
+}
+
 /**
  * Converts raw hash field API response into inferred IndexField[].
+ * Detects binary float32 vectors before falling back to string-based inference.
  */
 export const parseHashFields = (
   apiFields: Array<{ field: RedisResponseBuffer; value: RedisResponseBuffer }>,
 ): InferredFieldsResult => {
-  const hashData: HashKeyData = Object.fromEntries(
-    apiFields.map(({ field, value }) => [
-      bufferToString(field),
-      bufferToString(value),
-    ]),
-  )
+  const binaryVectorFields: IndexField[] = []
+  const textEntries: Array<[string, string]> = []
+
+  apiFields.forEach(({ field, value }) => {
+    const fieldName = bufferToString(field)
+    if (isBinaryVector(value)) {
+      binaryVectorFields.push(buildBinaryVectorField(fieldName, value))
+    } else {
+      textEntries.push([fieldName, bufferToString(value)])
+    }
+  })
+
+  const hashData: HashKeyData = Object.fromEntries(textEntries)
+  const inferred = inferKeyFields(hashData, RedisearchIndexKeyType.HASH)
 
   return {
-    fields: inferKeyFields(hashData, RedisearchIndexKeyType.HASH),
+    fields: [...inferred, ...binaryVectorFields],
     skippedFields: [],
   }
 }

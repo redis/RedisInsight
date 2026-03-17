@@ -1,3 +1,9 @@
+import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+import {
+  VectorAlgorithm,
+  VectorDataType,
+  VectorFlatFieldOptions,
+} from '../../components/index-details/IndexDetails.types'
 import {
   isIndexableJsonValue,
   filterJsonData,
@@ -87,6 +93,55 @@ describe('parseHashFields', () => {
 
     expect(result.fields).toEqual([])
     expect(result.skippedFields).toEqual([])
+  })
+
+  it('should detect binary float32 vector and return VECTOR type with options', () => {
+    // Two float32 values: 1.0 and 2.0 in little-endian
+    const float1 = [0x00, 0x00, 0x80, 0x3f] // 1.0
+    const float2 = [0x00, 0x00, 0x00, 0x40] // 2.0
+    const apiFields = [
+      {
+        field: { data: [101, 109, 98], type: 'Buffer' as const }, // "emb"
+        value: { data: [...float1, ...float2], type: 'Buffer' as const },
+      },
+    ]
+
+    const result = parseHashFields(apiFields)
+
+    expect(result.fields).toHaveLength(1)
+    const vectorField = result.fields[0]
+    expect(vectorField.type).toBe(FieldTypes.VECTOR)
+    expect(vectorField.name).toBe('emb')
+    expect(vectorField.value).toContain('(2 dims)')
+    const options = vectorField.options as VectorFlatFieldOptions
+    expect(options.algorithm).toBe(VectorAlgorithm.FLAT)
+    expect(options.dimensions).toBe(2)
+    expect(options.dataType).toBe(VectorDataType.FLOAT32)
+  })
+
+  it('should mix binary vector fields with regular text fields', () => {
+    const float1 = [0x00, 0x00, 0x80, 0x3f]
+    const float2 = [0x00, 0x00, 0x00, 0x40]
+    const apiFields = [
+      {
+        field: { data: [110, 97, 109, 101], type: 'Buffer' as const }, // "name"
+        value: { data: [65, 108, 105, 99, 101], type: 'Buffer' as const }, // "Alice"
+      },
+      {
+        field: { data: [118, 101, 99], type: 'Buffer' as const }, // "vec"
+        value: { data: [...float1, ...float2], type: 'Buffer' as const },
+      },
+    ]
+
+    const result = parseHashFields(apiFields)
+
+    expect(result.fields).toHaveLength(2)
+
+    const nameField = result.fields.find((f) => f.name === 'name')
+    expect(nameField?.type).not.toBe(FieldTypes.VECTOR)
+
+    const vecField = result.fields.find((f) => f.name === 'vec')
+    expect(vecField?.type).toBe(FieldTypes.VECTOR)
   })
 })
 
