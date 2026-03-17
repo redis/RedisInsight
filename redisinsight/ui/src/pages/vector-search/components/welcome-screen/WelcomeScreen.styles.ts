@@ -14,7 +14,7 @@ export const ScrollArea = styled(Col)`
   position: relative;
   z-index: 1;
   overflow-y: auto;
-  padding: ${({ theme }) => theme.core.space.space300};
+  padding: clamp(2rem, 8vh, 9rem) clamp(7rem, 8vw, 14rem);
 `
 
 export const Content = styled(Col)`
