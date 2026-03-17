@@ -812,9 +812,9 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | should save query and verify it appears in query library |
-| 🔲 | main | should navigate to query library via success toast action |
-| 🔲 | main | should cancel save query modal |
+| ✅ | main | should save query and verify it appears in query library |
+| ✅ | main | should navigate to query library via success toast action |
+| ✅ | main | should cancel save query modal |
 
 ### 8.11 Query Library
 
