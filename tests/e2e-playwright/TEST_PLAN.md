@@ -775,10 +775,10 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | should open sample data modal and complete "Start querying" flow |
-| 🔲 | main | should open sample data modal and navigate to "See index definition" |
-| 🔲 | main | should create index from existing data via list page menu |
-| 🔲 | main | should disable "Use existing data" when no hash or JSON keys exist |
+| ✅ | main | should open sample data modal and complete "Start querying" flow |
+| ✅ | main | should open sample data modal and navigate to "See index definition" |
+| ✅ | main | should create index from existing data via list page menu |
+| ✅ | main | should disable "Use existing data" when no hash or JSON keys exist |
 
 ### 8.8 Query Page
 
