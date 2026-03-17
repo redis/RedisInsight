@@ -13,7 +13,7 @@ test.describe('Privacy Settings', () => {
   });
 
   test('should view privacy settings', async ({ settingsPage }) => {
-    await expect(settingsPage.privacyButton).toBeVisible();
+    await expect(settingsPage.privacySectionHeader).toBeVisible();
     const isExpanded = await settingsPage.isPrivacyExpanded();
     expect(isExpanded).toBe(true);
   });
