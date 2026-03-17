@@ -56,6 +56,16 @@ on:
         type: boolean
         required: false
 
+      build_linux_snap_x64:
+        description: Build Linux snap x64
+        type: boolean
+        required: false
+
+      build_linux_snap_arm64:
+        description: Build Linux snap arm64
+        type: boolean
+        required: false
+
       environment:
         description: Environment to run build
         type: environment
