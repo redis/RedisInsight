@@ -822,11 +822,11 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | should search and filter saved queries in the library |
-| 🔲 | main | should expand and collapse a query library item |
-| 🔲 | main | should run query from library |
-| 🔲 | main | should load query into editor from library |
-| 🔲 | main | should delete query from library and show notification |
+| ✅ | main | should search and filter saved queries in the library |
+| ✅ | main | should expand and collapse a query library item |
+| ✅ | main | should run query from library |
+| ✅ | main | should load query into editor from library |
+| ✅ | main | should delete query from library and show notification |
 
 ### 8.12 Browser Page Integration
 
