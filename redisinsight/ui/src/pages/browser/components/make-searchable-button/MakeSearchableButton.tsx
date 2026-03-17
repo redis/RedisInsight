@@ -23,10 +23,12 @@ export const MakeSearchableButton = ({
 
   const source = SearchMakeSearchableSource.KeyDetails
 
+  const mappedKeyType = KEY_TYPE_MAP[keyType]
+
   const handleOpen = useCallback(() => {
     sendEventTelemetry({
       event: TelemetryEvent.SEARCH_MAKE_SEARCHABLE_CLICKED,
-      eventData: { databaseId: instanceId, keyType, source },
+      eventData: { databaseId: instanceId, keyType: mappedKeyType, source },
     })
     openMakeSearchableModal({
       prefix,
@@ -35,7 +37,14 @@ export const MakeSearchableButton = ({
       initialPrefix: prefix,
       source,
     })
-  }, [openMakeSearchableModal, keyName, keyType, prefix, instanceId])
+  }, [
+    openMakeSearchableModal,
+    keyName,
+    keyType,
+    prefix,
+    instanceId,
+    mappedKeyType,
+  ])
 
   return (
     <PrimaryButton

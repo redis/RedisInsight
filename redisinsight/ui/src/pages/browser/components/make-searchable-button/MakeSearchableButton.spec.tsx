@@ -4,6 +4,8 @@ import { render, screen, userEvent, cleanup } from 'uiSrc/utils/test-utils'
 import { KeyTypes } from 'uiSrc/constants'
 import { TelemetryEvent } from 'uiSrc/telemetry'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
+import { SearchMakeSearchableSource } from 'uiSrc/pages/vector-search/telemetry.constants'
 
 import { MakeSearchableButton } from './MakeSearchableButton'
 import { MakeSearchableButtonProps } from './MakeSearchableButton.types'
@@ -69,8 +71,24 @@ describe('MakeSearchableButton', () => {
       event: TelemetryEvent.SEARCH_MAKE_SEARCHABLE_CLICKED,
       eventData: {
         databaseId: mockInstanceId,
-        keyType: KeyTypes.Hash,
-        source: 'key_details',
+        keyType: RedisearchIndexKeyType.HASH,
+        source: SearchMakeSearchableSource.KeyDetails,
+      },
+    })
+  })
+
+  it('should send mapped keyType for JSON keys', async () => {
+    renderComponent({ keyType: KeyTypes.ReJSON })
+
+    const makeSearchableBtn = screen.getByTestId('make-searchable-btn')
+    await userEvent.click(makeSearchableBtn)
+
+    expect(mockSendEventTelemetry).toHaveBeenCalledWith({
+      event: TelemetryEvent.SEARCH_MAKE_SEARCHABLE_CLICKED,
+      eventData: {
+        databaseId: mockInstanceId,
+        keyType: RedisearchIndexKeyType.JSON,
+        source: SearchMakeSearchableSource.KeyDetails,
       },
     })
   })

@@ -169,7 +169,7 @@ const Node = ({
       event: TelemetryEvent.SEARCH_MAKE_SEARCHABLE_CLICKED,
       eventData: {
         databaseId: instanceId,
-        keyType: firstSearchableKey?.type,
+        keyType,
         source,
       },
     })

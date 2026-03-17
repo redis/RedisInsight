@@ -18,6 +18,7 @@ import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-re
 import { CreateIndexMode } from 'uiSrc/pages/vector-search/pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
 import { MakeSearchableModalProvider } from 'uiSrc/pages/browser/components/make-searchable-modal'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { SearchMakeSearchableSource } from 'uiSrc/pages/vector-search/telemetry.constants'
 import Node from './Node'
 import { TreeData } from '../../VirtualTree.types'
 import { mockVirtualTreeResult } from '../../VirtualTree.spec'
@@ -644,14 +645,17 @@ describe('Node', () => {
 
       renderNode({ data: mockData })
 
-      fireEvent.click(screen.getByTestId(`index-folder-btn-${mockFolderName}`))
+      const indexFolderBtn = screen.getByTestId(
+        `index-folder-btn-${mockFolderName}`,
+      )
+      fireEvent.click(indexFolderBtn)
 
       expect(sendEventTelemetry).toHaveBeenCalledWith({
         event: TelemetryEvent.SEARCH_MAKE_SEARCHABLE_CLICKED,
         eventData: {
           databaseId: mockInstanceId,
-          keyType: KeyTypes.Hash,
-          source: 'tree_view',
+          keyType: RedisearchIndexKeyType.HASH,
+          source: SearchMakeSearchableSource.TreeView,
         },
       })
 
