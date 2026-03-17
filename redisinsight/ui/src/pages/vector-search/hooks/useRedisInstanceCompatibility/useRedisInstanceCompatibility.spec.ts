@@ -189,7 +189,7 @@ describe('useRedisInstanceCompatibility', () => {
     expect(hookResult.hasMinimumRedisearchVersion).toBeUndefined()
   })
 
-  it('falls back to integer version when semanticVersion is missing', () => {
+  it('falls back to integer version when semanticVersion is missing (2.x)', () => {
     mockConnectedInstanceSelector.mockReturnValue({
       loading: false,
       modules: [{ name: 'search', version: 20600 }],
@@ -198,6 +198,22 @@ describe('useRedisInstanceCompatibility', () => {
     const hookResult = renderUseRedisInstanceCompatibility()
     expect(hookResult.hasRedisearch).toBe(true)
     expect(hookResult.hasMinimumRedisearchVersion).toBe(true)
+  })
+
+  it('falls back to integer version when semanticVersion is missing (1.x)', () => {
+    mockConnectedInstanceSelector.mockReturnValue({
+      loading: false,
+      modules: [{ name: 'search', version: 10614 }],
+    })
+
+    mockConnectedInstanceInfoSelector.mockReturnValue({
+      version: '5.0.14',
+    })
+
+    const hookResult = renderUseRedisInstanceCompatibility()
+    expect(hookResult.hasRedisearch).toBe(true)
+    expect(hookResult.hasMinimumRedisearchVersion).toBe(false)
+    expect(hookResult.hasSupportedVersion).toBe(false)
   })
 
   it('handles unparsable Redis version -> false for hasSupportedVersion', () => {
