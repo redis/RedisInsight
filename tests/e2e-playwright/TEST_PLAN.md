@@ -717,8 +717,8 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | should show select key onboarding and dismiss on "Got it" |
-| 🔲 | main | should not show select key onboarding on subsequent visit |
+| ✅ | main | should show select key onboarding and dismiss on "Got it" |
+| ✅ | main | should not show select key onboarding on subsequent visit |
 
 ### 8.3 Create Index - Onboarding
 
@@ -726,9 +726,9 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | should complete onboarding flow through all steps |
-| 🔲 | main | should skip onboarding |
-| 🔲 | main | should not show onboarding after completion |
+| ✅ | main | should complete onboarding flow through all steps |
+| ✅ | main | should skip onboarding |
+| ✅ | main | should not show onboarding after completion |
 
 ### 8.4 Create Index - Sample Data
 
