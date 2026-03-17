@@ -120,6 +120,7 @@ const BrowserSearchPanel = (props: Props) => {
             eventData: {
               databaseId: instanceId,
               view: viewType,
+              reason: 'module_not_loaded',
             },
           })
         } else if (!hasMinimumRedisearchVersion) {
@@ -129,6 +130,7 @@ const BrowserSearchPanel = (props: Props) => {
             eventData: {
               databaseId: instanceId,
               view: viewType,
+              reason: 'version_not_supported',
             },
           })
         } else {
