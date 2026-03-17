@@ -37,10 +37,12 @@ test.describe('Vector Search > Query Page Onboarding', { tag: '@serial' }, () =>
     await apiHelper.deleteDatabase(database.id);
   });
 
-  test.beforeEach(async ({ apiHelper, page }) => {
-    // Seed index
+  test.beforeEach(async ({ apiHelper, vectorSearchPage, page }) => {
     const indexConfig = IndexConfigFactory.build({ indexName: TEST_INDEX_NAME, prefix: TEST_INDEX_PREFIX });
     await apiHelper.createIndex(database.id, indexConfig.indexName, indexConfig.prefix, indexConfig.schema);
+
+    // Navigate to the app so localStorage operations target the correct origin
+    await vectorSearchPage.goto(database.id);
 
     // Reset query onboarding state so the popover appears
     await page.evaluate(() => {

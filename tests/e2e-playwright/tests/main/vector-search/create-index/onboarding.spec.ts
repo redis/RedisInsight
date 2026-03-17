@@ -22,6 +22,7 @@ test.describe('Vector Search > Select Key Onboarding', { tag: '@serial' }, () =>
 
   test.beforeAll(async ({ apiHelper }) => {
     database = await apiHelper.createDatabase(StandaloneConfigFactory.build());
+    await apiHelper.deleteKeysByPattern(database.id, `${TEST_INDEX_PREFIX}:*`);
     const hashKey = IndexHashKeyFactory.build({ keyName: TEST_KEY_NAME });
     await apiHelper.createHashKey(database.id, hashKey.keyName, hashKey.fields);
   });
@@ -32,9 +33,11 @@ test.describe('Vector Search > Select Key Onboarding', { tag: '@serial' }, () =>
     await apiHelper.deleteDatabase(database.id);
   });
 
-  test.beforeEach(async ({ page, apiHelper }) => {
-    // Seed index
+  test.beforeEach(async ({ apiHelper, vectorSearchPage, page }) => {
     await apiHelper.createIndex(database.id, seedIndex.indexName, seedIndex.prefix, seedIndex.schema);
+
+    // Navigate to the app so localStorage operations target the correct origin
+    await vectorSearchPage.goto(database.id);
 
     // Reset onboarding state so the popover appears
     await page.evaluate(() => {
@@ -79,6 +82,7 @@ test.describe('Vector Search > Create Index - Onboarding', { tag: '@serial' }, (
 
   test.beforeAll(async ({ apiHelper }) => {
     database = await apiHelper.createDatabase(StandaloneConfigFactory.build());
+    await apiHelper.deleteKeysByPattern(database.id, `${TEST_INDEX_PREFIX}:*`);
     const hashKey = IndexHashKeyFactory.build({ keyName: TEST_KEY_NAME });
     await apiHelper.createHashKey(database.id, hashKey.keyName, hashKey.fields);
   });
@@ -89,9 +93,12 @@ test.describe('Vector Search > Create Index - Onboarding', { tag: '@serial' }, (
     await apiHelper.deleteDatabase(database.id);
   });
 
-  test.beforeEach(async ({ page, apiHelper }) => {
+  test.beforeEach(async ({ page, apiHelper, vectorSearchPage }) => {
     // Seed index
     await apiHelper.createIndex(database.id, seedIndex.indexName, seedIndex.prefix, seedIndex.schema);
+
+    // Navigate to the app so localStorage operations target the correct origin
+    await vectorSearchPage.goto(database.id);
 
     // Reset create-index onboarding, skip select-key onboarding
     await page.evaluate(() => {
