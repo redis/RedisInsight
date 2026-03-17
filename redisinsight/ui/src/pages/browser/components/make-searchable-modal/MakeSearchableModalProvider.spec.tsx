@@ -1,8 +1,7 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
 import { faker } from '@faker-js/faker'
 import { render, screen, userEvent, cleanup } from 'uiSrc/utils/test-utils'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { TelemetryEvent } from 'uiSrc/telemetry'
 import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { SearchMakeSearchableSource } from 'uiSrc/pages/vector-search/telemetry.constants'
@@ -12,9 +11,10 @@ import {
   useMakeSearchableModal,
 } from './MakeSearchableModalProvider'
 
+const mockSendEventTelemetry = jest.fn()
 jest.mock('uiSrc/telemetry', () => ({
   ...jest.requireActual('uiSrc/telemetry'),
-  sendEventTelemetry: jest.fn(),
+  sendEventTelemetry: (...args: unknown[]) => mockSendEventTelemetry(...args),
 }))
 
 const mockInstanceId = faker.string.uuid()
@@ -25,14 +25,10 @@ jest.mock('react-router-dom', () => ({
   useHistory: () => ({ push: mockPush }),
 }))
 
-jest.mock('uiSrc/slices/instances/instances', () => ({
-  ...jest.requireActual('uiSrc/slices/instances/instances'),
-  connectedInstanceSelector: jest.fn(),
-}))
-
+const mockUseSelector = jest.fn()
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(),
+  useSelector: (...args: unknown[]) => mockUseSelector(...args),
 }))
 
 const TestConsumer = () => {
@@ -66,7 +62,7 @@ const renderComponent = () =>
 describe('MakeSearchableModalProvider', () => {
   beforeEach(() => {
     cleanup()
-    ;(useSelector as jest.Mock).mockImplementation((selector: any) => {
+    mockUseSelector.mockImplementation((selector: any) => {
       if (selector === connectedInstanceSelector) {
         return { id: mockInstanceId }
       }
@@ -81,18 +77,23 @@ describe('MakeSearchableModalProvider', () => {
   it('should open modal when openMakeSearchableModal is called', async () => {
     renderComponent()
 
-    await userEvent.click(screen.getByTestId('open-modal'))
+    const openModalBtn = screen.getByTestId('open-modal')
+    await userEvent.click(openModalBtn)
 
-    expect(screen.getByTestId('make-searchable-modal-body')).toBeInTheDocument()
+    const modalBody = screen.getByTestId('make-searchable-modal-body')
+    expect(modalBody).toBeInTheDocument()
   })
 
   it('should send SEARCH_MAKE_SEARCHABLE_CONFIRMED on confirm', async () => {
     renderComponent()
 
-    await userEvent.click(screen.getByTestId('open-modal'))
-    await userEvent.click(screen.getByTestId('make-searchable-modal-confirm'))
+    const openModalBtn = screen.getByTestId('open-modal')
+    await userEvent.click(openModalBtn)
 
-    expect(sendEventTelemetry).toHaveBeenCalledWith({
+    const confirmBtn = screen.getByTestId('make-searchable-modal-confirm')
+    await userEvent.click(confirmBtn)
+
+    expect(mockSendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.SEARCH_MAKE_SEARCHABLE_CONFIRMED,
       eventData: {
         databaseId: mockInstanceId,
@@ -105,10 +106,13 @@ describe('MakeSearchableModalProvider', () => {
   it('should send SEARCH_MAKE_SEARCHABLE_CANCELLED on cancel', async () => {
     renderComponent()
 
-    await userEvent.click(screen.getByTestId('open-modal'))
-    await userEvent.click(screen.getByTestId('make-searchable-modal-cancel'))
+    const openModalBtn = screen.getByTestId('open-modal')
+    await userEvent.click(openModalBtn)
 
-    expect(sendEventTelemetry).toHaveBeenCalledWith({
+    const cancelBtn = screen.getByTestId('make-searchable-modal-cancel')
+    await userEvent.click(cancelBtn)
+
+    expect(mockSendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.SEARCH_MAKE_SEARCHABLE_CANCELLED,
       eventData: {
         databaseId: mockInstanceId,
@@ -120,10 +124,13 @@ describe('MakeSearchableModalProvider', () => {
   it('should send SEARCH_MAKE_SEARCHABLE_CANCELLED on close button', async () => {
     renderComponent()
 
-    await userEvent.click(screen.getByTestId('open-modal'))
-    await userEvent.click(screen.getByTestId('make-searchable-modal-close'))
+    const openModalBtn = screen.getByTestId('open-modal')
+    await userEvent.click(openModalBtn)
 
-    expect(sendEventTelemetry).toHaveBeenCalledWith({
+    const closeBtn = screen.getByTestId('make-searchable-modal-close')
+    await userEvent.click(closeBtn)
+
+    expect(mockSendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.SEARCH_MAKE_SEARCHABLE_CANCELLED,
       eventData: {
         databaseId: mockInstanceId,

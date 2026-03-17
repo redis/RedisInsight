@@ -1,33 +1,23 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
 import { faker } from '@faker-js/faker'
 import { render, screen, userEvent, cleanup } from 'uiSrc/utils/test-utils'
 import { KeyTypes } from 'uiSrc/constants'
-import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { TelemetryEvent } from 'uiSrc/telemetry'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 
 import { MakeSearchableButton } from './MakeSearchableButton'
 import { MakeSearchableButtonProps } from './MakeSearchableButton.types'
 
+const mockSendEventTelemetry = jest.fn()
 jest.mock('uiSrc/telemetry', () => ({
   ...jest.requireActual('uiSrc/telemetry'),
-  sendEventTelemetry: jest.fn(),
+  sendEventTelemetry: (...args: unknown[]) => mockSendEventTelemetry(...args),
 }))
 
-jest.mock('uiSrc/pages/browser/components/make-searchable-modal', () => ({
-  useMakeSearchableModal: () => ({
-    openMakeSearchableModal: jest.fn(),
-  }),
-}))
-
-jest.mock('uiSrc/slices/instances/instances', () => ({
-  ...jest.requireActual('uiSrc/slices/instances/instances'),
-  connectedInstanceSelector: jest.fn(),
-}))
-
+const mockUseSelector = jest.fn()
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(),
+  useSelector: (...args: unknown[]) => mockUseSelector(...args),
 }))
 
 const mockInstanceId = faker.string.uuid()
@@ -48,7 +38,7 @@ const renderComponent = (
 describe('MakeSearchableButton', () => {
   beforeEach(() => {
     cleanup()
-    ;(useSelector as jest.Mock).mockImplementation((selector: any) => {
+    mockUseSelector.mockImplementation((selector: any) => {
       if (selector === connectedInstanceSelector) {
         return { id: mockInstanceId }
       }
@@ -63,18 +53,19 @@ describe('MakeSearchableButton', () => {
   it('should render the button', () => {
     renderComponent()
 
-    expect(screen.getByTestId('make-searchable-btn')).toBeInTheDocument()
-    expect(screen.getByTestId('make-searchable-btn')).toHaveTextContent(
-      'Make searchable',
-    )
+    const makeSearchableBtn = screen.getByTestId('make-searchable-btn')
+
+    expect(makeSearchableBtn).toBeInTheDocument()
+    expect(makeSearchableBtn).toHaveTextContent('Make searchable')
   })
 
   it('should send SEARCH_MAKE_SEARCHABLE_CLICKED telemetry on click', async () => {
     renderComponent()
 
-    await userEvent.click(screen.getByTestId('make-searchable-btn'))
+    const makeSearchableBtn = screen.getByTestId('make-searchable-btn')
+    await userEvent.click(makeSearchableBtn)
 
-    expect(sendEventTelemetry).toHaveBeenCalledWith({
+    expect(mockSendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.SEARCH_MAKE_SEARCHABLE_CLICKED,
       eventData: {
         databaseId: mockInstanceId,
