@@ -1,5 +1,5 @@
 import { request, APIRequestContext } from '@playwright/test';
-import { AddDatabaseConfig, DatabaseInstance } from 'e2eSrc/types';
+import { AddDatabaseConfig, DatabaseInstance, IndexSchemaField } from 'e2eSrc/types';
 import { TEST_DB_PREFIX } from 'e2eSrc/test-data/databases';
 
 /**
@@ -69,10 +69,7 @@ export class ApiHelper {
   /**
    * Update a database via API (PATCH)
    */
-  async updateDatabase(
-    id: string,
-    data: Record<string, unknown>,
-  ): Promise<DatabaseInstance> {
+  async updateDatabase(id: string, data: Record<string, unknown>): Promise<DatabaseInstance> {
     const ctx = await this.getContext();
     const response = await ctx.patch(`/api/databases/${id}`, { data });
 
@@ -373,6 +370,144 @@ export class ApiHelper {
     if (!settings.agreements || !settings.agreements.eula) {
       await this.acceptEula();
     }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Vector Search — Index management
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Create a RediSearch index via the CLI endpoint.
+   *
+   * Builds an `FT.CREATE` command from the provided arguments and sends it
+   * through the same send-command helper used for ad-hoc Redis commands.
+   */
+  async createIndex(databaseId: string, indexName: string, prefix: string, schema: IndexSchemaField[]): Promise<void> {
+    const schemaArgs = schema.flatMap((f) => [f.name, f.type.toUpperCase()]);
+    const command = ['FT.CREATE', indexName, 'ON', 'HASH', 'PREFIX', '1', prefix, 'SCHEMA', ...schemaArgs].join(' ');
+
+    await this.sendCommand(databaseId, command);
+  }
+
+  /**
+   * Delete a single RediSearch index.
+   * Silently ignores 404 (index already gone).
+   */
+  async deleteIndex(databaseId: string, indexName: string): Promise<void> {
+    await this.sendCommand(databaseId, `FT.DROPINDEX ${indexName}`).catch(() => {});
+  }
+
+  /**
+   * Delete RediSearch indexes in the database.
+   * When called without a filter, deletes all indexes.
+   * Pass a filter predicate to delete only matching indexes.
+   */
+  async deleteAllIndexes(databaseId: string, filter?: (name: string) => boolean): Promise<void> {
+    const indexes = await this.getIndexes(databaseId);
+    const toDelete = filter ? indexes.filter(filter) : indexes;
+
+    for (const name of toDelete) {
+      await this.deleteIndex(databaseId, name);
+    }
+  }
+
+  /**
+   * List all RediSearch indexes in the database.
+   */
+  async getIndexes(databaseId: string): Promise<string[]> {
+    const response = await this.sendCommand(databaseId, 'FT._LIST');
+
+    if (Array.isArray(response)) {
+      return response.map(String).filter(Boolean);
+    }
+
+    return [];
+  }
+
+  // ---------------------------------------------------------------------------
+  // Vector Search — Saved queries
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Create a saved query via API.
+   * Returns the created query object (including `id`).
+   */
+  async createSavedQuery(
+    databaseId: string,
+    indexName: string,
+    name: string,
+    query: string,
+  ): Promise<{ id: string; name: string; query: string }> {
+    const ctx = await this.getContext();
+    const response = await ctx.post(`/api/databases/${databaseId}/query-library`, {
+      data: { indexName, name, query },
+    });
+
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`Failed to create saved query: ${response.status()} - ${body}`);
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Delete all saved queries for a given index.
+   */
+  async deleteAllSavedQueries(databaseId: string, indexName: string): Promise<void> {
+    const ctx = await this.getContext();
+    const listResponse = await ctx.get(`/api/databases/${databaseId}/query-library?indexName=${indexName}`);
+
+    if (!listResponse.ok()) return;
+
+    const queries: { id: string }[] = await listResponse.json();
+    for (const q of queries) {
+      await ctx.delete(`/api/databases/${databaseId}/query-library/${q.id}`);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Vector Search — Command history
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Delete all search-type command execution history entries for a database.
+   */
+  async deleteCommandExecutions(databaseId: string): Promise<void> {
+    const ctx = await this.getContext();
+    const listResponse = await ctx.get(`/api/databases/${databaseId}/workbench/command-executions?type=SEARCH`);
+
+    if (!listResponse.ok()) return;
+
+    const executions: { id: string }[] = await listResponse.json();
+    if (executions.length === 0) return;
+
+    for (const e of executions) {
+      await ctx.delete(`/api/databases/${databaseId}/workbench/command-executions/${e.id}`);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // General — Send arbitrary Redis command
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Send a Redis command via the Workbench command-executions endpoint.
+   * Returns the `response` field from the first result entry.
+   */
+  async sendCommand(databaseId: string, command: string): Promise<unknown> {
+    const ctx = await this.getContext();
+    const response = await ctx.post(`/api/databases/${databaseId}/workbench/command-executions`, {
+      data: { commands: [command] },
+    });
+
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`Command "${command}" failed: ${response.status()} - ${body}`);
+    }
+
+    const executions = await response.json();
+    return executions?.[0]?.result?.[0]?.response;
   }
 
   /**
