@@ -81,9 +81,9 @@ describe('PUT /cloud/me/accounts/:id/current', () => {
         before: () => {
           initSMApiNockScope()
             .post(`/accounts/setcurrent/${mockCloudUserAccount.id}`)
-            .replyWithError(mockCapiUnauthorizedError)
+            .reply(401, { message: mockCapiUnauthorizedError.message })
             .post(`/accounts/setcurrent/${mockCloudUserAccount.id}`)
-            .replyWithError(mockCapiUnauthorizedError);
+            .reply(401, { message: mockCapiUnauthorizedError.message });
         },
         statusCode: 401,
         checkFn: ({ body }) => {
@@ -95,7 +95,7 @@ describe('PUT /cloud/me/accounts/:id/current', () => {
         before: () => {
           initSMApiNockScope()
             .post(`/accounts/setcurrent/${mockCloudUserAccount.id}`)
-            .replyWithError(mockSmApiBadRequestError);
+            .reply(400, { message: mockSmApiBadRequestError.message });
         },
         statusCode: 400,
         checkFn: ({ body }) => {

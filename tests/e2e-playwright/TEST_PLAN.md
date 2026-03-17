@@ -53,15 +53,23 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | View sign-in options (Google, GitHub, SSO) |
 | 🔲 | main | Accept terms checkbox |
 
-### 0.5 Insights Panel
+### 0.5 Insights Panel ✅
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Open Insights panel |
-| 🔲 | main | Close Insights panel |
-| 🔲 | main | Switch to Tutorials tab |
-| 🔲 | main | Switch to Tips tab |
-| 🔲 | main | Expand/collapse tutorial folders |
-| 🔲 | main | View My tutorials section |
+| ✅ | main | Open Insights panel |
+| ✅ | main | Close Insights panel |
+| ✅ | main | Switch to Tutorials tab |
+| ✅ | main | Switch to Tips tab |
+| ✅ | main | Expand/collapse tutorial folders |
+| ✅ | main | View Tutorials section |
+| ✅ | main | Run through a tutorial with pagination |
+| ✅ | main | Run a tutorial command |
+| 🔲 | main | Upload custom tutorial |
+| 🔲 | main | Delete custom tutorial |
+| 🔲 | main | View Tips when no recommendations |
+| 🔲 | main | Vote on a tip (like/dislike) |
+| 🔲 | main | Show/hide hidden tips |
+| 🔲 | main | Navigate to database analysis from Tips |
 
 ---
 
@@ -93,9 +101,9 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 1.1.1 Connection Security
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Add database using SSH tunneling |
-| 🔲 | main | Connect using SNI configuration |
-| 🔲 | main | Connect with TLS using CA, client, and private key certificates |
+| ✅ | main | Add database using SSH tunneling |
+| ✅ | main | Connect using SNI configuration |
+| ✅ | main | Connect with TLS using CA, client, and private key certificates |
 
 ### 1.1.2 Add Database (Advanced)
 | Status | Group | Test Case |
@@ -110,66 +118,66 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 1.2 Database List
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Filter databases by search query |
-| 🔲 | main | Filter with partial match |
-| 🔲 | main | Case-insensitive search |
-| 🔲 | main | Filter by host:port |
-| 🔲 | main | Clear search |
-| 🔲 | main | No results message |
-| 🔲 | main | Show columns button |
-| 🔲 | main | Hide/show columns |
-| 🔲 | main | Select single database |
-| 🔲 | main | Select multiple databases |
-| 🔲 | main | Select all databases |
-| 🔲 | main | Delete multiple databases |
-| 🔲 | main | Edit database connection |
-| 🔲 | main | Clone database connection |
-| 🔲 | main | Connect to database |
+| ✅ | main | Filter databases by search query |
+| ✅ | main | Filter with partial match |
+| ✅ | main | Case-insensitive search |
+| ✅ | main | Filter by host:port |
+| ✅ | main | Clear search |
+| ✅ | main | No results message |
+| ✅ | main | Show columns button |
+| ✅ | main | Hide/show columns |
+| ✅ | main | Select single database |
+| ✅ | main | Select multiple databases |
+| ✅ | main | Select all databases |
+| ✅ | main | Delete multiple databases |
+| ✅ | main | Edit database connection |
+| ✅ | main | Clone database connection |
+| ✅ | main | Connect to database |
 | 🔲 | main | Database connection status indicator |
-| 🔲 | main | Search by database name |
-| 🔲 | main | Search by host |
-| 🔲 | main | Search by port |
+| ✅ | main | Search by database name |
+| ✅ | main | Search by host |
+| ✅ | main | Search by port |
 | 🔲 | main | Search by connection type (OSS Cluster, Sentinel) |
 | 🔲 | main | Search by last connection time |
-| 🔲 | main | Verify Redis Stack icon displayed for databases with modules |
+| ✅ | main | Verify Redis Stack icon displayed for databases with modules |
 
 ### 1.3 Clone Database
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Clone standalone database with pre-populated form |
-| 🔲 | main | Clone database with same name |
-| 🔲 | main | Clone database with new name |
-| 🔲 | main | Cancel clone operation |
-| 🔲 | main | Go back to edit dialog from clone dialog |
-| 🔲 | main | Clone OSS Cluster database |
+| ✅ | main | Clone standalone database with pre-populated form |
+| ✅ | main | Clone database with same name |
+| ✅ | main | Clone database with new name |
+| ✅ | main | Cancel clone operation |
+| ✅ | main | Go back to edit dialog from clone dialog |
+| ✅ | main | Clone OSS Cluster database |
 | 🔲 | main | Clone Sentinel database |
-| 🔲 | main | Verify "New Connection" badge on cloned database |
-| 🔲 | main | Verify cloned database appears in list after creation |
+| ✅ | main | Verify "New Connection" badge on cloned database |
+| ✅ | main | Verify cloned database appears in list after creation |
 
 ### 1.4 Pagination (when > 15 databases)
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Show pagination when > 15 databases |
-| 🔲 | main | Navigate to next page |
-| 🔲 | main | Navigate to previous page |
-| 🔲 | main | Navigate to first/last page |
-| 🔲 | main | Change items per page (10, 25, 50, 100) |
-| 🔲 | main | Select page from dropdown |
-| 🔲 | main | Show correct row count "Showing X out of Y rows" |
-| 🔲 | main | Pagination buttons disabled state (first/previous on page 1) |
+| ✅ | main | Show pagination when > 15 databases |
+| ✅ | main | Navigate to next page |
+| ✅ | main | Navigate to previous page |
+| ✅ | main | Navigate to first/last page |
+| ✅ | main | Change items per page (10, 25, 50, 100) |
+| ✅ | main | Select page from dropdown |
+| ✅ | main | Show correct row count "Showing X out of Y rows" |
+| ✅ | main | Pagination buttons disabled state (first/previous on page 1) |
 
 ### 1.5 Import/Export
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Open import dialog |
-| 🔲 | main | Import single database |
-| 🔲 | main | Import multiple databases |
-| 🔲 | main | Show success count after import |
-| 🔲 | main | Cancel import dialog |
-| 🔲 | main | Export databases |
-| 🔲 | main | Import with errors (partial success) |
-| 🔲 | main | Import invalid file format |
-| 🔲 | main | Confirm database tags are exported/imported correctly |
+| ✅ | main | Open import dialog |
+| ✅ | main | Import single database |
+| ✅ | main | Import multiple databases |
+| ✅ | main | Show success count after import |
+| ✅ | main | Cancel import dialog |
+| ✅ | main | Export databases |
+| ✅ | main | Import with errors (partial success) |
+| ✅ | main | Import invalid file format |
+| ✅ | main | Confirm database tags are exported/imported correctly |
 | 🔲 | main | Confirm import summary distinguishes Fully/Partially Imported and Failed |
 
 ### 1.6 Database Tags
@@ -185,13 +193,13 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 1.7 Certificate and Encryption Handling
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Store credentials encrypted in local keychain when encryption enabled |
-| 🔲 | main | Display warning when encryption disabled and credentials stored as plaintext |
+| ✅ | main | Store credentials encrypted in local keychain when encryption enabled |
+| ✅ | main | Display warning when encryption disabled and credentials stored as plaintext |
 
 ### 1.8 Decompression
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Confirm setting a decompression type works |
+| ✅ | main | Confirm setting a decompression type works |
 
 ---
 
@@ -500,11 +508,11 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 3.5 Command Helper (Bottom Panel)
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Open Command Helper panel |
-| 🔲 | main | Search for a command |
-| 🔲 | main | Filter commands by category |
-| 🔲 | main | View command details |
-| 🔲 | main | Hide/close Command Helper panel |
+| ✅ | main | Open Command Helper panel |
+| ✅ | main | Search for a command |
+| ✅ | main | Filter commands by category |
+| ✅ | main | View command details |
+| ✅ | main | Hide/close Command Helper panel |
 
 ---
 
@@ -656,12 +664,12 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 7.1 General Settings
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | View settings page |
-| 🔲 | main | Show theme dropdown |
-| 🔲 | main | Toggle show notifications |
-| 🔲 | main | Show date/time format options |
-| 🔲 | main | Change date/time format (custom) |
-| 🔲 | main | Show time zone dropdown |
+| ✅ | main | View settings page |
+| ✅ | main | Show theme dropdown |
+| ✅ | main | Toggle show notifications |
+| ✅ | main | Show date/time format options |
+| ✅ | main | Change date/time format (custom) |
+| ✅ | main | Show time zone dropdown |
 
 ### 7.2 Privacy Settings
 | Status | Group | Test Case |
@@ -673,21 +681,21 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 7.3 Workbench Settings
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Show editor cleanup switch |
-| 🔲 | main | Show pipeline commands setting |
+| ✅ | main | Show editor cleanup switch |
+| ✅ | main | Show pipeline commands setting |
 | 🔲 | main | Configure command timeout (N/A - per-database setting, not in settings page) |
 
 ### 7.4 Redis Cloud Settings
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | View Redis Cloud settings |
-| 🔲 | main | Configure cloud account |
+| ✅ | main | View Redis Cloud settings |
+| ✅ | main | Configure cloud account |
 
 ### 7.5 Advanced Settings
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Show keys to scan setting |
-| 🔲 | main | Show advanced settings warning |
+| ✅ | main | Show keys to scan setting |
+| ✅ | main | Show advanced settings warning |
 
 ---
 

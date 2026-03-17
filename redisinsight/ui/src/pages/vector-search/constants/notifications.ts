@@ -1,5 +1,7 @@
-import { ToastVariant } from '@redis-ui/components'
-import { RiToastType } from 'uiSrc/components/base/display/toast/RiToast'
+import {
+  RiToastType,
+  ToastVariant,
+} from 'uiSrc/components/base/display/toast/RiToast'
 
 interface NotificationMessage {
   title: string
@@ -36,10 +38,12 @@ export const createIndexNotifications = {
   }),
 
   /** Shown when the index creation request fails. */
-  createFailed: (): NotificationMessage => ({
+  createFailed: (details?: string): NotificationMessage => ({
     title: 'Failed to create index',
-    message: 'An error occurred while creating the index. Please try again.',
-    variant: 'error' as ToastVariant,
+    message:
+      details ||
+      'An error occurred while creating the index. Please try again.',
+    variant: 'danger' as ToastVariant,
   }),
 
   // TODO: Use when creating an index from existing database keys (not sample data).

@@ -67,6 +67,24 @@ export class ApiHelper {
   }
 
   /**
+   * Update a database via API (PATCH)
+   */
+  async updateDatabase(
+    id: string,
+    data: Record<string, unknown>,
+  ): Promise<DatabaseInstance> {
+    const ctx = await this.getContext();
+    const response = await ctx.patch(`/api/databases/${id}`, { data });
+
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`Failed to update database: ${response.status()} - ${body}`);
+    }
+
+    return response.json();
+  }
+
+  /**
    * Get all databases
    */
   async getDatabases(): Promise<DatabaseInstance[]> {
@@ -124,8 +142,13 @@ export class ApiHelper {
 
   /**
    * Create a String key via API
+   * Value can be a string or a Buffer-like object { type: 'Buffer', data: number[] } for binary data
    */
-  async createStringKey(databaseId: string, keyName: string, value: string): Promise<void> {
+  async createStringKey(
+    databaseId: string,
+    keyName: string,
+    value: string | { type: 'Buffer'; data: number[] },
+  ): Promise<void> {
     const ctx = await this.getContext();
     const response = await ctx.post(`/api/databases/${databaseId}/string`, {
       data: { keyName, value },

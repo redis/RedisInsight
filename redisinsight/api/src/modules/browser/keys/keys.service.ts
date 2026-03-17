@@ -17,12 +17,16 @@ import {
   GetKeysDto,
   GetKeysInfoDto,
   GetKeysWithDetailsResponse,
+  GetNamespaceSearchableDto,
   KeyTtlResponse,
+  NamespaceSearchableResponse,
   RenameKeyDto,
   RenameKeyResponse,
   UpdateKeyTtlDto,
 } from 'src/modules/browser/keys/dto';
+import { RedisDataType } from 'src/modules/browser/keys/dto/key.dto';
 import { BrowserToolKeysCommands } from 'src/modules/browser/constants/browser-tool-commands';
+import { RedisClientCommand } from 'src/modules/redis/client';
 import { ClientMetadata } from 'src/common/models';
 import { Scanner } from 'src/modules/browser/keys/scanner/scanner';
 import { BrowserHistoryMode, RedisString } from 'src/common/constants';
@@ -262,6 +266,126 @@ export class KeysService {
       this.logger.error('Failed to rename key.', error, clientMetadata);
       throw catchAclError(error);
     }
+  }
+
+  private static readonly SEARCHABLE_TYPES = [
+    RedisDataType.Hash,
+    RedisDataType.JSON,
+  ];
+
+  private static readonly SCAN_SEARCHABLE_COUNT = 500;
+
+  /**
+   * Check if namespaces contain searchable keys (hash/json)
+   * Uses SCAN with TYPE filter, fully iterating until a match
+   * is found or the keyspace is exhausted
+   * @param clientMetadata
+   * @param dto
+   */
+  public async getNamespaceSearchable(
+    clientMetadata: ClientMetadata,
+    dto: GetNamespaceSearchableDto,
+  ): Promise<NamespaceSearchableResponse[]> {
+    try {
+      this.logger.debug('Checking namespace searchable keys.', clientMetadata);
+
+      const client =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+
+      const results = await Promise.all(
+        dto.prefixes.map((prefix) =>
+          this.findFirstSearchableKey(client, prefix),
+        ),
+      );
+
+      this.logger.debug(
+        'Succeed to check namespace searchable keys.',
+        clientMetadata,
+      );
+
+      return results;
+    } catch (error) {
+      this.logger.error(
+        `Failed to check namespace searchable keys. ${error.message}.`,
+        error,
+        clientMetadata,
+      );
+
+      if (error.message?.includes(RedisErrorCodes.CommandSyntaxError)) {
+        return dto.prefixes.map((prefix) => ({ prefix }));
+      }
+
+      throw catchAclError(error);
+    }
+  }
+
+  private async findFirstSearchableKey(
+    client: any,
+    prefix: string,
+  ): Promise<NamespaceSearchableResponse> {
+    const scanCursors = KeysService.SEARCHABLE_TYPES.map(() => '0');
+    const isTypeExhausted = KeysService.SEARCHABLE_TYPES.map(() => false);
+
+    while (!isTypeExhausted.every(Boolean)) {
+      const scanCommands: RedisClientCommand[] = [];
+      const pendingTypeIndexes: number[] = [];
+
+      for (
+        let typeIndex = 0;
+        typeIndex < KeysService.SEARCHABLE_TYPES.length;
+        typeIndex++
+      ) {
+        if (isTypeExhausted[typeIndex]) continue;
+        pendingTypeIndexes.push(typeIndex);
+        scanCommands.push([
+          BrowserToolKeysCommands.Scan,
+          scanCursors[typeIndex],
+          'MATCH',
+          `${prefix}*`,
+          'COUNT',
+          `${KeysService.SCAN_SEARCHABLE_COUNT}`,
+          'TYPE',
+          KeysService.SEARCHABLE_TYPES[typeIndex],
+        ]);
+      }
+
+      const pipelineResults = (await client.sendPipeline(scanCommands, {
+        replyEncoding: 'utf8',
+      })) as [any, [string, string[]]][];
+
+      for (
+        let resultIndex = 0;
+        resultIndex < pipelineResults.length;
+        resultIndex++
+      ) {
+        const typeIndex = pendingTypeIndexes[resultIndex];
+        const [scanError, scanResult] = pipelineResults[resultIndex];
+
+        if (scanError || !scanResult) {
+          isTypeExhausted[typeIndex] = true;
+          continue;
+        }
+
+        const [nextCursor, matchedKeys] = scanResult;
+
+        if (matchedKeys?.length > 0) {
+          return plainToInstance(NamespaceSearchableResponse, {
+            prefix,
+            key: {
+              name: matchedKeys[0],
+              type: KeysService.SEARCHABLE_TYPES[typeIndex],
+            },
+          });
+        }
+
+        scanCursors[typeIndex] = nextCursor;
+        if (nextCursor === '0') {
+          isTypeExhausted[typeIndex] = true;
+        }
+      }
+    }
+
+    return plainToInstance(NamespaceSearchableResponse, { prefix });
   }
 
   public async updateTtl(

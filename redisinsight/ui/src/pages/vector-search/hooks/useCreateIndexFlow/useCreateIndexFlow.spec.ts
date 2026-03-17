@@ -47,6 +47,52 @@ describe('useCreateIndexFlow', () => {
   })
 
   describe('when index does not exist', () => {
+    it('should invoke onSuccess callback after successful index creation', async () => {
+      const onSuccess = jest.fn()
+
+      const { result } = renderHook(() => useCreateIndexFlow())
+
+      await act(async () => {
+        result.current.run(
+          INSTANCE_ID_MOCK,
+          SampleDataContent.E_COMMERCE_DISCOVERY,
+          { onSuccess },
+        )
+      })
+
+      expect(onSuccess).not.toHaveBeenCalled()
+
+      const createOnSuccess = mockCreateIndexRun.mock.calls[0][1]
+      await act(async () => {
+        await createOnSuccess()
+      })
+
+      expect(onSuccess).toHaveBeenCalledTimes(1)
+    })
+
+    it('should invoke onError callback when index creation fails', async () => {
+      const onSuccess = jest.fn()
+      const onError = jest.fn()
+
+      const { result } = renderHook(() => useCreateIndexFlow())
+
+      await act(async () => {
+        result.current.run(
+          INSTANCE_ID_MOCK,
+          SampleDataContent.E_COMMERCE_DISCOVERY,
+          { onSuccess, onError },
+        )
+      })
+
+      const createOnError = mockCreateIndexRun.mock.calls[0][2]
+      await act(async () => {
+        await createOnError()
+      })
+
+      expect(onError).toHaveBeenCalledTimes(1)
+      expect(onSuccess).not.toHaveBeenCalled()
+    })
+
     it('should call createIndex and seed sample queries on success', async () => {
       const seedSpy = jest.spyOn(QueryLibraryService.prototype, 'seed')
 
@@ -86,7 +132,7 @@ describe('useCreateIndexFlow', () => {
       )
 
       expect(mockPush).toHaveBeenCalledWith({
-        pathname: expect.stringContaining('idx:bikes_vss'),
+        pathname: expect.stringContaining('idx%3Abikes_vss'),
         state: { activeTab: EditorTab.Library },
       })
 
@@ -157,7 +203,7 @@ describe('useCreateIndexFlow', () => {
       mockExistingIndexes = ['idx:bikes_vss']
     })
 
-    it('should seed sample queries and navigate to library tab', async () => {
+    it('should seed sample queries and navigate to query page', async () => {
       const { result } = renderHook(() => useCreateIndexFlow())
 
       await act(async () => {
@@ -170,7 +216,7 @@ describe('useCreateIndexFlow', () => {
       expect(mockCreateIndexRun).not.toHaveBeenCalled()
 
       expect(mockPush).toHaveBeenCalledWith({
-        pathname: expect.stringContaining('idx:bikes_vss'),
+        pathname: expect.stringContaining('idx%3Abikes_vss'),
         state: { activeTab: EditorTab.Library },
       })
 
@@ -179,6 +225,23 @@ describe('useCreateIndexFlow', () => {
           createIndexNotifications.sampleDataAlreadyExists(),
         ),
       )
+    })
+
+    it('should invoke onSuccess callback when index already exists', async () => {
+      const onSuccess = jest.fn()
+
+      const { result } = renderHook(() => useCreateIndexFlow())
+
+      await act(async () => {
+        await result.current.run(
+          INSTANCE_ID_MOCK,
+          SampleDataContent.E_COMMERCE_DISCOVERY,
+          { onSuccess },
+        )
+      })
+
+      expect(onSuccess).toHaveBeenCalledTimes(1)
+      expect(mockCreateIndexRun).not.toHaveBeenCalled()
     })
   })
 

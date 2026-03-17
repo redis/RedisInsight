@@ -8,7 +8,7 @@ import {
   SelectValueRenderParams,
 } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Text } from 'uiSrc/components/base/text'
-import { FieldTag } from 'uiSrc/components/new-index/create-index-step/field-box/FieldTag'
+import { FieldTag } from 'uiSrc/pages/vector-search/components/field-tag/FieldTag'
 
 import * as S from './FieldTypeSelect.styles'
 

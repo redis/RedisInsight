@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { Col, FlexGroup } from 'uiSrc/components/base/layout/flex'
-import Eyeglass from 'uiSrc/assets/img/vector-search/Eyeglass.svg'
-import EyeglassDark from 'uiSrc/assets/img/vector-search/EyeglassDark.svg'
+import Eyeglass from 'uiSrc/assets/img/vector-search/eyeglass.svg'
+import EyeglassDark from 'uiSrc/assets/img/vector-search/eyeglass-dark.svg'
 
 export const Container = styled(Col)`
   position: relative;

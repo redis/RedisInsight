@@ -1,5 +1,5 @@
 import React from 'react'
-import { Breadcrumbs } from '@redis-ui/components'
+import { Breadcrumbs } from 'uiSrc/components/base/navigation/breadcrumbs'
 import { useHistory, useParams } from 'react-router-dom'
 
 import { Title } from 'uiSrc/components/base/text'

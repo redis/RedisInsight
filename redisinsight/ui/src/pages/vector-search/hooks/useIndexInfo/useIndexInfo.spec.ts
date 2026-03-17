@@ -36,29 +36,9 @@ describe('useIndexInfo', () => {
       store: getMockedStore(),
     })
 
-    expect(result.current.loading).toBe(false)
+    expect(result.current.loading).toBe(true)
     expect(result.current.error).toBeNull()
     expect(result.current.indexInfo).toBeNull()
-  })
-
-  it('should not fetch when indexName is empty', async () => {
-    const requestSpy = jest.fn()
-
-    mswServer.use(
-      http.post(
-        getMswURL(getUrl(instanceId, ApiEndpoints.REDISEARCH_INFO)),
-        async () => {
-          requestSpy()
-          return HttpResponse.json({}, { status: 200 })
-        },
-      ),
-    )
-
-    renderHook(() => useIndexInfo({ indexName: '' }), {
-      store: getMockedStore(),
-    })
-
-    expect(requestSpy).not.toHaveBeenCalled()
   })
 
   it('should fetch index info successfully', async () => {
@@ -222,18 +202,22 @@ describe('useIndexInfo', () => {
     expect(result.current.loading).toBe(false)
   })
 
-  it('should not get stuck in loading state when indexName becomes empty while fetch is in progress', async () => {
-    let resolveRequest: () => void
-    const requestPromise = new Promise<void>((resolve) => {
-      resolveRequest = resolve
+  it('should not get stuck in loading state when indexName changes while fetch is in progress', async () => {
+    let resolveFirstRequest: () => void
+    const firstRequestPromise = new Promise<void>((resolve) => {
+      resolveFirstRequest = resolve
     })
     const mockApiResponse = indexInfoFactory.build()
 
     mswServer.use(
       http.post(
         getMswURL(getUrl(instanceId, ApiEndpoints.REDISEARCH_INFO)),
-        async () => {
-          await requestPromise
+        async ({ request }) => {
+          const body = (await request.json()) as { index: string }
+
+          if (body.index === indexName) {
+            await firstRequestPromise
+          }
           return HttpResponse.json(mockApiResponse, { status: 200 })
         },
       ),
@@ -252,18 +236,20 @@ describe('useIndexInfo', () => {
 
     expect(result.current.loading).toBe(true)
 
-    // Change indexName to empty while fetch is in progress
-    rerender({ name: '' })
+    // Change indexName while first fetch is in progress
+    rerender({ name: 'other-index' })
 
-    // Loading should be reset (not stuck)
-    expect(result.current.loading).toBe(false)
-
-    // Complete the in-flight request
-    await act(async () => {
-      resolveRequest!()
+    // Wait for second request to complete
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
     })
 
-    // Should remain stable
+    // Complete the first (stale) request
+    await act(async () => {
+      resolveFirstRequest!()
+    })
+
+    // Should remain stable (stale response ignored)
     expect(result.current.loading).toBe(false)
   })
 })

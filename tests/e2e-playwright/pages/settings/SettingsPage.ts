@@ -9,12 +9,12 @@ export class SettingsPage extends BasePage {
   // Page title
   readonly pageTitle: Locator;
 
-  // Accordion buttons
-  readonly generalButton: Locator;
-  readonly privacyButton: Locator;
-  readonly workbenchButton: Locator;
-  readonly redisCloudButton: Locator;
-  readonly advancedButton: Locator;
+  // Accordion section headers
+  readonly generalSectionHeader: Locator;
+  readonly privacySectionHeader: Locator;
+  readonly workbenchSectionHeader: Locator;
+  readonly redisCloudSectionHeader: Locator;
+  readonly advancedSectionHeader: Locator;
 
   // General settings
   readonly themeDropdown: Locator;
@@ -34,10 +34,16 @@ export class SettingsPage extends BasePage {
   // Workbench settings
   readonly editorCleanupSwitch: Locator;
   readonly pipelineCommandsText: Locator;
+  readonly pipelineCommandsValue: Locator;
+  readonly pipelineCommandsInput: Locator;
+  readonly pipelineApplyButton: Locator;
 
   // Advanced settings
   readonly advancedWarning: Locator;
   readonly keysToScanText: Locator;
+  readonly keysToScanValue: Locator;
+  readonly keysToScanInput: Locator;
+  readonly keysToScanApplyButton: Locator;
 
   // Redis Cloud settings
   readonly apiUserKeysText: Locator;
@@ -51,12 +57,12 @@ export class SettingsPage extends BasePage {
     // Page title
     this.pageTitle = page.locator('[data-testid="settings-page-title"]').or(page.getByText('Settings').first());
 
-    // Accordion headings (clicking the heading label toggles the section)
-    this.generalButton = page.getByRole('heading', { name: 'General' });
-    this.privacyButton = page.getByRole('heading', { name: 'Privacy' });
-    this.workbenchButton = page.getByRole('heading', { name: 'Workbench' });
-    this.redisCloudButton = page.getByRole('heading', { name: 'Redis Cloud', exact: true });
-    this.advancedButton = page.getByRole('heading', { name: 'Advanced' });
+    // The header toggles via its nested collapse trigger button.
+    this.generalSectionHeader = page.locator('[data-test-subj="accordion-appearance"] button[aria-expanded]');
+    this.privacySectionHeader = page.locator('[data-test-subj="accordion-privacy-settings"] button[aria-expanded]');
+    this.workbenchSectionHeader = page.locator('[data-test-subj="accordion-workbench-settings"] button[aria-expanded]');
+    this.redisCloudSectionHeader = page.locator('[data-test-subj="accordion-cloud-settings"] button[aria-expanded]');
+    this.advancedSectionHeader = page.locator('[data-test-subj="accordion-advanced-settings"] button[aria-expanded]');
 
     // General settings
     this.themeDropdown = page.getByRole('combobox', { name: /color theme/i });
@@ -84,14 +90,24 @@ export class SettingsPage extends BasePage {
     this.privacyPolicyLink = page.getByRole('link', { name: 'Privacy Policy' });
 
     // Workbench settings
+    const workbenchSection = page.getByTestId('accordion-workbench-settings');
+
     this.editorCleanupSwitch = page
       .locator('[data-testid="switch-workbench-cleanup"]')
       .or(page.getByRole('switch').filter({ hasText: /Clear the Editor/i }));
-    this.pipelineCommandsText = page.getByText(/Commands in pipeline/i);
+    this.pipelineCommandsText = workbenchSection.getByText(/Commands in pipeline/i);
+    this.pipelineCommandsValue = workbenchSection.getByTestId('pipeline-bunch-value');
+    this.pipelineCommandsInput = workbenchSection.getByTestId('pipeline-bunch-input');
+    this.pipelineApplyButton = this.pipelineCommandsInput
+      .locator('xpath=ancestor::form')
+      .getByTestId('apply-btn');
 
     // Advanced settings
     this.advancedWarning = page.getByRole('alert').filter({ hasText: /Advanced settings/i });
     this.keysToScanText = page.getByRole('heading', { name: 'Keys to Scan in List view' });
+    this.keysToScanValue = page.getByTestId(/keys-to-scan-value/);
+    this.keysToScanInput = page.getByTestId('keys-to-scan-input');
+    this.keysToScanApplyButton = page.getByTestId('apply-btn');
 
     // Redis Cloud settings
     this.apiUserKeysText = page.getByText('API user keys', { exact: true });
@@ -116,7 +132,7 @@ export class SettingsPage extends BasePage {
    * Expand General settings section
    */
   async expandGeneral(): Promise<void> {
-    await this.generalButton.click();
+    await this.generalSectionHeader.click();
     await this.themeDropdown.waitFor({ state: 'visible', timeout: 5000 });
   }
 
@@ -124,7 +140,7 @@ export class SettingsPage extends BasePage {
    * Expand Privacy settings section
    */
   async expandPrivacy(): Promise<void> {
-    await this.privacyButton.click();
+    await this.privacySectionHeader.click();
     await this.usageDataSwitch.waitFor({ state: 'visible', timeout: 5000 });
   }
 
@@ -132,7 +148,7 @@ export class SettingsPage extends BasePage {
    * Expand Workbench settings section
    */
   async expandWorkbench(): Promise<void> {
-    await this.workbenchButton.click();
+    await this.workbenchSectionHeader.click();
     await this.editorCleanupSwitch.waitFor({ state: 'visible', timeout: 5000 });
   }
 
@@ -140,7 +156,7 @@ export class SettingsPage extends BasePage {
    * Expand Advanced settings section
    */
   async expandAdvanced(): Promise<void> {
-    await this.advancedButton.click();
+    await this.advancedSectionHeader.click();
     await this.advancedWarning.waitFor({ state: 'visible', timeout: 5000 });
   }
 
@@ -148,39 +164,39 @@ export class SettingsPage extends BasePage {
    * Check if General section is expanded
    */
   async isGeneralExpanded(): Promise<boolean> {
-    const state = await this.page.locator('[data-test-subj="accordion-appearance"]').getAttribute('data-state');
-    return state === 'open';
+    const expanded = await this.generalSectionHeader.getAttribute('aria-expanded');
+    return expanded === 'true';
   }
 
   /**
    * Check if Privacy section is expanded
    */
   async isPrivacyExpanded(): Promise<boolean> {
-    const state = await this.page.locator('[data-test-subj="accordion-privacy-settings"]').getAttribute('data-state');
-    return state === 'open';
+    const expanded = await this.privacySectionHeader.getAttribute('aria-expanded');
+    return expanded === 'true';
   }
 
   /**
    * Check if Workbench section is expanded
    */
   async isWorkbenchExpanded(): Promise<boolean> {
-    const state = await this.page.locator('[data-test-subj="accordion-workbench-settings"]').getAttribute('data-state');
-    return state === 'open';
+    const expanded = await this.workbenchSectionHeader.getAttribute('aria-expanded');
+    return expanded === 'true';
   }
 
   /**
    * Check if Advanced section is expanded
    */
   async isAdvancedExpanded(): Promise<boolean> {
-    const state = await this.page.locator('[data-test-subj="accordion-advanced-settings"]').getAttribute('data-state');
-    return state === 'open';
+    const expanded = await this.advancedSectionHeader.getAttribute('aria-expanded');
+    return expanded === 'true';
   }
 
   /**
    * Expand Redis Cloud settings section
    */
   async expandRedisCloud(): Promise<void> {
-    await this.redisCloudButton.click();
+    await this.redisCloudSectionHeader.click();
     await this.apiUserKeysText.waitFor({ state: 'visible', timeout: 5000 });
   }
 
@@ -188,8 +204,8 @@ export class SettingsPage extends BasePage {
    * Check if Redis Cloud section is expanded
    */
   async isRedisCloudExpanded(): Promise<boolean> {
-    const state = await this.page.locator('[data-test-subj="accordion-cloud-settings"]').getAttribute('data-state');
-    return state === 'open';
+    const expanded = await this.redisCloudSectionHeader.getAttribute('aria-expanded');
+    return expanded === 'true';
   }
 
   /**
@@ -238,5 +254,53 @@ export class SettingsPage extends BasePage {
   async areNotificationsEnabled(): Promise<boolean> {
     const checked = await this.notificationSwitch.getAttribute('aria-checked');
     return checked === 'true';
+  }
+
+  /**
+   * Toggle editor cleanup switch
+   */
+  async toggleEditorCleanup(): Promise<void> {
+    await this.editorCleanupSwitch.click();
+  }
+
+  /**
+   * Check if editor cleanup is enabled (switch is on)
+   */
+  async isEditorCleanupEnabled(): Promise<boolean> {
+    const checked = await this.editorCleanupSwitch.getAttribute('aria-checked');
+    return checked === 'true';
+  }
+
+  /**
+   * Get current pipeline commands value (displayed number)
+   */
+  async getPipelineCommandsValue(): Promise<string> {
+    return (await this.pipelineCommandsValue.textContent()) ?? '';
+  }
+
+  /**
+   * Set pipeline commands value and apply (enters edit mode, fills input, clicks Apply)
+   */
+  async setPipelineCommandsAndApply(value: number): Promise<void> {
+    await this.pipelineCommandsValue.click();
+    await this.pipelineCommandsInput.waitFor({ state: 'visible' });
+    await this.pipelineCommandsInput.clear();
+    await this.pipelineCommandsInput.fill(String(value));
+    await this.pipelineApplyButton.click();
+   * Get current keys-to-scan value
+   */
+  async getKeysToScan(): Promise<string> {
+    return (await this.keysToScanValue.textContent()) || '';
+  }
+
+  /**
+   * Set keys-to-scan value and apply
+   */
+  async setKeysToScan(value: string): Promise<void> {
+    await this.keysToScanValue.click();
+    await this.keysToScanInput.waitFor({ state: 'visible' });
+    await this.keysToScanInput.clear();
+    await this.keysToScanInput.fill(value);
+    await this.keysToScanApplyButton.click();
   }
 }

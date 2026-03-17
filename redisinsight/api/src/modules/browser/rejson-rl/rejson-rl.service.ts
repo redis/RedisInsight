@@ -35,7 +35,10 @@ import { RedisClient } from 'src/modules/redis/client';
 import { DatabaseService } from 'src/modules/database/database.service';
 
 const MODULES_CONFIG = config.get('modules') as Config['modules'];
-const JSONbig = JSONBigInt();
+const JSONbig = JSONBigInt({
+  protoAction: 'preserve',
+  constructorAction: 'preserve',
+});
 
 @Injectable()
 export class RejsonRlService {

@@ -39,6 +39,12 @@ export interface NodeMetaData {
   isOpenByDefault: boolean
 }
 
+export interface FirstSearchableKey {
+  nameBuffer: RedisResponseBuffer
+  nameString: string
+  type: KeyTypes
+}
+
 export interface TreeData extends FixedSizeNodeData {
   isLeaf: boolean
   name: string
@@ -57,6 +63,9 @@ export interface TreeData extends FixedSizeNodeData {
   isSelected: boolean
   delimiters: string[]
   children?: TreeData[]
+  hasSearchableKeys?: boolean
+  firstSearchableKey?: FirstSearchableKey
+  checkSearchable?: (prefix: string, path: string) => void
   updateStatusOpen: (fullName: string, value: boolean) => void
   updateStatusSelected: (key: RedisString) => void
   getMetadata: (key: RedisString, path: string) => void

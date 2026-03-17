@@ -10,6 +10,7 @@ import {
   getApiErrorMessage,
   getUrl,
   isEqualBuffers,
+  isRedisearchAvailable,
   isStatusSuccessful,
   Maybe,
   Nullable,
@@ -682,6 +683,13 @@ const transformKeyIndexesResponse = (
 export function fetchKeyIndexesAction(keyName: string, force = false) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     const state = stateInit()
+    const { modules } = state.connections.instances.connectedInstance
+
+    if (!isRedisearchAvailable(modules)) {
+      dispatch(loadKeyIndexesSuccess([keyName, []]))
+      return
+    }
+
     const existing = state.browser.redisearch.keyIndexes[keyName]
 
     if (!force && existing && (existing.loading || !existing.error)) {

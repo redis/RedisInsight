@@ -1,0 +1,2 @@
+this is not valid JSON
+it should cause an import error

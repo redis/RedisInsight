@@ -75,8 +75,10 @@ export const useQueryLibrary = () => {
   )
 
   const deleteItem = useCallback(
-    async (id: string) => {
-      if (!databaseId) return
+    async (id: string): Promise<boolean> => {
+      if (!databaseId) {
+        return false
+      }
 
       try {
         await serviceRef.current.delete(databaseId, id)
@@ -85,8 +87,9 @@ export const useQueryLibrary = () => {
         dispatch(
           addMessageNotification(queryLibraryNotifications.queryDeleted()),
         )
+        return true
       } catch {
-        // Error notification is already dispatched by QueryLibraryService
+        return false
       }
     },
     [databaseId, dispatch],

@@ -8,6 +8,15 @@ import { isLz4SizeMarker, decompressLz4 } from './lz4'
 // Import extensions module to ensure handlers are registered
 import './extensions'
 
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    !(value instanceof Uint8Array) &&
+    !(value instanceof Date)
+  )
+}
+
 /**
  * Post-processes decoded data to find and decompress LZ4 patterns
  *
@@ -38,12 +47,8 @@ function postProcessLz4(value: unknown, decoder: Unpackr): unknown {
     return value.map((item) => postProcessLz4(item, decoder))
   }
 
-  // Recursively process objects
-  if (
-    typeof value === 'object' &&
-    value !== null &&
-    !(value instanceof Uint8Array)
-  ) {
+  // Recursively process plain objects
+  if (isPlainObject(value)) {
     const result: Record<string, unknown> = {}
     for (const [key, val] of Object.entries(value)) {
       result[key] = postProcessLz4(val, decoder)

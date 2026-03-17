@@ -15,7 +15,6 @@ export interface IRoute {
 
 export enum PageNames {
   workbench = 'workbench',
-  vectorSearchDeprecated = 'vector-search-deprecated',
   vectorSearch = 'vector-search',
   vectorSearchCreateIndex = 'create-index',
   vectorSearchQuery = 'query',
@@ -57,8 +56,6 @@ export const Pages = {
   azureSubscriptions: `${azure}/subscriptions`,
   azureDatabases: `${azure}/databases`,
   browser: (instanceId: string) => `/${instanceId}/${PageNames.browser}`,
-  vectorSearchDeprecated: (instanceId: string) =>
-    `/${instanceId}/${PageNames.vectorSearchDeprecated}`, // TODO: Remove this route after the new feature is stable
   vectorSearch: (instanceId: string) =>
     `/${instanceId}/${PageNames.vectorSearch}`,
   vectorSearchCreateIndex: (instanceId: string) =>
