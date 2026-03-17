@@ -834,11 +834,11 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | should show "View index" button for key indexed by a single index |
-| 🔲 | main | should show "View index" dropdown for key indexed by multiple indexes |
-| 🔲 | main | should show "Make searchable" button for non-indexed key and create index |
-| 🔲 | main | should show "Index" button on folder node and create index |
-| 🔲 | main | should show RQE not available when navigating to Search tab on Redis without search module |
+| ✅ | main | should show "View index" button for key indexed by a single index |
+| ✅ | main | should show "View index" dropdown for key indexed by multiple indexes |
+| ✅ | main | should show "Make searchable" button for non-indexed key and create index |
+| ✅ | main | should show "Index" button on folder node and create index |
+| ✅ | main | should show RQE not available when navigating to Search tab on Redis without search module |
 
 ---
 
