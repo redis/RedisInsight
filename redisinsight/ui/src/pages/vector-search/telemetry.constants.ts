@@ -1,6 +1,7 @@
 export enum SearchTelemetrySource {
   Welcome = 'welcome',
   List = 'list',
+  Browser = 'browser',
 }
 
 export enum SearchTelemetryCancelStep {
