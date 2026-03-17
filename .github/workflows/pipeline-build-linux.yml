@@ -76,7 +76,7 @@ jobs:
           IS_PRODUCTION: ${{ vars.ENV == 'production' }}
           TARGET_INPUT: ${{ inputs.target }}
         run: |
-          target=$(echo "$TARGET_INPUT" | grep -oE 'build_linux_[^ ]+' | sed 's/build_linux_//' | paste -sd ' ' -)
+          target=$(echo "$TARGET_INPUT" | grep -oE 'build_linux_[^ ]+' | sed 's/build_linux_//;s/_/:/' | sort -u | paste -sd ' ' -)
 
           if [ "$IS_PRODUCTION" == "true" ]; then
             yarn package:prod --linux $target
