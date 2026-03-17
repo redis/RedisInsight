@@ -702,78 +702,143 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ## 8. Vector Search
 
 ### 8.1 Navigation and RQE Availability
-| Status | Group | Test Case |
-|--------|-------|-----------|
-| 🔲 | main | Navigate to Vector Search page from navbar tab |
-| 🔲 | main | Show RQE not available screen for Redis without search module |
-| 🔲 | main | Show welcome screen when no indexes exist and RQE is available |
 
-### 8.2 Create Index - Onboarding
-| Status | Group | Test Case |
-|--------|-------|-----------|
-| 🔲 | main | Complete onboarding flow through all steps |
-| 🔲 | main | Skip onboarding |
-| 🔲 | main | Onboarding not shown after completion |
+> **Spec:** `tests/main/vector-search/navigation/navigation.spec.ts`
 
-### 8.3 Create Index - Sample Data
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Create index with sample data via "Start querying" and verify navigation to query page |
-| 🔲 | main | Open "See index definition" and verify pre-filled schema on create index page |
-| 🔲 | main | Verify sample queries are seeded after sample data index creation |
+| 🔲 | main | should show welcome screen when no indexes exist |
+| 🔲 | main | should show list screen when indexes exist |
+| 🔲 | main | should show RQE not available screen for Redis without search module |
 
-### 8.4 Create Index - Existing Data
-| Status | Group | Test Case |
-|--------|-------|-----------|
-| 🔲 | main | Select key and verify schema is inferred from key data |
-| 🔲 | main | Edit key prefix |
-| 🔲 | main | Add field to index schema |
-| 🔲 | main | Remove field from index schema |
-| 🔲 | main | Change field indexing type |
-| 🔲 | main | Toggle between table view and command view |
-| 🔲 | main | Submit index creation and verify navigation to query page |
+### 8.2 Select Key Onboarding
 
-### 8.5 List Indexes
-| Status | Group | Test Case |
-|--------|-------|-----------|
-| 🔲 | main | View indexes table with columns and create index entry points |
-| 🔲 | main | Query index action navigates to query page |
-| 🔲 | main | Browse index action navigates to browser page |
-| 🔲 | main | View index details in side panel |
-| 🔲 | main | Delete index with confirmation |
+> **Spec:** `tests/main/vector-search/create-index/onboarding.spec.ts`
 
-### 8.6 Query Page
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Run query and view results |
-| 🔲 | main | Expand and collapse query result card |
-| 🔲 | main | Re-run query from result card |
-| 🔲 | main | Delete individual result card |
-| 🔲 | main | Clear all results |
-| 🔲 | main | Explain query action |
-| 🔲 | main | Profile query action |
+| 🔲 | main | should show select key onboarding and dismiss on "Got it" |
+| 🔲 | main | should not show select key onboarding on subsequent visit |
 
-### 8.7 Save Query
-| Status | Group | Test Case |
-|--------|-------|-----------|
-| 🔲 | main | Save query and verify it appears in query library |
-| 🔲 | main | Cancel save query modal |
+### 8.3 Create Index - Onboarding
 
-### 8.8 Query Library
-| Status | Group | Test Case |
-|--------|-------|-----------|
-| 🔲 | main | View saved queries and search in library |
-| 🔲 | main | Run query from library |
-| 🔲 | main | Load query into editor from library |
-| 🔲 | main | Delete query from library with confirmation |
+> **Spec:** `tests/main/vector-search/create-index/onboarding.spec.ts`
 
-### 8.9 Browser Page Integration
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | View index data from indexed key (single and multiple indexes) |
-| 🔲 | main | Navigate to create index from non-indexed key header |
-| 🔲 | main | Browse index data from browser |
-| 🔲 | main | Show RQE not available when clicking Make searchable on Redis without search module |
+| 🔲 | main | should complete onboarding flow through all steps |
+| 🔲 | main | should skip onboarding |
+| 🔲 | main | should not show onboarding after completion |
+
+### 8.4 Create Index - Sample Data
+
+> **Spec:** `tests/main/vector-search/create-index/sample-data.spec.ts`
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| 🔲 | main | should close the sample data modal and return to list page |
+| 🔲 | main | should cancel index creation from "See index definition" and return to list page |
+| 🔲 | main | (E-Commerce Discovery) should create index via "Start querying" and verify query library is seeded |
+| 🔲 | main | (E-Commerce Discovery) should create index via "See index definition" and verify toast |
+| 🔲 | main | (Content Recommendations) should create index via "Start querying" and verify query library is seeded |
+| 🔲 | main | (Content Recommendations) should create index via "See index definition" and verify toast |
+
+### 8.5 Create Index - Existing Data
+
+> **Spec:** `tests/main/vector-search/create-index/existing-data.spec.ts`
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| 🔲 | main | should create index with default settings and navigate to query page |
+| 🔲 | main | should edit key prefix and create index |
+| 🔲 | main | should add field and create index |
+| 🔲 | main | should deselect a field row and exclude it from the index |
+| 🔲 | main | should change index name and create index |
+| 🔲 | main | should show duplicate index name validation and disable create button |
+| 🔲 | main | should create index from JSON key and navigate to query page |
+
+### 8.6 List Indexes
+
+> **Spec:** `tests/main/vector-search/list-indexes/list-indexes.spec.ts`
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| 🔲 | main | should display indexes table with index name and create index button |
+| 🔲 | main | should navigate to query page when Query button is clicked |
+| 🔲 | main | should navigate to browser page when Browse dataset action is clicked |
+| 🔲 | main | should open index details side panel via View index action |
+| 🔲 | main | should delete index with confirmation |
+
+### 8.7 Create Index from List Page
+
+> **Spec:** `tests/main/vector-search/list-indexes/create-index.spec.ts`
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| 🔲 | main | should open sample data modal and complete "Start querying" flow |
+| 🔲 | main | should open sample data modal and navigate to "See index definition" |
+| 🔲 | main | should create index from existing data via list page menu |
+| 🔲 | main | should disable "Use existing data" when no hash or JSON keys exist |
+
+### 8.8 Query Page
+
+> **Spec:** `tests/main/vector-search/query/query-editor.spec.ts`
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| 🔲 | main | should run query and view results |
+| 🔲 | main | should expand and collapse query result card |
+| 🔲 | main | should re-run query from result card |
+| 🔲 | main | should delete individual result card |
+| 🔲 | main | should clear all results |
+| 🔲 | main | should disable explain and profile buttons when editor is empty |
+| 🔲 | main | should disable explain and profile buttons for non-FT query |
+| 🔲 | main | should disable save button when editor is empty |
+| 🔲 | main | should execute explain query action |
+| 🔲 | main | should execute profile query action |
+
+### 8.9 Query Page Onboarding
+
+> **Spec:** `tests/main/vector-search/query/query-onboarding.spec.ts`
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| 🔲 | main | should show query onboarding and dismiss on "Got it" |
+| 🔲 | main | should not show query onboarding on subsequent visit |
+
+### 8.10 Save Query
+
+> **Spec:** `tests/main/vector-search/query/save-query.spec.ts`
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| 🔲 | main | should save query and verify it appears in query library |
+| 🔲 | main | should navigate to query library via success toast action |
+| 🔲 | main | should cancel save query modal |
+
+### 8.11 Query Library
+
+> **Spec:** `tests/main/vector-search/query/query-library.spec.ts`
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| 🔲 | main | should search and filter saved queries in the library |
+| 🔲 | main | should expand and collapse a query library item |
+| 🔲 | main | should run query from library |
+| 🔲 | main | should load query into editor from library |
+| 🔲 | main | should delete query from library and show notification |
+
+### 8.12 Browser Page Integration
+
+> **Spec:** `tests/main/vector-search/browser-integration/browser-integration.spec.ts`
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| 🔲 | main | should show "View index" button for key indexed by a single index |
+| 🔲 | main | should show "View index" dropdown for key indexed by multiple indexes |
+| 🔲 | main | should show "Make searchable" button for non-indexed key and create index |
+| 🔲 | main | should show "Index" button on folder node and create index |
+| 🔲 | main | should show RQE not available when navigating to Search tab on Redis without search module |
 
 ---
 
