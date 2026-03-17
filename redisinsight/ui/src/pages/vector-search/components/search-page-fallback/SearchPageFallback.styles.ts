@@ -76,8 +76,6 @@ export const FeatureListItem = styled(Item)`
   }
 `
 
-export const CTAWrapper = styled(Col)``
-
 export const ButtonWrapper = styled(Col).attrs({
   gap: 'xl',
   align: 'start',

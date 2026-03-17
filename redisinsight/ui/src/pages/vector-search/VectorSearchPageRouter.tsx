@@ -7,18 +7,20 @@ import { VectorSearchPageRouterProps } from './VectorSearchPageRouter.types'
 import { VectorSearchProvider } from './context/vector-search'
 import { useRedisInstanceCompatibility } from './hooks'
 import { RqeNotAvailable } from './components/rqe-not-available'
+import { VersionNotSupported } from './components/version-not-supported'
 import * as S from './pages/styles'
 
 /**
  * Router component for Vector Search pages.
  * Handles routing between main page, create index, and query pages.
- * Guards all sub-routes against missing RediSearch module.
+ * Guards against unsupported Redis versions (< 6) and missing RediSearch module.
  * Wrapped with VectorSearchProvider to supply global context (modal, shared actions).
  */
 export const VectorSearchPageRouter = ({
   routes,
 }: VectorSearchPageRouterProps) => {
-  const { hasRedisearch, loading } = useRedisInstanceCompatibility()
+  const { hasRedisearch, hasMinimumRedisearchVersion, loading } =
+    useRedisInstanceCompatibility()
 
   if (loading !== false) {
     return (
@@ -28,6 +30,14 @@ export const VectorSearchPageRouter = ({
         justify="center"
       >
         <Loader size="xl" data-testid="vector-search-loader" />
+      </S.PageWrapper>
+    )
+  }
+
+  if (hasMinimumRedisearchVersion === false) {
+    return (
+      <S.PageWrapper data-testid="vector-search-page--version-not-supported">
+        <VersionNotSupported />
       </S.PageWrapper>
     )
   }
