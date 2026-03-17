@@ -33,7 +33,7 @@ export const MakeSearchableButton = ({
     openMakeSearchableModal({
       prefix,
       initialKey: keyName,
-      initialKeyType: KEY_TYPE_MAP[keyType],
+      initialKeyType: mappedKeyType,
       initialPrefix: prefix,
       source,
     })
