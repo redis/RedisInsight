@@ -8,7 +8,6 @@ import instancesReducer from 'uiSrc/slices/instances/instances'
 import appOauthReducer from 'uiSrc/slices/oauth/cloud'
 import appFeaturesReducer from 'uiSrc/slices/app/features'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
-import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import { SearchPageFallback } from './SearchPageFallback'
 import { SearchPageFallbackContent } from './SearchPageFallback.types'
 
@@ -47,7 +46,6 @@ const CONTENT_WITH_FEATURES: SearchPageFallbackContent = {
   description: 'Test description',
   ctaText: 'Test CTA',
   oauthSource: OAuthSocialSource.BrowserSearch,
-  learnMoreLink: EXTERNAL_LINKS.redisQueryEngine,
 }
 
 const CONTENT_WITHOUT_FEATURES: SearchPageFallbackContent = {
@@ -56,7 +54,6 @@ const CONTENT_WITHOUT_FEATURES: SearchPageFallbackContent = {
   description: 'Minimal description',
   ctaText: 'Minimal CTA',
   oauthSource: OAuthSocialSource.BrowserSearch,
-  learnMoreLink: EXTERNAL_LINKS.redisQueryEngine,
 }
 
 const renderFallback = (

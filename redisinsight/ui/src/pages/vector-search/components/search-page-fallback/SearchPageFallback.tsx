@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 
 import RqeIllustration from 'uiSrc/assets/img/vector-search/rqe-not-available.svg?react'
 import { FeatureFlags } from 'uiSrc/constants'
-import { UTM_CAMPAINGS } from 'uiSrc/constants/links'
+import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
 import { OAuthSocialAction } from 'uiSrc/slices/interfaces'
 import { FeatureFlagComponent, OAuthSsoHandlerDialog } from 'uiSrc/components'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
@@ -78,7 +78,7 @@ export const SearchPageFallback = ({ content }: SearchPageFallbackProps) => {
                       <Link
                         variant="inline"
                         target="_blank"
-                        href={getUtmExternalLink(content.learnMoreLink, {
+                        href={getUtmExternalLink(EXTERNAL_LINKS.tryFree, {
                           campaign: utmCampaign,
                         })}
                         onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -100,7 +100,7 @@ export const SearchPageFallback = ({ content }: SearchPageFallbackProps) => {
                 <Link
                   variant="inline"
                   target="_blank"
-                  href={getUtmExternalLink(content.learnMoreLink, {
+                  href={getUtmExternalLink(EXTERNAL_LINKS.redisQueryEngine, {
                     campaign: utmCampaign,
                   })}
                   data-testid={`${content.testId}-learn-more-link`}

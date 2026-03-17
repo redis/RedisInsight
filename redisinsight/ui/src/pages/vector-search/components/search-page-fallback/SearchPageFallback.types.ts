@@ -8,5 +8,4 @@ export interface SearchPageFallbackContent {
   description: string
   ctaText: string
   oauthSource: OAuthSocialSource
-  learnMoreLink: string
 }

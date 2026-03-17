@@ -1,5 +1,4 @@
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
-import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import { SearchPageFallbackContent } from './SearchPageFallback.types'
 
 export const RQE_NOT_AVAILABLE_CONTENT: SearchPageFallbackContent = {
@@ -13,7 +12,6 @@ export const RQE_NOT_AVAILABLE_CONTENT: SearchPageFallbackContent = {
   ctaText:
     'Use your free trial all-in-one Redis Cloud database to start exploring these capabilities',
   oauthSource: OAuthSocialSource.BrowserSearch,
-  learnMoreLink: EXTERNAL_LINKS.redisQueryEngine,
 }
 
 export const VERSION_NOT_SUPPORTED_CONTENT: SearchPageFallbackContent = {
@@ -25,5 +23,4 @@ export const VERSION_NOT_SUPPORTED_CONTENT: SearchPageFallbackContent = {
   ctaText:
     'Create a free Redis Cloud database to start exploring these capabilities.',
   oauthSource: OAuthSocialSource.BrowserFiltering,
-  learnMoreLink: EXTERNAL_LINKS.redisQueryEngine,
 }
