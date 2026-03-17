@@ -30,91 +30,93 @@ export const RqeNotAvailable = () => {
 
   return (
     <S.StyledCard data-testid="rqe-not-available">
-      <S.StyledCardBody>
-        <S.ContentSection>
-          <Title
-            color="primary"
-            size="XL"
-            data-testid="rqe-not-available-title"
-          >
-            {rqeContent?.title?.[0]}
-          </Title>
+      <S.ScrollArea>
+        <S.StyledCardBody>
+          <S.ContentSection>
+            <Title
+              color="primary"
+              size="XL"
+              data-testid="rqe-not-available-title"
+            >
+              {rqeContent?.title?.[0]}
+            </Title>
 
-          <Spacer size="m" />
+            <Spacer size="m" />
 
-          <ColorText color="primary" variant="semiBold">
-            {rqeContent?.text?.[0]}
-          </ColorText>
+            <ColorText color="primary" variant="semiBold">
+              {rqeContent?.text?.[0]}
+            </ColorText>
 
-          <S.FeatureList data-testid="rqe-feature-list">
-            {rqeContent?.improvements?.map((improvement: string) => (
-              <S.FeatureListItem
-                key={improvement}
-                iconType="ToastCheckIcon"
-                color="primary"
-                label={<ColorText color="primary">{improvement}</ColorText>}
-              />
-            ))}
-          </S.FeatureList>
+            <S.FeatureList data-testid="rqe-feature-list">
+              {rqeContent?.improvements?.map((improvement: string) => (
+                <S.FeatureListItem
+                  key={improvement}
+                  iconType="ToastCheckIcon"
+                  color="primary"
+                  label={<ColorText color="primary">{improvement}</ColorText>}
+                />
+              ))}
+            </S.FeatureList>
 
-          <S.DescriptionText color="primary" data-testid="rqe-description">
-            {rqeContent?.additionalText}
-          </S.DescriptionText>
+            <S.DescriptionText color="primary" data-testid="rqe-description">
+              {rqeContent?.additionalText}
+            </S.DescriptionText>
 
-          <Spacer size="xl" />
+            <Spacer size="xl" />
 
-          <S.CtaText data-testid="rqe-cta-text">
-            {rqeContent?.ctaText?.[0]}
-          </S.CtaText>
+            <S.CtaText data-testid="rqe-cta-text">
+              {rqeContent?.ctaText?.[0]}
+            </S.CtaText>
 
-          {envDependentFeature?.flag && (
-            <S.CTAWrapper data-testid="rqe-cta-wrapper">
-              <Spacer size="m" />
-              <S.ButtonWrapper>
-                <FeatureFlagComponent name={FeatureFlags.cloudAds}>
-                  <OAuthSsoHandlerDialog>
-                    {(ssoCloudHandlerClick) => (
-                      <Link
-                        variant="inline"
-                        target="_blank"
-                        href={getUtmExternalLink(EXTERNAL_LINKS.tryFree, {
-                          campaign: utmCampaign,
-                        })}
-                        onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                          ssoCloudHandlerClick(e as React.MouseEvent, {
-                            source: OAuthSocialSource.BrowserSearch,
-                            action: OAuthSocialAction.Create,
-                          })
-                        }}
-                        data-testid="rqe-get-started-button"
-                      >
-                        <PrimaryButton size="m">
-                          Get started for free
-                        </PrimaryButton>
-                      </Link>
-                    )}
-                  </OAuthSsoHandlerDialog>
-                </FeatureFlagComponent>
+            {envDependentFeature?.flag && (
+              <S.CTAWrapper data-testid="rqe-cta-wrapper">
+                <Spacer size="m" />
+                <S.ButtonWrapper>
+                  <FeatureFlagComponent name={FeatureFlags.cloudAds}>
+                    <OAuthSsoHandlerDialog>
+                      {(ssoCloudHandlerClick) => (
+                        <Link
+                          variant="inline"
+                          target="_blank"
+                          href={getUtmExternalLink(EXTERNAL_LINKS.tryFree, {
+                            campaign: utmCampaign,
+                          })}
+                          onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                            ssoCloudHandlerClick(e as React.MouseEvent, {
+                              source: OAuthSocialSource.BrowserSearch,
+                              action: OAuthSocialAction.Create,
+                            })
+                          }}
+                          data-testid="rqe-get-started-button"
+                        >
+                          <PrimaryButton size="m">
+                            Get started for free
+                          </PrimaryButton>
+                        </Link>
+                      )}
+                    </OAuthSsoHandlerDialog>
+                  </FeatureFlagComponent>
 
-                <Link
-                  variant="inline"
-                  target="_blank"
-                  href={getUtmExternalLink(EXTERNAL_LINKS.redisQueryEngine, {
-                    campaign: utmCampaign,
-                  })}
-                  data-testid="rqe-learn-more-link"
-                >
-                  Learn more
-                </Link>
-              </S.ButtonWrapper>
-            </S.CTAWrapper>
-          )}
-        </S.ContentSection>
+                  <Link
+                    variant="inline"
+                    target="_blank"
+                    href={getUtmExternalLink(EXTERNAL_LINKS.redisQueryEngine, {
+                      campaign: utmCampaign,
+                    })}
+                    data-testid="rqe-learn-more-link"
+                  >
+                    Learn more
+                  </Link>
+                </S.ButtonWrapper>
+              </S.CTAWrapper>
+            )}
+          </S.ContentSection>
 
-        <S.IllustrationSection data-testid="rqe-illustration">
-          <RqeIllustration />
-        </S.IllustrationSection>
-      </S.StyledCardBody>
+          <S.IllustrationSection data-testid="rqe-illustration">
+            <RqeIllustration />
+          </S.IllustrationSection>
+        </S.StyledCardBody>
+      </S.ScrollArea>
     </S.StyledCard>
   )
 }

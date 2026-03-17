@@ -5,10 +5,16 @@ import { Group, Item } from 'uiSrc/components/base/layout/list'
 import { Text } from 'uiSrc/components/base/text'
 
 export const StyledCard = styled(Card)`
-  height: 100%;
-  justify-content: center;
-  align-items: center;
   position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+`
+
+export const ScrollArea = styled(Col)`
+  position: relative;
+  overflow-y: auto;
+  padding: clamp(2rem, 8vh, 9rem) clamp(7rem, 8vw, 14rem);
 `
 
 export const StyledCardBody = styled(Row).attrs({
