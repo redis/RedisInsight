@@ -49,15 +49,15 @@ test.describe('Vector Search > Create Index from List Page', { tag: '@serial' },
       .poll(() => apiHelper.getIndexes(database.id).then((indexes) => indexes.includes(seedIndex.indexName)))
       .toBe(true);
 
-    // Skip onboarding
+    await vectorSearchPage.goto(database.id);
+    await expect(vectorSearchPage.listWrapper).toBeVisible();
+
+    // Skip onboarding (must be after navigation so localStorage targets the app origin)
     await page.evaluate(() => {
       localStorage.setItem('vectorSearchSelectKeyOnboarding', 'true');
       localStorage.setItem('vectorSearchQueryOnboarding', 'true');
       localStorage.setItem('vectorSearchCreateIndexOnboarding', 'true');
     });
-
-    await vectorSearchPage.goto(database.id);
-    await expect(vectorSearchPage.listWrapper).toBeVisible();
   });
 
   test('should open sample data modal and complete "Start querying" flow', async ({ vectorSearchPage }) => {

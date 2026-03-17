@@ -38,14 +38,14 @@ test.describe('Vector Search > Save Query', { tag: '@serial' }, () => {
     const indexConfig = IndexConfigFactory.build({ indexName: TEST_INDEX_NAME, prefix: TEST_INDEX_PREFIX });
     await apiHelper.createIndex(database.id, indexConfig.indexName, indexConfig.prefix, indexConfig.schema);
 
+    // Navigate to query page
+    await vectorSearchPage.goto(database.id);
+    await expect(vectorSearchPage.listWrapper).toBeVisible();
+
     // Skip onboarding
     await page.evaluate(() => {
       localStorage.setItem('vectorSearchQueryOnboarding', 'true');
     });
-
-    // Navigate to query page
-    await vectorSearchPage.goto(database.id);
-    await expect(vectorSearchPage.listWrapper).toBeVisible();
 
     await vectorSearchPage.indexList.openQuery(TEST_INDEX_NAME);
     await expect(vectorSearchPage.queryPageWrapper).toBeVisible();
