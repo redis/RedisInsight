@@ -26,10 +26,9 @@ test.describe('Vector Search > Browser Page Integration', { tag: '@serial' }, ()
   });
 
   // Skip create-index onboarding for all tests
-  test.beforeEach(async ({ page }) => {
-    await page.evaluate(() => {
-      localStorage.setItem('vectorSearchCreateIndexOnboarding', 'true');
-    });
+  test.beforeEach(async ({ browserPage, page }) => {
+    await browserPage.goto(database.id);
+    await page.evaluate(() => localStorage.setItem('vectorSearchCreateIndexOnboarding', 'true'));
   });
 
   test.afterEach(async ({ apiHelper }) => {
@@ -56,7 +55,6 @@ test.describe('Vector Search > Browser Page Integration', { tag: '@serial' }, ()
     await apiHelper.createHashKey(database.id, singleKey.keyName, singleKey.fields);
 
     // Select the key and click "View index" to navigate to the Search tab
-    await browserPage.goto(database.id);
     await browserPage.keyList.searchKeys(`${singlePrefix}key1`);
     await browserPage.keyList.selectKeyInTree(`${singlePrefix}key1`);
     await expect(browserPage.keyDetailsPanel).toBeVisible();
@@ -82,7 +80,6 @@ test.describe('Vector Search > Browser Page Integration', { tag: '@serial' }, ()
     await apiHelper.createHashKey(database.id, hashKey.keyName, hashKey.fields);
 
     // Select the key → dropdown trigger shows with badge count "2"
-    await browserPage.goto(database.id);
     await browserPage.keyList.searchKeys(`${TEST_INDEX_PREFIX}key1`);
     await browserPage.keyList.selectKeyInTree(`${TEST_INDEX_PREFIX}key1`);
     await expect(browserPage.keyDetailsPanel).toBeVisible();
@@ -115,7 +112,6 @@ test.describe('Vector Search > Browser Page Integration', { tag: '@serial' }, ()
     await apiHelper.createHashKey(database.id, hashKey.keyName, hashKey.fields);
 
     // Select key → "Make searchable" button should appear (key has no index)
-    await browserPage.goto(database.id);
     await browserPage.keyList.searchKeys(nonIndexedKeyName);
     await browserPage.keyList.selectKeyInTree(nonIndexedKeyName);
     await expect(browserPage.keyDetailsPanel).toBeVisible();
@@ -146,7 +142,6 @@ test.describe('Vector Search > Browser Page Integration', { tag: '@serial' }, ()
     const hashKey = IndexHashKeyFactory.build({ keyName: indexableKeyName });
     await apiHelper.createHashKey(database.id, hashKey.keyName, hashKey.fields);
 
-    await browserPage.goto(database.id);
     await browserPage.keyList.searchKeys(indexableKeyName);
 
     // Hover folder node to reveal Index button, open modal, then create index
