@@ -38,7 +38,9 @@ const defaultProps: MakeSearchableButtonProps = {
   keyType: KeyTypes.Hash,
 }
 
-const renderComponent = (propsOverride?: Partial<MakeSearchableButtonProps>) => {
+const renderComponent = (
+  propsOverride?: Partial<MakeSearchableButtonProps>,
+) => {
   const props = { ...defaultProps, ...propsOverride }
   return render(<MakeSearchableButton {...props} />)
 }
@@ -62,7 +64,9 @@ describe('MakeSearchableButton', () => {
     renderComponent()
 
     expect(screen.getByTestId('make-searchable-btn')).toBeInTheDocument()
-    expect(screen.getByTestId('make-searchable-btn')).toHaveTextContent('Make searchable')
+    expect(screen.getByTestId('make-searchable-btn')).toHaveTextContent(
+      'Make searchable',
+    )
   })
 
   it('should send SEARCH_MAKE_SEARCHABLE_CLICKED telemetry on click', async () => {
