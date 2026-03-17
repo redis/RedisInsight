@@ -173,7 +173,7 @@ jobs:
         with:
           name: linux-builds
           path: |
-            ./release/latest-linux.yml
+            ./release/latest-linux*.yml
             ./release/Redis-Insight*.AppImage
             ./release/Redis-Insight*.deb
             ./release/Redis-Insight*.rpm
