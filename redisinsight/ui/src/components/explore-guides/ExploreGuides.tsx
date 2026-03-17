@@ -13,7 +13,7 @@ import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
-import * as S from './ExploreGuides.styles.ts'
+import * as S from './ExploreGuides.styles'
 
 const ExploreGuides = () => {
   const { data } = useSelector(guideLinksSelector)
