@@ -22,9 +22,31 @@ export const AZURE_REDIS_SCOPE = 'https://redis.azure.com/.default';
 export const AZURE_MANAGEMENT_SCOPE = 'https://management.azure.com/.default';
 
 /**
- * Azure OAuth redirect path for the application.
+ * Azure OAuth redirect type for the application.
+ * - deeplink: Uses custom protocol (redisinsight://) for Electron app
+ * - web: Uses HTTP localhost callback for web/Docker deployments
  */
-export const AZURE_OAUTH_REDIRECT_PATH = 'redisinsight://azure/oauth/callback';
+export enum AzureOAuthRedirectType {
+  Deeplink = 'deeplink',
+  Web = 'web',
+}
+
+/**
+ * Azure OAuth redirect path for Electron app (deeplink).
+ */
+export const AZURE_OAUTH_DEEPLINK_REDIRECT_PATH =
+  'redisinsight://azure/oauth/callback';
+
+/**
+ * Azure OAuth redirect path for the application.
+ * @deprecated Use AZURE_OAUTH_DEEPLINK_REDIRECT_PATH or getAzureOAuthRedirectUri() instead
+ */
+export const AZURE_OAUTH_REDIRECT_PATH = AZURE_OAUTH_DEEPLINK_REDIRECT_PATH;
+
+/**
+ * Azure OAuth web callback endpoint path (relative to API base).
+ */
+export const AZURE_OAUTH_WEB_CALLBACK_ENDPOINT = '/azure/auth/callback';
 
 /**
  * Scopes requested during the initial OAuth login flow.
