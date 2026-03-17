@@ -14,6 +14,8 @@ import {
   binaryToBuffer,
   bufferToJava,
   bufferToUint8Array,
+  isBinaryData,
+  isBinaryVector,
 } from 'uiSrc/utils'
 
 try {
@@ -291,5 +293,61 @@ describe('bufferToUint8Array', () => {
     expect(bufferToUint8Array(anyToBuffer(uint8Array))).toEqual(
       new Uint8Array(uint8Array),
     )
+  })
+})
+
+describe('isBinaryData', () => {
+  it('should return false for plain ASCII text', () => {
+    expect(isBinaryData(anyToBuffer([116, 101, 115, 116]))).toBe(false)
+  })
+
+  it('should return false for valid UTF-8 multibyte text', () => {
+    // "привет" in UTF-8
+    expect(
+      isBinaryData(
+        anyToBuffer([
+          208, 191, 209, 128, 208, 184, 208, 178, 208, 181, 209, 130,
+        ]),
+      ),
+    ).toBe(false)
+  })
+
+  it('should return true for binary data that is not valid UTF-8 round-trip', () => {
+    // float32 representation of 1.0 (little-endian: 0x00 0x00 0x80 0x3F)
+    expect(isBinaryData(anyToBuffer([0x00, 0x00, 0x80, 0x3f]))).toBe(true)
+  })
+})
+
+describe('isBinaryVector', () => {
+  it('should return true for a valid float32 binary vector', () => {
+    // Two float32 values: 1.0 and 2.0 in little-endian
+    const float1 = [0x00, 0x00, 0x80, 0x3f] // 1.0
+    const float2 = [0x00, 0x00, 0x00, 0x40] // 2.0
+    expect(isBinaryVector(anyToBuffer([...float1, ...float2]))).toBe(true)
+  })
+
+  it('should return false for plain text', () => {
+    // "test" is 4 bytes, divisible by 4, but valid UTF-8
+    expect(isBinaryVector(anyToBuffer([116, 101, 115, 116]))).toBe(false)
+  })
+
+  it('should return false for buffer with length not divisible by 4', () => {
+    expect(isBinaryVector(anyToBuffer([0x00, 0x00, 0x80]))).toBe(false)
+  })
+
+  it('should return false for buffer shorter than MIN_VECTOR_BYTES', () => {
+    // 4 bytes = only 1 float32 (need at least 2)
+    expect(isBinaryVector(anyToBuffer([0x00, 0x00, 0x80, 0x3f]))).toBe(false)
+  })
+
+  it('should return false when float32 values contain NaN', () => {
+    // NaN in float32: 0x7FC00000 little-endian = [0x00, 0x00, 0xC0, 0x7F]
+    const nan = [0x00, 0x00, 0xc0, 0x7f]
+    const valid = [0x00, 0x00, 0x80, 0x3f]
+    expect(isBinaryVector(anyToBuffer([...nan, ...valid]))).toBe(false)
+  })
+
+  it('should return false for empty buffer', () => {
+    expect(isBinaryVector(anyToBuffer([]))).toBe(false)
   })
 })
