@@ -707,9 +707,9 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | should show welcome screen when no indexes exist |
-| 🔲 | main | should show list screen when indexes exist |
-| 🔲 | main | should show RQE not available screen for Redis without search module |
+| ✅ | main | should show welcome screen when no indexes exist |
+| ✅ | main | should show list screen when indexes exist |
+| ✅ | main | should show RQE not available screen for Redis without search module |
 
 ### 8.2 Select Key Onboarding
 
