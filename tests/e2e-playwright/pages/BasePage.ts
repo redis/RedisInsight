@@ -53,8 +53,54 @@ export abstract class BasePage {
    */
   async gotoDatabase(databaseId: string): Promise<void> {
     await this.gotoHome();
-    await this.page.getByTestId(`instance-name-${databaseId}`).click();
+
+    const dbRow = this.page.getByTestId(`instance-name-${databaseId}`);
+
+    await this.paginateToRow(dbRow);
+
+    // The database may have been created via API after the home page
+    // fetched its list. Clicking the logo while already on "/" doesn't
+    // trigger a data re-fetch, so the list can be stale. Reload once
+    // to get a fresh list and retry pagination.
+    if (!(await dbRow.isVisible())) {
+      await this.page.reload();
+      await this.paginateToRow(dbRow);
+    }
+
+    await dbRow.click();
     await this.page.getByRole('tab', { name: 'Browse' }).waitFor({ state: 'visible' });
+  }
+
+  /**
+   * Wait for the database list to load, then paginate through all pages
+   * starting from page 1 until {@link row} is visible or no more pages remain.
+   */
+  private async paginateToRow(row: Locator): Promise<void> {
+    const firstPage = this.page.getByRole('button', { name: 'first page' });
+    const nextPage = this.page.getByRole('button', { name: 'next page' });
+
+    await this.page
+      .getByTestId(/^instance-name-/)
+      .first()
+      .waitFor({ state: 'visible' });
+
+    // Always start from page 1 so we scan every page.
+    if ((await firstPage.isVisible()) && (await firstPage.isEnabled())) {
+      await firstPage.click();
+      await this.page
+        .getByTestId(/^instance-name-/)
+        .first()
+        .waitFor({ state: 'visible' });
+    }
+
+    while (!(await row.isVisible())) {
+      if (!(await nextPage.isVisible()) || !(await nextPage.isEnabled())) break;
+      await nextPage.click();
+      await this.page
+        .getByTestId(/^instance-name-/)
+        .first()
+        .waitFor({ state: 'visible' });
+    }
   }
 
   /**

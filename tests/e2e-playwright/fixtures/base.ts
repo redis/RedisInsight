@@ -11,6 +11,7 @@ import {
   EulaPage,
   SidebarPanel,
   InsightsPanel,
+  VectorSearchPage,
 } from 'e2eSrc/pages';
 import { ApiHelper, retry } from 'e2eSrc/helpers';
 
@@ -41,6 +42,7 @@ type Fixtures = {
   eulaPage: EulaPage;
   sidebarPanel: SidebarPanel;
   insightsPanel: InsightsPanel;
+  vectorSearchPage: VectorSearchPage;
 };
 
 /**
@@ -233,6 +235,10 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
 
   insightsPanel: async ({ page }, use) => {
     await use(new InsightsPanel(page));
+  },
+
+  vectorSearchPage: async ({ page }, use) => {
+    await use(new VectorSearchPage(page));
   },
 });
 

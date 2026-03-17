@@ -71,7 +71,7 @@ jobs:
 
       - name: Run Playwright tests (Chromium)
         working-directory: ${{ env.E2E_DIR }}
-        run: npx playwright test --project=chromium
+        run: npx playwright test --project=chromium --project=chromium-serial
         env:
           CI: true
 

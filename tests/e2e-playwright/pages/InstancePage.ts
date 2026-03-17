@@ -42,6 +42,14 @@ export abstract class InstancePage extends BasePage {
   }
 
   /**
+   * Navigate to Search tab (staying on same database)
+   */
+  async navigateToSearch(): Promise<void> {
+    await this.navigationTabs.gotoSearch();
+    await this.waitForLoad();
+  }
+
+  /**
    * Navigate to Workbench tab (staying on same database)
    */
   async navigateToWorkbench(): Promise<void> {
