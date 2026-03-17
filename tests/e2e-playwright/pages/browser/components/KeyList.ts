@@ -184,7 +184,7 @@ export class KeyList {
    */
   async selectKeyInTree(keyName: string, delimiter = ':'): Promise<void> {
     const delimiterIndex = keyName.lastIndexOf(delimiter);
-    const leafName = keyName.substring(delimiterIndex + 1) || keyName;
+    const leafName = keyName.substring(delimiterIndex + delimiter.length) || keyName;
     const leafNode = this.container.getByRole('treeitem').filter({ hasText: leafName });
 
     if (delimiterIndex !== -1) {
