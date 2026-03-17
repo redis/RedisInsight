@@ -10,6 +10,8 @@ import {
   MenuContent,
   MenuItem,
 } from 'uiSrc/components/base/layout/menu'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { SearchBrowserSource } from 'uiSrc/pages/vector-search/telemetry.constants'
 
 import { ViewIndexDataButtonProps } from './ViewIndexDataButton.types'
 import * as S from './ViewIndexDataButton.styles'
@@ -25,6 +27,14 @@ export const ViewIndexDataButton = ({
 
   const navigateTo = useCallback(
     (indexName: string) => {
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_VIEW_INDEX_CLICKED,
+        eventData: {
+          databaseId: instanceId,
+          numberOfIndexes: indexes.length,
+          source: SearchBrowserSource.KeyDetails,
+        },
+      })
       if (onNavigate) {
         onNavigate(indexName)
         return
@@ -33,7 +43,7 @@ export const ViewIndexDataButton = ({
         Pages.vectorSearchQuery(instanceId, encodeURIComponent(indexName)),
       )
     },
-    [history, instanceId, onNavigate],
+    [history, instanceId, onNavigate, indexes.length],
   )
 
   if (indexes.length === 0) {

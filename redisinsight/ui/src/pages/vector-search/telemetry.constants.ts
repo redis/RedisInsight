@@ -1,6 +1,12 @@
 export enum SearchTelemetrySource {
   Welcome = 'welcome',
   List = 'list',
+  Browser = 'browser',
+}
+
+export enum SearchBrowserSource {
+  KeyDetails = 'key_details',
+  TreeView = 'tree_view',
 }
 
 export enum SearchTelemetryCancelStep {

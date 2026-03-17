@@ -17,6 +17,8 @@ import { FeatureFlags, KeyTypes, BrowserColumns, Pages } from 'uiSrc/constants'
 import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { CreateIndexMode } from 'uiSrc/pages/vector-search/pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
 import { MakeSearchableModalProvider } from 'uiSrc/pages/browser/components/make-searchable-modal'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { SearchBrowserSource } from 'uiSrc/pages/vector-search/telemetry.constants'
 import Node from './Node'
 import { TreeData } from '../../VirtualTree.types'
 import { mockVirtualTreeResult } from '../../VirtualTree.spec'
@@ -44,6 +46,11 @@ const mockedDataWithMetadata = {
   ttl: 123,
   size: 123,
 }
+
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
+}))
 
 jest.mock('uiSrc/services', () => ({
   ...jest.requireActual('uiSrc/services'),
@@ -621,6 +628,36 @@ describe('Node', () => {
       expect(
         screen.queryByTestId(`index-folder-btn-${mockFolderName}`),
       ).not.toBeInTheDocument()
+
+      spy.mockRestore()
+    })
+
+    it('should send SEARCH_MAKE_SEARCHABLE_CLICKED telemetry with tree_view source on Index button click', () => {
+      const spy = mockFeatureFlags({
+        [FeatureFlags.vectorSearchV2]: { flag: true },
+      })
+
+      const mockData: TreeData = {
+        ...baseFolderData,
+        hasSearchableKeys: true,
+        firstSearchableKey: mockFirstSearchableKey,
+      }
+
+      renderNode({ data: mockData })
+
+      const indexFolderBtn = screen.getByTestId(
+        `index-folder-btn-${mockFolderName}`,
+      )
+      fireEvent.click(indexFolderBtn)
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_MAKE_SEARCHABLE_CLICKED,
+        eventData: {
+          databaseId: mockInstanceId,
+          keyType: RedisearchIndexKeyType.HASH,
+          source: SearchBrowserSource.TreeView,
+        },
+      })
 
       spy.mockRestore()
     })

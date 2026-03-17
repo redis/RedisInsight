@@ -47,6 +47,10 @@ export const useListContent = () => {
 
   const handleQueryClick = useCallback(
     (indexName: string) => {
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_INDEX_QUERY_CLICKED,
+        eventData: { databaseId: instanceId },
+      })
       history.push(
         Pages.vectorSearchQuery(instanceId, encodeIndexNameForUrl(indexName)),
       )
@@ -71,6 +75,10 @@ export const useListContent = () => {
 
   const handleBrowseDataset = useCallback(
     (indexName: string) => {
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_INDEX_BROWSE_DATASET_CLICKED,
+        eventData: { databaseId: instanceId },
+      })
       localStorageService.set(
         BrowserStorageItem.browserSearchMode,
         SearchMode.Redisearch,

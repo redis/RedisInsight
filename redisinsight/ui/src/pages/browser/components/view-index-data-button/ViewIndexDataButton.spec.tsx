@@ -4,9 +4,16 @@ import { faker } from '@faker-js/faker'
 import { cleanup, render, screen, userEvent } from 'uiSrc/utils/test-utils'
 import { Pages } from 'uiSrc/constants'
 import { IndexSummary } from 'uiSrc/slices/interfaces/redisearch'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { SearchBrowserSource } from 'uiSrc/pages/vector-search/telemetry.constants'
 
 import { ViewIndexDataButton } from './ViewIndexDataButton'
 import { ViewIndexDataButtonProps } from './ViewIndexDataButton.types'
+
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
+}))
 
 const mockPush = jest.fn()
 const mockInstanceId = faker.string.uuid()
@@ -71,6 +78,23 @@ describe('ViewIndexDataButton', () => {
       )
     })
 
+    it('should send SEARCH_VIEW_INDEX_CLICKED telemetry on click', async () => {
+      const index = buildIndex({ name: 'movies_index' })
+      renderComponent({ indexes: [index] })
+
+      const viewIndexDataBtn = screen.getByTestId('view-index-data-btn')
+      await userEvent.click(viewIndexDataBtn)
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_VIEW_INDEX_CLICKED,
+        eventData: {
+          databaseId: mockInstanceId,
+          numberOfIndexes: 1,
+          source: SearchBrowserSource.KeyDetails,
+        },
+      })
+    })
+
     it('should call onNavigate callback instead of history.push when provided', async () => {
       const index = buildIndex({ name: 'movies_index' })
       const onNavigate = jest.fn()
@@ -127,6 +151,25 @@ describe('ViewIndexDataButton', () => {
           encodeURIComponent('users_index'),
         ),
       )
+    })
+
+    it('should send SEARCH_VIEW_INDEX_CLICKED telemetry with correct count when menu item is clicked', async () => {
+      renderComponent({ indexes })
+
+      const menuTrigger = screen.getByTestId('view-index-data-menu-trigger')
+      await userEvent.click(menuTrigger)
+
+      const menuItem = screen.getByTestId('view-index-data-item-users_index')
+      await userEvent.click(menuItem)
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_VIEW_INDEX_CLICKED,
+        eventData: {
+          databaseId: mockInstanceId,
+          numberOfIndexes: 3,
+          source: SearchBrowserSource.KeyDetails,
+        },
+      })
     })
 
     it('should call onNavigate callback for menu items when provided', async () => {

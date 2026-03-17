@@ -14,6 +14,11 @@ import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { bufferToString } from 'uiSrc/utils'
 import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { CreateIndexMode } from 'uiSrc/pages/vector-search/pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import {
+  SearchBrowserSource,
+  SearchTelemetrySource,
+} from 'uiSrc/pages/vector-search/telemetry.constants'
 
 import { MakeSearchableModal } from './MakeSearchableModal'
 
@@ -22,6 +27,7 @@ export interface MakeSearchableModalConfig {
   initialKey?: RedisResponseBuffer
   initialKeyType?: RedisearchIndexKeyType
   initialPrefix?: string
+  source?: SearchBrowserSource
 }
 
 const MakeSearchableModalContext = createContext<{
@@ -61,6 +67,23 @@ export const MakeSearchableModalProvider = ({
       return
     }
 
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_MAKE_SEARCHABLE_CONFIRMED,
+      eventData: {
+        databaseId: instanceId,
+        keyType: config.initialKeyType,
+        source: config.source,
+      },
+    })
+
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_OWN_DATA_INDEX_TRIGGERED,
+      eventData: {
+        databaseId: instanceId,
+        source: SearchTelemetrySource.Browser,
+      },
+    })
+
     setConfig(null)
 
     const search = new URLSearchParams()
@@ -74,6 +97,14 @@ export const MakeSearchableModalProvider = ({
     })
   }, [config, history, instanceId])
 
+  const handleCancel = useCallback(() => {
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_MAKE_SEARCHABLE_CANCELLED,
+      eventData: { databaseId: instanceId, source: config?.source },
+    })
+    setConfig(null)
+  }, [instanceId, config?.source])
+
   const contextValue = useMemo(
     () => ({ openMakeSearchableModal }),
     [openMakeSearchableModal],
@@ -86,7 +117,7 @@ export const MakeSearchableModalProvider = ({
         isOpen={config !== null}
         prefix={config?.prefix}
         onConfirm={handleConfirm}
-        onCancel={() => setConfig(null)}
+        onCancel={handleCancel}
       />
     </MakeSearchableModalContext.Provider>
   )

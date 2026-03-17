@@ -123,6 +123,20 @@ describe('useListContent', () => {
         Pages.vectorSearchQuery(mockInstanceId, indexName),
       )
     })
+
+    it('should send SEARCH_INDEX_QUERY_CLICKED telemetry', () => {
+      const { result } = renderHook(() => useListContent())
+      const indexName = faker.string.alpha(10)
+
+      act(() => {
+        result.current.onQueryClick(indexName)
+      })
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_INDEX_QUERY_CLICKED,
+        eventData: { databaseId: mockInstanceId },
+      })
+    })
   })
 
   describe('View index action', () => {
@@ -181,6 +195,20 @@ describe('useListContent', () => {
       expect(mockPush).toHaveBeenCalledWith({
         pathname: Pages.browser(mockInstanceId),
         search: `browseIndex=${indexName}`,
+      })
+    })
+
+    it('should send SEARCH_INDEX_BROWSE_DATASET_CLICKED telemetry', () => {
+      const { result } = renderHook(() => useListContent())
+      const indexName = faker.string.alpha(10)
+
+      act(() => {
+        result.current.actions[1].callback(indexName)
+      })
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_INDEX_BROWSE_DATASET_CLICKED,
+        eventData: { databaseId: mockInstanceId },
       })
     })
   })
