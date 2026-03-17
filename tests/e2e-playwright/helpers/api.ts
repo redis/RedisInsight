@@ -389,15 +389,15 @@ export class ApiHelper {
     schema: IndexSchemaField[],
     keyType: 'hash' | 'json' = 'hash',
   ): Promise<void> {
-    const schemaArgs = schema.flatMap((f) => [f.name, f.type.toUpperCase()]);
+    const schemaArgs = schema.flatMap((f) => [`"${f.name}"`, f.type.toUpperCase()]);
     const command = [
       'FT.CREATE',
-      indexName,
+      `"${indexName}"`,
       'ON',
       keyType.toUpperCase(),
       'PREFIX',
       '1',
-      prefix,
+      `"${prefix}"`,
       'SCHEMA',
       ...schemaArgs,
     ].join(' ');

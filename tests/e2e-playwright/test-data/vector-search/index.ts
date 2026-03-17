@@ -14,7 +14,7 @@ export const TEST_VS_PREFIX = 'test-vs-';
  * Default type is 'text'; override for numeric, tag, vector, etc.
  */
 export const IndexSchemaFieldFactory = Factory.define<IndexSchemaField>(() => ({
-  name: faker.word.noun().toLowerCase(),
+  name: faker.string.alpha(10),
   type: 'text',
 }));
 
