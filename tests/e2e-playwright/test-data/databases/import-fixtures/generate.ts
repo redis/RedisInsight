@@ -21,15 +21,11 @@ function writeTempFixture(filename: string, data: unknown): string {
 }
 
 export function generateValidSingle(name = 'test-import-single'): string {
-  const data: ImportFixture[] = [
-    { host, port, name, connectionType: 'STANDALONE' },
-  ];
+  const data: ImportFixture[] = [{ host, port, name, connectionType: 'STANDALONE' }];
   return writeTempFixture('valid-single.json', data);
 }
 
-export function generateValidMultiple(
-  names = ['test-import-multi-1', 'test-import-multi-2'],
-): string {
+export function generateValidMultiple(names = ['test-import-multi-1', 'test-import-multi-2']): string {
   const data: ImportFixture[] = names.map((n) => ({
     host,
     port,
@@ -39,9 +35,7 @@ export function generateValidMultiple(
   return writeTempFixture('valid-multiple.json', data);
 }
 
-export function generatePartialValid(
-  validName = 'test-import-partial-ok',
-): string {
+export function generatePartialValid(validName = 'test-import-partial-ok'): string {
   const data = [
     { host, port, name: validName, connectionType: 'STANDALONE' },
     { host: '', port: 1, name: 'test-import-partial-fail', connectionType: 'STANDALONE' },

@@ -24,11 +24,7 @@ test.describe('Advanced Settings', () => {
     await expect(settingsPage.keysToScanInput).toBeVisible();
   });
 
-  test('should change keys to scan and verify in Browser', async ({
-    settingsPage,
-    apiHelper,
-    browserPage,
-  }) => {
+  test('should change keys to scan and verify in Browser', async ({ settingsPage, apiHelper, browserPage }) => {
     let database: DatabaseInstance | undefined;
     let originalValue: string | undefined;
 

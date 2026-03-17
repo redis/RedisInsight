@@ -295,10 +295,7 @@ export class DatabaseList {
    */
   async exportSelectedAndDownload(): Promise<import('@playwright/test').Download> {
     await this.exportSelected();
-    const [download] = await Promise.all([
-      this.page.waitForEvent('download'),
-      this.exportConfirmButton.click(),
-    ]);
+    const [download] = await Promise.all([this.page.waitForEvent('download'), this.exportConfirmButton.click()]);
     return download;
   }
 

@@ -11,10 +11,7 @@ import { test, expect } from '../../../../fixtures/base';
  */
 test.describe('Redis Cloud Settings', () => {
   test.beforeEach(async ({ settingsPage }, testInfo) => {
-    test.skip(
-      testInfo.project.name !== 'electron',
-      'Redis Cloud settings only available in Electron',
-    );
+    test.skip(testInfo.project.name !== 'electron', 'Redis Cloud settings only available in Electron');
 
     await settingsPage.goto();
     await settingsPage.expandRedisCloud();
