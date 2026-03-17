@@ -128,14 +128,7 @@
     },
     "azureEntraId": {
       "flag": true,
-      "perc": [[0, 100]],
-      "filters": [
-        {
-          "name": "config.server.buildType",
-          "value": "ELECTRON",
-          "cond": "eq"
-        }
-      ]
+      "perc": [[0, 100]]
     },
     "dev-azureEntraId": {
       "flag": false,
