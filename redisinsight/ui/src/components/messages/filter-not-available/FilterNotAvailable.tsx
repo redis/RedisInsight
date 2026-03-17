@@ -16,7 +16,7 @@ import { freeInstancesSelector } from 'uiSrc/slices/instances/instances'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
 import { FeatureFlags } from 'uiSrc/constants'
-import { Text } from 'uiSrc/components/base/text'
+import { Text, Title } from 'uiSrc/components/base/text'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import * as S from './FilterNotAvailable.styles'
@@ -36,9 +36,9 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
   return (
     <S.Container gap="l">
       <RiIcon type="RedisDbBlueIcon" size="original" />
-      <S.StyledTitle size="L" data-testid="filter-not-available-title">
+      <Title size="L" data-testid="filter-not-available-title">
         Upgrade your Redis database to version 6 or above
-      </S.StyledTitle>
+      </Title>
       <Text color="primary">
         Filtering by data type is supported in Redis 6 and above.
       </Text>
@@ -81,7 +81,7 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
             </OAuthSsoHandlerDialog>
             <Link
               variant="inline"
-              target="blank"
+              target="_blank"
               href={getUtmExternalLink(EXTERNAL_LINKS.redisStack, utm)}
               data-testid="learn-more-link"
             >
