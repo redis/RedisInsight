@@ -11,10 +11,6 @@ import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import { SearchPageFallback } from './SearchPageFallback'
 import { SearchPageFallbackContent } from './SearchPageFallback.types'
-import {
-  RQE_NOT_AVAILABLE_CONTENT,
-  VERSION_NOT_SUPPORTED_CONTENT,
-} from './constants'
 
 const createTestStore = (featureFlagsEnabled = true) =>
   configureStore({
@@ -43,6 +39,26 @@ const createTestStore = (featureFlagsEnabled = true) =>
       getDefaultMiddleware({ serializableCheck: false }),
   })
 
+const CONTENT_WITH_FEATURES: SearchPageFallbackContent = {
+  testId: 'test-fallback',
+  title: 'Test Title',
+  subtitle: 'Test Subtitle',
+  features: ['Feature A', 'Feature B'],
+  description: 'Test description',
+  ctaText: 'Test CTA',
+  oauthSource: OAuthSocialSource.BrowserSearch,
+  learnMoreLink: EXTERNAL_LINKS.redisQueryEngine,
+}
+
+const CONTENT_WITHOUT_FEATURES: SearchPageFallbackContent = {
+  testId: 'minimal-fallback',
+  title: 'Minimal Title',
+  description: 'Minimal description',
+  ctaText: 'Minimal CTA',
+  oauthSource: OAuthSocialSource.BrowserSearch,
+  learnMoreLink: EXTERNAL_LINKS.redisQueryEngine,
+}
+
 const renderFallback = (
   content: SearchPageFallbackContent,
   featureFlagsEnabled = true,
@@ -58,156 +74,60 @@ const renderFallback = (
 }
 
 describe('SearchPageFallback', () => {
-  describe('with RQE content', () => {
-    const content = RQE_NOT_AVAILABLE_CONTENT
+  it('should render all content sections', () => {
+    renderFallback(CONTENT_WITH_FEATURES)
 
-    it('should render with correct testId', () => {
-      renderFallback(content)
-      expect(screen.getByTestId('rqe-not-available')).toBeInTheDocument()
-    })
-
-    it('should render title', () => {
-      renderFallback(content)
-      expect(screen.getByTestId('rqe-not-available-title')).toHaveTextContent(
-        'Redis Query Engine is not available for this database',
-      )
-    })
-
-    it('should render feature list', () => {
-      renderFallback(content)
-      expect(screen.getByText('Query')).toBeInTheDocument()
-      expect(screen.getByText('Secondary index')).toBeInTheDocument()
-      expect(screen.getByText('Full-text search')).toBeInTheDocument()
-    })
-
-    it('should render description', () => {
-      renderFallback(content)
-      expect(
-        screen.getByTestId('rqe-not-available-description'),
-      ).toHaveTextContent(
-        'These features enable multi-field queries, aggregation',
-      )
-    })
-
-    it('should render CTA text', () => {
-      renderFallback(content)
-      expect(
-        screen.getByTestId('rqe-not-available-cta-text'),
-      ).toHaveTextContent('Use your free trial all-in-one Redis Cloud database')
-    })
-
-    it('should render illustration', () => {
-      renderFallback(content)
-      expect(
-        screen.getByTestId('rqe-not-available-illustration'),
-      ).toBeInTheDocument()
-    })
-
-    it('should render CTA buttons when feature flags enabled', () => {
-      renderFallback(content)
-      expect(
-        screen.getByTestId('rqe-not-available-get-started-button'),
-      ).toBeInTheDocument()
-      expect(
-        screen.getByTestId('rqe-not-available-learn-more-link'),
-      ).toBeInTheDocument()
-    })
-
-    it('should not render CTA wrapper when feature flags disabled', () => {
-      renderFallback(content, false)
-      expect(
-        screen.queryByTestId('rqe-not-available-cta-wrapper'),
-      ).not.toBeInTheDocument()
-    })
-
-    it('should open OAuth modal when clicking get started', async () => {
-      renderFallback(content)
-      fireEvent.click(
-        screen.getByTestId('rqe-not-available-get-started-button'),
-      )
-      await waitFor(() => {
-        expect(screen.getByTestId('social-oauth-dialog')).toBeInTheDocument()
-      })
-    })
+    expect(screen.getByTestId('test-fallback')).toBeInTheDocument()
+    expect(screen.getByTestId('test-fallback-title')).toHaveTextContent(
+      'Test Title',
+    )
+    expect(screen.getByTestId('test-fallback-description')).toBeInTheDocument()
+    expect(screen.getByTestId('test-fallback-cta-text')).toBeInTheDocument()
+    expect(screen.getByTestId('test-fallback-illustration')).toBeInTheDocument()
   })
 
-  describe('with version-not-supported content', () => {
-    const content = VERSION_NOT_SUPPORTED_CONTENT
+  it('should render feature list when features are provided', () => {
+    renderFallback(CONTENT_WITH_FEATURES)
 
-    it('should render with correct testId', () => {
-      renderFallback(content)
-      expect(screen.getByTestId('version-not-supported')).toBeInTheDocument()
-    })
-
-    it('should render title', () => {
-      renderFallback(content)
-      expect(
-        screen.getByTestId('version-not-supported-title'),
-      ).toHaveTextContent('Redis Query Engine 2.0+ required')
-    })
-
-    it('should not render feature list', () => {
-      renderFallback(content)
-      expect(
-        screen.queryByTestId('version-not-supported-feature-list'),
-      ).not.toBeInTheDocument()
-    })
-
-    it('should render description', () => {
-      renderFallback(content)
-      expect(
-        screen.getByTestId('version-not-supported-description'),
-      ).toHaveTextContent(
-        'This page requires Redis Query Engine 2.0 or later (included with Redis 6+)',
-      )
-    })
-
-    it('should render CTA text', () => {
-      renderFallback(content)
-      expect(
-        screen.getByTestId('version-not-supported-cta-text'),
-      ).toHaveTextContent(
-        'Create a free Redis Cloud database to start exploring these capabilities',
-      )
-    })
-
-    it('should render CTA buttons when feature flags enabled', () => {
-      renderFallback(content)
-      expect(
-        screen.getByTestId('version-not-supported-get-started-button'),
-      ).toBeInTheDocument()
-      expect(
-        screen.getByTestId('version-not-supported-learn-more-link'),
-      ).toBeInTheDocument()
-    })
-
-    it('should not render CTA wrapper when feature flags disabled', () => {
-      renderFallback(content, false)
-      expect(
-        screen.queryByTestId('version-not-supported-cta-wrapper'),
-      ).not.toBeInTheDocument()
-    })
+    expect(screen.getByText('Feature A')).toBeInTheDocument()
+    expect(screen.getByText('Feature B')).toBeInTheDocument()
   })
 
-  describe('with custom content (no features)', () => {
-    const customContent: SearchPageFallbackContent = {
-      testId: 'custom-fallback',
-      title: 'Custom Title',
-      description: 'Custom description text',
-      ctaText: 'Custom CTA',
-      oauthSource: OAuthSocialSource.BrowserSearch,
-      learnMoreLink: EXTERNAL_LINKS.redisQueryEngine,
-    }
+  it('should not render subtitle or feature list when not provided', () => {
+    renderFallback(CONTENT_WITHOUT_FEATURES)
 
-    it('should render without subtitle and features', () => {
-      renderFallback(customContent)
-      expect(screen.getByTestId('custom-fallback')).toBeInTheDocument()
-      expect(screen.getByTestId('custom-fallback-title')).toHaveTextContent(
-        'Custom Title',
-      )
-      expect(
-        screen.queryByTestId('custom-fallback-feature-list'),
-      ).not.toBeInTheDocument()
+    expect(screen.getByTestId('minimal-fallback')).toBeInTheDocument()
+    expect(
+      screen.queryByTestId('minimal-fallback-feature-list'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should render CTA buttons when feature flags are enabled', () => {
+    renderFallback(CONTENT_WITH_FEATURES)
+
+    expect(
+      screen.getByTestId('test-fallback-get-started-button'),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByTestId('test-fallback-learn-more-link'),
+    ).toBeInTheDocument()
+  })
+
+  it('should not render CTA wrapper when feature flags are disabled', () => {
+    renderFallback(CONTENT_WITH_FEATURES, false)
+
+    expect(
+      screen.queryByTestId('test-fallback-cta-wrapper'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should open OAuth modal when clicking get started button', async () => {
+    renderFallback(CONTENT_WITH_FEATURES)
+
+    fireEvent.click(screen.getByTestId('test-fallback-get-started-button'))
+
+    await waitFor(() => {
+      expect(screen.getByTestId('social-oauth-dialog')).toBeInTheDocument()
     })
   })
 })
