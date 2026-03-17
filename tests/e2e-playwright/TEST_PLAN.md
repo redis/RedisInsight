@@ -786,16 +786,16 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | should run query and view results |
-| 🔲 | main | should expand and collapse query result card |
-| 🔲 | main | should re-run query from result card |
-| 🔲 | main | should delete individual result card |
-| 🔲 | main | should clear all results |
-| 🔲 | main | should disable explain and profile buttons when editor is empty |
-| 🔲 | main | should disable explain and profile buttons for non-FT query |
-| 🔲 | main | should disable save button when editor is empty |
-| 🔲 | main | should execute explain query action |
-| 🔲 | main | should execute profile query action |
+| ✅ | main | should run query and view results |
+| ✅ | main | should expand and collapse query result card |
+| ✅ | main | should re-run query from result card |
+| ✅ | main | should delete individual result card |
+| ✅ | main | should clear all results |
+| ✅ | main | should disable explain and profile buttons when editor is empty |
+| ✅ | main | should disable explain and profile buttons for non-FT query |
+| ✅ | main | should disable save button when editor is empty |
+| ✅ | main | should execute explain query action |
+| ✅ | main | should execute profile query action |
 
 ### 8.9 Query Page Onboarding
 
