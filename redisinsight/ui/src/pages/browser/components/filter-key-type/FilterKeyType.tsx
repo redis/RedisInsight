@@ -18,7 +18,7 @@ import {
 import { setBulkDeleteFilter } from 'uiSrc/slices/browser/bulkActions'
 import { isVersionHigherOrEquals } from 'uiSrc/utils'
 import { KeyViewType } from 'uiSrc/slices/interfaces/keys'
-import { FilterNotAvailable } from 'uiSrc/components'
+import { FeatureNotAvailable } from 'uiSrc/components'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { resetBrowserTree } from 'uiSrc/slices/app/context'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
@@ -171,7 +171,7 @@ const FilterKeyType = ({ modules }: Props) => {
           className={styles.unsupportedInfoModal}
           data-testid="filter-not-available-modal"
           content={
-            <FilterNotAvailable onClose={() => setIsInfoPopoverOpen(false)} />
+            <FeatureNotAvailable onClose={() => setIsInfoPopoverOpen(false)} />
           }
           title={null}
         />
