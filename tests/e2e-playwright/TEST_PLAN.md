@@ -749,13 +749,13 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | should create index with default settings and navigate to query page |
-| 🔲 | main | should edit key prefix and create index |
-| 🔲 | main | should add field and create index |
-| 🔲 | main | should deselect a field row and exclude it from the index |
-| 🔲 | main | should change index name and create index |
-| 🔲 | main | should show duplicate index name validation and disable create button |
-| 🔲 | main | should create index from JSON key and navigate to query page |
+| ✅ | main | should create index with default settings and navigate to query page |
+| ✅ | main | should edit key prefix and create index |
+| ✅ | main | should add field and create index |
+| ✅ | main | should deselect a field row and exclude it from the index |
+| ✅ | main | should change index name and create index |
+| ✅ | main | should show duplicate index name validation and disable create button |
+| ✅ | main | should create index from JSON key and navigate to query page |
 
 ### 8.6 List Indexes
 
