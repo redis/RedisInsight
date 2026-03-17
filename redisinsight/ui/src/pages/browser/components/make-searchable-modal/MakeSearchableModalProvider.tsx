@@ -15,7 +15,10 @@ import { bufferToString } from 'uiSrc/utils'
 import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { CreateIndexMode } from 'uiSrc/pages/vector-search/pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { SearchMakeSearchableSource } from 'uiSrc/pages/vector-search/telemetry.constants'
+import {
+  SearchMakeSearchableSource,
+  SearchTelemetrySource,
+} from 'uiSrc/pages/vector-search/telemetry.constants'
 
 import { MakeSearchableModal } from './MakeSearchableModal'
 
@@ -70,6 +73,14 @@ export const MakeSearchableModalProvider = ({
         databaseId: instanceId,
         keyType: config.initialKeyType,
         source: config.source,
+      },
+    })
+
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_OWN_DATA_INDEX_TRIGGERED,
+      eventData: {
+        databaseId: instanceId,
+        source: SearchTelemetrySource.Browser,
       },
     })
 

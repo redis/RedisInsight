@@ -4,7 +4,10 @@ import { render, screen, userEvent, cleanup } from 'uiSrc/utils/test-utils'
 import { TelemetryEvent } from 'uiSrc/telemetry'
 import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-import { SearchMakeSearchableSource } from 'uiSrc/pages/vector-search/telemetry.constants'
+import {
+  SearchMakeSearchableSource,
+  SearchTelemetrySource,
+} from 'uiSrc/pages/vector-search/telemetry.constants'
 
 import {
   MakeSearchableModalProvider,
@@ -99,6 +102,24 @@ describe('MakeSearchableModalProvider', () => {
         databaseId: mockInstanceId,
         keyType: RedisearchIndexKeyType.HASH,
         source: SearchMakeSearchableSource.KeyDetails,
+      },
+    })
+  })
+
+  it('should send SEARCH_OWN_DATA_INDEX_TRIGGERED with browser source on confirm', async () => {
+    renderComponent()
+
+    const openModalBtn = screen.getByTestId('open-modal')
+    await userEvent.click(openModalBtn)
+
+    const confirmBtn = screen.getByTestId('make-searchable-modal-confirm')
+    await userEvent.click(confirmBtn)
+
+    expect(mockSendEventTelemetry).toHaveBeenCalledWith({
+      event: TelemetryEvent.SEARCH_OWN_DATA_INDEX_TRIGGERED,
+      eventData: {
+        databaseId: mockInstanceId,
+        source: SearchTelemetrySource.Browser,
       },
     })
   })
