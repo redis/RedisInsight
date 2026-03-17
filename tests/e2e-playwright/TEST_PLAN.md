@@ -803,8 +803,8 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | should show query onboarding and dismiss on "Got it" |
-| 🔲 | main | should not show query onboarding on subsequent visit |
+| ✅ | main | should show query onboarding and dismiss on "Got it" |
+| ✅ | main | should not show query onboarding on subsequent visit |
 
 ### 8.10 Save Query
 
