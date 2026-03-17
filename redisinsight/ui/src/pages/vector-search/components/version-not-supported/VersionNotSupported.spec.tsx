@@ -7,9 +7,8 @@ import cloudReducer from 'uiSrc/slices/instances/cloud'
 import instancesReducer from 'uiSrc/slices/instances/instances'
 import appOauthReducer from 'uiSrc/slices/oauth/cloud'
 import appFeaturesReducer from 'uiSrc/slices/app/features'
-import { RqeNotAvailable } from './RqeNotAvailable'
+import { VersionNotSupported } from './VersionNotSupported'
 
-// Create a real store for testing Redux interactions
 const createTestStore = (featureFlagsEnabled = true) =>
   configureStore({
     reducer: combineReducers({
@@ -37,87 +36,85 @@ const createTestStore = (featureFlagsEnabled = true) =>
       getDefaultMiddleware({ serializableCheck: false }),
   })
 
-const renderRqeNotAvailable = (featureFlagsEnabled = true) => {
+const renderVersionNotSupported = (featureFlagsEnabled = true) => {
   const store = createTestStore(featureFlagsEnabled)
   return render(
     <>
-      <RqeNotAvailable />
+      <VersionNotSupported />
       <OAuthSsoDialog />
     </>,
     { store },
   )
 }
 
-describe('RqeNotAvailable', () => {
+describe('VersionNotSupported', () => {
   it('should render correctly', () => {
-    renderRqeNotAvailable()
+    renderVersionNotSupported()
 
-    const component = screen.getByTestId('rqe-not-available')
+    const component = screen.getByTestId('version-not-supported')
     expect(component).toBeInTheDocument()
   })
 
   it('should render title with correct text', () => {
-    renderRqeNotAvailable()
+    renderVersionNotSupported()
 
-    const title = screen.getByTestId('rqe-not-available-title')
+    const title = screen.getByTestId('version-not-supported-title')
     expect(title).toHaveTextContent(
-      'Redis Query Engine is not available for this database',
+      'Redis Query Engine 2.0+ required',
     )
   })
 
-  it('should render feature list with correct items', () => {
-    renderRqeNotAvailable()
-
-    expect(screen.getByText('Query')).toBeInTheDocument()
-    expect(screen.getByText('Secondary index')).toBeInTheDocument()
-    expect(screen.getByText('Full-text search')).toBeInTheDocument()
-  })
-
   it('should render description text', () => {
-    renderRqeNotAvailable()
+    renderVersionNotSupported()
 
-    const description = screen.getByTestId('rqe-not-available-description')
+    const description = screen.getByTestId('version-not-supported-description')
     expect(description).toHaveTextContent(
-      'These features enable multi-field queries, aggregation, exact phrase matching, numeric filtering, geo filtering and vector similarity semantic search on top of text queries.',
+      'This page requires Redis Query Engine 2.0 or later (included with Redis 6+)',
     )
   })
 
   it('should render CTA text', () => {
-    renderRqeNotAvailable()
+    renderVersionNotSupported()
 
-    const ctaText = screen.getByTestId('rqe-not-available-cta-text')
+    const ctaText = screen.getByTestId('version-not-supported-cta-text')
     expect(ctaText).toHaveTextContent(
-      'Use your free trial all-in-one Redis Cloud database to start exploring these capabilities',
+      'Create a free Redis Cloud database to start exploring these capabilities.',
     )
   })
 
   it('should render illustration', () => {
-    renderRqeNotAvailable()
+    renderVersionNotSupported()
 
-    const illustration = screen.getByTestId('rqe-not-available-illustration')
+    const illustration = screen.getByTestId(
+      'version-not-supported-illustration',
+    )
     expect(illustration).toBeInTheDocument()
   })
 
   it('should render "Get started for free" button when feature flags are enabled', () => {
-    renderRqeNotAvailable()
+    renderVersionNotSupported()
 
-    const button = screen.getByTestId('rqe-not-available-get-started-button')
+    const button = screen.getByTestId(
+      'version-not-supported-get-started-button',
+    )
     expect(button).toBeInTheDocument()
     expect(button).toHaveTextContent(/Get started for free/i)
   })
 
   it('should render "Learn more" link', () => {
-    renderRqeNotAvailable()
+    renderVersionNotSupported()
 
-    const link = screen.getByTestId('rqe-not-available-learn-more-link')
+    const link = screen.getByTestId('version-not-supported-learn-more-link')
     expect(link).toBeInTheDocument()
     expect(link).toHaveTextContent('Learn more')
   })
 
   it('should open OAuth modal when clicking "Get started for free" button', async () => {
-    renderRqeNotAvailable()
+    renderVersionNotSupported()
 
-    const button = screen.getByTestId('rqe-not-available-get-started-button')
+    const button = screen.getByTestId(
+      'version-not-supported-get-started-button',
+    )
     fireEvent.click(button)
 
     await waitFor(() => {
@@ -127,16 +124,16 @@ describe('RqeNotAvailable', () => {
   })
 
   it('should not render CTA wrapper when feature flags are disabled', () => {
-    renderRqeNotAvailable(false)
+    renderVersionNotSupported(false)
 
-    const ctaWrapper = screen.queryByTestId('rqe-not-available-cta-wrapper')
+    const ctaWrapper = screen.queryByTestId('version-not-supported-cta-wrapper')
     expect(ctaWrapper).not.toBeInTheDocument()
   })
 
   it('should have correct link href for "Learn more"', () => {
-    renderRqeNotAvailable()
+    renderVersionNotSupported()
 
-    const link = screen.getByTestId('rqe-not-available-learn-more-link')
+    const link = screen.getByTestId('version-not-supported-learn-more-link')
     expect(link).toHaveAttribute('href')
     expect(link.getAttribute('href')).toContain('redis.io')
   })
