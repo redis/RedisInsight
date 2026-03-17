@@ -14,6 +14,7 @@ import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { bufferToString } from 'uiSrc/utils'
 import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { CreateIndexMode } from 'uiSrc/pages/vector-search/pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { MakeSearchableModal } from './MakeSearchableModal'
 
@@ -61,6 +62,11 @@ export const MakeSearchableModalProvider = ({
       return
     }
 
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_MAKE_SEARCHABLE_CONFIRMED,
+      eventData: { databaseId: instanceId, keyType: config.initialKeyType },
+    })
+
     setConfig(null)
 
     const search = new URLSearchParams()
@@ -74,6 +80,14 @@ export const MakeSearchableModalProvider = ({
     })
   }, [config, history, instanceId])
 
+  const handleCancel = useCallback(() => {
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_MAKE_SEARCHABLE_CANCELLED,
+      eventData: { databaseId: instanceId },
+    })
+    setConfig(null)
+  }, [instanceId])
+
   const contextValue = useMemo(
     () => ({ openMakeSearchableModal }),
     [openMakeSearchableModal],
@@ -86,7 +100,7 @@ export const MakeSearchableModalProvider = ({
         isOpen={config !== null}
         prefix={config?.prefix}
         onConfirm={handleConfirm}
-        onCancel={() => setConfig(null)}
+        onCancel={handleCancel}
       />
     </MakeSearchableModalContext.Provider>
   )
