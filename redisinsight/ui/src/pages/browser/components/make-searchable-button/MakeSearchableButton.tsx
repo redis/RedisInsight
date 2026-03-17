@@ -7,7 +7,7 @@ import { extractNamespace } from 'uiSrc/pages/vector-search/utils'
 import { useMakeSearchableModal } from 'uiSrc/pages/browser/components/make-searchable-modal'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { SearchMakeSearchableSource } from 'uiSrc/pages/vector-search/telemetry.constants'
+import { SearchBrowserSource } from 'uiSrc/pages/vector-search/telemetry.constants'
 
 import { MakeSearchableButtonProps } from './MakeSearchableButton.types'
 
@@ -21,7 +21,7 @@ export const MakeSearchableButton = ({
 
   const prefix = useMemo(() => extractNamespace(keyNameString), [keyNameString])
 
-  const source = SearchMakeSearchableSource.KeyDetails
+  const source = SearchBrowserSource.KeyDetails
 
   const mappedKeyType = KEY_TYPE_MAP[keyType]
 

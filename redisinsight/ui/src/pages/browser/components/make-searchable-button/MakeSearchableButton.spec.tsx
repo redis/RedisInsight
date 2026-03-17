@@ -5,7 +5,7 @@ import { KeyTypes } from 'uiSrc/constants'
 import { TelemetryEvent } from 'uiSrc/telemetry'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
-import { SearchMakeSearchableSource } from 'uiSrc/pages/vector-search/telemetry.constants'
+import { SearchBrowserSource } from 'uiSrc/pages/vector-search/telemetry.constants'
 
 import { MakeSearchableButton } from './MakeSearchableButton'
 import { MakeSearchableButtonProps } from './MakeSearchableButton.types'
@@ -72,7 +72,7 @@ describe('MakeSearchableButton', () => {
       eventData: {
         databaseId: mockInstanceId,
         keyType: RedisearchIndexKeyType.HASH,
-        source: SearchMakeSearchableSource.KeyDetails,
+        source: SearchBrowserSource.KeyDetails,
       },
     })
   })
@@ -88,7 +88,7 @@ describe('MakeSearchableButton', () => {
       eventData: {
         databaseId: mockInstanceId,
         keyType: RedisearchIndexKeyType.JSON,
-        source: SearchMakeSearchableSource.KeyDetails,
+        source: SearchBrowserSource.KeyDetails,
       },
     })
   })

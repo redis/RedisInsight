@@ -11,7 +11,7 @@ import {
   MenuItem,
 } from 'uiSrc/components/base/layout/menu'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { SearchMakeSearchableSource } from 'uiSrc/pages/vector-search/telemetry.constants'
+import { SearchBrowserSource } from 'uiSrc/pages/vector-search/telemetry.constants'
 
 import { ViewIndexDataButtonProps } from './ViewIndexDataButton.types'
 import * as S from './ViewIndexDataButton.styles'
@@ -32,7 +32,7 @@ export const ViewIndexDataButton = ({
         eventData: {
           databaseId: instanceId,
           numberOfIndexes: indexes.length,
-          source: SearchMakeSearchableSource.KeyDetails,
+          source: SearchBrowserSource.KeyDetails,
         },
       })
       if (onNavigate) {

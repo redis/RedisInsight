@@ -5,7 +5,7 @@ import { TelemetryEvent } from 'uiSrc/telemetry'
 import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import {
-  SearchMakeSearchableSource,
+  SearchBrowserSource,
   SearchTelemetrySource,
 } from 'uiSrc/pages/vector-search/telemetry.constants'
 
@@ -46,7 +46,7 @@ const TestConsumer = () => {
           initialKey: { data: [116, 101, 115, 116], type: 'Buffer' },
           initialKeyType: RedisearchIndexKeyType.HASH,
           initialPrefix: 'product:',
-          source: SearchMakeSearchableSource.KeyDetails,
+          source: SearchBrowserSource.KeyDetails,
         })
       }
     >
@@ -101,7 +101,7 @@ describe('MakeSearchableModalProvider', () => {
       eventData: {
         databaseId: mockInstanceId,
         keyType: RedisearchIndexKeyType.HASH,
-        source: SearchMakeSearchableSource.KeyDetails,
+        source: SearchBrowserSource.KeyDetails,
       },
     })
   })
@@ -137,7 +137,7 @@ describe('MakeSearchableModalProvider', () => {
       event: TelemetryEvent.SEARCH_MAKE_SEARCHABLE_CANCELLED,
       eventData: {
         databaseId: mockInstanceId,
-        source: SearchMakeSearchableSource.KeyDetails,
+        source: SearchBrowserSource.KeyDetails,
       },
     })
   })
@@ -155,7 +155,7 @@ describe('MakeSearchableModalProvider', () => {
       event: TelemetryEvent.SEARCH_MAKE_SEARCHABLE_CANCELLED,
       eventData: {
         databaseId: mockInstanceId,
-        source: SearchMakeSearchableSource.KeyDetails,
+        source: SearchBrowserSource.KeyDetails,
       },
     })
   })

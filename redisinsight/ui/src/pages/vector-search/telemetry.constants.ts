@@ -4,7 +4,7 @@ export enum SearchTelemetrySource {
   Browser = 'browser',
 }
 
-export enum SearchMakeSearchableSource {
+export enum SearchBrowserSource {
   KeyDetails = 'key_details',
   TreeView = 'tree_view',
 }

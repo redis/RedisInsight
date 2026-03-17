@@ -5,7 +5,7 @@ import { cleanup, render, screen, userEvent } from 'uiSrc/utils/test-utils'
 import { Pages } from 'uiSrc/constants'
 import { IndexSummary } from 'uiSrc/slices/interfaces/redisearch'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { SearchMakeSearchableSource } from 'uiSrc/pages/vector-search/telemetry.constants'
+import { SearchBrowserSource } from 'uiSrc/pages/vector-search/telemetry.constants'
 
 import { ViewIndexDataButton } from './ViewIndexDataButton'
 import { ViewIndexDataButtonProps } from './ViewIndexDataButton.types'
@@ -90,7 +90,7 @@ describe('ViewIndexDataButton', () => {
         eventData: {
           databaseId: mockInstanceId,
           numberOfIndexes: 1,
-          source: SearchMakeSearchableSource.KeyDetails,
+          source: SearchBrowserSource.KeyDetails,
         },
       })
     })
@@ -167,7 +167,7 @@ describe('ViewIndexDataButton', () => {
         eventData: {
           databaseId: mockInstanceId,
           numberOfIndexes: 3,
-          source: SearchMakeSearchableSource.KeyDetails,
+          source: SearchBrowserSource.KeyDetails,
         },
       })
     })

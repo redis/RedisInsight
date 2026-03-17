@@ -18,7 +18,7 @@ import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-re
 import { CreateIndexMode } from 'uiSrc/pages/vector-search/pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
 import { MakeSearchableModalProvider } from 'uiSrc/pages/browser/components/make-searchable-modal'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { SearchMakeSearchableSource } from 'uiSrc/pages/vector-search/telemetry.constants'
+import { SearchBrowserSource } from 'uiSrc/pages/vector-search/telemetry.constants'
 import Node from './Node'
 import { TreeData } from '../../VirtualTree.types'
 import { mockVirtualTreeResult } from '../../VirtualTree.spec'
@@ -655,7 +655,7 @@ describe('Node', () => {
         eventData: {
           databaseId: mockInstanceId,
           keyType: RedisearchIndexKeyType.HASH,
-          source: SearchMakeSearchableSource.TreeView,
+          source: SearchBrowserSource.TreeView,
         },
       })
 

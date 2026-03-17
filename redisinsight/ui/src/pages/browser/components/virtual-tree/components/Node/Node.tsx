@@ -29,7 +29,7 @@ import { KEY_TYPE_MAP } from 'uiSrc/pages/vector-search/constants'
 import { useMakeSearchableModal } from 'uiSrc/pages/browser/components/make-searchable-modal'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-import { SearchMakeSearchableSource } from 'uiSrc/pages/vector-search/telemetry.constants'
+import { SearchBrowserSource } from 'uiSrc/pages/vector-search/telemetry.constants'
 import * as S from './Node.styles'
 import { TreeData } from '../../VirtualTree.types'
 import { DeleteKeyPopover } from '../../../delete-key-popover/DeleteKeyPopover'
@@ -161,7 +161,7 @@ const Node = ({
 
   const handleIndexClick = (e: React.MouseEvent) => {
     e.stopPropagation()
-    const source = SearchMakeSearchableSource.TreeView
+    const source = SearchBrowserSource.TreeView
     const keyType = firstSearchableKey
       ? KEY_TYPE_MAP[firstSearchableKey.type]
       : undefined

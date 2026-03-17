@@ -16,7 +16,7 @@ import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-re
 import { CreateIndexMode } from 'uiSrc/pages/vector-search/pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
-  SearchMakeSearchableSource,
+  SearchBrowserSource,
   SearchTelemetrySource,
 } from 'uiSrc/pages/vector-search/telemetry.constants'
 
@@ -27,7 +27,7 @@ export interface MakeSearchableModalConfig {
   initialKey?: RedisResponseBuffer
   initialKeyType?: RedisearchIndexKeyType
   initialPrefix?: string
-  source?: SearchMakeSearchableSource
+  source?: SearchBrowserSource
 }
 
 const MakeSearchableModalContext = createContext<{
