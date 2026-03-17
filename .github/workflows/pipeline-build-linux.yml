@@ -72,9 +72,12 @@ jobs:
 
       - name: Build linux packages (custom)
         if: inputs.target != vars.ALL
+        env:
+          IS_PRODUCTION: ${{ vars.ENV == 'production' }}
+          TARGET_INPUT: ${{ inputs.target }}
         run: |
           package_command=(yarn package:stage)
-          if [ "${{ vars.ENV == 'production' }}" == "true" ]; then
+          if [ "$IS_PRODUCTION" == "true" ]; then
             package_command=(yarn package:prod)
           fi
 
@@ -133,10 +136,10 @@ jobs:
                   ;;
               esac
             fi
-          done < <(printf '%s\n' "${{ inputs.target }}" | tr ' ' '\n')
+          done < <(printf '%s\n' "$TARGET_INPUT" | tr ' ' '\n')
 
           if [ ${#shared_targets[@]} -eq 0 ] && [ ${#x64_targets[@]} -eq 0 ] && [ ${#arm64_targets[@]} -eq 0 ]; then
-            echo "::error::No supported Linux targets found in '${{ inputs.target }}'"
+            echo "::error::No supported Linux targets found in '$TARGET_INPUT'"
             exit 1
           fi
 
