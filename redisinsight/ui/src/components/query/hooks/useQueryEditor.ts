@@ -56,6 +56,9 @@ export const useQueryEditor = (
 
   const openTimestampPickerRef = useRef(openTimestampPicker)
   openTimestampPickerRef.current = openTimestampPicker
+  const disposeTimestampCommandRef = useRef<monacoEditor.IDisposable | null>(
+    null,
+  )
 
   // Autocomplete & suggestions
   const completions = useRedisCompletions({
@@ -75,8 +78,10 @@ export const useQueryEditor = (
     completions.setupProviders(monaco)
 
     // Register command for "Insert timestamp..." completion item
-    monaco.editor.registerCommand(REDIS_OPEN_TIMESTAMP_PICKER_COMMAND, () =>
-      openTimestampPickerRef.current?.(),
+    disposeTimestampCommandRef.current?.dispose()
+    disposeTimestampCommandRef.current = monaco.editor.registerCommand(
+      REDIS_OPEN_TIMESTAMP_PICKER_COMMAND,
+      () => openTimestampPickerRef.current?.(),
     )
 
     // Context menu: Insert timestamp (contextMenuGroupId required for item to show)
@@ -164,6 +169,8 @@ export const useQueryEditor = (
   // Cleanup on unmount
   useEffect(
     () => () => {
+      disposeTimestampCommandRef.current?.dispose()
+      disposeTimestampCommandRef.current = null
       completions.disposeProviders()
       onCleanup?.()
     },
