@@ -66,6 +66,12 @@ const QueryWrapper = (props: Props) => {
     dispatch(fetchRedisearchListAction(undefined, undefined, false))
   }, [connectedInstanceId])
 
+  useEffect(() => {
+    if (!showTimestampPicker) {
+      setIsDatePickerOpen(false)
+    }
+  }, [showTimestampPicker])
+
   if (isCommandsLoading) {
     return (
       <S.ContainerPlaceholder>
