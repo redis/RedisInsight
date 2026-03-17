@@ -6,6 +6,8 @@ To use the Azure integration, your Azure tenant administrator may need to grant 
 
 > **Why is this needed?** See [Why This Setup is Required](#why-this-setup-is-required) for details on the authentication flow.
 
+> **Running in Docker?** See [Azure Docker Setup](azure-docker-setup.md) for configuration when using custom ports or reverse proxies.
+
 ### App Registration Details
 
 - **Application (Client) ID:** `61f3d82d-2bf3-432a-ba1b-c056e4cf0fd0`
