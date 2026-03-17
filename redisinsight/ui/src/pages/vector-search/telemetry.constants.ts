@@ -4,6 +4,11 @@ export enum SearchTelemetrySource {
   Browser = 'browser',
 }
 
+export enum SearchMakeSearchableSource {
+  KeyDetails = 'key_details',
+  TreeView = 'tree_view',
+}
+
 export enum SearchTelemetryCancelStep {
   SampleDataModal = 'sample_data_modal',
   IndexDefinition = 'index_definition',

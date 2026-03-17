@@ -85,7 +85,11 @@ describe('ViewIndexDataButton', () => {
 
       expect(sendEventTelemetry).toHaveBeenCalledWith({
         event: TelemetryEvent.SEARCH_VIEW_INDEX_CLICKED,
-        eventData: { databaseId: mockInstanceId, numberOfIndexes: 1 },
+        eventData: {
+          databaseId: mockInstanceId,
+          numberOfIndexes: 1,
+          source: 'key_details',
+        },
       })
     })
 
@@ -157,7 +161,11 @@ describe('ViewIndexDataButton', () => {
 
       expect(sendEventTelemetry).toHaveBeenCalledWith({
         event: TelemetryEvent.SEARCH_VIEW_INDEX_CLICKED,
-        eventData: { databaseId: mockInstanceId, numberOfIndexes: 3 },
+        eventData: {
+          databaseId: mockInstanceId,
+          numberOfIndexes: 3,
+          source: 'key_details',
+        },
       })
     })
 

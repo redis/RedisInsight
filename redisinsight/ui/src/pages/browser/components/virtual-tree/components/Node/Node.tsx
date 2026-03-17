@@ -27,6 +27,9 @@ import { Flex } from 'uiSrc/components/base/layout/flex'
 import { ColorText, Text } from 'uiSrc/components/base/text'
 import { KEY_TYPE_MAP } from 'uiSrc/pages/vector-search/constants'
 import { useMakeSearchableModal } from 'uiSrc/pages/browser/components/make-searchable-modal'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { SearchMakeSearchableSource } from 'uiSrc/pages/vector-search/telemetry.constants'
 import * as S from './Node.styles'
 import { TreeData } from '../../VirtualTree.types'
 import { DeleteKeyPopover } from '../../../delete-key-popover/DeleteKeyPopover'
@@ -81,6 +84,7 @@ const Node = ({
   const includeTTL = visibleColumns.includes(BrowserColumns.TTL)
 
   const { openMakeSearchableModal } = useMakeSearchableModal()
+  const { id: instanceId } = useSelector(connectedInstanceSelector)
 
   const [deletePopoverId, setDeletePopoverId] =
     useState<Maybe<string>>(undefined)
@@ -157,16 +161,27 @@ const Node = ({
 
   const handleIndexClick = (e: React.MouseEvent) => {
     e.stopPropagation()
+    const source = SearchMakeSearchableSource.TreeView
+    const keyType = firstSearchableKey
+      ? KEY_TYPE_MAP[firstSearchableKey.type]
+      : undefined
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_MAKE_SEARCHABLE_CLICKED,
+      eventData: {
+        databaseId: instanceId,
+        keyType: firstSearchableKey?.type,
+        source,
+      },
+    })
     const initialPrefix = firstSearchableKey?.nameString
       ? getKeyPrefix(firstSearchableKey.nameString)
       : folderPrefix
     openMakeSearchableModal({
       prefix: folderPrefix,
       initialKey: firstSearchableKey?.nameBuffer,
-      initialKeyType: firstSearchableKey
-        ? KEY_TYPE_MAP[firstSearchableKey.type]
-        : undefined,
+      initialKeyType: keyType,
       initialPrefix,
+      source,
     })
   }
 

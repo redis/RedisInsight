@@ -76,7 +76,11 @@ describe('MakeSearchableButton', () => {
 
     expect(sendEventTelemetry).toHaveBeenCalledWith({
       event: TelemetryEvent.SEARCH_MAKE_SEARCHABLE_CLICKED,
-      eventData: { databaseId: mockInstanceId, keyType: KeyTypes.Hash },
+      eventData: {
+        databaseId: mockInstanceId,
+        keyType: KeyTypes.Hash,
+        source: 'key_details',
+      },
     })
   })
 })
