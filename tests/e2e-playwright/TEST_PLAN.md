@@ -763,11 +763,11 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | should display indexes table with index name and create index button |
-| 🔲 | main | should navigate to query page when Query button is clicked |
-| 🔲 | main | should navigate to browser page when Browse dataset action is clicked |
-| 🔲 | main | should open index details side panel via View index action |
-| 🔲 | main | should delete index with confirmation |
+| ✅ | main | should display indexes table with index name and create index button |
+| ✅ | main | should navigate to query page when Query button is clicked |
+| ✅ | main | should navigate to browser page when Browse dataset action is clicked |
+| ✅ | main | should open index details side panel via View index action |
+| ✅ | main | should delete index with confirmation |
 
 ### 8.7 Create Index from List Page
 
