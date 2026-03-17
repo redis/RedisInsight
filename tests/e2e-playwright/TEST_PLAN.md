@@ -736,12 +736,12 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | should close the sample data modal and return to list page |
-| 🔲 | main | should cancel index creation from "See index definition" and return to list page |
-| 🔲 | main | (E-Commerce Discovery) should create index via "Start querying" and verify query library is seeded |
-| 🔲 | main | (E-Commerce Discovery) should create index via "See index definition" and verify toast |
-| 🔲 | main | (Content Recommendations) should create index via "Start querying" and verify query library is seeded |
-| 🔲 | main | (Content Recommendations) should create index via "See index definition" and verify toast |
+| ✅ | main | should close the sample data modal and return to list page |
+| ✅ | main | should cancel index creation from "See index definition" and return to list page |
+| ✅ | main | (E-Commerce Discovery) should create index via "Start querying" and verify query library is seeded |
+| ✅ | main | (E-Commerce Discovery) should create index via "See index definition" and verify toast |
+| ✅ | main | (Content Recommendations) should create index via "Start querying" and verify query library is seeded |
+| ✅ | main | (Content Recommendations) should create index via "See index definition" and verify toast |
 
 ### 8.5 Create Index - Existing Data
 
