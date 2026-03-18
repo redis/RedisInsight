@@ -1,6 +1,9 @@
 import styled from 'styled-components'
 
 export const BreadcrumbLink = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.core.space.space050};
   background: none;
   border: none;
   padding: 0;

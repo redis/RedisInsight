@@ -4,6 +4,7 @@ import { useHistory, useParams } from 'react-router-dom'
 
 import { Title } from 'uiSrc/components/base/text'
 import { Pages } from 'uiSrc/constants'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import {
   RiSelect,
   RiSelectOption,
@@ -41,8 +42,9 @@ export const HeaderTitle = ({
             onClick={handleNavigateToList}
             data-testid="breadcrumb-search-indexes-link"
           >
+            <RiIcon type="ChevronLeftIcon" size="S" />
             <Title size="M" color="primary">
-              Search indexes
+              Indexes
             </Title>
           </S.BreadcrumbLink>
         </Breadcrumbs.Item>
@@ -51,13 +53,7 @@ export const HeaderTitle = ({
             <S.SlashSeparator>/</S.SlashSeparator>
           </Breadcrumbs.Separator>
         </Breadcrumbs.Item>
-        <Breadcrumbs.Item>
-          <Breadcrumbs.Current>
-            <Title size="M" color="primary">
-              Query index:
-            </Title>
-          </Breadcrumbs.Current>
-        </Breadcrumbs.Item>
+
         <Breadcrumbs.Item>
           <RiSelect.Compose
             options={indexOptions}
