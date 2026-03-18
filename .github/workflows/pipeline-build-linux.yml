@@ -64,11 +64,11 @@ jobs:
 
       - name: Build linux packages (production)
         if: vars.ENV == 'production' && inputs.target == vars.ALL
-        run: yarn package:prod
+        run: yarn package:prod --x64
 
       - name: Build linux packages (staging)
         if: (vars.ENV == 'staging' || vars.ENV == 'development') && inputs.target == vars.ALL
-        run: yarn package:stage
+        run: yarn package:stage --x64
 
       - name: Build linux packages (custom)
         if: inputs.target != vars.ALL
