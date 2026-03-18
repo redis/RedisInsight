@@ -9,22 +9,6 @@ jest.mock('./hooks/useRedisInstanceCompatibility', () => ({
   useRedisInstanceCompatibility: jest.fn(),
 }))
 
-jest.mock('./components/rqe-not-available', () => {
-  const react = require('react')
-  return {
-    RqeNotAvailable: () =>
-      react.createElement('div', { 'data-testid': 'rqe-not-available' }),
-  }
-})
-
-jest.mock('./components/version-not-supported', () => {
-  const react = require('react')
-  return {
-    VersionNotSupported: () =>
-      react.createElement('div', { 'data-testid': 'version-not-supported' }),
-  }
-})
-
 jest.mock('./context/vector-search', () => ({
   VectorSearchProvider: ({ children }: { children: unknown }) => children,
 }))
