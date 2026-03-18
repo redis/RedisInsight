@@ -9,14 +9,6 @@ jest.mock('./hooks/useRedisInstanceCompatibility', () => ({
   useRedisInstanceCompatibility: jest.fn(),
 }))
 
-jest.mock('./components/rqe-not-available', () => {
-  const react = require('react')
-  return {
-    RqeNotAvailable: () =>
-      react.createElement('div', { 'data-testid': 'rqe-not-available' }),
-  }
-})
-
 jest.mock('./context/vector-search', () => ({
   VectorSearchProvider: ({ children }: { children: unknown }) => children,
 }))
@@ -46,6 +38,7 @@ describe('VectorSearchPageRouter', () => {
     mockUseRedisInstanceCompatibility.mockReturnValue({
       loading: false,
       hasRedisearch: true,
+      hasMinimumRedisearchVersion: true,
       hasSupportedVersion: true,
     })
   })
@@ -67,6 +60,7 @@ describe('VectorSearchPageRouter', () => {
     mockUseRedisInstanceCompatibility.mockReturnValue({
       loading: true,
       hasRedisearch: undefined,
+      hasMinimumRedisearchVersion: undefined,
       hasSupportedVersion: undefined,
     })
 
@@ -79,6 +73,7 @@ describe('VectorSearchPageRouter', () => {
     mockUseRedisInstanceCompatibility.mockReturnValue({
       loading: undefined,
       hasRedisearch: undefined,
+      hasMinimumRedisearchVersion: undefined,
       hasSupportedVersion: undefined,
     })
 
@@ -87,10 +82,45 @@ describe('VectorSearchPageRouter', () => {
     expect(screen.getByTestId('vector-search-loader')).toBeInTheDocument()
   })
 
-  it('should render RQE not available when RediSearch module is missing', () => {
+  it('should render version not supported when RediSearch version < 2.0', () => {
+    mockUseRedisInstanceCompatibility.mockReturnValue({
+      loading: false,
+      hasRedisearch: true,
+      hasMinimumRedisearchVersion: false,
+      hasSupportedVersion: false,
+    })
+
+    renderComponent()
+
+    expect(
+      screen.getByTestId('vector-search-page--version-not-supported'),
+    ).toBeInTheDocument()
+    expect(screen.getByTestId('version-not-supported')).toBeInTheDocument()
+  })
+
+  it('should render version not supported when RediSearch is present but version < 2.0', () => {
+    mockUseRedisInstanceCompatibility.mockReturnValue({
+      loading: false,
+      hasRedisearch: true,
+      hasMinimumRedisearchVersion: false,
+      hasSupportedVersion: false,
+    })
+
+    renderComponent()
+
+    expect(
+      screen.getByTestId('vector-search-page--version-not-supported'),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByTestId('vector-search-page--rqe-not-available'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should render RQE not available when RediSearch module is missing but version is supported', () => {
     mockUseRedisInstanceCompatibility.mockReturnValue({
       loading: false,
       hasRedisearch: false,
+      hasMinimumRedisearchVersion: true,
       hasSupportedVersion: true,
     })
 

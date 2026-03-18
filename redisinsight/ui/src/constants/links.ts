@@ -35,6 +35,7 @@ export const EXTERNAL_LINKS = {
 export const UTM_CAMPAINGS: Record<any, string> = {
   [OAuthSocialSource.Tutorials]: 'redisinsight_tutorials',
   [OAuthSocialSource.BrowserSearch]: 'redisinsight_browser_search',
+  [OAuthSocialSource.BrowserFiltering]: 'redisinsight_browser_filtering',
   [OAuthSocialSource.Workbench]: 'redisinsight_workbench',
   [CloudSsoUtmCampaign.BrowserFilter]: 'browser_filter',
   [OAuthSocialSource.EmptyDatabasesList]: 'empty_db_list',

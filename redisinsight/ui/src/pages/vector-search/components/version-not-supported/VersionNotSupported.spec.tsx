@@ -6,7 +6,7 @@ import cloudReducer from 'uiSrc/slices/instances/cloud'
 import instancesReducer from 'uiSrc/slices/instances/instances'
 import appOauthReducer from 'uiSrc/slices/oauth/cloud'
 import appFeaturesReducer from 'uiSrc/slices/app/features'
-import { RqeNotAvailable } from './RqeNotAvailable'
+import { VersionNotSupported } from './VersionNotSupported'
 
 const createTestStore = () =>
   configureStore({
@@ -35,11 +35,13 @@ const createTestStore = () =>
       getDefaultMiddleware({ serializableCheck: false }),
   })
 
-describe('RqeNotAvailable', () => {
-  it('should render with RQE not available content', () => {
-    render(<RqeNotAvailable />, { store: createTestStore() })
+describe('VersionNotSupported', () => {
+  it('should render with version not supported content', () => {
+    render(<VersionNotSupported />, { store: createTestStore() })
 
-    expect(screen.getByTestId('rqe-not-available')).toBeInTheDocument()
-    expect(screen.getByTestId('rqe-not-available-title')).toBeInTheDocument()
+    expect(screen.getByTestId('version-not-supported')).toBeInTheDocument()
+    expect(
+      screen.getByTestId('version-not-supported-title'),
+    ).toBeInTheDocument()
   })
 })
