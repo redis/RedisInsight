@@ -9,6 +9,10 @@ jest.mock('./hooks/useRedisInstanceCompatibility', () => ({
   useRedisInstanceCompatibility: jest.fn(),
 }))
 
+jest.mock('./hooks/useLastViewedPage', () => ({
+  useLastViewedPage: jest.fn(),
+}))
+
 jest.mock('./context/vector-search', () => ({
   VectorSearchProvider: ({ children }: { children: unknown }) => children,
 }))

@@ -28,7 +28,7 @@ export const IndexInfoSidePanel = ({
     <S.Panel data-testid="view-index-panel">
       <S.PanelHeader>
         <Text size="L" color="primary">
-          View index
+          {resolvedName}
         </Text>
         <IconButton
           icon={CancelIcon}

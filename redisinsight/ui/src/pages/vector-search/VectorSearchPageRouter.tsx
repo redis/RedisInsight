@@ -5,7 +5,7 @@ import { Loader } from 'uiSrc/components/base/display'
 
 import { VectorSearchPageRouterProps } from './VectorSearchPageRouter.types'
 import { VectorSearchProvider } from './context/vector-search'
-import { useRedisInstanceCompatibility } from './hooks'
+import { useRedisInstanceCompatibility, useLastViewedPage } from './hooks'
 import { RqeNotAvailable } from './components/rqe-not-available'
 import { VersionNotSupported } from './components/version-not-supported'
 import * as S from './pages/styles'
@@ -21,6 +21,8 @@ export const VectorSearchPageRouter = ({
 }: VectorSearchPageRouterProps) => {
   const { hasRedisearch, hasMinimumRedisearchVersion, loading } =
     useRedisInstanceCompatibility()
+
+  useLastViewedPage()
 
   if (loading !== false) {
     return (

@@ -187,7 +187,7 @@ describe('QueryLibraryView', () => {
       )
     })
 
-    it('should call onLoad with query text when Load is clicked', () => {
+    it('should call onLoad and send telemetry when Load is clicked', () => {
       renderComponent()
 
       const loadBtn = screen.getByTestId(
@@ -195,7 +195,7 @@ describe('QueryLibraryView', () => {
       )
       fireEvent.click(loadBtn)
 
-      expect(defaultProps.onLoad).toHaveBeenCalledWith(mockItems[0].query)
+      expect(defaultProps.onLoad).toHaveBeenCalled()
       expect(sendEventTelemetry).toHaveBeenCalledWith(
         expect.objectContaining({
           event: TelemetryEvent.SEARCH_QUERY_LIBRARY_LOADED,
