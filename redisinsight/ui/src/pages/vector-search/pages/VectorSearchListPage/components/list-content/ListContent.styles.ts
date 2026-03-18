@@ -8,5 +8,6 @@ export const ContentArea = styled(Row)`
 
 export const TableWrapper = styled(Col)`
   padding: 2px;
+  min-width: 0;
   overflow: auto;
 `
