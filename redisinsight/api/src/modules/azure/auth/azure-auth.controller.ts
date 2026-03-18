@@ -104,8 +104,12 @@ export class AzureAuthController {
         status: AzureAuthStatus.Failed,
         error: errorDescription || error,
       };
-      // For errors, we don't know the redirect type, return JSON
-      return errorResult;
+      // Return HTML for web flow errors (most common case in Docker/web)
+      res.type('text/html');
+      return generateCallbackHtml({
+        result: errorResult,
+        isDevMode: process.env.NODE_ENV === 'development',
+      });
     }
 
     if (!code || !state) {
@@ -113,10 +117,15 @@ export class AzureAuthController {
         sessionMetadata,
         new BadRequestException('Missing code or state parameter'),
       );
-      return {
+      const errorResult = {
         status: AzureAuthStatus.Failed,
         error: 'Missing code or state parameter',
       };
+      res.type('text/html');
+      return generateCallbackHtml({
+        result: errorResult,
+        isDevMode: process.env.NODE_ENV === 'development',
+      });
     }
 
     try {

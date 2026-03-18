@@ -60,29 +60,32 @@ export const generateCallbackHtml = (
     .title {
       font-size: 24px;
       margin-bottom: 16px;
-      color: ${result.status === AzureAuthStatus.Succeed ? '#28a745' : '#dc3545'};
+      color: #333;
     }
     .message {
       color: #666;
       margin-bottom: 20px;
     }
-    .close-message {
-      font-size: 14px;
-      color: #999;
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #3498db;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="title">
-      ${result.status === AzureAuthStatus.Succeed ? '✓ Authentication Successful' : '✕ Authentication Failed'}
-    </div>
-    <div class="message">
-      ${result.status === AzureAuthStatus.Succeed ? `Signed in as ${result.account?.username || 'user'}` : result.error || 'An error occurred'}
-    </div>
-    <div class="close-message">
-      Completing authentication...
-    </div>
+    <div class="spinner"></div>
+    <div class="title">Completing authentication...</div>
+    <div class="message">This window will close automatically.</div>
   </div>
   <script>
     (function() {
