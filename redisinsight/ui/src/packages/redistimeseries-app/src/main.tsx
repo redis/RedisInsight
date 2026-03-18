@@ -7,16 +7,26 @@ import App from './App'
 import './styles/styles.scss'
 import result from '../mockData/resultTimeSeries.json'
 
+interface PersistedTsChartConfig {
+  mode?: 'line' | 'points'
+  timeUnit?: 'seconds' | 'milliseconds'
+  staircase?: boolean
+  fill?: boolean
+}
+
 interface Props {
   command?: string
   data?: { response: any; status: string }[]
+  initialPreferences?: {
+    chartConfig?: PersistedTsChartConfig
+  }
 }
 
 const renderChart = (props: Props) => {
-  const { command = '', data: result = [] } = props
+  const { command = '', data: result = [], initialPreferences } = props
   render(
     <ThemeProvider>
-      <App command={command} result={result} />
+      <App command={command} result={result} initialPreferences={initialPreferences} />
     </ThemeProvider>,
     document.getElementById('app'),
   )

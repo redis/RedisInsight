@@ -4,6 +4,10 @@ import { instance, mock } from 'ts-mockito'
 import { ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 import { cleanup, fireEvent, mockedStore, render } from 'uiSrc/utils/test-utils'
 import { CommandExecutionStatus } from 'uiSrc/slices/interfaces/cli'
+import {
+  getWbTsResultPreferences,
+  setWbTsResultPreferences,
+} from 'uiSrc/pages/workbench/utils/tsResultPreferences'
 import QueryCard, { Props, getSummaryText } from './QueryCard'
 import { QueryResultsProvider } from '../context/query-results.context'
 
@@ -29,6 +33,12 @@ jest.mock('uiSrc/services', () => ({
     set: jest.fn(),
     get: jest.fn(),
   },
+}))
+
+jest.mock('uiSrc/pages/workbench/utils/tsResultPreferences', () => ({
+  ...jest.requireActual('uiSrc/pages/workbench/utils/tsResultPreferences'),
+  getWbTsResultPreferences: jest.fn().mockReturnValue(undefined),
+  setWbTsResultPreferences: jest.fn(),
 }))
 
 jest.mock('uiSrc/slices/app/plugins', () => ({
@@ -197,5 +207,85 @@ describe('QueryCard', () => {
     const queryCliResultEl = queryByTestId('query-cli-result')
 
     expect(queryCliResultEl).toBeInTheDocument()
+  })
+
+  describe('TimeSeries view persistence', () => {
+    const tsVisualization = {
+      id: 'redistimeseries-chart',
+      uniqId: 'redistimeseries-chart',
+      name: 'Chart',
+      plugin: {
+        name: 'redistimeseries',
+        internal: true,
+        baseUrl: '/plugins/redistimeseries',
+        scriptSrc: '/plugins/redistimeseries/index.js',
+        stylesSrc: '/plugins/redistimeseries/styles.css',
+      },
+      activationMethod: 'renderChart',
+      matchCommands: ['TS.RANGE', 'TS.MRANGE', 'TS.REVRANGE', 'TS.MREVRANGE'],
+      default: true,
+    }
+
+    const setupTsVisualization = () => {
+      // eslint-disable-next-line global-require
+      const { appPluginsSelector } = require('uiSrc/slices/app/plugins')
+      ;(appPluginsSelector as jest.Mock).mockReturnValue({
+        visualizations: [tsVisualization],
+        staticPath: '/static',
+      })
+      store.getState().connections.instances.connectedInstance.modules = [
+        { name: 'timeseries' },
+      ]
+    }
+
+    afterEach(() => {
+      // eslint-disable-next-line global-require
+      const { appPluginsSelector } = require('uiSrc/slices/app/plugins')
+      ;(appPluginsSelector as jest.Mock).mockReturnValue({
+        visualizations: [],
+      })
+      ;(getWbTsResultPreferences as jest.Mock).mockReturnValue(undefined)
+    })
+
+    it('should not persist view for non-TimeSeries commands', () => {
+      renderQueryCardComponent({
+        command: 'GET key',
+        result: mockResult,
+      })
+
+      expect(setWbTsResultPreferences).not.toHaveBeenCalled()
+    })
+
+    it('should display text result when persisted preference is text', () => {
+      setupTsVisualization()
+      ;(getWbTsResultPreferences as jest.Mock).mockReturnValue({
+        selectedView: 'text',
+      })
+
+      const { queryByTestId } = renderQueryCardComponent({
+        command: 'TS.RANGE key - +',
+        result: mockResult,
+        isOpen: true,
+      })
+
+      expect(queryByTestId('query-cli-result')).toBeInTheDocument()
+      expect(queryByTestId('query-plugin-result')).not.toBeInTheDocument()
+    })
+
+    it('should display plugin view when persisted preference is plugin', () => {
+      setupTsVisualization()
+      ;(getWbTsResultPreferences as jest.Mock).mockReturnValue({
+        selectedView: 'plugin:redistimeseries-chart',
+      })
+
+      const { queryByTestId } = renderQueryCardComponent({
+        command: 'TS.RANGE key - +',
+        result: mockResult,
+        isOpen: true,
+      })
+
+      expect(queryByTestId('query-plugin-result')).toBeInTheDocument()
+      expect(queryByTestId('query-cli-result')).not.toBeInTheDocument()
+    })
   })
 })
