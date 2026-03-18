@@ -1,4 +1,4 @@
-import { CloudSsoUtmCampaign, OAuthSocialSource } from 'uiSrc/slices/interfaces'
+import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { FeatureNotAvailableContent } from './FeatureNotAvailable.types'
 
 export const FILTER_NOT_AVAILABLE_CONTENT: FeatureNotAvailableContent = {
@@ -10,7 +10,6 @@ export const FILTER_NOT_AVAILABLE_CONTENT: FeatureNotAvailableContent = {
   noInstanceText:
     'Create a free Redis Cloud database that supports filtering and extends the core capabilities of your Redis.',
   oauthSource: OAuthSocialSource.BrowserFiltering,
-  utmCampaign: CloudSsoUtmCampaign.BrowserFiltering,
 }
 
 export const REDISEARCH_VERSION_REQUIRED_CONTENT: FeatureNotAvailableContent = {
@@ -24,5 +23,4 @@ export const REDISEARCH_VERSION_REQUIRED_CONTENT: FeatureNotAvailableContent = {
   noInstanceText:
     'Create a free Redis Cloud database to start exploring these capabilities.',
   oauthSource: OAuthSocialSource.BrowserSearch,
-  utmCampaign: CloudSsoUtmCampaign.BrowserSearch,
 }

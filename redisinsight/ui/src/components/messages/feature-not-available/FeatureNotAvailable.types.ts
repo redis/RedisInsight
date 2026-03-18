@@ -1,4 +1,4 @@
-import { CloudSsoUtmCampaign, OAuthSocialSource } from 'uiSrc/slices/interfaces'
+import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 
 export interface FeatureNotAvailableContent {
   testId: string
@@ -7,5 +7,4 @@ export interface FeatureNotAvailableContent {
   freeInstanceText: string
   noInstanceText: string
   oauthSource: OAuthSocialSource
-  utmCampaign: CloudSsoUtmCampaign
 }

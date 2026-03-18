@@ -36,7 +36,7 @@ const FeatureNotAvailable = ({
   const freeInstances = useSelector(freeInstancesSelector) || []
   const learnMoreUtm = {
     medium: UTM_MEDIUMS.Main,
-    campaign: UTM_CAMPAINGS[content.utmCampaign],
+    campaign: UTM_CAMPAINGS[content.oauthSource],
   }
 
   return (
