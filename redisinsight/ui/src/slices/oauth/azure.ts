@@ -56,7 +56,7 @@ export enum AzureOAuthRedirectType {
   Deeplink = 'deeplink',
 
   /**
-   * Uses HTTP localhost callback for web/Docker deployments with postMessage.
+   * Uses HTTP localhost callback for web/Docker deployments with localStorage polling.
    */
   Web = 'web',
 }

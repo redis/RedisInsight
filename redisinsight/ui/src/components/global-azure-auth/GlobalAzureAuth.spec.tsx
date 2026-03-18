@@ -6,7 +6,7 @@ import {
   mockedStore,
   render,
   createMockedStore,
-  act,
+  localStorageMock,
 } from 'uiSrc/utils/test-utils'
 import { AzureAuthStatus } from 'apiSrc/modules/azure/constants'
 import {
@@ -18,6 +18,8 @@ import { resetDataAzure } from 'uiSrc/slices/instances/azure'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 
 import GlobalAzureAuth from './GlobalAzureAuth'
+
+const AZURE_OAUTH_STORAGE_KEY = 'ri_azure_oauth_result'
 
 // Mock config to simulate non-Electron environment
 jest.mock('uiSrc/config', () => ({
@@ -35,6 +37,7 @@ beforeEach(() => {
   cleanup()
   store = createMockedStore()
   store.clearActions()
+  jest.clearAllMocks()
 })
 
 const renderGlobalAzureAuth = () => render(<GlobalAzureAuth />, { store })
@@ -46,110 +49,7 @@ describe('GlobalAzureAuth', () => {
     expect(container.firstChild).toBeNull()
   })
 
-  it('should set up message listener on mount', () => {
-    const addEventListenerSpy = jest.spyOn(window, 'addEventListener')
-
-    renderGlobalAzureAuth()
-
-    expect(addEventListenerSpy).toHaveBeenCalledWith(
-      'message',
-      expect.any(Function),
-    )
-
-    addEventListenerSpy.mockRestore()
-  })
-
-  it('should clean up message listener on unmount', () => {
-    const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener')
-
-    const { unmount } = renderGlobalAzureAuth()
-    unmount()
-
-    expect(removeEventListenerSpy).toHaveBeenCalledWith(
-      'message',
-      expect.any(Function),
-    )
-
-    removeEventListenerSpy.mockRestore()
-  })
-
-  describe('postMessage handling', () => {
-    const mockMsalAccount = {
-      id: faker.string.uuid(),
-      username: faker.internet.email(),
-      name: faker.person.fullName(),
-    }
-
-    it('should dispatch success actions on valid success message', () => {
-      renderGlobalAzureAuth()
-
-      act(() => {
-        window.dispatchEvent(
-          new MessageEvent('message', {
-            data: {
-              type: 'azure-oauth-callback',
-              payload: {
-                status: AzureAuthStatus.Succeed,
-                account: mockMsalAccount,
-              },
-            },
-            origin: window.location.origin,
-          }),
-        )
-      })
-
-      const actions = store.getActions()
-      expect(actions).toContainEqual(resetDataAzure())
-      expect(actions).toContainEqual(azureOAuthCallbackSuccess(mockMsalAccount))
-      expect(actions).toContainEqual(setAzureLoginSource(null))
-    })
-
-    it('should dispatch failure actions on failure message', () => {
-      const errorMessage = faker.lorem.sentence()
-
-      renderGlobalAzureAuth()
-
-      act(() => {
-        window.dispatchEvent(
-          new MessageEvent('message', {
-            data: {
-              type: 'azure-oauth-callback',
-              payload: {
-                status: AzureAuthStatus.Failed,
-                error: errorMessage,
-              },
-            },
-            origin: window.location.origin,
-          }),
-        )
-      })
-
-      const actions = store.getActions()
-      expect(actions).toContainEqual(azureOAuthCallbackFailure(errorMessage))
-      expect(actions[1].type).toEqual(addErrorNotification({} as any).type)
-    })
-
-    it('should ignore messages with wrong type', () => {
-      renderGlobalAzureAuth()
-
-      act(() => {
-        window.dispatchEvent(
-          new MessageEvent('message', {
-            data: {
-              type: 'some-other-type',
-              payload: {},
-            },
-            origin: window.location.origin,
-          }),
-        )
-      })
-
-      const actions = store.getActions()
-      expect(actions.length).toBe(0)
-    })
-  })
-
-  describe('localStorage polling setup', () => {
+  describe('localStorage polling', () => {
     it('should set up interval on mount', () => {
       const setIntervalSpy = jest.spyOn(window, 'setInterval')
 
@@ -169,6 +69,99 @@ describe('GlobalAzureAuth', () => {
       expect(clearIntervalSpy).toHaveBeenCalled()
 
       clearIntervalSpy.mockRestore()
+    })
+
+    it('should dispatch success actions when valid result found in localStorage', () => {
+      const mockMsalAccount = {
+        id: faker.string.uuid(),
+        username: faker.internet.email(),
+        name: faker.person.fullName(),
+      }
+
+      const storedValue = JSON.stringify({
+        timestamp: Date.now(),
+        result: {
+          status: AzureAuthStatus.Succeed,
+          account: mockMsalAccount,
+        },
+      })
+
+      // Mock localStorage.getItem to return the stored value once, then null
+      localStorageMock.getItem.mockReturnValueOnce(storedValue)
+
+      renderGlobalAzureAuth()
+
+      const actions = store.getActions()
+      expect(actions).toContainEqual(resetDataAzure())
+      expect(actions).toContainEqual(azureOAuthCallbackSuccess(mockMsalAccount))
+      expect(actions).toContainEqual(setAzureLoginSource(null))
+
+      // Verify localStorage.removeItem was called
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith(
+        AZURE_OAUTH_STORAGE_KEY,
+      )
+    })
+
+    it('should dispatch failure actions when error result found in localStorage', () => {
+      const errorMessage = faker.lorem.sentence()
+
+      const storedValue = JSON.stringify({
+        timestamp: Date.now(),
+        result: {
+          status: AzureAuthStatus.Failed,
+          error: errorMessage,
+        },
+      })
+
+      // Mock localStorage.getItem to return the stored value once
+      localStorageMock.getItem.mockReturnValueOnce(storedValue)
+
+      renderGlobalAzureAuth()
+
+      const actions = store.getActions()
+      // handleAzureOAuthFailure dispatches azureOAuthCallbackFailure first
+      expect(actions).toContainEqual(azureOAuthCallbackFailure(errorMessage))
+      // Then addErrorNotification is dispatched
+      expect(
+        actions.some(
+          (a: { type: string }) =>
+            a.type === addErrorNotification({} as any).type,
+        ),
+      ).toBe(true)
+
+      // Verify localStorage.removeItem was called
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith(
+        AZURE_OAUTH_STORAGE_KEY,
+      )
+    })
+
+    it('should ignore stale results in localStorage', () => {
+      const mockMsalAccount = {
+        id: faker.string.uuid(),
+        username: faker.internet.email(),
+        name: faker.person.fullName(),
+      }
+
+      const storedValue = JSON.stringify({
+        timestamp: Date.now() - 60000, // 60 seconds ago (stale)
+        result: {
+          status: AzureAuthStatus.Succeed,
+          account: mockMsalAccount,
+        },
+      })
+
+      // Mock localStorage.getItem to return the stale value
+      localStorageMock.getItem.mockReturnValueOnce(storedValue)
+
+      renderGlobalAzureAuth()
+
+      const actions = store.getActions()
+      expect(actions.length).toBe(0)
+
+      // Stale result should be cleared
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith(
+        AZURE_OAUTH_STORAGE_KEY,
+      )
     })
   })
 })

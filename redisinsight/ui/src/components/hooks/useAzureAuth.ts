@@ -33,7 +33,7 @@ export const useAzureAuth = () => {
       // Electron: open in system browser, deeplink will handle callback
       window.open(url, '_blank')
     } else {
-      // Web: open popup window, postMessage will handle callback
+      // Web: open popup window, localStorage polling will handle callback
       const left = window.screenX + (window.innerWidth - POPUP_WIDTH) / 2
       const top = window.screenY + (window.innerHeight - POPUP_HEIGHT) / 2
       const features = `width=${POPUP_WIDTH},height=${POPUP_HEIGHT},left=${left},top=${top},popup=yes`
