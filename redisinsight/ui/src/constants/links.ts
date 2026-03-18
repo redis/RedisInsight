@@ -1,4 +1,4 @@
-import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
+import { CloudSsoUtmCampaign, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 
 export const EXTERNAL_LINKS = {
   redisIo: 'https://redis.io',

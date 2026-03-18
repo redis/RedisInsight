@@ -14,7 +14,7 @@ const getCloudSsoUtmCampaignTestCases = [
   [OAuthSocialSource.RedisGraph, CloudSsoUtmCampaign.Workbench],
   [OAuthSocialSource.RedisBloom, CloudSsoUtmCampaign.Workbench],
   [OAuthSocialSource.BrowserContentMenu, CloudSsoUtmCampaign.BrowserOverview],
-  [OAuthSocialSource.BrowserFiltering, CloudSsoUtmCampaign.BrowserFiltering],
+  [OAuthSocialSource.BrowserFiltering, CloudSsoUtmCampaign.BrowserFilter],
   [OAuthSocialSource.WelcomeScreen, CloudSsoUtmCampaign.WelcomeScreen],
   [OAuthSocialSource.Tutorials, CloudSsoUtmCampaign.Tutorial],
   [OAuthSocialSource.Autodiscovery, CloudSsoUtmCampaign.AutoDiscovery],

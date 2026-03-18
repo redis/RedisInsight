@@ -116,7 +116,7 @@ export enum CloudSsoUtmCampaign {
   WelcomeScreen = 'welcome_screen',
   BrowserSearch = 'redisinsight_browser_search',
   BrowserOverview = 'redisinsight_browser_overview',
-  BrowserFiltering = 'browser_filtering',
+  BrowserFilter = 'redisinsight_browser_filter',
   Tutorial = 'tutorial',
   AutoDiscovery = 'auto_discovery',
   Copilot = 'copilot',
