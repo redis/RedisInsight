@@ -10,9 +10,14 @@ import {
 } from 'uiSrc/slices/oauth/azure'
 import { AzureLoginSource } from 'uiSrc/slices/interfaces'
 import { AppDispatch } from 'uiSrc/slices/store'
+import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 
 const riConfig = getConfig()
 const isElectron = riConfig.app.type === 'ELECTRON'
+
+const AZURE_LOCALHOST_ERROR_MESSAGE =
+  'Azure authentication requires accessing RedisInsight via localhost. ' +
+  'Please use http://localhost:PORT instead of IP addresses or custom domains.'
 
 // Popup window dimensions for OAuth
 const POPUP_WIDTH = 500
@@ -44,6 +49,21 @@ export const useAzureAuth = () => {
 
   const initiateLogin = useCallback(
     (source: AzureLoginSource = AzureLoginSource.Autodiscovery) => {
+      // In web mode, Azure OAuth only works when accessed via localhost
+      // due to Azure's redirect URI restrictions for public client apps
+      if (!isElectron && window.location.hostname !== 'localhost') {
+        dispatch(
+          addErrorNotification({
+            response: {
+              data: {
+                message: AZURE_LOCALHOST_ERROR_MESSAGE,
+              },
+            },
+          } as any),
+        )
+        return
+      }
+
       const redirectType = isElectron
         ? AzureOAuthRedirectType.Deeplink
         : AzureOAuthRedirectType.Web
