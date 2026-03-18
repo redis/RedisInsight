@@ -4,26 +4,45 @@ import { Pages } from 'uiSrc/constants'
 
 // Persists the last active sub-page (create-index or query) across mount/unmount cycles,
 // so navigating away from Vector Search and back restores the previous sub-page.
+// Scoped per instance to prevent cross-database navigation.
 // Cleared after each restore to allow explicit navigation to the index list.
-let lastViewedPage = ''
+interface SavedPage {
+  instanceId: string
+  pathname: string
+}
+
+let lastViewedPage: SavedPage | null = null
 
 export const useLastViewedPage = () => {
   const history = useHistory()
   const { instanceId } = useParams<{ instanceId: string }>()
   const { pathname } = useLocation()
   const pathnameRef = useRef<string>('')
+  const instanceIdRef = useRef<string>(instanceId)
+
+  useEffect(() => {
+    instanceIdRef.current = instanceId
+  }, [instanceId])
 
   useEffect(
     () => () => {
-      lastViewedPage = pathnameRef.current
+      if (pathnameRef.current) {
+        lastViewedPage = {
+          instanceId: instanceIdRef.current,
+          pathname: pathnameRef.current,
+        }
+      }
     },
     [],
   )
 
   useEffect(() => {
-    if (pathname === Pages.vectorSearch(instanceId) && lastViewedPage) {
-      const savedPage = lastViewedPage
-      lastViewedPage = ''
+    if (
+      pathname === Pages.vectorSearch(instanceId) &&
+      lastViewedPage?.instanceId === instanceId
+    ) {
+      const savedPage = lastViewedPage.pathname
+      lastViewedPage = null
       history.push(savedPage)
       return
     }
