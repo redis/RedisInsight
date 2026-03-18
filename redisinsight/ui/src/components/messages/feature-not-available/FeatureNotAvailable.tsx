@@ -1,11 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-import {
-  CloudSsoUtmCampaign,
-  OAuthSocialAction,
-  OAuthSocialSource,
-} from 'uiSrc/slices/interfaces'
+import { OAuthSocialAction } from 'uiSrc/slices/interfaces'
 import {
   FeatureFlagComponent,
   OAuthConnectFreeDb,
@@ -13,25 +9,24 @@ import {
 } from 'uiSrc/components'
 import { freeInstancesSelector } from 'uiSrc/slices/instances/instances'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
-import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
+import {
+  EXTERNAL_LINKS,
+  UTM_CAMPAINGS,
+  UTM_MEDIUMS,
+} from 'uiSrc/constants/links'
 import { FeatureFlags } from 'uiSrc/constants'
 import { Text, Title } from 'uiSrc/components/base/text'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import { Link } from 'uiSrc/components/base/link/Link'
-import { UpgradeModalContent } from './FeatureNotAvailable.types'
+import { FeatureNotAvailableContent } from './FeatureNotAvailable.types'
 import { FILTER_NOT_AVAILABLE_CONTENT } from './constants'
 import * as S from './FeatureNotAvailable.styles'
 
-const utm = {
-  medium: 'main',
-  campaign: UTM_CAMPAINGS[CloudSsoUtmCampaign.BrowserFilter],
-}
-
 interface FeatureNotAvailableProps {
   onClose?: () => void
-  content?: UpgradeModalContent
+  content?: FeatureNotAvailableContent
 }
 
 const FeatureNotAvailable = ({
@@ -39,6 +34,10 @@ const FeatureNotAvailable = ({
   content = FILTER_NOT_AVAILABLE_CONTENT,
 }: FeatureNotAvailableProps) => {
   const freeInstances = useSelector(freeInstancesSelector) || []
+  const learnMoreUtm = {
+    medium: UTM_MEDIUMS.Main,
+    campaign: UTM_CAMPAINGS[content.utmCampaign],
+  }
 
   return (
     <S.Container gap="l" data-testid={content.testId}>
@@ -54,7 +53,7 @@ const FeatureNotAvailable = ({
           <Text color="primary">{content.freeInstanceText}</Text>
           <OAuthConnectFreeDb
             id={freeInstances[0].id}
-            source={OAuthSocialSource.BrowserFiltering}
+            source={content.oauthSource}
             onSuccessClick={onClose}
           />
         </>
@@ -68,7 +67,7 @@ const FeatureNotAvailable = ({
                 <PrimaryButton
                   onClick={(e) => {
                     ssoCloudHandlerClick(e, {
-                      source: OAuthSocialSource.BrowserFiltering,
+                      source: content.oauthSource,
                       action: OAuthSocialAction.Create,
                     })
                     onClose?.()
@@ -83,7 +82,7 @@ const FeatureNotAvailable = ({
             <Link
               variant="inline"
               target="_blank"
-              href={getUtmExternalLink(EXTERNAL_LINKS.redisStack, utm)}
+              href={getUtmExternalLink(EXTERNAL_LINKS.redisStack, learnMoreUtm)}
               data-testid={`${content.testId}-learn-more-link`}
             >
               Learn More

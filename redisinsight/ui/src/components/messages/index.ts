@@ -9,7 +9,7 @@ export {
   FeatureNotAvailable,
   DatabaseNotOpened,
 }
-export type { UpgradeModalContent } from './feature-not-available'
+export type { FeatureNotAvailableContent } from './feature-not-available'
 export {
   FILTER_NOT_AVAILABLE_CONTENT,
   REDISEARCH_VERSION_REQUIRED_CONTENT,

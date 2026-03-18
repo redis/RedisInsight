@@ -19,7 +19,7 @@ export const getCloudSsoUtmCampaign = (
     case OAuthSocialSource.BrowserContentMenu:
       return CloudSsoUtmCampaign.BrowserOverview
     case OAuthSocialSource.BrowserFiltering:
-      return CloudSsoUtmCampaign.BrowserFilter
+      return CloudSsoUtmCampaign.BrowserFiltering
     case OAuthSocialSource.WelcomeScreen:
       return CloudSsoUtmCampaign.WelcomeScreen
     case OAuthSocialSource.Tutorials:
