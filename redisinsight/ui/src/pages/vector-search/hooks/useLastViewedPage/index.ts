@@ -1,0 +1,1 @@
+export { useLastViewedPage } from './useLastViewedPage'
