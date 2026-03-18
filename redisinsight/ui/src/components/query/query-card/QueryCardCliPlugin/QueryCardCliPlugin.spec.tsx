@@ -10,6 +10,7 @@ import {
   getPluginStateAction,
   setPluginStateAction,
 } from 'uiSrc/slices/app/plugins'
+import * as tsResultPreferences from 'uiSrc/pages/workbench/utils/tsResultPreferences'
 import QueryCardCliPlugin, { Props } from './QueryCardCliPlugin'
 
 const mockedProps = mock<Props>()
@@ -52,6 +53,12 @@ jest.mock('uiSrc/services', () => ({
     set: jest.fn(),
     get: jest.fn(),
   },
+}))
+
+jest.mock('uiSrc/pages/workbench/utils/tsResultPreferences', () => ({
+  ...jest.requireActual('uiSrc/pages/workbench/utils/tsResultPreferences'),
+  getWbTsResultPreferences: jest.fn().mockReturnValue(undefined),
+  mergeWbTsChartPreferences: jest.fn(),
 }))
 
 let store: typeof mockedStore
@@ -258,5 +265,167 @@ describe('QueryCardCliPlugin', () => {
     render(<QueryCardCliPlugin {...instance(mockedProps)} id="1" />)
 
     expect(replaceEmptyValueMock).toBeCalledWith([])
+  })
+
+  describe('TimeSeries dual-write', () => {
+    afterEach(() => {
+      const { appPluginsSelector } = require('uiSrc/slices/app/plugins')
+      ;(appPluginsSelector as jest.Mock).mockReturnValue({
+        visualizations: [
+          {
+            id: '1',
+            uniqId: '1',
+            name: 'test',
+            plugin: '',
+            activationMethod: 'render',
+            matchCommands: ['*'],
+          },
+        ],
+      })
+    })
+
+    it('should call mergeWbTsChartPreferences on setState for redistimeseries-chart', () => {
+      const { appPluginsSelector } = require('uiSrc/slices/app/plugins')
+      ;(appPluginsSelector as jest.Mock).mockReturnValue({
+        visualizations: [
+          {
+            id: 'redistimeseries-chart',
+            uniqId: 'redistimeseries-chart',
+            name: 'Chart',
+            plugin: { name: 'redistimeseries' },
+            activationMethod: 'renderChart',
+            matchCommands: ['TS.RANGE'],
+            default: true,
+          },
+        ],
+      })
+
+      const mockedSetPluginStateAction = jest
+        .fn()
+        .mockImplementation(() => jest.fn())
+      ;(setPluginStateAction as jest.Mock).mockImplementation(
+        mockedSetPluginStateAction,
+      )
+
+      const mockState = { mode: 'points', fill: false }
+      const onEventMock = jest
+        .fn()
+        .mockImplementation(
+          (_iframeId: string, event: string, callback: (data: any) => void) => {
+            if (event === PluginEvents.setState) {
+              callback({ requestId: 5, state: mockState })
+            }
+          },
+        )
+      ;(pluginApi.onEvent as jest.Mock).mockImplementation(onEventMock)
+
+      render(
+        <QueryCardCliPlugin
+          {...instance(mockedProps)}
+          id="redistimeseries-chart"
+          commandId="300"
+        />,
+      )
+
+      expect(
+        tsResultPreferences.mergeWbTsChartPreferences,
+      ).toHaveBeenCalledWith('instanceId', mockState)
+    })
+
+    it('should inject initialPreferences into executeCommand payload for TS plugin', () => {
+      const { appPluginsSelector } = require('uiSrc/slices/app/plugins')
+      ;(appPluginsSelector as jest.Mock).mockReturnValue({
+        visualizations: [
+          {
+            id: 'redistimeseries-chart',
+            uniqId: 'redistimeseries-chart',
+            name: 'Chart',
+            plugin: {
+              name: 'redistimeseries',
+              baseUrl: '/plugins/redistimeseries',
+              scriptSrc: '/plugins/redistimeseries/index.js',
+              stylesSrc: '/plugins/redistimeseries/styles.css',
+            },
+            activationMethod: 'renderChart',
+            matchCommands: ['TS.RANGE'],
+            default: true,
+          },
+        ],
+        staticPath: '/static',
+      })
+
+      const chartConfig = { mode: 'points' as const, fill: false }
+      ;(
+        tsResultPreferences.getWbTsResultPreferences as jest.Mock
+      ).mockReturnValue({
+        selectedView: 'plugin:redistimeseries-chart' as const,
+        chartConfig,
+      })
+
+      const createEventSpy = jest.spyOn(document, 'createEvent')
+
+      ;(pluginApi.onEvent as jest.Mock).mockImplementation(
+        (_iframeId: string, event: string, callback: (data?: any) => void) => {
+          if (event === PluginEvents.loaded) {
+            callback()
+          }
+        },
+      )
+
+      render(
+        <QueryCardCliPlugin
+          {...instance(mockedProps)}
+          id="redistimeseries-chart"
+          commandId="500"
+          result={[{ response: 'data', status: 'success' }] as any}
+          query="TS.RANGE key - +"
+        />,
+      )
+
+      const executeCommandEvent = createEventSpy.mock.results.find(
+        (r) => r.value?.data?.event === 'executeCommand',
+      )
+
+      expect(executeCommandEvent).toBeDefined()
+      expect(executeCommandEvent!.value.data.data.initialPreferences).toEqual({
+        chartConfig,
+      })
+
+      createEventSpy.mockRestore()
+    })
+
+    it('should not call mergeWbTsChartPreferences for non-TimeSeries plugin', () => {
+      ;(tsResultPreferences.mergeWbTsChartPreferences as jest.Mock).mockClear()
+
+      const mockedSetPluginStateAction = jest
+        .fn()
+        .mockImplementation(() => jest.fn())
+      ;(setPluginStateAction as jest.Mock).mockImplementation(
+        mockedSetPluginStateAction,
+      )
+
+      const onEventMock = jest
+        .fn()
+        .mockImplementation(
+          (_iframeId: string, event: string, callback: (data: any) => void) => {
+            if (event === PluginEvents.setState) {
+              callback({ requestId: 5, state: { some: 'state' } })
+            }
+          },
+        )
+      ;(pluginApi.onEvent as jest.Mock).mockImplementation(onEventMock)
+
+      render(
+        <QueryCardCliPlugin
+          {...instance(mockedProps)}
+          id="1"
+          commandId="300"
+        />,
+      )
+
+      expect(
+        tsResultPreferences.mergeWbTsChartPreferences,
+      ).not.toHaveBeenCalled()
+    })
   })
 })

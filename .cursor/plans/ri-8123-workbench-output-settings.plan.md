@@ -1,31 +1,31 @@
 ---
-name: 'RI-8123 Workbench output settings'
-overview: 'Persist RedisTimeSeries Workbench output preferences (selected view and chart config) per database so the next compatible result reuses the user''s last settings.'
+name: RI-8123 Workbench output settings
+overview: Persist RedisTimeSeries Workbench output preferences (selected view and chart config) per database so the next compatible result reuses the user's last settings.
 todos:
   - id: types-and-storage
-    content: 'Add storage key (wbTsResultPreferences) in storage.ts, define WorkbenchTsResultPreferences and PersistedTsChartConfig types, implement get/set/merge helper functions'
-    status: pending
+    content: Add storage key (wbTsResultPreferences) in storage.ts, define WorkbenchTsResultPreferences and PersistedTsChartConfig types, implement get/set/merge helper functions
+    status: completed
   - id: query-card-view-persistence
-    content: 'Update QueryCard to initialize selectedView from persisted preferences for TS commands and persist on dropdown change; handle useEffect race with visualizations'
-    status: pending
+    content: Update QueryCard to initialize selectedView from persisted preferences for TS commands and persist on dropdown change; handle useEffect race with visualizations
+    status: completed
   - id: plugin-host-bridge
-    content: 'Update QueryCardCliPlugin to pass initialPreferences.chartConfig in executeCommand for redistimeseries-chart and dual-write filtered chart subset to localStorage in setPluginState handler'
-    status: pending
+    content: Update QueryCardCliPlugin to pass initialPreferences.chartConfig in executeCommand for redistimeseries-chart and dual-write filtered chart subset to localStorage in setPluginState handler
+    status: completed
   - id: plugin-entrypoints
-    content: 'Update redistimeseries-app main.tsx and App.tsx to accept and forward initialPreferences; add redisinsight-plugin-sdk as dependency'
-    status: pending
+    content: Update redistimeseries-app main.tsx and App.tsx to accept and forward initialPreferences; add redisinsight-plugin-sdk as dependency
+    status: completed
   - id: chart-result-view
-    content: 'Update ChartResultView to merge persisted config with data-derived defaults and call plugin SDK setState with reusable subset on config change'
-    status: pending
+    content: Update ChartResultView to merge persisted config with data-derived defaults and call plugin SDK setState with reusable subset on config change
+    status: completed
   - id: unit-tests
-    content: 'Add unit tests for storage helpers, QueryCard view persistence, QueryCardCliPlugin dual-write and payload, and ChartResultView merge logic'
-    status: pending
+    content: Add unit tests for storage helpers, QueryCard view persistence, QueryCardCliPlugin dual-write and payload, and ChartResultView merge logic
+    status: completed
   - id: e2e-tests
-    content: 'Add Playwright tests for text-view persistence, chart-toggle persistence, and per-database isolation'
-    status: pending
+    content: Add Playwright tests for text-view persistence, chart-toggle persistence, and per-database isolation
+    status: cancelled
   - id: lint-typecheck
-    content: 'Run yarn lint:ui, yarn type-check:ui, and targeted tests; fix any issues'
-    status: pending
+    content: Run yarn lint:ui, yarn type-check:ui, and targeted tests; fix any issues
+    status: completed
 isProject: false
 ---
 
@@ -129,13 +129,13 @@ Stored object shape:
 
 ```ts
 interface WorkbenchTsResultPreferences {
-  selectedView: 'text' | 'plugin:redistimeseries-chart'
+  selectedView: 'text' | 'plugin:redistimeseries-chart';
   chartConfig?: {
-    mode?: GraphMode
-    timeUnit?: TimeUnit
-    staircase?: boolean
-    fill?: boolean
-  }
+    mode?: GraphMode;
+    timeUnit?: TimeUnit;
+    staircase?: boolean;
+    fill?: boolean;
+  };
 }
 ```
 

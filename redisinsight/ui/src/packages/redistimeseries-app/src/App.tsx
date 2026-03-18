@@ -1,9 +1,19 @@
 import React from 'react'
 import ChartResultView from './components/Chart/ChartResultView'
 
+interface PersistedTsChartConfig {
+  mode?: 'line' | 'points'
+  timeUnit?: 'seconds' | 'milliseconds'
+  staircase?: boolean
+  fill?: boolean
+}
+
 interface Props {
   command: string
   result?: { response: any; status: string }[]
+  initialPreferences?: {
+    chartConfig?: PersistedTsChartConfig
+  }
 }
 
 enum TsCmdRangePrefix {
@@ -12,7 +22,7 @@ enum TsCmdRangePrefix {
 }
 
 const App = (props: Props) => {
-  const { result: [{ response = '', status = '' } = {}] = [] } = props
+  const { result: [{ response = '', status = '' } = {}] = [], initialPreferences } = props
 
   if (status === 'fail') {
     return <div className="responseFail">{response}</div>
@@ -49,6 +59,7 @@ const App = (props: Props) => {
   return (
     <ChartResultView
       data={responseParser(props.command, props.result?.[0].response) as any}
+      initialChartConfig={initialPreferences?.chartConfig}
     />
   )
 }
