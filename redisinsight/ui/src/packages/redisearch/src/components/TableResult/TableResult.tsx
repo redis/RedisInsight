@@ -27,6 +27,8 @@ export interface Props {
   cursorId?: null | number
 }
 
+const MIN_COLUMN_WIDTH_PX = 150
+
 const EllipsisText = styled(ColorText)`
   overflow: hidden;
   text-overflow: ellipsis;
@@ -122,6 +124,9 @@ const TableResult = React.memo((props: Props) => {
     setColumns(newColumns)
   }, [result, query])
 
+  const tableMinWidth =
+    columns.length > 0 ? `${columns.length * MIN_COLUMN_WIDTH_PX}px` : undefined
+
   const isDataArr =
     !React.isValidElement(result) && !(isArray(result) && isEmpty(result))
   const isDataEl = React.isValidElement(result)
@@ -138,7 +143,11 @@ const TableResult = React.memo((props: Props) => {
       </div>
       {isDataArr && (
         <div data-testid={`query-table-result-${query}`}>
-          <Table columns={columns} data={result ?? []} />
+          <Table
+            columns={columns}
+            data={result ?? []}
+            minWidth={tableMinWidth}
+          />
         </div>
       )}
       {isDataEl && <div className={cx('resultEl')}>{result}</div>}
