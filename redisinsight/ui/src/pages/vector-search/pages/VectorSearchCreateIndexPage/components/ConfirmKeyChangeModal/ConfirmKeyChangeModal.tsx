@@ -28,7 +28,7 @@ export const ConfirmKeyChangeModal = ({
 
       <Col gap="m">
         <Text color="secondary" data-testid="change-key-modal-message">
-          You have modified the index fields. Selecting a different key will
+          You have modified the index types. Selecting a different key will
           discard your changes and load fields from the new key.
         </Text>
         <Spacer size="xl" />
