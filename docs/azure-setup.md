@@ -62,7 +62,26 @@ If you see this error:
 
 > Invalid resource. The client has requested access to a resource which is not listed in the requested permissions in the client's application registration.
 
-This means admin consent has not been granted for the RedisInsight application in your Azure tenant. Follow the "Using Azure CLI" steps above.
+This means admin consent has not been granted for the RedisInsight application in your Azure tenant. Follow the "Granting Admin Consent (Azure CLI)" steps above.
+
+### Error: AADSTS65006 - No entitlements matching required permissions
+
+If you see this error:
+
+> Resource 'acca5fbb-...' had no entitlements matching required permissions configured on the required resource access for client '61f3d82d-...'.
+
+This means the Azure Cache for Redis API permissions haven't been granted. Run these commands:
+
+```bash
+# Create the service principal for Azure Cache for Redis API
+az ad sp create --id acca5fbb-b7e4-4009-81f1-37e38fd66d78
+
+# Grant permission
+az ad app permission grant \
+  --id 61f3d82d-2bf3-432a-ba1b-c056e4cf0fd0 \
+  --api acca5fbb-b7e4-4009-81f1-37e38fd66d78 \
+  --scope user_impersonation
+```
 
 ### Error: AADSTS650052 - Lacks a service principal
 

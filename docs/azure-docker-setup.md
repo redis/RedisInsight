@@ -4,6 +4,22 @@ This guide covers using Azure Entra ID authentication with RedisInsight when run
 
 > **Prerequisites:** Your Azure tenant must have admin consent granted for RedisInsight. See [Azure Setup Guide](azure-setup.md) for initial setup.
 
+## Important: Localhost Access Required
+
+Azure Entra ID authentication in RedisInsight uses a **public client application** which only supports `localhost` redirect URIs. This means:
+
+- ✅ Access via `http://localhost:PORT` - **works**
+- ❌ Access via `http://127.0.0.1:PORT` - does not work
+- ❌ Access via `http://your-server-ip:PORT` - does not work
+- ❌ Access via custom domain - does not work
+
+If you need to access RedisInsight from a remote machine, use SSH port forwarding:
+
+```bash
+ssh -L 5540:localhost:5540 user@remote-server
+# Then access http://localhost:5540 on your local machine
+```
+
 ## Supported Ports
 
 Azure Entra ID authentication is supported on the following localhost ports:
