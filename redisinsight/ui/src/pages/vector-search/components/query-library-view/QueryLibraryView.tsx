@@ -11,6 +11,7 @@ import { QueryLibraryItem, QueryLibraryItemType } from '../query-library-item'
 import { DeleteQueryModal } from './components/delete-query-modal'
 import { useQueryLibrary } from './hooks/useQueryLibrary'
 import { QueryLibraryViewProps } from './QueryLibraryView.types'
+import { buildLoadQuery } from './QueryLibraryView.utils'
 import * as S from './QueryLibraryView.styles'
 
 const SERVICE_TYPE_TO_UI_TYPE: Record<QueryLibraryType, QueryLibraryItemType> =
@@ -64,7 +65,7 @@ export const QueryLibraryView = ({ onRun, onLoad }: QueryLibraryViewProps) => {
             query_type: SERVICE_TYPE_TO_UI_TYPE[item.type],
           },
         })
-        onLoad(item.query)
+        onLoad(buildLoadQuery(item))
       }
     },
     [getItemById, onLoad, instanceId],
