@@ -1,12 +1,7 @@
 import React from 'react'
-
 import { useSelector } from 'react-redux'
 
-import {
-  CloudSsoUtmCampaign,
-  OAuthSocialAction,
-  OAuthSocialSource,
-} from 'uiSrc/slices/interfaces'
+import { OAuthSocialAction } from 'uiSrc/slices/interfaces'
 import {
   FeatureFlagComponent,
   OAuthConnectFreeDb,
@@ -14,65 +9,64 @@ import {
 } from 'uiSrc/components'
 import { freeInstancesSelector } from 'uiSrc/slices/instances/instances'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
-import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
+import {
+  EXTERNAL_LINKS,
+  UTM_CAMPAINGS,
+  UTM_MEDIUMS,
+} from 'uiSrc/constants/links'
 import { FeatureFlags } from 'uiSrc/constants'
 import { Text, Title } from 'uiSrc/components/base/text'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import * as S from './FilterNotAvailable.styles'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import { Link } from 'uiSrc/components/base/link/Link'
+import { FeatureNotAvailableProps } from './FeatureNotAvailable.types'
+import * as S from './FeatureNotAvailable.styles'
 
-const utm = {
-  medium: 'main',
-  campaign: UTM_CAMPAINGS[CloudSsoUtmCampaign.BrowserFilter],
-}
-
-const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
+const FeatureNotAvailable = ({
+  onClose,
+  content,
+}: FeatureNotAvailableProps) => {
   const freeInstances = useSelector(freeInstancesSelector) || []
-  const onFreeDatabaseClick = () => {
-    onClose?.()
+  const learnMoreUtm = {
+    medium: UTM_MEDIUMS.Main,
+    campaign: UTM_CAMPAINGS[content.oauthSource],
   }
+
   return (
-    <S.Container gap="l">
+    <S.Container gap="l" data-testid={content.testId}>
       <RiIcon type="RedisDbBlueIcon" size="original" />
-      <Title size="L" data-testid="filter-not-available-title">
-        Upgrade your Redis database to version 6 or above
+      <Title size="L" data-testid={`${content.testId}-title`}>
+        {content.title}
       </Title>
-      <Text color="primary">
-        Filtering by data type is supported in Redis 6 and above.
+      <Text color="primary" data-testid={`${content.testId}-description`}>
+        {content.description}
       </Text>
       {!!freeInstances.length && (
         <>
-          <Text color="primary">
-            Use your free all-in-one Redis Cloud database to start exploring
-            these capabilities.
-          </Text>
+          <Text color="primary">{content.freeInstanceText}</Text>
           <OAuthConnectFreeDb
             id={freeInstances[0].id}
-            source={OAuthSocialSource.BrowserFiltering}
+            source={content.oauthSource}
             onSuccessClick={onClose}
           />
         </>
       )}
       {!freeInstances.length && (
         <FeatureFlagComponent name={FeatureFlags.cloudAds}>
-          <Text color="primary">
-            Create a free Redis Cloud database that supports filtering and
-            extends the core capabilities of your Redis.
-          </Text>
+          <Text color="primary">{content.noInstanceText}</Text>
           <Col align="center" gap="m">
             <OAuthSsoHandlerDialog>
               {(ssoCloudHandlerClick) => (
                 <PrimaryButton
                   onClick={(e) => {
                     ssoCloudHandlerClick(e, {
-                      source: OAuthSocialSource.BrowserFiltering,
+                      source: content.oauthSource,
                       action: OAuthSocialAction.Create,
                     })
-                    onFreeDatabaseClick()
+                    onClose?.()
                   }}
-                  data-testid="get-started-link"
+                  data-testid={`${content.testId}-get-started-link`}
                   size="m"
                 >
                   Get Started For Free
@@ -82,8 +76,8 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
             <Link
               variant="inline"
               target="_blank"
-              href={getUtmExternalLink(EXTERNAL_LINKS.redisStack, utm)}
-              data-testid="learn-more-link"
+              href={getUtmExternalLink(EXTERNAL_LINKS.redisStack, learnMoreUtm)}
+              data-testid={`${content.testId}-learn-more-link`}
             >
               Learn More
             </Link>
@@ -94,4 +88,4 @@ const FilterNotAvailable = ({ onClose }: { onClose?: () => void }) => {
   )
 }
 
-export default FilterNotAvailable
+export default FeatureNotAvailable

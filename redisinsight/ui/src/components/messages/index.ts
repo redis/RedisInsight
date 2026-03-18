@@ -1,11 +1,16 @@
 import ModuleNotLoaded from './module-not-loaded'
 import ModuleNotLoadedMinimalized from './module-not-loaded-minimalized'
-import FilterNotAvailable from './filter-not-available'
+import FeatureNotAvailable from './feature-not-available'
 import DatabaseNotOpened from './database-not-opened'
 
 export {
   ModuleNotLoaded,
   ModuleNotLoadedMinimalized,
-  FilterNotAvailable,
+  FeatureNotAvailable,
   DatabaseNotOpened,
 }
+export type { FeatureNotAvailableContent } from './feature-not-available'
+export {
+  FILTER_NOT_AVAILABLE_CONTENT,
+  REDISEARCH_VERSION_REQUIRED_CONTENT,
+} from './feature-not-available'
