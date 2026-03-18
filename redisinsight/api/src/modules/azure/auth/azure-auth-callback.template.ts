@@ -1,7 +1,7 @@
 import { AzureAuthStatus } from '../constants';
 
 /**
- * Result data sent via postMessage to the opener window.
+ * Result data stored in localStorage for the opener window to read.
  */
 export interface AzureOAuthCallbackResult {
   status: AzureAuthStatus;
@@ -24,6 +24,18 @@ export interface GenerateCallbackOptions {
 }
 
 /**
+ * Sanitize a string for safe embedding in HTML/JavaScript.
+ * Prevents XSS by escaping characters that could break out of script context.
+ */
+const sanitizeForHtml = (str: string): string =>
+  str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+
+/**
  * Generate HTML page for Azure OAuth web callback.
  * This page redirects to the UI origin with the result, allowing
  * the popup to communicate with the main window via localStorage.
@@ -32,7 +44,13 @@ export const generateCallbackHtml = (
   options: GenerateCallbackOptions,
 ): string => {
   const { result, isDevMode = false } = options;
-  const resultJson = JSON.stringify(result);
+
+  // Sanitize the error message to prevent XSS
+  const sanitizedResult = {
+    ...result,
+    error: result.error ? sanitizeForHtml(result.error) : undefined,
+  };
+  const resultJson = JSON.stringify(sanitizedResult);
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -103,13 +121,6 @@ export const generateCallbackHtml = (
           }));
         } catch (e) {
           // Storage failed
-        }
-
-        // Try postMessage as well (works if opener is same-origin)
-        if (window.opener) {
-          try {
-            window.opener.postMessage({ type: 'azure-oauth-callback', payload: result }, '*');
-          } catch (e) {}
         }
 
         setTimeout(function() { window.close(); }, 1000);
