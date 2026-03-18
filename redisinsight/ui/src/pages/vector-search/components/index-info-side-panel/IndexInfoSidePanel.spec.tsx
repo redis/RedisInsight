@@ -33,10 +33,11 @@ describe('IndexInfoSidePanel', () => {
   })
 
   it('should render panel with header and close button', () => {
-    renderComponent()
+    const indexName = faker.string.alphanumeric(10)
+    renderComponent({ indexName })
 
     const panel = screen.getByTestId('view-index-panel')
-    const title = screen.getByText('View index')
+    const title = screen.getByText(indexName)
     const closeBtn = screen.getByTestId('close-index-panel-btn')
 
     expect(panel).toBeInTheDocument()
