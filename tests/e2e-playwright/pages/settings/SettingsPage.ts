@@ -98,9 +98,7 @@ export class SettingsPage extends BasePage {
     this.pipelineCommandsText = workbenchSection.getByText(/Commands in pipeline/i);
     this.pipelineCommandsValue = workbenchSection.getByTestId('pipeline-bunch-value');
     this.pipelineCommandsInput = workbenchSection.getByTestId('pipeline-bunch-input');
-    this.pipelineApplyButton = this.pipelineCommandsInput
-      .locator('xpath=ancestor::form')
-      .getByTestId('apply-btn');
+    this.pipelineApplyButton = this.pipelineCommandsInput.locator('xpath=ancestor::form').getByTestId('apply-btn');
 
     // Advanced settings
     this.advancedWarning = page.getByRole('alert').filter({ hasText: /Advanced settings/i });
@@ -287,6 +285,9 @@ export class SettingsPage extends BasePage {
     await this.pipelineCommandsInput.clear();
     await this.pipelineCommandsInput.fill(String(value));
     await this.pipelineApplyButton.click();
+  }
+
+  /**
    * Get current keys-to-scan value
    */
   async getKeysToScan(): Promise<string> {

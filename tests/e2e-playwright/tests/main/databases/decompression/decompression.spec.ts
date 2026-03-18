@@ -60,10 +60,7 @@ test.describe('Decompression', () => {
     await editDialog.waitFor({ state: 'hidden' });
   });
 
-  test('should decompress GZIP-compressed key values in Browser', async ({
-    apiHelper,
-    browserPage,
-  }) => {
+  test('should decompress GZIP-compressed key values in Browser', async ({ apiHelper, browserPage }) => {
     const originalText = 'Hello, this is decompressed data!';
     const keyName = `decompression-test:${Date.now()}`;
     const compressedBuffer = gzipSync(Buffer.from(originalText));

@@ -19,6 +19,15 @@ export const StandaloneConfigFactory = Factory.define<AddDatabaseConfig>(() => (
 }));
 
 /**
+ * Standalone V5 database configuration factory (no Search module)
+ */
+export const StandaloneV5ConfigFactory = Factory.define<AddDatabaseConfig>(() => ({
+  host: redisConfig.standaloneV5.host,
+  port: redisConfig.standaloneV5.port,
+  name: `${TEST_DB_PREFIX}standalone-v5-${faker.string.alphanumeric(8)}`,
+}));
+
+/**
  * Standalone V7 database configuration factory
  */
 export const StandaloneV7ConfigFactory = Factory.define<AddDatabaseConfig>(() => ({
@@ -54,6 +63,16 @@ export const SentinelConfigFactory = Factory.define<AddDatabaseConfig & { master
   password: redisConfig.sentinel.password,
   name: `${TEST_DB_PREFIX}sentinel-${faker.string.alphanumeric(8)}`,
   masterName: redisConfig.sentinel.masterName,
+}));
+
+/**
+ * Standalone Empty database configuration factory
+ * Dedicated server (port 8105) for tests that need an isolated, empty Redis instance
+ */
+export const StandaloneEmptyConfigFactory = Factory.define<AddDatabaseConfig>(() => ({
+  host: redisConfig.standaloneEmpty.host,
+  port: redisConfig.standaloneEmpty.port,
+  name: `${TEST_DB_PREFIX}standalone-empty-${faker.string.alphanumeric(8)}`,
 }));
 
 /**

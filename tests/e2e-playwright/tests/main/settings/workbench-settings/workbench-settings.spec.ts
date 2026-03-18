@@ -27,10 +27,7 @@ test.describe('Workbench Settings', () => {
     await expect(settingsPage.pipelineCommandsText).toBeVisible();
   });
 
-  test('should save editor cleanup when toggled', async ({
-    settingsPage,
-    databasesPage,
-  }) => {
+  test('should save editor cleanup when toggled', async ({ settingsPage, databasesPage }) => {
     await settingsPage.expandWorkbench();
     await expect(settingsPage.editorCleanupSwitch).toBeVisible();
 
@@ -50,10 +47,7 @@ test.describe('Workbench Settings', () => {
     expect(restoredState).toBe(initialState);
   });
 
-  test('should save pipeline commands when changed', async ({
-    settingsPage,
-    databasesPage,
-  }) => {
+  test('should save pipeline commands when changed', async ({ settingsPage, databasesPage }) => {
     await settingsPage.expandWorkbench();
     await expect(settingsPage.pipelineCommandsValue).toBeVisible();
 
@@ -69,9 +63,7 @@ test.describe('Workbench Settings', () => {
 
     const restoreValue = initialValue.trim() ? parseInt(initialValue, 10) : 5;
     await settingsPage.setPipelineCommandsAndApply(restoreValue);
-    await expect(settingsPage.pipelineCommandsValue).toHaveText(
-      String(restoreValue),
-    );
+    await expect(settingsPage.pipelineCommandsValue).toHaveText(String(restoreValue));
   });
 });
 
@@ -91,10 +83,7 @@ test.describe('Workbench Settings take effect', () => {
     }
   });
 
-  test('editor cleanup when enabled clears editor after running command', async ({
-    settingsPage,
-    workbenchPage,
-  }) => {
+  test('editor cleanup when enabled clears editor after running command', async ({ settingsPage, workbenchPage }) => {
     await settingsPage.goto();
     await settingsPage.expandWorkbench();
     if (!(await settingsPage.isEditorCleanupEnabled())) {
@@ -108,10 +97,7 @@ test.describe('Workbench Settings take effect', () => {
     expect(editorContent.trim()).toBe('');
   });
 
-  test('editor cleanup when disabled keeps command in editor after run', async ({
-    settingsPage,
-    workbenchPage,
-  }) => {
+  test('editor cleanup when disabled keeps command in editor after run', async ({ settingsPage, workbenchPage }) => {
     await settingsPage.goto();
     await settingsPage.expandWorkbench();
     if (await settingsPage.isEditorCleanupEnabled()) {

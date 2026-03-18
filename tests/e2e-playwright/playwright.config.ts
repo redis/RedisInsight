@@ -61,6 +61,7 @@ const config: PlaywrightTestConfig<CustomTestOptions> = {
     {
       name: 'chromium',
       testDir: './tests/main',
+      grepInvert: /@serial/,
       dependencies: ['browser-setup'],
       use: {
         ...devices['Desktop Chrome'],
@@ -68,6 +69,20 @@ const config: PlaywrightTestConfig<CustomTestOptions> = {
         apiUrl: appConfig.apiUrl,
       },
       workers: 4,
+      timeout: 60000,
+    },
+    {
+      name: 'chromium-serial',
+      testDir: './tests/main',
+      grep: /@serial/,
+      dependencies: ['browser-setup'],
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: appConfig.clientUrl,
+        apiUrl: appConfig.apiUrl,
+      },
+      fullyParallel: false,
+      workers: 1,
       timeout: 60000,
     },
 
