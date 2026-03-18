@@ -36,6 +36,16 @@ const sanitizeForHtml = (str: string): string =>
     .replace(/'/g, '&#x27;');
 
 /**
+ * Escape JSON string for safe embedding in HTML script context.
+ * Prevents XSS by escaping sequences that could break out of script tags.
+ */
+const escapeJsonForScript = (json: string): string =>
+  json
+    .replace(/</g, '\\u003c') // Escape < to prevent </script> attacks
+    .replace(/>/g, '\\u003e') // Escape > for completeness
+    .replace(/&/g, '\\u0026'); // Escape & for HTML entity safety
+
+/**
  * Generate HTML page for Azure OAuth web callback.
  * This page redirects to the UI origin with the result, allowing
  * the popup to communicate with the main window via localStorage.
@@ -45,12 +55,22 @@ export const generateCallbackHtml = (
 ): string => {
   const { result, isDevMode = false } = options;
 
-  // Sanitize the error message to prevent XSS
+  // Sanitize all string fields in the result to prevent XSS
   const sanitizedResult = {
     ...result,
     error: result.error ? sanitizeForHtml(result.error) : undefined,
+    account: result.account
+      ? {
+          id: sanitizeForHtml(result.account.id),
+          username: sanitizeForHtml(result.account.username),
+          name: result.account.name
+            ? sanitizeForHtml(result.account.name)
+            : undefined,
+        }
+      : undefined,
   };
-  const resultJson = JSON.stringify(sanitizedResult);
+  // Escape the JSON for safe embedding in script context
+  const resultJson = escapeJsonForScript(JSON.stringify(sanitizedResult));
 
   return `<!DOCTYPE html>
 <html lang="en">

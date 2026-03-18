@@ -170,7 +170,8 @@ export class AzureAuthService {
       return {
         status: AzureAuthStatus.Failed,
         error: 'Invalid or expired authentication state',
-        redirectType: AzureOAuthRedirectType.Deeplink, // Default for unknown requests
+        // Default to Web since deeplink flows redirect to redisinsight:// and never reach HTTP callback
+        redirectType: AzureOAuthRedirectType.Web,
       };
     }
 

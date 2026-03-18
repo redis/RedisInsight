@@ -98,48 +98,9 @@ const GlobalAzureAuth = () => {
       return undefined
     }
 
-    // Check if we're in the popup window that was redirected from the API
-    // URL will be like: /azure-auth-callback?result=<base64-encoded-result>
-    const checkUrlForResult = () => {
-      const url = new URL(window.location.href)
-      if (
-        url.pathname === '/azure-auth-callback' &&
-        url.searchParams.has('result')
-      ) {
-        try {
-          const encodedResult = url.searchParams.get('result')!
-          const result = JSON.parse(atob(decodeURIComponent(encodedResult)))
-
-          // Store in localStorage for the main window to pick up
-          localStorage.setItem(
-            AZURE_OAUTH_STORAGE_KEY,
-            JSON.stringify({
-              timestamp: Date.now(),
-              result,
-            }),
-          )
-
-          // Close this popup window after a short delay
-          setTimeout(() => {
-            window.close()
-          }, 500)
-
-          return true
-        } catch {
-          // Failed to parse result from URL
-        }
-      }
-      return false
-    }
-
-    // If we're in the popup, handle the result and close
-    if (checkUrlForResult()) {
-      return undefined
-    }
-
-    // Main window logic below:
-
     // Poll localStorage for OAuth results from popup
+    // Note: The popup window uses AzureAuthCallbackPage (routed at /azure-auth-callback)
+    // to store the result in localStorage, then this component picks it up.
     const checkLocalStorage = () => {
       try {
         const stored = localStorage.getItem(AZURE_OAUTH_STORAGE_KEY)
