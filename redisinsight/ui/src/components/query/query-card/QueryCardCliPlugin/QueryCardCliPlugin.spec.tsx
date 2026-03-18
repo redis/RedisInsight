@@ -365,11 +365,7 @@ describe('QueryCardCliPlugin', () => {
       const createEventSpy = jest.spyOn(document, 'createEvent')
 
       ;(pluginApi.onEvent as jest.Mock).mockImplementation(
-        (
-          _iframeId: string,
-          event: string,
-          callback: (data?: any) => void,
-        ) => {
+        (_iframeId: string, event: string, callback: (data?: any) => void) => {
           if (event === PluginEvents.loaded) {
             callback()
           }

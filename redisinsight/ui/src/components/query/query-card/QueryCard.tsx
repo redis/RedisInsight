@@ -84,10 +84,14 @@ const resolveInitialView = (
   query: string,
   instanceId: string,
 ): { viewType: WBQueryType; selectedValue: string } | null => {
-  if (!hasTimeSeriesVisualization(views, query)) return null
+  if (!hasTimeSeriesVisualization(views, query)) {
+    return null
+  }
 
   const prefs = getWbTsResultPreferences(instanceId)
-  if (!prefs) return null
+  if (!prefs) {
+    return null
+  }
 
   if (prefs.selectedView === 'text') {
     return {
@@ -96,19 +100,9 @@ const resolveInitialView = (
     }
   }
 
-  const pluginAvailable = views.some(
-    (v) => v.uniqId === REDISTIMESERIES_CHART_ID,
-  )
-  if (pluginAvailable) {
-    return {
-      viewType: WBQueryType.Plugin,
-      selectedValue: REDISTIMESERIES_CHART_ID,
-    }
-  }
-
   return {
-    viewType: WBQueryType.Text,
-    selectedValue: DEFAULT_TEXT_VIEW_TYPE.id,
+    viewType: WBQueryType.Plugin,
+    selectedValue: REDISTIMESERIES_CHART_ID,
   }
 }
 
