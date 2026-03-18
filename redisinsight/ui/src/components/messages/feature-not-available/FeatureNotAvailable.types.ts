@@ -8,3 +8,8 @@ export interface FeatureNotAvailableContent {
   noInstanceText: string
   oauthSource: OAuthSocialSource
 }
+
+export interface FeatureNotAvailableProps {
+  onClose?: () => void
+  content: FeatureNotAvailableContent
+}

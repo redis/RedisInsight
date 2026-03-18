@@ -20,18 +20,12 @@ import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import { Link } from 'uiSrc/components/base/link/Link'
-import { FeatureNotAvailableContent } from './FeatureNotAvailable.types'
-import { FILTER_NOT_AVAILABLE_CONTENT } from './constants'
+import { FeatureNotAvailableProps } from './FeatureNotAvailable.types'
 import * as S from './FeatureNotAvailable.styles'
-
-interface FeatureNotAvailableProps {
-  onClose?: () => void
-  content?: FeatureNotAvailableContent
-}
 
 const FeatureNotAvailable = ({
   onClose,
-  content = FILTER_NOT_AVAILABLE_CONTENT,
+  content,
 }: FeatureNotAvailableProps) => {
   const freeInstances = useSelector(freeInstancesSelector) || []
   const learnMoreUtm = {
