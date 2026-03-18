@@ -17,7 +17,6 @@ import {
 import { AppDispatch } from 'uiSrc/slices/store'
 import { Pages } from 'uiSrc/constants'
 
-const AZURE_OAUTH_CALLBACK_MESSAGE_TYPE = 'azure-oauth-callback'
 const AZURE_OAUTH_STORAGE_KEY = 'ri_azure_oauth_result'
 const STORAGE_POLL_INTERVAL = 500 // ms
 const STORAGE_RESULT_MAX_AGE = 30000 // 30 seconds
@@ -32,17 +31,12 @@ interface AzureOAuthCallbackPayload {
   error?: string
 }
 
-interface AzureOAuthPostMessage {
-  type: string
-  payload: AzureOAuthCallbackPayload
-}
-
 const riConfig = getConfig()
 const isElectron = riConfig.app.type === 'ELECTRON'
 
 /**
- * Global Azure Auth listener for web flow.
- * Listens for postMessage events and polls localStorage for OAuth results.
+ * Global Azure Auth handler for web flow.
+ * Polls localStorage for OAuth results from the popup window.
  * This component should be mounted in the main App for non-Electron builds.
  */
 const GlobalAzureAuth = () => {
@@ -125,21 +119,6 @@ const GlobalAzureAuth = () => {
             }),
           )
 
-          // Also try postMessage if opener exists
-          if (window.opener) {
-            try {
-              window.opener.postMessage(
-                {
-                  type: AZURE_OAUTH_CALLBACK_MESSAGE_TYPE,
-                  payload: result,
-                },
-                '*',
-              )
-            } catch {
-              // Ignore errors
-            }
-          }
-
           // Close this popup window after a short delay
           setTimeout(() => {
             window.close()
@@ -160,19 +139,7 @@ const GlobalAzureAuth = () => {
 
     // Main window logic below:
 
-    // Handle postMessage events (for same-origin popup communication)
-    const handlePostMessage = (event: MessageEvent<AzureOAuthPostMessage>) => {
-      if (event.data?.type !== AZURE_OAUTH_CALLBACK_MESSAGE_TYPE) {
-        return
-      }
-
-      const { payload } = event.data
-      if (payload) {
-        processCallbackPayload(payload)
-      }
-    }
-
-    // Poll localStorage for OAuth results (cross-origin workaround)
+    // Poll localStorage for OAuth results from popup
     const checkLocalStorage = () => {
       try {
         const stored = localStorage.getItem(AZURE_OAUTH_STORAGE_KEY)
@@ -195,14 +162,12 @@ const GlobalAzureAuth = () => {
       }
     }
 
-    window.addEventListener('message', handlePostMessage)
     const pollInterval = setInterval(checkLocalStorage, STORAGE_POLL_INTERVAL)
 
     // Check immediately in case result is already there
     checkLocalStorage()
 
     return () => {
-      window.removeEventListener('message', handlePostMessage)
       clearInterval(pollInterval)
     }
   }, [dispatch, history])
