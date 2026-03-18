@@ -20,6 +20,10 @@ export const useQueryLibrary = () => {
   const indexName = rawIndexName ? decodeURIComponent(rawIndexName) : ''
 
   const [items, setItems] = useState<QueryLibraryItem[]>([])
+  // Whether the library contains any items at all, ignoring the active search filter.
+  // Updated only on unfiltered fetches and deletions, so it stays stable
+  // during debounced search transitions and avoids UI flicker.
+  const [hasItemsBeforeSearch, setHasItems] = useState(false)
   const [loading, setLoading] = useState<boolean>()
   const [error, setError] = useState<string | null>(null)
   const [search, setSearch] = useState('')
@@ -40,6 +44,9 @@ export const useQueryLibrary = () => {
           search: searchTerm || undefined,
         })
         setItems(data)
+        if (!searchTerm) {
+          setHasItems(data.length > 0)
+        }
       } catch {
         setItems([])
         setError('Failed to load query library')
@@ -82,7 +89,13 @@ export const useQueryLibrary = () => {
 
       try {
         await serviceRef.current.delete(databaseId, id)
-        setItems((prev) => prev.filter((item) => item.id !== id))
+        setItems((prev) => {
+          const remaining = prev.filter((item) => item.id !== id)
+          if (remaining.length === 0 && !search) {
+            setHasItems(false)
+          }
+          return remaining
+        })
         setOpenItemId((prev) => (prev === id ? null : prev))
         dispatch(
           addMessageNotification(queryLibraryNotifications.queryDeleted()),
@@ -92,7 +105,7 @@ export const useQueryLibrary = () => {
         return false
       }
     },
-    [databaseId, dispatch],
+    [databaseId, dispatch, search],
   )
 
   const toggleItemOpen = useCallback((id: string) => {
@@ -106,6 +119,7 @@ export const useQueryLibrary = () => {
 
   return {
     items,
+    hasItemsBeforeSearch,
     loading,
     error,
     search,

@@ -15,6 +15,7 @@ const mockItems = queryLibraryItemFactory.buildList(2)
 
 const mockUseQueryLibrary = {
   items: mockItems,
+  hasItemsBeforeSearch: true,
   loading: false,
   error: null as string | null,
   search: '',
@@ -56,6 +57,7 @@ describe('QueryLibraryView', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockUseQueryLibrary.items = mockItems
+    mockUseQueryLibrary.hasItemsBeforeSearch = true
     mockUseQueryLibrary.loading = false
     mockUseQueryLibrary.error = null
     mockUseQueryLibrary.search = ''
@@ -73,7 +75,26 @@ describe('QueryLibraryView', () => {
       expect(container).toBeInTheDocument()
     })
 
-    it('should render search input', () => {
+    it('should render search input when items exist', () => {
+      renderComponent()
+
+      const searchInput = screen.getByTestId('query-library-search')
+      expect(searchInput).toBeInTheDocument()
+    })
+
+    it('should not render search bar when there are no items and no search', () => {
+      mockUseQueryLibrary.items = []
+      mockUseQueryLibrary.hasItemsBeforeSearch = false
+      renderComponent()
+
+      const searchInput = screen.queryByTestId('query-library-search')
+      expect(searchInput).not.toBeInTheDocument()
+    })
+
+    it('should render search bar when search is active even with no items', () => {
+      mockUseQueryLibrary.items = []
+      mockUseQueryLibrary.hasItemsBeforeSearch = false
+      mockUseQueryLibrary.search = 'test'
       renderComponent()
 
       const searchInput = screen.getByTestId('query-library-search')
