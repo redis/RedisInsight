@@ -1,7 +1,31 @@
 ---
-name: ''
-overview: ''
-todos: []
+name: 'RI-8123 Workbench output settings'
+overview: 'Persist RedisTimeSeries Workbench output preferences (selected view and chart config) per database so the next compatible result reuses the user''s last settings.'
+todos:
+  - id: types-and-storage
+    content: 'Add storage key (wbTsResultPreferences) in storage.ts, define WorkbenchTsResultPreferences and PersistedTsChartConfig types, implement get/set/merge helper functions'
+    status: pending
+  - id: query-card-view-persistence
+    content: 'Update QueryCard to initialize selectedView from persisted preferences for TS commands and persist on dropdown change; handle useEffect race with visualizations'
+    status: pending
+  - id: plugin-host-bridge
+    content: 'Update QueryCardCliPlugin to pass initialPreferences.chartConfig in executeCommand for redistimeseries-chart and dual-write filtered chart subset to localStorage in setPluginState handler'
+    status: pending
+  - id: plugin-entrypoints
+    content: 'Update redistimeseries-app main.tsx and App.tsx to accept and forward initialPreferences; add redisinsight-plugin-sdk as dependency'
+    status: pending
+  - id: chart-result-view
+    content: 'Update ChartResultView to merge persisted config with data-derived defaults and call plugin SDK setState with reusable subset on config change'
+    status: pending
+  - id: unit-tests
+    content: 'Add unit tests for storage helpers, QueryCard view persistence, QueryCardCliPlugin dual-write and payload, and ChartResultView merge logic'
+    status: pending
+  - id: e2e-tests
+    content: 'Add Playwright tests for text-view persistence, chart-toggle persistence, and per-database isolation'
+    status: pending
+  - id: lint-typecheck
+    content: 'Run yarn lint:ui, yarn type-check:ui, and targeted tests; fix any issues'
+    status: pending
 isProject: false
 ---
 
@@ -162,6 +186,7 @@ Changes:
 - when the user changes the dropdown view:
   - preserve current behavior and telemetry
   - additionally persist `selectedView`
+- update the existing `useEffect` that reacts to `visualizations` loading so it does not overwrite a persisted RedisTimeSeries view selection after mount
 
 Rules:
 
@@ -170,6 +195,7 @@ Rules:
   - results mode is `Default`
 - grouped results mode should ignore this feature
 - if persisted `selectedView` points to plugin view but the plugin is not available, fall back to text
+- if visualizations arrive after the initial render, recompute available options but preserve the persisted view when it is still valid; only fall back to the plugin default when there is no persisted view or the persisted plugin view is unavailable
 
 Implementation detail:
 
@@ -211,7 +237,7 @@ Do not rely on per-command plugin `getState()` for this feature's initial value.
 
 ### 4. Use one concrete iframe-to-host mechanism
 
-Do not introduce a new dependency and do not leave the mechanism open-ended.
+Do not leave the mechanism open-ended.
 
 Use the existing plugin event bridge already implemented in `QueryCardCliPlugin`:
 
@@ -224,6 +250,18 @@ Use the existing plugin event bridge already implemented in `QueryCardCliPlugin`
 
 This keeps the bridge consistent with the current plugin contract and avoids inventing a second event path.
 
+Concrete decision:
+
+- use the existing local package `redisinsight-plugin-sdk` from inside `redistimeseries-app`
+- do not extend `globalThis.PluginSDK` in `pluginImport.ts`
+- do not introduce any new external npm dependency
+
+Reasoning:
+
+- `redisinsight-plugin-sdk` already implements `setState(...)`
+- it already handles request id generation, callback wiring, and host message transport
+- the injected `globalThis.PluginSDK` surface currently only exposes plugin load helpers and should remain unchanged for this feature
+
 ### 5. Teach the RedisTimeSeries iframe to emit only the reusable subset
 
 Files:
@@ -231,6 +269,7 @@ Files:
 - `redisinsight/ui/src/packages/redistimeseries-app/src/main.tsx`
 - `redisinsight/ui/src/packages/redistimeseries-app/src/App.tsx`
 - `redisinsight/ui/src/packages/redistimeseries-app/src/components/Chart/ChartResultView.tsx`
+- `redisinsight/ui/src/packages/redistimeseries-app/package.json`
 
 Changes in `main.tsx`:
 
@@ -250,8 +289,20 @@ Changes in `ChartResultView.tsx`:
   - data-derived defaults (`timeUnit`, `keyToY2Axis`)
   - persisted subset
 - on each change to persisted fields (`mode`, `timeUnit`, `staircase`, `fill`):
-  - call plugin SDK `setState(...)`
+  - import `setState` from `redisinsight-plugin-sdk`
+  - call `setState(...)`
   - emit only the reusable subset, not the full `ChartConfig`
+
+Changes in `package.json`:
+
+- add the local workspace dependency needed by the iframe package to call `setState(...)`
+- use the existing in-repo package, not an external registry dependency
+
+Merge rule:
+
+- persisted values always win over derived defaults for persisted fields
+- `determineDefaultTimeUnits(props.data)` is used only when there is no persisted `timeUnit`
+- data-derived values remain the source of truth only for non-persisted, result-shaped fields such as `keyToY2Axis`
 
 Required emitted state shape:
 
@@ -329,6 +380,8 @@ Add tests for:
 - RedisTimeSeries card initializes to persisted `text` view
 - RedisTimeSeries card initializes to persisted plugin view
 - non-TimeSeries card ignores persisted view
+- late `visualizations` loading does not reset a persisted RedisTimeSeries `text` view back to the plugin default
+- late `visualizations` loading preserves a persisted plugin view when that plugin becomes available
 - changing dropdown to text persists `selectedView = text`
 - changing dropdown back to plugin persists `selectedView = plugin:redistimeseries-chart`
 
@@ -348,9 +401,17 @@ Add tests for:
 
 - initial config merges persisted values with built-in defaults
 - missing persisted config uses current defaults
+- persisted `timeUnit` overrides `determineDefaultTimeUnits(props.data)` when both are present
+- data-derived `timeUnit` is used only when persisted `timeUnit` is absent
 - invalid persisted values are ignored
 - changing `mode`, `timeUnit`, `staircase`, or `fill` triggers `setState` with subset only
 - changing advanced options does not emit persisted-only payload changes unless one of the persisted fields changed
+
+Scope note:
+
+- `redistimeseries-app` does not currently have established component-test coverage for this flow
+- adding first-time package-level component test infrastructure for Plotly rendering is not required for this ticket
+- if package-level unit coverage is expensive, prefer validating merge/filter behavior in host-side tests plus end-to-end coverage for the user-visible outcome
 
 ### E2E / Playwright
 
@@ -386,9 +447,10 @@ Add one isolation scenario:
 3. Update `QueryCardCliPlugin` to pass initial chart defaults and dual-write filtered chart preferences on `setState`.
 4. Update the RedisTimeSeries package entrypoints to accept initial preferences.
 5. Update `ChartResultView` to merge persisted config and emit subset state through existing plugin `setState`.
-6. Add unit tests for storage, host card behavior, host plugin bridge, and chart result view.
+6. Add unit tests for storage, host card behavior, and host plugin bridge; add package-level chart tests only if they fit existing infrastructure cheaply.
 7. Add Playwright coverage for text-view persistence, chart-toggle persistence, and per-database isolation.
 8. Run lint, type-check, and targeted tests.
+9. Delete `.cursor/plans/ri-8123-workbench-output-settings.plan.md` before the final PR is merged.
 
 ## Files expected to change
 
@@ -403,10 +465,11 @@ Add one isolation scenario:
 
 ### RedisTimeSeries package
 
+- `redisinsight/ui/src/packages/redistimeseries-app/package.json`
 - `redisinsight/ui/src/packages/redistimeseries-app/src/main.tsx`
 - `redisinsight/ui/src/packages/redistimeseries-app/src/App.tsx`
 - `redisinsight/ui/src/packages/redistimeseries-app/src/components/Chart/ChartResultView.tsx`
-- new or updated tests under `redisinsight/ui/src/packages/redistimeseries-app/src/components/Chart/`
+- optional test additions under `redisinsight/ui/src/packages/redistimeseries-app/src/components/Chart/` only if no new test infrastructure is needed
 
 ### E2E
 
@@ -416,5 +479,8 @@ Add one isolation scenario:
 
 - Do not route this through server-backed user settings.
 - Do not add a new plugin transport if the existing `setState` bridge is sufficient.
+- Do use the local `redisinsight-plugin-sdk` package for iframe `setState(...)` calls.
+- Do not extend `pluginImport.ts` / `globalThis.PluginSDK` for this feature.
 - Do not persist advanced chart fields that depend on the current dataset.
 - Do not forget text-view persistence; it is part of the user-facing problem, not an optional extension.
+- Do not expand package-level test infrastructure for `redistimeseries-app` as part of this ticket unless it turns out to be trivial.
