@@ -44,7 +44,6 @@ describe('useQueryEditor', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-
     ;(useQueryEditorContext as jest.Mock).mockReturnValue({
       monacoObjects: { current: null },
       query: 'SET key value EXAT 1',
@@ -54,7 +53,6 @@ describe('useQueryEditor', () => {
       activeIndexName: '',
       openTimestampPicker: jest.fn(),
     })
-
     ;(useRedisCompletions as jest.Mock).mockReturnValue({
       setupProviders: jest.fn(),
       disposeProviders: mockDisposeProviders,
@@ -65,7 +63,6 @@ describe('useQueryEditor', () => {
       setSuggestionsData: jest.fn(),
       getSuggestions: jest.fn().mockReturnValue({ data: [] }),
     })
-
     ;(useMonacoRedisEditor as jest.Mock).mockImplementation(({ onSetup }) => ({
       editorDidMount: (editor: any, monaco: any) => onSetup?.(editor, monaco),
       onExitSnippetMode: mockExitSnippetMode,

@@ -114,9 +114,9 @@ describe('isArgUnixTimePosition', () => {
   })
 
   it('should return true when arg type is unix-time', () => {
-    expect(
-      isArgUnixTimePosition({ type: ICommandTokenType.UnixTime }),
-    ).toBe(true)
+    expect(isArgUnixTimePosition({ type: ICommandTokenType.UnixTime })).toBe(
+      true,
+    )
   })
 
   it('should return true when arg.arguments contains unix-time (oneof/block)', () => {
