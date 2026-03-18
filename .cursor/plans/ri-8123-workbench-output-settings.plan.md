@@ -5,95 +5,416 @@ todos: []
 isProject: false
 ---
 
-# RI-8123: Remember workbench output settings — full plan
+# RI-8123: Remember Workbench output settings
 
 ## Context
 
-When running `TS.RANGE` (and TS.MRANGE, TS.REVRANGE, TS.MREVRANGE) in workbench, chart output settings (line vs points, staircase, fill, time unit) reset to defaults on every new result. Users want these preferences to persist so they don’t have to reconfigure after each command.
+When users run RedisTimeSeries commands in Workbench (`TS.RANGE`, `TS.REVRANGE`, `TS.MRANGE`, `TS.MREVRANGE`), each new result card resets to the visualization defaults:
 
-**Current flow:** QueryCardCliPlugin sends `executeCommand('renderChart', { command, data: result, mode })` to the Time Series plugin iframe. The plugin’s `ChartResultView` initializes `chartConfig` with local `useState` defaults every mount. Plugin state (getState/setState) is stored per (visualizationId, commandId) via API, so each new command gets a new commandId and no saved default.
+- chart view selected instead of the user's last chosen result view
+- line mode instead of points
+- staircase off
+- fill on
+- time unit re-derived from the result
 
----
+This is happening because the current persistence layers do not model a "next compatible Workbench result default":
 
-## 1. Implementation
+- `QueryCard` owns the selected result view (`Text` vs plugin) in local component state.
+- The RedisTimeSeries iframe owns chart config in `ChartResultView` local state.
+- Existing plugin state (`getState` / `setState`) is keyed by `(visualizationId, commandExecutionId)`, so it restores an existing saved command result, not a future command.
 
-### 1.1 Persistence shape and storage
+The feature should make the next compatible RedisTimeSeries result start from the user's latest preferred output settings, without mutating older cards in history.
 
-- **Persist only “output format” subset** of `ChartConfig` so it applies to any TS result:
-  - `mode` (`GraphMode.line` | `GraphMode.points`)
-  - `timeUnit` (`TimeUnit.seconds` | `TimeUnit.milliseconds`)
+## Goal
+
+Persist RedisTimeSeries Workbench output preferences so the next RedisTimeSeries command result reuses the user's last settings.
+
+### Success criteria
+
+- If a user switches a RedisTimeSeries result from chart view to text view, the next RedisTimeSeries result opens in text view.
+- If a user stays in chart view and changes chart options, the next RedisTimeSeries result starts with the same persisted chart options.
+- Preferences are scoped per database.
+- Existing saved result cards keep their own historical state.
+- Non-TimeSeries results are unaffected.
+
+## Product decisions
+
+### Scope
+
+- Persistence is **per database**, not global across the app.
+- Persistence applies only to RedisTimeSeries Workbench results.
+- Persistence affects only **future compatible results**, not previously rendered cards.
+
+### Persisted preference shape
+
+Persist the minimum reusable subset:
+
+- `selectedView`
+  - `text`
+  - `plugin:redistimeseries-chart`
+- `chartConfig`
+  - `mode` (`line` | `points`)
+  - `timeUnit` (`seconds` | `milliseconds`)
   - `staircase` (boolean)
   - `fill` (boolean)
-- **Do not persist** data-specific fields: `title`, `xlabel`, `keyToY2Axis`, `yAxisConfig`, `yAxis2Config` (they depend on the current series).
-- **Where to store:** Extend `state.user.settings.workbench` (see `redisinsight/ui/src/slices/interfaces/user.ts`). Add `chartOutputSettings?: WorkbenchChartOutputSettings`. Follow the same pattern as `workbench.cleanup` in `redisinsight/ui/src/slices/user/user-settings.ts`: reducer + optional mirror to a `BrowserStorageItem` (e.g. add `wbTsChartOutput` in `redisinsight/ui/src/constants/storage.ts`) for fast read before user settings load.
-- **Types:** Define `WorkbenchChartOutputSettings` (subset of ChartConfig) in user/workbench types and use it in the plugin contract.
 
-### 1.2 Host (QueryCardCliPlugin)
+Do not persist:
 
-- **File:** `redisinsight/ui/src/components/query/query-card/QueryCardCliPlugin/QueryCardCliPlugin.tsx`
-- **Pass initial config:** When building the payload for `executeCommand`, if the current visualization is the Time Series chart, include saved settings in `data`. Detect by `currentView?.id === 'redistimeseries-chart'` (from `package.json` visualizations[].id). Payload becomes: `data: { command, data: result, mode, chartConfig: savedWorkbenchChartOutputSettings }`. Read saved settings from a selector (e.g. `userSettingsWBSelector` or a new selector that returns `workbench.chartOutputSettings`).
-- **Persist on setState:** In the `setPluginState` handler, when the visualization is the Time Series chart (same id check), after the existing `setPluginStateAction` call, also dispatch an action to update the workbench default (e.g. `setWorkbenchChartOutputSettings(state)` or equivalent). That action should update Redux and optionally write to localStorage so the next chart load gets the new default.
+- `title`
+- `xlabel`
+- `yAxis2`
+- `keyToY2Axis`
+- `yAxisConfig`
+- `yAxis2Config`
+- zoom / relayout state
+- any plugin-specific metadata outside this subset
 
-### 1.3 User settings slice
+### Default behavior when no preference exists
 
-- **Files:**
-  - `redisinsight/ui/src/slices/interfaces/user.ts` — extend `workbench` with `chartOutputSettings?: WorkbenchChartOutputSettings`.
-  - `redisinsight/ui/src/slices/user/user-settings.ts` — add reducer (e.g. `setWorkbenchChartOutputSettings`), persist to localStorage if using `BrowserStorageItem.wbTsChartOutput`, add/export selector for `workbench.chartOutputSettings`.
-- **Initial state:** `workbench.chartOutputSettings` can be `undefined`; the plugin will treat that as “use built-in defaults”.
+Use current built-in defaults:
 
-### 1.4 Plugin (redistimeseries-app)
+- `selectedView = plugin:redistimeseries-chart`
+- `mode = line`
+- `timeUnit = determineDefaultTimeUnits(result)`
+- `staircase = false`
+- `fill = true`
 
-- **main.tsx** (`redisinsight/ui/src/packages/redistimeseries-app/src/main.tsx`): Extend the `Props` / payload type to include `chartConfig?: WorkbenchChartOutputSettings`. In `renderChart`, pass `chartConfig` through to `App`.
-- **App.tsx** (`redisinsight/ui/src/packages/redistimeseries-app/src/App.tsx`): Accept optional `initialChartConfig` and pass it to `ChartResultView`.
-- **ChartResultView** (`redisinsight/ui/src/packages/redistimeseries-app/src/components/Chart/ChartResultView.tsx`):
-  - Add optional prop `initialChartConfig?: Partial<ChartConfig>` (or the persisted subset type).
-  - Initialize `useState<ChartConfig>` by merging `initialChartConfig` with data-derived defaults: keep `timeUnit` from `determineDefaultTimeUnits(props.data)` if not in initial, keep `keyToY2Axis` from current `props.data`, and use defaults for any missing or invalid keys.
-  - On config change: call the plugin SDK `setState(chartConfig)` so the host receives it (existing getState/setState flow). Either add `redisinsight-plugin-sdk` as a dependency and call `setState(config)` from ChartResultView when the user changes settings, or have the host inject `PluginSDK.setState` and call that. The host will then persist per-command (existing) and workbench default (new).
+## Architecture
 
-### 1.5 Edge cases
+### Source of truth
 
-- **First run / no saved settings:** If `chartConfig` is undefined, ChartResultView behaves as today (defaults only).
-- **Schema changes:** Persisted object should allow optional fields; when applying, merge with defaults and ignore unknown keys so future new options don’t break old stored blobs.
-- **Existing plugin state API:** No change to getState/setState URL or behavior; only the host’s handling of setState for the Time Series plugin is extended (dual-write to workbench default).
+The source of truth for this feature should be **host-owned browser storage**, not user settings API state and not plugin state API.
 
----
+Reasoning:
 
-## 2. Testing
+- User settings state in this repo is primarily tied to `/settings` API config and only mirrors a small local-only cleanup flag.
+- Plugin state API is intentionally per-command and should stay that way.
+- This feature is instance-scoped UI preference, closest to other Workbench/browser local UI state.
 
-### 2.1 Unit tests
+### Storage location
 
-- **User settings slice** (`redisinsight/ui/src/slices/tests/user/user-settings.spec.ts`): Reducer and actions for `chartOutputSettings` (set, merge with defaults, optional localStorage write). Assert initial state and after setWorkbenchChartOutputSettings.
-- **ChartResultView** (new spec under `redisinsight/ui/src/packages/redistimeseries-app/src/components/Chart/`): (1) Initial state when `initialChartConfig` is provided: mode, timeUnit, staircase, fill match. (2) When `initialChartConfig` is missing, defaults (e.g. GraphMode.line, fill: true, staircase: false) and data-derived `timeUnit` and `keyToY2Axis` are used. (3) Partial or invalid keys in `initialChartConfig` do not break render; unknown keys are ignored.
-- **QueryCardCliPlugin** (`redisinsight/ui/src/components/query/query-card/QueryCardCliPlugin/QueryCardCliPlugin.spec.tsx`): When the current view is the Time Series chart and the selector returns saved `chartOutputSettings`, `executeCommand` is invoked with `data.chartConfig` set. When `setPluginState` is called for that visualization, the new “save workbench default” action is dispatched (mock and assert).
+Add a new browser storage key in `redisinsight/ui/src/constants/storage.ts`, for example:
 
-### 2.2 E2E
+- `wbTsResultPreferences = 'wbTsResultPreferences_'`
 
-- **Workbench Time Series persistence:** In the Playwright E2E suite (e.g. under `tests/e2e-playwright/`), add or extend a test: run a TS command (e.g. `TS.RANGE`), change chart settings (e.g. switch to points, toggle staircase/fill), run another TS command (same or different key), then assert the second result shows the same chart options (e.g. points mode, staircase on). Use existing page objects and `waitFor`/assertions; no fixed time waits.
+Persist values under:
 
-### 2.3 Pre-PR
+- `BrowserStorageItem.wbTsResultPreferences + instanceId`
 
-- Run `yarn lint` and `yarn type-check:ui`; fix any issues.
+Stored object shape:
 
----
+```ts
+interface WorkbenchTsResultPreferences {
+  selectedView: 'text' | 'plugin:redistimeseries-chart'
+  chartConfig?: {
+    mode?: GraphMode
+    timeUnit?: TimeUnit
+    staircase?: boolean
+    fill?: boolean
+  }
+}
+```
 
-## 3. Order of work
+### Ownership split
 
-1. **Types and storage** — Define `WorkbenchChartOutputSettings`, extend `StateUserSettings.workbench`, add `BrowserStorageItem.wbTsChartOutput` if used.
-2. **User settings slice** — Reducer, selector, optional localStorage; add unit tests for chart output settings.
-3. **Host** — In QueryCardCliPlugin: pass `chartConfig` in `executeCommand` for Time Series chart; in `setPluginState`, dual-write to workbench default when view is Time Series. Add/update QueryCardCliPlugin unit tests.
-4. **Plugin** — main.tsx and App accept and pass `initialChartConfig`; ChartResultView uses it for initial state and calls setState on change. Add ChartResultView unit tests.
-5. **E2E** — Workbench TS chart persistence scenario.
-6. **Lint and type-check** — Fix and re-run.
+- Host owns:
+  - reading and writing persisted per-database preferences
+  - result-view persistence (`Text` vs plugin)
+  - providing initial chart defaults to the iframe
+  - filtering and validating the subset written by the iframe
+- Iframe owns:
+  - local chart UI state for the current card
+  - notifying the host when the persisted chart subset changes
 
----
+## Implementation
 
-## 4. Files to touch (summary)
+### 1. Add preference types and storage helpers
 
-| Area             | Files                                                                                                                                                              |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Types            | `redisinsight/ui/src/slices/interfaces/user.ts`                                                                                                                    |
-| Storage constant | `redisinsight/ui/src/constants/storage.ts` (optional)                                                                                                              |
-| User settings    | `redisinsight/ui/src/slices/user/user-settings.ts`, `redisinsight/ui/src/slices/tests/user/user-settings.spec.ts`                                                  |
-| Host plugin      | `redisinsight/ui/src/components/query/query-card/QueryCardCliPlugin/QueryCardCliPlugin.tsx`, `QueryCardCliPlugin.spec.tsx`                                         |
-| Plugin app       | `redisinsight/ui/src/packages/redistimeseries-app/src/main.tsx`, `App.tsx`, `components/Chart/ChartResultView.tsx`; new `ChartResultView.spec.tsx` (or equivalent) |
-| E2E              | New or extended Playwright test under `tests/e2e-playwright/` for workbench TS chart persistence                                                                   |
+Add a dedicated type and helper functions in UI code, not under user settings:
+
+- define `WorkbenchTsResultPreferences`
+- define `PersistedTsChartConfig`
+- add helpers:
+  - `getWorkbenchTsResultPreferences(instanceId)`
+  - `setWorkbenchTsResultPreferences(instanceId, preferences)`
+  - `mergeWorkbenchTsChartPreferences(existing, incoming)`
+
+Implementation rules:
+
+- tolerate malformed localStorage payloads by falling back to defaults
+- ignore unknown keys
+- only write the supported subset
+
+Recommended location:
+
+- `redisinsight/ui/src/pages/workbench/utils/` or `redisinsight/ui/src/services/`
+
+### 2. Persist result-view selection in host `QueryCard`
+
+File:
+
+- `redisinsight/ui/src/components/query/query-card/QueryCard.tsx`
+
+Changes:
+
+- detect when the current card is a RedisTimeSeries-compatible card
+- initialize `selectedViewValue` and `viewTypeSelected` from persisted preferences instead of always using the plugin default
+- when the user changes the dropdown view:
+  - preserve current behavior and telemetry
+  - additionally persist `selectedView`
+
+Rules:
+
+- only apply persisted view selection when:
+  - query type is compatible with RedisTimeSeries visualization
+  - results mode is `Default`
+- grouped results mode should ignore this feature
+- if persisted `selectedView` points to plugin view but the plugin is not available, fall back to text
+
+Implementation detail:
+
+- the persisted value should be normalized to a stable host value:
+  - `text`
+  - `plugin:redistimeseries-chart`
+- do not persist ephemeral dropdown ids that may change for other plugins
+
+### 3. Pass initial chart defaults from host to iframe
+
+File:
+
+- `redisinsight/ui/src/components/query/query-card/QueryCardCliPlugin/QueryCardCliPlugin.tsx`
+
+Changes:
+
+- when rendering `redistimeseries-chart`, read persisted preferences for the current `instanceId`
+- extend the payload sent through `executeCommand('renderChart', ...)`
+
+Required payload shape:
+
+```ts
+{
+  command,
+  data: result,
+  mode,
+  initialPreferences: {
+    chartConfig: {
+      mode,
+      timeUnit,
+      staircase,
+      fill,
+    }
+  }
+}
+```
+
+Do not rely on per-command plugin `getState()` for this feature's initial value.
+
+### 4. Use one concrete iframe-to-host mechanism
+
+Do not introduce a new dependency and do not leave the mechanism open-ended.
+
+Use the existing plugin event bridge already implemented in `QueryCardCliPlugin`:
+
+- the iframe calls the existing plugin SDK `setState(...)`
+- `QueryCardCliPlugin` already listens to `PluginEvents.setState`
+- extend the host handler so that for `redistimeseries-chart` it:
+  - continues existing per-command `setPluginStateAction(...)`
+  - also extracts the reusable subset
+  - persists that subset into per-database local storage
+
+This keeps the bridge consistent with the current plugin contract and avoids inventing a second event path.
+
+### 5. Teach the RedisTimeSeries iframe to emit only the reusable subset
+
+Files:
+
+- `redisinsight/ui/src/packages/redistimeseries-app/src/main.tsx`
+- `redisinsight/ui/src/packages/redistimeseries-app/src/App.tsx`
+- `redisinsight/ui/src/packages/redistimeseries-app/src/components/Chart/ChartResultView.tsx`
+
+Changes in `main.tsx`:
+
+- extend render payload typing to accept:
+  - `initialPreferences?: { chartConfig?: PersistedTsChartConfig }`
+
+Changes in `App.tsx`:
+
+- accept `initialPreferences`
+- pass `initialChartConfig` into `ChartResultView`
+
+Changes in `ChartResultView.tsx`:
+
+- accept `initialChartConfig?: Partial<ChartConfig>`
+- initialize local `chartConfig` by merging:
+  - built-in defaults
+  - data-derived defaults (`timeUnit`, `keyToY2Axis`)
+  - persisted subset
+- on each change to persisted fields (`mode`, `timeUnit`, `staircase`, `fill`):
+  - call plugin SDK `setState(...)`
+  - emit only the reusable subset, not the full `ChartConfig`
+
+Required emitted state shape:
+
+```ts
+{
+  mode,
+  timeUnit,
+  staircase,
+  fill,
+}
+```
+
+Do not emit:
+
+- `keyToY2Axis`
+- `yAxisConfig`
+- `yAxis2Config`
+- `title`
+- `xlabel`
+- transient layout state
+
+### 6. Host filtering and write path
+
+In `QueryCardCliPlugin.tsx`, inside the existing `setPluginState` handler:
+
+- if `visualizationId !== 'redistimeseries-chart'`, keep current behavior only
+- if `visualizationId === 'redistimeseries-chart'`:
+  - validate incoming state
+  - extract only `mode`, `timeUnit`, `staircase`, `fill`
+  - merge into current persisted preferences for `instanceId`
+  - preserve current `selectedView`
+  - write back to localStorage
+
+This write path must not overwrite `selectedView` unless the host UI explicitly changed it.
+
+### 7. Compatibility and fallback behavior
+
+If stored preferences are invalid:
+
+- invalid `selectedView` -> fall back to `plugin:redistimeseries-chart`
+- invalid chart fields -> ignore invalid values and use defaults
+
+If plugin is unavailable:
+
+- force `selectedView = text`
+- keep stored chartConfig unchanged for future compatible sessions
+
+If the current result is not RedisTimeSeries:
+
+- do not read or write this preference
+
+If the user opens an old historical command:
+
+- its own per-command plugin state remains authoritative for that card
+- this feature only seeds new cards
+
+## Testing
+
+### Unit tests
+
+#### Storage helpers
+
+Add tests for:
+
+- empty storage returns defaults / undefined preference
+- invalid JSON does not throw
+- merge preserves `selectedView`
+- merge ignores unsupported chart keys
+- storage is keyed by `instanceId`
+
+#### `QueryCard`
+
+Add tests for:
+
+- RedisTimeSeries card initializes to persisted `text` view
+- RedisTimeSeries card initializes to persisted plugin view
+- non-TimeSeries card ignores persisted view
+- changing dropdown to text persists `selectedView = text`
+- changing dropdown back to plugin persists `selectedView = plugin:redistimeseries-chart`
+
+#### `QueryCardCliPlugin`
+
+Add tests for:
+
+- `renderChart` receives `initialPreferences.chartConfig` for TimeSeries plugin
+- non-TimeSeries plugin does not receive this payload
+- `setPluginState` dual-writes for TimeSeries plugin
+- host filters plugin state to the reusable subset before persisting
+- host does not overwrite `selectedView` during chart-config writes
+
+#### `ChartResultView`
+
+Add tests for:
+
+- initial config merges persisted values with built-in defaults
+- missing persisted config uses current defaults
+- invalid persisted values are ignored
+- changing `mode`, `timeUnit`, `staircase`, or `fill` triggers `setState` with subset only
+- changing advanced options does not emit persisted-only payload changes unless one of the persisted fields changed
+
+### E2E / Playwright
+
+Add one Workbench RedisTimeSeries persistence scenario:
+
+1. open Workbench for a database
+2. run a `TS.RANGE` command
+3. switch to text view
+4. run another `TS.RANGE`
+5. verify the new card opens in text view
+6. switch back to chart view
+7. change to points, staircase on, fill off, choose a non-default time unit
+8. run another `TS.RANGE`
+9. verify the new card opens in chart view with the same persisted toggles and time unit
+
+Add one isolation scenario:
+
+1. set preferences in database A
+2. open database B and run a `TS.RANGE`
+3. verify database B still uses defaults
+
+### Validation before PR
+
+- `yarn lint:ui`
+- `yarn type-check:ui`
+- relevant UI unit tests
+- relevant Playwright test if feasible
+
+## Order of work
+
+1. Add storage key, types, and helper functions for per-database RedisTimeSeries preferences.
+2. Update `QueryCard` to read and persist `selectedView`.
+3. Update `QueryCardCliPlugin` to pass initial chart defaults and dual-write filtered chart preferences on `setState`.
+4. Update the RedisTimeSeries package entrypoints to accept initial preferences.
+5. Update `ChartResultView` to merge persisted config and emit subset state through existing plugin `setState`.
+6. Add unit tests for storage, host card behavior, host plugin bridge, and chart result view.
+7. Add Playwright coverage for text-view persistence, chart-toggle persistence, and per-database isolation.
+8. Run lint, type-check, and targeted tests.
+
+## Files expected to change
+
+### Host UI
+
+- `redisinsight/ui/src/constants/storage.ts`
+- `redisinsight/ui/src/components/query/query-card/QueryCard.tsx`
+- `redisinsight/ui/src/components/query/query-card/QueryCard.spec.tsx`
+- `redisinsight/ui/src/components/query/query-card/QueryCardCliPlugin/QueryCardCliPlugin.tsx`
+- `redisinsight/ui/src/components/query/query-card/QueryCardCliPlugin/QueryCardCliPlugin.spec.tsx`
+- one new helper/types file for persisted Workbench RedisTimeSeries preferences
+
+### RedisTimeSeries package
+
+- `redisinsight/ui/src/packages/redistimeseries-app/src/main.tsx`
+- `redisinsight/ui/src/packages/redistimeseries-app/src/App.tsx`
+- `redisinsight/ui/src/packages/redistimeseries-app/src/components/Chart/ChartResultView.tsx`
+- new or updated tests under `redisinsight/ui/src/packages/redistimeseries-app/src/components/Chart/`
+
+### E2E
+
+- new or extended Playwright test under `tests/e2e-playwright/`
+
+## Notes for implementation
+
+- Do not route this through server-backed user settings.
+- Do not add a new plugin transport if the existing `setState` bridge is sufficient.
+- Do not persist advanced chart fields that depend on the current dataset.
+- Do not forget text-view persistence; it is part of the user-facing problem, not an optional extension.
