@@ -1,5 +1,5 @@
-import { IRedisCommand } from 'uiSrc/constants'
-import { commandHasUnixTimeArgs } from './utils'
+import { IRedisCommand, ICommandTokenType } from 'uiSrc/constants'
+import { commandHasUnixTimeArgs, isArgUnixTimePosition } from './utils'
 
 const mockCommands: IRedisCommand[] = [
   {
@@ -105,5 +105,27 @@ describe('commandHasUnixTimeArgs', () => {
 
   it('should return false when all lines have non-unix-time commands', () => {
     expect(commandHasUnixTimeArgs(mockCommands, 'GET a\nGET b')).toBe(false)
+  })
+})
+
+describe('isArgUnixTimePosition', () => {
+  it('should return false for null or undefined', () => {
+    expect(isArgUnixTimePosition(null)).toBe(false)
+  })
+
+  it('should return true when arg type is unix-time', () => {
+    expect(
+      isArgUnixTimePosition({ type: ICommandTokenType.UnixTime }),
+    ).toBe(true)
+  })
+
+  it('should return true when arg.arguments contains unix-time (oneof/block)', () => {
+    const oneofArg = mockCommands[0].arguments![2]
+    expect(isArgUnixTimePosition(oneofArg)).toBe(true)
+  })
+
+  it('should return false for non-unix-time arg', () => {
+    expect(isArgUnixTimePosition(mockCommands[0].arguments![0])).toBe(false)
+    expect(isArgUnixTimePosition({ type: ICommandTokenType.Key })).toBe(false)
   })
 })

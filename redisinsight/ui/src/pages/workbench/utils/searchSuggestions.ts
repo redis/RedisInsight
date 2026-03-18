@@ -5,7 +5,8 @@ import {
   CursorContext,
   FoundCommandArgument,
 } from 'uiSrc/pages/workbench/types'
-import { IRedisCommand, ICommandTokenType } from 'uiSrc/constants'
+import { IRedisCommand } from 'uiSrc/constants'
+import { isArgUnixTimePosition } from 'uiSrc/components/datetime-picker/utils'
 import {
   asSuggestionsRef,
   getFieldsSuggestions,
@@ -54,15 +55,7 @@ export const findSuggestionsByArg = (
   const foundArg = findSuggestionsByQueryArgs(listOfCommands, beforeOffsetArgs)
 
   if (!command.name.startsWith(ModuleCommandPrefix.RediSearch)) {
-    // Direct unix-time arg (e.g. EXPIREAT timestamp) or oneof containing unix-time (e.g. SET ... PXAT)
-    const stopArg = foundArg?.stopArg
-    const isUnixTimeArg =
-      stopArg &&
-      (stopArg.type === ICommandTokenType.UnixTime ||
-        (Array.isArray(stopArg.arguments) &&
-          stopArg.arguments.some(
-            (a: IRedisCommand) => a.type === ICommandTokenType.UnixTime,
-          )))
+    const isUnixTimeArg = isArgUnixTimePosition(foundArg?.stopArg ?? null)
     const timestampSuggestion = isUnixTimeArg
       ? [
           {

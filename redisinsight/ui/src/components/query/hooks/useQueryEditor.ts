@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
-import { ICommandTokenType } from 'uiSrc/constants'
 import { REDIS_OPEN_TIMESTAMP_PICKER_COMMAND } from 'uiSrc/pages/workbench/constants'
+import { isArgUnixTimePosition } from 'uiSrc/components/datetime-picker/utils'
 import { useQueryEditorContext } from '../context/query-editor.context'
 import { useRedisCompletions } from './useRedisCompletions'
 import { useMonacoRedisEditor } from './useMonacoRedisEditor'
@@ -190,16 +190,4 @@ export const useQueryEditor = (
     triggerUpdateCursorPosition,
     currentArgIsUnixTime,
   }
-}
-
-/** True if the current argument is unix-time or a oneof/block containing unix-time (e.g. SET EXAT/PXAT). */
-function isArgUnixTimePosition(
-  arg: { type?: string; arguments?: Array<{ type?: string }> } | null,
-): boolean {
-  if (!arg) return false
-  if (arg.type === ICommandTokenType.UnixTime) return true
-  return (
-    Array.isArray(arg.arguments) &&
-    arg.arguments.some((a) => a.type === ICommandTokenType.UnixTime)
-  )
 }

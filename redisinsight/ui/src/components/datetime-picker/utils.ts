@@ -1,5 +1,25 @@
 import { ICommandTokenType, IRedisCommand } from 'uiSrc/constants'
 
+/** Minimal shape for command argument used by isArgUnixTimePosition. */
+type ArgWithType = {
+  type?: string
+  arguments?: Array<{ type?: string }>
+}
+
+/**
+ * True if the given argument is unix-time or a oneof/block containing a direct
+ * unix-time child (e.g. SET EXAT/PXAT). Used for timestamp picker visibility
+ * and "Insert timestamp..." suggestions.
+ */
+export const isArgUnixTimePosition = (arg: ArgWithType | null): boolean => {
+  if (!arg) return false
+  if (arg.type === ICommandTokenType.UnixTime) return true
+  return (
+    Array.isArray(arg.arguments) &&
+    arg.arguments.some((a) => a.type === ICommandTokenType.UnixTime)
+  )
+}
+
 const hasUnixTimeArg = (args?: IRedisCommand[]): boolean => {
   if (!args?.length) {
     return false
