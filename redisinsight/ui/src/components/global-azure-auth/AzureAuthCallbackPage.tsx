@@ -6,8 +6,6 @@ import {
   AzureAuthStatus,
 } from 'apiSrc/modules/azure/constants'
 
-type CallbackState = 'processing' | 'success' | 'error'
-
 // Styled Components
 const PageWrapper = styled(Col)`
   height: 100vh;
@@ -42,7 +40,9 @@ const ErrorTitle = styled(Title)`
  * It extracts the result from URL, stores it in localStorage, and closes.
  */
 const AzureAuthCallbackPage = () => {
-  const [state, setState] = useState<CallbackState>('processing')
+  const [state, setState] = useState<AzureAuthStatus>(
+    AzureAuthStatus.Processing,
+  )
 
   useEffect(() => {
     const url = new URL(window.location.href)
@@ -60,7 +60,7 @@ const AzureAuthCallbackPage = () => {
           },
         }),
       )
-      setState('error')
+      setState(AzureAuthStatus.Failed)
       setTimeout(() => window.close(), 2000)
       return
     }
@@ -81,7 +81,7 @@ const AzureAuthCallbackPage = () => {
         }),
       )
 
-      setState('success')
+      setState(AzureAuthStatus.Succeed)
       // Close this popup window
       setTimeout(() => window.close(), 500)
     } catch {
@@ -96,12 +96,23 @@ const AzureAuthCallbackPage = () => {
           },
         }),
       )
-      setState('error')
+      setState(AzureAuthStatus.Failed)
       setTimeout(() => window.close(), 2000)
     }
   }, [])
 
-  if (state === 'error') {
+  if (state === AzureAuthStatus.Processing) {
+    return (
+      <PageWrapper contentCentered grow={false}>
+        <ContentWrapper>
+          <Title>Processing...</Title>
+          <Subtitle>Please wait</Subtitle>
+        </ContentWrapper>
+      </PageWrapper>
+    )
+  }
+
+  if (state === AzureAuthStatus.Failed) {
     return (
       <PageWrapper contentCentered grow={false}>
         <ContentWrapper>

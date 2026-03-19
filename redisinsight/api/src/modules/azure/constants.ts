@@ -75,6 +75,7 @@ export const AZURE_OAUTH_SCOPES = [
 ];
 
 export enum AzureAuthStatus {
+  Processing = 'processing',
   Succeed = 'succeed',
   Failed = 'failed',
 }
