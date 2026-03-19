@@ -35,11 +35,7 @@ const extractPersistedSubset = (config: ChartConfig): PersistedTsChartConfig => 
 })
 
 const emitPersistedState = (config: ChartConfig) => {
-  try {
-    setPluginState(extractPersistedSubset(config))
-  } catch {
-    // best-effort
-  }
+  setPluginState(extractPersistedSubset(config)).catch(() => {})
 }
 
 export default function ChartResultView(props: ChartResultViewProps) {
