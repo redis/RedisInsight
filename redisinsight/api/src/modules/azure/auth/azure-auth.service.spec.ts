@@ -3,7 +3,11 @@ import { faker } from '@faker-js/faker';
 import { PublicClientApplication } from '@azure/msal-node';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AzureAuthService } from './azure-auth.service';
-import { AzureAuthStatus, AzureRedisTokenEvents } from '../constants';
+import {
+  AzureAuthStatus,
+  AzureOAuthRedirectType,
+  AzureRedisTokenEvents,
+} from '../constants';
 import { AzureOAuthPrompt } from './dto';
 
 jest.mock('@azure/msal-node');
@@ -172,6 +176,26 @@ describe('AzureAuthService', () => {
       expect(result.status).toBe(AzureAuthStatus.Succeed);
       expect(result.account).toEqual(mockAccount);
       expect(result.error).toBeUndefined();
+    });
+  });
+
+  describe('removeAuthRequest', () => {
+    it('should return redirect type and remove state from map', async () => {
+      const { state } = await service.getAuthorizationUrl();
+
+      // Remove should return the redirect type
+      const redirectType = service.removeAuthRequest(state);
+      expect(redirectType).toBe(AzureOAuthRedirectType.Deeplink);
+
+      // handleCallback should fail since state was removed
+      const result = await service.handleCallback('auth-code', state);
+      expect(result.status).toBe(AzureAuthStatus.Failed);
+      expect(result.error).toBe('Invalid or expired authentication state');
+    });
+
+    it('should return null for unknown state', () => {
+      const redirectType = service.removeAuthRequest('unknown-state');
+      expect(redirectType).toBeNull();
     });
   });
 

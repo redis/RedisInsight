@@ -100,11 +100,23 @@ export class AzureAuthController {
         sessionMetadata,
         new BadRequestException(errorDescription || error),
       );
+
+      // Clean up the auth request and get redirect type (state may be present even on error)
+      const redirectType = state
+        ? this.azureAuthService.removeAuthRequest(state)
+        : null;
+
       const errorResult = {
         status: AzureAuthStatus.Failed,
         error: errorDescription || error,
       };
-      // Return HTML for web flow errors (most common case in Docker/web)
+
+      // For deeplink flows (Electron dev mode), return JSON
+      if (redirectType === AzureOAuthRedirectType.Deeplink) {
+        return errorResult;
+      }
+
+      // For web flows (or unknown), return HTML
       res.type('text/html');
       return generateCallbackHtml({
         result: errorResult,
@@ -121,6 +133,7 @@ export class AzureAuthController {
         status: AzureAuthStatus.Failed,
         error: 'Missing code or state parameter',
       };
+      // No state means we can't determine redirect type, default to HTML
       res.type('text/html');
       return generateCallbackHtml({
         result: errorResult,
@@ -168,15 +181,25 @@ export class AzureAuthController {
       this.logger.error('Azure OAuth callback failed', e);
       this.analytics.sendAzureSignInFailed(sessionMetadata, wrapHttpError(e));
 
-      // Return HTML error page for web flows instead of throwing JSON error.
+      // Try to get redirect type from state (might still exist if error happened early)
+      // This ensures Electron dev mode (which uses HTTP for deeplinks) gets JSON response
+      const redirectType = this.azureAuthService.removeAuthRequest(state);
+
+      const errorResult = {
+        status: AzureAuthStatus.Failed,
+        error: e instanceof Error ? e.message : 'Authentication failed',
+      };
+
+      // For deeplink flows, return JSON (for Electron IPC handling)
+      if (redirectType === AzureOAuthRedirectType.Deeplink) {
+        return errorResult;
+      }
+
+      // For web flows (or unknown - state already deleted), return HTML
       // This ensures the popup can communicate the error to the main window via localStorage.
-      // We default to web flow since deeplink flows redirect to redisinsight:// and don't reach HTTP callback.
       res.type('text/html');
       return generateCallbackHtml({
-        result: {
-          status: AzureAuthStatus.Failed,
-          error: e instanceof Error ? e.message : 'Authentication failed',
-        },
+        result: errorResult,
         isDevMode: process.env.NODE_ENV === 'development',
       });
     }

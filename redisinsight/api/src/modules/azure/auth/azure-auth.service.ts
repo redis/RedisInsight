@@ -96,6 +96,20 @@ export class AzureAuthService {
   }
 
   /**
+   * Remove an auth request by state and return its redirect type.
+   * Used for cleanup when OAuth errors occur before handleCallback is called.
+   * @returns The redirect type if found, null otherwise
+   */
+  removeAuthRequest(state: string): AzureOAuthRedirectType | null {
+    const authRequest = this.authRequests.get(state);
+    if (authRequest) {
+      this.authRequests.delete(state);
+      return authRequest.redirectType;
+    }
+    return null;
+  }
+
+  /**
    * Get the redirect URI based on the redirect type.
    * For web flow, uses externalUrl config if set, otherwise constructs localhost URL.
    * This allows users to set RI_EXTERNAL_URL when running behind a proxy or custom port.
