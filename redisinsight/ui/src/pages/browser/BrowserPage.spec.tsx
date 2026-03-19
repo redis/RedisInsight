@@ -10,9 +10,11 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { setConnectedInstanceId } from 'uiSrc/slices/instances/instances'
 import { loadKeys, toggleBrowserFullScreen } from 'uiSrc/slices/browser/keys'
+import { SearchMode } from 'uiSrc/slices/interfaces/keys'
 import { resetErrors } from 'uiSrc/slices/app/notifications'
 import {
   setBrowserBulkActionOpen,
+  setBrowserKeyListDataLoaded,
   setBrowserPanelSizes,
   setBrowserSelectedKey,
 } from 'uiSrc/slices/app/context'
@@ -170,6 +172,7 @@ describe('BrowserPage', () => {
       setBrowserPanelSizes(expect.any(Object)),
       setBrowserBulkActionOpen(expect.any(Boolean)),
       setBrowserSelectedKey(null),
+      setBrowserKeyListDataLoaded(SearchMode.Pattern, false),
       toggleBrowserFullScreen(false),
     ]
 

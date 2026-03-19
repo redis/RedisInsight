@@ -4,6 +4,11 @@ import { apiService } from 'uiSrc/services'
 
 import { useHasExistingKeys } from './useHasExistingKeys'
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: jest.fn(() => ({ pathname: '/test' })),
+}))
+
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn((selector) => {
