@@ -16,9 +16,10 @@ import {
 } from 'uiSrc/slices/app/notifications'
 import { AppDispatch } from 'uiSrc/slices/store'
 import { Pages } from 'uiSrc/constants'
-import { AzureAuthStatus } from 'apiSrc/modules/azure/constants'
-
-const AZURE_OAUTH_STORAGE_KEY = 'ri_azure_oauth_result'
+import {
+  AzureAuthStatus,
+  AZURE_OAUTH_STORAGE_KEY,
+} from 'apiSrc/modules/azure/constants'
 const STORAGE_POLL_INTERVAL = 500 // ms
 const STORAGE_RESULT_MAX_AGE = 30000 // 30 seconds
 

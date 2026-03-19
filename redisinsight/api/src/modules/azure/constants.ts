@@ -1,4 +1,11 @@
 /**
+ * LocalStorage key for Azure OAuth callback data.
+ * Used for cross-window communication between popup and main window.
+ * IMPORTANT: This key is also referenced in the frontend components.
+ */
+export const AZURE_OAUTH_STORAGE_KEY = 'ri_azure_oauth_result';
+
+/**
  * Azure AD authority URL for multi-tenant authentication.
  * Uses 'common' endpoint to allow any Azure AD tenant.
  */

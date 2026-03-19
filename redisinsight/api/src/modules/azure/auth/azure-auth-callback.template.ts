@@ -1,4 +1,4 @@
-import { AzureAuthStatus } from '../constants';
+import { AzureAuthStatus, AZURE_OAUTH_STORAGE_KEY } from '../constants';
 
 /**
  * Result data stored in localStorage for the opener window to read.
@@ -105,7 +105,7 @@ export const generateCallbackHtml = (
     (function() {
       var result = ${resultJson};
       var isDevMode = ${isDevMode};
-      var STORAGE_KEY = 'ri_azure_oauth_result';
+      var STORAGE_KEY = '${AZURE_OAUTH_STORAGE_KEY}';
       var DEV_UI_PORT = '8080';
 
       // Function to store result and close

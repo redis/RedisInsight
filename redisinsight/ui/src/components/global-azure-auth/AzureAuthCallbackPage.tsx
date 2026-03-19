@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { Col } from 'uiSrc/components/base/layout/flex'
-
-const AZURE_OAUTH_STORAGE_KEY = 'ri_azure_oauth_result'
+import { AZURE_OAUTH_STORAGE_KEY } from 'apiSrc/modules/azure/constants'
 
 // Styled Components
 const PageWrapper = styled(Col)`
