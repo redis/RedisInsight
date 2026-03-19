@@ -121,7 +121,8 @@ const GlobalAzureAuth = () => {
           localStorage.removeItem(AZURE_OAUTH_STORAGE_KEY)
         }
       } catch {
-        // Ignore parse errors
+        // Remove corrupt data to prevent infinite polling errors
+        localStorage.removeItem(AZURE_OAUTH_STORAGE_KEY)
       }
     }
 
