@@ -8,7 +8,7 @@ import React, {
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { debounce, findIndex, isUndefined, reject } from 'lodash'
+import { debounce, findIndex, isUndefined, reject, orderBy } from 'lodash'
 
 import { CellMeasurerCache } from 'react-virtualized'
 import {
@@ -35,13 +35,17 @@ import {
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { SearchMode } from 'uiSrc/slices/interfaces/keys'
 import VirtualTable from 'uiSrc/components/virtual-table/VirtualTable'
-import { ITableColumn } from 'uiSrc/components/virtual-table/interfaces'
+import {
+  ITableColumn,
+  ISortedColumn,
+} from 'uiSrc/components/virtual-table/interfaces'
 import {
   BrowserColumns,
   KeyTypes,
   ModulesKeyTypes,
   TableCellAlignment,
   TableCellTextAlignment,
+  SortOrder,
 } from 'uiSrc/constants'
 import { IKeyPropTypes } from 'uiSrc/constants/prop-types/keys'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -97,6 +101,47 @@ const KeyList = forwardRef((props: Props, ref) => {
   )
   const [deletePopoverIndex, setDeletePopoverIndex] =
     useState<Maybe<number>>(undefined)
+  const [sortedColumn, setSortedColumn] = useState<ISortedColumn | undefined>(
+    undefined,
+  )
+
+  const sortItems = useCallback(
+    (itemsToSort: any[], sortConfig = sortedColumn) => {
+      if (!sortConfig) return itemsToSort
+
+      const { column, order } = sortConfig
+      const isAsc = order === SortOrder.ASC
+
+      return orderBy(
+        itemsToSort,
+        [
+          (item: any) => {
+            const val = item[column]
+            if (column === 'nameString') {
+              return (
+                item.nameString || bufferToString(item.name)
+              )?.toLowerCase()
+            }
+            if (column === 'type') {
+              return item.type || ''
+            }
+            if (column === 'ttl' || column === 'size') {
+              if (isUndefined(val) || val === null) {
+                return isAsc ? Infinity : -Infinity
+              }
+              if (column === 'ttl' && val === -1) {
+                return isAsc ? Infinity : -Infinity
+              }
+              return Number(val)
+            }
+            return val
+          },
+        ],
+        [isAsc ? 'asc' : 'desc'],
+      )
+    },
+    [sortedColumn],
+  )
 
   const controller = useRef<Nullable<AbortController>>(null)
   const itemsRef = useRef(keysState.keys)
@@ -117,8 +162,33 @@ const KeyList = forwardRef((props: Props, ref) => {
     cancelAllMetadataRequests()
   }, [searchMode])
 
+  const prevKeys = useRef(keysState.keys)
+
   useEffect(() => {
-    itemsRef.current = [...keysState.keys]
+    const isNewData = prevKeys.current !== keysState.keys
+    if (isNewData) {
+      const newKeys = keysState.keys
+      const itemsMap = new Map()
+      itemsRef.current.forEach((item) => {
+        if ((item?.name as any)?.data) {
+          itemsMap.set((item.name as any).data.join(','), item)
+        }
+      })
+
+      const mergedItems = newKeys.map((newKey) => {
+        if ((newKey?.name as any)?.data) {
+          const existingItem = itemsMap.get((newKey.name as any).data.join(','))
+          if (existingItem) {
+            return { ...existingItem, ...newKey }
+          }
+        }
+        return newKey
+      })
+      itemsRef.current = mergedItems
+      prevKeys.current = keysState.keys
+    }
+
+    cellCache.clearAll()
 
     if (
       (!firstDataLoaded && keysState.lastRefreshTime) ||
@@ -140,7 +210,7 @@ const KeyList = forwardRef((props: Props, ref) => {
     const { startIndex, lastIndex } = renderedRowsIndexesRef.current
     onRowsRendered(startIndex, lastIndex)
     rerender({})
-  }, [keysState.keys])
+  }, [keysState.keys, sortedColumn, sortItems])
 
   useEffect(() => {
     const isSizeReenabled =
@@ -282,13 +352,29 @@ const KeyList = forwardRef((props: Props, ref) => {
     startIndex: number,
     lastIndex: number,
   ): IKeyPropTypes[] => {
+    const sortedItems = sortItems([...itemsRef.current])
     const newItems = bufferFormatRangeItems(
-      itemsRef.current,
+      sortedItems,
       startIndex,
       lastIndex,
       formatItem,
     )
-    itemsRef.current.splice(startIndex, newItems.length, ...newItems)
+
+    const newItemsMap = new Map()
+    newItems.forEach((newItem: any) => {
+      if (newItem?.name?.data) {
+        newItemsMap.set(newItem.name.data.join(','), newItem)
+      }
+    })
+
+    itemsRef.current.forEach((item, idx) => {
+      if ((item?.name as any)?.data) {
+        const newItem = newItemsMap.get((item.name as any).data.join(','))
+        if (newItem) {
+          itemsRef.current[idx] = newItem
+        }
+      }
+    })
 
     return newItems
   }
@@ -299,10 +385,8 @@ const KeyList = forwardRef((props: Props, ref) => {
       itemsInit: IKeyPropTypes[] = [],
       forceRefresh?: boolean,
     ): void => {
-      const isSomeNotUndefined = ({ type, size, length }: IKeyPropTypes) =>
-        (!commonFilterType && !isUndefined(type)) ||
-        !isUndefined(size) ||
-        !isUndefined(length)
+      const isSomeNotUndefined = ({ type, size }: IKeyPropTypes) =>
+        (!commonFilterType && !isUndefined(type)) || !isUndefined(size)
 
       let startIndex = initialStartIndex
       let itemsToProcess = itemsInit
@@ -344,8 +428,20 @@ const KeyList = forwardRef((props: Props, ref) => {
     const items = loadedItems.map(formatItem)
     itemsRef.current.splice(startIndex, items.length, ...items)
 
+    cellCache.clearAll()
     rerender({})
   }
+
+  const onChangeSorting = useCallback(
+    (column: string, order: SortOrder) => {
+      const isNewColumn = !sortedColumn || sortedColumn.column !== column
+      const finalOrder = isNewColumn ? SortOrder.ASC : order
+
+      setSortedColumn({ column, order: finalOrder })
+      cellCache.clearAll()
+    },
+    [sortedColumn],
+  )
 
   const isTtlTheLastColumn = !visibleColumns.includes(BrowserColumns.Size)
   const ttlColumnSize = isTtlTheLastColumn ? 146 : 86
@@ -354,6 +450,7 @@ const KeyList = forwardRef((props: Props, ref) => {
     {
       id: 'type',
       label: 'Type',
+      isSortable: true,
       absoluteWidth: 'auto',
       minWidth: 126,
       render: (cellData: any, { nameString }: any) => (
@@ -363,6 +460,7 @@ const KeyList = forwardRef((props: Props, ref) => {
     {
       id: 'nameString',
       label: 'Key',
+      isSortable: true,
       minWidth: 94,
       truncateText: true,
       render: (
@@ -394,6 +492,7 @@ const KeyList = forwardRef((props: Props, ref) => {
       ? {
           id: 'ttl',
           label: 'TTL',
+          isSortable: true,
           absoluteWidth: ttlColumnSize,
           minWidth: ttlColumnSize,
           truncateText: true,
@@ -430,6 +529,7 @@ const KeyList = forwardRef((props: Props, ref) => {
       ? {
           id: 'size',
           label: 'Size',
+          isSortable: true,
           absoluteWidth: 90,
           minWidth: 90,
           alignment: TableCellAlignment.Right,
@@ -470,15 +570,17 @@ const KeyList = forwardRef((props: Props, ref) => {
     <VirtualTable
       selectable
       onRowClick={selectKey}
-      headerHeight={0}
+      headerHeight={44}
       rowHeight={43}
       threshold={50}
       columns={columns}
+      sortedColumn={sortedColumn}
+      onChangeSorting={onChangeSorting}
       cellCache={cellCache}
       loadMoreItems={onLoadMoreItems}
       onWheel={onWheelSearched}
       loading={loading || !firstDataLoaded}
-      items={itemsRef.current}
+      items={sortItems([...itemsRef.current])}
       totalItemsCount={keysState.total ?? Infinity}
       scanned={isSearched || isFiltered ? keysState.scanned : 0}
       noItemsMessage={noItemsMessage}

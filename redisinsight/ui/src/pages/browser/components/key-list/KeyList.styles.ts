@@ -29,6 +29,45 @@ export const Table = styled.div<{
     margin-right: -10px;
   }
 
+  .ReactVirtualized__Table__headerRow {
+    background-color: ${({ theme }: { theme: Theme }) =>
+      theme.semantic.color.background.neutral400};
+    border-bottom: 1px solid
+      ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral500};
+    text-transform: none;
+    padding-left: 20px !important;
+
+    .ReactVirtualized__Table__headerColumn {
+      &:first-of-type {
+        border-left: 3px solid transparent;
+      }
+      .flex-row.fluid {
+        display: flex;
+        align-items: center;
+
+        /* Container for the sorting arrow */
+        & > div:nth-child(2):not([class*='resize']) {
+          display: flex;
+          flex: 0 0 20px;
+          margin-left: -20px !important;
+          padding: 0 !important;
+          background: transparent !important;
+          z-index: 1;
+
+          button {
+            padding: 0 !important;
+            background: transparent !important;
+          }
+        }
+      }
+
+      /* Reserve space for the arrow within the label button to avoid shifting */
+      [data-testid='score-button'] {
+        padding-right: 20px !important;
+      }
+    }
+  }
+
   .ReactVirtualized__Table__row {
     .ReactVirtualized__Table__rowColumn {
       .moveOnHoverKey {
