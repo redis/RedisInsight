@@ -36,7 +36,7 @@ describe('AzureAuthCallbackPage', () => {
     })
   }
 
-  it('should render authentication complete message with valid result', () => {
+  it('should render returning message with valid result', () => {
     setLocationWithResult({
       status: AzureAuthStatus.Succeed,
       account: { id: 'test-id', username: 'test@example.com' },
@@ -44,9 +44,9 @@ describe('AzureAuthCallbackPage', () => {
 
     const { getByText } = render(<AzureAuthCallbackPage />)
 
-    expect(getByText('✓ Authentication Complete')).toBeInTheDocument()
+    expect(getByText('Returning to RedisInsight...')).toBeInTheDocument()
     expect(
-      getByText('This window will close automatically...'),
+      getByText('This window will close automatically'),
     ).toBeInTheDocument()
   })
 
@@ -62,7 +62,7 @@ describe('AzureAuthCallbackPage', () => {
 
     const { getByText } = render(<AzureAuthCallbackPage />)
 
-    expect(getByText('✕ Authentication Failed')).toBeInTheDocument()
+    expect(getByText('✕ Something went wrong')).toBeInTheDocument()
     expect(
       getByText('This window will close automatically...'),
     ).toBeInTheDocument()
@@ -80,6 +80,6 @@ describe('AzureAuthCallbackPage', () => {
 
     const { getByText } = render(<AzureAuthCallbackPage />)
 
-    expect(getByText('✕ Authentication Failed')).toBeInTheDocument()
+    expect(getByText('✕ Something went wrong')).toBeInTheDocument()
   })
 })

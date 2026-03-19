@@ -116,18 +116,20 @@ const AzureAuthCallbackPage = () => {
     return (
       <PageWrapper contentCentered grow={false}>
         <ContentWrapper>
-          <ErrorTitle>✕ Authentication Failed</ErrorTitle>
+          <ErrorTitle>✕ Something went wrong</ErrorTitle>
           <Subtitle>This window will close automatically...</Subtitle>
         </ContentWrapper>
       </PageWrapper>
     )
   }
 
+  // Successfully received and relayed the OAuth result to the main application
+  // (regardless of whether the OAuth flow itself succeeded or failed)
   return (
     <PageWrapper contentCentered grow={false}>
       <ContentWrapper>
-        <Title>✓ Authentication Complete</Title>
-        <Subtitle>This window will close automatically...</Subtitle>
+        <Title>Returning to RedisInsight...</Title>
+        <Subtitle>This window will close automatically</Subtitle>
       </ContentWrapper>
     </PageWrapper>
   )
