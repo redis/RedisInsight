@@ -127,7 +127,9 @@ export const generateCallbackHtml = (
       // Note: window.opener is null after OAuth redirect through Microsoft, so we can't check it
       if (isDevMode) {
         var uiOrigin = window.location.protocol + '//' + window.location.hostname + ':' + DEV_UI_PORT;
-        var encodedResult = encodeURIComponent(btoa(JSON.stringify(result)));
+        // Use encodeURIComponent + unescape to handle non-ASCII characters (e.g., international names)
+        // btoa only accepts Latin1 characters, so we must encode Unicode first
+        var encodedResult = encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(result)))));
         var redirectUrl = uiOrigin + '/azure-auth-callback?result=' + encodedResult;
         window.location.href = redirectUrl;
         return;

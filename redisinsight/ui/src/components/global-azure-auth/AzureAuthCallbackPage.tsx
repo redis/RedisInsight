@@ -40,7 +40,11 @@ const AzureAuthCallbackPage = () => {
 
     if (encodedResult) {
       try {
-        const result = JSON.parse(atob(decodeURIComponent(encodedResult)))
+        // Use decodeURIComponent + escape to handle non-ASCII characters (e.g., international names)
+        // This is the inverse of btoa(unescape(encodeURIComponent(...))) used in the callback template
+        const result = JSON.parse(
+          decodeURIComponent(escape(atob(decodeURIComponent(encodedResult)))),
+        )
 
         // Store in localStorage for the main window to pick up
         localStorage.setItem(

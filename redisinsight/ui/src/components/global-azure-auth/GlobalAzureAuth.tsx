@@ -16,6 +16,7 @@ import {
 } from 'uiSrc/slices/app/notifications'
 import { AppDispatch } from 'uiSrc/slices/store'
 import { Pages } from 'uiSrc/constants'
+import { AzureAuthStatus } from 'apiSrc/modules/azure/constants'
 
 const AZURE_OAUTH_STORAGE_KEY = 'ri_azure_oauth_result'
 const STORAGE_POLL_INTERVAL = 500 // ms
@@ -50,7 +51,7 @@ const GlobalAzureAuth = () => {
   const processCallbackPayload = (payload: AzureOAuthCallbackPayload) => {
     const { status, account, error } = payload
 
-    if (status === 'succeed' && account) {
+    if (status === AzureAuthStatus.Succeed && account) {
       const azureAccount = {
         id: account.id,
         username: account.username,
