@@ -1,0 +1,20 @@
+{
+  "name": "@redisinsight/shared-types",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/cjs/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/cjs/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc && tsc -p tsconfig.esm.json",
+    "build:watch": "concurrently \"tsc --watch\" \"tsc -p tsconfig.esm.json --watch\""
+  }
+}
+

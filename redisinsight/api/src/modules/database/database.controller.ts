@@ -33,6 +33,7 @@ import { ExportDatabasesDto } from 'src/modules/database/dto/export.databases.dt
 import { ExportDatabase } from 'src/modules/database/models/export-database';
 import { DatabaseResponse } from 'src/modules/database/dto/database.response';
 import { classToClass } from 'src/utils';
+import { ExampleEnum } from '@redisinsight/shared-types';
 
 @ApiTags('Database')
 @Controller('databases')
@@ -78,6 +79,8 @@ export class DatabaseController {
     @RequestSessionMetadata() sessionMetadata: SessionMetadata,
     @Param('id') id: string,
   ): Promise<DatabaseResponse> {
+    console.log(ExampleEnum.Value1);
+
     return classToClass(
       DatabaseResponse,
       await this.service.get(sessionMetadata, id),

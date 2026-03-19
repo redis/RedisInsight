@@ -11,6 +11,9 @@ import {
 import { resetDataAzure } from 'uiSrc/slices/instances/azure'
 import { AzureLoginSource } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { ExampleEnum } from '@redisinsight/shared-types'
+
+console.log(ExampleEnum.Value1)
 
 const OAUTH_TIMEOUT_MS = 60 * 1000
 let oauthTimeoutId: ReturnType<typeof setTimeout> | null = null
