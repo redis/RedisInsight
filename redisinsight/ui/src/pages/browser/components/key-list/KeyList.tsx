@@ -179,7 +179,7 @@ const KeyList = forwardRef((props: Props, ref) => {
         if ((newKey?.name as any)?.data) {
           const existingItem = itemsMap.get((newKey.name as any).data.join(','))
           if (existingItem) {
-            return { ...newKey, ...existingItem }
+            return { ...existingItem, ...newKey }
           }
         }
         return newKey
