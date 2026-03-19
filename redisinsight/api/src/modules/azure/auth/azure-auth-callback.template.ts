@@ -24,18 +24,6 @@ export interface GenerateCallbackOptions {
 }
 
 /**
- * Sanitize a string for safe embedding in HTML/JavaScript.
- * Prevents XSS by escaping characters that could break out of script context.
- */
-const sanitizeForHtml = (str: string): string =>
-  str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;');
-
-/**
  * Escape JSON string for safe embedding in HTML script context.
  * Prevents XSS by escaping sequences that could break out of script tags.
  */
@@ -55,22 +43,10 @@ export const generateCallbackHtml = (
 ): string => {
   const { result, isDevMode = false } = options;
 
-  // Sanitize all string fields in the result to prevent XSS
-  const sanitizedResult = {
-    ...result,
-    error: result.error ? sanitizeForHtml(result.error) : undefined,
-    account: result.account
-      ? {
-          id: sanitizeForHtml(result.account.id),
-          username: sanitizeForHtml(result.account.username),
-          name: result.account.name
-            ? sanitizeForHtml(result.account.name)
-            : undefined,
-        }
-      : undefined,
-  };
-  // Escape the JSON for safe embedding in script context
-  const resultJson = escapeJsonForScript(JSON.stringify(sanitizedResult));
+  // Escape JSON for safe embedding in script context.
+  // escapeJsonForScript prevents </script> injection by escaping < > &
+  // No HTML encoding needed since we're in a script context, not HTML content.
+  const resultJson = escapeJsonForScript(JSON.stringify(result));
 
   return `<!DOCTYPE html>
 <html lang="en">
