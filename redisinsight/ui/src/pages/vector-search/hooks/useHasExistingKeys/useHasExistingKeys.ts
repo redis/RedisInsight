@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import { apiService } from 'uiSrc/services'
@@ -21,6 +22,7 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
   const [hasKeys, setHasKeys] = useState(false)
   const [loading, setLoading] = useState(true)
 
+  const { pathname } = useLocation()
   const { id: instanceId } = useSelector(connectedInstanceSelector)
   const { encoding } = useSelector(appInfoSelector)
 
@@ -85,7 +87,7 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
     return () => {
       controller.abort()
     }
-  }, [checkForKeys])
+  }, [checkForKeys, pathname])
 
   return { hasKeys, loading }
 }
