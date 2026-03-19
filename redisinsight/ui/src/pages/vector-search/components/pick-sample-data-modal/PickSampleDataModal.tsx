@@ -32,6 +32,7 @@ import * as S from './PickSampleDataModal.styles'
 
 const PickSampleDataModal = ({
   isOpen,
+  loading,
   selectedDataset,
   onSelectDataset,
   onCancel,
@@ -131,6 +132,7 @@ const PickSampleDataModal = ({
 
             <PrimaryButton
               size="large"
+              loading={loading}
               disabled={!hasSelection}
               onClick={() => hasSelection && onStartQuerying(selectedDataset)}
               data-testid="pick-sample-data-modal--start-querying"
