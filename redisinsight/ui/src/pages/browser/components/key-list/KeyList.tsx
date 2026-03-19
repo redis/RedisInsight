@@ -127,10 +127,10 @@ const KeyList = forwardRef((props: Props, ref) => {
             }
             if (column === 'ttl' || column === 'size') {
               if (isUndefined(val) || val === null) {
-                return Infinity
+                return isAsc ? Infinity : -Infinity
               }
               if (column === 'ttl' && val === -1) {
-                return Infinity
+                return isAsc ? Infinity : -Infinity
               }
               return Number(val)
             }
