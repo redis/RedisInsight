@@ -50,6 +50,13 @@ export interface ChartConfig {
   yAxis2Config: YAxisConfig
 }
 
+export interface PersistedTsChartConfig {
+  mode?: 'line' | 'points'
+  timeUnit?: 'seconds' | 'milliseconds'
+  staircase?: boolean
+  fill?: boolean
+}
+
 export type ChartImageExportOption = 'png' | 'svg'
 
 export interface ChartProps {

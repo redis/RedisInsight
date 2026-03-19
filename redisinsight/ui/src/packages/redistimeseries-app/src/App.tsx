@@ -1,12 +1,6 @@
 import React from 'react'
 import ChartResultView from './components/Chart/ChartResultView'
-
-interface PersistedTsChartConfig {
-  mode?: 'line' | 'points'
-  timeUnit?: 'seconds' | 'milliseconds'
-  staircase?: boolean
-  fill?: boolean
-}
+import { PersistedTsChartConfig } from './components/Chart/interfaces'
 
 interface Props {
   command: string

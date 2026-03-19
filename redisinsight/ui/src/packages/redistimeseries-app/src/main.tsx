@@ -3,16 +3,10 @@ import React from 'react'
 import { render } from 'react-dom'
 import { ThemeProvider } from 'uiSrc/components/base/utils/pluginsThemeContext'
 import App from './App'
+import { PersistedTsChartConfig } from './components/Chart/interfaces'
 
 import './styles/styles.scss'
 import result from '../mockData/resultTimeSeries.json'
-
-interface PersistedTsChartConfig {
-  mode?: 'line' | 'points'
-  timeUnit?: 'seconds' | 'milliseconds'
-  staircase?: boolean
-  fill?: boolean
-}
 
 interface Props {
   command?: string

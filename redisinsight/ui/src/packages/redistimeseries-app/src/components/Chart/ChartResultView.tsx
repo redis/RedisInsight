@@ -6,6 +6,7 @@ import {
   AxisScale,
   ChartConfig,
   GraphMode,
+  PersistedTsChartConfig,
   TimeSeries,
   TimeUnit,
   YAxisConfig,
@@ -17,13 +18,6 @@ import { determineDefaultTimeUnits, normalizeDatapointUnits } from './utils'
 enum LAYOUT_STATE {
   INITIAL_STATE,
   RELAYOUT_STATE,
-}
-
-interface PersistedTsChartConfig {
-  mode?: 'line' | 'points'
-  timeUnit?: 'seconds' | 'milliseconds'
-  staircase?: boolean
-  fill?: boolean
 }
 
 interface ChartResultViewProps {
