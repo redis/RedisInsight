@@ -170,9 +170,12 @@ const KeyList = forwardRef((props: Props, ref) => {
     if (isNewData) {
       const newKeys = keysState.keys
       const mergedItems = newKeys.map((newKey) => {
-        const existingItem = itemsRef.current.find((item) =>
-          isEqualBuffers(item.name, newKey.name as any),
-        )
+        const existingItem = itemsRef.current.find((item) => {
+          if (item && item.name && newKey && newKey.name) {
+            return isEqualBuffers(item.name as any, newKey.name as any)
+          }
+          return false
+        })
         if (existingItem) {
           return { ...newKey, ...existingItem }
         }
@@ -346,13 +349,22 @@ const KeyList = forwardRef((props: Props, ref) => {
     startIndex: number,
     lastIndex: number,
   ): IKeyPropTypes[] => {
+    const sortedItems = sortItems([...itemsRef.current])
     const newItems = bufferFormatRangeItems(
-      itemsRef.current,
+      sortedItems,
       startIndex,
       lastIndex,
       formatItem,
     )
-    itemsRef.current.splice(startIndex, newItems.length, ...newItems)
+
+    newItems.forEach((newItem: any) => {
+      const idx = itemsRef.current.findIndex((item) =>
+        isEqualBuffers(item.name as any, newItem.name as any),
+      )
+      if (idx !== -1) {
+        itemsRef.current[idx] = newItem
+      }
+    })
 
     return newItems
   }
