@@ -60,7 +60,14 @@ interface AuthRequestData {
   verifier: string;
   redirectUri: string;
   redirectType: AzureOAuthRedirectType;
+  createdAt: number;
 }
+
+/**
+ * Maximum age for auth requests before they're considered stale (10 minutes).
+ * OAuth flows should complete well within this time.
+ */
+const AUTH_REQUEST_MAX_AGE_MS = 10 * 60 * 1000;
 
 @Injectable()
 export class AzureAuthService {
@@ -74,6 +81,19 @@ export class AzureAuthService {
   private authRequests: Map<string, AuthRequestData> = new Map();
 
   constructor(private readonly eventEmitter: EventEmitter2) {}
+
+  /**
+   * Remove expired auth requests to prevent memory leaks from abandoned flows.
+   */
+  private cleanupExpiredAuthRequests(): void {
+    const now = Date.now();
+    this.authRequests.forEach((data, state) => {
+      if (now - data.createdAt > AUTH_REQUEST_MAX_AGE_MS) {
+        this.authRequests.delete(state);
+        this.logger.debug(`Cleaned up expired auth request: ${state}`);
+      }
+    });
+  }
 
   /**
    * Get the redirect URI based on the redirect type.
@@ -131,8 +151,16 @@ export class AzureAuthService {
     const state = generateUuid();
     const redirectUri = this.getRedirectUri(redirectType);
 
-    this.authRequests.clear();
-    this.authRequests.set(state, { verifier, redirectUri, redirectType });
+    // Clean up any expired auth requests (abandoned flows) before adding new one
+    this.cleanupExpiredAuthRequests();
+
+    // Store auth request data keyed by unique state UUID
+    this.authRequests.set(state, {
+      verifier,
+      redirectUri,
+      redirectType,
+      createdAt: Date.now(),
+    });
 
     const authUrl = await pca.getAuthCodeUrl({
       scopes: AZURE_OAUTH_SCOPES,
