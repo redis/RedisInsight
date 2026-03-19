@@ -16,7 +16,6 @@ import {
   bufferFormatRangeItems,
   Nullable,
   Maybe,
-  isEqualBuffers,
 } from 'uiSrc/utils'
 import {
   deleteKeyAction,
@@ -169,15 +168,19 @@ const KeyList = forwardRef((props: Props, ref) => {
     const isNewData = prevKeys.current !== keysState.keys
     if (isNewData) {
       const newKeys = keysState.keys
+      const itemsMap = new Map()
+      itemsRef.current.forEach((item) => {
+        if ((item?.name as any)?.data) {
+          itemsMap.set((item.name as any).data.join(','), item)
+        }
+      })
+
       const mergedItems = newKeys.map((newKey) => {
-        const existingItem = itemsRef.current.find((item) => {
-          if (item && item.name && newKey && newKey.name) {
-            return isEqualBuffers(item.name as any, newKey.name as any)
+        if ((newKey?.name as any)?.data) {
+          const existingItem = itemsMap.get((newKey.name as any).data.join(','))
+          if (existingItem) {
+            return { ...newKey, ...existingItem }
           }
-          return false
-        })
-        if (existingItem) {
-          return { ...newKey, ...existingItem }
         }
         return newKey
       })
@@ -357,12 +360,19 @@ const KeyList = forwardRef((props: Props, ref) => {
       formatItem,
     )
 
+    const newItemsMap = new Map()
     newItems.forEach((newItem: any) => {
-      const idx = itemsRef.current.findIndex((item) =>
-        isEqualBuffers(item.name as any, newItem.name as any),
-      )
-      if (idx !== -1) {
-        itemsRef.current[idx] = newItem
+      if (newItem?.name?.data) {
+        newItemsMap.set(newItem.name.data.join(','), newItem)
+      }
+    })
+
+    itemsRef.current.forEach((item, idx) => {
+      if ((item?.name as any)?.data) {
+        const newItem = newItemsMap.get((item.name as any).data.join(','))
+        if (newItem) {
+          itemsRef.current[idx] = newItem
+        }
       }
     })
 
