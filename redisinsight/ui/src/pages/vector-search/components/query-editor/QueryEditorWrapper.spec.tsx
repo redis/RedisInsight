@@ -3,6 +3,7 @@ import { faker } from '@faker-js/faker'
 import { render, screen, fireEvent, waitFor } from 'uiSrc/utils/test-utils'
 import { QUERY_LIBRARY_ITEMS_MOCK } from 'uiSrc/mocks/handlers/browser/queryLibraryHandlers'
 import { QueryLibraryService } from 'uiSrc/services/query-library/QueryLibraryService'
+import { buildLoadQuery } from '../query-library-view/QueryLibraryView.utils'
 
 import { QueryEditorWrapper } from './QueryEditorWrapper'
 import { EditorTab } from './QueryEditor.types'
@@ -161,7 +162,7 @@ describe('QueryEditorWrapper', () => {
     fireEvent.click(loadBtn)
 
     expect(defaultProps.setQuery).toHaveBeenCalledWith(
-      QUERY_LIBRARY_ITEMS_MOCK[0].query,
+      buildLoadQuery(QUERY_LIBRARY_ITEMS_MOCK[0]),
     )
 
     const editor = screen.getByTestId('vector-search-editor')
