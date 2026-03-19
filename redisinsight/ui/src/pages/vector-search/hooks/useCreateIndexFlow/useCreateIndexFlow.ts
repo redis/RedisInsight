@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 
@@ -43,9 +43,10 @@ export const useCreateIndexFlow = (): UseCreateIndexFlowResult => {
   const history = useHistory()
   const dispatch = useDispatch()
 
-  const { run: createIndex, loading } = useCreateIndex()
+  const { run: createIndex } = useCreateIndex()
   const { stringData: existingIndexes } = useRedisearchListData()
   const queryLibraryService = useRef(new QueryLibraryService()).current
+  const [loading, setLoading] = useState(false)
 
   const seedSampleQueries = useCallback(
     async (
@@ -89,38 +90,45 @@ export const useCreateIndexFlow = (): UseCreateIndexFlowResult => {
       const indexName = getIndexNameBySampleData(dataset)
       const indexAlreadyExists = existingIndexes.includes(indexName)
 
-      if (indexAlreadyExists) {
-        dispatch(
-          addMessageNotification(
-            createIndexNotifications.sampleDataAlreadyExists(),
-          ),
-        )
-        await seedSampleQueries(instanceId, indexName, dataset)
-        callbacks?.onSuccess?.()
-        navigateToLibrary(instanceId, indexName)
-        return
-      }
-
-      createIndex(
-        { instanceId, indexName, dataContent: dataset },
-        async () => {
+      setLoading(true)
+      try {
+        if (indexAlreadyExists) {
           dispatch(
             addMessageNotification(
-              createIndexNotifications.sampleDataCreated(),
+              createIndexNotifications.sampleDataAlreadyExists(),
             ),
           )
-          dispatch(fetchRedisearchListAction())
           await seedSampleQueries(instanceId, indexName, dataset)
           callbacks?.onSuccess?.()
           navigateToLibrary(instanceId, indexName)
-        },
-        async () => {
-          dispatch(
-            addMessageNotification(createIndexNotifications.createFailed()),
-          )
-          callbacks?.onError?.()
-        },
-      )
+          return
+        }
+
+        await createIndex(
+          { instanceId, indexName, dataContent: dataset },
+          async () => {
+            dispatch(
+              addMessageNotification(
+                createIndexNotifications.sampleDataCreated(),
+              ),
+            )
+            dispatch(fetchRedisearchListAction())
+            await seedSampleQueries(instanceId, indexName, dataset)
+            callbacks?.onSuccess?.()
+            navigateToLibrary(instanceId, indexName)
+          },
+          async () => {
+            dispatch(
+              addMessageNotification(createIndexNotifications.createFailed()),
+            )
+            callbacks?.onError?.()
+          },
+        )
+      } catch {
+        callbacks?.onError?.()
+      } finally {
+        setLoading(false)
+      }
     },
     [
       existingIndexes,
