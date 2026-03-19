@@ -6,6 +6,7 @@ import { QueryLibraryService } from 'uiSrc/services/query-library/QueryLibrarySe
 
 import { QueryEditorWrapper } from './QueryEditorWrapper'
 import { EditorTab } from './QueryEditor.types'
+import { buildLoadQuery } from '../query-library-view/QueryLibraryView.utils'
 
 jest.mock('uiSrc/components/base/code-editor', () => {
   const ReactMock = require('react')
@@ -161,7 +162,7 @@ describe('QueryEditorWrapper', () => {
     fireEvent.click(loadBtn)
 
     expect(defaultProps.setQuery).toHaveBeenCalledWith(
-      QUERY_LIBRARY_ITEMS_MOCK[0].query,
+      buildLoadQuery(QUERY_LIBRARY_ITEMS_MOCK[0]),
     )
 
     const editor = screen.getByTestId('vector-search-editor')
