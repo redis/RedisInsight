@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { RiTooltip } from 'uiSrc/components'
 import { KEY_TYPE_MAP } from 'uiSrc/pages/vector-search/constants'
 import { extractNamespace } from 'uiSrc/pages/vector-search/utils'
 import { useMakeSearchableModal } from 'uiSrc/pages/browser/components/make-searchable-modal'
@@ -47,12 +48,23 @@ export const MakeSearchableButton = ({
   ])
 
   return (
-    <PrimaryButton
-      size="small"
-      onClick={handleOpen}
-      data-testid="make-searchable-btn"
+    <RiTooltip
+      position="top"
+      content={
+        <span>
+          Index data with the "<strong>{prefix}</strong>" prefix so you can
+          query it using full-text, vector, exact matching, and geospatial
+          search.
+        </span>
+      }
     >
-      Make searchable
-    </PrimaryButton>
+      <PrimaryButton
+        size="small"
+        onClick={handleOpen}
+        data-testid="make-searchable-btn"
+      >
+        Make searchable
+      </PrimaryButton>
+    </RiTooltip>
   )
 }

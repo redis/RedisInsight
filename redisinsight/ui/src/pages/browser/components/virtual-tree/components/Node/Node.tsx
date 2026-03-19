@@ -247,12 +247,23 @@ const Node = ({
             </S.FolderKeyCount>
             {hasSearchableKeys && (
               <FeatureFlagComponent name={FeatureFlags.vectorSearchV2}>
-                <S.IndexButton
-                  onClick={handleIndexClick}
-                  data-testid={`index-folder-btn-${fullName}`}
+                <RiTooltip
+                  position="top"
+                  content={
+                    <span>
+                      Index data with the "<strong>{folderPrefix}</strong>"{' '}
+                      prefix so you can query it using full-text, vector, exact
+                      matching, and geospatial search.
+                    </span>
+                  }
                 >
-                  Index
-                </S.IndexButton>
+                  <S.IndexButton
+                    onClick={handleIndexClick}
+                    data-testid={`index-folder-btn-${fullName}`}
+                  >
+                    Index
+                  </S.IndexButton>
+                </RiTooltip>
               </FeatureFlagComponent>
             )}
             <FeatureFlagComponent name={FeatureFlags.envDependent}>
