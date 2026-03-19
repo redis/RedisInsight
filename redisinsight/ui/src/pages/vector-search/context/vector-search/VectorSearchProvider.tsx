@@ -29,7 +29,8 @@ export const VectorSearchProvider = ({
   const history = useHistory()
   const { instanceId } = useParams<{ instanceId: string }>()
 
-  const { run: createIndexFlow } = useCreateIndexFlow()
+  const { run: createIndexFlow, loading: createIndexLoading } =
+    useCreateIndexFlow()
   const { hasKeys: hasExistingKeys, loading: hasExistingKeysLoading } =
     useHasExistingKeys()
 
@@ -126,10 +127,15 @@ export const VectorSearchProvider = ({
         },
       })
 
-      dismissSampleDataModal()
       createIndexFlow(instanceId, dataset, {
-        onSuccess: () => onStartQueryingIndexCreated(fields),
-        onError: onStartQueryingIndexError,
+        onSuccess: () => {
+          dismissSampleDataModal()
+          onStartQueryingIndexCreated(fields)
+        },
+        onError: () => {
+          dismissSampleDataModal()
+          onStartQueryingIndexError()
+        },
       })
     },
     [
@@ -176,6 +182,7 @@ export const VectorSearchProvider = ({
       {children}
       <PickSampleDataModal
         isOpen={isSampleDataModalOpen}
+        loading={createIndexLoading}
         selectedDataset={selectedDataset}
         onSelectDataset={handleSelectDataset}
         onCancel={cancelSampleDataModal}
