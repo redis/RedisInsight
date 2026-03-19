@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import parse from 'html-react-parser'
 import cx from 'classnames'
 import { flatten, isArray, isEmpty, map, uniq } from 'lodash'
@@ -30,6 +30,12 @@ export interface Props {
 const EllipsisText = styled(ColorText)`
   overflow: hidden;
   text-overflow: ellipsis;
+`
+
+const TableWrapper = styled.div<React.HTMLAttributes<HTMLDivElement>>`
+  min-width: 0;
+  overflow: auto;
+  padding: 2px;
 `
 
 const noResultsMessage = 'No results found.'
@@ -126,6 +132,12 @@ const TableResult = React.memo((props: Props) => {
     !React.isValidElement(result) && !(isArray(result) && isEmpty(result))
   const isDataEl = React.isValidElement(result)
 
+  const MIN_COLUMN_WIDTH = 180
+  const tableMinWidth = useMemo(
+    () => `${Math.max(columns.length * MIN_COLUMN_WIDTH, 920)}px`,
+    [columns.length],
+  )
+
   return (
     <div className={cx('queryResultsContainer', 'container')}>
       <div className="queryHeader">
@@ -137,9 +149,9 @@ const TableResult = React.memo((props: Props) => {
         )}
       </div>
       {isDataArr && (
-        <div data-testid={`query-table-result-${query}`}>
-          <Table columns={columns} data={result ?? []} />
-        </div>
+        <TableWrapper data-testid={`query-table-result-${query}`}>
+          <Table columns={columns} data={result ?? []} minWidth={tableMinWidth} />
+        </TableWrapper>
       )}
       {isDataEl && <div className={cx('resultEl')}>{result}</div>}
       {!isDataArr && !isDataEl && (
