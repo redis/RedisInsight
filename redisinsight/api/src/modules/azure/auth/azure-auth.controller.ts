@@ -167,7 +167,18 @@ export class AzureAuthController {
     } catch (e) {
       this.logger.error('Azure OAuth callback failed', e);
       this.analytics.sendAzureSignInFailed(sessionMetadata, wrapHttpError(e));
-      throw e;
+
+      // Return HTML error page for web flows instead of throwing JSON error.
+      // This ensures the popup can communicate the error to the main window via localStorage.
+      // We default to web flow since deeplink flows redirect to redisinsight:// and don't reach HTTP callback.
+      res.type('text/html');
+      return generateCallbackHtml({
+        result: {
+          status: AzureAuthStatus.Failed,
+          error: e instanceof Error ? e.message : 'Authentication failed',
+        },
+        isDevMode: process.env.NODE_ENV === 'development',
+      });
     }
   }
 
