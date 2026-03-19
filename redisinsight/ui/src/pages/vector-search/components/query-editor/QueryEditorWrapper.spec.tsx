@@ -7,7 +7,6 @@ import { buildLoadQuery } from '../query-library-view/QueryLibraryView.utils'
 
 import { QueryEditorWrapper } from './QueryEditorWrapper'
 import { EditorTab } from './QueryEditor.types'
-import { buildLoadQuery } from '../query-library-view/QueryLibraryView.utils'
 
 jest.mock('uiSrc/components/base/code-editor', () => {
   const ReactMock = require('react')
