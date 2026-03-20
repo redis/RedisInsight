@@ -59,20 +59,20 @@ const AzureManualConnectionPage = () => {
     FormikErrors<AzureManualConnectionFormValues>
   >({})
 
+  // Redirect to home if not authenticated
   useEffect(() => {
-    // Redirect to home if not authenticated
     if (!account) {
       history.push(Pages.home)
-      return
     }
+  }, [account, history])
 
+  // Send telemetry only once on initial page load
+  useEffect(() => {
     setTitle('Azure Manual Connection')
-
-    // Send telemetry when page is opened
     sendEventTelemetry({
       event: TelemetryEvent.AZURE_MANUAL_CONNECTION_OPENED,
     })
-  }, [account, history])
+  }, [])
 
   const initialValues: AzureManualConnectionFormValues = {
     host: '',
@@ -115,25 +115,19 @@ const AzureManualConnectionPage = () => {
       verifyServerCert: values.verifyServerCert,
       // Azure-specific provider info
       provider: 'AZURE_CACHE',
-    }
-
-    // Handle SNI (tlsServername) - important for Private Link connections
-    if (values.sni && values.servername) {
-      // The backend expects tlsServername for SNI override
-      ;(payload as any).tlsServername = values.servername
-    }
-
-    // Handle timeout
-    if (values.timeout) {
-      ;(payload as any).timeout = parseInt(values.timeout, 10) * 1000 // Convert to ms
-    }
-
-    // Add Azure provider details for Entra ID authentication
-    // account.id contains the MSAL homeAccountId (mapped by backend)
-    ;(payload as any).providerDetails = {
-      provider: 'azure',
-      authType: 'entraId',
-      azureAccountId: account.id,
+      // SNI (tlsServername) - important for Private Link connections
+      tlsServername:
+        values.sni && values.servername ? values.servername : undefined,
+      // Timeout in milliseconds (convert from seconds)
+      timeout: values.timeout ? parseInt(values.timeout, 10) * 1000 : undefined,
+      // Azure provider details for Entra ID authentication
+      // account.id contains the MSAL homeAccountId (mapped by backend)
+      // Values match backend enums: CloudProvider.Azure, AzureAuthType.EntraId
+      providerDetails: {
+        provider: 'azure',
+        authType: 'entraId',
+        azureAccountId: account.id,
+      } as Instance['providerDetails'],
     }
 
     try {
