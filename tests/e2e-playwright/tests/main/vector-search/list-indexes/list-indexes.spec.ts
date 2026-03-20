@@ -98,7 +98,7 @@ test.describe('Vector Search > List Indexes', { tag: '@serial' }, () => {
     await viewItem.click();
 
     await expect(vectorSearchPage.indexInfoPanel.container).toBeVisible();
-    await expect(vectorSearchPage.indexInfoPanel.title).toBeVisible();
+    await expect(vectorSearchPage.indexInfoPanel.getTitle(TEST_INDEX_NAME)).toBeVisible();
 
     // Close panel and verify it hides
     await vectorSearchPage.indexInfoPanel.closeButton.click();
