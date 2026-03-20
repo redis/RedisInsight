@@ -10,10 +10,10 @@ import QueryCardCliResultWrapper, {
 } from './QueryCardCliResultWrapper'
 import QueryCardCliDefaultResult, {
   Props as QueryCardCliDefaultResultProps,
-} from '../QueryCardCliDefaultResult'
+} from '../QueryCardCliDefaultResult/QueryCardCliDefaultResult'
 import QueryCardCliGroupResult, {
   Props as QueryCardCliGroupResultProps,
-} from '../QueryCardCliGroupResult'
+} from '../QueryCardCliGroupResult/QueryCardCliGroupResult'
 
 const mockedProps = mock<Props>()
 const mockedQueryCardCliDefaultResultProps =
@@ -78,7 +78,7 @@ describe('QueryCardCliResultWrapper', () => {
     const mockResult = [
       {
         response: '',
-        status: 'success',
+        status: CommandExecutionStatus.Success,
       },
     ]
 
@@ -106,7 +106,7 @@ describe('QueryCardCliResultWrapper', () => {
     const mockResult = [
       {
         response: ['response'],
-        status: 'success',
+        status: CommandExecutionStatus.Success,
       },
     ]
 
