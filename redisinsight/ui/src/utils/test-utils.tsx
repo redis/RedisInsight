@@ -385,6 +385,7 @@ jest.mock('uiSrc/utils/routing', () => ({
 export const localStorageMock = {
   getItem: jest.fn(),
   setItem: jest.fn(),
+  removeItem: jest.fn(),
   clear: jest.fn(),
 }
 Object.defineProperty(window, 'localStorage', { value: localStorageMock })
@@ -392,6 +393,7 @@ Object.defineProperty(window, 'localStorage', { value: localStorageMock })
 export const sessionStorageMock = {
   getItem: jest.fn(),
   setItem: jest.fn(),
+  removeItem: jest.fn(),
   clear: jest.fn(),
 }
 Object.defineProperty(window, 'sessionStorage', { value: sessionStorageMock })

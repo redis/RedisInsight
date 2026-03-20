@@ -3,7 +3,11 @@ import { faker } from '@faker-js/faker';
 import { PublicClientApplication } from '@azure/msal-node';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AzureAuthService } from './azure-auth.service';
-import { AzureAuthStatus, AzureRedisTokenEvents } from '../constants';
+import {
+  AzureAuthStatus,
+  AzureOAuthRedirectType,
+  AzureRedisTokenEvents,
+} from '../constants';
 import { AzureOAuthPrompt } from './dto';
 
 jest.mock('@azure/msal-node');
@@ -63,18 +67,48 @@ describe('AzureAuthService', () => {
   });
 
   describe('getAuthorizationUrl', () => {
-    it('should clear previous auth requests to prevent memory leak', async () => {
-      mockPca.acquireTokenByCode.mockRejectedValue(new Error('Token error'));
+    it('should allow concurrent auth requests (multiple tabs or users)', async () => {
+      const mockAccount = createMockAccount();
+      mockPca.acquireTokenByCode.mockResolvedValue({
+        accessToken: faker.string.alphanumeric(100),
+        account: mockAccount,
+      } as any);
 
       // Create first auth request
       const { state: firstState } = await service.getAuthorizationUrl();
 
-      // Create second auth request (should clear the first)
+      // Create second auth request (should NOT clear the first)
+      const { state: secondState } = await service.getAuthorizationUrl();
+
+      // Both states should still be valid
+      const result1 = await service.handleCallback('auth-code-1', firstState);
+      const result2 = await service.handleCallback('auth-code-2', secondState);
+
+      expect(result1.status).toBe(AzureAuthStatus.Succeed);
+      expect(result2.status).toBe(AzureAuthStatus.Succeed);
+    });
+
+    it('should clean up expired auth requests on new request', async () => {
+      mockPca.acquireTokenByCode.mockRejectedValue(new Error('Token error'));
+
+      // Create first auth request
+      const { state: expiredState } = await service.getAuthorizationUrl();
+
+      // Fast-forward time past expiration (10 minutes + 1 second)
+      const originalDateNow = Date.now;
+      const startTime = Date.now();
+      Date.now = jest.fn(() => startTime + 10 * 60 * 1000 + 1000);
+
+      // Create second auth request (should clean up expired first request)
       await service.getAuthorizationUrl();
 
-      // First state should no longer be valid
-      const result = await service.handleCallback('auth-code', firstState);
+      // Restore Date.now
+      Date.now = originalDateNow;
+
+      // First state should no longer be valid (expired and cleaned up)
+      const result = await service.handleCallback('auth-code', expiredState);
       expect(result.status).toBe(AzureAuthStatus.Failed);
+      expect(result.error).toBe('Invalid or expired authentication state');
     });
 
     it('should pass prompt parameter to MSAL when provided', async () => {
@@ -142,6 +176,26 @@ describe('AzureAuthService', () => {
       expect(result.status).toBe(AzureAuthStatus.Succeed);
       expect(result.account).toEqual(mockAccount);
       expect(result.error).toBeUndefined();
+    });
+  });
+
+  describe('removeAuthRequest', () => {
+    it('should return redirect type and remove state from map', async () => {
+      const { state } = await service.getAuthorizationUrl();
+
+      // Remove should return the redirect type
+      const redirectType = service.removeAuthRequest(state);
+      expect(redirectType).toBe(AzureOAuthRedirectType.Deeplink);
+
+      // handleCallback should fail since state was removed
+      const result = await service.handleCallback('auth-code', state);
+      expect(result.status).toBe(AzureAuthStatus.Failed);
+      expect(result.error).toBe('Invalid or expired authentication state');
+    });
+
+    it('should return null for unknown state', () => {
+      const redirectType = service.removeAuthRequest('unknown-state');
+      expect(redirectType).toBeNull();
     });
   });
 

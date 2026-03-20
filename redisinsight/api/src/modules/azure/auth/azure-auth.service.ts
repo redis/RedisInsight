@@ -11,11 +11,14 @@ import {
   AZURE_CLIENT_ID,
   AZURE_REDIS_SCOPE,
   AZURE_MANAGEMENT_SCOPE,
-  AZURE_OAUTH_REDIRECT_PATH,
+  AZURE_OAUTH_DEEPLINK_REDIRECT_PATH,
   AZURE_OAUTH_SCOPES,
+  AZURE_OAUTH_WEB_CALLBACK_ENDPOINT,
   AzureAuthStatus,
+  AzureOAuthRedirectType,
   AzureRedisTokenEvents,
 } from '../constants';
+import { get, Config } from 'src/utils';
 import { AzureTokenResult, AzureAuthStatusResponse } from './models';
 import { AzureOAuthPrompt } from './dto';
 
@@ -50,6 +53,22 @@ const generateUuid = (): string => crypto.randomUUID();
  * Service for handling Azure Entra ID authentication.
  * Uses MSAL (Microsoft Authentication Library) for OAuth 2.0 flows.
  */
+/**
+ * Data stored for each pending auth request
+ */
+interface AuthRequestData {
+  verifier: string;
+  redirectUri: string;
+  redirectType: AzureOAuthRedirectType;
+  createdAt: number;
+}
+
+/**
+ * Maximum age for auth requests before they're considered stale (10 minutes).
+ * OAuth flows should complete well within this time.
+ */
+const AUTH_REQUEST_MAX_AGE_MS = 10 * 60 * 1000;
+
 @Injectable()
 export class AzureAuthService {
   private readonly logger = new Logger(AzureAuthService.name);
@@ -57,11 +76,58 @@ export class AzureAuthService {
   private pca: PublicClientApplication | null = null;
 
   /**
-   * Map of state -> PKCE verifier for pending auth requests
+   * Map of state -> auth request data (PKCE verifier + redirect URI)
    */
-  private authRequests: Map<string, string> = new Map();
+  private authRequests: Map<string, AuthRequestData> = new Map();
 
   constructor(private readonly eventEmitter: EventEmitter2) {}
+
+  /**
+   * Remove expired auth requests to prevent memory leaks from abandoned flows.
+   */
+  private cleanupExpiredAuthRequests(): void {
+    const now = Date.now();
+    this.authRequests.forEach((data, state) => {
+      if (now - data.createdAt > AUTH_REQUEST_MAX_AGE_MS) {
+        this.authRequests.delete(state);
+        this.logger.debug(`Cleaned up expired auth request: ${state}`);
+      }
+    });
+  }
+
+  /**
+   * Remove an auth request by state and return its redirect type.
+   * Used for cleanup when OAuth errors occur before handleCallback is called.
+   * @returns The redirect type if found, null otherwise
+   */
+  removeAuthRequest(state: string): AzureOAuthRedirectType | null {
+    const authRequest = this.authRequests.get(state);
+    if (authRequest) {
+      this.authRequests.delete(state);
+      return authRequest.redirectType;
+    }
+    return null;
+  }
+
+  /**
+   * Get the redirect URI based on the redirect type.
+   * For web flow, uses externalUrl config if set, otherwise constructs localhost URL.
+   * This allows users to set RI_EXTERNAL_URL when running behind a proxy or custom port.
+   */
+  private getRedirectUri(
+    redirectType: AzureOAuthRedirectType = AzureOAuthRedirectType.Deeplink,
+  ): string {
+    if (redirectType === AzureOAuthRedirectType.Web) {
+      const serverConfig = get('server') as Config['server'];
+      // Use external URL if configured (for Docker port mapping or reverse proxy)
+      if (serverConfig.externalUrl) {
+        const baseUrl = serverConfig.externalUrl.replace(/\/$/, ''); // Remove trailing slash
+        return `${baseUrl}/api${AZURE_OAUTH_WEB_CALLBACK_ENDPOINT}`;
+      }
+      return `http://localhost:${serverConfig.port}/api${AZURE_OAUTH_WEB_CALLBACK_ENDPOINT}`;
+    }
+    return AZURE_OAUTH_DEEPLINK_REDIRECT_PATH;
+  }
 
   private getMsalClient(): PublicClientApplication {
     if (this.pca) {
@@ -85,35 +151,49 @@ export class AzureAuthService {
    * Generate authorization URL for OAuth flow.
    * Returns URL to redirect user to Microsoft login.
    * @param prompt - Optional prompt parameter to control login behavior.
+   * @param redirectType - Type of redirect (deeplink for Electron, web for browser/Docker)
    * @see https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-auth-code-flow#request-an-authorization-code
    */
   async getAuthorizationUrl(
     prompt?: AzureOAuthPrompt,
+    redirectType: AzureOAuthRedirectType = AzureOAuthRedirectType.Deeplink,
   ): Promise<{ url: string; state: string }> {
     const pca = this.getMsalClient();
 
     const verifier = generateCodeVerifier();
     const challenge = generateCodeChallenge(verifier);
     const state = generateUuid();
+    const redirectUri = this.getRedirectUri(redirectType);
 
-    this.authRequests.clear();
-    this.authRequests.set(state, verifier);
+    // Clean up any expired auth requests (abandoned flows) before adding new one
+    this.cleanupExpiredAuthRequests();
+
+    // Store auth request data keyed by unique state UUID
+    this.authRequests.set(state, {
+      verifier,
+      redirectUri,
+      redirectType,
+      createdAt: Date.now(),
+    });
 
     const authUrl = await pca.getAuthCodeUrl({
       scopes: AZURE_OAUTH_SCOPES,
-      redirectUri: AZURE_OAUTH_REDIRECT_PATH,
+      redirectUri,
       codeChallenge: challenge,
       codeChallengeMethod: 'S256',
       state,
       ...(prompt && { prompt }),
     });
 
-    this.logger.debug('Generated authorization URL');
+    this.logger.debug(
+      `Generated authorization URL with redirect type: ${redirectType}`,
+    );
     return { url: authUrl, state };
   }
 
   /**
    * Handle OAuth callback - exchange authorization code for tokens.
+   * Returns the result along with the redirect type used for this request.
    */
   async handleCallback(
     code: string,
@@ -122,17 +202,22 @@ export class AzureAuthService {
     status: AzureAuthStatus;
     account?: AccountInfo;
     error?: string;
+    redirectType: AzureOAuthRedirectType;
   }> {
     const pca = this.getMsalClient();
 
-    const verifier = this.authRequests.get(state);
-    if (!verifier) {
+    const authRequest = this.authRequests.get(state);
+    if (!authRequest) {
       this.logger.warn(`No auth request found for state: ${state}`);
       return {
         status: AzureAuthStatus.Failed,
         error: 'Invalid or expired authentication state',
+        // Default to Web since deeplink flows redirect to redisinsight:// and never reach HTTP callback
+        redirectType: AzureOAuthRedirectType.Web,
       };
     }
+
+    const { verifier, redirectUri, redirectType } = authRequest;
 
     // Clean up the auth request
     this.authRequests.delete(state);
@@ -141,7 +226,7 @@ export class AzureAuthService {
       const result = await pca.acquireTokenByCode({
         code,
         scopes: AZURE_OAUTH_SCOPES,
-        redirectUri: AZURE_OAUTH_REDIRECT_PATH,
+        redirectUri,
         codeVerifier: verifier,
       });
 
@@ -152,12 +237,14 @@ export class AzureAuthService {
       return {
         status: AzureAuthStatus.Succeed,
         account: result.account,
+        redirectType,
       };
     } catch (error: any) {
       this.logger.error(`Token acquisition failed: ${error.message}`);
       return {
         status: AzureAuthStatus.Failed,
         error: error.message || 'Token acquisition failed',
+        redirectType,
       };
     }
   }

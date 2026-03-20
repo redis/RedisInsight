@@ -80,6 +80,7 @@ export default {
     env: process.env.NODE_ENV || 'development',
     host: process.env.RI_APP_HOST ?? '0.0.0.0',
     port: parseInt(process.env.RI_APP_PORT, 10) || 5540,
+    externalUrl: process.env.RI_EXTERNAL_URL, // External URL for OAuth callbacks when running behind proxy or custom port
     docPrefix: 'api/docs',
     globalPrefix: 'api',
     customPluginsUri,

@@ -1,5 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsOptional } from 'class-validator';
+import { AzureOAuthRedirectType } from '../../constants';
 
 /**
  * Valid OAuth prompt parameter values for Azure Entra ID.
@@ -35,4 +36,18 @@ export class AzureAuthLoginDto {
     message: `prompt must be a valid value. Valid values: ${Object.values(AzureOAuthPrompt).join(', ')}.`,
   })
   prompt?: AzureOAuthPrompt;
+
+  @ApiPropertyOptional({
+    description:
+      'OAuth redirect type. ' +
+      '"deeplink" uses redisinsight:// protocol for Electron, "web" uses localhost HTTP callback for browser/Docker.',
+    enum: AzureOAuthRedirectType,
+    example: AzureOAuthRedirectType.Deeplink,
+    default: AzureOAuthRedirectType.Deeplink,
+  })
+  @IsOptional()
+  @IsEnum(AzureOAuthRedirectType, {
+    message: `redirectType must be a valid value. Valid values: ${Object.values(AzureOAuthRedirectType).join(', ')}.`,
+  })
+  redirectType?: AzureOAuthRedirectType;
 }
