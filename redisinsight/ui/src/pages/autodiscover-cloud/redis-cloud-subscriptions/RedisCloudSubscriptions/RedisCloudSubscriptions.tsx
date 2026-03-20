@@ -75,12 +75,15 @@ const RedisCloudSubscriptions = ({
     }
   }, [subscriptions, loading])
 
-  const countStatusActive = items.filter(
-    ({ status, numberOfDatabases }: RedisCloudSubscription) =>
-      status === RedisCloudSubscriptionStatus.Active && numberOfDatabases !== 0,
-  )?.length
+  // Calculate counts from original subscriptions to prevent notification re-triggering on search
+  const countStatusActive =
+    subscriptions?.filter(
+      ({ status, numberOfDatabases }: RedisCloudSubscription) =>
+        status === RedisCloudSubscriptionStatus.Active &&
+        numberOfDatabases !== 0,
+    )?.length || 0
 
-  const countStatusFailed = items.length - countStatusActive
+  const countStatusFailed = (subscriptions?.length || 0) - countStatusActive
 
   const handleSubmit = () => {
     onSubmit(
@@ -106,7 +109,11 @@ const RedisCloudSubscriptions = ({
       subscriptions?.filter(
         (item: RedisCloudSubscription) =>
           item.name?.toLowerCase()?.indexOf(value) !== -1 ||
-          item.id?.toString()?.toLowerCase().indexOf(value) !== -1,
+          item.id?.toString()?.indexOf(value) !== -1 ||
+          item.type?.toLowerCase()?.indexOf(value) !== -1 ||
+          item.provider?.toLowerCase()?.indexOf(value) !== -1 ||
+          item.region?.toLowerCase()?.indexOf(value) !== -1 ||
+          item.status?.toLowerCase()?.indexOf(value) !== -1,
       ) ?? []
 
     if (!itemsTemp?.length) {
