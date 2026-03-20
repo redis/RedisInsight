@@ -55,9 +55,21 @@ const AzureManualConnectionPage = () => {
   const account = useSelector(azureAuthAccountSelector)
 
   const [loading, setLoading] = useState(false)
+  // Initialize errors with validation result to prevent submit button flash on first render
   const [errors, setErrors] = useState<
     FormikErrors<AzureManualConnectionFormValues>
-  >({})
+  >(() =>
+    getFormErrors({
+      host: '',
+      port: '6380',
+      name: '',
+      username: account?.username || '',
+      timeout: '30',
+      verifyServerCert: false,
+      sni: false,
+      servername: '',
+    }),
+  )
 
   // Redirect to home if not authenticated
   useEffect(() => {
