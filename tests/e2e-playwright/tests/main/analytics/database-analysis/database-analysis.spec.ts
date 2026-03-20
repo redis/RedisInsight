@@ -132,7 +132,7 @@ test.describe('Analytics > Database Analysis', () => {
     });
 
     test('should show top namespaces section', async ({ analyticsPage }) => {
-      await expect(analyticsPage.topNamespacesContainer).toBeVisible();
+      await expect(analyticsPage.topNamespacesSection).toBeVisible();
     });
 
     test('should show namespaces table by memory by default', async ({ analyticsPage }) => {

@@ -52,7 +52,8 @@ export class AnalyticsPage extends InstancePage {
   readonly ttlDistributionChart: Locator;
   readonly showNoExpirySwitch: Locator;
 
-  // Top Namespaces
+  // Top Namespaces (either populated or empty-state)
+  readonly topNamespacesSection: Locator;
   readonly topNamespacesContainer: Locator;
   readonly topNamespacesEmpty: Locator;
   readonly topNamespacesMessage: Locator;
@@ -121,6 +122,7 @@ export class AnalyticsPage extends InstancePage {
     // Top Namespaces
     this.topNamespacesContainer = page.getByTestId('top-namespaces');
     this.topNamespacesEmpty = page.getByTestId('top-namespaces-empty');
+    this.topNamespacesSection = this.topNamespacesContainer.or(this.topNamespacesEmpty);
     this.topNamespacesMessage = page.getByTestId('top-namespaces-message');
     this.treeViewPageLink = page.getByTestId('tree-view-page-link');
     this.nspTableMemory = page.getByTestId('nsp-table-memory');
@@ -231,7 +233,12 @@ export class AnalyticsPage extends InstancePage {
 
   /**
    * Ensure a report has been generated (check first, generate if needed)
-   * Use in beforeEach or at the start of tests that require a report
+   * Use in beforeEach or at the start of tests that require a report.
+   *
+   * After confirming the header progress is visible, also waits for the
+   * Data Summary tab content to mount (the Tabs component may lazy-render
+   * content, so the header can be ready before the tab body appears).
+   *
    * @param timeout - max wait time in ms (default 30s, use longer for large datasets)
    */
   async ensureReportGenerated(timeout = 30000): Promise<void> {
@@ -240,6 +247,7 @@ export class AnalyticsPage extends InstancePage {
       await this.clickNewReport();
       await this.waitForReportGenerated(timeout);
     }
+    await this.summaryPerData.waitFor({ state: 'visible', timeout: 15000 });
   }
 
   /**
