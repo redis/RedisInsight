@@ -55,6 +55,7 @@ export const Pages = {
   azure,
   azureSubscriptions: `${azure}/subscriptions`,
   azureDatabases: `${azure}/databases`,
+  azureManualConnection: `${azure}/manual-connection`,
   browser: (instanceId: string) => `/${instanceId}/${PageNames.browser}`,
   vectorSearch: (instanceId: string) =>
     `/${instanceId}/${PageNames.vectorSearch}`,

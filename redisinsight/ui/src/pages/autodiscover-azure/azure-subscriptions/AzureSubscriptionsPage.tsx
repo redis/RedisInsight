@@ -71,6 +71,10 @@ const AzureSubscriptionsPage = () => {
     initiateLogin()
   }
 
+  const handleManualConnection = () => {
+    history.push(Pages.azureManualConnection)
+  }
+
   return (
     <AzureSubscriptions
       subscriptions={subscriptions || []}
@@ -81,6 +85,7 @@ const AzureSubscriptionsPage = () => {
       onSubmit={handleSubmit}
       onSwitchAccount={handleSwitchAccount}
       onRefresh={handleRefresh}
+      onManualConnection={handleManualConnection}
     />
   )
 }

@@ -15,7 +15,7 @@ type HeaderProps = {
   title: ReactNode
   subTitle?: ReactNode
   onBack: () => void
-  onQueryChange: (query: string) => void
+  onQueryChange?: (query: string) => void
   backButtonText?: string
 }
 export const Header = ({
@@ -44,18 +44,20 @@ export const Header = ({
           </FlexItem>
         )}
       </Col>
-      <Row justify="end" gap="s" grow={false}>
-        <SearchContainer>
-          <SearchForm>
-            <SearchInput
-              placeholder="Search..."
-              onChange={onQueryChange}
-              aria-label="Search"
-              data-testid="search"
-            />
-          </SearchForm>
-        </SearchContainer>
-      </Row>
+      {onQueryChange && (
+        <Row justify="end" gap="s" grow={false}>
+          <SearchContainer>
+            <SearchForm>
+              <SearchInput
+                placeholder="Search..."
+                onChange={onQueryChange}
+                aria-label="Search"
+                data-testid="search"
+              />
+            </SearchForm>
+          </SearchContainer>
+        </Row>
+      )}
     </Row>
   )
 }
