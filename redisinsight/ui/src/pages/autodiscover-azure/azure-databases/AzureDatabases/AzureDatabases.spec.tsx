@@ -29,6 +29,7 @@ describe('AzureDatabases', () => {
     onSubmit: jest.fn(),
     onSelectionChange: jest.fn(),
     onRefresh: jest.fn(),
+    onManualConnection: jest.fn(),
   }
 
   const renderComponent = (propsOverride?: Partial<Props>) => {
