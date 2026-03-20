@@ -94,7 +94,13 @@ const AzureManualConnectionForm = (props: Props) => {
         {/* Username (pre-filled from Entra ID, read-only info) */}
         <Row gap="m">
           <FlexItem grow>
+            <Spacer size="xs" />
+            <Text size="S" color="secondary">
+              Authentication will use your Azure Entra ID credentials
+            </Text>
+
             <FormField label="Username">
+              <Spacer size="s" />
               <TextInput
                 name="username"
                 id="username"
@@ -106,11 +112,6 @@ const AzureManualConnectionForm = (props: Props) => {
                 disabled
               />
             </FormField>
-          </FlexItem>
-          <FlexItem grow>
-            <Text size="S" color="secondary">
-              Authentication will use your Azure Entra ID credentials
-            </Text>
           </FlexItem>
         </Row>
 
