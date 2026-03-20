@@ -179,7 +179,6 @@ const AzureManualConnectionPage = () => {
           title="Manual Azure Connection"
           onBack={handleBack}
           backButtonText="Databases"
-          onQueryChange={() => {}}
         />
         <Spacer size="m" />
         <FormWrapper>
