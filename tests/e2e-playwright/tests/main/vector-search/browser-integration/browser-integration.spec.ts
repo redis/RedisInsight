@@ -39,6 +39,7 @@ test.describe('Vector Search > Browser Page Integration', { tag: '@serial' }, ()
   });
 
   test.afterAll(async ({ apiHelper }) => {
+    await apiHelper.deleteKeysByPattern(database.id, TEST_KEY_PATTERN);
     await apiHelper.deleteDatabase(database.id);
   });
 
