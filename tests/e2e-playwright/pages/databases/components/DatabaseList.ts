@@ -165,9 +165,15 @@ export class DatabaseList {
    * Returns the total number of databases, not just visible rows
    */
   async getTotalCount(): Promise<number> {
-    const text = await this.paginationRowCount.textContent();
-    const match = text?.match(/out of (\d+) rows/);
-    return match ? parseInt(match[1], 10) : await this.getVisibleRowCount();
+    if (await this.paginationRowCount.isVisible()) {
+      const text = await this.paginationRowCount.textContent();
+      const match = text?.match(/out of (\d+) rows/);
+
+      if (match) {
+        return parseInt(match[1], 10);
+      }
+    }
+    return this.getVisibleRowCount();
   }
 
   // ==================== SEARCH ====================
