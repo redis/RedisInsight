@@ -55,37 +55,8 @@ const AzureManualConnectionPage = () => {
   const account = useSelector(azureAuthAccountSelector)
 
   const [loading, setLoading] = useState(false)
-  // Initialize errors with validation result to prevent submit button flash on first render
-  const [errors, setErrors] = useState<
-    FormikErrors<AzureManualConnectionFormValues>
-  >(() =>
-    getFormErrors({
-      host: '',
-      port: '6380',
-      name: '',
-      username: account?.username || '',
-      timeout: '30',
-      verifyServerCert: false,
-      sni: false,
-      servername: '',
-    }),
-  )
 
-  // Redirect to home if not authenticated
-  useEffect(() => {
-    if (!account) {
-      history.push(Pages.home)
-    }
-  }, [account, history])
-
-  // Send telemetry only once on initial page load
-  useEffect(() => {
-    setTitle('Azure Manual Connection')
-    sendEventTelemetry({
-      event: TelemetryEvent.AZURE_MANUAL_CONNECTION_OPENED,
-    })
-  }, [])
-
+  // Define initialValues once to keep error state and form state in sync
   const initialValues: AzureManualConnectionFormValues = {
     host: '',
     port: '6380',
@@ -96,6 +67,27 @@ const AzureManualConnectionPage = () => {
     sni: false,
     servername: '',
   }
+
+  // Initialize errors with validation result to prevent submit button flash on first render
+  const [errors, setErrors] = useState<
+    FormikErrors<AzureManualConnectionFormValues>
+  >(() => getFormErrors(initialValues))
+
+  // Redirect to home if not authenticated
+  useEffect(() => {
+    if (!account) {
+      history.push(Pages.home)
+    }
+  }, [account, history])
+
+  // Send telemetry only once on initial page load (skip if not authenticated)
+  useEffect(() => {
+    if (!account) return
+    setTitle('Azure Manual Connection')
+    sendEventTelemetry({
+      event: TelemetryEvent.AZURE_MANUAL_CONNECTION_OPENED,
+    })
+  }, [])
 
   const validate = (values: AzureManualConnectionFormValues) => {
     const errs = getFormErrors(values)
