@@ -53,6 +53,8 @@ import styles from './styles.module.scss'
 import { useQueryResultsContext } from '../../context/query-results.context'
 import { ProfileSelect } from './QueryCardHeader.styles'
 
+export const VIEW_TYPE_SEPARATOR = '__separator__'
+
 export interface Props {
   query: string
   isOpen: boolean
@@ -148,7 +150,7 @@ const QueryCardHeader = (props: Props) => {
   }
 
   const onChangeView = (initValue: string) => {
-    if (selectedValue === initValue) return
+    if (selectedValue === initValue || initValue === VIEW_TYPE_SEPARATOR) return
     const currentView = options.find(({ id }) => id === initValue)
     const previousView = options.find(({ id }) => id === selectedValue)
     const type = currentView.value
@@ -288,12 +290,12 @@ const QueryCardHeader = (props: Props) => {
   )
   if (indexForSeparator > -1) {
     modifiedOptions.splice(indexForSeparator + 1, 0, {
-      value: '',
+      value: VIEW_TYPE_SEPARATOR,
       disabled: true,
       inputDisplay: <span className={styles.separator} />,
-      label: '',
+      label: VIEW_TYPE_SEPARATOR,
       dropdownDisplay: <span />,
-      'data-test-subj': '',
+      'data-test-subj': 'view-type-separator',
     })
   }
 
