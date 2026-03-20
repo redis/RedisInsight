@@ -12,6 +12,7 @@ import {
   AzurePage,
   AzureSubscriptionsPage,
   AzureDatabasesPage,
+  AzureManualConnectionPage,
 } from 'uiSrc/pages'
 import { VectorSearchPageRouter } from 'uiSrc/pages/vector-search'
 import WorkbenchPage from 'uiSrc/pages/workbench'
@@ -56,6 +57,9 @@ const LazyAzureSubscriptionsPage = lazy(
 )
 const LazyAzureDatabasesPage = lazy(
   () => import('uiSrc/pages/autodiscover-azure/azure-databases'),
+)
+const LazyAzureManualConnectionPage = lazy(
+  () => import('uiSrc/pages/autodiscover-azure/azure-manual-connection'),
 )
 const LazyRdiPage = lazy(() => import('uiSrc/pages/rdi/home'))
 const LazyRdiInstancePage = lazy(() => import('uiSrc/pages/rdi/instance'))
@@ -163,6 +167,12 @@ const ROUTES: IRoute[] = [
         {
           path: Pages.azureDatabases,
           component: LAZY_LOAD ? LazyAzureDatabasesPage : AzureDatabasesPage,
+        },
+        {
+          path: Pages.azureManualConnection,
+          component: LAZY_LOAD
+            ? LazyAzureManualConnectionPage
+            : AzureManualConnectionPage,
         },
       ],
     },
