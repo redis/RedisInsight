@@ -76,4 +76,6 @@ export interface UseQueryEditorReturn {
   triggerUpdateCursorPosition: (
     editor: monacoEditor.editor.IStandaloneCodeEditor,
   ) => void
+  /** True when the cursor is on a unix-time argument (for "Insert timestamp" help UI). */
+  currentArgIsUnixTime: boolean
 }

@@ -87,6 +87,9 @@ export enum DefinedArgumentName {
 }
 
 export const FIELD_START_SYMBOL = '@'
+
+export const REDIS_OPEN_TIMESTAMP_PICKER_COMMAND = 'redis.openTimestampPicker'
+
 export enum EmptySuggestionsIds {
   NoIndexes = 'no-indexes',
 }

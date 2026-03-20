@@ -13,3 +13,7 @@ export type { RICollapsibleNavGroupProps } from './collapsible-nav-group/RIColla
 export * from './section'
 
 export * from './call-out/CallOut'
+
+export * from './calendar'
+
+export * from './date-picker'
