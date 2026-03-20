@@ -158,7 +158,6 @@ const AzureManualConnectionPage = () => {
   const formik = useFormik({
     initialValues,
     validate,
-    enableReinitialize: true,
     validateOnMount: true,
     onSubmit: handleSubmit,
   })
