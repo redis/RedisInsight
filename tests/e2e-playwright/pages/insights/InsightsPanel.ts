@@ -69,17 +69,28 @@ export class InsightsPanel {
   }
 
   /**
-   * Open the Insights panel by clicking the trigger
+   * Open the Insights panel by clicking the trigger.
+   * The trigger dispatches a *toggle* action, so clicking it when the panel
+   * is already open would close it.  Skip the click when already visible.
    */
   async open(): Promise<void> {
+    if (await this.panel.isVisible()) {
+      return;
+    }
+
     await this.trigger.click();
     await this.panel.waitFor({ state: 'visible' });
   }
 
   /**
-   * Close the Insights panel
+   * Close the Insights panel.
+   * No-op if the panel is already hidden.
    */
   async close(): Promise<void> {
+    if (!(await this.panel.isVisible())) {
+      return;
+    }
+
     await this.closeButton.click();
     await this.panel.waitFor({ state: 'hidden' });
   }

@@ -15,6 +15,7 @@ export class DatabaseList {
   readonly selectionCounter: Locator;
   readonly exportButton: Locator;
   readonly exportConfirmButton: Locator;
+  readonly exportPopover: Locator;
   readonly bulkDeleteButton: Locator;
   readonly cancelSelectingButton: Locator;
 
@@ -39,7 +40,8 @@ export class DatabaseList {
     // Bulk selection elements
     this.selectionCounter = page.getByText(/You selected: \d+ items?/);
     this.exportButton = page.getByRole('button', { name: 'Export' });
-    this.exportConfirmButton = page.getByRole('button', { name: 'Export' }).last();
+    this.exportPopover = page.getByTestId('export-popover');
+    this.exportConfirmButton = this.exportPopover.getByRole('button', { name: 'Export' });
     this.bulkDeleteButton = page.getByRole('button', { name: 'Delete' });
     this.cancelSelectingButton = page.getByRole('button', { name: 'Cancel selecting' });
 
@@ -301,6 +303,7 @@ export class DatabaseList {
    */
   async exportSelectedAndDownload(): Promise<import('@playwright/test').Download> {
     await this.exportSelected();
+    await this.exportConfirmButton.waitFor({ state: 'visible' });
     const [download] = await Promise.all([this.page.waitForEvent('download'), this.exportConfirmButton.click()]);
     return download;
   }
