@@ -45,6 +45,7 @@ enum BrowserStorageItem {
   vectorSearchQueryOnboarding = 'vectorSearchQueryOnboarding',
   vectorSearchSelectKeyOnboarding = 'vectorSearchSelectKeyOnboarding',
   vectorSearchCreateIndexOnboarding = 'vectorSearchCreateIndexOnboarding',
+  wbTsResultPreferences = 'wbTsResultPreferences_',
 }
 
 export default BrowserStorageItem

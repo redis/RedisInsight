@@ -1,9 +1,14 @@
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - local workspace package resolved by Vite at build time
+import { setState as setPluginState } from 'redisinsight-plugin-sdk'
 import {
   AxisScale,
   ChartConfig,
   GraphMode,
+  PersistedTsChartConfig,
   TimeSeries,
+  TimeUnit,
   YAxisConfig,
 } from './interfaces'
 import ChartConfigForm from './ChartConfigForm'
@@ -17,9 +22,24 @@ enum LAYOUT_STATE {
 
 interface ChartResultViewProps {
   data: TimeSeries[]
+  initialChartConfig?: PersistedTsChartConfig
+}
+
+const PERSISTED_FIELDS = ['mode', 'timeUnit', 'staircase', 'fill'] as const
+
+const extractPersistedSubset = (config: ChartConfig): PersistedTsChartConfig => ({
+  mode: config.mode,
+  timeUnit: config.timeUnit,
+  staircase: config.staircase,
+  fill: config.fill,
+})
+
+const emitPersistedState = (config: ChartConfig) => {
+  setPluginState(extractPersistedSubset(config)).catch(() => {})
 }
 
 export default function ChartResultView(props: ChartResultViewProps) {
+  const { initialChartConfig } = props
   const defaultYAxisConfig: YAxisConfig = { label: '', scale: AxisScale.linear }
   const keyToY2AxisDefault = props.data.reduce(
     (keyToYAxis: any, timeSeries) => {
@@ -29,13 +49,21 @@ export default function ChartResultView(props: ChartResultViewProps) {
     {},
   )
 
+  const resolvedMode = initialChartConfig?.mode
+    ? (initialChartConfig.mode as GraphMode)
+    : GraphMode.line
+
+  const resolvedTimeUnit = initialChartConfig?.timeUnit
+    ? (initialChartConfig.timeUnit as TimeUnit)
+    : determineDefaultTimeUnits(props.data)
+
   const [chartConfig, setChartConfig] = useState<ChartConfig>({
-    mode: GraphMode.line,
-    timeUnit: determineDefaultTimeUnits(props.data),
+    mode: resolvedMode,
+    timeUnit: resolvedTimeUnit,
     title: '',
     xlabel: '',
-    staircase: false,
-    fill: true,
+    staircase: initialChartConfig?.staircase ?? false,
+    fill: initialChartConfig?.fill ?? true,
     yAxis2: false,
     keyToY2Axis: keyToY2AxisDefault,
     yAxisConfig: defaultYAxisConfig,
@@ -45,15 +73,26 @@ export default function ChartResultView(props: ChartResultViewProps) {
     LAYOUT_STATE.INITIAL_STATE,
   )
 
+  const prevPersistedRef = useRef(extractPersistedSubset(chartConfig))
+
+  const emitIfPersistedChanged = useCallback((next: ChartConfig) => {
+    const nextSubset = extractPersistedSubset(next)
+    const prev = prevPersistedRef.current
+
+    const changed = PERSISTED_FIELDS.some((f) => nextSubset[f] !== prev[f])
+    if (changed) {
+      prevPersistedRef.current = nextSubset
+      emitPersistedState(next)
+    }
+  }, [])
+
   function handleChartConfigChanged(control: string, value: any) {
-    onChartConfigChange(control, value)
+    const next = { ...chartConfig, [control]: value }
+    setChartConfig(next)
+    emitIfPersistedChanged(next)
     if (chartState !== LAYOUT_STATE.INITIAL_STATE) {
       setChartState(LAYOUT_STATE.INITIAL_STATE)
     }
-  }
-
-  function onChartConfigChange(control: string, value: any) {
-    setChartConfig({ ...chartConfig, [control]: value })
   }
 
   function onRelayout() {
