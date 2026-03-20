@@ -38,6 +38,7 @@ export interface Props {
   onSubmit: (subscription: AzureSubscription) => void
   onSwitchAccount: () => void
   onRefresh: () => void
+  onManualConnection: () => void
 }
 
 const AzureSubscriptions = ({
@@ -49,6 +50,7 @@ const AzureSubscriptions = ({
   onSubmit,
   onSwitchAccount,
   onRefresh,
+  onManualConnection,
 }: Props) => {
   const account = useSelector(azureAuthAccountSelector)
   const [items, setItems] = useState<AzureSubscription[]>(subscriptions)
@@ -177,6 +179,12 @@ const AzureSubscriptions = ({
         <Row justify="end">
           <Row gap="m" grow={false}>
             <SecondaryButton onClick={onClose}>Cancel</SecondaryButton>
+            <SecondaryButton
+              data-testid="btn-manual-connection"
+              onClick={onManualConnection}
+            >
+              Manual Connection
+            </SecondaryButton>
             <PrimaryButton
               disabled={!selectedId || loading}
               loading={loading}

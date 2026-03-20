@@ -40,6 +40,7 @@ export interface Props {
   onSubmit: () => void
   onSelectionChange: (databases: AzureRedisDatabase[]) => void
   onRefresh: () => void
+  onManualConnection: () => void
 }
 
 const AzureDatabases = ({
@@ -53,6 +54,7 @@ const AzureDatabases = ({
   onSubmit,
   onSelectionChange,
   onRefresh,
+  onManualConnection,
 }: Props) => {
   const [items, setItems] = useState<AzureRedisDatabase[]>(databases)
 
@@ -196,6 +198,12 @@ const AzureDatabases = ({
           )}
           <Row gap="m" grow={false}>
             <SecondaryButton onClick={onClose}>Cancel</SecondaryButton>
+            <SecondaryButton
+              data-testid="btn-manual-connection"
+              onClick={onManualConnection}
+            >
+              Manual Connection
+            </SecondaryButton>
             <PrimaryButton
               data-testid="btn-submit"
               disabled={selectedDatabases.length === 0 || loading}
