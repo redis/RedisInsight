@@ -159,8 +159,10 @@ test.describe('Import / Export Databases', () => {
 
     await databaseList.selectRow(config.name);
 
-    const download = await databaseList.exportSelectedAndDownload();
-    const suggestedName = download.suggestedFilename();
-    expect(suggestedName).toMatch(/\.json$/i);
+    const response = await databaseList.exportSelectedAndDownload();
+    expect(response.ok()).toBe(true);
+
+    const body = await response.json();
+    expect(body).toBeDefined();
   });
 });

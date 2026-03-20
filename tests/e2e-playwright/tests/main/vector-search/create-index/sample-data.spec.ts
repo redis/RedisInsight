@@ -4,11 +4,15 @@ import { IndexConfigFactory } from 'e2eSrc/test-data/vector-search';
 import { DatabaseInstance } from 'e2eSrc/types';
 
 const seedIndex = IndexConfigFactory.build();
+const SAMPLE_INDEX_NAMES = [seedIndex.indexName, 'idx:bikes_vss', 'idx:movies_vss'];
+const SAMPLE_KEY_PREFIXES = ['bikes:*', 'movie:*'];
 
 const SAMPLE_DATASETS = [
   { id: 'e-commerce-discovery', label: 'E-Commerce Discovery (Bikes)', expectedQueryCount: 4 },
   { id: 'content-recommendations', label: 'Content Recommendations (Movies)', expectedQueryCount: 5 },
 ] as const;
+
+test.use({ featureFlags: { vectorSearchV2: true } });
 
 /**
  * Vector Search > Create Index - Sample Data
@@ -26,13 +30,19 @@ test.describe('Vector Search > Create Index - Sample Data', { tag: '@serial' }, 
   });
 
   test.afterAll(async ({ apiHelper }) => {
+    await apiHelper.deleteAllIndexes(database.id, (name) => SAMPLE_INDEX_NAMES.includes(name));
+    for (const prefix of SAMPLE_KEY_PREFIXES) {
+      await apiHelper.deleteKeysByPattern(database.id, prefix);
+    }
     await apiHelper.deleteDatabase(database.id);
   });
 
   test.beforeEach(async ({ apiHelper }) => {
-    // Clean known indexes and seed one so the list page appears
-    const KNOWN_INDEXES = [seedIndex.indexName, 'idx:bikes_vss', 'idx:movies_vss'];
-    await apiHelper.deleteAllIndexes(database.id, (name) => KNOWN_INDEXES.includes(name));
+    // Clean known indexes and sample-data keys, then seed one so the list page appears
+    await apiHelper.deleteAllIndexes(database.id, (name) => SAMPLE_INDEX_NAMES.includes(name));
+    for (const prefix of SAMPLE_KEY_PREFIXES) {
+      await apiHelper.deleteKeysByPattern(database.id, prefix);
+    }
     await apiHelper.createIndex(database.id, seedIndex.indexName, seedIndex.prefix, seedIndex.schema);
   });
 

@@ -78,9 +78,7 @@ export class SettingsPage extends BasePage {
       .or(page.getByRole('combobox').filter({ hasText: /HH:mm/i }));
     this.customDateFormatInput = page.getByTestId('custom-datetime-input');
     this.customDateFormatSaveButton = page.getByTestId('datetime-custom-btn');
-    this.timezoneDropdown = page
-      .locator('[data-testid="select-timezone"]')
-      .or(page.getByRole('combobox').filter({ hasText: /Match System/i }));
+    this.timezoneDropdown = page.getByTestId('format-timezone-form').getByRole('combobox');
     this.datePreview = page.getByTestId('data-preview');
 
     // Privacy settings
