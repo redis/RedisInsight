@@ -166,14 +166,17 @@ export class KeyList {
    * Click on a key by name
    */
   async clickKey(keyName: string): Promise<void> {
-    // Try grid row first (list view), then treeitem (tree view)
-    const gridRow = this.page.getByRole('row', { name: new RegExp(keyName) });
-    const treeItem = this.page.getByRole('treeitem', { name: new RegExp(keyName) });
+    const escapedKeyName = keyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-    if (await gridRow.isVisible()) {
-      await gridRow.click();
+    // Try grid row first (list view), then treeitem (tree view)
+    const gridRow = this.page.getByRole('row', { name: new RegExp(escapedKeyName) });
+    const treeItem = this.page.getByRole('treeitem', { name: new RegExp(escapedKeyName) });
+    const keyElement = gridRow.or(treeItem);
+
+    if (await keyElement.isVisible()) {
+      await keyElement.click();
     } else {
-      await treeItem.click();
+      await this.selectKeyInTree(keyName);
     }
   }
 
