@@ -210,6 +210,10 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
     await electronPage.waitForLoadState('domcontentloaded');
 
     await use(electronPage);
+
+    // Remove route handlers so they don't leak to subsequent tests
+    // sharing this Electron page within the same worker.
+    await electronPage.unrouteAll({ behavior: 'wait' });
   },
 
   apiHelper: async ({ apiUrl, electronApp }, use) => {
