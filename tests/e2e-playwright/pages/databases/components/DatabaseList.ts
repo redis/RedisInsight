@@ -1,4 +1,4 @@
-import { Page, Locator, expect } from '@playwright/test';
+import { Page, Locator, Response, expect } from '@playwright/test';
 
 /**
  * Component Page Object for the Database List
@@ -299,13 +299,21 @@ export class DatabaseList {
   }
 
   /**
-   * Export selected databases and return the download artifact
+   * Export selected databases and return the API response.
+   *
+   * file-saver's blob URL download does not emit a Playwright "download"
+   * event in Electron, so we verify through the API response instead.
    */
-  async exportSelectedAndDownload(): Promise<import('@playwright/test').Download> {
+  async exportSelectedAndDownload(): Promise<Response> {
     await this.exportSelected();
     await this.exportConfirmButton.waitFor({ state: 'visible' });
-    const [download] = await Promise.all([this.page.waitForEvent('download'), this.exportConfirmButton.click()]);
-    return download;
+    const [response] = await Promise.all([
+      this.page.waitForResponse(
+        (resp) => resp.url().includes('/databases/export') && resp.request().method() === 'POST',
+      ),
+      this.exportConfirmButton.click(),
+    ]);
+    return response;
   }
 
   /**
