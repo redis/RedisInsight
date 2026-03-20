@@ -59,6 +59,11 @@ test.describe('Analytics > Database Analysis', () => {
       { field: 'type', value: 'click' },
       { field: 'page', value: 'home' },
     ]);
+
+    // Pre-generate an analysis report so every test that navigates to the
+    // analysis page finds an existing report with data. This avoids flaky
+    // timing issues that arise when generating reports through the UI.
+    await apiHelper.createDatabaseAnalysis(database.id);
   });
 
   test.afterAll(async ({ apiHelper }) => {

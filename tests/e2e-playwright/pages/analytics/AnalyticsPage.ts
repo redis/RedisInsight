@@ -234,17 +234,18 @@ export class AnalyticsPage extends InstancePage {
   }
 
   /**
-   * Ensure a report has been generated (check first, generate if needed).
-   * Use in beforeEach or at the start of tests that require a report.
+   * Ensure a report is loaded and the Data Summary tab content is visible.
    *
-   * After the report header is ready, also waits for the Data Summary tab
-   * content to settle (either the charts or the "no keys" empty message).
-   * The @redis-ui Tabs component may lazy-mount content, so the header can
-   * be visible before the tab body appears in the DOM.
+   * Prefer pre-generating the report via {@link ApiHelper.createDatabaseAnalysis}
+   * in `beforeAll` so the page only needs to load existing data. Falls back to
+   * generating a report through the UI when none is found.
    *
-   * @param timeout - max wait time in ms (default 30s, use longer for large datasets)
+   * After the header progress indicator is ready, also waits for the Data
+   * Summary tab content to settle (either the charts or the "no keys" empty
+   * message). The @redis-ui Tabs component may lazy-mount content, so the
+   * header can be ready before the tab body appears in the DOM.
    */
-  async ensureReportGenerated(timeout = 30000): Promise<void> {
+  async ensureReportGenerated(timeout?: number): Promise<void> {
     const hasReport = await this.isReportVisible();
     if (!hasReport) {
       await this.clickNewReport();

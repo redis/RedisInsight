@@ -493,6 +493,28 @@ export class ApiHelper {
   }
 
   // ---------------------------------------------------------------------------
+  // Database Analysis
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Generate a database analysis report via the API.
+   * Returns the full analysis response (progress, totalKeys, totalMemory, etc.).
+   */
+  async createDatabaseAnalysis(databaseId: string, delimiter = ':'): Promise<Record<string, unknown>> {
+    const ctx = await this.getContext();
+    const response = await ctx.post(`/api/databases/${databaseId}/analysis`, {
+      data: { delimiter },
+    });
+
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`Failed to create database analysis: ${response.status()} - ${body}`);
+    }
+
+    return response.json();
+  }
+
+  // ---------------------------------------------------------------------------
   // General — Send arbitrary Redis command
   // ---------------------------------------------------------------------------
 
