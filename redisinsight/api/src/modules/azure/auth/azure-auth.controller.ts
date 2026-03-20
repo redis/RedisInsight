@@ -129,11 +129,23 @@ export class AzureAuthController {
         sessionMetadata,
         new BadRequestException('Missing code or state parameter'),
       );
+
+      // Clean up auth request if state is present (code missing case)
+      const redirectType = state
+        ? this.azureAuthService.removeAuthRequest(state)
+        : null;
+
       const errorResult = {
         status: AzureAuthStatus.Failed,
         error: 'Missing code or state parameter',
       };
-      // No state means we can't determine redirect type, default to HTML
+
+      // For deeplink flows (Electron dev mode), return JSON
+      if (redirectType === AzureOAuthRedirectType.Deeplink) {
+        return errorResult;
+      }
+
+      // No state or web flow - return HTML
       res.type('text/html');
       return generateCallbackHtml({
         result: errorResult,
