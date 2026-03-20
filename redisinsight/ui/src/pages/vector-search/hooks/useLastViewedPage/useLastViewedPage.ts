@@ -15,7 +15,7 @@ let lastViewedPage: SavedPage | null = null
 
 // Exposed on window so Playwright e2e tests can reset the in-memory state
 // between tests (Electron shares a single window across a worker).
-if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
+if (typeof window !== 'undefined') {
   Object.assign(window, {
     __TEST_resetVectorSearchLastPage: () => {
       lastViewedPage = null

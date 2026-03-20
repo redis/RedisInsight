@@ -6,8 +6,9 @@ import { DatabaseInstance } from 'e2eSrc/types';
 
 const uniqueId = faker.string.alphanumeric(6);
 const TEST_INDEX_PREFIX = `a-vs-create-${uniqueId}:`;
-const SAMPLE_INDEXES = ['idx:bikes_vss', 'idx:movies_vss'];
 const seedIndex = IndexConfigFactory.build();
+const SAMPLE_INDEX_NAMES = ['idx:bikes_vss', 'idx:movies_vss'];
+const SAMPLE_KEY_PREFIXES = ['bikes:*', 'movie:*'];
 
 test.use({ featureFlags: { vectorSearchV2: true } });
 
@@ -30,21 +31,24 @@ test.describe('Vector Search > Create Index from List Page', { tag: '@serial' },
     }
   });
 
+  const indexFilter = (name: string) =>
+    name.includes(uniqueId) || name === seedIndex.indexName || SAMPLE_INDEX_NAMES.includes(name);
+
   test.afterAll(async ({ apiHelper }) => {
-    await apiHelper.deleteAllIndexes(
-      database.id,
-      (name) => name.includes(uniqueId) || name === seedIndex.indexName || SAMPLE_INDEXES.includes(name),
-    );
+    await apiHelper.deleteAllIndexes(database.id, indexFilter);
     await apiHelper.deleteKeysByPattern(database.id, `${TEST_INDEX_PREFIX}*`);
+    for (const prefix of SAMPLE_KEY_PREFIXES) {
+      await apiHelper.deleteKeysByPattern(database.id, prefix);
+    }
     await apiHelper.deleteDatabase(database.id);
   });
 
   test.beforeEach(async ({ vectorSearchPage, apiHelper, page }) => {
-    // Clean indexes and seed one (so the list page appears)
-    await apiHelper.deleteAllIndexes(
-      database.id,
-      (name) => name.includes(uniqueId) || name === seedIndex.indexName || SAMPLE_INDEXES.includes(name),
-    );
+    // Clean known indexes and sample-data keys, then seed one (so the list page appears)
+    await apiHelper.deleteAllIndexes(database.id, indexFilter);
+    for (const prefix of SAMPLE_KEY_PREFIXES) {
+      await apiHelper.deleteKeysByPattern(database.id, prefix);
+    }
     await apiHelper.createIndex(database.id, seedIndex.indexName, seedIndex.prefix, seedIndex.schema);
 
     await expect

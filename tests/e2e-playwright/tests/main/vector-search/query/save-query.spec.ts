@@ -27,6 +27,7 @@ test.describe('Vector Search > Save Query', { tag: '@serial' }, () => {
   });
 
   test.afterEach(async ({ apiHelper }) => {
+    await apiHelper.deleteAllSavedQueries(database.id, TEST_INDEX_NAME);
     await apiHelper.deleteAllIndexes(database.id, (name) => name.includes(uniqueId));
   });
 

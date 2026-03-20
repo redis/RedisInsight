@@ -36,8 +36,11 @@ test.describe('Vector Search > Create Index - Existing Data', { tag: '@serial' }
     await apiHelper.createJsonKey(database.id, jsonKey.keyName, JSON.stringify(jsonKey.value));
   });
 
-  test.afterAll(async ({ apiHelper }) => {
+  test.afterEach(async ({ apiHelper }) => {
     await apiHelper.deleteAllIndexes(database.id, (name) => name.includes(uniqueId) || name === seedIndex.indexName);
+  });
+
+  test.afterAll(async ({ apiHelper }) => {
     await apiHelper.deleteKeysByPattern(database.id, `${TEST_INDEX_PREFIX}*`);
     await apiHelper.deleteDatabase(database.id);
   });
@@ -172,7 +175,7 @@ test.describe('Vector Search > Create Index - Existing Data', { tag: '@serial' }
     await expect(vectorSearchPage.createIndexForm.indexNameDisplay).toBeVisible();
     await vectorSearchPage.createIndexForm.indexNameEditButton.click();
 
-    const customName = `custom-idx-${faker.string.alphanumeric(6)}`;
+    const customName = `custom-idx-${uniqueId}-${faker.string.alphanumeric(6)}`;
     await expect(vectorSearchPage.createIndexForm.indexNameInput).toBeVisible();
     await vectorSearchPage.createIndexForm.indexNameInput.clear();
     await vectorSearchPage.createIndexForm.indexNameInput.fill(customName);
@@ -198,7 +201,7 @@ test.describe('Vector Search > Create Index - Existing Data', { tag: '@serial' }
   }) => {
     // Create an index via API to establish a duplicate target
     const indexConfig = IndexConfigFactory.build({
-      indexName: `dup-idx-${faker.string.alphanumeric(6)}`,
+      indexName: `dup-idx-${uniqueId}-${faker.string.alphanumeric(6)}`,
       prefix: `${TEST_INDEX_PREFIX}dup:`,
       schema: [IndexSchemaFieldFactory.build({ name: 'name', type: 'text' })],
     });
