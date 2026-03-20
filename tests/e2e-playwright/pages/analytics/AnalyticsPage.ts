@@ -39,7 +39,8 @@ export class AnalyticsPage extends InstancePage {
   readonly dataSummaryTab: Locator;
   readonly tipsTab: Locator;
 
-  // Summary per data (donut charts)
+  // Summary per data (donut charts) — or the "no keys" empty message
+  readonly dataSummaryContent: Locator;
   readonly summaryPerData: Locator;
   readonly summaryPerDataCharts: Locator;
   readonly memoryChartTitle: Locator;
@@ -106,8 +107,9 @@ export class AnalyticsPage extends InstancePage {
     this.dataSummaryTab = page.getByRole('tab', { name: 'Data Summary' });
     this.tipsTab = page.getByRole('tab', { name: /Tips/ });
 
-    // Summary per data (donut charts)
+    // Summary per data (donut charts) — or the "no keys" fallback
     this.summaryPerData = page.getByTestId('summary-per-data');
+    this.dataSummaryContent = this.summaryPerData.or(page.getByTestId('empty-analysis-no-keys'));
     this.summaryPerDataCharts = page.getByTestId('summary-per-data-charts');
     this.memoryChartTitle = page.getByTestId('donut-title-memory');
     this.keysChartTitle = page.getByTestId('donut-title-keys');
@@ -232,12 +234,13 @@ export class AnalyticsPage extends InstancePage {
   }
 
   /**
-   * Ensure a report has been generated (check first, generate if needed)
+   * Ensure a report has been generated (check first, generate if needed).
    * Use in beforeEach or at the start of tests that require a report.
    *
-   * After confirming the header progress is visible, also waits for the
-   * Data Summary tab content to mount (the Tabs component may lazy-render
-   * content, so the header can be ready before the tab body appears).
+   * After the report header is ready, also waits for the Data Summary tab
+   * content to settle (either the charts or the "no keys" empty message).
+   * The @redis-ui Tabs component may lazy-mount content, so the header can
+   * be visible before the tab body appears in the DOM.
    *
    * @param timeout - max wait time in ms (default 30s, use longer for large datasets)
    */
@@ -247,7 +250,7 @@ export class AnalyticsPage extends InstancePage {
       await this.clickNewReport();
       await this.waitForReportGenerated(timeout);
     }
-    await this.summaryPerData.waitFor({ state: 'visible', timeout: 15000 });
+    await this.dataSummaryContent.waitFor({ state: 'visible' });
   }
 
   /**
