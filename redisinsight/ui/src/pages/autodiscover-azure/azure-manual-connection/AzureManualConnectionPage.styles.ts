@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Col, FlexItem } from 'uiSrc/components/base/layout/flex'
+import { Col } from 'uiSrc/components/base/layout/flex'
 import { Theme } from 'uiSrc/components/base/theme/types'
 
 export const FormContainer = styled(Col)`
@@ -20,12 +20,4 @@ export const FormWrapper = styled.div`
   scrollbar-width: thin;
   min-height: 0;
   padding: ${({ theme }: { theme: Theme }) => theme.core.space.space010};
-`
-
-export const Footer = styled(FlexItem).attrs({
-  grow: false,
-  padding: 6,
-})`
-  border-top: 1px solid
-    ${({ theme }: { theme: Theme }) => theme.semantic.color.border.neutral400};
 `

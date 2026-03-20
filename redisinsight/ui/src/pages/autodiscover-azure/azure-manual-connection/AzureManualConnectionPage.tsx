@@ -136,22 +136,25 @@ const AzureManualConnectionPage = () => {
       azureAccountId: account.id,
     }
 
-    dispatch(
-      createInstanceStandaloneAction(payload as Instance, undefined, () => {
-        // On success, send telemetry and navigate home
-        sendEventTelemetry({
-          event: TelemetryEvent.AZURE_MANUAL_CONNECTION_SUCCEEDED,
-          eventData: {
-            useSni: values.sni,
-            verifyServerCert: values.verifyServerCert,
-          },
-        })
-        // Note: createInstanceStandaloneAction already handles fetchInstancesAction and success notification
-        history.push(Pages.home)
-      }),
-    )
-
-    setLoading(false)
+    try {
+      await dispatch(
+        createInstanceStandaloneAction(payload as Instance, undefined, () => {
+          // On success, send telemetry and navigate home
+          sendEventTelemetry({
+            event: TelemetryEvent.AZURE_MANUAL_CONNECTION_SUCCEEDED,
+            eventData: {
+              useSni: values.sni,
+              verifyServerCert: values.verifyServerCert,
+            },
+          })
+          // Note: createInstanceStandaloneAction already handles fetchInstancesAction and success notification
+          history.push(Pages.home)
+        }),
+      )
+    } finally {
+      // Reset loading state after async action completes (success or failure)
+      setLoading(false)
+    }
   }
 
   const formik = useFormik({
