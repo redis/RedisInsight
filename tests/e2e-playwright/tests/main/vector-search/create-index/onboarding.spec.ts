@@ -10,6 +10,8 @@ const TEST_INDEX_PREFIX = `a-vs-onboard-${uniqueId}`;
 const TEST_KEY_NAME = `${TEST_INDEX_PREFIX}:key1`;
 const seedIndex = IndexConfigFactory.build();
 
+test.use({ featureFlags: { vectorSearchV2: true } });
+
 /**
  * Vector Search > Select Key Onboarding
  *

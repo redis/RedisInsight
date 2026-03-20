@@ -10,6 +10,8 @@ const SAMPLE_DATASETS = [
   { id: 'content-recommendations', label: 'Content Recommendations (Movies)', expectedQueryCount: 5 },
 ] as const;
 
+test.use({ featureFlags: { vectorSearchV2: true } });
+
 /**
  * Vector Search > Create Index - Sample Data
  *

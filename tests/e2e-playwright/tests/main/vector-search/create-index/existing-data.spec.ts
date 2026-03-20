@@ -17,6 +17,8 @@ const TEST_HASH_KEY = hashKey.keyName;
 const TEST_JSON_KEY = jsonKey.keyName;
 const seedIndex = IndexConfigFactory.build();
 
+test.use({ featureFlags: { vectorSearchV2: true } });
+
 /**
  * Vector Search > Create Index - Existing Data
  *

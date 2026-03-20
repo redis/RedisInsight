@@ -9,6 +9,8 @@ const TEST_INDEX_PREFIX = `a-vs-create-${uniqueId}:`;
 const SAMPLE_INDEXES = ['idx:bikes_vss', 'idx:movies_vss'];
 const seedIndex = IndexConfigFactory.build();
 
+test.use({ featureFlags: { vectorSearchV2: true } });
+
 /**
  * Vector Search > Create Index from List Page
  *

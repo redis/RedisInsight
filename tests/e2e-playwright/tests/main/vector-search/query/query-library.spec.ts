@@ -9,6 +9,8 @@ const TEST_INDEX_PREFIX = `test-vs-lib-${uniqueId}:`;
 const TEST_INDEX_NAME = `test-vs-lib-${uniqueId}-idx`;
 const TEST_QUERY = '* => [KNN 10 @vec $BLOB]';
 
+test.use({ featureFlags: { vectorSearchV2: true } });
+
 test.describe('Vector Search > Query Library', { tag: '@serial' }, () => {
   let database: DatabaseInstance;
 

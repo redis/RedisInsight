@@ -8,6 +8,8 @@ const uniqueId = faker.string.alphanumeric(6);
 const TEST_INDEX_PREFIX = `test-vs-list-${uniqueId}:`;
 const TEST_INDEX_NAME = `test-vs-list-${uniqueId}-idx`;
 
+test.use({ featureFlags: { vectorSearchV2: true } });
+
 /**
  * Vector Search > List Indexes
  *
