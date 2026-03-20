@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import cx from 'classnames'
 import { isArray } from 'lodash'
 
@@ -19,6 +19,10 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import QueryCardCliDefaultResult from '../QueryCardCliDefaultResult'
 import QueryCardCliGroupResult from '../QueryCardCliGroupResult'
 import styles from './styles.module.scss'
+import {
+  CopyResultButton,
+  ResultContainer,
+} from './QueryCardCliResultWrapper.styles'
 
 export interface Props {
   query: string
@@ -28,6 +32,42 @@ export interface Props {
   isNotStored?: boolean
   isFullScreen?: boolean
   db?: number
+}
+
+export const getResultText = (
+  result: Maybe<CommandExecutionResult[]>,
+  query: string,
+  resultsMode?: ResultsMode,
+  db?: number,
+): string => {
+  if (!result?.length) return ''
+
+  // Handle group results
+  if (isGroupResults(resultsMode) && isArray(result[0]?.response)) {
+    return result[0].response
+      .map(
+        (item: {
+          command: string
+          response: unknown
+          status: CommandExecutionStatus
+        }) => {
+          const commandPrefix = `[db${db ?? 0}] > ${item.command}`
+          const responseText =
+            item.status === CommandExecutionStatus.Success
+              ? formatToText(replaceEmptyValue(item.response), item.command)
+              : replaceEmptyValue(item.response)
+          return `${commandPrefix}\n${responseText}`
+        },
+      )
+      .join('\n\n')
+  }
+
+  // Handle single result
+  if (result[0]?.status === CommandExecutionStatus.Success) {
+    return formatToText(replaceEmptyValue(result[0]?.response), query)
+  }
+
+  return replaceEmptyValue(result[0]?.response)?.toString() ?? ''
 }
 
 const QueryCardCliResultWrapper = (props: Props) => {
@@ -41,11 +81,22 @@ const QueryCardCliResultWrapper = (props: Props) => {
     db,
   } = props
 
+  const copyText = useMemo(
+    () => getResultText(result, query, resultsMode, db),
+    [result, query, resultsMode, db],
+  )
+
   return (
-    <div
+    <ResultContainer
       data-testid="query-cli-result-wrapper"
       className={cx('queryResultsContainer', styles.container)}
     >
+      <CopyResultButton
+        copy={copyText}
+        aria-label="Copy result"
+        data-testid="copy-result"
+        tooltipConfig={{ content: 'Copy result' }}
+      />
       {!loading && (
         <div data-testid="query-cli-result" className={cx(styles.content)}>
           {isNotStored && (
@@ -87,7 +138,7 @@ const QueryCardCliResultWrapper = (props: Props) => {
           <LoadingContent lines={1} />
         </div>
       )}
-    </div>
+    </ResultContainer>
   )
 }
 
