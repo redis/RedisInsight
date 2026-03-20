@@ -1,38 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import { Col } from 'uiSrc/components/base/layout/flex'
+import { Title, Text } from 'uiSrc/components/base/text'
+import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
   AZURE_OAUTH_STORAGE_KEY,
   AzureAuthStatus,
 } from 'apiSrc/modules/azure/constants'
-
-// Styled Components
-const PageWrapper = styled(Col)`
-  height: 100vh;
-  width: 100vw;
-  background-color: ${({ theme }) =>
-    theme.semantic.color.background.neutral100};
-`
-
-const ContentWrapper = styled.div`
-  text-align: center;
-`
-
-const Title = styled.div`
-  font-size: 2rem;
-  font-weight: 500;
-  color: ${({ theme }) => theme.semantic.color.text.neutral800};
-  margin-bottom: ${({ theme }) => theme.core.space.space150};
-`
-
-const Subtitle = styled.div`
-  font-size: 1.25rem;
-  color: ${({ theme }) => theme.semantic.color.text.neutral600};
-`
-
-const ErrorTitle = styled(Title)`
-  color: ${({ theme }) => theme.semantic.color.text.danger600};
-`
+import * as S from './AzureAuthCallbackPage.styles'
 
 /**
  * Minimal page component for the Azure OAuth callback route.
@@ -103,35 +76,46 @@ const AzureAuthCallbackPage = () => {
 
   if (state === AzureAuthStatus.Processing) {
     return (
-      <PageWrapper contentCentered grow={false}>
-        <ContentWrapper>
-          <Title>Processing...</Title>
-          <Subtitle>Please wait</Subtitle>
-        </ContentWrapper>
-      </PageWrapper>
+      <S.PageWrapper contentCentered grow={false}>
+        <S.ContentWrapper>
+          <Title size="L">Processing...</Title>
+          <Spacer size="s" />
+          <Text size="M" color="subdued">
+            Please wait
+          </Text>
+        </S.ContentWrapper>
+      </S.PageWrapper>
     )
   }
 
   if (state === AzureAuthStatus.Failed) {
     return (
-      <PageWrapper contentCentered grow={false}>
-        <ContentWrapper>
-          <ErrorTitle>✕ Something went wrong</ErrorTitle>
-          <Subtitle>This window will close automatically...</Subtitle>
-        </ContentWrapper>
-      </PageWrapper>
+      <S.PageWrapper contentCentered grow={false}>
+        <S.ContentWrapper>
+          <Title size="L" color="danger">
+            ✕ Something went wrong
+          </Title>
+          <Spacer size="s" />
+          <Text size="M" color="subdued">
+            This window will close automatically...
+          </Text>
+        </S.ContentWrapper>
+      </S.PageWrapper>
     )
   }
 
   // Successfully received and relayed the OAuth result to the main application
   // (regardless of whether the OAuth flow itself succeeded or failed)
   return (
-    <PageWrapper contentCentered grow={false}>
-      <ContentWrapper>
-        <Title>Returning to RedisInsight...</Title>
-        <Subtitle>This window will close automatically</Subtitle>
-      </ContentWrapper>
-    </PageWrapper>
+    <S.PageWrapper contentCentered grow={false}>
+      <S.ContentWrapper>
+        <Title size="L">Returning to RedisInsight...</Title>
+        <Spacer size="s" />
+        <Text size="M" color="subdued">
+          This window will close automatically
+        </Text>
+      </S.ContentWrapper>
+    </S.PageWrapper>
   )
 }
 
