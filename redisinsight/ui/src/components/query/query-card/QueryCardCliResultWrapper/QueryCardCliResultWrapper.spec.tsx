@@ -242,7 +242,7 @@ describe('getResultText', () => {
     expect(text).toBe('"(nil)"')
   })
 
-  it('should format group results with command prefix', () => {
+  it('should format group results with command prefix (no db prefix for db 0)', () => {
     const result = [
       {
         response: [
@@ -263,10 +263,11 @@ describe('getResultText', () => {
 
     const text = getResultText(result, '', ResultsMode.GroupMode, 0)
 
-    expect(text).toContain('[db0] > PING')
+    expect(text).toContain('> PING')
     expect(text).toContain('PONG')
-    expect(text).toContain('[db0] > GET key')
+    expect(text).toContain('> GET key')
     expect(text).toContain('value')
+    expect(text).not.toContain('[db0]')
   })
 
   it('should use provided db number in group results prefix', () => {
@@ -288,7 +289,7 @@ describe('getResultText', () => {
     expect(text).toContain('[db5] > PING')
   })
 
-  it('should handle failed commands in group results', () => {
+  it('should handle failed commands in group results (no db prefix for db 0)', () => {
     const result = [
       {
         response: [
@@ -304,7 +305,8 @@ describe('getResultText', () => {
 
     const text = getResultText(result, '', ResultsMode.GroupMode, 0)
 
-    expect(text).toContain('[db0] > INVALID')
+    expect(text).toContain('> INVALID')
     expect(text).toContain('ERR unknown command')
+    expect(text).not.toContain('[db0]')
   })
 })

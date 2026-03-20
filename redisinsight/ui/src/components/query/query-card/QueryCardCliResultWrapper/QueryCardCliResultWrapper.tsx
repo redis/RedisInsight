@@ -8,6 +8,7 @@ import { ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 import {
   cliParseTextResponse,
   formatToText,
+  getDbIndex,
   isGroupResults,
   Maybe,
   replaceEmptyValue,
@@ -51,7 +52,10 @@ export const getResultText = (
           response: unknown
           status: CommandExecutionStatus
         }) => {
-          const commandPrefix = `[db${db ?? 0}] > ${item.command}`
+          const dbPrefix = getDbIndex(db)
+          const commandPrefix = dbPrefix
+            ? `${dbPrefix} > ${item.command}`
+            : `> ${item.command}`
           const responseText =
             item.status === CommandExecutionStatus.Success
               ? formatToText(replaceEmptyValue(item.response), item.command)
