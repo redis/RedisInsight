@@ -40,6 +40,31 @@ describe('parseExplainableCommand', () => {
     expect(parseExplainableCommand('FT.SEARCH   ')).toBeNull()
     expect(parseExplainableCommand('FT.AGGREGATE  ')).toBeNull()
   })
+
+  it('ignores leading comment lines from sample queries', () => {
+    const query = '// Some description\nFT.SEARCH idx "*"'
+    const result = parseExplainableCommand(query)
+    expect(result).toEqual({ command: 'FT.SEARCH', afterCommand: ' idx "*"' })
+  })
+
+  it('ignores multiple leading comment lines', () => {
+    const query = '// Line 1\n// Line 2\nFT.AGGREGATE idx "*"'
+    const result = parseExplainableCommand(query)
+    expect(result).toEqual({
+      command: 'FT.AGGREGATE',
+      afterCommand: ' idx "*"',
+    })
+  })
+
+  it('ignores indented comment lines', () => {
+    const query = '  // indented comment\nFT.SEARCH idx "*"'
+    const result = parseExplainableCommand(query)
+    expect(result).toEqual({ command: 'FT.SEARCH', afterCommand: ' idx "*"' })
+  })
+
+  it('returns null when only comments remain', () => {
+    expect(parseExplainableCommand('// just a comment')).toBeNull()
+  })
 })
 
 describe('buildExplainQuery', () => {
