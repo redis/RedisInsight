@@ -68,6 +68,7 @@ export const Name = styled(Text)`
 
 export const Description = styled(Text)`
   min-width: 0;
+  max-width: 40%;
   flex-shrink: 1;
   ${truncatedText}
 `
