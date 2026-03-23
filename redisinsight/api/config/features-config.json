@@ -120,7 +120,8 @@
     },
     "vectorSearchV2": {
       "flag": true,
-      "perc": [[0, 10]]
+      "perc": [[0, 10]],
+      "filters": []
     },
     "databasesListV2": {
       "flag": true,
