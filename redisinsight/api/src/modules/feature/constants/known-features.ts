@@ -61,7 +61,6 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
   [KnownFeatures.VectorSearchV2]: {
     name: KnownFeatures.VectorSearchV2,
     storage: FeatureStorage.Database,
-    overridable: true,
   },
 
   [KnownFeatures.AzureEntraId]: {
