@@ -1,10 +1,11 @@
 import {
   BadRequestException,
   ForbiddenException,
+  forwardRef,
+  Inject,
   Injectable,
   Logger,
 } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
 import { plainToInstance } from 'class-transformer';
 import { Database } from 'src/modules/database/models/database';
 import {
@@ -19,21 +20,12 @@ import { ICredentialStrategy } from '../credential-strategy.provider';
 export class AzureAccessKeyCredentialStrategy implements ICredentialStrategy {
   private readonly logger = new Logger(AzureAccessKeyCredentialStrategy.name);
 
-  private autodiscoveryService: AzureAutodiscoveryService;
-
-  // Use ModuleRef for lazy injection to avoid circular dependency
+  // Use forwardRef to avoid circular dependency
   // AzureModule imports DatabaseModule, and CredentialsModule needs AzureAutodiscoveryService
-  constructor(private readonly moduleRef: ModuleRef) {}
-
-  private getAutodiscoveryService(): AzureAutodiscoveryService {
-    if (!this.autodiscoveryService) {
-      this.autodiscoveryService = this.moduleRef.get(
-        AzureAutodiscoveryService,
-        { strict: false },
-      );
-    }
-    return this.autodiscoveryService;
-  }
+  constructor(
+    @Inject(forwardRef(() => AzureAutodiscoveryService))
+    private readonly autodiscoveryService: AzureAutodiscoveryService,
+  ) {}
 
   static isAzureProviderDetails(
     details: AzureProviderDetails | null | undefined,
@@ -89,7 +81,7 @@ export class AzureAccessKeyCredentialStrategy implements ICredentialStrategy {
     }
 
     try {
-      const accessKey = await this.getAutodiscoveryService().getAccessKey(
+      const accessKey = await this.autodiscoveryService.getAccessKey(
         providerDetails.azureAccountId,
         providerDetails.subscriptionId,
         providerDetails.resourceGroup,
