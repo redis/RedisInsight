@@ -53,8 +53,6 @@ import styles from './styles.module.scss'
 import { useQueryResultsContext } from '../../context/query-results.context'
 import { ProfileSelect } from './QueryCardHeader.styles'
 
-export const VIEW_TYPE_SEPARATOR = '__separator__'
-
 export interface Props {
   query: string
   isOpen: boolean
@@ -150,7 +148,10 @@ const QueryCardHeader = (props: Props) => {
   }
 
   const onChangeView = (initValue: string) => {
-    if (selectedValue === initValue || initValue === VIEW_TYPE_SEPARATOR) return
+    if (selectedValue === initValue) {
+      return
+    }
+
     const currentView = options.find(({ id }) => id === initValue)
     const previousView = options.find(({ id }) => id === selectedValue)
     const type = currentView.value
@@ -226,8 +227,19 @@ const QueryCardHeader = (props: Props) => {
 
   const options: any[] = getViewTypeOptions()
   options.push(...pluginsOptions)
-  const modifiedOptions = options.map((item) => {
+
+  const firstExternalIndex = findIndex(
+    pluginsOptions,
+    (option) => !option.internal,
+  )
+  const firstExternalOptionIndex =
+    firstExternalIndex > -1
+      ? getViewTypeOptions().length + firstExternalIndex
+      : -1
+
+  const modifiedOptions = options.map((item, index) => {
     const { value, id, text, iconDark, iconLight } = item
+    const hasSeparator = index === firstExternalOptionIndex
     return {
       value: id ?? value,
       label: id ?? value,
@@ -245,7 +257,11 @@ const QueryCardHeader = (props: Props) => {
         </RiTooltip>
       ),
       dropdownDisplay: (
-        <div className={cx(styles.dropdownOption)}>
+        <div
+          className={cx(styles.dropdownOption, {
+            [styles.dropdownOptionSeparator]: hasSeparator,
+          })}
+        >
           <RiIcon type={theme === Theme.Dark ? iconDark : iconLight} />
           <span>{truncateText(text, 20)}</span>
         </div>
@@ -283,21 +299,6 @@ const QueryCardHeader = (props: Props) => {
   })
 
   const canCommandProfile = isCommandAllowedForProfile(query)
-
-  const indexForSeparator = findIndex(
-    pluginsOptions,
-    (option) => !option.internal,
-  )
-  if (indexForSeparator > -1) {
-    modifiedOptions.splice(indexForSeparator + 1, 0, {
-      value: VIEW_TYPE_SEPARATOR,
-      disabled: true,
-      inputDisplay: <span className={styles.separator} />,
-      label: VIEW_TYPE_SEPARATOR,
-      dropdownDisplay: <span />,
-      'data-test-subj': 'view-type-separator',
-    })
-  }
 
   return (
     <Row
