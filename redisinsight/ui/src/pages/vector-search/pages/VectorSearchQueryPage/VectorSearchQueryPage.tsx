@@ -23,12 +23,12 @@ export const VectorSearchQueryPage = () => {
 
   const [isIndexPanelOpen, setIsIndexPanelOpen] = useState(false)
 
-  const { loading, stringData: indexes } = useRedisearchListData()
+  const { loading, error, stringData: indexes } = useRedisearchListData()
 
   const decodedIndexName = decodeIndexNameFromUrl(indexName)
 
   useEffect(() => {
-    if (loading !== false) {
+    if (loading !== false || error) {
       return
     }
 
@@ -37,7 +37,7 @@ export const VectorSearchQueryPage = () => {
     if (!indexExists) {
       history.push(Pages.vectorSearch(instanceId))
     }
-  }, [loading, indexes, decodedIndexName, instanceId, history])
+  }, [loading, error, indexes, decodedIndexName, instanceId, history])
 
   const indexOptions: RiSelectOption[] = useMemo(
     () =>

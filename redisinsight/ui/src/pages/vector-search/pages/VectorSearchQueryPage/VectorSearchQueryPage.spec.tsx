@@ -208,6 +208,21 @@ describe('VectorSearchQueryPage', () => {
       expect(mockPush).toHaveBeenCalledWith(`/${mockInstanceId}/vector-search`)
     })
 
+    it('should not redirect when the index list fetch fails', async () => {
+      setupRouterMocks('my-index')
+      redisearchListSelectorMock.mockReturnValue({
+        data: [],
+        loading: false,
+        error: 'Network Error',
+      })
+
+      await renderComponent()
+
+      expect(mockPush).not.toHaveBeenCalledWith(
+        `/${mockInstanceId}/vector-search`,
+      )
+    })
+
     it('should not redirect when loading has not started yet', async () => {
       setupRouterMocks('my-index')
       redisearchListSelectorMock.mockReturnValue({
