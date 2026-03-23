@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 
 import { RiSelectOption } from 'uiSrc/components/base/forms/select/RiSelect'
@@ -23,7 +23,21 @@ export const VectorSearchQueryPage = () => {
 
   const [isIndexPanelOpen, setIsIndexPanelOpen] = useState(false)
 
-  const { stringData: indexes } = useRedisearchListData()
+  const { loading, stringData: indexes } = useRedisearchListData()
+
+  const decodedIndexName = decodeIndexNameFromUrl(indexName)
+
+  useEffect(() => {
+    if (loading !== false || indexes.length === 0) {
+      return
+    }
+
+    const indexExists = indexes.some((name) => name === decodedIndexName)
+
+    if (!indexExists) {
+      history.push(Pages.vectorSearch(instanceId))
+    }
+  }, [loading, indexes, decodedIndexName, instanceId, history])
 
   const indexOptions: RiSelectOption[] = useMemo(
     () =>
@@ -67,7 +81,7 @@ export const VectorSearchQueryPage = () => {
   return (
     <S.PageContainer data-testid="vector-search-query-page">
       <PageHeader
-        indexName={getIndexDisplayName(decodeIndexNameFromUrl(indexName))}
+        indexName={getIndexDisplayName(decodedIndexName)}
         indexOptions={indexOptions}
         onIndexChange={handleIndexChange}
         onToggleIndexPanel={toggleIndexPanel}

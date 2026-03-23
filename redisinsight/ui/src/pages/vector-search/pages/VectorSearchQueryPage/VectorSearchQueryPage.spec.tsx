@@ -1,8 +1,12 @@
 import React from 'react'
+import reactRouterDom from 'react-router-dom'
 import { act, cleanup, fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { sendEventTelemetry } from 'uiSrc/telemetry'
 import { TelemetryEvent } from 'uiSrc/telemetry/events'
 import { commandExecutionUIFactory } from 'uiSrc/mocks/factories/workbench/commandExectution.factory'
+import { redisearchListSelector } from 'uiSrc/slices/browser/redisearch'
+
+const redisearchListSelectorMock = redisearchListSelector as jest.Mock
 import { VectorSearchQueryPage } from './VectorSearchQueryPage'
 
 jest.mock('uiSrc/telemetry', () => ({
@@ -12,20 +16,6 @@ jest.mock('uiSrc/telemetry', () => ({
 
 const mockInstanceId = 'instanceId'
 const mockPush = jest.fn()
-
-jest.mock('react-router-dom', () => {
-  const actual = jest.requireActual('react-router-dom')
-  return {
-    ...actual,
-    useParams: () => ({
-      instanceId: mockInstanceId,
-      indexName: 'test-index',
-    }),
-    useHistory: () => ({
-      push: mockPush,
-    }),
-  }
-})
 
 jest.mock('uiSrc/slices/browser/redisearch', () => ({
   ...jest.requireActual('uiSrc/slices/browser/redisearch'),
@@ -64,6 +54,13 @@ jest.mock('uiSrc/services/commands-history/commandsHistoryService', () => ({
 
 const mockHistoryItems = commandExecutionUIFactory.buildList(2)
 
+const setupRouterMocks = (indexName = 'test-index') => {
+  reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: mockPush })
+  reactRouterDom.useParams = jest
+    .fn()
+    .mockReturnValue({ instanceId: mockInstanceId, indexName })
+}
+
 const renderComponent = async () => {
   let result: ReturnType<typeof render>
 
@@ -78,6 +75,7 @@ describe('VectorSearchQueryPage', () => {
   beforeEach(() => {
     cleanup()
     jest.clearAllMocks()
+    setupRouterMocks()
     mockGetCommandsHistory.mockResolvedValue([])
     mockAddCommandsToHistory.mockResolvedValue([])
     mockDeleteCommandFromHistory.mockResolvedValue(undefined)
@@ -150,6 +148,66 @@ describe('VectorSearchQueryPage', () => {
         event: TelemetryEvent.SEARCH_CLEAR_ALL_RESULTS_CLICKED,
         eventData: { databaseId: mockInstanceId },
       })
+    })
+  })
+
+  describe('redirect when index does not exist', () => {
+    it('should redirect to vector search list when navigating to a non-existent index', async () => {
+      setupRouterMocks('deleted-index')
+      redisearchListSelectorMock.mockReturnValue({
+        data: ['index-a', 'index-b'],
+        loading: false,
+        error: '',
+      })
+
+      await renderComponent()
+
+      expect(mockPush).toHaveBeenCalledWith(`/${mockInstanceId}/vector-search`)
+    })
+
+    it('should not redirect when navigating to an existing index', async () => {
+      setupRouterMocks('my-index')
+      redisearchListSelectorMock.mockReturnValue({
+        data: ['my-index', 'other-index'],
+        loading: false,
+        error: '',
+      })
+
+      await renderComponent()
+
+      expect(mockPush).not.toHaveBeenCalledWith(
+        `/${mockInstanceId}/vector-search`,
+      )
+    })
+
+    it('should not redirect while the index list is still loading', async () => {
+      setupRouterMocks('my-index')
+      redisearchListSelectorMock.mockReturnValue({
+        data: [],
+        loading: true,
+        error: '',
+      })
+
+      await renderComponent()
+
+      expect(mockPush).not.toHaveBeenCalledWith(
+        `/${mockInstanceId}/vector-search`,
+      )
+    })
+
+    it('should not redirect when loading has not started yet', async () => {
+      setupRouterMocks('my-index')
+      redisearchListSelectorMock.mockReturnValue({
+        data: [],
+        loading: undefined,
+        error: '',
+      })
+
+      await renderComponent()
+
+      expect(mockPush).not.toHaveBeenCalledWith(
+        `/${mockInstanceId}/vector-search`,
+      )
     })
   })
 })
