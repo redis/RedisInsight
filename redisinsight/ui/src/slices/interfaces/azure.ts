@@ -8,6 +8,11 @@ export enum AzureRedisType {
   Enterprise = 'enterprise',
 }
 
+export enum AzureAuthType {
+  AccessKey = 'accessKey',
+  EntraId = 'entraId',
+}
+
 export enum AzureAccessKeysStatus {
   Enabled = 'Enabled',
   Disabled = 'Disabled',

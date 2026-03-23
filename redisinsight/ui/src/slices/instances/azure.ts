@@ -239,6 +239,7 @@ export function fetchDatabasesAzure(accountId: string, subscriptionId: string) {
 export function addDatabasesAzureAction(
   accountId: string,
   databaseIds: string[],
+  authType?: string,
 ) {
   return async (dispatch: AppDispatch) => {
     dispatch(addDatabasesAzure())
@@ -248,7 +249,7 @@ export function addDatabasesAzureAction(
         ImportAzureDatabaseResponse[]
       >(ApiEndpoints.AZURE_AUTODISCOVERY_DATABASES, {
         accountId,
-        databases: databaseIds.map((id) => ({ id })),
+        databases: databaseIds.map((id) => ({ id, authType })),
       })
 
       if (isStatusSuccessful(status)) {
