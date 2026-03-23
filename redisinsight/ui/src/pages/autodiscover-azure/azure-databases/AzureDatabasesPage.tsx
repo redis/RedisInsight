@@ -191,6 +191,10 @@ const AzureDatabasesPage = () => {
     }
   }
 
+  const handleManualConnection = () => {
+    history.push(Pages.azureManualConnection)
+  }
+
   return (
     <AzureDatabases
       databases={databases || []}
@@ -203,6 +207,7 @@ const AzureDatabasesPage = () => {
       onSubmit={handleSubmit}
       onSelectionChange={setSelectedDatabases}
       onRefresh={handleRefresh}
+      onManualConnection={handleManualConnection}
     />
   )
 }
