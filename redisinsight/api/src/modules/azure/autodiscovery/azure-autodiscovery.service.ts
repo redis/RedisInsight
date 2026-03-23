@@ -513,6 +513,9 @@ export class AzureAutodiscoveryService {
       databases.map(async (dto): Promise<ImportAzureDatabaseResponse> => {
         let database: AzureRedisDatabase | null = null;
 
+        // Use authType from DTO if provided, otherwise default to Entra ID
+        const selectedAuthType = dto.authType || AzureAuthType.EntraId;
+
         try {
           this.logger.debug(`[${dto.id}] Fetching database details...`);
 
@@ -523,6 +526,8 @@ export class AzureAutodiscoveryService {
             this.analytics.sendAzureDatabaseAddFailed(
               sessionMetadata,
               new BadRequestException(ERROR_MESSAGES.AZURE_DATABASE_NOT_FOUND),
+              undefined,
+              selectedAuthType,
             );
             return {
               id: dto.id,
@@ -530,9 +535,6 @@ export class AzureAutodiscoveryService {
               message: ERROR_MESSAGES.AZURE_DATABASE_NOT_FOUND,
             };
           }
-
-          // Use authType from DTO if provided, otherwise default to Entra ID
-          const selectedAuthType = dto.authType || AzureAuthType.EntraId;
 
           const connectionDetails = await this.getConnectionDetailsForAuthType(
             accountId,
@@ -550,6 +552,7 @@ export class AzureAutodiscoveryService {
                 ERROR_MESSAGES.AZURE_FAILED_TO_GET_CONNECTION_DETAILS,
               ),
               database.type,
+              selectedAuthType,
             );
             return {
               id: dto.id,
@@ -595,7 +598,11 @@ export class AzureAutodiscoveryService {
           });
 
           this.logger.debug(`[${dto.id}] Successfully added database`);
-          this.analytics.sendAzureDatabaseAdded(sessionMetadata, database.type);
+          this.analytics.sendAzureDatabaseAdded(
+            sessionMetadata,
+            database.type,
+            selectedAuthType,
+          );
 
           return {
             id: dto.id,
@@ -609,6 +616,7 @@ export class AzureAutodiscoveryService {
             sessionMetadata,
             new BadRequestException(this.getUserFriendlyErrorMessage(error)),
             database?.type,
+            selectedAuthType,
           );
           return {
             id: dto.id,
