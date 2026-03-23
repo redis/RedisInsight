@@ -28,7 +28,7 @@ export const VectorSearchQueryPage = () => {
   const decodedIndexName = decodeIndexNameFromUrl(indexName)
 
   useEffect(() => {
-    if (loading !== false || indexes.length === 0) {
+    if (loading !== false) {
       return
     }
 

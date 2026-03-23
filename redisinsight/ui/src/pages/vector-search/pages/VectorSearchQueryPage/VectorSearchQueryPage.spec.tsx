@@ -20,7 +20,7 @@ const mockPush = jest.fn()
 jest.mock('uiSrc/slices/browser/redisearch', () => ({
   ...jest.requireActual('uiSrc/slices/browser/redisearch'),
   redisearchListSelector: jest.fn().mockReturnValue({
-    data: [],
+    data: ['test-index'],
     loading: false,
     error: '',
   }),
@@ -193,6 +193,19 @@ describe('VectorSearchQueryPage', () => {
       expect(mockPush).not.toHaveBeenCalledWith(
         `/${mockInstanceId}/vector-search`,
       )
+    })
+
+    it('should redirect when loading finishes with an empty index list', async () => {
+      setupRouterMocks('my-index')
+      redisearchListSelectorMock.mockReturnValue({
+        data: [],
+        loading: false,
+        error: '',
+      })
+
+      await renderComponent()
+
+      expect(mockPush).toHaveBeenCalledWith(`/${mockInstanceId}/vector-search`)
     })
 
     it('should not redirect when loading has not started yet', async () => {
