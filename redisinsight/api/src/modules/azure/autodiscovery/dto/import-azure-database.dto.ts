@@ -1,5 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsDefined, IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsDefined,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { AzureAuthType } from '../../constants';
 
 export class ImportAzureDatabaseDto {
   @ApiProperty({
@@ -10,4 +17,13 @@ export class ImportAzureDatabaseDto {
   @IsNotEmpty()
   @IsString()
   id: string;
+
+  @ApiPropertyOptional({
+    description: 'Authentication type (defaults to Entra ID)',
+    enum: AzureAuthType,
+    default: AzureAuthType.EntraId,
+  })
+  @IsOptional()
+  @IsEnum(AzureAuthType)
+  authType?: AzureAuthType;
 }

@@ -6,6 +6,7 @@ import { TelemetryBaseService } from 'src/modules/analytics/telemetry.base.servi
 import { SessionMetadata } from 'src/common/models';
 import { AzureSubscription, AzureRedisDatabase } from '../models';
 import {
+  AzureAuthType,
   AzureRedisType,
   AzureSubscriptionState,
   AzureProvisioningState,
@@ -86,10 +87,12 @@ export class AzureAutodiscoveryAnalytics extends TelemetryBaseService {
   sendAzureDatabaseAdded(
     sessionMetadata: SessionMetadata,
     databaseType: AzureRedisType,
+    authType: AzureAuthType,
   ) {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.AzureDatabaseAdded, {
         databaseType,
+        authType,
       });
     } catch (e) {
       // continue regardless of error
@@ -100,12 +103,13 @@ export class AzureAutodiscoveryAnalytics extends TelemetryBaseService {
     sessionMetadata: SessionMetadata,
     exception: HttpException,
     databaseType?: AzureRedisType,
+    authType?: AzureAuthType,
   ) {
     this.sendFailedEvent(
       sessionMetadata,
       TelemetryEvents.AzureDatabaseAddFailed,
       exception,
-      { databaseType },
+      { databaseType, authType },
     );
   }
 }

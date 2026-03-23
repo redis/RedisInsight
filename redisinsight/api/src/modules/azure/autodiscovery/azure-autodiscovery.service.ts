@@ -22,6 +22,7 @@ import { HostingProvider } from 'src/modules/database/entities/database.entity';
 import { CloudProvider } from 'src/modules/database/models/provider-details';
 import { ImportAzureDatabaseDto, ImportAzureDatabaseResponse } from './dto';
 import ERROR_MESSAGES from 'src/constants/error-messages';
+import { AzureEntraIdTokenExpiredException } from '../exceptions';
 
 @Injectable()
 export class AzureAutodiscoveryService {
@@ -36,7 +37,10 @@ export class AzureAutodiscoveryService {
   /**
    * Maps raw error messages to user-friendly messages
    */
-  private getUserFriendlyErrorMessage(error: Error): string {
+  private getUserFriendlyErrorMessage(
+    error: Error,
+    authType: AzureAuthType,
+  ): string {
     const message = error?.message?.toLowerCase() || '';
 
     if (
@@ -44,7 +48,9 @@ export class AzureAutodiscoveryService {
       message.includes('noauth') ||
       message.includes('please check the username or password')
     ) {
-      return ERROR_MESSAGES.AZURE_ENTRA_ID_AUTH_FAILED;
+      return authType === AzureAuthType.AccessKey
+        ? ERROR_MESSAGES.AZURE_ACCESS_KEY_AUTH_FAILED
+        : ERROR_MESSAGES.AZURE_ENTRA_ID_AUTH_FAILED;
     }
 
     if (message.includes('please check the ca or client certificate')) {
@@ -329,6 +335,78 @@ export class AzureAutodiscoveryService {
     return match ? match[1] : '';
   }
 
+  /**
+   * Fetches the primary access key for an Azure Redis resource.
+   * Works for both Standard and Enterprise Redis types.
+   *
+   * @param accountId - MSAL account ID for authentication
+   * @param subscriptionId - Azure subscription ID
+   * @param resourceGroup - Azure resource group name
+   * @param resourceName - Redis cache name
+   * @param resourceType - Standard or Enterprise Redis
+   * @param clusterName - Required for Enterprise Redis databases
+   * @returns The primary access key
+   */
+  async getAccessKey(
+    accountId: string,
+    subscriptionId: string,
+    resourceGroup: string,
+    resourceName: string,
+    resourceType: AzureRedisType,
+    clusterName?: string,
+  ): Promise<string> {
+    const client = await this.getAuthenticatedClient(accountId);
+
+    if (!client) {
+      throw new AzureEntraIdTokenExpiredException(
+        'Azure session expired. Please re-authenticate with Azure to access this database.',
+      );
+    }
+
+    const url =
+      resourceType === AzureRedisType.Enterprise
+        ? AzureApiUrls.postEnterpriseRedisKeys(
+            subscriptionId,
+            resourceGroup,
+            clusterName!,
+            resourceName,
+          )
+        : AzureApiUrls.postStandardRedisKeys(
+            subscriptionId,
+            resourceGroup,
+            resourceName,
+          );
+
+    this.logger.debug(
+      `Fetching access key for ${resourceType} Redis: ${resourceName}`,
+    );
+
+    const { data } = await client.post(url);
+
+    // Both Standard and Enterprise Redis return: { primaryKey, secondaryKey }
+    return data.primaryKey;
+  }
+
+  /**
+   * Extracts the resource name and cluster name from an Azure database.
+   * For Standard Redis: resourceName is the cache name
+   * For Enterprise Redis: name is "clusterName/databaseName", so we extract both
+   */
+  private extractResourceNames(database: AzureRedisDatabase): {
+    resourceName: string;
+    clusterName?: string;
+  } {
+    if (database.type === AzureRedisType.Enterprise) {
+      // Enterprise database names are in format "clusterName/databaseName"
+      const parts = database.name.split('/');
+      return {
+        resourceName: parts[1] || 'default',
+        clusterName: parts[0],
+      };
+    }
+    return { resourceName: database.name };
+  }
+
   private async getEntraIdConnectionDetails(
     accountId: string,
     database: AzureRedisDatabase,
@@ -344,6 +422,8 @@ export class AzureAutodiscoveryService {
     }
 
     const port = this.getTlsPort(database);
+    const { resourceName, clusterName } = this.extractResourceNames(database);
+
     this.logger.debug(
       `Using Entra ID auth for ${database.name} (type=${database.type}, port=${port})`,
     );
@@ -358,6 +438,9 @@ export class AzureAutodiscoveryService {
       subscriptionId: database.subscriptionId,
       resourceGroup: database.resourceGroup,
       resourceId: database.id,
+      resourceName,
+      resourceType: database.type,
+      clusterName,
     };
   }
 
@@ -369,6 +452,53 @@ export class AzureAutodiscoveryService {
       return database.sslPort || 6380;
     }
     return database.port || 10000;
+  }
+
+  /**
+   * Get connection details for Access Key authentication.
+   * Unlike Entra ID, this only requires database metadata - no Redis token needed.
+   * The Access Key is fetched dynamically at connection time by the credential strategy.
+   */
+  private getAccessKeyConnectionDetails(
+    accountId: string,
+    database: AzureRedisDatabase,
+  ): AzureConnectionDetails {
+    const port = this.getTlsPort(database);
+    const { resourceName, clusterName } = this.extractResourceNames(database);
+
+    this.logger.debug(
+      `Using Access Key auth for ${database.name} (type=${database.type}, port=${port})`,
+    );
+
+    return {
+      host: database.host,
+      port,
+      tls: true,
+      authType: AzureAuthType.AccessKey,
+      azureAccountId: accountId,
+      subscriptionId: database.subscriptionId,
+      resourceGroup: database.resourceGroup,
+      resourceId: database.id,
+      resourceName,
+      resourceType: database.type,
+      clusterName,
+    };
+  }
+
+  /**
+   * Get connection details based on authentication type.
+   * - Entra ID: Requires Redis token, returns null if unavailable
+   * - Access Key: Only needs database metadata, never returns null
+   */
+  private async getConnectionDetailsForAuthType(
+    accountId: string,
+    database: AzureRedisDatabase,
+    authType: AzureAuthType,
+  ): Promise<AzureConnectionDetails | null> {
+    if (authType === AzureAuthType.AccessKey) {
+      return this.getAccessKeyConnectionDetails(accountId, database);
+    }
+    return this.getEntraIdConnectionDetails(accountId, database);
   }
 
   /**
@@ -388,6 +518,9 @@ export class AzureAutodiscoveryService {
       databases.map(async (dto): Promise<ImportAzureDatabaseResponse> => {
         let database: AzureRedisDatabase | null = null;
 
+        // Use authType from DTO if provided, otherwise default to Entra ID
+        const selectedAuthType = dto.authType || AzureAuthType.EntraId;
+
         try {
           this.logger.debug(`[${dto.id}] Fetching database details...`);
 
@@ -398,6 +531,8 @@ export class AzureAutodiscoveryService {
             this.analytics.sendAzureDatabaseAddFailed(
               sessionMetadata,
               new BadRequestException(ERROR_MESSAGES.AZURE_DATABASE_NOT_FOUND),
+              undefined,
+              selectedAuthType,
             );
             return {
               id: dto.id,
@@ -406,9 +541,10 @@ export class AzureAutodiscoveryService {
             };
           }
 
-          const connectionDetails = await this.getEntraIdConnectionDetails(
+          const connectionDetails = await this.getConnectionDetailsForAuthType(
             accountId,
             database,
+            selectedAuthType,
           );
 
           if (!connectionDetails) {
@@ -421,6 +557,7 @@ export class AzureAutodiscoveryService {
                 ERROR_MESSAGES.AZURE_FAILED_TO_GET_CONNECTION_DETAILS,
               ),
               database.type,
+              selectedAuthType,
             );
             return {
               id: dto.id,
@@ -430,13 +567,18 @@ export class AzureAutodiscoveryService {
           }
 
           this.logger.debug(
-            `[${dto.id}] Connection details: host=${connectionDetails.host}, port=${connectionDetails.port}, tls=${connectionDetails.tls}`,
+            `[${dto.id}] Connection details: host=${connectionDetails.host}, port=${connectionDetails.port}, tls=${connectionDetails.tls}, authType=${selectedAuthType}`,
           );
 
           const providerDetails = {
             provider: CloudProvider.Azure,
-            authType: connectionDetails.authType,
+            authType: selectedAuthType,
             azureAccountId: connectionDetails.azureAccountId,
+            subscriptionId: connectionDetails.subscriptionId,
+            resourceGroup: connectionDetails.resourceGroup,
+            resourceName: connectionDetails.resourceName,
+            resourceType: connectionDetails.resourceType,
+            clusterName: connectionDetails.clusterName,
           };
 
           const provider =
@@ -461,7 +603,11 @@ export class AzureAutodiscoveryService {
           });
 
           this.logger.debug(`[${dto.id}] Successfully added database`);
-          this.analytics.sendAzureDatabaseAdded(sessionMetadata, database.type);
+          this.analytics.sendAzureDatabaseAdded(
+            sessionMetadata,
+            database.type,
+            selectedAuthType,
+          );
 
           return {
             id: dto.id,
@@ -471,15 +617,20 @@ export class AzureAutodiscoveryService {
           this.logger.error(
             `[${dto.id}] Failed to add database: ${error.message}`,
           );
+          const userFriendlyMessage = this.getUserFriendlyErrorMessage(
+            error,
+            selectedAuthType,
+          );
           this.analytics.sendAzureDatabaseAddFailed(
             sessionMetadata,
-            new BadRequestException(this.getUserFriendlyErrorMessage(error)),
+            new BadRequestException(userFriendlyMessage),
             database?.type,
+            selectedAuthType,
           );
           return {
             id: dto.id,
             status: ActionStatus.Fail,
-            message: this.getUserFriendlyErrorMessage(error),
+            message: userFriendlyMessage,
           };
         }
       }),

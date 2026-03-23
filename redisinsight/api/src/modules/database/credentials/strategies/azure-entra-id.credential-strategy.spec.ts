@@ -5,7 +5,10 @@ import { mockDatabase } from 'src/__mocks__';
 import { AzureAuthService } from 'src/modules/azure/auth/azure-auth.service';
 import { AzureAuthType } from 'src/modules/azure/constants';
 import { AzureEntraIdTokenExpiredException } from 'src/modules/azure/exceptions';
-import { CloudProvider } from 'src/modules/database/models/provider-details';
+import {
+  CloudProvider,
+  isAzureProviderDetails,
+} from 'src/modules/database/models/provider-details';
 import { Database } from 'src/modules/database/models/database';
 import { AzureEntraIdCredentialStrategy } from './azure-entra-id.credential-strategy';
 
@@ -63,37 +66,27 @@ describe('AzureEntraIdCredentialStrategy', () => {
         authType: AzureAuthType.EntraId,
       };
 
-      expect(
-        AzureEntraIdCredentialStrategy.isAzureProviderDetails(details),
-      ).toBe(true);
+      expect(isAzureProviderDetails(details)).toBe(true);
     });
 
     it('should return false for null', () => {
-      expect(AzureEntraIdCredentialStrategy.isAzureProviderDetails(null)).toBe(
-        false,
-      );
+      expect(isAzureProviderDetails(null)).toBe(false);
     });
 
     it('should return false for undefined', () => {
-      expect(
-        AzureEntraIdCredentialStrategy.isAzureProviderDetails(undefined),
-      ).toBe(false);
+      expect(isAzureProviderDetails(undefined)).toBe(false);
     });
 
     it('should return false for details without provider', () => {
       const details = { authType: AzureAuthType.EntraId } as any;
 
-      expect(
-        AzureEntraIdCredentialStrategy.isAzureProviderDetails(details),
-      ).toBe(false);
+      expect(isAzureProviderDetails(details)).toBe(false);
     });
 
     it('should return false for details without authType', () => {
       const details = { provider: CloudProvider.Azure } as any;
 
-      expect(
-        AzureEntraIdCredentialStrategy.isAzureProviderDetails(details),
-      ).toBe(false);
+      expect(isAzureProviderDetails(details)).toBe(false);
     });
   });
 

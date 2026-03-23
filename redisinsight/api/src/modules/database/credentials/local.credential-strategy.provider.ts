@@ -6,6 +6,7 @@ import {
 } from './credential-strategy.provider';
 import { DefaultCredentialStrategy } from './strategies/default.credential-strategy';
 import { AzureEntraIdCredentialStrategy } from './strategies/azure-entra-id.credential-strategy';
+import { AzureAccessKeyCredentialStrategy } from './strategies/azure-access-key.credential-strategy';
 
 @Injectable()
 export class LocalCredentialStrategyProvider extends CredentialStrategyProvider {
@@ -13,12 +14,14 @@ export class LocalCredentialStrategyProvider extends CredentialStrategyProvider 
 
   constructor(
     private readonly azureEntraIdCredentialStrategy: AzureEntraIdCredentialStrategy,
+    private readonly azureAccessKeyCredentialStrategy: AzureAccessKeyCredentialStrategy,
     private readonly defaultCredentialStrategy: DefaultCredentialStrategy,
   ) {
     super();
     // Order matters: first match wins. DefaultCredentialStrategy is always last as fallback.
     this.strategies = [
       this.azureEntraIdCredentialStrategy,
+      this.azureAccessKeyCredentialStrategy,
       this.defaultCredentialStrategy,
     ];
   }
