@@ -40,6 +40,5 @@ export enum KnownFeatures {
 export interface IFeatureFlag {
   name: string;
   storage: string;
-  overridable?: boolean;
   factory?: () => Partial<Feature>;
 }
