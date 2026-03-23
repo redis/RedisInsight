@@ -22,6 +22,7 @@ import { HostingProvider } from 'src/modules/database/entities/database.entity';
 import { CloudProvider } from 'src/modules/database/models/provider-details';
 import { ImportAzureDatabaseDto, ImportAzureDatabaseResponse } from './dto';
 import ERROR_MESSAGES from 'src/constants/error-messages';
+import { AzureEntraIdTokenExpiredException } from '../exceptions';
 
 @Injectable()
 export class AzureAutodiscoveryService {
@@ -329,6 +330,78 @@ export class AzureAutodiscoveryService {
     return match ? match[1] : '';
   }
 
+  /**
+   * Fetches the primary access key for an Azure Redis resource.
+   * Works for both Standard and Enterprise Redis types.
+   *
+   * @param accountId - MSAL account ID for authentication
+   * @param subscriptionId - Azure subscription ID
+   * @param resourceGroup - Azure resource group name
+   * @param resourceName - Redis cache name
+   * @param resourceType - Standard or Enterprise Redis
+   * @param clusterName - Required for Enterprise Redis databases
+   * @returns The primary access key
+   */
+  async getAccessKey(
+    accountId: string,
+    subscriptionId: string,
+    resourceGroup: string,
+    resourceName: string,
+    resourceType: AzureRedisType,
+    clusterName?: string,
+  ): Promise<string> {
+    const client = await this.getAuthenticatedClient(accountId);
+
+    if (!client) {
+      throw new AzureEntraIdTokenExpiredException(
+        'Azure session expired. Please re-authenticate with Azure to access this database.',
+      );
+    }
+
+    const url =
+      resourceType === AzureRedisType.Enterprise
+        ? AzureApiUrls.postEnterpriseRedisKeys(
+            subscriptionId,
+            resourceGroup,
+            clusterName!,
+            resourceName,
+          )
+        : AzureApiUrls.postStandardRedisKeys(
+            subscriptionId,
+            resourceGroup,
+            resourceName,
+          );
+
+    this.logger.debug(
+      `Fetching access key for ${resourceType} Redis: ${resourceName}`,
+    );
+
+    const { data } = await client.post(url);
+
+    // Both Standard and Enterprise Redis return: { primaryKey, secondaryKey }
+    return data.primaryKey;
+  }
+
+  /**
+   * Extracts the resource name and cluster name from an Azure database.
+   * For Standard Redis: resourceName is the cache name
+   * For Enterprise Redis: name is "clusterName/databaseName", so we extract both
+   */
+  private extractResourceNames(database: AzureRedisDatabase): {
+    resourceName: string;
+    clusterName?: string;
+  } {
+    if (database.type === AzureRedisType.Enterprise) {
+      // Enterprise database names are in format "clusterName/databaseName"
+      const parts = database.name.split('/');
+      return {
+        resourceName: parts[1] || 'default',
+        clusterName: parts[0],
+      };
+    }
+    return { resourceName: database.name };
+  }
+
   private async getEntraIdConnectionDetails(
     accountId: string,
     database: AzureRedisDatabase,
@@ -344,6 +417,8 @@ export class AzureAutodiscoveryService {
     }
 
     const port = this.getTlsPort(database);
+    const { resourceName, clusterName } = this.extractResourceNames(database);
+
     this.logger.debug(
       `Using Entra ID auth for ${database.name} (type=${database.type}, port=${port})`,
     );
@@ -358,6 +433,9 @@ export class AzureAutodiscoveryService {
       subscriptionId: database.subscriptionId,
       resourceGroup: database.resourceGroup,
       resourceId: database.id,
+      resourceName,
+      resourceType: database.type,
+      clusterName,
     };
   }
 
@@ -429,14 +507,22 @@ export class AzureAutodiscoveryService {
             };
           }
 
+          // Use authType from DTO if provided, otherwise default to Entra ID
+          const selectedAuthType = dto.authType || AzureAuthType.EntraId;
+
           this.logger.debug(
-            `[${dto.id}] Connection details: host=${connectionDetails.host}, port=${connectionDetails.port}, tls=${connectionDetails.tls}`,
+            `[${dto.id}] Connection details: host=${connectionDetails.host}, port=${connectionDetails.port}, tls=${connectionDetails.tls}, authType=${selectedAuthType}`,
           );
 
           const providerDetails = {
             provider: CloudProvider.Azure,
-            authType: connectionDetails.authType,
+            authType: selectedAuthType,
             azureAccountId: connectionDetails.azureAccountId,
+            subscriptionId: connectionDetails.subscriptionId,
+            resourceGroup: connectionDetails.resourceGroup,
+            resourceName: connectionDetails.resourceName,
+            resourceType: connectionDetails.resourceType,
+            clusterName: connectionDetails.clusterName,
           };
 
           const provider =
