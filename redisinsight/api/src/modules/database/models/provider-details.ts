@@ -13,6 +13,20 @@ export enum CloudProvider {
   Azure = 'azure',
 }
 
+/**
+ * Type guard to check if details are Azure provider details
+ */
+export function isAzureProviderDetails(
+  details: AzureProviderDetails | null | undefined,
+): details is AzureProviderDetails {
+  if (!details) return false;
+  return (
+    'provider' in details &&
+    details.provider === CloudProvider.Azure &&
+    'authType' in details
+  );
+}
+
 export class AzureProviderDetails {
   @ApiProperty({
     description: 'Cloud provider',

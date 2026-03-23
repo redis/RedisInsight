@@ -450,6 +450,53 @@ export class AzureAutodiscoveryService {
   }
 
   /**
+   * Get connection details for Access Key authentication.
+   * Unlike Entra ID, this only requires database metadata - no Redis token needed.
+   * The Access Key is fetched dynamically at connection time by the credential strategy.
+   */
+  private getAccessKeyConnectionDetails(
+    accountId: string,
+    database: AzureRedisDatabase,
+  ): AzureConnectionDetails {
+    const port = this.getTlsPort(database);
+    const { resourceName, clusterName } = this.extractResourceNames(database);
+
+    this.logger.debug(
+      `Using Access Key auth for ${database.name} (type=${database.type}, port=${port})`,
+    );
+
+    return {
+      host: database.host,
+      port,
+      tls: true,
+      authType: AzureAuthType.AccessKey,
+      azureAccountId: accountId,
+      subscriptionId: database.subscriptionId,
+      resourceGroup: database.resourceGroup,
+      resourceId: database.id,
+      resourceName,
+      resourceType: database.type,
+      clusterName,
+    };
+  }
+
+  /**
+   * Get connection details based on authentication type.
+   * - Entra ID: Requires Redis token, returns null if unavailable
+   * - Access Key: Only needs database metadata, never returns null
+   */
+  private async getConnectionDetailsForAuthType(
+    accountId: string,
+    database: AzureRedisDatabase,
+    authType: AzureAuthType,
+  ): Promise<AzureConnectionDetails | null> {
+    if (authType === AzureAuthType.AccessKey) {
+      return this.getAccessKeyConnectionDetails(accountId, database);
+    }
+    return this.getEntraIdConnectionDetails(accountId, database);
+  }
+
+  /**
    * Add Azure databases from autodiscovery
    * Fetches connection details and creates databases
    */
@@ -484,9 +531,13 @@ export class AzureAutodiscoveryService {
             };
           }
 
-          const connectionDetails = await this.getEntraIdConnectionDetails(
+          // Use authType from DTO if provided, otherwise default to Entra ID
+          const selectedAuthType = dto.authType || AzureAuthType.EntraId;
+
+          const connectionDetails = await this.getConnectionDetailsForAuthType(
             accountId,
             database,
+            selectedAuthType,
           );
 
           if (!connectionDetails) {
@@ -506,9 +557,6 @@ export class AzureAutodiscoveryService {
               message: ERROR_MESSAGES.AZURE_FAILED_TO_GET_CONNECTION_DETAILS,
             };
           }
-
-          // Use authType from DTO if provided, otherwise default to Entra ID
-          const selectedAuthType = dto.authType || AzureAuthType.EntraId;
 
           this.logger.debug(
             `[${dto.id}] Connection details: host=${connectionDetails.host}, port=${connectionDetails.port}, tls=${connectionDetails.tls}, authType=${selectedAuthType}`,

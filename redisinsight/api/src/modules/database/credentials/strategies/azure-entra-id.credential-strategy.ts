@@ -3,7 +3,7 @@ import { plainToInstance } from 'class-transformer';
 import { Database } from 'src/modules/database/models/database';
 import {
   AzureProviderDetails,
-  CloudProvider,
+  isAzureProviderDetails,
 } from 'src/modules/database/models/provider-details';
 import { AzureAuthType } from 'src/modules/azure/constants';
 import { AzureAuthService } from 'src/modules/azure/auth/azure-auth.service';
@@ -16,22 +16,11 @@ export class AzureEntraIdCredentialStrategy implements ICredentialStrategy {
 
   constructor(private readonly azureAuthService: AzureAuthService) {}
 
-  static isAzureProviderDetails(
-    details: AzureProviderDetails | null | undefined,
-  ): details is AzureProviderDetails {
-    if (!details) return false;
-    return (
-      'provider' in details &&
-      details.provider === CloudProvider.Azure &&
-      'authType' in details
-    );
-  }
-
   static isAzureEntraIdAuth(
     details: AzureProviderDetails | null | undefined,
   ): boolean {
     return (
-      AzureEntraIdCredentialStrategy.isAzureProviderDetails(details) &&
+      isAzureProviderDetails(details) &&
       details.authType === AzureAuthType.EntraId
     );
   }

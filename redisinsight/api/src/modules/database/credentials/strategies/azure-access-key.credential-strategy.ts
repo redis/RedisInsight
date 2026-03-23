@@ -10,7 +10,7 @@ import { plainToInstance } from 'class-transformer';
 import { Database } from 'src/modules/database/models/database';
 import {
   AzureProviderDetails,
-  CloudProvider,
+  isAzureProviderDetails,
 } from 'src/modules/database/models/provider-details';
 import { AzureAuthType } from 'src/modules/azure/constants';
 import { AzureAutodiscoveryService } from 'src/modules/azure/autodiscovery/azure-autodiscovery.service';
@@ -27,22 +27,11 @@ export class AzureAccessKeyCredentialStrategy implements ICredentialStrategy {
     private readonly autodiscoveryService: AzureAutodiscoveryService,
   ) {}
 
-  static isAzureProviderDetails(
-    details: AzureProviderDetails | null | undefined,
-  ): details is AzureProviderDetails {
-    if (!details) return false;
-    return (
-      'provider' in details &&
-      details.provider === CloudProvider.Azure &&
-      'authType' in details
-    );
-  }
-
   static isAzureAccessKeyAuth(
     details: AzureProviderDetails | null | undefined,
   ): boolean {
     return (
-      AzureAccessKeyCredentialStrategy.isAzureProviderDetails(details) &&
+      isAzureProviderDetails(details) &&
       details.authType === AzureAuthType.AccessKey
     );
   }
