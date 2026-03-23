@@ -494,11 +494,15 @@ describe('AzureAutodiscoveryService', () => {
           name: database.name,
           tls: true,
           provider: HostingProvider.AZURE_CACHE,
-          providerDetails: {
+          providerDetails: expect.objectContaining({
             provider: CloudProvider.Azure,
             authType: AzureAuthType.EntraId,
             azureAccountId: accountId,
-          },
+            subscriptionId: database.subscriptionId,
+            resourceGroup: database.resourceGroup,
+            resourceName: database.name,
+            resourceType: AzureRedisType.Standard,
+          }),
         }),
       );
     });
