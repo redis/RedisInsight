@@ -39,8 +39,14 @@ test.describe('Database List Pagination', () => {
 
   test.beforeEach(async ({ databasesPage }) => {
     await databasesPage.goto();
-    // Filter to only show test databases to ensure consistent pagination state
-    await databasesPage.databaseList.search(PAGINATION_PREFIX);
+    const { databaseList } = databasesPage;
+
+    await databaseList.search(PAGINATION_PREFIX);
+    await expect(databaseList.paginationRowCount).toContainText(`${DB_COUNT}`);
+    // Both page size and page number persist in localStorage across tests.
+    // Reset to a known state: 10 items/page on page 1.
+    await databaseList.setItemsPerPage('10');
+    await databaseList.selectPage('1');
   });
 
   test('should show pagination when more than 15 databases', async ({ databasesPage }) => {
