@@ -8,6 +8,8 @@ const uniqueId = faker.string.alphanumeric(6);
 const TEST_INDEX_PREFIX = `test-vs-list-${uniqueId}:`;
 const TEST_INDEX_NAME = `test-vs-list-${uniqueId}-idx`;
 
+test.use({ featureFlags: { vectorSearchV2: true } });
+
 /**
  * Vector Search > List Indexes
  *
@@ -96,7 +98,7 @@ test.describe('Vector Search > List Indexes', { tag: '@serial' }, () => {
     await viewItem.click();
 
     await expect(vectorSearchPage.indexInfoPanel.container).toBeVisible();
-    await expect(vectorSearchPage.indexInfoPanel.title).toBeVisible();
+    await expect(vectorSearchPage.indexInfoPanel.getTitle(TEST_INDEX_NAME)).toBeVisible();
 
     // Close panel and verify it hides
     await vectorSearchPage.indexInfoPanel.closeButton.click();

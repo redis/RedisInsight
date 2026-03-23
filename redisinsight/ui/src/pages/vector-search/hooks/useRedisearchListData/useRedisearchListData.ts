@@ -10,7 +10,7 @@ import { bufferToString, isRedisearchAvailable } from 'uiSrc/utils'
 
 export const useRedisearchListData = () => {
   const dispatch = useDispatch()
-  const { loading, data } = useSelector(redisearchListSelector)
+  const { loading, data, error } = useSelector(redisearchListSelector)
   const { modules, host: instanceHost } = useSelector(connectedInstanceSelector)
 
   const stringData = useMemo(
@@ -31,6 +31,7 @@ export const useRedisearchListData = () => {
 
   return {
     loading,
+    error,
     data,
     stringData,
   }

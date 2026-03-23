@@ -39,7 +39,8 @@ export class AnalyticsPage extends InstancePage {
   readonly dataSummaryTab: Locator;
   readonly tipsTab: Locator;
 
-  // Summary per data (donut charts)
+  // Summary per data (donut charts) — or the "no keys" empty message
+  readonly dataSummaryContent: Locator;
   readonly summaryPerData: Locator;
   readonly summaryPerDataCharts: Locator;
   readonly memoryChartTitle: Locator;
@@ -52,7 +53,8 @@ export class AnalyticsPage extends InstancePage {
   readonly ttlDistributionChart: Locator;
   readonly showNoExpirySwitch: Locator;
 
-  // Top Namespaces
+  // Top Namespaces (either populated or empty-state)
+  readonly topNamespacesSection: Locator;
   readonly topNamespacesContainer: Locator;
   readonly topNamespacesEmpty: Locator;
   readonly topNamespacesMessage: Locator;
@@ -105,8 +107,9 @@ export class AnalyticsPage extends InstancePage {
     this.dataSummaryTab = page.getByRole('tab', { name: 'Data Summary' });
     this.tipsTab = page.getByRole('tab', { name: /Tips/ });
 
-    // Summary per data (donut charts)
+    // Summary per data (donut charts) — or the "no keys" fallback
     this.summaryPerData = page.getByTestId('summary-per-data');
+    this.dataSummaryContent = this.summaryPerData.or(page.getByTestId('empty-analysis-no-keys'));
     this.summaryPerDataCharts = page.getByTestId('summary-per-data-charts');
     this.memoryChartTitle = page.getByTestId('donut-title-memory');
     this.keysChartTitle = page.getByTestId('donut-title-keys');
@@ -121,6 +124,7 @@ export class AnalyticsPage extends InstancePage {
     // Top Namespaces
     this.topNamespacesContainer = page.getByTestId('top-namespaces');
     this.topNamespacesEmpty = page.getByTestId('top-namespaces-empty');
+    this.topNamespacesSection = this.topNamespacesContainer.or(this.topNamespacesEmpty);
     this.topNamespacesMessage = page.getByTestId('top-namespaces-message');
     this.treeViewPageLink = page.getByTestId('tree-view-page-link');
     this.nspTableMemory = page.getByTestId('nsp-table-memory');
@@ -230,16 +234,24 @@ export class AnalyticsPage extends InstancePage {
   }
 
   /**
-   * Ensure a report has been generated (check first, generate if needed)
-   * Use in beforeEach or at the start of tests that require a report
-   * @param timeout - max wait time in ms (default 30s, use longer for large datasets)
+   * Ensure a report is loaded and the Data Summary tab content is visible.
+   *
+   * Prefer pre-generating the report via {@link ApiHelper.createDatabaseAnalysis}
+   * in `beforeAll` so the page only needs to load existing data. Falls back to
+   * generating a report through the UI when none is found.
+   *
+   * After the header progress indicator is ready, also waits for the Data
+   * Summary tab content to settle (either the charts or the "no keys" empty
+   * message). The @redis-ui Tabs component may lazy-mount content, so the
+   * header can be ready before the tab body appears in the DOM.
    */
-  async ensureReportGenerated(timeout = 30000): Promise<void> {
+  async ensureReportGenerated(timeout?: number): Promise<void> {
     const hasReport = await this.isReportVisible();
     if (!hasReport) {
       await this.clickNewReport();
       await this.waitForReportGenerated(timeout);
     }
+    await this.dataSummaryContent.waitFor({ state: 'visible' });
   }
 
   /**

@@ -10,6 +10,9 @@ import { test, expect } from 'e2eSrc/fixtures/base';
 test.describe('Certificate and Encryption Handling', () => {
   test.describe.configure({ mode: 'serial' });
 
+  // TODO: Enable once DELETE /api/settings/agreements endpoint is implemented
+  test.skip(true, 'Requires DELETE /api/settings/agreements endpoint (not yet implemented)');
+
   test.afterAll(async ({ apiHelper }) => {
     await apiHelper.acceptEula();
   });

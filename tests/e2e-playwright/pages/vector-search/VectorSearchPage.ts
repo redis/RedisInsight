@@ -80,6 +80,9 @@ export class VectorSearchPage extends InstancePage {
 
   async goto(databaseId: string): Promise<void> {
     await this.gotoDatabase(databaseId);
+    // Clear the in-memory "last viewed page" so the Search tab always
+    // opens the index list instead of restoring a previous sub-page.
+    await this.page.evaluate(() => (window as any).__TEST_resetVectorSearchLastPage?.());
     await this.navigationTabs.gotoSearch();
     await this.waitForLoad();
   }

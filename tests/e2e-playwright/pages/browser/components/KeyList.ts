@@ -166,14 +166,17 @@ export class KeyList {
    * Click on a key by name
    */
   async clickKey(keyName: string): Promise<void> {
-    // Try grid row first (list view), then treeitem (tree view)
-    const gridRow = this.page.getByRole('row', { name: new RegExp(keyName) });
-    const treeItem = this.page.getByRole('treeitem', { name: new RegExp(keyName) });
+    const escapedKeyName = keyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-    if (await gridRow.isVisible()) {
-      await gridRow.click();
+    // Try grid row first (list view), then treeitem (tree view)
+    const gridRow = this.page.getByRole('row', { name: new RegExp(escapedKeyName) });
+    const treeItem = this.page.getByRole('treeitem', { name: new RegExp(escapedKeyName) });
+    const keyElement = gridRow.or(treeItem);
+
+    if (await keyElement.isVisible()) {
+      await keyElement.click();
     } else {
-      await treeItem.click();
+      await this.selectKeyInTree(keyName);
     }
   }
 
@@ -232,17 +235,18 @@ export class KeyList {
 
   /**
    * Get key row locator by name
-   * Returns a locator that can be used for assertions (visible/not visible)
+   * Returns a locator that can be used for assertions (visible/not visible).
+   * Uses .first() because tree view parent nodes can also match the regex
+   * (their accessible name includes descendant text), which would otherwise
+   * trigger a Playwright strict-mode violation.
    */
   getKeyRow(keyName: string): Locator {
-    // Escape special regex characters in key name
     const escapedKeyName = keyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-    // Return locator for grid cell (list view) or treeitem (tree view)
-    // Use or() to combine both selectors
     return this.page
       .getByRole('gridcell', { name: keyName })
-      .or(this.page.getByRole('treeitem', { name: new RegExp(escapedKeyName) }));
+      .or(this.page.getByRole('treeitem', { name: new RegExp(escapedKeyName) }))
+      .first();
   }
 
   /**

@@ -4,11 +4,13 @@ import {
   Post,
   Query,
   Param,
+  Res,
   UsePipes,
   ValidationPipe,
   Logger,
   BadRequestException,
 } from '@nestjs/common';
+import { Response } from 'express';
 import {
   ApiTags,
   ApiOperation,
@@ -18,11 +20,12 @@ import {
 } from '@nestjs/swagger';
 import { AzureAuthService } from './azure-auth.service';
 import { AzureAuthAnalytics } from './azure-auth.analytics';
-import { AzureAuthStatus } from '../constants';
+import { AzureAuthStatus, AzureOAuthRedirectType } from '../constants';
 import { AzureAuthLoginDto, AzureOAuthPrompt } from './dto';
 import { RequestSessionMetadata } from 'src/common/decorators';
 import { SessionMetadata } from 'src/common/models';
 import { wrapHttpError } from 'src/common/utils';
+import { generateCallbackHtml } from './azure-auth-callback.template';
 
 @ApiTags('Azure Auth')
 @Controller('azure/auth')
@@ -48,20 +51,33 @@ export class AzureAuthController {
     description:
       'OAuth prompt parameter: "select_account" to show account picker, "login" to force re-auth, "consent" to force consent dialog',
   })
+  @ApiQuery({
+    name: 'redirectType',
+    required: false,
+    enum: AzureOAuthRedirectType,
+    description:
+      'Redirect type: "deeplink" for Electron app, "web" for browser/Docker deployments',
+  })
   @ApiResponse({
     status: 200,
     description: 'Authorization URL generated successfully',
   })
   async login(@Query() dto: AzureAuthLoginDto): Promise<{ url: string }> {
-    this.logger.log('Initiating Azure OAuth login');
-    const { url } = await this.azureAuthService.getAuthorizationUrl(dto.prompt);
+    this.logger.log(
+      `Initiating Azure OAuth login with redirect type: ${dto.redirectType || 'deeplink'}`,
+    );
+    const { url } = await this.azureAuthService.getAuthorizationUrl(
+      dto.prompt,
+      dto.redirectType,
+    );
     return { url };
   }
 
   @Get('callback')
   @ApiOperation({
     summary: 'Handle OAuth callback',
-    description: 'Exchanges authorization code for tokens.',
+    description:
+      'Exchanges authorization code for tokens. For web redirects, returns HTML with postMessage.',
   })
   @ApiResponse({
     status: 200,
@@ -69,6 +85,7 @@ export class AzureAuthController {
   })
   async callback(
     @RequestSessionMetadata() sessionMetadata: SessionMetadata,
+    @Res({ passthrough: true }) res: Response,
     @Query('code') code: string,
     @Query('state') state: string,
     @Query('error') error: string,
@@ -83,10 +100,28 @@ export class AzureAuthController {
         sessionMetadata,
         new BadRequestException(errorDescription || error),
       );
-      return {
+
+      // Clean up the auth request and get redirect type (state may be present even on error)
+      const redirectType = state
+        ? this.azureAuthService.removeAuthRequest(state)
+        : null;
+
+      const errorResult = {
         status: AzureAuthStatus.Failed,
         error: errorDescription || error,
       };
+
+      // For deeplink flows (Electron dev mode), return JSON
+      if (redirectType === AzureOAuthRedirectType.Deeplink) {
+        return errorResult;
+      }
+
+      // For web flows (or unknown), return HTML
+      res.type('text/html');
+      return generateCallbackHtml({
+        result: errorResult,
+        isDevMode: process.env.NODE_ENV === 'development',
+      });
     }
 
     if (!code || !state) {
@@ -94,14 +129,33 @@ export class AzureAuthController {
         sessionMetadata,
         new BadRequestException('Missing code or state parameter'),
       );
-      return {
+
+      // Clean up auth request if state is present (code missing case)
+      const redirectType = state
+        ? this.azureAuthService.removeAuthRequest(state)
+        : null;
+
+      const errorResult = {
         status: AzureAuthStatus.Failed,
         error: 'Missing code or state parameter',
       };
+
+      // For deeplink flows (Electron dev mode), return JSON
+      if (redirectType === AzureOAuthRedirectType.Deeplink) {
+        return errorResult;
+      }
+
+      // No state or web flow - return HTML
+      res.type('text/html');
+      return generateCallbackHtml({
+        result: errorResult,
+        isDevMode: process.env.NODE_ENV === 'development',
+      });
     }
 
     try {
       const result = await this.azureAuthService.handleCallback(code, state);
+      const { redirectType, ...resultWithoutRedirectType } = result;
 
       if (result.status === AzureAuthStatus.Succeed) {
         this.analytics.sendAzureSignInSucceeded(sessionMetadata);
@@ -112,11 +166,54 @@ export class AzureAuthController {
         );
       }
 
-      return result;
+      // For web redirects, return HTML page with postMessage
+      if (redirectType === AzureOAuthRedirectType.Web) {
+        const callbackResult = {
+          status: result.status,
+          account: result.account
+            ? {
+                id: result.account.homeAccountId,
+                username: result.account.username,
+                name: result.account.name,
+              }
+            : undefined,
+          error: result.error,
+        };
+
+        res.type('text/html');
+        return generateCallbackHtml({
+          result: callbackResult,
+          isDevMode: process.env.NODE_ENV === 'development',
+        });
+      }
+
+      // For deeplink redirects, return JSON (for Electron IPC handling)
+      return resultWithoutRedirectType;
     } catch (e) {
       this.logger.error('Azure OAuth callback failed', e);
       this.analytics.sendAzureSignInFailed(sessionMetadata, wrapHttpError(e));
-      throw e;
+
+      // Try to get redirect type from state (might still exist if error happened early)
+      // This ensures Electron dev mode (which uses HTTP for deeplinks) gets JSON response
+      const redirectType = this.azureAuthService.removeAuthRequest(state);
+
+      const errorResult = {
+        status: AzureAuthStatus.Failed,
+        error: e instanceof Error ? e.message : 'Authentication failed',
+      };
+
+      // For deeplink flows, return JSON (for Electron IPC handling)
+      if (redirectType === AzureOAuthRedirectType.Deeplink) {
+        return errorResult;
+      }
+
+      // For web flows (or unknown - state already deleted), return HTML
+      // This ensures the popup can communicate the error to the main window via localStorage.
+      res.type('text/html');
+      return generateCallbackHtml({
+        result: errorResult,
+        isDevMode: process.env.NODE_ENV === 'development',
+      });
     }
   }
 

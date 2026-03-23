@@ -40,7 +40,11 @@ describe('useRedisearchListData', () => {
   })
 
   const setupMocks = (
-    redisearchState: { loading: boolean | undefined; data: any[] },
+    redisearchState: {
+      loading: boolean | undefined
+      data: any[]
+      error?: string
+    },
     instanceState: { modules?: any[]; host?: string },
   ) => {
     mockUseSelector.mockImplementation((selector: any) => {
@@ -66,6 +70,18 @@ describe('useRedisearchListData', () => {
     expect(result.current.loading).toBeUndefined()
     expect(result.current.data).toEqual([])
     expect(result.current.stringData).toEqual([])
+  })
+
+  it('should return error from the selector', () => {
+    setupMocks(
+      { loading: false, data: [], error: 'Network Error' },
+      { modules: [], host: 'localhost' },
+    )
+    mockIsRedisearchAvailable.mockReturnValue(false)
+
+    const { result } = renderHook(() => useRedisearchListData())
+
+    expect(result.current.error).toBe('Network Error')
   })
 
   it('should dispatch fetchRedisearchListAction when redisearch module is available', async () => {

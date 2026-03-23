@@ -20,7 +20,6 @@ const routerDom = require('react-router-dom')
 jest.mock('../useCreateIndex', () => ({
   useCreateIndex: () => ({
     run: mockCreateIndexRun,
-    loading: false,
   }),
 }))
 
@@ -242,6 +241,58 @@ describe('useCreateIndexFlow', () => {
 
       expect(onSuccess).toHaveBeenCalledTimes(1)
       expect(mockCreateIndexRun).not.toHaveBeenCalled()
+    })
+
+    it('should set loading to true while seeding sample queries', async () => {
+      let resolveSeed!: () => void
+      const seedPromise = new Promise<void>((resolve) => {
+        resolveSeed = resolve
+      })
+      jest
+        .spyOn(QueryLibraryService.prototype, 'seed')
+        .mockReturnValue(seedPromise)
+
+      const { result } = renderHook(() => useCreateIndexFlow())
+
+      act(() => {
+        result.current.run(
+          INSTANCE_ID_MOCK,
+          SampleDataContent.E_COMMERCE_DISCOVERY,
+        )
+      })
+
+      expect(result.current.loading).toBe(true)
+
+      await act(async () => {
+        resolveSeed()
+      })
+
+      expect(result.current.loading).toBe(false)
+    })
+
+    it('should invoke onError callback when seeding fails', async () => {
+      const onSuccess = jest.fn()
+      const onError = jest.fn()
+      const seedSpy = jest
+        .spyOn(QueryLibraryService.prototype, 'seed')
+        .mockRejectedValue(new Error('seed failed'))
+
+      const { result } = renderHook(() => useCreateIndexFlow())
+
+      await act(async () => {
+        await result.current.run(
+          INSTANCE_ID_MOCK,
+          SampleDataContent.E_COMMERCE_DISCOVERY,
+          { onSuccess, onError },
+        )
+      })
+
+      expect(onError).toHaveBeenCalledTimes(1)
+      expect(onSuccess).not.toHaveBeenCalled()
+      expect(mockPush).not.toHaveBeenCalled()
+      expect(result.current.loading).toBe(false)
+
+      seedSpy.mockRestore()
     })
   })
 

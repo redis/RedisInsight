@@ -31,6 +31,7 @@ describe('AzureSubscriptions', () => {
     onSubmit: jest.fn(),
     onSwitchAccount: jest.fn(),
     onRefresh: jest.fn(),
+    onManualConnection: jest.fn(),
   }
 
   const renderComponent = (propsOverride?: Partial<Props>) => {

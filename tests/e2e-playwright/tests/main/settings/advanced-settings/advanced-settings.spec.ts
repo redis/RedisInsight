@@ -21,6 +21,9 @@ test.describe('Advanced Settings', () => {
 
   test('should show keys to scan setting', async ({ settingsPage }) => {
     await expect(settingsPage.keysToScanText).toBeVisible();
+    await expect(settingsPage.keysToScanValue).toBeVisible();
+
+    await settingsPage.keysToScanValue.click();
     await expect(settingsPage.keysToScanInput).toBeVisible();
   });
 

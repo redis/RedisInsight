@@ -7,8 +7,11 @@ import { DatabaseInstance } from 'e2eSrc/types';
 
 const uniqueId = faker.string.alphanumeric(6);
 const TEST_INDEX_PREFIX = `a-vs-onboard-${uniqueId}`;
-const TEST_KEY_NAME = `${TEST_INDEX_PREFIX}:key1`;
+const TEST_SELECT_KEY = `${TEST_INDEX_PREFIX}:selkey`;
+const TEST_CREATE_KEY = `${TEST_INDEX_PREFIX}:crtkey`;
 const seedIndex = IndexConfigFactory.build();
+
+test.use({ featureFlags: { vectorSearchV2: true } });
 
 /**
  * Vector Search > Select Key Onboarding
@@ -22,18 +25,21 @@ test.describe('Vector Search > Select Key Onboarding', { tag: '@serial' }, () =>
 
   test.beforeAll(async ({ apiHelper }) => {
     database = await apiHelper.createDatabase(StandaloneConfigFactory.build());
-    await apiHelper.deleteKeysByPattern(database.id, `${TEST_INDEX_PREFIX}:*`);
-    const hashKey = IndexHashKeyFactory.build({ keyName: TEST_KEY_NAME });
+    const hashKey = IndexHashKeyFactory.build({ keyName: TEST_SELECT_KEY });
     await apiHelper.createHashKey(database.id, hashKey.keyName, hashKey.fields);
   });
 
+  test.afterEach(async ({ apiHelper }) => {
+    await apiHelper.deleteIndex(database.id, seedIndex.indexName);
+  });
+
   test.afterAll(async ({ apiHelper }) => {
-    await apiHelper.deleteAllIndexes(database.id, (name) => name.includes(uniqueId) || name === seedIndex.indexName);
     await apiHelper.deleteKeysByPattern(database.id, `${TEST_INDEX_PREFIX}:*`);
     await apiHelper.deleteDatabase(database.id);
   });
 
   test.beforeEach(async ({ apiHelper, vectorSearchPage, page }) => {
+    await apiHelper.deleteIndex(database.id, seedIndex.indexName);
     await apiHelper.createIndex(database.id, seedIndex.indexName, seedIndex.prefix, seedIndex.schema);
 
     // Navigate to the app so localStorage operations target the correct origin
@@ -82,19 +88,21 @@ test.describe('Vector Search > Create Index - Onboarding', { tag: '@serial' }, (
 
   test.beforeAll(async ({ apiHelper }) => {
     database = await apiHelper.createDatabase(StandaloneConfigFactory.build());
-    await apiHelper.deleteKeysByPattern(database.id, `${TEST_INDEX_PREFIX}:*`);
-    const hashKey = IndexHashKeyFactory.build({ keyName: TEST_KEY_NAME });
+    const hashKey = IndexHashKeyFactory.build({ keyName: TEST_CREATE_KEY });
     await apiHelper.createHashKey(database.id, hashKey.keyName, hashKey.fields);
   });
 
+  test.afterEach(async ({ apiHelper }) => {
+    await apiHelper.deleteIndex(database.id, seedIndex.indexName);
+  });
+
   test.afterAll(async ({ apiHelper }) => {
-    await apiHelper.deleteAllIndexes(database.id, (name) => name.includes(uniqueId) || name === seedIndex.indexName);
     await apiHelper.deleteKeysByPattern(database.id, `${TEST_INDEX_PREFIX}:*`);
     await apiHelper.deleteDatabase(database.id);
   });
 
   test.beforeEach(async ({ page, apiHelper, vectorSearchPage }) => {
-    // Seed index
+    await apiHelper.deleteIndex(database.id, seedIndex.indexName);
     await apiHelper.createIndex(database.id, seedIndex.indexName, seedIndex.prefix, seedIndex.schema);
 
     // Navigate to the app so localStorage operations target the correct origin
@@ -110,7 +118,7 @@ test.describe('Vector Search > Create Index - Onboarding', { tag: '@serial' }, (
   test('should complete onboarding flow through all steps', async ({ vectorSearchPage }) => {
     await vectorSearchPage.goto(database.id);
     await vectorSearchPage.navigateToCreateIndex();
-    await vectorSearchPage.createIndexForm.selectKey(TEST_KEY_NAME);
+    await vectorSearchPage.createIndexForm.selectKey(TEST_CREATE_KEY);
 
     const { createIndexOnboarding } = vectorSearchPage;
     await expect(createIndexOnboarding.stepPopover('defineIndex')).toBeVisible();
@@ -127,7 +135,7 @@ test.describe('Vector Search > Create Index - Onboarding', { tag: '@serial' }, (
   test('should skip onboarding', async ({ vectorSearchPage }) => {
     await vectorSearchPage.goto(database.id);
     await vectorSearchPage.navigateToCreateIndex();
-    await vectorSearchPage.createIndexForm.selectKey(TEST_KEY_NAME);
+    await vectorSearchPage.createIndexForm.selectKey(TEST_CREATE_KEY);
 
     const { createIndexOnboarding } = vectorSearchPage;
     await expect(createIndexOnboarding.stepPopover('defineIndex')).toBeVisible();
@@ -143,7 +151,7 @@ test.describe('Vector Search > Create Index - Onboarding', { tag: '@serial' }, (
 
     await vectorSearchPage.goto(database.id);
     await vectorSearchPage.navigateToCreateIndex();
-    await vectorSearchPage.createIndexForm.selectKey(TEST_KEY_NAME);
+    await vectorSearchPage.createIndexForm.selectKey(TEST_CREATE_KEY);
 
     await expect(vectorSearchPage.createIndexForm.container).toBeVisible();
     await expect(vectorSearchPage.createIndexOnboarding.popover).not.toBeVisible();

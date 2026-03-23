@@ -12,6 +12,8 @@ const uniqueId = faker.string.alphanumeric(6);
 const TEST_INDEX_PREFIX = `test-vs-nav-${uniqueId}:`;
 const TEST_INDEX_NAME = `test-vs-nav-${uniqueId}-idx`;
 
+test.use({ featureFlags: { vectorSearchV2: true } });
+
 /**
  * Vector Search > Navigation and RQE Availability
  *

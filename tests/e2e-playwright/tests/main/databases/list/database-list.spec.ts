@@ -191,7 +191,7 @@ test.describe('Database List', () => {
 
       await databaseList.selectAll();
 
-      const totalCount = await databaseList.getVisibleRowCount();
+      const totalCount = await databaseList.getTotalCount();
       const selectedCount = await databaseList.getSelectedCount();
       expect(selectedCount).toBe(totalCount);
 

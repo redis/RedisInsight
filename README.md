@@ -71,6 +71,7 @@ If you are running Redis Insight from [Docker](https://hub.docker.com/r/redis/re
 Redis Insight supports Azure Cache for Redis with Microsoft Entra ID authentication. If your organization requires admin consent for third-party applications, see our setup guide.
 
 - [Azure Setup Guide](docs/azure-setup.md)
+- [Azure Docker Setup](docs/azure-docker-setup.md) - Configuration for Docker, custom ports, and reverse proxies
 
 ## Feedback
 

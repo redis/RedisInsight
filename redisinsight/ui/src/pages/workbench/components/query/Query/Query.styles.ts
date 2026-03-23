@@ -40,7 +40,10 @@ export const InputContainer = styled.div<ComponentPropsWithRef<'div'>>`
   width: 100%;
   border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
   background-color: ${({ theme }) =>
-    theme.semantic.color.background.neutral100};
+    theme.semantic.color.background.neutral300};
+
+  --monaco-color-bg: ${({ theme }) =>
+    theme.semantic.color.background.neutral300};
 `
 
 export const QueryFooter = styled(Row).attrs({

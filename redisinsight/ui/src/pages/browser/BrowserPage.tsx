@@ -24,6 +24,7 @@ import {
   appContextBrowser,
   setBrowserPanelSizes,
   setBrowserBulkActionOpen,
+  setBrowserKeyListDataLoaded,
   appContextSelector,
 } from 'uiSrc/slices/app/context'
 import { resetErrors } from 'uiSrc/slices/app/notifications'
@@ -33,7 +34,7 @@ import {
   connectedInstanceSelector,
 } from 'uiSrc/slices/instances/instances'
 
-import { KeyViewType } from 'uiSrc/slices/interfaces/keys'
+import { KeyViewType, SearchMode } from 'uiSrc/slices/interfaces/keys'
 import {
   SCAN_COUNT_DEFAULT,
   SCAN_TREE_COUNT_DEFAULT,
@@ -142,6 +143,7 @@ const BrowserPage = () => {
       })
       dispatch(setBrowserBulkActionOpen(isBulkActionsPanelOpenRef.current))
       dispatch(setBrowserSelectedKey(selectedKeyRef.current))
+      dispatch(setBrowserKeyListDataLoaded(SearchMode.Pattern, false))
 
       if (!selectedKeyRef.current) {
         dispatch(toggleBrowserFullScreen(false))
