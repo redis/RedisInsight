@@ -37,7 +37,10 @@ export class AzureAutodiscoveryService {
   /**
    * Maps raw error messages to user-friendly messages
    */
-  private getUserFriendlyErrorMessage(error: Error): string {
+  private getUserFriendlyErrorMessage(
+    error: Error,
+    authType: AzureAuthType,
+  ): string {
     const message = error?.message?.toLowerCase() || '';
 
     if (
@@ -45,7 +48,9 @@ export class AzureAutodiscoveryService {
       message.includes('noauth') ||
       message.includes('please check the username or password')
     ) {
-      return ERROR_MESSAGES.AZURE_ENTRA_ID_AUTH_FAILED;
+      return authType === AzureAuthType.AccessKey
+        ? ERROR_MESSAGES.AZURE_ACCESS_KEY_AUTH_FAILED
+        : ERROR_MESSAGES.AZURE_ENTRA_ID_AUTH_FAILED;
     }
 
     if (message.includes('please check the ca or client certificate')) {
@@ -612,16 +617,20 @@ export class AzureAutodiscoveryService {
           this.logger.error(
             `[${dto.id}] Failed to add database: ${error.message}`,
           );
+          const userFriendlyMessage = this.getUserFriendlyErrorMessage(
+            error,
+            selectedAuthType,
+          );
           this.analytics.sendAzureDatabaseAddFailed(
             sessionMetadata,
-            new BadRequestException(this.getUserFriendlyErrorMessage(error)),
+            new BadRequestException(userFriendlyMessage),
             database?.type,
             selectedAuthType,
           );
           return {
             id: dto.id,
             status: ActionStatus.Fail,
-            message: this.getUserFriendlyErrorMessage(error),
+            message: userFriendlyMessage,
           };
         }
       }),

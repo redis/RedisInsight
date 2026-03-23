@@ -12,7 +12,7 @@ import {
   AzureProviderDetails,
   isAzureProviderDetails,
 } from 'src/modules/database/models/provider-details';
-import { AzureAuthType } from 'src/modules/azure/constants';
+import { AzureAuthType, AzureRedisType } from 'src/modules/azure/constants';
 import { AzureAutodiscoveryService } from 'src/modules/azure/autodiscovery/azure-autodiscovery.service';
 import { ICredentialStrategy } from '../credential-strategy.provider';
 
@@ -66,6 +66,19 @@ export class AzureAccessKeyCredentialStrategy implements ICredentialStrategy {
       );
       throw new BadRequestException(
         'Missing Azure resource information. Please remove this database and re-add it through Azure autodiscovery.',
+      );
+    }
+
+    // Enterprise Redis requires clusterName to construct the correct API URL
+    if (
+      providerDetails.resourceType === AzureRedisType.Enterprise &&
+      !providerDetails.clusterName
+    ) {
+      this.logger.warn(
+        `Database ${database.id} is Enterprise Redis but missing clusterName`,
+      );
+      throw new BadRequestException(
+        'Missing cluster name for Enterprise Redis. Please remove this database and re-add it through Azure autodiscovery.',
       );
     }
 
