@@ -1,0 +1,125 @@
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
+import { plainToInstance } from 'class-transformer';
+import { Database } from 'src/modules/database/models/database';
+import {
+  AzureProviderDetails,
+  CloudProvider,
+} from 'src/modules/database/models/provider-details';
+import { AzureAuthType } from 'src/modules/azure/constants';
+import { AzureAutodiscoveryService } from 'src/modules/azure/autodiscovery/azure-autodiscovery.service';
+import { ICredentialStrategy } from '../credential-strategy.provider';
+
+@Injectable()
+export class AzureAccessKeyCredentialStrategy implements ICredentialStrategy {
+  private readonly logger = new Logger(AzureAccessKeyCredentialStrategy.name);
+
+  private autodiscoveryService: AzureAutodiscoveryService;
+
+  // Use ModuleRef for lazy injection to avoid circular dependency
+  // AzureModule imports DatabaseModule, and CredentialsModule needs AzureAutodiscoveryService
+  constructor(private readonly moduleRef: ModuleRef) {}
+
+  private getAutodiscoveryService(): AzureAutodiscoveryService {
+    if (!this.autodiscoveryService) {
+      this.autodiscoveryService = this.moduleRef.get(
+        AzureAutodiscoveryService,
+        { strict: false },
+      );
+    }
+    return this.autodiscoveryService;
+  }
+
+  static isAzureProviderDetails(
+    details: AzureProviderDetails | null | undefined,
+  ): details is AzureProviderDetails {
+    if (!details) return false;
+    return (
+      'provider' in details &&
+      details.provider === CloudProvider.Azure &&
+      'authType' in details
+    );
+  }
+
+  static isAzureAccessKeyAuth(
+    details: AzureProviderDetails | null | undefined,
+  ): boolean {
+    return (
+      AzureAccessKeyCredentialStrategy.isAzureProviderDetails(details) &&
+      details.authType === AzureAuthType.AccessKey
+    );
+  }
+
+  canHandle(database: Database): boolean {
+    return AzureAccessKeyCredentialStrategy.isAzureAccessKeyAuth(
+      database.providerDetails,
+    );
+  }
+
+  async resolve(database: Database): Promise<Database> {
+    const { providerDetails } = database;
+
+    // Validate required fields for Access Key auth
+    if (!providerDetails?.azureAccountId) {
+      this.logger.warn(
+        `Database ${database.id} has Access Key auth but no azureAccountId`,
+      );
+      throw new BadRequestException(
+        'Azure account not found. Please remove this database and re-add it through Azure autodiscovery.',
+      );
+    }
+
+    if (
+      !providerDetails?.subscriptionId ||
+      !providerDetails?.resourceGroup ||
+      !providerDetails?.resourceName ||
+      !providerDetails?.resourceType
+    ) {
+      this.logger.warn(
+        `Database ${database.id} is missing Azure resource information`,
+      );
+      throw new BadRequestException(
+        'Missing Azure resource information. Please remove this database and re-add it through Azure autodiscovery.',
+      );
+    }
+
+    try {
+      const accessKey = await this.getAutodiscoveryService().getAccessKey(
+        providerDetails.azureAccountId,
+        providerDetails.subscriptionId,
+        providerDetails.resourceGroup,
+        providerDetails.resourceName,
+        providerDetails.resourceType,
+        providerDetails.clusterName,
+      );
+
+      // Use plainToInstance to ensure the result is a proper Database class instance
+      // For Access Key auth, use 'default' as username (standard Redis default user)
+      return plainToInstance(
+        Database,
+        {
+          ...database,
+          username: 'default',
+          password: accessKey,
+        },
+        { groups: ['security'] },
+      );
+    } catch (error) {
+      if (error?.response?.status === 403) {
+        this.logger.warn(
+          `Insufficient permissions to retrieve Access Key for database ${database.id}`,
+        );
+        throw new ForbiddenException(
+          'Insufficient permissions to retrieve Access Key. ' +
+            'Please use Entra ID authentication or request "Redis Cache Contributor" role.',
+        );
+      }
+      throw error;
+    }
+  }
+}
