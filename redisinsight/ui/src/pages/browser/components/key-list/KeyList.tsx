@@ -109,6 +109,7 @@ const KeyList = forwardRef((props: Props, ref) => {
   const itemsRef = useRef(keysState.keys)
   const sortedColumnRef = useRef(sortedColumn)
   const renderedRowsIndexesRef = useRef({ startIndex: 0, lastIndex: 0 })
+  const sortedColumnMountedRef = useRef(false)
 
   const dispatch = useDispatch()
 
@@ -156,6 +157,15 @@ const KeyList = forwardRef((props: Props, ref) => {
 
   useEffect(() => {
     sortedColumnRef.current = sortedColumn
+
+    // Skip on initial mount — the keysState.keys effect already handles the
+    // first render. Running here on mount when sortedColumn is null would
+    // cancel in-flight metadata requests and, more critically, reset the stored
+    // scroll position to 0, breaking scroll restoration on re-mount.
+    if (!sortedColumnMountedRef.current) {
+      sortedColumnMountedRef.current = true
+      return
+    }
 
     if (itemsRef.current.length === 0) return
 

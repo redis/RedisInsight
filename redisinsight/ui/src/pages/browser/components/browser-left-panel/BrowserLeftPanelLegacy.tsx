@@ -202,7 +202,6 @@ const BrowserLeftPanelLegacy = (props: Props) => {
           onDelete={onDeleteKey}
           onAddKeyPanel={handleAddKeyPanel}
           sortedColumn={sortedColumn}
-          onChangeSorting={handleChangeSorting}
         />
       )}
       {viewType === KeyViewType.Tree && !keysError && (
