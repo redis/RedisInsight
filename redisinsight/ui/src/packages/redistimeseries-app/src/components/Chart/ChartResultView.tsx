@@ -1,6 +1,4 @@
 import React, { useMemo, useState } from 'react'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore - local workspace package resolved by Vite at build time
 import { setState as setPluginState } from 'redisinsight-plugin-sdk'
 import {
   AxisScale,

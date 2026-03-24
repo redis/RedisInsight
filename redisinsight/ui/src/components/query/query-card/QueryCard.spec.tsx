@@ -4,6 +4,7 @@ import { instance, mock } from 'ts-mockito'
 import { ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 import { cleanup, fireEvent, mockedStore, render } from 'uiSrc/utils/test-utils'
 import { CommandExecutionStatus } from 'uiSrc/slices/interfaces/cli'
+import { appPluginsSelector } from 'uiSrc/slices/app/plugins'
 import {
   getWbTsResultPreferences,
   setWbTsResultPreferences,
@@ -47,6 +48,9 @@ jest.mock('uiSrc/slices/app/plugins', () => ({
     visualizations: [],
   }),
 }))
+
+const mockAppPluginsSelector = appPluginsSelector as jest.Mock
+const mockGetWbTsResultPreferences = getWbTsResultPreferences as jest.Mock
 
 const renderQueryCardComponent = (props: Partial<Props> = {}) => {
   return render(
@@ -227,9 +231,7 @@ describe('QueryCard', () => {
     }
 
     const setupTsVisualization = () => {
-      // eslint-disable-next-line global-require
-      const { appPluginsSelector } = require('uiSrc/slices/app/plugins')
-      ;(appPluginsSelector as jest.Mock).mockReturnValue({
+      mockAppPluginsSelector.mockReturnValue({
         visualizations: [tsVisualization],
         staticPath: '/static',
       })
@@ -239,12 +241,10 @@ describe('QueryCard', () => {
     }
 
     afterEach(() => {
-      // eslint-disable-next-line global-require
-      const { appPluginsSelector } = require('uiSrc/slices/app/plugins')
-      ;(appPluginsSelector as jest.Mock).mockReturnValue({
+      mockAppPluginsSelector.mockReturnValue({
         visualizations: [],
       })
-      ;(getWbTsResultPreferences as jest.Mock).mockReturnValue(undefined)
+      mockGetWbTsResultPreferences.mockReturnValue(undefined)
     })
 
     it('should not persist view for non-TimeSeries commands', () => {
@@ -258,7 +258,7 @@ describe('QueryCard', () => {
 
     it('should display text result when persisted preference is text', () => {
       setupTsVisualization()
-      ;(getWbTsResultPreferences as jest.Mock).mockReturnValue({
+      mockGetWbTsResultPreferences.mockReturnValue({
         selectedView: 'text',
       })
 
@@ -274,7 +274,7 @@ describe('QueryCard', () => {
 
     it('should display plugin view when persisted preference is plugin', () => {
       setupTsVisualization()
-      ;(getWbTsResultPreferences as jest.Mock).mockReturnValue({
+      mockGetWbTsResultPreferences.mockReturnValue({
         selectedView: 'plugin:redistimeseries-chart',
       })
 
