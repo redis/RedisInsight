@@ -643,6 +643,63 @@ describe('KeyList', () => {
       expect(keyNames[2]).toBe('key-key2')
     })
 
+    it('should maintain sort order when metadata loads asynchronously', async () => {
+      // Keys have no type/size/length so metadata fetch is triggered
+      const keys = [
+        {
+          name: {
+            data: Buffer.from('key1'),
+            type: RedisResponseBufferType.Buffer,
+          },
+          nameString: 'key1',
+        },
+        {
+          name: {
+            data: Buffer.from('key2'),
+            type: RedisResponseBufferType.Buffer,
+          },
+          nameString: 'key2',
+        },
+        {
+          name: {
+            data: Buffer.from('key3'),
+            type: RedisResponseBufferType.Buffer,
+          },
+          nameString: 'key3',
+        },
+      ]
+
+      // API returns sizes in a non-sorted order: key1=300, key2=100, key3=200
+      const apiServiceMock = jest.fn().mockResolvedValue({
+        data: [
+          { ...keys[0], type: 'hash', ttl: -1, size: 300 },
+          { ...keys[1], type: 'hash', ttl: -1, size: 100 },
+          { ...keys[2], type: 'hash', ttl: -1, size: 200 },
+        ],
+      })
+      apiService.post = apiServiceMock
+
+      const { container } = render(
+        <KeyList
+          {...propsMock}
+          keysState={{ ...propsMock.keysState, keys: keys as any }}
+          sortedColumn={{ column: 'size', order: SortOrder.ASC }}
+        />,
+      )
+
+      await waitFor(
+        () => {
+          expect(apiServiceMock).toHaveBeenCalled()
+          const keyNames = getKeyNamesInOrder(container)
+          // After metadata arrives, applySort should re-run: key2(100) < key3(200) < key1(300)
+          expect(keyNames[0]).toBe('key-key2')
+          expect(keyNames[1]).toBe('key-key3')
+          expect(keyNames[2]).toBe('key-key1')
+        },
+        { timeout: 500 },
+      )
+    })
+
     it('should re-fetch metadata when sortedColumn changes', async () => {
       const apiServiceMock = jest
         .fn()

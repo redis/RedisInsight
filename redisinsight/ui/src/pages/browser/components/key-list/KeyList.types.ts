@@ -1,4 +1,4 @@
-import { BrowserColumns, KeyTypes, SortOrder } from 'uiSrc/constants'
+import { BrowserColumns, KeyTypes } from 'uiSrc/constants'
 import { IKeyPropTypes } from 'uiSrc/constants/prop-types/keys'
 import { KeysStoreData } from 'uiSrc/slices/interfaces/keys'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
@@ -20,5 +20,4 @@ export interface Props {
   commonFilterType: Nullable<KeyTypes>
   onAddKeyPanel: (value: boolean) => void
   sortedColumn?: ISortedColumn | null
-  onChangeSorting?: (column: string | null, order: SortOrder | null) => void
 }

@@ -107,6 +107,7 @@ const KeyList = forwardRef((props: Props, ref) => {
 
   const controller = useRef<Nullable<AbortController>>(null)
   const itemsRef = useRef(keysState.keys)
+  const sortedColumnRef = useRef(sortedColumn)
   const renderedRowsIndexesRef = useRef({ startIndex: 0, lastIndex: 0 })
 
   const dispatch = useDispatch()
@@ -154,6 +155,8 @@ const KeyList = forwardRef((props: Props, ref) => {
   }, [keysState.keys])
 
   useEffect(() => {
+    sortedColumnRef.current = sortedColumn
+
     if (itemsRef.current.length === 0) return
 
     if (sortedColumn) {
@@ -400,6 +403,10 @@ const KeyList = forwardRef((props: Props, ref) => {
   ) => {
     const items = loadedItems.map(formatItem)
     itemsRef.current.splice(startIndex, items.length, ...items)
+
+    if (sortedColumnRef.current) {
+      itemsRef.current = applySort(itemsRef.current, sortedColumnRef.current)
+    }
 
     rerender({})
   }
