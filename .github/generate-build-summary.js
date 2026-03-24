@@ -65,10 +65,13 @@ async function generateBuildSummary() {
         name: 'Redis Insight for Linux (x64 snap)',
         category: Categories.Linux,
       },
-      'Redis-Insight-linux-arm64.snap': {
-        name: 'Redis Insight for Linux (arm64 snap)',
-        category: Categories.Linux,
-      },
+      // TODO: arm64 snap disabled — no arm64 snap template in electron-builder
+      // https://github.com/electron-userland/electron-builder/issues/8167
+      // https://github.com/electron-userland/electron-builder-binaries/releases/tag/snap-template-4.0-2
+      // 'Redis-Insight-linux-arm64.snap': {
+      //   name: 'Redis Insight for Linux (arm64 snap)',
+      //   category: Categories.Linux,
+      // },
       'Redis-Insight-linux-x86_64.rpm': {
         name: 'Redis Insight for Linux (x64 rpm)',
         category: Categories.Linux,

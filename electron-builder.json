@@ -111,7 +111,7 @@
       },
       {
         "target": "snap",
-        "arch": ["x64", "arm64"]
+        "arch": ["x64"]
       }
     ],
     "synopsis": "Redis GUI by Redis Ltd.",

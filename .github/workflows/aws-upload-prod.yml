@@ -172,11 +172,14 @@ jobs:
             [objectDownload]=${appFileName}'-linux-aarch64.rpm'
           )
 
-          declare -A tag10=(
-            [arch]='arm64'
-            [platform]='linux_snap'
-            [objectDownload]=${appFileName}'-linux-arm64.snap'
-          )
+          # TODO: arm64 snap disabled — no arm64 snap template in electron-builder
+          # https://github.com/electron-userland/electron-builder/issues/8167
+          # https://github.com/electron-userland/electron-builder-binaries/releases/tag/snap-template-4.0-2
+          # declare -A tag10=(
+          #   [arch]='arm64'
+          #   [platform]='linux_snap'
+          #   [objectDownload]=${appFileName}'-linux-arm64.snap'
+          # )
 
           # loop for add all tags to each app and create metrics
           declare -n tag

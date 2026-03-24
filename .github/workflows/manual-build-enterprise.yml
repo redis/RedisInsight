@@ -61,10 +61,13 @@ on:
         type: boolean
         required: false
 
-      build_linux_snap_arm64:
-        description: Build Linux snap arm64
-        type: boolean
-        required: false
+      # TODO: arm64 snap disabled — no arm64 snap template in electron-builder
+      # https://github.com/electron-userland/electron-builder/issues/8167
+      # https://github.com/electron-userland/electron-builder-binaries/releases/tag/snap-template-4.0-2
+      # build_linux_snap_arm64:
+      #   description: Build Linux snap arm64
+      #   type: boolean
+      #   required: false
 
       environment:
         description: Environment to run build

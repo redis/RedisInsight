@@ -57,7 +57,10 @@ jobs:
       matrix:
         snapcraft_file_name:
           - Redis-Insight-linux-amd64.snap
-          - Redis-Insight-linux-arm64.snap
+          # TODO: arm64 snap disabled — no arm64 snap template in electron-builder
+          # https://github.com/electron-userland/electron-builder/issues/8167
+          # https://github.com/electron-userland/electron-builder-binaries/releases/tag/snap-template-4.0-2
+          # - Redis-Insight-linux-arm64.snap
     env:
       SNAPCRAFT_FILE_NAME: ${{ matrix.snapcraft_file_name }}
       SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
