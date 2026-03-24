@@ -173,14 +173,6 @@ export class SettingsPage extends BasePage {
   }
 
   /**
-   * Check if usage data (analytics) is enabled
-   */
-  async isUsageDataEnabled(): Promise<boolean> {
-    const checked = await this.usageDataSwitch.getAttribute('aria-checked');
-    return checked === 'true';
-  }
-
-  /**
    * Toggle usage data switch and wait for the settings PATCH to complete
    */
   async toggleUsageData(): Promise<void> {
@@ -197,9 +189,9 @@ export class SettingsPage extends BasePage {
    */
   async interceptTelemetryRequests(): Promise<string[]> {
     const urls: string[] = [];
-    await this.page.route('**/analytics/send-*', (route) => {
+    await this.page.route('**/analytics/send-*', async (route) => {
       urls.push(route.request().url());
-      route.fulfill({ status: 204 });
+      await route.fulfill({ status: 204 });
     });
     return urls;
   }
