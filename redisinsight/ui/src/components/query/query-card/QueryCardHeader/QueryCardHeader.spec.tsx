@@ -240,4 +240,17 @@ describe('QueryCardHeader', () => {
     expect(mockOnQueryDelete).toHaveBeenCalled()
     // Should not throw when telemetry callbacks are undefined
   })
+
+  it('should render view-type when external plugins are present', () => {
+    expect(() =>
+      renderQueryCardHeaderComponent({
+        ...instance(mockedProps),
+        query: 'FT.SEARCH idx *',
+        isOpen: true,
+        selectedValue: 'default__Text',
+      }),
+    ).not.toThrow()
+
+    expect(screen.getByTestId('select-view-type')).toBeInTheDocument()
+  })
 })
