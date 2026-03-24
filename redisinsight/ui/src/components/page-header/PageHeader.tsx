@@ -75,7 +75,7 @@ const PageHeader = (props: Props) => {
                 <CopilotTrigger />
               </FlexItem>
             )}
-            <FlexItem grow>
+            <FlexItem>
               <InsightsTrigger source="home page" />
             </FlexItem>
             <FeatureFlagComponent
