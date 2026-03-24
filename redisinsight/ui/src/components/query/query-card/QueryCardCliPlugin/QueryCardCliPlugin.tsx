@@ -103,7 +103,6 @@ const QueryCardCliPlugin = (props: Props) => {
         payload.initialPreferences = { chartConfig: prefs.chartConfig }
       }
     }
-
     sendMessageToPlugin({
       event: 'executeCommand',
       method,

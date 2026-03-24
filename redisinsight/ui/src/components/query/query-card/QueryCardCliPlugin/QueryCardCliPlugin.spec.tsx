@@ -290,7 +290,7 @@ describe('QueryCardCliPlugin', () => {
         visualizations: [
           {
             id: 'redistimeseries-chart',
-            uniqId: 'redistimeseries-chart',
+            uniqId: 'redistimeseries__redistimeseries-chart',
             name: 'Chart',
             plugin: { name: 'redistimeseries' },
             activationMethod: 'renderChart',
@@ -322,7 +322,7 @@ describe('QueryCardCliPlugin', () => {
       render(
         <QueryCardCliPlugin
           {...instance(mockedProps)}
-          id="redistimeseries-chart"
+          id="redistimeseries__redistimeseries-chart"
           commandId="300"
         />,
       )
@@ -338,7 +338,7 @@ describe('QueryCardCliPlugin', () => {
         visualizations: [
           {
             id: 'redistimeseries-chart',
-            uniqId: 'redistimeseries-chart',
+            uniqId: 'redistimeseries__redistimeseries-chart',
             name: 'Chart',
             plugin: {
               name: 'redistimeseries',
@@ -375,7 +375,7 @@ describe('QueryCardCliPlugin', () => {
       render(
         <QueryCardCliPlugin
           {...instance(mockedProps)}
-          id="redistimeseries-chart"
+          id="redistimeseries__redistimeseries-chart"
           commandId="500"
           result={[{ response: 'data', status: 'success' }] as any}
           query="TS.RANGE key - +"

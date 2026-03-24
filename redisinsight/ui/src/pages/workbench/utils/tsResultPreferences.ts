@@ -19,7 +19,9 @@ const VALID_MODES = ['line', 'points'] as const
 const VALID_TIME_UNITS = ['seconds', 'milliseconds'] as const
 const VALID_SELECTED_VIEWS = ['text', 'plugin:redistimeseries-chart'] as const
 
-const REDISTIMESERIES_CHART_ID = 'redistimeseries-chart'
+const REDISTIMESERIES_PLUGIN_NAME = 'redistimeseries'
+const REDISTIMESERIES_VIEW_ID = 'redistimeseries-chart'
+const REDISTIMESERIES_CHART_ID = `${REDISTIMESERIES_PLUGIN_NAME}__${REDISTIMESERIES_VIEW_ID}`
 
 const isValidMode = (v: unknown): v is PersistedTsChartConfig['mode'] =>
   VALID_MODES.includes(v as any)

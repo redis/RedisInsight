@@ -212,7 +212,7 @@ describe('QueryCard', () => {
   describe('TimeSeries view persistence', () => {
     const tsVisualization = {
       id: 'redistimeseries-chart',
-      uniqId: 'redistimeseries-chart',
+      uniqId: 'redistimeseries__redistimeseries-chart',
       name: 'Chart',
       plugin: {
         name: 'redistimeseries',

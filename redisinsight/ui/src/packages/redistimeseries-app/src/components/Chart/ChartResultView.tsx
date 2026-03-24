@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore - local workspace package resolved by Vite at build time
 import { setState as setPluginState } from 'redisinsight-plugin-sdk'
@@ -25,7 +25,7 @@ interface ChartResultViewProps {
   initialChartConfig?: PersistedTsChartConfig
 }
 
-const PERSISTED_FIELDS = ['mode', 'timeUnit', 'staircase', 'fill'] as const
+const PERSISTED_CONTROLS = new Set(['mode', 'timeUnit', 'staircase', 'fill'])
 
 const extractPersistedSubset = (config: ChartConfig): PersistedTsChartConfig => ({
   mode: config.mode,
@@ -33,10 +33,6 @@ const extractPersistedSubset = (config: ChartConfig): PersistedTsChartConfig => 
   staircase: config.staircase,
   fill: config.fill,
 })
-
-const emitPersistedState = (config: ChartConfig) => {
-  setPluginState(extractPersistedSubset(config)).catch(() => {})
-}
 
 export default function ChartResultView(props: ChartResultViewProps) {
   const { initialChartConfig } = props
@@ -73,23 +69,12 @@ export default function ChartResultView(props: ChartResultViewProps) {
     LAYOUT_STATE.INITIAL_STATE,
   )
 
-  const prevPersistedRef = useRef(extractPersistedSubset(chartConfig))
-
-  const emitIfPersistedChanged = useCallback((next: ChartConfig) => {
-    const nextSubset = extractPersistedSubset(next)
-    const prev = prevPersistedRef.current
-
-    const changed = PERSISTED_FIELDS.some((f) => nextSubset[f] !== prev[f])
-    if (changed) {
-      prevPersistedRef.current = nextSubset
-      emitPersistedState(next)
-    }
-  }, [])
-
   function handleChartConfigChanged(control: string, value: any) {
     const next = { ...chartConfig, [control]: value }
     setChartConfig(next)
-    emitIfPersistedChanged(next)
+    if (PERSISTED_CONTROLS.has(control)) {
+      setPluginState(extractPersistedSubset(next)).catch(() => {})
+    }
     if (chartState !== LAYOUT_STATE.INITIAL_STATE) {
       setChartState(LAYOUT_STATE.INITIAL_STATE)
     }

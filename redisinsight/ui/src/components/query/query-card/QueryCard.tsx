@@ -152,16 +152,19 @@ const QueryCard = (props: Props) => {
   const [queryType, setQueryType] = useState<WBQueryType>(
     getWBQueryType(command, visualizations),
   )
-  const initialView = resolveInitialView(visualizations, command, instanceId)
-  const [viewTypeSelected, setViewTypeSelected] = useState<WBQueryType>(
-    initialView?.viewType ?? getWBQueryType(command, visualizations),
-  )
+  const [viewTypeSelected, setViewTypeSelected] = useState<WBQueryType>(() => {
+    const iv = resolveInitialView(visualizations, command, instanceId)
+    return iv?.viewType ?? getWBQueryType(command, visualizations)
+  })
   const [message, setMessage] = useState<string>('')
-  const [selectedViewValue, setSelectedViewValue] = useState<string>(
-    initialView?.selectedValue ??
+  const [selectedViewValue, setSelectedViewValue] = useState<string>(() => {
+    const iv = resolveInitialView(visualizations, command, instanceId)
+    return (
+      iv?.selectedValue ??
       getDefaultPlugin(visualizations, command || '') ??
-      queryType,
-  )
+      getWBQueryType(command, visualizations)
+    )
+  })
 
   const { telemetry } = useQueryResultsContext()
 
