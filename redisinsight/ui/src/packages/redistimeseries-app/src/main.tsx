@@ -3,6 +3,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import { ThemeProvider } from 'uiSrc/components/base/utils/pluginsThemeContext'
 import App from './App'
+import { PersistedTsChartConfig } from './components/Chart/interfaces'
 
 import './styles/styles.scss'
 import result from '../mockData/resultTimeSeries.json'
@@ -10,13 +11,16 @@ import result from '../mockData/resultTimeSeries.json'
 interface Props {
   command?: string
   data?: { response: any; status: string }[]
+  initialPreferences?: {
+    chartConfig?: PersistedTsChartConfig
+  }
 }
 
 const renderChart = (props: Props) => {
-  const { command = '', data: result = [] } = props
+  const { command = '', data: result = [], initialPreferences } = props
   render(
     <ThemeProvider>
-      <App command={command} result={result} />
+      <App command={command} result={result} initialPreferences={initialPreferences} />
     </ThemeProvider>,
     document.getElementById('app'),
   )

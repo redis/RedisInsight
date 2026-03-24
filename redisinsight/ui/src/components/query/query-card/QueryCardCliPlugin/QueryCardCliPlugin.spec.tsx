@@ -6,10 +6,12 @@ import { pluginApi } from 'uiSrc/services/PluginAPI'
 import { cleanup, mockedStore, render } from 'uiSrc/utils/test-utils'
 import { formatToText, replaceEmptyValue } from 'uiSrc/utils'
 import {
+  appPluginsSelector,
   sendPluginCommandAction,
   getPluginStateAction,
   setPluginStateAction,
 } from 'uiSrc/slices/app/plugins'
+import * as tsResultPreferences from 'uiSrc/pages/workbench/utils/tsResultPreferences'
 import QueryCardCliPlugin, { Props } from './QueryCardCliPlugin'
 
 const mockedProps = mock<Props>()
@@ -53,6 +55,20 @@ jest.mock('uiSrc/services', () => ({
     get: jest.fn(),
   },
 }))
+
+jest.mock('uiSrc/pages/workbench/utils/tsResultPreferences', () => ({
+  ...jest.requireActual('uiSrc/pages/workbench/utils/tsResultPreferences'),
+  getWbTsResultPreferences: jest.fn().mockReturnValue(undefined),
+  mergeWbTsChartPreferences: jest.fn(),
+}))
+
+const mockAppPluginsSelector = appPluginsSelector as jest.Mock
+const mockPluginApiOnEvent = pluginApi.onEvent as jest.Mock
+const mockSetPluginStateAction = setPluginStateAction as jest.Mock
+const mockGetWbTsResultPreferences =
+  tsResultPreferences.getWbTsResultPreferences as jest.Mock
+const mockMergeWbTsChartPreferences =
+  tsResultPreferences.mergeWbTsChartPreferences as jest.Mock
 
 let store: typeof mockedStore
 beforeEach(() => {
@@ -258,5 +274,153 @@ describe('QueryCardCliPlugin', () => {
     render(<QueryCardCliPlugin {...instance(mockedProps)} id="1" />)
 
     expect(replaceEmptyValueMock).toBeCalledWith([])
+  })
+
+  describe('TimeSeries dual-write', () => {
+    afterEach(() => {
+      mockAppPluginsSelector.mockReturnValue({
+        visualizations: [
+          {
+            id: '1',
+            uniqId: '1',
+            name: 'test',
+            plugin: '',
+            activationMethod: 'render',
+            matchCommands: ['*'],
+          },
+        ],
+      })
+    })
+
+    it('should call mergeWbTsChartPreferences on setState for redistimeseries-chart', () => {
+      mockAppPluginsSelector.mockReturnValue({
+        visualizations: [
+          {
+            id: 'redistimeseries-chart',
+            uniqId: 'redistimeseries__redistimeseries-chart',
+            name: 'Chart',
+            plugin: { name: 'redistimeseries' },
+            activationMethod: 'renderChart',
+            matchCommands: ['TS.RANGE'],
+            default: true,
+          },
+        ],
+      })
+
+      const setStateMock = jest.fn().mockImplementation(() => jest.fn())
+      mockSetPluginStateAction.mockImplementation(setStateMock)
+
+      const mockState = { mode: 'points', fill: false }
+      const onEventMock = jest
+        .fn()
+        .mockImplementation(
+          (_iframeId: string, event: string, callback: (data: any) => void) => {
+            if (event === PluginEvents.setState) {
+              callback({ requestId: 5, state: mockState })
+            }
+          },
+        )
+      mockPluginApiOnEvent.mockImplementation(onEventMock)
+
+      render(
+        <QueryCardCliPlugin
+          {...instance(mockedProps)}
+          id="redistimeseries__redistimeseries-chart"
+          commandId="300"
+        />,
+      )
+
+      expect(mockMergeWbTsChartPreferences).toHaveBeenCalledWith(
+        'instanceId',
+        mockState,
+      )
+    })
+
+    it('should inject initialPreferences into executeCommand payload for TS plugin', () => {
+      mockAppPluginsSelector.mockReturnValue({
+        visualizations: [
+          {
+            id: 'redistimeseries-chart',
+            uniqId: 'redistimeseries__redistimeseries-chart',
+            name: 'Chart',
+            plugin: {
+              name: 'redistimeseries',
+              baseUrl: '/plugins/redistimeseries',
+              scriptSrc: '/plugins/redistimeseries/index.js',
+              stylesSrc: '/plugins/redistimeseries/styles.css',
+            },
+            activationMethod: 'renderChart',
+            matchCommands: ['TS.RANGE'],
+            default: true,
+          },
+        ],
+        staticPath: '/static',
+      })
+
+      const chartConfig = { mode: 'points' as const, fill: false }
+      mockGetWbTsResultPreferences.mockReturnValue({
+        selectedView: 'plugin:redistimeseries-chart' as const,
+        chartConfig,
+      })
+
+      const createEventSpy = jest.spyOn(document, 'createEvent')
+
+      mockPluginApiOnEvent.mockImplementation(
+        (_iframeId: string, event: string, callback: (data?: any) => void) => {
+          if (event === PluginEvents.loaded) {
+            callback()
+          }
+        },
+      )
+
+      render(
+        <QueryCardCliPlugin
+          {...instance(mockedProps)}
+          id="redistimeseries__redistimeseries-chart"
+          commandId="500"
+          result={[{ response: 'data', status: 'success' }] as any}
+          query="TS.RANGE key - +"
+        />,
+      )
+
+      const executeCommandEvent = createEventSpy.mock.results.find(
+        (r) => r.value?.data?.event === 'executeCommand',
+      )
+
+      expect(executeCommandEvent).toBeDefined()
+      expect(executeCommandEvent!.value.data.data.initialPreferences).toEqual({
+        chartConfig,
+      })
+
+      createEventSpy.mockRestore()
+    })
+
+    it('should not call mergeWbTsChartPreferences for non-TimeSeries plugin', () => {
+      mockMergeWbTsChartPreferences.mockClear()
+
+      const setStateMock = jest.fn().mockImplementation(() => jest.fn())
+      mockSetPluginStateAction.mockImplementation(setStateMock)
+
+      const onEventMock = jest
+        .fn()
+        .mockImplementation(
+          (_iframeId: string, event: string, callback: (data: any) => void) => {
+            if (event === PluginEvents.setState) {
+              callback({ requestId: 5, state: { some: 'state' } })
+            }
+          },
+        )
+      mockPluginApiOnEvent.mockImplementation(onEventMock)
+
+      render(
+        <QueryCardCliPlugin
+          {...instance(mockedProps)}
+          id="1"
+          commandId="300"
+        />,
+      )
+
+      expect(mockMergeWbTsChartPreferences).not.toHaveBeenCalled()
+    })
   })
 })

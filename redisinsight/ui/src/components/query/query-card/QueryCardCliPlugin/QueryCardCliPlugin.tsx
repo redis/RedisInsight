@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import { v4 as uuidv4 } from 'uuid'
+import { useParams } from 'react-router-dom'
 import { pluginApi } from 'uiSrc/services/PluginAPI'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import {
@@ -27,6 +28,11 @@ import {
 } from 'uiSrc/slices/app/plugins'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { appServerInfoSelector } from 'uiSrc/slices/app/info'
+import {
+  getWbTsResultPreferences,
+  isRedisTimeSeriesVisualization,
+  mergeWbTsChartPreferences,
+} from 'uiSrc/pages/workbench/utils/tsResultPreferences'
 
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { ColorText } from 'uiSrc/components/base/text'
@@ -67,6 +73,7 @@ const QueryCardCliPlugin = (props: Props) => {
   const { visualizations = [], staticPath } = useSelector(appPluginsSelector)
   const { modules = [] } = useSelector(connectedInstanceSelector)
   const serverInfo = useSelector(appServerInfoSelector)
+  const { instanceId = '' } = useParams<{ instanceId: string }>()
 
   const [currentView, setCurrentView] = useState<Nullable<any>>(null)
   const [currentPlugin, setCurrentPlugin] = useState<Nullable<string>>(null)
@@ -88,10 +95,18 @@ const QueryCardCliPlugin = (props: Props) => {
   }
 
   const executeCommand = (method: string) => {
+    const payload: Record<string, any> = { command: query, data: result, mode }
+
+    if (isRedisTimeSeriesVisualization(id)) {
+      const prefs = getWbTsResultPreferences(instanceId)
+      if (prefs?.chartConfig) {
+        payload.initialPreferences = { chartConfig: prefs.chartConfig }
+      }
+    }
     sendMessageToPlugin({
       event: 'executeCommand',
       method,
-      data: { command: query, data: result, mode },
+      data: payload,
     })
   }
 
@@ -165,6 +180,11 @@ const QueryCardCliPlugin = (props: Props) => {
       event: PluginEvents.setState,
       requestId,
     }
+
+    if (isRedisTimeSeriesVisualization(id) && state) {
+      mergeWbTsChartPreferences(instanceId, state)
+    }
+
     dispatch(
       setPluginStateAction({
         visualizationId: id,
