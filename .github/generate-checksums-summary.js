@@ -16,6 +16,8 @@ const fileMappings = {
   'Redis-Insight-linux-arm64.deb': 'Linux Debian (arm64)',
   'Redis-Insight-linux-x86_64.rpm': 'Linux RPM (x64)',
   'Redis-Insight-linux-aarch64.rpm': 'Linux RPM (arm64)',
+  'Redis-Insight-linux-amd64.snap': 'Linux Snap (x64)',
+  'Redis-Insight-linux-arm64.snap': 'Linux Snap (arm64)',
   'Redis-Insight-mac-x64.dmg': 'MacOS Intel',
   'Redis-Insight-mac-arm64.dmg': 'MacOS Apple silicon',
 };
