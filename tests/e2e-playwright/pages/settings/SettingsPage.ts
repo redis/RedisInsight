@@ -173,6 +173,38 @@ export class SettingsPage extends BasePage {
   }
 
   /**
+   * Check if usage data (analytics) is enabled
+   */
+  async isUsageDataEnabled(): Promise<boolean> {
+    const checked = await this.usageDataSwitch.getAttribute('aria-checked');
+    return checked === 'true';
+  }
+
+  /**
+   * Toggle usage data switch and wait for the settings PATCH to complete
+   */
+  async toggleUsageData(): Promise<void> {
+    await Promise.all([
+      this.page.waitForResponse((resp) => resp.url().includes('/api/settings') && resp.request().method() === 'PATCH'),
+      this.usageDataSwitch.click(),
+    ]);
+  }
+
+  /**
+   * Set up route interception for telemetry requests (send-event, send-page).
+   * Returns an array that accumulates intercepted request URLs.
+   * Intercepted requests are fulfilled with 204 to prevent real telemetry.
+   */
+  async interceptTelemetryRequests(): Promise<string[]> {
+    const urls: string[] = [];
+    await this.page.route('**/analytics/send-*', (route) => {
+      urls.push(route.request().url());
+      route.fulfill({ status: 204 });
+    });
+    return urls;
+  }
+
+  /**
    * Check if Workbench section is expanded
    */
   async isWorkbenchExpanded(): Promise<boolean> {
