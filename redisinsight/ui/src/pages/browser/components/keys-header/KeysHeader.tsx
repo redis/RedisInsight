@@ -42,7 +42,8 @@ import { incrementOnboardStepAction } from 'uiSrc/slices/app/features'
 import { AutoRefresh, OnboardingTour } from 'uiSrc/components'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
-import { BrowserColumns, KeyValueFormat } from 'uiSrc/constants'
+import { BrowserColumns, KeyValueFormat, SortOrder } from 'uiSrc/constants'
+import { ISortedColumn } from 'uiSrc/components/virtual-table/interfaces'
 
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { setConnectivityError } from 'uiSrc/slices/app/connectivity'
@@ -50,7 +51,7 @@ import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 
@@ -74,12 +75,62 @@ export interface Props {
   isSearched: boolean
   loadKeys: (type?: KeyViewType) => void
   handleScanMoreClick: (config: any) => void
+  sortedColumn?: ISortedColumn | null
+  onChangeSorting?: (column: string | null, order: SortOrder | null) => void
 }
 
 const ViewSwitchButton = styled(ButtonGroup.Button)`
   width: 24px !important;
   min-width: 24px !important;
 `
+
+const SortButton = styled.button<
+  React.ButtonHTMLAttributes<HTMLButtonElement> & { $isActive?: boolean }
+>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background-color: transparent;
+  cursor: pointer;
+  color: inherit;
+
+  &:hover {
+    background-color: ${({ theme }) =>
+      theme?.semantic?.color?.background?.neutral300 || 'rgba(0, 0, 0, 0.05)'};
+  }
+
+  ${({ $isActive, theme }) =>
+    $isActive &&
+    css`
+      background-color: ${theme?.semantic?.color?.background?.neutral500 ||
+      'rgba(0, 0, 0, 0.1)'};
+      color: ${theme?.semantic?.color?.icon?.primary600 || 'inherit'};
+    `}
+`
+
+const SortDivider = styled.hr`
+  border: none;
+  border-top: 1px solid
+    ${({ theme }) =>
+      theme?.semantic?.color?.border?.neutral300 || 'rgba(0,0,0,0.1)'};
+  margin: 4px 0;
+  width: 100%;
+`
+
+const SORTABLE_COLUMNS = [
+  {
+    id: 'nameString',
+    label: 'Key',
+    requiresColumn: null as BrowserColumns | null,
+  },
+  { id: 'ttl', label: 'TTL', requiresColumn: BrowserColumns.TTL },
+  { id: 'size', label: 'Size', requiresColumn: BrowserColumns.Size },
+]
 
 const KeysHeader = (props: Props) => {
   const {
@@ -89,6 +140,8 @@ const KeysHeader = (props: Props) => {
     loadKeys,
     handleScanMoreClick,
     nextCursor,
+    sortedColumn,
+    onChangeSorting,
   } = props
 
   const { id: instanceId, keyNameFormat } = useSelector(
@@ -269,6 +322,16 @@ const KeysHeader = (props: Props) => {
         : hidden.push(BrowserColumns.Size)
     }
 
+    // Clear sort if the column being hidden is currently the sorted column
+    if (!status) {
+      const sortedColDef = SORTABLE_COLUMNS.find(
+        (c) => c.requiresColumn === columnType,
+      )
+      if (sortedColDef && sortedColumn?.column === sortedColDef.id) {
+        onChangeSorting?.(null, null)
+      }
+    }
+
     dispatch(setBrowserShownColumns(newColumns))
     sendEventTelemetry({
       event: TelemetryEvent.SHOW_BROWSER_COLUMN_CLICKED,
@@ -425,6 +488,71 @@ const KeysHeader = (props: Props) => {
                           }
                           data-testid="show-ttl"
                         />
+                      </FlexItem>
+                      <FlexItem>
+                        <SortDivider />
+                      </FlexItem>
+                      <FlexItem>
+                        <Text size="s" style={{ marginBottom: 4 }}>
+                          Sort by
+                        </Text>
+                        <Col gap="s">
+                          {SORTABLE_COLUMNS.filter(
+                            (col) =>
+                              col.requiresColumn === null ||
+                              shownColumns.includes(col.requiresColumn),
+                          ).map((col) => (
+                            <Row key={col.id} align="center" justify="between">
+                              <FlexItem>
+                                <Text size="s">{col.label}</Text>
+                              </FlexItem>
+                              <Row gap="xs">
+                                <FlexItem>
+                                  <SortButton
+                                    $isActive={
+                                      sortedColumn?.column === col.id &&
+                                      sortedColumn?.order === SortOrder.ASC
+                                    }
+                                    onClick={() =>
+                                      sortedColumn?.column === col.id &&
+                                      sortedColumn?.order === SortOrder.ASC
+                                        ? onChangeSorting?.(null, null)
+                                        : onChangeSorting?.(
+                                            col.id,
+                                            SortOrder.ASC,
+                                          )
+                                    }
+                                    data-testid={`sort-asc-${col.id}`}
+                                    title={`Sort ${col.label} ascending`}
+                                  >
+                                    <RiIcon type="ArrowUpIcon" size="s" />
+                                  </SortButton>
+                                </FlexItem>
+                                <FlexItem>
+                                  <SortButton
+                                    $isActive={
+                                      sortedColumn?.column === col.id &&
+                                      sortedColumn?.order === SortOrder.DESC
+                                    }
+                                    onClick={() =>
+                                      sortedColumn?.column === col.id &&
+                                      sortedColumn?.order === SortOrder.DESC
+                                        ? onChangeSorting?.(null, null)
+                                        : onChangeSorting?.(
+                                            col.id,
+                                            SortOrder.DESC,
+                                          )
+                                    }
+                                    data-testid={`sort-desc-${col.id}`}
+                                    title={`Sort ${col.label} descending`}
+                                  >
+                                    <RiIcon type="ArrowDownIcon" size="s" />
+                                  </SortButton>
+                                </FlexItem>
+                              </Row>
+                            </Row>
+                          ))}
+                        </Col>
                       </FlexItem>
                     </Col>
                   </RiPopover>
