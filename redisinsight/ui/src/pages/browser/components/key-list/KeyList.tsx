@@ -189,12 +189,10 @@ const KeyList = forwardRef((props: Props, ref) => {
       controller.current = new AbortController()
 
       const { startIndex, lastIndex } = renderedRowsIndexesRef.current
-      const visibleItems = bufferFormatRangeItems(
-        itemsRef.current,
-        startIndex,
-        lastIndex,
-        formatItem,
-      )
+      // bufferFormatRows both formats items and splices them into itemsRef.current,
+      // ensuring the references passed to getMetadata exist in itemsRef.current so
+      // onSuccessFetchedMetadata can locate them via indexOf.
+      const visibleItems = bufferFormatRows(startIndex, lastIndex)
 
       getMetadata(visibleItems, true)
     }
