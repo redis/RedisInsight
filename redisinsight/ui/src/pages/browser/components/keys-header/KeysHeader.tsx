@@ -446,71 +446,79 @@ const KeysHeader = (props: Props) => {
                           data-testid="show-ttl"
                         />
                       </FlexItem>
-                      <FlexItem>
-                        <S.SortDivider />
-                      </FlexItem>
-                      <FlexItem>
-                        <Text size="s" style={{ marginBottom: 4 }}>
-                          Sort by:
-                        </Text>
-                        <Col gap="s">
-                          {SORTABLE_COLUMNS.filter(
-                            (col) =>
-                              col.requiresColumn === null ||
-                              shownColumns.includes(col.requiresColumn),
-                          ).map((col) => (
-                            <Row key={col.id} align="center" justify="between">
-                              <FlexItem grow>
-                                <Text size="s">{col.label}</Text>
-                              </FlexItem>
-                              <Row gap="xs" grow={false}>
-                                <FlexItem>
-                                  <S.SortButton
-                                    $isActive={
-                                      sortedColumn?.column === col.id &&
-                                      sortedColumn?.order === SortOrder.ASC
-                                    }
-                                    onClick={() =>
-                                      sortedColumn?.column === col.id &&
-                                      sortedColumn?.order === SortOrder.ASC
-                                        ? onChangeSorting?.(null, null)
-                                        : onChangeSorting?.(
-                                            col.id,
-                                            SortOrder.ASC,
-                                          )
-                                    }
-                                    data-testid={`sort-asc-${col.id}`}
-                                    title={`Sort ${col.label} ascending`}
-                                  >
-                                    <RiIcon type="ArrowUpIcon" size="s" />
-                                  </S.SortButton>
-                                </FlexItem>
-                                <FlexItem>
-                                  <S.SortButton
-                                    $isActive={
-                                      sortedColumn?.column === col.id &&
-                                      sortedColumn?.order === SortOrder.DESC
-                                    }
-                                    onClick={() =>
-                                      sortedColumn?.column === col.id &&
-                                      sortedColumn?.order === SortOrder.DESC
-                                        ? onChangeSorting?.(null, null)
-                                        : onChangeSorting?.(
-                                            col.id,
-                                            SortOrder.DESC,
-                                          )
-                                    }
-                                    data-testid={`sort-desc-${col.id}`}
-                                    title={`Sort ${col.label} descending`}
-                                  >
-                                    <RiIcon type="ArrowDownIcon" size="s" />
-                                  </S.SortButton>
-                                </FlexItem>
-                              </Row>
-                            </Row>
-                          ))}
-                        </Col>
-                      </FlexItem>
+                      {viewType === KeyViewType.Browser && (
+                        <>
+                          <FlexItem>
+                            <S.SortDivider />
+                          </FlexItem>
+                          <FlexItem>
+                            <Text size="s" style={{ marginBottom: 4 }}>
+                              Sort by:
+                            </Text>
+                            <Col gap="s">
+                              {SORTABLE_COLUMNS.filter(
+                                (col) =>
+                                  col.requiresColumn === null ||
+                                  shownColumns.includes(col.requiresColumn),
+                              ).map((col) => (
+                                <Row
+                                  key={col.id}
+                                  align="center"
+                                  justify="between"
+                                >
+                                  <FlexItem grow>
+                                    <Text size="s">{col.label}</Text>
+                                  </FlexItem>
+                                  <Row gap="xs" grow={false}>
+                                    <FlexItem>
+                                      <S.SortButton
+                                        $isActive={
+                                          sortedColumn?.column === col.id &&
+                                          sortedColumn?.order === SortOrder.ASC
+                                        }
+                                        onClick={() =>
+                                          sortedColumn?.column === col.id &&
+                                          sortedColumn?.order === SortOrder.ASC
+                                            ? onChangeSorting?.(null, null)
+                                            : onChangeSorting?.(
+                                                col.id,
+                                                SortOrder.ASC,
+                                              )
+                                        }
+                                        data-testid={`sort-asc-${col.id}`}
+                                        title={`Sort ${col.label} ascending`}
+                                      >
+                                        <RiIcon type="ArrowUpIcon" size="s" />
+                                      </S.SortButton>
+                                    </FlexItem>
+                                    <FlexItem>
+                                      <S.SortButton
+                                        $isActive={
+                                          sortedColumn?.column === col.id &&
+                                          sortedColumn?.order === SortOrder.DESC
+                                        }
+                                        onClick={() =>
+                                          sortedColumn?.column === col.id &&
+                                          sortedColumn?.order === SortOrder.DESC
+                                            ? onChangeSorting?.(null, null)
+                                            : onChangeSorting?.(
+                                                col.id,
+                                                SortOrder.DESC,
+                                              )
+                                        }
+                                        data-testid={`sort-desc-${col.id}`}
+                                        title={`Sort ${col.label} descending`}
+                                      >
+                                        <RiIcon type="ArrowDownIcon" size="s" />
+                                      </S.SortButton>
+                                    </FlexItem>
+                                  </Row>
+                                </Row>
+                              ))}
+                            </Col>
+                          </FlexItem>
+                        </>
+                      )}
                     </Col>
                   </RiPopover>
                 </FlexItem>
