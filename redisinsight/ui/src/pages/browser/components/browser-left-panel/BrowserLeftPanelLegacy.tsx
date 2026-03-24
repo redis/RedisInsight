@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
@@ -27,7 +27,8 @@ import {
 } from 'uiSrc/slices/browser/redisearch'
 import { isEqualBuffers, Nullable } from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
-import { KeyTypes } from 'uiSrc/constants'
+import { KeyTypes, SortOrder } from 'uiSrc/constants'
+import { ISortedColumn } from 'uiSrc/components/virtual-table/interfaces'
 
 import KeyList from '../key-list'
 import KeyTree from '../key-tree'
@@ -78,6 +79,8 @@ const BrowserLeftPanelLegacy = (props: Props) => {
   } = useSelector(appContextBrowser)
 
   const keyListRef = useRef<any>()
+
+  const [sortedColumn, setSortedColumn] = useState<ISortedColumn | null>(null)
 
   const dispatch = useDispatch()
 
@@ -154,6 +157,13 @@ const BrowserLeftPanelLegacy = (props: Props) => {
     keyListRef.current?.handleLoadMoreItems?.(config)
   }
 
+  const handleChangeSorting = useCallback(
+    (column: string | null, order: SortOrder | null) => {
+      setSortedColumn(column && order ? { column, order } : null)
+    },
+    [],
+  )
+
   const onDeleteKey = useCallback(
     (key: RedisResponseBuffer) => {
       if (isEqualBuffers(key, selectedKey)) {
@@ -166,11 +176,13 @@ const BrowserLeftPanelLegacy = (props: Props) => {
     <div className={styles.container}>
       <KeysHeader
         keysState={keysState}
-        loading={headerLoading}
+        loading={headerLoading ?? false}
         isSearched={isSearched}
         loadKeys={loadKeys}
         handleScanMoreClick={handleScanMoreClick}
         nextCursor={keysState.nextCursor}
+        sortedColumn={sortedColumn}
+        onChangeSorting={handleChangeSorting}
       />
       {keysError && (
         <div className={styles.error}>
@@ -189,6 +201,7 @@ const BrowserLeftPanelLegacy = (props: Props) => {
           selectKey={selectKey}
           onDelete={onDeleteKey}
           onAddKeyPanel={handleAddKeyPanel}
+          sortedColumn={sortedColumn}
         />
       )}
       {viewType === KeyViewType.Tree && !keysError && (
