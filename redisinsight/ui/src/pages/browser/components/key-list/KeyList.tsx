@@ -224,8 +224,12 @@ const KeyList = forwardRef((props: Props, ref) => {
       }
 
       const field = col.column as 'ttl' | 'size'
-      const withValue = sortableItems.filter((i) => i[field] !== undefined)
-      const withoutValue = sortableItems.filter((i) => i[field] === undefined)
+      // ttl === -1 means "No limit" (no expiry). Treat it as no-value so it
+      // always sorts to the end, the same as keys whose metadata hasn't loaded yet.
+      const isNoValue = (i: SortableKey) =>
+        i[field] === undefined || (field === 'ttl' && i[field] === -1)
+      const withValue = sortableItems.filter((i) => !isNoValue(i))
+      const withoutValue = sortableItems.filter((i) => isNoValue(i))
       return [...orderBy(withValue, [field], [dir]), ...withoutValue]
     },
     [],
@@ -387,7 +391,7 @@ const KeyList = forwardRef((props: Props, ref) => {
           itemsToFetch.map(({ name }) => name),
           commonFilterType,
           controller.current?.signal,
-          (loadedItems) => onSuccessFetchedMetadata(startIndex, loadedItems),
+          (loadedItems) => onSuccessFetchedMetadata(itemsToFetch, loadedItems),
           () => {
             rerender({})
           },
@@ -398,11 +402,19 @@ const KeyList = forwardRef((props: Props, ref) => {
   )
 
   const onSuccessFetchedMetadata = (
-    startIndex: number,
+    sentItems: IKeyPropTypes[],
     loadedItems: GetKeyInfoResponse[],
   ) => {
-    const items = loadedItems.map(formatItem)
-    itemsRef.current.splice(startIndex, items.length, ...items)
+    // Locate each sent item in the current list by reference and replace it
+    // in-place. A positional splice would corrupt the array when some items in
+    // the visible range already had metadata (and were excluded from the fetch
+    // via `reject`), because the loaded items are a non-contiguous subset.
+    loadedItems.forEach((loadedItem, i) => {
+      const idx = itemsRef.current.indexOf(sentItems[i] as GetKeyInfoResponse)
+      if (idx !== -1) {
+        itemsRef.current[idx] = formatItem(loadedItem)
+      }
+    })
 
     if (sortedColumnRef.current) {
       itemsRef.current = applySort(itemsRef.current, sortedColumnRef.current)

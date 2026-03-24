@@ -643,6 +643,142 @@ describe('KeyList', () => {
       expect(keyNames[2]).toBe('key-key2')
     })
 
+    it('should place keys with ttl=-1 (No limit) at the end when sorting by TTL ascending', () => {
+      const keys = [
+        {
+          name: { data: Buffer.from('key1'), type: RedisResponseBufferType.Buffer },
+          nameString: 'key1',
+          type: 'hash',
+          ttl: -1,
+          size: 100,
+        },
+        {
+          name: { data: Buffer.from('key2'), type: RedisResponseBufferType.Buffer },
+          nameString: 'key2',
+          type: 'hash',
+          ttl: 10,
+          size: 100,
+        },
+        {
+          name: { data: Buffer.from('key3'), type: RedisResponseBufferType.Buffer },
+          nameString: 'key3',
+          type: 'hash',
+          ttl: 30,
+          size: 100,
+        },
+      ]
+
+      const { container } = render(
+        <KeyList
+          {...propsMock}
+          keysState={{ ...propsMock.keysState, keys: keys as any }}
+          sortedColumn={{ column: 'ttl', order: SortOrder.ASC }}
+        />,
+      )
+
+      const keyNames = getKeyNamesInOrder(container)
+      // key2(10) < key3(30) < key1(-1 → No limit, always last)
+      expect(keyNames[0]).toBe('key-key2')
+      expect(keyNames[1]).toBe('key-key3')
+      expect(keyNames[2]).toBe('key-key1')
+    })
+
+    it('should place keys with ttl=-1 (No limit) at the end when sorting by TTL descending', () => {
+      const keys = [
+        {
+          name: { data: Buffer.from('key1'), type: RedisResponseBufferType.Buffer },
+          nameString: 'key1',
+          type: 'hash',
+          ttl: -1,
+          size: 100,
+        },
+        {
+          name: { data: Buffer.from('key2'), type: RedisResponseBufferType.Buffer },
+          nameString: 'key2',
+          type: 'hash',
+          ttl: 10,
+          size: 100,
+        },
+        {
+          name: { data: Buffer.from('key3'), type: RedisResponseBufferType.Buffer },
+          nameString: 'key3',
+          type: 'hash',
+          ttl: 30,
+          size: 100,
+        },
+      ]
+
+      const { container } = render(
+        <KeyList
+          {...propsMock}
+          keysState={{ ...propsMock.keysState, keys: keys as any }}
+          sortedColumn={{ column: 'ttl', order: SortOrder.DESC }}
+        />,
+      )
+
+      const keyNames = getKeyNamesInOrder(container)
+      // key3(30) > key2(10) > key1(-1 → No limit, always last)
+      expect(keyNames[0]).toBe('key-key3')
+      expect(keyNames[1]).toBe('key-key2')
+      expect(keyNames[2]).toBe('key-key1')
+    })
+
+    it('should not corrupt list when some items already have metadata on fetch', async () => {
+      // key2 already has metadata; key1 and key3 do not → only key1 & key3 are fetched.
+      // The API response must be placed at the correct positions (0 and 2), not
+      // contiguously from index 0 (which would overwrite key2 with key3 data).
+      const keys = [
+        {
+          name: { data: Buffer.from('key1'), type: RedisResponseBufferType.Buffer },
+          nameString: 'key1',
+        },
+        {
+          name: { data: Buffer.from('key2'), type: RedisResponseBufferType.Buffer },
+          nameString: 'key2',
+          type: 'hash',
+          ttl: -1,
+          size: 200,
+        },
+        {
+          name: { data: Buffer.from('key3'), type: RedisResponseBufferType.Buffer },
+          nameString: 'key3',
+        },
+      ]
+
+      // The mock mirrors the real API contract: returns only the requested keys,
+      // in the order they were sent.
+      const sizeByName: Record<string, number> = { key1: 100, key3: 300 }
+      const apiServiceMock = jest
+        .fn()
+        .mockImplementation(async (_url: string, body: { keys: any[] }) => ({
+          data: body.keys.map((key) => {
+            const keyName = Buffer.from(key.data).toString()
+            return { name: key, nameString: keyName, type: 'hash', ttl: -1, size: sizeByName[keyName] }
+          }),
+        }))
+      apiService.post = apiServiceMock
+
+      const { container } = render(
+        <KeyList
+          {...propsMock}
+          keysState={{ ...propsMock.keysState, keys: keys as any }}
+          sortedColumn={{ column: 'size', order: SortOrder.ASC }}
+        />,
+      )
+
+      await waitFor(
+        () => {
+          expect(apiServiceMock).toHaveBeenCalled()
+          const keyNames = getKeyNamesInOrder(container)
+          // After metadata: key1(100), key2(200), key3(300) sorted ASC
+          expect(keyNames[0]).toBe('key-key1')
+          expect(keyNames[1]).toBe('key-key2')
+          expect(keyNames[2]).toBe('key-key3')
+        },
+        { timeout: 500 },
+      )
+    })
+
     it('should maintain sort order when metadata loads asynchronously', async () => {
       // Keys have no type/size/length so metadata fetch is triggered
       const keys = [
@@ -669,14 +805,18 @@ describe('KeyList', () => {
         },
       ]
 
-      // API returns sizes in a non-sorted order: key1=300, key2=100, key3=200
-      const apiServiceMock = jest.fn().mockResolvedValue({
-        data: [
-          { ...keys[0], type: 'hash', ttl: -1, size: 300 },
-          { ...keys[1], type: 'hash', ttl: -1, size: 100 },
-          { ...keys[2], type: 'hash', ttl: -1, size: 200 },
-        ],
-      })
+      // Sizes are deliberately out of order to prove applySort re-runs correctly.
+      // The mock mirrors the real API contract: returns only the requested keys,
+      // in the order they were sent.
+      const sizeByName: Record<string, number> = { key1: 300, key2: 100, key3: 200 }
+      const apiServiceMock = jest
+        .fn()
+        .mockImplementation(async (_url: string, body: { keys: any[] }) => ({
+          data: body.keys.map((key) => {
+            const keyName = Buffer.from(key.data).toString()
+            return { name: key, nameString: keyName, type: 'hash', ttl: -1, size: sizeByName[keyName] }
+          }),
+        }))
       apiService.post = apiServiceMock
 
       const { container } = render(
