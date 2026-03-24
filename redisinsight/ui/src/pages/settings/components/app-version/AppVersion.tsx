@@ -12,9 +12,9 @@ const AppVersion = () => {
   return (
     <Text
       size="s"
-      color="subdued"
+      color="secondary"
       data-testid="settings-app-version"
-      style={{ marginTop: 16, textAlign: 'center' }}
+      style={{ marginTop: 16, textAlign: 'left' }}
     >
       Redis Insight v{server.appVersion}
     </Text>
