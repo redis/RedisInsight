@@ -23,16 +23,20 @@ const REDISTIMESERIES_PLUGIN_NAME = 'redistimeseries'
 const REDISTIMESERIES_VIEW_ID = 'redistimeseries-chart'
 const REDISTIMESERIES_CHART_ID = `${REDISTIMESERIES_PLUGIN_NAME}__${REDISTIMESERIES_VIEW_ID}`
 
-const isValidMode = (v: unknown): v is PersistedTsChartConfig['mode'] =>
-  VALID_MODES.includes(v as any)
+const isValidMode = (
+  v: string,
+): v is NonNullable<PersistedTsChartConfig['mode']> =>
+  (VALID_MODES as readonly string[]).includes(v)
 
-const isValidTimeUnit = (v: unknown): v is PersistedTsChartConfig['timeUnit'] =>
-  VALID_TIME_UNITS.includes(v as any)
+const isValidTimeUnit = (
+  v: string,
+): v is NonNullable<PersistedTsChartConfig['timeUnit']> =>
+  (VALID_TIME_UNITS as readonly string[]).includes(v)
 
 const isValidSelectedView = (
-  v: unknown,
+  v: string,
 ): v is WorkbenchTsResultPreferences['selectedView'] =>
-  VALID_SELECTED_VIEWS.includes(v as any)
+  (VALID_SELECTED_VIEWS as readonly string[]).includes(v)
 
 const sanitizeChartConfig = (
   raw: unknown,
@@ -42,8 +46,10 @@ const sanitizeChartConfig = (
   const obj = raw as Record<string, unknown>
   const result: PersistedTsChartConfig = {}
 
-  if (isValidMode(obj.mode)) result.mode = obj.mode
-  if (isValidTimeUnit(obj.timeUnit)) result.timeUnit = obj.timeUnit
+  if (typeof obj.mode === 'string' && isValidMode(obj.mode))
+    result.mode = obj.mode
+  if (typeof obj.timeUnit === 'string' && isValidTimeUnit(obj.timeUnit))
+    result.timeUnit = obj.timeUnit
   if (typeof obj.staircase === 'boolean') result.staircase = obj.staircase
   if (typeof obj.fill === 'boolean') result.fill = obj.fill
 
@@ -61,9 +67,11 @@ export const getWbTsResultPreferences = (
 
     if (!isObjectLike(raw)) return undefined
 
-    const selectedView = isValidSelectedView(raw.selectedView)
-      ? raw.selectedView
-      : undefined
+    const selectedView =
+      typeof raw.selectedView === 'string' &&
+      isValidSelectedView(raw.selectedView)
+        ? raw.selectedView
+        : undefined
 
     const chartConfig = sanitizeChartConfig(raw.chartConfig)
 
