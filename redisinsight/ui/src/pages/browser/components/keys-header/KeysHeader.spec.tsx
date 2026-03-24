@@ -176,6 +176,34 @@ describe('KeysHeader', () => {
     expect(queryByTestId('scan-more')).not.toBeInTheDocument()
   })
 
+  it('should show sort options in the columns popover when List view is active', () => {
+    ;(keysSlice.keysSelector as jest.Mock).mockReturnValue({
+      ...mockSelectorData,
+      viewType: KeyViewType.Browser,
+    })
+
+    render(<KeysHeader {...propsMock} />)
+
+    fireEvent.click(screen.getByTestId('btn-columns-actions'))
+
+    expect(screen.getByTestId('sort-asc-nameString')).toBeInTheDocument()
+    expect(screen.getByTestId('sort-desc-nameString')).toBeInTheDocument()
+  })
+
+  it('should not show sort options in the columns popover when Tree view is active', () => {
+    ;(keysSlice.keysSelector as jest.Mock).mockReturnValue({
+      ...mockSelectorData,
+      viewType: KeyViewType.Tree,
+    })
+
+    render(<KeysHeader {...propsMock} />)
+
+    fireEvent.click(screen.getByTestId('btn-columns-actions'))
+
+    expect(screen.queryByTestId('sort-asc-nameString')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('sort-desc-nameString')).not.toBeInTheDocument()
+  })
+
   it('should reset selected key data when no keys data is returned', async () => {
     ;(keysSlice.fetchKeys as jest.Mock).mockImplementation(
       (_options: any, onSuccess: (data: any) => void) => () => {

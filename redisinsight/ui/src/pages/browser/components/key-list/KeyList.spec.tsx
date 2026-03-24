@@ -20,7 +20,7 @@ import {
   setLastBatchKeys,
 } from 'uiSrc/slices/browser/keys'
 import { apiService } from 'uiSrc/services'
-import { BrowserColumns } from 'uiSrc/constants'
+import { BrowserColumns, SortOrder } from 'uiSrc/constants'
 import { bufferToHex, bufferToString } from 'uiSrc/utils'
 import { RedisResponseBufferType } from 'uiSrc/slices/interfaces'
 
@@ -389,5 +389,302 @@ describe('KeyList', () => {
         `[data-testid="delete-key-btn-${propsMock.keysState.keys[0].nameString}"]`,
       ),
     ).toBeInTheDocument()
+  })
+
+  describe('sorting', () => {
+    beforeEach(() => {
+      // Ensure bufferToString is used so key names render as plain strings
+      mockedUseKeyFormatHandler.mockImplementation(bufferToString)
+    })
+
+    // Helper: returns key name testids in DOM order (from KeyRowName data-testid="key-{shortName}")
+    const getKeyNamesInOrder = (container: HTMLElement): string[] =>
+      Array.from(container.querySelectorAll('[data-testid^="key-"]'))
+        .filter((el) => !el.getAttribute('data-testid')?.includes('key-row'))
+        .map((el) => el.getAttribute('data-testid') ?? '')
+
+    it('should sort rows by key name ascending', () => {
+      const keys = [
+        {
+          name: {
+            data: Buffer.from('keyC'),
+            type: RedisResponseBufferType.Buffer,
+          },
+          nameString: 'keyC',
+          type: 'hash',
+          ttl: -1,
+          size: 100,
+        },
+        {
+          name: {
+            data: Buffer.from('keyA'),
+            type: RedisResponseBufferType.Buffer,
+          },
+          nameString: 'keyA',
+          type: 'hash',
+          ttl: -1,
+          size: 150,
+        },
+        {
+          name: {
+            data: Buffer.from('keyB'),
+            type: RedisResponseBufferType.Buffer,
+          },
+          nameString: 'keyB',
+          type: 'hash',
+          ttl: -1,
+          size: 110,
+        },
+      ]
+
+      const { container } = render(
+        <KeyList
+          {...propsMock}
+          keysState={{ ...propsMock.keysState, keys }}
+          sortedColumn={{ column: 'nameString', order: SortOrder.ASC }}
+        />,
+      )
+
+      const keyNames = getKeyNamesInOrder(container)
+      expect(keyNames[0]).toBe('key-keyA')
+      expect(keyNames[1]).toBe('key-keyB')
+      expect(keyNames[2]).toBe('key-keyC')
+    })
+
+    it('should sort rows by key name descending', () => {
+      const keys = [
+        {
+          name: {
+            data: Buffer.from('keyA'),
+            type: RedisResponseBufferType.Buffer,
+          },
+          nameString: 'keyA',
+          type: 'hash',
+          ttl: -1,
+          size: 100,
+        },
+        {
+          name: {
+            data: Buffer.from('keyC'),
+            type: RedisResponseBufferType.Buffer,
+          },
+          nameString: 'keyC',
+          type: 'hash',
+          ttl: -1,
+          size: 150,
+        },
+        {
+          name: {
+            data: Buffer.from('keyB'),
+            type: RedisResponseBufferType.Buffer,
+          },
+          nameString: 'keyB',
+          type: 'hash',
+          ttl: -1,
+          size: 110,
+        },
+      ]
+
+      const { container } = render(
+        <KeyList
+          {...propsMock}
+          keysState={{ ...propsMock.keysState, keys }}
+          sortedColumn={{ column: 'nameString', order: SortOrder.DESC }}
+        />,
+      )
+
+      const keyNames = getKeyNamesInOrder(container)
+      expect(keyNames[0]).toBe('key-keyC')
+      expect(keyNames[1]).toBe('key-keyB')
+      expect(keyNames[2]).toBe('key-keyA')
+    })
+
+    it('should sort rows by size ascending', () => {
+      const keys = [
+        {
+          name: {
+            data: Buffer.from('key1'),
+            type: RedisResponseBufferType.Buffer,
+          },
+          nameString: 'key1',
+          type: 'hash',
+          ttl: -1,
+          size: 300,
+        },
+        {
+          name: {
+            data: Buffer.from('key2'),
+            type: RedisResponseBufferType.Buffer,
+          },
+          nameString: 'key2',
+          type: 'hash',
+          ttl: -1,
+          size: 100,
+        },
+        {
+          name: {
+            data: Buffer.from('key3'),
+            type: RedisResponseBufferType.Buffer,
+          },
+          nameString: 'key3',
+          type: 'hash',
+          ttl: -1,
+          size: 200,
+        },
+      ]
+
+      const { container } = render(
+        <KeyList
+          {...propsMock}
+          keysState={{ ...propsMock.keysState, keys }}
+          sortedColumn={{ column: 'size', order: SortOrder.ASC }}
+        />,
+      )
+
+      const keyNames = getKeyNamesInOrder(container)
+      expect(keyNames[0]).toBe('key-key2')
+      expect(keyNames[1]).toBe('key-key3')
+      expect(keyNames[2]).toBe('key-key1')
+    })
+
+    it('should sort rows by TTL descending', () => {
+      const keys = [
+        {
+          name: {
+            data: Buffer.from('key1'),
+            type: RedisResponseBufferType.Buffer,
+          },
+          nameString: 'key1',
+          type: 'hash',
+          ttl: 10,
+          size: 100,
+        },
+        {
+          name: {
+            data: Buffer.from('key2'),
+            type: RedisResponseBufferType.Buffer,
+          },
+          nameString: 'key2',
+          type: 'hash',
+          ttl: 50,
+          size: 100,
+        },
+        {
+          name: {
+            data: Buffer.from('key3'),
+            type: RedisResponseBufferType.Buffer,
+          },
+          nameString: 'key3',
+          type: 'hash',
+          ttl: 30,
+          size: 100,
+        },
+      ]
+
+      const { container } = render(
+        <KeyList
+          {...propsMock}
+          keysState={{ ...propsMock.keysState, keys }}
+          sortedColumn={{ column: 'ttl', order: SortOrder.DESC }}
+        />,
+      )
+
+      const keyNames = getKeyNamesInOrder(container)
+      expect(keyNames[0]).toBe('key-key2')
+      expect(keyNames[1]).toBe('key-key3')
+      expect(keyNames[2]).toBe('key-key1')
+    })
+
+    it('should place keys without size at the end when sorting by size', () => {
+      const keys = [
+        {
+          name: {
+            data: Buffer.from('key1'),
+            type: RedisResponseBufferType.Buffer,
+          },
+          nameString: 'key1',
+          type: 'hash',
+          ttl: -1,
+          size: 200,
+        },
+        {
+          name: {
+            data: Buffer.from('key2'),
+            type: RedisResponseBufferType.Buffer,
+          },
+          nameString: 'key2',
+          type: 'hash',
+          ttl: -1,
+          // no size — simulates a key whose metadata hasn't loaded yet
+        },
+        {
+          name: {
+            data: Buffer.from('key3'),
+            type: RedisResponseBufferType.Buffer,
+          },
+          nameString: 'key3',
+          type: 'hash',
+          ttl: -1,
+          size: 100,
+        },
+      ]
+
+      const { container } = render(
+        <KeyList
+          {...propsMock}
+          keysState={{ ...propsMock.keysState, keys }}
+          sortedColumn={{ column: 'size', order: SortOrder.ASC }}
+        />,
+      )
+
+      const keyNames = getKeyNamesInOrder(container)
+      expect(keyNames[0]).toBe('key-key3')
+      expect(keyNames[1]).toBe('key-key1')
+      expect(keyNames[2]).toBe('key-key2')
+    })
+
+    it('should re-fetch metadata when sortedColumn changes', async () => {
+      const apiServiceMock = jest
+        .fn()
+        .mockResolvedValue(cloneDeep(propsMock.keysState.keys))
+      apiService.post = apiServiceMock
+
+      const { rerender } = render(
+        <KeyList
+          {...propsMock}
+          keysState={{
+            ...propsMock.keysState,
+            keys: propsMock.keysState.keys.map(({ name, nameString }) => ({
+              name,
+              nameString,
+            })),
+          }}
+          sortedColumn={null}
+        />,
+      )
+
+      apiServiceMock.mockClear()
+
+      rerender(
+        <KeyList
+          {...propsMock}
+          keysState={{
+            ...propsMock.keysState,
+            keys: propsMock.keysState.keys.map(({ name, nameString }) => ({
+              name,
+              nameString,
+            })),
+          }}
+          sortedColumn={{ column: 'nameString', order: SortOrder.ASC }}
+        />,
+      )
+
+      await waitFor(
+        () => {
+          expect(apiServiceMock).toHaveBeenCalled()
+        },
+        { timeout: 500 },
+      )
+    })
   })
 })
