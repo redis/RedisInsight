@@ -48,12 +48,12 @@ import { ISortedColumn } from 'uiSrc/components/virtual-table/interfaces'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { setConnectivityError } from 'uiSrc/slices/app/connectivity'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import styles from './styles.module.scss'
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
-import styled, { css } from 'styled-components'
 import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
+import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Text } from 'uiSrc/components/base/text'
+import styles from './styles.module.scss'
+import * as S from './KeysHeader.styles'
 
 const HIDE_REFRESH_LABEL_WIDTH = 640
 
@@ -78,49 +78,6 @@ export interface Props {
   sortedColumn?: ISortedColumn | null
   onChangeSorting?: (column: string | null, order: SortOrder | null) => void
 }
-
-const ViewSwitchButton = styled(ButtonGroup.Button)`
-  width: 24px !important;
-  min-width: 24px !important;
-`
-
-const SortButton = styled.button<
-  React.ButtonHTMLAttributes<HTMLButtonElement> & { $isActive?: boolean }
->`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border: none;
-  border-radius: 4px;
-  background-color: transparent;
-  cursor: pointer;
-  color: inherit;
-
-  &:hover {
-    background-color: ${({ theme }) =>
-      theme?.semantic?.color?.background?.neutral300 || 'rgba(0, 0, 0, 0.05)'};
-  }
-
-  ${({ $isActive, theme }) =>
-    $isActive &&
-    css`
-      background-color: ${theme?.semantic?.color?.background?.neutral500 ||
-      'rgba(0, 0, 0, 0.1)'};
-      color: ${theme?.semantic?.color?.icon?.primary600 || 'inherit'};
-    `}
-`
-
-const SortDivider = styled.hr`
-  border: none;
-  border-top: 1px solid
-    ${({ theme }) =>
-      theme?.semantic?.color?.border?.neutral300 || 'rgba(0,0,0,0.1)'};
-  margin: 4px 0;
-  width: 100%;
-`
 
 const SORTABLE_COLUMNS = [
   {
@@ -352,7 +309,7 @@ const KeysHeader = (props: Props) => {
             position="top"
             key={view.tooltipText}
           >
-            <ViewSwitchButton
+            <S.ViewSwitchButton
               aria-label={view.ariaLabel}
               onClick={() => view.onClick()}
               isSelected={view.isActiveView()}
@@ -360,7 +317,7 @@ const KeysHeader = (props: Props) => {
               disabled={view.disabled || false}
             >
               <ButtonGroup.Icon icon={view.getIconType()} />
-            </ViewSwitchButton>
+            </S.ViewSwitchButton>
           </RiTooltip>
         ))}
       </ButtonGroup>
@@ -490,11 +447,11 @@ const KeysHeader = (props: Props) => {
                         />
                       </FlexItem>
                       <FlexItem>
-                        <SortDivider />
+                        <S.SortDivider />
                       </FlexItem>
                       <FlexItem>
                         <Text size="s" style={{ marginBottom: 4 }}>
-                          Sort by
+                          Sort by:
                         </Text>
                         <Col gap="s">
                           {SORTABLE_COLUMNS.filter(
@@ -503,12 +460,12 @@ const KeysHeader = (props: Props) => {
                               shownColumns.includes(col.requiresColumn),
                           ).map((col) => (
                             <Row key={col.id} align="center" justify="between">
-                              <FlexItem>
+                              <FlexItem grow>
                                 <Text size="s">{col.label}</Text>
                               </FlexItem>
-                              <Row gap="xs">
+                              <Row gap="xs" grow={false}>
                                 <FlexItem>
-                                  <SortButton
+                                  <S.SortButton
                                     $isActive={
                                       sortedColumn?.column === col.id &&
                                       sortedColumn?.order === SortOrder.ASC
@@ -526,10 +483,10 @@ const KeysHeader = (props: Props) => {
                                     title={`Sort ${col.label} ascending`}
                                   >
                                     <RiIcon type="ArrowUpIcon" size="s" />
-                                  </SortButton>
+                                  </S.SortButton>
                                 </FlexItem>
                                 <FlexItem>
-                                  <SortButton
+                                  <S.SortButton
                                     $isActive={
                                       sortedColumn?.column === col.id &&
                                       sortedColumn?.order === SortOrder.DESC
@@ -547,7 +504,7 @@ const KeysHeader = (props: Props) => {
                                     title={`Sort ${col.label} descending`}
                                   >
                                     <RiIcon type="ArrowDownIcon" size="s" />
-                                  </SortButton>
+                                  </S.SortButton>
                                 </FlexItem>
                               </Row>
                             </Row>
