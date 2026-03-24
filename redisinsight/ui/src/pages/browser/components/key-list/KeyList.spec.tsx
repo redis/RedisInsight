@@ -646,21 +646,30 @@ describe('KeyList', () => {
     it('should place keys with ttl=-1 (No limit) at the end when sorting by TTL ascending', () => {
       const keys = [
         {
-          name: { data: Buffer.from('key1'), type: RedisResponseBufferType.Buffer },
+          name: {
+            data: Buffer.from('key1'),
+            type: RedisResponseBufferType.Buffer,
+          },
           nameString: 'key1',
           type: 'hash',
           ttl: -1,
           size: 100,
         },
         {
-          name: { data: Buffer.from('key2'), type: RedisResponseBufferType.Buffer },
+          name: {
+            data: Buffer.from('key2'),
+            type: RedisResponseBufferType.Buffer,
+          },
           nameString: 'key2',
           type: 'hash',
           ttl: 10,
           size: 100,
         },
         {
-          name: { data: Buffer.from('key3'), type: RedisResponseBufferType.Buffer },
+          name: {
+            data: Buffer.from('key3'),
+            type: RedisResponseBufferType.Buffer,
+          },
           nameString: 'key3',
           type: 'hash',
           ttl: 30,
@@ -686,21 +695,30 @@ describe('KeyList', () => {
     it('should place keys with ttl=-1 (No limit) at the end when sorting by TTL descending', () => {
       const keys = [
         {
-          name: { data: Buffer.from('key1'), type: RedisResponseBufferType.Buffer },
+          name: {
+            data: Buffer.from('key1'),
+            type: RedisResponseBufferType.Buffer,
+          },
           nameString: 'key1',
           type: 'hash',
           ttl: -1,
           size: 100,
         },
         {
-          name: { data: Buffer.from('key2'), type: RedisResponseBufferType.Buffer },
+          name: {
+            data: Buffer.from('key2'),
+            type: RedisResponseBufferType.Buffer,
+          },
           nameString: 'key2',
           type: 'hash',
           ttl: 10,
           size: 100,
         },
         {
-          name: { data: Buffer.from('key3'), type: RedisResponseBufferType.Buffer },
+          name: {
+            data: Buffer.from('key3'),
+            type: RedisResponseBufferType.Buffer,
+          },
           nameString: 'key3',
           type: 'hash',
           ttl: 30,
@@ -729,18 +747,27 @@ describe('KeyList', () => {
       // contiguously from index 0 (which would overwrite key2 with key3 data).
       const keys = [
         {
-          name: { data: Buffer.from('key1'), type: RedisResponseBufferType.Buffer },
+          name: {
+            data: Buffer.from('key1'),
+            type: RedisResponseBufferType.Buffer,
+          },
           nameString: 'key1',
         },
         {
-          name: { data: Buffer.from('key2'), type: RedisResponseBufferType.Buffer },
+          name: {
+            data: Buffer.from('key2'),
+            type: RedisResponseBufferType.Buffer,
+          },
           nameString: 'key2',
           type: 'hash',
           ttl: -1,
           size: 200,
         },
         {
-          name: { data: Buffer.from('key3'), type: RedisResponseBufferType.Buffer },
+          name: {
+            data: Buffer.from('key3'),
+            type: RedisResponseBufferType.Buffer,
+          },
           nameString: 'key3',
         },
       ]
@@ -753,7 +780,13 @@ describe('KeyList', () => {
         .mockImplementation(async (_url: string, body: { keys: any[] }) => ({
           data: body.keys.map((key) => {
             const keyName = Buffer.from(key.data).toString()
-            return { name: key, nameString: keyName, type: 'hash', ttl: -1, size: sizeByName[keyName] }
+            return {
+              name: key,
+              nameString: keyName,
+              type: 'hash',
+              ttl: -1,
+              size: sizeByName[keyName],
+            }
           }),
         }))
       apiService.post = apiServiceMock
@@ -808,13 +841,23 @@ describe('KeyList', () => {
       // Sizes are deliberately out of order to prove applySort re-runs correctly.
       // The mock mirrors the real API contract: returns only the requested keys,
       // in the order they were sent.
-      const sizeByName: Record<string, number> = { key1: 300, key2: 100, key3: 200 }
+      const sizeByName: Record<string, number> = {
+        key1: 300,
+        key2: 100,
+        key3: 200,
+      }
       const apiServiceMock = jest
         .fn()
         .mockImplementation(async (_url: string, body: { keys: any[] }) => ({
           data: body.keys.map((key) => {
             const keyName = Buffer.from(key.data).toString()
-            return { name: key, nameString: keyName, type: 'hash', ttl: -1, size: sizeByName[keyName] }
+            return {
+              name: key,
+              nameString: keyName,
+              type: 'hash',
+              ttl: -1,
+              size: sizeByName[keyName],
+            }
           }),
         }))
       apiService.post = apiServiceMock

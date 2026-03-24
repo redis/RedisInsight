@@ -196,7 +196,7 @@ const KeyList = forwardRef((props: Props, ref) => {
         formatItem,
       )
 
-      getMetadata(startIndex, visibleItems, true)
+      getMetadata(visibleItems, true)
     }
 
     prevIncludeSize.current = shownColumns.includes(BrowserColumns.Size)
@@ -329,7 +329,7 @@ const KeyList = forwardRef((props: Props, ref) => {
 
     const newItems = bufferFormatRows(startIndex, lastIndex)
 
-    getMetadata(startIndex, newItems)
+    getMetadata(newItems)
     rerender({})
   }
 
@@ -358,17 +358,12 @@ const KeyList = forwardRef((props: Props, ref) => {
   }
 
   const getMetadata = useCallback(
-    (
-      initialStartIndex: number,
-      itemsInit: IKeyPropTypes[] = [],
-      forceRefresh?: boolean,
-    ): void => {
+    (itemsInit: IKeyPropTypes[] = [], forceRefresh?: boolean): void => {
       const isSomeNotUndefined = ({ type, size, length }: IKeyPropTypes) =>
         (!commonFilterType && !isUndefined(type)) ||
         !isUndefined(size) ||
         !isUndefined(length)
 
-      let startIndex = initialStartIndex
       let itemsToProcess = itemsInit
 
       if (!forceRefresh) {
@@ -378,7 +373,6 @@ const KeyList = forwardRef((props: Props, ref) => {
         )
         if (firstEmptyItemIndex === -1) return
 
-        startIndex = initialStartIndex + firstEmptyItemIndex
         itemsToProcess = itemsInit.slice(firstEmptyItemIndex)
       }
 
