@@ -154,7 +154,30 @@ const InternalPage = (props: Props) => {
       <JsxParser
         bindings={{ path }}
         components={components}
-        blacklistedTags={['iframe', 'script']}
+        blacklistedTags={[
+          'script',
+          'iframe',
+          'object',
+          'embed',
+          'form',
+          'input',
+          'textarea',
+          'select',
+          'button',
+          'meta',
+          'link',
+          'base',
+          'style',
+          'svg',
+          'math',
+          'video',
+          'audio',
+          'source',
+          'applet',
+          'frame',
+          'frameset',
+        ]}
+        blacklistedAttrs={[/^on.*/i, /^style$/i]}
         autoCloseVoidElements
         jsx={content}
         onError={(e) => console.error(e)}
