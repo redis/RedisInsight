@@ -676,9 +676,9 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 7.2 Privacy Settings
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | View privacy settings |
-| 🔲 | main | Show usage data switch |
-| 🔲 | main | Show privacy policy link |
+| ✅ | main | Display privacy settings (section, usage data switch, privacy policy link) |
+| ✅ | main | No telemetry requests emitted after disabling usage data |
+| ✅ | main | Telemetry requests emitted after enabling usage data |
 
 ### 7.3 Workbench Settings
 | Status | Group | Test Case |
@@ -961,7 +961,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Trigger key events and confirm telemetry records correctly |
 | 🔲 | main | Confirm telemetry payloads contain Database ID, Timestamp, Event Type |
 | 🔲 | main | Confirm telemetry events appear in analytics console/local logs |
-| 🔲 | main | Disable telemetry in Settings and confirm no new events logged |
+| ✅ | main | Disable telemetry in Settings and confirm no new events logged |
 
 ### 12.3 EULA & Privacy Settings
 
