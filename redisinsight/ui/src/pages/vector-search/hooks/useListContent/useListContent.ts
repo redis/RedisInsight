@@ -21,6 +21,7 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { QueryLibraryService } from 'uiSrc/services/query-library/QueryLibraryService'
 import { queryLibraryNotifications } from 'uiSrc/pages/vector-search/constants'
+import { SearchIndexDetailsSource } from 'uiSrc/pages/vector-search/telemetry.constants'
 import { localStorageService } from 'uiSrc/services'
 
 import { IndexListAction } from '../../components/index-list/IndexList.types'
@@ -63,7 +64,10 @@ export const useListContent = () => {
       setViewingIndexName(indexName)
       sendEventTelemetry({
         event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
-        eventData: { databaseId: instanceId },
+        eventData: {
+          databaseId: instanceId,
+          source: SearchIndexDetailsSource.IndexList,
+        },
       })
     },
     [instanceId],

@@ -30,6 +30,11 @@ export enum SearchOnboardingAction {
   Skip = 'skip',
 }
 
+export enum SearchIndexDetailsSource {
+  IndexList = 'index_list',
+  Query = 'query',
+}
+
 export enum SearchCommandType {
   Search = 'search',
   Aggregate = 'aggregate',
