@@ -29,6 +29,16 @@ const testCases = [
   },
 ]
 
+const visitMock = visit as jest.Mock
+
+const setupVisitMock = (node: Record<string, unknown>) => {
+  visitMock.mockImplementation(
+    (_tree, _name, callback: (n: Record<string, unknown>) => void) => {
+      callback(node)
+    },
+  )
+}
+
 describe('remarkRedisUpload', () => {
   testCases.forEach((tc) => {
     it(`should return ${tc.resultPath} + ${tc.meta} for ${tc.lang} ${tc.meta}`, () => {
@@ -38,12 +48,7 @@ describe('remarkRedisUpload', () => {
         meta: tc.meta,
       }
 
-      // mock implementation
-      ;(visit as jest.Mock).mockImplementation(
-        (_tree: any, _name: string, callback: (node: any) => void) => {
-          callback(node)
-        },
-      )
+      setupVisitMock(node)
 
       const remark = remarkRedisUpload(tc.path)
       remark({} as Node)
@@ -53,5 +58,25 @@ describe('remarkRedisUpload', () => {
         value: getValue(tc.meta, tc.resultPath),
       })
     })
+  })
+
+  it('should escape label to prevent JSX attribute breakout', () => {
+    const maliciousLabel =
+      'x" path="/x" /> <img src={alert(1)} /> <RedisUploadButton label="y'
+    const node = {
+      type: 'code',
+      lang: 'redis-upload:[/_data/file.txt]',
+      meta: maliciousLabel,
+    }
+
+    setupVisitMock(node)
+
+    const remark = remarkRedisUpload(`${TUTORIAL_PATH}/intro.md`)
+    remark({} as Node)
+
+    expect(node.type).toBe('html')
+    expect(node.value).not.toContain('"/>')
+    expect(node.value).not.toContain('<img')
+    expect(node.value).not.toContain('{alert')
   })
 })

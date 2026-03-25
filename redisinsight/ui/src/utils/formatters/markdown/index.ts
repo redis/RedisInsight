@@ -4,6 +4,7 @@ import { remarkLink } from './remarkLink'
 import { remarkCode } from './remarkCode'
 import { remarkSanitize } from './remarkSanitize'
 import { remarkRedisUpload } from './remarkRedisUpload'
+import { escapeJsxAttribute } from './escapeJsxAttribute'
 
 export {
   rehypeLinks,
@@ -12,4 +13,5 @@ export {
   remarkCode,
   remarkRedisUpload,
   remarkSanitize,
+  escapeJsxAttribute,
 }

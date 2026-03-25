@@ -9,7 +9,7 @@ const getValue = (
   params?: string,
   value?: string,
 ) =>
-  `<Code label="${meta}" params="${params}" path={path} lang="${lang}">{${JSON.stringify(value)}}</Code>`
+  `<Code label="${meta}" params="${params ?? ''}" path={path} lang="${lang}">{${JSON.stringify(value)}}</Code>`
 
 describe('remarkRedisCode', () => {
   it('should not modify codeNode if lang not redis', () => {

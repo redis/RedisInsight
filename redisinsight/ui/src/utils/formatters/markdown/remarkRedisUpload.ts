@@ -1,10 +1,10 @@
 import { visit } from 'unist-util-visit'
 import { getFileUrlFromMd } from 'uiSrc/utils/pathUtil'
+import { escapeJsxAttribute } from './escapeJsxAttribute'
 
 export const remarkRedisUpload =
   (path: string): ((tree: Node) => void) =>
   (tree: any) => {
-    // Find code node in syntax tree
     visit(tree, 'code', (node) => {
       try {
         const { lang, meta } = node
@@ -18,8 +18,9 @@ export const remarkRedisUpload =
 
         if (path && label) {
           node.type = 'html'
-          // Replace it with our custom component
-          node.value = `<RedisUploadButton label="${label}" path="${decodedPath}" />`
+          const safeLabel = escapeJsxAttribute(label)
+          const safePath = escapeJsxAttribute(decodedPath)
+          node.value = `<RedisUploadButton label="${safeLabel}" path="${safePath}" />`
         }
       } catch (e) {
         // ignore errors
