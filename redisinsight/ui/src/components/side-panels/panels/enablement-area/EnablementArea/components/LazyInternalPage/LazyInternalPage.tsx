@@ -128,7 +128,10 @@ const LazyInternalPage = ({
       setLoading(false)
     } catch (error) {
       setLoading(false)
-      const errorMessage: string = getApiErrorMessage(error as AxiosError)
+      const errorMessage: string =
+        error instanceof Error && !(error as AxiosError).response
+          ? error.message
+          : getApiErrorMessage(error as AxiosError)
       dispatch(resetExplorePanelSearch())
       dispatch(setExplorePanelContent({ data: null, url: null }))
       setError(errorMessage)
