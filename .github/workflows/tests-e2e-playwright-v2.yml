@@ -101,7 +101,7 @@ jobs:
     secrets: inherit
     with:
       environment: ${{ inputs.environment || 'staging' }}
-      target: 'build_linux_AppImage'
+      target: 'build_linux_appimage_x64'
       debug: ${{ inputs.debug || false }}
       enterprise: false
 

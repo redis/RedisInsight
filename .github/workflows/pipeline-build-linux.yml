@@ -72,10 +72,13 @@ jobs:
 
       - name: Build linux packages (custom)
         if: inputs.target != vars.ALL
+        env:
+          IS_PRODUCTION: ${{ vars.ENV == 'production' }}
+          TARGET_INPUT: ${{ inputs.target }}
         run: |
-          target=$(echo "${{inputs.target}}" | grep -oE 'build_linux_[^_ ]+' | sed 's/build_linux_//' | sort -u | paste -sd ' ' -)
+          target=$(echo "$TARGET_INPUT" | grep -oE 'build_linux_[^ ]+' | sed 's/build_linux_//;s/_/:/' | sort -u | paste -sd ' ' -)
 
-          if [ "${{ vars.ENV == 'production' }}" == "true" ]; then
+          if [ "$IS_PRODUCTION" == "true" ]; then
             yarn package:prod --linux $target
           else
             yarn package:stage --linux $target
@@ -93,7 +96,7 @@ jobs:
         with:
           name: linux-builds
           path: |
-            ./release/latest-linux.yml
+            ./release/latest-linux*.yml
             ./release/Redis-Insight*.AppImage
             ./release/Redis-Insight*.deb
             ./release/Redis-Insight*.rpm
