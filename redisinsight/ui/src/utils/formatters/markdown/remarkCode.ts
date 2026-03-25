@@ -17,7 +17,7 @@ export const remarkCode =
 
       if (codeOptions?.allLangs) {
         const safeMeta = escapeJsxAttribute(meta || '')
-        const safeLang = escapeJsxAttribute(lang)
+        const safeLang = escapeJsxAttribute(lang || '')
         codeNode.type = 'html'
         codeNode.value = `<Code label="${safeMeta}" lang="${safeLang}">{${JSON.stringify(value)}}</Code>`
       }
