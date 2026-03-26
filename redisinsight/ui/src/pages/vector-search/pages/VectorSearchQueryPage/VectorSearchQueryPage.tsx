@@ -87,6 +87,7 @@ export const VectorSearchQueryPage = () => {
       <PageHeader
         indexName={getIndexDisplayName(decodedIndexName)}
         indexOptions={indexOptions}
+        isIndexPanelOpen={isIndexPanelOpen}
         onIndexChange={handleIndexChange}
         onToggleIndexPanel={toggleIndexPanel}
       />
