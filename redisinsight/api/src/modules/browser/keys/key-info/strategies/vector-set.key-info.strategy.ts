@@ -11,6 +11,11 @@ import { KeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/ke
 import { RedisClient } from 'src/modules/redis/client';
 import { MAX_KEY_SIZE } from 'src/modules/browser/keys/key-info/constants';
 
+enum VInfoField {
+  QuantType = 'quant-type',
+  VectorDim = 'vector-dim',
+}
+
 interface VectorSetInfo {
   quantType?: string;
   vectorDim?: number;
@@ -32,9 +37,9 @@ export class VectorSetKeyInfoStrategy extends KeyInfoStrategy {
       const key = String(vInfoResponse[i]).toLowerCase();
       const value = vInfoResponse[i + 1];
 
-      if (key === 'quant-type') {
+      if (key === VInfoField.QuantType) {
         result.quantType = String(value);
-      } else if (key === 'vector-dim') {
+      } else if (key === VInfoField.VectorDim) {
         result.vectorDim = Number(value);
       }
     }
