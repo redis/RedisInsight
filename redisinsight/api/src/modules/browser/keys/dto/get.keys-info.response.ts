@@ -34,4 +34,17 @@ export class GetKeyInfoResponse {
     description: 'The length of the value stored in a key.',
   })
   length?: number;
+
+  @ApiPropertyOptional({
+    type: String,
+    description:
+      'The quantization type used for vector set keys (e.g., int8, float32).',
+  })
+  quantType?: string;
+
+  @ApiPropertyOptional({
+    type: Number,
+    description: 'The vector dimensions for vector set keys.',
+  })
+  vectorDim?: number;
 }

@@ -11,14 +11,17 @@ import {
   RedisDataType,
 } from 'src/modules/browser/keys/dto';
 import { VectorSetKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/vector-set.key-info.strategy';
+import {
+  vectorSetKeyInfoFactory,
+  vInfoResponseFactory,
+} from 'src/modules/browser/keys/key-info/__tests__/vector-set-key-info.factory';
 
-const getKeyInfoResponse: GetKeyInfoResponse = {
-  name: 'testVectorSet',
-  type: 'vectorset',
-  ttl: -1,
-  size: 50,
-  length: 10,
-};
+const vInfo = vInfoResponseFactory.build();
+const getKeyInfoResponse: GetKeyInfoResponse = vectorSetKeyInfoFactory.build({
+  quantType: vInfo.quantType,
+  vectorDim: vInfo.vectorDim,
+});
+const mockVInfoResponse = vInfo.raw;
 
 describe('VectorSetKeyInfoStrategy', () => {
   let strategy: VectorSetKeyInfoStrategy;
@@ -33,19 +36,22 @@ describe('VectorSetKeyInfoStrategy', () => {
 
   describe('getInfo', () => {
     const key = getKeyInfoResponse.name;
+    const { ttl, length, size } = getKeyInfoResponse;
 
     describe('when includeSize is true', () => {
-      it('should return all info in single pipeline', async () => {
+      it('should return all info including quantType and vectorDim in single pipeline', async () => {
         when(mockStandaloneRedisClient.sendPipeline)
           .calledWith([
             [BrowserToolKeysCommands.Ttl, key],
             [BrowserToolVectorSetCommands.VCard, key],
             [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],
+            [BrowserToolVectorSetCommands.VInfo, key],
           ])
           .mockResolvedValueOnce([
-            [null, -1],
-            [null, 10],
-            [null, 50],
+            [null, ttl],
+            [null, length],
+            [null, size],
+            [null, mockVInfoResponse],
           ]);
 
         const result = await strategy.getInfo(
@@ -60,22 +66,24 @@ describe('VectorSetKeyInfoStrategy', () => {
     });
 
     describe('when includeSize is false', () => {
-      it('should return appropriate value', async () => {
+      it('should return appropriate value with quantType and vectorDim', async () => {
         when(mockStandaloneRedisClient.sendPipeline)
           .calledWith([
             [BrowserToolKeysCommands.Ttl, key],
             [BrowserToolVectorSetCommands.VCard, key],
+            [BrowserToolVectorSetCommands.VInfo, key],
           ])
           .mockResolvedValueOnce([
-            [null, -1],
-            [null, 10],
+            [null, ttl],
+            [null, length],
+            [null, mockVInfoResponse],
           ]);
 
         when(mockStandaloneRedisClient.sendPipeline)
           .calledWith([
             [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],
           ])
-          .mockResolvedValueOnce([[null, 50]]);
+          .mockResolvedValueOnce([[null, size]]);
 
         const result = await strategy.getInfo(
           mockStandaloneRedisClient,
@@ -98,10 +106,12 @@ describe('VectorSetKeyInfoStrategy', () => {
           .calledWith([
             [BrowserToolKeysCommands.Ttl, key],
             [BrowserToolVectorSetCommands.VCard, key],
+            [BrowserToolVectorSetCommands.VInfo, key],
           ])
           .mockResolvedValueOnce([
-            [null, -1],
-            [null, 10],
+            [null, ttl],
+            [null, length],
+            [null, mockVInfoResponse],
           ]);
 
         when(mockStandaloneRedisClient.sendPipeline)
@@ -125,10 +135,12 @@ describe('VectorSetKeyInfoStrategy', () => {
           .calledWith([
             [BrowserToolKeysCommands.Ttl, key],
             [BrowserToolVectorSetCommands.VCard, key],
+            [BrowserToolVectorSetCommands.VInfo, key],
           ])
           .mockResolvedValueOnce([
-            [null, -1],
+            [null, ttl],
             [null, 50000],
+            [null, mockVInfoResponse],
           ]);
 
         const result = await strategy.getInfo(
@@ -142,6 +154,39 @@ describe('VectorSetKeyInfoStrategy', () => {
           ...getKeyInfoResponse,
           length: 50000,
           size: -1,
+        });
+      });
+
+      it('should return undefined for quantType and vectorDim when VINFO returns empty array', async () => {
+        when(mockStandaloneRedisClient.sendPipeline)
+          .calledWith([
+            [BrowserToolKeysCommands.Ttl, key],
+            [BrowserToolVectorSetCommands.VCard, key],
+            [BrowserToolVectorSetCommands.VInfo, key],
+          ])
+          .mockResolvedValueOnce([
+            [null, ttl],
+            [null, length],
+            [null, []],
+          ]);
+
+        when(mockStandaloneRedisClient.sendPipeline)
+          .calledWith([
+            [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],
+          ])
+          .mockResolvedValueOnce([[null, size]]);
+
+        const result = await strategy.getInfo(
+          mockStandaloneRedisClient,
+          key,
+          RedisDataType.VectorSet,
+          false,
+        );
+
+        expect(result).toEqual({
+          ...getKeyInfoResponse,
+          quantType: undefined,
+          vectorDim: undefined,
         });
       });
     });

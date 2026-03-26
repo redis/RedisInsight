@@ -22,7 +22,7 @@ export interface Props {
 }
 
 const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
-  const { type, size, length } =
+  const { type, size, length, quantType, vectorDim } =
     useSelector(selectedKeyDataSelector) ?? initialKeyInfo
 
   const isSizeTooLarge = size === -1
@@ -78,6 +78,30 @@ const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
           {length ?? '-'}
         </Text>
       </FlexItem>
+      {quantType && (
+        <FlexItem>
+          <Text
+            size="s"
+            className={styles.subtitleText}
+            data-testid="key-quant-type-text"
+          >
+            {width > MIDDLE_SCREEN_RESOLUTION ? 'Quant type: ' : 'Q: '}
+            {quantType}
+          </Text>
+        </FlexItem>
+      )}
+      {vectorDim !== undefined && (
+        <FlexItem>
+          <Text
+            size="s"
+            className={styles.subtitleText}
+            data-testid="key-vector-dim-text"
+          >
+            {width > MIDDLE_SCREEN_RESOLUTION ? 'Vector dim: ' : 'Dim: '}
+            {vectorDim}
+          </Text>
+        </FlexItem>
+      )}
     </>
   )
 }
