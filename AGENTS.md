@@ -96,6 +96,7 @@ All detailed development standards are maintained in `.ai/rules/`:
 - **Branches**: `.ai/skills/branches/SKILL.md` - Branch naming conventions
 - **Commits**: `.ai/skills/commits/SKILL.md` - Commit message guidelines
 - **Pull Requests**: `.ai/skills/pull-requests/SKILL.md` - PR process and review guidelines
+- **Feature Flags**: `.ai/skills/feature-flags/SKILL.md` - Adding, promoting, and removing feature flags
 
 **Refer to these files for comprehensive guidelines on each topic.**
 

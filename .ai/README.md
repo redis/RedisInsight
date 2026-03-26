@@ -31,6 +31,11 @@ AGENTS.md                              # 🎯 AI agent entry point
 │   ├── branches.md                    # Branch naming conventions
 │   ├── commits.md                     # Commit message guidelines
 │   └── pull-requests.md               # Pull request process
+├── skills/                            # AI agent skills (step-by-step workflows)
+│   ├── branches/SKILL.md             # Branch naming skill
+│   ├── commits/SKILL.md              # Commit message generation skill
+│   ├── pull-requests/SKILL.md        # PR creation and review skill
+│   └── feature-flags/SKILL.md        # Feature flag lifecycle skill
 └── commands/                          # AI workflow commands
     ├── pr-plan.md                     # JIRA ticket implementation planning
     ├── commit-message.md              # Commit message generation
@@ -39,7 +44,8 @@ AGENTS.md                              # 🎯 AI agent entry point
 # Symlinks (all AI tools read from .ai/)
 .cursor/
   ├── rules/ -> ../.ai/rules/          # Cursor AI (rules)
-  └── commands/ -> ../.ai/commands/  # Cursor AI (commands)
+  ├── commands/ -> ../.ai/commands/    # Cursor AI (commands)
+  └── skills/ -> ../.ai/skills/        # Cursor AI (skills)
 .augment/ -> .ai/                      # Augment AI
 .windsurfrules -> .ai/                 # Windsurf AI
 .github/copilot-instructions.md        # GitHub Copilot
@@ -68,6 +74,7 @@ This directory contains comprehensive development standards that are automatical
 - **Branch Naming**: `.ai/rules/branches.md` - Branch naming conventions
 - **Commit Messages**: `.ai/rules/commits.md` - Commit message guidelines (Conventional Commits)
 - **Pull Request Process**: `.ai/rules/pull-requests.md` - PR creation and review guidelines
+- **Feature Flags**: `.ai/skills/feature-flags/SKILL.md` - Adding, promoting, and removing feature flags
 
 ## MCP (Model Context Protocol) Setup
 
