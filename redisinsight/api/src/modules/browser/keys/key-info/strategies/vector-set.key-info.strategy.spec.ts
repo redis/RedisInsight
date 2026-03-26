@@ -11,29 +11,17 @@ import {
   RedisDataType,
 } from 'src/modules/browser/keys/dto';
 import { VectorSetKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/vector-set.key-info.strategy';
+import {
+  vectorSetKeyInfoFactory,
+  vInfoResponseFactory,
+} from 'src/modules/browser/keys/key-info/__tests__/vector-set-key-info.factory';
 
-const getKeyInfoResponse: GetKeyInfoResponse = {
-  name: 'testVectorSet',
-  type: 'vectorset',
-  ttl: -1,
-  size: 50,
-  length: 10,
-  quantType: 'int8',
-  vectorDim: 300,
-};
-
-const mockVInfoResponse = [
-  'quant-type',
-  'int8',
-  'hnsw-m',
-  '16',
-  'vector-dim',
-  300,
-  'projection-input-dim',
-  '0',
-  'size',
-  '5',
-];
+const vInfo = vInfoResponseFactory.build();
+const getKeyInfoResponse: GetKeyInfoResponse = vectorSetKeyInfoFactory.build({
+  quantType: vInfo.quantType,
+  vectorDim: vInfo.vectorDim,
+});
+const mockVInfoResponse = vInfo.raw;
 
 describe('VectorSetKeyInfoStrategy', () => {
   let strategy: VectorSetKeyInfoStrategy;
@@ -48,6 +36,7 @@ describe('VectorSetKeyInfoStrategy', () => {
 
   describe('getInfo', () => {
     const key = getKeyInfoResponse.name;
+    const { ttl, length, size } = getKeyInfoResponse;
 
     describe('when includeSize is true', () => {
       it('should return all info including quantType and vectorDim in single pipeline', async () => {
@@ -59,9 +48,9 @@ describe('VectorSetKeyInfoStrategy', () => {
             [BrowserToolVectorSetCommands.VInfo, key],
           ])
           .mockResolvedValueOnce([
-            [null, -1],
-            [null, 10],
-            [null, 50],
+            [null, ttl],
+            [null, length],
+            [null, size],
             [null, mockVInfoResponse],
           ]);
 
@@ -85,8 +74,8 @@ describe('VectorSetKeyInfoStrategy', () => {
             [BrowserToolVectorSetCommands.VInfo, key],
           ])
           .mockResolvedValueOnce([
-            [null, -1],
-            [null, 10],
+            [null, ttl],
+            [null, length],
             [null, mockVInfoResponse],
           ]);
 
@@ -94,7 +83,7 @@ describe('VectorSetKeyInfoStrategy', () => {
           .calledWith([
             [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],
           ])
-          .mockResolvedValueOnce([[null, 50]]);
+          .mockResolvedValueOnce([[null, size]]);
 
         const result = await strategy.getInfo(
           mockStandaloneRedisClient,
@@ -120,8 +109,8 @@ describe('VectorSetKeyInfoStrategy', () => {
             [BrowserToolVectorSetCommands.VInfo, key],
           ])
           .mockResolvedValueOnce([
-            [null, -1],
-            [null, 10],
+            [null, ttl],
+            [null, length],
             [null, mockVInfoResponse],
           ]);
 
@@ -149,7 +138,7 @@ describe('VectorSetKeyInfoStrategy', () => {
             [BrowserToolVectorSetCommands.VInfo, key],
           ])
           .mockResolvedValueOnce([
-            [null, -1],
+            [null, ttl],
             [null, 50000],
             [null, mockVInfoResponse],
           ]);
@@ -176,8 +165,8 @@ describe('VectorSetKeyInfoStrategy', () => {
             [BrowserToolVectorSetCommands.VInfo, key],
           ])
           .mockResolvedValueOnce([
-            [null, -1],
-            [null, 10],
+            [null, ttl],
+            [null, length],
             [null, []],
           ]);
 
@@ -185,7 +174,7 @@ describe('VectorSetKeyInfoStrategy', () => {
           .calledWith([
             [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],
           ])
-          .mockResolvedValueOnce([[null, 50]]);
+          .mockResolvedValueOnce([[null, size]]);
 
         const result = await strategy.getInfo(
           mockStandaloneRedisClient,
