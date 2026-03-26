@@ -4,6 +4,7 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
+import { chunk } from 'lodash';
 import { catchAclError } from 'src/utils';
 import { RedisErrorCodes } from 'src/constants';
 import ERROR_MESSAGES from 'src/constants/error-messages';
@@ -121,30 +122,22 @@ export class VectorSetService {
 
     const results = await client.sendPipeline(pipelineCommands);
 
-    // Parse results: each element has 2 results (VEMB, VGETATTR)
-    const elements: VectorSetElementDto[] = [];
-    for (let i = 0; i < elementNames.length; i++) {
-      const name = elementNames[i];
-      const embResult = results[i * 2];
-      const attrResult = results[i * 2 + 1];
+    const resultPairs = chunk(results, 2);
 
-      // embResult is [error, value], parse vector values
+    return elementNames.map((name, i) => {
+      const [embResult, attrResult] = resultPairs[i];
+
       const vector = embResult[1]
         ? (embResult[1] as string[]).map((v) => parseFloat(v))
         : undefined;
 
-      // attrResult is [error, value]
       const attributes = attrResult[1] as string | undefined;
 
-      elements.push(
-        plainToInstance(VectorSetElementDto, {
-          name,
-          vector,
-          attributes: attributes || undefined,
-        }),
-      );
-    }
-
-    return elements;
+      return plainToInstance(VectorSetElementDto, {
+        name,
+        vector,
+        attributes: attributes || undefined,
+      });
+    });
   }
 }
