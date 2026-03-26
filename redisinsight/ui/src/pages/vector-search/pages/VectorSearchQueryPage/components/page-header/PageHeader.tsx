@@ -9,6 +9,7 @@ import * as S from './PageHeader.styles'
 export const PageHeader = ({
   indexName,
   indexOptions,
+  isIndexPanelOpen,
   onIndexChange,
   onToggleIndexPanel,
 }: PageHeaderProps) => (
@@ -18,6 +19,6 @@ export const PageHeader = ({
       indexOptions={indexOptions}
       onIndexChange={onIndexChange}
     />
-    <ViewIndexButton onClick={onToggleIndexPanel} />
+    <ViewIndexButton isActive={isIndexPanelOpen} onClick={onToggleIndexPanel} />
   </S.HeaderRow>
 )
