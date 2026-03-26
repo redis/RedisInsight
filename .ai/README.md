@@ -36,7 +36,7 @@ AGENTS.md                              # 🎯 AI agent entry point
 │   ├── branches/                      # Branch naming skill
 │   ├── commits/                       # Commit message skill
 │   ├── pull-requests/                 # Pull request skill
-|   └── feature-flags/SKILL.md        # Feature flag lifecycle
+|   └── feature-flags/SKILL.md         # Feature flag lifecycle
 │   └── redis-ui-components/ -> node_modules/@redis-ui/components/skills/redis-ui-components
 │       ├── SKILL.md                   # Component catalog and usage patterns
 │       └── references/                # Per-component API docs (Button, Select, etc.)
@@ -78,10 +78,8 @@ This directory contains comprehensive development standards that are automatical
 - **Branch Naming**: `.ai/rules/branches.md` - Branch naming conventions
 - **Commit Messages**: `.ai/rules/commits.md` - Commit message guidelines (Conventional Commits)
 - **Pull Request Process**: `.ai/rules/pull-requests.md` - PR creation and review guidelines
-  <<<<<<< HEAD
-- # **Feature Flags**: `.ai/skills/feature-flags/SKILL.md` - Adding, promoting, and removing feature flags
+- **Feature Flags**: `.ai/skills/feature-flags/SKILL.md` - Adding, promoting, and removing feature flags
 - **Redis UI Components**: `.ai/skills/redis-ui-components/` - Component API references, props, and usage examples (sourced from `@redis-ui/components` npm package via symlink)
-  > > > > > > > ceb770a0b (docs: Add Redis UI Components skills)
 
 ## MCP (Model Context Protocol) Setup
 
