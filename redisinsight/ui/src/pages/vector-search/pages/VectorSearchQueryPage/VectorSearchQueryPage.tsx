@@ -4,6 +4,7 @@ import { useHistory, useParams } from 'react-router-dom'
 import { RiSelectOption } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Pages } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { SearchIndexDetailsSource } from 'uiSrc/pages/vector-search/telemetry.constants'
 
 import {
   getIndexDisplayName,
@@ -68,7 +69,10 @@ export const VectorSearchQueryPage = () => {
     if (!isIndexPanelOpen) {
       sendEventTelemetry({
         event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
-        eventData: { databaseId: instanceId },
+        eventData: {
+          databaseId: instanceId,
+          source: SearchIndexDetailsSource.Query,
+        },
       })
     }
     setIsIndexPanelOpen((prev) => !prev)
