@@ -43,7 +43,7 @@ export class VectorSetService {
         keyName,
       ])) as number;
 
-      if (!total && total !== 0) {
+      if (!total) {
         this.logger.error(
           `Failed to get elements of the VectorSet data type. Not Found key: ${keyName}.`,
           clientMetadata,

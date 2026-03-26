@@ -117,43 +117,13 @@ describe('VectorSetService', () => {
       expect(result.nextCursor).toEqual('(element3');
     });
 
-    it('should return empty elements when key is empty', async () => {
-      when(client.sendCommand)
-        .calledWith([
-          BrowserToolVectorSetCommands.VCard,
-          mockGetVectorSetElementsDto.keyName,
-        ])
-        .mockResolvedValue(0);
-
-      when(client.sendCommand)
-        .calledWith([
-          BrowserToolVectorSetCommands.VRange,
-          mockGetVectorSetElementsDto.keyName,
-          mockGetVectorSetElementsDto.start,
-          mockGetVectorSetElementsDto.end,
-          mockGetVectorSetElementsDto.count,
-        ])
-        .mockResolvedValue([]);
-
-      client.sendPipeline.mockResolvedValue([]);
-
-      const result = await service.getElements(
-        mockBrowserClientMetadata,
-        mockGetVectorSetElementsDto,
-      );
-
-      expect(result.total).toEqual(0);
-      expect(result.elements).toEqual([]);
-      expect(result.nextCursor).toBeUndefined();
-    });
-
     it('should throw NotFoundException when key does not exist', async () => {
       when(client.sendCommand)
         .calledWith([
           BrowserToolVectorSetCommands.VCard,
           mockGetVectorSetElementsDto.keyName,
         ])
-        .mockResolvedValue(null);
+        .mockResolvedValue(0);
 
       await expect(
         service.getElements(
