@@ -4,4 +4,3 @@ export * from './z-set';
 export * from './set';
 export * from './list';
 export * from './hash';
-export * from './vector-set';
