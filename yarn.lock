@@ -2602,7 +2602,7 @@
     "@react-hook/latest" "^1.0.2"
     "@react-hook/passive-layout-effect" "^1.2.0"
 
-"@redis-ui/components@^43.0.0", "@redis-ui/components@^43.2.2":
+"@redis-ui/components@^43.0.0", "@redis-ui/components@^43.0.2":
   version "43.0.2"
   resolved "https://registry.yarnpkg.com/@redis-ui/components/-/components-43.0.2.tgz#80b9186f493df4b4714a698e8b04a56abf633b4a"
   integrity sha512-hnuzHLxvzyDj5udRjhCoXEeZNwu8mQHpDA39PeCs/7To7K5ThpnvCiKJzp9gjoivkFMPd8r32vCcCsG82Qb7Cg==
