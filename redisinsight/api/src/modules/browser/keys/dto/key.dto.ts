@@ -13,6 +13,7 @@ export enum RedisDataType {
   JSON = 'ReJSON-RL',
   Graph = 'graphdata',
   TS = 'TSDB-TYPE',
+  VectorSet = 'vectorset',
 }
 
 export class KeyDto {

@@ -75,4 +75,8 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
     name: KnownFeatures.DevBrowser,
     storage: FeatureStorage.Database,
   },
+  [KnownFeatures.DevVectorSet]: {
+    name: KnownFeatures.DevVectorSet,
+    storage: FeatureStorage.Database,
+  },
 };
