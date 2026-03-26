@@ -1,13 +1,21 @@
 import React from 'react'
 
-import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
+import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
 
 export interface ViewIndexButtonProps {
+  isActive: boolean
   onClick: () => void
 }
 
-export const ViewIndexButton = ({ onClick }: ViewIndexButtonProps) => (
-  <EmptyButton size="small" onClick={onClick} data-testid="view-index-btn">
+export const ViewIndexButton = ({
+  isActive,
+  onClick,
+}: ViewIndexButtonProps) => (
+  <ToggleButton
+    pressed={isActive}
+    onPressedChange={onClick}
+    data-testid="view-index-btn"
+  >
     View index
-  </EmptyButton>
+  </ToggleButton>
 )
