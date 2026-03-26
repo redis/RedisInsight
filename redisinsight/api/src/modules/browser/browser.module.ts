@@ -9,6 +9,7 @@ import { RejsonRlModule } from 'src/modules/browser/rejson-rl/rejson-rl.module';
 import { StreamModule } from 'src/modules/browser/stream/stream.module';
 import { RedisearchModule } from 'src/modules/browser/redisearch/redisearch.module';
 import { KeysModule } from 'src/modules/browser/keys/keys.module';
+import { VectorSetModule } from 'src/modules/browser/vector-set/vector-set.module';
 import { BrowserHistoryRepository } from './browser-history/repositories/browser-history.repository';
 import { LocalBrowserHistoryRepository } from './browser-history/repositories/local.browser-history.repository';
 
@@ -32,6 +33,7 @@ export class BrowserModule {
         RejsonRlModule.register({ route }),
         RedisearchModule.register({ route }),
         KeysModule.register({ route }),
+        VectorSetModule.register({ route }),
       ],
       exports: [BrowserHistoryModule],
     };
