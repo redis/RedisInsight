@@ -83,4 +83,33 @@ describe('remarkLink', () => {
       value: '<RedisInsightLink url="workbench" text="Workbench" size="S" />',
     })
   })
+
+  it('should escape URL and text to prevent JSX attribute breakout', () => {
+    const visitMock = visit as jest.Mock
+    const codeNode: Record<string, unknown> = {
+      title: 'Redis Cloud',
+      type: 'link',
+      url: 'https://evil.com/x" onload="alert(1)',
+      children: [
+        {
+          type: 'text',
+          value: 'Click" /> <img src={alert(1)} /> <a text="',
+        },
+      ],
+    }
+
+    visitMock.mockImplementation(
+      (_tree, _name, callback: (n: Record<string, unknown>) => void) => {
+        callback(codeNode)
+      },
+    )
+
+    const remark = remarkLink()
+    remark({} as Node)
+
+    const output = codeNode.value as string
+    expect(output).toContain('&quot;')
+    expect(output).not.toContain('<img')
+    expect(output).not.toContain('{alert')
+  })
 })

@@ -10,6 +10,7 @@ import {
 } from 'uiSrc/slices/browser/redisearch'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { SearchIndexDetailsSource } from 'uiSrc/pages/vector-search/telemetry.constants'
 
 import { useListContent } from './useListContent'
 import { useIndexListData } from '../useIndexListData'
@@ -163,7 +164,10 @@ describe('useListContent', () => {
 
       expect(sendEventTelemetry).toHaveBeenCalledWith({
         event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
-        eventData: { databaseId: mockInstanceId },
+        eventData: {
+          databaseId: mockInstanceId,
+          source: SearchIndexDetailsSource.IndexList,
+        },
       })
     })
 
