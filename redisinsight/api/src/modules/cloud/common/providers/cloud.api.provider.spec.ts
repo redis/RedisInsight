@@ -56,6 +56,10 @@ const getHeadersTests = [
     expected: { ...mockDefaultCloudApiHeaders },
   },
   {
+    input: null,
+    expected: { ...mockDefaultCloudApiHeaders },
+  },
+  {
     input: {},
     expected: { ...mockDefaultCloudApiHeaders },
   },
@@ -73,6 +77,12 @@ const getHeadersTests = [
   {
     input: { csrf: 'csrf-token' },
     expected: { ...mockDefaultCloudApiHeaders, 'x-csrf-token': 'csrf-token' },
+  },
+  {
+    input: { idToken: 'id-token-value' },
+    expected: {
+      ...mockDefaultCloudApiHeaders,
+    },
   },
   {
     input: { idToken: 'id-token-value', idpType: CloudAuthIdpType.Google },
