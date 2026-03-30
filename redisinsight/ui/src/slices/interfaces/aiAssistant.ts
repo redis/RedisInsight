@@ -1,6 +1,7 @@
 export enum AiChatType {
   Assistance = 'document',
   Query = 'database',
+  Agent = 'agent',
 }
 
 export enum AiChatMessageType {
@@ -35,6 +36,10 @@ export interface StateAiAssistant {
   expert: {
     loading: boolean
     agreements: string[]
+    messages: Array<AiChatMessage>
+  }
+  agent: {
+    loading: boolean
     messages: Array<AiChatMessage>
   }
 }

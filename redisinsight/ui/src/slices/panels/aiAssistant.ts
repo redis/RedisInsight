@@ -55,6 +55,10 @@ export const initialState: StateAiAssistant = {
     agreements: [],
     messages: [],
   },
+  agent: {
+    loading: false,
+    messages: [],
+  },
 }
 
 // A slice for recipes
@@ -192,6 +196,50 @@ const aiAssistantSlice = createSlice({
     clearExpertChatHistory: (state) => {
       state.expert.messages = []
     },
+    getAgentChatHistory: (state) => {
+      state.agent.loading = true
+    },
+    getAgentChatHistorySuccess: (
+      state,
+      { payload }: PayloadAction<Array<AiChatMessage>>,
+    ) => {
+      state.agent.loading = false
+      state.agent.messages =
+        payload?.map((m) => ({ ...m, id: `ai_${uuidv4()}` })) || []
+    },
+    getAgentChatHistoryFailed: (state) => {
+      state.agent.loading = false
+    },
+    sendAgentQuestion: (state, { payload }: PayloadAction<AiChatMessage>) => {
+      state.agent.messages.push(payload)
+    },
+    setAgentQuestionError: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        id: string
+        error: Maybe<{
+          statusCode: number
+          errorCode?: number
+        }>
+      }>,
+    ) => {
+      state.agent.messages = state.agent.messages.map((item) =>
+        item.id === payload.id
+          ? {
+              ...item,
+              error: payload.error,
+            }
+          : item,
+      )
+    },
+    sendAgentAnswer: (state, { payload }: PayloadAction<AiChatMessage>) => {
+      state.agent.messages.push(payload)
+    },
+    clearAgentChatHistory: (state) => {
+      state.agent.messages = []
+    },
   },
 })
 
@@ -201,6 +249,8 @@ export const aiAssistantChatSelector = (state: RootState) =>
   state.panels.aiAssistant.assistant
 export const aiExpertChatSelector = (state: RootState) =>
   state.panels.aiAssistant.expert
+export const aiAgentChatSelector = (state: RootState) =>
+  state.panels.aiAssistant.agent
 
 // Actions generated from the slice
 export const {
@@ -227,6 +277,13 @@ export const {
   setExpertQuestionError,
   sendExpertAnswer,
   clearExpertChatHistory,
+  getAgentChatHistory,
+  getAgentChatHistorySuccess,
+  getAgentChatHistoryFailed,
+  sendAgentQuestion,
+  setAgentQuestionError,
+  sendAgentAnswer,
+  clearAgentChatHistory,
 } = aiAssistantSlice.actions
 
 // The reducer
@@ -462,6 +519,98 @@ export function removeExpertChatHistoryAction(
       }
 
       dispatch(addErrorNotification(err))
+    }
+  }
+}
+
+export function getAgentChatHistoryAction(
+  instanceId: string,
+  onSuccess?: () => void,
+) {
+  return async (dispatch: AppDispatch) => {
+    dispatch(getAgentChatHistory())
+
+    try {
+      const { status, data } = await apiService.get<any>(
+        `${ApiEndpoints.AI_AGENT}/${instanceId}/messages`,
+      )
+
+      if (isStatusSuccessful(status)) {
+        dispatch(getAgentChatHistorySuccess(data))
+        onSuccess?.()
+      }
+    } catch (e) {
+      dispatch(getAgentChatHistoryFailed())
+    }
+  }
+}
+
+export function askAgentChatbotAction(
+  databaseId: string,
+  message: string,
+  {
+    onMessage,
+    onError,
+    onFinish,
+  }: {
+    onMessage?: (message: AiChatMessage) => void
+    onError?: (errorCode: number) => void
+    onFinish?: () => void
+  },
+) {
+  return async (dispatch: AppDispatch) => {
+    const humanMessage = generateHumanMessage(message)
+    const aiMessageProgressed: AiChatMessage = generateAiMessage()
+
+    dispatch(sendAgentQuestion(humanMessage))
+
+    onMessage?.(aiMessageProgressed)
+
+    const baseUrl = getBaseUrl()
+    const url = `${baseUrl}${ApiEndpoints.AI_AGENT}/${databaseId}/messages`
+
+    await getStreamedAnswer(url, message, {
+      onMessage: (value: string) => {
+        aiMessageProgressed.content += value
+        onMessage?.(aiMessageProgressed)
+      },
+      onFinish: () => {
+        dispatch(sendAgentAnswer(aiMessageProgressed))
+        onFinish?.()
+      },
+      onError: (error: any) => {
+        dispatch(
+          setAgentQuestionError({
+            id: humanMessage.id,
+            error: {
+              statusCode: error?.status ?? 500,
+              errorCode: error?.errorCode,
+            },
+          }),
+        )
+        onError?.(error?.status ?? 500)
+        onFinish?.()
+      },
+    })
+  }
+}
+
+export function removeAgentChatHistoryAction(
+  instanceId: string,
+  onSuccess?: () => void,
+) {
+  return async (dispatch: AppDispatch) => {
+    try {
+      const { status } = await apiService.delete<any>(
+        `${ApiEndpoints.AI_AGENT}/${instanceId}/messages`,
+      )
+
+      if (isStatusSuccessful(status)) {
+        dispatch(clearAgentChatHistory())
+        onSuccess?.()
+      }
+    } catch (e) {
+      dispatch(addErrorNotification(getAxiosError(e as EnhancedAxiosError)))
     }
   }
 }

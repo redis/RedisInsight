@@ -1,5 +1,5 @@
 {
-  "version": 3.6,
+  "version": 3.7,
   "features": {
     "redisDataIntegration": {
       "flag": true,
@@ -141,6 +141,10 @@
     },
     "dev-vectorSet": {
       "flag": false,
+      "perc": [[0, 100]]
+    },
+    "dev-agentChat": {
+      "flag": true,
       "perc": [[0, 100]]
     }
   }

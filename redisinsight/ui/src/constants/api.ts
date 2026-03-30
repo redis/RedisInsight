@@ -146,6 +146,7 @@ enum ApiEndpoints {
 
   AI_ASSISTANT_CHATS = 'ai/assistant/chats',
   AI_EXPERT = 'ai/expert',
+  AI_AGENT = 'ai/agent',
 
   ANALYTICS_SEND_EVENT = 'analytics/send-event',
   ANALYTICS_SEND_PAGE = 'analytics/send-page',

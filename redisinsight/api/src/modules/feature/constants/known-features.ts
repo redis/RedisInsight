@@ -79,4 +79,8 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
     name: KnownFeatures.DevVectorSet,
     storage: FeatureStorage.Database,
   },
+  [KnownFeatures.DevAgentChat]: {
+    name: KnownFeatures.DevAgentChat,
+    storage: FeatureStorage.Database,
+  },
 };

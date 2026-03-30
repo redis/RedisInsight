@@ -26,6 +26,7 @@ import { AzureModule } from 'src/modules/azure/azure.module';
 import { RdiModule } from 'src/modules/rdi/rdi.module';
 import { AiChatModule } from 'src/modules/ai/chat/ai-chat.module';
 import { AiQueryModule } from 'src/modules/ai/query/ai-query.module';
+import { AiAgentModule } from 'src/modules/ai/agent/ai-agent.module';
 import { InitModule } from 'src/modules/init/init.module';
 import { AnalyticsModule } from 'src/modules/analytics/analytics.module';
 import { BrowserModule } from './modules/browser/browser.module';
@@ -76,6 +77,7 @@ const STATICS_CONFIG = config.get('statics') as Config['statics'];
     AzureModule,
     AiChatModule,
     AiQueryModule.register(),
+    AiAgentModule,
     RdiModule.register(),
     StaticsManagementModule.register({
       initDefaults: STATICS_CONFIG.initDefaults,

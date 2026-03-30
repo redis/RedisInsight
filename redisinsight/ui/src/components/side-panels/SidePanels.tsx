@@ -48,10 +48,12 @@ const SidePanelsWrapper = (props: Props) => {
   const {
     [FeatureFlags.databaseChat]: databaseChatFeature,
     [FeatureFlags.documentationChat]: documentationChatFeature,
+    [FeatureFlags.devAgentChat]: agentChatFeature,
   } = useSelector(appFeatureFlagsFeaturesSelector)
   const isAnyChatAvailable = isAnyFeatureEnabled([
     databaseChatFeature,
     documentationChatFeature,
+    agentChatFeature,
   ])
 
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false)

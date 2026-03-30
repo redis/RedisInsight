@@ -13,6 +13,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
 import AssistanceChat from '../assistance-chat'
 import ExpertChat from '../expert-chat'
+import AgentChat from '../agent-chat'
 
 import styles from './styles.module.scss'
 import sidePanelStyles from 'uiSrc/components/side-panels/styles.module.scss'
@@ -27,6 +28,7 @@ const ChatsWrapper = () => {
   const {
     [FeatureFlags.documentationChat]: documentationChatFeature,
     [FeatureFlags.databaseChat]: databaseChatFeature,
+    [FeatureFlags.devAgentChat]: agentChatFeature,
   } = useSelector(appFeatureFlagsFeaturesSelector)
 
   const chats = filter<ChatWithTabs>(
@@ -38,6 +40,10 @@ const ChatsWrapper = () => {
       {
         feature: databaseChatFeature,
         tab: AiChatType.Query,
+      },
+      {
+        feature: agentChatFeature,
+        tab: AiChatType.Agent,
       },
     ],
     ({ feature }) => !!feature?.flag,
@@ -51,7 +57,8 @@ const ChatsWrapper = () => {
     if (
       (activeTab === AiChatType.Assistance &&
         !documentationChatFeature?.flag) ||
-      (activeTab === AiChatType.Query && !databaseChatFeature?.flag)
+      (activeTab === AiChatType.Query && !databaseChatFeature?.flag) ||
+      (activeTab === AiChatType.Agent && !agentChatFeature?.flag)
     ) {
       dispatch(setSelectedTab(chats[0].tab))
     }
@@ -62,7 +69,7 @@ const ChatsWrapper = () => {
         chat: activeTab,
       },
     })
-  }, [databaseChatFeature, databaseChatFeature, activeTab])
+  }, [databaseChatFeature, databaseChatFeature, agentChatFeature, activeTab])
 
   const tabs: TabInfo[] = [
     {
@@ -75,10 +82,16 @@ const ChatsWrapper = () => {
       value: AiChatType.Query,
       content: null,
     },
+    {
+      label: <span>Agent</span>,
+      value: AiChatType.Agent,
+      content: null,
+    },
   ].filter(
     (tab) =>
       (tab.value === AiChatType.Assistance && documentationChatFeature?.flag) ||
-      (tab.value === AiChatType.Query && databaseChatFeature?.flag),
+      (tab.value === AiChatType.Query && databaseChatFeature?.flag) ||
+      (tab.value === AiChatType.Agent && agentChatFeature?.flag),
   )
 
   const selectTab = (tab: string) => {
@@ -102,6 +115,9 @@ const ChatsWrapper = () => {
             documentationChatFeature?.flag && <AssistanceChat />}
           {activeTab === AiChatType.Query && databaseChatFeature?.flag && (
             <ExpertChat />
+          )}
+          {activeTab === AiChatType.Agent && agentChatFeature?.flag && (
+            <AgentChat />
           )}
         </div>
       )}

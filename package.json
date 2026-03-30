@@ -291,6 +291,7 @@
     "monaco-yaml": "^5.1.1",
     "msgpackr": "^1.10.1",
     "node-abi": "^4.24.0",
+    "openai": "^6.33.0",
     "pako": "^2.1.0",
     "php-serialize": "^4.0.2",
     "pickleparser": "^0.2.1",

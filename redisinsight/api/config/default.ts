@@ -451,5 +451,12 @@ export default {
     queryMaxResults: parseInt(process.env.RI_AI_QUERY_MAX_RESULTS, 10) || 50,
     queryMaxNestedElements:
       parseInt(process.env.RI_AI_QUERY_MAX_NESTED_ELEMENTS, 10) || 25,
+    agent: {
+      apiKey: process.env.RI_AI_AGENT_API_KEY || '',
+      apiUrl: process.env.RI_AI_AGENT_API_URL || 'https://api.openai.com/v1',
+      model: process.env.RI_AI_AGENT_MODEL || 'gpt-4o',
+      maxToolRounds:
+        parseInt(process.env.RI_AI_AGENT_MAX_TOOL_ROUNDS, 10) || 10,
+    },
   },
 };
