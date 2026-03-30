@@ -19,6 +19,7 @@ export const ParametersIconWrapper = styled(FlexItem)`
   .parameters-anchor {
     display: flex;
     align-items: center;
+    width: fit-content;
   }
 `
 
