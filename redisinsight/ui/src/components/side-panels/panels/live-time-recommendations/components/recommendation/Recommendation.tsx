@@ -43,7 +43,11 @@ import { RiAccordion } from 'uiSrc/components/base/display/accordion/RiAccordion
 import { Link } from 'uiSrc/components/base/link/Link'
 
 import styles from './styles.module.scss'
-import { RecommendationContent, Title } from './Recommendation.styles'
+import {
+  AccordionBody,
+  RecommendationContent,
+  Title,
+} from './Recommendation.styles'
 
 const TITLE_TRUNCATE_LENGTH = 30 // Note: Temporary dirty fix for RI-7474, before the full redesign of this component
 
@@ -306,7 +310,7 @@ const Recommendation = ({
         data-testid={`${name}-accordion`}
         aria-label={`${name}-accordion`}
       >
-        <Col>
+        <AccordionBody>
           {/* Note: Temporary dirty fix for RI-7474, before the full redesign of this component */}
           {title?.length > TITLE_TRUNCATE_LENGTH && <Title>{title}</Title>}
           <RecommendationContent
@@ -315,7 +319,7 @@ const Recommendation = ({
           >
             {recommendationContent()}
           </RecommendationContent>
-        </Col>
+        </AccordionBody>
       </RiAccordion>
     </div>
   )
