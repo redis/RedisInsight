@@ -23,7 +23,7 @@ const RiAccordionActions = ({
       {actionButtonText}
     </Section.Header.ActionButton>
     {actions}
-    <Section.Header.CollapseButton />
+    <Section.Header.CollapseButton style={{ flexShrink: 0 }} />
   </Section.Header.Group>
 )
 
