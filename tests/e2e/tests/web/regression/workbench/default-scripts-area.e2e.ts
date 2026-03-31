@@ -39,7 +39,7 @@ test('Verify that user can see the [Manual] option in the Enablement area', asyn
     }
 });
 test('Verify that user can see saved article in Enablement area when he leaves Workbench page and goes back again', async t => {
-    const tooltipText = 'Open Workbench in the left menu to see the command results.';
+    const tooltipText = 'Open Workbench in the top navbar to see the command results.';
     await workbenchPage.NavigationHeader.togglePanel(true);
     const tutorials = await workbenchPage.InsightsPanel.setActiveTab(ExploreTabs.Tutorials);
     await t.click(tutorials.dataStructureAccordionTutorialButton);
@@ -49,7 +49,7 @@ test('Verify that user can see saved article in Enablement area when he leaves W
     let selector = tutorials.getRunSelector('Create a hash');
 
     // https://redislabs.atlassian.net/browse/RI-5340
-    // Verify that user can see “Open Workbench in the left menu to see the command results.” tooltip when hovering over Run button
+    // Verify that user can see "Open Workbench in the top navbar to see the command results." tooltip when hovering over Run button
     await t.hover(selector);
     await t.expect(browserPage.tooltip.withText(tooltipText).exists).ok('Tooltip is not displayed or text is invalid');
 

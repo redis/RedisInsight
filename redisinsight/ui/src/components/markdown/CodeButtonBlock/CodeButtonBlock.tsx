@@ -213,7 +213,7 @@ const CodeButtonBlock = (props: Props) => {
                   content={
                     isPopoverOpen
                       ? undefined
-                      : 'Open Workbench in the left menu to see the command results.'
+                      : 'Open Workbench in the top navbar to see the command results.'
                   }
                   data-testid="run-btn-open-workbench-tooltip"
                 >
