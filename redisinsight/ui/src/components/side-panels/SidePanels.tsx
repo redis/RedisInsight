@@ -2,31 +2,22 @@ import React, { useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { useHistory, useLocation, useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { KeyboardKeys as keys } from 'uiSrc/constants/keys'
 
 import {
-  changeSelectedTab,
   changeSidePanel,
   insightsPanelSelector,
-  resetExplorePanelSearch,
-  setExplorePanelIsPageOpen,
   sidePanelsSelector,
 } from 'uiSrc/slices/panels/sidePanels'
-import { InsightsPanelTabs, SidePanels } from 'uiSrc/slices/interfaces/insights'
+import { SidePanels } from 'uiSrc/slices/interfaces/insights'
 import {
   sendEventTelemetry,
   TELEMETRY_EMPTY_VALUE,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import {
-  connectedInstanceCDSelector,
-  connectedInstanceSelector,
-} from 'uiSrc/slices/instances/instances'
-import { appContextCapability } from 'uiSrc/slices/app/context'
-import { getTutorialCapability } from 'uiSrc/utils'
-import { isShowCapabilityTutorialPopover } from 'uiSrc/services'
-import { EAManifestFirstKey, FeatureFlags } from 'uiSrc/constants'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { FeatureFlags } from 'uiSrc/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { isAnyFeatureEnabled } from 'uiSrc/utils/features'
 
@@ -43,8 +34,6 @@ const SidePanelsWrapper = (props: Props) => {
   const { openedPanel } = useSelector(sidePanelsSelector)
   const { tabSelected } = useSelector(insightsPanelSelector)
   const { provider } = useSelector(connectedInstanceSelector)
-  const { source: capabilitySource } = useSelector(appContextCapability)
-  const { free = false } = useSelector(connectedInstanceCDSelector) ?? {}
   const {
     [FeatureFlags.databaseChat]: databaseChatFeature,
     [FeatureFlags.documentationChat]: documentationChatFeature,
@@ -56,7 +45,6 @@ const SidePanelsWrapper = (props: Props) => {
 
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
 
-  const history = useHistory()
   const { pathname } = useLocation()
   const dispatch = useDispatch()
   const { instanceId } = useParams<{ instanceId: string }>()
@@ -84,32 +72,6 @@ const SidePanelsWrapper = (props: Props) => {
 
     pathnameRef.current = pathname
   }, [pathname, isFullScreen])
-
-  useEffect(() => {
-    if (!capabilitySource || !isShowCapabilityTutorialPopover(free)) {
-      return
-    }
-
-    const tutorialCapabilityPath =
-      getTutorialCapability(capabilitySource)?.path || ''
-
-    // set 'path' with the path to capability tutorial
-    if (tutorialCapabilityPath) {
-      const search = new URLSearchParams(window.location.search)
-      search.set(
-        'path',
-        `${EAManifestFirstKey.TUTORIALS}/${tutorialCapabilityPath}`,
-      )
-      history.push({ search: search.toString() })
-    } else {
-      // reset explore if tutorial is not found
-      dispatch(resetExplorePanelSearch())
-      dispatch(setExplorePanelIsPageOpen(false))
-    }
-
-    dispatch(changeSelectedTab(InsightsPanelTabs.Explore))
-    dispatch(changeSidePanel(SidePanels.Insights))
-  }, [capabilitySource, free])
 
   const handleEscFullScreen = (event: KeyboardEvent) => {
     if (event?.key === keys.ESCAPE && isFullScreen) {

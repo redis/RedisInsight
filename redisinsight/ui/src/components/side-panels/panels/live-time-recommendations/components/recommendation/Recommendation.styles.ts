@@ -1,6 +1,13 @@
 import styled from 'styled-components'
 import { Card } from 'uiSrc/components/base/layout'
+import { Col } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
+
+export const AccordionBody = styled(Col)`
+  min-width: 0;
+  overflow: hidden;
+  overflow-wrap: break-word;
+`
 
 export const RecommendationContent = styled(Card)`
   padding: 0;
