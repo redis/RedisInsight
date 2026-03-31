@@ -82,6 +82,10 @@ export const useAzureAuth = () => {
   )
 
   const cancelLogin = useCallback(() => {
+    if (popupRef.current && !popupRef.current.closed) {
+      popupRef.current.close()
+      popupRef.current = null
+    }
     dispatch(cancelAzureLoginAction())
   }, [dispatch])
 

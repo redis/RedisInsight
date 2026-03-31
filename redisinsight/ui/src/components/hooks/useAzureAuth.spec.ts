@@ -113,5 +113,15 @@ describe('useAzureAuth', () => {
 
       expect(mockedCancelAzureLoginAction).toHaveBeenCalled()
     })
+
+    it('should not throw if no popup is open', () => {
+      const { result } = renderHook(() => useAzureAuth())
+
+      expect(() => {
+        act(() => {
+          result.current.cancelLogin()
+        })
+      }).not.toThrow()
+    })
   })
 })
