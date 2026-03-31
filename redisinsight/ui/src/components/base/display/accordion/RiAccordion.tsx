@@ -63,26 +63,32 @@ export const RiAccordion = ({
   actions,
   collapsible = true,
   defaultOpen = true,
+  open: openProp,
   onOpenChange: onOpenChangeProp,
   ...rest
 }: RiAccordionProps) => {
-  const [isOpen, setIsOpen] = useState(defaultOpen)
+  const [internalOpen, setInternalOpen] = useState(defaultOpen)
+
+  const isControlled = openProp !== undefined
+  const isOpen = isControlled ? openProp : internalOpen
 
   const handleOpenChange = useCallback(
     (open: boolean) => {
-      setIsOpen(open)
+      if (!isControlled) {
+        setInternalOpen(open)
+      }
       onOpenChangeProp?.(open)
     },
-    [onOpenChangeProp],
+    [isControlled, onOpenChangeProp],
   )
 
   const handleToggle = useCallback(() => {
-    setIsOpen((prev) => {
-      const next = !prev
-      onOpenChangeProp?.(next)
-      return next
-    })
-  }, [onOpenChangeProp])
+    const next = !isOpen
+    if (!isControlled) {
+      setInternalOpen(next)
+    }
+    onOpenChangeProp?.(next)
+  }, [isOpen, isControlled, onOpenChangeProp])
 
   return (
     <Section.Compose
