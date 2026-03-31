@@ -35,7 +35,7 @@ Redis Insight is an intuitive and efficient GUI for Redis, allowing you to inter
 - Command auto-complete support for [search and query](https://redis.io/search/) capability, [JSON](https://redis.io/json/) and [time series](https://redis.io/timeseries/) data structures
 - Visualizations of your [search and query](https://redis.io/search/) indexes and results.
 - Ability to build [your own data visualization plugins](https://github.com/RedisInsight/Packages)
-- Officially supported for Redis OSS, [Redis Cloud](https://redis.io/cloud/). Works with Microsoft Azure Cache for Redis
+- Officially supported for Redis OSS, [Redis Cloud](https://redis.io/cloud/). Works with Microsoft Azure Managed Redis (formerly Azure Cache for Redis)
 
 Check out the [release notes](https://github.com/RedisInsight/RedisInsight/releases).
 
@@ -66,9 +66,9 @@ If you have any issues occurring in Redis Insight, you can follow the steps belo
 
 If you are running Redis Insight from [Docker](https://hub.docker.com/r/redis/redisinsight), you can access the API from `http://localhost:5540/api/docs`.
 
-## Azure Cache for Redis
+## Azure Managed Redis (formerly Azure Cache for Redis)
 
-Redis Insight supports Azure Cache for Redis with Microsoft Entra ID authentication. If your organization requires admin consent for third-party applications, see our setup guide.
+Redis Insight supports Azure Managed Redis and Azure Cache for Redis with Microsoft Entra ID authentication. If your organization requires admin consent for third-party applications, see our setup guide.
 
 - [Azure Setup Guide](docs/azure-setup.md)
 - [Azure Docker Setup](docs/azure-docker-setup.md) - Configuration for Docker, custom ports, and reverse proxies

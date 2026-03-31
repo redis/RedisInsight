@@ -1,4 +1,4 @@
-# Azure Cache for Redis Setup
+# Azure Managed Redis Setup (formerly Azure Cache for Redis)
 
 ## Setup Instructions
 
