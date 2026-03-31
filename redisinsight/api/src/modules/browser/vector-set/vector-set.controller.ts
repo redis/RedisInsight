@@ -21,7 +21,7 @@ import { BrowserBaseController } from 'src/modules/browser/browser.base.controll
 
 @ApiTags('Browser: VectorSet')
 @UseInterceptors(BrowserSerializeInterceptor)
-@Controller('vectorSet')
+@Controller('vector-set')
 @UsePipes(new ValidationPipe({ transform: true }))
 export class VectorSetController extends BrowserBaseController {
   constructor(private vectorSetService: VectorSetService) {
