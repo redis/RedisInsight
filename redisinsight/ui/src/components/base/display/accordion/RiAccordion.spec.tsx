@@ -52,6 +52,34 @@ describe('RiAccordion', () => {
       expectBodyHidden(accordionBody)
     })
 
+    it('Should toggle when label is activated via Enter key', async () => {
+      renderComponent({ collapsible: true, defaultOpen: false })
+
+      expectBodyHidden(accordionBody)
+
+      const labelButton = screen.getByRole('button', { name: label })
+      labelButton.focus()
+      await userEvent.keyboard('{Enter}')
+      expect(screen.getByText(accordionBody)).toBeVisible()
+
+      await userEvent.keyboard('{Enter}')
+      expectBodyHidden(accordionBody)
+    })
+
+    it('Should toggle when label is activated via Space key', async () => {
+      renderComponent({ collapsible: true, defaultOpen: false })
+
+      expectBodyHidden(accordionBody)
+
+      const labelButton = screen.getByRole('button', { name: label })
+      labelButton.focus()
+      await userEvent.keyboard(' ')
+      expect(screen.getByText(accordionBody)).toBeVisible()
+
+      await userEvent.keyboard(' ')
+      expectBodyHidden(accordionBody)
+    })
+
     it('Should keep content visible when not collapsible', async () => {
       renderComponent({ collapsible: false })
 

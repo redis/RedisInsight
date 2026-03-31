@@ -14,23 +14,37 @@ const RiAccordionCustomLabel = ({
 }: {
   children: React.ReactNode
   onToggle?: () => void
-}) => (
-  <div
-    role="button"
-    tabIndex={0}
-    style={clickableLabelStyle}
-    onClick={onToggle}
-  >
-    {children}
-  </div>
-)
+}) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      onToggle?.()
+    }
+  }
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      style={clickableLabelStyle}
+      onClick={onToggle}
+      onKeyDown={handleKeyDown}
+    >
+      {children}
+    </div>
+  )
+}
 
 const RiAccordionLabel = ({ label, onToggle }: RiAccordionLabelProps) => {
   if (!label) {
     return null
   }
   if (typeof label === 'string') {
-    return <Section.Header.Label label={label} />
+    return (
+      <RiAccordionCustomLabel onToggle={onToggle}>
+        <Section.Header.Label label={label} />
+      </RiAccordionCustomLabel>
+    )
   }
   return (
     <RiAccordionCustomLabel onToggle={onToggle}>
