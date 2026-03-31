@@ -83,12 +83,8 @@ export const RiAccordion = ({
   )
 
   const handleToggle = useCallback(() => {
-    const next = !isOpen
-    if (!isControlled) {
-      setInternalOpen(next)
-    }
-    onOpenChangeProp?.(next)
-  }, [isOpen, isControlled, onOpenChangeProp])
+    handleOpenChange(!isOpen)
+  }, [isOpen, handleOpenChange])
 
   return (
     <Section.Compose
