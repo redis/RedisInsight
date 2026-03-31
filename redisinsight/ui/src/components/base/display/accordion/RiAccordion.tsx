@@ -15,13 +15,9 @@ const RiAccordionCustomLabel = ({
   children: React.ReactNode
   onToggle?: () => void
 }) => {
-  const handleClick = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault()
-      onToggle?.()
-    },
-    [onToggle],
-  )
+  const handleClick = useCallback(() => {
+    onToggle?.()
+  }, [onToggle])
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -51,11 +47,7 @@ const RiAccordionLabel = ({ label, onToggle }: RiAccordionLabelProps) => {
     return null
   }
   if (typeof label === 'string') {
-    return (
-      <RiAccordionCustomLabel onToggle={onToggle}>
-        <Section.Header.Label label={label} />
-      </RiAccordionCustomLabel>
-    )
+    return <Section.Header.Label label={label} />
   }
   return (
     <RiAccordionCustomLabel onToggle={onToggle}>

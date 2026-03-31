@@ -90,6 +90,24 @@ describe('RiAccordion', () => {
       expectBodyHidden(accordionBody)
     })
 
+    it('Should not block default action of links inside the label', async () => {
+      const linkText = faker.lorem.words(2)
+      const onClick = jest.fn((e: React.MouseEvent) => e.preventDefault())
+      const jsxLabel = (
+        <span>
+          {label}
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+          <a href="#" onClick={onClick}>
+            {linkText}
+          </a>
+        </span>
+      )
+      renderComponent({ collapsible: true, defaultOpen: true, label: jsxLabel })
+
+      await userEvent.click(screen.getByText(linkText))
+      expect(onClick).toHaveBeenCalledTimes(1)
+    })
+
     it('Should keep content visible when not collapsible', async () => {
       renderComponent({ collapsible: false })
 
