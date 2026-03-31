@@ -18,8 +18,9 @@ export interface Props {
 
 const MAIN_PANEL_DEFAULT_SIZE = 70
 const SIDE_PANEL_DEFAULT_SIZE = 30
-const MAIN_PANEL_MIN_SIZE = 30
-const SIDE_PANEL_MIN_SIZE = 15
+const MAIN_PANEL_MIN_SIZE = 50
+const SIDE_PANEL_MIN_SIZE = 20
+const SIDE_PANEL_MAX_SIZE = 50
 
 const ExplorePanelTemplate = (props: Props) => {
   const { children, panelClassName } = props
@@ -48,6 +49,7 @@ const ExplorePanelTemplate = (props: Props) => {
               id="side-panel"
               order={2}
               minSize={SIDE_PANEL_MIN_SIZE}
+              maxSize={SIDE_PANEL_MAX_SIZE}
               defaultSize={SIDE_PANEL_DEFAULT_SIZE}
             >
               <SidePanels panelClassName={panelClassName} />
