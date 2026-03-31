@@ -114,11 +114,11 @@ describe('ExplorePanelTemplate', () => {
         changeSidePanel(SidePanels.Insights),
       ]
       expect(store.getActions()).toEqual(expectedActions)
-      mockedGetTutorialCapability.mockRestore()
     })
 
     it('should dispatch resetExplorePanelSearch if capability was not found', () => {
       mockedSidePanelsSelector.mockReturnValue({ openedPanel: null })
+      mockedGetTutorialCapability.mockReturnValue(undefined)
 
       render(
         <ExplorePanelTemplate>

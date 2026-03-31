@@ -325,5 +325,4 @@ describe('SidePanels', () => {
     render(<SidePanels />)
     expect(store.getActions()).toEqual([changeSidePanel(null)])
   })
-
 })
