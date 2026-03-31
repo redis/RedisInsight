@@ -1,7 +1,7 @@
 import React, { isValidElement, useCallback, useState } from 'react'
 import { Section } from '@redis-ui/components'
 import { RiAccordionActionsProps, RiAccordionProps } from './RiAccordion.types'
-import { clickableLabelStyle } from './RiAccordion.styles'
+import { ClickableLabel, CollapseButton } from './RiAccordion.styles'
 
 interface RiAccordionLabelProps extends Pick<RiAccordionProps, 'label'> {
   onToggle?: () => void
@@ -30,15 +30,15 @@ const RiAccordionCustomLabel = ({
   )
 
   return (
-    <div
+    <ClickableLabel
+      as="div"
       role="button"
       tabIndex={0}
-      style={clickableLabelStyle}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
     >
       {children}
-    </div>
+    </ClickableLabel>
   )
 }
 
@@ -66,7 +66,7 @@ const RiAccordionActions = ({
       {actionButtonText}
     </Section.Header.ActionButton>
     {actions}
-    <Section.Header.CollapseButton style={{ flexShrink: 0 }} />
+    <CollapseButton />
   </Section.Header.Group>
 )
 
