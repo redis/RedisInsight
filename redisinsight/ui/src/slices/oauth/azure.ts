@@ -192,6 +192,13 @@ export function initiateAzureLoginAction(options: InitiateAzureLoginOptions) {
   }
 }
 
+export function cancelAzureLoginAction() {
+  return (dispatch: AppDispatch) => {
+    clearOAuthTimeout()
+    dispatch(setAzureAuthInitialState())
+  }
+}
+
 export function handleAzureOAuthSuccess(account: AzureAccount) {
   return (dispatch: AppDispatch) => {
     clearOAuthTimeout()

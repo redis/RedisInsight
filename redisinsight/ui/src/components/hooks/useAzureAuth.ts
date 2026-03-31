@@ -6,6 +6,7 @@ import {
   azureAuthSelector,
   AzureOAuthPrompt,
   AzureOAuthRedirectType,
+  cancelAzureLoginAction,
   initiateAzureLoginAction,
 } from 'uiSrc/slices/oauth/azure'
 import { AzureLoginSource } from 'uiSrc/slices/interfaces'
@@ -80,11 +81,16 @@ export const useAzureAuth = () => {
     [dispatch, openAuthUrl],
   )
 
+  const cancelLogin = useCallback(() => {
+    dispatch(cancelAzureLoginAction())
+  }, [dispatch])
+
   return {
     loading,
     account,
     error,
     initiateLogin,
+    cancelLogin,
   }
 }
 
