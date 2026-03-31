@@ -15,19 +15,30 @@ const RiAccordionCustomLabel = ({
   children: React.ReactNode
   onToggle?: () => void
 }) => {
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Enter' || e.key === ' ') {
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
       e.preventDefault()
       onToggle?.()
-    }
-  }
+    },
+    [onToggle],
+  )
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        onToggle?.()
+      }
+    },
+    [onToggle],
+  )
 
   return (
     <div
       role="button"
       tabIndex={0}
       style={clickableLabelStyle}
-      onClick={onToggle}
+      onClick={handleClick}
       onKeyDown={handleKeyDown}
     >
       {children}

@@ -52,8 +52,13 @@ describe('RiAccordion', () => {
       expectBodyHidden(accordionBody)
     })
 
-    it('Should toggle when label is activated via Enter key', async () => {
-      renderComponent({ collapsible: true, defaultOpen: false })
+    it('Should toggle JSX label via Enter key', async () => {
+      const jsxLabel = <span>{label}</span>
+      renderComponent({
+        collapsible: true,
+        defaultOpen: false,
+        label: jsxLabel,
+      })
 
       expectBodyHidden(accordionBody)
 
@@ -66,8 +71,13 @@ describe('RiAccordion', () => {
       expectBodyHidden(accordionBody)
     })
 
-    it('Should toggle when label is activated via Space key', async () => {
-      renderComponent({ collapsible: true, defaultOpen: false })
+    it('Should toggle JSX label via Space key', async () => {
+      const jsxLabel = <span>{label}</span>
+      renderComponent({
+        collapsible: true,
+        defaultOpen: false,
+        label: jsxLabel,
+      })
 
       expectBodyHidden(accordionBody)
 
