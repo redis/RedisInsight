@@ -9,6 +9,7 @@ import {
 } from 'uiSrc/components/base/layout'
 
 import { FlexColPanel, MainWrapper } from './ExplorePanelTemplate.styles'
+import { useCapabilityAutoOpen } from './useCapabilityAutoOpen'
 
 export interface Props {
   children: React.ReactNode
@@ -24,6 +25,8 @@ const ExplorePanelTemplate = (props: Props) => {
   const { children, panelClassName } = props
   const { openedPanel } = useSelector(sidePanelsSelector)
   const isPanelOpen = !!openedPanel
+
+  useCapabilityAutoOpen()
 
   return (
     <MainWrapper>

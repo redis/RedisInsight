@@ -14,22 +14,13 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { MOCK_RECOMMENDATIONS } from 'uiSrc/constants/mocks/mock-recommendations'
 import {
-  changeSelectedTab,
   changeSidePanel,
   insightsPanelSelector,
-  resetExplorePanelSearch,
-  setExplorePanelIsPageOpen,
   sidePanelsSelector,
 } from 'uiSrc/slices/panels/sidePanels'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Pages } from 'uiSrc/constants'
-import { connectedInstanceCDSelector } from 'uiSrc/slices/instances/instances'
-import {
-  InsightsPanelTabs,
-  SidePanels as ISidePanels,
-} from 'uiSrc/slices/interfaces/insights'
-import { getTutorialCapability } from 'uiSrc/utils'
-import { isShowCapabilityTutorialPopover } from 'uiSrc/services'
+import { SidePanels as ISidePanels } from 'uiSrc/slices/interfaces/insights'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 
 import SidePanels from './SidePanels'
@@ -63,16 +54,6 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
     connectionType: 'CLUSTER',
     provider: 'REDIS_CLOUD',
   }),
-  connectedInstanceCDSelector: jest.fn().mockReturnValue({
-    free: false,
-  }),
-}))
-
-jest.mock('uiSrc/slices/app/context', () => ({
-  ...jest.requireActual('uiSrc/slices/app/context'),
-  appContextCapability: jest.fn().mockReturnValue({
-    source: 'workbench RediSearch',
-  }),
 }))
 
 jest.mock('uiSrc/slices/recommendations/recommendations', () => ({
@@ -98,18 +79,6 @@ jest.mock('uiSrc/slices/panels/sidePanels', () => ({
 jest.mock('uiSrc/telemetry', () => ({
   ...jest.requireActual('uiSrc/telemetry'),
   sendEventTelemetry: jest.fn(),
-}))
-
-jest.mock('uiSrc/utils', () => ({
-  ...jest.requireActual('uiSrc/utils'),
-  getTutorialCapability: jest
-    .fn()
-    .mockReturnValue({ path: 'path', telemetryName: 'searchAndQuery' }),
-}))
-
-jest.mock('uiSrc/services', () => ({
-  ...jest.requireActual('uiSrc/services'),
-  isShowCapabilityTutorialPopover: jest.fn(),
 }))
 
 /**
@@ -357,44 +326,4 @@ describe('SidePanels', () => {
     expect(store.getActions()).toEqual([changeSidePanel(null)])
   })
 
-  describe('capability', () => {
-    beforeEach(() => {
-      ;(connectedInstanceCDSelector as jest.Mock).mockReturnValueOnce({
-        free: true,
-      })
-      ;(isShowCapabilityTutorialPopover as jest.Mock).mockImplementation(
-        () => true,
-      )
-    })
-    it('should call store actions', () => {
-      ;(sidePanelsSelector as jest.Mock).mockReturnValue({
-        openedPanel: ISidePanels.Insights,
-      })
-      ;(insightsPanelSelector as jest.Mock).mockReturnValue({ tabSelected: '' })
-      ;(getTutorialCapability as jest.Mock).mockImplementation(() => ({
-        tutorialPage: { args: { path: 'path' } },
-      }))
-      render(<SidePanels />)
-
-      const expectedActions = [
-        resetExplorePanelSearch(),
-        setExplorePanelIsPageOpen(false),
-        changeSelectedTab(InsightsPanelTabs.Explore),
-        changeSidePanel(ISidePanels.Insights),
-      ]
-      expect(store.getActions()).toEqual(expectedActions)
-      ;(getTutorialCapability as jest.Mock).mockRestore()
-    })
-    it('should call resetExplorePanelSearch if capability was not found', () => {
-      render(<SidePanels />)
-
-      const expectedActions = [
-        resetExplorePanelSearch(),
-        setExplorePanelIsPageOpen(false),
-        changeSelectedTab(InsightsPanelTabs.Explore),
-        changeSidePanel(ISidePanels.Insights),
-      ]
-      expect(store.getActions()).toEqual(expectedActions)
-    })
-  })
 })
