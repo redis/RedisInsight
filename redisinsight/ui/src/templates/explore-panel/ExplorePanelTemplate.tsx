@@ -1,33 +1,63 @@
 import React from 'react'
-import cx from 'classnames'
 import { useSelector } from 'react-redux'
 import { sidePanelsSelector } from 'uiSrc/slices/panels/sidePanels'
 import SidePanels from 'uiSrc/components/side-panels'
 
-import styles from './styles.module.scss'
-import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import {
+  ResizableContainer,
+  ResizablePanelHandle,
+} from 'uiSrc/components/base/layout'
+
+import { FlexColPanel, MainWrapper } from './ExplorePanelTemplate.styles'
+import { useCapabilityAutoOpen } from './useCapabilityAutoOpen'
 
 export interface Props {
   children: React.ReactNode
   panelClassName?: string
 }
 
+const MAIN_PANEL_DEFAULT_SIZE = 70
+const SIDE_PANEL_DEFAULT_SIZE = 30
+const MAIN_PANEL_MIN_SIZE = 50
+const SIDE_PANEL_MIN_SIZE = 20
+const SIDE_PANEL_MAX_SIZE = 50
+
 const ExplorePanelTemplate = (props: Props) => {
   const { children, panelClassName } = props
   const { openedPanel } = useSelector(sidePanelsSelector)
+  const isPanelOpen = !!openedPanel
+
+  useCapabilityAutoOpen()
+
   return (
-    <Row full className={styles.mainWrapper}>
-      <Col className={cx(styles.mainPanel, { insightsOpen: !!openedPanel })}>
-        {children}
-      </Col>
-      <div
-        className={cx(styles.insigtsWrapper, {
-          [styles.insightsOpen]: !!openedPanel,
-        })}
-      >
-        <SidePanels panelClassName={panelClassName} />
-      </div>
-    </Row>
+    <MainWrapper>
+      <ResizableContainer direction="horizontal">
+        <FlexColPanel
+          id="main-content"
+          order={1}
+          minSize={MAIN_PANEL_MIN_SIZE}
+          defaultSize={isPanelOpen ? MAIN_PANEL_DEFAULT_SIZE : 100}
+        >
+          {children}
+        </FlexColPanel>
+
+        {isPanelOpen && (
+          <>
+            <ResizablePanelHandle direction="vertical" />
+
+            <FlexColPanel
+              id="side-panel"
+              order={2}
+              minSize={SIDE_PANEL_MIN_SIZE}
+              maxSize={SIDE_PANEL_MAX_SIZE}
+              defaultSize={SIDE_PANEL_DEFAULT_SIZE}
+            >
+              <SidePanels panelClassName={panelClassName} />
+            </FlexColPanel>
+          </>
+        )}
+      </ResizableContainer>
+    </MainWrapper>
   )
 }
 

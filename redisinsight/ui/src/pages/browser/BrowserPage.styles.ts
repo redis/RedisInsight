@@ -12,9 +12,17 @@ export const PageContainer = styled(Col)`
   overflow: hidden;
 `
 
-export const MainContent = styled(Row)`
+export const MainContent = styled(Row)<{
+  $sidePanelOpen?: boolean
+}>`
   padding: 0 ${({ theme }) => theme.core.space.space200};
   overflow: hidden;
+
+  ${({ $sidePanelOpen }) =>
+    $sidePanelOpen &&
+    css`
+      padding-right: 0;
+    `}
 `
 
 export const BackButtonWrapper = styled.div`
@@ -31,12 +39,21 @@ export const BackButtonWrapper = styled.div`
 
 export const SearchPanelWrapper = styled.div<{
   $hidden: boolean
+  $sidePanelOpen?: boolean
   children?: React.ReactNode
 }>`
   ${({ $hidden }) =>
     $hidden &&
     css`
       display: none;
+    `}
+
+  ${({ $sidePanelOpen }) =>
+    $sidePanelOpen &&
+    css`
+      > * {
+        padding-right: 0;
+      }
     `}
 `
 

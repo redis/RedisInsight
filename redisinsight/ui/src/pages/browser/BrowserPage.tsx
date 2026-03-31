@@ -310,10 +310,13 @@ const BrowserPage = () => {
             </EmptyButton>
           </S.BackButtonWrapper>
         )}
-        <S.SearchPanelWrapper $hidden={isRightPanelFullScreen}>
+        <S.SearchPanelWrapper
+          $hidden={isRightPanelFullScreen}
+          $sidePanelOpen={!!openedSidePanel}
+        >
           <BrowserSearchPanel handleCreateIndexPanel={handleCreateIndexPanel} />
         </S.SearchPanelWrapper>
-        <S.MainContent grow>
+        <S.MainContent grow $sidePanelOpen={!!openedSidePanel}>
           <S.StyledResizableContainer
             direction="horizontal"
             onLayout={onPanelWidthChange}
