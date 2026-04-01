@@ -2,14 +2,13 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
-import { KeyTypes } from 'uiSrc/constants'
 
 import {
   KeyDetailsHeader,
   KeyDetailsHeaderProps,
 } from 'uiSrc/pages/browser/modules'
 import { VectorSetElementList } from './vector-set-element-list'
-import { KeyDetailsSubheader } from '../key-details-subheader/KeyDetailsSubheader'
+import { VectorSetKeySubheader } from './vector-set-key-subheader'
 import * as S from './VectorSetDetails.styles'
 
 export interface Props extends KeyDetailsHeaderProps {
@@ -19,13 +18,12 @@ export interface Props extends KeyDetailsHeaderProps {
 }
 
 const VectorSetDetails = (props: Props) => {
-  const keyType = KeyTypes.VectorSet
   const { loading } = useSelector(selectedKeySelector)
 
   return (
     <S.Container>
       <KeyDetailsHeader {...props} key="key-details-header" />
-      <KeyDetailsSubheader keyType={keyType} />
+      <VectorSetKeySubheader />
       <S.DetailsBody>
         {!loading && (
           <S.ListWrapper>
