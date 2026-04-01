@@ -6,6 +6,7 @@ import {
   azureAuthSelector,
   AzureOAuthPrompt,
   AzureOAuthRedirectType,
+  cancelAzureLoginAction,
   initiateAzureLoginAction,
 } from 'uiSrc/slices/oauth/azure'
 import { AzureAccountFactory } from 'uiSrc/mocks/factories/cloud/AzureAccount.factory'
@@ -30,10 +31,14 @@ jest.mock('uiSrc/slices/oauth/azure', () => ({
     error: '',
   }),
   initiateAzureLoginAction: jest.fn().mockReturnValue({ type: 'mock-action' }),
+  cancelAzureLoginAction: jest
+    .fn()
+    .mockReturnValue({ type: 'mock-cancel-action' }),
 }))
 
 const mockedAzureAuthSelector = azureAuthSelector as jest.Mock
 const mockedInitiateAzureLoginAction = initiateAzureLoginAction as jest.Mock
+const mockedCancelAzureLoginAction = cancelAzureLoginAction as jest.Mock
 
 let store: typeof mockedStore
 
@@ -95,6 +100,28 @@ describe('useAzureAuth', () => {
         prompt: AzureOAuthPrompt.SelectAccount,
         redirectType: AzureOAuthRedirectType.Deeplink,
       })
+    })
+  })
+
+  describe('cancelLogin', () => {
+    it('should dispatch cancelAzureLoginAction', () => {
+      const { result } = renderHook(() => useAzureAuth())
+
+      act(() => {
+        result.current.cancelLogin()
+      })
+
+      expect(mockedCancelAzureLoginAction).toHaveBeenCalled()
+    })
+
+    it('should not throw if no popup is open', () => {
+      const { result } = renderHook(() => useAzureAuth())
+
+      expect(() => {
+        act(() => {
+          result.current.cancelLogin()
+        })
+      }).not.toThrow()
     })
   })
 })
