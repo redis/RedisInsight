@@ -1,7 +1,0 @@
-export { default as PasswordInput } from './PasswordInput'
-export { default as SearchInput } from './SearchInput'
-export { default as NumericInput } from './NumericInput'
-export { default as SwitchInput } from './SwitchInput'
-export { default as TextArea } from './TextArea'
-export { default as TextInput } from './TextInput'
-export { default as ComposedInput } from './ComposedInput'

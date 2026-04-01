@@ -1,9 +1,0 @@
-{
-  "reporterEnabled": "spec,@mochajs/json-file-reporter,mocha-junit-reporter",
-  "mochajsJsonFileReporterReporterOptions": {
-    "output": "coverage/test-run-result.json"
-  },
-  "mochaJunitReporterReporterOptions": {
-    "mochaFile": "coverage/test-run-result.xml"
-  }
-}

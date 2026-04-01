@@ -1,1 +1,0 @@
-export { IndexInfoSidePanel } from './IndexInfoSidePanel'

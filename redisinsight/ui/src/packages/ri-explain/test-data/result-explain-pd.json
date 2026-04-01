@@ -1,6 +1,0 @@
-[
-  {
-    "status": "success",
-    "response": "INTERSECT {\\n  UNION {\\n    query\\n    +queri(expanded)\\n    queri(expanded)\\n  }\\n  UNION {\\n    search\\n    +search(expanded)\\n  }\\n}\\n"
-  }
-]

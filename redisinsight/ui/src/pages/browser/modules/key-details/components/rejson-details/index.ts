@@ -1,1 +1,0 @@
-export { RejsonDetailsWrapper } from './RejsonDetailsWrapper'

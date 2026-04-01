@@ -1,3 +1,0 @@
-import CloudCapiUnAuthorizedErrorContent from './CloudCapiUnAuthorizedErrorContent'
-
-export default CloudCapiUnAuthorizedErrorContent

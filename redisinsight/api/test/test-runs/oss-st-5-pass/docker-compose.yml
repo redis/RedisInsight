@@ -1,9 +1,0 @@
-version: '3.4'
-
-services:
-  test:
-    env_file:
-      - ./oss-st-5-pass/.env
-  redis:
-    image: redis:5
-    command: redis-server --requirepass testpass

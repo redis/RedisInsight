@@ -1,7 +1,0 @@
-@mixin insights-open($max-width: 1440px) {
-  :global(.insightsOpen) {
-    @media only screen and (max-width: $max-width) {
-      @content;
-    }
-  }
-}

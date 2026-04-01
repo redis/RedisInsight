@@ -1,8 +1,0 @@
-<svg id="bd-ico" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-  <rect id="bg" width="24" height="24" fill="#dfe5ef" opacity="0"/>
-  <g id="Modules_-_Redis_Stack" data-name="Modules - Redis Stack" transform="translate(2.134 2.762)">
-    <path id="Path_10413" data-name="Path 10413" d="M13.891,11.476,4.336,15.819a.312.312,0,0,0-.007.564l9.555,4.633a.311.311,0,0,0,.272,0l9.555-4.633a.312.312,0,0,0-.007-.564l-9.555-4.343A.311.311,0,0,0,13.891,11.476Z" transform="translate(-4.153 -2.57)" fill="#d2defc" stroke="#4d6992" stroke-width="0.744"/>
-    <path id="Path_10414" data-name="Path 10414" d="M13.891,7.946,4.336,12.289a.312.312,0,0,0-.007.564l9.555,4.633a.311.311,0,0,0,.272,0l9.555-4.633a.312.312,0,0,0-.007-.564L14.149,7.946A.312.312,0,0,0,13.891,7.946Z" transform="translate(-4.153 -3.479)" fill="#a2b8f2" stroke="#4d6992" stroke-width="0.744"/>
-    <path id="Path_10415" data-name="Path 10415" d="M13.891,4.416,4.336,8.759a.312.312,0,0,0-.007.564l9.555,4.633a.312.312,0,0,0,.272,0l9.555-4.633a.312.312,0,0,0-.007-.564L14.149,4.416A.312.312,0,0,0,13.891,4.416Z" transform="translate(-4.153 -4.388)" fill="#7b90e0" stroke="#4d6992" stroke-width="0.744"/>
-  </g>
-</svg>

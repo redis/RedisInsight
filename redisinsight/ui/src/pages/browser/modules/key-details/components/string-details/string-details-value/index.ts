@@ -1,1 +1,0 @@
-export { StringDetailsValue } from './StringDetailsValue'

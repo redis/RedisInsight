@@ -1,1 +1,0 @@
-export { SetDetails } from './SetDetails'

@@ -1,9 +1,0 @@
-@import './variables';
-
-blockquote {
-  padding: 0 10px;
-  border-left: 2px solid var(--controlsBorderColor);
-  margin-bottom: ($margin-size-pace * 6 + px);
-  margin-top: ($margin-size-pace * 2 + px);;
-  font-style: italic;
-}

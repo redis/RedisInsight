@@ -1,5 +1,0 @@
-version: '3.4'
-
-services:
-  redis:
-    build: ./oss-st-5

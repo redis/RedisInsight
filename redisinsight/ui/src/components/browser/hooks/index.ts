@@ -1,1 +1,0 @@
-export { useResponsiveColumns } from './useResponsiveColumns'

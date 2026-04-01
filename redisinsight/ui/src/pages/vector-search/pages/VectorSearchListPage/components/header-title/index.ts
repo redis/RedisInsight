@@ -1,1 +1,0 @@
-export { HeaderTitle } from './HeaderTitle'

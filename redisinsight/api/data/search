@@ -1,3 +1,0 @@
-FT.CREATE idx:smpl_bicycle ON JSON PREFIX 1 sample_bicycle: SCHEMA $.brand AS brand TEXT $.model AS model TEXT $.description AS description TEXT $.price AS price NUMERIC $.condition AS condition TAG SEPARATOR , $.type AS type TAG $.helmet_included AS helmet_included TAG $.specs.material AS material TAG $.specs.weight AS weight NUMERIC
-
-FT.CREATE "idx:smpl_restaurant" ON JSON PREFIX 1 "sample_restaurant:" SCHEMA "$.cuisine" AS "cuisine" TAG "$.name" AS "restaunt_name" TEXT "$.location" AS "location" GEO

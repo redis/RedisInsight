@@ -1,1 +1,0 @@
-export { VectorSearchWelcomePage } from './VectorSearchWelcomePage'

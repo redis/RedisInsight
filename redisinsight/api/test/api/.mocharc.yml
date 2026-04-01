@@ -1,7 +1,0 @@
-spec:
-  - test/**/*.test.ts
-require: 'test/api/api.deps.init.ts'
-project: ./test/api/api.tsconfig.json
-retries: 2
-timeout: 60000
-exit: true

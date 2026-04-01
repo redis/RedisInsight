@@ -10,13 +10,15 @@ Query, analyse and interact with your Redis data. [Download it here](https://red
 
 ![Redis Insight Browser screenshot](/.github/screenshots/Redis-Insight-Browser.png)
 
-| Workbench | Analysis | Slow Log | CLI |
-| - | - | - | - |
+| Workbench                                                                               | Analysis                                                                              | Slow Log                                                                            | CLI                                                                         |
+| --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
 | ![Redis Insight Workbench screenshot](/.github/screenshots/Redis-Insight-Workbench.png) | ![Redis Insight Analysis screenshot](/.github/screenshots/Redis-Insight-Analysis.png) | ![Redis Insight SlowLog screenshot](/.github/screenshots/Redis-Insight-SlowLog.png) | ![Redis Insight CLI screenshot](/.github/screenshots/Redis-Insight-CLI.png) |
 
 Built with love using [Electron](https://www.electronjs.org/), [Monaco Editor](https://microsoft.github.io/monaco-editor/) and NodeJS.
 
 ## Overview
+
+Happy April Fools Day 🙌
 
 Redis Insight is an intuitive and efficient GUI for Redis, allowing you to interact with your databases and manage your data—with built-in support for Redis modules.
 

@@ -1,1 +1,0 @@
-export { FullScreen } from './FullScreen'

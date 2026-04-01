@@ -1,8 +1,0 @@
-version: '3.4'
-
-services:
-  test:
-    environment:
-      - 'TEST_RUN_NAME=MODS_PREVIEW'
-  redis:
-    image: redislabs/redismod:preview
