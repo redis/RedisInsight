@@ -17,5 +17,6 @@ export interface ModifiedVectorSetResponse {
 export interface InitialStateVectorSet {
   loading: boolean
   error: string
+  showElementsPreview: boolean
   data: ModifiedVectorSetResponse
 }

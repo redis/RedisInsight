@@ -63,6 +63,7 @@ describe('vectorSet slice', () => {
       const state = {
         ...initialState,
         loading: true,
+        showElementsPreview: false,
       }
 
       const nextState = reducer(initialState, loadVectorSetElements(true))
@@ -92,6 +93,7 @@ describe('vectorSet slice', () => {
           ...data,
           key: data.keyName,
         },
+        showElementsPreview: false,
       }
 
       const nextState = reducer(
@@ -119,6 +121,7 @@ describe('vectorSet slice', () => {
           ...data,
           key: data.keyName,
         },
+        showElementsPreview: false,
       }
 
       const nextState = reducer(
@@ -141,6 +144,7 @@ describe('vectorSet slice', () => {
         loading: false,
         error: data,
         data: initialState.data,
+        showElementsPreview: false,
       }
 
       const nextState = reducer(
@@ -162,6 +166,7 @@ describe('vectorSet slice', () => {
         loading: true,
         error: '',
         data: initialState.data,
+        showElementsPreview: false,
       }
 
       const nextState = reducer(initialState, loadMoreVectorSetElements())
@@ -188,6 +193,7 @@ describe('vectorSet slice', () => {
         loading: false,
         error: '',
         data,
+        showElementsPreview: false,
       }
 
       const nextState = reducer(
@@ -210,6 +216,7 @@ describe('vectorSet slice', () => {
         loading: false,
         error: data,
         data: initialState.data,
+        showElementsPreview: false,
       }
 
       const nextState = reducer(

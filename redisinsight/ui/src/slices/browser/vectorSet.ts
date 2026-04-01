@@ -27,6 +27,7 @@ const VECTOR_SET_COUNT_DEFAULT = 10
 export const initialState: InitialStateVectorSet = {
   loading: false,
   error: '',
+  showElementsPreview: false,
   data: {
     total: 0,
     key: undefined,
@@ -35,6 +36,11 @@ export const initialState: InitialStateVectorSet = {
     elements: [],
   },
 }
+
+const getShowElementsPreview = (data: ModifiedVectorSetResponse) =>
+  !data?.nextCursor &&
+  data?.elements?.length > 0 &&
+  data?.elements?.length < data?.total
 
 const vectorSetSlice = createSlice({
   name: 'vectorSet',
@@ -61,6 +67,7 @@ const vectorSetSlice = createSlice({
       }
       state.data.key = payload.keyName as RedisResponseBuffer
       state.loading = false
+      state.showElementsPreview = getShowElementsPreview(state.data)
     },
     loadVectorSetElementsFailure: (state, { payload }) => {
       state.loading = false
@@ -74,13 +81,14 @@ const vectorSetSlice = createSlice({
     loadMoreVectorSetElementsSuccess: (
       state,
       {
-        payload: { elements, ...rest },
+        payload: { elements, nextCursor, ...rest },
       }: PayloadAction<ModifiedVectorSetResponse>,
     ) => {
       state.loading = false
       state.data = {
         ...state.data,
         ...rest,
+        nextCursor,
         elements: state.data?.elements?.concat(elements),
       }
     },
