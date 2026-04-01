@@ -11,6 +11,7 @@ import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Text } from 'uiSrc/components/base/text/Text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { Loader } from 'uiSrc/components/base/display'
+import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { useConnectivityOptions } from '../../hooks/useConnectivityOptions'
 
 import {
@@ -27,6 +28,10 @@ export interface Props {
 const ConnectivityOptions = (props: Props) => {
   const { onClickOption, onClose } = props
   const connectivityOptions = useConnectivityOptions({ onClickOption })
+
+  const loadingOption = connectivityOptions.find(
+    (option) => option.loading && option.onCancel,
+  )
 
   return (
     <>
@@ -99,6 +104,20 @@ const ConnectivityOptions = (props: Props) => {
             </FlexItem>
           ))}
         </Grid>
+        {loadingOption && (
+          <>
+            <Spacer size="m" />
+            <Row justify="center">
+              <SecondaryButton
+                size="s"
+                onClick={loadingOption.onCancel}
+                data-testid="cancel-azure-login-btn"
+              >
+                Cancel
+              </SecondaryButton>
+            </Row>
+          </>
+        )}
       </section>
     </>
   )

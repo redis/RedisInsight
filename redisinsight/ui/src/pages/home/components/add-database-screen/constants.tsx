@@ -15,6 +15,7 @@ export interface ConnectivityOptionConfig {
 export interface ConnectivityOption extends ConnectivityOptionConfig {
   onClick: () => void
   loading?: boolean
+  onCancel?: () => void
 }
 
 export const CONNECTIVITY_OPTIONS_CONFIG: ConnectivityOptionConfig[] = [

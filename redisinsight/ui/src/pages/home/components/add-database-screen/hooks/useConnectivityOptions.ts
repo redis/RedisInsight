@@ -22,7 +22,12 @@ export const useConnectivityOptions = ({
 }: UseConnectivityOptionsProps): ConnectivityOption[] => {
   const history = useHistory()
   const isAzureEntraIdEnabled = useSelector(isAzureEntraIdEnabledSelector)
-  const { initiateLogin, loading: azureLoading, account } = useAzureAuth()
+  const {
+    initiateLogin,
+    cancelLogin,
+    loading: azureLoading,
+    account,
+  } = useAzureAuth()
 
   const handleAzureClick = useCallback(() => {
     sendEventTelemetry({
@@ -50,6 +55,13 @@ export const useConnectivityOptions = ({
       return false
     }
 
+    const getCancelHandler = (option: ConnectivityOptionConfig) => {
+      if (option.type === AddDbType.azure) {
+        return cancelLogin
+      }
+      return undefined
+    }
+
     const isFeatureEnabled = (option: ConnectivityOptionConfig) => {
       if (option.type === AddDbType.azure) {
         return isAzureEntraIdEnabled
@@ -62,7 +74,14 @@ export const useConnectivityOptions = ({
         ...config,
         onClick: getClickHandler(config),
         loading: getLoadingState(config),
+        onCancel: getCancelHandler(config),
       }),
     )
-  }, [isAzureEntraIdEnabled, handleAzureClick, azureLoading, onClickOption])
+  }, [
+    isAzureEntraIdEnabled,
+    handleAzureClick,
+    azureLoading,
+    cancelLogin,
+    onClickOption,
+  ])
 }

@@ -17,6 +17,7 @@ jest.mock('uiSrc/slices/app/features', () => ({
 jest.mock('uiSrc/components/hooks/useAzureAuth', () => ({
   useAzureAuth: jest.fn().mockReturnValue({
     initiateLogin: jest.fn(),
+    cancelLogin: jest.fn(),
     loading: false,
     account: null,
   }),
@@ -38,10 +39,12 @@ const mockedUseAzureAuth = useAzureAuth as jest.Mock
 describe('useConnectivityOptions', () => {
   const mockOnClickOption = jest.fn()
   const mockInitiateLogin = jest.fn()
+  const mockCancelLogin = jest.fn()
 
   beforeEach(() => {
     mockedUseAzureAuth.mockReturnValue({
       initiateLogin: mockInitiateLogin,
+      cancelLogin: mockCancelLogin,
       loading: false,
       account: null,
     })
@@ -83,6 +86,7 @@ describe('useConnectivityOptions', () => {
     mockedIsAzureEntraIdEnabledSelector.mockReturnValue(true)
     mockedUseAzureAuth.mockReturnValue({
       initiateLogin: mockInitiateLogin,
+      cancelLogin: mockCancelLogin,
       loading: false,
       account: null,
     })
@@ -112,6 +116,7 @@ describe('useConnectivityOptions', () => {
     mockedIsAzureEntraIdEnabledSelector.mockReturnValue(true)
     mockedUseAzureAuth.mockReturnValue({
       initiateLogin: mockInitiateLogin,
+      cancelLogin: mockCancelLogin,
       loading: false,
       account: mockAccount,
     })
@@ -152,6 +157,7 @@ describe('useConnectivityOptions', () => {
     mockedIsAzureEntraIdEnabledSelector.mockReturnValue(true)
     mockedUseAzureAuth.mockReturnValue({
       initiateLogin: mockInitiateLogin,
+      cancelLogin: mockCancelLogin,
       loading: true,
     })
 
@@ -202,5 +208,63 @@ describe('useConnectivityOptions', () => {
     expect(sentinelOption).toBeDefined()
     expect(softwareOption).toBeDefined()
     expect(importOption).toBeDefined()
+  })
+
+  it('should return onCancel from cancelLogin for Azure option', () => {
+    mockedIsAzureEntraIdEnabledSelector.mockReturnValue(true)
+    mockedUseAzureAuth.mockReturnValue({
+      initiateLogin: mockInitiateLogin,
+      cancelLogin: mockCancelLogin,
+      loading: false,
+      account: null,
+    })
+
+    const { result } = renderHook(() =>
+      useConnectivityOptions({ onClickOption: mockOnClickOption }),
+    )
+
+    const azureOption = result.current.find(
+      (opt) => opt.type === AddDbType.azure,
+    )
+
+    expect(azureOption?.onCancel).toBe(mockCancelLogin)
+  })
+
+  it('should return onCancel = undefined for non-Azure options', () => {
+    mockedIsAzureEntraIdEnabledSelector.mockReturnValue(false)
+
+    const { result } = renderHook(() =>
+      useConnectivityOptions({ onClickOption: mockOnClickOption }),
+    )
+
+    const nonAzureOptions = result.current.filter(
+      (opt) => opt.type !== AddDbType.azure,
+    )
+
+    nonAzureOptions.forEach((option) => {
+      expect(option.onCancel).toBeUndefined()
+    })
+  })
+
+  it('should call cancelLogin when Azure onCancel is invoked', () => {
+    mockedIsAzureEntraIdEnabledSelector.mockReturnValue(true)
+    mockedUseAzureAuth.mockReturnValue({
+      initiateLogin: mockInitiateLogin,
+      cancelLogin: mockCancelLogin,
+      loading: true,
+      account: null,
+    })
+
+    const { result } = renderHook(() =>
+      useConnectivityOptions({ onClickOption: mockOnClickOption }),
+    )
+
+    const azureOption = result.current.find(
+      (opt) => opt.type === AddDbType.azure,
+    )
+
+    azureOption?.onCancel?.()
+
+    expect(mockCancelLogin).toHaveBeenCalled()
   })
 })
