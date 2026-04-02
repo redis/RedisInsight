@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { memo, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { PaginationState } from 'uiSrc/components/base/layout/table'
@@ -61,25 +61,20 @@ const VectorSetElementList = memo(() => {
     return 'No results found.'
   }, [loading])
 
-  const handlePaginationChange = useCallback(
-    (newPagination: PaginationState) => {
-      setPagination(newPagination)
+  useEffect(() => {
+    const { pageIndex, pageSize } = pagination
+    const requiredEnd = (pageIndex + 1) * pageSize
 
-      const { pageIndex, pageSize } = newPagination
-      const requiredEnd = (pageIndex + 1) * pageSize
-
-      if (requiredEnd > elements.length && nextCursor && !loading) {
-        dispatch(
-          fetchMoreVectorSetElements({
-            key: key as RedisResponseBuffer,
-            nextCursor,
-            count: pageSize,
-          }),
-        )
-      }
-    },
-    [elements.length, nextCursor, key, loading, dispatch],
-  )
+    if (requiredEnd > elements.length && nextCursor && !loading) {
+      dispatch(
+        fetchMoreVectorSetElements({
+          key: key as RedisResponseBuffer,
+          nextCursor,
+          count: pageSize,
+        }),
+      )
+    }
+  }, [pagination])
 
   return (
     <S.Container data-testid="vector-set-details">
@@ -92,7 +87,7 @@ const VectorSetElementList = memo(() => {
         manualPagination={paginationEnabled}
         totalRowCount={paginationEnabled ? total : undefined}
         pagination={pagination}
-        onPaginationChange={handlePaginationChange}
+        onPaginationChange={setPagination}
         emptyState={emptyMessage}
         data-testid="vector-set-details-table"
       />
