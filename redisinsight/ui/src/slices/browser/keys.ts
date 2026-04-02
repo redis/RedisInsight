@@ -63,6 +63,7 @@ import {
   refreshZsetMembersAction,
 } from './zset'
 import { fetchSetMembers, refreshSetMembersAction } from './set'
+import { fetchVectorSetElements } from './vectorSet'
 import { fetchReJSON, setEditorType, setIsWithinThreshold } from './rejson'
 import {
   setHashInitialState,
@@ -885,6 +886,9 @@ export function fetchKeyInfo(
           )
         }
       }
+      if (data.type === KeyTypes.VectorSet) {
+        dispatch<any>(fetchVectorSetElements({ key, resetData }))
+      }
     } catch (_err) {
       const error = _err as AxiosError
       const errorMessage = getApiErrorMessage(error)
@@ -1585,6 +1589,10 @@ export function refreshKey(
       }
       case KeyTypes.Stream: {
         dispatch(refreshStream(key, resetData))
+        break
+      }
+      case KeyTypes.VectorSet: {
+        dispatch(fetchVectorSetElements({ key, resetData }))
         break
       }
       default:
