@@ -12,7 +12,7 @@ import {
   vectorSetDataSelector,
   vectorSetSelector,
 } from 'uiSrc/slices/browser/vectorSet'
-import { RedisResponseBuffer, VectorSetElement } from 'uiSrc/slices/interfaces'
+import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 import { getVectorSetColumns } from './VectorSetElementList.config'
 import { DEFAULT_PAGE_SIZE, ENABLE_PAGINATION_COUNT } from './constants'
@@ -20,26 +20,17 @@ import * as S from './VectorSetElementList.styles'
 
 const VectorSetElementList = memo(() => {
   const { loading } = useSelector(vectorSetSelector)
-  const {
-    elements: loadedElements,
-    nextCursor,
-    total,
-  } = useSelector(vectorSetDataSelector)
+  const { elements, nextCursor, total } = useSelector(vectorSetDataSelector)
   const { name: key } = useSelector(selectedKeyDataSelector) ?? { name: '' }
   const { compressor = null } = useSelector(connectedInstanceSelector)
   const { viewFormat } = useSelector(selectedKeySelector)
 
   const dispatch = useDispatch()
 
-  const [elements, setElements] = useState<VectorSetElement[]>(loadedElements)
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,
   })
-
-  useEffect(() => {
-    setElements(loadedElements)
-  }, [loadedElements])
 
   useEffect(() => {
     setPagination((prev) => ({ ...prev, pageIndex: 0 }))
