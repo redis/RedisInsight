@@ -165,7 +165,6 @@ const InternalPage = (props: Props) => {
           'select',
           'button',
           'meta',
-          'link',
           'base',
           'style',
           'svg',
