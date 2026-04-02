@@ -77,13 +77,13 @@ const VectorSetElementList = memo(() => {
       const { pageIndex, pageSize } = newPagination
       const requiredEnd = (pageIndex + 1) * pageSize
 
-      if (requiredEnd > elements.length && nextCursor) {
+      if (requiredEnd > elements.length && nextCursor && !loading) {
         dispatch(
           fetchMoreVectorSetElements(key as RedisResponseBuffer, nextCursor),
         )
       }
     },
-    [elements.length, nextCursor, key, dispatch],
+    [elements.length, nextCursor, key, loading, dispatch],
   )
 
   return (
