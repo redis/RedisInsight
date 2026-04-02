@@ -20,6 +20,7 @@ import {
 } from 'src/modules/browser/vector-set/__tests__/vector-set.factory';
 import { VectorSetService } from 'src/modules/browser/vector-set/vector-set.service';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
+import { RedisFeature } from 'src/modules/redis/client';
 
 describe('VectorSetService', () => {
   const client = mockStandaloneRedisClient;
@@ -47,6 +48,8 @@ describe('VectorSetService', () => {
 
   describe('getElements', () => {
     beforeEach(() => {
+      client.isFeatureSupported = jest.fn().mockResolvedValue(true);
+
       when(client.sendCommand)
         .calledWith([BrowserToolVectorSetCommands.VCard, mockDto.keyName])
         .mockResolvedValue(mockElements.length);
@@ -74,6 +77,16 @@ describe('VectorSetService', () => {
         mockDto,
       );
 
+      expect(client.isFeatureSupported).toHaveBeenCalledWith(
+        RedisFeature.VRangeCommand,
+      );
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolVectorSetCommands.VRange,
+        mockDto.keyName,
+        mockDto.start,
+        mockDto.end,
+        mockDto.count,
+      ]);
       expect(result.keyName).toEqual(mockDto.keyName);
       expect(result.total).toEqual(mockElements.length);
       expect(result.elements).toHaveLength(mockElements.length);
@@ -139,6 +152,40 @@ describe('VectorSetService', () => {
       await expect(
         service.getElements(mockBrowserClientMetadata, mockDto),
       ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should fallback to VRANDMEMBER when VRANGE is not supported', async () => {
+      client.isFeatureSupported = jest.fn().mockResolvedValue(false);
+
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolVectorSetCommands.VRandMember,
+          mockDto.keyName,
+          mockDto.count,
+        ])
+        .mockResolvedValue(mockElementNames);
+
+      const pipelineResults = mockElements.flatMap((el) => [
+        [null, el.vector.map(String)],
+        [null, el.attributes ?? null],
+      ]);
+      client.sendPipeline.mockResolvedValue(pipelineResults);
+
+      const result = await service.getElements(
+        mockBrowserClientMetadata,
+        mockDto,
+      );
+
+      expect(client.isFeatureSupported).toHaveBeenCalledWith(
+        RedisFeature.VRangeCommand,
+      );
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolVectorSetCommands.VRandMember,
+        mockDto.keyName,
+        mockDto.count,
+      ]);
+      expect(result.elements).toHaveLength(mockElements.length);
+      expect(result.nextCursor).toBeUndefined();
     });
   });
 });

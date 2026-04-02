@@ -17,7 +17,11 @@ import {
   VectorSetElementDto,
 } from 'src/modules/browser/vector-set/dto';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
-import { RedisClient, RedisClientCommand } from 'src/modules/redis/client';
+import {
+  RedisClient,
+  RedisClientCommand,
+  RedisFeature,
+} from 'src/modules/redis/client';
 
 @Injectable()
 export class VectorSetService {
@@ -54,14 +58,32 @@ export class VectorSetService {
         );
       }
 
-      // Get element names using VRANGE
-      const elementNames = (await client.sendCommand([
-        BrowserToolVectorSetCommands.VRange,
-        keyName,
-        start || '-',
-        end || '+',
-        count,
-      ])) as string[];
+      const isVRangeSupported = await client.isFeatureSupported(
+        RedisFeature.VRangeCommand,
+      );
+
+      let elementNames: string[];
+      let nextCursor: string | undefined;
+
+      if (isVRangeSupported) {
+        elementNames = (await client.sendCommand([
+          BrowserToolVectorSetCommands.VRange,
+          keyName,
+          start || '-',
+          end || '+',
+          count,
+        ])) as string[];
+
+        if (elementNames.length === count && elementNames.length > 0) {
+          nextCursor = `(${elementNames[elementNames.length - 1]}`;
+        }
+      } else {
+        elementNames = (await client.sendCommand([
+          BrowserToolVectorSetCommands.VRandMember,
+          keyName,
+          count,
+        ])) as string[];
+      }
 
       // Fetch embeddings and attributes for each element using pipelining
       const elements = await this.fetchElementDetails(
@@ -69,13 +91,6 @@ export class VectorSetService {
         keyName,
         elementNames,
       );
-
-      // Determine next cursor for pagination
-      let nextCursor: string | undefined;
-      if (elementNames.length === count && elementNames.length > 0) {
-        // Use exclusive range starting after last element
-        nextCursor = `(${elementNames[elementNames.length - 1]}`;
-      }
 
       this.logger.debug(
         'Succeed to get elements of the VectorSet data type.',
