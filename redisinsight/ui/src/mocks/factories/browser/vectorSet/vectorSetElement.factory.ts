@@ -1,7 +1,17 @@
 import { faker } from '@faker-js/faker'
 import { Factory } from 'fishery'
+import { KeyTypes } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
 import { VectorSetElement } from 'uiSrc/slices/interfaces'
+
+export const mockKeyBuffer = stringToBuffer(faker.word.noun())
+
+export const mockVectorSetKeyInfo = {
+  name: mockKeyBuffer,
+  type: KeyTypes.VectorSet,
+  ttl: faker.number.int({ min: -1, max: 86400 }),
+  size: faker.number.int({ min: 1, max: 1000 }),
+}
 
 export const vectorSetElementFactory = Factory.define<VectorSetElement>(() => ({
   name: stringToBuffer(faker.word.words({ count: { min: 1, max: 3 } })),

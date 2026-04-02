@@ -44,6 +44,7 @@ import { CreateZSetWithExpireDto } from 'apiSrc/modules/browser/z-set/dto'
 import { SetStringWithExpireDto } from 'apiSrc/modules/browser/string/dto'
 import { rootReducer } from '../../store'
 import { loadVectorSetElements } from '../../browser/vectorSet'
+import { mockVectorSetKeyInfo } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
 import { getString, getStringSuccess } from '../../browser/string'
 import reducer, {
   addHashKey,
@@ -1537,12 +1538,7 @@ describe('keys slice', () => {
       })
 
       it('should dispatch loadVectorSetElements for VectorSet key type', async () => {
-        const data = {
-          name: stringToBuffer('myvset'),
-          type: KeyTypes.VectorSet,
-          ttl: -1,
-          size: 10,
-        }
+        const data = mockVectorSetKeyInfo
         const responsePayload = { data, status: 200 }
 
         apiService.post = jest.fn().mockResolvedValue(responsePayload)
