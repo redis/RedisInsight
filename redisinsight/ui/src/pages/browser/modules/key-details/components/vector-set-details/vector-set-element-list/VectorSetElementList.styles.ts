@@ -8,8 +8,6 @@ export const Container = styled(FlexItem)`
   width: 100%;
   overflow: hidden;
   padding: ${({ theme }) => theme.core?.space.space200};
-  background-color: ${({ theme }) =>
-    theme.semantic?.color.background.neutral100};
 `
 
 export const StyledTable = styled(Table)`
