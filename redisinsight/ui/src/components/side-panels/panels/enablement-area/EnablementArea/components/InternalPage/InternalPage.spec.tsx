@@ -87,6 +87,16 @@ describe('InternalPage', () => {
 
     expect(queryByTestId('header')).toBeInTheDocument()
   })
+  it('should strip lowercase <link> tags from content', () => {
+    const content =
+      '<link rel="stylesheet" href="https://evil.com/exfil.css" /><p data-testid="safe">safe</p>'
+    const { queryByTestId, container } = render(
+      <InternalPage {...instance(mockedProps)} content={content} />,
+    )
+
+    expect(queryByTestId('safe')).toBeInTheDocument()
+    expect(container.querySelector('link')).not.toBeInTheDocument()
+  })
 
   describe('capability', () => {
     beforeEach(() => {
