@@ -106,11 +106,23 @@ export const vectorSetDataSelector = (state: RootState) =>
 
 export default vectorSetSlice.reducer
 
-export function fetchVectorSetElements(
-  key: RedisResponseBuffer,
-  count: number = VECTOR_SET_COUNT_DEFAULT,
-  resetData?: boolean,
-) {
+interface FetchVectorSetElementsParams {
+  key: RedisResponseBuffer
+  count?: number
+  resetData?: boolean
+}
+
+interface FetchMoreVectorSetElementsParams {
+  key: RedisResponseBuffer
+  nextCursor: string
+  count?: number
+}
+
+export function fetchVectorSetElements({
+  key,
+  count = VECTOR_SET_COUNT_DEFAULT,
+  resetData,
+}: FetchVectorSetElementsParams) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     dispatch(loadVectorSetElements(resetData))
 
@@ -142,11 +154,11 @@ export function fetchVectorSetElements(
   }
 }
 
-export function fetchMoreVectorSetElements(
-  key: RedisResponseBuffer,
-  nextCursor: string,
-  count: number = VECTOR_SET_COUNT_DEFAULT,
-) {
+export function fetchMoreVectorSetElements({
+  key,
+  nextCursor,
+  count = VECTOR_SET_COUNT_DEFAULT,
+}: FetchMoreVectorSetElementsParams) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     dispatch(loadMoreVectorSetElements())
 
@@ -174,40 +186,6 @@ export function fetchMoreVectorSetElements(
       const errorMessage = getApiErrorMessage(error)
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
       dispatch(loadMoreVectorSetElementsFailure(errorMessage))
-    }
-  }
-}
-
-export function refreshVectorSetElementsAction(
-  key: RedisResponseBuffer,
-  resetData?: boolean,
-) {
-  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
-    dispatch(loadVectorSetElements(resetData))
-
-    try {
-      const state = stateInit()
-      const { encoding } = state.app.info
-      const { data, status } = await apiService.post<ModifiedVectorSetResponse>(
-        getUrl(
-          state.connections.instances.connectedInstance?.id,
-          ApiEndpoints.VECTOR_SET_GET_ELEMENTS,
-        ),
-        {
-          keyName: key,
-          count: VECTOR_SET_COUNT_DEFAULT,
-        },
-        { params: { encoding } },
-      )
-
-      if (isStatusSuccessful(status)) {
-        dispatch(loadVectorSetElementsSuccess(data))
-      }
-    } catch (_err) {
-      const error = _err as AxiosError
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
-      dispatch(loadVectorSetElementsFailure(errorMessage))
     }
   }
 }

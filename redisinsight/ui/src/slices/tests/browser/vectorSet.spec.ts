@@ -239,7 +239,7 @@ describe('vectorSet slice', () => {
         apiService.post = jest.fn().mockResolvedValue(responsePayload)
 
         await store.dispatch<any>(
-          fetchVectorSetElements(data.keyName as any, 10),
+          fetchVectorSetElements({ key: data.keyName as any, count: 10 }),
         )
 
         const expectedActions = [
@@ -262,7 +262,7 @@ describe('vectorSet slice', () => {
         apiService.post = jest.fn().mockRejectedValue(responsePayload)
 
         await store.dispatch<any>(
-          fetchVectorSetElements(data.keyName as any, 10),
+          fetchVectorSetElements({ key: data.keyName as any, count: 10 }),
         )
 
         const expectedActions = [
@@ -288,7 +288,11 @@ describe('vectorSet slice', () => {
         apiService.post = jest.fn().mockResolvedValue(responsePayload)
 
         await store.dispatch<any>(
-          fetchMoreVectorSetElements(data.keyName as any, '(elem3', 10),
+          fetchMoreVectorSetElements({
+            key: data.keyName as any,
+            nextCursor: '(elem3',
+            count: 10,
+          }),
         )
 
         const expectedActions = [
@@ -310,7 +314,11 @@ describe('vectorSet slice', () => {
         apiService.post = jest.fn().mockRejectedValue(responsePayload)
 
         await store.dispatch<any>(
-          fetchMoreVectorSetElements(data.keyName as any, '(elem3', 10),
+          fetchMoreVectorSetElements({
+            key: data.keyName as any,
+            nextCursor: '(elem3',
+            count: 10,
+          }),
         )
 
         const expectedActions = [
