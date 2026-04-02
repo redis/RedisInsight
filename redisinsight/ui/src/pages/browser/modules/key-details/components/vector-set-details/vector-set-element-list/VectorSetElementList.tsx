@@ -79,7 +79,11 @@ const VectorSetElementList = memo(() => {
 
       if (requiredEnd > elements.length && nextCursor && !loading) {
         dispatch(
-          fetchMoreVectorSetElements(key as RedisResponseBuffer, nextCursor),
+          fetchMoreVectorSetElements(
+            key as RedisResponseBuffer,
+            nextCursor,
+            pageSize,
+          ),
         )
       }
     },
