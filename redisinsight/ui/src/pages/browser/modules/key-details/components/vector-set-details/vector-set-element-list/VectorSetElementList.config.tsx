@@ -2,39 +2,88 @@ import React from 'react'
 
 import { ColumnDef, Row } from 'uiSrc/components/base/layout/table'
 import { VectorSetElement } from 'uiSrc/slices/interfaces'
+import {
+  bufferToString,
+  createDeleteFieldHeader,
+  createDeleteFieldMessage,
+} from 'uiSrc/utils'
+import HelpTexts from 'uiSrc/constants/help-texts'
+import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
 import { ElementNameCell } from './components/ElementNameCell/ElementNameCell'
 import {
-  GetColumnsOptions,
+  ElementsListConfig,
   VectorSetColumn,
 } from './VectorSetElementList.types'
 import { VECTOR_SET_COLUMN_HEADERS } from './constants'
 
-const createNameColumn = ({
-  compressor,
-  viewFormat,
-}: GetColumnsOptions): ColumnDef<VectorSetElement> => ({
-  id: VectorSetColumn.Name,
-  accessorKey: VectorSetColumn.Name,
-  header: VECTOR_SET_COLUMN_HEADERS[VectorSetColumn.Name],
-  enableSorting: false,
-  size: 100,
-  cell: ({ row }: { row: Row<VectorSetElement> }) => (
-    <ElementNameCell
-      element={row.original}
-      compressor={compressor}
-      viewFormat={viewFormat}
-    />
-  ),
-})
+const createNameColumn = (
+  listConfig: ElementsListConfig,
+): ColumnDef<VectorSetElement> => {
+  const { compressor, viewFormat } = listConfig
+  return {
+    id: VectorSetColumn.Name,
+    accessorKey: VectorSetColumn.Name,
+    header: VECTOR_SET_COLUMN_HEADERS[VectorSetColumn.Name],
+    enableSorting: false,
+    size: 150,
+    cell: ({ row }: { row: Row<VectorSetElement> }) => (
+      <ElementNameCell
+        element={row.original}
+        compressor={compressor}
+        viewFormat={viewFormat}
+      />
+    ),
+  }
+}
 
-const ACTIONS_COLUMN: ColumnDef<VectorSetElement> = {
+const createActionsColumn = (
+  listConfig: ElementsListConfig,
+): ColumnDef<VectorSetElement> => ({
   id: VectorSetColumn.Actions,
   header: VECTOR_SET_COLUMN_HEADERS[VectorSetColumn.Actions],
   enableSorting: false,
   size: 10,
-  cell: () => null,
-}
+  cell: ({ row }: { row: Row<VectorSetElement> }) => {
+    const { name: nameBuffer } = row.original
+    const { viewFormat, elementDeleteConfig: deleteConfig } = listConfig
+    const {
+      deleting,
+      suffix,
+      total,
+      keyName,
+      closePopover,
+      showPopover,
+      handleDeleteElement,
+      handleRemoveIconClick,
+    } = deleteConfig
+
+    const name = bufferToString(nameBuffer, viewFormat)
+
+    return (
+      <div className="value-table-actions">
+        <PopoverDelete
+          header={createDeleteFieldHeader(nameBuffer)}
+          text={createDeleteFieldMessage(keyName)}
+          item={name}
+          itemRaw={nameBuffer}
+          suffix={suffix}
+          deleting={deleting}
+          closePopover={closePopover}
+          updateLoading={false}
+          showPopover={showPopover}
+          handleDeleteItem={handleDeleteElement}
+          handleButtonClick={handleRemoveIconClick}
+          testid={`vector-set-remove-btn-${name}`}
+          appendInfo={total === 1 ? HelpTexts.REMOVE_LAST_ELEMENT() : null}
+        />
+      </div>
+    )
+  },
+})
 
 export const getVectorSetColumns = (
-  options: GetColumnsOptions,
-): ColumnDef<VectorSetElement>[] => [createNameColumn(options), ACTIONS_COLUMN]
+  listConfig: ElementsListConfig,
+): ColumnDef<VectorSetElement>[] => [
+  createNameColumn(listConfig),
+  createActionsColumn(listConfig),
+]
