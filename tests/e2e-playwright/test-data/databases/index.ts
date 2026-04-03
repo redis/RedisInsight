@@ -55,6 +55,15 @@ export const ClusterConfigFactory = Factory.define<AddDatabaseConfig>(() => ({
 }));
 
 /**
+ * Cluster database with cluster-announce-hostname configuration factory
+ */
+export const ClusterHostnameConfigFactory = Factory.define<AddDatabaseConfig>(() => ({
+  host: redisConfig.clusterHostname.host,
+  port: redisConfig.clusterHostname.port,
+  name: `${TEST_DB_PREFIX}cluster-hostname-${faker.string.alphanumeric(8)}`,
+}));
+
+/**
  * Sentinel database configuration factory
  */
 export const SentinelConfigFactory = Factory.define<AddDatabaseConfig & { masterName: string }>(() => ({
