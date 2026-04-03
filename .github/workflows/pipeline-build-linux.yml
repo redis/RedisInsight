@@ -44,7 +44,6 @@ jobs:
         uses: ./.github/actions/install-all-build-libs
         with:
           keytar-host-mirror: ${{ secrets.NPM_CONFIG_KEYTAR_BINARY_HOST_MIRROR }}
-          sqlite3-host-mirror: ${{ secrets.NPM_CONFIG_NODE_SQLITE3_BINARY_HOST_MIRROR }}
 
       # TODO: Is it needed?
       # - run: |

@@ -7,9 +7,6 @@ inputs:
   keytar-host-mirror:
     description: Keytar binary host mirror
     required: false
-  sqlite3-host-mirror:
-    description: SQLite3 binary host mirror
-    required: false
   skip-postinstall:
     description: Skip postinstall
     required: false
@@ -28,6 +25,5 @@ runs:
       run: |
         # todo: uncomment after build our binaries
         # export npm_config_keytar_binary_host_mirror=${{ inputs.keytar-host-mirror }}
-        # export npm_config_node_sqlite3_binary_host_mirror=${{ inputs.sqlite3-host-mirror }}
 
         yarn install --frozen-lockfile --network-timeout 1000000

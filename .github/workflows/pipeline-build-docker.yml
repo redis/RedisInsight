@@ -43,7 +43,6 @@ jobs:
         uses: ./.github/actions/install-all-build-libs
         with:
           keytar-host-mirror: ${{ secrets.NPM_CONFIG_KEYTAR_BINARY_HOST_MIRROR }}
-          sqlite3-host-mirror: ${{ secrets.NPM_CONFIG_NODE_SQLITE3_BINARY_HOST_MIRROR }}
 
       - name: Build sources
         run: ./.github/build/build.sh
@@ -53,7 +52,6 @@ jobs:
         if: inputs.for_e2e_tests
         run: |
           unset npm_config_keytar_binary_host_mirror
-          unset npm_config_node_sqlite3_binary_host_mirror
           # Docker sources
           PLATFORM=linux ARCH=x64 LIBC=musl .github/build/build_modules.sh
 
@@ -61,7 +59,6 @@ jobs:
         if: ${{ !inputs.for_e2e_tests }}
         run: |
           unset npm_config_keytar_binary_host_mirror
-          unset npm_config_node_sqlite3_binary_host_mirror
           # Docker sources
           PLATFORM=linux ARCH=x64 LIBC=musl .github/build/build_modules.sh
           PLATFORM=linux ARCH=arm64 LIBC=musl .github/build/build_modules.sh
