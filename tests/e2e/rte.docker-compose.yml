@@ -223,6 +223,47 @@ services:
       default:
         ipv4_address: 172.31.100.213
 
+  # oss cluster (v7) with cluster-announce-hostname
+  cluster-hostname-creator-7:
+    logging: *logging
+    build:
+      context: ./rte/oss-cluster-7-hostname
+      dockerfile: creator.Dockerfile
+    depends_on:
+      - master-hostname-7-1
+      - master-hostname-7-2
+      - master-hostname-7-3
+  master-hostname-7-1:
+    logging: *logging
+    build: &cluster-hostname-7-build ./rte/oss-cluster-7-hostname
+    ports:
+      - 8210:6379
+      - 18210:16379
+    command: redis-server /etc/redis/redis.conf --cluster-announce-hostname master-hostname-7-1 --cluster-announce-ip host.docker.internal --cluster-announce-port 8210 --cluster-announce-bus-port 18210
+    networks:
+      default:
+        ipv4_address: 172.31.100.231
+  master-hostname-7-2:
+    logging: *logging
+    build: *cluster-hostname-7-build
+    ports:
+      - 8211:6379
+      - 18211:16379
+    command: redis-server /etc/redis/redis.conf --cluster-announce-hostname master-hostname-7-2 --cluster-announce-ip host.docker.internal --cluster-announce-port 8211 --cluster-announce-bus-port 18211
+    networks:
+      default:
+        ipv4_address: 172.31.100.232
+  master-hostname-7-3:
+    logging: *logging
+    build: *cluster-hostname-7-build
+    ports:
+      - 8212:6379
+      - 18212:16379
+    command: redis-server /etc/redis/redis.conf --cluster-announce-hostname master-hostname-7-3 --cluster-announce-ip host.docker.internal --cluster-announce-port 8212 --cluster-announce-bus-port 18212
+    networks:
+      default:
+        ipv4_address: 172.31.100.233
+
   # oss cluster (v7) with rediserch > 2.2
   cluster-rs-creator-7:
     logging: *logging
