@@ -4,13 +4,21 @@ import { AxiosError } from 'axios'
 import { apiService } from 'uiSrc/services'
 import { ApiEndpoints } from 'uiSrc/constants'
 import {
+  bufferToString,
   getApiErrorMessage,
   getUrl,
+  isEqualBuffers,
   isStatusSuccessful,
   Maybe,
 } from 'uiSrc/utils'
+import successMessages from 'uiSrc/components/notifications/success-messages'
 
-import { updateSelectedKeyRefreshTime } from './keys'
+import {
+  deleteKeyFromList,
+  deleteSelectedKeySuccess,
+  refreshKeyInfoAction,
+  updateSelectedKeyRefreshTime,
+} from './keys'
 import { AppDispatch, RootState } from '../store'
 import { RedisResponseBuffer } from '../interfaces'
 import {
@@ -19,6 +27,7 @@ import {
 } from '../interfaces/vectorSet'
 import {
   addErrorNotification,
+  addMessageNotification,
   IAddInstanceErrorPayload,
 } from '../app/notifications'
 
@@ -89,6 +98,27 @@ const vectorSetSlice = createSlice({
       state.loading = false
       state.error = payload
     },
+
+    removeVectorSetElements: (state) => {
+      state.loading = true
+      state.error = ''
+    },
+    removeVectorSetElementsSuccess: (state) => {
+      state.loading = false
+    },
+    removeVectorSetElementsFailure: (state, { payload }) => {
+      state.loading = false
+      state.error = payload
+    },
+    removeElementsFromList: (
+      state,
+      { payload: elements }: PayloadAction<RedisResponseBuffer[]>,
+    ) => {
+      state.data.elements = state.data.elements.filter(
+        (el) => !elements.some((element) => isEqualBuffers(el.name, element)),
+      )
+      state.data.total -= elements.length
+    },
   },
 })
 
@@ -99,6 +129,10 @@ export const {
   loadMoreVectorSetElements,
   loadMoreVectorSetElementsSuccess,
   loadMoreVectorSetElementsFailure,
+  removeVectorSetElements,
+  removeVectorSetElementsSuccess,
+  removeVectorSetElementsFailure,
+  removeElementsFromList,
 } = vectorSetSlice.actions
 
 export const vectorSetSelector = (state: RootState) => state.browser.vectorSet
@@ -187,6 +221,63 @@ export function fetchMoreVectorSetElements({
       const errorMessage = getApiErrorMessage(error)
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
       dispatch(loadMoreVectorSetElementsFailure(errorMessage))
+    }
+  }
+}
+
+export function deleteVectorSetElements(
+  key: RedisResponseBuffer,
+  elements: RedisResponseBuffer[],
+  onSuccessAction?: (newTotal: number) => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    dispatch(removeVectorSetElements())
+
+    try {
+      const state = stateInit()
+      const { encoding } = state.app.info
+      const { data, status } = await apiService.delete(
+        getUrl(
+          state.connections.instances.connectedInstance?.id,
+          ApiEndpoints.VECTOR_SET_ELEMENTS,
+        ),
+        {
+          data: {
+            keyName: key,
+            elements,
+          },
+          params: { encoding },
+        },
+      )
+
+      if (isStatusSuccessful(status)) {
+        const newTotalValue = state.browser.vectorSet.data.total - data.affected
+
+        onSuccessAction?.(newTotalValue)
+        dispatch(removeVectorSetElementsSuccess())
+        dispatch(removeElementsFromList(elements))
+        if (newTotalValue > 0) {
+          dispatch<any>(refreshKeyInfoAction(key))
+          dispatch(
+            addMessageNotification(
+              successMessages.REMOVED_KEY_VALUE(
+                key,
+                elements.map((element) => bufferToString(element)).join(''),
+                'Element',
+              ),
+            ),
+          )
+        } else {
+          dispatch(deleteSelectedKeySuccess())
+          dispatch(deleteKeyFromList(key))
+          dispatch(addMessageNotification(successMessages.DELETED_KEY(key)))
+        }
+      }
+    } catch (_err) {
+      const error = _err as AxiosError
+      const errorMessage = getApiErrorMessage(error)
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      dispatch(removeVectorSetElementsFailure(errorMessage))
     }
   }
 }
