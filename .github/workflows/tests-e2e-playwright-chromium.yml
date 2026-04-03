@@ -69,6 +69,23 @@ jobs:
           TEST_BIG_DB_DUMP=$TEST_BIG_DB_DUMP \
           docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml up --detach --force-recreate
 
+      - name: Wait for Redis clusters to be ready
+        run: |
+          echo "Waiting for OSS cluster (8200) to form..."
+          for i in $(seq 1 60); do
+            if docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml exec -T master-plain-7-1 redis-cli CLUSTER INFO 2>/dev/null | grep -q "cluster_state:ok"; then
+              echo "IP-based cluster ready"; break
+            fi
+            sleep 2
+          done
+          echo "Waiting for hostname cluster (8210) to form..."
+          for i in $(seq 1 60); do
+            if docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml exec -T master-hostname-7-1 redis-cli CLUSTER INFO 2>/dev/null | grep -q "cluster_state:ok"; then
+              echo "Hostname-based cluster ready"; break
+            fi
+            sleep 2
+          done
+
       - name: Run Playwright tests (Chromium)
         working-directory: ${{ env.E2E_DIR }}
         run: npx playwright test --project=chromium --project=chromium-serial
