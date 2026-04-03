@@ -1,5 +1,5 @@
 import { KeyValueCompressor, KeyValueFormat } from 'uiSrc/constants'
-import { VectorSetElement } from 'uiSrc/slices/interfaces'
+import { RedisString, VectorSetElement } from 'uiSrc/slices/interfaces'
 import { Nullable } from 'uiSrc/utils'
 
 export enum VectorSetColumn {
@@ -7,9 +7,21 @@ export enum VectorSetColumn {
   Actions = 'actions',
 }
 
-export interface GetColumnsOptions {
+export interface ElementDeleteConfig {
+  deleting: string
+  suffix: string
+  total: number
+  keyName: RedisString
+  closePopover: () => void
+  showPopover: (item: string) => void
+  handleDeleteElement: (item: RedisString | string) => void
+  handleRemoveIconClick: () => void
+}
+
+export interface ElementsListConfig {
   compressor: Nullable<KeyValueCompressor>
   viewFormat: KeyValueFormat
+  elementDeleteConfig: ElementDeleteConfig
 }
 
 export interface ElementNameCellProps {
