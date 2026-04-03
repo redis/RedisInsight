@@ -100,6 +100,7 @@ export class VectorSetService {
         keyName,
         total,
         nextCursor,
+        isPaginationSupported: isVRangeSupported,
         elements,
       });
     } catch (error) {

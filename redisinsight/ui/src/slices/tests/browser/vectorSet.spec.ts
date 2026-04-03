@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker'
 import { cloneDeep } from 'lodash'
 import { apiService } from 'uiSrc/services'
 import {
@@ -12,7 +13,8 @@ import {
 import { MOCK_TIMESTAMP } from 'uiSrc/mocks/data/dateNow'
 import {
   vectorSetElementFactory,
-  mockVectorSetElements,
+  vectorSetTestKeyName,
+  vectorSetPaginationCursorAfter,
 } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
 import { updateSelectedKeyRefreshTime } from '../../browser/keys'
 import reducer, {
@@ -78,10 +80,14 @@ describe('vectorSet slice', () => {
   describe('loadVectorSetElementsSuccess', () => {
     it('should properly set the state with fetched data', () => {
       const elements = vectorSetElementFactory.buildList(2)
+      const keyName = vectorSetTestKeyName()
       const data = {
-        keyName: 'test vectorset',
-        total: 2,
-        nextCursor: '(elem2',
+        keyName,
+        total: elements.length,
+        nextCursor: vectorSetPaginationCursorAfter(
+          elements[elements.length - 1],
+        ),
+        isPaginationSupported: true,
         elements,
       }
 
@@ -108,7 +114,7 @@ describe('vectorSet slice', () => {
 
     it('should properly set the state with empty data', () => {
       const data: any = {
-        keyName: 'key',
+        keyName: vectorSetTestKeyName(),
       }
 
       const state = {
@@ -131,6 +137,73 @@ describe('vectorSet slice', () => {
         browser: { ...initialStateDefault.browser, vectorSet: nextState },
       }
       expect(vectorSetSelector(rootState)).toEqual(state)
+    })
+
+    it('stores isPaginationSupported true so UI hides the preview banner (table lists pages)', () => {
+      const elements = vectorSetElementFactory.buildList(5)
+      const keyName = vectorSetTestKeyName()
+      const data = {
+        keyName,
+        total: elements.length,
+        nextCursor: undefined,
+        isPaginationSupported: true,
+        elements,
+      }
+
+      const state = {
+        loading: false,
+        error: '',
+        data: {
+          ...data,
+          key: data.keyName,
+        },
+      }
+
+      const nextState = reducer(
+        initialState,
+        loadVectorSetElementsSuccess(data as any),
+      )
+
+      const rootState = {
+        ...initialStateDefault,
+        browser: { ...initialStateDefault.browser, vectorSet: nextState },
+      }
+      expect(vectorSetSelector(rootState)).toEqual(state)
+      expect(nextState.data.isPaginationSupported).toBe(true)
+    })
+
+    it('stores isPaginationSupported false so UI shows the preview banner (random sample)', () => {
+      const elements = vectorSetElementFactory.buildList(3)
+      const keyName = vectorSetTestKeyName()
+      const total = faker.number.int({ min: elements.length + 1, max: 500 })
+      const data = {
+        keyName,
+        total,
+        nextCursor: undefined,
+        isPaginationSupported: false,
+        elements,
+      }
+
+      const state = {
+        loading: false,
+        error: '',
+        data: {
+          ...data,
+          key: data.keyName,
+        },
+      }
+
+      const nextState = reducer(
+        initialState,
+        loadVectorSetElementsSuccess(data as any),
+      )
+
+      const rootState = {
+        ...initialStateDefault,
+        browser: { ...initialStateDefault.browser, vectorSet: nextState },
+      }
+      expect(vectorSetSelector(rootState)).toEqual(state)
+      expect(nextState.data.isPaginationSupported).toBe(false)
     })
   })
 
@@ -177,8 +250,9 @@ describe('vectorSet slice', () => {
   describe('loadMoreVectorSetElementsSuccess', () => {
     it('should properly set the state with fetched data', () => {
       const elements = vectorSetElementFactory.buildList(2)
+      const keyName = vectorSetTestKeyName()
       const data = {
-        keyName: '',
+        keyName,
         nextCursor: undefined,
         total: 0,
         elements,
@@ -187,7 +261,13 @@ describe('vectorSet slice', () => {
       const state = {
         loading: false,
         error: '',
-        data,
+        data: {
+          ...initialState.data,
+          keyName,
+          total: 0,
+          nextCursor: undefined,
+          elements,
+        },
       }
 
       const nextState = reducer(
@@ -227,11 +307,15 @@ describe('vectorSet slice', () => {
 
   describe('thunks', () => {
     describe('fetchVectorSetElements', () => {
+      const thunkElements = vectorSetElementFactory.buildList(3)
       const data = {
-        keyName: 'test vectorset',
-        total: 3,
-        nextCursor: '(elem3',
-        elements: mockVectorSetElements,
+        keyName: vectorSetTestKeyName(),
+        total: thunkElements.length,
+        nextCursor: vectorSetPaginationCursorAfter(
+          thunkElements[thunkElements.length - 1],
+        ),
+        isPaginationSupported: true,
+        elements: thunkElements,
       }
 
       it('call fetchVectorSetElements, loadVectorSetElementsSuccess when fetch is successful', async () => {
@@ -276,12 +360,19 @@ describe('vectorSet slice', () => {
     })
 
     describe('fetchMoreVectorSetElements', () => {
+      const moreElements = vectorSetElementFactory.buildList(3)
       const data = {
-        keyName: 'test vectorset',
-        total: 10,
-        nextCursor: '(elem6',
-        elements: mockVectorSetElements,
+        keyName: vectorSetTestKeyName(),
+        total: faker.number.int({ min: moreElements.length + 1, max: 100 }),
+        nextCursor: vectorSetPaginationCursorAfter(
+          moreElements[moreElements.length - 1],
+        ),
+        isPaginationSupported: true,
+        elements: moreElements,
       }
+      const requestCursor = vectorSetPaginationCursorAfter(
+        vectorSetElementFactory.build(),
+      )
 
       it('call fetchMoreVectorSetElements, loadMoreVectorSetElementsSuccess when fetch is successful', async () => {
         const responsePayload = { data, status: 200 }
@@ -290,7 +381,7 @@ describe('vectorSet slice', () => {
         await store.dispatch<any>(
           fetchMoreVectorSetElements({
             key: data.keyName as any,
-            nextCursor: '(elem3',
+            nextCursor: requestCursor,
             count: 10,
           }),
         )
@@ -316,7 +407,7 @@ describe('vectorSet slice', () => {
         await store.dispatch<any>(
           fetchMoreVectorSetElements({
             key: data.keyName as any,
-            nextCursor: '(elem3',
+            nextCursor: requestCursor,
             count: 10,
           }),
         )

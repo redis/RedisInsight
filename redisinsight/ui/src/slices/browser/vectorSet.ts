@@ -74,14 +74,15 @@ const vectorSetSlice = createSlice({
     loadMoreVectorSetElementsSuccess: (
       state,
       {
-        payload: { elements, ...rest },
+        payload: { elements, nextCursor, ...rest },
       }: PayloadAction<ModifiedVectorSetResponse>,
     ) => {
       state.loading = false
       state.data = {
         ...state.data,
         ...rest,
-        elements: state.data?.elements?.concat(elements),
+        nextCursor,
+        elements: (state.data?.elements ?? []).concat(elements),
       }
     },
     loadMoreVectorSetElementsFailure: (state, { payload }) => {

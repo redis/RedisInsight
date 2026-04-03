@@ -93,6 +93,7 @@ describe('VectorSetService', () => {
       expect(result.elements[0].name).toEqual(mockElements[0].name);
       expect(result.elements[0].vector).toEqual(mockElements[0].vector);
       expect(result.elements[0].attributes).toEqual(mockElements[0].attributes);
+      expect(result.isPaginationSupported).toBe(true);
     });
 
     it('should return nextCursor when results equal count', async () => {
@@ -118,6 +119,7 @@ describe('VectorSetService', () => {
 
       const lastElementName = mockElementNames[mockElementNames.length - 1];
       expect(result.nextCursor).toEqual(`(${lastElementName}`);
+      expect(result.isPaginationSupported).toBe(true);
     });
 
     it('should throw NotFoundException when key does not exist', async () => {
@@ -186,6 +188,7 @@ describe('VectorSetService', () => {
       ]);
       expect(result.elements).toHaveLength(mockElements.length);
       expect(result.nextCursor).toBeUndefined();
+      expect(result.isPaginationSupported).toBe(false);
     });
   });
 });

@@ -30,7 +30,7 @@ export class GetVectorSetElementsDto extends KeyDto {
     description: 'Specifying the number of elements to return.',
     type: Number,
     minimum: 1,
-    default: 15,
+    default: 10,
   })
   @IsInt()
   @Min(1)
