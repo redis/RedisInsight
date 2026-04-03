@@ -43,10 +43,15 @@ jobs:
     needs: aws-upload-prod
     secrets: inherit
 
+  github-release:
+    name: Upload to GitHub Release
+    uses: ./.github/workflows/github-release-upload.yml
+    needs: aws-upload-prod
+
   # Remove artifacts from github actions
   remove-artifacts:
     name: Remove artifacts
-    needs: [aws-upload-prod]
+    needs: [aws-upload-prod, github-release]
     if: always()
     runs-on: ubuntu-latest
 
