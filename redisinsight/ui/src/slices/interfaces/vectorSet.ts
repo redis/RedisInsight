@@ -11,12 +11,13 @@ export interface ModifiedVectorSetResponse {
   key?: RedisResponseBuffer
   keyName: RedisString
   nextCursor?: string
+  /** From API: whether cursor-based pagination is supported for listing elements. */
+  isPaginationSupported?: boolean
   elements: VectorSetElement[]
 }
 
 export interface InitialStateVectorSet {
   loading: boolean
   error: string
-  showElementsPreview: boolean
   data: ModifiedVectorSetResponse
 }

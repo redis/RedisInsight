@@ -1,23 +1,22 @@
 import React from 'react'
 import { render, screen } from 'uiSrc/utils/test-utils'
-import {
-  mockKeyBuffer,
-  mockVectorSetElements,
-} from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
 import { VectorSetElementList } from './VectorSetElementList'
 
 jest.mock('uiSrc/slices/browser/vectorSet', () => {
-  const defaultState = jest.requireActual(
-    'uiSrc/slices/browser/vectorSet',
-  ).initialState
+  const { initialState } = jest.requireActual('uiSrc/slices/browser/vectorSet')
+  const { mockKeyBuffer, vectorSetElementFactory } = jest.requireActual(
+    'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory',
+  )
+  const elements = vectorSetElementFactory.buildList(3)
   return {
-    vectorSetSelector: jest.fn().mockReturnValue(defaultState),
+    vectorSetSelector: jest.fn().mockReturnValue(initialState),
     vectorSetDataSelector: jest.fn().mockReturnValue({
-      ...defaultState.data,
-      total: mockVectorSetElements.length,
+      ...initialState.data,
+      total: elements.length,
+      isPaginationSupported: true,
       key: mockKeyBuffer,
       keyName: mockKeyBuffer,
-      elements: mockVectorSetElements,
+      elements,
     }),
     fetchMoreVectorSetElements: () => jest.fn(),
   }
@@ -31,7 +30,7 @@ describe('VectorSetElementList', () => {
   it('should render rows properly', () => {
     const { container } = render(<VectorSetElementList />)
     const rows = container.querySelectorAll('tbody tr')
-    expect(rows).toHaveLength(mockVectorSetElements.length)
+    expect(rows).toHaveLength(3)
   })
 
   it('should render vector-set-details test id', () => {

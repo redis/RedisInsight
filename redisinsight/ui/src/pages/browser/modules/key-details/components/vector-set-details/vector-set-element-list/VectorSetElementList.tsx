@@ -15,12 +15,14 @@ import {
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 import { getVectorSetColumns } from './VectorSetElementList.config'
-import { DEFAULT_PAGE_SIZE, ENABLE_PAGINATION_COUNT } from './constants'
+import { DEFAULT_PAGE_SIZE } from './constants'
 import * as S from './VectorSetElementList.styles'
 
 const VectorSetElementList = memo(() => {
   const { loading } = useSelector(vectorSetSelector)
-  const { elements, nextCursor, total } = useSelector(vectorSetDataSelector)
+  const { elements, nextCursor, total, isPaginationSupported } = useSelector(
+    vectorSetDataSelector,
+  )
   const { name: key } = useSelector(selectedKeyDataSelector) ?? { name: '' }
   const { compressor = null } = useSelector(connectedInstanceSelector)
   const { viewFormat } = useSelector(selectedKeySelector)
@@ -36,9 +38,6 @@ const VectorSetElementList = memo(() => {
     setPagination((prev) => ({ ...prev, pageIndex: 0 }))
   }, [key])
 
-  const paginationEnabled =
-    !!nextCursor || elements.length > ENABLE_PAGINATION_COUNT
-
   const columns = useMemo(
     () => getVectorSetColumns({ compressor: compressor as any, viewFormat }),
     [compressor, viewFormat],
@@ -51,10 +50,10 @@ const VectorSetElementList = memo(() => {
   )
 
   const currentPageData = useMemo(() => {
-    if (!paginationEnabled) return elements
+    if (!isPaginationSupported) return elements
     const { pageIndex, pageSize } = pagination
     return elements.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize)
-  }, [elements, pagination, paginationEnabled])
+  }, [elements, pagination, isPaginationSupported])
 
   const emptyMessage = useMemo(() => {
     if (loading) return 'Loading...'
@@ -74,7 +73,7 @@ const VectorSetElementList = memo(() => {
         }),
       )
     }
-  }, [pagination])
+  }, [pagination, elements, nextCursor, loading, key, dispatch])
 
   return (
     <S.Container data-testid="vector-set-details">
@@ -83,9 +82,9 @@ const VectorSetElementList = memo(() => {
         data={currentPageData}
         stripedRows
         minWidth={tableMinWidth}
-        paginationEnabled={paginationEnabled}
-        manualPagination={paginationEnabled}
-        totalRowCount={paginationEnabled ? total : undefined}
+        paginationEnabled={isPaginationSupported}
+        manualPagination={isPaginationSupported}
+        totalRowCount={isPaginationSupported ? total : undefined}
         pagination={pagination}
         onPaginationChange={setPagination}
         emptyState={emptyMessage}
