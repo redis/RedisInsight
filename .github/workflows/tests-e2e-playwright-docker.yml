@@ -65,20 +65,24 @@ jobs:
 
       - name: Wait for Redis clusters to be ready
         run: |
-          echo "Waiting for OSS cluster (8200) to form..."
-          for i in $(seq 1 60); do
-            if docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml exec -T master-plain-7-1 redis-cli CLUSTER INFO 2>/dev/null | grep -q "cluster_state:ok"; then
-              echo "IP-based cluster ready"; break
-            fi
-            sleep 2
-          done
-          echo "Waiting for hostname cluster (8210) to form..."
-          for i in $(seq 1 60); do
-            if docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml exec -T master-hostname-7-1 redis-cli CLUSTER INFO 2>/dev/null | grep -q "cluster_state:ok"; then
-              echo "Hostname-based cluster ready"; break
-            fi
-            sleep 2
-          done
+          DC="docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml"
+
+          wait_for_cluster() {
+            local svc=$1 label=$2
+            echo "Waiting for $label to form..."
+            for i in $(seq 1 60); do
+              if $DC exec -T "$svc" redis-cli CLUSTER INFO 2>/dev/null | grep -q "cluster_state:ok"; then
+                echo "✅ $label ready after ~$((i*2))s"; return 0
+              fi
+              sleep 2
+            done
+            echo "::error::$label did NOT become ready within 120 s"
+            $DC exec -T "$svc" redis-cli CLUSTER INFO 2>/dev/null || true
+            return 1
+          }
+
+          wait_for_cluster master-plain-7-1    "IP-based cluster (8200)"
+          wait_for_cluster master-hostname-7-1  "Hostname-based cluster (8210)"
 
       - name: Start RedisInsight Docker container
         run: |
