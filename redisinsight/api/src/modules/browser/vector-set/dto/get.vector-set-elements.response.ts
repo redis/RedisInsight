@@ -18,6 +18,14 @@ export class GetVectorSetElementsResponse extends KeyResponse {
   nextCursor?: string;
 
   @ApiProperty({
+    type: Boolean,
+    description:
+      'True when the server supports ordered cursor pagination for listing elements. ' +
+      'False when only random sampling is available for this Redis version.',
+  })
+  isPaginationSupported: boolean;
+
+  @ApiProperty({
     description: 'Array of vector set elements.',
     isArray: true,
     type: () => VectorSetElementDto,

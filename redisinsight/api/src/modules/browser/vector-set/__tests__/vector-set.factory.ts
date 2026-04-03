@@ -37,6 +37,7 @@ export const getVectorSetElementsResponseFactory =
       keyName: Buffer.from(`vset:${faker.string.alphanumeric(6)}`),
       total: elements.length,
       nextCursor: undefined,
+      isPaginationSupported: true,
       elements,
     };
   });
