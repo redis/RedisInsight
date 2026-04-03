@@ -18,6 +18,7 @@ export interface Props extends KeyDetailsHeaderProps {
 }
 
 const VectorSetDetails = (props: Props) => {
+  const { onRemoveKey } = props
   const { loading } = useSelector(selectedKeySelector)
 
   return (
@@ -27,7 +28,7 @@ const VectorSetDetails = (props: Props) => {
       <S.DetailsBody>
         {!loading && (
           <S.ListWrapper>
-            <VectorSetElementList />
+            <VectorSetElementList onRemoveKey={onRemoveKey} />
           </S.ListWrapper>
         )}
       </S.DetailsBody>
