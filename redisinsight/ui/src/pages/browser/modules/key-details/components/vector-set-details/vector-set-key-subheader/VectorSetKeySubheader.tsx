@@ -14,7 +14,7 @@ const VectorSetKeySubheader = () => {
   const { total, elements, isPaginationSupported } = useSelector(
     vectorSetDataSelector,
   )
-  const showPreview = !isPaginationSupported
+  const showPreview = isPaginationSupported === false
 
   return (
     <S.Container>

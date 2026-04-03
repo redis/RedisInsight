@@ -46,6 +46,20 @@ describe('VectorSetKeySubheader', () => {
     ).not.toBeInTheDocument()
   })
 
+  it('does not render preview summary when isPaginationSupported is undefined', () => {
+    const elements = vectorSetElementFactory.buildList(3)
+    getMockedSelector().mockReturnValue({
+      total: 10,
+      elements,
+    })
+
+    render(<VectorSetKeySubheader />)
+
+    expect(
+      screen.queryByTestId('vector-set-preview-summary'),
+    ).not.toBeInTheDocument()
+  })
+
   it('renders preview summary when isPaginationSupported is false', () => {
     const elements = vectorSetElementFactory.buildList(
       faker.number.int({ min: 1, max: 8 }),
