@@ -1,40 +1,71 @@
 import React from 'react'
-import { render, screen } from 'uiSrc/utils/test-utils'
+import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import { deleteVectorSetElements } from 'uiSrc/slices/browser/vectorSet'
 import { VectorSetElementList } from './VectorSetElementList'
 
 jest.mock('uiSrc/slices/browser/vectorSet', () => {
-  const { initialState } = jest.requireActual('uiSrc/slices/browser/vectorSet')
+  const actual = jest.requireActual('uiSrc/slices/browser/vectorSet')
+  const { faker } = jest.requireActual('@faker-js/faker')
   const { mockKeyBuffer, vectorSetElementFactory } = jest.requireActual(
     'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory',
   )
+  faker.seed(8165)
   const elements = vectorSetElementFactory.buildList(3)
   return {
-    vectorSetSelector: jest.fn().mockReturnValue(initialState),
+    ...actual,
+    vectorSetSelector: jest.fn().mockReturnValue(actual.initialState),
     vectorSetDataSelector: jest.fn().mockReturnValue({
-      ...initialState.data,
+      ...actual.initialState.data,
       total: elements.length,
       isPaginationSupported: true,
       key: mockKeyBuffer,
       keyName: mockKeyBuffer,
       elements,
     }),
-    fetchMoreVectorSetElements: () => jest.fn(),
+    fetchMoreVectorSetElements: jest.fn(() => jest.fn()),
+    deleteVectorSetElements: jest.fn(() => jest.fn()),
   }
 })
 
 describe('VectorSetElementList', () => {
+  beforeEach(() => {
+    jest.mocked(deleteVectorSetElements).mockClear()
+  })
+
   it('should render', () => {
-    expect(render(<VectorSetElementList />)).toBeTruthy()
+    expect(
+      render(<VectorSetElementList onRemoveKey={jest.fn()} />),
+    ).toBeTruthy()
   })
 
   it('should render rows properly', () => {
-    const { container } = render(<VectorSetElementList />)
+    const { container } = render(
+      <VectorSetElementList onRemoveKey={jest.fn()} />,
+    )
     const rows = container.querySelectorAll('tbody tr')
     expect(rows).toHaveLength(3)
   })
 
   it('should render vector-set-details test id', () => {
-    render(<VectorSetElementList />)
+    render(<VectorSetElementList onRemoveKey={jest.fn()} />)
     expect(screen.getByTestId('vector-set-details')).toBeInTheDocument()
+  })
+
+  it('should render a remove control for each element row', () => {
+    render(<VectorSetElementList onRemoveKey={jest.fn()} />)
+    expect(screen.getAllByLabelText(/remove field/i)).toHaveLength(3)
+  })
+
+  it('should open delete confirmation after clicking remove on a row', () => {
+    render(<VectorSetElementList onRemoveKey={jest.fn()} />)
+    fireEvent.click(screen.getAllByLabelText(/remove field/i)[0])
+    expect(screen.getByRole('button', { name: 'Remove' })).toBeInTheDocument()
+  })
+
+  it('should call deleteVectorSetElements when delete is confirmed', () => {
+    render(<VectorSetElementList onRemoveKey={jest.fn()} />)
+    fireEvent.click(screen.getAllByLabelText(/remove field/i)[0])
+    fireEvent.click(screen.getByRole('button', { name: 'Remove' }))
+    expect(deleteVectorSetElements).toHaveBeenCalledTimes(1)
   })
 })
