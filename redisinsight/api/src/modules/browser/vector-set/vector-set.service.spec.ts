@@ -206,17 +206,19 @@ describe('VectorSetService', () => {
     it('should delete elements successfully', async () => {
       const { elements, keyName } = mockDeleteDto;
 
-      for (const element of elements) {
-        when(client.sendCommand)
-          .calledWith([BrowserToolVectorSetCommands.VRem, keyName, element])
-          .mockResolvedValue(1);
-      }
+      const pipelineCommands = elements.map((element) => [
+        BrowserToolVectorSetCommands.VRem,
+        keyName,
+        element,
+      ]);
+      client.sendPipeline.mockResolvedValue(elements.map(() => [null, 1]));
 
       const result = await service.deleteElements(
         mockBrowserClientMetadata,
         mockDeleteDto,
       );
 
+      expect(client.sendPipeline).toHaveBeenCalledWith(pipelineCommands);
       expect(result).toEqual({ affected: elements.length });
     });
 
@@ -235,7 +237,7 @@ describe('VectorSetService', () => {
         ...mockRedisWrongTypeError,
         command: 'VREM',
       };
-      client.sendCommand.mockRejectedValue(replyError);
+      client.sendPipeline.mockResolvedValue([[replyError, null]]);
 
       await expect(
         service.deleteElements(mockBrowserClientMetadata, mockDeleteDto),
@@ -247,7 +249,7 @@ describe('VectorSetService', () => {
         ...mockRedisNoPermError,
         command: 'VREM',
       };
-      client.sendCommand.mockRejectedValue(replyError);
+      client.sendPipeline.mockResolvedValue([[replyError, null]]);
 
       await expect(
         service.deleteElements(mockBrowserClientMetadata, mockDeleteDto),

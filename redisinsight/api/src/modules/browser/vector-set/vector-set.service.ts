@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { chunk } from 'lodash';
-import { catchAclError } from 'src/utils';
+import { catchAclError, catchMultiTransactionError } from 'src/utils';
 import { RedisErrorCodes } from 'src/constants';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { BrowserToolVectorSetCommands } from 'src/modules/browser/constants/browser-tool-commands';
@@ -134,15 +134,26 @@ export class VectorSetService {
 
       await checkIfKeyNotExists(keyName, client);
 
-      let affected = 0;
-      for (const element of elements) {
-        const result = (await client.sendCommand([
-          BrowserToolVectorSetCommands.VRem,
-          keyName,
-          element,
-        ])) as number;
-        affected += result;
+      if (!elements.length) {
+        return { affected: 0 };
       }
+
+      const pipelineCommands: RedisClientCommand[] = elements.map((element) => [
+        BrowserToolVectorSetCommands.VRem,
+        keyName,
+        element,
+      ]);
+
+      const pipelineResults = await client.sendPipeline(pipelineCommands);
+      catchMultiTransactionError(pipelineResults);
+
+      // Pipeline returns one [error, reply] pair per VREM. Each reply is how many
+      // members that call removed (0 or 1). Sum them for the API response total.
+      const affected = pipelineResults.reduce(
+        (removedSoFar, [, membersRemovedByThisCommand]) =>
+          removedSoFar + (membersRemovedByThisCommand as number),
+        0,
+      );
 
       this.logger.debug(
         'Succeed to delete elements from the VectorSet data type.',
