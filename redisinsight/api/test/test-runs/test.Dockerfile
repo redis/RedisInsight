@@ -1,6 +1,6 @@
 FROM node:22.22.0-alpine as test
 
-RUN apk update && apk add bash libsecret dbus-x11 gnome-keyring
+RUN apk update && apk add bash libsecret dbus-x11 gnome-keyring python3 py3-setuptools make g++
 RUN dbus-uuidgen > /var/lib/dbus/machine-id
 
 WORKDIR /usr/src/app

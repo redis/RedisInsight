@@ -11,6 +11,7 @@ FROM node:22.22.0-alpine as build
 # update apk repository and install build dependencies
 RUN apk update && apk add --no-cache --virtual .gyp \
         python3 \
+        py3-setuptools \
         make \
         git \
         g++
