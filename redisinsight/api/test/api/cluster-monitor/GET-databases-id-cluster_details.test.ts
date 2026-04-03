@@ -114,6 +114,13 @@ describe('GET /databases/:id/cluster-details', () => {
         responseSchema,
         checkFn: ({ body }) => {
           expect(body.version).to.eql(rte.env.version);
+          expect(body.nodes).to.have.length.greaterThan(0);
+          body.nodes.forEach((node) => {
+            expect(node.host).to.be.a('string').and.not.empty;
+            expect(node.port).to.be.a('number').and.greaterThan(0);
+            expect(node.role).to.eql('primary');
+            expect(node.slots).to.be.an('array').and.not.empty;
+          });
         },
       },
     ].map(mainCheckFn);
