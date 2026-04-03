@@ -122,6 +122,7 @@ describe('ClusterShardsInfoStrategy', () => {
         slots,
       );
       expect(result[0].host).toBe(raw.ip);
+      expect((result[0] as any).ip).toBe(raw.ip);
     });
 
     it('should prefer hostname over ip when hostname is set', () => {
@@ -133,6 +134,7 @@ describe('ClusterShardsInfoStrategy', () => {
         slots,
       );
       expect(result[0].host).toBe(hostname);
+      expect((result[0] as any).ip).toBe(raw.ip);
     });
 
     it('should fall back to ip when hostname is not present in reply', () => {
@@ -157,6 +159,7 @@ describe('ClusterShardsInfoStrategy', () => {
         slots,
       );
       expect(result[0].host).toBe(ip);
+      expect((result[0] as any).ip).toBe(ip);
     });
 
     it('should use tls-port when port is missing', () => {
@@ -246,6 +249,7 @@ describe('ClusterShardsInfoStrategy', () => {
         expect.objectContaining({
           id: primary.id,
           host: hostname,
+          ip: primary.ip,
           port: tlsPort,
           role: 'primary',
           slots: ['0-16383'],
