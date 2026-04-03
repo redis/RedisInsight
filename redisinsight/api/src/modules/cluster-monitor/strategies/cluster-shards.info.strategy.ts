@@ -41,7 +41,7 @@ export class ClusterShardsInfoStrategy extends AbstractInfoStrategy {
       const nodeObj = convertArrayReplyToObject(nodeArray);
       const node = {
         id: nodeObj.id,
-        host: nodeObj.ip,
+        host: nodeObj.hostname || nodeObj.ip,
         port: nodeObj.port || nodeObj['tls-port'],
         tlsPort: nodeObj['tls-port'],
         role: nodeObj.role === 'master' ? NodeRole.Primary : NodeRole.Replica,
