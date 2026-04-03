@@ -5,13 +5,15 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { chunk } from 'lodash';
-import { catchAclError } from 'src/utils';
+import { catchAclError, catchMultiTransactionError } from 'src/utils';
 import { RedisErrorCodes } from 'src/constants';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { BrowserToolVectorSetCommands } from 'src/modules/browser/constants/browser-tool-commands';
 import { plainToInstance } from 'class-transformer';
 import { ClientMetadata } from 'src/common/models';
 import {
+  DeleteVectorSetElementsDto,
+  DeleteVectorSetElementsResponse,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
   VectorSetElementDto,
@@ -22,6 +24,7 @@ import {
   RedisClientCommand,
   RedisFeature,
 } from 'src/modules/redis/client';
+import { checkIfKeyNotExists } from 'src/modules/browser/utils';
 
 @Injectable()
 export class VectorSetService {
@@ -106,6 +109,60 @@ export class VectorSetService {
     } catch (error) {
       this.logger.error(
         'Failed to get elements of the VectorSet data type.',
+        error,
+        clientMetadata,
+      );
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
+  public async deleteElements(
+    clientMetadata: ClientMetadata,
+    dto: DeleteVectorSetElementsDto,
+  ): Promise<DeleteVectorSetElementsResponse> {
+    try {
+      this.logger.debug(
+        'Deleting elements from the VectorSet data type.',
+        clientMetadata,
+      );
+      const { keyName, elements } = dto;
+      const client: RedisClient =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+
+      await checkIfKeyNotExists(keyName, client);
+
+      if (!elements.length) {
+        return { affected: 0 };
+      }
+
+      const pipelineCommands: RedisClientCommand[] = elements.map((element) => [
+        BrowserToolVectorSetCommands.VRem,
+        keyName,
+        element,
+      ]);
+
+      const pipelineResults = await client.sendPipeline(pipelineCommands);
+      catchMultiTransactionError(pipelineResults);
+
+      // Pipeline returns one [error, reply] pair per VREM. Each reply is how many
+      // members that call removed (0 or 1). Sum them for the API response total.
+      const affected = pipelineResults.reduce(
+        (removedSoFar, [, membersRemovedByThisCommand]) =>
+          removedSoFar + (membersRemovedByThisCommand as number),
+        0,
+      );
+
+      this.logger.debug(
+        'Succeed to delete elements from the VectorSet data type.',
+        clientMetadata,
+      );
+      return { affected };
+    } catch (error) {
+      this.logger.error(
+        'Failed to delete elements from the VectorSet data type.',
         error,
         clientMetadata,
       );
