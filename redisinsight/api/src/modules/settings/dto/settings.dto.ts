@@ -188,10 +188,14 @@ export class UpdateSettingsDto {
   batchSize?: number;
 
   @ApiPropertyOptional({
-    description: 'Agreements',
+    description:
+      'Agreements. On first setup all keys from the agreements spec must be provided: eula, analytics, notifications, encryption.',
     type: Map,
     example: {
       eula: true,
+      analytics: false,
+      notifications: false,
+      encryption: false,
     },
   })
   @IsOptional()
