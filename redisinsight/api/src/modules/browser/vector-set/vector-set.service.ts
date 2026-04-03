@@ -12,6 +12,8 @@ import { BrowserToolVectorSetCommands } from 'src/modules/browser/constants/brow
 import { plainToInstance } from 'class-transformer';
 import { ClientMetadata } from 'src/common/models';
 import {
+  DeleteVectorSetElementsDto,
+  DeleteVectorSetElementsResponse,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
   VectorSetElementDto,
@@ -22,6 +24,7 @@ import {
   RedisClientCommand,
   RedisFeature,
 } from 'src/modules/redis/client';
+import { checkIfKeyNotExists } from 'src/modules/browser/utils';
 
 @Injectable()
 export class VectorSetService {
@@ -106,6 +109,49 @@ export class VectorSetService {
     } catch (error) {
       this.logger.error(
         'Failed to get elements of the VectorSet data type.',
+        error,
+        clientMetadata,
+      );
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
+  public async deleteElements(
+    clientMetadata: ClientMetadata,
+    dto: DeleteVectorSetElementsDto,
+  ): Promise<DeleteVectorSetElementsResponse> {
+    try {
+      this.logger.debug(
+        'Deleting elements from the VectorSet data type.',
+        clientMetadata,
+      );
+      const { keyName, elements } = dto;
+      const client: RedisClient =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+
+      await checkIfKeyNotExists(keyName, client);
+
+      let affected = 0;
+      for (const element of elements) {
+        const result = (await client.sendCommand([
+          BrowserToolVectorSetCommands.VRem,
+          keyName,
+          element,
+        ])) as number;
+        affected += result;
+      }
+
+      this.logger.debug(
+        'Succeed to delete elements from the VectorSet data type.',
+        clientMetadata,
+      );
+      return { affected };
+    } catch (error) {
+      this.logger.error(
+        'Failed to delete elements from the VectorSet data type.',
         error,
         clientMetadata,
       );

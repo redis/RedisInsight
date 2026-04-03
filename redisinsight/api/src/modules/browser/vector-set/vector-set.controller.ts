@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Post,
   UseInterceptors,
   UsePipes,
@@ -12,6 +13,8 @@ import { BrowserClientMetadata } from 'src/modules/browser/decorators/browser-cl
 import { ApiQueryRedisStringEncoding } from 'src/common/decorators';
 import { ClientMetadata } from 'src/common/models';
 import {
+  DeleteVectorSetElementsDto,
+  DeleteVectorSetElementsResponse,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
 } from 'src/modules/browser/vector-set/dto';
@@ -47,5 +50,26 @@ export class VectorSetController extends BrowserBaseController {
     @Body() dto: GetVectorSetElementsDto,
   ): Promise<GetVectorSetElementsResponse> {
     return await this.vectorSetService.getElements(clientMetadata, dto);
+  }
+
+  @Delete('/elements')
+  @ApiRedisInstanceOperation({
+    description:
+      'Remove the specified elements from the VectorSet stored at key',
+    statusCode: 200,
+    responses: [
+      {
+        status: 200,
+        description: 'Ok',
+        type: DeleteVectorSetElementsResponse,
+      },
+    ],
+  })
+  @ApiQueryRedisStringEncoding()
+  async deleteElements(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: DeleteVectorSetElementsDto,
+  ): Promise<DeleteVectorSetElementsResponse> {
+    return await this.vectorSetService.deleteElements(clientMetadata, dto);
   }
 }
