@@ -64,6 +64,12 @@ jobs:
           # Wait for the app to be ready
           npx wait-on http://localhost:8080 http://localhost:5540/api/health --timeout 60000
 
+      - name: Ensure host.docker.internal resolves on the host
+        run: |
+          if ! grep -q host.docker.internal /etc/hosts; then
+            echo "127.0.0.1 host.docker.internal" | sudo tee -a /etc/hosts
+          fi
+
       - name: Start Redis test environment
         run: |
           TEST_BIG_DB_DUMP=$TEST_BIG_DB_DUMP \

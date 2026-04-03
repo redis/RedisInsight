@@ -115,6 +115,12 @@ jobs:
           mkdir -p tests/e2e/remote
           mkdir -p tests/e2e/rdi
 
+      - name: Ensure host.docker.internal resolves on the host
+        run: |
+          if ! grep -q host.docker.internal /etc/hosts; then
+            echo "127.0.0.1 host.docker.internal" | sudo tee -a /etc/hosts
+          fi
+
       - name: Start Redis test environment
         run: |
           TEST_BIG_DB_DUMP=$TEST_BIG_DB_DUMP \
