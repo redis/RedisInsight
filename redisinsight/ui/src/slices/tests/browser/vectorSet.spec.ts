@@ -552,7 +552,11 @@ describe('vectorSet slice', () => {
           removeElementsFromList(elements),
           refreshKeyInfo(),
           addMessageNotification(
-            successMessages.REMOVED_KEY_VALUE(key, elements.join(''), 'Member'),
+            successMessages.REMOVED_KEY_VALUE(
+              key,
+              elements.join(''),
+              'Element',
+            ),
           ),
         ]
 
