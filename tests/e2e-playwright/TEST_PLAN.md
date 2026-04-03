@@ -648,13 +648,9 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | View cluster nodes |
-| 🔲 | main | View node details |
-| 🔲 | main | View slot distribution |
+| ✅ | main | Display cluster overview with all nodes (IP-based: header, version, uptime, charts, 3 nodes with host:port) |
+| ✅ | main | Display cluster overview with hostname-announced nodes (hostname-based: header, version 7.0.0, uptime, charts, 3 nodes with hostname:port) |
 | 🔲 | main | Refresh cluster info |
-| 🔲 | main | View Overview tab by default for OSS Cluster |
-| 🔲 | main | View cluster header info (Type, Version, User) |
-| 🔲 | main | View cluster uptime |
 | 🔲 | main | View primary node statistics table |
 | 🔲 | main | View columns (Commands/s, Clients, Total Keys, Network Input/Output, Total Memory) |
 | 🔲 | main | Verify dynamic values update in statistics table |
