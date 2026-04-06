@@ -60,7 +60,7 @@ const EditConnection = (props: Props) => {
             formik={formik}
             showFields={{
               alias: true,
-              host: (!isEditMode || isCloneMode) && !isFromCloud,
+              host: !isFromCloud,
               port: !isFromCloud,
               timeout: true,
             }}
