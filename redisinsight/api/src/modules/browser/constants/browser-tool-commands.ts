@@ -108,6 +108,7 @@ export enum BrowserToolVectorSetCommands {
   VRandMember = 'VRANDMEMBER',
   VEmb = 'VEMB',
   VGetAttr = 'VGETATTR',
+  VSetAttr = 'VSETATTR',
   VRem = 'VREM',
 }
 
