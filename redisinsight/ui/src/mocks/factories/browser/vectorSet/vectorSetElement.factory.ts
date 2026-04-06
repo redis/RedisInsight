@@ -26,5 +26,14 @@ export const vectorSetElementFactory = Factory.define<VectorSetElement>(() => ({
     : undefined,
 }))
 
-export const mockVectorSetElements: VectorSetElement[] =
-  vectorSetElementFactory.buildList(3)
+/** Redis key name string for vector set tests (stable shape, random value). */
+export const vectorSetTestKeyName = (): string =>
+  `vset:${faker.string.alphanumeric(10)}`
+
+/**
+ * Cursor for the next page of vector set elements: exclusive lexicographic
+ * start after the last returned element name (matches API `(${lastElementName}`).
+ */
+export const vectorSetPaginationCursorAfter = (
+  element: VectorSetElement,
+): string => `(${element.name.toString()}`
