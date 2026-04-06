@@ -51,6 +51,9 @@ export abstract class AbstractInfoStrategy implements IClusterInfo {
             (n) =>
               (n.options?.host === node.host &&
                 n.options?.port === node.port) ||
+              (node.ip &&
+                n.options?.host === node.ip &&
+                n.options?.port === node.port) ||
               (n.options?.natHost === node.host &&
                 n.options?.natPort === node.port),
           );

@@ -12,8 +12,20 @@ import { InstancePage } from '../InstancePage';
  */
 export class AnalyticsPage extends InstancePage {
   // Sub-page tabs
+  readonly overviewTab: Locator;
   readonly databaseAnalysisTab: Locator;
   readonly slowLogTab: Locator;
+
+  // Cluster Details (Overview) elements
+  readonly clusterDetailsPage: Locator;
+  readonly clusterDetailsHeader: Locator;
+  readonly clusterDetailsContent: Locator;
+  readonly clusterDetailsLoading: Locator;
+  readonly clusterDetailsCharts: Locator;
+  readonly clusterDetailsUptime: Locator;
+  readonly primaryNodesHeader: Locator;
+  readonly primaryNodesTableLoading: Locator;
+  readonly primaryNodesTableEmpty: Locator;
 
   // Slow Log elements
   readonly slowLogTable: Locator;
@@ -80,8 +92,20 @@ export class AnalyticsPage extends InstancePage {
     super(page);
 
     // Sub-page tabs (rendered by @redis-ui/components Tabs with role="tab")
+    this.overviewTab = page.getByRole('tab', { name: 'Overview' });
     this.databaseAnalysisTab = page.getByRole('tab', { name: 'Database Analysis' });
     this.slowLogTab = page.getByRole('tab', { name: 'Slow Log' });
+
+    // Cluster Details (Overview) elements
+    this.clusterDetailsPage = page.getByTestId('cluster-details-page');
+    this.clusterDetailsHeader = page.getByTestId('cluster-details-header');
+    this.clusterDetailsContent = page.getByTestId('cluster-details-content');
+    this.clusterDetailsLoading = page.getByTestId('cluster-details-loading');
+    this.clusterDetailsCharts = page.getByTestId('cluster-details-charts');
+    this.clusterDetailsUptime = page.getByTestId('cluster-details-uptime');
+    this.primaryNodesHeader = page.getByText(/\d+ Primary nodes/);
+    this.primaryNodesTableLoading = page.getByTestId('primary-nodes-table-loading');
+    this.primaryNodesTableEmpty = page.getByTestId('primary-nodes-table-empty');
 
     // Slow Log elements
     this.slowLogTable = page.getByTestId('slowlog-table');
@@ -154,6 +178,23 @@ export class AnalyticsPage extends InstancePage {
 
   async waitForLoad(): Promise<void> {
     await this.slowLogTab.waitFor({ state: 'visible' });
+  }
+
+  /**
+   * Navigate to Cluster Overview page via UI (only visible for cluster databases)
+   */
+  async gotoClusterOverview(databaseId: string): Promise<void> {
+    await this.gotoDatabase(databaseId);
+    await this.navigationTabs.gotoAnalyze();
+    await this.overviewTab.click();
+    await this.clusterDetailsPage.waitFor({ state: 'visible' });
+  }
+
+  /**
+   * Switch to Cluster Overview sub-tab (when already on Analyze page)
+   */
+  async clickOverviewTab(): Promise<void> {
+    await this.overviewTab.click();
   }
 
   /**

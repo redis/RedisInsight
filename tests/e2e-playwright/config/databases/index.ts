@@ -12,7 +12,7 @@ import {
   standaloneBigConfig,
 } from './standalone';
 
-import { clusterConfig } from './cluster';
+import { clusterConfig, clusterHostnameConfig } from './cluster';
 
 import { sentinelConfig } from './sentinel';
 
@@ -28,6 +28,7 @@ export const redisConfig = {
   standaloneEmpty: standaloneEmptyConfig,
   standaloneBig: standaloneBigConfig,
   cluster: clusterConfig,
+  clusterHostname: clusterHostnameConfig,
   sentinel: sentinelConfig,
   sshRedis: sshRedisConfig,
   sshTunnel: sshTunnelConfig,
