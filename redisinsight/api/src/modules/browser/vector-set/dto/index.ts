@@ -3,3 +3,4 @@ export * from './get.vector-set-elements.dto';
 export * from './get.vector-set-elements.response';
 export * from './delete.vector-set-elements.dto';
 export * from './delete.vector-set-elements.response';
+export * from './set.vector-set-element-attribute.dto';
