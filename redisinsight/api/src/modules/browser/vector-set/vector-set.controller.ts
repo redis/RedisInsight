@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Post,
+  Put,
   UseInterceptors,
   UsePipes,
   ValidationPipe,
@@ -17,6 +18,7 @@ import {
   DeleteVectorSetElementsResponse,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
+  SetVectorSetElementAttributeDto,
 } from 'src/modules/browser/vector-set/dto';
 import { VectorSetService } from 'src/modules/browser/vector-set/vector-set.service';
 import { BrowserSerializeInterceptor } from 'src/common/interceptors';
@@ -50,6 +52,20 @@ export class VectorSetController extends BrowserBaseController {
     @Body() dto: GetVectorSetElementsDto,
   ): Promise<GetVectorSetElementsResponse> {
     return await this.vectorSetService.getElements(clientMetadata, dto);
+  }
+
+  @Put('/attributes')
+  @ApiRedisInstanceOperation({
+    description: 'Set attributes on an element of the VectorSet stored at key',
+    statusCode: 200,
+    responses: [{ status: 200, description: 'Ok' }],
+  })
+  @ApiQueryRedisStringEncoding()
+  async setElementAttribute(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: SetVectorSetElementAttributeDto,
+  ): Promise<void> {
+    return await this.vectorSetService.setElementAttribute(clientMetadata, dto);
   }
 
   @Delete('/elements')
