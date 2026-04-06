@@ -17,6 +17,7 @@ import { BrowserToolVectorSetCommands } from 'src/modules/browser/constants/brow
 import {
   deleteVectorSetElementsDtoFactory,
   getVectorSetElementsDtoFactory,
+  setVectorSetElementAttributeDtoFactory,
   vectorSetElementFactory,
 } from 'src/modules/browser/vector-set/__tests__/vector-set.factory';
 import { BrowserToolKeysCommands } from 'src/modules/browser/constants/browser-tool-commands';
@@ -253,6 +254,66 @@ describe('VectorSetService', () => {
 
       await expect(
         service.deleteElements(mockBrowserClientMetadata, mockDeleteDto),
+      ).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe('setElementAttribute', () => {
+    const mockSetAttrDto = setVectorSetElementAttributeDtoFactory.build();
+
+    beforeEach(() => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, mockSetAttrDto.keyName])
+        .mockResolvedValue(true);
+    });
+
+    it('should set element attribute successfully', async () => {
+      client.sendCommand.mockResolvedValue(1);
+
+      await service.setElementAttribute(
+        mockBrowserClientMetadata,
+        mockSetAttrDto,
+      );
+
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolVectorSetCommands.VSetAttr,
+        mockSetAttrDto.keyName,
+        mockSetAttrDto.element,
+        mockSetAttrDto.attributes,
+      ]);
+    });
+
+    it('should throw NotFoundException when key does not exist', async () => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, mockSetAttrDto.keyName])
+        .mockResolvedValue(false);
+
+      await expect(
+        service.setElementAttribute(mockBrowserClientMetadata, mockSetAttrDto),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw BadRequestException for wrong type error', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisWrongTypeError,
+        command: 'VSETATTR',
+      };
+      client.sendCommand.mockRejectedValue(replyError);
+
+      await expect(
+        service.setElementAttribute(mockBrowserClientMetadata, mockSetAttrDto),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw ForbiddenException when user has no permissions', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisNoPermError,
+        command: 'VSETATTR',
+      };
+      client.sendCommand.mockRejectedValue(replyError);
+
+      await expect(
+        service.setElementAttribute(mockBrowserClientMetadata, mockSetAttrDto),
       ).rejects.toThrow(ForbiddenException);
     });
   });
