@@ -17,7 +17,6 @@ import { connectedInstanceOverviewSelector } from 'uiSrc/slices/instances/instan
 import { FeatureFlags, KeyTypes } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
-import { isDevVectorSetEnabledSelector } from 'uiSrc/slices/app/features'
 import FilterKeyType from './FilterKeyType'
 import { resetBrowserTree } from 'uiSrc/slices/app/context'
 
@@ -33,7 +32,7 @@ jest.mock('uiSrc/telemetry', () => ({
 
 jest.mock('uiSrc/slices/app/features', () => ({
   ...jest.requireActual('uiSrc/slices/app/features'),
-  isDevVectorSetEnabledSelector: jest.fn().mockReturnValue(true),
+  isDevelopment: false,
 }))
 
 jest.mock('uiSrc/slices/instances/instances', () => ({
@@ -191,17 +190,22 @@ describe('FilterKeyType', () => {
     expect(graphElement).not.toBeInTheDocument()
   })
 
-  it('should show Vector Set when dev vector set feature is enabled', async () => {
-    jest.mocked(isDevVectorSetEnabledSelector).mockReturnValue(true)
-    const { queryByText } = render(<FilterKeyType />)
+  it('should show Vector Set when vector set feature flag is enabled', async () => {
+    const initialStoreState = set(
+      cloneDeep(initialStateDefault),
+      `app.features.featureFlags.features.${FeatureFlags.devVectorSet}`,
+      { flag: true },
+    )
+    const { queryByText } = render(<FilterKeyType />, {
+      store: mockStore(initialStoreState),
+    })
 
     await userEvent.click(screen.getByTestId(filterSelectId))
 
     expect(queryByText('Vector Set')).toBeInTheDocument()
   })
 
-  it('should hide Vector Set when dev vector set feature is disabled', () => {
-    jest.mocked(isDevVectorSetEnabledSelector).mockReturnValue(false)
+  it('should hide Vector Set when vector set feature flag is disabled', () => {
     const { queryByText } = render(<FilterKeyType />)
 
     fireEvent.click(screen.getByTestId(filterSelectId))

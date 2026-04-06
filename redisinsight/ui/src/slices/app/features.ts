@@ -205,7 +205,7 @@ export const appFeatureFlagsSelector = (state: RootState) =>
 export const appFeatureFlagsFeaturesSelector = (state: RootState) =>
   state.app.features.featureFlags.features
 
-const isDevelopment = riConfig.app.env === 'development'
+export const isDevelopment = riConfig.app.env === 'development'
 
 export const isAzureEntraIdEnabledSelector = (state: RootState): boolean => {
   if (isDevelopment) {

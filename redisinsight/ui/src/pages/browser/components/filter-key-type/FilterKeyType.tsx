@@ -24,7 +24,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { resetBrowserTree } from 'uiSrc/slices/app/context'
 import {
   appFeatureFlagsFeaturesSelector,
-  isDevVectorSetEnabledSelector,
+  isDevelopment,
 } from 'uiSrc/slices/app/features'
 import { AdditionalRedisModule } from 'uiSrc/slices/interfaces'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
@@ -58,7 +58,6 @@ const FilterKeyType = ({ modules }: Props) => {
   const { version } = useSelector(connectedInstanceOverviewSelector)
   const { filter, viewType, searchMode } = useSelector(keysSelector)
   const features = useSelector(appFeatureFlagsFeaturesSelector)
-  const isDevVectorSet = useSelector(isDevVectorSetEnabledSelector)
 
   const { instanceId } = useParams<{ instanceId: string }>()
   const dispatch = useDispatch()
@@ -81,8 +80,12 @@ const FilterKeyType = ({ modules }: Props) => {
     inputDisplay: JSX.Element
     dropdownDisplay: JSX.Element
   }[] = FILTER_KEY_TYPE_OPTIONS.filter(
-    ({ featureFlag, skipIfNoModule, isDevFeature }) => {
-      if (isDevFeature && !isDevVectorSet) {
+    ({ featureFlag, skipIfNoModule, typeFeatureFlag }) => {
+      if (
+        typeFeatureFlag &&
+        !isDevelopment &&
+        !features[typeFeatureFlag]?.flag
+      ) {
         return false
       }
       if (
