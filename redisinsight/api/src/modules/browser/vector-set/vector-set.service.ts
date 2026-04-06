@@ -16,6 +16,7 @@ import {
   DeleteVectorSetElementsResponse,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
+  SetVectorSetElementAttributeDto,
   VectorSetElementDto,
 } from 'src/modules/browser/vector-set/dto';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
@@ -163,6 +164,45 @@ export class VectorSetService {
     } catch (error) {
       this.logger.error(
         'Failed to delete elements from the VectorSet data type.',
+        error,
+        clientMetadata,
+      );
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
+  public async setElementAttribute(
+    clientMetadata: ClientMetadata,
+    dto: SetVectorSetElementAttributeDto,
+  ): Promise<void> {
+    try {
+      this.logger.debug(
+        'Setting element attribute in the VectorSet data type.',
+        clientMetadata,
+      );
+      const { keyName, element, attributes } = dto;
+      const client: RedisClient =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+
+      await checkIfKeyNotExists(keyName, client);
+
+      await client.sendCommand([
+        BrowserToolVectorSetCommands.VSetAttr,
+        keyName,
+        element,
+        attributes,
+      ]);
+
+      this.logger.debug(
+        'Succeed to set element attribute in the VectorSet data type.',
+        clientMetadata,
+      );
+    } catch (error) {
+      this.logger.error(
+        'Failed to set element attribute in the VectorSet data type.',
         error,
         clientMetadata,
       );
