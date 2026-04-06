@@ -43,6 +43,12 @@ export const FILTER_KEY_TYPE_OPTIONS = [
     color: GROUP_TYPES_COLORS[KeyTypes.Stream],
   },
   {
+    text: 'Vector Set',
+    value: KeyTypes.VectorSet,
+    color: GROUP_TYPES_COLORS[KeyTypes.VectorSet],
+    isDevFeature: true,
+  },
+  {
     text: 'Graph',
     value: ModulesKeyTypes.Graph,
     color: GROUP_TYPES_COLORS[ModulesKeyTypes.Graph],

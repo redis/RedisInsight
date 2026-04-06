@@ -17,6 +17,7 @@ import { connectedInstanceOverviewSelector } from 'uiSrc/slices/instances/instan
 import { FeatureFlags, KeyTypes } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
+import { isDevVectorSetEnabledSelector } from 'uiSrc/slices/app/features'
 import FilterKeyType from './FilterKeyType'
 import { resetBrowserTree } from 'uiSrc/slices/app/context'
 
@@ -28,6 +29,11 @@ const unsupportedAnchorId = 'unsupported-btn-anchor'
 jest.mock('uiSrc/telemetry', () => ({
   ...jest.requireActual('uiSrc/telemetry'),
   sendEventTelemetry: jest.fn(),
+}))
+
+jest.mock('uiSrc/slices/app/features', () => ({
+  ...jest.requireActual('uiSrc/slices/app/features'),
+  isDevVectorSetEnabledSelector: jest.fn().mockReturnValue(true),
 }))
 
 jest.mock('uiSrc/slices/instances/instances', () => ({
@@ -183,5 +189,23 @@ describe('FilterKeyType', () => {
 
     const graphElement = queryByText('Graph')
     expect(graphElement).not.toBeInTheDocument()
+  })
+
+  it('should show Vector Set when dev vector set feature is enabled', async () => {
+    jest.mocked(isDevVectorSetEnabledSelector).mockReturnValue(true)
+    const { queryByText } = render(<FilterKeyType />)
+
+    await userEvent.click(screen.getByTestId(filterSelectId))
+
+    expect(queryByText('Vector Set')).toBeInTheDocument()
+  })
+
+  it('should hide Vector Set when dev vector set feature is disabled', () => {
+    jest.mocked(isDevVectorSetEnabledSelector).mockReturnValue(false)
+    const { queryByText } = render(<FilterKeyType />)
+
+    fireEvent.click(screen.getByTestId(filterSelectId))
+
+    expect(queryByText('Vector Set')).not.toBeInTheDocument()
   })
 })

@@ -22,7 +22,10 @@ import { FeatureNotAvailable } from 'uiSrc/components'
 import { FILTER_NOT_AVAILABLE_CONTENT } from 'uiSrc/components/messages'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { resetBrowserTree } from 'uiSrc/slices/app/context'
-import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
+import {
+  appFeatureFlagsFeaturesSelector,
+  isDevVectorSetEnabledSelector,
+} from 'uiSrc/slices/app/features'
 import { AdditionalRedisModule } from 'uiSrc/slices/interfaces'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { HealthText } from 'uiSrc/components/base/text/HealthText'
@@ -55,6 +58,7 @@ const FilterKeyType = ({ modules }: Props) => {
   const { version } = useSelector(connectedInstanceOverviewSelector)
   const { filter, viewType, searchMode } = useSelector(keysSelector)
   const features = useSelector(appFeatureFlagsFeaturesSelector)
+  const isDevVectorSet = useSelector(isDevVectorSetEnabledSelector)
 
   const { instanceId } = useParams<{ instanceId: string }>()
   const dispatch = useDispatch()
@@ -76,15 +80,20 @@ const FilterKeyType = ({ modules }: Props) => {
     value: string
     inputDisplay: JSX.Element
     dropdownDisplay: JSX.Element
-  }[] = FILTER_KEY_TYPE_OPTIONS.filter(({ featureFlag, skipIfNoModule }) => {
-    if (
-      skipIfNoModule &&
-      !modules?.some(({ name }) => name === skipIfNoModule)
-    ) {
-      return false
-    }
-    return !featureFlag || features[featureFlag]?.flag
-  }).map((item) => {
+  }[] = FILTER_KEY_TYPE_OPTIONS.filter(
+    ({ featureFlag, skipIfNoModule, isDevFeature }) => {
+      if (isDevFeature && !isDevVectorSet) {
+        return false
+      }
+      if (
+        skipIfNoModule &&
+        !modules?.some(({ name }) => name === skipIfNoModule)
+      ) {
+        return false
+      }
+      return !featureFlag || features[featureFlag]?.flag
+    },
+  ).map((item) => {
     const { value, color, text } = item
     return {
       value,
