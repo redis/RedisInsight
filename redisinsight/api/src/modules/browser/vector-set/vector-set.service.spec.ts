@@ -15,9 +15,11 @@ import {
 } from 'src/__mocks__';
 import { BrowserToolVectorSetCommands } from 'src/modules/browser/constants/browser-tool-commands';
 import {
+  deleteVectorSetElementsDtoFactory,
   getVectorSetElementsDtoFactory,
   vectorSetElementFactory,
 } from 'src/modules/browser/vector-set/__tests__/vector-set.factory';
+import { BrowserToolKeysCommands } from 'src/modules/browser/constants/browser-tool-commands';
 import { VectorSetService } from 'src/modules/browser/vector-set/vector-set.service';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { RedisFeature } from 'src/modules/redis/client';
@@ -189,6 +191,69 @@ describe('VectorSetService', () => {
       expect(result.elements).toHaveLength(mockElements.length);
       expect(result.nextCursor).toBeUndefined();
       expect(result.isPaginationSupported).toBe(false);
+    });
+  });
+
+  describe('deleteElements', () => {
+    const mockDeleteDto = deleteVectorSetElementsDtoFactory.build();
+
+    beforeEach(() => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, mockDeleteDto.keyName])
+        .mockResolvedValue(true);
+    });
+
+    it('should delete elements successfully', async () => {
+      const { elements, keyName } = mockDeleteDto;
+
+      const pipelineCommands = elements.map((element) => [
+        BrowserToolVectorSetCommands.VRem,
+        keyName,
+        element,
+      ]);
+      client.sendPipeline.mockResolvedValue(elements.map(() => [null, 1]));
+
+      const result = await service.deleteElements(
+        mockBrowserClientMetadata,
+        mockDeleteDto,
+      );
+
+      expect(client.sendPipeline).toHaveBeenCalledWith(pipelineCommands);
+      expect(result).toEqual({ affected: elements.length });
+    });
+
+    it('should throw NotFoundException when key does not exist', async () => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, mockDeleteDto.keyName])
+        .mockResolvedValue(false);
+
+      await expect(
+        service.deleteElements(mockBrowserClientMetadata, mockDeleteDto),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw BadRequestException for wrong type error', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisWrongTypeError,
+        command: 'VREM',
+      };
+      client.sendPipeline.mockResolvedValue([[replyError, null]]);
+
+      await expect(
+        service.deleteElements(mockBrowserClientMetadata, mockDeleteDto),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw ForbiddenException when user has no permissions', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisNoPermError,
+        command: 'VREM',
+      };
+      client.sendPipeline.mockResolvedValue([[replyError, null]]);
+
+      await expect(
+        service.deleteElements(mockBrowserClientMetadata, mockDeleteDto),
+      ).rejects.toThrow(ForbiddenException);
     });
   });
 });

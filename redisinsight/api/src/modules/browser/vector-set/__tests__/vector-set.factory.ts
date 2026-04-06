@@ -1,6 +1,7 @@
 import { Factory } from 'fishery';
 import { faker } from '@faker-js/faker';
 import {
+  DeleteVectorSetElementsDto,
   VectorSetElementDto,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
@@ -26,6 +27,15 @@ export const getVectorSetElementsDtoFactory =
     start: '-',
     end: '+',
     count: faker.number.int({ min: 1, max: 100 }),
+  }));
+
+export const deleteVectorSetElementsDtoFactory =
+  Factory.define<DeleteVectorSetElementsDto>(() => ({
+    keyName: Buffer.from(`vset:${faker.string.alphanumeric(6)}`),
+    elements: [
+      Buffer.from(faker.string.alphanumeric(8)),
+      Buffer.from(faker.string.alphanumeric(8)),
+    ],
   }));
 
 export const getVectorSetElementsResponseFactory =
