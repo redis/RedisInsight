@@ -1,0 +1,81 @@
+name: GitHub Release Upload
+
+on:
+  workflow_call:
+
+permissions:
+  contents: write
+
+jobs:
+  upload:
+    name: Upload assets to GitHub draft release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download builds
+        uses: actions/download-artifact@v4
+        with:
+          name: 'all-builds'
+          path: release
+
+      - name: Read version and find draft release
+        id: find-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          APP_VERSION=$(jq -r '.version' redisinsight/package.json)
+          echo "version=${APP_VERSION}" >> "$GITHUB_OUTPUT"
+
+          RELEASE_TAG=$(gh release list --json tagName,isDraft \
+            --jq ".[] | select(.isDraft and .tagName == \"${APP_VERSION}\") | .tagName" \
+            | head -n 1)
+
+          if [ -z "$RELEASE_TAG" ]; then
+            echo "::warning::No draft release found for tag '${APP_VERSION}'. Skipping upload."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Draft release found: ${RELEASE_TAG}"
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            echo "tag=${RELEASE_TAG}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload desktop installers to draft release
+        if: steps.find-release.outputs.found == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${{ steps.find-release.outputs.tag }}"
+
+          PATTERNS=(
+            "Redis-Insight-mac-x64.dmg"
+            "Redis-Insight-mac-arm64.dmg"
+            "Redis-Insight-win-installer.exe"
+            "Redis-Insight-linux-x86_64.AppImage"
+            "Redis-Insight-linux-arm64.AppImage"
+            "Redis-Insight-linux-amd64.deb"
+            "Redis-Insight-linux-arm64.deb"
+            "Redis-Insight-linux-x86_64.rpm"
+            "Redis-Insight-linux-aarch64.rpm"
+            "Redis-Insight-linux-amd64.snap"
+          )
+
+          FILES=()
+          for pattern in "${PATTERNS[@]}"; do
+            match=$(find ./release -name "$pattern" -type f 2>/dev/null | head -n 1)
+            if [ -n "$match" ]; then
+              FILES+=("$match")
+              echo "Found: $match"
+            else
+              echo "::warning::Installer not found: $pattern"
+            fi
+          done
+
+          if [ ${#FILES[@]} -eq 0 ]; then
+            echo "::warning::No desktop installers matched. Nothing to upload."
+            exit 0
+          fi
+
+          echo "Uploading ${#FILES[@]} file(s) to release '${TAG}'..."
+          gh release upload "$TAG" "${FILES[@]}" --clobber
+          echo "Upload complete."
