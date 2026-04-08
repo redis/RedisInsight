@@ -199,6 +199,39 @@ describe('InstanceForm', () => {
     )
   })
 
+  it('should change host input properly in edit mode', async () => {
+    const handleSubmit = jest.fn()
+    render(
+      <div id="footerDatabaseForm">
+        <ManualConnectionForm
+          {...instance(mockedProps)}
+          isEditMode
+          formFields={{
+            ...formFields,
+            connectionType: ConnectionType.Standalone,
+          }}
+          onSubmit={handleSubmit}
+        />
+      </div>,
+    )
+
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('host'), {
+        target: { value: 'redis.example.local' },
+      })
+    })
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(BTN_SUBMIT))
+    })
+
+    expect(handleSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        host: 'redis.example.local',
+      }),
+    )
+  })
+
   it('should change tls checkbox', async () => {
     const handleSubmit = jest.fn()
     const handleTestConnection = jest.fn()
@@ -1334,9 +1367,7 @@ describe('InstanceForm', () => {
         />,
       )
 
-      // Host is not shown in edit mode (shown as info above form)
-      expect(screen.queryByTestId('host')).not.toBeInTheDocument()
-      // Port, username, password should be disabled
+      expect(screen.getByTestId('host')).toBeDisabled()
       expect(screen.getByTestId('port')).toBeDisabled()
       expect(screen.getByTestId('username')).toBeDisabled()
       expect(screen.getByTestId('password')).toBeDisabled()
@@ -1374,9 +1405,7 @@ describe('InstanceForm', () => {
         />,
       )
 
-      // Host is not shown in edit mode (shown as info above form)
-      expect(screen.queryByTestId('host')).not.toBeInTheDocument()
-      // Port, username, password should NOT be disabled for non-Azure databases
+      expect(screen.getByTestId('host')).not.toBeDisabled()
       expect(screen.getByTestId('port')).not.toBeDisabled()
       expect(screen.getByTestId('username')).not.toBeDisabled()
       expect(screen.getByTestId('password')).not.toBeDisabled()
