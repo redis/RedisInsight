@@ -101,7 +101,7 @@
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
     "source-map-support": "^0.5.19",
-    "better-sqlite3": "^11.0.0",
+    "better-sqlite3": "^12.8.0",
     "swagger-ui-express": "^4.1.4",
     "tunnel-ssh": "^5.1.2",
     "typeorm": "^0.3.26",

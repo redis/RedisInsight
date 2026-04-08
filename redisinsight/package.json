@@ -19,7 +19,7 @@
     "**/cpu-features": "file:./api/stubs/cpu-features"
   },
   "dependencies": {
-    "better-sqlite3": "^11.0.0",
+    "better-sqlite3": "^12.8.0",
     "keytar": "^7.9.0",
     "tunnel-ssh": "^5.1.2"
   }
