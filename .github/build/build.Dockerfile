@@ -21,6 +21,12 @@ WORKDIR /usr/src/app
 ADD $DIST /usr/src/app/redisinsight
 RUN ls -la /usr/src/app/redisinsight
 
+# Rebuild better-sqlite3 for Alpine (musl) since the pre-built binary was
+# compiled on Ubuntu (glibc) and is not compatible with musl libc.
+RUN apk add --no-cache --virtual .build-deps python3 make g++ \
+    && cd /usr/src/app/redisinsight/api && npm rebuild better-sqlite3 \
+    && apk del .build-deps
+
 # folder to store local database, plugins, logs and all other files
 RUN mkdir -p /data && chown -R node:node /data
 
