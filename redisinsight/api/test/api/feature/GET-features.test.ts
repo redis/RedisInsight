@@ -35,7 +35,7 @@ const waitForFlags = async (flags: any, action?: Function) => {
 
     client.once('features', (data) => {
       try {
-        expect(data.features).to.deep.include(flags.features);
+        expect(data.features).to.deep.eq(flags.features);
         res(true);
       } catch (e) {
         rej(e);
@@ -108,7 +108,7 @@ describe('GET /features', () => {
       checkFn: async ({ body }) => {
         const [config] = await featureConfigRepository.find();
 
-        expect(body.features).to.deep.include({
+        expect(body.features).to.deep.eq({
           insightsRecommendations: {
             flag: false,
             name: 'insightsRecommendations',
