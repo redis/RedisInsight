@@ -13,7 +13,11 @@ import {
   vectorSetDataSelector,
   vectorSetSelector,
 } from 'uiSrc/slices/browser/vectorSet'
-import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces'
+import {
+  RedisResponseBuffer,
+  RedisString,
+  VectorSetElement,
+} from 'uiSrc/slices/interfaces'
 
 import { getVectorSetColumns } from '../VectorSetElementList.config'
 import {
@@ -27,10 +31,12 @@ const MIN_COLUMN_WIDTH = 100
 
 export interface UseVectorSetElementListDataParams {
   onRemoveKey: () => void
+  onViewElement: (element: VectorSetElement) => void
 }
 
 const useVectorSetElementListData = ({
   onRemoveKey,
+  onViewElement,
 }: UseVectorSetElementListDataParams) => {
   const { loading } = useSelector(vectorSetSelector)
   const { elements, nextCursor, total, isPaginationSupported } = useSelector(
@@ -95,6 +101,7 @@ const useVectorSetElementListData = ({
       compressor: compressor as any,
       viewFormat,
       elementDeleteConfig: deleteConfig,
+      onViewElement,
     }
     return getVectorSetColumns(listConfig)
   }, [compressor, viewFormat, deleting, total, key, closePopover, showPopover])

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ColumnDef, Row } from 'uiSrc/components/base/layout/table'
+import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import { VectorSetElement } from 'uiSrc/slices/interfaces'
 import {
   bufferToString,
@@ -8,13 +8,15 @@ import {
   createDeleteFieldMessage,
 } from 'uiSrc/utils'
 import HelpTexts from 'uiSrc/constants/help-texts'
-import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import { ElementNameCell } from './components/ElementNameCell/ElementNameCell'
+import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
 import {
   ElementsListConfig,
   VectorSetColumn,
 } from './VectorSetElementList.types'
 import { VECTOR_SET_COLUMN_HEADERS } from './constants'
+import * as S from './VectorSetElementList.styles'
 
 const createNameColumn = (
   listConfig: ElementsListConfig,
@@ -45,7 +47,11 @@ const createActionsColumn = (
   size: 10,
   cell: ({ row }: { row: Row<VectorSetElement> }) => {
     const { name: nameBuffer } = row.original
-    const { viewFormat, elementDeleteConfig: deleteConfig } = listConfig
+    const {
+      viewFormat,
+      elementDeleteConfig: deleteConfig,
+      onViewElement,
+    } = listConfig
     const {
       deleting,
       suffix,
@@ -60,7 +66,15 @@ const createActionsColumn = (
     const name = bufferToString(nameBuffer, viewFormat)
 
     return (
-      <div className="value-table-actions">
+      <Row gap="s" align="center" justify="center">
+        <S.StyledTextButton
+          onClick={() => onViewElement(row.original)}
+          data-testid={`vector-set-view-btn-${name}`}
+          variant="primary-inline"
+          color="informative400"
+        >
+          View
+        </S.StyledTextButton>
         <PopoverDelete
           header={createDeleteFieldHeader(nameBuffer)}
           text={createDeleteFieldMessage(keyName)}
@@ -76,7 +90,7 @@ const createActionsColumn = (
           testid={`vector-set-remove-btn-${name}`}
           appendInfo={total === 1 ? HelpTexts.REMOVE_LAST_ELEMENT() : null}
         />
-      </div>
+      </Row>
     )
   },
 })
