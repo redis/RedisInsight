@@ -14,9 +14,12 @@ import { ClientMetadata } from 'src/common/models';
 import {
   DeleteVectorSetElementsDto,
   DeleteVectorSetElementsResponse,
+  GetVectorSetElementAttributeDto,
+  GetVectorSetElementAttributeResponse,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
   SetVectorSetElementAttributeDto,
+  SetVectorSetElementAttributeResponse,
   VectorSetElementDto,
 } from 'src/modules/browser/vector-set/dto';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
@@ -174,10 +177,52 @@ export class VectorSetService {
     }
   }
 
+  public async getElementAttribute(
+    clientMetadata: ClientMetadata,
+    dto: GetVectorSetElementAttributeDto,
+  ): Promise<GetVectorSetElementAttributeResponse> {
+    try {
+      this.logger.debug(
+        'Getting element attribute in the VectorSet data type.',
+        clientMetadata,
+      );
+      const { keyName, element } = dto;
+      const client: RedisClient =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+
+      await checkIfKeyNotExists(keyName, client);
+
+      const attributes = (await client.sendCommand([
+        BrowserToolVectorSetCommands.VGetAttr,
+        keyName,
+        element,
+      ])) as string;
+
+      this.logger.debug(
+        'Succeed to get element attribute in the VectorSet data type.',
+        clientMetadata,
+      );
+
+      return plainToInstance(GetVectorSetElementAttributeResponse, {
+        attributes: attributes || undefined,
+      });
+    } catch (error) {
+      this.logger.error(
+        'Failed to get element attribute in the VectorSet data type.',
+        error,
+        clientMetadata,
+      );
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
   public async setElementAttribute(
     clientMetadata: ClientMetadata,
     dto: SetVectorSetElementAttributeDto,
-  ): Promise<void> {
+  ): Promise<SetVectorSetElementAttributeResponse> {
     try {
       this.logger.debug(
         'Setting element attribute in the VectorSet data type.',
@@ -196,10 +241,20 @@ export class VectorSetService {
         attributes,
       ]);
 
+      const storedAttributes = (await client.sendCommand([
+        BrowserToolVectorSetCommands.VGetAttr,
+        keyName,
+        element,
+      ])) as string | undefined;
+
       this.logger.debug(
         'Succeed to set element attribute in the VectorSet data type.',
         clientMetadata,
       );
+
+      return plainToInstance(SetVectorSetElementAttributeResponse, {
+        attributes: storedAttributes,
+      });
     } catch (error) {
       this.logger.error(
         'Failed to set element attribute in the VectorSet data type.',
