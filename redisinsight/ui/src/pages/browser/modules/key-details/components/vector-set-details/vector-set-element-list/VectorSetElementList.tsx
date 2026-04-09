@@ -1,13 +1,15 @@
 import React, { memo } from 'react'
 
+import { VectorSetElement } from 'uiSrc/slices/interfaces'
 import useVectorSetElementListData from './hooks/useVectorSetElementListData'
 import * as S from './VectorSetElementList.styles'
 
 export interface Props {
   onRemoveKey: () => void
+  onViewElement: (element: VectorSetElement) => void
 }
 
-const VectorSetElementList = memo(({ onRemoveKey }: Props) => {
+const VectorSetElementList = memo(({ onRemoveKey, onViewElement }: Props) => {
   const {
     columns,
     currentPageData,
@@ -17,7 +19,7 @@ const VectorSetElementList = memo(({ onRemoveKey }: Props) => {
     emptyMessage,
     isPaginationSupported,
     total,
-  } = useVectorSetElementListData({ onRemoveKey })
+  } = useVectorSetElementListData({ onRemoveKey, onViewElement })
 
   return (
     <S.Container data-testid="vector-set-details">
