@@ -33,7 +33,7 @@ const getDBConnection = async (): Promise<Connection> => {
     const dbFile = constants.TEST_LOCAL_DB_FILE_PATH;
     localDbConnection = await createConnection({
       name: 'integrationtests',
-      type: 'sqlite',
+      type: 'better-sqlite3',
       database: dbFile,
       entities: [`./../**/*.entity.ts`],
       synchronize: false,

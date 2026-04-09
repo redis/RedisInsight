@@ -21,7 +21,7 @@ export class LocalSettingsRepository extends SettingsRepository {
       try {
         entity = await this.repository.save(this.repository.create({ id: 1 }));
       } catch (e) {
-        if (e.code === 'SQLITE_CONSTRAINT') {
+        if (e.code?.startsWith?.('SQLITE_CONSTRAINT')) {
           return this.getOrCreate();
         }
 

@@ -16,12 +16,11 @@
   },
   "resolutions": {
     "**/semver": "^7.5.2",
-    "sqlite3/**/tar": "^6.2.1",
     "**/cpu-features": "file:./api/stubs/cpu-features"
   },
   "dependencies": {
+    "better-sqlite3": "^12.8.0",
     "keytar": "^7.9.0",
-    "sqlite3": "5.1.7",
     "tunnel-ssh": "^5.1.2"
   }
 }
