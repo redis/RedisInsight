@@ -22,6 +22,7 @@ export interface ElementsListConfig {
   compressor: Nullable<KeyValueCompressor>
   viewFormat: KeyValueFormat
   elementDeleteConfig: ElementDeleteConfig
+  onViewElement: (element: VectorSetElement) => void
 }
 
 export interface ElementNameCellProps {
