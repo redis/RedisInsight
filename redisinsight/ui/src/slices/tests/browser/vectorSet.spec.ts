@@ -43,6 +43,7 @@ import reducer, {
   fetchVectorSetElements,
   fetchMoreVectorSetElements,
   deleteVectorSetElements,
+  getVectorSetElementAttribute,
   setVectorSetElementAttribute,
 } from '../../browser/vectorSet'
 
@@ -627,6 +628,83 @@ describe('vectorSet slice', () => {
         ]
 
         expect(mockedStore.getActions()).toEqual(expectedActions)
+      })
+    })
+
+    describe('getVectorSetElementAttribute', () => {
+      const mockElement = vectorSetElementWithAttributesFactory.build()
+      const key = vectorSetTestKeyName()
+      const { name: element, attributes } = mockElement
+
+      it('should dispatch updateElementAttributes and call onSuccess when get is successful', async () => {
+        const responsePayload = {
+          status: 200,
+          data: { attributes },
+        }
+        apiService.post = jest.fn().mockResolvedValue(responsePayload)
+
+        const onSuccess = jest.fn()
+
+        await store.dispatch<any>(
+          getVectorSetElementAttribute(key as any, element, onSuccess),
+        )
+
+        const expectedActions = [
+          updateElementAttributes({
+            element,
+            attributes: attributes!,
+          }),
+        ]
+
+        expect(store.getActions()).toEqual(expectedActions)
+        expect(onSuccess).toHaveBeenCalledTimes(1)
+        expect(onSuccess).toHaveBeenCalledWith(attributes)
+      })
+
+      it('should dispatch updateElementAttributes with empty string when attributes is undefined', async () => {
+        const responsePayload = {
+          status: 200,
+          data: { attributes: undefined },
+        }
+        apiService.post = jest.fn().mockResolvedValue(responsePayload)
+
+        const onSuccess = jest.fn()
+
+        await store.dispatch<any>(
+          getVectorSetElementAttribute(key as any, element, onSuccess),
+        )
+
+        const expectedActions = [
+          updateElementAttributes({
+            element,
+            attributes: '',
+          }),
+        ]
+
+        expect(store.getActions()).toEqual(expectedActions)
+        expect(onSuccess).toHaveBeenCalledWith(undefined)
+      })
+
+      it('should dispatch error notification when get fails', async () => {
+        const responsePayload = {
+          response: {
+            status: 500,
+            data: { message: 'Something was wrong!' },
+          },
+        }
+        apiService.post = jest.fn().mockRejectedValue(responsePayload)
+
+        await store.dispatch<any>(
+          getVectorSetElementAttribute(key as any, element),
+        )
+
+        const expectedActions = [
+          addErrorNotification(
+            responsePayload as unknown as IAddInstanceErrorPayload,
+          ),
+        ]
+
+        expect(store.getActions()).toEqual(expectedActions)
       })
     })
 
