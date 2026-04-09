@@ -1,0 +1,55 @@
+meta {
+  name: Get Element Attribute
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/vector-set/get-attributes
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "vset:small_3d",
+    "element": "item_1"
+  }
+}
+
+docs {
+  # Get Element Attribute
+
+  Retrieves the attributes of a single element in the Vector Set stored at `keyName`. Uses the Redis `VGETATTR` command.
+
+  ## Request Body
+
+  | Field | Type | Description |
+  |-------|------|-------------|
+  | `keyName` | string | The Vector Set key name |
+  | `element` | string | The element name within the vector set |
+
+  ## Response
+
+  Returns `200 OK` with the element's attributes.
+
+  | Field | Type | Description |
+  |-------|------|-------------|
+  | `attributes` | string \| undefined | The attributes string stored on the element, or `undefined` if the element has no attributes |
+
+  ## Error Responses
+
+  | Status | Condition |
+  |--------|-----------|
+  | `400` | Key exists but is not a Vector Set (WRONGTYPE) |
+  | `404` | Key does not exist |
+
+  ## Notes
+
+  - Returns `undefined` for `attributes` when the element has no attributes set (i.e. `VGETATTR` returns `null`).
+  - The `attributes` value is a plain string. While it is typically JSON, Redis does not enforce any format.
+}
+
+settings {
+  encodeUrl: true
+}

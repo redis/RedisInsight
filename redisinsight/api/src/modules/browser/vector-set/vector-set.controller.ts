@@ -16,9 +16,12 @@ import { ClientMetadata } from 'src/common/models';
 import {
   DeleteVectorSetElementsDto,
   DeleteVectorSetElementsResponse,
+  GetVectorSetElementAttributeDto,
+  GetVectorSetElementAttributeResponse,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
   SetVectorSetElementAttributeDto,
+  SetVectorSetElementAttributeResponse,
 } from 'src/modules/browser/vector-set/dto';
 import { VectorSetService } from 'src/modules/browser/vector-set/vector-set.service';
 import { BrowserSerializeInterceptor } from 'src/common/interceptors';
@@ -54,17 +57,43 @@ export class VectorSetController extends BrowserBaseController {
     return await this.vectorSetService.getElements(clientMetadata, dto);
   }
 
+  @Post('/get-attributes')
+  @ApiRedisInstanceOperation({
+    description: 'Get attributes of an element in the VectorSet stored at key',
+    statusCode: 200,
+    responses: [
+      {
+        status: 200,
+        description: 'Ok',
+        type: GetVectorSetElementAttributeResponse,
+      },
+    ],
+  })
+  @ApiQueryRedisStringEncoding()
+  async getElementAttribute(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: GetVectorSetElementAttributeDto,
+  ): Promise<GetVectorSetElementAttributeResponse> {
+    return await this.vectorSetService.getElementAttribute(clientMetadata, dto);
+  }
+
   @Put('/attributes')
   @ApiRedisInstanceOperation({
     description: 'Set attributes on an element of the VectorSet stored at key',
     statusCode: 200,
-    responses: [{ status: 200, description: 'Ok' }],
+    responses: [
+      {
+        status: 200,
+        description: 'Ok',
+        type: SetVectorSetElementAttributeResponse,
+      },
+    ],
   })
   @ApiQueryRedisStringEncoding()
   async setElementAttribute(
     @BrowserClientMetadata() clientMetadata: ClientMetadata,
     @Body() dto: SetVectorSetElementAttributeDto,
-  ): Promise<void> {
+  ): Promise<SetVectorSetElementAttributeResponse> {
     return await this.vectorSetService.setElementAttribute(clientMetadata, dto);
   }
 

@@ -35,7 +35,11 @@ docs {
 
   ## Response
 
-  Returns `200 OK` with no body on success.
+  Returns `200 OK` with the stored attributes after the update.
+
+  | Field | Type | Description |
+  |-------|------|-------------|
+  | `attributes` | string | The attributes string as stored on the element after the update (read back via `VGETATTR`) |
 
   ## Error Responses
 
@@ -47,7 +51,8 @@ docs {
   ## Notes
 
   - The `attributes` field is a plain string. While it is typically used to store JSON, Redis does not enforce any format.
-  - Use **Get Elements** to retrieve the current attributes for an element.
+  - After setting, the endpoint reads back the stored value using `VGETATTR` to confirm what was persisted.
+  - Use **Get Element Attribute** to retrieve the current attributes for a single element.
 }
 
 settings {
