@@ -16,6 +16,7 @@ import successMessages from 'uiSrc/components/notifications/success-messages'
 import { MOCK_TIMESTAMP } from 'uiSrc/mocks/data/dateNow'
 import {
   vectorSetElementFactory,
+  vectorSetElementWithAttributesFactory,
   vectorSetTestKeyName,
   vectorSetPaginationCursorAfter,
 } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
@@ -37,10 +38,12 @@ import reducer, {
   removeVectorSetElementsSuccess,
   removeVectorSetElementsFailure,
   removeElementsFromList,
+  updateElementAttributes,
   vectorSetSelector,
   fetchVectorSetElements,
   fetchMoreVectorSetElements,
   deleteVectorSetElements,
+  setVectorSetElementAttribute,
 } from '../../browser/vectorSet'
 
 jest.mock('uiSrc/services', () => ({
@@ -625,6 +628,91 @@ describe('vectorSet slice', () => {
 
         expect(mockedStore.getActions()).toEqual(expectedActions)
       })
+    })
+
+    describe('setVectorSetElementAttribute', () => {
+      const mockElement = vectorSetElementWithAttributesFactory.build()
+      const key = vectorSetTestKeyName()
+      const { name: element, attributes } = mockElement
+
+      it('should dispatch updateElementAttributes with response data when set is successful', async () => {
+        const responsePayload = {
+          status: 200,
+          data: { attributes },
+        }
+        apiService.put = jest.fn().mockResolvedValue(responsePayload)
+
+        const onSuccess = jest.fn()
+
+        await store.dispatch<any>(
+          setVectorSetElementAttribute(
+            key as any,
+            element,
+            attributes!,
+            onSuccess,
+          ),
+        )
+
+        const expectedActions = [
+          updateElementAttributes({
+            element,
+            attributes: attributes!,
+          }),
+        ]
+
+        expect(store.getActions()).toEqual(expectedActions)
+        expect(onSuccess).toHaveBeenCalledTimes(1)
+      })
+
+      it('should dispatch error notification when set fails', async () => {
+        const responsePayload = {
+          response: {
+            status: 500,
+            data: { message: 'Something was wrong!' },
+          },
+        }
+        apiService.put = jest.fn().mockRejectedValue(responsePayload)
+
+        await store.dispatch<any>(
+          setVectorSetElementAttribute(key as any, element, attributes!),
+        )
+
+        const expectedActions = [
+          addErrorNotification(
+            responsePayload as unknown as IAddInstanceErrorPayload,
+          ),
+        ]
+
+        expect(store.getActions()).toEqual(expectedActions)
+      })
+    })
+  })
+
+  describe('updateElementAttributes', () => {
+    it('should update attributes of a matching element', () => {
+      const elements = vectorSetElementFactory.buildList(3)
+      const stateWithElements = {
+        ...initialState,
+        data: {
+          ...initialState.data,
+          total: 3,
+          elements,
+        },
+      }
+
+      const newAttributes = '{"updated":true}'
+      const nextState = reducer(
+        stateWithElements,
+        updateElementAttributes({
+          element: elements[1].name,
+          attributes: newAttributes,
+        }),
+      )
+
+      expect(nextState.data.elements[1].attributes).toEqual(newAttributes)
+      expect(nextState.data.elements[0].attributes).toEqual(
+        elements[0].attributes,
+      )
     })
   })
 })
