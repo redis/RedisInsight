@@ -95,6 +95,12 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
           console.log(`[Electron] ${msg.type()}: ${msg.text()}`);
         });
 
+        // Capture main process output for CI diagnostics
+        const electronProcess = electronApp.process();
+        electronProcess.stderr?.on('data', (data: Buffer) => {
+          console.log(`[Electron stderr] ${data.toString().trimEnd()}`);
+        });
+
         // Wait for the main window (not the splash screen)
         let mainWindow = await electronApp.firstWindow();
 

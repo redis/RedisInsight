@@ -35,7 +35,7 @@ export class LocalAgreementsRepository extends AgreementsRepository {
           ),
         );
       } catch (e) {
-        if (e.code === 'SQLITE_CONSTRAINT') {
+        if (e.code?.startsWith?.('SQLITE_CONSTRAINT')) {
           return this.getOrCreate(sessionMetadata, defaultOptions);
         }
 
