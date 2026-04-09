@@ -768,7 +768,7 @@ describe('vectorSet slice', () => {
 
   describe('updateElementAttributes', () => {
     it('should update attributes of a matching element', () => {
-      const elements = vectorSetElementFactory.buildList(3)
+      const elements = vectorSetElementWithAttributesFactory.buildList(3)
       const stateWithElements = {
         ...initialState,
         data: {
