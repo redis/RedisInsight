@@ -30,7 +30,7 @@ import { QueryLibraryEntity } from 'src/modules/query-library/entities/query-lib
 const dbConfig = config.get('db');
 
 const ormConfig = {
-  type: 'sqlite',
+  type: 'better-sqlite3',
   database: dbConfig.database,
   synchronize: dbConfig.synchronize,
   migrationsRun: dbConfig.migrationsRun,
@@ -65,4 +65,4 @@ const ormConfig = {
 
 export const ormModuleOptions: TypeOrmModuleOptions =
   ormConfig as TypeOrmModuleOptions;
-export default new DataSource({ ...ormConfig, type: 'sqlite' });
+export default new DataSource({ ...ormConfig, type: 'better-sqlite3' });

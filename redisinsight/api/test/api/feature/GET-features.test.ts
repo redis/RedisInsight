@@ -34,8 +34,12 @@ const waitForFlags = async (flags: any, action?: Function) => {
     }
 
     client.once('features', (data) => {
-      expect(flags.features).to.deep.eq(data.features);
-      res(true);
+      try {
+        expect(data.features).to.deep.eq(flags.features);
+        res(true);
+      } catch (e) {
+        rej(e);
+      }
     });
     setTimeout(() => {
       rej(new Error('no flags received in 10s'));
@@ -260,8 +264,8 @@ describe('GET /features', () => {
     {
       name: 'Should return false since analytics disabled (triggered by settings change)',
       before: async () => {
-        await new Promise((res, rej) => {
-          waitForFlags({
+        await waitForFlags(
+          {
             features: {
               insightsRecommendations: {
                 flag: false,
@@ -276,16 +280,14 @@ describe('GET /features', () => {
                 name: 'databaseManagement',
               },
             },
-          })
-            .then(res)
-            .catch(rej);
-
-          updateSettings({
-            agreements: {
-              analytics: false,
-            },
-          }).catch(rej);
-        });
+          },
+          () =>
+            updateSettings({
+              agreements: {
+                analytics: false,
+              },
+            }),
+        );
       },
       statusCode: 200,
       responseBody: {

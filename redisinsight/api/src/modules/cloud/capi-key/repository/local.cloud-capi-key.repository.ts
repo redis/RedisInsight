@@ -100,7 +100,7 @@ export class LocalCloudCapiKeyRepository extends CloudCapiKeyRepository {
         ),
       );
     } catch (e) {
-      if (e.code === 'SQLITE_CONSTRAINT') {
+      if (e.code?.startsWith?.('SQLITE_CONSTRAINT')) {
         throw new CloudApiBadRequestException('Such capi key already exists');
       }
 

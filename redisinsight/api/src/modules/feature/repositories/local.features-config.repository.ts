@@ -55,7 +55,7 @@ export class LocalFeaturesConfigRepository extends FeaturesConfigRepository {
           }),
         );
       } catch (e) {
-        if (e.code === 'SQLITE_CONSTRAINT') {
+        if (e.code?.startsWith?.('SQLITE_CONSTRAINT')) {
           return this.getOrCreate();
         }
 
