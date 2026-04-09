@@ -18,8 +18,7 @@ env:
 jobs:
   e2e-electron:
     name: E2E Electron (Linux)
-    # Use ubuntu-22.04 to match the old workflow (ubuntu-latest is 24.04)
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     environment: ${{ inputs.environment }}
     timeout-minutes: 60
     env:
@@ -58,7 +57,7 @@ jobs:
       - name: Install system dependencies for Electron/AppImage
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y kmod libfuse2 xvfb net-tools xdotool desktop-file-utils fluxbox netcat
+          sudo apt-get install -y kmod libfuse2 xvfb net-tools xdotool desktop-file-utils fluxbox netcat-openbsd
 
       - name: Setup E2E environment
         uses: ./.github/actions/setup-e2e-playwright
