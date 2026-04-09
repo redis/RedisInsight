@@ -6,3 +6,4 @@ export * from './delete.vector-set-elements.response';
 export * from './get.vector-set-element-attribute.dto';
 export * from './get.vector-set-element-attribute.response';
 export * from './set.vector-set-element-attribute.dto';
+export * from './set.vector-set-element-attribute.response';
