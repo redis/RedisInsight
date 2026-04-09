@@ -13,7 +13,10 @@ export const mockVectorSetKeyInfo = {
   size: faker.number.int({ min: 1, max: 1000 }),
 }
 
-export const vectorSetElementFactory = Factory.define<VectorSetElement>(() => ({
+export const mockVectorSetElementAttributes = (): string =>
+  JSON.stringify({ [faker.word.noun()]: faker.word.adjective() })
+
+const buildBaseElement = (): Omit<VectorSetElement, 'attributes'> => ({
   name: stringToBuffer(faker.word.words({ count: { min: 1, max: 3 } })),
   vector: faker.helpers.arrayElements(
     Array.from({ length: 128 }, () =>
@@ -21,10 +24,17 @@ export const vectorSetElementFactory = Factory.define<VectorSetElement>(() => ({
     ),
     faker.number.int({ min: 2, max: 8 }),
   ),
-  attributes: faker.datatype.boolean()
-    ? JSON.stringify({ [faker.word.noun()]: faker.word.adjective() })
-    : undefined,
+})
+
+export const vectorSetElementFactory = Factory.define<VectorSetElement>(() => ({
+  ...buildBaseElement(),
 }))
+
+export const vectorSetElementWithAttributesFactory =
+  Factory.define<VectorSetElement>(() => ({
+    ...buildBaseElement(),
+    attributes: mockVectorSetElementAttributes(),
+  }))
 
 /** Redis key name string for vector set tests (stable shape, random value). */
 export const vectorSetTestKeyName = (): string =>
