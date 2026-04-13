@@ -29,6 +29,7 @@ const DatabasesList = () => {
         data={visibleInstances}
         columns={columns}
         stripedRows
+        enableColumnResizing
         rowSelectionMode="multiple"
         paginationEnabled={paginationEnabled}
         onRowClick={handleCheckConnectToInstance}
