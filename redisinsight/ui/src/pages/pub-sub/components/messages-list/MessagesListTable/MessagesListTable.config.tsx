@@ -17,7 +17,7 @@ export const PUB_SUB_TABLE_COLUMNS: ColumnDef<IMessage>[] = [
     header: PUB_SUB_TABLE_COLUMN_FIELD_NAME_MAP.get(
       PubSubTableColumn.Timestamp,
     ),
-    size: 30,
+    size: 200,
     enableSorting: true,
     cell: MessagesListTableCellTimestamp,
   },
@@ -25,12 +25,13 @@ export const PUB_SUB_TABLE_COLUMNS: ColumnDef<IMessage>[] = [
     id: PubSubTableColumn.Channel,
     accessorKey: PubSubTableColumn.Channel,
     header: PUB_SUB_TABLE_COLUMN_FIELD_NAME_MAP.get(PubSubTableColumn.Channel),
-    size: 40,
+    size: 200,
   },
   {
     id: PubSubTableColumn.Message,
     accessorKey: PubSubTableColumn.Message,
     header: PUB_SUB_TABLE_COLUMN_FIELD_NAME_MAP.get(PubSubTableColumn.Message),
+    size: 800,
     cell: MessagesListTableCellMessage,
   },
 ]

@@ -34,7 +34,7 @@ const SlowLogTable = (props: Props) => {
       id: 'time',
       header: 'Timestamp',
       accessorKey: 'time',
-      size: 15,
+      size: 200,
       cell: ({ getValue }) => {
         const date = (getValue() as number) * 1000
 
@@ -45,7 +45,7 @@ const SlowLogTable = (props: Props) => {
       id: 'durationUs',
       header: `Duration, ${DURATION_UNITS.find(({ value }) => value === durationUnit)?.inputDisplay}`,
       accessorKey: 'durationUs',
-      size: 15,
+      size: 150,
       cell: ({ getValue }) => {
         const duration = getValue() as number
 
@@ -60,6 +60,7 @@ const SlowLogTable = (props: Props) => {
       id: 'args',
       header: 'Command',
       accessorKey: 'args',
+      size: 850,
       cell: ({ getValue }) => {
         const command = getValue() as string
 
@@ -90,6 +91,7 @@ const SlowLogTable = (props: Props) => {
       <Table
         columns={columns}
         data={items}
+        enableColumnResizing
         onSortingChange={handleSortingChange}
         maxHeight="60vh"
         stripedRows
