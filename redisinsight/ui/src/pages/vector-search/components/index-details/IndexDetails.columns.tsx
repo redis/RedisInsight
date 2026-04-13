@@ -15,9 +15,11 @@ import { CreateIndexOnboardingStep } from '../create-index-onboarding/CreateInde
 
 export const SELECTION_COLUMN: ColumnDef<IndexField> = {
   id: IndexDetailsColumn.Selection,
-  size: 50,
+  size: 40,
   sizeUnit: 'px',
+  isHeaderCustom: true,
   enableSorting: false,
+  enableResizing: false,
   header: Table.HeaderMultiRowSelectionButton,
   cell: ({ row }) => <Table.RowSelectionButton row={row} />,
 }
@@ -25,6 +27,7 @@ export const SELECTION_COLUMN: ColumnDef<IndexField> = {
 export const NAME_COLUMN: ColumnDef<IndexField> = {
   id: IndexDetailsColumn.Name,
   accessorKey: IndexDetailsColumn.Name,
+  size: 300,
   enableSorting: false,
   header: () => (
     <CreateIndexOnboardingPopover
@@ -42,6 +45,7 @@ export const NAME_COLUMN: ColumnDef<IndexField> = {
 export const VALUE_COLUMN: ColumnDef<IndexField> = {
   id: IndexDetailsColumn.Value,
   accessorKey: IndexDetailsColumn.Value,
+  size: 500,
   enableSorting: false,
   header: () => (
     <CreateIndexOnboardingPopover
@@ -105,7 +109,8 @@ export const createActionsColumn = (
 ): ColumnDef<IndexField> => ({
   id: IndexDetailsColumn.Actions,
   enableSorting: false,
-  size: 50,
+  enableResizing: false,
+  size: 40,
   sizeUnit: 'px',
   header: '',
   cell: ({ row }: { row: Row<IndexField> }) => (
