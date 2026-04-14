@@ -17,6 +17,7 @@ import { BrowserToolVectorSetCommands } from 'src/modules/browser/constants/brow
 import {
   deleteVectorSetElementsDtoFactory,
   getVectorSetElementsDtoFactory,
+  getVectorSetElementAttributeDtoFactory,
   setVectorSetElementAttributeDtoFactory,
   vectorSetElementFactory,
 } from 'src/modules/browser/vector-set/__tests__/vector-set.factory';
@@ -258,6 +259,91 @@ describe('VectorSetService', () => {
     });
   });
 
+  describe('getElementAttribute', () => {
+    const mockGetAttrDto = getVectorSetElementAttributeDtoFactory.build();
+
+    beforeEach(() => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, mockGetAttrDto.keyName])
+        .mockResolvedValue(true);
+    });
+
+    it('should get element attribute successfully', async () => {
+      const mockAttributes = '{"color":"red"}';
+
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolVectorSetCommands.VGetAttr,
+          mockGetAttrDto.keyName,
+          mockGetAttrDto.element,
+        ])
+        .mockResolvedValue(mockAttributes);
+
+      const result = await service.getElementAttribute(
+        mockBrowserClientMetadata,
+        mockGetAttrDto,
+      );
+
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolVectorSetCommands.VGetAttr,
+        mockGetAttrDto.keyName,
+        mockGetAttrDto.element,
+      ]);
+      expect(result.attributes).toEqual(mockAttributes);
+    });
+
+    it('should return undefined attributes when element has no attributes', async () => {
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolVectorSetCommands.VGetAttr,
+          mockGetAttrDto.keyName,
+          mockGetAttrDto.element,
+        ])
+        .mockResolvedValue(null);
+
+      const result = await service.getElementAttribute(
+        mockBrowserClientMetadata,
+        mockGetAttrDto,
+      );
+
+      expect(result.attributes).toBeUndefined();
+    });
+
+    it('should throw NotFoundException when key does not exist', async () => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, mockGetAttrDto.keyName])
+        .mockResolvedValue(false);
+
+      await expect(
+        service.getElementAttribute(mockBrowserClientMetadata, mockGetAttrDto),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw BadRequestException for wrong type error', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisWrongTypeError,
+        command: 'VGETATTR',
+      };
+      client.sendCommand.mockRejectedValue(replyError);
+
+      await expect(
+        service.getElementAttribute(mockBrowserClientMetadata, mockGetAttrDto),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw ForbiddenException when user has no permissions', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisNoPermError,
+        command: 'VGETATTR',
+      };
+      client.sendCommand.mockRejectedValue(replyError);
+
+      await expect(
+        service.getElementAttribute(mockBrowserClientMetadata, mockGetAttrDto),
+      ).rejects.toThrow(ForbiddenException);
+    });
+  });
+
   describe('setElementAttribute', () => {
     const mockSetAttrDto = setVectorSetElementAttributeDtoFactory.build();
 
@@ -267,10 +353,25 @@ describe('VectorSetService', () => {
         .mockResolvedValue(true);
     });
 
-    it('should set element attribute successfully', async () => {
-      client.sendCommand.mockResolvedValue(1);
+    it('should set element attribute and return the stored value', async () => {
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolVectorSetCommands.VSetAttr,
+          mockSetAttrDto.keyName,
+          mockSetAttrDto.element,
+          mockSetAttrDto.attributes,
+        ])
+        .mockResolvedValue(1);
 
-      await service.setElementAttribute(
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolVectorSetCommands.VGetAttr,
+          mockSetAttrDto.keyName,
+          mockSetAttrDto.element,
+        ])
+        .mockResolvedValue(mockSetAttrDto.attributes);
+
+      const result = await service.setElementAttribute(
         mockBrowserClientMetadata,
         mockSetAttrDto,
       );
@@ -281,6 +382,12 @@ describe('VectorSetService', () => {
         mockSetAttrDto.element,
         mockSetAttrDto.attributes,
       ]);
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolVectorSetCommands.VGetAttr,
+        mockSetAttrDto.keyName,
+        mockSetAttrDto.element,
+      ]);
+      expect(result.attributes).toEqual(mockSetAttrDto.attributes);
     });
 
     it('should throw NotFoundException when key does not exist', async () => {
