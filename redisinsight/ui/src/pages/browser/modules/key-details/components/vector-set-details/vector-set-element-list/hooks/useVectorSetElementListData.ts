@@ -104,7 +104,16 @@ const useVectorSetElementListData = ({
       onViewElement,
     }
     return getVectorSetColumns(listConfig)
-  }, [compressor, viewFormat, deleting, total, key, closePopover, showPopover])
+  }, [
+    compressor,
+    viewFormat,
+    deleting,
+    total,
+    key,
+    closePopover,
+    showPopover,
+    onViewElement,
+  ])
 
   const tableMinWidth = useMemo(
     () => `${Math.max(columns.length * MIN_COLUMN_WIDTH, 550)}px`,
