@@ -119,6 +119,22 @@ const vectorSetSlice = createSlice({
       )
       state.data.total -= elements.length
     },
+    updateElementAttributes: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        element: RedisResponseBuffer
+        attributes: string
+      }>,
+    ) => {
+      const el = state.data.elements.find((e) =>
+        isEqualBuffers(e.name, payload.element),
+      )
+      if (el) {
+        el.attributes = payload.attributes
+      }
+    },
   },
 })
 
@@ -133,6 +149,7 @@ export const {
   removeVectorSetElementsSuccess,
   removeVectorSetElementsFailure,
   removeElementsFromList,
+  updateElementAttributes,
 } = vectorSetSlice.actions
 
 export const vectorSetSelector = (state: RootState) => state.browser.vectorSet
@@ -278,6 +295,84 @@ export function deleteVectorSetElements(
       const errorMessage = getApiErrorMessage(error)
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
       dispatch(removeVectorSetElementsFailure(errorMessage))
+    }
+  }
+}
+
+export function getVectorSetElementAttribute(
+  key: RedisResponseBuffer,
+  element: RedisResponseBuffer,
+  onSuccessAction?: (attributes?: string) => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    try {
+      const state = stateInit()
+      const { encoding } = state.app.info
+      const { data, status } = await apiService.post<{
+        attributes?: string
+      }>(
+        getUrl(
+          state.connections.instances.connectedInstance?.id,
+          ApiEndpoints.VECTOR_SET_GET_ELEMENT_ATTRIBUTES,
+        ),
+        {
+          keyName: key,
+          element,
+        },
+        { params: { encoding } },
+      )
+
+      if (isStatusSuccessful(status)) {
+        dispatch(
+          updateElementAttributes({
+            element,
+            attributes: data.attributes ?? '',
+          }),
+        )
+        onSuccessAction?.(data.attributes)
+      }
+    } catch (_err) {
+      const error = _err as AxiosError
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+    }
+  }
+}
+
+export function setVectorSetElementAttribute(
+  key: RedisResponseBuffer,
+  element: RedisResponseBuffer,
+  attributes: string,
+  onSuccessAction?: () => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    try {
+      const state = stateInit()
+      const { encoding } = state.app.info
+      const { data, status } = await apiService.put<{ attributes: string }>(
+        getUrl(
+          state.connections.instances.connectedInstance?.id,
+          ApiEndpoints.VECTOR_SET_ELEMENT_ATTRIBUTES,
+        ),
+        {
+          keyName: key,
+          element,
+          attributes,
+        },
+        { params: { encoding } },
+      )
+
+      if (isStatusSuccessful(status)) {
+        dispatch(
+          updateElementAttributes({
+            element,
+            attributes: data.attributes,
+          }),
+        )
+        onSuccessAction?.()
+      }
+    } catch (_err) {
+      const error = _err as AxiosError
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
     }
   }
 }
