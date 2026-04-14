@@ -83,9 +83,15 @@ const ElementDetails = ({
     if (!element || isSaveDisabled) return
 
     const trimmed = value.trim()
-    const formatted = trimmed
-      ? JSON.stringify(JSON.parse(trimmed), null, 2)
-      : ''
+
+    // Guard against invalid JSON that can slip through due to a race condition
+    // in useMonacoValidation (decorations reset isValidating before markers update isValid)
+    let formatted: string
+    try {
+      formatted = trimmed ? JSON.stringify(JSON.parse(trimmed), null, 2) : ''
+    } catch {
+      return
+    }
 
     const applyFormatted = () => {
       setIsEditing(false)
