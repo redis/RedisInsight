@@ -60,16 +60,15 @@ const ElementDetails = ({
     [element],
   )
 
-  useEffect(() => {
-    if (isEditing) {
-      setSavedValue(value)
-    }
-  }, [isEditing])
-
   const vectorText = useMemo(
     () => formatVector(element?.vector),
     [element?.vector],
   )
+
+  const startEditing = useCallback(() => {
+    setSavedValue(value)
+    setIsEditing(true)
+  }, [value])
 
   const handleCancelEditing = useCallback(() => {
     setValue(savedValue)
@@ -149,7 +148,7 @@ const ElementDetails = ({
                     <S.EditButton
                       icon={EditIcon}
                       aria-label="Edit attributes"
-                      onClick={() => setIsEditing(true)}
+                      onClick={startEditing}
                       data-testid="vector-set-edit-attributes-btn"
                     />
                   )}
