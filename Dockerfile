@@ -6,7 +6,7 @@
 # the best way to minimize the number of node_module restores and build steps
 # while still keeping the final image small.
 
-FROM node:22.22.0-alpine as build
+FROM node:22.22.0-alpine AS build
 
 # update apk repository and install build dependencies
 RUN apk update && apk add --no-cache --virtual .gyp \
@@ -14,7 +14,8 @@ RUN apk update && apk add --no-cache --virtual .gyp \
         py3-setuptools \
         make \
         git \
-        g++
+        g++ \
+        gcompat
 
 # set workdir
 WORKDIR /usr/src/app
