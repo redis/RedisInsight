@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { monaco } from 'react-monaco-editor'
 
-import { VectorSetElement, RedisResponseBuffer } from 'uiSrc/slices/interfaces'
+import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import {
   Drawer,
   DrawerHeader,
@@ -22,23 +22,10 @@ import {
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { setVectorSetElementAttribute } from 'uiSrc/slices/browser/vectorSet'
 import { bufferToString } from 'uiSrc/utils'
+import { formatVector } from './utils'
+import { VECTOR_DESCRIPTION, ATTRIBUTES_DESCRIPTION } from './constants'
+import { ElementDetailsProps } from './ElementDetails.types'
 import * as S from './ElementDetails.styles'
-
-const VECTOR_DESCRIPTION =
-  'The numerical embedding representing this item in vector space, used for similarity search and ranking.'
-const ATTRIBUTES_DESCRIPTION =
-  'Structured metadata associated with this item, used for filtering, display, and hybrid search queries.'
-
-export interface ElementDetailsProps {
-  element: VectorSetElement | null
-  isOpen: boolean
-  onClose: () => void
-}
-
-const formatVector = (vector?: number[]): string => {
-  if (!vector?.length) return '[]'
-  return `[${vector.join(', ')}]`
-}
 
 const ElementDetails = ({ element, isOpen, onClose }: ElementDetailsProps) => {
   const dispatch = useDispatch()

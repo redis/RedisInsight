@@ -2,7 +2,8 @@ import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { setVectorSetElementAttribute } from 'uiSrc/slices/browser/vectorSet'
 import { vectorSetElementFactory } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
-import { ElementDetails, ElementDetailsProps } from './ElementDetails'
+import { ElementDetails } from './ElementDetails'
+import { ElementDetailsProps } from './ElementDetails.types'
 
 const mockUseMonacoValidation = jest.fn().mockReturnValue({
   isValid: true,
@@ -38,9 +39,13 @@ const defaultProps: ElementDetailsProps = {
 }
 
 describe('ElementDetails', () => {
+  const renderComponent = (propsOverride?: Partial<ElementDetailsProps>) => {
+    const props = { ...defaultProps, ...propsOverride }
+    return render(<ElementDetails {...props} />)
+  }
+
   beforeEach(() => {
     jest.mocked(setVectorSetElementAttribute).mockClear()
-    ;(defaultProps.onClose as jest.Mock).mockClear()
     mockUseMonacoValidation.mockReturnValue({
       isValid: true,
       isValidating: false,
@@ -48,12 +53,12 @@ describe('ElementDetails', () => {
   })
 
   it('should render when open with element', () => {
-    render(<ElementDetails {...defaultProps} />)
+    renderComponent()
     expect(screen.getByTestId('vector-set-vector-value')).toBeInTheDocument()
   })
 
   it('should display vector values in read-only textarea', () => {
-    render(<ElementDetails {...defaultProps} />)
+    renderComponent()
     const vectorField = screen.getByTestId('vector-set-vector-value')
     const expectedVector = `[${mockElement.vector!.join(', ')}]`
     expect(vectorField).toHaveTextContent(expectedVector)
@@ -61,7 +66,7 @@ describe('ElementDetails', () => {
   })
 
   it('should display formatted attributes in editor', () => {
-    render(<ElementDetails {...defaultProps} />)
+    renderComponent()
     const editor = screen.getByTestId(
       'mock-monaco-editor',
     ) as HTMLTextAreaElement
@@ -74,7 +79,7 @@ describe('ElementDetails', () => {
   })
 
   it('should enter edit mode when edit button is clicked', () => {
-    render(<ElementDetails {...defaultProps} />)
+    renderComponent()
     fireEvent.click(screen.getByTestId('vector-set-edit-attributes-btn'))
     expect(
       screen.getByTestId('vector-set-save-attributes-btn'),
@@ -88,7 +93,7 @@ describe('ElementDetails', () => {
     const element = vectorSetElementFactory.build({
       attributes: JSON.stringify({ status: 'original' }),
     })
-    render(<ElementDetails {...defaultProps} element={element} />)
+    renderComponent({ element })
 
     const editor = screen.getByTestId(
       'mock-monaco-editor',
@@ -110,7 +115,7 @@ describe('ElementDetails', () => {
   })
 
   it('should call setVectorSetElementAttribute on save', () => {
-    render(<ElementDetails {...defaultProps} />)
+    renderComponent()
     fireEvent.click(screen.getByTestId('vector-set-edit-attributes-btn'))
 
     const editor = screen.getByTestId(
@@ -127,7 +132,7 @@ describe('ElementDetails', () => {
       isValid: false,
       isValidating: false,
     })
-    render(<ElementDetails {...defaultProps} />)
+    renderComponent()
     fireEvent.click(screen.getByTestId('vector-set-edit-attributes-btn'))
 
     const saveBtn = screen.getByTestId('vector-set-save-attributes-btn')
