@@ -4,13 +4,16 @@ import { instance, mock } from 'ts-mockito'
 import { cleanup, mockedStore, render, screen } from 'uiSrc/utils/test-utils'
 import { ResultsMode } from 'uiSrc/slices/interfaces/workbench'
 import { CommandExecutionStatus } from 'uiSrc/slices/interfaces/cli'
-import QueryCardCliResultWrapper, { Props } from './QueryCardCliResultWrapper'
+import QueryCardCliResultWrapper, {
+  Props,
+  getResultText,
+} from './QueryCardCliResultWrapper'
 import QueryCardCliDefaultResult, {
   Props as QueryCardCliDefaultResultProps,
-} from '../QueryCardCliDefaultResult'
+} from '../QueryCardCliDefaultResult/QueryCardCliDefaultResult'
 import QueryCardCliGroupResult, {
   Props as QueryCardCliGroupResultProps,
-} from '../QueryCardCliGroupResult'
+} from '../QueryCardCliGroupResult/QueryCardCliGroupResult'
 
 const mockedProps = mock<Props>()
 const mockedQueryCardCliDefaultResultProps =
@@ -75,7 +78,7 @@ describe('QueryCardCliResultWrapper', () => {
     const mockResult = [
       {
         response: '',
-        status: 'success',
+        status: CommandExecutionStatus.Success,
       },
     ]
 
@@ -103,7 +106,7 @@ describe('QueryCardCliResultWrapper', () => {
     const mockResult = [
       {
         response: ['response'],
-        status: 'success',
+        status: CommandExecutionStatus.Success,
       },
     ]
 
@@ -191,5 +194,119 @@ describe('QueryCardCliResultWrapper', () => {
     const resultEl = queryByTestId('query-cli-card-result')
 
     expect(resultEl).toHaveTextContent('(nil)')
+  })
+})
+
+describe('getResultText', () => {
+  it('should return empty string when result is empty', () => {
+    expect(getResultText([], 'PING')).toBe('')
+    expect(getResultText(undefined, 'PING')).toBe('')
+  })
+
+  it('should return formatted text for single successful result', () => {
+    const result = [
+      {
+        response: 'PONG',
+        status: CommandExecutionStatus.Success,
+      },
+    ]
+
+    const text = getResultText(result, 'PING')
+
+    expect(text).toBe('"PONG"')
+  })
+
+  it('should return raw response for single failed result', () => {
+    const result = [
+      {
+        response: 'ERR unknown command',
+        status: CommandExecutionStatus.Fail,
+      },
+    ]
+
+    const text = getResultText(result, 'INVALID')
+
+    expect(text).toBe('ERR unknown command')
+  })
+
+  it('should return (nil) for empty successful response', () => {
+    const result = [
+      {
+        response: '',
+        status: CommandExecutionStatus.Success,
+      },
+    ]
+
+    const text = getResultText(result, 'GET nonexistent')
+
+    expect(text).toBe('"(nil)"')
+  })
+
+  it('should format group results with command prefix (no db prefix for db 0)', () => {
+    const result = [
+      {
+        response: [
+          {
+            command: 'PING',
+            response: 'PONG',
+            status: CommandExecutionStatus.Success,
+          },
+          {
+            command: 'GET key',
+            response: 'value',
+            status: CommandExecutionStatus.Success,
+          },
+        ],
+        status: CommandExecutionStatus.Success,
+      },
+    ]
+
+    const text = getResultText(result, '', ResultsMode.GroupMode, 0)
+
+    expect(text).toContain('> PING')
+    expect(text).toContain('PONG')
+    expect(text).toContain('> GET key')
+    expect(text).toContain('value')
+    expect(text).not.toContain('[db0]')
+  })
+
+  it('should use provided db number in group results prefix', () => {
+    const result = [
+      {
+        response: [
+          {
+            command: 'PING',
+            response: 'PONG',
+            status: CommandExecutionStatus.Success,
+          },
+        ],
+        status: CommandExecutionStatus.Success,
+      },
+    ]
+
+    const text = getResultText(result, '', ResultsMode.GroupMode, 5)
+
+    expect(text).toContain('[db5] > PING')
+  })
+
+  it('should handle failed commands in group results (no db prefix for db 0)', () => {
+    const result = [
+      {
+        response: [
+          {
+            command: 'INVALID',
+            response: 'ERR unknown command',
+            status: CommandExecutionStatus.Fail,
+          },
+        ],
+        status: CommandExecutionStatus.Success,
+      },
+    ]
+
+    const text = getResultText(result, '', ResultsMode.GroupMode, 0)
+
+    expect(text).toContain('> INVALID')
+    expect(text).toContain('ERR unknown command')
+    expect(text).not.toContain('[db0]')
   })
 })

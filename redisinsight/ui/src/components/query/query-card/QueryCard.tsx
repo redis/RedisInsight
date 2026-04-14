@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
@@ -28,6 +28,11 @@ import {
   CommandExecutionResult,
   IPluginVisualization,
 } from 'uiSrc/slices/interfaces'
+import {
+  getWbTsResultPreferences,
+  setWbTsResultPreferences,
+  REDISTIMESERIES_CHART_ID,
+} from 'uiSrc/pages/workbench/utils/tsResultPreferences'
 
 import QueryCardHeader from './QueryCardHeader'
 import QueryCardCliResultWrapper from './QueryCardCliResultWrapper'
@@ -65,6 +70,41 @@ export interface Props {
 const getDefaultPlugin = (views: IPluginVisualization[], query: string) =>
   getVisualizationsByCommand(query, views).find((view) => view.default)
     ?.uniqId || DEFAULT_TEXT_VIEW_TYPE.id
+
+const hasTimeSeriesVisualization = (
+  views: IPluginVisualization[],
+  query: string,
+): boolean =>
+  getVisualizationsByCommand(query, views).some(
+    (v) => v.uniqId === REDISTIMESERIES_CHART_ID,
+  )
+
+const resolveInitialView = (
+  views: IPluginVisualization[],
+  query: string,
+  instanceId: string,
+): { viewType: WBQueryType; selectedValue: string } | null => {
+  if (!hasTimeSeriesVisualization(views, query)) {
+    return null
+  }
+
+  const prefs = getWbTsResultPreferences(instanceId)
+  if (!prefs) {
+    return null
+  }
+
+  if (prefs.selectedView === 'text') {
+    return {
+      viewType: WBQueryType.Text,
+      selectedValue: DEFAULT_TEXT_VIEW_TYPE.id,
+    }
+  }
+
+  return {
+    viewType: WBQueryType.Plugin,
+    selectedValue: REDISTIMESERIES_CHART_ID,
+  }
+}
 
 export const getSummaryText = (
   summary?: ResultsSummary,
@@ -112,12 +152,19 @@ const QueryCard = (props: Props) => {
   const [queryType, setQueryType] = useState<WBQueryType>(
     getWBQueryType(command, visualizations),
   )
-  const [viewTypeSelected, setViewTypeSelected] =
-    useState<WBQueryType>(queryType)
+  const [viewTypeSelected, setViewTypeSelected] = useState<WBQueryType>(() => {
+    const iv = resolveInitialView(visualizations, command, instanceId)
+    return iv?.viewType ?? getWBQueryType(command, visualizations)
+  })
   const [message, setMessage] = useState<string>('')
-  const [selectedViewValue, setSelectedViewValue] = useState<string>(
-    getDefaultPlugin(visualizations, command || '') || queryType,
-  )
+  const [selectedViewValue, setSelectedViewValue] = useState<string>(() => {
+    const iv = resolveInitialView(visualizations, command, instanceId)
+    return (
+      iv?.selectedValue ??
+      getDefaultPlugin(visualizations, command || '') ??
+      getWBQueryType(command, visualizations)
+    )
+  })
 
   const { telemetry } = useQueryResultsContext()
 
@@ -153,10 +200,17 @@ const QueryCard = (props: Props) => {
     if (visualizations.length) {
       const type = getWBQueryType(command, visualizations)
       setQueryType(type)
-      setViewTypeSelected(type)
-      setSelectedViewValue(
-        getDefaultPlugin(visualizations, command) || queryType,
-      )
+
+      const persisted = resolveInitialView(visualizations, command, instanceId)
+      if (persisted) {
+        setViewTypeSelected(persisted.viewType)
+        setSelectedViewValue(persisted.selectedValue)
+      } else {
+        setViewTypeSelected(type)
+        setSelectedViewValue(
+          getDefaultPlugin(visualizations, command) || queryType,
+        )
+      }
     }
   }, [visualizations])
 
@@ -167,10 +221,21 @@ const QueryCard = (props: Props) => {
     onToggleOpen?.(id, !isOpen)
   }
 
-  const changeViewTypeSelected = (type: WBQueryType, value: string) => {
-    setViewTypeSelected(type)
-    setSelectedViewValue(value)
-  }
+  const changeViewTypeSelected = useCallback(
+    (type: WBQueryType, value: string) => {
+      setViewTypeSelected(type)
+      setSelectedViewValue(value)
+
+      if (hasTimeSeriesVisualization(visualizations, command)) {
+        const selectedView =
+          value === REDISTIMESERIES_CHART_ID
+            ? ('plugin:redistimeseries-chart' as const)
+            : ('text' as const)
+        setWbTsResultPreferences(instanceId, { selectedView })
+      }
+    },
+    [visualizations, command, instanceId],
+  )
 
   const commonError = CommonErrorResponse(id, command, result)
 

@@ -29,6 +29,7 @@ import reducer, {
 import {
   ActionStatus,
   AzureAccessKeysStatus,
+  AzureAuthType,
   AzureRedisDatabase,
   AzureRedisType,
   AzureSubscription,
@@ -537,6 +538,7 @@ describe('azure slice', () => {
       it('should dispatch success action when add succeeds', async () => {
         const accountId = faker.string.uuid()
         const databaseIds = [databases[0].id, databases[1].id]
+        const authType = AzureAuthType.EntraId
         const addResults = [
           { id: databases[0].id, status: ActionStatus.Success, message: '' },
           { id: databases[1].id, status: ActionStatus.Success, message: '' },
@@ -546,7 +548,40 @@ describe('azure slice', () => {
         apiService.post = jest.fn().mockResolvedValue(responsePayload)
 
         await store.dispatch<any>(
-          addDatabasesAzureAction(accountId, databaseIds),
+          addDatabasesAzureAction(accountId, databaseIds, authType),
+        )
+
+        const expectedActions = [
+          addDatabasesAzure(),
+          addDatabasesAzureSuccess(addResults),
+        ]
+
+        expect(store.getActions()).toEqual(expectedActions)
+      })
+
+      it('should dispatch success action with AccessKey auth type', async () => {
+        const accountId = faker.string.uuid()
+        const databaseIds = [databases[0].id]
+        const authType = AzureAuthType.AccessKey
+        const addResults = [
+          { id: databases[0].id, status: ActionStatus.Success, message: '' },
+        ]
+        const responsePayload = { data: addResults, status: 201 }
+
+        apiService.post = jest.fn().mockResolvedValue(responsePayload)
+
+        await store.dispatch<any>(
+          addDatabasesAzureAction(accountId, databaseIds, authType),
+        )
+
+        expect(apiService.post).toHaveBeenCalledWith(
+          expect.any(String),
+          expect.objectContaining({
+            accountId,
+            databases: [
+              { id: databases[0].id, authType: AzureAuthType.AccessKey },
+            ],
+          }),
         )
 
         const expectedActions = [
@@ -560,6 +595,7 @@ describe('azure slice', () => {
       it('should dispatch failure action when add fails', async () => {
         const accountId = faker.string.uuid()
         const databaseIds = [databases[0].id]
+        const authType = AzureAuthType.EntraId
         const errorMessage = 'Failed to add databases'
         const responsePayload = {
           response: {
@@ -571,7 +607,7 @@ describe('azure slice', () => {
         apiService.post = jest.fn().mockRejectedValueOnce(responsePayload)
 
         const result = await store.dispatch<any>(
-          addDatabasesAzureAction(accountId, databaseIds),
+          addDatabasesAzureAction(accountId, databaseIds, authType),
         )
 
         const expectedActions = [

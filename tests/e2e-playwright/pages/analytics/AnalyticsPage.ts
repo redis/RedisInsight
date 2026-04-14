@@ -12,8 +12,20 @@ import { InstancePage } from '../InstancePage';
  */
 export class AnalyticsPage extends InstancePage {
   // Sub-page tabs
+  readonly overviewTab: Locator;
   readonly databaseAnalysisTab: Locator;
   readonly slowLogTab: Locator;
+
+  // Cluster Details (Overview) elements
+  readonly clusterDetailsPage: Locator;
+  readonly clusterDetailsHeader: Locator;
+  readonly clusterDetailsContent: Locator;
+  readonly clusterDetailsLoading: Locator;
+  readonly clusterDetailsCharts: Locator;
+  readonly clusterDetailsUptime: Locator;
+  readonly primaryNodesHeader: Locator;
+  readonly primaryNodesTableLoading: Locator;
+  readonly primaryNodesTableEmpty: Locator;
 
   // Slow Log elements
   readonly slowLogTable: Locator;
@@ -39,7 +51,8 @@ export class AnalyticsPage extends InstancePage {
   readonly dataSummaryTab: Locator;
   readonly tipsTab: Locator;
 
-  // Summary per data (donut charts)
+  // Summary per data (donut charts) — or the "no keys" empty message
+  readonly dataSummaryContent: Locator;
   readonly summaryPerData: Locator;
   readonly summaryPerDataCharts: Locator;
   readonly memoryChartTitle: Locator;
@@ -52,7 +65,8 @@ export class AnalyticsPage extends InstancePage {
   readonly ttlDistributionChart: Locator;
   readonly showNoExpirySwitch: Locator;
 
-  // Top Namespaces
+  // Top Namespaces (either populated or empty-state)
+  readonly topNamespacesSection: Locator;
   readonly topNamespacesContainer: Locator;
   readonly topNamespacesEmpty: Locator;
   readonly topNamespacesMessage: Locator;
@@ -78,8 +92,20 @@ export class AnalyticsPage extends InstancePage {
     super(page);
 
     // Sub-page tabs (rendered by @redis-ui/components Tabs with role="tab")
+    this.overviewTab = page.getByRole('tab', { name: 'Overview' });
     this.databaseAnalysisTab = page.getByRole('tab', { name: 'Database Analysis' });
     this.slowLogTab = page.getByRole('tab', { name: 'Slow Log' });
+
+    // Cluster Details (Overview) elements
+    this.clusterDetailsPage = page.getByTestId('cluster-details-page');
+    this.clusterDetailsHeader = page.getByTestId('cluster-details-header');
+    this.clusterDetailsContent = page.getByTestId('cluster-details-content');
+    this.clusterDetailsLoading = page.getByTestId('cluster-details-loading');
+    this.clusterDetailsCharts = page.getByTestId('cluster-details-charts');
+    this.clusterDetailsUptime = page.getByTestId('cluster-details-uptime');
+    this.primaryNodesHeader = page.getByText(/\d+ Primary nodes/);
+    this.primaryNodesTableLoading = page.getByTestId('primary-nodes-table-loading');
+    this.primaryNodesTableEmpty = page.getByTestId('primary-nodes-table-empty');
 
     // Slow Log elements
     this.slowLogTable = page.getByTestId('slowlog-table');
@@ -105,8 +131,9 @@ export class AnalyticsPage extends InstancePage {
     this.dataSummaryTab = page.getByRole('tab', { name: 'Data Summary' });
     this.tipsTab = page.getByRole('tab', { name: /Tips/ });
 
-    // Summary per data (donut charts)
+    // Summary per data (donut charts) — or the "no keys" fallback
     this.summaryPerData = page.getByTestId('summary-per-data');
+    this.dataSummaryContent = this.summaryPerData.or(page.getByTestId('empty-analysis-no-keys'));
     this.summaryPerDataCharts = page.getByTestId('summary-per-data-charts');
     this.memoryChartTitle = page.getByTestId('donut-title-memory');
     this.keysChartTitle = page.getByTestId('donut-title-keys');
@@ -121,6 +148,7 @@ export class AnalyticsPage extends InstancePage {
     // Top Namespaces
     this.topNamespacesContainer = page.getByTestId('top-namespaces');
     this.topNamespacesEmpty = page.getByTestId('top-namespaces-empty');
+    this.topNamespacesSection = this.topNamespacesContainer.or(this.topNamespacesEmpty);
     this.topNamespacesMessage = page.getByTestId('top-namespaces-message');
     this.treeViewPageLink = page.getByTestId('tree-view-page-link');
     this.nspTableMemory = page.getByTestId('nsp-table-memory');
@@ -150,6 +178,23 @@ export class AnalyticsPage extends InstancePage {
 
   async waitForLoad(): Promise<void> {
     await this.slowLogTab.waitFor({ state: 'visible' });
+  }
+
+  /**
+   * Navigate to Cluster Overview page via UI (only visible for cluster databases)
+   */
+  async gotoClusterOverview(databaseId: string): Promise<void> {
+    await this.gotoDatabase(databaseId);
+    await this.navigationTabs.gotoAnalyze();
+    await this.overviewTab.click();
+    await this.clusterDetailsPage.waitFor({ state: 'visible' });
+  }
+
+  /**
+   * Switch to Cluster Overview sub-tab (when already on Analyze page)
+   */
+  async clickOverviewTab(): Promise<void> {
+    await this.overviewTab.click();
   }
 
   /**
@@ -230,16 +275,24 @@ export class AnalyticsPage extends InstancePage {
   }
 
   /**
-   * Ensure a report has been generated (check first, generate if needed)
-   * Use in beforeEach or at the start of tests that require a report
-   * @param timeout - max wait time in ms (default 30s, use longer for large datasets)
+   * Ensure a report is loaded and the Data Summary tab content is visible.
+   *
+   * Prefer pre-generating the report via {@link ApiHelper.createDatabaseAnalysis}
+   * in `beforeAll` so the page only needs to load existing data. Falls back to
+   * generating a report through the UI when none is found.
+   *
+   * After the header progress indicator is ready, also waits for the Data
+   * Summary tab content to settle (either the charts or the "no keys" empty
+   * message). The @redis-ui Tabs component may lazy-mount content, so the
+   * header can be ready before the tab body appears in the DOM.
    */
-  async ensureReportGenerated(timeout = 30000): Promise<void> {
+  async ensureReportGenerated(timeout?: number): Promise<void> {
     const hasReport = await this.isReportVisible();
     if (!hasReport) {
       await this.clickNewReport();
       await this.waitForReportGenerated(timeout);
     }
+    await this.dataSummaryContent.waitFor({ state: 'visible' });
   }
 
   /**

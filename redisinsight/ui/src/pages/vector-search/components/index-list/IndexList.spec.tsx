@@ -34,7 +34,7 @@ describe('IndexList', () => {
       expect(screen.getByTestId('index-list')).toBeInTheDocument()
       expect(screen.getByText('Index name')).toBeInTheDocument()
       expect(screen.getByText('Index prefix')).toBeInTheDocument()
-      expect(screen.getByText('Index fields')).toBeInTheDocument()
+      expect(screen.getByText('Index types')).toBeInTheDocument()
       expect(screen.getByText('Docs')).toBeInTheDocument()
       expect(screen.getByText('Records')).toBeInTheDocument()
       expect(screen.getByText('Terms')).toBeInTheDocument()

@@ -64,14 +64,41 @@ jobs:
           # Wait for the app to be ready
           npx wait-on http://localhost:8080 http://localhost:5540/api/health --timeout 60000
 
+      - name: Ensure host.docker.internal resolves on the host
+        run: |
+          if ! grep -q host.docker.internal /etc/hosts; then
+            echo "127.0.0.1 host.docker.internal" | sudo tee -a /etc/hosts
+          fi
+
       - name: Start Redis test environment
         run: |
           TEST_BIG_DB_DUMP=$TEST_BIG_DB_DUMP \
           docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml up --detach --force-recreate
 
+      - name: Wait for Redis clusters to be ready
+        run: |
+          DC="docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml"
+
+          wait_for_cluster() {
+            local svc=$1 label=$2
+            echo "Waiting for $label to form..."
+            for i in $(seq 1 60); do
+              if $DC exec -T "$svc" redis-cli CLUSTER INFO 2>/dev/null | grep -q "cluster_state:ok"; then
+                echo "✅ $label ready after ~$((i*2))s"; return 0
+              fi
+              sleep 2
+            done
+            echo "::error::$label did NOT become ready within 120 s"
+            $DC exec -T "$svc" redis-cli CLUSTER INFO 2>/dev/null || true
+            return 1
+          }
+
+          wait_for_cluster master-plain-7-1    "IP-based cluster (8200)"
+          wait_for_cluster master-hostname-7-1  "Hostname-based cluster (8210)"
+
       - name: Run Playwright tests (Chromium)
         working-directory: ${{ env.E2E_DIR }}
-        run: npx playwright test --project=chromium
+        run: npx playwright test --project=chromium --project=chromium-serial
         env:
           CI: true
 

@@ -1,5 +1,5 @@
 {
-  "version": 3.2,
+  "version": 3.6,
   "features": {
     "redisDataIntegration": {
       "flag": true,
@@ -118,13 +118,10 @@
       "flag": true,
       "perc": [[0, 100]]
     },
-    "vectorSearch": {
-      "flag": false,
-      "perc": [[0, 100]]
-    },
-    "dev-vectorSearch": {
-      "flag": false,
-      "perc": [[0, 100]]
+    "vectorSearchV2": {
+      "flag": true,
+      "perc": [[0, 10]],
+      "filters": []
     },
     "databasesListV2": {
       "flag": true,
@@ -132,14 +129,7 @@
     },
     "azureEntraId": {
       "flag": true,
-      "perc": [[0, 100]],
-      "filters": [
-        {
-          "name": "config.server.buildType",
-          "value": "ELECTRON",
-          "cond": "eq"
-        }
-      ]
+      "perc": [[0, 100]]
     },
     "dev-azureEntraId": {
       "flag": false,

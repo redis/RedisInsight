@@ -1,0 +1,1 @@
+export { VectorSearchPage } from './VectorSearchPage';

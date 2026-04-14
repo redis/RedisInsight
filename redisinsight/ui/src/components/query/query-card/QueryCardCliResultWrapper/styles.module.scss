@@ -1,7 +1,7 @@
 .container {
   @include eui.scrollBar;
   flex: auto;
-  padding: 9px 8px 9px 20px;
+  padding: 24px 8px 9px 20px;
   overflow: auto;
   white-space: pre-wrap;
   word-break: break-all;

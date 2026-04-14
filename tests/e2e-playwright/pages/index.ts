@@ -3,6 +3,7 @@ export { InstancePage } from './InstancePage';
 export { InstanceHeader, NavigationTabs, BottomPanel } from './components';
 export { BrowserPage, AddKeyDialog, KeyList } from './browser';
 export { CliPanel } from './cli';
+export { CommandHelperPanel } from './command-helper';
 export {
   DatabasesPage,
   AddDatabaseDialog,
@@ -17,3 +18,5 @@ export { SettingsPage } from './settings';
 export { PubSubPage } from './pubsub';
 export { SidebarPanel } from './navigation';
 export { EulaPage } from './eula';
+export { VectorSearchPage } from './vector-search';
+export { InsightsPanel } from './insights';

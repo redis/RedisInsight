@@ -4,6 +4,9 @@ import { cleanup, mockedStore, renderHook, act } from 'uiSrc/utils/test-utils'
 import { AzureLoginSource } from 'uiSrc/slices/interfaces'
 import {
   azureAuthSelector,
+  AzureOAuthPrompt,
+  AzureOAuthRedirectType,
+  cancelAzureLoginAction,
   initiateAzureLoginAction,
 } from 'uiSrc/slices/oauth/azure'
 import { AzureAccountFactory } from 'uiSrc/mocks/factories/cloud/AzureAccount.factory'
@@ -28,10 +31,14 @@ jest.mock('uiSrc/slices/oauth/azure', () => ({
     error: '',
   }),
   initiateAzureLoginAction: jest.fn().mockReturnValue({ type: 'mock-action' }),
+  cancelAzureLoginAction: jest
+    .fn()
+    .mockReturnValue({ type: 'mock-cancel-action' }),
 }))
 
 const mockedAzureAuthSelector = azureAuthSelector as jest.Mock
 const mockedInitiateAzureLoginAction = initiateAzureLoginAction as jest.Mock
+const mockedCancelAzureLoginAction = cancelAzureLoginAction as jest.Mock
 
 let store: typeof mockedStore
 
@@ -75,6 +82,8 @@ describe('useAzureAuth', () => {
       expect(mockedInitiateAzureLoginAction).toHaveBeenCalledWith({
         source: AzureLoginSource.Autodiscovery,
         onSuccess: expect.any(Function),
+        prompt: AzureOAuthPrompt.SelectAccount,
+        redirectType: AzureOAuthRedirectType.Deeplink,
       })
     })
 
@@ -88,23 +97,31 @@ describe('useAzureAuth', () => {
       expect(mockedInitiateAzureLoginAction).toHaveBeenCalledWith({
         source: AzureLoginSource.TokenRefresh,
         onSuccess: expect.any(Function),
+        prompt: AzureOAuthPrompt.SelectAccount,
+        redirectType: AzureOAuthRedirectType.Deeplink,
       })
     })
   })
 
-  describe('switchAccount', () => {
-    it('should dispatch initiateAzureLoginAction with select_account prompt', () => {
+  describe('cancelLogin', () => {
+    it('should dispatch cancelAzureLoginAction', () => {
       const { result } = renderHook(() => useAzureAuth())
 
       act(() => {
-        result.current.switchAccount()
+        result.current.cancelLogin()
       })
 
-      expect(mockedInitiateAzureLoginAction).toHaveBeenCalledWith({
-        source: AzureLoginSource.Autodiscovery,
-        onSuccess: expect.any(Function),
-        prompt: 'select_account',
-      })
+      expect(mockedCancelAzureLoginAction).toHaveBeenCalled()
+    })
+
+    it('should not throw if no popup is open', () => {
+      const { result } = renderHook(() => useAzureAuth())
+
+      expect(() => {
+        act(() => {
+          result.current.cancelLogin()
+        })
+      }).not.toThrow()
     })
   })
 })

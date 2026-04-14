@@ -14,7 +14,7 @@ import {
   Footer,
   Header,
 } from 'uiSrc/components/auto-discover'
-import { AzureRedisDatabase } from 'uiSrc/slices/interfaces'
+import { AzureAuthType, AzureRedisDatabase } from 'uiSrc/slices/interfaces'
 import { Text } from 'uiSrc/components/base/text'
 import {
   IconButton,
@@ -23,6 +23,12 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { Loader } from 'uiSrc/components/base/display'
 import { RefreshIcon } from 'uiSrc/components/base/icons'
+import {
+  RiRadioGroupRoot,
+  RiRadioGroupItemRoot,
+  RiRadioGroupItemIndicator,
+  RiRadioGroupItemLabel,
+} from 'uiSrc/components/base/forms/radio-group/RadioGroup'
 
 import {
   AZURE_DATABASES_COLUMNS,
@@ -35,11 +41,14 @@ export interface Props {
   subscriptionName: string
   loading: boolean
   error: string
+  authType: AzureAuthType
   onBack: () => void
   onClose: () => void
   onSubmit: () => void
   onSelectionChange: (databases: AzureRedisDatabase[]) => void
+  onAuthTypeChange: (authType: AzureAuthType) => void
   onRefresh: () => void
+  onManualConnection: () => void
 }
 
 const AzureDatabases = ({
@@ -48,11 +57,14 @@ const AzureDatabases = ({
   subscriptionName,
   loading,
   error,
+  authType,
   onBack,
   onClose,
   onSubmit,
   onSelectionChange,
+  onAuthTypeChange,
   onRefresh,
+  onManualConnection,
 }: Props) => {
   const [items, setItems] = useState<AzureRedisDatabase[]>(databases)
 
@@ -148,6 +160,36 @@ const AzureDatabases = ({
                 aria-label="Refresh databases"
                 data-testid="btn-refresh-databases"
               />
+              <Text size="M">|</Text>
+              <Text size="M">Auth:</Text>
+              <RiRadioGroupRoot
+                value={authType}
+                onChange={(value) => onAuthTypeChange(value as AzureAuthType)}
+                data-testid="auth-type-radio-group"
+              >
+                <Row gap="l">
+                  <Row gap="xs" align="center">
+                    <RiRadioGroupItemRoot
+                      value={AzureAuthType.EntraId}
+                      data-testid="auth-type-entra-id"
+                    >
+                      <RiRadioGroupItemIndicator />
+                      <RiRadioGroupItemLabel>
+                        Microsoft Entra ID (Recommended)
+                      </RiRadioGroupItemLabel>
+                    </RiRadioGroupItemRoot>
+                  </Row>
+                  <Row gap="xs" align="center">
+                    <RiRadioGroupItemRoot
+                      value={AzureAuthType.AccessKey}
+                      data-testid="auth-type-access-key"
+                    >
+                      <RiRadioGroupItemIndicator />
+                      <RiRadioGroupItemLabel>Access Key</RiRadioGroupItemLabel>
+                    </RiRadioGroupItemRoot>
+                  </Row>
+                </Row>
+              </RiRadioGroupRoot>
             </Row>
           }
         />
@@ -196,6 +238,12 @@ const AzureDatabases = ({
           )}
           <Row gap="m" grow={false}>
             <SecondaryButton onClick={onClose}>Cancel</SecondaryButton>
+            <SecondaryButton
+              data-testid="btn-manual-connection"
+              onClick={onManualConnection}
+            >
+              Manual Connection
+            </SecondaryButton>
             <PrimaryButton
               data-testid="btn-submit"
               disabled={selectedDatabases.length === 0 || loading}

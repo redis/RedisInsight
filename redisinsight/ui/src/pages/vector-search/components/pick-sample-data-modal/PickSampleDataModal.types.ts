@@ -11,6 +11,7 @@ export interface SampleDataOption {
 
 export interface PickSampleDataModalProps {
   isOpen: boolean
+  loading?: boolean
   selectedDataset: SampleDataContent | null
   onSelectDataset: (value: SampleDataContent) => void
   onCancel: () => void

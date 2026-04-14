@@ -10,8 +10,12 @@ function readCertFile(filename: string): string {
   return fs.readFileSync(path.join(CERTS_PATH, filename), 'utf-8');
 }
 
-// Generate unique suffix once per test run to avoid "already in use" errors
-const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+function generateUniqueSuffix(): string {
+  return `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+}
+
+// Generate unique suffix once per module load for backward compatibility
+const uniqueSuffix = generateUniqueSuffix();
 
 /**
  * TLS Redis connection configuration
@@ -37,3 +41,23 @@ export const tlsClientCert: TlsClientCertConfig = {
   certificate: getEnvOptional('TLS_CLIENT_CERT') || readCertFile('user.crt'),
   key: getEnvOptional('TLS_CLIENT_KEY') || readCertFile('user.key'),
 };
+
+/**
+ * Create fresh TLS cert configs with a unique suffix per call,
+ * so multiple tests in the same module don't collide on cert names.
+ */
+export function createUniqueTlsCerts(): { caCert: TlsCertConfig; clientCert: TlsClientCertConfig } {
+  const suffix = generateUniqueSuffix();
+  const caBase = getEnvOptional('TLS_CA_CERT_NAME') || 'test-ca';
+  const clientBase = getEnvOptional('TLS_CLIENT_CERT_NAME') || 'test-client';
+  return {
+    caCert: {
+      ...tlsCaCert,
+      name: `${caBase}-${suffix}`,
+    },
+    clientCert: {
+      ...tlsClientCert,
+      name: `${clientBase}-${suffix}`,
+    },
+  };
+}

@@ -2,11 +2,20 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 
 import { Pages } from 'uiSrc/constants'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
+import { IndexField } from '../../components/index-details/IndexDetails.types'
 import { PickSampleDataModal } from '../../components/pick-sample-data-modal'
 import { SampleDataContent } from '../../components/pick-sample-data-modal/PickSampleDataModal.types'
-import { useCreateIndexFlow } from '../../hooks'
-
+import { useCreateIndexFlow, useHasExistingKeys } from '../../hooks'
+import { CreateIndexMode } from '../../pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
+import {
+  SearchTelemetryCancelStep,
+  SearchTelemetryDemoDataNextStep,
+  SearchTelemetrySource,
+} from '../../telemetry.constants'
+import { getFieldTypeSummary } from '../../utils/telemetry.utils'
+import { getFieldsBySampleData } from '../../utils/sampleData'
 import { VectorSearchProviderProps } from './VectorSearchContext.types'
 import { VectorSearchContext } from './VectorSearchContext'
 
@@ -20,17 +29,40 @@ export const VectorSearchProvider = ({
   const history = useHistory()
   const { instanceId } = useParams<{ instanceId: string }>()
 
-  const { run: createIndexFlow } = useCreateIndexFlow()
+  const { run: createIndexFlow, loading: createIndexLoading } =
+    useCreateIndexFlow()
+  const { hasKeys: hasExistingKeys, loading: hasExistingKeysLoading } =
+    useHasExistingKeys()
 
-  const openPickSampleDataModal = useCallback(() => {
-    setSelectedDataset(null)
-    setIsSampleDataModalOpen(true)
-  }, [])
+  const openPickSampleDataModal = useCallback(
+    (source: SearchTelemetrySource) => {
+      setSelectedDataset(null)
+      setIsSampleDataModalOpen(true)
 
-  const closeSampleDataModal = useCallback(() => {
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_DEMO_ONBOARDING_TRIGGERED,
+        eventData: { databaseId: instanceId, source },
+      })
+    },
+    [instanceId],
+  )
+
+  const dismissSampleDataModal = useCallback(() => {
     setIsSampleDataModalOpen(false)
     setSelectedDataset(null)
   }, [])
+
+  const cancelSampleDataModal = useCallback(() => {
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_CREATE_INDEX_CANCELLED,
+      eventData: {
+        databaseId: instanceId,
+        step: SearchTelemetryCancelStep.SampleDataModal,
+      },
+    })
+
+    dismissSampleDataModal()
+  }, [instanceId, dismissSampleDataModal])
 
   const handleSelectDataset = useCallback((value: SampleDataContent) => {
     setSelectedDataset(value)
@@ -38,29 +70,111 @@ export const VectorSearchProvider = ({
 
   const handleSeeIndexDefinition = useCallback(
     (dataset: SampleDataContent) => {
-      closeSampleDataModal()
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_DEMO_DATA_SELECTED,
+        eventData: {
+          databaseId: instanceId,
+          dataset,
+          next_step: SearchTelemetryDemoDataNextStep.IndexDefinition,
+        },
+      })
+
+      dismissSampleDataModal()
       history.push({
         pathname: Pages.vectorSearchCreateIndex(instanceId),
-        state: { sampleData: dataset },
+        search: `?sampleData=${dataset}`,
       })
     },
-    [closeSampleDataModal, history, instanceId],
+    [dismissSampleDataModal, history, instanceId],
   )
+
+  const onStartQueryingIndexCreated = useCallback(
+    (fields: IndexField[]) => {
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_INDEX_CREATED,
+        eventData: {
+          databaseId: instanceId,
+          data_source: CreateIndexMode.SampleData,
+          number_of_indexed_fields: fields.length,
+          field_types: getFieldTypeSummary(fields),
+          fields_modified: false,
+        },
+      })
+    },
+    [instanceId],
+  )
+
+  const onStartQueryingIndexError = useCallback(() => {
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_CREATE_INDEX_ERROR,
+      eventData: {
+        databaseId: instanceId,
+        data_source: CreateIndexMode.SampleData,
+      },
+    })
+  }, [instanceId])
 
   const handleStartQuerying = useCallback(
     (dataset: SampleDataContent) => {
-      closeSampleDataModal()
-      createIndexFlow(instanceId, dataset)
+      const fields = getFieldsBySampleData(dataset)
+
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_DEMO_DATA_SELECTED,
+        eventData: {
+          databaseId: instanceId,
+          dataset,
+          next_step: SearchTelemetryDemoDataNextStep.StartQuerying,
+        },
+      })
+
+      createIndexFlow(instanceId, dataset, {
+        onSuccess: () => {
+          dismissSampleDataModal()
+          onStartQueryingIndexCreated(fields)
+        },
+        onError: () => {
+          dismissSampleDataModal()
+          onStartQueryingIndexError()
+        },
+      })
     },
-    [closeSampleDataModal, createIndexFlow, instanceId],
+    [
+      dismissSampleDataModal,
+      createIndexFlow,
+      instanceId,
+      onStartQueryingIndexCreated,
+      onStartQueryingIndexError,
+    ],
   )
 
-  // Only expose stable callbacks so child pages don't re-render on modal state changes
+  const navigateToExistingDataFlow = useCallback(
+    (source: SearchTelemetrySource) => {
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_OWN_DATA_INDEX_TRIGGERED,
+        eventData: { databaseId: instanceId, source },
+      })
+
+      history.push({
+        pathname: Pages.vectorSearchCreateIndex(instanceId),
+        search: `?mode=${CreateIndexMode.ExistingData}`,
+      })
+    },
+    [history, instanceId],
+  )
+
   const contextValue = useMemo(
     () => ({
       openPickSampleDataModal,
+      navigateToExistingDataFlow,
+      hasExistingKeys,
+      hasExistingKeysLoading,
     }),
-    [openPickSampleDataModal],
+    [
+      openPickSampleDataModal,
+      navigateToExistingDataFlow,
+      hasExistingKeys,
+      hasExistingKeysLoading,
+    ],
   )
 
   return (
@@ -68,9 +182,10 @@ export const VectorSearchProvider = ({
       {children}
       <PickSampleDataModal
         isOpen={isSampleDataModalOpen}
+        loading={createIndexLoading}
         selectedDataset={selectedDataset}
         onSelectDataset={handleSelectDataset}
-        onCancel={closeSampleDataModal}
+        onCancel={cancelSampleDataModal}
         onSeeIndexDefinition={handleSeeIndexDefinition}
         onStartQuerying={handleStartQuerying}
       />

@@ -40,7 +40,10 @@ const App = (props: Props) => {
   if (status === 'fail') {
     return (
       <div className="cli-container">
-        <div className="cli-output-response-fail">
+        <div
+          data-testid="cli-output-response-fail"
+          className="cli-output-response-fail"
+        >
           {JSON.stringify(response)}
         </div>
       </div>

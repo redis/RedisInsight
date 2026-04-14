@@ -5,6 +5,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Title } from 'uiSrc/components/base/text'
 import { KeyTreeSettings } from 'uiSrc/pages/browser/components/key-tree'
 
+import { SelectKeyOnboardingPopover } from '../../select-key-onboarding-popover'
 import { useKeysBrowser } from '../hooks/useKeysBrowser'
 import * as S from '../KeysBrowser.styles'
 
@@ -20,11 +21,13 @@ const Header = () => {
   return (
     <S.HeaderWrapper>
       <Row align="center" justify="between">
-        <FlexItem grow={false}>
-          <Title size="S" variant="semiBold" color="primary">
-            Select key
-          </Title>
-        </FlexItem>
+        <SelectKeyOnboardingPopover>
+          <FlexItem grow={false}>
+            <Title size="S" variant="semiBold" color="primary">
+              Select key
+            </Title>
+          </FlexItem>
+        </SelectKeyOnboardingPopover>
         <Row gap="m" align="center" grow={false}>
           <FlexItem>
             <AutoRefresh

@@ -1,21 +1,28 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { mockDatabase } from 'src/__mocks__';
 import { AzureAuthService } from 'src/modules/azure/auth/azure-auth.service';
+import { AzureAutodiscoveryService } from 'src/modules/azure/autodiscovery/azure-autodiscovery.service';
 import { AzureAuthType } from 'src/modules/azure/constants';
 import { CloudProvider } from 'src/modules/database/models/provider-details';
 import { Database } from 'src/modules/database/models/database';
 import { LocalCredentialStrategyProvider } from './local.credential-strategy.provider';
 import { DefaultCredentialStrategy } from './strategies/default.credential-strategy';
 import { AzureEntraIdCredentialStrategy } from './strategies/azure-entra-id.credential-strategy';
+import { AzureAccessKeyCredentialStrategy } from './strategies/azure-access-key.credential-strategy';
 
 const mockAzureAuthService = {
   getRedisTokenByAccountId: jest.fn(),
 };
 
+const mockAzureAutodiscoveryService = {
+  getAccessKey: jest.fn(),
+};
+
 describe('LocalCredentialStrategyProvider', () => {
   let provider: LocalCredentialStrategyProvider;
   let defaultStrategy: DefaultCredentialStrategy;
-  let azureStrategy: AzureEntraIdCredentialStrategy;
+  let azureEntraIdStrategy: AzureEntraIdCredentialStrategy;
+  let azureAccessKeyStrategy: AzureAccessKeyCredentialStrategy;
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -25,16 +32,22 @@ describe('LocalCredentialStrategyProvider', () => {
         LocalCredentialStrategyProvider,
         DefaultCredentialStrategy,
         AzureEntraIdCredentialStrategy,
+        AzureAccessKeyCredentialStrategy,
         {
           provide: AzureAuthService,
           useValue: mockAzureAuthService,
+        },
+        {
+          provide: AzureAutodiscoveryService,
+          useValue: mockAzureAutodiscoveryService,
         },
       ],
     }).compile();
 
     provider = module.get(LocalCredentialStrategyProvider);
     defaultStrategy = module.get(DefaultCredentialStrategy);
-    azureStrategy = module.get(AzureEntraIdCredentialStrategy);
+    azureEntraIdStrategy = module.get(AzureEntraIdCredentialStrategy);
+    azureAccessKeyStrategy = module.get(AzureAccessKeyCredentialStrategy);
   });
 
   describe('resolve', () => {
@@ -72,7 +85,7 @@ describe('LocalCredentialStrategyProvider', () => {
         },
       });
 
-      const resolveSpy = jest.spyOn(azureStrategy, 'resolve');
+      const resolveSpy = jest.spyOn(azureEntraIdStrategy, 'resolve');
 
       await provider.resolve(mockAzureDatabase);
 
@@ -87,7 +100,7 @@ describe('LocalCredentialStrategyProvider', () => {
       expect(result).toBe(defaultStrategy);
     });
 
-    it('should return Azure strategy for database with Entra ID auth', () => {
+    it('should return Azure Entra ID strategy for database with Entra ID auth', () => {
       const mockAzureDatabase = Object.assign(new Database(), {
         ...mockDatabase,
         providerDetails: {
@@ -99,21 +112,26 @@ describe('LocalCredentialStrategyProvider', () => {
 
       const result = provider.getStrategy(mockAzureDatabase);
 
-      expect(result).toBe(azureStrategy);
+      expect(result).toBe(azureEntraIdStrategy);
     });
 
-    it('should return default strategy for Azure database with access key auth', () => {
+    it('should return Azure Access Key strategy for database with access key auth', () => {
       const mockAzureDatabase = Object.assign(new Database(), {
         ...mockDatabase,
         providerDetails: {
           provider: CloudProvider.Azure,
           authType: AzureAuthType.AccessKey,
+          azureAccountId: 'test-account-id',
+          subscriptionId: 'test-subscription',
+          resourceGroup: 'test-rg',
+          resourceName: 'test-cache',
+          resourceType: 'standard',
         },
       });
 
       const result = provider.getStrategy(mockAzureDatabase);
 
-      expect(result).toBe(defaultStrategy);
+      expect(result).toBe(azureAccessKeyStrategy);
     });
   });
 });

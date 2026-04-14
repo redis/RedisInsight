@@ -179,4 +179,22 @@ export class AzureConnectionDetails {
     type: String,
   })
   resourceId: string;
+
+  @ApiProperty({
+    description: 'Azure resource name',
+    type: String,
+  })
+  resourceName: string;
+
+  @ApiProperty({
+    description: 'Azure Redis type',
+    enum: AzureRedisType,
+  })
+  resourceType: AzureRedisType;
+
+  @ApiPropertyOptional({
+    description: 'Enterprise cluster name (for enterprise databases)',
+    type: String,
+  })
+  clusterName?: string;
 }

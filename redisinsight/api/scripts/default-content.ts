@@ -1,4 +1,3 @@
-import * as path from 'path';
 import {
   getFile,
   updateFolderFromArchive,
@@ -10,11 +9,11 @@ const PATH_CONFIG = get('dir_path');
 const CONTENT_CONFIG = get('content');
 
 const archiveUrl = new URL(
-  path.join(CONTENT_CONFIG.updateUrl, CONTENT_CONFIG.zip),
+  `${CONTENT_CONFIG.updateUrl}/${CONTENT_CONFIG.zip}`,
 ).toString();
 
 const buildInfoUrl = new URL(
-  path.join(CONTENT_CONFIG.updateUrl, CONTENT_CONFIG.buildInfo),
+  `${CONTENT_CONFIG.updateUrl}/${CONTENT_CONFIG.buildInfo}`,
 ).toString();
 
 async function init() {

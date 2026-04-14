@@ -159,4 +159,16 @@ describe('PickSampleDataModal', () => {
 
     expect(mockedOnCancel).toHaveBeenCalled()
   })
+
+  it('should disable "Start querying" button when loading', () => {
+    renderComponent({
+      loading: true,
+      selectedDataset: SampleDataContent.E_COMMERCE_DISCOVERY,
+    })
+
+    const startButton = screen.getByTestId(
+      'pick-sample-data-modal--start-querying',
+    )
+    expect(startButton).toBeDisabled()
+  })
 })

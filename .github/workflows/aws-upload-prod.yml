@@ -110,43 +110,76 @@ jobs:
         run: |
 
           # declare all tags
-          declare -A tag0=(
+          declare -A tag00=(
             [arch]='x64'
             [platform]='macos'
             [objectDownload]=${appFileName}'-mac-x64.dmg'
             [objectUpgrade]=${appFileName}'-mac-x64.zip'
           )
 
-          declare -A tag1=(
+          declare -A tag01=(
             [arch]='arm64'
             [platform]='macos'
             [objectDownload]=${appFileName}'-mac-arm64.dmg'
             [objectUpgrade]=${appFileName}'-mac-arm64.zip'
           )
 
-          declare -A tag2=(
+          declare -A tag02=(
             [arch]='x64'
             [platform]='windows'
             [objectDownload]=${appFileName}'-win-installer.exe'
           )
 
-          declare -A tag3=(
+          declare -A tag03=(
             [arch]='x64'
             [platform]='linux_AppImage'
             [objectDownload]=${appFileName}'-linux-x86_64.AppImage'
           )
 
-          declare -A tag4=(
+          declare -A tag04=(
             [arch]='x64'
             [platform]='linux_deb'
             [objectDownload]=${appFileName}'-linux-amd64.deb'
           )
 
-          declare -A tag5=(
+          declare -A tag05=(
             [arch]='x64'
             [platform]='linux_rpm'
             [objectDownload]=${appFileName}'-linux-x86_64.rpm'
           )
+
+          declare -A tag06=(
+            [arch]='x64'
+            [platform]='linux_snap'
+            [objectDownload]=${appFileName}'-linux-amd64.snap'
+          )
+
+          declare -A tag07=(
+            [arch]='arm64'
+            [platform]='linux_AppImage'
+            [objectDownload]=${appFileName}'-linux-arm64.AppImage'
+          )
+
+          declare -A tag08=(
+            [arch]='arm64'
+            [platform]='linux_deb'
+            [objectDownload]=${appFileName}'-linux-arm64.deb'
+          )
+
+          declare -A tag09=(
+            [arch]='arm64'
+            [platform]='linux_rpm'
+            [objectDownload]=${appFileName}'-linux-aarch64.rpm'
+          )
+
+          # TODO: arm64 snap disabled — no arm64 snap template in electron-builder
+          # https://github.com/electron-userland/electron-builder/issues/8167
+          # https://github.com/electron-userland/electron-builder-binaries/releases/tag/snap-template-4.0-2
+          # declare -A tag10=(
+          #   [arch]='arm64'
+          #   [platform]='linux_snap'
+          #   [objectDownload]=${appFileName}'-linux-arm64.snap'
+          # )
 
           # loop for add all tags to each app and create metrics
           declare -n tag

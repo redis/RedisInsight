@@ -2,6 +2,7 @@ import { test as base, ElectronApplication, _electron as electron } from '@playw
 import {
   BrowserPage,
   CliPanel,
+  CommandHelperPanel,
   DatabasesPage,
   WorkbenchPage,
   AnalyticsPage,
@@ -9,6 +10,8 @@ import {
   PubSubPage,
   EulaPage,
   SidebarPanel,
+  InsightsPanel,
+  VectorSearchPage,
 } from 'e2eSrc/pages';
 import { ApiHelper, retry } from 'e2eSrc/helpers';
 
@@ -25,11 +28,18 @@ interface ElectronAppWithWindowId extends ElectronApplication {
 type Fixtures = {
   apiHelper: ApiHelper;
   /**
+   * Feature flag overrides applied via route interception on GET /api/features.
+   * Keys are feature names (e.g. 'vectorSearchV2'), values are the desired flag state.
+   * Set per-file or per-describe with test.use({ featureFlags: { vectorSearchV2: true } }).
+   */
+  featureFlags: Record<string, boolean>;
+  /**
    * Browser page fixture
    * Use browserPage.goto(databaseId) to navigate
    */
   browserPage: BrowserPage;
   cliPanel: CliPanel;
+  commandHelperPanel: CommandHelperPanel;
   databasesPage: DatabasesPage;
   workbenchPage: WorkbenchPage;
   analyticsPage: AnalyticsPage;
@@ -37,6 +47,8 @@ type Fixtures = {
   pubSubPage: PubSubPage;
   eulaPage: EulaPage;
   sidebarPanel: SidebarPanel;
+  insightsPanel: InsightsPanel;
+  vectorSearchPage: VectorSearchPage;
 };
 
 /**
@@ -57,6 +69,7 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
   // Worker-scoped so they're available to worker-scoped fixtures
   electronExecutablePath: [undefined, { option: true, scope: 'worker' }],
   apiUrl: ['', { option: true, scope: 'worker' }],
+  featureFlags: [{}, { option: true }],
 
   // Electron app - worker-scoped, shared across all tests in a worker
   // Only launched when electronExecutablePath is set
@@ -80,6 +93,12 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
         // Log Electron console messages for debugging
         electronApp.on('console', (msg) => {
           console.log(`[Electron] ${msg.type()}: ${msg.text()}`);
+        });
+
+        // Capture main process output for CI diagnostics
+        const electronProcess = electronApp.process();
+        electronProcess.stderr?.on('data', (data: Buffer) => {
+          console.log(`[Electron stderr] ${data.toString().trimEnd()}`);
         });
 
         // Wait for the main window (not the splash screen)
@@ -146,9 +165,27 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
   ],
 
   // Page - from Electron app or browser depending on mode
-  page: async ({ electronApp, page, baseURL }, use) => {
+  page: async ({ electronApp, page, baseURL, featureFlags }, use) => {
+    const setupFeatureFlagOverrides = async (targetPage: typeof page) => {
+      if (Object.keys(featureFlags).length === 0) return;
+
+      await targetPage.route('**/api/features', async (route) => {
+        const response = await route.fetch();
+        const json = await response.json();
+
+        json.features = json.features || {};
+        for (const [name, flag] of Object.entries(featureFlags)) {
+          json.features[name] = { ...json.features[name], name, flag };
+        }
+
+        await route.fulfill({ json });
+      });
+    };
+
     if (!electronApp) {
-      // Browser mode - navigate to app if on blank page
+      // Browser mode — set up route interception before navigating
+      await setupFeatureFlagOverrides(page);
+
       if (page.url() === 'about:blank' && baseURL) {
         await page.goto(baseURL);
         await page.waitForLoadState('domcontentloaded');
@@ -164,6 +201,10 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
 
     // Electron mode - get page from Electron app
     const electronPage = await electronApp.firstWindow();
+
+    // Set up route interception before reload so features are overridden
+    await setupFeatureFlagOverrides(electronPage);
+
     // Skip onboarding by setting localStorage before reload
     // This ensures the app reads the value when it initializes
     await electronPage.evaluate(() => {
@@ -175,6 +216,10 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
     await electronPage.waitForLoadState('domcontentloaded');
 
     await use(electronPage);
+
+    // Remove route handlers so they don't leak to subsequent tests
+    // sharing this Electron page within the same worker.
+    await electronPage.unrouteAll({ behavior: 'wait' });
   },
 
   apiHelper: async ({ apiUrl, electronApp }, use) => {
@@ -193,6 +238,10 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
 
   cliPanel: async ({ page }, use) => {
     await use(new CliPanel(page));
+  },
+
+  commandHelperPanel: async ({ page }, use) => {
+    await use(new CommandHelperPanel(page));
   },
 
   databasesPage: async ({ page }, use) => {
@@ -221,6 +270,14 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
 
   sidebarPanel: async ({ page }, use) => {
     await use(new SidebarPanel(page));
+  },
+
+  insightsPanel: async ({ page }, use) => {
+    await use(new InsightsPanel(page));
+  },
+
+  vectorSearchPage: async ({ page }, use) => {
+    await use(new VectorSearchPage(page));
   },
 });
 

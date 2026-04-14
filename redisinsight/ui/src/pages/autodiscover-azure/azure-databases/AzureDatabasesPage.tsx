@@ -15,6 +15,7 @@ import { AppDispatch } from 'uiSrc/slices/store'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   ActionStatus,
+  AzureAuthType,
   AzureRedisDatabase,
   ImportAzureDatabaseResponse,
 } from 'uiSrc/slices/interfaces'
@@ -89,6 +90,9 @@ const AzureDatabasesPage = () => {
     AzureRedisDatabase[]
   >([])
 
+  // Auth type state - defaults to Entra ID (recommended)
+  const [authType, setAuthType] = useState<AzureAuthType>(AzureAuthType.EntraId)
+
   useEffect(() => {
     // Redirect to home if not authenticated
     if (!account) {
@@ -151,12 +155,13 @@ const AzureDatabasesPage = () => {
       event: TelemetryEvent.AZURE_IMPORT_DATABASES_SUBMITTED,
       eventData: {
         totalDatabases: selectedDatabases.length,
+        authType,
       },
     })
 
     const databaseIds = selectedDatabases.map((db) => db.id)
     const results = await dispatch(
-      addDatabasesAzureAction(account.id, databaseIds),
+      addDatabasesAzureAction(account.id, databaseIds, authType),
     )
 
     const successResults = results.filter(
@@ -191,6 +196,10 @@ const AzureDatabasesPage = () => {
     }
   }
 
+  const handleManualConnection = () => {
+    history.push(Pages.azureManualConnection)
+  }
+
   return (
     <AzureDatabases
       databases={databases || []}
@@ -198,11 +207,14 @@ const AzureDatabasesPage = () => {
       subscriptionName={selectedSubscription?.displayName || ''}
       loading={loading}
       error={error}
+      authType={authType}
       onBack={handleBack}
       onClose={handleClose}
       onSubmit={handleSubmit}
       onSelectionChange={setSelectedDatabases}
+      onAuthTypeChange={setAuthType}
       onRefresh={handleRefresh}
+      onManualConnection={handleManualConnection}
     />
   )
 }

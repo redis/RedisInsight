@@ -2,7 +2,11 @@ import React from 'react'
 import { faker } from '@faker-js/faker'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 
-import { AzureRedisDatabase, AzureRedisType } from 'uiSrc/slices/interfaces'
+import {
+  AzureAuthType,
+  AzureRedisDatabase,
+  AzureRedisType,
+} from 'uiSrc/slices/interfaces'
 import AzureDatabases, { Props } from './AzureDatabases'
 
 const mockDatabase = (): AzureRedisDatabase => ({
@@ -24,11 +28,14 @@ describe('AzureDatabases', () => {
     subscriptionName: 'Test Subscription',
     loading: false,
     error: '',
+    authType: AzureAuthType.EntraId,
     onBack: jest.fn(),
     onClose: jest.fn(),
     onSubmit: jest.fn(),
     onSelectionChange: jest.fn(),
+    onAuthTypeChange: jest.fn(),
     onRefresh: jest.fn(),
+    onManualConnection: jest.fn(),
   }
 
   const renderComponent = (propsOverride?: Partial<Props>) => {
@@ -262,5 +269,50 @@ describe('AzureDatabases', () => {
     fireEvent.click(screen.getByText(databases[0].name))
     const afterDeselect = onSelectionChange.mock.calls.at(-1)?.[0]
     expect(afterDeselect?.length).toBe(9)
+  })
+
+  describe('Auth Type Selection', () => {
+    it('should render auth type radio group', () => {
+      renderComponent()
+      expect(screen.getByTestId('auth-type-radio-group')).toBeInTheDocument()
+    })
+
+    it('should render both auth type options', () => {
+      renderComponent()
+      expect(screen.getByTestId('auth-type-entra-id')).toBeInTheDocument()
+      expect(screen.getByTestId('auth-type-access-key')).toBeInTheDocument()
+    })
+
+    it('should display Entra ID as recommended option', () => {
+      renderComponent()
+      expect(
+        screen.getByText('Microsoft Entra ID (Recommended)'),
+      ).toBeInTheDocument()
+    })
+
+    it('should display Access Key option', () => {
+      renderComponent()
+      expect(screen.getByText('Access Key')).toBeInTheDocument()
+    })
+
+    it('should call onAuthTypeChange when Access Key is selected', () => {
+      const onAuthTypeChange = jest.fn()
+      renderComponent({ onAuthTypeChange })
+
+      const accessKeyRadio = screen.getByTestId('auth-type-access-key')
+      const radioButton = accessKeyRadio.querySelector('[role="radio"]')
+      fireEvent.click(radioButton!)
+      expect(onAuthTypeChange).toHaveBeenCalledWith(AzureAuthType.AccessKey)
+    })
+
+    it('should call onAuthTypeChange when Entra ID is selected', () => {
+      const onAuthTypeChange = jest.fn()
+      renderComponent({ authType: AzureAuthType.AccessKey, onAuthTypeChange })
+
+      const entraIdRadio = screen.getByTestId('auth-type-entra-id')
+      const radioButton = entraIdRadio.querySelector('[role="radio"]')
+      fireEvent.click(radioButton!)
+      expect(onAuthTypeChange).toHaveBeenCalledWith(AzureAuthType.EntraId)
+    })
   })
 })

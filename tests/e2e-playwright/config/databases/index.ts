@@ -12,13 +12,13 @@ import {
   standaloneBigConfig,
 } from './standalone';
 
-import { clusterConfig } from './cluster';
+import { clusterConfig, clusterHostnameConfig } from './cluster';
 
 import { sentinelConfig } from './sentinel';
 
 import { sshRedisConfig, sshTunnelConfig } from './ssh';
 
-import { tlsRedisConfig, tlsCaCert, tlsClientCert } from './tls';
+import { tlsRedisConfig, tlsCaCert, tlsClientCert, createUniqueTlsCerts } from './tls';
 
 export const redisConfig = {
   standalone: standaloneConfig,
@@ -28,10 +28,12 @@ export const redisConfig = {
   standaloneEmpty: standaloneEmptyConfig,
   standaloneBig: standaloneBigConfig,
   cluster: clusterConfig,
+  clusterHostname: clusterHostnameConfig,
   sentinel: sentinelConfig,
   sshRedis: sshRedisConfig,
   sshTunnel: sshTunnelConfig,
   tlsRedis: tlsRedisConfig,
   tlsCaCert,
   tlsClientCert,
+  createUniqueTlsCerts,
 };

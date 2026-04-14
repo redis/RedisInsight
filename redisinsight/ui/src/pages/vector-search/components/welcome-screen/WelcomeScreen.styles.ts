@@ -1,14 +1,20 @@
 import styled from 'styled-components'
 import { Col, FlexGroup } from 'uiSrc/components/base/layout/flex'
-import Eyeglass from 'uiSrc/assets/img/vector-search/Eyeglass.svg'
-import EyeglassDark from 'uiSrc/assets/img/vector-search/EyeglassDark.svg'
+import Eyeglass from 'uiSrc/assets/img/vector-search/eyeglass.svg'
+import EyeglassDark from 'uiSrc/assets/img/vector-search/eyeglass-dark.svg'
 
 export const Container = styled(Col)`
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  padding: ${({ theme }) => theme.core.space.space300};
+`
+
+export const ScrollArea = styled(Col)`
+  position: relative;
+  z-index: 1;
+  overflow-y: auto;
+  padding: clamp(2rem, 8vh, 9rem) clamp(7rem, 8vw, 14rem);
 `
 
 export const Content = styled(Col)`

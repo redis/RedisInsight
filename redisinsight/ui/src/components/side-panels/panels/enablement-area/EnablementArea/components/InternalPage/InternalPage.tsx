@@ -36,6 +36,11 @@ import { EmptyPrompt, Pagination, Code } from '..'
 
 import styles from './styles.module.scss'
 
+// Case-sensitive strip of HTML <link> elements to prevent external resource loading
+// while preserving PascalCase <Link> React components used by tutorials.
+// JsxParser's blacklistedTags is case-insensitive, so we handle <link> separately.
+const LOWERCASE_LINK_TAG = /<link\b[^>]*\/?>|<\/link\s*>/g
+
 export interface Props {
   onClose: () => void
   title: string
@@ -148,19 +153,46 @@ const InternalPage = (props: Props) => {
     }
   }, [isLoading, location])
 
+  const sanitizedContent = useMemo(
+    () => content?.replace(LOWERCASE_LINK_TAG, '') ?? '',
+    [content],
+  )
+
   const contentComponent = useMemo(
     () => (
       // @ts-ignore
       <JsxParser
         bindings={{ path }}
         components={components}
-        blacklistedTags={['iframe', 'script']}
+        blacklistedTags={[
+          'script',
+          'iframe',
+          'object',
+          'embed',
+          'form',
+          'input',
+          'textarea',
+          'select',
+          'button',
+          'meta',
+          'base',
+          'style',
+          'svg',
+          'math',
+          'video',
+          'audio',
+          'source',
+          'applet',
+          'frame',
+          'frameset',
+        ]}
+        blacklistedAttrs={[/^on.*/i, /^style$/i]}
         autoCloseVoidElements
-        jsx={content}
+        jsx={sanitizedContent}
         onError={(e) => console.error(e)}
       />
     ),
-    [content],
+    [sanitizedContent],
   )
 
   return (

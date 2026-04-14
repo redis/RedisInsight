@@ -16,6 +16,7 @@ import reducer, {
   azureAuthAccountSelector,
   azureAuthLoadingSelector,
   initiateAzureLoginAction,
+  cancelAzureLoginAction,
   handleAzureOAuthSuccess,
 } from 'uiSrc/slices/oauth/azure'
 import { AzureLoginSource } from 'uiSrc/slices/interfaces'
@@ -361,6 +362,21 @@ describe('azure auth slice', () => {
         const actions = store.getActions()
         expect(actions).toContainEqual(resetDataAzure())
         expect(actions).toContainEqual(azureOAuthCallbackSuccess(mockAccount))
+      })
+    })
+
+    describe('cancelAzureLoginAction', () => {
+      it('should dispatch setAzureAuthInitialState to reset loading state', () => {
+        store.dispatch<any>(cancelAzureLoginAction())
+
+        const actions = store.getActions()
+        expect(actions).toContainEqual(setAzureAuthInitialState())
+      })
+
+      it('should reset loading to false in the reducer when cancelled', () => {
+        const loadingState = { ...initialState, loading: true }
+        const result = reducer(loadingState, setAzureAuthInitialState())
+        expect(result.loading).toBe(false)
       })
     })
   })

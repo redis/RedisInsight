@@ -29,7 +29,7 @@ import CodeBlock from './code-block'
 import FeatureFlagComponent from './feature-flag-component'
 import AutoRefresh from './auto-refresh'
 import ConfirmationPopover from './confirmation-popover'
-import { ModuleNotLoaded, FilterNotAvailable } from './messages'
+import { ModuleNotLoaded, FeatureNotAvailable } from './messages'
 import RdiInstanceHeader from './rdi-instance-header'
 import {
   RecommendationBody,
@@ -78,7 +78,7 @@ export {
   RecommendationCopyComponent,
   FeatureFlagComponent,
   ModuleNotLoaded,
-  FilterNotAvailable,
+  FeatureNotAvailable,
   AutoRefresh,
   ConfirmationPopover,
   RdiInstanceHeader,

@@ -30,72 +30,82 @@ export const WelcomeScreen = ({
 
   return (
     <S.Container data-testid="welcome-screen">
-      <S.Content>
-        <Col gap="m">
-          <Title size="XL" color="primary" data-testid="welcome-screen--title">
-            {TITLE}
-          </Title>
-          <Text size="L" color="primary" data-testid="welcome-screen--subtitle">
-            {SUBTITLE}
-          </Text>
-        </Col>
-
-        <Spacer size="7.2rem" />
-
-        <S.FeaturesContainer
-          wrap
-          gap="xl"
-          data-testid="welcome-screen--features"
-        >
-          {FEATURES.map((feature) => (
-            <S.FeatureItem
-              key={feature.title}
-              gap="xs"
-              data-testid={`welcome-screen--feature-${feature.icon}`}
+      <S.ScrollArea>
+        <S.Content>
+          <Col gap="m">
+            <Title
+              size="XL"
+              color="primary"
+              data-testid="welcome-screen--title"
             >
-              <RiIcon
-                type={feature.icon as AllIconsType}
-                size="xl"
-                color="neutral800"
-              />
-              <Spacer size="space050" />
-              <Text size="M" variant="semiBold" color="primary">
-                {feature.title}
-              </Text>
-              <Text size="S" color="secondary">
-                {feature.description}
-              </Text>
-            </S.FeatureItem>
-          ))}
-        </S.FeaturesContainer>
+              {TITLE}
+            </Title>
+            <Text
+              size="L"
+              color="primary"
+              data-testid="welcome-screen--subtitle"
+            >
+              {SUBTITLE}
+            </Text>
+          </Col>
 
-        <Spacer size="11.2rem" />
+          <Spacer size="7.2rem" />
 
-        <Row gap="l" data-testid="welcome-screen--actions">
-          <PrimaryButton
-            size="l"
-            onClick={onTrySampleDataClick}
-            data-testid="welcome-screen--try-sample-data-btn"
+          <S.FeaturesContainer
+            wrap
+            gap="xl"
+            data-testid="welcome-screen--features"
           >
-            {TRY_SAMPLE_DATA_LABEL}
-          </PrimaryButton>
+            {FEATURES.map((feature) => (
+              <S.FeatureItem
+                key={feature.title}
+                gap="xs"
+                data-testid={`welcome-screen--feature-${feature.icon}`}
+              >
+                <RiIcon
+                  type={feature.icon as AllIconsType}
+                  size="xl"
+                  color="neutral800"
+                />
+                <Spacer size="space050" />
+                <Text size="M" variant="semiBold" color="primary">
+                  {feature.title}
+                </Text>
+                <Text size="S" color="secondary">
+                  {feature.description}
+                </Text>
+              </S.FeatureItem>
+            ))}
+          </S.FeaturesContainer>
 
-          <RiTooltip
-            content={isUseMyDatabaseDisabled ? useMyDatabaseTooltip : null}
-            anchorClassName="euiToolTip__btn-disabled"
-          >
-            <SecondaryButton
-              filled
+          <Spacer size="11.2rem" />
+
+          <Row gap="l" data-testid="welcome-screen--actions">
+            <PrimaryButton
               size="l"
-              onClick={onUseMyDatabaseClick}
-              disabled={isUseMyDatabaseDisabled}
-              data-testid="welcome-screen--use-my-database-btn"
+              onClick={onTrySampleDataClick}
+              data-testid="welcome-screen--try-sample-data-btn"
             >
-              {USE_MY_DATABASE_LABEL}
-            </SecondaryButton>
-          </RiTooltip>
-        </Row>
-      </S.Content>
+              {TRY_SAMPLE_DATA_LABEL}
+            </PrimaryButton>
+
+            <RiTooltip
+              content={isUseMyDatabaseDisabled ? useMyDatabaseTooltip : null}
+              anchorClassName="euiToolTip__btn-disabled"
+            >
+              <SecondaryButton
+                filled
+                size="l"
+                onClick={onUseMyDatabaseClick}
+                disabled={isUseMyDatabaseDisabled}
+                data-testid="welcome-screen--use-my-database-btn"
+              >
+                {USE_MY_DATABASE_LABEL}
+              </SecondaryButton>
+            </RiTooltip>
+          </Row>
+        </S.Content>
+      </S.ScrollArea>
 
       <S.BackgroundImage data-testid="welcome-screen--background" />
     </S.Container>

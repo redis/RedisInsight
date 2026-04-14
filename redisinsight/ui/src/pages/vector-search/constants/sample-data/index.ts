@@ -17,4 +17,4 @@ export const SAMPLE_DATASETS: Record<SampleDataContent, SampleDatasetConfig> = {
 }
 
 export { BIKES_DATASET, MOVIES_DATASET }
-export type { SampleDatasetConfig } from './types'
+export type { SampleDatasetConfig, SampleQuery } from './types'

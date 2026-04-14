@@ -93,6 +93,15 @@ export class QueryLibraryService {
 
     if (error) {
       store.dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      throw error
+    }
+  }
+
+  async deleteByIndex(databaseId: string, indexName: string): Promise<void> {
+    const { error } = await this.database.deleteByIndex(databaseId, indexName)
+
+    if (error) {
+      store.dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
     }
   }
 

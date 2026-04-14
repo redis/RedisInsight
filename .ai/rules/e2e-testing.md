@@ -1,3 +1,9 @@
+---
+description: Playwright E2E testing standards, page object models, test structure, fixtures, and navigation patterns
+globs: tests/e2e-playwright/**/*.ts
+alwaysApply: false
+---
+
 # E2E Testing Standards (Playwright)
 
 ## Location

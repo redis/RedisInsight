@@ -16,7 +16,11 @@ const JSONView = (props: Props) => {
   useEffect(() => {
     const parseJSON = async (value: string, command: string) => {
       try {
-        const json = JSONBigInt({ useNativeBigInt: true }).parse(value)
+        const json = JSONBigInt({
+          useNativeBigInt: true,
+          protoAction: 'preserve',
+          constructorAction: 'preserve',
+        }).parse(value)
         setResult({ value: json, isValid: true })
       } catch (_err) {
         const reply = await formatRedisReply(value, command)
@@ -36,7 +40,12 @@ const JSONView = (props: Props) => {
           <JsonPretty data={result.value} space={2} />
         </div>
       ) : (
-        <div className="cli-output-response-success">{result.value}</div>
+        <div
+          data-testid="cli-output-response-success"
+          className="cli-output-response-success"
+        >
+          {result.value}
+        </div>
       )}
     </>
   )

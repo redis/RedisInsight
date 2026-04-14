@@ -7,4 +7,6 @@ export const HeaderRow = styled(Row).attrs({ grow: false })`
 
 export const PageLayout = styled(Col).attrs({ gap: 'l' })`
   min-height: 0;
+  min-width: 0;
+  overflow: hidden;
 `

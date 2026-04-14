@@ -33,13 +33,13 @@ export const mockUtm = {
 export const mockCloudApiUnauthorizedExceptionResponse = {
   error: 'CloudApiUnauthorized',
   errorCode: CustomErrorCodes.CloudApiUnauthorized,
-  message: mockCapiUnauthorizedError.message,
+  message: 'Request failed with status code 401',
   statusCode: HttpStatus.UNAUTHORIZED,
 };
 
 export const mockCloudApiBadRequestExceptionResponse = {
   error: 'CloudApiBadRequest',
   errorCode: CustomErrorCodes.CloudApiBadRequest,
-  message: mockSmApiBadRequestError.message,
+  message: 'Request failed with status code 400',
   statusCode: HttpStatus.BAD_REQUEST,
 };

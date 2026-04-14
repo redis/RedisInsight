@@ -6,7 +6,7 @@ import { IndexListColumn } from './IndexList.types'
 export const INDEX_LIST_COLUMN_HEADERS: Record<IndexListColumn, string> = {
   [IndexListColumn.Name]: 'Index name',
   [IndexListColumn.Prefix]: 'Index prefix',
-  [IndexListColumn.FieldTypes]: 'Index fields',
+  [IndexListColumn.FieldTypes]: 'Index types',
   [IndexListColumn.Docs]: 'Docs',
   [IndexListColumn.Records]: 'Records',
   [IndexListColumn.Terms]: 'Terms',

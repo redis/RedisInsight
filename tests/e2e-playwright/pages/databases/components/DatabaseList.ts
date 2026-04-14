@@ -1,4 +1,4 @@
-import { Page, Locator, expect } from '@playwright/test';
+import { Page, Locator, Response, expect } from '@playwright/test';
 
 /**
  * Component Page Object for the Database List
@@ -14,6 +14,8 @@ export class DatabaseList {
   // Bulk selection elements
   readonly selectionCounter: Locator;
   readonly exportButton: Locator;
+  readonly exportConfirmButton: Locator;
+  readonly exportPopover: Locator;
   readonly bulkDeleteButton: Locator;
   readonly cancelSelectingButton: Locator;
 
@@ -38,6 +40,8 @@ export class DatabaseList {
     // Bulk selection elements
     this.selectionCounter = page.getByText(/You selected: \d+ items?/);
     this.exportButton = page.getByRole('button', { name: 'Export' });
+    this.exportPopover = page.getByTestId('export-popover');
+    this.exportConfirmButton = this.exportPopover.getByRole('button', { name: 'Export' });
     this.bulkDeleteButton = page.getByRole('button', { name: 'Delete' });
     this.cancelSelectingButton = page.getByRole('button', { name: 'Cancel selecting' });
 
@@ -163,9 +167,15 @@ export class DatabaseList {
    * Returns the total number of databases, not just visible rows
    */
   async getTotalCount(): Promise<number> {
-    const text = await this.paginationRowCount.textContent();
-    const match = text?.match(/out of (\d+) rows/);
-    return match ? parseInt(match[1], 10) : await this.getVisibleRowCount();
+    if (await this.paginationRowCount.isVisible()) {
+      const text = await this.paginationRowCount.textContent();
+      const match = text?.match(/out of (\d+) rows/);
+
+      if (match) {
+        return parseInt(match[1], 10);
+      }
+    }
+    return this.getVisibleRowCount();
   }
 
   // ==================== SEARCH ====================
@@ -282,10 +292,28 @@ export class DatabaseList {
   }
 
   /**
-   * Export selected databases
+   * Open the export popover for selected databases
    */
   async exportSelected(): Promise<void> {
     await this.exportButton.click();
+  }
+
+  /**
+   * Export selected databases and return the API response.
+   *
+   * file-saver's blob URL download does not emit a Playwright "download"
+   * event in Electron, so we verify through the API response instead.
+   */
+  async exportSelectedAndDownload(): Promise<Response> {
+    await this.exportSelected();
+    await this.exportConfirmButton.waitFor({ state: 'visible' });
+    const [response] = await Promise.all([
+      this.page.waitForResponse(
+        (resp) => resp.url().includes('/databases/export') && resp.request().method() === 'POST',
+      ),
+      this.exportConfirmButton.click(),
+    ]);
+    return response;
   }
 
   /**
@@ -448,7 +476,7 @@ export class DatabaseList {
    */
   async setItemsPerPage(value: '10' | '25' | '50' | '100'): Promise<void> {
     await this.paginationItemsPerPage.click();
-    await this.page.getByRole('option', { name: value }).click();
+    await this.page.getByRole('option', { name: value, exact: true }).click();
   }
 
   /**
@@ -463,6 +491,6 @@ export class DatabaseList {
    */
   async selectPage(pageNumber: string): Promise<void> {
     await this.paginationPageSelect.click();
-    await this.page.getByRole('option', { name: pageNumber }).click();
+    await this.page.getByRole('option', { name: pageNumber, exact: true }).click();
   }
 }

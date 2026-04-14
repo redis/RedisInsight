@@ -1,5 +1,11 @@
 import { IndexField } from '../../components/index-details/IndexDetails.types'
 
+export interface SampleQuery {
+  name: string
+  description?: string
+  query: string
+}
+
 /**
  * Full configuration for a sample dataset.
  * To add a new dataset, create a new file in this directory implementing this interface,
@@ -20,4 +26,7 @@ export interface SampleDatasetConfig {
 
   /** Index field definitions shown in the IndexDetails table. */
   fields: IndexField[]
+
+  /** Pre-defined sample queries seeded into the Query Library after index creation. */
+  sampleQueries: SampleQuery[]
 }

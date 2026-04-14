@@ -44,9 +44,6 @@ $marginIcon: 12px;
   max-width: 134px;
 }
 
-.mode + .mode {
-  margin-left: 18px;
-}
 
 .timeText,
 .summaryText {
@@ -152,15 +149,14 @@ $marginIcon: 12px;
   flex-shrink: 0;
 }
 
-.dropdownOptionSeparator:after {
-  content: "";
-  display: block;
-  height: 0;
-  width: 100%;
-  border-bottom: 1px solid var(--separatorDropdownColor);
-  opacity: 0.5;
-  position: absolute;
-  bottom: -8.5px;
+.dropdownOptionSeparator {
+  content-visibility: auto;
+}
+
+:global {
+  [role="option"]:has([class*="dropdownOptionSeparator"]) {
+    border-top: 1px solid var(--separatorDropdownColor);
+  }
 }
 
 .changeView:global(.euiSuperSelectControl) {

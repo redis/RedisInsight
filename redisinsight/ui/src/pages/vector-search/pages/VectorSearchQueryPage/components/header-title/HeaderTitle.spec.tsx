@@ -28,14 +28,12 @@ describe('HeaderTitle', () => {
 
     const breadcrumb = screen.getByTestId('breadcrumb-search-indexes')
     const link = screen.getByTestId('breadcrumb-search-indexes-link')
-    const searchLabel = screen.getByText('Search indexes')
-    const queryLabel = screen.getByText('Query index:')
+    const searchLabel = screen.getByText('Indexes')
     const trigger = screen.getByTestId('index-select-trigger')
 
     expect(breadcrumb).toBeInTheDocument()
     expect(link).toBeInTheDocument()
     expect(searchLabel).toBeInTheDocument()
-    expect(queryLabel).toBeInTheDocument()
     expect(trigger).toBeInTheDocument()
   })
 })

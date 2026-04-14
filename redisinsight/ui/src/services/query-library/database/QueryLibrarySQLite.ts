@@ -111,6 +111,15 @@ export class QueryLibrarySQLite implements QueryLibraryDatabase {
     }
   }
 
+  // No-op: for SQLite, query library cleanup is handled automatically by the backend
+  // when an index is deleted (see redisearch.service.ts → deleteIndex).
+  async deleteByIndex(
+    _databaseId: string,
+    _indexName: string,
+  ): Promise<QueryLibraryResult> {
+    return { success: true }
+  }
+
   async seed(
     databaseId: string,
     items: SeedQueryLibraryItem[],

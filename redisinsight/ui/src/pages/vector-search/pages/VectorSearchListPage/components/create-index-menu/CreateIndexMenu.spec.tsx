@@ -1,17 +1,35 @@
 import React from 'react'
-import { render, screen, userEvent } from 'uiSrc/utils/test-utils'
+import { act } from '@testing-library/react'
+import {
+  fireEvent,
+  render,
+  screen,
+  userEvent,
+  waitForRiTooltipVisible,
+} from 'uiSrc/utils/test-utils'
 
+import { useVectorSearch } from '../../../../context/vector-search'
 import { CreateIndexMenu } from './CreateIndexMenu'
 
-const mockOpenPickSampleDataModal = jest.fn()
-
 jest.mock('../../../../context/vector-search', () => ({
-  useVectorSearch: jest.fn(() => ({
-    openPickSampleDataModal: mockOpenPickSampleDataModal,
-  })),
+  useVectorSearch: jest.fn(),
 }))
 
-const renderComponent = () => render(<CreateIndexMenu />)
+const mockUseVectorSearch = jest.mocked(useVectorSearch)
+
+const renderComponent = ({
+  hasExistingKeys = false,
+  hasExistingKeysLoading = false,
+} = {}) => {
+  mockUseVectorSearch.mockReturnValue({
+    hasExistingKeys,
+    hasExistingKeysLoading,
+    openPickSampleDataModal: jest.fn(),
+    navigateToExistingDataFlow: jest.fn(),
+  } as unknown as ReturnType<typeof useVectorSearch>)
+
+  return render(<CreateIndexMenu />)
+}
 
 describe('CreateIndexMenu', () => {
   afterEach(() => {
@@ -54,11 +72,11 @@ describe('CreateIndexMenu', () => {
     )
     await userEvent.click(sampleDataItem)
 
-    expect(mockOpenPickSampleDataModal).toHaveBeenCalled()
+    expect(mockUseVectorSearch().openPickSampleDataModal).toHaveBeenCalled()
   })
 
-  it('should have "Use existing data" option disabled', async () => {
-    renderComponent()
+  it('should have "Use existing data" option disabled when no keys exist', async () => {
+    renderComponent({ hasExistingKeys: false })
 
     const btn = screen.getByTestId('vector-search--list--create-index-btn')
     await userEvent.click(btn)
@@ -67,5 +85,57 @@ describe('CreateIndexMenu', () => {
       'vector-search--list--create-index--existing-data',
     )
     expect(existingDataItem).toHaveAttribute('aria-disabled', 'true')
+  })
+
+  it('should show tooltip when no keys exist', async () => {
+    renderComponent({ hasExistingKeys: false })
+
+    const btn = screen.getByTestId('vector-search--list--create-index-btn')
+    await userEvent.click(btn)
+
+    const existingDataItem = screen.getByTestId(
+      'vector-search--list--create-index--existing-data',
+    )
+
+    await act(async () => {
+      fireEvent.focus(existingDataItem)
+    })
+    await waitForRiTooltipVisible()
+
+    expect(
+      screen.getAllByText('No Hash or JSON keys found in your database')[0],
+    ).toBeInTheDocument()
+  })
+
+  it('should show loading tooltip when keys are being checked', async () => {
+    renderComponent({ hasExistingKeysLoading: true })
+
+    const btn = screen.getByTestId('vector-search--list--create-index-btn')
+    await userEvent.click(btn)
+
+    const existingDataItem = screen.getByTestId(
+      'vector-search--list--create-index--existing-data',
+    )
+
+    await act(async () => {
+      fireEvent.focus(existingDataItem)
+    })
+    await waitForRiTooltipVisible()
+
+    expect(
+      screen.getAllByText('Checking for existing keys…')[0],
+    ).toBeInTheDocument()
+  })
+
+  it('should enable "Use existing data" when keys exist', async () => {
+    renderComponent({ hasExistingKeys: true })
+
+    const btn = screen.getByTestId('vector-search--list--create-index-btn')
+    await userEvent.click(btn)
+
+    const existingDataItem = screen.getByTestId(
+      'vector-search--list--create-index--existing-data',
+    )
+    expect(existingDataItem).not.toHaveAttribute('aria-disabled', 'true')
   })
 })

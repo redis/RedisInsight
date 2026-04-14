@@ -6,9 +6,9 @@ import {
   PANEL_PADDING_SIZE_MAP,
 } from './RiPopover.constants'
 
-type AnchorPosition = keyof typeof ANCHOR_POSITION_MAP
-
 type PanelPaddingSize = keyof typeof PANEL_PADDING_SIZE_MAP
+
+export type AnchorPosition = keyof typeof ANCHOR_POSITION_MAP
 
 export type RiPopoverProps = Omit<
   PopoverProps,

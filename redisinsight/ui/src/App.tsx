@@ -22,6 +22,9 @@ import { ThemeProvider } from './contexts/themeContext'
 import MainComponent from './components/main/MainComponent'
 import MonacoEnvironmentInitializer from './components/MonacoEnvironmentInitializer/MonacoEnvironmentInitializer'
 import GlobalDialogs from './components/global-dialogs'
+import GlobalAzureAuth, {
+  AzureAuthCallbackPage,
+} from './components/global-azure-auth'
 import NotFoundErrorPage from './pages/not-found-error/NotFoundErrorPage'
 
 import themeDark from './styles/themes/dark_theme/darkTheme.scss?inline'
@@ -56,6 +59,11 @@ const App = ({ children }: { children?: ReactElement[] }) => {
       <Switch>
         <Route exact path={Pages.notFound} component={NotFoundErrorPage} />
         <Route
+          exact
+          path="/azure-auth-callback"
+          component={AzureAuthCallbackPage}
+        />
+        <Route
           path="*"
           render={() => (
             <>
@@ -71,6 +79,7 @@ const App = ({ children }: { children?: ReactElement[] }) => {
               <Config />
               <ShortcutsFlyout />
               <MonacoLanguages />
+              <GlobalAzureAuth />
               {children}
             </>
           )}

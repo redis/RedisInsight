@@ -3,13 +3,23 @@ import { remarkCode } from 'uiSrc/utils/formatters/markdown'
 
 jest.mock('unist-util-visit')
 
+const visitMock = visit as jest.Mock
+
+const setupVisitMock = (node: Record<string, unknown>) => {
+  visitMock.mockImplementation(
+    (_tree: any, _name: string, callback: (n: any) => void) => {
+      callback(node)
+    },
+  )
+}
+
 const getValue = (
   meta: string,
   lang: string,
   params?: string,
   value?: string,
 ) =>
-  `<Code label="${meta}" params="${params}" path={path} lang="${lang}">{${JSON.stringify(value)}}</Code>`
+  `<Code label="${meta}" params="${params ?? ''}" path={path} lang="${lang}">{${JSON.stringify(value)}}</Code>`
 
 describe('remarkRedisCode', () => {
   it('should not modify codeNode if lang not redis', () => {
@@ -18,12 +28,8 @@ describe('remarkRedisCode', () => {
       value: '1',
       meta: '2',
     }
-    // mock implementation
-    ;(visit as jest.Mock).mockImplementation(
-      (_tree: any, _name: string, callback: (codeNode: any) => void) => {
-        callback(codeNode)
-      },
-    )
+
+    setupVisitMock(codeNode)
 
     const remark = remarkCode()
     remark({} as Node)
@@ -38,12 +44,8 @@ describe('remarkRedisCode', () => {
       value: '1',
       meta: '2',
     }
-    // mock implementation
-    ;(visit as jest.Mock).mockImplementation(
-      (_tree: any, _name: string, callback: (codeNode: any) => void) => {
-        callback(codeNode)
-      },
-    )
+
+    setupVisitMock(codeNode)
 
     const remark = remarkCode()
     remark({} as Node)
@@ -60,12 +62,8 @@ describe('remarkRedisCode', () => {
       value: '1',
       meta: '2',
     }
-    // mock implementation
-    ;(visit as jest.Mock).mockImplementation(
-      (_tree: any, _name: string, callback: (codeNode: any) => void) => {
-        callback(codeNode)
-      },
-    )
+
+    setupVisitMock(codeNode)
 
     const remark = remarkCode({ allLangs: true })
     remark({} as Node)
@@ -73,6 +71,24 @@ describe('remarkRedisCode', () => {
       ...codeNode,
       type: 'html',
       value: `<Code label="2" lang="java">{${JSON.stringify('1')}}</Code>`,
+    })
+  })
+
+  it('should handle null lang with allLangs enabled', () => {
+    const codeNode: Record<string, unknown> = {
+      lang: null,
+      value: 'plain text',
+      meta: null,
+    }
+
+    setupVisitMock(codeNode)
+
+    const remark = remarkCode({ allLangs: true })
+    remark({} as Node)
+    expect(codeNode).toEqual({
+      ...codeNode,
+      type: 'html',
+      value: `<Code label="" lang="">{${JSON.stringify('plain text')}}</Code>`,
     })
   })
 
@@ -84,12 +100,8 @@ describe('remarkRedisCode', () => {
         value: '1',
         meta: '2',
       }
-      // mock implementation
-      ;(visit as jest.Mock).mockImplementation(
-        (_tree: any, _name: string, callback: (codeNode: any) => void) => {
-          callback(codeNode)
-        },
-      )
+
+      setupVisitMock(codeNode)
 
       const remark = remarkCode()
       remark({} as Node)
@@ -106,12 +118,8 @@ describe('remarkRedisCode', () => {
         value: '1',
         meta: '2',
       }
-      // mock implementation
-      ;(visit as jest.Mock).mockImplementation(
-        (_tree: any, _name: string, callback: (codeNode: any) => void) => {
-          callback(codeNode)
-        },
-      )
+
+      setupVisitMock(codeNode)
 
       const remark = remarkCode()
       remark({} as Node)

@@ -43,4 +43,9 @@ export interface QueryLibraryDatabase {
     databaseId: string,
     items: SeedQueryLibraryItem[],
   ): Promise<QueryLibraryResult>
+
+  deleteByIndex(
+    databaseId: string,
+    indexName: string,
+  ): Promise<QueryLibraryResult>
 }

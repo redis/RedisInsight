@@ -1,27 +1,29 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 
 import { IRedisCommand } from 'uiSrc/constants'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { LoadingContent } from 'uiSrc/components/base/layout'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
-import {
-  fetchRedisearchListAction,
-  redisearchListSelector,
-} from 'uiSrc/slices/browser/redisearch'
-import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-import { searchAndQuerySelector } from 'uiSrc/slices/search/searchAndQuery'
+import { redisearchListSelector } from 'uiSrc/slices/browser/redisearch'
+import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { mergeRedisCommandsSpecs } from 'uiSrc/utils/transformers/redisCommands'
 import SEARCH_COMMANDS_SPEC from 'uiSrc/pages/workbench/data/supported_commands.json'
 import {
   QueryEditorContextProvider,
   LoadingContainer,
 } from 'uiSrc/components/query'
+import { QueryLibraryService } from 'uiSrc/services/query-library/QueryLibraryService'
+import { queryLibraryNotifications } from 'uiSrc/pages/vector-search/constants'
 
+import { decodeIndexNameFromUrl } from '../../utils'
 import { EditorTab, QueryEditorWrapperProps } from './QueryEditor.types'
 import { EditorLibraryToggle } from './EditorLibraryToggle'
 import { VectorSearchEditor } from './VectorSearchEditor'
 import { VectorSearchActions } from './VectorSearchActions'
+import { QueryLibraryView } from '../query-library-view'
+import { SaveQueryModal } from '../save-query-modal'
 import * as S from './QueryEditor.styles'
 
 /**
@@ -33,17 +35,90 @@ export const QueryEditorWrapper = ({
   query,
   setQuery,
   onSubmit,
+  isLoading = false,
 }: QueryEditorWrapperProps) => {
-  const { indexName } = useParams<{ indexName?: string }>()
-  const [activeTab, setActiveTab] = useState<EditorTab>(EditorTab.Editor)
+  const { instanceId, indexName } = useParams<{
+    instanceId: string
+    indexName?: string
+  }>()
+  const location = useLocation<{ activeTab?: EditorTab }>()
+  const [activeTab, setActiveTab] = useState<EditorTab>(
+    location.state?.activeTab ?? EditorTab.Editor,
+  )
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+
+  const changeActiveTab = useCallback(
+    (tab: EditorTab) => {
+      setActiveTab(tab)
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_EDITOR_TAB_CHANGED,
+        eventData: { databaseId: instanceId, tab },
+      })
+    },
+    [instanceId],
+  )
+
+  const handleLibraryLoad = useCallback(
+    (queryText: string) => {
+      setQuery(queryText)
+      setActiveTab(EditorTab.Editor)
+    },
+    [setQuery],
+  )
+
+  const handleSaveClick = useCallback(() => {
+    setIsSaveModalOpen(true)
+  }, [])
+
+  const handleSaveClose = useCallback(() => {
+    setIsSaveModalOpen(false)
+  }, [])
+
+  const decodedIndexName = indexName ? decodeURIComponent(indexName) : ''
 
   const dispatch = useDispatch()
+  const queryLibraryService = useRef(new QueryLibraryService()).current
+
+  const handleSaveSubmit = useCallback(
+    async (name: string) => {
+      if (!instanceId || !decodedIndexName) return
+
+      setIsSaving(true)
+      try {
+        const result = await queryLibraryService.create(instanceId, {
+          indexName: decodedIndexName,
+          name,
+          query,
+        })
+
+        if (result) {
+          sendEventTelemetry({
+            event: TelemetryEvent.SEARCH_QUERY_SAVED,
+            eventData: { databaseId: instanceId },
+          })
+          dispatch(
+            addMessageNotification(
+              queryLibraryNotifications.querySaved(() => {
+                setActiveTab(EditorTab.Library)
+              }),
+            ),
+          )
+          setIsSaveModalOpen(false)
+        }
+      } catch {
+        dispatch(addMessageNotification(queryLibraryNotifications.saveFailed()))
+      } finally {
+        setIsSaving(false)
+      }
+    },
+    [instanceId, decodedIndexName, query, dispatch],
+  )
+
   const { loading: isCommandsLoading, spec: COMMANDS_SPEC } = useSelector(
     appRedisCommandsSelector,
   )
-  const { id: connectedInstanceId } = useSelector(connectedInstanceSelector)
   const { data: indexes = [] } = useSelector(redisearchListSelector)
-  const { loading, processing } = useSelector(searchAndQuerySelector)
 
   const REDIS_COMMANDS = useMemo(
     () =>
@@ -53,11 +128,6 @@ export const QueryEditorWrapper = ({
       ) as IRedisCommand[],
     [COMMANDS_SPEC, SEARCH_COMMANDS_SPEC],
   )
-
-  useEffect(() => {
-    if (!connectedInstanceId) return
-    dispatch(fetchRedisearchListAction(undefined, undefined, false))
-  }, [connectedInstanceId])
 
   if (isCommandsLoading) {
     return (
@@ -76,25 +146,35 @@ export const QueryEditorWrapper = ({
         setQuery,
         commands: REDIS_COMMANDS,
         indexes,
-        activeIndexName: indexName ? decodeURIComponent(indexName) : undefined,
-        isLoading: loading || processing,
+        activeIndexName: indexName
+          ? decodeIndexNameFromUrl(indexName)
+          : undefined,
+        isLoading,
         onSubmit,
       }}
     >
       <S.EditorWrapper data-testid="vector-search-query-editor">
-        <EditorLibraryToggle activeTab={activeTab} onChangeTab={setActiveTab} />
+        <EditorLibraryToggle
+          activeTab={activeTab}
+          onChangeTab={changeActiveTab}
+        />
         {activeTab === EditorTab.Editor && (
           <>
             <VectorSearchEditor />
-            <VectorSearchActions />
+            <VectorSearchActions onSaveClick={handleSaveClick} />
           </>
         )}
         {activeTab === EditorTab.Library && (
-          <div data-testid="vector-search-library-placeholder">
-            {/* Library view placeholder -- to be implemented */}
-          </div>
+          <QueryLibraryView onRun={onSubmit} onLoad={handleLibraryLoad} />
         )}
       </S.EditorWrapper>
+
+      <SaveQueryModal
+        isOpen={isSaveModalOpen}
+        isSaving={isSaving}
+        onSave={handleSaveSubmit}
+        onClose={handleSaveClose}
+      />
     </QueryEditorContextProvider>
   )
 }

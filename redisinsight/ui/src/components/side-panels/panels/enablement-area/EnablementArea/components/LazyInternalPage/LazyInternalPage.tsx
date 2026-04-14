@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { startCase } from 'lodash'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import axios, { AxiosError } from 'axios'
+import { AxiosError } from 'axios'
 
 import { getApiErrorMessage, isStatusSuccessful, Nullable } from 'uiSrc/utils'
 import { resourcesService } from 'uiSrc/services'
@@ -74,7 +74,6 @@ const LazyInternalPage = ({
   const [error, setError] = useState<string>('')
   const [pageData, setPageData] = useState<IPageData>(DEFAULT_PAGE_DATA)
   const dispatch = useDispatch()
-  const fetchService = IS_ABSOLUTE_PATH.test(path) ? axios : resourcesService
 
   const scrollTopRef = useRef(0)
 
@@ -105,12 +104,15 @@ const LazyInternalPage = ({
     setPageData({ ...DEFAULT_PAGE_DATA, ...pageInfo, relatedPages })
 
     try {
+      if (IS_ABSOLUTE_PATH.test(path)) {
+        throw new Error('External content is not allowed')
+      }
+
       const formatter = FormatSelector.selectFor(pageInfo.extension)
       let content = contentContext
 
-      // if we have already downloaded content we take it from store
       if (url !== path || !contentContext) {
-        const { data, status } = await fetchService.get<string>(path)
+        const { data, status } = await resourcesService.get<string>(path)
         if (isStatusSuccessful(status)) {
           content = data
           dispatch(setExplorePanelContent({ data, url: path }))
@@ -126,7 +128,10 @@ const LazyInternalPage = ({
       setLoading(false)
     } catch (error) {
       setLoading(false)
-      const errorMessage: string = getApiErrorMessage(error as AxiosError)
+      const errorMessage: string =
+        error instanceof Error && !(error as AxiosError).response
+          ? error.message
+          : getApiErrorMessage(error as AxiosError)
       dispatch(resetExplorePanelSearch())
       dispatch(setExplorePanelContent({ data: null, url: null }))
       setError(errorMessage)

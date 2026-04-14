@@ -32,6 +32,35 @@ export interface StateAzureAuth {
   source: AzureLoginSource | null
 }
 
+export enum AzureOAuthPrompt {
+  /**
+   * Force the account picker to appear, allowing the user to select a different account.
+   */
+  SelectAccount = 'select_account',
+
+  /**
+   * Force re-authentication, even if the user has a valid session.
+   */
+  Login = 'login',
+
+  /**
+   * Force the consent dialog to appear, even if consent was previously granted.
+   */
+  Consent = 'consent',
+}
+
+export enum AzureOAuthRedirectType {
+  /**
+   * Uses custom protocol (redisinsight://) for Electron app deep linking.
+   */
+  Deeplink = 'deeplink',
+
+  /**
+   * Uses HTTP localhost callback for web/Docker deployments with localStorage polling.
+   */
+  Web = 'web',
+}
+
 export const initialState: StateAzureAuth = {
   loading: false,
   account: null,
@@ -117,14 +146,15 @@ export default azureAuthSlice.reducer
 
 export interface InitiateAzureLoginOptions {
   source: AzureLoginSource
-  prompt?: 'select_account' | 'login' | 'consent'
+  prompt?: AzureOAuthPrompt
+  redirectType?: AzureOAuthRedirectType
   onSuccess?: (url: string) => void
   onFail?: () => void
 }
 
 // Thunk action to initiate Azure login
 export function initiateAzureLoginAction(options: InitiateAzureLoginOptions) {
-  const { source, prompt, onSuccess, onFail } = options
+  const { source, prompt, redirectType, onSuccess, onFail } = options
 
   return async (dispatch: AppDispatch) => {
     dispatch(setAzureLoginSource(source))
@@ -134,10 +164,13 @@ export function initiateAzureLoginAction(options: InitiateAzureLoginOptions) {
     dispatch(azureAuthLogin())
 
     try {
-      const params = prompt ? { prompt } : undefined
+      const params: Record<string, string> = {}
+      if (prompt) params.prompt = prompt
+      if (redirectType) params.redirectType = redirectType
+
       const { data, status } = await apiService.get<AzureAuthLoginResponse>(
         ApiEndpoints.AZURE_AUTH_LOGIN,
-        { params },
+        { params: Object.keys(params).length > 0 ? params : undefined },
       )
 
       if (isStatusSuccessful(status)) {
@@ -156,6 +189,13 @@ export function initiateAzureLoginAction(options: InitiateAzureLoginOptions) {
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
       onFail?.()
     }
+  }
+}
+
+export function cancelAzureLoginAction() {
+  return (dispatch: AppDispatch) => {
+    clearOAuthTimeout()
+    dispatch(setAzureAuthInitialState())
   }
 }
 

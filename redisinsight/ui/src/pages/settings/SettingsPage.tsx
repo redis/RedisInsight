@@ -17,7 +17,6 @@ import {
   fetchUserSettingsSpec,
   userSettingsSelector,
 } from 'uiSrc/slices/user/user-settings'
-
 import Divider from 'uiSrc/components/divider/Divider'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import {
@@ -33,6 +32,7 @@ import { Loader, RICollapsibleNavGroup } from 'uiSrc/components/base/display'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import {
   AdvancedSettings,
+  AppVersion,
   CloudSettings,
   ThemeSettings,
   WorkbenchSettings,
@@ -184,6 +184,7 @@ const SettingsPage = () => {
               {AdvancedSettingsGroup()}
             </RICollapsibleNavGroup>
           </Col>
+          <AppVersion />
         </PageContentBody>
       </PageBody>
     </Page>

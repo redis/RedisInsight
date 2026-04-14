@@ -1,0 +1,307 @@
+import React from 'react'
+import { render, screen, fireEvent, waitFor } from 'uiSrc/utils/test-utils'
+import { queryLibraryItemFactory } from 'uiSrc/mocks/factories/query-library/queryLibraryItem.factory'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+
+import { QueryLibraryView } from './QueryLibraryView'
+import { QueryLibraryViewProps } from './QueryLibraryView.types'
+
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
+}))
+
+const mockItems = queryLibraryItemFactory.buildList(2)
+
+const mockUseQueryLibrary = {
+  items: mockItems,
+  hasItemsBeforeSearch: true,
+  loading: false,
+  error: null as string | null,
+  search: '',
+  openItemId: null,
+  onSearchChange: jest.fn(),
+  deleteItem: jest.fn(),
+  toggleItemOpen: jest.fn(),
+  getItemById: jest.fn((id: string) => mockItems.find((i) => i.id === id)),
+}
+
+jest.mock('./hooks/useQueryLibrary', () => ({
+  useQueryLibrary: () => mockUseQueryLibrary,
+}))
+
+jest.mock('uiSrc/components/base/code-editor', () => {
+  const ReactMock = require('react')
+  return {
+    __esModule: true,
+    CodeEditor: (props: any) =>
+      ReactMock.createElement(
+        'div',
+        { 'data-testid': props['data-testid'] },
+        props.value,
+      ),
+  }
+})
+
+describe('QueryLibraryView', () => {
+  const defaultProps: QueryLibraryViewProps = {
+    onRun: jest.fn(),
+    onLoad: jest.fn(),
+  }
+
+  const renderComponent = (propsOverride?: Partial<QueryLibraryViewProps>) => {
+    const props = { ...defaultProps, ...propsOverride }
+    return render(<QueryLibraryView {...props} />)
+  }
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+    mockUseQueryLibrary.items = mockItems
+    mockUseQueryLibrary.hasItemsBeforeSearch = true
+    mockUseQueryLibrary.loading = false
+    mockUseQueryLibrary.error = null
+    mockUseQueryLibrary.search = ''
+    mockUseQueryLibrary.openItemId = null
+    mockUseQueryLibrary.getItemById.mockImplementation((id: string) =>
+      mockItems.find((i) => i.id === id),
+    )
+  })
+
+  describe('rendering', () => {
+    it('should render the view container', () => {
+      renderComponent()
+
+      const container = screen.getByTestId('query-library-view')
+      expect(container).toBeInTheDocument()
+    })
+
+    it('should render search input when items exist', () => {
+      renderComponent()
+
+      const searchInput = screen.getByTestId('query-library-search')
+      expect(searchInput).toBeInTheDocument()
+    })
+
+    it('should not render search bar when there are no items and no search', () => {
+      mockUseQueryLibrary.items = []
+      mockUseQueryLibrary.hasItemsBeforeSearch = false
+      renderComponent()
+
+      const searchInput = screen.queryByTestId('query-library-search')
+      expect(searchInput).not.toBeInTheDocument()
+    })
+
+    it('should render search bar when search is active even with no items', () => {
+      mockUseQueryLibrary.items = []
+      mockUseQueryLibrary.hasItemsBeforeSearch = false
+      mockUseQueryLibrary.search = 'test'
+      renderComponent()
+
+      const searchInput = screen.getByTestId('query-library-search')
+      expect(searchInput).toBeInTheDocument()
+    })
+
+    it('should render query library items', () => {
+      renderComponent()
+
+      const firstItem = screen.getByTestId(
+        `query-library-item-${mockItems[0].id}`,
+      )
+      expect(firstItem).toBeInTheDocument()
+
+      const secondItem = screen.getByTestId(
+        `query-library-item-${mockItems[1].id}`,
+      )
+      expect(secondItem).toBeInTheDocument()
+    })
+  })
+
+  describe('loading state', () => {
+    it('should show loading state when loading with no items', () => {
+      mockUseQueryLibrary.loading = true
+      mockUseQueryLibrary.items = []
+      renderComponent()
+
+      const loading = screen.getByTestId('query-library-loading')
+      expect(loading).toBeInTheDocument()
+    })
+
+    it('should show items when loading with existing items', () => {
+      mockUseQueryLibrary.loading = true
+      renderComponent()
+
+      const loading = screen.queryByTestId('query-library-loading')
+      expect(loading).not.toBeInTheDocument()
+
+      const item = screen.getByTestId(`query-library-item-${mockItems[0].id}`)
+      expect(item).toBeInTheDocument()
+    })
+  })
+
+  describe('error state', () => {
+    it('should show error message', () => {
+      mockUseQueryLibrary.error = 'Failed to load query library'
+      mockUseQueryLibrary.items = []
+      renderComponent()
+
+      const errorEl = screen.getByTestId('query-library-error')
+      expect(errorEl).toHaveTextContent('Failed to load query library')
+    })
+  })
+
+  describe('empty state', () => {
+    it('should show empty message when no items and no search', () => {
+      mockUseQueryLibrary.items = []
+      renderComponent()
+
+      const emptyState = screen.getByTestId('query-library-empty')
+      expect(emptyState).toHaveTextContent(
+        'No saved queries yet. Create your query in editor and click Save to add it here.',
+      )
+    })
+
+    it('should show search empty message when no items with search', () => {
+      mockUseQueryLibrary.items = []
+      mockUseQueryLibrary.search = 'nonexistent'
+      renderComponent()
+
+      const emptyState = screen.getByTestId('query-library-empty')
+      expect(emptyState).toHaveTextContent('No queries match your search')
+    })
+  })
+
+  describe('actions', () => {
+    it('should call onRun with query text when Run is clicked', () => {
+      renderComponent()
+
+      const runBtn = screen.getByTestId(
+        `query-library-item-${mockItems[0].id}-run-btn`,
+      )
+      fireEvent.click(runBtn)
+
+      expect(defaultProps.onRun).toHaveBeenCalledWith(mockItems[0].query)
+      expect(sendEventTelemetry).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: TelemetryEvent.SEARCH_QUERY_LIBRARY_RUN,
+        }),
+      )
+    })
+
+    it('should call onLoad and send telemetry when Load is clicked', () => {
+      renderComponent()
+
+      const loadBtn = screen.getByTestId(
+        `query-library-item-${mockItems[0].id}-load-btn`,
+      )
+      fireEvent.click(loadBtn)
+
+      expect(defaultProps.onLoad).toHaveBeenCalled()
+      expect(sendEventTelemetry).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: TelemetryEvent.SEARCH_QUERY_LIBRARY_LOADED,
+        }),
+      )
+    })
+
+    it('should show delete confirmation modal when Delete is clicked', () => {
+      renderComponent()
+
+      const deleteBtn = screen.getByTestId(
+        `query-library-item-${mockItems[0].id}-delete-btn`,
+      )
+      fireEvent.click(deleteBtn)
+
+      const modalMessage = screen.getByTestId(
+        'query-library-delete-modal-message',
+      )
+      expect(modalMessage).toBeInTheDocument()
+    })
+
+    it('should call deleteItem and send telemetry on successful delete', async () => {
+      mockUseQueryLibrary.deleteItem.mockResolvedValue(true)
+      renderComponent()
+
+      const deleteBtn = screen.getByTestId(
+        `query-library-item-${mockItems[0].id}-delete-btn`,
+      )
+      fireEvent.click(deleteBtn)
+
+      const confirmBtn = screen.getByTestId(
+        'query-library-delete-modal-confirm',
+      )
+      fireEvent.click(confirmBtn)
+
+      await waitFor(() => {
+        expect(mockUseQueryLibrary.deleteItem).toHaveBeenCalledWith(
+          mockItems[0].id,
+        )
+      })
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: TelemetryEvent.SEARCH_QUERY_DELETED,
+        }),
+      )
+    })
+
+    it('should not send telemetry when delete fails', async () => {
+      mockUseQueryLibrary.deleteItem.mockResolvedValue(false)
+      renderComponent()
+
+      const deleteBtn = screen.getByTestId(
+        `query-library-item-${mockItems[0].id}-delete-btn`,
+      )
+      fireEvent.click(deleteBtn)
+
+      const confirmBtn = screen.getByTestId(
+        'query-library-delete-modal-confirm',
+      )
+      fireEvent.click(confirmBtn)
+
+      await waitFor(() => {
+        expect(mockUseQueryLibrary.deleteItem).toHaveBeenCalledWith(
+          mockItems[0].id,
+        )
+      })
+
+      expect(sendEventTelemetry).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: TelemetryEvent.SEARCH_QUERY_DELETED,
+        }),
+      )
+    })
+
+    it('should close delete modal on cancel', () => {
+      renderComponent()
+
+      const deleteBtn = screen.getByTestId(
+        `query-library-item-${mockItems[0].id}-delete-btn`,
+      )
+      fireEvent.click(deleteBtn)
+
+      const modalMessage = screen.getByTestId(
+        'query-library-delete-modal-message',
+      )
+      expect(modalMessage).toBeInTheDocument()
+
+      const cancelBtn = screen.getByTestId('query-library-delete-modal-cancel')
+      fireEvent.click(cancelBtn)
+
+      const dismissedModal = screen.queryByTestId(
+        'query-library-delete-modal-message',
+      )
+      expect(dismissedModal).not.toBeInTheDocument()
+    })
+  })
+
+  describe('search', () => {
+    it('should call onSearchChange when search input changes', () => {
+      renderComponent()
+
+      const searchInput = screen.getByTestId('query-library-search')
+      fireEvent.change(searchInput, { target: { value: 'test' } })
+
+      expect(mockUseQueryLibrary.onSearchChange).toHaveBeenCalledWith('test')
+    })
+  })
+})

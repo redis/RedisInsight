@@ -1,6 +1,6 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { InstancePage } from '../InstancePage';
-import { AddKeyDialog, BulkActionsPanel, KeyDetails, KeyList } from './components';
+import { AddKeyDialog, BulkActionsPanel, KeyDetails, KeyList, MakeSearchableModal } from './components';
 
 /**
  * Browser Page Object
@@ -17,14 +17,21 @@ export class BrowserPage extends InstancePage {
   readonly bulkActionsPanel: BulkActionsPanel;
   readonly keyDetails: KeyDetails;
   readonly keyList: KeyList;
+  readonly makeSearchableModal: MakeSearchableModal;
 
   // Browser-specific action buttons
   readonly addKeyButton: Locator;
   readonly bulkActionsButton: Locator;
 
-  // Browser-specific key details panel
+  // Key details panel
   readonly keyDetailsPanel: Locator;
   readonly noKeySelectedMessage: Locator;
+
+  // View index / Make searchable (key details header)
+  readonly viewIndexButton: Locator;
+  readonly viewIndexMenuTrigger: Locator;
+  readonly viewIndexCountBadge: Locator;
+  readonly makeSearchableButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -34,14 +41,21 @@ export class BrowserPage extends InstancePage {
     this.bulkActionsPanel = new BulkActionsPanel(page);
     this.keyDetails = new KeyDetails(page);
     this.keyList = new KeyList(page);
+    this.makeSearchableModal = new MakeSearchableModal(page);
 
     // Browser-specific action buttons
     this.addKeyButton = page.getByText('Add key', { exact: true });
     this.bulkActionsButton = page.getByRole('button', { name: /bulk actions/i });
 
-    // Browser-specific key details panel
-    this.keyDetailsPanel = page.locator('[data-testid="key-details"]');
+    // Key details panel
+    this.keyDetailsPanel = page.getByTestId('key-details-header');
     this.noKeySelectedMessage = page.getByText(/Select the key from the list/);
+
+    // View index / Make searchable
+    this.viewIndexButton = page.getByRole('button', { name: 'View index', exact: true });
+    this.viewIndexMenuTrigger = page.getByTestId('view-index-data-menu-trigger');
+    this.viewIndexCountBadge = page.getByTestId('view-index-data-count-badge');
+    this.makeSearchableButton = page.getByRole('button', { name: 'Make searchable' });
   }
 
   /**
@@ -77,5 +91,19 @@ export class BrowserPage extends InstancePage {
   async expectKeyNotInList(keyName: string): Promise<void> {
     const exists = await this.keyList.keyExists(keyName);
     expect(exists).toBe(false);
+  }
+
+  /**
+   * Get a "View index" menu item by index name (inside the dropdown)
+   */
+  getViewIndexMenuItem(indexName: string): Locator {
+    return this.page.getByRole('menuitem', { name: indexName, exact: true });
+  }
+
+  /**
+   * Get the "Index" button that appears on a folder node when hovered
+   */
+  getIndexFolderButton(folderName: string): Locator {
+    return this.page.getByTestId(`index-folder-btn-${folderName}`);
   }
 }

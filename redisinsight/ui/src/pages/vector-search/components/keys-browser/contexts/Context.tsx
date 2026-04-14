@@ -2,6 +2,7 @@ import React, {
   createContext,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -10,7 +11,6 @@ import { useParams } from 'react-router-dom'
 
 import {
   appContextBrowser,
-  appContextSelector,
   resetBrowserTree,
   setBrowserKeyListDataLoaded,
   setBrowserSelectedKey,
@@ -52,6 +52,8 @@ const SUPPORTED_TABS = [KeyTypes.Hash, KeyTypes.ReJSON] as const
 
 export const Provider = ({
   onSelectKey,
+  initialKey,
+  initialKeyType,
   children,
 }: KeysBrowserProps & { children: React.ReactNode }) => {
   const { instanceId } = useParams<{ instanceId: string }>()
@@ -64,13 +66,14 @@ export const Provider = ({
     error: keysError,
   } = useSelector(keysSelector)
   const { id: connectedInstanceId } = useSelector(connectedInstanceSelector)
-  const { contextInstanceId } = useSelector(appContextSelector)
   const {
-    keyList: { isDataPatternLoaded, scrollPatternTopPosition },
+    keyList: { scrollPatternTopPosition },
   } = useSelector(appContextBrowser)
   const dispatch = useDispatch()
 
-  const [activeTab, setActiveTab] = useState<KeyTypes>(SUPPORTED_TABS[0])
+  const [activeTab, setActiveTab] = useState<KeyTypes>(
+    initialKeyType ?? SUPPORTED_TABS[0],
+  )
 
   const keyListRef = useRef<KeyTreeHandle | null>(null)
 
@@ -93,10 +96,10 @@ export const Provider = ({
       dispatch(setConnectedInstanceId(instanceId))
     }
 
+    dispatch(resetKeysData(SearchMode.Pattern))
+    dispatch(resetBrowserTree())
     dispatch(setFilter(activeTab))
-    if (!isDataPatternLoaded || contextInstanceId !== instanceId) {
-      loadKeys()
-    }
+    loadKeys()
 
     return () => {
       dispatch(setFilter(null))
@@ -105,7 +108,17 @@ export const Provider = ({
       dispatch(resetBrowserTree())
       dispatch(setBrowserKeyListDataLoaded(SearchMode.Pattern, false))
     }
-  }, [])
+  }, [dispatch, loadKeys])
+
+  const initialKeyAppliedRef = useRef(false)
+
+  useEffect(() => {
+    if (initialKey && !initialKeyAppliedRef.current && keysState.keys.length) {
+      initialKeyAppliedRef.current = true
+      dispatch(loadKeyInfoSuccess({ name: initialKey }))
+      onSelectKey(initialKey, activeTab)
+    }
+  }, [initialKey, keysState.keys.length, onSelectKey, activeTab])
 
   const loadMoreItems = useCallback(
     (
@@ -188,9 +201,9 @@ export const Provider = ({
   const selectKey = useCallback(
     ({ rowData }: { rowData: { name: RedisResponseBuffer } }) => {
       dispatch(loadKeyInfoSuccess({ name: rowData.name }))
-      onSelectKey(rowData.name)
+      onSelectKey(rowData.name, activeTab)
     },
-    [onSelectKey],
+    [onSelectKey, activeTab],
   )
 
   const handleScanMore = useCallback(
@@ -203,31 +216,50 @@ export const Provider = ({
     [],
   )
 
-  const value: KeysBrowserContextValue = {
-    loading,
-    headerLoading: loading,
+  const value: KeysBrowserContextValue = useMemo(
+    () => ({
+      loading,
+      headerLoading: loading,
 
-    keysState,
-    keysError,
-    commonFilterType: filter as Nullable<KeyTypes>,
-    scrollTopPosition: scrollPatternTopPosition,
+      keysState,
+      keysError,
+      commonFilterType: filter as Nullable<KeyTypes>,
+      scrollTopPosition: scrollPatternTopPosition,
 
-    activeTab,
+      activeTab,
 
-    isSearched,
-    isFiltered,
+      isSearched,
+      isFiltered,
 
-    keyListRef,
+      keyListRef,
 
-    selectKey,
+      selectKey,
 
-    handleRefreshKeys,
-    handleEnableAutoRefresh,
-    handleChangeAutoRefreshRate,
-    handleTabChange,
-    loadMoreItems,
-    handleScanMore,
-  }
+      handleRefreshKeys,
+      handleEnableAutoRefresh,
+      handleChangeAutoRefreshRate,
+      handleTabChange,
+      loadMoreItems,
+      handleScanMore,
+    }),
+    [
+      loading,
+      keysState,
+      keysError,
+      filter,
+      scrollPatternTopPosition,
+      activeTab,
+      isSearched,
+      isFiltered,
+      selectKey,
+      handleRefreshKeys,
+      handleEnableAutoRefresh,
+      handleChangeAutoRefreshRate,
+      handleTabChange,
+      loadMoreItems,
+      handleScanMore,
+    ],
+  )
 
   return (
     <KeysBrowserContext.Provider value={value}>

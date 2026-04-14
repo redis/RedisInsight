@@ -2,13 +2,14 @@ import { Page, Locator, expect } from '@playwright/test';
 
 /**
  * Navigation Tabs component
- * Common tabs shown on all database instance pages (Browse, Workbench, Analyze, Pub/Sub)
+ * Common tabs shown on all database instance pages (Browse, Search, Workbench, Analyze, Pub/Sub)
  */
 export class NavigationTabs {
   readonly page: Page;
 
   // Tab elements
   readonly browseTab: Locator;
+  readonly searchTab: Locator;
   readonly workbenchTab: Locator;
   readonly analyzeTab: Locator;
   readonly pubSubTab: Locator;
@@ -18,6 +19,7 @@ export class NavigationTabs {
 
     // Navigation tabs
     this.browseTab = page.getByRole('tab', { name: 'Browse' });
+    this.searchTab = page.getByRole('tab', { name: 'Search' });
     this.workbenchTab = page.getByRole('tab', { name: 'Workbench' });
     this.analyzeTab = page.getByRole('tab', { name: 'Analyze' });
     this.pubSubTab = page.getByRole('tab', { name: 'Pub/Sub' });
@@ -29,6 +31,14 @@ export class NavigationTabs {
   async gotoBrowser(): Promise<void> {
     await this.browseTab.click();
     await expect(this.browseTab).toHaveAttribute('aria-selected', 'true');
+  }
+
+  /**
+   * Navigate to Search tab
+   */
+  async gotoSearch(): Promise<void> {
+    await this.searchTab.click();
+    await expect(this.searchTab).toHaveAttribute('aria-selected', 'true');
   }
 
   /**
@@ -59,7 +69,7 @@ export class NavigationTabs {
    * Get the currently selected tab name
    */
   async getSelectedTab(): Promise<string | null> {
-    const tabs = [this.browseTab, this.workbenchTab, this.analyzeTab, this.pubSubTab];
+    const tabs = [this.browseTab, this.searchTab, this.workbenchTab, this.analyzeTab, this.pubSubTab];
     for (const tab of tabs) {
       const isSelected = await tab.getAttribute('aria-selected');
       if (isSelected === 'true') {
@@ -72,9 +82,10 @@ export class NavigationTabs {
   /**
    * Check if a specific tab is selected
    */
-  async isTabSelected(tabName: 'Browse' | 'Workbench' | 'Analyze' | 'Pub/Sub'): Promise<boolean> {
+  async isTabSelected(tabName: 'Browse' | 'Search' | 'Workbench' | 'Analyze' | 'Pub/Sub'): Promise<boolean> {
     const tabMap = {
       Browse: this.browseTab,
+      Search: this.searchTab,
       Workbench: this.workbenchTab,
       Analyze: this.analyzeTab,
       'Pub/Sub': this.pubSubTab,

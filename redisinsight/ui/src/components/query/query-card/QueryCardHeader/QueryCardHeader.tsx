@@ -51,7 +51,11 @@ import QueryCardTooltip from '../QueryCardTooltip'
 
 import styles from './styles.module.scss'
 import { useQueryResultsContext } from '../../context/query-results.context'
-import { ProfileSelect } from './QueryCardHeader.styles'
+import {
+  ModeLabel,
+  ParametersIconWrapper,
+  ProfileSelect,
+} from './QueryCardHeader.styles'
 
 export interface Props {
   query: string
@@ -148,7 +152,10 @@ const QueryCardHeader = (props: Props) => {
   }
 
   const onChangeView = (initValue: string) => {
-    if (selectedValue === initValue) return
+    if (selectedValue === initValue) {
+      return
+    }
+
     const currentView = options.find(({ id }) => id === initValue)
     const previousView = options.find(({ id }) => id === selectedValue)
     const type = currentView.value
@@ -224,8 +231,19 @@ const QueryCardHeader = (props: Props) => {
 
   const options: any[] = getViewTypeOptions()
   options.push(...pluginsOptions)
-  const modifiedOptions = options.map((item) => {
+
+  const firstExternalIndex = findIndex(
+    pluginsOptions,
+    (option) => !option.internal,
+  )
+  const firstExternalOptionIndex =
+    firstExternalIndex > -1
+      ? getViewTypeOptions().length + firstExternalIndex
+      : -1
+
+  const modifiedOptions = options.map((item, index) => {
     const { value, id, text, iconDark, iconLight } = item
+    const hasSeparator = index === firstExternalOptionIndex
     return {
       value: id ?? value,
       label: id ?? value,
@@ -243,7 +261,11 @@ const QueryCardHeader = (props: Props) => {
         </RiTooltip>
       ),
       dropdownDisplay: (
-        <div className={cx(styles.dropdownOption)}>
+        <div
+          className={cx(styles.dropdownOption, {
+            [styles.dropdownOptionSeparator]: hasSeparator,
+          })}
+        >
           <RiIcon type={theme === Theme.Dark ? iconDark : iconLight} />
           <span>{truncateText(text, 20)}</span>
         </div>
@@ -281,21 +303,6 @@ const QueryCardHeader = (props: Props) => {
   })
 
   const canCommandProfile = isCommandAllowedForProfile(query)
-
-  const indexForSeparator = findIndex(
-    pluginsOptions,
-    (option) => !option.internal,
-  )
-  if (indexForSeparator > -1) {
-    modifiedOptions.splice(indexForSeparator + 1, 0, {
-      value: '',
-      disabled: true,
-      inputDisplay: <span className={styles.separator} />,
-      label: '',
-      dropdownDisplay: <span />,
-      'data-test-subj': '',
-    })
-  }
 
   return (
     <Row
@@ -482,50 +489,44 @@ const QueryCardHeader = (props: Props) => {
                   )}
                 </FlexItem>
               )}
-              <FlexItem className={styles.buttonIcon}>
-                {(isRawMode(mode) || isGroupResults(resultsMode)) && (
+              {(isRawMode(mode) || isGroupResults(resultsMode)) && (
+                <ParametersIconWrapper className={styles.buttonIcon}>
                   <RiTooltip
                     className={styles.tooltip}
-                    anchorClassName={styles.buttonIcon}
+                    anchorClassName="parameters-anchor"
                     content={
                       <>
                         {isGroupMode(resultsMode) && (
-                          <ColorText
-                            className={cx(styles.mode)}
-                            data-testid="group-mode-tooltip"
-                          >
+                          <ModeLabel data-testid="group-mode-tooltip">
                             <RiIcon type="GroupModeIcon" />
-                          </ColorText>
+                            Group mode
+                          </ModeLabel>
                         )}
                         {isSilentMode(resultsMode) && (
-                          <ColorText
-                            className={cx(styles.mode)}
-                            data-testid="silent-mode-tooltip"
-                          >
+                          <ModeLabel data-testid="silent-mode-tooltip">
                             <RiIcon type="SilentModeIcon" />
-                          </ColorText>
+                            Silent mode
+                          </ModeLabel>
                         )}
                         {isRawMode(mode) && (
-                          <ColorText
-                            className={cx(styles.mode)}
-                            data-testid="raw-mode-tooltip"
-                          >
-                            -r
-                          </ColorText>
+                          <ModeLabel data-testid="raw-mode-tooltip">
+                            <RiIcon type="RawModeIcon" />
+                            Raw mode
+                          </ModeLabel>
                         )}
                       </>
                     }
                     position="bottom"
                     data-testid="parameters-tooltip"
                   >
-                    <RiIcon
-                      color="subdued"
-                      type="MoreactionsIcon"
+                    <IconButton
+                      icon="MoreactionsIcon"
+                      aria-label="Query parameters"
                       data-testid="parameters-anchor"
                     />
                   </RiTooltip>
-                )}
-              </FlexItem>
+                </ParametersIconWrapper>
+              )}
             </Row>
           </Row>
         </FlexItem>

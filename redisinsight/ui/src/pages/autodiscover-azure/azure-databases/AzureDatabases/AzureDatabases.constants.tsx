@@ -21,6 +21,7 @@ export const AZURE_DATABASES_COLUMNS: ColumnDef<AzureRedisDatabase>[] = [
     header: ({ table }) => (
       <Table.HeaderMultiRowSelectionButton
         table={table}
+        managePage
         data-testid="row-selection"
       />
     ),

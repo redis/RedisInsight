@@ -42,7 +42,7 @@ export class LocalPluginStateRepository extends PluginStateRepository {
         await this.modelEncryptor.encryptEntity(entity),
       );
     } catch (e) {
-      if (e.code === 'SQLITE_CONSTRAINT') {
+      if (e.code?.startsWith?.('SQLITE_CONSTRAINT')) {
         throw new NotFoundException(ERROR_MESSAGES.COMMAND_EXECUTION_NOT_FOUND);
       }
 

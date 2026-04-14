@@ -7,10 +7,16 @@ import { ExplainableCommand } from './QueryEditor.types'
  * Returns the matched command and its position so that Explain / Profile
  * can transform the query without a second regex pass.
  */
+export const stripCommentLines = (text: string): string =>
+  text
+    .split('\n')
+    .filter((line) => !/^\s*\/\//.test(line))
+    .join('\n')
+
 export const parseExplainableCommand = (
   query: string,
 ): { command: ExplainableCommand; afterCommand: string } | null => {
-  const trimmed = query.trim()
+  const trimmed = stripCommentLines(query).trim()
   if (!trimmed) return null
 
   const upper = trimmed.toUpperCase()

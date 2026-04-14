@@ -1,5 +1,7 @@
-import { ToastVariant } from '@redis-ui/components'
-import { RiToastType } from 'uiSrc/components/base/display/toast/RiToast'
+import {
+  RiToastType,
+  ToastVariant,
+} from 'uiSrc/components/base/display/toast/RiToast'
 
 interface NotificationMessage {
   title: string
@@ -36,10 +38,12 @@ export const createIndexNotifications = {
   }),
 
   /** Shown when the index creation request fails. */
-  createFailed: (): NotificationMessage => ({
+  createFailed: (details?: string): NotificationMessage => ({
     title: 'Failed to create index',
-    message: 'An error occurred while creating the index. Please try again.',
-    variant: 'error' as ToastVariant,
+    message:
+      details ||
+      'An error occurred while creating the index. Please try again.',
+    variant: 'danger' as ToastVariant,
   }),
 
   // TODO: Use when creating an index from existing database keys (not sample data).
@@ -49,5 +53,38 @@ export const createIndexNotifications = {
     message: 'Your data is now searchable. You can start running queries.',
     showCloseButton: false,
     actions: {},
+  }),
+}
+
+export const queryLibraryNotifications = {
+  querySaved: (onGoToLibrary?: VoidFunction): NotificationMessage => ({
+    title: 'Query saved to your library.',
+    message: 'You can find it anytime in the Query Library.',
+    showCloseButton: false,
+    actions: {
+      primary: {
+        label: 'Go to Query Library',
+        onClick: onGoToLibrary ?? (() => {}),
+        closes: true,
+      },
+    },
+  }),
+
+  saveFailed: (): NotificationMessage => ({
+    title: 'Failed to save query',
+    message: 'An error occurred while saving the query. Please try again.',
+    variant: 'error' as ToastVariant,
+  }),
+
+  queryDeleted: (): NotificationMessage => ({
+    title: 'Query has been deleted.',
+    message: '',
+  }),
+
+  cleanupFailed: (): NotificationMessage => ({
+    title: 'Failed to clean up query library',
+    message:
+      'An error occurred while removing saved queries for the deleted index.',
+    variant: 'error' as ToastVariant,
   }),
 }

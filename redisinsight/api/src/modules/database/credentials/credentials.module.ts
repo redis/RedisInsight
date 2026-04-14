@@ -6,6 +6,7 @@ import {
 import { LocalCredentialStrategyProvider } from './local.credential-strategy.provider';
 import { DefaultCredentialStrategy } from './strategies/default.credential-strategy';
 import { AzureEntraIdCredentialStrategy } from './strategies/azure-entra-id.credential-strategy';
+import { AzureAccessKeyCredentialStrategy } from './strategies/azure-access-key.credential-strategy';
 
 @Global()
 export class CredentialsModule {
@@ -13,6 +14,7 @@ export class CredentialsModule {
     provider: Type<CredentialStrategyProvider> = LocalCredentialStrategyProvider,
     strategies: Type<ICredentialStrategy>[] = [
       AzureEntraIdCredentialStrategy,
+      AzureAccessKeyCredentialStrategy,
       DefaultCredentialStrategy,
     ],
   ): DynamicModule {

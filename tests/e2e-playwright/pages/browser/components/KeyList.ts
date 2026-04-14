@@ -34,6 +34,9 @@ export class KeyList {
   readonly container: Locator;
   readonly noKeysMessage: Locator;
 
+  // Index selector (Redisearch mode)
+  readonly indexSelector: Locator;
+
   // Key type filter dropdown
   readonly keyTypeFilterDropdown: Locator;
 
@@ -49,6 +52,9 @@ export class KeyList {
     this.searchButton = page.getByTestId('search-btn');
     this.resetFilterButton = page.getByTestId('reset-filter-btn');
 
+    // Index selector (Redisearch mode)
+    this.indexSelector = page.getByTestId('select-search-mode');
+
     // View controls
     this.listViewButton = page.getByTestId('view-type-browser-btn');
     this.treeViewButton = page.getByTestId('view-type-list-btn');
@@ -63,9 +69,13 @@ export class KeyList {
     this.lastRefresh = page.getByText(/Last refresh:/);
     this.scanMoreButton = page.getByTestId('scan-more');
 
-    // Key list container
-    this.keyListContainer = page.locator('[data-testid="virtual-list"], [role="tree"], [role="grid"]');
-    this.container = page.locator('[data-testid="virtual-list"], [role="tree"], [role="grid"]');
+    // Key list container — matches new panel, legacy list view, or legacy tree view
+    this.keyListContainer = page.locator(
+      '[data-testid="keys-browser-panel"], [data-testid="keyList-table"], [data-testid="virtual-tree"]',
+    );
+    this.container = page.locator(
+      '[data-testid="keys-browser-panel"], [data-testid="keyList-table"], [data-testid="virtual-tree"]',
+    );
     this.noKeysMessage = page.getByText(/no keys/i);
   }
 
@@ -156,15 +166,48 @@ export class KeyList {
    * Click on a key by name
    */
   async clickKey(keyName: string): Promise<void> {
-    // Try grid row first (list view), then treeitem (tree view)
-    const gridRow = this.page.getByRole('row', { name: new RegExp(keyName) });
-    const treeItem = this.page.getByRole('treeitem', { name: new RegExp(keyName) });
+    const escapedKeyName = keyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-    if (await gridRow.isVisible()) {
-      await gridRow.click();
+    // Try grid row first (list view), then treeitem (tree view)
+    const gridRow = this.page.getByRole('row', { name: new RegExp(escapedKeyName) });
+    const treeItem = this.page.getByRole('treeitem', { name: new RegExp(escapedKeyName) });
+    const keyElement = gridRow.or(treeItem);
+
+    if (await keyElement.isVisible()) {
+      await keyElement.click();
     } else {
-      await treeItem.click();
+      await this.selectKeyInTree(keyName);
     }
+  }
+
+  /**
+   * Select a key in tree view by expanding its folder and clicking the leaf.
+   * @param keyName full key name (e.g. `prefix:key1`)
+   * @param delimiter tree delimiter (default `:`)
+   */
+  async selectKeyInTree(keyName: string, delimiter = ':'): Promise<void> {
+    const delimiterIndex = keyName.lastIndexOf(delimiter);
+    const leafName = keyName.substring(delimiterIndex + delimiter.length) || keyName;
+    const leafNode = this.container.getByRole('treeitem').filter({ hasText: leafName });
+
+    if (delimiterIndex !== -1) {
+      const folder = keyName.substring(0, delimiterIndex);
+      const collapsed = this.page.getByTestId(`node-item_${folder}`);
+      const expanded = this.page.getByTestId(`node-item_${folder}--expanded`);
+
+      await expanded.or(collapsed).waitFor({ state: 'visible' });
+
+      // VirtualTree may auto-expand single-child folders while keeping
+      // the collapsed testid. Only click to expand when the leaf is not
+      // already visible.
+      const leafAlreadyVisible = await leafNode.isVisible().catch(() => false);
+
+      if (!leafAlreadyVisible && (await collapsed.isVisible())) {
+        await collapsed.click();
+      }
+    }
+
+    await leafNode.click();
   }
 
   /**
@@ -192,17 +235,18 @@ export class KeyList {
 
   /**
    * Get key row locator by name
-   * Returns a locator that can be used for assertions (visible/not visible)
+   * Returns a locator that can be used for assertions (visible/not visible).
+   * Uses .first() because tree view parent nodes can also match the regex
+   * (their accessible name includes descendant text), which would otherwise
+   * trigger a Playwright strict-mode violation.
    */
   getKeyRow(keyName: string): Locator {
-    // Escape special regex characters in key name
     const escapedKeyName = keyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-    // Return locator for grid cell (list view) or treeitem (tree view)
-    // Use or() to combine both selectors
     return this.page
       .getByRole('gridcell', { name: keyName })
-      .or(this.page.getByRole('treeitem', { name: new RegExp(escapedKeyName) }));
+      .or(this.page.getByRole('treeitem', { name: new RegExp(escapedKeyName) }))
+      .first();
   }
 
   /**
@@ -281,6 +325,16 @@ export class KeyList {
     await this.treeSettingsButton.click();
     // Wait for dialog to appear
     await this.page.getByRole('dialog').waitFor({ state: 'visible' });
+  }
+
+  /**
+   * Hover over a folder node in the tree view (expanded or collapsed)
+   */
+  async hoverFolderNode(folderName: string): Promise<void> {
+    const collapsed = this.page.getByTestId(`node-item_${folderName}`);
+    const expanded = this.page.getByTestId(`node-item_${folderName}--expanded`);
+    const folderNode = expanded.or(collapsed);
+    await folderNode.hover();
   }
 
   /**

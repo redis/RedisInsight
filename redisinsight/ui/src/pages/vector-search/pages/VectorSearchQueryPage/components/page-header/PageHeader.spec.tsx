@@ -12,6 +12,7 @@ describe('PageHeader', () => {
       { value: 'index-1', label: 'index-1' },
       { value: 'index-2', label: 'index-2' },
     ],
+    isIndexPanelOpen: false,
     onIndexChange: jest.fn(),
     onToggleIndexPanel: jest.fn(),
   }
