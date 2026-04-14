@@ -69,8 +69,7 @@ const ElementDetails = ({ element, isOpen, onClose }: ElementDetailsProps) => {
     setIsEditing(false)
   }, [savedValue])
 
-  const isValueEmpty = value.trim() === ''
-  const isValueValid = isValueEmpty || (isValid && !isValidating)
+  const isValueValid = isValid && !isValidating
   const isSaveDisabled = !isValueValid || value === savedValue
 
   const handleSave = useCallback(() => {
@@ -160,7 +159,7 @@ const ElementDetails = ({ element, isOpen, onClose }: ElementDetailsProps) => {
                   Cancel
                 </SecondaryButton>
                 <PrimaryButton
-                  disabled={!isValid || isValidating || value === savedValue}
+                  disabled={isSaveDisabled}
                   onClick={handleSave}
                   data-testid="vector-set-save-attributes-btn"
                 >
