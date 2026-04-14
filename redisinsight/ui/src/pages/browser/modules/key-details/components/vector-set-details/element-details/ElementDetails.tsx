@@ -27,7 +27,12 @@ import { VECTOR_DESCRIPTION, ATTRIBUTES_DESCRIPTION } from './constants'
 import { ElementDetailsProps } from './ElementDetails.types'
 import * as S from './ElementDetails.styles'
 
-const ElementDetails = ({ element, isOpen, onClose }: ElementDetailsProps) => {
+const ElementDetails = ({
+  element,
+  isOpen,
+  onClose,
+  onDrawerDidClose,
+}: ElementDetailsProps) => {
   const dispatch = useDispatch()
   const { name: keyName } = useSelector(selectedKeyDataSelector) ?? {}
 
@@ -101,75 +106,76 @@ const ElementDetails = ({ element, isOpen, onClose }: ElementDetailsProps) => {
     )
   }, [dispatch, value, element, keyName, isSaveDisabled, savedValue])
 
-  if (!element) return null
-
   return (
     <Drawer
       open={isOpen}
       onOpenChange={(open) => {
         if (!open) onClose()
       }}
+      onDrawerDidClose={onDrawerDidClose}
       data-test-subj="element-details-panel"
     >
       <DrawerHeader title={elementName} />
-      <DrawerBody>
-        <S.Body>
-          <Col gap="l">
-            <Text color="secondary">{VECTOR_DESCRIPTION}</Text>
-            <Col gap="s">
-              <Text color="primary">Vector</Text>
-              <S.VectorTextArea
-                readOnly
-                value={vectorText}
-                data-testid="vector-set-vector-value"
-                height="110px"
-              />
-            </Col>
-          </Col>
-
-          <Col gap="l">
-            <Text color="secondary">{ATTRIBUTES_DESCRIPTION}</Text>
-            <Col gap="s">
-              <Text color="primary">Attributes</Text>
-              <S.EditorWrapper data-testid="vector-set-attributes-json-editor">
-                {!isEditing && (
-                  <S.EditButton
-                    icon={EditIcon}
-                    aria-label="Edit attributes"
-                    onClick={() => setIsEditing(true)}
-                    data-testid="vector-set-edit-attributes-btn"
-                  />
-                )}
-                <Editor
-                  language="json"
-                  value={value}
-                  readOnly={!isEditing}
-                  onChange={setValue}
-                  onEditorDidMount={onEditorDidMount}
-                  data-testid="vector-set-json-editor"
+      {element && (
+        <DrawerBody>
+          <S.Body>
+            <Col gap="l">
+              <Text color="secondary">{VECTOR_DESCRIPTION}</Text>
+              <Col gap="s">
+                <Text color="primary">Vector</Text>
+                <S.VectorTextArea
+                  readOnly
+                  value={vectorText}
+                  data-testid="vector-set-vector-value"
+                  height="110px"
                 />
-              </S.EditorWrapper>
+              </Col>
             </Col>
-            {isEditing && (
-              <Row justify="end" gap="m">
-                <SecondaryButton
-                  onClick={handleCancelEditing}
-                  data-testid="vector-set-cancel-attributes-btn"
-                >
-                  Cancel
-                </SecondaryButton>
-                <PrimaryButton
-                  disabled={isSaveDisabled}
-                  onClick={handleSave}
-                  data-testid="vector-set-save-attributes-btn"
-                >
-                  Save
-                </PrimaryButton>
-              </Row>
-            )}
-          </Col>
-        </S.Body>
-      </DrawerBody>
+
+            <Col gap="l">
+              <Text color="secondary">{ATTRIBUTES_DESCRIPTION}</Text>
+              <Col gap="s">
+                <Text color="primary">Attributes</Text>
+                <S.EditorWrapper data-testid="vector-set-attributes-json-editor">
+                  {!isEditing && (
+                    <S.EditButton
+                      icon={EditIcon}
+                      aria-label="Edit attributes"
+                      onClick={() => setIsEditing(true)}
+                      data-testid="vector-set-edit-attributes-btn"
+                    />
+                  )}
+                  <Editor
+                    language="json"
+                    value={value}
+                    readOnly={!isEditing}
+                    onChange={setValue}
+                    onEditorDidMount={onEditorDidMount}
+                    data-testid="vector-set-json-editor"
+                  />
+                </S.EditorWrapper>
+              </Col>
+              {isEditing && (
+                <Row justify="end" gap="m">
+                  <SecondaryButton
+                    onClick={handleCancelEditing}
+                    data-testid="vector-set-cancel-attributes-btn"
+                  >
+                    Cancel
+                  </SecondaryButton>
+                  <PrimaryButton
+                    disabled={isSaveDisabled}
+                    onClick={handleSave}
+                    data-testid="vector-set-save-attributes-btn"
+                  >
+                    Save
+                  </PrimaryButton>
+                </Row>
+              )}
+            </Col>
+          </S.Body>
+        </DrawerBody>
+      )}
     </Drawer>
   )
 }

@@ -27,6 +27,7 @@ const VectorSetDetails = (props: Props) => {
     isDetailsPanelOpen,
     handleViewElement,
     handleClosePanel,
+    handleDrawerDidClose,
   } = useElementDetails()
 
   return (
@@ -47,6 +48,7 @@ const VectorSetDetails = (props: Props) => {
         element={viewedElement}
         isOpen={isDetailsPanelOpen}
         onClose={handleClosePanel}
+        onDrawerDidClose={handleDrawerDidClose}
       />
     </S.Container>
   )

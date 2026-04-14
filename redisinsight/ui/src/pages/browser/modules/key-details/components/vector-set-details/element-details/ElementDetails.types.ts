@@ -4,4 +4,5 @@ export interface ElementDetailsProps {
   element: VectorSetElement | null
   isOpen: boolean
   onClose: () => void
+  onDrawerDidClose: () => void
 }

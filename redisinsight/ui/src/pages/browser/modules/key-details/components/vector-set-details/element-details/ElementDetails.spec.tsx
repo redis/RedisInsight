@@ -36,6 +36,7 @@ const defaultProps: ElementDetailsProps = {
   element: mockElement,
   isOpen: true,
   onClose: jest.fn(),
+  onDrawerDidClose: jest.fn(),
 }
 
 describe('ElementDetails', () => {

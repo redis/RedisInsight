@@ -12,6 +12,7 @@ export const useElementDetails = () => {
   const [viewedElement, setViewedElement] = useState<VectorSetElement | null>(
     null,
   )
+  const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false)
 
   const handleViewElement = useCallback(
     (element: VectorSetElement) => {
@@ -23,6 +24,7 @@ export const useElementDetails = () => {
           element.name,
           (attributes) => {
             setViewedElement({ ...element, attributes })
+            setIsDetailsPanelOpen(true)
           },
         ),
       )
@@ -31,13 +33,18 @@ export const useElementDetails = () => {
   )
 
   const handleClosePanel = useCallback(() => {
+    setIsDetailsPanelOpen(false)
+  }, [])
+
+  const handleDrawerDidClose = useCallback(() => {
     setViewedElement(null)
   }, [])
 
   return {
     viewedElement,
-    isDetailsPanelOpen: !!viewedElement,
+    isDetailsPanelOpen,
     handleViewElement,
     handleClosePanel,
+    handleDrawerDidClose,
   }
 }
