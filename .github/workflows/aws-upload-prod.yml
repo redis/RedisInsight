@@ -85,11 +85,11 @@ jobs:
           if [[ -z "$downloadLatestFolderPath" || -z "$upgradeLatestFolderPath" ]]; then
             exit 1;
           fi
-          # remove previous build from the latest directory /public/latest
-          aws s3 rm s3://${AWS_BUCKET_NAME}/${downloadLatestFolderPath} --recursive
+          # remove only macOS builds from latest (preserve Linux/Windows)
+          aws s3 rm s3://${AWS_BUCKET_NAME}/${downloadLatestFolderPath}/ --recursive --exclude "*" --include "*mac*" --include "*darwin*" --include "latest-mac*"
 
-          # remove previous build from the upgrade directory /public/upgrades
-          aws s3 rm s3://${AWS_BUCKET_NAME}/${upgradeLatestFolderPath} --recursive
+          # remove only macOS builds from upgrades (preserve Linux/Windows)
+          aws s3 rm s3://${AWS_BUCKET_NAME}/${upgradeLatestFolderPath}/ --recursive --exclude "*" --include "*mac*" --include "*darwin*" --include "latest-mac*"
 
           # copy current version apps for download to /public/latest
           aws s3 cp s3://${AWS_BUCKET_NAME}/private/${applicationVersion}/ \
@@ -124,53 +124,53 @@ jobs:
             [objectUpgrade]=${appFileName}'-mac-arm64.zip'
           )
 
-          declare -A tag02=(
-            [arch]='x64'
-            [platform]='windows'
-            [objectDownload]=${appFileName}'-win-installer.exe'
-          )
+          # declare -A tag02=(
+          #   [arch]='x64'
+          #   [platform]='windows'
+          #   [objectDownload]=${appFileName}'-win-installer.exe'
+          # )
 
-          declare -A tag03=(
-            [arch]='x64'
-            [platform]='linux_AppImage'
-            [objectDownload]=${appFileName}'-linux-x86_64.AppImage'
-          )
+          # declare -A tag03=(
+          #   [arch]='x64'
+          #   [platform]='linux_AppImage'
+          #   [objectDownload]=${appFileName}'-linux-x86_64.AppImage'
+          # )
 
-          declare -A tag04=(
-            [arch]='x64'
-            [platform]='linux_deb'
-            [objectDownload]=${appFileName}'-linux-amd64.deb'
-          )
+          # declare -A tag04=(
+          #   [arch]='x64'
+          #   [platform]='linux_deb'
+          #   [objectDownload]=${appFileName}'-linux-amd64.deb'
+          # )
 
-          declare -A tag05=(
-            [arch]='x64'
-            [platform]='linux_rpm'
-            [objectDownload]=${appFileName}'-linux-x86_64.rpm'
-          )
+          # declare -A tag05=(
+          #   [arch]='x64'
+          #   [platform]='linux_rpm'
+          #   [objectDownload]=${appFileName}'-linux-x86_64.rpm'
+          # )
 
-          declare -A tag06=(
-            [arch]='x64'
-            [platform]='linux_snap'
-            [objectDownload]=${appFileName}'-linux-amd64.snap'
-          )
+          # declare -A tag06=(
+          #   [arch]='x64'
+          #   [platform]='linux_snap'
+          #   [objectDownload]=${appFileName}'-linux-amd64.snap'
+          # )
 
-          declare -A tag07=(
-            [arch]='arm64'
-            [platform]='linux_AppImage'
-            [objectDownload]=${appFileName}'-linux-arm64.AppImage'
-          )
+          # declare -A tag07=(
+          #   [arch]='arm64'
+          #   [platform]='linux_AppImage'
+          #   [objectDownload]=${appFileName}'-linux-arm64.AppImage'
+          # )
 
-          declare -A tag08=(
-            [arch]='arm64'
-            [platform]='linux_deb'
-            [objectDownload]=${appFileName}'-linux-arm64.deb'
-          )
+          # declare -A tag08=(
+          #   [arch]='arm64'
+          #   [platform]='linux_deb'
+          #   [objectDownload]=${appFileName}'-linux-arm64.deb'
+          # )
 
-          declare -A tag09=(
-            [arch]='arm64'
-            [platform]='linux_rpm'
-            [objectDownload]=${appFileName}'-linux-aarch64.rpm'
-          )
+          # declare -A tag09=(
+          #   [arch]='arm64'
+          #   [platform]='linux_rpm'
+          #   [objectDownload]=${appFileName}'-linux-aarch64.rpm'
+          # )
 
           # TODO: arm64 snap disabled — no arm64 snap template in electron-builder
           # https://github.com/electron-userland/electron-builder/issues/8167

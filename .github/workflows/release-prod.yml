@@ -37,11 +37,11 @@ jobs:
     needs: virustotal-prod
     secrets: inherit
 
-  publish-stores:
-    name: Publish to stores
-    uses: ./.github/workflows/publish-stores.yml
-    needs: aws-upload-prod
-    secrets: inherit
+  # publish-stores:
+  #   name: Publish to stores
+  #   uses: ./.github/workflows/publish-stores.yml
+  #   needs: aws-upload-prod
+  #   secrets: inherit
 
   github-release:
     name: Upload to GitHub Release
