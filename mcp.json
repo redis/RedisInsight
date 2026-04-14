@@ -3,29 +3,29 @@
   "mcpServers": {
     "github": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "args": ["-y", "@modelcontextprotocol/server-github@2025.4.8"],
       "description": "GitHub integration for managing issues, pull requests, and repository operations for RedisInsight/RedisInsight"
     },
     "memory": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "args": ["-y", "@modelcontextprotocol/server-memory@2026.1.26"],
       "description": "Persistent memory for storing context about the RedisInsight project across sessions"
     },
     "sequential-thinking": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking@2025.12.18"],
       "description": "Enhanced reasoning capabilities for complex architectural and debugging tasks"
     },
     "context-7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
+      "args": ["-y", "@upstash/context7-mcp@2.1.8"],
       "description": "Context 7 MCP server for enhanced context management and analysis"
     },
     "playwright": {
       "command": "npx",
       "args": [
         "-y",
-        "@playwright/mcp@latest"
+        "@playwright/mcp@0.0.70"
       ]
     },
     "atlassian": {
@@ -36,7 +36,7 @@
         "--rm",
         "--env-file",
         ".env.mcp",
-        "ghcr.io/sooperset/mcp-atlassian:latest"
+        "ghcr.io/sooperset/mcp-atlassian@sha256:60c3126b196feea01d29d25f0e6957268b97e5305c84d2f5a7b1c16a2f5af45b"
       ],
       "description": "Atlassian MCP server for managing JIRA projects (RI-XXX tickets) and Confluence content"
     },
