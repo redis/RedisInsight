@@ -15,15 +15,17 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { EditIcon } from 'uiSrc/components/base/icons'
-import {
-  MonacoEditor as Editor,
-  useMonacoValidation,
-} from 'uiSrc/components/monaco-editor'
+import { CodeEditor } from 'uiSrc/components/base/code-editor'
+import { useMonacoValidation } from 'uiSrc/components/monaco-editor'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { setVectorSetElementAttribute } from 'uiSrc/slices/browser/vectorSet'
 import { bufferToString } from 'uiSrc/utils'
 import { formatVector } from './utils'
-import { VECTOR_DESCRIPTION, ATTRIBUTES_DESCRIPTION } from './constants'
+import {
+  VECTOR_DESCRIPTION,
+  ATTRIBUTES_DESCRIPTION,
+  ATTRIBUTES_EDITOR_OPTIONS,
+} from './constants'
 import { ElementDetailsProps } from './ElementDetails.types'
 import * as S from './ElementDetails.styles'
 
@@ -145,13 +147,15 @@ const ElementDetails = ({
                       data-testid="vector-set-edit-attributes-btn"
                     />
                   )}
-                  <Editor
+                  <CodeEditor
                     language="json"
                     value={value}
-                    readOnly={!isEditing}
+                    options={{
+                      ...ATTRIBUTES_EDITOR_OPTIONS,
+                      readOnly: !isEditing,
+                    }}
                     onChange={setValue}
-                    onEditorDidMount={onEditorDidMount}
-                    data-testid="vector-set-json-editor"
+                    editorDidMount={onEditorDidMount}
                   />
                 </S.EditorWrapper>
               </Col>

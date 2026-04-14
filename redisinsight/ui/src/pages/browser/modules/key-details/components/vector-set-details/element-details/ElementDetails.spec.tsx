@@ -10,18 +10,21 @@ const mockUseMonacoValidation = jest.fn().mockReturnValue({
   isValidating: false,
 })
 
-jest.mock('uiSrc/components/monaco-editor', () => ({
-  MonacoEditor: (props: any) => {
+jest.mock('uiSrc/components/base/code-editor', () => ({
+  CodeEditor: (props: any) => {
     const mockReact = require('react')
     return mockReact.createElement('textarea', {
       'data-testid': 'mock-monaco-editor',
       value: props.value,
-      readOnly: props.readOnly,
+      readOnly: props.options?.readOnly,
       onChange: (e: any) => {
         if (props.onChange) props.onChange(e.target.value)
       },
     })
   },
+}))
+
+jest.mock('uiSrc/components/monaco-editor', () => ({
   useMonacoValidation: (...args: any[]) => mockUseMonacoValidation(...args),
 }))
 

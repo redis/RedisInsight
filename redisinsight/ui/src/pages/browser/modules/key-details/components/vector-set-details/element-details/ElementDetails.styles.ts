@@ -17,6 +17,9 @@ export const VectorTextArea = styled(TextArea)`
 
 export const EditorWrapper = styled.div<{ children: React.ReactNode }>`
   position: relative;
+  width: 100%;
+  height: 200px;
+  border: 1px solid ${({ theme }) => theme.semantic?.color?.border?.neutral500};
 `
 
 export const EditButton = styled(IconButton)`
