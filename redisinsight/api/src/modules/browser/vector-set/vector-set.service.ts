@@ -14,7 +14,7 @@ import {
   DeleteVectorSetElementsDto,
   DeleteVectorSetElementsResponse,
   DownloadVectorSetEmbeddingDto,
-  GetVectorSetElementAttributeDto,
+  GetVectorSetElementDetailsDto,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
   SetVectorSetElementAttributeDto,
@@ -177,7 +177,7 @@ export class VectorSetService {
 
   public async getElementDetails(
     clientMetadata: ClientMetadata,
-    dto: GetVectorSetElementAttributeDto,
+    dto: GetVectorSetElementDetailsDto,
   ): Promise<VectorSetElementDto> {
     try {
       this.logger.debug(
@@ -190,13 +190,10 @@ export class VectorSetService {
 
       await checkIfKeyNotExists(keyName, client);
 
-      const elementName =
-        element instanceof Buffer ? element.toString() : element;
-
       const details = await this.fetchElementDetails(
         client,
         keyName,
-        elementName as string,
+        element.toString(),
       );
 
       this.logger.debug(
@@ -307,10 +304,16 @@ export class VectorSetService {
     keyName: Buffer | string,
     elementName: string,
   ): Promise<VectorSetElementDto> {
-    const [[, rawEmb], [, rawAttr]] = await client.sendPipeline([
+    const results = await client.sendPipeline([
       [BrowserToolVectorSetCommands.VEmb, keyName, elementName],
       [BrowserToolVectorSetCommands.VGetAttr, keyName, elementName],
     ]);
+
+    const [embErr, rawEmb] = results[0];
+    const [attrErr, rawAttr] = results[1];
+
+    if (embErr) throw embErr;
+    if (attrErr) throw attrErr;
 
     const rawVector = rawEmb
       ? (rawEmb as string[]).map((v) => parseFloat(v))

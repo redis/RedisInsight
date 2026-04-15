@@ -7,7 +7,7 @@ import {
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
   SetVectorSetElementAttributeDto,
-  GetVectorSetElementAttributeDto,
+  GetVectorSetElementDetailsDto,
 } from 'src/modules/browser/vector-set/dto';
 
 export const vectorSetElementFactory = Factory.define<VectorSetElementDto>(
@@ -41,8 +41,8 @@ export const deleteVectorSetElementsDtoFactory =
     ],
   }));
 
-export const getVectorSetElementAttributeDtoFactory =
-  Factory.define<GetVectorSetElementAttributeDto>(() => ({
+export const getVectorSetElementDetailsDtoFactory =
+  Factory.define<GetVectorSetElementDetailsDto>(() => ({
     keyName: Buffer.from(`vset:${faker.string.alphanumeric(6)}`),
     element: Buffer.from(faker.string.alphanumeric(8)),
   }));

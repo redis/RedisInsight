@@ -18,7 +18,7 @@ import {
   deleteVectorSetElementsDtoFactory,
   downloadVectorSetEmbeddingDtoFactory,
   getVectorSetElementsDtoFactory,
-  getVectorSetElementAttributeDtoFactory,
+  getVectorSetElementDetailsDtoFactory,
   setVectorSetElementAttributeDtoFactory,
   vectorSetElementFactory,
 } from 'src/modules/browser/vector-set/__tests__/vector-set.factory';
@@ -243,7 +243,7 @@ describe('VectorSetService', () => {
   });
 
   describe('getElementDetails', () => {
-    const mockDetailsDto = getVectorSetElementAttributeDtoFactory.build();
+    const mockDetailsDto = getVectorSetElementDetailsDtoFactory.build();
     const mockElement = vectorSetElementFactory.build({
       attributes: JSON.stringify({ status: 'active' }),
     });

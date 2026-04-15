@@ -18,7 +18,7 @@ import {
   DeleteVectorSetElementsDto,
   DeleteVectorSetElementsResponse,
   DownloadVectorSetEmbeddingDto,
-  GetVectorSetElementAttributeDto,
+  GetVectorSetElementDetailsDto,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
   SetVectorSetElementAttributeDto,
@@ -76,7 +76,7 @@ export class VectorSetController extends BrowserBaseController {
   @ApiQueryRedisStringEncoding()
   async getElementDetails(
     @BrowserClientMetadata() clientMetadata: ClientMetadata,
-    @Body() dto: GetVectorSetElementAttributeDto,
+    @Body() dto: GetVectorSetElementDetailsDto,
   ): Promise<VectorSetElementDto> {
     return await this.vectorSetService.getElementDetails(clientMetadata, dto);
   }
