@@ -16,6 +16,7 @@ import {
 import { BrowserToolVectorSetCommands } from 'src/modules/browser/constants/browser-tool-commands';
 import {
   deleteVectorSetElementsDtoFactory,
+  downloadVectorSetEmbeddingDtoFactory,
   getVectorSetElementsDtoFactory,
   getVectorSetElementAttributeDtoFactory,
   setVectorSetElementAttributeDtoFactory,
@@ -70,12 +71,6 @@ describe('VectorSetService', () => {
     });
 
     it('should get elements successfully', async () => {
-      const pipelineResults = mockElements.flatMap((el) => [
-        [null, el.vector.map(String)],
-        [null, el.attributes ?? null],
-      ]);
-      client.sendPipeline.mockResolvedValue(pipelineResults);
-
       const result = await service.getElements(
         mockBrowserClientMetadata,
         mockDto,
@@ -95,8 +90,8 @@ describe('VectorSetService', () => {
       expect(result.total).toEqual(mockElements.length);
       expect(result.elements).toHaveLength(mockElements.length);
       expect(result.elements[0].name).toEqual(mockElements[0].name);
-      expect(result.elements[0].vector).toEqual(mockElements[0].vector);
-      expect(result.elements[0].attributes).toEqual(mockElements[0].attributes);
+      expect(result.elements[0].vector).toBeUndefined();
+      expect(result.elements[0].attributes).toBeUndefined();
       expect(result.isPaginationSupported).toBe(true);
     });
 
@@ -112,12 +107,6 @@ describe('VectorSetService', () => {
           dto.count,
         ])
         .mockResolvedValue(mockElementNames);
-
-      const pipelineResults = mockElements.flatMap((el) => [
-        [null, el.vector.map(String)],
-        [null, null],
-      ]);
-      client.sendPipeline.mockResolvedValue(pipelineResults);
 
       const result = await service.getElements(mockBrowserClientMetadata, dto);
 
@@ -170,12 +159,6 @@ describe('VectorSetService', () => {
           mockDto.count,
         ])
         .mockResolvedValue(mockElementNames);
-
-      const pipelineResults = mockElements.flatMap((el) => [
-        [null, el.vector.map(String)],
-        [null, el.attributes ?? null],
-      ]);
-      client.sendPipeline.mockResolvedValue(pipelineResults);
 
       const result = await service.getElements(
         mockBrowserClientMetadata,
@@ -259,87 +242,99 @@ describe('VectorSetService', () => {
     });
   });
 
-  describe('getElementAttribute', () => {
-    const mockGetAttrDto = getVectorSetElementAttributeDtoFactory.build();
+  describe('getElementDetails', () => {
+    const mockDetailsDto = getVectorSetElementAttributeDtoFactory.build();
+    const mockElement = vectorSetElementFactory.build({
+      attributes: JSON.stringify({ status: 'active' }),
+    });
+    const mockRawVector = mockElement.vector!.map(String);
 
     beforeEach(() => {
       when(client.sendCommand)
-        .calledWith([BrowserToolKeysCommands.Exists, mockGetAttrDto.keyName])
+        .calledWith([BrowserToolKeysCommands.Exists, mockDetailsDto.keyName])
         .mockResolvedValue(true);
     });
 
-    it('should get element attribute successfully', async () => {
-      const mockAttributes = '{"color":"red"}';
+    it('should return element with vector and attributes', async () => {
+      client.sendPipeline.mockResolvedValue([
+        [null, mockRawVector],
+        [null, mockElement.attributes],
+      ]);
 
-      when(client.sendCommand)
-        .calledWith([
-          BrowserToolVectorSetCommands.VGetAttr,
-          mockGetAttrDto.keyName,
-          mockGetAttrDto.element,
-        ])
-        .mockResolvedValue(mockAttributes);
-
-      const result = await service.getElementAttribute(
+      const result = await service.getElementDetails(
         mockBrowserClientMetadata,
-        mockGetAttrDto,
+        mockDetailsDto,
       );
 
-      expect(client.sendCommand).toHaveBeenCalledWith([
-        BrowserToolVectorSetCommands.VGetAttr,
-        mockGetAttrDto.keyName,
-        mockGetAttrDto.element,
-      ]);
-      expect(result.attributes).toEqual(mockAttributes);
+      expect(Buffer.from(result.name as any).toString()).toEqual(
+        mockDetailsDto.element.toString(),
+      );
+      expect(result.vector).toEqual(mockElement.vector);
+      expect(result.vectorTruncated).toBeUndefined();
+      expect(result.attributes).toEqual(mockElement.attributes);
     });
 
-    it('should return undefined attributes when element has no attributes', async () => {
-      when(client.sendCommand)
-        .calledWith([
-          BrowserToolVectorSetCommands.VGetAttr,
-          mockGetAttrDto.keyName,
-          mockGetAttrDto.element,
-        ])
-        .mockResolvedValue(null);
+    it('should return element with undefined attributes when none exist', async () => {
+      client.sendPipeline.mockResolvedValue([
+        [null, mockRawVector],
+        [null, null],
+      ]);
 
-      const result = await service.getElementAttribute(
+      const result = await service.getElementDetails(
         mockBrowserClientMetadata,
-        mockGetAttrDto,
+        mockDetailsDto,
       );
 
+      expect(result.vector).toEqual(mockElement.vector);
       expect(result.attributes).toBeUndefined();
+    });
+
+    it('should return element with undefined vector when VEMB returns null', async () => {
+      client.sendPipeline.mockResolvedValue([
+        [null, null],
+        [null, mockElement.attributes],
+      ]);
+
+      const result = await service.getElementDetails(
+        mockBrowserClientMetadata,
+        mockDetailsDto,
+      );
+
+      expect(result.vector).toBeUndefined();
+      expect(result.attributes).toEqual(mockElement.attributes);
     });
 
     it('should throw NotFoundException when key does not exist', async () => {
       when(client.sendCommand)
-        .calledWith([BrowserToolKeysCommands.Exists, mockGetAttrDto.keyName])
+        .calledWith([BrowserToolKeysCommands.Exists, mockDetailsDto.keyName])
         .mockResolvedValue(false);
 
       await expect(
-        service.getElementAttribute(mockBrowserClientMetadata, mockGetAttrDto),
+        service.getElementDetails(mockBrowserClientMetadata, mockDetailsDto),
       ).rejects.toThrow(NotFoundException);
     });
 
     it('should throw BadRequestException for wrong type error', async () => {
       const replyError: ReplyError = {
         ...mockRedisWrongTypeError,
-        command: 'VGETATTR',
+        command: 'VEMB',
       };
       client.sendCommand.mockRejectedValue(replyError);
 
       await expect(
-        service.getElementAttribute(mockBrowserClientMetadata, mockGetAttrDto),
+        service.getElementDetails(mockBrowserClientMetadata, mockDetailsDto),
       ).rejects.toThrow(BadRequestException);
     });
 
     it('should throw ForbiddenException when user has no permissions', async () => {
       const replyError: ReplyError = {
         ...mockRedisNoPermError,
-        command: 'VGETATTR',
+        command: 'VEMB',
       };
       client.sendCommand.mockRejectedValue(replyError);
 
       await expect(
-        service.getElementAttribute(mockBrowserClientMetadata, mockGetAttrDto),
+        service.getElementDetails(mockBrowserClientMetadata, mockDetailsDto),
       ).rejects.toThrow(ForbiddenException);
     });
   });
@@ -421,6 +416,97 @@ describe('VectorSetService', () => {
 
       await expect(
         service.setElementAttribute(mockBrowserClientMetadata, mockSetAttrDto),
+      ).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe('downloadEmbedding', () => {
+    const mockDownloadDto = downloadVectorSetEmbeddingDtoFactory.build();
+    const mockDownloadElement = vectorSetElementFactory.build();
+    const mockRawVector = mockDownloadElement.vector!.map(String);
+
+    beforeEach(() => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, mockDownloadDto.keyName])
+        .mockResolvedValue(true);
+    });
+
+    it('should return a readable stream with formatted vector', async () => {
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolVectorSetCommands.VEmb,
+          mockDownloadDto.keyName,
+          mockDownloadDto.element,
+        ])
+        .mockResolvedValue(mockRawVector);
+
+      const { stream } = await service.downloadEmbedding(
+        mockBrowserClientMetadata,
+        mockDownloadDto,
+      );
+
+      const chunks: string[] = [];
+      for await (const chunk of stream) {
+        chunks.push(chunk);
+      }
+      const result = chunks.join('');
+
+      expect(result).toEqual(`[${mockRawVector.join(', ')}]`);
+    });
+
+    it('should return "[]" when VEMB returns null', async () => {
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolVectorSetCommands.VEmb,
+          mockDownloadDto.keyName,
+          mockDownloadDto.element,
+        ])
+        .mockResolvedValue(null);
+
+      const { stream } = await service.downloadEmbedding(
+        mockBrowserClientMetadata,
+        mockDownloadDto,
+      );
+
+      const chunks: string[] = [];
+      for await (const chunk of stream) {
+        chunks.push(chunk);
+      }
+
+      expect(chunks.join('')).toEqual('[]');
+    });
+
+    it('should throw NotFoundException when key does not exist', async () => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, mockDownloadDto.keyName])
+        .mockResolvedValue(false);
+
+      await expect(
+        service.downloadEmbedding(mockBrowserClientMetadata, mockDownloadDto),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw BadRequestException for wrong type error', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisWrongTypeError,
+        command: 'VEMB',
+      };
+      client.sendCommand.mockRejectedValue(replyError);
+
+      await expect(
+        service.downloadEmbedding(mockBrowserClientMetadata, mockDownloadDto),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw ForbiddenException when user has no permissions', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisNoPermError,
+        command: 'VEMB',
+      };
+      client.sendCommand.mockRejectedValue(replyError);
+
+      await expect(
+        service.downloadEmbedding(mockBrowserClientMetadata, mockDownloadDto),
       ).rejects.toThrow(ForbiddenException);
     });
   });

@@ -4,7 +4,6 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { chunk } from 'lodash';
 import { catchAclError, catchMultiTransactionError } from 'src/utils';
 import { RedisErrorCodes } from 'src/constants';
 import ERROR_MESSAGES from 'src/constants/error-messages';
@@ -14,15 +13,17 @@ import { ClientMetadata } from 'src/common/models';
 import {
   DeleteVectorSetElementsDto,
   DeleteVectorSetElementsResponse,
+  DownloadVectorSetEmbeddingDto,
   GetVectorSetElementAttributeDto,
-  GetVectorSetElementAttributeResponse,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
   SetVectorSetElementAttributeDto,
   SetVectorSetElementAttributeResponse,
   VectorSetElementDto,
+  VECTOR_EMBEDDING_MAX_DISPLAY_LENGTH,
 } from 'src/modules/browser/vector-set/dto';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
+import { Readable } from 'stream';
 import {
   RedisClient,
   RedisClientCommand,
@@ -92,11 +93,8 @@ export class VectorSetService {
         ])) as string[];
       }
 
-      // Fetch embeddings and attributes for each element using pipelining
-      const elements = await this.fetchElementDetails(
-        client,
-        keyName,
-        elementNames,
+      const elements = elementNames.map((name) =>
+        plainToInstance(VectorSetElementDto, { name }),
       );
 
       this.logger.debug(
@@ -177,13 +175,13 @@ export class VectorSetService {
     }
   }
 
-  public async getElementAttribute(
+  public async getElementDetails(
     clientMetadata: ClientMetadata,
     dto: GetVectorSetElementAttributeDto,
-  ): Promise<GetVectorSetElementAttributeResponse> {
+  ): Promise<VectorSetElementDto> {
     try {
       this.logger.debug(
-        'Getting element attribute in the VectorSet data type.',
+        'Getting element details in the VectorSet data type.',
         clientMetadata,
       );
       const { keyName, element } = dto;
@@ -192,23 +190,24 @@ export class VectorSetService {
 
       await checkIfKeyNotExists(keyName, client);
 
-      const attributes = (await client.sendCommand([
-        BrowserToolVectorSetCommands.VGetAttr,
+      const elementName =
+        element instanceof Buffer ? element.toString() : element;
+
+      const details = await this.fetchElementDetails(
+        client,
         keyName,
-        element,
-      ])) as string;
+        elementName as string,
+      );
 
       this.logger.debug(
-        'Succeed to get element attribute in the VectorSet data type.',
+        'Succeed to get element details in the VectorSet data type.',
         clientMetadata,
       );
 
-      return plainToInstance(GetVectorSetElementAttributeResponse, {
-        attributes: attributes || undefined,
-      });
+      return plainToInstance(VectorSetElementDto, details);
     } catch (error) {
       this.logger.error(
-        'Failed to get element attribute in the VectorSet data type.',
+        'Failed to get element details in the VectorSet data type.',
         error,
         clientMetadata,
       );
@@ -268,44 +267,68 @@ export class VectorSetService {
     }
   }
 
+  public async downloadEmbedding(
+    clientMetadata: ClientMetadata,
+    dto: DownloadVectorSetEmbeddingDto,
+  ): Promise<{ stream: Readable }> {
+    try {
+      this.logger.debug('Downloading vector embedding.', clientMetadata);
+      const { keyName, element } = dto;
+      const client: RedisClient =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+
+      await checkIfKeyNotExists(keyName, client);
+
+      const rawVector = (await client.sendCommand([
+        BrowserToolVectorSetCommands.VEmb,
+        keyName,
+        element,
+      ])) as string[];
+
+      const formatted = rawVector ? `[${rawVector.join(', ')}]` : '[]';
+
+      const stream = Readable.from(formatted);
+      return { stream };
+    } catch (error) {
+      this.logger.error(
+        'Failed to download vector embedding.',
+        error,
+        clientMetadata,
+      );
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
   private async fetchElementDetails(
     client: RedisClient,
     keyName: Buffer | string,
-    elementNames: string[],
-  ): Promise<VectorSetElementDto[]> {
-    if (!elementNames.length) {
-      return [];
-    }
+    elementName: string,
+  ): Promise<VectorSetElementDto> {
+    const [[, rawEmb], [, rawAttr]] = await client.sendPipeline([
+      [BrowserToolVectorSetCommands.VEmb, keyName, elementName],
+      [BrowserToolVectorSetCommands.VGetAttr, keyName, elementName],
+    ]);
 
-    // Build pipeline commands for VEMB and VGETATTR
-    const pipelineCommands: RedisClientCommand[] = [];
-    for (const name of elementNames) {
-      pipelineCommands.push([BrowserToolVectorSetCommands.VEmb, keyName, name]);
-      pipelineCommands.push([
-        BrowserToolVectorSetCommands.VGetAttr,
-        keyName,
-        name,
-      ]);
-    }
+    const rawVector = rawEmb
+      ? (rawEmb as string[]).map((v) => parseFloat(v))
+      : undefined;
 
-    const results = await client.sendPipeline(pipelineCommands);
+    const vectorTruncated =
+      rawVector !== undefined &&
+      rawVector.length > VECTOR_EMBEDDING_MAX_DISPLAY_LENGTH;
 
-    const resultPairs = chunk(results, 2);
+    const vector = vectorTruncated
+      ? rawVector.slice(0, VECTOR_EMBEDDING_MAX_DISPLAY_LENGTH)
+      : rawVector;
 
-    return elementNames.map((name, i) => {
-      const [embResult, attrResult] = resultPairs[i];
-
-      const vector = embResult[1]
-        ? (embResult[1] as string[]).map((v) => parseFloat(v))
-        : undefined;
-
-      const attributes = attrResult[1] as string | undefined;
-
-      return plainToInstance(VectorSetElementDto, {
-        name,
-        vector,
-        attributes: attributes || undefined,
-      });
+    return plainToInstance(VectorSetElementDto, {
+      name: elementName,
+      vector,
+      vectorTruncated: vectorTruncated || undefined,
+      attributes: (rawAttr as string) || undefined,
     });
   }
 }
