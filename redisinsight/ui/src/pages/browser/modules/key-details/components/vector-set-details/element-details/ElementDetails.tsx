@@ -11,10 +11,14 @@ import {
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import {
+  IconButton,
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { EditIcon } from 'uiSrc/components/base/icons'
+import { DownloadIcon, EditIcon } from 'uiSrc/components/base/icons'
+import { CopyButton } from 'uiSrc/components/copy-button'
+import { RiTooltip } from 'uiSrc/components'
+import { handleDownloadButton } from 'uiSrc/utils/events'
 import { CodeEditor } from 'uiSrc/components/base/code-editor'
 import { useMonacoValidation } from 'uiSrc/components/monaco-editor'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
@@ -64,6 +68,10 @@ const ElementDetails = ({
     () => formatVector(element?.vector),
     [element?.vector],
   )
+
+  const handleDownloadVector = useCallback(() => {
+    handleDownloadButton(vectorText, `${elementName}_vector.txt`)
+  }, [vectorText])
 
   const startEditing = useCallback(() => {
     setSavedValue(value)
@@ -130,12 +138,29 @@ const ElementDetails = ({
               <Text color="secondary">{VECTOR_DESCRIPTION}</Text>
               <Col gap="s">
                 <Text color="primary">Vector</Text>
-                <S.VectorTextArea
-                  readOnly
-                  value={vectorText}
-                  data-testid="vector-set-vector-value"
-                  height="110px"
-                />
+                <S.VectorWrapper>
+                  <S.VectorActions gap="m" align="end">
+                    <CopyButton
+                      copy={vectorText}
+                      aria-label="Copy vector"
+                      data-testid="vector-set-copy-vector-btn"
+                    />
+                    <RiTooltip content="Download" position="left">
+                      <IconButton
+                        icon={DownloadIcon}
+                        aria-label="Download vector"
+                        onClick={handleDownloadVector}
+                        data-testid="vector-set-download-vector-btn"
+                      />
+                    </RiTooltip>
+                  </S.VectorActions>
+                  <S.VectorTextArea
+                    readOnly
+                    value={vectorText}
+                    data-testid="vector-set-vector-value"
+                    height="110px"
+                  />
+                </S.VectorWrapper>
               </Col>
             </Col>
 
