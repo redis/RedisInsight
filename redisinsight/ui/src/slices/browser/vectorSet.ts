@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AxiosError } from 'axios'
+import { AxiosError, AxiosResponseHeaders } from 'axios'
 
 import { apiService } from 'uiSrc/services'
 import { ApiEndpoints } from 'uiSrc/constants'
@@ -24,6 +24,7 @@ import { RedisResponseBuffer } from '../interfaces'
 import {
   InitialStateVectorSet,
   ModifiedVectorSetResponse,
+  VectorSetElement,
 } from '../interfaces/vectorSet'
 import {
   addErrorNotification,
@@ -135,6 +136,19 @@ const vectorSetSlice = createSlice({
         el.attributes = payload.attributes
       }
     },
+
+    downloadVectorSetEmbedding: (state) => {
+      state.loading = true
+      state.error = ''
+    },
+    downloadVectorSetEmbeddingSuccess: (state) => {
+      state.loading = false
+      state.error = ''
+    },
+    downloadVectorSetEmbeddingFailure: (state, { payload }) => {
+      state.loading = false
+      state.error = payload
+    },
   },
 })
 
@@ -150,6 +164,9 @@ export const {
   removeVectorSetElementsFailure,
   removeElementsFromList,
   updateElementAttributes,
+  downloadVectorSetEmbedding,
+  downloadVectorSetEmbeddingSuccess,
+  downloadVectorSetEmbeddingFailure,
 } = vectorSetSlice.actions
 
 export const vectorSetSelector = (state: RootState) => state.browser.vectorSet
@@ -299,21 +316,19 @@ export function deleteVectorSetElements(
   }
 }
 
-export function getVectorSetElementAttribute(
+export function getVectorSetElementDetails(
   key: RedisResponseBuffer,
   element: RedisResponseBuffer,
-  onSuccessAction?: (attributes?: string) => void,
+  onSuccessAction?: (details: VectorSetElement) => void,
 ) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     try {
       const state = stateInit()
       const { encoding } = state.app.info
-      const { data, status } = await apiService.post<{
-        attributes?: string
-      }>(
+      const { data, status } = await apiService.post<VectorSetElement>(
         getUrl(
           state.connections.instances.connectedInstance?.id,
-          ApiEndpoints.VECTOR_SET_GET_ELEMENT_ATTRIBUTES,
+          ApiEndpoints.VECTOR_SET_GET_ELEMENT_DETAILS,
         ),
         {
           keyName: key,
@@ -329,7 +344,7 @@ export function getVectorSetElementAttribute(
             attributes: data.attributes ?? '',
           }),
         )
-        onSuccessAction?.(data.attributes)
+        onSuccessAction?.(data)
       }
     } catch (_err) {
       const error = _err as AxiosError
@@ -373,6 +388,41 @@ export function setVectorSetElementAttribute(
     } catch (_err) {
       const error = _err as AxiosError
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+    }
+  }
+}
+
+export function fetchDownloadVectorEmbedding(
+  key: RedisResponseBuffer,
+  element: RedisResponseBuffer,
+  onSuccessAction?: (data: string, headers: AxiosResponseHeaders) => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    dispatch(downloadVectorSetEmbedding())
+
+    try {
+      const state = stateInit()
+      const { data, status, headers } = await apiService.post(
+        getUrl(
+          state.connections.instances.connectedInstance?.id,
+          ApiEndpoints.VECTOR_SET_DOWNLOAD_EMBEDDING,
+        ),
+        {
+          keyName: key,
+          element,
+        },
+        { responseType: 'arraybuffer' },
+      )
+
+      if (isStatusSuccessful(status)) {
+        dispatch(downloadVectorSetEmbeddingSuccess())
+        onSuccessAction?.(data, headers)
+      }
+    } catch (_err) {
+      const error = _err as AxiosError
+      const errorMessage = getApiErrorMessage(error)
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      dispatch(downloadVectorSetEmbeddingFailure(errorMessage))
     }
   }
 }

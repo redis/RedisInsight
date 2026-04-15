@@ -3,6 +3,7 @@ import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces/app'
 export interface VectorSetElement {
   name: RedisResponseBuffer
   vector?: number[]
+  vectorTruncated?: boolean
   attributes?: string
 }
 

@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
-import { getVectorSetElementAttribute } from 'uiSrc/slices/browser/vectorSet'
+import { getVectorSetElementDetails } from 'uiSrc/slices/browser/vectorSet'
 import { VectorSetElement, RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 export const useElementDetails = () => {
@@ -19,11 +19,11 @@ export const useElementDetails = () => {
       if (!keyName) return
 
       dispatch(
-        getVectorSetElementAttribute(
+        getVectorSetElementDetails(
           keyName as RedisResponseBuffer,
           element.name,
-          (attributes) => {
-            setViewedElement({ ...element, attributes })
+          (details) => {
+            setViewedElement(details)
             setIsDetailsPanelOpen(true)
           },
         ),

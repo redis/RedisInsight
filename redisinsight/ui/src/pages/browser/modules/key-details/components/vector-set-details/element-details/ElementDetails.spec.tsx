@@ -1,7 +1,6 @@
 import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
-import { bufferToString, handleCopy } from 'uiSrc/utils'
-import { handleDownloadButton } from 'uiSrc/utils/events'
+import { handleCopy } from 'uiSrc/utils'
 import { setVectorSetElementAttribute } from 'uiSrc/slices/browser/vectorSet'
 import { vectorSetElementFactory } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
 import { ElementDetails } from './ElementDetails'
@@ -10,11 +9,6 @@ import { ElementDetailsProps } from './ElementDetails.types'
 jest.mock('uiSrc/utils', () => ({
   ...jest.requireActual('uiSrc/utils'),
   handleCopy: jest.fn(),
-}))
-
-jest.mock('uiSrc/utils/events', () => ({
-  ...jest.requireActual('uiSrc/utils/events'),
-  handleDownloadButton: jest.fn(),
 }))
 
 const mockUseMonacoValidation = jest.fn().mockReturnValue({
@@ -43,6 +37,7 @@ jest.mock('uiSrc/components/monaco-editor', () => ({
 jest.mock('uiSrc/slices/browser/vectorSet', () => ({
   ...jest.requireActual('uiSrc/slices/browser/vectorSet'),
   setVectorSetElementAttribute: jest.fn(() => jest.fn()),
+  fetchDownloadVectorEmbedding: jest.fn(() => jest.fn()),
 }))
 
 const mockElement = vectorSetElementFactory.build()
@@ -155,23 +150,32 @@ describe('ElementDetails', () => {
     expect(saveBtn).toBeDisabled()
   })
 
-  it('should copy vector text when copy button is clicked', () => {
+  it('should show copy button for small vectors and copy on click', () => {
     renderComponent()
+    expect(
+      screen.getByTestId('vector-set-copy-vector-btn-btn'),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByTestId('vector-set-download-vector-btn'),
+    ).not.toBeInTheDocument()
+
     fireEvent.click(screen.getByTestId('vector-set-copy-vector-btn-btn'))
 
     const expectedVector = `[${mockElement.vector!.join(', ')}]`
     expect(handleCopy).toHaveBeenCalledWith(expectedVector)
   })
 
-  it('should download vector when download button is clicked', () => {
-    renderComponent()
-    fireEvent.click(screen.getByTestId('vector-set-download-vector-btn'))
+  it('should show download button instead of copy for truncated vectors', () => {
+    const truncatedElement = vectorSetElementFactory.build({
+      vectorTruncated: true,
+    })
+    renderComponent({ element: truncatedElement })
 
-    const expectedVector = `[${mockElement.vector!.join(', ')}]`
-    const expectedFilename = `${bufferToString(mockElement.name)}_vector.txt`
-    expect(handleDownloadButton).toHaveBeenCalledWith(
-      expectedVector,
-      expectedFilename,
-    )
+    expect(
+      screen.getByTestId('vector-set-download-vector-btn'),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByTestId('vector-set-copy-vector-btn-btn'),
+    ).not.toBeInTheDocument()
   })
 })

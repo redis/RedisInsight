@@ -18,11 +18,14 @@ import {
 import { DownloadIcon, EditIcon } from 'uiSrc/components/base/icons'
 import { CopyButton } from 'uiSrc/components/copy-button'
 import { RiTooltip } from 'uiSrc/components'
-import { handleDownloadButton } from 'uiSrc/utils/events'
+import { downloadFile } from 'uiSrc/utils/dom/downloadFile'
 import { CodeEditor } from 'uiSrc/components/base/code-editor'
 import { useMonacoValidation } from 'uiSrc/components/monaco-editor'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
-import { setVectorSetElementAttribute } from 'uiSrc/slices/browser/vectorSet'
+import {
+  fetchDownloadVectorEmbedding,
+  setVectorSetElementAttribute,
+} from 'uiSrc/slices/browser/vectorSet'
 import { bufferToString } from 'uiSrc/utils'
 import { formatVector } from './utils'
 import {
@@ -64,14 +67,23 @@ const ElementDetails = ({
     [element],
   )
 
+  const isTruncatedVector = element?.vectorTruncated ?? false
+
   const vectorText = useMemo(
-    () => formatVector(element?.vector),
-    [element?.vector],
+    () => formatVector(element?.vector, isTruncatedVector),
+    [element?.vector, isTruncatedVector],
   )
 
   const handleDownloadVector = useCallback(() => {
-    handleDownloadButton(vectorText, `${elementName}_vector.txt`)
-  }, [vectorText, elementName])
+    if (!element || !keyName) return
+    dispatch(
+      fetchDownloadVectorEmbedding(
+        keyName as RedisResponseBuffer,
+        element.name,
+        downloadFile,
+      ),
+    )
+  }, [dispatch, element, keyName])
 
   const startEditing = useCallback(() => {
     setSavedValue(value)
@@ -140,19 +152,22 @@ const ElementDetails = ({
                 <Text color="primary">Vector</Text>
                 <S.VectorWrapper>
                   <S.VectorActions gap="m" align="end">
-                    <CopyButton
-                      copy={vectorText}
-                      aria-label="Copy vector"
-                      data-testid="vector-set-copy-vector-btn"
-                    />
-                    <RiTooltip content="Download" position="left">
-                      <IconButton
-                        icon={DownloadIcon}
-                        aria-label="Download vector"
-                        onClick={handleDownloadVector}
-                        data-testid="vector-set-download-vector-btn"
+                    {isTruncatedVector ? (
+                      <RiTooltip content="Download" position="left">
+                        <IconButton
+                          icon={DownloadIcon}
+                          aria-label="Download vector"
+                          onClick={handleDownloadVector}
+                          data-testid="vector-set-download-vector-btn"
+                        />
+                      </RiTooltip>
+                    ) : (
+                      <CopyButton
+                        copy={vectorText}
+                        aria-label="Copy vector"
+                        data-testid="vector-set-copy-vector-btn"
                       />
-                    </RiTooltip>
+                    )}
                   </S.VectorActions>
                   <S.VectorTextArea
                     readOnly
