@@ -1,0 +1,57 @@
+meta {
+  name: Download Embedding
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/vector-set/download-embedding
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "vset:small_3d",
+    "element": "item_1"
+  }
+}
+
+docs {
+  # Download Vector Embedding
+
+  Downloads the full vector embedding for a single element as a binary file stream. Uses the Redis `VEMB` command internally.
+
+  This endpoint is used when the vector dimension exceeds the frontend display threshold (100,000 dimensions), providing a way to retrieve the complete embedding data as a downloadable file.
+
+  ## Request Body
+
+  | Field | Type | Description |
+  |-------|------|-------------|
+  | `keyName` | string | The Vector Set key name |
+  | `element` | string | The element name within the vector set |
+
+  ## Response
+
+  Returns a binary stream (`application/octet-stream`) with `Content-Disposition: attachment;filename="vector_embedding"`.
+
+  The body contains the vector formatted as a JSON array string: `[0.10, 0.20, 0.30, ...]`
+
+  ## Response Headers
+
+  | Header | Value |
+  |--------|-------|
+  | `Content-Type` | `application/octet-stream` |
+  | `Content-Disposition` | `attachment;filename="vector_embedding"` |
+
+  ## Error Responses
+
+  | Status | Condition |
+  |--------|-----------|
+  | `400` | Key exists but is not a Vector Set (WRONGTYPE) |
+  | `404` | Key does not exist |
+}
+
+settings {
+  encodeUrl: true
+}

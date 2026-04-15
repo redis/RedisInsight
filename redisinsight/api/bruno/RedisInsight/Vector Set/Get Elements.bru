@@ -56,7 +56,8 @@ docs {
 
   - `total`: Total number of elements in the Vector Set
   - `nextCursor`: Use this as `start` in the next request to paginate (if more elements exist)
-  - `elements`: Array of element objects with `name`, `vector`, and `attributes`
+  - `isPaginationSupported`: Whether the server supports ordered cursor pagination
+  - `elements`: Array of element objects with `name` only. Use the `/get-details` endpoint to retrieve the full embedding and attributes for a specific element.
 }
 
 settings {
