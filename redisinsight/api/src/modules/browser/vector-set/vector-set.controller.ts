@@ -102,6 +102,17 @@ export class VectorSetController extends BrowserBaseController {
   }
 
   @Post('/download-embedding')
+  @ApiRedisInstanceOperation({
+    description:
+      'Download the full vector embedding of an element in the VectorSet stored at key',
+    statusCode: 200,
+    responses: [
+      {
+        status: 200,
+        description: 'Ok',
+      },
+    ],
+  })
   @ApiQueryRedisStringEncoding()
   async downloadEmbedding(
     @Res() res: Response,
@@ -120,7 +131,15 @@ export class VectorSetController extends BrowserBaseController {
     );
     res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
 
-    stream.on('error', () => res.status(404).send()).pipe(res);
+    stream
+      .on('error', () => {
+        if (!res.headersSent) {
+          res.status(404).send();
+        } else {
+          res.destroy();
+        }
+      })
+      .pipe(res);
   }
 
   @Delete('/elements')
