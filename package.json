@@ -88,21 +88,25 @@
     "vite"
   ],
   "homepage": "https://github.com/RedisInsight/RedisInsight#readme",
-  "resolutions": {
-    "**/trim": "0.0.3",
+  "overrides": {
+    "trim": "0.0.3",
     "word-wrap": "1.2.4",
-    "**/semver": "^7.5.2",
-    "rawproto/protobufjs": "^7.2.5",
+    "semver": "^7.5.2",
+    "rawproto": { "protobufjs": "^7.2.5" },
     "@electron/notarize": "2.3.2",
-    "webpack-bundle-analyzer/ws": "^7.5.10",
-    "msw/path-to-regexp": "^6.3.0",
-    "msw/cookie": "^0.7.0",
-    "**/cross-spawn": "^7.0.5",
+    "webpack-bundle-analyzer": { "ws": "^7.5.10" },
+    "msw": {
+      "path-to-regexp": "^6.3.0",
+      "cookie": "^0.7.0"
+    },
+    "cross-spawn": "^7.0.5",
     "styled-components": "^5",
-    "@elastic/eui/**/prismjs": "~1.30.0",
-    "vite/esbuild": "^0.25.0",
-    "react-router-dom/react-router/path-to-regexp": "^1.9.0",
-    "**/form-data": "^4.0.4"
+    "@elastic/eui": { "prismjs": "~1.30.0" },
+    "vite": { "esbuild": "^0.25.0" },
+    "react-router-dom": {
+      "react-router": { "path-to-regexp": "^1.9.0" }
+    },
+    "form-data": "^4.0.4"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.28.0",

@@ -14,7 +14,7 @@
     "build": "vite build",
     "stats": "NODE_OPTIONS=--max_old_space_size=8192 npx vite-bundle-visualizer --open -o ./dist-stats.html --sourcemap"
   },
-  "resolutions": {
-    "**/form-data": "^4.0.4"
+  "overrides": {
+    "form-data": "^4.0.4"
   }
 }

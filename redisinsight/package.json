@@ -14,9 +14,9 @@
   "scripts": {
     "postinstall": "npx patch-package"
   },
-  "resolutions": {
-    "**/semver": "^7.5.2",
-    "**/cpu-features": "file:./api/stubs/cpu-features"
+  "overrides": {
+    "semver": "^7.5.2",
+    "cpu-features": "file:./api/stubs/cpu-features"
   },
   "dependencies": {
     "better-sqlite3": "^12.8.0",

@@ -39,21 +39,20 @@
     "typeorm:run": "yarn typeorm migration:run",
     "typeorm:run:stage": "cross-env NODE_ENV=staging yarn typeorm migration:run"
   },
-  "resolutions": {
+  "overrides": {
     "word-wrap": "1.2.4",
-    "jest/**/micromatch": "^4.0.8",
-    "mocha/minimatch": "^3.0.5",
-    "**/semver": "^7.5.2",
-    "**/cpu-features": "file:./stubs/cpu-features",
-    "**/cross-spawn": "^7.0.5",
-    "**/redis-parser": "3.0.0",
-    "winston-daily-rotate-file/**/file-stream-rotator": "^1.0.0",
-    "**/form-data": "^4.0.4",
+    "jest": { "micromatch": "^4.0.8" },
+    "mocha": { "minimatch": "^3.0.5" },
+    "semver": "^7.5.2",
+    "cpu-features": "file:./stubs/cpu-features",
+    "cross-spawn": "^7.0.5",
+    "redis-parser": "3.0.0",
+    "winston-daily-rotate-file": { "file-stream-rotator": "^1.0.0" },
     "form-data": "^4.0.4",
-    "supertest/**/form-data": "^4.0.4",
-    "@nestjs/cli/glob": "11.1.0",
-    "@nestjs/swagger/js-yaml": "4.1.1",
-    "**/multer": "^2.0.2"
+    "supertest": { "form-data": "^4.0.4" },
+    "@nestjs/cli": { "glob": "11.1.0" },
+    "@nestjs/swagger": { "js-yaml": "4.1.1" },
+    "multer": "^2.0.2"
   },
   "dependencies": {
     "@azure/msal-node": "^5.0.2",
