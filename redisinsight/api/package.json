@@ -13,7 +13,7 @@
     "build:defaults:commands": "ts-node ./scripts/default-commands.ts",
     "build:defaults:tutorials": "ts-node ./scripts/default-tutorials.ts",
     "build:defaults:content": "ts-node ./scripts/default-content.ts",
-    "build:defaults": "yarn build:defaults:commands && yarn build:defaults:content && yarn build:defaults:tutorials",
+    "build:defaults": "npm run build:defaults:commands && npm run build:defaults:content && npm run build:defaults:tutorials",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "build:prod": "rimraf dist && nest build -p ./tsconfig.build.prod.json && cross-env NODE_ENV=production",
@@ -33,11 +33,11 @@
     "test:e2e": "jest --config ./test/jest-e2e.json -w 1",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./config/ormconfig.ts",
     "test:api": "cross-env NODE_ENV=test ts-mocha --paths --config ./test/api/.mocharc.yml",
-    "test:api:cov": "nyc --reporter=html --reporter=text --reporter=text-summary yarn run test:api",
-    "test:api:ci:cov": "cross-env nyc -r text -r text-summary -r html yarn run test:api --reporter mocha-multi-reporters --reporter-options configFile=test/api/reporters.json && nyc merge .nyc_output ./coverage/test-run-coverage.json",
-    "typeorm:migrate": "cross-env NODE_ENV=staging yarn typeorm migration:generate ./migration/migration",
-    "typeorm:run": "yarn typeorm migration:run",
-    "typeorm:run:stage": "cross-env NODE_ENV=staging yarn typeorm migration:run"
+    "test:api:cov": "nyc --reporter=html --reporter=text --reporter=text-summary npm run test:api",
+    "test:api:ci:cov": "cross-env nyc -r text -r text-summary -r html npm run test:api -- --reporter mocha-multi-reporters --reporter-options configFile=test/api/reporters.json && nyc merge .nyc_output ./coverage/test-run-coverage.json",
+    "typeorm:migrate": "cross-env NODE_ENV=staging npm run typeorm -- migration:generate ./migration/migration",
+    "typeorm:run": "npm run typeorm -- migration:run",
+    "typeorm:run:stage": "cross-env NODE_ENV=staging npm run typeorm -- migration:run"
   },
   "overrides": {
     "word-wrap": "1.2.4",
