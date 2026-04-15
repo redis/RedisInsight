@@ -10,6 +10,7 @@ import { SetKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies
 import { StreamKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/stream.key-info.strategy';
 import { StringKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/string.key-info.strategy';
 import { TsKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/ts.key-info.strategy';
+import { VectorSetKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/vector-set.key-info.strategy';
 import { ZSetKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/z-set.key-info.strategy';
 
 describe('KeyInfoProvider', () => {
@@ -27,6 +28,7 @@ describe('KeyInfoProvider', () => {
         StreamKeyInfoStrategy,
         StringKeyInfoStrategy,
         TsKeyInfoStrategy,
+        VectorSetKeyInfoStrategy,
         ZSetKeyInfoStrategy,
         UnsupportedKeyInfoStrategy,
       ],
@@ -49,6 +51,7 @@ describe('KeyInfoProvider', () => {
       { input: RedisDataType.Stream, strategy: StreamKeyInfoStrategy },
       { input: RedisDataType.String, strategy: StringKeyInfoStrategy },
       { input: RedisDataType.TS, strategy: TsKeyInfoStrategy },
+      { input: RedisDataType.VectorSet, strategy: VectorSetKeyInfoStrategy },
       { input: RedisDataType.ZSet, strategy: ZSetKeyInfoStrategy },
     ];
 

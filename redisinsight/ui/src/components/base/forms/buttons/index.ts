@@ -9,3 +9,5 @@ export { SecondaryButton } from 'uiSrc/components/base/forms/buttons/SecondaryBu
 export { ToggleButton } from 'uiSrc/components/base/forms/buttons/ToggleButton'
 
 export type { IconType } from 'uiSrc/components/base/forms/buttons/IconButton'
+
+export { TextButton } from '@redis-ui/components'

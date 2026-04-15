@@ -9,7 +9,10 @@ import {
 } from 'src/modules/redis/client';
 import { RedisString } from 'src/common/constants';
 import { ClientMetadata } from 'src/common/models';
-import { BrowserToolHashCommands } from 'src/modules/browser/constants/browser-tool-commands';
+import {
+  BrowserToolHashCommands,
+  BrowserToolVectorSetCommands,
+} from 'src/modules/browser/constants/browser-tool-commands';
 import { Database } from 'src/modules/database/models/database';
 
 // should return array (same as original reply)
@@ -31,6 +34,15 @@ export abstract class IoredisClient extends RedisClient {
     client.addBuiltinCommand(BrowserToolHashCommands.HPersist);
     // fix not existing command in pipeline
     client.addBuiltinCommand(BrowserToolHashCommands.HGETALL);
+    // Vector Set commands
+    client.addBuiltinCommand(BrowserToolVectorSetCommands.VCard);
+    client.addBuiltinCommand(BrowserToolVectorSetCommands.VInfo);
+    client.addBuiltinCommand(BrowserToolVectorSetCommands.VRange);
+    client.addBuiltinCommand(BrowserToolVectorSetCommands.VRandMember);
+    client.addBuiltinCommand(BrowserToolVectorSetCommands.VEmb);
+    client.addBuiltinCommand(BrowserToolVectorSetCommands.VGetAttr);
+    client.addBuiltinCommand(BrowserToolVectorSetCommands.VSetAttr);
+    client.addBuiltinCommand(BrowserToolVectorSetCommands.VRem);
   }
 
   static prepareCommandOptions(options: IRedisClientCommandOptions): any {

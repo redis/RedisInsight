@@ -9,6 +9,7 @@ import {
 import { RedisString } from 'src/common/constants';
 import { KeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/key-info.strategy';
 import { RedisClient } from 'src/modules/redis/client';
+import { MAX_KEY_SIZE } from 'src/modules/browser/keys/key-info/constants';
 
 export class ZSetKeyInfoStrategy extends KeyInfoStrategy {
   public async getInfo(
@@ -42,7 +43,7 @@ export class ZSetKeyInfoStrategy extends KeyInfoStrategy {
     ])) as [any, number][];
 
     let size = -1;
-    if (length < 50_000) {
+    if (length < MAX_KEY_SIZE) {
       const sizeData = (await client.sendPipeline([
         [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],
       ])) as [any, number][];

@@ -15,6 +15,7 @@ import {
   CloudApiForbiddenException,
   CloudApiUnauthorizedException,
 } from 'src/modules/cloud/common/exceptions';
+import { CloudAuthIdpType } from 'src/modules/cloud/auth/models';
 import { CloudApiProvider } from './cloud.api.provider';
 
 const generateUtmBodyTests = [
@@ -55,6 +56,10 @@ const getHeadersTests = [
     expected: { ...mockDefaultCloudApiHeaders },
   },
   {
+    input: null,
+    expected: { ...mockDefaultCloudApiHeaders },
+  },
+  {
     input: {},
     expected: { ...mockDefaultCloudApiHeaders },
   },
@@ -77,6 +82,18 @@ const getHeadersTests = [
     input: { idToken: 'id-token-value' },
     expected: {
       ...mockDefaultCloudApiHeaders,
+    },
+  },
+  {
+    input: { idToken: 'id-token-value', idpType: CloudAuthIdpType.Google },
+    expected: {
+      ...mockDefaultCloudApiHeaders,
+    },
+  },
+  {
+    input: { idToken: 'id-token-value', idpType: CloudAuthIdpType.Sso },
+    expected: {
+      ...mockDefaultCloudApiHeaders,
       'Sm-Id-Token': 'id-token-value',
     },
   },
@@ -85,6 +102,7 @@ const getHeadersTests = [
       accessToken: 'jwt-token',
       idToken: 'id-token-value',
       csrf: 'csrf-token',
+      idpType: CloudAuthIdpType.Sso,
     },
     expected: {
       ...mockDefaultCloudApiHeaders,

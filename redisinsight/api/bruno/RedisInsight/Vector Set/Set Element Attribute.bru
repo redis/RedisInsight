@@ -1,0 +1,60 @@
+meta {
+  name: Set Element Attribute
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/vector-set/attributes
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "vset:small_3d",
+    "element": "item_1",
+    "attributes": "{\"color\": \"red\", \"category\": \"example\"}"
+  }
+}
+
+docs {
+  # Set Element Attribute
+
+  Sets attributes on a single element of the Vector Set stored at `keyName`. Uses the Redis `VSETATTR` command.
+
+  The attributes value completely **replaces** any existing attributes on the element.
+
+  ## Request Body
+
+  | Field | Type | Description |
+  |-------|------|-------------|
+  | `keyName` | string | The Vector Set key name |
+  | `element` | string | The element name within the vector set |
+  | `attributes` | string | Attributes string to set on the element (typically JSON) |
+
+  ## Response
+
+  Returns `200 OK` with the stored attributes after the update.
+
+  | Field | Type | Description |
+  |-------|------|-------------|
+  | `attributes` | string | The attributes string as stored on the element after the update (read back via `VGETATTR`) |
+
+  ## Error Responses
+
+  | Status | Condition |
+  |--------|-----------|
+  | `400` | Key exists but is not a Vector Set (WRONGTYPE) |
+  | `404` | Key does not exist |
+
+  ## Notes
+
+  - The `attributes` field is a plain string. While it is typically used to store JSON, Redis does not enforce any format.
+  - After setting, the endpoint reads back the stored value using `VGETATTR` to confirm what was persisted.
+  - Use **Get Element Attribute** to retrieve the current attributes for a single element.
+}
+
+settings {
+  encodeUrl: true
+}

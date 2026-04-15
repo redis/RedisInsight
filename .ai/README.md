@@ -8,6 +8,7 @@ This repository uses a centralized approach to AI development rules:
 
 - **`AGENTS.md`** (at repository root) - Entry point for AI agents with essential commands, testing instructions, and quick reference
 - **`.ai/rules/`** - Detailed development standards organized by topic
+- **`.ai/skills/`** - Agent skills (local and from npm packages)
 - **`.ai/commands/`** - AI workflow commands and templates
 
 These rules are used by multiple AI coding assistants:
@@ -31,6 +32,14 @@ AGENTS.md                              # 🎯 AI agent entry point
 │   ├── branches.md                    # Branch naming conventions
 │   ├── commits.md                     # Commit message guidelines
 │   └── pull-requests.md               # Pull request process
+├── skills/                            # Agent skills
+│   ├── branches/                      # Branch naming skill
+│   ├── commits/                       # Commit message skill
+│   ├── pull-requests/                 # Pull request skill
+|   └── feature-flags/SKILL.md         # Feature flag lifecycle
+│   └── redis-ui-components/ -> node_modules/@redis-ui/components/skills/redis-ui-components
+│       ├── SKILL.md                   # Component catalog and usage patterns
+│       └── references/                # Per-component API docs (Button, Select, etc.)
 └── commands/                          # AI workflow commands
     ├── pr-plan.md                     # JIRA ticket implementation planning
     ├── commit-message.md              # Commit message generation
@@ -39,7 +48,8 @@ AGENTS.md                              # 🎯 AI agent entry point
 # Symlinks (all AI tools read from .ai/)
 .cursor/
   ├── rules/ -> ../.ai/rules/          # Cursor AI (rules)
-  └── commands/ -> ../.ai/commands/  # Cursor AI (commands)
+  ├── commands/ -> ../.ai/commands/    # Cursor AI (commands)
+  └── skills/ -> ../.ai/skills/        # Cursor AI (skills)
 .augment/ -> .ai/                      # Augment AI
 .windsurfrules -> .ai/                 # Windsurf AI
 .github/copilot-instructions.md        # GitHub Copilot
@@ -68,6 +78,8 @@ This directory contains comprehensive development standards that are automatical
 - **Branch Naming**: `.ai/rules/branches.md` - Branch naming conventions
 - **Commit Messages**: `.ai/rules/commits.md` - Commit message guidelines (Conventional Commits)
 - **Pull Request Process**: `.ai/rules/pull-requests.md` - PR creation and review guidelines
+- **Feature Flags**: `.ai/skills/feature-flags/SKILL.md` - Adding, promoting, and removing feature flags
+- **Redis UI Components**: `.ai/skills/redis-ui-components/` - Component API references, props, and usage examples (sourced from `@redis-ui/components` npm package via symlink)
 
 ## MCP (Model Context Protocol) Setup
 

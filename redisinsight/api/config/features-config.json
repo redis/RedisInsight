@@ -138,6 +138,10 @@
     "dev-browser": {
       "flag": false,
       "perc": [[0, 100]]
+    },
+    "dev-vectorSet": {
+      "flag": false,
+      "perc": [[0, 100]]
     }
   }
 }

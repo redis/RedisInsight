@@ -2602,10 +2602,10 @@
     "@react-hook/latest" "^1.0.2"
     "@react-hook/passive-layout-effect" "^1.2.0"
 
-"@redis-ui/components@^42.5.1", "@redis-ui/components@^42.8.0":
-  version "42.8.0"
-  resolved "https://registry.yarnpkg.com/@redis-ui/components/-/components-42.8.0.tgz#583ade7d155e722b2169d5f385a22b81678afb49"
-  integrity sha512-VQl6aeuM/VVVP46CJd9x2ng3lDLZnz1MsqgmC+f/zUYWVFzpV9oPKisFnjJj8e++8hKzdb6Hx5I8GsKicoHbsA==
+"@redis-ui/components@^43.0.0", "@redis-ui/components@^43.2.1":
+  version "43.2.1"
+  resolved "https://registry.yarnpkg.com/@redis-ui/components/-/components-43.2.1.tgz#eb4ff6888c5c6a01e7e591baae9acf17d8918f41"
+  integrity sha512-ES+pwFOWPfXV1HC9+N5UFcL7dvnmlbeGOlTbZyUUKye/52nn7g79av2T4yz79MG7tPeXM17nZaJanvmP/QbnPg==
   dependencies:
     "@radix-ui/react-checkbox" "^1.0.3"
     "@radix-ui/react-collapsible" "^1.0.3"
@@ -2627,31 +2627,31 @@
     react-hotkeys-hook "^4.6.1"
     react-loading-skeleton "^3.3.1"
     react-toastify "10.0.4"
-    type-fest "^3.13.1"
+    type-fest "^5.4.4"
     virtua "^0.36.3"
 
-"@redis-ui/icons@^6.7.0", "@redis-ui/icons@^6.7.1":
-  version "6.7.1"
-  resolved "https://registry.yarnpkg.com/@redis-ui/icons/-/icons-6.7.1.tgz#e1fc3bb041429319b982fd880b3cbfa86d12a8d7"
-  integrity sha512-Ht1lDSN53W0Z72k0j+L8LoYP113S/3wBdoXHuCwk2r7akiofmcu5zGdwjgOjAsHZYrlzj2jci5k8zrbB3oBwNg==
+"@redis-ui/icons@^6.8.5":
+  version "6.8.5"
+  resolved "https://registry.yarnpkg.com/@redis-ui/icons/-/icons-6.8.5.tgz#71e705d746523cfc02447bdf86f7dc3e8fa8eb65"
+  integrity sha512-HywdRaRANpYcu/cnjLJPUykqOFGEIrQPFNprRdGPpZIYF5GvRW9/9lm7MY2H1eRrZx28rM3tmMLxMomGM8le0g==
 
-"@redis-ui/styles@^14.9.3":
-  version "14.9.3"
-  resolved "https://registry.yarnpkg.com/@redis-ui/styles/-/styles-14.9.3.tgz#c3674a9349ec79eb1d5b496ce103de31dad3d0c3"
-  integrity sha512-0lbKjd4dMUHU7i81W+sK+lJZK8Gdqx7lmHfTGvPusfk7mt3VCDmbgJX+Z0KY+Gcq1JcxRkDo794bKHoPSG8WCg==
+"@redis-ui/styles@^14.13.0":
+  version "14.13.0"
+  resolved "https://registry.yarnpkg.com/@redis-ui/styles/-/styles-14.13.0.tgz#f91f6ec9495e57057308edd8ea52e9dc89b884da"
+  integrity sha512-i/O8E0U6CIjqg3kCzfiP1xMMA/i6hevk9kacJ1oWCSrblk5M12oFRaOd2yaLZe99hyUu5TYG2imE/SAOY5ajbQ==
   dependencies:
     color-alpha "^2.0.0"
     polished "^4.3.1"
 
-"@redis-ui/table@^3.5.1":
-  version "3.5.1"
-  resolved "https://registry.yarnpkg.com/@redis-ui/table/-/table-3.5.1.tgz#955c63349fdb52d49f7748b3c40a96c2da897f37"
-  integrity sha512-UxmWd9JJNAwo63mv4Qbbxbw5YYqmrmSlK+2wkaycwwJ18EJaTzpadsapML0bWzylG4dB5RCYOMk7X45emXy1Uw==
+"@redis-ui/table@^3.5.9":
+  version "3.5.9"
+  resolved "https://registry.yarnpkg.com/@redis-ui/table/-/table-3.5.9.tgz#d6a38fedd4e499b1872365afea500a90664d9a98"
+  integrity sha512-zAhgZ+MroRJDhPGCMWAzS2X2sShdgDCOAkd3AmopTHE2MpcCIU2AS9VHzAl7JHC9+E3aAEq7E/n+1eIO/MybIA==
   dependencies:
-    "@redis-ui/components" "^42.5.1"
-    "@redis-ui/icons" "^6.7.1"
+    "@redis-ui/components" "^43.0.0"
+    "@redis-ui/icons" "^6.8.5"
     "@tanstack/react-table" "^8.9.8"
-    type-fest "^3.13.1"
+    type-fest "^5.4.4"
 
 "@reduxjs/toolkit@^1.6.2":
   version "1.9.5"
@@ -8153,9 +8153,9 @@ focus-lock@^1.3.6:
     tslib "^2.0.3"
 
 follow-redirects@^1.15.11:
-  version "1.15.11"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.11.tgz#777d73d72a92f8ec4d2e410eb47352a56b8e8340"
-  integrity sha512-deG2P0JfjrTxl50XGCDyfI97ZGVCxIpfKYmfyrQ54n5FO/0gfIES8C/Psl6kWVDolizcaaxZJnTS0QSMxvnsBQ==
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.16.0.tgz#28474a159d3b9d11ef62050a14ed60e4df6d61bc"
+  integrity sha512-y5rN/uOsadFT/JfYwhxRS5R7Qce+g3zG97+JrtFZlC9klX/W5hD7iiLzScI4nZqUS7DNUdhPgw4xI8W2LuXlUw==
 
 for-each@^0.3.3, for-each@^0.3.5:
   version "0.3.5"
@@ -13713,12 +13713,7 @@ sass-embedded-win32-x64@1.75.0:
     sass-embedded-win32-ia32 "1.75.0"
     sass-embedded-win32-x64 "1.75.0"
 
-sax@^1.2.4:
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
-  integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
-
-sax@^1.5.0:
+sax@^1.2.4, sax@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.5.0.tgz#b5549b671069b7aa392df55ec7574cf411179eb8"
   integrity sha512-21IYA3Q5cQf089Z6tgaUTr7lDAyzoTPx5HRtbhsME8Udispad8dC/+sziTNugOEx54ilvatQ9YCzl4KQLPcRHA==
@@ -14593,6 +14588,11 @@ tabbable@^3.0.0:
   resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-3.1.2.tgz#f2d16cccd01f400e38635c7181adfe0ad965a4a2"
   integrity sha512-wjB6puVXTYO0BSFtCmWQubA/KIn7Xvajw0x0l6eJUudMG/EAiJvIUnyNX6xO4NpGrJ16lbD0eUseB9WxW0vlpQ==
 
+tagged-tag@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/tagged-tag/-/tagged-tag-1.0.0.tgz#a0b5917c2864cba54841495abfa3f6b13edcf4d6"
+  integrity sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==
+
 tapable@^0.1.8:
   version "0.1.10"
   resolved "https://registry.yarnpkg.com/tapable/-/tapable-0.1.10.tgz#29c35707c2b70e50d07482b5d202e8ed446dafd4"
@@ -15014,15 +15014,17 @@ type-fest@^2.17.0:
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-2.19.0.tgz#88068015bb33036a598b952e55e9311a60fd3a9b"
   integrity sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==
 
-type-fest@^3.13.1:
-  version "3.13.1"
-  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-3.13.1.tgz#bb744c1f0678bea7543a2d1ec24e83e68e8c8706"
-  integrity sha512-tLq3bSNx+xSpwvAJnzrK0Ep5CLNWjvFTOp71URMaAEWBfRb9nnJiBoUe0tF8bI4ZFO3omgBR6NvnbzVUT3Ly4g==
-
 type-fest@^4.26.1:
   version "4.41.0"
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-4.41.0.tgz#6ae1c8e5731273c2bf1f58ad39cbae2c91a46c58"
   integrity sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==
+
+type-fest@^5.4.4:
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-5.5.0.tgz#78fca72f3a1f9ec964e6ae260db492b070c56f3b"
+  integrity sha512-PlBfpQwiUvGViBNX84Yxwjsdhd1TUlXr6zjX7eoirtCPIr08NAmxwa+fcYBTeRQxHo9YC9wwF3m9i700sHma8g==
+  dependencies:
+    tagged-tag "^1.0.0"
 
 typed-array-buffer@^1.0.3:
   version "1.0.3"

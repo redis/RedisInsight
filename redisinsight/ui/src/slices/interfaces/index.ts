@@ -1,4 +1,5 @@
 export * from './instances'
+export * from './vectorSet'
 export * from './hash'
 export * from './app'
 export * from './workbench'

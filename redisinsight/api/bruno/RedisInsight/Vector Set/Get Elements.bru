@@ -1,0 +1,65 @@
+meta {
+  name: Get Elements
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/vector-set/get-elements
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "vset:small_3d",
+    "start": "-",
+    "end": "+",
+    "count": 15
+  }
+}
+
+docs {
+  # Get Vector Set Elements
+
+  Returns elements from a Vector Set in **lexicographical order** (alphabetical byte-by-byte comparison).
+
+  ## Request Parameters
+
+  | Parameter | Description |
+  |-----------|-------------|
+  | `keyName` | The Vector Set key name |
+  | `start` | Starting point for the range (use `-` for beginning) |
+  | `end` | Ending point for the range (use `+` for end) |
+  | `count` | Maximum number of elements to return |
+
+  ## Range Syntax
+
+  | Symbol | Meaning |
+  |--------|---------|
+  | `-` | Minimum (start from beginning) |
+  | `+` | Maximum (end at last element) |
+  | `[elem` | Inclusive (include this element) |
+  | `(elem` | Exclusive (start after this element) |
+
+  ## Important: Lexicographical Ordering
+
+  Elements are sorted as **strings**, not numbers! This means:
+
+  ```
+  item_1 → item_10 → item_11 → item_15 → item_2 → item_3
+  ```
+
+  Because `"item_10"` < `"item_2"` when comparing character by character (`'1'` < `'2'`).
+
+  ## Response
+
+  - `total`: Total number of elements in the Vector Set
+  - `nextCursor`: Use this as `start` in the next request to paginate (if more elements exist)
+  - `elements`: Array of element objects with `name`, `vector`, and `attributes`
+}
+
+settings {
+  encodeUrl: true
+}
+

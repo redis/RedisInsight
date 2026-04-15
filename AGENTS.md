@@ -96,6 +96,8 @@ All detailed development standards are maintained in `.ai/rules/`:
 - **Branches**: `.ai/skills/branches/SKILL.md` - Branch naming conventions
 - **Commits**: `.ai/skills/commits/SKILL.md` - Commit message guidelines
 - **Pull Requests**: `.ai/skills/pull-requests/SKILL.md` - PR process and review guidelines
+- **Feature Flags**: `.ai/skills/feature-flags/SKILL.md` - Adding, promoting, and removing feature flags
+- **Redis UI Components**: `.ai/skills/redis-ui-components/SKILL.md` - Component API references, props, and usage examples (from `@redis-ui/components` package)
 
 **Refer to these files for comprehensive guidelines on each topic.**
 
@@ -112,6 +114,7 @@ All detailed development standards are maintained in `.ai/rules/`:
 - Use semantic colors from theme (not CSS variables)
 - Use layout components (Row/Col/FlexGroup) instead of div
 - Pass layout props as component props (not hardcoded in styles)
+- Consult the `redis-ui-components` skill (`.ai/skills/redis-ui-components/`) for component APIs when writing frontend code
 
 ### ⚠️ Ask First
 
