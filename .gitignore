@@ -86,7 +86,6 @@ redisinsight/ui/src/packages/common/index*
 static/
 
 .env*
-.npmrc
 
 # AI rules
 .windsurfrules

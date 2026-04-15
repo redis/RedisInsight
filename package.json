@@ -91,7 +91,6 @@
   "overrides": {
     "trim": "0.0.3",
     "word-wrap": "1.2.4",
-    "semver": "^7.5.2",
     "rawproto": { "protobufjs": "^7.2.5" },
     "@electron/notarize": "2.3.2",
     "webpack-bundle-analyzer": { "ws": "^7.5.10" },
@@ -100,7 +99,6 @@
       "cookie": "^0.7.0"
     },
     "cross-spawn": "^7.0.5",
-    "styled-components": "^5",
     "@elastic/eui": { "prismjs": "~1.30.0" },
     "vite": { "esbuild": "^0.25.0" },
     "react-router-dom": {
@@ -255,7 +253,7 @@
     "@redis-ui/components": "^43.2.1",
     "@redis-ui/icons": "^6.8.5",
     "@redis-ui/styles": "^14.13.0",
-    "@redis-ui/table": "^3.5.9",
+    "@redis-ui/table": "3.5.9",
     "@reduxjs/toolkit": "^1.6.2",
     "@stablelib/snappy": "^1.0.2",
     "@types/json-dup-key-validator": "^1.0.2",
@@ -289,7 +287,7 @@
     "lz4js": "^0.2.0",
     "modern-normalize": "^3.0.1",
     "monaco-editor": "^0.48.0",
-    "monaco-yaml": "^5.1.1",
+    "monaco-yaml": "5.1.1",
     "msgpackr": "^1.10.1",
     "node-abi": "^4.24.0",
     "pako": "^2.1.0",
@@ -309,7 +307,7 @@
     "react-router-dom": "^5.3.4",
     "react-virtualized": "^9.22.2",
     "react-virtualized-auto-sizer": "^1.0.6",
-    "react-vtree": "^3.0.0-beta.3",
+    "react-vtree": "3.0.0-beta.3",
     "react-window": "^1.8.6",
     "react-window-infinite-loader": "^1.0.8",
     "rehype-stringify": "^9.0.2",
