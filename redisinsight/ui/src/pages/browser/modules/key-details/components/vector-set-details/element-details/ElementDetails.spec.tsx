@@ -1,9 +1,21 @@
 import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import { bufferToString, handleCopy } from 'uiSrc/utils'
+import { handleDownloadButton } from 'uiSrc/utils/events'
 import { setVectorSetElementAttribute } from 'uiSrc/slices/browser/vectorSet'
 import { vectorSetElementFactory } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
 import { ElementDetails } from './ElementDetails'
 import { ElementDetailsProps } from './ElementDetails.types'
+
+jest.mock('uiSrc/utils', () => ({
+  ...jest.requireActual('uiSrc/utils'),
+  handleCopy: jest.fn(),
+}))
+
+jest.mock('uiSrc/utils/events', () => ({
+  ...jest.requireActual('uiSrc/utils/events'),
+  handleDownloadButton: jest.fn(),
+}))
 
 const mockUseMonacoValidation = jest.fn().mockReturnValue({
   isValid: true,
@@ -141,5 +153,25 @@ describe('ElementDetails', () => {
 
     const saveBtn = screen.getByTestId('vector-set-save-attributes-btn')
     expect(saveBtn).toBeDisabled()
+  })
+
+  it('should copy vector text when copy button is clicked', () => {
+    renderComponent()
+    fireEvent.click(screen.getByTestId('vector-set-copy-vector-btn-btn'))
+
+    const expectedVector = `[${mockElement.vector!.join(', ')}]`
+    expect(handleCopy).toHaveBeenCalledWith(expectedVector)
+  })
+
+  it('should download vector when download button is clicked', () => {
+    renderComponent()
+    fireEvent.click(screen.getByTestId('vector-set-download-vector-btn'))
+
+    const expectedVector = `[${mockElement.vector!.join(', ')}]`
+    const expectedFilename = `${bufferToString(mockElement.name)}_vector.txt`
+    expect(handleDownloadButton).toHaveBeenCalledWith(
+      expectedVector,
+      expectedFilename,
+    )
   })
 })
