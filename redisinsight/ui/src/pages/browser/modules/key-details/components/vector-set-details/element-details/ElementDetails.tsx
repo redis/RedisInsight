@@ -71,7 +71,7 @@ const ElementDetails = ({
 
   const handleDownloadVector = useCallback(() => {
     handleDownloadButton(vectorText, `${elementName}_vector.txt`)
-  }, [vectorText])
+  }, [vectorText, elementName])
 
   const startEditing = useCallback(() => {
     setSavedValue(value)
