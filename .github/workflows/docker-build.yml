@@ -1,0 +1,15 @@
+name: Docker Build
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    name: Docker Build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t redisinsight-local .
