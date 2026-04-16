@@ -1,4 +1,9 @@
-export const formatVector = (vector?: number[]): string => {
+export const formatVector = (
+  vector?: number[],
+  truncated?: boolean,
+): string => {
   if (!vector?.length) return '[]'
-  return `[${vector.join(', ')}]`
+
+  const formatted = `[${vector.join(', ')}`
+  return truncated ? `${formatted}, ...]` : `${formatted}]`
 }

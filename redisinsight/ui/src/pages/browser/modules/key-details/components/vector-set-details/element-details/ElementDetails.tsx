@@ -11,14 +11,21 @@ import {
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import {
+  IconButton,
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { EditIcon } from 'uiSrc/components/base/icons'
+import { DownloadIcon, EditIcon } from 'uiSrc/components/base/icons'
+import { CopyButton } from 'uiSrc/components/copy-button'
+import { RiTooltip } from 'uiSrc/components'
+import { downloadFile } from 'uiSrc/utils/dom/downloadFile'
 import { CodeEditor } from 'uiSrc/components/base/code-editor'
 import { useMonacoValidation } from 'uiSrc/components/monaco-editor'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
-import { setVectorSetElementAttribute } from 'uiSrc/slices/browser/vectorSet'
+import {
+  fetchDownloadVectorEmbedding,
+  setVectorSetElementAttribute,
+} from 'uiSrc/slices/browser/vectorSet'
 import { bufferToString } from 'uiSrc/utils'
 import { formatVector } from './utils'
 import {
@@ -60,10 +67,23 @@ const ElementDetails = ({
     [element],
   )
 
+  const isTruncatedVector = element?.vectorTruncated ?? false
+
   const vectorText = useMemo(
-    () => formatVector(element?.vector),
-    [element?.vector],
+    () => formatVector(element?.vector, isTruncatedVector),
+    [element?.vector, isTruncatedVector],
   )
+
+  const handleDownloadVector = useCallback(() => {
+    if (!element || !keyName) return
+    dispatch(
+      fetchDownloadVectorEmbedding(
+        keyName as RedisResponseBuffer,
+        element.name,
+        downloadFile,
+      ),
+    )
+  }, [dispatch, element, keyName])
 
   const startEditing = useCallback(() => {
     setSavedValue(value)
@@ -130,12 +150,32 @@ const ElementDetails = ({
               <Text color="secondary">{VECTOR_DESCRIPTION}</Text>
               <Col gap="s">
                 <Text color="primary">Vector</Text>
-                <S.VectorTextArea
-                  readOnly
-                  value={vectorText}
-                  data-testid="vector-set-vector-value"
-                  height="110px"
-                />
+                <S.VectorWrapper>
+                  <S.VectorActions gap="m" align="end">
+                    {isTruncatedVector ? (
+                      <RiTooltip content="Download" position="left">
+                        <IconButton
+                          icon={DownloadIcon}
+                          aria-label="Download vector"
+                          onClick={handleDownloadVector}
+                          data-testid="vector-set-download-vector-btn"
+                        />
+                      </RiTooltip>
+                    ) : (
+                      <CopyButton
+                        copy={vectorText}
+                        aria-label="Copy vector"
+                        data-testid="vector-set-copy-vector-btn"
+                      />
+                    )}
+                  </S.VectorActions>
+                  <S.VectorTextArea
+                    readOnly
+                    value={vectorText}
+                    data-testid="vector-set-vector-value"
+                    height="110px"
+                  />
+                </S.VectorWrapper>
               </Col>
             </Col>
 

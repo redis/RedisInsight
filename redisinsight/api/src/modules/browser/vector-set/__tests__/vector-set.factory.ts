@@ -3,10 +3,11 @@ import { faker } from '@faker-js/faker';
 import {
   DeleteVectorSetElementsDto,
   VectorSetElementDto,
+  VectorSetElementKeyDto,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
   SetVectorSetElementAttributeDto,
-  GetVectorSetElementAttributeDto,
+  GetVectorSetElementDetailsDto,
 } from 'src/modules/browser/vector-set/dto';
 
 export const vectorSetElementFactory = Factory.define<VectorSetElementDto>(
@@ -40,8 +41,8 @@ export const deleteVectorSetElementsDtoFactory =
     ],
   }));
 
-export const getVectorSetElementAttributeDtoFactory =
-  Factory.define<GetVectorSetElementAttributeDto>(() => ({
+export const getVectorSetElementDetailsDtoFactory =
+  Factory.define<GetVectorSetElementDetailsDto>(() => ({
     keyName: Buffer.from(`vset:${faker.string.alphanumeric(6)}`),
     element: Buffer.from(faker.string.alphanumeric(8)),
   }));
@@ -53,6 +54,12 @@ export const setVectorSetElementAttributeDtoFactory =
     attributes: JSON.stringify({
       [faker.string.alpha(5)]: faker.string.alpha(5),
     }),
+  }));
+
+export const downloadVectorSetEmbeddingDtoFactory =
+  Factory.define<VectorSetElementKeyDto>(() => ({
+    keyName: Buffer.from(`vset:${faker.string.alphanumeric(6)}`),
+    element: Buffer.from(faker.string.alphanumeric(8)),
   }));
 
 export const getVectorSetElementsResponseFactory =

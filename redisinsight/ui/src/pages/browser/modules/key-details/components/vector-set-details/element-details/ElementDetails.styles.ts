@@ -9,10 +9,23 @@ export const Body = styled(Col)`
 `
 
 export const VectorTextArea = styled(TextArea)`
-  font-family: 'Source Code Pro';
+  font-family: 'Source Code Pro', 'Inconsolata', monospace;
   border: 1px solid ${({ theme }) => theme.semantic?.color?.border?.neutral500};
-  padding: ${({ theme }) => theme.core?.space?.space020};
   scrollbar-width: thin;
+  padding: ${({ theme }) => theme.core?.space?.space025};
+  padding-right: ${({ theme }) => theme.core?.space?.space400};
+`
+
+export const VectorWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`
+
+export const VectorActions = styled(Col)`
+  position: absolute;
+  top: ${({ theme }) => theme.core?.space?.space150};
+  right: ${({ theme }) => theme.core?.space?.space150};
+  z-index: 1;
 `
 
 export const EditorWrapper = styled.div<{ children: React.ReactNode }>`

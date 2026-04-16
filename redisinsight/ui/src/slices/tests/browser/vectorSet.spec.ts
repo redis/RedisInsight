@@ -39,12 +39,16 @@ import reducer, {
   removeVectorSetElementsFailure,
   removeElementsFromList,
   updateElementAttributes,
+  downloadVectorSetEmbedding,
+  downloadVectorSetEmbeddingSuccess,
+  downloadVectorSetEmbeddingFailure,
   vectorSetSelector,
   fetchVectorSetElements,
   fetchMoreVectorSetElements,
   deleteVectorSetElements,
-  getVectorSetElementAttribute,
+  getVectorSetElementDetails,
   setVectorSetElementAttribute,
+  fetchDownloadVectorEmbedding,
 } from '../../browser/vectorSet'
 
 jest.mock('uiSrc/services', () => ({
@@ -110,6 +114,7 @@ describe('vectorSet slice', () => {
 
       const state = {
         loading: false,
+        downloading: false,
         error: '',
         data: {
           ...data,
@@ -136,6 +141,7 @@ describe('vectorSet slice', () => {
 
       const state = {
         loading: false,
+        downloading: false,
         error: '',
         data: {
           ...initialState.data,
@@ -169,6 +175,7 @@ describe('vectorSet slice', () => {
 
       const state = {
         loading: false,
+        downloading: false,
         error: '',
         data: {
           ...data,
@@ -203,6 +210,7 @@ describe('vectorSet slice', () => {
 
       const state = {
         loading: false,
+        downloading: false,
         error: '',
         data: {
           ...data,
@@ -229,6 +237,7 @@ describe('vectorSet slice', () => {
       const data = 'some error'
       const state = {
         loading: false,
+        downloading: false,
         error: data,
         data: initialState.data,
       }
@@ -250,6 +259,7 @@ describe('vectorSet slice', () => {
     it('should properly set the state before the fetch data', () => {
       const state = {
         loading: true,
+        downloading: false,
         error: '',
         data: initialState.data,
       }
@@ -277,6 +287,7 @@ describe('vectorSet slice', () => {
 
       const state = {
         loading: false,
+        downloading: false,
         error: '',
         data: {
           ...initialState.data,
@@ -305,6 +316,7 @@ describe('vectorSet slice', () => {
       const data = 'some error'
       const state = {
         loading: false,
+        downloading: false,
         error: data,
         data: initialState.data,
       }
@@ -380,6 +392,37 @@ describe('vectorSet slice', () => {
         browser: { ...initialStateDefault.browser, vectorSet: nextState },
       }
       expect(vectorSetSelector(rootState)).toEqual(state)
+    })
+  })
+
+  describe('downloadVectorSetEmbedding', () => {
+    it('should set downloading true without affecting loading', () => {
+      const nextState = reducer(initialState, downloadVectorSetEmbedding())
+
+      expect(nextState.downloading).toBe(true)
+      expect(nextState.loading).toBe(false)
+    })
+  })
+
+  describe('downloadVectorSetEmbeddingSuccess', () => {
+    it('should set downloading false', () => {
+      const prevState = { ...initialState, downloading: true, error: 'old' }
+      const nextState = reducer(prevState, downloadVectorSetEmbeddingSuccess())
+
+      expect(nextState.downloading).toBe(false)
+    })
+  })
+
+  describe('downloadVectorSetEmbeddingFailure', () => {
+    it('should set downloading false and store error', () => {
+      const prevState = { ...initialState, downloading: true }
+      const nextState = reducer(
+        prevState,
+        downloadVectorSetEmbeddingFailure('download failed'),
+      )
+
+      expect(nextState.downloading).toBe(false)
+      expect(nextState.error).toBe('download failed')
     })
   })
 
@@ -631,83 +674,6 @@ describe('vectorSet slice', () => {
       })
     })
 
-    describe('getVectorSetElementAttribute', () => {
-      const mockElement = vectorSetElementWithAttributesFactory.build()
-      const key = vectorSetTestKeyName()
-      const { name: element, attributes } = mockElement
-
-      it('should dispatch updateElementAttributes and call onSuccess when get is successful', async () => {
-        const responsePayload = {
-          status: 200,
-          data: { attributes },
-        }
-        apiService.post = jest.fn().mockResolvedValue(responsePayload)
-
-        const onSuccess = jest.fn()
-
-        await store.dispatch<any>(
-          getVectorSetElementAttribute(key as any, element, onSuccess),
-        )
-
-        const expectedActions = [
-          updateElementAttributes({
-            element,
-            attributes: attributes!,
-          }),
-        ]
-
-        expect(store.getActions()).toEqual(expectedActions)
-        expect(onSuccess).toHaveBeenCalledTimes(1)
-        expect(onSuccess).toHaveBeenCalledWith(attributes)
-      })
-
-      it('should dispatch updateElementAttributes with empty string when attributes is undefined', async () => {
-        const responsePayload = {
-          status: 200,
-          data: { attributes: undefined },
-        }
-        apiService.post = jest.fn().mockResolvedValue(responsePayload)
-
-        const onSuccess = jest.fn()
-
-        await store.dispatch<any>(
-          getVectorSetElementAttribute(key as any, element, onSuccess),
-        )
-
-        const expectedActions = [
-          updateElementAttributes({
-            element,
-            attributes: '',
-          }),
-        ]
-
-        expect(store.getActions()).toEqual(expectedActions)
-        expect(onSuccess).toHaveBeenCalledWith(undefined)
-      })
-
-      it('should dispatch error notification when get fails', async () => {
-        const responsePayload = {
-          response: {
-            status: 500,
-            data: { message: 'Something was wrong!' },
-          },
-        }
-        apiService.post = jest.fn().mockRejectedValue(responsePayload)
-
-        await store.dispatch<any>(
-          getVectorSetElementAttribute(key as any, element),
-        )
-
-        const expectedActions = [
-          addErrorNotification(
-            responsePayload as unknown as IAddInstanceErrorPayload,
-          ),
-        ]
-
-        expect(store.getActions()).toEqual(expectedActions)
-      })
-    })
-
     describe('setVectorSetElementAttribute', () => {
       const mockElement = vectorSetElementWithAttributesFactory.build()
       const key = vectorSetTestKeyName()
@@ -759,6 +725,146 @@ describe('vectorSet slice', () => {
           addErrorNotification(
             responsePayload as unknown as IAddInstanceErrorPayload,
           ),
+        ]
+
+        expect(store.getActions()).toEqual(expectedActions)
+      })
+    })
+
+    describe('getVectorSetElementDetails', () => {
+      const mockElement = vectorSetElementWithAttributesFactory.build()
+      const key = vectorSetTestKeyName()
+      const { name: element, attributes } = mockElement
+
+      it('should dispatch updateElementAttributes and call onSuccess with full details', async () => {
+        const responsePayload = {
+          status: 200,
+          data: {
+            name: element,
+            vector: [0.1, 0.2, 0.3],
+            attributes,
+          },
+        }
+        apiService.post = jest.fn().mockResolvedValue(responsePayload)
+
+        const onSuccess = jest.fn()
+
+        await store.dispatch<any>(
+          getVectorSetElementDetails(key as any, element, onSuccess),
+        )
+
+        const expectedActions = [
+          updateElementAttributes({
+            element,
+            attributes: attributes!,
+          }),
+        ]
+
+        expect(store.getActions()).toEqual(expectedActions)
+        expect(onSuccess).toHaveBeenCalledTimes(1)
+        expect(onSuccess).toHaveBeenCalledWith(responsePayload.data)
+      })
+
+      it('should dispatch updateElementAttributes with empty string when attributes is undefined', async () => {
+        const responsePayload = {
+          status: 200,
+          data: {
+            name: element,
+            vector: [0.1, 0.2],
+            attributes: undefined,
+          },
+        }
+        apiService.post = jest.fn().mockResolvedValue(responsePayload)
+
+        await store.dispatch<any>(
+          getVectorSetElementDetails(key as any, element),
+        )
+
+        const expectedActions = [
+          updateElementAttributes({
+            element,
+            attributes: '',
+          }),
+        ]
+
+        expect(store.getActions()).toEqual(expectedActions)
+      })
+
+      it('should dispatch error notification when get fails', async () => {
+        const responsePayload = {
+          response: {
+            status: 500,
+            data: { message: 'Something was wrong!' },
+          },
+        }
+        apiService.post = jest.fn().mockRejectedValue(responsePayload)
+
+        await store.dispatch<any>(
+          getVectorSetElementDetails(key as any, element),
+        )
+
+        const expectedActions = [
+          addErrorNotification(
+            responsePayload as unknown as IAddInstanceErrorPayload,
+          ),
+        ]
+
+        expect(store.getActions()).toEqual(expectedActions)
+      })
+    })
+
+    describe('fetchDownloadVectorEmbedding', () => {
+      const key = vectorSetTestKeyName()
+      const element = vectorSetElementFactory.build().name
+
+      it('should dispatch success actions when download succeeds', async () => {
+        const responsePayload = {
+          status: 200,
+          data: '[0.1, 0.2, 0.3]',
+          headers: {
+            'content-disposition': 'attachment;filename="vector_embedding"',
+          },
+        }
+        apiService.post = jest.fn().mockResolvedValue(responsePayload)
+
+        const onSuccess = jest.fn()
+
+        await store.dispatch<any>(
+          fetchDownloadVectorEmbedding(key as any, element, onSuccess),
+        )
+
+        const expectedActions = [
+          downloadVectorSetEmbedding(),
+          downloadVectorSetEmbeddingSuccess(),
+        ]
+
+        expect(store.getActions()).toEqual(expectedActions)
+        expect(onSuccess).toHaveBeenCalledWith(
+          responsePayload.data,
+          responsePayload.headers,
+        )
+      })
+
+      it('should dispatch failure actions when download fails', async () => {
+        const errorMessage = 'Download failed!'
+        const responsePayload = {
+          response: {
+            status: 500,
+            data: { message: errorMessage },
+          },
+        }
+        apiService.post = jest.fn().mockRejectedValue(responsePayload)
+
+        await store.dispatch<any>(
+          fetchDownloadVectorEmbedding(key as any, element),
+        )
+
+        const expectedActions = [
+          downloadVectorSetEmbedding(),
+          addErrorNotification(
+            responsePayload as unknown as IAddInstanceErrorPayload,
+          ),
+          downloadVectorSetEmbeddingFailure(errorMessage),
         ]
 
         expect(store.getActions()).toEqual(expectedActions)

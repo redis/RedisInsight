@@ -4,6 +4,7 @@ import {
   Delete,
   Post,
   Put,
+  Res,
   UseInterceptors,
   UsePipes,
   ValidationPipe,
@@ -16,16 +17,18 @@ import { ClientMetadata } from 'src/common/models';
 import {
   DeleteVectorSetElementsDto,
   DeleteVectorSetElementsResponse,
-  GetVectorSetElementAttributeDto,
-  GetVectorSetElementAttributeResponse,
+  GetVectorSetElementDetailsDto,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
   SetVectorSetElementAttributeDto,
   SetVectorSetElementAttributeResponse,
+  VectorSetElementDto,
+  VectorSetElementKeyDto,
 } from 'src/modules/browser/vector-set/dto';
 import { VectorSetService } from 'src/modules/browser/vector-set/vector-set.service';
 import { BrowserSerializeInterceptor } from 'src/common/interceptors';
 import { BrowserBaseController } from 'src/modules/browser/browser.base.controller';
+import { Response } from 'express';
 
 @ApiTags('Browser: VectorSet')
 @UseInterceptors(BrowserSerializeInterceptor)
@@ -57,24 +60,25 @@ export class VectorSetController extends BrowserBaseController {
     return await this.vectorSetService.getElements(clientMetadata, dto);
   }
 
-  @Post('/get-attributes')
+  @Post('/get-details')
   @ApiRedisInstanceOperation({
-    description: 'Get attributes of an element in the VectorSet stored at key',
+    description:
+      'Get the full details (embedding and attributes) of an element in the VectorSet stored at key',
     statusCode: 200,
     responses: [
       {
         status: 200,
         description: 'Ok',
-        type: GetVectorSetElementAttributeResponse,
+        type: VectorSetElementDto,
       },
     ],
   })
   @ApiQueryRedisStringEncoding()
-  async getElementAttribute(
+  async getElementDetails(
     @BrowserClientMetadata() clientMetadata: ClientMetadata,
-    @Body() dto: GetVectorSetElementAttributeDto,
-  ): Promise<GetVectorSetElementAttributeResponse> {
-    return await this.vectorSetService.getElementAttribute(clientMetadata, dto);
+    @Body() dto: GetVectorSetElementDetailsDto,
+  ): Promise<VectorSetElementDto> {
+    return await this.vectorSetService.getElementDetails(clientMetadata, dto);
   }
 
   @Put('/attributes')
@@ -95,6 +99,47 @@ export class VectorSetController extends BrowserBaseController {
     @Body() dto: SetVectorSetElementAttributeDto,
   ): Promise<SetVectorSetElementAttributeResponse> {
     return await this.vectorSetService.setElementAttribute(clientMetadata, dto);
+  }
+
+  @Post('/download-embedding')
+  @ApiRedisInstanceOperation({
+    description:
+      'Download the full vector embedding of an element in the VectorSet stored at key',
+    statusCode: 200,
+    responses: [
+      {
+        status: 200,
+        description: 'Ok',
+      },
+    ],
+  })
+  @ApiQueryRedisStringEncoding()
+  async downloadEmbedding(
+    @Res() res: Response,
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: VectorSetElementKeyDto,
+  ): Promise<void> {
+    const { stream } = await this.vectorSetService.downloadEmbedding(
+      clientMetadata,
+      dto,
+    );
+
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader(
+      'Content-Disposition',
+      'attachment;filename="vector_embedding"',
+    );
+    res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+
+    stream
+      .on('error', () => {
+        if (!res.headersSent) {
+          res.status(404).send();
+        } else {
+          res.destroy();
+        }
+      })
+      .pipe(res);
   }
 
   @Delete('/elements')
