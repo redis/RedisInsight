@@ -19,6 +19,7 @@ export interface ModifiedVectorSetResponse {
 
 export interface InitialStateVectorSet {
   loading: boolean
+  downloading: boolean
   error: string
   data: ModifiedVectorSetResponse
 }

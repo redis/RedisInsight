@@ -36,6 +36,7 @@ const VECTOR_SET_COUNT_DEFAULT = 10
 
 export const initialState: InitialStateVectorSet = {
   loading: false,
+  downloading: false,
   error: '',
   data: {
     total: 0,
@@ -138,15 +139,13 @@ const vectorSetSlice = createSlice({
     },
 
     downloadVectorSetEmbedding: (state) => {
-      state.loading = true
-      state.error = ''
+      state.downloading = true
     },
     downloadVectorSetEmbeddingSuccess: (state) => {
-      state.loading = false
-      state.error = ''
+      state.downloading = false
     },
     downloadVectorSetEmbeddingFailure: (state, { payload }) => {
-      state.loading = false
+      state.downloading = false
       state.error = payload
     },
   },

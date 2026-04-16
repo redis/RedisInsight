@@ -114,6 +114,7 @@ describe('vectorSet slice', () => {
 
       const state = {
         loading: false,
+        downloading: false,
         error: '',
         data: {
           ...data,
@@ -140,6 +141,7 @@ describe('vectorSet slice', () => {
 
       const state = {
         loading: false,
+        downloading: false,
         error: '',
         data: {
           ...initialState.data,
@@ -173,6 +175,7 @@ describe('vectorSet slice', () => {
 
       const state = {
         loading: false,
+        downloading: false,
         error: '',
         data: {
           ...data,
@@ -207,6 +210,7 @@ describe('vectorSet slice', () => {
 
       const state = {
         loading: false,
+        downloading: false,
         error: '',
         data: {
           ...data,
@@ -233,6 +237,7 @@ describe('vectorSet slice', () => {
       const data = 'some error'
       const state = {
         loading: false,
+        downloading: false,
         error: data,
         data: initialState.data,
       }
@@ -254,6 +259,7 @@ describe('vectorSet slice', () => {
     it('should properly set the state before the fetch data', () => {
       const state = {
         loading: true,
+        downloading: false,
         error: '',
         data: initialState.data,
       }
@@ -281,6 +287,7 @@ describe('vectorSet slice', () => {
 
       const state = {
         loading: false,
+        downloading: false,
         error: '',
         data: {
           ...initialState.data,
@@ -309,6 +316,7 @@ describe('vectorSet slice', () => {
       const data = 'some error'
       const state = {
         loading: false,
+        downloading: false,
         error: data,
         data: initialState.data,
       }
@@ -388,33 +396,32 @@ describe('vectorSet slice', () => {
   })
 
   describe('downloadVectorSetEmbedding', () => {
-    it('should set loading true and clear error', () => {
+    it('should set downloading true without affecting loading', () => {
       const nextState = reducer(initialState, downloadVectorSetEmbedding())
 
-      expect(nextState.loading).toBe(true)
-      expect(nextState.error).toBe('')
+      expect(nextState.downloading).toBe(true)
+      expect(nextState.loading).toBe(false)
     })
   })
 
   describe('downloadVectorSetEmbeddingSuccess', () => {
-    it('should set loading false and clear error', () => {
-      const prevState = { ...initialState, loading: true, error: 'old' }
+    it('should set downloading false', () => {
+      const prevState = { ...initialState, downloading: true, error: 'old' }
       const nextState = reducer(prevState, downloadVectorSetEmbeddingSuccess())
 
-      expect(nextState.loading).toBe(false)
-      expect(nextState.error).toBe('')
+      expect(nextState.downloading).toBe(false)
     })
   })
 
   describe('downloadVectorSetEmbeddingFailure', () => {
-    it('should set loading false and store error', () => {
-      const prevState = { ...initialState, loading: true }
+    it('should set downloading false and store error', () => {
+      const prevState = { ...initialState, downloading: true }
       const nextState = reducer(
         prevState,
         downloadVectorSetEmbeddingFailure('download failed'),
       )
 
-      expect(nextState.loading).toBe(false)
+      expect(nextState.downloading).toBe(false)
       expect(nextState.error).toBe('download failed')
     })
   })
