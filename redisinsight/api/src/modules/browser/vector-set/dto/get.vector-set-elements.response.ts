@@ -1,6 +1,6 @@
 import { KeyResponse } from 'src/modules/browser/keys/dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { VectorSetElementDto } from './vector-set-element.dto';
+import { VectorSetElementKeyDto } from './vector-set-element-key.dto';
 
 export class GetVectorSetElementsResponse extends KeyResponse {
   @ApiProperty({
@@ -28,7 +28,7 @@ export class GetVectorSetElementsResponse extends KeyResponse {
   @ApiProperty({
     description: 'Array of vector set elements.',
     isArray: true,
-    type: () => VectorSetElementDto,
+    type: () => VectorSetElementKeyDto,
   })
-  elements: VectorSetElementDto[];
+  elements: VectorSetElementKeyDto[];
 }
