@@ -1,0 +1,61 @@
+meta {
+  name: Create Vector Set
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/vector-set
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "vset:my_new_set",
+    "elements": [
+      {
+        "name": "item_1",
+        "vector": [0.1, 0.2, 0.3],
+        "attributes": "{\"color\": \"red\"}"
+      },
+      {
+        "name": "item_2",
+        "vector": [0.4, 0.5, 0.6]
+      }
+    ],
+    "expire": 3600
+  }
+}
+
+docs {
+  # Create Vector Set
+
+  Creates a new Vector Set key with the provided elements. Uses the Redis `VADD` command internally (one call per element, pipelined).
+
+  ## Request Body
+
+  | Field | Type | Description |
+  |-------|------|-------------|
+  | `keyName` | string | The key name for the new Vector Set |
+  | `elements` | array | Array of elements to add |
+  | `elements[].name` | string | Element name |
+  | `elements[].vector` | number[] | Vector embedding values |
+  | `elements[].attributes` | string (optional) | Attributes string to associate with the element (passed via SETATTR) |
+  | `expire` | number (optional) | TTL in seconds |
+
+  ## Response
+
+  Returns `201 Created` with no body on success.
+
+  ## Error Responses
+
+  | Status | Condition |
+  |--------|-----------|
+  | `400` | Key already exists |
+  | `403` | User has no permissions |
+}
+
+settings {
+  encodeUrl: true
+}
