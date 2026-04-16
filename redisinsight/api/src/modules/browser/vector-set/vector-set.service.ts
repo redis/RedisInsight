@@ -37,6 +37,89 @@ export class VectorSetService {
 
   constructor(private databaseClientFactory: DatabaseClientFactory) {}
 
+  public async createVectorSet(
+    clientMetadata: ClientMetadata,
+    dto: CreateVectorSetDto,
+  ): Promise<void> {
+    try {
+      this.logger.debug('Creating VectorSet data type.', clientMetadata);
+      const { keyName, elements, expire } = dto;
+      const client: RedisClient =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+
+      await checkIfKeyExists(keyName, client);
+
+      const commands: RedisClientCommand[] = elements.map((element) =>
+        this.buildVaddCommand(keyName, element),
+      );
+
+      if (expire) {
+        commands.push([
+          BrowserToolKeysCommands.Expire,
+          keyName,
+          expire,
+        ] as RedisClientCommand);
+      }
+
+      const transactionResults = await client.sendPipeline(commands);
+      catchMultiTransactionError(transactionResults);
+
+      this.logger.debug(
+        'Succeed to create VectorSet data type.',
+        clientMetadata,
+      );
+    } catch (error) {
+      this.logger.error(
+        'Failed to create VectorSet data type.',
+        error,
+        clientMetadata,
+      );
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
+  public async addElements(
+    clientMetadata: ClientMetadata,
+    dto: AddElementsToVectorSetDto,
+  ): Promise<void> {
+    try {
+      this.logger.debug(
+        'Adding elements to the VectorSet data type.',
+        clientMetadata,
+      );
+      const { keyName, elements } = dto;
+      const client: RedisClient =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+
+      await checkIfKeyNotExists(keyName, client);
+
+      const commands: RedisClientCommand[] = elements.map((element) =>
+        this.buildVaddCommand(keyName, element),
+      );
+
+      const transactionResults = await client.sendPipeline(commands);
+      catchMultiTransactionError(transactionResults);
+
+      this.logger.debug(
+        'Succeed to add elements to VectorSet data type.',
+        clientMetadata,
+      );
+    } catch (error) {
+      this.logger.error(
+        'Failed to add elements to VectorSet data type.',
+        error,
+        clientMetadata,
+      );
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
   public async getElements(
     clientMetadata: ClientMetadata,
     dto: GetVectorSetElementsDto,
