@@ -9,7 +9,7 @@ export const Body = styled(Col)`
 `
 
 export const VectorTextArea = styled(TextArea)`
-  font-family: 'Source Code Pro';
+  font-family: 'Source Code Pro', 'Inconsolata', monospace;
   border: 1px solid ${({ theme }) => theme.semantic?.color?.border?.neutral500};
   scrollbar-width: thin;
   padding: ${({ theme }) => theme.core?.space?.space025};
