@@ -28,6 +28,7 @@ export const IndexDetails = ({
       <Table
         columns={columns}
         data={fields}
+        enableColumnResizing
         getRowId={(row: IndexField) => row.id}
         rowSelectionMode={isEditable ? 'multiple' : undefined}
         rowSelection={rowSelection}

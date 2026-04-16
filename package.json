@@ -251,10 +251,10 @@
   "dependencies": {
     "@elastic/datemath": "^5.0.3",
     "@elastic/eui": "34.6.0",
-    "@redis-ui/components": "^43.2.1",
-    "@redis-ui/icons": "^6.8.5",
-    "@redis-ui/styles": "^14.13.0",
-    "@redis-ui/table": "^3.5.9",
+    "@redis-ui/components": "^44.0.1",
+    "@redis-ui/icons": "^6.9.3",
+    "@redis-ui/styles": "^15.0.0",
+    "@redis-ui/table": "^3.7.0",
     "@reduxjs/toolkit": "^1.6.2",
     "@stablelib/snappy": "^1.0.2",
     "@types/json-dup-key-validator": "^1.0.2",
@@ -324,7 +324,7 @@
     "uuid": "^8.3.2"
   },
   "engines": {
-    "node": ">=22.22.0",
+    "node": ">=22.x",
     "npm": ">=6.x",
     "yarn": ">=1.21.3"
   },
