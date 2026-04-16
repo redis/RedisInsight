@@ -166,7 +166,7 @@
     "core-js": "^3.6.5",
     "cross-env": "^7.0.2",
     "css-loader": "^5.0.1",
-    "css-minimizer-webpack-plugin": "^6.0.0",
+    "css-minimizer-webpack-plugin": "^8.0.0",
     "csv-parser": "^3.0.0",
     "csv-stringify": "^6.4.0",
     "dotenv": "^16.4.5",
