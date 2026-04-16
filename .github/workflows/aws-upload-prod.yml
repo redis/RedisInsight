@@ -19,7 +19,7 @@ jobs:
 
       - name: Merge builds by pattern
         id: merge-builds
-        uses: actions/upload-artifact/merge@v4
+        uses: actions/upload-artifact/merge@v7
         with:
           name: 'all-builds'
           pattern: '*-builds'

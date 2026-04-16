@@ -57,7 +57,7 @@ jobs:
           rm -rf release/win-unpacked
         shell: bash
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: windows-builds
           if-no-files-found: error

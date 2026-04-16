@@ -165,7 +165,7 @@ jobs:
 
       - name: Upload coverage files as artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverages-${{ matrix.rte }}
           path: ./itest/coverages
@@ -258,7 +258,7 @@ jobs:
 
       - name: Merge coverage artifacts
         id: merge-artifacts
-        uses: actions/upload-artifact/merge@v4
+        uses: actions/upload-artifact/merge@v7
         with:
           name: coverages-artifacts
           pattern: coverages-*
@@ -280,7 +280,7 @@ jobs:
           cp integration-coverage.txt $GITHUB_WORKSPACE/integration-coverage.txt
 
       - name: Upload integration-coverage as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: integration-coverage
           path: integration-coverage.txt
