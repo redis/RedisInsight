@@ -1,16 +1,43 @@
 name: Install Windows certs
 
 inputs:
-  WIN_CSC_PFX_BASE64:
+  WIN_CSC_DIGICERT_API_KEY:
+    required: true
+  WIN_CSC_DIGICERT_CLIENT_CERT_B64:
+    required: true
+  WIN_CSC_DIGICERT_CLIENT_CERT_PASSWORD:
+    required: true
+  WIN_CSC_DIGICERT_HOST:
+    required: false
+    default: 'https://clientauth.one.digicert.com'
+  WIN_CSC_DIGICERT_KEYPAIR_ALIAS:
     required: true
 
 runs:
   using: 'composite'
   steps:
-    - name: Setup sign certificates
+    - name: Setup certificate from base64 secret
       shell: bash
-      env:
-        WIN_CSC_PFX_BASE64: ${{ inputs.WIN_CSC_PFX_BASE64 }}
       run: |
-        mkdir -p certs
-        echo "$WIN_CSC_PFX_BASE64" | base64 -d > certs/redislabs_win.pfx
+        echo "${{ inputs.WIN_CSC_DIGICERT_CLIENT_CERT_B64 }}" | base64 --decode > /d/Certificate_pkcs12.p12
+
+    - name: Set DigiCert environment variables
+      shell: bash
+      run: |
+        echo "SM_HOST=${{ inputs.WIN_CSC_DIGICERT_HOST }}" >> "$GITHUB_ENV"
+        echo "SM_API_KEY=${{ inputs.WIN_CSC_DIGICERT_API_KEY }}" >> "$GITHUB_ENV"
+        echo "SM_CLIENT_CERT_FILE=D:\\Certificate_pkcs12.p12" >> "$GITHUB_ENV"
+        echo "SM_CLIENT_CERT_PASSWORD=${{ inputs.WIN_CSC_DIGICERT_CLIENT_CERT_PASSWORD }}" >> "$GITHUB_ENV"
+        echo "C:\Program Files\DigiCert\DigiCert Keylocker Tools" >> $GITHUB_PATH
+
+    - name: Install DigiCert KeyLocker tools
+      shell: cmd
+      run: |
+        curl -X GET https://one.digicert.com/signingmanager/api-ui/v1/releases/Keylockertools-windows-x64.msi/download -H "x-api-key:%SM_API_KEY%" -o Keylockertools-windows-x64.msi
+        msiexec /i Keylockertools-windows-x64.msi /quiet /qn
+
+    - name: Register KSP and sync certificate to Windows certificate store
+      shell: cmd
+      run: |
+        smctl windows ksp register
+        smctl windows certsync --keypair-alias=${{ inputs.WIN_CSC_DIGICERT_KEYPAIR_ALIAS }}

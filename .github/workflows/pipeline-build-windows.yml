@@ -38,7 +38,10 @@ jobs:
       - name: Setup certs
         uses: ./.github/actions/install-windows-certs
         with:
-          WIN_CSC_PFX_BASE64: ${{ secrets.WIN_CSC_PFX_BASE64 }}
+          WIN_CSC_DIGICERT_API_KEY: ${{ secrets.WIN_CSC_DIGICERT_API_KEY }}
+          WIN_CSC_DIGICERT_CLIENT_CERT_B64: ${{ secrets.WIN_CSC_DIGICERT_CLIENT_CERT_B64 }}
+          WIN_CSC_DIGICERT_CLIENT_CERT_PASSWORD: ${{ secrets.WIN_CSC_DIGICERT_CLIENT_CERT_PASSWORD }}
+          WIN_CSC_DIGICERT_KEYPAIR_ALIAS: ${{ secrets.WIN_CSC_DIGICERT_KEYPAIR_ALIAS }}
 
       - name: Install plugins dependencies and build plugins
         run: yarn build:statics:win
@@ -46,14 +49,14 @@ jobs:
       - name: Build windows exe (production)
         if: vars.ENV == 'production'
         run: |
-          yarn package:prod
+          yarn package:prod -c.win.signtoolOptions.certificateSha1=${{ secrets.WIN_CSC_DIGICERT_CERT_SHA1 }}
           rm -rf release/win-unpacked
         shell: bash
 
       - name: Build windows exe (staging)
         if: (vars.ENV == 'staging' ||  vars.ENV == 'development')
         run: |
-          yarn package:stage
+          yarn package:stage -c.win.signtoolOptions.certificateSha1=${{ secrets.WIN_CSC_DIGICERT_CERT_SHA1 }}
           rm -rf release/win-unpacked
         shell: bash
 
@@ -67,8 +70,6 @@ jobs:
             ./release/latest.yml
 
     env:
-      WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
-      WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
       RI_AI_CONVAI_TOKEN: ${{ secrets.RI_AI_CONVAI_TOKEN }}
       RI_AI_QUERY_PASS: ${{ secrets.RI_AI_QUERY_PASS }}
       RI_AI_QUERY_USER: ${{ secrets.RI_AI_QUERY_USER }}

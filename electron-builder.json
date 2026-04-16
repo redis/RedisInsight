@@ -87,7 +87,11 @@
     "target": ["nsis"],
     "artifactName": "Redis-Insight-${os}-installer.${ext}",
     "icon": "resources/icon.ico",
-    "legalTrademarks": "Redis Inc., Redis Labs Inc."
+    "legalTrademarks": "Redis Inc., Redis Labs Inc.",
+    "signtoolOptions": {
+      "signingHashAlgorithms": ["sha256"],
+      "rfc3161TimeStampServer": "http://timestamp.digicert.com"
+    }
   },
   "nsis": {
     "oneClick": false,
