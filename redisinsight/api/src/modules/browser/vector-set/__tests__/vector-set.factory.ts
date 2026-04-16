@@ -1,17 +1,19 @@
 import { Factory } from 'fishery';
 import { faker } from '@faker-js/faker';
 import {
+  AddElementsToVectorSetDto,
+  AddVectorSetElementDto,
+  CreateVectorSetDto,
   DeleteVectorSetElementsDto,
-  VectorSetElementDto,
+  VectorSetElementDetailsDto,
   VectorSetElementKeyDto,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
   SetVectorSetElementAttributeDto,
-  GetVectorSetElementDetailsDto,
 } from 'src/modules/browser/vector-set/dto';
 
-export const vectorSetElementFactory = Factory.define<VectorSetElementDto>(
-  () => ({
+export const vectorSetElementFactory =
+  Factory.define<VectorSetElementDetailsDto>(() => ({
     name: Buffer.from(faker.string.alphanumeric(8)),
     vector: Array.from({ length: 3 }, () =>
       parseFloat(
@@ -21,8 +23,7 @@ export const vectorSetElementFactory = Factory.define<VectorSetElementDto>(
     attributes: faker.datatype.boolean()
       ? JSON.stringify({ [faker.string.alpha(5)]: faker.string.alpha(5) })
       : undefined,
-  }),
-);
+  }));
 
 export const getVectorSetElementsDtoFactory =
   Factory.define<GetVectorSetElementsDto>(() => ({
@@ -42,7 +43,7 @@ export const deleteVectorSetElementsDtoFactory =
   }));
 
 export const getVectorSetElementDetailsDtoFactory =
-  Factory.define<GetVectorSetElementDetailsDto>(() => ({
+  Factory.define<VectorSetElementKeyDto>(() => ({
     keyName: Buffer.from(`vset:${faker.string.alphanumeric(6)}`),
     element: Buffer.from(faker.string.alphanumeric(8)),
   }));
@@ -61,6 +62,29 @@ export const downloadVectorSetEmbeddingDtoFactory =
     keyName: Buffer.from(`vset:${faker.string.alphanumeric(6)}`),
     element: Buffer.from(faker.string.alphanumeric(8)),
   }));
+
+export const addVectorSetElementDtoFactory =
+  Factory.define<AddVectorSetElementDto>(() => ({
+    name: Buffer.from(faker.string.alphanumeric(8)),
+    vector: Array.from({ length: 3 }, () =>
+      parseFloat(
+        faker.number.float({ min: 0, max: 1, fractionDigits: 2 }).toFixed(2),
+      ),
+    ),
+  }));
+
+export const addElementsToVectorSetDtoFactory =
+  Factory.define<AddElementsToVectorSetDto>(() => ({
+    keyName: Buffer.from(`vset:${faker.string.alphanumeric(6)}`),
+    elements: addVectorSetElementDtoFactory.buildList(2),
+  }));
+
+export const createVectorSetDtoFactory = Factory.define<CreateVectorSetDto>(
+  () => ({
+    keyName: Buffer.from(`vset:${faker.string.alphanumeric(6)}`),
+    elements: addVectorSetElementDtoFactory.buildList(2),
+  }),
+);
 
 export const getVectorSetElementsResponseFactory =
   Factory.define<GetVectorSetElementsResponse>(({ transientParams }) => {
