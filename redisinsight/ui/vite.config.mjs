@@ -103,6 +103,8 @@ export default defineConfig({
       '@antv/hierarchy',
       'class-transformer',
       'keytar',
+      'ssh2',
+      'tunnel-ssh',
       '@nestjs/common',
       '@nestjs/core',
       '@nestjs/event-emitter',
