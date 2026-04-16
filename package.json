@@ -318,7 +318,7 @@
     "semver": "^7.7.2",
     "socket.io-client": "^4.8.0",
     "styled-components": "^5.0.0",
-    "unified": "^10.1.1",
+    "unified": "^11.0.5",
     "unist-util-visit": "^4.1.0",
     "url-parse": "^1.5.10",
     "uuid": "^8.3.2"
