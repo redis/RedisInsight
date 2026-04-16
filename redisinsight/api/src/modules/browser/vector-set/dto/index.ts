@@ -1,4 +1,5 @@
 export * from './vector-set-element.dto';
+export * from './vector-set-element-key.dto';
 export * from './get.vector-set-elements.dto';
 export * from './get.vector-set-elements.response';
 export * from './delete.vector-set-elements.dto';
@@ -6,4 +7,3 @@ export * from './delete.vector-set-elements.response';
 export * from './get.vector-set-element-details.dto';
 export * from './set.vector-set-element-attribute.dto';
 export * from './set.vector-set-element-attribute.response';
-export * from './download.vector-set-embedding.dto';

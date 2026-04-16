@@ -13,13 +13,13 @@ import { ClientMetadata } from 'src/common/models';
 import {
   DeleteVectorSetElementsDto,
   DeleteVectorSetElementsResponse,
-  DownloadVectorSetEmbeddingDto,
   GetVectorSetElementDetailsDto,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
   SetVectorSetElementAttributeDto,
   SetVectorSetElementAttributeResponse,
   VectorSetElementDto,
+  VectorSetElementKeyDto,
   VECTOR_EMBEDDING_MAX_DISPLAY_LENGTH,
 } from 'src/modules/browser/vector-set/dto';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
@@ -266,7 +266,7 @@ export class VectorSetService {
 
   public async downloadEmbedding(
     clientMetadata: ClientMetadata,
-    dto: DownloadVectorSetEmbeddingDto,
+    dto: VectorSetElementKeyDto,
   ): Promise<{ stream: Readable }> {
     try {
       this.logger.debug('Downloading vector embedding.', clientMetadata);

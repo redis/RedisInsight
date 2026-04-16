@@ -2,8 +2,8 @@ import { Factory } from 'fishery';
 import { faker } from '@faker-js/faker';
 import {
   DeleteVectorSetElementsDto,
-  DownloadVectorSetEmbeddingDto,
   VectorSetElementDto,
+  VectorSetElementKeyDto,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
   SetVectorSetElementAttributeDto,
@@ -57,7 +57,7 @@ export const setVectorSetElementAttributeDtoFactory =
   }));
 
 export const downloadVectorSetEmbeddingDtoFactory =
-  Factory.define<DownloadVectorSetEmbeddingDto>(() => ({
+  Factory.define<VectorSetElementKeyDto>(() => ({
     keyName: Buffer.from(`vset:${faker.string.alphanumeric(6)}`),
     element: Buffer.from(faker.string.alphanumeric(8)),
   }));

@@ -17,13 +17,13 @@ import { ClientMetadata } from 'src/common/models';
 import {
   DeleteVectorSetElementsDto,
   DeleteVectorSetElementsResponse,
-  DownloadVectorSetEmbeddingDto,
   GetVectorSetElementDetailsDto,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
   SetVectorSetElementAttributeDto,
   SetVectorSetElementAttributeResponse,
   VectorSetElementDto,
+  VectorSetElementKeyDto,
 } from 'src/modules/browser/vector-set/dto';
 import { VectorSetService } from 'src/modules/browser/vector-set/vector-set.service';
 import { BrowserSerializeInterceptor } from 'src/common/interceptors';
@@ -117,7 +117,7 @@ export class VectorSetController extends BrowserBaseController {
   async downloadEmbedding(
     @Res() res: Response,
     @BrowserClientMetadata() clientMetadata: ClientMetadata,
-    @Body() dto: DownloadVectorSetEmbeddingDto,
+    @Body() dto: VectorSetElementKeyDto,
   ): Promise<void> {
     const { stream } = await this.vectorSetService.downloadEmbedding(
       clientMetadata,
