@@ -382,6 +382,26 @@ export class VectorSetService {
     }
   }
 
+  private buildVaddCommand(
+    keyName: Buffer | string,
+    element: AddVectorSetElementDto,
+  ): RedisClientCommand {
+    const args: Array<string | number | Buffer> = [
+      BrowserToolVectorSetCommands.VAdd,
+      keyName,
+      'VALUES',
+      element.vector.length,
+      ...element.vector.map(String),
+      element.name,
+    ];
+
+    if (element.attributes !== undefined) {
+      args.push('SETATTR', element.attributes);
+    }
+
+    return args as RedisClientCommand;
+  }
+
   private async fetchElementDetails(
     client: RedisClient,
     keyName: Buffer | string,
