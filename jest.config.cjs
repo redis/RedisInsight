@@ -40,10 +40,14 @@ module.exports = {
   ],
   setupFilesAfterEnv: ['<rootDir>/redisinsight/ui/src/setup-tests.ts'],
   moduleDirectories: ['node_modules', 'redisinsight/node_modules'],
-  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json'],
+  moduleFileExtensions: ['js', 'mjs', 'jsx', 'ts', 'tsx', 'json'],
   testEnvironment: 'jest-fixed-jsdom',
+  transform: {
+    '\\.[jt]sx?$': 'babel-jest',
+    '\\.mjs$': 'babel-jest',
+  },
   transformIgnorePatterns: [
-    'node_modules/(?!(monaco-editor|react-monaco-editor|brotli-dec-wasm|until-async)/)',
+    'node_modules/(?!(monaco-editor|react-monaco-editor|brotli-dec-wasm|until-async|rettime)/)',
   ],
   // TODO: add tests for plugins
   modulePathIgnorePatterns: [

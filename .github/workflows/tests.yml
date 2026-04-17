@@ -101,6 +101,9 @@ jobs:
     uses: ./.github/workflows/lint.yml
     secrets: inherit
 
+  docker-build:
+    uses: ./.github/workflows/docker-build.yml
+
   frontend-tests:
     needs: [changes, lint, should-run-all-tests]
     if: |

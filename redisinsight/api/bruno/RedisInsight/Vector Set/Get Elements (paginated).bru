@@ -1,0 +1,64 @@
+meta {
+  name: Get Elements (paginated)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/vector-set/get-elements
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "vset:small_3d",
+    "start": "(item_1",
+    "end": "+",
+    "count": 10
+  }
+}
+
+docs {
+  # Pagination Example
+
+  This request demonstrates how to paginate through Vector Set elements.
+
+  ## How Pagination Works
+
+  1. **First request**: Use `start: "-"` to start from the beginning
+  2. **Response** includes `nextCursor` (e.g., `"(item_4"`) if more elements exist
+  3. **Next request**: Use the `nextCursor` value as the `start` parameter
+  4. **Repeat** until no `nextCursor` is returned (you've reached the end)
+
+  ## Understanding `nextCursor`
+
+  The `nextCursor` format is `(lastElement` where:
+  - `(` means "exclusive" - start **after** this element
+  - `lastElement` is the last element from the previous response
+
+  ## Example Flow
+
+  ```
+  Request 1: { start: "-", count: 10 }
+  Response:  { nextCursor: "(item_4", elements: [item_1, item_10, ..., item_4] }
+
+  Request 2: { start: "(item_4", count: 10 }
+  Response:  { elements: [item_5, item_6, ..., item_9] }  // No nextCursor = done!
+  ```
+
+  ## Important: Lexicographical Order
+
+  Elements are sorted as **strings**, not numbers:
+
+  ```
+  item_1 → item_10 → item_11 → item_15 → item_2 → item_3 → item_4 → item_5
+  ```
+
+  This is because `"item_10"` comes before `"item_2"` alphabetically (`'1'` < `'2'`).
+}
+
+settings {
+  encodeUrl: true
+}
+

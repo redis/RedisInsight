@@ -63,6 +63,12 @@ enum ApiEndpoints {
   REJSON_SET = 'rejson-rl/set',
   REJSON_ARRAPPEND = 'rejson-rl/arrappend',
 
+  VECTOR_SET_GET_ELEMENTS = 'vector-set/get-elements',
+  VECTOR_SET_ELEMENTS = 'vector-set/elements',
+  VECTOR_SET_GET_ELEMENT_DETAILS = 'vector-set/get-details',
+  VECTOR_SET_ELEMENT_ATTRIBUTES = 'vector-set/attributes',
+  VECTOR_SET_DOWNLOAD_EMBEDDING = 'vector-set/download-embedding',
+
   STREAMS = 'streams',
   STREAMS_ENTRIES = 'streams/entries',
   STREAMS_ENTRIES_GET = 'streams/entries/get',

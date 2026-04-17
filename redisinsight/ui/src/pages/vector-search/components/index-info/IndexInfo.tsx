@@ -56,7 +56,11 @@ export const IndexInfo = ({ indexInfo, dataTestId }: IndexInfoProps) => {
       </Text>
 
       {/* Attributes Table */}
-      <Table columns={TABLE_COLUMNS} data={parseIndexAttributes(indexInfo)} />
+      <Table
+        columns={TABLE_COLUMNS}
+        data={parseIndexAttributes(indexInfo)}
+        enableColumnResizing
+      />
 
       {/* Summary Info */}
       <Text

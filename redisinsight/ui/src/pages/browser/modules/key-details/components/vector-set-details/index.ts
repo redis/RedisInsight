@@ -1,0 +1,1 @@
+export { VectorSetDetails } from './VectorSetDetails'

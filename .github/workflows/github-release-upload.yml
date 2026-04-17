@@ -50,14 +50,14 @@ jobs:
           PATTERNS=(
             "Redis-Insight-mac-x64.dmg"
             "Redis-Insight-mac-arm64.dmg"
-            # "Redis-Insight-win-installer.exe"
-            # "Redis-Insight-linux-x86_64.AppImage"
-            # "Redis-Insight-linux-arm64.AppImage"
-            # "Redis-Insight-linux-amd64.deb"
-            # "Redis-Insight-linux-arm64.deb"
-            # "Redis-Insight-linux-x86_64.rpm"
-            # "Redis-Insight-linux-aarch64.rpm"
-            # "Redis-Insight-linux-amd64.snap"
+            "Redis-Insight-win-installer.exe"
+            "Redis-Insight-linux-x86_64.AppImage"
+            "Redis-Insight-linux-arm64.AppImage"
+            "Redis-Insight-linux-amd64.deb"
+            "Redis-Insight-linux-arm64.deb"
+            "Redis-Insight-linux-x86_64.rpm"
+            "Redis-Insight-linux-aarch64.rpm"
+            "Redis-Insight-linux-amd64.snap"
           )
 
           FILES=()

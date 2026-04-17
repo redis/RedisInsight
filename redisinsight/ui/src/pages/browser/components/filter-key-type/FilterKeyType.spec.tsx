@@ -30,6 +30,11 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
+jest.mock('uiSrc/slices/app/features', () => ({
+  ...jest.requireActual('uiSrc/slices/app/features'),
+  isDevelopment: false,
+}))
+
 jest.mock('uiSrc/slices/instances/instances', () => ({
   ...jest.requireActual('uiSrc/slices/instances/instances'),
   connectedInstanceOverviewSelector: jest.fn().mockReturnValue({
@@ -183,5 +188,28 @@ describe('FilterKeyType', () => {
 
     const graphElement = queryByText('Graph')
     expect(graphElement).not.toBeInTheDocument()
+  })
+
+  it('should show Vector Set when vector set feature flag is enabled', async () => {
+    const initialStoreState = set(
+      cloneDeep(initialStateDefault),
+      `app.features.featureFlags.features.${FeatureFlags.devVectorSet}`,
+      { flag: true },
+    )
+    const { queryByText } = render(<FilterKeyType />, {
+      store: mockStore(initialStoreState),
+    })
+
+    await userEvent.click(screen.getByTestId(filterSelectId))
+
+    expect(queryByText('Vector Set')).toBeInTheDocument()
+  })
+
+  it('should hide Vector Set when vector set feature flag is disabled', () => {
+    const { queryByText } = render(<FilterKeyType />)
+
+    fireEvent.click(screen.getByTestId(filterSelectId))
+
+    expect(queryByText('Vector Set')).not.toBeInTheDocument()
   })
 })

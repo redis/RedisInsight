@@ -1,0 +1,46 @@
+meta {
+  name: Delete Elements
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/vector-set/elements
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "vset:small_3d",
+    "elements": ["item_1"]
+  }
+}
+
+docs {
+  # Delete Vector Set Elements
+
+  Removes one or more elements from the Vector Set at `keyName`.
+
+  ## Request body
+
+  | Field | Description |
+  |-------|-------------|
+  | `keyName` | The Vector Set key name |
+  | `elements` | Non-empty array of element names to remove (strings as stored in Redis) |
+
+  ## Response
+
+  | Field | Description |
+  |-------|-------------|
+  | `affected` | Number of elements that were removed |
+
+  ## Notes
+
+  - Use **Get Elements** first to list element `name` values, then pass those names here.
+  - Removing the last element empties the key (same behavior as Redis `VREM`).
+}
+
+settings {
+  encodeUrl: true
+}

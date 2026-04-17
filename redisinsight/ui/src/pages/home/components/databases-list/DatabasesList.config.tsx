@@ -45,8 +45,10 @@ export const BASE_COLUMNS: ColumnDef<Instance>[] = [
   {
     id: SELECT_COL_ID,
     size: 40,
+    sizeUnit: 'px',
     isHeaderCustom: true,
     enableSorting: false,
+    enableResizing: false,
     header: Table.HeaderMultiRowSelectionButton,
     cell: ({ row }) => (
       <Table.RowSelectionButton
@@ -59,6 +61,7 @@ export const BASE_COLUMNS: ColumnDef<Instance>[] = [
     id: DatabaseListColumn.Name,
     accessorKey: DatabaseListColumn.Name,
     header: COLUMN_FIELD_NAME_MAP.get(DatabaseListColumn.Name),
+    size: 200,
     enableSorting: true,
     cell: DatabasesListCellName,
     sortingFn: (rowA, rowB) => {
@@ -71,6 +74,7 @@ export const BASE_COLUMNS: ColumnDef<Instance>[] = [
     id: DatabaseListColumn.Host,
     accessorKey: DatabaseListColumn.Host,
     header: COLUMN_FIELD_NAME_MAP.get(DatabaseListColumn.Host),
+    size: 200,
     enableSorting: true,
     cell: DatabasesListCellHost,
     sortingFn: (rowA, rowB) => {
@@ -83,6 +87,7 @@ export const BASE_COLUMNS: ColumnDef<Instance>[] = [
     id: DatabaseListColumn.ConnectionType,
     accessorKey: DatabaseListColumn.ConnectionType,
     header: COLUMN_FIELD_NAME_MAP.get(DatabaseListColumn.ConnectionType),
+    size: 150,
     enableSorting: true,
     cell: DatabasesListCellConnectionType,
   },
@@ -90,6 +95,7 @@ export const BASE_COLUMNS: ColumnDef<Instance>[] = [
     id: DatabaseListColumn.Modules,
     accessorKey: DatabaseListColumn.Modules,
     header: COLUMN_FIELD_NAME_MAP.get(DatabaseListColumn.Modules),
+    size: 150,
     enableSorting: false,
     cell: DatabasesListCellModules,
   },
@@ -97,6 +103,7 @@ export const BASE_COLUMNS: ColumnDef<Instance>[] = [
     id: DatabaseListColumn.LastConnection,
     accessorKey: DatabaseListColumn.LastConnection,
     header: COLUMN_FIELD_NAME_MAP.get(DatabaseListColumn.LastConnection),
+    size: 180,
     enableSorting: true,
     sortingFn: (rowA, rowB) => {
       const conn1 = rowA.original.lastConnection
@@ -119,6 +126,7 @@ export const BASE_COLUMNS: ColumnDef<Instance>[] = [
     accessorKey: DatabaseListColumn.Tags,
     isHeaderCustom: true,
     header: TagsCellHeader,
+    size: 200,
     enableSorting: true,
     cell: DatabasesListCellTags,
     sortingFn: (rowA, rowB) => {
@@ -135,7 +143,10 @@ export const BASE_COLUMNS: ColumnDef<Instance>[] = [
     id: DatabaseListColumn.Controls,
     accessorKey: DatabaseListColumn.Controls,
     header: '',
+    size: 60,
+    sizeUnit: 'px',
     enableSorting: false,
+    enableResizing: false,
     cell: DatabasesListCellControls,
   },
 ]

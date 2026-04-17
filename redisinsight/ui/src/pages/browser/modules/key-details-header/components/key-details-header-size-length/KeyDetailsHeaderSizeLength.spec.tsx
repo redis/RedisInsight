@@ -83,4 +83,83 @@ describe('KeyDetailsHeaderSizeLength', () => {
       'Top-level values: 5',
     )
   })
+
+  it('should render quant type when provided', () => {
+    mockSelectedKeyDataSelector.mockReturnValueOnce({
+      type: KeyTypes.VectorSet,
+      size: 1024,
+      length: 5,
+      quantType: 'int8',
+    })
+
+    render(
+      <KeyDetailsHeaderSizeLength {...instance(mockedProps)} width={1920} />,
+    )
+
+    expect(screen.getByTestId('key-quant-type-text')).toHaveTextContent(
+      'Quant type: int8',
+    )
+  })
+
+  it('should render vector dim when provided', () => {
+    mockSelectedKeyDataSelector.mockReturnValueOnce({
+      type: KeyTypes.VectorSet,
+      size: 1024,
+      length: 5,
+      vectorDim: 300,
+    })
+
+    render(
+      <KeyDetailsHeaderSizeLength {...instance(mockedProps)} width={1920} />,
+    )
+
+    expect(screen.getByTestId('key-vector-dim-text')).toHaveTextContent(
+      'Vector dim: 300',
+    )
+  })
+
+  it('should not render quant type when not provided', () => {
+    mockSelectedKeyDataSelector.mockReturnValueOnce({
+      type: KeyTypes.VectorSet,
+      size: 1024,
+      length: 5,
+    })
+
+    render(
+      <KeyDetailsHeaderSizeLength {...instance(mockedProps)} width={1920} />,
+    )
+
+    expect(screen.queryByTestId('key-quant-type-text')).not.toBeInTheDocument()
+  })
+
+  it('should not render vector dim when not provided', () => {
+    mockSelectedKeyDataSelector.mockReturnValueOnce({
+      type: KeyTypes.VectorSet,
+      size: 1024,
+      length: 5,
+    })
+
+    render(
+      <KeyDetailsHeaderSizeLength {...instance(mockedProps)} width={1920} />,
+    )
+
+    expect(screen.queryByTestId('key-vector-dim-text')).not.toBeInTheDocument()
+  })
+
+  it('should render vector dim when value is 0', () => {
+    mockSelectedKeyDataSelector.mockReturnValueOnce({
+      type: KeyTypes.VectorSet,
+      size: 1024,
+      length: 5,
+      vectorDim: 0,
+    })
+
+    render(
+      <KeyDetailsHeaderSizeLength {...instance(mockedProps)} width={1920} />,
+    )
+
+    expect(screen.getByTestId('key-vector-dim-text')).toHaveTextContent(
+      'Vector dim: 0',
+    )
+  })
 })

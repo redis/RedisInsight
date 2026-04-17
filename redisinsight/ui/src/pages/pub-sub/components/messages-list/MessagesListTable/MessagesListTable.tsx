@@ -89,6 +89,7 @@ const MessagesListTable = () => {
             columns={PUB_SUB_TABLE_COLUMNS}
             data={messages}
             stripedRows
+            enableColumnResizing
             enableSorting
             paginationEnabled
             defaultSorting={[{ id: PubSubTableColumn.Timestamp, desc: true }]}
