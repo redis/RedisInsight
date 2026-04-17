@@ -50,8 +50,19 @@ jobs:
           # Get list of artifacts
           ARTIFACTS=$(ls ./release)
 
-          # Conver list to json
-          ARTIFACTS_JSON=$(echo "$ARTIFACTS" | jq -R -s -c 'split("\n")[:-1]')
+          # Convert list to json.
+          # linux-builds is split into two virtual scans (x86_64 and arm64) because
+          # the combined zip exceeds VirusTotal's ~650MB upload limit once arm64
+          # binaries are included. Both virtual scans still download the same
+          # linux-builds artifact; the split happens at zip time via file filters.
+          ARTIFACTS_JSON=$(echo "$ARTIFACTS" | jq -R -s -c '
+            split("\n")[:-1]
+            | reduce .[] as $a ([];
+                if $a == "linux-builds"
+                then . + ["linux-x86_64-builds", "linux-arm64-builds"]
+                else . + [$a]
+                end)
+          ')
 
           echo "artifact_exists=true" >> $GITHUB_OUTPUT
           echo "artifact_names=$ARTIFACTS_JSON" >> $GITHUB_OUTPUT
@@ -71,7 +82,9 @@ jobs:
         if: needs.download_artifacts.outputs.artifact_exists == 'true'
         uses: actions/download-artifact@v4
         with:
-          name: ${{ matrix.artifact }}
+          # linux-x86_64-builds and linux-arm64-builds are virtual scan entries;
+          # both resolve to the single linux-builds artifact uploaded by the build.
+          name: ${{ (matrix.artifact == 'linux-x86_64-builds' || matrix.artifact == 'linux-arm64-builds') && 'linux-builds' || matrix.artifact }}
           path: ./release
 
       - name: Send File to scan
@@ -79,19 +92,31 @@ jobs:
         run: |
           uploadZipFile="./${{ matrix.artifact }}.zip"
 
-          # Compress artifactes
-          zip -r "${uploadZipFile}" "./release" ${{ startsWith(matrix.artifact, 'macos-') && '-x "*/redisstack/*" "*.tar.gz" "*.zip"' || '' }}
+          # Compress artifacts. Per-scan exclusions keep each zip under
+          # VirusTotal's ~650MB /files/upload_url limit:
+          #   - macos-*            : exclude bundled redisstack and archives
+          #   - linux-x86_64-builds: exclude arm64/aarch64 binaries
+          #   - linux-arm64-builds : exclude x86_64/amd64 binaries
+          zip -r "${uploadZipFile}" "./release" \
+            ${{ startsWith(matrix.artifact, 'macos-')      && '-x "*/redisstack/*" "*.tar.gz" "*.zip"' || '' }} \
+            ${{ matrix.artifact == 'linux-x86_64-builds'    && '-x "*arm64*" "*aarch64*"'              || '' }} \
+            ${{ matrix.artifact == 'linux-arm64-builds'     && '-x "*x86_64*" "*amd64*"'               || '' }}
+
+          echo "File to upload: ${uploadZipFile} ($(du -h "${uploadZipFile}" | cut -f1))"
 
           # Generate url to download zip file
           uploadUrl=$(curl -sq -XGET https://www.virustotal.com/api/v3/files/upload_url -H "x-apikey: $VIRUSTOTAL_API_KEY" | jq -r '.data')
 
-          echo "File to upload: ${uploadZipFile}"
+          # Upload zip file to VirusTotal. Capture the raw response so a non-JSON
+          # error (e.g. payload too large) produces a readable log instead of a
+          # cryptic "jq: parse error".
+          uploadResponse=$(curl -sq -XPOST "${uploadUrl}" -H "x-apikey: $VIRUSTOTAL_API_KEY" --form file=@"${uploadZipFile}")
+          analysedId=$(echo "$uploadResponse" | jq -r '.data.id' 2>/dev/null || true)
 
-          # Upload zip file to VirusTotal
-          analysedId=$(curl -sq -XPOST "${uploadUrl}" -H "x-apikey: $VIRUSTOTAL_API_KEY" --form file=@"${uploadZipFile}" | jq -r '.data.id')
-
-          if [ $analysedId == "null" ]; then
-            echo 'Status is null, something went wrong';
+          if [ -z "$analysedId" ] || [ "$analysedId" == "null" ]; then
+            echo 'VirusTotal upload failed. Raw response (first 2KB):'
+            echo "$uploadResponse" | head -c 2048
+            echo
             exit 1;
           fi
 
