@@ -1,6 +1,6 @@
 {
   "name": "redisinsight-api",
-  "version": "3.4.1",
+  "version": "3.4.2",
   "description": "Redis Insight API",
   "private": true,
   "author": {
