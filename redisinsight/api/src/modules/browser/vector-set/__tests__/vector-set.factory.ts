@@ -88,14 +88,15 @@ export const createVectorSetDtoFactory = Factory.define<CreateVectorSetDto>(
 
 export const getVectorSetElementsResponseFactory =
   Factory.define<GetVectorSetElementsResponse>(({ transientParams }) => {
-    const elements =
-      transientParams.elements ?? vectorSetElementFactory.buildList(3);
+    const elementNames =
+      transientParams.elementNames ??
+      vectorSetElementFactory.buildList(3).map((el) => el.name);
 
     return {
       keyName: Buffer.from(`vset:${faker.string.alphanumeric(6)}`),
-      total: elements.length,
+      total: elementNames.length,
       nextCursor: undefined,
       isPaginationSupported: true,
-      elements,
+      elementNames,
     };
   });

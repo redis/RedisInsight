@@ -184,10 +184,6 @@ export class VectorSetService {
         ])) as string[];
       }
 
-      const elements = elementNames.map((name) =>
-        plainToInstance(VectorSetElementKeyDto, { name }),
-      );
-
       this.logger.debug(
         'Succeed to get elements of the VectorSet data type.',
         clientMetadata,
@@ -197,7 +193,7 @@ export class VectorSetService {
         total,
         nextCursor,
         isPaginationSupported: isVRangeSupported,
-        elements,
+        elementNames,
       });
     } catch (error) {
       this.logger.error(

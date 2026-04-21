@@ -216,7 +216,7 @@ describe('VectorSetService', () => {
       ]);
       expect(result.keyName).toEqual(mockDto.keyName);
       expect(result.total).toEqual(mockElements.length);
-      expect(result.elements).toHaveLength(mockElements.length);
+      expect(result.elementNames).toHaveLength(mockElements.length);
       expect(result.isPaginationSupported).toBe(true);
     });
 
@@ -298,7 +298,7 @@ describe('VectorSetService', () => {
         mockDto.keyName,
         mockDto.count,
       ]);
-      expect(result.elements).toHaveLength(mockElements.length);
+      expect(result.elementNames).toHaveLength(mockElements.length);
       expect(result.nextCursor).toBeUndefined();
       expect(result.isPaginationSupported).toBe(false);
     });
