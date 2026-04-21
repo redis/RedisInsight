@@ -15,14 +15,15 @@ import { BrowserClientMetadata } from 'src/modules/browser/decorators/browser-cl
 import { ApiQueryRedisStringEncoding } from 'src/common/decorators';
 import { ClientMetadata } from 'src/common/models';
 import {
+  AddElementsToVectorSetDto,
+  CreateVectorSetDto,
   DeleteVectorSetElementsDto,
   DeleteVectorSetElementsResponse,
-  GetVectorSetElementDetailsDto,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
   SetVectorSetElementAttributeDto,
   SetVectorSetElementAttributeResponse,
-  VectorSetElementDto,
+  VectorSetElementDetailsDto,
   VectorSetElementKeyDto,
 } from 'src/modules/browser/vector-set/dto';
 import { VectorSetService } from 'src/modules/browser/vector-set/vector-set.service';
@@ -37,6 +38,32 @@ import { Response } from 'express';
 export class VectorSetController extends BrowserBaseController {
   constructor(private vectorSetService: VectorSetService) {
     super();
+  }
+
+  @Post('')
+  @ApiRedisInstanceOperation({
+    description: 'Set key to hold VectorSet data type',
+    statusCode: 201,
+  })
+  @ApiQueryRedisStringEncoding()
+  async createVectorSet(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: CreateVectorSetDto,
+  ): Promise<void> {
+    return await this.vectorSetService.createVectorSet(clientMetadata, dto);
+  }
+
+  @Put('')
+  @ApiRedisInstanceOperation({
+    description: 'Add elements to the VectorSet stored at key',
+    statusCode: 200,
+  })
+  @ApiQueryRedisStringEncoding()
+  async addElements(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: AddElementsToVectorSetDto,
+  ): Promise<void> {
+    return await this.vectorSetService.addElements(clientMetadata, dto);
   }
 
   // The key name can be very large, so it is better to send it in the request body
@@ -69,15 +96,15 @@ export class VectorSetController extends BrowserBaseController {
       {
         status: 200,
         description: 'Ok',
-        type: VectorSetElementDto,
+        type: VectorSetElementDetailsDto,
       },
     ],
   })
   @ApiQueryRedisStringEncoding()
   async getElementDetails(
     @BrowserClientMetadata() clientMetadata: ClientMetadata,
-    @Body() dto: GetVectorSetElementDetailsDto,
-  ): Promise<VectorSetElementDto> {
+    @Body() dto: VectorSetElementKeyDto,
+  ): Promise<VectorSetElementDetailsDto> {
     return await this.vectorSetService.getElementDetails(clientMetadata, dto);
   }
 

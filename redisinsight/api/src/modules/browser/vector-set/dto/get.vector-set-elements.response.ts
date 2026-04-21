@@ -1,6 +1,7 @@
 import { KeyResponse } from 'src/modules/browser/keys/dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { VectorSetElementDto } from './vector-set-element.dto';
+import { RedisStringType } from 'src/common/decorators';
+import { RedisString } from 'src/common/constants';
 
 export class GetVectorSetElementsResponse extends KeyResponse {
   @ApiProperty({
@@ -26,9 +27,10 @@ export class GetVectorSetElementsResponse extends KeyResponse {
   isPaginationSupported: boolean;
 
   @ApiProperty({
-    description: 'Array of vector set elements.',
+    description: 'Array of vector set element names.',
     isArray: true,
-    type: () => VectorSetElementDto,
+    type: String,
   })
-  elements: VectorSetElementDto[];
+  @RedisStringType({ each: true })
+  elementNames: RedisString[];
 }

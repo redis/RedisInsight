@@ -5,7 +5,7 @@ import { RedisString } from 'src/common/constants';
 
 export const VECTOR_EMBEDDING_MAX_DISPLAY_LENGTH = 100_000;
 
-export class VectorSetElementDto {
+export class VectorSetElementDetailsDto {
   @ApiProperty({
     type: String,
     description: 'Element name value.',

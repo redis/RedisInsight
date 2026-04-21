@@ -1,0 +1,56 @@
+meta {
+  name: Add Elements
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/vector-set
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "vset:my_new_set",
+    "elements": [
+      {
+        "name": "item_3",
+        "vector": [0.7, 0.8, 0.9],
+        "attributes": "{\"color\": \"blue\"}"
+      }
+    ]
+  }
+}
+
+docs {
+  # Add Elements
+
+  Adds elements to an existing Vector Set key. Uses the Redis `VADD` command internally (one call per element, pipelined).
+
+  ## Request Body
+
+  | Field | Type | Description |
+  |-------|------|-------------|
+  | `keyName` | string | The Vector Set key name |
+  | `elements` | array | Array of elements to add |
+  | `elements[].name` | string | Element name |
+  | `elements[].vector` | number[] | Vector embedding values |
+  | `elements[].attributes` | string (optional) | Attributes string to associate with the element (passed via SETATTR) |
+
+  ## Response
+
+  Returns `200 OK` with no body on success.
+
+  ## Error Responses
+
+  | Status | Condition |
+  |--------|-----------|
+  | `400` | Key exists but is not a Vector Set (WRONGTYPE) |
+  | `404` | Key does not exist |
+  | `403` | User has no permissions |
+}
+
+settings {
+  encodeUrl: true
+}
