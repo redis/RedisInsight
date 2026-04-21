@@ -275,7 +275,7 @@
     "file-saver": "^2.0.5",
     "formik": "^2.2.9",
     "fzstd": "^0.1.0",
-    "get-port": "^7.0.0",
+    "get-port": "^7.2.0",
     "html-entities": "^2.3.2",
     "html-react-parser": "^1.2.4",
     "java-object-serialization": "^0.1.2",
