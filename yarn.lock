@@ -2635,10 +2635,10 @@
     "@react-hook/latest" "^1.0.2"
     "@react-hook/passive-layout-effect" "^1.2.0"
 
-"@redis-ui/components@^44.0.0", "@redis-ui/components@^44.0.1":
-  version "44.0.1"
-  resolved "https://registry.yarnpkg.com/@redis-ui/components/-/components-44.0.1.tgz#b61864e7e2f7798e131ed35c6d49e5ea8101e229"
-  integrity sha512-W5tT1QwqpUqo355N5SyZn93TBKBMfssOW0FU/jMgZ4VMhMfumv3UqSsZx+482wP1HJGRvevlxHXYfXIvdgFChQ==
+"@redis-ui/components@^44.0.0", "@redis-ui/components@^44.0.2":
+  version "44.0.2"
+  resolved "https://registry.yarnpkg.com/@redis-ui/components/-/components-44.0.2.tgz#039ba4fb09079944d00ea06407265fcc3f8aab51"
+  integrity sha512-ldQzUV14452iVOuOxjnN3U9YbO6xm9UOmKpAHyJ8NZs53WAo4oCjGk4CImkf8cNh8YuDrVVg7RrZKbqFZqmSdg==
   dependencies:
     "@radix-ui/react-checkbox" "^1.0.3"
     "@radix-ui/react-collapsible" "^1.0.3"
