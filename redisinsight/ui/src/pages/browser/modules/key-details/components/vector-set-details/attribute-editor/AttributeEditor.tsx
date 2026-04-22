@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import { CodeEditor } from 'uiSrc/components/base/code-editor'
 import { Text } from 'uiSrc/components/base/text'
@@ -10,11 +10,7 @@ import {
   DEFAULT_ATTRIBUTE_EDITOR_HEIGHT,
   JSON_VALIDATION_DEBOUNCE_MS,
 } from './constants'
-import {
-  isJsonValid,
-  restoreJsonValidation,
-  suppressJsonValidation,
-} from './utils'
+import { isJsonValid } from './utils'
 import { AttributeEditorProps } from './AttributeEditor.types'
 import * as S from './AttributeEditor.styles'
 
@@ -25,14 +21,7 @@ const AttributeEditor = ({
   height = DEFAULT_ATTRIBUTE_EDITOR_HEIGHT,
   testId = 'attribute-editor',
 }: AttributeEditorProps) => {
-  const [showNonJsonWarning, setShowNonJsonWarning] = useState(
-    () => !isJsonValid(value),
-  )
-
-  useEffect(() => {
-    suppressJsonValidation()
-    return restoreJsonValidation
-  }, [])
+  const [showNonJsonWarning, setShowNonJsonWarning] = useState(false)
 
   useDebouncedEffect(
     () => {
