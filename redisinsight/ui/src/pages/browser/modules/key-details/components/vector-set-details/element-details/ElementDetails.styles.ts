@@ -14,6 +14,8 @@ export const VectorTextArea = styled(TextArea)`
   scrollbar-width: thin;
   padding: ${({ theme }) => theme.core?.space?.space025};
   padding-right: ${({ theme }) => theme.core?.space?.space400};
+  background-color: ${({ theme }) =>
+    theme.semantic?.color?.background?.neutral100};
 `
 
 export const VectorWrapper = styled.div`
@@ -31,8 +33,6 @@ export const VectorActions = styled(Col)`
 export const EditorWrapper = styled.div<{ children: React.ReactNode }>`
   position: relative;
   width: 100%;
-  height: 200px;
-  border: 1px solid ${({ theme }) => theme.semantic?.color?.border?.neutral500};
 `
 
 export const EditButton = styled(IconButton)`

@@ -1,5 +1,6 @@
 export * from './useAddElementPanel'
 export * from './useAddElements'
+export * from './useElementAttributeEditor'
 export * from './useElementDetails'
 export * from './useVectorSetElementForm'
 export * from './useVectorSetElementListData'
