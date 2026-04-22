@@ -41,7 +41,7 @@ export interface AddVectorSetElementsData {
 export interface CreateVectorSetWithExpireDto {
   keyName: RedisResponseBuffer
   elements: {
-    name: string
+    name: RedisResponseBuffer
     vector: number[]
     attributes?: string
   }[]

@@ -1789,7 +1789,7 @@ describe('keys slice', () => {
       it('success to add vector set key', async () => {
         const data = {
           keyName: stringToBuffer('myVectorSet'),
-          elements: [{ name: 'el-1', vector: [0.1, 0.2, 0.3] }],
+          elements: [{ name: stringToBuffer('el-1'), vector: [0.1, 0.2, 0.3] }],
         }
         const responsePayload = { status: 200 }
 
@@ -1812,7 +1812,7 @@ describe('keys slice', () => {
       it('calls onFailAction and dispatches failure on error', async () => {
         const data = {
           keyName: stringToBuffer('myVectorSet'),
-          elements: [{ name: 'el-1', vector: [0.1, 0.2, 0.3] }],
+          elements: [{ name: stringToBuffer('el-1'), vector: [0.1, 0.2, 0.3] }],
         }
         const errorMessage = 'Something went wrong'
         const responsePayload = {

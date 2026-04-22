@@ -2,6 +2,7 @@ import React from 'react'
 import { cloneDeep } from 'lodash'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { addVectorSetKey } from 'uiSrc/slices/browser/keys'
+import { stringToBuffer } from 'uiSrc/utils'
 import AddKeyVectorSet from './AddKeyVectorSet'
 import { Props } from './AddKeyVectorSet.types'
 
@@ -78,7 +79,7 @@ describe('AddKeyVectorSet', () => {
 
     expect(addVectorSetKey).toHaveBeenCalledWith(
       expect.objectContaining({
-        elements: [{ name: 'elem1', vector: [1, 2, 3] }],
+        elements: [{ name: stringToBuffer('elem1'), vector: [1, 2, 3] }],
       }),
       expect.any(Function),
     )

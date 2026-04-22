@@ -34,7 +34,10 @@ const AddKeyVectorSet = ({ keyName = '', keyTTL, onCancel }: Props) => {
   const handleSubmit = (elements: SubmitElement[]) => {
     const data: CreateVectorSetWithExpireDto = {
       keyName: stringToBuffer(keyName),
-      elements,
+      elements: elements.map((el) => ({
+        ...el,
+        name: stringToBuffer(el.name),
+      })),
       ...(keyTTL !== undefined ? { expire: toNumber(keyTTL) } : {}),
     }
     dispatch(addVectorSetKey(data, () => onCancel()))
