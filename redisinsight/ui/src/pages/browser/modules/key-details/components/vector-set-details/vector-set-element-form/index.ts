@@ -1,4 +1,6 @@
 export { default as VectorSetElementForm } from './VectorSetElementForm'
+export { default as VectorSetElementFormFields } from './VectorSetElementFormFields'
+export type { VectorSetElementFormFieldsProps } from './VectorSetElementFormFields'
 export type {
   IVectorSetElementState,
   SubmitElement,
