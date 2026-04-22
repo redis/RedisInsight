@@ -1,5 +1,10 @@
 import { VECTOR_SEPARATOR, DEFAULT_VECTOR_HELP_TEXT } from './constants'
-import { VectorFieldInfo, VectorValidationResult } from './interfaces'
+import {
+  IVectorSetElementState,
+  SubmitElement,
+  VectorFieldInfo,
+  VectorValidationResult,
+} from './interfaces'
 
 export function parseVector(raw: string): number[] | null {
   const trimmed = raw.trim()
@@ -41,6 +46,28 @@ export function getVectorError(
   vectorDim?: number,
 ): string | undefined {
   return validateVector(raw, vectorDim).error
+}
+
+export function getValidVector(
+  raw: string,
+  vectorDim?: number,
+): number[] | null {
+  const { parsed, error } = validateVector(raw, vectorDim)
+  return !error && parsed ? parsed : null
+}
+
+export function toSubmitElement(
+  el: IVectorSetElementState,
+  vectorDim?: number,
+): SubmitElement | null {
+  const vector = getValidVector(el.vector, vectorDim)
+  if (!vector) return null
+
+  const item: SubmitElement = { name: el.name, vector }
+  const trimmedAttributes = el.attributes.trim()
+  if (trimmedAttributes) item.attributes = trimmedAttributes
+
+  return item
 }
 
 export function getVectorFieldInfo(

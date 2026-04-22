@@ -1,5 +1,12 @@
+import { vectorSetElementFormStateFactory } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
 import { DEFAULT_VECTOR_HELP_TEXT } from './constants'
-import { getVectorError, getVectorFieldInfo, parseVector } from './utils'
+import {
+  getValidVector,
+  getVectorError,
+  getVectorFieldInfo,
+  parseVector,
+  toSubmitElement,
+} from './utils'
 
 describe('parseVector', () => {
   it('should return null for an empty string', () => {
@@ -92,5 +99,76 @@ describe('getVectorFieldInfo', () => {
       text: 'Detected numeric vector (4 dimensions).',
       isError: false,
     })
+  })
+})
+
+describe('getValidVector', () => {
+  it('should return null for an empty string', () => {
+    expect(getValidVector('')).toBeNull()
+    expect(getValidVector('   ')).toBeNull()
+  })
+
+  it('should return null for an unparsable vector', () => {
+    expect(getValidVector('1, abc, 3')).toBeNull()
+  })
+
+  it('should return the parsed vector without dimension check', () => {
+    expect(getValidVector('1, 2, 3')).toEqual([1, 2, 3])
+  })
+
+  it('should return the parsed vector when dimension matches', () => {
+    expect(getValidVector('1, 2, 3', 3)).toEqual([1, 2, 3])
+  })
+
+  it('should return null when dimension does not match', () => {
+    expect(getValidVector('1, 2', 3)).toBeNull()
+  })
+})
+
+describe('toSubmitElement', () => {
+  it('should return null when the vector is invalid', () => {
+    expect(
+      toSubmitElement(
+        vectorSetElementFormStateFactory.build({ vector: '1, abc' }),
+      ),
+    ).toBeNull()
+  })
+
+  it('should return null when the vector dimension does not match', () => {
+    expect(
+      toSubmitElement(
+        vectorSetElementFormStateFactory.build({ vector: '1, 2' }),
+        3,
+      ),
+    ).toBeNull()
+  })
+
+  it('should map a valid element without attributes', () => {
+    expect(toSubmitElement(vectorSetElementFormStateFactory.build())).toEqual({
+      name: 'item',
+      vector: [1, 2, 3],
+    })
+  })
+
+  it('should include trimmed attributes when provided', () => {
+    expect(
+      toSubmitElement(
+        vectorSetElementFormStateFactory.build({
+          attributes: '  {"a":1}  ',
+        }),
+      ),
+    ).toEqual({
+      name: 'item',
+      vector: [1, 2, 3],
+      attributes: '{"a":1}',
+    })
+  })
+
+  it('should omit attributes when they are whitespace only', () => {
+    const result = toSubmitElement(
+      vectorSetElementFormStateFactory.build({ attributes: '   ' }),
+    )
+    expect(result).toEqual({ name: 'item', vector: [1, 2, 3] })
+    expect(result).not.toHaveProperty('attributes')
   })
 })

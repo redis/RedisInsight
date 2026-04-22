@@ -5,7 +5,10 @@ import {
   IVectorSetElementState,
   SubmitElement,
 } from '../../vector-set-element-form/interfaces'
-import { parseVector } from '../../vector-set-element-form/utils'
+import {
+  getValidVector,
+  toSubmitElement,
+} from '../../vector-set-element-form/utils'
 
 import {
   EditableStringField,
@@ -25,13 +28,9 @@ export const useVectorSetElementForm = ({
 
   const isFormValid = useMemo(
     () =>
-      elements.every((el) => {
-        if (!el.name.trim()) return false
-        const parsed = parseVector(el.vector)
-        if (!parsed) return false
-        if (vectorDim !== undefined && parsed.length !== vectorDim) return false
-        return true
-      }),
+      elements.every(
+        (el) => el.name.trim() && getValidVector(el.vector, vectorDim) !== null,
+      ),
     [elements, vectorDim],
   )
 
@@ -83,17 +82,10 @@ export const useVectorSetElementForm = ({
   }, [])
 
   const submitData = useCallback(() => {
-    const result: SubmitElement[] = []
-    for (const el of elements) {
-      const parsed = parseVector(el.vector)
-      if (!parsed) return
-      const item: SubmitElement = { name: el.name, vector: parsed }
-      const trimmedAttributes = el.attributes.trim()
-      if (trimmedAttributes) item.attributes = trimmedAttributes
-      result.push(item)
-    }
-    onSubmit(result)
-  }, [elements, onSubmit])
+    const payload = elements.map((el) => toSubmitElement(el, vectorDim))
+    if (payload.some((item) => item === null)) return
+    onSubmit(payload as SubmitElement[])
+  }, [elements, vectorDim, onSubmit])
 
   const isClearDisabled = useCallback(
     (item: IVectorSetElementState): boolean =>

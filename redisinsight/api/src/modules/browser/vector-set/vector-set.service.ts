@@ -98,6 +98,7 @@ export class VectorSetService {
         'Adding elements to the VectorSet data type.',
         clientMetadata,
       );
+
       const { keyName, elements } = dto;
       const client: RedisClient =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
