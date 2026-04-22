@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { INITIAL_VECTOR_SET_ELEMENT_STATE } from '../../vector-set-element-form/constants'
 import {
@@ -20,20 +20,20 @@ export const useVectorSetElementForm = ({
   const [elements, setElements] = useState<IVectorSetElementState[]>([
     { ...INITIAL_VECTOR_SET_ELEMENT_STATE },
   ])
-  const [isFormValid, setIsFormValid] = useState(false)
   const lastAddedNameRef = useRef<HTMLInputElement>(null)
   const prevElementsLengthRef = useRef(elements.length)
 
-  useEffect(() => {
-    const valid = elements.every((el) => {
-      if (!el.name.trim()) return false
-      const parsed = parseVector(el.vector)
-      if (!parsed) return false
-      if (vectorDim !== undefined && parsed.length !== vectorDim) return false
-      return true
-    })
-    setIsFormValid(valid)
-  }, [elements, vectorDim])
+  const isFormValid = useMemo(
+    () =>
+      elements.every((el) => {
+        if (!el.name.trim()) return false
+        const parsed = parseVector(el.vector)
+        if (!parsed) return false
+        if (vectorDim !== undefined && parsed.length !== vectorDim) return false
+        return true
+      }),
+    [elements, vectorDim],
+  )
 
   useEffect(() => {
     if (elements.length > prevElementsLengthRef.current) {
