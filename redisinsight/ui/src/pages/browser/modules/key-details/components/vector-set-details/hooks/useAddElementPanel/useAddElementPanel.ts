@@ -18,6 +18,8 @@ export const useAddElementPanel = ({
 
   const [isAddItemPanelOpen, setIsAddItemPanelOpen] = useState(false)
   const prevKeyNameRef = useRef(keyName)
+  const isAddItemPanelOpenRef = useRef(isAddItemPanelOpen)
+  isAddItemPanelOpenRef.current = isAddItemPanelOpen
 
   const openAddItemPanel = useCallback(() => {
     setIsAddItemPanelOpen(true)
@@ -40,10 +42,10 @@ export const useAddElementPanel = ({
 
     if (!keyName) return
 
-    setIsAddItemPanelOpen((open) => {
-      if (open) onCloseAddItemPanel()
-      return false
-    })
+    if (isAddItemPanelOpenRef.current) {
+      onCloseAddItemPanel()
+    }
+    setIsAddItemPanelOpen(false)
   }, [keyName, onCloseAddItemPanel])
 
   return {
