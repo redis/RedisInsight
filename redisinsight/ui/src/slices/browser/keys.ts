@@ -27,6 +27,7 @@ import {
   bufferToString,
   isEqualBuffers,
   isRedisearchAvailable,
+  stringToBuffer,
 } from 'uiSrc/utils'
 import { DEFAULT_SEARCH_MATCH, SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import {
@@ -55,6 +56,7 @@ import {
   GetKeysWithDetailsResponse,
 } from 'apiSrc/modules/browser/keys/dto'
 import { CreateStreamDto } from 'apiSrc/modules/browser/stream/dto'
+import { CreateVectorSetWithExpireDto } from 'uiSrc/slices/interfaces/vectorSet'
 
 import { fetchString } from './string'
 import {
@@ -1057,6 +1059,67 @@ export function addStreamKey(
   onFailAction?: () => void,
 ) {
   return addTypedKey(data, KeyTypes.Stream, onSuccessAction, onFailAction)
+}
+
+// Asynchronous thunk action
+// Vector set create uses POST /vector-set (create-only; VADD against a new key).
+// The element PUT endpoint reuses the same path for adding to an existing key.
+export function addVectorSetKey(
+  data: CreateVectorSetWithExpireDto,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    dispatch(addKey())
+    try {
+      const state = stateInit()
+      const { encoding } = state.app.info
+      const payload = {
+        keyName: data.keyName,
+        elements: data.elements.map((el) => ({
+          name: stringToBuffer(el.name),
+          vector: el.vector,
+          ...(el.attributes ? { attributes: el.attributes } : {}),
+        })),
+        ...(data.expire !== undefined ? { expire: data.expire } : {}),
+      }
+      const { status } = await apiService.post(
+        getUrl(
+          state.connections.instances?.connectedInstance?.id ?? '',
+          ApiEndpoints.VECTOR_SET,
+        ),
+        payload,
+        { params: { encoding } },
+      )
+      if (isStatusSuccessful(status)) {
+        onSuccessAction?.()
+        dispatch(addKeySuccess())
+        dispatch<any>(
+          addKeyIntoList({ key: data.keyName, keyType: KeyTypes.VectorSet }),
+        )
+        dispatch(
+          addMessageNotification(successMessages.ADDED_NEW_KEY(data.keyName)),
+        )
+        sendEventTelemetry({
+          event: getBasedOnViewTypeEvent(
+            state.browser.keys?.viewType,
+            TelemetryEvent.BROWSER_KEY_ADDED,
+            TelemetryEvent.TREE_VIEW_KEY_ADDED,
+          ),
+          eventData: {
+            databaseId: state.connections.instances?.connectedInstance?.id,
+            ...getAdditionalAddedEventData(ApiEndpoints.VECTOR_SET, data),
+          },
+        })
+      }
+    } catch (_err) {
+      const error = _err as AxiosError
+      onFailAction?.()
+      const errorMessage = getApiErrorMessage(error)
+      dispatch(addErrorNotification(error))
+      dispatch(addKeyFailure(errorMessage))
+    }
+  }
 }
 
 // Asynchronous thunk action

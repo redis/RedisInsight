@@ -38,6 +38,16 @@ export interface AddVectorSetElementsData {
   }[]
 }
 
+export interface CreateVectorSetWithExpireDto {
+  keyName: RedisResponseBuffer
+  elements: {
+    name: string
+    vector: number[]
+    attributes?: string
+  }[]
+  expire?: number
+}
+
 export interface FetchVectorSetElementsParams {
   key: RedisResponseBuffer
   count?: number

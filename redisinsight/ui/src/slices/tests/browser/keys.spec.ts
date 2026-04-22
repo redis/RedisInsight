@@ -55,6 +55,7 @@ import reducer, {
   addReJSONKey,
   addSetKey,
   addStringKey,
+  addVectorSetKey,
   addZsetKey,
   defaultSelectedKeyAction,
   defaultSelectedKeyActionFailure,
@@ -1781,6 +1782,54 @@ describe('keys slice', () => {
           addMessageNotification(successMessages.ADDED_NEW_KEY(data.keyName)),
         ]
         expect(store.getActions()).toEqual(expectedActions)
+      })
+    })
+
+    describe('addVectorSetKey', () => {
+      it('success to add vector set key', async () => {
+        const data = {
+          keyName: stringToBuffer('myVectorSet'),
+          elements: [{ name: 'el-1', vector: [0.1, 0.2, 0.3] }],
+        }
+        const responsePayload = { status: 200 }
+
+        apiService.post = jest.fn().mockResolvedValue(responsePayload)
+
+        await store.dispatch<any>(addVectorSetKey(data, jest.fn()))
+
+        const expectedActions = [
+          addKey(),
+          addKeySuccess(),
+          updateKeyList({
+            keyName: data.keyName,
+            keyType: KeyTypes.VectorSet,
+          }),
+          addMessageNotification(successMessages.ADDED_NEW_KEY(data.keyName)),
+        ]
+        expect(store.getActions()).toEqual(expectedActions)
+      })
+
+      it('calls onFailAction and dispatches failure on error', async () => {
+        const data = {
+          keyName: stringToBuffer('myVectorSet'),
+          elements: [{ name: 'el-1', vector: [0.1, 0.2, 0.3] }],
+        }
+        const errorMessage = 'Something went wrong'
+        const responsePayload = {
+          response: { status: 500, data: { message: errorMessage } },
+        }
+
+        apiService.post = jest.fn().mockRejectedValue(responsePayload)
+        const onFail = jest.fn()
+
+        await store.dispatch<any>(addVectorSetKey(data, jest.fn(), onFail))
+
+        expect(onFail).toHaveBeenCalled()
+        expect(
+          store
+            .getActions()
+            .some((action) => action.type === 'keys/addKeyFailure'),
+        ).toBe(true)
       })
     })
 
