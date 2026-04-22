@@ -10,20 +10,27 @@ import {
   isEqualBuffers,
   isStatusSuccessful,
   Maybe,
+  stringToBuffer,
 } from 'uiSrc/utils'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 
 import {
   deleteKeyFromList,
   deleteSelectedKeySuccess,
+  fetchKeyInfo,
   refreshKeyInfoAction,
   updateSelectedKeyRefreshTime,
 } from './keys'
 import { AppDispatch, RootState } from '../store'
 import { RedisResponseBuffer } from '../interfaces'
 import {
+  AddVectorSetElementsData,
+  AddVectorSetElementsState,
+  FetchMoreVectorSetElementsParams,
+  FetchVectorSetElementsParams,
+  GetVectorSetElementsResponse,
   InitialStateVectorSet,
-  ModifiedVectorSetResponse,
+  VectorSetData,
   VectorSetElement,
 } from '../interfaces/vectorSet'
 import {
@@ -45,6 +52,10 @@ export const initialState: InitialStateVectorSet = {
     nextCursor: undefined,
     elements: [],
   },
+  adding: {
+    loading: false,
+    error: '',
+  },
 }
 
 const vectorSetSlice = createSlice({
@@ -64,13 +75,12 @@ const vectorSetSlice = createSlice({
     },
     loadVectorSetElementsSuccess: (
       state,
-      { payload }: PayloadAction<ModifiedVectorSetResponse>,
+      { payload }: PayloadAction<VectorSetData>,
     ) => {
       state.data = {
         ...state.data,
         ...payload,
       }
-      state.data.key = payload.keyName as RedisResponseBuffer
       state.loading = false
     },
     loadVectorSetElementsFailure: (state, { payload }) => {
@@ -86,7 +96,7 @@ const vectorSetSlice = createSlice({
       state,
       {
         payload: { elements, nextCursor, ...rest },
-      }: PayloadAction<ModifiedVectorSetResponse>,
+      }: PayloadAction<VectorSetData>,
     ) => {
       state.loading = false
       state.data = {
@@ -138,6 +148,27 @@ const vectorSetSlice = createSlice({
       }
     },
 
+    addElements: (state) => {
+      state.adding = {
+        ...state.adding,
+        loading: true,
+        error: '',
+      }
+    },
+    addElementsSuccess: (state) => {
+      state.adding = {
+        ...state.adding,
+        loading: false,
+      }
+    },
+    addElementsFailure: (state, { payload }) => {
+      state.adding = {
+        ...state.adding,
+        loading: false,
+        error: payload,
+      }
+    },
+
     downloadVectorSetEmbedding: (state) => {
       state.downloading = true
     },
@@ -163,6 +194,9 @@ export const {
   removeVectorSetElementsFailure,
   removeElementsFromList,
   updateElementAttributes,
+  addElements,
+  addElementsSuccess,
+  addElementsFailure,
   downloadVectorSetEmbedding,
   downloadVectorSetEmbeddingSuccess,
   downloadVectorSetEmbeddingFailure,
@@ -171,20 +205,11 @@ export const {
 export const vectorSetSelector = (state: RootState) => state.browser.vectorSet
 export const vectorSetDataSelector = (state: RootState) =>
   state.browser.vectorSet?.data
+export const addVectorSetElementsStateSelector = (
+  state: RootState,
+): AddVectorSetElementsState => state.browser.vectorSet?.adding
 
 export default vectorSetSlice.reducer
-
-interface FetchVectorSetElementsParams {
-  key: RedisResponseBuffer
-  count?: number
-  resetData?: boolean
-}
-
-interface FetchMoreVectorSetElementsParams {
-  key: RedisResponseBuffer
-  nextCursor: string
-  count?: number
-}
 
 export function fetchVectorSetElements({
   key,
@@ -197,20 +222,27 @@ export function fetchVectorSetElements({
     try {
       const state = stateInit()
       const { encoding } = state.app.info
-      const { data, status } = await apiService.post<ModifiedVectorSetResponse>(
-        getUrl(
-          state.connections.instances.connectedInstance?.id,
-          ApiEndpoints.VECTOR_SET_GET_ELEMENTS,
-        ),
-        {
-          keyName: key,
-          count,
-        },
-        { params: { encoding } },
-      )
+      const { data, status } =
+        await apiService.post<GetVectorSetElementsResponse>(
+          getUrl(
+            state.connections.instances.connectedInstance?.id,
+            ApiEndpoints.VECTOR_SET_GET_ELEMENTS,
+          ),
+          {
+            keyName: key,
+            count,
+          },
+          { params: { encoding } },
+        )
 
       if (isStatusSuccessful(status)) {
-        dispatch(loadVectorSetElementsSuccess(data))
+        const { elementNames, ...rest } = data
+        dispatch(
+          loadVectorSetElementsSuccess({
+            ...rest,
+            elements: elementNames.map((name) => ({ name })),
+          }),
+        )
         dispatch(updateSelectedKeyRefreshTime(Date.now()))
       }
     } catch (_err) {
@@ -233,21 +265,28 @@ export function fetchMoreVectorSetElements({
     try {
       const state = stateInit()
       const { encoding } = state.app.info
-      const { data, status } = await apiService.post<ModifiedVectorSetResponse>(
-        getUrl(
-          state.connections.instances.connectedInstance?.id,
-          ApiEndpoints.VECTOR_SET_GET_ELEMENTS,
-        ),
-        {
-          keyName: key,
-          start: nextCursor,
-          count,
-        },
-        { params: { encoding } },
-      )
+      const { data, status } =
+        await apiService.post<GetVectorSetElementsResponse>(
+          getUrl(
+            state.connections.instances.connectedInstance?.id,
+            ApiEndpoints.VECTOR_SET_GET_ELEMENTS,
+          ),
+          {
+            keyName: key,
+            start: nextCursor,
+            count,
+          },
+          { params: { encoding } },
+        )
 
       if (isStatusSuccessful(status)) {
-        dispatch(loadMoreVectorSetElementsSuccess(data))
+        const { elementNames, ...rest } = data
+        dispatch(
+          loadMoreVectorSetElementsSuccess({
+            ...rest,
+            elements: elementNames.map((name) => ({ name })),
+          }),
+        )
       }
     } catch (_err) {
       const error = _err as AxiosError
@@ -387,6 +426,46 @@ export function setVectorSetElementAttribute(
     } catch (_err) {
       const error = _err as AxiosError
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+    }
+  }
+}
+
+export function addVectorSetElements(
+  data: AddVectorSetElementsData,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    dispatch(addElements())
+    try {
+      const state = stateInit()
+      const { encoding } = state.app.info
+      const { status } = await apiService.put(
+        getUrl(
+          state.connections.instances.connectedInstance?.id,
+          ApiEndpoints.VECTOR_SET,
+        ),
+        {
+          keyName: data.keyName,
+          elements: data.elements.map((el) => ({
+            name: stringToBuffer(el.name),
+            vector: el.vector,
+            ...(el.attributes ? { attributes: el.attributes } : {}),
+          })),
+        },
+        { params: { encoding } },
+      )
+      if (isStatusSuccessful(status)) {
+        onSuccessAction?.()
+        dispatch(addElementsSuccess())
+        dispatch<any>(fetchKeyInfo(data.keyName))
+      }
+    } catch (_err) {
+      const error = _err as AxiosError
+      onFailAction?.()
+      const errorMessage = getApiErrorMessage(error)
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      dispatch(addElementsFailure(errorMessage))
     }
   }
 }
