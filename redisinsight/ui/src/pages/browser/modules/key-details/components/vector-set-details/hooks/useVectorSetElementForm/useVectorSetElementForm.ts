@@ -22,7 +22,7 @@ export const useVectorSetElementForm = ({
   ])
   const [isFormValid, setIsFormValid] = useState(false)
   const lastAddedNameRef = useRef<HTMLInputElement>(null)
-  const lastAddedIdRef = useRef(elements[0].id)
+  const prevElementsLengthRef = useRef(elements.length)
 
   useEffect(() => {
     const valid = elements.every((el) => {
@@ -36,15 +36,20 @@ export const useVectorSetElementForm = ({
   }, [elements, vectorDim])
 
   useEffect(() => {
-    lastAddedNameRef.current?.focus()
-  }, [lastAddedIdRef.current])
+    if (elements.length > prevElementsLengthRef.current) {
+      lastAddedNameRef.current?.focus()
+    }
+    prevElementsLengthRef.current = elements.length
+  }, [elements.length])
 
   const addElement = useCallback(() => {
-    setElements((prev) => {
-      const nextId = prev[prev.length - 1].id + 1
-      lastAddedIdRef.current = nextId
-      return [...prev, { ...INITIAL_VECTOR_SET_ELEMENT_STATE, id: nextId }]
-    })
+    setElements((prev) => [
+      ...prev,
+      {
+        ...INITIAL_VECTOR_SET_ELEMENT_STATE,
+        id: prev[prev.length - 1].id + 1,
+      },
+    ])
   }, [])
 
   const onClickRemove = useCallback((item: IVectorSetElementState) => {
