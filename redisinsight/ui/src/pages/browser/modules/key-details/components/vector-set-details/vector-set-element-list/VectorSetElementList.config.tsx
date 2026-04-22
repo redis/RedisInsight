@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ColumnDef } from 'uiSrc/components/base/layout/table'
+import { ColumnDef, Row as TableRow } from 'uiSrc/components/base/layout/table'
 import { VectorSetElement } from 'uiSrc/slices/interfaces'
 import {
   bufferToString,
@@ -28,7 +28,7 @@ const createNameColumn = (
     header: VECTOR_SET_COLUMN_HEADERS[VectorSetColumn.Name],
     enableSorting: false,
     size: 150,
-    cell: ({ row }: { row: Row<VectorSetElement> }) => (
+    cell: ({ row }: { row: TableRow<VectorSetElement> }) => (
       <ElementNameCell
         element={row.original}
         compressor={compressor}
@@ -45,7 +45,7 @@ const createActionsColumn = (
   header: VECTOR_SET_COLUMN_HEADERS[VectorSetColumn.Actions],
   enableSorting: false,
   size: 10,
-  cell: ({ row }: { row: Row<VectorSetElement> }) => {
+  cell: ({ row }: { row: TableRow<VectorSetElement> }) => {
     const { name: nameBuffer } = row.original
     const {
       viewFormat,

@@ -1,7 +1,7 @@
 import React, { memo } from 'react'
 
 import { VectorSetElement } from 'uiSrc/slices/interfaces'
-import useVectorSetElementListData from './hooks/useVectorSetElementListData'
+import { useVectorSetElementListData } from '../hooks'
 import * as S from './VectorSetElementList.styles'
 
 export interface Props {
