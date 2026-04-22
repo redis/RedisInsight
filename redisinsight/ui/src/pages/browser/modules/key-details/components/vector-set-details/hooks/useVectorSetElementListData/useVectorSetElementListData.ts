@@ -13,31 +13,27 @@ import {
   vectorSetDataSelector,
   vectorSetSelector,
 } from 'uiSrc/slices/browser/vectorSet'
-import {
-  RedisResponseBuffer,
-  RedisString,
-  VectorSetElement,
-} from 'uiSrc/slices/interfaces'
+import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces'
 
-import { getVectorSetColumns } from '../VectorSetElementList.config'
+import { getVectorSetColumns } from '../../vector-set-element-list/VectorSetElementList.config'
 import {
   ElementDeleteConfig,
   ElementsListConfig,
-} from '../VectorSetElementList.types'
-import { DEFAULT_PAGE_SIZE } from '../constants'
+} from '../../vector-set-element-list/VectorSetElementList.types'
+import { DEFAULT_PAGE_SIZE } from '../../vector-set-element-list/constants'
+
+import {
+  UseVectorSetElementListDataParams,
+  UseVectorSetElementListDataResult,
+} from './useVectorSetElementListData.types'
 
 const ELEMENT_DELETE_POPOVER_SUFFIX = '_vectorSet'
 const MIN_COLUMN_WIDTH = 100
 
-export interface UseVectorSetElementListDataParams {
-  onRemoveKey: () => void
-  onViewElement: (element: VectorSetElement) => void
-}
-
-const useVectorSetElementListData = ({
+export const useVectorSetElementListData = ({
   onRemoveKey,
   onViewElement,
-}: UseVectorSetElementListDataParams) => {
+}: UseVectorSetElementListDataParams): UseVectorSetElementListDataResult => {
   const { loading } = useSelector(vectorSetSelector)
   const { elements, nextCursor, total, isPaginationSupported } = useSelector(
     vectorSetDataSelector,
@@ -157,5 +153,3 @@ const useVectorSetElementListData = ({
     total,
   }
 }
-
-export default useVectorSetElementListData
