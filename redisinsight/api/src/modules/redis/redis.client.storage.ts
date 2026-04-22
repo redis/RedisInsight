@@ -227,4 +227,25 @@ export class RedisClientStorage {
       (client) => get(client.database, fieldPath) === value,
     );
   }
+
+  /**
+   * Disconnects and removes every cached client.
+   *
+   * Intended for events that invalidate all existing sockets at once — e.g.
+   * the host's network interface changed (Ethernet -> Wi-Fi) and any socket
+   * bound to the old interface is now half-open. Forcing a fresh connection
+   * on next use avoids the "first refresh hangs until the OS keepalive probe
+   * finally fires" problem.
+   */
+  public async removeAll(): Promise<number> {
+    const ids = [...this.clients.keys()];
+
+    if (ids.length === 0) {
+      return 0;
+    }
+
+    this.logger.debug(`Disconnecting ${ids.length} cached client(s)`);
+
+    return sum(await Promise.all(ids.map(this.remove.bind(this))));
+  }
 }

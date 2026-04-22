@@ -5,9 +5,14 @@ import {
   mockDatabase,
   mockSshTunnelProvider,
 } from 'src/__mocks__';
+import apiConfig, { Config } from 'src/utils/config';
 import { SshTunnelProvider } from 'src/modules/ssh/ssh-tunnel.provider';
 import { NodeRedisConnectionStrategy } from 'src/modules/redis/connection/node.redis.connection.strategy';
 import { StandaloneNodeRedisClient } from 'src/modules/redis/client/node-redis/standalone.node-redis.client';
+
+const REDIS_CLIENTS_CONFIG = apiConfig.get(
+  'redis_clients',
+) as Config['redis_clients'];
 
 jest.mock('redis', () => ({
   ...jest.requireActual('redis'),
@@ -57,6 +62,27 @@ describe('NodeRedisConnectionStrategy', () => {
         expect.objectContaining({
           socket: expect.objectContaining({
             family: 0,
+          }),
+        }),
+      );
+    });
+    it('should pass keepAlive on socket to detect half-open sockets after network switch', async () => {
+      const mockClient = {
+        on: jest.fn().mockReturnThis(),
+        connect: jest.fn().mockResolvedValue(undefined),
+      };
+      createClientSpy.mockReturnValue(mockClient);
+
+      await service.createStandaloneClient(
+        mockClientMetadata,
+        mockDatabase,
+        {},
+      );
+
+      expect(createClientSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          socket: expect.objectContaining({
+            keepAlive: REDIS_CLIENTS_CONFIG.keepAlive || false,
           }),
         }),
       );

@@ -178,10 +178,26 @@ export default {
     maxRedirections: parseInt(process.env.RI_CLIENTS_MAX_REDIRECTIONS, 10) || 3,
     slotsRefreshTimeout:
       parseInt(process.env.RI_CLIENTS_SLOTS_REQUEST_TIMEOUT, 10) || 5000,
+    // TCP keepalive initial idle delay in ms. Enables SO_KEEPALIVE so that
+    // half-open sockets (e.g. after a network interface switch) are eventually
+    // detected and closed by the OS instead of hanging indefinitely.
+    // Set to 0 to disable.
+    keepAlive:
+      process.env.RI_CLIENTS_KEEP_ALIVE !== undefined
+        ? parseInt(process.env.RI_CLIENTS_KEEP_ALIVE, 10)
+        : 5_000,
     maxStringSize: parseInt(process.env.RI_CLIENTS_MAX_STRING_SIZE, 10),
     truncatedStringPrefix:
       process.env.RI_CLIENTS_TRUNCATED_STRING_PREFIX ||
       '[Truncated due to length]',
+    // When enabled, the backend watches the host's network interfaces and
+    // disconnects every cached Redis client whenever the interface set
+    // changes (e.g. Ethernet -> Wi-Fi). The next command then opens a fresh
+    // socket on the currently-active interface instead of reusing a
+    // half-open one and hanging until the HTTP requestTimeout fires.
+    networkWatcher: process.env.RI_CLIENTS_NETWORK_WATCHER !== 'false',
+    networkWatcherInterval:
+      parseInt(process.env.RI_CLIENTS_NETWORK_WATCHER_INTERVAL, 10) || 2_000,
   },
   redis_scan: {
     countDefault: parseInt(process.env.RI_SCAN_COUNT_DEFAULT, 10) || 200,

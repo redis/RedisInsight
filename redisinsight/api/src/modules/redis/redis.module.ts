@@ -4,6 +4,7 @@ import { IoredisRedisConnectionStrategy } from 'src/modules/redis/connection/ior
 import { NodeRedisConnectionStrategy } from 'src/modules/redis/connection/node.redis.connection.strategy';
 import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
 import { LocalRedisClientFactory } from 'src/modules/redis/local.redis.client.factory';
+import { NetworkChangeMonitor } from 'src/modules/redis/network-change.monitor';
 
 @Module({})
 export class RedisModule {
@@ -14,6 +15,7 @@ export class RedisModule {
       module: RedisModule,
       providers: [
         RedisClientStorage,
+        NetworkChangeMonitor,
         {
           provide: RedisClientFactory,
           useClass: redisClientFactory,

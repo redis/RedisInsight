@@ -230,6 +230,20 @@ describe('IoredisRedisConnectionStrategy', () => {
 
       process.nextTick(() => mockIoredisNativeClient.emit('ready'));
     });
+    it('should pass keepAlive to detect half-open sockets after network switch', (done) => {
+      service
+        .createStandaloneClient(mockClientMetadata, mockDatabase, {})
+        .then(() => {
+          expect(spyRedis).toHaveBeenCalledWith(
+            expect.objectContaining({
+              keepAlive: REDIS_CLIENTS_CONFIG.keepAlive,
+            }),
+          );
+          done();
+        });
+
+      process.nextTick(() => mockIoredisNativeClient.emit('ready'));
+    });
   });
 
   describe('createClusterClient', () => {
