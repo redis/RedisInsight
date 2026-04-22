@@ -6,6 +6,7 @@ import {
   AddVectorSetElementsData,
   VectorSetElement,
 } from 'uiSrc/slices/interfaces'
+import { IVectorSetElementState } from 'uiSrc/pages/browser/modules/key-details/components/vector-set-details/vector-set-element-form/interfaces'
 
 export const mockKeyBuffer = stringToBuffer(faker.word.noun())
 
@@ -55,6 +56,15 @@ export const addVectorSetElementsDataFactory =
         attributes: mockVectorSetElementAttributes(),
       },
     ],
+  }))
+
+export const vectorSetElementFormStateFactory =
+  Factory.define<IVectorSetElementState>(() => ({
+    id: 1,
+    name: 'item',
+    vector: '1, 2, 3',
+    attributes: '',
+    showAttributes: false,
   }))
 
 /** Redis key name string for vector set tests (stable shape, random value). */
