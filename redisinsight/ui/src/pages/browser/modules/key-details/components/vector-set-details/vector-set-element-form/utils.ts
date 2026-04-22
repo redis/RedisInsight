@@ -1,5 +1,5 @@
 import { VECTOR_SEPARATOR, DEFAULT_VECTOR_HELP_TEXT } from './constants'
-import { VectorFieldInfo } from './interfaces'
+import { VectorFieldInfo, VectorValidationResult } from './interfaces'
 
 export function parseVector(raw: string): number[] | null {
   const trimmed = raw.trim()
@@ -17,44 +17,47 @@ export function parseVector(raw: string): number[] | null {
   return nums.length > 0 ? nums : null
 }
 
+function validateVector(
+  raw: string,
+  vectorDim?: number,
+): VectorValidationResult {
+  if (!raw.trim()) return { parsed: null }
+
+  const parsed = parseVector(raw)
+  if (!parsed) return { parsed: null, error: 'Invalid number format in vector' }
+
+  if (vectorDim !== undefined && parsed.length !== vectorDim) {
+    return {
+      parsed,
+      error: `Dimension mismatch. Expected ${vectorDim} values, but received ${parsed.length}`,
+    }
+  }
+
+  return { parsed }
+}
+
 export function getVectorError(
   raw: string,
   vectorDim?: number,
 ): string | undefined {
-  if (!raw.trim()) return undefined
-
-  const parsed = parseVector(raw)
-  if (!parsed) return 'Invalid number format in vector'
-
-  if (vectorDim !== undefined && parsed.length !== vectorDim) {
-    return `Dimension mismatch. Expected ${vectorDim} values, but received ${parsed.length}`
-  }
-
-  return undefined
+  return validateVector(raw, vectorDim).error
 }
 
 export function getVectorFieldInfo(
   raw: string,
   vectorDim?: number,
 ): VectorFieldInfo {
-  const trimmed = raw.trim()
-
-  if (!trimmed) {
+  if (!raw.trim()) {
     return { text: DEFAULT_VECTOR_HELP_TEXT, isError: false }
   }
 
-  const error = getVectorError(raw, vectorDim)
+  const { parsed, error } = validateVector(raw, vectorDim)
   if (error) {
     return { text: error, isError: true }
   }
 
-  const parsed = parseVector(raw)
-  if (parsed) {
-    return {
-      text: `Detected numeric vector (${parsed.length} dimensions).`,
-      isError: false,
-    }
+  return {
+    text: `Detected numeric vector (${parsed!.length} dimensions).`,
+    isError: false,
   }
-
-  return { text: '', isError: false }
 }

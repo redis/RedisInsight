@@ -24,3 +24,8 @@ export interface VectorFieldInfo {
   text: string
   isError: boolean
 }
+
+export interface VectorValidationResult {
+  parsed: number[] | null
+  error?: string
+}
