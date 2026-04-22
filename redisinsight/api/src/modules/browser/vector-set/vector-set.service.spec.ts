@@ -15,6 +15,9 @@ import {
 } from 'src/__mocks__';
 import { BrowserToolVectorSetCommands } from 'src/modules/browser/constants/browser-tool-commands';
 import {
+  addElementsToVectorSetDtoFactory,
+  addVectorSetElementDtoFactory,
+  createVectorSetDtoFactory,
   deleteVectorSetElementsDtoFactory,
   downloadVectorSetEmbeddingDtoFactory,
   getVectorSetElementsDtoFactory,
@@ -49,6 +52,131 @@ describe('VectorSetService', () => {
     service = module.get<VectorSetService>(VectorSetService);
     client.sendCommand = jest.fn().mockResolvedValue(undefined);
     client.sendPipeline = jest.fn().mockResolvedValue(undefined);
+  });
+
+  describe('createVectorSet', () => {
+    const mockCreateDto = createVectorSetDtoFactory.build();
+
+    beforeEach(() => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, mockCreateDto.keyName])
+        .mockResolvedValue(false);
+    });
+
+    it('should create vector set with elements successfully', async () => {
+      client.sendPipeline.mockResolvedValue(
+        mockCreateDto.elements.map(() => [null, 1]),
+      );
+
+      await service.createVectorSet(mockBrowserClientMetadata, mockCreateDto);
+
+      expect(client.sendPipeline).toHaveBeenCalledWith(
+        mockCreateDto.elements.map((el) =>
+          expect.arrayContaining([
+            BrowserToolVectorSetCommands.VAdd,
+            mockCreateDto.keyName,
+            'VALUES',
+            el.vector.length,
+          ]),
+        ),
+      );
+    });
+
+    it('should include SETATTR when element has attributes', async () => {
+      const mockElement = addVectorSetElementDtoFactory.build({
+        attributes: '{"color":"red"}',
+      });
+      const dtoWithAttrs = createVectorSetDtoFactory.build({
+        elements: [mockElement],
+      });
+
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, dtoWithAttrs.keyName])
+        .mockResolvedValue(false);
+
+      client.sendPipeline.mockResolvedValue([[null, 1]]);
+
+      await service.createVectorSet(mockBrowserClientMetadata, dtoWithAttrs);
+
+      expect(client.sendPipeline).toHaveBeenCalledWith([
+        expect.arrayContaining(['SETATTR', mockElement.attributes]),
+      ]);
+    });
+
+    it('should set expire when provided', async () => {
+      const dtoWithExpire = createVectorSetDtoFactory.build({
+        expire: 3600,
+      });
+
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, dtoWithExpire.keyName])
+        .mockResolvedValue(false);
+
+      client.sendPipeline.mockResolvedValue([
+        ...dtoWithExpire.elements.map(() => [null, 1]),
+        [null, 1],
+      ]);
+
+      await service.createVectorSet(mockBrowserClientMetadata, dtoWithExpire);
+
+      expect(client.sendPipeline).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          [BrowserToolKeysCommands.Expire, dtoWithExpire.keyName, 3600],
+        ]),
+      );
+    });
+
+    it('should throw when key already exists', async () => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, mockCreateDto.keyName])
+        .mockResolvedValue(true);
+
+      await expect(
+        service.createVectorSet(mockBrowserClientMetadata, mockCreateDto),
+      ).rejects.toThrow();
+    });
+  });
+
+  describe('addElements', () => {
+    const mockElement = addVectorSetElementDtoFactory.build({
+      attributes: '{"status":"active"}',
+    });
+    const mockAddDto = addElementsToVectorSetDtoFactory.build({
+      elements: [mockElement],
+    });
+
+    beforeEach(() => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, mockAddDto.keyName])
+        .mockResolvedValue(true);
+    });
+
+    it('should add elements to existing vector set successfully', async () => {
+      client.sendPipeline.mockResolvedValue([[null, 1]]);
+
+      await service.addElements(mockBrowserClientMetadata, mockAddDto);
+
+      expect(client.sendPipeline).toHaveBeenCalledWith([
+        expect.arrayContaining([
+          BrowserToolVectorSetCommands.VAdd,
+          mockAddDto.keyName,
+          'VALUES',
+          mockElement.vector.length,
+          'SETATTR',
+          mockElement.attributes,
+        ]),
+      ]);
+    });
+
+    it('should throw NotFoundException when key does not exist', async () => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, mockAddDto.keyName])
+        .mockResolvedValue(false);
+
+      await expect(
+        service.addElements(mockBrowserClientMetadata, mockAddDto),
+      ).rejects.toThrow(NotFoundException);
+    });
   });
 
   describe('getElements', () => {
@@ -88,10 +216,7 @@ describe('VectorSetService', () => {
       ]);
       expect(result.keyName).toEqual(mockDto.keyName);
       expect(result.total).toEqual(mockElements.length);
-      expect(result.elements).toHaveLength(mockElements.length);
-      expect(result.elements[0].name).toEqual(mockElements[0].name);
-      expect(result.elements[0].vector).toBeUndefined();
-      expect(result.elements[0].attributes).toBeUndefined();
+      expect(result.elementNames).toHaveLength(mockElements.length);
       expect(result.isPaginationSupported).toBe(true);
     });
 
@@ -173,7 +298,7 @@ describe('VectorSetService', () => {
         mockDto.keyName,
         mockDto.count,
       ]);
-      expect(result.elements).toHaveLength(mockElements.length);
+      expect(result.elementNames).toHaveLength(mockElements.length);
       expect(result.nextCursor).toBeUndefined();
       expect(result.isPaginationSupported).toBe(false);
     });

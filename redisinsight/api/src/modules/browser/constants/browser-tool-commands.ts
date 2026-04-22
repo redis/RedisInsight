@@ -102,6 +102,7 @@ export enum BrowserToolTSCommands {
 }
 
 export enum BrowserToolVectorSetCommands {
+  VAdd = 'VADD',
   VCard = 'VCARD',
   VInfo = 'VINFO',
   VRange = 'VRANGE',

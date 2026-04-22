@@ -19,6 +19,7 @@ import {
   vectorSetElementWithAttributesFactory,
   vectorSetTestKeyName,
   vectorSetPaginationCursorAfter,
+  addVectorSetElementsDataFactory,
 } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
 import {
   deletePatternKeyFromList,
@@ -39,6 +40,11 @@ import reducer, {
   removeVectorSetElementsFailure,
   removeElementsFromList,
   updateElementAttributes,
+  addElements,
+  addElementsSuccess,
+  addElementsFailure,
+  addVectorSetElements,
+  addVectorSetElementsStateSelector,
   downloadVectorSetEmbedding,
   downloadVectorSetEmbeddingSuccess,
   downloadVectorSetEmbeddingFailure,
@@ -116,9 +122,9 @@ describe('vectorSet slice', () => {
         loading: false,
         downloading: false,
         error: '',
+        adding: initialState.adding,
         data: {
           ...data,
-          key: data.keyName,
         },
       }
 
@@ -143,10 +149,10 @@ describe('vectorSet slice', () => {
         loading: false,
         downloading: false,
         error: '',
+        adding: initialState.adding,
         data: {
           ...initialState.data,
           ...data,
-          key: data.keyName,
         },
       }
 
@@ -177,9 +183,9 @@ describe('vectorSet slice', () => {
         loading: false,
         downloading: false,
         error: '',
+        adding: initialState.adding,
         data: {
           ...data,
-          key: data.keyName,
         },
       }
 
@@ -212,9 +218,9 @@ describe('vectorSet slice', () => {
         loading: false,
         downloading: false,
         error: '',
+        adding: initialState.adding,
         data: {
           ...data,
-          key: data.keyName,
         },
       }
 
@@ -239,6 +245,7 @@ describe('vectorSet slice', () => {
         loading: false,
         downloading: false,
         error: data,
+        adding: initialState.adding,
         data: initialState.data,
       }
 
@@ -261,6 +268,7 @@ describe('vectorSet slice', () => {
         loading: true,
         downloading: false,
         error: '',
+        adding: initialState.adding,
         data: initialState.data,
       }
 
@@ -289,6 +297,7 @@ describe('vectorSet slice', () => {
         loading: false,
         downloading: false,
         error: '',
+        adding: initialState.adding,
         data: {
           ...initialState.data,
           keyName,
@@ -318,6 +327,7 @@ describe('vectorSet slice', () => {
         loading: false,
         downloading: false,
         error: data,
+        adding: initialState.adding,
         data: initialState.data,
       }
 
@@ -451,27 +461,34 @@ describe('vectorSet slice', () => {
   describe('thunks', () => {
     describe('fetchVectorSetElements', () => {
       const thunkElements = vectorSetElementFactory.buildList(3)
-      const data = {
+      const apiResponse = {
         keyName: vectorSetTestKeyName(),
         total: thunkElements.length,
         nextCursor: vectorSetPaginationCursorAfter(
           thunkElements[thunkElements.length - 1],
         ),
         isPaginationSupported: true,
-        elements: thunkElements,
+        elementNames: thunkElements.map((el) => el.name),
       }
 
       it('call fetchVectorSetElements, loadVectorSetElementsSuccess when fetch is successful', async () => {
-        const responsePayload = { data, status: 200 }
+        const responsePayload = { data: apiResponse, status: 200 }
         apiService.post = jest.fn().mockResolvedValue(responsePayload)
 
         await store.dispatch<any>(
-          fetchVectorSetElements({ key: data.keyName as any, count: 10 }),
+          fetchVectorSetElements({
+            key: apiResponse.keyName as any,
+            count: 10,
+          }),
         )
 
+        const { elementNames, ...rest } = apiResponse
         const expectedActions = [
           loadVectorSetElements(undefined),
-          loadVectorSetElementsSuccess(responsePayload.data),
+          loadVectorSetElementsSuccess({
+            ...rest,
+            elements: elementNames.map((name) => ({ name })),
+          }),
           updateSelectedKeyRefreshTime(Date.now()),
         ]
 
@@ -489,7 +506,10 @@ describe('vectorSet slice', () => {
         apiService.post = jest.fn().mockRejectedValue(responsePayload)
 
         await store.dispatch<any>(
-          fetchVectorSetElements({ key: data.keyName as any, count: 10 }),
+          fetchVectorSetElements({
+            key: apiResponse.keyName as any,
+            count: 10,
+          }),
         )
 
         const expectedActions = [
@@ -504,34 +524,38 @@ describe('vectorSet slice', () => {
 
     describe('fetchMoreVectorSetElements', () => {
       const moreElements = vectorSetElementFactory.buildList(3)
-      const data = {
+      const moreApiResponse = {
         keyName: vectorSetTestKeyName(),
         total: faker.number.int({ min: moreElements.length + 1, max: 100 }),
         nextCursor: vectorSetPaginationCursorAfter(
           moreElements[moreElements.length - 1],
         ),
         isPaginationSupported: true,
-        elements: moreElements,
+        elementNames: moreElements.map((el) => el.name),
       }
       const requestCursor = vectorSetPaginationCursorAfter(
         vectorSetElementFactory.build(),
       )
 
       it('call fetchMoreVectorSetElements, loadMoreVectorSetElementsSuccess when fetch is successful', async () => {
-        const responsePayload = { data, status: 200 }
+        const responsePayload = { data: moreApiResponse, status: 200 }
         apiService.post = jest.fn().mockResolvedValue(responsePayload)
 
         await store.dispatch<any>(
           fetchMoreVectorSetElements({
-            key: data.keyName as any,
+            key: moreApiResponse.keyName as any,
             nextCursor: requestCursor,
             count: 10,
           }),
         )
 
+        const { elementNames: moreElementNames, ...moreRest } = moreApiResponse
         const expectedActions = [
           loadMoreVectorSetElements(),
-          loadMoreVectorSetElementsSuccess(responsePayload.data),
+          loadMoreVectorSetElementsSuccess({
+            ...moreRest,
+            elements: moreElementNames.map((name) => ({ name })),
+          }),
         ]
 
         expect(mockedStore.getActions()).toEqual(expectedActions)
@@ -549,7 +573,7 @@ describe('vectorSet slice', () => {
 
         await store.dispatch<any>(
           fetchMoreVectorSetElements({
-            key: data.keyName as any,
+            key: moreApiResponse.keyName as any,
             nextCursor: requestCursor,
             count: 10,
           }),
@@ -897,6 +921,104 @@ describe('vectorSet slice', () => {
       expect(nextState.data.elements[0].attributes).toEqual(
         elements[0].attributes,
       )
+    })
+  })
+
+  describe('addElements', () => {
+    it('should set adding.loading true and clear error', () => {
+      const nextState = reducer(initialState, addElements())
+
+      expect(nextState.adding.loading).toBe(true)
+      expect(nextState.adding.error).toBe('')
+    })
+  })
+
+  describe('addElementsSuccess', () => {
+    it('should set adding.loading false', () => {
+      const prevState = {
+        ...initialState,
+        adding: { loading: true, error: '' },
+      }
+      const nextState = reducer(prevState, addElementsSuccess())
+
+      expect(nextState.adding.loading).toBe(false)
+    })
+  })
+
+  describe('addElementsFailure', () => {
+    it('should set adding.loading false and store error', () => {
+      const prevState = {
+        ...initialState,
+        adding: { loading: true, error: '' },
+      }
+      const nextState = reducer(prevState, addElementsFailure('add failed'))
+
+      expect(nextState.adding.loading).toBe(false)
+      expect(nextState.adding.error).toBe('add failed')
+    })
+  })
+
+  describe('addVectorSetElementsStateSelector', () => {
+    it('should return the adding state', () => {
+      const addingState = { loading: true, error: 'err' }
+      const rootState = {
+        ...initialStateDefault,
+        browser: {
+          ...initialStateDefault.browser,
+          vectorSet: { ...initialState, adding: addingState },
+        },
+      }
+      expect(addVectorSetElementsStateSelector(rootState)).toEqual(addingState)
+    })
+  })
+
+  describe('addVectorSetElements thunk', () => {
+    const elementsData = addVectorSetElementsDataFactory.build()
+
+    it('should dispatch success actions when add is successful', async () => {
+      const responsePayload = { status: 200 }
+      apiService.put = jest.fn().mockResolvedValue(responsePayload)
+
+      const onSuccess = jest.fn()
+
+      await store.dispatch<any>(
+        addVectorSetElements(elementsData as any, onSuccess),
+      )
+
+      const expectedActions = [addElements(), addElementsSuccess()]
+
+      expect(store.getActions().slice(0, expectedActions.length)).toEqual(
+        expectedActions,
+      )
+      expect(onSuccess).toHaveBeenCalledTimes(1)
+    })
+
+    it('should dispatch failure actions when add fails', async () => {
+      const errorMessage = 'Something was wrong!'
+      const responsePayload = {
+        response: {
+          status: 500,
+          data: { message: errorMessage },
+        },
+      }
+      apiService.put = jest.fn().mockRejectedValue(responsePayload)
+
+      const onFail = jest.fn()
+
+      await store.dispatch<any>(
+        addVectorSetElements(elementsData as any, undefined, onFail),
+      )
+
+      const expectedActions = [
+        addElements(),
+        addErrorNotification(
+          responsePayload as unknown as IAddInstanceErrorPayload,
+        ),
+        addElementsFailure(errorMessage),
+      ]
+
+      expect(store.getActions()).toEqual(expectedActions)
+      expect(onFail).toHaveBeenCalledTimes(1)
     })
   })
 })

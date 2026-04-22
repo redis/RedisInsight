@@ -41,10 +41,10 @@ docs {
 
   ```
   Request 1: { start: "-", count: 10 }
-  Response:  { nextCursor: "(item_4", elements: [item_1, item_10, ..., item_4] }
+  Response:  { nextCursor: "(item_4", elementNames: ["item_1", "item_10", ..., "item_4"] }
 
   Request 2: { start: "(item_4", count: 10 }
-  Response:  { elements: [item_5, item_6, ..., item_9] }  // No nextCursor = done!
+  Response:  { elementNames: ["item_5", "item_6", ..., "item_9"] }  // No nextCursor = done!
   ```
 
   ## Important: Lexicographical Order

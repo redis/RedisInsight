@@ -7,20 +7,25 @@ import {
 import { catchAclError, catchMultiTransactionError } from 'src/utils';
 import { RedisErrorCodes } from 'src/constants';
 import ERROR_MESSAGES from 'src/constants/error-messages';
-import { BrowserToolVectorSetCommands } from 'src/modules/browser/constants/browser-tool-commands';
+import {
+  BrowserToolKeysCommands,
+  BrowserToolVectorSetCommands,
+} from 'src/modules/browser/constants/browser-tool-commands';
 import { plainToInstance } from 'class-transformer';
 import { ClientMetadata } from 'src/common/models';
 import {
+  AddElementsToVectorSetDto,
+  CreateVectorSetDto,
   DeleteVectorSetElementsDto,
   DeleteVectorSetElementsResponse,
-  GetVectorSetElementDetailsDto,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
   SetVectorSetElementAttributeDto,
   SetVectorSetElementAttributeResponse,
-  VectorSetElementDto,
+  VectorSetElementDetailsDto,
   VectorSetElementKeyDto,
   VECTOR_EMBEDDING_MAX_DISPLAY_LENGTH,
+  AddVectorSetElementDto,
 } from 'src/modules/browser/vector-set/dto';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { Readable } from 'stream';
@@ -29,13 +34,99 @@ import {
   RedisClientCommand,
   RedisFeature,
 } from 'src/modules/redis/client';
-import { checkIfKeyNotExists } from 'src/modules/browser/utils';
+import {
+  checkIfKeyExists,
+  checkIfKeyNotExists,
+} from 'src/modules/browser/utils';
 
 @Injectable()
 export class VectorSetService {
   private logger = new Logger('VectorSetService');
 
   constructor(private databaseClientFactory: DatabaseClientFactory) {}
+
+  public async createVectorSet(
+    clientMetadata: ClientMetadata,
+    dto: CreateVectorSetDto,
+  ): Promise<void> {
+    try {
+      this.logger.debug('Creating VectorSet data type.', clientMetadata);
+      const { keyName, elements, expire } = dto;
+      const client: RedisClient =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+
+      await checkIfKeyExists(keyName, client);
+
+      const commands: RedisClientCommand[] = elements.map((element) =>
+        this.buildVaddCommand(keyName, element),
+      );
+
+      if (expire) {
+        commands.push([
+          BrowserToolKeysCommands.Expire,
+          keyName,
+          expire,
+        ] as RedisClientCommand);
+      }
+
+      const transactionResults = await client.sendPipeline(commands);
+      catchMultiTransactionError(transactionResults);
+
+      this.logger.debug(
+        'Succeed to create VectorSet data type.',
+        clientMetadata,
+      );
+    } catch (error) {
+      this.logger.error(
+        'Failed to create VectorSet data type.',
+        error,
+        clientMetadata,
+      );
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
+  public async addElements(
+    clientMetadata: ClientMetadata,
+    dto: AddElementsToVectorSetDto,
+  ): Promise<void> {
+    try {
+      this.logger.debug(
+        'Adding elements to the VectorSet data type.',
+        clientMetadata,
+      );
+      const { keyName, elements } = dto;
+      const client: RedisClient =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+
+      await checkIfKeyNotExists(keyName, client);
+
+      const commands: RedisClientCommand[] = elements.map((element) =>
+        this.buildVaddCommand(keyName, element),
+      );
+
+      const transactionResults = await client.sendPipeline(commands);
+      catchMultiTransactionError(transactionResults);
+
+      this.logger.debug(
+        'Succeed to add elements to VectorSet data type.',
+        clientMetadata,
+      );
+    } catch (error) {
+      this.logger.error(
+        'Failed to add elements to VectorSet data type.',
+        error,
+        clientMetadata,
+      );
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
 
   public async getElements(
     clientMetadata: ClientMetadata,
@@ -93,10 +184,6 @@ export class VectorSetService {
         ])) as string[];
       }
 
-      const elements = elementNames.map((name) =>
-        plainToInstance(VectorSetElementDto, { name }),
-      );
-
       this.logger.debug(
         'Succeed to get elements of the VectorSet data type.',
         clientMetadata,
@@ -106,7 +193,7 @@ export class VectorSetService {
         total,
         nextCursor,
         isPaginationSupported: isVRangeSupported,
-        elements,
+        elementNames,
       });
     } catch (error) {
       this.logger.error(
@@ -177,8 +264,8 @@ export class VectorSetService {
 
   public async getElementDetails(
     clientMetadata: ClientMetadata,
-    dto: GetVectorSetElementDetailsDto,
-  ): Promise<VectorSetElementDto> {
+    dto: VectorSetElementKeyDto,
+  ): Promise<VectorSetElementDetailsDto> {
     try {
       this.logger.debug(
         'Getting element details in the VectorSet data type.',
@@ -201,7 +288,7 @@ export class VectorSetService {
         clientMetadata,
       );
 
-      return plainToInstance(VectorSetElementDto, details);
+      return plainToInstance(VectorSetElementDetailsDto, details);
     } catch (error) {
       this.logger.error(
         'Failed to get element details in the VectorSet data type.',
@@ -299,11 +386,31 @@ export class VectorSetService {
     }
   }
 
+  private buildVaddCommand(
+    keyName: Buffer | string,
+    element: AddVectorSetElementDto,
+  ): RedisClientCommand {
+    const args: Array<string | number | Buffer> = [
+      BrowserToolVectorSetCommands.VAdd,
+      keyName,
+      'VALUES',
+      element.vector.length,
+      ...element.vector.map(String),
+      element.name,
+    ];
+
+    if (element.attributes !== undefined) {
+      args.push('SETATTR', element.attributes);
+    }
+
+    return args as RedisClientCommand;
+  }
+
   private async fetchElementDetails(
     client: RedisClient,
     keyName: Buffer | string,
     elementName: string,
-  ): Promise<VectorSetElementDto> {
+  ): Promise<VectorSetElementDetailsDto> {
     const results = await client.sendPipeline([
       [BrowserToolVectorSetCommands.VEmb, keyName, elementName],
       [BrowserToolVectorSetCommands.VGetAttr, keyName, elementName],
@@ -327,7 +434,7 @@ export class VectorSetService {
       ? rawVector.slice(0, VECTOR_EMBEDDING_MAX_DISPLAY_LENGTH)
       : rawVector;
 
-    return plainToInstance(VectorSetElementDto, {
+    return plainToInstance(VectorSetElementDetailsDto, {
       name: elementName,
       vector,
       vectorTruncated: vectorTruncated || undefined,
