@@ -1,9 +1,10 @@
 import { faker } from '@faker-js/faker'
 import React from 'react'
-import { render, screen } from 'uiSrc/utils/test-utils'
+import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { vectorSetElementFactory } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
 import { vectorSetDataSelector } from 'uiSrc/slices/browser/vectorSet'
 import { VectorSetKeySubheader } from './VectorSetKeySubheader'
+import { Props } from './VectorSetKeySubheader.types'
 
 jest.mock('uiSrc/slices/browser/vectorSet', () => ({
   vectorSetDataSelector: jest.fn(),
@@ -22,8 +23,17 @@ jest.mock(
   },
 )
 
+const defaultProps: Props = {
+  openAddItemPanel: jest.fn(),
+}
+
 describe('VectorSetKeySubheader', () => {
   const getMockedSelector = () => vectorSetDataSelector as jest.Mock
+
+  const renderComponent = (propsOverride?: Partial<Props>) => {
+    const props = { ...defaultProps, ...propsOverride }
+    return render(<VectorSetKeySubheader {...props} />)
+  }
 
   beforeEach(() => {
     getMockedSelector().mockReset()
@@ -39,7 +49,7 @@ describe('VectorSetKeySubheader', () => {
       isPaginationSupported: true,
     })
 
-    render(<VectorSetKeySubheader />)
+    renderComponent()
 
     expect(
       screen.queryByTestId('vector-set-preview-summary'),
@@ -53,7 +63,7 @@ describe('VectorSetKeySubheader', () => {
       elements,
     })
 
-    render(<VectorSetKeySubheader />)
+    renderComponent()
 
     expect(
       screen.queryByTestId('vector-set-preview-summary'),
@@ -71,10 +81,36 @@ describe('VectorSetKeySubheader', () => {
       isPaginationSupported: false,
     })
 
-    render(<VectorSetKeySubheader />)
+    renderComponent()
 
     expect(screen.getByTestId('vector-set-preview-summary')).toHaveTextContent(
       `${elements.length} out of ${total}`,
     )
+  })
+
+  it('renders the Add Elements button', () => {
+    getMockedSelector().mockReturnValue({
+      total: 5,
+      elements: vectorSetElementFactory.buildList(3),
+      isPaginationSupported: true,
+    })
+
+    renderComponent()
+
+    expect(screen.getByTestId('add-key-value-items-btn')).toBeInTheDocument()
+  })
+
+  it('calls openAddItemPanel when Add Elements button is clicked', () => {
+    const openAddItemPanel = jest.fn()
+    getMockedSelector().mockReturnValue({
+      total: 5,
+      elements: vectorSetElementFactory.buildList(3),
+      isPaginationSupported: true,
+    })
+
+    renderComponent({ openAddItemPanel })
+
+    fireEvent.click(screen.getByTestId('add-key-value-items-btn'))
+    expect(openAddItemPanel).toHaveBeenCalledTimes(1)
   })
 })
