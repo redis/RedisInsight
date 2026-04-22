@@ -192,6 +192,12 @@ const getAdditionalAddedEventData = (endpoint: ApiEndpoints, data: any) => {
         length: 1,
         TTL: data.expire || -1,
       }
+    case ApiEndpoints.VECTOR_SET:
+      return {
+        keyType: KeyTypes.VectorSet,
+        length: data.elements?.length,
+        TTL: data.expire || -1,
+      }
     default:
       return {}
   }
