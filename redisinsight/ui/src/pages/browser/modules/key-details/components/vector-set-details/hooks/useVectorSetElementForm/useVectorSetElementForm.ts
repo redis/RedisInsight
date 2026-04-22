@@ -6,7 +6,7 @@ import {
   SubmitElement,
 } from '../../vector-set-element-form/interfaces'
 import {
-  getValidVector,
+  isValidElement,
   toSubmitElement,
 } from '../../vector-set-element-form/utils'
 
@@ -27,10 +27,7 @@ export const useVectorSetElementForm = ({
   const prevElementsLengthRef = useRef(elements.length)
 
   const isFormValid = useMemo(
-    () =>
-      elements.every(
-        (el) => el.name.trim() && getValidVector(el.vector, vectorDim) !== null,
-      ),
+    () => elements.every((el) => isValidElement(el, vectorDim)),
     [elements, vectorDim],
   )
 

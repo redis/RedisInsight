@@ -4,6 +4,7 @@ import {
   getValidVector,
   getVectorError,
   getVectorFieldInfo,
+  isValidElement,
   parseVector,
   toSubmitElement,
 } from './utils'
@@ -143,6 +144,31 @@ describe('toSubmitElement', () => {
     ).toBeNull()
   })
 
+  it('should return null when the name is empty', () => {
+    expect(
+      toSubmitElement(vectorSetElementFormStateFactory.build({ name: '' })),
+    ).toBeNull()
+  })
+
+  it('should return null when the name is whitespace-only', () => {
+    expect(
+      toSubmitElement(
+        vectorSetElementFormStateFactory.build({ name: '   \t  ' }),
+      ),
+    ).toBeNull()
+  })
+
+  it('should trim the name in the submitted payload', () => {
+    expect(
+      toSubmitElement(
+        vectorSetElementFormStateFactory.build({ name: '  padded  ' }),
+      ),
+    ).toEqual({
+      name: 'padded',
+      vector: [1, 2, 3],
+    })
+  })
+
   it('should map a valid element without attributes', () => {
     expect(toSubmitElement(vectorSetElementFormStateFactory.build())).toEqual({
       name: 'item',
@@ -170,5 +196,42 @@ describe('toSubmitElement', () => {
     )
     expect(result).toEqual({ name: 'item', vector: [1, 2, 3] })
     expect(result).not.toHaveProperty('attributes')
+  })
+})
+
+describe('isValidElement', () => {
+  it('should return false for an empty name', () => {
+    expect(
+      isValidElement(vectorSetElementFormStateFactory.build({ name: '' })),
+    ).toBe(false)
+  })
+
+  it('should return false for a whitespace-only name', () => {
+    expect(
+      isValidElement(
+        vectorSetElementFormStateFactory.build({ name: '   \t  ' }),
+      ),
+    ).toBe(false)
+  })
+
+  it('should return false for an invalid vector', () => {
+    expect(
+      isValidElement(
+        vectorSetElementFormStateFactory.build({ vector: '1, abc' }),
+      ),
+    ).toBe(false)
+  })
+
+  it('should return false when the vector dimension does not match', () => {
+    expect(
+      isValidElement(
+        vectorSetElementFormStateFactory.build({ vector: '1, 2' }),
+        3,
+      ),
+    ).toBe(false)
+  })
+
+  it('should return true for a valid element', () => {
+    expect(isValidElement(vectorSetElementFormStateFactory.build())).toBe(true)
   })
 })

@@ -56,14 +56,24 @@ export function getValidVector(
   return !error && parsed ? parsed : null
 }
 
+export function isValidElement(
+  el: IVectorSetElementState,
+  vectorDim?: number,
+): boolean {
+  return !!el.name.trim() && getValidVector(el.vector, vectorDim) !== null
+}
+
 export function toSubmitElement(
   el: IVectorSetElementState,
   vectorDim?: number,
 ): SubmitElement | null {
+  const name = el.name.trim()
+  if (!name) return null
+
   const vector = getValidVector(el.vector, vectorDim)
   if (!vector) return null
 
-  const item: SubmitElement = { name: el.name, vector }
+  const item: SubmitElement = { name, vector }
   const trimmedAttributes = el.attributes.trim()
   if (trimmedAttributes) item.attributes = trimmedAttributes
 
