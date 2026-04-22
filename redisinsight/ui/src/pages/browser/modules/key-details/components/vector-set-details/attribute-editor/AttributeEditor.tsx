@@ -21,7 +21,9 @@ const AttributeEditor = ({
   height = DEFAULT_ATTRIBUTE_EDITOR_HEIGHT,
   testId = 'attribute-editor',
 }: AttributeEditorProps) => {
-  const [showNonJsonWarning, setShowNonJsonWarning] = useState(false)
+  const [showNonJsonWarning, setShowNonJsonWarning] = useState(
+    () => !isJsonValid(value),
+  )
 
   useDebouncedEffect(
     () => {
