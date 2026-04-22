@@ -34,7 +34,7 @@ const AttributeEditor = ({
   )
 
   return (
-    <S.Wrapper>
+    <S.Wrapper gap="s">
       <S.EditorContainer $height={height}>
         <CodeEditor
           language="json"

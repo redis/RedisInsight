@@ -1,10 +1,8 @@
 import styled from 'styled-components'
 import { Banner } from 'uiSrc/components/base/display/banner'
+import { Col } from 'uiSrc/components/base/layout/flex'
 
-export const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.core?.space?.space050};
+export const Wrapper = styled(Col)`
   width: 100%;
   min-width: 0;
 `
