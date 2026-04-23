@@ -1,14 +1,8 @@
+import { PopulateOption } from './AddKeyVectorSet.types'
+
 export enum PopulateMode {
   Sample = 'sample',
   Manual = 'manual',
-}
-
-export interface PopulateOption {
-  value: PopulateMode
-  label: string
-  description?: string
-  disabled?: boolean
-  id: string
 }
 
 export const POPULATE_OPTIONS: PopulateOption[] = [

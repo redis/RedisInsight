@@ -1,5 +1,4 @@
 import React from 'react'
-import { cloneDeep } from 'lodash'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { addVectorSetKey } from 'uiSrc/slices/browser/keys'
 import { stringToBuffer } from 'uiSrc/utils'
@@ -18,6 +17,11 @@ const defaultProps: Props = {
 }
 
 describe('AddKeyVectorSet', () => {
+  const renderComponent = (propsOverride?: Partial<Props>) => {
+    const props = { ...defaultProps, ...propsOverride }
+    return render(<AddKeyVectorSet {...props} />)
+  }
+
   beforeEach(() => {
     jest.clearAllMocks()
     // ActionFooter renders via a portal to #formFooterBar
@@ -32,29 +36,29 @@ describe('AddKeyVectorSet', () => {
   })
 
   it('should render', () => {
-    expect(render(<AddKeyVectorSet {...defaultProps} />)).toBeTruthy()
+    expect(renderComponent()).toBeTruthy()
   })
 
   it('should render the populate mode radio group with manual pre-selected', () => {
-    render(<AddKeyVectorSet {...defaultProps} />)
+    renderComponent()
     expect(
       screen.getByTestId('add-key-vector-set-populate'),
     ).toBeInTheDocument()
   })
 
   it('should render element name and vector inputs', () => {
-    render(<AddKeyVectorSet {...defaultProps} />)
+    renderComponent()
     expect(screen.getByTestId('element-name')).toBeInTheDocument()
     expect(screen.getByTestId('element-vector')).toBeInTheDocument()
   })
 
   it('should disable the submit button when the form is invalid', () => {
-    render(<AddKeyVectorSet {...defaultProps} />)
+    renderComponent()
     expect(screen.getByTestId('add-key-vector-set-btn')).toBeDisabled()
   })
 
   it('should enable the submit button once name and a valid vector are entered', () => {
-    render(<AddKeyVectorSet {...cloneDeep(defaultProps)} />)
+    renderComponent()
 
     fireEvent.change(screen.getByTestId('element-name'), {
       target: { value: 'elem1' },
@@ -67,7 +71,7 @@ describe('AddKeyVectorSet', () => {
   })
 
   it('should dispatch addVectorSetKey with parsed elements on submit', () => {
-    render(<AddKeyVectorSet {...cloneDeep(defaultProps)} />)
+    renderComponent()
 
     fireEvent.change(screen.getByTestId('element-name'), {
       target: { value: 'elem1' },
@@ -86,7 +90,7 @@ describe('AddKeyVectorSet', () => {
   })
 
   it('should include expire in payload when keyTTL is provided', () => {
-    render(<AddKeyVectorSet {...cloneDeep(defaultProps)} keyTTL={60} />)
+    renderComponent({ keyTTL: 60 })
 
     fireEvent.change(screen.getByTestId('element-name'), {
       target: { value: 'elem1' },
@@ -104,7 +108,7 @@ describe('AddKeyVectorSet', () => {
 
   it('should call onCancel when the cancel button is clicked', () => {
     const onCancel = jest.fn()
-    render(<AddKeyVectorSet {...defaultProps} onCancel={onCancel} />)
+    renderComponent({ onCancel })
 
     fireEvent.click(screen.getByText('Cancel'))
     expect(onCancel).toHaveBeenCalledWith(true)
