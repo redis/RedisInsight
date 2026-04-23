@@ -40,7 +40,7 @@ jobs:
         run: yarn test:cov --ci --silent
 
       - name: Upload Test Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ${{ env.REPORT_NAME }}
