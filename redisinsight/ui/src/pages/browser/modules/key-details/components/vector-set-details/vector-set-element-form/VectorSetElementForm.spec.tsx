@@ -201,4 +201,85 @@ describe('VectorSetElementForm', () => {
       'Enter Vector (5 dimensions)',
     )
   })
+
+  describe('when vectorDim is not provided (new vector set)', () => {
+    it('should infer required dimension from the first element vector', () => {
+      render(<VectorSetElementForm {...defaultProps} />)
+      fireEvent.change(screen.getByTestId(ELEMENT_NAME), {
+        target: { value: 'elem1' },
+      })
+      fireEvent.change(screen.getByTestId(ELEMENT_VECTOR), {
+        target: { value: '0.1, 0.2, 0.3' },
+      })
+
+      fireEvent.click(screen.getByTestId('add-item'))
+
+      const vectorInputs = screen.getAllByTestId(ELEMENT_VECTOR)
+      expect(vectorInputs[1]).toHaveAttribute(
+        'placeholder',
+        'Enter Vector (3 dimensions)',
+      )
+    })
+
+    it('should show dimension mismatch error on subsequent element that does not match the first', () => {
+      render(<VectorSetElementForm {...defaultProps} />)
+
+      fireEvent.change(screen.getByTestId(ELEMENT_NAME), {
+        target: { value: 'elem1' },
+      })
+      fireEvent.change(screen.getByTestId(ELEMENT_VECTOR), {
+        target: { value: '0.1, 0.2, 0.3' },
+      })
+
+      fireEvent.click(screen.getByTestId('add-item'))
+
+      const nameInputs = screen.getAllByTestId(ELEMENT_NAME)
+      const vectorInputs = screen.getAllByTestId(ELEMENT_VECTOR)
+
+      fireEvent.change(nameInputs[1], { target: { value: 'elem2' } })
+      fireEvent.change(vectorInputs[1], { target: { value: '0.4, 0.5' } })
+
+      expect(
+        screen.getAllByText(
+          'Dimension mismatch. Expected 3 values, but received 2',
+        ).length,
+      ).toBeGreaterThan(0)
+      expect(screen.getByTestId('save-elements-btn')).toBeDisabled()
+    })
+
+    it('should not validate the first element against an inferred dimension from itself', () => {
+      render(<VectorSetElementForm {...defaultProps} />)
+      fireEvent.change(screen.getByTestId(ELEMENT_NAME), {
+        target: { value: 'elem1' },
+      })
+      fireEvent.change(screen.getByTestId(ELEMENT_VECTOR), {
+        target: { value: '0.1, 0.2, 0.3' },
+      })
+
+      expect(screen.queryByText(/dimension mismatch/i)).not.toBeInTheDocument()
+      expect(screen.getByTestId('save-elements-btn')).not.toBeDisabled()
+    })
+
+    it('should enable save when all subsequent elements match the first element dimension', () => {
+      render(<VectorSetElementForm {...defaultProps} />)
+
+      fireEvent.change(screen.getByTestId(ELEMENT_NAME), {
+        target: { value: 'elem1' },
+      })
+      fireEvent.change(screen.getByTestId(ELEMENT_VECTOR), {
+        target: { value: '1, 2, 3' },
+      })
+
+      fireEvent.click(screen.getByTestId('add-item'))
+
+      const nameInputs = screen.getAllByTestId(ELEMENT_NAME)
+      const vectorInputs = screen.getAllByTestId(ELEMENT_VECTOR)
+
+      fireEvent.change(nameInputs[1], { target: { value: 'elem2' } })
+      fireEvent.change(vectorInputs[1], { target: { value: '4, 5, 6' } })
+
+      expect(screen.queryByText(/dimension mismatch/i)).not.toBeInTheDocument()
+      expect(screen.getByTestId('save-elements-btn')).not.toBeDisabled()
+    })
+  })
 })

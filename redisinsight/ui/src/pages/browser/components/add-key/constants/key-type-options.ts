@@ -36,4 +36,9 @@ export const ADD_KEY_TYPE_OPTIONS = [
     value: KeyTypes.Stream,
     color: GROUP_TYPES_COLORS[KeyTypes.Stream],
   },
+  {
+    text: 'Vector Set',
+    value: KeyTypes.VectorSet,
+    color: GROUP_TYPES_COLORS[KeyTypes.VectorSet],
+  },
 ]

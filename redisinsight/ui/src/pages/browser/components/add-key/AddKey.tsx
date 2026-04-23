@@ -35,6 +35,7 @@ import AddKeySet from './AddKeySet'
 import AddKeyList from './AddKeyList'
 import AddKeyReJSON from './AddKeyReJSON'
 import AddKeyStream from './AddKeyStream'
+import AddKeyVectorSet from './AddKeyVectorSet'
 import { ContentFields } from './AddKey.styles'
 
 import styles from './styles.module.scss'
@@ -200,6 +201,12 @@ const AddKey = (props: Props) => {
               )}
               {typeSelected === KeyTypes.Stream && (
                 <AddKeyStream onCancel={closeAddKeyPanel} {...defaultFields} />
+              )}
+              {typeSelected === KeyTypes.VectorSet && (
+                <AddKeyVectorSet
+                  onCancel={closeAddKeyPanel}
+                  {...defaultFields}
+                />
               )}
             </ContentFields>
           </div>

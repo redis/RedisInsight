@@ -7,6 +7,7 @@ import {
 } from '../../vector-set-element-form/interfaces'
 import {
   isValidElement,
+  parseVector,
   toSubmitElement,
 } from '../../vector-set-element-form/utils'
 
@@ -26,9 +27,29 @@ export const useVectorSetElementForm = ({
   const lastAddedNameRef = useRef<HTMLInputElement>(null)
   const prevElementsLengthRef = useRef(elements.length)
 
+  // When creating a new vector set, `vectorDim` is not known up-front.
+  // The first row with a valid vector defines the expected dimension for the rest.
+  const inferredVectorDim = useMemo<number | undefined>(() => {
+    if (vectorDim !== undefined) return vectorDim
+    const firstVector = parseVector(elements[0]?.vector ?? '')
+    return firstVector?.length
+  }, [vectorDim, elements])
+
+  const getDimForElement = useCallback(
+    (index: number): number | undefined => {
+      if (vectorDim !== undefined) return vectorDim
+      // First element defines the dim; validate it only as a plain vector.
+      return index === 0 ? undefined : inferredVectorDim
+    },
+    [vectorDim, inferredVectorDim],
+  )
+
   const isFormValid = useMemo(
-    () => elements.every((el) => isValidElement(el, vectorDim)),
-    [elements, vectorDim],
+    () =>
+      elements.every((el, index) =>
+        isValidElement(el, getDimForElement(index)),
+      ),
+    [elements, getDimForElement],
   )
 
   useEffect(() => {
@@ -79,10 +100,12 @@ export const useVectorSetElementForm = ({
   }, [])
 
   const submitData = useCallback(() => {
-    const payload = elements.map((el) => toSubmitElement(el, vectorDim))
+    const payload = elements.map((el, index) =>
+      toSubmitElement(el, getDimForElement(index)),
+    )
     if (payload.some((item) => item === null)) return
     onSubmit(payload as SubmitElement[])
-  }, [elements, vectorDim, onSubmit])
+  }, [elements, getDimForElement, onSubmit])
 
   const isClearDisabled = useCallback(
     (item: IVectorSetElementState): boolean =>
@@ -100,5 +123,6 @@ export const useVectorSetElementForm = ({
     toggleAttributes,
     submitData,
     isClearDisabled,
+    getDimForElement,
   }
 }

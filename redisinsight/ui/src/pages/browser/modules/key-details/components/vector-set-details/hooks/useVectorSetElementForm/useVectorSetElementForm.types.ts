@@ -24,4 +24,10 @@ export interface UseVectorSetElementFormResult {
   toggleAttributes: (id: number) => void
   submitData: () => void
   isClearDisabled: (item: IVectorSetElementState) => boolean
+  /**
+   * Returns the expected vector dimension for the element at the given index.
+   * When `vectorDim` is not supplied (new vector set creation), the first
+   * element's vector defines the required dimension for subsequent rows.
+   */
+  getDimForElement: (index: number) => number | undefined
 }

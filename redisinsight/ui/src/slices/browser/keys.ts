@@ -55,6 +55,7 @@ import {
   GetKeysWithDetailsResponse,
 } from 'apiSrc/modules/browser/keys/dto'
 import { CreateStreamDto } from 'apiSrc/modules/browser/stream/dto'
+import { CreateVectorSetWithExpireDto } from 'uiSrc/slices/interfaces/vectorSet'
 
 import { fetchString } from './string'
 import {
@@ -1057,6 +1058,17 @@ export function addStreamKey(
   onFailAction?: () => void,
 ) {
   return addTypedKey(data, KeyTypes.Stream, onSuccessAction, onFailAction)
+}
+
+// Asynchronous thunk action
+// Vector set create uses POST /vector-set (create-only; VADD against a new key).
+// The element PUT endpoint reuses the same path for adding to an existing key.
+export function addVectorSetKey(
+  data: CreateVectorSetWithExpireDto,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return addTypedKey(data, KeyTypes.VectorSet, onSuccessAction, onFailAction)
 }
 
 // Asynchronous thunk action
