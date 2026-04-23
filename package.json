@@ -321,7 +321,7 @@
     "unified": "^10.1.1",
     "unist-util-visit": "^4.1.0",
     "url-parse": "^1.5.10",
-    "uuid": "^8.3.2"
+    "uuid": "^14.0.0"
   },
   "engines": {
     "node": ">=22.x",
