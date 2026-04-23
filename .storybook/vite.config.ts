@@ -108,6 +108,11 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
+        // Pin the Sass API to the legacy compiler. Vite 6 silently switched the
+        // default to 'modern-compiler' when sass-embedded is installed, which
+        // changes how @import and additionalData are resolved and breaks the
+        // existing stylesheets that still rely on @import.
+        api: 'legacy',
         // add @layer app for css ordering. Styles without layer have the highest priority
         // https://github.com/vitejs/vite/issues/3924
         additionalData: (source: string, filename: string) => {
