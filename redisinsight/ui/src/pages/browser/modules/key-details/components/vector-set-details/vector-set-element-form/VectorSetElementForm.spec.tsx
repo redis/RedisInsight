@@ -1,5 +1,9 @@
 import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import {
+  FP32_INVALID_BYTE_LENGTH_INPUT,
+  FP32_VECTOR_FIXTURE_1_2_3,
+} from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
 import VectorSetElementForm from './VectorSetElementForm'
 import { Props } from './interfaces'
 
@@ -154,7 +158,7 @@ describe('VectorSetElementForm', () => {
     fireEvent.click(screen.getByTestId('save-elements-btn'))
 
     expect(onSubmit).toHaveBeenCalledWith([
-      { name: 'elem1', vector: [0.1, 0.2, 0.3] },
+      { name: 'elem1', vectorValues: [0.1, 0.2, 0.3] },
     ])
   })
 
@@ -177,7 +181,7 @@ describe('VectorSetElementForm', () => {
     expect(onSubmit).toHaveBeenCalledWith([
       {
         name: 'elem1',
-        vector: [1, 2, 3],
+        vectorValues: [1, 2, 3],
         attributes: '{"key":"value"}',
       },
     ])
@@ -200,6 +204,65 @@ describe('VectorSetElementForm', () => {
       'placeholder',
       'Enter Vector (5 dimensions)',
     )
+  })
+
+  describe('FP32 input', () => {
+    const { escaped: FP32_ESCAPED, base64: FP32_BASE64 } =
+      FP32_VECTOR_FIXTURE_1_2_3
+
+    it('should show the FP32 detected hint for a valid escaped-byte input', () => {
+      render(<VectorSetElementForm {...defaultProps} />)
+      fireEvent.change(screen.getByTestId(ELEMENT_VECTOR), {
+        target: { value: FP32_ESCAPED },
+      })
+      expect(
+        screen.getByText('Detected FP32 vector (3 dimensions).'),
+      ).toBeInTheDocument()
+    })
+
+    it('should submit a vectorFp32 payload instead of vectorValues', () => {
+      const onSubmit = jest.fn()
+      render(<VectorSetElementForm {...defaultProps} onSubmit={onSubmit} />)
+      fireEvent.change(screen.getByTestId(ELEMENT_NAME), {
+        target: { value: 'elem1' },
+      })
+      fireEvent.change(screen.getByTestId(ELEMENT_VECTOR), {
+        target: { value: FP32_ESCAPED },
+      })
+      fireEvent.click(screen.getByTestId('save-elements-btn'))
+
+      expect(onSubmit).toHaveBeenCalledWith([
+        { name: 'elem1', vectorFp32: FP32_BASE64 },
+      ])
+    })
+
+    it('should flag an FP32 input whose byte length is not a multiple of 4', () => {
+      render(<VectorSetElementForm {...defaultProps} />)
+      fireEvent.change(screen.getByTestId(ELEMENT_VECTOR), {
+        target: { value: FP32_INVALID_BYTE_LENGTH_INPUT },
+      })
+      expect(
+        screen.getAllByText('FP32 byte length must be a multiple of 4').length,
+      ).toBeGreaterThan(0)
+    })
+
+    it('should infer required dim from a FP32 first element for a numeric second row', () => {
+      render(<VectorSetElementForm {...defaultProps} />)
+      fireEvent.change(screen.getByTestId(ELEMENT_NAME), {
+        target: { value: 'elem1' },
+      })
+      fireEvent.change(screen.getByTestId(ELEMENT_VECTOR), {
+        target: { value: FP32_ESCAPED },
+      })
+
+      fireEvent.click(screen.getByTestId('add-item'))
+
+      const vectorInputs = screen.getAllByTestId(ELEMENT_VECTOR)
+      expect(vectorInputs[1]).toHaveAttribute(
+        'placeholder',
+        'Enter Vector (3 dimensions)',
+      )
+    })
   })
 
   describe('when vectorDim is not provided (new vector set)', () => {
