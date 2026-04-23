@@ -152,7 +152,6 @@
     "@types/styled-components": "^5.1.34",
     "@types/supertest": "^2.0.8",
     "@types/text-encoding": "^0.0.37",
-    "@types/uuid": "^8.3.4",
     "@types/webpack-env": "^1.18.4",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
@@ -321,14 +320,11 @@
     "unified": "^10.1.1",
     "unist-util-visit": "^4.1.0",
     "url-parse": "^1.5.10",
-    "uuid": "^8.3.2"
+    "uuid": "^14.0.0"
   },
   "engines": {
     "node": ">=22.x",
     "npm": ">=6.x",
     "yarn": ">=1.21.3"
-  },
-  "browser": {
-    "uuid": "./node_modules/uuid/dist/esm-browser/index.js"
   }
 }
