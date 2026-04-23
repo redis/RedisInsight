@@ -67,6 +67,32 @@ export const vectorSetElementFormStateFactory =
     showAttributes: false,
   }))
 
+/**
+ * Shared FP32 fixture used across vector-set unit tests. Represents the vector
+ * `[1.0, 2.0, 3.0]` as a 12-byte little-endian IEEE-754 blob, together with
+ * its two wire representations: the C/Python-style escaped string that the
+ * form accepts as input, and the base64 string that the BE DTO receives.
+ *
+ * 1.0 -> 00 00 80 3f, 2.0 -> 00 00 00 40, 3.0 -> 00 00 40 40
+ */
+export const FP32_VECTOR_FIXTURE_1_2_3 = (() => {
+  const bytes = [
+    0x00, 0x00, 0x80, 0x3f, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x40, 0x40,
+  ]
+  const escaped = bytes
+    .map((b) => `\\x${b.toString(16).padStart(2, '0')}`)
+    .join('')
+  const base64 = btoa(String.fromCharCode(...bytes))
+  return { bytes, escaped, base64, dim: bytes.length / 4 }
+})()
+
+/**
+ * 3-byte FP32 input used by negative tests. Starts with `\x` (so detection
+ * commits to the FP32 branch) but fails the "byte length must be a multiple
+ * of 4" check, exercising the format-specific error path.
+ */
+export const FP32_INVALID_BYTE_LENGTH_INPUT = '\\x00\\x00\\x00'
+
 /** Redis key name string for vector set tests (stable shape, random value). */
 export const vectorSetTestKeyName = (): string =>
   `vset:${faker.string.alphanumeric(10)}`
