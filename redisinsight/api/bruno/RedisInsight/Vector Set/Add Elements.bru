@@ -16,8 +16,13 @@ body:json {
     "elements": [
       {
         "name": "item_3",
-        "vector": [0.7, 0.8, 0.9],
+        "vectorValues": [0.7, 0.8, 0.9],
         "attributes": "{\"color\": \"blue\"}"
+      },
+      {
+        "name": "item_fp32",
+        "vectorFp32": "AACAPwAAAEAAAEBA",
+        "attributes": "{\"format\": \"fp32\"}"
       }
     ]
   }
@@ -28,6 +33,8 @@ docs {
 
   Adds elements to an existing Vector Set key. Uses the Redis `VADD` command internally (one call per element, pipelined).
 
+  Each element must provide exactly one of two equivalent vector representations: `vectorValues` (numeric array, issues `VADD key VALUES <dim> <v1> ...`) or `vectorFp32` (base64-encoded little-endian IEEE-754 FP32 blob, issues `VADD key FP32 <blob> <element>`). The two fields are mutually exclusive. All elements in a single request — and all elements already in the set — must share the same dimension.
+
   ## Request Body
 
   | Field | Type | Description |
@@ -35,8 +42,15 @@ docs {
   | `keyName` | string | The Vector Set key name |
   | `elements` | array | Array of elements to add |
   | `elements[].name` | string | Element name |
-  | `elements[].vector` | number[] | Vector embedding values |
+  | `elements[].vectorValues` | number[] | Vector embedding as numeric values. Mutually exclusive with `vectorFp32`. |
+  | `elements[].vectorFp32` | string (base64) | Vector embedding as a base64-encoded little-endian FP32 blob. Decoded length must be a non-zero multiple of 4 bytes. Mutually exclusive with `vectorValues`. |
   | `elements[].attributes` | string (optional) | Attributes string to associate with the element (passed via SETATTR) |
+
+  ## FP32 Example
+
+  The base64 payload `AACAPwAAAEAAAEBA` decodes to the 12-byte FP32 blob for
+  `[1.0, 2.0, 3.0]` (little-endian IEEE-754):
+  `00 00 80 3f 00 00 00 40 00 00 40 40`.
 
   ## Response
 
@@ -46,7 +60,7 @@ docs {
 
   | Status | Condition |
   |--------|-----------|
-  | `400` | Key exists but is not a Vector Set (WRONGTYPE) |
+  | `400` | Key exists but is not a Vector Set (WRONGTYPE), or an element provided neither `vectorValues` nor `vectorFp32` (or provided both) |
   | `404` | Key does not exist |
   | `403` | User has no permissions |
 }

@@ -16,12 +16,17 @@ body:json {
     "elements": [
       {
         "name": "item_1",
-        "vector": [0.1, 0.2, 0.3],
+        "vectorValues": [0.1, 0.2, 0.3],
         "attributes": "{\"color\": \"red\"}"
       },
       {
         "name": "item_2",
-        "vector": [0.4, 0.5, 0.6]
+        "vectorValues": [0.4, 0.5, 0.6]
+      },
+      {
+        "name": "item_fp32",
+        "vectorFp32": "AACAPwAAAEAAAEBA",
+        "attributes": "{\"format\": \"fp32\"}"
       }
     ],
     "expire": 3600
@@ -33,6 +38,8 @@ docs {
 
   Creates a new Vector Set key with the provided elements. Uses the Redis `VADD` command internally (one call per element, pipelined).
 
+  Each element must provide exactly one of two equivalent vector representations: `vectorValues` (numeric array, issues `VADD key VALUES <dim> <v1> ...`) or `vectorFp32` (base64-encoded little-endian IEEE-754 FP32 blob, issues `VADD key FP32 <blob> <element>`). The two fields are mutually exclusive. All elements in the request must share the same dimension.
+
   ## Request Body
 
   | Field | Type | Description |
@@ -40,9 +47,16 @@ docs {
   | `keyName` | string | The key name for the new Vector Set |
   | `elements` | array | Array of elements to add |
   | `elements[].name` | string | Element name |
-  | `elements[].vector` | number[] | Vector embedding values |
+  | `elements[].vectorValues` | number[] | Vector embedding as numeric values. Mutually exclusive with `vectorFp32`. |
+  | `elements[].vectorFp32` | string (base64) | Vector embedding as a base64-encoded little-endian FP32 blob. Decoded length must be a non-zero multiple of 4 bytes. Mutually exclusive with `vectorValues`. |
   | `elements[].attributes` | string (optional) | Attributes string to associate with the element (passed via SETATTR) |
   | `expire` | number (optional) | TTL in seconds |
+
+  ## FP32 Example
+
+  The base64 payload `AACAPwAAAEAAAEBA` decodes to the 12-byte FP32 blob for
+  `[1.0, 2.0, 3.0]` (little-endian IEEE-754):
+  `00 00 80 3f 00 00 00 40 00 00 40 40`.
 
   ## Response
 
@@ -52,7 +66,7 @@ docs {
 
   | Status | Condition |
   |--------|-----------|
-  | `400` | Key already exists |
+  | `400` | Key already exists, or an element provided neither `vectorValues` nor `vectorFp32` (or provided both) |
   | `403` | User has no permissions |
 }
 
