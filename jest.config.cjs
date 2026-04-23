@@ -28,6 +28,7 @@ module.exports = {
     'rehype-stringify': '<rootDir>/redisinsight/__mocks__/rehypeStringify.js',
     'unist-util-visit': '<rootDir>/redisinsight/__mocks__/unistUtilsVisit.js',
     d3: '<rootDir>/node_modules/d3/dist/d3.min.js',
+    '^uuid$': require.resolve('uuid'),
     msgpackr: require.resolve('msgpackr'),
     'brotli-dec-wasm': '<rootDir>/redisinsight/__mocks__/brotli-dec-wasm.js',
     'react-resizable-panels':
