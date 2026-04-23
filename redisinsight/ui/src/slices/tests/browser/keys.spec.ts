@@ -1916,6 +1916,10 @@ describe('keys slice', () => {
         const responsePayload = { status: 200 }
 
         apiService.patch = jest.fn().mockResolvedValue(responsePayload)
+        apiService.post = jest.fn().mockResolvedValue({
+          data: { data: '{}', keyName: 'keyName' },
+          status: 200,
+        })
 
         // Act
         await store.dispatch<any>(editKeyTTL(key, ttl))
