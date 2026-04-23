@@ -237,7 +237,7 @@
     "vite-plugin-compression2": "^2.5.3",
     "vite-plugin-ejs": "^1.7.0",
     "vite-plugin-electron": "^0.28.6",
-    "vite-plugin-electron-renderer": "^0.14.5",
+    "vite-plugin-electron-renderer": "^0.14.6",
     "vite-plugin-istanbul": "^7.1.0",
     "vite-plugin-react-click-to-component": "^3.0.0",
     "vite-plugin-svgr": "^4.2.0",
