@@ -20,7 +20,7 @@ jobs:
           skip-system-deps: '1'
 
       - name: Restore ESLint cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .eslintcache
           key: eslint-${{ runner.os }}-${{ hashFiles('.eslintrc.js') }}-${{ github.ref_name }}
