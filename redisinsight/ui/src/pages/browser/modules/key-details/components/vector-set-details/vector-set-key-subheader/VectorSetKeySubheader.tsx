@@ -6,11 +6,14 @@ import { vectorSetDataSelector } from 'uiSrc/slices/browser/vectorSet'
 import { MIDDLE_SCREEN_RESOLUTION } from 'uiSrc/constants'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
+import Divider from 'uiSrc/components/divider/Divider'
 import { KeyDetailsHeaderFormatter } from 'uiSrc/pages/browser/modules/key-details-header/components/key-details-header-formatter'
+import { AddItemsAction } from 'uiSrc/pages/browser/modules/key-details/components/key-details-actions'
 
 import * as S from './VectorSetKeySubheader.styles'
+import { Props } from './VectorSetKeySubheader.types'
 
-const VectorSetKeySubheader = () => {
+const VectorSetKeySubheader = ({ openAddItemPanel }: Props) => {
   const { total, elements, isPaginationSupported } = useSelector(
     vectorSetDataSelector,
   )
@@ -38,6 +41,12 @@ const VectorSetKeySubheader = () => {
               <FlexItem>
                 <KeyDetailsHeaderFormatter width={width} />
               </FlexItem>
+              <Divider orientation="vertical" />
+              <AddItemsAction
+                title="Add Elements"
+                width={width}
+                openAddItemPanel={openAddItemPanel}
+              />
             </Row>
           </div>
         )}
