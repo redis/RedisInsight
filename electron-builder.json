@@ -89,6 +89,7 @@
     "icon": "resources/icon.ico",
     "legalTrademarks": "Redis Inc., Redis Labs Inc.",
     "signtoolOptions": {
+      "signDlls": false,
       "signingHashAlgorithms": ["sha256"],
       "rfc3161TimeStampServer": "http://timestamp.digicert.com"
     }
