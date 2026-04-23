@@ -1988,9 +1988,9 @@
   integrity sha512-O+6Gs8UeDbyFpbSh2CPEz/UOrrdWPTBYNblZK5CxxLisYt4kGX3Sc+czffFonyjiGSq3jWLwJS/CCJc7tBr4sQ==
 
 "@mswjs/interceptors@^0.41.2":
-  version "0.41.5"
-  resolved "https://registry.yarnpkg.com/@mswjs/interceptors/-/interceptors-0.41.5.tgz#d2db94d0169ba397ee4ea3a960e77de1e0e2adf0"
-  integrity sha512-Fa2HztoLlZxRN6wVC2KB7q0SvRTKjfP0328NVnSit03+0nzm62syxyT46KGbgq3Vr1A/mmLeQwu3GprB0lNTjw==
+  version "0.41.3"
+  resolved "https://registry.yarnpkg.com/@mswjs/interceptors/-/interceptors-0.41.3.tgz#d766dc1a168aa315a6a0b2d0f2e0cf1b74f23c82"
+  integrity sha512-cXu86tF4VQVfwz8W1SPbhoRyHJkti6mjH/XJIxp40jhO4j2k1m4KYrEykxqWPkFF3vrK4rgQppBh//AwyGSXPA==
   dependencies:
     "@open-draft/deferred-promise" "^2.2.0"
     "@open-draft/logger" "^0.3.0"
