@@ -74,8 +74,6 @@ const AddKeyVectorSet = ({ keyName = '', keyTTL, onCancel }: Props) => {
                   key={option.value}
                   $disabled={option.disabled}
                   data-testid={`add-key-vector-set-populate-${option.value}`}
-                  align="center"
-                  gap="s"
                 >
                   <RiRadioGroupItemRoot
                     value={option.value}

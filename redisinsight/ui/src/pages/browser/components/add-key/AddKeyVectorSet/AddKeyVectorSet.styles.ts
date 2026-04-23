@@ -7,9 +7,12 @@ export const RadioCardList = styled(Row)`
   width: 100%;
 `
 
-export const RadioCard = styled(Row)<
+export const RadioCard = styled.label<
   React.LabelHTMLAttributes<HTMLLabelElement> & { $disabled?: boolean }
 >`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.core.space.space050};
   border: 1px solid ${({ theme }) => theme.semantic.color.border.secondary500};
   border-radius: ${({ theme }) =>
     theme.components.boxSelectionGroup.item.borderRadius};
