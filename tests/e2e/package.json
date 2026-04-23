@@ -31,7 +31,7 @@
     "js-yaml": "^4.1.1",
     "lz4js": "^0.2.0",
     "msgpackr": "^1.11.0",
-    "protobufjs": "^7.4.0",
+    "protobufjs": "^7.5.5",
     "puppeteer": "^23.7.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-real-browser": "^1.3.17"
