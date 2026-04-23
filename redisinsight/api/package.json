@@ -105,7 +105,7 @@
     "swagger-ui-express": "^4.1.4",
     "tunnel-ssh": "^5.1.2",
     "typeorm": "^0.3.26",
-    "uuid": "^8.3.2",
+    "uuid": "^14.0.0",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.0"
   },
@@ -161,8 +161,26 @@
     "rootDir": "src",
     "testRegex": ".spec.ts$",
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.ts$": "ts-jest",
+      "^.+\\.[cm]?js$": [
+        "babel-jest",
+        {
+          "presets": [
+            [
+              "@babel/preset-env",
+              {
+                "targets": {
+                  "node": "current"
+                }
+              }
+            ]
+          ]
+        }
+      ]
     },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!uuid/)"
+    ],
     "coverageDirectory": "../report/coverage",
     "coveragePathIgnorePatterns": [
       "/node_modules/",

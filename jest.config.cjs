@@ -28,7 +28,6 @@ module.exports = {
     'rehype-stringify': '<rootDir>/redisinsight/__mocks__/rehypeStringify.js',
     'unist-util-visit': '<rootDir>/redisinsight/__mocks__/unistUtilsVisit.js',
     d3: '<rootDir>/node_modules/d3/dist/d3.min.js',
-    '^uuid$': require.resolve('uuid'),
     msgpackr: require.resolve('msgpackr'),
     'brotli-dec-wasm': '<rootDir>/redisinsight/__mocks__/brotli-dec-wasm.js',
     'react-resizable-panels':
@@ -47,7 +46,7 @@ module.exports = {
     '\\.mjs$': 'babel-jest',
   },
   transformIgnorePatterns: [
-    'node_modules/(?!(monaco-editor|react-monaco-editor|brotli-dec-wasm|until-async|rettime)/)',
+    'node_modules/(?!(monaco-editor|react-monaco-editor|brotli-dec-wasm|until-async|rettime|uuid)/)',
   ],
   // TODO: add tests for plugins
   modulePathIgnorePatterns: [
