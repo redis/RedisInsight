@@ -96,7 +96,6 @@
     "@electron/notarize": "2.3.2",
     "webpack-bundle-analyzer/ws": "^7.5.10",
     "msw/path-to-regexp": "^6.3.0",
-    "msw/cookie": "^0.7.0",
     "**/cross-spawn": "^7.0.5",
     "styled-components": "^5",
     "@elastic/eui/**/prismjs": "~1.30.0",
