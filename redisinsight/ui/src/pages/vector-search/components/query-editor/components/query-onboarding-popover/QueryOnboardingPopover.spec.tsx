@@ -35,7 +35,7 @@ describe('QueryOnboardingPopover', () => {
     const onboardingContent = screen.getByTestId(
       'query-library-onboarding-content',
     )
-    const title = screen.getByText('Index created successfully.')
+    const title = screen.getByText('Start exploring your data')
 
     expect(onboardingContent).toBeInTheDocument()
     expect(title).toBeInTheDocument()
