@@ -2,6 +2,7 @@ import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { addVectorSetKey } from 'uiSrc/slices/browser/keys'
 import { stringToBuffer } from 'uiSrc/utils'
+import { FP32_VECTOR_FIXTURE_1_2_3 } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
 import AddKeyVectorSet from './AddKeyVectorSet'
 import { Props } from './AddKeyVectorSet.types'
 
@@ -83,7 +84,31 @@ describe('AddKeyVectorSet', () => {
 
     expect(addVectorSetKey).toHaveBeenCalledWith(
       expect.objectContaining({
-        elements: [{ name: stringToBuffer('elem1'), vector: [1, 2, 3] }],
+        elements: [{ name: stringToBuffer('elem1'), vectorValues: [1, 2, 3] }],
+      }),
+      expect.any(Function),
+    )
+  })
+
+  it('should dispatch addVectorSetKey with vectorFp32 base64 when an FP32 input is entered', () => {
+    renderComponent()
+
+    const { escaped: fp32Escaped, base64: expectedBase64 } =
+      FP32_VECTOR_FIXTURE_1_2_3
+
+    fireEvent.change(screen.getByTestId('element-name'), {
+      target: { value: 'elem1' },
+    })
+    fireEvent.change(screen.getByTestId('element-vector'), {
+      target: { value: fp32Escaped },
+    })
+    fireEvent.click(screen.getByTestId('add-key-vector-set-btn'))
+
+    expect(addVectorSetKey).toHaveBeenCalledWith(
+      expect.objectContaining({
+        elements: [
+          { name: stringToBuffer('elem1'), vectorFp32: expectedBase64 },
+        ],
       }),
       expect.any(Function),
     )
