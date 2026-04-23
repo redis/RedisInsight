@@ -63,7 +63,7 @@ jobs:
           xdg-settings set default-web-browser google-chrome.desktop
 
       - name: Download AppImage Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: linux-builds
           path: ./release
