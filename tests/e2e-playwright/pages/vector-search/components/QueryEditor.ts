@@ -41,7 +41,7 @@ export class QueryEditor {
     this.explainTooltip = page.getByTestId('explain-tooltip');
     this.profileTooltip = page.getByTestId('profile-tooltip');
 
-    this.queryOnboarding = page.getByText('Index created successfully.');
+    this.queryOnboarding = page.getByText('Start exploring your data');
     this.queryOnboardingDismiss = page.getByRole('button', { name: 'Got it' });
   }
 

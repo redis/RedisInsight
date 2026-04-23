@@ -13,7 +13,7 @@ test.use({ featureFlags: { vectorSearchV2: true } });
 /**
  * Vector Search > Query Page Onboarding
  *
- * The "Index created successfully" popover appears the first time the
+ * The "Start exploring your data" popover appears the first time the
  * query page is visited. It introduces the Query editor and Query library
  * tabs. Dismissed via the "Got it" button, it does not appear on subsequent visits.
  */
