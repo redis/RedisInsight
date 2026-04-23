@@ -23,29 +23,31 @@ export class AddVectorSetElementDto {
 
   @ApiPropertyOptional({
     description:
-      'Vector embedding values. Mutually exclusive with `fp32` - exactly one ' +
-      'of the two must be supplied.',
+      'Vector embedding as numeric values. Mutually exclusive with ' +
+      '`vectorFp32` - exactly one of the two must be supplied.',
     type: [Number],
     isArray: true,
   })
-  // Numeric vector and FP32 blob are two equivalent representations of the same
-  // value and must not be supplied together. When `fp32` is present we skip
-  // validation on `vector`; otherwise the legacy rules (non-empty array) apply.
-  @ValidateIf((o) => o.fp32 === undefined)
+  // `vectorValues` and `vectorFp32` are two equivalent representations of the
+  // same vector and must not be supplied together. When `vectorFp32` is
+  // present we skip validation on `vectorValues`; otherwise the legacy rules
+  // (non-empty array) apply.
+  @ValidateIf((o) => o.vectorFp32 === undefined)
   @IsArray()
   @ArrayNotEmpty()
-  vector?: number[];
+  vectorValues?: number[];
 
   @ApiPropertyOptional({
     type: String,
     description:
-      'Base64-encoded little-endian IEEE-754 FP32 blob. Decoded length must ' +
-      'be a non-zero multiple of 4 bytes. Mutually exclusive with `vector`.',
+      'Vector embedding as a base64-encoded little-endian IEEE-754 FP32 ' +
+      'blob. Decoded length must be a non-zero multiple of 4 bytes. ' +
+      'Mutually exclusive with `vectorValues`.',
   })
-  @ValidateIf((o) => o.vector === undefined)
+  @ValidateIf((o) => o.vectorValues === undefined)
   @IsString()
   @IsBase64()
-  fp32?: string;
+  vectorFp32?: string;
 
   @ApiPropertyOptional({
     type: String,
