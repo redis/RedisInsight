@@ -394,11 +394,42 @@ export class VectorSetService {
     const args: Array<string | number | Buffer> = [
       BrowserToolVectorSetCommands.VAdd,
       keyName,
-      'VALUES',
-      element.vector.length,
-      ...element.vector.map(String),
-      element.name,
     ];
+
+    // Dispatch explicitly on each payload rather than assuming `vectorValues`
+    // is defined. DTO validation should already guarantee exactly one of the
+    // two is present, but we stay defensive so any future internal caller
+    // that bypasses class-validator still fails loudly instead of crashing on
+    // an `undefined.length` read or silently dropping one of the two inputs.
+    const hasVectorFp32 =
+      typeof element.vectorFp32 === 'string' && element.vectorFp32.length > 0;
+    const hasVectorValues =
+      Array.isArray(element.vectorValues) && element.vectorValues.length > 0;
+
+    if (hasVectorFp32 && hasVectorValues) {
+      throw new BadRequestException(
+        'Vector element must supply either `vectorValues` (number[]) or `vectorFp32` (base64 string), not both.',
+      );
+    }
+
+    if (hasVectorFp32) {
+      args.push(
+        'FP32',
+        Buffer.from(element.vectorFp32, 'base64'),
+        element.name,
+      );
+    } else if (hasVectorValues) {
+      args.push(
+        'VALUES',
+        element.vectorValues.length,
+        ...element.vectorValues.map(String),
+        element.name,
+      );
+    } else {
+      throw new BadRequestException(
+        'Vector element requires either `vectorValues` (number[]) or `vectorFp32` (base64 string).',
+      );
+    }
 
     if (element.attributes !== undefined) {
       args.push('SETATTR', element.attributes);

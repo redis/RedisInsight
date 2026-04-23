@@ -20,6 +20,8 @@ import {
   createVectorSetDtoFactory,
   deleteVectorSetElementsDtoFactory,
   downloadVectorSetEmbeddingDtoFactory,
+  fp32AddVectorSetElementDtoFactory,
+  FP32_VECTOR_FIXTURE_1_2_3,
   getVectorSetElementsDtoFactory,
   getVectorSetElementDetailsDtoFactory,
   setVectorSetElementAttributeDtoFactory,
@@ -76,7 +78,7 @@ describe('VectorSetService', () => {
             BrowserToolVectorSetCommands.VAdd,
             mockCreateDto.keyName,
             'VALUES',
-            el.vector.length,
+            el.vectorValues.length,
           ]),
         ),
       );
@@ -135,6 +137,69 @@ describe('VectorSetService', () => {
         service.createVectorSet(mockBrowserClientMetadata, mockCreateDto),
       ).rejects.toThrow();
     });
+
+    it('should dispatch VADD with FP32 Buffer when element has vectorFp32 payload', async () => {
+      const fp32Element = fp32AddVectorSetElementDtoFactory.build();
+      const dtoWithFp32 = createVectorSetDtoFactory.build({
+        elements: [fp32Element],
+      });
+
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, dtoWithFp32.keyName])
+        .mockResolvedValue(false);
+
+      client.sendPipeline.mockResolvedValue([[null, 1]]);
+
+      await service.createVectorSet(mockBrowserClientMetadata, dtoWithFp32);
+
+      expect(client.sendPipeline).toHaveBeenCalledWith([
+        [
+          BrowserToolVectorSetCommands.VAdd,
+          dtoWithFp32.keyName,
+          'FP32',
+          FP32_VECTOR_FIXTURE_1_2_3.buffer,
+          fp32Element.name,
+        ],
+      ]);
+    });
+
+    it('should throw BadRequestException when element has neither vectorValues nor vectorFp32', async () => {
+      const invalidElement = addVectorSetElementDtoFactory.build({
+        vectorValues: undefined,
+        vectorFp32: undefined,
+      });
+      const invalidDto = createVectorSetDtoFactory.build({
+        elements: [invalidElement],
+      });
+
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, invalidDto.keyName])
+        .mockResolvedValue(false);
+
+      await expect(
+        service.createVectorSet(mockBrowserClientMetadata, invalidDto),
+      ).rejects.toThrow(BadRequestException);
+      expect(client.sendPipeline).not.toHaveBeenCalled();
+    });
+
+    it('should throw BadRequestException when element supplies both vectorValues and vectorFp32', async () => {
+      const conflictingElement = addVectorSetElementDtoFactory.build({
+        vectorValues: [0.1, 0.2, 0.3],
+        vectorFp32: FP32_VECTOR_FIXTURE_1_2_3.base64,
+      });
+      const conflictingDto = createVectorSetDtoFactory.build({
+        elements: [conflictingElement],
+      });
+
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, conflictingDto.keyName])
+        .mockResolvedValue(false);
+
+      await expect(
+        service.createVectorSet(mockBrowserClientMetadata, conflictingDto),
+      ).rejects.toThrow(BadRequestException);
+      expect(client.sendPipeline).not.toHaveBeenCalled();
+    });
   });
 
   describe('addElements', () => {
@@ -161,7 +226,7 @@ describe('VectorSetService', () => {
           BrowserToolVectorSetCommands.VAdd,
           mockAddDto.keyName,
           'VALUES',
-          mockElement.vector.length,
+          mockElement.vectorValues.length,
           'SETATTR',
           mockElement.attributes,
         ]),
@@ -176,6 +241,73 @@ describe('VectorSetService', () => {
       await expect(
         service.addElements(mockBrowserClientMetadata, mockAddDto),
       ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should dispatch VADD with FP32 Buffer when element has vectorFp32 payload', async () => {
+      const fp32Element = fp32AddVectorSetElementDtoFactory.build({
+        attributes: '{"status":"active"}',
+      });
+      const fp32Dto = addElementsToVectorSetDtoFactory.build({
+        elements: [fp32Element],
+      });
+
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, fp32Dto.keyName])
+        .mockResolvedValue(true);
+
+      client.sendPipeline.mockResolvedValue([[null, 1]]);
+
+      await service.addElements(mockBrowserClientMetadata, fp32Dto);
+
+      expect(client.sendPipeline).toHaveBeenCalledWith([
+        [
+          BrowserToolVectorSetCommands.VAdd,
+          fp32Dto.keyName,
+          'FP32',
+          FP32_VECTOR_FIXTURE_1_2_3.buffer,
+          fp32Element.name,
+          'SETATTR',
+          fp32Element.attributes,
+        ],
+      ]);
+    });
+
+    it('should throw BadRequestException when element.vectorValues is an empty array', async () => {
+      const emptyVectorElement = addVectorSetElementDtoFactory.build({
+        vectorValues: [],
+        vectorFp32: undefined,
+      });
+      const emptyDto = addElementsToVectorSetDtoFactory.build({
+        elements: [emptyVectorElement],
+      });
+
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, emptyDto.keyName])
+        .mockResolvedValue(true);
+
+      await expect(
+        service.addElements(mockBrowserClientMetadata, emptyDto),
+      ).rejects.toThrow(BadRequestException);
+      expect(client.sendPipeline).not.toHaveBeenCalled();
+    });
+
+    it('should throw BadRequestException when element supplies both vectorValues and vectorFp32', async () => {
+      const conflictingElement = addVectorSetElementDtoFactory.build({
+        vectorValues: [0.1, 0.2, 0.3],
+        vectorFp32: FP32_VECTOR_FIXTURE_1_2_3.base64,
+      });
+      const conflictingDto = addElementsToVectorSetDtoFactory.build({
+        elements: [conflictingElement],
+      });
+
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, conflictingDto.keyName])
+        .mockResolvedValue(true);
+
+      await expect(
+        service.addElements(mockBrowserClientMetadata, conflictingDto),
+      ).rejects.toThrow(BadRequestException);
+      expect(client.sendPipeline).not.toHaveBeenCalled();
     });
   });
 
