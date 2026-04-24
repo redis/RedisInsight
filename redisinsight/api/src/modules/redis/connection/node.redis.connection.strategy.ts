@@ -59,6 +59,10 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
         port,
         family: 0, // Enable dual-stack IPv4/IPv6 (auto-detect)
         connectTimeout: timeout,
+        // TCP keepalive. Required to detect half-open sockets after the OS
+        // silently drops a network interface (e.g. Ethernet -> Wi-Fi hand-off).
+        // Without this, commands issued on a stale socket would hang forever.
+        keepAlive: REDIS_CLIENTS_CONFIG.keepAlive || false,
         ...tlsOptions,
         reconnectStrategy: options?.useRetry
           ? this.retryStrategy.bind(this)

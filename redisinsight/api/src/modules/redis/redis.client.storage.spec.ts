@@ -669,6 +669,41 @@ describe('RedisClientStorage', () => {
     });
   });
 
+  describe('removeAll', () => {
+    it('should disconnect and remove every cached client', async () => {
+      expect(service['clients'].size).toEqual(6);
+
+      const removed = await service.removeAll();
+
+      expect(removed).toEqual(6);
+      expect(service['clients'].size).toEqual(0);
+      expect(mockRedisClient1.disconnect).toHaveBeenCalled();
+      expect(mockRedisClient2.disconnect).toHaveBeenCalled();
+      expect(mockRedisClient3.disconnect).toHaveBeenCalled();
+      expect(mockRedisClient4.disconnect).toHaveBeenCalled();
+      expect(mockRedisClient5.disconnect).toHaveBeenCalled();
+      expect(mockRedisClient6.disconnect).toHaveBeenCalled();
+
+      expect(eventEmitter.emit).toHaveBeenCalledWith(
+        RedisClientEvents.ClientRemoved,
+        expect.objectContaining({
+          clientId: mockRedisClient1.id,
+          databaseId: mockRedisClient1.clientMetadata.databaseId,
+        }),
+      );
+    });
+
+    it('should be a no-op when there are no cached clients', async () => {
+      // @ts-ignore
+      service['clients'] = new Map();
+
+      const removed = await service.removeAll();
+
+      expect(removed).toEqual(0);
+      expect(eventEmitter.emit).not.toHaveBeenCalled();
+    });
+  });
+
   describe('advanced', () => {
     beforeEach(() => {
       // @ts-ignore

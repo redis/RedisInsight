@@ -54,6 +54,11 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
       password,
       family: 0, // Enable dual-stack IPv4/IPv6 (auto-detect)
       connectTimeout: timeout,
+      // TCP keepalive. Required to detect half-open sockets after the OS
+      // silently drops a network interface (e.g. Ethernet -> Wi-Fi hand-off).
+      // Without this, ioredis would never surface an error on the pending
+      // command and requests would hang forever.
+      keepAlive: REDIS_CLIENTS_CONFIG.keepAlive,
       db: isNumber(clientMetadata.db) ? clientMetadata.db : db,
       connectionName:
         options?.connectionName ||

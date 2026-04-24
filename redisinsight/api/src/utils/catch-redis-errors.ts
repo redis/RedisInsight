@@ -40,6 +40,78 @@ export const isCertError = (error: ReplyError): boolean => {
   }
 };
 
+/**
+ * Detects runtime errors produced by the redis client driver (ioredis /
+ * node-redis) when the underlying connection is broken / unavailable mid-way
+ * through a command. These are NOT "initial connect" failures but rather
+ * errors thrown by a command on an already-established client whose socket
+ * just died (e.g. network interface switched and the host became unroutable,
+ * half-open TCP socket, reconnect backoff gave up, etc.).
+ *
+ * We convert these to `RedisConnection*` exceptions (HTTP 424) so the UI's
+ * connectivityErrorsInterceptor picks them up and shows the "Connection Lost"
+ * banner instead of a generic 500 / request-timed-out toast.
+ */
+export const isRedisRuntimeConnectionError = (error: ReplyError): boolean => {
+  if (!error || error instanceof HttpException) {
+    return false;
+  }
+
+  const message = error?.message || '';
+  const code = error?.code || '';
+
+  return (
+    // ioredis / node-redis: command aborted because the underlying stream
+    // errored / was closed before a reply arrived
+    message === 'Command timed out' ||
+    // ioredis / node-redis: client disconnected before reply arrived
+    message === 'Connection is closed.' ||
+    message === 'Connection is already closed.' ||
+    message === 'The client is closed' ||
+    message === 'Socket closed unexpectedly' ||
+    // ioredis: commands issued while disconnected and offline queue disabled
+    message.startsWith("Stream isn't writeable") ||
+    // ioredis cluster: reconnect backoff exhausted / all nodes failed mid-flight
+    message.includes('Failed to refresh slots cache') ||
+    message.includes('CLUSTERDOWN') ||
+    // Low-level socket errors surfaced through the driver
+    code === 'ECONNRESET' ||
+    code === 'EPIPE' ||
+    code === 'EADDRNOTAVAIL' ||
+    code === 'ENETUNREACH' ||
+    code === 'ENETDOWN' ||
+    code === 'EHOSTUNREACH' ||
+    code === 'ETIMEDOUT' ||
+    message.includes('EADDRNOTAVAIL') ||
+    message.includes('ENETUNREACH') ||
+    message.includes('ENETDOWN') ||
+    message.includes('EHOSTUNREACH') ||
+    message.includes('ECONNRESET')
+  );
+};
+
+/**
+ * If the error represents a runtime connection failure, wrap it in the
+ * appropriate `RedisConnection*` HttpException (status 424). Otherwise
+ * returns `undefined` so callers can continue their normal error handling.
+ */
+export const wrapRedisRuntimeConnectionError = (
+  error: ReplyError,
+): HttpException | undefined => {
+  if (!isRedisRuntimeConnectionError(error)) {
+    return undefined;
+  }
+
+  const message = error?.message || '';
+  if (message.includes('timed out') || error?.code === 'ETIMEDOUT') {
+    return new RedisConnectionTimeoutException(undefined, { cause: error });
+  }
+
+  return new RedisConnectionFailedException(message || undefined, {
+    cause: error,
+  });
+};
+
 export const getRedisConnectionException = (
   error: ReplyError,
   connectionOptions: { host: string; port: number },
@@ -140,6 +212,16 @@ export const catchAclError = (error: ReplyError): HttpException => {
       throw new ForbiddenException(noPermError.message);
     }
   }
+
+  // If the underlying driver surfaced a runtime connection error (socket
+  // dropped, host unroutable, reconnect backoff exhausted, etc.) re-throw
+  // it as a RedisConnection* exception so the UI renders the "Connection
+  // Lost" banner instead of a generic 500.
+  const connectionException = wrapRedisRuntimeConnectionError(error);
+  if (connectionException) {
+    throw connectionException;
+  }
+
   throw new InternalServerErrorException(error.message);
 };
 

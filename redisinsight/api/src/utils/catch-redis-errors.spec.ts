@@ -9,8 +9,11 @@ import {
   RedisConnectionUnavailableException,
 } from 'src/modules/redis/exceptions/connection';
 import {
+  catchAclError,
   catchRedisSearchError,
   getRedisConnectionException,
+  isRedisRuntimeConnectionError,
+  wrapRedisRuntimeConnectionError,
 } from 'src/utils/catch-redis-errors';
 import { ReplyError } from 'src/models';
 import { CertificatesErrorCodes, RedisErrorCodes } from 'src/constants';
@@ -160,6 +163,91 @@ describe('catch-redis-errors', () => {
       expect(
         getRedisConnectionException(error as ReplyError, database),
       ).toEqual(output);
+    });
+  });
+
+  describe('runtime connection errors', () => {
+    const makeError = (
+      fields: Partial<{ message: string; code: string }>,
+    ): ReplyError =>
+      Object.assign(new Error(fields.message || ''), {
+        code: fields.code,
+      }) as ReplyError;
+
+    it.each([
+      'Command timed out',
+      'Connection is closed.',
+      'Connection is already closed.',
+      'The client is closed',
+      'Socket closed unexpectedly',
+      "Stream isn't writeable and enableOfflineQueue options is false",
+      'Failed to refresh slots cache.',
+      'CLUSTERDOWN The cluster is down',
+    ])(
+      'should recognize message "%s" as a runtime connection error',
+      (message) => {
+        expect(isRedisRuntimeConnectionError(makeError({ message }))).toBe(
+          true,
+        );
+      },
+    );
+
+    it.each([
+      'ECONNRESET',
+      'EPIPE',
+      'EADDRNOTAVAIL',
+      'ENETUNREACH',
+      'ENETDOWN',
+      'EHOSTUNREACH',
+      'ETIMEDOUT',
+    ])(
+      'should recognize socket code "%s" as a runtime connection error',
+      (code) => {
+        expect(
+          isRedisRuntimeConnectionError(
+            makeError({ message: `read ${code}`, code }),
+          ),
+        ).toBe(true);
+      },
+    );
+
+    it('should not flag unrelated errors', () => {
+      expect(
+        isRedisRuntimeConnectionError(
+          new Error('WRONGTYPE operation') as ReplyError,
+        ),
+      ).toBe(false);
+      expect(
+        isRedisRuntimeConnectionError(undefined as unknown as ReplyError),
+      ).toBe(false);
+    });
+
+    it('wrapRedisRuntimeConnectionError should map Command timed out to RedisConnectionTimeoutException', () => {
+      expect(
+        wrapRedisRuntimeConnectionError(
+          makeError({ message: 'Command timed out' }),
+        ),
+      ).toBeInstanceOf(RedisConnectionTimeoutException);
+    });
+
+    it('wrapRedisRuntimeConnectionError should map socket failures to RedisConnectionFailedException', () => {
+      expect(
+        wrapRedisRuntimeConnectionError(
+          makeError({ message: 'read ECONNRESET', code: 'ECONNRESET' }),
+        ),
+      ).toBeInstanceOf(RedisConnectionFailedException);
+    });
+
+    it('catchAclError should re-throw runtime connection errors as RedisConnection* (424)', () => {
+      const error = makeError({ message: 'Command timed out' });
+      expect(() => catchAclError(error)).toThrow(
+        RedisConnectionTimeoutException,
+      );
+    });
+
+    it('catchAclError should still throw 500 for non-connection runtime errors', () => {
+      const error = makeError({ message: 'WRONGTYPE operation' });
+      expect(() => catchAclError(error)).toThrow(InternalServerErrorException);
     });
   });
 
