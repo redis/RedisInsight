@@ -449,7 +449,9 @@ export function addVectorSetElements(
           keyName: data.keyName,
           elements: data.elements.map((el) => ({
             name: stringToBuffer(el.name),
-            vector: el.vector,
+            ...(el.vectorFp32 !== undefined
+              ? { vectorFp32: el.vectorFp32 }
+              : { vectorValues: el.vectorValues }),
             ...(el.attributes ? { attributes: el.attributes } : {}),
           })),
         },

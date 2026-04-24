@@ -981,9 +981,7 @@ describe('vectorSet slice', () => {
 
       const onSuccess = jest.fn()
 
-      await store.dispatch<any>(
-        addVectorSetElements(elementsData as any, onSuccess),
-      )
+      await store.dispatch<any>(addVectorSetElements(elementsData, onSuccess))
 
       const expectedActions = [addElements(), addElementsSuccess()]
 
@@ -991,6 +989,19 @@ describe('vectorSet slice', () => {
         expectedActions,
       )
       expect(onSuccess).toHaveBeenCalledTimes(1)
+
+      expect(apiService.put).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          keyName: elementsData.keyName,
+          elements: elementsData.elements.map((el) =>
+            expect.objectContaining({
+              vectorValues: el.vectorValues,
+            }),
+          ),
+        }),
+        expect.any(Object),
+      )
     })
 
     it('should dispatch failure actions when add fails', async () => {
@@ -1006,7 +1017,7 @@ describe('vectorSet slice', () => {
       const onFail = jest.fn()
 
       await store.dispatch<any>(
-        addVectorSetElements(elementsData as any, undefined, onFail),
+        addVectorSetElements(elementsData, undefined, onFail),
       )
 
       const expectedActions = [

@@ -6,8 +6,8 @@ import {
   SubmitElement,
 } from '../../vector-set-element-form/interfaces'
 import {
+  getRowDim,
   isValidElement,
-  parseVector,
   toSubmitElement,
 } from '../../vector-set-element-form/utils'
 
@@ -28,11 +28,12 @@ export const useVectorSetElementForm = ({
   const prevElementsLengthRef = useRef(elements.length)
 
   // When creating a new vector set, `vectorDim` is not known up-front.
-  // The first row with a valid vector defines the expected dimension for the rest.
+  // The first row with a valid vector defines the expected dimension for the
+  // rest. `getRowDim` handles both numeric (`number[]`) and FP32 (`\xHH...`)
+  // inputs, so mixed-format sets share a single dimension source of truth.
   const inferredVectorDim = useMemo<number | undefined>(() => {
     if (vectorDim !== undefined) return vectorDim
-    const firstVector = parseVector(elements[0]?.vector ?? '')
-    return firstVector?.length
+    return getRowDim(elements[0]?.vector ?? '')
   }, [vectorDim, elements])
 
   const getDimForElement = useCallback(

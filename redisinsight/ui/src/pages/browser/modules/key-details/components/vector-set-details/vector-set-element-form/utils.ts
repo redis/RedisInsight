@@ -1,4 +1,12 @@
-import { VECTOR_SEPARATOR, DEFAULT_VECTOR_HELP_TEXT } from './constants'
+import {
+  DEFAULT_VECTOR_HELP_TEXT,
+  FP32_ESCAPE_PREFIX_REGEX,
+  FP32_ESCAPE_REGEX,
+  INVALID_FP32_BYTE_LENGTH_ERROR,
+  INVALID_FP32_FORMAT_ERROR,
+  INVALID_NUMERIC_FORMAT_ERROR,
+  VECTOR_SEPARATOR,
+} from './constants'
 import {
   IVectorSetElementState,
   SubmitElement,
@@ -22,23 +30,70 @@ export function parseVector(raw: string): number[] | null {
   return nums.length > 0 ? nums : null
 }
 
+export function isFp32Input(raw: string): boolean {
+  return FP32_ESCAPE_PREFIX_REGEX.test(raw.trim())
+}
+
+export function parseFp32EscapedString(raw: string): Uint8Array | null {
+  const trimmed = raw.trim()
+  if (!trimmed) return null
+  if (!FP32_ESCAPE_REGEX.test(trimmed)) return null
+
+  const matches = trimmed.match(/\\x([0-9a-fA-F]{2})/g)
+  if (!matches || matches.length === 0) return null
+
+  const bytes = new Uint8Array(matches.length)
+  for (let i = 0; i < matches.length; i += 1) {
+    bytes[i] = parseInt(matches[i].slice(2), 16)
+  }
+  return bytes
+}
+
+function bytesToBase64(bytes: Uint8Array): string {
+  let binary = ''
+  for (let i = 0; i < bytes.length; i += 1) {
+    binary += String.fromCharCode(bytes[i])
+  }
+  return btoa(binary)
+}
+
 function validateVector(
   raw: string,
   vectorDim?: number,
 ): VectorValidationResult {
-  if (!raw.trim()) return { parsed: null }
+  if (!raw.trim()) return {}
+
+  if (isFp32Input(raw)) {
+    const bytes = parseFp32EscapedString(raw)
+    if (!bytes) return { error: INVALID_FP32_FORMAT_ERROR }
+    if (bytes.length === 0 || bytes.length % 4 !== 0) {
+      return { error: INVALID_FP32_BYTE_LENGTH_ERROR }
+    }
+    const dim = bytes.length / 4
+    if (vectorDim !== undefined && dim !== vectorDim) {
+      return {
+        kind: 'fp32',
+        fp32Bytes: bytes,
+        dim,
+        error: `Dimension mismatch. Expected ${vectorDim} values, but received ${dim}`,
+      }
+    }
+    return { kind: 'fp32', fp32Bytes: bytes, dim }
+  }
 
   const parsed = parseVector(raw)
-  if (!parsed) return { parsed: null, error: 'Invalid number format in vector' }
+  if (!parsed) return { error: INVALID_NUMERIC_FORMAT_ERROR }
 
   if (vectorDim !== undefined && parsed.length !== vectorDim) {
     return {
-      parsed,
+      kind: 'numeric',
+      numeric: parsed,
+      dim: parsed.length,
       error: `Dimension mismatch. Expected ${vectorDim} values, but received ${parsed.length}`,
     }
   }
 
-  return { parsed }
+  return { kind: 'numeric', numeric: parsed, dim: parsed.length }
 }
 
 export function getVectorError(
@@ -48,19 +103,23 @@ export function getVectorError(
   return validateVector(raw, vectorDim).error
 }
 
-export function getValidVector(
-  raw: string,
-  vectorDim?: number,
-): number[] | null {
-  const { parsed, error } = validateVector(raw, vectorDim)
-  return !error && parsed ? parsed : null
+/**
+ * Returns the detected dimension of the row's vector input regardless of format
+ * (numeric `number[]` or FP32 byte blob). Used to infer the required dimension
+ * for subsequent rows when creating a new vector set.
+ */
+export function getRowDim(raw: string): number | undefined {
+  const result = validateVector(raw)
+  return result.dim
 }
 
 export function isValidElement(
   el: IVectorSetElementState,
   vectorDim?: number,
 ): boolean {
-  return !!el.name.trim() && getValidVector(el.vector, vectorDim) !== null
+  if (!el.name.trim()) return false
+  const result = validateVector(el.vector, vectorDim)
+  return !result.error && result.kind !== undefined
 }
 
 export function toSubmitElement(
@@ -70,10 +129,18 @@ export function toSubmitElement(
   const name = el.name.trim()
   if (!name) return null
 
-  const vector = getValidVector(el.vector, vectorDim)
-  if (!vector) return null
+  const result = validateVector(el.vector, vectorDim)
+  if (result.error || !result.kind) return null
 
-  const item: SubmitElement = { name, vector }
+  const item: SubmitElement = { name }
+  if (result.kind === 'fp32' && result.fp32Bytes) {
+    item.vectorFp32 = bytesToBase64(result.fp32Bytes)
+  } else if (result.kind === 'numeric' && result.numeric) {
+    item.vectorValues = result.numeric
+  } else {
+    return null
+  }
+
   const trimmedAttributes = el.attributes.trim()
   if (trimmedAttributes) item.attributes = trimmedAttributes
 
@@ -88,13 +155,20 @@ export function getVectorFieldInfo(
     return { text: DEFAULT_VECTOR_HELP_TEXT, isError: false }
   }
 
-  const { parsed, error } = validateVector(raw, vectorDim)
-  if (error) {
-    return { text: error, isError: true }
+  const result = validateVector(raw, vectorDim)
+  if (result.error) {
+    return { text: result.error, isError: true }
+  }
+
+  if (result.kind === 'fp32') {
+    return {
+      text: `Detected FP32 vector (${result.dim} dimensions).`,
+      isError: false,
+    }
   }
 
   return {
-    text: `Detected numeric vector (${parsed!.length} dimensions).`,
+    text: `Detected numeric vector (${result.dim} dimensions).`,
     isError: false,
   }
 }

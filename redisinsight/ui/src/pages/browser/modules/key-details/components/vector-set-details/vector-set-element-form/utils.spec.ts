@@ -1,13 +1,29 @@
-import { vectorSetElementFormStateFactory } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
-import { DEFAULT_VECTOR_HELP_TEXT } from './constants'
 import {
-  getValidVector,
+  FP32_INVALID_BYTE_LENGTH_INPUT,
+  FP32_VECTOR_FIXTURE_1_2_3,
+  vectorSetElementFormStateFactory,
+} from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
+import {
+  DEFAULT_VECTOR_HELP_TEXT,
+  INVALID_FP32_BYTE_LENGTH_ERROR,
+  INVALID_FP32_FORMAT_ERROR,
+} from './constants'
+import {
+  getRowDim,
   getVectorError,
   getVectorFieldInfo,
+  isFp32Input,
   isValidElement,
+  parseFp32EscapedString,
   parseVector,
   toSubmitElement,
 } from './utils'
+
+const {
+  bytes: FP32_BYTES_1_2_3,
+  escaped: FP32_ESCAPED_1_2_3,
+  base64: FP32_BASE64_1_2_3,
+} = FP32_VECTOR_FIXTURE_1_2_3
 
 describe('parseVector', () => {
   it('should return null for an empty string', () => {
@@ -103,29 +119,6 @@ describe('getVectorFieldInfo', () => {
   })
 })
 
-describe('getValidVector', () => {
-  it('should return null for an empty string', () => {
-    expect(getValidVector('')).toBeNull()
-    expect(getValidVector('   ')).toBeNull()
-  })
-
-  it('should return null for an unparsable vector', () => {
-    expect(getValidVector('1, abc, 3')).toBeNull()
-  })
-
-  it('should return the parsed vector without dimension check', () => {
-    expect(getValidVector('1, 2, 3')).toEqual([1, 2, 3])
-  })
-
-  it('should return the parsed vector when dimension matches', () => {
-    expect(getValidVector('1, 2, 3', 3)).toEqual([1, 2, 3])
-  })
-
-  it('should return null when dimension does not match', () => {
-    expect(getValidVector('1, 2', 3)).toBeNull()
-  })
-})
-
 describe('toSubmitElement', () => {
   it('should return null when the vector is invalid', () => {
     expect(
@@ -165,14 +158,14 @@ describe('toSubmitElement', () => {
       ),
     ).toEqual({
       name: 'padded',
-      vector: [1, 2, 3],
+      vectorValues: [1, 2, 3],
     })
   })
 
   it('should map a valid element without attributes', () => {
     expect(toSubmitElement(vectorSetElementFormStateFactory.build())).toEqual({
       name: 'item',
-      vector: [1, 2, 3],
+      vectorValues: [1, 2, 3],
     })
   })
 
@@ -185,7 +178,7 @@ describe('toSubmitElement', () => {
       ),
     ).toEqual({
       name: 'item',
-      vector: [1, 2, 3],
+      vectorValues: [1, 2, 3],
       attributes: '{"a":1}',
     })
   })
@@ -194,7 +187,7 @@ describe('toSubmitElement', () => {
     const result = toSubmitElement(
       vectorSetElementFormStateFactory.build({ attributes: '   ' }),
     )
-    expect(result).toEqual({ name: 'item', vector: [1, 2, 3] })
+    expect(result).toEqual({ name: 'item', vectorValues: [1, 2, 3] })
     expect(result).not.toHaveProperty('attributes')
   })
 })
@@ -233,5 +226,159 @@ describe('isValidElement', () => {
 
   it('should return true for a valid element', () => {
     expect(isValidElement(vectorSetElementFormStateFactory.build())).toBe(true)
+  })
+
+  it('should return true for a valid FP32 element with matching dim', () => {
+    expect(
+      isValidElement(
+        vectorSetElementFormStateFactory.build({ vector: FP32_ESCAPED_1_2_3 }),
+        3,
+      ),
+    ).toBe(true)
+  })
+})
+
+describe('isFp32Input', () => {
+  it('should return false for plain numeric input', () => {
+    expect(isFp32Input('1, 2, 3')).toBe(false)
+    expect(isFp32Input('')).toBe(false)
+  })
+
+  it('should return true when input starts with an `\\xHH` escape', () => {
+    expect(isFp32Input(FP32_ESCAPED_1_2_3)).toBe(true)
+    expect(isFp32Input('  \\x00\\x01')).toBe(true)
+  })
+
+  it('should treat any `\\x` prefix as an FP32 attempt (even when malformed)', () => {
+    // So that malformed FP32 inputs surface a format-specific error instead
+    // of falling through to the numeric parser as "not a number".
+    expect(isFp32Input('\\xG0')).toBe(true)
+    expect(isFp32Input('\\x')).toBe(true)
+  })
+
+  it('should return false for inputs that do not start with `\\x`', () => {
+    expect(isFp32Input('x00')).toBe(false)
+    expect(isFp32Input('0x00')).toBe(false)
+  })
+})
+
+describe('parseFp32EscapedString', () => {
+  it('should return null for an empty/whitespace string', () => {
+    expect(parseFp32EscapedString('')).toBeNull()
+    expect(parseFp32EscapedString('   ')).toBeNull()
+  })
+
+  it('should return null when the string does not match the full escape regex', () => {
+    expect(parseFp32EscapedString('\\x00 hello')).toBeNull()
+    expect(parseFp32EscapedString('\\xZZ')).toBeNull()
+  })
+
+  it('should decode a valid escaped-byte string', () => {
+    const bytes = parseFp32EscapedString(FP32_ESCAPED_1_2_3)
+    expect(bytes).not.toBeNull()
+    expect(Array.from(bytes as Uint8Array)).toEqual(FP32_BYTES_1_2_3)
+  })
+
+  it('should tolerate whitespace between escape tokens', () => {
+    const spaced = FP32_ESCAPED_1_2_3.replace(/\\x/g, ' \\x')
+    const bytes = parseFp32EscapedString(spaced)
+    expect(bytes).not.toBeNull()
+    expect(Array.from(bytes as Uint8Array)).toEqual(FP32_BYTES_1_2_3)
+  })
+})
+
+describe('getRowDim', () => {
+  it('should return undefined for an empty/invalid input', () => {
+    expect(getRowDim('')).toBeUndefined()
+    expect(getRowDim('1, abc')).toBeUndefined()
+  })
+
+  it('should return the numeric length for a numeric input', () => {
+    expect(getRowDim('1, 2, 3, 4')).toBe(4)
+  })
+
+  it('should return bytes/4 for a valid FP32 input', () => {
+    expect(getRowDim(FP32_ESCAPED_1_2_3)).toBe(3)
+  })
+
+  it('should return undefined for an FP32 input with invalid byte length', () => {
+    expect(getRowDim(FP32_INVALID_BYTE_LENGTH_INPUT)).toBeUndefined()
+  })
+})
+
+describe('FP32 detection in getVectorError', () => {
+  it('should return undefined for a valid FP32 input', () => {
+    expect(getVectorError(FP32_ESCAPED_1_2_3)).toBeUndefined()
+  })
+
+  it('should return the FP32 byte-length error when bytes are not a multiple of 4', () => {
+    expect(getVectorError(FP32_INVALID_BYTE_LENGTH_INPUT)).toBe(
+      INVALID_FP32_BYTE_LENGTH_ERROR,
+    )
+  })
+
+  it('should return the FP32 format error for stray hex characters', () => {
+    expect(getVectorError('\\xZZ')).toBe(INVALID_FP32_FORMAT_ERROR)
+  })
+
+  it('should return a dimension-mismatch error when FP32 dim disagrees', () => {
+    expect(getVectorError(FP32_ESCAPED_1_2_3, 5)).toBe(
+      'Dimension mismatch. Expected 5 values, but received 3',
+    )
+  })
+})
+
+describe('FP32 detection in getVectorFieldInfo', () => {
+  it('should return the FP32 detected message for a valid FP32 input', () => {
+    expect(getVectorFieldInfo(FP32_ESCAPED_1_2_3)).toEqual({
+      text: 'Detected FP32 vector (3 dimensions).',
+      isError: false,
+    })
+  })
+
+  it('should return the FP32 byte-length error in the hint', () => {
+    expect(getVectorFieldInfo(FP32_INVALID_BYTE_LENGTH_INPUT)).toEqual({
+      text: INVALID_FP32_BYTE_LENGTH_ERROR,
+      isError: true,
+    })
+  })
+})
+
+describe('FP32 detection in toSubmitElement', () => {
+  it('should produce a `vectorFp32` base64 payload for a valid FP32 input', () => {
+    const result = toSubmitElement(
+      vectorSetElementFormStateFactory.build({
+        vector: FP32_ESCAPED_1_2_3,
+      }),
+    )
+    expect(result).toEqual({
+      name: 'item',
+      vectorFp32: FP32_BASE64_1_2_3,
+    })
+    expect(result).not.toHaveProperty('vectorValues')
+  })
+
+  it('should include attributes alongside the vectorFp32 payload', () => {
+    const result = toSubmitElement(
+      vectorSetElementFormStateFactory.build({
+        vector: FP32_ESCAPED_1_2_3,
+        attributes: '{"a":1}',
+      }),
+    )
+    expect(result).toEqual({
+      name: 'item',
+      vectorFp32: FP32_BASE64_1_2_3,
+      attributes: '{"a":1}',
+    })
+  })
+
+  it('should return null when the FP32 byte length is invalid', () => {
+    expect(
+      toSubmitElement(
+        vectorSetElementFormStateFactory.build({
+          vector: FP32_INVALID_BYTE_LENGTH_INPUT,
+        }),
+      ),
+    ).toBeNull()
   })
 })
