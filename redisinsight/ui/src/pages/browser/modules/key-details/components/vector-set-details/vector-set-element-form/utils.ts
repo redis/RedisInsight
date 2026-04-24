@@ -103,15 +103,6 @@ export function getVectorError(
   return validateVector(raw, vectorDim).error
 }
 
-export function getValidVector(
-  raw: string,
-  vectorDim?: number,
-): number[] | null {
-  const result = validateVector(raw, vectorDim)
-  if (result.error || result.kind !== 'numeric' || !result.numeric) return null
-  return result.numeric
-}
-
 /**
  * Returns the detected dimension of the row's vector input regardless of format
  * (numeric `number[]` or FP32 byte blob). Used to infer the required dimension

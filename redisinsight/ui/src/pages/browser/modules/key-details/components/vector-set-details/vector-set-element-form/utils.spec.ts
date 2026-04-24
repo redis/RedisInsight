@@ -10,7 +10,6 @@ import {
 } from './constants'
 import {
   getRowDim,
-  getValidVector,
   getVectorError,
   getVectorFieldInfo,
   isFp32Input,
@@ -117,29 +116,6 @@ describe('getVectorFieldInfo', () => {
       text: 'Detected numeric vector (4 dimensions).',
       isError: false,
     })
-  })
-})
-
-describe('getValidVector', () => {
-  it('should return null for an empty string', () => {
-    expect(getValidVector('')).toBeNull()
-    expect(getValidVector('   ')).toBeNull()
-  })
-
-  it('should return null for an unparsable vector', () => {
-    expect(getValidVector('1, abc, 3')).toBeNull()
-  })
-
-  it('should return the parsed vector without dimension check', () => {
-    expect(getValidVector('1, 2, 3')).toEqual([1, 2, 3])
-  })
-
-  it('should return the parsed vector when dimension matches', () => {
-    expect(getValidVector('1, 2, 3', 3)).toEqual([1, 2, 3])
-  })
-
-  it('should return null when dimension does not match', () => {
-    expect(getValidVector('1, 2', 3)).toBeNull()
   })
 })
 

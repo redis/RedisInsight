@@ -49,10 +49,10 @@ export const addVectorSetElementsDataFactory =
   Factory.define<AddVectorSetElementsData>(() => ({
     keyName: stringToBuffer(`vset:${faker.string.alphanumeric(10)}`),
     elements: [
-      { name: faker.word.noun(), vector: buildMockVector() },
+      { name: faker.word.noun(), vectorValues: buildMockVector() },
       {
         name: faker.word.noun(),
-        vector: buildMockVector(),
+        vectorValues: buildMockVector(),
         attributes: mockVectorSetElementAttributes(),
       },
     ],
