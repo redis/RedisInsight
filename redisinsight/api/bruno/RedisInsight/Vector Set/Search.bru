@@ -1,0 +1,110 @@
+meta {
+  name: Similarity Search
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/vector-set/similarity-search
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "vset:small_3d",
+    "elementName": "item_1",
+    "count": 10
+  }
+}
+
+docs {
+  # Similarity Search
+
+  Runs a vector similarity search against the Vector Set stored at `keyName`. Uses the Redis `VSIM` command with `WITHSCORES` and `WITHATTRIBS` always enabled, so each match returned by this endpoint includes its similarity score and any attributes stored on the element.
+
+  ## Request Body
+
+  Exactly one of `elementName`, `vectorValues`, or `vectorFp32` must be supplied:
+
+  | Field | Type | Description |
+  |-------|------|-------------|
+  | `keyName` | string | The Vector Set key name |
+  | `elementName` | string | (One-of) Use an existing element's vector as the query |
+  | `vectorValues` | number[] | (One-of) Query vector as numeric values |
+  | `vectorFp32` | string | (One-of) Query vector as a base64-encoded little-endian FP32 blob (length must be a non-zero multiple of 4 bytes) |
+  | `count` | number | Maximum number of results (default `10`, max `1000`) |
+  | `filter` | string | Optional filter expression evaluated against element attributes (passed verbatim to Redis after `FILTER`) |
+
+  ## Response
+
+  Returns `200 OK` with the matched elements ordered by descending similarity score.
+
+  | Field | Type | Description |
+  |-------|------|-------------|
+  | `keyName` | string | The Vector Set key name |
+  | `elements` | array | List of `{ name, score, attributes? }` matches |
+  | `elements[].name` | string | Matched element name |
+  | `elements[].score` | number | Similarity score returned by `VSIM ... WITHSCORES` |
+  | `elements[].attributes` | string | Attributes string stored on the element (omitted when the element has none) |
+
+  ## Error Responses
+
+  | Status | Condition |
+  |--------|-----------|
+  | `400` | Multiple or no query payloads (`elementName` / `vectorValues` / `vectorFp32`), or key exists but is not a Vector Set (WRONGTYPE) |
+  | `404` | Key does not exist |
+
+  ## Examples
+
+  ### Search by existing element
+
+  ```json
+  {
+    "keyName": "vset:small_3d",
+    "elementName": "item_1",
+    "count": 5
+  }
+  ```
+
+  ### Search by raw values
+
+  ```json
+  {
+    "keyName": "vset:small_3d",
+    "vectorValues": [0.1, 0.2, 0.3],
+    "count": 5
+  }
+  ```
+
+  ### Search by FP32 blob
+
+  ```json
+  {
+    "keyName": "vset:small_3d",
+    "vectorFp32": "AACAPwAAAEAAAEBA",
+    "count": 5
+  }
+  ```
+
+  ### Search with attribute filter
+
+  ```json
+  {
+    "keyName": "vset:small_3d",
+    "elementName": "item_1",
+    "count": 5,
+    "filter": "@color == 'red'"
+  }
+  ```
+
+  ## Notes
+
+  - `WITHSCORES` and `WITHATTRIBS` are always applied server-side; they are not exposed as request fields so the response shape is stable.
+  - Results are ordered by descending similarity score.
+  - When an element has no attributes, the `attributes` field is omitted from that match.
+}
+
+settings {
+  encodeUrl: true
+}
