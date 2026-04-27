@@ -21,6 +21,8 @@ import {
   DeleteVectorSetElementsResponse,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
+  SearchVectorSetDto,
+  SearchVectorSetResponse,
   SetVectorSetElementAttributeDto,
   SetVectorSetElementAttributeResponse,
   VectorSetElementDetailsDto,
@@ -188,5 +190,27 @@ export class VectorSetController extends BrowserBaseController {
     @Body() dto: DeleteVectorSetElementsDto,
   ): Promise<DeleteVectorSetElementsResponse> {
     return await this.vectorSetService.deleteElements(clientMetadata, dto);
+  }
+
+  @Post('/similarity-search')
+  @ApiRedisInstanceOperation({
+    description:
+      'Run a vector similarity search (VSIM) against the VectorSet stored at key. ' +
+      'WITHSCORES and WITHATTRIBS are always applied so each match carries a similarity score and the element attributes (when present).',
+    statusCode: 200,
+    responses: [
+      {
+        status: 200,
+        description: 'Ok',
+        type: SearchVectorSetResponse,
+      },
+    ],
+  })
+  @ApiQueryRedisStringEncoding()
+  async similaritySearch(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: SearchVectorSetDto,
+  ): Promise<SearchVectorSetResponse> {
+    return await this.vectorSetService.similaritySearch(clientMetadata, dto);
   }
 }

@@ -20,6 +20,9 @@ import {
   DeleteVectorSetElementsResponse,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
+  SearchVectorSetDto,
+  SearchVectorSetMatchDto,
+  SearchVectorSetResponse,
   SetVectorSetElementAttributeDto,
   SetVectorSetElementAttributeResponse,
   VectorSetElementDetailsDto,
@@ -38,6 +41,12 @@ import {
   checkIfKeyExists,
   checkIfKeyNotExists,
 } from 'src/modules/browser/utils';
+
+/**
+ * Stride of `VSIM ... WITHSCORES WITHATTRIBS` replies. The flat reply array
+ * contains 3 entries per match in the order `(name, score, attributes|null)`.
+ */
+const VSIM_REPLY_STRIDE = 3;
 
 @Injectable()
 export class VectorSetService {
@@ -387,6 +396,50 @@ export class VectorSetService {
     }
   }
 
+  public async similaritySearch(
+    clientMetadata: ClientMetadata,
+    dto: SearchVectorSetDto,
+  ): Promise<SearchVectorSetResponse> {
+    try {
+      this.logger.debug(
+        'Running similarity search on the VectorSet data type.',
+        clientMetadata,
+      );
+      const { keyName } = dto;
+      const client: RedisClient =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+
+      await checkIfKeyNotExists(keyName, client);
+
+      const command = this.buildVsimCommand(keyName, dto);
+      const reply = (await client.sendCommand(command)) as Array<
+        string | Buffer | null
+      >;
+
+      const elements = this.parseVsimReply(reply);
+
+      this.logger.debug(
+        'Succeed to run similarity search on the VectorSet data type.',
+        clientMetadata,
+      );
+
+      return plainToInstance(SearchVectorSetResponse, {
+        keyName,
+        elements,
+      });
+    } catch (error) {
+      this.logger.error(
+        'Failed to run similarity search on the VectorSet data type.',
+        error,
+        clientMetadata,
+      );
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
   private buildVaddCommand(
     keyName: Buffer | string,
     element: AddVectorSetElementDto,
@@ -436,6 +489,109 @@ export class VectorSetService {
     }
 
     return args as RedisClientCommand;
+  }
+
+  private buildVsimCommand(
+    keyName: Buffer | string,
+    dto: SearchVectorSetDto,
+  ): RedisClientCommand {
+    const args: Array<string | number | Buffer> = [
+      BrowserToolVectorSetCommands.VSim,
+      keyName,
+    ];
+
+    // Exactly one of `elementName`, `vectorValues`, `vectorFp32` must be
+    // present. DTO validation should already enforce this, but stay defensive
+    // so any future internal caller that bypasses class-validator fails loudly.
+    const hasElementName =
+      dto.elementName !== undefined &&
+      dto.elementName !== null &&
+      ((typeof dto.elementName === 'string' && dto.elementName.length > 0) ||
+        Buffer.isBuffer(dto.elementName));
+    const hasVectorFp32 =
+      typeof dto.vectorFp32 === 'string' && dto.vectorFp32.length > 0;
+    const hasVectorValues =
+      Array.isArray(dto.vectorValues) && dto.vectorValues.length > 0;
+
+    const queryModeCount =
+      Number(hasElementName) + Number(hasVectorFp32) + Number(hasVectorValues);
+
+    if (queryModeCount > 1) {
+      throw new BadRequestException(
+        'Vector similarity search must supply exactly one of `elementName`, `vectorValues`, or `vectorFp32`.',
+      );
+    }
+    if (queryModeCount === 0) {
+      throw new BadRequestException(
+        'Vector similarity search requires one of `elementName`, `vectorValues`, or `vectorFp32`.',
+      );
+    }
+
+    if (hasElementName) {
+      args.push('ELE', dto.elementName as string | Buffer);
+    } else if (hasVectorFp32) {
+      args.push('FP32', Buffer.from(dto.vectorFp32, 'base64'));
+    } else {
+      args.push(
+        'VALUES',
+        dto.vectorValues.length,
+        ...dto.vectorValues.map(String),
+      );
+    }
+
+    // WITHSCORES and WITHATTRIBS are always appended so the response shape is
+    // stable; they are intentionally not part of the DTO.
+    args.push('WITHSCORES', 'WITHATTRIBS');
+
+    if (dto.count !== undefined) {
+      args.push('COUNT', dto.count);
+    }
+
+    if (dto.filter !== undefined && dto.filter !== '') {
+      args.push('FILTER', dto.filter);
+    }
+
+    return args as RedisClientCommand;
+  }
+
+  private parseVsimReply(
+    reply: Array<string | Buffer | null> | null | undefined,
+  ): SearchVectorSetMatchDto[] {
+    if (!reply || reply.length === 0) {
+      return [];
+    }
+
+    // Defensive: drop any trailing partial tuple. Redis is expected to always
+    // return a multiple of `VSIM_REPLY_STRIDE`, so this only protects against
+    // unexpected server-side bugs.
+    const remainder = reply.length % VSIM_REPLY_STRIDE;
+    const usableLength =
+      remainder === 0 ? reply.length : reply.length - remainder;
+    if (remainder !== 0) {
+      this.logger.warn(
+        `VSIM reply length ${reply.length} is not a multiple of ${VSIM_REPLY_STRIDE}; dropping trailing partial tuple.`,
+      );
+    }
+
+    const matches: SearchVectorSetMatchDto[] = [];
+    for (let i = 0; i < usableLength; i += VSIM_REPLY_STRIDE) {
+      const name = reply[i] as string | Buffer;
+      const rawScore = reply[i + 1];
+      const rawAttributes = reply[i + 2];
+
+      const score =
+        typeof rawScore === 'number' ? rawScore : parseFloat(String(rawScore));
+
+      const match: SearchVectorSetMatchDto = { name, score };
+      if (rawAttributes !== null && rawAttributes !== undefined) {
+        match.attributes =
+          typeof rawAttributes === 'string'
+            ? rawAttributes
+            : String(rawAttributes);
+      }
+      matches.push(match);
+    }
+    return matches;
   }
 
   private async fetchElementDetails(
