@@ -27,6 +27,7 @@ const getQueryTheme = () => {
   const queryThemeParam = new URLSearchParams(window.location.search)
     .get('theme')
     ?.toUpperCase()
+    .split('-')[0]
 
   return THEMES.find(({ value }) => value === queryThemeParam)?.value
 }
