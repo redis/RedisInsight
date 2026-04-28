@@ -25,136 +25,49 @@ on:
         type: boolean
 
 jobs:
-  build-x64:
-    name: Build linux x64
+  build-linux:
+    name: Build linux ${{ matrix.arch }}
     if: |
       inputs.target == 'all' ||
       inputs.target == 'linux' ||
-      contains(inputs.target, 'build_linux_appimage_x64') ||
-      contains(inputs.target, 'build_linux_deb_x64') ||
-      contains(inputs.target, 'build_linux_rpm_x64') ||
-      contains(inputs.target, 'build_linux_snap_x64')
-    runs-on: ubuntu-24.04
+      contains(inputs.target, format('build_linux_appimage_{0}', matrix.arch)) ||
+      contains(inputs.target, format('build_linux_deb_{0}', matrix.arch)) ||
+      contains(inputs.target, format('build_linux_rpm_{0}', matrix.arch)) ||
+      (matrix.arch == 'x64' && contains(inputs.target, 'build_linux_snap_x64'))
+    runs-on: ${{ matrix.runner }}
     environment: ${{ inputs.environment }}
-
-    steps:
-      - uses: actions/checkout@v4
-
-      # SSH Debug
-      - name: Enable SSH
-        uses: mxschmitt/action-tmate@v3
-        if: inputs.debug
-        with:
-          detached: true
-
-      - name: Install all libs and dependencies
-        uses: ./.github/actions/install-all-build-libs
-        with:
-          keytar-host-mirror: ${{ secrets.NPM_CONFIG_KEYTAR_BINARY_HOST_MIRROR }}
-          sqlite3-host-mirror: ${{ secrets.NPM_CONFIG_NODE_SQLITE3_BINARY_HOST_MIRROR }}
-
-      # TODO: Is it needed?
-      # - run: |
-      #     mkdir electron
-      #     CURRENT_VERSION=$(jq -r ".version" redisinsight/package.json)
-      #     echo "Build version: $CURRENT_VERSION"
-      #     cp ./redisinsight/package.json ./electron/package.json
-      #     echo "$VERSION" > electron/version
-      #     exit 0
-      # - uses: actions/download-artifact@v4.1.0
-      #   with:
-      #     path: "."
-      # - run: cp ./electron/package.json ./redisinsight/
-
-      - name: Install plugins dependencies and build plugins
-        run: yarn build:statics
-
-      - name: Build linux packages (production)
-        if: vars.ENV == 'production' && (inputs.target == vars.ALL || inputs.target == 'linux')
-        run: yarn package:prod --linux appimage:x64 deb:x64 rpm:x64 snap:x64
-
-      - name: Build linux packages (staging)
-        if: (vars.ENV == 'staging' || vars.ENV == 'development') && (inputs.target == vars.ALL || inputs.target == 'linux')
-        run: yarn package:stage --linux appimage:x64 deb:x64 rpm:x64 snap:x64
-
-      - name: Build linux packages (custom x64)
-        if: inputs.target != vars.ALL && inputs.target != 'linux'
-        env:
-          IS_PRODUCTION: ${{ vars.ENV == 'production' }}
-          TARGET_INPUT: ${{ inputs.target }}
-        run: |
-          target=$(echo "$TARGET_INPUT" | tr ' ' '\n' | sed -n 's/^build_linux_//p' | sed 's/_/:/g' | awk '/:x64$/' | sort -u | paste -sd ' ' -)
-
-          if [ -z "$target" ]; then
-            echo "No x64 linux targets selected."
-            exit 0
-          fi
-
-          if [ "$IS_PRODUCTION" == "true" ]; then
-            yarn package:prod --linux $target
-          else
-            yarn package:stage --linux $target
-          fi
-
-      - name: Verify native binaries (x64)
-        run: node ./scripts/verify-native-modules-linux.js --arch=x64
-
-      - uses: actions/upload-artifact@v4
-        name: Upload vendor for plugins
-        with:
-          name: vendor-plugins-x64
-          path: |
-            ./vendor
-
-      - uses: actions/upload-artifact@v4
-        name: Upload linux x64 builds
-        with:
-          name: linux-builds-x64
-          path: |
-            ./release/latest-linux*.yml
-            ./release/Redis-Insight*x64*.AppImage
-            ./release/Redis-Insight*x86_64*.AppImage
-            ./release/Redis-Insight*x64*.deb
-            ./release/Redis-Insight*amd64*.deb
-            ./release/Redis-Insight*x64*.rpm
-            ./release/Redis-Insight*x86_64*.rpm
-            ./release/Redis-Insight*x64*.snap
-            ./release/Redis-Insight*amd64*.snap
-
-    env:
-      RI_AI_CONVAI_TOKEN: ${{ secrets.RI_AI_CONVAI_TOKEN }}
-      RI_AI_QUERY_PASS: ${{ secrets.RI_AI_QUERY_PASS }}
-      RI_AI_QUERY_USER: ${{ secrets.RI_AI_QUERY_USER }}
-      RI_CLOUD_API_URL: ${{ secrets.RI_CLOUD_API_URL }}
-      RI_CLOUD_API_TOKEN: ${{ secrets.RI_CLOUD_API_TOKEN }}
-      RI_CLOUD_CAPI_URL: ${{ secrets.RI_CLOUD_CAPI_URL }}
-      RI_CLOUD_IDP_AUTHORIZE_URL: ${{ secrets.RI_CLOUD_IDP_AUTHORIZE_URL }}
-      RI_CLOUD_IDP_CLIENT_ID: ${{ secrets.RI_CLOUD_IDP_CLIENT_ID }}
-      RI_CLOUD_IDP_GH_ID: ${{ secrets.RI_CLOUD_IDP_GH_ID }}
-      RI_CLOUD_IDP_GOOGLE_ID: ${{ secrets.RI_CLOUD_IDP_GOOGLE_ID }}
-      RI_CLOUD_IDP_ISSUER: ${{ secrets.RI_CLOUD_IDP_ISSUER }}
-      RI_CLOUD_IDP_REVOKE_TOKEN_URL: ${{ secrets.RI_CLOUD_IDP_REVOKE_TOKEN_URL }}
-      RI_CLOUD_IDP_REDIRECT_URI: ${{ secrets.RI_CLOUD_IDP_REDIRECT_URI }}
-      RI_CLOUD_IDP_TOKEN_URL: ${{ secrets.RI_CLOUD_IDP_TOKEN_URL }}
-      RI_SEGMENT_WRITE_KEY: ${{ secrets.RI_SEGMENT_WRITE_KEY }}
-      RI_SERVER_TLS_CERT: ${{ secrets.RI_SERVER_TLS_CERT }}
-      RI_SERVER_TLS_KEY: ${{ secrets.RI_SERVER_TLS_KEY }}
-      RI_FEATURES_CONFIG_URL: ${{ secrets.RI_FEATURES_CONFIG_URL }}
-      RI_UPGRADES_LINK: ${{ secrets.RI_UPGRADES_LINK_NEW }}
-      RI_FEATURES_CLOUD_ADS_DEFAULT_FLAG: ${{ inputs.enterprise == false }}
-      RI_DISABLE_AUTO_UPGRADE: ${{ inputs.enterprise }}
-      RI_APP_TYPE: ${{ inputs.enterprise && 'ELECTRON_ENTERPRISE' || 'ELECTRON' }}
-
-  build-arm64:
-    name: Build linux arm64
-    if: |
-      inputs.target == 'all' ||
-      inputs.target == 'linux' ||
-      contains(inputs.target, 'build_linux_appimage_arm64') ||
-      contains(inputs.target, 'build_linux_deb_arm64') ||
-      contains(inputs.target, 'build_linux_rpm_arm64')
-    runs-on: ubuntu-24.04-arm
-    environment: ${{ inputs.environment }}
+    strategy:
+      matrix:
+        include:
+          - arch: x64
+            runner: ubuntu-24.04
+            defaultTargets: appimage:x64 deb:x64 rpm:x64 snap:x64
+            customArchFilter: ':x64$'
+            uploadArtifactName: linux-builds-x64
+            uploadPaths: |
+              ./release/latest-linux*.yml
+              ./release/Redis-Insight*x64*.AppImage
+              ./release/Redis-Insight*x86_64*.AppImage
+              ./release/Redis-Insight*x64*.deb
+              ./release/Redis-Insight*amd64*.deb
+              ./release/Redis-Insight*x64*.rpm
+              ./release/Redis-Insight*x86_64*.rpm
+              ./release/Redis-Insight*x64*.snap
+              ./release/Redis-Insight*amd64*.snap
+            needsSystemFpm: false
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+            defaultTargets: appimage:arm64 deb:arm64 rpm:arm64
+            customArchFilter: ':arm64$'
+            uploadArtifactName: linux-builds-arm64
+            uploadPaths: |
+              ./release/latest-linux*.yml
+              ./release/Redis-Insight*arm64*.AppImage
+              ./release/Redis-Insight*aarch64*.AppImage
+              ./release/Redis-Insight*arm64*.deb
+              ./release/Redis-Insight*arm64*.rpm
+              ./release/Redis-Insight*aarch64*.rpm
+            needsSystemFpm: true
 
     steps:
       - uses: actions/checkout@v4
@@ -176,6 +89,7 @@ jobs:
         run: yarn build:statics
 
       - name: Install system fpm for arm64
+        if: matrix.needsSystemFpm
         run: |
           sudo apt-get update -qy
           sudo apt-get install -qy ruby ruby-dev build-essential
@@ -183,22 +97,24 @@ jobs:
 
       - name: Build linux packages (production)
         if: vars.ENV == 'production' && (inputs.target == vars.ALL || inputs.target == 'linux')
-        run: yarn package:prod --linux appimage:arm64 deb:arm64 rpm:arm64
+        run: yarn package:prod --linux ${{ matrix.defaultTargets }}
 
       - name: Build linux packages (staging)
         if: (vars.ENV == 'staging' || vars.ENV == 'development') && (inputs.target == vars.ALL || inputs.target == 'linux')
-        run: yarn package:stage --linux appimage:arm64 deb:arm64 rpm:arm64
+        run: yarn package:stage --linux ${{ matrix.defaultTargets }}
 
-      - name: Build linux packages (custom arm64)
+      - name: Build linux packages (custom)
         if: inputs.target != vars.ALL && inputs.target != 'linux'
         env:
           IS_PRODUCTION: ${{ vars.ENV == 'production' }}
           TARGET_INPUT: ${{ inputs.target }}
+          TARGET_FILTER: ${{ matrix.customArchFilter }}
+          ARCH: ${{ matrix.arch }}
         run: |
-          target=$(echo "$TARGET_INPUT" | tr ' ' '\n' | sed -n 's/^build_linux_//p' | sed 's/_/:/g' | awk '/:arm64$/' | sort -u | paste -sd ' ' -)
+          target=$(echo "$TARGET_INPUT" | tr ' ' '\n' | sed -n 's/^build_linux_//p' | sed 's/_/:/g' | awk "/$TARGET_FILTER/" | sort -u | paste -sd ' ' -)
 
           if [ -z "$target" ]; then
-            echo "No arm64 linux targets selected."
+            echo "No $ARCH linux targets selected."
             exit 0
           fi
 
@@ -208,27 +124,21 @@ jobs:
             yarn package:stage --linux $target
           fi
 
-      - name: Verify native binaries (arm64)
-        run: node ./scripts/verify-native-modules-linux.js --arch=arm64
+      - name: Verify native binaries
+        run: node ./scripts/verify-native-modules-linux.js --arch=${{ matrix.arch }}
 
       - uses: actions/upload-artifact@v4
         name: Upload vendor for plugins
         with:
-          name: vendor-plugins-arm64
+          name: vendor-plugins-${{ matrix.arch }}
           path: |
             ./vendor
 
       - uses: actions/upload-artifact@v4
-        name: Upload linux arm64 builds
+        name: Upload linux builds
         with:
-          name: linux-builds-arm64
-          path: |
-            ./release/latest-linux*.yml
-            ./release/Redis-Insight*arm64*.AppImage
-            ./release/Redis-Insight*aarch64*.AppImage
-            ./release/Redis-Insight*arm64*.deb
-            ./release/Redis-Insight*arm64*.rpm
-            ./release/Redis-Insight*aarch64*.rpm
+          name: ${{ matrix.uploadArtifactName }}
+          path: ${{ matrix.uploadPaths }}
 
     env:
       RI_AI_CONVAI_TOKEN: ${{ secrets.RI_AI_CONVAI_TOKEN }}
@@ -253,13 +163,13 @@ jobs:
       RI_FEATURES_CLOUD_ADS_DEFAULT_FLAG: ${{ inputs.enterprise == false }}
       RI_DISABLE_AUTO_UPGRADE: ${{ inputs.enterprise }}
       RI_APP_TYPE: ${{ inputs.enterprise && 'ELECTRON_ENTERPRISE' || 'ELECTRON' }}
-      USE_SYSTEM_FPM: true
+      USE_SYSTEM_FPM: ${{ matrix.needsSystemFpm }}
 
   publish-artifacts:
     name: Publish linux artifacts
     runs-on: ubuntu-24.04
-    needs: [build-x64, build-arm64]
-    if: always() && (needs.build-x64.result == 'success' || needs.build-arm64.result == 'success')
+    needs: [build-linux]
+    if: always() && needs.build-linux.result == 'success'
     steps:
       - uses: actions/download-artifact@v4
         name: Download vendor artifacts
