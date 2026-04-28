@@ -315,7 +315,7 @@
     "remark-rehype": "^11.1.2",
     "semver": "^7.7.2",
     "socket.io-client": "^4.8.0",
-    "styled-components": "^5.0.0",
+    "styled-components": "^6.4.1",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0",
     "url-parse": "^1.5.10",
