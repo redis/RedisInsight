@@ -40,7 +40,7 @@ jobs:
       RI_SERVER_TLS_KEY: ${{ secrets.RI_SERVER_TLS_KEY }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Enable SSH Debug
         if: ${{ inputs.debug }}
