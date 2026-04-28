@@ -107,10 +107,13 @@ jobs:
           path: |
             ./release/latest-linux*.yml
             ./release/Redis-Insight*x64*.AppImage
+            ./release/Redis-Insight*x86_64*.AppImage
             ./release/Redis-Insight*x64*.deb
             ./release/Redis-Insight*amd64*.deb
             ./release/Redis-Insight*x64*.rpm
+            ./release/Redis-Insight*x86_64*.rpm
             ./release/Redis-Insight*x64*.snap
+            ./release/Redis-Insight*amd64*.snap
 
     env:
       RI_AI_CONVAI_TOKEN: ${{ secrets.RI_AI_CONVAI_TOKEN }}
