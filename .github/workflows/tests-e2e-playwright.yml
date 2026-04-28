@@ -30,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install dependencies for Playwright tests
         uses: ./.github/actions/install-deps

@@ -15,7 +15,7 @@ jobs:
     name: Release s3 private
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Merge builds by pattern
         id: merge-builds
@@ -51,7 +51,7 @@ jobs:
     needs: 'release-private'
     environment: 'production-approve'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Init variables
         run: |

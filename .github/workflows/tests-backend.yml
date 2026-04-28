@@ -18,7 +18,7 @@ jobs:
     name: Unit tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install all libs and dependencies for BE
         uses: ./.github/actions/install-all-build-libs

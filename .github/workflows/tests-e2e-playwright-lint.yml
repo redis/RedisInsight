@@ -11,7 +11,7 @@ jobs:
     name: Lint & Type Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup E2E environment
         uses: ./.github/actions/setup-e2e-playwright

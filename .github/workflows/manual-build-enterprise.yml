@@ -90,7 +90,7 @@ jobs:
     outputs: # Set this to consume the output on other job
       selected: ${{ steps.get-selected.outputs.selected}}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - id: get-selected
         uses: joao-zanutto/get-selected@v1.1.1
@@ -132,6 +132,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Remove all artifacts
         uses: ./.github/actions/remove-artifacts
