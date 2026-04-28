@@ -12,6 +12,7 @@ import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import {
   EDGE_COLOR_BODY_DARK,
   EDGE_COLOR_BODY_LIGHT,
+  EMPTY_EXPLAIN_RESULT_MESSAGE,
   NODE_COLOR_BODY_DARK,
   NODE_COLOR_BODY_LIGHT,
 } from './constants'
@@ -33,6 +34,19 @@ import { ExplainNode, ProfileNode } from './Node'
 interface IExplain {
   command: string
   data: [{ response: string[] | string | any }]
+}
+
+const normalizeExplainOutput = (output: string) =>
+  output.trim().replace(/^"|"$/g, '').trim()
+
+const isEmptyExplainOutput = (output: string) => {
+  const normalizedOutput = normalizeExplainOutput(output)
+
+  return (
+    normalizedOutput === '' ||
+    normalizedOutput === '<WILDCARD>' ||
+    normalizedOutput === '<WILDCARD>}'
+  )
 }
 
 function getEdgeSize(c: number) {
@@ -130,10 +144,17 @@ export default function Explain({ command, data }: IExplain): JSX.Element {
   }
 
   const resp = data[0].response
+  const explainOutput = Array.isArray(resp)
+    ? resp.join('\n')
+    : String(resp ?? '')
+        .split('\\n')
+        .join('\n')
 
-  const explainDrawData = ParseExplain(
-    Array.isArray(resp) ? resp.join('\n') : resp.split('\\n').join('\n'),
-  )
+  if (isEmptyExplainOutput(explainOutput)) {
+    return <div className="responseInfo">{EMPTY_EXPLAIN_RESULT_MESSAGE}</div>
+  }
+
+  const explainDrawData = ParseExplain(explainOutput)
   return (
     <ExplainDraw
       data={explainDrawData}
