@@ -27,13 +27,7 @@ on:
 jobs:
   build-linux:
     name: Build linux ${{ matrix.arch }}
-    if: |
-      inputs.target == 'all' ||
-      inputs.target == 'linux' ||
-      contains(inputs.target, format('build_linux_appimage_{0}', matrix.arch)) ||
-      contains(inputs.target, format('build_linux_deb_{0}', matrix.arch)) ||
-      contains(inputs.target, format('build_linux_rpm_{0}', matrix.arch)) ||
-      (matrix.arch == 'x64' && contains(inputs.target, 'build_linux_snap_x64'))
+    if: contains(inputs.target, 'linux') || inputs.target == 'all'
     runs-on: ${{ matrix.runner }}
     environment: ${{ inputs.environment }}
     strategy:
@@ -88,47 +82,64 @@ jobs:
       - name: Install plugins dependencies and build plugins
         run: yarn build:statics
 
+      - name: Resolve linux targets for matrix arch
+        id: resolve-targets
+        env:
+          TARGET_INPUT: ${{ inputs.target }}
+          TARGET_FILTER: ${{ matrix.customArchFilter }}
+        run: |
+          if [ "$TARGET_INPUT" = "all" ] || [ "$TARGET_INPUT" = "linux" ]; then
+            echo "should_build=true" >> "$GITHUB_OUTPUT"
+            echo "mode=default" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          target=$(echo "$TARGET_INPUT" | tr ' ' '\n' | sed -n 's/^build_linux_//p' | sed 's/_/:/g' | awk "/$TARGET_FILTER/" | sort -u | paste -sd ' ' -)
+
+          if [ -z "$target" ]; then
+            echo "should_build=false" >> "$GITHUB_OUTPUT"
+            echo "mode=none" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "should_build=true" >> "$GITHUB_OUTPUT"
+          echo "mode=custom" >> "$GITHUB_OUTPUT"
+          echo "custom_targets=$target" >> "$GITHUB_OUTPUT"
+
       - name: Install system fpm for arm64
-        if: matrix.needsSystemFpm
+        if: matrix.needsSystemFpm && steps.resolve-targets.outputs.should_build == 'true'
         run: |
           sudo apt-get update -qy
           sudo apt-get install -qy ruby ruby-dev build-essential
           sudo gem install --no-document fpm
 
       - name: Build linux packages (production)
-        if: vars.ENV == 'production' && (inputs.target == vars.ALL || inputs.target == 'linux')
+        if: vars.ENV == 'production' && steps.resolve-targets.outputs.mode == 'default'
         run: yarn package:prod --linux ${{ matrix.defaultTargets }}
 
       - name: Build linux packages (staging)
-        if: (vars.ENV == 'staging' || vars.ENV == 'development') && (inputs.target == vars.ALL || inputs.target == 'linux')
+        if: (vars.ENV == 'staging' || vars.ENV == 'development') && steps.resolve-targets.outputs.mode == 'default'
         run: yarn package:stage --linux ${{ matrix.defaultTargets }}
 
       - name: Build linux packages (custom)
-        if: inputs.target != vars.ALL && inputs.target != 'linux'
+        if: steps.resolve-targets.outputs.mode == 'custom'
         env:
           IS_PRODUCTION: ${{ vars.ENV == 'production' }}
-          TARGET_INPUT: ${{ inputs.target }}
-          TARGET_FILTER: ${{ matrix.customArchFilter }}
-          ARCH: ${{ matrix.arch }}
+          CUSTOM_TARGETS: ${{ steps.resolve-targets.outputs.custom_targets }}
         run: |
-          target=$(echo "$TARGET_INPUT" | tr ' ' '\n' | sed -n 's/^build_linux_//p' | sed 's/_/:/g' | awk "/$TARGET_FILTER/" | sort -u | paste -sd ' ' -)
-
-          if [ -z "$target" ]; then
-            echo "No $ARCH linux targets selected."
-            exit 0
-          fi
-
           if [ "$IS_PRODUCTION" == "true" ]; then
-            yarn package:prod --linux $target
+            yarn package:prod --linux $CUSTOM_TARGETS
           else
-            yarn package:stage --linux $target
+            yarn package:stage --linux $CUSTOM_TARGETS
           fi
 
       - name: Verify native binaries
+        if: steps.resolve-targets.outputs.should_build == 'true'
         run: node ./scripts/verify-native-modules-linux.js --arch=${{ matrix.arch }}
 
       - uses: actions/upload-artifact@v4
         name: Upload vendor for plugins
+        if: steps.resolve-targets.outputs.should_build == 'true'
         with:
           name: vendor-plugins-${{ matrix.arch }}
           path: |
@@ -136,6 +147,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         name: Upload linux builds
+        if: steps.resolve-targets.outputs.should_build == 'true'
         with:
           name: ${{ matrix.uploadArtifactName }}
           path: ${{ matrix.uploadPaths }}
