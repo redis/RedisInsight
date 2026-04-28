@@ -164,6 +164,12 @@ jobs:
       - name: Install plugins dependencies and build plugins
         run: yarn build:statics
 
+      - name: Install system fpm for arm64
+        run: |
+          sudo apt-get update -qy
+          sudo apt-get install -qy ruby ruby-dev build-essential
+          sudo gem install --no-document fpm
+
       - name: Build linux packages (production)
         if: vars.ENV == 'production' && (inputs.target == vars.ALL || inputs.target == 'linux')
         run: yarn package:prod --linux appimage:arm64 deb:arm64 rpm:arm64
@@ -235,6 +241,7 @@ jobs:
       RI_FEATURES_CLOUD_ADS_DEFAULT_FLAG: ${{ inputs.enterprise == false }}
       RI_DISABLE_AUTO_UPGRADE: ${{ inputs.enterprise }}
       RI_APP_TYPE: ${{ inputs.enterprise && 'ELECTRON_ENTERPRISE' || 'ELECTRON' }}
+      USE_SYSTEM_FPM: true
 
   publish-artifacts:
     name: Publish linux artifacts
