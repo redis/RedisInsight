@@ -271,7 +271,7 @@
     "electron-store": "^8.0.0",
     "electron-updater": "^6.6.2",
     "file-saver": "^2.0.5",
-    "formik": "^2.2.9",
+    "formik": "^2.4.9",
     "fzstd": "^0.1.0",
     "get-port": "^7.2.0",
     "html-entities": "^2.3.2",
