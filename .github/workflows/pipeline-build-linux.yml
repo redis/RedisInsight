@@ -27,7 +27,13 @@ on:
 jobs:
   build-x64:
     name: Build linux x64
-    if: inputs.target == 'all' || inputs.target == 'linux' || contains(inputs.target, '_x64')
+    if: |
+      inputs.target == 'all' ||
+      inputs.target == 'linux' ||
+      contains(inputs.target, 'build_linux_appimage_x64') ||
+      contains(inputs.target, 'build_linux_deb_x64') ||
+      contains(inputs.target, 'build_linux_rpm_x64') ||
+      contains(inputs.target, 'build_linux_snap_x64')
     runs-on: ubuntu-24.04
     environment: ${{ inputs.environment }}
 
@@ -141,7 +147,12 @@ jobs:
 
   build-arm64:
     name: Build linux arm64
-    if: inputs.target == 'all' || inputs.target == 'linux' || contains(inputs.target, '_arm64')
+    if: |
+      inputs.target == 'all' ||
+      inputs.target == 'linux' ||
+      contains(inputs.target, 'build_linux_appimage_arm64') ||
+      contains(inputs.target, 'build_linux_deb_arm64') ||
+      contains(inputs.target, 'build_linux_rpm_arm64')
     runs-on: ubuntu-24.04-arm
     environment: ${{ inputs.environment }}
 
@@ -217,6 +228,7 @@ jobs:
             ./release/Redis-Insight*aarch64*.AppImage
             ./release/Redis-Insight*arm64*.deb
             ./release/Redis-Insight*arm64*.rpm
+            ./release/Redis-Insight*aarch64*.rpm
 
     env:
       RI_AI_CONVAI_TOKEN: ${{ secrets.RI_AI_CONVAI_TOKEN }}
