@@ -64,11 +64,11 @@ jobs:
         run: yarn build:statics
 
       - name: Build linux packages (production)
-        if: vars.ENV == 'production' && inputs.target == vars.ALL
+        if: vars.ENV == 'production' && (inputs.target == vars.ALL || inputs.target == 'linux')
         run: yarn package:prod --linux appimage:x64 deb:x64 rpm:x64 snap:x64
 
       - name: Build linux packages (staging)
-        if: (vars.ENV == 'staging' || vars.ENV == 'development') && inputs.target == vars.ALL
+        if: (vars.ENV == 'staging' || vars.ENV == 'development') && (inputs.target == vars.ALL || inputs.target == 'linux')
         run: yarn package:stage --linux appimage:x64 deb:x64 rpm:x64 snap:x64
 
       - name: Build linux packages (custom x64)
@@ -165,11 +165,11 @@ jobs:
         run: yarn build:statics
 
       - name: Build linux packages (production)
-        if: vars.ENV == 'production' && inputs.target == vars.ALL
+        if: vars.ENV == 'production' && (inputs.target == vars.ALL || inputs.target == 'linux')
         run: yarn package:prod --linux appimage:arm64 deb:arm64 rpm:arm64
 
       - name: Build linux packages (staging)
-        if: (vars.ENV == 'staging' || vars.ENV == 'development') && inputs.target == vars.ALL
+        if: (vars.ENV == 'staging' || vars.ENV == 'development') && (inputs.target == vars.ALL || inputs.target == 'linux')
         run: yarn package:stage --linux appimage:arm64 deb:arm64 rpm:arm64
 
       - name: Build linux packages (custom arm64)
