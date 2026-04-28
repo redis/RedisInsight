@@ -10,8 +10,11 @@ inputs:
     description: Keytar binary host mirror
     required: false
 
+  native-addon-host-mirror:
+    description: Native addons binary host mirror (legacy sqlite3 naming)
+    required: false
   sqlite3-host-mirror:
-    description: SQLite3 binary host mirror
+    description: Deprecated. Use native-addon-host-mirror
     required: false
 
 runs:
@@ -63,7 +66,7 @@ runs:
       with:
         dir-path: './redisinsight'
         keytar-host-mirror: ${{ inputs.keytar-host-mirror }}
-        sqlite3-host-mirror: ${{ inputs.sqlite3-host-mirror }}
+        native-addon-host-mirror: ${{ inputs.native-addon-host-mirror || inputs.sqlite3-host-mirror }}
 
     - name: Install dependencies for BE package.js
       if: steps.cache-node-modules.outputs.cache-hit != 'true'
@@ -77,4 +80,4 @@ runs:
       with:
         dir-path: './'
         keytar-host-mirror: ${{ inputs.keytar-host-mirror }}
-        sqlite3-host-mirror: ${{ inputs.sqlite3-host-mirror }}
+        native-addon-host-mirror: ${{ inputs.native-addon-host-mirror || inputs.sqlite3-host-mirror }}
