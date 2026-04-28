@@ -220,7 +220,7 @@
     "storybook": "^9.1.19",
     "style-loader": "^2.0.0",
     "supertest": "^4.0.2",
-    "terser-webpack-plugin": "^5.4.0",
+    "terser-webpack-plugin": "^5.5.0",
     "text-encoding": "^0.7.0",
     "ts-jest": "^29.2.5",
     "ts-loader": "^9.5.1",
