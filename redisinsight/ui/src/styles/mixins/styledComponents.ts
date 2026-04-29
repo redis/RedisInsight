@@ -1,4 +1,4 @@
-import { css, CSSObject, FlattenSimpleInterpolation } from 'styled-components'
+import { css, type CSSObject, type Interpolation } from 'styled-components'
 
 /**
  * Breakpoint values matching EUI breakpoints
@@ -42,7 +42,7 @@ export const breakpoint = (...sizes: BreakpointKey[]) => {
   return (
     strings: TemplateStringsArray,
     ...interpolations: Array<
-      string | number | FlattenSimpleInterpolation | CSSObject
+      string | number | Interpolation<object> | CSSObject
     >
   ) => {
     const content = css(strings, ...interpolations)
@@ -124,7 +124,7 @@ export const insightsOpen = (maxWidth: number = 1440) => {
   return (
     strings: TemplateStringsArray,
     ...interpolations: Array<
-      string | number | FlattenSimpleInterpolation | CSSObject
+      string | number | Interpolation<object> | CSSObject
     >
   ) => {
     const content = css(strings, ...interpolations)
