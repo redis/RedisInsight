@@ -23,7 +23,7 @@ jobs:
       artifact_exists: ${{ steps.list_artifacts.outputs.artifact_exists }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download All Artifacts
         uses: actions/download-artifact@v4

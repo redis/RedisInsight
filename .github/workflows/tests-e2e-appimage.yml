@@ -40,7 +40,7 @@ jobs:
     environment:
       name: production
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # SSH Debug
       - name: Enable SSH

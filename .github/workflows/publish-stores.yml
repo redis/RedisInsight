@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Publish to Dockerhub
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Download Docker images
         run: |
@@ -65,7 +65,7 @@ jobs:
       SNAPCRAFT_FILE_NAME: ${{ matrix.snapcraft_file_name }}
       SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Download Snapcraft package
         id: snap

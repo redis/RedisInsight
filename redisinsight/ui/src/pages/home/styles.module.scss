@@ -11,6 +11,8 @@
     .homePage {
       height: calc(100% - 60px);
       overflow-y: auto;
+      /* Inset on all sides so table card chrome is not clipped by this scrollport */
+      padding: 1px;
     }
   }
 }
