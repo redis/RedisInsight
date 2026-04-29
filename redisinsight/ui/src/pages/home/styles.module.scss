@@ -10,6 +10,9 @@
   :global {
     .homePage {
       height: calc(100% - 60px);
+      overflow-y: auto;
+      /* Prevents @redis-ui/table container chrome from clipping at the scrollport top */
+      padding-top: 2px;
     }
   }
 }
