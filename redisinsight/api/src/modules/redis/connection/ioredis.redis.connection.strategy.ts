@@ -65,6 +65,7 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
         : this.dummyFn.bind(this),
       autoResendUnfulfilledCommands: false,
       enableReadyCheck: options.enableReadyCheck ?? true,
+      keepAlive: REDIS_CLIENTS_CONFIG.keepAlive,
     };
 
     if (tls) {

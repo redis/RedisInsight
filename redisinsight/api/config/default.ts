@@ -175,6 +175,7 @@ export default {
     retryDelay: parseInt(process.env.RI_CLIENTS_RETRY_DELAY, 10) || 500,
     maxRetriesPerRequest:
       parseInt(process.env.RI_CLIENTS_MAX_RETRIES_PER_REQUEST, 10) || 1,
+    keepAlive: parseInt(process.env.RI_CLIENTS_KEEP_ALIVE, 10) || 10_000, // 10s
     maxRedirections: parseInt(process.env.RI_CLIENTS_MAX_REDIRECTIONS, 10) || 3,
     slotsRefreshTimeout:
       parseInt(process.env.RI_CLIENTS_SLOTS_REQUEST_TIMEOUT, 10) || 5000,
