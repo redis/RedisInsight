@@ -152,7 +152,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
           original: { id, name },
         },
       }) => (
-        <Row align="center" justify="start" grow={false} gap="xs">
+        <Row align="center" justify="start" grow={false} gap="s">
           <CopyButton
             copy={name || ''}
             onCopy={handleCopy}
