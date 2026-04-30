@@ -137,7 +137,7 @@ jobs:
         if: steps.resolve-targets.outputs.should_build == 'true'
         run: node ./scripts/verify-native-modules-linux.js --arch=${{ matrix.arch }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         name: Upload vendor for plugins
         if: steps.resolve-targets.outputs.should_build == 'true'
         with:
@@ -145,7 +145,7 @@ jobs:
           path: |
             ./vendor
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         name: Upload linux builds
         if: steps.resolve-targets.outputs.should_build == 'true'
         with:
@@ -190,7 +190,7 @@ jobs:
           merge-multiple: true
           path: ./vendor
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         name: Upload vendor for plugins
         with:
           name: vendor-plugins
@@ -212,7 +212,7 @@ jobs:
             exit 1
           fi
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         name: Upload linux builds
         with:
           name: linux-builds
