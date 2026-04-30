@@ -107,6 +107,7 @@ const CloudSettings = () => {
                 {'To delete API keys from Redis Cloud, '}
                 <Link
                   target="_blank"
+                  variant="inline"
                   color="text"
                   tabIndex={-1}
                   href="https://redis.io/redis-enterprise-cloud/overview/?utm_source=redisinsight&utm_medium=settings&utm_campaign=clear_keys"
