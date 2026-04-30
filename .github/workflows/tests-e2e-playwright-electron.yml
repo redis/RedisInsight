@@ -66,7 +66,7 @@ jobs:
           working-directory: ${{ env.E2E_DIR }}
 
       - name: Download Linux build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: linux-builds
           path: ./release

@@ -126,7 +126,7 @@ jobs:
 
       - name: Download Docker Artifacts
         if: inputs.build == 'docker'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: docker-builds
           path: ./release
@@ -265,7 +265,7 @@ jobs:
           delete-merged: true
 
       - name: Download coverage artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: coverages-artifacts
           path: ./coverages

@@ -49,7 +49,7 @@ jobs:
           working-directory: ${{ env.E2E_DIR }}
 
       - name: Download Docker Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: docker-builds
           path: ./release
