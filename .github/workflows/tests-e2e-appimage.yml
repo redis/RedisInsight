@@ -81,7 +81,7 @@ jobs:
           .github/e2e/test.app-image.sh
 
       - name: Upload Test Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ${{ env.REPORT_NAME }}
