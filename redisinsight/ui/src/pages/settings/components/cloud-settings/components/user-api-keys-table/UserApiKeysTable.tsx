@@ -221,13 +221,12 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
             Cloud database.
           </Text>
           <Spacer />
-          <div className={styles.actions}>
+          <Row align="center" justify="end" grow={false} gap="s">
             <OAuthSsoHandlerDialog>
               {(socialCloudHandlerClick) => (
                 <EmptyButton
                   size="small"
                   color="ghost"
-                  className={styles.autodiscoverBtn}
                   onClick={(e: React.MouseEvent) =>
                     socialCloudHandlerClick(e, {
                       source: OAuthSocialSource.SettingsPage,
@@ -256,7 +255,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
                 </PrimaryButton>
               )}
             </OAuthSsoHandlerDialog>
-          </div>
+          </Row>
         </div>
         <Spacer />
       </>
