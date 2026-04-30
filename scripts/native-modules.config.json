@@ -1,0 +1,7 @@
+{
+  "asarUnpackModules": ["node_modules/keytar", "node_modules/better-sqlite3"],
+  "linuxRequiredNodeBinaries": [
+    "node_modules/keytar/build/Release/keytar.node",
+    "node_modules/better-sqlite3/build/Release/better_sqlite3.node"
+  ]
+}

@@ -25,10 +25,43 @@ on:
         type: boolean
 
 jobs:
-  build:
-    name: Build linux
-    runs-on: ubuntu-24.04
+  build-linux:
+    name: Build linux ${{ matrix.arch }}
+    if: contains(inputs.target, 'linux') || inputs.target == 'all'
+    runs-on: ${{ matrix.runner }}
     environment: ${{ inputs.environment }}
+    strategy:
+      matrix:
+        include:
+          - arch: x64
+            runner: ubuntu-24.04
+            defaultTargets: appimage:x64 deb:x64 rpm:x64 snap:x64
+            customArchFilter: ':x64$'
+            uploadArtifactName: linux-builds-x64
+            uploadPaths: |
+              ./release/latest-linux*.yml
+              ./release/Redis-Insight*x64*.AppImage
+              ./release/Redis-Insight*x86_64*.AppImage
+              ./release/Redis-Insight*x64*.deb
+              ./release/Redis-Insight*amd64*.deb
+              ./release/Redis-Insight*x64*.rpm
+              ./release/Redis-Insight*x86_64*.rpm
+              ./release/Redis-Insight*x64*.snap
+              ./release/Redis-Insight*amd64*.snap
+            needsSystemFpm: false
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+            defaultTargets: appimage:arm64 deb:arm64 rpm:arm64
+            customArchFilter: ':arm64$'
+            uploadArtifactName: linux-builds-arm64
+            uploadPaths: |
+              ./release/latest-linux*.yml
+              ./release/Redis-Insight*arm64*.AppImage
+              ./release/Redis-Insight*aarch64*.AppImage
+              ./release/Redis-Insight*arm64*.deb
+              ./release/Redis-Insight*arm64*.rpm
+              ./release/Redis-Insight*aarch64*.rpm
+            needsSystemFpm: true
 
     steps:
       - uses: actions/checkout@v6
@@ -46,61 +79,78 @@ jobs:
           keytar-host-mirror: ${{ secrets.NPM_CONFIG_KEYTAR_BINARY_HOST_MIRROR }}
           sqlite3-host-mirror: ${{ secrets.NPM_CONFIG_NODE_SQLITE3_BINARY_HOST_MIRROR }}
 
-      # TODO: Is it needed?
-      # - run: |
-      #     mkdir electron
-      #     CURRENT_VERSION=$(jq -r ".version" redisinsight/package.json)
-      #     echo "Build version: $CURRENT_VERSION"
-      #     cp ./redisinsight/package.json ./electron/package.json
-      #     echo "$VERSION" > electron/version
-      #     exit 0
-      # - uses: actions/download-artifact@v4.1.0
-      #   with:
-      #     path: "."
-      # - run: cp ./electron/package.json ./redisinsight/
-
       - name: Install plugins dependencies and build plugins
         run: yarn build:statics
 
+      - name: Resolve linux targets for matrix arch
+        id: resolve-targets
+        env:
+          TARGET_INPUT: ${{ inputs.target }}
+          TARGET_FILTER: ${{ matrix.customArchFilter }}
+        run: |
+          if [ "$TARGET_INPUT" = "all" ] || [ "$TARGET_INPUT" = "linux" ]; then
+            echo "should_build=true" >> "$GITHUB_OUTPUT"
+            echo "mode=default" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          target=$(echo "$TARGET_INPUT" | tr ' ' '\n' | sed -n 's/^build_linux_//p' | sed 's/_/:/g' | awk "/$TARGET_FILTER/" | sort -u | paste -sd ' ' -)
+
+          if [ -z "$target" ]; then
+            echo "should_build=false" >> "$GITHUB_OUTPUT"
+            echo "mode=none" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "should_build=true" >> "$GITHUB_OUTPUT"
+          echo "mode=custom" >> "$GITHUB_OUTPUT"
+          echo "custom_targets=$target" >> "$GITHUB_OUTPUT"
+
+      - name: Install system fpm for arm64
+        if: matrix.needsSystemFpm && steps.resolve-targets.outputs.should_build == 'true'
+        run: |
+          sudo apt-get update -qy
+          sudo apt-get install -qy ruby ruby-dev build-essential
+          sudo gem install --no-document fpm
+
       - name: Build linux packages (production)
-        if: vars.ENV == 'production' && inputs.target == vars.ALL
-        run: yarn package:prod
+        if: vars.ENV == 'production' && steps.resolve-targets.outputs.mode == 'default'
+        run: yarn package:prod --linux ${{ matrix.defaultTargets }}
 
       - name: Build linux packages (staging)
-        if: (vars.ENV == 'staging' || vars.ENV == 'development') && inputs.target == vars.ALL
-        run: yarn package:stage
+        if: (vars.ENV == 'staging' || vars.ENV == 'development') && steps.resolve-targets.outputs.mode == 'default'
+        run: yarn package:stage --linux ${{ matrix.defaultTargets }}
 
       - name: Build linux packages (custom)
-        if: inputs.target != vars.ALL
+        if: steps.resolve-targets.outputs.mode == 'custom'
         env:
           IS_PRODUCTION: ${{ vars.ENV == 'production' }}
-          TARGET_INPUT: ${{ inputs.target }}
+          CUSTOM_TARGETS: ${{ steps.resolve-targets.outputs.custom_targets }}
         run: |
-          target=$(echo "$TARGET_INPUT" | grep -oE 'build_linux_[^ ]+' | sed 's/build_linux_//;s/_/:/' | sort -u | paste -sd ' ' -)
-
           if [ "$IS_PRODUCTION" == "true" ]; then
-            yarn package:prod --linux $target
+            yarn package:prod --linux $CUSTOM_TARGETS
           else
-            yarn package:stage --linux $target
+            yarn package:stage --linux $CUSTOM_TARGETS
           fi
+
+      - name: Verify native binaries
+        if: steps.resolve-targets.outputs.should_build == 'true'
+        run: node ./scripts/verify-native-modules-linux.js --arch=${{ matrix.arch }}
 
       - uses: actions/upload-artifact@v4
         name: Upload vendor for plugins
+        if: steps.resolve-targets.outputs.should_build == 'true'
         with:
-          name: vendor-plugins
+          name: vendor-plugins-${{ matrix.arch }}
           path: |
             ./vendor
 
       - uses: actions/upload-artifact@v4
         name: Upload linux builds
+        if: steps.resolve-targets.outputs.should_build == 'true'
         with:
-          name: linux-builds
-          path: |
-            ./release/latest-linux*.yml
-            ./release/Redis-Insight*.AppImage
-            ./release/Redis-Insight*.deb
-            ./release/Redis-Insight*.rpm
-            ./release/Redis-Insight*.snap
+          name: ${{ matrix.uploadArtifactName }}
+          path: ${{ matrix.uploadPaths }}
 
     env:
       RI_AI_CONVAI_TOKEN: ${{ secrets.RI_AI_CONVAI_TOKEN }}
@@ -125,3 +175,50 @@ jobs:
       RI_FEATURES_CLOUD_ADS_DEFAULT_FLAG: ${{ inputs.enterprise == false }}
       RI_DISABLE_AUTO_UPGRADE: ${{ inputs.enterprise }}
       RI_APP_TYPE: ${{ inputs.enterprise && 'ELECTRON_ENTERPRISE' || 'ELECTRON' }}
+      USE_SYSTEM_FPM: ${{ matrix.needsSystemFpm }}
+
+  publish-artifacts:
+    name: Publish linux artifacts
+    runs-on: ubuntu-24.04
+    needs: [build-linux]
+    if: always() && needs.build-linux.result == 'success'
+    steps:
+      - uses: actions/download-artifact@v4
+        name: Download vendor artifacts
+        with:
+          pattern: vendor-plugins-*
+          merge-multiple: true
+          path: ./vendor
+
+      - uses: actions/upload-artifact@v4
+        name: Upload vendor for plugins
+        with:
+          name: vendor-plugins
+          path: ./vendor
+
+      - uses: actions/download-artifact@v4
+        name: Download linux build artifacts
+        with:
+          pattern: linux-builds-*
+          merge-multiple: true
+          path: ./release
+
+      - name: Print native binary paths from artifacts
+        run: |
+          if [ -d "./release" ]; then
+            find ./release -type f \( -name "*.node" -o -name "*.AppImage" -o -name "*.deb" -o -name "*.rpm" -o -name "*.snap" \) | sort
+          else
+            echo "Release directory is missing"
+            exit 1
+          fi
+
+      - uses: actions/upload-artifact@v4
+        name: Upload linux builds
+        with:
+          name: linux-builds
+          path: |
+            ./release/latest-linux*.yml
+            ./release/Redis-Insight*.AppImage
+            ./release/Redis-Insight*.deb
+            ./release/Redis-Insight*.rpm
+            ./release/Redis-Insight*.snap

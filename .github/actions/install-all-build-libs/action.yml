@@ -34,9 +34,9 @@ runs:
           node_modules
           redisinsight/node_modules
           redisinsight/api/node_modules
-        key: node-modules-${{ runner.os }}-${{ hashFiles('yarn.lock', 'redisinsight/yarn.lock', 'redisinsight/api/yarn.lock') }}
+        key: node-modules-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('yarn.lock', 'redisinsight/yarn.lock', 'redisinsight/api/yarn.lock') }}
         restore-keys: |
-          node-modules-${{ runner.os }}-
+          node-modules-${{ runner.os }}-${{ runner.arch }}-
 
     - name: Setup Python
       uses: actions/setup-python@v5
