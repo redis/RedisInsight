@@ -59,6 +59,7 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
         port,
         family: 0, // Enable dual-stack IPv4/IPv6 (auto-detect)
         connectTimeout: timeout,
+        keepAlive: REDIS_CLIENTS_CONFIG.keepAlive,
         ...tlsOptions,
         reconnectStrategy: options?.useRetry
           ? this.retryStrategy.bind(this)
