@@ -142,12 +142,17 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
       header: '',
       id: 'actions',
       accessorKey: 'id',
+      size: 48,
+      sizeUnit: 'px',
+      maxSize: 48,
+      enableResizing: false,
+      enableSorting: false,
       cell: ({
         row: {
           original: { id, name },
         },
       }) => (
-        <Row align="center" justify="start" grow={false} gap="s">
+        <Row align="center" justify="start" grow={false} gap="xs">
           <CopyButton
             copy={name || ''}
             onCopy={handleCopy}
@@ -262,6 +267,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
     <Table
       columns={columns}
       data={items}
+      enableColumnResizing
       defaultSorting={[
         {
           id: 'createdAt',
