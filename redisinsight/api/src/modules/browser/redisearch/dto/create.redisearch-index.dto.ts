@@ -6,7 +6,11 @@ import {
   IsOptional,
   ValidateNested,
 } from 'class-validator';
-import { IsRedisString, RedisStringType } from 'src/common/decorators';
+import {
+  ApiRedisString,
+  IsRedisString,
+  RedisStringType,
+} from 'src/common/decorators';
 import { RedisString } from 'src/common/constants';
 import { Type } from 'class-transformer';
 
@@ -25,10 +29,7 @@ export enum RedisearchIndexDataType {
 }
 
 export class CreateRedisearchIndexFieldDto {
-  @ApiProperty({
-    description: 'Name of field to be indexed',
-    type: String,
-  })
+  @ApiRedisString('Name of field to be indexed')
   @IsDefined()
   @RedisStringType()
   @IsRedisString()
@@ -48,10 +49,7 @@ export class CreateRedisearchIndexFieldDto {
 }
 
 export class CreateRedisearchIndexDto {
-  @ApiProperty({
-    description: 'Index Name',
-    type: String,
-  })
+  @ApiRedisString('Index Name')
   @IsDefined()
   @RedisStringType()
   @IsRedisString()
@@ -69,11 +67,7 @@ export class CreateRedisearchIndexDto {
   })
   type: RedisearchIndexKeyType;
 
-  @ApiPropertyOptional({
-    description: 'Keys prefixes to find keys for index',
-    isArray: true,
-    type: String,
-  })
+  @ApiRedisString('Keys prefixes to find keys for index', true, false)
   @IsOptional()
   @RedisStringType({ each: true })
   @IsRedisString({ each: true })
