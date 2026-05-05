@@ -245,7 +245,7 @@
     "webpack-cli": "^5.1.4",
     "webpack-merge": "^5.10.0",
     "whatwg-fetch": "^3.6.2",
-    "yarn-deduplicate": "^3.1.0"
+    "yarn-deduplicate": "^6.0.2"
   },
   "dependencies": {
     "@elastic/datemath": "^5.0.3",
