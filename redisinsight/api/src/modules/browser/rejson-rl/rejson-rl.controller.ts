@@ -91,6 +91,13 @@ export class RejsonRlController extends BrowserBaseController {
   @ApiRedisInstanceOperation({
     description: 'Removes path in the REJSON-RL',
     statusCode: 200,
+    responses: [
+      {
+        status: 200,
+        description: 'Ok',
+        type: RemoveRejsonRlResponse,
+      },
+    ],
   })
   async remove(
     @BrowserClientMetadata() clientMetadata: ClientMetadata,
