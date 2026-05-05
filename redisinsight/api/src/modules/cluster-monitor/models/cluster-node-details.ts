@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export enum NodeRole {
   Primary = 'primary',
@@ -54,7 +54,7 @@ export class ClusterNodeDetails {
   })
   role: NodeRole;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     description: 'ID of primary node (for replica only)',
     example: 'c33218e9ff2faf8749bfb6585ba1e6d40a4e94fb',
@@ -68,7 +68,7 @@ export class ClusterNodeDetails {
   })
   health: HealthStatus;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     isArray: true,
     description:
@@ -139,7 +139,7 @@ export class ClusterNodeDetails {
   })
   networkOutKbps: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: Number,
     description:
       'Ratio for cache hits and misses [0 - 1]. Ideally should be close to 1',
@@ -156,7 +156,7 @@ export class ClusterNodeDetails {
   })
   replicationOffset: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: Number,
     description:
       'For replicas only. Determines on how much replica is behind of primary.',
@@ -171,7 +171,7 @@ export class ClusterNodeDetails {
   })
   uptimeSec: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: () => ClusterNodeDetails,
     isArray: true,
     description: 'For primary nodes only. Replica node(s) details',
