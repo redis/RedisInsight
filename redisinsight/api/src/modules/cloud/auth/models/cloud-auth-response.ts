@@ -22,10 +22,7 @@ export class CloudAuthResponse {
 
   @ApiPropertyOptional({
     description: 'Error details if authentication failed',
-    oneOf: [
-      { type: 'object' },
-      { type: 'string' },
-    ],
+    oneOf: [{ type: 'object' }, { type: 'string' }],
     example: { code: 'OAUTH_ERROR', message: 'Authentication failed' },
   })
   error?: object | string;

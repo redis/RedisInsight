@@ -1,5 +1,4 @@
 import { KeyDto } from 'src/modules/browser/keys/dto';
-import { ApiProperty } from '@nestjs/swagger';
 import { ArrayNotEmpty, IsArray, IsDefined } from 'class-validator';
 import {
   ApiRedisString,

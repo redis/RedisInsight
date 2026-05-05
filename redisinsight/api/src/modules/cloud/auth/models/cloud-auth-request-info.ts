@@ -1,5 +1,8 @@
 import { PickType, ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { CloudAuthRequest, CloudAuthIdpType } from 'src/modules/cloud/auth/models/cloud-auth-request';
+import {
+  CloudAuthRequest,
+  CloudAuthIdpType,
+} from 'src/modules/cloud/auth/models/cloud-auth-request';
 import { SessionMetadata } from 'src/common/models';
 
 export class CloudAuthRequestInfo extends PickType(CloudAuthRequest, [

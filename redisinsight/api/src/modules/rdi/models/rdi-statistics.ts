@@ -201,7 +201,9 @@ export class RdiStatisticsData {
       discriminator: {
         propertyName: 'view',
         mapping: {
-          [RdiStatisticsViewType.Table]: getSchemaPath(RdiStatisticsTableSection),
+          [RdiStatisticsViewType.Table]: getSchemaPath(
+            RdiStatisticsTableSection,
+          ),
           [RdiStatisticsViewType.Blocks]: getSchemaPath(
             RdiStatisticsBlocksSection,
           ),
