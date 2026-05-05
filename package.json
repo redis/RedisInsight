@@ -106,7 +106,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.28.0",
     "@babel/preset-env": "^7.23.2",
-    "@babel/preset-react": "^7.22.15",
+    "@babel/preset-react": "^7.28.5",
     "@babel/preset-typescript": "^7.23.2",
     "@electron/rebuild": "^4.0.1",
     "@faker-js/faker": "^8.4.1",
