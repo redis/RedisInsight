@@ -1,14 +1,14 @@
 import { RedisString } from 'src/common/constants';
-import { IsRedisString, RedisStringType } from 'src/common/decorators';
+import {
+  ApiRedisString,
+  IsRedisString,
+  RedisStringType,
+} from 'src/common/decorators';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
 export class Key {
-  @ApiProperty({
-    description: 'Key name',
-    type: String,
-    example: 'key1',
-  })
+  @ApiRedisString('Key Name')
   @IsRedisString()
   @Expose()
   @RedisStringType()
