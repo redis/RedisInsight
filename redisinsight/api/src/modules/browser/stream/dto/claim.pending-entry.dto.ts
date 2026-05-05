@@ -11,25 +11,21 @@ import {
   NotEquals,
   ValidateIf,
 } from 'class-validator';
-import { IsRedisString, RedisStringType } from 'src/common/decorators';
+import {
+  ApiRedisString,
+  IsRedisString,
+  RedisStringType,
+} from 'src/common/decorators';
 import { RedisString } from 'src/common/constants';
 
 export class ClaimPendingEntryDto extends KeyDto {
-  @ApiProperty({
-    type: String,
-    description: 'Consumer group name',
-    example: 'group-1',
-  })
+  @ApiRedisString('Consumer group name')
   @IsNotEmpty()
   @IsRedisString()
   @RedisStringType()
   groupName: RedisString;
 
-  @ApiProperty({
-    type: String,
-    description: 'Consumer name',
-    example: 'consumer-1',
-  })
+  @ApiRedisString('Consumer name')
   @IsNotEmpty()
   @IsRedisString()
   @RedisStringType()

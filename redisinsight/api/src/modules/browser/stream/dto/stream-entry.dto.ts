@@ -7,27 +7,23 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { IsRedisString, RedisStringType } from 'src/common/decorators';
+import {
+  ApiRedisString,
+  IsRedisString,
+  RedisStringType,
+} from 'src/common/decorators';
 import { RedisString } from 'src/common/constants';
 import { Type } from 'class-transformer';
 
 export class StreamEntryFieldDto {
-  @ApiProperty({
-    type: String,
-    description: 'Entry field name',
-    example: 'field1',
-  })
+  @ApiRedisString('Entry field name')
   @IsDefined()
   @IsNotEmpty()
   @IsRedisString()
   @RedisStringType()
   name: RedisString;
 
-  @ApiProperty({
-    type: String,
-    description: 'Entry value',
-    example: 'value1',
-  })
+  @ApiRedisString('Entry value')
   @IsDefined()
   @IsNotEmpty()
   @IsRedisString()
@@ -47,7 +43,8 @@ export class StreamEntryDto {
   id: string;
 
   @ApiProperty({
-    type: Object,
+    type: StreamEntryFieldDto,
+    isArray: true,
     description: 'Entry fields',
     example: [
       { name: 'field1', value: 'value1' },

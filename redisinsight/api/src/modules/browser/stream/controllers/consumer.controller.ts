@@ -15,7 +15,6 @@ import {
   ClaimPendingEntriesResponse,
   ClaimPendingEntryDto,
   ConsumerDto,
-  ConsumerGroupDto,
   DeleteConsumersDto,
   GetConsumersDto,
   GetPendingEntriesDto,
@@ -44,7 +43,7 @@ export class ConsumerController extends BrowserBaseController {
     responses: [
       {
         status: 200,
-        type: ConsumerGroupDto,
+        type: ConsumerDto,
         isArray: true,
       },
     ],
