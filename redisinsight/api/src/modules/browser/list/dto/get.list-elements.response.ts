@@ -1,6 +1,6 @@
 import { KeyResponse } from 'src/modules/browser/keys/dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { RedisStringType } from 'src/common/decorators';
+import { ApiRedisString, RedisStringType } from 'src/common/decorators';
 import { RedisString } from 'src/common/constants';
 
 export class GetListElementsResponse extends KeyResponse {
@@ -10,11 +10,7 @@ export class GetListElementsResponse extends KeyResponse {
   })
   total: number;
 
-  @ApiProperty({
-    type: () => String,
-    description: 'Array of elements.',
-    isArray: true,
-  })
+  @ApiRedisString('Elements', true)
   @RedisStringType({ each: true })
   elements: RedisString[];
 }
