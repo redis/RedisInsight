@@ -46,6 +46,7 @@ export class KeysController {
   @ApiOkResponse({
     description: 'Keys list',
     type: GetKeysWithDetailsResponse,
+    isArray: true,
   })
   @ApiQueryRedisStringEncoding()
   async getKeys(
@@ -62,7 +63,8 @@ export class KeysController {
   @ApiRedisParams()
   @ApiOkResponse({
     description: 'Info for multiple keys',
-    type: GetKeysWithDetailsResponse,
+    type: GetKeyInfoResponse,
+    isArray: true,
   })
   @ApiQueryRedisStringEncoding()
   async getKeysInfo(

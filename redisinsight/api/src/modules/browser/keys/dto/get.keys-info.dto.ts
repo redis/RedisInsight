@@ -1,6 +1,10 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsDefined, IsEnum, IsOptional } from 'class-validator';
-import { IsRedisString, RedisStringType } from 'src/common/decorators';
+import {
+  ApiRedisString,
+  IsRedisString,
+  RedisStringType,
+} from 'src/common/decorators';
 import { RedisString } from 'src/common/constants';
 import { KeyDto, RedisDataType } from './key.dto';
 
@@ -16,12 +20,7 @@ export class GetKeyInfoDto extends KeyDto {
 }
 
 export class GetKeysInfoDto {
-  @ApiProperty({
-    description: 'List of keys',
-    type: String,
-    isArray: true,
-    example: ['keys', 'key2'],
-  })
+  @ApiRedisString('List of keys', true)
   @IsDefined()
   @IsRedisString({ each: true })
   @RedisStringType({ each: true })

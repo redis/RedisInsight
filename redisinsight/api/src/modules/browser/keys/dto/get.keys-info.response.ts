@@ -1,11 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { RedisStringType } from 'src/common/decorators';
+import { RedisStringType, ApiRedisString } from 'src/common/decorators';
 import { RedisString } from 'src/common/constants';
 
 export class GetKeyInfoResponse {
-  @ApiProperty({
-    type: String,
-  })
+  @ApiRedisString()
   @RedisStringType()
   name: RedisString;
 
