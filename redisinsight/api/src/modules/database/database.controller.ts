@@ -256,7 +256,7 @@ export class DatabaseController {
       {
         status: 200,
         description: 'Delete many databases by ids response',
-        type: DeleteDatabasesDto,
+        type: DeleteDatabasesResponse,
       },
     ],
   })
@@ -302,6 +302,7 @@ export class DatabaseController {
         status: 201,
         description: 'Export many databases by ids response',
         type: ExportDatabase,
+        isArray: true,
       },
     ],
   })
