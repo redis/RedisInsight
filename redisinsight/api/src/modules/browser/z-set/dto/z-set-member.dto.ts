@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDefined } from 'class-validator';
 import {
+  ApiRedisString,
   IsRedisString,
   isZSetScore,
   RedisStringType,
@@ -8,10 +9,7 @@ import {
 import { RedisString } from 'src/common/constants';
 
 export class ZSetMemberDto {
-  @ApiProperty({
-    type: String,
-    description: 'Member name value.',
-  })
+  @ApiRedisString('Member name value')
   @IsDefined()
   @IsRedisString()
   @RedisStringType()
