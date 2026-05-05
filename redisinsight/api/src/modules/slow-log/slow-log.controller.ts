@@ -41,7 +41,7 @@ export class SlowLogController {
     })
     clientMetadata: ClientMetadata,
     @Query() getSlowLogsDto: GetSlowLogsDto,
-  ): Promise<any> {
+  ): Promise<SlowLog[]> {
     return this.service.getSlowLogs(clientMetadata, getSlowLogsDto);
   }
 
