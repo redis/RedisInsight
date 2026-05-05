@@ -147,6 +147,21 @@ module.exports = {
       rules: {
         radix: 'off',
         'no-bitwise': ['error', { allow: ['|'] }],
+        // RI-7682: discourage new BE -> FE coupling. Existing imports are still allowed
+        // (warn-only) until per-domain migration replaces them with `uiSrc/api-client/*`.
+        // Flips to 'error' once Phase 2 is complete.
+        'no-restricted-imports': [
+          'warn',
+          {
+            patterns: [
+              {
+                group: ['apiSrc/*', 'src/*'],
+                message:
+                  'Importing from the API codebase couples the UI to backend internals. Use `uiSrc/api-client/*` (generated from OpenAPI) instead. See RI-7682.',
+              },
+            ],
+          },
+        ],
         'max-len': [
           'error',
           {
