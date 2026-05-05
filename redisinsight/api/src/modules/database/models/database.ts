@@ -145,7 +145,7 @@ export class Database {
 
   @ApiProperty({
     description: 'Time of the last connection to the database.',
-    type: String,
+    type: Date,
     format: 'date-time',
     example: '2021-01-06T12:44:39.000Z',
   })
