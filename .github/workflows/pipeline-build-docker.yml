@@ -37,7 +37,7 @@ jobs:
           detached: true
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
 
       - name: Install all libs and dependencies
         uses: ./.github/actions/install-all-build-libs
