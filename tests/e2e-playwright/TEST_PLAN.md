@@ -210,20 +210,20 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 2.1 Key List View
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | View key list |
-| 🔲 | main | Search/filter keys by pattern |
-| 🔲 | main | Filter by key type |
-| 🔲 | main | Filter keys by exact name |
-| 🔲 | main | Clear search filter |
-| 🔲 | main | Click on key to view details |
-| 🔲 | main | Refresh key list |
-| 🔲 | main | Show no results message for non-matching pattern |
-| 🔲 | main | Delete key |
-| 🔲 | main | Delete multiple keys (bulk) |
-| 🔲 | main | Search by Values of Keys |
-| 🔲 | main | Configure columns visibility |
-| 🔲 | main | Configure auto-refresh |
-| 🔲 | main | View database stats (CPU, Keys, Memory, Clients) |
+| ✅ | main | View key list |
+| ✅ | main | Search/filter keys by pattern |
+| ✅ | main | Filter by key type, then narrow by exact key name |
+| ✅ | main | Clear search filter |
+| ✅ | main | Click on key to view details |
+| ✅ | main | Refresh key list |
+| ✅ | main | Show no results message for non-matching pattern |
+| ✅ | main | Delete key |
+| ✅ | main | Delete multiple keys (bulk) |
+| ✅ | main | Search by Values of Keys |
+| ✅ | main | Configure columns visibility |
+| ✅ | main | Configure auto-refresh |
+| ✅ | main | Show empty database welcome and open Add key manually |
+| ✅ | main | Display keys summary and scroll key list in list view |
 
 ### 2.2 Key Tree View
 | Status | Group | Test Case |
