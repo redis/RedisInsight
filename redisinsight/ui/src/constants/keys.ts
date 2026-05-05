@@ -5,6 +5,7 @@ import { CommandGroup } from './commands'
 export enum KeyTypes {
   Hash = 'hash',
   List = 'list',
+  Array = 'array',
   Set = 'set',
   ZSet = 'zset',
   String = 'string',
@@ -24,6 +25,7 @@ export enum ModulesKeyTypes {
 export const GROUP_TYPES_DISPLAY = Object.freeze({
   [KeyTypes.Hash]: 'Hash',
   [KeyTypes.List]: 'List',
+  [KeyTypes.Array]: 'Array',
   [KeyTypes.Set]: 'Set',
   [KeyTypes.ZSet]: 'Sorted Set',
   [KeyTypes.String]: 'String',
@@ -43,6 +45,7 @@ export const GROUP_TYPES_DISPLAY = Object.freeze({
   [CommandGroup.TimeSeries]: 'TimeSeries',
   [CommandGroup.Server]: 'Server',
   [CommandGroup.SortedSet]: 'Sorted Set',
+  [CommandGroup.Array]: 'Array',
   [CommandGroup.HyperLogLog]: 'HyperLogLog',
   [CommandGroup.CMS]: 'CMS',
   [CommandGroup.TDigest]: 'TDigest',
@@ -57,6 +60,7 @@ export type GroupTypesDisplay = keyof typeof GROUP_TYPES_DISPLAY
 export const GROUP_TYPES_COLORS = Object.freeze({
   [KeyTypes.Hash]: 'var(--typeHashColor)',
   [KeyTypes.List]: 'var(--typeListColor)',
+  [KeyTypes.Array]: 'var(--typeArrayColor)',
   [KeyTypes.Set]: 'var(--typeSetColor)',
   [KeyTypes.ZSet]: 'var(--typeZSetColor)',
   [KeyTypes.String]: 'var(--typeStringColor)',
@@ -67,6 +71,7 @@ export const GROUP_TYPES_COLORS = Object.freeze({
   [ModulesKeyTypes.Graph]: 'var(--typeGraphColor)',
   [ModulesKeyTypes.TimeSeries]: 'var(--typeTimeSeriesColor)',
   [CommandGroup.SortedSet]: 'var(--groupSortedSetColor)',
+  [CommandGroup.Array]: 'var(--typeArrayColor)',
   [CommandGroup.Bitmap]: 'var(--groupBitmapColor)',
   [CommandGroup.Cluster]: 'var(--groupClusterColor)',
   [CommandGroup.Connection]: 'var(--groupConnectionColor)',
@@ -129,6 +134,7 @@ export const LENGTH_NAMING_BY_TYPE: LengthNamingByType = Object.freeze({
   [ModulesKeyTypes.Graph]: 'Nodes',
   [ModulesKeyTypes.TimeSeries]: 'Samples',
   [KeyTypes.Stream]: 'Entries',
+  [KeyTypes.Array]: 'Elements',
   [KeyTypes.ReJSON]: 'Top-level values',
 })
 
@@ -187,6 +193,7 @@ export const ENDPOINT_BASED_ON_KEY_TYPE = Object.freeze({
   [KeyTypes.String]: ApiEndpoints.STRING,
   [KeyTypes.Hash]: ApiEndpoints.HASH,
   [KeyTypes.List]: ApiEndpoints.LIST,
+  [KeyTypes.Array]: ApiEndpoints.ARRAY,
   [KeyTypes.ReJSON]: ApiEndpoints.REJSON,
   [KeyTypes.Stream]: ApiEndpoints.STREAMS,
   [KeyTypes.VectorSet]: ApiEndpoints.VECTOR_SET,

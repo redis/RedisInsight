@@ -91,6 +91,7 @@ export enum CommandGroup {
   Set = 'set',
   Stream = 'stream',
   List = 'list',
+  Array = 'array',
   String = 'string',
   Search = 'search',
   JSON = 'json',

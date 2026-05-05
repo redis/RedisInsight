@@ -15,6 +15,7 @@ import {
   validateNumber,
   checkTimestamp,
   checkConvertToDate,
+  validateArrayIndex,
 } from 'uiSrc/utils'
 
 const text1 = '123 123 123'
@@ -122,6 +123,18 @@ describe('Validations utils', () => {
       expect(validateTTLNumberForAddKey('0')).toEqual('')
       expect(validateTTLNumberForAddKey('0123')).toEqual('123')
       expect(validateTTLNumberForAddKey('300')).toEqual('300')
+    })
+  })
+
+  describe('validateArrayIndex', () => {
+    it('returns an unsigned array index capped at Redis Array maximum', () => {
+      expect(validateArrayIndex('00123abc')).toEqual('123')
+      expect(validateArrayIndex('18446744073709551614')).toEqual(
+        '18446744073709551614',
+      )
+      expect(validateArrayIndex('18446744073709551615')).toEqual(
+        '18446744073709551614',
+      )
     })
   })
 

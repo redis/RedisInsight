@@ -112,6 +112,26 @@ export const AddListFormConfig: IAddListFormConfig = {
   },
 }
 
+interface IAddArrayFormConfig {
+  index: IFormField
+  value: IFormField
+}
+
+export const AddArrayFormConfig: IAddArrayFormConfig = {
+  index: {
+    name: 'index',
+    isRequire: true,
+    label: 'Index*',
+    placeholder: 'Enter Index',
+  },
+  value: {
+    name: 'value',
+    isRequire: false,
+    label: 'Value',
+    placeholder: 'Enter Value',
+  },
+}
+
 interface IAddJSONFormConfig {
   value: IFormField
 }

@@ -12,6 +12,11 @@ export const ADD_KEY_TYPE_OPTIONS = [
     color: GROUP_TYPES_COLORS[KeyTypes.List],
   },
   {
+    text: 'Array',
+    value: KeyTypes.Array,
+    color: GROUP_TYPES_COLORS[KeyTypes.Array],
+  },
+  {
     text: 'Set',
     value: KeyTypes.Set,
     color: GROUP_TYPES_COLORS[KeyTypes.Set],

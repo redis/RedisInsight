@@ -33,6 +33,7 @@ import AddKeyZset from './AddKeyZset'
 import AddKeyString from './AddKeyString'
 import AddKeySet from './AddKeySet'
 import AddKeyList from './AddKeyList'
+import AddKeyArray from './AddKeyArray'
 import AddKeyReJSON from './AddKeyReJSON'
 import AddKeyStream from './AddKeyStream'
 import AddKeyVectorSet from './AddKeyVectorSet'
@@ -182,6 +183,9 @@ const AddKey = (props: Props) => {
               )}
               {typeSelected === KeyTypes.List && (
                 <AddKeyList onCancel={closeAddKeyPanel} {...defaultFields} />
+              )}
+              {typeSelected === KeyTypes.Array && (
+                <AddKeyArray onCancel={closeAddKeyPanel} {...defaultFields} />
               )}
               {typeSelected === KeyTypes.ReJSON && (
                 <>

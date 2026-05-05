@@ -10,6 +10,7 @@ import {
 import { RedisString } from 'src/common/constants';
 import { ClientMetadata } from 'src/common/models';
 import {
+  BrowserToolArrayCommands,
   BrowserToolHashCommands,
   BrowserToolVectorSetCommands,
 } from 'src/modules/browser/constants/browser-tool-commands';
@@ -19,6 +20,23 @@ import { Database } from 'src/modules/database/models/database';
 Redis.Command.setReplyTransformer(
   BrowserToolHashCommands.HGetAll,
   (result) => result,
+);
+
+const stringifyArrayIndexes = (result: unknown[]) => {
+  if (!Array.isArray(result)) {
+    return result;
+  }
+
+  return result.map((value) => (isNumber(value) ? String(value) : value));
+};
+
+Redis.Command.setReplyTransformer(
+  BrowserToolArrayCommands.ARScan,
+  stringifyArrayIndexes,
+);
+Redis.Command.setReplyTransformer(
+  BrowserToolArrayCommands.ARGrep,
+  stringifyArrayIndexes,
 );
 
 export abstract class IoredisClient extends RedisClient {
@@ -44,6 +62,25 @@ export abstract class IoredisClient extends RedisClient {
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VGetAttr);
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VSetAttr);
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VRem);
+    // Array commands
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARSet);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARMSet);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARGet);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARMGet);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARGetRange);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARScan);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARDel);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARDelRange);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARLen);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARCount);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARInfo);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARGrep);
+    client.addBuiltinCommand(BrowserToolArrayCommands.AROp);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARInsert);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARRing);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARNext);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARSeek);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARLastItems);
   }
 
   static prepareCommandOptions(options: IRedisClientCommandOptions): any {

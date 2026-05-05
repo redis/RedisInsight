@@ -14,6 +14,7 @@ import zsetReducer from './browser/zset'
 import setReducer from './browser/set'
 import hashReducer from './browser/hash'
 import listReducer from './browser/list'
+import arrayReducer from './browser/array'
 import rejsonReducer from './browser/rejson'
 import streamReducer from './browser/stream'
 import vectorSetReducer from './browser/vectorSet'
@@ -93,6 +94,7 @@ export const rootReducer = combineReducers({
     set: setReducer,
     hash: hashReducer,
     list: listReducer,
+    array: arrayReducer,
     rejson: rejsonReducer,
     stream: streamReducer,
     vectorSet: vectorSetReducer,

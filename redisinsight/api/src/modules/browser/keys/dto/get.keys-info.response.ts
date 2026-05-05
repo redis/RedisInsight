@@ -47,4 +47,16 @@ export class GetKeyInfoResponse {
     description: 'The vector dimensions for vector set keys.',
   })
   vectorDim?: number;
+
+  @ApiPropertyOptional({
+    type: String,
+    description: 'The logical length for array keys (highest index + 1).',
+  })
+  arrayLogicalLength?: string;
+
+  @ApiPropertyOptional({
+    type: String,
+    description: 'The next ARINSERT index for array keys.',
+  })
+  arrayNextIndex?: string;
 }

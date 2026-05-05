@@ -45,6 +45,27 @@ export enum BrowserToolListCommands {
   LIndex = 'lindex',
 }
 
+export enum BrowserToolArrayCommands {
+  ARSet = 'arset',
+  ARMSet = 'armset',
+  ARGet = 'arget',
+  ARMGet = 'armget',
+  ARGetRange = 'argetrange',
+  ARScan = 'arscan',
+  ARDel = 'ardel',
+  ARDelRange = 'ardelrange',
+  ARLen = 'arlen',
+  ARCount = 'arcount',
+  ARInfo = 'arinfo',
+  ARGrep = 'argrep',
+  AROp = 'arop',
+  ARInsert = 'arinsert',
+  ARRing = 'arring',
+  ARNext = 'arnext',
+  ARSeek = 'arseek',
+  ARLastItems = 'arlastitems',
+}
+
 export enum BrowserToolSetCommands {
   SScan = 'sscan',
   SAdd = 'sadd',
@@ -118,6 +139,7 @@ export type BrowserToolCommands =
   | BrowserToolStringCommands
   | BrowserToolSetCommands
   | BrowserToolListCommands
+  | BrowserToolArrayCommands
   | BrowserToolHashCommands
   | BrowserToolZSetCommands
   | BrowserToolRejsonRlCommands

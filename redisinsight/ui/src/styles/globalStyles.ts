@@ -11,6 +11,7 @@ export const GlobalStyles = createGlobalStyle<{ theme: Theme }>`
     /* Type colors for Redis data types */
     --typeHashColor: #364cff;
     --typeListColor: #008556;
+    --typeArrayColor: #315CFF;
     --typeSetColor: #9c5c2b;
     --typeZSetColor: #a00a6b;
     --typeStringColor: #6a1dc3;

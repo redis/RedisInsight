@@ -58,6 +58,13 @@ enum ApiEndpoints {
   LIST_GET_ELEMENTS = 'list/get-elements',
   LIST_DELETE_ELEMENTS = 'list/elements',
 
+  ARRAY = 'array',
+  ARRAY_GET_ELEMENTS = 'array/get-elements',
+  ARRAY_GET_ELEMENT = 'array/get-element',
+  ARRAY_ELEMENTS = 'array/elements',
+  ARRAY_RANGES = 'array/ranges',
+  ARRAY_SEARCH = 'array/search',
+
   REJSON = 'rejson-rl',
   REJSON_GET = 'rejson-rl/get',
   REJSON_SET = 'rejson-rl/set',

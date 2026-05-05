@@ -45,6 +45,7 @@ import {
 import { NamespaceSearchableResult } from 'uiSrc/slices/interfaces/keys'
 
 import { CreateListWithExpireDto } from 'apiSrc/modules/browser/list/dto'
+import { CreateArrayWithExpireDto } from 'apiSrc/modules/browser/array/dto'
 import { SetStringWithExpireDto } from 'apiSrc/modules/browser/string/dto'
 import { CreateZSetWithExpireDto } from 'apiSrc/modules/browser/z-set/dto'
 import { CreateHashWithExpireDto } from 'apiSrc/modules/browser/hash/dto'
@@ -76,6 +77,11 @@ import {
   fetchListElements,
   refreshListElementsAction,
 } from './list'
+import {
+  fetchArrayElements,
+  refreshArrayElementsAction,
+  setArrayInitialState,
+} from './array'
 import {
   fetchStreamEntries,
   refreshStream,
@@ -167,6 +173,8 @@ export const initialKeyInfo = {
   length: 0,
   quantType: undefined,
   vectorDim: undefined,
+  arrayLogicalLength: undefined,
+  arrayNextIndex: undefined,
 }
 
 const getInitialSelectedKeyState = (state: KeysStore) => ({
@@ -627,6 +635,9 @@ export function setInitialStateByType(type: string) {
     if (type === KeyTypes.List) {
       dispatch(setListInitialState())
     }
+    if (type === KeyTypes.Array) {
+      dispatch(setArrayInitialState())
+    }
     if (type === KeyTypes.ZSet) {
       dispatch(setZsetInitialState())
     }
@@ -840,6 +851,9 @@ export function fetchKeyInfo(
       if (data.type === KeyTypes.List) {
         dispatch<any>(fetchListElements(key, 0, SCAN_COUNT_DEFAULT, resetData))
       }
+      if (data.type === KeyTypes.Array) {
+        dispatch<any>(fetchArrayElements({ key, resetData }))
+      }
       if (data.type === KeyTypes.String) {
         dispatch<any>(
           fetchString(key, {
@@ -1040,6 +1054,15 @@ export function addListKey(
   onFailAction?: () => void,
 ) {
   return addTypedKey(data, KeyTypes.List, onSuccessAction, onFailAction)
+}
+
+// Asynchronous thunk action
+export function addArrayKey(
+  data: CreateArrayWithExpireDto,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return addTypedKey(data, KeyTypes.Array, onSuccessAction, onFailAction)
 }
 
 // Asynchronous thunk action
@@ -1587,6 +1610,10 @@ export function refreshKey(
       }
       case KeyTypes.List: {
         dispatch(refreshListElementsAction(key, resetData))
+        break
+      }
+      case KeyTypes.Array: {
+        dispatch(refreshArrayElementsAction(key, resetData))
         break
       }
       case KeyTypes.String: {

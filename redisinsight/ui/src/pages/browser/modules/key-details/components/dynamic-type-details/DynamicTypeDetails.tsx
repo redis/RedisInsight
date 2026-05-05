@@ -18,6 +18,7 @@ import { ZSetDetails } from '../zset-details'
 import { SetDetails } from '../set-details'
 import { HashDetails } from '../hash-details'
 import { ListDetails } from '../list-details'
+import { ArrayDetails } from '../array-details'
 import { StreamDetails } from '../stream-details'
 import { VectorSetDetails } from '../vector-set-details'
 
@@ -38,6 +39,7 @@ const DynamicTypeDetails = (props: Props) => {
     [KeyTypes.String]: <StringDetails {...props} />,
     [KeyTypes.Hash]: <HashDetails {...props} />,
     [KeyTypes.List]: <ListDetails {...props} />,
+    [KeyTypes.Array]: <ArrayDetails {...props} />,
     [KeyTypes.ReJSON]: <RejsonDetailsWrapper {...props} />,
     [KeyTypes.Stream]: <StreamDetails {...props} />,
     ...(isDevVectorSet && {

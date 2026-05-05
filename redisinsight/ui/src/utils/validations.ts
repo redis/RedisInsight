@@ -48,6 +48,18 @@ export const validateTTLNumberForAddKey = (iniValue: string) =>
 export const validateListIndex = (initValue: string) =>
   initValue.replace(/[^0-9]+/gi, '')
 
+export const ARRAY_MAX_INDEX = '18446744073709551614'
+
+export const validateArrayIndex = (initValue: string) => {
+  const value = validateListIndex(initValue).replace(/^0+(?=\d)/, '')
+
+  if (value.length !== ARRAY_MAX_INDEX.length) {
+    return value.length < ARRAY_MAX_INDEX.length ? value : ARRAY_MAX_INDEX
+  }
+
+  return value <= ARRAY_MAX_INDEX ? value : ARRAY_MAX_INDEX
+}
+
 export const validateScoreNumber = (initValue: string) => {
   let value = initValue
     .replace(/[^-0-9.]+/gi, '')

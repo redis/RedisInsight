@@ -1,0 +1,44 @@
+.container {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  padding: 16px;
+  background-color: var(--euiColorEmptyShade);
+
+  .textAreaControls {
+    right: -56px !important;
+    bottom: -4px !important;
+    top: auto !important;
+    background-color: var(--euiPageBackgroundColor) !important;
+  }
+
+  .textArea {
+    z-index: 3;
+    min-width: calc(100% + 106px) !important;
+    min-height: 43px;
+    padding-left: 20px;
+    padding-bottom: 36px !important;
+    margin: -8px -6px -8px -20px !important;
+    overflow: hidden;
+    overflow-wrap: break-word;
+    resize: none;
+    background-color: var(--euiPageBackgroundColor) !important;
+    border-color: var(--euiColorPrimary) !important;
+    font: normal normal normal 13px/18px Graphik, sans-serif;
+
+    &:focus {
+      background-image: none !important;
+    }
+
+    &.areaWarning {
+      border-color: var(--euiColorWarningLight) !important;
+    }
+  }
+}
+
+.markdownValue {
+  width: 100%;
+  padding: 8px 0;
+  color: var(--euiTextSubduedColor);
+  white-space: normal;
+}
