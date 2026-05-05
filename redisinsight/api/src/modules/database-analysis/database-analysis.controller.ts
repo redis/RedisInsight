@@ -10,6 +10,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiEndpoint } from 'src/decorators/api-endpoint.decorator';
+import { ApiRedisParams } from 'src/decorators/api-redis-params.decorator';
 import { ApiTags } from '@nestjs/swagger';
 import { DatabaseAnalysisService } from 'src/modules/database-analysis/database-analysis.service';
 import {
@@ -30,6 +31,7 @@ import { ClientMetadata } from 'src/common/models';
 @UseInterceptors(BrowserSerializeInterceptor)
 @UsePipes(new ValidationPipe({ transform: true }))
 @ApiTags('Database Analysis')
+@ApiRedisParams()
 @Controller('/analysis')
 export class DatabaseAnalysisController {
   constructor(private readonly service: DatabaseAnalysisService) {}

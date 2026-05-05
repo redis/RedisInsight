@@ -18,7 +18,6 @@ export class VectorSetElementDetailsDto {
   @ApiPropertyOptional({
     description: `Vector embedding values. Truncated to the first ${VECTOR_EMBEDDING_MAX_DISPLAY_LENGTH} items when the full dimension exceeds the limit.`,
     type: [Number],
-    isArray: true,
   })
   vector?: number[];
 

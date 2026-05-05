@@ -1,4 +1,9 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  ApiExtraModels,
+  ApiProperty,
+  ApiPropertyOptional,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 
 export enum RdiStatisticsStatus {
@@ -178,25 +183,29 @@ export type RdiStatisticsSection =
 
 // ============ Result ============
 
+@ApiExtraModels(
+  RdiStatisticsTableSection,
+  RdiStatisticsBlocksSection,
+  RdiStatisticsInfoSection,
+)
 export class RdiStatisticsData {
   @ApiProperty({
     description: 'Statistics sections',
     type: 'array',
     items: {
       oneOf: [
-        { $ref: '#/components/schemas/RdiStatisticsTableSection' },
-        { $ref: '#/components/schemas/RdiStatisticsBlocksSection' },
-        { $ref: '#/components/schemas/RdiStatisticsInfoSection' },
+        { $ref: getSchemaPath(RdiStatisticsTableSection) },
+        { $ref: getSchemaPath(RdiStatisticsBlocksSection) },
+        { $ref: getSchemaPath(RdiStatisticsInfoSection) },
       ],
       discriminator: {
         propertyName: 'view',
         mapping: {
-          [RdiStatisticsViewType.Table]:
-            '#/components/schemas/RdiStatisticsTableSection',
-          [RdiStatisticsViewType.Blocks]:
-            '#/components/schemas/RdiStatisticsBlocksSection',
-          [RdiStatisticsViewType.Info]:
-            '#/components/schemas/RdiStatisticsInfoSection',
+          [RdiStatisticsViewType.Table]: getSchemaPath(RdiStatisticsTableSection),
+          [RdiStatisticsViewType.Blocks]: getSchemaPath(
+            RdiStatisticsBlocksSection,
+          ),
+          [RdiStatisticsViewType.Info]: getSchemaPath(RdiStatisticsInfoSection),
         },
       },
     },
