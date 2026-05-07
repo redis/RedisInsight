@@ -29,6 +29,8 @@
     "paths": {
       "uiSrc/*": ["redisinsight/ui/src/*"],
       "apiSrc/*": ["redisinsight/api/src/*"],
+      "apiClient": ["redisinsight/api-client"],
+      "apiClient/*": ["redisinsight/api-client/*"],
       "src/*": ["redisinsight/api/src/*"],
       "desktopSrc/*": ["redisinsight/desktop/src/*"],
       "tests/*": ["redisinsight/ui/__tests__/*"]
@@ -38,6 +40,7 @@
     "redisinsight/ui/src/**/*",
     "redisinsight/ui/index.tsx",
     "redisinsight/ui/indexElectron.tsx",
+    "redisinsight/api-client/**/*",
     "redisinsight/desktop/**/*",
     "redisinsight/ui/vite-env.d.ts",
     "jest.config.cjs",

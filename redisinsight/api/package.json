@@ -22,7 +22,7 @@
     "minify:prod": "node ./esbuild.js --production",
     "minify:dev": "node ./esbuild.js --watch",
     "generate:openapi-spec": "ts-node --transpile-only -r tsconfig-paths/register ./scripts/dump-openapi.ts",
-    "generate:api-client": "yarn generate:openapi-spec && openapi-generator-cli generate -i ./openapi.json -g typescript-axios -o ../ui/src/api-client",
+    "generate:api-client": "yarn generate:openapi-spec && openapi-generator-cli generate -i ./openapi.json -g typescript-axios -o ../api-client",
     "start": "nest start",
     "start:dev": "cross-env NODE_ENV=development nest start --watch",
     "start:debug": "nest start --debug --watch",

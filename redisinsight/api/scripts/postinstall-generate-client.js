@@ -5,7 +5,7 @@
  * Regenerates the OpenAPI TypeScript client consumed by the UI workspace.
  *
  * Runs as part of the api workspace `postinstall` so a fresh checkout always
- * produces an up-to-date `redisinsight/ui/src/api-client/`. Skipped when:
+ * produces an up-to-date `redisinsight/api-client/`. Skipped when:
  *   - SKIP_API_CLIENT_GEN=1            (offline installs / CI caches)
  *   - CI=true and SKIP_API_CLIENT_GEN unset  -> runs (CI generates the client)
  *
