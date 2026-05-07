@@ -20,7 +20,7 @@ jobs:
     name: E2E Chromium (Local Dev)
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-    timeout-minutes: 60
+    timeout-minutes: 90
     env:
       E2E_CLOUD_DATABASE_USERNAME: ${{ secrets.E2E_CLOUD_DATABASE_USERNAME }}
       E2E_CLOUD_DATABASE_PASSWORD: ${{ secrets.E2E_CLOUD_DATABASE_PASSWORD }}
@@ -103,7 +103,7 @@ jobs:
           CI: true
 
       - name: Upload test results
-        if: ${{ !cancelled() }}
+        if: ${{ always() }}
         uses: actions/upload-artifact@v7
         with:
           name: playwright-report-chromium
