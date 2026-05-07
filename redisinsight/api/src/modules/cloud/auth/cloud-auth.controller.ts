@@ -14,8 +14,8 @@ import { CloudAuthResponse } from './models/cloud-auth-response';
 import { CloudAuthRequestOptions } from './models';
 
 @ApiTags('Cloud Auth')
+@Controller('cloud')
 @ApiExtraModels(CloudAuthRequestOptions)
-@Controller('cloud/auth')
 @UsePipes(new ValidationPipe({ transform: true }))
 export class CloudAuthController {
   constructor(private readonly cloudAuthService: CloudAuthService) {}
