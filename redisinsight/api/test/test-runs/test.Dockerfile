@@ -9,8 +9,8 @@ COPY package.json yarn.lock ./
 COPY stubs ./stubs
 COPY scripts ./scripts
 # Skip API client generation during install: integration tests don't need the
-# generated client, the source tree is not yet present, and the generator
-# requires Java which isn't installed in this image.
+# generated client, and the api source tree isn't COPYed in until after
+# `yarn install` (the generator reads it to produce the OpenAPI spec).
 ENV SKIP_API_CLIENT_GEN=1
 RUN yarn install
 COPY . .
