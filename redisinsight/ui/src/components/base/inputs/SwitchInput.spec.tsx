@@ -1,6 +1,6 @@
 import React from 'react'
-
-import { render, userEvent } from 'uiSrc/utils/test-utils'
+import userEvent from '@testing-library/user-event'
+import { render } from '@testing-library/react'
 
 import SwitchInput from './SwitchInput'
 
