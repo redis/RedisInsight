@@ -7,6 +7,11 @@ WORKDIR /usr/src/app
 
 COPY package.json yarn.lock ./
 COPY stubs ./stubs
+COPY scripts ./scripts
+# Skip API client generation during install: integration tests don't need the
+# generated client, the source tree is not yet present, and the generator
+# requires Java which isn't installed in this image.
+ENV SKIP_API_CLIENT_GEN=1
 RUN yarn install
 COPY . .
 
