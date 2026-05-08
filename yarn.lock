@@ -4103,10 +4103,10 @@
   dependencies:
     "@types/superagent" "*"
 
-"@types/text-encoding@^0.0.37":
-  version "0.0.37"
-  resolved "https://registry.yarnpkg.com/@types/text-encoding/-/text-encoding-0.0.37.tgz#1f5be8e0720818f8b61b44e411dff4166c700273"
-  integrity sha512-3GhM7gehB2O3rugV5Y/qJeowoqSNM02Ne+1Mxe1fN+uAScmh6OUSnYBQbB9OpLHxM3ieGh8QhnZIf9CnkRC5xA==
+"@types/text-encoding@^0.0.40":
+  version "0.0.40"
+  resolved "https://registry.yarnpkg.com/@types/text-encoding/-/text-encoding-0.0.40.tgz#3a9d6ec2ae6697fcee8965de4304d9513c0dbb4f"
+  integrity sha512-dHzoIdwBfY7jcSTTt6XBkaeiuFQAQD7r/7aJySKDdHkYBCDOvs9jPVt4NYXuwBMn89PP6gSd29WubIS19wTiXg==
 
 "@types/tough-cookie@*":
   version "4.0.2"
