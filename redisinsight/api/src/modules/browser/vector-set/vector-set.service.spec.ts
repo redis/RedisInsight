@@ -17,6 +17,9 @@ import { BrowserToolVectorSetCommands } from 'src/modules/browser/constants/brow
 import {
   addElementsToVectorSetDtoFactory,
   addVectorSetElementDtoFactory,
+  buildVsimByElementCommand,
+  buildVsimByFp32Command,
+  buildVsimByValuesCommand,
   createVectorSetDtoFactory,
   deleteVectorSetElementsDtoFactory,
   downloadVectorSetEmbeddingDtoFactory,
@@ -24,6 +27,13 @@ import {
   FP32_VECTOR_FIXTURE_1_2_3,
   getVectorSetElementsDtoFactory,
   getVectorSetElementDetailsDtoFactory,
+  searchVectorSetByElementDtoFactory,
+  searchVectorSetByFp32DtoFactory,
+  searchVectorSetByValuesDtoFactory,
+  SEARCH_VSIM_MATCH_ATTRIBUTES_1,
+  SEARCH_VSIM_MATCH_NAME_1,
+  SEARCH_VSIM_MATCH_NAME_2,
+  SEARCH_VSIM_REPLY_TWO_MATCHES,
   setVectorSetElementAttributeDtoFactory,
   vectorSetElementFactory,
 } from 'src/modules/browser/vector-set/__tests__/vector-set.factory';
@@ -765,6 +775,398 @@ describe('VectorSetService', () => {
       await expect(
         service.downloadEmbedding(mockBrowserClientMetadata, mockDownloadDto),
       ).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe('similaritySearch', () => {
+    const mockSearchByElementDto = searchVectorSetByElementDtoFactory.build();
+    const mockSearchByValuesDto = searchVectorSetByValuesDtoFactory.build();
+    const mockSearchByFp32Dto = searchVectorSetByFp32DtoFactory.build();
+
+    beforeEach(() => {
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolKeysCommands.Exists,
+          mockSearchByElementDto.keyName,
+        ])
+        .mockResolvedValue(true);
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolKeysCommands.Exists,
+          mockSearchByValuesDto.keyName,
+        ])
+        .mockResolvedValue(true);
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolKeysCommands.Exists,
+          mockSearchByFp32Dto.keyName,
+        ])
+        .mockResolvedValue(true);
+    });
+
+    it('should run VSIM by element with COUNT, WITHSCORES and WITHATTRIBS', async () => {
+      const expectedCommand = buildVsimByElementCommand(mockSearchByElementDto);
+      when(client.sendCommand)
+        .calledWith(expectedCommand)
+        .mockResolvedValue(SEARCH_VSIM_REPLY_TWO_MATCHES);
+
+      const result = await service.similaritySearch(
+        mockBrowserClientMetadata,
+        mockSearchByElementDto,
+      );
+
+      expect(client.sendCommand).toHaveBeenCalledWith(expectedCommand);
+      expect(result.keyName).toEqual(mockSearchByElementDto.keyName);
+      expect(result.elements).toHaveLength(2);
+      expect(result.elements[0]).toEqual({
+        name: SEARCH_VSIM_MATCH_NAME_1,
+        score: 0.95,
+        attributes: SEARCH_VSIM_MATCH_ATTRIBUTES_1,
+      });
+      expect(result.elements[1]).toEqual({
+        name: SEARCH_VSIM_MATCH_NAME_2,
+        score: 0.81,
+      });
+      expect('attributes' in result.elements[1]).toBe(false);
+    });
+
+    it('should run VSIM by VALUES with stringified vector entries', async () => {
+      const expectedCommand = buildVsimByValuesCommand(mockSearchByValuesDto);
+      when(client.sendCommand)
+        .calledWith(expectedCommand)
+        .mockResolvedValue([]);
+
+      await service.similaritySearch(
+        mockBrowserClientMetadata,
+        mockSearchByValuesDto,
+      );
+
+      expect(client.sendCommand).toHaveBeenCalledWith(expectedCommand);
+    });
+
+    it('should run VSIM by FP32 with a Buffer payload', async () => {
+      const expectedCommand = buildVsimByFp32Command(
+        mockSearchByFp32Dto,
+        FP32_VECTOR_FIXTURE_1_2_3.buffer,
+      );
+      when(client.sendCommand)
+        .calledWith(expectedCommand)
+        .mockResolvedValue([]);
+
+      await service.similaritySearch(
+        mockBrowserClientMetadata,
+        mockSearchByFp32Dto,
+      );
+
+      expect(client.sendCommand).toHaveBeenCalledWith(expectedCommand);
+    });
+
+    it('should append FILTER after COUNT/WITHSCORES/WITHATTRIBS', async () => {
+      const dto = { ...mockSearchByElementDto, filter: '@score > 0.5' };
+      const expectedCommand = buildVsimByElementCommand(dto, {
+        filter: dto.filter,
+      });
+      when(client.sendCommand)
+        .calledWith(expectedCommand)
+        .mockResolvedValue([]);
+
+      await service.similaritySearch(mockBrowserClientMetadata, dto);
+
+      expect(client.sendCommand).toHaveBeenCalledWith(expectedCommand);
+    });
+
+    it('should omit COUNT when count is undefined but still send WITHSCORES/WITHATTRIBS', async () => {
+      const dto = { ...mockSearchByElementDto, count: undefined };
+      const expectedCommand = buildVsimByElementCommand(dto, {
+        includeCount: false,
+      });
+      when(client.sendCommand)
+        .calledWith(expectedCommand)
+        .mockResolvedValue([]);
+
+      await service.similaritySearch(mockBrowserClientMetadata, dto);
+
+      expect(client.sendCommand).toHaveBeenCalledWith(expectedCommand);
+    });
+
+    it('should parse a string score into a float number', async () => {
+      when(client.sendCommand)
+        .calledWith(buildVsimByElementCommand(mockSearchByElementDto))
+        .mockResolvedValue([SEARCH_VSIM_MATCH_NAME_1, '0.952381', null]);
+
+      const result = await service.similaritySearch(
+        mockBrowserClientMetadata,
+        mockSearchByElementDto,
+      );
+
+      expect(typeof result.elements[0].score).toBe('number');
+      expect(result.elements[0].score).toBeCloseTo(0.952381, 6);
+    });
+
+    it('should parse a Buffer score into a float number', async () => {
+      when(client.sendCommand)
+        .calledWith(buildVsimByElementCommand(mockSearchByElementDto))
+        .mockResolvedValue([
+          SEARCH_VSIM_MATCH_NAME_1,
+          Buffer.from('0.4275'),
+          null,
+        ]);
+
+      const result = await service.similaritySearch(
+        mockBrowserClientMetadata,
+        mockSearchByElementDto,
+      );
+
+      expect(typeof result.elements[0].score).toBe('number');
+      expect(result.elements[0].score).toBeCloseTo(0.4275, 6);
+    });
+
+    it('should pass through a numeric (RESP3 double) score unchanged', async () => {
+      when(client.sendCommand)
+        .calledWith(buildVsimByElementCommand(mockSearchByElementDto))
+        .mockResolvedValue([SEARCH_VSIM_MATCH_NAME_1, 0.123456, null]);
+
+      const result = await service.similaritySearch(
+        mockBrowserClientMetadata,
+        mockSearchByElementDto,
+      );
+
+      expect(typeof result.elements[0].score).toBe('number');
+      expect(result.elements[0].score).toBe(0.123456);
+    });
+
+    it('should decode a Buffer attributes payload into a string', async () => {
+      const attrs = JSON.stringify({ tag: 'red' });
+      when(client.sendCommand)
+        .calledWith(buildVsimByElementCommand(mockSearchByElementDto))
+        .mockResolvedValue([
+          SEARCH_VSIM_MATCH_NAME_1,
+          '0.5',
+          Buffer.from(attrs),
+        ]);
+
+      const result = await service.similaritySearch(
+        mockBrowserClientMetadata,
+        mockSearchByElementDto,
+      );
+
+      expect(result.elements[0].attributes).toBe(attrs);
+    });
+
+    it('should return empty elements array when VSIM returns []', async () => {
+      when(client.sendCommand)
+        .calledWith(buildVsimByElementCommand(mockSearchByElementDto))
+        .mockResolvedValue([]);
+
+      const result = await service.similaritySearch(
+        mockBrowserClientMetadata,
+        mockSearchByElementDto,
+      );
+
+      expect(result.elements).toEqual([]);
+    });
+
+    it('should defensively truncate replies whose length is not a multiple of 3', async () => {
+      when(client.sendCommand)
+        .calledWith(buildVsimByElementCommand(mockSearchByElementDto))
+        .mockResolvedValue([
+          ...SEARCH_VSIM_REPLY_TWO_MATCHES,
+          Buffer.from('orphan'),
+        ]);
+
+      const result = await service.similaritySearch(
+        mockBrowserClientMetadata,
+        mockSearchByElementDto,
+      );
+
+      expect(result.elements).toHaveLength(2);
+    });
+
+    it('should throw BadRequestException when no query payload is supplied', async () => {
+      const dto = {
+        ...mockSearchByElementDto,
+        elementName: undefined,
+        vectorValues: undefined,
+        vectorFp32: undefined,
+      };
+
+      await expect(
+        service.similaritySearch(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException when more than one query payload is supplied', async () => {
+      const dto = { ...mockSearchByElementDto, vectorValues: [1, 2, 3] };
+
+      await expect(
+        service.similaritySearch(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw NotFoundException when key does not exist', async () => {
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolKeysCommands.Exists,
+          mockSearchByElementDto.keyName,
+        ])
+        .mockResolvedValue(false);
+
+      await expect(
+        service.similaritySearch(
+          mockBrowserClientMetadata,
+          mockSearchByElementDto,
+        ),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw BadRequestException for wrong type error', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisWrongTypeError,
+        command: 'VSIM',
+      };
+      when(client.sendCommand)
+        .calledWith(buildVsimByElementCommand(mockSearchByElementDto))
+        .mockRejectedValue(replyError);
+
+      await expect(
+        service.similaritySearch(
+          mockBrowserClientMetadata,
+          mockSearchByElementDto,
+        ),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw ForbiddenException when user has no permissions', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisNoPermError,
+        command: 'VSIM',
+      };
+      when(client.sendCommand)
+        .calledWith(buildVsimByElementCommand(mockSearchByElementDto))
+        .mockRejectedValue(replyError);
+
+      await expect(
+        service.similaritySearch(
+          mockBrowserClientMetadata,
+          mockSearchByElementDto,
+        ),
+      ).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe('getSimilaritySearchPreview', () => {
+    it('should render VSIM preview with ELE clause and quote element when needed', async () => {
+      const dto = {
+        keyName: Buffer.from('mykey'),
+        elementName: Buffer.from('hello world'),
+        count: 10,
+      };
+
+      const { preview } = await service.getSimilaritySearchPreview(
+        mockBrowserClientMetadata,
+        dto,
+      );
+
+      expect(preview).toBe(
+        'VSIM mykey ELE "hello world" COUNT 10 WITHSCORES WITHATTRIBS',
+      );
+    });
+
+    it('should render VSIM preview with VALUES clause for numeric vector input', async () => {
+      const { preview } = await service.getSimilaritySearchPreview(
+        mockBrowserClientMetadata,
+        {
+          keyName: Buffer.from('mykey'),
+          vectorValues: [1, 2, 3],
+          count: 5,
+        },
+      );
+
+      expect(preview).toBe(
+        'VSIM mykey VALUES 3 1 2 3 COUNT 5 WITHSCORES WITHATTRIBS',
+      );
+    });
+
+    it('should render FP32 vector as a quoted `\\xHH...` escape string', async () => {
+      const { preview } = await service.getSimilaritySearchPreview(
+        mockBrowserClientMetadata,
+        {
+          keyName: Buffer.from('mykey'),
+          vectorFp32: FP32_VECTOR_FIXTURE_1_2_3.base64,
+          count: 10,
+        },
+      );
+
+      const expectedEscape = Array.from(FP32_VECTOR_FIXTURE_1_2_3.buffer)
+        .map((byte) => `\\x${byte.toString(16).padStart(2, '0')}`)
+        .join('');
+      expect(preview).toBe(
+        `VSIM mykey FP32 "${expectedEscape}" COUNT 10 WITHSCORES WITHATTRIBS`,
+      );
+    });
+
+    it('should return an empty preview when no query payload is supplied', async () => {
+      const { preview } = await service.getSimilaritySearchPreview(
+        mockBrowserClientMetadata,
+        {
+          keyName: Buffer.from('mykey'),
+          count: 10,
+        },
+      );
+
+      expect(preview).toBe('');
+    });
+
+    it('should return an empty preview even when only `keyName` and `filter` are supplied', async () => {
+      const { preview } = await service.getSimilaritySearchPreview(
+        mockBrowserClientMetadata,
+        {
+          keyName: Buffer.from('mykey'),
+          filter: '.year > 2020',
+          count: 10,
+        },
+      );
+
+      expect(preview).toBe('');
+    });
+
+    it('should append FILTER clause after WITHSCORES/WITHATTRIBS', async () => {
+      const { preview } = await service.getSimilaritySearchPreview(
+        mockBrowserClientMetadata,
+        {
+          keyName: Buffer.from('mykey'),
+          vectorValues: [1, 2, 3],
+          count: 10,
+          filter: '.year > 2020',
+        },
+      );
+
+      expect(preview).toBe(
+        'VSIM mykey VALUES 3 1 2 3 COUNT 10 WITHSCORES WITHATTRIBS FILTER ".year > 2020"',
+      );
+    });
+
+    it('should omit COUNT clause when count is undefined', async () => {
+      const { preview } = await service.getSimilaritySearchPreview(
+        mockBrowserClientMetadata,
+        {
+          keyName: Buffer.from('mykey'),
+          vectorValues: [1, 2],
+        },
+      );
+
+      expect(preview).toBe('VSIM mykey VALUES 2 1 2 WITHSCORES WITHATTRIBS');
+    });
+
+    it('should throw BadRequestException when more than one query payload is supplied', async () => {
+      await expect(
+        service.getSimilaritySearchPreview(mockBrowserClientMetadata, {
+          keyName: Buffer.from('mykey'),
+          elementName: Buffer.from('foo'),
+          vectorValues: [1, 2, 3],
+          count: 10,
+        }),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 });
