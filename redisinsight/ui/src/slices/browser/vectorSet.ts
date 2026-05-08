@@ -32,6 +32,12 @@ import {
   InitialStateVectorSet,
   VectorSetData,
   VectorSetElement,
+  VectorSetSimilaritySearchPayload,
+  VectorSetSimilaritySearchPreviewPayload,
+  VectorSetSimilaritySearchPreviewResponse,
+  VectorSetSimilaritySearchPreviewState,
+  VectorSetSimilaritySearchResponse,
+  VectorSetSimilaritySearchState,
 } from '../interfaces/vectorSet'
 import {
   addErrorNotification,
@@ -55,6 +61,16 @@ export const initialState: InitialStateVectorSet = {
   adding: {
     loading: false,
     error: '',
+  },
+  similaritySearch: {
+    loading: false,
+    error: '',
+    data: undefined,
+  },
+  similaritySearchPreview: {
+    loading: false,
+    error: '',
+    preview: '',
   },
 }
 
@@ -179,6 +195,68 @@ const vectorSetSlice = createSlice({
       state.downloading = false
       state.error = payload
     },
+
+    loadSimilaritySearch: (state) => {
+      state.similaritySearch = {
+        ...state.similaritySearch,
+        loading: true,
+        error: '',
+      }
+    },
+    loadSimilaritySearchSuccess: (
+      state,
+      { payload }: PayloadAction<VectorSetSimilaritySearchResponse>,
+    ) => {
+      state.similaritySearch = {
+        loading: false,
+        error: '',
+        data: payload,
+      }
+    },
+    loadSimilaritySearchFailure: (
+      state,
+      { payload }: PayloadAction<string>,
+    ) => {
+      state.similaritySearch = {
+        ...state.similaritySearch,
+        loading: false,
+        error: payload,
+      }
+    },
+    clearSimilaritySearch: (state) => {
+      state.similaritySearch = initialState.similaritySearch
+    },
+
+    loadSimilaritySearchPreview: (state) => {
+      state.similaritySearchPreview = {
+        ...state.similaritySearchPreview,
+        loading: true,
+        error: '',
+      }
+    },
+    loadSimilaritySearchPreviewSuccess: (
+      state,
+      { payload }: PayloadAction<string>,
+    ) => {
+      state.similaritySearchPreview = {
+        loading: false,
+        error: '',
+        preview: payload,
+      }
+    },
+    loadSimilaritySearchPreviewFailure: (
+      state,
+      { payload }: PayloadAction<string>,
+    ) => {
+      state.similaritySearchPreview = {
+        ...state.similaritySearchPreview,
+        loading: false,
+        error: payload,
+      }
+    },
+    clearSimilaritySearchPreview: (state) => {
+      state.similaritySearchPreview = initialState.similaritySearchPreview
+    },
   },
 })
 
@@ -200,6 +278,14 @@ export const {
   downloadVectorSetEmbedding,
   downloadVectorSetEmbeddingSuccess,
   downloadVectorSetEmbeddingFailure,
+  loadSimilaritySearch,
+  loadSimilaritySearchSuccess,
+  loadSimilaritySearchFailure,
+  clearSimilaritySearch,
+  loadSimilaritySearchPreview,
+  loadSimilaritySearchPreviewSuccess,
+  loadSimilaritySearchPreviewFailure,
+  clearSimilaritySearchPreview,
 } = vectorSetSlice.actions
 
 export const vectorSetSelector = (state: RootState) => state.browser.vectorSet
@@ -208,6 +294,13 @@ export const vectorSetDataSelector = (state: RootState) =>
 export const addVectorSetElementsStateSelector = (
   state: RootState,
 ): AddVectorSetElementsState => state.browser.vectorSet?.adding
+export const vectorSetSimilaritySearchSelector = (
+  state: RootState,
+): VectorSetSimilaritySearchState => state.browser.vectorSet?.similaritySearch
+export const vectorSetSimilaritySearchPreviewSelector = (
+  state: RootState,
+): VectorSetSimilaritySearchPreviewState =>
+  state.browser.vectorSet?.similaritySearchPreview
 
 export default vectorSetSlice.reducer
 
@@ -503,6 +596,77 @@ export function fetchDownloadVectorEmbedding(
       const errorMessage = getApiErrorMessage(error)
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
       dispatch(downloadVectorSetEmbeddingFailure(errorMessage))
+    }
+  }
+}
+
+export function fetchVectorSetSimilaritySearch(
+  payload: VectorSetSimilaritySearchPayload,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    dispatch(loadSimilaritySearch())
+
+    try {
+      const state = stateInit()
+      const { encoding } = state.app.info
+      const { data, status } =
+        await apiService.post<VectorSetSimilaritySearchResponse>(
+          getUrl(
+            state.connections.instances.connectedInstance?.id,
+            ApiEndpoints.VECTOR_SET_SIMILARITY_SEARCH,
+          ),
+          payload,
+          { params: { encoding } },
+        )
+
+      if (isStatusSuccessful(status)) {
+        dispatch(loadSimilaritySearchSuccess(data))
+      }
+    } catch (_err) {
+      const error = _err as AxiosError
+      const errorMessage = getApiErrorMessage(error)
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      dispatch(loadSimilaritySearchFailure(errorMessage))
+    }
+  }
+}
+
+/**
+ * Fetch the BE-built `VSIM` command preview for the supplied form DTO.
+ * The BE reuses the same command builder as the search endpoint, so the
+ * preview is guaranteed to match the command that would actually run when
+ * the user submits the form. Intended to be called debounced from the
+ * similarity-search form on every change.
+ *
+ * Errors are stored in the slice but intentionally _not_ surfaced as toasts:
+ * preview is best-effort and a transient 4xx (e.g. user typed both element
+ * and vector during a transition) should not yell at the user.
+ */
+export function fetchVectorSetSimilaritySearchPreview(
+  payload: VectorSetSimilaritySearchPreviewPayload,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    dispatch(loadSimilaritySearchPreview())
+
+    try {
+      const state = stateInit()
+      const { encoding } = state.app.info
+      const { data, status } =
+        await apiService.post<VectorSetSimilaritySearchPreviewResponse>(
+          getUrl(
+            state.connections.instances.connectedInstance?.id,
+            ApiEndpoints.VECTOR_SET_SIMILARITY_SEARCH_PREVIEW,
+          ),
+          payload,
+          { params: { encoding } },
+        )
+
+      if (isStatusSuccessful(status)) {
+        dispatch(loadSimilaritySearchPreviewSuccess(data.preview))
+      }
+    } catch (_err) {
+      const error = _err as AxiosError
+      dispatch(loadSimilaritySearchPreviewFailure(getApiErrorMessage(error)))
     }
   }
 }
