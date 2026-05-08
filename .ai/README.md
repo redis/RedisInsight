@@ -17,6 +17,7 @@ These rules are used by multiple AI coding assistants:
 - **Augment** (via symlink: `.augment/`)
 - **Windsurf** (via symlink: `.windsurfrules`)
 - **GitHub Copilot** (via file: `.github/copilot-instructions.md`)
+- **Claude Code** (via hybrid: `.claude/commands/` and `.claude/skills/` symlinks)
 
 ## Structure
 
