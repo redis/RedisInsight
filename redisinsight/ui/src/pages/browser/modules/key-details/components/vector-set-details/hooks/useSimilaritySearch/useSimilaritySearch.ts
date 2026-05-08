@@ -11,11 +11,8 @@ import {
   vectorSetSimilaritySearchPreviewSelector,
   vectorSetSimilaritySearchSelector,
 } from 'uiSrc/slices/browser/vectorSet'
-import {
-  VectorSetSimilarityMatch,
-  VectorSetSimilaritySearchPayload,
-} from 'uiSrc/slices/interfaces/vectorSet'
-import { isEqualBuffers, stringToBuffer } from 'uiSrc/utils'
+import { VectorSetSimilaritySearchPayload } from 'uiSrc/slices/interfaces/vectorSet'
+import { stringToBuffer } from 'uiSrc/utils'
 
 import { SimilaritySearchFormState } from '../../similarity-search-form'
 import {
@@ -24,8 +21,7 @@ import {
 } from '../../vector-set-element-form/utils'
 
 import { UseSimilaritySearchResult } from './useSimilaritySearch.types'
-
-const EMPTY_MATCHES: VectorSetSimilarityMatch[] = []
+import { areKeysEqual } from './useSimilaritySearch.utils'
 
 /**
  * Delay before the FE fires a preview request after the user stops typing.
@@ -37,7 +33,7 @@ const PREVIEW_DEBOUNCE_MS = 250
 export const useSimilaritySearch = (): UseSimilaritySearchResult => {
   const dispatch = useDispatch()
   const selectedKeyData = useSelector(selectedKeyDataSelector)
-  const { loading, data } = useSelector(vectorSetSimilaritySearchSelector)
+  const { loading } = useSelector(vectorSetSimilaritySearchSelector)
   const { loading: previewLoading, preview } = useSelector(
     vectorSetSimilaritySearchPreviewSelector,
   )
@@ -150,25 +146,14 @@ export const useSimilaritySearch = (): UseSimilaritySearchResult => {
     [buildSimilaritySearchPayload, debouncedDispatchPreview, dispatch],
   )
 
-  const matches = useMemo(() => data?.elements ?? EMPTY_MATCHES, [data])
-  const hasResults = data !== undefined
-
   return {
     loading,
     previewLoading,
     vectorDim,
-    hasResults,
-    matches,
     preview,
     runSimilaritySearch,
     runSimilaritySearchPreview,
     resetSimilaritySearch,
     buildSimilaritySearchPayload,
   }
-}
-
-const areKeysEqual = (a: unknown, b: unknown): boolean => {
-  if (a === b) return true
-  if (a == null || b == null) return false
-  return isEqualBuffers(a as any, b as any)
 }
