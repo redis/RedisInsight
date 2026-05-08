@@ -6,7 +6,6 @@
       "Bash(yarn test*)",
       "Bash(yarn dev:ui*)",
       "Bash(yarn dev:api*)",
-      "Bash(node node_modules/.bin/jest*)",
       "Bash(node 'node_modules/.bin/jest'*)"
     ]
   }
