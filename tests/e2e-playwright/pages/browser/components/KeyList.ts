@@ -175,12 +175,13 @@ export class KeyList {
    */
   async clickKey(keyName: string): Promise<void> {
     const keyEl = this.getKeyRow(keyName);
-    try {
+    const isListRowVisible = await keyEl.isVisible();
+    if (isListRowVisible) {
       await keyEl.scrollIntoViewIfNeeded();
       await keyEl.click();
-    } catch {
-      await this.selectKeyInTree(keyName);
+      return;
     }
+    await this.selectKeyInTree(keyName);
   }
 
   /**

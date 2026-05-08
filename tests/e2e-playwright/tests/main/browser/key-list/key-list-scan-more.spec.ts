@@ -16,6 +16,11 @@ test.describe('Browser > Key List View (large dataset)', () => {
     }
   });
 
+  test.afterEach(async ({ browserPage }) => {
+    // Restore the default list view so this suite doesn't leak tree-view state to other specs in the same worker.
+    await browserPage.keyList.switchToListView();
+  });
+
   test('should display keys summary and scroll key list in list view', async ({ browserPage }) => {
     await browserPage.goto(bigDatabase.id);
     await browserPage.keyList.switchToListView();
