@@ -115,3 +115,56 @@ jobs:
       environment: ${{ inputs.environment || 'staging' }}
       debug: ${{ inputs.debug || false }}
 
+  # Slack notification on nightly failures only
+  notify-slack:
+    name: Notify Slack on nightly failure
+    needs:
+      - lint
+      - build-docker
+      - build-linux
+      - e2e-dev-chromium
+      - e2e-docker
+      - e2e-electron
+    if: |
+      always() &&
+      github.event_name == 'schedule' &&
+      (needs.lint.result == 'failure' ||
+       needs.build-docker.result == 'failure' ||
+       needs.build-linux.result == 'failure' ||
+       needs.e2e-dev-chromium.result == 'failure' ||
+       needs.e2e-docker.result == 'failure' ||
+       needs.e2e-electron.result == 'failure')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post to Slack
+        uses: slackapi/slack-github-action@v3.0.3
+        with:
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_TEST_REPORT_KEY }}
+          payload: |
+            channel: "${{ secrets.SLACK_TEST_REPORT_CHANNEL }}"
+            text: "<!here> *Nightly E2E failure* — `${{ github.repository }}` on `${{ github.ref_name }}` @ `${{ github.sha }}`"
+            attachments:
+              - color: "#cc0000"
+                title: "${{ github.workflow }}"
+                title_link: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                fields:
+                  - title: "Lint"
+                    value: "${{ needs.lint.result }}"
+                    short: true
+                  - title: "Build Docker"
+                    value: "${{ needs.build-docker.result }}"
+                    short: true
+                  - title: "Build Linux"
+                    value: "${{ needs.build-linux.result }}"
+                    short: true
+                  - title: "Chromium (Dev)"
+                    value: "${{ needs.e2e-dev-chromium.result }}"
+                    short: true
+                  - title: "Docker"
+                    value: "${{ needs.e2e-docker.result }}"
+                    short: true
+                  - title: "Electron (Linux)"
+                    value: "${{ needs.e2e-electron.result }}"
+                    short: true
+
