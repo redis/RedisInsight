@@ -246,7 +246,7 @@ export function formatVsimCommandPreview(dto: SimilaritySearchDto): string {
 
   return writeVsimTokens<string>(dto, query, {
     literal: (token) => token,
-    key: (key) => bufferOrStringToString(key),
+    key: (key) => quoteForCli(bufferOrStringToString(key)),
     element: (element) => quoteForCli(bufferOrStringToString(element)),
     // Render the FP32 bytes back as the canonical `\xHH\xHH...` escape
     // string so the preview is copy-paste-safe into `redis-cli`. Wrapped in

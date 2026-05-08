@@ -237,6 +237,28 @@ describe('vector-set.utils', () => {
       );
     });
 
+    it('should quote keyName that contains whitespace for CLI safety', () => {
+      const dto = similaritySearchDtoFactory.build({
+        keyName: Buffer.from('my vector set'),
+        elementName: Buffer.from('seed'),
+        count: 5,
+      });
+
+      expect(formatVsimCommandPreview(dto)).toBe(
+        'VSIM "my vector set" ELE seed COUNT 5 WITHSCORES WITHATTRIBS',
+      );
+    });
+
+    it('should escape embedded double-quotes in keyName with backslashes', () => {
+      const dto = similaritySearchDtoFactory.build({
+        keyName: Buffer.from('a"b'),
+        elementName: Buffer.from('seed'),
+        count: undefined,
+      });
+
+      expect(formatVsimCommandPreview(dto)).toContain('VSIM "a\\"b" ELE');
+    });
+
     it('should escape embedded double-quotes in elements with backslashes', () => {
       const dto = similaritySearchDtoFactory.build({
         keyName: Buffer.from('vset:key'),
