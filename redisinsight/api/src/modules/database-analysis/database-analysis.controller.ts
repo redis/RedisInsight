@@ -10,7 +10,8 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiEndpoint } from 'src/decorators/api-endpoint.decorator';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiRedisParams } from 'src/decorators/api-redis-params.decorator';
+import { ApiTags, ApiParam } from '@nestjs/swagger';
 import { DatabaseAnalysisService } from 'src/modules/database-analysis/database-analysis.service';
 import {
   DatabaseAnalysis,
@@ -30,6 +31,7 @@ import { ClientMetadata } from 'src/common/models';
 @UseInterceptors(BrowserSerializeInterceptor)
 @UsePipes(new ValidationPipe({ transform: true }))
 @ApiTags('Database Analysis')
+@ApiRedisParams()
 @Controller('/analysis')
 export class DatabaseAnalysisController {
   constructor(private readonly service: DatabaseAnalysisService) {}
@@ -65,17 +67,18 @@ export class DatabaseAnalysisController {
   })
   @Get(':id')
   @ApiQueryRedisStringEncoding()
+  @ApiParam({ name: 'id', description: 'Analysis id', type: String })
   async get(@Param('id') id: string): Promise<DatabaseAnalysis> {
     return this.service.get(id);
   }
 
   @ApiEndpoint({
     statusCode: 200,
-    description: 'Get database analysis',
+    description: 'Get database analysis list',
     responses: [
       {
         status: 200,
-        type: DatabaseAnalysis,
+        type: [ShortDatabaseAnalysis],
       },
     ],
   })
@@ -89,16 +92,17 @@ export class DatabaseAnalysisController {
 
   @Patch(':id')
   @ApiEndpoint({
-    description: 'Update database instance by id',
+    description: 'Update database analysis by id',
     statusCode: 200,
     responses: [
       {
         status: 200,
-        description: "Updated database instance' response",
+        description: 'Updated database analysis response',
         type: DatabaseAnalysis,
       },
     ],
   })
+  @ApiParam({ name: 'id', description: 'Analysis id', type: String })
   @UsePipes(
     new ValidationPipe({
       transform: true,

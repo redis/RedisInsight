@@ -41,6 +41,9 @@ export class HashController extends BrowserBaseController {
   @ApiOperation({ description: 'Set key to hold Hash data type' })
   @ApiRedisParams()
   @ApiBody({ type: CreateHashWithExpireDto })
+  @ApiOkResponse({
+    description: 'Hash key created successfully',
+  })
   @ApiQueryRedisStringEncoding()
   async createHash(
     @BrowserClientMetadata() clientMetadata: ClientMetadata,
@@ -75,6 +78,9 @@ export class HashController extends BrowserBaseController {
   })
   @ApiRedisParams()
   @ApiBody({ type: AddFieldsToHashDto })
+  @ApiOkResponse({
+    description: 'Fields added to hash successfully',
+  })
   @ApiQueryRedisStringEncoding()
   async addMember(
     @BrowserClientMetadata() clientMetadata: ClientMetadata,
@@ -89,6 +95,9 @@ export class HashController extends BrowserBaseController {
   })
   @ApiRedisParams()
   @ApiBody({ type: UpdateHashFieldsTtlDto })
+  @ApiOkResponse({
+    description: 'Hash fields TTL updated successfully',
+  })
   @ApiQueryRedisStringEncoding()
   async updateTtl(
     @BrowserClientMetadata() clientMetadata: ClientMetadata,
@@ -103,6 +112,10 @@ export class HashController extends BrowserBaseController {
   })
   @ApiRedisParams()
   @ApiBody({ type: DeleteFieldsFromHashDto })
+  @ApiOkResponse({
+    description: 'Fields removed from hash',
+    type: DeleteFieldsFromHashResponse,
+  })
   @ApiQueryRedisStringEncoding()
   async deleteFields(
     @BrowserClientMetadata() clientMetadata: ClientMetadata,

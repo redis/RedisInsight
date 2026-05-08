@@ -55,6 +55,11 @@ redisinsight/api/reports
 redisinsight/api/dist-minified
 redisinsight/api/tutorials
 redisinsight/api/content
+
+# Generated OpenAPI artifacts (regenerated on install via `yarn generate:api-client`).
+# Both the spec dump and the TS client are derived from BE source — they are not committed.
+redisinsight/api/openapi.json
+redisinsight/api-client
 redisinsight/ui/dist-stats.html
 report
 reports

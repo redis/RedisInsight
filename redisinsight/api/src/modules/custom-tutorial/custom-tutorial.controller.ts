@@ -50,7 +50,8 @@ export class CustomTutorialController {
     statusCode: 201,
     responses: [
       {
-        type: Object,
+        status: 201,
+        type: RootCustomTutorialManifest,
       },
     ],
   })
@@ -67,7 +68,8 @@ export class CustomTutorialController {
     statusCode: 200,
     responses: [
       {
-        type: Object,
+        status: 200,
+        type: RootCustomTutorialManifest,
       },
     ],
   })

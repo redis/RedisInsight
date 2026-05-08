@@ -5,7 +5,11 @@ import {
 } from '@nestjs/swagger';
 import { KeyDto } from 'src/modules/browser/keys/dto';
 import { IsInt, IsNotEmpty, IsString, Min } from 'class-validator';
-import { IsRedisString, RedisStringType } from 'src/common/decorators';
+import {
+  ApiRedisString,
+  IsRedisString,
+  RedisStringType,
+} from 'src/common/decorators';
 import { RedisString } from 'src/common/constants';
 import { GetConsumersDto } from './get.consumers.dto';
 
@@ -17,11 +21,7 @@ export class PendingEntryDto {
   })
   id: string;
 
-  @ApiProperty({
-    type: String,
-    description: 'Consumer name',
-    example: 'consumer-1',
-  })
+  @ApiRedisString('Consumer name')
   @RedisStringType()
   consumerName: RedisString;
 
@@ -46,11 +46,7 @@ export class GetPendingEntriesDto extends IntersectionType(
   KeyDto,
   GetConsumersDto,
 ) {
-  @ApiProperty({
-    type: String,
-    description: 'Consumer name',
-    example: 'consumer-1',
-  })
+  @ApiRedisString('Consumer name')
   @IsNotEmpty()
   @IsRedisString()
   @RedisStringType()

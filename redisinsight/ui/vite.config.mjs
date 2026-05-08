@@ -83,6 +83,7 @@ export default defineConfig({
       '@redislabsdev/redis-ui-table': '@redis-ui/table',
       uiSrc: fileURLToPath(new URL('./src', import.meta.url)),
       apiSrc: fileURLToPath(new URL('../api/src', import.meta.url)),
+      apiClient: fileURLToPath(new URL('../api-client', import.meta.url)),
     },
   },
   server: {

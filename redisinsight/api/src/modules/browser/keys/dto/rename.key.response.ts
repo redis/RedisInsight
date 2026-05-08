@@ -1,13 +1,13 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { IsDefined } from 'class-validator';
-import { IsRedisString, RedisStringType } from 'src/common/decorators';
+import {
+  ApiRedisString,
+  IsRedisString,
+  RedisStringType,
+} from 'src/common/decorators';
 import { RedisString } from 'src/common/constants';
 
 export class KeyResponse {
-  @ApiProperty({
-    description: 'Key Name',
-    type: String,
-  })
+  @ApiRedisString('keyName')
   @IsDefined()
   @IsRedisString()
   @RedisStringType()

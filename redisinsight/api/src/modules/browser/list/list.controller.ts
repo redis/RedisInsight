@@ -105,6 +105,10 @@ export class ListController extends BrowserBaseController {
     description: 'Update list element by index.',
   })
   @ApiRedisParams()
+  @ApiOkResponse({
+    description: 'Updated list element.',
+    type: SetListElementResponse,
+  })
   @ApiBody({ type: SetListElementDto })
   @ApiQueryRedisStringEncoding()
   async updateElement(
@@ -131,7 +135,7 @@ export class ListController extends BrowserBaseController {
       {
         status: 200,
         description: 'Specified elements of the list stored at key.',
-        type: GetListElementsResponse,
+        type: GetListElementResponse,
       },
     ],
   })
@@ -153,7 +157,7 @@ export class ListController extends BrowserBaseController {
       {
         status: 200,
         description: 'Removed elements.',
-        type: GetListElementsResponse,
+        type: DeleteListElementsResponse,
       },
     ],
   })

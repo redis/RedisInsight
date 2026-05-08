@@ -15,6 +15,8 @@ module.exports = {
     'uiSrc/slices/store$': '<rootDir>/redisinsight/ui/src/utils/test-store.ts',
     'uiSrc/(.*)': '<rootDir>/redisinsight/ui/src/$1',
     'apiSrc/(.*)': '<rootDir>/redisinsight/api/src/$1',
+    '^apiClient$': '<rootDir>/redisinsight/api-client',
+    'apiClient/(.*)': '<rootDir>/redisinsight/api-client/$1',
     '@redislabsdev/redis-ui-components': '@redis-ui/components',
     '@redislabsdev/redis-ui-styles': '@redis-ui/styles',
     '@redislabsdev/redis-ui-icons': '@redis-ui/icons',

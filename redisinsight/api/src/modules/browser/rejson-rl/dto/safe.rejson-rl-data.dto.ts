@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-enum RejsonRlDataType {
+export enum RejsonRlDataType {
   String = 'string',
   Number = 'number',
   Integer = 'integer',

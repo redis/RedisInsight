@@ -46,6 +46,9 @@ export default defineConfig({
       apiSrc: fileURLToPath(
         new URL('../redisinsight/api/src', import.meta.url),
       ),
+      apiClient: fileURLToPath(
+        new URL('../redisinsight/api-client', import.meta.url),
+      ),
     },
   },
   server: {

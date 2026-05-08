@@ -26,7 +26,6 @@ export class AddVectorSetElementDto {
       'Vector embedding as numeric values. Mutually exclusive with ' +
       '`vectorFp32` - exactly one of the two must be supplied.',
     type: [Number],
-    isArray: true,
   })
   // `vectorValues` and `vectorFp32` are two equivalent representations of the
   // same vector and must not be supplied together. When `vectorFp32` is

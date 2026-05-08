@@ -1,14 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDefined } from 'class-validator';
-import { IsRedisString, RedisStringType } from 'src/common/decorators';
+import {
+  ApiRedisString,
+  IsRedisString,
+  RedisStringType,
+} from 'src/common/decorators';
 import { RedisString } from 'src/common/constants';
 import { Expose } from 'class-transformer';
 
 export class IndexInfoRequestBodyDto {
-  @ApiProperty({
-    description: 'Index name',
-    type: String,
-  })
+  @ApiRedisString('Key Name')
   @IsDefined()
   @RedisStringType()
   @IsRedisString()
