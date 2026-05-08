@@ -137,32 +137,24 @@ export const getVectorSetElementsResponseFactory =
     };
   });
 
-export const searchVectorSetByElementDtoFactory =
-  Factory.define<SimilaritySearchDto>(() => ({
-    keyName: Buffer.from(`vset:${faker.string.alphanumeric(6)}`),
-    elementName: Buffer.from(faker.string.alphanumeric(8)),
-    vectorValues: undefined,
-    vectorFp32: undefined,
-    count: faker.number.int({ min: 1, max: 100 }),
-  }));
+export const similaritySearchDtoFactory = Factory.define<
+  SimilaritySearchDto,
+  { variant?: 'element' | 'values' | 'fp32' }
+>(({ transientParams }) => {
+  const { variant = 'element' } = transientParams;
 
-export const searchVectorSetByValuesDtoFactory =
-  Factory.define<SimilaritySearchDto>(() => ({
+  return {
     keyName: Buffer.from(`vset:${faker.string.alphanumeric(6)}`),
-    elementName: undefined,
-    vectorValues: [1, 2, 3],
-    vectorFp32: undefined,
+    elementName:
+      variant === 'element'
+        ? Buffer.from(faker.string.alphanumeric(8))
+        : undefined,
+    vectorValues: variant === 'values' ? [1, 2, 3] : undefined,
+    vectorFp32:
+      variant === 'fp32' ? FP32_VECTOR_FIXTURE_1_2_3.base64 : undefined,
     count: faker.number.int({ min: 1, max: 100 }),
-  }));
-
-export const searchVectorSetByFp32DtoFactory =
-  Factory.define<SimilaritySearchDto>(() => ({
-    keyName: Buffer.from(`vset:${faker.string.alphanumeric(6)}`),
-    elementName: undefined,
-    vectorValues: undefined,
-    vectorFp32: FP32_VECTOR_FIXTURE_1_2_3.base64,
-    count: faker.number.int({ min: 1, max: 100 }),
-  }));
+  };
+});
 
 export const searchVectorSetMatchFactory =
   Factory.define<SearchVectorSetMatchDto>(({ transientParams }) => {

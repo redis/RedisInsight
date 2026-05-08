@@ -4,9 +4,7 @@ import {
   addVectorSetElementDtoFactory,
   FP32_VECTOR_FIXTURE_1_2_3,
   fp32AddVectorSetElementDtoFactory,
-  searchVectorSetByElementDtoFactory,
-  searchVectorSetByFp32DtoFactory,
-  searchVectorSetByValuesDtoFactory,
+  similaritySearchDtoFactory,
   SEARCH_VSIM_MATCH_ATTRIBUTES_1,
   SEARCH_VSIM_MATCH_NAME_1,
   SEARCH_VSIM_MATCH_NAME_2,
@@ -105,7 +103,7 @@ describe('vector-set.utils', () => {
 
   describe('buildVsimCommand', () => {
     it('should emit ELE clause with WITHSCORES/WITHATTRIBS and COUNT for elementName mode', () => {
-      const dto = searchVectorSetByElementDtoFactory.build({
+      const dto = similaritySearchDtoFactory.build({
         keyName: Buffer.from('vset:key'),
         elementName: Buffer.from('seed'),
         count: 5,
@@ -124,10 +122,10 @@ describe('vector-set.utils', () => {
     });
 
     it('should stringify each numeric vector entry to preserve float precision on the wire', () => {
-      const dto = searchVectorSetByValuesDtoFactory.build({
-        vectorValues: [0.1, 0.2, 0.3],
-        count: 10,
-      });
+      const dto = similaritySearchDtoFactory.build(
+        { vectorValues: [0.1, 0.2, 0.3], count: 10 },
+        { transient: { variant: 'values' } },
+      );
 
       const command = buildVsimCommand(dto) as unknown[];
 
@@ -147,7 +145,10 @@ describe('vector-set.utils', () => {
     });
 
     it('should pass FP32 as a raw Buffer (decoded from the base64 DTO field)', () => {
-      const dto = searchVectorSetByFp32DtoFactory.build({ count: 3 });
+      const dto = similaritySearchDtoFactory.build(
+        { count: 3 },
+        { transient: { variant: 'fp32' } },
+      );
 
       const command = buildVsimCommand(dto) as unknown[];
 
@@ -164,7 +165,7 @@ describe('vector-set.utils', () => {
     });
 
     it('should append FILTER <expr> after the WITHSCORES/WITHATTRIBS tail', () => {
-      const dto = searchVectorSetByElementDtoFactory.build({
+      const dto = similaritySearchDtoFactory.build({
         count: 4,
         filter: '.color == "red"',
       });
@@ -178,7 +179,7 @@ describe('vector-set.utils', () => {
     });
 
     it('should omit the COUNT clause when count is undefined', () => {
-      const dto = searchVectorSetByElementDtoFactory.build({
+      const dto = similaritySearchDtoFactory.build({
         count: undefined,
       });
 
@@ -190,7 +191,7 @@ describe('vector-set.utils', () => {
     });
 
     it('should throw BadRequestException when no query payload is supplied', () => {
-      const dto = searchVectorSetByElementDtoFactory.build({
+      const dto = similaritySearchDtoFactory.build({
         elementName: undefined,
         vectorValues: undefined,
         vectorFp32: undefined,
@@ -201,7 +202,7 @@ describe('vector-set.utils', () => {
     });
 
     it('should throw BadRequestException when more than one query payload is supplied', () => {
-      const dto = searchVectorSetByElementDtoFactory.build({
+      const dto = similaritySearchDtoFactory.build({
         elementName: Buffer.from('e'),
         vectorValues: [1, 2, 3],
       });
@@ -213,7 +214,7 @@ describe('vector-set.utils', () => {
 
   describe('formatVsimCommandPreview', () => {
     it('should render an ELE preview with the key + element decoded from Buffers', () => {
-      const dto = searchVectorSetByElementDtoFactory.build({
+      const dto = similaritySearchDtoFactory.build({
         keyName: Buffer.from('vset:key'),
         elementName: Buffer.from('seed'),
         count: 5,
@@ -225,7 +226,7 @@ describe('vector-set.utils', () => {
     });
 
     it('should quote elements that contain whitespace or quotes for CLI safety', () => {
-      const dto = searchVectorSetByElementDtoFactory.build({
+      const dto = similaritySearchDtoFactory.build({
         keyName: Buffer.from('vset:key'),
         elementName: Buffer.from('with space'),
         count: undefined,
@@ -237,7 +238,7 @@ describe('vector-set.utils', () => {
     });
 
     it('should escape embedded double-quotes in elements with backslashes', () => {
-      const dto = searchVectorSetByElementDtoFactory.build({
+      const dto = similaritySearchDtoFactory.build({
         keyName: Buffer.from('vset:key'),
         elementName: Buffer.from('a"b'),
         count: undefined,
@@ -247,11 +248,14 @@ describe('vector-set.utils', () => {
     });
 
     it('should render numeric VALUES inline (stringified) without quoting', () => {
-      const dto = searchVectorSetByValuesDtoFactory.build({
-        keyName: Buffer.from('vset:key'),
-        vectorValues: [0.1, 0.2, 0.3],
-        count: undefined,
-      });
+      const dto = similaritySearchDtoFactory.build(
+        {
+          keyName: Buffer.from('vset:key'),
+          vectorValues: [0.1, 0.2, 0.3],
+          count: undefined,
+        },
+        { transient: { variant: 'values' } },
+      );
 
       expect(formatVsimCommandPreview(dto)).toBe(
         'VSIM vset:key VALUES 3 0.1 0.2 0.3 WITHSCORES WITHATTRIBS',
@@ -259,10 +263,13 @@ describe('vector-set.utils', () => {
     });
 
     it('should render FP32 bytes as a quoted `\\xHH...` escape string', () => {
-      const dto = searchVectorSetByFp32DtoFactory.build({
-        keyName: Buffer.from('vset:key'),
-        count: undefined,
-      });
+      const dto = similaritySearchDtoFactory.build(
+        {
+          keyName: Buffer.from('vset:key'),
+          count: undefined,
+        },
+        { transient: { variant: 'fp32' } },
+      );
 
       expect(formatVsimCommandPreview(dto)).toBe(
         'VSIM vset:key FP32 "\\x00\\x00\\x80\\x3f\\x00\\x00\\x00\\x40\\x00\\x00\\x40\\x40" WITHSCORES WITHATTRIBS',
@@ -270,7 +277,7 @@ describe('vector-set.utils', () => {
     });
 
     it('should append FILTER <expr> as the last clause and quote when needed', () => {
-      const dto = searchVectorSetByElementDtoFactory.build({
+      const dto = similaritySearchDtoFactory.build({
         keyName: Buffer.from('vset:key'),
         elementName: Buffer.from('seed'),
         count: undefined,
@@ -283,7 +290,7 @@ describe('vector-set.utils', () => {
     });
 
     it('should return empty string when no query payload is supplied', () => {
-      const dto = searchVectorSetByElementDtoFactory.build({
+      const dto = similaritySearchDtoFactory.build({
         elementName: undefined,
         vectorValues: undefined,
         vectorFp32: undefined,
@@ -293,7 +300,7 @@ describe('vector-set.utils', () => {
     });
 
     it('should return empty string even when keyName and filter are present but no query payload', () => {
-      const dto = searchVectorSetByElementDtoFactory.build({
+      const dto = similaritySearchDtoFactory.build({
         elementName: undefined,
         vectorValues: undefined,
         vectorFp32: undefined,
@@ -304,7 +311,7 @@ describe('vector-set.utils', () => {
     });
 
     it('should throw BadRequestException when more than one query payload is supplied', () => {
-      const dto = searchVectorSetByElementDtoFactory.build({
+      const dto = similaritySearchDtoFactory.build({
         elementName: Buffer.from('e'),
         vectorValues: [1, 2, 3],
       });

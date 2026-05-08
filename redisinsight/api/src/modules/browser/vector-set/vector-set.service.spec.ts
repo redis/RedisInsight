@@ -27,9 +27,7 @@ import {
   FP32_VECTOR_FIXTURE_1_2_3,
   getVectorSetElementsDtoFactory,
   getVectorSetElementDetailsDtoFactory,
-  searchVectorSetByElementDtoFactory,
-  searchVectorSetByFp32DtoFactory,
-  searchVectorSetByValuesDtoFactory,
+  similaritySearchDtoFactory,
   SEARCH_VSIM_MATCH_ATTRIBUTES_1,
   SEARCH_VSIM_MATCH_NAME_1,
   SEARCH_VSIM_MATCH_NAME_2,
@@ -779,9 +777,15 @@ describe('VectorSetService', () => {
   });
 
   describe('similaritySearch', () => {
-    const mockSearchByElementDto = searchVectorSetByElementDtoFactory.build();
-    const mockSearchByValuesDto = searchVectorSetByValuesDtoFactory.build();
-    const mockSearchByFp32Dto = searchVectorSetByFp32DtoFactory.build();
+    const mockSearchByElementDto = similaritySearchDtoFactory.build();
+    const mockSearchByValuesDto = similaritySearchDtoFactory.build(
+      {},
+      { transient: { variant: 'values' } },
+    );
+    const mockSearchByFp32Dto = similaritySearchDtoFactory.build(
+      {},
+      { transient: { variant: 'fp32' } },
+    );
 
     beforeEach(() => {
       when(client.sendCommand)
