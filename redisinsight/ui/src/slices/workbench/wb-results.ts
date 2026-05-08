@@ -40,7 +40,7 @@ import {
   removeCommand,
   wbHistoryStorage,
 } from 'uiSrc/services/workbenchStorage'
-import { CreateCommandExecutionsDto } from 'apiSrc/modules/workbench/dto/create-command-executions.dto'
+import { CreateCommandExecutionsDto } from 'apiClient'
 
 import { AppDispatch, RootState } from '../store'
 import {

@@ -38,7 +38,7 @@ import { decompressingBuffer } from 'uiSrc/utils/decompressors'
 import { FormattedValue } from 'uiSrc/pages/browser/modules/key-details/shared'
 import { FormatedDate } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
-import { StreamEntryDto } from 'apiSrc/modules/browser/stream/dto'
+import { StreamEntryDto } from 'apiClient'
 import StreamDataView from './StreamDataView'
 import styles from './StreamDataView/styles.module.scss'
 import {

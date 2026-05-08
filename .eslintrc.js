@@ -147,11 +147,11 @@ module.exports = {
       rules: {
         radix: 'off',
         'no-bitwise': ['error', { allow: ['|'] }],
-        // RI-7682: discourage new BE -> FE coupling. Existing imports are still allowed
-        // (warn-only) until per-domain migration replaces them with `apiClient/*`.
-        // Flips to 'error' once Phase 2 is complete.
+        // RI-7682: forbid new BE -> FE coupling. The UI must consume the
+        // generated `apiClient/*` types (or FE-local replacements) instead of
+        // reaching into `apiSrc/*` or `src/*`.
         'no-restricted-imports': [
-          'warn',
+          'error',
           {
             patterns: [
               {

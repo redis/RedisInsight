@@ -7,6 +7,7 @@ import {
   KeyTypes,
   KeyValueFormat,
   ModulesKeyTypes,
+  ListElementDestination,
 } from 'uiSrc/constants'
 import { apiService } from 'uiSrc/services'
 import {
@@ -33,19 +34,19 @@ import {
   setIsWithinThreshold,
 } from 'uiSrc/slices/browser/rejson'
 import { EditorType } from 'uiSrc/slices/interfaces'
-import { CreateHashWithExpireDto } from 'apiSrc/modules/browser/hash/dto'
-import {
-  CreateListWithExpireDto,
-  ListElementDestination,
-} from 'apiSrc/modules/browser/list/dto'
-import { CreateRejsonRlWithExpireDto } from 'apiSrc/modules/browser/rejson-rl/dto'
-import { CreateSetWithExpireDto } from 'apiSrc/modules/browser/set/dto'
-import { CreateZSetWithExpireDto } from 'apiSrc/modules/browser/z-set/dto'
-import { SetStringWithExpireDto } from 'apiSrc/modules/browser/string/dto'
+
 import { rootReducer } from '../../store'
 import { loadVectorSetElements } from '../../browser/vectorSet'
 import { mockVectorSetKeyInfo } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
 import { getString, getStringSuccess } from '../../browser/string'
+import {
+  CreateHashWithExpireDto,
+  CreateListWithExpireDto,
+  CreateRejsonRlWithExpireDto,
+  CreateSetWithExpireDto,
+  CreateZSetWithExpireDto,
+  SetStringWithExpireDto,
+} from 'apiClient'
 import reducer, {
   addHashKey,
   addKey,

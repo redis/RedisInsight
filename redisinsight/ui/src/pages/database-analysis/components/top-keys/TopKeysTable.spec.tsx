@@ -1,7 +1,7 @@
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
 import { render, screen } from 'uiSrc/utils/test-utils'
-import { Key } from 'apiSrc/modules/database-analysis/models/key'
+import { Key } from 'apiClient'
 
 import TopKeysTable, { Props } from './TopKeysTable'
 

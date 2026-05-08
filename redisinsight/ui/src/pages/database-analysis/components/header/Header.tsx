@@ -21,11 +21,10 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { HideFor } from 'uiSrc/components/base/utils/ShowHide'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
-import { ShortDatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
-import { AnalysisProgress } from 'apiSrc/modules/database-analysis/models/analysis-progress'
 
 import styles from './styles.module.scss'
 import { Container, HeaderSelect, InfoIcon } from './Header.styles'
+import { ShortDatabaseAnalysis, AnalysisProgress } from 'apiClient'
 
 export interface Props {
   items: ShortDatabaseAnalysis[]

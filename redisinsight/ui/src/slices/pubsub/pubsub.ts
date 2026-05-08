@@ -8,8 +8,7 @@ import { AppDispatch, RootState } from 'uiSrc/slices/store'
 import { getApiErrorMessage, getUrl, isStatusSuccessful } from 'uiSrc/utils'
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
 import { SubscriptionType } from 'uiSrc/constants/pubSub'
-import { MessagesResponse } from 'apiSrc/modules/pub-sub/dto/messages.response'
-import { PublishResponse } from 'apiSrc/modules/pub-sub/dto/publish.response'
+import { MessagesResponse, PublishResponse } from 'apiClient'
 
 export const initialState: StatePubSub = {
   loading: false,

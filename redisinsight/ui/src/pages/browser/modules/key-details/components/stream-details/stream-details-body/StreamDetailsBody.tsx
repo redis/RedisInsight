@@ -24,7 +24,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import RangeFilter from 'uiSrc/components/range-filter'
 import { ProgressBarLoader } from 'uiSrc/components/base/display'
 import { Col } from 'uiSrc/components/base/layout/flex'
-import { GetStreamEntriesResponse } from 'apiSrc/modules/browser/stream/dto'
+import { GetStreamEntriesResponse } from 'apiClient'
 
 import ConsumersViewWrapper from '../consumers-view'
 import GroupsViewWrapper from '../groups-view'

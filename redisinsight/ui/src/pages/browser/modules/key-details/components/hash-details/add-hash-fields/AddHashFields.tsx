@@ -31,10 +31,7 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import {
-  AddFieldsToHashDto,
-  HashFieldDto,
-} from 'apiSrc/modules/browser/hash/dto'
+import { AddFieldsToHashDto, HashFieldDto } from 'apiClient'
 
 import { EntryContent } from '../../common/AddKeysContainer.styled'
 

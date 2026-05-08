@@ -16,7 +16,7 @@ import {
 import { apiService } from 'uiSrc/services'
 import { store } from 'uiSrc/slices/store'
 import { getInstanceInfo } from 'uiSrc/services/database/instancesService'
-import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
+import { AdditionalRedisModule } from 'apiClient'
 import { IRedisModulesSummary, MatchType, RedisModules } from './interfaces'
 import { TelemetryEvent } from './events'
 import { checkIsAnalyticsGranted } from './checkAnalytics'

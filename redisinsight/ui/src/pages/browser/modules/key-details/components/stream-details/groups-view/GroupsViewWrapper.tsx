@@ -43,7 +43,7 @@ import {
   ConsumerDto,
   ConsumerGroupDto,
   UpdateConsumerGroupDto,
-} from 'apiSrc/modules/browser/stream/dto'
+} from 'apiClient'
 
 import GroupsView from './GroupsView'
 

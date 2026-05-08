@@ -6,7 +6,7 @@ import { streamGroupsSelector } from 'uiSrc/slices/browser/stream'
 import VirtualTable from 'uiSrc/components/virtual-table/VirtualTable'
 import { ITableColumn } from 'uiSrc/components/virtual-table/interfaces'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
-import { PendingEntryDto } from 'apiSrc/modules/browser/stream/dto'
+import { PendingEntryDto } from 'apiClient'
 
 import styles from './styles.module.scss'
 

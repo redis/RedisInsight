@@ -15,7 +15,7 @@ import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { AllIconsType, RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
+import { AdditionalRedisModule } from 'apiClient'
 import { RiImage } from 'uiSrc/components/base/display'
 import MessageInfoSvg from 'uiSrc/assets/img/icons/help_illus.svg'
 import {

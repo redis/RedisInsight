@@ -6,10 +6,7 @@ import {
   initialStateDefault,
   mockedStore,
 } from 'uiSrc/utils/test-utils'
-import {
-  GetCloudAccountShortInfoResponse,
-  RedisCloudDatabase,
-} from 'apiSrc/modules/redis-enterprise/dto/cloud.dto'
+import { GetCloudAccountShortInfoResponse, RedisCloudDatabase } from 'apiClient'
 import reducer, {
   loadSubscriptionsRedisCloud,
   initialState,

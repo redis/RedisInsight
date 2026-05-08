@@ -16,7 +16,7 @@ import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { SortOrder } from 'uiSrc/constants'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
-import { ConsumerGroupDto } from 'apiSrc/modules/browser/stream/dto'
+import { ConsumerGroupDto } from 'apiClient'
 
 const StreamTabs = () => {
   const { viewType } = useSelector(streamSelector)

@@ -22,7 +22,7 @@ import {
   sendEventTelemetry,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import { StreamEntryDto } from 'apiSrc/modules/browser/stream/dto'
+import { StreamEntryDto } from 'apiClient'
 
 import styles from './styles.module.scss'
 

@@ -11,7 +11,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
-import { CreateRejsonRlWithExpireDto } from 'apiSrc/modules/browser/rejson-rl/dto'
+import { CreateRejsonRlWithExpireDto } from 'apiClient'
 
 import { AddJSONFormConfig as config } from '../constants/fields-config'
 

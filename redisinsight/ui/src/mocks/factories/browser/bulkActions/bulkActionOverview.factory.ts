@@ -1,24 +1,26 @@
 import { Factory } from 'fishery'
 import { faker } from '@faker-js/faker'
-import { RedisDataType } from 'uiSrc/constants'
-import { IBulkActionOverview } from 'apiSrc/modules/bulk-actions/interfaces/bulk-action-overview.interface'
-import { IBulkActionFilterOverview } from 'apiSrc/modules/bulk-actions/interfaces/bulk-action-filter-overview.interface'
-import { IBulkActionProgressOverview } from 'apiSrc/modules/bulk-actions/interfaces/bulk-action-progress-overview.interface'
-import { IBulkActionSummaryOverview } from 'apiSrc/modules/bulk-actions/interfaces/bulk-action-summary-overview.interface'
 import {
-  BulkActionStatus,
-  BulkActionType,
-} from 'apiSrc/modules/bulk-actions/constants'
+  BulkActionsStatus,
+  BulkActionsType,
+  RedisDataType,
+} from 'uiSrc/constants'
+import {
+  IBulkActionFilterOverview,
+  IBulkActionOverview,
+  IBulkActionProgressOverview,
+  IBulkActionSummaryOverview,
+} from 'uiSrc/slices/interfaces'
 
 export const bulkActionOverviewFactory = Factory.define<IBulkActionOverview>(
   ({ sequence }) => ({
     id: `bulk-action-${sequence}`,
     databaseId: faker.string.uuid(),
-    type: faker.helpers.enumValue(BulkActionType),
+    type: faker.helpers.enumValue(BulkActionsType),
     summary: bulkActionSummaryOverviewFactory.build(),
     progress: bulkActionProgressOverviewFactory.build(),
     filter: bulkActionFilterOverviewFactory.build(),
-    status: faker.helpers.enumValue(BulkActionStatus),
+    status: faker.helpers.enumValue(BulkActionsStatus),
     duration: faker.number.int({ min: 10, max: 100 }),
   }),
 )

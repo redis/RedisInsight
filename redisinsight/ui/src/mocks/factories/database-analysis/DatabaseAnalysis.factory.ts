@@ -1,6 +1,6 @@
 import { Factory } from 'fishery'
 import { faker } from '@faker-js/faker'
-import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
+import { DatabaseAnalysis } from 'apiClient'
 
 export const DatabaseAnalysisFactory = Factory.define<DatabaseAnalysis>(() => ({
   id: faker.string.uuid(),

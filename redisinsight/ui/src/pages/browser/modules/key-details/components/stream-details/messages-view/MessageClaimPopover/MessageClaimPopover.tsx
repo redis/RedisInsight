@@ -31,7 +31,7 @@ import {
   ClaimPendingEntryDto,
   ClaimPendingEntriesResponse,
   ConsumerDto,
-} from 'apiSrc/modules/browser/stream/dto'
+} from 'apiClient'
 
 import styles from './styles.module.scss'
 

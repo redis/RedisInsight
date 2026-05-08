@@ -49,7 +49,7 @@ import {
 } from 'uiSrc/components/virtual-table/interfaces'
 import { decompressingBuffer } from 'uiSrc/utils/decompressors'
 import { FormattedValue } from 'uiSrc/pages/browser/modules/key-details/shared'
-import { GetSetMembersResponse } from 'apiSrc/modules/browser/set/dto'
+import { GetSetMembersResponse } from 'apiClient'
 import styles from './styles.module.scss'
 
 const suffix = '_set'

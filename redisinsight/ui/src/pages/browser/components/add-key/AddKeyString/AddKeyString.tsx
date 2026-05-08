@@ -8,7 +8,7 @@ import { addKeyStateSelector, addStringKey } from 'uiSrc/slices/browser/keys'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextArea } from 'uiSrc/components/base/inputs'
-import { SetStringWithExpireDto } from 'apiSrc/modules/browser/string/dto'
+import { SetStringWithExpireDto } from 'apiClient'
 import { AddStringFormConfig as config } from '../constants/fields-config'
 
 export interface Props {

@@ -11,8 +11,7 @@ import {
   SortOrder,
 } from 'uiSrc/constants'
 import { ConfigDBStorageItem } from 'uiSrc/constants/storage'
-import { GetServerInfoResponse } from 'apiSrc/modules/server/dto/server.dto'
-import { RedisString as RedisStringAPI } from 'apiSrc/common/constants/redis-string'
+import { GetServerInfoResponse } from 'apiClient'
 import { RiToastType } from 'uiSrc/components/base/display/toast/RiToast'
 import { ToastVariant } from '@redis-ui/components'
 
@@ -296,7 +295,7 @@ export enum RedisResponseBufferType {
 export type RedisResponseBuffer = {
   type: RedisResponseBufferType
   data: UintArray
-} & Exclude<RedisStringAPI, string>
+} & Buffer
 
 export type RedisString = string | RedisResponseBuffer
 

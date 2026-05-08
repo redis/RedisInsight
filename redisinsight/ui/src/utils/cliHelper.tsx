@@ -15,7 +15,7 @@ import { SelectCommand } from 'uiSrc/constants/cliOutput'
 import { RedisDefaultModules, COMMAND_MODULES } from 'uiSrc/slices/interfaces'
 
 import { getCommandsForExecution } from 'uiSrc/utils/monaco/monacoUtils'
-import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
+import { AdditionalRedisModule } from 'apiClient'
 import formatToText from './transformers/cliTextFormatter'
 import { getDbIndex } from './longNames'
 

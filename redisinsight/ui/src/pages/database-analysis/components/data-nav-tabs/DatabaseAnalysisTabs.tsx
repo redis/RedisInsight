@@ -16,10 +16,7 @@ import { recommendationsSelector } from 'uiSrc/slices/recommendations/recommenda
 import { TabInfo } from 'uiSrc/components/base/layout/tabs'
 import { Text } from 'uiSrc/components/base/text'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
-import {
-  ShortDatabaseAnalysis,
-  DatabaseAnalysis,
-} from 'apiSrc/modules/database-analysis/models'
+import { ShortDatabaseAnalysis, DatabaseAnalysis } from 'apiClient'
 import Recommendations from '../recommendations-view'
 import AnalysisDataView from '../analysis-data-view'
 

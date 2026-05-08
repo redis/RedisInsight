@@ -36,7 +36,7 @@ import {
   ToastCheckIcon,
 } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
+import { AdditionalRedisModule } from 'apiClient'
 
 import { RunConfirmationPopover } from './components'
 import styles from './styles.module.scss'

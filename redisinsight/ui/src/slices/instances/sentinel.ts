@@ -13,9 +13,6 @@ import { apiService } from 'uiSrc/services'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { ApiEncryptionErrors } from 'uiSrc/constants/apiErrors'
 
-import { SentinelMaster } from 'apiSrc/modules/redis-sentinel/models/sentinel-master'
-import { CreateSentinelDatabasesDto } from 'apiSrc/modules/redis-sentinel/dto/create.sentinel.databases.dto'
-import { CreateSentinelDatabaseResponse } from 'apiSrc/modules/redis-sentinel/dto/create.sentinel.database.response'
 import {
   AddRedisDatabaseStatus,
   InitialStateSentinel,
@@ -25,7 +22,12 @@ import {
 } from '../interfaces'
 import { AppDispatch, RootState } from '../store'
 import { addErrorNotification } from '../app/notifications'
-import type { ActionStatus } from 'src/common/models'
+import type { ActionStatus } from 'uiSrc/slices/interfaces'
+import {
+  SentinelMaster,
+  CreateSentinelDatabasesDto,
+  CreateSentinelDatabaseResponse,
+} from 'apiClient'
 
 export const initialState: InitialStateSentinel = {
   loading: false,

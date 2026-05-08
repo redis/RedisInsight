@@ -26,7 +26,7 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Modal } from 'uiSrc/components/base/display'
 import { CancelIcon } from 'uiSrc/components/base/icons'
-import { CloudSubscriptionPlanResponse } from 'apiSrc/modules/cloud/subscription/dto'
+import { CloudSubscriptionPlanResponse } from 'apiClient'
 import { OAuthProvider, OAuthProviders } from './constants'
 import {
   StyledFooter,

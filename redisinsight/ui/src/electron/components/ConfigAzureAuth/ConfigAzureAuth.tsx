@@ -13,9 +13,8 @@ import {
   addErrorNotification,
   addMessageNotification,
 } from 'uiSrc/slices/app/notifications'
-import { AzureAuthStatus } from 'apiSrc/modules/azure/constants'
+import { AzureAuthStatus, Pages } from 'uiSrc/constants'
 import { AppDispatch } from 'uiSrc/slices/store'
-import { Pages } from 'uiSrc/constants'
 
 interface MsalAccountInfo {
   homeAccountId: string

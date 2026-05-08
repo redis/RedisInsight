@@ -16,10 +16,7 @@ import {
 import { getPercentage, numberWithSpaces } from 'uiSrc/utils/numbers'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { RiIcon, AllIconsType } from 'uiSrc/components/base/icons/RiIcon'
-import {
-  DatabaseAnalysis,
-  SimpleTypeSummary,
-} from 'apiSrc/modules/database-analysis/models'
+import { DatabaseAnalysis, SimpleTypeSummary } from 'apiClient'
 
 import {
   ChartsWrapper,

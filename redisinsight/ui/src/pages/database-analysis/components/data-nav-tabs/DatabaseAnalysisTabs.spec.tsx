@@ -16,7 +16,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { MOCK_RECOMMENDATIONS } from 'uiSrc/constants/mocks/mock-recommendations'
 import { recommendationsSelector } from 'uiSrc/slices/recommendations/recommendations'
-import { ShortDatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
+import { ShortDatabaseAnalysis } from 'apiClient'
 import DatabaseAnalysisTabs, { Props } from './DatabaseAnalysisTabs'
 
 const mockRecommendationsSelector = jest.requireActual(

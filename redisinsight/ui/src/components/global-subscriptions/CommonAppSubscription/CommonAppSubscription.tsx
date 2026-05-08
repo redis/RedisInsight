@@ -19,7 +19,7 @@ import { oauthCloudJobSelector, setJob } from 'uiSrc/slices/oauth/cloud'
 import { CloudJobName } from 'uiSrc/electron/constants'
 import { appCsrfSelector } from 'uiSrc/slices/app/csrf'
 import { useIoConnection } from 'uiSrc/services/hooks/useIoConnection'
-import { CloudJobInfo } from 'apiSrc/modules/cloud/job/models'
+import { CloudJobInfo } from 'apiClient'
 
 const CommonAppSubscription = () => {
   const { id: jobId = '' } = useSelector(oauthCloudJobSelector) ?? {}

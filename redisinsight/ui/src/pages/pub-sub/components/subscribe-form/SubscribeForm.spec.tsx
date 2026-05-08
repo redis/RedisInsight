@@ -14,7 +14,7 @@ import {
 } from 'uiSrc/utils/test-utils'
 
 import SubscribeForm from './SubscribeForm'
-import { SubscriptionType } from 'apiSrc/modules/pub-sub/constants'
+import { SubscriptionType } from 'uiSrc/constants/pubSub'
 
 let store: typeof mockedStore
 

@@ -13,7 +13,7 @@ import {
 
 import { FormatedDate, RiTooltip } from 'uiSrc/components'
 
-import { SlowLog } from 'apiSrc/modules/slow-log/models'
+import { SlowLog } from 'apiClient'
 import { StyledTableWrapper } from './SlowLogTable.styles'
 
 export const DATE_FORMAT = 'HH:mm:ss d LLL yyyy'

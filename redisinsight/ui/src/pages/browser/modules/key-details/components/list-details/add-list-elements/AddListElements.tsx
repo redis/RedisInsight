@@ -23,7 +23,7 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import { PushElementToListDto } from 'apiSrc/modules/browser/list/dto'
+import { PushElementToListDto } from 'apiClient'
 
 import { EntryContent } from '../../common/AddKeysContainer.styled'
 

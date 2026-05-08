@@ -1,10 +1,40 @@
-import { BulkActionsStatus, BulkActionsType, KeyTypes } from 'uiSrc/constants'
+import {
+  BulkActionsStatus,
+  BulkActionsType,
+  KeyTypes,
+  RedisDataType,
+} from 'uiSrc/constants'
 import { Nullable } from 'uiSrc/utils'
-import { IBulkActionOverview as IBulkActionOverviewBE } from 'apiSrc/modules/bulk-actions/interfaces/bulk-action-overview.interface'
 
-export interface IBulkActionOverview
-  extends Omit<IBulkActionOverviewBE, 'status'> {
+export interface IBulkActionFilterOverview {
+  type: RedisDataType
+  match: string
+}
+
+export interface IBulkActionProgressOverview {
+  total: number
+  scanned: number
+}
+
+export interface IBulkActionSummaryOverview {
+  processed: number
+  succeed: number
+  failed: number
+  errors: Array<Record<string, string>>
+  keys: Array<unknown>
+}
+
+export interface IBulkActionOverview {
+  id: string
+  databaseId: string
+  duration: number
+  type: BulkActionsType
   status: BulkActionsStatus
+  filter: IBulkActionFilterOverview
+  progress: IBulkActionProgressOverview
+  summary: IBulkActionSummaryOverview
+  downloadUrl?: string
+  error?: string
 }
 
 export interface StateBulkActions {

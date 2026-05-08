@@ -17,7 +17,6 @@ import {
 import { EMPTY_COMMAND } from 'uiSrc/constants'
 import { CommandExecutionType, ResultsMode } from 'uiSrc/slices/interfaces'
 import { setDbIndexState } from 'uiSrc/slices/app/context'
-import { SendClusterCommandDto } from 'apiSrc/modules/cli/dto/cli.dto'
 import reducer, {
   initialState,
   sendWBCommand,
@@ -612,7 +611,7 @@ describe('workbench results slice', () => {
 
     describe('Single Node Cluster Cli command', () => {
       const commandId = `${Date.now()}`
-      const options: SendClusterCommandDto = {
+      const options = {
         command: 'keys *',
         nodeOptions: {
           host: 'localhost',

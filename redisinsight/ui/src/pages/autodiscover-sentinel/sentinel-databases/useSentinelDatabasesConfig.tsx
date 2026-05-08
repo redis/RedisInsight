@@ -14,7 +14,7 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Pages } from 'uiSrc/constants'
 import { setTitle } from 'uiSrc/utils'
-import { CreateSentinelDatabaseDto } from 'apiSrc/modules/redis-sentinel/dto/create.sentinel.database.dto'
+import { CreateSentinelDatabaseDto } from 'apiClient'
 import {
   ColumnDef,
   RowSelectionState,

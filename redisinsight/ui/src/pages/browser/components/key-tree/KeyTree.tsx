@@ -34,7 +34,7 @@ import {
   setBulkDeleteStartAgain,
 } from 'uiSrc/slices/browser/bulkActions'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
+import { GetKeyInfoResponse } from 'apiClient'
 
 import styles from './styles.module.scss'
 import { KeyTreeProps } from './KeyTree.types'

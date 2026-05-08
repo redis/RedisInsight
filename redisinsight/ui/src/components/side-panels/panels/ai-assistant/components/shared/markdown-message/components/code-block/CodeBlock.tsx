@@ -4,7 +4,7 @@ import { CodeButtonParams } from 'uiSrc/constants'
 import { sendWbQueryAction } from 'uiSrc/slices/workbench/wb-results'
 import { CodeButtonBlock } from 'uiSrc/components/markdown'
 import { ButtonLang } from 'uiSrc/utils/formatters/markdown/remarkCode'
-import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
+import { AdditionalRedisModule } from 'apiClient'
 
 export interface Props {
   modules?: AdditionalRedisModule[]

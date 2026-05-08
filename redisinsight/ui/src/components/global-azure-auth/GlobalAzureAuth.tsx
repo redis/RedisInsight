@@ -15,11 +15,11 @@ import {
   addMessageNotification,
 } from 'uiSrc/slices/app/notifications'
 import { AppDispatch } from 'uiSrc/slices/store'
-import { Pages } from 'uiSrc/constants'
 import {
+  Pages,
   AzureAuthStatus,
   AZURE_OAUTH_STORAGE_KEY,
-} from 'apiSrc/modules/azure/constants'
+} from 'uiSrc/constants'
 const STORAGE_POLL_INTERVAL = 500 // ms
 const STORAGE_RESULT_MAX_AGE = 30000 // 30 seconds
 

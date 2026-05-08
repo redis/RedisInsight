@@ -33,7 +33,7 @@ import {
 import { TableTextBtn } from 'uiSrc/pages/database-analysis/components/base/TableTextBtn'
 import { Table, ColumnDef } from 'uiSrc/components/base/layout/table'
 import { CellText } from 'uiSrc/components/auto-discover'
-import { NspSummary } from 'apiSrc/modules/database-analysis/models'
+import { NspSummary } from 'apiClient'
 
 import { ExpandedRowItem, TruncatedContent } from './TopNamespace.styles'
 

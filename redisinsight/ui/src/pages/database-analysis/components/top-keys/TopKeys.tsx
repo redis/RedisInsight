@@ -3,7 +3,7 @@ import { TableView } from 'uiSrc/pages/database-analysis/constants'
 import { Nullable } from 'uiSrc/utils'
 import TableLoader from 'uiSrc/pages/database-analysis/components/table-loader'
 import { TextBtn } from 'uiSrc/pages/database-analysis/components/base/TextBtn'
-import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
+import { DatabaseAnalysis } from 'apiClient'
 import {
   Section,
   SectionTitle,

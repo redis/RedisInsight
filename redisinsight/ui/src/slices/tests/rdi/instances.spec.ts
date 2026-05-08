@@ -31,7 +31,7 @@ import {
 } from 'uiSrc/slices/app/notifications'
 import { RdiInstance } from 'uiSrc/slices/interfaces'
 import successMessages from 'uiSrc/components/notifications/success-messages'
-import { Rdi } from 'apiSrc/modules/rdi/models'
+import { Rdi } from 'apiClient'
 
 let store: typeof mockedStore
 

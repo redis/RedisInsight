@@ -10,7 +10,7 @@ import {
 import { AddStreamFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
 import { StreamEntryFields } from 'uiSrc/pages/browser/modules/key-details/components/stream-details/add-stream-entity'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
-import { CreateStreamDto } from 'apiSrc/modules/browser/stream/dto'
+import { CreateStreamDto } from 'apiClient'
 
 import styles from './styles.module.scss'
 

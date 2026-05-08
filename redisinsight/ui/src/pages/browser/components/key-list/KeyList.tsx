@@ -55,7 +55,7 @@ import KeyRowSize from 'uiSrc/pages/browser/components/key-row-size'
 import KeyRowName from 'uiSrc/pages/browser/components/key-row-name'
 import KeyRowType from 'uiSrc/pages/browser/components/key-row-type'
 
-import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
+import { GetKeyInfoResponse } from 'apiClient'
 
 import * as S from './KeyList.styles'
 import { Props } from './KeyList.types'

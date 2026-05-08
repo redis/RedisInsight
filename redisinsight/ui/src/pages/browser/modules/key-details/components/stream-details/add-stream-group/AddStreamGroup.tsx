@@ -19,7 +19,7 @@ import {
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiTooltip } from 'uiSrc/components'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import { CreateConsumerGroupsDto } from 'apiSrc/modules/browser/stream/dto'
+import { CreateConsumerGroupsDto } from 'apiClient'
 
 import { Panel } from 'uiSrc/components/panel'
 import { Text } from 'uiSrc/components/base/text'
