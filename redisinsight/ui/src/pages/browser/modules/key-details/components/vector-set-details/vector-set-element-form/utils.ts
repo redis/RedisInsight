@@ -49,7 +49,7 @@ export function parseFp32EscapedString(raw: string): Uint8Array | null {
   return bytes
 }
 
-function bytesToBase64(bytes: Uint8Array): string {
+export function bytesToBase64(bytes: Uint8Array): string {
   let binary = ''
   for (let i = 0; i < bytes.length; i += 1) {
     binary += String.fromCharCode(bytes[i])
@@ -57,7 +57,7 @@ function bytesToBase64(bytes: Uint8Array): string {
   return btoa(binary)
 }
 
-function validateVector(
+export function validateVector(
   raw: string,
   vectorDim?: number,
 ): VectorValidationResult {
