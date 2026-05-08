@@ -1,0 +1,100 @@
+meta {
+  name: Similarity Search Preview
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/vector-set/similarity-search/preview
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "vset:small_3d",
+    "vectorValues": [0.1, 0.2, 0.3],
+    "count": 10
+  }
+}
+
+docs {
+  # Similarity Search Preview
+
+  Returns a human-readable preview of the `VSIM` command that the similarity-search endpoint would execute for the supplied DTO. Reuses the same internal command builder as `POST /vector-set/similarity-search` so the preview cannot drift from what is actually executed when the form is submitted.
+
+  Designed to be called (debounced) by the FE once the similarity-search form is valid so the UI always shows the exact command that will run.
+
+  ## Request Body
+
+  Same shape as `POST /vector-set/similarity-search`. The only difference is that all query fields are optional — when none is supplied the endpoint returns an empty preview instead of a `400`.
+
+  | Field | Type | Description |
+  |-------|------|-------------|
+  | `keyName` | string | The Vector Set key name. Required (`@IsDefined` on the DTO). |
+  | `elementName` | string | (Optional) Existing element's vector as the query |
+  | `vectorValues` | number[] | (Optional) Query vector as numeric values |
+  | `vectorFp32` | string | (Optional) Query vector as a base64-encoded little-endian FP32 blob |
+  | `count` | number | Maximum number of results (omitted from preview when undefined) |
+  | `filter` | string | Optional filter expression evaluated against element attributes |
+
+  At most one of `elementName`, `vectorValues`, `vectorFp32` may be present. Supplying more than one returns `400`.
+
+  When **none** of `elementName` / `vectorValues` / `vectorFp32` is supplied the response `preview` is an empty string — the FE treats that as "nothing to show yet" and hides the preview bar.
+
+  ## Response
+
+  ```json
+  {
+    "preview": "VSIM vset:small_3d VALUES 3 0.1 0.2 0.3 COUNT 10 WITHSCORES WITHATTRIBS"
+  }
+  ```
+
+  ## Error Responses
+
+  | Status | Condition |
+  |--------|-----------|
+  | `400` | More than one of `elementName` / `vectorValues` / `vectorFp32` supplied, invalid `count`, or invalid `vectorFp32` base64 |
+
+  ## Examples
+
+  ### Empty preview when no query payload is supplied
+
+  ```json
+  {
+    "keyName": "vset:small_3d",
+    "count": 10
+  }
+  ```
+
+  Returns:
+
+  ```json
+  { "preview": "" }
+  ```
+
+  ### Preview for FP32 input
+
+  ```json
+  {
+    "keyName": "vset:small_3d",
+    "vectorFp32": "AACAPwAAAEAAAEBA",
+    "count": 10
+  }
+  ```
+
+  Returns the FP32 vector rendered as a quoted `\xHH` escape string so the command is copy-paste-safe into `redis-cli`:
+
+  ```
+  VSIM vset:small_3d FP32 "\x00\x00\x80\x3f\x00\x00\x00\x40\x00\x00\x40\x40" COUNT 10 WITHSCORES WITHATTRIBS
+  ```
+
+  ## Notes
+
+  - `WITHSCORES` and `WITHATTRIBS` are always rendered (matches the search endpoint).
+  - When **no** query field is supplied, the response `preview` is an empty string instead of a placeholder command.
+}
+
+settings {
+  encodeUrl: true
+}
