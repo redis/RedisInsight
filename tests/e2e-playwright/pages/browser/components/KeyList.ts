@@ -494,14 +494,6 @@ export class KeyList {
   }
 
   /**
-   * Convenience helper for reading the first delimiter chip.
-   */
-  async getCurrentDelimiter(): Promise<string> {
-    const [first] = await this.getCurrentDelimiters();
-    return first ?? '';
-  }
-
-  /**
    * Add a delimiter via the AutoTag input inside the tree-view settings popover.
    */
   async addDelimiter(delimiter: string): Promise<void> {
