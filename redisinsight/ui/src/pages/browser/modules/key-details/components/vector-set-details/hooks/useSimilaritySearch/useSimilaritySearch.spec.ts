@@ -93,31 +93,6 @@ describe('useSimilaritySearch', () => {
     expect(result.current.vectorDim).toBe(4)
   })
 
-  describe('results exposure', () => {
-    it('reports no results and an empty matches array before any search', () => {
-      const { result } = renderHook(() => useSimilaritySearch())
-
-      expect(result.current.hasResults).toBe(false)
-      expect(result.current.matches).toEqual([])
-    })
-
-    it('exposes hasResults and matches when search data is loaded', () => {
-      const elements = [
-        { name: stringToBuffer('alpha'), score: 0.9 },
-        { name: stringToBuffer('beta'), score: 0.5 },
-      ]
-      setSimilaritySearchState(false, {
-        keyName: KEY_BUFFER,
-        elements,
-      })
-
-      const { result } = renderHook(() => useSimilaritySearch())
-
-      expect(result.current.hasResults).toBe(true)
-      expect(result.current.matches).toEqual(elements)
-    })
-  })
-
   describe('buildSimilaritySearchPayload', () => {
     it('returns null when no key is selected', () => {
       setSelectedKey(null)

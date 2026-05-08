@@ -1,7 +1,4 @@
-import {
-  VectorSetSimilarityMatch,
-  VectorSetSimilaritySearchPayload,
-} from 'uiSrc/slices/interfaces/vectorSet'
+import { VectorSetSimilaritySearchPayload } from 'uiSrc/slices/interfaces/vectorSet'
 
 import { SimilaritySearchFormState } from '../../similarity-search-form'
 
@@ -14,10 +11,6 @@ export interface UseSimilaritySearchResult {
    */
   previewLoading: boolean
   vectorDim?: number
-  /** True once a search has produced a response for the current key. */
-  hasResults: boolean
-  /** Matches from the latest successful search; empty when none. */
-  matches: VectorSetSimilarityMatch[]
   /** BE-built `VSIM` command preview for the current form state. */
   preview: string
   runSimilaritySearch: (state: SimilaritySearchFormState) => void
