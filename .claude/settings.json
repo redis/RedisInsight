@@ -2,11 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(yarn lint*)",
-      "Bash(yarn lint:ui*)",
-      "Bash(yarn lint:api*)",
       "Bash(yarn type-check:ui*)",
       "Bash(yarn test*)",
-      "Bash(yarn test:api*)",
       "Bash(yarn dev:ui*)",
       "Bash(yarn dev:api*)",
       "Bash(node node_modules/.bin/jest*)",
