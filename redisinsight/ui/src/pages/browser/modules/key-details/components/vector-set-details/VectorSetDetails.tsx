@@ -22,6 +22,7 @@ import {
   useAddElements,
   useElementDetails,
   useSimilaritySearch,
+  useSimilaritySearchResults,
 } from './hooks'
 import * as S from './VectorSetDetails.styles'
 
@@ -57,13 +58,14 @@ const VectorSetDetails = (props: Props) => {
     loading: similaritySearchLoading,
     previewLoading: similaritySearchPreviewLoading,
     vectorDim: similaritySearchVectorDim,
-    hasResults: hasSimilarityResults,
-    matches: similarityMatches,
     preview: similaritySearchPreview,
     runSimilaritySearch,
     runSimilaritySearchPreview,
     resetSimilaritySearch,
   } = useSimilaritySearch()
+
+  const { hasResults: hasSimilarityResults, matches: similarityMatches } =
+    useSimilaritySearchResults()
 
   const handleSubmitElements = useCallback(
     (elements: SubmitElement[]) => {
