@@ -150,7 +150,7 @@
     "@types/semver": "^7.7.0",
     "@types/styled-components": "^5.1.34",
     "@types/supertest": "^2.0.8",
-    "@types/text-encoding": "^0.0.37",
+    "@types/text-encoding": "^0.0.40",
     "@types/webpack-env": "^1.18.4",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
