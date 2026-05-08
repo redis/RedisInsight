@@ -1,5 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import { stringToBuffer } from 'uiSrc/utils'
+import { vectorSetSimilaritySearchSelector } from 'uiSrc/slices/browser/vectorSet'
 import { Props, VectorSetDetails } from './VectorSetDetails'
 
 const defaultProps = {
@@ -19,13 +21,36 @@ jest.mock('uiSrc/slices/browser/vectorSet', () => {
     addVectorSetElementsStateSelector: jest
       .fn()
       .mockReturnValue(defaultState.adding),
+    vectorSetSimilaritySearchSelector: jest
+      .fn()
+      .mockReturnValue(defaultState.similaritySearch),
+    vectorSetSimilaritySearchPreviewSelector: jest
+      .fn()
+      .mockReturnValue(defaultState.similaritySearchPreview),
     fetchMoreVectorSetElements: () => jest.fn(),
     fetchVectorSetElements: () => jest.fn(),
     addVectorSetElements: () => jest.fn(),
+    fetchVectorSetSimilaritySearch: () => jest.fn(),
+    fetchVectorSetSimilaritySearchPreview: () => jest.fn(),
   }
 })
 
+const setSimilaritySearchData = (data?: {
+  keyName: any
+  elements: { name: any; score: number }[]
+}) => {
+  ;(vectorSetSimilaritySearchSelector as jest.Mock).mockReturnValue({
+    loading: false,
+    error: '',
+    data,
+  })
+}
+
 describe('VectorSetDetails', () => {
+  beforeEach(() => {
+    setSimilaritySearchData(undefined)
+  })
+
   it('should render', () => {
     expect(render(<VectorSetDetails {...defaultProps} />)).toBeTruthy()
   })
@@ -64,5 +89,31 @@ describe('VectorSetDetails', () => {
 
     fireEvent.click(screen.getByTestId('cancel-elements-btn'))
     expect(screen.queryByTestId('save-elements-btn')).not.toBeInTheDocument()
+  })
+
+  it('shows the regular elements list when no similarity search has run', () => {
+    render(<VectorSetDetails {...defaultProps} />)
+    expect(screen.getByTestId('vector-set-details')).toBeInTheDocument()
+    expect(
+      screen.queryByTestId('vector-set-similarity-results'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('replaces the elements list with the similarity results table once a search succeeds', () => {
+    setSimilaritySearchData({
+      keyName: stringToBuffer('mykey'),
+      elements: [
+        { name: stringToBuffer('alpha'), score: 0.9 },
+        { name: stringToBuffer('beta'), score: 0.5 },
+      ],
+    })
+
+    render(<VectorSetDetails {...defaultProps} />)
+
+    expect(
+      screen.getByTestId('vector-set-similarity-results'),
+    ).toBeInTheDocument()
+    expect(screen.getByText('90.00 %')).toBeInTheDocument()
+    expect(screen.getByText('50.00 %')).toBeInTheDocument()
   })
 })
