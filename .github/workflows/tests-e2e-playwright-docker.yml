@@ -116,7 +116,7 @@ jobs:
           OSS_CLUSTER_HOSTNAME_HOST: 'host.docker.internal'
 
       - name: Upload test results
-        if: ${{ !cancelled() }}
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: playwright-report-docker

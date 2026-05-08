@@ -173,7 +173,7 @@ jobs:
           NODE_TLS_REJECT_UNAUTHORIZED: '0'
 
       - name: Upload test results
-        if: ${{ !cancelled() }}
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: playwright-report-electron-linux
