@@ -14,7 +14,7 @@ import SWAGGER_CONFIG from '../config/swagger';
  * Boots the Nest application **without** listening on a port and serializes the
  * Swagger document to `redisinsight/api/openapi.json`.
  *
- * Used by the `generate:openapi-spec` script (which feeds `openapi-generator-cli`).
+ * Used by the `generate:openapi-spec` script (which feeds `@hey-api/openapi-ts`).
  * Keep the bootstrap logic here as small as possible: the goal is a deterministic
  * spec dump that does not rely on any runtime side-effects of `main.ts` (folder
  * migrations, log file providers, websocket adapters, etc.).
