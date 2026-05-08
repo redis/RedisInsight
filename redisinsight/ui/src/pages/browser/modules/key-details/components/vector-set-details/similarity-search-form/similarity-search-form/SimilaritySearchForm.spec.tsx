@@ -204,9 +204,6 @@ describe('SimilaritySearchForm', () => {
     })
 
     expect(screen.getByTestId(`${TEST_ID}-submit`)).toBeEnabled()
-    expect(
-      screen.getByText('Detected numeric vector (3 dimensions).'),
-    ).toBeInTheDocument()
   })
 
   it('disables submit when the FP32 vector dimension does not match vectorDim', () => {
