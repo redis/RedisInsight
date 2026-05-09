@@ -1226,6 +1226,21 @@ describe('vectorSet slice', () => {
         expect.any(Object),
       )
     })
+
+    it('should dispatch failure when the response status is not successful and no error is thrown', async () => {
+      const payload = buildPayload()
+      apiService.post = jest.fn().mockResolvedValue({
+        status: 304,
+        data: { keyName: payload.keyName, elements: [] },
+      })
+
+      await store.dispatch<any>(fetchVectorSetSimilaritySearch(payload))
+
+      expect(store.getActions()).toEqual([
+        loadSimilaritySearch(),
+        loadSimilaritySearchFailure('Something was wrong!'),
+      ])
+    })
   })
 
   describe('similaritySearchPreview reducers', () => {
