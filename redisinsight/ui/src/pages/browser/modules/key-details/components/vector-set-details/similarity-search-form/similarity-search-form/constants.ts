@@ -4,6 +4,8 @@ export const SIMILARITY_SEARCH_COUNT_DEFAULT = 10
 export const SIMILARITY_SEARCH_COUNT_MIN = 1
 export const SIMILARITY_SEARCH_COUNT_MAX = 1000
 
+export const VECTOR_PLACEHOLDER =
+  'Enter a vector to find items with the most similar vectors.'
 export const ELEMENT_PLACEHOLDER = 'Existing element name'
 export const FILTER_PLACEHOLDER = 'e.g. .price > 50 and .category == "books"'
 

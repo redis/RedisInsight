@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import { RiTooltip } from 'uiSrc/components'
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
@@ -29,6 +29,7 @@ import {
   SIMILARITY_SEARCH_COUNT_MIN,
   SIMILARITY_SEARCH_FORM_TEST_ID as TEST_ID,
   VECTOR_MODE_TOOLTIP,
+  VECTOR_PLACEHOLDER,
 } from './constants'
 import { initialFormState, isQueryReady } from './utils'
 import {
@@ -50,19 +51,16 @@ export const SimilaritySearchForm = () => {
   const [state, setState] =
     useState<SimilaritySearchFormState>(initialFormState)
 
-  const setMode = useCallback((mode: SimilaritySearchMode) => {
+  const setMode = (mode: SimilaritySearchMode) => {
     setState((prev) => ({ ...prev, mode }))
-  }, [])
+  }
 
-  const setField = useCallback(
-    <K extends keyof SimilaritySearchFormState>(
-      key: K,
-      value: SimilaritySearchFormState[K],
-    ) => {
-      setState((prev) => ({ ...prev, [key]: value }))
-    },
-    [],
-  )
+  const setField = <K extends keyof SimilaritySearchFormState>(
+    key: K,
+    value: SimilaritySearchFormState[K],
+  ) => {
+    setState((prev) => ({ ...prev, [key]: value }))
+  }
 
   // Refresh the BE-built preview on every form-state change (and on mount, to
   // seed the initial preview). The hook debounces the actual request so we
@@ -82,18 +80,15 @@ export const SimilaritySearchForm = () => {
   const submitLoading = loading || previewLoading
   const submitDisabled = submitLoading || !queryReady
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = () => {
     if (!queryReady) return
     runSimilaritySearch(state)
-  }, [runSimilaritySearch, queryReady, state])
+  }
 
-  const handleReset = useCallback(() => {
+  const handleReset = () => {
     setState(initialFormState())
     resetSimilaritySearch()
-  }, [resetSimilaritySearch])
-
-  const vectorPlaceholder =
-    'Enter a vector to find items with the most similar vectors.'
+  }
 
   return (
     <FormContainer data-testid={TEST_ID} gap="m" grow={false}>
@@ -140,7 +135,7 @@ export const SimilaritySearchForm = () => {
           {state.mode === 'vector' ? (
             <FormField>
               <TextInput
-                placeholder={vectorPlaceholder}
+                placeholder={VECTOR_PLACEHOLDER}
                 value={state.vectorInput}
                 onChange={(value) => setField('vectorInput', value)}
                 disabled={loading}
