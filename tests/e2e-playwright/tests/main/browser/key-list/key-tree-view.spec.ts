@@ -38,10 +38,14 @@ test.describe('Browser > Key Tree View', () => {
     database = await apiHelper.createDatabase(config);
   });
 
-  test.afterEach(async ({ apiHelper }) => {
+  test.afterEach(async ({ apiHelper, browserPage }) => {
     if (database?.id) {
       await apiHelper.deleteKeysByPattern(database.id, allTestKeysPattern);
     }
+    // browserViewType is persisted in localStorage and shared across all specs in the same Electron
+    // instance. Tests here briefly force list view; clear the key so the next spec gets the app's
+    // true default (Tree) even if a test fails before switching back.
+    await browserPage.page.evaluate(() => localStorage.removeItem('browserViewType'));
   });
 
   test.afterAll(async ({ apiHelper }) => {
