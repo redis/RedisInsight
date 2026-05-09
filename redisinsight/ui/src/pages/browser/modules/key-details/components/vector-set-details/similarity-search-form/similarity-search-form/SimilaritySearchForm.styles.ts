@@ -49,5 +49,5 @@ export const CountInlineLabel = styled.span<HTMLAttributes<HTMLSpanElement>>`
 export const FilterLabel = styled.span<HTMLAttributes<HTMLSpanElement>>`
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: ${({ theme }) => theme.core.space.space050};
 `
