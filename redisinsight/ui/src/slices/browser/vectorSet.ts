@@ -5,6 +5,7 @@ import { apiService } from 'uiSrc/services'
 import { ApiEndpoints } from 'uiSrc/constants'
 import {
   bufferToString,
+  DEFAULT_ERROR_MESSAGE,
   getApiErrorMessage,
   getUrl,
   isEqualBuffers,
@@ -337,6 +338,8 @@ export function fetchVectorSetElements({
           }),
         )
         dispatch(updateSelectedKeyRefreshTime(Date.now()))
+      } else {
+        dispatch(loadVectorSetElementsFailure(DEFAULT_ERROR_MESSAGE))
       }
     } catch (_err) {
       const error = _err as AxiosError
@@ -380,6 +383,8 @@ export function fetchMoreVectorSetElements({
             elements: elementNames.map((name) => ({ name })),
           }),
         )
+      } else {
+        dispatch(loadMoreVectorSetElementsFailure(DEFAULT_ERROR_MESSAGE))
       }
     } catch (_err) {
       const error = _err as AxiosError
@@ -437,6 +442,8 @@ export function deleteVectorSetElements(
           dispatch(deleteKeyFromList(key))
           dispatch(addMessageNotification(successMessages.DELETED_KEY(key)))
         }
+      } else {
+        dispatch(removeVectorSetElementsFailure(DEFAULT_ERROR_MESSAGE))
       }
     } catch (_err) {
       const error = _err as AxiosError
@@ -554,6 +561,9 @@ export function addVectorSetElements(
         onSuccessAction?.()
         dispatch(addElementsSuccess())
         dispatch<any>(fetchKeyInfo(data.keyName))
+      } else {
+        onFailAction?.()
+        dispatch(addElementsFailure(DEFAULT_ERROR_MESSAGE))
       }
     } catch (_err) {
       const error = _err as AxiosError
@@ -590,6 +600,8 @@ export function fetchDownloadVectorEmbedding(
       if (isStatusSuccessful(status)) {
         dispatch(downloadVectorSetEmbeddingSuccess())
         onSuccessAction?.(data, headers)
+      } else {
+        dispatch(downloadVectorSetEmbeddingFailure(DEFAULT_ERROR_MESSAGE))
       }
     } catch (_err) {
       const error = _err as AxiosError
@@ -621,6 +633,8 @@ export function fetchVectorSetSimilaritySearch(
 
       if (isStatusSuccessful(status)) {
         dispatch(loadSimilaritySearchSuccess(data))
+      } else {
+        dispatch(loadSimilaritySearchFailure(DEFAULT_ERROR_MESSAGE))
       }
     } catch (_err) {
       const error = _err as AxiosError
@@ -663,6 +677,8 @@ export function fetchVectorSetSimilaritySearchPreview(
 
       if (isStatusSuccessful(status)) {
         dispatch(loadSimilaritySearchPreviewSuccess(data.preview))
+      } else {
+        dispatch(loadSimilaritySearchPreviewFailure(DEFAULT_ERROR_MESSAGE))
       }
     } catch (_err) {
       const error = _err as AxiosError
