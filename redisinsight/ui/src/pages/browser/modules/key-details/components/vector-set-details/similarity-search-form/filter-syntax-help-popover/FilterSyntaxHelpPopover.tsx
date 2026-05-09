@@ -10,11 +10,8 @@ import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { Row } from 'uiSrc/components/base/layout/flex'
 
-import {
-  HelpExampleList,
-  HelpPopoverContainer,
-} from './FilterSyntaxHelpPopover.styles'
 import { FILTER_EXAMPLES, FILTER_OPERATORS } from './constants'
+import * as S from './FilterSyntaxHelpPopover.styles'
 
 const TEST_ID = 'similarity-search-filter-help'
 
@@ -28,7 +25,7 @@ export const FilterSyntaxHelpPopover = () => {
       isOpen={isOpen}
       closePopover={() => setIsOpen(false)}
       panelPaddingSize="m"
-      button={
+      trigger={
         <IconButton
           icon={InfoIcon}
           aria-label="Filter syntax help"
@@ -37,7 +34,7 @@ export const FilterSyntaxHelpPopover = () => {
         />
       }
     >
-      <HelpPopoverContainer data-testid={`${TEST_ID}-panel`}>
+      <S.HelpPopoverContainer data-testid={`${TEST_ID}-panel`} gap="s">
         <Title size="XS">Filter syntax</Title>
         <Text size="s">
           Filters use a small expression language evaluated against each
@@ -46,19 +43,21 @@ export const FilterSyntaxHelpPopover = () => {
         <Text size="s" color="secondary">
           Operators
         </Text>
-        <HelpExampleList>
+        <S.HelpExampleList>
           {FILTER_OPERATORS.map((line) => (
             <li key={line}>{line}</li>
           ))}
-        </HelpExampleList>
+        </S.HelpExampleList>
         <Text size="s" color="secondary">
           Examples
         </Text>
-        <HelpExampleList>
+        <S.HelpExampleList>
           {FILTER_EXAMPLES.map((line) => (
-            <li key={line}>{line}</li>
+            <li key={line}>
+              <S.StyledExampleText size="s">{line}</S.StyledExampleText>
+            </li>
           ))}
-        </HelpExampleList>
+        </S.HelpExampleList>
         <Row justify="end">
           <SecondaryButton
             size="s"
@@ -68,7 +67,7 @@ export const FilterSyntaxHelpPopover = () => {
             Close
           </SecondaryButton>
         </Row>
-      </HelpPopoverContainer>
+      </S.HelpPopoverContainer>
     </RiPopover>
   )
 }
