@@ -306,21 +306,6 @@ export class KeyList {
   }
 
   /**
-   * Total keys in DB shown in footer (`keys-total`), when present.
-   */
-  async getFooterTotalCount(): Promise<number | null> {
-    const el = this.keysSummary.getByTestId('keys-total');
-    if (!(await el.isVisible().catch(() => false))) {
-      return null;
-    }
-    const text = await el.innerText();
-    if (!text?.trim()) {
-      return null;
-    }
-    return this.parseFormattedCount(text);
-  }
-
-  /**
    * Refresh the key list
    */
   async refresh(): Promise<void> {
