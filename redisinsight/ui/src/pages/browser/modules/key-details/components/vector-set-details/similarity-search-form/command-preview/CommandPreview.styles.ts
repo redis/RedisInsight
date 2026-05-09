@@ -4,9 +4,8 @@ import { Row } from 'uiSrc/components/base/layout/flex'
 
 export const PreviewBar = styled(Row)`
   width: 100%;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 8px 6px 12px;
+  padding: ${({ theme }) =>
+    `${theme.core.space.space100} ${theme.core.space.space200}`};
   border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral600};
   border-radius: 4px;
   background: ${({ theme }) => theme.semantic.color.background.neutral100};

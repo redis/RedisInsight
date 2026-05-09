@@ -12,7 +12,7 @@ export const CommandPreview = ({ command }: CommandPreviewProps) => {
   const isEmpty = command.length === 0
 
   return (
-    <PreviewBar data-testid={TEST_ID}>
+    <PreviewBar data-testid={TEST_ID} gap="m" align="center">
       <PreviewText title={command} data-testid={`${TEST_ID}-text`}>
         {isEmpty ? PREVIEW_PLACEHOLDER : command}
       </PreviewText>
