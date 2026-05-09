@@ -190,6 +190,13 @@ export class KeyList {
    * @param delimiter tree delimiter (default `:`)
    */
   async selectKeyInTree(keyName: string, delimiter = ':'): Promise<void> {
+    // browserViewType persists in localStorage across specs in the same Electron instance.
+    // If list view leaked from a previous spec, switch to tree view here so the rest of this
+    // helper (which only matches tree-view test ids) doesn't time out.
+    if (await this.keyListTable.isVisible()) {
+      await this.switchToTreeView();
+    }
+
     const delimiterIndex = keyName.lastIndexOf(delimiter);
     const leafName = keyName.substring(delimiterIndex + delimiter.length) || keyName;
     const leafNode = this.keyListContainer.getByRole('treeitem').filter({ hasText: leafName });

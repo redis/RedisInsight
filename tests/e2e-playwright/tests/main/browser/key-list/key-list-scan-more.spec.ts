@@ -17,8 +17,10 @@ test.describe('Browser > Key List View (large dataset)', () => {
   });
 
   test.afterEach(async ({ browserPage }) => {
-    // Restore the default list view so this suite doesn't leak tree-view state to other specs in the same worker.
-    await browserPage.keyList.switchToListView();
+    // browserViewType is persisted in localStorage and shared across all specs in the same Electron
+    // instance. Clear it so the next spec gets the app's true default (Tree) instead of whatever this
+    // suite last set.
+    await browserPage.page.evaluate(() => localStorage.removeItem('browserViewType'));
   });
 
   test('should display keys summary and scroll key list in list view', async ({ browserPage }) => {

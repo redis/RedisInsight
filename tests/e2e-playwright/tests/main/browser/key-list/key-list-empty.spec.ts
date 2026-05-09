@@ -21,6 +21,13 @@ test.describe('Browser > Key List View (empty database)', () => {
     }
   });
 
+  test.afterEach(async ({ browserPage }) => {
+    // browserViewType is persisted in localStorage and shared across all specs in the same Electron
+    // instance. Clear it so the next spec gets the app's true default (Tree) instead of the list view
+    // this test forces.
+    await browserPage.page.evaluate(() => localStorage.removeItem('browserViewType'));
+  });
+
   test('should show empty database welcome and open Add key from message', async ({ browserPage }) => {
     await browserPage.goto(database.id);
     await browserPage.keyList.switchToListView();
