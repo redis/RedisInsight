@@ -9,7 +9,7 @@ export const HelpPopoverContainer = styled(Col)`
 
 export const HelpExampleList = styled.ul`
   margin: 0;
-  padding-left: 20px;
+  padding-left: ${({ theme }) => theme.core.space.space300};
   font-family: 'Source Code Pro', Menlo, Consolas, monospace;
   font-size: 12px;
 `
