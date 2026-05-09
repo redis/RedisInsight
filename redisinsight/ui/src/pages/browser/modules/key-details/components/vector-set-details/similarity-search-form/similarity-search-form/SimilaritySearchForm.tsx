@@ -182,9 +182,7 @@ export const SimilaritySearchForm = () => {
             <Row align="center" gap="s">
               <FilterLabel>
                 Filter expression
-                <FilterSyntaxHelpPopover
-                  data-testid={`${TEST_ID}-filter-help`}
-                />
+                <FilterSyntaxHelpPopover />
               </FilterLabel>
               <FlexItem grow>
                 <TextInput
@@ -202,10 +200,7 @@ export const SimilaritySearchForm = () => {
 
       <Row align="center" gap="m">
         <FlexItem grow>
-          <CommandPreview
-            command={preview ?? ''}
-            data-testid={`${TEST_ID}-preview`}
-          />
+          <CommandPreview command={preview ?? ''} />
         </FlexItem>
         <FlexItem grow={false}>
           <RiTooltip content="Reset form" position="top">

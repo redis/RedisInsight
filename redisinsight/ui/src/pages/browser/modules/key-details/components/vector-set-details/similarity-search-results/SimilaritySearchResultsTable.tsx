@@ -9,11 +9,10 @@ import { SIMILARITY_RESULTS_EMPTY_MESSAGE } from './constants'
 import { SimilaritySearchResultsTableProps } from './SimilaritySearchResultsTable.types'
 import * as S from './SimilaritySearchResultsTable.styles'
 
+const TEST_ID = 'vector-set-similarity-results'
+
 const SimilaritySearchResultsTable = memo(
-  ({
-    matches,
-    'data-testid': dataTestId = 'vector-set-similarity-results',
-  }: SimilaritySearchResultsTableProps) => {
+  ({ matches }: SimilaritySearchResultsTableProps) => {
     const { compressor = null } = useSelector(connectedInstanceSelector)
     const { viewFormat } = useSelector(selectedKeySelector)
 
@@ -28,14 +27,14 @@ const SimilaritySearchResultsTable = memo(
     )
 
     return (
-      <S.Container data-testid={dataTestId}>
+      <S.Container data-testid={TEST_ID}>
         <S.StyledTable
           columns={columns}
           data={sortedMatches}
           stripedRows
           paginationEnabled={false}
           emptyState={SIMILARITY_RESULTS_EMPTY_MESSAGE}
-          data-testid={`${dataTestId}-table`}
+          data-testid={`${TEST_ID}-table`}
         />
       </S.Container>
     )

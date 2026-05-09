@@ -15,11 +15,10 @@ import {
   HelpPopoverContainer,
 } from './FilterSyntaxHelpPopover.styles'
 import { FILTER_EXAMPLES, FILTER_OPERATORS } from './constants'
-import { FilterSyntaxHelpPopoverProps } from './FilterSyntaxHelpPopover.types'
 
-export const FilterSyntaxHelpPopover = ({
-  'data-testid': dataTestId = 'similarity-search-filter-help',
-}: FilterSyntaxHelpPopoverProps) => {
+const TEST_ID = 'similarity-search-filter-help'
+
+export const FilterSyntaxHelpPopover = () => {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -34,11 +33,11 @@ export const FilterSyntaxHelpPopover = ({
           icon={InfoIcon}
           aria-label="Filter syntax help"
           onClick={() => setIsOpen((prev) => !prev)}
-          data-testid={`${dataTestId}-trigger`}
+          data-testid={`${TEST_ID}-trigger`}
         />
       }
     >
-      <HelpPopoverContainer data-testid={`${dataTestId}-panel`}>
+      <HelpPopoverContainer data-testid={`${TEST_ID}-panel`}>
         <Title size="XS">Filter syntax</Title>
         <Text size="s">
           Filters use a small expression language evaluated against each
@@ -64,7 +63,7 @@ export const FilterSyntaxHelpPopover = ({
           <SecondaryButton
             size="s"
             onClick={() => setIsOpen(false)}
-            data-testid={`${dataTestId}-close`}
+            data-testid={`${TEST_ID}-close`}
           >
             Close
           </SecondaryButton>

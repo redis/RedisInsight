@@ -38,10 +38,12 @@ describe('SimilaritySearchForm', () => {
   it('falls back to the "Redis Command Preview" placeholder when the hook has no preview', () => {
     render(<SimilaritySearchForm />)
 
-    expect(screen.getByTestId(`${TEST_ID}-preview-text`)).toHaveTextContent(
-      'Redis Command Preview',
-    )
-    expect(screen.getByTestId(`${TEST_ID}-preview-copy-btn`)).toBeDisabled()
+    expect(
+      screen.getByTestId('similarity-search-command-preview-text'),
+    ).toHaveTextContent('Redis Command Preview')
+    expect(
+      screen.getByTestId('similarity-search-command-preview-copy-btn'),
+    ).toBeDisabled()
   })
 
   it('renders the hook-supplied preview verbatim and enables the copy button', () => {
@@ -52,10 +54,12 @@ describe('SimilaritySearchForm', () => {
     )
     render(<SimilaritySearchForm />)
 
-    expect(screen.getByTestId(`${TEST_ID}-preview-text`)).toHaveTextContent(
-      'VSIM mykey ELE seed WITHSCORES WITHATTRIBS',
-    )
-    expect(screen.getByTestId(`${TEST_ID}-preview-copy-btn`)).toBeEnabled()
+    expect(
+      screen.getByTestId('similarity-search-command-preview-text'),
+    ).toHaveTextContent('VSIM mykey ELE seed WITHSCORES WITHATTRIBS')
+    expect(
+      screen.getByTestId('similarity-search-command-preview-copy-btn'),
+    ).toBeEnabled()
   })
 
   it('keeps the submit button disabled until a valid query is provided', () => {
@@ -231,13 +235,13 @@ describe('SimilaritySearchForm', () => {
     render(<SimilaritySearchForm />)
 
     expect(
-      screen.queryByTestId(`${TEST_ID}-filter-help-panel`),
+      screen.queryByTestId('similarity-search-filter-help-panel'),
     ).not.toBeInTheDocument()
 
-    fireEvent.click(screen.getByTestId(`${TEST_ID}-filter-help-trigger`))
+    fireEvent.click(screen.getByTestId('similarity-search-filter-help-trigger'))
 
     expect(
-      screen.getByTestId(`${TEST_ID}-filter-help-panel`),
+      screen.getByTestId('similarity-search-filter-help-panel'),
     ).toBeInTheDocument()
   })
 })

@@ -14,5 +14,4 @@ export interface SimilarityResultsListConfig {
 
 export interface SimilaritySearchResultsTableProps {
   matches: VectorSetSimilarityMatch[]
-  'data-testid'?: string
 }
