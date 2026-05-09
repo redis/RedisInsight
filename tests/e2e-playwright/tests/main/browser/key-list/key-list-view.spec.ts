@@ -35,10 +35,13 @@ test.describe('Browser > Key List View', () => {
     if (database?.id) {
       await apiHelper.deleteKeysByPattern(database.id, allTestKeysPattern);
     }
-    // browserViewType is persisted in localStorage and shared across all specs in the same Electron
-    // instance. Clear it so the next spec gets the app's true default (Tree) instead of the list view
-    // these tests force at the start.
-    await browserPage.page.evaluate(() => localStorage.removeItem('browserViewType'));
+    // These keys are persisted in localStorage and shared across all specs in the same Electron
+    // instance. Clear them so the next spec gets the app's true defaults instead of the state these
+    // tests force (browserViewType -> list view; autoRefreshRatekeys -> 1s rate from the auto-refresh test).
+    await browserPage.page.evaluate(() => {
+      localStorage.removeItem('browserViewType');
+      localStorage.removeItem('autoRefreshRatekeys');
+    });
   });
 
   test.afterAll(async ({ apiHelper }) => {
@@ -135,6 +138,11 @@ test.describe('Browser > Key List View', () => {
     await expect(browserPage.keyList.getKeyRow(refreshKey)).not.toBeVisible();
     await apiHelper.createStringKey(database.id, refreshKey, 'from-auto-refresh-check');
     await expect(browserPage.keyList.getKeyRow(refreshKey)).toBeVisible();
+
+    // Disable auto-refresh so the 1s interval stops firing before the next serial test runs.
+    await browserPage.keyList.openKeysAutoRefreshPopover();
+    await browserPage.keyList.keysAutoRefreshSwitch.click();
+    await browserPage.page.keyboard.press('Escape');
   });
 
   test('should show no results message for non-matching pattern', async ({ apiHelper, browserPage }) => {
