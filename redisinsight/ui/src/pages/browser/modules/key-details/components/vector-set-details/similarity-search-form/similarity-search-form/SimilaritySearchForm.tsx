@@ -31,7 +31,7 @@ import {
   VECTOR_MODE_TOOLTIP,
   VECTOR_PLACEHOLDER,
 } from './constants'
-import { initialFormState, isQueryReady } from './utils'
+import { initialFormState, isQueryReady } from './SimilaritySearchForm.utils'
 import {
   SimilaritySearchFormState,
   SimilaritySearchMode,
