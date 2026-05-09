@@ -9,6 +9,7 @@ import {
   vectorSetSimilaritySearchPreviewSelector,
   vectorSetSimilaritySearchSelector,
 } from 'uiSrc/slices/browser/vectorSet'
+import { VectorSetSimilaritySearchResponse } from 'uiSrc/slices/interfaces'
 
 import { SimilaritySearchFormState } from '../../similarity-search-form'
 import { useSimilaritySearch } from './useSimilaritySearch'
@@ -28,6 +29,18 @@ jest.mock('uiSrc/slices/browser/vectorSet', () => ({
 
 const KEY_BUFFER = stringToBuffer('mykey')
 
+const mockedSelectedKeyDataSelector = jest.mocked(selectedKeyDataSelector)
+const mockedSimilaritySearchSelector = jest.mocked(
+  vectorSetSimilaritySearchSelector,
+)
+const mockedSimilaritySearchPreviewSelector = jest.mocked(
+  vectorSetSimilaritySearchPreviewSelector,
+)
+const mockedFetchSimilaritySearch = jest.mocked(fetchVectorSetSimilaritySearch)
+const mockedFetchSimilaritySearchPreview = jest.mocked(
+  fetchVectorSetSimilaritySearchPreview,
+)
+
 const baseState = (): SimilaritySearchFormState => ({
   mode: 'vector',
   vectorInput: '',
@@ -39,17 +52,16 @@ const baseState = (): SimilaritySearchFormState => ({
 const setSelectedKey = (
   data: { name: typeof KEY_BUFFER; vectorDim?: number } | null,
 ) => {
-  ;(selectedKeyDataSelector as jest.Mock).mockReturnValue(data)
+  mockedSelectedKeyDataSelector.mockReturnValue(
+    data as ReturnType<typeof selectedKeyDataSelector>,
+  )
 }
 
 const setSimilaritySearchState = (
   loading: boolean,
-  data?: {
-    keyName: typeof KEY_BUFFER
-    elements: { name: any; score: number }[]
-  },
+  data?: VectorSetSimilaritySearchResponse,
 ) => {
-  ;(vectorSetSimilaritySearchSelector as jest.Mock).mockReturnValue({
+  mockedSimilaritySearchSelector.mockReturnValue({
     loading,
     error: '',
     data,
@@ -61,7 +73,7 @@ const setSimilaritySearchPreviewState = (
   preview = '',
   error = '',
 ) => {
-  ;(vectorSetSimilaritySearchPreviewSelector as jest.Mock).mockReturnValue({
+  mockedSimilaritySearchPreviewSelector.mockReturnValue({
     loading,
     error,
     preview,
@@ -74,12 +86,12 @@ beforeEach(() => {
   setSimilaritySearchState(false)
   setSimilaritySearchPreviewState()
   setSelectedKey({ name: KEY_BUFFER, vectorDim: 3 })
-  ;(fetchVectorSetSimilaritySearch as jest.Mock).mockReturnValue({
+  mockedFetchSimilaritySearch.mockReturnValue({
     type: 'vectorSet/fetchVectorSetSimilaritySearch',
-  })
-  ;(fetchVectorSetSimilaritySearchPreview as jest.Mock).mockReturnValue({
+  } as unknown as ReturnType<typeof fetchVectorSetSimilaritySearch>)
+  mockedFetchSimilaritySearchPreview.mockReturnValue({
     type: 'vectorSet/fetchVectorSetSimilaritySearchPreview',
-  })
+  } as unknown as ReturnType<typeof fetchVectorSetSimilaritySearchPreview>)
 })
 
 describe('useSimilaritySearch', () => {

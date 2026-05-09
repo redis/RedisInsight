@@ -1,6 +1,7 @@
 import { renderHook } from 'uiSrc/utils/test-utils'
 import { stringToBuffer } from 'uiSrc/utils'
 import { vectorSetSimilaritySearchSelector } from 'uiSrc/slices/browser/vectorSet'
+import { VectorSetSimilaritySearchResponse } from 'uiSrc/slices/interfaces'
 
 import { useSimilaritySearchResults } from './useSimilaritySearchResults'
 
@@ -11,14 +12,15 @@ jest.mock('uiSrc/slices/browser/vectorSet', () => ({
 
 const KEY_BUFFER = stringToBuffer('mykey')
 
+const mockedSimilaritySearchSelector = jest.mocked(
+  vectorSetSimilaritySearchSelector,
+)
+
 const setSimilaritySearchState = (
   loading: boolean,
-  data?: {
-    keyName: typeof KEY_BUFFER
-    elements: { name: any; score: number }[]
-  },
+  data?: VectorSetSimilaritySearchResponse,
 ) => {
-  ;(vectorSetSimilaritySearchSelector as jest.Mock).mockReturnValue({
+  mockedSimilaritySearchSelector.mockReturnValue({
     loading,
     error: '',
     data,
