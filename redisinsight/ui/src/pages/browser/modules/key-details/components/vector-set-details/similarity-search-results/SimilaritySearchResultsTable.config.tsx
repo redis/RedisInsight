@@ -1,6 +1,10 @@
 import React from 'react'
 
-import { ColumnDef, Row as TableRow } from 'uiSrc/components/base/layout/table'
+import {
+  CellContext,
+  ColumnDef,
+  Row as TableRow,
+} from 'uiSrc/components/base/layout/table'
 import { VectorSetSimilarityMatch } from 'uiSrc/slices/interfaces/vectorSet'
 
 import { ElementNameCell } from '../vector-set-element-list/components/ElementNameCell/ElementNameCell'
@@ -14,28 +18,28 @@ import {
   SimilarityResultsListConfig,
 } from './SimilaritySearchResultsTable.types'
 import * as S from './SimilaritySearchResultsTable.styles'
+import { KeyValueFormat } from 'uiSrc/constants'
 
-const createNameColumn = (
-  listConfig: SimilarityResultsListConfig,
-): ColumnDef<VectorSetSimilarityMatch> => {
-  const { compressor, viewFormat } = listConfig
-  return {
-    id: SimilarityResultsColumn.Name,
-    accessorKey: SimilarityResultsColumn.Name,
-    header: SIMILARITY_RESULTS_COLUMN_HEADERS[SimilarityResultsColumn.Name],
-    enableSorting: false,
-    size: 200,
-    cell: ({ row }: { row: TableRow<VectorSetSimilarityMatch> }) => (
+const nameColumn: ColumnDef<VectorSetSimilarityMatch> = {
+  id: SimilarityResultsColumn.Name,
+  accessorKey: SimilarityResultsColumn.Name,
+  header: SIMILARITY_RESULTS_COLUMN_HEADERS[SimilarityResultsColumn.Name],
+  enableSorting: false,
+  size: 200,
+  cell: ({ row, table }: CellContext<VectorSetSimilarityMatch, unknown>) => {
+    const { compressor = null, viewFormat } = table.options
+      .meta as SimilarityResultsListConfig
+    return (
       <ElementNameCell
         element={row.original}
         compressor={compressor}
-        viewFormat={viewFormat}
+        viewFormat={viewFormat ?? KeyValueFormat.JSON}
       />
-    ),
-  }
+    )
+  },
 }
 
-const createSimilarityColumn = (): ColumnDef<VectorSetSimilarityMatch> => ({
+const similarityColumn: ColumnDef<VectorSetSimilarityMatch> = {
   id: SimilarityResultsColumn.Similarity,
   accessorKey: SimilarityResultsColumn.Similarity,
   header: SIMILARITY_RESULTS_COLUMN_HEADERS[SimilarityResultsColumn.Similarity],
@@ -48,17 +52,12 @@ const createSimilarityColumn = (): ColumnDef<VectorSetSimilarityMatch> => ({
       <S.SimilarityCell
         $isHigh={isHigh}
         data-testid={`vector-set-similarity-cell-${row.index}`}
-        title={String(score)}
       >
         {formatSimilarity(score)}
       </S.SimilarityCell>
     )
   },
-})
+}
 
-export const getSimilarityResultsColumns = (
-  listConfig: SimilarityResultsListConfig,
-): ColumnDef<VectorSetSimilarityMatch>[] => [
-  createNameColumn(listConfig),
-  createSimilarityColumn(),
-]
+export const SIMILARITY_RESULTS_COLUMNS: ColumnDef<VectorSetSimilarityMatch>[] =
+  [nameColumn, similarityColumn]

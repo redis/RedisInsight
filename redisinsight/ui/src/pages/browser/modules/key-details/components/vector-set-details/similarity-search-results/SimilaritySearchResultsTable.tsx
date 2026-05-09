@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
 
-import { getSimilarityResultsColumns } from './SimilaritySearchResultsTable.config'
+import { SIMILARITY_RESULTS_COLUMNS } from './SimilaritySearchResultsTable.config'
 import { SIMILARITY_RESULTS_EMPTY_MESSAGE } from './constants'
 import { SimilaritySearchResultsTableProps } from './SimilaritySearchResultsTable.types'
 import * as S from './SimilaritySearchResultsTable.styles'
@@ -21,16 +21,12 @@ const SimilaritySearchResultsTable = memo(
       [matches],
     )
 
-    const columns = useMemo(
-      () => getSimilarityResultsColumns({ compressor, viewFormat }),
-      [compressor, viewFormat],
-    )
-
     return (
       <S.Container data-testid={TEST_ID}>
         <S.StyledTable
-          columns={columns}
+          columns={SIMILARITY_RESULTS_COLUMNS}
           data={sortedMatches}
+          meta={{ compressor, viewFormat }}
           stripedRows
           paginationEnabled={false}
           emptyState={SIMILARITY_RESULTS_EMPTY_MESSAGE}
