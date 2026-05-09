@@ -1,3 +1,5 @@
+export const SIMILARITY_SEARCH_FORM_TEST_ID = 'similarity-search-form'
+
 export const SIMILARITY_SEARCH_COUNT_DEFAULT = 10
 export const SIMILARITY_SEARCH_COUNT_MIN = 1
 export const SIMILARITY_SEARCH_COUNT_MAX = 1000

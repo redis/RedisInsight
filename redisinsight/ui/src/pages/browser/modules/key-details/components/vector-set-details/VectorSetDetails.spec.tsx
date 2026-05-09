@@ -2,7 +2,12 @@ import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { stringToBuffer } from 'uiSrc/utils'
 import { vectorSetSimilaritySearchSelector } from 'uiSrc/slices/browser/vectorSet'
+
 import { Props, VectorSetDetails } from './VectorSetDetails'
+
+const mockedVectorSetSimilaritySearchSelector = jest.mocked(
+  vectorSetSimilaritySearchSelector,
+)
 
 const defaultProps = {
   onRemoveKey: jest.fn(),
@@ -39,7 +44,7 @@ const setSimilaritySearchData = (data?: {
   keyName: any
   elements: { name: any; score: number }[]
 }) => {
-  ;(vectorSetSimilaritySearchSelector as jest.Mock).mockReturnValue({
+  mockedVectorSetSimilaritySearchSelector.mockReturnValue({
     loading: false,
     error: '',
     data,

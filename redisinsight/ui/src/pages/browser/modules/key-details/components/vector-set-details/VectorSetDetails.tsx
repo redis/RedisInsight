@@ -21,7 +21,6 @@ import {
   useAddElementPanel,
   useAddElements,
   useElementDetails,
-  useSimilaritySearch,
   useSimilaritySearchResults,
 } from './hooks'
 import * as S from './VectorSetDetails.styles'
@@ -54,16 +53,6 @@ const VectorSetDetails = (props: Props) => {
 
   const { loading: addingLoading, vectorDim, submitElements } = useAddElements()
 
-  const {
-    loading: similaritySearchLoading,
-    previewLoading: similaritySearchPreviewLoading,
-    vectorDim: similaritySearchVectorDim,
-    preview: similaritySearchPreview,
-    runSimilaritySearch,
-    runSimilaritySearchPreview,
-    resetSimilaritySearch,
-  } = useSimilaritySearch()
-
   const { hasResults: hasSimilarityResults, matches: similarityMatches } =
     useSimilaritySearchResults()
 
@@ -77,20 +66,7 @@ const VectorSetDetails = (props: Props) => {
   return (
     <S.Container>
       <KeyDetailsHeader {...props} key="key-details-header" />
-      <SimilaritySearchForm
-        // Remount the form on key change so its local state (mode, inputs,
-        // count, filter) drops back to its initial values without each child
-        // having to reset itself.
-        key={keyName}
-        keyName={keyName}
-        vectorDim={similaritySearchVectorDim}
-        loading={similaritySearchLoading}
-        previewLoading={similaritySearchPreviewLoading}
-        preview={similaritySearchPreview}
-        onSubmit={runSimilaritySearch}
-        onStateChange={runSimilaritySearchPreview}
-        onReset={resetSimilaritySearch}
-      />
+      <SimilaritySearchForm key={keyName} />
       <VectorSetKeySubheader openAddItemPanel={openAddItemPanel} />
       <S.DetailsBody>
         {!loading && (

@@ -1,25 +1,32 @@
 import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import { useSimilaritySearchResultFactory } from 'uiSrc/mocks/factories/browser/vectorSet/useSimilaritySearch.factory'
+
+import { useSimilaritySearch } from '../../hooks/useSimilaritySearch'
 
 import { SimilaritySearchForm } from './SimilaritySearchForm'
+import { SIMILARITY_SEARCH_FORM_TEST_ID as TEST_ID } from './constants'
 
-const KEY_NAME = 'mykey'
-const TEST_ID = 'similarity-search-form'
+// The hook has its own spec covering selectors, debouncing, payload building
+// and dispatch. Here we only mock it to keep the form from talking to the
+// real store — this spec stays focused on form behavior (UI, validation,
+// local state, hook wiring).
+jest.mock('../../hooks/useSimilaritySearch', () => ({
+  useSimilaritySearch: jest.fn(),
+}))
 
-const renderForm = (
-  overrides: Partial<React.ComponentProps<typeof SimilaritySearchForm>> = {},
-) =>
-  render(
-    <SimilaritySearchForm
-      keyName={KEY_NAME}
-      data-testid={TEST_ID}
-      {...overrides}
-    />,
+const mockedUseSimilaritySearch = jest.mocked(useSimilaritySearch)
+
+beforeEach(() => {
+  jest.clearAllMocks()
+  mockedUseSimilaritySearch.mockReturnValue(
+    useSimilaritySearchResultFactory.build(),
   )
+})
 
 describe('SimilaritySearchForm', () => {
   it('renders the mode toggle, vector input, count, filter and submit', () => {
-    renderForm()
+    render(<SimilaritySearchForm />)
 
     expect(screen.getByTestId(`${TEST_ID}-mode-toggle`)).toBeInTheDocument()
     expect(screen.getByTestId(`${TEST_ID}-vector-input`)).toBeInTheDocument()
@@ -28,108 +35,31 @@ describe('SimilaritySearchForm', () => {
     expect(screen.getByTestId(`${TEST_ID}-submit`)).toBeInTheDocument()
   })
 
-  it('renders the supplied `preview` prop verbatim in the preview area', () => {
-    renderForm({ preview: 'VSIM mykey VALUES 3 1 2 3 WITHSCORES WITHATTRIBS' })
-
-    expect(screen.getByTestId(`${TEST_ID}-preview-text`)).toHaveTextContent(
-      'VSIM mykey VALUES 3 1 2 3 WITHSCORES WITHATTRIBS',
-    )
-  })
-
-  it('renders the "Redis Command Preview" placeholder when no preview is supplied', () => {
-    renderForm()
-
-    expect(screen.getByTestId(`${TEST_ID}-preview`)).toBeInTheDocument()
-    expect(screen.getByTestId(`${TEST_ID}-preview-text`)).toHaveTextContent(
-      'Redis Command Preview',
-    )
-  })
-
-  it('renders the placeholder when an empty preview is supplied', () => {
-    renderForm({ preview: '' })
+  it('falls back to the "Redis Command Preview" placeholder when the hook has no preview', () => {
+    render(<SimilaritySearchForm />)
 
     expect(screen.getByTestId(`${TEST_ID}-preview-text`)).toHaveTextContent(
       'Redis Command Preview',
     )
+    expect(screen.getByTestId(`${TEST_ID}-preview-copy-btn`)).toBeDisabled()
   })
 
-  it('shows the supplied command instead of the placeholder when a non-empty preview is supplied', () => {
-    renderForm({ preview: 'VSIM mykey ELE seed WITHSCORES WITHATTRIBS' })
+  it('renders the hook-supplied preview verbatim and enables the copy button', () => {
+    mockedUseSimilaritySearch.mockReturnValue(
+      useSimilaritySearchResultFactory.build({
+        preview: 'VSIM mykey ELE seed WITHSCORES WITHATTRIBS',
+      }),
+    )
+    render(<SimilaritySearchForm />)
 
     expect(screen.getByTestId(`${TEST_ID}-preview-text`)).toHaveTextContent(
       'VSIM mykey ELE seed WITHSCORES WITHATTRIBS',
     )
-  })
-
-  it('disables the copy button when no preview is supplied', () => {
-    renderForm()
-
-    expect(screen.getByTestId(`${TEST_ID}-preview-copy-btn`)).toBeDisabled()
-  })
-
-  it('enables the copy button when a non-empty preview is supplied', () => {
-    renderForm({ preview: 'VSIM mykey ELE seed WITHSCORES WITHATTRIBS' })
-
     expect(screen.getByTestId(`${TEST_ID}-preview-copy-btn`)).toBeEnabled()
   })
 
-  it('fires `onStateChange` on mount with the initial form state', () => {
-    const onStateChange = jest.fn()
-    renderForm({ onStateChange })
-
-    expect(onStateChange).toHaveBeenCalledWith(
-      expect.objectContaining({
-        mode: 'vector',
-        vectorInput: '',
-        elementInput: '',
-        count: 10,
-        filter: '',
-      }),
-    )
-  })
-
-  it('fires `onStateChange` whenever the vector input changes', () => {
-    const onStateChange = jest.fn()
-    renderForm({ onStateChange })
-    onStateChange.mockClear()
-
-    fireEvent.change(screen.getByTestId(`${TEST_ID}-vector-input`), {
-      target: { value: '1, 2, 3' },
-    })
-
-    expect(onStateChange).toHaveBeenCalledWith(
-      expect.objectContaining({ mode: 'vector', vectorInput: '1, 2, 3' }),
-    )
-  })
-
-  it('fires `onStateChange` with mode=element after switching modes', () => {
-    const onStateChange = jest.fn()
-    renderForm({ onStateChange })
-    onStateChange.mockClear()
-
-    fireEvent.click(screen.getByTestId(`${TEST_ID}-mode-element`))
-
-    expect(onStateChange).toHaveBeenLastCalledWith(
-      expect.objectContaining({ mode: 'element' }),
-    )
-  })
-
-  it('fires `onStateChange` whenever the filter input changes', () => {
-    const onStateChange = jest.fn()
-    renderForm({ onStateChange })
-    onStateChange.mockClear()
-
-    fireEvent.change(screen.getByTestId(`${TEST_ID}-filter-input`), {
-      target: { value: '.price > 50' },
-    })
-
-    expect(onStateChange).toHaveBeenLastCalledWith(
-      expect.objectContaining({ filter: '.price > 50' }),
-    )
-  })
-
   it('keeps the submit button disabled until a valid query is provided', () => {
-    renderForm()
+    render(<SimilaritySearchForm />)
 
     const submit = screen.getByTestId(`${TEST_ID}-submit`)
     expect(submit).toBeDisabled()
@@ -142,7 +72,7 @@ describe('SimilaritySearchForm', () => {
   })
 
   it('switches to ELE mode and renders the element input', () => {
-    renderForm()
+    render(<SimilaritySearchForm />)
 
     fireEvent.click(screen.getByTestId(`${TEST_ID}-mode-element`))
 
@@ -152,37 +82,38 @@ describe('SimilaritySearchForm', () => {
     expect(screen.getByTestId(`${TEST_ID}-element-input`)).toBeInTheDocument()
   })
 
-  it('calls onSubmit with the current form state when the submit button is clicked', () => {
-    const onSubmit = jest.fn()
-    renderForm({ onSubmit })
+  it('calls runSimilaritySearch when the submit button is clicked', () => {
+    const runSimilaritySearch = jest.fn()
+    mockedUseSimilaritySearch.mockReturnValue(
+      useSimilaritySearchResultFactory.build({ runSimilaritySearch }),
+    )
+    render(<SimilaritySearchForm />)
 
     fireEvent.change(screen.getByTestId(`${TEST_ID}-vector-input`), {
       target: { value: '1, 2, 3' },
     })
     fireEvent.click(screen.getByTestId(`${TEST_ID}-submit`))
 
-    expect(onSubmit).toHaveBeenCalledTimes(1)
-    expect(onSubmit).toHaveBeenCalledWith(
-      expect.objectContaining({
-        mode: 'vector',
-        vectorInput: '1, 2, 3',
-        count: 10,
-        filter: '',
-      }),
-    )
+    expect(runSimilaritySearch).toHaveBeenCalledTimes(1)
   })
 
-  it('does not call onSubmit when the query is not ready', () => {
-    const onSubmit = jest.fn()
-    renderForm({ onSubmit })
+  it('does not call runSimilaritySearch when the query is not ready', () => {
+    const runSimilaritySearch = jest.fn()
+    mockedUseSimilaritySearch.mockReturnValue(
+      useSimilaritySearchResultFactory.build({ runSimilaritySearch }),
+    )
+    render(<SimilaritySearchForm />)
 
     fireEvent.click(screen.getByTestId(`${TEST_ID}-submit`))
 
-    expect(onSubmit).not.toHaveBeenCalled()
+    expect(runSimilaritySearch).not.toHaveBeenCalled()
   })
 
-  it('disables submit when the numeric vector dimension does not match vectorDim', () => {
-    renderForm({ vectorDim: 3 })
+  it('disables submit and surfaces a dimension-mismatch error when the numeric vector does not match vectorDim', () => {
+    mockedUseSimilaritySearch.mockReturnValue(
+      useSimilaritySearchResultFactory.build({ vectorDim: 3 }),
+    )
+    render(<SimilaritySearchForm />)
 
     fireEvent.change(screen.getByTestId(`${TEST_ID}-vector-input`), {
       target: { value: '1, 2' },
@@ -197,7 +128,10 @@ describe('SimilaritySearchForm', () => {
   })
 
   it('enables submit when the numeric vector dimension matches vectorDim', () => {
-    renderForm({ vectorDim: 3 })
+    mockedUseSimilaritySearch.mockReturnValue(
+      useSimilaritySearchResultFactory.build({ vectorDim: 3 }),
+    )
+    render(<SimilaritySearchForm />)
 
     fireEvent.change(screen.getByTestId(`${TEST_ID}-vector-input`), {
       target: { value: '1, 2, 3' },
@@ -207,7 +141,10 @@ describe('SimilaritySearchForm', () => {
   })
 
   it('disables submit when the FP32 vector dimension does not match vectorDim', () => {
-    renderForm({ vectorDim: 4 })
+    mockedUseSimilaritySearch.mockReturnValue(
+      useSimilaritySearchResultFactory.build({ vectorDim: 4 }),
+    )
+    render(<SimilaritySearchForm />)
 
     fireEvent.change(screen.getByTestId(`${TEST_ID}-vector-input`), {
       target: { value: '\\x00\\x00\\x80\\x3f\\x00\\x00\\x00\\x40' },
@@ -221,9 +158,16 @@ describe('SimilaritySearchForm', () => {
     ).toBeGreaterThan(0)
   })
 
-  it('keeps the submit button disabled while the preview is being fetched, even when the query is otherwise valid', () => {
-    const onSubmit = jest.fn()
-    renderForm({ vectorDim: 3, previewLoading: true, onSubmit })
+  it('keeps submit disabled while the preview is being fetched, even when the query is otherwise valid', () => {
+    const runSimilaritySearch = jest.fn()
+    mockedUseSimilaritySearch.mockReturnValue(
+      useSimilaritySearchResultFactory.build({
+        vectorDim: 3,
+        previewLoading: true,
+        runSimilaritySearch,
+      }),
+    )
+    render(<SimilaritySearchForm />)
 
     fireEvent.change(screen.getByTestId(`${TEST_ID}-vector-input`), {
       target: { value: '1, 2, 3' },
@@ -233,20 +177,25 @@ describe('SimilaritySearchForm', () => {
     expect(submit).toBeDisabled()
 
     fireEvent.click(submit)
-    expect(onSubmit).not.toHaveBeenCalled()
+    expect(runSimilaritySearch).not.toHaveBeenCalled()
   })
 
   describe('reset button', () => {
-    it('renders a reset button next to the submit button', () => {
-      renderForm()
+    it('renders next to the submit button', () => {
+      render(<SimilaritySearchForm />)
 
       expect(screen.getByTestId(`${TEST_ID}-reset`)).toBeInTheDocument()
     })
 
-    it('clears the form fields and fires onReset when clicked', () => {
-      const onReset = jest.fn()
-      const onStateChange = jest.fn()
-      renderForm({ vectorDim: 3, onReset, onStateChange })
+    it('clears the form fields and calls resetSimilaritySearch on click', () => {
+      const resetSimilaritySearch = jest.fn()
+      mockedUseSimilaritySearch.mockReturnValue(
+        useSimilaritySearchResultFactory.build({
+          vectorDim: 3,
+          resetSimilaritySearch,
+        }),
+      )
+      render(<SimilaritySearchForm />)
 
       fireEvent.change(screen.getByTestId(`${TEST_ID}-vector-input`), {
         target: { value: '1, 2, 3' },
@@ -255,10 +204,9 @@ describe('SimilaritySearchForm', () => {
         target: { value: '.price > 50' },
       })
 
-      onStateChange.mockClear()
       fireEvent.click(screen.getByTestId(`${TEST_ID}-reset`))
 
-      expect(onReset).toHaveBeenCalledTimes(1)
+      expect(resetSimilaritySearch).toHaveBeenCalledTimes(1)
       expect(
         (screen.getByTestId(`${TEST_ID}-vector-input`) as HTMLInputElement)
           .value,
@@ -267,25 +215,20 @@ describe('SimilaritySearchForm', () => {
         (screen.getByTestId(`${TEST_ID}-filter-input`) as HTMLInputElement)
           .value,
       ).toBe('')
-      expect(onStateChange).toHaveBeenLastCalledWith(
-        expect.objectContaining({
-          mode: 'vector',
-          vectorInput: '',
-          elementInput: '',
-          filter: '',
-        }),
-      )
     })
 
-    it('disables the reset button while a search is in flight', () => {
-      renderForm({ loading: true })
+    it('is disabled while a search is in flight', () => {
+      mockedUseSimilaritySearch.mockReturnValue(
+        useSimilaritySearchResultFactory.build({ loading: true }),
+      )
+      render(<SimilaritySearchForm />)
 
       expect(screen.getByTestId(`${TEST_ID}-reset`)).toBeDisabled()
     })
   })
 
   it('opens the filter syntax help popover when the trigger is clicked', () => {
-    renderForm()
+    render(<SimilaritySearchForm />)
 
     expect(
       screen.queryByTestId(`${TEST_ID}-filter-help-panel`),
