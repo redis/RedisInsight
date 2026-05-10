@@ -2,6 +2,7 @@ import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { act, mockedStore, renderHook } from 'uiSrc/utils/test-utils'
 import { stringToBuffer } from 'uiSrc/utils'
 import {
+  abortVectorSetSimilaritySearchPreview,
   clearSimilaritySearch,
   clearSimilaritySearchPreview,
   fetchVectorSetSimilaritySearch,
@@ -25,6 +26,7 @@ jest.mock('uiSrc/slices/browser/vectorSet', () => ({
   vectorSetSimilaritySearchPreviewSelector: jest.fn(),
   fetchVectorSetSimilaritySearch: jest.fn(),
   fetchVectorSetSimilaritySearchPreview: jest.fn(),
+  abortVectorSetSimilaritySearchPreview: jest.fn(),
 }))
 
 const KEY_BUFFER = stringToBuffer('mykey')
@@ -39,6 +41,9 @@ const mockedSimilaritySearchPreviewSelector = jest.mocked(
 const mockedFetchSimilaritySearch = jest.mocked(fetchVectorSetSimilaritySearch)
 const mockedFetchSimilaritySearchPreview = jest.mocked(
   fetchVectorSetSimilaritySearchPreview,
+)
+const mockedAbortSimilaritySearchPreview = jest.mocked(
+  abortVectorSetSimilaritySearchPreview,
 )
 
 const baseState = (): SimilaritySearchFormState => ({
@@ -236,6 +241,44 @@ describe('useSimilaritySearch', () => {
         ]),
       )
     })
+
+    it('cancels any pending debounced preview so a stale callback cannot fire after the slices are cleared', () => {
+      jest.useFakeTimers()
+      try {
+        const { result } = renderHook(() => useSimilaritySearch())
+
+        act(() => {
+          result.current.runSimilaritySearchPreview({
+            ...baseState(),
+            vectorInput: '1, 2, 3',
+          })
+        })
+
+        act(() => {
+          result.current.resetSimilaritySearch()
+        })
+
+        act(() => {
+          jest.advanceTimersByTime(300)
+        })
+
+        expect(fetchVectorSetSimilaritySearchPreview).not.toHaveBeenCalled()
+      } finally {
+        jest.useRealTimers()
+      }
+    })
+
+    it('aborts any in-flight preview request so a late response cannot repopulate the cleared slice', () => {
+      const { result } = renderHook(() => useSimilaritySearch())
+
+      mockedAbortSimilaritySearchPreview.mockClear()
+
+      act(() => {
+        result.current.resetSimilaritySearch()
+      })
+
+      expect(mockedAbortSimilaritySearchPreview).toHaveBeenCalledTimes(1)
+    })
   })
 
   describe('unmount cleanup', () => {
@@ -253,6 +296,30 @@ describe('useSimilaritySearch', () => {
           clearSimilaritySearchPreview.type,
         ]),
       )
+    })
+
+    it('cancels any pending debounced preview on unmount so a stale callback cannot fire after teardown', () => {
+      jest.useFakeTimers()
+      try {
+        const { result, unmount } = renderHook(() => useSimilaritySearch())
+
+        act(() => {
+          result.current.runSimilaritySearchPreview({
+            ...baseState(),
+            vectorInput: '1, 2, 3',
+          })
+        })
+
+        unmount()
+
+        act(() => {
+          jest.advanceTimersByTime(300)
+        })
+
+        expect(fetchVectorSetSimilaritySearchPreview).not.toHaveBeenCalled()
+      } finally {
+        jest.useRealTimers()
+      }
     })
   })
 

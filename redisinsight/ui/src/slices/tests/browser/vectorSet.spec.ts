@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker'
+import axios from 'axios'
 import { cloneDeep } from 'lodash'
 import { apiService } from 'uiSrc/services'
 import {
@@ -67,6 +68,7 @@ import reducer, {
   clearSimilaritySearchPreview,
   vectorSetSimilaritySearchPreviewSelector,
   fetchVectorSetSimilaritySearchPreview,
+  abortVectorSetSimilaritySearchPreview,
 } from '../../browser/vectorSet'
 
 jest.mock('uiSrc/services', () => ({
@@ -1389,6 +1391,76 @@ describe('vectorSet slice', () => {
         payload,
         expect.any(Object),
       )
+    })
+
+    it('should pass an AbortSignal to apiService.post so the request can be aborted', async () => {
+      const payload = buildPreviewPayload()
+      apiService.post = jest
+        .fn()
+        .mockResolvedValue({ status: 200, data: { preview: '' } })
+
+      await store.dispatch<any>(fetchVectorSetSimilaritySearchPreview(payload))
+
+      const [, , config] = (apiService.post as jest.Mock).mock.calls[0]
+      expect(config?.signal).toBeInstanceOf(AbortSignal)
+    })
+
+    it('should not dispatch any success/failure action when the request is aborted before it resolves', async () => {
+      const payload = buildPreviewPayload()
+      let capturedSignal: AbortSignal | undefined
+      apiService.post = jest.fn().mockImplementation((_url, _body, config) => {
+        capturedSignal = config?.signal
+        return new Promise((_resolve, reject) => {
+          capturedSignal?.addEventListener('abort', () => {
+            const cancelError = new axios.Cancel('aborted by client')
+            reject(cancelError)
+          })
+        })
+      })
+
+      const dispatchPromise = store.dispatch<any>(
+        fetchVectorSetSimilaritySearchPreview(payload),
+      )
+
+      abortVectorSetSimilaritySearchPreview()
+      await dispatchPromise
+
+      expect(store.getActions()).toEqual([loadSimilaritySearchPreview()])
+    })
+
+    it('should abort the previous in-flight request when a newer dispatch is made', async () => {
+      const payload = buildPreviewPayload()
+      const signals: AbortSignal[] = []
+      apiService.post = jest.fn().mockImplementation((_url, _body, config) => {
+        signals.push(config?.signal)
+        return new Promise((resolve, reject) => {
+          config?.signal?.addEventListener('abort', () => {
+            reject(new axios.Cancel('aborted by client'))
+          })
+          // Resolve the second call only — keeps the first one pending so
+          // it gets aborted when the second dispatch starts.
+          if (signals.length > 1) {
+            resolve({ status: 200, data: { preview: 'done' } })
+          }
+        })
+      })
+
+      const first = store.dispatch<any>(
+        fetchVectorSetSimilaritySearchPreview(payload),
+      )
+      const second = store.dispatch<any>(
+        fetchVectorSetSimilaritySearchPreview(payload),
+      )
+
+      await Promise.all([first, second])
+
+      expect(signals[0].aborted).toBe(true)
+      expect(signals[1].aborted).toBe(false)
+      expect(store.getActions()).toEqual([
+        loadSimilaritySearchPreview(),
+        loadSimilaritySearchPreview(),
+        loadSimilaritySearchPreviewSuccess('done'),
+      ])
     })
   })
 })
