@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AxiosError, AxiosResponseHeaders } from 'axios'
+import axios, { AxiosError, AxiosResponseHeaders } from 'axios'
 
 import { apiService } from 'uiSrc/services'
 import { ApiEndpoints } from 'uiSrc/constants'
@@ -646,6 +646,29 @@ export function fetchVectorSetSimilaritySearch(
 }
 
 /**
+ * Module-scoped controller used to abort an in-flight similarity-search
+ * preview request when:
+ *   - the user fires a newer preview (most-recent wins), or
+ *   - the consumer hook resets state (key change, unmount, manual reset)
+ *     via `abortVectorSetSimilaritySearchPreview()` below.
+ *
+ * Mirrors the pattern used by `redisearch.ts`. Cancelling the debounce
+ * alone is not enough — once the timer has fired, the response can still
+ * land after a reset and overwrite the freshly-cleared preview slice.
+ */
+let similaritySearchPreviewController: AbortController | null = null
+
+/**
+ * Abort the in-flight `fetchVectorSetSimilaritySearchPreview` request (if
+ * any) so its late response cannot dispatch into the just-cleared preview
+ * slice. Safe no-op when no request is in flight.
+ */
+export const abortVectorSetSimilaritySearchPreview = (): void => {
+  similaritySearchPreviewController?.abort()
+  similaritySearchPreviewController = null
+}
+
+/**
  * Fetch the BE-built `VSIM` command preview for the supplied form DTO.
  * The BE reuses the same command builder as the search endpoint, so the
  * preview is guaranteed to match the command that would actually run when
@@ -660,6 +683,10 @@ export function fetchVectorSetSimilaritySearchPreview(
   payload: VectorSetSimilaritySearchPreviewPayload,
 ) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    similaritySearchPreviewController?.abort()
+    const controller = new AbortController()
+    similaritySearchPreviewController = controller
+
     dispatch(loadSimilaritySearchPreview())
 
     try {
@@ -672,8 +699,10 @@ export function fetchVectorSetSimilaritySearchPreview(
             ApiEndpoints.VECTOR_SET_SIMILARITY_SEARCH_PREVIEW,
           ),
           payload,
-          { params: { encoding } },
+          { params: { encoding }, signal: controller.signal },
         )
+
+      if (controller.signal.aborted) return
 
       if (isStatusSuccessful(status)) {
         dispatch(loadSimilaritySearchPreviewSuccess(data.preview))
@@ -681,8 +710,15 @@ export function fetchVectorSetSimilaritySearchPreview(
         dispatch(loadSimilaritySearchPreviewFailure(DEFAULT_ERROR_MESSAGE))
       }
     } catch (_err) {
+      if (axios.isCancel(_err)) return
       const error = _err as AxiosError
       dispatch(loadSimilaritySearchPreviewFailure(getApiErrorMessage(error)))
+    } finally {
+      // Only clear the module-scoped controller if it still points to ours
+      // — a later dispatch may have already swapped a fresh one in.
+      if (similaritySearchPreviewController === controller) {
+        similaritySearchPreviewController = null
+      }
     }
   }
 }

@@ -4,6 +4,7 @@ import { debounce } from 'lodash'
 
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import {
+  abortVectorSetSimilaritySearchPreview,
   clearSimilaritySearch,
   clearSimilaritySearchPreview,
   fetchVectorSetSimilaritySearch,
@@ -41,10 +42,25 @@ export const useSimilaritySearch = (): UseSimilaritySearchResult => {
   const vectorDim = selectedKeyData?.vectorDim
   const keyName = selectedKeyData?.name
 
+  const debouncedDispatchPreview = useMemo(
+    () =>
+      debounce((payload: VectorSetSimilaritySearchPayload) => {
+        dispatch(fetchVectorSetSimilaritySearchPreview(payload))
+      }, PREVIEW_DEBOUNCE_MS),
+    [dispatch],
+  )
+
+  // Make sure no late preview write can land on top of the cleared slices:
+  //   1. cancel any not-yet-fired debounced timer (queued payload is dropped),
+  //   2. abort any already-in-flight preview request (its late response is
+  //      filtered out at the slice level via `axios.isCancel`).
+  // Then dispatch the clears.
   const resetSimilaritySearch = useCallback(() => {
+    debouncedDispatchPreview.cancel()
+    abortVectorSetSimilaritySearchPreview()
     dispatch(clearSimilaritySearch())
     dispatch(clearSimilaritySearchPreview())
-  }, [dispatch])
+  }, [debouncedDispatchPreview, dispatch])
 
   const lastKeyRef = useRef(keyName)
   useEffect(() => {
@@ -108,21 +124,6 @@ export const useSimilaritySearch = (): UseSimilaritySearchResult => {
       dispatch(fetchVectorSetSimilaritySearch(payload))
     },
     [buildSimilaritySearchPayload, dispatch],
-  )
-
-  const debouncedDispatchPreview = useMemo(
-    () =>
-      debounce((payload: VectorSetSimilaritySearchPayload) => {
-        dispatch(fetchVectorSetSimilaritySearchPreview(payload))
-      }, PREVIEW_DEBOUNCE_MS),
-    [dispatch],
-  )
-
-  useEffect(
-    () => () => {
-      debouncedDispatchPreview.cancel()
-    },
-    [debouncedDispatchPreview],
   )
 
   /**
