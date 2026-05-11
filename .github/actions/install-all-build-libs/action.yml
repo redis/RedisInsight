@@ -78,3 +78,15 @@ runs:
         dir-path: './'
         keytar-host-mirror: ${{ inputs.keytar-host-mirror }}
         sqlite3-host-mirror: ${{ inputs.sqlite3-host-mirror }}
+
+    # The OpenAPI client (`redisinsight/api-client/`) is gitignored and produced
+    # by the `postinstall` hook in `redisinsight/api`. When the node_modules
+    # cache is restored, postinstall is skipped, so the directory ends up
+    # missing and the UI workspace fails to resolve `from 'apiClient'`.
+    # Generate it here when it isn't present.
+    - name: Generate OpenAPI client (if missing)
+      shell: bash
+      run: |
+        if [ ! -f redisinsight/api-client/index.ts ]; then
+          yarn --cwd redisinsight/api generate:api-client
+        fi
