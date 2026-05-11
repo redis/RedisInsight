@@ -27,6 +27,7 @@ const VectorSetElementList = memo(({ onRemoveKey, onViewElement }: Props) => {
         columns={columns}
         data={currentPageData}
         stripedRows
+        enableColumnResizing
         minWidth={tableMinWidth}
         paginationEnabled={isPaginationSupported}
         manualPagination={isPaginationSupported}

@@ -25,7 +25,7 @@ const nameColumn: ColumnDef<VectorSetSimilarityMatch> = {
   accessorKey: SimilarityResultsColumn.Name,
   header: SIMILARITY_RESULTS_COLUMN_HEADERS[SimilarityResultsColumn.Name],
   enableSorting: false,
-  size: 200,
+  size: 150,
   cell: ({ row, table }: CellContext<VectorSetSimilarityMatch, unknown>) => {
     const { compressor = null, viewFormat } = table.options
       .meta as SimilarityResultsListConfig
@@ -44,7 +44,8 @@ const similarityColumn: ColumnDef<VectorSetSimilarityMatch> = {
   accessorKey: SimilarityResultsColumn.Similarity,
   header: SIMILARITY_RESULTS_COLUMN_HEADERS[SimilarityResultsColumn.Similarity],
   enableSorting: false,
-  size: 120,
+  enableResizing: false,
+  size: 10,
   cell: ({ row }: { row: TableRow<VectorSetSimilarityMatch> }) => {
     const { score } = row.original
     const isHigh = Number.isFinite(score) && score >= HIGH_SIMILARITY_THRESHOLD
