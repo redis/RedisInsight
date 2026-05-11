@@ -37,5 +37,5 @@ export * from './sorting'
 export * from './databaseList'
 export * from './rdiList'
 export * from './importDatabasesTableResult'
-export * from './apiEnums'
+export * from './azure'
 export { ApiEndpoints, BrowserStorageItem, ApiStatusCode, apiErrors }
