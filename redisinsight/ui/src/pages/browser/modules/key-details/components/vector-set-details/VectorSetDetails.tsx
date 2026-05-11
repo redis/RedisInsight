@@ -1,11 +1,14 @@
 import React, { useCallback } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import {
   selectedKeyDataSelector,
   selectedKeySelector,
 } from 'uiSrc/slices/browser/keys'
-import { vectorSetDataSelector } from 'uiSrc/slices/browser/vectorSet'
+import {
+  clearSimilaritySearch,
+  vectorSetDataSelector,
+} from 'uiSrc/slices/browser/vectorSet'
 import { bufferToString } from 'uiSrc/utils'
 import {
   KeyDetailsHeader,
@@ -35,6 +38,7 @@ export interface Props extends KeyDetailsHeaderProps {
 const VectorSetDetails = (props: Props) => {
   const { onRemoveKey, onOpenAddItemPanel, onCloseAddItemPanel } = props
 
+  const dispatch = useDispatch()
   const { loading } = useSelector(selectedKeySelector)
   const selectedKeyData = useSelector(selectedKeyDataSelector)
   const keyName = selectedKeyData?.name
@@ -56,6 +60,10 @@ const VectorSetDetails = (props: Props) => {
 
   const { hasResults: hasSimilarityResults, matches: similarityMatches } =
     useSimilaritySearchResults()
+
+  const handleClearResults = useCallback(() => {
+    dispatch(clearSimilaritySearch())
+  }, [dispatch])
 
   const {
     total = 0,
@@ -88,6 +96,8 @@ const VectorSetDetails = (props: Props) => {
         showPreview={showPreview}
         previewCount={previewCount}
         total={total}
+        hasSimilarityResults={hasSimilarityResults}
+        onClearResults={handleClearResults}
       />
       <S.DetailsBody>
         {!loading && (
