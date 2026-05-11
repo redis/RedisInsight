@@ -1,4 +1,17 @@
 {
+  // The root tsconfig serves three jobs:
+  //   1. `paths` map for `tsconfig-paths-webpack-plugin` in
+  //      `configs/webpack.config.base.ts` — resolves `apiSrc/*`, `uiSrc/*`,
+  //      `desktopSrc/*`, and `apiClient(/**)` when bundling the desktop
+  //      electron-main process.
+  //   2. ESLint parser project for files not covered by a more specific
+  //      override (`tests/playwright/**`, `stories/**`, etc.).
+  //   3. IDE root for TypeScript "workspace" awareness.
+  //
+  // It is NOT the type-check target for the UI — that lives in
+  // `redisinsight/ui/tsconfig.json` and is run via `yarn type-check:ui`.
+  // The API has its own self-contained `redisinsight/api/tsconfig.json`.
+  // Storybook extends `redisinsight/ui/tsconfig.json`.
   "compilerOptions": {
     "target": "ES2020",
     "module": "CommonJS",

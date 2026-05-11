@@ -227,11 +227,6 @@ module.exports = {
                 position: 'after',
               },
               {
-                pattern: 'apiSrc/**',
-                group: 'internal',
-                position: 'after',
-              },
-              {
                 pattern: '{.,..}/*.scss',
                 group: 'object',
                 position: 'after',

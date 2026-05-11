@@ -43,9 +43,6 @@ export default defineConfig({
       '@redislabsdev/redis-ui-icons': '@redis-ui/icons',
       '@redislabsdev/redis-ui-table': '@redis-ui/table',
       uiSrc: fileURLToPath(new URL('../redisinsight/ui/src', import.meta.url)),
-      apiSrc: fileURLToPath(
-        new URL('../redisinsight/api/src', import.meta.url),
-      ),
       apiClient: fileURLToPath(
         new URL('../redisinsight/api-client', import.meta.url),
       ),
