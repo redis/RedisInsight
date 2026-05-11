@@ -279,6 +279,34 @@ describe('stringToSerializedBufferFormat', () => {
         )
       })
     })
+
+    // Regression: plain JSON.parse converts integers outside the JS safe
+    // range to imprecise numbers (e.g. 9999999999999999999 → 1e19),
+    // silently corrupting values on save.
+    describe('should preserve BigInt precision on save', () => {
+      const testValues = [
+        {
+          input: '9999999999999999999',
+          expected: stringToBuffer('i:9999999999999999999;'),
+        },
+        {
+          input: '-9999999999999999999',
+          expected: stringToBuffer('i:-9999999999999999999;'),
+        },
+        {
+          input: '{"small":42,"big_int":9999999999999999999}',
+          expected: stringToBuffer(
+            'a:2:{s:5:"small";i:42;s:7:"big_int";i:9999999999999999999;}',
+          ),
+        },
+      ]
+
+      test.each(testValues)('round-trips %j', ({ input, expected }) => {
+        expect(
+          stringToSerializedBufferFormat(KeyValueFormat.PHP, input),
+        ).toEqual(expected)
+      })
+    })
   })
 })
 

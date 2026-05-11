@@ -37,6 +37,23 @@ import {
 } from 'uiSrc/utils'
 import { reSerializeJSON } from 'uiSrc/utils/formatters/json'
 
+const BigIntJSONParser = JSONBigInt({ useNativeBigInt: true })
+
+// json-bigint returns objects with a null prototype; php-serialize reads
+// `item.constructor.name` to detect plain objects and crashes on those.
+// Rebuild the structure with standard Object prototypes before serializing.
+const withStandardPrototype = (v: unknown): unknown => {
+  if (Array.isArray(v)) return v.map(withStandardPrototype)
+  if (v !== null && typeof v === 'object') {
+    const out: Record<string, unknown> = {}
+    for (const k of Object.keys(v)) {
+      out[k] = withStandardPrototype((v as Record<string, unknown>)[k])
+    }
+    return out
+  }
+  return v
+}
+
 export interface FormattingProps {
   expanded?: boolean
   skipVector?: boolean
@@ -309,7 +326,10 @@ const stringToSerializedBufferFormat = (
     }
     case KeyValueFormat.PHP: {
       try {
-        const json = JSON.parse(value)
+        // BigInt-aware parse so integers outside JS safe range survive the
+        // JSON → PHP-serialize round-trip without silent precision loss
+        // (php-serialize accepts BigInt natively and emits i:N;).
+        const json = withStandardPrototype(BigIntJSONParser.parse(value))
         const serialized = serialize(json)
         return stringToBuffer(serialized)
       } catch (e) {
