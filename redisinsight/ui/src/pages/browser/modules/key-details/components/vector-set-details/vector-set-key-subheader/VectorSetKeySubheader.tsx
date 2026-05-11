@@ -38,15 +38,15 @@ const VectorSetKeySubheader = ({ openAddItemPanel }: Props) => {
                   </Text>
                 </FlexItem>
               )}
-              <FlexItem>
+              <Row align="center" grow={false}>
                 <KeyDetailsHeaderFormatter width={width} />
-              </FlexItem>
-              <Divider orientation="vertical" />
-              <AddItemsAction
-                title="Add Elements"
-                width={width}
-                openAddItemPanel={openAddItemPanel}
-              />
+                <Divider orientation="vertical" />
+                <AddItemsAction
+                  title="Add Elements"
+                  width={width}
+                  openAddItemPanel={openAddItemPanel}
+                />
+              </Row>
             </Row>
           </div>
         )}
