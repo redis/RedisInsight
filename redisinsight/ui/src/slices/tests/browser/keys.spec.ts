@@ -7,8 +7,16 @@ import {
   KeyTypes,
   KeyValueFormat,
   ModulesKeyTypes,
-  ListElementDestination,
 } from 'uiSrc/constants'
+import {
+  ListElementDestination,
+  CreateHashWithExpireDto,
+  CreateListWithExpireDto,
+  CreateRejsonRlWithExpireDto,
+  CreateSetWithExpireDto,
+  CreateZSetWithExpireDto,
+  SetStringWithExpireDto,
+} from 'apiClient'
 import { apiService } from 'uiSrc/services'
 import {
   parseKeysListResponse,
@@ -39,14 +47,6 @@ import { rootReducer } from '../../store'
 import { loadVectorSetElements } from '../../browser/vectorSet'
 import { mockVectorSetKeyInfo } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
 import { getString, getStringSuccess } from '../../browser/string'
-import {
-  CreateHashWithExpireDto,
-  CreateListWithExpireDto,
-  CreateRejsonRlWithExpireDto,
-  CreateSetWithExpireDto,
-  CreateZSetWithExpireDto,
-  SetStringWithExpireDto,
-} from 'apiClient'
 import reducer, {
   addHashKey,
   addKey,

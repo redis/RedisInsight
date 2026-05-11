@@ -1,8 +1,13 @@
 import { http, HttpHandler, HttpResponse } from 'msw'
-import { ApiEndpoints, HealthStatus, NodeRole } from 'uiSrc/constants'
+import { ApiEndpoints } from 'uiSrc/constants'
 import { getUrl } from 'uiSrc/utils'
 import { getMswURL } from 'uiSrc/utils/test-utils'
-import { ClusterDetails, Database as DatabaseInstanceResponse } from 'apiClient'
+import {
+  ClusterDetails,
+  Database as DatabaseInstanceResponse,
+  HealthStatus,
+  NodeRole,
+} from 'apiClient'
 
 export const INSTANCE_ID_MOCK = 'instanceId'
 

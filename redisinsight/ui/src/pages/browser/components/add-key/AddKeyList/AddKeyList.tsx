@@ -11,8 +11,7 @@ import {
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { Spacer } from 'uiSrc/components/base/layout'
-import { CreateListWithExpireDto } from 'apiClient'
-import { ListElementDestination } from 'uiSrc/constants'
+import { CreateListWithExpireDto, ListElementDestination } from 'apiClient'
 
 import { AddListFormConfig as config } from '../constants/fields-config'
 import AddMultipleFields from '../../add-multiple-fields'

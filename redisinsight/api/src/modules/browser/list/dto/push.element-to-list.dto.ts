@@ -28,6 +28,7 @@ export class PushElementToListDto extends KeyDto {
       'Default: TAIL (when not specified)',
     default: ListElementDestination.Tail,
     enum: ListElementDestination,
+    enumName: 'ListElementDestination',
   })
   @IsEnum(ListElementDestination, {
     message: `destination must be a valid enum value. Valid values: ${Object.values(

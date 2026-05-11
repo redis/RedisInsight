@@ -1,7 +1,6 @@
 import { Factory } from 'fishery'
 import { faker } from '@faker-js/faker'
-import { HealthStatus, NodeRole } from 'uiSrc/constants'
-import { ClusterNodeDetails } from 'apiClient'
+import { ClusterNodeDetails, HealthStatus, NodeRole } from 'apiClient'
 
 export const ClusterNodeDetailsFactory = Factory.define<ClusterNodeDetails>(
   () => ({

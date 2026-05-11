@@ -50,6 +50,7 @@ export class ClusterNodeDetails {
   @ApiProperty({
     type: String,
     enum: NodeRole,
+    enumName: 'NodeRole',
     description: 'Node role in cluster',
   })
   role: NodeRole;
@@ -64,6 +65,7 @@ export class ClusterNodeDetails {
   @ApiProperty({
     type: String,
     enum: HealthStatus,
+    enumName: 'HealthStatus',
     description: "Node's current health status",
   })
   health: HealthStatus;
