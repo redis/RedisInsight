@@ -163,6 +163,37 @@ describe('bufferToSerializedFormat', () => {
         ).toEqual(val)
       })
     })
+
+    // php-serialize v5.1+ returns BigInt for integers outside JS safe range.
+    // Regression: JSON.stringify throws on BigInt, which previously caused
+    // the editor to fall back to the raw serialized string.
+    describe('should handle BigInt values from large integers', () => {
+      const testValues = [
+        {
+          input: stringToBuffer('i:9999999999999999999;'),
+          expected: '9999999999999999999',
+        },
+        {
+          input: stringToBuffer('i:-9999999999999999999;'),
+          expected: '-9999999999999999999',
+        },
+        {
+          input: stringToBuffer(
+            'a:2:{s:5:"small";i:42;s:7:"big_int";i:9999999999999999999;}',
+          ),
+          expected: '{"small":42,"big_int":9999999999999999999}',
+        },
+      ]
+
+      test.each(testValues)(
+        'preserves precision for %j',
+        ({ input, expected }) => {
+          expect(bufferToSerializedFormat(KeyValueFormat.PHP, input)).toEqual(
+            expected,
+          )
+        },
+      )
+    })
   })
 })
 
