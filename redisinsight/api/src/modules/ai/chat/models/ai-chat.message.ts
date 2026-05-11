@@ -17,6 +17,8 @@ export class AiChatMessageContextRecord {
 export class AiChatMessage {
   @ApiProperty({
     enum: AiChatMessageType,
+
+    enumName: 'AiChatMessageType',
   })
   @Expose()
   type: AiChatMessageType;

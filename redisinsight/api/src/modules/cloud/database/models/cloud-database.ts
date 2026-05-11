@@ -89,6 +89,8 @@ export class CloudDatabase {
   @ApiProperty({
     description: 'Subscription type',
     enum: CloudSubscriptionType,
+
+    enumName: 'CloudSubscriptionType',
   })
   @Expose()
   subscriptionType: CloudSubscriptionType;
@@ -117,6 +119,7 @@ export class CloudDatabase {
   @ApiProperty({
     description: 'Database status',
     enum: CloudDatabaseStatus,
+    enumName: 'CloudDatabaseStatus',
     default: CloudDatabaseStatus.Active,
   })
   @Expose()

@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import {} from '@nestjs/swagger';
 
 export const REDIS_STRING_SCHEMA = {
   type: String,

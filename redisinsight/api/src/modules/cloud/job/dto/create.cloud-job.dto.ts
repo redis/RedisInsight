@@ -28,6 +28,8 @@ export class CreateCloudJobDto {
   @ApiProperty({
     description: 'Job name to create',
     enum: CloudJobName,
+
+    enumName: 'CloudJobName',
   })
   @IsEnum(CloudJobName)
   @IsNotEmpty()
@@ -36,6 +38,8 @@ export class CreateCloudJobDto {
   @ApiProperty({
     description: 'Mod in which to run the job.',
     enum: CloudJobRunMode,
+
+    enumName: 'CloudJobRunMode',
   })
   @IsOptional()
   @Expose()

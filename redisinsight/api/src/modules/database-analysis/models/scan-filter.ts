@@ -1,6 +1,6 @@
 import { RedisDataType } from 'src/modules/browser/keys/dto';
 import { IsEnum, IsInt, IsOptional, IsString } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
 export class ScanFilter {
@@ -18,7 +18,7 @@ export class ScanFilter {
   })
   type?: RedisDataType = null;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Match glob patterns',
     type: String,
     example: 'device:*',
@@ -29,7 +29,7 @@ export class ScanFilter {
   @Expose()
   match?: string = '*';
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: '"count" argument for "scan" command per node',
     type: Number,
     example: 10_000,

@@ -59,6 +59,8 @@ export class RdiPipelineStatus {
     description: 'Pipeline status',
     example: 'ready',
     enum: PipelineStatus,
+
+    enumName: 'PipelineStatus',
   })
   @Expose()
   status: PipelineStatus;
@@ -67,6 +69,8 @@ export class RdiPipelineStatus {
     description: 'Pipeline state (used in api/v1 only)',
     example: 'cdc',
     enum: PipelineState,
+
+    enumName: 'PipelineState',
   })
   @Expose()
   state?: PipelineState;

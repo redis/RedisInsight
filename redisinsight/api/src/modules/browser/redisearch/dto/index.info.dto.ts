@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsDefined } from 'class-validator';
 import {
   ApiRedisString,
@@ -17,7 +17,7 @@ export class IndexInfoRequestBodyDto {
 }
 
 export class IndexOptionsDto {
-  @ApiProperty({
+  @ApiPropertyOptional({
     description:
       'is a filter expression with the full RediSearch aggregation expression language.',
     type: String,
@@ -25,7 +25,7 @@ export class IndexOptionsDto {
   @Expose()
   filter?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description:
       'if set, indicates the default language for documents in the index. Default is English.',
     type: String,
@@ -57,7 +57,7 @@ export class IndexDefinitionDto {
   @Expose()
   default_score: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description:
       'Indicates whether all fields of a JSON document are automatically indexed by RediSearch',
     type: String,
@@ -88,21 +88,21 @@ export class IndexAttibuteDto {
   @Expose()
   type: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Field weight',
     type: String,
   })
   @Expose()
   WEIGHT?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Field can be sorted',
     type: Boolean,
   })
   @Expose()
   SORTABLE?: boolean;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description:
       'Attributes can have the NOINDEX option, which means they will not be indexed. ',
     type: Boolean,
@@ -110,14 +110,14 @@ export class IndexAttibuteDto {
   @Expose()
   NOINDEX?: boolean;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Attribute is case sensitive',
     type: Boolean,
   })
   @Expose()
   CASESENSITIVE?: boolean;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: `By default, for hashes (not with JSON) SORTABLE applies a normalization to the indexed value
       (characters set to lowercase, removal of diacritics).`,
     type: Boolean,
@@ -125,7 +125,7 @@ export class IndexAttibuteDto {
   @Expose()
   UNF?: boolean;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: `Text attributes can have the NOSTEM argument that disables stemming when indexing its values.
       This may be ideal for things like proper names.`,
     type: Boolean,
@@ -133,7 +133,7 @@ export class IndexAttibuteDto {
   @Expose()
   NOSTEM?: boolean;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: `Indicates how the text contained in the attribute is to be split into individual tags.
       The default is ,. The value must be a single character.`,
     type: String,
@@ -208,21 +208,21 @@ export class IndexInfoDto {
   @Expose()
   num_docs: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The maximum document ID.',
     type: String,
   })
   @Expose()
   max_doc_id?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The number of distinct terms.',
     type: String,
   })
   @Expose()
   num_terms?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The total number of records.',
     type: String,
   })
@@ -230,7 +230,7 @@ export class IndexInfoDto {
   num_records?: string;
 
   // Various size statistics
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: `The memory used by the inverted index, which is the core data structure
       used for searching in RediSearch. The size is given in megabytes.`,
     type: String,
@@ -238,7 +238,7 @@ export class IndexInfoDto {
   @Expose()
   inverted_sz_mb?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: `The memory used by the vector index,
       which stores any vectors associated with each document.`,
     type: String,
@@ -246,14 +246,14 @@ export class IndexInfoDto {
   @Expose()
   vector_index_sz_mb?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The total number of blocks in the inverted index.',
     type: String,
   })
   @Expose()
   total_inverted_index_blocks?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: `The memory used by the offset vectors,
       which store positional information for terms in documents.`,
     type: String,
@@ -261,7 +261,7 @@ export class IndexInfoDto {
   @Expose()
   offset_vectors_sz_mb?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: `The memory used by the document table,
       which contains metadata about each document in the index.`,
     type: String,
@@ -269,7 +269,7 @@ export class IndexInfoDto {
   @Expose()
   doc_table_size_mb?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: `The memory used by sortable values,
       which are values associated with documents and used for sorting purposes.`,
     type: String,
@@ -277,28 +277,28 @@ export class IndexInfoDto {
   @Expose()
   sortable_values_size_mb?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Tag overhead memory usage in mb',
     type: String,
   })
   @Expose()
   tag_overhead_sz_mb?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Text overhead memory usage in mb',
     type: String,
   })
   @Expose()
   text_overhead_sz_mb?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Total index memory size in mb',
     type: String,
   })
   @Expose()
   total_index_memory_sz_mb?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: `The memory used by the key table,
       which stores the mapping between document IDs and Redis keys`,
     type: String,
@@ -306,14 +306,14 @@ export class IndexInfoDto {
   @Expose()
   key_table_size_mb?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The memory used by GEO-related fields.',
     type: String,
   })
   @Expose()
   geoshapes_sz_mb?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description:
       'The average number of records (including deletions) per document.',
     type: String,
@@ -321,14 +321,14 @@ export class IndexInfoDto {
   @Expose()
   records_per_doc_avg?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The average size of each record in bytes.',
     type: String,
   })
   @Expose()
   bytes_per_record_avg?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description:
       'The average number of offsets (position information) per term.',
     type: String,
@@ -336,7 +336,7 @@ export class IndexInfoDto {
   @Expose()
   offsets_per_term_avg?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The average number of bits used for offsets per record.',
     type: String,
   })
@@ -344,28 +344,28 @@ export class IndexInfoDto {
   offset_bits_per_record_avg?: string;
 
   // Indexing-related statistics
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The number of failures encountered during indexing.',
     type: String,
   })
   @Expose()
   hash_indexing_failures?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The total time taken for indexing in seconds.',
     type: String,
   })
   @Expose()
   total_indexing_time?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Indicates whether the index is currently being generated.',
     type: String,
   })
   @Expose()
   indexing?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description:
       'The percentage of the index that has been successfully generated.',
     type: String,
@@ -373,14 +373,14 @@ export class IndexInfoDto {
   @Expose()
   percent_indexed?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'The number of times the index has been used.',
     type: Number,
   })
   @Expose()
   number_of_uses?: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description:
       'The index deletion flag. A value of 1 indicates index deletion is in progress.',
     type: Number,
@@ -389,21 +389,21 @@ export class IndexInfoDto {
   cleaning?: number;
 
   // Other
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Garbage collection statistics',
     type: Object,
   })
   @Expose()
   gc_stats?: object;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Cursor statistics',
     type: Object,
   })
   @Expose()
   cursor_stats?: object;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description:
       'Dialect statistics: the number of times the index was searched using each DIALECT, 1 - 4.',
     type: Object,

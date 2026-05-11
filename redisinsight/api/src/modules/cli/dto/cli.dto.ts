@@ -29,6 +29,8 @@ export class SendCommandDto {
     description: 'Define output format',
     default: CliOutputFormatterTypes.Raw,
     enum: CliOutputFormatterTypes,
+
+    enumName: 'CliOutputFormatterTypes',
   })
   @IsOptional()
   @IsEnum(CliOutputFormatterTypes, {
@@ -50,6 +52,8 @@ export class SendCommandResponse {
     description: 'Redis CLI command execution status',
     default: CommandExecutionStatus.Success,
     enum: CommandExecutionStatus,
+
+    enumName: 'CommandExecutionStatus',
   })
   status: CommandExecutionStatus;
 }

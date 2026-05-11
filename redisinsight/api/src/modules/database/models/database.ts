@@ -121,6 +121,8 @@ export class Database {
     description: 'Connection Type',
     default: ConnectionType.STANDALONE,
     enum: ConnectionType,
+
+    enumName: 'ConnectionType',
   })
   @Expose()
   @IsEnum(ConnectionType)
@@ -143,7 +145,7 @@ export class Database {
   @IsString()
   provider?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Time of the last connection to the database.',
     type: Date,
     format: 'date-time',
@@ -152,7 +154,7 @@ export class Database {
   @Expose()
   lastConnection?: Date;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Date of creation',
     type: Date,
   })
@@ -298,6 +300,8 @@ export class Database {
     description: 'Database compressor',
     default: Compressor.NONE,
     enum: Compressor,
+
+    enumName: 'Compressor',
   })
   @Expose()
   @IsEnum(Compressor, {
@@ -312,6 +316,8 @@ export class Database {
     description: 'Key name format',
     default: Encoding.UNICODE,
     enum: Encoding,
+
+    enumName: 'Encoding',
   })
   @Expose()
   @IsEnum(Encoding, {

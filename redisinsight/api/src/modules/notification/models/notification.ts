@@ -5,6 +5,8 @@ import { NotificationType } from 'src/modules/notification/constants';
 export class Notification {
   @ApiProperty({
     enum: NotificationType,
+
+    enumName: 'NotificationType',
     example: NotificationType.Global,
     description: 'Notification type',
   })

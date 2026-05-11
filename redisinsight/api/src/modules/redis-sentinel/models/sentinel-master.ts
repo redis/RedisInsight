@@ -67,6 +67,7 @@ export class SentinelMaster {
   @ApiPropertyOptional({
     description: 'Sentinel master status',
     enum: SentinelMasterStatus,
+    enumName: 'SentinelMasterStatus',
     default: SentinelMasterStatus.Active,
   })
   status?: SentinelMasterStatus;

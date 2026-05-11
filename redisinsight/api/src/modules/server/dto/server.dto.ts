@@ -40,6 +40,7 @@ export class GetServerInfoResponse {
   @ApiProperty({
     description: 'Application package type.',
     enum: PackageType,
+    enumName: 'PackageType',
     example: 'app-image',
   })
   packageType: PackageType;
@@ -47,6 +48,7 @@ export class GetServerInfoResponse {
   @ApiProperty({
     description: 'Application type.',
     enum: AppType,
+    enumName: 'AppType',
     example: 'DOCKER',
   })
   appType: AppType;

@@ -13,6 +13,7 @@ export class CloudAuthRequestOptions {
   @ApiProperty({
     description: 'OAuth identity provider strategy',
     enum: CloudAuthIdpType,
+    enumName: 'CloudAuthIdpType',
     example: CloudAuthIdpType.Google,
   })
   strategy: CloudAuthIdpType;
@@ -42,6 +43,7 @@ export class CloudAuthRequest extends CloudAuthRequestOptions {
   @ApiProperty({
     description: 'Identity provider type',
     enum: CloudAuthIdpType,
+    enumName: 'CloudAuthIdpType',
     example: CloudAuthIdpType.Google,
   })
   idpType: CloudAuthIdpType;

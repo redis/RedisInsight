@@ -38,6 +38,8 @@ export class CreateRedisearchIndexFieldDto {
   @ApiProperty({
     description: 'Type of how data must be indexed',
     enum: RedisearchIndexDataType,
+
+    enumName: 'RedisearchIndexDataType',
   })
   @IsDefined()
   @IsEnum(RedisearchIndexDataType, {
@@ -58,6 +60,8 @@ export class CreateRedisearchIndexDto {
   @ApiProperty({
     description: 'Type of keys to index',
     enum: RedisearchIndexKeyType,
+
+    enumName: 'RedisearchIndexKeyType',
   })
   @IsDefined()
   @IsEnum(RedisearchIndexKeyType, {

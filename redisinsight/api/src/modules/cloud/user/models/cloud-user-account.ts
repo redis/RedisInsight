@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { TransformGroup } from 'src/common/constants';
 
@@ -18,14 +18,14 @@ export class CloudUserAccount {
   name: string;
 
   @Expose({ groups: [TransformGroup.Secure] })
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Cloud API key',
     type: String,
   })
   capiKey?: string; // api_access_key
 
   @Expose({ groups: [TransformGroup.Secure] })
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Cloud API secret',
     type: String,
   })

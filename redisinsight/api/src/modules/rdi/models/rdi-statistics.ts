@@ -220,6 +220,8 @@ export class RdiStatisticsResult {
   @ApiProperty({
     description: 'Statistics status',
     enum: RdiStatisticsStatus,
+
+    enumName: 'RdiStatisticsStatus',
   })
   @Expose()
   status: RdiStatisticsStatus;

@@ -1,5 +1,5 @@
 import { Expose, Type } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { BrowserHistoryMode } from 'src/common/constants';
 import { RedisDataType } from 'src/modules/browser/keys/dto';
@@ -19,7 +19,7 @@ export class ScanFilter {
   })
   type?: RedisDataType = null;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Match glob patterns',
     type: String,
     example: 'device:*',
@@ -56,10 +56,12 @@ export class BrowserHistory {
   @Type(() => ScanFilter)
   filter: ScanFilter = new ScanFilter();
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Mode of history',
     default: BrowserHistoryMode.Pattern,
     enum: BrowserHistoryMode,
+
+    enumName: 'BrowserHistoryMode',
   })
   @Expose()
   mode?: BrowserHistoryMode = BrowserHistoryMode.Pattern;

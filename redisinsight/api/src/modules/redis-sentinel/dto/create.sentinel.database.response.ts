@@ -21,6 +21,8 @@ export class CreateSentinelDatabaseResponse {
     description: 'Add Sentinel Master status',
     default: ActionStatus.Success,
     enum: ActionStatus,
+
+    enumName: 'ActionStatus',
   })
   @Expose()
   status: ActionStatus;
