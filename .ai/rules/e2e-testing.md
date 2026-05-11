@@ -433,13 +433,18 @@ await page.goto('/');
 
 ## Running Tests
 
+Run these commands from the E2E package directory:
+
 ```bash
-npm test                    # Main project tests (default)
-npm run test:main           # Main project tests only
-npm run test:electron       # Electron tests (auto-detects platform)
-npm run test:all            # All projects
-ENV=ci npm test             # CI environment
-ENV=staging npm test        # Staging environment
+cd tests/e2e-playwright
+
+npx playwright test                           # All Playwright projects
+npx playwright test --project=chromium        # Chromium browser tests
+npx playwright test --project=electron        # Electron desktop tests
+npx playwright test --project=main            # Main parallel tests only
+npx playwright test --project=auto-update     # Auto-update tests only
+ENV=ci npx playwright test                    # CI environment
+ENV=staging npx playwright test               # Staging environment
 ```
 
 ## Code Quality (IMPORTANT)
@@ -448,7 +453,7 @@ ENV=staging npm test        # Staging environment
 
 ```bash
 npm run lint                # ESLint check
-npx tsc --noEmit            # TypeScript type check
+npm run type-check          # TypeScript type check
 ```
 
 Both must pass before committing. Common issues:
