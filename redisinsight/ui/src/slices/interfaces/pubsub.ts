@@ -27,3 +27,8 @@ export interface StatePubSub {
   messages: PubSubMessage[]
   count: number
 }
+
+export interface MessagesResponse {
+  messages: PubSubMessage[]
+  count: number
+}
