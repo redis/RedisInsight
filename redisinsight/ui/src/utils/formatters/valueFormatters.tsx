@@ -260,7 +260,10 @@ const bufferToSerializedFormat = (
           {},
           { strict: false, encoding: 'utf8' },
         )
-        const stringified = JSON.stringify(decoded)
+        // php-serialize v5.1+ returns BigInt for integers outside the safe
+        // range; JSON.stringify would throw on those, so use JSONBigInt
+        // (matches the view path in formattingBuffer).
+        const stringified = JSONBigInt.stringify(decoded)
         return reSerializeJSON(stringified, space)
       } catch (e) {
         return bufferToUTF8(value)
