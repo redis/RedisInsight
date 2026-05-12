@@ -27,20 +27,18 @@ docs {
 
   ## Request Body
 
-  Same shape as `POST /vector-set/similarity-search`. The only difference is that all query fields are optional — when none is supplied the endpoint returns an empty preview instead of a `400`.
+  Same shape as `POST /vector-set/similarity-search` — exactly one of `elementName`, `vectorValues`, `vectorFp32` must be supplied.
 
   | Field | Type | Description |
   |-------|------|-------------|
   | `keyName` | string | The Vector Set key name. Required (`@IsDefined` on the DTO). |
-  | `elementName` | string | (Optional) Existing element's vector as the query |
-  | `vectorValues` | number[] | (Optional) Query vector as numeric values |
-  | `vectorFp32` | string | (Optional) Query vector as a base64-encoded little-endian FP32 blob |
+  | `elementName` | string | (One-of) Existing element's vector as the query |
+  | `vectorValues` | number[] | (One-of) Query vector as numeric values |
+  | `vectorFp32` | string | (One-of) Query vector as a base64-encoded little-endian FP32 blob |
   | `count` | number | Maximum number of results (omitted from preview when undefined) |
   | `filter` | string | Optional filter expression evaluated against element attributes |
 
-  At most one of `elementName`, `vectorValues`, `vectorFp32` may be present. Supplying more than one returns `400`.
-
-  When **none** of `elementName` / `vectorValues` / `vectorFp32` is supplied the response `preview` is an empty string — the FE treats that as "nothing to show yet" and hides the preview bar.
+  Exactly one of `elementName`, `vectorValues`, `vectorFp32` must be present — zero or more than one returns `400` (same rule as the search endpoint).
 
   ## Response
 
@@ -54,24 +52,9 @@ docs {
 
   | Status | Condition |
   |--------|-----------|
-  | `400` | More than one of `elementName` / `vectorValues` / `vectorFp32` supplied, invalid `count`, or invalid `vectorFp32` base64 |
+  | `400` | Zero or more than one of `elementName` / `vectorValues` / `vectorFp32` supplied, invalid `count`, or invalid `vectorFp32` base64 |
 
   ## Examples
-
-  ### Empty preview when no query payload is supplied
-
-  ```json
-  {
-    "keyName": "vset:small_3d",
-    "count": 10
-  }
-  ```
-
-  Returns:
-
-  ```json
-  { "preview": "" }
-  ```
 
   ### Preview for FP32 input
 
@@ -92,7 +75,7 @@ docs {
   ## Notes
 
   - `WITHSCORES` and `WITHATTRIBS` are always rendered (matches the search endpoint).
-  - When **no** query field is supplied, the response `preview` is an empty string instead of a placeholder command.
+  - The FE is expected to gate the call so the preview endpoint is only hit once the form has resolved to exactly one query mode.
 }
 
 settings {

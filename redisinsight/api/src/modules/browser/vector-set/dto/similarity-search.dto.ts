@@ -25,12 +25,12 @@ export const VSIM_FILTER_MAX_LENGTH = 2048;
  *     that the search endpoint would execute for the same payload.
  *
  * All three query fields (`elementName`, `vectorValues`, `vectorFp32`) are
- * marked `@IsOptional` so that the preview endpoint can accept an empty
- * payload (and respond with an empty preview). The "exactly one of the three
- * must be supplied" rule is enforced uniformly at the service layer
- * (`resolveVsimQuery`), which raises `BadRequestException` with a clear
- * message if zero or more than one of the three is present. The search
- * endpoint therefore still rejects empty / over-specified payloads with `400`.
+ * marked `@IsOptional` because exactly one — not all — must be supplied;
+ * the "exactly one of the three" rule is enforced uniformly at the service
+ * layer (`resolveVsimQuery`), which raises `BadRequestException` with a
+ * clear message if zero or more than one of the three is present. Both
+ * the search and preview endpoints reject empty / over-specified payloads
+ * with `400`.
  */
 export class SimilaritySearchDto extends KeyDto {
   @ApiPropertyOptional({

@@ -10,8 +10,9 @@ export class SearchVectorSetPreviewResponse {
     type: String,
     description:
       'Human-readable VSIM command preview built from the supplied DTO. ' +
-      'Missing fields (vector / element / key) are rendered as `<…>` ' +
-      'placeholders so the preview stays useful while the form is being filled in.',
+      'The endpoint requires exactly one of `elementName` / `vectorValues` ' +
+      '/ `vectorFp32` to be present — under- or over-specified payloads are ' +
+      'rejected with `400` (same rules as the search endpoint).',
   })
   preview: string;
 }

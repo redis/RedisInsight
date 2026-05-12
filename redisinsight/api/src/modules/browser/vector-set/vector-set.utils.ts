@@ -69,11 +69,12 @@ function quoteForCli(value: string): string {
 
 /**
  * Resolve which of the three mutually-exclusive query payloads the DTO
- * supplied. Returns `null` when none were supplied — callers decide whether
- * that is an error (search) or a no-op (preview). Throws for the genuinely
- * invalid case where more than one was supplied.
+ * supplied. Throws `BadRequestException` when zero or more than one of
+ * `elementName` / `vectorValues` / `vectorFp32` is present, so both the
+ * search and preview endpoints uniformly reject under- and over-specified
+ * payloads with `400`.
  */
-function resolveVsimQuery(dto: SimilaritySearchDto): ResolvedVsimQuery | null {
+function resolveVsimQuery(dto: SimilaritySearchDto): ResolvedVsimQuery {
   const hasElementName =
     dto.elementName !== undefined &&
     dto.elementName !== null &&
@@ -105,10 +106,7 @@ function resolveVsimQuery(dto: SimilaritySearchDto): ResolvedVsimQuery | null {
   if (hasVectorFp32) {
     return { mode: 'FP32', bytes: Buffer.from(dto.vectorFp32, 'base64') };
   }
-  if (hasVectorValues) {
-    return { mode: 'VALUES', values: dto.vectorValues };
-  }
-  return null;
+  return { mode: 'VALUES', values: dto.vectorValues };
 }
 
 /**
@@ -229,20 +227,13 @@ export function buildVsimCommand(dto: SimilaritySearchDto): RedisClientCommand {
  * Build the human-readable VSIM command preview for the supplied DTO.
  * Shares `resolveVsimQuery` and `writeVsimTokens` with `buildVsimCommand`
  * so the preview cannot drift from what the search endpoint would actually
- * execute.
- *
- * Returns an empty string when no query payload is supplied — the FE only
- * asks for a preview once the form is valid, so a missing query is treated
- * as "nothing to preview yet" rather than rendering a placeholder command.
- * `keyName` is guaranteed by `KeyDto` (`@IsDefined`) — requests without it
- * are rejected at the validation pipe before reaching this function.
+ * execute. Throws `BadRequestException` (via `resolveVsimQuery`) when zero
+ * or more than one of `elementName` / `vectorValues` / `vectorFp32` is
+ * supplied — the FE is expected to only call the preview endpoint once
+ * the form has resolved to exactly one query mode.
  */
 export function formatVsimCommandPreview(dto: SimilaritySearchDto): string {
   const query = resolveVsimQuery(dto);
-
-  if (!query) {
-    return '';
-  }
 
   return writeVsimTokens<string>(dto, query, {
     literal: (token) => token,

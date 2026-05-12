@@ -220,7 +220,7 @@ export class VectorSetController extends BrowserBaseController {
     description:
       'Build a human-readable preview of the VSIM command that the similarity-search endpoint would execute for the supplied DTO. ' +
       'Reuses the same internal command builder as the search endpoint so the preview cannot drift from what is actually executed. ' +
-      'Returns an empty `preview` string when no query payload (`elementName` / `vectorValues` / `vectorFp32`) is supplied.',
+      'Requires exactly one of `elementName` / `vectorValues` / `vectorFp32` — under- or over-specified payloads are rejected with `400`.',
     statusCode: 200,
     responses: [
       {
