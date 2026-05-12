@@ -9,9 +9,6 @@ import {
   VectorSetElementDetailsDto,
   VectorSetElementKeyDto,
   GetVectorSetElementsDto,
-  GetVectorSetElementsResponse,
-  SearchVectorSetMatchDto,
-  SearchVectorSetResponse,
   SetVectorSetElementAttributeDto,
   SimilaritySearchDto,
 } from 'src/modules/browser/vector-set/dto';
@@ -122,21 +119,6 @@ export const createVectorSetDtoFactory = Factory.define<CreateVectorSetDto>(
   }),
 );
 
-export const getVectorSetElementsResponseFactory =
-  Factory.define<GetVectorSetElementsResponse>(({ transientParams }) => {
-    const elementNames =
-      transientParams.elementNames ??
-      vectorSetElementFactory.buildList(3).map((el) => el.name);
-
-    return {
-      keyName: Buffer.from(`vset:${faker.string.alphanumeric(6)}`),
-      total: elementNames.length,
-      nextCursor: undefined,
-      isPaginationSupported: true,
-      elementNames,
-    };
-  });
-
 export const similaritySearchDtoFactory = Factory.define<
   SimilaritySearchDto,
   { variant?: 'element' | 'values' | 'fp32' }
@@ -155,28 +137,6 @@ export const similaritySearchDtoFactory = Factory.define<
     count: faker.number.int({ min: 1, max: 100 }),
   };
 });
-
-export const searchVectorSetMatchFactory =
-  Factory.define<SearchVectorSetMatchDto>(({ transientParams }) => {
-    const match: SearchVectorSetMatchDto = {
-      name: Buffer.from(faker.string.alphanumeric(8)),
-      score: parseFloat(
-        faker.number.float({ min: 0, max: 1, fractionDigits: 4 }).toFixed(4),
-      ),
-    };
-    if (transientParams.withAttributes) {
-      match.attributes = JSON.stringify({
-        [faker.string.alpha(5)]: faker.string.alpha(5),
-      });
-    }
-    return match;
-  });
-
-export const searchVectorSetResponseFactory =
-  Factory.define<SearchVectorSetResponse>(() => ({
-    keyName: Buffer.from(`vset:${faker.string.alphanumeric(6)}`),
-    elements: searchVectorSetMatchFactory.buildList(2),
-  }));
 
 /**
  * Stable VSIM match fixtures used by `similaritySearch` service specs. These are
