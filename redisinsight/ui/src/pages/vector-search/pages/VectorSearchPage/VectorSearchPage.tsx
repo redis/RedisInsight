@@ -48,7 +48,7 @@ export const VectorSearchPage = () => {
   })
 
   setTitle(
-    `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)} - Vector Search`,
+    `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)} - Search`,
   )
 
   if (indexesLoading !== false) {
