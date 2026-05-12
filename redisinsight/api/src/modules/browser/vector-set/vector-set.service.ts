@@ -20,12 +20,14 @@ import {
   DeleteVectorSetElementsResponse,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
+  SimilaritySearchDto,
+  SearchVectorSetPreviewResponse,
+  SearchVectorSetResponse,
   SetVectorSetElementAttributeDto,
   SetVectorSetElementAttributeResponse,
   VectorSetElementDetailsDto,
   VectorSetElementKeyDto,
   VECTOR_EMBEDDING_MAX_DISPLAY_LENGTH,
-  AddVectorSetElementDto,
 } from 'src/modules/browser/vector-set/dto';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { Readable } from 'stream';
@@ -38,6 +40,12 @@ import {
   checkIfKeyExists,
   checkIfKeyNotExists,
 } from 'src/modules/browser/utils';
+import {
+  buildVaddCommand,
+  buildVsimCommand,
+  formatVsimCommandPreview,
+  parseVsimReply,
+} from 'src/modules/browser/vector-set/vector-set.utils';
 
 @Injectable()
 export class VectorSetService {
@@ -58,7 +66,7 @@ export class VectorSetService {
       await checkIfKeyExists(keyName, client);
 
       const commands: RedisClientCommand[] = elements.map((element) =>
-        this.buildVaddCommand(keyName, element),
+        buildVaddCommand(keyName, element),
       );
 
       if (expire) {
@@ -106,7 +114,7 @@ export class VectorSetService {
       await checkIfKeyNotExists(keyName, client);
 
       const commands: RedisClientCommand[] = elements.map((element) =>
-        this.buildVaddCommand(keyName, element),
+        buildVaddCommand(keyName, element),
       );
 
       const transactionResults = await client.sendPipeline(commands);
@@ -387,55 +395,74 @@ export class VectorSetService {
     }
   }
 
-  private buildVaddCommand(
-    keyName: Buffer | string,
-    element: AddVectorSetElementDto,
-  ): RedisClientCommand {
-    const args: Array<string | number | Buffer> = [
-      BrowserToolVectorSetCommands.VAdd,
-      keyName,
-    ];
-
-    // Dispatch explicitly on each payload rather than assuming `vectorValues`
-    // is defined. DTO validation should already guarantee exactly one of the
-    // two is present, but we stay defensive so any future internal caller
-    // that bypasses class-validator still fails loudly instead of crashing on
-    // an `undefined.length` read or silently dropping one of the two inputs.
-    const hasVectorFp32 =
-      typeof element.vectorFp32 === 'string' && element.vectorFp32.length > 0;
-    const hasVectorValues =
-      Array.isArray(element.vectorValues) && element.vectorValues.length > 0;
-
-    if (hasVectorFp32 && hasVectorValues) {
-      throw new BadRequestException(
-        'Vector element must supply either `vectorValues` (number[]) or `vectorFp32` (base64 string), not both.',
+  public async similaritySearch(
+    clientMetadata: ClientMetadata,
+    dto: SimilaritySearchDto,
+  ): Promise<SearchVectorSetResponse> {
+    try {
+      this.logger.debug(
+        'Running similarity search on the VectorSet data type.',
+        clientMetadata,
       );
+      const { keyName } = dto;
+      const client: RedisClient =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+
+      await checkIfKeyNotExists(keyName, client);
+
+      const command = buildVsimCommand(dto);
+      const reply = (await client.sendCommand(command)) as Array<
+        string | Buffer | null
+      >;
+
+      const elements = parseVsimReply(reply, this.logger);
+
+      this.logger.debug(
+        'Succeed to run similarity search on the VectorSet data type.',
+        clientMetadata,
+      );
+
+      return plainToInstance(SearchVectorSetResponse, {
+        keyName,
+        elements,
+      });
+    } catch (error) {
+      this.logger.error(
+        'Failed to run similarity search on the VectorSet data type.',
+        error,
+        clientMetadata,
+      );
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
     }
+  }
 
-    if (hasVectorFp32) {
-      args.push(
-        'FP32',
-        Buffer.from(element.vectorFp32, 'base64'),
-        element.name,
+  public async getSimilaritySearchPreview(
+    clientMetadata: ClientMetadata,
+    dto: SimilaritySearchDto,
+  ): Promise<SearchVectorSetPreviewResponse> {
+    try {
+      this.logger.debug(
+        'Building VSIM command preview for the VectorSet data type.',
+        clientMetadata,
       );
-    } else if (hasVectorValues) {
-      args.push(
-        'VALUES',
-        element.vectorValues.length,
-        ...element.vectorValues.map(String),
-        element.name,
+
+      const preview = formatVsimCommandPreview(dto);
+
+      return plainToInstance(SearchVectorSetPreviewResponse, { preview });
+    } catch (error) {
+      this.logger.error(
+        'Failed to build VSIM command preview for the VectorSet data type.',
+        error,
+        clientMetadata,
       );
-    } else {
-      throw new BadRequestException(
-        'Vector element requires either `vectorValues` (number[]) or `vectorFp32` (base64 string).',
-      );
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw catchAclError(error);
     }
-
-    if (element.attributes !== undefined) {
-      args.push('SETATTR', element.attributes);
-    }
-
-    return args as RedisClientCommand;
   }
 
   private async fetchElementDetails(

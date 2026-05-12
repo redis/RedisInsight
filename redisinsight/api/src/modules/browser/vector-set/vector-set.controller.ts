@@ -21,6 +21,9 @@ import {
   DeleteVectorSetElementsResponse,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
+  SimilaritySearchDto,
+  SearchVectorSetPreviewResponse,
+  SearchVectorSetResponse,
   SetVectorSetElementAttributeDto,
   SetVectorSetElementAttributeResponse,
   VectorSetElementDetailsDto,
@@ -188,5 +191,53 @@ export class VectorSetController extends BrowserBaseController {
     @Body() dto: DeleteVectorSetElementsDto,
   ): Promise<DeleteVectorSetElementsResponse> {
     return await this.vectorSetService.deleteElements(clientMetadata, dto);
+  }
+
+  @Post('/similarity-search')
+  @ApiRedisInstanceOperation({
+    description:
+      'Run a vector similarity search (VSIM) against the VectorSet stored at key. ' +
+      'WITHSCORES and WITHATTRIBS are always applied so each match carries a similarity score and the element attributes (when present).',
+    statusCode: 200,
+    responses: [
+      {
+        status: 200,
+        description: 'Ok',
+        type: SearchVectorSetResponse,
+      },
+    ],
+  })
+  @ApiQueryRedisStringEncoding()
+  async similaritySearch(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: SimilaritySearchDto,
+  ): Promise<SearchVectorSetResponse> {
+    return await this.vectorSetService.similaritySearch(clientMetadata, dto);
+  }
+
+  @Post('/similarity-search/preview')
+  @ApiRedisInstanceOperation({
+    description:
+      'Build a human-readable preview of the VSIM command that the similarity-search endpoint would execute for the supplied DTO. ' +
+      'Reuses the same internal command builder as the search endpoint so the preview cannot drift from what is actually executed. ' +
+      'Requires exactly one of `elementName` / `vectorValues` / `vectorFp32` — under- or over-specified payloads are rejected with `400`.',
+    statusCode: 200,
+    responses: [
+      {
+        status: 200,
+        description: 'Ok',
+        type: SearchVectorSetPreviewResponse,
+      },
+    ],
+  })
+  @ApiQueryRedisStringEncoding()
+  async getSimilaritySearchPreview(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: SimilaritySearchDto,
+  ): Promise<SearchVectorSetPreviewResponse> {
+    return await this.vectorSetService.getSimilaritySearchPreview(
+      clientMetadata,
+      dto,
+    );
   }
 }

@@ -1,5 +1,6 @@
 import { Factory } from 'fishery';
 import { faker } from '@faker-js/faker';
+import { BrowserToolVectorSetCommands } from 'src/modules/browser/constants/browser-tool-commands';
 import {
   AddElementsToVectorSetDto,
   AddVectorSetElementDto,
@@ -8,8 +9,8 @@ import {
   VectorSetElementDetailsDto,
   VectorSetElementKeyDto,
   GetVectorSetElementsDto,
-  GetVectorSetElementsResponse,
   SetVectorSetElementAttributeDto,
+  SimilaritySearchDto,
 } from 'src/modules/browser/vector-set/dto';
 
 export const vectorSetElementFactory =
@@ -118,17 +119,112 @@ export const createVectorSetDtoFactory = Factory.define<CreateVectorSetDto>(
   }),
 );
 
-export const getVectorSetElementsResponseFactory =
-  Factory.define<GetVectorSetElementsResponse>(({ transientParams }) => {
-    const elementNames =
-      transientParams.elementNames ??
-      vectorSetElementFactory.buildList(3).map((el) => el.name);
+export const similaritySearchDtoFactory = Factory.define<
+  SimilaritySearchDto,
+  { variant?: 'element' | 'values' | 'fp32' }
+>(({ transientParams }) => {
+  const { variant = 'element' } = transientParams;
 
-    return {
-      keyName: Buffer.from(`vset:${faker.string.alphanumeric(6)}`),
-      total: elementNames.length,
-      nextCursor: undefined,
-      isPaginationSupported: true,
-      elementNames,
-    };
-  });
+  return {
+    keyName: Buffer.from(`vset:${faker.string.alphanumeric(6)}`),
+    elementName:
+      variant === 'element'
+        ? Buffer.from(faker.string.alphanumeric(8))
+        : undefined,
+    vectorValues: variant === 'values' ? [1, 2, 3] : undefined,
+    vectorFp32:
+      variant === 'fp32' ? FP32_VECTOR_FIXTURE_1_2_3.base64 : undefined,
+    count: faker.number.int({ min: 1, max: 100 }),
+  };
+});
+
+/**
+ * Stable VSIM match fixtures used by `similaritySearch` service specs. These are
+ * exported as constants (instead of factory builds) so tests that compare the
+ * exact reply payload to the parsed response can rely on referential equality
+ * for the buffer/string fields.
+ */
+export const SEARCH_VSIM_MATCH_NAME_1 = Buffer.from('match_1');
+export const SEARCH_VSIM_MATCH_NAME_2 = Buffer.from('match_2');
+export const SEARCH_VSIM_MATCH_ATTRIBUTES_1 = JSON.stringify({ k: 'v' });
+
+/**
+ * Canonical flat VSIM reply for two matches, mirroring the Redis wire layout
+ * `name, score, attributes` per match (stride 3). The first match carries
+ * attributes; the second has `null` so specs cover both branches in one reply.
+ */
+export const SEARCH_VSIM_REPLY_TWO_MATCHES: Array<string | Buffer | null> = [
+  SEARCH_VSIM_MATCH_NAME_1,
+  '0.95',
+  SEARCH_VSIM_MATCH_ATTRIBUTES_1,
+  SEARCH_VSIM_MATCH_NAME_2,
+  '0.81',
+  null,
+];
+
+type VsimCommandOptions = {
+  /** Append `COUNT <n>`. Defaults to true; set to false to omit the segment. */
+  includeCount?: boolean;
+  /** Append `FILTER <expr>` after `WITHSCORES`/`WITHATTRIBS`. */
+  filter?: string;
+};
+
+const appendCommonVsimSuffix = (
+  args: unknown[],
+  count: number | undefined,
+  options: VsimCommandOptions,
+): unknown[] => {
+  if (options.includeCount !== false && count !== undefined) {
+    args.push('COUNT', count);
+  }
+  args.push('WITHSCORES', 'WITHATTRIBS');
+  if (options.filter !== undefined) {
+    args.push('FILTER', options.filter);
+  }
+  return args;
+};
+
+/**
+ * Build the expected VSIM command array for an element-mode similarity
+ * search, in the exact order the production `buildVsimCommand` emits it.
+ * Specs use this both as a `when().calledWith(...)` matcher and as the
+ * argument passed to `expect(...).toHaveBeenCalledWith(...)`.
+ */
+export const buildVsimByElementCommand = (
+  dto: Pick<SimilaritySearchDto, 'keyName' | 'elementName' | 'count'>,
+  options: VsimCommandOptions = {},
+): unknown[] =>
+  appendCommonVsimSuffix(
+    [BrowserToolVectorSetCommands.VSim, dto.keyName, 'ELE', dto.elementName],
+    dto.count,
+    options,
+  );
+
+export const buildVsimByValuesCommand = (
+  dto: Pick<SimilaritySearchDto, 'keyName' | 'vectorValues' | 'count'>,
+  options: VsimCommandOptions = {},
+): unknown[] => {
+  const values = dto.vectorValues ?? [];
+  return appendCommonVsimSuffix(
+    [
+      BrowserToolVectorSetCommands.VSim,
+      dto.keyName,
+      'VALUES',
+      values.length,
+      ...values.map(String),
+    ],
+    dto.count,
+    options,
+  );
+};
+
+export const buildVsimByFp32Command = (
+  dto: Pick<SimilaritySearchDto, 'keyName' | 'count'>,
+  fp32Buffer: Buffer,
+  options: VsimCommandOptions = {},
+): unknown[] =>
+  appendCommonVsimSuffix(
+    [BrowserToolVectorSetCommands.VSim, dto.keyName, 'FP32', fp32Buffer],
+    dto.count,
+    options,
+  );
