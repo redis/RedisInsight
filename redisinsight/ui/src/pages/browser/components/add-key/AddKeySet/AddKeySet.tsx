@@ -8,7 +8,7 @@ import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import { CreateSetWithExpireDto } from 'apiSrc/modules/browser/set/dto'
+import { CreateSetWithExpireDto } from 'apiClient'
 
 import { INITIAL_SET_MEMBER_STATE, ISetMemberState } from './interfaces'
 import { AddSetFormConfig as config } from '../constants/fields-config'

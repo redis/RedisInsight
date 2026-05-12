@@ -10,13 +10,12 @@ import { ConnectionType } from 'uiSrc/slices/interfaces'
 import { Nullable } from 'uiSrc/utils'
 import { Item as ListGroupItem } from 'uiSrc/components/base/layout/list'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { Endpoint } from 'apiSrc/common/models'
-import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
 
 import styles from '../styles.module.scss'
 import { DbInfoGroup } from './DbInfo.styles'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { DbInfoLabelValue } from './types'
+import { Endpoint, AdditionalRedisModule } from 'apiClient'
 
 export interface Props {
   connectionType?: ConnectionType

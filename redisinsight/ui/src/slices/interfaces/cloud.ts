@@ -2,9 +2,13 @@ import { Nullable } from 'uiSrc/utils'
 import { Instance } from 'uiSrc/slices/interfaces/instances'
 
 import { OAuthProvider } from 'uiSrc/components/oauth/oauth-select-plan/constants'
-import { CloudJobInfo, CloudJobStatus } from 'apiSrc/modules/cloud/job/models'
-import { CloudUser } from 'apiSrc/modules/cloud/user/models'
-import { CloudSubscriptionPlanResponse } from 'apiSrc/modules/cloud/subscription/dto'
+
+import { CloudJobStatus } from 'uiSrc/electron/constants'
+import {
+  CloudJobInfo,
+  CloudUser,
+  CloudSubscriptionPlanResponse,
+} from 'apiClient'
 
 export interface CloudJobInfoState extends Omit<CloudJobInfo, 'status'> {
   status: '' | CloudJobStatus

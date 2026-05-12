@@ -7,7 +7,7 @@ import {
   RedisDefaultModules,
   REDISEARCH_MODULES,
 } from 'uiSrc/slices/interfaces'
-import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
+import { AdditionalRedisModule } from 'apiClient'
 import { DEFAULT_MODULES_INFO, ModuleInfo } from 'uiSrc/constants/modules'
 import { AllIconsType } from 'uiSrc/components/base/icons'
 

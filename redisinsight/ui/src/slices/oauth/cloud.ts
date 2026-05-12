@@ -20,9 +20,6 @@ import {
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { getCloudSsoUtmParams } from 'uiSrc/utils/oauth/cloudSsoUtm'
 import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
-import { CloudUser } from 'apiSrc/modules/cloud/user/models'
-import { CloudJobInfo } from 'apiSrc/modules/cloud/job/models'
-import { CloudSubscriptionPlanResponse } from 'apiSrc/modules/cloud/subscription/dto'
 
 import { AppDispatch, RootState } from '../store'
 import {
@@ -46,6 +43,11 @@ import {
   setConnectedInstanceId,
 } from '../instances/instances'
 import ApiStatusCode from '../../constants/apiStatusCode'
+import {
+  CloudUser,
+  CloudJobInfo,
+  CloudSubscriptionPlanResponse,
+} from 'apiClient'
 
 export const initialState: StateAppOAuth = {
   loading: false,

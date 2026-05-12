@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash'
 
 import { AxiosError } from 'axios'
-import { SendCommandResponse } from 'src/modules/cli/dto/cli.dto'
+import { SendCommandResponse } from 'apiClient'
 import { AppDispatch, RootState } from 'uiSrc/slices/store'
 import {
   cleanup,

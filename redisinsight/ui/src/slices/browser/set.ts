@@ -14,10 +14,7 @@ import {
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 
-import {
-  AddMembersToSetDto,
-  GetSetMembersResponse,
-} from 'apiSrc/modules/browser/set/dto'
+import { AddMembersToSetDto, GetSetMembersResponse } from 'apiClient'
 import {
   deleteKeyFromList,
   deleteSelectedKeySuccess,

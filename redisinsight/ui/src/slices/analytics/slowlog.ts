@@ -6,7 +6,7 @@ import { setSlowLogUnits } from 'uiSrc/slices/app/context'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { StateSlowLog } from 'uiSrc/slices/interfaces/analytics'
 import { getApiErrorMessage, getUrl, isStatusSuccessful } from 'uiSrc/utils'
-import { SlowLog, SlowLogConfig } from 'apiSrc/modules/slow-log/models'
+import { SlowLog, SlowLogConfig } from 'apiClient'
 
 import { AppDispatch, RootState } from '../store'
 

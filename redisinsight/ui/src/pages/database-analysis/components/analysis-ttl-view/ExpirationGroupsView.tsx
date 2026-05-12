@@ -25,7 +25,7 @@ import {
   setShowNoExpiryGroup,
 } from 'uiSrc/slices/analytics/dbAnalysis'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
+import { DatabaseAnalysis } from 'apiClient'
 
 import {
   SectionTitleWrapper,

@@ -42,11 +42,10 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import { DeleteListElementsDto } from 'apiSrc/modules/browser/list/dto'
+import { DeleteListElementsDto, ListElementDestination } from 'apiClient'
 
 import {
   HEAD_DESTINATION,
-  ListElementDestination,
   TAIL_DESTINATION,
 } from '../add-list-elements/AddListElements'
 

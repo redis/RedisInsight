@@ -1,7 +1,7 @@
 import React from 'react'
 import { getGroupTypeDisplay } from 'uiSrc/utils'
 import { render, screen } from 'uiSrc/utils/test-utils'
-import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
+import { DatabaseAnalysis } from 'apiClient'
 
 import SummaryPerData from './SummaryPerData'
 

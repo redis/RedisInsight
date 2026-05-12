@@ -1,4 +1,4 @@
-import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
+import { AdditionalRedisModule } from 'apiClient'
 import { TelemetryEvent } from './events'
 
 export interface ITelemetryIdentify {

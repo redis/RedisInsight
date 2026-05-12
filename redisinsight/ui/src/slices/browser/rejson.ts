@@ -19,10 +19,7 @@ import {
 } from 'uiSrc/utils'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { parseJsonData } from 'uiSrc/pages/browser/modules/key-details/components/rejson-details/utils'
-import {
-  GetRejsonRlResponseDto,
-  RemoveRejsonRlResponse,
-} from 'apiSrc/modules/browser/rejson-rl/dto'
+import { GetRejsonRlResponseDto, RemoveRejsonRlResponse } from 'apiClient'
 
 import { refreshKeyInfoAction } from './keys'
 import {

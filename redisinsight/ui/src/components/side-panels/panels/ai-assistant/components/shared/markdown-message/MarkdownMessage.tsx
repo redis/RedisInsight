@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import JsxParser from 'react-jsx-parser'
 import MarkdownToJsxString from 'uiSrc/services/formatter/MarkdownToJsxString'
 import { CloudLink } from 'uiSrc/components/markdown'
-import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
+import { AdditionalRedisModule } from 'apiClient'
 import { ChatExternalLink, CodeBlock } from './components'
 
 export interface CodeProps {

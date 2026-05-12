@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
+import type { AdditionalRedisModule } from 'apiClient'
 
 export interface DatabaseListModulesProps {
   content?: ReactNode

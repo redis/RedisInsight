@@ -27,9 +27,6 @@ import {
   INFINITE_MESSAGES,
   InfiniteMessagesIds,
 } from 'uiSrc/components/notifications/components'
-import { Database as DatabaseInstanceResponse } from 'apiSrc/modules/database/models/database'
-import { RedisNodeInfoResponse } from 'apiSrc/modules/database/dto/redis-info.dto'
-import { ExportDatabase } from 'apiSrc/modules/database/models/export-database'
 
 import { fetchMastersSentinelAction } from './sentinel'
 import { fetchTags } from './tags'
@@ -41,6 +38,11 @@ import {
   removeInfiniteNotification,
 } from '../app/notifications'
 import { ConnectionType, InitialStateInstances, Instance } from '../interfaces'
+import {
+  Database as DatabaseInstanceResponse,
+  RedisNodeInfoResponse,
+  ExportDatabase,
+} from 'apiClient'
 
 const HIDE_CREATING_DB_DELAY_MS = 500
 

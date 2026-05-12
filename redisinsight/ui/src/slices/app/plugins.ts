@@ -15,10 +15,9 @@ import {
   PluginsResponse,
   StateAppPlugins,
 } from 'uiSrc/slices/interfaces'
-import { SendCommandResponse } from 'apiSrc/modules/cli/dto/cli.dto'
-import { PluginState } from 'apiSrc/modules/workbench/models/plugin-state'
 
 import { AppDispatch, RootState } from '../store'
+import { SendCommandResponse, PluginState } from 'apiClient'
 
 export const initialState: StateAppPlugins = {
   loading: false,

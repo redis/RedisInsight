@@ -2,23 +2,22 @@ import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces/app'
 import { Maybe, Nullable } from 'uiSrc/utils'
 import { OAuthSocialAction } from 'uiSrc/slices/interfaces/cloud'
 import { DatabaseListColumn } from 'uiSrc/constants'
-import { GetHashFieldsResponse } from 'apiSrc/modules/browser/hash/dto'
-import { GetSetMembersResponse } from 'apiSrc/modules/browser/set/dto'
+
+import { Tag } from './tag'
 import {
+  GetHashFieldsResponse,
+  GetSetMembersResponse,
   GetRejsonRlResponseDto,
   SafeRejsonRlDataDto,
-} from 'apiSrc/modules/browser/rejson-rl/dto'
-import {
   GetListElementsDto,
   GetListElementsResponse,
-} from 'apiSrc/modules/browser/list/dto'
-import { Database as DatabaseInstanceResponse } from 'apiSrc/modules/database/models/database'
-import { SearchZSetMembersResponse } from 'apiSrc/modules/browser/z-set/dto'
-import { SentinelMaster } from 'apiSrc/modules/redis-sentinel/models/sentinel-master'
-import { CreateSentinelDatabaseDto } from 'apiSrc/modules/redis-sentinel/dto/create.sentinel.database.dto'
-import { CreateSentinelDatabaseResponse } from 'apiSrc/modules/redis-sentinel/dto/create.sentinel.database.response'
-import { RedisNodeInfoResponse } from 'apiSrc/modules/database/dto/redis-info.dto'
-import { Tag } from './tag'
+  Database as DatabaseInstanceResponse,
+  SearchZSetMembersResponse,
+  SentinelMaster,
+  CreateSentinelDatabaseDto,
+  CreateSentinelDatabaseResponse,
+  RedisNodeInfoResponse,
+} from 'apiClient'
 
 export interface Instance extends Partial<DatabaseInstanceResponse> {
   host: string

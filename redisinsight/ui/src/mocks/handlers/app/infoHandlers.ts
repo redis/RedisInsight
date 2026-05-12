@@ -1,7 +1,7 @@
 import { http, HttpHandler, HttpResponse } from 'msw'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { getMswURL } from 'uiSrc/utils/test-utils'
-import { Database as DatabaseInstanceResponse } from 'apiSrc/modules/database/models/database'
+import { Database as DatabaseInstanceResponse } from 'apiClient'
 
 export const APP_INFO_DATA_MOCK = {
   id: 'id1',

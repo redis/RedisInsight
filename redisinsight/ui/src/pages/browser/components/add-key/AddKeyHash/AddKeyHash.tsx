@@ -18,10 +18,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import {
-  CreateHashWithExpireDto,
-  HashFieldDto,
-} from 'apiSrc/modules/browser/hash/dto'
+import { CreateHashWithExpireDto, HashFieldDto } from 'apiClient'
 
 import { IHashFieldState, INITIAL_HASH_FIELD_STATE } from './interfaces'
 import { AddHashFormConfig as config } from '../constants/fields-config'

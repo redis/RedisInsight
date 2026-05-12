@@ -15,7 +15,7 @@ import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import { CreateZSetWithExpireDto } from 'apiSrc/modules/browser/z-set/dto'
+import { CreateZSetWithExpireDto } from 'apiClient'
 import { AddZsetFormConfig as config } from '../constants/fields-config'
 
 export interface Props {

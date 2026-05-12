@@ -86,7 +86,7 @@ import {
   GetHashFieldsResponse,
   HashFieldDto,
   UpdateHashFieldsTtlDto,
-} from 'apiSrc/modules/browser/hash/dto'
+} from 'apiClient'
 
 import styles from './styles.module.scss'
 

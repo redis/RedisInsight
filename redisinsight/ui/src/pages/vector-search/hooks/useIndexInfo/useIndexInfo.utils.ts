@@ -1,5 +1,5 @@
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
-import { IndexInfoDto } from 'apiSrc/modules/browser/redisearch/dto/index.info.dto'
+import { IndexInfoDto } from 'apiClient'
 
 import { IndexInfo } from './useIndexInfo.types'
 

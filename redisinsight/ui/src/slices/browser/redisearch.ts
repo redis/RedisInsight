@@ -22,12 +22,6 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { SearchHistoryItem } from 'uiSrc/slices/interfaces/keys'
 import { IndexSummary } from 'uiSrc/slices/interfaces/redisearch'
-import { GetKeysWithDetailsResponse } from 'apiSrc/modules/browser/keys/dto'
-import {
-  CreateRedisearchIndexDto,
-  IndexDeleteRequestBodyDto,
-  ListRedisearchIndexesResponse,
-} from 'apiSrc/modules/browser/redisearch/dto'
 
 import { AppDispatch, RootState } from '../store'
 import {
@@ -35,6 +29,12 @@ import {
   StateRedisearch,
   KeyIndexesApiResponse,
 } from '../interfaces'
+import {
+  GetKeysWithDetailsResponse,
+  CreateRedisearchIndexDto,
+  IndexDeleteRequestBodyDto,
+  ListRedisearchIndexesResponse,
+} from 'apiClient'
 import {
   addErrorNotification,
   addMessageNotification,

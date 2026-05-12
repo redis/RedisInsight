@@ -34,7 +34,7 @@ import { FormatedDate } from 'uiSrc/components'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Text, Title } from 'uiSrc/components/base/text'
 import { defaultValueRender } from 'uiSrc/components/base/forms/select/RiSelect'
-import { SlowLog } from 'apiSrc/modules/slow-log/models'
+import { SlowLog } from 'apiClient'
 import { AnalysisPageContainer } from 'uiSrc/pages/database-analysis/components/analysis-page-container'
 import { AnalyticsPageHeader } from 'uiSrc/pages/database-analysis/components/analytics-page-header'
 

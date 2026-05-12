@@ -5,7 +5,7 @@ import { apiService } from 'uiSrc/services'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { getUrl, isStatusSuccessful } from 'uiSrc/utils'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-import { IndexInfoDto } from 'apiSrc/modules/browser/redisearch/dto/index.info.dto'
+import { IndexInfoDto } from 'apiClient'
 
 import {
   IndexInfo,

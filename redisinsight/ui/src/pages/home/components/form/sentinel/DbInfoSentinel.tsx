@@ -3,7 +3,7 @@ import { capitalize } from 'lodash'
 
 import { ConnectionType } from 'uiSrc/slices/interfaces'
 import { Nullable } from 'uiSrc/utils'
-import { SentinelMaster } from 'apiSrc/modules/redis-sentinel/models/sentinel-master'
+import { SentinelMaster } from 'apiClient'
 import { CopyButton } from 'uiSrc/components/copy-button'
 
 import { DbInfoGroup } from '../DbInfo.styles'

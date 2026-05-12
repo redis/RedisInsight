@@ -1,17 +1,6 @@
 import { Factory } from 'fishery'
 import { faker } from '@faker-js/faker'
-import { ClusterNodeDetails } from 'src/modules/cluster-monitor/models'
-
-enum NodeRole {
-  Primary = 'primary',
-  Replica = 'replica',
-}
-
-enum HealthStatus {
-  Online = 'online',
-  Offline = 'offline',
-  Loading = 'loading',
-}
+import { ClusterNodeDetails, HealthStatus, NodeRole } from 'apiClient'
 
 export const ClusterNodeDetailsFactory = Factory.define<ClusterNodeDetails>(
   () => ({

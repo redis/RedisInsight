@@ -38,7 +38,7 @@ import {
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { TableTextBtn } from 'uiSrc/pages/database-analysis/components/base/TableTextBtn'
 import { Table, ColumnDef } from 'uiSrc/components/base/layout/table'
-import { Key } from 'apiSrc/modules/database-analysis/models/key'
+import { Key } from 'apiClient'
 import { CellText } from 'uiSrc/components/auto-discover'
 
 export interface Props {

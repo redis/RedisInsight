@@ -33,7 +33,7 @@ import {
   ClaimPendingEntryDto,
   ClaimPendingEntriesResponse,
   AckPendingEntriesResponse,
-} from 'apiSrc/modules/browser/stream/dto'
+} from 'apiClient'
 import { AppDispatch, RootState } from '../store'
 import { StateStream, StreamViewType } from '../interfaces/stream'
 import {

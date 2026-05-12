@@ -8,9 +8,6 @@ import {
 import { apiService } from 'uiSrc/services'
 import { parseAddedMastersSentinel, parseMastersSentinel } from 'uiSrc/utils'
 
-import { SentinelMaster } from 'apiSrc/modules/redis-sentinel/models/sentinel-master'
-import { CreateSentinelDatabaseResponse } from 'apiSrc/modules/redis-sentinel/dto/create.sentinel.database.response'
-
 import reducer, {
   initialState,
   sentinelSelector,
@@ -27,6 +24,7 @@ import reducer, {
 } from '../../instances/sentinel'
 import { addErrorNotification } from '../../app/notifications'
 import { LoadedSentinel, ModifiedSentinelMaster } from '../../interfaces'
+import { SentinelMaster, CreateSentinelDatabaseResponse } from 'apiClient'
 
 jest.mock('uiSrc/services', () => ({
   ...jest.requireActual('uiSrc/services'),

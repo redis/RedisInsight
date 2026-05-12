@@ -28,7 +28,7 @@ import {
   PendingEntryDto,
   ClaimPendingEntryDto,
   ClaimPendingEntriesResponse,
-} from 'apiSrc/modules/browser/stream/dto'
+} from 'apiClient'
 
 import MessagesView from './MessagesView'
 import MessageClaimPopover from './MessageClaimPopover'

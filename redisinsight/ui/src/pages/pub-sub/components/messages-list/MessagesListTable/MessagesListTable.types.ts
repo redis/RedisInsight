@@ -1,7 +1,7 @@
 import { ReactElement } from 'react'
 import { CellContext } from 'uiSrc/components/base/layout/table'
-import { IMessage } from 'apiSrc/modules/pub-sub/interfaces/message.interface'
+import { PubSubMessage } from 'uiSrc/slices/interfaces'
 
 export type IMessagesListTableCell = (
-  props: CellContext<IMessage, unknown>,
+  props: CellContext<PubSubMessage, unknown>,
 ) => ReactElement<any, any> | null

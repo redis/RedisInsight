@@ -23,17 +23,12 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import { PushElementToListDto } from 'apiSrc/modules/browser/list/dto'
+import { ListElementDestination, PushElementToListDto } from 'apiClient'
 
 import { EntryContent } from '../../common/AddKeysContainer.styled'
 
 export interface Props {
   closePanel: (isCancelled?: boolean) => void
-}
-
-export enum ListElementDestination {
-  Tail = 'TAIL',
-  Head = 'HEAD',
 }
 
 export const TAIL_DESTINATION: ListElementDestination =

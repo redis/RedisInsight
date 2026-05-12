@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import { DatabaseListModules } from './DatabaseListModules'
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
-import type { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
+import type { AdditionalRedisModule } from 'apiClient'
 
 const meta: Meta<typeof DatabaseListModules> = {
   component: DatabaseListModules,

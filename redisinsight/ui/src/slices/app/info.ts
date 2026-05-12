@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { apiService } from 'uiSrc/services'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { getApiErrorMessage, isStatusSuccessful } from 'uiSrc/utils'
-import { GetServerInfoResponse } from 'apiSrc/modules/server/dto/server.dto'
+import { GetServerInfoResponse } from 'apiClient'
 
 import { AppDispatch, RootState } from '../store'
 import { RedisResponseEncoding, StateAppInfo } from '../interfaces'

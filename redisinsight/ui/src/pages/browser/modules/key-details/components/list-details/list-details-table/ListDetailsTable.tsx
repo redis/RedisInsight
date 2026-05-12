@@ -72,10 +72,7 @@ import {
   FormattedValue,
 } from 'uiSrc/pages/browser/modules/key-details/shared'
 import { Text } from 'uiSrc/components/base/text'
-import {
-  SetListElementDto,
-  SetListElementResponse,
-} from 'apiSrc/modules/browser/list/dto'
+import { SetListElementDto, SetListElementResponse } from 'apiClient'
 
 import styles from './styles.module.scss'
 

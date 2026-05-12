@@ -6,11 +6,7 @@ import {
   initialStateDefault,
   mockedStore,
 } from 'uiSrc/utils/test-utils'
-import {
-  ClusterConnectionDetailsDto,
-  RedisEnterpriseDatabase,
-} from 'apiSrc/modules/redis-enterprise/dto/cluster.dto'
-import { AddRedisEnterpriseDatabaseResponse } from 'apiSrc/modules/redis-enterprise/dto/redis-enterprise-cluster.dto'
+
 import reducer, {
   initialState,
   loadInstancesRedisCluster,
@@ -25,6 +21,11 @@ import reducer, {
 } from '../../instances/cluster'
 
 import { addErrorNotification } from '../../app/notifications'
+import {
+  ClusterConnectionDetailsDto,
+  RedisEnterpriseDatabase,
+  AddRedisEnterpriseDatabaseResponse,
+} from 'apiClient'
 
 jest.mock('uiSrc/services', () => ({
   ...jest.requireActual('uiSrc/services'),

@@ -19,7 +19,7 @@ import { fetchKeys, fetchMoreKeys } from 'uiSrc/slices/browser/keys'
 import { initialState as initialStateInstances } from 'uiSrc/slices/instances/instances'
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
 import { MOCK_TIMESTAMP } from 'uiSrc/mocks/data/dateNow'
-import { IndexDeleteRequestBodyDto } from 'apiSrc/modules/browser/redisearch/dto'
+import { IndexDeleteRequestBodyDto } from 'apiClient'
 import reducer, {
   initialState,
   loadKeys,

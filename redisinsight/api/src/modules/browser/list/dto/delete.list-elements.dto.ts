@@ -10,6 +10,7 @@ export class DeleteListElementsDto extends KeyDto {
       'In order to remove last elements of the list, use the TAIL value, else HEAD value',
     default: ListElementDestination.Tail,
     enum: ListElementDestination,
+    enumName: 'ListElementDestination',
   })
   @IsDefined()
   @IsEnum(ListElementDestination, {

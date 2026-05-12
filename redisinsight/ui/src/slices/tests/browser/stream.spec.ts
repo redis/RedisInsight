@@ -76,7 +76,7 @@ import {
   ClaimPendingEntryDto,
   PendingEntryDto,
   UpdateConsumerGroupDto,
-} from 'apiSrc/modules/browser/stream/dto'
+} from 'apiClient'
 import {
   addErrorNotification,
   addMessageNotification,

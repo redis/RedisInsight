@@ -72,10 +72,7 @@ import {
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
-import {
-  AddMembersToZSetDto,
-  SearchZSetMembersResponse,
-} from 'apiSrc/modules/browser/z-set/dto'
+import { AddMembersToZSetDto, SearchZSetMembersResponse } from 'apiClient'
 
 import styles from './styles.module.scss'
 

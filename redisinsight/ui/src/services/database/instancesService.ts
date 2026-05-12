@@ -1,12 +1,14 @@
-import { RedisNodeInfoResponse } from 'src/modules/database/dto/redis-info.dto'
-import { Database as DatabaseInstanceResponse } from 'src/modules/database/models/database'
-import { ExportDatabase } from 'src/modules/database/models/export-database'
 import axios, { CancelTokenSource } from 'axios'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { apiService } from 'uiSrc/services'
 import { isStatusSuccessful, Nullable } from 'uiSrc/utils'
 import { Instance } from 'uiSrc/slices/interfaces'
 import { PartialInstance } from 'uiSrc/slices/instances/instances'
+import {
+  RedisNodeInfoResponse,
+  Database as DatabaseInstanceResponse,
+  ExportDatabase,
+} from 'apiClient'
 
 const endpoint = ApiEndpoints.DATABASES
 
