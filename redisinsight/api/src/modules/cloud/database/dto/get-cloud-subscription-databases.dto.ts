@@ -24,6 +24,8 @@ export class GetCloudSubscriptionDatabasesDto {
   @ApiProperty({
     description: 'Subscription Id',
     enum: CloudSubscriptionType,
+
+    enumName: 'CloudSubscriptionType',
   })
   @IsEnum(CloudSubscriptionType, {
     message: `subscriptionType must be a valid enum value. Valid values: ${Object.values(

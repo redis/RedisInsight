@@ -79,6 +79,8 @@ export class AzureRedisDatabase {
   @ApiProperty({
     description: 'Redis type (standard or enterprise)',
     enum: AzureRedisType,
+
+    enumName: 'AzureRedisType',
   })
   type: AzureRedisType;
 
@@ -115,6 +117,8 @@ export class AzureRedisDatabase {
   @ApiPropertyOptional({
     description: 'Access keys authentication status',
     enum: AzureAccessKeysStatus,
+
+    enumName: 'AzureAccessKeysStatus',
   })
   accessKeysAuthentication?: AzureAccessKeysStatus;
 }
@@ -153,6 +157,8 @@ export class AzureConnectionDetails {
   @ApiProperty({
     description: 'Authentication type',
     enum: AzureAuthType,
+
+    enumName: 'AzureAuthType',
   })
   authType: AzureAuthType;
 
@@ -189,6 +195,8 @@ export class AzureConnectionDetails {
   @ApiProperty({
     description: 'Azure Redis type',
     enum: AzureRedisType,
+
+    enumName: 'AzureRedisType',
   })
   resourceType: AzureRedisType;
 

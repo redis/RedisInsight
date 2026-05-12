@@ -13,6 +13,7 @@ export class CloudAuthRequestInfo extends PickType(CloudAuthRequest, [
   @ApiProperty({
     description: 'Identity provider type',
     enum: CloudAuthIdpType,
+    enumName: 'CloudAuthIdpType',
     example: CloudAuthIdpType.Google,
   })
   idpType: CloudAuthIdpType;

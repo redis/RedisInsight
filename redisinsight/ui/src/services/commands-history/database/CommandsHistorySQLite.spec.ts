@@ -35,7 +35,7 @@ describe('CommandHistorySQLite', () => {
       const expectedResultCommands = mockCommands.map((cmd) => ({
         ...cmd,
         emptyCommand: false,
-        createdAt: cmd.createdAt.toISOString(),
+        createdAt: cmd.createdAt,
       }))
 
       // Override the MSW handler to return our mock commands
@@ -132,12 +132,12 @@ describe('CommandHistorySQLite', () => {
       const expectedResultCommands1 = mockCommandExecutions1.map((cmd) => ({
         ...cmd,
         emptyCommand: false,
-        createdAt: cmd.createdAt.toISOString(),
+        createdAt: cmd.createdAt,
       }))
       const expectedResultCommands2 = mockCommandExecutions2.map((cmd) => ({
         ...cmd,
         emptyCommand: false,
-        createdAt: cmd.createdAt.toISOString(),
+        createdAt: cmd.createdAt,
       }))
 
       // Override the MSW handler to return different data based on instance ID
@@ -188,7 +188,7 @@ describe('CommandHistorySQLite', () => {
       const expectedResultCommand = {
         ...mockCommand,
         emptyCommand: false,
-        createdAt: mockCommand.createdAt.toISOString(),
+        createdAt: mockCommand.createdAt,
       }
 
       // Override the MSW handler to return our mock command
@@ -291,12 +291,12 @@ describe('CommandHistorySQLite', () => {
       const expectedResultCommand1 = {
         ...mockCommand1,
         emptyCommand: false,
-        createdAt: mockCommand1.createdAt.toISOString(),
+        createdAt: mockCommand1.createdAt,
       }
       const expectedResultCommand2 = {
         ...mockCommand2,
         emptyCommand: false,
-        createdAt: mockCommand2.createdAt.toISOString(),
+        createdAt: mockCommand2.createdAt,
       }
 
       // Override the MSW handler to return different data based on instance ID and command ID
@@ -384,7 +384,7 @@ describe('CommandHistorySQLite', () => {
       const expectedResultCommands = mockCommands.map((cmd) => ({
         ...cmd,
         emptyCommand: false,
-        createdAt: cmd.createdAt.toISOString(),
+        createdAt: cmd.createdAt,
       })) as unknown as CommandExecutionUI[]
 
       // Override the MSW handler to return our mock commands
@@ -424,7 +424,7 @@ describe('CommandHistorySQLite', () => {
         const expectedResultCommands = mockCommands.map((cmd) => ({
           ...cmd,
           emptyCommand: false,
-          createdAt: cmd.createdAt.toISOString(),
+          createdAt: cmd.createdAt,
         })) as unknown as CommandExecutionUI[]
 
         mswServer.use(
@@ -561,12 +561,12 @@ describe('CommandHistorySQLite', () => {
       const expectedResultCommands1 = mockCommandExecutions1.map((cmd) => ({
         ...cmd,
         emptyCommand: false,
-        createdAt: cmd.createdAt.toISOString(),
+        createdAt: cmd.createdAt,
       })) as unknown as CommandExecutionUI[]
       const expectedResultCommands2 = mockCommandExecutions2.map((cmd) => ({
         ...cmd,
         emptyCommand: false,
-        createdAt: cmd.createdAt.toISOString(),
+        createdAt: cmd.createdAt,
       })) as unknown as CommandExecutionUI[]
 
       // Override the MSW handler to return different data based on instance ID

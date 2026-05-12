@@ -245,7 +245,7 @@ describe('CommandsHistoryIndexedDB', () => {
       const expectedResultCommands = mockCommandExecutions.map((cmd) => ({
         ...cmd,
         emptyCommand: false,
-        createdAt: cmd.createdAt?.toISOString(),
+        createdAt: cmd.createdAt,
       })) as unknown as CommandExecutionUI[]
 
       // Override the MSW handler to return our mock commands

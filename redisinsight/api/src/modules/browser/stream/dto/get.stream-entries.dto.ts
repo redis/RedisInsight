@@ -34,6 +34,8 @@ export class GetStreamEntriesDto extends KeyDto {
     description: 'Get entries sort by IDs order.',
     default: SortOrder.Desc,
     enum: SortOrder,
+
+    enumName: 'SortOrder',
   })
   @IsEnum(SortOrder, {
     message: `sortOrder must be a valid enum value. Valid values: ${Object.values(

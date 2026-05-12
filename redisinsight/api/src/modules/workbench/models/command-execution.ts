@@ -79,6 +79,8 @@ export class CommandExecution {
     description: 'Workbench mode',
     default: RunQueryMode.ASCII,
     enum: RunQueryMode,
+
+    enumName: 'RunQueryMode',
   })
   @Expose()
   @IsOptional()
@@ -94,6 +96,8 @@ export class CommandExecution {
     description: 'Workbench result mode',
     default: ResultsMode.Default,
     enum: ResultsMode,
+
+    enumName: 'ResultsMode',
   })
   @Expose()
   @IsOptional()
@@ -157,6 +161,8 @@ export class CommandExecution {
       'Command execution type. Used to distinguish between search and workbench',
     default: CommandExecutionType.Workbench,
     enum: CommandExecutionType,
+
+    enumName: 'CommandExecutionType',
   })
   @Expose()
   @IsOptional()

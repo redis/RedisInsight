@@ -30,6 +30,7 @@ export class GetKeysInfoDto {
     description:
       'Iterate through the database looking for keys of a specific type.',
     enum: RedisDataType,
+    enumName: 'RedisDataType',
     example: RedisDataType.Hash,
   })
   @IsEnum(RedisDataType, {

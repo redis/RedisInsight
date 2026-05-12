@@ -29,10 +29,12 @@ export class CloudSubscription {
   @ApiProperty({
     description: 'Subscription type',
     enum: CloudSubscriptionType,
+
+    enumName: 'CloudSubscriptionType',
   })
   type: CloudSubscriptionType;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Number of databases in subscription',
     type: Number,
   })
@@ -41,6 +43,7 @@ export class CloudSubscription {
   @ApiProperty({
     description: 'Subscription status',
     enum: CloudSubscriptionStatus,
+    enumName: 'CloudSubscriptionStatus',
     default: CloudSubscriptionStatus.Active,
   })
   status: CloudSubscriptionStatus;

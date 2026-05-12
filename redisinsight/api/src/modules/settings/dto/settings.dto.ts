@@ -58,10 +58,22 @@ export class GetUserAgreementsResponse {
   })
   version: string;
 
+  @ApiPropertyOptional({
+    description: 'Did the user accept the EULA agreement.',
+    type: Boolean,
+  })
   eula?: boolean;
 
+  @ApiPropertyOptional({
+    description: 'Did the user accept the analytics agreement.',
+    type: Boolean,
+  })
   analytics?: boolean;
 
+  @ApiPropertyOptional({
+    description: 'Did the user accept the notifications agreement.',
+    type: Boolean,
+  })
   notifications?: boolean;
 
   @Exclude()
@@ -90,6 +102,7 @@ export class GetAppSettingsResponse {
   @ApiProperty({
     description: 'Applied application timezone',
     enum: TimezoneOption,
+    enumName: 'TimezoneOption',
     example: 'local',
   })
   @Expose()

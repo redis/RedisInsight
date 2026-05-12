@@ -21,6 +21,7 @@ export class ImportAzureDatabaseDto {
   @ApiPropertyOptional({
     description: 'Authentication type (defaults to Entra ID)',
     enum: AzureAuthType,
+    enumName: 'AzureAuthType',
     default: AzureAuthType.EntraId,
   })
   @IsOptional()

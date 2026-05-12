@@ -9,6 +9,8 @@ export enum AiQueryIntermediateStepType {
 export class AiQueryIntermediateStep {
   @ApiProperty({
     enum: AiQueryIntermediateStepType,
+
+    enumName: 'AiQueryIntermediateStepType',
   })
   @Expose()
   type: AiQueryIntermediateStepType;

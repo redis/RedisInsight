@@ -43,7 +43,7 @@ export class PluginVisualization {
   @Type(() => String)
   matchCommands: string[];
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: Boolean,
   })
   @IsOptional()
@@ -51,7 +51,7 @@ export class PluginVisualization {
   @IsBoolean()
   default?: boolean;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
   })
   @IsOptional()
@@ -59,7 +59,7 @@ export class PluginVisualization {
   @IsString()
   iconDark?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
   })
   @IsOptional()
@@ -97,7 +97,7 @@ export class Plugin {
   @IsString()
   main: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Uri to css file on the local server',
     type: String,
   })

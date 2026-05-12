@@ -32,6 +32,8 @@ export class SafeRejsonRlDataDto {
 
   @ApiProperty({
     enum: RejsonRlDataType,
+
+    enumName: 'RejsonRlDataType',
     description: 'Type of the field',
   })
   type: RejsonRlDataType;

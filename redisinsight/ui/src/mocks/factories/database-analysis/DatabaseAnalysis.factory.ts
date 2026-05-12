@@ -8,7 +8,7 @@ export const DatabaseAnalysisFactory = Factory.define<DatabaseAnalysis>(() => ({
   filter: { match: '*', count: 10000 } as any,
   delimiter: ':',
   progress: { total: 100000, scanned: 50000, processed: 10000 } as any,
-  createdAt: faker.date.recent(),
+  createdAt: faker.date.recent().toISOString(),
   totalKeys: { total: 10000, types: [] } as any,
   totalMemory: { total: 1000000, types: [] } as any,
   topKeysNsp: [],

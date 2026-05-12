@@ -7,6 +7,8 @@ export class ModifyDatabaseRecommendationDto {
     description: 'Recommendation vote',
     default: null,
     enum: Vote,
+
+    enumName: 'Vote',
   })
   @IsOptional()
   @IsEnum(Vote, {

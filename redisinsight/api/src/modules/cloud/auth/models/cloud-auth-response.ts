@@ -9,6 +9,7 @@ export class CloudAuthResponse {
   @ApiProperty({
     description: 'Authentication status',
     enum: CloudAuthStatus,
+    enumName: 'CloudAuthStatus',
     example: CloudAuthStatus.Succeed,
   })
   status: CloudAuthStatus;

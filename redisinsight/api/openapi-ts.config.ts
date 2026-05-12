@@ -12,9 +12,9 @@ import { defineConfig } from '@hey-api/openapi-ts';
  * `@ApiProperty({ enum, ... })` decorator must include `enumName: 'X'` so Nest
  * emits the enum as a referenced `components/schemas/X` instead of inlining it.
  *
- * `enums.case: 'PascalCase'` keeps the generated member names aligned with the
- * BE source (e.g. `NodeRole.Primary`, not the default `NodeRole.PRIMARY`), so
- * UI call sites read naturally.
+ * `enums.case: 'PascalCase'` keeps member names exactly as written in the BE
+ * source (e.g. `RunQueryMode.ASCII`, `NodeRole.Primary`) so the UI does not
+ * have to follow casing transforms.
  */
 export default defineConfig({
   input: './openapi.json',

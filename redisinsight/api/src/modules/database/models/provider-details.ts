@@ -31,6 +31,7 @@ export class AzureProviderDetails {
   @ApiProperty({
     description: 'Cloud provider',
     enum: CloudProvider,
+    enumName: 'CloudProvider',
     example: CloudProvider.Azure,
   })
   @Expose()
@@ -40,6 +41,7 @@ export class AzureProviderDetails {
   @ApiProperty({
     description: 'Authentication type',
     enum: AzureAuthType,
+    enumName: 'AzureAuthType',
     example: AzureAuthType.EntraId,
   })
   @Expose()
@@ -93,6 +95,8 @@ export class AzureProviderDetails {
   @ApiPropertyOptional({
     description: 'Azure Redis type (standard/enterprise)',
     enum: AzureRedisType,
+
+    enumName: 'AzureRedisType',
   })
   @Expose()
   @IsOptional()

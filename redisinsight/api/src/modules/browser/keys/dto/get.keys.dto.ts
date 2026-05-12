@@ -54,6 +54,8 @@ export class GetKeysDto {
     description:
       'Iterate through the database looking for keys of a specific type.',
     enum: RedisDataType,
+
+    enumName: 'RedisDataType',
   })
   @IsEnum(RedisDataType, {
     message: `destination must be a valid enum value. Valid values: ${Object.values(
