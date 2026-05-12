@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker'
+import axios from 'axios'
 import { cloneDeep } from 'lodash'
 import { apiService } from 'uiSrc/services'
 import {
@@ -49,12 +50,25 @@ import reducer, {
   downloadVectorSetEmbeddingSuccess,
   downloadVectorSetEmbeddingFailure,
   vectorSetSelector,
+  vectorSetSimilaritySearchSelector,
   fetchVectorSetElements,
   fetchMoreVectorSetElements,
   deleteVectorSetElements,
   getVectorSetElementDetails,
   setVectorSetElementAttribute,
   fetchDownloadVectorEmbedding,
+  loadSimilaritySearch,
+  loadSimilaritySearchSuccess,
+  loadSimilaritySearchFailure,
+  clearSimilaritySearch,
+  fetchVectorSetSimilaritySearch,
+  loadSimilaritySearchPreview,
+  loadSimilaritySearchPreviewSuccess,
+  loadSimilaritySearchPreviewFailure,
+  clearSimilaritySearchPreview,
+  vectorSetSimilaritySearchPreviewSelector,
+  fetchVectorSetSimilaritySearchPreview,
+  abortVectorSetSimilaritySearchPreview,
 } from '../../browser/vectorSet'
 
 jest.mock('uiSrc/services', () => ({
@@ -123,6 +137,8 @@ describe('vectorSet slice', () => {
         downloading: false,
         error: '',
         adding: initialState.adding,
+        similaritySearch: initialState.similaritySearch,
+        similaritySearchPreview: initialState.similaritySearchPreview,
         data: {
           ...data,
         },
@@ -150,6 +166,8 @@ describe('vectorSet slice', () => {
         downloading: false,
         error: '',
         adding: initialState.adding,
+        similaritySearch: initialState.similaritySearch,
+        similaritySearchPreview: initialState.similaritySearchPreview,
         data: {
           ...initialState.data,
           ...data,
@@ -184,6 +202,8 @@ describe('vectorSet slice', () => {
         downloading: false,
         error: '',
         adding: initialState.adding,
+        similaritySearch: initialState.similaritySearch,
+        similaritySearchPreview: initialState.similaritySearchPreview,
         data: {
           ...data,
         },
@@ -219,6 +239,8 @@ describe('vectorSet slice', () => {
         downloading: false,
         error: '',
         adding: initialState.adding,
+        similaritySearch: initialState.similaritySearch,
+        similaritySearchPreview: initialState.similaritySearchPreview,
         data: {
           ...data,
         },
@@ -246,6 +268,8 @@ describe('vectorSet slice', () => {
         downloading: false,
         error: data,
         adding: initialState.adding,
+        similaritySearch: initialState.similaritySearch,
+        similaritySearchPreview: initialState.similaritySearchPreview,
         data: initialState.data,
       }
 
@@ -269,6 +293,8 @@ describe('vectorSet slice', () => {
         downloading: false,
         error: '',
         adding: initialState.adding,
+        similaritySearch: initialState.similaritySearch,
+        similaritySearchPreview: initialState.similaritySearchPreview,
         data: initialState.data,
       }
 
@@ -298,6 +324,8 @@ describe('vectorSet slice', () => {
         downloading: false,
         error: '',
         adding: initialState.adding,
+        similaritySearch: initialState.similaritySearch,
+        similaritySearchPreview: initialState.similaritySearchPreview,
         data: {
           ...initialState.data,
           keyName,
@@ -328,6 +356,8 @@ describe('vectorSet slice', () => {
         downloading: false,
         error: data,
         adding: initialState.adding,
+        similaritySearch: initialState.similaritySearch,
+        similaritySearchPreview: initialState.similaritySearchPreview,
         data: initialState.data,
       }
 
@@ -1030,6 +1060,407 @@ describe('vectorSet slice', () => {
 
       expect(store.getActions()).toEqual(expectedActions)
       expect(onFail).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('similaritySearch reducers', () => {
+    const buildSearchResponse = () => ({
+      keyName: vectorSetTestKeyName(),
+      elements: [
+        {
+          name: vectorSetElementFactory.build().name,
+          score: 0.95,
+          attributes: '{"k":"v"}',
+        },
+        {
+          name: vectorSetElementFactory.build().name,
+          score: 0.81,
+        },
+      ],
+    })
+
+    it('loadSimilaritySearch: should set loading and clear error', () => {
+      const prevState = {
+        ...initialState,
+        similaritySearch: {
+          loading: false,
+          error: 'previous',
+          data: undefined,
+        },
+      }
+
+      const nextState = reducer(prevState, loadSimilaritySearch())
+
+      expect(nextState.similaritySearch.loading).toBe(true)
+      expect(nextState.similaritySearch.error).toBe('')
+    })
+
+    it('loadSimilaritySearchSuccess: should store the response and clear loading', () => {
+      const response = buildSearchResponse()
+      const prevState = {
+        ...initialState,
+        similaritySearch: {
+          ...initialState.similaritySearch,
+          loading: true,
+        },
+      }
+      const nextState = reducer(
+        prevState,
+        loadSimilaritySearchSuccess(response as any),
+      )
+
+      expect(nextState.similaritySearch).toEqual({
+        loading: false,
+        error: '',
+        data: response,
+      })
+    })
+
+    it('loadSimilaritySearchFailure: should store the error and clear loading', () => {
+      const prevState = {
+        ...initialState,
+        similaritySearch: {
+          ...initialState.similaritySearch,
+          loading: true,
+        },
+      }
+      const nextState = reducer(prevState, loadSimilaritySearchFailure('boom'))
+
+      expect(nextState.similaritySearch.loading).toBe(false)
+      expect(nextState.similaritySearch.error).toBe('boom')
+    })
+
+    it('clearSimilaritySearch: should reset to initial similarity-search state', () => {
+      const prevState = {
+        ...initialState,
+        similaritySearch: {
+          loading: false,
+          error: 'old',
+          data: buildSearchResponse() as any,
+        },
+      }
+
+      const nextState = reducer(prevState, clearSimilaritySearch())
+
+      expect(nextState.similaritySearch).toEqual(initialState.similaritySearch)
+    })
+
+    it('vectorSetSimilaritySearchSelector returns the slice state', () => {
+      const similaritySearch = {
+        loading: false,
+        error: '',
+        data: buildSearchResponse() as any,
+      }
+      const rootState = {
+        ...initialStateDefault,
+        browser: {
+          ...initialStateDefault.browser,
+          vectorSet: { ...initialState, similaritySearch },
+        },
+      }
+
+      expect(vectorSetSimilaritySearchSelector(rootState)).toEqual(
+        similaritySearch,
+      )
+    })
+  })
+
+  describe('fetchVectorSetSimilaritySearch thunk', () => {
+    const buildPayload = () =>
+      ({
+        keyName: vectorSetTestKeyName(),
+        vectorValues: [1, 2, 3],
+        count: 5,
+      }) as any
+
+    it('should dispatch success actions when the request succeeds', async () => {
+      const payload = buildPayload()
+      const responseData = {
+        keyName: payload.keyName,
+        elements: [
+          { name: vectorSetElementFactory.build().name, score: 0.9 },
+          { name: vectorSetElementFactory.build().name, score: 0.5 },
+        ],
+      }
+      apiService.post = jest
+        .fn()
+        .mockResolvedValue({ status: 200, data: responseData })
+
+      await store.dispatch<any>(fetchVectorSetSimilaritySearch(payload))
+
+      expect(store.getActions()).toEqual([
+        loadSimilaritySearch(),
+        loadSimilaritySearchSuccess(responseData as any),
+      ])
+    })
+
+    it('should dispatch failure actions when the request fails', async () => {
+      const payload = buildPayload()
+      const errorMessage = 'wrong type'
+      const responsePayload = {
+        response: { status: 400, data: { message: errorMessage } },
+      }
+      apiService.post = jest.fn().mockRejectedValue(responsePayload)
+
+      await store.dispatch<any>(fetchVectorSetSimilaritySearch(payload))
+
+      expect(store.getActions()).toEqual([
+        loadSimilaritySearch(),
+        addErrorNotification(
+          responsePayload as unknown as IAddInstanceErrorPayload,
+        ),
+        loadSimilaritySearchFailure(errorMessage),
+      ])
+    })
+
+    it('should send the payload verbatim to the similarity-search endpoint', async () => {
+      const payload = buildPayload()
+      apiService.post = jest.fn().mockResolvedValue({
+        status: 200,
+        data: { keyName: payload.keyName, elements: [] },
+      })
+
+      await store.dispatch<any>(fetchVectorSetSimilaritySearch(payload))
+
+      expect(apiService.post).toHaveBeenCalledWith(
+        expect.stringContaining('vector-set/similarity-search'),
+        payload,
+        expect.any(Object),
+      )
+    })
+
+    it('should dispatch failure when the response status is not successful and no error is thrown', async () => {
+      const payload = buildPayload()
+      apiService.post = jest.fn().mockResolvedValue({
+        status: 304,
+        data: { keyName: payload.keyName, elements: [] },
+      })
+
+      await store.dispatch<any>(fetchVectorSetSimilaritySearch(payload))
+
+      expect(store.getActions()).toEqual([
+        loadSimilaritySearch(),
+        loadSimilaritySearchFailure('Something was wrong!'),
+      ])
+    })
+  })
+
+  describe('similaritySearchPreview reducers', () => {
+    it('loadSimilaritySearchPreview: should set loading and clear error', () => {
+      const prevState = {
+        ...initialState,
+        similaritySearchPreview: {
+          loading: false,
+          error: 'previous',
+          preview: 'stale',
+        },
+      }
+
+      const nextState = reducer(prevState, loadSimilaritySearchPreview())
+
+      expect(nextState.similaritySearchPreview.loading).toBe(true)
+      expect(nextState.similaritySearchPreview.error).toBe('')
+      expect(nextState.similaritySearchPreview.preview).toBe('stale')
+    })
+
+    it('loadSimilaritySearchPreviewSuccess: should store the preview string and clear loading', () => {
+      const prevState = {
+        ...initialState,
+        similaritySearchPreview: {
+          ...initialState.similaritySearchPreview,
+          loading: true,
+        },
+      }
+      const nextState = reducer(
+        prevState,
+        loadSimilaritySearchPreviewSuccess('VSIM mykey VALUES 3 1 2 3'),
+      )
+
+      expect(nextState.similaritySearchPreview).toEqual({
+        loading: false,
+        error: '',
+        preview: 'VSIM mykey VALUES 3 1 2 3',
+      })
+    })
+
+    it('loadSimilaritySearchPreviewFailure: should store the error and clear loading', () => {
+      const prevState = {
+        ...initialState,
+        similaritySearchPreview: {
+          loading: true,
+          error: '',
+          preview: 'last good',
+        },
+      }
+      const nextState = reducer(
+        prevState,
+        loadSimilaritySearchPreviewFailure('boom'),
+      )
+
+      expect(nextState.similaritySearchPreview.loading).toBe(false)
+      expect(nextState.similaritySearchPreview.error).toBe('boom')
+      expect(nextState.similaritySearchPreview.preview).toBe('last good')
+    })
+
+    it('clearSimilaritySearchPreview: should reset to initial preview state', () => {
+      const prevState = {
+        ...initialState,
+        similaritySearchPreview: {
+          loading: false,
+          error: 'old',
+          preview: 'stale',
+        },
+      }
+
+      const nextState = reducer(prevState, clearSimilaritySearchPreview())
+
+      expect(nextState.similaritySearchPreview).toEqual(
+        initialState.similaritySearchPreview,
+      )
+    })
+
+    it('vectorSetSimilaritySearchPreviewSelector returns the slice state', () => {
+      const similaritySearchPreview = {
+        loading: false,
+        error: '',
+        preview: 'VSIM mykey ELE foo COUNT 5 WITHSCORES WITHATTRIBS',
+      }
+      const rootState = {
+        ...initialStateDefault,
+        browser: {
+          ...initialStateDefault.browser,
+          vectorSet: { ...initialState, similaritySearchPreview },
+        },
+      }
+
+      expect(vectorSetSimilaritySearchPreviewSelector(rootState)).toEqual(
+        similaritySearchPreview,
+      )
+    })
+  })
+
+  describe('fetchVectorSetSimilaritySearchPreview thunk', () => {
+    const buildPreviewPayload = () =>
+      ({
+        keyName: vectorSetTestKeyName(),
+        mode: 'VECTOR' as const,
+        vectorValues: [1, 2, 3],
+        count: 5,
+      }) as any
+
+    it('should dispatch success with the preview string when the request succeeds', async () => {
+      const payload = buildPreviewPayload()
+      const preview = 'VSIM key VALUES 3 1 2 3 COUNT 5 WITHSCORES WITHATTRIBS'
+      apiService.post = jest
+        .fn()
+        .mockResolvedValue({ status: 200, data: { preview } })
+
+      await store.dispatch<any>(fetchVectorSetSimilaritySearchPreview(payload))
+
+      expect(store.getActions()).toEqual([
+        loadSimilaritySearchPreview(),
+        loadSimilaritySearchPreviewSuccess(preview),
+      ])
+    })
+
+    it('should dispatch failure (without an error notification) when the request fails', async () => {
+      const payload = buildPreviewPayload()
+      const errorMessage = 'bad dto'
+      apiService.post = jest.fn().mockRejectedValue({
+        response: { status: 400, data: { message: errorMessage } },
+      })
+
+      await store.dispatch<any>(fetchVectorSetSimilaritySearchPreview(payload))
+
+      expect(store.getActions()).toEqual([
+        loadSimilaritySearchPreview(),
+        loadSimilaritySearchPreviewFailure(errorMessage),
+      ])
+    })
+
+    it('should hit the similarity-search/preview endpoint with the payload', async () => {
+      const payload = buildPreviewPayload()
+      apiService.post = jest
+        .fn()
+        .mockResolvedValue({ status: 200, data: { preview: '' } })
+
+      await store.dispatch<any>(fetchVectorSetSimilaritySearchPreview(payload))
+
+      expect(apiService.post).toHaveBeenCalledWith(
+        expect.stringContaining('vector-set/similarity-search/preview'),
+        payload,
+        expect.any(Object),
+      )
+    })
+
+    it('should pass an AbortSignal to apiService.post so the request can be aborted', async () => {
+      const payload = buildPreviewPayload()
+      apiService.post = jest
+        .fn()
+        .mockResolvedValue({ status: 200, data: { preview: '' } })
+
+      await store.dispatch<any>(fetchVectorSetSimilaritySearchPreview(payload))
+
+      const [, , config] = (apiService.post as jest.Mock).mock.calls[0]
+      expect(config?.signal).toBeInstanceOf(AbortSignal)
+    })
+
+    it('should not dispatch any success/failure action when the request is aborted before it resolves', async () => {
+      const payload = buildPreviewPayload()
+      let capturedSignal: AbortSignal | undefined
+      apiService.post = jest.fn().mockImplementation((_url, _body, config) => {
+        capturedSignal = config?.signal
+        return new Promise((_resolve, reject) => {
+          capturedSignal?.addEventListener('abort', () => {
+            const cancelError = new axios.Cancel('aborted by client')
+            reject(cancelError)
+          })
+        })
+      })
+
+      const dispatchPromise = store.dispatch<any>(
+        fetchVectorSetSimilaritySearchPreview(payload),
+      )
+
+      abortVectorSetSimilaritySearchPreview()
+      await dispatchPromise
+
+      expect(store.getActions()).toEqual([loadSimilaritySearchPreview()])
+    })
+
+    it('should abort the previous in-flight request when a newer dispatch is made', async () => {
+      const payload = buildPreviewPayload()
+      const signals: AbortSignal[] = []
+      apiService.post = jest.fn().mockImplementation((_url, _body, config) => {
+        signals.push(config?.signal)
+        return new Promise((resolve, reject) => {
+          config?.signal?.addEventListener('abort', () => {
+            reject(new axios.Cancel('aborted by client'))
+          })
+          // Resolve the second call only — keeps the first one pending so
+          // it gets aborted when the second dispatch starts.
+          if (signals.length > 1) {
+            resolve({ status: 200, data: { preview: 'done' } })
+          }
+        })
+      })
+
+      const first = store.dispatch<any>(
+        fetchVectorSetSimilaritySearchPreview(payload),
+      )
+      const second = store.dispatch<any>(
+        fetchVectorSetSimilaritySearchPreview(payload),
+      )
+
+      await Promise.all([first, second])
+
+      expect(signals[0].aborted).toBe(true)
+      expect(signals[1].aborted).toBe(false)
+      expect(store.getActions()).toEqual([
+        loadSimilaritySearchPreview(),
+        loadSimilaritySearchPreview(),
+        loadSimilaritySearchPreviewSuccess('done'),
+      ])
     })
   })
 })

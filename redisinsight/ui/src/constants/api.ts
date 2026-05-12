@@ -69,6 +69,8 @@ enum ApiEndpoints {
   VECTOR_SET_GET_ELEMENT_DETAILS = 'vector-set/get-details',
   VECTOR_SET_ELEMENT_ATTRIBUTES = 'vector-set/attributes',
   VECTOR_SET_DOWNLOAD_EMBEDDING = 'vector-set/download-embedding',
+  VECTOR_SET_SIMILARITY_SEARCH = 'vector-set/similarity-search',
+  VECTOR_SET_SIMILARITY_SEARCH_PREVIEW = 'vector-set/similarity-search/preview',
 
   STREAMS = 'streams',
   STREAMS_ENTRIES = 'streams/entries',

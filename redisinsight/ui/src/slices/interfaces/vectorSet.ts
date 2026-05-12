@@ -74,4 +74,50 @@ export interface InitialStateVectorSet {
   error: string
   data: VectorSetData
   adding: AddVectorSetElementsState
+  similaritySearch: VectorSetSimilaritySearchState
+  similaritySearchPreview: VectorSetSimilaritySearchPreviewState
+}
+
+export interface VectorSetSimilaritySearchPayload {
+  keyName: RedisResponseBuffer
+  elementName?: RedisResponseBuffer
+  vectorValues?: number[]
+  vectorFp32?: string
+  count?: number
+  filter?: string
+}
+
+export interface VectorSetSimilarityMatch {
+  name: RedisResponseBuffer
+  score: number
+  attributes?: string
+}
+
+export interface VectorSetSimilaritySearchResponse {
+  keyName: RedisResponseBuffer
+  elements: VectorSetSimilarityMatch[]
+}
+
+export interface VectorSetSimilaritySearchState {
+  loading: boolean
+  error: string
+  data?: VectorSetSimilaritySearchResponse
+}
+
+/**
+ * Preview endpoint accepts the same payload shape as the executable search
+ * endpoint — the FE only fires a preview once the form is valid, so there
+ * is no need for a relaxed/lenient variant of the payload.
+ */
+export type VectorSetSimilaritySearchPreviewPayload =
+  VectorSetSimilaritySearchPayload
+
+export interface VectorSetSimilaritySearchPreviewResponse {
+  preview: string
+}
+
+export interface VectorSetSimilaritySearchPreviewState {
+  loading: boolean
+  error: string
+  preview: string
 }

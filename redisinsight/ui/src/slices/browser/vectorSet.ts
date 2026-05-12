@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AxiosError, AxiosResponseHeaders } from 'axios'
+import axios, { AxiosError, AxiosResponseHeaders } from 'axios'
 
 import { apiService } from 'uiSrc/services'
 import { ApiEndpoints } from 'uiSrc/constants'
 import {
   bufferToString,
+  DEFAULT_ERROR_MESSAGE,
   getApiErrorMessage,
   getUrl,
   isEqualBuffers,
@@ -32,6 +33,12 @@ import {
   InitialStateVectorSet,
   VectorSetData,
   VectorSetElement,
+  VectorSetSimilaritySearchPayload,
+  VectorSetSimilaritySearchPreviewPayload,
+  VectorSetSimilaritySearchPreviewResponse,
+  VectorSetSimilaritySearchPreviewState,
+  VectorSetSimilaritySearchResponse,
+  VectorSetSimilaritySearchState,
 } from '../interfaces/vectorSet'
 import {
   addErrorNotification,
@@ -55,6 +62,16 @@ export const initialState: InitialStateVectorSet = {
   adding: {
     loading: false,
     error: '',
+  },
+  similaritySearch: {
+    loading: false,
+    error: '',
+    data: undefined,
+  },
+  similaritySearchPreview: {
+    loading: false,
+    error: '',
+    preview: '',
   },
 }
 
@@ -179,6 +196,68 @@ const vectorSetSlice = createSlice({
       state.downloading = false
       state.error = payload
     },
+
+    loadSimilaritySearch: (state) => {
+      state.similaritySearch = {
+        ...state.similaritySearch,
+        loading: true,
+        error: '',
+      }
+    },
+    loadSimilaritySearchSuccess: (
+      state,
+      { payload }: PayloadAction<VectorSetSimilaritySearchResponse>,
+    ) => {
+      state.similaritySearch = {
+        loading: false,
+        error: '',
+        data: payload,
+      }
+    },
+    loadSimilaritySearchFailure: (
+      state,
+      { payload }: PayloadAction<string>,
+    ) => {
+      state.similaritySearch = {
+        ...state.similaritySearch,
+        loading: false,
+        error: payload,
+      }
+    },
+    clearSimilaritySearch: (state) => {
+      state.similaritySearch = initialState.similaritySearch
+    },
+
+    loadSimilaritySearchPreview: (state) => {
+      state.similaritySearchPreview = {
+        ...state.similaritySearchPreview,
+        loading: true,
+        error: '',
+      }
+    },
+    loadSimilaritySearchPreviewSuccess: (
+      state,
+      { payload }: PayloadAction<string>,
+    ) => {
+      state.similaritySearchPreview = {
+        loading: false,
+        error: '',
+        preview: payload,
+      }
+    },
+    loadSimilaritySearchPreviewFailure: (
+      state,
+      { payload }: PayloadAction<string>,
+    ) => {
+      state.similaritySearchPreview = {
+        ...state.similaritySearchPreview,
+        loading: false,
+        error: payload,
+      }
+    },
+    clearSimilaritySearchPreview: (state) => {
+      state.similaritySearchPreview = initialState.similaritySearchPreview
+    },
   },
 })
 
@@ -200,6 +279,14 @@ export const {
   downloadVectorSetEmbedding,
   downloadVectorSetEmbeddingSuccess,
   downloadVectorSetEmbeddingFailure,
+  loadSimilaritySearch,
+  loadSimilaritySearchSuccess,
+  loadSimilaritySearchFailure,
+  clearSimilaritySearch,
+  loadSimilaritySearchPreview,
+  loadSimilaritySearchPreviewSuccess,
+  loadSimilaritySearchPreviewFailure,
+  clearSimilaritySearchPreview,
 } = vectorSetSlice.actions
 
 export const vectorSetSelector = (state: RootState) => state.browser.vectorSet
@@ -208,6 +295,13 @@ export const vectorSetDataSelector = (state: RootState) =>
 export const addVectorSetElementsStateSelector = (
   state: RootState,
 ): AddVectorSetElementsState => state.browser.vectorSet?.adding
+export const vectorSetSimilaritySearchSelector = (
+  state: RootState,
+): VectorSetSimilaritySearchState => state.browser.vectorSet?.similaritySearch
+export const vectorSetSimilaritySearchPreviewSelector = (
+  state: RootState,
+): VectorSetSimilaritySearchPreviewState =>
+  state.browser.vectorSet?.similaritySearchPreview
 
 export default vectorSetSlice.reducer
 
@@ -244,6 +338,8 @@ export function fetchVectorSetElements({
           }),
         )
         dispatch(updateSelectedKeyRefreshTime(Date.now()))
+      } else {
+        dispatch(loadVectorSetElementsFailure(DEFAULT_ERROR_MESSAGE))
       }
     } catch (_err) {
       const error = _err as AxiosError
@@ -287,6 +383,8 @@ export function fetchMoreVectorSetElements({
             elements: elementNames.map((name) => ({ name })),
           }),
         )
+      } else {
+        dispatch(loadMoreVectorSetElementsFailure(DEFAULT_ERROR_MESSAGE))
       }
     } catch (_err) {
       const error = _err as AxiosError
@@ -344,6 +442,8 @@ export function deleteVectorSetElements(
           dispatch(deleteKeyFromList(key))
           dispatch(addMessageNotification(successMessages.DELETED_KEY(key)))
         }
+      } else {
+        dispatch(removeVectorSetElementsFailure(DEFAULT_ERROR_MESSAGE))
       }
     } catch (_err) {
       const error = _err as AxiosError
@@ -461,6 +561,9 @@ export function addVectorSetElements(
         onSuccessAction?.()
         dispatch(addElementsSuccess())
         dispatch<any>(fetchKeyInfo(data.keyName))
+      } else {
+        onFailAction?.()
+        dispatch(addElementsFailure(DEFAULT_ERROR_MESSAGE))
       }
     } catch (_err) {
       const error = _err as AxiosError
@@ -497,12 +600,125 @@ export function fetchDownloadVectorEmbedding(
       if (isStatusSuccessful(status)) {
         dispatch(downloadVectorSetEmbeddingSuccess())
         onSuccessAction?.(data, headers)
+      } else {
+        dispatch(downloadVectorSetEmbeddingFailure(DEFAULT_ERROR_MESSAGE))
       }
     } catch (_err) {
       const error = _err as AxiosError
       const errorMessage = getApiErrorMessage(error)
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
       dispatch(downloadVectorSetEmbeddingFailure(errorMessage))
+    }
+  }
+}
+
+export function fetchVectorSetSimilaritySearch(
+  payload: VectorSetSimilaritySearchPayload,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    dispatch(loadSimilaritySearch())
+
+    try {
+      const state = stateInit()
+      const { encoding } = state.app.info
+      const { data, status } =
+        await apiService.post<VectorSetSimilaritySearchResponse>(
+          getUrl(
+            state.connections.instances.connectedInstance?.id,
+            ApiEndpoints.VECTOR_SET_SIMILARITY_SEARCH,
+          ),
+          payload,
+          { params: { encoding } },
+        )
+
+      if (isStatusSuccessful(status)) {
+        dispatch(loadSimilaritySearchSuccess(data))
+      } else {
+        dispatch(loadSimilaritySearchFailure(DEFAULT_ERROR_MESSAGE))
+      }
+    } catch (_err) {
+      const error = _err as AxiosError
+      const errorMessage = getApiErrorMessage(error)
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      dispatch(loadSimilaritySearchFailure(errorMessage))
+    }
+  }
+}
+
+/**
+ * Module-scoped controller used to abort an in-flight similarity-search
+ * preview request when:
+ *   - the user fires a newer preview (most-recent wins), or
+ *   - the consumer hook resets state (key change, unmount, manual reset)
+ *     via `abortVectorSetSimilaritySearchPreview()` below.
+ *
+ * Mirrors the pattern used by `redisearch.ts`. Cancelling the debounce
+ * alone is not enough — once the timer has fired, the response can still
+ * land after a reset and overwrite the freshly-cleared preview slice.
+ */
+let similaritySearchPreviewController: AbortController | null = null
+
+/**
+ * Abort the in-flight `fetchVectorSetSimilaritySearchPreview` request (if
+ * any) so its late response cannot dispatch into the just-cleared preview
+ * slice. Safe no-op when no request is in flight.
+ */
+export const abortVectorSetSimilaritySearchPreview = (): void => {
+  similaritySearchPreviewController?.abort()
+  similaritySearchPreviewController = null
+}
+
+/**
+ * Fetch the BE-built `VSIM` command preview for the supplied form DTO.
+ * The BE reuses the same command builder as the search endpoint, so the
+ * preview is guaranteed to match the command that would actually run when
+ * the user submits the form. Intended to be called debounced from the
+ * similarity-search form on every change.
+ *
+ * Errors are stored in the slice but intentionally _not_ surfaced as toasts:
+ * preview is best-effort and a transient 4xx (e.g. user typed both element
+ * and vector during a transition) should not yell at the user.
+ */
+export function fetchVectorSetSimilaritySearchPreview(
+  payload: VectorSetSimilaritySearchPreviewPayload,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    similaritySearchPreviewController?.abort()
+    const controller = new AbortController()
+    similaritySearchPreviewController = controller
+
+    dispatch(loadSimilaritySearchPreview())
+
+    try {
+      const state = stateInit()
+      const { encoding } = state.app.info
+      const { data, status } =
+        await apiService.post<VectorSetSimilaritySearchPreviewResponse>(
+          getUrl(
+            state.connections.instances.connectedInstance?.id,
+            ApiEndpoints.VECTOR_SET_SIMILARITY_SEARCH_PREVIEW,
+          ),
+          payload,
+          { params: { encoding }, signal: controller.signal },
+        )
+
+      if (controller.signal.aborted) return
+
+      if (isStatusSuccessful(status)) {
+        dispatch(loadSimilaritySearchPreviewSuccess(data.preview))
+      } else {
+        dispatch(loadSimilaritySearchPreviewFailure(DEFAULT_ERROR_MESSAGE))
+      }
+    } catch (_err) {
+      if (axios.isCancel(_err)) return
+      const error = _err as AxiosError
+      dispatch(loadSimilaritySearchPreviewFailure(getApiErrorMessage(error)))
+    } finally {
+      // Only clear the module-scoped controller if it still points to ours
+      // — a later dispatch may have already swapped a fresh one in.
+      if (similaritySearchPreviewController === controller) {
+        similaritySearchPreviewController = null
+      }
     }
   }
 }

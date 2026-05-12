@@ -1,0 +1,1 @@
+export { SimilaritySearchResultsTable } from './SimilaritySearchResultsTable'

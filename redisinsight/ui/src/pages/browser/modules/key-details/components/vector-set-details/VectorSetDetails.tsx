@@ -1,7 +1,11 @@
 import React, { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 
-import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
+import {
+  selectedKeyDataSelector,
+  selectedKeySelector,
+} from 'uiSrc/slices/browser/keys'
+import { bufferToString } from 'uiSrc/utils'
 import {
   KeyDetailsHeader,
   KeyDetailsHeaderProps,
@@ -11,7 +15,14 @@ import { AddKeysContainer } from '../common/AddKeysContainer.styled'
 import { VectorSetElementList } from './vector-set-element-list'
 import { VectorSetKeySubheader } from './vector-set-key-subheader'
 import { ElementDetails } from './element-details'
-import { useAddElementPanel, useAddElements, useElementDetails } from './hooks'
+import { SimilaritySearchForm } from './similarity-search-form'
+import { SimilaritySearchResultsTable } from './similarity-search-results'
+import {
+  useAddElementPanel,
+  useAddElements,
+  useElementDetails,
+  useSimilaritySearchResults,
+} from './hooks'
 import * as S from './VectorSetDetails.styles'
 
 export interface Props extends KeyDetailsHeaderProps {
@@ -24,6 +35,10 @@ const VectorSetDetails = (props: Props) => {
   const { onRemoveKey, onOpenAddItemPanel, onCloseAddItemPanel } = props
 
   const { loading } = useSelector(selectedKeySelector)
+  const selectedKeyData = useSelector(selectedKeyDataSelector)
+  const keyName = selectedKeyData?.name
+    ? bufferToString(selectedKeyData.name)
+    : ''
 
   const {
     viewedElement,
@@ -38,6 +53,9 @@ const VectorSetDetails = (props: Props) => {
 
   const { loading: addingLoading, vectorDim, submitElements } = useAddElements()
 
+  const { hasResults: hasSimilarityResults, matches: similarityMatches } =
+    useSimilaritySearchResults()
+
   const handleSubmitElements = useCallback(
     (elements: SubmitElement[]) => {
       submitElements(elements, () => closeAddItemPanel())
@@ -48,14 +66,19 @@ const VectorSetDetails = (props: Props) => {
   return (
     <S.Container>
       <KeyDetailsHeader {...props} key="key-details-header" />
+      <SimilaritySearchForm key={keyName} />
       <VectorSetKeySubheader openAddItemPanel={openAddItemPanel} />
       <S.DetailsBody>
         {!loading && (
           <S.ListWrapper>
-            <VectorSetElementList
-              onRemoveKey={onRemoveKey}
-              onViewElement={handleViewElement}
-            />
+            {hasSimilarityResults ? (
+              <SimilaritySearchResultsTable matches={similarityMatches} />
+            ) : (
+              <VectorSetElementList
+                onRemoveKey={onRemoveKey}
+                onViewElement={handleViewElement}
+              />
+            )}
           </S.ListWrapper>
         )}
         {isAddItemPanelOpen && (
