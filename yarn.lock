@@ -2975,10 +2975,10 @@
   resolved "https://registry.yarnpkg.com/@stablelib/snappy/-/snappy-1.0.2.tgz#ebc9875639dcc3d9cf847a10599a8ed4246e870d"
   integrity sha512-bROi7u2tJsTA4PQMpoI3Za33upkUqryXqWpYMxqoEAN6iW0/2icycoREgzNuzgSVpq6rIT98mc6tewnlTBXRwQ==
 
-"@storybook/addon-a11y@^9.1.11":
-  version "9.1.11"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-a11y/-/addon-a11y-9.1.11.tgz#4d856216f77aea4997a2731c65dc424143e8f0b5"
-  integrity sha512-cM0ermYo2wBIMPImcNIqayXvjhWnLguxClaFWxtsC6T3U2suC5lH6Y/8+znFJODqCWFWNnM1mDwWYVimufvYcg==
+"@storybook/addon-a11y@^9.1.19":
+  version "9.1.19"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-a11y/-/addon-a11y-9.1.19.tgz#01190dcc689f7288f53aa3a87a52f6e2625eb282"
+  integrity sha512-UjJ8qIKlI7UvGYVVV6axO1TgyySGZwbTEu/JbKjYxVTmZKBHK9PQZjEysYwqMTmqDtfeQ33Cg7WfkpeHdBmdgw==
   dependencies:
     "@storybook/global" "^5.0.0"
     axe-core "^4.2.0"
@@ -3770,7 +3770,7 @@
   resolved "https://registry.yarnpkg.com/@types/history/-/history-4.7.11.tgz#56588b17ae8f50c53983a524fc3cc47437969d64"
   integrity sha512-qjDJRrmvBMiTx+jyLxvLfJU7UznFuokDv4f3WRuriHKERccVpFU+8XMQUAbDzoiJCsmexxRExQeMwwCdamSKDA==
 
-"@types/hoist-non-react-statics@^3.3.0", "@types/hoist-non-react-statics@^3.3.1":
+"@types/hoist-non-react-statics@*", "@types/hoist-non-react-statics@^3.3.0", "@types/hoist-non-react-statics@^3.3.1":
   version "3.3.7"
   resolved "https://registry.yarnpkg.com/@types/hoist-non-react-statics/-/hoist-non-react-statics-3.3.7.tgz#306e3a3a73828522efa1341159da4846e7573a6c"
   integrity sha512-PQTyIulDkIDro8P+IHbKCsw7U2xxBYflVzW/FgWdCAePD9xGSidgA76/GeJ6lBKoblyhf9pBY763gbrN+1dI8g==
