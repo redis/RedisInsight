@@ -93,6 +93,12 @@ function resolveVsimQuery(dto: SimilaritySearchDto): ResolvedVsimQuery | null {
     );
   }
 
+  if (suppliedCount === 0) {
+    throw new BadRequestException(
+      'Vector similarity search requires one of `elementName`, `vectorValues`, or `vectorFp32`.',
+    );
+  }
+
   if (hasElementName) {
     return { mode: 'ELE', element: dto.elementName };
   }
@@ -207,12 +213,6 @@ export function buildVaddCommand(
 
 export function buildVsimCommand(dto: SimilaritySearchDto): RedisClientCommand {
   const query = resolveVsimQuery(dto);
-
-  if (!query) {
-    throw new BadRequestException(
-      'Vector similarity search requires one of `elementName`, `vectorValues`, or `vectorFp32`.',
-    );
-  }
 
   return writeVsimTokens<string | number | Buffer>(dto, query, {
     literal: (token) => token,

@@ -1109,29 +1109,23 @@ describe('VectorSetService', () => {
       );
     });
 
-    it('should return an empty preview when no query payload is supplied', async () => {
-      const { preview } = await service.getSimilaritySearchPreview(
-        mockBrowserClientMetadata,
-        {
+    it('should throw BadRequestException when no query payload is supplied', async () => {
+      await expect(
+        service.getSimilaritySearchPreview(mockBrowserClientMetadata, {
           keyName: Buffer.from('mykey'),
           count: 10,
-        },
-      );
-
-      expect(preview).toBe('');
+        }),
+      ).rejects.toThrow(BadRequestException);
     });
 
-    it('should return an empty preview even when only `keyName` and `filter` are supplied', async () => {
-      const { preview } = await service.getSimilaritySearchPreview(
-        mockBrowserClientMetadata,
-        {
+    it('should throw BadRequestException even when only `keyName` and `filter` are supplied', async () => {
+      await expect(
+        service.getSimilaritySearchPreview(mockBrowserClientMetadata, {
           keyName: Buffer.from('mykey'),
           filter: '.year > 2020',
           count: 10,
-        },
-      );
-
-      expect(preview).toBe('');
+        }),
+      ).rejects.toThrow(BadRequestException);
     });
 
     it('should append FILTER clause after WITHSCORES/WITHATTRIBS', async () => {

@@ -311,17 +311,18 @@ describe('vector-set.utils', () => {
       expect(preview.endsWith('FILTER ".color == \\"red\\""')).toBe(true);
     });
 
-    it('should return empty string when no query payload is supplied', () => {
+    it('should throw BadRequestException when no query payload is supplied', () => {
       const dto = similaritySearchDtoFactory.build({
         elementName: undefined,
         vectorValues: undefined,
         vectorFp32: undefined,
       });
 
-      expect(formatVsimCommandPreview(dto)).toBe('');
+      expect(() => formatVsimCommandPreview(dto)).toThrow(BadRequestException);
+      expect(() => formatVsimCommandPreview(dto)).toThrow(/requires one of/);
     });
 
-    it('should return empty string even when keyName and filter are present but no query payload', () => {
+    it('should throw BadRequestException even when keyName and filter are present but no query payload', () => {
       const dto = similaritySearchDtoFactory.build({
         elementName: undefined,
         vectorValues: undefined,
@@ -329,7 +330,7 @@ describe('vector-set.utils', () => {
         filter: '.x > 1',
       });
 
-      expect(formatVsimCommandPreview(dto)).toBe('');
+      expect(() => formatVsimCommandPreview(dto)).toThrow(BadRequestException);
     });
 
     it('should throw BadRequestException when more than one query payload is supplied', () => {
@@ -339,6 +340,7 @@ describe('vector-set.utils', () => {
       });
 
       expect(() => formatVsimCommandPreview(dto)).toThrow(BadRequestException);
+      expect(() => formatVsimCommandPreview(dto)).toThrow(/exactly one/);
     });
   });
 
