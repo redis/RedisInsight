@@ -5,6 +5,7 @@ import { stringToBuffer } from 'uiSrc/utils'
 import {
   AddVectorSetElementsData,
   VectorSetElement,
+  VectorSetSimilarityMatch,
 } from 'uiSrc/slices/interfaces'
 import { IVectorSetElementState } from 'uiSrc/pages/browser/modules/key-details/components/vector-set-details/vector-set-element-form/interfaces'
 
@@ -38,6 +39,17 @@ export const vectorSetElementWithAttributesFactory =
   Factory.define<VectorSetElement>(() => ({
     ...buildBaseElement(),
     attributes: mockVectorSetElementAttributes(),
+  }))
+
+/**
+ * Builds a `VectorSetSimilarityMatch` with a buffered random name and a
+ * `[0, 1]` score. Pass overrides for any field; `attributes` defaults to
+ * `undefined` since most tests only assert on `name` + `score`.
+ */
+export const vectorSetSimilarityMatchFactory =
+  Factory.define<VectorSetSimilarityMatch>(() => ({
+    name: stringToBuffer(faker.word.noun()),
+    score: faker.number.float({ min: 0, max: 1, fractionDigits: 4 }),
   }))
 
 const buildMockVector = (dim = 3): number[] =>

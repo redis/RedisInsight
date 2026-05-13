@@ -16,3 +16,8 @@ export const SIMILARITY_RESULTS_EMPTY_MESSAGE = 'No matching elements found.'
  * Expressed in the same `[0, 1]` space the BE returns.
  */
 export const HIGH_SIMILARITY_THRESHOLD = 0.85
+
+/** Prefix for dynamic attribute column ids — avoids collision with `name` / `similarity`. */
+export const SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_ID_PREFIX = 'attr_'
+
+export const SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE = 10
