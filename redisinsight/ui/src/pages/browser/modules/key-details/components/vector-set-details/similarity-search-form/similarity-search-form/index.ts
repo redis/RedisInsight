@@ -1,2 +1,6 @@
 export { SimilaritySearchForm } from './SimilaritySearchForm'
-export type { SimilaritySearchFormState } from './SimilaritySearchForm.types'
+export type {
+  SimilaritySearchFormProps,
+  SimilaritySearchFormState,
+  SimilaritySearchPrefill,
+} from './SimilaritySearchForm.types'
