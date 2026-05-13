@@ -356,7 +356,6 @@ describe('DatabaseService', () => {
         ),
       ).rejects.toThrow(NotFoundException);
     });
-
   });
 
   describe('test', () => {
