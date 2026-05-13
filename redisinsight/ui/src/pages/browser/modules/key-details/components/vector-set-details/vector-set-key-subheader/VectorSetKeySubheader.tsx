@@ -8,6 +8,7 @@ import Divider from 'uiSrc/components/divider/Divider'
 import { KeyDetailsHeaderFormatter } from 'uiSrc/pages/browser/modules/key-details-header/components/key-details-header-formatter'
 import { AddItemsAction } from 'uiSrc/pages/browser/modules/key-details/components/key-details-actions'
 
+import { ClearResultsAction } from '../clear-results-action'
 import * as S from './VectorSetKeySubheader.styles'
 import { Props } from './VectorSetKeySubheader.types'
 
@@ -16,6 +17,8 @@ const VectorSetKeySubheader = ({
   showPreview,
   previewCount,
   total,
+  hasSimilarityResults,
+  onClearResults,
 }: Props) => {
   return (
     <S.Container>
@@ -39,11 +42,19 @@ const VectorSetKeySubheader = ({
               <Row align="center" grow={false}>
                 <KeyDetailsHeaderFormatter width={width} />
                 <Divider orientation="vertical" />
-                <AddItemsAction
-                  title="Add Elements"
-                  width={width}
-                  openAddItemPanel={openAddItemPanel}
-                />
+                {hasSimilarityResults ? (
+                  <ClearResultsAction
+                    width={width}
+                    onClick={onClearResults}
+                    testIdPrefix="similarity-search"
+                  />
+                ) : (
+                  <AddItemsAction
+                    title="Add Elements"
+                    width={width}
+                    openAddItemPanel={openAddItemPanel}
+                  />
+                )}
               </Row>
             </Row>
           </div>

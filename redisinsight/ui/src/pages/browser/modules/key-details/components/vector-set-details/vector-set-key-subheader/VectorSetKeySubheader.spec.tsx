@@ -19,12 +19,15 @@ jest.mock(
 
 const PREVIEW_TEST_ID = 'vector-set-preview-summary'
 const ADD_BUTTON_TEST_ID = 'add-key-value-items-btn'
+const CLEAR_BUTTON_TEST_ID = 'similarity-search-clear-results-btn'
 
 const defaultProps: Props = {
   openAddItemPanel: jest.fn(),
   showPreview: false,
   previewCount: 0,
   total: 0,
+  hasSimilarityResults: false,
+  onClearResults: jest.fn(),
 }
 
 const renderComponent = (propsOverride?: Partial<Props>) => {
@@ -45,10 +48,11 @@ describe('VectorSetKeySubheader', () => {
     expect(screen.getByTestId(PREVIEW_TEST_ID)).toHaveTextContent('7 out of 42')
   })
 
-  it('renders the Add Elements button', () => {
-    renderComponent()
+  it('renders the Add Elements button when hasSimilarityResults is false', () => {
+    renderComponent({ hasSimilarityResults: false })
 
     expect(screen.getByTestId(ADD_BUTTON_TEST_ID)).toBeInTheDocument()
+    expect(screen.queryByTestId(CLEAR_BUTTON_TEST_ID)).not.toBeInTheDocument()
   })
 
   it('calls openAddItemPanel when Add Elements button is clicked', () => {
@@ -58,5 +62,21 @@ describe('VectorSetKeySubheader', () => {
 
     fireEvent.click(screen.getByTestId(ADD_BUTTON_TEST_ID))
     expect(openAddItemPanel).toHaveBeenCalledTimes(1)
+  })
+
+  it('swaps the Add button for the Clear results button when hasSimilarityResults is true', () => {
+    renderComponent({ hasSimilarityResults: true })
+
+    expect(screen.getByTestId(CLEAR_BUTTON_TEST_ID)).toBeInTheDocument()
+    expect(screen.queryByTestId(ADD_BUTTON_TEST_ID)).not.toBeInTheDocument()
+  })
+
+  it('calls onClearResults when the Clear results button is clicked', () => {
+    const onClearResults = jest.fn()
+
+    renderComponent({ hasSimilarityResults: true, onClearResults })
+
+    fireEvent.click(screen.getByTestId(CLEAR_BUTTON_TEST_ID))
+    expect(onClearResults).toHaveBeenCalledTimes(1)
   })
 })
