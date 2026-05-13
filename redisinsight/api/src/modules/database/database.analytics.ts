@@ -128,27 +128,6 @@ export class DatabaseAnalytics extends TelemetryBaseService {
     }
   }
 
-  sendInstanceProductionTransitionEvent(
-    sessionMetadata: SessionMetadata,
-    instance: Database,
-    isProduction: boolean,
-  ): void {
-    try {
-      this.sendEvent(
-        sessionMetadata,
-        isProduction
-          ? TelemetryEvents.DatabaseMarkedProduction
-          : TelemetryEvents.DatabaseUnmarkedProduction,
-        {
-          databaseId: instance.id,
-          provider: instance.provider,
-        },
-      );
-    } catch (e) {
-      // continue regardless of error
-    }
-  }
-
   sendInstanceDeletedEvent(
     sessionMetadata: SessionMetadata,
     instance: Database,

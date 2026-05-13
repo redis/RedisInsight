@@ -549,42 +549,6 @@ describe('DatabaseAnalytics', () => {
     });
   });
 
-  describe('sendInstanceProductionTransitionEvent', () => {
-    it('should emit MarkedProduction event when isProduction=true', () => {
-      service.sendInstanceProductionTransitionEvent(
-        mockSessionMetadata,
-        mockDatabase,
-        true,
-      );
-
-      expect(sendEventSpy).toHaveBeenCalledWith(
-        mockSessionMetadata,
-        TelemetryEvents.DatabaseMarkedProduction,
-        {
-          databaseId: mockDatabase.id,
-          provider: mockDatabase.provider,
-        },
-      );
-    });
-
-    it('should emit UnmarkedProduction event when isProduction=false', () => {
-      service.sendInstanceProductionTransitionEvent(
-        mockSessionMetadata,
-        mockDatabase,
-        false,
-      );
-
-      expect(sendEventSpy).toHaveBeenCalledWith(
-        mockSessionMetadata,
-        TelemetryEvents.DatabaseUnmarkedProduction,
-        {
-          databaseId: mockDatabase.id,
-          provider: mockDatabase.provider,
-        },
-      );
-    });
-  });
-
   describe('sendDatabaseConnectedClientListEvent', () => {
     it('should emit event', () => {
       service.sendDatabaseConnectedClientListEvent(mockSessionMetadata, {
