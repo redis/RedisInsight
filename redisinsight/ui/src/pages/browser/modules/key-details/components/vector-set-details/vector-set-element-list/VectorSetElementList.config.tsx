@@ -30,7 +30,6 @@ const createNameColumn = (
     accessorKey: VectorSetColumn.Name,
     header: VECTOR_SET_COLUMN_HEADERS[VectorSetColumn.Name],
     enableSorting: false,
-    size: 150,
     cell: ({ row }: { row: TableRow<VectorSetElement> }) => (
       <ElementNameCell
         element={row.original}
@@ -48,7 +47,8 @@ const createActionsColumn = (
   header: VECTOR_SET_COLUMN_HEADERS[VectorSetColumn.Actions],
   enableSorting: false,
   enableResizing: false,
-  size: 10,
+  size: 100,
+  sizeUnit: 'px',
   cell: ({ row }: { row: TableRow<VectorSetElement> }) => {
     const { name: nameBuffer } = row.original
     const {
