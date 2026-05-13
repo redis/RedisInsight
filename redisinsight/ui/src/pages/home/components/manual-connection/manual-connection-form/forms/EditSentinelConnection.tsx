@@ -102,7 +102,7 @@ const EditSentinelConnection = (props: Props) => {
       </Title>
       <DatabaseForm
         formik={formik}
-        showFields={{ host: false, port: true, alias: false, timeout: false }}
+        showFields={{ host: true, port: true, alias: false, timeout: false }}
         onHostNamePaste={onHostNamePaste}
       />
     </Col>
