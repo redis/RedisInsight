@@ -71,6 +71,9 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.devBrowser]: {
         flag: false,
       },
+      [FeatureFlags.devProdMode]: {
+        flag: false,
+      },
     },
   },
 }
