@@ -220,6 +220,14 @@ export class DatabaseService {
         // ignore error
       }
 
+      if (database.isProduction) {
+        this.analytics.sendInstanceProductionTransitionEvent(
+          sessionMetadata,
+          database,
+          true,
+        );
+      }
+
       return database;
     } catch (error) {
       this.logger.error('Failed to add database.', error, sessionMetadata);
@@ -245,6 +253,7 @@ export class DatabaseService {
   ): Promise<Database> {
     this.logger.debug(`Updating database: ${id}`, sessionMetadata);
     const oldDatabase = await this.get(sessionMetadata, id, true);
+    const wasProduction = !!oldDatabase.isProduction;
 
     let database: Database;
     try {
@@ -272,6 +281,18 @@ export class DatabaseService {
         database,
         manualUpdate,
       );
+
+      if (
+        manualUpdate &&
+        dto.isProduction !== undefined &&
+        wasProduction !== !!database.isProduction
+      ) {
+        this.analytics.sendInstanceProductionTransitionEvent(
+          sessionMetadata,
+          database,
+          !!database.isProduction,
+        );
+      }
 
       return database;
     } catch (error) {

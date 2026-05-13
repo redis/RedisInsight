@@ -188,6 +188,7 @@ describe('DatabaseConnectionService', () => {
         analytics.sendDatabaseConnectedClientListEvent,
       ).toHaveBeenCalledWith(mockSessionMetadata, {
         databaseId: mockDatabase.id,
+        isProduction: 'false',
         clients: mockRedisClientListResult.map((c) => ({
           version: mockRedisGeneralInfo.version,
           resp: get(c, 'resp', 'n/a'),
@@ -195,6 +196,22 @@ describe('DatabaseConnectionService', () => {
           libName: get(c, 'lib-name', 'n/a'),
         })),
       });
+    });
+
+    it('should send isProduction=true when database is production', async () => {
+      repository.get.mockResolvedValueOnce({
+        ...mockDatabase,
+        isProduction: true,
+      });
+
+      await service.connect(mockCommonClientMetadata);
+
+      expect(
+        analytics.sendDatabaseConnectedClientListEvent,
+      ).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        expect.objectContaining({ isProduction: 'true' }),
+      );
     });
   });
 });

@@ -48,7 +48,7 @@ export class DatabaseConnectionService {
       version: await this.databaseInfoProvider.determineDatabaseServer(client),
     };
 
-    const { host, provider } = await this.repository.get(
+    const { host, provider, isProduction } = await this.repository.get(
       clientMetadata.sessionMetadata,
       clientMetadata.databaseId,
     );
@@ -102,7 +102,12 @@ export class DatabaseConnectionService {
       );
     }
 
-    this.collectClientInfo(clientMetadata, client, generalInfo?.version);
+    this.collectClientInfo(
+      clientMetadata,
+      client,
+      generalInfo?.version,
+      isProduction,
+    );
 
     this.logger.debug(
       `Succeed to connect to database ${clientMetadata.databaseId}`,
@@ -114,6 +119,7 @@ export class DatabaseConnectionService {
     clientMetadata: ClientMetadata,
     client: RedisClient,
     version?: string,
+    isProduction?: boolean,
   ) {
     try {
       const intVersion = parseInt(version, 10) || 0;
@@ -124,6 +130,7 @@ export class DatabaseConnectionService {
         clientMetadata.sessionMetadata,
         {
           databaseId: clientMetadata.databaseId,
+          isProduction: isProduction ? 'true' : 'false',
           ...(client.isInfoCommandDisabled
             ? { info_command_is_disabled: true }
             : {}),

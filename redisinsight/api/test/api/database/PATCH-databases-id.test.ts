@@ -52,6 +52,7 @@ const dataSchema = Joi.object({
     certificate: Joi.string(),
     key: Joi.string(),
   }).allow(null),
+  isProduction: Joi.boolean().allow(null),
 })
   .messages({
     'any.required': '{#label} should not be empty',
@@ -157,6 +158,22 @@ describe(`PATCH /databases/:id`, () => {
             constants.TEST_INSTANCE_ID,
           );
           expect(newDatabase.name).to.eq(newName);
+        },
+      },
+      {
+        name: 'Should toggle isProduction for existing database',
+        data: {
+          isProduction: true,
+        },
+        responseSchema,
+        responseBody: {
+          isProduction: true,
+        },
+        after: async () => {
+          newDatabase = await localDb.getInstanceById(
+            constants.TEST_INSTANCE_ID,
+          );
+          expect(newDatabase.isProduction).to.eq(true);
         },
       },
       {

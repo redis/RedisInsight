@@ -220,6 +220,23 @@ describe('DatabaseService', () => {
         new NotFoundException(),
       );
     });
+    it('should fire production transition event when isProduction=true', async () => {
+      const prodDatabase = { ...mockDatabase, isProduction: true };
+      databaseRepository.create.mockResolvedValueOnce(prodDatabase);
+
+      await service.create(mockSessionMetadata, prodDatabase);
+
+      expect(
+        analytics.sendInstanceProductionTransitionEvent,
+      ).toHaveBeenCalledWith(mockSessionMetadata, prodDatabase, true);
+    });
+    it('should not fire production transition event when isProduction is falsy', async () => {
+      await service.create(mockSessionMetadata, mockDatabase);
+
+      expect(
+        analytics.sendInstanceProductionTransitionEvent,
+      ).not.toHaveBeenCalled();
+    });
   });
 
   describe('update', () => {
@@ -355,6 +372,73 @@ describe('DatabaseService', () => {
           true,
         ),
       ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should fire production transition event when isProduction toggles to true', async () => {
+      const updated = { ...mockDatabase, isProduction: true };
+      databaseRepository.update.mockReturnValue(updated);
+
+      await service.update(
+        mockSessionMetadata,
+        mockDatabase.id,
+        classToClass(UpdateDatabaseDto, { isProduction: true }),
+        true,
+      );
+
+      expect(
+        analytics.sendInstanceProductionTransitionEvent,
+      ).toHaveBeenCalledWith(mockSessionMetadata, updated, true);
+    });
+
+    it('should fire production transition event when isProduction toggles to false', async () => {
+      databaseRepository.get.mockResolvedValueOnce({
+        ...mockDatabase,
+        isProduction: true,
+      });
+      const updated = { ...mockDatabase, isProduction: false };
+      databaseRepository.update.mockReturnValue(updated);
+
+      await service.update(
+        mockSessionMetadata,
+        mockDatabase.id,
+        classToClass(UpdateDatabaseDto, { isProduction: false }),
+        true,
+      );
+
+      expect(
+        analytics.sendInstanceProductionTransitionEvent,
+      ).toHaveBeenCalledWith(mockSessionMetadata, updated, false);
+    });
+
+    it('should not fire production transition event when isProduction is unchanged', async () => {
+      databaseRepository.update.mockReturnValue(mockDatabase);
+
+      await service.update(
+        mockSessionMetadata,
+        mockDatabase.id,
+        classToClass(UpdateDatabaseDto, { name: 'new' }),
+        true,
+      );
+
+      expect(
+        analytics.sendInstanceProductionTransitionEvent,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should not fire production transition event for non-manual updates', async () => {
+      const updated = { ...mockDatabase, isProduction: true };
+      databaseRepository.update.mockReturnValue(updated);
+
+      await service.update(
+        mockSessionMetadata,
+        mockDatabase.id,
+        classToClass(UpdateDatabaseDto, { isProduction: true }),
+        false,
+      );
+
+      expect(
+        analytics.sendInstanceProductionTransitionEvent,
+      ).not.toHaveBeenCalled();
     });
   });
 

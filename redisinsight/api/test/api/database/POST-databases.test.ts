@@ -50,6 +50,7 @@ const dataSchema = Joi.object({
     privateKey: Joi.string().allow(null),
     passphrase: Joi.string().allow(null),
   }).allow(null),
+  isProduction: Joi.boolean().allow(null),
 })
   .messages({
     'any.required': '{#label} should not be empty',
@@ -224,6 +225,45 @@ describe('POST /databases', () => {
             username: null,
             connectionType: constants.STANDALONE,
             new: true,
+          },
+        });
+      });
+      it('Create standalone with isProduction=true', async () => {
+        const dbName = constants.getRandomString();
+
+        await validateApiCall({
+          endpoint,
+          statusCode: 201,
+          data: {
+            name: dbName,
+            host: constants.TEST_REDIS_HOST,
+            port: constants.TEST_REDIS_PORT,
+            isProduction: true,
+          },
+          responseSchema,
+          responseBody: {
+            name: dbName,
+            host: constants.TEST_REDIS_HOST,
+            port: constants.TEST_REDIS_PORT,
+            isProduction: true,
+          },
+        });
+      });
+      it('Create standalone defaults isProduction to false when omitted', async () => {
+        const dbName = constants.getRandomString();
+
+        await validateApiCall({
+          endpoint,
+          statusCode: 201,
+          data: {
+            name: dbName,
+            host: constants.TEST_REDIS_HOST,
+            port: constants.TEST_REDIS_PORT,
+          },
+          responseSchema,
+          responseBody: {
+            name: dbName,
+            isProduction: false,
           },
         });
       });

@@ -56,6 +56,7 @@ import { EncryptTags1743606395647 } from './1743606395647-encrypt-tags';
 import { UpdateProviderNames1755086732238 } from './1755086732238-update-provider-names';
 import { ProviderDetails1769785218000 } from './1769785218000-provider-details';
 import { QueryLibrary1771500000000 } from './1771500000000-query-library';
+import { DatabaseIsProduction1778758000000 } from './1778758000000-database-isProduction';
 
 export default [
   initialMigration1614164490968,
@@ -116,4 +117,5 @@ export default [
   UpdateProviderNames1755086732238,
   ProviderDetails1769785218000,
   QueryLibrary1771500000000,
+  DatabaseIsProduction1778758000000,
 ];

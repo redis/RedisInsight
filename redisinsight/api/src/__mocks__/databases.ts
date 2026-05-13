@@ -376,4 +376,5 @@ export const mockDatabaseAnalytics = jest.fn(() => ({
   sendInstanceEditedEvent: jest.fn(),
   sendInstanceDeletedEvent: jest.fn(),
   sendDatabaseConnectedClientListEvent: jest.fn(),
+  sendInstanceProductionTransitionEvent: jest.fn(),
 }));
