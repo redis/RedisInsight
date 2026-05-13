@@ -32,3 +32,13 @@ export const SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE = 140
 
 /** Per-attribute-column floor used when computing the table's `minWidth`. */
 export const SIMILARITY_RESULTS_TABLE_MIN_COLUMN_WIDTH = 140
+
+/**
+ * Floor for the table's overall `minWidth` when the visible-column count is
+ * small (e.g. just the two built-in `name` + `similarity` columns). Sized to
+ * fit the default columns comfortably so the table doesn't collapse below
+ * its readable width even when no attribute columns are visible.
+ */
+export const SIMILARITY_RESULTS_TABLE_MIN_WIDTH_FALLBACK =
+  SIMILARITY_RESULTS_NAME_COLUMN_SIZE +
+  SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE
