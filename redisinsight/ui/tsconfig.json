@@ -1,3 +1,42 @@
 {
-  "extends": "../../tsconfig.json"
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "lib": ["dom", "esnext", "WebWorker"],
+    "declaration": true,
+    "declarationMap": true,
+    "noEmit": true,
+    "jsx": "react",
+    "strict": true,
+    "pretty": true,
+    "sourceMap": true,
+    "baseUrl": "./",
+    /* Additional Checks */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    /* Module Resolution Options */
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "types": ["node", "vite/client"],
+    "paths": {
+      "uiSrc/*": ["src/*"],
+      "apiClient": ["../api-client"],
+      "apiClient/*": ["../api-client/*"]
+    }
+  },
+  "include": [
+    "src/**/*",
+    "index.tsx",
+    "indexElectron.tsx",
+    "vite-env.d.ts",
+    "../api-client/**/*"
+  ]
 }

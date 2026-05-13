@@ -72,7 +72,7 @@ export const FEATURE_ERROR_MESSAGES = {
 
 1. Node.js built-in modules
 2. External dependencies (`@nestjs/*`, etc.)
-3. Internal modules (using `apiSrc/*` alias)
+3. Internal modules (using `src/*` alias — the backend's self-reference into `redisinsight/api/src/*`)
 4. Local relative imports
 
 ## Service Layer
@@ -192,7 +192,7 @@ this.logger.error('Error message', error.stack, { context })
 
 ### Redis Service Pattern
 
-- Use RedisClient from `apiSrc/modules/redis`
+- Use RedisClient from `src/modules/redis`
 - Handle errors gracefully
 - Log Redis operations
 - Use try-catch for error handling

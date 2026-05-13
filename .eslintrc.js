@@ -142,26 +142,11 @@ module.exports = {
       parserOptions: {
         ecmaVersion: 2020,
         sourceType: 'module',
-        project: path.join(__dirname, 'tsconfig.json'),
+        project: path.join(__dirname, 'redisinsight/ui/tsconfig.json'),
       },
       rules: {
         radix: 'off',
         'no-bitwise': ['error', { allow: ['|'] }],
-        // RI-7682: forbid new BE -> FE coupling. The UI must consume the
-        // generated `apiClient/*` types (or FE-local replacements) instead of
-        // reaching into `apiSrc/*` or `src/*`.
-        'no-restricted-imports': [
-          'error',
-          {
-            patterns: [
-              {
-                group: ['apiSrc/*', 'src/*'],
-                message:
-                  'Importing from the API codebase couples the UI to backend internals. Use `apiClient/*` (generated from OpenAPI) instead. See RI-7682.',
-              },
-            ],
-          },
-        ],
         'max-len': [
           'error',
           {
@@ -223,11 +208,6 @@ module.exports = {
             pathGroups: [
               {
                 pattern: 'uiSrc/**',
-                group: 'internal',
-                position: 'after',
-              },
-              {
-                pattern: 'apiSrc/**',
                 group: 'internal',
                 position: 'after',
               },

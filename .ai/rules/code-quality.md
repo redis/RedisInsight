@@ -27,15 +27,17 @@ alwaysApply: true
 
 1. External libraries (`react`, `lodash`, etc.)
 2. Built-in Node modules (`path`, `fs` - backend only)
-3. Internal modules with aliases (`uiSrc/*`, `apiSrc/*`)
+3. Internal modules with aliases (`uiSrc/*`, `apiClient`)
 4. Sibling/parent relative imports
 5. Style imports (ALWAYS LAST)
 
 ### Module Aliases
 
-- `uiSrc/*` → `redisinsight/ui/src/*`
-- `apiSrc/*` → `redisinsight/api/src/*`
-- `desktopSrc/*` → `redisinsight/desktop/src/*`
+- `uiSrc/*` → `redisinsight/ui/src/*` (UI workspace)
+- `apiClient` → `redisinsight/api-client` (auto-generated OpenAPI types — the UI's only entry point into BE-defined shapes)
+- `desktopSrc/*` → `redisinsight/desktop/src/*` (desktop workspace)
+
+The UI workspace must not import from the backend codebase directly. Use `apiClient` for types and the existing service layer (`uiSrc/services`) for HTTP calls.
 
 ✅ **Use aliases**: `import { Button } from 'uiSrc/components/Button'`  
 ❌ **Avoid relative**: `import { Button } from '../../../ui/src/components/Button'`

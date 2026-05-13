@@ -6,7 +6,6 @@ const riPath = path.join(rootPath, 'redisinsight')
 
 const apiPath = path.join(riPath, 'api')
 const uiPath = path.join(riPath, 'ui')
-const apiSrcPath = path.join(apiPath, 'src')
 const uiSrcPath = path.join(uiPath, 'src')
 const desktopPath = path.join(riPath, 'desktop')
 const desktopSrcPath = path.join(desktopPath, 'src')
@@ -29,7 +28,6 @@ export default {
   apiPath,
   uiPath,
   riPath,
-  apiSrcPath,
   uiSrcPath,
   releasePath,
   desktopPath,
