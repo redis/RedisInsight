@@ -231,6 +231,45 @@ describe('SimilaritySearchForm', () => {
     })
   })
 
+  describe('prefillElement prop', () => {
+    it('switches to Element mode and seeds the element input when a prefill is provided', () => {
+      render(
+        <SimilaritySearchForm prefillElement={{ value: 'alpha', nonce: 1 }} />,
+      )
+
+      expect(
+        screen.queryByTestId(`${TEST_ID}-vector-input`),
+      ).not.toBeInTheDocument()
+      expect(
+        (screen.getByTestId(`${TEST_ID}-element-input`) as HTMLInputElement)
+          .value,
+      ).toBe('alpha')
+    })
+
+    it('re-applies the same value when only the nonce changes', () => {
+      const { rerender } = render(
+        <SimilaritySearchForm prefillElement={{ value: 'alpha', nonce: 1 }} />,
+      )
+
+      fireEvent.change(screen.getByTestId(`${TEST_ID}-element-input`), {
+        target: { value: 'beta' },
+      })
+      expect(
+        (screen.getByTestId(`${TEST_ID}-element-input`) as HTMLInputElement)
+          .value,
+      ).toBe('beta')
+
+      rerender(
+        <SimilaritySearchForm prefillElement={{ value: 'alpha', nonce: 2 }} />,
+      )
+
+      expect(
+        (screen.getByTestId(`${TEST_ID}-element-input`) as HTMLInputElement)
+          .value,
+      ).toBe('alpha')
+    })
+  })
+
   it('opens the filter syntax help popover when the trigger is clicked', () => {
     render(<SimilaritySearchForm />)
 

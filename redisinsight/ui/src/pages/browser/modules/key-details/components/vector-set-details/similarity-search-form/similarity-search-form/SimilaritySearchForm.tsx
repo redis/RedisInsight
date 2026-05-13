@@ -33,11 +33,14 @@ import {
 } from './constants'
 import { initialFormState, isQueryReady } from './SimilaritySearchForm.utils'
 import {
+  SimilaritySearchFormProps,
   SimilaritySearchFormState,
   SimilaritySearchMode,
 } from './SimilaritySearchForm.types'
 
-export const SimilaritySearchForm = () => {
+export const SimilaritySearchForm = ({
+  prefillElement,
+}: SimilaritySearchFormProps = {}) => {
   const {
     loading,
     previewLoading,
@@ -50,6 +53,18 @@ export const SimilaritySearchForm = () => {
 
   const [state, setState] =
     useState<SimilaritySearchFormState>(initialFormState)
+
+  // React to external prefill requests: switch to Element mode and seed the
+  // element input. Keyed on `nonce` so re-requesting the same value still
+  // re-applies the prefill (e.g. clicking the same row's search icon twice).
+  useEffect(() => {
+    if (!prefillElement) return
+    setState((prev) => ({
+      ...prev,
+      mode: 'element',
+      elementInput: prefillElement.value,
+    }))
+  }, [prefillElement?.nonce, prefillElement?.value])
 
   const setMode = (mode: SimilaritySearchMode) => {
     setState((prev) => ({ ...prev, mode }))
