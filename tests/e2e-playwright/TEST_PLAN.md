@@ -255,13 +255,9 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 2.4 Key Details - String
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | View string value |
-| 🔲 | main | Edit string value |
-| 🔲 | main | View/edit TTL |
-| 🔲 | main | Copy key name (covered by "should show copy key name button on hover" test) |
-| 🔲 | main | Change value format (text/binary/hex) |
-| 🔲 | main | Rename key and confirm new name propagates across Browser |
-| 🔲 | main | Confirm TTL countdown updates in real time |
+| ✅ | main | should view, edit, rename a String key and show copy-on-hover |
+| ✅ | main | should view, edit TTL and have the key expire after countdown |
+| ✅ | main | should change value format between Unicode, HEX and Binary |
 
 ### 2.5 Key Details - Hash
 | Status | Group | Test Case |
