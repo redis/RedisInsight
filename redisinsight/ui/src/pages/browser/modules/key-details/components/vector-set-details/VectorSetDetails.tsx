@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import {
@@ -14,12 +14,16 @@ import {
   KeyDetailsHeader,
   KeyDetailsHeaderProps,
 } from 'uiSrc/pages/browser/modules'
+import { VectorSetElement } from 'uiSrc/slices/interfaces'
 import { VectorSetElementForm, SubmitElement } from './vector-set-element-form'
 import { AddKeysContainer } from '../common/AddKeysContainer.styled'
 import { VectorSetElementList } from './vector-set-element-list'
 import { VectorSetKeySubheader } from './vector-set-key-subheader'
 import { ElementDetails } from './element-details'
-import { SimilaritySearchForm } from './similarity-search-form'
+import {
+  SimilaritySearchForm,
+  SimilaritySearchPrefill,
+} from './similarity-search-form'
 import {
   SimilarityColumnsPopover,
   SimilaritySearchResultsTable,
@@ -69,6 +73,20 @@ const VectorSetDetails = (props: Props) => {
     dispatch(clearSimilaritySearch())
   }, [dispatch])
 
+  // Drives the similarity-search form's Element-mode prefill when a user
+  // clicks "Search similar" on an element row. The nonce lets the same value
+  // be re-applied on repeat clicks.
+  const [similarityPrefill, setSimilarityPrefill] =
+    useState<SimilaritySearchPrefill>()
+
+  const handleSearchByElement = useCallback((element: VectorSetElement) => {
+    const value = bufferToString(element.name)
+    setSimilarityPrefill((prev) => ({
+      value,
+      nonce: (prev?.nonce ?? 0) + 1,
+    }))
+  }, [])
+
   // Single source of truth shared by the results table and the Columns popover.
   const {
     columns: similarityColumns,
@@ -117,7 +135,7 @@ const VectorSetDetails = (props: Props) => {
   return (
     <S.Container>
       <KeyDetailsHeader {...props} key="key-details-header" />
-      <SimilaritySearchForm key={keyName} />
+      <SimilaritySearchForm key={keyName} prefillElement={similarityPrefill} />
       <VectorSetKeySubheader
         openAddItemPanel={openAddItemPanel}
         showPreview={showPreview}
@@ -141,6 +159,7 @@ const VectorSetDetails = (props: Props) => {
               <VectorSetElementList
                 onRemoveKey={onRemoveKey}
                 onViewElement={handleViewElement}
+                onSearchByElement={handleSearchByElement}
               />
             )}
           </S.ListWrapper>

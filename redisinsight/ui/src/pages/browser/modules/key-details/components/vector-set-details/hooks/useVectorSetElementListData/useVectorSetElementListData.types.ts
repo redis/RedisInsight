@@ -6,6 +6,7 @@ import { VectorSetElement } from 'uiSrc/slices/interfaces'
 export interface UseVectorSetElementListDataParams {
   onRemoveKey: () => void
   onViewElement: (element: VectorSetElement) => void
+  onSearchByElement: (element: VectorSetElement) => void
 }
 
 export interface UseVectorSetElementListDataResult {
