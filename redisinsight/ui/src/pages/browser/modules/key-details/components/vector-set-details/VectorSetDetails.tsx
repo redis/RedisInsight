@@ -70,19 +70,18 @@ const VectorSetDetails = (props: Props) => {
     dispatch(clearSimilaritySearch())
   }, [dispatch])
 
-  // Cache parsed attribute payloads so each row pays the JSON-parse cost once
-  // instead of once per attribute column (and key collector) it renders.
-  const similarityParsedAttributesCache = useMemo(
-    () => buildParsedAttributesCache(similarityMatches),
-    [similarityMatches],
-  )
-  // Attribute columns are derived from the union of keys across matches.
-  // Stable alphabetical ordering keeps the column list referentially stable.
-  const similarityAttributeKeys = useMemo(
-    () =>
-      collectAttributeKeys(similarityMatches, similarityParsedAttributesCache),
-    [similarityMatches, similarityParsedAttributesCache],
-  )
+  // Cache parsed attribute payloads + derive the union of attribute keys in
+  // one pass, so each row pays the JSON-parse cost once across the key
+  // collector and every attribute column it renders. Stable alphabetical
+  // ordering keeps the resulting column list referentially stable.
+  const { similarityParsedAttributesCache, similarityAttributeKeys } =
+    useMemo(() => {
+      const cache = buildParsedAttributesCache(similarityMatches)
+      return {
+        similarityParsedAttributesCache: cache,
+        similarityAttributeKeys: collectAttributeKeys(similarityMatches, cache),
+      }
+    }, [similarityMatches])
   const similarityColumns = useMemo(
     () => buildSimilarityResultsColumns(similarityAttributeKeys),
     [similarityAttributeKeys],

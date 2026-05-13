@@ -43,8 +43,7 @@ export const vectorSetElementWithAttributesFactory =
 
 /**
  * Builds a `VectorSetSimilarityMatch` with a buffered random name and a
- * `[0, 1]` score. Pass overrides for any field; `attributes` defaults to
- * `undefined` since most tests only assert on `name` + `score`.
+ * `[0, 1]` score. Pass `attributes` via overrides when the test needs them.
  */
 export const vectorSetSimilarityMatchFactory =
   Factory.define<VectorSetSimilarityMatch>(() => ({
