@@ -10,7 +10,7 @@
     "strict": true,
     "pretty": true,
     "sourceMap": true,
-    "baseUrl": "./",
+    "baseUrl": "../..",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
@@ -25,11 +25,11 @@
     "skipLibCheck": true,
     "types": ["node"],
     "paths": {
-      "desktopSrc/*": ["src/*"],
-      "apiSrc/*": ["../api/src/*"],
-      "uiSrc/*": ["../ui/src/*"],
-      "apiClient": ["../api-client"],
-      "apiClient/*": ["../api-client/*"]
+      "desktopSrc/*": ["redisinsight/desktop/src/*"],
+      "apiSrc/*": ["redisinsight/api/src/*"],
+      "uiSrc/*": ["redisinsight/ui/src/*"],
+      "apiClient": ["redisinsight/api-client"],
+      "apiClient/*": ["redisinsight/api-client/*"]
     }
   },
   "include": ["**/*"],
