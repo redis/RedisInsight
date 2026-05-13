@@ -16,6 +16,8 @@ export interface SimilarityResultsListConfig {
 export interface SimilaritySearchResultsTableProps {
   matches: VectorSetSimilarityMatch[]
   columns: ColumnDef<VectorSetSimilarityMatch>[]
+  /** `@redis-ui/table` visibility map (`{ [columnId]: false }`). */
+  columnVisibility: Record<string, boolean>
   parsedAttributesCache: WeakMap<
     VectorSetSimilarityMatch,
     Record<string, unknown>
