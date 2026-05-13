@@ -4,9 +4,17 @@ import { useSelector } from 'react-redux'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
 
-import { SimilarityResultsCellMeta } from './SimilaritySearchResultsTable.config'
-import { SIMILARITY_RESULTS_EMPTY_MESSAGE } from './constants'
-import { SimilaritySearchResultsTableProps } from './SimilaritySearchResultsTable.types'
+import {
+  SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_ID_PREFIX,
+  SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE,
+  SIMILARITY_RESULTS_EMPTY_MESSAGE,
+  SIMILARITY_RESULTS_NAME_COLUMN_MIN_SIZE,
+  SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE,
+} from './constants'
+import {
+  SimilarityResultsCellMeta,
+  SimilaritySearchResultsTableProps,
+} from './SimilaritySearchResultsTable.types'
 import * as S from './SimilaritySearchResultsTable.styles'
 
 const TEST_ID = 'vector-set-similarity-results'
@@ -35,6 +43,21 @@ const SimilaritySearchResultsTable = memo(
       [compressor, viewFormat, parsedAttributesCache],
     )
 
+    // Force the table to overflow (and scroll horizontally) once the columns
+    // can no longer fit comfortably inside the container, instead of squishing
+    // every column. The min-width is the actual sum of column widths so the
+    // browser only stretches the auto-sized name column with leftover space.
+    const tableMinWidth = useMemo(() => {
+      const attributeCount = columns.filter((column) =>
+        column.id?.startsWith(SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_ID_PREFIX),
+      ).length
+      const total =
+        SIMILARITY_RESULTS_NAME_COLUMN_MIN_SIZE +
+        SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE +
+        attributeCount * SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE
+      return `${total}px`
+    }, [columns])
+
     return (
       <S.Container data-testid={TEST_ID}>
         <S.StyledTable
@@ -43,6 +66,7 @@ const SimilaritySearchResultsTable = memo(
           meta={meta}
           stripedRows
           enableColumnResizing
+          minWidth={tableMinWidth}
           paginationEnabled={false}
           emptyState={SIMILARITY_RESULTS_EMPTY_MESSAGE}
           data-testid={`${TEST_ID}-table`}

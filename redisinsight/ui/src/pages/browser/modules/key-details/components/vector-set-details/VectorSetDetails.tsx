@@ -14,7 +14,6 @@ import {
   KeyDetailsHeader,
   KeyDetailsHeaderProps,
 } from 'uiSrc/pages/browser/modules'
-import { VectorSetSimilarityMatch } from 'uiSrc/slices/interfaces'
 import { VectorSetElementForm, SubmitElement } from './vector-set-element-form'
 import { AddKeysContainer } from '../common/AddKeysContainer.styled'
 import { VectorSetElementList } from './vector-set-element-list'
@@ -24,8 +23,8 @@ import { SimilaritySearchForm } from './similarity-search-form'
 import { SimilaritySearchResultsTable } from './similarity-search-results'
 import { buildSimilarityResultsColumns } from './similarity-search-results/SimilaritySearchResultsTable.config'
 import {
+  buildParsedAttributesCache,
   collectAttributeKeys,
-  parseAttributes,
 } from './similarity-search-results/utils/parseAttributes'
 import {
   useAddElementPanel,
@@ -71,28 +70,23 @@ const VectorSetDetails = (props: Props) => {
     dispatch(clearSimilaritySearch())
   }, [dispatch])
 
+  // Cache parsed attribute payloads so each row pays the JSON-parse cost once
+  // instead of once per attribute column (and key collector) it renders.
+  const similarityParsedAttributesCache = useMemo(
+    () => buildParsedAttributesCache(similarityMatches),
+    [similarityMatches],
+  )
   // Attribute columns are derived from the union of keys across matches.
   // Stable alphabetical ordering keeps the column list referentially stable.
   const similarityAttributeKeys = useMemo(
-    () => collectAttributeKeys(similarityMatches),
-    [similarityMatches],
+    () =>
+      collectAttributeKeys(similarityMatches, similarityParsedAttributesCache),
+    [similarityMatches, similarityParsedAttributesCache],
   )
   const similarityColumns = useMemo(
     () => buildSimilarityResultsColumns(similarityAttributeKeys),
     [similarityAttributeKeys],
   )
-  // Cache parsed attribute payloads so each row pays the JSON-parse cost once
-  // instead of once per attribute column it renders.
-  const similarityParsedAttributesCache = useMemo(() => {
-    const cache = new WeakMap<
-      VectorSetSimilarityMatch,
-      Record<string, unknown>
-    >()
-    for (const match of similarityMatches) {
-      cache.set(match, parseAttributes(match.attributes))
-    }
-    return cache
-  }, [similarityMatches])
 
   const {
     total = 0,

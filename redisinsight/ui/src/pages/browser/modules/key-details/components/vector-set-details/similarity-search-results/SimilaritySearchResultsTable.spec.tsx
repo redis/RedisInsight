@@ -7,7 +7,10 @@ import { vectorSetSimilarityMatchFactory } from 'uiSrc/mocks/factories/browser/v
 
 import { SimilaritySearchResultsTable } from './SimilaritySearchResultsTable'
 import { buildSimilarityResultsColumns } from './SimilaritySearchResultsTable.config'
-import { collectAttributeKeys, parseAttributes } from './utils/parseAttributes'
+import {
+  buildParsedAttributesCache,
+  collectAttributeKeys,
+} from './utils/parseAttributes'
 
 const buildMatch = (
   name: string,
@@ -26,15 +29,9 @@ const buildMatch = (
  * signature surfaces here too.
  */
 const renderTable = (matches: VectorSetSimilarityMatch[]) => {
-  const attributeKeys = collectAttributeKeys(matches)
+  const parsedAttributesCache = buildParsedAttributesCache(matches)
+  const attributeKeys = collectAttributeKeys(matches, parsedAttributesCache)
   const columns = buildSimilarityResultsColumns(attributeKeys)
-  const parsedAttributesCache = new WeakMap<
-    VectorSetSimilarityMatch,
-    Record<string, unknown>
-  >()
-  for (const match of matches) {
-    parsedAttributesCache.set(match, parseAttributes(match.attributes))
-  }
   return render(
     <SimilaritySearchResultsTable
       matches={matches}

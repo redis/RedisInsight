@@ -13,11 +13,17 @@ export interface SimilarityResultsListConfig {
   viewFormat: KeyValueFormat
 }
 
+export type ParsedAttributesCache = WeakMap<
+  VectorSetSimilarityMatch,
+  Record<string, unknown>
+>
+
+export interface SimilarityResultsCellMeta extends SimilarityResultsListConfig {
+  parsedAttributesCache: ParsedAttributesCache
+}
+
 export interface SimilaritySearchResultsTableProps {
   matches: VectorSetSimilarityMatch[]
   columns: ColumnDef<VectorSetSimilarityMatch>[]
-  parsedAttributesCache: WeakMap<
-    VectorSetSimilarityMatch,
-    Record<string, unknown>
-  >
+  parsedAttributesCache: ParsedAttributesCache
 }
