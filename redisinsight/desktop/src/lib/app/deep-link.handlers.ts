@@ -9,13 +9,7 @@ import {
   WindowType,
 } from 'desktopSrc/lib'
 import { wrapErrorMessageSensitiveData } from 'desktopSrc/utils'
-import { IpcOnEvent } from 'uiSrc/electron/constants'
-
-export interface IParsedDeepLink {
-  initialPage?: string
-  target?: string
-  from?: string
-}
+import { IpcOnEvent, IParsedDeepLink } from 'uiSrc/electron/constants'
 
 export const deepLinkHandler = async (
   from?: string,

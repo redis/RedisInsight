@@ -29,8 +29,7 @@
     "paths": {
       "uiSrc/*": ["src/*"],
       "apiClient": ["../api-client"],
-      "apiClient/*": ["../api-client/*"],
-      "desktopSrc/*": ["../desktop/src/*"]
+      "apiClient/*": ["../api-client/*"]
     }
   },
   "include": [

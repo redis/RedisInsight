@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { UpdateInfo } from 'electron-updater'
-import { IParsedDeepLink } from 'desktopSrc/lib/app/deep-link.handlers'
+import { IParsedDeepLink } from 'uiSrc/electron/constants'
 import {
   appServerInfoSelector,
   appElectronInfoSelector,
