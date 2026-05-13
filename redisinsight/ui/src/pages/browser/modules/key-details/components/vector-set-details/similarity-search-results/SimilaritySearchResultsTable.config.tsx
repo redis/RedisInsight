@@ -19,6 +19,7 @@ import {
   SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE,
 } from './constants'
 import {
+  SimilarityResultsCellMeta,
   SimilarityResultsColumn,
   SimilarityResultsListConfig,
 } from './SimilaritySearchResultsTable.types'
@@ -76,7 +77,11 @@ const similarityColumn: ColumnDef<VectorSetSimilarityMatch> = {
   },
 }
 
-/** Build a column for a single attribute key. */
+/**
+ * Build a column for a single attribute key. The cell reads the
+ * pre-parsed payload from `meta.parsedAttributesCache` so each row pays the
+ * JSON-parse cost once instead of once per attribute column it renders.
+ */
 const buildAttributeColumn = (
   key: string,
 ): ColumnDef<VectorSetSimilarityMatch> => ({
@@ -85,8 +90,12 @@ const buildAttributeColumn = (
   enableSorting: false,
   size: SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE,
   sizeUnit: 'px',
-  cell: ({ row }: CellContext<VectorSetSimilarityMatch, unknown>) => {
-    const attrs = parseAttributes(row.original.attributes)
+  cell: ({ row, table }: CellContext<VectorSetSimilarityMatch, unknown>) => {
+    const { parsedAttributesCache } = table.options
+      .meta as SimilarityResultsCellMeta
+    const attrs =
+      parsedAttributesCache.get(row.original) ??
+      parseAttributes(row.original.attributes)
     return (
       <S.AttributeCell
         data-testid={`vector-set-similarity-attribute-cell-${row.index}-${key}`}

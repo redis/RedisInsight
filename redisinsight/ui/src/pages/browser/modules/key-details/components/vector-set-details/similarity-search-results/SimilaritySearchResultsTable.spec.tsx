@@ -7,7 +7,11 @@ import { vectorSetSimilarityMatchFactory } from 'uiSrc/mocks/factories/browser/v
 
 import { SimilaritySearchResultsTable } from './SimilaritySearchResultsTable'
 import { buildSimilarityResultsColumns } from './SimilaritySearchResultsTable.config'
-import { collectAttributeKeys, parseAttributes } from './utils/parseAttributes'
+import { ParsedAttributesCache } from './SimilaritySearchResultsTable.types'
+import {
+  buildParsedAttributesCache,
+  collectAttributeKeys,
+} from './utils/parseAttributes'
 
 const buildMatch = (
   name: string,
@@ -29,15 +33,9 @@ const renderTable = (
   matches: VectorSetSimilarityMatch[],
   options: { columnVisibility?: Record<string, boolean> } = {},
 ) => {
-  const attributeKeys = collectAttributeKeys(matches)
+  const parsedAttributesCache = buildParsedAttributesCache(matches)
+  const attributeKeys = collectAttributeKeys(matches, parsedAttributesCache)
   const columns = buildSimilarityResultsColumns(attributeKeys)
-  const parsedAttributesCache = new WeakMap<
-    VectorSetSimilarityMatch,
-    Record<string, unknown>
-  >()
-  for (const match of matches) {
-    parsedAttributesCache.set(match, parseAttributes(match.attributes))
-  }
   return render(
     <SimilaritySearchResultsTable
       matches={matches}
@@ -182,6 +180,31 @@ describe('SimilaritySearchResultsTable', () => {
         .getAllByRole('columnheader')
         .map((h) => h.textContent?.trim())
       expect(headers).toEqual(['Element', 'Similarity', 'count'])
+    })
+
+    // Regression: attribute cells must read from `parsedAttributesCache`
+    // instead of re-parsing `row.original.attributes` on every render.
+    // We seed the cache with a value that diverges from the raw JSON so a
+    // cache-bypassing implementation would render the wrong text.
+    it('renders attribute values from the parsed-attributes cache', () => {
+      const match = buildMatch('a', 0.9, '{"city":"RAW"}')
+      const attributeKeys = collectAttributeKeys([match])
+      const columns = buildSimilarityResultsColumns(attributeKeys)
+      const parsedAttributesCache: ParsedAttributesCache = new WeakMap()
+      parsedAttributesCache.set(match, { city: 'FROM_CACHE' })
+
+      render(
+        <SimilaritySearchResultsTable
+          matches={[match]}
+          columns={columns}
+          columnVisibility={{}}
+          parsedAttributesCache={parsedAttributesCache}
+        />,
+      )
+
+      expect(
+        screen.getByTestId('vector-set-similarity-attribute-cell-0-city'),
+      ).toHaveTextContent('FROM_CACHE')
     })
   })
 })

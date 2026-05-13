@@ -4,9 +4,15 @@ import { ColumnDef } from 'uiSrc/components/base/layout/table'
 import { VectorSetSimilarityMatch } from 'uiSrc/slices/interfaces/vectorSet'
 
 import { SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_ID_PREFIX } from '../constants'
-import { SimilarityResultsColumn } from '../SimilaritySearchResultsTable.types'
+import {
+  ParsedAttributesCache,
+  SimilarityResultsColumn,
+} from '../SimilaritySearchResultsTable.types'
 import { buildSimilarityResultsColumns } from '../SimilaritySearchResultsTable.config'
-import { collectAttributeKeys, parseAttributes } from '../utils/parseAttributes'
+import {
+  buildParsedAttributesCache,
+  collectAttributeKeys,
+} from '../utils/parseAttributes'
 
 export interface UseSimilarityResultColumnsResult {
   columns: ColumnDef<VectorSetSimilarityMatch>[]
@@ -21,10 +27,7 @@ export interface UseSimilarityResultColumnsResult {
    * match so each row pays the JSON-parse cost a single time regardless
    * of how many attribute columns it renders.
    */
-  parsedAttributesCache: WeakMap<
-    VectorSetSimilarityMatch,
-    Record<string, unknown>
-  >
+  parsedAttributesCache: ParsedAttributesCache
 }
 
 /** `foo` → `attr_foo`. */
@@ -41,7 +44,15 @@ export const attributeColumnId = (key: string): string =>
 export const useSimilarityResultColumns = (
   matches: VectorSetSimilarityMatch[],
 ): UseSimilarityResultColumnsResult => {
-  const attributeKeys = useMemo(() => collectAttributeKeys(matches), [matches])
+  const parsedAttributesCache = useMemo<ParsedAttributesCache>(
+    () => buildParsedAttributesCache(matches),
+    [matches],
+  )
+
+  const attributeKeys = useMemo(
+    () => collectAttributeKeys(matches, parsedAttributesCache),
+    [matches, parsedAttributesCache],
+  )
 
   const [hiddenColumns, setHiddenColumns] = useState<Set<string>>(
     () => new Set(),
@@ -86,17 +97,6 @@ export const useSimilarityResultColumns = (
     for (const id of hiddenColumns) out[id] = false
     return out
   }, [hiddenColumns])
-
-  const parsedAttributesCache = useMemo(() => {
-    const cache = new WeakMap<
-      VectorSetSimilarityMatch,
-      Record<string, unknown>
-    >()
-    for (const match of matches) {
-      cache.set(match, parseAttributes(match.attributes))
-    }
-    return cache
-  }, [matches])
 
   return {
     columns,

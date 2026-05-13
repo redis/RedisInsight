@@ -12,7 +12,7 @@ import {
   SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE,
 } from './constants'
 import {
-  SimilarityResultsListConfig,
+  SimilarityResultsCellMeta,
   SimilaritySearchResultsTableProps,
 } from './SimilaritySearchResultsTable.types'
 import * as S from './SimilaritySearchResultsTable.styles'
@@ -40,7 +40,7 @@ const SimilaritySearchResultsTable = memo(
           compressor,
           viewFormat,
           parsedAttributesCache,
-        }) as SimilarityResultsListConfig,
+        }) as SimilarityResultsCellMeta,
       [compressor, viewFormat, parsedAttributesCache],
     )
 
