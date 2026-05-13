@@ -15,6 +15,8 @@ import {
   SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_ID_PREFIX,
   SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE,
   SIMILARITY_RESULTS_COLUMN_HEADERS,
+  SIMILARITY_RESULTS_NAME_COLUMN_SIZE,
+  SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE,
 } from './constants'
 import {
   SimilarityResultsColumn,
@@ -28,7 +30,8 @@ const nameColumn: ColumnDef<VectorSetSimilarityMatch> = {
   accessorKey: SimilarityResultsColumn.Name,
   header: SIMILARITY_RESULTS_COLUMN_HEADERS[SimilarityResultsColumn.Name],
   enableSorting: false,
-  size: 200,
+  size: SIMILARITY_RESULTS_NAME_COLUMN_SIZE,
+  sizeUnit: 'px',
   cell: ({ row, table }: CellContext<VectorSetSimilarityMatch, unknown>) => {
     const { compressor = null, viewFormat } = table.options
       .meta as SimilarityResultsListConfig
@@ -47,7 +50,7 @@ const similarityColumn: ColumnDef<VectorSetSimilarityMatch> = {
   accessorKey: SimilarityResultsColumn.Similarity,
   header: SIMILARITY_RESULTS_COLUMN_HEADERS[SimilarityResultsColumn.Similarity],
   enableSorting: false,
-  size: 70,
+  size: SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE,
   sizeUnit: 'px',
   cell: ({ row }: { row: TableRow<VectorSetSimilarityMatch> }) => {
     const { score } = row.original
@@ -71,6 +74,7 @@ const buildAttributeColumn = (
   header: key,
   enableSorting: false,
   size: SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE,
+  sizeUnit: 'px',
   cell: ({ row }: CellContext<VectorSetSimilarityMatch, unknown>) => {
     const attrs = parseAttributes(row.original.attributes)
     return (
