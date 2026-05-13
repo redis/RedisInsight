@@ -353,6 +353,20 @@ module.exports = {
         // radix: 'off',
       },
     },
+    // Desktop workspace overrides.
+    // The desktop main process imports a handful of NestJS DI surfaces
+    // (modules, services, the `server` bootstrap) from `../../api/dist/src/*`
+    // — they MUST be the same compiled artifact the running api registers, or
+    // `beApp.select(...).get(...)` lookups will miss. Those imports trip
+    // ESLint's `import/extensions` rule on relative paths whose final
+    // segment has no `.`; disable the rule for the workspace rather than
+    // pepper the files with per-line disables.
+    {
+      files: ['redisinsight/desktop/**/*.ts'],
+      rules: {
+        'import/extensions': 'off',
+      },
+    },
     // Temporary disable some rules for UI
     {
       files: ['redisinsight/ui/**/*.ts*'],

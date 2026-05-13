@@ -6,11 +6,14 @@ import { createAuthStrategy } from 'desktopSrc/lib/auth/auth.factory'
 import { AuthStrategy } from 'desktopSrc/lib/auth/auth.interface'
 import { initAzureAuthServiceProvider } from 'desktopSrc/lib/azure'
 import { AbstractWindowAuthStrategy } from 'apiSrc/modules/auth/window-auth/strategies/abstract.window.auth.strategy'
-// eslint-disable-next-line import/extensions -- api/dist doesn't exist in CI
+// The imports below resolve to compiled BE artifacts (api/dist/*) rather than
+// source via apiSrc/*. That is *required* for NestJS DI: WindowAuthModule and
+// WindowAuthService have to be the same class objects the running api
+// (bootstrapped via `server()`) registered. Importing the source would let
+// webpack/ts-loader produce a second compiled copy and `beApp.select(...)`
+// would not find the desktop's local references in the api's module registry.
 import { WindowAuthModule } from '../../../../api/dist/src/modules/auth/window-auth/window-auth.module'
-// eslint-disable-next-line import/extensions -- api/dist doesn't exist in CI
 import { WindowAuthService } from '../../../../api/dist/src/modules/auth/window-auth/window-auth.service'
-// eslint-disable-next-line import/extensions -- api/dist doesn't exist in CI
 import server from '../../../../api/dist/src/main'
 import { getWindows } from '../window'
 

@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "lib": ["ES2020"],
+    "types": ["node"],
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "baseUrl": "./",
+    "paths": {
+      "desktopSrc/*": ["src/*"],
+      "uiSrc/*": ["../ui/src/*"],
+      "apiClient": ["../api-client"],
+      "apiClient/*": ["../api-client/*"],
+      "apiSrc/*": ["../api/src/*"]
+    }
+  },
+  "include": [
+    "src/**/*",
+    "index.ts",
+    "app.ts",
+    "preload.ts"
+  ]
+}

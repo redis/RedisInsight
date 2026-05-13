@@ -1,20 +1,24 @@
 import { ipcMain, WebContents } from 'electron'
 import log from 'electron-log'
 import open from 'open'
+import {
+  CloudAuthRequestOptions,
+  CloudAuthResponse,
+  CloudAuthStatus,
+} from 'apiClient'
 import { UrlWithParsedQuery } from 'url'
 import { wrapErrorMessageSensitiveData } from 'desktopSrc/utils'
 
 import { IpcOnEvent, IpcInvokeEvent } from 'uiSrc/electron/constants'
 
 import { CloudOauthUnexpectedErrorException } from 'apiSrc/modules/cloud/auth/exceptions'
-import {
-  CloudAuthRequestOptions,
-  CloudAuthResponse,
-  CloudAuthStatus,
-} from 'apiSrc/modules/cloud/auth/models'
-import { DEFAULT_SESSION_ID, DEFAULT_USER_ID } from 'apiSrc/common/constants'
 import { createAuthStrategy } from '../auth/auth.factory'
 import { getWindows } from '../window/browserWindow'
+
+// Defaults for the single-user / single-session case the desktop OAuth flow
+// operates under. Mirrors the BE constants in api/src/common/constants/user.ts.
+const DEFAULT_SESSION_ID = '1'
+const DEFAULT_USER_ID = '1'
 
 const authStrategy = createAuthStrategy()
 

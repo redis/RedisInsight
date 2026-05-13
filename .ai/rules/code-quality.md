@@ -34,10 +34,17 @@ alwaysApply: true
 ### Module Aliases
 
 - `uiSrc/*` → `redisinsight/ui/src/*` (UI workspace)
-- `apiClient` → `redisinsight/api-client` (auto-generated OpenAPI types — the UI's only entry point into BE-defined shapes)
+- `apiClient` → `redisinsight/api-client` (auto-generated OpenAPI types — the typed entry point both the UI and the desktop main process use to consume BE-defined shapes)
 - `desktopSrc/*` → `redisinsight/desktop/src/*` (desktop workspace)
 
 The UI workspace must not import from the backend codebase directly. Use `apiClient` for types and the existing service layer (`uiSrc/services`) for HTTP calls.
+
+The desktop workspace consumes BE shapes through three distinct lenses, each chosen for a specific reason:
+- `apiClient` for types that exist on the REST surface (same as the UI consumes them).
+- `apiSrc/*` (TypeScript paths alias to `redisinsight/api/src/*`) for plain BE classes the desktop subclasses or instantiates directly (`AbstractWindowAuthStrategy`, exception classes). These need real type info but don't participate in NestJS DI, so getting them through tsconfig paths is fine and keeps full type safety.
+- Explicit `../../api/dist/src/*` paths for NestJS DI surfaces (`@Module`-decorated classes, services looked up via `beApp.select(...).get(...)`, the `server` bootstrap function). These MUST be the same compiled artifact the running api registers; importing them from source would produce a second compiled copy and break DI lookups.
+
+This split is the only place a non-API workspace reaches into `redisinsight/api/`.
 
 ✅ **Use aliases**: `import { Button } from 'uiSrc/components/Button'`  
 ❌ **Avoid relative**: `import { Button } from '../../../ui/src/components/Button'`

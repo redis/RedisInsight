@@ -8,7 +8,7 @@ import { IpcOnEvent } from 'uiSrc/electron/constants'
 import {
   AzureAuthStatus,
   AZURE_OAUTH_REDIRECT_PATH,
-} from 'apiSrc/modules/azure/constants'
+} from 'uiSrc/constants/azure'
 import { getAzureAuthService } from './azure-auth.service.provider'
 import { mapKnownAzureAdError } from './azure-oauth-errors'
 

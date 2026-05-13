@@ -74,7 +74,7 @@ This project uses a centralized AI rules structure:
 **Module Aliases:**
 
 - `uiSrc/*` → `redisinsight/ui/src/*`
-- `apiClient` → `redisinsight/api-client` (auto-generated OpenAPI types consumed by the UI)
+- `apiClient` → `redisinsight/api-client` (auto-generated OpenAPI types consumed by the UI and the desktop main process)
 - `desktopSrc/*` → `redisinsight/desktop/src/*`
 
 ## 📖 Additional Documentation

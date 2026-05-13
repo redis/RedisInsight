@@ -59,6 +59,7 @@ export default defineConfig({
     alias: {
       desktopSrc: path.resolve(__dirname, 'src'),
       uiSrc: path.resolve(__dirname, '../ui/src'),
+      apiClient: path.resolve(__dirname, '../api-client'),
     },
   },
 })
