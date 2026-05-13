@@ -44,6 +44,7 @@ const createActionsColumn = (
   id: VectorSetColumn.Actions,
   header: VECTOR_SET_COLUMN_HEADERS[VectorSetColumn.Actions],
   enableSorting: false,
+  enableResizing: false,
   size: 10,
   cell: ({ row }: { row: TableRow<VectorSetElement> }) => {
     const { name: nameBuffer } = row.original

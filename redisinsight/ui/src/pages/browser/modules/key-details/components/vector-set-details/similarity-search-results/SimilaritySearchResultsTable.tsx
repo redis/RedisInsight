@@ -28,6 +28,7 @@ const SimilaritySearchResultsTable = memo(
           data={sortedMatches}
           meta={{ compressor, viewFormat }}
           stripedRows
+          enableColumnResizing
           paginationEnabled={false}
           emptyState={SIMILARITY_RESULTS_EMPTY_MESSAGE}
           data-testid={`${TEST_ID}-table`}
