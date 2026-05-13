@@ -366,136 +366,180 @@ export class KeyList {
   }
 
   /**
-   * Open tree view settings dialog
+   * Open tree view settings popover
    */
   async openTreeViewSettings(): Promise<void> {
     await this.treeSettingsButton.click();
-    // Wait for dialog to appear
-    await this.page.getByRole('dialog').waitFor({ state: 'visible' });
+    await expect(this.page.getByTestId('tree-view-apply-btn')).toBeVisible();
   }
 
   /**
    * Hover over a folder node in the tree view (expanded or collapsed)
    */
   async hoverFolderNode(folderName: string): Promise<void> {
-    const collapsed = this.page.getByTestId(`node-item_${folderName}`);
-    const expanded = this.page.getByTestId(`node-item_${folderName}--expanded`);
-    const folderNode = expanded.or(collapsed);
-    await folderNode.hover();
+    const folder = this.getFolderByName(folderName);
+    await expect(folder).toBeVisible();
+
+    // Move the mouse off any previously hovered element so the next hover always
+    // dispatches a fresh `mouseenter` (Radix tooltips won't re-open otherwise,
+    // e.g. when this is called right after a click on the same folder).
+    await this.page.mouse.move(0, 0);
+    await folder.locator('.node-folder-anchor').first().hover();
   }
 
   /**
-   * Get folder by name in tree view
+   * Get the tree-view tooltip for a hovered folder.
+   */
+  async namespaceTooltip(folderName: string): Promise<Locator> {
+    await this.hoverFolderNode(folderName);
+    return this.page.getByRole('tooltip').filter({ hasText: folderName });
+  }
+
+  /**
+   * Get folder treeitem by name in tree view.
+   * Matches whether the folder is currently expanded or collapsed.
    */
   getFolderByName(folderName: string): Locator {
-    return this.page.getByRole('treeitem', { name: new RegExp(`Folder ${folderName}`) });
+    const collapsed = this.page.getByTestId(`node-item_${folderName}`);
+    const expanded = this.page.getByTestId(`node-item_${folderName}--expanded`);
+    return expanded.or(collapsed).first();
   }
 
   /**
-   * Expand folder in tree view
+   * Ordered, lower-case folder labels currently visible in the tree.
+   * Useful for asserting sort-order changes.
    */
-  async expandFolder(folderName: string): Promise<void> {
+  async getVisibleTreeFolderNames(): Promise<string[]> {
+    const folderLabels = this.page.locator('[data-testid^="folder-"]');
+    return folderLabels.allInnerTexts();
+  }
+
+  /**
+   * Expand a folder in tree view so its direct child becomes visible.
+   * Uses `childName` visibility as ground truth — the VirtualTree may auto-expand
+   * single-child folders while keeping the collapsed `node-item_*` testid, so the
+   * testid suffix alone is unreliable.
+   */
+  async expandFolder(folderName: string, childName: string): Promise<void> {
     const folder = this.getFolderByName(folderName);
+    await expect(folder).toBeVisible();
+
+    const isExpanded = await this.isFolderExpanded(folderName, childName);
+    if (isExpanded) {
+      return;
+    }
+
     await folder.click();
-    // Wait for chevron to change to down
-    await this.page
-      .getByRole('treeitem', { name: new RegExp(`Chevron Down.*${folderName}`) })
-      .waitFor({ state: 'visible' });
+    const child = this.getFolderByName(childName);
+    await expect(child).toBeVisible();
   }
 
   /**
-   * Collapse folder in tree view
+   * Collapse a folder in tree view so its direct child becomes hidden.
    */
-  async collapseFolder(folderName: string): Promise<void> {
+  async collapseFolder(folderName: string, childName: string): Promise<void> {
     const folder = this.getFolderByName(folderName);
+    await expect(folder).toBeVisible();
+
+    const isExpanded = await this.isFolderExpanded(folderName, childName);
+    if (!isExpanded) {
+      return;
+    }
+
     await folder.click();
-    // Wait for chevron to change to right
-    await this.page
-      .getByRole('treeitem', { name: new RegExp(`Chevron Right.*${folderName}`) })
-      .waitFor({ state: 'visible' });
+    const child = this.getFolderByName(childName);
+    await expect(child).toBeHidden();
   }
 
   /**
-   * Check if folder is expanded
+   * Whether a folder appears expanded (its direct child is rendered).
    */
-  async isFolderExpanded(folderName: string): Promise<boolean> {
-    const expandedFolder = this.page.getByRole('treeitem', { name: new RegExp(`Chevron Down.*${folderName}`) });
-    return expandedFolder.isVisible();
+  async isFolderExpanded(folderName: string, childName: string): Promise<boolean> {
+    if (!(await this.getFolderByName(folderName).isVisible())) {
+      return false;
+    }
+    return this.getFolderByName(childName).isVisible();
   }
 
   /**
-   * Get folder percentage text
+   * Folder percentage text (e.g. `33%`, `<1%`).
    */
   async getFolderPercentage(folderName: string): Promise<string | null> {
-    const folder = this.getFolderByName(folderName);
-    const percentageElement = folder
-      .locator('div')
-      .filter({ hasText: /\d+%|<1%/ })
-      .first();
-    return percentageElement.textContent();
+    return this.page.getByTestId(`percentage_${folderName}`).textContent();
   }
 
   /**
-   * Get folder count
+   * Folder key count text (number of keys under the folder).
    */
   async getFolderCount(folderName: string): Promise<string | null> {
-    const folder = this.getFolderByName(folderName);
-    // The count is the last number in the folder row
-    const countElement = folder.locator('div').last();
-    return countElement.textContent();
+    return this.page.getByTestId(`count_${folderName}`).textContent();
   }
 
   /**
-   * Get current delimiter from tree view settings
+   * All currently visible delimiter chips inside the tree-view settings popover.
    */
-  async getCurrentDelimiter(): Promise<string> {
-    const delimiterChip = this.page.getByRole('dialog').locator('[class*="chip"]').first();
-    const text = await delimiterChip.textContent();
-    return text?.replace('Remove', '').trim() || '';
+  delimiterChips(): Locator {
+    return this.page.locator('[data-testid="delimiter-combobox"] [data-test-subj="autoTagChip"]');
   }
 
   /**
-   * Add delimiter in tree view settings
+   * Read all configured delimiter labels (chip titles) in order.
+   */
+  async getCurrentDelimiters(): Promise<string[]> {
+    const chips = this.delimiterChips();
+    const titles = await chips.evaluateAll((nodes) =>
+      nodes.map((node) => node.getAttribute('title') ?? node.textContent ?? ''),
+    );
+    return titles.map((title) => title.trim()).filter(Boolean);
+  }
+
+  /**
+   * Add a delimiter via the AutoTag input inside the tree-view settings popover.
    */
   async addDelimiter(delimiter: string): Promise<void> {
-    const delimiterInput = this.page.getByRole('textbox', { name: 'Delimiter' });
+    const delimiterInput = this.page.locator('[data-testid="delimiter-combobox"] [data-test-subj="autoTagInput"]');
     await delimiterInput.fill(delimiter);
     await delimiterInput.press('Enter');
+    await expect(
+      this.page.locator(`[data-testid="delimiter-combobox"] [data-test-subj="autoTagChip"][title="${delimiter}"]`),
+    ).toBeVisible();
   }
 
   /**
-   * Remove delimiter in tree view settings
+   * Remove a delimiter chip by its label.
    */
   async removeDelimiter(delimiter: string): Promise<void> {
-    const delimiterChip = this.page.getByRole('dialog').locator(`[class*="chip"]`).filter({ hasText: delimiter });
-    await delimiterChip.getByRole('button', { name: 'Remove' }).click();
+    const chip = this.page.locator(
+      `[data-testid="delimiter-combobox"] [data-test-subj="autoTagChip"][title="${delimiter}"]`,
+    );
+    await chip.locator('button').click();
+    await expect(chip).toBeHidden();
   }
 
   /**
-   * Apply tree view settings
+   * Apply tree view settings (closes popover).
    */
   async applyTreeViewSettings(): Promise<void> {
-    await this.page.getByRole('button', { name: 'Apply' }).click();
-    // Wait for dialog to close
-    await this.page.getByRole('dialog').waitFor({ state: 'hidden' });
+    const applyButton = this.page.getByTestId('tree-view-apply-btn');
+    await applyButton.click();
+    await expect(applyButton).toBeHidden();
   }
 
   /**
-   * Cancel tree view settings
+   * Cancel tree view settings (closes popover, discards changes).
    */
   async cancelTreeViewSettings(): Promise<void> {
-    await this.page.getByRole('button', { name: 'Cancel' }).click();
-    // Wait for dialog to close
-    await this.page.getByRole('dialog').waitFor({ state: 'hidden' });
+    const cancelButton = this.page.getByTestId('tree-view-cancel-btn');
+    await cancelButton.click();
+    await expect(cancelButton).toBeHidden();
   }
 
   /**
-   * Change sort by option in tree view settings
+   * Change sort order in tree view settings popover.
    */
-  async changeSortBy(option: string): Promise<void> {
-    const sortByDropdown = this.page.getByRole('combobox', { name: 'Sort by' });
-    await sortByDropdown.click();
-    await this.page.getByRole('option', { name: option }).click();
+  async changeSortBy(order: 'ASC' | 'DESC'): Promise<void> {
+    await this.page.getByTestId('tree-view-sorting-select').click();
+    await this.page.getByTestId(`tree-view-sorting-item-${order}`).click();
   }
 
   /**

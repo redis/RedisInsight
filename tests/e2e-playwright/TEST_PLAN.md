@@ -228,19 +228,14 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 2.2 Key Tree View
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Switch to tree view |
-| 🔲 | main | Expand/collapse tree nodes |
-| 🔲 | main | Configure delimiter |
-| 🔲 | main | Sort tree nodes |
-| 🔲 | main | View folder percentage and count |
-| 🔲 | main | Scan more keys (covered by "should show scan more button when searching" test) |
-| 🔲 | main | Open tree view settings |
-| 🔲 | main | Tree view mode state persists after page refresh |
-| 🔲 | main | Filter state preserved when switching between Browser and Tree view |
-| 🔲 | main | Key type filter state preserved when switching views |
-| 🔲 | main | Configure multiple delimiters in tree view |
-| 🔲 | main | Cancel delimiter change reverts to previous value |
-| 🔲 | main | Verify namespace tooltip shows key pattern and delimiter |
+| ✅ | main | Group keys into folders, expand/collapse them, and show folder badges/tooltip |
+| ✅ | main | Open tree view settings, change the delimiter and regroup folders |
+| ✅ | main | Sort tree nodes ascending and descending |
+| ✅ | main | Scan more keys |
+| ✅ | main | Selected view (List/Tree) persists after page refresh |
+| ✅ | main | Pattern and key-type filters preserved when switching List <-> Tree |
+| ✅ | main | Configure multiple delimiters in tree view |
+| ✅ | main | Cancel delimiter change reverts to previous value |
 | 🔲 | main | Scan DB by 10K keys in tree view |
 
 ### 2.3 Add Keys
