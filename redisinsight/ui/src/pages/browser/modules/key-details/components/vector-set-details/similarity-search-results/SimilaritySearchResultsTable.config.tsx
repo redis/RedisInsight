@@ -15,7 +15,7 @@ import {
   SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_ID_PREFIX,
   SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE,
   SIMILARITY_RESULTS_COLUMN_HEADERS,
-  SIMILARITY_RESULTS_NAME_COLUMN_SIZE,
+  SIMILARITY_RESULTS_NAME_COLUMN_MIN_SIZE,
   SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE,
 } from './constants'
 import {
@@ -30,8 +30,15 @@ const nameColumn: ColumnDef<VectorSetSimilarityMatch> = {
   accessorKey: SimilarityResultsColumn.Name,
   header: SIMILARITY_RESULTS_COLUMN_HEADERS[SimilarityResultsColumn.Name],
   enableSorting: false,
-  size: SIMILARITY_RESULTS_NAME_COLUMN_SIZE,
+  minSize: SIMILARITY_RESULTS_NAME_COLUMN_MIN_SIZE,
+  size: SIMILARITY_RESULTS_NAME_COLUMN_MIN_SIZE,
   sizeUnit: 'px',
+  getHeaderCellProps: () => ({
+    style: {
+      width: 'auto',
+      minWidth: `${SIMILARITY_RESULTS_NAME_COLUMN_MIN_SIZE}px`,
+    },
+  }),
   cell: ({ row, table }: CellContext<VectorSetSimilarityMatch, unknown>) => {
     const { compressor = null, viewFormat } = table.options
       .meta as SimilarityResultsListConfig
@@ -51,7 +58,10 @@ const similarityColumn: ColumnDef<VectorSetSimilarityMatch> = {
   header: SIMILARITY_RESULTS_COLUMN_HEADERS[SimilarityResultsColumn.Similarity],
   enableSorting: false,
   size: SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE,
+  minSize: SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE,
+  maxSize: SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE,
   sizeUnit: 'px',
+  enableResizing: false,
   cell: ({ row }: { row: TableRow<VectorSetSimilarityMatch> }) => {
     const { score } = row.original
     const isHigh = Number.isFinite(score) && score >= HIGH_SIMILARITY_THRESHOLD

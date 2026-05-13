@@ -5,11 +5,16 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
 
 import {
+  SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_ID_PREFIX,
+  SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE,
   SIMILARITY_RESULTS_EMPTY_MESSAGE,
-  SIMILARITY_RESULTS_TABLE_MIN_COLUMN_WIDTH,
-  SIMILARITY_RESULTS_TABLE_MIN_WIDTH_FALLBACK,
+  SIMILARITY_RESULTS_NAME_COLUMN_MIN_SIZE,
+  SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE,
 } from './constants'
-import { SimilaritySearchResultsTableProps } from './SimilaritySearchResultsTable.types'
+import {
+  SimilarityResultsListConfig,
+  SimilaritySearchResultsTableProps,
+} from './SimilaritySearchResultsTable.types'
 import * as S from './SimilaritySearchResultsTable.styles'
 
 const TEST_ID = 'vector-set-similarity-results'
@@ -35,21 +40,26 @@ const SimilaritySearchResultsTable = memo(
           compressor,
           viewFormat,
           parsedAttributesCache,
-        }) as SimilarityResultsCellMeta,
+        }) as SimilarityResultsListConfig,
       [compressor, viewFormat, parsedAttributesCache],
     )
 
-    // Force the table to grow wider than its container (and scroll
-    // horizontally) when there are many attribute columns, instead of
-    // squishing every column into a narrow, ellipsised cell. Driven by the
-    // count of *visible* columns so hiding attributes via the Columns popover
-    // shrinks the table back down.
+    // Force the table to overflow (and scroll horizontally) once the columns
+    // can no longer fit comfortably inside the container, instead of squishing
+    // every column. The min-width is the actual sum of column widths so the
+    // browser only stretches the auto-sized name column with leftover space.
     const tableMinWidth = useMemo(() => {
-      const visibleCount = columns.filter(
-        (column) => columnVisibility[column.id as string] !== false,
+      const visibleAttributeCount = columns.filter(
+        (column) =>
+          column.id?.startsWith(
+            SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_ID_PREFIX,
+          ) && columnVisibility[column.id] !== false,
       ).length
-      const computed = visibleCount * SIMILARITY_RESULTS_TABLE_MIN_COLUMN_WIDTH
-      return `${Math.max(computed, SIMILARITY_RESULTS_TABLE_MIN_WIDTH_FALLBACK)}px`
+      const total =
+        SIMILARITY_RESULTS_NAME_COLUMN_MIN_SIZE +
+        SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE +
+        visibleAttributeCount * SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE
+      return `${total}px`
     }, [columns, columnVisibility])
 
     return (

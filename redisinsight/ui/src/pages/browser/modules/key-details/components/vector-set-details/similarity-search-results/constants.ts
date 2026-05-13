@@ -20,25 +20,6 @@ export const HIGH_SIMILARITY_THRESHOLD = 0.85
 /** Prefix for dynamic attribute column ids — avoids collision with `name` / `similarity`. */
 export const SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_ID_PREFIX = 'attr_'
 
-/**
- * Per-column widths (in px). Sized so each column comfortably fits its content
- * without ellipsing for typical values; combined with `SIMILARITY_RESULTS_TABLE_MIN_COLUMN_WIDTH`
- * this lets the table grow wider than its container and scroll horizontally
- * instead of squishing every column.
- */
-export const SIMILARITY_RESULTS_NAME_COLUMN_SIZE = 330
-export const SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE = 110
+export const SIMILARITY_RESULTS_NAME_COLUMN_MIN_SIZE = 200
+export const SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE = 100
 export const SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE = 140
-
-/** Per-attribute-column floor used when computing the table's `minWidth`. */
-export const SIMILARITY_RESULTS_TABLE_MIN_COLUMN_WIDTH = 140
-
-/**
- * Floor for the table's overall `minWidth` when the visible-column count is
- * small (e.g. just the two built-in `name` + `similarity` columns). Sized to
- * fit the default columns comfortably so the table doesn't collapse below
- * its readable width even when no attribute columns are visible.
- */
-export const SIMILARITY_RESULTS_TABLE_MIN_WIDTH_FALLBACK =
-  SIMILARITY_RESULTS_NAME_COLUMN_SIZE +
-  SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE
