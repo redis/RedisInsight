@@ -367,4 +367,14 @@ export class Database {
   @IsBoolean()
   @IsOptional()
   isPreSetup?: boolean;
+
+  @ApiPropertyOptional({
+    description: 'Marks the database connection as a production environment.',
+    type: Boolean,
+    default: false,
+  })
+  @Expose()
+  @IsBoolean()
+  @IsOptional()
+  isProduction?: boolean;
 }

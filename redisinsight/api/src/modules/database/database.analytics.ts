@@ -60,6 +60,7 @@ export class DatabaseAnalytics extends TelemetryBaseService {
         serverName: additionalInfo?.server?.server_name || null,
         forceStandalone: instance?.forceStandalone ? 'true' : 'false',
         keyNameFormat: instance?.keyNameFormat || null,
+        isProduction: instance?.isProduction ? 'true' : 'false',
         ...modulesSummary,
       });
     } catch (e) {
@@ -104,6 +105,7 @@ export class DatabaseAnalytics extends TelemetryBaseService {
             useDecompression: cur?.compressor || null,
             forceStandalone: cur?.forceStandalone ? 'true' : 'false',
             keyNameFormat: cur?.keyNameFormat || null,
+            isProduction: cur?.isProduction ? 'true' : 'false',
             previousValues: {
               connectionType: prev.connectionType,
               provider: prev.provider,
@@ -116,6 +118,7 @@ export class DatabaseAnalytics extends TelemetryBaseService {
               useTLSAuthClients: prev?.clientCert ? 'enabled' : 'disabled',
               forceStandalone: prev?.forceStandalone ? 'true' : 'false',
               keyNameFormat: prev?.keyNameFormat || null,
+              isProduction: prev?.isProduction ? 'true' : 'false',
             },
           },
         );
