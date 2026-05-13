@@ -32,3 +32,13 @@ export const SimilarityCell = styled.span<{
       ? theme.semantic.color.text.success600
       : theme.semantic.color.text.neutral800};
 `
+
+export const AttributeCell = styled.span<{
+  children?: React.ReactNode
+}>`
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`
