@@ -4,6 +4,8 @@ import webpackPaths from './webpack.paths'
 import { dependencies as externals } from '../redisinsight/package.json'
 import { resolve } from 'path'
 
+const desktopTsconfig = resolve(__dirname, '../redisinsight/desktop/tsconfig.json')
+
 const configuration: webpack.Configuration = {
   externals: [...Object.keys(externals || {})],
 
@@ -40,7 +42,7 @@ const configuration: webpack.Configuration = {
   resolve: {
     extensions: ['.js', '.jsx', '.json', '.ts', '.tsx', '.scss'],
     modules: [webpackPaths.apiPath, 'node_modules'],
-    plugins: [new TsconfigPathsPlugins()],
+    plugins: [new TsconfigPathsPlugins({ configFile: desktopTsconfig })],
     alias: {
       'class-transformer': resolve(
         './redisinsight/api/node_modules/class-transformer/cjs',

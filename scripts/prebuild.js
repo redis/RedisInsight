@@ -1,6 +1,6 @@
-import rimraf from 'rimraf';
-import fs from 'fs';
-import webpackPaths from '../configs/webpack.paths';
+const rimraf = require('rimraf');
+const fs = require('fs');
+const webpackPaths = require('../configs/webpack.paths');
 
 const foldersToRemove = [webpackPaths.distPath, webpackPaths.buildPath];
 
