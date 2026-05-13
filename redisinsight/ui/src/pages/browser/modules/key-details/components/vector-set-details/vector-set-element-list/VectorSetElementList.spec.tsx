@@ -31,11 +31,13 @@ describe('VectorSetElementList', () => {
   const defaultProps = {
     onRemoveKey: jest.fn(),
     onViewElement: jest.fn(),
+    onSearchByElement: jest.fn(),
   }
 
   beforeEach(() => {
     jest.mocked(deleteVectorSetElements).mockClear()
     defaultProps.onViewElement.mockClear()
+    defaultProps.onSearchByElement.mockClear()
   })
 
   it('should render', () => {

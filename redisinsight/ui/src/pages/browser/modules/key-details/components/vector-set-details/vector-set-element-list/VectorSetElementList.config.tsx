@@ -9,8 +9,11 @@ import {
 } from 'uiSrc/utils'
 import HelpTexts from 'uiSrc/constants/help-texts'
 import { Row } from 'uiSrc/components/base/layout/flex'
-import { ElementNameCell } from './components/ElementNameCell/ElementNameCell'
+import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { SearchIcon } from 'uiSrc/components/base/icons'
+import { RiTooltip } from 'uiSrc/components'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
+import { ElementNameCell } from './components/ElementNameCell/ElementNameCell'
 import {
   ElementsListConfig,
   VectorSetColumn,
@@ -52,6 +55,7 @@ const createActionsColumn = (
       viewFormat,
       elementDeleteConfig: deleteConfig,
       onViewElement,
+      onSearchByElement,
     } = listConfig
     const {
       deleting,
@@ -76,6 +80,15 @@ const createActionsColumn = (
         >
           View
         </S.StyledTextButton>
+        <RiTooltip content="Find similar elements" position="top">
+          <IconButton
+            size="S"
+            icon={SearchIcon}
+            onClick={() => onSearchByElement(row.original)}
+            aria-label="Find similar elements"
+            data-testid={`vector-set-search-similar-btn-${name}`}
+          />
+        </RiTooltip>
         <PopoverDelete
           header={createDeleteFieldHeader(nameBuffer)}
           text={createDeleteFieldMessage(keyName)}

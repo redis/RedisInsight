@@ -23,6 +23,7 @@ export interface ElementsListConfig {
   viewFormat: KeyValueFormat
   elementDeleteConfig: ElementDeleteConfig
   onViewElement: (element: VectorSetElement) => void
+  onSearchByElement: (element: VectorSetElement) => void
 }
 
 export interface ElementNameCellProps {
