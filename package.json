@@ -254,7 +254,7 @@
     "@redis-ui/icons": "^6.9.3",
     "@redis-ui/styles": "^15.0.0",
     "@redis-ui/table": "^3.7.0",
-    "@reduxjs/toolkit": "^1.6.2",
+    "@reduxjs/toolkit": "^2.11.2",
     "@stablelib/snappy": "^1.0.2",
     "@types/json-dup-key-validator": "^1.0.2",
     "ajv": "^8.18.0",
