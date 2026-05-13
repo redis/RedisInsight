@@ -5,6 +5,7 @@ import {
   selectedKeyDataSelector,
   selectedKeySelector,
 } from 'uiSrc/slices/browser/keys'
+import { vectorSetDataSelector } from 'uiSrc/slices/browser/vectorSet'
 import { bufferToString } from 'uiSrc/utils'
 import {
   KeyDetailsHeader,
@@ -56,6 +57,21 @@ const VectorSetDetails = (props: Props) => {
   const { hasResults: hasSimilarityResults, matches: similarityMatches } =
     useSimilaritySearchResults()
 
+  const {
+    total = 0,
+    elements: vectorSetElements = [],
+    isPaginationSupported,
+  } = useSelector(vectorSetDataSelector) ?? {}
+
+  // Similarity-search results take precedence over the element-list preview:
+  // when results are visible we always show "Previewing matches/total".
+  // Otherwise we keep the original element-list preview, which is only shown
+  // for non-paginated vector sets.
+  const showPreview = hasSimilarityResults || isPaginationSupported === false
+  const previewCount = hasSimilarityResults
+    ? similarityMatches.length
+    : vectorSetElements.length
+
   const handleSubmitElements = useCallback(
     (elements: SubmitElement[]) => {
       submitElements(elements, () => closeAddItemPanel())
@@ -67,7 +83,12 @@ const VectorSetDetails = (props: Props) => {
     <S.Container>
       <KeyDetailsHeader {...props} key="key-details-header" />
       <SimilaritySearchForm key={keyName} />
-      <VectorSetKeySubheader openAddItemPanel={openAddItemPanel} />
+      <VectorSetKeySubheader
+        openAddItemPanel={openAddItemPanel}
+        showPreview={showPreview}
+        previewCount={previewCount}
+        total={total}
+      />
       <S.DetailsBody>
         {!loading && (
           <S.ListWrapper>
