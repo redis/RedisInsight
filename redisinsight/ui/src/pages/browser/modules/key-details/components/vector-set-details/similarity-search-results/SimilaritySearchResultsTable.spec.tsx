@@ -7,10 +7,7 @@ import { vectorSetSimilarityMatchFactory } from 'uiSrc/mocks/factories/browser/v
 
 import { SimilaritySearchResultsTable } from './SimilaritySearchResultsTable'
 import { buildSimilarityResultsColumns } from './SimilaritySearchResultsTable.config'
-import {
-  buildParsedAttributesCache,
-  collectAttributeKeys,
-} from './utils/parseAttributes'
+import { collectAttributeKeys, parseAttributes } from './utils/parseAttributes'
 
 const buildMatch = (
   name: string,
@@ -25,17 +22,27 @@ const buildMatch = (
 
 /**
  * Build the table props the same way `VectorSetDetails` does in production —
- * keeps the spec realistic and means a single change to the column-builder
- * signature surfaces here too.
+ * keeps the spec realistic and means a single change to the hook signature
+ * surfaces here too.
  */
-const renderTable = (matches: VectorSetSimilarityMatch[]) => {
-  const parsedAttributesCache = buildParsedAttributesCache(matches)
-  const attributeKeys = collectAttributeKeys(matches, parsedAttributesCache)
+const renderTable = (
+  matches: VectorSetSimilarityMatch[],
+  options: { columnVisibility?: Record<string, boolean> } = {},
+) => {
+  const attributeKeys = collectAttributeKeys(matches)
   const columns = buildSimilarityResultsColumns(attributeKeys)
+  const parsedAttributesCache = new WeakMap<
+    VectorSetSimilarityMatch,
+    Record<string, unknown>
+  >()
+  for (const match of matches) {
+    parsedAttributesCache.set(match, parseAttributes(match.attributes))
+  }
   return render(
     <SimilaritySearchResultsTable
       matches={matches}
       columns={columns}
+      columnVisibility={options.columnVisibility ?? {}}
       parsedAttributesCache={parsedAttributesCache}
     />,
   )
@@ -161,6 +168,20 @@ describe('SimilaritySearchResultsTable', () => {
       expect(
         screen.getByTestId('vector-set-similarity-attribute-cell-1-count'),
       ).toHaveTextContent('')
+    })
+
+    it('hides columns whose visibility is explicitly false', () => {
+      const matches = [buildMatch('a', 0.9, '{"city":"NYC","count":3}')]
+
+      renderTable(matches, {
+        columnVisibility: { attr_city: false },
+      })
+
+      // The `city` header should be hidden, `count` should still render.
+      const headers = screen
+        .getAllByRole('columnheader')
+        .map((h) => h.textContent?.trim())
+      expect(headers).toEqual(['Element', 'Similarity', 'count'])
     })
   })
 })

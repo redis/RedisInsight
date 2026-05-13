@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import {
@@ -20,12 +20,11 @@ import { VectorSetElementList } from './vector-set-element-list'
 import { VectorSetKeySubheader } from './vector-set-key-subheader'
 import { ElementDetails } from './element-details'
 import { SimilaritySearchForm } from './similarity-search-form'
-import { SimilaritySearchResultsTable } from './similarity-search-results'
-import { buildSimilarityResultsColumns } from './similarity-search-results/SimilaritySearchResultsTable.config'
 import {
-  buildParsedAttributesCache,
-  collectAttributeKeys,
-} from './similarity-search-results/utils/parseAttributes'
+  SimilarityColumnsPopover,
+  SimilaritySearchResultsTable,
+  useSimilarityResultColumns,
+} from './similarity-search-results'
 import {
   useAddElementPanel,
   useAddElements,
@@ -70,22 +69,30 @@ const VectorSetDetails = (props: Props) => {
     dispatch(clearSimilaritySearch())
   }, [dispatch])
 
-  // Cache parsed attribute payloads + derive the union of attribute keys in
-  // one pass, so each row pays the JSON-parse cost once across the key
-  // collector and every attribute column it renders. Stable alphabetical
-  // ordering keeps the resulting column list referentially stable.
-  const { similarityParsedAttributesCache, similarityAttributeKeys } =
-    useMemo(() => {
-      const cache = buildParsedAttributesCache(similarityMatches)
-      return {
-        similarityParsedAttributesCache: cache,
-        similarityAttributeKeys: collectAttributeKeys(similarityMatches, cache),
-      }
-    }, [similarityMatches])
-  const similarityColumns = useMemo(
-    () => buildSimilarityResultsColumns(similarityAttributeKeys),
-    [similarityAttributeKeys],
-  )
+  // Single source of truth shared by the results table and the Columns popover.
+  const {
+    columns: similarityColumns,
+    columnVisibility: similarityColumnVisibility,
+    columnsMap: similarityColumnsMap,
+    shownColumns: similarityShownColumns,
+    onShownColumnsChange: handleSimilarityColumnsChange,
+    parsedAttributesCache: similarityParsedAttributesCache,
+  } = useSimilarityResultColumns(similarityMatches)
+
+  // Hide the Columns popover when there are no toggleable (attribute) columns.
+  const showSimilarityColumnsPopover =
+    hasSimilarityResults && similarityColumnsMap.size > 0
+
+  const similarityAdditionalActions = showSimilarityColumnsPopover
+    ? (width: number) => (
+        <SimilarityColumnsPopover
+          width={width}
+          columnsMap={similarityColumnsMap}
+          shownColumns={similarityShownColumns}
+          onShownColumnsChange={handleSimilarityColumnsChange}
+        />
+      )
+    : undefined
 
   const {
     total = 0,
@@ -118,6 +125,7 @@ const VectorSetDetails = (props: Props) => {
         total={total}
         hasSimilarityResults={hasSimilarityResults}
         onClearResults={handleClearResults}
+        additionalActions={similarityAdditionalActions}
       />
       <S.DetailsBody>
         {!loading && (
@@ -126,6 +134,7 @@ const VectorSetDetails = (props: Props) => {
               <SimilaritySearchResultsTable
                 matches={similarityMatches}
                 columns={similarityColumns}
+                columnVisibility={similarityColumnVisibility}
                 parsedAttributesCache={similarityParsedAttributesCache}
               />
             ) : (

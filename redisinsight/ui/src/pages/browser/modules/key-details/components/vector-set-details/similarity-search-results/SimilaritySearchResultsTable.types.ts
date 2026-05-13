@@ -13,17 +13,13 @@ export interface SimilarityResultsListConfig {
   viewFormat: KeyValueFormat
 }
 
-export type ParsedAttributesCache = WeakMap<
-  VectorSetSimilarityMatch,
-  Record<string, unknown>
->
-
-export interface SimilarityResultsCellMeta extends SimilarityResultsListConfig {
-  parsedAttributesCache: ParsedAttributesCache
-}
-
 export interface SimilaritySearchResultsTableProps {
   matches: VectorSetSimilarityMatch[]
   columns: ColumnDef<VectorSetSimilarityMatch>[]
-  parsedAttributesCache: ParsedAttributesCache
+  /** `@redis-ui/table` visibility map (`{ [columnId]: false }`). */
+  columnVisibility: Record<string, boolean>
+  parsedAttributesCache: WeakMap<
+    VectorSetSimilarityMatch,
+    Record<string, unknown>
+  >
 }
