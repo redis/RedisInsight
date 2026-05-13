@@ -1,1 +1,5 @@
 export { SimilaritySearchResultsTable } from './SimilaritySearchResultsTable'
+export { SimilarityColumnsPopover } from './components/SimilarityColumnsPopover'
+export type { SimilarityColumnsPopoverProps } from './components/SimilarityColumnsPopover'
+export { useSimilarityResultColumns } from './hooks/useSimilarityResultColumns'
+export type { UseSimilarityResultColumnsResult } from './hooks/useSimilarityResultColumns'

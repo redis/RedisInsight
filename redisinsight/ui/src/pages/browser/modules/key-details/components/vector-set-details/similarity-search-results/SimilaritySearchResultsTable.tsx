@@ -23,6 +23,7 @@ const SimilaritySearchResultsTable = memo(
   ({
     matches,
     columns,
+    columnVisibility,
     parsedAttributesCache,
   }: SimilaritySearchResultsTableProps) => {
     const { compressor = null } = useSelector(connectedInstanceSelector)
@@ -64,6 +65,7 @@ const SimilaritySearchResultsTable = memo(
           columns={columns}
           data={sortedMatches}
           meta={meta}
+          columnVisibility={columnVisibility}
           stripedRows
           enableColumnResizing
           minWidth={tableMinWidth}
