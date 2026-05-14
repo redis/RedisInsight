@@ -35,18 +35,22 @@ _Note: It will trigger only checks related to the back-end_
 
 ## TypeScript Configuration
 
-TypeScript config is split per area: a narrow root `tsconfig.json` plus a standalone config per area that has its own build tool or distinct path needs.
+TypeScript config is split across the repo rather than centralised in a single root `tsconfig.json`. Each area owns its own:
 
 | Path | Purpose |
 | - | - |
-| `tsconfig.json` (root) | Catch-all for `stories/**` and `configs/**`; also loaded by `ts-node` when webpack executes the `.ts` configs (`build:main`, `build:main:stage`, `build:stage`) |
-| `redisinsight/ui/tsconfig.json` | UI build, Vite, ESLint for UI files |
+| `redisinsight/ui/tsconfig.json` | UI build, vite, ESLint for UI files |
 | `redisinsight/api/tsconfig.json` | API build, ESLint for API files |
-| `redisinsight/desktop/tsconfig.json` | Desktop. Cross-area paths (`desktopSrc/*`, `apiSrc/*`, `uiSrc/*`, `apiClient`) for IDE + ESLint. Webpack uses explicit `resolve.alias` in `configs/webpack.config.base.ts` for the electron bundle |
-| `.storybook/tsconfig.json` | Storybook framework setup |
-| `tests/e2e-playwright/tsconfig.json` | Standalone E2E sub-project |
+| `redisinsight/desktop/tsconfig.json` | Desktop main/preload paths consumed by webpack's `TsconfigPathsPlugin`; ESLint for desktop files |
+| `configs/tsconfig.json` | Loaded by `ts-node` when webpack executes the `.ts` configs in `configs/` (`build:main`, `build:main:stage`) |
+| `.storybook/tsconfig.json` | Storybook setup |
+| `stories/tsconfig.json` | Storybook stories — extends UI config |
+| `tests/playwright/tsconfig.json` | Playwright tests |
+| `tests/e2e/tsconfig.json`, `tests/e2e-playwright/tsconfig.json` | Standalone E2E sub-projects |
 
-ESLint's root config uses `parserOptions.project: true`, so each linted file picks up its nearest tsconfig automatically.
+ESLint's root config uses `parserOptions.project: true`, so each linted file picks up its nearest tsconfig automatically. When you add a new top-level TS area, drop a tsconfig in it.
+
+There is intentionally no root `tsconfig.json`. Running bare `tsc` from the repo root will fail — use `yarn type-check:ui` or pass `--project <path>` explicitly.
 
 ## Pull Requests
 
