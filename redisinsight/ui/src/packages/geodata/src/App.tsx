@@ -3,12 +3,17 @@ import React from 'react'
 import { GeoInspector } from './components/GeoInspector'
 import { GeoSearchVisualization } from './components/GeoSearchVisualization'
 import { Message } from './components/Message'
+import { RqeGeoVisualization } from './components/RqeGeoVisualization'
 import { PluginProps, WorkbenchResult } from './types'
 
 export enum GeodataMode {
   Markers = 'markers',
   Heatmap = 'heatmap',
   Inspector = 'inspector',
+  RqeMarkers = 'rqe-markers',
+  RqeHeatmap = 'rqe-heatmap',
+  RqeInspector = 'rqe-inspector',
+  RqeShape = 'rqe-shape',
 }
 
 interface AppProps extends PluginProps {
@@ -48,6 +53,50 @@ const App = ({ command = '', data = [], mode }: AppProps) => {
         response={response}
         status={status}
         mode="heatmap"
+      />
+    )
+  }
+
+  if (mode === GeodataMode.RqeMarkers) {
+    return (
+      <RqeGeoVisualization
+        command={command}
+        response={response}
+        status={status}
+        mode="markers"
+      />
+    )
+  }
+
+  if (mode === GeodataMode.RqeHeatmap) {
+    return (
+      <RqeGeoVisualization
+        command={command}
+        response={response}
+        status={status}
+        mode="heatmap"
+      />
+    )
+  }
+
+  if (mode === GeodataMode.RqeInspector) {
+    return (
+      <RqeGeoVisualization
+        command={command}
+        response={response}
+        status={status}
+        mode="inspector"
+      />
+    )
+  }
+
+  if (mode === GeodataMode.RqeShape) {
+    return (
+      <RqeGeoVisualization
+        command={command}
+        response={response}
+        status={status}
+        mode="shape"
       />
     )
   }
