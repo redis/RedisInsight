@@ -16,6 +16,19 @@ export const DEFAULT_GEO_CONFIG: GeoConfig = {
   },
 }
 
+export const MAP_FIT_BOUNDS_PADDING_RATIO = 0.32
+
+export const MAP_INITIAL_MAX_ZOOM = 12
+
+export const CLUSTER_MIN_POINTS = 50
+
+export const DISTANCE_THRESHOLDS = {
+  close: 0.5,
+  middle: 0.85,
+}
+
+export const THRESHOLD_VISIBLE_ZOOM = 12
+
 export const DISTANCE_COLORS = {
   close: '#008556',
   middle: '#9c5c2b',

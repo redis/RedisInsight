@@ -120,8 +120,10 @@ describe('GeoShapePlot', () => {
       [2, 2],
       expect.objectContaining({ fillColor: '#a00a6b' }),
     )
+    expect(mockPad).toHaveBeenCalledWith(0.32)
     expect(mockFitBounds).toHaveBeenCalledWith('padded-bounds', {
       animate: false,
+      maxZoom: 12,
     })
 
     const popup = mockShapeBindPopup.mock.calls[0][0] as HTMLElement
