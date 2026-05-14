@@ -31,7 +31,6 @@
     "lint:ui": "eslint ./redisinsight/ui --ext .js,.jsx,.ts,.tsx --cache --cache-strategy content",
     "lint:api": "eslint ./redisinsight/api --ext .js,.ts --cache --cache-strategy content",
     "lint:desktop": "eslint ./redisinsight/desktop --cache --cache-strategy content",
-    "lint:e2e": "yarn --cwd tests/e2e lint",
     "prettier": "prettier --check .",
     "prettier:update": "prettier --write .",
     "prettier:fix": "prettier --write",

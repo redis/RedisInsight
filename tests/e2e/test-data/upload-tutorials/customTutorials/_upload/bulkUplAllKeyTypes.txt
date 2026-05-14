@@ -1,9 +1,0 @@
-HSET hashkey1 'field' 'value'
-LPUSH listkey1 'element'
-SADD setkey1 'member'
-ZADD zsetkey1 1 'member'
-SET stringkey1 'value'
-JSON.SET jsonkey1 . '1'
-XADD streamkey1 * 'field' 'value'
-GRAPH.QUERY graphkey1 "CREATE ()"
-TS.CREATE tskey1

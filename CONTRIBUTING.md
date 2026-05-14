@@ -45,8 +45,7 @@ TypeScript config is split across the repo rather than centralised in a single r
 | `configs/tsconfig.json` | Loaded by `ts-node` when webpack executes the `.ts` configs in `configs/` (`build:main`, `build:main:stage`) |
 | `.storybook/tsconfig.json` | Storybook setup |
 | `stories/tsconfig.json` | Storybook stories — extends UI config |
-| `tests/playwright/tsconfig.json` | Playwright tests |
-| `tests/e2e/tsconfig.json`, `tests/e2e-playwright/tsconfig.json` | Standalone E2E sub-projects |
+| `tests/e2e-playwright/tsconfig.json` | Playwright E2E sub-project |
 
 ESLint's root config uses `parserOptions.project: true`, so each linted file picks up its nearest tsconfig automatically. When you add a new top-level TS area, drop a tsconfig in it.
 
