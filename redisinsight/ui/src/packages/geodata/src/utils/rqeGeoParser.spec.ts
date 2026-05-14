@@ -391,6 +391,63 @@ describe('rqeGeoParser', () => {
     })
   })
 
+  it('normalizes Redis 8 FT.HYBRID map-style result rows', () => {
+    const command = unwrapCommand(
+      'FT.HYBRID idx SEARCH "@coords:[2.34 48.86 1000 km]" VSIM @embedding $vec KNN 2 K 3 PARAMS 2 vec aaaa LOAD 2 @name @coords',
+    )
+
+    expect(
+      parseRqeGeoResults(
+        [
+          'total_results',
+          3,
+          'results',
+          [
+            ['name', 'Paris', 'coords', '2.3522,48.8566'],
+            ['name', 'Lyon', 'coords', '4.8357,45.7640'],
+          ],
+          'warnings',
+          [],
+          'execution_time',
+          0.264,
+        ],
+        command,
+      ),
+    ).toMatchObject({
+      ok: true,
+      value: {
+        points: [
+          { id: 'row-1', name: 'Paris', field: 'coords', lon: 2.3522, lat: 48.8566 },
+          { id: 'row-2', name: 'Lyon', field: 'coords', lon: 4.8357, lat: 45.764 },
+        ],
+      },
+    })
+
+    expect(
+      parseRqeGeoResults(
+        {
+          total_results: 1,
+          results: [
+            {
+              name: 'Lille',
+              coords: '3.0573,50.6292',
+            },
+          ],
+          warnings: [],
+          execution_time: 0.158,
+        },
+        command,
+      ),
+    ).toMatchObject({
+      ok: true,
+      value: {
+        points: [
+          { id: 'row-1', name: 'Lille', field: 'coords', lon: 3.0573, lat: 50.6292 },
+        ],
+      },
+    })
+  })
+
   it('normalizes returned WKT shapes', () => {
     const command = unwrapCommand(
       'FT.SEARCH idx "@geom:[CONTAINS $shape]" PARAMS 2 shape "POINT (2 2)" RETURN 1 geom DIALECT 3',

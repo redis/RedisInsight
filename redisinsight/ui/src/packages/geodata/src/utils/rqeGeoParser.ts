@@ -373,7 +373,95 @@ const parseAggregateRows = (response: unknown[]): RqeRow[] => {
     .filter((row): row is RqeRow => row !== null)
 }
 
-const parseRqeRows = (response: unknown, command: ParsedRqeGeoCommand): ParseResult<RqeRow[]> => {
+const parseHybridResultRows = (results: unknown[]): RqeRow[] =>
+  results
+    .map((result, index): RqeRow | null => {
+      if (Array.isArray(result)) {
+        const directFields = fieldPairsToRecord(result)
+        if (directFields) {
+          return {
+            id: `row-${index + 1}`,
+            fields: directFields,
+          }
+        }
+
+        const fields = fieldPairsToRecord(result[1])
+        if (fields) {
+          return {
+            id: String(result[0] || `row-${index + 1}`),
+            fields,
+          }
+        }
+      }
+
+      if (result && typeof result === 'object') {
+        const row = result as Record<string, unknown>
+        const fields = row.fields ? fieldPairsToRecord(row.fields) : null
+        if (fields) {
+          return {
+            id: String(row.id || row.key || row.__key || `row-${index + 1}`),
+            fields,
+          }
+        }
+
+        return {
+          id: String(row.id || row.key || row.__key || `row-${index + 1}`),
+          fields: Object.fromEntries(
+            Object.entries(row).filter(
+              ([field]) => !['id', 'key', '__key'].includes(field),
+            ),
+          ),
+        }
+      }
+
+      return null
+    })
+    .filter((row): row is RqeRow => row !== null)
+
+const getHybridResults = (response: unknown): unknown[] | null => {
+  if (Array.isArray(response)) {
+    for (let index = 0; index < response.length - 1; index += 2) {
+      if (
+        String(response[index]).toLowerCase() === 'results' &&
+        Array.isArray(response[index + 1])
+      ) {
+        return response[index + 1]
+      }
+    }
+  }
+
+  if (response && typeof response === 'object') {
+    const results = (response as { results?: unknown }).results
+    return Array.isArray(results) ? results : null
+  }
+
+  return null
+}
+
+const parseHybridRows = (response: unknown): ParseResult<RqeRow[]> => {
+  const results = getHybridResults(response)
+  if (results) {
+    return { ok: true, value: parseHybridResultRows(results) }
+  }
+
+  if (!Array.isArray(response)) {
+    return { ok: false, error: 'FT.HYBRID response must be an array or object.' }
+  }
+
+  const rows = response[1] && Array.isArray(response[2])
+    ? parseSearchRows(response)
+    : parseAggregateRows(response)
+  return { ok: true, value: rows }
+}
+
+const parseRqeRows = (
+  response: unknown,
+  command: ParsedRqeGeoCommand,
+): ParseResult<RqeRow[]> => {
+  if (command.command === 'FT.HYBRID') {
+    return parseHybridRows(response)
+  }
+
   if (!Array.isArray(response)) {
     return { ok: false, error: `${command.command} response must be an array.` }
   }
@@ -385,10 +473,10 @@ const parseRqeRows = (response: unknown, command: ParsedRqeGeoCommand): ParseRes
     return { ok: true, value: parseAggregateRows(response) }
   }
 
-  const rows = response[1] && Array.isArray(response[2])
-    ? parseSearchRows(response)
-    : parseAggregateRows(response)
-  return { ok: true, value: rows }
+  return {
+    ok: false,
+    error: `Unsupported Redis Query Engine command: ${command.command}.`,
+  }
 }
 
 const parseCoordinateString = (value: string): GeoPointResult['lon' | 'lat'][] | null => {
