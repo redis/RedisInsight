@@ -209,6 +209,11 @@ describe('FilterKeyType', () => {
   })
 
   it('should hide Vector Set when vector set feature flag is disabled', () => {
+    // Ensure the version gate is satisfied so the assertion truly
+    // exercises the feature-flag path and not the version path.
+    connectedInstanceOverviewSelector.mockImplementationOnce(() => ({
+      version: '8.0.0',
+    }))
     const { queryByText } = render(<FilterKeyType />)
 
     fireEvent.click(screen.getByTestId(filterSelectId))

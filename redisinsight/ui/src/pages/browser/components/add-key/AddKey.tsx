@@ -108,7 +108,9 @@ const AddKey = (props: Props) => {
       ),
     }
   })
-  const [typeSelected, setTypeSelected] = useState<string>(options[0].value)
+  const [typeSelected, setTypeSelected] = useState<string>(
+    options[0]?.value ?? KeyTypes.Hash,
+  )
   const [keyName, setKeyName] = useState<string>('')
   const [keyTTL, setKeyTTL] = useState<Maybe<number>>(undefined)
 

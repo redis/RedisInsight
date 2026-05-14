@@ -45,11 +45,21 @@ const mockVectorSetFlag = (enabled: boolean) =>
       [FeatureFlags.devVectorSet]: { flag: enabled },
     })
 
+const mockRedisVersion = (version: string) =>
+  (connectedInstanceOverviewSelector as jest.Mock).mockReturnValue({ version })
+
 let store: typeof mockedStore
 beforeEach(() => {
   cleanup()
   store = cloneDeep(mockedStore)
   store.clearActions()
+  // Reset selector mocks to the default version between tests so a stray
+  // override in one test doesn't bleed into the next.
+  mockRedisVersion('8.0.0')
+})
+
+afterEach(() => {
+  jest.restoreAllMocks()
 })
 
 describe('AddKey', () => {
@@ -138,9 +148,7 @@ describe('AddKey', () => {
   })
 
   it('should show Vector Set option when redis version >= 8.0 and vector set flag is enabled', async () => {
-    ;(connectedInstanceOverviewSelector as jest.Mock).mockReturnValueOnce({
-      version: '8.0.0',
-    })
+    mockRedisVersion('8.0.0')
     mockVectorSetFlag(true)
 
     render(
@@ -155,9 +163,7 @@ describe('AddKey', () => {
   })
 
   it('should hide Vector Set option when redis version < 8.0', async () => {
-    ;(connectedInstanceOverviewSelector as jest.Mock).mockReturnValueOnce({
-      version: '7.4.0',
-    })
+    mockRedisVersion('7.4.0')
     mockVectorSetFlag(true)
 
     render(
@@ -172,9 +178,7 @@ describe('AddKey', () => {
   })
 
   it('should hide Vector Set option when vector set flag is disabled', async () => {
-    ;(connectedInstanceOverviewSelector as jest.Mock).mockReturnValueOnce({
-      version: '8.0.0',
-    })
+    mockRedisVersion('8.0.0')
     mockVectorSetFlag(false)
 
     render(
