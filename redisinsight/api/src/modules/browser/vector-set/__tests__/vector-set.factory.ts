@@ -167,6 +167,12 @@ type VsimCommandOptions = {
   includeCount?: boolean;
   /** Append `FILTER <expr>` after `WITHSCORES`/`WITHATTRIBS`. */
   filter?: string;
+  /**
+   * Append `WITHATTRIBS`. Defaults to true. Set to false to mirror the
+   * Redis 8.0.0–8.0.2 fallback path where the option is omitted because
+   * the server errors out on it.
+   */
+  withAttribs?: boolean;
 };
 
 const appendCommonVsimSuffix = (
@@ -177,7 +183,10 @@ const appendCommonVsimSuffix = (
   if (options.includeCount !== false && count !== undefined) {
     args.push('COUNT', count);
   }
-  args.push('WITHSCORES', 'WITHATTRIBS');
+  args.push('WITHSCORES');
+  if (options.withAttribs !== false) {
+    args.push('WITHATTRIBS');
+  }
   if (options.filter !== undefined) {
     args.push('FILTER', options.filter);
   }
