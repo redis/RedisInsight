@@ -210,6 +210,48 @@ describe('vector-set.utils', () => {
       expect(() => buildVsimCommand(dto)).toThrow(BadRequestException);
       expect(() => buildVsimCommand(dto)).toThrow(/exactly one/);
     });
+
+    it('should omit WITHATTRIBS when `withAttribs: false` is supplied (Redis 8.0.0–8.0.2 fallback)', () => {
+      const dto = similaritySearchDtoFactory.build({
+        keyName: Buffer.from('vset:key'),
+        elementName: Buffer.from('seed'),
+        count: 5,
+      });
+
+      const command = buildVsimCommand(dto, {
+        withAttribs: false,
+      }) as unknown[];
+
+      expect(command).toEqual([
+        BrowserToolVectorSetCommands.VSim,
+        dto.keyName,
+        'ELE',
+        dto.elementName,
+        'COUNT',
+        5,
+        'WITHSCORES',
+      ]);
+      expect(command).not.toContain('WITHATTRIBS');
+    });
+
+    it('should still place FILTER after WITHSCORES when `withAttribs: false`', () => {
+      const dto = similaritySearchDtoFactory.build({
+        keyName: Buffer.from('vset:key'),
+        elementName: Buffer.from('seed'),
+        count: 4,
+        filter: '.color == "red"',
+      });
+
+      const command = buildVsimCommand(dto, {
+        withAttribs: false,
+      }) as unknown[];
+
+      expect(command).not.toContain('WITHATTRIBS');
+      expect(command.indexOf('FILTER')).toBeGreaterThan(
+        command.indexOf('WITHSCORES'),
+      );
+      expect(command.slice(-2)).toEqual(['FILTER', '.color == "red"']);
+    });
   });
 
   describe('formatVsimCommandPreview', () => {
@@ -342,6 +384,18 @@ describe('vector-set.utils', () => {
       expect(() => formatVsimCommandPreview(dto)).toThrow(BadRequestException);
       expect(() => formatVsimCommandPreview(dto)).toThrow(/exactly one/);
     });
+
+    it('should omit WITHATTRIBS in preview when `withAttribs: false` is supplied', () => {
+      const dto = similaritySearchDtoFactory.build({
+        keyName: Buffer.from('vset:key'),
+        elementName: Buffer.from('seed'),
+        count: 5,
+      });
+
+      expect(formatVsimCommandPreview(dto, { withAttribs: false })).toBe(
+        'VSIM vset:key ELE seed COUNT 5 WITHSCORES',
+      );
+    });
   });
 
   describe('parseVsimReply', () => {
@@ -427,6 +481,41 @@ describe('vector-set.utils', () => {
       ];
 
       expect(() => parseVsimReply(reply)).not.toThrow();
+    });
+
+    it('should parse a (name, score) reply with stride 2 when `withAttribs: false`', () => {
+      const reply: Array<string | Buffer | null> = [
+        Buffer.from('m1'),
+        '0.95',
+        Buffer.from('m2'),
+        '0.81',
+      ];
+
+      const matches = parseVsimReply(reply, undefined, { withAttribs: false });
+
+      expect(matches).toEqual([
+        { name: Buffer.from('m1'), score: 0.95 },
+        { name: Buffer.from('m2'), score: 0.81 },
+      ]);
+      expect(matches[0].attributes).toBeUndefined();
+      expect(matches[1].attributes).toBeUndefined();
+    });
+
+    it('should drop a trailing partial tuple at stride 2 when `withAttribs: false`', () => {
+      const reply: Array<string | Buffer | null> = [
+        Buffer.from('m1'),
+        '0.9',
+        Buffer.from('m2'),
+      ];
+      const logger = { warn: jest.fn() } as unknown as Logger;
+
+      const matches = parseVsimReply(reply, logger, { withAttribs: false });
+
+      expect(matches).toHaveLength(1);
+      expect(matches[0].name).toEqual(Buffer.from('m1'));
+      expect(logger.warn).toHaveBeenCalledWith(
+        expect.stringContaining('not a multiple of 2'),
+      );
     });
   });
 });

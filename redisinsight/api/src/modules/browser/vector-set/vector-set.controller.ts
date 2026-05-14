@@ -197,7 +197,7 @@ export class VectorSetController extends BrowserBaseController {
   @ApiRedisInstanceOperation({
     description:
       'Run a vector similarity search (VSIM) against the VectorSet stored at key. ' +
-      'WITHSCORES and WITHATTRIBS are always applied so each match carries a similarity score and the element attributes (when present).',
+      'WITHSCORES is always applied so each match carries a similarity score; element attributes are returned when present (resolved server-side either via WITHATTRIBS on Redis ≥ 8.0.3 or per-element VGETATTR on 8.0.0–8.0.2 where WITHATTRIBS is unsupported).',
     statusCode: 200,
     responses: [
       {

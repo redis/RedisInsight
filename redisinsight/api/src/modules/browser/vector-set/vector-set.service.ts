@@ -410,12 +410,24 @@ export class VectorSetService {
 
       await checkIfKeyNotExists(keyName, client);
 
-      const command = buildVsimCommand(dto);
+      // Redis 8.0.0–8.0.2 errors out when WITHATTRIBS is appended to VSIM, so
+      // on those versions we omit the option and back-fill attributes via
+      // per-element VGETATTR after the search returns. The response shape
+      // stays identical for FE consumers.
+      const withAttribs = await client.isFeatureSupported(
+        RedisFeature.VsimWithAttribs,
+      );
+
+      const command = buildVsimCommand(dto, { withAttribs });
       const reply = (await client.sendCommand(command)) as Array<
         string | Buffer | null
       >;
 
-      const elements = parseVsimReply(reply, this.logger);
+      const elements = parseVsimReply(reply, this.logger, { withAttribs });
+
+      if (!withAttribs && elements.length > 0) {
+        await this.fetchAttributesForMatches(client, keyName, elements);
+      }
 
       this.logger.debug(
         'Succeed to run similarity search on the VectorSet data type.',
@@ -449,7 +461,16 @@ export class VectorSetService {
         clientMetadata,
       );
 
-      const preview = formatVsimCommandPreview(dto);
+      // Mirror the version-aware branch in `similaritySearch` so the preview
+      // never advertises a WITHATTRIBS that the actual search would skip on
+      // Redis 8.0.0–8.0.2.
+      const client: RedisClient =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+      const withAttribs = await client.isFeatureSupported(
+        RedisFeature.VsimWithAttribs,
+      );
+
+      const preview = formatVsimCommandPreview(dto, { withAttribs });
 
       return plainToInstance(SearchVectorSetPreviewResponse, { preview });
     } catch (error) {
@@ -463,6 +484,43 @@ export class VectorSetService {
       }
       throw catchAclError(error);
     }
+  }
+
+  /**
+   * Back-fill the `attributes` field on each match by issuing one VGETATTR
+   * per element in a single pipeline. Used as the fallback path for Redis
+   * 8.0.0–8.0.2 where VSIM rejects the WITHATTRIBS option.
+   *
+   * Mutates `matches` in place. Per-element errors are swallowed (logged at
+   * debug) so a single failing VGETATTR cannot drop the whole search reply;
+   * elements without attributes simply keep `attributes` undefined.
+   */
+  private async fetchAttributesForMatches(
+    client: RedisClient,
+    keyName: Buffer | string,
+    matches: { name: string | Buffer; attributes?: string }[],
+  ): Promise<void> {
+    const commands: RedisClientCommand[] = matches.map((match) => [
+      BrowserToolVectorSetCommands.VGetAttr,
+      keyName,
+      match.name,
+    ]);
+
+    const results = await client.sendPipeline(commands);
+
+    results.forEach(([err, value], i) => {
+      if (err) {
+        this.logger.debug(
+          `VGETATTR failed for match ${matches[i].name?.toString()}; leaving attributes undefined.`,
+          err,
+        );
+        return;
+      }
+      if (value !== null && value !== undefined) {
+        matches[i].attributes =
+          typeof value === 'string' ? value : String(value);
+      }
+    });
   }
 
   private async fetchElementDetails(
