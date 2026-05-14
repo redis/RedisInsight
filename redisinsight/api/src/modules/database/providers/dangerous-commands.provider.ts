@@ -11,21 +11,22 @@ export class DangerousCommandsProvider {
 
   /**
    * Get cached dangerous commands list for the connection, or fetch and cache it.
+   * An empty result (e.g. ACL unsupported or NOPERM) is cached too so we don't
+   * re-issue a command that will always fail for this database.
    */
   async getDangerousCommands(client: RedisClient): Promise<string[]> {
-    const cached = this.cache.get(client.clientMetadata.databaseId);
-    if (cached) {
-      return cached;
+    const { databaseId } = client.clientMetadata;
+    if (this.cache.has(databaseId)) {
+      return this.cache.get(databaseId)!;
     }
 
     const commands = await this.fetchDangerousCommands(client);
-    this.cache.set(client.clientMetadata.databaseId, commands);
+    this.cache.set(databaseId, commands);
     return commands;
   }
 
   /**
-   * Invalidate the cached entry for a given database id.
-   * Should be called when the connection for this database is closed.
+   * Drop the cached entry for a given database id so the next call re-fetches.
    */
   invalidate(databaseId: string): void {
     this.cache.delete(databaseId);
