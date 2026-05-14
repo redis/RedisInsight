@@ -22,7 +22,7 @@ test.describe('Browser > Key List View', () => {
   const bulkKey1 = `${TEST_KEY_PREFIX}kl-bulk-a-${suffix}`;
   const bulkKey2 = `${TEST_KEY_PREFIX}kl-bulk-b-${suffix}`;
   const bulkPattern = `${TEST_KEY_PREFIX}kl-bulk-*-${suffix}`;
-  const allTestKeysPattern = `${TEST_KEY_PREFIX}*`;
+  const allTestKeysPattern = `${TEST_KEY_PREFIX}kl-*`;
 
   test.beforeAll(async ({ apiHelper }) => {
     const config = StandaloneConfigFactory.build({

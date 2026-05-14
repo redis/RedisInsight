@@ -17,19 +17,19 @@ test.describe('Browser > Key Tree View', () => {
   const suffix = Date.now().toString(36);
 
   // Colon-delimited tree keys
-  const treeFolder = `${TEST_KEY_PREFIX}tree-${suffix}`;
+  const treeFolder = `${TEST_KEY_PREFIX}tv-tree-${suffix}`;
   const usersFolder = `${treeFolder}:users`;
   const userAliceKey = `${usersFolder}:alice`;
   const userBobKey = `${usersFolder}:bob`;
-  const flatLeafKey = `${TEST_KEY_PREFIX}leaf-${suffix}`;
+  const flatLeafKey = `${TEST_KEY_PREFIX}tv-leaf-${suffix}`;
 
   // Underscore-delimited tree keys (used by delimiter-change tests)
-  const underscoreTreeFolder = `${TEST_KEY_PREFIX}utree-${suffix}`;
+  const underscoreTreeFolder = `${TEST_KEY_PREFIX}tv-utree-${suffix}`;
   const underscoreUsersFolder = `${underscoreTreeFolder}_users`;
   const underscoreAliceKey = `${underscoreUsersFolder}_alice`;
   const underscoreBobKey = `${underscoreUsersFolder}_bob`;
 
-  const allTestKeysPattern = `${TEST_KEY_PREFIX}*`;
+  const allTestKeysPattern = `${TEST_KEY_PREFIX}tv-*`;
 
   test.beforeAll(async ({ apiHelper }) => {
     const config = StandaloneConfigFactory.build({
@@ -178,8 +178,8 @@ test.describe('Browser > Key Tree View', () => {
 
   test('should sort tree nodes ascending and descending', async ({ apiHelper, browserPage }) => {
     // Seed keys producing two top-level folders that sort in opposite orders for ASC/DESC
-    await apiHelper.createStringKey(database.id, `${TEST_KEY_PREFIX}aaa-${suffix}:k1`, 'a');
-    await apiHelper.createStringKey(database.id, `${TEST_KEY_PREFIX}zzz-${suffix}:k1`, 'z');
+    await apiHelper.createStringKey(database.id, `${TEST_KEY_PREFIX}tv-aaa-${suffix}:k1`, 'a');
+    await apiHelper.createStringKey(database.id, `${TEST_KEY_PREFIX}tv-zzz-${suffix}:k1`, 'z');
 
     // Open the Browser page in Tree view
     await browserPage.goto(database.id);
@@ -189,8 +189,8 @@ test.describe('Browser > Key Tree View', () => {
     await expect
       .poll(async () => {
         const names = await browserPage.keyList.getVisibleTreeFolderNames();
-        const aaaIndex = names.findIndex((name) => name.startsWith(`${TEST_KEY_PREFIX}aaa-${suffix}`));
-        const zzzIndex = names.findIndex((name) => name.startsWith(`${TEST_KEY_PREFIX}zzz-${suffix}`));
+        const aaaIndex = names.findIndex((name) => name.startsWith(`${TEST_KEY_PREFIX}tv-aaa-${suffix}`));
+        const zzzIndex = names.findIndex((name) => name.startsWith(`${TEST_KEY_PREFIX}tv-zzz-${suffix}`));
         return aaaIndex !== -1 && zzzIndex !== -1 && aaaIndex < zzzIndex;
       })
       .toBe(true);
@@ -203,8 +203,8 @@ test.describe('Browser > Key Tree View', () => {
     await expect
       .poll(async () => {
         const names = await browserPage.keyList.getVisibleTreeFolderNames();
-        const aaaIndex = names.findIndex((name) => name.startsWith(`${TEST_KEY_PREFIX}aaa-${suffix}`));
-        const zzzIndex = names.findIndex((name) => name.startsWith(`${TEST_KEY_PREFIX}zzz-${suffix}`));
+        const aaaIndex = names.findIndex((name) => name.startsWith(`${TEST_KEY_PREFIX}tv-aaa-${suffix}`));
+        const zzzIndex = names.findIndex((name) => name.startsWith(`${TEST_KEY_PREFIX}tv-zzz-${suffix}`));
         return aaaIndex !== -1 && zzzIndex !== -1 && aaaIndex > zzzIndex;
       })
       .toBe(true);
@@ -220,8 +220,8 @@ test.describe('Browser > Key Tree View', () => {
     browserPage,
   }) => {
     // Seed mixed types so the type filter has something to narrow
-    const stringKey = `${TEST_KEY_PREFIX}filter-str-${suffix}`;
-    const hashKeyName = `${TEST_KEY_PREFIX}filter-hash-${suffix}`;
+    const stringKey = `${TEST_KEY_PREFIX}tv-filter-str-${suffix}`;
+    const hashKeyName = `${TEST_KEY_PREFIX}tv-filter-hash-${suffix}`;
     await apiHelper.createStringKey(database.id, stringKey, 'hello');
     await apiHelper.createHashKey(database.id, hashKeyName, [{ field: 'f1', value: 'v1' }]);
 
@@ -229,14 +229,14 @@ test.describe('Browser > Key Tree View', () => {
     await browserPage.goto(database.id);
     await browserPage.keyList.switchToListView();
     await browserPage.keyList.filterByType('Hash');
-    await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}filter-*-${suffix}`);
+    await browserPage.keyList.searchKeys(`${TEST_KEY_PREFIX}tv-filter-*-${suffix}`);
 
     await expect(browserPage.keyList.getKeyRow(hashKeyName)).toBeVisible();
     await expect(browserPage.keyList.getKeyRow(stringKey)).not.toBeVisible();
 
     // Switch to Tree view; filters should persist
     await browserPage.keyList.switchToTreeView();
-    await expect(browserPage.keyList.searchInput).toHaveValue(`${TEST_KEY_PREFIX}filter-*-${suffix}`);
+    await expect(browserPage.keyList.searchInput).toHaveValue(`${TEST_KEY_PREFIX}tv-filter-*-${suffix}`);
     await expect(browserPage.keyList.resetFilterButton).toBeVisible();
     await expect(browserPage.keyList.getKeyRow(hashKeyName)).toBeVisible();
     await expect(browserPage.keyList.getKeyRow(stringKey)).not.toBeVisible();
