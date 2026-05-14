@@ -140,12 +140,12 @@ export const RqeGeoVisualization = ({
     return (
       <div className="geodata-shell">
         <GeoHeader title={title} command={command} status={status} resultCount={shapes.length} />
-        {renderSummary(parsedCommand.value, shapes.length)}
         {shapes.length === 0 ? (
           <Message>No geospatial shapes returned.</Message>
         ) : (
           <>
             <GeoShapePlot shapes={shapes} overlay={parsedCommand.value.overlay} />
+            {renderSummary(parsedCommand.value, shapes.length)}
             <GeoTable
               columns={['Name', 'ID', 'Field', 'WKT']}
               rows={getShapeRows(shapes)}

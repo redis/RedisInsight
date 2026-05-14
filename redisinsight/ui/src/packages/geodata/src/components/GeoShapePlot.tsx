@@ -1,7 +1,12 @@
 import * as L from 'leaflet'
 import React, { useEffect, useRef } from 'react'
 
-import { DEFAULT_GEO_CONFIG, MAP_COLORS } from '../constants'
+import {
+  DEFAULT_GEO_CONFIG,
+  MAP_COLORS,
+  MAP_FIT_BOUNDS_PADDING_RATIO,
+  MAP_INITIAL_MAX_ZOOM,
+} from '../constants'
 import { GeoQueryOverlay, GeoShapeGeometry, GeoShapeResult } from '../types'
 
 interface GeoShapePlotProps {
@@ -79,7 +84,8 @@ export const GeoShapePlot = ({ shapes, overlay }: GeoShapePlotProps) => {
       zoomControl: true,
       preferCanvas: true,
     })
-    const bounds = L.latLngBounds([])
+    const resultBounds = L.latLngBounds([])
+    const fallbackBounds = L.latLngBounds([])
 
     setTileNotice(tileConfig.enabled ? null : 'Map tiles disabled')
     if (tileConfig.enabled && tileConfig.urlTemplate) {
@@ -98,7 +104,9 @@ export const GeoShapePlot = ({ shapes, overlay }: GeoShapePlotProps) => {
         fillOpacity: 0.16,
         weight: 2,
       })
-      getGeometryBounds(shape.geometry).forEach((point) => bounds.extend(point))
+      getGeometryBounds(shape.geometry).forEach((point) =>
+        resultBounds.extend(point),
+      )
     })
 
     if (overlay?.type === 'shape') {
@@ -116,12 +124,16 @@ export const GeoShapePlot = ({ shapes, overlay }: GeoShapePlotProps) => {
         },
       )
       getGeometryBounds(overlay.geometry).forEach((point) =>
-        bounds.extend(point),
+        fallbackBounds.extend(point),
       )
     }
 
+    const bounds = resultBounds.isValid() ? resultBounds : fallbackBounds
     if (bounds.isValid()) {
-      map.fitBounds(bounds.pad(0.18), { animate: false })
+      map.fitBounds(bounds.pad(MAP_FIT_BOUNDS_PADDING_RATIO), {
+        animate: false,
+        maxZoom: MAP_INITIAL_MAX_ZOOM,
+      })
     }
 
     return () => {

@@ -233,6 +233,17 @@ describe('Geodata App', () => {
     expect(screen.getByText('RQE Geo Shape')).toBeInTheDocument()
     expect(screen.getByRole('cell', { name: 'Zone' })).toBeInTheDocument()
     expect(screen.getByText('CONTAINS')).toBeInTheDocument()
+
+    const plot = screen.getByRole('img', {
+      name: 'Leaflet geospatial shape plot',
+    })
+    const summary = screen.getByLabelText('RQE command summary')
+    expect(
+      Boolean(
+        plot.compareDocumentPosition(summary) &
+          Node.DOCUMENT_POSITION_FOLLOWING,
+      ),
+    ).toBe(true)
   })
 
   it('renders returned-field guidance for RQE GEOSHAPE visualizations', () => {

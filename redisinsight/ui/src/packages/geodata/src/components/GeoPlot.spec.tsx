@@ -1,12 +1,18 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 
 import { GeoResult, ParsedGeoCommand } from '../types'
 
 const mockMapRemove = jest.fn()
 const mockFitBounds = jest.fn()
+const mockMapGetZoom = jest.fn(() => 12)
+const mockMapOff = jest.fn()
+const mockMapOn = jest.fn()
 const mockMap = {
   fitBounds: mockFitBounds,
+  getZoom: mockMapGetZoom,
+  off: mockMapOff,
+  on: mockMapOn,
   remove: mockMapRemove,
 }
 
@@ -24,14 +30,28 @@ const mockShapeLayer = {
 
 const mockMarkerLayerAddLayer = jest.fn()
 const mockMarkerLayerAddTo = jest.fn()
+const mockRefreshClusters = jest.fn()
 const mockMarkerLayer = {
   addLayer: mockMarkerLayerAddLayer,
   addTo: mockMarkerLayerAddTo,
+  refreshClusters: mockRefreshClusters,
 }
 
 const mockBindPopup = jest.fn()
-const mockMarker = {
-  bindPopup: mockBindPopup,
+const mockMarkerAddTo = jest.fn()
+const mockSetStyle = jest.fn()
+const createMarker = (options = {}) => {
+  const marker = {
+    addTo: mockMarkerAddTo,
+    bindPopup: (popup: HTMLElement) => {
+      mockBindPopup(popup)
+      return marker
+    },
+    options,
+    setStyle: mockSetStyle,
+  }
+
+  return marker
 }
 
 const mockTileLayerAddTo = jest.fn()
@@ -43,13 +63,13 @@ const mockTileLayer = {
 
 const mockLeaflet = {
   circle: jest.fn(() => mockShapeLayer),
-  circleMarker: jest.fn(() => mockMarker),
+  circleMarker: jest.fn((_latLng, options) => createMarker(options)),
   divIcon: jest.fn((options) => options),
   heatLayer: jest.fn(() => mockShapeLayer),
   latLngBounds: jest.fn(() => mockBounds),
   layerGroup: jest.fn(() => mockMarkerLayer),
   map: jest.fn(() => mockMap),
-  marker: jest.fn(() => mockMarker),
+  marker: jest.fn((_latLng, options) => createMarker(options)),
   markerClusterGroup: jest.fn(() => mockMarkerLayer),
   rectangle: jest.fn(() => mockShapeLayer),
   tileLayer: jest.fn(() => mockTileLayer),
@@ -72,7 +92,17 @@ const originalNodeEnv = process.env.NODE_ENV
 const radiusCommand: ParsedGeoCommand = {
   command: 'GEOSEARCH',
   kind: 'searchResults',
-  rawTokens: [],
+  rawTokens: [
+    'GEOSEARCH',
+    'Sicily',
+    'FROMLONLAT',
+    '15',
+    '37',
+    'BYRADIUS',
+    '300',
+    'km',
+    'WITHCOORD',
+  ],
   searchType: 'radius',
   key: 'Sicily',
   centerLon: 15,
@@ -108,6 +138,7 @@ describe('GeoPlot', () => {
   beforeEach(() => {
     process.env.NODE_ENV = 'development'
     jest.clearAllMocks()
+    mockMapGetZoom.mockReturnValue(12)
   })
 
   afterEach(() => {
@@ -165,7 +196,7 @@ describe('GeoPlot', () => {
       ]),
       expect.objectContaining({ fillOpacity: 0.08 }),
     )
-    expect(mockExtend).toHaveBeenCalledWith([37, 15])
+    expect(mockExtend).not.toHaveBeenCalled()
     expect(mockLeaflet.heatLayer).toHaveBeenCalledWith(
       [
         [38.115556, 13.361389, 10],
@@ -173,29 +204,62 @@ describe('GeoPlot', () => {
       ],
       expect.objectContaining({ radius: 24 }),
     )
+    expect(mockPad).toHaveBeenCalledWith(0.32)
     expect(mockFitBounds).toHaveBeenCalledWith('padded-bounds', {
       animate: false,
+      maxZoom: 12,
     })
   })
 
   it('uses clustered markers for large result sets', () => {
-    const manyResults = Array.from({ length: 51 }, (_, index) => ({
+    const manyResults = Array.from({ length: 50 }, (_, index) => ({
       name: `member-${index}`,
       lat: 37 + index / 100,
       lon: 15 + index / 100,
+      distance: index,
     }))
 
     render(
       <GeoPlot mode="markers" results={manyResults} command={radiusCommand} />,
     )
 
-    expect(mockLeaflet.markerClusterGroup).toHaveBeenCalled()
-    expect(mockLeaflet.marker).toHaveBeenCalledTimes(51)
-    expect(mockLeaflet.divIcon).toHaveBeenCalledWith({
-      className: 'geodata-div-marker',
-      html: '',
-      iconSize: [12, 12],
+    expect(mockLeaflet.markerClusterGroup).toHaveBeenCalledWith(
+      expect.objectContaining({
+        disableClusteringAtZoom: 12,
+        iconCreateFunction: expect.any(Function),
+      }),
+    )
+    expect(mockLeaflet.circleMarker).toHaveBeenCalledTimes(50)
+    expect(mockLeaflet.marker).not.toHaveBeenCalled()
+
+    const { iconCreateFunction } = mockLeaflet.markerClusterGroup.mock.calls[0][0]
+    iconCreateFunction({
+      getAllChildMarkers: () => [
+        { options: { distanceKm: 10 } },
+        { options: { distanceKm: 20 } },
+      ],
     })
+    expect(mockLeaflet.divIcon).toHaveBeenCalledWith(
+      expect.objectContaining({
+        className: 'geodata-cluster',
+        html: expect.any(HTMLElement),
+        iconSize: [30, 30],
+      }),
+    )
+    iconCreateFunction({
+      getAllChildMarkers: () =>
+        Array.from({ length: 11 }, () => ({ options: { distanceKm: 20 } })),
+    })
+    expect(mockLeaflet.divIcon).toHaveBeenLastCalledWith(
+      expect.objectContaining({ iconSize: [40, 40] }),
+    )
+    iconCreateFunction({
+      getAllChildMarkers: () =>
+        Array.from({ length: 101 }, () => ({ options: {} })),
+    })
+    expect(mockLeaflet.divIcon).toHaveBeenLastCalledWith(
+      expect.objectContaining({ iconSize: [50, 50] }),
+    )
   })
 
   it('uses the middle distance color for mid-range points', () => {
@@ -206,7 +270,7 @@ describe('GeoPlot', () => {
           { name: 'Middle', lat: 37, lon: 15, distance: 70 },
           { name: 'Far', lat: 38, lon: 16, distance: 100 },
         ]}
-        command={radiusCommand}
+        command={{ ...radiusCommand, radius: 100 }}
       />,
     )
 
@@ -214,6 +278,108 @@ describe('GeoPlot', () => {
       1,
       [37, 15],
       expect.objectContaining({ fillColor: '#9c5c2b' }),
+    )
+  })
+
+  it('uses Redis distance units and computed distances for marker colors', () => {
+    const legacyRadiusCommand: ParsedGeoCommand = {
+      ...radiusCommand,
+      command: 'GEORADIUS',
+      rawTokens: ['GEORADIUS', 'Sicily', '15', '37', '300000', 'm'],
+      radius: 300,
+    }
+
+    render(
+      <GeoPlot
+        mode="markers"
+        results={[
+          { name: 'Meters', lat: 37, lon: 15, distance: 150000 },
+          { name: 'Computed', lat: 38, lon: 16 },
+        ]}
+        command={legacyRadiusCommand}
+      />,
+    )
+
+    expect(mockLeaflet.circleMarker).toHaveBeenNthCalledWith(
+      1,
+      [37, 15],
+      expect.objectContaining({ fillColor: '#008556' }),
+    )
+    expect(mockLeaflet.circleMarker).toHaveBeenNthCalledWith(
+      2,
+      [38, 16],
+      expect.objectContaining({ fillColor: expect.any(String) }),
+    )
+  })
+
+  it('uses legacy GEORADIUSBYMEMBER distance units', () => {
+    render(
+      <GeoPlot
+        mode="markers"
+        results={[{ name: 'Far', lat: 38, lon: 16, distance: 200 }]}
+        command={{
+          ...radiusCommand,
+          command: 'GEORADIUSBYMEMBER',
+          rawTokens: ['GEORADIUSBYMEMBER', 'Sicily', 'Palermo', '100', 'mi'],
+          radius: 160.9344,
+        }}
+      />,
+    )
+
+    expect(mockLeaflet.circleMarker).toHaveBeenCalledWith(
+      [38, 16],
+      expect.objectContaining({ fillColor: '#a00a6b' }),
+    )
+  })
+
+  it('uses the middle color when distance cannot be resolved', () => {
+    render(
+      <GeoPlot
+        mode="markers"
+        results={[{ name: 'Unknown', lat: 38, lon: 16 }]}
+        command={{
+          ...radiusCommand,
+          centerLat: undefined,
+          centerLon: undefined,
+          radius: undefined,
+          searchType: 'unknown',
+        }}
+      />,
+    )
+
+    expect(mockLeaflet.circleMarker).toHaveBeenCalledWith(
+      [38, 16],
+      expect.objectContaining({ fillColor: '#9c5c2b' }),
+    )
+  })
+
+  it('updates thresholds without recreating the map', () => {
+    render(
+      <GeoPlot
+        mode="markers"
+        results={[
+          { name: 'Close', lat: 37, lon: 15, distance: 20 },
+          { name: 'Middle', lat: 38, lon: 16, distance: 70 },
+        ]}
+        command={{ ...radiusCommand, radius: 100 }}
+      />,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Distance thresholds' }))
+    mockLeaflet.map.mockClear()
+    mockSetStyle.mockClear()
+
+    fireEvent.change(screen.getByLabelText('Close threshold'), {
+      target: { value: '0.3' },
+    })
+    fireEvent.change(screen.getByLabelText('Mid threshold'), {
+      target: { value: '0.9' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
+
+    expect(mockLeaflet.map).not.toHaveBeenCalled()
+    expect(mockSetStyle).toHaveBeenCalledWith(
+      expect.objectContaining({ fillColor: expect.any(String) }),
     )
   })
 
