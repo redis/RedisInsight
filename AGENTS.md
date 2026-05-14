@@ -51,7 +51,7 @@ yarn test              # Run all UI tests
 yarn test:api          # Run all API tests
 
 # E2E tests
-yarn --cwd tests/e2e test
+yarn --cwd tests/e2e-playwright test
 ```
 
 ### Run Specific Frontend Tests

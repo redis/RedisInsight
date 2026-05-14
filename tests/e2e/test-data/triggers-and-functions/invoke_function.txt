@@ -1,6 +1,0 @@
-#!js api_version=1.0 name=lib
-
-redis.registerFunction('function', function(client, word1, word2, w3rd1){
-
-    return '${word1 ${word2} ${word3}';
-});

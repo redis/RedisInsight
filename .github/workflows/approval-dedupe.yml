@@ -16,7 +16,7 @@
 #         uses: ./.github/workflows/approval-dedupe.yml
 #         secrets: inherit
 #         with:
-#           workflow_filename: tests-e2e.yml   # set to the caller's filename
+#           workflow_filename: tests-e2e-playwright-v2.yml   # set to the caller's filename
 #           require_approval: true             # only run on Approved reviews
 #           allow_workflow_dispatch: true      # allow manual runs to go to mode=run
 # - Gate heavy jobs in the caller with:
@@ -31,7 +31,7 @@ on:
   workflow_call:
     inputs:
       workflow_filename:
-        description: The workflow filename to inspect for prior runs (e.g., tests-e2e.yml)
+        description: The workflow filename to inspect for prior runs (e.g., tests-e2e-playwright-v2.yml)
         required: true
         type: string
       require_approval:

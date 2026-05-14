@@ -21,9 +21,7 @@ RedisInsight has no root `tsconfig.json`. Config is split per area, each owning 
 | `configs/tsconfig.json` | Compiler options (`module: CommonJS`, `esModuleInterop`) used by `ts-node` to load the `.ts` webpack configs | `ts-node` via `TS_NODE_PROJECT` set in `build:main` / `build:main:stage` / `build:stage` |
 | `.storybook/tsconfig.json` | Storybook framework files, extends UI tsconfig | Storybook + ESLint |
 | `stories/tsconfig.json` | Story files. Extends UI tsconfig; rewires `uiSrc/*` to resolve from `redisinsight/ui` | Storybook + ESLint |
-| `tests/playwright/tsconfig.json` | New Playwright suite | Playwright runner + ESLint |
-| `tests/e2e/tsconfig.json` | Legacy TestCafe E2E | E2E runner (sub-project with own package.json, eslint-ignored at root) |
-| `tests/e2e-playwright/tsconfig.json` | Older Playwright suite | E2E runner (sub-project, eslint-ignored at root) |
+| `tests/e2e-playwright/tsconfig.json` | Playwright E2E suite | E2E runner (sub-project with own package.json, eslint-ignored at root) |
 
 ## Webpack path resolution (`configs/webpack.config.base.ts`)
 
