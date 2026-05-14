@@ -1,22 +1,49 @@
 import React from 'react'
-import { faker } from '@faker-js/faker'
 
 import { render, screen } from 'uiSrc/utils/test-utils'
 import { stringToBuffer } from 'uiSrc/utils'
 import { VectorSetSimilarityMatch } from 'uiSrc/slices/interfaces/vectorSet'
+import { vectorSetSimilarityMatchFactory } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
 
 import { SimilaritySearchResultsTable } from './SimilaritySearchResultsTable'
+import { buildSimilarityResultsColumns } from './SimilaritySearchResultsTable.config'
+import {
+  buildParsedAttributesCache,
+  collectAttributeKeys,
+} from './utils/parseAttributes'
 
-faker.seed(8158)
+const buildMatch = (
+  name: string,
+  score: number,
+  attributes?: string,
+): VectorSetSimilarityMatch =>
+  vectorSetSimilarityMatchFactory.build({
+    name: stringToBuffer(name),
+    score,
+    attributes,
+  })
 
-const buildMatch = (name: string, score: number): VectorSetSimilarityMatch => ({
-  name: stringToBuffer(name),
-  score,
-})
+/**
+ * Build the table props the same way `VectorSetDetails` does in production —
+ * keeps the spec realistic and means a single change to the column-builder
+ * signature surfaces here too.
+ */
+const renderTable = (matches: VectorSetSimilarityMatch[]) => {
+  const parsedAttributesCache = buildParsedAttributesCache(matches)
+  const attributeKeys = collectAttributeKeys(matches, parsedAttributesCache)
+  const columns = buildSimilarityResultsColumns(attributeKeys)
+  return render(
+    <SimilaritySearchResultsTable
+      matches={matches}
+      columns={columns}
+      parsedAttributesCache={parsedAttributesCache}
+    />,
+  )
+}
 
 describe('SimilaritySearchResultsTable', () => {
   it('renders the empty state when no matches are provided', () => {
-    render(<SimilaritySearchResultsTable matches={[]} />)
+    renderTable([])
 
     expect(
       screen.getByTestId('vector-set-similarity-results'),
@@ -27,9 +54,7 @@ describe('SimilaritySearchResultsTable', () => {
   it('renders one row per match with Element + Similarity columns', () => {
     const matches = [buildMatch('alpha', 0.9999), buildMatch('beta', 0.5)]
 
-    const { container } = render(
-      <SimilaritySearchResultsTable matches={matches} />,
-    )
+    const { container } = renderTable(matches)
 
     const rows = container.querySelectorAll('tbody tr')
     expect(rows).toHaveLength(2)
@@ -44,7 +69,7 @@ describe('SimilaritySearchResultsTable', () => {
       buildMatch('gamma', 0),
     ]
 
-    render(<SimilaritySearchResultsTable matches={matches} />)
+    renderTable(matches)
 
     expect(screen.getByText('99.99 %')).toBeInTheDocument()
     expect(screen.getByText('50.00 %')).toBeInTheDocument()
@@ -58,7 +83,7 @@ describe('SimilaritySearchResultsTable', () => {
       buildMatch('mid', 0.5),
     ]
 
-    render(<SimilaritySearchResultsTable matches={matches} />)
+    renderTable(matches)
 
     const cells = screen.getAllByTestId(/vector-set-similarity-cell-/)
     expect(cells.map((cell) => cell.textContent)).toEqual([
@@ -69,9 +94,7 @@ describe('SimilaritySearchResultsTable', () => {
   })
 
   it('falls back to a dash for non-finite scores', () => {
-    const matches = [buildMatch('broken', Number.NaN)]
-
-    render(<SimilaritySearchResultsTable matches={matches} />)
+    renderTable([buildMatch('broken', Number.NaN)])
 
     expect(screen.getByText('—')).toBeInTheDocument()
   })
@@ -83,7 +106,7 @@ describe('SimilaritySearchResultsTable', () => {
       buildMatch('low', 0.84),
     ]
 
-    render(<SimilaritySearchResultsTable matches={matches} />)
+    renderTable(matches)
 
     // Sorted desc by score → high (0.86), boundary (0.85), low (0.84). Cells
     // above the threshold get a different styled-component class than ones
@@ -92,5 +115,52 @@ describe('SimilaritySearchResultsTable', () => {
     const cells = screen.getAllByTestId(/vector-set-similarity-cell-/)
     expect(cells[0].className).toBe(cells[1].className)
     expect(cells[0].className).not.toBe(cells[2].className)
+  })
+
+  describe('attribute columns', () => {
+    it('renders one column per attribute key, alphabetically', () => {
+      const matches = [
+        buildMatch('a', 0.9, '{"zeta":1,"alpha":"x"}'),
+        buildMatch('b', 0.8, '{"beta":2}'),
+      ]
+
+      renderTable(matches)
+
+      // Header order: Element, Similarity, then attributes alphabetically.
+      const headers = screen
+        .getAllByRole('columnheader')
+        .map((h) => h.textContent?.trim())
+      expect(headers).toEqual([
+        'Element',
+        'Similarity',
+        'alpha',
+        'beta',
+        'zeta',
+      ])
+    })
+
+    it('renders attribute values per row', () => {
+      const matches = [
+        buildMatch('a', 0.9, '{"city":"NYC","count":3}'),
+        buildMatch('b', 0.8, '{"city":"LA"}'),
+      ]
+
+      renderTable(matches)
+
+      // a is first (higher score), so row 0 = a, row 1 = b.
+      expect(
+        screen.getByTestId('vector-set-similarity-attribute-cell-0-city'),
+      ).toHaveTextContent('NYC')
+      expect(
+        screen.getByTestId('vector-set-similarity-attribute-cell-0-count'),
+      ).toHaveTextContent('3')
+      expect(
+        screen.getByTestId('vector-set-similarity-attribute-cell-1-city'),
+      ).toHaveTextContent('LA')
+      // b has no `count` attribute → empty cell
+      expect(
+        screen.getByTestId('vector-set-similarity-attribute-cell-1-count'),
+      ).toHaveTextContent('')
+    })
   })
 })

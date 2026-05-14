@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import {
@@ -21,6 +21,11 @@ import { VectorSetKeySubheader } from './vector-set-key-subheader'
 import { ElementDetails } from './element-details'
 import { SimilaritySearchForm } from './similarity-search-form'
 import { SimilaritySearchResultsTable } from './similarity-search-results'
+import { buildSimilarityResultsColumns } from './similarity-search-results/SimilaritySearchResultsTable.config'
+import {
+  buildParsedAttributesCache,
+  collectAttributeKeys,
+} from './similarity-search-results/utils/parseAttributes'
 import {
   useAddElementPanel,
   useAddElements,
@@ -65,16 +70,31 @@ const VectorSetDetails = (props: Props) => {
     dispatch(clearSimilaritySearch())
   }, [dispatch])
 
+  // Cache parsed attribute payloads + derive the union of attribute keys in
+  // one pass, so each row pays the JSON-parse cost once across the key
+  // collector and every attribute column it renders. Stable alphabetical
+  // ordering keeps the resulting column list referentially stable.
+  const { similarityParsedAttributesCache, similarityAttributeKeys } =
+    useMemo(() => {
+      const cache = buildParsedAttributesCache(similarityMatches)
+      return {
+        similarityParsedAttributesCache: cache,
+        similarityAttributeKeys: collectAttributeKeys(similarityMatches, cache),
+      }
+    }, [similarityMatches])
+  const similarityColumns = useMemo(
+    () => buildSimilarityResultsColumns(similarityAttributeKeys),
+    [similarityAttributeKeys],
+  )
+
   const {
     total = 0,
     elements: vectorSetElements = [],
     isPaginationSupported,
   } = useSelector(vectorSetDataSelector) ?? {}
 
-  // Similarity-search results take precedence over the element-list preview:
-  // when results are visible we always show "Previewing matches/total".
-  // Otherwise we keep the original element-list preview, which is only shown
-  // for non-paginated vector sets.
+  // Similarity-search results take precedence; otherwise fall back to the
+  // element-list preview, which is only shown for non-paginated vector sets.
   const showPreview = hasSimilarityResults || isPaginationSupported === false
   const previewCount = hasSimilarityResults
     ? similarityMatches.length
@@ -103,7 +123,11 @@ const VectorSetDetails = (props: Props) => {
         {!loading && (
           <S.ListWrapper>
             {hasSimilarityResults ? (
-              <SimilaritySearchResultsTable matches={similarityMatches} />
+              <SimilaritySearchResultsTable
+                matches={similarityMatches}
+                columns={similarityColumns}
+                parsedAttributesCache={similarityParsedAttributesCache}
+              />
             ) : (
               <VectorSetElementList
                 onRemoveKey={onRemoveKey}
