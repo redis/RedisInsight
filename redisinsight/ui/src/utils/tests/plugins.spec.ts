@@ -26,4 +26,59 @@ describe('getVisualizationsByCommand', () => {
       expect(result).toHaveLength(expected)
     },
   )
+
+  it('applies optional query predicates after command matching', () => {
+    const geodataVisualization = {
+      matchCommands: ['FT.SEARCH', 'FT.AGGREGATE', 'FT.HYBRID'],
+      matchQuery: {
+        anyRegex: [
+          String.raw`@\w+:\[\s*[-+$\w.]+\s+[-+$\w.]+\s+[-+$\w.]+\s+(?:m|km|mi|ft)\s*\]`,
+          String.raw`\bGEOFILTER\s+\w+\s+[-+$\w.]+\s+[-+$\w.]+\s+[-+$\w.]+\s+(?:m|km|mi|ft)\b`,
+        ],
+      },
+    } as IPluginVisualization
+
+    expect(
+      getVisualizationsByCommand('FT.SEARCH idx "*"', [geodataVisualization]),
+    ).toHaveLength(0)
+    expect(
+      getVisualizationsByCommand(
+        'FT.SEARCH idx "@coords:[2.34 48.86 1000 km]"',
+        [geodataVisualization],
+      ),
+    ).toHaveLength(1)
+    expect(
+      getVisualizationsByCommand('FT.AGGREGATE idx "*" LOAD 1 @coords', [
+        geodataVisualization,
+      ]),
+    ).toHaveLength(0)
+    expect(
+      getVisualizationsByCommand(
+        'FT.SEARCH idx * GEOFILTER coords 2.34 48.86 1000 km',
+        [geodataVisualization],
+      ),
+    ).toHaveLength(1)
+  })
+
+  it('ignores invalid query predicate regexes without throwing', () => {
+    const invalidVisualization = {
+      matchCommands: ['FT.SEARCH'],
+      matchQuery: {
+        anyRegex: ['['],
+      },
+    } as IPluginVisualization
+
+    expect(() =>
+      getVisualizationsByCommand(
+        'FT.SEARCH idx "@coords:[2.34 48.86 1000 km]"',
+        [invalidVisualization],
+      ),
+    ).not.toThrow()
+    expect(
+      getVisualizationsByCommand(
+        'FT.SEARCH idx "@coords:[2.34 48.86 1000 km]"',
+        [invalidVisualization],
+      ),
+    ).toHaveLength(0)
+  })
 })

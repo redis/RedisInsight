@@ -44,6 +44,22 @@ const renderGeoInspector = (props: PluginProps): void => {
   renderApp(props, GeodataMode.Inspector)
 }
 
+const renderRqeGeoMap = (props: PluginProps): void => {
+  renderApp(props, GeodataMode.RqeMarkers)
+}
+
+const renderRqeGeoHeatmap = (props: PluginProps): void => {
+  renderApp(props, GeodataMode.RqeHeatmap)
+}
+
+const renderRqeGeoInspector = (props: PluginProps): void => {
+  renderApp(props, GeodataMode.RqeInspector)
+}
+
+const renderRqeGeoShape = (props: PluginProps): void => {
+  renderApp(props, GeodataMode.RqeShape)
+}
+
 if (process.env.NODE_ENV === 'development') {
   renderGeoInspector({
     command: 'GEOPOS Sicily Palermo Catania',
@@ -59,4 +75,12 @@ if (process.env.NODE_ENV === 'development') {
   })
 }
 
-export default { renderGeoMapMarkers, renderGeoMapHeatmap, renderGeoInspector }
+export default {
+  renderGeoMapMarkers,
+  renderGeoMapHeatmap,
+  renderGeoInspector,
+  renderRqeGeoMap,
+  renderRqeGeoHeatmap,
+  renderRqeGeoInspector,
+  renderRqeGeoShape,
+}

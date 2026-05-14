@@ -71,6 +71,86 @@
       "iconLight": "./dist/geodata_inspector_icon_light.svg",
       "description": "Inspect Redis geospatial command inputs and results",
       "default": true
+    },
+    {
+      "id": "ri-geodata-rqe-map",
+      "name": "RQE Geo Map",
+      "activationMethod": "renderRqeGeoMap",
+      "matchCommands": [
+        "FT.SEARCH",
+        "FT.AGGREGATE",
+        "FT.HYBRID"
+      ],
+      "matchQuery": {
+        "anyRegex": [
+          "@[A-Za-z0-9_.$:-]+:\\[\\s*[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+(?:m|km|mi|ft)\\s*\\]",
+          "\\bGEOFILTER\\s+[A-Za-z0-9_.$:-]+\\s+[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+(?:m|km|mi|ft)\\b"
+        ]
+      },
+      "iconDark": "./dist/geodata_icon_dark.svg",
+      "iconLight": "./dist/geodata_icon_light.svg",
+      "description": "Show Redis Query Engine GEO results as plotted locations",
+      "default": false
+    },
+    {
+      "id": "ri-geodata-rqe-heatmap",
+      "name": "RQE Geo Heatmap",
+      "activationMethod": "renderRqeGeoHeatmap",
+      "matchCommands": [
+        "FT.SEARCH",
+        "FT.AGGREGATE",
+        "FT.HYBRID"
+      ],
+      "matchQuery": {
+        "anyRegex": [
+          "@[A-Za-z0-9_.$:-]+:\\[\\s*[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+(?:m|km|mi|ft)\\s*\\]",
+          "\\bGEOFILTER\\s+[A-Za-z0-9_.$:-]+\\s+[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+(?:m|km|mi|ft)\\b"
+        ]
+      },
+      "iconDark": "./dist/geodata_heatmap_icon_dark.svg",
+      "iconLight": "./dist/geodata_heatmap_icon_light.svg",
+      "description": "Show Redis Query Engine GEO result density",
+      "default": false
+    },
+    {
+      "id": "ri-geodata-rqe-inspector",
+      "name": "RQE Geo Inspector",
+      "activationMethod": "renderRqeGeoInspector",
+      "matchCommands": [
+        "FT.SEARCH",
+        "FT.AGGREGATE",
+        "FT.HYBRID"
+      ],
+      "matchQuery": {
+        "anyRegex": [
+          "@[A-Za-z0-9_.$:-]+:\\[\\s*[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+(?:m|km|mi|ft)\\s*\\]",
+          "\\bGEOFILTER\\s+[A-Za-z0-9_.$:-]+\\s+[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+(?:m|km|mi|ft)\\b",
+          "@[A-Za-z0-9_.$:-]+:\\[\\s*(?:WITHIN|CONTAINS|INTERSECTS|DISJOINT)\\s+[^\\]]+\\]"
+        ]
+      },
+      "iconDark": "./dist/geodata_inspector_icon_dark.svg",
+      "iconLight": "./dist/geodata_inspector_icon_light.svg",
+      "description": "Inspect Redis Query Engine geospatial command inputs and results",
+      "default": false
+    },
+    {
+      "id": "ri-geodata-rqe-shape",
+      "name": "RQE Geo Shape",
+      "activationMethod": "renderRqeGeoShape",
+      "matchCommands": [
+        "FT.SEARCH",
+        "FT.AGGREGATE",
+        "FT.HYBRID"
+      ],
+      "matchQuery": {
+        "anyRegex": [
+          "@[A-Za-z0-9_.$:-]+:\\[\\s*(?:WITHIN|CONTAINS|INTERSECTS|DISJOINT)\\s+[^\\]]+\\]"
+        ]
+      },
+      "iconDark": "./dist/geodata_inspector_icon_dark.svg",
+      "iconLight": "./dist/geodata_inspector_icon_light.svg",
+      "description": "Show Redis Query Engine GEOSHAPE WKT results",
+      "default": false
     }
   ],
   "devDependencies": {
