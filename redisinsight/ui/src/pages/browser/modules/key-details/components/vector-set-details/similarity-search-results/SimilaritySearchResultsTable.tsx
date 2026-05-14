@@ -23,6 +23,7 @@ const SimilaritySearchResultsTable = memo(
   ({
     matches,
     columns,
+    columnVisibility,
     parsedAttributesCache,
   }: SimilaritySearchResultsTableProps) => {
     const { compressor = null } = useSelector(connectedInstanceSelector)
@@ -48,15 +49,18 @@ const SimilaritySearchResultsTable = memo(
     // every column. The min-width is the actual sum of column widths so the
     // browser only stretches the auto-sized name column with leftover space.
     const tableMinWidth = useMemo(() => {
-      const attributeCount = columns.filter((column) =>
-        column.id?.startsWith(SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_ID_PREFIX),
+      const visibleAttributeCount = columns.filter(
+        (column) =>
+          column.id?.startsWith(
+            SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_ID_PREFIX,
+          ) && columnVisibility[column.id] !== false,
       ).length
       const total =
         SIMILARITY_RESULTS_NAME_COLUMN_MIN_SIZE +
         SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE +
-        attributeCount * SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE
+        visibleAttributeCount * SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE
       return `${total}px`
-    }, [columns])
+    }, [columns, columnVisibility])
 
     return (
       <S.Container data-testid={TEST_ID}>
@@ -64,6 +68,7 @@ const SimilaritySearchResultsTable = memo(
           columns={columns}
           data={sortedMatches}
           meta={meta}
+          columnVisibility={columnVisibility}
           stripedRows
           enableColumnResizing
           minWidth={tableMinWidth}

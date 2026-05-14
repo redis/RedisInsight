@@ -21,6 +21,7 @@ import {
 import {
   SimilarityResultsCellMeta,
   SimilarityResultsColumn,
+  SimilarityResultsListConfig,
 } from './SimilaritySearchResultsTable.types'
 import * as S from './SimilaritySearchResultsTable.styles'
 import { KeyValueFormat } from 'uiSrc/constants'
@@ -33,9 +34,6 @@ const nameColumn: ColumnDef<VectorSetSimilarityMatch> = {
   minSize: SIMILARITY_RESULTS_NAME_COLUMN_MIN_SIZE,
   size: SIMILARITY_RESULTS_NAME_COLUMN_MIN_SIZE,
   sizeUnit: 'px',
-  // Auto-size the header cell so leftover horizontal space is absorbed by
-  // the name column (the only flexible one) instead of being distributed
-  // across all columns.
   getHeaderCellProps: () => ({
     style: {
       width: 'auto',
@@ -44,7 +42,7 @@ const nameColumn: ColumnDef<VectorSetSimilarityMatch> = {
   }),
   cell: ({ row, table }: CellContext<VectorSetSimilarityMatch, unknown>) => {
     const { compressor = null, viewFormat } = table.options
-      .meta as SimilarityResultsCellMeta
+      .meta as SimilarityResultsListConfig
     return (
       <ElementNameCell
         element={row.original}
@@ -60,11 +58,11 @@ const similarityColumn: ColumnDef<VectorSetSimilarityMatch> = {
   accessorKey: SimilarityResultsColumn.Similarity,
   header: SIMILARITY_RESULTS_COLUMN_HEADERS[SimilarityResultsColumn.Similarity],
   enableSorting: false,
-  enableResizing: false,
   size: SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE,
   minSize: SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE,
   maxSize: SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE,
   sizeUnit: 'px',
+  enableResizing: false,
   cell: ({ row }: { row: TableRow<VectorSetSimilarityMatch> }) => {
     const { score } = row.original
     const isHigh = Number.isFinite(score) && score >= HIGH_SIMILARITY_THRESHOLD

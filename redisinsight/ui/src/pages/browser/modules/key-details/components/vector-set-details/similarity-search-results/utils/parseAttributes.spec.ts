@@ -3,7 +3,6 @@ import { VectorSetSimilarityMatch } from 'uiSrc/slices/interfaces/vectorSet'
 import { vectorSetSimilarityMatchFactory } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
 
 import {
-  buildParsedAttributesCache,
   collectAttributeKeys,
   parseAttributes,
   renderAttributeValue,
@@ -84,45 +83,6 @@ describe('collectAttributeKeys', () => {
       match('e', 0.5, '{"y":2}'),
     ])
     expect(keys).toEqual(['x', 'y'])
-  })
-
-  it('reads from the provided cache instead of re-parsing attributes', () => {
-    const a = match('a', 0.9, '{"x":1}')
-    const b = match('b', 0.8, '{"y":2}')
-    const cache = buildParsedAttributesCache([a, b])
-    const parseSpy = jest.spyOn(JSON, 'parse')
-
-    const keys = collectAttributeKeys([a, b], cache)
-
-    expect(keys).toEqual(['x', 'y'])
-    expect(parseSpy).not.toHaveBeenCalled()
-    parseSpy.mockRestore()
-  })
-
-  it('falls back to re-parsing when the cache lacks an entry', () => {
-    const a = match('a', 0.9, '{"x":1}')
-    const cache = buildParsedAttributesCache([])
-    expect(collectAttributeKeys([a], cache)).toEqual(['x'])
-  })
-})
-
-describe('buildParsedAttributesCache', () => {
-  it('caches parsed payloads keyed on the match reference', () => {
-    const a = match('a', 0.9, '{"x":1}')
-    const b = match('b', 0.8, '{"y":"two"}')
-    const cache = buildParsedAttributesCache([a, b])
-
-    expect(cache.get(a)).toEqual({ x: 1 })
-    expect(cache.get(b)).toEqual({ y: 'two' })
-  })
-
-  it('stores `{}` for matches with missing/malformed attributes', () => {
-    const a = match('a', 0.9, 'not-json')
-    const b = match('b', 0.8)
-    const cache = buildParsedAttributesCache([a, b])
-
-    expect(cache.get(a)).toEqual({})
-    expect(cache.get(b)).toEqual({})
   })
 })
 

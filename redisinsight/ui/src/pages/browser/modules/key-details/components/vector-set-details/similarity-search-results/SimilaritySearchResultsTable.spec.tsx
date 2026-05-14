@@ -7,6 +7,7 @@ import { vectorSetSimilarityMatchFactory } from 'uiSrc/mocks/factories/browser/v
 
 import { SimilaritySearchResultsTable } from './SimilaritySearchResultsTable'
 import { buildSimilarityResultsColumns } from './SimilaritySearchResultsTable.config'
+import { ParsedAttributesCache } from './SimilaritySearchResultsTable.types'
 import {
   buildParsedAttributesCache,
   collectAttributeKeys,
@@ -25,10 +26,13 @@ const buildMatch = (
 
 /**
  * Build the table props the same way `VectorSetDetails` does in production —
- * keeps the spec realistic and means a single change to the column-builder
- * signature surfaces here too.
+ * keeps the spec realistic and means a single change to the hook signature
+ * surfaces here too.
  */
-const renderTable = (matches: VectorSetSimilarityMatch[]) => {
+const renderTable = (
+  matches: VectorSetSimilarityMatch[],
+  options: { columnVisibility?: Record<string, boolean> } = {},
+) => {
   const parsedAttributesCache = buildParsedAttributesCache(matches)
   const attributeKeys = collectAttributeKeys(matches, parsedAttributesCache)
   const columns = buildSimilarityResultsColumns(attributeKeys)
@@ -36,6 +40,7 @@ const renderTable = (matches: VectorSetSimilarityMatch[]) => {
     <SimilaritySearchResultsTable
       matches={matches}
       columns={columns}
+      columnVisibility={options.columnVisibility ?? {}}
       parsedAttributesCache={parsedAttributesCache}
     />,
   )
@@ -161,6 +166,45 @@ describe('SimilaritySearchResultsTable', () => {
       expect(
         screen.getByTestId('vector-set-similarity-attribute-cell-1-count'),
       ).toHaveTextContent('')
+    })
+
+    it('hides columns whose visibility is explicitly false', () => {
+      const matches = [buildMatch('a', 0.9, '{"city":"NYC","count":3}')]
+
+      renderTable(matches, {
+        columnVisibility: { attr_city: false },
+      })
+
+      // The `city` header should be hidden, `count` should still render.
+      const headers = screen
+        .getAllByRole('columnheader')
+        .map((h) => h.textContent?.trim())
+      expect(headers).toEqual(['Element', 'Similarity', 'count'])
+    })
+
+    // Regression: attribute cells must read from `parsedAttributesCache`
+    // instead of re-parsing `row.original.attributes` on every render.
+    // We seed the cache with a value that diverges from the raw JSON so a
+    // cache-bypassing implementation would render the wrong text.
+    it('renders attribute values from the parsed-attributes cache', () => {
+      const match = buildMatch('a', 0.9, '{"city":"RAW"}')
+      const attributeKeys = collectAttributeKeys([match])
+      const columns = buildSimilarityResultsColumns(attributeKeys)
+      const parsedAttributesCache: ParsedAttributesCache = new WeakMap()
+      parsedAttributesCache.set(match, { city: 'FROM_CACHE' })
+
+      render(
+        <SimilaritySearchResultsTable
+          matches={[match]}
+          columns={columns}
+          columnVisibility={{}}
+          parsedAttributesCache={parsedAttributesCache}
+        />,
+      )
+
+      expect(
+        screen.getByTestId('vector-set-similarity-attribute-cell-0-city'),
+      ).toHaveTextContent('FROM_CACHE')
     })
   })
 })
