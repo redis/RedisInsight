@@ -80,7 +80,7 @@ const FilterKeyType = ({ modules }: Props) => {
     inputDisplay: JSX.Element
     dropdownDisplay: JSX.Element
   }[] = FILTER_KEY_TYPE_OPTIONS.filter(
-    ({ featureFlag, skipIfNoModule, typeFeatureFlag }) => {
+    ({ featureFlag, skipIfNoModule, typeFeatureFlag, minVersion }) => {
       if (
         typeFeatureFlag &&
         !isDevelopment &&
@@ -92,6 +92,9 @@ const FilterKeyType = ({ modules }: Props) => {
         skipIfNoModule &&
         !modules?.some(({ name }) => name === skipIfNoModule)
       ) {
+        return false
+      }
+      if (minVersion && !isVersionHigherOrEquals(version, minVersion)) {
         return false
       }
       return !featureFlag || features[featureFlag]?.flag

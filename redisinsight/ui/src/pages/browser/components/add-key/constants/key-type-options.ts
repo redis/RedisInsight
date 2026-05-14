@@ -1,4 +1,5 @@
 import { GROUP_TYPES_COLORS, KeyTypes } from 'uiSrc/constants'
+import { CommandsVersions } from 'uiSrc/constants/commandsVersions'
 
 export const ADD_KEY_TYPE_OPTIONS = [
   {
@@ -40,5 +41,6 @@ export const ADD_KEY_TYPE_OPTIONS = [
     text: 'Vector Set',
     value: KeyTypes.VectorSet,
     color: GROUP_TYPES_COLORS[KeyTypes.VectorSet],
+    minVersion: CommandsVersions.VECTOR_SET.since,
   },
 ]

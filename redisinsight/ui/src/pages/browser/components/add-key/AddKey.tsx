@@ -10,13 +10,21 @@ import {
   resetAddKey,
   keysSelector,
 } from 'uiSrc/slices/browser/keys'
-import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import {
+  connectedInstanceOverviewSelector,
+  connectedInstanceSelector,
+} from 'uiSrc/slices/instances/instances'
 import {
   sendEventTelemetry,
   TelemetryEvent,
   getBasedOnViewTypeEvent,
 } from 'uiSrc/telemetry'
-import { isContainJSONModule, Maybe, stringToBuffer } from 'uiSrc/utils'
+import {
+  isContainJSONModule,
+  isVersionHigherOrEquals,
+  Maybe,
+  stringToBuffer,
+} from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
@@ -53,6 +61,7 @@ const AddKey = (props: Props) => {
   const { id: instanceId, modules = [] } = useSelector(
     connectedInstanceSelector,
   )
+  const { version } = useSelector(connectedInstanceOverviewSelector)
   const { viewType } = useSelector(keysSelector)
 
   useEffect(
@@ -64,7 +73,10 @@ const AddKey = (props: Props) => {
     [],
   )
 
-  const options = ADD_KEY_TYPE_OPTIONS.map((item) => {
+  const options = ADD_KEY_TYPE_OPTIONS.filter(
+    ({ minVersion }) =>
+      !minVersion || isVersionHigherOrEquals(version, minVersion),
+  ).map((item) => {
     const { value, color, text } = item
     return {
       value,

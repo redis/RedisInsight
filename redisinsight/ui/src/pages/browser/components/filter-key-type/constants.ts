@@ -4,6 +4,7 @@ import {
   ModulesKeyTypes,
   FeatureFlags,
 } from 'uiSrc/constants'
+import { CommandsVersions } from 'uiSrc/constants/commandsVersions'
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
 
 export const FILTER_KEY_TYPE_OPTIONS = [
@@ -47,6 +48,7 @@ export const FILTER_KEY_TYPE_OPTIONS = [
     value: KeyTypes.VectorSet,
     color: GROUP_TYPES_COLORS[KeyTypes.VectorSet],
     typeFeatureFlag: FeatureFlags.devVectorSet,
+    minVersion: CommandsVersions.VECTOR_SET.since,
   },
   {
     text: 'Graph',

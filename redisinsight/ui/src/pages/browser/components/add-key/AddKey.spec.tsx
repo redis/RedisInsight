@@ -9,7 +9,10 @@ import {
   userEvent,
 } from 'uiSrc/utils/test-utils'
 import { ADD_KEY_TYPE_OPTIONS } from 'uiSrc/pages/browser/components/add-key/constants/key-type-options'
-import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import {
+  connectedInstanceOverviewSelector,
+  connectedInstanceSelector,
+} from 'uiSrc/slices/instances/instances'
 import {
   OAuthSocialAction,
   OAuthSocialSource,
@@ -28,6 +31,9 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
   connectedInstanceSelector: jest.fn().mockReturnValue({
     id: '1',
     modules: [],
+  }),
+  connectedInstanceOverviewSelector: jest.fn().mockReturnValue({
+    version: '8.0.0',
   }),
 }))
 
@@ -121,6 +127,38 @@ describe('AddKey', () => {
       ...afterRenderActions,
       ...expectedActions,
     ])
+  })
+
+  it('should show Vector Set option when redis version >= 8.0', async () => {
+    ;(connectedInstanceOverviewSelector as jest.Mock).mockReturnValueOnce({
+      version: '8.0.0',
+    })
+
+    render(
+      <AddKey
+        onAddKeyPanel={handleAddKeyPanelMock}
+        onClosePanel={handleCloseKeyMock}
+      />,
+    )
+
+    await userEvent.click(screen.getByTestId('select-key-type'))
+    expect(await screen.findByText('Vector Set')).toBeInTheDocument()
+  })
+
+  it('should hide Vector Set option when redis version < 8.0', async () => {
+    ;(connectedInstanceOverviewSelector as jest.Mock).mockReturnValueOnce({
+      version: '7.4.0',
+    })
+
+    render(
+      <AddKey
+        onAddKeyPanel={handleAddKeyPanelMock}
+        onClosePanel={handleCloseKeyMock}
+      />,
+    )
+
+    await userEvent.click(screen.getByTestId('select-key-type'))
+    expect(screen.queryByText('Vector Set')).not.toBeInTheDocument()
   })
 
   it('should not show text if db contains ReJSON module', async () => {
