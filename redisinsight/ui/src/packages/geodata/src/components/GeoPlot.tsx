@@ -1,4 +1,4 @@
-import L from 'leaflet'
+import * as L from 'leaflet'
 import React, { useEffect, useRef } from 'react'
 
 import 'leaflet.heat'
@@ -107,25 +107,27 @@ const addMarkers = (
   results: GeoResult[],
   maxDistance: number,
 ): void => {
-  const markerLayer = results.length > 50 ? L.markerClusterGroup() : L.layerGroup()
+  const markerLayer =
+    results.length > 50 ? L.markerClusterGroup() : L.layerGroup()
 
   results.forEach((result) => {
     const color = getPointColor(result, maxDistance)
-    const marker = results.length > 50
-      ? L.marker([result.lat, result.lon], {
-        icon: L.divIcon({
-          className: 'geodata-div-marker',
-          html: '',
-          iconSize: [12, 12],
-        }),
-      })
-      : L.circleMarker([result.lat, result.lon], {
-        radius: 7,
-        color: '#ffffff',
-        weight: 1,
-        fillColor: color,
-        fillOpacity: 0.9,
-      })
+    const marker =
+      results.length > 50
+        ? L.marker([result.lat, result.lon], {
+            icon: L.divIcon({
+              className: 'geodata-div-marker',
+              html: '',
+              iconSize: [12, 12],
+            }),
+          })
+        : L.circleMarker([result.lat, result.lon], {
+            radius: 7,
+            color: '#ffffff',
+            weight: 1,
+            fillColor: color,
+            fillOpacity: 0.9,
+          })
 
     marker.bindPopup(createPopup(result))
     markerLayer.addLayer(marker)
@@ -136,7 +138,11 @@ const addMarkers = (
 
 const addHeatmap = (map: L.Map, results: GeoResult[]): void => {
   L.heatLayer(
-    results.map(({ lat, lon, distance = 1 }) => [lat, lon, Math.max(0.25, distance)]),
+    results.map(({ lat, lon, distance = 1 }) => [
+      lat,
+      lon,
+      Math.max(0.25, distance),
+    ]),
     {
       radius: 24,
       blur: 18,
@@ -153,7 +159,10 @@ const addHeatmap = (map: L.Map, results: GeoResult[]): void => {
 
 export const GeoPlot = ({ mode, results, command }: GeoPlotProps) => {
   const mapRef = useRef<HTMLDivElement>(null)
-  const maxDistance = Math.max(...results.map(({ distance = 0 }) => distance), 0)
+  const maxDistance = Math.max(
+    ...results.map(({ distance = 0 }) => distance),
+    0,
+  )
 
   useEffect(() => {
     if (!mapRef.current || process.env.NODE_ENV === 'test') {
@@ -182,9 +191,17 @@ export const GeoPlot = ({ mode, results, command }: GeoPlotProps) => {
   }, [command, maxDistance, mode, results])
 
   return (
-    <section className="geodata-plot-panel" aria-label={mode === 'markers' ? 'Geo Map' : 'Geo Heatmap'}>
+    <section
+      className="geodata-plot-panel"
+      aria-label={mode === 'markers' ? 'Geo Map' : 'Geo Heatmap'}
+    >
       <div className="geodata-offline-note">Map tiles disabled</div>
-      <div ref={mapRef} className="geodata-plot" role="img" aria-label="Leaflet geospatial plot" />
+      <div
+        ref={mapRef}
+        className="geodata-plot"
+        role="img"
+        aria-label="Leaflet geospatial plot"
+      />
     </section>
   )
 }
