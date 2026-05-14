@@ -1,0 +1,91 @@
+{
+  "author": {
+    "name": "Redis Ltd.",
+    "email": "support@redis.com",
+    "url": "https://redis.com/redis-enterprise/redis-insight"
+  },
+  "bugs": {
+    "url": "https://github.com/redis/RedisInsight/issues"
+  },
+  "description": "Redis Insight geospatial Workbench visualizations",
+  "source": "./src/main.tsx",
+  "styles": "./dist/styles.css",
+  "main": "./dist/index.js",
+  "name": "geodata",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "vite -c ../vite.config.mjs",
+    "test": "node ../../../../../node_modules/.bin/jest -c jest.config.cjs",
+    "typecheck": "node ../../../../../node_modules/.bin/tsc --project tsconfig.json --noEmit"
+  },
+  "visualizations": [
+    {
+      "id": "ri-demo-geodata-markers",
+      "name": "Geo Map",
+      "activationMethod": "renderGeoMapMarkers",
+      "matchCommands": [
+        "GEOSEARCH",
+        "GEORADIUS",
+        "GEORADIUS_RO",
+        "GEORADIUSBYMEMBER",
+        "GEORADIUSBYMEMBER_RO"
+      ],
+      "iconDark": "./dist/geodata_icon_dark.svg",
+      "iconLight": "./dist/geodata_icon_light.svg",
+      "description": "Show geospatial command results as plotted locations",
+      "default": false
+    },
+    {
+      "id": "ri-demo-geodata-heatmap",
+      "name": "Geo Heatmap",
+      "activationMethod": "renderGeoMapHeatmap",
+      "matchCommands": [
+        "GEOSEARCH",
+        "GEORADIUS",
+        "GEORADIUS_RO",
+        "GEORADIUSBYMEMBER",
+        "GEORADIUSBYMEMBER_RO"
+      ],
+      "iconDark": "./dist/geodata_heatmap_icon_dark.svg",
+      "iconLight": "./dist/geodata_heatmap_icon_light.svg",
+      "description": "Show geospatial command result density",
+      "default": false
+    },
+    {
+      "id": "ri-geodata-inspector",
+      "name": "Geo Inspector",
+      "activationMethod": "renderGeoInspector",
+      "matchCommands": [
+        "GEOADD",
+        "GEODIST",
+        "GEOHASH",
+        "GEOPOS",
+        "GEORADIUS",
+        "GEORADIUS_RO",
+        "GEORADIUSBYMEMBER",
+        "GEORADIUSBYMEMBER_RO",
+        "GEOSEARCH",
+        "GEOSEARCHSTORE"
+      ],
+      "iconDark": "./dist/geodata_inspector_icon_dark.svg",
+      "iconLight": "./dist/geodata_inspector_icon_light.svg",
+      "description": "Inspect Redis geospatial command inputs and results",
+      "default": false
+    }
+  ],
+  "devDependencies": {
+    "@types/leaflet": "^1.9.3",
+    "@types/leaflet.markercluster": "^1.5.6",
+    "vite": "file:../node_modules/vite"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4",
+    "leaflet.heat": "^0.2.0",
+    "leaflet.markercluster": "^1.5.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "resolutions": {
+    "**/semver": "^7.5.2"
+  }
+}

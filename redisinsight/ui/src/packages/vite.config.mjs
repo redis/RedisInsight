@@ -14,6 +14,7 @@ const riPlugins = [
   { name: 'redisgraph', entry: 'src/main.tsx' },
   { name: 'redistimeseries-app', entry: 'src/main.tsx' },
   { name: 'ri-explain', entry: 'src/main.tsx' },
+  { name: 'geodata', entry: 'src/main.tsx' },
 ];
 
 /**
@@ -101,6 +102,7 @@ export default defineConfig({
               '/App.scss',
               '/packages/clients-list/src/styles/styles.scss',
               '/packages/redisearch/src/styles/styles.scss',
+              '/packages/geodata/src/styles/styles.scss',
             ];
             if (skipFiles.every((file) => !filename.endsWith(file))) {
               return `
