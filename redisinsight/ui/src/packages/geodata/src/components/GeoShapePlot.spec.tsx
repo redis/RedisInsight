@@ -28,11 +28,19 @@ const mockShapeLayer = {
   bindPopup: mockShapeBindPopup,
 }
 
+const mockTileLayerAddTo = jest.fn()
+const mockTileLayerOn = jest.fn()
+const mockTileLayer = {
+  addTo: mockTileLayerAddTo,
+  on: mockTileLayerOn,
+}
+
 const mockLeaflet = {
   circleMarker: jest.fn(() => mockShapeLayer),
   latLngBounds: jest.fn(() => mockBounds),
   map: jest.fn(() => mockMap),
   polygon: jest.fn(() => mockShapeLayer),
+  tileLayer: jest.fn(() => mockTileLayer),
 }
 
 jest.mock('leaflet', () => ({
@@ -95,6 +103,15 @@ describe('GeoShapePlot', () => {
       screen.getByRole('img', { name: 'Leaflet geospatial shape plot' }),
     ).toBeInTheDocument()
     expect(mockLeaflet.map).toHaveBeenCalled()
+    expect(mockLeaflet.tileLayer).toHaveBeenCalledWith(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      expect.objectContaining({
+        attribution: 'OpenStreetMap contributors',
+        maxZoom: 19,
+      }),
+    )
+    expect(mockTileLayerAddTo).toHaveBeenCalledWith(mockMap)
+    expect(screen.queryByText('Map tiles disabled')).not.toBeInTheDocument()
     expect(mockLeaflet.polygon).toHaveBeenCalledWith(
       [[[1, 1], [3, 1], [3, 3], [1, 1]]],
       expect.objectContaining({ fillOpacity: 0.16 }),

@@ -108,15 +108,14 @@ describe('Geodata App', () => {
     expect(document.querySelector('img')).not.toBeInTheDocument()
   })
 
-  it('does not include external map tile providers by default', () => {
+  it('enables OpenStreetMap tiles by default', () => {
     renderComponent(
       'GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 300 km WITHCOORD',
       [['Palermo', ['13.361389', '38.115556']]],
       GeodataMode.Markers,
     )
 
-    expect(document.body.textContent).not.toContain('tile.openstreetmap.org')
-    expect(document.body.textContent).toContain('Map tiles disabled')
+    expect(document.body.textContent).not.toContain('Map tiles disabled')
   })
 
   it('renders map rows with distance and hash columns', () => {
@@ -169,7 +168,7 @@ describe('Geodata App', () => {
     expect(screen.getByText('RQE Geo Map')).toBeInTheDocument()
     expect(screen.getByRole('cell', { name: 'Paris' })).toBeInTheDocument()
     expect(screen.getByRole('cell', { name: '2.34' })).toBeInTheDocument()
-    expect(screen.getByText('Map tiles disabled')).toBeInTheDocument()
+    expect(screen.queryByText('Map tiles disabled')).not.toBeInTheDocument()
   })
 
   it('renders Redis Query Engine GEO points on a heatmap', () => {

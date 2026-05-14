@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from 'react'
 import 'leaflet.heat'
 import 'leaflet.markercluster'
 
-import { DISTANCE_COLORS } from '../constants'
+import { DEFAULT_GEO_CONFIG, DISTANCE_COLORS } from '../constants'
 import { GeoResult, ParsedGeoCommand } from '../types'
 
 interface GeoPlotProps {
@@ -157,8 +157,13 @@ const addHeatmap = (map: L.Map, results: GeoResult[]): void => {
   ).addTo(map)
 }
 
+const tileConfig = DEFAULT_GEO_CONFIG.tiles
+
 export const GeoPlot = ({ mode, results, command }: GeoPlotProps) => {
   const mapRef = useRef<HTMLDivElement>(null)
+  const [tileNotice, setTileNotice] = React.useState<string | null>(
+    tileConfig.enabled ? null : 'Map tiles disabled',
+  )
   const maxDistance = Math.max(
     ...results.map(({ distance = 0 }) => distance),
     0,
@@ -170,11 +175,21 @@ export const GeoPlot = ({ mode, results, command }: GeoPlotProps) => {
     }
 
     const map = L.map(mapRef.current, {
-      attributionControl: false,
+      attributionControl: tileConfig.enabled,
       zoomControl: true,
       preferCanvas: true,
     })
     const bounds = getBounds(results)
+
+    setTileNotice(tileConfig.enabled ? null : 'Map tiles disabled')
+    if (tileConfig.enabled && tileConfig.urlTemplate) {
+      const tileLayer = L.tileLayer(tileConfig.urlTemplate, {
+        attribution: tileConfig.attribution,
+        maxZoom: tileConfig.maxZoom,
+      })
+      tileLayer.on('tileerror', () => setTileNotice('Map tiles unavailable'))
+      tileLayer.addTo(map)
+    }
 
     addSearchShape(map, command, bounds)
     if (mode === 'heatmap') {
@@ -195,7 +210,7 @@ export const GeoPlot = ({ mode, results, command }: GeoPlotProps) => {
       className="geodata-plot-panel"
       aria-label={mode === 'markers' ? 'Geo Map' : 'Geo Heatmap'}
     >
-      <div className="geodata-offline-note">Map tiles disabled</div>
+      {tileNotice && <div className="geodata-offline-note">{tileNotice}</div>}
       <div
         ref={mapRef}
         className="geodata-plot"

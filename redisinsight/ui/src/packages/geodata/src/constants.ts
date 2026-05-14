@@ -5,9 +5,10 @@ export const MAP_WITHCOORD_ERROR =
 
 export const DEFAULT_GEO_CONFIG: GeoConfig = {
   tiles: {
-    enabled: false,
-    urlTemplate: '',
-    attribution: '',
+    enabled: true,
+    urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attribution: 'OpenStreetMap contributors',
+    maxZoom: 19,
   },
   limits: {
     maxMapPoints: 5000,
