@@ -1,7 +1,7 @@
 import * as L from 'leaflet'
 import React, { useEffect, useRef } from 'react'
 
-import { DEFAULT_GEO_CONFIG } from '../constants'
+import { DEFAULT_GEO_CONFIG, MAP_COLORS } from '../constants'
 import { GeoQueryOverlay, GeoShapeGeometry, GeoShapeResult } from '../types'
 
 interface GeoShapePlotProps {
@@ -41,9 +41,9 @@ const addGeometry = (
   if (geometry.type === 'point') {
     L.circleMarker([geometry.lat, geometry.lon], {
       radius: 7,
-      color: '#ffffff',
+      color: MAP_COLORS.stroke,
       weight: 1,
-      fillColor: options.color || '#00a382',
+      fillColor: options.color || MAP_COLORS.primary,
       fillOpacity: 0.9,
     })
       .bindPopup(createPopup(name, field))
@@ -93,8 +93,8 @@ export const GeoShapePlot = ({ shapes, overlay }: GeoShapePlotProps) => {
 
     shapes.forEach((shape) => {
       addGeometry(map, shape.geometry, shape.name, shape.field, {
-        color: '#00a382',
-        fillColor: '#00a382',
+        color: MAP_COLORS.primary,
+        fillColor: MAP_COLORS.primary,
         fillOpacity: 0.16,
         weight: 2,
       })
@@ -102,14 +102,22 @@ export const GeoShapePlot = ({ shapes, overlay }: GeoShapePlotProps) => {
     })
 
     if (overlay?.type === 'shape') {
-      addGeometry(map, overlay.geometry, `${overlay.operation} query`, overlay.field, {
-        color: '#a00a6b',
-        fillColor: '#a00a6b',
-        fillOpacity: 0.08,
-        weight: 1,
-        dashArray: '4 4',
-      })
-      getGeometryBounds(overlay.geometry).forEach((point) => bounds.extend(point))
+      addGeometry(
+        map,
+        overlay.geometry,
+        `${overlay.operation} query`,
+        overlay.field,
+        {
+          color: MAP_COLORS.query,
+          fillColor: MAP_COLORS.query,
+          fillOpacity: 0.08,
+          weight: 1,
+          dashArray: '4 4',
+        },
+      )
+      getGeometryBounds(overlay.geometry).forEach((point) =>
+        bounds.extend(point),
+      )
     }
 
     if (bounds.isValid()) {

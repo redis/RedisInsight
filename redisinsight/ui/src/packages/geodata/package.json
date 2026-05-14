@@ -20,7 +20,7 @@
   },
   "visualizations": [
     {
-      "id": "ri-demo-geodata-markers",
+      "id": "ri-geodata-map",
       "name": "Geo Map",
       "activationMethod": "renderGeoMapMarkers",
       "matchCommands": [
@@ -36,7 +36,7 @@
       "default": true
     },
     {
-      "id": "ri-demo-geodata-heatmap",
+      "id": "ri-geodata-heatmap",
       "name": "Geo Heatmap",
       "activationMethod": "renderGeoMapHeatmap",
       "matchCommands": [
