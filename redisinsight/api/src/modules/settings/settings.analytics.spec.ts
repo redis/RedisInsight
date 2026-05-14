@@ -132,6 +132,7 @@ describe('SettingsAnalytics', () => {
   describe('sendSettingsUpdatedEvent', () => {
     const defaultSettings: GetAppSettingsResponse = {
       acceptTermsAndConditionsOverwritten: false,
+      skipConfirmationsForNonProduction: false,
       agreements: null,
       scanThreshold: 10000,
       batchSize: 5,
@@ -198,6 +199,41 @@ describe('SettingsAnalytics', () => {
         mockSessionMetadata,
         { ...defaultSettings, scanThreshold: 10000 },
         undefined,
+      );
+
+      expect(sendEventMethod).not.toHaveBeenCalled();
+    });
+    it('should emit [SETTINGS_SKIP_CONFIRMATIONS_NON_PROD_TOGGLED] when enabled', async () => {
+      service.sendSettingsUpdatedEvent(
+        mockSessionMetadata,
+        { ...defaultSettings, skipConfirmationsForNonProduction: true },
+        { ...defaultSettings, skipConfirmationsForNonProduction: false },
+      );
+
+      expect(sendEventMethod).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        TelemetryEvents.SettingsSkipConfirmationsNonProdToggled,
+        { newValue: true },
+      );
+    });
+    it('should emit [SETTINGS_SKIP_CONFIRMATIONS_NON_PROD_TOGGLED] when disabled', async () => {
+      service.sendSettingsUpdatedEvent(
+        mockSessionMetadata,
+        { ...defaultSettings, skipConfirmationsForNonProduction: false },
+        { ...defaultSettings, skipConfirmationsForNonProduction: true },
+      );
+
+      expect(sendEventMethod).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        TelemetryEvents.SettingsSkipConfirmationsNonProdToggled,
+        { newValue: false },
+      );
+    });
+    it('should not emit [SETTINGS_SKIP_CONFIRMATIONS_NON_PROD_TOGGLED] for the same value', async () => {
+      service.sendSettingsUpdatedEvent(
+        mockSessionMetadata,
+        { ...defaultSettings, skipConfirmationsForNonProduction: true },
+        { ...defaultSettings, skipConfirmationsForNonProduction: true },
       );
 
       expect(sendEventMethod).not.toHaveBeenCalled();

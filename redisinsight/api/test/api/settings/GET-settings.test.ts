@@ -25,6 +25,7 @@ const responseSchema = Joi.object()
     dateFormat: Joi.string().allow(null),
     timezone: Joi.string().allow(null),
     acceptTermsAndConditionsOverwritten: Joi.bool().required(),
+    skipConfirmationsForNonProduction: Joi.bool().required(),
     agreements: Joi.object()
       .keys({
         version: Joi.string().required(),

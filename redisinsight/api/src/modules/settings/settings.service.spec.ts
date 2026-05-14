@@ -117,6 +117,7 @@ describe('SettingsService', () => {
         timezone: null,
         agreements: null,
         acceptTermsAndConditionsOverwritten: false,
+        skipConfirmationsForNonProduction: false,
       });
 
       expect(eventEmitter.emit).not.toHaveBeenCalled();
@@ -131,6 +132,7 @@ describe('SettingsService', () => {
       expect(result).toEqual({
         ...mockSettings.data,
         acceptTermsAndConditionsOverwritten: false,
+        skipConfirmationsForNonProduction: false,
         agreements: {
           version: mockAgreements.version,
           ...mockAgreements.data,
@@ -251,6 +253,25 @@ describe('SettingsService', () => {
 
       // not first run so shouldn't run database discovery
       expect(databaseDiscoveryService.discover).not.toHaveBeenCalled();
+    });
+    it('should persist skipConfirmationsForNonProduction toggle', async () => {
+      const dto: UpdateSettingsDto = {
+        skipConfirmationsForNonProduction: true,
+      };
+
+      await service.updateAppSettings(mockSessionMetadata, dto);
+
+      expect(settingsRepository.update).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        {
+          ...mockSettings,
+          data: {
+            ...mockSettings.data,
+            skipConfirmationsForNonProduction: true,
+          },
+        },
+      );
+      expect(analyticsService.sendSettingsUpdatedEvent).toHaveBeenCalled();
     });
     it('should update agreements only', async () => {
       const dto: UpdateSettingsDto = {
