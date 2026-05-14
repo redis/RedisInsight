@@ -105,6 +105,7 @@ All detailed development standards are maintained in `.ai/rules/`:
 
 ### ✅ Always Do
 
+- Ensure the current branch name follows `.ai/skills/branches/SKILL.md` before opening a PR; rename it if it doesn't
 - Write to `src/` and `tests/` directories
 - Run `yarn lint` and `yarn test` before commits
 - Follow naming conventions (camelCase, PascalCase, UPPER_SNAKE_CASE)
