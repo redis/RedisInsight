@@ -14,9 +14,9 @@ The map views require `WITHCOORD` in command output. The inspector can render sc
 
 ## Tile Policy
 
-The plugin uses Leaflet for local rendering, but does not create an external tile layer by default. Points, search shapes, and heatmaps render without network requests to OpenStreetMap or another map provider.
+The plugin uses Leaflet with an OpenStreetMap tile layer by default so points, search shapes, and heatmaps render on top of a real basemap.
 
-If a tile provider is added later, it should be configurable and approved by maintainers before shipping.
+The tile provider is declared in `public/config.json` and mirrored in the runtime default config. For an official upstream PR, maintainers may still require this to be disabled or replaced by a Redis-approved tile backend.
 
 ## Development
 

@@ -183,6 +183,7 @@ export interface GeoConfig {
     enabled: boolean
     urlTemplate: string
     attribution: string
+    maxZoom?: number
   }
   limits: {
     maxMapPoints: number
