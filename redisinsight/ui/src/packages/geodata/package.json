@@ -33,7 +33,7 @@
       "iconDark": "./dist/geodata_icon_dark.svg",
       "iconLight": "./dist/geodata_icon_light.svg",
       "description": "Show geospatial command results as plotted locations",
-      "default": false
+      "default": true
     },
     {
       "id": "ri-demo-geodata-heatmap",
@@ -70,7 +70,7 @@
       "iconDark": "./dist/geodata_inspector_icon_dark.svg",
       "iconLight": "./dist/geodata_inspector_icon_light.svg",
       "description": "Inspect Redis geospatial command inputs and results",
-      "default": false
+      "default": true
     }
   ],
   "devDependencies": {

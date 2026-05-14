@@ -10,6 +10,8 @@ Internal RedisInsight Workbench plugin for Redis GEO commands.
 
 The map views require `WITHCOORD` in command output. The inspector can render scalar, integer, hash, position, and search-store responses without coordinates.
 
+`Geo Map` is the default visualization for coordinate search commands. `Geo Inspector` is the default for GEO commands that do not have coordinate rows.
+
 ## Tile Policy
 
 The plugin uses Leaflet for local rendering, but does not create an external tile layer by default. Points, search shapes, and heatmaps render without network requests to OpenStreetMap or another map provider.
@@ -23,4 +25,3 @@ yarn --cwd redisinsight/ui/src/packages/geodata
 yarn --cwd redisinsight/ui/src/packages/geodata test
 yarn --cwd redisinsight/ui/src/packages build
 ```
-
