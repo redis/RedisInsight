@@ -31,11 +31,13 @@ describe('VectorSetElementList', () => {
   const defaultProps = {
     onRemoveKey: jest.fn(),
     onViewElement: jest.fn(),
+    onSearchByElement: jest.fn(),
   }
 
   beforeEach(() => {
     jest.mocked(deleteVectorSetElements).mockClear()
     defaultProps.onViewElement.mockClear()
+    defaultProps.onSearchByElement.mockClear()
   })
 
   it('should render', () => {
@@ -67,6 +69,21 @@ describe('VectorSetElementList', () => {
     render(<VectorSetElementList {...defaultProps} />)
     fireEvent.click(screen.getAllByRole('button', { name: 'View' })[0])
     expect(defaultProps.onViewElement).toHaveBeenCalledTimes(1)
+  })
+
+  it('should render a "Find similar elements" button for each element row', () => {
+    render(<VectorSetElementList {...defaultProps} />)
+    expect(
+      screen.getAllByRole('button', { name: 'Find similar elements' }),
+    ).toHaveLength(3)
+  })
+
+  it('should call onSearchByElement when the search-similar button is clicked', () => {
+    render(<VectorSetElementList {...defaultProps} />)
+    fireEvent.click(
+      screen.getAllByRole('button', { name: 'Find similar elements' })[0],
+    )
+    expect(defaultProps.onSearchByElement).toHaveBeenCalledTimes(1)
   })
 
   it('should open delete confirmation after clicking remove on a row', () => {

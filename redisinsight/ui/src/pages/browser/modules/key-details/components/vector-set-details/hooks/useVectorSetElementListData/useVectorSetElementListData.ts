@@ -33,6 +33,7 @@ const MIN_COLUMN_WIDTH = 100
 export const useVectorSetElementListData = ({
   onRemoveKey,
   onViewElement,
+  onSearchByElement,
 }: UseVectorSetElementListDataParams): UseVectorSetElementListDataResult => {
   const { loading } = useSelector(vectorSetSelector)
   const { elements, nextCursor, total, isPaginationSupported } = useSelector(
@@ -98,6 +99,7 @@ export const useVectorSetElementListData = ({
       viewFormat,
       elementDeleteConfig: deleteConfig,
       onViewElement,
+      onSearchByElement,
     }
     return getVectorSetColumns(listConfig)
   }, [
@@ -109,6 +111,7 @@ export const useVectorSetElementListData = ({
     closePopover,
     showPopover,
     onViewElement,
+    onSearchByElement,
   ])
 
   const tableMinWidth = useMemo(
