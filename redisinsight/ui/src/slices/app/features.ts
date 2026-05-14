@@ -207,6 +207,9 @@ export const appFeatureFlagsSelector = (state: RootState) =>
   state.app.features.featureFlags
 export const appFeatureFlagsFeaturesSelector = (state: RootState) =>
   state.app.features.featureFlags.features
+export const appFeatureFlagDevProdModeSelector = (state: RootState): boolean =>
+  state.app.features.featureFlags.features[FeatureFlags.devProdMode]?.flag ??
+  false
 
 export const isDevelopment = riConfig.app.env === 'development'
 

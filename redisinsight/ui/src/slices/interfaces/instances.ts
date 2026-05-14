@@ -351,6 +351,7 @@ export interface InitialStateInstances {
     data: Nullable<ImportDatabasesData>
   }
   shownColumns: DatabaseListColumn[]
+  dangerousCommands: string[]
 }
 
 export interface ErrorImportResult {
