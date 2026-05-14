@@ -5,6 +5,7 @@ export enum TelemetryEvents {
   AnalyticsPermission = 'ANALYTICS_PERMISSION',
   SettingsScanThresholdChanged = 'SETTINGS_KEYS_TO_SCAN_CHANGED',
   SettingsWorkbenchPipelineChanged = 'SETTINGS_WORKBENCH_PIPELINE_CHANGED',
+  SettingsSkipConfirmationsNonProdToggled = 'SETTINGS_SKIP_CONFIRMATIONS_NON_PROD_TOGGLED',
   DatabaseConnectedClientList = 'DATABASE_CONNECTED_CLIENT_LIST',
 
   // Events for redis instances

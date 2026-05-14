@@ -27,6 +27,7 @@ const APP_DEFAULT_SETTINGS = {
   timezone: null,
   agreements: null,
   acceptTermsAndConditionsOverwritten: false,
+  skipConfirmationsForNonProduction: false,
 };
 const TEST_LIBRARY_NAME = 'lib';
 const TEST_ANALYTICS_PAGE = 'Settings';
