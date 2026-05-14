@@ -271,6 +271,7 @@ const instancesSlice = createSlice({
     // reset connected instance
     resetConnectedInstance: (state) => {
       state.connectedInstance = initialState.connectedInstance
+      state.dangerousCommands = initialState.dangerousCommands
     },
 
     importInstancesFromFile: (state) => {

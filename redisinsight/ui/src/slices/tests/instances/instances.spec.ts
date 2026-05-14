@@ -959,6 +959,25 @@ describe('instances slice', () => {
     })
   })
 
+  describe('resetConnectedInstance', () => {
+    it('also clears dangerousCommands so they do not leak across connections', () => {
+      // Arrange
+      const seeded = reducer(
+        initialState,
+        setConnectedInstanceDangerousCommands(['FLUSHDB']),
+      )
+
+      // Act
+      const nextState = reducer(seeded, resetConnectedInstance())
+
+      // Assert
+      const rootState = Object.assign(initialStateDefault, {
+        connections: { instances: nextState },
+      })
+      expect(connectedInstanceDangerousCommandsSelector(rootState)).toEqual([])
+    })
+  })
+
   describe('connectedInstanceIsProductionSelector', () => {
     it('returns isProduction from connected instance', () => {
       const nextState = {
