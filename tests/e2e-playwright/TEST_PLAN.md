@@ -477,6 +477,9 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Confirm plugins display module-specific icons and metadata |
 | 🔲 | main | Switch between views (Table ↔ Text) and confirm format updates instantly |
 | 🔲 | main | Confirm TimeSeries visualization displays correct axes, values, and units |
+| ✅ | main | Run GEOSEARCH and confirm Geo Map visualization loads without external tiles |
+| ✅ | main | Switch GEOSEARCH output between Geo Heatmap and Geo Map |
+| ✅ | main | Run GEODIST and confirm Geo Inspector visualization loads |
 
 ### 3.3 Tutorials
 | Status | Group | Test Case |
@@ -1145,4 +1148,3 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 |--------|-------|-----------|
 | 🔲 | main | Display GitHub repository link |
 | 🔲 | main | GitHub link opens correct repository URL |
-
