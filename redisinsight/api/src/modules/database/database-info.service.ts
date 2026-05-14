@@ -8,6 +8,7 @@ import { RECOMMENDATION_NAMES } from 'src/constants';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { RedisClient } from 'src/modules/redis/client';
 import { DatabaseInfoProvider } from 'src/modules/database/providers/database-info.provider';
+import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import { DatabaseService } from './database.service';
 import { DatabaseOverviewKeyspace } from './constants/overview';
 
@@ -21,7 +22,26 @@ export class DatabaseInfoService {
     private readonly databaseInfoProvider: DatabaseInfoProvider,
     private readonly recommendationService: DatabaseRecommendationService,
     private readonly databaseService: DatabaseService,
+    private readonly dangerousCommandsProvider: DangerousCommandsProvider,
   ) {}
+
+  /**
+   * Get the list of "dangerous" commands for the connected Redis instance.
+   * Sourced from `ACL CAT dangerous`. Cached per connection.
+   */
+  public async getDangerousCommands(
+    clientMetadata: ClientMetadata,
+  ): Promise<string[]> {
+    this.logger.debug(
+      `Getting dangerous commands for: ${clientMetadata.databaseId}`,
+      clientMetadata,
+    );
+
+    const client: RedisClient =
+      await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+
+    return this.dangerousCommandsProvider.getDangerousCommands(client);
+  }
 
   /**
    * Get database general info

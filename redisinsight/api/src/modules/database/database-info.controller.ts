@@ -79,6 +79,33 @@ export class DatabaseInfoController {
     return this.databaseInfoService.getOverview(clientMetadata, keyspace);
   }
 
+  @Get(':id/dangerous-commands')
+  @UseInterceptors(new TimeoutInterceptor())
+  @ApiEndpoint({
+    description:
+      'Get the list of "dangerous" commands for the connected Redis instance (via ACL CAT dangerous). Returns an empty array on Redis versions that do not support ACL.',
+    statusCode: 200,
+    responses: [
+      {
+        status: 200,
+        description: 'Array of upper-case dangerous command names',
+        schema: {
+          type: 'array',
+          items: { type: 'string' },
+        },
+      },
+    ],
+  })
+  async getDangerousCommands(
+    @ClientMetadataParam({
+      databaseIdParam: 'id',
+      ignoreDbIndex: true,
+    })
+    clientMetadata: ClientMetadata,
+  ): Promise<string[]> {
+    return this.databaseInfoService.getDangerousCommands(clientMetadata);
+  }
+
   @Get(':id/db/:index')
   @UseInterceptors(new TimeoutInterceptor())
   @ApiEndpoint({

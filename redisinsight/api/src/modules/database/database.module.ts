@@ -18,6 +18,7 @@ import { DatabaseOverviewProvider } from 'src/modules/database/providers/databas
 import { StackDatabasesRepository } from 'src/modules/database/repositories/stack.databases.repository';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { DatabaseInfoProvider } from './providers/database-info.provider';
+import { DangerousCommandsProvider } from './providers/dangerous-commands.provider';
 import { ConnectionMiddleware } from './middleware/connection.middleware';
 
 const SERVER_CONFIG = config.get('server') as Config['server'];
@@ -42,6 +43,7 @@ export class DatabaseModule {
         DatabaseAnalytics,
         DatabaseFactory,
         DatabaseInfoService,
+        DangerousCommandsProvider,
         {
           provide: DatabaseOverviewProvider,
           useClass: databaseOverviewProvider,
