@@ -55,9 +55,6 @@ describe('GET /plugins', () => {
     {
       name: 'Should get plugin commands whitelist',
       responseSchema,
-      checkFn: ({ body }) => {
-        console.log('body', body);
-      },
     },
   ].map(mainCheckFn);
 });
