@@ -47,7 +47,7 @@ test.describe('Workbench > Geodata plugin', () => {
     await expect(workbenchPage.resultsPanel.pluginResult).toBeVisible();
     await expect(frame.getByRole('heading', { name: 'Geo Map' })).toBeVisible();
     await expect(frame.getByRole('img', { name: 'Leaflet geospatial plot' })).toBeVisible();
-    await expect(frame.getByText('Map tiles disabled')).toBeVisible();
+    await expect(frame.getByText('Map tiles disabled')).not.toBeVisible();
   });
 
   test('switches coordinate search results to Geo Heatmap', async ({ workbenchPage }) => {
