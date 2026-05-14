@@ -4,7 +4,12 @@ import React, { useEffect, useRef } from 'react'
 import 'leaflet.heat'
 import 'leaflet.markercluster'
 
-import { DEFAULT_GEO_CONFIG, DISTANCE_COLORS } from '../constants'
+import {
+  DEFAULT_GEO_CONFIG,
+  DISTANCE_COLORS,
+  HEAT_COLORS,
+  MAP_COLORS,
+} from '../constants'
 import { GeoResult, ParsedGeoCommand } from '../types'
 
 interface GeoPlotProps {
@@ -68,8 +73,8 @@ const addSearchShape = (
   if (command.searchType === 'radius' && command.radius !== undefined) {
     L.circle(center, {
       radius: command.radius * 1000,
-      color: '#00a382',
-      fillColor: '#00a382',
+      color: MAP_COLORS.primary,
+      fillColor: MAP_COLORS.primary,
       fillOpacity: 0.08,
       weight: 1,
       dashArray: '4 4',
@@ -90,8 +95,8 @@ const addSearchShape = (
         [command.centerLat + latDelta / 2, command.centerLon + lonDelta / 2],
       ],
       {
-        color: '#00a382',
-        fillColor: '#00a382',
+        color: MAP_COLORS.primary,
+        fillColor: MAP_COLORS.primary,
         fillOpacity: 0.08,
         weight: 1,
         dashArray: '4 4',
@@ -123,7 +128,7 @@ const addMarkers = (
           })
         : L.circleMarker([result.lat, result.lon], {
             radius: 7,
-            color: '#ffffff',
+            color: MAP_COLORS.stroke,
             weight: 1,
             fillColor: color,
             fillOpacity: 0.9,
@@ -148,10 +153,10 @@ const addHeatmap = (map: L.Map, results: GeoResult[]): void => {
       blur: 18,
       minOpacity: 0.28,
       gradient: {
-        0.2: '#008556',
-        0.5: '#00a382',
-        0.75: '#d9822b',
-        1: '#a00a6b',
+        0.2: HEAT_COLORS[0],
+        0.5: HEAT_COLORS[1],
+        0.75: HEAT_COLORS[2],
+        1: HEAT_COLORS[3],
       },
     },
   ).addTo(map)
