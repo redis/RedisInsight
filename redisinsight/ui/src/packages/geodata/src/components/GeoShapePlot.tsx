@@ -1,6 +1,7 @@
 import * as L from 'leaflet'
 import React, { useEffect, useRef } from 'react'
 
+import { DEFAULT_GEO_CONFIG } from '../constants'
 import { GeoQueryOverlay, GeoShapeGeometry, GeoShapeResult } from '../types'
 
 interface GeoShapePlotProps {
@@ -60,8 +61,13 @@ const addGeometry = (
     .addTo(map)
 }
 
+const tileConfig = DEFAULT_GEO_CONFIG.tiles
+
 export const GeoShapePlot = ({ shapes, overlay }: GeoShapePlotProps) => {
   const mapRef = useRef<HTMLDivElement>(null)
+  const [tileNotice, setTileNotice] = React.useState<string | null>(
+    tileConfig.enabled ? null : 'Map tiles disabled',
+  )
 
   useEffect(() => {
     if (!mapRef.current || process.env.NODE_ENV === 'test') {
@@ -69,11 +75,21 @@ export const GeoShapePlot = ({ shapes, overlay }: GeoShapePlotProps) => {
     }
 
     const map = L.map(mapRef.current, {
-      attributionControl: false,
+      attributionControl: tileConfig.enabled,
       zoomControl: true,
       preferCanvas: true,
     })
     const bounds = L.latLngBounds([])
+
+    setTileNotice(tileConfig.enabled ? null : 'Map tiles disabled')
+    if (tileConfig.enabled && tileConfig.urlTemplate) {
+      const tileLayer = L.tileLayer(tileConfig.urlTemplate, {
+        attribution: tileConfig.attribution,
+        maxZoom: tileConfig.maxZoom,
+      })
+      tileLayer.on('tileerror', () => setTileNotice('Map tiles unavailable'))
+      tileLayer.addTo(map)
+    }
 
     shapes.forEach((shape) => {
       addGeometry(map, shape.geometry, shape.name, shape.field, {
@@ -107,7 +123,7 @@ export const GeoShapePlot = ({ shapes, overlay }: GeoShapePlotProps) => {
 
   return (
     <section className="geodata-plot-panel" aria-label="RQE Geo Shape">
-      <div className="geodata-offline-note">Map tiles disabled</div>
+      {tileNotice && <div className="geodata-offline-note">{tileNotice}</div>}
       <div
         ref={mapRef}
         className="geodata-plot"

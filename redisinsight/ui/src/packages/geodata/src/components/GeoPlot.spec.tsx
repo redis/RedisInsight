@@ -34,6 +34,13 @@ const mockMarker = {
   bindPopup: mockBindPopup,
 }
 
+const mockTileLayerAddTo = jest.fn()
+const mockTileLayerOn = jest.fn()
+const mockTileLayer = {
+  addTo: mockTileLayerAddTo,
+  on: mockTileLayerOn,
+}
+
 const mockLeaflet = {
   circle: jest.fn(() => mockShapeLayer),
   circleMarker: jest.fn(() => mockMarker),
@@ -45,6 +52,7 @@ const mockLeaflet = {
   marker: jest.fn(() => mockMarker),
   markerClusterGroup: jest.fn(() => mockMarkerLayer),
   rectangle: jest.fn(() => mockShapeLayer),
+  tileLayer: jest.fn(() => mockTileLayer),
 }
 
 jest.mock('leaflet', () => ({
@@ -115,6 +123,15 @@ describe('GeoPlot', () => {
       screen.getByRole('img', { name: 'Leaflet geospatial plot' }),
     ).toBeInTheDocument()
     expect(mockLeaflet.map).toHaveBeenCalled()
+    expect(mockLeaflet.tileLayer).toHaveBeenCalledWith(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      expect.objectContaining({
+        attribution: 'OpenStreetMap contributors',
+        maxZoom: 19,
+      }),
+    )
+    expect(mockTileLayerAddTo).toHaveBeenCalledWith(mockMap)
+    expect(screen.queryByText('Map tiles disabled')).not.toBeInTheDocument()
     expect(mockLeaflet.latLngBounds).toHaveBeenCalledWith([
       [38.115556, 13.361389],
       [37.502669, 15.087269],
