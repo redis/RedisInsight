@@ -161,6 +161,7 @@ export class KeyList {
    */
   async switchToListView(): Promise<void> {
     await this.listViewButton.click();
+    await this.waitForKeysLoaded();
   }
 
   /**
@@ -168,6 +169,7 @@ export class KeyList {
    */
   async switchToTreeView(): Promise<void> {
     await this.treeViewButton.click();
+    await this.waitForKeysLoaded();
   }
 
   /**
@@ -389,10 +391,18 @@ export class KeyList {
 
   /**
    * Get the tree-view tooltip for a hovered folder.
+   * Retries the hover until the tooltip is visible — a React re-render between
+   * hover and tooltip open silently swallows the mouseenter event (Radix behaviour).
    */
   async namespaceTooltip(folderName: string): Promise<Locator> {
-    await this.hoverFolderNode(folderName);
-    return this.page.getByRole('tooltip').filter({ hasText: folderName });
+    const tooltip = this.page.getByRole('tooltip').filter({ hasText: folderName });
+    await expect
+      .poll(async () => {
+        await this.hoverFolderNode(folderName);
+        return tooltip.isVisible();
+      })
+      .toBe(true);
+    return tooltip;
   }
 
   /**
