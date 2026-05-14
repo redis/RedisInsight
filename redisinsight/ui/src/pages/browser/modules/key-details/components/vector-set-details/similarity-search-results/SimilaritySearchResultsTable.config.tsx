@@ -117,7 +117,3 @@ export const buildSimilarityResultsColumns = (
   similarityColumn,
   ...attributeKeys.map(buildAttributeColumn),
 ]
-
-/** Static-only column list (for call sites that don't thread attribute keys). */
-export const SIMILARITY_RESULTS_COLUMNS: ColumnDef<VectorSetSimilarityMatch>[] =
-  buildSimilarityResultsColumns([])
