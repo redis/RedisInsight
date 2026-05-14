@@ -57,6 +57,7 @@ export enum RedisFeature {
   HashFieldsExpiration = 'HashFieldsExpiration',
   UnlinkCommand = 'UnlinkCommand',
   VRangeCommand = 'VRangeCommand',
+  VsimWithAttribs = 'VsimWithAttribs',
 }
 
 const CLIENT_DATABASE_FIELDS: (keyof Database)[] = ['providerDetails'];
@@ -195,6 +196,14 @@ export abstract class RedisClient extends EventEmitter2 {
           const redisVersion = await this.getRedisVersion();
           // VRANGE command was introduced in Redis 8.4
           return redisVersion && semverCompare('8.4', redisVersion) < 1;
+        } catch (e) {
+          return false;
+        }
+      case RedisFeature.VsimWithAttribs:
+        try {
+          const redisVersion = await this.getRedisVersion();
+          // VSIM WITHATTRIBS option is broken on 8.0.0–8.0.2 and was fixed in 8.0.3
+          return redisVersion && semverCompare('8.0.3', redisVersion) < 1;
         } catch (e) {
           return false;
         }
