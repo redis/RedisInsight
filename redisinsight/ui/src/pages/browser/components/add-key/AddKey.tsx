@@ -15,6 +15,10 @@ import {
   connectedInstanceSelector,
 } from 'uiSrc/slices/instances/instances'
 import {
+  appFeatureFlagsFeaturesSelector,
+  isDevelopment,
+} from 'uiSrc/slices/app/features'
+import {
   sendEventTelemetry,
   TelemetryEvent,
   getBasedOnViewTypeEvent,
@@ -62,6 +66,7 @@ const AddKey = (props: Props) => {
     connectedInstanceSelector,
   )
   const { version } = useSelector(connectedInstanceOverviewSelector)
+  const features = useSelector(appFeatureFlagsFeaturesSelector)
   const { viewType } = useSelector(keysSelector)
 
   useEffect(
@@ -74,8 +79,19 @@ const AddKey = (props: Props) => {
   )
 
   const options = ADD_KEY_TYPE_OPTIONS.filter(
-    ({ minVersion }) =>
-      !minVersion || isVersionHigherOrEquals(version, minVersion),
+    ({ minVersion, typeFeatureFlag }) => {
+      if (minVersion && !isVersionHigherOrEquals(version, minVersion)) {
+        return false
+      }
+      if (
+        typeFeatureFlag &&
+        !isDevelopment &&
+        !features[typeFeatureFlag]?.flag
+      ) {
+        return false
+      }
+      return true
+    },
   ).map((item) => {
     const { value, color, text } = item
     return {

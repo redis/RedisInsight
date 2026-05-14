@@ -21,6 +21,7 @@ import {
 import * as appFeaturesSlice from 'uiSrc/slices/app/features'
 import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
 import { setSocialDialogState } from 'uiSrc/slices/oauth/cloud'
+import { FeatureFlags } from 'uiSrc/constants'
 import AddKey from './AddKey'
 
 const handleAddKeyPanelMock = () => {}
@@ -36,6 +37,13 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
     version: '8.0.0',
   }),
 }))
+
+const mockVectorSetFlag = (enabled: boolean) =>
+  jest
+    .spyOn(appFeaturesSlice, 'appFeatureFlagsFeaturesSelector')
+    .mockReturnValue({
+      [FeatureFlags.devVectorSet]: { flag: enabled },
+    })
 
 let store: typeof mockedStore
 beforeEach(() => {
@@ -129,10 +137,11 @@ describe('AddKey', () => {
     ])
   })
 
-  it('should show Vector Set option when redis version >= 8.0', async () => {
+  it('should show Vector Set option when redis version >= 8.0 and vector set flag is enabled', async () => {
     ;(connectedInstanceOverviewSelector as jest.Mock).mockReturnValueOnce({
       version: '8.0.0',
     })
+    mockVectorSetFlag(true)
 
     render(
       <AddKey
@@ -149,6 +158,24 @@ describe('AddKey', () => {
     ;(connectedInstanceOverviewSelector as jest.Mock).mockReturnValueOnce({
       version: '7.4.0',
     })
+    mockVectorSetFlag(true)
+
+    render(
+      <AddKey
+        onAddKeyPanel={handleAddKeyPanelMock}
+        onClosePanel={handleCloseKeyMock}
+      />,
+    )
+
+    await userEvent.click(screen.getByTestId('select-key-type'))
+    expect(screen.queryByText('Vector Set')).not.toBeInTheDocument()
+  })
+
+  it('should hide Vector Set option when vector set flag is disabled', async () => {
+    ;(connectedInstanceOverviewSelector as jest.Mock).mockReturnValueOnce({
+      version: '8.0.0',
+    })
+    mockVectorSetFlag(false)
 
     render(
       <AddKey
