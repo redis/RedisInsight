@@ -1,7 +1,7 @@
-const path = require('path')
+const path = require('path');
 
-const rootDir = path.resolve(__dirname, '../../../../..')
-const rootConfig = require(path.join(rootDir, 'jest.config.cjs'))
+const rootDir = path.resolve(__dirname, '../../../../..');
+const rootConfig = require(path.join(rootDir, 'jest.config.cjs'));
 
 module.exports = {
   ...rootConfig,
@@ -18,7 +18,14 @@ module.exports = {
     '<rootDir>/tests',
   ],
   coveragePathIgnorePatterns: ['/node_modules/'],
-  coverageThreshold: undefined,
+  coverageThreshold: {
+    global: {
+      branches: 90,
+      functions: 90,
+      lines: 90,
+      statements: 90,
+    },
+  },
   reporters: ['default'],
   roots: ['<rootDir>/redisinsight/ui/src/packages/geodata/src'],
   setupFilesAfterEnv: [
@@ -28,4 +35,4 @@ module.exports = {
     '<rootDir>/redisinsight/ui/src/packages/geodata/src/**/*.spec.ts',
     '<rootDir>/redisinsight/ui/src/packages/geodata/src/**/*.spec.tsx',
   ],
-}
+};

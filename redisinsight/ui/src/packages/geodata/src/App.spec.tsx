@@ -25,7 +25,9 @@ describe('Geodata App', () => {
     )
 
     expect(
-      screen.getByText('Geo map visualizations require WITHCOORD in the Redis command.'),
+      screen.getByText(
+        'Geo map visualizations require WITHCOORD in the Redis command.',
+      ),
     ).toBeInTheDocument()
   })
 
@@ -36,15 +38,42 @@ describe('Geodata App', () => {
     expect(screen.getByText('166.2742 km')).toBeInTheDocument()
   })
 
+  it('renders command failures', () => {
+    render(
+      <App
+        command="GEODIST Sicily Palermo Catania km"
+        data={[{ status: 'fail', response: 'ERR failed' }]}
+        mode={GeodataMode.Inspector}
+      />,
+    )
+
+    expect(screen.getByText('Command failed')).toBeInTheDocument()
+    expect(screen.getByText('"ERR failed"')).toBeInTheDocument()
+  })
+
+  it('renders default empty plugin state', () => {
+    render(<App mode={GeodataMode.Inspector} />)
+
+    expect(screen.getByText('No command provided')).toBeInTheDocument()
+    expect(screen.getByText('unknown')).toBeInTheDocument()
+    expect(screen.getByText('Missing Redis command.')).toBeInTheDocument()
+  })
+
   it('renders Geo Inspector for GEOHASH', () => {
-    renderComponent('GEOHASH Sicily Palermo Catania', ['sqc8b49rny0', 'sqdtr74hyu0'])
+    renderComponent('GEOHASH Sicily Palermo Catania', [
+      'sqc8b49rny0',
+      'sqdtr74hyu0',
+    ])
 
     expect(screen.getByText('Palermo')).toBeInTheDocument()
     expect(screen.getByText('sqc8b49rny0')).toBeInTheDocument()
   })
 
   it('renders Geo Inspector for GEOPOS with missing members', () => {
-    renderComponent('GEOPOS Sicily Palermo Missing', [['13.361389', '38.115556'], null])
+    renderComponent('GEOPOS Sicily Palermo Missing', [
+      ['13.361389', '38.115556'],
+      null,
+    ])
 
     expect(screen.getByText('Palermo')).toBeInTheDocument()
     expect(screen.getByText('Missing')).toBeInTheDocument()
@@ -88,5 +117,45 @@ describe('Geodata App', () => {
 
     expect(document.body.textContent).not.toContain('tile.openstreetmap.org')
     expect(document.body.textContent).toContain('Map tiles disabled')
+  })
+
+  it('renders map rows with distance and hash columns', () => {
+    renderComponent(
+      'GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 300 km WITHDIST WITHHASH WITHCOORD',
+      [['Palermo', '190.4424', 3479447370796909, ['13.361389', '38.115556']]],
+      GeodataMode.Markers,
+    )
+
+    expect(screen.getByRole('cell', { name: '190.4424' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('cell', { name: '3479447370796909' }),
+    ).toBeInTheDocument()
+  })
+
+  it('renders empty heatmap results without a plot', () => {
+    renderComponent(
+      'GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 300 km WITHCOORD',
+      [],
+      GeodataMode.Heatmap,
+    )
+
+    expect(screen.getByText('Geo Heatmap')).toBeInTheDocument()
+    expect(screen.getByText('No geospatial rows returned.')).toBeInTheDocument()
+    expect(
+      screen.queryByLabelText('Leaflet geospatial plot'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('renders unsupported map response errors', () => {
+    renderComponent(
+      'GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 300 km WITHCOORD',
+      'not-array',
+      GeodataMode.Markers,
+    )
+
+    expect(screen.getByText('Cannot render map')).toBeInTheDocument()
+    expect(
+      screen.getByText('Geo command response must be an array.'),
+    ).toBeInTheDocument()
   })
 })
