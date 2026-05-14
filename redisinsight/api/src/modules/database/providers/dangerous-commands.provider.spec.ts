@@ -49,12 +49,43 @@ describe('DangerousCommandsProvider', () => {
       expect(result).toEqual([]);
     });
 
-    it('should return empty array when ACL is not supported', async () => {
+    it('should return empty array and cache it when ACL is not supported (unknown command)', async () => {
       client.call.mockRejectedValueOnce(new Error("ERR unknown command 'ACL'"));
 
-      const result = await service.getDangerousCommands(client);
+      const first = await service.getDangerousCommands(client);
+      const second = await service.getDangerousCommands(client);
 
-      expect(result).toEqual([]);
+      expect(first).toEqual([]);
+      expect(second).toEqual([]);
+      expect(client.call).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return empty array and cache it on NOPERM', async () => {
+      client.call.mockRejectedValueOnce(
+        new Error(
+          "NOPERM this user has no permissions to run the 'acl|cat' command",
+        ),
+      );
+
+      const first = await service.getDangerousCommands(client);
+      const second = await service.getDangerousCommands(client);
+
+      expect(first).toEqual([]);
+      expect(second).toEqual([]);
+      expect(client.call).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return empty array but NOT cache on transient errors', async () => {
+      client.call
+        .mockRejectedValueOnce(new Error('ECONNRESET socket hang up'))
+        .mockResolvedValueOnce(['flushall']);
+
+      const first = await service.getDangerousCommands(client);
+      const second = await service.getDangerousCommands(client);
+
+      expect(first).toEqual([]);
+      expect(second).toEqual(['FLUSHALL']);
+      expect(client.call).toHaveBeenCalledTimes(2);
     });
 
     it('should return empty array when reply is not an array', async () => {
