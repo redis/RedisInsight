@@ -37,6 +37,9 @@ yarn --cwd "${RI_EXPLIAIN_DIR}"
 CLIENTS_LIST_DIR="./redisinsight/ui/src/packages/clients-list"
 yarn --cwd "${CLIENTS_LIST_DIR}"
 
+GEODATA_DIR="./redisinsight/ui/src/packages/geodata"
+yarn --cwd "${GEODATA_DIR}"
+
 # Build all plugins and common libraries
 NODE_OPTIONS=--max_old_space_size=4096 yarn --cwd "${PACKAGES_DIR}" build
 
@@ -76,4 +79,10 @@ fi
 if [ $pluginsOnlyInstall != 1 ]; then
   mkdir -p "${PLUGINS_DIR}/clients-list"
   cp -R "${CLIENTS_LIST_DIR}/dist" "${CLIENTS_LIST_DIR}/package.json" "${PLUGINS_DIR}/clients-list"
+fi
+
+# Copy geodata plugin
+if [ $pluginsOnlyInstall != 1 ]; then
+  mkdir -p "${PLUGINS_DIR}/geodata"
+  cp -R "${GEODATA_DIR}/dist" "${GEODATA_DIR}/package.json" "${PLUGINS_DIR}/geodata"
 fi

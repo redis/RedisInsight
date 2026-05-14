@@ -1,0 +1,11 @@
+{
+  "tiles": {
+    "enabled": false,
+    "urlTemplate": "",
+    "attribution": ""
+  },
+  "limits": {
+    "maxMapPoints": 5000,
+    "maxTableRows": 10000
+  }
+}
