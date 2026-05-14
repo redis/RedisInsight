@@ -9,21 +9,18 @@ description: >-
 
 # TypeScript Configuration
 
-RedisInsight has no root `tsconfig.json`. Config is split per area, each owning its own paths, includes, and consumers. ESLint uses `parserOptions.project: true` to auto-discover the nearest tsconfig for each linted file.
+RedisInsight uses a focused root `tsconfig.json` as a catch-all (stories, configs/, ts-node fallback), plus standalone per-area tsconfigs for everything that has a dedicated build tool or distinct cross-area path needs. ESLint uses `parserOptions.project: true` to auto-discover the nearest tsconfig per file.
 
 ## Layout
 
 | File | Owns | Consumers |
 | - | - | - |
+| `tsconfig.json` (root) | Catch-all for `stories/**` and `configs/**`. Provides `esModuleInterop` + `module: CommonJS` for ts-node, and `uiSrc/*` / `apiClient` paths for stories | ts-node (via `TS_NODE_PROJECT` in build scripts), ESLint for `stories/**`, IDE fallback |
 | `redisinsight/ui/tsconfig.json` | UI source, `uiSrc/*`, `apiClient` paths | Vite (UI build), ESLint UI override, `yarn type-check:ui` |
 | `redisinsight/api/tsconfig.json` | API source, `src/*`, `tests/*` paths | NestJS build, ESLint API override |
-| `redisinsight/desktop/tsconfig.json` | Desktop source. Paths `desktopSrc/*`, `apiSrc/*`, `uiSrc/*`, `apiClient`, `apiClient/*` for TypeScript / IDE intellisense | ESLint for desktop files, TS language server |
-| `configs/tsconfig.json` | Compiler options (`module: CommonJS`, `esModuleInterop`) used by `ts-node` to load the `.ts` webpack configs | `ts-node` via `TS_NODE_PROJECT` set in `build:main` / `build:main:stage` / `build:stage` |
-| `.storybook/tsconfig.json` | Storybook framework files, extends UI tsconfig | Storybook + ESLint |
-| `stories/tsconfig.json` | Story files. Extends UI tsconfig; rewires `uiSrc/*` to resolve from `redisinsight/ui` | Storybook + ESLint |
-| `tests/playwright/tsconfig.json` | New Playwright suite | Playwright runner + ESLint |
-| `tests/e2e/tsconfig.json` | Legacy TestCafe E2E | E2E runner (sub-project with own package.json, eslint-ignored at root) |
-| `tests/e2e-playwright/tsconfig.json` | Older Playwright suite | E2E runner (sub-project, eslint-ignored at root) |
+| `redisinsight/desktop/tsconfig.json` | Desktop source. Cross-area paths `desktopSrc/*`, `apiSrc/*`, `uiSrc/*`, `apiClient`, `apiClient/*` | ESLint for desktop files, TS language server / IDE intellisense |
+| `.storybook/tsconfig.json` | Storybook framework files, extends UI tsconfig | Storybook build (Vite under the hood) |
+| `tests/e2e-playwright/tsconfig.json` | E2E suite (standalone sub-project) | E2E runner |
 
 ## Webpack path resolution (`configs/webpack.config.base.ts`)
 
@@ -43,13 +40,13 @@ If you add a new path alias used by desktop code, add it in **both** places: `re
 
 ## ts-node and webpack TS configs
 
-The webpack configs in `configs/` are `.ts` files with type annotations. When `webpack --config ./configs/*.ts` runs, `ts-node` compiles them. Three package.json scripts set `TS_NODE_PROJECT=./configs/tsconfig.json` so ts-node uses the right compiler options:
+The webpack configs in `configs/` are `.ts` files with type annotations. When `webpack --config ./configs/*.ts` runs, `ts-node` compiles them. Three package.json scripts set `TS_NODE_PROJECT=./tsconfig.json` so ts-node uses the right compiler options (`module: CommonJS`, `esModuleInterop`):
 
 - `build:main`
 - `build:main:stage`
 - `build:stage`
 
-`configs/tsconfig.json` deliberately does not set `allowJs`. Any `.js` file inside `scripts/` or `configs/` must be CommonJS (`require` / `module.exports`) — Node 22's module syntax detection will treat ESM-syntax `.js` files as ESM and break references to `__dirname`. Two scripts converted for this reason: `scripts/prebuild.js`, `scripts/DeleteSourceMaps.js`.
+The root tsconfig deliberately does not set `allowJs`. Any `.js` file inside `scripts/` or `configs/` must be CommonJS (`require` / `module.exports`) — Node 22's module syntax detection will treat ESM-syntax `.js` files as ESM and break references to `__dirname`. Two scripts already converted for this reason: `scripts/prebuild.js`, `scripts/DeleteSourceMaps.js`.
 
 ## ESLint
 
@@ -60,7 +57,7 @@ The webpack configs in `configs/` are `.ts` files with type annotations. When `w
 - UI override: `parserOptions.project: redisinsight/ui/tsconfig.json` (explicit).
 - Files in `.storybook/`, `.github/`, etc. are not linted by `eslint .` because ESLint skips dot-prefixed paths during directory expansion.
 
-If you add a top-level TS folder that ESLint will reach, drop a tsconfig in it or `parserOptions.project: true` will fail to find one.
+`stories/**` and `redisinsight/desktop/**` get covered by the root tsconfig and desktop tsconfig respectively (auto-discovery walks up to find them).
 
 ## Common tasks
 
@@ -73,7 +70,7 @@ If you add a top-level TS folder that ESLint will reach, drop a tsconfig in it o
 
 ### Adding a new top-level TS folder
 
-Create a `tsconfig.json` in it. Bare minimum:
+If it's small and uses the same compiler options as stories/configs, add its path to the root `tsconfig.json` `include`. Otherwise create a dedicated tsconfig:
 
 ```json
 {
@@ -82,12 +79,12 @@ Create a `tsconfig.json` in it. Bare minimum:
 }
 ```
 
-Without it, ESLint's `parserOptions.project: true` will error on those files.
+Without coverage in either, ESLint's `parserOptions.project: true` will error on those files.
 
 ### Adding a new `.ts` webpack config under `configs/`
 
-No action needed — `configs/tsconfig.json` includes `**/*`.
+No action needed — the root tsconfig already includes `configs/**`.
 
 ### Adding a Node script that needs to run without ts-node
 
-Place under `scripts/` as CommonJS (`require`/`module.exports`). Do not use ESM syntax — `configs/tsconfig.json` no longer has `allowJs` and Node 22 will load ESM-syntax `.js` files as ESM (no `__dirname`).
+Place under `scripts/` as CommonJS (`require`/`module.exports`). Do not use ESM syntax — the root tsconfig does not have `allowJs` and Node 22 will load ESM-syntax `.js` files as ESM (no `__dirname`).

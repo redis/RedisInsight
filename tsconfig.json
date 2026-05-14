@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "lib": ["dom", "esnext"],
+    "jsx": "react",
+    "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "uiSrc/*": ["redisinsight/ui/src/*"],
+      "apiClient": ["redisinsight/api-client"],
+      "apiClient/*": ["redisinsight/api-client/*"]
+    },
+    "types": ["node"]
+  },
+  "include": ["stories/**/*", "configs/**/*"]
+}
