@@ -17,7 +17,7 @@ RedisInsight has no root `tsconfig.json`. Config is split per area, each owning 
 | - | - | - |
 | `redisinsight/ui/tsconfig.json` | UI source, `uiSrc/*`, `apiClient` paths | Vite (UI build), ESLint UI override, `yarn type-check:ui` |
 | `redisinsight/api/tsconfig.json` | API source, `src/*`, `tests/*` paths | NestJS build, ESLint API override |
-| `redisinsight/desktop/tsconfig.json` | Desktop source. `baseUrl: ../..` with paths `desktopSrc/*`, `apiSrc/*`, `uiSrc/*`, `apiClient`, `apiClient/*` | Webpack `TsconfigPathsPlugin` (electron main/preload bundles), ESLint for desktop files |
+| `redisinsight/desktop/tsconfig.json` | Desktop source. Paths `desktopSrc/*`, `apiSrc/*`, `uiSrc/*`, `apiClient`, `apiClient/*` for TypeScript / IDE intellisense | ESLint for desktop files, TS language server |
 | `configs/tsconfig.json` | Compiler options (`module: CommonJS`, `esModuleInterop`) used by `ts-node` to load the `.ts` webpack configs | `ts-node` via `TS_NODE_PROJECT` set in `build:main` / `build:main:stage` / `build:stage` |
 | `.storybook/tsconfig.json` | Storybook framework files, extends UI tsconfig | Storybook + ESLint |
 | `stories/tsconfig.json` | Story files. Extends UI tsconfig; rewires `uiSrc/*` to resolve from `redisinsight/ui` | Storybook + ESLint |
@@ -27,14 +27,19 @@ RedisInsight has no root `tsconfig.json`. Config is split per area, each owning 
 
 ## Webpack path resolution (`configs/webpack.config.base.ts`)
 
-`TsconfigPathsPlugin` is given an explicit `configFile`:
+Webpack uses explicit `resolve.alias` entries (not `tsconfig-paths-webpack-plugin`):
 
 ```ts
-const desktopTsconfig = resolve(__dirname, '../redisinsight/desktop/tsconfig.json')
-plugins: [new TsconfigPathsPlugins({ configFile: desktopTsconfig })]
+alias: {
+  desktopSrc: webpackPaths.desktopSrcPath,
+  apiSrc: resolve(webpackPaths.apiPath, 'src'),
+  uiSrc: webpackPaths.uiSrcPath,
+  apiClient: resolve(webpackPaths.riPath, 'api-client'),
+  // ...
+}
 ```
 
-This is the only place that resolves `desktopSrc/*` / `apiSrc/*` / `uiSrc/*` for the electron bundles. If you add a new path alias used by desktop code, add it to `redisinsight/desktop/tsconfig.json`.
+If you add a new path alias used by desktop code, add it in **both** places: `redisinsight/desktop/tsconfig.json` (for TypeScript / ESLint / IDE) and `configs/webpack.config.base.ts` `resolve.alias` (for the electron bundle).
 
 ## ts-node and webpack TS configs
 
@@ -64,7 +69,7 @@ If you add a top-level TS folder that ESLint will reach, drop a tsconfig in it o
 1. Add the alias to `redisinsight/desktop/tsconfig.json` `compilerOptions.paths`.
 2. If the alias is also used by UI code, add it to `redisinsight/ui/tsconfig.json`.
 3. If the alias is also used by API code, add it to `redisinsight/api/tsconfig.json`.
-4. Vite resolves UI aliases via `redisinsight/ui/tsconfig.json` automatically; webpack resolves desktop aliases via `TsconfigPathsPlugin({ configFile })` — no separate webpack alias config needed.
+4. For aliases used by the **electron bundle** (anything imported from `redisinsight/desktop/**`), also mirror the alias into `configs/webpack.config.base.ts` `resolve.alias`. Vite resolves UI aliases from `redisinsight/ui/tsconfig.json` automatically.
 
 ### Adding a new top-level TS folder
 
