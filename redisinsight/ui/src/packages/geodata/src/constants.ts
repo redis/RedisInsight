@@ -23,3 +23,9 @@ export const DISTANCE_COLORS = {
 }
 
 export const HEAT_COLORS = ['#008556', '#00a382', '#d9822b', '#a00a6b']
+
+export const MAP_COLORS = {
+  primary: '#00a382',
+  query: '#a00a6b',
+  stroke: '#ffffff',
+}

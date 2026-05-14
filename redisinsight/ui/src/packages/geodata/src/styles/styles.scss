@@ -1,15 +1,41 @@
 .geodata-shell {
+  --geodata-background: #10131a;
+  --geodata-border: rgba(255, 255, 255, 0.12);
+  --geodata-border-subtle: rgba(255, 255, 255, 0.08);
+  --geodata-message-background: rgba(217, 130, 43, 0.12);
+  --geodata-message-border: rgba(217, 130, 43, 0.5);
+  --geodata-marker-background: #008556;
+  --geodata-muted-text: #aab6c4;
+  --geodata-offline-background: rgba(16, 19, 26, 0.78);
+  --geodata-panel-background: rgba(255, 255, 255, 0.04);
+  --geodata-plot-background: #0c1117;
+  --geodata-plot-panel-background: #151b24;
+  --geodata-subtle-text: #8996a6;
+  --geodata-table-header-background: #171d27;
+  --geodata-table-header-text: #cfd7e2;
+  --geodata-text: #e7ecf2;
+  --geodata-white: #ffffff;
+
   box-sizing: border-box;
   min-height: 100%;
   padding: 12px;
-  color: #e7ecf2;
-  background: #10131a;
+  color: var(--geodata-text);
+  background: var(--geodata-background);
   font-family: Graphik, sans-serif;
 }
 
 body.theme_LIGHT .geodata-shell {
-  color: #17202e;
-  background: #f7f9fc;
+  --geodata-background: #f7f9fc;
+  --geodata-border: rgba(23, 32, 46, 0.14);
+  --geodata-border-subtle: rgba(23, 32, 46, 0.1);
+  --geodata-muted-text: #526070;
+  --geodata-panel-background: #ffffff;
+  --geodata-plot-background: #eef2f7;
+  --geodata-plot-panel-background: #ffffff;
+  --geodata-subtle-text: #526070;
+  --geodata-table-header-background: #eef2f7;
+  --geodata-table-header-text: #17202e;
+  --geodata-text: #17202e;
 }
 
 .geodata-header {
@@ -18,11 +44,7 @@ body.theme_LIGHT .geodata-shell {
   gap: 16px;
   align-items: flex-start;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-body.theme_LIGHT .geodata-header {
-  border-bottom-color: rgba(23, 32, 46, 0.14);
+  border-bottom: 1px solid var(--geodata-border);
 }
 
 .geodata-header h2 {
@@ -34,14 +56,10 @@ body.theme_LIGHT .geodata-header {
 .geodata-header p {
   max-width: 760px;
   margin: 0;
-  color: #aab6c4;
+  color: var(--geodata-muted-text);
   font-family: Inconsolata, monospace;
   font-size: 13px;
   overflow-wrap: anywhere;
-}
-
-body.theme_LIGHT .geodata-header p {
-  color: #526070;
 }
 
 .geodata-header dl,
@@ -54,7 +72,7 @@ body.theme_LIGHT .geodata-header p {
 
 .geodata-header dt,
 .geodata-summary-grid dt {
-  color: #8996a6;
+  color: var(--geodata-subtle-text);
   font-size: 11px;
   text-transform: uppercase;
 }
@@ -69,22 +87,17 @@ body.theme_LIGHT .geodata-header p {
   grid-template-columns: repeat(4, minmax(120px, 1fr));
   margin: 12px 0;
   padding: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--geodata-border);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.04);
-}
-
-body.theme_LIGHT .geodata-summary-grid {
-  border-color: rgba(23, 32, 46, 0.14);
-  background: #fff;
+  background: var(--geodata-panel-background);
 }
 
 .geodata-message {
   margin-top: 12px;
   padding: 16px;
-  border: 1px solid rgba(217, 130, 43, 0.5);
+  border: 1px solid var(--geodata-message-border);
   border-radius: 6px;
-  background: rgba(217, 130, 43, 0.12);
+  background: var(--geodata-message-background);
 }
 
 .geodata-message h3 {
@@ -95,15 +108,10 @@ body.theme_LIGHT .geodata-summary-grid {
 .geodata-plot-panel {
   position: relative;
   margin: 12px 0;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--geodata-border);
   border-radius: 6px;
   overflow: hidden;
-  background: #151b24;
-}
-
-body.theme_LIGHT .geodata-plot-panel {
-  border-color: rgba(23, 32, 46, 0.14);
-  background: #fff;
+  background: var(--geodata-plot-panel-background);
 }
 
 .geodata-offline-note {
@@ -113,37 +121,29 @@ body.theme_LIGHT .geodata-plot-panel {
   z-index: 1;
   padding: 4px 8px;
   border-radius: 4px;
-  background: rgba(0, 0, 0, 0.6);
-  color: #e7ecf2;
+  background: var(--geodata-offline-background);
+  color: var(--geodata-white);
   font-size: 12px;
 }
 
 .geodata-plot {
   width: 100%;
   height: 380px;
-  background: #0c1117;
-}
-
-body.theme_LIGHT .geodata-plot {
-  background: #eef2f7;
+  background: var(--geodata-plot-background);
 }
 
 .geodata-div-marker {
-  border: 2px solid #fff;
+  border: 2px solid var(--geodata-white);
   border-radius: 50%;
-  background: #008556;
+  background: var(--geodata-marker-background);
 }
 
 .geodata-table-wrap {
   max-height: 340px;
   margin-top: 12px;
   overflow: auto;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--geodata-border);
   border-radius: 6px;
-}
-
-body.theme_LIGHT .geodata-table-wrap {
-  border-color: rgba(23, 32, 46, 0.14);
 }
 
 .geodata-table {
@@ -155,27 +155,17 @@ body.theme_LIGHT .geodata-table-wrap {
 .geodata-table th,
 .geodata-table td {
   padding: 9px 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--geodata-border-subtle);
   text-align: left;
   vertical-align: top;
-}
-
-body.theme_LIGHT .geodata-table th,
-body.theme_LIGHT .geodata-table td {
-  border-bottom-color: rgba(23, 32, 46, 0.1);
 }
 
 .geodata-table th {
   position: sticky;
   top: 0;
-  background: #171d27;
-  color: #cfd7e2;
+  background: var(--geodata-table-header-background);
+  color: var(--geodata-table-header-text);
   font-weight: 600;
-}
-
-body.theme_LIGHT .geodata-table th {
-  background: #eef2f7;
-  color: #17202e;
 }
 
 .geodata-metric {
@@ -185,18 +175,13 @@ body.theme_LIGHT .geodata-table th {
   min-width: 180px;
   margin-top: 12px;
   padding: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--geodata-border);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.04);
-}
-
-body.theme_LIGHT .geodata-metric {
-  border-color: rgba(23, 32, 46, 0.14);
-  background: #fff;
+  background: var(--geodata-panel-background);
 }
 
 .geodata-metric span {
-  color: #8996a6;
+  color: var(--geodata-subtle-text);
   font-size: 12px;
 }
 
