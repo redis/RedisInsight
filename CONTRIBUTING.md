@@ -33,6 +33,25 @@ _Note: It will trigger only checks related to the back-end_
 - This makes it easier for reviewers to understand and track changes.
 - Use meaningful commit messages (see [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for inspiration).
 
+## TypeScript Configuration
+
+TypeScript config is split across the repo rather than centralised in a single root `tsconfig.json`. Each area owns its own:
+
+| Path | Purpose |
+| - | - |
+| `redisinsight/ui/tsconfig.json` | UI build, vite, ESLint for UI files |
+| `redisinsight/api/tsconfig.json` | API build, ESLint for API files |
+| `redisinsight/desktop/tsconfig.json` | Desktop main/preload paths consumed by webpack's `TsconfigPathsPlugin`; ESLint for desktop files |
+| `configs/tsconfig.json` | Loaded by `ts-node` when webpack executes the `.ts` configs in `configs/` (`build:main`, `build:main:stage`) |
+| `.storybook/tsconfig.json` | Storybook setup |
+| `stories/tsconfig.json` | Storybook stories — extends UI config |
+| `tests/playwright/tsconfig.json` | Playwright tests |
+| `tests/e2e/tsconfig.json`, `tests/e2e-playwright/tsconfig.json` | Standalone E2E sub-projects |
+
+ESLint's root config uses `parserOptions.project: true`, so each linted file picks up its nearest tsconfig automatically. When you add a new top-level TS area, drop a tsconfig in it.
+
+There is intentionally no root `tsconfig.json`. Running bare `tsc` from the repo root will fail — use `yarn type-check:ui` or pass `--project <path>` explicitly.
+
 ## Pull Requests
 
 Use the following procedure to submit a pull request:

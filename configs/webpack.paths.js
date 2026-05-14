@@ -22,7 +22,7 @@ const distPath = path.join(riPath, 'dist')
 const distMainPath = path.join(distPath, 'main')
 const distRendererPath = path.join(distPath, 'renderer')
 
-export default {
+module.exports = {
   rootPath,
   dllPath,
   apiPath,

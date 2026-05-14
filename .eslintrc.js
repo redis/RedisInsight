@@ -380,7 +380,7 @@ module.exports = {
     },
   ],
   parserOptions: {
-    project: './tsconfig.json',
+    project: true,
     ecmaVersion: 2020,
     sourceType: 'module',
   },
