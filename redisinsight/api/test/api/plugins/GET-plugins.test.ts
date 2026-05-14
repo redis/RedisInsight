@@ -25,6 +25,9 @@ const responseSchema = Joi.object()
                   matchCommands: Joi.array()
                     .items(Joi.string().required())
                     .required(),
+                  matchQuery: Joi.object().keys({
+                    anyRegex: Joi.array().items(Joi.string().required()),
+                  }),
                   default: Joi.boolean(),
                   iconDark: Joi.string(),
                   iconLight: Joi.string(),
