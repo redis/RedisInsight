@@ -1,4 +1,4 @@
-name: E2E Playwright - Chromium (Dev)
+name: E2E Playwright - Chromium
 
 on:
   workflow_call:
@@ -17,7 +17,7 @@ env:
 
 jobs:
   e2e-chromium:
-    name: E2E Chromium (Local Dev)
+    name: E2E Chromium (Web Build)
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     timeout-minutes: 60
@@ -54,15 +54,18 @@ jobs:
       - name: Build statics
         run: yarn build:statics
 
+      - name: Build UI (production web bundle)
+        run: yarn build:ui
+
       - name: Build API
         run: yarn --cwd redisinsight/api build
 
-      - name: Start application (dev mode)
+      - name: Start application (production mode)
+        env:
+          RI_SERVE_STATICS: 'true'
         run: |
-          yarn dev:api &
-          yarn dev:ui &
-          # Wait for the app to be ready
-          npx wait-on http://localhost:8080 http://localhost:5540/api/health --timeout 60000
+          yarn --cwd redisinsight/api start:prod &
+          npx wait-on http://localhost:5540/api/health --timeout 120000
 
       - name: Ensure host.docker.internal resolves on the host
         run: |
@@ -101,6 +104,8 @@ jobs:
         run: npx playwright test --project=chromium --project=chromium-serial
         env:
           CI: true
+          RI_CLIENT_URL: http://localhost:5540
+          RI_API_URL: http://localhost:5540
 
       - name: Upload test results
         if: always()
@@ -114,10 +119,7 @@ jobs:
 
       - name: Stop application
         if: always()
-        run: |
-          # Kill any node processes running the app
-          pkill -f "dist/src/main" || true
-          pkill -f "vite dev" || true
+        run: pkill -f "dist/src/main" || true
 
       - name: Stop Redis test environment
         if: always()
