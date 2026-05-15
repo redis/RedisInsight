@@ -12,21 +12,25 @@ post {
 
 body:json {
   {
-    "keyName": "vset:small_3d",
-    "elementName": "item_1",
+    "keyName": "compass",
     "count": 10
   }
 }
 
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
 docs {
   # Similarity Search
-
+  
   Runs a vector similarity search against the Vector Set stored at `keyName`. Uses the Redis `VSIM` command with `WITHSCORES` and `WITHATTRIBS` always enabled, so each match returned by this endpoint includes its similarity score and any attributes stored on the element.
-
+  
   ## Request Body
-
+  
   Exactly one of `elementName`, `vectorValues`, or `vectorFp32` must be supplied:
-
+  
   | Field | Type | Description |
   |-------|------|-------------|
   | `keyName` | string | The Vector Set key name |
@@ -35,11 +39,11 @@ docs {
   | `vectorFp32` | string | (One-of) Query vector as a base64-encoded little-endian FP32 blob (length must be a non-zero multiple of 4 bytes) |
   | `count` | number | Maximum number of results (default `10`, max `1000`) |
   | `filter` | string | Optional filter expression evaluated against element attributes (passed verbatim to Redis after `FILTER`) |
-
+  
   ## Response
-
+  
   Returns `200 OK` with the matched elements ordered by descending similarity score.
-
+  
   | Field | Type | Description |
   |-------|------|-------------|
   | `keyName` | string | The Vector Set key name |
@@ -47,64 +51,223 @@ docs {
   | `elements[].name` | string | Matched element name |
   | `elements[].score` | number | Similarity score returned by `VSIM ... WITHSCORES` |
   | `elements[].attributes` | string | Attributes string stored on the element (omitted when the element has none) |
-
+  
   ## Error Responses
-
+  
   | Status | Condition |
   |--------|-----------|
   | `400` | Multiple or no query payloads (`elementName` / `vectorValues` / `vectorFp32`), or key exists but is not a Vector Set (WRONGTYPE) |
   | `404` | Key does not exist |
-
+  
   ## Examples
-
+  
   ### Search by existing element
-
+  
+  Find the closest directions to `northeast` — expect `northeast` itself first (perfect score), then the two adjacent cardinals `north` and `east`.
+  
   ```json
   {
-    "keyName": "vset:small_3d",
-    "elementName": "item_1",
+    "keyName": "compass",
+    "elementName": "northeast",
     "count": 5
   }
   ```
-
+  
   ### Search by raw values
-
+  
+  Query with an east-leaning vector (mostly east, a bit north):
+  
   ```json
   {
-    "keyName": "vset:small_3d",
-    "vectorValues": [0.1, 0.2, 0.3],
+    "keyName": "compass",
+    "vectorValues": [2, 1],
     "count": 5
   }
   ```
-
+  
   ### Search by FP32 blob
-
+  
+  Same query vector `[2, 1]` expressed as an FP32 base64 blob — equivalent to the example above:
+  
   ```json
   {
-    "keyName": "vset:small_3d",
-    "vectorFp32": "AACAPwAAAEAAAEBA",
+    "keyName": "compass",
+    "vectorFp32": "AAAAQAAAgD8=",
     "count": 5
   }
   ```
-
+  
   ### Search with attribute filter
-
+  
+  Anchored on `northeast`, restrict the search to intercardinal directions only (filters out the cardinals):
+  
   ```json
   {
-    "keyName": "vset:small_3d",
-    "elementName": "item_1",
+    "keyName": "compass",
+    "elementName": "northeast",
     "count": 5,
-    "filter": "@color == 'red'"
+    "filter": ".type == \"intercardinal\""
   }
   ```
-
+  
   ## Notes
-
+  
   - `WITHSCORES` and `WITHATTRIBS` are always applied server-side; they are not exposed as request fields so the response shape is stable.
   - Results are ordered by descending similarity score.
   - When an element has no attributes, the `attributes` field is omitted from that match.
 }
 
-settings {
-  encodeUrl: true
+example {
+  name: similarity search by element name
+  
+  request: {
+    url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/vector-set/similarity-search
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "keyName": "compass",
+        "elementName": "northeast",
+        "count": 10
+      }
+    }
+  }
+  
+  response: {
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+  
+      '''
+    }
+  }
+}
+
+example {
+  name: similarity search by vector values
+  
+  request: {
+    url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/vector-set/similarity-search
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "keyName": "compass",
+        "vectorValues": [1,0],
+        "count": 10
+      }
+    }
+  }
+  
+  response: {
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+  
+      '''
+    }
+  }
+}
+
+example {
+  name: similarity search by vector in fp32 format
+  
+  request: {
+    url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/vector-set/similarity-search
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "keyName": "compass",
+        "vectorFp32": "AACAvwAAgL8=",
+        "count": 10
+      }
+    }
+  }
+  
+  response: {
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+  
+      '''
+    }
+  }
+}
+
+example {
+  name: invalid similarity search with more than one similarity object
+  
+  request: {
+    url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/vector-set/similarity-search
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "keyName": "compass",
+        "elementName": "northeast=",
+        "vectorValues": [1,0],
+        "count": 10
+      }
+    }
+  }
+  
+  response: {
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+  
+      '''
+    }
+  }
+}
+
+example {
+  name: invalid similarity search with missing similarity object
+  
+  request: {
+    url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/vector-set/similarity-search
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "keyName": "compass",
+        "count": 10
+      }
+    }
+  }
+  
+  response: {
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+  
+      '''
+    }
+  }
 }

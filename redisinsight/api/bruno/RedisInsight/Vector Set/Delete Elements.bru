@@ -12,8 +12,8 @@ delete {
 
 body:json {
   {
-    "keyName": "vset:small_3d",
-    "elements": ["item_1"]
+    "keyName": "compass",
+    "elements": ["invalid"]
   }
 }
 
@@ -21,6 +21,8 @@ docs {
   # Delete Vector Set Elements
 
   Removes one or more elements from the Vector Set at `keyName`.
+
+  The example above removes the `invalid` placeholder element that was added by the **Add Elements** example, leaving only the eight valid compass directions.
 
   ## Request body
 
@@ -37,7 +39,7 @@ docs {
 
   ## Notes
 
-  - Use **Get Elements** first to list element `name` values, then pass those names here.
+  - Use **Get Elements** first to list element `name` values (e.g. `northeast`, `southwest`, `invalid`), then pass those names here.
   - Removing the last element empties the key (same behavior as Redis `VREM`).
 }
 

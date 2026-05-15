@@ -12,17 +12,32 @@ put {
 
 body:json {
   {
-    "keyName": "vset:my_new_set",
+    "keyName": "compass",
     "elements": [
       {
-        "name": "item_3",
-        "vectorValues": [0.7, 0.8, 0.9],
-        "attributes": "{\"color\": \"blue\"}"
+        "name": "northeast",
+        "vectorValues": [1, 1],
+        "attributes": "{\"type\": \"intercardinal\", \"bearing\": 45}"
       },
       {
-        "name": "item_fp32",
-        "vectorFp32": "AACAPwAAAEAAAEBA",
-        "attributes": "{\"format\": \"fp32\"}"
+        "name": "northwest",
+        "vectorValues": [-1, 1],
+        "attributes": "{\"type\": \"intercardinal\", \"bearing\": 315}"
+      },
+      {
+        "name": "southeast",
+        "vectorFp32": "AACAPwAAgL8=",
+        "attributes": "{\"type\": \"intercardinal\", \"bearing\": 135}"
+      },
+      {
+        "name": "southwest",
+        "vectorFp32": "AACAvwAAgL8=",
+        "attributes": "{\"type\": \"intercardinal\", \"bearing\": 225}"
+      },
+      {
+        "name": "invalid",
+        "vectorValues": [0, 0],
+        "attributes": "{\"valid\": false, \"note\": \"placeholder to be deleted\"}"
       }
     ]
   }
@@ -32,6 +47,11 @@ docs {
   # Add Elements
 
   Adds elements to an existing Vector Set key. Uses the Redis `VADD` command internally (one call per element, pipelined).
+
+  The example above extends the `compass` set (created with the four cardinals) by adding:
+
+  - The four **intercardinal** directions — `northeast`, `northwest`, `southeast`, `southwest`. `southeast` and `southwest` are sent as FP32 base64 blobs to demonstrate that input format alongside the plain numeric form.
+  - An `invalid` placeholder element (zero vector) used to exercise the **Delete Elements** endpoint.
 
   Each element must provide exactly one of two equivalent vector representations: `vectorValues` (numeric array, issues `VADD key VALUES <dim> <v1> ...`) or `vectorFp32` (base64-encoded little-endian IEEE-754 FP32 blob, issues `VADD key FP32 <blob> <element>`). The two fields are mutually exclusive. All elements in a single request — and all elements already in the set — must share the same dimension.
 
@@ -48,9 +68,7 @@ docs {
 
   ## FP32 Example
 
-  The base64 payload `AACAPwAAAEAAAEBA` decodes to the 12-byte FP32 blob for
-  `[1.0, 2.0, 3.0]` (little-endian IEEE-754):
-  `00 00 80 3f 00 00 00 40 00 00 40 40`.
+  The base64 payload `AACAPwAAgL8=` decodes to the 8-byte FP32 blob for the **southeast** vector `[1, -1]` (little-endian IEEE-754): `00 00 80 3f 00 00 80 bf`. The `AACAvwAAgL8=` payload encodes **southwest** `[-1, -1]`: `00 00 80 bf 00 00 80 bf`.
 
   ## Response
 
