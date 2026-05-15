@@ -64,6 +64,16 @@ Only needed once per project (already done for ui/api/desktop). The non-force `y
 
 The api postinstall regenerates `redisinsight/api-client/`. That can shift UI and Desktop error counts (they both import from `apiClient`). If `yarn type-check:ui` or `yarn type-check:desktop` reports drift after an api install, refresh those baselines.
 
+### Local UI check disagrees with CI
+
+UI plugins under `redisinsight/ui/src/packages/{redisearch, redisgraph, redistimeseries-app, ri-explain, clients-list}` are sub-projects whose source gets type-checked via the UI tsconfig. Their deps live in nested `node_modules` populated by `yarn build:statics` (or by running `yarn --cwd redisinsight/ui/src/packages/<plugin>`). CI runs `yarn build:statics` before `yarn type-check:ui`, so the baseline reflects "plugin deps installed."
+
+If `yarn type-check:ui` shows TS7016 ("Could not find a declaration file for module ...") errors that CI doesn't, you're missing plugin deps. Run `yarn build:statics` once, then re-run the check. Don't refresh the baseline to your local state — CI runs with plugin deps installed.
+
+### Local Desktop check disagrees with CI
+
+Desktop type-check needs `redisinsight/api/dist/` populated with the **dev** nest build (`yarn --cwd redisinsight/api build`, not `build:prod` — prod skips `.d.ts` emission). CI does this automatically. Locally, build api once before generating or refreshing the desktop baseline.
+
 ## Reviewing PRs
 
 Reject PRs that:
