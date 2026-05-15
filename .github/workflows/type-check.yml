@@ -29,6 +29,22 @@ jobs:
         with:
           skip-system-deps: '1'
 
+      # UI plugins under redisinsight/ui/src/packages/* are sub-projects with
+      # their own deps. The UI tsconfig includes src/**, so plugin sources are
+      # type-checked too and need their deps installed for module resolution.
+      - name: Cache UI plugin node_modules
+        if: ${{ inputs.run-ui != false }}
+        uses: actions/cache@v4
+        with:
+          path: |
+            redisinsight/ui/src/packages/node_modules
+            redisinsight/ui/src/packages/*/node_modules
+          key: ui-plugins-node-modules-${{ runner.os }}-${{ hashFiles('redisinsight/ui/src/packages/**/yarn.lock') }}
+
+      - name: Install UI plugin deps and build statics
+        if: ${{ inputs.run-ui != false }}
+        run: yarn build:statics
+
       - name: UI
         if: ${{ inputs.run-ui != false }}
         run: yarn type-check:ui

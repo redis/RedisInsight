@@ -279,17 +279,11 @@
     "TS2339": 4,
     "TS2345": 2
   },
-  "redisinsight/ui/src/packages/clients-list/src/components/json-view/JSONView.tsx": {
-    "TS2307": 1
-  },
   "redisinsight/ui/src/packages/clients-list/src/components/table-view/TableView.spec.tsx": {
     "TS2307": 1
   },
   "redisinsight/ui/src/packages/clients-list/src/components/table-view/TableView.tsx": {
     "TS2305": 1
-  },
-  "redisinsight/ui/src/packages/redisearch/src/App.tsx": {
-    "TS2307": 1
   },
   "redisinsight/ui/src/packages/redisearch/src/components/TableInfoResult/TableInfoResult.tsx": {
     "TS2305": 1,
@@ -298,13 +292,9 @@
   },
   "redisinsight/ui/src/packages/redisgraph/src/App.tsx": {
     "TS18048": 1,
-    "TS2307": 1,
-    "TS2322": 1,
-    "TS7006": 1,
-    "TS7031": 1
+    "TS2322": 1
   },
   "redisinsight/ui/src/packages/redisgraph/src/Graph.tsx": {
-    "TS2307": 1,
     "TS2322": 1,
     "TS2345": 6,
     "TS6133": 5,
@@ -335,19 +325,16 @@
     "TS7006": 11
   },
   "redisinsight/ui/src/packages/redistimeseries-app/src/components/Chart/Chart.tsx": {
-    "TS2307": 2,
-    "TS2345": 1
+    "TS2307": 1,
+    "TS2345": 1,
+    "TS7016": 1
   },
   "redisinsight/ui/src/packages/redistimeseries-app/src/components/Chart/ChartConfigForm.tsx": {
     "TS2339": 1,
     "TS2698": 1
   },
-  "redisinsight/ui/src/packages/redistimeseries-app/src/components/Chart/ChartResultView.tsx": {
-    "TS2307": 1
-  },
   "redisinsight/ui/src/packages/ri-explain/src/Explain.tsx": {
-    "TS2307": 4,
-    "TS7006": 2,
+    "TS7016": 1,
     "TS7053": 1
   },
   "redisinsight/ui/src/packages/ri-explain/src/Node.tsx": {
@@ -1238,5 +1225,8 @@
     "TS2345": 5,
     "TS7005": 1,
     "TS7034": 1
+  },
+  "redisinsight/ui/src/utils/transformers/formatDate.ts": {
+    "TS2345": 1
   }
 }
