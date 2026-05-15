@@ -51,18 +51,9 @@ body.theme_LIGHT .geodata-shell {
 }
 
 .geodata-header h2 {
-  margin: 0 0 6px;
+  margin: 0;
   font-size: 18px;
   font-weight: 600;
-}
-
-.geodata-header p {
-  max-width: 760px;
-  margin: 0;
-  color: var(--geodata-muted-text);
-  font-family: Inconsolata, monospace;
-  font-size: 13px;
-  overflow-wrap: anywhere;
 }
 
 .geodata-header dl,

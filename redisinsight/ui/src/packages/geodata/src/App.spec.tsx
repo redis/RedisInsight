@@ -31,10 +31,13 @@ describe('Geodata App', () => {
     ).toBeInTheDocument()
   })
 
-  it('renders Geo Inspector for GEODIST', () => {
-    renderComponent('GEODIST Sicily Palermo Catania km', '166.2742')
+  it('renders Geospatial details for GEODIST without repeating the command', () => {
+    const command = 'GEODIST Sicily Palermo Catania km'
 
-    expect(screen.getByText('Geo Inspector')).toBeInTheDocument()
+    renderComponent(command, '166.2742')
+
+    expect(screen.getByText('Geospatial details')).toBeInTheDocument()
+    expect(screen.queryByText(command)).not.toBeInTheDocument()
     expect(screen.getByText('166.2742 km')).toBeInTheDocument()
   })
 
@@ -54,12 +57,13 @@ describe('Geodata App', () => {
   it('renders default empty plugin state', () => {
     render(<App mode={GeodataMode.Inspector} />)
 
-    expect(screen.getByText('No command provided')).toBeInTheDocument()
+    expect(screen.getByText('Geospatial details')).toBeInTheDocument()
+    expect(screen.queryByText('No command provided')).not.toBeInTheDocument()
     expect(screen.getByText('unknown')).toBeInTheDocument()
     expect(screen.getByText('Missing Redis command.')).toBeInTheDocument()
   })
 
-  it('renders Geo Inspector for GEOHASH', () => {
+  it('renders Geospatial details for GEOHASH', () => {
     renderComponent('GEOHASH Sicily Palermo Catania', [
       'sqc8b49rny0',
       'sqdtr74hyu0',
@@ -69,7 +73,7 @@ describe('Geodata App', () => {
     expect(screen.getByText('sqc8b49rny0')).toBeInTheDocument()
   })
 
-  it('renders Geo Inspector for GEOPOS with missing members', () => {
+  it('renders Geospatial details for GEOPOS with missing members', () => {
     renderComponent('GEOPOS Sicily Palermo Missing', [
       ['13.361389', '38.115556'],
       null,
@@ -138,7 +142,7 @@ describe('Geodata App', () => {
       GeodataMode.Heatmap,
     )
 
-    expect(screen.getByText('Geo Heatmap')).toBeInTheDocument()
+    expect(screen.getByText('Geospatial heatmap')).toBeInTheDocument()
     expect(screen.getByText('No geospatial rows returned.')).toBeInTheDocument()
     expect(
       screen.queryByLabelText('Leaflet geospatial plot'),
@@ -165,7 +169,7 @@ describe('Geodata App', () => {
       GeodataMode.RqeMarkers,
     )
 
-    expect(screen.getByText('RQE Geo Map')).toBeInTheDocument()
+    expect(screen.getByText('Search geospatial map')).toBeInTheDocument()
     expect(screen.getByRole('cell', { name: 'Paris' })).toBeInTheDocument()
     expect(screen.getByRole('cell', { name: '2.34' })).toBeInTheDocument()
     expect(screen.queryByText('Map tiles disabled')).not.toBeInTheDocument()
@@ -178,7 +182,7 @@ describe('Geodata App', () => {
       GeodataMode.RqeHeatmap,
     )
 
-    expect(screen.getByText('RQE Geo Heatmap')).toBeInTheDocument()
+    expect(screen.getByText('Search geospatial heatmap')).toBeInTheDocument()
     expect(screen.getByRole('cell', { name: 'Paris' })).toBeInTheDocument()
   })
 
@@ -217,7 +221,7 @@ describe('Geodata App', () => {
       GeodataMode.RqeInspector,
     )
 
-    expect(screen.getByText('RQE Geo Inspector')).toBeInTheDocument()
+    expect(screen.getByText('Search geospatial details')).toBeInTheDocument()
     expect(screen.getByText('FT.AGGREGATE')).toBeInTheDocument()
     expect(screen.getAllByText('coords')).toHaveLength(2)
     expect(screen.getByText('1000 km')).toBeInTheDocument()
@@ -230,7 +234,7 @@ describe('Geodata App', () => {
       GeodataMode.RqeShape,
     )
 
-    expect(screen.getByText('RQE Geo Shape')).toBeInTheDocument()
+    expect(screen.getByText('Search geoshape map')).toBeInTheDocument()
     expect(screen.getByRole('cell', { name: 'Zone' })).toBeInTheDocument()
     expect(screen.getByText('CONTAINS')).toBeInTheDocument()
 

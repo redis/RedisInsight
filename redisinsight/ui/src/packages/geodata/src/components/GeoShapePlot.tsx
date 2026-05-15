@@ -142,7 +142,7 @@ export const GeoShapePlot = ({ shapes, overlay }: GeoShapePlotProps) => {
   }, [overlay, shapes])
 
   return (
-    <section className="geodata-plot-panel" aria-label="RQE Geo Shape">
+    <section className="geodata-plot-panel" aria-label="Search geoshape map">
       {tileNotice && <div className="geodata-offline-note">{tileNotice}</div>}
       <div
         ref={mapRef}

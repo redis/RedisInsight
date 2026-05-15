@@ -478,7 +478,7 @@ export const GeoPlot = ({ mode, results, command }: GeoPlotProps) => {
   return (
     <section
       className="geodata-plot-panel"
-      aria-label={mode === 'markers' ? 'Geo Map' : 'Geo Heatmap'}
+      aria-label={mode === 'markers' ? 'Geospatial map' : 'Geospatial heatmap'}
     >
       {mode === 'markers' && showThresholdControls && (
         <DistanceThresholdControls
