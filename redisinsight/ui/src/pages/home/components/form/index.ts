@@ -6,6 +6,7 @@ import TlsDetails from './TlsDetails'
 import DatabaseForm from './DatabaseForm'
 import SSHDetails from './SSHDetails'
 import ForceStandalone from './ForceStandalone'
+import ProductionToggle from './ProductionToggle'
 import KeyFormatSelector from './KeyFormatSelector'
 
 export {
@@ -18,5 +19,6 @@ export {
   SSHDetails,
   DbCompressor,
   ForceStandalone,
+  ProductionToggle,
   KeyFormatSelector,
 }

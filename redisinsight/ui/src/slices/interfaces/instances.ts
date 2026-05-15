@@ -56,6 +56,7 @@ export interface Instance extends Partial<DatabaseInstanceResponse> {
   visible?: boolean
   loading?: boolean
   isFreeDb?: boolean
+  isProduction?: boolean
   tags?: Tag[]
 }
 
