@@ -14,7 +14,8 @@ describe('GeoInspector', () => {
   it('renders parse errors for unsupported commands', () => {
     renderInspector('PING', 'PONG')
 
-    expect(screen.getByText('Geo Inspector')).toBeInTheDocument()
+    expect(screen.getByText('Geospatial details')).toBeInTheDocument()
+    expect(screen.queryByText('PING')).not.toBeInTheDocument()
     expect(screen.getByText('Cannot inspect command')).toBeInTheDocument()
     expect(
       screen.getByText('Unsupported geo command: PING.'),

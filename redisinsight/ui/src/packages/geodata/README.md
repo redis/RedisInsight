@@ -4,13 +4,13 @@ Internal RedisInsight Workbench plugin for Redis GEO commands.
 
 ## Visualizations
 
-- `Geo Map` plots coordinate-bearing search results for `GEOSEARCH`, `GEORADIUS`, and `GEORADIUSBYMEMBER`.
-- `Geo Heatmap` renders the same coordinate-bearing search results as density.
-- `Geo Inspector` summarizes every Redis GEO command family, including write and store commands.
+- `Geospatial map` plots coordinate-bearing search results for `GEOSEARCH`, `GEORADIUS`, and `GEORADIUSBYMEMBER`.
+- `Geospatial heatmap` renders the same coordinate-bearing search results as density.
+- `Geospatial details` summarizes every Redis GEO command family, including write and store commands.
 
 The map views require `WITHCOORD` in command output. The inspector can render scalar, integer, hash, position, and search-store responses without coordinates.
 
-`Geo Map` is the default visualization for coordinate search commands. `Geo Inspector` is the default for GEO commands that do not have coordinate rows.
+`Geospatial map` is the default visualization for coordinate search commands. `Geospatial details` is the default for GEO commands that do not have coordinate rows.
 
 ## Tile Policy
 

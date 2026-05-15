@@ -20,12 +20,12 @@ export const GeoSearchVisualization = ({
   mode,
 }: GeoSearchVisualizationProps) => {
   const parsedCommand = parseSearchParams(command)
-  const title = mode === 'markers' ? 'Geo Map' : 'Geo Heatmap'
+  const title = mode === 'markers' ? 'Geospatial map' : 'Geospatial heatmap'
 
   if (!parsedCommand.ok) {
     return (
       <div className="geodata-shell">
-        <GeoHeader title={title} command={command} status={status} resultCount={0} />
+        <GeoHeader title={title} status={status} resultCount={0} />
         <Message title="Cannot render map">{parsedCommand.error}</Message>
       </div>
     )
@@ -35,7 +35,7 @@ export const GeoSearchVisualization = ({
   if (!parsedResults.ok) {
     return (
       <div className="geodata-shell">
-        <GeoHeader title={title} command={command} status={status} resultCount={0} />
+        <GeoHeader title={title} status={status} resultCount={0} />
         <Message title="Cannot render map">{parsedResults.error}</Message>
       </div>
     )
@@ -44,7 +44,7 @@ export const GeoSearchVisualization = ({
   const results = parsedResults.value
   return (
     <div className="geodata-shell">
-      <GeoHeader title={title} command={command} status={status} resultCount={results.length} />
+      <GeoHeader title={title} status={status} resultCount={results.length} />
       {results.length === 0 ? (
         <Message>No geospatial rows returned.</Message>
       ) : (
