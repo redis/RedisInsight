@@ -22,15 +22,15 @@ interface RqeGeoVisualizationProps {
 
 const getTitle = (mode: RqeGeoVisualizationProps['mode']): string => {
   if (mode === 'markers') {
-    return 'RQE Geo Map'
+    return 'Search geospatial map'
   }
   if (mode === 'heatmap') {
-    return 'RQE Geo Heatmap'
+    return 'Search geospatial heatmap'
   }
   if (mode === 'shape') {
-    return 'RQE Geo Shape'
+    return 'Search geoshape map'
   }
-  return 'RQE Geo Inspector'
+  return 'Search geospatial details'
 }
 
 const toNativeGeoCommand = (command: ParsedRqeGeoCommand): ParsedGeoCommand => {
@@ -117,7 +117,7 @@ export const RqeGeoVisualization = ({
   if (!parsedCommand.ok) {
     return (
       <div className="geodata-shell">
-        <GeoHeader title={title} command={command} status={status} resultCount={0} />
+        <GeoHeader title={title} status={status} resultCount={0} />
         <Message title="Cannot inspect RQE geo command">{parsedCommand.error}</Message>
       </div>
     )
@@ -127,7 +127,7 @@ export const RqeGeoVisualization = ({
   if (!parsedResults.ok) {
     return (
       <div className="geodata-shell">
-        <GeoHeader title={title} command={command} status={status} resultCount={0} />
+        <GeoHeader title={title} status={status} resultCount={0} />
         <Message title={`Cannot render ${mode === 'shape' ? 'RQE geo shape' : 'RQE geo map'}`}>
           {parsedResults.error}
         </Message>
@@ -139,7 +139,7 @@ export const RqeGeoVisualization = ({
   if (mode === 'shape') {
     return (
       <div className="geodata-shell">
-        <GeoHeader title={title} command={command} status={status} resultCount={shapes.length} />
+        <GeoHeader title={title} status={status} resultCount={shapes.length} />
         {shapes.length === 0 ? (
           <Message>No geospatial shapes returned.</Message>
         ) : (
@@ -161,7 +161,6 @@ export const RqeGeoVisualization = ({
       <div className="geodata-shell">
         <GeoHeader
           title={title}
-          command={command}
           status={status}
           resultCount={points.length + shapes.length}
         />
@@ -184,7 +183,7 @@ export const RqeGeoVisualization = ({
 
   return (
     <div className="geodata-shell">
-      <GeoHeader title={title} command={command} status={status} resultCount={points.length} />
+      <GeoHeader title={title} status={status} resultCount={points.length} />
       {points.length === 0 ? (
         <Message>No geospatial rows returned.</Message>
       ) : (

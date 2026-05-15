@@ -142,11 +142,12 @@ const renderInspectorBody = (response: unknown, command: ParsedGeoCommand) => {
 
 export const GeoInspector = ({ command, response, status }: GeoInspectorProps) => {
   const parsedCommand = parseGeoCommand(command)
+  const title = 'Geospatial details'
 
   if (!parsedCommand.ok) {
     return (
       <div className="geodata-shell">
-        <GeoHeader title="Geo Inspector" command={command} status={status} />
+        <GeoHeader title={title} status={status} />
         <Message title="Cannot inspect command">{parsedCommand.error}</Message>
       </div>
     )
@@ -154,7 +155,7 @@ export const GeoInspector = ({ command, response, status }: GeoInspectorProps) =
 
   return (
     <div className="geodata-shell">
-      <GeoHeader title="Geo Inspector" command={command} status={status} />
+      <GeoHeader title={title} status={status} />
       {renderCommandSummary(parsedCommand.value)}
       {renderInspectorBody(response, parsedCommand.value)}
     </div>
