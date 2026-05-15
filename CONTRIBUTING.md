@@ -51,6 +51,17 @@ ESLint's root config uses `parserOptions.project: true`, so each linted file pic
 
 There is intentionally no root `tsconfig.json`. Running bare `tsc` from the repo root will fail — use `yarn type-check:ui` or pass `--project <path>` explicitly.
 
+### Type-error baselines
+
+Per-project type-check runs in CI and fails if any new TS error is introduced. For `ui`, `api`, and `desktop` we lock the current error counts in `.tscheck.rec.json` files next to each tsconfig; `configs` is checked with no baseline (must stay clean). The `api` check uses [`redisinsight/api/tsconfig.check.json`](redisinsight/api/tsconfig.check.json), which extends the base config with `strict: true` (minus `strictPropertyInitialization` and `useUnknownInCatchVariables`) — the base `tsconfig.json` stays as-is so `nest build` is unaffected.
+
+Common flows:
+
+- **Check locally** (all projects): `yarn type-check`.
+- **Check one project**: `yarn --cwd redisinsight/{ui,api,desktop} type-check`.
+- **You fixed errors**: CI will say "baseline is outdated". Run `yarn --cwd redisinsight/{ui,api,desktop} tscheck` locally to refresh the matching `.tscheck.rec.json` and commit it.
+- **You introduced new errors**: fix them. Do not use `tscheck:force` in any workspace to overwrite the baseline upward — error counts must only decrease. Reviewers should reject PRs that bump baselines without a corresponding fix.
+
 ## Pull Requests
 
 Use the following procedure to submit a pull request:
