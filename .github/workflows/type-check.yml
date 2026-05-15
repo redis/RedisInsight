@@ -37,6 +37,12 @@ jobs:
         if: ${{ inputs.run-api != false }}
         run: yarn type-check:api
 
+      # Desktop sources import from redisinsight/api/dist/src/**, so the api
+      # has to be built first or those imports show up as TS2307s.
+      - name: Build API (for desktop type-check)
+        if: ${{ inputs.run-desktop != false }}
+        run: yarn build:api
+
       - name: Desktop
         if: ${{ inputs.run-desktop != false }}
         run: yarn type-check:desktop
