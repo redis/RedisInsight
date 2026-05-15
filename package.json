@@ -146,7 +146,6 @@
     "@types/jest": "^29.5.14",
     "@types/js-yaml": "^4.0.9",
     "@types/json-bigint": "^1.0.1",
-    "@types/json-stable-stringify": "^1.0.36",
     "@types/jsonpath": "^0.2.0",
     "@types/lodash": "^4.14.171",
     "@types/node": "14.14.10",
