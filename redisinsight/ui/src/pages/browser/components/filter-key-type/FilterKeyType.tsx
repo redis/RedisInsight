@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import {
   SCAN_COUNT_DEFAULT,
@@ -22,11 +22,9 @@ import { FeatureNotAvailable } from 'uiSrc/components'
 import { FILTER_NOT_AVAILABLE_CONTENT } from 'uiSrc/components/messages'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { resetBrowserTree } from 'uiSrc/slices/app/context'
-import {
-  appFeatureFlagsFeaturesSelector,
-  isDevelopment,
-} from 'uiSrc/slices/app/features'
+import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { AdditionalRedisModule } from 'uiSrc/slices/interfaces'
+import { RootState } from 'uiSrc/slices/store'
 import { OutsideClickDetector } from 'uiSrc/components/base/utils'
 import { HealthText } from 'uiSrc/components/base/text/HealthText'
 import {
@@ -58,6 +56,17 @@ const FilterKeyType = ({ modules }: Props) => {
   const { version } = useSelector(connectedInstanceOverviewSelector)
   const { filter, viewType, searchMode } = useSelector(keysSelector)
   const features = useSelector(appFeatureFlagsFeaturesSelector)
+  // Resolve each option's optional `isEnabledSelector` against the store so
+  // the option config is the single source of truth for which key types are
+  // gated (e.g. behind dev/feature flags). `shallowEqual` keeps the filtered
+  // array stable across renders when membership doesn't change.
+  const enabledOptions = useSelector(
+    (state: RootState) =>
+      FILTER_KEY_TYPE_OPTIONS.filter(
+        ({ isEnabledSelector }) => isEnabledSelector?.(state) ?? true,
+      ),
+    shallowEqual,
+  )
 
   const { instanceId } = useParams<{ instanceId: string }>()
   const dispatch = useDispatch()
@@ -79,46 +88,42 @@ const FilterKeyType = ({ modules }: Props) => {
     value: string
     inputDisplay: JSX.Element
     dropdownDisplay: JSX.Element
-  }[] = FILTER_KEY_TYPE_OPTIONS.filter(
-    ({ featureFlag, skipIfNoModule, typeFeatureFlag }) => {
-      if (
-        typeFeatureFlag &&
-        !isDevelopment &&
-        !features[typeFeatureFlag]?.flag
-      ) {
-        return false
-      }
+  }[] = enabledOptions
+    .filter(({ featureFlag, skipIfNoModule, minVersion }) => {
       if (
         skipIfNoModule &&
         !modules?.some(({ name }) => name === skipIfNoModule)
       ) {
         return false
       }
+      if (minVersion && !isVersionHigherOrEquals(version, minVersion)) {
+        return false
+      }
       return !featureFlag || features[featureFlag]?.flag
-    },
-  ).map((item) => {
-    const { value, color, text } = item
-    return {
-      value,
-      inputDisplay: (
-        <HealthText
-          color={color}
-          data-test-subj={`filter-option-type-${value}`}
-        >
-          {text}
-        </HealthText>
-      ),
-      dropdownDisplay: (
-        <HealthText
-          color={color}
-          data-test-subj={`filter-option-type-${value}`}
-        >
-          {text}
-        </HealthText>
-      ),
-      'data-test-subj': `filter-option-type-${value}`,
-    }
-  })
+    })
+    .map((item) => {
+      const { value, color, text } = item
+      return {
+        value,
+        inputDisplay: (
+          <HealthText
+            color={color}
+            data-test-subj={`filter-option-type-${value}`}
+          >
+            {text}
+          </HealthText>
+        ),
+        dropdownDisplay: (
+          <HealthText
+            color={color}
+            data-test-subj={`filter-option-type-${value}`}
+          >
+            {text}
+          </HealthText>
+        ),
+        'data-test-subj': `filter-option-type-${value}`,
+      }
+    })
 
   options.unshift({
     value: ALL_KEY_TYPES_VALUE,
