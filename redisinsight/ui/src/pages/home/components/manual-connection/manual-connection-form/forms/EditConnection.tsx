@@ -7,10 +7,13 @@ import {
   SSHDetails,
   TlsDetails,
 } from 'uiSrc/pages/home/components/form'
+import ProductionToggle from 'uiSrc/pages/home/components/form/ProductionToggle'
 import { Spacer } from 'uiSrc/components/base/layout'
 import Divider from 'uiSrc/components/divider/Divider'
 import { BuildType } from 'uiSrc/constants/env'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
+import FeatureFlagComponent from 'uiSrc/components/feature-flag-component'
+import { FeatureFlags } from 'uiSrc/constants/featureFlags'
 import DecompressionAndFormatters from './DecompressionAndFormatters'
 
 import { AZURE_READONLY_FIELDS, ManualFormTab } from '../constants'
@@ -72,6 +75,14 @@ const EditConnection = (props: Props) => {
           <Divider />
           <Spacer size="m" />
           <ForceStandalone formik={formik} />
+          <FeatureFlagComponent name={FeatureFlags.devProdMode}>
+            <>
+              <Spacer size="m" />
+              <Divider />
+              <Spacer size="m" />
+              <ProductionToggle formik={formik} />
+            </>
+          </FeatureFlagComponent>
           {isCloneMode && (
             <>
               <Spacer size="m" />

@@ -7,6 +7,7 @@ import ManualConnectionFrom, {
   Props as ManualConnectionFromProps,
 } from 'uiSrc/pages/home/components/manual-connection/manual-connection-form/ManualConnectionForm'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { createInstanceStandaloneAction } from 'uiSrc/slices/instances/instances'
 import ManualConnectionWrapper, { Props } from './ManualConnectionWrapper'
 
 const mockedProps = mock<Props>()
@@ -20,6 +21,11 @@ jest.mock('./manual-connection-form/ManualConnectionForm', () => ({
 jest.mock('uiSrc/telemetry', () => ({
   ...jest.requireActual('uiSrc/telemetry'),
   sendEventTelemetry: jest.fn(),
+}))
+
+jest.mock('uiSrc/slices/instances/instances', () => ({
+  ...jest.requireActual('uiSrc/slices/instances/instances'),
+  createInstanceStandaloneAction: jest.fn(() => ({ type: 'noop' })),
 }))
 
 const mockManualConnectionFrom = (props: ManualConnectionFromProps) => (
@@ -44,6 +50,20 @@ const mockManualConnectionFrom = (props: ManualConnectionFromProps) => (
       onClick={() => props.onSubmit({})}
     >
       {props.submitButtonText}
+    </button>
+    <button
+      type="button"
+      data-testid="btn-submit-prod"
+      onClick={() =>
+        props.onSubmit({
+          name: 'db',
+          host: 'localhost',
+          port: '6379',
+          isProduction: true,
+        })
+      }
+    >
+      submit with isProduction
     </button>
     <button
       type="button"
@@ -120,6 +140,19 @@ describe('ManualConnectionWrapper', () => {
     expect(sendEventTelemetry).toBeCalledWith({
       event: TelemetryEvent.CONFIG_DATABASES_MANUALLY_SUBMITTED,
     })
+  })
+
+  it('should pass isProduction through preparePayload to the create action', () => {
+    ;(createInstanceStandaloneAction as jest.Mock).mockClear()
+    render(<ManualConnectionWrapper {...instance(mockedProps)} />)
+    act(() => {
+      fireEvent.click(screen.getByTestId('btn-submit-prod'))
+    })
+
+    expect(createInstanceStandaloneAction).toHaveBeenCalledWith(
+      expect.objectContaining({ isProduction: true }),
+      expect.anything(),
+    )
   })
 
   it('should call proper telemetry event on Clone database', () => {
