@@ -29,6 +29,13 @@ jobs:
         with:
           skip-system-deps: '1'
 
+      # yarn 1.x without workspaces does not share root binaries with sub-dirs.
+      # Workspace-level scripts (yarn --cwd redisinsight/<ws> ...) pipe through
+      # tsc / tsc-output-parser / tsx, which only live in the root node_modules.
+      # Putting root's .bin on PATH lets nested invocations find them.
+      - name: Expose root node_modules/.bin
+        run: echo "$(pwd)/node_modules/.bin" >> $GITHUB_PATH
+
       # UI plugins under redisinsight/ui/src/packages/* are sub-projects with
       # their own deps. The UI tsconfig includes src/**, so plugin sources are
       # type-checked too and need their deps installed for module resolution.
