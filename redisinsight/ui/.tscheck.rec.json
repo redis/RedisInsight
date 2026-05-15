@@ -1,0 +1,1242 @@
+{
+  "node_modules/@tanstack/table-core/src/features/ColumnFiltering.ts": {
+    "TS6133": 2
+  },
+  "node_modules/@tanstack/table-core/src/features/ColumnGrouping.ts": {
+    "TS6133": 1,
+    "TS7030": 1
+  },
+  "node_modules/@tanstack/table-core/src/features/RowSelection.ts": {
+    "TS7030": 1
+  },
+  "node_modules/@tanstack/table-core/src/features/RowSorting.ts": {
+    "TS6133": 1
+  },
+  "node_modules/@tanstack/table-core/src/types.ts": {
+    "TS6133": 1,
+    "TS6205": 1
+  },
+  "node_modules/@tanstack/table-core/src/utils/getGroupedRowModel.ts": {
+    "TS6133": 1
+  },
+  "node_modules/@tanstack/table-core/src/utils/getPaginationRowModel.ts": {
+    "TS6133": 1
+  },
+  "redisinsight/api-client/core/queryKeySerializer.gen.ts": {
+    "TS2339": 1,
+    "TS2345": 1,
+    "TS2488": 1
+  },
+  "redisinsight/desktop/preload.ts": {
+    "TS2307": 1
+  },
+  "redisinsight/ui/src/components/ContentEditable.tsx": {
+    "TS2339": 1,
+    "TS2551": 1
+  },
+  "redisinsight/ui/src/components/base/display/collapsible-nav-group/RICollapsibleNavGroup.tsx": {
+    "TS2724": 1
+  },
+  "redisinsight/ui/src/components/base/forms/buttons/EmptyButton.stories.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/components/base/icons/Icon.tsx": {
+    "TS7053": 2
+  },
+  "redisinsight/ui/src/components/base/icons/RiIcon.tsx": {
+    "TS2339": 1
+  },
+  "redisinsight/ui/src/components/base/utils/resize-observer/ResizeObserver.tsx": {
+    "TS7030": 1
+  },
+  "redisinsight/ui/src/components/bulk-actions-config/BulkActionsConfig.spec.tsx": {
+    "TS2322": 1,
+    "TS2339": 5,
+    "TS7016": 1
+  },
+  "redisinsight/ui/src/components/bulk-actions-config/BulkActionsConfig.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/components/charts/bar-chart/BarChart.spec.tsx": {
+    "TS2554": 1,
+    "TS7031": 1
+  },
+  "redisinsight/ui/src/components/cli/components/cli-input/CliAutocomplete/CliAutocomplete.stories.tsx": {
+    "TS2322": 3
+  },
+  "redisinsight/ui/src/components/command-helper/CommandHelperWrapper.spec.tsx": {
+    "TS2322": 1,
+    "TS2339": 6
+  },
+  "redisinsight/ui/src/components/config/Config.spec.tsx": {
+    "TS2339": 14
+  },
+  "redisinsight/ui/src/components/consents-settings/ConsentsNotifications/ConsentsNotifications.tsx": {
+    "TS7053": 1
+  },
+  "redisinsight/ui/src/components/consents-settings/ConsentsPrivacy/ConsentsPrivacy.tsx": {
+    "TS7053": 1
+  },
+  "redisinsight/ui/src/components/consents-settings/ConsentsSettings.tsx": {
+    "TS2339": 1
+  },
+  "redisinsight/ui/src/components/divider/Divider.spec.tsx": {
+    "TS2614": 1
+  },
+  "redisinsight/ui/src/components/formated-date/FormatedDate.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/components/global-subscriptions/CommonAppSubscription/CommonAppSubscription.spec.tsx": {
+    "TS2339": 1,
+    "TS7016": 1
+  },
+  "redisinsight/ui/src/components/instance-header/components/ShortInstanceInfo.spec.tsx": {
+    "TS2322": 1,
+    "TS2740": 2,
+    "TS7053": 1
+  },
+  "redisinsight/ui/src/components/instance-header/components/instances-navigation-popover/InstancesNavigationPopover.tsx": {
+    "TS2322": 1,
+    "TS2345": 2
+  },
+  "redisinsight/ui/src/components/json-viewer/utils.spec.ts": {
+    "TS2345": 3
+  },
+  "redisinsight/ui/src/components/main-router/components/RedisStackRoutes.spec.tsx": {
+    "TS2614": 1
+  },
+  "redisinsight/ui/src/components/main-router/constants/defaultRoutes.ts": {
+    "TS2322": 4
+  },
+  "redisinsight/ui/src/components/markdown/CloudLink/CloudLink.spec.tsx": {
+    "TS2741": 2
+  },
+  "redisinsight/ui/src/components/markdown/CloudLink/CloudLink.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/components/messages/module-not-loaded/ModuleNotLoadedButton.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/components/monitor-config/MonitorConfig.spec.tsx": {
+    "TS2339": 7,
+    "TS7016": 1
+  },
+  "redisinsight/ui/src/components/monitor-config/MonitorConfig.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/components/monitor/MonitorHeader/MonitorHeader.spec.tsx": {
+    "TS2339": 2
+  },
+  "redisinsight/ui/src/components/notifications/components/infinite-messages/InfiniteMessages.spec.tsx": {
+    "TS2554": 3
+  },
+  "redisinsight/ui/src/components/notifications/components/persistent-error-content/PersistentErrorContent.spec.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/components/oauth/oauth-jobs/OAuthJobs.spec.tsx": {
+    "TS2345": 3
+  },
+  "redisinsight/ui/src/components/oauth/oauth-jobs/OAuthJobs.tsx": {
+    "TS2345": 4
+  },
+  "redisinsight/ui/src/components/oauth/oauth-select-account-dialog/OAuthSelectAccountDialog.spec.tsx": {
+    "TS2554": 1
+  },
+  "redisinsight/ui/src/components/oauth/shared/oauth-form/OAuthForm.spec.tsx": {
+    "TS2739": 1,
+    "TS2741": 4
+  },
+  "redisinsight/ui/src/components/oauth/shared/oauth-social-buttons/OAuthSocialButtons.spec.tsx": {
+    "TS2741": 1
+  },
+  "redisinsight/ui/src/components/onboarding-features/OnboardingFeatures.spec.tsx": {
+    "TS2339": 6
+  },
+  "redisinsight/ui/src/components/page-header/components/index.ts": {
+    "TS2307": 1
+  },
+  "redisinsight/ui/src/components/pub-sub-config/PubSubConfig.spec.tsx": {
+    "TS2339": 4,
+    "TS7016": 1
+  },
+  "redisinsight/ui/src/components/query/query-actions/QueryActions.tsx": {
+    "TS2769": 1
+  },
+  "redisinsight/ui/src/components/query/query-card/QueryCard.spec.tsx": {
+    "TS2322": 12,
+    "TS2345": 1,
+    "TS2739": 1
+  },
+  "redisinsight/ui/src/components/query/query-card/QueryCard.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/components/query/query-card/QueryCardCliGroupResult/QueryCardCliGroupResult.spec.tsx": {
+    "TS2322": 3
+  },
+  "redisinsight/ui/src/components/query/query-card/QueryCardCliGroupResult/QueryCardCliGroupResult.tsx": {
+    "TS2339": 1
+  },
+  "redisinsight/ui/src/components/query/query-card/QueryCardCliResultWrapper/QueryCardCliResultWrapper.spec.tsx": {
+    "TS2322": 1,
+    "TS2345": 3
+  },
+  "redisinsight/ui/src/components/query/query-results/QueryResults.tsx": {
+    "TS2322": 4
+  },
+  "redisinsight/ui/src/components/range-filter/RangeFilter.tsx": {
+    "TS2322": 2,
+    "TS7006": 1,
+    "TS7031": 4
+  },
+  "redisinsight/ui/src/components/recommendation/content-element/ContentElement.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/components/recommendation/recommendation-voting/components/vote-option/VoteOption.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/components/shortcuts-flyout/ShortcutsFlyout.tsx": {
+    "TS2305": 1,
+    "TS7031": 1
+  },
+  "redisinsight/ui/src/components/side-panels/panels/ai-assistant/components/expert-chat/components/expert-chat-header/ExpertChatHeader.spec.tsx": {
+    "TS2741": 3
+  },
+  "redisinsight/ui/src/components/side-panels/panels/ai-assistant/components/expert-chat/components/no-indexes-initial-message/NoIndexesInitialMessage.spec.tsx": {
+    "TS2741": 3
+  },
+  "redisinsight/ui/src/components/side-panels/panels/ai-assistant/components/shared/markdown-message/components/chat-external-link/ChatExternalLink.tsx": {
+    "TS2305": 1
+  },
+  "redisinsight/ui/src/components/side-panels/panels/enablement-area/EnablementArea/components/DeleteTutorialButton/DeleteTutorialButton.tsx": {
+    "TS2769": 1
+  },
+  "redisinsight/ui/src/components/side-panels/panels/enablement-area/EnablementArea/components/InternalLink/InternalLink.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/components/side-panels/panels/live-time-recommendations/LiveTimeRecommendations.spec.tsx": {
+    "TS2339": 2
+  },
+  "redisinsight/ui/src/components/side-panels/panels/live-time-recommendations/components/recommendation/Recommendation.spec.tsx": {
+    "TS2339": 3,
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/components/virtual-grid/VirtualGrid.tsx": {
+    "TS18048": 1,
+    "TS2339": 8,
+    "TS2345": 3,
+    "TS2769": 1,
+    "TS7031": 1
+  },
+  "redisinsight/ui/src/components/virtual-grid/utils.tsx": {
+    "TS18049": 2,
+    "TS2322": 1,
+    "TS2339": 5,
+    "TS2345": 1,
+    "TS2698": 1,
+    "TS2769": 4
+  },
+  "redisinsight/ui/src/components/virtual-list/VirtualList.tsx": {
+    "TS18048": 1
+  },
+  "redisinsight/ui/src/components/virtual-table/VirtualTable.tsx": {
+    "TS2322": 2,
+    "TS2339": 1,
+    "TS2786": 5
+  },
+  "redisinsight/ui/src/constants/monaco/sqliteFunctions/monacoSQLiteFunctions.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/electron/components/ConfigOAuth/ConfigOAuth.tsx": {
+    "TS2339": 1,
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/electron/utils/tests/ipcCheckUpdates.spec.ts": {
+    "TS2345": 2,
+    "TS2740": 1
+  },
+  "redisinsight/ui/src/helpers/tests/constructKeysToTree.spec.ts": {
+    "TS7023": 1
+  },
+  "redisinsight/ui/src/mocks/data/rdi.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/mocks/factories/redisearch/IndexField.factory.ts": {
+    "TS2339": 1
+  },
+  "redisinsight/ui/src/mocks/factories/workbench/commandExectution.factory.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/mocks/handlers/instances/instancesHandlers.ts": {
+    "TS1117": 2,
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/mocks/handlers/workbench/commands.ts": {
+    "TS2304": 1,
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/packages/clients-list/src/components/json-view/JSONView.spec.tsx": {
+    "TS18047": 4,
+    "TS2339": 4,
+    "TS2345": 2
+  },
+  "redisinsight/ui/src/packages/clients-list/src/components/json-view/JSONView.tsx": {
+    "TS2307": 1
+  },
+  "redisinsight/ui/src/packages/clients-list/src/components/table-view/TableView.spec.tsx": {
+    "TS2307": 1
+  },
+  "redisinsight/ui/src/packages/clients-list/src/components/table-view/TableView.tsx": {
+    "TS2305": 1
+  },
+  "redisinsight/ui/src/packages/redisearch/src/App.tsx": {
+    "TS2307": 1
+  },
+  "redisinsight/ui/src/packages/redisearch/src/components/TableInfoResult/TableInfoResult.tsx": {
+    "TS2305": 1,
+    "TS6133": 1,
+    "TS7031": 1
+  },
+  "redisinsight/ui/src/packages/redisgraph/src/App.tsx": {
+    "TS18048": 1,
+    "TS2307": 1,
+    "TS2322": 1,
+    "TS7006": 1,
+    "TS7031": 1
+  },
+  "redisinsight/ui/src/packages/redisgraph/src/Graph.tsx": {
+    "TS2307": 1,
+    "TS2322": 1,
+    "TS2345": 6,
+    "TS6133": 5,
+    "TS7006": 9
+  },
+  "redisinsight/ui/src/packages/redisgraph/src/graphd3.ts": {
+    "TS18048": 9,
+    "TS2322": 4,
+    "TS2339": 1,
+    "TS2345": 13,
+    "TS2352": 1,
+    "TS2454": 1,
+    "TS2531": 3,
+    "TS2683": 41,
+    "TS2790": 1,
+    "TS6133": 9,
+    "TS7005": 14,
+    "TS7006": 79,
+    "TS7009": 3,
+    "TS7031": 1,
+    "TS7034": 4,
+    "TS7053": 3
+  },
+  "redisinsight/ui/src/packages/redisgraph/src/parser.ts": {
+    "TS6133": 1
+  },
+  "redisinsight/ui/src/packages/redisgraph/src/utils.ts": {
+    "TS7006": 11
+  },
+  "redisinsight/ui/src/packages/redistimeseries-app/src/components/Chart/Chart.tsx": {
+    "TS2307": 2,
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/packages/redistimeseries-app/src/components/Chart/ChartConfigForm.tsx": {
+    "TS2339": 1,
+    "TS2698": 1
+  },
+  "redisinsight/ui/src/packages/redistimeseries-app/src/components/Chart/ChartResultView.tsx": {
+    "TS2307": 1
+  },
+  "redisinsight/ui/src/packages/ri-explain/src/Explain.tsx": {
+    "TS2307": 4,
+    "TS7006": 2,
+    "TS7053": 1
+  },
+  "redisinsight/ui/src/packages/ri-explain/src/Node.tsx": {
+    "TS2322": 1,
+    "TS2339": 2
+  },
+  "redisinsight/ui/src/packages/ri-explain/src/parser.ts": {
+    "TS6133": 2,
+    "TS7023": 1,
+    "TS7053": 5
+  },
+  "redisinsight/ui/src/pages/autodiscover-azure/azure-subscriptions/AzureSubscriptions/AzureSubscriptions.spec.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/autodiscover-cloud/redis-cloud-databases-result/RedisCloudDatabasesResultPage.spec.tsx": {
+    "TS2339": 1
+  },
+  "redisinsight/ui/src/pages/autodiscover-cloud/redis-cloud-databases/RedisCloudDatabasesPage.spec.tsx": {
+    "TS2339": 1
+  },
+  "redisinsight/ui/src/pages/autodiscover-cloud/redis-cloud-subscriptions/RedisCloudSubscriptionsPage.spec.tsx": {
+    "TS2339": 1
+  },
+  "redisinsight/ui/src/pages/autodiscover-sentinel/sentinel-databases/components/index.ts": {
+    "TS2307": 1
+  },
+  "redisinsight/ui/src/pages/browser/BrowserPage.spec.tsx": {
+    "TS2339": 7,
+    "TS2614": 1
+  },
+  "redisinsight/ui/src/pages/browser/BrowserPage.test.tsx": {
+    "TS1015": 1,
+    "TS2339": 4
+  },
+  "redisinsight/ui/src/pages/browser/components/add-key/AddKeyHash/AddKeyHash.tsx": {
+    "TS2322": 3
+  },
+  "redisinsight/ui/src/pages/browser/components/add-key/AddKeyList/AddKeyList.spec.tsx": {
+    "TS2339": 1,
+    "TS7006": 1
+  },
+  "redisinsight/ui/src/pages/browser/components/add-key/AddKeyList/AddKeyList.tsx": {
+    "TS2322": 2
+  },
+  "redisinsight/ui/src/pages/browser/components/add-key/AddKeyReJSON/AddKeyReJSON.spec.tsx": {
+    "TS2339": 2
+  },
+  "redisinsight/ui/src/pages/browser/components/add-key/AddKeyReJSON/AddKeyReJSON.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/browser/components/add-key/AddKeySet/AddKeySet.tsx": {
+    "TS2322": 2
+  },
+  "redisinsight/ui/src/pages/browser/components/add-key/AddKeyStream/AddKeyStream.tsx": {
+    "TS2322": 2
+  },
+  "redisinsight/ui/src/pages/browser/components/add-key/AddKeyString/AddKeyString.spec.tsx": {
+    "TS2339": 1,
+    "TS7006": 1
+  },
+  "redisinsight/ui/src/pages/browser/components/add-key/AddKeyString/AddKeyString.tsx": {
+    "TS2322": 2
+  },
+  "redisinsight/ui/src/pages/browser/components/add-key/AddKeyZset/AddKeyZset.tsx": {
+    "TS2322": 2
+  },
+  "redisinsight/ui/src/pages/browser/components/bulk-actions/BulkDelete/BulkDeleteContent/BulkDeleteContent.tsx": {
+    "TS18048": 1,
+    "TS2769": 1
+  },
+  "redisinsight/ui/src/pages/browser/components/filter-key-type/FilterKeyType.spec.tsx": {
+    "TS2339": 4
+  },
+  "redisinsight/ui/src/pages/browser/components/key-list/KeyList.spec.tsx": {
+    "TS2322": 9,
+    "TS2339": 3,
+    "TS2352": 1
+  },
+  "redisinsight/ui/src/pages/browser/components/key-tree/KeyTree.tsx": {
+    "TS2339": 1,
+    "TS2345": 5,
+    "TS6133": 1
+  },
+  "redisinsight/ui/src/pages/browser/components/keys-browser-panel/contexts/Context.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/browser/components/make-searchable-button/MakeSearchableButton.spec.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/browser/components/make-searchable-modal/MakeSearchableModalProvider.spec.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/browser/components/onboarding-start-popover/OnboardingStartPopover.spec.tsx": {
+    "TS2339": 2
+  },
+  "redisinsight/ui/src/pages/browser/components/redisearch-key-list/RediSearchIndexesList.spec.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/pages/browser/components/virtual-tree/VirtualTree.spec.tsx": {
+    "TS2614": 1
+  },
+  "redisinsight/ui/src/pages/browser/components/virtual-tree/components/Node/Node.tsx": {
+    "TS2322": 3
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details-header/KeyDetailsHeader.spec.tsx": {
+    "TS2322": 2,
+    "TS2540": 1
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details-header/components/key-details-header-ttl/KeyDetailsHeaderTTL.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/hash-details/add-hash-fields/AddHashFields.tsx": {
+    "TS2322": 3
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/hash-details/hash-details-table/HashDetailsTable.tsx": {
+    "TS18046": 1,
+    "TS2322": 3,
+    "TS2345": 21
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/list-details/add-list-elements/AddListElements.tsx": {
+    "TS2322": 2
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/list-details/list-details-table/ListDetailsTable.spec.tsx": {
+    "TS2305": 1
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/list-details/list-details-table/ListDetailsTable.tsx": {
+    "TS2322": 3,
+    "TS2339": 1,
+    "TS2345": 11
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/list-details/remove-list-elements/RemoveListElements.spec.tsx": {
+    "TS2339": 2
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/list-details/remove-list-elements/RemoveListElements.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/rejson-details/components/add-item/AddItem.tsx": {
+    "TS2769": 1
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/rejson-details/rejson-object/RejsonObject.spec.tsx": {
+    "TS2322": 13
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/rejson-details/rejson-object/RejsonObject.tsx": {
+    "TS2345": 2,
+    "TS7030": 1
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/rejson-details/rejson-scalar/RejsonScalar.spec.tsx": {
+    "TS2322": 2
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/set-details/add-set-members/AddSetMembers.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/set-details/set-details-table/SetDetailsTable.spec.tsx": {
+    "TS2339": 1
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/set-details/set-details-table/SetDetailsTable.tsx": {
+    "TS2339": 1,
+    "TS2345": 6
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/stream-details/add-stream-entity/AddStreamEntries.tsx": {
+    "TS2322": 2
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/stream-details/add-stream-group/AddStreamGroup.tsx": {
+    "TS2322": 2
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/stream-details/consumers-view/ConsumersView/ConsumersView.tsx": {
+    "TS2322": 1,
+    "TS2769": 2
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/stream-details/consumers-view/ConsumersViewWrapper.spec.tsx": {
+    "TS2339": 1,
+    "TS2345": 1,
+    "TS2554": 1,
+    "TS2698": 2
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/stream-details/consumers-view/ConsumersViewWrapper.tsx": {
+    "TS2339": 2,
+    "TS2345": 2
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/stream-details/groups-view/GroupsView/GroupsView.tsx": {
+    "TS2322": 1,
+    "TS2769": 2
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/stream-details/groups-view/GroupsViewWrapper.spec.tsx": {
+    "TS2322": 3
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/stream-details/groups-view/GroupsViewWrapper.tsx": {
+    "TS2322": 2,
+    "TS2339": 5,
+    "TS2345": 7,
+    "TS2698": 3
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/stream-details/messages-view/MessageClaimPopover/MessageClaimPopover.tsx": {
+    "TS2339": 3,
+    "TS2345": 2
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/stream-details/messages-view/MessagesView/MessagesView.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/stream-details/messages-view/MessagesViewWrapper.spec.tsx": {
+    "TS2339": 1,
+    "TS2554": 1
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/stream-details/messages-view/MessagesViewWrapper.tsx": {
+    "TS2345": 2
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/stream-details/stream-data-view/StreamDataView/StreamDataView.tsx": {
+    "TS2322": 1,
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/stream-details/stream-data-view/StreamDataViewWrapper.tsx": {
+    "TS2322": 2,
+    "TS2345": 9,
+    "TS2741": 1,
+    "TS7006": 1,
+    "TS7053": 1
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/stream-details/stream-details-body/StreamDetailsBody.spec.tsx": {
+    "TS2339": 5
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/stream-details/stream-details-body/StreamDetailsBody.tsx": {
+    "TS2345": 2
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/stream-details/stream-tabs/StreamTabs.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/string-details/string-details-value/StringDetailsValue.spec.tsx": {
+    "TS2339": 10,
+    "TS2345": 3
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/string-details/string-details-value/StringDetailsValue.tsx": {
+    "TS18048": 2,
+    "TS2345": 5
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/zset-details/add-zset-members/AddZsetMembers.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/components/zset-details/zset-details-table/ZSetDetailsTable.tsx": {
+    "TS2322": 3,
+    "TS2345": 9
+  },
+  "redisinsight/ui/src/pages/browser/modules/key-details/shared/formatted-value/FormattedValue.tsx": {
+    "TS2339": 1
+  },
+  "redisinsight/ui/src/pages/cluster-details/components/ClusterNodesTable/ClusterNodesTable.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/cluster-details/components/ClusterNodesTable/components/ClusterNodesNumericCell/utils/isMaxColumnFieldValue.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/pages/cluster-details/components/cluster-details-graphics/ClusterDetailsGraphics.spec.tsx": {
+    "TS2307": 1
+  },
+  "redisinsight/ui/src/pages/database-analysis/DatabaseAnalysisPage.spec.tsx": {
+    "TS2339": 2
+  },
+  "redisinsight/ui/src/pages/database-analysis/components/analysis-data-view/AnalysisDataView.spec.tsx": {
+    "TS2339": 2
+  },
+  "redisinsight/ui/src/pages/home/components/add-database-screen/AddDatabaseScreen.styles.ts": {
+    "TS2304": 1
+  },
+  "redisinsight/ui/src/pages/home/components/cloud-connection/cloud-connection-form/CloudConnectionForm.tsx": {
+    "TS7053": 1
+  },
+  "redisinsight/ui/src/pages/home/components/cluster-connection/ClusterConnectionFormWrapper.spec.tsx": {
+    "TS2339": 1,
+    "TS2554": 1,
+    "TS2722": 1
+  },
+  "redisinsight/ui/src/pages/home/components/cluster-connection/cluster-connection-form/ClusterConnectionForm.tsx": {
+    "TS7053": 1
+  },
+  "redisinsight/ui/src/pages/home/components/database-list-header/DatabaseListHeader.spec.tsx": {
+    "TS2322": 2
+  },
+  "redisinsight/ui/src/pages/home/components/databases-list/DatabasesList.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/home/components/databases-list/components/DatabasesListCellConnectionType/DatabasesListCellConnectionType.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/home/components/databases-list/components/DatabasesListCellLastConnection/DatabasesListCellLastConnection.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/home/components/databases-list/components/DatabasesListCellName/DatabasesListCellName.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/home/components/empty-message/EmptyMessage.tsx": {
+    "TS2769": 1
+  },
+  "redisinsight/ui/src/pages/home/components/form/TlsDetails.tsx": {
+    "TS2322": 3
+  },
+  "redisinsight/ui/src/pages/home/components/import-database/components/TableResult/TableResult.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/home/components/manual-connection/ManualConnectionWrapper.spec.tsx": {
+    "TS2339": 5,
+    "TS2345": 1,
+    "TS2722": 1
+  },
+  "redisinsight/ui/src/pages/home/components/manual-connection/ManualConnectionWrapper.tsx": {
+    "TS2739": 1
+  },
+  "redisinsight/ui/src/pages/home/components/manual-connection/manual-connection-form/forms/AddConnection.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/home/components/manual-connection/manual-connection-form/forms/EditConnection.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/home/components/manual-connection/manual-connection-form/forms/EditSentinelConnection.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/home/components/search-databases-list/SearchDatabasesList.spec.tsx": {
+    "TS2345": 2
+  },
+  "redisinsight/ui/src/pages/home/components/search-databases-list/SearchDatabasesList.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/pages/home/components/sentinel-connection/SentinelConnectionWrapper.spec.tsx": {
+    "TS2339": 3,
+    "TS2345": 1,
+    "TS2722": 1
+  },
+  "redisinsight/ui/src/pages/home/components/sentinel-connection/SentinelConnectionWrapper.tsx": {
+    "TS2739": 1
+  },
+  "redisinsight/ui/src/pages/home/components/sentinel-connection/sentinel-connection-form/SentinelConnectionForm.tsx": {
+    "TS2322": 3
+  },
+  "redisinsight/ui/src/pages/home/interfaces/form.ts": {
+    "TS2430": 1
+  },
+  "redisinsight/ui/src/pages/home/utils/form.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/instance/InstancePage.spec.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/pages/pub-sub/PubSubPage.spec.tsx": {
+    "TS2339": 1
+  },
+  "redisinsight/ui/src/pages/rdi/home/components/rdi-instances-list/RdiInstancesList.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/rdi/home/components/rdi-instances-list/components/RdiInstancesListCell/RdiInstancesListCell.spec.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/rdi/home/search/SearchRdiList.spec.tsx": {
+    "TS2322": 2
+  },
+  "redisinsight/ui/src/pages/rdi/home/search/SearchRdiList.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/pages/rdi/instance/components/header/components/buttons/deploy-pipeline-button/DeployPipelineButton.spec.tsx": {
+    "TS2741": 1
+  },
+  "redisinsight/ui/src/pages/rdi/instance/components/header/components/buttons/deploy-pipeline-button/DeployPipelineButton.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/pages/rdi/instance/components/header/components/index.ts": {
+    "TS2307": 1
+  },
+  "redisinsight/ui/src/pages/rdi/pipeline-management/components/jobs-panel/Panel.spec.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/pages/rdi/pipeline-management/components/jobs-panel/Panel.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/pages/rdi/pipeline-management/components/test-connections-log/TestConnectionsLog.tsx": {
+    "TS2305": 1,
+    "TS7031": 1
+  },
+  "redisinsight/ui/src/pages/rdi/pipeline-management/components/test-connections-panel/TestConnectionsPanel.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/rdi/pipeline-management/pages/job/Job.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/pages/rdi/pipeline-management/pages/job/JobsWrapper.spec.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/pages/redis-stack/components/edit-connection/EditConnection.tsx": {
+    "TS2322": 1,
+    "TS2345": 2
+  },
+  "redisinsight/ui/src/pages/settings/SettingsPage.spec.tsx": {
+    "TS2339": 2
+  },
+  "redisinsight/ui/src/pages/settings/components/cloud-settings/CloudSettings.spec.tsx": {
+    "TS2339": 3
+  },
+  "redisinsight/ui/src/pages/settings/components/cloud-settings/components/user-api-keys-table/UserApiKeysTable.spec.tsx": {
+    "TS2339": 4
+  },
+  "redisinsight/ui/src/pages/settings/components/general-settings/datetime-formatter/DateTimeFormatter.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/pages/settings/components/general-settings/datetime-formatter/components/datetime-form/DatetimeForm.spec.tsx": {
+    "TS2339": 3
+  },
+  "redisinsight/ui/src/pages/settings/components/general-settings/datetime-formatter/components/datetime-form/DatetimeForm.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/pages/settings/components/general-settings/datetime-formatter/components/timezone-form/TimezoneForm.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/slow-log/SlowLogPage.tsx": {
+    "TS2786": 2
+  },
+  "redisinsight/ui/src/pages/slow-log/components/SlowLogConfig/SlowLogConfig.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/slow-log/components/SlowLogTable/SlowLogTable.tsx": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/vector-search/components/index-info/IndexInfo.stories.tsx": {
+    "TS2322": 9
+  },
+  "redisinsight/ui/src/pages/vector-search/components/index-info/IndexInfo.utils.spec.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/vector-search/hooks/useCreateIndexFlow/useCreateIndexFlow.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/pages/vector-search/hooks/useListContent/index.ts": {
+    "TS2724": 1
+  },
+  "redisinsight/ui/src/pages/vector-search/hooks/useListContent/useListContent.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/pages/vector-search/hooks/useLoadKeyData/helpers.spec.ts": {
+    "TS2345": 3
+  },
+  "redisinsight/ui/src/pages/vector-search/pages/VectorSearchQueryPage/hooks/useQuery.utils.spec.ts": {
+    "TS2322": 4
+  },
+  "redisinsight/ui/src/pages/workbench/components/query/Query/Query.tsx": {
+    "TS18047": 1,
+    "TS2339": 1
+  },
+  "redisinsight/ui/src/pages/workbench/components/wb-results/WBResults/WBResults.tsx": {
+    "TS2322": 4
+  },
+  "redisinsight/ui/src/pages/workbench/components/wb-view/WBView/WBView.spec.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/pages/workbench/components/wb-view/WBViewWrapper.spec.tsx": {
+    "TS2339": 1
+  },
+  "redisinsight/ui/src/pages/workbench/utils/suggestions.ts": {
+    "TS6133": 1
+  },
+  "redisinsight/ui/src/pages/workbench/utils/tests/monaco.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/pages/workbench/utils/tests/query.spec.ts": {
+    "TS7053": 1
+  },
+  "redisinsight/ui/src/plugins/pluginImport.spec.ts": {
+    "TS2322": 1,
+    "TS7017": 1
+  },
+  "redisinsight/ui/src/services/commands-history/database/CommandsHistoryIndexedDB.spec.ts": {
+    "TS2339": 2,
+    "TS2345": 4,
+    "TS2554": 5
+  },
+  "redisinsight/ui/src/services/commands-history/database/CommandsHistorySQLite.spec.ts": {
+    "TS2339": 16,
+    "TS2345": 10
+  },
+  "redisinsight/ui/src/services/commands-history/utils/command-execution.mapper.spec.ts": {
+    "TS2322": 1,
+    "TS2339": 5,
+    "TS2345": 4
+  },
+  "redisinsight/ui/src/services/formatter/FormatSelector.spec.ts": {
+    "TS18046": 1
+  },
+  "redisinsight/ui/src/services/formatter/MarkdownToJsxString.ts": {
+    "TS2345": 4,
+    "TS2769": 3
+  },
+  "redisinsight/ui/src/services/query-library/QueryLibraryService.spec.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/services/tests/formatter/MarkdownToJsxString.spec.ts": {
+    "TS2352": 1
+  },
+  "redisinsight/ui/src/setup-env.ts": {
+    "TS2307": 1
+  },
+  "redisinsight/ui/src/slices/analytics/clusterDetails.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/analytics/dbAnalysis.ts": {
+    "TS2345": 4
+  },
+  "redisinsight/ui/src/slices/analytics/slowlog.ts": {
+    "TS2345": 4
+  },
+  "redisinsight/ui/src/slices/app/info.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/app/plugins.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/app/redis-commands.ts": {
+    "TS2345": 2
+  },
+  "redisinsight/ui/src/slices/browser/bulkActions.ts": {
+    "TS2345": 2
+  },
+  "redisinsight/ui/src/slices/browser/hash.ts": {
+    "TS2322": 2,
+    "TS2345": 17,
+    "TS2769": 1
+  },
+  "redisinsight/ui/src/slices/browser/keys.ts": {
+    "TS2322": 1,
+    "TS2345": 9,
+    "TS2741": 1
+  },
+  "redisinsight/ui/src/slices/browser/list.ts": {
+    "TS2322": 5,
+    "TS2345": 18,
+    "TS2769": 1
+  },
+  "redisinsight/ui/src/slices/browser/redisearch.ts": {
+    "TS2322": 1,
+    "TS2339": 2,
+    "TS2345": 10,
+    "TS2769": 1
+  },
+  "redisinsight/ui/src/slices/browser/rejson.ts": {
+    "TS2345": 8
+  },
+  "redisinsight/ui/src/slices/browser/set.ts": {
+    "TS2322": 2,
+    "TS2345": 14
+  },
+  "redisinsight/ui/src/slices/browser/stream.ts": {
+    "TS2322": 4,
+    "TS2339": 1,
+    "TS2345": 30,
+    "TS2698": 1,
+    "TS2739": 1
+  },
+  "redisinsight/ui/src/slices/browser/string.ts": {
+    "TS2345": 7,
+    "TS2741": 1
+  },
+  "redisinsight/ui/src/slices/browser/vectorSet.ts": {
+    "TS2322": 1,
+    "TS2345": 2
+  },
+  "redisinsight/ui/src/slices/browser/zset.ts": {
+    "TS2322": 3,
+    "TS2345": 22
+  },
+  "redisinsight/ui/src/slices/cli/cli-output.ts": {
+    "TS2345": 2
+  },
+  "redisinsight/ui/src/slices/cli/cli-settings.ts": {
+    "TS2345": 5
+  },
+  "redisinsight/ui/src/slices/content/create-redis-buttons.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/instances/caCerts.ts": {
+    "TS2345": 5
+  },
+  "redisinsight/ui/src/slices/instances/clientCerts.ts": {
+    "TS2345": 4
+  },
+  "redisinsight/ui/src/slices/instances/cloud.ts": {
+    "TS2345": 5
+  },
+  "redisinsight/ui/src/slices/instances/cluster.ts": {
+    "TS2345": 5
+  },
+  "redisinsight/ui/src/slices/instances/instances.ts": {
+    "TS2322": 1,
+    "TS2339": 2,
+    "TS2345": 14
+  },
+  "redisinsight/ui/src/slices/instances/sentinel.ts": {
+    "TS2322": 1,
+    "TS2345": 6
+  },
+  "redisinsight/ui/src/slices/interfaces/hash.ts": {
+    "TS2430": 1
+  },
+  "redisinsight/ui/src/slices/interfaces/instances.ts": {
+    "TS2430": 2
+  },
+  "redisinsight/ui/src/slices/interfaces/zset.ts": {
+    "TS2430": 1
+  },
+  "redisinsight/ui/src/slices/oauth/cloud.ts": {
+    "TS2345": 9
+  },
+  "redisinsight/ui/src/slices/panels/aiAssistant.ts": {
+    "TS2345": 3
+  },
+  "redisinsight/ui/src/slices/pubsub/pubsub.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/rdi/dryRun.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/rdi/instances.ts": {
+    "TS2322": 2,
+    "TS2339": 1,
+    "TS2345": 8
+  },
+  "redisinsight/ui/src/slices/rdi/pipeline.ts": {
+    "TS2345": 7
+  },
+  "redisinsight/ui/src/slices/rdi/statistics.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/rdi/testConnections.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/recommendations/recommendations.ts": {
+    "TS2345": 3
+  },
+  "redisinsight/ui/src/slices/tests/analytics/clusterDetails.spec.ts": {
+    "TS2345": 2
+  },
+  "redisinsight/ui/src/slices/tests/analytics/dbAnalysis.spec.ts": {
+    "TS2322": 1,
+    "TS2345": 10
+  },
+  "redisinsight/ui/src/slices/tests/analytics/settings.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/tests/analytics/slowlog.spec.ts": {
+    "TS2345": 5
+  },
+  "redisinsight/ui/src/slices/tests/app/features.spec.ts": {
+    "TS2345": 4
+  },
+  "redisinsight/ui/src/slices/tests/app/info.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/tests/app/notifications.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/tests/app/plugins.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/tests/app/redis-commands.spec.ts": {
+    "TS2345": 4
+  },
+  "redisinsight/ui/src/slices/tests/browser/bulkActions.spec.ts": {
+    "TS2345": 7,
+    "TS2740": 2
+  },
+  "redisinsight/ui/src/slices/tests/browser/hash.spec.ts": {
+    "TS2345": 31
+  },
+  "redisinsight/ui/src/slices/tests/browser/keys.spec.ts": {
+    "TS2322": 4,
+    "TS2339": 4,
+    "TS2345": 28
+  },
+  "redisinsight/ui/src/slices/tests/browser/list.spec.ts": {
+    "TS2322": 3,
+    "TS2345": 32,
+    "TS2352": 1,
+    "TS2554": 1
+  },
+  "redisinsight/ui/src/slices/tests/browser/redisearch.spec.ts": {
+    "TS2322": 2,
+    "TS2345": 14,
+    "TS2739": 6
+  },
+  "redisinsight/ui/src/slices/tests/browser/rejson.spec.ts": {
+    "TS2345": 26,
+    "TS2554": 2
+  },
+  "redisinsight/ui/src/slices/tests/browser/set.spec.ts": {
+    "TS2345": 33
+  },
+  "redisinsight/ui/src/slices/tests/browser/stream.spec.ts": {
+    "TS2322": 11,
+    "TS2345": 58
+  },
+  "redisinsight/ui/src/slices/tests/browser/string.spec.ts": {
+    "TS2345": 38,
+    "TS2554": 1
+  },
+  "redisinsight/ui/src/slices/tests/browser/vectorSet.spec.ts": {
+    "TS2345": 4
+  },
+  "redisinsight/ui/src/slices/tests/browser/zset.spec.ts": {
+    "TS2322": 2,
+    "TS2345": 54,
+    "TS2554": 2
+  },
+  "redisinsight/ui/src/slices/tests/cli/cli-output.spec.ts": {
+    "TS2322": 1,
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/tests/cli/cli-settings.spec.ts": {
+    "TS2345": 3,
+    "TS2554": 2
+  },
+  "redisinsight/ui/src/slices/tests/cli/monitor.spec.ts": {
+    "TS7016": 1
+  },
+  "redisinsight/ui/src/slices/tests/content/create-redis-buttons.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/tests/content/guide-links.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/tests/instances/caCerts.spec.ts": {
+    "TS2345": 5
+  },
+  "redisinsight/ui/src/slices/tests/instances/clientCerts.spec.ts": {
+    "TS2345": 2
+  },
+  "redisinsight/ui/src/slices/tests/instances/cloud.spec.ts": {
+    "TS2322": 3,
+    "TS2345": 7
+  },
+  "redisinsight/ui/src/slices/tests/instances/cluster.spec.ts": {
+    "TS2322": 6,
+    "TS2345": 3
+  },
+  "redisinsight/ui/src/slices/tests/instances/instances.spec.ts": {
+    "TS2322": 1,
+    "TS2345": 23
+  },
+  "redisinsight/ui/src/slices/tests/instances/sentinel.spec.ts": {
+    "TS2322": 3,
+    "TS2345": 8
+  },
+  "redisinsight/ui/src/slices/tests/oauth/azure.spec.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/slices/tests/oauth/cloud.spec.ts": {
+    "TS2345": 14
+  },
+  "redisinsight/ui/src/slices/tests/panels/aiAssistant.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/tests/panels/sidePanels.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/tests/pubsub/pubsub.spec.ts": {
+    "TS2345": 3
+  },
+  "redisinsight/ui/src/slices/tests/rdi/dryRun.spec.tsx": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/tests/rdi/instances.spec.ts": {
+    "TS2345": 4
+  },
+  "redisinsight/ui/src/slices/tests/rdi/pipeline.spec.ts": {
+    "TS2345": 7
+  },
+  "redisinsight/ui/src/slices/tests/rdi/testConnections.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/tests/recommendations/recommendations.spec.ts": {
+    "TS2322": 4,
+    "TS2345": 11,
+    "TS2559": 1
+  },
+  "redisinsight/ui/src/slices/tests/user/user-settings.spec.ts": {
+    "TS2345": 2
+  },
+  "redisinsight/ui/src/slices/tests/workbench/wb-custom-tutorials.spec.ts": {
+    "TS2345": 4
+  },
+  "redisinsight/ui/src/slices/tests/workbench/wb-results.spec.ts": {
+    "TS2322": 7,
+    "TS2345": 20,
+    "TS2741": 1
+  },
+  "redisinsight/ui/src/slices/tests/workbench/wb-tutorials.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/user/user-settings.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/slices/workbench/wb-custom-tutorials.ts": {
+    "TS2339": 1,
+    "TS2345": 3
+  },
+  "redisinsight/ui/src/slices/workbench/wb-results.ts": {
+    "TS2322": 1,
+    "TS2345": 6
+  },
+  "redisinsight/ui/src/slices/workbench/wb-tutorials.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/telemetry/telemetryUtils.ts": {
+    "TS7053": 1
+  },
+  "redisinsight/ui/src/utils/bigString.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/utils/formatters/valueFormatters.tsx": {
+    "TS2322": 2,
+    "TS2345": 1,
+    "TS7016": 1
+  },
+  "redisinsight/ui/src/utils/instance/instanceModules.ts": {
+    "TS7053": 1
+  },
+  "redisinsight/ui/src/utils/instance/instanceNavigation.ts": {
+    "TS7006": 1
+  },
+  "redisinsight/ui/src/utils/monaco/monacoRedisSignatureHelpProvider.ts": {
+    "TS2339": 1
+  },
+  "redisinsight/ui/src/utils/monaco/monacoUtils.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/ui/src/utils/parseResponse.ts": {
+    "TS2322": 2,
+    "TS2339": 12,
+    "TS7005": 1,
+    "TS7034": 1,
+    "TS7053": 5
+  },
+  "redisinsight/ui/src/utils/streamUtils.ts": {
+    "TS2345": 2
+  },
+  "redisinsight/ui/src/utils/test-utils.tsx": {
+    "TS2322": 2
+  },
+  "redisinsight/ui/src/utils/tests/apiResponse.spec.ts": {
+    "TS2345": 1,
+    "TS2739": 2,
+    "TS2741": 1
+  },
+  "redisinsight/ui/src/utils/tests/cliHelper.spec.ts": {
+    "TS18046": 1,
+    "TS2345": 2
+  },
+  "redisinsight/ui/src/utils/tests/commands.spec.ts": {
+    "TS2322": 1,
+    "TS2556": 1
+  },
+  "redisinsight/ui/src/utils/tests/dom/downloadFile.spec.ts": {
+    "TS2352": 1
+  },
+  "redisinsight/ui/src/utils/tests/events/handleDownloadButton.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/utils/tests/formatters/bufferFormatters.spec.ts": {
+    "TS2304": 1
+  },
+  "redisinsight/ui/src/utils/tests/formatters/markdown/remarkRedisUpload.spec.ts": {
+    "TS2339": 3
+  },
+  "redisinsight/ui/src/utils/tests/formatters/valueFormatters.spec.ts": {
+    "TS2769": 2
+  },
+  "redisinsight/ui/src/utils/tests/instance/instanceNavigation.spec.ts": {
+    "TS2322": 3
+  },
+  "redisinsight/ui/src/utils/tests/monaco/cyber/completionProvider.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/utils/tests/monaco/cyber/monarchTokensProvider.spec.ts": {
+    "TS7053": 1
+  },
+  "redisinsight/ui/src/utils/tests/monaco/monacoUtils.spec.ts": {
+    "TS2345": 4
+  },
+  "redisinsight/ui/src/utils/tests/oauth/cloudSsoUtm.spec.tsx": {
+    "TS2322": 3,
+    "TS2345": 1
+  },
+  "redisinsight/ui/src/utils/tests/onboarding.spec.tsx": {
+    "TS2554": 2
+  },
+  "redisinsight/ui/src/utils/tests/parseResponse.spec.ts": {
+    "TS2345": 5,
+    "TS7005": 1,
+    "TS7034": 1
+  }
+}

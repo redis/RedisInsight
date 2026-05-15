@@ -103,3 +103,6 @@ storybook-static
 .env.mcp
 
 .eslintcache
+
+# TypeScript incremental build info
+*.tsbuildinfo

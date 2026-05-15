@@ -1,0 +1,2112 @@
+{
+  "redisinsight/api/config/default.ts": {
+    "TS2345": 38,
+    "TS7053": 6
+  },
+  "redisinsight/api/config/production.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/config/test.ts": {
+    "TS2345": 6
+  },
+  "redisinsight/api/scripts/default-commands.ts": {
+    "TS7031": 3
+  },
+  "redisinsight/api/src/__mocks__/ai.ts": {
+    "TS7016": 1
+  },
+  "redisinsight/api/src/__mocks__/cloud-job.ts": {
+    "TS7053": 6
+  },
+  "redisinsight/api/src/__mocks__/cloud-subscription.ts": {
+    "TS2783": 1
+  },
+  "redisinsight/api/src/__mocks__/database-discovery.ts": {
+    "TS18048": 6,
+    "TS2352": 3
+  },
+  "redisinsight/api/src/__mocks__/databases.ts": {
+    "TS2322": 1,
+    "TS2698": 1,
+    "TS2783": 1
+  },
+  "redisinsight/api/src/__mocks__/errors.ts": {
+    "TS2322": 3
+  },
+  "redisinsight/api/src/__mocks__/feature.ts": {
+    "TS2339": 5
+  },
+  "redisinsight/api/src/__mocks__/profiler.ts": {
+    "TS2322": 1,
+    "TS7016": 1
+  },
+  "redisinsight/api/src/__mocks__/rdi.ts": {
+    "TS2322": 1,
+    "TS7016": 1
+  },
+  "redisinsight/api/src/__mocks__/redis-rs.ts": {
+    "TS2345": 1,
+    "TS7023": 1
+  },
+  "redisinsight/api/src/__mocks__/ssh.ts": {
+    "TS2698": 1
+  },
+  "redisinsight/api/src/app.module.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/common/decorators/client-metadata/client-metadata.decorator.ts": {
+    "TS2322": 2,
+    "TS2345": 2,
+    "TS2769": 1
+  },
+  "redisinsight/api/src/common/decorators/object-as-map.decorator.ts": {
+    "TS2322": 1,
+    "TS2769": 1,
+    "TS7053": 1
+  },
+  "redisinsight/api/src/common/decorators/redis-string/redis-string-type.decorator.ts": {
+    "TS2345": 4
+  },
+  "redisinsight/api/src/common/decorators/session/session-metadata.decorator.ts": {
+    "TS2769": 1
+  },
+  "redisinsight/api/src/common/logger/app-logger.spec.ts": {
+    "TS7053": 18
+  },
+  "redisinsight/api/src/common/logger/app-logger.ts": {
+    "TS2322": 1,
+    "TS2722": 3
+  },
+  "redisinsight/api/src/common/pipes/database-index.validation.pipe.ts": {
+    "TS7006": 1
+  },
+  "redisinsight/api/src/common/transformers/redis-reply/formatter-manager.ts": {
+    "TS7053": 3
+  },
+  "redisinsight/api/src/common/transformers/redis-reply/strategies/ascii-formatter.strategey.spec.ts": {
+    "TS7005": 8,
+    "TS7034": 2
+  },
+  "redisinsight/api/src/common/transformers/redis-reply/strategies/ascii-formatter.strategy.ts": {
+    "TS7053": 2
+  },
+  "redisinsight/api/src/common/transformers/redis-reply/strategies/utf8-formatter.strategy.spec.ts": {
+    "TS7005": 9,
+    "TS7034": 2
+  },
+  "redisinsight/api/src/common/transformers/redis-reply/strategies/utf8-formatter.strategy.ts": {
+    "TS7053": 2
+  },
+  "redisinsight/api/src/common/transformers/redis-string/any-to-redis-string.transformer.ts": {
+    "TS7031": 2
+  },
+  "redisinsight/api/src/common/transformers/redis-string/redis-string-to-ascii.transformer.ts": {
+    "TS7031": 2
+  },
+  "redisinsight/api/src/common/transformers/redis-string/redis-string-to-buffer.transformer.ts": {
+    "TS7031": 2
+  },
+  "redisinsight/api/src/common/transformers/redis-string/redis-string-to-utf8.transformer.ts": {
+    "TS7031": 2
+  },
+  "redisinsight/api/src/common/utils/merge.util.ts": {
+    "TS7023": 1
+  },
+  "redisinsight/api/src/constants/error-messages.ts": {
+    "TS7006": 4
+  },
+  "redisinsight/api/src/constants/exceptions.ts": {
+    "TS7006": 1
+  },
+  "redisinsight/api/src/decorators/api-endpoint.decorator.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/dto/dto-transformer.ts": {
+    "TS7031": 1,
+    "TS7053": 1
+  },
+  "redisinsight/api/src/exceptions/global-exception.filter.ts": {
+    "TS7053": 1
+  },
+  "redisinsight/api/src/init-helper.ts": {
+    "TS7006": 2
+  },
+  "redisinsight/api/src/main.ts": {
+    "TS7006": 1
+  },
+  "redisinsight/api/src/middleware/subpath-proxy.middleware.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/ai/query/ai-query.service.spec.ts": {
+    "TS7005": 35,
+    "TS7006": 35,
+    "TS7034": 5
+  },
+  "redisinsight/api/src/modules/ai/query/ai-query.service.ts": {
+    "TS18048": 4,
+    "TS2454": 1,
+    "TS7005": 2,
+    "TS7006": 1,
+    "TS7034": 2,
+    "TS7053": 1
+  },
+  "redisinsight/api/src/modules/ai/query/providers/ai-query.provider.spec.ts": {
+    "TS2345": 2,
+    "TS7016": 1
+  },
+  "redisinsight/api/src/modules/ai/query/providers/auth/local.ai-query-auth.provider.ts": {
+    "TS18048": 1,
+    "TS2322": 2,
+    "TS7023": 1
+  },
+  "redisinsight/api/src/modules/ai/query/repositories/in-memory.ai-query.context.repository.ts": {
+    "TS2322": 2
+  },
+  "redisinsight/api/src/modules/ai/query/repositories/local.ai-query.message.repository.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/ai/query/utils/context.util.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/ai/query/utils/context.util.ts": {
+    "TS7006": 3,
+    "TS7053": 16
+  },
+  "redisinsight/api/src/modules/analytics/analytics.service.spec.ts": {
+    "TS7005": 18,
+    "TS7034": 3
+  },
+  "redisinsight/api/src/modules/analytics/analytics.service.ts": {
+    "TS2322": 2
+  },
+  "redisinsight/api/src/modules/analytics/command.telemetry.base.service.spec.ts": {
+    "TS7005": 6,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/analytics/telemetry.base.service.ts": {
+    "TS7053": 7
+  },
+  "redisinsight/api/src/modules/auth/window-auth/constants/exceptions.ts": {
+    "TS7006": 1
+  },
+  "redisinsight/api/src/modules/auth/window-auth/window-auth.service.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/azure/auth/azure-auth.service.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/azure/autodiscovery/azure-autodiscovery.service.ts": {
+    "TS7022": 1
+  },
+  "redisinsight/api/src/modules/azure/azure-token-refresh.manager.ts": {
+    "TS18048": 1
+  },
+  "redisinsight/api/src/modules/browser/browser-history/browser-history.controller.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/browser/browser-history/browser-history.module.ts": {
+    "TS7031": 1
+  },
+  "redisinsight/api/src/modules/browser/browser-history/dto/get.browser-history.dto.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/browser/browser-history/repositories/local.browser-history.repository.spec.ts": {
+    "TS2345": 2,
+    "TS7005": 3,
+    "TS7034": 1,
+    "TS7053": 4
+  },
+  "redisinsight/api/src/modules/browser/browser-history/repositories/local.browser-history.repository.ts": {
+    "TS2345": 2
+  },
+  "redisinsight/api/src/modules/browser/hash/hash.module.ts": {
+    "TS7031": 1
+  },
+  "redisinsight/api/src/modules/browser/hash/hash.service.spec.ts": {
+    "TS7005": 2,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/browser/hash/hash.service.ts": {
+    "TS18049": 2,
+    "TS2322": 1,
+    "TS2345": 4,
+    "TS7005": 1,
+    "TS7034": 1,
+    "TS7053": 2
+  },
+  "redisinsight/api/src/modules/browser/keys/key-info/strategies/graph.key-info.strategy.ts": {
+    "TS18049": 1,
+    "TS2322": 3,
+    "TS7053": 1
+  },
+  "redisinsight/api/src/modules/browser/keys/key-info/strategies/hash.key-info.strategy.ts": {
+    "TS18047": 1,
+    "TS2322": 5
+  },
+  "redisinsight/api/src/modules/browser/keys/key-info/strategies/list.key-info.strategy.ts": {
+    "TS18047": 1,
+    "TS2322": 5
+  },
+  "redisinsight/api/src/modules/browser/keys/key-info/strategies/rejson-rl.key-info.strategy.ts": {
+    "TS2322": 5
+  },
+  "redisinsight/api/src/modules/browser/keys/key-info/strategies/set.key-info.strategy.ts": {
+    "TS18047": 1,
+    "TS2322": 5
+  },
+  "redisinsight/api/src/modules/browser/keys/key-info/strategies/stream.key-info.strategy.ts": {
+    "TS18047": 1,
+    "TS2322": 5
+  },
+  "redisinsight/api/src/modules/browser/keys/key-info/strategies/string.key-info.strategy.ts": {
+    "TS2322": 3
+  },
+  "redisinsight/api/src/modules/browser/keys/key-info/strategies/ts.key-info.strategy.ts": {
+    "TS2322": 3
+  },
+  "redisinsight/api/src/modules/browser/keys/key-info/strategies/unsupported.key-info.strategy.ts": {
+    "TS2322": 2
+  },
+  "redisinsight/api/src/modules/browser/keys/key-info/strategies/z-set.key-info.strategy.ts": {
+    "TS18047": 1,
+    "TS2322": 5
+  },
+  "redisinsight/api/src/modules/browser/keys/keys.module.ts": {
+    "TS7031": 1
+  },
+  "redisinsight/api/src/modules/browser/keys/keys.service.ts": {
+    "TS18049": 1
+  },
+  "redisinsight/api/src/modules/browser/keys/scanner/scanner.spec.ts": {
+    "TS7005": 4,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/browser/keys/scanner/strategies/cluster.scanner.strategy.spec.ts": {
+    "TS18048": 2
+  },
+  "redisinsight/api/src/modules/browser/keys/scanner/strategies/cluster.scanner.strategy.ts": {
+    "TS18048": 1,
+    "TS18049": 2,
+    "TS2322": 4,
+    "TS2345": 2,
+    "TS2538": 1,
+    "TS7053": 2
+  },
+  "redisinsight/api/src/modules/browser/keys/scanner/strategies/standalone.scanner.strategy.spec.ts": {
+    "TS18048": 7,
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/browser/keys/scanner/strategies/standalone.scanner.strategy.ts": {
+    "TS2322": 4,
+    "TS2345": 3
+  },
+  "redisinsight/api/src/modules/browser/list/list.module.ts": {
+    "TS7031": 1
+  },
+  "redisinsight/api/src/modules/browser/list/list.service.ts": {
+    "TS2322": 2,
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/browser/redisearch/redisearch.module.ts": {
+    "TS7031": 1
+  },
+  "redisinsight/api/src/modules/browser/redisearch/redisearch.service.spec.ts": {
+    "TS2339": 1,
+    "TS7005": 3,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/browser/redisearch/redisearch.service.ts": {
+    "TS2339": 1,
+    "TS2769": 2,
+    "TS7005": 1,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/browser/rejson-rl/rejson-rl.module.ts": {
+    "TS7031": 1
+  },
+  "redisinsight/api/src/modules/browser/rejson-rl/rejson-rl.service.spec.ts": {
+    "TS7006": 4
+  },
+  "redisinsight/api/src/modules/browser/rejson-rl/rejson-rl.service.ts": {
+    "TS18047": 1,
+    "TS18049": 4,
+    "TS2345": 1,
+    "TS7053": 7
+  },
+  "redisinsight/api/src/modules/browser/set/set.module.ts": {
+    "TS7031": 1
+  },
+  "redisinsight/api/src/modules/browser/set/set.service.ts": {
+    "TS18049": 2,
+    "TS2322": 4,
+    "TS2345": 2,
+    "TS7053": 2
+  },
+  "redisinsight/api/src/modules/browser/stream/services/consumer-group.service.ts": {
+    "TS2322": 1,
+    "TS2345": 2
+  },
+  "redisinsight/api/src/modules/browser/stream/services/consumer.service.ts": {
+    "TS2322": 2,
+    "TS2345": 2
+  },
+  "redisinsight/api/src/modules/browser/stream/services/stream.service.ts": {
+    "TS2322": 1,
+    "TS2345": 5,
+    "TS2533": 1
+  },
+  "redisinsight/api/src/modules/browser/stream/stream.module.ts": {
+    "TS7031": 1
+  },
+  "redisinsight/api/src/modules/browser/string/string.module.ts": {
+    "TS7031": 1
+  },
+  "redisinsight/api/src/modules/browser/string/string.service.spec.ts": {
+    "TS7005": 2,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/browser/string/string.service.ts": {
+    "TS18049": 1,
+    "TS2322": 2
+  },
+  "redisinsight/api/src/modules/browser/utils/clusterCursor.ts": {
+    "TS7005": 1,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/browser/utils/redisIndexInfo.ts": {
+    "TS7006": 1,
+    "TS7053": 1
+  },
+  "redisinsight/api/src/modules/browser/vector-set/vector-set.module.ts": {
+    "TS7031": 1
+  },
+  "redisinsight/api/src/modules/browser/vector-set/vector-set.service.spec.ts": {
+    "TS18048": 2
+  },
+  "redisinsight/api/src/modules/browser/vector-set/vector-set.service.ts": {
+    "TS2345": 3
+  },
+  "redisinsight/api/src/modules/browser/vector-set/vector-set.utils.ts": {
+    "TS18048": 2,
+    "TS2322": 2,
+    "TS2769": 2
+  },
+  "redisinsight/api/src/modules/browser/z-set/z-set.module.ts": {
+    "TS7031": 1
+  },
+  "redisinsight/api/src/modules/browser/z-set/z-set.service.spec.ts": {
+    "TS7005": 1,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/browser/z-set/z-set.service.ts": {
+    "TS18049": 2,
+    "TS2322": 5,
+    "TS2345": 3,
+    "TS2740": 1,
+    "TS7053": 2
+  },
+  "redisinsight/api/src/modules/bulk-actions/bulk-actions.analytics.spec.ts": {
+    "TS2322": 11,
+    "TS2345": 10,
+    "TS7005": 15,
+    "TS7034": 2
+  },
+  "redisinsight/api/src/modules/bulk-actions/bulk-actions.service.spec.ts": {
+    "TS7016": 1
+  },
+  "redisinsight/api/src/modules/bulk-actions/bulk-import.controller.ts": {
+    "TS7016": 1
+  },
+  "redisinsight/api/src/modules/bulk-actions/bulk-import.service.spec.ts": {
+    "TS2322": 4,
+    "TS2345": 1,
+    "TS7005": 14,
+    "TS7016": 1,
+    "TS7034": 2
+  },
+  "redisinsight/api/src/modules/bulk-actions/bulk-import.service.ts": {
+    "TS2322": 2,
+    "TS2345": 2,
+    "TS7006": 2,
+    "TS7016": 1
+  },
+  "redisinsight/api/src/modules/bulk-actions/models/bulk-action-filter.ts": {
+    "TS2322": 5
+  },
+  "redisinsight/api/src/modules/bulk-actions/models/bulk-action-progress.ts": {
+    "TS7006": 3
+  },
+  "redisinsight/api/src/modules/bulk-actions/models/bulk-action.spec.ts": {
+    "TS2739": 3,
+    "TS7005": 17,
+    "TS7034": 3,
+    "TS7053": 3
+  },
+  "redisinsight/api/src/modules/bulk-actions/models/bulk-action.ts": {
+    "TS7006": 2
+  },
+  "redisinsight/api/src/modules/bulk-actions/models/runners/abstract.bulk-action.runner.ts": {
+    "TS7006": 1,
+    "TS7010": 2
+  },
+  "redisinsight/api/src/modules/bulk-actions/models/runners/simple/abstract.bulk-action.simple.runner.spec.ts": {
+    "TS7005": 11,
+    "TS7034": 6,
+    "TS7053": 6
+  },
+  "redisinsight/api/src/modules/bulk-actions/models/runners/simple/abstract.bulk-action.simple.runner.ts": {
+    "TS7006": 2
+  },
+  "redisinsight/api/src/modules/bulk-actions/providers/bulk-actions.provider.spec.ts": {
+    "TS2322": 1,
+    "TS7016": 1
+  },
+  "redisinsight/api/src/modules/certificate/ca-certificate.service.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/certificate/client-certificate.service.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/certificate/repositories/local.ca-certificate.repository.ts": {
+    "TS2322": 1,
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/certificate/repositories/local.client-certificate.repository.ts": {
+    "TS2322": 1,
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/certificate/transformers/ca-cert.transformer.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/certificate/transformers/client-cert.transformer.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/cli/cli.module.ts": {
+    "TS7031": 2
+  },
+  "redisinsight/api/src/modules/cli/constants/errors.ts": {
+    "TS7006": 4
+  },
+  "redisinsight/api/src/modules/cli/services/cli-analytics/cli-analytics.service.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/cli/services/cli-analytics/cli-analytics.service.ts": {
+    "TS7053": 5
+  },
+  "redisinsight/api/src/modules/cli/services/cli-business/cli-business.service.spec.ts": {
+    "TS2322": 1,
+    "TS7005": 4,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/cli/services/cli-business/output-formatter/output-formatter-manager.ts": {
+    "TS7053": 3
+  },
+  "redisinsight/api/src/modules/cli/services/cli-business/output-formatter/strategies/raw-formatter.strategy.spec.ts": {
+    "TS7005": 8,
+    "TS7034": 2
+  },
+  "redisinsight/api/src/modules/cli/services/cli-business/output-formatter/strategies/raw-formatter.strategy.ts": {
+    "TS7053": 2
+  },
+  "redisinsight/api/src/modules/cli/services/cli-business/output-formatter/strategies/text-formatter.strategy.spec.ts": {
+    "TS7005": 10,
+    "TS7034": 2
+  },
+  "redisinsight/api/src/modules/cli/services/cli-business/output-formatter/strategies/utf-8-formatter.strategy.ts": {
+    "TS7053": 2
+  },
+  "redisinsight/api/src/modules/cloud/auth/auth-strategy/cloud-auth.strategy.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/cloud/auth/auth-strategy/cloud-auth.strategy.ts": {
+    "TS7008": 1
+  },
+  "redisinsight/api/src/modules/cloud/auth/cloud-auth.analytics.spec.ts": {
+    "TS2345": 1,
+    "TS2352": 2,
+    "TS7005": 7,
+    "TS7034": 2
+  },
+  "redisinsight/api/src/modules/cloud/auth/cloud-auth.service.spec.ts": {
+    "TS2345": 4,
+    "TS7005": 13,
+    "TS7034": 4
+  },
+  "redisinsight/api/src/modules/cloud/auth/cloud-auth.service.ts": {
+    "TS18048": 6,
+    "TS2322": 1,
+    "TS2345": 10,
+    "TS2454": 4,
+    "TS2532": 5
+  },
+  "redisinsight/api/src/modules/cloud/autodiscovery/cloud-autodicovery.analytics.spec.ts": {
+    "TS7005": 14,
+    "TS7034": 2
+  },
+  "redisinsight/api/src/modules/cloud/autodiscovery/cloud-autodiscovery.service.ts": {
+    "TS2454": 1,
+    "TS2769": 1,
+    "TS7005": 3,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/cloud/autodiscovery/cloud.autodiscovery.controller.ts": {
+    "TS7006": 1
+  },
+  "redisinsight/api/src/modules/cloud/capi-key/cloud-capi-key.analytics.spec.ts": {
+    "TS7005": 2,
+    "TS7034": 2
+  },
+  "redisinsight/api/src/modules/cloud/capi-key/cloud-capi-key.controller.ts": {
+    "TS7006": 3
+  },
+  "redisinsight/api/src/modules/cloud/capi-key/cloud-capi-key.service.spec.ts": {
+    "TS2345": 2
+  },
+  "redisinsight/api/src/modules/cloud/capi-key/cloud-capi-key.service.ts": {
+    "TS2322": 1,
+    "TS2345": 2
+  },
+  "redisinsight/api/src/modules/cloud/capi-key/repository/local.cloud-capi-key.repository.ts": {
+    "TS2322": 2,
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/cloud/common/providers/cloud.api.provider.ts": {
+    "TS2322": 5,
+    "TS7023": 1,
+    "TS7053": 4
+  },
+  "redisinsight/api/src/modules/cloud/common/providers/cloud.capi.provider.ts": {
+    "TS2322": 2
+  },
+  "redisinsight/api/src/modules/cloud/database/cloud-database.analytics.spec.ts": {
+    "TS7005": 5,
+    "TS7034": 2
+  },
+  "redisinsight/api/src/modules/cloud/database/utils/cloud-data-converter.ts": {
+    "TS7053": 1
+  },
+  "redisinsight/api/src/modules/cloud/job/cloud-job.controller.ts": {
+    "TS7006": 3
+  },
+  "redisinsight/api/src/modules/cloud/job/cloud-job.provider.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/cloud/job/dto/create.cloud-job.dto.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/cloud/job/jobs/cloud-job.spec.ts": {
+    "TS7005": 17,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/cloud/job/jobs/cloud-job.ts": {
+    "TS2532": 1,
+    "TS7053": 1
+  },
+  "redisinsight/api/src/modules/cloud/job/jobs/create-free-database.cloud-job.ts": {
+    "TS2322": 1,
+    "TS2345": 2,
+    "TS2454": 2
+  },
+  "redisinsight/api/src/modules/cloud/job/jobs/create-free-subscription.cloud-job.ts": {
+    "TS2345": 4
+  },
+  "redisinsight/api/src/modules/cloud/job/jobs/import-free-database.cloud-job.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/cloud/job/jobs/wait-for-active-database.cloud-job.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/cloud/job/jobs/wait-for-active-subscription.cloud-job.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/cloud/job/jobs/wait-for-task.cloud-job.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/cloud/job/transformers/cloud-job-data.transformer.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/cloud/session/cloud-session.service.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/cloud/session/repositories/local.cloud.session.repository.spec.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/cloud/session/repositories/local.cloud.session.repository.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/cloud/subscription/cloud-subscription.api.service.ts": {
+    "TS7006": 1,
+    "TS7053": 1
+  },
+  "redisinsight/api/src/modules/cloud/subscription/cloud-subscription.capi.service.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/cloud/subscription/cloud-subscription.controller.ts": {
+    "TS7006": 1
+  },
+  "redisinsight/api/src/modules/cloud/user/cloud-user.api.service.spec.ts": {
+    "TS7005": 35,
+    "TS7016": 1,
+    "TS7034": 5
+  },
+  "redisinsight/api/src/modules/cloud/user/cloud-user.api.service.ts": {
+    "TS2322": 1,
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/cloud/user/providers/cloud-user.api.provider.ts": {
+    "TS2322": 1,
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/cloud/user/utils/token.spec.ts": {
+    "TS7016": 1
+  },
+  "redisinsight/api/src/modules/cluster-monitor/cluster-monitor.service.ts": {
+    "TS2322": 2
+  },
+  "redisinsight/api/src/modules/cluster-monitor/strategies/abstract.info.strategy.ts": {
+    "TS18048": 1,
+    "TS2322": 2,
+    "TS7006": 7,
+    "TS7010": 1,
+    "TS7053": 4
+  },
+  "redisinsight/api/src/modules/cluster-monitor/strategies/cluster-shards.info.strategy.spec.ts": {
+    "TS2339": 10
+  },
+  "redisinsight/api/src/modules/cluster-monitor/strategies/cluster-shards.info.strategy.ts": {
+    "TS2769": 1,
+    "TS7005": 1,
+    "TS7034": 1,
+    "TS7053": 1
+  },
+  "redisinsight/api/src/modules/commands/commands-json.provider.ts": {
+    "TS7006": 2
+  },
+  "redisinsight/api/src/modules/commands/commands.module.ts": {
+    "TS7031": 2
+  },
+  "redisinsight/api/src/modules/commands/commands.service.ts": {
+    "TS7008": 2,
+    "TS7053": 1
+  },
+  "redisinsight/api/src/modules/custom-tutorial/custom-tutorial.analytics.spec.ts": {
+    "TS7005": 4,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/custom-tutorial/custom-tutorial.service.ts": {
+    "TS2345": 2,
+    "TS7005": 1,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/custom-tutorial/providers/custom-tutorial.fs.provider.spec.ts": {
+    "TS7005": 1,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/custom-tutorial/providers/custom-tutorial.fs.provider.ts": {
+    "TS7006": 1
+  },
+  "redisinsight/api/src/modules/custom-tutorial/providers/custom-tutorial.manifest.provider.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/custom-tutorial/providers/custom-tutorial.manifest.provider.ts": {
+    "TS2322": 5,
+    "TS7006": 1
+  },
+  "redisinsight/api/src/modules/database-analysis/database-analysis.service.ts": {
+    "TS18048": 1,
+    "TS2322": 1,
+    "TS2345": 1,
+    "TS2454": 1,
+    "TS2769": 1,
+    "TS7005": 3,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/database-analysis/entities/database-analysis.entity.ts": {
+    "TS7006": 4
+  },
+  "redisinsight/api/src/modules/database-analysis/models/scan-filter.ts": {
+    "TS2322": 3
+  },
+  "redisinsight/api/src/modules/database-analysis/providers/database-analysis.provider.spec.ts": {
+    "TS7005": 4,
+    "TS7034": 1,
+    "TS7053": 4
+  },
+  "redisinsight/api/src/modules/database-analysis/providers/database-analysis.provider.ts": {
+    "TS2322": 4,
+    "TS7053": 6
+  },
+  "redisinsight/api/src/modules/database-analysis/providers/database-analyzer.spec.ts": {
+    "TS2352": 2,
+    "TS7006": 1
+  },
+  "redisinsight/api/src/modules/database-analysis/providers/database-analyzer.ts": {
+    "TS2322": 1,
+    "TS2345": 1,
+    "TS2769": 1,
+    "TS7053": 2
+  },
+  "redisinsight/api/src/modules/database-analysis/scanner/key-info/key-info.provider.spec.ts": {
+    "TS2531": 1
+  },
+  "redisinsight/api/src/modules/database-analysis/scanner/key-info/key-info.provider.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/database-analysis/scanner/key-info/strategies/abstract.info.strategy.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/database-analysis/scanner/key-info/strategies/default-info.strategy.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/database-analysis/scanner/key-info/strategies/graph-info.strategy.ts": {
+    "TS18049": 1,
+    "TS7053": 1
+  },
+  "redisinsight/api/src/modules/database-analysis/scanner/key-info/strategies/json-info.strategy.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/database-analysis/scanner/keys-scanner.spec.ts": {
+    "TS2339": 1
+  },
+  "redisinsight/api/src/modules/database-analysis/scanner/keys-scanner.ts": {
+    "TS18048": 1,
+    "TS2345": 1,
+    "TS2454": 4,
+    "TS7005": 1,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/database-discovery/pre-setup.database-discovery.service.spec.ts": {
+    "TS18048": 2
+  },
+  "redisinsight/api/src/modules/database-discovery/pre-setup.database-discovery.service.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/database-discovery/utils/autodiscovery.util.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/database-discovery/utils/autodiscovery.util.ts": {
+    "TS2345": 3
+  },
+  "redisinsight/api/src/modules/database-discovery/utils/pre-setup.discovery.util.spec.ts": {
+    "TS18048": 9
+  },
+  "redisinsight/api/src/modules/database-discovery/utils/pre-setup.discovery.util.ts": {
+    "TS2322": 13,
+    "TS2345": 2,
+    "TS7005": 1,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/database-import/certificate-import.service.spec.ts": {
+    "TS7005": 10,
+    "TS7034": 4
+  },
+  "redisinsight/api/src/modules/database-import/certificate-import.service.ts": {
+    "TS2322": 7,
+    "TS2345": 10
+  },
+  "redisinsight/api/src/modules/database-import/database-import.analytics.spec.ts": {
+    "TS7005": 7,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/database-import/database-import.analytics.ts": {
+    "TS2769": 1
+  },
+  "redisinsight/api/src/modules/database-import/database-import.service.spec.ts": {
+    "TS2345": 1,
+    "TS7005": 1,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/database-import/database-import.service.ts": {
+    "TS18048": 1,
+    "TS2322": 1,
+    "TS2345": 5,
+    "TS7053": 2
+  },
+  "redisinsight/api/src/modules/database-import/dto/database-import.response.ts": {
+    "TS7006": 1
+  },
+  "redisinsight/api/src/modules/database-import/dto/import.database.dto.ts": {
+    "TS2345": 2
+  },
+  "redisinsight/api/src/modules/database-import/ssh-import.service.spec.ts": {
+    "TS7005": 1,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/database-import/ssh-import.service.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/database-recommendation/database-recommendation.analytics.spec.ts": {
+    "TS7005": 1,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/database-recommendation/database-recommendation.service.ts": {
+    "TS2322": 2,
+    "TS7052": 1
+  },
+  "redisinsight/api/src/modules/database-recommendation/models/database-recommendation.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/database-recommendation/repositories/local.database.recommendation.repository.ts": {
+    "TS2322": 2
+  },
+  "redisinsight/api/src/modules/database-recommendation/scanner/recommendation.provider.spec.ts": {
+    "TS2531": 1
+  },
+  "redisinsight/api/src/modules/database-recommendation/scanner/recommendation.provider.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/database-recommendation/scanner/recommendations.scanner.spec.ts": {
+    "TS2339": 1,
+    "TS7005": 4,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/database-recommendation/scanner/strategies/avoid-lua-scripts.strategy.ts": {
+    "TS18048": 1
+  },
+  "redisinsight/api/src/modules/database-recommendation/scanner/strategies/big-amount-connected-clients.strategy.ts": {
+    "TS18048": 1
+  },
+  "redisinsight/api/src/modules/database-recommendation/scanner/strategies/big-set.strategy.ts": {
+    "TS18048": 1
+  },
+  "redisinsight/api/src/modules/database-recommendation/scanner/strategies/big-string.strategy.ts": {
+    "TS18048": 1
+  },
+  "redisinsight/api/src/modules/database-recommendation/scanner/strategies/compression-for-list.strategy.ts": {
+    "TS18048": 1
+  },
+  "redisinsight/api/src/modules/database-recommendation/scanner/strategies/redis-version.strategy.ts": {
+    "TS7016": 1
+  },
+  "redisinsight/api/src/modules/database-recommendation/scanner/strategies/rts.strategy.ts": {
+    "TS7006": 1,
+    "TS7031": 2
+  },
+  "redisinsight/api/src/modules/database-recommendation/scanner/strategies/search-JSON.strategy.spec.ts": {
+    "TS7005": 1,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/database-recommendation/scanner/strategies/shard-hash.strategy.ts": {
+    "TS7006": 1
+  },
+  "redisinsight/api/src/modules/database/database-connection.service.ts": {
+    "TS2322": 1,
+    "TS2345": 1,
+    "TS2538": 1
+  },
+  "redisinsight/api/src/modules/database/database-info.controller.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/database/database.analytics.spec.ts": {
+    "TS2345": 2,
+    "TS7005": 16,
+    "TS7034": 2
+  },
+  "redisinsight/api/src/modules/database/database.analytics.ts": {
+    "TS18048": 2,
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/database/database.service.spec.ts": {
+    "TS2352": 2
+  },
+  "redisinsight/api/src/modules/database/database.service.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/database/dto/create.database.dto.ts": {
+    "TS2345": 3
+  },
+  "redisinsight/api/src/modules/database/middleware/connection.middleware.ts": {
+    "TS7016": 1
+  },
+  "redisinsight/api/src/modules/database/providers/database-info.provider.spec.ts": {
+    "TS18048": 2,
+    "TS2345": 1,
+    "TS2488": 1,
+    "TS2769": 1
+  },
+  "redisinsight/api/src/modules/database/providers/database-info.provider.ts": {
+    "TS18047": 2,
+    "TS18048": 4,
+    "TS2322": 3,
+    "TS2345": 2,
+    "TS7006": 1,
+    "TS7053": 2
+  },
+  "redisinsight/api/src/modules/database/providers/database-overview.provider.spec.ts": {
+    "TS2322": 2,
+    "TS7005": 26,
+    "TS7034": 3
+  },
+  "redisinsight/api/src/modules/database/providers/database-overview.provider.ts": {
+    "TS2322": 16,
+    "TS2339": 2,
+    "TS2345": 11,
+    "TS7053": 1
+  },
+  "redisinsight/api/src/modules/database/providers/database.client.factory.spec.ts": {
+    "TS18048": 2,
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/database/providers/database.client.factory.ts": {
+    "TS2339": 2
+  },
+  "redisinsight/api/src/modules/database/providers/database.factory.spec.ts": {
+    "TS7005": 3,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/database/providers/database.factory.ts": {
+    "TS18048": 1,
+    "TS2538": 1
+  },
+  "redisinsight/api/src/modules/database/repositories/local.database.repository.spec.ts": {
+    "TS2322": 3,
+    "TS2339": 3
+  },
+  "redisinsight/api/src/modules/database/repositories/local.database.repository.ts": {
+    "TS2322": 5,
+    "TS2345": 2
+  },
+  "redisinsight/api/src/modules/database/repositories/stack.databases.repository.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/encryption/encryption.service.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/encryption/model.encryptor.ts": {
+    "TS2322": 4,
+    "TS7053": 8
+  },
+  "redisinsight/api/src/modules/encryption/strategies/key-encryption.strategy.spec.ts": {
+    "TS2345": 2
+  },
+  "redisinsight/api/src/modules/encryption/strategies/key-encryption.strategy.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/encryption/strategies/keytar-encryption.strategy.spec.ts": {
+    "TS2345": 2
+  },
+  "redisinsight/api/src/modules/encryption/strategies/keytar-encryption.strategy.ts": {
+    "TS2345": 1,
+    "TS7008": 1
+  },
+  "redisinsight/api/src/modules/feature/feature.analytics.spec.ts": {
+    "TS7005": 4,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/feature/feature.analytics.ts": {
+    "TS7053": 1
+  },
+  "redisinsight/api/src/modules/feature/local.feature.service.spec.ts": {
+    "TS2532": 1
+  },
+  "redisinsight/api/src/modules/feature/local.feature.service.ts": {
+    "TS2322": 3,
+    "TS2339": 1,
+    "TS2345": 1,
+    "TS7053": 11
+  },
+  "redisinsight/api/src/modules/feature/local.features-config.service.ts": {
+    "TS2339": 1
+  },
+  "redisinsight/api/src/modules/feature/providers/feature-flag/feature-flag.provider.spec.ts": {
+    "TS7053": 2
+  },
+  "redisinsight/api/src/modules/feature/providers/feature-flag/strategies/feature.flag.strategy.spec.ts": {
+    "TS2339": 11,
+    "TS2532": 5,
+    "TS2698": 6,
+    "TS7005": 25,
+    "TS7034": 4
+  },
+  "redisinsight/api/src/modules/feature/providers/feature-flag/strategies/switchable.flag.strategy.spec.ts": {
+    "TS7005": 36,
+    "TS7034": 2
+  },
+  "redisinsight/api/src/modules/feature/providers/feature-flag/strategies/switchable.flag.strategy.ts": {
+    "TS7053": 1
+  },
+  "redisinsight/api/src/modules/feature/repositories/local.features-config.repository.spec.ts": {
+    "TS7053": 2
+  },
+  "redisinsight/api/src/modules/feature/transformers/feature-config-filter.transformer.ts": {
+    "TS7031": 2
+  },
+  "redisinsight/api/src/modules/notification/providers/global-notification.provider.ts": {
+    "TS2741": 1,
+    "TS7005": 1,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/plugin/plugin.service.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/profiler/emitters/client.logs-emiter.spec.ts": {
+    "TS7016": 1
+  },
+  "redisinsight/api/src/modules/profiler/emitters/file.logs-emitter.ts": {
+    "TS7006": 1
+  },
+  "redisinsight/api/src/modules/profiler/models/log-file.spec.ts": {
+    "TS7053": 2
+  },
+  "redisinsight/api/src/modules/profiler/models/log-file.ts": {
+    "TS2322": 1,
+    "TS2722": 2
+  },
+  "redisinsight/api/src/modules/profiler/models/redis.observer.spec.ts": {
+    "TS2532": 2,
+    "TS7005": 8,
+    "TS7034": 3
+  },
+  "redisinsight/api/src/modules/profiler/models/redis.observer.ts": {
+    "TS18048": 1,
+    "TS2322": 1,
+    "TS7006": 4
+  },
+  "redisinsight/api/src/modules/profiler/profiler.gateway.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/profiler/profiler.service.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/profiler/providers/log-file.provider.ts": {
+    "TS2322": 2,
+    "TS7006": 1
+  },
+  "redisinsight/api/src/modules/profiler/providers/profiler-client.provider.spec.ts": {
+    "TS2345": 2
+  },
+  "redisinsight/api/src/modules/profiler/providers/profiler-client.provider.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/profiler/providers/redis-observer.provider.ts": {
+    "TS18048": 2,
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/pub-sub/errors/pub-sub-ws.exception.ts": {
+    "TS7053": 1
+  },
+  "redisinsight/api/src/modules/pub-sub/model/redis-client-subscriber.spec.ts": {
+    "TS7005": 8,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/pub-sub/model/redis-client-subscriber.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/pub-sub/model/user-session.spec.ts": {
+    "TS7005": 6,
+    "TS7034": 2
+  },
+  "redisinsight/api/src/modules/pub-sub/providers/user-session.provider.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/query-library/__tests__/query-library.factory.ts": {
+    "TS2322": 2
+  },
+  "redisinsight/api/src/modules/query-library/repositories/local-query-library.repository.spec.ts": {
+    "TS2339": 8,
+    "TS2345": 8
+  },
+  "redisinsight/api/src/modules/query-library/repositories/local-query-library.repository.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/rdi/client/api/v1/api.rdi.client.spec.ts": {
+    "TS18048": 1,
+    "TS7016": 1
+  },
+  "redisinsight/api/src/modules/rdi/client/api/v1/api.rdi.client.ts": {
+    "TS7016": 1
+  },
+  "redisinsight/api/src/modules/rdi/client/api/v1/transformers/statistics.transformers.spec.ts": {
+    "TS2345": 5
+  },
+  "redisinsight/api/src/modules/rdi/client/api/v2/transformers/metrics-collections.transformer.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/rdi/decorators/request.rdi.client.metadata.decorator.ts": {
+    "TS2322": 1,
+    "TS2345": 1,
+    "TS2769": 1
+  },
+  "redisinsight/api/src/modules/rdi/providers/rdi.client.factory.spec.ts": {
+    "TS7016": 1,
+    "TS7053": 1
+  },
+  "redisinsight/api/src/modules/rdi/providers/rdi.client.provider.spec.ts": {
+    "TS2322": 6
+  },
+  "redisinsight/api/src/modules/rdi/providers/rdi.client.storage.spec.ts": {
+    "TS18048": 1,
+    "TS2322": 4,
+    "TS2352": 2,
+    "TS2532": 1
+  },
+  "redisinsight/api/src/modules/rdi/providers/rdi.client.storage.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/rdi/rdi-pipeline.analytics.spec.ts": {
+    "TS7005": 2,
+    "TS7034": 2
+  },
+  "redisinsight/api/src/modules/rdi/rdi-statistics.service.spec.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/rdi/rdi.analytics.spec.ts": {
+    "TS7005": 2,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/rdi/rdi.service.spec.ts": {
+    "TS2322": 3,
+    "TS7053": 1
+  },
+  "redisinsight/api/src/modules/rdi/repository/local.rdi.repository.ts": {
+    "TS2322": 1,
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/rdi/utils/pipeline.util.spec.ts": {
+    "TS7005": 1,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/rdi/utils/pipeline.util.ts": {
+    "TS7005": 1,
+    "TS7034": 1,
+    "TS7053": 1
+  },
+  "redisinsight/api/src/modules/recommendation/providers/recommendation.provider.spec.ts": {
+    "TS7005": 2,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/recommendation/providers/recommendation.provider.ts": {
+    "TS18049": 1,
+    "TS2322": 44,
+    "TS7016": 1,
+    "TS7053": 1
+  },
+  "redisinsight/api/src/modules/recommendation/recommendation.service.ts": {
+    "TS2322": 1,
+    "TS2345": 19,
+    "TS2722": 1,
+    "TS2769": 1
+  },
+  "redisinsight/api/src/modules/redis-enterprise/redis-enterprise.analytics.spec.ts": {
+    "TS7005": 7,
+    "TS7034": 2
+  },
+  "redisinsight/api/src/modules/redis-enterprise/redis-enterprise.service.spec.ts": {
+    "TS2769": 1,
+    "TS7005": 14,
+    "TS7034": 2
+  },
+  "redisinsight/api/src/modules/redis-enterprise/redis-enterprise.service.ts": {
+    "TS2322": 1,
+    "TS2339": 1,
+    "TS2790": 1
+  },
+  "redisinsight/api/src/modules/redis-enterprise/utils/redis-enterprise-converter.ts": {
+    "TS7053": 1
+  },
+  "redisinsight/api/src/modules/redis-sentinel/redis-sentinel.analytics.spec.ts": {
+    "TS7005": 7,
+    "TS7034": 2
+  },
+  "redisinsight/api/src/modules/redis-sentinel/redis-sentinel.analytics.ts": {
+    "TS18048": 1
+  },
+  "redisinsight/api/src/modules/redis/client/ioredis/cluster.ioredis.client.ts": {
+    "TS2488": 1
+  },
+  "redisinsight/api/src/modules/redis/client/ioredis/ioredis.client.ts": {
+    "TS2345": 2,
+    "TS2532": 1
+  },
+  "redisinsight/api/src/modules/redis/client/node-redis/cluster.node-redis.client.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/redis/client/node-redis/node-redis.client.ts": {
+    "TS2532": 1
+  },
+  "redisinsight/api/src/modules/redis/client/node-redis/standalone.node-redis.client.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/redis/client/redis.client.ts": {
+    "TS2322": 5,
+    "TS7016": 1
+  },
+  "redisinsight/api/src/modules/redis/connection/ioredis.redis.connection.strategy.spec.ts": {
+    "TS7005": 35,
+    "TS7006": 2,
+    "TS7034": 4
+  },
+  "redisinsight/api/src/modules/redis/connection/ioredis.redis.connection.strategy.ts": {
+    "TS18048": 2,
+    "TS2322": 1,
+    "TS2345": 2,
+    "TS2454": 2
+  },
+  "redisinsight/api/src/modules/redis/connection/node.redis.connection.strategy.ts": {
+    "TS18048": 2,
+    "TS2322": 1,
+    "TS2345": 2,
+    "TS2454": 1,
+    "TS7053": 1
+  },
+  "redisinsight/api/src/modules/redis/connection/redis.connection.strategy.ts": {
+    "TS18048": 1,
+    "TS7053": 3
+  },
+  "redisinsight/api/src/modules/redis/local.redis.client.factory.spec.ts": {
+    "TS2698": 1,
+    "TS7053": 14
+  },
+  "redisinsight/api/src/modules/redis/redis.client.factory.ts": {
+    "TS7053": 2
+  },
+  "redisinsight/api/src/modules/redis/redis.client.storage.spec.ts": {
+    "TS18048": 3,
+    "TS2339": 2,
+    "TS2345": 16,
+    "TS2532": 10,
+    "TS7006": 2,
+    "TS7053": 8
+  },
+  "redisinsight/api/src/modules/redis/redis.client.storage.ts": {
+    "TS2322": 2
+  },
+  "redisinsight/api/src/modules/redis/utils/reply.util.spec.ts": {
+    "TS2322": 4
+  },
+  "redisinsight/api/src/modules/redis/utils/reply.util.ts": {
+    "TS2538": 1,
+    "TS7005": 1,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/server/local.server.service.ts": {
+    "TS2345": 2
+  },
+  "redisinsight/api/src/modules/server/server.service.ts": {
+    "TS2322": 2,
+    "TS2366": 1,
+    "TS7053": 2
+  },
+  "redisinsight/api/src/modules/session/providers/storage/in-memory.session.storage.ts": {
+    "TS2322": 2
+  },
+  "redisinsight/api/src/modules/session/session.service.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/settings/dto/settings.dto.ts": {
+    "TS2322": 3
+  },
+  "redisinsight/api/src/modules/settings/settings.analytics.spec.ts": {
+    "TS2322": 4,
+    "TS2345": 1,
+    "TS7005": 8,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/settings/settings.service.spec.ts": {
+    "TS2322": 2,
+    "TS2698": 1
+  },
+  "redisinsight/api/src/modules/settings/settings.service.ts": {
+    "TS2454": 1
+  },
+  "redisinsight/api/src/modules/slow-log/slow-log.service.ts": {
+    "TS2322": 1,
+    "TS2339": 1,
+    "TS2345": 3
+  },
+  "redisinsight/api/src/modules/ssh/ssh-tunnel.provider.spec.ts": {
+    "TS2339": 3,
+    "TS2345": 1,
+    "TS2739": 1,
+    "TS7005": 9,
+    "TS7034": 3
+  },
+  "redisinsight/api/src/modules/ssh/transformers/ssh-options.transformer.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/statics-management/providers/auto-updated-statics.provider.spec.ts": {
+    "TS7005": 10,
+    "TS7034": 2
+  },
+  "redisinsight/api/src/modules/statics-management/statics-management.module.ts": {
+    "TS7031": 2
+  },
+  "redisinsight/api/src/modules/tag/repository/local.tag.repository.spec.ts": {
+    "TS2345": 3
+  },
+  "redisinsight/api/src/modules/tag/tag.service.spec.ts": {
+    "TS2345": 2
+  },
+  "redisinsight/api/src/modules/workbench/plugins.service.spec.ts": {
+    "TS7005": 11,
+    "TS7034": 3
+  },
+  "redisinsight/api/src/modules/workbench/providers/plugin-commands-whitelist.provider.spec.ts": {
+    "TS7005": 10,
+    "TS7034": 2
+  },
+  "redisinsight/api/src/modules/workbench/providers/plugin-commands-whitelist.provider.ts": {
+    "TS2345": 1,
+    "TS7005": 1,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/workbench/providers/workbench-commands.executor.spec.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/modules/workbench/providers/workbench-commands.executor.ts": {
+    "TS2345": 4
+  },
+  "redisinsight/api/src/modules/workbench/repositories/local-command-execution.repository.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/workbench/repositories/local-plugin-state.repository.spec.ts": {
+    "TS7005": 5,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/modules/workbench/workbench.analytics.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/modules/workbench/workbench.analytics.ts": {
+    "TS7053": 2
+  },
+  "redisinsight/api/src/modules/workbench/workbench.module.ts": {
+    "TS7031": 2
+  },
+  "redisinsight/api/src/modules/workbench/workbench.service.ts": {
+    "TS2322": 1
+  },
+  "redisinsight/api/src/utils/analytics-helper.spec.ts": {
+    "TS2345": 2
+  },
+  "redisinsight/api/src/utils/analytics-helper.ts": {
+    "TS2322": 5,
+    "TS7053": 11
+  },
+  "redisinsight/api/src/utils/base.helper.ts": {
+    "TS7053": 2
+  },
+  "redisinsight/api/src/utils/big-string.spec.ts": {
+    "TS2345": 1
+  },
+  "redisinsight/api/src/utils/catch-redis-errors.ts": {
+    "TS2322": 1,
+    "TS2345": 1
+  },
+  "redisinsight/api/src/utils/class-transformer.ts": {
+    "TS2339": 1
+  },
+  "redisinsight/api/src/utils/cli-helper.ts": {
+    "TS2769": 1
+  },
+  "redisinsight/api/src/utils/converter.spec.ts": {
+    "TS2556": 1
+  },
+  "redisinsight/api/src/utils/converter.ts": {
+    "TS2322": 4
+  },
+  "redisinsight/api/src/utils/createHttpOptions.ts": {
+    "TS18048": 2,
+    "TS2769": 2
+  },
+  "redisinsight/api/src/utils/feature-version-filter.helper.ts": {
+    "TS7016": 1
+  },
+  "redisinsight/api/src/utils/logsFormatter.spec.ts": {
+    "TS7053": 1
+  },
+  "redisinsight/api/src/utils/logsFormatter.ts": {
+    "TS7053": 5
+  },
+  "redisinsight/api/src/utils/promise-with-timeout.ts": {
+    "TS7005": 1,
+    "TS7034": 1
+  },
+  "redisinsight/api/src/utils/redis-modules-summary.ts": {
+    "TS7053": 3
+  },
+  "redisinsight/api/src/utils/redis-reply-converter.ts": {
+    "TS18047": 1,
+    "TS7053": 1
+  },
+  "redisinsight/api/src/validators/isObjectWithValues.validator.ts": {
+    "TS18048": 1
+  },
+  "redisinsight/api/src/validators/serializedJson.validator.ts": {
+    "TS7006": 1
+  },
+  "redisinsight/api/test/api/_init/WS-notifications-global-sync.test.ts": {
+    "TS7005": 2,
+    "TS7034": 1
+  },
+  "redisinsight/api/test/api/analytics/analytics.test.ts": {
+    "TS18047": 2
+  },
+  "redisinsight/api/test/api/browser-history/DELETE-browser-history-id.test.ts": {
+    "TS7006": 1
+  },
+  "redisinsight/api/test/api/bulk-actions/POST-databases-id-bulk_actions-import-default_data.test.ts": {
+    "TS18047": 7
+  },
+  "redisinsight/api/test/api/bulk-actions/POST-databases-id-bulk_actions-import-tutorial_data.test.ts": {
+    "TS18047": 5,
+    "TS7005": 3,
+    "TS7031": 4,
+    "TS7034": 1
+  },
+  "redisinsight/api/test/api/bulk-actions/POST-databases-id-bulk_actions-import.test.ts": {
+    "TS18047": 21,
+    "TS7031": 6
+  },
+  "redisinsight/api/test/api/cli/POST-databases-id-cli-uuid-send_cluster_command.test.ts": {
+    "TS18047": 11,
+    "TS7006": 1,
+    "TS7031": 6
+  },
+  "redisinsight/api/test/api/cli/POST-databases-id-cli-uuid-send_command.test.ts": {
+    "TS18047": 53,
+    "TS2339": 2,
+    "TS7006": 2,
+    "TS7031": 39
+  },
+  "redisinsight/api/test/api/cli/POST-databases-id-cli.test.ts": {
+    "TS18047": 1,
+    "TS7006": 1
+  },
+  "redisinsight/api/test/api/cloud/autodiscovery/POST-cloud-autodiscovery-databases.test.ts": {
+    "TS7031": 1
+  },
+  "redisinsight/api/test/api/cloud/autodiscovery/POST-cloud-autodiscovery-get_databases.test.ts": {
+    "TS7031": 2
+  },
+  "redisinsight/api/test/api/cloud/user/GET-cloud-me.test.ts": {
+    "TS7031": 1
+  },
+  "redisinsight/api/test/api/cloud/user/PUT-cloud-me-accounts-id-current.test.ts": {
+    "TS7031": 4
+  },
+  "redisinsight/api/test/api/cluster-monitor/GET-databases-id-cluster_details.test.ts": {
+    "TS18047": 5,
+    "TS2345": 1,
+    "TS7006": 1,
+    "TS7031": 3
+  },
+  "redisinsight/api/test/api/commands/GET-commands.test.ts": {
+    "TS7006": 1,
+    "TS7031": 1
+  },
+  "redisinsight/api/test/api/custom-tutorials/POST-custom-tutorials.test.ts": {
+    "TS18048": 3,
+    "TS2322": 3,
+    "TS7031": 10
+  },
+  "redisinsight/api/test/api/database-analysis/GET-databases-id-analysis-id.test.ts": {
+    "TS7031": 1
+  },
+  "redisinsight/api/test/api/database-analysis/PATCH-databases-id-analysis.test.ts": {
+    "TS7031": 1
+  },
+  "redisinsight/api/test/api/database-analysis/POST-databases-id-analysis.test.ts": {
+    "TS18047": 24,
+    "TS7005": 26,
+    "TS7006": 1,
+    "TS7031": 20,
+    "TS7034": 2
+  },
+  "redisinsight/api/test/api/database-discovery/pre-setup-databases.tests.ts": {
+    "TS18048": 6,
+    "TS7005": 5,
+    "TS7034": 1
+  },
+  "redisinsight/api/test/api/database-import/POST-databases-import.test.ts": {
+    "TS18047": 21,
+    "TS2339": 2,
+    "TS7005": 98,
+    "TS7031": 2,
+    "TS7034": 1
+  },
+  "redisinsight/api/test/api/database-recommendations/DELETE-databases-id-recommendations.test.ts": {
+    "TS7005": 6,
+    "TS7034": 1
+  },
+  "redisinsight/api/test/api/database-recommendations/PATCH-databases-id-recommendations-id.test.ts": {
+    "TS7005": 4,
+    "TS7031": 2,
+    "TS7034": 1
+  },
+  "redisinsight/api/test/api/database-recommendations/PATCH-databases-id-recommendations-read.test.ts": {
+    "TS7005": 2,
+    "TS7006": 2,
+    "TS7034": 1
+  },
+  "redisinsight/api/test/api/database-recommendations/WS-new-recommendations.test.ts": {
+    "TS18047": 2
+  },
+  "redisinsight/api/test/api/database/DELETE-databases-id.test.ts": {
+    "TS7006": 1
+  },
+  "redisinsight/api/test/api/database/GET-databases-id-dangerous-commands.test.ts": {
+    "TS7031": 1
+  },
+  "redisinsight/api/test/api/database/GET-databases-id-info.test.ts": {
+    "TS18047": 10,
+    "TS7031": 1
+  },
+  "redisinsight/api/test/api/database/GET-databases-id-overview.test.ts": {
+    "TS18047": 4,
+    "TS7031": 3
+  },
+  "redisinsight/api/test/api/database/GET-databases.test.ts": {
+    "TS18047": 1,
+    "TS7031": 1
+  },
+  "redisinsight/api/test/api/database/PATCH-databases-id.test.ts": {
+    "TS18047": 26,
+    "TS7005": 15,
+    "TS7031": 7,
+    "TS7034": 7
+  },
+  "redisinsight/api/test/api/database/POST-databases-clone-id.test.ts": {
+    "TS18047": 10,
+    "TS7005": 11,
+    "TS7031": 7,
+    "TS7034": 6
+  },
+  "redisinsight/api/test/api/database/POST-databases-export.test.ts": {
+    "TS7031": 7
+  },
+  "redisinsight/api/test/api/database/POST-databases-test-id.test.ts": {
+    "TS18047": 12,
+    "TS7005": 4,
+    "TS7031": 1,
+    "TS7034": 4
+  },
+  "redisinsight/api/test/api/database/POST-databases-test.test.ts": {
+    "TS7005": 29,
+    "TS7034": 3
+  },
+  "redisinsight/api/test/api/database/POST-databases.test.ts": {
+    "TS18047": 14,
+    "TS7005": 17,
+    "TS7031": 14,
+    "TS7034": 7
+  },
+  "redisinsight/api/test/api/deps.ts": {
+    "TS18047": 1,
+    "TS2322": 1,
+    "TS2339": 1
+  },
+  "redisinsight/api/test/api/enterprise/POST-redis-enterprise-cluster-get_dbs.test.ts": {
+    "TS18048": 2,
+    "TS7006": 1
+  },
+  "redisinsight/api/test/api/feature/GET-features.test.ts": {
+    "TS7005": 5,
+    "TS7006": 1,
+    "TS7031": 1,
+    "TS7034": 2
+  },
+  "redisinsight/api/test/api/feature/POST-features-sync.test.ts": {
+    "TS7005": 12,
+    "TS7034": 1
+  },
+  "redisinsight/api/test/api/hash/DELETE-databases-id-hash-fields.test.ts": {
+    "TS18047": 11
+  },
+  "redisinsight/api/test/api/hash/POST-databases-id-hash-get_fields.test.ts": {
+    "TS18047": 6,
+    "TS7031": 7
+  },
+  "redisinsight/api/test/api/hash/POST-databases-id-hash.test.ts": {
+    "TS18047": 15,
+    "TS2339": 1,
+    "TS7006": 1
+  },
+  "redisinsight/api/test/api/hash/PUT-databases-id-hash.test.ts": {
+    "TS18047": 10
+  },
+  "redisinsight/api/test/api/info/GET-health.test.ts": {
+    "TS7031": 1
+  },
+  "redisinsight/api/test/api/info/GET-info-cli-blocking-commands.test.ts": {
+    "TS7006": 1
+  },
+  "redisinsight/api/test/api/info/GET-info-cli-unsupported-commands.test.ts": {
+    "TS7006": 1
+  },
+  "redisinsight/api/test/api/info/GET-info.test.ts": {
+    "TS7006": 1,
+    "TS7031": 1
+  },
+  "redisinsight/api/test/api/keys/DELETE-databases-id-keys.test.ts": {
+    "TS18047": 9,
+    "TS7006": 3
+  },
+  "redisinsight/api/test/api/keys/PATCH-databases-id-keys-name.test.ts": {
+    "TS18047": 18,
+    "TS7006": 1,
+    "TS7031": 5
+  },
+  "redisinsight/api/test/api/keys/PATCH-databases-id-keys-ttl.test.ts": {
+    "TS18047": 11
+  },
+  "redisinsight/api/test/api/keys/POST-databases-id-keys-get_info.test.ts": {
+    "TS18047": 11,
+    "TS7006": 2,
+    "TS7031": 5
+  },
+  "redisinsight/api/test/api/keys/POST-databases-id-keys-get_infos.test.ts": {
+    "TS18047": 4,
+    "TS7006": 1,
+    "TS7031": 10
+  },
+  "redisinsight/api/test/api/keys/POST-databases-id-keys.test.ts": {
+    "TS18047": 10,
+    "TS2339": 19,
+    "TS2345": 18,
+    "TS7006": 42,
+    "TS7031": 36
+  },
+  "redisinsight/api/test/api/list/DELETE-databases-id-list-elements.test.ts": {
+    "TS18047": 13
+  },
+  "redisinsight/api/test/api/list/PATCH-databases-id-list.test.ts": {
+    "TS18047": 9
+  },
+  "redisinsight/api/test/api/list/POST-databases-id-list-get_elements-index.test.ts": {
+    "TS18047": 5
+  },
+  "redisinsight/api/test/api/list/POST-databases-id-list-get_elements.test.ts": {
+    "TS18047": 6
+  },
+  "redisinsight/api/test/api/list/POST-databases-id-list.test.ts": {
+    "TS18047": 16,
+    "TS7006": 1
+  },
+  "redisinsight/api/test/api/list/PUT-databases-id-list.test.ts": {
+    "TS18047": 13
+  },
+  "redisinsight/api/test/api/notifications/GET-notifications.test.ts": {
+    "TS7006": 1,
+    "TS7031": 1
+  },
+  "redisinsight/api/test/api/notifications/PATCH-notifications.test.ts": {
+    "TS7005": 2,
+    "TS7006": 3,
+    "TS7034": 1
+  },
+  "redisinsight/api/test/api/plugins/GET-databases-id-plugins-commands.test.ts": {
+    "TS7006": 1,
+    "TS7031": 1
+  },
+  "redisinsight/api/test/api/plugins/GET-databases-id-plugins-id-command_executions-id-state.test.ts": {
+    "TS7006": 1,
+    "TS7031": 1
+  },
+  "redisinsight/api/test/api/plugins/GET-plugins.test.ts": {
+    "TS7006": 1,
+    "TS7031": 1
+  },
+  "redisinsight/api/test/api/plugins/POST-databases-id-plugins-command_executions.test.ts": {
+    "TS18047": 5,
+    "TS2345": 1,
+    "TS2578": 1,
+    "TS7005": 5,
+    "TS7006": 6,
+    "TS7031": 7,
+    "TS7034": 1
+  },
+  "redisinsight/api/test/api/plugins/POST-databases-id-plugins-id-command_executions-id-state.test.ts": {
+    "TS7006": 1,
+    "TS7031": 3
+  },
+  "redisinsight/api/test/api/pub-sub/POST-databases-id-pub-sub-messages.test.ts": {
+    "TS18047": 3,
+    "TS7006": 1
+  },
+  "redisinsight/api/test/api/query-library/GET-databases-id-query_library-id.test.ts": {
+    "TS7031": 1
+  },
+  "redisinsight/api/test/api/query-library/GET-databases-id-query_library.test.ts": {
+    "TS7006": 3,
+    "TS7031": 6
+  },
+  "redisinsight/api/test/api/query-library/PATCH-databases-id-query_library-id.test.ts": {
+    "TS7031": 3
+  },
+  "redisinsight/api/test/api/query-library/POST-databases-id-query_library-seed.test.ts": {
+    "TS7006": 1,
+    "TS7031": 2
+  },
+  "redisinsight/api/test/api/query-library/POST-databases-id-query_library.test.ts": {
+    "TS7031": 2
+  },
+  "redisinsight/api/test/api/rdi/DELETE-rdi.test.ts": {
+    "TS18047": 2
+  },
+  "redisinsight/api/test/api/rdi/GET-rdi-id-connect.test.ts": {
+    "TS7006": 1,
+    "TS7016": 1
+  },
+  "redisinsight/api/test/api/rdi/GET-rdi-id.test.ts": {
+    "TS7006": 1,
+    "TS7031": 2
+  },
+  "redisinsight/api/test/api/rdi/GET-rdi.test.ts": {
+    "TS7031": 2
+  },
+  "redisinsight/api/test/api/rdi/PATCH-rdi-id.test.ts": {
+    "TS7006": 1,
+    "TS7016": 1,
+    "TS7031": 2
+  },
+  "redisinsight/api/test/api/rdi/POST-rdi.test.ts": {
+    "TS7016": 1,
+    "TS7031": 1
+  },
+  "redisinsight/api/test/api/rdi/pipeline/GET-rdi-id-pipeline-config-template-pipelineType-dbType.test.ts": {
+    "TS7016": 1,
+    "TS7031": 3
+  },
+  "redisinsight/api/test/api/rdi/pipeline/GET-rdi-id-pipeline-job-functions.test.ts": {
+    "TS7016": 1,
+    "TS7031": 3
+  },
+  "redisinsight/api/test/api/rdi/pipeline/GET-rdi-id-pipeline-job-template-pipelineType.test.ts": {
+    "TS7016": 1,
+    "TS7031": 3
+  },
+  "redisinsight/api/test/api/rdi/pipeline/GET-rdi-id-pipeline-schema.test.ts": {
+    "TS7016": 1,
+    "TS7031": 3
+  },
+  "redisinsight/api/test/api/rdi/pipeline/GET-rdi-id-pipeline-status.test.ts": {
+    "TS7016": 1,
+    "TS7031": 5
+  },
+  "redisinsight/api/test/api/rdi/pipeline/GET-rdi-id-pipeline-strategies.test.ts": {
+    "TS7016": 1,
+    "TS7031": 3
+  },
+  "redisinsight/api/test/api/rdi/pipeline/GET-rdi-id-pipeline.test.ts": {
+    "TS7016": 1,
+    "TS7031": 3
+  },
+  "redisinsight/api/test/api/rdi/pipeline/POST-rdi-id-pipeline-deploy.test.ts": {
+    "TS7006": 1,
+    "TS7016": 1,
+    "TS7031": 5
+  },
+  "redisinsight/api/test/api/rdi/pipeline/POST-rdi-id-pipeline-dry-run-job.test.ts": {
+    "TS7006": 1,
+    "TS7016": 1,
+    "TS7031": 3
+  },
+  "redisinsight/api/test/api/rdi/pipeline/POST-rdi-id-pipeline-reset.test.ts": {
+    "TS7006": 1,
+    "TS7031": 5
+  },
+  "redisinsight/api/test/api/rdi/pipeline/POST-rdi-id-pipeline-start.test.ts": {
+    "TS7006": 1,
+    "TS7031": 5
+  },
+  "redisinsight/api/test/api/rdi/pipeline/POST-rdi-id-pipeline-stop.test.ts": {
+    "TS7006": 1,
+    "TS7031": 5
+  },
+  "redisinsight/api/test/api/rdi/pipeline/POST-rdi-id-pipeline-test-connections.test.ts": {
+    "TS7006": 1,
+    "TS7016": 1,
+    "TS7031": 5
+  },
+  "redisinsight/api/test/api/rdi/statistics/GET-rdi-id-statistics.test.ts": {
+    "TS7016": 1,
+    "TS7031": 3
+  },
+  "redisinsight/api/test/api/redisearch/DELETE-databases-id-redisearch.test.ts": {
+    "TS18047": 9
+  },
+  "redisinsight/api/test/api/redisearch/GET-databases-id-redisearch.test.ts": {
+    "TS18047": 3,
+    "TS7031": 1
+  },
+  "redisinsight/api/test/api/redisearch/POST-databases-id-redisearch-info.test.ts": {
+    "TS18047": 3,
+    "TS7031": 3
+  },
+  "redisinsight/api/test/api/redisearch/POST-databases-id-redisearch-key-indexes.test.ts": {
+    "TS18047": 3,
+    "TS7006": 1,
+    "TS7031": 3
+  },
+  "redisinsight/api/test/api/redisearch/POST-databases-id-redisearch-search.test.ts": {
+    "TS18047": 8,
+    "TS7031": 4
+  },
+  "redisinsight/api/test/api/redisearch/POST-databases-id-redisearch.test.ts": {
+    "TS18047": 5,
+    "TS7031": 6
+  },
+  "redisinsight/api/test/api/rejson-rl/DELETE-databases-id-rejson_rl.test.ts": {
+    "TS18047": 15,
+    "TS2339": 4
+  },
+  "redisinsight/api/test/api/rejson-rl/PATCH-databases-id-rejson_rl-arrappend.test.ts": {
+    "TS18047": 9
+  },
+  "redisinsight/api/test/api/rejson-rl/PATCH-databases-id-rejson_rl-set.test.ts": {
+    "TS18047": 12
+  },
+  "redisinsight/api/test/api/rejson-rl/POST-databases-id-rejson_rl-get.test.ts": {
+    "TS18047": 10
+  },
+  "redisinsight/api/test/api/rejson-rl/POST-databases-id-rejson_rl.test.ts": {
+    "TS18047": 15,
+    "TS2339": 5,
+    "TS7006": 1
+  },
+  "redisinsight/api/test/api/sentinel/POST-redis_sentinel-databases.test.ts": {
+    "TS18047": 6,
+    "TS7005": 3,
+    "TS7031": 5,
+    "TS7034": 1
+  },
+  "redisinsight/api/test/api/sentinel/POST-redis_sentinel-get_databases.test.ts": {
+    "TS7031": 2
+  },
+  "redisinsight/api/test/api/set/DELETE-databases-id-set-members.test.ts": {
+    "TS18047": 12
+  },
+  "redisinsight/api/test/api/set/POST-databases-id-set-get_members.test.ts": {
+    "TS18047": 8,
+    "TS7031": 8
+  },
+  "redisinsight/api/test/api/set/POST-databases-id-set.test.ts": {
+    "TS18047": 16,
+    "TS7006": 1
+  },
+  "redisinsight/api/test/api/set/PUT-databases-id-set.test.ts": {
+    "TS18047": 14
+  },
+  "redisinsight/api/test/api/settings/GET-settings-agreements-spec.test.ts": {
+    "TS7006": 1,
+    "TS7031": 1
+  },
+  "redisinsight/api/test/api/settings/GET-settings.test.ts": {
+    "TS7006": 1,
+    "TS7031": 2
+  },
+  "redisinsight/api/test/api/settings/PATCH-settings.test.ts": {
+    "TS7006": 1,
+    "TS7031": 7,
+    "TS7053": 1
+  },
+  "redisinsight/api/test/api/slowlog/DELETE-databases-id-slow_logs.test.ts": {
+    "TS18047": 8,
+    "TS7006": 1
+  },
+  "redisinsight/api/test/api/slowlog/GET-databases-id-slow_logs-config.test.ts": {
+    "TS18047": 2,
+    "TS7006": 1,
+    "TS7031": 1
+  },
+  "redisinsight/api/test/api/slowlog/GET-databases-id-slow_logs.test.ts": {
+    "TS18047": 12,
+    "TS7006": 2,
+    "TS7031": 3
+  },
+  "redisinsight/api/test/api/slowlog/PATCH-databases-id-slow_logs-config.test.ts": {
+    "TS18047": 6,
+    "TS7006": 1
+  },
+  "redisinsight/api/test/api/stream/DELETE-databases-id-streams-consumer_groups-consumers.test.ts": {
+    "TS18047": 19
+  },
+  "redisinsight/api/test/api/stream/DELETE-databases-id-streams-consumer_groups.test.ts": {
+    "TS18047": 13
+  },
+  "redisinsight/api/test/api/stream/PATCH-databases-id-streams-consumer_groups.test.ts": {
+    "TS18047": 14
+  },
+  "redisinsight/api/test/api/stream/POST-databases-id-streams-consumer_groups-consumers-get.test.ts": {
+    "TS18047": 8,
+    "TS7031": 4
+  },
+  "redisinsight/api/test/api/stream/POST-databases-id-streams-consumer_groups-consumers-pending_messages-ack.test.ts": {
+    "TS18047": 16
+  },
+  "redisinsight/api/test/api/stream/POST-databases-id-streams-consumer_groups-consumers-pending_messages-claim.test.ts": {
+    "TS18047": 22
+  },
+  "redisinsight/api/test/api/stream/POST-databases-id-streams-consumer_groups-consumers-pending_messages-get.test.ts": {
+    "TS18047": 12,
+    "TS7031": 9
+  },
+  "redisinsight/api/test/api/stream/POST-databases-id-streams-consumer_groups-get.test.ts": {
+    "TS18047": 7,
+    "TS7031": 4
+  },
+  "redisinsight/api/test/api/stream/POST-databases-id-streams-consumer_groups.test.ts": {
+    "TS18047": 21
+  },
+  "redisinsight/api/test/api/stream/POST-databases-id-streams-entries-get.test.ts": {
+    "TS18047": 7,
+    "TS7005": 2,
+    "TS7006": 8,
+    "TS7031": 7,
+    "TS7034": 1
+  },
+  "redisinsight/api/test/api/stream/POST-databases-id-streams-entries.test.ts": {
+    "TS18047": 13
+  },
+  "redisinsight/api/test/api/stream/POST-databases-id-streams.test.ts": {
+    "TS18047": 14
+  },
+  "redisinsight/api/test/api/string/POST-databases-id-string-download_value.test.ts": {
+    "TS18047": 3
+  },
+  "redisinsight/api/test/api/string/POST-databases-id-string-get_value.test.ts": {
+    "TS18047": 4
+  },
+  "redisinsight/api/test/api/string/POST-databases-id-string.test.ts": {
+    "TS18047": 14,
+    "TS7006": 1
+  },
+  "redisinsight/api/test/api/string/PUT-databases-id-string.test.ts": {
+    "TS18047": 14,
+    "TS7006": 1
+  },
+  "redisinsight/api/test/api/triggered-functions/DELETE-databases-id-library.test.ts": {
+    "TS18047": 3
+  },
+  "redisinsight/api/test/api/triggered-functions/POST-databases-id-library.test.ts": {
+    "TS18047": 3
+  },
+  "redisinsight/api/test/api/workbench/GET-databases-id-workbench-command_executions-id.test.ts": {
+    "TS7006": 1,
+    "TS7031": 2
+  },
+  "redisinsight/api/test/api/workbench/GET-databases-id-workbench-command_executions.test.ts": {
+    "TS7031": 6
+  },
+  "redisinsight/api/test/api/workbench/POST-databases-id-workbench-command_executions.test.ts": {
+    "TS18047": 44,
+    "TS2339": 2,
+    "TS2783": 1,
+    "TS7005": 5,
+    "TS7006": 6,
+    "TS7031": 40,
+    "TS7034": 1
+  },
+  "redisinsight/api/test/api/ws/bulk-actions/bulk-actions-create.test.ts": {
+    "TS18047": 1,
+    "TS2683": 1,
+    "TS7005": 9,
+    "TS7006": 9,
+    "TS7034": 1
+  },
+  "redisinsight/api/test/api/ws/monitor/monitor.test.ts": {
+    "TS18047": 4,
+    "TS2538": 2,
+    "TS2683": 1,
+    "TS7006": 9
+  },
+  "redisinsight/api/test/api/ws/pub-sub/pub-sub.test.ts": {
+    "TS18047": 32,
+    "TS2339": 5,
+    "TS2345": 9,
+    "TS2683": 1,
+    "TS7005": 26,
+    "TS7006": 26,
+    "TS7034": 1
+  },
+  "redisinsight/api/test/api/z-set/DELETE-databases-id-zSet-members.test.ts": {
+    "TS18047": 11
+  },
+  "redisinsight/api/test/api/z-set/PATCH-databases-id-zSet.test.ts": {
+    "TS18047": 9,
+    "TS2339": 1
+  },
+  "redisinsight/api/test/api/z-set/POST-databases-id-zSet-get_members.test.ts": {
+    "TS18047": 6
+  },
+  "redisinsight/api/test/api/z-set/POST-databases-id-zSet-search.test.ts": {
+    "TS18047": 6,
+    "TS7031": 7
+  },
+  "redisinsight/api/test/api/z-set/POST-databases-id-zSet.test.ts": {
+    "TS18047": 16,
+    "TS7006": 1
+  },
+  "redisinsight/api/test/api/z-set/PUT-databases-id-zSet.test.ts": {
+    "TS18047": 10,
+    "TS2339": 2
+  },
+  "redisinsight/api/test/helpers/analytics.ts": {
+    "TS7005": 1,
+    "TS7006": 1,
+    "TS7034": 1
+  },
+  "redisinsight/api/test/helpers/cloud.ts": {
+    "TS7005": 6,
+    "TS7006": 4,
+    "TS7034": 1
+  },
+  "redisinsight/api/test/helpers/constants.ts": {
+    "TS2345": 2
+  },
+  "redisinsight/api/test/helpers/data/redis.ts": {
+    "TS2322": 1,
+    "TS7005": 3,
+    "TS7006": 16,
+    "TS7034": 3
+  },
+  "redisinsight/api/test/helpers/local-db.ts": {
+    "TS2339": 3,
+    "TS2345": 1,
+    "TS2783": 2,
+    "TS7005": 1,
+    "TS7006": 10,
+    "TS7034": 1
+  },
+  "redisinsight/api/test/helpers/redis.ts": {
+    "TS2345": 3,
+    "TS7005": 1,
+    "TS7006": 2,
+    "TS7016": 1,
+    "TS7031": 1,
+    "TS7034": 1,
+    "TS7053": 1
+  },
+  "redisinsight/api/test/helpers/server.ts": {
+    "TS2322": 1,
+    "TS2339": 1,
+    "TS2345": 1,
+    "TS7016": 1
+  },
+  "redisinsight/api/test/helpers/test.ts": {
+    "TS2339": 2,
+    "TS7006": 11,
+    "TS7016": 2,
+    "TS7031": 2
+  },
+  "redisinsight/api/test/helpers/test/conditionalIgnore.ts": {
+    "TS2366": 1,
+    "TS2454": 2,
+    "TS2531": 1,
+    "TS2683": 2,
+    "TS7016": 2,
+    "TS7019": 1
+  },
+  "redisinsight/api/test/helpers/test/dataGenerator.ts": {
+    "TS2322": 4,
+    "TS2345": 19,
+    "TS7005": 5,
+    "TS7006": 6,
+    "TS7034": 1
+  },
+  "redisinsight/api/test/helpers/utils.ts": {
+    "TS7005": 1,
+    "TS7034": 1,
+    "TS7053": 1
+  }
+}

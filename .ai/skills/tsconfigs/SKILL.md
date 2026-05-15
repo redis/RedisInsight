@@ -17,6 +17,7 @@ RedisInsight has no root `tsconfig.json`. Config is split per area, each owning 
 | - | - | - |
 | `redisinsight/ui/tsconfig.json` | UI source, `uiSrc/*`, `apiClient` paths | Vite (UI build), ESLint UI override, `yarn type-check:ui` |
 | `redisinsight/api/tsconfig.json` | API source, `src/*`, `tests/*` paths | NestJS build, ESLint API override |
+| `redisinsight/api/tsconfig.check.json` | Same as base + `strict: true` (with `strictPropertyInitialization` and `useUnknownInCatchVariables` off) and `noEmit: true` | `yarn type-check:api` only — kept separate so strict mode doesn't break `nest build`. See the `type-check-baselines` skill. |
 | `redisinsight/desktop/tsconfig.json` | Desktop source. Paths `desktopSrc/*`, `apiSrc/*`, `uiSrc/*`, `apiClient`, `apiClient/*` for TypeScript / IDE intellisense | ESLint for desktop files, TS language server |
 | `configs/tsconfig.json` | Compiler options (`module: CommonJS`, `esModuleInterop`) used by `ts-node` to load the `.ts` webpack configs | `ts-node` via `TS_NODE_PROJECT` set in `build:main` / `build:main:stage` / `build:stage` |
 | `.storybook/tsconfig.json` | Storybook framework files, extends UI tsconfig | Storybook + ESLint |

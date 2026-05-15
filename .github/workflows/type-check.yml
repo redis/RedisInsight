@@ -1,0 +1,45 @@
+name: Type check
+
+on:
+  workflow_call:
+    inputs:
+      run-ui:
+        type: boolean
+        default: true
+      run-api:
+        type: boolean
+        default: true
+      run-desktop:
+        type: boolean
+        default: true
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  type-check:
+    runs-on: ubuntu-latest
+    name: tsc baselines
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-all-build-libs
+        with:
+          skip-system-deps: '1'
+
+      - name: UI
+        if: ${{ inputs.run-ui != false }}
+        run: yarn type-check:ui
+
+      - name: API
+        if: ${{ inputs.run-api != false }}
+        run: yarn type-check:api
+
+      - name: Desktop
+        if: ${{ inputs.run-desktop != false }}
+        run: yarn type-check:desktop
+
+      - name: Configs
+        run: yarn type-check:configs
