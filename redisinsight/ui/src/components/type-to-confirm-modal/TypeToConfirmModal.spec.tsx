@@ -4,7 +4,7 @@ import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import TypeToConfirmModal, { Props } from './TypeToConfirmModal'
 
 const mockProps: Props = {
-  dbName: 'prod-cache-eu-west-1',
+  confirmationText: 'prod-cache-eu-west-1',
   actionDescription: 'This will run FLUSHDB against prod-cache-eu-west-1.',
   onConfirm: jest.fn(),
   onCancel: jest.fn(),
@@ -70,7 +70,7 @@ describe('TypeToConfirmModal', () => {
     ).toBeDisabled()
   })
 
-  it('confirm button should be disabled when typed value does not match dbName', () => {
+  it('confirm button should be disabled when typed value does not match confirmationText', () => {
     render(<TypeToConfirmModal {...mockProps} />)
 
     typeInConfirmInput('not-the-name')
@@ -80,7 +80,7 @@ describe('TypeToConfirmModal', () => {
     ).toBeDisabled()
   })
 
-  it('confirm button should be enabled when typed value exactly matches dbName', () => {
+  it('confirm button should be enabled when typed value exactly matches confirmationText', () => {
     render(<TypeToConfirmModal {...mockProps} />)
 
     typeInConfirmInput('prod-cache-eu-west-1')

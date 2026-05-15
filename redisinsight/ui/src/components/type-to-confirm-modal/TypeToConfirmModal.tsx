@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 
 import { Modal } from 'uiSrc/components/base/display'
 import { CancelIcon } from 'uiSrc/components/base/icons'
@@ -12,7 +12,7 @@ import { TextInput } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
 
 export interface Props {
-  dbName: string
+  confirmationText: string
   actionDescription: React.ReactNode
   onConfirm: () => void
   onCancel: () => void
@@ -22,7 +22,7 @@ export interface Props {
 }
 
 const TypeToConfirmModal = ({
-  dbName,
+  confirmationText,
   actionDescription,
   onConfirm,
   onCancel,
@@ -31,8 +31,7 @@ const TypeToConfirmModal = ({
   cancelButtonText = 'Cancel',
 }: Props) => {
   const [value, setValue] = useState('')
-
-  const isMatch = useMemo(() => value === dbName, [value, dbName])
+  const isMatch = value === confirmationText
 
   const handleConfirm = () => {
     if (!isMatch) return
@@ -63,7 +62,7 @@ const TypeToConfirmModal = ({
               <FormField
                 label={
                   <span>
-                    Type <strong>{dbName}</strong> to confirm
+                    Type <strong>{confirmationText}</strong> to confirm
                   </span>
                 }
               >
