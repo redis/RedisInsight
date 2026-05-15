@@ -43,8 +43,8 @@ const SkipConfirmations = () => {
       </FormField>
       <Spacer size="s" />
       <Text color="primary" size="s">
-        Skip additional confirmation dialogs when modifying data in
-        non-production databases.
+        Skip all confirmation dialogs when modifying data in non-production
+        databases.
       </Text>
     </FeatureFlagComponent>
   )
