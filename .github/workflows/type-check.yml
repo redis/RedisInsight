@@ -38,10 +38,11 @@ jobs:
         run: yarn type-check:api
 
       # Desktop sources import from redisinsight/api/dist/src/**, so the api
-      # has to be built first or those imports show up as TS2307s.
+      # has to be built first or those imports show up as TS2307/TS2749 errors.
+      # Use the default nest build (not build:prod) so `.d.ts` files are emitted.
       - name: Build API (for desktop type-check)
         if: ${{ inputs.run-desktop != false }}
-        run: yarn build:api
+        run: yarn --cwd redisinsight/api build
 
       - name: Desktop
         if: ${{ inputs.run-desktop != false }}
