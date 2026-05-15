@@ -7,7 +7,21 @@ import {
   SearchVectorSetMatchDto,
   SimilaritySearchDto,
 } from 'src/modules/browser/vector-set/dto';
-import { VSIM_REPLY_STRIDE } from 'src/modules/browser/vector-set/constants';
+import {
+  VSIM_REPLY_STRIDE,
+  VSIM_REPLY_STRIDE_NO_ATTRIBS,
+} from 'src/modules/browser/vector-set/constants';
+
+/**
+ * Optional flag shared by the VSIM command builder, preview formatter, and
+ * reply parser. Defaults to `true` so callers that don't care about the
+ * Redis-version split keep the canonical `WITHSCORES WITHATTRIBS` shape.
+ *
+ * Set to `false` on Redis 8.0.0–8.0.2 where the `WITHATTRIBS` option is
+ * broken; in that mode the service back-fills attributes via per-element
+ * `VGETATTR` after the search returns.
+ */
+export type VsimWithAttribsOption = { withAttribs?: boolean };
 
 /**
  * Resolved query clause shared between the executable command builder and the
@@ -120,7 +134,10 @@ function writeVsimTokens<T>(
   dto: SimilaritySearchDto,
   query: ResolvedVsimQuery,
   tokenWriter: VsimTokenWriter<T>,
+  options: VsimWithAttribsOption = {},
 ): T[] {
+  const { withAttribs = true } = options;
+
   const tokens: T[] = [
     tokenWriter.literal(BrowserToolVectorSetCommands.VSim),
     tokenWriter.key(dto.keyName),
@@ -142,12 +159,14 @@ function writeVsimTokens<T>(
     tokens.push(tokenWriter.literal('COUNT'), tokenWriter.number(dto.count));
   }
 
-  // WITHSCORES and WITHATTRIBS are always appended so the response shape
-  // is stable; they are intentionally not part of the DTO.
-  tokens.push(
-    tokenWriter.literal('WITHSCORES'),
-    tokenWriter.literal('WITHATTRIBS'),
-  );
+  // WITHSCORES is always appended so the response shape is stable; they are
+  // intentionally not part of the DTO. WITHATTRIBS is conditional because
+  // Redis 8.0.0–8.0.2 errors out on it; the service back-fills attributes
+  // via VGETATTR in that case.
+  tokens.push(tokenWriter.literal('WITHSCORES'));
+  if (withAttribs) {
+    tokens.push(tokenWriter.literal('WITHATTRIBS'));
+  }
 
   if (dto.filter !== undefined && dto.filter !== '') {
     tokens.push(tokenWriter.literal('FILTER'), tokenWriter.filter(dto.filter));
@@ -209,18 +228,26 @@ export function buildVaddCommand(
   return args as RedisClientCommand;
 }
 
-export function buildVsimCommand(dto: SimilaritySearchDto): RedisClientCommand {
+export function buildVsimCommand(
+  dto: SimilaritySearchDto,
+  options: VsimWithAttribsOption = {},
+): RedisClientCommand {
   const query = resolveVsimQuery(dto);
 
-  return writeVsimTokens<string | number | Buffer>(dto, query, {
-    literal: (token) => token,
-    key: (key) => key as string | Buffer,
-    element: (element) => element as string | Buffer,
-    fp32: (bytes) => bytes,
-    number: (value) => value,
-    vectorValue: (value) => String(value),
-    filter: (filter) => filter,
-  }) as RedisClientCommand;
+  return writeVsimTokens<string | number | Buffer>(
+    dto,
+    query,
+    {
+      literal: (token) => token,
+      key: (key) => key as string | Buffer,
+      element: (element) => element as string | Buffer,
+      fp32: (bytes) => bytes,
+      number: (value) => value,
+      vectorValue: (value) => String(value),
+      filter: (filter) => filter,
+    },
+    options,
+  ) as RedisClientCommand;
 }
 
 /**
@@ -232,59 +259,75 @@ export function buildVsimCommand(dto: SimilaritySearchDto): RedisClientCommand {
  * supplied — the FE is expected to only call the preview endpoint once
  * the form has resolved to exactly one query mode.
  */
-export function formatVsimCommandPreview(dto: SimilaritySearchDto): string {
+export function formatVsimCommandPreview(
+  dto: SimilaritySearchDto,
+  options: VsimWithAttribsOption = {},
+): string {
   const query = resolveVsimQuery(dto);
 
-  return writeVsimTokens<string>(dto, query, {
-    literal: (token) => token,
-    key: (key) => quoteForCli(bufferOrStringToString(key)),
-    element: (element) => quoteForCli(bufferOrStringToString(element)),
-    // Render the FP32 bytes back as the canonical `\xHH\xHH...` escape
-    // string so the preview is copy-paste-safe into `redis-cli`. Wrapped in
-    // double quotes for the same reason.
-    fp32: (bytes) => `"${bytesToEscapeString(bytes)}"`,
-    number: (value) => String(value),
-    vectorValue: (value) => String(value),
-    filter: (filter) => quoteForCli(filter),
-  }).join(' ');
+  return writeVsimTokens<string>(
+    dto,
+    query,
+    {
+      literal: (token) => token,
+      key: (key) => quoteForCli(bufferOrStringToString(key)),
+      element: (element) => quoteForCli(bufferOrStringToString(element)),
+      // Render the FP32 bytes back as the canonical `\xHH\xHH...` escape
+      // string so the preview is copy-paste-safe into `redis-cli`. Wrapped in
+      // double quotes for the same reason.
+      fp32: (bytes) => `"${bytesToEscapeString(bytes)}"`,
+      number: (value) => String(value),
+      vectorValue: (value) => String(value),
+      filter: (filter) => quoteForCli(filter),
+    },
+    options,
+  ).join(' ');
 }
 
 export function parseVsimReply(
   reply: Array<string | Buffer | null> | null | undefined,
   logger?: Logger,
+  options: VsimWithAttribsOption = {},
 ): SearchVectorSetMatchDto[] {
   if (!reply || reply.length === 0) {
     return [];
   }
 
+  const { withAttribs = true } = options;
+  const stride = withAttribs ? VSIM_REPLY_STRIDE : VSIM_REPLY_STRIDE_NO_ATTRIBS;
+
   // Defensive: drop any trailing partial tuple. Redis is expected to always
-  // return a multiple of `VSIM_REPLY_STRIDE`, so this only protects against
-  // unexpected server-side bugs.
-  const remainder = reply.length % VSIM_REPLY_STRIDE;
+  // return a multiple of `stride`, so this only protects against unexpected
+  // server-side bugs.
+  const remainder = reply.length % stride;
   const usableLength =
     remainder === 0 ? reply.length : reply.length - remainder;
   if (remainder !== 0) {
     logger?.warn(
-      `VSIM reply length ${reply.length} is not a multiple of ${VSIM_REPLY_STRIDE}; dropping trailing partial tuple.`,
+      `VSIM reply length ${reply.length} is not a multiple of ${stride}; dropping trailing partial tuple.`,
     );
   }
 
   const matches: SearchVectorSetMatchDto[] = [];
-  for (let i = 0; i < usableLength; i += VSIM_REPLY_STRIDE) {
+  for (let i = 0; i < usableLength; i += stride) {
     const name = reply[i] as string | Buffer;
     const rawScore = reply[i + 1];
-    const rawAttributes = reply[i + 2];
 
     const score =
       typeof rawScore === 'number' ? rawScore : parseFloat(String(rawScore));
 
     const match: SearchVectorSetMatchDto = { name, score };
-    if (rawAttributes !== null && rawAttributes !== undefined) {
-      match.attributes =
-        typeof rawAttributes === 'string'
-          ? rawAttributes
-          : String(rawAttributes);
+
+    if (withAttribs) {
+      const rawAttributes = reply[i + 2];
+      if (rawAttributes !== null && rawAttributes !== undefined) {
+        match.attributes =
+          typeof rawAttributes === 'string'
+            ? rawAttributes
+            : String(rawAttributes);
+      }
     }
+
     matches.push(match);
   }
   return matches;
