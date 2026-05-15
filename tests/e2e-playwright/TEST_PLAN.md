@@ -477,6 +477,10 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Confirm plugins display module-specific icons and metadata |
 | 🔲 | main | Switch between views (Table ↔ Text) and confirm format updates instantly |
 | 🔲 | main | Confirm TimeSeries visualization displays correct axes, values, and units |
+| ✅ | main | renders Geo Map by default for coordinate search results |
+| ✅ | main | switches coordinate search results to Geo Heatmap |
+| ✅ | main | switches coordinate search results back to Geo Map |
+| ✅ | main | renders Geo Inspector by default for scalar GEO commands |
 
 ### 3.3 Tutorials
 | Status | Group | Test Case |
@@ -1145,4 +1149,3 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 |--------|-------|-----------|
 | 🔲 | main | Display GitHub repository link |
 | 🔲 | main | GitHub link opens correct repository URL |
-

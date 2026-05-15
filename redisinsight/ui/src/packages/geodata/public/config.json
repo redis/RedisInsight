@@ -1,0 +1,12 @@
+{
+  "tiles": {
+    "enabled": true,
+    "urlTemplate": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    "attribution": "OpenStreetMap contributors",
+    "maxZoom": 19
+  },
+  "limits": {
+    "maxMapPoints": 5000,
+    "maxTableRows": 10000
+  }
+}

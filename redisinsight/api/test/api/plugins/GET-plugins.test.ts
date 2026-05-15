@@ -25,6 +25,9 @@ const responseSchema = Joi.object()
                   matchCommands: Joi.array()
                     .items(Joi.string().required())
                     .required(),
+                  matchQuery: Joi.object().keys({
+                    anyRegex: Joi.array().items(Joi.string().required()),
+                  }),
                   default: Joi.boolean(),
                   iconDark: Joi.string(),
                   iconLight: Joi.string(),
@@ -52,9 +55,6 @@ describe('GET /plugins', () => {
     {
       name: 'Should get plugin commands whitelist',
       responseSchema,
-      checkFn: ({ body }) => {
-        console.log('body', body);
-      },
     },
   ].map(mainCheckFn);
 });
