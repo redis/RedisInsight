@@ -211,6 +211,7 @@ const ManualConnectionWrapper = (props: Props) => {
       tls,
       forceStandalone,
       keyNameFormat,
+      isProduction,
     } = values
 
     const database: any = {
@@ -227,6 +228,7 @@ const ManualConnectionWrapper = (props: Props) => {
       tls,
       forceStandalone,
       keyNameFormat,
+      isProduction,
     }
 
     // add tls & ssh for database (modifies database object)
