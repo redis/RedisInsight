@@ -325,6 +325,12 @@ export const mockDatabaseRepository = jest.fn(() => ({
   cleanupPreSetup: jest.fn().mockResolvedValue({ affected: 0 }),
 }));
 
+export const mockDangerousCommandsProvider = jest.fn(() => ({
+  getDangerousCommands: jest.fn().mockResolvedValue([]),
+  invalidate: jest.fn(),
+  handleInstanceDeletedEvent: jest.fn(),
+}));
+
 export const mockDatabaseService = jest.fn(() => ({
   get: jest.fn().mockResolvedValue(mockDatabase),
   create: jest.fn().mockResolvedValue(mockDatabase),

@@ -1,16 +1,56 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { TelemetryEvents } from 'src/constants';
 import { TelemetryBaseService } from 'src/modules/analytics/telemetry.base.service';
 import { getRangeForNumber, BULK_ACTIONS_BREAKPOINTS } from 'src/utils';
 import { IBulkActionOverview } from 'src/modules/bulk-actions/interfaces/bulk-action-overview.interface';
 import { SessionMetadata } from 'src/common/models';
+import {
+  BulkActionType,
+  BulkActionConfirmation,
+} from 'src/modules/bulk-actions/constants';
+import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 
 @Injectable()
 export class BulkActionsAnalytics extends TelemetryBaseService {
-  sendActionStarted(
+  constructor(
+    protected eventEmitter: EventEmitter2,
+    private readonly databaseRepository: DatabaseRepository,
+  ) {
+    super(eventEmitter);
+  }
+
+  private async resolveIsProduction(
+    sessionMetadata: SessionMetadata,
+    databaseId: string,
+  ): Promise<'true' | 'false'> {
+    try {
+      const database = await this.databaseRepository.get(
+        sessionMetadata,
+        databaseId,
+      );
+      return database?.isProduction ? 'true' : 'false';
+    } catch (e) {
+      return 'false';
+    }
+  }
+
+  private isDangerousAction(type: BulkActionType): 'true' | 'false' {
+    return type === BulkActionType.Delete || type === BulkActionType.Unlink
+      ? 'true'
+      : 'false';
+  }
+
+  private resolveConfirmedThrough(
+    overview: IBulkActionOverview,
+  ): BulkActionConfirmation | null {
+    return overview.confirmedThrough ?? null;
+  }
+
+  async sendActionStarted(
     sessionMetadata: SessionMetadata,
     overview: IBulkActionOverview,
-  ): void {
+  ): Promise<void> {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.BulkActionsStarted, {
         databaseId: overview.databaseId,
@@ -32,16 +72,22 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
+        isProduction: await this.resolveIsProduction(
+          sessionMetadata,
+          overview.databaseId,
+        ),
+        dangerous: this.isDangerousAction(overview.type),
+        confirmedThrough: this.resolveConfirmedThrough(overview),
       });
     } catch (e) {
       // continue regardless of error
     }
   }
 
-  sendActionStopped(
+  async sendActionStopped(
     sessionMetadata: SessionMetadata,
     overview: IBulkActionOverview,
-  ): void {
+  ): Promise<void> {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.BulkActionsStopped, {
         databaseId: overview.databaseId,
@@ -80,16 +126,22 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
+        isProduction: await this.resolveIsProduction(
+          sessionMetadata,
+          overview.databaseId,
+        ),
+        dangerous: this.isDangerousAction(overview.type),
+        confirmedThrough: this.resolveConfirmedThrough(overview),
       });
     } catch (e) {
       // continue regardless of error
     }
   }
 
-  sendActionSucceed(
+  async sendActionSucceed(
     sessionMetadata: SessionMetadata,
     overview: IBulkActionOverview,
-  ): void {
+  ): Promise<void> {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.BulkActionsSucceed, {
         databaseId: overview.databaseId,
@@ -116,32 +168,44 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
+        isProduction: await this.resolveIsProduction(
+          sessionMetadata,
+          overview.databaseId,
+        ),
+        dangerous: this.isDangerousAction(overview.type),
+        confirmedThrough: this.resolveConfirmedThrough(overview),
       });
     } catch (e) {
       // continue regardless of error
     }
   }
 
-  sendActionFailed(
+  async sendActionFailed(
     sessionMetadata: SessionMetadata,
     overview: IBulkActionOverview,
     error: HttpException | Error,
-  ): void {
+  ): Promise<void> {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.BulkActionsFailed, {
         databaseId: overview.databaseId,
         action: overview.type,
         error,
+        isProduction: await this.resolveIsProduction(
+          sessionMetadata,
+          overview.databaseId,
+        ),
+        dangerous: this.isDangerousAction(overview.type),
+        confirmedThrough: this.resolveConfirmedThrough(overview),
       });
     } catch (e) {
       // continue regardless of error
     }
   }
 
-  sendImportSamplesUploaded(
+  async sendImportSamplesUploaded(
     sessionMetadata: SessionMetadata,
     overview: IBulkActionOverview,
-  ): void {
+  ): Promise<void> {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.ImportSamplesUploaded, {
         databaseId: overview.databaseId,
@@ -164,6 +228,10 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
+        isProduction: await this.resolveIsProduction(
+          sessionMetadata,
+          overview.databaseId,
+        ),
       });
     } catch (e) {
       // continue regardless of error

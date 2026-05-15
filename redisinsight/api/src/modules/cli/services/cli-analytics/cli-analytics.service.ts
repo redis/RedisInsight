@@ -9,14 +9,31 @@ import {
 import { CommandsService } from 'src/modules/commands/commands.service';
 import { CommandTelemetryBaseService } from 'src/modules/analytics/command.telemetry.base.service';
 import { SessionMetadata } from 'src/common/models';
+import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 
 @Injectable()
 export class CliAnalyticsService extends CommandTelemetryBaseService {
   constructor(
     protected eventEmitter: EventEmitter2,
     protected readonly commandsService: CommandsService,
+    private readonly databaseRepository: DatabaseRepository,
   ) {
     super(eventEmitter, commandsService);
+  }
+
+  private async resolveIsProduction(
+    sessionMetadata: SessionMetadata,
+    databaseId: string,
+  ): Promise<'true' | 'false'> {
+    try {
+      const database = await this.databaseRepository.get(
+        sessionMetadata,
+        databaseId,
+      );
+      return database?.isProduction ? 'true' : 'false';
+    } catch (e) {
+      return 'false';
+    }
   }
 
   sendClientCreatedEvent(
@@ -101,10 +118,20 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
     additionalData: object = {},
   ): Promise<void> {
     try {
+      const { dangerous, ...rest } = additionalData as {
+        dangerous?: boolean;
+        command?: string;
+        [k: string]: any;
+      };
       this.sendEvent(sessionMetadata, TelemetryEvents.CliCommandExecuted, {
         databaseId,
-        ...(await this.getCommandAdditionalInfo(additionalData['command'])),
-        ...additionalData,
+        ...(await this.getCommandAdditionalInfo(rest['command'])),
+        ...rest,
+        isProduction: await this.resolveIsProduction(
+          sessionMetadata,
+          databaseId,
+        ),
+        dangerous: dangerous ? 'true' : 'false',
       });
     } catch (e) {
       // ignore error
@@ -118,12 +145,22 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
     additionalData: object = {},
   ): Promise<void> {
     try {
+      const { dangerous, ...rest } = additionalData as {
+        dangerous?: boolean;
+        command?: string;
+        [k: string]: any;
+      };
       this.sendEvent(sessionMetadata, TelemetryEvents.CliCommandErrorReceived, {
         databaseId,
         error: error?.name,
         command: error?.command?.name,
-        ...(await this.getCommandAdditionalInfo(additionalData['command'])),
-        ...additionalData,
+        ...(await this.getCommandAdditionalInfo(rest['command'])),
+        ...rest,
+        isProduction: await this.resolveIsProduction(
+          sessionMetadata,
+          databaseId,
+        ),
+        dangerous: dangerous ? 'true' : 'false',
       });
     } catch (e) {
       // continue regardless of error
@@ -138,14 +175,24 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
   ): Promise<void> {
     const { status, error } = result;
     try {
+      const { dangerous, ...rest } = additionalData as {
+        dangerous?: boolean;
+        command?: string;
+        [k: string]: any;
+      };
       if (status === CommandExecutionStatus.Success) {
         this.sendEvent(
           sessionMetadata,
           TelemetryEvents.CliClusterNodeCommandExecuted,
           {
             databaseId,
-            ...(await this.getCommandAdditionalInfo(additionalData['command'])),
-            ...additionalData,
+            ...(await this.getCommandAdditionalInfo(rest['command'])),
+            ...rest,
+            isProduction: await this.resolveIsProduction(
+              sessionMetadata,
+              databaseId,
+            ),
+            dangerous: dangerous ? 'true' : 'false',
           },
         );
       }
@@ -157,8 +204,13 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
             databaseId,
             error: error.name,
             command: error?.command?.name,
-            ...(await this.getCommandAdditionalInfo(additionalData['command'])),
-            ...additionalData,
+            ...(await this.getCommandAdditionalInfo(rest['command'])),
+            ...rest,
+            isProduction: await this.resolveIsProduction(
+              sessionMetadata,
+              databaseId,
+            ),
+            dangerous: dangerous ? 'true' : 'false',
           },
         );
       }

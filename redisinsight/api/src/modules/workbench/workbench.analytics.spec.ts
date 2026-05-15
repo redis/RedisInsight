@@ -6,12 +6,14 @@ import {
   mockDatabase,
   MockType,
   mockSessionMetadata,
+  mockDatabaseRepository,
 } from 'src/__mocks__';
 import { CommandType, TelemetryEvents } from 'src/constants';
 import { ReplyError } from 'src/models';
 import { CommandExecutionStatus } from 'src/modules/cli/dto/cli.dto';
 import { CommandParsingError } from 'src/modules/cli/constants/errors';
 import { CommandsService } from 'src/modules/commands/commands.service';
+import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 import { WorkbenchAnalytics } from './workbench.analytics';
 import { CommandExecutionType } from './models/command-execution';
 
@@ -30,6 +32,7 @@ describe('WorkbenchAnalytics', () => {
   let sendEventMethod: jest.SpyInstance<WorkbenchAnalytics, unknown[]>;
   let sendFailedEventMethod: jest.SpyInstance<WorkbenchAnalytics, unknown[]>;
   let commandsService: MockType<CommandsService>;
+  let databaseRepository: MockType<DatabaseRepository>;
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -41,9 +44,15 @@ describe('WorkbenchAnalytics', () => {
           provide: CommandsService,
           useFactory: () => mockCommandsService,
         },
+        {
+          provide: DatabaseRepository,
+          useFactory: mockDatabaseRepository,
+        },
         WorkbenchAnalytics,
       ],
     }).compile();
+
+    databaseRepository = module.get(DatabaseRepository);
 
     service = module.get<WorkbenchAnalytics>(WorkbenchAnalytics);
     sendEventMethod = jest.spyOn<WorkbenchAnalytics, any>(service, 'sendEvent');
@@ -83,7 +92,7 @@ describe('WorkbenchAnalytics', () => {
 
   describe('sendIndexInfoEvent', () => {
     it('should emit index info event for Workbench commands', async () => {
-      service.sendIndexInfoEvent(
+      await service.sendIndexInfoEvent(
         mockSessionMetadata,
         instanceId,
         CommandExecutionType.Workbench,
@@ -98,11 +107,12 @@ describe('WorkbenchAnalytics', () => {
         {
           databaseId: instanceId,
           any: 'fields',
+          isProduction: 'false',
         },
       );
     });
     it('should emit index info event for Search commands', async () => {
-      service.sendIndexInfoEvent(
+      await service.sendIndexInfoEvent(
         mockSessionMetadata,
         instanceId,
         CommandExecutionType.Search,
@@ -117,11 +127,12 @@ describe('WorkbenchAnalytics', () => {
         {
           databaseId: instanceId,
           any: 'fields',
+          isProduction: 'false',
         },
       );
     });
     it('should not fail and should not emit when no data to send', async () => {
-      service.sendIndexInfoEvent(
+      await service.sendIndexInfoEvent(
         mockSessionMetadata,
         instanceId,
         CommandExecutionType.Workbench,
@@ -154,6 +165,8 @@ describe('WorkbenchAnalytics', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });
@@ -179,6 +192,8 @@ describe('WorkbenchAnalytics', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });
@@ -202,6 +217,8 @@ describe('WorkbenchAnalytics', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });
@@ -224,6 +241,8 @@ describe('WorkbenchAnalytics', () => {
         {
           databaseId: instanceId,
           command: 'set',
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });
@@ -245,6 +264,8 @@ describe('WorkbenchAnalytics', () => {
           commandType: CommandType.Module,
           moduleName: 'redisbloom',
           capability: 'bf',
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });
@@ -266,6 +287,8 @@ describe('WorkbenchAnalytics', () => {
           commandType: CommandType.Module,
           moduleName: 'custommodule',
           capability: 'n/a',
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });
@@ -287,6 +310,8 @@ describe('WorkbenchAnalytics', () => {
           commandType: CommandType.Module,
           moduleName: 'custom',
           capability: 'n/a',
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });
@@ -306,6 +331,8 @@ describe('WorkbenchAnalytics', () => {
         TelemetryEvents.WorkbenchCommandExecuted,
         {
           databaseId: instanceId,
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });
@@ -333,6 +360,8 @@ describe('WorkbenchAnalytics', () => {
           moduleName: 'n/a',
           capability: 'string',
           data: 'Some data',
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });
@@ -355,6 +384,8 @@ describe('WorkbenchAnalytics', () => {
           databaseId: instanceId,
           error: ReplyError.name,
           command: 'sadd',
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });
@@ -378,6 +409,8 @@ describe('WorkbenchAnalytics', () => {
           databaseId: instanceId,
           error: CommandParsingError.name,
           command: undefined,
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });
@@ -398,7 +431,11 @@ describe('WorkbenchAnalytics', () => {
         mockSessionMetadata,
         TelemetryEvents.WorkbenchCommandErrorReceived,
         error,
-        { databaseId: instanceId },
+        {
+          databaseId: instanceId,
+          isProduction: 'false',
+          dangerous: 'false',
+        },
       );
     });
     it('should emit SearchCommandExecuted event', async () => {
@@ -419,6 +456,8 @@ describe('WorkbenchAnalytics', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });
@@ -446,10 +485,69 @@ describe('WorkbenchAnalytics', () => {
           moduleName: 'n/a',
           capability: 'string',
           data: 'Some data',
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });
   });
+  describe('production mode and dangerous flag enrichment', () => {
+    it('should emit isProduction=true when database is marked production', async () => {
+      databaseRepository.get.mockResolvedValueOnce({
+        ...mockDatabase,
+        isProduction: true,
+      });
+
+      await service.sendCommandExecutedEvent(
+        mockSessionMetadata,
+        instanceId,
+        CommandExecutionType.Workbench,
+        { response: 'OK', status: CommandExecutionStatus.Success },
+        { command: 'set' },
+      );
+
+      expect(sendEventMethod).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        TelemetryEvents.WorkbenchCommandExecuted,
+        expect.objectContaining({ isProduction: 'true' }),
+      );
+    });
+
+    it('should pass dangerous through from additionalData', async () => {
+      await service.sendCommandExecutedEvent(
+        mockSessionMetadata,
+        instanceId,
+        CommandExecutionType.Workbench,
+        { response: 'OK', status: CommandExecutionStatus.Success },
+        { command: 'flushdb', dangerous: true },
+      );
+
+      expect(sendEventMethod).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        TelemetryEvents.WorkbenchCommandExecuted,
+        expect.objectContaining({ dangerous: 'true' }),
+      );
+    });
+
+    it('should default isProduction to false when lookup throws', async () => {
+      databaseRepository.get.mockRejectedValueOnce(new Error('boom'));
+
+      await service.sendCommandExecutedEvent(
+        mockSessionMetadata,
+        instanceId,
+        CommandExecutionType.Workbench,
+        { response: 'OK', status: CommandExecutionStatus.Success },
+        { command: 'set' },
+      );
+
+      expect(sendEventMethod).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        TelemetryEvents.WorkbenchCommandExecuted,
+        expect.objectContaining({ isProduction: 'false' }),
+      );
+    });
+  });
+
   describe('sendCommandDeletedEvent', () => {
     it('should emit WorkbenchCommandDeleted event', () => {
       service.sendCommandDeletedEvent(mockSessionMetadata, instanceId, {

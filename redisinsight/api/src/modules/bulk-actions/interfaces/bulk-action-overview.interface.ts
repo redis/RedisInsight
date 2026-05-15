@@ -1,4 +1,5 @@
 import {
+  BulkActionConfirmation,
   BulkActionStatus,
   BulkActionType,
 } from 'src/modules/bulk-actions/constants';
@@ -17,4 +18,5 @@ export interface IBulkActionOverview {
   summary: IBulkActionSummaryOverview;
   downloadUrl?: string;
   error?: string;
+  confirmedThrough?: BulkActionConfirmation | null;
 }
