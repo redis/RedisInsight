@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   enforce-branch-rules:
     runs-on: ubuntu-latest
