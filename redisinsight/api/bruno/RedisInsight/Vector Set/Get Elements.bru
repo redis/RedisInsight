@@ -12,7 +12,7 @@ post {
 
 body:json {
   {
-    "keyName": "vset:small_3d",
+    "keyName": "compass",
     "start": "-",
     "end": "+",
     "count": 15
@@ -44,13 +44,16 @@ docs {
 
   ## Important: Lexicographical Ordering
 
-  Elements are sorted as **strings**, not numbers! This means:
+  Elements are sorted as **strings**, not by any natural meaning. For the `compass` example above, the eight compass directions come back in this order:
 
   ```
-  item_1 → item_10 → item_11 → item_15 → item_2 → item_3
+  east → north → northeast → northwest → south → southeast → southwest → west
   ```
 
-  Because `"item_10"` < `"item_2"` when comparing character by character (`'1'` < `'2'`).
+  Two things to notice:
+
+  - `north` sorts **before** `northeast` even though `northeast` looks "longer" — when one string is a prefix of another, the shorter one wins lexicographically.
+  - `southeast` sorts **before** `southwest` because `'e'` (0x65) < `'w'` (0x77) at the 6th character.
 
   ## Response
 
@@ -63,4 +66,3 @@ docs {
 settings {
   encodeUrl: true
 }
-

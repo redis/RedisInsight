@@ -12,21 +12,27 @@ post {
 
 body:json {
   {
-    "keyName": "vset:my_new_set",
+    "keyName": "compass",
     "elements": [
       {
-        "name": "item_1",
-        "vectorValues": [0.1, 0.2, 0.3],
-        "attributes": "{\"color\": \"red\"}"
+        "name": "east",
+        "vectorValues": [1, 0],
+        "attributes": "{\"type\": \"cardinal\", \"bearing\": 90}"
       },
       {
-        "name": "item_2",
-        "vectorValues": [0.4, 0.5, 0.6]
+        "name": "north",
+        "vectorValues": [0, 1],
+        "attributes": "{\"type\": \"cardinal\", \"bearing\": 0}"
       },
       {
-        "name": "item_fp32",
-        "vectorFp32": "AACAPwAAAEAAAEBA",
-        "attributes": "{\"format\": \"fp32\"}"
+        "name": "west",
+        "vectorValues": [-1, 0],
+        "attributes": "{\"type\": \"cardinal\", \"bearing\": 270}"
+      },
+      {
+        "name": "south",
+        "vectorValues": [0, -1],
+        "attributes": "{\"type\": \"cardinal\", \"bearing\": 180}"
       }
     ],
     "expire": 3600
@@ -37,6 +43,8 @@ docs {
   # Create Vector Set
 
   Creates a new Vector Set key with the provided elements. Uses the Redis `VADD` command internally (one call per element, pipelined).
+
+  The example above creates the `compass` set seeded with the four **cardinal** directions (east, north, west, south) as 2D unit vectors on the XY plane. The four **intercardinal** directions (northeast, northwest, southeast, southwest) are added separately via the **Add Elements** endpoint.
 
   Each element must provide exactly one of two equivalent vector representations: `vectorValues` (numeric array, issues `VADD key VALUES <dim> <v1> ...`) or `vectorFp32` (base64-encoded little-endian IEEE-754 FP32 blob, issues `VADD key FP32 <blob> <element>`). The two fields are mutually exclusive. All elements in the request must share the same dimension.
 
@@ -51,12 +59,6 @@ docs {
   | `elements[].vectorFp32` | string (base64) | Vector embedding as a base64-encoded little-endian FP32 blob. Decoded length must be a non-zero multiple of 4 bytes. Mutually exclusive with `vectorValues`. |
   | `elements[].attributes` | string (optional) | Attributes string to associate with the element (passed via SETATTR) |
   | `expire` | number (optional) | TTL in seconds |
-
-  ## FP32 Example
-
-  The base64 payload `AACAPwAAAEAAAEBA` decodes to the 12-byte FP32 blob for
-  `[1.0, 2.0, 3.0]` (little-endian IEEE-754):
-  `00 00 80 3f 00 00 00 40 00 00 40 40`.
 
   ## Response
 

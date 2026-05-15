@@ -12,8 +12,8 @@ post {
 
 body:json {
   {
-    "keyName": "vset:small_3d",
-    "vectorValues": [0.1, 0.2, 0.3],
+    "keyName": "compass",
+    "vectorValues": [2, 1],
     "count": 10
   }
 }
@@ -44,7 +44,7 @@ docs {
 
   ```json
   {
-    "preview": "VSIM vset:small_3d VALUES 3 0.1 0.2 0.3 COUNT 10 WITHSCORES WITHATTRIBS"
+    "preview": "VSIM compass VALUES 2 2 1 COUNT 10 WITHSCORES WITHATTRIBS"
   }
   ```
 
@@ -58,10 +58,12 @@ docs {
 
   ### Preview for FP32 input
 
+  Using the FP32 encoding of the same query vector `[2, 1]`:
+
   ```json
   {
-    "keyName": "vset:small_3d",
-    "vectorFp32": "AACAPwAAAEAAAEBA",
+    "keyName": "compass",
+    "vectorFp32": "AAAAQAAAgD8=",
     "count": 10
   }
   ```
@@ -69,7 +71,7 @@ docs {
   Returns the FP32 vector rendered as a quoted `\xHH` escape string so the command is copy-paste-safe into `redis-cli`:
 
   ```
-  VSIM vset:small_3d FP32 "\x00\x00\x80\x3f\x00\x00\x00\x40\x00\x00\x40\x40" COUNT 10 WITHSCORES WITHATTRIBS
+  VSIM compass FP32 "\x00\x00\x00\x40\x00\x00\x80\x3f" COUNT 10 WITHSCORES WITHATTRIBS
   ```
 
   ## Notes
