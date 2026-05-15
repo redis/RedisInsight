@@ -6,14 +6,14 @@ import {
   connectedInstanceSelector,
 } from 'uiSrc/slices/instances/instances'
 import { appSettingsSkipConfirmationsForNonProdSelector } from 'uiSrc/slices/user/user-settings'
-import { getProdModeForDatabase, ProdMode } from 'uiSrc/utils/prodMode'
+import { getDatabaseMode, DatabaseMode } from 'uiSrc/utils/databaseMode'
 
-export interface UseProdModeResult {
-  mode: ProdMode
+export interface UseDatabaseModeResult {
+  mode: DatabaseMode
   isDangerousCommand: (cmd: string) => boolean
 }
 
-export const useProdMode = (): UseProdModeResult => {
+export const useDatabaseMode = (): UseDatabaseModeResult => {
   const flagEnabled = useSelector(appFeatureFlagDevProdModeSelector)
   const skipConfirmations = useSelector(
     appSettingsSkipConfirmationsForNonProdSelector,
@@ -24,8 +24,8 @@ export const useProdMode = (): UseProdModeResult => {
   const connectedInstance = useSelector(connectedInstanceSelector)
 
   const isConnected = Boolean(connectedInstance.id)
-  const mode: ProdMode = isConnected
-    ? getProdModeForDatabase(connectedInstance, {
+  const mode: DatabaseMode = isConnected
+    ? getDatabaseMode(connectedInstance, {
         flagEnabled,
         skipConfirmations,
       })

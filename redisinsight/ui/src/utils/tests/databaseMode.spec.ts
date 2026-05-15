@@ -1,9 +1,9 @@
-import { getProdModeForDatabase } from 'uiSrc/utils/prodMode'
+import { getDatabaseMode } from 'uiSrc/utils/databaseMode'
 
-describe('getProdModeForDatabase', () => {
+describe('getDatabaseMode', () => {
   it('returns disabled when flag is off regardless of row', () => {
     expect(
-      getProdModeForDatabase(
+      getDatabaseMode(
         { isProduction: true },
         { flagEnabled: false, skipConfirmations: true },
       ),
@@ -12,7 +12,7 @@ describe('getProdModeForDatabase', () => {
 
   it('returns production when flag on and row is production', () => {
     expect(
-      getProdModeForDatabase(
+      getDatabaseMode(
         { isProduction: true },
         { flagEnabled: true, skipConfirmations: false },
       ),
@@ -21,7 +21,7 @@ describe('getProdModeForDatabase', () => {
 
   it('returns fast for non-prod row when skip-confirmations is on', () => {
     expect(
-      getProdModeForDatabase(
+      getDatabaseMode(
         { isProduction: false },
         { flagEnabled: true, skipConfirmations: true },
       ),
@@ -30,7 +30,7 @@ describe('getProdModeForDatabase', () => {
 
   it('returns unmarked for non-prod row when skip-confirmations is off', () => {
     expect(
-      getProdModeForDatabase(
+      getDatabaseMode(
         { isProduction: false },
         { flagEnabled: true, skipConfirmations: false },
       ),
@@ -39,16 +39,13 @@ describe('getProdModeForDatabase', () => {
 
   it('treats undefined isProduction as not production', () => {
     expect(
-      getProdModeForDatabase(
-        {},
-        { flagEnabled: true, skipConfirmations: false },
-      ),
+      getDatabaseMode({}, { flagEnabled: true, skipConfirmations: false }),
     ).toBe('unmarked')
   })
 
   it('returns disabled for a null row when flag is off', () => {
     expect(
-      getProdModeForDatabase(null, {
+      getDatabaseMode(null, {
         flagEnabled: false,
         skipConfirmations: false,
       }),
@@ -57,7 +54,7 @@ describe('getProdModeForDatabase', () => {
 
   it('treats a null row as not production when flag is on', () => {
     expect(
-      getProdModeForDatabase(null, {
+      getDatabaseMode(null, {
         flagEnabled: true,
         skipConfirmations: false,
       }),

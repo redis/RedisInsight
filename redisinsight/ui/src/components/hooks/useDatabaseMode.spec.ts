@@ -6,7 +6,7 @@ import {
 } from 'uiSrc/slices/instances/instances'
 import { appSettingsSkipConfirmationsForNonProdSelector } from 'uiSrc/slices/user/user-settings'
 
-import { useProdMode } from './useProdMode'
+import { useDatabaseMode } from './useDatabaseMode'
 
 jest.mock('uiSrc/slices/app/features', () => ({
   ...jest.requireActual('uiSrc/slices/app/features'),
@@ -51,35 +51,35 @@ const setMocks = (input: {
   })
 }
 
-describe('useProdMode', () => {
+describe('useDatabaseMode', () => {
   describe('truth table', () => {
     it('returns disabled when flag is off', () => {
       setMocks({ flag: false, isProduction: true, skipConfirmations: true })
-      const { result } = renderHook(useProdMode)
+      const { result } = renderHook(useDatabaseMode)
       expect(result.current.mode).toBe('disabled')
     })
 
     it('returns production when flag on and connection is production', () => {
       setMocks({ flag: true, isProduction: true, skipConfirmations: false })
-      const { result } = renderHook(useProdMode)
+      const { result } = renderHook(useDatabaseMode)
       expect(result.current.mode).toBe('production')
     })
 
     it('returns production even when skip-confirmations is on', () => {
       setMocks({ flag: true, isProduction: true, skipConfirmations: true })
-      const { result } = renderHook(useProdMode)
+      const { result } = renderHook(useDatabaseMode)
       expect(result.current.mode).toBe('production')
     })
 
     it('returns fast when flag on, not production, skip-confirmations on', () => {
       setMocks({ flag: true, isProduction: false, skipConfirmations: true })
-      const { result } = renderHook(useProdMode)
+      const { result } = renderHook(useDatabaseMode)
       expect(result.current.mode).toBe('fast')
     })
 
     it('returns unmarked when flag on, not production, skip-confirmations off', () => {
       setMocks({ flag: true, isProduction: false, skipConfirmations: false })
-      const { result } = renderHook(useProdMode)
+      const { result } = renderHook(useDatabaseMode)
       expect(result.current.mode).toBe('unmarked')
     })
   })
@@ -92,7 +92,7 @@ describe('useProdMode', () => {
         skipConfirmations: false,
         dangerousCommands: ['FLUSHDB', 'KEYS'],
       })
-      const { result } = renderHook(useProdMode)
+      const { result } = renderHook(useDatabaseMode)
       expect(result.current.isDangerousCommand('FLUSHDB')).toBe(false)
     })
 
@@ -103,7 +103,7 @@ describe('useProdMode', () => {
         skipConfirmations: true,
         dangerousCommands: ['FLUSHDB'],
       })
-      const { result } = renderHook(useProdMode)
+      const { result } = renderHook(useDatabaseMode)
       expect(result.current.isDangerousCommand('FLUSHDB')).toBe(false)
     })
 
@@ -114,7 +114,7 @@ describe('useProdMode', () => {
         skipConfirmations: false,
         dangerousCommands: ['FLUSHDB', 'KEYS'],
       })
-      const { result } = renderHook(useProdMode)
+      const { result } = renderHook(useDatabaseMode)
       expect(result.current.isDangerousCommand('flushdb')).toBe(true)
       expect(result.current.isDangerousCommand('FlushDB')).toBe(true)
       expect(result.current.isDangerousCommand('keys')).toBe(true)
@@ -127,7 +127,7 @@ describe('useProdMode', () => {
         skipConfirmations: false,
         dangerousCommands: ['FLUSHDB'],
       })
-      const { result } = renderHook(useProdMode)
+      const { result } = renderHook(useDatabaseMode)
       expect(result.current.isDangerousCommand('GET')).toBe(false)
     })
 
@@ -138,7 +138,7 @@ describe('useProdMode', () => {
         skipConfirmations: false,
         dangerousCommands: ['FLUSHDB'],
       })
-      const { result } = renderHook(useProdMode)
+      const { result } = renderHook(useDatabaseMode)
       expect(result.current.isDangerousCommand('')).toBe(false)
     })
 
@@ -149,7 +149,7 @@ describe('useProdMode', () => {
         skipConfirmations: false,
         dangerousCommands: ['flushdb'],
       })
-      const { result } = renderHook(useProdMode)
+      const { result } = renderHook(useDatabaseMode)
       expect(result.current.isDangerousCommand('FLUSHDB')).toBe(true)
     })
   })
@@ -163,7 +163,7 @@ describe('useProdMode', () => {
         dangerousCommands: ['FLUSHDB'],
         connected: false,
       })
-      const { result } = renderHook(useProdMode)
+      const { result } = renderHook(useDatabaseMode)
       expect(result.current.mode).toBe('disabled')
       expect(result.current.isDangerousCommand('FLUSHDB')).toBe(false)
     })

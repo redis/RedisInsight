@@ -1,14 +1,14 @@
 import { Instance } from 'uiSrc/slices/interfaces'
 
-export type ProdMode = 'production' | 'fast' | 'unmarked' | 'disabled'
+export type DatabaseMode = 'production' | 'fast' | 'unmarked' | 'disabled'
 
-export const getProdModeForDatabase = (
+export const getDatabaseMode = (
   database: Pick<Instance, 'isProduction'> | null | undefined,
   {
     flagEnabled,
     skipConfirmations,
   }: { flagEnabled: boolean; skipConfirmations: boolean },
-): ProdMode => {
+): DatabaseMode => {
   if (!flagEnabled) return 'disabled'
   if (database?.isProduction) return 'production'
   if (skipConfirmations) return 'fast'
