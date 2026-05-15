@@ -96,6 +96,10 @@ export const userSettingsConfigSelector = (state: RootState) =>
   state.user.settings.config
 export const userSettingsWBSelector = (state: RootState) =>
   state.user.settings.workbench
+export const appSettingsSkipConfirmationsForNonProdSelector = (
+  state: RootState,
+): boolean =>
+  state.user.settings.config?.skipConfirmationsForNonProduction ?? false
 
 // The reducer
 export default userSettingsSlice.reducer

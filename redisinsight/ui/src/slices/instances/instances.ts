@@ -86,6 +86,7 @@ export const initialState: InitialStateInstances = {
     data: null,
   },
   shownColumns: [...COLUMN_FIELD_NAME_MAP.keys()],
+  dangerousCommands: [],
 }
 
 // A slice for recipes
@@ -270,6 +271,7 @@ const instancesSlice = createSlice({
     // reset connected instance
     resetConnectedInstance: (state) => {
       state.connectedInstance = initialState.connectedInstance
+      state.dangerousCommands = initialState.dangerousCommands
     },
 
     importInstancesFromFile: (state) => {
@@ -312,6 +314,15 @@ const instancesSlice = createSlice({
     ) => {
       state.shownColumns = [...payload]
     },
+    setConnectedInstanceDangerousCommands: (
+      state,
+      { payload }: { payload: string[] },
+    ) => {
+      state.dangerousCommands = payload.map((cmd) => cmd.toUpperCase())
+    },
+    resetConnectedInstanceDangerousCommands: (state) => {
+      state.dangerousCommands = []
+    },
   },
 })
 
@@ -353,6 +364,8 @@ export const {
   setConnectedInfoInstance,
   setConnectedInfoInstanceSuccess,
   setShownColumns,
+  setConnectedInstanceDangerousCommands,
+  resetConnectedInstanceDangerousCommands,
 } = instancesSlice.actions
 
 // selectors
@@ -364,6 +377,13 @@ export const connectedInstanceSelector = (state: RootState) =>
   state.connections.instances.connectedInstance
 export const connectedInstanceCDSelector = (state: RootState) =>
   state.connections.instances.connectedInstance.cloudDetails
+export const connectedInstanceIsProductionSelector = (
+  state: RootState,
+): boolean =>
+  state.connections.instances.connectedInstance.isProduction ?? false
+export const connectedInstanceDangerousCommandsSelector = (
+  state: RootState,
+): string[] => state.connections.instances.dangerousCommands
 export const connectedInstanceInfoSelector = (state: RootState) =>
   state.connections.instances.instanceInfo
 export const editedInstanceSelector = (state: RootState) =>
@@ -903,6 +923,25 @@ export function checkDatabaseIndexAction(
       const error = _err as AxiosError
       dispatch(checkDatabaseIndexFailure())
       dispatch(addErrorNotification(error))
+      onFailAction?.()
+    }
+  }
+}
+
+export function fetchConnectedInstanceDangerousCommandsAction(
+  id: string,
+  onSuccessAction?: (commands: string[]) => void,
+  onFailAction?: () => void,
+) {
+  return async (dispatch: AppDispatch) => {
+    try {
+      const data = await instancesService.getInstanceDangerousCommands(id)
+
+      if (data !== null) {
+        dispatch(setConnectedInstanceDangerousCommands(data))
+        onSuccessAction?.(data)
+      }
+    } catch (_err) {
       onFailAction?.()
     }
   }

@@ -25,6 +25,13 @@ export async function getInstanceOverview(id: string) {
 
   return isStatusSuccessful(status) ? data : null
 }
+export async function getInstanceDangerousCommands(id: string) {
+  const { data, status } = await apiService.get<string[]>(
+    `${endpoint}/${id}/${ApiEndpoints.DANGEROUS_COMMANDS}`,
+  )
+
+  return isStatusSuccessful(status) ? data : null
+}
 
 export const sourceInstance: {
   source: Nullable<CancelTokenSource>

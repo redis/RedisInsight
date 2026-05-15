@@ -7,6 +7,7 @@ enum ApiEndpoints {
   DATABASES_IMPORT = 'databases/import',
   DATABASES_TEST_CONNECTION = 'databases/test',
   DATABASES_EXPORT = 'databases/export',
+  DANGEROUS_COMMANDS = 'dangerous-commands',
 
   TAGS = 'tags',
 

@@ -66,6 +66,11 @@ import reducer, {
   exportInstancesAction,
   autoCreateAndConnectToInstanceAction,
   cloneInstanceAction,
+  setConnectedInstanceDangerousCommands,
+  resetConnectedInstanceDangerousCommands,
+  fetchConnectedInstanceDangerousCommandsAction,
+  connectedInstanceDangerousCommandsSelector,
+  connectedInstanceIsProductionSelector,
 } from '../../instances/instances'
 import {
   addErrorNotification,
@@ -909,6 +914,90 @@ describe('instances slice', () => {
         },
       })
       expect(instancesSelector(rootState)).toEqual(state)
+    })
+  })
+
+  describe('setConnectedInstanceDangerousCommands', () => {
+    it('should store commands in uppercase', () => {
+      // Act
+      const nextState = reducer(
+        initialState,
+        setConnectedInstanceDangerousCommands(['flushdb', 'KEYS', 'flushAll']),
+      )
+
+      // Assert
+      const rootState = Object.assign(initialStateDefault, {
+        connections: { instances: nextState },
+      })
+      expect(connectedInstanceDangerousCommandsSelector(rootState)).toEqual([
+        'FLUSHDB',
+        'KEYS',
+        'FLUSHALL',
+      ])
+    })
+  })
+
+  describe('resetConnectedInstanceDangerousCommands', () => {
+    it('should clear the list', () => {
+      // Arrange
+      const seeded = reducer(
+        initialState,
+        setConnectedInstanceDangerousCommands(['FLUSHDB']),
+      )
+
+      // Act
+      const nextState = reducer(
+        seeded,
+        resetConnectedInstanceDangerousCommands(),
+      )
+
+      // Assert
+      const rootState = Object.assign(initialStateDefault, {
+        connections: { instances: nextState },
+      })
+      expect(connectedInstanceDangerousCommandsSelector(rootState)).toEqual([])
+    })
+  })
+
+  describe('resetConnectedInstance', () => {
+    it('also clears dangerousCommands so they do not leak across connections', () => {
+      // Arrange
+      const seeded = reducer(
+        initialState,
+        setConnectedInstanceDangerousCommands(['FLUSHDB']),
+      )
+
+      // Act
+      const nextState = reducer(seeded, resetConnectedInstance())
+
+      // Assert
+      const rootState = Object.assign(initialStateDefault, {
+        connections: { instances: nextState },
+      })
+      expect(connectedInstanceDangerousCommandsSelector(rootState)).toEqual([])
+    })
+  })
+
+  describe('connectedInstanceIsProductionSelector', () => {
+    it('returns isProduction from connected instance', () => {
+      const nextState = {
+        ...initialState,
+        connectedInstance: {
+          ...initialState.connectedInstance,
+          isProduction: true,
+        },
+      }
+      const rootState = Object.assign(initialStateDefault, {
+        connections: { instances: nextState },
+      })
+      expect(connectedInstanceIsProductionSelector(rootState)).toBe(true)
+    })
+
+    it('defaults to false when isProduction is undefined', () => {
+      const rootState = Object.assign(initialStateDefault, {
+        connections: { instances: initialState },
+      })
+      expect(connectedInstanceIsProductionSelector(rootState)).toBe(false)
     })
   })
 
@@ -1951,6 +2040,45 @@ describe('instances slice', () => {
           addErrorNotification(responsePayload as AxiosError),
         ]
         expect(store.getActions()).toEqual(expectedActions)
+      })
+    })
+
+    describe('fetchConnectedInstanceDangerousCommandsAction', () => {
+      it('dispatches setConnectedInstanceDangerousCommands on success', async () => {
+        // Arrange
+        const data = ['FLUSHDB', 'KEYS']
+        apiService.get = jest.fn().mockResolvedValue({ status: 200, data })
+
+        // Act
+        const onSuccess = jest.fn()
+        await store.dispatch<any>(
+          fetchConnectedInstanceDangerousCommandsAction('db-1', onSuccess),
+        )
+
+        // Assert
+        expect(store.getActions()).toEqual([
+          setConnectedInstanceDangerousCommands(data),
+        ])
+        expect(onSuccess).toHaveBeenCalledWith(data)
+      })
+
+      it('calls onFailAction and dispatches nothing on error', async () => {
+        // Arrange
+        apiService.get = jest.fn().mockRejectedValue(new Error('boom'))
+
+        // Act
+        const onFail = jest.fn()
+        await store.dispatch<any>(
+          fetchConnectedInstanceDangerousCommandsAction(
+            'db-1',
+            undefined,
+            onFail,
+          ),
+        )
+
+        // Assert
+        expect(store.getActions()).toEqual([])
+        expect(onFail).toHaveBeenCalled()
       })
     })
   })
