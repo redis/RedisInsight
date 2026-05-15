@@ -16,12 +16,12 @@ RedisInsight gates TypeScript errors per project via a one-way ratchet: current 
 
 | Project | tsconfig used | Baseline file | Compare | Refresh |
 | - | - | - | - | - |
-| UI | `redisinsight/ui/tsconfig.json` | `redisinsight/ui/.tscheck.rec.json` | `yarn type-check:ui` | `yarn tscheck:ui` |
-| API | `redisinsight/api/tsconfig.check.json` (strict, extends base) | `redisinsight/api/.tscheck.rec.json` | `yarn type-check:api` | `yarn tscheck:api` |
-| Desktop | `redisinsight/desktop/tsconfig.json` | `redisinsight/desktop/.tscheck.rec.json` | `yarn type-check:desktop` | `yarn tscheck:desktop` |
-| Configs | `configs/tsconfig.json` | — (must stay at 0 errors) | `yarn type-check:configs` | — |
+| UI | `redisinsight/ui/tsconfig.json` | `redisinsight/ui/.tscheck.rec.json` | `yarn --cwd redisinsight/ui type-check` | `yarn --cwd redisinsight/ui tscheck` |
+| API | `redisinsight/api/tsconfig.check.json` (strict, extends base) | `redisinsight/api/.tscheck.rec.json` | `yarn --cwd redisinsight/api type-check` | `yarn --cwd redisinsight/api tscheck` |
+| Desktop | `redisinsight/desktop/tsconfig.json` | `redisinsight/desktop/.tscheck.rec.json` | `yarn --cwd redisinsight/desktop type-check` | `yarn --cwd redisinsight/desktop tscheck` |
+| Configs | `configs/tsconfig.json` | — (must stay at 0 errors) | `yarn tsc --project configs/tsconfig.json --noEmit` | — |
 
-`yarn type-check` runs all four. E2E Playwright is type-checked by a separate workflow (`tests-e2e-playwright-lint.yml`) — not part of `yarn type-check`.
+`yarn type-check` (at repo root) runs all four. E2E Playwright is type-checked by a separate workflow (`tests-e2e-playwright-lint.yml`) — not part of `yarn type-check`. Force-overwrite for emergencies is `yarn --cwd redisinsight/<workspace> tscheck:force`.
 
 ## API has a dedicated check tsconfig
 
@@ -40,14 +40,14 @@ The base `tsconfig.json` stays as-is so `nest build` is unaffected. **Never enab
 
 ### CI says "more TS errors than previously recorded"
 
-You introduced new errors. Fix them. Read the script output — it lists the file, error code (TSxxxx), and message for each new error. Do **not** run `yarn tscheck:*:force` to paper over them.
+You introduced new errors. Fix them. Read the script output — it lists the file, error code (TSxxxx), and message for each new error. Do **not** run `tscheck:force` in any workspace to paper over them.
 
 ### CI says "baseline is outdated"
 
 You fixed errors (good). Refresh the baseline:
 
 ```sh
-yarn tscheck:ui       # or :api / :desktop
+yarn --cwd redisinsight/ui tscheck    # or api / desktop
 ```
 
 Commit the updated `.tscheck.rec.json`.
@@ -58,7 +58,7 @@ Same rule: the file × error-code counts went from 0 to N — that's "new errors
 
 ### Bootstrapping a fresh baseline
 
-Only needed once per project (already done for ui/api/desktop). The non-force `yarn tscheck:*` calls `compare` first, which fails against an empty baseline. Use `yarn tscheck:*:force` for the very first baseline only.
+Only needed once per project (already done for ui/api/desktop). The non-force `yarn --cwd redisinsight/<workspace> tscheck` calls `compare` first, which fails against an empty baseline. Use `yarn --cwd redisinsight/<workspace> tscheck:force` for the very first baseline only.
 
 ### After `yarn install` in `redisinsight/api/`
 
@@ -79,7 +79,7 @@ Desktop type-check needs `redisinsight/api/dist/` populated with the **dev** nes
 Reject PRs that:
 
 - Bump a `.tscheck.rec.json` file × code count **up** without a corresponding code fix.
-- Use `tscheck:*:force` (look for the diff: a force overwrite typically touches many lines in the rec file with no related TS changes).
+- Use `tscheck:force` in any workspace (look for the diff: a force overwrite typically touches many lines in the rec file with no related TS changes).
 - Enable `strict` in `redisinsight/api/tsconfig.json` (the base). Strict for api belongs only in `tsconfig.check.json`.
 
 Approve PRs that:

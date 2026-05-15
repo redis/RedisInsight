@@ -39,7 +39,10 @@
     "test:api:ci:cov": "cross-env nyc -r text -r text-summary -r html yarn run test:api --reporter mocha-multi-reporters --reporter-options configFile=test/api/reporters.json && nyc merge .nyc_output ./coverage/test-run-coverage.json",
     "typeorm:migrate": "cross-env NODE_ENV=staging yarn typeorm migration:generate ./migration/migration",
     "typeorm:run": "yarn typeorm migration:run",
-    "typeorm:run:stage": "cross-env NODE_ENV=staging yarn typeorm migration:run"
+    "typeorm:run:stage": "cross-env NODE_ENV=staging yarn typeorm migration:run",
+    "type-check": "tsc --project tsconfig.check.json --noEmit --pretty false | tsc-output-parser | tsx ../../scripts/ts-error-check.ts compare .tscheck.rec.json 'yarn --cwd redisinsight/api tscheck'",
+    "tscheck": "tsc --project tsconfig.check.json --noEmit --pretty false | tsc-output-parser | tsx ../../scripts/ts-error-check.ts overwrite .tscheck.rec.json",
+    "tscheck:force": "tsc --project tsconfig.check.json --noEmit --pretty false | tsc-output-parser | tsx ../../scripts/ts-error-check.ts force_overwrite .tscheck.rec.json"
   },
   "resolutions": {
     "word-wrap": "1.2.4",

@@ -12,7 +12,10 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "stats": "NODE_OPTIONS=--max_old_space_size=8192 npx vite-bundle-visualizer --open -o ./dist-stats.html --sourcemap"
+    "stats": "NODE_OPTIONS=--max_old_space_size=8192 npx vite-bundle-visualizer --open -o ./dist-stats.html --sourcemap",
+    "type-check": "tsc --project tsconfig.json --noEmit --pretty false | tsc-output-parser | tsx ../../scripts/ts-error-check.ts compare .tscheck.rec.json 'yarn --cwd redisinsight/ui tscheck'",
+    "tscheck": "tsc --project tsconfig.json --noEmit --pretty false | tsc-output-parser | tsx ../../scripts/ts-error-check.ts overwrite .tscheck.rec.json",
+    "tscheck:force": "tsc --project tsconfig.json --noEmit --pretty false | tsc-output-parser | tsx ../../scripts/ts-error-check.ts force_overwrite .tscheck.rec.json"
   },
   "resolutions": {
     "**/form-data": "^4.0.4"

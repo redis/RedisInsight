@@ -47,11 +47,11 @@ jobs:
 
       - name: UI
         if: ${{ inputs.run-ui != false }}
-        run: yarn type-check:ui
+        run: yarn --cwd redisinsight/ui type-check
 
       - name: API
         if: ${{ inputs.run-api != false }}
-        run: yarn type-check:api
+        run: yarn --cwd redisinsight/api type-check
 
       # Desktop sources import from redisinsight/api/dist/src/**, so the api
       # has to be built first or those imports show up as TS2307/TS2749 errors.
@@ -62,7 +62,7 @@ jobs:
 
       - name: Desktop
         if: ${{ inputs.run-desktop != false }}
-        run: yarn type-check:desktop
+        run: yarn --cwd redisinsight/desktop type-check
 
       - name: Configs
-        run: yarn type-check:configs
+        run: yarn tsc --project configs/tsconfig.json --noEmit

@@ -1,275 +1,275 @@
 {
-  "node_modules/@tanstack/table-core/src/features/ColumnFiltering.ts": {
+  "../../node_modules/@tanstack/table-core/src/features/ColumnFiltering.ts": {
     "TS6133": 2
   },
-  "node_modules/@tanstack/table-core/src/features/ColumnGrouping.ts": {
+  "../../node_modules/@tanstack/table-core/src/features/ColumnGrouping.ts": {
     "TS6133": 1,
     "TS7030": 1
   },
-  "node_modules/@tanstack/table-core/src/features/RowSelection.ts": {
+  "../../node_modules/@tanstack/table-core/src/features/RowSelection.ts": {
     "TS7030": 1
   },
-  "node_modules/@tanstack/table-core/src/features/RowSorting.ts": {
+  "../../node_modules/@tanstack/table-core/src/features/RowSorting.ts": {
     "TS6133": 1
   },
-  "node_modules/@tanstack/table-core/src/types.ts": {
+  "../../node_modules/@tanstack/table-core/src/types.ts": {
     "TS6133": 1,
     "TS6205": 1
   },
-  "node_modules/@tanstack/table-core/src/utils/getGroupedRowModel.ts": {
+  "../../node_modules/@tanstack/table-core/src/utils/getGroupedRowModel.ts": {
     "TS6133": 1
   },
-  "node_modules/@tanstack/table-core/src/utils/getPaginationRowModel.ts": {
+  "../../node_modules/@tanstack/table-core/src/utils/getPaginationRowModel.ts": {
     "TS6133": 1
   },
-  "redisinsight/api-client/core/queryKeySerializer.gen.ts": {
+  "../api-client/core/queryKeySerializer.gen.ts": {
     "TS2339": 1,
     "TS2345": 1,
     "TS2488": 1
   },
-  "redisinsight/api/src/modules/cloud/auth/exceptions/cloud-oauth.canceled.exception.ts": {
+  "../api/src/modules/cloud/auth/exceptions/cloud-oauth.canceled.exception.ts": {
     "TS2307": 2
   },
-  "redisinsight/api/src/modules/cloud/auth/exceptions/cloud-oauth.github-email-permission.exception.ts": {
+  "../api/src/modules/cloud/auth/exceptions/cloud-oauth.github-email-permission.exception.ts": {
     "TS2307": 2
   },
-  "redisinsight/api/src/modules/cloud/auth/exceptions/cloud-oauth.misconfiguration.exception.ts": {
+  "../api/src/modules/cloud/auth/exceptions/cloud-oauth.misconfiguration.exception.ts": {
     "TS2307": 2
   },
-  "redisinsight/api/src/modules/cloud/auth/exceptions/cloud-oauth.missed-required-data.exception.ts": {
+  "../api/src/modules/cloud/auth/exceptions/cloud-oauth.missed-required-data.exception.ts": {
     "TS2307": 2
   },
-  "redisinsight/api/src/modules/cloud/auth/exceptions/cloud-oauth.unexpected-error.exception.ts": {
+  "../api/src/modules/cloud/auth/exceptions/cloud-oauth.unexpected-error.exception.ts": {
     "TS2307": 2
   },
-  "redisinsight/api/src/modules/cloud/auth/exceptions/cloud-oauth.unknown-authorization-request.exception.ts": {
+  "../api/src/modules/cloud/auth/exceptions/cloud-oauth.unknown-authorization-request.exception.ts": {
     "TS2307": 2
   },
-  "redisinsight/api/src/modules/cloud/auth/models/cloud-auth-request-info.ts": {
+  "../api/src/modules/cloud/auth/models/cloud-auth-request-info.ts": {
     "TS2307": 2,
     "TS2345": 1
   },
-  "redisinsight/api/src/modules/cloud/auth/models/cloud-auth-request.ts": {
+  "../api/src/modules/cloud/auth/models/cloud-auth-request.ts": {
     "TS2307": 1,
     "TS2564": 4
   },
-  "redisinsight/api/src/modules/cloud/auth/models/cloud-auth-response.ts": {
+  "../api/src/modules/cloud/auth/models/cloud-auth-response.ts": {
     "TS2564": 1
   },
-  "redisinsight/desktop/src/lib/azure/azure-oauth-errors.spec.ts": {
-    "TS2304": 10,
-    "TS2593": 14
-  },
-  "redisinsight/desktop/src/lib/window/browserWindow.ts": {
-    "TS2459": 1
-  },
-  "redisinsight/desktop/src/lib/window/window.handlers.ts": {
-    "TS2769": 1,
-    "TS7006": 2
-  },
-  "redisinsight/desktop/vite.main.config.ts": {
-    "TS2769": 5,
-    "TS7006": 1
-  },
-  "redisinsight/ui/src/components/base/icons/Icon.tsx": {
+  "../ui/src/components/base/icons/Icon.tsx": {
     "TS7053": 2
   },
-  "redisinsight/ui/src/components/base/icons/RiIcon.tsx": {
+  "../ui/src/components/base/icons/RiIcon.tsx": {
     "TS2339": 1
   },
-  "redisinsight/ui/src/components/base/icons/iconRegistry.tsx": {
+  "../ui/src/components/base/icons/iconRegistry.tsx": {
     "TS2307": 119
   },
-  "redisinsight/ui/src/components/notifications/components/infinite-messages/InfiniteMessages.tsx": {
+  "../ui/src/components/notifications/components/infinite-messages/InfiniteMessages.tsx": {
     "TS2307": 1
   },
-  "redisinsight/ui/src/constants/monaco/sqliteFunctions/monacoSQLiteFunctions.ts": {
+  "../ui/src/constants/monaco/sqliteFunctions/monacoSQLiteFunctions.ts": {
     "TS2345": 1
   },
-  "redisinsight/ui/src/pages/browser/modules/key-details/components/rejson-details/utils/utils.ts": {
+  "../ui/src/pages/browser/modules/key-details/components/rejson-details/utils/utils.ts": {
     "TS2307": 1
   },
-  "redisinsight/ui/src/slices/analytics/clusterDetails.ts": {
+  "../ui/src/slices/analytics/clusterDetails.ts": {
     "TS2345": 1
   },
-  "redisinsight/ui/src/slices/analytics/dbAnalysis.ts": {
+  "../ui/src/slices/analytics/dbAnalysis.ts": {
     "TS2345": 4
   },
-  "redisinsight/ui/src/slices/analytics/slowlog.ts": {
+  "../ui/src/slices/analytics/slowlog.ts": {
     "TS2345": 4
   },
-  "redisinsight/ui/src/slices/app/info.ts": {
+  "../ui/src/slices/app/info.ts": {
     "TS2345": 1
   },
-  "redisinsight/ui/src/slices/app/plugins.ts": {
+  "../ui/src/slices/app/plugins.ts": {
     "TS2345": 1
   },
-  "redisinsight/ui/src/slices/app/redis-commands.ts": {
+  "../ui/src/slices/app/redis-commands.ts": {
     "TS2345": 2
   },
-  "redisinsight/ui/src/slices/browser/bulkActions.ts": {
+  "../ui/src/slices/browser/bulkActions.ts": {
     "TS2345": 2
   },
-  "redisinsight/ui/src/slices/browser/hash.ts": {
+  "../ui/src/slices/browser/hash.ts": {
     "TS2322": 2,
     "TS2345": 17,
     "TS2769": 1
   },
-  "redisinsight/ui/src/slices/browser/keys.ts": {
+  "../ui/src/slices/browser/keys.ts": {
     "TS2322": 1,
     "TS2345": 9,
     "TS2741": 1
   },
-  "redisinsight/ui/src/slices/browser/list.ts": {
+  "../ui/src/slices/browser/list.ts": {
     "TS2322": 5,
     "TS2345": 18,
     "TS2769": 1
   },
-  "redisinsight/ui/src/slices/browser/redisearch.ts": {
+  "../ui/src/slices/browser/redisearch.ts": {
     "TS2322": 1,
     "TS2339": 2,
     "TS2345": 10,
     "TS2769": 1
   },
-  "redisinsight/ui/src/slices/browser/rejson.ts": {
+  "../ui/src/slices/browser/rejson.ts": {
     "TS2345": 8
   },
-  "redisinsight/ui/src/slices/browser/set.ts": {
+  "../ui/src/slices/browser/set.ts": {
     "TS2322": 2,
     "TS2345": 14
   },
-  "redisinsight/ui/src/slices/browser/stream.ts": {
+  "../ui/src/slices/browser/stream.ts": {
     "TS2322": 4,
     "TS2339": 1,
     "TS2345": 30,
     "TS2698": 1,
     "TS2739": 1
   },
-  "redisinsight/ui/src/slices/browser/string.ts": {
+  "../ui/src/slices/browser/string.ts": {
     "TS2345": 7,
     "TS2741": 1
   },
-  "redisinsight/ui/src/slices/browser/vectorSet.ts": {
+  "../ui/src/slices/browser/vectorSet.ts": {
     "TS2322": 1,
     "TS2345": 2
   },
-  "redisinsight/ui/src/slices/browser/zset.ts": {
+  "../ui/src/slices/browser/zset.ts": {
     "TS2322": 3,
     "TS2345": 22
   },
-  "redisinsight/ui/src/slices/cli/cli-output.ts": {
+  "../ui/src/slices/cli/cli-output.ts": {
     "TS2345": 2
   },
-  "redisinsight/ui/src/slices/cli/cli-settings.ts": {
+  "../ui/src/slices/cli/cli-settings.ts": {
     "TS2345": 5
   },
-  "redisinsight/ui/src/slices/content/create-redis-buttons.ts": {
+  "../ui/src/slices/content/create-redis-buttons.ts": {
     "TS2345": 1
   },
-  "redisinsight/ui/src/slices/instances/caCerts.ts": {
+  "../ui/src/slices/instances/caCerts.ts": {
     "TS2345": 5
   },
-  "redisinsight/ui/src/slices/instances/clientCerts.ts": {
+  "../ui/src/slices/instances/clientCerts.ts": {
     "TS2345": 4
   },
-  "redisinsight/ui/src/slices/instances/cloud.ts": {
+  "../ui/src/slices/instances/cloud.ts": {
     "TS2345": 5
   },
-  "redisinsight/ui/src/slices/instances/cluster.ts": {
+  "../ui/src/slices/instances/cluster.ts": {
     "TS2345": 5
   },
-  "redisinsight/ui/src/slices/instances/instances.ts": {
+  "../ui/src/slices/instances/instances.ts": {
     "TS2322": 1,
     "TS2339": 2,
     "TS2345": 14
   },
-  "redisinsight/ui/src/slices/instances/sentinel.ts": {
+  "../ui/src/slices/instances/sentinel.ts": {
     "TS2322": 1,
     "TS2345": 6
   },
-  "redisinsight/ui/src/slices/interfaces/hash.ts": {
+  "../ui/src/slices/interfaces/hash.ts": {
     "TS2430": 1
   },
-  "redisinsight/ui/src/slices/interfaces/instances.ts": {
+  "../ui/src/slices/interfaces/instances.ts": {
     "TS2430": 2
   },
-  "redisinsight/ui/src/slices/interfaces/zset.ts": {
+  "../ui/src/slices/interfaces/zset.ts": {
     "TS2430": 1
   },
-  "redisinsight/ui/src/slices/oauth/cloud.ts": {
+  "../ui/src/slices/oauth/cloud.ts": {
     "TS2345": 9
   },
-  "redisinsight/ui/src/slices/panels/aiAssistant.ts": {
+  "../ui/src/slices/panels/aiAssistant.ts": {
     "TS2345": 3
   },
-  "redisinsight/ui/src/slices/pubsub/pubsub.ts": {
+  "../ui/src/slices/pubsub/pubsub.ts": {
     "TS2345": 1
   },
-  "redisinsight/ui/src/slices/rdi/dryRun.ts": {
+  "../ui/src/slices/rdi/dryRun.ts": {
     "TS2345": 1
   },
-  "redisinsight/ui/src/slices/rdi/instances.ts": {
+  "../ui/src/slices/rdi/instances.ts": {
     "TS2322": 2,
     "TS2339": 1,
     "TS2345": 8
   },
-  "redisinsight/ui/src/slices/rdi/pipeline.ts": {
+  "../ui/src/slices/rdi/pipeline.ts": {
     "TS2345": 7
   },
-  "redisinsight/ui/src/slices/rdi/statistics.ts": {
+  "../ui/src/slices/rdi/statistics.ts": {
     "TS2345": 1
   },
-  "redisinsight/ui/src/slices/rdi/testConnections.ts": {
+  "../ui/src/slices/rdi/testConnections.ts": {
     "TS2345": 1
   },
-  "redisinsight/ui/src/slices/recommendations/recommendations.ts": {
+  "../ui/src/slices/recommendations/recommendations.ts": {
     "TS2345": 3
   },
-  "redisinsight/ui/src/slices/user/user-settings.ts": {
+  "../ui/src/slices/user/user-settings.ts": {
     "TS2345": 1
   },
-  "redisinsight/ui/src/slices/workbench/wb-custom-tutorials.ts": {
+  "../ui/src/slices/workbench/wb-custom-tutorials.ts": {
     "TS2339": 1,
     "TS2345": 3
   },
-  "redisinsight/ui/src/slices/workbench/wb-results.ts": {
+  "../ui/src/slices/workbench/wb-results.ts": {
     "TS2322": 1,
     "TS2345": 6
   },
-  "redisinsight/ui/src/slices/workbench/wb-tutorials.ts": {
+  "../ui/src/slices/workbench/wb-tutorials.ts": {
     "TS2345": 1
   },
-  "redisinsight/ui/src/telemetry/telemetryUtils.ts": {
+  "../ui/src/telemetry/telemetryUtils.ts": {
     "TS7053": 1
   },
-  "redisinsight/ui/src/utils/bigString.ts": {
+  "../ui/src/utils/bigString.ts": {
     "TS2345": 1
   },
-  "redisinsight/ui/src/utils/formatters/valueFormatters.tsx": {
+  "../ui/src/utils/formatters/valueFormatters.tsx": {
     "TS2322": 2,
     "TS2345": 1,
     "TS7016": 1
   },
-  "redisinsight/ui/src/utils/instance/instanceModules.ts": {
+  "../ui/src/utils/instance/instanceModules.ts": {
     "TS7053": 1
   },
-  "redisinsight/ui/src/utils/instance/instanceNavigation.ts": {
+  "../ui/src/utils/instance/instanceNavigation.ts": {
     "TS7006": 1
   },
-  "redisinsight/ui/src/utils/monaco/monacoRedisSignatureHelpProvider.ts": {
+  "../ui/src/utils/monaco/monacoRedisSignatureHelpProvider.ts": {
     "TS2339": 1
   },
-  "redisinsight/ui/src/utils/monaco/monacoUtils.ts": {
+  "../ui/src/utils/monaco/monacoUtils.ts": {
     "TS2322": 1
   },
-  "redisinsight/ui/src/utils/parseResponse.ts": {
+  "../ui/src/utils/parseResponse.ts": {
     "TS2322": 2,
     "TS2339": 12,
     "TS7005": 1,
     "TS7034": 1,
     "TS7053": 5
   },
-  "redisinsight/ui/src/utils/streamUtils.ts": {
+  "../ui/src/utils/streamUtils.ts": {
     "TS2345": 2
+  },
+  "src/lib/azure/azure-oauth-errors.spec.ts": {
+    "TS2304": 10,
+    "TS2593": 14
+  },
+  "src/lib/window/browserWindow.ts": {
+    "TS2459": 1
+  },
+  "src/lib/window/window.handlers.ts": {
+    "TS2769": 1,
+    "TS7006": 2
+  },
+  "vite.main.config.ts": {
+    "TS2769": 5,
+    "TS7006": 1
   }
 }

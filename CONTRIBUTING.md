@@ -57,9 +57,10 @@ Per-project type-check runs in CI and fails if any new TS error is introduced. F
 
 Common flows:
 
-- **Check locally**: `yarn type-check` (all projects) or `yarn type-check:{ui,api,desktop,configs}` (one project).
-- **You fixed errors**: CI will say "baseline is outdated". Run `yarn tscheck:{ui,api,desktop}` locally to refresh the matching `.tscheck.rec.json` and commit it.
-- **You introduced new errors**: fix them. Do not use `yarn tscheck:*:force` to overwrite the baseline upward — error counts must only decrease. Reviewers should reject PRs that bump baselines without a corresponding fix.
+- **Check locally** (all projects): `yarn type-check`.
+- **Check one project**: `yarn --cwd redisinsight/{ui,api,desktop} type-check`.
+- **You fixed errors**: CI will say "baseline is outdated". Run `yarn --cwd redisinsight/{ui,api,desktop} tscheck` locally to refresh the matching `.tscheck.rec.json` and commit it.
+- **You introduced new errors**: fix them. Do not use `tscheck:force` in any workspace to overwrite the baseline upward — error counts must only decrease. Reviewers should reject PRs that bump baselines without a corresponding fix.
 
 ## Pull Requests
 
