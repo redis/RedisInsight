@@ -50,6 +50,7 @@ export class BulkActionsProvider {
       socket,
       this.analytics,
       dto.generateReport,
+      dto.confirmedThrough ?? null,
     );
 
     this.bulkActions.set(dto.id, bulkAction);

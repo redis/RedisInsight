@@ -1,6 +1,7 @@
 import { debounce } from 'lodash';
 import { Response } from 'express';
 import {
+  BulkActionConfirmation,
   BulkActionStatus,
   BulkActionType,
 } from 'src/modules/bulk-actions/constants';
@@ -33,6 +34,8 @@ export class BulkAction implements IBulkAction {
 
   private readonly generateReport: boolean;
 
+  private readonly confirmedThrough: BulkActionConfirmation | null;
+
   private streamingResponse: Response | null = null;
 
   private streamReadyResolver: (() => void) | null = null;
@@ -45,12 +48,14 @@ export class BulkAction implements IBulkAction {
     private readonly socket: Socket,
     private readonly analytics: BulkActionsAnalytics,
     generateReport: boolean = false,
+    confirmedThrough: BulkActionConfirmation | null = null,
   ) {
     this.debounce = debounce(this.sendOverview.bind(this), 1000, {
       maxWait: 1000,
     });
     this.status = BulkActionStatus.Initialized;
     this.generateReport = generateReport;
+    this.confirmedThrough = confirmedThrough;
   }
 
   /**
@@ -251,6 +256,7 @@ export class BulkAction implements IBulkAction {
       filter: this.filter.getOverview(),
       progress,
       summary,
+      confirmedThrough: this.confirmedThrough,
     };
 
     if (this.generateReport) {
