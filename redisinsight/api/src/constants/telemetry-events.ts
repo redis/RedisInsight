@@ -84,6 +84,7 @@ export enum TelemetryEvents {
   // Profiler
   ProfilerLogDownloaded = 'PROFILER_LOG_DOWNLOADED',
   ProfilerLogDeleted = 'PROFILER_LOG_DELETED',
+  ProfilerStarted = 'PROFILER_STARTED',
 
   // Slowlog
   SlowlogSetLogSlowerThan = 'SLOWLOG_SET_LOG_SLOWER_THAN',

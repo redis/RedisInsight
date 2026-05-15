@@ -6,6 +6,7 @@ import {
   mockDatabase,
   MockType,
   mockSessionMetadata,
+  mockDatabaseRepository,
 } from 'src/__mocks__';
 import { CommandType, TelemetryEvents } from 'src/constants';
 import { ReplyError } from 'src/models';
@@ -15,6 +16,7 @@ import {
   ICliExecResultFromNode,
 } from 'src/modules/cli/dto/cli.dto';
 import { CommandsService } from 'src/modules/commands/commands.service';
+import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 import { CliAnalyticsService } from './cli-analytics.service';
 
 const mockCommandsService = {
@@ -36,6 +38,7 @@ describe('CliAnalyticsService', () => {
   let sendEventMethod: jest.SpyInstance<CliAnalyticsService, unknown[]>;
   let sendFailedEventMethod: jest.SpyInstance<CliAnalyticsService, unknown[]>;
   let commandsService: MockType<CommandsService>;
+  let databaseRepository: MockType<DatabaseRepository>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -44,10 +47,16 @@ describe('CliAnalyticsService', () => {
           provide: CommandsService,
           useFactory: () => mockCommandsService,
         },
+        {
+          provide: DatabaseRepository,
+          useFactory: mockDatabaseRepository,
+        },
         EventEmitter2,
         CliAnalyticsService,
       ],
     }).compile();
+
+    databaseRepository = module.get(DatabaseRepository);
 
     service = module.get<CliAnalyticsService>(CliAnalyticsService);
     sendEventMethod = jest.spyOn<CliAnalyticsService, any>(
@@ -271,6 +280,8 @@ describe('CliAnalyticsService', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });
@@ -282,7 +293,54 @@ describe('CliAnalyticsService', () => {
         TelemetryEvents.CliCommandExecuted,
         {
           databaseId,
+          isProduction: 'false',
+          dangerous: 'false',
         },
+      );
+    });
+    it('should emit isProduction=true when database is marked production', async () => {
+      databaseRepository.get.mockResolvedValueOnce({
+        ...mockDatabase,
+        isProduction: true,
+      });
+
+      await service.sendCommandExecutedEvent(
+        mockSessionMetadata,
+        databaseId,
+        mockAdditionalData,
+      );
+
+      expect(sendEventMethod).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        TelemetryEvents.CliCommandExecuted,
+        expect.objectContaining({ isProduction: 'true' }),
+      );
+    });
+    it('should pass dangerous flag through from additionalData', async () => {
+      await service.sendCommandExecutedEvent(mockSessionMetadata, databaseId, {
+        ...mockAdditionalData,
+        dangerous: true,
+      });
+
+      expect(sendEventMethod).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        TelemetryEvents.CliCommandExecuted,
+        expect.objectContaining({ dangerous: 'true' }),
+      );
+    });
+    it('should default isProduction to false when database lookup throws', async () => {
+      databaseRepository.get.mockRejectedValueOnce(new Error('boom'));
+
+      await service.sendCommandExecutedEvent(
+        mockSessionMetadata,
+        databaseId,
+        mockAdditionalData,
+      );
+
+      expect(sendEventMethod).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        TelemetryEvents.CliCommandExecuted,
+        expect.objectContaining({ isProduction: 'false' }),
       );
     });
   });
@@ -306,6 +364,8 @@ describe('CliAnalyticsService', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });
@@ -323,6 +383,8 @@ describe('CliAnalyticsService', () => {
           databaseId,
           error: ReplyError.name,
           command: 'sadd',
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });
@@ -345,6 +407,8 @@ describe('CliAnalyticsService', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });
@@ -415,6 +479,8 @@ describe('CliAnalyticsService', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });
@@ -440,6 +506,8 @@ describe('CliAnalyticsService', () => {
           databaseId,
           error: redisReplyError.name,
           command: 'sadd',
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });
@@ -464,6 +532,8 @@ describe('CliAnalyticsService', () => {
         {
           databaseId,
           error: CommandParsingError.name,
+          isProduction: 'false',
+          dangerous: 'false',
         },
       );
     });

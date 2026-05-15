@@ -29,6 +29,7 @@ import { ClientNotFoundErrorException } from 'src/modules/redis/exceptions/clien
 import { DatabaseRecommendationService } from 'src/modules/database-recommendation/database-recommendation.service';
 import { RedisClient } from 'src/modules/redis/client';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
+import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import { v4 as uuidv4 } from 'uuid';
 import { getAnalyticsDataFromIndexInfo } from 'src/utils';
 import { OutputFormatterManager } from './output-formatter/output-formatter-manager';
@@ -47,6 +48,7 @@ export class CliBusinessService {
     private recommendationService: DatabaseRecommendationService,
     private readonly commandsService: CommandsService,
     private databaseClientFactory: DatabaseClientFactory,
+    private readonly dangerousCommandsProvider: DangerousCommandsProvider,
   ) {
     this.outputFormatterManager = new OutputFormatterManager();
     this.outputFormatterManager.addStrategy(
@@ -188,9 +190,10 @@ export class CliBusinessService {
     const outputFormat = dto.outputFormat || CliOutputFormatterTypes.Raw;
     let command: string = unknownCommand;
     let args: string[] = [];
+    let client: RedisClient | undefined;
 
     try {
-      const client: RedisClient =
+      client =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
 
       const formatter = this.outputFormatterManager.getStrategy(outputFormat);
@@ -216,6 +219,7 @@ export class CliBusinessService {
         {
           command,
           outputFormat,
+          dangerous: await this.isDangerousCommand(client, command),
         },
       );
 
@@ -255,6 +259,7 @@ export class CliBusinessService {
           {
             command,
             outputFormat,
+            dangerous: await this.isDangerousCommand(client, command),
           },
         );
 
@@ -279,6 +284,22 @@ export class CliBusinessService {
       }
 
       return { response: error.message, status: CommandExecutionStatus.Fail };
+    }
+  }
+
+  private async isDangerousCommand(
+    client: RedisClient | undefined,
+    command: string,
+  ): Promise<boolean> {
+    if (!client || !command) {
+      return false;
+    }
+    try {
+      const dangerous =
+        await this.dangerousCommandsProvider.getDangerousCommands(client);
+      return dangerous.includes(command.toUpperCase());
+    } catch (e) {
+      return false;
     }
   }
 

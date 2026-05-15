@@ -28,6 +28,7 @@ export const mockBulkActionOverview = {
     errors: [],
     keys: [],
   },
+  confirmedThrough: null,
 };
 
 export const mockDefaultDataManifest = {

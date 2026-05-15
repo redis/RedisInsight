@@ -5,6 +5,7 @@ import { TelemetryBaseService } from 'src/modules/analytics/telemetry.base.servi
 import { CommandExecutionStatus } from 'src/modules/cli/dto/cli.dto';
 import { RedisError, ReplyError } from 'src/models';
 import { SessionMetadata } from 'src/common/models';
+import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 
 export interface IExecResult {
   response: any;
@@ -16,7 +17,10 @@ export interface IExecResult {
 export class ProfilerAnalyticsService extends TelemetryBaseService {
   private events: Map<TelemetryEvents, Function> = new Map();
 
-  constructor(protected eventEmitter: EventEmitter2) {
+  constructor(
+    protected eventEmitter: EventEmitter2,
+    private readonly databaseRepository: DatabaseRepository,
+  ) {
     super(eventEmitter);
     this.events.set(
       TelemetryEvents.ProfilerLogDownloaded,
@@ -28,30 +32,70 @@ export class ProfilerAnalyticsService extends TelemetryBaseService {
     );
   }
 
-  sendLogDeleted(
+  private async resolveIsProduction(
+    sessionMetadata: SessionMetadata,
+    databaseId: string,
+  ): Promise<'true' | 'false'> {
+    try {
+      const database = await this.databaseRepository.get(
+        sessionMetadata,
+        databaseId,
+      );
+      return database?.isProduction ? 'true' : 'false';
+    } catch (e) {
+      return 'false';
+    }
+  }
+
+  async sendLogDeleted(
     sessionMetadata: SessionMetadata,
     databaseId: string,
     fileSizeBytes: number,
-  ): void {
+  ): Promise<void> {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.ProfilerLogDeleted, {
         databaseId,
         fileSizeBytes,
+        isProduction: await this.resolveIsProduction(
+          sessionMetadata,
+          databaseId,
+        ),
       });
     } catch (e) {
       // continue regardless of error
     }
   }
 
-  sendLogDownloaded(
+  async sendLogDownloaded(
     sessionMetadata: SessionMetadata,
     databaseId: string,
     fileSizeBytes: number,
-  ): void {
+  ): Promise<void> {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.ProfilerLogDownloaded, {
         databaseId,
         fileSizeBytes,
+        isProduction: await this.resolveIsProduction(
+          sessionMetadata,
+          databaseId,
+        ),
+      });
+    } catch (e) {
+      // continue regardless of error
+    }
+  }
+
+  async sendProfilerStartedEvent(
+    sessionMetadata: SessionMetadata,
+    databaseId: string,
+  ): Promise<void> {
+    try {
+      this.sendEvent(sessionMetadata, TelemetryEvents.ProfilerStarted, {
+        databaseId,
+        isProduction: await this.resolveIsProduction(
+          sessionMetadata,
+          databaseId,
+        ),
       });
     } catch (e) {
       // continue regardless of error

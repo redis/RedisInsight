@@ -8,6 +8,7 @@ import {
   mockStandaloneRedisClient,
   mockWorkbenchAnalyticsService,
   mockWorkbenchClientMetadata,
+  mockDangerousCommandsProvider,
 } from 'src/__mocks__';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { unknownCommand } from 'src/constants';
@@ -26,6 +27,7 @@ import {
   FormatterTypes,
 } from 'src/common/transformers';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
+import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import {
   CommandExecutionType,
   RunQueryMode,
@@ -67,6 +69,10 @@ describe('WorkbenchCommandsExecutor', () => {
         {
           provide: DatabaseClientFactory,
           useFactory: mockDatabaseClientFactory,
+        },
+        {
+          provide: DangerousCommandsProvider,
+          useFactory: mockDangerousCommandsProvider,
         },
       ],
     }).compile();
@@ -113,6 +119,7 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: 'ft.info',
             rawMode: true,
+            dangerous: false,
           },
         );
         expect(mockAnalyticsService.sendIndexInfoEvent).toHaveBeenCalledWith(
@@ -153,6 +160,7 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: mockSetCommand,
             rawMode: false,
+            dangerous: false,
           },
         );
       });
@@ -188,6 +196,7 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: mockSetCommand,
             rawMode: false,
+            dangerous: false,
           },
         );
       });
@@ -226,6 +235,7 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: mockSetCommand,
             rawMode: false,
+            dangerous: false,
           },
         );
       });
@@ -265,6 +275,7 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: mockSetCommand,
             rawMode: false,
+            dangerous: false,
           },
         );
       });
@@ -304,6 +315,7 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: mockSetCommand,
             rawMode: true,
+            dangerous: false,
           },
         );
       });
@@ -339,6 +351,7 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: mockSetCommand,
             rawMode: false,
+            dangerous: false,
           },
         );
       });
@@ -375,6 +388,7 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: unknownCommand,
             rawMode: false,
+            dangerous: false,
           },
         );
       });

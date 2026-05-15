@@ -17,6 +17,7 @@ import {
   mockRedisFtInfoReply,
   mockFtInfoAnalyticsData,
   mockSessionMetadata,
+  mockDangerousCommandsProvider,
 } from 'src/__mocks__';
 import {
   CommandExecutionStatus,
@@ -35,6 +36,7 @@ import { KeytarUnavailableException } from 'src/modules/encryption/exceptions';
 import { CommandsService } from 'src/modules/commands/commands.service';
 import { DatabaseRecommendationService } from 'src/modules/database-recommendation/database-recommendation.service';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
+import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import { OutputFormatterManager } from './output-formatter/output-formatter-manager';
 import {
   CliOutputFormatterTypes,
@@ -88,6 +90,10 @@ describe('CliBusinessService', () => {
         {
           provide: DatabaseRecommendationService,
           useFactory: mockDatabaseRecommendationService,
+        },
+        {
+          provide: DangerousCommandsProvider,
+          useFactory: mockDangerousCommandsProvider,
         },
       ],
     }).compile();
@@ -285,6 +291,7 @@ describe('CliBusinessService', () => {
         {
           command: 'ft.info',
           outputFormat: CliOutputFormatterTypes.Raw,
+          dangerous: false,
         },
       );
       expect(analyticsService.sendIndexInfoEvent).toHaveBeenCalledWith(
@@ -315,6 +322,7 @@ describe('CliBusinessService', () => {
         {
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
+          dangerous: false,
         },
       );
     });
@@ -343,6 +351,7 @@ describe('CliBusinessService', () => {
         {
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
+          dangerous: false,
         },
       );
     });
@@ -369,6 +378,7 @@ describe('CliBusinessService', () => {
         {
           command: 'script',
           outputFormat: CliOutputFormatterTypes.Raw,
+          dangerous: false,
         },
       );
     });
@@ -391,6 +401,7 @@ describe('CliBusinessService', () => {
         {
           command: unknownCommand,
           outputFormat: CliOutputFormatterTypes.Raw,
+          dangerous: false,
         },
       );
     });
@@ -418,6 +429,7 @@ describe('CliBusinessService', () => {
         {
           command: 'get',
           outputFormat: CliOutputFormatterTypes.Raw,
+          dangerous: false,
         },
       );
     });
@@ -487,6 +499,7 @@ describe('CliBusinessService', () => {
         {
           command: 'info',
           outputFormat: CliOutputFormatterTypes.Raw,
+          dangerous: false,
         },
       );
     });
@@ -534,6 +547,7 @@ describe('CliBusinessService', () => {
         {
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
+          dangerous: false,
         },
       );
     });
@@ -562,6 +576,7 @@ describe('CliBusinessService', () => {
         {
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
+          dangerous: false,
         },
       );
     });
@@ -588,6 +603,7 @@ describe('CliBusinessService', () => {
         {
           command: 'script',
           outputFormat: CliOutputFormatterTypes.Raw,
+          dangerous: false,
         },
       );
     });
@@ -610,6 +626,7 @@ describe('CliBusinessService', () => {
         {
           command: unknownCommand,
           outputFormat: CliOutputFormatterTypes.Raw,
+          dangerous: false,
         },
       );
     });
@@ -637,6 +654,7 @@ describe('CliBusinessService', () => {
         {
           command: 'get',
           outputFormat: CliOutputFormatterTypes.Raw,
+          dangerous: false,
         },
       );
     });
@@ -706,6 +724,7 @@ describe('CliBusinessService', () => {
         {
           command: 'info',
           outputFormat: CliOutputFormatterTypes.Raw,
+          dangerous: false,
         },
       );
     });

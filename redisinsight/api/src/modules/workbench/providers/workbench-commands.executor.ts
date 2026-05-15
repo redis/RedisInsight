@@ -23,6 +23,7 @@ import { RedisClient } from 'src/modules/redis/client';
 import { getAnalyticsDataFromIndexInfo } from 'src/utils';
 import { RunQueryMode } from 'src/modules/workbench/models/command-execution';
 import { WorkbenchAnalytics } from 'src/modules/workbench/workbench.analytics';
+import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 
 @Injectable()
 export class WorkbenchCommandsExecutor {
@@ -30,7 +31,10 @@ export class WorkbenchCommandsExecutor {
 
   private formatterManager: FormatterManager;
 
-  constructor(private analyticsService: WorkbenchAnalytics) {
+  constructor(
+    private analyticsService: WorkbenchAnalytics,
+    private readonly dangerousCommandsProvider: DangerousCommandsProvider,
+  ) {
     this.formatterManager = new FormatterManager();
     this.formatterManager.addStrategy(
       FormatterTypes.UTF8,
@@ -81,7 +85,11 @@ export class WorkbenchCommandsExecutor {
         client.clientMetadata.databaseId,
         dto.type,
         result,
-        { command, rawMode: mode === RunQueryMode.Raw },
+        {
+          command,
+          rawMode: mode === RunQueryMode.Raw,
+          dangerous: await this.isDangerousCommand(client, command),
+        },
       );
 
       if (command.toLowerCase() === 'ft.info') {
@@ -106,7 +114,11 @@ export class WorkbenchCommandsExecutor {
         client.clientMetadata.databaseId,
         dto.type,
         { ...errorResult, error },
-        { command, rawMode: dto.mode === RunQueryMode.Raw },
+        {
+          command,
+          rawMode: dto.mode === RunQueryMode.Raw,
+          dangerous: await this.isDangerousCommand(client, command),
+        },
       );
 
       if (
@@ -125,6 +137,22 @@ export class WorkbenchCommandsExecutor {
       }
 
       return [errorResult];
+    }
+  }
+
+  private async isDangerousCommand(
+    client: RedisClient | undefined,
+    command: string,
+  ): Promise<boolean> {
+    if (!client || !command) {
+      return false;
+    }
+    try {
+      const dangerous =
+        await this.dangerousCommandsProvider.getDangerousCommands(client);
+      return dangerous.includes(command.toUpperCase());
+    } catch (e) {
+      return false;
     }
   }
 

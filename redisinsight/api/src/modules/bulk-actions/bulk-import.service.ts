@@ -111,6 +111,7 @@ export class BulkImportService {
       filter: null,
       status: BulkActionStatus.Completed,
       duration: 0,
+      confirmedThrough: null,
     };
 
     this.analytics.sendActionStarted(clientMetadata.sessionMetadata, result);

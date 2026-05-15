@@ -55,6 +55,7 @@ export const mockProfilerAnalyticsService: MockType<ProfilerAnalyticsService> =
   {
     sendLogDeleted: jest.fn(),
     sendLogDownloaded: jest.fn(),
+    sendProfilerStartedEvent: jest.fn(),
     getEventsEmitters: jest
       .fn()
       .mockImplementation(() => mockProfilerAnalyticsEvents),
