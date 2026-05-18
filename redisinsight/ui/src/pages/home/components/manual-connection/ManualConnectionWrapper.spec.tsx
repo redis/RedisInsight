@@ -9,6 +9,7 @@ import ManualConnectionFrom, {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { createInstanceStandaloneAction } from 'uiSrc/slices/instances/instances'
 import ManualConnectionWrapper, { Props } from './ManualConnectionWrapper'
+import { DbConnectionInfo } from '../../interfaces'
 
 const mockedProps = mock<Props>()
 
@@ -47,7 +48,7 @@ const mockManualConnectionFrom = (props: ManualConnectionFromProps) => (
     <button
       type="submit"
       data-testid="btn-submit"
-      onClick={() => props.onSubmit({})}
+      onClick={() => props.onSubmit({} as DbConnectionInfo)}
     >
       {props.submitButtonText}
     </button>
@@ -60,7 +61,7 @@ const mockManualConnectionFrom = (props: ManualConnectionFromProps) => (
           host: 'localhost',
           port: '6379',
           isProduction: true,
-        })
+        } as DbConnectionInfo)
       }
     >
       submit with isProduction
