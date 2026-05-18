@@ -4,7 +4,10 @@ import { toNumber } from 'lodash'
 
 import { stringToBuffer } from 'uiSrc/utils'
 import { addKeyStateSelector, addVectorSetKey } from 'uiSrc/slices/browser/keys'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { CreateVectorSetWithExpireDto } from 'uiSrc/slices/interfaces/vectorSet'
+import { useLoadData } from 'uiSrc/services/hooks'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import {
   RiRadioGroupItemIndicator,
@@ -14,6 +17,7 @@ import {
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
+import { Spacer } from 'uiSrc/components/base/layout/spacer'
 
 import {
   SubmitElement,
@@ -21,15 +25,51 @@ import {
 } from 'uiSrc/pages/browser/modules/key-details/components/vector-set-details/vector-set-element-form'
 import { useVectorSetElementForm } from 'uiSrc/pages/browser/modules/key-details/components/vector-set-details/hooks'
 
+import LoadSampleDataset, {
+  VEC2WORD_COLLECTION_NAME,
+  checkVec2WordExists,
+  loadSampleDatasetAlreadyExistsNotification,
+  loadSampleDatasetFailedNotification,
+} from './LoadSampleDataset'
 import { POPULATE_LABEL, POPULATE_OPTIONS, PopulateMode } from './constants'
 import { Props } from './AddKeyVectorSet.types'
 import * as S from './AddKeyVectorSet.styles'
 
-const AddKeyVectorSet = ({ keyName = '', keyTTL, onCancel }: Props) => {
+const AddKeyVectorSet = ({
+  keyName = '',
+  keyTTL,
+  onCancel,
+  setKeyName,
+  setKeyNameDisabled,
+}: Props) => {
   const dispatch = useDispatch()
   const { loading } = useSelector(addKeyStateSelector)
+  const { id: instanceId } = useSelector(connectedInstanceSelector)
 
   const [populateMode, setPopulateMode] = useState<string>(PopulateMode.Manual)
+  const isSampleMode = populateMode === PopulateMode.Sample
+
+  // Drive the parent-owned key-name input from the populate-mode toggle:
+  // Sample → fixed `vec2word` (the bundled-file key), input locked; Manual →
+  // clear and unlock so the user can pick their own.
+  //
+  // The cleanup branch fires on Sample → Manual toggle **and** on unmount
+  // (e.g. the user switches the key type away from Vector Set while Sample is
+  // active). In both cases we want to wipe the auto-populated `vec2word`
+  // value so it doesn't bleed into the next subform.
+  useEffect(() => {
+    setKeyName?.(isSampleMode ? VEC2WORD_COLLECTION_NAME : '')
+    setKeyNameDisabled?.(isSampleMode)
+    return () => {
+      if (isSampleMode) {
+        setKeyName?.('')
+        setKeyNameDisabled?.(false)
+      }
+    }
+  }, [isSampleMode, setKeyName, setKeyNameDisabled])
+
+  const { load: loadSampleDataset, loading: isLoadingSampleDataset } =
+    useLoadData()
 
   const handleSubmit = (elements: SubmitElement[]) => {
     const data: CreateVectorSetWithExpireDto = {
@@ -50,12 +90,43 @@ const AddKeyVectorSet = ({ keyName = '', keyTTL, onCancel }: Props) => {
     setIsKeyNameValid(`${keyName}`.length > 0)
   }, [keyName])
 
-  const isFormValid = isKeyNameValid && formApi.isFormValid
+  // Sample mode bypasses the manual-entry form fields entirely — the keyName
+  // and per-element values are dictated by the bundled data file.
+  const isFormValid = isSampleMode
+    ? true
+    : isKeyNameValid && formApi.isFormValid
+
+  const submitSampleDataset = async () => {
+    try {
+      // Mirror vector-search's "already exists" branch: if `vec2word` is
+      // already in the database, skip the bulk-import and surface an info
+      // toast instead of silently re-running VADD on the existing key.
+      if (await checkVec2WordExists(instanceId)) {
+        dispatch(
+          addMessageNotification(loadSampleDatasetAlreadyExistsNotification()),
+        )
+        onCancel()
+        return
+      }
+      await loadSampleDataset(instanceId, VEC2WORD_COLLECTION_NAME)
+      onCancel()
+    } catch {
+      dispatch(addMessageNotification(loadSampleDatasetFailedNotification()))
+    }
+  }
+
+  const onClickAction = () => {
+    if (isSampleMode) {
+      submitSampleDataset()
+    } else {
+      formApi.submitData()
+    }
+  }
 
   const onFormSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault()
     if (isFormValid) {
-      formApi.submitData()
+      onClickAction()
     }
   }
 
@@ -97,14 +168,21 @@ const AddKeyVectorSet = ({ keyName = '', keyTTL, onCancel }: Props) => {
           </RiRadioGroupRoot>
         </FormField>
 
-        <VectorSetElementFormFields {...formApi} loading={loading} />
+        {isSampleMode ? (
+          <>
+            <Spacer size="l" />
+            <LoadSampleDataset />
+          </>
+        ) : (
+          <VectorSetElementFormFields {...formApi} loading={loading} />
+        )}
       </Col>
 
       <ActionFooter
         onCancel={() => onCancel(true)}
-        onAction={formApi.submitData}
+        onAction={onClickAction}
         actionText="Add Key"
-        loading={loading}
+        loading={loading || isLoadingSampleDataset}
         disabled={!isFormValid}
         actionTestId="add-key-vector-set-btn"
       />

@@ -1,14 +1,40 @@
 import React from 'react'
-import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import { act, fireEvent, render, screen, waitFor } from 'uiSrc/utils/test-utils'
 import { addVectorSetKey } from 'uiSrc/slices/browser/keys'
+import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { stringToBuffer } from 'uiSrc/utils'
 import { FP32_VECTOR_FIXTURE_1_2_3 } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
+import { bulkActionOverviewFactory } from 'uiSrc/mocks/factories/browser/bulkActions/bulkActionOverview.factory'
 import AddKeyVectorSet from './AddKeyVectorSet'
 import { Props } from './AddKeyVectorSet.types'
 
 jest.mock('uiSrc/slices/browser/keys', () => ({
   ...jest.requireActual('uiSrc/slices/browser/keys'),
   addVectorSetKey: jest.fn(() => ({ type: 'keys/addVectorSetKey' })),
+}))
+
+jest.mock('uiSrc/slices/app/notifications', () => ({
+  ...jest.requireActual('uiSrc/slices/app/notifications'),
+  addMessageNotification: jest.fn(() => ({
+    type: 'notifications/addMessageNotification',
+  })),
+}))
+
+const mockLoad = jest.fn()
+jest.mock('uiSrc/services/hooks', () => ({
+  ...jest.requireActual('uiSrc/services/hooks'),
+  useLoadData: () => ({
+    load: mockLoad,
+    loading: false,
+    error: null,
+  }),
+}))
+
+const mockCheckVec2WordExists = jest.fn()
+jest.mock('./LoadSampleDataset', () => ({
+  __esModule: true,
+  ...jest.requireActual('./LoadSampleDataset'),
+  checkVec2WordExists: (...args: unknown[]) => mockCheckVec2WordExists(...args),
 }))
 
 const defaultProps: Props = {
@@ -25,6 +51,8 @@ describe('AddKeyVectorSet', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    // Default: vec2word does not exist, so submit proceeds to bulk-import.
+    mockCheckVec2WordExists.mockResolvedValue(false)
     // ActionFooter renders via a portal to #formFooterBar
     const footer = document.createElement('div')
     footer.setAttribute('id', 'formFooterBar')
@@ -137,5 +165,92 @@ describe('AddKeyVectorSet', () => {
 
     fireEvent.click(screen.getByText('Cancel'))
     expect(onCancel).toHaveBeenCalledWith(true)
+  })
+
+  describe('sample dataset mode', () => {
+    const selectSampleMode = () =>
+      fireEvent.click(screen.getByTestId('add-key-vector-set-populate-sample'))
+    const selectManualMode = () =>
+      fireEvent.click(screen.getByTestId('add-key-vector-set-populate-manual'))
+
+    it('swaps the form section and mirrors populate mode into the parent keyName + disabled flag', () => {
+      const setKeyName = jest.fn()
+      const setKeyNameDisabled = jest.fn()
+      renderComponent({ setKeyName, setKeyNameDisabled })
+
+      // Initial Manual render → input cleared and unlocked.
+      expect(setKeyName).toHaveBeenLastCalledWith('')
+      expect(setKeyNameDisabled).toHaveBeenLastCalledWith(false)
+
+      selectSampleMode()
+      expect(
+        screen.getByTestId('add-key-vector-set-load-sample-dataset'),
+      ).toBeInTheDocument()
+      expect(screen.queryByTestId('element-name')).not.toBeInTheDocument()
+      expect(setKeyName).toHaveBeenLastCalledWith('vec2word')
+      expect(setKeyNameDisabled).toHaveBeenLastCalledWith(true)
+
+      selectManualMode()
+      expect(setKeyName).toHaveBeenLastCalledWith('')
+      expect(setKeyNameDisabled).toHaveBeenLastCalledWith(false)
+    })
+
+    it('on submit calls useLoadData.load with vec2word and closes the dialog on success', async () => {
+      mockLoad.mockResolvedValue(bulkActionOverviewFactory.build())
+      const onCancel = jest.fn()
+      renderComponent({ onCancel })
+      selectSampleMode()
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('add-key-vector-set-btn'))
+      })
+
+      await waitFor(() =>
+        expect(mockLoad).toHaveBeenCalledWith(expect.anything(), 'vec2word'),
+      )
+      expect(onCancel).toHaveBeenCalled()
+      expect(addMessageNotification).not.toHaveBeenCalled()
+      expect(addVectorSetKey).not.toHaveBeenCalled()
+    })
+
+    it('dispatches an info toast and skips the bulk-import when vec2word already exists', async () => {
+      mockCheckVec2WordExists.mockResolvedValue(true)
+      const onCancel = jest.fn()
+      renderComponent({ onCancel })
+      selectSampleMode()
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('add-key-vector-set-btn'))
+      })
+
+      await waitFor(() =>
+        expect(addMessageNotification).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: 'Sample dataset already loaded',
+            variant: 'notice',
+          }),
+        ),
+      )
+      expect(mockLoad).not.toHaveBeenCalled()
+      expect(onCancel).toHaveBeenCalled()
+    })
+
+    it('dispatches the failure toast and keeps the dialog open when load fails', async () => {
+      mockLoad.mockRejectedValue(new Error('boom'))
+      const onCancel = jest.fn()
+      renderComponent({ onCancel })
+      selectSampleMode()
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('add-key-vector-set-btn'))
+      })
+
+      await waitFor(() =>
+        expect(addMessageNotification).toHaveBeenCalledWith(
+          expect.objectContaining({ title: 'Failed to create vector set' }),
+        ),
+      )
+      expect(onCancel).not.toHaveBeenCalled()
+    })
   })
 })

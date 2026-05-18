@@ -235,6 +235,8 @@ const AddKey = (props: Props) => {
               {typeSelected === KeyTypes.VectorSet && (
                 <AddKeyVectorSet
                   onCancel={closeAddKeyPanel}
+                  setKeyName={setKeyName}
+                  setKeyNameDisabled={setKeyNameDisabled}
                   {...defaultFields}
                 />
               )}
