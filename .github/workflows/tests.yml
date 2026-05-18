@@ -101,11 +101,20 @@ jobs:
     uses: ./.github/workflows/lint.yml
     secrets: inherit
 
+  type-check:
+    needs: [changes, should-run-all-tests]
+    uses: ./.github/workflows/type-check.yml
+    with:
+      run-ui: ${{ needs.should-run-all-tests.outputs.result == 'true' || needs.changes.outputs.frontend == 'true' }}
+      run-api: ${{ needs.should-run-all-tests.outputs.result == 'true' || needs.changes.outputs.backend == 'true' }}
+      run-desktop: ${{ needs.should-run-all-tests.outputs.result == 'true' || needs.changes.outputs.desktop == 'true' }}
+    secrets: inherit
+
   docker-build:
     uses: ./.github/workflows/docker-build.yml
 
   frontend-tests:
-    needs: [changes, lint, should-run-all-tests]
+    needs: [changes, lint, type-check, should-run-all-tests]
     if: |
       needs.should-run-all-tests.outputs.result == 'true' ||
       startsWith(github.ref_name, 'fe/') ||
@@ -123,7 +132,7 @@ jobs:
       type: unit
 
   backend-tests:
-    needs: [changes, lint, should-run-all-tests]
+    needs: [changes, lint, type-check, should-run-all-tests]
     if: |
       needs.should-run-all-tests.outputs.result == 'true' ||
       startsWith(github.ref_name, 'be/') ||
@@ -141,7 +150,7 @@ jobs:
       type: unit
 
   integration-tests:
-    needs: [changes, lint, should-run-all-tests]
+    needs: [changes, lint, type-check, should-run-all-tests]
     if: |
       needs.should-run-all-tests.outputs.result == 'true' ||
       startsWith(github.ref_name, 'be/') ||

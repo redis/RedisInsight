@@ -1,0 +1,75 @@
+name: Type check
+
+on:
+  workflow_call:
+    inputs:
+      run-ui:
+        type: boolean
+        default: true
+      run-api:
+        type: boolean
+        default: true
+      run-desktop:
+        type: boolean
+        default: true
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  type-check:
+    runs-on: ubuntu-latest
+    name: tsc baselines
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-all-build-libs
+        with:
+          skip-system-deps: '1'
+
+      # yarn 1.x without workspaces does not share root binaries with sub-dirs.
+      # Workspace-level scripts (yarn --cwd redisinsight/<ws> ...) pipe through
+      # tsc / tsc-output-parser / tsx, which only live in the root node_modules.
+      # Putting root's .bin on PATH lets nested invocations find them.
+      - name: Expose root node_modules/.bin
+        run: echo "$(pwd)/node_modules/.bin" >> $GITHUB_PATH
+
+      # UI plugins under redisinsight/ui/src/packages/* are sub-projects with
+      # their own deps. The UI tsconfig includes src/**, so plugin sources are
+      # type-checked too and need their deps installed for module resolution.
+      - name: Cache UI plugin node_modules
+        if: ${{ inputs.run-ui != false }}
+        uses: actions/cache@v4
+        with:
+          path: |
+            redisinsight/ui/src/packages/node_modules
+            redisinsight/ui/src/packages/*/node_modules
+          key: ui-plugins-node-modules-${{ runner.os }}-${{ hashFiles('redisinsight/ui/src/packages/**/yarn.lock') }}
+
+      - name: Install UI plugin deps and build statics
+        if: ${{ inputs.run-ui != false }}
+        run: yarn build:statics
+
+      - name: UI
+        if: ${{ inputs.run-ui != false }}
+        run: yarn --cwd redisinsight/ui type-check
+
+      - name: API
+        if: ${{ inputs.run-api != false }}
+        run: yarn --cwd redisinsight/api type-check
+
+      # Desktop sources import from redisinsight/api/dist/src/**, so the api
+      # has to be built first or those imports show up as TS2307/TS2749 errors.
+      # Use the default nest build (not build:prod) so `.d.ts` files are emitted.
+      - name: Build API (for desktop type-check)
+        if: ${{ inputs.run-desktop != false }}
+        run: yarn --cwd redisinsight/api build
+
+      - name: Desktop
+        if: ${{ inputs.run-desktop != false }}
+        run: yarn --cwd redisinsight/desktop type-check
+
+      - name: Configs
+        run: yarn tsc --project configs/tsconfig.json --noEmit
