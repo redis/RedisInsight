@@ -14,14 +14,20 @@ RedisInsight gates TypeScript errors per project via a one-way ratchet: current 
 
 ## Projects and commands
 
-| Project | tsconfig used | Baseline file | Compare | Refresh |
-| - | - | - | - | - |
-| UI | `redisinsight/ui/tsconfig.json` | `redisinsight/ui/.tscheck.rec.json` | `yarn --cwd redisinsight/ui type-check` | `yarn --cwd redisinsight/ui tscheck` |
-| API | `redisinsight/api/tsconfig.check.json` (strict, extends base) | `redisinsight/api/.tscheck.rec.json` | `yarn --cwd redisinsight/api type-check` | `yarn --cwd redisinsight/api tscheck` |
-| Desktop | `redisinsight/desktop/tsconfig.json` | `redisinsight/desktop/.tscheck.rec.json` | `yarn --cwd redisinsight/desktop type-check` | `yarn --cwd redisinsight/desktop tscheck` |
-| Configs | `configs/tsconfig.json` | — (must stay at 0 errors) | `yarn tsc --project configs/tsconfig.json --noEmit` | — |
+| Project | tsconfig used | Baseline file | Per-project compare |
+| - | - | - | - |
+| UI | `redisinsight/ui/tsconfig.json` | `redisinsight/ui/.tscheck.rec.json` | `yarn --cwd redisinsight/ui type-check` |
+| API | `redisinsight/api/tsconfig.check.json` (strict, extends base) | `redisinsight/api/.tscheck.rec.json` | `yarn --cwd redisinsight/api type-check` |
+| Desktop | `redisinsight/desktop/tsconfig.json` | `redisinsight/desktop/.tscheck.rec.json` | `yarn --cwd redisinsight/desktop type-check` |
+| Configs | `configs/tsconfig.json` | — (must stay at 0 errors) | `yarn tsc --project configs/tsconfig.json --noEmit` |
 
-`yarn type-check` (at repo root) runs all four. E2E Playwright is type-checked by a separate workflow (`tests-e2e-playwright-lint.yml`) — not part of `yarn type-check`. Force-overwrite for emergencies is `yarn --cwd redisinsight/<workspace> tscheck:force`.
+Run all checks together from the repo root:
+
+- `yarn type-check` — compare against baselines (all four projects). E2E Playwright is type-checked by a separate workflow (`tests-e2e-playwright-lint.yml`) — not part of this.
+- `yarn tscheck` — refresh baselines for ui/api/desktop after fixing errors. Projects whose error count didn't change produce no diff.
+- `yarn tscheck:force` — force-overwrite baselines for ui/api/desktop. Emergencies only.
+
+**Always run refresh commands through the root `yarn tscheck` / `yarn tscheck:force` wrappers.** The per-workspace refresh scripts (`yarn --cwd redisinsight/<ws> tscheck`) shell out to `tsc`, `tsx`, and `tsc-output-parser`, which are installed only in the **root** `node_modules/.bin/` — this repo is not a yarn workspace, so yarn won't add the root bin dir to PATH when invoked with `--cwd`. The root wrappers exist precisely to avoid that trap by running in the root yarn context first. If you must invoke the per-package script directly, prepend the root bin dir manually: `PATH="$PWD/node_modules/.bin:$PATH" yarn --cwd redisinsight/ui tscheck`.
 
 ## API has a dedicated check tsconfig
 
@@ -44,13 +50,13 @@ You introduced new errors. Fix them. Read the script output — it lists the fil
 
 ### CI says "baseline is outdated"
 
-You fixed errors (good). Refresh the baseline:
+You fixed errors (good). Refresh baselines from the repo root:
 
 ```sh
-yarn --cwd redisinsight/ui tscheck    # or api / desktop
+yarn tscheck
 ```
 
-Commit the updated `.tscheck.rec.json`.
+This runs the refresh for ui, api, and desktop; only the project whose count changed will produce a diff. Commit the updated `.tscheck.rec.json`.
 
 ### Adding a brand-new file with TS errors
 

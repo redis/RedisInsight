@@ -634,7 +634,6 @@
   },
   "src/pages/home/components/manual-connection/ManualConnectionWrapper.spec.tsx": {
     "TS2339": 5,
-    "TS2345": 1,
     "TS2722": 1
   },
   "src/pages/home/components/manual-connection/ManualConnectionWrapper.tsx": {
