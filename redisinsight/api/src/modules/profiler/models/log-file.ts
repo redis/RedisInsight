@@ -4,6 +4,7 @@ import { ReadStream, WriteStream } from 'fs';
 import config from 'src/utils/config';
 import { FileLogsEmitter } from 'src/modules/profiler/emitters/file.logs-emitter';
 import { TelemetryEvents } from 'src/constants';
+import { SessionMetadata } from 'src/common/models';
 
 const DIR_PATH = config.get('dir_path');
 const PROFILER = config.get('profiler');
@@ -25,6 +26,8 @@ export class LogFile {
 
   private analyticsEvents: Map<TelemetryEvents, Function>;
 
+  private readonly sessionMetadata: SessionMetadata | undefined;
+
   public readonly instanceId: string;
 
   public readonly id: string;
@@ -33,6 +36,7 @@ export class LogFile {
     instanceId: string,
     id: string,
     analyticsEvents?: Map<TelemetryEvents, Function>,
+    sessionMetadata?: SessionMetadata,
   ) {
     this.instanceId = instanceId;
     this.id = id;
@@ -40,6 +44,7 @@ export class LogFile {
     this.filePath = join(DIR_PATH.tmpDir, this.id);
     this.startTime = new Date();
     this.analyticsEvents = analyticsEvents || new Map();
+    this.sessionMetadata = sessionMetadata;
   }
 
   /**
@@ -65,6 +70,7 @@ export class LogFile {
       stream.destroy();
       try {
         this.analyticsEvents.get(TelemetryEvents.ProfilerLogDownloaded)(
+          this.sessionMetadata,
           this.instanceId,
           this.getFileSize(),
         );
@@ -137,6 +143,7 @@ export class LogFile {
       fs.unlinkSync(this.filePath);
 
       this.analyticsEvents.get(TelemetryEvents.ProfilerLogDeleted)(
+        this.sessionMetadata,
         this.instanceId,
         size,
       );

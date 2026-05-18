@@ -3,6 +3,7 @@ import { Injectable, NotFoundException, OnModuleDestroy } from '@nestjs/common';
 import { LogFile } from 'src/modules/profiler/models/log-file';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { ProfilerAnalyticsService } from 'src/modules/profiler/profiler-analytics.service';
+import { SessionMetadata } from 'src/common/models';
 
 @Injectable()
 export class LogFileProvider implements OnModuleDestroy {
@@ -14,12 +15,25 @@ export class LogFileProvider implements OnModuleDestroy {
    * Get or create Profiler Log File to work with
    * @param instanceId
    * @param id
+   * @param sessionMetadata Used by the analytics events bound on the LogFile
+   *   instance so `ProfilerLogDownloaded` / `ProfilerLogDeleted` can resolve
+   *   the connection's `isProduction` status. Optional for backward
+   *   compatibility — analytics gracefully default to `'false'` when absent.
    */
-  getOrCreate(instanceId: string, id: string): LogFile {
+  getOrCreate(
+    instanceId: string,
+    id: string,
+    sessionMetadata?: SessionMetadata,
+  ): LogFile {
     if (!this.profilerLogFiles.has(id)) {
       this.profilerLogFiles.set(
         id,
-        new LogFile(instanceId, id, this.analyticsService.getEventsEmitters()),
+        new LogFile(
+          instanceId,
+          id,
+          this.analyticsService.getEventsEmitters(),
+          sessionMetadata,
+        ),
       );
     }
 

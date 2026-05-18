@@ -3,6 +3,7 @@ import { LogFile } from 'src/modules/profiler/models/log-file';
 import {
   mockLogFile,
   mockProfilerAnalyticsEvents,
+  mockSessionMetadata,
   mockSocket,
 } from 'src/__mocks__';
 import config from 'src/utils/config';
@@ -17,10 +18,12 @@ describe('LogFile', () => {
   let logFile: LogFile;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     logFile = new LogFile(
       mockLogFile.instanceId,
       mockLogFile.id,
       mockProfilerAnalyticsEvents,
+      mockSessionMetadata,
     );
   });
 
@@ -128,6 +131,10 @@ describe('LogFile', () => {
     expect(stream['_writableState'].ended).toEqual(true);
     expect(
       mockProfilerAnalyticsEvents.get(TelemetryEvents.ProfilerLogDeleted),
-    ).toHaveBeenCalled();
+    ).toHaveBeenCalledWith(
+      mockSessionMetadata,
+      mockLogFile.instanceId,
+      expect.any(Number),
+    );
   });
 });

@@ -33,6 +33,7 @@ export class ProfilerClientProvider {
         const profilerLogFile = this.logFileProvider.getOrCreate(
           instanceId,
           settings.logFileId,
+          sessionMetadata,
         );
 
         // set database alias as part of the log file name
