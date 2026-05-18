@@ -37,6 +37,7 @@ import {
 } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { AdditionalRedisModule } from 'apiClient'
+import { useDatabaseMode } from 'uiSrc/components/hooks/useDatabaseMode'
 
 import { RunConfirmationPopover } from './components'
 import styles from './styles.module.scss'
@@ -78,6 +79,8 @@ const CodeButtonBlock = (props: Props) => {
   const [isCopied, setIsCopied] = useState(false)
 
   const { instanceId } = useParams<{ instanceId: string }>()
+  const { mode } = useDatabaseMode()
+  const isProduction = mode === 'production'
 
   const isButtonHasConfirmation =
     params?.run_confirmation === BooleanParams.true
@@ -211,9 +214,11 @@ const CodeButtonBlock = (props: Props) => {
               button={
                 <RiTooltip
                   content={
-                    isPopoverOpen
-                      ? undefined
-                      : 'Open Workbench in the top navbar to see the command results.'
+                    isProduction
+                      ? 'Button disabled for your production database to avoid accidental data modifications.'
+                      : isPopoverOpen
+                        ? undefined
+                        : 'Open Workbench in the top navbar to see the command results.'
                   }
                   data-testid="run-btn-open-workbench-tooltip"
                 >
@@ -222,7 +227,7 @@ const CodeButtonBlock = (props: Props) => {
                     icon={isRan ? CheckBoldIcon : PlayIcon}
                     iconSide="right"
                     size="small"
-                    disabled={isLoading || isRan}
+                    disabled={isLoading || isRan || isProduction}
                     loading={isLoading}
                     className={cx(styles.actionBtn, styles.runBtn)}
                     {...rest}

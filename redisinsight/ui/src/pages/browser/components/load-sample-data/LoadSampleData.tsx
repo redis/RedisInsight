@@ -17,8 +17,9 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { PlayFilledIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
-import { RiPopover } from 'uiSrc/components/base'
+import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { useDatabaseMode } from 'uiSrc/components/hooks/useDatabaseMode'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -32,6 +33,8 @@ const LoadSampleData = (props: Props) => {
 
   const { id } = useSelector(connectedInstanceSelector)
   const { loading } = useSelector(bulkActionsSelector)
+  const { mode } = useDatabaseMode()
+  const isProduction = mode === 'production'
 
   const dispatch = useDispatch()
 
@@ -58,16 +61,25 @@ const LoadSampleData = (props: Props) => {
       panelPaddingSize="none"
       anchorClassName={cx(styles.buttonWrapper, anchorClassName)}
       button={
-        <SecondaryButton
-          filled
-          onClick={() => setIsConfirmationOpen(true)}
-          className={styles.loadDataBtn}
-          loading={loading}
-          disabled={loading}
-          data-testid="load-sample-data-btn"
+        <RiTooltip
+          content={
+            isProduction
+              ? 'Button disabled for your production database to avoid accidental data modifications.'
+              : undefined
+          }
+          data-testid="load-sample-data-btn-tooltip"
         >
-          Load sample data
-        </SecondaryButton>
+          <SecondaryButton
+            filled
+            onClick={() => setIsConfirmationOpen(true)}
+            className={styles.loadDataBtn}
+            loading={loading}
+            disabled={loading || isProduction}
+            data-testid="load-sample-data-btn"
+          >
+            Load sample data
+          </SecondaryButton>
+        </RiTooltip>
       }
     >
       <Row gap="m" responsive={false} style={{ padding: 15 }}>

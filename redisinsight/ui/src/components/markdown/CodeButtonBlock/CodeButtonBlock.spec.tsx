@@ -1,11 +1,21 @@
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
 import reactRouterDom from 'react-router-dom'
-import { fireEvent, render, screen, act } from 'uiSrc/utils/test-utils'
+import {
+  fireEvent,
+  render,
+  screen,
+  act,
+  waitForRiTooltipVisible,
+} from 'uiSrc/utils/test-utils'
 import { Pages } from 'uiSrc/constants'
 import { setDBConfigStorageField } from 'uiSrc/services'
 import { ConfigDBStorageItem } from 'uiSrc/constants/storage'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { useDatabaseMode } from 'uiSrc/components/hooks/useDatabaseMode'
+
+const PRODUCTION_DISABLED_TOOLTIP =
+  'Button disabled for your production database to avoid accidental data modifications.'
 import CodeButtonBlock, { Props } from './CodeButtonBlock'
 
 const mockedProps = mock<Props>()
@@ -22,6 +32,18 @@ jest.mock('uiSrc/telemetry', () => ({
   ...jest.requireActual('uiSrc/telemetry'),
   sendEventTelemetry: jest.fn(),
 }))
+
+jest.mock('uiSrc/components/hooks/useDatabaseMode', () => ({
+  ...jest.requireActual('uiSrc/components/hooks/useDatabaseMode'),
+  useDatabaseMode: jest.fn(),
+}))
+
+beforeEach(() => {
+  ;(useDatabaseMode as jest.Mock).mockReturnValue({
+    mode: 'unmarked',
+    isDangerousCommand: () => false,
+  })
+})
 
 describe('CodeButtonBlock', () => {
   it('should render', () => {
@@ -253,5 +275,80 @@ describe('CodeButtonBlock', () => {
     expect(
       screen.getByTestId('database-not-opened-popover'),
     ).toBeInTheDocument()
+  })
+
+  describe('production mode', () => {
+    it('should disable Run button and not call onApply when mode is production', () => {
+      ;(useDatabaseMode as jest.Mock).mockReturnValue({
+        mode: 'production',
+        isDangerousCommand: () => false,
+      })
+      const onApply = jest.fn()
+
+      render(
+        <CodeButtonBlock
+          {...instance(mockedProps)}
+          label={label}
+          onApply={onApply}
+          content={simpleContent}
+        />,
+      )
+
+      const runBtn = screen.getByTestId(`run-btn-${label}`)
+      expect(runBtn).toBeDisabled()
+
+      fireEvent.click(runBtn)
+      expect(onApply).not.toBeCalled()
+    })
+
+    it('should show the production tooltip copy on focus when mode is production', async () => {
+      ;(useDatabaseMode as jest.Mock).mockReturnValue({
+        mode: 'production',
+        isDangerousCommand: () => false,
+      })
+
+      render(
+        <CodeButtonBlock
+          {...instance(mockedProps)}
+          label={label}
+          onApply={jest.fn()}
+          content={simpleContent}
+        />,
+      )
+
+      await act(async () => {
+        fireEvent.focus(screen.getByTestId(`run-btn-${label}`).parentElement!)
+      })
+      await waitForRiTooltipVisible()
+
+      expect(
+        screen.getAllByText(PRODUCTION_DISABLED_TOOLTIP)[0],
+      ).toBeInTheDocument()
+    })
+
+    it('should keep Run button enabled when mode is unmarked', () => {
+      reactRouterDom.useParams = jest
+        .fn()
+        .mockReturnValue({ instanceId: 'instanceId' })
+      ;(useDatabaseMode as jest.Mock).mockReturnValue({
+        mode: 'unmarked',
+        isDangerousCommand: () => false,
+      })
+      const onApply = jest.fn()
+
+      render(
+        <CodeButtonBlock
+          {...instance(mockedProps)}
+          label={label}
+          onApply={onApply}
+          content={simpleContent}
+        />,
+      )
+
+      const runBtn = screen.getByTestId(`run-btn-${label}`)
+      expect(runBtn).not.toBeDisabled()
+      fireEvent.click(runBtn)
+      expect(onApply).toBeCalled()
+    })
   })
 })

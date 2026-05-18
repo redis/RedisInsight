@@ -5,9 +5,11 @@ import {
   screen,
   fireEvent,
   waitForRiPopoverVisible,
+  waitForRiTooltipVisible,
   mockedStore,
   cleanup,
   waitForStack,
+  act,
 } from 'uiSrc/utils/test-utils'
 
 import {
@@ -18,7 +20,11 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { apiService } from 'uiSrc/services'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import successMessages from 'uiSrc/components/notifications/success-messages'
+import { useDatabaseMode } from 'uiSrc/components/hooks/useDatabaseMode'
 import LoadSampleData from './LoadSampleData'
+
+const PRODUCTION_DISABLED_TOOLTIP =
+  'Button disabled for your production database to avoid accidental data modifications.'
 
 jest.mock('uiSrc/slices/instances/instances', () => ({
   ...jest.requireActual('uiSrc/slices/instances/instances'),
@@ -32,11 +38,20 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
+jest.mock('uiSrc/components/hooks/useDatabaseMode', () => ({
+  ...jest.requireActual('uiSrc/components/hooks/useDatabaseMode'),
+  useDatabaseMode: jest.fn(),
+}))
+
 let store: typeof mockedStore
 beforeEach(() => {
   cleanup()
   store = cloneDeep(mockedStore)
   store.clearActions()
+  ;(useDatabaseMode as jest.Mock).mockReturnValue({
+    mode: 'unmarked',
+    isDangerousCommand: () => false,
+  })
 })
 
 describe('LoadSampleData', () => {
@@ -75,6 +90,45 @@ describe('LoadSampleData', () => {
     expect(sendEventTelemetry).toBeCalledWith({
       event: TelemetryEvent.IMPORT_SAMPLES_CLICKED,
       eventData: { databaseId: '1' },
+    })
+  })
+
+  describe('production mode', () => {
+    it('should disable the button and not open the popover in production', () => {
+      ;(useDatabaseMode as jest.Mock).mockReturnValue({
+        mode: 'production',
+        isDangerousCommand: () => false,
+      })
+
+      render(<LoadSampleData />)
+
+      const btn = screen.getByTestId('load-sample-data-btn')
+      expect(btn).toBeDisabled()
+
+      fireEvent.click(btn)
+      expect(
+        screen.queryByTestId('load-sample-data-btn-confirm'),
+      ).not.toBeInTheDocument()
+    })
+
+    it('should show the production tooltip copy on focus in production', async () => {
+      ;(useDatabaseMode as jest.Mock).mockReturnValue({
+        mode: 'production',
+        isDangerousCommand: () => false,
+      })
+
+      render(<LoadSampleData />)
+
+      await act(async () => {
+        fireEvent.focus(
+          screen.getByTestId('load-sample-data-btn').parentElement!,
+        )
+      })
+      await waitForRiTooltipVisible()
+
+      expect(
+        screen.getAllByText(PRODUCTION_DISABLED_TOOLTIP)[0],
+      ).toBeInTheDocument()
     })
   })
 })
