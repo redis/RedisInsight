@@ -219,7 +219,7 @@ export class CliBusinessService {
         {
           command,
           outputFormat,
-          dangerous: await this.dangerousCommandsProvider.isDangerous(
+          isDangerous: await this.dangerousCommandsProvider.isDangerous(
             client,
             command,
           ),
@@ -262,7 +262,7 @@ export class CliBusinessService {
           {
             command,
             outputFormat,
-            dangerous: await this.dangerousCommandsProvider.isDangerous(
+            isDangerous: await this.dangerousCommandsProvider.isDangerous(
               client,
               command,
             ),

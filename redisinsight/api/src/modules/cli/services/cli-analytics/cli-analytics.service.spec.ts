@@ -281,7 +281,7 @@ describe('CliAnalyticsService', () => {
           moduleName: 'n/a',
           capability: 'string',
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -294,7 +294,7 @@ describe('CliAnalyticsService', () => {
         {
           databaseId,
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -316,16 +316,16 @@ describe('CliAnalyticsService', () => {
         expect.objectContaining({ isProduction: 'true' }),
       );
     });
-    it('should pass dangerous flag through from additionalData', async () => {
+    it('should pass isDangerous flag through from additionalData', async () => {
       await service.sendCommandExecutedEvent(mockSessionMetadata, databaseId, {
         ...mockAdditionalData,
-        dangerous: true,
+        isDangerous: true,
       });
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
         TelemetryEvents.CliCommandExecuted,
-        expect.objectContaining({ dangerous: 'true' }),
+        expect.objectContaining({ isDangerous: 'true' }),
       );
     });
     it('should default isProduction to false when database lookup throws', async () => {
@@ -365,7 +365,7 @@ describe('CliAnalyticsService', () => {
           moduleName: 'n/a',
           capability: 'string',
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -384,7 +384,7 @@ describe('CliAnalyticsService', () => {
           error: ReplyError.name,
           command: 'sadd',
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -408,7 +408,7 @@ describe('CliAnalyticsService', () => {
           moduleName: 'n/a',
           capability: 'string',
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -480,7 +480,7 @@ describe('CliAnalyticsService', () => {
           moduleName: 'n/a',
           capability: 'string',
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -507,7 +507,7 @@ describe('CliAnalyticsService', () => {
           error: redisReplyError.name,
           command: 'sadd',
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -533,7 +533,7 @@ describe('CliAnalyticsService', () => {
           databaseId,
           error: CommandParsingError.name,
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });

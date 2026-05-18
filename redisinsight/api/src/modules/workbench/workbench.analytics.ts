@@ -89,8 +89,8 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
   ): Promise<void> {
     const { status } = result;
     try {
-      const { dangerous, ...rest } = additionalData as {
-        dangerous?: boolean;
+      const { isDangerous, ...rest } = additionalData as {
+        isDangerous?: boolean;
         command?: string;
         [k: string]: any;
       };
@@ -109,7 +109,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
             sessionMetadata,
             databaseId,
           ),
-          dangerous: dangerous ? 'true' : 'false',
+          isDangerous: isDangerous ? 'true' : 'false',
         });
       }
       if (status === CommandExecutionStatus.Fail) {
@@ -121,7 +121,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
           {
             ...(await this.getCommandAdditionalInfo(rest['command'])),
             ...rest,
-            dangerous,
+            isDangerous,
           },
         );
       }
@@ -154,8 +154,8 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
           ? TelemetryEvents.SearchCommandErrorReceived
           : TelemetryEvents.WorkbenchCommandErrorReceived;
 
-      const { dangerous, ...rest } = additionalData as {
-        dangerous?: boolean;
+      const { isDangerous, ...rest } = additionalData as {
+        isDangerous?: boolean;
         [k: string]: any;
       };
       const isProduction = await resolveIsProduction(
@@ -163,14 +163,14 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
         sessionMetadata,
         databaseId,
       );
-      const dangerousStr: 'true' | 'false' = dangerous ? 'true' : 'false';
+      const isDangerousStr: 'true' | 'false' = isDangerous ? 'true' : 'false';
 
       if (error instanceof HttpException) {
         this.sendFailedEvent(sessionMetadata, event, error, {
           databaseId,
           ...rest,
           isProduction,
-          dangerous: dangerousStr,
+          isDangerous: isDangerousStr,
         });
       } else {
         this.sendEvent(sessionMetadata, event, {
@@ -179,7 +179,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
           command: error?.command?.name,
           ...rest,
           isProduction,
-          dangerous: dangerousStr,
+          isDangerous: isDangerousStr,
         });
       }
     } catch (e) {

@@ -63,7 +63,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
           sessionMetadata,
           overview.databaseId,
         ),
-        dangerous: this.isDangerousAction(overview.type),
+        isDangerous: this.isDangerousAction(overview.type),
         confirmedThrough: this.resolveConfirmedThrough(overview),
       });
     } catch (e) {
@@ -118,7 +118,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
           sessionMetadata,
           overview.databaseId,
         ),
-        dangerous: this.isDangerousAction(overview.type),
+        isDangerous: this.isDangerousAction(overview.type),
         confirmedThrough: this.resolveConfirmedThrough(overview),
       });
     } catch (e) {
@@ -161,7 +161,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
           sessionMetadata,
           overview.databaseId,
         ),
-        dangerous: this.isDangerousAction(overview.type),
+        isDangerous: this.isDangerousAction(overview.type),
         confirmedThrough: this.resolveConfirmedThrough(overview),
       });
     } catch (e) {
@@ -184,7 +184,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
           sessionMetadata,
           overview.databaseId,
         ),
-        dangerous: this.isDangerousAction(overview.type),
+        isDangerous: this.isDangerousAction(overview.type),
         confirmedThrough: this.resolveConfirmedThrough(overview),
       });
     } catch (e) {

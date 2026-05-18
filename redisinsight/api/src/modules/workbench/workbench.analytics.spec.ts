@@ -166,7 +166,7 @@ describe('WorkbenchAnalytics', () => {
           moduleName: 'n/a',
           capability: 'string',
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -193,7 +193,7 @@ describe('WorkbenchAnalytics', () => {
           moduleName: 'n/a',
           capability: 'string',
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -218,7 +218,7 @@ describe('WorkbenchAnalytics', () => {
           moduleName: 'n/a',
           capability: 'string',
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -242,7 +242,7 @@ describe('WorkbenchAnalytics', () => {
           databaseId: instanceId,
           command: 'set',
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -265,7 +265,7 @@ describe('WorkbenchAnalytics', () => {
           moduleName: 'redisbloom',
           capability: 'bf',
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -288,7 +288,7 @@ describe('WorkbenchAnalytics', () => {
           moduleName: 'custommodule',
           capability: 'n/a',
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -311,7 +311,7 @@ describe('WorkbenchAnalytics', () => {
           moduleName: 'custom',
           capability: 'n/a',
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -332,7 +332,7 @@ describe('WorkbenchAnalytics', () => {
         {
           databaseId: instanceId,
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -361,7 +361,7 @@ describe('WorkbenchAnalytics', () => {
           capability: 'string',
           data: 'Some data',
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -385,7 +385,7 @@ describe('WorkbenchAnalytics', () => {
           error: ReplyError.name,
           command: 'sadd',
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -410,7 +410,7 @@ describe('WorkbenchAnalytics', () => {
           error: CommandParsingError.name,
           command: undefined,
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -434,7 +434,7 @@ describe('WorkbenchAnalytics', () => {
         {
           databaseId: instanceId,
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -457,7 +457,7 @@ describe('WorkbenchAnalytics', () => {
           moduleName: 'n/a',
           capability: 'string',
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
@@ -486,12 +486,12 @@ describe('WorkbenchAnalytics', () => {
           capability: 'string',
           data: 'Some data',
           isProduction: 'false',
-          dangerous: 'false',
+          isDangerous: 'false',
         },
       );
     });
   });
-  describe('production mode and dangerous flag enrichment', () => {
+  describe('production mode and isDangerous flag enrichment', () => {
     it('should emit isProduction=true when database is marked production', async () => {
       databaseRepository.get.mockResolvedValueOnce({
         ...mockDatabase,
@@ -513,19 +513,19 @@ describe('WorkbenchAnalytics', () => {
       );
     });
 
-    it('should pass dangerous through from additionalData', async () => {
+    it('should pass isDangerous through from additionalData', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
         instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
-        { command: 'flushdb', dangerous: true },
+        { command: 'flushdb', isDangerous: true },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
         TelemetryEvents.WorkbenchCommandExecuted,
-        expect.objectContaining({ dangerous: 'true' }),
+        expect.objectContaining({ isDangerous: 'true' }),
       );
     });
 

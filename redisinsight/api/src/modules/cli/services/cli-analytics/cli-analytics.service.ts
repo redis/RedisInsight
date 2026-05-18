@@ -104,8 +104,8 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
     additionalData: object = {},
   ): Promise<void> {
     try {
-      const { dangerous, ...rest } = additionalData as {
-        dangerous?: boolean;
+      const { isDangerous, ...rest } = additionalData as {
+        isDangerous?: boolean;
         command?: string;
         [k: string]: any;
       };
@@ -118,7 +118,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
           sessionMetadata,
           databaseId,
         ),
-        dangerous: dangerous ? 'true' : 'false',
+        isDangerous: isDangerous ? 'true' : 'false',
       });
     } catch (e) {
       // ignore error
@@ -132,8 +132,8 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
     additionalData: object = {},
   ): Promise<void> {
     try {
-      const { dangerous, ...rest } = additionalData as {
-        dangerous?: boolean;
+      const { isDangerous, ...rest } = additionalData as {
+        isDangerous?: boolean;
         command?: string;
         [k: string]: any;
       };
@@ -148,7 +148,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
           sessionMetadata,
           databaseId,
         ),
-        dangerous: dangerous ? 'true' : 'false',
+        isDangerous: isDangerous ? 'true' : 'false',
       });
     } catch (e) {
       // continue regardless of error
@@ -163,8 +163,8 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
   ): Promise<void> {
     const { status, error } = result;
     try {
-      const { dangerous, ...rest } = additionalData as {
-        dangerous?: boolean;
+      const { isDangerous, ...rest } = additionalData as {
+        isDangerous?: boolean;
         command?: string;
         [k: string]: any;
       };
@@ -181,7 +181,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
               sessionMetadata,
               databaseId,
             ),
-            dangerous: dangerous ? 'true' : 'false',
+            isDangerous: isDangerous ? 'true' : 'false',
           },
         );
       }
@@ -200,7 +200,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
               sessionMetadata,
               databaseId,
             ),
-            dangerous: dangerous ? 'true' : 'false',
+            isDangerous: isDangerous ? 'true' : 'false',
           },
         );
       }

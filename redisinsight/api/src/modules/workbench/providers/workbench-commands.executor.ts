@@ -88,7 +88,7 @@ export class WorkbenchCommandsExecutor {
         {
           command,
           rawMode: mode === RunQueryMode.Raw,
-          dangerous: await this.dangerousCommandsProvider.isDangerous(
+          isDangerous: await this.dangerousCommandsProvider.isDangerous(
             client,
             command,
           ),
@@ -120,7 +120,7 @@ export class WorkbenchCommandsExecutor {
         {
           command,
           rawMode: dto.mode === RunQueryMode.Raw,
-          dangerous: await this.dangerousCommandsProvider.isDangerous(
+          isDangerous: await this.dangerousCommandsProvider.isDangerous(
             client,
             command,
           ),

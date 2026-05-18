@@ -291,7 +291,7 @@ describe('CliBusinessService', () => {
         {
           command: 'ft.info',
           outputFormat: CliOutputFormatterTypes.Raw,
-          dangerous: false,
+          isDangerous: false,
         },
       );
       expect(analyticsService.sendIndexInfoEvent).toHaveBeenCalledWith(
@@ -322,7 +322,7 @@ describe('CliBusinessService', () => {
         {
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
-          dangerous: false,
+          isDangerous: false,
         },
       );
     });
@@ -351,7 +351,7 @@ describe('CliBusinessService', () => {
         {
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
-          dangerous: false,
+          isDangerous: false,
         },
       );
     });
@@ -378,7 +378,7 @@ describe('CliBusinessService', () => {
         {
           command: 'script',
           outputFormat: CliOutputFormatterTypes.Raw,
-          dangerous: false,
+          isDangerous: false,
         },
       );
     });
@@ -401,7 +401,7 @@ describe('CliBusinessService', () => {
         {
           command: unknownCommand,
           outputFormat: CliOutputFormatterTypes.Raw,
-          dangerous: false,
+          isDangerous: false,
         },
       );
     });
@@ -429,7 +429,7 @@ describe('CliBusinessService', () => {
         {
           command: 'get',
           outputFormat: CliOutputFormatterTypes.Raw,
-          dangerous: false,
+          isDangerous: false,
         },
       );
     });
@@ -499,7 +499,7 @@ describe('CliBusinessService', () => {
         {
           command: 'info',
           outputFormat: CliOutputFormatterTypes.Raw,
-          dangerous: false,
+          isDangerous: false,
         },
       );
     });
@@ -547,7 +547,7 @@ describe('CliBusinessService', () => {
         {
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
-          dangerous: false,
+          isDangerous: false,
         },
       );
     });
@@ -576,7 +576,7 @@ describe('CliBusinessService', () => {
         {
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
-          dangerous: false,
+          isDangerous: false,
         },
       );
     });
@@ -603,7 +603,7 @@ describe('CliBusinessService', () => {
         {
           command: 'script',
           outputFormat: CliOutputFormatterTypes.Raw,
-          dangerous: false,
+          isDangerous: false,
         },
       );
     });
@@ -626,7 +626,7 @@ describe('CliBusinessService', () => {
         {
           command: unknownCommand,
           outputFormat: CliOutputFormatterTypes.Raw,
-          dangerous: false,
+          isDangerous: false,
         },
       );
     });
@@ -654,7 +654,7 @@ describe('CliBusinessService', () => {
         {
           command: 'get',
           outputFormat: CliOutputFormatterTypes.Raw,
-          dangerous: false,
+          isDangerous: false,
         },
       );
     });
@@ -724,7 +724,7 @@ describe('CliBusinessService', () => {
         {
           command: 'info',
           outputFormat: CliOutputFormatterTypes.Raw,
-          dangerous: false,
+          isDangerous: false,
         },
       );
     });

@@ -65,7 +65,7 @@ describe('BulkActionsAnalytics', () => {
             totalRange: '0 - 5 000',
           },
           isProduction: 'false',
-          dangerous: 'true',
+          isDangerous: 'true',
           confirmedThrough: null,
         },
       );
@@ -90,7 +90,7 @@ describe('BulkActionsAnalytics', () => {
           },
           progress: {},
           isProduction: 'false',
-          dangerous: 'true',
+          isDangerous: 'true',
           confirmedThrough: null,
         },
       );
@@ -114,7 +114,7 @@ describe('BulkActionsAnalytics', () => {
           },
           progress: {},
           isProduction: 'false',
-          dangerous: 'true',
+          isDangerous: 'true',
           confirmedThrough: null,
         },
       );
@@ -148,7 +148,7 @@ describe('BulkActionsAnalytics', () => {
         expect.objectContaining({ confirmedThrough: 'type-to-confirm' }),
       );
     });
-    it('should emit dangerous=false for Upload bulk action', async () => {
+    it('should emit isDangerous=false for Upload bulk action', async () => {
       await service.sendActionStarted(mockSessionMetadata, {
         ...mockBulkActionOverview,
         type: BulkActionType.Upload,
@@ -157,7 +157,7 @@ describe('BulkActionsAnalytics', () => {
       expect(sendEventSpy).toHaveBeenCalledWith(
         mockSessionMetadata,
         TelemetryEvents.BulkActionsStarted,
-        expect.objectContaining({ dangerous: 'false' }),
+        expect.objectContaining({ isDangerous: 'false' }),
       );
     });
     it('should not emit event in case of an error and should not fail', async () => {
@@ -199,7 +199,7 @@ describe('BulkActionsAnalytics', () => {
             failedRange: '0 - 5 000',
           },
           isProduction: 'false',
-          dangerous: 'true',
+          isDangerous: 'true',
           confirmedThrough: null,
         },
       );
@@ -225,7 +225,7 @@ describe('BulkActionsAnalytics', () => {
           progress: {},
           summary: {},
           isProduction: 'false',
-          dangerous: 'true',
+          isDangerous: 'true',
           confirmedThrough: null,
         },
       );
@@ -263,7 +263,7 @@ describe('BulkActionsAnalytics', () => {
             failedRange: '0 - 5 000',
           },
           isProduction: 'false',
-          dangerous: 'true',
+          isDangerous: 'true',
           confirmedThrough: null,
         },
       );
@@ -287,7 +287,7 @@ describe('BulkActionsAnalytics', () => {
           },
           summary: {},
           isProduction: 'false',
-          dangerous: 'true',
+          isDangerous: 'true',
           confirmedThrough: null,
         },
       );
@@ -314,7 +314,7 @@ describe('BulkActionsAnalytics', () => {
           action: mockBulkActionOverview.type,
           error: mockRedisNoAuthError,
           isProduction: 'false',
-          dangerous: 'true',
+          isDangerous: 'true',
           confirmedThrough: null,
         },
       );

@@ -119,7 +119,7 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: 'ft.info',
             rawMode: true,
-            dangerous: false,
+            isDangerous: false,
           },
         );
         expect(mockAnalyticsService.sendIndexInfoEvent).toHaveBeenCalledWith(
@@ -160,7 +160,7 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: mockSetCommand,
             rawMode: false,
-            dangerous: false,
+            isDangerous: false,
           },
         );
       });
@@ -196,7 +196,7 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: mockSetCommand,
             rawMode: false,
-            dangerous: false,
+            isDangerous: false,
           },
         );
       });
@@ -235,7 +235,7 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: mockSetCommand,
             rawMode: false,
-            dangerous: false,
+            isDangerous: false,
           },
         );
       });
@@ -275,7 +275,7 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: mockSetCommand,
             rawMode: false,
-            dangerous: false,
+            isDangerous: false,
           },
         );
       });
@@ -315,7 +315,7 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: mockSetCommand,
             rawMode: true,
-            dangerous: false,
+            isDangerous: false,
           },
         );
       });
@@ -351,7 +351,7 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: mockSetCommand,
             rawMode: false,
-            dangerous: false,
+            isDangerous: false,
           },
         );
       });
@@ -388,7 +388,7 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: unknownCommand,
             rawMode: false,
-            dangerous: false,
+            isDangerous: false,
           },
         );
       });
