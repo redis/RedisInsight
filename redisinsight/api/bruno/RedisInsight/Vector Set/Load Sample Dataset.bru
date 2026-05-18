@@ -1,0 +1,99 @@
+meta {
+  name: Load Sample Dataset
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/bulk-actions/import/vector-collection
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "collectionName": "vec2word"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  # Load Sample Dataset (Vector Set)
+
+  Loads a bundled vector-set sample dataset into a Redis vector-set key by
+  reusing the existing **bulk-actions import** pipeline that powers the
+  vector-search example collections (`bikes`, `movies`).
+
+  ## How it works
+
+  The endpoint `POST /bulk-actions/import/vector-collection` is the shared
+  loader for any whitelisted bundled dataset under
+  `redisinsight/api/data/vector-collections/`. The whitelist currently allows:
+
+  - `bikes` — vector-search source (HSET commands → hash entries)
+  - `movies` — vector-search source (HSET commands → hash entries)
+  - `vec2word` — **vector-set source** (`VADD` commands → vector-set key)
+
+  Each line of the bundled file is a single Redis CLI command. For `vec2word`
+  every line looks like:
+
+  ```
+  VADD vec2word VALUES 300 <300 floats...> <word> SETATTR '{"pos":"<pos>"}'
+  ```
+
+  The server reads the file, parses each line via `splitCliCommandLine`,
+  batches the commands (10 000 per batch), and dispatches them via
+  `sendPipeline` — same machinery as bikes/movies.
+
+  ## Request Body
+
+  | Field | Type | Description |
+  |-------|------|-------------|
+  | `collectionName` | string | One of the whitelisted bundled collection names. For vector sets, use `vec2word`. |
+
+  ## Response
+
+  Returns `200 OK` with a `BulkActionOverview` JSON payload, e.g.:
+
+  ```json
+  {
+    "id": "...",
+    "databaseId": "...",
+    "type": "upload",
+    "status": "completed",
+    "duration": 42,
+    "filter": null,
+    "progress": null,
+    "summary": {
+      "processed": 100,
+      "succeed": 100,
+      "failed": 0,
+      "errors": [],
+      "keys": []
+    }
+  }
+  ```
+
+  ## Error Responses
+
+  | Status | Condition |
+  |--------|-----------|
+  | `400` | `collectionName` is not whitelisted, or the bundled file is missing |
+  | `500` | Generic import failure |
+
+  Per-command failures (e.g. existing key with the wrong type, ACL denials)
+  do **not** fail the whole request — they're reported in `summary.failed`
+  along with the error in `summary.errors`.
+
+  ## Follow-up
+
+  Once the dataset is loaded into `vec2word` you can exercise it via:
+
+  - **Get Elements** — list element names from the `vec2word` key.
+  - **Get Element Details** — fetch the vector + `{"pos":"..."}` attribute for a single word.
+  - **Similarity Search** — `VSIM vec2word ELE king WITHSCORES WITHATTRIBS` to find the nearest words to `king`.
+}
