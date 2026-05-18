@@ -46,12 +46,13 @@ export const loadSampleDatasetFailedNotification = () => ({
 })
 
 /**
- * Toast shown when the user clicks "Add key" with sample-dataset mode but the
- * target `vec2word` key already exists. Mirrors the vector-search
- * `sampleDataAlreadyExists` notice variant.
+ * Toast shown when the user clicks "Add key" in sample-dataset mode but the
+ * target key already exists. We can only verify the key is present — not
+ * that it actually holds the bundled sample dataset — so the copy intentionally
+ * stays generic.
  */
-export const loadSampleDatasetAlreadyExistsNotification = () => ({
-  title: 'Sample dataset already loaded',
+export const keyAlreadyExistsNotification = () => ({
+  title: 'Key already exists',
   message: `A key named '${VEC2WORD_COLLECTION_NAME}' already exists in this database.`,
   variant: 'notice' as ToastVariant,
   showCloseButton: false,

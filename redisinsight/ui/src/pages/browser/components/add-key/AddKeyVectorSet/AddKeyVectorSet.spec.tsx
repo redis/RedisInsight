@@ -230,9 +230,7 @@ describe('AddKeyVectorSet', () => {
         fireEvent.click(screen.getByTestId('add-key-vector-set-btn'))
       })
 
-      await waitFor(() =>
-        expectMessageDispatched('Sample dataset already loaded'),
-      )
+      await waitFor(() => expectMessageDispatched('Key already exists'))
       expect(mockLoad).not.toHaveBeenCalled()
       expect(onCancel).toHaveBeenCalled()
     })

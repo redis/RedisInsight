@@ -28,7 +28,7 @@ import { useVectorSetElementForm } from 'uiSrc/pages/browser/modules/key-details
 import LoadSampleDataset, {
   VEC2WORD_COLLECTION_NAME,
   checkVec2WordExists,
-  loadSampleDatasetAlreadyExistsNotification,
+  keyAlreadyExistsNotification,
   loadSampleDatasetFailedNotification,
 } from './LoadSampleDataset'
 import { POPULATE_LABEL, POPULATE_OPTIONS, PopulateMode } from './constants'
@@ -102,9 +102,7 @@ const AddKeyVectorSet = ({
       // already in the database, skip the bulk-import and surface an info
       // toast instead of silently re-running VADD on the existing key.
       if (await checkVec2WordExists(instanceId)) {
-        dispatch(
-          addMessageNotification(loadSampleDatasetAlreadyExistsNotification()),
-        )
+        dispatch(addMessageNotification(keyAlreadyExistsNotification()))
         onCancel()
         return
       }
