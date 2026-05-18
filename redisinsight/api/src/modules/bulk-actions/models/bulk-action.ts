@@ -49,6 +49,7 @@ export class BulkAction implements IBulkAction {
     private readonly analytics: BulkActionsAnalytics,
     generateReport: boolean = false,
     confirmedThrough: BulkActionConfirmation | null = null,
+    private readonly sessionMetadata: SessionMetadata | undefined = undefined,
   ) {
     this.debounce = debounce(this.sendOverview.bind(this), 1000, {
       maxWait: 1000,
@@ -321,10 +322,15 @@ export class BulkAction implements IBulkAction {
   }
 
   /**
-   * Send overview to a client
-   * @param sessionMetadata
+   * Send overview to a client.
+   *
+   * `sessionMetadata` is read from the stored field by default. The method is
+   * invoked through the debounce wrapper without arguments, so the parameter
+   * would otherwise be `undefined` for terminal-state events and the analytics
+   * `isProduction` enrichment would always fall back to `'false'`. Tests may
+   * still pass `sessionMetadata` explicitly to exercise the call path.
    */
-  sendOverview(sessionMetadata: SessionMetadata) {
+  sendOverview(sessionMetadata: SessionMetadata = this.sessionMetadata) {
     const overview = this.getOverview();
     if (overview.status === BulkActionStatus.Completed) {
       this.analytics.sendActionSucceed(sessionMetadata, overview);

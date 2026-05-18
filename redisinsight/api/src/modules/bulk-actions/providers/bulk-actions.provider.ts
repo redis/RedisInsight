@@ -51,6 +51,7 @@ export class BulkActionsProvider {
       this.analytics,
       dto.generateReport,
       dto.confirmedThrough ?? null,
+      sessionMetadata,
     );
 
     this.bulkActions.set(dto.id, bulkAction);

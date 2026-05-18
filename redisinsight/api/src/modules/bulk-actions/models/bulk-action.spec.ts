@@ -472,6 +472,34 @@ describe('AbstractBulkActionSimpleRunner', () => {
         },
       );
     });
+
+    it('falls back to constructor-stored sessionMetadata when invoked without args (debounce path)', () => {
+      mockSocket.emit.mockReturnValue();
+
+      const bulkActionWithSession = new BulkAction(
+        mockCreateBulkActionDto.id,
+        mockCreateBulkActionDto.databaseId,
+        mockCreateBulkActionDto.type,
+        mockBulkActionFilter,
+        mockSocket,
+        mockBulkActionsAnalytics() as any,
+        false,
+        null,
+        mockSessionMetadata,
+      );
+      const innerAnalytics = bulkActionWithSession[
+        'analytics'
+      ] as unknown as MockType<BulkActionsAnalytics>;
+      bulkActionWithSession['status'] = BulkActionStatus.Completed;
+
+      // Simulate the debounced invocation: no args.
+      bulkActionWithSession.sendOverview();
+
+      expect(innerAnalytics.sendActionSucceed).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        expect.any(Object),
+      );
+    });
   });
 
   describe('Other', () => {
