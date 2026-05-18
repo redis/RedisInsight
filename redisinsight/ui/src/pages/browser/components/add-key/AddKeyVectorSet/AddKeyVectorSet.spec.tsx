@@ -245,7 +245,9 @@ describe('AddKeyVectorSet', () => {
         fireEvent.click(screen.getByTestId('add-key-vector-set-btn'))
       })
 
-      await waitFor(() => expectMessageDispatched('Failed to create vector set'))
+      await waitFor(() =>
+        expectMessageDispatched('Failed to create vector set'),
+      )
       expect(onCancel).not.toHaveBeenCalled()
     })
   })
