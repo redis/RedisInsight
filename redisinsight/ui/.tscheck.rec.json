@@ -405,9 +405,6 @@
     "TS18048": 1,
     "TS2769": 1
   },
-  "src/pages/browser/components/filter-key-type/FilterKeyType.spec.tsx": {
-    "TS2339": 4
-  },
   "src/pages/browser/components/key-list/KeyList.spec.tsx": {
     "TS2322": 9,
     "TS2339": 3,
