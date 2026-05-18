@@ -10,7 +10,6 @@ export const POPULATE_OPTIONS: PopulateOption[] = [
     value: PopulateMode.Sample,
     label: 'Load sample dataset',
     description: 'Explore vector sets with pre-loaded word embeddings',
-    disabled: true,
     id: 'populate-sample',
   },
   {
