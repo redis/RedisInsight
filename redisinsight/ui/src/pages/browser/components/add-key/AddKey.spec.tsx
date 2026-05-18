@@ -1,15 +1,20 @@
 import React from 'react'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, set } from 'lodash'
 
 import {
   cleanup,
+  initialStateDefault,
   mockedStore,
+  mockStore,
   render,
   screen,
   userEvent,
 } from 'uiSrc/utils/test-utils'
 import { ADD_KEY_TYPE_OPTIONS } from 'uiSrc/pages/browser/components/add-key/constants/key-type-options'
-import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import {
+  connectedInstanceOverviewSelector,
+  connectedInstanceSelector,
+} from 'uiSrc/slices/instances/instances'
 import {
   OAuthSocialAction,
   OAuthSocialSource,
@@ -18,6 +23,7 @@ import {
 import * as appFeaturesSlice from 'uiSrc/slices/app/features'
 import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
 import { setSocialDialogState } from 'uiSrc/slices/oauth/cloud'
+import { FeatureFlags } from 'uiSrc/constants'
 import AddKey from './AddKey'
 
 const handleAddKeyPanelMock = () => {}
@@ -29,13 +35,48 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
     id: '1',
     modules: [],
   }),
+  connectedInstanceOverviewSelector: jest.fn().mockReturnValue({
+    version: '8.0.0',
+  }),
 }))
+
+/**
+ * Build a fresh store with the `devVectorSet` feature flag pre-seeded so the
+ * Vector Set option's `isEnabledSelector` (which reads the flag from the
+ * features slice) resolves correctly. We seed the store rather than spying
+ * on the selector because the option config holds an import-time reference
+ * to the selector, which jest spies on the module export cannot intercept.
+ */
+const renderWithVectorSetFlag = (enabled: boolean) => {
+  const storeState = set(
+    cloneDeep(initialStateDefault),
+    `app.features.featureFlags.features.${FeatureFlags.devVectorSet}`,
+    { flag: enabled },
+  )
+  return render(
+    <AddKey
+      onAddKeyPanel={handleAddKeyPanelMock}
+      onClosePanel={handleCloseKeyMock}
+    />,
+    { store: mockStore(storeState) },
+  )
+}
+
+const mockRedisVersion = (version: string) =>
+  (connectedInstanceOverviewSelector as jest.Mock).mockReturnValue({ version })
 
 let store: typeof mockedStore
 beforeEach(() => {
   cleanup()
   store = cloneDeep(mockedStore)
   store.clearActions()
+  // Reset selector mocks to the default version between tests so a stray
+  // override in one test doesn't bleed into the next.
+  mockRedisVersion('8.0.0')
+})
+
+afterEach(() => {
+  jest.restoreAllMocks()
 })
 
 describe('AddKey', () => {
@@ -121,6 +162,30 @@ describe('AddKey', () => {
       ...afterRenderActions,
       ...expectedActions,
     ])
+  })
+
+  it('should show Vector Set option when redis version >= 8.0 and vector set flag is enabled', async () => {
+    mockRedisVersion('8.0.0')
+    renderWithVectorSetFlag(true)
+
+    await userEvent.click(screen.getByTestId('select-key-type'))
+    expect(await screen.findByText('Vector Set')).toBeInTheDocument()
+  })
+
+  it('should hide Vector Set option when redis version < 8.0', async () => {
+    mockRedisVersion('7.4.0')
+    renderWithVectorSetFlag(true)
+
+    await userEvent.click(screen.getByTestId('select-key-type'))
+    expect(screen.queryByText('Vector Set')).not.toBeInTheDocument()
+  })
+
+  it('should hide Vector Set option when vector set flag is disabled', async () => {
+    mockRedisVersion('8.0.0')
+    renderWithVectorSetFlag(false)
+
+    await userEvent.click(screen.getByTestId('select-key-type'))
+    expect(screen.queryByText('Vector Set')).not.toBeInTheDocument()
   })
 
   it('should not show text if db contains ReJSON module', async () => {

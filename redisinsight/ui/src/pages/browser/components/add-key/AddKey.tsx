@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
 import Divider from 'uiSrc/components/divider/Divider'
 import { KeyTypes } from 'uiSrc/constants'
@@ -10,13 +10,22 @@ import {
   resetAddKey,
   keysSelector,
 } from 'uiSrc/slices/browser/keys'
-import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import {
+  connectedInstanceOverviewSelector,
+  connectedInstanceSelector,
+} from 'uiSrc/slices/instances/instances'
+import { RootState } from 'uiSrc/slices/store'
 import {
   sendEventTelemetry,
   TelemetryEvent,
   getBasedOnViewTypeEvent,
 } from 'uiSrc/telemetry'
-import { isContainJSONModule, Maybe, stringToBuffer } from 'uiSrc/utils'
+import {
+  isContainJSONModule,
+  isVersionHigherOrEquals,
+  Maybe,
+  stringToBuffer,
+} from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
@@ -53,6 +62,18 @@ const AddKey = (props: Props) => {
   const { id: instanceId, modules = [] } = useSelector(
     connectedInstanceSelector,
   )
+  const { version } = useSelector(connectedInstanceOverviewSelector)
+  // Resolve each option's optional `isEnabledSelector` against the store so
+  // the option config is the single source of truth for which key types are
+  // gated (e.g. behind dev/feature flags). `shallowEqual` keeps the filtered
+  // array stable across renders when membership doesn't change.
+  const enabledOptions = useSelector(
+    (state: RootState) =>
+      ADD_KEY_TYPE_OPTIONS.filter(
+        ({ isEnabledSelector }) => isEnabledSelector?.(state) ?? true,
+      ),
+    shallowEqual,
+  )
   const { viewType } = useSelector(keysSelector)
 
   useEffect(
@@ -64,23 +85,30 @@ const AddKey = (props: Props) => {
     [],
   )
 
-  const options = ADD_KEY_TYPE_OPTIONS.map((item) => {
-    const { value, color, text } = item
-    return {
-      value,
-      inputDisplay: (
-        <HealthText
-          color={color}
-          style={{ lineHeight: 'inherit' }}
-          data-test-subj={value}
-          data-testid={value}
-        >
-          {text}
-        </HealthText>
-      ),
-    }
-  })
-  const [typeSelected, setTypeSelected] = useState<string>(options[0].value)
+  const options = enabledOptions
+    .filter(
+      ({ minVersion }) =>
+        !minVersion || isVersionHigherOrEquals(version, minVersion),
+    )
+    .map((item) => {
+      const { value, color, text } = item
+      return {
+        value,
+        inputDisplay: (
+          <HealthText
+            color={color}
+            style={{ lineHeight: 'inherit' }}
+            data-test-subj={value}
+            data-testid={value}
+          >
+            {text}
+          </HealthText>
+        ),
+      }
+    })
+  const [typeSelected, setTypeSelected] = useState<string>(
+    options[0]?.value ?? KeyTypes.Hash,
+  )
   const [keyName, setKeyName] = useState<string>('')
   const [keyTTL, setKeyTTL] = useState<Maybe<number>>(undefined)
 
