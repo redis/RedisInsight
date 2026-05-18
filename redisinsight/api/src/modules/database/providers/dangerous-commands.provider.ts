@@ -40,6 +40,30 @@ export class DangerousCommandsProvider {
   }
 
   /**
+   * Check whether a single command (case-insensitive) is in the dangerous-commands
+   * list for the connection. Used by analytics call sites to derive the
+   * `dangerous: 'true' | 'false'` flag without each caller having to reimplement
+   * the same guard + uppercase + Set.has dance.
+   *
+   * Returns `false` for missing client/command or transient errors so analytics
+   * never blocks the request path.
+   */
+  async isDangerous(
+    client: RedisClient | undefined,
+    command: string | undefined,
+  ): Promise<boolean> {
+    if (!client || !command) {
+      return false;
+    }
+    try {
+      const list = await this.getDangerousCommands(client);
+      return list.includes(command.toUpperCase());
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
    * Drop the cached entry for a given database id so the next call re-fetches.
    */
   invalidate(databaseId: string): void {

@@ -7,6 +7,7 @@ import { CommandsService } from 'src/modules/commands/commands.service';
 import { CommandTelemetryBaseService } from 'src/modules/analytics/command.telemetry.base.service';
 import { SessionMetadata } from 'src/common/models';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
+import { resolveIsProduction } from 'src/modules/database/utils/resolve-is-production';
 import { CommandExecutionType } from './models/command-execution';
 
 export interface IExecResult {
@@ -23,21 +24,6 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     private readonly databaseRepository: DatabaseRepository,
   ) {
     super(eventEmitter, commandsService);
-  }
-
-  private async resolveIsProduction(
-    sessionMetadata: SessionMetadata,
-    databaseId: string,
-  ): Promise<'true' | 'false'> {
-    try {
-      const database = await this.databaseRepository.get(
-        sessionMetadata,
-        databaseId,
-      );
-      return database?.isProduction ? 'true' : 'false';
-    } catch (e) {
-      return 'false';
-    }
   }
 
   async sendIndexInfoEvent(
@@ -59,7 +45,8 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
       this.sendEvent(sessionMetadata, event, {
         databaseId,
         ...additionalData,
-        isProduction: await this.resolveIsProduction(
+        isProduction: await resolveIsProduction(
+          this.databaseRepository,
           sessionMetadata,
           databaseId,
         ),
@@ -117,7 +104,8 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
           databaseId,
           ...(await this.getCommandAdditionalInfo(rest['command'])),
           ...rest,
-          isProduction: await this.resolveIsProduction(
+          isProduction: await resolveIsProduction(
+            this.databaseRepository,
             sessionMetadata,
             databaseId,
           ),
@@ -170,7 +158,8 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
         dangerous?: boolean;
         [k: string]: any;
       };
-      const isProduction = await this.resolveIsProduction(
+      const isProduction = await resolveIsProduction(
+        this.databaseRepository,
         sessionMetadata,
         databaseId,
       );

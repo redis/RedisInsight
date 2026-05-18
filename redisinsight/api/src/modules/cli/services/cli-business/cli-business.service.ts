@@ -219,7 +219,10 @@ export class CliBusinessService {
         {
           command,
           outputFormat,
-          dangerous: await this.isDangerousCommand(client, command),
+          dangerous: await this.dangerousCommandsProvider.isDangerous(
+            client,
+            command,
+          ),
         },
       );
 
@@ -259,7 +262,10 @@ export class CliBusinessService {
           {
             command,
             outputFormat,
-            dangerous: await this.isDangerousCommand(client, command),
+            dangerous: await this.dangerousCommandsProvider.isDangerous(
+              client,
+              command,
+            ),
           },
         );
 
@@ -284,22 +290,6 @@ export class CliBusinessService {
       }
 
       return { response: error.message, status: CommandExecutionStatus.Fail };
-    }
-  }
-
-  private async isDangerousCommand(
-    client: RedisClient | undefined,
-    command: string,
-  ): Promise<boolean> {
-    if (!client || !command) {
-      return false;
-    }
-    try {
-      const dangerous =
-        await this.dangerousCommandsProvider.getDangerousCommands(client);
-      return dangerous.includes(command.toUpperCase());
-    } catch (e) {
-      return false;
     }
   }
 

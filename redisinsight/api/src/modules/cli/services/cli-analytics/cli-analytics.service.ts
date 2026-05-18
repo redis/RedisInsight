@@ -10,6 +10,7 @@ import { CommandsService } from 'src/modules/commands/commands.service';
 import { CommandTelemetryBaseService } from 'src/modules/analytics/command.telemetry.base.service';
 import { SessionMetadata } from 'src/common/models';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
+import { resolveIsProduction } from 'src/modules/database/utils/resolve-is-production';
 
 @Injectable()
 export class CliAnalyticsService extends CommandTelemetryBaseService {
@@ -19,21 +20,6 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
     private readonly databaseRepository: DatabaseRepository,
   ) {
     super(eventEmitter, commandsService);
-  }
-
-  private async resolveIsProduction(
-    sessionMetadata: SessionMetadata,
-    databaseId: string,
-  ): Promise<'true' | 'false'> {
-    try {
-      const database = await this.databaseRepository.get(
-        sessionMetadata,
-        databaseId,
-      );
-      return database?.isProduction ? 'true' : 'false';
-    } catch (e) {
-      return 'false';
-    }
   }
 
   sendClientCreatedEvent(
@@ -127,7 +113,8 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
         databaseId,
         ...(await this.getCommandAdditionalInfo(rest['command'])),
         ...rest,
-        isProduction: await this.resolveIsProduction(
+        isProduction: await resolveIsProduction(
+          this.databaseRepository,
           sessionMetadata,
           databaseId,
         ),
@@ -156,7 +143,8 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
         command: error?.command?.name,
         ...(await this.getCommandAdditionalInfo(rest['command'])),
         ...rest,
-        isProduction: await this.resolveIsProduction(
+        isProduction: await resolveIsProduction(
+          this.databaseRepository,
           sessionMetadata,
           databaseId,
         ),
@@ -188,7 +176,8 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
             databaseId,
             ...(await this.getCommandAdditionalInfo(rest['command'])),
             ...rest,
-            isProduction: await this.resolveIsProduction(
+            isProduction: await resolveIsProduction(
+              this.databaseRepository,
               sessionMetadata,
               databaseId,
             ),
@@ -206,7 +195,8 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
             command: error?.command?.name,
             ...(await this.getCommandAdditionalInfo(rest['command'])),
             ...rest,
-            isProduction: await this.resolveIsProduction(
+            isProduction: await resolveIsProduction(
+              this.databaseRepository,
               sessionMetadata,
               databaseId,
             ),

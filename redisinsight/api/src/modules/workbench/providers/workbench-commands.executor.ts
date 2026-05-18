@@ -88,7 +88,10 @@ export class WorkbenchCommandsExecutor {
         {
           command,
           rawMode: mode === RunQueryMode.Raw,
-          dangerous: await this.isDangerousCommand(client, command),
+          dangerous: await this.dangerousCommandsProvider.isDangerous(
+            client,
+            command,
+          ),
         },
       );
 
@@ -117,7 +120,10 @@ export class WorkbenchCommandsExecutor {
         {
           command,
           rawMode: dto.mode === RunQueryMode.Raw,
-          dangerous: await this.isDangerousCommand(client, command),
+          dangerous: await this.dangerousCommandsProvider.isDangerous(
+            client,
+            command,
+          ),
         },
       );
 
@@ -137,22 +143,6 @@ export class WorkbenchCommandsExecutor {
       }
 
       return [errorResult];
-    }
-  }
-
-  private async isDangerousCommand(
-    client: RedisClient | undefined,
-    command: string,
-  ): Promise<boolean> {
-    if (!client || !command) {
-      return false;
-    }
-    try {
-      const dangerous =
-        await this.dangerousCommandsProvider.getDangerousCommands(client);
-      return dangerous.includes(command.toUpperCase());
-    } catch (e) {
-      return false;
     }
   }
 

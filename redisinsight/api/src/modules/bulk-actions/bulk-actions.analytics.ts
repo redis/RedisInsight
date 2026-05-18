@@ -10,6 +10,7 @@ import {
   BulkActionConfirmation,
 } from 'src/modules/bulk-actions/constants';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
+import { resolveIsProduction } from 'src/modules/database/utils/resolve-is-production';
 
 @Injectable()
 export class BulkActionsAnalytics extends TelemetryBaseService {
@@ -18,21 +19,6 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
     private readonly databaseRepository: DatabaseRepository,
   ) {
     super(eventEmitter);
-  }
-
-  private async resolveIsProduction(
-    sessionMetadata: SessionMetadata,
-    databaseId: string,
-  ): Promise<'true' | 'false'> {
-    try {
-      const database = await this.databaseRepository.get(
-        sessionMetadata,
-        databaseId,
-      );
-      return database?.isProduction ? 'true' : 'false';
-    } catch (e) {
-      return 'false';
-    }
   }
 
   private isDangerousAction(type: BulkActionType): 'true' | 'false' {
@@ -72,7 +58,8 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
-        isProduction: await this.resolveIsProduction(
+        isProduction: await resolveIsProduction(
+          this.databaseRepository,
           sessionMetadata,
           overview.databaseId,
         ),
@@ -126,7 +113,8 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
-        isProduction: await this.resolveIsProduction(
+        isProduction: await resolveIsProduction(
+          this.databaseRepository,
           sessionMetadata,
           overview.databaseId,
         ),
@@ -168,7 +156,8 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
-        isProduction: await this.resolveIsProduction(
+        isProduction: await resolveIsProduction(
+          this.databaseRepository,
           sessionMetadata,
           overview.databaseId,
         ),
@@ -190,7 +179,8 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
         databaseId: overview.databaseId,
         action: overview.type,
         error,
-        isProduction: await this.resolveIsProduction(
+        isProduction: await resolveIsProduction(
+          this.databaseRepository,
           sessionMetadata,
           overview.databaseId,
         ),
@@ -228,7 +218,8 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
-        isProduction: await this.resolveIsProduction(
+        isProduction: await resolveIsProduction(
+          this.databaseRepository,
           sessionMetadata,
           overview.databaseId,
         ),

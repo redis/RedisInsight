@@ -327,6 +327,7 @@ export const mockDatabaseRepository = jest.fn(() => ({
 
 export const mockDangerousCommandsProvider = jest.fn(() => ({
   getDangerousCommands: jest.fn().mockResolvedValue([]),
+  isDangerous: jest.fn().mockResolvedValue(false),
   invalidate: jest.fn(),
   handleInstanceDeletedEvent: jest.fn(),
 }));

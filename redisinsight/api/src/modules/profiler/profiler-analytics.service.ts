@@ -6,6 +6,7 @@ import { CommandExecutionStatus } from 'src/modules/cli/dto/cli.dto';
 import { RedisError, ReplyError } from 'src/models';
 import { SessionMetadata } from 'src/common/models';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
+import { resolveIsProduction } from 'src/modules/database/utils/resolve-is-production';
 
 export interface IExecResult {
   response: any;
@@ -32,21 +33,6 @@ export class ProfilerAnalyticsService extends TelemetryBaseService {
     );
   }
 
-  private async resolveIsProduction(
-    sessionMetadata: SessionMetadata,
-    databaseId: string,
-  ): Promise<'true' | 'false'> {
-    try {
-      const database = await this.databaseRepository.get(
-        sessionMetadata,
-        databaseId,
-      );
-      return database?.isProduction ? 'true' : 'false';
-    } catch (e) {
-      return 'false';
-    }
-  }
-
   async sendLogDeleted(
     sessionMetadata: SessionMetadata,
     databaseId: string,
@@ -56,7 +42,8 @@ export class ProfilerAnalyticsService extends TelemetryBaseService {
       this.sendEvent(sessionMetadata, TelemetryEvents.ProfilerLogDeleted, {
         databaseId,
         fileSizeBytes,
-        isProduction: await this.resolveIsProduction(
+        isProduction: await resolveIsProduction(
+          this.databaseRepository,
           sessionMetadata,
           databaseId,
         ),
@@ -75,7 +62,8 @@ export class ProfilerAnalyticsService extends TelemetryBaseService {
       this.sendEvent(sessionMetadata, TelemetryEvents.ProfilerLogDownloaded, {
         databaseId,
         fileSizeBytes,
-        isProduction: await this.resolveIsProduction(
+        isProduction: await resolveIsProduction(
+          this.databaseRepository,
           sessionMetadata,
           databaseId,
         ),
@@ -92,7 +80,8 @@ export class ProfilerAnalyticsService extends TelemetryBaseService {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.ProfilerStarted, {
         databaseId,
-        isProduction: await this.resolveIsProduction(
+        isProduction: await resolveIsProduction(
+          this.databaseRepository,
           sessionMetadata,
           databaseId,
         ),
