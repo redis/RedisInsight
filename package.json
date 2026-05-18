@@ -53,6 +53,8 @@
     "test:cov:unit": "jest ./redisinsight/ui --group=-component --coverage -w 1",
     "test:cov:component": "jest ./redisinsight/ui --group=component --coverage -w 1",
     "type-check": "yarn --cwd redisinsight/ui type-check && yarn --cwd redisinsight/api type-check && yarn --cwd redisinsight/desktop type-check && tsc --project configs/tsconfig.json --noEmit",
+    "tscheck": "yarn --cwd redisinsight/ui tscheck && yarn --cwd redisinsight/api tscheck && yarn --cwd redisinsight/desktop tscheck",
+    "tscheck:force": "yarn --cwd redisinsight/ui tscheck:force && yarn --cwd redisinsight/api tscheck:force && yarn --cwd redisinsight/desktop tscheck:force",
     "sb": "storybook dev -p 6006",
     "build-sb": "storybook build"
   },
