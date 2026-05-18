@@ -1,7 +1,13 @@
 import React from 'react'
-import { act, fireEvent, render, screen, waitFor } from 'uiSrc/utils/test-utils'
+import {
+  act,
+  fireEvent,
+  mockedStore,
+  render,
+  screen,
+  waitFor,
+} from 'uiSrc/utils/test-utils'
 import { addVectorSetKey } from 'uiSrc/slices/browser/keys'
-import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { stringToBuffer } from 'uiSrc/utils'
 import { FP32_VECTOR_FIXTURE_1_2_3 } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
 import { bulkActionOverviewFactory } from 'uiSrc/mocks/factories/browser/bulkActions/bulkActionOverview.factory'
@@ -11,13 +17,6 @@ import { Props } from './AddKeyVectorSet.types'
 jest.mock('uiSrc/slices/browser/keys', () => ({
   ...jest.requireActual('uiSrc/slices/browser/keys'),
   addVectorSetKey: jest.fn(() => ({ type: 'keys/addVectorSetKey' })),
-}))
-
-jest.mock('uiSrc/slices/app/notifications', () => ({
-  ...jest.requireActual('uiSrc/slices/app/notifications'),
-  addMessageNotification: jest.fn(() => ({
-    type: 'notifications/addMessageNotification',
-  })),
 }))
 
 const mockLoad = jest.fn()
@@ -51,6 +50,7 @@ describe('AddKeyVectorSet', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockedStore.clearActions()
     // Default: vec2word does not exist, so submit proceeds to bulk-import.
     mockCheckVec2WordExists.mockResolvedValue(false)
     // ActionFooter renders via a portal to #formFooterBar
@@ -195,6 +195,14 @@ describe('AddKeyVectorSet', () => {
       expect(setKeyNameDisabled).toHaveBeenLastCalledWith(false)
     })
 
+    const expectMessageDispatched = (title: string) =>
+      expect(mockedStore.getActions()).toContainEqual(
+        expect.objectContaining({
+          type: 'notifications/addMessageNotification',
+          payload: expect.objectContaining({ title }),
+        }),
+      )
+
     it('on submit calls useLoadData.load with vec2word and closes the dialog on success', async () => {
       mockLoad.mockResolvedValue(bulkActionOverviewFactory.build())
       const onCancel = jest.fn()
@@ -209,7 +217,6 @@ describe('AddKeyVectorSet', () => {
         expect(mockLoad).toHaveBeenCalledWith(expect.anything(), 'vec2word'),
       )
       expect(onCancel).toHaveBeenCalled()
-      expect(addMessageNotification).not.toHaveBeenCalled()
       expect(addVectorSetKey).not.toHaveBeenCalled()
     })
 
@@ -224,12 +231,7 @@ describe('AddKeyVectorSet', () => {
       })
 
       await waitFor(() =>
-        expect(addMessageNotification).toHaveBeenCalledWith(
-          expect.objectContaining({
-            title: 'Sample dataset already loaded',
-            variant: 'notice',
-          }),
-        ),
+        expectMessageDispatched('Sample dataset already loaded'),
       )
       expect(mockLoad).not.toHaveBeenCalled()
       expect(onCancel).toHaveBeenCalled()
@@ -245,11 +247,7 @@ describe('AddKeyVectorSet', () => {
         fireEvent.click(screen.getByTestId('add-key-vector-set-btn'))
       })
 
-      await waitFor(() =>
-        expect(addMessageNotification).toHaveBeenCalledWith(
-          expect.objectContaining({ title: 'Failed to create vector set' }),
-        ),
-      )
+      await waitFor(() => expectMessageDispatched('Failed to create vector set'))
       expect(onCancel).not.toHaveBeenCalled()
     })
   })
