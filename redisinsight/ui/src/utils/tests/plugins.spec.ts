@@ -2,6 +2,18 @@ import { getVisualizationsByCommand } from 'uiSrc/utils'
 import { IPluginVisualization } from 'uiSrc/slices/interfaces'
 
 describe('getVisualizationsByCommand', () => {
+  const boundedGeoRadiusRegex =
+    String.raw`@[A-Za-z0-9_.$:-]{1,128}:\[\s*` +
+    String.raw`[-+$A-Za-z0-9_.]{1,128}\s+` +
+    String.raw`[-+$A-Za-z0-9_.]{1,128}\s+` +
+    String.raw`[-+$A-Za-z0-9_.]{1,128}\s+(?:m|km|mi|ft)\s*\]`
+
+  const boundedGeoFilterRegex =
+    String.raw`\bGEOFILTER\s+[A-Za-z0-9_.$:-]{1,128}\s+` +
+    String.raw`[-+$A-Za-z0-9_.]{1,128}\s+` +
+    String.raw`[-+$A-Za-z0-9_.]{1,128}\s+` +
+    String.raw`[-+$A-Za-z0-9_.]{1,128}\s+(?:m|km|mi|ft)\b`
+
   const getVisualizationsByCommandTests: [string, number][] = [
     ['ft.search sa', 2],
     ['ft.get zxc', 2],
@@ -103,9 +115,7 @@ describe('getVisualizationsByCommand', () => {
     const geodataVisualization = {
       matchCommands: ['FT.SEARCH'],
       matchQuery: {
-        anyRegex: [
-          String.raw`@[A-Za-z0-9_.$:-]{1,128}:\[\s*[-+$A-Za-z0-9_.]{1,128}\s+[-+$A-Za-z0-9_.]{1,128}\s+[-+$A-Za-z0-9_.]{1,128}\s+(?:m|km|mi|ft)\s*\]`,
-        ],
+        anyRegex: [boundedGeoRadiusRegex],
       },
     } as IPluginVisualization
 
@@ -121,8 +131,8 @@ describe('getVisualizationsByCommand', () => {
       matchCommands: ['FT.SEARCH', 'FT.AGGREGATE', 'FT.HYBRID'],
       matchQuery: {
         anyRegex: [
-          String.raw`@[A-Za-z0-9_.$:-]{1,128}:\[\s*[-+$A-Za-z0-9_.]{1,128}\s+[-+$A-Za-z0-9_.]{1,128}\s+[-+$A-Za-z0-9_.]{1,128}\s+(?:m|km|mi|ft)\s*\]`,
-          String.raw`\bGEOFILTER\s+[A-Za-z0-9_.$:-]{1,128}\s+[-+$A-Za-z0-9_.]{1,128}\s+[-+$A-Za-z0-9_.]{1,128}\s+[-+$A-Za-z0-9_.]{1,128}\s+(?:m|km|mi|ft)\b`,
+          boundedGeoRadiusRegex,
+          boundedGeoFilterRegex,
           String.raw`@[A-Za-z0-9_.$:-]{1,128}:\[\s*(?:WITHIN|CONTAINS|INTERSECTS|DISJOINT)\s+[^\]]{1,2048}\]`,
         ],
       },
