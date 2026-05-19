@@ -57,6 +57,7 @@ jobs:
       backend: ${{ steps.filter.outputs.backend }}
       desktop: ${{ steps.filter.outputs.desktop }}
       docker: ${{ steps.filter.outputs.docker }}
+      infra: ${{ steps.filter.outputs.infra }}
     steps:
       - uses: actions/checkout@v6
       - uses: dorny/paths-filter@v4.0.1
@@ -74,9 +75,25 @@ jobs:
               - 'Dockerfile*'
               - '.dockerignore'
               - '*docker*.sh'
+            # Shared toolchain / CI config — when these change, run everything.
+            infra:
+              - 'package.json'
+              - 'yarn.lock'
+              - '.yarnrc'
+              - '.nvmrc'
+              - '.eslintrc*'
+              - '.eslintignore'
+              - 'babel.config*'
+              - 'jest.config*'
+              - 'jest-resolver.js'
+              - 'configs/**'
+              - 'scripts/**'
+              - '.github/workflows/**'
+              - '.github/actions/**'
 
   # Check common conditions that trigger all test suites
   should-run-all-tests:
+    needs: changes
     runs-on: ubuntu-latest
     outputs:
       result: ${{ steps.check.outputs.result }}
@@ -84,6 +101,7 @@ jobs:
       - id: check
         env:
           PRERELEASE_CONDITION: ${{ inputs.pre_release == true }}
+          INFRA_CHANGED: ${{ needs.changes.outputs.infra }}
         run: |
           OTHER_CONDITIONS="${{ github.event_name == 'workflow_dispatch' ||
               startsWith(github.ref_name, 'release/') ||
@@ -91,7 +109,7 @@ jobs:
               github.ref_name == 'latest' ||
               contains(github.event.pull_request.labels.*.name, 'run-all-tests') }}"
 
-          if [[ "$PRERELEASE_CONDITION" == "true" ]] || [[ "$OTHER_CONDITIONS" == "true" ]]; then
+          if [[ "$PRERELEASE_CONDITION" == "true" ]] || [[ "$OTHER_CONDITIONS" == "true" ]] || [[ "$INFRA_CHANGED" == "true" ]]; then
             echo "result=true" >> $GITHUB_OUTPUT
           else
             echo "result=false" >> $GITHUB_OUTPUT
@@ -105,8 +123,8 @@ jobs:
     needs: [changes, should-run-all-tests]
     uses: ./.github/workflows/type-check.yml
     with:
-      run-ui: ${{ needs.should-run-all-tests.outputs.result == 'true' || needs.changes.outputs.frontend == 'true' }}
-      run-api: ${{ needs.should-run-all-tests.outputs.result == 'true' || needs.changes.outputs.backend == 'true' }}
+      run-ui: ${{ needs.should-run-all-tests.outputs.result == 'true' || needs.changes.outputs.frontend == 'true' || contains(github.event.pull_request.labels.*.name, 'run-frontend-tests') }}
+      run-api: ${{ needs.should-run-all-tests.outputs.result == 'true' || needs.changes.outputs.backend == 'true' || contains(github.event.pull_request.labels.*.name, 'run-backend-tests') }}
       run-desktop: ${{ needs.should-run-all-tests.outputs.result == 'true' || needs.changes.outputs.desktop == 'true' }}
     secrets: inherit
 
