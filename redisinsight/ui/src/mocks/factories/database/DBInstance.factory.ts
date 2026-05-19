@@ -1,5 +1,6 @@
 import { Factory } from 'fishery'
 import { faker } from '@faker-js/faker'
+import { DatabaseMode } from 'apiClient'
 import { ConnectionType, Instance } from 'uiSrc/slices/interfaces'
 
 export const DBInstanceFactory = Factory.define<Instance>(() => ({
@@ -20,4 +21,5 @@ export const DBInstanceFactory = Factory.define<Instance>(() => ({
   version: faker.system.semver(),
   lastConnection: faker.date.past(),
   provider: faker.company.name(),
+  databaseMode: DatabaseMode.Unmarked,
 }))

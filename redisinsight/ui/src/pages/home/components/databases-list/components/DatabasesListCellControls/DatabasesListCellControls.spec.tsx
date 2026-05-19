@@ -6,6 +6,7 @@ import {
   waitForRiPopoverVisible,
   waitFor,
 } from 'uiSrc/utils/test-utils'
+import { DatabaseMode } from 'apiClient'
 import { Instance } from 'uiSrc/slices/interfaces'
 import {
   HomePageDataProviderProvider,
@@ -42,6 +43,7 @@ const instance: Instance = {
   version: null,
   provider: 'LOCALHOST',
   cloudDetails: { test: true } as any,
+  databaseMode: DatabaseMode.Unmarked,
 }
 
 const row = { original: instance }

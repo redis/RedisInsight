@@ -1,4 +1,5 @@
 import { http, HttpHandler, HttpResponse } from 'msw'
+import { DatabaseMode } from 'apiClient'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { ConnectionType, Instance } from 'uiSrc/slices/interfaces'
 import { getMswURL } from 'uiSrc/utils/test-utils'
@@ -21,6 +22,7 @@ export const INSTANCES_MOCK: Instance[] = [
     db: 123,
     lastConnection: new Date('2021-04-22T09:03:56.917Z'),
     version: null,
+    databaseMode: DatabaseMode.Unmarked,
   },
   {
     id: 'a0db1bc8-a353-4c43-a856-b72f4811d2d4',
@@ -64,6 +66,7 @@ export const INSTANCES_MOCK: Instance[] = [
     sentinelMaster: {
       name: 'mymaster',
     },
+    databaseMode: DatabaseMode.Unmarked,
   },
 ]
 

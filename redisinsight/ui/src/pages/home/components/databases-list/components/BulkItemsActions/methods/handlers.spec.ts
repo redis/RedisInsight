@@ -1,4 +1,5 @@
 import saveAs from 'file-saver'
+import { DatabaseMode } from 'apiClient'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { dispatch } from 'uiSrc/slices/store'
 import { Instance } from 'uiSrc/slices/interfaces'
@@ -48,8 +49,24 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
 jest.mock('file-saver', () => ({ __esModule: true, default: jest.fn() }))
 
 const instances: Instance[] = [
-  { id: '1', name: 'A', host: 'h1', port: 6379, modules: [], version: null },
-  { id: '2', name: 'B', host: 'h2', port: 6380, modules: [], version: null },
+  {
+    id: '1',
+    name: 'A',
+    host: 'h1',
+    port: 6379,
+    modules: [],
+    version: null,
+    databaseMode: DatabaseMode.Unmarked,
+  },
+  {
+    id: '2',
+    name: 'B',
+    host: 'h2',
+    port: 6380,
+    modules: [],
+    version: null,
+    databaseMode: DatabaseMode.Unmarked,
+  },
 ]
 
 describe('BulkItemsActions handlers', () => {

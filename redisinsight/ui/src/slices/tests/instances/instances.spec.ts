@@ -72,6 +72,7 @@ import reducer, {
   connectedInstanceDangerousCommandsSelector,
   connectedInstanceDatabaseModeSelector,
 } from '../../instances/instances'
+import { DatabaseMode } from 'apiClient'
 import {
   addErrorNotification,
   addInfiniteNotification,
@@ -110,6 +111,7 @@ beforeEach(() => {
       nameFromProvider: null,
       modules: [],
       lastConnection: new Date('2021-04-22T09:03:56.917Z'),
+      databaseMode: DatabaseMode.Unmarked,
     },
     {
       id: 'a0db1bc8-a353-4c43-a856-b72f4811d2d4',
@@ -152,6 +154,7 @@ beforeEach(() => {
       sentinelMaster: {
         name: 'mymaster',
       },
+      databaseMode: DatabaseMode.Unmarked,
     },
   ]
 })

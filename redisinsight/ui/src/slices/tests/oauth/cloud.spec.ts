@@ -7,6 +7,7 @@ import {
   initialStateDefault,
   mockedStore,
 } from 'uiSrc/utils/test-utils'
+import { DatabaseMode } from 'apiClient'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { apiService } from 'uiSrc/services'
 import {
@@ -268,6 +269,7 @@ describe('oauth cloud slice', () => {
         id: 'id',
         modules: [],
         version: '1',
+        databaseMode: DatabaseMode.Unmarked,
       }
       // Arrange
       const state = {

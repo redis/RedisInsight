@@ -1,6 +1,7 @@
 import { isUndefined, toString } from 'lodash'
 import React from 'react'
 import { FormikErrors } from 'formik'
+import { DatabaseMode } from 'apiClient'
 import { InstanceType } from 'uiSrc/slices/interfaces'
 import {
   ADD_NEW,
@@ -294,6 +295,7 @@ export const getFormValues = (instance?: Nullable<Record<string, any>>) => ({
   tls: instance?.tls ?? false,
   db: instance?.db,
   compressor: instance?.compressor ?? NONE,
+  databaseMode: instance?.databaseMode ?? DatabaseMode.Unmarked,
   modules: instance?.modules,
   showDb: !!instance?.db,
   forceStandalone: instance?.forceStandalone ?? false,

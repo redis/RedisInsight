@@ -38,10 +38,6 @@ describe('getDatabaseMode', () => {
     ).toBe('unmarked')
   })
 
-  it('treats undefined databaseMode as unmarked', () => {
-    expect(getDatabaseMode({}, { flagEnabled: true })).toBe('unmarked')
-  })
-
   it('returns disabled for a null row when flag is off', () => {
     expect(getDatabaseMode(null, { flagEnabled: false })).toBe('disabled')
   })

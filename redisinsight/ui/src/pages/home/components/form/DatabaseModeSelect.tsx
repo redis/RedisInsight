@@ -49,7 +49,7 @@ const DatabaseModeSelect = (props: Props) => {
         <FormField label={<DatabaseModeLabel />}>
           <RiSelect
             name="databaseMode"
-            value={formik.values.databaseMode ?? DatabaseMode.Unmarked}
+            value={formik.values.databaseMode}
             options={options}
             onChange={(value) => {
               formik.setFieldValue('databaseMode', value)

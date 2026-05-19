@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash'
+import { DatabaseMode } from 'apiClient'
 import { ConnectionType, Instance } from 'uiSrc/slices/interfaces'
 import { cleanup, mockedStore, renderHook } from 'uiSrc/utils/test-utils'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -28,6 +29,7 @@ beforeEach(() => {
       connectionType: ConnectionType.Standalone,
       modules: [],
       version: '6.2.6',
+      databaseMode: DatabaseMode.Unmarked,
     },
     cluster: {
       id: 'a0db1bc8-a353-4c43-a856-b72f4811d2d4',
@@ -37,6 +39,7 @@ beforeEach(() => {
       connectionType: ConnectionType.Cluster,
       modules: [],
       version: '6.2.6',
+      databaseMode: DatabaseMode.Unmarked,
     },
     sentinel: {
       id: 'b83a3932-e95f-4f09-9d8a-55079f400186',
@@ -45,6 +48,7 @@ beforeEach(() => {
       port: 5005,
       connectionType: ConnectionType.Sentinel,
       modules: [],
+      databaseMode: DatabaseMode.Unmarked,
     },
   }
 })

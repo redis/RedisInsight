@@ -68,6 +68,7 @@ export const initialState: InitialStateInstances = {
     isRediStack: false,
     modules: [],
     loading: undefined,
+    databaseMode: DatabaseMode.Unmarked,
   },
   editedInstance: {
     loading: false,
@@ -380,9 +381,7 @@ export const connectedInstanceCDSelector = (state: RootState) =>
   state.connections.instances.connectedInstance.cloudDetails
 export const connectedInstanceDatabaseModeSelector = (
   state: RootState,
-): DatabaseMode =>
-  state.connections.instances.connectedInstance.databaseMode ??
-  DatabaseMode.Unmarked
+): DatabaseMode => state.connections.instances.connectedInstance.databaseMode
 export const connectedInstanceDangerousCommandsSelector = (
   state: RootState,
 ): string[] => state.connections.instances.dangerousCommands
