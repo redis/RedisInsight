@@ -33,6 +33,7 @@ AGENTS.md                              # 🎯 AI agent entry point
 │   ├── commits.md                     # Commit message guidelines
 │   └── pull-requests.md               # Pull request process
 ├── skills/                            # Agent skills
+│   ├── branches/                      # Branch naming skill
 │   ├── commits/                       # Commit message skill
 │   ├── pull-requests/                 # Pull request skill
 |   └── feature-flags/SKILL.md         # Feature flag lifecycle
@@ -74,6 +75,7 @@ This directory contains comprehensive development standards that are automatical
 - **Frontend Patterns**: `.ai/rules/frontend.md` - React, Redux, styled-components, UI component usage
 - **Backend Patterns**: `.ai/rules/backend.md` - NestJS, dependency injection, API patterns
 - **Testing Standards**: `.ai/rules/testing.md` - Testing patterns, faker usage, test helpers
+- **Branch Naming**: `.ai/skills/branches/SKILL.md` - Branch naming conventions
 - **Commit Messages**: `.ai/rules/commits.md` - Commit message guidelines (Conventional Commits)
 - **Pull Request Process**: `.ai/rules/pull-requests.md` - PR creation and review guidelines
 - **Feature Flags**: `.ai/skills/feature-flags/SKILL.md` - Adding, promoting, and removing feature flags

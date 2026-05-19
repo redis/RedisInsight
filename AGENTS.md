@@ -98,6 +98,7 @@ All detailed development standards are maintained in `.ai/rules/`:
 - **Frontend**: `.ai/rules/frontend.md` - React, Redux, UI patterns, styled-components
 - **Backend**: `.ai/rules/backend.md` - NestJS, API patterns, dependency injection
 - **Testing**: `.ai/rules/testing.md` - Testing standards, faker usage, test patterns
+- **Branches**: `.ai/skills/branches/SKILL.md` - Branch naming conventions
 - **Commits**: `.ai/skills/commits/SKILL.md` - Commit message guidelines
 - **Pull Requests**: `.ai/skills/pull-requests/SKILL.md` - PR process and review guidelines
 - **Feature Flags**: `.ai/skills/feature-flags/SKILL.md` - Adding, promoting, and removing feature flags
@@ -110,6 +111,7 @@ All detailed development standards are maintained in `.ai/rules/`:
 
 ### ✅ Always Do
 
+- Ensure the current branch name follows `.ai/skills/branches/SKILL.md` before opening a PR; rename it if it doesn't
 - Write to `src/` and `tests/` directories
 - Run `yarn lint` and `yarn test` before commits
 - Follow naming conventions (camelCase, PascalCase, UPPER_SNAKE_CASE)
