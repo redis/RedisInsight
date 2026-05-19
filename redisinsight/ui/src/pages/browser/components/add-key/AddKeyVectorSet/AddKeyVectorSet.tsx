@@ -4,10 +4,11 @@ import { toNumber } from 'lodash'
 
 import { stringToBuffer } from 'uiSrc/utils'
 import {
+  addKeyIntoList,
   addKeyStateSelector,
   addVectorSetKey,
-  loadKeys,
 } from 'uiSrc/slices/browser/keys'
+import { KeyTypes } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { CreateVectorSetWithExpireDto } from 'uiSrc/slices/interfaces/vectorSet'
@@ -112,9 +113,15 @@ const AddKeyVectorSet = ({
         return
       }
       await loadSampleDataset(instanceId, VEC2WORD_COLLECTION_NAME)
-      // Refresh the Browser keys list so the new key shows up immediately,
-      // then surface a green success toast.
-      dispatch(loadKeys())
+      // Splice the new key into the Browser keys list — same pattern as the
+      // manual addTypedKey flow — so it shows up immediately without
+      // triggering a full refetch (and the loading spinner that comes with it).
+      dispatch(
+        addKeyIntoList({
+          key: stringToBuffer(VEC2WORD_COLLECTION_NAME),
+          keyType: KeyTypes.VectorSet,
+        }),
+      )
       dispatch(addMessageNotification(sampleDatasetLoadedNotification()))
       onCancel()
     } catch {

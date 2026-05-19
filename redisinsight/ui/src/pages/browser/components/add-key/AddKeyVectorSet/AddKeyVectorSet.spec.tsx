@@ -7,7 +7,7 @@ import {
   screen,
   waitFor,
 } from 'uiSrc/utils/test-utils'
-import { addVectorSetKey, loadKeys } from 'uiSrc/slices/browser/keys'
+import { addKeyIntoList, addVectorSetKey } from 'uiSrc/slices/browser/keys'
 import { stringToBuffer } from 'uiSrc/utils'
 import { FP32_VECTOR_FIXTURE_1_2_3 } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
 import { bulkActionOverviewFactory } from 'uiSrc/mocks/factories/browser/bulkActions/bulkActionOverview.factory'
@@ -17,7 +17,7 @@ import { Props } from './AddKeyVectorSet.types'
 jest.mock('uiSrc/slices/browser/keys', () => ({
   ...jest.requireActual('uiSrc/slices/browser/keys'),
   addVectorSetKey: jest.fn(() => ({ type: 'keys/addVectorSetKey' })),
-  loadKeys: jest.fn(() => ({ type: 'keys/loadKeys' })),
+  addKeyIntoList: jest.fn(() => ({ type: 'keys/addKeyIntoList' })),
 }))
 
 const mockLoad = jest.fn()
@@ -217,7 +217,9 @@ describe('AddKeyVectorSet', () => {
       await waitFor(() =>
         expect(mockLoad).toHaveBeenCalledWith(expect.anything(), 'vec2word'),
       )
-      expect(loadKeys).toHaveBeenCalled()
+      expect(addKeyIntoList).toHaveBeenCalledWith(
+        expect.objectContaining({ key: stringToBuffer('vec2word') }),
+      )
       expectMessageDispatched('Sample vector set added')
       expect(onCancel).toHaveBeenCalled()
       expect(addVectorSetKey).not.toHaveBeenCalled()
