@@ -2,13 +2,10 @@ name: ✅ Tests
 
 on:
   push:
-    branches:
-      - 'fe/**'
-      - 'be/**'
-      - 'fe-be/**'
-      - 'feature/**'
-      - 'bugfix/**'
-      - 'ric/**'
+    branches-ignore:
+      - main
+      - latest
+      - 'release/**'
   pull_request:
     types: [labeled]
 
@@ -89,9 +86,6 @@ jobs:
           PRERELEASE_CONDITION: ${{ inputs.pre_release == true }}
         run: |
           OTHER_CONDITIONS="${{ github.event_name == 'workflow_dispatch' ||
-              startsWith(github.ref_name, 'feature/') ||
-              startsWith(github.ref_name, 'bugfix/') ||
-              startsWith(github.ref_name, 'ric/') ||
               startsWith(github.ref_name, 'release/') ||
               github.ref_name == 'latest' ||
               contains(github.event.pull_request.labels.*.name, 'run-all-tests') }}"
@@ -128,8 +122,7 @@ jobs:
     needs: [changes, lint, type-check, should-run-all-tests]
     if: |
       needs.should-run-all-tests.outputs.result == 'true' ||
-      startsWith(github.ref_name, 'fe/') ||
-      startsWith(github.ref_name, 'fe-be/') ||
+      needs.changes.outputs.frontend == 'true' ||
       contains(github.event.pull_request.labels.*.name, 'run-frontend-tests')
     uses: ./.github/workflows/tests-frontend.yml
     secrets: inherit
@@ -146,8 +139,7 @@ jobs:
     needs: [changes, lint, type-check, should-run-all-tests]
     if: |
       needs.should-run-all-tests.outputs.result == 'true' ||
-      startsWith(github.ref_name, 'be/') ||
-      startsWith(github.ref_name, 'fe-be/') ||
+      needs.changes.outputs.backend == 'true' ||
       contains(github.event.pull_request.labels.*.name, 'run-backend-tests')
     uses: ./.github/workflows/tests-backend.yml
     secrets: inherit
@@ -164,8 +156,7 @@ jobs:
     needs: [changes, lint, type-check, should-run-all-tests]
     if: |
       needs.should-run-all-tests.outputs.result == 'true' ||
-      startsWith(github.ref_name, 'be/') ||
-      startsWith(github.ref_name, 'fe-be/') ||
+      needs.changes.outputs.backend == 'true' ||
       contains(github.event.pull_request.labels.*.name, 'run-integration-tests')
     uses: ./.github/workflows/tests-integration.yml
     secrets: inherit
