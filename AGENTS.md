@@ -77,13 +77,18 @@ yarn lint              # All code
 yarn lint:ui           # Frontend only
 yarn lint:api          # Backend only
 
-# Type checking
-yarn type-check:ui     # Frontend TypeScript
+# Type checking (compares against .tscheck.rec.json baselines for ui/api/desktop + configs)
+yarn type-check
+
+# Refresh baselines after intentionally adding or fixing TS errors (do not run casually)
+yarn tscheck
 
 # Tests
 yarn test              # Frontend tests
 yarn test:api          # Backend tests
 ```
+
+`yarn type-check` is the gate — CI fails if any (file × error-code) TS-error count increases. If you intentionally changed TS-error counts, run `yarn tscheck` to refresh the baselines and commit the updated `.tscheck.rec.json` files. See `.ai/skills/type-check-baselines/SKILL.md` for details (including the `yarn tscheck:force` escape hatch).
 
 **Fix any linting errors, type errors, or test failures before committing.**
 
@@ -97,6 +102,7 @@ All detailed development standards are maintained in `.ai/rules/`:
 - **Commits**: `.ai/skills/commits/SKILL.md` - Commit message guidelines
 - **Pull Requests**: `.ai/skills/pull-requests/SKILL.md` - PR process and review guidelines
 - **Feature Flags**: `.ai/skills/feature-flags/SKILL.md` - Adding, promoting, and removing feature flags
+- **TS Error Baselines**: `.ai/skills/type-check-baselines/SKILL.md` - Running and refreshing TypeScript error baselines
 - **Redis UI Components**: `.ai/skills/redis-ui-components/SKILL.md` - Component API references, props, and usage examples (from `@redis-ui/components` package)
 
 **Refer to these files for comprehensive guidelines on each topic.**
