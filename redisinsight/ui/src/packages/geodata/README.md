@@ -14,9 +14,9 @@ The map views require `WITHCOORD` in command output. The inspector can render sc
 
 ## Tile Policy
 
-The plugin loads OSM tiles by default; provider is configurable in `public/config.json`; fallback renders unavailable state.
+The plugin loads OSM tiles from the runtime default config; fallback renders unavailable state.
 
-The tile provider is declared in `public/config.json` and mirrored in the runtime default config. For an official upstream PR, maintainers may still require this to be disabled or replaced by a Redis-approved tile backend.
+For an official upstream PR, maintainers may still require the default tile provider to be disabled or replaced by a Redis-approved tile backend.
 
 ## Development
 

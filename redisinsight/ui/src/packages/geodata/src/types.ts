@@ -185,8 +185,4 @@ export interface GeoConfig {
     attribution: string
     maxZoom?: number
   }
-  limits: {
-    maxMapPoints: number
-    maxTableRows: number
-  }
 }
