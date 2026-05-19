@@ -63,7 +63,10 @@ jobs:
       - uses: dorny/paths-filter@v4.0.1
         id: filter
         with:
-          base: ${{ github.ref }}
+          # Compare against main so each push's gating reflects the
+          # cumulative branch diff, not just the latest commit. Keeps
+          # the merge-gate aligned with what would actually land.
+          base: main
           filters: |
             frontend:
               - 'redisinsight/ui/**'
