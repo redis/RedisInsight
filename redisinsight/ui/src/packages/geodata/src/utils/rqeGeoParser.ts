@@ -479,7 +479,7 @@ const parseRqeRows = (
   }
 }
 
-const parseCoordinateString = (value: string): GeoPointResult['lon' | 'lat'][] | null => {
+const parseCoordinateString = (value: string): number[] | null => {
   const parts = value.split(',').map((part) => Number(part.trim()))
   if (parts.length !== 2 || !parts.every(Number.isFinite)) {
     return null
