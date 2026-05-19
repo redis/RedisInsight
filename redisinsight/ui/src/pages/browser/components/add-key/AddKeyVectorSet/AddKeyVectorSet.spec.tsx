@@ -7,7 +7,7 @@ import {
   screen,
   waitFor,
 } from 'uiSrc/utils/test-utils'
-import { addVectorSetKey } from 'uiSrc/slices/browser/keys'
+import { addVectorSetKey, loadKeys } from 'uiSrc/slices/browser/keys'
 import { stringToBuffer } from 'uiSrc/utils'
 import { FP32_VECTOR_FIXTURE_1_2_3 } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
 import { bulkActionOverviewFactory } from 'uiSrc/mocks/factories/browser/bulkActions/bulkActionOverview.factory'
@@ -17,6 +17,7 @@ import { Props } from './AddKeyVectorSet.types'
 jest.mock('uiSrc/slices/browser/keys', () => ({
   ...jest.requireActual('uiSrc/slices/browser/keys'),
   addVectorSetKey: jest.fn(() => ({ type: 'keys/addVectorSetKey' })),
+  loadKeys: jest.fn(() => ({ type: 'keys/loadKeys' })),
 }))
 
 const mockLoad = jest.fn()
@@ -203,7 +204,7 @@ describe('AddKeyVectorSet', () => {
         }),
       )
 
-    it('on submit calls useLoadData.load with vec2word and closes the dialog on success', async () => {
+    it('on submit calls useLoadData.load with vec2word, refreshes the keys list, surfaces a success toast and closes the dialog', async () => {
       mockLoad.mockResolvedValue(bulkActionOverviewFactory.build())
       const onCancel = jest.fn()
       renderComponent({ onCancel })
@@ -216,6 +217,8 @@ describe('AddKeyVectorSet', () => {
       await waitFor(() =>
         expect(mockLoad).toHaveBeenCalledWith(expect.anything(), 'vec2word'),
       )
+      expect(loadKeys).toHaveBeenCalled()
+      expectMessageDispatched('Sample dataset loaded')
       expect(onCancel).toHaveBeenCalled()
       expect(addVectorSetKey).not.toHaveBeenCalled()
     })

@@ -45,6 +45,13 @@ export const loadSampleDatasetFailedNotification = () => ({
   variant: 'danger' as ToastVariant,
 })
 
+/** Green success toast shown after the bulk-import POST for `vec2word` succeeds. */
+export const sampleDatasetLoadedNotification = () => ({
+  title: 'Sample dataset loaded',
+  message: `The '${VEC2WORD_COLLECTION_NAME}' vector set is ready to query.`,
+  showCloseButton: false,
+})
+
 /**
  * Toast shown when the user clicks "Add key" in sample-dataset mode but the
  * target key already exists. We can only verify the key is present — not

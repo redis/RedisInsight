@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toNumber } from 'lodash'
 
 import { stringToBuffer } from 'uiSrc/utils'
-import { addKeyStateSelector, addVectorSetKey } from 'uiSrc/slices/browser/keys'
+import {
+  addKeyStateSelector,
+  addVectorSetKey,
+  loadKeys,
+} from 'uiSrc/slices/browser/keys'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { CreateVectorSetWithExpireDto } from 'uiSrc/slices/interfaces/vectorSet'
@@ -30,6 +34,7 @@ import LoadSampleDataset, {
   checkVec2WordExists,
   keyAlreadyExistsNotification,
   loadSampleDatasetFailedNotification,
+  sampleDatasetLoadedNotification,
 } from './LoadSampleDataset'
 import { POPULATE_LABEL, POPULATE_OPTIONS, PopulateMode } from './constants'
 import { Props } from './AddKeyVectorSet.types'
@@ -107,6 +112,10 @@ const AddKeyVectorSet = ({
         return
       }
       await loadSampleDataset(instanceId, VEC2WORD_COLLECTION_NAME)
+      // Refresh the Browser keys list so the new key shows up immediately,
+      // then surface a green success toast.
+      dispatch(loadKeys())
+      dispatch(addMessageNotification(sampleDatasetLoadedNotification()))
       onCancel()
     } catch {
       dispatch(addMessageNotification(loadSampleDatasetFailedNotification()))
