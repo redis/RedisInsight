@@ -788,6 +788,11 @@ describe('VectorSetService', () => {
     );
 
     beforeEach(() => {
+      // Default to "WITHATTRIBS supported" (Redis ≥ 8.0.3) so the canonical
+      // path is exercised here; the dedicated 8.0.0–8.0.2 fallback block
+      // below overrides this per-test.
+      client.isFeatureSupported = jest.fn().mockResolvedValue(true);
+
       when(client.sendCommand)
         .calledWith([
           BrowserToolKeysCommands.Exists,
@@ -1056,9 +1061,141 @@ describe('VectorSetService', () => {
         ),
       ).rejects.toThrow(ForbiddenException);
     });
+
+    describe('Redis 8.0.0–8.0.2 (WITHATTRIBS unsupported) fallback', () => {
+      beforeEach(() => {
+        client.isFeatureSupported = jest.fn().mockResolvedValue(false);
+      });
+
+      it('should check the VsimWithAttribs feature before issuing VSIM', async () => {
+        const expectedCommand = buildVsimByElementCommand(
+          mockSearchByElementDto,
+          { withAttribs: false },
+        );
+        when(client.sendCommand)
+          .calledWith(expectedCommand)
+          .mockResolvedValue([]);
+
+        await service.similaritySearch(
+          mockBrowserClientMetadata,
+          mockSearchByElementDto,
+        );
+
+        expect(client.isFeatureSupported).toHaveBeenCalledWith(
+          RedisFeature.VsimWithAttribs,
+        );
+      });
+
+      it('should omit WITHATTRIBS from the VSIM command and back-fill attributes via VGETATTR pipeline', async () => {
+        const expectedCommand = buildVsimByElementCommand(
+          mockSearchByElementDto,
+          { withAttribs: false },
+        );
+        // Stride-2 reply (no attributes inline)
+        when(client.sendCommand)
+          .calledWith(expectedCommand)
+          .mockResolvedValue([
+            SEARCH_VSIM_MATCH_NAME_1,
+            '0.95',
+            SEARCH_VSIM_MATCH_NAME_2,
+            '0.81',
+          ]);
+
+        client.sendPipeline.mockResolvedValue([
+          [null, SEARCH_VSIM_MATCH_ATTRIBUTES_1],
+          [null, null],
+        ]);
+
+        const result = await service.similaritySearch(
+          mockBrowserClientMetadata,
+          mockSearchByElementDto,
+        );
+
+        expect(client.sendCommand).toHaveBeenCalledWith(expectedCommand);
+        expect(client.sendPipeline).toHaveBeenCalledWith([
+          [
+            BrowserToolVectorSetCommands.VGetAttr,
+            mockSearchByElementDto.keyName,
+            SEARCH_VSIM_MATCH_NAME_1,
+          ],
+          [
+            BrowserToolVectorSetCommands.VGetAttr,
+            mockSearchByElementDto.keyName,
+            SEARCH_VSIM_MATCH_NAME_2,
+          ],
+        ]);
+        expect(result.elements).toEqual([
+          {
+            name: SEARCH_VSIM_MATCH_NAME_1,
+            score: 0.95,
+            attributes: SEARCH_VSIM_MATCH_ATTRIBUTES_1,
+          },
+          { name: SEARCH_VSIM_MATCH_NAME_2, score: 0.81 },
+        ]);
+        expect('attributes' in result.elements[1]).toBe(false);
+      });
+
+      it('should not issue any VGETATTR pipeline when VSIM returns no matches', async () => {
+        const expectedCommand = buildVsimByElementCommand(
+          mockSearchByElementDto,
+          { withAttribs: false },
+        );
+        when(client.sendCommand)
+          .calledWith(expectedCommand)
+          .mockResolvedValue([]);
+
+        const result = await service.similaritySearch(
+          mockBrowserClientMetadata,
+          mockSearchByElementDto,
+        );
+
+        expect(client.sendPipeline).not.toHaveBeenCalled();
+        expect(result.elements).toEqual([]);
+      });
+
+      it('should swallow per-element VGETATTR errors and leave attributes undefined for that match', async () => {
+        const expectedCommand = buildVsimByElementCommand(
+          mockSearchByElementDto,
+          { withAttribs: false },
+        );
+        when(client.sendCommand)
+          .calledWith(expectedCommand)
+          .mockResolvedValue([
+            SEARCH_VSIM_MATCH_NAME_1,
+            '0.95',
+            SEARCH_VSIM_MATCH_NAME_2,
+            '0.81',
+          ]);
+
+        const replyError: ReplyError = {
+          ...mockRedisNoPermError,
+          command: 'VGETATTR',
+        };
+        client.sendPipeline.mockResolvedValue([
+          [null, SEARCH_VSIM_MATCH_ATTRIBUTES_1],
+          [replyError, null],
+        ]);
+
+        const result = await service.similaritySearch(
+          mockBrowserClientMetadata,
+          mockSearchByElementDto,
+        );
+
+        expect(result.elements[0].attributes).toEqual(
+          SEARCH_VSIM_MATCH_ATTRIBUTES_1,
+        );
+        expect(result.elements[1].attributes).toBeUndefined();
+      });
+    });
   });
 
   describe('getSimilaritySearchPreview', () => {
+    beforeEach(() => {
+      // Default to "WITHATTRIBS supported" so the canonical preview shape is
+      // exercised; the dedicated fallback test below overrides this.
+      client.isFeatureSupported = jest.fn().mockResolvedValue(true);
+    });
+
     it('should render VSIM preview with ELE clause and quote element when needed', async () => {
       const dto = {
         keyName: Buffer.from('mykey'),
@@ -1165,6 +1302,24 @@ describe('VectorSetService', () => {
           count: 10,
         }),
       ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should omit WITHATTRIBS in the preview on Redis 8.0.0–8.0.2 (WITHATTRIBS unsupported)', async () => {
+      client.isFeatureSupported = jest.fn().mockResolvedValue(false);
+
+      const { preview } = await service.getSimilaritySearchPreview(
+        mockBrowserClientMetadata,
+        {
+          keyName: Buffer.from('mykey'),
+          elementName: Buffer.from('seed'),
+          count: 5,
+        },
+      );
+
+      expect(client.isFeatureSupported).toHaveBeenCalledWith(
+        RedisFeature.VsimWithAttribs,
+      );
+      expect(preview).toBe('VSIM mykey ELE seed COUNT 5 WITHSCORES');
     });
   });
 });
