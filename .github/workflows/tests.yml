@@ -59,6 +59,7 @@ jobs:
       frontend: ${{ steps.filter.outputs.frontend }}
       backend: ${{ steps.filter.outputs.backend }}
       desktop: ${{ steps.filter.outputs.desktop }}
+      docker: ${{ steps.filter.outputs.docker }}
     steps:
       - uses: actions/checkout@v6
       - uses: dorny/paths-filter@v4.0.1
@@ -72,6 +73,10 @@ jobs:
               - 'redisinsight/api/**'
             desktop:
               - 'redisinsight/desktop/**'
+            docker:
+              - 'Dockerfile*'
+              - '.dockerignore'
+              - '*docker*.sh'
 
   # Check common conditions that trigger all test suites
   should-run-all-tests:
@@ -111,6 +116,12 @@ jobs:
     secrets: inherit
 
   docker-build:
+    needs: [changes, should-run-all-tests]
+    if: |
+      needs.should-run-all-tests.outputs.result == 'true' ||
+      needs.changes.outputs.frontend == 'true' ||
+      needs.changes.outputs.backend == 'true' ||
+      needs.changes.outputs.docker == 'true'
     uses: ./.github/workflows/docker-build.yml
 
   frontend-tests:
