@@ -304,7 +304,7 @@
     "react-dom": "^18.2.0",
     "react-focus-on": "^3.9.4",
     "react-hotkeys-hook": "^3.3.1",
-    "react-jsx-parser": "^1.28.4",
+    "react-jsx-parser": "^2.4.1",
     "react-monaco-editor": "^0.59.0",
     "react-redux": "^7.2.2",
     "react-resizable-panels": "^3.0.2",
