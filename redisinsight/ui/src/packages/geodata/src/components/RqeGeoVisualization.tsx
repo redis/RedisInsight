@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import { GeoHeader } from './GeoHeader'
 import { GeoPlot } from './GeoPlot'
@@ -70,10 +70,7 @@ const getPointRows = (points: GeoPointResult[]) =>
 const getShapeRows = (shapes: GeoShapeResult[]) =>
   shapes.map((shape) => [shape.name, shape.id, shape.field, shape.wkt])
 
-const renderSummary = (
-  command: ParsedRqeGeoCommand,
-  rowCount: number,
-) => {
+const renderSummary = (command: ParsedRqeGeoCommand, rowCount: number) => {
   const overlayValue =
     command.overlay.type === 'radius'
       ? `${command.overlay.radius} ${command.overlay.unit}`
@@ -112,23 +109,65 @@ export const RqeGeoVisualization = ({
   mode,
 }: RqeGeoVisualizationProps) => {
   const title = getTitle(mode)
-  const parsedCommand = parseRqeGeoCommand(command)
+  const parsedCommand = useMemo(() => parseRqeGeoCommand(command), [command])
+  const parsedResults = useMemo(
+    () =>
+      parsedCommand.ok
+        ? parseRqeGeoResults(response, parsedCommand.value)
+        : null,
+    [parsedCommand, response],
+  )
+  const pointRows = useMemo(
+    () => (parsedResults?.ok ? getPointRows(parsedResults.value.points) : []),
+    [parsedResults],
+  )
+  const shapeRows = useMemo(
+    () => (parsedResults?.ok ? getShapeRows(parsedResults.value.shapes) : []),
+    [parsedResults],
+  )
+  const nativeGeoCommand = useMemo<ParsedGeoCommand>(
+    () =>
+      parsedCommand.ok
+        ? toNativeGeoCommand(parsedCommand.value)
+        : {
+            command: 'GEOSEARCH',
+            kind: 'searchResults',
+            rawTokens: [],
+            searchType: 'unknown',
+            withCoord: true,
+          },
+    [parsedCommand],
+  )
+  const mapPoints = useMemo(
+    () =>
+      parsedResults?.ok
+        ? parsedResults.value.points.map((point) => ({
+            name: point.name,
+            lon: point.lon,
+            lat: point.lat,
+          }))
+        : [],
+    [parsedResults],
+  )
 
   if (!parsedCommand.ok) {
     return (
       <div className="geodata-shell">
         <GeoHeader title={title} status={status} resultCount={0} />
-        <Message title="Cannot inspect RQE geo command">{parsedCommand.error}</Message>
+        <Message title="Cannot inspect RQE geo command">
+          {parsedCommand.error}
+        </Message>
       </div>
     )
   }
 
-  const parsedResults = parseRqeGeoResults(response, parsedCommand.value)
-  if (!parsedResults.ok) {
+  if (!parsedResults?.ok) {
     return (
       <div className="geodata-shell">
         <GeoHeader title={title} status={status} resultCount={0} />
-        <Message title={`Cannot render ${mode === 'shape' ? 'RQE geo shape' : 'RQE geo map'}`}>
+        <Message
+          title={`Cannot render ${mode === 'shape' ? 'RQE geo shape' : 'RQE geo map'}`}
+        >
           {parsedResults.error}
         </Message>
       </div>
@@ -144,11 +183,14 @@ export const RqeGeoVisualization = ({
           <Message>No geospatial shapes returned.</Message>
         ) : (
           <>
-            <GeoShapePlot shapes={shapes} overlay={parsedCommand.value.overlay} />
+            <GeoShapePlot
+              shapes={shapes}
+              overlay={parsedCommand.value.overlay}
+            />
             {renderSummary(parsedCommand.value, shapes.length)}
             <GeoTable
               columns={['Name', 'ID', 'Field', 'WKT']}
-              rows={getShapeRows(shapes)}
+              rows={shapeRows}
             />
           </>
         )}
@@ -168,14 +210,11 @@ export const RqeGeoVisualization = ({
         {points.length > 0 && (
           <GeoTable
             columns={['Name', 'ID', 'Field', 'Longitude', 'Latitude']}
-            rows={getPointRows(points)}
+            rows={pointRows}
           />
         )}
         {shapes.length > 0 && (
-          <GeoTable
-            columns={['Name', 'ID', 'Field', 'WKT']}
-            rows={getShapeRows(shapes)}
-          />
+          <GeoTable columns={['Name', 'ID', 'Field', 'WKT']} rows={shapeRows} />
         )}
       </div>
     )
@@ -188,18 +227,10 @@ export const RqeGeoVisualization = ({
         <Message>No geospatial rows returned.</Message>
       ) : (
         <>
-          <GeoPlot
-            mode={mode}
-            results={points.map((point) => ({
-              name: point.name,
-              lon: point.lon,
-              lat: point.lat,
-            }))}
-            command={toNativeGeoCommand(parsedCommand.value)}
-          />
+          <GeoPlot mode={mode} results={mapPoints} command={nativeGeoCommand} />
           <GeoTable
             columns={['Name', 'ID', 'Field', 'Longitude', 'Latitude']}
-            rows={getPointRows(points)}
+            rows={pointRows}
           />
         </>
       )}
