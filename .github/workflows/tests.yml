@@ -87,6 +87,7 @@ jobs:
         run: |
           OTHER_CONDITIONS="${{ github.event_name == 'workflow_dispatch' ||
               startsWith(github.ref_name, 'release/') ||
+              startsWith(github.ref_name, 'ric/') ||
               github.ref_name == 'latest' ||
               contains(github.event.pull_request.labels.*.name, 'run-all-tests') }}"
 
