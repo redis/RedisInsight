@@ -162,7 +162,7 @@ const AddKeyVectorSet = ({
         <FormField label={POPULATE_LABEL}>
           <RiRadioGroupRoot
             value={populateMode}
-            onChange={(value) => setPopulateMode(value)}
+            onChange={(value: PopulateMode) => setPopulateMode(value)}
             data-testid="add-key-vector-set-populate"
           >
             <S.RadioCardList gap="m">
