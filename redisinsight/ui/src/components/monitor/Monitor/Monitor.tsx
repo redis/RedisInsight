@@ -6,12 +6,12 @@ import { IMonitorDataPayload } from 'uiSrc/slices/interfaces'
 
 import { RiTooltip } from 'uiSrc/components'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { ColorText, Text, Title } from 'uiSrc/components/base/text'
 import { SwitchInput } from 'uiSrc/components/base/inputs'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import MonitorLog from '../MonitorLog'
 import MonitorOutputList from '../MonitorOutputList'
+import ProfilerStartButton from '../ProfilerStartButton'
 
 import ProfilerImage from 'uiSrc/assets/img/profiler/magnifier.svg'
 
@@ -75,15 +75,9 @@ const Monitor = (props: Props) => {
         </Text>
 
         <div>
-          <RiTooltip content="Enable real-time profiling of your Redis database.">
-            <PrimaryButton
-              onClick={() => handleRunMonitor(saveLogValue)}
-              aria-label="start monitor"
-              data-testid="start-monitor"
-            >
-              Start Profiler
-            </PrimaryButton>
-          </RiTooltip>
+          <ProfilerStartButton
+            onStart={() => handleRunMonitor(saveLogValue)}
+          />
         </div>
 
         <div data-testid="save-log-container">
