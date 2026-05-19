@@ -2,7 +2,7 @@ import React from 'react'
 import { render, screen } from 'uiSrc/utils/test-utils'
 
 import LoadSampleDataset from './LoadSampleDataset'
-import { VEC2WORD_INFO, VEC2WORD_PREVIEW } from './constants'
+import { VEC2WORD_INFO, VEC2WORD_PREVIEW } from './data'
 
 describe('LoadSampleDataset', () => {
   it('renders all hardcoded preview rows and info pairs', () => {

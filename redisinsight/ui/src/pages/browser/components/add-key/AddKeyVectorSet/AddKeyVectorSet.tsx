@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from 'react'
+import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toNumber } from 'lodash'
 
@@ -52,8 +52,18 @@ const AddKeyVectorSet = ({
   const { loading } = useSelector(addKeyStateSelector)
   const { id: instanceId } = useSelector(connectedInstanceSelector)
 
-  const [populateMode, setPopulateMode] = useState<string>(PopulateMode.Manual)
+  const [populateMode, setPopulateMode] = useState<PopulateMode>(
+    PopulateMode.Manual,
+  )
   const isSampleMode = populateMode === PopulateMode.Sample
+  // Local gate covering the *entire* sample-dataset submit flow — including
+  // the `checkVec2WordExists` preflight, which runs before `useLoadData`'s
+  // own `loading` flag flips. The state drives the button's `disabled` /
+  // `loading` props for rendering; the ref short-circuits synchronous
+  // double-clicks that fire before React flushes the state update.
+  const [isSubmittingSampleDataset, setIsSubmittingSampleDataset] =
+    useState(false)
+  const isSubmittingSampleDatasetRef = useRef(false)
 
   // Drive the parent-owned key-name input from the populate-mode toggle:
   // Sample → fixed `vec2word` (the bundled-file key), input locked; Manual →
@@ -74,8 +84,7 @@ const AddKeyVectorSet = ({
     }
   }, [isSampleMode, setKeyName, setKeyNameDisabled])
 
-  const { load: loadSampleDataset, loading: isLoadingSampleDataset } =
-    useLoadData()
+  const { load: loadSampleDataset } = useLoadData()
 
   const handleSubmit = (elements: SubmitElement[]) => {
     const data: CreateVectorSetWithExpireDto = {
@@ -91,10 +100,7 @@ const AddKeyVectorSet = ({
 
   const formApi = useVectorSetElementForm({ onSubmit: handleSubmit })
 
-  const [isKeyNameValid, setIsKeyNameValid] = useState<boolean>(false)
-  useEffect(() => {
-    setIsKeyNameValid(`${keyName}`.length > 0)
-  }, [keyName])
+  const isKeyNameValid = `${keyName}`.length > 0
 
   // Sample mode bypasses the manual-entry form fields entirely — the keyName
   // and per-element values are dictated by the bundled data file.
@@ -103,6 +109,9 @@ const AddKeyVectorSet = ({
     : isKeyNameValid && formApi.isFormValid
 
   const submitSampleDataset = async () => {
+    if (isSubmittingSampleDatasetRef.current) return
+    isSubmittingSampleDatasetRef.current = true
+    setIsSubmittingSampleDataset(true)
     try {
       // Mirror vector-search's "already exists" branch: if `vec2word` is
       // already in the database, skip the bulk-import and surface an info
@@ -126,6 +135,9 @@ const AddKeyVectorSet = ({
       onCancel()
     } catch {
       dispatch(addMessageNotification(loadSampleDatasetFailedNotification()))
+    } finally {
+      isSubmittingSampleDatasetRef.current = false
+      setIsSubmittingSampleDataset(false)
     }
   }
 
@@ -196,8 +208,8 @@ const AddKeyVectorSet = ({
         onCancel={() => onCancel(true)}
         onAction={onClickAction}
         actionText="Add Key"
-        loading={loading || isLoadingSampleDataset}
-        disabled={!isFormValid}
+        loading={loading || isSubmittingSampleDataset}
+        disabled={!isFormValid || isSubmittingSampleDataset}
         actionTestId="add-key-vector-set-btn"
       />
     </form>

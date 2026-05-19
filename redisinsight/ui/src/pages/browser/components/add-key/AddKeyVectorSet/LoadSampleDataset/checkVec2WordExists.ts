@@ -4,7 +4,7 @@ import { apiService } from 'uiSrc/services'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { getUrl, stringToBuffer } from 'uiSrc/utils'
 
-import { VEC2WORD_COLLECTION_NAME } from './constants'
+import { VEC2WORD_COLLECTION_NAME } from './data'
 
 /**
  * Pre-flight check: does the `vec2word` key already exist in the connected

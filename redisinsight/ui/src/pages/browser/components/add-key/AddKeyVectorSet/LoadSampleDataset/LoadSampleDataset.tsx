@@ -3,7 +3,7 @@ import React from 'react'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 
-import { VEC2WORD_INFO, VEC2WORD_PREVIEW } from './constants'
+import { VEC2WORD_INFO, VEC2WORD_PREVIEW } from './data'
 import * as S from './LoadSampleDataset.styles'
 
 const LoadSampleDataset = () => (

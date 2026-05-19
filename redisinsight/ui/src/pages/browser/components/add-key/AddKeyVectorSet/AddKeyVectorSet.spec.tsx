@@ -240,6 +240,41 @@ describe('AddKeyVectorSet', () => {
       expect(onCancel).toHaveBeenCalled()
     })
 
+    it('ignores extra clicks while the preflight checkVec2WordExists call is still in flight', async () => {
+      // Pin the preflight as a deferred promise so we can simulate the
+      // "user clicked twice before the existence check resolved" window.
+      let resolveExists: (value: boolean) => void = () => {}
+      mockCheckVec2WordExists.mockImplementation(
+        () =>
+          new Promise<boolean>((resolve) => {
+            resolveExists = resolve
+          }),
+      )
+      mockLoad.mockResolvedValue(bulkActionOverviewFactory.build())
+      const onCancel = jest.fn()
+      renderComponent({ onCancel })
+      selectSampleMode()
+
+      const submitButton = screen.getByTestId('add-key-vector-set-btn')
+      await act(async () => {
+        fireEvent.click(submitButton)
+        fireEvent.click(submitButton)
+        fireEvent.click(submitButton)
+      })
+
+      expect(mockCheckVec2WordExists).toHaveBeenCalledTimes(1)
+      await waitFor(() => expect(submitButton).toBeDisabled())
+
+      await act(async () => {
+        resolveExists(false)
+      })
+
+      await waitFor(() =>
+        expect(mockLoad).toHaveBeenCalledWith(expect.anything(), 'vec2word'),
+      )
+      expect(mockLoad).toHaveBeenCalledTimes(1)
+    })
+
     it('dispatches the failure toast and keeps the dialog open when load fails', async () => {
       mockLoad.mockRejectedValue(new Error('boom'))
       const onCancel = jest.fn()
