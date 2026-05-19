@@ -161,7 +161,11 @@ export const RqeGeoVisualization = ({
     )
   }
 
-  if (!parsedResults?.ok) {
+  if (parsedResults === null) {
+    return null
+  }
+
+  if (!parsedResults.ok) {
     return (
       <div className="geodata-shell">
         <GeoHeader title={title} status={status} resultCount={0} />
