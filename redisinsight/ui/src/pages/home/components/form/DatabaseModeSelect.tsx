@@ -2,7 +2,7 @@ import React from 'react'
 import { FormikProps } from 'formik'
 
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { DatabaseModeValue } from 'uiSrc/slices/interfaces'
+import { DatabaseMode } from 'apiClient'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
@@ -14,10 +14,10 @@ export interface Props {
   formik: FormikProps<DbConnectionInfo>
 }
 
-const options: { value: DatabaseModeValue; label: string }[] = [
-  { value: 'unmarked', label: 'Unmarked' },
-  { value: 'production', label: 'Production' },
-  { value: 'fast', label: 'Fast' },
+const options: { value: DatabaseMode; label: string }[] = [
+  { value: DatabaseMode.Unmarked, label: 'Unmarked' },
+  { value: DatabaseMode.Production, label: 'Production' },
+  { value: DatabaseMode.Fast, label: 'Fast' },
 ]
 
 const DatabaseModeLabel = () => (
@@ -49,7 +49,7 @@ const DatabaseModeSelect = (props: Props) => {
         <FormField label={<DatabaseModeLabel />}>
           <RiSelect
             name="databaseMode"
-            value={formik.values.databaseMode ?? 'unmarked'}
+            value={formik.values.databaseMode ?? DatabaseMode.Unmarked}
             options={options}
             onChange={(value) => {
               formik.setFieldValue('databaseMode', value)

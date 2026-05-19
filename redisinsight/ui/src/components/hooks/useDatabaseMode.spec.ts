@@ -4,7 +4,7 @@ import {
   connectedInstanceDangerousCommandsSelector,
   connectedInstanceSelector,
 } from 'uiSrc/slices/instances/instances'
-import { DatabaseModeValue } from 'uiSrc/slices/interfaces'
+import { DatabaseMode } from 'apiClient'
 
 import { useDatabaseMode } from './useDatabaseMode'
 
@@ -28,7 +28,7 @@ const mockedDangerousCommands =
 
 const setMocks = (input: {
   flag: boolean
-  databaseMode: DatabaseModeValue
+  databaseMode: DatabaseMode
   dangerousCommands?: string[]
   connected?: boolean
 }) => {
@@ -43,25 +43,25 @@ const setMocks = (input: {
 describe('useDatabaseMode', () => {
   describe('truth table', () => {
     it('returns disabled when flag is off', () => {
-      setMocks({ flag: false, databaseMode: 'production' })
+      setMocks({ flag: false, databaseMode: DatabaseMode.Production })
       const { result } = renderHook(useDatabaseMode)
       expect(result.current.mode).toBe('disabled')
     })
 
     it('returns production when flag on and connection is marked production', () => {
-      setMocks({ flag: true, databaseMode: 'production' })
+      setMocks({ flag: true, databaseMode: DatabaseMode.Production })
       const { result } = renderHook(useDatabaseMode)
       expect(result.current.mode).toBe('production')
     })
 
     it('returns fast when flag on and connection is marked fast', () => {
-      setMocks({ flag: true, databaseMode: 'fast' })
+      setMocks({ flag: true, databaseMode: DatabaseMode.Fast })
       const { result } = renderHook(useDatabaseMode)
       expect(result.current.mode).toBe('fast')
     })
 
     it('returns unmarked when flag on and connection is unmarked', () => {
-      setMocks({ flag: true, databaseMode: 'unmarked' })
+      setMocks({ flag: true, databaseMode: DatabaseMode.Unmarked })
       const { result } = renderHook(useDatabaseMode)
       expect(result.current.mode).toBe('unmarked')
     })
@@ -71,7 +71,7 @@ describe('useDatabaseMode', () => {
     it('returns false outside production', () => {
       setMocks({
         flag: true,
-        databaseMode: 'unmarked',
+        databaseMode: DatabaseMode.Unmarked,
         dangerousCommands: ['FLUSHDB', 'KEYS'],
       })
       const { result } = renderHook(useDatabaseMode)
@@ -81,7 +81,7 @@ describe('useDatabaseMode', () => {
     it('returns false in fast mode even for known dangerous commands', () => {
       setMocks({
         flag: true,
-        databaseMode: 'fast',
+        databaseMode: DatabaseMode.Fast,
         dangerousCommands: ['FLUSHDB'],
       })
       const { result } = renderHook(useDatabaseMode)
@@ -91,7 +91,7 @@ describe('useDatabaseMode', () => {
     it('matches case-insensitively inside production', () => {
       setMocks({
         flag: true,
-        databaseMode: 'production',
+        databaseMode: DatabaseMode.Production,
         dangerousCommands: ['FLUSHDB', 'KEYS'],
       })
       const { result } = renderHook(useDatabaseMode)
@@ -103,7 +103,7 @@ describe('useDatabaseMode', () => {
     it('returns false for unknown commands inside production', () => {
       setMocks({
         flag: true,
-        databaseMode: 'production',
+        databaseMode: DatabaseMode.Production,
         dangerousCommands: ['FLUSHDB'],
       })
       const { result } = renderHook(useDatabaseMode)
@@ -113,7 +113,7 @@ describe('useDatabaseMode', () => {
     it('handles empty / falsy command string', () => {
       setMocks({
         flag: true,
-        databaseMode: 'production',
+        databaseMode: DatabaseMode.Production,
         dangerousCommands: ['FLUSHDB'],
       })
       const { result } = renderHook(useDatabaseMode)
@@ -123,7 +123,7 @@ describe('useDatabaseMode', () => {
     it('handles a lowercase dangerousCommands list defensively', () => {
       setMocks({
         flag: true,
-        databaseMode: 'production',
+        databaseMode: DatabaseMode.Production,
         dangerousCommands: ['flushdb'],
       })
       const { result } = renderHook(useDatabaseMode)
@@ -135,7 +135,7 @@ describe('useDatabaseMode', () => {
     it('returns disabled and a false isDangerousCommand when no connection is active', () => {
       setMocks({
         flag: true,
-        databaseMode: 'production',
+        databaseMode: DatabaseMode.Production,
         dangerousCommands: ['FLUSHDB'],
         connected: false,
       })

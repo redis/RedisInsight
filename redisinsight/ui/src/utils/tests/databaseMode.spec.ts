@@ -1,27 +1,40 @@
+import { DatabaseMode } from 'apiClient'
 import { getDatabaseMode } from 'uiSrc/utils/databaseMode'
 
 describe('getDatabaseMode', () => {
   it('returns disabled when flag is off regardless of row', () => {
     expect(
-      getDatabaseMode({ databaseMode: 'production' }, { flagEnabled: false }),
+      getDatabaseMode(
+        { databaseMode: DatabaseMode.Production },
+        { flagEnabled: false },
+      ),
     ).toBe('disabled')
   })
 
   it('returns production when flag on and row is production', () => {
     expect(
-      getDatabaseMode({ databaseMode: 'production' }, { flagEnabled: true }),
+      getDatabaseMode(
+        { databaseMode: DatabaseMode.Production },
+        { flagEnabled: true },
+      ),
     ).toBe('production')
   })
 
   it('returns fast when flag on and row is fast', () => {
     expect(
-      getDatabaseMode({ databaseMode: 'fast' }, { flagEnabled: true }),
+      getDatabaseMode(
+        { databaseMode: DatabaseMode.Fast },
+        { flagEnabled: true },
+      ),
     ).toBe('fast')
   })
 
   it('returns unmarked when flag on and row is unmarked', () => {
     expect(
-      getDatabaseMode({ databaseMode: 'unmarked' }, { flagEnabled: true }),
+      getDatabaseMode(
+        { databaseMode: DatabaseMode.Unmarked },
+        { flagEnabled: true },
+      ),
     ).toBe('unmarked')
   })
 

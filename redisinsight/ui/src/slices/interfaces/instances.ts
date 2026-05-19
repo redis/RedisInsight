@@ -56,17 +56,8 @@ export interface Instance extends Partial<DatabaseInstanceResponse> {
   visible?: boolean
   loading?: boolean
   isFreeDb?: boolean
-  databaseMode?: DatabaseModeValue
   tags?: Tag[]
 }
-
-export type DatabaseModeValue = 'unmarked' | 'production' | 'fast'
-
-export const DATABASE_MODE_VALUES: DatabaseModeValue[] = [
-  'unmarked',
-  'production',
-  'fast',
-]
 
 export interface AdditionalRedisModule {
   name: string
