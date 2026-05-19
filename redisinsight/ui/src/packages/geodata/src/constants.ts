@@ -10,10 +10,6 @@ export const DEFAULT_GEO_CONFIG: GeoConfig = {
     attribution: 'OpenStreetMap contributors',
     maxZoom: 19,
   },
-  limits: {
-    maxMapPoints: 5000,
-    maxTableRows: 10000,
-  },
 }
 
 export const MAP_FIT_BOUNDS_PADDING_RATIO = 0.32
