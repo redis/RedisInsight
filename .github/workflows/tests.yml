@@ -111,6 +111,11 @@ jobs:
     secrets: inherit
 
   docker-build:
+    needs: [changes, should-run-all-tests]
+    if: |
+      needs.should-run-all-tests.outputs.result == 'true' ||
+      needs.changes.outputs.frontend == 'true' ||
+      needs.changes.outputs.backend == 'true'
     uses: ./.github/workflows/docker-build.yml
 
   frontend-tests:
