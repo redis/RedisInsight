@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import { GeoHeader } from './GeoHeader'
 import { GeoPlot } from './GeoPlot'
@@ -19,8 +19,28 @@ export const GeoSearchVisualization = ({
   status,
   mode,
 }: GeoSearchVisualizationProps) => {
-  const parsedCommand = parseSearchParams(command)
+  const parsedCommand = useMemo(() => parseSearchParams(command), [command])
   const title = mode === 'markers' ? 'Geospatial map' : 'Geospatial heatmap'
+  const parsedResults = useMemo(
+    () =>
+      parsedCommand.ok
+        ? parseGeoSearchResults(response, parsedCommand.value)
+        : null,
+    [parsedCommand, response],
+  )
+  const rows = useMemo(
+    () =>
+      parsedResults?.ok
+        ? parsedResults.value.map((result) => [
+            result.name,
+            result.lon,
+            result.lat,
+            result.distance === undefined ? '-' : result.distance,
+            result.hash === undefined ? '-' : result.hash,
+          ])
+        : [],
+    [parsedResults],
+  )
 
   if (!parsedCommand.ok) {
     return (
@@ -31,8 +51,7 @@ export const GeoSearchVisualization = ({
     )
   }
 
-  const parsedResults = parseGeoSearchResults(response, parsedCommand.value)
-  if (!parsedResults.ok) {
+  if (!parsedResults?.ok) {
     return (
       <div className="geodata-shell">
         <GeoHeader title={title} status={status} resultCount={0} />
@@ -49,16 +68,14 @@ export const GeoSearchVisualization = ({
         <Message>No geospatial rows returned.</Message>
       ) : (
         <>
-          <GeoPlot mode={mode} results={results} command={parsedCommand.value} />
+          <GeoPlot
+            mode={mode}
+            results={results}
+            command={parsedCommand.value}
+          />
           <GeoTable
             columns={['Member', 'Longitude', 'Latitude', 'Distance', 'Hash']}
-            rows={results.map((result) => [
-              result.name,
-              result.lon,
-              result.lat,
-              result.distance === undefined ? '-' : result.distance,
-              result.hash === undefined ? '-' : result.hash,
-            ])}
+            rows={rows}
           />
         </>
       )}
