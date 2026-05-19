@@ -7,25 +7,9 @@ Welcome! This short guide explains how to contribute effectively and pass all re
 - If you find a bug, please submit an issue to our GitHub [repository](https://github.com/redis/RedisInsight/issues).
 - Before submitting, search the issue tracker to see if your problem already exists. Existing issues may already have workarounds or ongoing fixes.
 
-## Branch Naming Convention
+## Branches
 
-Use lowercase, kebab-case, and a type prefix:
-
-- `feature/<short-title>`
-- `bugfix/<short-title>`
-
-**Example**: `bugfix/fix-header-alignment`
-
-_Note: It will trigger some CI, like unit tests and lint checks_
-
-For frontend/backend only, prefix with `fe/` or `be/` to trigger fewer checks:
-
-- `fe/feature/<short-title>`
-- `be/bugfix/<short-title>`
-
-**Example**: `be/bugfix/update-databases-api`
-
-_Note: It will trigger only checks related to the back-end_
+Use any short, descriptive branch name. CI decides which suites to run from the diff (the `changes` job in `.github/workflows/tests.yml` uses `dorny/paths-filter` against `redisinsight/ui/`, `redisinsight/api/`, `redisinsight/desktop/`, and Docker files). If automatic detection misses something, apply one of these PR labels to force a suite to run: `run-all-tests`, `run-frontend-tests`, `run-backend-tests`, `run-integration-tests`.
 
 ## Commits
 
@@ -68,16 +52,16 @@ Use the following procedure to submit a pull request:
 
 1. Fork RedisInsight on GitHub (_[How to fork a repo?](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo)_)
 
-2. Create a branch from `main` (see [Branch Naming](#branch-naming-convention))
+2. Create a branch from `main`
 
 ```bash
-git checkout -b bugfix/<short-title>
+git checkout -b <short-title>
 ```
 
 3. Make the changes and push to your branch (see [Commits](#commits))
 
 ```bash
-git push bugfix/<short-title>
+git push origin <short-title>
 ```
 
 4. Initiate a pull request on GitHub (_[How to create a PR?](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request)_)
