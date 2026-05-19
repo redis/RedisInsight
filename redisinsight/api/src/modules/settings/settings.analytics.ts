@@ -114,5 +114,4 @@ export class SettingsAnalytics extends TelemetryBaseService {
       },
     );
   }
-
 }

@@ -27,9 +27,9 @@ const DatabaseModeLabel = () => (
       position="right"
       content={
         <Text>
-          Production adds confirmation friction before risky changes. Fast
-          skips confirmations for trusted dev/test connections. Unmarked uses
-          default behavior.
+          Production adds confirmation friction before risky changes. Fast skips
+          confirmations for trusted dev/test connections. Unmarked uses default
+          behavior.
         </Text>
       }
     >

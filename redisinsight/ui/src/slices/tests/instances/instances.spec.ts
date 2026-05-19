@@ -999,9 +999,7 @@ describe('instances slice', () => {
       const rootState = Object.assign(initialStateDefault, {
         connections: { instances: initialState },
       })
-      expect(connectedInstanceDatabaseModeSelector(rootState)).toBe(
-        'unmarked',
-      )
+      expect(connectedInstanceDatabaseModeSelector(rootState)).toBe('unmarked')
     })
   })
 

@@ -3,19 +3,13 @@ import { getDatabaseMode } from 'uiSrc/utils/databaseMode'
 describe('getDatabaseMode', () => {
   it('returns disabled when flag is off regardless of row', () => {
     expect(
-      getDatabaseMode(
-        { databaseMode: 'production' },
-        { flagEnabled: false },
-      ),
+      getDatabaseMode({ databaseMode: 'production' }, { flagEnabled: false }),
     ).toBe('disabled')
   })
 
   it('returns production when flag on and row is production', () => {
     expect(
-      getDatabaseMode(
-        { databaseMode: 'production' },
-        { flagEnabled: true },
-      ),
+      getDatabaseMode({ databaseMode: 'production' }, { flagEnabled: true }),
     ).toBe('production')
   })
 
