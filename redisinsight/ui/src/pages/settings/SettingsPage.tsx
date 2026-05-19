@@ -37,10 +37,7 @@ import {
   ThemeSettings,
   WorkbenchSettings,
 } from './components'
-import {
-  DateTimeFormatter,
-  SkipConfirmations,
-} from './components/general-settings'
+import { DateTimeFormatter } from './components/general-settings'
 import styles from './styles.module.scss'
 
 const SettingsPage = () => {
@@ -73,7 +70,6 @@ const SettingsPage = () => {
       <Divider />
       <Spacer />
       <DateTimeFormatter />
-      <SkipConfirmations />
     </>
   )
 

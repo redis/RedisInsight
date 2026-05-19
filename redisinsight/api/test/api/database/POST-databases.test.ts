@@ -50,7 +50,9 @@ const dataSchema = Joi.object({
     privateKey: Joi.string().allow(null),
     passphrase: Joi.string().allow(null),
   }).allow(null),
-  isProduction: Joi.boolean().allow(null),
+  databaseMode: Joi.string()
+    .valid('unmarked', 'production', 'fast')
+    .allow(null),
 })
   .messages({
     'any.required': '{#label} should not be empty',
@@ -228,7 +230,7 @@ describe('POST /databases', () => {
           },
         });
       });
-      it('Create standalone with isProduction=true', async () => {
+      it('Create standalone with databaseMode=production', async () => {
         const dbName = constants.getRandomString();
 
         await validateApiCall({
@@ -238,18 +240,37 @@ describe('POST /databases', () => {
             name: dbName,
             host: constants.TEST_REDIS_HOST,
             port: constants.TEST_REDIS_PORT,
-            isProduction: true,
+            databaseMode: 'production',
           },
           responseSchema,
           responseBody: {
             name: dbName,
             host: constants.TEST_REDIS_HOST,
             port: constants.TEST_REDIS_PORT,
-            isProduction: true,
+            databaseMode: 'production',
           },
         });
       });
-      it('Create standalone defaults isProduction to false when omitted', async () => {
+      it('Create standalone with databaseMode=fast', async () => {
+        const dbName = constants.getRandomString();
+
+        await validateApiCall({
+          endpoint,
+          statusCode: 201,
+          data: {
+            name: dbName,
+            host: constants.TEST_REDIS_HOST,
+            port: constants.TEST_REDIS_PORT,
+            databaseMode: 'fast',
+          },
+          responseSchema,
+          responseBody: {
+            name: dbName,
+            databaseMode: 'fast',
+          },
+        });
+      });
+      it('Create standalone defaults databaseMode to unmarked when omitted', async () => {
         const dbName = constants.getRandomString();
 
         await validateApiCall({
@@ -263,7 +284,7 @@ describe('POST /databases', () => {
           responseSchema,
           responseBody: {
             name: dbName,
-            isProduction: false,
+            databaseMode: 'unmarked',
           },
         });
       });

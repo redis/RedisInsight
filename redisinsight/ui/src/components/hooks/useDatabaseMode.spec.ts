@@ -4,7 +4,7 @@ import {
   connectedInstanceDangerousCommandsSelector,
   connectedInstanceSelector,
 } from 'uiSrc/slices/instances/instances'
-import { appSettingsSkipConfirmationsForNonProdSelector } from 'uiSrc/slices/user/user-settings'
+import { DatabaseModeValue } from 'uiSrc/slices/interfaces'
 
 import { useDatabaseMode } from './useDatabaseMode'
 
@@ -17,68 +17,51 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
   ...jest.requireActual('uiSrc/slices/instances/instances'),
   connectedInstanceSelector: jest
     .fn()
-    .mockReturnValue({ id: 'db-1', isProduction: false }),
+    .mockReturnValue({ id: 'db-1', databaseMode: 'unmarked' }),
   connectedInstanceDangerousCommandsSelector: jest.fn().mockReturnValue([]),
-}))
-
-jest.mock('uiSrc/slices/user/user-settings', () => ({
-  ...jest.requireActual('uiSrc/slices/user/user-settings'),
-  appSettingsSkipConfirmationsForNonProdSelector: jest
-    .fn()
-    .mockReturnValue(false),
 }))
 
 const mockedFlag = appFeatureFlagDevProdModeSelector as jest.Mock
 const mockedInstance = connectedInstanceSelector as jest.Mock
 const mockedDangerousCommands =
   connectedInstanceDangerousCommandsSelector as jest.Mock
-const mockedSkipConfirmations =
-  appSettingsSkipConfirmationsForNonProdSelector as jest.Mock
 
 const setMocks = (input: {
   flag: boolean
-  isProduction: boolean
-  skipConfirmations: boolean
+  databaseMode: DatabaseModeValue
   dangerousCommands?: string[]
   connected?: boolean
 }) => {
   mockedFlag.mockReturnValue(input.flag)
-  mockedSkipConfirmations.mockReturnValue(input.skipConfirmations)
   mockedDangerousCommands.mockReturnValue(input.dangerousCommands ?? [])
   mockedInstance.mockReturnValue({
     id: input.connected === false ? '' : 'db-1',
-    isProduction: input.isProduction,
+    databaseMode: input.databaseMode,
   })
 }
 
 describe('useDatabaseMode', () => {
   describe('truth table', () => {
     it('returns disabled when flag is off', () => {
-      setMocks({ flag: false, isProduction: true, skipConfirmations: true })
+      setMocks({ flag: false, databaseMode: 'production' })
       const { result } = renderHook(useDatabaseMode)
       expect(result.current.mode).toBe('disabled')
     })
 
-    it('returns production when flag on and connection is production', () => {
-      setMocks({ flag: true, isProduction: true, skipConfirmations: false })
+    it('returns production when flag on and connection is marked production', () => {
+      setMocks({ flag: true, databaseMode: 'production' })
       const { result } = renderHook(useDatabaseMode)
       expect(result.current.mode).toBe('production')
     })
 
-    it('returns production even when skip-confirmations is on', () => {
-      setMocks({ flag: true, isProduction: true, skipConfirmations: true })
-      const { result } = renderHook(useDatabaseMode)
-      expect(result.current.mode).toBe('production')
-    })
-
-    it('returns fast when flag on, not production, skip-confirmations on', () => {
-      setMocks({ flag: true, isProduction: false, skipConfirmations: true })
+    it('returns fast when flag on and connection is marked fast', () => {
+      setMocks({ flag: true, databaseMode: 'fast' })
       const { result } = renderHook(useDatabaseMode)
       expect(result.current.mode).toBe('fast')
     })
 
-    it('returns unmarked when flag on, not production, skip-confirmations off', () => {
-      setMocks({ flag: true, isProduction: false, skipConfirmations: false })
+    it('returns unmarked when flag on and connection is unmarked', () => {
+      setMocks({ flag: true, databaseMode: 'unmarked' })
       const { result } = renderHook(useDatabaseMode)
       expect(result.current.mode).toBe('unmarked')
     })
@@ -88,8 +71,7 @@ describe('useDatabaseMode', () => {
     it('returns false outside production', () => {
       setMocks({
         flag: true,
-        isProduction: false,
-        skipConfirmations: false,
+        databaseMode: 'unmarked',
         dangerousCommands: ['FLUSHDB', 'KEYS'],
       })
       const { result } = renderHook(useDatabaseMode)
@@ -99,8 +81,7 @@ describe('useDatabaseMode', () => {
     it('returns false in fast mode even for known dangerous commands', () => {
       setMocks({
         flag: true,
-        isProduction: false,
-        skipConfirmations: true,
+        databaseMode: 'fast',
         dangerousCommands: ['FLUSHDB'],
       })
       const { result } = renderHook(useDatabaseMode)
@@ -110,8 +91,7 @@ describe('useDatabaseMode', () => {
     it('matches case-insensitively inside production', () => {
       setMocks({
         flag: true,
-        isProduction: true,
-        skipConfirmations: false,
+        databaseMode: 'production',
         dangerousCommands: ['FLUSHDB', 'KEYS'],
       })
       const { result } = renderHook(useDatabaseMode)
@@ -123,8 +103,7 @@ describe('useDatabaseMode', () => {
     it('returns false for unknown commands inside production', () => {
       setMocks({
         flag: true,
-        isProduction: true,
-        skipConfirmations: false,
+        databaseMode: 'production',
         dangerousCommands: ['FLUSHDB'],
       })
       const { result } = renderHook(useDatabaseMode)
@@ -134,8 +113,7 @@ describe('useDatabaseMode', () => {
     it('handles empty / falsy command string', () => {
       setMocks({
         flag: true,
-        isProduction: true,
-        skipConfirmations: false,
+        databaseMode: 'production',
         dangerousCommands: ['FLUSHDB'],
       })
       const { result } = renderHook(useDatabaseMode)
@@ -145,8 +123,7 @@ describe('useDatabaseMode', () => {
     it('handles a lowercase dangerousCommands list defensively', () => {
       setMocks({
         flag: true,
-        isProduction: true,
-        skipConfirmations: false,
+        databaseMode: 'production',
         dangerousCommands: ['flushdb'],
       })
       const { result } = renderHook(useDatabaseMode)
@@ -158,8 +135,7 @@ describe('useDatabaseMode', () => {
     it('returns disabled and a false isDangerousCommand when no connection is active', () => {
       setMocks({
         flag: true,
-        isProduction: true,
-        skipConfirmations: true,
+        databaseMode: 'production',
         dangerousCommands: ['FLUSHDB'],
         connected: false,
       })

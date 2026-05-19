@@ -70,7 +70,7 @@ import reducer, {
   resetConnectedInstanceDangerousCommands,
   fetchConnectedInstanceDangerousCommandsAction,
   connectedInstanceDangerousCommandsSelector,
-  connectedInstanceIsProductionSelector,
+  connectedInstanceDatabaseModeSelector,
 } from '../../instances/instances'
 import {
   addErrorNotification,
@@ -978,26 +978,30 @@ describe('instances slice', () => {
     })
   })
 
-  describe('connectedInstanceIsProductionSelector', () => {
-    it('returns isProduction from connected instance', () => {
+  describe('connectedInstanceDatabaseModeSelector', () => {
+    it('returns databaseMode from connected instance', () => {
       const nextState = {
         ...initialState,
         connectedInstance: {
           ...initialState.connectedInstance,
-          isProduction: true,
+          databaseMode: 'production',
         },
       }
       const rootState = Object.assign(initialStateDefault, {
         connections: { instances: nextState },
       })
-      expect(connectedInstanceIsProductionSelector(rootState)).toBe(true)
+      expect(connectedInstanceDatabaseModeSelector(rootState)).toBe(
+        'production',
+      )
     })
 
-    it('defaults to false when isProduction is undefined', () => {
+    it('defaults to unmarked when databaseMode is undefined', () => {
       const rootState = Object.assign(initialStateDefault, {
         connections: { instances: initialState },
       })
-      expect(connectedInstanceIsProductionSelector(rootState)).toBe(false)
+      expect(connectedInstanceDatabaseModeSelector(rootState)).toBe(
+        'unmarked',
+      )
     })
   })
 

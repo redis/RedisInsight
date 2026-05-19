@@ -45,12 +45,6 @@ export class SettingsAnalytics extends TelemetryBaseService {
           oldSettings.batchSize,
         );
       }
-      if (has(dif, 'skipConfirmationsForNonProduction')) {
-        this.sendSkipConfirmationsNonProdToggled(
-          sessionMetadata,
-          dif.skipConfirmationsForNonProduction,
-        );
-      }
     } catch (e) {
       // continue regardless of error
     }
@@ -121,16 +115,4 @@ export class SettingsAnalytics extends TelemetryBaseService {
     );
   }
 
-  private sendSkipConfirmationsNonProdToggled(
-    sessionMetadata: SessionMetadata,
-    newValue: boolean,
-  ): void {
-    this.sendEvent(
-      sessionMetadata,
-      TelemetryEvents.SettingsSkipConfirmationsNonProdToggled,
-      {
-        newValue,
-      },
-    );
-  }
 }

@@ -6,6 +6,7 @@ import { ClientCertificate } from 'src/modules/certificate/models/client-certifi
 import {
   Compressor,
   ConnectionType,
+  DatabaseMode,
   Encoding,
   HostingProvider,
 } from 'src/modules/database/entities/database.entity';
@@ -369,12 +370,18 @@ export class Database {
   isPreSetup?: boolean;
 
   @ApiPropertyOptional({
-    description: 'Marks the database connection as a production environment.',
-    type: Boolean,
-    default: false,
+    description:
+      'Database connection mode. Controls confirmation friction for risky operations.',
+    default: DatabaseMode.Unmarked,
+    enum: DatabaseMode,
+    enumName: 'DatabaseMode',
   })
   @Expose()
-  @IsBoolean()
+  @IsEnum(DatabaseMode, {
+    message: `databaseMode must be a valid enum value. Valid values: ${Object.values(
+      DatabaseMode,
+    )}.`,
+  })
   @IsOptional()
-  isProduction?: boolean;
+  databaseMode?: DatabaseMode = DatabaseMode.Unmarked;
 }

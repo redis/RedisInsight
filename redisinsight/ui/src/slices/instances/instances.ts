@@ -37,7 +37,12 @@ import {
   addMessageNotification,
   removeInfiniteNotification,
 } from '../app/notifications'
-import { ConnectionType, InitialStateInstances, Instance } from '../interfaces'
+import {
+  ConnectionType,
+  DatabaseModeValue,
+  InitialStateInstances,
+  Instance,
+} from '../interfaces'
 import {
   Database as DatabaseInstanceResponse,
   RedisNodeInfoResponse,
@@ -377,10 +382,10 @@ export const connectedInstanceSelector = (state: RootState) =>
   state.connections.instances.connectedInstance
 export const connectedInstanceCDSelector = (state: RootState) =>
   state.connections.instances.connectedInstance.cloudDetails
-export const connectedInstanceIsProductionSelector = (
+export const connectedInstanceDatabaseModeSelector = (
   state: RootState,
-): boolean =>
-  state.connections.instances.connectedInstance.isProduction ?? false
+): DatabaseModeValue =>
+  state.connections.instances.connectedInstance.databaseMode ?? 'unmarked'
 export const connectedInstanceDangerousCommandsSelector = (
   state: RootState,
 ): string[] => state.connections.instances.dangerousCommands

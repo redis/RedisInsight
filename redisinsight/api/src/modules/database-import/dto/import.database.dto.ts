@@ -42,7 +42,7 @@ export class ImportDatabaseDto extends PickType(Database, [
   'tlsServername',
   'forceStandalone',
   'tags',
-  'isProduction',
+  'databaseMode',
 ] as const) {
   @Expose()
   @IsNotEmpty()

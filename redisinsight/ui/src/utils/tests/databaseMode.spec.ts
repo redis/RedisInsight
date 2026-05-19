@@ -4,8 +4,8 @@ describe('getDatabaseMode', () => {
   it('returns disabled when flag is off regardless of row', () => {
     expect(
       getDatabaseMode(
-        { isProduction: true },
-        { flagEnabled: false, skipConfirmations: true },
+        { databaseMode: 'production' },
+        { flagEnabled: false },
       ),
     ).toBe('disabled')
   })
@@ -13,51 +13,33 @@ describe('getDatabaseMode', () => {
   it('returns production when flag on and row is production', () => {
     expect(
       getDatabaseMode(
-        { isProduction: true },
-        { flagEnabled: true, skipConfirmations: false },
+        { databaseMode: 'production' },
+        { flagEnabled: true },
       ),
     ).toBe('production')
   })
 
-  it('returns fast for non-prod row when skip-confirmations is on', () => {
+  it('returns fast when flag on and row is fast', () => {
     expect(
-      getDatabaseMode(
-        { isProduction: false },
-        { flagEnabled: true, skipConfirmations: true },
-      ),
+      getDatabaseMode({ databaseMode: 'fast' }, { flagEnabled: true }),
     ).toBe('fast')
   })
 
-  it('returns unmarked for non-prod row when skip-confirmations is off', () => {
+  it('returns unmarked when flag on and row is unmarked', () => {
     expect(
-      getDatabaseMode(
-        { isProduction: false },
-        { flagEnabled: true, skipConfirmations: false },
-      ),
+      getDatabaseMode({ databaseMode: 'unmarked' }, { flagEnabled: true }),
     ).toBe('unmarked')
   })
 
-  it('treats undefined isProduction as not production', () => {
-    expect(
-      getDatabaseMode({}, { flagEnabled: true, skipConfirmations: false }),
-    ).toBe('unmarked')
+  it('treats undefined databaseMode as unmarked', () => {
+    expect(getDatabaseMode({}, { flagEnabled: true })).toBe('unmarked')
   })
 
   it('returns disabled for a null row when flag is off', () => {
-    expect(
-      getDatabaseMode(null, {
-        flagEnabled: false,
-        skipConfirmations: false,
-      }),
-    ).toBe('disabled')
+    expect(getDatabaseMode(null, { flagEnabled: false })).toBe('disabled')
   })
 
-  it('treats a null row as not production when flag is on', () => {
-    expect(
-      getDatabaseMode(null, {
-        flagEnabled: true,
-        skipConfirmations: false,
-      }),
-    ).toBe('unmarked')
+  it('treats a null row as unmarked when flag is on', () => {
+    expect(getDatabaseMode(null, { flagEnabled: true })).toBe('unmarked')
   })
 })

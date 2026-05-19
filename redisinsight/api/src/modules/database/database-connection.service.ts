@@ -2,7 +2,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { RECOMMENDATION_NAMES } from 'src/constants';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 import { DatabaseAnalytics } from 'src/modules/database/database.analytics';
-import { HostingProvider } from 'src/modules/database/entities/database.entity';
+import {
+  DatabaseMode,
+  HostingProvider,
+} from 'src/modules/database/entities/database.entity';
 import { DatabaseInfoProvider } from 'src/modules/database/providers/database-info.provider';
 import { DatabaseRecommendationService } from 'src/modules/database-recommendation/database-recommendation.service';
 import { Database } from 'src/modules/database/models/database';
@@ -48,7 +51,7 @@ export class DatabaseConnectionService {
       version: await this.databaseInfoProvider.determineDatabaseServer(client),
     };
 
-    const { host, provider, isProduction } = await this.repository.get(
+    const { host, provider, databaseMode } = await this.repository.get(
       clientMetadata.sessionMetadata,
       clientMetadata.databaseId,
     );
@@ -106,7 +109,7 @@ export class DatabaseConnectionService {
       clientMetadata,
       client,
       generalInfo?.version,
-      isProduction,
+      databaseMode,
     );
 
     this.logger.debug(
@@ -119,7 +122,7 @@ export class DatabaseConnectionService {
     clientMetadata: ClientMetadata,
     client: RedisClient,
     version?: string,
-    isProduction?: boolean,
+    databaseMode?: DatabaseMode,
   ) {
     try {
       const intVersion = parseInt(version, 10) || 0;
@@ -130,7 +133,7 @@ export class DatabaseConnectionService {
         clientMetadata.sessionMetadata,
         {
           databaseId: clientMetadata.databaseId,
-          isProduction: isProduction ? 'true' : 'false',
+          databaseMode: databaseMode ?? DatabaseMode.Unmarked,
           ...(client.isInfoCommandDisabled
             ? { info_command_is_disabled: true }
             : {}),

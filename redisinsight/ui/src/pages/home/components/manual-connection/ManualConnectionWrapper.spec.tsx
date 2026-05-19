@@ -60,11 +60,11 @@ const mockManualConnectionFrom = (props: ManualConnectionFromProps) => (
           name: 'db',
           host: 'localhost',
           port: '6379',
-          isProduction: true,
+          databaseMode: 'production',
         } as DbConnectionInfo)
       }
     >
-      submit with isProduction
+      submit with databaseMode
     </button>
     <button
       type="button"
@@ -143,7 +143,7 @@ describe('ManualConnectionWrapper', () => {
     })
   })
 
-  it('should pass isProduction through preparePayload to the create action', () => {
+  it('should pass databaseMode through preparePayload to the create action', () => {
     ;(createInstanceStandaloneAction as jest.Mock).mockClear()
     render(<ManualConnectionWrapper {...instance(mockedProps)} />)
     act(() => {
@@ -151,7 +151,7 @@ describe('ManualConnectionWrapper', () => {
     })
 
     expect(createInstanceStandaloneAction).toHaveBeenCalledWith(
-      expect.objectContaining({ isProduction: true }),
+      expect.objectContaining({ databaseMode: 'production' }),
       expect.anything(),
     )
   })
