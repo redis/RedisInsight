@@ -1228,7 +1228,7 @@
     "TS2345": 1
   },
   "src/modules/redis/client/redis.client.ts": {
-    "TS2322": 5,
+    "TS2322": 1,
     "TS7016": 1
   },
   "src/modules/redis/connection/ioredis.redis.connection.strategy.spec.ts": {
