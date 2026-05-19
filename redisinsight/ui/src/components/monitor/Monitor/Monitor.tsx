@@ -75,9 +75,7 @@ const Monitor = (props: Props) => {
         </Text>
 
         <div>
-          <ProfilerStartButton
-            onStart={() => handleRunMonitor(saveLogValue)}
-          />
+          <ProfilerStartButton onStart={() => handleRunMonitor(saveLogValue)} />
         </div>
 
         <div data-testid="save-log-container">
