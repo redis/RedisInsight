@@ -83,8 +83,8 @@
       ],
       "matchQuery": {
         "anyRegex": [
-          "@[A-Za-z0-9_.$:-]+:\\[\\s*[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+(?:m|km|mi|ft)\\s*\\]",
-          "\\bGEOFILTER\\s+[A-Za-z0-9_.$:-]+\\s+[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+(?:m|km|mi|ft)\\b"
+          "@[A-Za-z0-9_.$:-]{1,128}:\\[\\s*[-+$A-Za-z0-9_.]{1,128}\\s+[-+$A-Za-z0-9_.]{1,128}\\s+[-+$A-Za-z0-9_.]{1,128}\\s+(?:m|km|mi|ft)\\s*\\]",
+          "\\bGEOFILTER\\s+[A-Za-z0-9_.$:-]{1,128}\\s+[-+$A-Za-z0-9_.]{1,128}\\s+[-+$A-Za-z0-9_.]{1,128}\\s+[-+$A-Za-z0-9_.]{1,128}\\s+(?:m|km|mi|ft)\\b"
         ]
       },
       "iconDark": "./dist/geodata_icon_dark.svg",
@@ -103,8 +103,8 @@
       ],
       "matchQuery": {
         "anyRegex": [
-          "@[A-Za-z0-9_.$:-]+:\\[\\s*[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+(?:m|km|mi|ft)\\s*\\]",
-          "\\bGEOFILTER\\s+[A-Za-z0-9_.$:-]+\\s+[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+(?:m|km|mi|ft)\\b"
+          "@[A-Za-z0-9_.$:-]{1,128}:\\[\\s*[-+$A-Za-z0-9_.]{1,128}\\s+[-+$A-Za-z0-9_.]{1,128}\\s+[-+$A-Za-z0-9_.]{1,128}\\s+(?:m|km|mi|ft)\\s*\\]",
+          "\\bGEOFILTER\\s+[A-Za-z0-9_.$:-]{1,128}\\s+[-+$A-Za-z0-9_.]{1,128}\\s+[-+$A-Za-z0-9_.]{1,128}\\s+[-+$A-Za-z0-9_.]{1,128}\\s+(?:m|km|mi|ft)\\b"
         ]
       },
       "iconDark": "./dist/geodata_heatmap_icon_dark.svg",
@@ -123,9 +123,9 @@
       ],
       "matchQuery": {
         "anyRegex": [
-          "@[A-Za-z0-9_.$:-]+:\\[\\s*[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+(?:m|km|mi|ft)\\s*\\]",
-          "\\bGEOFILTER\\s+[A-Za-z0-9_.$:-]+\\s+[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+[-+$A-Za-z0-9_.]+\\s+(?:m|km|mi|ft)\\b",
-          "@[A-Za-z0-9_.$:-]+:\\[\\s*(?:WITHIN|CONTAINS|INTERSECTS|DISJOINT)\\s+[^\\]]+\\]"
+          "@[A-Za-z0-9_.$:-]{1,128}:\\[\\s*[-+$A-Za-z0-9_.]{1,128}\\s+[-+$A-Za-z0-9_.]{1,128}\\s+[-+$A-Za-z0-9_.]{1,128}\\s+(?:m|km|mi|ft)\\s*\\]",
+          "\\bGEOFILTER\\s+[A-Za-z0-9_.$:-]{1,128}\\s+[-+$A-Za-z0-9_.]{1,128}\\s+[-+$A-Za-z0-9_.]{1,128}\\s+[-+$A-Za-z0-9_.]{1,128}\\s+(?:m|km|mi|ft)\\b",
+          "@[A-Za-z0-9_.$:-]{1,128}:\\[\\s*(?:WITHIN|CONTAINS|INTERSECTS|DISJOINT)\\s+[^\\]]{1,2048}\\]"
         ]
       },
       "iconDark": "./dist/geodata_inspector_icon_dark.svg",
@@ -144,7 +144,7 @@
       ],
       "matchQuery": {
         "anyRegex": [
-          "@[A-Za-z0-9_.$:-]+:\\[\\s*(?:WITHIN|CONTAINS|INTERSECTS|DISJOINT)\\s+[^\\]]+\\]"
+          "@[A-Za-z0-9_.$:-]{1,128}:\\[\\s*(?:WITHIN|CONTAINS|INTERSECTS|DISJOINT)\\s+[^\\]]{1,2048}\\]"
         ]
       },
       "iconDark": "./dist/geodata_inspector_icon_dark.svg",
