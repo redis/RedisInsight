@@ -8,7 +8,6 @@ import {
   CLUSTER_MIN_POINTS,
   DEFAULT_GEO_CONFIG,
   DISTANCE_COLORS,
-  DISTANCE_THRESHOLDS,
   HEAT_COLORS,
   MAP_COLORS,
   MAP_FIT_BOUNDS_PADDING_RATIO,
@@ -16,35 +15,17 @@ import {
   THRESHOLD_VISIBLE_ZOOM,
 } from '../constants'
 import { GeoResult, ParsedGeoCommand } from '../types'
-
-interface GeoPlotProps {
-  mode: 'markers' | 'heatmap'
-  results: GeoResult[]
-  command: ParsedGeoCommand
-}
-
-interface DistanceThresholds {
-  close: number
-  middle: number
-}
-
-interface DistanceMarkerOptions extends L.CircleMarkerOptions {
-  distanceKm?: number
-}
-
-const EARTH_RADIUS_KM = 6371
-
-const DEFAULT_DISTANCE_THRESHOLDS: DistanceThresholds = {
-  close: DISTANCE_THRESHOLDS.close,
-  middle: DISTANCE_THRESHOLDS.middle,
-}
-
-const UNIT_TO_KM: Record<string, number> = {
-  M: 0.001,
-  KM: 1,
-  FT: 0.0003048,
-  MI: 1.609344,
-}
+import {
+  DEFAULT_DISTANCE_THRESHOLDS,
+  EARTH_RADIUS_KM,
+  UNIT_TO_KM,
+} from './GeoPlot.constants'
+import {
+  DistanceMarkerOptions,
+  DistanceThresholds,
+  GeoPlotProps,
+  ThresholdControlsProps,
+} from './GeoPlot.types'
 
 const toRadians = (value: number): number => (value * Math.PI) / 180
 
@@ -291,11 +272,6 @@ const addHeatmap = (map: L.Map, results: GeoResult[]): void => {
       },
     },
   ).addTo(map)
-}
-
-interface ThresholdControlsProps {
-  thresholds: DistanceThresholds
-  onChange: (thresholds: DistanceThresholds) => void
 }
 
 const DistanceThresholdControls = ({
