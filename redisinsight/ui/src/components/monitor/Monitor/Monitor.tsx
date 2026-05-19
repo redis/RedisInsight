@@ -47,7 +47,7 @@ const Monitor = (props: Props) => {
   } = props
   const [saveLogValue, setSaveLogValue] = useState(isSaveToFile)
 
-  const MonitorNotStarted = () => (
+  const renderMonitorNotStarted = () => (
     <Row
       align="center"
       style={{ margin: 48 }}
@@ -141,7 +141,7 @@ const Monitor = (props: Props) => {
           <MonitorError />
         ) : (
           <>
-            {!isStarted && <MonitorNotStarted />}
+            {!isStarted && renderMonitorNotStarted()}
             {!items?.length && isRunning && !isPaused && (
               <div
                 data-testid="monitor-started"
