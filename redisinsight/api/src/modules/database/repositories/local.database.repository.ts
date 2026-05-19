@@ -129,6 +129,7 @@ export class LocalDatabaseRepository extends DatabaseRepository {
         'd.version',
         'cd',
         'd.createdAt',
+        'd.databaseMode',
         'tags',
       ])
       .getMany();
