@@ -218,7 +218,7 @@ describe('AddKeyVectorSet', () => {
         expect(mockLoad).toHaveBeenCalledWith(expect.anything(), 'vec2word'),
       )
       expect(loadKeys).toHaveBeenCalled()
-      expectMessageDispatched('Sample dataset loaded')
+      expectMessageDispatched('Sample vector set added')
       expect(onCancel).toHaveBeenCalled()
       expect(addVectorSetKey).not.toHaveBeenCalled()
     })

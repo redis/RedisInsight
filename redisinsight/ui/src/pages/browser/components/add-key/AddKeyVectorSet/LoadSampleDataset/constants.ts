@@ -47,8 +47,8 @@ export const loadSampleDatasetFailedNotification = () => ({
 
 /** Green success toast shown after the bulk-import POST for `vec2word` succeeds. */
 export const sampleDatasetLoadedNotification = () => ({
-  title: 'Sample dataset loaded',
-  message: `The '${VEC2WORD_COLLECTION_NAME}' vector set is ready to query.`,
+  title: 'Sample vector set added',
+  message: `The '${VEC2WORD_COLLECTION_NAME}' sample vector set has been successfully added.`,
   showCloseButton: false,
 })
 
