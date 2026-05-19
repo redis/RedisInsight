@@ -81,4 +81,70 @@ describe('getVisualizationsByCommand', () => {
       ),
     ).toHaveLength(0)
   })
+
+  it('ignores invalid command regexes without throwing', () => {
+    const invalidCommandVisualization = {
+      matchCommands: ['FT.SEARCH', '['],
+    } as IPluginVisualization
+
+    expect(() =>
+      getVisualizationsByCommand('FT.AGGREGATE idx "*"', [
+        invalidCommandVisualization,
+      ]),
+    ).not.toThrow()
+    expect(
+      getVisualizationsByCommand('FT.AGGREGATE idx "*"', [
+        invalidCommandVisualization,
+      ]),
+    ).toHaveLength(0)
+  })
+
+  it('does not run query predicate regexes against oversized queries', () => {
+    const geodataVisualization = {
+      matchCommands: ['FT.SEARCH'],
+      matchQuery: {
+        anyRegex: [
+          String.raw`@[A-Za-z0-9_.$:-]{1,128}:\[\s*[-+$A-Za-z0-9_.]{1,128}\s+[-+$A-Za-z0-9_.]{1,128}\s+[-+$A-Za-z0-9_.]{1,128}\s+(?:m|km|mi|ft)\s*\]`,
+        ],
+      },
+    } as IPluginVisualization
+
+    const oversizedQuery = `FT.SEARCH idx "${'a'.repeat(1025)} @coords:[2.34 48.86 1000 km]"`
+
+    expect(
+      getVisualizationsByCommand(oversizedQuery, [geodataVisualization]),
+    ).toHaveLength(0)
+  })
+
+  it('matches bounded geodata query predicate regexes', () => {
+    const geodataVisualization = {
+      matchCommands: ['FT.SEARCH', 'FT.AGGREGATE', 'FT.HYBRID'],
+      matchQuery: {
+        anyRegex: [
+          String.raw`@[A-Za-z0-9_.$:-]{1,128}:\[\s*[-+$A-Za-z0-9_.]{1,128}\s+[-+$A-Za-z0-9_.]{1,128}\s+[-+$A-Za-z0-9_.]{1,128}\s+(?:m|km|mi|ft)\s*\]`,
+          String.raw`\bGEOFILTER\s+[A-Za-z0-9_.$:-]{1,128}\s+[-+$A-Za-z0-9_.]{1,128}\s+[-+$A-Za-z0-9_.]{1,128}\s+[-+$A-Za-z0-9_.]{1,128}\s+(?:m|km|mi|ft)\b`,
+          String.raw`@[A-Za-z0-9_.$:-]{1,128}:\[\s*(?:WITHIN|CONTAINS|INTERSECTS|DISJOINT)\s+[^\]]{1,2048}\]`,
+        ],
+      },
+    } as IPluginVisualization
+
+    expect(
+      getVisualizationsByCommand(
+        'FT.SEARCH idx "@coords:[2.34 48.86 1000 km]"',
+        [geodataVisualization],
+      ),
+    ).toHaveLength(1)
+    expect(
+      getVisualizationsByCommand(
+        'FT.SEARCH idx * GEOFILTER coords 2.34 48.86 1000 km',
+        [geodataVisualization],
+      ),
+    ).toHaveLength(1)
+    expect(
+      getVisualizationsByCommand(
+        'FT.SEARCH idx "@geom:[CONTAINS $shape]" PARAMS 2 shape "POINT (2 2)"',
+        [geodataVisualization],
+      ),
+    ).toHaveLength(1)
+  })
 })
