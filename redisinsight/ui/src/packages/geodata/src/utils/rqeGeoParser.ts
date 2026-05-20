@@ -463,6 +463,25 @@ const parseRqeRows = (
   }
 }
 
+const hasNoResultRows = (
+  response: unknown,
+  command: ParsedRqeGeoCommand,
+): boolean => {
+  if (command.command === 'FT.HYBRID') {
+    const hybridResults = getHybridResults(response)
+    if (hybridResults) {
+      return hybridResults.length === 0
+    }
+  }
+
+  if (!Array.isArray(response)) {
+    return false
+  }
+
+  const resultCountSource = Array.isArray(response[0]) ? response[0] : response
+  return Number(resultCountSource[0]) === 0
+}
+
 const parseCoordinateString = (value: string): number[] | null => {
   const parts = value.split(',').map((part) => Number(part.trim()))
   if (parts.length !== 2 || !parts.every(Number.isFinite)) {
@@ -606,6 +625,17 @@ export const parseRqeGeoResults = (
   const parsedRows = parseRqeRows(response, command)
   if (!parsedRows.ok) {
     return parsedRows
+  }
+
+  if (!parsedRows.value.length && hasNoResultRows(response, command)) {
+    return {
+      ok: true,
+      value: {
+        command,
+        points: [],
+        shapes: [],
+      },
+    }
   }
 
   const points = command.kind === 'pointRadius'
