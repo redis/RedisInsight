@@ -7,12 +7,12 @@ import {
   connectedInstanceSelector,
 } from 'uiSrc/slices/instances/instances'
 
-export interface UseEnvironmentResult {
+export interface UseDatabaseEnvironmentResult {
   environment: Environment
   isDangerousCommand: (cmd: string) => boolean
 }
 
-export const useEnvironment = (): UseEnvironmentResult => {
+export const useDatabaseEnvironment = (): UseDatabaseEnvironmentResult => {
   const flagEnabled = useSelector(appFeatureFlagDevProdModeSelector)
   const dangerousCommands = useSelector(
     connectedInstanceDangerousCommandsSelector,

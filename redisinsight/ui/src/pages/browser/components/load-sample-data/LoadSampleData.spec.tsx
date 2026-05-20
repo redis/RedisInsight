@@ -20,7 +20,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { apiService } from 'uiSrc/services'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import successMessages from 'uiSrc/components/notifications/success-messages'
-import { useEnvironment } from 'uiSrc/components/hooks/useEnvironment'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 import LoadSampleData from './LoadSampleData'
 
 const PRODUCTION_DISABLED_TOOLTIP =
@@ -38,9 +38,9 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
-jest.mock('uiSrc/components/hooks/useEnvironment', () => ({
-  ...jest.requireActual('uiSrc/components/hooks/useEnvironment'),
-  useEnvironment: jest.fn(),
+jest.mock('uiSrc/components/hooks/useDatabaseEnvironment', () => ({
+  ...jest.requireActual('uiSrc/components/hooks/useDatabaseEnvironment'),
+  useDatabaseEnvironment: jest.fn(),
 }))
 
 let store: typeof mockedStore
@@ -48,7 +48,7 @@ beforeEach(() => {
   cleanup()
   store = cloneDeep(mockedStore)
   store.clearActions()
-  ;(useEnvironment as jest.Mock).mockReturnValue({
+  ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
     environment: 'unspecified',
     isDangerousCommand: () => false,
   })
@@ -95,7 +95,7 @@ describe('LoadSampleData', () => {
 
   describe('production mode', () => {
     it('should disable the button and not open the popover in production', () => {
-      ;(useEnvironment as jest.Mock).mockReturnValue({
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
         environment: 'production',
         isDangerousCommand: () => false,
       })
@@ -112,7 +112,7 @@ describe('LoadSampleData', () => {
     })
 
     it('should show the production tooltip copy on focus in production', async () => {
-      ;(useEnvironment as jest.Mock).mockReturnValue({
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
         environment: 'production',
         isDangerousCommand: () => false,
       })

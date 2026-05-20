@@ -379,9 +379,6 @@ export const connectedInstanceSelector = (state: RootState) =>
   state.connections.instances.connectedInstance
 export const connectedInstanceCDSelector = (state: RootState) =>
   state.connections.instances.connectedInstance.cloudDetails
-export const connectedInstanceEnvironmentSelector = (
-  state: RootState,
-): Environment => state.connections.instances.connectedInstance.environment
 export const connectedInstanceDangerousCommandsSelector = (
   state: RootState,
 ): string[] => state.connections.instances.dangerousCommands

@@ -1,16 +1,18 @@
 import React from 'react'
 import { Environment } from 'apiClient'
 import { cleanup, fireEvent, render, screen } from 'uiSrc/utils/test-utils'
-import * as useEnvironmentModule from 'uiSrc/components/hooks/useEnvironment'
+import * as useDatabaseEnvironmentModule from 'uiSrc/components/hooks/useDatabaseEnvironment'
 import ProfilerStartButton from './ProfilerStartButton'
 
 const mockUseEnvironment = (
-  environment: useEnvironmentModule.UseEnvironmentResult['environment'],
+  environment: useDatabaseEnvironmentModule.UseDatabaseEnvironmentResult['environment'],
 ) =>
-  jest.spyOn(useEnvironmentModule, 'useEnvironment').mockReturnValue({
-    environment,
-    isDangerousCommand: () => false,
-  })
+  jest
+    .spyOn(useDatabaseEnvironmentModule, 'useDatabaseEnvironment')
+    .mockReturnValue({
+      environment,
+      isDangerousCommand: () => false,
+    })
 
 beforeEach(() => {
   cleanup()

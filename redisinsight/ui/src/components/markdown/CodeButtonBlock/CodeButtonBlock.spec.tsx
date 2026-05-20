@@ -12,7 +12,7 @@ import { Pages } from 'uiSrc/constants'
 import { setDBConfigStorageField } from 'uiSrc/services'
 import { ConfigDBStorageItem } from 'uiSrc/constants/storage'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { useEnvironment } from 'uiSrc/components/hooks/useEnvironment'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 
 const PRODUCTION_DISABLED_TOOLTIP =
   'Button disabled for your production database to avoid accidental data modifications.'
@@ -33,13 +33,13 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
-jest.mock('uiSrc/components/hooks/useEnvironment', () => ({
-  ...jest.requireActual('uiSrc/components/hooks/useEnvironment'),
-  useEnvironment: jest.fn(),
+jest.mock('uiSrc/components/hooks/useDatabaseEnvironment', () => ({
+  ...jest.requireActual('uiSrc/components/hooks/useDatabaseEnvironment'),
+  useDatabaseEnvironment: jest.fn(),
 }))
 
 beforeEach(() => {
-  ;(useEnvironment as jest.Mock).mockReturnValue({
+  ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
     environment: 'unspecified',
     isDangerousCommand: () => false,
   })
@@ -279,7 +279,7 @@ describe('CodeButtonBlock', () => {
 
   describe('production mode', () => {
     it('should disable Run button and not call onApply when mode is production', () => {
-      ;(useEnvironment as jest.Mock).mockReturnValue({
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
         environment: 'production',
         isDangerousCommand: () => false,
       })
@@ -302,7 +302,7 @@ describe('CodeButtonBlock', () => {
     })
 
     it('should show the production tooltip copy on focus when mode is production', async () => {
-      ;(useEnvironment as jest.Mock).mockReturnValue({
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
         environment: 'production',
         isDangerousCommand: () => false,
       })
@@ -330,7 +330,7 @@ describe('CodeButtonBlock', () => {
       reactRouterDom.useParams = jest
         .fn()
         .mockReturnValue({ instanceId: 'instanceId' })
-      ;(useEnvironment as jest.Mock).mockReturnValue({
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
         environment: 'unspecified',
         isDangerousCommand: () => false,
       })

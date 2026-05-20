@@ -70,7 +70,6 @@ import reducer, {
   resetConnectedInstanceDangerousCommands,
   fetchConnectedInstanceDangerousCommandsAction,
   connectedInstanceDangerousCommandsSelector,
-  connectedInstanceEnvironmentSelector,
 } from '../../instances/instances'
 import { Environment } from 'apiClient'
 import {
@@ -979,31 +978,6 @@ describe('instances slice', () => {
         connections: { instances: nextState },
       })
       expect(connectedInstanceDangerousCommandsSelector(rootState)).toEqual([])
-    })
-  })
-
-  describe('connectedInstanceEnvironmentSelector', () => {
-    it('returns environment from connected instance', () => {
-      const nextState = {
-        ...initialState,
-        connectedInstance: {
-          ...initialState.connectedInstance,
-          environment: 'production',
-        },
-      }
-      const rootState = Object.assign(initialStateDefault, {
-        connections: { instances: nextState },
-      })
-      expect(connectedInstanceEnvironmentSelector(rootState)).toBe('production')
-    })
-
-    it('defaults to unmarked when environment is undefined', () => {
-      const rootState = Object.assign(initialStateDefault, {
-        connections: { instances: initialState },
-      })
-      expect(connectedInstanceEnvironmentSelector(rootState)).toBe(
-        'unspecified',
-      )
     })
   })
 

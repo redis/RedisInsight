@@ -6,7 +6,7 @@ import {
 } from 'uiSrc/slices/instances/instances'
 import { Environment } from 'apiClient'
 
-import { useEnvironment } from './useEnvironment'
+import { useDatabaseEnvironment } from './useDatabaseEnvironment'
 
 jest.mock('uiSrc/slices/app/features', () => ({
   ...jest.requireActual('uiSrc/slices/app/features'),
@@ -39,29 +39,29 @@ const setMocks = (input: {
   })
 }
 
-describe('useEnvironment', () => {
+describe('useDatabaseEnvironment', () => {
   describe('truth table', () => {
     it('falls back to unmarked when flag is off', () => {
       setMocks({ flag: false, environment: Environment.Production })
-      const { result } = renderHook(useEnvironment)
+      const { result } = renderHook(useDatabaseEnvironment)
       expect(result.current.environment).toBe('unspecified')
     })
 
     it('returns production when flag on and connection is marked production', () => {
       setMocks({ flag: true, environment: Environment.Production })
-      const { result } = renderHook(useEnvironment)
+      const { result } = renderHook(useDatabaseEnvironment)
       expect(result.current.environment).toBe('production')
     })
 
     it('returns fast when flag on and connection is marked fast', () => {
       setMocks({ flag: true, environment: Environment.Development })
-      const { result } = renderHook(useEnvironment)
+      const { result } = renderHook(useDatabaseEnvironment)
       expect(result.current.environment).toBe('development')
     })
 
     it('returns unmarked when flag on and connection is unmarked', () => {
       setMocks({ flag: true, environment: Environment.Unspecified })
-      const { result } = renderHook(useEnvironment)
+      const { result } = renderHook(useDatabaseEnvironment)
       expect(result.current.environment).toBe('unspecified')
     })
   })
@@ -73,7 +73,7 @@ describe('useEnvironment', () => {
         environment: Environment.Unspecified,
         dangerousCommands: ['FLUSHDB', 'KEYS'],
       })
-      const { result } = renderHook(useEnvironment)
+      const { result } = renderHook(useDatabaseEnvironment)
       expect(result.current.isDangerousCommand('FLUSHDB')).toBe(false)
     })
 
@@ -83,7 +83,7 @@ describe('useEnvironment', () => {
         environment: Environment.Development,
         dangerousCommands: ['FLUSHDB'],
       })
-      const { result } = renderHook(useEnvironment)
+      const { result } = renderHook(useDatabaseEnvironment)
       expect(result.current.isDangerousCommand('FLUSHDB')).toBe(false)
     })
 
@@ -93,7 +93,7 @@ describe('useEnvironment', () => {
         environment: Environment.Production,
         dangerousCommands: ['FLUSHDB', 'KEYS'],
       })
-      const { result } = renderHook(useEnvironment)
+      const { result } = renderHook(useDatabaseEnvironment)
       expect(result.current.isDangerousCommand('flushdb')).toBe(true)
       expect(result.current.isDangerousCommand('FlushDB')).toBe(true)
       expect(result.current.isDangerousCommand('keys')).toBe(true)
@@ -105,7 +105,7 @@ describe('useEnvironment', () => {
         environment: Environment.Production,
         dangerousCommands: ['FLUSHDB'],
       })
-      const { result } = renderHook(useEnvironment)
+      const { result } = renderHook(useDatabaseEnvironment)
       expect(result.current.isDangerousCommand('GET')).toBe(false)
     })
 
@@ -115,7 +115,7 @@ describe('useEnvironment', () => {
         environment: Environment.Production,
         dangerousCommands: ['FLUSHDB'],
       })
-      const { result } = renderHook(useEnvironment)
+      const { result } = renderHook(useDatabaseEnvironment)
       expect(result.current.isDangerousCommand('')).toBe(false)
     })
 
@@ -125,7 +125,7 @@ describe('useEnvironment', () => {
         environment: Environment.Production,
         dangerousCommands: ['flushdb'],
       })
-      const { result } = renderHook(useEnvironment)
+      const { result } = renderHook(useDatabaseEnvironment)
       expect(result.current.isDangerousCommand('FLUSHDB')).toBe(true)
     })
   })

@@ -20,21 +20,29 @@ const options: { value: Environment; label: string }[] = [
   { value: Environment.Development, label: 'Development' },
 ]
 
+const EnvironmentTooltipContent = () => (
+  <>
+    <Text>Classify this database to apply the right safety behavior.</Text>
+    <Text>
+      <strong>Production</strong> — Adds an extra layer of protection to prevent
+      unintended changes. Includes additional confirmation dialogs before
+      modifying data and stronger friction before running dangerous commands.
+    </Text>
+    <Text>
+      <strong>Development</strong> — Skips standard confirmation dialogs when
+      modifying data, for faster work on development and test databases.
+    </Text>
+    <Text>
+      <strong>Unspecified</strong> — Standard Redis Insight behavior. The
+      default for new and existing connections.
+    </Text>
+  </>
+)
+
 const EnvironmentLabel = () => (
   <Row align="center" gap="s">
     <Text>Environment</Text>
-    <RiTooltip
-      position="right"
-      content={
-        <Text>
-          Classify this database to apply the right safety behavior. When marked
-          as production, Redis Insight adds an extra layer of protection to
-          prevent unintended changes. This includes additional confirmation
-          dialogues before modifying data and stronger friction before running
-          dangerous commands.
-        </Text>
-      }
-    >
+    <RiTooltip position="right" content={<EnvironmentTooltipContent />}>
       <FlexItem>
         <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
       </FlexItem>
