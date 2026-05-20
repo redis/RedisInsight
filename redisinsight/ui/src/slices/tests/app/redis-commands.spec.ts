@@ -159,6 +159,10 @@ describe('slices', () => {
       expect(mockedStore.getActions()).toEqual(expectedActions)
     })
 
+    it('exposes vector_set in the local-resources commands list', () => {
+      expect(commands).toContain('vector_set')
+    })
+
     it('successfully fetches all local commands', async () => {
       mockConfig(true)
       let expectedResult = {}
