@@ -1,4 +1,5 @@
 import React from 'react'
+import { Environment } from 'apiClient'
 import { instance, mock } from 'ts-mockito'
 import reactRouterDom from 'react-router-dom'
 import {
@@ -12,7 +13,7 @@ import { Pages } from 'uiSrc/constants'
 import { setDBConfigStorageField } from 'uiSrc/services'
 import { ConfigDBStorageItem } from 'uiSrc/constants/storage'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { useDatabaseMode } from 'uiSrc/components/hooks/useDatabaseMode'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 
 const PRODUCTION_DISABLED_TOOLTIP =
   'Button disabled for your production database to avoid accidental data modifications.'
@@ -33,14 +34,14 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
-jest.mock('uiSrc/components/hooks/useDatabaseMode', () => ({
-  ...jest.requireActual('uiSrc/components/hooks/useDatabaseMode'),
-  useDatabaseMode: jest.fn(),
+jest.mock('uiSrc/components/hooks/useDatabaseEnvironment', () => ({
+  ...jest.requireActual('uiSrc/components/hooks/useDatabaseEnvironment'),
+  useDatabaseEnvironment: jest.fn(),
 }))
 
 beforeEach(() => {
-  ;(useDatabaseMode as jest.Mock).mockReturnValue({
-    mode: 'unmarked',
+  ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+    environment: Environment.Unspecified,
     isDangerousCommand: () => false,
   })
 })
@@ -279,8 +280,8 @@ describe('CodeButtonBlock', () => {
 
   describe('production mode', () => {
     it('should disable Run button and not call onApply when mode is production', () => {
-      ;(useDatabaseMode as jest.Mock).mockReturnValue({
-        mode: 'production',
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+        environment: Environment.Production,
         isDangerousCommand: () => false,
       })
       const onApply = jest.fn()
@@ -302,8 +303,8 @@ describe('CodeButtonBlock', () => {
     })
 
     it('should show the production tooltip copy on focus when mode is production', async () => {
-      ;(useDatabaseMode as jest.Mock).mockReturnValue({
-        mode: 'production',
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+        environment: Environment.Production,
         isDangerousCommand: () => false,
       })
 
@@ -330,8 +331,8 @@ describe('CodeButtonBlock', () => {
       reactRouterDom.useParams = jest
         .fn()
         .mockReturnValue({ instanceId: 'instanceId' })
-      ;(useDatabaseMode as jest.Mock).mockReturnValue({
-        mode: 'unmarked',
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+        environment: Environment.Unspecified,
         isDangerousCommand: () => false,
       })
       const onApply = jest.fn()

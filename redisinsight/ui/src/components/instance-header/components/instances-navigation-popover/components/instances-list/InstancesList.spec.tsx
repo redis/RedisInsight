@@ -10,6 +10,7 @@ import {
   screen,
 } from 'uiSrc/utils/test-utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { Environment } from 'apiClient'
 import { Instance, RdiInstance } from 'uiSrc/slices/interfaces'
 import InstancesList, { InstancesListProps } from './InstancesList'
 import { InstancesTabs } from '../../InstancesNavigationPopover'
@@ -48,6 +49,7 @@ const mockDbs: Instance[] = [
     port: 6379,
     modules: [],
     version: '7.0.0',
+    environment: Environment.Unspecified,
   },
   {
     id: 'db_2',
@@ -56,6 +58,7 @@ const mockDbs: Instance[] = [
     port: 6379,
     modules: [],
     version: '7.0.0',
+    environment: Environment.Unspecified,
   },
 ]
 

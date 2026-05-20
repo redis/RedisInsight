@@ -1,14 +1,17 @@
 import React from 'react'
+import { Environment } from 'apiClient'
 import { cleanup, fireEvent, render, screen } from 'uiSrc/utils/test-utils'
-import * as useDatabaseModeModule from 'uiSrc/components/hooks/useDatabaseMode'
+import * as useDatabaseEnvironmentModule from 'uiSrc/components/hooks/useDatabaseEnvironment'
 import MonitorNotStarted from './MonitorNotStarted'
 
 beforeEach(() => {
   cleanup()
-  jest.spyOn(useDatabaseModeModule, 'useDatabaseMode').mockReturnValue({
-    mode: 'unmarked',
-    isDangerousCommand: () => false,
-  })
+  jest
+    .spyOn(useDatabaseEnvironmentModule, 'useDatabaseEnvironment')
+    .mockReturnValue({
+      environment: Environment.Unspecified,
+      isDangerousCommand: () => false,
+    })
 })
 
 afterEach(() => {

@@ -26,7 +26,10 @@ import { RECOMMENDATION_NAMES } from 'src/constants';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { FeatureService } from 'src/modules/feature/feature.service';
 import { getHostingProvider } from 'src/utils/hosting-provider-helper';
-import { HostingProvider } from 'src/modules/database/entities/database.entity';
+import {
+  Environment,
+  HostingProvider,
+} from 'src/modules/database/entities/database.entity';
 
 jest.mock('src/utils/hosting-provider-helper');
 
@@ -188,7 +191,7 @@ describe('DatabaseConnectionService', () => {
         analytics.sendDatabaseConnectedClientListEvent,
       ).toHaveBeenCalledWith(mockSessionMetadata, {
         databaseId: mockDatabase.id,
-        isProduction: 'false',
+        environment: Environment.Unspecified,
         clients: mockRedisClientListResult.map((c) => ({
           version: mockRedisGeneralInfo.version,
           resp: get(c, 'resp', 'n/a'),
@@ -198,10 +201,10 @@ describe('DatabaseConnectionService', () => {
       });
     });
 
-    it('should send isProduction=true when database is production', async () => {
+    it('should send environment=production when database is marked production', async () => {
       repository.get.mockResolvedValueOnce({
         ...mockDatabase,
-        isProduction: true,
+        environment: Environment.Production,
       });
 
       await service.connect(mockCommonClientMetadata);
@@ -210,7 +213,23 @@ describe('DatabaseConnectionService', () => {
         analytics.sendDatabaseConnectedClientListEvent,
       ).toHaveBeenCalledWith(
         mockSessionMetadata,
-        expect.objectContaining({ isProduction: 'true' }),
+        expect.objectContaining({ environment: Environment.Production }),
+      );
+    });
+
+    it('should send environment=fast when database is marked fast', async () => {
+      repository.get.mockResolvedValueOnce({
+        ...mockDatabase,
+        environment: Environment.Development,
+      });
+
+      await service.connect(mockCommonClientMetadata);
+
+      expect(
+        analytics.sendDatabaseConnectedClientListEvent,
+      ).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        expect.objectContaining({ environment: Environment.Development }),
       );
     });
   });

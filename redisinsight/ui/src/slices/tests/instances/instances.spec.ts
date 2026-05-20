@@ -70,8 +70,8 @@ import reducer, {
   resetConnectedInstanceDangerousCommands,
   fetchConnectedInstanceDangerousCommandsAction,
   connectedInstanceDangerousCommandsSelector,
-  connectedInstanceIsProductionSelector,
 } from '../../instances/instances'
+import { Environment } from 'apiClient'
 import {
   addErrorNotification,
   addInfiniteNotification,
@@ -110,6 +110,7 @@ beforeEach(() => {
       nameFromProvider: null,
       modules: [],
       lastConnection: new Date('2021-04-22T09:03:56.917Z'),
+      environment: Environment.Unspecified,
     },
     {
       id: 'a0db1bc8-a353-4c43-a856-b72f4811d2d4',
@@ -126,6 +127,7 @@ beforeEach(() => {
         caCertId: '70b95d32-c19d-4311-bb24-e684af12cf15',
         clientCertPairId: '70b95d32-c19d-4311-b23b24-e684af12cf15',
       },
+      environment: Environment.Unspecified,
     },
     {
       id: 'b83a3932-e95f-4f09-9d8a-55079f400186',
@@ -152,6 +154,7 @@ beforeEach(() => {
       sentinelMaster: {
         name: 'mymaster',
       },
+      environment: Environment.Unspecified,
     },
   ]
 })
@@ -975,29 +978,6 @@ describe('instances slice', () => {
         connections: { instances: nextState },
       })
       expect(connectedInstanceDangerousCommandsSelector(rootState)).toEqual([])
-    })
-  })
-
-  describe('connectedInstanceIsProductionSelector', () => {
-    it('returns isProduction from connected instance', () => {
-      const nextState = {
-        ...initialState,
-        connectedInstance: {
-          ...initialState.connectedInstance,
-          isProduction: true,
-        },
-      }
-      const rootState = Object.assign(initialStateDefault, {
-        connections: { instances: nextState },
-      })
-      expect(connectedInstanceIsProductionSelector(rootState)).toBe(true)
-    })
-
-    it('defaults to false when isProduction is undefined', () => {
-      const rootState = Object.assign(initialStateDefault, {
-        connections: { instances: initialState },
-      })
-      expect(connectedInstanceIsProductionSelector(rootState)).toBe(false)
     })
   })
 

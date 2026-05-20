@@ -1,4 +1,5 @@
 import { http, HttpHandler, HttpResponse } from 'msw'
+import { Environment } from 'apiClient'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { ConnectionType, Instance } from 'uiSrc/slices/interfaces'
 import { getMswURL } from 'uiSrc/utils/test-utils'
@@ -21,6 +22,7 @@ export const INSTANCES_MOCK: Instance[] = [
     db: 123,
     lastConnection: new Date('2021-04-22T09:03:56.917Z'),
     version: null,
+    environment: Environment.Unspecified,
   },
   {
     id: 'a0db1bc8-a353-4c43-a856-b72f4811d2d4',
@@ -37,6 +39,7 @@ export const INSTANCES_MOCK: Instance[] = [
       caCertId: '70b95d32-c19d-4311-bb24-e684af12cf15',
       clientCertPairId: '70b95d32-c19d-4311-b23b24-e684af12cf15',
     },
+    environment: Environment.Unspecified,
   },
   {
     id: 'b83a3932-e95f-4f09-9d8a-55079f400186',
@@ -64,6 +67,7 @@ export const INSTANCES_MOCK: Instance[] = [
     sentinelMaster: {
       name: 'mymaster',
     },
+    environment: Environment.Unspecified,
   },
 ]
 

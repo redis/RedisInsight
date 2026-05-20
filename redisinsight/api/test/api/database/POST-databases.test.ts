@@ -50,7 +50,9 @@ const dataSchema = Joi.object({
     privateKey: Joi.string().allow(null),
     passphrase: Joi.string().allow(null),
   }).allow(null),
-  isProduction: Joi.boolean().allow(null),
+  environment: Joi.string()
+    .valid('unspecified', 'production', 'development')
+    .allow(null),
 })
   .messages({
     'any.required': '{#label} should not be empty',
@@ -228,7 +230,7 @@ describe('POST /databases', () => {
           },
         });
       });
-      it('Create standalone with isProduction=true', async () => {
+      it('Create standalone with environment=production', async () => {
         const dbName = constants.getRandomString();
 
         await validateApiCall({
@@ -238,18 +240,37 @@ describe('POST /databases', () => {
             name: dbName,
             host: constants.TEST_REDIS_HOST,
             port: constants.TEST_REDIS_PORT,
-            isProduction: true,
+            environment: 'production',
           },
           responseSchema,
           responseBody: {
             name: dbName,
             host: constants.TEST_REDIS_HOST,
             port: constants.TEST_REDIS_PORT,
-            isProduction: true,
+            environment: 'production',
           },
         });
       });
-      it('Create standalone defaults isProduction to false when omitted', async () => {
+      it('Create standalone with environment=fast', async () => {
+        const dbName = constants.getRandomString();
+
+        await validateApiCall({
+          endpoint,
+          statusCode: 201,
+          data: {
+            name: dbName,
+            host: constants.TEST_REDIS_HOST,
+            port: constants.TEST_REDIS_PORT,
+            environment: 'development',
+          },
+          responseSchema,
+          responseBody: {
+            name: dbName,
+            environment: 'development',
+          },
+        });
+      });
+      it('Create standalone defaults environment to unmarked when omitted', async () => {
         const dbName = constants.getRandomString();
 
         await validateApiCall({
@@ -263,7 +284,7 @@ describe('POST /databases', () => {
           responseSchema,
           responseBody: {
             name: dbName,
-            isProduction: false,
+            environment: 'unspecified',
           },
         });
       });

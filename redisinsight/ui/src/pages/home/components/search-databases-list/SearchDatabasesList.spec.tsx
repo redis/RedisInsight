@@ -11,6 +11,7 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { loadInstancesSuccess } from 'uiSrc/slices/instances/instances'
 import { RootState, store } from 'uiSrc/slices/store'
+import { Environment } from 'apiClient'
 import { ConnectionType, Instance } from 'uiSrc/slices/interfaces'
 import SearchDatabasesList from './SearchDatabasesList'
 
@@ -40,6 +41,7 @@ const connectedInstancesMock: Instance[] = [
       },
     ],
     version: '',
+    environment: Environment.Unspecified,
   },
   {
     id: '2',
@@ -52,6 +54,7 @@ const connectedInstancesMock: Instance[] = [
     lastConnection: new Date(),
     tags: [],
     version: '',
+    environment: Environment.Unspecified,
   },
 ]
 
@@ -72,6 +75,7 @@ const otherInstancesMock: Instance[] = [
     connectionType: 'NOT CONNECTED' as any,
     tags: [],
     version: '',
+    environment: Environment.Unspecified,
   },
   {
     id: '4',
@@ -83,6 +87,7 @@ const otherInstancesMock: Instance[] = [
     connectionType: 'UNRECOGNIZED' as any,
     tags: [],
     version: '',
+    environment: Environment.Unspecified,
   },
   {
     id: '5',
@@ -94,6 +99,7 @@ const otherInstancesMock: Instance[] = [
     connectionType: undefined,
     tags: [],
     version: '',
+    environment: Environment.Unspecified,
   },
 ]
 

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Environment } from 'apiClient'
 import { cloneDeep } from 'lodash'
 import {
   render,
@@ -20,7 +21,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { apiService } from 'uiSrc/services'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import successMessages from 'uiSrc/components/notifications/success-messages'
-import { useDatabaseMode } from 'uiSrc/components/hooks/useDatabaseMode'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 import LoadSampleData from './LoadSampleData'
 
 const PRODUCTION_DISABLED_TOOLTIP =
@@ -38,9 +39,9 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
-jest.mock('uiSrc/components/hooks/useDatabaseMode', () => ({
-  ...jest.requireActual('uiSrc/components/hooks/useDatabaseMode'),
-  useDatabaseMode: jest.fn(),
+jest.mock('uiSrc/components/hooks/useDatabaseEnvironment', () => ({
+  ...jest.requireActual('uiSrc/components/hooks/useDatabaseEnvironment'),
+  useDatabaseEnvironment: jest.fn(),
 }))
 
 let store: typeof mockedStore
@@ -48,8 +49,8 @@ beforeEach(() => {
   cleanup()
   store = cloneDeep(mockedStore)
   store.clearActions()
-  ;(useDatabaseMode as jest.Mock).mockReturnValue({
-    mode: 'unmarked',
+  ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+    environment: Environment.Unspecified,
     isDangerousCommand: () => false,
   })
 })
@@ -95,8 +96,8 @@ describe('LoadSampleData', () => {
 
   describe('production mode', () => {
     it('should disable the button and not open the popover in production', () => {
-      ;(useDatabaseMode as jest.Mock).mockReturnValue({
-        mode: 'production',
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+        environment: Environment.Production,
         isDangerousCommand: () => false,
       })
 
@@ -112,8 +113,8 @@ describe('LoadSampleData', () => {
     })
 
     it('should show the production tooltip copy on focus in production', async () => {
-      ;(useDatabaseMode as jest.Mock).mockReturnValue({
-        mode: 'production',
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+        environment: Environment.Production,
         isDangerousCommand: () => false,
       })
 

@@ -138,16 +138,6 @@ export class GetAppSettingsResponse {
   acceptTermsAndConditionsOverwritten: boolean = false;
 
   @ApiProperty({
-    description:
-      'Skip confirmation dialogs for non-production database connections.',
-    type: Boolean,
-    example: false,
-  })
-  @Expose()
-  @Default(false)
-  skipConfirmationsForNonProduction: boolean = false;
-
-  @ApiProperty({
     description: 'Agreements set by the user.',
     type: GetUserAgreementsResponse,
     example: {
@@ -237,14 +227,4 @@ export class UpdateSettingsDto {
   @IsString()
   @IsEnum(ToggleAnalyticsReason)
   analyticsReason?: ToggleAnalyticsReasonType;
-
-  @ApiPropertyOptional({
-    description:
-      'Skip confirmation dialogs for non-production database connections.',
-    type: Boolean,
-    example: false,
-  })
-  @IsOptional()
-  @IsBoolean()
-  skipConfirmationsForNonProduction?: boolean;
 }

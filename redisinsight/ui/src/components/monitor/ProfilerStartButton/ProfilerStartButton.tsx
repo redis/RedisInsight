@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 
+import { Environment } from 'apiClient'
 import { RiTooltip } from 'uiSrc/components'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import {
@@ -7,16 +8,16 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import ConfirmationPopover from 'uiSrc/components/confirmation-popover/ConfirmationPopover'
-import { useDatabaseMode } from 'uiSrc/components/hooks/useDatabaseMode'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 
 export interface Props {
   onStart: () => void
 }
 
 const ProfilerStartButton = ({ onStart }: Props) => {
-  const { mode } = useDatabaseMode()
+  const { environment } = useDatabaseEnvironment()
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
-  const isProduction = mode === 'production'
+  const isProduction = environment === Environment.Production
 
   const handleClick = () => {
     if (isProduction) {

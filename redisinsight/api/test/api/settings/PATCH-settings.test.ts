@@ -25,7 +25,6 @@ const responseSchema = Joi.object()
     dateFormat: Joi.string().allow(null),
     timezone: Joi.string().allow(null),
     acceptTermsAndConditionsOverwritten: Joi.bool().required(),
-    skipConfirmationsForNonProduction: Joi.bool().required(),
     agreements: Joi.object()
       .keys({
         version: Joi.string().required(),
@@ -44,7 +43,6 @@ const dataSchema = Joi.object({
   scanThreshold: Joi.number().allow(null).min(500).optional(),
   dateFormat: Joi.string().allow(null),
   timezone: Joi.string().allow(null),
-  skipConfirmationsForNonProduction: Joi.boolean().allow(null).optional(),
   agreements: Joi.object()
     .keys({
       eula: Joi.boolean().label('.eula').optional(),
@@ -129,24 +127,6 @@ describe('PATCH /settings', () => {
             constants.APP_DEFAULT_SETTINGS;
 
           expect(body).to.include(defaultSettings);
-        },
-      },
-      {
-        name: 'Should enable skipConfirmationsForNonProduction',
-        statusCode: 200,
-        data: { skipConfirmationsForNonProduction: true },
-        responseSchema,
-        checkFn: ({ body }) => {
-          expect(body.skipConfirmationsForNonProduction).to.eql(true);
-        },
-      },
-      {
-        name: 'Should disable skipConfirmationsForNonProduction',
-        statusCode: 200,
-        data: { skipConfirmationsForNonProduction: false },
-        responseSchema,
-        checkFn: ({ body }) => {
-          expect(body.skipConfirmationsForNonProduction).to.eql(false);
         },
       },
     ].map(mainCheckFn);

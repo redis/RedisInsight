@@ -2,12 +2,12 @@ import React from 'react'
 import { FormikProps } from 'formik'
 import {
   DatabaseForm,
+  EnvironmentSelect,
   DbIndex,
   ForceStandalone,
   SSHDetails,
   TlsDetails,
 } from 'uiSrc/pages/home/components/form'
-import ProductionToggle from 'uiSrc/pages/home/components/form/ProductionToggle'
 import { Spacer } from 'uiSrc/components/base/layout'
 import Divider from 'uiSrc/components/divider/Divider'
 import { BuildType } from 'uiSrc/constants/env'
@@ -80,7 +80,7 @@ const EditConnection = (props: Props) => {
               <Spacer size="m" />
               <Divider />
               <Spacer size="m" />
-              <ProductionToggle formik={formik} />
+              <EnvironmentSelect formik={formik} />
             </>
           </FeatureFlagComponent>
           {isCloneMode && (

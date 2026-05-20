@@ -1,4 +1,5 @@
 import React from 'react'
+import { Environment } from 'apiClient'
 import { cloneDeep } from 'lodash'
 import reactRouterDom from 'react-router-dom'
 import { AxiosError } from 'axios'
@@ -19,7 +20,7 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { checkResourse } from 'uiSrc/services/resourcesService'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
-import { useDatabaseMode } from 'uiSrc/components/hooks/useDatabaseMode'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 import RedisUploadButton, { Props } from './RedisUploadButton'
 
 const PRODUCTION_DISABLED_TOOLTIP =
@@ -42,9 +43,9 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
-jest.mock('uiSrc/components/hooks/useDatabaseMode', () => ({
-  ...jest.requireActual('uiSrc/components/hooks/useDatabaseMode'),
-  useDatabaseMode: jest.fn(),
+jest.mock('uiSrc/components/hooks/useDatabaseEnvironment', () => ({
+  ...jest.requireActual('uiSrc/components/hooks/useDatabaseEnvironment'),
+  useDatabaseEnvironment: jest.fn(),
 }))
 
 let store: typeof mockedStore
@@ -52,8 +53,8 @@ beforeEach(() => {
   cleanup()
   store = cloneDeep(mockedStore)
   store.clearActions()
-  ;(useDatabaseMode as jest.Mock).mockReturnValue({
-    mode: 'unmarked',
+  ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+    environment: Environment.Unspecified,
     isDangerousCommand: () => false,
   })
 })
@@ -178,8 +179,8 @@ describe('RedisUploadButton', () => {
 
   describe('production mode', () => {
     it('should disable the bulk-import button when mode is production', () => {
-      ;(useDatabaseMode as jest.Mock).mockReturnValue({
-        mode: 'production',
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+        environment: Environment.Production,
         isDangerousCommand: () => false,
       })
 
@@ -190,8 +191,8 @@ describe('RedisUploadButton', () => {
     })
 
     it('should not open popover or fire telemetry when clicked in production', () => {
-      ;(useDatabaseMode as jest.Mock).mockReturnValue({
-        mode: 'production',
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+        environment: Environment.Production,
         isDangerousCommand: () => false,
       })
       const sendEventTelemetryMock = jest.fn()
@@ -210,8 +211,8 @@ describe('RedisUploadButton', () => {
     })
 
     it('should show the production tooltip copy on focus in production', async () => {
-      ;(useDatabaseMode as jest.Mock).mockReturnValue({
-        mode: 'production',
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+        environment: Environment.Production,
         isDangerousCommand: () => false,
       })
 

@@ -2,6 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { TelemetryBaseService } from 'src/modules/analytics/telemetry.base.service';
 import { Database } from 'src/modules/database/models/database';
+import { Environment } from 'src/modules/database/entities/database.entity';
 import { TelemetryEvents } from 'src/constants';
 import { getRedisModulesSummary } from 'src/utils/redis-modules-summary';
 import { getRangeForNumber, TOTAL_KEYS_BREAKPOINTS } from 'src/utils';
@@ -60,7 +61,7 @@ export class DatabaseAnalytics extends TelemetryBaseService {
         serverName: additionalInfo?.server?.server_name || null,
         forceStandalone: instance?.forceStandalone ? 'true' : 'false',
         keyNameFormat: instance?.keyNameFormat || null,
-        isProduction: instance?.isProduction ? 'true' : 'false',
+        environment: instance?.environment ?? Environment.Unspecified,
         ...modulesSummary,
       });
     } catch (e) {
@@ -105,7 +106,7 @@ export class DatabaseAnalytics extends TelemetryBaseService {
             useDecompression: cur?.compressor || null,
             forceStandalone: cur?.forceStandalone ? 'true' : 'false',
             keyNameFormat: cur?.keyNameFormat || null,
-            isProduction: cur?.isProduction ? 'true' : 'false',
+            environment: cur?.environment ?? Environment.Unspecified,
             previousValues: {
               connectionType: prev.connectionType,
               provider: prev.provider,
@@ -118,7 +119,7 @@ export class DatabaseAnalytics extends TelemetryBaseService {
               useTLSAuthClients: prev?.clientCert ? 'enabled' : 'disabled',
               forceStandalone: prev?.forceStandalone ? 'true' : 'false',
               keyNameFormat: prev?.keyNameFormat || null,
-              isProduction: prev?.isProduction ? 'true' : 'false',
+              environment: prev?.environment ?? Environment.Unspecified,
             },
           },
         );

@@ -1,3 +1,4 @@
+import { Environment } from 'apiClient'
 import {
   getUtmExternalLink,
   buildRedisInsightUrl,
@@ -58,6 +59,7 @@ const buildRedisInsightUrlTests: Array<{
         memoryLimitMeasurementUnit: 'MB',
         free: true,
       },
+      environment: Environment.Unspecified,
     },
     expected:
       'redisinsight://databases/connect?redisUrl=redis%3A%2F%2F%40aws-instance.amazonaws.com%3A6379&cloudBdbId=1&databaseAlias=free+aws+instance&subscriptionType=fixed&planMemoryLimit=1024&memoryLimitMeasurementUnit=MB&free=true',
@@ -72,6 +74,7 @@ const buildRedisInsightUrlTests: Array<{
       tlsClientAuthRequired: true,
       modules: [],
       version: '1.0.0',
+      environment: Environment.Unspecified,
     },
     expected:
       'redisinsight://databases/connect?redisUrl=redis%3A%2F%2F%40127.0.0.1%3A6380&cloudBdbId=&databaseAlias=cert+localhost+instance&requiredTls=true&requiredCaCert=true&requiredClientCert=true',
@@ -93,6 +96,7 @@ const buildRedisInsightUrlTests: Array<{
         planMemoryLimit: 2048,
         memoryLimitMeasurementUnit: 'MB',
       },
+      environment: Environment.Unspecified,
     },
     expected:
       'redisinsight://databases/connect?redisUrl=redis%3A%2F%2F%40gcp-instance.example.com%3A6379&cloudBdbId=2&databaseAlias=mixed+cert+gcp+instance&requiredTls=true&requiredCaCert=true&subscriptionType=fixed&planMemoryLimit=2048&memoryLimitMeasurementUnit=MB',

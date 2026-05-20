@@ -1299,7 +1299,7 @@
   "src/modules/settings/settings.analytics.spec.ts": {
     "TS2322": 4,
     "TS2345": 1,
-    "TS7005": 8,
+    "TS7005": 5,
     "TS7034": 1
   },
   "src/modules/settings/settings.service.spec.ts": {
@@ -1897,7 +1897,7 @@
   },
   "test/api/settings/PATCH-settings.test.ts": {
     "TS7006": 1,
-    "TS7031": 7,
+    "TS7031": 5,
     "TS7053": 1
   },
   "test/api/slowlog/DELETE-databases-id-slow_logs.test.ts": {

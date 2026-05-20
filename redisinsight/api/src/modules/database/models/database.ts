@@ -7,6 +7,7 @@ import {
   Compressor,
   ConnectionType,
   Encoding,
+  Environment,
   HostingProvider,
 } from 'src/modules/database/entities/database.entity';
 import {
@@ -369,12 +370,18 @@ export class Database {
   isPreSetup?: boolean;
 
   @ApiPropertyOptional({
-    description: 'Marks the database connection as a production environment.',
-    type: Boolean,
-    default: false,
+    description:
+      'Environment classification for the database connection. Controls confirmation friction for risky operations.',
+    default: Environment.Unspecified,
+    enum: Environment,
+    enumName: 'Environment',
   })
   @Expose()
-  @IsBoolean()
+  @IsEnum(Environment, {
+    message: `environment must be a valid enum value. Valid values: ${Object.values(
+      Environment,
+    )}.`,
+  })
   @IsOptional()
-  isProduction?: boolean;
+  environment?: Environment = Environment.Unspecified;
 }

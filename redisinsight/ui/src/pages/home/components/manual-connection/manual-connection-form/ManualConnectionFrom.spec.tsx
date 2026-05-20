@@ -1412,8 +1412,8 @@ describe('InstanceForm', () => {
     expect(handleSubmit).toHaveBeenCalled()
   })
 
-  describe('Production toggle', () => {
-    it('should not render the toggle when the devProdMode flag is off', () => {
+  describe('Database mode select', () => {
+    it('should not render the dropdown when the devProdMode flag is off', () => {
       ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValueOnce({
         [FeatureFlags.devProdMode]: { flag: false },
       })
@@ -1426,10 +1426,10 @@ describe('InstanceForm', () => {
         />,
       )
 
-      expect(screen.queryByTestId('isProduction')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('select-environment')).not.toBeInTheDocument()
     })
 
-    it('should render the toggle (off by default) when the devProdMode flag is on', () => {
+    it('should render the dropdown when the devProdMode flag is on', () => {
       ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValue({
         [FeatureFlags.devProdMode]: { flag: true },
       })
@@ -1442,61 +1442,7 @@ describe('InstanceForm', () => {
         />,
       )
 
-      const toggle = screen.getByTestId('isProduction')
-      expect(toggle).toBeInTheDocument()
-      expect(toggle).toHaveAttribute('aria-checked', 'false')
-      ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReset()
-    })
-
-    it('should pre-fill the toggle from the existing connection on edit', () => {
-      ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValue({
-        [FeatureFlags.devProdMode]: { flag: true },
-      })
-
-      render(
-        <ManualConnectionForm
-          {...instance(mockedProps)}
-          isEditMode
-          formFields={{ ...formFields, isProduction: true }}
-        />,
-      )
-
-      const toggle = screen.getByTestId('isProduction')
-      expect(toggle).toHaveAttribute('aria-checked', 'true')
-      ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReset()
-    })
-
-    it('should submit isProduction in the payload when toggled on', async () => {
-      ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValue({
-        [FeatureFlags.devProdMode]: { flag: true },
-      })
-      const handleSubmit = jest.fn()
-
-      render(
-        <div id="footerDatabaseForm">
-          <ManualConnectionForm
-            {...instance(mockedProps)}
-            isEditMode={false}
-            formFields={formFields}
-            onSubmit={handleSubmit}
-          />
-        </div>,
-      )
-
-      await act(async () => {
-        fireEvent.click(screen.getByTestId('isProduction'))
-      })
-      await act(async () => {
-        fireEvent.keyDown(screen.getByTestId('form'), {
-          key: 'Enter',
-          code: 13,
-          charCode: 13,
-        })
-      })
-
-      expect(handleSubmit).toHaveBeenCalledWith(
-        expect.objectContaining({ isProduction: true }),
-      )
+      expect(screen.getByTestId('select-environment')).toBeInTheDocument()
       ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReset()
     })
   })
