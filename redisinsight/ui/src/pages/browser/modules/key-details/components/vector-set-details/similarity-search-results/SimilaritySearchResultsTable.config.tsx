@@ -96,8 +96,9 @@ const buildAttributeColumn = (
     const attrs =
       parsedAttributesCache.get(row.original) ??
       parseAttributes(row.original.attributes)
-    const value = attrs[key]
-    const isMissing = !(key in attrs) || value === null || value === undefined
+    const hasOwn = Object.prototype.hasOwnProperty.call(attrs, key)
+    const value = hasOwn ? attrs[key] : undefined
+    const isMissing = !hasOwn || value === null || value === undefined
     return (
       <S.AttributeCell
         data-testid={`vector-set-similarity-attribute-cell-${row.index}-${key}`}
