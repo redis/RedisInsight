@@ -14,12 +14,9 @@ export class CommandsJsonProvider {
 
   private readonly url: string;
 
-  private readonly defaultData?: object;
-
-  constructor(name: string, url: string, defaultData?: object) {
+  constructor(name: string, url: string) {
     this.name = name;
     this.url = url;
-    this.defaultData = defaultData;
     this.logger = new Logger(`CommandsJsonProvider:${this.name}`);
   }
 
@@ -79,10 +76,6 @@ export class CommandsJsonProvider {
    * In case when no default data we will return empty object to not fail api call
    */
   async getDefaultCommands() {
-    if (this.defaultData) {
-      return { [this.name]: this.defaultData };
-    }
-
     try {
       return {
         [this.name]: JSON.parse(

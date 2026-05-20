@@ -10,9 +10,15 @@ async function init() {
   try {
     await Promise.all(
       COMMANDS_CONFIG.map(async ({ name, url, defaultUrl }) => {
+        const source = defaultUrl || url;
+        if (!source) {
+          // Provider ships its own JSON in the repo — nothing to download.
+          console.log(`Skipping ${name} commands: no source URL configured.`);
+          return;
+        }
         try {
           console.log(`Trying to get ${name} commands...`);
-          const { data } = await axios.get(defaultUrl || url, {
+          const { data } = await axios.get(source, {
             responseType: 'text',
             transformResponse: [(raw) => raw],
           });

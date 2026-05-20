@@ -321,6 +321,13 @@ export default {
         process.env.RI_COMMANDS_REDISBLOOM_URL ||
         'https://raw.githubusercontent.com/RedisBloom/RedisBloom/master/commands.json',
     },
+    {
+      // Vector Set commands ship with this repo (no canonical upstream JSON
+      // is published yet). Url is opt-in via env so deployers can point at a
+      // hosted snapshot once one exists.
+      name: 'vector_set',
+      url: process.env.RI_COMMANDS_VECTOR_SET_URL || '',
+    },
   ],
   connections: {
     timeout:

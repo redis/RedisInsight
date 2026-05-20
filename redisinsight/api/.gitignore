@@ -2,7 +2,10 @@
 /dist
 /node_modules
 /static
-/defaults
+/defaults/*
+!/defaults/commands/
+/defaults/commands/*
+!/defaults/commands/vector_set.json
 
 # Logs
 logs
