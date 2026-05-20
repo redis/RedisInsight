@@ -5,7 +5,7 @@ export class DatabaseMode1779000000000 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "database_instance" ADD COLUMN "databaseMode" varchar DEFAULT ('unmarked')`,
+      `ALTER TABLE "database_instance" ADD COLUMN "databaseMode" varchar NOT NULL DEFAULT ('unmarked')`,
     );
   }
 

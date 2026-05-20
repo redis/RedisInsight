@@ -298,6 +298,6 @@ export class DatabaseEntity {
   keyNameFormat: string;
 
   @Expose()
-  @Column({ nullable: true, default: DatabaseMode.Unmarked })
+  @Column({ nullable: false, default: DatabaseMode.Unmarked })
   databaseMode: DatabaseMode;
 }
