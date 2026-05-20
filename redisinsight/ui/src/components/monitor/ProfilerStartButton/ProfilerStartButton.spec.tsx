@@ -5,10 +5,10 @@ import * as useEnvironmentModule from 'uiSrc/components/hooks/useEnvironment'
 import ProfilerStartButton from './ProfilerStartButton'
 
 const mockUseEnvironment = (
-  mode: useEnvironmentModule.UseEnvironmentResult['mode'],
+  environment: useEnvironmentModule.UseEnvironmentResult['environment'],
 ) =>
   jest.spyOn(useEnvironmentModule, 'useEnvironment').mockReturnValue({
-    mode,
+    environment,
     isDangerousCommand: () => false,
   })
 

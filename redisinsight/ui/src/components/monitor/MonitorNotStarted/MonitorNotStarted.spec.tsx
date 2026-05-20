@@ -7,7 +7,7 @@ import MonitorNotStarted from './MonitorNotStarted'
 beforeEach(() => {
   cleanup()
   jest.spyOn(useEnvironmentModule, 'useEnvironment').mockReturnValue({
-    mode: Environment.Unspecified,
+    environment: Environment.Unspecified,
     isDangerousCommand: () => false,
   })
 })

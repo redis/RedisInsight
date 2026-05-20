@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 
+import { Environment } from 'apiClient'
 import { RiTooltip } from 'uiSrc/components'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import {
@@ -14,9 +15,9 @@ export interface Props {
 }
 
 const ProfilerStartButton = ({ onStart }: Props) => {
-  const { mode } = useEnvironment()
+  const { environment } = useEnvironment()
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
-  const isProduction = mode === 'production'
+  const isProduction = environment === Environment.Production
 
   const handleClick = () => {
     if (isProduction) {

@@ -36,7 +36,7 @@ import {
   ToastCheckIcon,
 } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { AdditionalRedisModule } from 'apiClient'
+import { AdditionalRedisModule, Environment } from 'apiClient'
 import { useEnvironment } from 'uiSrc/components/hooks/useEnvironment'
 
 import { RunConfirmationPopover } from './components'
@@ -79,8 +79,8 @@ const CodeButtonBlock = (props: Props) => {
   const [isCopied, setIsCopied] = useState(false)
 
   const { instanceId } = useParams<{ instanceId: string }>()
-  const { mode } = useEnvironment()
-  const isProduction = mode === 'production'
+  const { environment } = useEnvironment()
+  const isProduction = environment === Environment.Production
 
   const isButtonHasConfirmation =
     params?.run_confirmation === BooleanParams.true

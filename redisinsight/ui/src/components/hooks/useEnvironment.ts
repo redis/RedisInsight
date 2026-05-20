@@ -8,7 +8,7 @@ import {
 } from 'uiSrc/slices/instances/instances'
 
 export interface UseEnvironmentResult {
-  mode: Environment
+  environment: Environment
   isDangerousCommand: (cmd: string) => boolean
 }
 
@@ -19,18 +19,18 @@ export const useEnvironment = (): UseEnvironmentResult => {
   )
   const connectedInstance = useSelector(connectedInstanceSelector)
 
-  const mode: Environment = flagEnabled
+  const environment: Environment = flagEnabled
     ? connectedInstance.environment
     : Environment.Unspecified
 
   const isDangerousCommand = useMemo(() => {
     const upper = new Set(dangerousCommands.map((c) => c.toUpperCase()))
     return (cmd: string): boolean => {
-      if (mode !== Environment.Production) return false
+      if (environment !== Environment.Production) return false
       if (!cmd) return false
       return upper.has(cmd.toUpperCase())
     }
-  }, [mode, dangerousCommands])
+  }, [environment, dangerousCommands])
 
-  return { mode, isDangerousCommand }
+  return { environment, isDangerousCommand }
 }

@@ -40,7 +40,7 @@ jest.mock('uiSrc/components/hooks/useEnvironment', () => ({
 
 beforeEach(() => {
   ;(useEnvironment as jest.Mock).mockReturnValue({
-    mode: 'unspecified',
+    environment: 'unspecified',
     isDangerousCommand: () => false,
   })
 })
@@ -280,7 +280,7 @@ describe('CodeButtonBlock', () => {
   describe('production mode', () => {
     it('should disable Run button and not call onApply when mode is production', () => {
       ;(useEnvironment as jest.Mock).mockReturnValue({
-        mode: 'production',
+        environment: 'production',
         isDangerousCommand: () => false,
       })
       const onApply = jest.fn()
@@ -303,7 +303,7 @@ describe('CodeButtonBlock', () => {
 
     it('should show the production tooltip copy on focus when mode is production', async () => {
       ;(useEnvironment as jest.Mock).mockReturnValue({
-        mode: 'production',
+        environment: 'production',
         isDangerousCommand: () => false,
       })
 
@@ -331,7 +331,7 @@ describe('CodeButtonBlock', () => {
         .fn()
         .mockReturnValue({ instanceId: 'instanceId' })
       ;(useEnvironment as jest.Mock).mockReturnValue({
-        mode: 'unspecified',
+        environment: 'unspecified',
         isDangerousCommand: () => false,
       })
       const onApply = jest.fn()

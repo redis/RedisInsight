@@ -44,25 +44,25 @@ describe('useEnvironment', () => {
     it('falls back to unmarked when flag is off', () => {
       setMocks({ flag: false, environment: Environment.Production })
       const { result } = renderHook(useEnvironment)
-      expect(result.current.mode).toBe('unspecified')
+      expect(result.current.environment).toBe('unspecified')
     })
 
     it('returns production when flag on and connection is marked production', () => {
       setMocks({ flag: true, environment: Environment.Production })
       const { result } = renderHook(useEnvironment)
-      expect(result.current.mode).toBe('production')
+      expect(result.current.environment).toBe('production')
     })
 
     it('returns fast when flag on and connection is marked fast', () => {
       setMocks({ flag: true, environment: Environment.Development })
       const { result } = renderHook(useEnvironment)
-      expect(result.current.mode).toBe('development')
+      expect(result.current.environment).toBe('development')
     })
 
     it('returns unmarked when flag on and connection is unmarked', () => {
       setMocks({ flag: true, environment: Environment.Unspecified })
       const { result } = renderHook(useEnvironment)
-      expect(result.current.mode).toBe('unspecified')
+      expect(result.current.environment).toBe('unspecified')
     })
   })
 

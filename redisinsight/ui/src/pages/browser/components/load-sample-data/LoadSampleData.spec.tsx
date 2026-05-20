@@ -49,7 +49,7 @@ beforeEach(() => {
   store = cloneDeep(mockedStore)
   store.clearActions()
   ;(useEnvironment as jest.Mock).mockReturnValue({
-    mode: 'unspecified',
+    environment: 'unspecified',
     isDangerousCommand: () => false,
   })
 })
@@ -96,7 +96,7 @@ describe('LoadSampleData', () => {
   describe('production mode', () => {
     it('should disable the button and not open the popover in production', () => {
       ;(useEnvironment as jest.Mock).mockReturnValue({
-        mode: 'production',
+        environment: 'production',
         isDangerousCommand: () => false,
       })
 
@@ -113,7 +113,7 @@ describe('LoadSampleData', () => {
 
     it('should show the production tooltip copy on focus in production', async () => {
       ;(useEnvironment as jest.Mock).mockReturnValue({
-        mode: 'production',
+        environment: 'production',
         isDangerousCommand: () => false,
       })
 

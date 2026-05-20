@@ -20,6 +20,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { useEnvironment } from 'uiSrc/components/hooks/useEnvironment'
+import { Environment } from 'apiClient'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -33,8 +34,8 @@ const LoadSampleData = (props: Props) => {
 
   const { id } = useSelector(connectedInstanceSelector)
   const { loading } = useSelector(bulkActionsSelector)
-  const { mode } = useEnvironment()
-  const isProduction = mode === 'production'
+  const { environment } = useEnvironment()
+  const isProduction = environment === Environment.Production
 
   const dispatch = useDispatch()
 

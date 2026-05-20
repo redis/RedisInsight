@@ -53,7 +53,7 @@ beforeEach(() => {
   store = cloneDeep(mockedStore)
   store.clearActions()
   ;(useEnvironment as jest.Mock).mockReturnValue({
-    mode: 'unspecified',
+    environment: 'unspecified',
     isDangerousCommand: () => false,
   })
 })
@@ -179,7 +179,7 @@ describe('RedisUploadButton', () => {
   describe('production mode', () => {
     it('should disable the bulk-import button when mode is production', () => {
       ;(useEnvironment as jest.Mock).mockReturnValue({
-        mode: 'production',
+        environment: 'production',
         isDangerousCommand: () => false,
       })
 
@@ -191,7 +191,7 @@ describe('RedisUploadButton', () => {
 
     it('should not open popover or fire telemetry when clicked in production', () => {
       ;(useEnvironment as jest.Mock).mockReturnValue({
-        mode: 'production',
+        environment: 'production',
         isDangerousCommand: () => false,
       })
       const sendEventTelemetryMock = jest.fn()
@@ -211,7 +211,7 @@ describe('RedisUploadButton', () => {
 
     it('should show the production tooltip copy on focus in production', async () => {
       ;(useEnvironment as jest.Mock).mockReturnValue({
-        mode: 'production',
+        environment: 'production',
         isDangerousCommand: () => false,
       })
 
