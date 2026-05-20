@@ -69,11 +69,17 @@ export class LogFile {
     stream.once('end', () => {
       stream.destroy();
       try {
-        this.analyticsEvents.get(TelemetryEvents.ProfilerLogDownloaded)(
-          this.sessionMetadata,
-          this.instanceId,
-          this.getFileSize(),
-        );
+        // Wrap in Promise.resolve so the analytics handler returning either
+        // void (legacy) or Promise<void> (current — see ProfilerAnalyticsService)
+        // is uniformly catchable. The sync try/catch can't trap a post-await
+        // rejection on its own.
+        Promise.resolve(
+          this.analyticsEvents.get(TelemetryEvents.ProfilerLogDownloaded)(
+            this.sessionMetadata,
+            this.instanceId,
+            this.getFileSize(),
+          ),
+        ).catch(() => {});
       } catch (e) {
         // ignore analytics errors
       }
@@ -142,11 +148,16 @@ export class LogFile {
       const size = this.getFileSize();
       fs.unlinkSync(this.filePath);
 
-      this.analyticsEvents.get(TelemetryEvents.ProfilerLogDeleted)(
-        this.sessionMetadata,
-        this.instanceId,
-        size,
-      );
+      // Wrap in Promise.resolve so an async handler's rejection (the
+      // analytics service is now async — see ProfilerAnalyticsService)
+      // doesn't escape past this sync try/catch as an unhandled rejection.
+      Promise.resolve(
+        this.analyticsEvents.get(TelemetryEvents.ProfilerLogDeleted)(
+          this.sessionMetadata,
+          this.instanceId,
+          size,
+        ),
+      ).catch(() => {});
     } catch (e) {
       // ignore error
     }
