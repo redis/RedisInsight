@@ -102,6 +102,7 @@ export enum CommandGroup {
   TopK = 'topk',
   BloomFilter = 'bf',
   CuckooFilter = 'cf',
+  VectorSet = 'vector_set',
 }
 
 export enum CommandPrefix {

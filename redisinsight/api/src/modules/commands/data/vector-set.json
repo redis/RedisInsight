@@ -1,0 +1,262 @@
+{
+  "VADD": {
+    "summary": "Add a new element to a vector set, or update an existing element's vector.",
+    "since": "8.0.0",
+    "group": "vector_set",
+    "complexity": "O(log(N)) for each new element, where N is the number of elements in the vector set.",
+    "arguments": [
+      { "name": "key", "type": "key" },
+      {
+        "name": "reduce",
+        "type": "block",
+        "token": "REDUCE",
+        "optional": true,
+        "arguments": [
+          { "name": "dim", "type": "integer" }
+        ]
+      },
+      {
+        "name": "vector",
+        "type": "oneof",
+        "arguments": [
+          {
+            "name": "fp32",
+            "type": "block",
+            "arguments": [
+              { "name": "fp32", "type": "pure-token", "token": "FP32" },
+              { "name": "blob", "type": "string" }
+            ]
+          },
+          {
+            "name": "values",
+            "type": "block",
+            "arguments": [
+              { "name": "values", "type": "pure-token", "token": "VALUES" },
+              { "name": "num", "type": "integer" },
+              { "name": "value", "type": "double", "multiple": true }
+            ]
+          }
+        ]
+      },
+      { "name": "element", "type": "string" },
+      { "name": "cas", "type": "pure-token", "token": "CAS", "optional": true },
+      {
+        "name": "quantization",
+        "type": "oneof",
+        "optional": true,
+        "arguments": [
+          { "name": "noquant", "type": "pure-token", "token": "NOQUANT" },
+          { "name": "q8", "type": "pure-token", "token": "Q8" },
+          { "name": "bin", "type": "pure-token", "token": "BIN" }
+        ]
+      },
+      {
+        "name": "ef",
+        "type": "block",
+        "token": "EF",
+        "optional": true,
+        "arguments": [
+          { "name": "build-exploration-factor", "type": "integer" }
+        ]
+      },
+      {
+        "name": "setattr",
+        "type": "block",
+        "token": "SETATTR",
+        "optional": true,
+        "arguments": [
+          { "name": "attributes", "type": "string" }
+        ]
+      },
+      {
+        "name": "m",
+        "type": "block",
+        "token": "M",
+        "optional": true,
+        "arguments": [
+          { "name": "numlinks", "type": "integer" }
+        ]
+      }
+    ]
+  },
+  "VSIM": {
+    "summary": "Return elements similar to a given vector or to an element of a vector set.",
+    "since": "8.0.0",
+    "group": "vector_set",
+    "complexity": "O(log(N)) where N is the number of elements in the vector set.",
+    "arguments": [
+      { "name": "key", "type": "key" },
+      {
+        "name": "query",
+        "type": "oneof",
+        "arguments": [
+          {
+            "name": "ele",
+            "type": "block",
+            "arguments": [
+              { "name": "ele", "type": "pure-token", "token": "ELE" },
+              { "name": "element", "type": "string" }
+            ]
+          },
+          {
+            "name": "fp32",
+            "type": "block",
+            "arguments": [
+              { "name": "fp32", "type": "pure-token", "token": "FP32" },
+              { "name": "blob", "type": "string" }
+            ]
+          },
+          {
+            "name": "values",
+            "type": "block",
+            "arguments": [
+              { "name": "values", "type": "pure-token", "token": "VALUES" },
+              { "name": "num", "type": "integer" },
+              { "name": "value", "type": "double", "multiple": true }
+            ]
+          }
+        ]
+      },
+      { "name": "withscores", "type": "pure-token", "token": "WITHSCORES", "optional": true },
+      { "name": "withattribs", "type": "pure-token", "token": "WITHATTRIBS", "optional": true },
+      {
+        "name": "count",
+        "type": "block",
+        "token": "COUNT",
+        "optional": true,
+        "arguments": [
+          { "name": "num", "type": "integer" }
+        ]
+      },
+      {
+        "name": "ef",
+        "type": "block",
+        "token": "EF",
+        "optional": true,
+        "arguments": [
+          { "name": "search-exploration-factor", "type": "integer" }
+        ]
+      },
+      {
+        "name": "filter",
+        "type": "block",
+        "token": "FILTER",
+        "optional": true,
+        "arguments": [
+          { "name": "expression", "type": "string" }
+        ]
+      },
+      {
+        "name": "filter-ef",
+        "type": "block",
+        "token": "FILTER-EF",
+        "optional": true,
+        "arguments": [
+          { "name": "max-filtering-effort", "type": "integer" }
+        ]
+      },
+      { "name": "truth", "type": "pure-token", "token": "TRUTH", "optional": true },
+      { "name": "nothread", "type": "pure-token", "token": "NOTHREAD", "optional": true }
+    ]
+  },
+  "VEMB": {
+    "summary": "Return the approximate vector associated with a given element of a vector set.",
+    "since": "8.0.0",
+    "group": "vector_set",
+    "complexity": "O(1)",
+    "arguments": [
+      { "name": "key", "type": "key" },
+      { "name": "element", "type": "string" },
+      { "name": "raw", "type": "pure-token", "token": "RAW", "optional": true }
+    ]
+  },
+  "VDIM": {
+    "summary": "Return the dimension of the vectors in a vector set.",
+    "since": "8.0.0",
+    "group": "vector_set",
+    "complexity": "O(1)",
+    "arguments": [
+      { "name": "key", "type": "key" }
+    ]
+  },
+  "VCARD": {
+    "summary": "Return the number of elements in a vector set.",
+    "since": "8.0.0",
+    "group": "vector_set",
+    "complexity": "O(1)",
+    "arguments": [
+      { "name": "key", "type": "key" }
+    ]
+  },
+  "VREM": {
+    "summary": "Remove an element from a vector set.",
+    "since": "8.0.0",
+    "group": "vector_set",
+    "complexity": "O(log(N)) where N is the number of elements in the vector set.",
+    "arguments": [
+      { "name": "key", "type": "key" },
+      { "name": "element", "type": "string" }
+    ]
+  },
+  "VRANDMEMBER": {
+    "summary": "Return one or more random elements from a vector set.",
+    "since": "8.0.0",
+    "group": "vector_set",
+    "complexity": "O(N) where N is the absolute value of the count.",
+    "arguments": [
+      { "name": "key", "type": "key" },
+      { "name": "count", "type": "integer", "optional": true }
+    ]
+  },
+  "VLINKS": {
+    "summary": "Return the HNSW graph neighbours of an element in a vector set, layer by layer.",
+    "since": "8.0.0",
+    "group": "vector_set",
+    "complexity": "O(1)",
+    "arguments": [
+      { "name": "key", "type": "key" },
+      { "name": "element", "type": "string" },
+      { "name": "withscores", "type": "pure-token", "token": "WITHSCORES", "optional": true }
+    ]
+  },
+  "VINFO": {
+    "summary": "Return information about a vector set: size, dimension, quantization, HNSW parameters.",
+    "since": "8.0.0",
+    "group": "vector_set",
+    "complexity": "O(1)",
+    "arguments": [
+      { "name": "key", "type": "key" }
+    ]
+  },
+  "VSETATTR": {
+    "summary": "Set or replace the JSON attributes associated with an element of a vector set.",
+    "since": "8.0.0",
+    "group": "vector_set",
+    "complexity": "O(1)",
+    "arguments": [
+      { "name": "key", "type": "key" },
+      { "name": "element", "type": "string" },
+      { "name": "json-attributes", "type": "string" }
+    ]
+  },
+  "VGETATTR": {
+    "summary": "Return the JSON attributes associated with an element of a vector set.",
+    "since": "8.0.0",
+    "group": "vector_set",
+    "complexity": "O(1)",
+    "arguments": [
+      { "name": "key", "type": "key" },
+      { "name": "element", "type": "string" }
+    ]
+  },
+  "VISMEMBER": {
+    "summary": "Return whether an element is a member of a vector set.",
+    "since": "8.0.0",
+    "group": "vector_set",
+    "complexity": "O(1)",
+    "arguments": [
+      { "name": "key", "type": "key" },
+      { "name": "element", "type": "string" }
+    ]
+  }
+}

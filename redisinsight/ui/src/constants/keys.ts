@@ -49,6 +49,7 @@ export const GROUP_TYPES_DISPLAY = Object.freeze({
   [CommandGroup.TopK]: 'TopK',
   [CommandGroup.BloomFilter]: 'Bloom Filter',
   [CommandGroup.CuckooFilter]: 'Cuckoo Filter',
+  [CommandGroup.VectorSet]: 'Vector Set',
 })
 
 export type GroupTypesDisplay = keyof typeof GROUP_TYPES_DISPLAY
@@ -77,6 +78,7 @@ export const GROUP_TYPES_COLORS = Object.freeze({
   [CommandGroup.Transactions]: 'var(--groupTransactionsColor)',
   [CommandGroup.Server]: 'var(--groupServerColor)',
   [CommandGroup.HyperLogLog]: 'var(--groupHyperLolLogColor)',
+  [CommandGroup.VectorSet]: 'var(--typeVectorSetColor)',
 })
 
 export type GroupTypesColors = keyof typeof GROUP_TYPES_COLORS

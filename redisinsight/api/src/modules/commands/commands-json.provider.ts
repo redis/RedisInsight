@@ -14,9 +14,12 @@ export class CommandsJsonProvider {
 
   private readonly url: string;
 
-  constructor(name, url) {
+  private readonly defaultData?: object;
+
+  constructor(name: string, url: string, defaultData?: object) {
     this.name = name;
     this.url = url;
+    this.defaultData = defaultData;
     this.logger = new Logger(`CommandsJsonProvider:${this.name}`);
   }
 
@@ -24,6 +27,11 @@ export class CommandsJsonProvider {
    * Get latest json from external resource and save it locally
    */
   async updateLatestJson() {
+    if (!this.url) {
+      // Bundled-only provider — nothing to fetch.
+      return;
+    }
+
     try {
       this.logger.debug(`Trying to update ${this.name} commands...`);
       const { data } = await axios.get(this.url, {
@@ -71,6 +79,10 @@ export class CommandsJsonProvider {
    * In case when no default data we will return empty object to not fail api call
    */
   async getDefaultCommands() {
+    if (this.defaultData) {
+      return { [this.name]: this.defaultData };
+    }
+
     try {
       return {
         [this.name]: JSON.parse(

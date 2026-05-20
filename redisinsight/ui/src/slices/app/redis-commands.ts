@@ -21,6 +21,7 @@ export const commands = [
   'redisgraph',
   'redisgears',
   'redisbloom',
+  'vector_set',
 ]
 
 export const initialState: StateAppRedisCommands = {

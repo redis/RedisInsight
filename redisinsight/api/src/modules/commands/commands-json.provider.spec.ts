@@ -39,6 +39,17 @@ describe('CommandsJsonProvider', () => {
 
       expect(mockedFs.writeFile).not.toHaveBeenCalled();
     });
+
+    it('should skip network fetch when url is empty (bundled provider)', async () => {
+      const bundled = new CommandsJsonProvider('vector_set', '', {
+        VADD: { summary: 's', since: '8.0.0', group: 'vector_set' },
+      });
+
+      await bundled.updateLatestJson();
+
+      expect(mockedAxios.get).not.toHaveBeenCalled();
+      expect(mockedFs.writeFile).not.toHaveBeenCalled();
+    });
   });
 
   describe('getCommands', () => {
@@ -88,6 +99,18 @@ describe('CommandsJsonProvider', () => {
       expect(await service.getDefaultCommands()).toEqual({
         name: mockRedijsonCommands,
       });
+    });
+
+    it('should return bundled defaultData without reading from disk', async () => {
+      const bundledData = {
+        VADD: { summary: 's', since: '8.0.0', group: 'vector_set' },
+      };
+      const bundled = new CommandsJsonProvider('vector_set', '', bundledData);
+
+      expect(await bundled.getDefaultCommands()).toEqual({
+        vector_set: bundledData,
+      });
+      expect(mockedFs.readFile).not.toHaveBeenCalled();
     });
   });
 });
