@@ -383,6 +383,55 @@ describe('GeoPlot', () => {
     )
   })
 
+  it('refreshes cluster icons with updated thresholds', () => {
+    const manyResults = Array.from({ length: 50 }, (_, index) => ({
+      name: `member-${index}`,
+      lat: 37 + index / 100,
+      lon: 15 + index / 100,
+      distance: 70,
+    }))
+
+    render(
+      <GeoPlot
+        mode="markers"
+        results={manyResults}
+        command={{ ...radiusCommand, radius: 100 }}
+      />,
+    )
+
+    const { iconCreateFunction } = mockLeaflet.markerClusterGroup.mock.calls[0][0]
+    iconCreateFunction({
+      getAllChildMarkers: () => [{ options: { distanceKm: 70 } }],
+    })
+    const initialIconCall =
+      mockLeaflet.divIcon.mock.calls[mockLeaflet.divIcon.mock.calls.length - 1]
+    const initialIcon = initialIconCall[0].html as HTMLElement
+    expect(
+      initialIcon.style.getPropertyValue('--geodata-current-cluster-color'),
+    ).toBe('#9c5c2b')
+
+    mockRefreshClusters.mockClear()
+    fireEvent.click(screen.getByRole('button', { name: 'Distance thresholds' }))
+    fireEvent.change(screen.getByLabelText('Close threshold'), {
+      target: { value: '0.3' },
+    })
+    fireEvent.change(screen.getByLabelText('Mid threshold'), {
+      target: { value: '0.6' },
+    })
+
+    expect(mockRefreshClusters).toHaveBeenCalled()
+
+    iconCreateFunction({
+      getAllChildMarkers: () => [{ options: { distanceKm: 70 } }],
+    })
+    const updatedIconCall =
+      mockLeaflet.divIcon.mock.calls[mockLeaflet.divIcon.mock.calls.length - 1]
+    const updatedIcon = updatedIconCall[0].html as HTMLElement
+    expect(
+      updatedIcon.style.getPropertyValue('--geodata-current-cluster-color'),
+    ).toBe('#a00a6b')
+  })
+
   it('skips search shapes when no center is available', () => {
     render(
       <GeoPlot
