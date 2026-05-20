@@ -162,10 +162,10 @@ describe('SimilaritySearchResultsTable', () => {
       expect(
         screen.getByTestId('vector-set-similarity-attribute-cell-1-city'),
       ).toHaveTextContent('LA')
-      // b has no `count` attribute → empty cell
+      // b has no `count` attribute → (nil) placeholder
       expect(
         screen.getByTestId('vector-set-similarity-attribute-cell-1-count'),
-      ).toHaveTextContent('')
+      ).toHaveTextContent('(nil)')
     })
 
     it('hides columns whose visibility is explicitly false', () => {

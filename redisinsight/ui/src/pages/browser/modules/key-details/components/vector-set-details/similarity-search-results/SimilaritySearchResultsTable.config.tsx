@@ -96,11 +96,17 @@ const buildAttributeColumn = (
     const attrs =
       parsedAttributesCache.get(row.original) ??
       parseAttributes(row.original.attributes)
+    const value = attrs[key]
+    const isMissing = !(key in attrs) || value === null || value === undefined
     return (
       <S.AttributeCell
         data-testid={`vector-set-similarity-attribute-cell-${row.index}-${key}`}
       >
-        {renderAttributeValue(attrs[key])}
+        {isMissing ? (
+          <S.NilAttributeValue variant="italic">(nil)</S.NilAttributeValue>
+        ) : (
+          renderAttributeValue(value)
+        )}
       </S.AttributeCell>
     )
   },
