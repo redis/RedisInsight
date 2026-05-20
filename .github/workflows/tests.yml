@@ -2,13 +2,10 @@ name: ✅ Tests
 
 on:
   push:
-    branches:
-      - 'fe/**'
-      - 'be/**'
-      - 'fe-be/**'
-      - 'feature/**'
-      - 'bugfix/**'
-      - 'ric/**'
+    branches-ignore:
+      - main
+      - latest
+      - 'release/**'
   pull_request:
     types: [labeled]
 
@@ -60,12 +57,16 @@ jobs:
       backend: ${{ steps.filter.outputs.backend }}
       desktop: ${{ steps.filter.outputs.desktop }}
       docker: ${{ steps.filter.outputs.docker }}
+      infra: ${{ steps.filter.outputs.infra }}
     steps:
       - uses: actions/checkout@v6
       - uses: dorny/paths-filter@v4.0.1
         id: filter
         with:
-          base: ${{ github.ref }}
+          # Compare against main so each push's gating reflects the
+          # cumulative branch diff, not just the latest commit. Keeps
+          # the merge-gate aligned with what would actually land.
+          base: main
           filters: |
             frontend:
               - 'redisinsight/ui/**'
@@ -77,60 +78,97 @@ jobs:
               - 'Dockerfile*'
               - '.dockerignore'
               - '*docker*.sh'
+            # Shared toolchain / CI config — when these change, run everything.
+            infra:
+              - 'package.json'
+              - 'yarn.lock'
+              - '.yarnrc'
+              - '.nvmrc'
+              - '.eslintrc*'
+              - '.eslintignore'
+              - 'babel.config*'
+              - 'jest.config*'
+              - 'jest-resolver.js'
+              - 'configs/**'
+              - 'scripts/**'
+              - '.github/workflows/**'
+              - '.github/actions/**'
 
-  # Check common conditions that trigger all test suites
-  should-run-all-tests:
+  # Compute per-consumer "should this run" decisions from changes, labels,
+  # pre-release input, and manual dispatch. One job, one source of truth.
+  should-run:
+    needs: changes
     runs-on: ubuntu-latest
     outputs:
-      result: ${{ steps.check.outputs.result }}
+      ui: ${{ steps.eval.outputs.ui }}
+      api: ${{ steps.eval.outputs.api }}
+      desktop: ${{ steps.eval.outputs.desktop }}
+      integration: ${{ steps.eval.outputs.integration }}
+      docker: ${{ steps.eval.outputs.docker }}
     steps:
-      - id: check
+      - id: eval
         env:
-          PRERELEASE_CONDITION: ${{ inputs.pre_release == true }}
+          PRE_RELEASE: ${{ inputs.pre_release == true }}
+          DISPATCH: ${{ github.event_name == 'workflow_dispatch' }}
+          LABEL_ALL: ${{ contains(github.event.pull_request.labels.*.name, 'run-all-tests') }}
+          LABEL_FE: ${{ contains(github.event.pull_request.labels.*.name, 'run-frontend-tests') }}
+          LABEL_BE: ${{ contains(github.event.pull_request.labels.*.name, 'run-backend-tests') }}
+          LABEL_IT: ${{ contains(github.event.pull_request.labels.*.name, 'run-integration-tests') }}
+          CHG_FRONTEND: ${{ needs.changes.outputs.frontend }}
+          CHG_BACKEND: ${{ needs.changes.outputs.backend }}
+          CHG_DESKTOP: ${{ needs.changes.outputs.desktop }}
+          CHG_DOCKER: ${{ needs.changes.outputs.docker }}
+          CHG_INFRA: ${{ needs.changes.outputs.infra }}
         run: |
-          OTHER_CONDITIONS="${{ github.event_name == 'workflow_dispatch' ||
-              startsWith(github.ref_name, 'feature/') ||
-              startsWith(github.ref_name, 'bugfix/') ||
-              startsWith(github.ref_name, 'ric/') ||
-              startsWith(github.ref_name, 'release/') ||
-              github.ref_name == 'latest' ||
-              contains(github.event.pull_request.labels.*.name, 'run-all-tests') }}"
-
-          if [[ "$PRERELEASE_CONDITION" == "true" ]] || [[ "$OTHER_CONDITIONS" == "true" ]]; then
-            echo "result=true" >> $GITHUB_OUTPUT
+          # "Run everything" — pre-release builds, manual dispatch, the
+          # run-all-tests label, or shared toolchain/CI changes.
+          if [[ "$PRE_RELEASE" == "true" || "$DISPATCH" == "true" || "$LABEL_ALL" == "true" || "$CHG_INFRA" == "true" ]]; then
+            ALL=true
           else
-            echo "result=false" >> $GITHUB_OUTPUT
+            ALL=false
           fi
+
+          ui=$ALL
+          api=$ALL
+          desktop=$ALL
+          integration=$ALL
+          docker=$ALL
+
+          [[ "$CHG_FRONTEND" == "true" || "$LABEL_FE" == "true" ]] && ui=true
+          [[ "$CHG_BACKEND"  == "true" || "$LABEL_BE" == "true" ]] && api=true
+          [[ "$CHG_DESKTOP"  == "true" ]] && desktop=true
+          [[ "$CHG_BACKEND"  == "true" || "$LABEL_IT" == "true" ]] && integration=true
+          [[ "$CHG_FRONTEND" == "true" || "$CHG_BACKEND" == "true" || "$CHG_DOCKER" == "true" ]] && docker=true
+
+          {
+            echo "ui=$ui"
+            echo "api=$api"
+            echo "desktop=$desktop"
+            echo "integration=$integration"
+            echo "docker=$docker"
+          } >> "$GITHUB_OUTPUT"
 
   lint:
     uses: ./.github/workflows/lint.yml
     secrets: inherit
 
   type-check:
-    needs: [changes, should-run-all-tests]
+    needs: should-run
     uses: ./.github/workflows/type-check.yml
     with:
-      run-ui: ${{ needs.should-run-all-tests.outputs.result == 'true' || needs.changes.outputs.frontend == 'true' }}
-      run-api: ${{ needs.should-run-all-tests.outputs.result == 'true' || needs.changes.outputs.backend == 'true' }}
-      run-desktop: ${{ needs.should-run-all-tests.outputs.result == 'true' || needs.changes.outputs.desktop == 'true' }}
+      run-ui: ${{ needs.should-run.outputs.ui == 'true' }}
+      run-api: ${{ needs.should-run.outputs.api == 'true' }}
+      run-desktop: ${{ needs.should-run.outputs.desktop == 'true' }}
     secrets: inherit
 
   docker-build:
-    needs: [changes, should-run-all-tests]
-    if: |
-      needs.should-run-all-tests.outputs.result == 'true' ||
-      needs.changes.outputs.frontend == 'true' ||
-      needs.changes.outputs.backend == 'true' ||
-      needs.changes.outputs.docker == 'true'
+    needs: should-run
+    if: needs.should-run.outputs.docker == 'true'
     uses: ./.github/workflows/docker-build.yml
 
   frontend-tests:
-    needs: [changes, lint, type-check, should-run-all-tests]
-    if: |
-      needs.should-run-all-tests.outputs.result == 'true' ||
-      startsWith(github.ref_name, 'fe/') ||
-      startsWith(github.ref_name, 'fe-be/') ||
-      contains(github.event.pull_request.labels.*.name, 'run-frontend-tests')
+    needs: [should-run, lint, type-check]
+    if: needs.should-run.outputs.ui == 'true'
     uses: ./.github/workflows/tests-frontend.yml
     secrets: inherit
 
@@ -143,12 +181,8 @@ jobs:
       type: unit
 
   backend-tests:
-    needs: [changes, lint, type-check, should-run-all-tests]
-    if: |
-      needs.should-run-all-tests.outputs.result == 'true' ||
-      startsWith(github.ref_name, 'be/') ||
-      startsWith(github.ref_name, 'fe-be/') ||
-      contains(github.event.pull_request.labels.*.name, 'run-backend-tests')
+    needs: [should-run, lint, type-check]
+    if: needs.should-run.outputs.api == 'true'
     uses: ./.github/workflows/tests-backend.yml
     secrets: inherit
 
@@ -161,12 +195,8 @@ jobs:
       type: unit
 
   integration-tests:
-    needs: [changes, lint, type-check, should-run-all-tests]
-    if: |
-      needs.should-run-all-tests.outputs.result == 'true' ||
-      startsWith(github.ref_name, 'be/') ||
-      startsWith(github.ref_name, 'fe-be/') ||
-      contains(github.event.pull_request.labels.*.name, 'run-integration-tests')
+    needs: [should-run, lint, type-check]
+    if: needs.should-run.outputs.integration == 'true'
     uses: ./.github/workflows/tests-integration.yml
     secrets: inherit
     with:

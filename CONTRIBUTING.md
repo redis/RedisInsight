@@ -16,16 +16,12 @@ Use lowercase, kebab-case, and a type prefix:
 
 **Example**: `bugfix/fix-header-alignment`
 
-_Note: It will trigger some CI, like unit tests and lint checks_
-
-For frontend/backend only, prefix with `fe/` or `be/` to trigger fewer checks:
+For frontend/backend only changes, prefix with `fe/` or `be/`:
 
 - `fe/feature/<short-title>`
 - `be/bugfix/<short-title>`
 
 **Example**: `be/bugfix/update-databases-api`
-
-_Note: It will trigger only checks related to the back-end_
 
 ## Commits
 
@@ -77,7 +73,7 @@ git checkout -b bugfix/<short-title>
 3. Make the changes and push to your branch (see [Commits](#commits))
 
 ```bash
-git push bugfix/<short-title>
+git push origin bugfix/<short-title>
 ```
 
 4. Initiate a pull request on GitHub (_[How to create a PR?](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request)_)

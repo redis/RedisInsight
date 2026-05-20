@@ -1,14 +1,14 @@
 ---
 name: branches
 description: >-
-  Create and name git branches following project conventions and GitHub Actions
-  enforcement rules. Use when creating branches, checking out new branches, or
-  the user mentions branch naming.
+  Create and name git branches following project conventions. Use when
+  creating branches, checking out new branches, or the user mentions
+  branch naming.
 ---
 
 # Branch Naming Conventions
 
-Use lowercase kebab-case with type prefix and issue/ticket identifier. **Branch names must match GitHub Actions workflow rules** (see `.github/workflows/enforce-branch-name-rules.yml`).
+Use lowercase kebab-case with type prefix and issue/ticket identifier.
 
 ```bash
 # Pattern: <type>/<issue-ref>/<short-title>
@@ -31,7 +31,7 @@ release/v2.0.0
 ric/RI-666/custom-prefix
 ```
 
-## Allowed Branch Types (GitHub Actions Enforced)
+## Branch Types
 
 - `feature/` - New features and refactoring (affects multiple areas)
 - `bugfix/` - Bug fixes (affects multiple areas)

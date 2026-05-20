@@ -44,10 +44,6 @@ This project uses a centralized AI rules structure:
   - Backend testing with NestJS
   - E2E testing with Playwright
 
-- **Branch Naming**: `.ai/rules/branches.md`
-
-  - Branch naming conventions (type/RI-XXX/title or type/XXX/title)
-
 - **Commit Messages**: `.ai/rules/commits.md`
 
   - Commit message format (Conventional Commits)
