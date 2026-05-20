@@ -89,8 +89,9 @@ const getDistanceScaleKm = (
     return command.radius
   }
 
-  return Math.max(
-    ...results.map((result) => calculateDistanceKm(result, command) ?? 0),
+  return results.reduce(
+    (maxDistance, result) =>
+      Math.max(maxDistance, calculateDistanceKm(result, command) ?? 0),
     0,
   )
 }

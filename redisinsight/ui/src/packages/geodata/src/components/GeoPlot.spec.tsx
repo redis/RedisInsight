@@ -365,6 +365,20 @@ describe('GeoPlot', () => {
     )
   })
 
+  it('scales large BYBOX result sets without spreading distances into Math.max', () => {
+    process.env.NODE_ENV = 'test'
+    const manyResults = Array.from({ length: 150_000 }, (_, index) => ({
+      name: `member-${index}`,
+      lat: 37,
+      lon: 15,
+      distance: index,
+    }))
+
+    expect(() =>
+      render(<GeoPlot mode="markers" results={manyResults} command={boxCommand} />),
+    ).not.toThrow()
+  })
+
   it('uses the middle color when distance cannot be resolved', () => {
     render(
       <GeoPlot
