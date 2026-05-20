@@ -7,7 +7,7 @@ import { CommandsService } from 'src/modules/commands/commands.service';
 import { CommandTelemetryBaseService } from 'src/modules/analytics/command.telemetry.base.service';
 import { SessionMetadata } from 'src/common/models';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
-import { resolveIsProduction } from 'src/modules/database/utils/resolve-is-production';
+import { resolveEnvironment } from 'src/modules/database/utils/resolve-environment';
 import { CommandExecutionType } from './models/command-execution';
 
 export interface IExecResult {
@@ -45,7 +45,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
       this.sendEvent(sessionMetadata, event, {
         databaseId,
         ...additionalData,
-        isProduction: await resolveIsProduction(
+        environment: await resolveEnvironment(
           this.databaseRepository,
           sessionMetadata,
           databaseId,
@@ -104,7 +104,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
           databaseId,
           ...(await this.getCommandAdditionalInfo(rest['command'])),
           ...rest,
-          isProduction: await resolveIsProduction(
+          environment: await resolveEnvironment(
             this.databaseRepository,
             sessionMetadata,
             databaseId,
@@ -158,7 +158,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
         isDangerous?: boolean;
         [k: string]: any;
       };
-      const isProduction = await resolveIsProduction(
+      const environment = await resolveEnvironment(
         this.databaseRepository,
         sessionMetadata,
         databaseId,
@@ -169,7 +169,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
         this.sendFailedEvent(sessionMetadata, event, error, {
           databaseId,
           ...rest,
-          isProduction,
+          environment,
           isDangerous: isDangerousStr,
         });
       } else {
@@ -178,7 +178,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
           error: error.name,
           command: error?.command?.name,
           ...rest,
-          isProduction,
+          environment,
           isDangerous: isDangerousStr,
         });
       }

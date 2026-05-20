@@ -15,6 +15,7 @@ import {
   BulkActionType,
 } from 'src/modules/bulk-actions/constants';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
+import { Environment } from 'src/modules/database/entities/database.entity';
 
 describe('BulkActionsAnalytics', () => {
   let service: BulkActionsAnalytics;
@@ -64,7 +65,7 @@ describe('BulkActionsAnalytics', () => {
             total: mockBulkActionOverview.progress.total,
             totalRange: '0 - 5 000',
           },
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'true',
           confirmedThrough: null,
         },
@@ -89,7 +90,7 @@ describe('BulkActionsAnalytics', () => {
             type: mockBulkActionOverview.filter?.type,
           },
           progress: {},
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'true',
           confirmedThrough: null,
         },
@@ -113,16 +114,16 @@ describe('BulkActionsAnalytics', () => {
             match: 'PATTERN', // todo: is this expected behavior?
           },
           progress: {},
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'true',
           confirmedThrough: null,
         },
       );
     });
-    it('should emit isProduction=true when database is production', async () => {
+    it('should emit environment=production when database is production', async () => {
       databaseRepository.get.mockResolvedValueOnce({
         ...mockDatabase,
-        isProduction: true,
+        environment: Environment.Production,
       });
 
       await service.sendActionStarted(
@@ -133,7 +134,7 @@ describe('BulkActionsAnalytics', () => {
       expect(sendEventSpy).toHaveBeenCalledWith(
         mockSessionMetadata,
         TelemetryEvents.BulkActionsStarted,
-        expect.objectContaining({ isProduction: 'true' }),
+        expect.objectContaining({ environment: Environment.Production }),
       );
     });
     it('should round-trip confirmedThrough from overview', async () => {
@@ -198,7 +199,7 @@ describe('BulkActionsAnalytics', () => {
             failed: mockBulkActionOverview.summary.failed,
             failedRange: '0 - 5 000',
           },
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'true',
           confirmedThrough: null,
         },
@@ -224,7 +225,7 @@ describe('BulkActionsAnalytics', () => {
           },
           progress: {},
           summary: {},
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'true',
           confirmedThrough: null,
         },
@@ -262,7 +263,7 @@ describe('BulkActionsAnalytics', () => {
             failed: mockBulkActionOverview.summary.failed,
             failedRange: '0 - 5 000',
           },
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'true',
           confirmedThrough: null,
         },
@@ -286,7 +287,7 @@ describe('BulkActionsAnalytics', () => {
             match: 'PATTERN', // todo: is this expected behavior?
           },
           summary: {},
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'true',
           confirmedThrough: null,
         },
@@ -313,7 +314,7 @@ describe('BulkActionsAnalytics', () => {
           databaseId: mockBulkActionOverview.databaseId,
           action: mockBulkActionOverview.type,
           error: mockRedisNoAuthError,
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'true',
           confirmedThrough: null,
         },
@@ -347,7 +348,7 @@ describe('BulkActionsAnalytics', () => {
             failed: mockBulkActionOverview.summary.failed,
             failedRange: '0 - 5 000',
           },
-          isProduction: 'false',
+          environment: Environment.Unspecified,
         },
       );
     });
@@ -366,7 +367,7 @@ describe('BulkActionsAnalytics', () => {
           action: mockBulkActionOverview.type,
           duration: mockBulkActionOverview.duration,
           summary: {},
-          isProduction: 'false',
+          environment: Environment.Unspecified,
         },
       );
     });

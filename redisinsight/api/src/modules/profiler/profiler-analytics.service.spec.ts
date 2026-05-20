@@ -8,6 +8,7 @@ import {
 } from 'src/__mocks__';
 import { TelemetryEvents } from 'src/constants';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
+import { Environment } from 'src/modules/database/entities/database.entity';
 import { ProfilerAnalyticsService } from './profiler-analytics.service';
 
 const databaseId = mockDatabase.id;
@@ -35,20 +36,20 @@ describe('ProfilerAnalyticsService', () => {
   });
 
   describe('sendProfilerStartedEvent', () => {
-    it('should emit ProfilerStarted event with databaseId and isProduction=false', async () => {
+    it('should emit ProfilerStarted event with databaseId and environment=unspecified', async () => {
       await service.sendProfilerStartedEvent(mockSessionMetadata, databaseId);
 
       expect(sendEventSpy).toHaveBeenCalledWith(
         mockSessionMetadata,
         TelemetryEvents.ProfilerStarted,
-        { databaseId, isProduction: 'false' },
+        { databaseId, environment: Environment.Unspecified },
       );
     });
 
-    it('should emit isProduction=true when database is production', async () => {
+    it('should emit environment=production when database is production', async () => {
       databaseRepository.get.mockResolvedValueOnce({
         ...mockDatabase,
-        isProduction: true,
+        environment: Environment.Production,
       });
 
       await service.sendProfilerStartedEvent(mockSessionMetadata, databaseId);
@@ -56,11 +57,11 @@ describe('ProfilerAnalyticsService', () => {
       expect(sendEventSpy).toHaveBeenCalledWith(
         mockSessionMetadata,
         TelemetryEvents.ProfilerStarted,
-        expect.objectContaining({ isProduction: 'true' }),
+        expect.objectContaining({ environment: Environment.Production }),
       );
     });
 
-    it('should default isProduction to false when lookup throws', async () => {
+    it('should default environment to unspecified when lookup throws', async () => {
       databaseRepository.get.mockRejectedValueOnce(new Error('boom'));
 
       await service.sendProfilerStartedEvent(mockSessionMetadata, databaseId);
@@ -68,31 +69,39 @@ describe('ProfilerAnalyticsService', () => {
       expect(sendEventSpy).toHaveBeenCalledWith(
         mockSessionMetadata,
         TelemetryEvents.ProfilerStarted,
-        { databaseId, isProduction: 'false' },
+        { databaseId, environment: Environment.Unspecified },
       );
     });
   });
 
   describe('sendLogDownloaded', () => {
-    it('should emit ProfilerLogDownloaded with isProduction', async () => {
+    it('should emit ProfilerLogDownloaded with environment', async () => {
       await service.sendLogDownloaded(mockSessionMetadata, databaseId, 4242);
 
       expect(sendEventSpy).toHaveBeenCalledWith(
         mockSessionMetadata,
         TelemetryEvents.ProfilerLogDownloaded,
-        { databaseId, fileSizeBytes: 4242, isProduction: 'false' },
+        {
+          databaseId,
+          fileSizeBytes: 4242,
+          environment: Environment.Unspecified,
+        },
       );
     });
   });
 
   describe('sendLogDeleted', () => {
-    it('should emit ProfilerLogDeleted with isProduction', async () => {
+    it('should emit ProfilerLogDeleted with environment', async () => {
       await service.sendLogDeleted(mockSessionMetadata, databaseId, 100);
 
       expect(sendEventSpy).toHaveBeenCalledWith(
         mockSessionMetadata,
         TelemetryEvents.ProfilerLogDeleted,
-        { databaseId, fileSizeBytes: 100, isProduction: 'false' },
+        {
+          databaseId,
+          fileSizeBytes: 100,
+          environment: Environment.Unspecified,
+        },
       );
     });
   });

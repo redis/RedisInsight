@@ -327,8 +327,8 @@ export class BulkAction implements IBulkAction {
    * `sessionMetadata` is read from the stored field by default. The method is
    * invoked through the debounce wrapper without arguments, so the parameter
    * would otherwise be `undefined` for terminal-state events and the analytics
-   * `isProduction` enrichment would always fall back to `'false'`. Tests may
-   * still pass `sessionMetadata` explicitly to exercise the call path.
+   * `environment` enrichment would always fall back to `Environment.Unspecified`.
+   * Tests may still pass `sessionMetadata` explicitly to exercise the call path.
    */
   sendOverview(sessionMetadata: SessionMetadata = this.sessionMetadata) {
     const overview = this.getOverview();

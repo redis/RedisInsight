@@ -6,7 +6,7 @@ import { CommandExecutionStatus } from 'src/modules/cli/dto/cli.dto';
 import { RedisError, ReplyError } from 'src/models';
 import { SessionMetadata } from 'src/common/models';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
-import { resolveIsProduction } from 'src/modules/database/utils/resolve-is-production';
+import { resolveEnvironment } from 'src/modules/database/utils/resolve-environment';
 
 export interface IExecResult {
   response: any;
@@ -42,7 +42,7 @@ export class ProfilerAnalyticsService extends TelemetryBaseService {
       this.sendEvent(sessionMetadata, TelemetryEvents.ProfilerLogDeleted, {
         databaseId,
         fileSizeBytes,
-        isProduction: await resolveIsProduction(
+        environment: await resolveEnvironment(
           this.databaseRepository,
           sessionMetadata,
           databaseId,
@@ -62,7 +62,7 @@ export class ProfilerAnalyticsService extends TelemetryBaseService {
       this.sendEvent(sessionMetadata, TelemetryEvents.ProfilerLogDownloaded, {
         databaseId,
         fileSizeBytes,
-        isProduction: await resolveIsProduction(
+        environment: await resolveEnvironment(
           this.databaseRepository,
           sessionMetadata,
           databaseId,
@@ -80,7 +80,7 @@ export class ProfilerAnalyticsService extends TelemetryBaseService {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.ProfilerStarted, {
         databaseId,
-        isProduction: await resolveIsProduction(
+        environment: await resolveEnvironment(
           this.databaseRepository,
           sessionMetadata,
           databaseId,

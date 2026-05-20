@@ -10,7 +10,7 @@ import { CommandsService } from 'src/modules/commands/commands.service';
 import { CommandTelemetryBaseService } from 'src/modules/analytics/command.telemetry.base.service';
 import { SessionMetadata } from 'src/common/models';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
-import { resolveIsProduction } from 'src/modules/database/utils/resolve-is-production';
+import { resolveEnvironment } from 'src/modules/database/utils/resolve-environment';
 
 @Injectable()
 export class CliAnalyticsService extends CommandTelemetryBaseService {
@@ -113,7 +113,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
         databaseId,
         ...(await this.getCommandAdditionalInfo(rest['command'])),
         ...rest,
-        isProduction: await resolveIsProduction(
+        environment: await resolveEnvironment(
           this.databaseRepository,
           sessionMetadata,
           databaseId,
@@ -143,7 +143,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
         command: error?.command?.name,
         ...(await this.getCommandAdditionalInfo(rest['command'])),
         ...rest,
-        isProduction: await resolveIsProduction(
+        environment: await resolveEnvironment(
           this.databaseRepository,
           sessionMetadata,
           databaseId,
@@ -176,7 +176,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
             databaseId,
             ...(await this.getCommandAdditionalInfo(rest['command'])),
             ...rest,
-            isProduction: await resolveIsProduction(
+            environment: await resolveEnvironment(
               this.databaseRepository,
               sessionMetadata,
               databaseId,
@@ -195,7 +195,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
             command: error?.command?.name,
             ...(await this.getCommandAdditionalInfo(rest['command'])),
             ...rest,
-            isProduction: await resolveIsProduction(
+            environment: await resolveEnvironment(
               this.databaseRepository,
               sessionMetadata,
               databaseId,

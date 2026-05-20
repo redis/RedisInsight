@@ -17,8 +17,9 @@ export class LogFileProvider implements OnModuleDestroy {
    * @param id
    * @param sessionMetadata Used by the analytics events bound on the LogFile
    *   instance so `ProfilerLogDownloaded` / `ProfilerLogDeleted` can resolve
-   *   the connection's `isProduction` status. Optional for backward
-   *   compatibility — analytics gracefully default to `'false'` when absent.
+   *   the connection's `environment` classification. Optional for backward
+   *   compatibility — analytics gracefully default to `Environment.Unspecified`
+   *   when absent.
    */
   getOrCreate(
     instanceId: string,

@@ -17,6 +17,7 @@ import {
 } from 'src/modules/cli/dto/cli.dto';
 import { CommandsService } from 'src/modules/commands/commands.service';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
+import { Environment } from 'src/modules/database/entities/database.entity';
 import { CliAnalyticsService } from './cli-analytics.service';
 
 const mockCommandsService = {
@@ -280,7 +281,7 @@ describe('CliAnalyticsService', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
@@ -293,15 +294,15 @@ describe('CliAnalyticsService', () => {
         TelemetryEvents.CliCommandExecuted,
         {
           databaseId,
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
     });
-    it('should emit isProduction=true when database is marked production', async () => {
+    it('should emit environment=production when database is marked production', async () => {
       databaseRepository.get.mockResolvedValueOnce({
         ...mockDatabase,
-        isProduction: true,
+        environment: Environment.Production,
       });
 
       await service.sendCommandExecutedEvent(
@@ -313,7 +314,7 @@ describe('CliAnalyticsService', () => {
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
         TelemetryEvents.CliCommandExecuted,
-        expect.objectContaining({ isProduction: 'true' }),
+        expect.objectContaining({ environment: Environment.Production }),
       );
     });
     it('should pass isDangerous flag through from additionalData', async () => {
@@ -328,7 +329,7 @@ describe('CliAnalyticsService', () => {
         expect.objectContaining({ isDangerous: 'true' }),
       );
     });
-    it('should default isProduction to false when database lookup throws', async () => {
+    it('should default environment to unspecified when database lookup throws', async () => {
       databaseRepository.get.mockRejectedValueOnce(new Error('boom'));
 
       await service.sendCommandExecutedEvent(
@@ -340,7 +341,7 @@ describe('CliAnalyticsService', () => {
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
         TelemetryEvents.CliCommandExecuted,
-        expect.objectContaining({ isProduction: 'false' }),
+        expect.objectContaining({ environment: Environment.Unspecified }),
       );
     });
   });
@@ -364,7 +365,7 @@ describe('CliAnalyticsService', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
@@ -383,7 +384,7 @@ describe('CliAnalyticsService', () => {
           databaseId,
           error: ReplyError.name,
           command: 'sadd',
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
@@ -407,7 +408,7 @@ describe('CliAnalyticsService', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
@@ -479,7 +480,7 @@ describe('CliAnalyticsService', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
@@ -506,7 +507,7 @@ describe('CliAnalyticsService', () => {
           databaseId,
           error: redisReplyError.name,
           command: 'sadd',
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
@@ -532,7 +533,7 @@ describe('CliAnalyticsService', () => {
         {
           databaseId,
           error: CommandParsingError.name,
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );

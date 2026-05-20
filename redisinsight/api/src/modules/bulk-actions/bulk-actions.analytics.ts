@@ -10,7 +10,7 @@ import {
   BulkActionConfirmation,
 } from 'src/modules/bulk-actions/constants';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
-import { resolveIsProduction } from 'src/modules/database/utils/resolve-is-production';
+import { resolveEnvironment } from 'src/modules/database/utils/resolve-environment';
 
 @Injectable()
 export class BulkActionsAnalytics extends TelemetryBaseService {
@@ -58,7 +58,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
-        isProduction: await resolveIsProduction(
+        environment: await resolveEnvironment(
           this.databaseRepository,
           sessionMetadata,
           overview.databaseId,
@@ -113,7 +113,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
-        isProduction: await resolveIsProduction(
+        environment: await resolveEnvironment(
           this.databaseRepository,
           sessionMetadata,
           overview.databaseId,
@@ -156,7 +156,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
-        isProduction: await resolveIsProduction(
+        environment: await resolveEnvironment(
           this.databaseRepository,
           sessionMetadata,
           overview.databaseId,
@@ -179,7 +179,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
         databaseId: overview.databaseId,
         action: overview.type,
         error,
-        isProduction: await resolveIsProduction(
+        environment: await resolveEnvironment(
           this.databaseRepository,
           sessionMetadata,
           overview.databaseId,
@@ -218,7 +218,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
-        isProduction: await resolveIsProduction(
+        environment: await resolveEnvironment(
           this.databaseRepository,
           sessionMetadata,
           overview.databaseId,

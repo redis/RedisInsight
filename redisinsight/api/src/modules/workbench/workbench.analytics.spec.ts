@@ -14,6 +14,7 @@ import { CommandExecutionStatus } from 'src/modules/cli/dto/cli.dto';
 import { CommandParsingError } from 'src/modules/cli/constants/errors';
 import { CommandsService } from 'src/modules/commands/commands.service';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
+import { Environment } from 'src/modules/database/entities/database.entity';
 import { WorkbenchAnalytics } from './workbench.analytics';
 import { CommandExecutionType } from './models/command-execution';
 
@@ -107,7 +108,7 @@ describe('WorkbenchAnalytics', () => {
         {
           databaseId: instanceId,
           any: 'fields',
-          isProduction: 'false',
+          environment: Environment.Unspecified,
         },
       );
     });
@@ -127,7 +128,7 @@ describe('WorkbenchAnalytics', () => {
         {
           databaseId: instanceId,
           any: 'fields',
-          isProduction: 'false',
+          environment: Environment.Unspecified,
         },
       );
     });
@@ -165,7 +166,7 @@ describe('WorkbenchAnalytics', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
@@ -192,7 +193,7 @@ describe('WorkbenchAnalytics', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
@@ -217,7 +218,7 @@ describe('WorkbenchAnalytics', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
@@ -241,7 +242,7 @@ describe('WorkbenchAnalytics', () => {
         {
           databaseId: instanceId,
           command: 'set',
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
@@ -264,7 +265,7 @@ describe('WorkbenchAnalytics', () => {
           commandType: CommandType.Module,
           moduleName: 'redisbloom',
           capability: 'bf',
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
@@ -287,7 +288,7 @@ describe('WorkbenchAnalytics', () => {
           commandType: CommandType.Module,
           moduleName: 'custommodule',
           capability: 'n/a',
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
@@ -310,7 +311,7 @@ describe('WorkbenchAnalytics', () => {
           commandType: CommandType.Module,
           moduleName: 'custom',
           capability: 'n/a',
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
@@ -331,7 +332,7 @@ describe('WorkbenchAnalytics', () => {
         TelemetryEvents.WorkbenchCommandExecuted,
         {
           databaseId: instanceId,
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
@@ -360,7 +361,7 @@ describe('WorkbenchAnalytics', () => {
           moduleName: 'n/a',
           capability: 'string',
           data: 'Some data',
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
@@ -384,7 +385,7 @@ describe('WorkbenchAnalytics', () => {
           databaseId: instanceId,
           error: ReplyError.name,
           command: 'sadd',
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
@@ -409,7 +410,7 @@ describe('WorkbenchAnalytics', () => {
           databaseId: instanceId,
           error: CommandParsingError.name,
           command: undefined,
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
@@ -433,7 +434,7 @@ describe('WorkbenchAnalytics', () => {
         error,
         {
           databaseId: instanceId,
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
@@ -456,7 +457,7 @@ describe('WorkbenchAnalytics', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
@@ -485,17 +486,17 @@ describe('WorkbenchAnalytics', () => {
           moduleName: 'n/a',
           capability: 'string',
           data: 'Some data',
-          isProduction: 'false',
+          environment: Environment.Unspecified,
           isDangerous: 'false',
         },
       );
     });
   });
-  describe('production mode and isDangerous flag enrichment', () => {
-    it('should emit isProduction=true when database is marked production', async () => {
+  describe('environment and isDangerous flag enrichment', () => {
+    it('should emit environment=production when database is marked production', async () => {
       databaseRepository.get.mockResolvedValueOnce({
         ...mockDatabase,
-        isProduction: true,
+        environment: Environment.Production,
       });
 
       await service.sendCommandExecutedEvent(
@@ -509,7 +510,7 @@ describe('WorkbenchAnalytics', () => {
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
         TelemetryEvents.WorkbenchCommandExecuted,
-        expect.objectContaining({ isProduction: 'true' }),
+        expect.objectContaining({ environment: Environment.Production }),
       );
     });
 
@@ -529,7 +530,7 @@ describe('WorkbenchAnalytics', () => {
       );
     });
 
-    it('should default isProduction to false when lookup throws', async () => {
+    it('should default environment to unspecified when lookup throws', async () => {
       databaseRepository.get.mockRejectedValueOnce(new Error('boom'));
 
       await service.sendCommandExecutedEvent(
@@ -543,7 +544,7 @@ describe('WorkbenchAnalytics', () => {
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
         TelemetryEvents.WorkbenchCommandExecuted,
-        expect.objectContaining({ isProduction: 'false' }),
+        expect.objectContaining({ environment: Environment.Unspecified }),
       );
     });
   });
