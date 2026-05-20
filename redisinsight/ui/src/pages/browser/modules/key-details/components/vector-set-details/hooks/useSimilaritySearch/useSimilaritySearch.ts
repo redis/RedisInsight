@@ -15,7 +15,10 @@ import {
 import { VectorSetSimilaritySearchPayload } from 'uiSrc/slices/interfaces/vectorSet'
 import { stringToBuffer } from 'uiSrc/utils'
 
-import { SimilaritySearchFormState } from '../../similarity-search-form'
+import {
+  SimilaritySearchFormState,
+  SimilaritySearchMode,
+} from '../../similarity-search-form'
 import {
   bytesToBase64,
   validateVector,
@@ -89,7 +92,7 @@ export const useSimilaritySearch = (): UseSimilaritySearchResult => {
         keyName: selectedKeyData.name,
       }
 
-      if (state.mode === 'element') {
+      if (state.mode === SimilaritySearchMode.Element) {
         const element = state.elementInput.trim()
         if (!element) return null
         payload.elementName = stringToBuffer(element)

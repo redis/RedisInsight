@@ -1,4 +1,7 @@
-export type SimilaritySearchMode = 'vector' | 'element'
+export enum SimilaritySearchMode {
+  Vector = 'vector',
+  Element = 'element',
+}
 
 export interface SimilaritySearchFormState {
   mode: SimilaritySearchMode
