@@ -10,6 +10,7 @@ import {
 } from 'src/__mocks__';
 import { TelemetryEvents } from 'src/constants';
 import { BulkActionsAnalytics } from 'src/modules/bulk-actions/bulk-actions.analytics';
+import { IBulkActionOverview } from 'src/modules/bulk-actions/interfaces/bulk-action-overview.interface';
 import {
   BulkActionConfirmation,
   BulkActionType,
@@ -19,8 +20,8 @@ import { Environment } from 'src/modules/database/entities/database.entity';
 
 describe('BulkActionsAnalytics', () => {
   let service: BulkActionsAnalytics;
-  let sendEventSpy;
-  let sendFailedEventSpy;
+  let sendEventSpy: jest.SpyInstance;
+  let sendFailedEventSpy: jest.SpyInstance;
   let databaseRepository: MockType<DatabaseRepository>;
 
   beforeEach(async () => {
@@ -128,7 +129,7 @@ describe('BulkActionsAnalytics', () => {
 
       await service.sendActionStarted(
         mockSessionMetadata,
-        mockBulkActionOverview,
+        mockBulkActionOverview as unknown as IBulkActionOverview,
       );
 
       expect(sendEventSpy).toHaveBeenCalledWith(
@@ -141,7 +142,7 @@ describe('BulkActionsAnalytics', () => {
       await service.sendActionStarted(mockSessionMetadata, {
         ...mockBulkActionOverview,
         confirmedThrough: BulkActionConfirmation.TypeToConfirm,
-      });
+      } as unknown as IBulkActionOverview);
 
       expect(sendEventSpy).toHaveBeenCalledWith(
         mockSessionMetadata,
@@ -153,7 +154,7 @@ describe('BulkActionsAnalytics', () => {
       await service.sendActionStarted(mockSessionMetadata, {
         ...mockBulkActionOverview,
         type: BulkActionType.Upload,
-      });
+      } as unknown as IBulkActionOverview);
 
       expect(sendEventSpy).toHaveBeenCalledWith(
         mockSessionMetadata,

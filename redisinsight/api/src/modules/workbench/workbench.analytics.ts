@@ -91,7 +91,6 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     try {
       const { isDangerous, ...rest } = additionalData as {
         isDangerous?: boolean;
-        command?: string;
         [k: string]: any;
       };
       if (status === CommandExecutionStatus.Success) {

@@ -328,18 +328,24 @@ export class BulkAction implements IBulkAction {
    * invoked through the debounce wrapper without arguments, so the parameter
    * would otherwise be `undefined` for terminal-state events and the analytics
    * `environment` enrichment would always fall back to `Environment.Unspecified`.
+   * If we end up with no sessionMetadata, skip the analytics emit — the socket
+   * `overview` event still fires so the UI keeps updating.
    * Tests may still pass `sessionMetadata` explicitly to exercise the call path.
    */
-  sendOverview(sessionMetadata: SessionMetadata = this.sessionMetadata) {
+  sendOverview(
+    sessionMetadata: SessionMetadata | undefined = this.sessionMetadata,
+  ) {
     const overview = this.getOverview();
-    if (overview.status === BulkActionStatus.Completed) {
-      this.analytics.sendActionSucceed(sessionMetadata, overview);
-    }
-    if (overview.status === BulkActionStatus.Failed) {
-      this.analytics.sendActionFailed(sessionMetadata, overview, this.error);
-    }
-    if (overview.status === BulkActionStatus.Aborted) {
-      this.analytics.sendActionStopped(sessionMetadata, overview);
+    if (sessionMetadata) {
+      if (overview.status === BulkActionStatus.Completed) {
+        this.analytics.sendActionSucceed(sessionMetadata, overview);
+      }
+      if (overview.status === BulkActionStatus.Failed) {
+        this.analytics.sendActionFailed(sessionMetadata, overview, this.error);
+      }
+      if (overview.status === BulkActionStatus.Aborted) {
+        this.analytics.sendActionStopped(sessionMetadata, overview);
+      }
     }
     try {
       this.socket.emit('overview', overview);
