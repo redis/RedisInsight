@@ -55,6 +55,7 @@ const responseSchema = Joi.array()
         )
         .allow(null),
       isPreSetup: Joi.boolean().allow(null),
+      databaseMode: Joi.string().valid('unmarked', 'production', 'fast'),
     }),
   )
   .required()
