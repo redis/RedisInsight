@@ -431,6 +431,24 @@ describe('rqeGeoParser', () => {
         ],
       },
     })
+    expect(
+      parseRqeGeoResults(
+        [
+          2,
+          ['coords', '3.1,49.2'],
+          ['coords', '4.2,50.3'],
+        ],
+        command,
+      ),
+    ).toMatchObject({
+      ok: true,
+      value: {
+        points: [
+          { id: 'row-1', field: 'coords', lon: 3.1, lat: 49.2 },
+          { id: 'row-2', field: 'coords', lon: 4.2, lat: 50.3 },
+        ],
+      },
+    })
   })
 
   it('normalizes Redis 8 FT.HYBRID map-style result rows', () => {
