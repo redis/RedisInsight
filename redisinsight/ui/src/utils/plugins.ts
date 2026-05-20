@@ -1,7 +1,15 @@
 import { IPluginVisualization } from 'uiSrc/slices/interfaces'
 import { getBaseApiUrl } from 'uiSrc/utils/common'
 
-const MATCH_QUERY_MAX_LENGTH = 1024
+const MATCH_QUERY_SCAN_LENGTH = 20_000
+
+const getRegexMatchTarget = (query: string): string => {
+  const paramsIndex = query.search(/\bPARAMS\b/i)
+  const queryWithoutParams =
+    paramsIndex === -1 ? query : query.slice(0, paramsIndex)
+
+  return queryWithoutParams.slice(0, MATCH_QUERY_SCAN_LENGTH)
+}
 
 const testRegex = (pattern: string, query: string): boolean => {
   try {
@@ -23,11 +31,9 @@ const doesQueryPredicateMatch = (
     return true
   }
 
-  if (query.length > MATCH_QUERY_MAX_LENGTH) {
-    return false
-  }
+  const matchTarget = getRegexMatchTarget(query)
 
-  return anyRegex.some((pattern) => testRegex(pattern, query))
+  return anyRegex.some((pattern) => testRegex(pattern, matchTarget))
 }
 
 export const getVisualizationsByCommand = (

@@ -15,10 +15,10 @@ import {
   THRESHOLD_VISIBLE_ZOOM,
 } from '../constants'
 import { GeoResult, ParsedGeoCommand } from '../types'
+import { convertToKm } from '../utils/distance'
 import {
   DEFAULT_DISTANCE_THRESHOLDS,
   EARTH_RADIUS_KM,
-  UNIT_TO_KM,
 } from './GeoPlot.constants'
 import {
   DistanceMarkerOptions,
@@ -28,9 +28,6 @@ import {
 } from './GeoPlot.types'
 
 const toRadians = (value: number): number => (value * Math.PI) / 180
-
-const toKm = (value: number, unit = 'km'): number =>
-  value * (UNIT_TO_KM[unit.toUpperCase()] ?? 1)
 
 const getRawDistanceUnit = (command: ParsedGeoCommand): string => {
   const upperTokens = command.rawTokens.map((token) => token.toUpperCase())
@@ -61,7 +58,7 @@ const calculateDistanceKm = (
   command: ParsedGeoCommand,
 ): number | undefined => {
   if (result.distance !== undefined) {
-    return toKm(result.distance, getRawDistanceUnit(command))
+    return convertToKm(result.distance, getRawDistanceUnit(command))
   }
 
   if (command.centerLat === undefined || command.centerLon === undefined) {
