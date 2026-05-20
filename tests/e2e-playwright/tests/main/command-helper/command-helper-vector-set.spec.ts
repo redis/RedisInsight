@@ -50,7 +50,7 @@ test.describe('Command Helper > Vector Set commands', () => {
 
     await expect(commandHelperPanel.searchResultTitles.first()).toBeVisible();
     const count = await commandHelperPanel.getSearchResultCount();
-    // 12 documented Vector Set commands.
-    expect(count).toBeGreaterThanOrEqual(12);
+    // 13 documented Vector Set commands.
+    expect(count).toBeGreaterThanOrEqual(13);
   });
 });

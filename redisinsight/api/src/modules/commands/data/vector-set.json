@@ -84,6 +84,9 @@
     "since": "8.0.0",
     "group": "vector_set",
     "complexity": "O(log(N)) where N is the number of elements in the vector set.",
+    "history": [
+      ["8.0.3", "Added the `WITHATTRIBS` option."]
+    ],
     "arguments": [
       { "name": "key", "type": "key" },
       {
@@ -257,6 +260,18 @@
     "arguments": [
       { "name": "key", "type": "key" },
       { "name": "element", "type": "string" }
+    ]
+  },
+  "VRANGE": {
+    "summary": "Return elements of a vector set within a lexicographical range.",
+    "since": "8.4.0",
+    "group": "vector_set",
+    "complexity": "O(log(K)+M) where K is the number of elements with the start prefix and M is the number of elements returned.",
+    "arguments": [
+      { "name": "key", "type": "key" },
+      { "name": "start", "type": "string" },
+      { "name": "end", "type": "string" },
+      { "name": "count", "type": "integer", "optional": true }
     ]
   }
 }

@@ -17,6 +17,7 @@ describe('vector-set.json', () => {
       'VSETATTR',
       'VGETATTR',
       'VISMEMBER',
+      'VRANGE',
     ];
 
     expect(Object.keys(vectorSetCommands as object).sort()).toEqual(
@@ -29,7 +30,8 @@ describe('vector-set.json', () => {
     (_name, command: any) => {
       expect(typeof command.summary).toBe('string');
       expect(command.summary.length).toBeGreaterThan(0);
-      expect(command.since).toBe('8.0.0');
+      expect(typeof command.since).toBe('string');
+      expect(command.since).toMatch(/^\d+\.\d+\.\d+$/);
       expect(command.group).toBe('vector_set');
       expect(Array.isArray(command.arguments)).toBe(true);
     },
