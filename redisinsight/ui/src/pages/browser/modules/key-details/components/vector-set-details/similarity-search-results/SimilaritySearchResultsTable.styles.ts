@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 import { Table } from 'uiSrc/components/base/layout/table'
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
+import { Text } from 'uiSrc/components/base/text'
 
 export const Container = styled(FlexItem)`
   display: flex;
@@ -41,4 +42,8 @@ export const AttributeCell = styled.span<{
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+`
+
+export const NilAttributeValue = styled(Text)`
+  color: ${({ theme }) => theme.semantic.color.text.neutral500};
 `
