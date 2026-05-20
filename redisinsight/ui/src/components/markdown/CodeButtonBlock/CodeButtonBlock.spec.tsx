@@ -1,4 +1,5 @@
 import React from 'react'
+import { Environment } from 'apiClient'
 import { instance, mock } from 'ts-mockito'
 import reactRouterDom from 'react-router-dom'
 import {
@@ -40,7 +41,7 @@ jest.mock('uiSrc/components/hooks/useDatabaseEnvironment', () => ({
 
 beforeEach(() => {
   ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
-    environment: 'unspecified',
+    environment: Environment.Unspecified,
     isDangerousCommand: () => false,
   })
 })
@@ -280,7 +281,7 @@ describe('CodeButtonBlock', () => {
   describe('production mode', () => {
     it('should disable Run button and not call onApply when mode is production', () => {
       ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
-        environment: 'production',
+        environment: Environment.Production,
         isDangerousCommand: () => false,
       })
       const onApply = jest.fn()
@@ -303,7 +304,7 @@ describe('CodeButtonBlock', () => {
 
     it('should show the production tooltip copy on focus when mode is production', async () => {
       ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
-        environment: 'production',
+        environment: Environment.Production,
         isDangerousCommand: () => false,
       })
 
@@ -331,7 +332,7 @@ describe('CodeButtonBlock', () => {
         .fn()
         .mockReturnValue({ instanceId: 'instanceId' })
       ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
-        environment: 'unspecified',
+        environment: Environment.Unspecified,
         isDangerousCommand: () => false,
       })
       const onApply = jest.fn()

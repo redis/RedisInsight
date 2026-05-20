@@ -1,4 +1,5 @@
 import React from 'react'
+import { Environment } from 'apiClient'
 import { cloneDeep } from 'lodash'
 import reactRouterDom from 'react-router-dom'
 import { AxiosError } from 'axios'
@@ -53,7 +54,7 @@ beforeEach(() => {
   store = cloneDeep(mockedStore)
   store.clearActions()
   ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
-    environment: 'unspecified',
+    environment: Environment.Unspecified,
     isDangerousCommand: () => false,
   })
 })
@@ -179,7 +180,7 @@ describe('RedisUploadButton', () => {
   describe('production mode', () => {
     it('should disable the bulk-import button when mode is production', () => {
       ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
-        environment: 'production',
+        environment: Environment.Production,
         isDangerousCommand: () => false,
       })
 
@@ -191,7 +192,7 @@ describe('RedisUploadButton', () => {
 
     it('should not open popover or fire telemetry when clicked in production', () => {
       ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
-        environment: 'production',
+        environment: Environment.Production,
         isDangerousCommand: () => false,
       })
       const sendEventTelemetryMock = jest.fn()
@@ -211,7 +212,7 @@ describe('RedisUploadButton', () => {
 
     it('should show the production tooltip copy on focus in production', async () => {
       ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
-        environment: 'production',
+        environment: Environment.Production,
         isDangerousCommand: () => false,
       })
 

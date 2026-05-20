@@ -1,4 +1,5 @@
 import React from 'react'
+import { Environment } from 'apiClient'
 import { cloneDeep } from 'lodash'
 import {
   render,
@@ -49,7 +50,7 @@ beforeEach(() => {
   store = cloneDeep(mockedStore)
   store.clearActions()
   ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
-    environment: 'unspecified',
+    environment: Environment.Unspecified,
     isDangerousCommand: () => false,
   })
 })
@@ -96,7 +97,7 @@ describe('LoadSampleData', () => {
   describe('production mode', () => {
     it('should disable the button and not open the popover in production', () => {
       ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
-        environment: 'production',
+        environment: Environment.Production,
         isDangerousCommand: () => false,
       })
 
@@ -113,7 +114,7 @@ describe('LoadSampleData', () => {
 
     it('should show the production tooltip copy on focus in production', async () => {
       ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
-        environment: 'production',
+        environment: Environment.Production,
         isDangerousCommand: () => false,
       })
 
