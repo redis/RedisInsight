@@ -432,7 +432,7 @@ const parseHybridRows = (response: unknown): ParseResult<RqeRow[]> => {
     return { ok: false, error: 'FT.HYBRID response must be an array or object.' }
   }
 
-  const rows = response[1] && Array.isArray(response[2])
+  const rows = typeof response[1] === 'string' && Array.isArray(response[2])
     ? parseSearchRows(response)
     : parseAggregateRows(response)
   return { ok: true, value: rows }
