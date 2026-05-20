@@ -7,6 +7,7 @@ This project uses a centralized AI rules structure:
 - **`AGENTS.md`** (repository root) - Entry point with commands, testing, and boundaries
 - **`.ai/rules/`** - Detailed development standards organized by topic
 - **`.ai/commands/`** - AI workflow commands and templates
+- **`.ai/skills/`** - Reusable agent skills shared by supported AI tools
 
 ## 📂 Rules Structure
 
@@ -80,4 +81,4 @@ This project uses a centralized AI rules structure:
 
 ---
 
-**Note**: This is a minimal reference file. GitHub Copilot cannot read the referenced files directly, but developers can access the full guidelines. Other AI tools (Cursor, Augment, Windsurf) access these rules via symlinks and can read `AGENTS.md` directly.
+**Note**: This is a minimal reference file. GitHub Copilot cannot read the referenced files directly, but developers can access the full guidelines. Other AI tools (Cursor, Augment, Windsurf, Claude Code, Codex) access these rules via symlinks and can read `AGENTS.md` directly.

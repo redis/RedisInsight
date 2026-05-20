@@ -17,12 +17,14 @@ These rules are used by multiple AI coding assistants:
 - **Augment** (via symlink: `.augment/`)
 - **Windsurf** (via symlink: `.windsurfrules`)
 - **GitHub Copilot** (via file: `.github/copilot-instructions.md`)
-- **Claude Code** (via hybrid: `.claude/commands/` and `.claude/skills/` symlinks)
+- **Claude Code** (via `CLAUDE.md` plus `.claude/commands/` and `.claude/skills/` symlinks)
+- **Codex** (via `AGENTS.md` and `.agents/skills` symlink)
 
 ## Structure
 
 ```
 AGENTS.md                              # 🎯 AI agent entry point
+CLAUDE.md -> AGENTS.md                 # Claude Code entry point
 .ai/                                   # Single source of truth
 ├── README.md                          # This file (human-readable overview)
 ├── rules/                             # Development standards (modular)
@@ -53,7 +55,11 @@ AGENTS.md                              # 🎯 AI agent entry point
 .augment/ -> .ai/                      # Augment AI
 .windsurfrules -> .ai/                 # Windsurf AI
 .github/copilot-instructions.md        # GitHub Copilot
+.agents/
+  └── skills -> ../.ai/skills          # Codex repo skills
 ```
+
+**Codex note**: Codex reads `AGENTS.md` for project instructions and discovers repo skills from `.agents/skills`. Do not symlink `.ai/rules/` into `.codex/rules/`: Codex `.rules` files are command execution policies, not Markdown development guidelines.
 
 ## For AI Agents
 
