@@ -64,9 +64,14 @@ describe('rqeGeoParser', () => {
     expect(
       unwrapCommand('FT.SEARCH idx "@coords:[2.34 48.86 1000 m]"').overlay,
     ).toMatchObject({ radiusKm: 1, unit: 'm' })
-    expect(
-      unwrapCommand('FT.SEARCH idx "@coords:[2.34 48.86 2 mi]"').overlay,
-    ).toMatchObject({ radiusKm: 3.21868, unit: 'mi' })
+    const milesOverlay = unwrapCommand(
+      'FT.SEARCH idx "@coords:[2.34 48.86 2 mi]"',
+    ).overlay
+    expect(milesOverlay).toMatchObject({ type: 'radius', unit: 'mi' })
+    if (milesOverlay.type !== 'radius') {
+      throw new Error('Expected radius overlay')
+    }
+    expect(milesOverlay.radiusKm).toBeCloseTo(3.218688)
     const feetOverlay = unwrapCommand(
       'FT.SEARCH idx "@coords:[2.34 48.86 1000 ft]"',
     ).overlay

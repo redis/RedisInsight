@@ -179,7 +179,7 @@ describe('geoParser', () => {
       ok: true,
       value: {
         kind: 'storeSummary',
-        radius: 1.60934,
+        radius: 1.609344,
         storeKey: 'Nearby',
       },
     })
