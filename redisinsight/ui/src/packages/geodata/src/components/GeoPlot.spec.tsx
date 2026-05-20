@@ -332,6 +332,39 @@ describe('GeoPlot', () => {
     )
   })
 
+  it('uses the raw GEOSEARCH BYBOX unit for returned distances', () => {
+    render(
+      <GeoPlot
+        mode="markers"
+        results={[{ name: 'Meters', lat: 37, lon: 15, distance: 500 }]}
+        command={{
+          ...boxCommand,
+          rawTokens: [
+            'GEOSEARCH',
+            'Sicily',
+            'FROMLONLAT',
+            '15',
+            '37',
+            'BYBOX',
+            '1000',
+            '1000',
+            'm',
+            'WITHDIST',
+            'WITHCOORD',
+          ],
+          boxWidth: 1,
+          boxHeight: 1,
+          unit: 'km',
+        }}
+      />,
+    )
+
+    expect(mockLeaflet.circleMarker).toHaveBeenCalledWith(
+      [37, 15],
+      expect.objectContaining({ distanceKm: 0.5 }),
+    )
+  })
+
   it('uses the middle color when distance cannot be resolved', () => {
     render(
       <GeoPlot

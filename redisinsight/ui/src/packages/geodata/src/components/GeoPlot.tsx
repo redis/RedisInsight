@@ -37,6 +37,11 @@ const getRawDistanceUnit = (command: ParsedGeoCommand): string => {
     if (radiusIndex >= 0) {
       return command.rawTokens[radiusIndex + 2] || command.unit || 'km'
     }
+
+    const boxIndex = upperTokens.indexOf('BYBOX')
+    if (boxIndex >= 0) {
+      return command.rawTokens[boxIndex + 3] || command.unit || 'km'
+    }
   }
 
   if (command.command === 'GEORADIUS' || command.command === 'GEORADIUS_RO') {
