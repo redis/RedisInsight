@@ -30,12 +30,11 @@ const setMocks = (input: {
   flag: boolean
   databaseMode: DatabaseMode
   dangerousCommands?: string[]
-  connected?: boolean
 }) => {
   mockedFlag.mockReturnValue(input.flag)
   mockedDangerousCommands.mockReturnValue(input.dangerousCommands ?? [])
   mockedInstance.mockReturnValue({
-    id: input.connected === false ? '' : 'db-1',
+    id: 'db-1',
     databaseMode: input.databaseMode,
   })
 }
@@ -128,20 +127,6 @@ describe('useDatabaseMode', () => {
       })
       const { result } = renderHook(useDatabaseMode)
       expect(result.current.isDangerousCommand('FLUSHDB')).toBe(true)
-    })
-  })
-
-  describe('safe defaults', () => {
-    it('falls back to unmarked and a false isDangerousCommand when no connection is active', () => {
-      setMocks({
-        flag: true,
-        databaseMode: DatabaseMode.Production,
-        dangerousCommands: ['FLUSHDB'],
-        connected: false,
-      })
-      const { result } = renderHook(useDatabaseMode)
-      expect(result.current.mode).toBe('unmarked')
-      expect(result.current.isDangerousCommand('FLUSHDB')).toBe(false)
     })
   })
 })

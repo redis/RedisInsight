@@ -19,11 +19,9 @@ export const useDatabaseMode = (): UseDatabaseModeResult => {
   )
   const connectedInstance = useSelector(connectedInstanceSelector)
 
-  const isConnected = Boolean(connectedInstance.id)
-  const mode: DatabaseMode =
-    isConnected && flagEnabled
-      ? connectedInstance.databaseMode
-      : DatabaseMode.Unmarked
+  const mode: DatabaseMode = flagEnabled
+    ? connectedInstance.databaseMode
+    : DatabaseMode.Unmarked
 
   const isDangerousCommand = useMemo(() => {
     const upper = new Set(dangerousCommands.map((c) => c.toUpperCase()))
