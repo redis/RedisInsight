@@ -1,6 +1,5 @@
 import {
   getSearchMemberRows,
-  isUnitToken,
   parseGeoCommand,
   parseGeoDistanceResult,
   parseGeoHashResults,
@@ -484,14 +483,11 @@ describe('geoParser', () => {
     })
   })
 
-  it('extracts plain member rows and recognizes distance units', () => {
+  it('extracts plain member rows', () => {
     expect(getSearchMemberRows('bad')).toEqual([])
     expect(getSearchMemberRows(['Palermo', ['Catania', '56.4']])).toEqual([
       'Palermo',
       'Catania',
     ])
-    expect(isUnitToken('km')).toBe(true)
-    expect(isUnitToken('yards')).toBe(false)
-    expect(isUnitToken(undefined)).toBe(false)
   })
 })

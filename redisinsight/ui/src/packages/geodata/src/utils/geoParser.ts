@@ -25,7 +25,6 @@ const GEO_COMMANDS = new Set<GeoCommand>([
 ])
 
 const GEOADD_OPTIONS = new Set(['NX', 'XX', 'CH'])
-const DISTANCE_UNITS = new Set(['M', 'KM', 'FT', 'MI'])
 
 export const tokenizeRedisCommand = (command: string): string[] => {
   const tokens: string[] = []
@@ -625,6 +624,3 @@ export const getSearchMemberRows = (response: unknown): string[] => {
     return String(item)
   })
 }
-
-export const isUnitToken = (value: string | undefined): boolean =>
-  !!value && DISTANCE_UNITS.has(value.toUpperCase())

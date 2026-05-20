@@ -289,6 +289,43 @@ describe('rqeGeoParser', () => {
     })
   })
 
+  it('returns an empty dataset for valid RQE queries without matches', () => {
+    const searchCommand = unwrapCommand(
+      'FT.SEARCH cities "@coords:[2.34 48.86 1000 km]" RETURN 1 coords',
+    )
+    const aggregateCommand = unwrapCommand(
+      'FT.AGGREGATE idx "@coords:[2.34 48.86 1000 km]" LOAD 1 @coords',
+    )
+    const hybridCommand = unwrapCommand(
+      'FT.HYBRID idx SEARCH "@coords:[2.34 48.86 1000 km]" VSIM @embedding $vec LOAD 1 coords PARAMS 2 vec blob',
+    )
+
+    expect(parseRqeGeoResults([0], searchCommand)).toEqual({
+      ok: true,
+      value: {
+        command: searchCommand,
+        points: [],
+        shapes: [],
+      },
+    })
+    expect(parseRqeGeoResults([0], aggregateCommand)).toEqual({
+      ok: true,
+      value: {
+        command: aggregateCommand,
+        points: [],
+        shapes: [],
+      },
+    })
+    expect(parseRqeGeoResults({ total_results: 0, results: [] }, hybridCommand)).toEqual({
+      ok: true,
+      value: {
+        command: hybridCommand,
+        points: [],
+        shapes: [],
+      },
+    })
+  })
+
   it('normalizes FT.AGGREGATE and cursor point rows', () => {
     const command = unwrapCommand(
       'FT.AGGREGATE idx "@coords:[$lon $lat $radius km]" PARAMS 6 lon 2.34 lat 48.86 radius 1000 LOAD 1 @coords',
