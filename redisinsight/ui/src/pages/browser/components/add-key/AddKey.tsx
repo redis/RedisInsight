@@ -111,6 +111,7 @@ const AddKey = (props: Props) => {
   )
   const [keyName, setKeyName] = useState<string>('')
   const [keyTTL, setKeyTTL] = useState<Maybe<number>>(undefined)
+  const [keyNameDisabled, setKeyNameDisabled] = useState<boolean>(false)
 
   const onChangeType = (value: string) => {
     setTypeSelected(value)
@@ -188,6 +189,7 @@ const AddKey = (props: Props) => {
                 setKeyName={setKeyName}
                 keyTTL={keyTTL}
                 setKeyTTL={setKeyTTL}
+                keyNameDisabled={keyNameDisabled}
               />
 
               <Spacer size="xl" />
@@ -233,6 +235,8 @@ const AddKey = (props: Props) => {
               {typeSelected === KeyTypes.VectorSet && (
                 <AddKeyVectorSet
                   onCancel={closeAddKeyPanel}
+                  setKeyName={setKeyName}
+                  setKeyNameDisabled={setKeyNameDisabled}
                   {...defaultFields}
                 />
               )}

@@ -11,6 +11,7 @@ export const RadioCard = styled.label<
   React.LabelHTMLAttributes<HTMLLabelElement> & { $disabled?: boolean }
 >`
   display: flex;
+  flex-grow: 1;
   align-items: center;
   gap: ${({ theme }) => theme.core.space.space050};
   border: 1px solid ${({ theme }) => theme.semantic.color.border.secondary500};

@@ -21,6 +21,12 @@ export interface Props {
   setKeyName: React.Dispatch<React.SetStateAction<string>>
   keyTTL: Maybe<number>
   setKeyTTL: React.Dispatch<React.SetStateAction<Maybe<number>>>
+  /**
+   * When true, the key-name input is rendered as disabled in addition to the
+   * existing `loading` gate. Used by the vector-set "Load sample dataset"
+   * flow to lock the key name to the bundled `vec2word` value.
+   */
+  keyNameDisabled?: boolean
 }
 
 const AddKeyCommonFields = (props: Props) => {
@@ -33,6 +39,7 @@ const AddKeyCommonFields = (props: Props) => {
     setKeyName,
     keyTTL,
     setKeyTTL,
+    keyNameDisabled = false,
   } = props
 
   const handleTTLChange = (value: string) => {
@@ -91,7 +98,7 @@ const AddKeyCommonFields = (props: Props) => {
           value={keyName}
           placeholder={config.keyName.placeholder}
           onChange={setKeyName}
-          disabled={loading}
+          disabled={loading || keyNameDisabled}
           autoComplete="off"
           data-testid="key"
         />

@@ -43,6 +43,9 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
   connectedInstanceSelector: jest.fn().mockReturnValue({ id: '123' }),
 }))
 
+const connectedInstanceOverviewSelectorMock =
+  connectedInstanceOverviewSelector as jest.Mock
+
 beforeEach(() => {
   cleanup()
   store = cloneDeep(mockedStore)
@@ -105,11 +108,9 @@ describe('FilterKeyType', () => {
   })
 
   it('should be disabled filter with database redis version < 6.0', () => {
-    ;(connectedInstanceOverviewSelector as jest.Mock).mockImplementationOnce(
-      () => ({
-        version: '5.1',
-      }),
-    )
+    connectedInstanceOverviewSelectorMock.mockImplementationOnce(() => ({
+      version: '5.1',
+    }))
     render(<FilterKeyType />)
     const filterSelect = screen.getByTestId(filterSelectId)
 
@@ -117,11 +118,9 @@ describe('FilterKeyType', () => {
   })
 
   it('should be info box with database redis version < 6.0', () => {
-    ;(connectedInstanceOverviewSelector as jest.Mock).mockImplementationOnce(
-      () => ({
-        version: '5.1',
-      }),
-    )
+    connectedInstanceOverviewSelectorMock.mockImplementationOnce(() => ({
+      version: '5.1',
+    }))
     render(<FilterKeyType />)
     expect(screen.getByTestId(unsupportedAnchorId)).toBeInTheDocument()
 
@@ -136,11 +135,9 @@ describe('FilterKeyType', () => {
     ;(sendEventTelemetry as jest.Mock).mockImplementation(
       () => sendEventTelemetryMock,
     )
-    ;(connectedInstanceOverviewSelector as jest.Mock).mockImplementationOnce(
-      () => ({
-        version: '5.1',
-      }),
-    )
+    connectedInstanceOverviewSelectorMock.mockImplementationOnce(() => ({
+      version: '5.1',
+    }))
 
     render(<FilterKeyType />)
 
@@ -199,11 +196,9 @@ describe('FilterKeyType', () => {
   })
 
   it('should show Vector Set when vector set feature flag is enabled and redis version >= 8.0', async () => {
-    ;(connectedInstanceOverviewSelector as jest.Mock).mockImplementationOnce(
-      () => ({
-        version: '8.0.0',
-      }),
-    )
+    connectedInstanceOverviewSelectorMock.mockImplementationOnce(() => ({
+      version: '8.0.0',
+    }))
     const initialStoreState = set(
       cloneDeep(initialStateDefault),
       `app.features.featureFlags.features.${FeatureFlags.devVectorSet}`,
@@ -221,11 +216,9 @@ describe('FilterKeyType', () => {
   it('should hide Vector Set when vector set feature flag is disabled', () => {
     // Ensure the version gate is satisfied so the assertion truly
     // exercises the feature-flag path and not the version path.
-    ;(connectedInstanceOverviewSelector as jest.Mock).mockImplementationOnce(
-      () => ({
-        version: '8.0.0',
-      }),
-    )
+    connectedInstanceOverviewSelectorMock.mockImplementationOnce(() => ({
+      version: '8.0.0',
+    }))
     const { queryByText } = render(<FilterKeyType />)
 
     fireEvent.click(screen.getByTestId(filterSelectId))
@@ -234,11 +227,9 @@ describe('FilterKeyType', () => {
   })
 
   it('should hide Vector Set when redis version < 8.0 even if feature flag is enabled', async () => {
-    ;(connectedInstanceOverviewSelector as jest.Mock).mockImplementationOnce(
-      () => ({
-        version: '7.4.0',
-      }),
-    )
+    connectedInstanceOverviewSelectorMock.mockImplementationOnce(() => ({
+      version: '7.4.0',
+    }))
     const initialStoreState = set(
       cloneDeep(initialStateDefault),
       `app.features.featureFlags.features.${FeatureFlags.devVectorSet}`,
