@@ -1,4 +1,5 @@
 import React from 'react'
+import { DatabaseMode } from 'apiClient'
 import { cleanup, fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import * as useDatabaseModeModule from 'uiSrc/components/hooks/useDatabaseMode'
 import MonitorNotStarted from './MonitorNotStarted'
@@ -6,7 +7,7 @@ import MonitorNotStarted from './MonitorNotStarted'
 beforeEach(() => {
   cleanup()
   jest.spyOn(useDatabaseModeModule, 'useDatabaseMode').mockReturnValue({
-    mode: 'unmarked',
+    mode: DatabaseMode.Unmarked,
     isDangerousCommand: () => false,
   })
 })

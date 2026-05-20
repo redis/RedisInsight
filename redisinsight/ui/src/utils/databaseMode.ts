@@ -1,14 +1,15 @@
-import { DatabaseMode as PersistedDatabaseMode } from 'apiClient'
+import { DatabaseMode } from 'apiClient'
 import { Instance } from 'uiSrc/slices/interfaces'
 
-// Runtime mode driving UI gates: persisted enum values plus 'disabled'
-// (returned when the dev-prodMode feature flag is off).
-export type DatabaseMode = `${PersistedDatabaseMode}` | 'disabled'
+export { DatabaseMode }
 
+// Returns the effective database mode for UI gates. When the dev-prodMode
+// feature flag is off (or no row is supplied), falls back to Unmarked so
+// no friction is applied — equivalent to the feature being inactive.
 export const getDatabaseMode = (
   database: Pick<Instance, 'databaseMode'> | null | undefined,
   { flagEnabled }: { flagEnabled: boolean },
 ): DatabaseMode => {
-  if (!flagEnabled) return 'disabled'
-  return database?.databaseMode ?? PersistedDatabaseMode.Unmarked
+  if (!flagEnabled) return DatabaseMode.Unmarked
+  return database?.databaseMode ?? DatabaseMode.Unmarked
 }

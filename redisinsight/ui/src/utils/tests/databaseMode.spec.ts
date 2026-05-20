@@ -2,13 +2,13 @@ import { DatabaseMode } from 'apiClient'
 import { getDatabaseMode } from 'uiSrc/utils/databaseMode'
 
 describe('getDatabaseMode', () => {
-  it('returns disabled when flag is off regardless of row', () => {
+  it('falls back to unmarked when flag is off regardless of row', () => {
     expect(
       getDatabaseMode(
         { databaseMode: DatabaseMode.Production },
         { flagEnabled: false },
       ),
-    ).toBe('disabled')
+    ).toBe('unmarked')
   })
 
   it('returns production when flag on and row is production', () => {
@@ -38,8 +38,8 @@ describe('getDatabaseMode', () => {
     ).toBe('unmarked')
   })
 
-  it('returns disabled for a null row when flag is off', () => {
-    expect(getDatabaseMode(null, { flagEnabled: false })).toBe('disabled')
+  it('treats a null row as unmarked when flag is off', () => {
+    expect(getDatabaseMode(null, { flagEnabled: false })).toBe('unmarked')
   })
 
   it('treats a null row as unmarked when flag is on', () => {

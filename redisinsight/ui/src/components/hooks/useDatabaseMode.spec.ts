@@ -42,10 +42,10 @@ const setMocks = (input: {
 
 describe('useDatabaseMode', () => {
   describe('truth table', () => {
-    it('returns disabled when flag is off', () => {
+    it('falls back to unmarked when flag is off', () => {
       setMocks({ flag: false, databaseMode: DatabaseMode.Production })
       const { result } = renderHook(useDatabaseMode)
-      expect(result.current.mode).toBe('disabled')
+      expect(result.current.mode).toBe('unmarked')
     })
 
     it('returns production when flag on and connection is marked production', () => {
@@ -132,7 +132,7 @@ describe('useDatabaseMode', () => {
   })
 
   describe('safe defaults', () => {
-    it('returns disabled and a false isDangerousCommand when no connection is active', () => {
+    it('falls back to unmarked and a false isDangerousCommand when no connection is active', () => {
       setMocks({
         flag: true,
         databaseMode: DatabaseMode.Production,
@@ -140,7 +140,7 @@ describe('useDatabaseMode', () => {
         connected: false,
       })
       const { result } = renderHook(useDatabaseMode)
-      expect(result.current.mode).toBe('disabled')
+      expect(result.current.mode).toBe('unmarked')
       expect(result.current.isDangerousCommand('FLUSHDB')).toBe(false)
     })
   })

@@ -22,7 +22,7 @@ export const useDatabaseMode = (): UseDatabaseModeResult => {
   const isConnected = Boolean(connectedInstance.id)
   const mode: DatabaseMode = isConnected
     ? getDatabaseMode(connectedInstance, { flagEnabled })
-    : 'disabled'
+    : DatabaseMode.Unmarked
 
   const isDangerousCommand = useMemo(() => {
     const upper = new Set(dangerousCommands.map((c) => c.toUpperCase()))

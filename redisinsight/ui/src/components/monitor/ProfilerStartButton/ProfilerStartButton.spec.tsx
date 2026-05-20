@@ -1,4 +1,5 @@
 import React from 'react'
+import { DatabaseMode } from 'apiClient'
 import { cleanup, fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import * as useDatabaseModeModule from 'uiSrc/components/hooks/useDatabaseMode'
 import ProfilerStartButton from './ProfilerStartButton'
@@ -21,12 +22,12 @@ afterEach(() => {
 
 describe('ProfilerStartButton', () => {
   it('should render the Start Profiler button', () => {
-    mockUseDatabaseMode('unmarked')
+    mockUseDatabaseMode(DatabaseMode.Unmarked)
     render(<ProfilerStartButton onStart={jest.fn()} />)
     expect(screen.getByTestId('start-monitor')).toBeInTheDocument()
   })
 
-  it.each(['fast', 'unmarked', 'disabled'] as const)(
+  it.each([DatabaseMode.Fast, DatabaseMode.Unmarked])(
     'should call onStart directly when mode is "%s"',
     (mode) => {
       mockUseDatabaseMode(mode)
@@ -42,7 +43,7 @@ describe('ProfilerStartButton', () => {
 
   describe('in production mode', () => {
     beforeEach(() => {
-      mockUseDatabaseMode('production')
+      mockUseDatabaseMode(DatabaseMode.Production)
     })
 
     it('should open the confirmation popover and not call onStart on first click', () => {
