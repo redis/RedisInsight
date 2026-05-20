@@ -21,10 +21,6 @@ runs:
       uses: actions/setup-node@v4.0.4
       with:
         node-version: '22.22.0'
-        # disable cache for windows
-        # https://github.com/actions/setup-node/issues/975
-        cache: ${{ runner.os != 'Windows' && 'yarn' || '' }}
-        cache-dependency-path: ${{ runner.os != 'Windows' && '**/yarn.lock' || '' }}
 
     - name: Cache node_modules
       id: cache-node-modules
