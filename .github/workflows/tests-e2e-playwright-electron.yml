@@ -120,6 +120,18 @@ jobs:
             echo "127.0.0.1 host.docker.internal" | sudo tee -a /etc/hosts
           fi
 
+      - name: Pull Redis test environment images
+        run: |
+          for i in 1 2 3; do
+            if docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml pull; then
+              exit 0
+            fi
+            echo "Pull attempt $i failed, retrying in 15s..."
+            sleep 15
+          done
+          echo "::error::Failed to pull Redis test environment images after 3 attempts"
+          exit 1
+
       - name: Start Redis test environment
         run: |
           TEST_BIG_DB_DUMP=$TEST_BIG_DB_DUMP \
