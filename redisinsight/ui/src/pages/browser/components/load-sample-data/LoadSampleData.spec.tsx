@@ -20,7 +20,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { apiService } from 'uiSrc/services'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import successMessages from 'uiSrc/components/notifications/success-messages'
-import { useDatabaseMode } from 'uiSrc/components/hooks/useDatabaseMode'
+import { useEnvironment } from 'uiSrc/components/hooks/useEnvironment'
 import LoadSampleData from './LoadSampleData'
 
 const PRODUCTION_DISABLED_TOOLTIP =
@@ -38,9 +38,9 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
-jest.mock('uiSrc/components/hooks/useDatabaseMode', () => ({
-  ...jest.requireActual('uiSrc/components/hooks/useDatabaseMode'),
-  useDatabaseMode: jest.fn(),
+jest.mock('uiSrc/components/hooks/useEnvironment', () => ({
+  ...jest.requireActual('uiSrc/components/hooks/useEnvironment'),
+  useEnvironment: jest.fn(),
 }))
 
 let store: typeof mockedStore
@@ -48,8 +48,8 @@ beforeEach(() => {
   cleanup()
   store = cloneDeep(mockedStore)
   store.clearActions()
-  ;(useDatabaseMode as jest.Mock).mockReturnValue({
-    mode: 'unmarked',
+  ;(useEnvironment as jest.Mock).mockReturnValue({
+    mode: 'unspecified',
     isDangerousCommand: () => false,
   })
 })
@@ -95,7 +95,7 @@ describe('LoadSampleData', () => {
 
   describe('production mode', () => {
     it('should disable the button and not open the popover in production', () => {
-      ;(useDatabaseMode as jest.Mock).mockReturnValue({
+      ;(useEnvironment as jest.Mock).mockReturnValue({
         mode: 'production',
         isDangerousCommand: () => false,
       })
@@ -112,7 +112,7 @@ describe('LoadSampleData', () => {
     })
 
     it('should show the production tooltip copy on focus in production', async () => {
-      ;(useDatabaseMode as jest.Mock).mockReturnValue({
+      ;(useEnvironment as jest.Mock).mockReturnValue({
         mode: 'production',
         isDangerousCommand: () => false,
       })

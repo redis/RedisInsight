@@ -70,9 +70,9 @@ import reducer, {
   resetConnectedInstanceDangerousCommands,
   fetchConnectedInstanceDangerousCommandsAction,
   connectedInstanceDangerousCommandsSelector,
-  connectedInstanceDatabaseModeSelector,
+  connectedInstanceEnvironmentSelector,
 } from '../../instances/instances'
-import { DatabaseMode } from 'apiClient'
+import { Environment } from 'apiClient'
 import {
   addErrorNotification,
   addInfiniteNotification,
@@ -111,7 +111,7 @@ beforeEach(() => {
       nameFromProvider: null,
       modules: [],
       lastConnection: new Date('2021-04-22T09:03:56.917Z'),
-      databaseMode: DatabaseMode.Unmarked,
+      environment: Environment.Unspecified,
     },
     {
       id: 'a0db1bc8-a353-4c43-a856-b72f4811d2d4',
@@ -154,7 +154,7 @@ beforeEach(() => {
       sentinelMaster: {
         name: 'mymaster',
       },
-      databaseMode: DatabaseMode.Unmarked,
+      environment: Environment.Unspecified,
     },
   ]
 })
@@ -981,28 +981,28 @@ describe('instances slice', () => {
     })
   })
 
-  describe('connectedInstanceDatabaseModeSelector', () => {
-    it('returns databaseMode from connected instance', () => {
+  describe('connectedInstanceEnvironmentSelector', () => {
+    it('returns environment from connected instance', () => {
       const nextState = {
         ...initialState,
         connectedInstance: {
           ...initialState.connectedInstance,
-          databaseMode: 'production',
+          environment: 'production',
         },
       }
       const rootState = Object.assign(initialStateDefault, {
         connections: { instances: nextState },
       })
-      expect(connectedInstanceDatabaseModeSelector(rootState)).toBe(
-        'production',
-      )
+      expect(connectedInstanceEnvironmentSelector(rootState)).toBe('production')
     })
 
-    it('defaults to unmarked when databaseMode is undefined', () => {
+    it('defaults to unmarked when environment is undefined', () => {
       const rootState = Object.assign(initialStateDefault, {
         connections: { instances: initialState },
       })
-      expect(connectedInstanceDatabaseModeSelector(rootState)).toBe('unmarked')
+      expect(connectedInstanceEnvironmentSelector(rootState)).toBe(
+        'unspecified',
+      )
     })
   })
 

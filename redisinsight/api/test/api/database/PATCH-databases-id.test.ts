@@ -52,8 +52,8 @@ const dataSchema = Joi.object({
     certificate: Joi.string(),
     key: Joi.string(),
   }).allow(null),
-  databaseMode: Joi.string()
-    .valid('unmarked', 'production', 'fast')
+  environment: Joi.string()
+    .valid('unspecified', 'production', 'development')
     .allow(null),
 })
   .messages({
@@ -163,19 +163,19 @@ describe(`PATCH /databases/:id`, () => {
         },
       },
       {
-        name: 'Should change databaseMode for existing database',
+        name: 'Should change environment for existing database',
         data: {
-          databaseMode: 'production',
+          environment: 'production',
         },
         responseSchema,
         responseBody: {
-          databaseMode: 'production',
+          environment: 'production',
         },
         after: async () => {
           newDatabase = await localDb.getInstanceById(
             constants.TEST_INSTANCE_ID,
           );
-          expect(newDatabase.databaseMode).to.eq('production');
+          expect(newDatabase.environment).to.eq('production');
         },
       },
       {

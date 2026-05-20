@@ -54,7 +54,7 @@ export class CreateDatabaseDto extends PickType(Database, [
   'providerDetails',
   'forceStandalone',
   'keyNameFormat',
-  'databaseMode',
+  'environment',
 ] as const) {
   @ApiPropertyOptional({
     description: 'CA Certificate',

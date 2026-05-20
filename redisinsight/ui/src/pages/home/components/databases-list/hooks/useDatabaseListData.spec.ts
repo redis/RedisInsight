@@ -5,7 +5,7 @@ import {
   initialStateDefault,
   renderHook,
 } from 'uiSrc/utils/test-utils'
-import { DatabaseMode } from 'apiClient'
+import { Environment } from 'apiClient'
 import { DatabaseListColumn } from 'uiSrc/constants'
 import { Instance } from 'uiSrc/slices/interfaces'
 import { DBInstanceFactory } from 'uiSrc/mocks/factories/database/DBInstance.factory'
@@ -161,7 +161,7 @@ describe('useDatabaseListData', () => {
         modules: [],
         version: null,
         visible: false,
-        databaseMode: DatabaseMode.Unmarked,
+        environment: Environment.Unspecified,
       },
     ]
     const store = getStoreWith({ instances })
@@ -191,7 +191,7 @@ describe('useDatabaseListData', () => {
         modules: [],
         version: null,
         visible: true,
-        databaseMode: DatabaseMode.Unmarked,
+        environment: Environment.Unspecified,
       }),
     )
     const store = getStoreWith({ instances })
@@ -212,7 +212,7 @@ describe('useDatabaseListData', () => {
         modules: [],
         version: null,
         visible: true,
-        databaseMode: DatabaseMode.Unmarked,
+        environment: Environment.Unspecified,
       }),
     )
     const store = getStoreWith({ instances })

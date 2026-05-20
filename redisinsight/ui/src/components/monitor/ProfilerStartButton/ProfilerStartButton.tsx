@@ -7,14 +7,14 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import ConfirmationPopover from 'uiSrc/components/confirmation-popover/ConfirmationPopover'
-import { useDatabaseMode } from 'uiSrc/components/hooks/useDatabaseMode'
+import { useEnvironment } from 'uiSrc/components/hooks/useEnvironment'
 
 export interface Props {
   onStart: () => void
 }
 
 const ProfilerStartButton = ({ onStart }: Props) => {
-  const { mode } = useDatabaseMode()
+  const { mode } = useEnvironment()
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
   const isProduction = mode === 'production'
 

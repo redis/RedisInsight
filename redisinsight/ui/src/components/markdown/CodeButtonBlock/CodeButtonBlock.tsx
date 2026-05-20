@@ -37,7 +37,7 @@ import {
 } from 'uiSrc/components/base/icons'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { AdditionalRedisModule } from 'apiClient'
-import { useDatabaseMode } from 'uiSrc/components/hooks/useDatabaseMode'
+import { useEnvironment } from 'uiSrc/components/hooks/useEnvironment'
 
 import { RunConfirmationPopover } from './components'
 import styles from './styles.module.scss'
@@ -79,7 +79,7 @@ const CodeButtonBlock = (props: Props) => {
   const [isCopied, setIsCopied] = useState(false)
 
   const { instanceId } = useParams<{ instanceId: string }>()
-  const { mode } = useDatabaseMode()
+  const { mode } = useEnvironment()
   const isProduction = mode === 'production'
 
   const isButtonHasConfirmation =

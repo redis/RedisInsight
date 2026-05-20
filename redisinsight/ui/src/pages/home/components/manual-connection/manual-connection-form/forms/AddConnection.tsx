@@ -2,7 +2,7 @@ import React from 'react'
 import { FormikProps } from 'formik'
 import {
   DatabaseForm,
-  DatabaseModeSelect,
+  EnvironmentSelect,
   DbIndex,
   ForceStandalone,
   SSHDetails,
@@ -65,7 +65,7 @@ const AddConnection = (props: Props) => {
               <Spacer size="m" />
               <Divider />
               <Spacer size="m" />
-              <DatabaseModeSelect formik={formik} />
+              <EnvironmentSelect formik={formik} />
             </>
           </FeatureFlagComponent>
         </>

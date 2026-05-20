@@ -9,7 +9,7 @@ import {
   render,
   screen,
 } from 'uiSrc/utils/test-utils'
-import { DatabaseMode } from 'apiClient'
+import { Environment } from 'apiClient'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import {
   ConnectionType,
@@ -44,7 +44,7 @@ const mockInstances: Instance[] = [
     version: null,
     lastConnection: new Date('2021-04-22T09:03:56.917Z'),
     provider: 'provider',
-    databaseMode: DatabaseMode.Unmarked,
+    environment: Environment.Unspecified,
   },
 ]
 

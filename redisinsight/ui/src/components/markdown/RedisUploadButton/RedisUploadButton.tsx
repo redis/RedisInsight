@@ -31,7 +31,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { useDatabaseMode } from 'uiSrc/components/hooks/useDatabaseMode'
+import { useEnvironment } from 'uiSrc/components/hooks/useEnvironment'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -47,7 +47,7 @@ const RedisUploadButton = ({ label, path }: Props) => {
 
   const dispatch = useDispatch()
   const { instanceId } = useParams<{ instanceId: string }>()
-  const { mode } = useDatabaseMode()
+  const { mode } = useEnvironment()
   const isProduction = mode === 'production'
 
   const urlToFile = getPathToResource(path)

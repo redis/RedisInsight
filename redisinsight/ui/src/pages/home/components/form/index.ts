@@ -6,7 +6,7 @@ import TlsDetails from './TlsDetails'
 import DatabaseForm from './DatabaseForm'
 import SSHDetails from './SSHDetails'
 import ForceStandalone from './ForceStandalone'
-import DatabaseModeSelect from './DatabaseModeSelect'
+import EnvironmentSelect from './EnvironmentSelect'
 import KeyFormatSelector from './KeyFormatSelector'
 
 export {
@@ -19,6 +19,6 @@ export {
   SSHDetails,
   DbCompressor,
   ForceStandalone,
-  DatabaseModeSelect,
+  EnvironmentSelect,
   KeyFormatSelector,
 }

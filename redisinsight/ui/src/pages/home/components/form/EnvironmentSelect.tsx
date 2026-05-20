@@ -2,7 +2,7 @@ import React from 'react'
 import { FormikProps } from 'formik'
 
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
-import { DatabaseMode } from 'apiClient'
+import { Environment } from 'apiClient'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
@@ -14,22 +14,24 @@ export interface Props {
   formik: FormikProps<DbConnectionInfo>
 }
 
-const options: { value: DatabaseMode; label: string }[] = [
-  { value: DatabaseMode.Unmarked, label: 'Unmarked' },
-  { value: DatabaseMode.Production, label: 'Production' },
-  { value: DatabaseMode.Fast, label: 'Fast' },
+const options: { value: Environment; label: string }[] = [
+  { value: Environment.Unspecified, label: 'Unspecified' },
+  { value: Environment.Production, label: 'Production' },
+  { value: Environment.Development, label: 'Development' },
 ]
 
-const DatabaseModeLabel = () => (
+const EnvironmentLabel = () => (
   <Row align="center" gap="s">
-    <Text>Database mode</Text>
+    <Text>Environment</Text>
     <RiTooltip
       position="right"
       content={
         <Text>
-          Production adds confirmation friction before risky changes. Fast skips
-          confirmations for trusted dev/test connections. Unmarked uses default
-          behavior.
+          Classify this database to apply the right safety behavior. When marked
+          as production, Redis Insight adds an extra layer of protection to
+          prevent unintended changes. This includes additional confirmation
+          dialogues before modifying data and stronger friction before running
+          dangerous commands.
         </Text>
       }
     >
@@ -40,21 +42,21 @@ const DatabaseModeLabel = () => (
   </Row>
 )
 
-const DatabaseModeSelect = (props: Props) => {
+const EnvironmentSelect = (props: Props) => {
   const { formik } = props
 
   return (
     <Row gap="m">
       <FlexItem grow>
-        <FormField label={<DatabaseModeLabel />}>
+        <FormField label={<EnvironmentLabel />}>
           <RiSelect
-            name="databaseMode"
-            value={formik.values.databaseMode}
+            name="environment"
+            value={formik.values.environment}
             options={options}
             onChange={(value) => {
-              formik.setFieldValue('databaseMode', value)
+              formik.setFieldValue('environment', value)
             }}
-            data-testid="select-database-mode"
+            data-testid="select-environment"
           />
         </FormField>
       </FlexItem>
@@ -63,4 +65,4 @@ const DatabaseModeSelect = (props: Props) => {
   )
 }
 
-export default DatabaseModeSelect
+export default EnvironmentSelect

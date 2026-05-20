@@ -40,7 +40,7 @@ import {
 import { ConnectionType, InitialStateInstances, Instance } from '../interfaces'
 import {
   Database as DatabaseInstanceResponse,
-  DatabaseMode,
+  Environment,
   RedisNodeInfoResponse,
   ExportDatabase,
 } from 'apiClient'
@@ -68,7 +68,7 @@ export const initialState: InitialStateInstances = {
     isRediStack: false,
     modules: [],
     loading: undefined,
-    databaseMode: DatabaseMode.Unmarked,
+    environment: Environment.Unspecified,
   },
   editedInstance: {
     loading: false,
@@ -379,9 +379,9 @@ export const connectedInstanceSelector = (state: RootState) =>
   state.connections.instances.connectedInstance
 export const connectedInstanceCDSelector = (state: RootState) =>
   state.connections.instances.connectedInstance.cloudDetails
-export const connectedInstanceDatabaseModeSelector = (
+export const connectedInstanceEnvironmentSelector = (
   state: RootState,
-): DatabaseMode => state.connections.instances.connectedInstance.databaseMode
+): Environment => state.connections.instances.connectedInstance.environment
 export const connectedInstanceDangerousCommandsSelector = (
   state: RootState,
 ): string[] => state.connections.instances.dangerousCommands

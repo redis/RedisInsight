@@ -12,7 +12,7 @@ import {
   GetListElementsDto,
   GetListElementsResponse,
   Database as DatabaseInstanceResponse,
-  DatabaseMode,
+  Environment,
   SearchZSetMembersResponse,
   SentinelMaster,
   CreateSentinelDatabaseDto,
@@ -57,7 +57,7 @@ export interface Instance extends Partial<DatabaseInstanceResponse> {
   visible?: boolean
   loading?: boolean
   isFreeDb?: boolean
-  databaseMode: DatabaseMode
+  environment: Environment
   tags?: Tag[]
 }
 

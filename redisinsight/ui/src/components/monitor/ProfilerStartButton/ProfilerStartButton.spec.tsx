@@ -1,13 +1,13 @@
 import React from 'react'
-import { DatabaseMode } from 'apiClient'
+import { Environment } from 'apiClient'
 import { cleanup, fireEvent, render, screen } from 'uiSrc/utils/test-utils'
-import * as useDatabaseModeModule from 'uiSrc/components/hooks/useDatabaseMode'
+import * as useEnvironmentModule from 'uiSrc/components/hooks/useEnvironment'
 import ProfilerStartButton from './ProfilerStartButton'
 
-const mockUseDatabaseMode = (
-  mode: useDatabaseModeModule.UseDatabaseModeResult['mode'],
+const mockUseEnvironment = (
+  mode: useEnvironmentModule.UseEnvironmentResult['mode'],
 ) =>
-  jest.spyOn(useDatabaseModeModule, 'useDatabaseMode').mockReturnValue({
+  jest.spyOn(useEnvironmentModule, 'useEnvironment').mockReturnValue({
     mode,
     isDangerousCommand: () => false,
   })
@@ -22,15 +22,15 @@ afterEach(() => {
 
 describe('ProfilerStartButton', () => {
   it('should render the Start Profiler button', () => {
-    mockUseDatabaseMode(DatabaseMode.Unmarked)
+    mockUseEnvironment(Environment.Unspecified)
     render(<ProfilerStartButton onStart={jest.fn()} />)
     expect(screen.getByTestId('start-monitor')).toBeInTheDocument()
   })
 
-  it.each([DatabaseMode.Fast, DatabaseMode.Unmarked])(
+  it.each([Environment.Development, Environment.Unspecified])(
     'should call onStart directly when mode is "%s"',
     (mode) => {
-      mockUseDatabaseMode(mode)
+      mockUseEnvironment(mode)
       const onStart = jest.fn()
       render(<ProfilerStartButton onStart={onStart} />)
 
@@ -43,7 +43,7 @@ describe('ProfilerStartButton', () => {
 
   describe('in production mode', () => {
     beforeEach(() => {
-      mockUseDatabaseMode(DatabaseMode.Production)
+      mockUseEnvironment(Environment.Production)
     })
 
     it('should open the confirmation popover and not call onStart on first click', () => {

@@ -157,7 +157,7 @@ export const MOCK_COMMANDS_SPEC = {
         key_spec_index: 0,
       },
     ],
-    command_flags: ['readonly', 'fast'],
+    command_flags: ['readonly', 'development'],
   },
   HSET: {
     provider: 'main',
@@ -214,7 +214,7 @@ export const MOCK_COMMANDS_SPEC = {
         ],
       },
     ],
-    command_flags: ['write', 'denyoom', 'fast'],
+    command_flags: ['write', 'denyoom', 'development'],
   },
   'CLIENT KILL': {
     provider: 'main',
@@ -592,7 +592,7 @@ export const MOCK_COMMANDS_SPEC = {
         ],
       },
     ],
-    command_flags: ['write', 'denyoom', 'fast'],
+    command_flags: ['write', 'denyoom', 'development'],
   },
   RESET: {
     provider: 'main',
@@ -606,7 +606,7 @@ export const MOCK_COMMANDS_SPEC = {
       'noscript',
       'loading',
       'stale',
-      'fast',
+      'development',
       'no_auth',
       'allow_busy',
     ],

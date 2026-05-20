@@ -188,7 +188,7 @@ describe('DatabaseConnectionService', () => {
         analytics.sendDatabaseConnectedClientListEvent,
       ).toHaveBeenCalledWith(mockSessionMetadata, {
         databaseId: mockDatabase.id,
-        databaseMode: 'unmarked',
+        environment: 'unspecified',
         clients: mockRedisClientListResult.map((c) => ({
           version: mockRedisGeneralInfo.version,
           resp: get(c, 'resp', 'n/a'),
@@ -198,10 +198,10 @@ describe('DatabaseConnectionService', () => {
       });
     });
 
-    it('should send databaseMode=production when database is marked production', async () => {
+    it('should send environment=production when database is marked production', async () => {
       repository.get.mockResolvedValueOnce({
         ...mockDatabase,
-        databaseMode: 'production',
+        environment: 'production',
       });
 
       await service.connect(mockCommonClientMetadata);
@@ -210,14 +210,14 @@ describe('DatabaseConnectionService', () => {
         analytics.sendDatabaseConnectedClientListEvent,
       ).toHaveBeenCalledWith(
         mockSessionMetadata,
-        expect.objectContaining({ databaseMode: 'production' }),
+        expect.objectContaining({ environment: 'production' }),
       );
     });
 
-    it('should send databaseMode=fast when database is marked fast', async () => {
+    it('should send environment=fast when database is marked fast', async () => {
       repository.get.mockResolvedValueOnce({
         ...mockDatabase,
-        databaseMode: 'fast',
+        environment: 'development',
       });
 
       await service.connect(mockCommonClientMetadata);
@@ -226,7 +226,7 @@ describe('DatabaseConnectionService', () => {
         analytics.sendDatabaseConnectedClientListEvent,
       ).toHaveBeenCalledWith(
         mockSessionMetadata,
-        expect.objectContaining({ databaseMode: 'fast' }),
+        expect.objectContaining({ environment: 'development' }),
       );
     });
   });

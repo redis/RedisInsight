@@ -66,7 +66,7 @@ describe('DatabaseAnalytics', () => {
           useDecompression: mockDatabaseWithTlsAuth.compressor,
           serverName: 'valkey',
           keyNameFormat: Encoding.UNICODE,
-          databaseMode: 'unmarked',
+          environment: 'unspecified',
           ...DEFAULT_REDIS_MODULES_SUMMARY,
         },
       );
@@ -106,7 +106,7 @@ describe('DatabaseAnalytics', () => {
           useDecompression: mockDatabaseWithTlsAuth.compressor,
           serverName: 'valkey',
           keyNameFormat: Encoding.UNICODE,
-          databaseMode: 'unmarked',
+          environment: 'unspecified',
           ...DEFAULT_REDIS_MODULES_SUMMARY,
         },
       );
@@ -146,7 +146,7 @@ describe('DatabaseAnalytics', () => {
           forceStandalone: 'false',
           useDecompression: mockDatabaseWithTlsAuth.compressor,
           keyNameFormat: Encoding.UNICODE,
-          databaseMode: 'unmarked',
+          environment: 'unspecified',
           ...DEFAULT_REDIS_MODULES_SUMMARY,
           RediSearch: {
             loaded: true,
@@ -193,7 +193,7 @@ describe('DatabaseAnalytics', () => {
           forceStandalone: 'false',
           useDecompression: mockDatabaseWithTlsAuth.compressor,
           keyNameFormat: Encoding.UNICODE,
-          databaseMode: 'unmarked',
+          environment: 'unspecified',
           ...DEFAULT_REDIS_MODULES_SUMMARY,
           RediSearch: {
             loaded: true,
@@ -254,7 +254,7 @@ describe('DatabaseAnalytics', () => {
           useDecompression: mockDatabaseWithTlsAuth.compressor,
           forceStandalone: 'false',
           keyNameFormat: Encoding.UNICODE,
-          databaseMode: 'unmarked',
+          environment: 'unspecified',
           previousValues: {
             connectionType: prev.connectionType,
             provider: prev.provider,
@@ -265,7 +265,7 @@ describe('DatabaseAnalytics', () => {
             useSSH: 'disabled',
             forceStandalone: 'false',
             keyNameFormat: Encoding.UNICODE,
-            databaseMode: 'unmarked',
+            environment: 'unspecified',
           },
         },
       );
@@ -297,7 +297,7 @@ describe('DatabaseAnalytics', () => {
           useDecompression: mockDatabaseWithTlsAuth.compressor,
           forceStandalone: 'false',
           keyNameFormat: Encoding.UNICODE,
-          databaseMode: 'unmarked',
+          environment: 'unspecified',
           previousValues: {
             connectionType: prev.connectionType,
             provider: prev.provider,
@@ -308,7 +308,7 @@ describe('DatabaseAnalytics', () => {
             useTLSAuthClients: 'disabled',
             forceStandalone: 'false',
             keyNameFormat: Encoding.UNICODE,
-            databaseMode: 'unmarked',
+            environment: 'unspecified',
           },
         },
       );
@@ -340,7 +340,7 @@ describe('DatabaseAnalytics', () => {
           useDecompression: mockDatabaseWithTlsAuth.compressor,
           forceStandalone: 'true',
           keyNameFormat: Encoding.UNICODE,
-          databaseMode: 'unmarked',
+          environment: 'unspecified',
           previousValues: {
             connectionType: prev.connectionType,
             provider: prev.provider,
@@ -351,7 +351,7 @@ describe('DatabaseAnalytics', () => {
             useTLSAuthClients: 'disabled',
             forceStandalone: 'false',
             keyNameFormat: Encoding.UNICODE,
-            databaseMode: 'unmarked',
+            environment: 'unspecified',
           },
         },
       );
@@ -383,7 +383,7 @@ describe('DatabaseAnalytics', () => {
           useDecompression: mockDatabaseWithTlsAuth.compressor,
           forceStandalone: 'false',
           keyNameFormat: Encoding.UNICODE,
-          databaseMode: 'unmarked',
+          environment: 'unspecified',
           previousValues: {
             connectionType: prev.connectionType,
             provider: prev.provider,
@@ -394,7 +394,7 @@ describe('DatabaseAnalytics', () => {
             useTLSAuthClients: 'disabled',
             forceStandalone: 'false',
             keyNameFormat: Encoding.UNICODE,
-            databaseMode: 'unmarked',
+            environment: 'unspecified',
           },
         },
       );
@@ -427,7 +427,7 @@ describe('DatabaseAnalytics', () => {
           useDecompression: mockDatabaseWithTlsAuth.compressor,
           forceStandalone: 'true',
           keyNameFormat: Encoding.UNICODE,
-          databaseMode: 'unmarked',
+          environment: 'unspecified',
           previousValues: {
             connectionType: prev.connectionType,
             provider: prev.provider,
@@ -438,7 +438,7 @@ describe('DatabaseAnalytics', () => {
             useTLSAuthClients: 'disabled',
             forceStandalone: 'true',
             keyNameFormat: Encoding.UNICODE,
-            databaseMode: 'unmarked',
+            environment: 'unspecified',
           },
         },
       );
@@ -473,7 +473,7 @@ describe('DatabaseAnalytics', () => {
           useDecompression: mockDatabaseWithTlsAuth.compressor,
           forceStandalone: 'false',
           keyNameFormat: Encoding.HEX,
-          databaseMode: 'unmarked',
+          environment: 'unspecified',
           previousValues: {
             connectionType: prev.connectionType,
             provider: prev.provider,
@@ -484,7 +484,7 @@ describe('DatabaseAnalytics', () => {
             useSSH: 'disabled',
             forceStandalone: 'false',
             keyNameFormat: Encoding.UNICODE,
-            databaseMode: 'unmarked',
+            environment: 'unspecified',
           },
         },
       );

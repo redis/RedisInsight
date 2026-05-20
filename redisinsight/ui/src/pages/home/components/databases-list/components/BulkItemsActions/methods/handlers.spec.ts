@@ -1,5 +1,5 @@
 import saveAs from 'file-saver'
-import { DatabaseMode } from 'apiClient'
+import { Environment } from 'apiClient'
 import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { dispatch } from 'uiSrc/slices/store'
 import { Instance } from 'uiSrc/slices/interfaces'
@@ -56,7 +56,7 @@ const instances: Instance[] = [
     port: 6379,
     modules: [],
     version: null,
-    databaseMode: DatabaseMode.Unmarked,
+    environment: Environment.Unspecified,
   },
   {
     id: '2',
@@ -65,7 +65,7 @@ const instances: Instance[] = [
     port: 6380,
     modules: [],
     version: null,
-    databaseMode: DatabaseMode.Unmarked,
+    environment: Environment.Unspecified,
   },
 ]
 

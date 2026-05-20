@@ -19,7 +19,7 @@ import { PlayFilledIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { useDatabaseMode } from 'uiSrc/components/hooks/useDatabaseMode'
+import { useEnvironment } from 'uiSrc/components/hooks/useEnvironment'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -33,7 +33,7 @@ const LoadSampleData = (props: Props) => {
 
   const { id } = useSelector(connectedInstanceSelector)
   const { loading } = useSelector(bulkActionsSelector)
-  const { mode } = useDatabaseMode()
+  const { mode } = useEnvironment()
   const isProduction = mode === 'production'
 
   const dispatch = useDispatch()

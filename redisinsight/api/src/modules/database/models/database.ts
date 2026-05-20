@@ -6,8 +6,8 @@ import { ClientCertificate } from 'src/modules/certificate/models/client-certifi
 import {
   Compressor,
   ConnectionType,
-  DatabaseMode,
   Encoding,
+  Environment,
   HostingProvider,
 } from 'src/modules/database/entities/database.entity';
 import {
@@ -371,17 +371,17 @@ export class Database {
 
   @ApiPropertyOptional({
     description:
-      'Database connection mode. Controls confirmation friction for risky operations.',
-    default: DatabaseMode.Unmarked,
-    enum: DatabaseMode,
-    enumName: 'DatabaseMode',
+      'Environment classification for the database connection. Controls confirmation friction for risky operations.',
+    default: Environment.Unspecified,
+    enum: Environment,
+    enumName: 'Environment',
   })
   @Expose()
-  @IsEnum(DatabaseMode, {
-    message: `databaseMode must be a valid enum value. Valid values: ${Object.values(
-      DatabaseMode,
+  @IsEnum(Environment, {
+    message: `environment must be a valid enum value. Valid values: ${Object.values(
+      Environment,
     )}.`,
   })
   @IsOptional()
-  databaseMode?: DatabaseMode = DatabaseMode.Unmarked;
+  environment?: Environment = Environment.Unspecified;
 }

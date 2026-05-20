@@ -50,8 +50,8 @@ const dataSchema = Joi.object({
     privateKey: Joi.string().allow(null),
     passphrase: Joi.string().allow(null),
   }).allow(null),
-  databaseMode: Joi.string()
-    .valid('unmarked', 'production', 'fast')
+  environment: Joi.string()
+    .valid('unspecified', 'production', 'development')
     .allow(null),
 })
   .messages({
@@ -230,7 +230,7 @@ describe('POST /databases', () => {
           },
         });
       });
-      it('Create standalone with databaseMode=production', async () => {
+      it('Create standalone with environment=production', async () => {
         const dbName = constants.getRandomString();
 
         await validateApiCall({
@@ -240,18 +240,18 @@ describe('POST /databases', () => {
             name: dbName,
             host: constants.TEST_REDIS_HOST,
             port: constants.TEST_REDIS_PORT,
-            databaseMode: 'production',
+            environment: 'production',
           },
           responseSchema,
           responseBody: {
             name: dbName,
             host: constants.TEST_REDIS_HOST,
             port: constants.TEST_REDIS_PORT,
-            databaseMode: 'production',
+            environment: 'production',
           },
         });
       });
-      it('Create standalone with databaseMode=fast', async () => {
+      it('Create standalone with environment=fast', async () => {
         const dbName = constants.getRandomString();
 
         await validateApiCall({
@@ -261,16 +261,16 @@ describe('POST /databases', () => {
             name: dbName,
             host: constants.TEST_REDIS_HOST,
             port: constants.TEST_REDIS_PORT,
-            databaseMode: 'fast',
+            environment: 'development',
           },
           responseSchema,
           responseBody: {
             name: dbName,
-            databaseMode: 'fast',
+            environment: 'development',
           },
         });
       });
-      it('Create standalone defaults databaseMode to unmarked when omitted', async () => {
+      it('Create standalone defaults environment to unmarked when omitted', async () => {
         const dbName = constants.getRandomString();
 
         await validateApiCall({
@@ -284,7 +284,7 @@ describe('POST /databases', () => {
           responseSchema,
           responseBody: {
             name: dbName,
-            databaseMode: 'unmarked',
+            environment: 'unspecified',
           },
         });
       });

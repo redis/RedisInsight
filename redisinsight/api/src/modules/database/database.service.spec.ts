@@ -37,7 +37,7 @@ import { UpdateDatabaseDto } from 'src/modules/database/dto/update.database.dto'
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import {
   Compressor,
-  DatabaseMode,
+  Environment,
 } from 'src/modules/database/entities/database.entity';
 import { RedisClientFactory } from 'src/modules/redis/redis.client.factory';
 import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
@@ -268,7 +268,7 @@ describe('DatabaseService', () => {
         {
           timeout: 30000,
           compressor: Compressor.NONE,
-          databaseMode: DatabaseMode.Unmarked,
+          environment: Environment.Unspecified,
           id: 'a77b23c1-7816-4ea4-b61f-d37795a0f805-db-id',
           name: 'database-name',
           host: '127.0.100.1',
@@ -315,7 +315,7 @@ describe('DatabaseService', () => {
         {
           timeout: 30000,
           compressor: Compressor.NONE,
-          databaseMode: DatabaseMode.Unmarked,
+          environment: Environment.Unspecified,
           name: 'database-name',
           id: 'a77b23c1-7816-4ea4-b61f-d37795a0f805-db-id',
           host: '127.0.100.1',
