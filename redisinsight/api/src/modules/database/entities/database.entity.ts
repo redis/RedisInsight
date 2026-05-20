@@ -68,28 +68,6 @@ export enum DatabaseMode {
   Fast = 'fast',
 }
 
-// Coerces legacy / corrupt cell values back to a valid DatabaseMode on read.
-// Dev mode (synchronize: true, migrationsRun: false) can leave the old
-// isProduction boolean values (0 / 1 / true / false) under the new column
-// name when TypeORM diffs the entity — this transformer guarantees the
-// service layer always sees a valid enum.
-const databaseModeTransformer = {
-  to: (value: DatabaseMode | undefined | null): DatabaseMode =>
-    value ?? DatabaseMode.Unmarked,
-  from: (value: unknown): DatabaseMode => {
-    if (
-      value === DatabaseMode.Production ||
-      value === '1' ||
-      value === 1 ||
-      value === true
-    ) {
-      return DatabaseMode.Production;
-    }
-    if (value === DatabaseMode.Fast) return DatabaseMode.Fast;
-    return DatabaseMode.Unmarked;
-  },
-};
-
 @Entity('database_instance')
 export class DatabaseEntity {
   @Expose()
@@ -320,10 +298,6 @@ export class DatabaseEntity {
   keyNameFormat: string;
 
   @Expose()
-  @Column({
-    nullable: false,
-    default: DatabaseMode.Unmarked,
-    transformer: databaseModeTransformer,
-  })
+  @Column({ nullable: false, default: DatabaseMode.Unmarked })
   databaseMode: DatabaseMode;
 }
