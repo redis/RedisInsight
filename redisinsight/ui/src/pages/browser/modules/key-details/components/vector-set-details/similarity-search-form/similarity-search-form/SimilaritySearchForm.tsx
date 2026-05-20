@@ -61,7 +61,7 @@ export const SimilaritySearchForm = ({
     if (!prefillElement) return
     setState((prev) => ({
       ...prev,
-      mode: 'element',
+      mode: SimilaritySearchMode.Element,
       elementInput: prefillElement.value,
     }))
   }, [prefillElement?.nonce, prefillElement?.value])
@@ -111,8 +111,8 @@ export const SimilaritySearchForm = ({
         <FlexItem grow={false}>
           <ButtonGroup data-testid={`${TEST_ID}-mode-toggle`}>
             <ButtonGroup.Button
-              isSelected={state.mode === 'vector'}
-              onClick={() => setMode('vector')}
+              isSelected={state.mode === SimilaritySearchMode.Vector}
+              onClick={() => setMode(SimilaritySearchMode.Vector)}
               data-testid={`${TEST_ID}-mode-vector`}
             >
               <ModeButtonContent>
@@ -128,8 +128,8 @@ export const SimilaritySearchForm = ({
               </ModeButtonContent>
             </ButtonGroup.Button>
             <ButtonGroup.Button
-              isSelected={state.mode === 'element'}
-              onClick={() => setMode('element')}
+              isSelected={state.mode === SimilaritySearchMode.Element}
+              onClick={() => setMode(SimilaritySearchMode.Element)}
               data-testid={`${TEST_ID}-mode-element`}
             >
               <ModeButtonContent>
@@ -147,7 +147,7 @@ export const SimilaritySearchForm = ({
           </ButtonGroup>
         </FlexItem>
         <FlexItem grow>
-          {state.mode === 'vector' ? (
+          {state.mode === SimilaritySearchMode.Vector ? (
             <FormField>
               <TextInput
                 placeholder={VECTOR_PLACEHOLDER}

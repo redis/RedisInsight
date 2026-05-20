@@ -1,10 +1,13 @@
 import { validateVector } from '../../vector-set-element-form/utils'
 
 import { SIMILARITY_SEARCH_COUNT_DEFAULT } from './constants'
-import { SimilaritySearchFormState } from './SimilaritySearchForm.types'
+import {
+  SimilaritySearchFormState,
+  SimilaritySearchMode,
+} from './SimilaritySearchForm.types'
 
 export const initialFormState = (): SimilaritySearchFormState => ({
-  mode: 'vector',
+  mode: SimilaritySearchMode.Vector,
   vectorInput: '',
   elementInput: '',
   count: SIMILARITY_SEARCH_COUNT_DEFAULT,
@@ -21,7 +24,7 @@ export const isQueryReady = (
   state: SimilaritySearchFormState,
   vectorDim?: number,
 ): boolean => {
-  if (state.mode === 'element') {
+  if (state.mode === SimilaritySearchMode.Element) {
     return state.elementInput.trim().length > 0
   }
   const result = validateVector(state.vectorInput, vectorDim)

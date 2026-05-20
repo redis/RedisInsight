@@ -12,7 +12,10 @@ import {
 } from 'uiSrc/slices/browser/vectorSet'
 import { VectorSetSimilaritySearchResponse } from 'uiSrc/slices/interfaces'
 
-import { SimilaritySearchFormState } from '../../similarity-search-form'
+import {
+  SimilaritySearchFormState,
+  SimilaritySearchMode,
+} from '../../similarity-search-form'
 import { useSimilaritySearch } from './useSimilaritySearch'
 
 jest.mock('uiSrc/slices/browser/keys', () => ({
@@ -47,7 +50,7 @@ const mockedAbortSimilaritySearchPreview = jest.mocked(
 )
 
 const baseState = (): SimilaritySearchFormState => ({
-  mode: 'vector',
+  mode: SimilaritySearchMode.Vector,
   vectorInput: '',
   elementInput: '',
   count: 10,
@@ -129,7 +132,7 @@ describe('useSimilaritySearch', () => {
 
       const payload = result.current.buildSimilaritySearchPayload({
         ...baseState(),
-        mode: 'element',
+        mode: SimilaritySearchMode.Element,
         elementInput: 'book-1',
       })
 
@@ -206,7 +209,7 @@ describe('useSimilaritySearch', () => {
       expect(
         result.current.buildSimilaritySearchPayload({
           ...baseState(),
-          mode: 'element',
+          mode: SimilaritySearchMode.Element,
           elementInput: '   ',
         }),
       ).toBeNull()
@@ -454,7 +457,7 @@ describe('useSimilaritySearch', () => {
         act(() => {
           result.current.runSimilaritySearchPreview({
             ...baseState(),
-            mode: 'element',
+            mode: SimilaritySearchMode.Element,
             elementInput: 'book-1',
           })
           jest.advanceTimersByTime(300)
