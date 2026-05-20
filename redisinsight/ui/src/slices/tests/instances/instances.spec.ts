@@ -128,6 +128,7 @@ beforeEach(() => {
         caCertId: '70b95d32-c19d-4311-bb24-e684af12cf15',
         clientCertPairId: '70b95d32-c19d-4311-b23b24-e684af12cf15',
       },
+      environment: Environment.Unspecified,
     },
     {
       id: 'b83a3932-e95f-4f09-9d8a-55079f400186',
