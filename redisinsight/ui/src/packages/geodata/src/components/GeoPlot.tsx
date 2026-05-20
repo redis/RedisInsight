@@ -219,7 +219,7 @@ const addMarkers = (
   results: GeoResult[],
   command: ParsedGeoCommand,
   distanceScaleKm: number,
-  thresholds: DistanceThresholds,
+  thresholdsRef: React.MutableRefObject<DistanceThresholds>,
   markersRef: React.MutableRefObject<L.CircleMarker[]>,
 ): L.LayerGroup | L.MarkerClusterGroup => {
   const useCluster = results.length >= CLUSTER_MIN_POINTS
@@ -227,7 +227,7 @@ const addMarkers = (
     ? L.markerClusterGroup({
         disableClusteringAtZoom: THRESHOLD_VISIBLE_ZOOM,
         iconCreateFunction: (cluster) =>
-          createClusterIcon(cluster, distanceScaleKm, thresholds),
+          createClusterIcon(cluster, distanceScaleKm, thresholdsRef.current),
       })
     : L.layerGroup()
 
@@ -237,7 +237,11 @@ const addMarkers = (
       radius: 7,
       color: MAP_COLORS.stroke,
       weight: 1,
-      fillColor: getPointColor(distanceKm, distanceScaleKm, thresholds),
+      fillColor: getPointColor(
+        distanceKm,
+        distanceScaleKm,
+        thresholdsRef.current,
+      ),
       fillOpacity: 0.9,
       distanceKm,
     } as DistanceMarkerOptions).bindPopup(createPopup(result))
@@ -403,7 +407,7 @@ export const GeoPlot = ({ mode, results, command }: GeoPlotProps) => {
         results,
         command,
         distanceScaleKm,
-        thresholdsRef.current,
+        thresholdsRef,
         markersRef,
       )
 
