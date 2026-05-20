@@ -111,7 +111,7 @@ describe('getVisualizationsByCommand', () => {
     ).toHaveLength(0)
   })
 
-  it('does not run query predicate regexes against oversized queries', () => {
+  it('matches query predicates before oversized PARAMS payloads', () => {
     const geodataVisualization = {
       matchCommands: ['FT.SEARCH'],
       matchQuery: {
@@ -119,10 +119,29 @@ describe('getVisualizationsByCommand', () => {
       },
     } as IPluginVisualization
 
-    const oversizedQuery = `FT.SEARCH idx "${'a'.repeat(1025)} @coords:[2.34 48.86 1000 km]"`
+    const oversizedHybridQuery =
+      'FT.SEARCH idx "@coords:[2.34 48.86 1000 km]=>[KNN 3 @embedding $vec]" ' +
+      `PARAMS 2 vec "${'a'.repeat(20_001)}" DIALECT 2`
 
     expect(
-      getVisualizationsByCommand(oversizedQuery, [geodataVisualization]),
+      getVisualizationsByCommand(oversizedHybridQuery, [geodataVisualization]),
+    ).toHaveLength(1)
+  })
+
+  it('only scans a bounded query prefix for predicates', () => {
+    const geodataVisualization = {
+      matchCommands: ['FT.SEARCH'],
+      matchQuery: {
+        anyRegex: [boundedGeoRadiusRegex],
+      },
+    } as IPluginVisualization
+
+    const queryWithLateGeoPredicate = `FT.SEARCH idx "${'a'.repeat(20_001)} @coords:[2.34 48.86 1000 km]"`
+
+    expect(
+      getVisualizationsByCommand(queryWithLateGeoPredicate, [
+        geodataVisualization,
+      ]),
     ).toHaveLength(0)
   })
 

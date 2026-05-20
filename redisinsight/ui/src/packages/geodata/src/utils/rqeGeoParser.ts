@@ -9,6 +9,7 @@ import {
   RqeGeoCommand,
   RqeGeoDataset,
 } from '../types'
+import { convertToKm } from './distance'
 import { tokenizeRedisCommand } from './geoParser'
 
 const RQE_GEO_COMMANDS = new Set<RqeGeoCommand>([
@@ -40,23 +41,6 @@ const parseNumber = (value: string, field: string): ParseResult<number> => {
     return { ok: false, error: `Invalid ${field}: ${value}.` }
   }
   return { ok: true, value: parsed }
-}
-
-const convertToKm = (value: number, unit: string): number => {
-  const normalized = unit.toLowerCase()
-  if (normalized === 'km') {
-    return value
-  }
-  if (normalized === 'm') {
-    return value / 1000
-  }
-  if (normalized === 'mi') {
-    return value * 1.60934
-  }
-  if (normalized === 'ft') {
-    return value * 0.0003048
-  }
-  return value
 }
 
 const resolveParam = (value: string, params: Record<string, string>): string =>

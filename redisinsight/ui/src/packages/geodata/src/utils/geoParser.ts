@@ -9,6 +9,7 @@ import {
   ParseResult,
   ParsedGeoCommand,
 } from '../types'
+import { convertToKm } from './distance'
 
 const GEO_COMMANDS = new Set<GeoCommand>([
   'GEOADD',
@@ -87,23 +88,6 @@ const parseNumber = (value: string | undefined, field: string): ParseResult<numb
   }
 
   return { ok: true, value: parsed }
-}
-
-const convertToKm = (value: number, unit = 'km'): number => {
-  const normalizedUnit = unit.toUpperCase()
-  if (normalizedUnit === 'KM') {
-    return value
-  }
-  if (normalizedUnit === 'M') {
-    return value / 1000
-  }
-  if (normalizedUnit === 'MI') {
-    return value * 1.60934
-  }
-  if (normalizedUnit === 'FT') {
-    return value * 0.0003048
-  }
-  return value
 }
 
 const getUpperTokens = (tokens: string[]): string[] =>
