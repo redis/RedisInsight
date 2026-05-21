@@ -8,9 +8,9 @@ Internal RedisInsight Workbench plugin for Redis GEO commands.
 - `Geospatial heatmap` renders the same coordinate-bearing search results as density.
 - `Geospatial details` summarizes every Redis GEO command family, including write and store commands.
 
-The map views require `WITHCOORD` in command output. The inspector can render scalar, integer, hash, position, and search-store responses without coordinates.
+The map views require `WITHCOORD` in command output. The inspector can render scalar, integer, hash, position, search, and search-store responses without coordinates.
 
-`Geospatial map` is the default visualization for coordinate search commands. `Geospatial details` is the default for GEO commands that do not have coordinate rows.
+`Geospatial map` is the default visualization for coordinate search commands that include `WITHCOORD`. `Geospatial details` is the default for scalar, store, and non-coordinate GEO search commands, and remains selectable for coordinate search commands.
 
 ## Tile Policy
 
