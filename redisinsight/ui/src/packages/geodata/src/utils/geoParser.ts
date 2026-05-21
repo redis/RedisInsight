@@ -92,28 +92,22 @@ const parseNumber = (value: string | undefined, field: string): ParseResult<numb
 const getUpperTokens = (tokens: string[]): string[] =>
   tokens.map((token) => token.toUpperCase())
 
-const getFlags = (tokens: string[]) => {
+const getSearchOptions = (tokens: string[], startIndex = 0) => {
   const upperTokens = getUpperTokens(tokens)
-  return {
-    withCoord: upperTokens.includes('WITHCOORD'),
-    withDist: upperTokens.includes('WITHDIST'),
-    withHash: upperTokens.includes('WITHHASH'),
-  }
-}
-
-const getSearchOptions = (tokens: string[]) => {
-  const upperTokens = getUpperTokens(tokens)
-  const countIndex = upperTokens.indexOf('COUNT')
-  const storeIndex = upperTokens.indexOf('STORE')
-  const storeDistIndex = upperTokens.indexOf('STOREDIST')
-  const ascIndex = upperTokens.indexOf('ASC')
-  const descIndex = upperTokens.indexOf('DESC')
+  const countIndex = upperTokens.indexOf('COUNT', startIndex)
+  const storeIndex = upperTokens.indexOf('STORE', startIndex)
+  const storeDistIndex = upperTokens.indexOf('STOREDIST', startIndex)
+  const ascIndex = upperTokens.indexOf('ASC', startIndex)
+  const descIndex = upperTokens.indexOf('DESC', startIndex)
   const count = countIndex >= 0 ? Number(tokens[countIndex + 1]) : undefined
+  const optionTokens = upperTokens.slice(startIndex)
 
   return {
-    ...getFlags(tokens),
+    withCoord: optionTokens.includes('WITHCOORD'),
+    withDist: optionTokens.includes('WITHDIST'),
+    withHash: optionTokens.includes('WITHHASH'),
     count: Number.isFinite(count) ? count : undefined,
-    isAnyCount: upperTokens.includes('ANY'),
+    isAnyCount: optionTokens.includes('ANY'),
     order: ascIndex >= 0 ? 'ASC' as const : descIndex >= 0 ? 'DESC' as const : undefined,
     storeKey: storeIndex >= 0 ? tokens[storeIndex + 1] : undefined,
     storeDistKey: storeDistIndex >= 0 ? tokens[storeDistIndex + 1] : undefined,
@@ -214,6 +208,9 @@ const parseGeoMemberList = (
   if (!tokens[1]) {
     return { ok: false, error: `${command} requires a key.` }
   }
+  if (!tokens[2]) {
+    return { ok: false, error: `${command} requires at least one member.` }
+  }
 
   return {
     ok: true,
@@ -233,6 +230,7 @@ const applySearchShape = (
   const upperTokens = getUpperTokens(tokens)
   const fromLonLatIndex = upperTokens.indexOf('FROMLONLAT')
   const fromMemberIndex = upperTokens.indexOf('FROMMEMBER')
+  let shapeSearchStart = 0
 
   if (fromLonLatIndex >= 0) {
     const lon = parseNumber(tokens[fromLonLatIndex + 1], 'longitude')
@@ -247,17 +245,24 @@ const applySearchShape = (
 
     params.centerLon = lon.value
     params.centerLat = lat.value
+    shapeSearchStart = fromLonLatIndex + 3
   } else if (fromMemberIndex >= 0) {
-    params.memberName = tokens[fromMemberIndex + 1]
+    const memberName = tokens[fromMemberIndex + 1]
+    if (!memberName) {
+      return { ok: false, error: `${params.command} requires a FROMMEMBER member.` }
+    }
+
+    params.memberName = memberName
     params.centerFromMember = true
+    shapeSearchStart = fromMemberIndex + 2
   } else {
     return { ok: false, error: `${params.command} requires FROMLONLAT or FROMMEMBER.` }
   }
 
-  const radiusIndex = upperTokens.indexOf('BYRADIUS')
-  const boxIndex = upperTokens.indexOf('BYBOX')
+  const radiusIndex = upperTokens.indexOf('BYRADIUS', shapeSearchStart)
+  const boxIndex = upperTokens.indexOf('BYBOX', shapeSearchStart)
 
-  if (radiusIndex >= 0) {
+  if (radiusIndex >= 0 && (boxIndex < 0 || radiusIndex < boxIndex)) {
     const radius = parseNumber(tokens[radiusIndex + 1], 'radius')
     if (!radius.ok) {
       return radius
@@ -266,6 +271,7 @@ const applySearchShape = (
     params.radius = convertToKm(radius.value, tokens[radiusIndex + 2])
     params.unit = 'km'
     params.searchType = 'radius'
+    Object.assign(params, getSearchOptions(tokens, radiusIndex + 3))
     return { ok: true, value: params }
   }
 
@@ -284,6 +290,7 @@ const applySearchShape = (
     params.boxHeight = convertToKm(height.value, tokens[boxIndex + 3])
     params.unit = 'km'
     params.searchType = 'box'
+    Object.assign(params, getSearchOptions(tokens, boxIndex + 4))
     return { ok: true, value: params }
   }
 
@@ -300,7 +307,6 @@ const parseGeoSearch = (
 
   const params: ParsedGeoCommand = {
     ...createBaseCommand(command, tokens),
-    ...getSearchOptions(tokens),
     kind: 'searchResults',
     key: tokens[1],
   }
@@ -318,7 +324,6 @@ const parseGeoSearchStore = (
 
   const params: ParsedGeoCommand = {
     ...createBaseCommand(command, tokens),
-    ...getSearchOptions(tokens),
     kind: 'storeSummary',
     destinationKey: tokens[1],
     key: tokens[2],
@@ -350,7 +355,7 @@ const parseGeoRadius = (
     return radius
   }
 
-  const options = getSearchOptions(tokens)
+  const options = getSearchOptions(tokens, 6)
 
   return {
     ok: true,
@@ -381,7 +386,7 @@ const parseGeoRadiusByMember = (
     return radius
   }
 
-  const options = getSearchOptions(tokens)
+  const options = getSearchOptions(tokens, 5)
 
   return {
     ok: true,

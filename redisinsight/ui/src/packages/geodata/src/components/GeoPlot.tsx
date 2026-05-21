@@ -28,6 +28,8 @@ import {
 } from './GeoPlot.types'
 
 const toRadians = (value: number): number => (value * Math.PI) / 180
+const KM_PER_LATITUDE_DEGREE = 111
+const MAX_LONGITUDE_DEGREES = 360
 
 const getRawDistanceUnit = (command: ParsedGeoCommand): string => {
   const upperTokens = command.rawTokens.map((token) => token.toUpperCase())
@@ -176,6 +178,17 @@ const createPopup = (result: GeoResult): HTMLElement => {
 const getBounds = (results: GeoResult[]): L.LatLngBounds =>
   L.latLngBounds(results.map(({ lat, lon }) => [lat, lon]))
 
+const getLongitudeDelta = (widthKm: number, centerLat: number): number => {
+  const longitudeKmPerDegree =
+    KM_PER_LATITUDE_DEGREE * Math.abs(Math.cos(toRadians(centerLat)))
+
+  if (longitudeKmPerDegree <= 0) {
+    return MAX_LONGITUDE_DEGREES
+  }
+
+  return Math.min(widthKm / longitudeKmPerDegree, MAX_LONGITUDE_DEGREES)
+}
+
 const addSearchShape = (
   map: L.Map,
   command: ParsedGeoCommand,
@@ -202,8 +215,8 @@ const addSearchShape = (
     command.boxWidth !== undefined &&
     command.boxHeight !== undefined
   ) {
-    const latDelta = command.boxHeight / 111
-    const lonDelta = command.boxWidth / 111
+    const latDelta = command.boxHeight / KM_PER_LATITUDE_DEGREE
+    const lonDelta = getLongitudeDelta(command.boxWidth, command.centerLat)
     L.rectangle(
       [
         [command.centerLat - latDelta / 2, command.centerLon - lonDelta / 2],
