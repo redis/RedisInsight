@@ -22,6 +22,12 @@ import { DatabaseService } from 'src/modules/database/database.service';
 export class BulkActionsProvider {
   private bulkActions: Map<string, BulkAction> = new Map();
 
+  // Ids whose construction is in flight (before the BulkAction is stored in
+  // `bulkActions`). Reserved synchronously on entry to `create` so concurrent
+  // calls with the same id fail the duplicate check despite the await on
+  // `databaseService.get` that precedes the map insertion.
+  private inFlightIds: Set<string> = new Set();
+
   private logger: Logger = new Logger('BulkActionsProvider');
 
   constructor(
@@ -40,28 +46,34 @@ export class BulkActionsProvider {
     dto: CreateBulkActionDto,
     socket: Socket,
   ): Promise<BulkAction> {
-    if (this.bulkActions.get(dto.id)) {
+    if (this.bulkActions.has(dto.id) || this.inFlightIds.has(dto.id)) {
       throw new Error('You already have bulk action with such id');
     }
+    this.inFlightIds.add(dto.id);
 
-    const database = await this.databaseService.get(
-      sessionMetadata,
-      dto.databaseId,
-    );
+    let bulkAction: BulkAction;
+    try {
+      const database = await this.databaseService.get(
+        sessionMetadata,
+        dto.databaseId,
+      );
 
-    const bulkAction = new BulkAction(
-      dto.id,
-      database,
-      dto.type,
-      dto.filter,
-      socket,
-      this.analytics,
-      sessionMetadata,
-      dto.generateReport,
-      dto.confirmedThrough ?? null,
-    );
+      bulkAction = new BulkAction(
+        dto.id,
+        database,
+        dto.type,
+        dto.filter,
+        socket,
+        this.analytics,
+        sessionMetadata,
+        dto.generateReport,
+        dto.confirmedThrough ?? null,
+      );
 
-    this.bulkActions.set(dto.id, bulkAction);
+      this.bulkActions.set(dto.id, bulkAction);
+    } finally {
+      this.inFlightIds.delete(dto.id);
+    }
 
     // todo: add multi user support
     // todo: use own client and close it after
