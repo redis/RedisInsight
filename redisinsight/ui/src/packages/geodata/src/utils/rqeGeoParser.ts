@@ -49,7 +49,12 @@ const resolveParam = (value: string, params: Record<string, string>): string =>
 const parseParams = (tokens: string[]): Record<string, string> => {
   const params: Record<string, string> = {}
   const upperTokens = tokens.map((token) => token.toUpperCase())
-  const paramsIndex = upperTokens.indexOf('PARAMS')
+  const paramsIndex = upperTokens.findIndex(
+    (token, index) =>
+      index > 2 &&
+      token === 'PARAMS' &&
+      Number.isInteger(Number(tokens[index + 1])),
+  )
   if (paramsIndex < 0) {
     return params
   }
@@ -72,7 +77,12 @@ const parseParams = (tokens: string[]): Record<string, string> => {
 
 const getParamsRange = (tokens: string[]): { start: number; end: number } | null => {
   const upperTokens = tokens.map((token) => token.toUpperCase())
-  const paramsIndex = upperTokens.indexOf('PARAMS')
+  const paramsIndex = upperTokens.findIndex(
+    (token, index) =>
+      index > 2 &&
+      token === 'PARAMS' &&
+      Number.isInteger(Number(tokens[index + 1])),
+  )
   if (paramsIndex < 0) {
     return null
   }

@@ -167,6 +167,22 @@ describe('rqeGeoParser', () => {
     })
   })
 
+  it('parses FT.HYBRID geo filters when the index is named PARAMS', () => {
+    expect(
+      parseRqeGeoCommand(
+        'FT.HYBRID PARAMS SEARCH "@coords:[2.34 48.86 1000 km]" VSIM @embedding $vec PARAMS 2 vec blob',
+      ),
+    ).toMatchObject({
+      ok: true,
+      value: {
+        command: 'FT.HYBRID',
+        index: 'PARAMS',
+        kind: 'pointRadius',
+        geoField: 'coords',
+      },
+    })
+  })
+
   it('parses GEOSHAPE point and polygon predicates', () => {
     expect(
       parseRqeGeoCommand(
