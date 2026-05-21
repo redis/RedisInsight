@@ -103,7 +103,9 @@
     "@elastic/eui/**/prismjs": "~1.30.0",
     "vite/esbuild": "^0.25.0",
     "react-router-dom/react-router/path-to-regexp": "^1.9.0",
-    "**/form-data": "^4.0.4"
+    "**/form-data": "^4.0.4",
+    "@types/react": "18.2.1",
+    "@types/react-dom": "18.2.1"
   },
   "devDependencies": {
     "@aivenio/tsc-output-parser": "2.1.1",

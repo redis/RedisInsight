@@ -240,8 +240,7 @@
   },
   "src/components/virtual-table/VirtualTable.tsx": {
     "TS2322": 2,
-    "TS2339": 1,
-    "TS2786": 5
+    "TS2339": 1
   },
   "src/constants/monaco/sqliteFunctions/monacoSQLiteFunctions.ts": {
     "TS2345": 1
@@ -738,9 +737,6 @@
   },
   "src/pages/settings/components/general-settings/datetime-formatter/components/timezone-form/TimezoneForm.tsx": {
     "TS2322": 1
-  },
-  "src/pages/slow-log/SlowLogPage.tsx": {
-    "TS2786": 2
   },
   "src/pages/slow-log/components/SlowLogConfig/SlowLogConfig.tsx": {
     "TS2322": 1
