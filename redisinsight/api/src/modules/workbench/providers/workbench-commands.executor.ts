@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { CommandExecutionStatus } from 'src/modules/cli/dto/cli.dto';
 import {
   checkHumanReadableCommands,
@@ -24,7 +29,6 @@ import { getAnalyticsDataFromIndexInfo } from 'src/utils';
 import { RunQueryMode } from 'src/modules/workbench/models/command-execution';
 import { WorkbenchAnalytics } from 'src/modules/workbench/workbench.analytics';
 import { DatabaseService } from 'src/modules/database/database.service';
-import { Database } from 'src/modules/database/models/database';
 import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 
 @Injectable()
@@ -63,97 +67,109 @@ export class WorkbenchCommandsExecutor {
     this.logger.debug('Executing workbench command.');
     let command = unknownCommand;
     let commandArgs: string[] = [];
-    let database: Database | undefined;
     let isDangerous: 'true' | 'false' = 'false';
 
     try {
-      database = await this.databaseService.get(
+      const database = await this.databaseService.get(
         client.clientMetadata.sessionMetadata,
         client.clientMetadata.databaseId,
       );
 
-      const { command: commandLine, mode } = dto;
-      [command, ...commandArgs] = splitCliCommandLine(commandLine);
+      try {
+        const { command: commandLine, mode } = dto;
+        [command, ...commandArgs] = splitCliCommandLine(commandLine);
 
-      isDangerous = (await this.dangerousCommandsProvider.isDangerous(
-        client,
-        command,
-      ))
-        ? 'true'
-        : 'false';
-
-      const formatter = this.getFormatter(mode);
-      const replyEncoding = checkHumanReadableCommands(
-        `${command} ${commandArgs[0]}`,
-      )
-        ? 'utf8'
-        : undefined;
-
-      const response = formatter.format(
-        await client.sendCommand([command, ...commandArgs], { replyEncoding }),
-      );
-      const result: CommandExecutionResult[] = [
-        { response, status: CommandExecutionStatus.Success },
-      ];
-
-      this.logger.debug('Succeed to execute workbench command.');
-      this.analyticsService.sendCommandExecutedEvents(
-        client.clientMetadata.sessionMetadata,
-        database,
-        dto.type,
-        result,
-        isDangerous,
-        {
+        isDangerous = (await this.dangerousCommandsProvider.isDangerous(
+          client,
           command,
-          rawMode: mode === RunQueryMode.Raw,
-        },
-      );
+        ))
+          ? 'true'
+          : 'false';
 
-      if (command.toLowerCase() === 'ft.info') {
-        this.analyticsService.sendIndexInfoEvent(
+        const formatter = this.getFormatter(mode);
+        const replyEncoding = checkHumanReadableCommands(
+          `${command} ${commandArgs[0]}`,
+        )
+          ? 'utf8'
+          : undefined;
+
+        const response = formatter.format(
+          await client.sendCommand([command, ...commandArgs], {
+            replyEncoding,
+          }),
+        );
+        const result: CommandExecutionResult[] = [
+          { response, status: CommandExecutionStatus.Success },
+        ];
+
+        this.logger.debug('Succeed to execute workbench command.');
+        this.analyticsService.sendCommandExecutedEvents(
           client.clientMetadata.sessionMetadata,
           database,
           dto.type,
-          getAnalyticsDataFromIndexInfo(response as string[]),
+          result,
+          isDangerous,
+          {
+            command,
+            rawMode: mode === RunQueryMode.Raw,
+          },
         );
-      }
 
-      return result;
-    } catch (error) {
-      this.logger.error('Failed to execute workbench command.', error);
+        if (command.toLowerCase() === 'ft.info') {
+          this.analyticsService.sendIndexInfoEvent(
+            client.clientMetadata.sessionMetadata,
+            database,
+            dto.type,
+            getAnalyticsDataFromIndexInfo(response as string[]),
+          );
+        }
 
-      const errorResult = {
-        response: error.message,
-        status: CommandExecutionStatus.Fail,
-      };
-      this.analyticsService.sendCommandExecutedEvent(
-        client.clientMetadata.sessionMetadata,
-        database!,
-        dto.type,
-        { ...errorResult, error },
-        isDangerous,
-        {
-          command,
-          rawMode: dto.mode === RunQueryMode.Raw,
-        },
-      );
+        return result;
+      } catch (error) {
+        this.logger.error('Failed to execute workbench command.', error);
 
-      if (
-        error instanceof CommandParsingError ||
-        error instanceof CommandNotSupportedError ||
-        error.name === 'ReplyError'
-      ) {
+        const errorResult = {
+          response: error.message,
+          status: CommandExecutionStatus.Fail,
+        };
+        this.analyticsService.sendCommandExecutedEvent(
+          client.clientMetadata.sessionMetadata,
+          database,
+          dto.type,
+          { ...errorResult, error },
+          isDangerous,
+          {
+            command,
+            rawMode: dto.mode === RunQueryMode.Raw,
+          },
+        );
+
+        if (
+          error instanceof CommandParsingError ||
+          error instanceof CommandNotSupportedError ||
+          error.name === 'ReplyError'
+        ) {
+          return [errorResult];
+        }
+
+        if (
+          error instanceof WrongDatabaseTypeError ||
+          error instanceof ClusterNodeNotFoundError
+        ) {
+          throw new BadRequestException(error.message);
+        }
+
         return [errorResult];
       }
-
-      if (
-        error instanceof WrongDatabaseTypeError ||
-        error instanceof ClusterNodeNotFoundError
-      ) {
-        throw new BadRequestException(error.message);
+    } catch (error) {
+      this.logger.error('Failed to execute workbench command.', error);
+      // Rethrow HTTP-style exceptions (e.g. BadRequestException raised by
+      // the inner catch) so the controller surfaces them as 4xx instead of
+      // swallowing them into a Fail result.
+      if (error instanceof HttpException) {
+        throw error;
       }
-
-      return [errorResult];
+      return [{ response: error.message, status: CommandExecutionStatus.Fail }];
     }
   }
 
