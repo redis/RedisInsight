@@ -7,7 +7,7 @@ argument-hint: <ticket-id or ticket-url>
 
 Use Playwright MCP to explore a page, discover testable functionality, and generate E2E tests based on a Jira ticket.
 
-**Follow all standards in `.ai/rules/e2e-testing.md`**
+**Follow all standards in `.ai/skills/e2e-testing/SKILL.md`**
 
 **Reference:** @tests/e2e-playwright/TEST_PLAN.md
 

@@ -2,7 +2,7 @@
 
 This document outlines the comprehensive E2E testing strategy for RedisInsight features.
 
-> **📋 Rules**: Before implementing tests, read [`.ai/rules/e2e-testing.md`](../../.ai/rules/e2e-testing.md) for coding standards, patterns, and best practices.
+> **📋 Rules**: Before implementing tests, read [`.ai/skills/e2e-testing/SKILL.md`](../../.ai/skills/e2e-testing/SKILL.md) for coding standards, patterns, and best practices.
 
 ## Overview
 

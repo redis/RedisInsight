@@ -1,1 +1,0 @@
-../../.ai/rules/code-quality.md

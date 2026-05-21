@@ -1,6 +1,15 @@
 ---
-alwaysApply: true
+name: code-quality
+description: >-
+  Code-quality standards for RedisInsight: TypeScript strictness,
+  naming conventions (camelCase, PascalCase, UPPER_SNAKE_CASE),
+  linting rules, no `any` without reason, no `!important` in styles,
+  and constant extraction. Use when writing or refactoring any
+  TypeScript/JavaScript code in this repo, when ESLint or Prettier
+  issues come up, or when the user mentions code style, lint, naming
+  conventions, or general code quality.
 ---
+
 
 # Code Quality Standards
 
