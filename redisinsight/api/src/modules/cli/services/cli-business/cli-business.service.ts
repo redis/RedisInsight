@@ -193,14 +193,12 @@ export class CliBusinessService {
     const outputFormat = dto.outputFormat || CliOutputFormatterTypes.Raw;
     let command: string = unknownCommand;
     let args: string[] = [];
-    let environment: Environment = Environment.Unspecified;
-    let isDangerous: 'true' | 'false' = 'false';
 
     try {
       const client: RedisClient =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
 
-      environment =
+      const environment =
         (
           await this.databaseService.get(
             clientMetadata.sessionMetadata,
@@ -210,12 +208,10 @@ export class CliBusinessService {
 
       const formatter = this.outputFormatterManager.getStrategy(outputFormat);
       [command, ...args] = splitCliCommandLine(commandLine);
-      isDangerous = (await this.dangerousCommandsProvider.isDangerous(
-        client,
-        command,
-      ))
-        ? 'true'
-        : 'false';
+      const isDangerous: 'true' | 'false' =
+        (await this.dangerousCommandsProvider.isDangerous(client, command))
+          ? 'true'
+          : 'false';
       const replyEncoding = checkHumanReadableCommands(`${command} ${args[0]}`)
         ? 'utf8'
         : undefined;
@@ -275,8 +271,8 @@ export class CliBusinessService {
           clientMetadata.sessionMetadata,
           clientMetadata.databaseId,
           error,
-          environment,
-          isDangerous,
+          Environment.Unspecified,
+          'false',
           {
             command,
             outputFormat,

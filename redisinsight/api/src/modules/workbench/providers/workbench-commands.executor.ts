@@ -63,26 +63,22 @@ export class WorkbenchCommandsExecutor {
     this.logger.debug('Executing workbench command.');
     let command = unknownCommand;
     let commandArgs: string[] = [];
-    let environment: Environment = Environment.Unspecified;
-    let isDangerous: 'true' | 'false' = 'false';
 
     try {
       const { command: commandLine, mode } = dto;
       [command, ...commandArgs] = splitCliCommandLine(commandLine);
 
-      environment =
+      const environment =
         (
           await this.databaseService.get(
             client.clientMetadata.sessionMetadata,
             client.clientMetadata.databaseId,
           )
         ).environment ?? Environment.Unspecified;
-      isDangerous = (await this.dangerousCommandsProvider.isDangerous(
-        client,
-        command,
-      ))
-        ? 'true'
-        : 'false';
+      const isDangerous: 'true' | 'false' =
+        (await this.dangerousCommandsProvider.isDangerous(client, command))
+          ? 'true'
+          : 'false';
 
       const formatter = this.getFormatter(mode);
       const replyEncoding = checkHumanReadableCommands(
@@ -135,8 +131,8 @@ export class WorkbenchCommandsExecutor {
         client.clientMetadata.databaseId,
         dto.type,
         { ...errorResult, error },
-        environment,
-        isDangerous,
+        Environment.Unspecified,
+        'false',
         {
           command,
           rawMode: dto.mode === RunQueryMode.Raw,
