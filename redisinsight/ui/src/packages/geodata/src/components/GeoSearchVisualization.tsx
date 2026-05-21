@@ -13,6 +13,9 @@ interface GeoSearchVisualizationProps {
   mode: 'markers' | 'heatmap'
 }
 
+const getErrorTitle = (mode: GeoSearchVisualizationProps['mode']): string =>
+  mode === 'markers' ? 'Cannot render map' : 'Cannot render heatmap'
+
 export const GeoSearchVisualization = ({
   command,
   response,
@@ -21,6 +24,7 @@ export const GeoSearchVisualization = ({
 }: GeoSearchVisualizationProps) => {
   const parsedCommand = useMemo(() => parseSearchParams(command), [command])
   const title = mode === 'markers' ? 'Geospatial map' : 'Geospatial heatmap'
+  const errorTitle = getErrorTitle(mode)
   const parsedResults = useMemo(
     () =>
       parsedCommand.ok
@@ -46,7 +50,7 @@ export const GeoSearchVisualization = ({
     return (
       <div className="geodata-shell">
         <GeoHeader title={title} status={status} resultCount={0} />
-        <Message title="Cannot render map">{parsedCommand.error}</Message>
+        <Message title={errorTitle}>{parsedCommand.error}</Message>
       </div>
     )
   }
@@ -59,7 +63,7 @@ export const GeoSearchVisualization = ({
     return (
       <div className="geodata-shell">
         <GeoHeader title={title} status={status} resultCount={0} />
-        <Message title="Cannot render map">{parsedResults.error}</Message>
+        <Message title={errorTitle}>{parsedResults.error}</Message>
       </div>
     )
   }

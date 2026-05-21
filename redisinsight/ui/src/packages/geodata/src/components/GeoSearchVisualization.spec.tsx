@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 
 import { GeoSearchVisualization } from './GeoSearchVisualization'
 import { ParsedGeoCommand } from '../types'
@@ -50,6 +50,10 @@ const parsedCommand: ParsedGeoCommand = {
 }
 
 describe('GeoSearchVisualization', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   it('memoizes parsed command and results for stable inputs', () => {
     const response = [['Palermo', ['13.361389', '38.115556']]]
     const parseSearchParams = jest
@@ -82,5 +86,45 @@ describe('GeoSearchVisualization', () => {
 
     expect(parseSearchParams).toHaveBeenCalledTimes(1)
     expect(parseGeoSearchResults).toHaveBeenCalledTimes(1)
+  })
+
+  it('shows a heatmap-specific parse error title in heatmap mode', () => {
+    jest
+      .spyOn(geoParser, 'parseSearchParams')
+      .mockReturnValue({ ok: false, error: 'Invalid search command.' })
+
+    render(
+      <GeoSearchVisualization
+        command="GEOSEARCH Sicily FROMLONLAT bad 37 BYRADIUS 300 km WITHCOORD"
+        response={[]}
+        status="fail"
+        mode="heatmap"
+      />,
+    )
+
+    expect(screen.getByText('Cannot render heatmap')).toBeInTheDocument()
+    expect(screen.queryByText('Cannot render map')).not.toBeInTheDocument()
+  })
+
+  it('shows a heatmap-specific result error title in heatmap mode', () => {
+    jest
+      .spyOn(geoParser, 'parseSearchParams')
+      .mockReturnValue({ ok: true, value: parsedCommand })
+    jest.spyOn(geoParser, 'parseGeoSearchResults').mockReturnValue({
+      ok: false,
+      error: 'Unexpected GEOSEARCH result row.',
+    })
+
+    render(
+      <GeoSearchVisualization
+        command="GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 300 km WITHCOORD"
+        response={['bad-row']}
+        status="fail"
+        mode="heatmap"
+      />,
+    )
+
+    expect(screen.getByText('Cannot render heatmap')).toBeInTheDocument()
+    expect(screen.queryByText('Cannot render map')).not.toBeInTheDocument()
   })
 })
