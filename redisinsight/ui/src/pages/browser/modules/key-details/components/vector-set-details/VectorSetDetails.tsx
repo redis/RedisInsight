@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import {
@@ -9,7 +9,10 @@ import {
   clearSimilaritySearch,
   vectorSetDataSelector,
 } from 'uiSrc/slices/browser/vectorSet'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { bufferToString } from 'uiSrc/utils'
+import { VectorSetSimilarityEntryPoint } from './telemetry.constants'
 import {
   KeyDetailsHeader,
   KeyDetailsHeaderProps,
@@ -49,9 +52,35 @@ const VectorSetDetails = (props: Props) => {
   const dispatch = useDispatch()
   const { loading } = useSelector(selectedKeySelector)
   const selectedKeyData = useSelector(selectedKeyDataSelector)
+  const { id: databaseId } = useSelector(connectedInstanceSelector)
   const keyName = selectedKeyData?.name
     ? bufferToString(selectedKeyData.name)
     : ''
+
+  // Fire VECTOR_SET_KEY_VIEWED once per key once VINFO-derived properties are
+  // available. Re-fires when the user switches to a different vector set key.
+  const lastViewedKeyRef = useRef<string | undefined>(undefined)
+  const quantizationType = selectedKeyData?.quantType
+  const vectorDimension = selectedKeyData?.vectorDim
+  const length = selectedKeyData?.length
+  useEffect(() => {
+    if (!keyName || quantizationType === undefined) {
+      return
+    }
+    if (lastViewedKeyRef.current === keyName) {
+      return
+    }
+    lastViewedKeyRef.current = keyName
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SET_KEY_VIEWED,
+      eventData: {
+        databaseId,
+        quantizationType,
+        vectorDimension,
+        length,
+      },
+    })
+  }, [databaseId, keyName, quantizationType, vectorDimension, length])
 
   const {
     viewedElement,
@@ -70,8 +99,12 @@ const VectorSetDetails = (props: Props) => {
     useSimilaritySearchResults()
 
   const handleClearResults = useCallback(() => {
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SET_SIMILARITY_SEARCH_RESULTS_CLEARED,
+      eventData: { databaseId },
+    })
     dispatch(clearSimilaritySearch())
-  }, [dispatch])
+  }, [databaseId, dispatch])
 
   // Drives the similarity-search form's Element-mode prefill when a user
   // clicks "Search similar" on an element row. The nonce lets the same value
@@ -79,13 +112,23 @@ const VectorSetDetails = (props: Props) => {
   const [similarityPrefill, setSimilarityPrefill] =
     useState<SimilaritySearchPrefill>()
 
-  const handleSearchByElement = useCallback((element: VectorSetElement) => {
-    const value = bufferToString(element.name)
-    setSimilarityPrefill((prev) => ({
-      value,
-      nonce: (prev?.nonce ?? 0) + 1,
-    }))
-  }, [])
+  const handleSearchByElement = useCallback(
+    (element: VectorSetElement) => {
+      const value = bufferToString(element.name)
+      sendEventTelemetry({
+        event: TelemetryEvent.VECTOR_SET_FIND_SIMILAR_CLICKED,
+        eventData: {
+          databaseId,
+          entryPoint: VectorSetSimilarityEntryPoint.ElementRow,
+        },
+      })
+      setSimilarityPrefill((prev) => ({
+        value,
+        nonce: (prev?.nonce ?? 0) + 1,
+      }))
+    },
+    [databaseId],
+  )
 
   // Single source of truth shared by the results table and the Columns popover.
   const {

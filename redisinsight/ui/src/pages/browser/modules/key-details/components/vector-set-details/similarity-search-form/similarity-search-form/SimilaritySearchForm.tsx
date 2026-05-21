@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import { useSelector } from 'react-redux'
 
 import { RiTooltip } from 'uiSrc/components'
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
@@ -7,7 +8,10 @@ import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { InfoIcon, ResetIcon } from 'uiSrc/components/base/icons'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { TextInput, QuantityCounter } from 'uiSrc/components/base/inputs'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
+import { VectorSetSimilarityInputMode } from '../../telemetry.constants'
 import { getVectorFieldInfo } from '../../vector-set-element-form/utils'
 import { useSimilaritySearch } from '../../hooks/useSimilaritySearch'
 
@@ -54,6 +58,8 @@ export const SimilaritySearchForm = ({
   const [state, setState] =
     useState<SimilaritySearchFormState>(initialFormState)
 
+  const { id: databaseId } = useSelector(connectedInstanceSelector)
+
   // React to external prefill requests: switch to Element mode and seed the
   // element input. Keyed on `nonce` so re-requesting the same value still
   // re-applies the prefill (e.g. clicking the same row's search icon twice).
@@ -97,10 +103,26 @@ export const SimilaritySearchForm = ({
 
   const handleSubmit = () => {
     if (!queryReady) return
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SET_SIMILARITY_SEARCH_SUBMITTED,
+      eventData: {
+        databaseId,
+        inputMode:
+          state.mode === SimilaritySearchMode.Vector
+            ? VectorSetSimilarityInputMode.Vector
+            : VectorSetSimilarityInputMode.Element,
+        count: state.count ?? SIMILARITY_SEARCH_COUNT_DEFAULT,
+        hasAttributeFilter: state.filter.trim().length > 0,
+      },
+    })
     runSimilaritySearch(state)
   }
 
   const handleReset = () => {
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SET_SIMILARITY_SEARCH_FORM_RESET,
+      eventData: { databaseId },
+    })
     setState(initialFormState())
     resetSimilaritySearch()
   }
