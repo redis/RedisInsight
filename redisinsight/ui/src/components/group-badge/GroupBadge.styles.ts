@@ -35,9 +35,12 @@ const compressedStyle = css`
 `
 export const StyledGroupBadge = styled(RiBadge)<StyledGroupBadgeProps>`
   min-width: ${({ theme }) => theme.core.space.space150};
+  flex-shrink: 0;
+  white-space: nowrap;
   & > p {
     display: flex;
     align-items: center;
+    white-space: nowrap;
   }
   ${({ $color }) =>
     `
