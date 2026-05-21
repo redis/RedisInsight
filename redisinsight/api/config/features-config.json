@@ -141,7 +141,14 @@
     },
     "dev-vectorSet": {
       "flag": false,
-      "perc": [[0, 100]]
+      "perc": [[0, 100]],
+      "filters": [
+        {
+          "name": "env.NODE_ENV",
+          "value": "production",
+          "cond": "neq"
+        }
+      ]
     },
     "dev-prodMode": {
       "flag": false,
