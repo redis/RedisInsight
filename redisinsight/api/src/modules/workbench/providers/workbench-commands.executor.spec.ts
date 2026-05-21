@@ -8,7 +8,6 @@ import {
   mockStandaloneRedisClient,
   mockWorkbenchAnalyticsService,
   mockWorkbenchClientMetadata,
-  mockDangerousCommandsProvider,
 } from 'src/__mocks__';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { unknownCommand } from 'src/constants';
@@ -27,7 +26,6 @@ import {
   FormatterTypes,
 } from 'src/common/transformers';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
-import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import {
   CommandExecutionType,
   RunQueryMode,
@@ -69,10 +67,6 @@ describe('WorkbenchCommandsExecutor', () => {
         {
           provide: DatabaseClientFactory,
           useFactory: mockDatabaseClientFactory,
-        },
-        {
-          provide: DangerousCommandsProvider,
-          useFactory: mockDangerousCommandsProvider,
         },
       ],
     }).compile();
@@ -116,10 +110,10 @@ describe('WorkbenchCommandsExecutor', () => {
               status: CommandExecutionStatus.Success,
             },
           ],
+          client,
           {
             command: 'ft.info',
             rawMode: true,
-            isDangerous: false,
           },
         );
         expect(mockAnalyticsService.sendIndexInfoEvent).toHaveBeenCalledWith(
@@ -157,10 +151,10 @@ describe('WorkbenchCommandsExecutor', () => {
               status: CommandExecutionStatus.Success,
             },
           ],
+          client,
           {
             command: mockSetCommand,
             rawMode: false,
-            isDangerous: false,
           },
         );
       });
@@ -193,10 +187,10 @@ describe('WorkbenchCommandsExecutor', () => {
             error: new CommandNotSupportedError(MOCK_ERROR_MESSAGE),
             status: CommandExecutionStatus.Fail,
           },
+          client,
           {
             command: mockSetCommand,
             rawMode: false,
-            isDangerous: false,
           },
         );
       });
@@ -232,10 +226,10 @@ describe('WorkbenchCommandsExecutor', () => {
             error: replyError,
             status: CommandExecutionStatus.Fail,
           },
+          client,
           {
             command: mockSetCommand,
             rawMode: false,
-            isDangerous: false,
           },
         );
       });
@@ -272,10 +266,10 @@ describe('WorkbenchCommandsExecutor', () => {
               status: CommandExecutionStatus.Success,
             },
           ],
+          client,
           {
             command: mockSetCommand,
             rawMode: false,
-            isDangerous: false,
           },
         );
       });
@@ -312,10 +306,10 @@ describe('WorkbenchCommandsExecutor', () => {
               status: CommandExecutionStatus.Success,
             },
           ],
+          client,
           {
             command: mockSetCommand,
             rawMode: true,
-            isDangerous: false,
           },
         );
       });
@@ -348,10 +342,10 @@ describe('WorkbenchCommandsExecutor', () => {
             error: new ServiceUnavailableException(MOCK_ERROR_MESSAGE),
             status: CommandExecutionStatus.Fail,
           },
+          client,
           {
             command: mockSetCommand,
             rawMode: false,
-            isDangerous: false,
           },
         );
       });
@@ -385,10 +379,10 @@ describe('WorkbenchCommandsExecutor', () => {
             ),
             status: CommandExecutionStatus.Fail,
           },
+          client,
           {
             command: unknownCommand,
             rawMode: false,
-            isDangerous: false,
           },
         );
       });

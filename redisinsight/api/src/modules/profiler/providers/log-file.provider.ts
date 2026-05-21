@@ -15,11 +15,7 @@ export class LogFileProvider implements OnModuleDestroy {
    * Get or create Profiler Log File to work with
    * @param instanceId
    * @param id
-   * @param sessionMetadata Used by the analytics events bound on the LogFile
-   *   instance so `ProfilerLogDownloaded` / `ProfilerLogDeleted` can resolve
-   *   the connection's `environment` classification. Optional for backward
-   *   compatibility — analytics gracefully default to `Environment.Unspecified`
-   *   when absent.
+   * @param sessionMetadata
    */
   getOrCreate(
     instanceId: string,

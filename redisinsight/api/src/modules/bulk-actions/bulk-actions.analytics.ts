@@ -5,10 +5,7 @@ import { TelemetryBaseService } from 'src/modules/analytics/telemetry.base.servi
 import { getRangeForNumber, BULK_ACTIONS_BREAKPOINTS } from 'src/utils';
 import { IBulkActionOverview } from 'src/modules/bulk-actions/interfaces/bulk-action-overview.interface';
 import { SessionMetadata } from 'src/common/models';
-import {
-  BulkActionType,
-  BulkActionConfirmation,
-} from 'src/modules/bulk-actions/constants';
+import { BulkActionConfirmation } from 'src/modules/bulk-actions/constants';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 import { resolveEnvironment } from 'src/modules/database/utils/resolve-environment';
 
@@ -19,12 +16,6 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
     private readonly databaseRepository: DatabaseRepository,
   ) {
     super(eventEmitter);
-  }
-
-  private isDangerousAction(type: BulkActionType): 'true' | 'false' {
-    return type === BulkActionType.Delete || type === BulkActionType.Unlink
-      ? 'true'
-      : 'false';
   }
 
   private resolveConfirmedThrough(
@@ -63,7 +54,6 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
           sessionMetadata,
           overview.databaseId,
         ),
-        isDangerous: this.isDangerousAction(overview.type),
         confirmedThrough: this.resolveConfirmedThrough(overview),
       });
     } catch (e) {
@@ -118,7 +108,6 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
           sessionMetadata,
           overview.databaseId,
         ),
-        isDangerous: this.isDangerousAction(overview.type),
         confirmedThrough: this.resolveConfirmedThrough(overview),
       });
     } catch (e) {
@@ -161,7 +150,6 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
           sessionMetadata,
           overview.databaseId,
         ),
-        isDangerous: this.isDangerousAction(overview.type),
         confirmedThrough: this.resolveConfirmedThrough(overview),
       });
     } catch (e) {
@@ -184,7 +172,6 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
           sessionMetadata,
           overview.databaseId,
         ),
-        isDangerous: this.isDangerousAction(overview.type),
         confirmedThrough: this.resolveConfirmedThrough(overview),
       });
     } catch (e) {

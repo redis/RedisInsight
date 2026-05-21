@@ -29,7 +29,6 @@ import { ClientNotFoundErrorException } from 'src/modules/redis/exceptions/clien
 import { DatabaseRecommendationService } from 'src/modules/database-recommendation/database-recommendation.service';
 import { RedisClient } from 'src/modules/redis/client';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
-import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import { v4 as uuidv4 } from 'uuid';
 import { getAnalyticsDataFromIndexInfo } from 'src/utils';
 import { OutputFormatterManager } from './output-formatter/output-formatter-manager';
@@ -48,7 +47,6 @@ export class CliBusinessService {
     private recommendationService: DatabaseRecommendationService,
     private readonly commandsService: CommandsService,
     private databaseClientFactory: DatabaseClientFactory,
-    private readonly dangerousCommandsProvider: DangerousCommandsProvider,
   ) {
     this.outputFormatterManager = new OutputFormatterManager();
     this.outputFormatterManager.addStrategy(
@@ -216,13 +214,10 @@ export class CliBusinessService {
       this.cliAnalyticsService.sendCommandExecutedEvent(
         clientMetadata.sessionMetadata,
         clientMetadata.databaseId,
+        client,
         {
           command,
           outputFormat,
-          isDangerous: await this.dangerousCommandsProvider.isDangerous(
-            client,
-            command,
-          ),
         },
       );
 
@@ -259,13 +254,10 @@ export class CliBusinessService {
           clientMetadata.sessionMetadata,
           clientMetadata.databaseId,
           error,
+          client,
           {
             command,
             outputFormat,
-            isDangerous: await this.dangerousCommandsProvider.isDangerous(
-              client,
-              command,
-            ),
           },
         );
 

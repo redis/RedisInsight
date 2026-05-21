@@ -8,6 +8,8 @@ import { CommandTelemetryBaseService } from 'src/modules/analytics/command.telem
 import { SessionMetadata } from 'src/common/models';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 import { resolveEnvironment } from 'src/modules/database/utils/resolve-environment';
+import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
+import { RedisClient } from 'src/modules/redis/client';
 import { CommandExecutionType } from './models/command-execution';
 
 export interface IExecResult {
@@ -22,6 +24,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     protected eventEmitter: EventEmitter2,
     protected readonly commandsService: CommandsService,
     private readonly databaseRepository: DatabaseRepository,
+    private readonly dangerousCommandsProvider: DangerousCommandsProvider,
   ) {
     super(eventEmitter, commandsService);
   }
@@ -61,6 +64,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     databaseId: string,
     commandExecutionType: CommandExecutionType,
     results: IExecResult[],
+    client: RedisClient | undefined,
     additionalData: object = {},
   ): Promise<void> {
     try {
@@ -71,6 +75,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
             databaseId,
             commandExecutionType,
             result,
+            client,
             additionalData,
           ),
         ),
@@ -85,14 +90,12 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     databaseId: string,
     commandExecutionType: CommandExecutionType,
     result: IExecResult,
+    client: RedisClient | undefined,
     additionalData: object = {},
   ): Promise<void> {
     const { status } = result;
     try {
-      const { isDangerous, ...rest } = additionalData as {
-        isDangerous?: boolean;
-        [k: string]: any;
-      };
+      const command = (additionalData as { command?: string }).command;
       if (status === CommandExecutionStatus.Success) {
         const event =
           commandExecutionType === CommandExecutionType.Search
@@ -101,14 +104,19 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
 
         this.sendEvent(sessionMetadata, event, {
           databaseId,
-          ...(await this.getCommandAdditionalInfo(rest['command'])),
-          ...rest,
+          ...(await this.getCommandAdditionalInfo(command)),
+          ...additionalData,
           environment: await resolveEnvironment(
             this.databaseRepository,
             sessionMetadata,
             databaseId,
           ),
-          isDangerous: isDangerous ? 'true' : 'false',
+          isDangerous: (await this.dangerousCommandsProvider.isDangerous(
+            client,
+            command,
+          ))
+            ? 'true'
+            : 'false',
         });
       }
       if (status === CommandExecutionStatus.Fail) {
@@ -117,10 +125,10 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
           databaseId,
           result.error,
           commandExecutionType,
+          client,
           {
-            ...(await this.getCommandAdditionalInfo(rest['command'])),
-            ...rest,
-            isDangerous,
+            ...(await this.getCommandAdditionalInfo(command)),
+            ...additionalData,
           },
         );
       }
@@ -145,6 +153,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     databaseId: string,
     error: any,
     commandExecutionType: CommandExecutionType,
+    client: RedisClient | undefined,
     additionalData: object = {},
   ): Promise<void> {
     try {
@@ -153,32 +162,32 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
           ? TelemetryEvents.SearchCommandErrorReceived
           : TelemetryEvents.WorkbenchCommandErrorReceived;
 
-      const { isDangerous, ...rest } = additionalData as {
-        isDangerous?: boolean;
-        [k: string]: any;
-      };
+      const command = (additionalData as { command?: string }).command;
       const environment = await resolveEnvironment(
         this.databaseRepository,
         sessionMetadata,
         databaseId,
       );
-      const isDangerousStr: 'true' | 'false' = isDangerous ? 'true' : 'false';
+      const isDangerous: 'true' | 'false' =
+        (await this.dangerousCommandsProvider.isDangerous(client, command))
+          ? 'true'
+          : 'false';
 
       if (error instanceof HttpException) {
         this.sendFailedEvent(sessionMetadata, event, error, {
           databaseId,
-          ...rest,
+          ...additionalData,
           environment,
-          isDangerous: isDangerousStr,
+          isDangerous,
         });
       } else {
         this.sendEvent(sessionMetadata, event, {
           databaseId,
           error: error.name,
           command: error?.command?.name,
-          ...rest,
+          ...additionalData,
           environment,
-          isDangerous: isDangerousStr,
+          isDangerous,
         });
       }
     } catch (e) {

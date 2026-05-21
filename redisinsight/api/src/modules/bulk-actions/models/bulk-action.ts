@@ -322,15 +322,8 @@ export class BulkAction implements IBulkAction {
   }
 
   /**
-   * Send overview to a client.
-   *
-   * `sessionMetadata` is read from the stored field by default. The method is
-   * invoked through the debounce wrapper without arguments, so the parameter
-   * would otherwise be `undefined` for terminal-state events and the analytics
-   * `environment` enrichment would always fall back to `Environment.Unspecified`.
-   * If we end up with no sessionMetadata, skip the analytics emit — the socket
-   * `overview` event still fires so the UI keeps updating.
-   * Tests may still pass `sessionMetadata` explicitly to exercise the call path.
+   * Send overview to a client
+   * @param sessionMetadata defaults to the value stored at construction time
    */
   sendOverview(
     sessionMetadata: SessionMetadata | undefined = this.sessionMetadata,

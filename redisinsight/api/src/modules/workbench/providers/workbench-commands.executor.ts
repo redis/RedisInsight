@@ -23,7 +23,6 @@ import { RedisClient } from 'src/modules/redis/client';
 import { getAnalyticsDataFromIndexInfo } from 'src/utils';
 import { RunQueryMode } from 'src/modules/workbench/models/command-execution';
 import { WorkbenchAnalytics } from 'src/modules/workbench/workbench.analytics';
-import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 
 @Injectable()
 export class WorkbenchCommandsExecutor {
@@ -31,10 +30,7 @@ export class WorkbenchCommandsExecutor {
 
   private formatterManager: FormatterManager;
 
-  constructor(
-    private analyticsService: WorkbenchAnalytics,
-    private readonly dangerousCommandsProvider: DangerousCommandsProvider,
-  ) {
+  constructor(private analyticsService: WorkbenchAnalytics) {
     this.formatterManager = new FormatterManager();
     this.formatterManager.addStrategy(
       FormatterTypes.UTF8,
@@ -85,13 +81,10 @@ export class WorkbenchCommandsExecutor {
         client.clientMetadata.databaseId,
         dto.type,
         result,
+        client,
         {
           command,
           rawMode: mode === RunQueryMode.Raw,
-          isDangerous: await this.dangerousCommandsProvider.isDangerous(
-            client,
-            command,
-          ),
         },
       );
 
@@ -117,13 +110,10 @@ export class WorkbenchCommandsExecutor {
         client.clientMetadata.databaseId,
         dto.type,
         { ...errorResult, error },
+        client,
         {
           command,
           rawMode: dto.mode === RunQueryMode.Raw,
-          isDangerous: await this.dangerousCommandsProvider.isDangerous(
-            client,
-            command,
-          ),
         },
       );
 

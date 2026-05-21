@@ -12,7 +12,9 @@ export abstract class CommandTelemetryBaseService extends TelemetryBaseService {
     super(eventEmitter);
   }
 
-  protected async getCommandAdditionalInfo(command: string): Promise<object> {
+  protected async getCommandAdditionalInfo(
+    command: string | undefined,
+  ): Promise<object> {
     try {
       const result = {
         commandType: CommandType.Module,

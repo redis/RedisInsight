@@ -11,10 +11,7 @@ import {
 import { TelemetryEvents } from 'src/constants';
 import { BulkActionsAnalytics } from 'src/modules/bulk-actions/bulk-actions.analytics';
 import { IBulkActionOverview } from 'src/modules/bulk-actions/interfaces/bulk-action-overview.interface';
-import {
-  BulkActionConfirmation,
-  BulkActionType,
-} from 'src/modules/bulk-actions/constants';
+import { BulkActionConfirmation } from 'src/modules/bulk-actions/constants';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 import { Environment } from 'src/modules/database/entities/database.entity';
 
@@ -67,7 +64,6 @@ describe('BulkActionsAnalytics', () => {
             totalRange: '0 - 5 000',
           },
           environment: Environment.Unspecified,
-          isDangerous: 'true',
           confirmedThrough: null,
         },
       );
@@ -92,7 +88,6 @@ describe('BulkActionsAnalytics', () => {
           },
           progress: {},
           environment: Environment.Unspecified,
-          isDangerous: 'true',
           confirmedThrough: null,
         },
       );
@@ -116,7 +111,6 @@ describe('BulkActionsAnalytics', () => {
           },
           progress: {},
           environment: Environment.Unspecified,
-          isDangerous: 'true',
           confirmedThrough: null,
         },
       );
@@ -148,18 +142,6 @@ describe('BulkActionsAnalytics', () => {
         mockSessionMetadata,
         TelemetryEvents.BulkActionsStarted,
         expect.objectContaining({ confirmedThrough: 'type-to-confirm' }),
-      );
-    });
-    it('should emit isDangerous=false for Upload bulk action', async () => {
-      await service.sendActionStarted(mockSessionMetadata, {
-        ...mockBulkActionOverview,
-        type: BulkActionType.Upload,
-      } as unknown as IBulkActionOverview);
-
-      expect(sendEventSpy).toHaveBeenCalledWith(
-        mockSessionMetadata,
-        TelemetryEvents.BulkActionsStarted,
-        expect.objectContaining({ isDangerous: 'false' }),
       );
     });
     it('should not emit event in case of an error and should not fail', async () => {
@@ -201,7 +183,6 @@ describe('BulkActionsAnalytics', () => {
             failedRange: '0 - 5 000',
           },
           environment: Environment.Unspecified,
-          isDangerous: 'true',
           confirmedThrough: null,
         },
       );
@@ -227,7 +208,6 @@ describe('BulkActionsAnalytics', () => {
           progress: {},
           summary: {},
           environment: Environment.Unspecified,
-          isDangerous: 'true',
           confirmedThrough: null,
         },
       );
@@ -265,7 +245,6 @@ describe('BulkActionsAnalytics', () => {
             failedRange: '0 - 5 000',
           },
           environment: Environment.Unspecified,
-          isDangerous: 'true',
           confirmedThrough: null,
         },
       );
@@ -289,7 +268,6 @@ describe('BulkActionsAnalytics', () => {
           },
           summary: {},
           environment: Environment.Unspecified,
-          isDangerous: 'true',
           confirmedThrough: null,
         },
       );
@@ -316,7 +294,6 @@ describe('BulkActionsAnalytics', () => {
           action: mockBulkActionOverview.type,
           error: mockRedisNoAuthError,
           environment: Environment.Unspecified,
-          isDangerous: 'true',
           confirmedThrough: null,
         },
       );

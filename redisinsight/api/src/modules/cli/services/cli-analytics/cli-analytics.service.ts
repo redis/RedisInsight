@@ -11,6 +11,8 @@ import { CommandTelemetryBaseService } from 'src/modules/analytics/command.telem
 import { SessionMetadata } from 'src/common/models';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 import { resolveEnvironment } from 'src/modules/database/utils/resolve-environment';
+import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
+import { RedisClient } from 'src/modules/redis/client';
 
 @Injectable()
 export class CliAnalyticsService extends CommandTelemetryBaseService {
@@ -18,6 +20,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
     protected eventEmitter: EventEmitter2,
     protected readonly commandsService: CommandsService,
     private readonly databaseRepository: DatabaseRepository,
+    private readonly dangerousCommandsProvider: DangerousCommandsProvider,
   ) {
     super(eventEmitter, commandsService);
   }
@@ -101,23 +104,26 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
   public async sendCommandExecutedEvent(
     sessionMetadata: SessionMetadata,
     databaseId: string,
+    client: RedisClient | undefined,
     additionalData: object = {},
   ): Promise<void> {
     try {
-      const { isDangerous, ...rest } = additionalData as {
-        isDangerous?: boolean;
-        [k: string]: any;
-      };
+      const command = (additionalData as { command?: string }).command;
       this.sendEvent(sessionMetadata, TelemetryEvents.CliCommandExecuted, {
         databaseId,
-        ...(await this.getCommandAdditionalInfo(rest['command'])),
-        ...rest,
+        ...(await this.getCommandAdditionalInfo(command)),
+        ...additionalData,
         environment: await resolveEnvironment(
           this.databaseRepository,
           sessionMetadata,
           databaseId,
         ),
-        isDangerous: isDangerous ? 'true' : 'false',
+        isDangerous: (await this.dangerousCommandsProvider.isDangerous(
+          client,
+          command,
+        ))
+          ? 'true'
+          : 'false',
       });
     } catch (e) {
       // ignore error
@@ -128,25 +134,28 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
     sessionMetadata: SessionMetadata,
     databaseId: string,
     error: ReplyError,
+    client: RedisClient | undefined,
     additionalData: object = {},
   ): Promise<void> {
     try {
-      const { isDangerous, ...rest } = additionalData as {
-        isDangerous?: boolean;
-        [k: string]: any;
-      };
+      const command = (additionalData as { command?: string }).command;
       this.sendEvent(sessionMetadata, TelemetryEvents.CliCommandErrorReceived, {
         databaseId,
         error: error?.name,
         command: error?.command?.name,
-        ...(await this.getCommandAdditionalInfo(rest['command'])),
-        ...rest,
+        ...(await this.getCommandAdditionalInfo(command)),
+        ...additionalData,
         environment: await resolveEnvironment(
           this.databaseRepository,
           sessionMetadata,
           databaseId,
         ),
-        isDangerous: isDangerous ? 'true' : 'false',
+        isDangerous: (await this.dangerousCommandsProvider.isDangerous(
+          client,
+          command,
+        ))
+          ? 'true'
+          : 'false',
       });
     } catch (e) {
       // continue regardless of error
@@ -157,28 +166,33 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
     sessionMetadata: SessionMetadata,
     databaseId: string,
     result: ICliExecResultFromNode,
+    client: RedisClient | undefined,
     additionalData: object = {},
   ): Promise<void> {
     const { status, error } = result;
     try {
-      const { isDangerous, ...rest } = additionalData as {
-        isDangerous?: boolean;
-        [k: string]: any;
-      };
+      const command = (additionalData as { command?: string }).command;
+      const environment = await resolveEnvironment(
+        this.databaseRepository,
+        sessionMetadata,
+        databaseId,
+      );
+      const isDangerous = (await this.dangerousCommandsProvider.isDangerous(
+        client,
+        command,
+      ))
+        ? 'true'
+        : 'false';
       if (status === CommandExecutionStatus.Success) {
         this.sendEvent(
           sessionMetadata,
           TelemetryEvents.CliClusterNodeCommandExecuted,
           {
             databaseId,
-            ...(await this.getCommandAdditionalInfo(rest['command'])),
-            ...rest,
-            environment: await resolveEnvironment(
-              this.databaseRepository,
-              sessionMetadata,
-              databaseId,
-            ),
-            isDangerous: isDangerous ? 'true' : 'false',
+            ...(await this.getCommandAdditionalInfo(command)),
+            ...additionalData,
+            environment,
+            isDangerous,
           },
         );
       }
@@ -190,14 +204,10 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
             databaseId,
             error: error.name,
             command: error?.command?.name,
-            ...(await this.getCommandAdditionalInfo(rest['command'])),
-            ...rest,
-            environment: await resolveEnvironment(
-              this.databaseRepository,
-              sessionMetadata,
-              databaseId,
-            ),
-            isDangerous: isDangerous ? 'true' : 'false',
+            ...(await this.getCommandAdditionalInfo(command)),
+            ...additionalData,
+            environment,
+            isDangerous,
           },
         );
       }

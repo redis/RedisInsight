@@ -3,15 +3,8 @@ import { Environment } from 'src/modules/database/entities/database.entity';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 
 /**
- * Resolve the `environment` classification (`Environment` enum) for a
- * database. Mirrors the analytics emit convention established by
- * `database.analytics.ts` after RI-8198 collapsed the prior
- * `isProduction` boolean into a tri-state enum
- * (`unspecified` | `production` | `development`).
- *
- * Wrapped in try/catch and defaults to `Environment.Unspecified` on lookup
- * failure so analytics callers never block the request path on a missing /
- * corrupt database row.
+ * Resolve the database `environment` for analytics emits.
+ * Defaults to `Environment.Unspecified` on lookup failure.
  */
 export async function resolveEnvironment(
   databaseRepository: DatabaseRepository,

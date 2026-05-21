@@ -17,7 +17,6 @@ import {
   mockRedisFtInfoReply,
   mockFtInfoAnalyticsData,
   mockSessionMetadata,
-  mockDangerousCommandsProvider,
 } from 'src/__mocks__';
 import {
   CommandExecutionStatus,
@@ -36,7 +35,6 @@ import { KeytarUnavailableException } from 'src/modules/encryption/exceptions';
 import { CommandsService } from 'src/modules/commands/commands.service';
 import { DatabaseRecommendationService } from 'src/modules/database-recommendation/database-recommendation.service';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
-import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import { OutputFormatterManager } from './output-formatter/output-formatter-manager';
 import {
   CliOutputFormatterTypes,
@@ -90,10 +88,6 @@ describe('CliBusinessService', () => {
         {
           provide: DatabaseRecommendationService,
           useFactory: mockDatabaseRecommendationService,
-        },
-        {
-          provide: DangerousCommandsProvider,
-          useFactory: mockDangerousCommandsProvider,
         },
       ],
     }).compile();
@@ -288,10 +282,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
+        expect.anything(),
         {
           command: 'ft.info',
           outputFormat: CliOutputFormatterTypes.Raw,
-          isDangerous: false,
         },
       );
       expect(analyticsService.sendIndexInfoEvent).toHaveBeenCalledWith(
@@ -319,10 +313,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
+        expect.anything(),
         {
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
-          isDangerous: false,
         },
       );
     });
@@ -348,10 +342,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
+        expect.anything(),
         {
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
-          isDangerous: false,
         },
       );
     });
@@ -375,10 +369,10 @@ describe('CliBusinessService', () => {
         new CommandNotSupportedError(
           ERROR_MESSAGES.CLI_COMMAND_NOT_SUPPORTED(command.toUpperCase()),
         ),
+        expect.anything(),
         {
           command: 'script',
           outputFormat: CliOutputFormatterTypes.Raw,
-          isDangerous: false,
         },
       );
     });
@@ -398,10 +392,10 @@ describe('CliBusinessService', () => {
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
         new CommandParsingError(ERROR_MESSAGES.CLI_UNTERMINATED_QUOTES()),
+        expect.anything(),
         {
           command: unknownCommand,
           outputFormat: CliOutputFormatterTypes.Raw,
-          isDangerous: false,
         },
       );
     });
@@ -426,10 +420,10 @@ describe('CliBusinessService', () => {
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
         replyError,
+        expect.anything(),
         {
           command: 'get',
           outputFormat: CliOutputFormatterTypes.Raw,
-          isDangerous: false,
         },
       );
     });
@@ -496,10 +490,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
+        expect.anything(),
         {
           command: 'info',
           outputFormat: CliOutputFormatterTypes.Raw,
-          isDangerous: false,
         },
       );
     });
@@ -544,10 +538,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
+        expect.anything(),
         {
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
-          isDangerous: false,
         },
       );
     });
@@ -573,10 +567,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
+        expect.anything(),
         {
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
-          isDangerous: false,
         },
       );
     });
@@ -600,10 +594,10 @@ describe('CliBusinessService', () => {
         new CommandNotSupportedError(
           ERROR_MESSAGES.CLI_COMMAND_NOT_SUPPORTED(command.toUpperCase()),
         ),
+        expect.anything(),
         {
           command: 'script',
           outputFormat: CliOutputFormatterTypes.Raw,
-          isDangerous: false,
         },
       );
     });
@@ -623,10 +617,10 @@ describe('CliBusinessService', () => {
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
         new CommandParsingError(ERROR_MESSAGES.CLI_UNTERMINATED_QUOTES()),
+        expect.anything(),
         {
           command: unknownCommand,
           outputFormat: CliOutputFormatterTypes.Raw,
-          isDangerous: false,
         },
       );
     });
@@ -651,10 +645,10 @@ describe('CliBusinessService', () => {
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
         replyError,
+        expect.anything(),
         {
           command: 'get',
           outputFormat: CliOutputFormatterTypes.Raw,
-          isDangerous: false,
         },
       );
     });
@@ -721,10 +715,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
+        expect.anything(),
         {
           command: 'info',
           outputFormat: CliOutputFormatterTypes.Raw,
-          isDangerous: false,
         },
       );
     });

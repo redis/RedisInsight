@@ -7,6 +7,8 @@ import {
   MockType,
   mockSessionMetadata,
   mockDatabaseRepository,
+  mockDangerousCommandsProvider,
+  mockStandaloneRedisClient,
 } from 'src/__mocks__';
 import { CommandType, TelemetryEvents } from 'src/constants';
 import { ReplyError } from 'src/models';
@@ -18,6 +20,7 @@ import {
 import { CommandsService } from 'src/modules/commands/commands.service';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 import { Environment } from 'src/modules/database/entities/database.entity';
+import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import { CliAnalyticsService } from './cli-analytics.service';
 
 const mockCommandsService = {
@@ -40,6 +43,7 @@ describe('CliAnalyticsService', () => {
   let sendFailedEventMethod: jest.SpyInstance<CliAnalyticsService, unknown[]>;
   let commandsService: MockType<CommandsService>;
   let databaseRepository: MockType<DatabaseRepository>;
+  let dangerousCommandsProvider: MockType<DangerousCommandsProvider>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -52,12 +56,17 @@ describe('CliAnalyticsService', () => {
           provide: DatabaseRepository,
           useFactory: mockDatabaseRepository,
         },
+        {
+          provide: DangerousCommandsProvider,
+          useFactory: mockDangerousCommandsProvider,
+        },
         EventEmitter2,
         CliAnalyticsService,
       ],
     }).compile();
 
     databaseRepository = module.get(DatabaseRepository);
+    dangerousCommandsProvider = module.get(DangerousCommandsProvider);
 
     service = module.get<CliAnalyticsService>(CliAnalyticsService);
     sendEventMethod = jest.spyOn<CliAnalyticsService, any>(
@@ -269,6 +278,7 @@ describe('CliAnalyticsService', () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
         databaseId,
+        mockStandaloneRedisClient,
         mockAdditionalData,
       );
 
@@ -287,7 +297,11 @@ describe('CliAnalyticsService', () => {
       );
     });
     it('should emit CliCommandExecuted event without additional data', async () => {
-      await service.sendCommandExecutedEvent(mockSessionMetadata, databaseId);
+      await service.sendCommandExecutedEvent(
+        mockSessionMetadata,
+        databaseId,
+        mockStandaloneRedisClient,
+      );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
@@ -308,6 +322,7 @@ describe('CliAnalyticsService', () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
         databaseId,
+        mockStandaloneRedisClient,
         mockAdditionalData,
       );
 
@@ -317,11 +332,15 @@ describe('CliAnalyticsService', () => {
         expect.objectContaining({ environment: Environment.Production }),
       );
     });
-    it('should pass isDangerous flag through from additionalData', async () => {
-      await service.sendCommandExecutedEvent(mockSessionMetadata, databaseId, {
-        ...mockAdditionalData,
-        isDangerous: true,
-      });
+    it('should emit isDangerous=true when the provider classifies the command', async () => {
+      dangerousCommandsProvider.isDangerous.mockResolvedValueOnce(true);
+
+      await service.sendCommandExecutedEvent(
+        mockSessionMetadata,
+        databaseId,
+        mockStandaloneRedisClient,
+        mockAdditionalData,
+      );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
@@ -335,6 +354,7 @@ describe('CliAnalyticsService', () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
         databaseId,
+        mockStandaloneRedisClient,
         mockAdditionalData,
       );
 
@@ -352,6 +372,7 @@ describe('CliAnalyticsService', () => {
         mockSessionMetadata,
         databaseId,
         redisReplyError,
+        mockStandaloneRedisClient,
         mockAdditionalData,
       );
 
@@ -375,6 +396,7 @@ describe('CliAnalyticsService', () => {
         mockSessionMetadata,
         databaseId,
         redisReplyError,
+        mockStandaloneRedisClient,
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -395,6 +417,7 @@ describe('CliAnalyticsService', () => {
         mockSessionMetadata,
         databaseId,
         error,
+        mockStandaloneRedisClient,
         mockAdditionalData,
       );
 
@@ -468,6 +491,7 @@ describe('CliAnalyticsService', () => {
         mockSessionMetadata,
         databaseId,
         nodExecResult,
+        mockStandaloneRedisClient,
         mockAdditionalData,
       );
 
@@ -498,6 +522,7 @@ describe('CliAnalyticsService', () => {
         mockSessionMetadata,
         databaseId,
         nodExecResult,
+        mockStandaloneRedisClient,
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -525,6 +550,7 @@ describe('CliAnalyticsService', () => {
         mockSessionMetadata,
         databaseId,
         nodExecResult,
+        mockStandaloneRedisClient,
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -549,6 +575,7 @@ describe('CliAnalyticsService', () => {
         mockSessionMetadata,
         databaseId,
         nodExecResult,
+        mockStandaloneRedisClient,
       );
 
       expect(sendEventMethod).not.toHaveBeenCalled();

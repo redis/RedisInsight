@@ -7,6 +7,8 @@ import {
   MockType,
   mockSessionMetadata,
   mockDatabaseRepository,
+  mockDangerousCommandsProvider,
+  mockStandaloneRedisClient,
 } from 'src/__mocks__';
 import { CommandType, TelemetryEvents } from 'src/constants';
 import { ReplyError } from 'src/models';
@@ -15,6 +17,7 @@ import { CommandParsingError } from 'src/modules/cli/constants/errors';
 import { CommandsService } from 'src/modules/commands/commands.service';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 import { Environment } from 'src/modules/database/entities/database.entity';
+import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import { WorkbenchAnalytics } from './workbench.analytics';
 import { CommandExecutionType } from './models/command-execution';
 
@@ -34,6 +37,7 @@ describe('WorkbenchAnalytics', () => {
   let sendFailedEventMethod: jest.SpyInstance<WorkbenchAnalytics, unknown[]>;
   let commandsService: MockType<CommandsService>;
   let databaseRepository: MockType<DatabaseRepository>;
+  let dangerousCommandsProvider: MockType<DangerousCommandsProvider>;
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -49,11 +53,16 @@ describe('WorkbenchAnalytics', () => {
           provide: DatabaseRepository,
           useFactory: mockDatabaseRepository,
         },
+        {
+          provide: DangerousCommandsProvider,
+          useFactory: mockDangerousCommandsProvider,
+        },
         WorkbenchAnalytics,
       ],
     }).compile();
 
     databaseRepository = module.get(DatabaseRepository);
+    dangerousCommandsProvider = module.get(DangerousCommandsProvider);
 
     service = module.get<WorkbenchAnalytics>(WorkbenchAnalytics);
     sendEventMethod = jest.spyOn<WorkbenchAnalytics, any>(service, 'sendEvent');
@@ -153,6 +162,7 @@ describe('WorkbenchAnalytics', () => {
           { response: 'OK', status: CommandExecutionStatus.Success },
           { response: 'OK', status: CommandExecutionStatus.Success },
         ],
+        mockStandaloneRedisClient,
         { command: 'set' },
       );
 
@@ -180,6 +190,7 @@ describe('WorkbenchAnalytics', () => {
           { response: 'OK', status: CommandExecutionStatus.Success },
           { response: 'OK', status: CommandExecutionStatus.Success },
         ],
+        mockStandaloneRedisClient,
         { command: 'set' },
       );
 
@@ -206,6 +217,7 @@ describe('WorkbenchAnalytics', () => {
         instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
+        mockStandaloneRedisClient,
         { command: 'set' },
       );
 
@@ -233,6 +245,7 @@ describe('WorkbenchAnalytics', () => {
         instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
+        mockStandaloneRedisClient,
         { command: 'set' },
       );
 
@@ -253,6 +266,7 @@ describe('WorkbenchAnalytics', () => {
         instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
+        mockStandaloneRedisClient,
         { command: 'bF.rEsErvE' },
       );
 
@@ -276,6 +290,7 @@ describe('WorkbenchAnalytics', () => {
         instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
+        mockStandaloneRedisClient,
         { command: 'CUSTOM.COMMAnd' },
       );
 
@@ -299,6 +314,7 @@ describe('WorkbenchAnalytics', () => {
         instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
+        mockStandaloneRedisClient,
         { command: 'some.command' },
       );
 
@@ -325,6 +341,7 @@ describe('WorkbenchAnalytics', () => {
           response: 'OK',
           status: CommandExecutionStatus.Success,
         },
+        mockStandaloneRedisClient,
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -347,6 +364,7 @@ describe('WorkbenchAnalytics', () => {
           error: redisReplyError,
           status: CommandExecutionStatus.Fail,
         },
+        mockStandaloneRedisClient,
         { command: 'set', data: 'Some data' },
       );
 
@@ -376,6 +394,7 @@ describe('WorkbenchAnalytics', () => {
           error: redisReplyError,
           status: CommandExecutionStatus.Fail,
         },
+        mockStandaloneRedisClient,
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -401,6 +420,7 @@ describe('WorkbenchAnalytics', () => {
           status: CommandExecutionStatus.Fail,
           error,
         },
+        mockStandaloneRedisClient,
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -426,6 +446,7 @@ describe('WorkbenchAnalytics', () => {
           status: CommandExecutionStatus.Fail,
           error,
         },
+        mockStandaloneRedisClient,
       );
 
       expect(sendFailedEventMethod).toHaveBeenCalledWith(
@@ -445,6 +466,7 @@ describe('WorkbenchAnalytics', () => {
         instanceId,
         CommandExecutionType.Search,
         { response: 'OK', status: CommandExecutionStatus.Success },
+        mockStandaloneRedisClient,
         { command: 'set' },
       );
 
@@ -472,6 +494,7 @@ describe('WorkbenchAnalytics', () => {
           error: redisReplyError,
           status: CommandExecutionStatus.Fail,
         },
+        mockStandaloneRedisClient,
         { command: 'set', data: 'Some data' },
       );
 
@@ -504,6 +527,7 @@ describe('WorkbenchAnalytics', () => {
         instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
+        mockStandaloneRedisClient,
         { command: 'set' },
       );
 
@@ -514,13 +538,16 @@ describe('WorkbenchAnalytics', () => {
       );
     });
 
-    it('should pass isDangerous through from additionalData', async () => {
+    it('should emit isDangerous=true when the provider classifies the command', async () => {
+      dangerousCommandsProvider.isDangerous.mockResolvedValueOnce(true);
+
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
         instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
-        { command: 'flushdb', isDangerous: true },
+        mockStandaloneRedisClient,
+        { command: 'flushdb' },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -538,6 +565,7 @@ describe('WorkbenchAnalytics', () => {
         instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
+        mockStandaloneRedisClient,
         { command: 'set' },
       );
 
