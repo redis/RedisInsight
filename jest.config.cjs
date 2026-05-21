@@ -48,7 +48,7 @@ module.exports = {
     '\\.mjs$': 'babel-jest',
   },
   transformIgnorePatterns: [
-    'node_modules/(?!(monaco-editor|react-monaco-editor|brotli-dec-wasm|until-async|rettime|uuid)/)',
+    'node_modules/(?!(monaco-editor|react-monaco-editor|brotli-dec-wasm|until-async|rettime|uuid|react-jsx-parser)/)',
   ],
   // TODO: add tests for plugins
   modulePathIgnorePatterns: [
