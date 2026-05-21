@@ -17,10 +17,16 @@ describe('getVisualizationsByCommand', () => {
   const redisTokenRegex = String.raw`(?:"[^"\r\n]{0,512}"|'[^'\r\n]{0,512}'|[^\s"']{1,512})`
   const nativeWithCoordRegex =
     String.raw`(?:\bGEOSEARCH\b\s+${redisTokenRegex}\s+` +
-    String.raw`(?:FROMLONLAT\s+${redisTokenRegex}\s+${redisTokenRegex}|FROMMEMBER\s+${redisTokenRegex})\s+` +
-    String.raw`(?:BYRADIUS\s+${redisTokenRegex}\s+${redisTokenRegex}|BYBOX\s+${redisTokenRegex}\s+${redisTokenRegex}\s+${redisTokenRegex})|` +
-    String.raw`\bGEORADIUS(?:_RO)?\b\s+${redisTokenRegex}\s+${redisTokenRegex}\s+${redisTokenRegex}\s+${redisTokenRegex}\s+${redisTokenRegex}|` +
-    String.raw`\bGEORADIUSBYMEMBER(?:_RO)?\b\s+${redisTokenRegex}\s+${redisTokenRegex}\s+${redisTokenRegex}\s+${redisTokenRegex})` +
+    String.raw`(?:FROMLONLAT\s+${redisTokenRegex}\s+${redisTokenRegex}|` +
+    String.raw`FROMMEMBER\s+${redisTokenRegex})\s+` +
+    String.raw`(?:BYRADIUS\s+${redisTokenRegex}\s+${redisTokenRegex}|` +
+    String.raw`BYBOX\s+${redisTokenRegex}\s+${redisTokenRegex}\s+` +
+    String.raw`${redisTokenRegex})|` +
+    String.raw`\bGEORADIUS(?:_RO)?\b\s+${redisTokenRegex}\s+` +
+    String.raw`${redisTokenRegex}\s+${redisTokenRegex}\s+` +
+    String.raw`${redisTokenRegex}\s+${redisTokenRegex}|` +
+    String.raw`\bGEORADIUSBYMEMBER(?:_RO)?\b\s+${redisTokenRegex}\s+` +
+    String.raw`${redisTokenRegex}\s+${redisTokenRegex}\s+${redisTokenRegex})` +
     String.raw`(?=[\s\S]{0,4096}\bWITHCOORD\b)`
 
   const getVisualizationsByCommandTests: [string, number][] = [
@@ -206,6 +212,11 @@ describe('getVisualizationsByCommand', () => {
     expect(
       defaultsFor('GEOSEARCH WITHCOORD FROMLONLAT 15 37 BYRADIUS 300 km'),
     ).toEqual(['ri-geodata-search-inspector'])
+    expect(
+      defaultsFor(
+        'GEOSEARCH Sicily FROMMEMBER PARAMS BYRADIUS 10 km WITHCOORD',
+      ),
+    ).toEqual(['ri-geodata-map'])
     expect(defaultsFor('GEODIST Sicily Palermo Catania km')).toEqual([
       'ri-geodata-inspector',
     ])
@@ -255,7 +266,7 @@ describe('getVisualizationsByCommand', () => {
     ).toHaveLength(0)
   })
 
-  it('matches query predicates before oversized PARAMS payloads', () => {
+  it('matches query predicates before actual FT PARAMS payloads', () => {
     const geodataVisualization = {
       matchCommands: ['FT.SEARCH'],
       matchQuery: {
@@ -269,6 +280,18 @@ describe('getVisualizationsByCommand', () => {
 
     expect(
       getVisualizationsByCommand(oversizedHybridQuery, [geodataVisualization]),
+    ).toHaveLength(1)
+    expect(
+      getVisualizationsByCommand(
+        'FT.SEARCH PARAMS "@coords:[2.34 48.86 1000 km]"',
+        [geodataVisualization],
+      ),
+    ).toHaveLength(1)
+    expect(
+      getVisualizationsByCommand(
+        'FT.SEARCH idx "PARAMS @coords:[2.34 48.86 1000 km]" PARAMS 2 vec blob',
+        [geodataVisualization],
+      ),
     ).toHaveLength(1)
   })
 
