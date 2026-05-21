@@ -104,7 +104,7 @@ const buildAttributeColumn = (
         data-testid={`vector-set-similarity-attribute-cell-${row.index}-${key}`}
       >
         {isMissing ? (
-          <S.NilAttributeValue variant="italic">(nil)</S.NilAttributeValue>
+          <S.NilAttributeValue variant="italic">Empty</S.NilAttributeValue>
         ) : (
           renderAttributeValue(value)
         )}
