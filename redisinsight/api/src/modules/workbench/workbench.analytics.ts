@@ -6,7 +6,6 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CommandsService } from 'src/modules/commands/commands.service';
 import { CommandTelemetryBaseService } from 'src/modules/analytics/command.telemetry.base.service';
 import { SessionMetadata } from 'src/common/models';
-import { Database } from 'src/modules/database/models/database';
 import { Environment } from 'src/modules/database/entities/database.entity';
 import { CommandExecutionType } from './models/command-execution';
 
@@ -32,8 +31,9 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
 
   async sendIndexInfoEvent(
     sessionMetadata: SessionMetadata,
-    database: Database,
+    databaseId: string,
     commandExecutionType: CommandExecutionType,
+    environment: Environment,
     additionalData: object | null,
   ): Promise<void> {
     if (!additionalData) {
@@ -47,9 +47,9 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
           : TelemetryEvents.WorkbenchIndexInfoSubmitted;
 
       this.sendEvent(sessionMetadata, event, {
-        databaseId: database.id,
+        databaseId,
         ...additionalData,
-        environment: database.environment ?? Environment.Unspecified,
+        environment,
       });
     } catch (e) {
       // ignore error
@@ -58,9 +58,10 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
 
   public async sendCommandExecutedEvents(
     sessionMetadata: SessionMetadata,
-    database: Database,
+    databaseId: string,
     commandExecutionType: CommandExecutionType,
     results: IExecResult[],
+    environment: Environment,
     isDangerous: 'true' | 'false',
     additionalData: WorkbenchCommandEventData = {},
   ): Promise<void> {
@@ -69,9 +70,10 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
         results.map((result) =>
           this.sendCommandExecutedEvent(
             sessionMetadata,
-            database,
+            databaseId,
             commandExecutionType,
             result,
+            environment,
             isDangerous,
             additionalData,
           ),
@@ -84,17 +86,16 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
 
   public async sendCommandExecutedEvent(
     sessionMetadata: SessionMetadata,
-    database: Database,
+    databaseId: string,
     commandExecutionType: CommandExecutionType,
     result: IExecResult,
+    environment: Environment,
     isDangerous: 'true' | 'false',
     additionalData: WorkbenchCommandEventData = {},
   ): Promise<void> {
     const { status } = result;
     try {
       const { command } = additionalData;
-      const environment = database.environment ?? Environment.Unspecified;
-
       if (status === CommandExecutionStatus.Success) {
         const event =
           commandExecutionType === CommandExecutionType.Search
@@ -102,7 +103,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
             : TelemetryEvents.WorkbenchCommandExecuted;
 
         this.sendEvent(sessionMetadata, event, {
-          databaseId: database.id,
+          databaseId,
           ...(await this.getCommandAdditionalInfo(command)),
           ...additionalData,
           environment,
@@ -112,9 +113,10 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
       if (status === CommandExecutionStatus.Fail) {
         await this.sendCommandErrorEvent(
           sessionMetadata,
-          database,
+          databaseId,
           result.error,
           commandExecutionType,
+          environment,
           isDangerous,
           additionalData,
         );
@@ -137,9 +139,10 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
 
   private async sendCommandErrorEvent(
     sessionMetadata: SessionMetadata,
-    database: Database,
+    databaseId: string,
     error: any,
     commandExecutionType: CommandExecutionType,
+    environment: Environment,
     isDangerous: 'true' | 'false',
     additionalData: WorkbenchCommandEventData = {},
   ): Promise<void> {
@@ -151,11 +154,10 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
 
       const { command } = additionalData;
       const commandInfo = await this.getCommandAdditionalInfo(command);
-      const environment = database.environment ?? Environment.Unspecified;
 
       if (error instanceof HttpException) {
         this.sendFailedEvent(sessionMetadata, event, error, {
-          databaseId: database.id,
+          databaseId,
           ...commandInfo,
           ...additionalData,
           environment,
@@ -163,7 +165,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
         });
       } else {
         this.sendEvent(sessionMetadata, event, {
-          databaseId: database.id,
+          databaseId,
           error: error.name,
           command: error?.command?.name,
           ...commandInfo,

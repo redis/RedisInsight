@@ -9,7 +9,6 @@ import {
 import { CommandsService } from 'src/modules/commands/commands.service';
 import { CommandTelemetryBaseService } from 'src/modules/analytics/command.telemetry.base.service';
 import { SessionMetadata } from 'src/common/models';
-import { Database } from 'src/modules/database/models/database';
 import { Environment } from 'src/modules/database/entities/database.entity';
 import { CliOutputFormatterTypes } from 'src/modules/cli/services/cli-business/output-formatter/output-formatter.interface';
 
@@ -105,17 +104,17 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
 
   public async sendCommandExecutedEvent(
     sessionMetadata: SessionMetadata,
-    database: Database,
+    databaseId: string,
+    environment: Environment,
     isDangerous: 'true' | 'false',
     additionalData: CliCommandEventData = {},
   ): Promise<void> {
     try {
-      const { command } = additionalData;
       this.sendEvent(sessionMetadata, TelemetryEvents.CliCommandExecuted, {
-        databaseId: database.id,
-        ...(await this.getCommandAdditionalInfo(command)),
+        databaseId,
+        ...(await this.getCommandAdditionalInfo(additionalData.command)),
         ...additionalData,
-        environment: database.environment ?? Environment.Unspecified,
+        environment,
         isDangerous,
       });
     } catch (e) {
@@ -125,20 +124,20 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
 
   public async sendCommandErrorEvent(
     sessionMetadata: SessionMetadata,
-    database: Database,
+    databaseId: string,
     error: ReplyError,
+    environment: Environment,
     isDangerous: 'true' | 'false',
     additionalData: CliCommandEventData = {},
   ): Promise<void> {
     try {
-      const { command } = additionalData;
       this.sendEvent(sessionMetadata, TelemetryEvents.CliCommandErrorReceived, {
-        databaseId: database.id,
+        databaseId,
         error: error?.name,
         command: error?.command?.name,
-        ...(await this.getCommandAdditionalInfo(command)),
+        ...(await this.getCommandAdditionalInfo(additionalData.command)),
         ...additionalData,
-        environment: database.environment ?? Environment.Unspecified,
+        environment,
         isDangerous,
       });
     } catch (e) {
@@ -148,22 +147,21 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
 
   public async sendClusterCommandExecutedEvent(
     sessionMetadata: SessionMetadata,
-    database: Database,
+    databaseId: string,
     result: ICliExecResultFromNode,
+    environment: Environment,
     isDangerous: 'true' | 'false',
     additionalData: CliCommandEventData = {},
   ): Promise<void> {
     const { status, error } = result;
     try {
-      const { command } = additionalData;
-      const environment = database.environment ?? Environment.Unspecified;
       if (status === CommandExecutionStatus.Success) {
         this.sendEvent(
           sessionMetadata,
           TelemetryEvents.CliClusterNodeCommandExecuted,
           {
-            databaseId: database.id,
-            ...(await this.getCommandAdditionalInfo(command)),
+            databaseId,
+            ...(await this.getCommandAdditionalInfo(additionalData.command)),
             ...additionalData,
             environment,
             isDangerous,
@@ -175,10 +173,10 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
           sessionMetadata,
           TelemetryEvents.CliCommandErrorReceived,
           {
-            databaseId: database.id,
+            databaseId,
             error: error.name,
             command: error?.command?.name,
-            ...(await this.getCommandAdditionalInfo(command)),
+            ...(await this.getCommandAdditionalInfo(additionalData.command)),
             ...additionalData,
             environment,
             isDangerous,

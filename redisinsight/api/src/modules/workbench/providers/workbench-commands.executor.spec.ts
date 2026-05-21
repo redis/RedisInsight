@@ -29,6 +29,7 @@ import {
 } from 'src/common/transformers';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { DatabaseService } from 'src/modules/database/database.service';
+import { Environment } from 'src/modules/database/entities/database.entity';
 import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import {
   CommandExecutionType,
@@ -114,7 +115,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvents,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockDatabase,
+          mockDatabase.id,
           CommandExecutionType.Workbench,
           [
             {
@@ -122,6 +123,7 @@ describe('WorkbenchCommandsExecutor', () => {
               status: CommandExecutionStatus.Success,
             },
           ],
+          Environment.Unspecified,
           'false',
           {
             command: 'ft.info',
@@ -130,8 +132,9 @@ describe('WorkbenchCommandsExecutor', () => {
         );
         expect(mockAnalyticsService.sendIndexInfoEvent).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockDatabase,
+          mockDatabase.id,
           CommandExecutionType.Workbench,
+          Environment.Unspecified,
           mockFtInfoAnalyticsData,
         );
       });
@@ -155,7 +158,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvents,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockDatabase,
+          mockDatabase.id,
           CommandExecutionType.Workbench,
           [
             {
@@ -163,6 +166,7 @@ describe('WorkbenchCommandsExecutor', () => {
               status: CommandExecutionStatus.Success,
             },
           ],
+          Environment.Unspecified,
           'false',
           {
             command: mockSetCommand,
@@ -192,13 +196,14 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvent,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockDatabase,
+          mockDatabase.id,
           CommandExecutionType.Workbench,
           {
             response: MOCK_ERROR_MESSAGE,
             error: new CommandNotSupportedError(MOCK_ERROR_MESSAGE),
             status: CommandExecutionStatus.Fail,
           },
+          Environment.Unspecified,
           'false',
           {
             command: mockSetCommand,
@@ -231,13 +236,14 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvent,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockDatabase,
+          mockDatabase.id,
           CommandExecutionType.Workbench,
           {
             response: MOCK_ERROR_MESSAGE,
             error: replyError,
             status: CommandExecutionStatus.Fail,
           },
+          Environment.Unspecified,
           'false',
           {
             command: mockSetCommand,
@@ -270,7 +276,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvents,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockDatabase,
+          mockDatabase.id,
           CommandExecutionType.Workbench,
           [
             {
@@ -278,6 +284,7 @@ describe('WorkbenchCommandsExecutor', () => {
               status: CommandExecutionStatus.Success,
             },
           ],
+          Environment.Unspecified,
           'false',
           {
             command: mockSetCommand,
@@ -310,7 +317,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvents,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockDatabase,
+          mockDatabase.id,
           CommandExecutionType.Workbench,
           [
             {
@@ -318,6 +325,7 @@ describe('WorkbenchCommandsExecutor', () => {
               status: CommandExecutionStatus.Success,
             },
           ],
+          Environment.Unspecified,
           'false',
           {
             command: mockSetCommand,
@@ -347,13 +355,14 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvent,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockDatabase,
+          mockDatabase.id,
           CommandExecutionType.Workbench,
           {
             response: MOCK_ERROR_MESSAGE,
             error: new ServiceUnavailableException(MOCK_ERROR_MESSAGE),
             status: CommandExecutionStatus.Fail,
           },
+          Environment.Unspecified,
           'false',
           {
             command: mockSetCommand,
@@ -382,7 +391,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvent,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockDatabase,
+          mockDatabase.id,
           CommandExecutionType.Workbench,
           {
             response: ERROR_MESSAGES.CLI_UNTERMINATED_QUOTES(),
@@ -391,6 +400,7 @@ describe('WorkbenchCommandsExecutor', () => {
             ),
             status: CommandExecutionStatus.Fail,
           },
+          Environment.Unspecified,
           'false',
           {
             command: unknownCommand,

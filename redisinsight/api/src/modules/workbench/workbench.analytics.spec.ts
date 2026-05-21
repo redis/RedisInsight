@@ -86,8 +86,9 @@ describe('WorkbenchAnalytics', () => {
     it('should emit index info event for Workbench commands', async () => {
       await service.sendIndexInfoEvent(
         mockSessionMetadata,
-        mockDatabase,
+        instanceId,
         CommandExecutionType.Workbench,
+        Environment.Unspecified,
         {
           any: 'fields',
         },
@@ -106,8 +107,9 @@ describe('WorkbenchAnalytics', () => {
     it('should emit index info event for Search commands', async () => {
       await service.sendIndexInfoEvent(
         mockSessionMetadata,
-        mockDatabase,
+        instanceId,
         CommandExecutionType.Search,
+        Environment.Unspecified,
         {
           any: 'fields',
         },
@@ -126,8 +128,9 @@ describe('WorkbenchAnalytics', () => {
     it('should not fail and should not emit when no data to send', async () => {
       await service.sendIndexInfoEvent(
         mockSessionMetadata,
-        mockDatabase,
+        instanceId,
         CommandExecutionType.Workbench,
+        Environment.Unspecified,
         null,
       );
 
@@ -138,12 +141,13 @@ describe('WorkbenchAnalytics', () => {
     it('should emit multiple Workbench events', async () => {
       await service.sendCommandExecutedEvents(
         mockSessionMetadata,
-        mockDatabase,
+        instanceId,
         CommandExecutionType.Workbench,
         [
           { response: 'OK', status: CommandExecutionStatus.Success },
           { response: 'OK', status: CommandExecutionStatus.Success },
         ],
+        Environment.Unspecified,
         'false',
         { command: 'set' },
       );
@@ -166,12 +170,13 @@ describe('WorkbenchAnalytics', () => {
     it('should emit multiple Search events', async () => {
       await service.sendCommandExecutedEvents(
         mockSessionMetadata,
-        mockDatabase,
+        instanceId,
         CommandExecutionType.Search,
         [
           { response: 'OK', status: CommandExecutionStatus.Success },
           { response: 'OK', status: CommandExecutionStatus.Success },
         ],
+        Environment.Unspecified,
         'false',
         { command: 'set' },
       );
@@ -196,9 +201,10 @@ describe('WorkbenchAnalytics', () => {
     it('should emit WorkbenchCommandExecuted event', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
+        Environment.Unspecified,
         'false',
         { command: 'set' },
       );
@@ -224,9 +230,10 @@ describe('WorkbenchAnalytics', () => {
 
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
+        Environment.Unspecified,
         'false',
         { command: 'set' },
       );
@@ -245,9 +252,10 @@ describe('WorkbenchAnalytics', () => {
     it('should emit WorkbenchCommandExecuted event (module with cap.)', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
+        Environment.Unspecified,
         'false',
         { command: 'bF.rEsErvE' },
       );
@@ -269,9 +277,10 @@ describe('WorkbenchAnalytics', () => {
     it('should emit WorkbenchCommandExecuted event (module w\\o cap.)', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
+        Environment.Unspecified,
         'false',
         { command: 'CUSTOM.COMMAnd' },
       );
@@ -293,9 +302,10 @@ describe('WorkbenchAnalytics', () => {
     it('should emit WorkbenchCommandExecuted event (custom module)', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
+        Environment.Unspecified,
         'false',
         { command: 'some.command' },
       );
@@ -317,12 +327,13 @@ describe('WorkbenchAnalytics', () => {
     it('should emit WorkbenchCommandExecuted event without additional data', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        instanceId,
         CommandExecutionType.Workbench,
         {
           response: 'OK',
           status: CommandExecutionStatus.Success,
         },
+        Environment.Unspecified,
         'false',
       );
 
@@ -339,13 +350,14 @@ describe('WorkbenchAnalytics', () => {
     it('should emit WorkbenchCommandError event', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        instanceId,
         CommandExecutionType.Workbench,
         {
           response: 'Error',
           error: redisReplyError,
           status: CommandExecutionStatus.Fail,
         },
+        Environment.Unspecified,
         'false',
         { command: 'set' },
       );
@@ -368,13 +380,14 @@ describe('WorkbenchAnalytics', () => {
     it('should emit WorkbenchCommandError event without additional data', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        instanceId,
         CommandExecutionType.Workbench,
         {
           response: 'Error',
           error: redisReplyError,
           status: CommandExecutionStatus.Fail,
         },
+        Environment.Unspecified,
         'false',
       );
 
@@ -394,13 +407,14 @@ describe('WorkbenchAnalytics', () => {
       const error: any = CommandParsingError;
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        instanceId,
         CommandExecutionType.Workbench,
         {
           response: 'Error',
           status: CommandExecutionStatus.Fail,
           error,
         },
+        Environment.Unspecified,
         'false',
       );
 
@@ -420,13 +434,14 @@ describe('WorkbenchAnalytics', () => {
       const error = new ServiceUnavailableException();
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        instanceId,
         CommandExecutionType.Workbench,
         {
           response: 'Error',
           status: CommandExecutionStatus.Fail,
           error,
         },
+        Environment.Unspecified,
         'false',
       );
 
@@ -444,9 +459,10 @@ describe('WorkbenchAnalytics', () => {
     it('should emit SearchCommandExecuted event', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        instanceId,
         CommandExecutionType.Search,
         { response: 'OK', status: CommandExecutionStatus.Success },
+        Environment.Unspecified,
         'false',
         { command: 'set' },
       );
@@ -468,13 +484,14 @@ describe('WorkbenchAnalytics', () => {
     it('should emit SearchCommandError event', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        instanceId,
         CommandExecutionType.Search,
         {
           response: 'Error',
           error: redisReplyError,
           status: CommandExecutionStatus.Fail,
         },
+        Environment.Unspecified,
         'false',
         { command: 'set' },
       );
@@ -499,9 +516,10 @@ describe('WorkbenchAnalytics', () => {
     it('should emit environment=production when database is marked production', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        { ...mockDatabase, environment: Environment.Production },
+        instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
+        Environment.Production,
         'false',
         { command: 'set' },
       );
@@ -516,9 +534,10 @@ describe('WorkbenchAnalytics', () => {
     it('should emit isDangerous=true when caller marks the command as dangerous', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
+        Environment.Unspecified,
         'true',
         { command: 'flushdb' },
       );

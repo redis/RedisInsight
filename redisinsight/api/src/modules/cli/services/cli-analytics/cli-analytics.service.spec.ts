@@ -259,7 +259,8 @@ describe('CliAnalyticsService', () => {
     it('should emit CliCommandExecuted event', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        databaseId,
+        Environment.Unspecified,
         'false',
         mockAdditionalData,
       );
@@ -281,7 +282,8 @@ describe('CliAnalyticsService', () => {
     it('should emit CliCommandExecuted event without additional data', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        databaseId,
+        Environment.Unspecified,
         'false',
       );
 
@@ -298,7 +300,8 @@ describe('CliAnalyticsService', () => {
     it('should emit environment=production when database is marked production', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        { ...mockDatabase, environment: Environment.Production },
+        databaseId,
+        Environment.Production,
         'false',
         mockAdditionalData,
       );
@@ -312,7 +315,8 @@ describe('CliAnalyticsService', () => {
     it('should emit isDangerous=true when caller marks the command as dangerous', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        databaseId,
+        Environment.Unspecified,
         'true',
         mockAdditionalData,
       );
@@ -329,8 +333,9 @@ describe('CliAnalyticsService', () => {
     it('should emit CliCommandError event', async () => {
       await service.sendCommandErrorEvent(
         mockSessionMetadata,
-        mockDatabase,
+        databaseId,
         redisReplyError,
+        Environment.Unspecified,
         'false',
         mockAdditionalData,
       );
@@ -353,8 +358,9 @@ describe('CliAnalyticsService', () => {
     it('should emit CliCommandError event without additional data', async () => {
       await service.sendCommandErrorEvent(
         mockSessionMetadata,
-        mockDatabase,
+        databaseId,
         redisReplyError,
+        Environment.Unspecified,
         'false',
       );
 
@@ -374,8 +380,9 @@ describe('CliAnalyticsService', () => {
       const error: any = CommandParsingError;
       await service.sendCommandErrorEvent(
         mockSessionMetadata,
-        mockDatabase,
+        databaseId,
         error,
+        Environment.Unspecified,
         'false',
         mockAdditionalData,
       );
@@ -448,8 +455,9 @@ describe('CliAnalyticsService', () => {
 
       await service.sendClusterCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        databaseId,
         nodExecResult,
+        Environment.Unspecified,
         'false',
         mockAdditionalData,
       );
@@ -479,8 +487,9 @@ describe('CliAnalyticsService', () => {
 
       await service.sendClusterCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        databaseId,
         nodExecResult,
+        Environment.Unspecified,
         'false',
       );
 
@@ -507,8 +516,9 @@ describe('CliAnalyticsService', () => {
 
       await service.sendClusterCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        databaseId,
         nodExecResult,
+        Environment.Unspecified,
         'false',
       );
 
@@ -532,8 +542,9 @@ describe('CliAnalyticsService', () => {
       };
       await service.sendClusterCommandExecutedEvent(
         mockSessionMetadata,
-        mockDatabase,
+        databaseId,
         nodExecResult,
+        Environment.Unspecified,
         'false',
       );
 

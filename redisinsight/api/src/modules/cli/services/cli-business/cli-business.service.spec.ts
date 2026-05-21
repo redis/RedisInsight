@@ -9,7 +9,6 @@ import {
   mockRedisWrongTypeError,
   mockCliAnalyticsService,
   MockType,
-  mockDatabase,
   mockDatabaseRecommendationService,
   mockCliClientMetadata,
   mockDatabaseClientFactory,
@@ -294,7 +293,8 @@ describe('CliBusinessService', () => {
       expect(formatSpy).toHaveBeenCalled();
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
-        mockDatabase,
+        mockCliClientMetadata.databaseId,
+        expect.anything(),
         expect.anything(),
         {
           command: 'ft.info',
@@ -325,7 +325,8 @@ describe('CliBusinessService', () => {
       expect(formatSpy).toHaveBeenCalled();
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
-        mockDatabase,
+        mockCliClientMetadata.databaseId,
+        expect.anything(),
         expect.anything(),
         {
           command: 'memory',
@@ -354,7 +355,8 @@ describe('CliBusinessService', () => {
       expect(formatSpy).toHaveBeenCalled();
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
-        mockDatabase,
+        mockCliClientMetadata.databaseId,
+        expect.anything(),
         expect.anything(),
         {
           command: 'memory',
@@ -378,10 +380,11 @@ describe('CliBusinessService', () => {
       expect(result).toEqual(mockResult);
       expect(analyticsService.sendCommandErrorEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
-        mockDatabase,
+        mockCliClientMetadata.databaseId,
         new CommandNotSupportedError(
           ERROR_MESSAGES.CLI_COMMAND_NOT_SUPPORTED(command.toUpperCase()),
         ),
+        expect.anything(),
         expect.anything(),
         {
           command: 'script',
@@ -403,8 +406,9 @@ describe('CliBusinessService', () => {
       expect(result).toEqual(mockResult);
       expect(analyticsService.sendCommandErrorEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
-        mockDatabase,
+        mockCliClientMetadata.databaseId,
         new CommandParsingError(ERROR_MESSAGES.CLI_UNTERMINATED_QUOTES()),
+        expect.anything(),
         expect.anything(),
         {
           command: unknownCommand,
@@ -431,8 +435,9 @@ describe('CliBusinessService', () => {
       expect(result).toEqual(mockResult);
       expect(analyticsService.sendCommandErrorEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
-        mockDatabase,
+        mockCliClientMetadata.databaseId,
         replyError,
+        expect.anything(),
         expect.anything(),
         {
           command: 'get',
@@ -502,7 +507,8 @@ describe('CliBusinessService', () => {
       expect(result).toEqual(mockResult);
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
-        mockDatabase,
+        mockCliClientMetadata.databaseId,
+        expect.anything(),
         expect.anything(),
         {
           command: 'info',
@@ -550,7 +556,8 @@ describe('CliBusinessService', () => {
       expect(formatSpy).toHaveBeenCalled();
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
-        mockDatabase,
+        mockCliClientMetadata.databaseId,
+        expect.anything(),
         expect.anything(),
         {
           command: 'memory',
@@ -579,7 +586,8 @@ describe('CliBusinessService', () => {
       expect(formatSpy).toHaveBeenCalled();
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
-        mockDatabase,
+        mockCliClientMetadata.databaseId,
+        expect.anything(),
         expect.anything(),
         {
           command: 'memory',
@@ -603,10 +611,11 @@ describe('CliBusinessService', () => {
       expect(result).toEqual(mockResult);
       expect(analyticsService.sendCommandErrorEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
-        mockDatabase,
+        mockCliClientMetadata.databaseId,
         new CommandNotSupportedError(
           ERROR_MESSAGES.CLI_COMMAND_NOT_SUPPORTED(command.toUpperCase()),
         ),
+        expect.anything(),
         expect.anything(),
         {
           command: 'script',
@@ -628,8 +637,9 @@ describe('CliBusinessService', () => {
       expect(result).toEqual(mockResult);
       expect(analyticsService.sendCommandErrorEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
-        mockDatabase,
+        mockCliClientMetadata.databaseId,
         new CommandParsingError(ERROR_MESSAGES.CLI_UNTERMINATED_QUOTES()),
+        expect.anything(),
         expect.anything(),
         {
           command: unknownCommand,
@@ -656,8 +666,9 @@ describe('CliBusinessService', () => {
       expect(result).toEqual(mockResult);
       expect(analyticsService.sendCommandErrorEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
-        mockDatabase,
+        mockCliClientMetadata.databaseId,
         replyError,
+        expect.anything(),
         expect.anything(),
         {
           command: 'get',
@@ -727,7 +738,8 @@ describe('CliBusinessService', () => {
       expect(result).toEqual(mockResult);
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
-        mockDatabase,
+        mockCliClientMetadata.databaseId,
+        expect.anything(),
         expect.anything(),
         {
           command: 'info',

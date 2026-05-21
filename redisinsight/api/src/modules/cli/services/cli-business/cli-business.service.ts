@@ -27,8 +27,10 @@ import { EncryptionServiceErrorException } from 'src/modules/encryption/exceptio
 import { getUnsupportedCommands } from 'src/modules/cli/utils/getUnsupportedCommands';
 import { ClientNotFoundErrorException } from 'src/modules/redis/exceptions/client-not-found-error.exception';
 import { DatabaseRecommendationService } from 'src/modules/database-recommendation/database-recommendation.service';
+import { RedisClient } from 'src/modules/redis/client';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { DatabaseService } from 'src/modules/database/database.service';
+import { Environment } from 'src/modules/database/entities/database.entity';
 import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import { v4 as uuidv4 } from 'uuid';
 import { getAnalyticsDataFromIndexInfo } from 'src/utils';
@@ -191,47 +193,89 @@ export class CliBusinessService {
     const outputFormat = dto.outputFormat || CliOutputFormatterTypes.Raw;
     let command: string = unknownCommand;
     let args: string[] = [];
+    let environment: Environment = Environment.Unspecified;
     let isDangerous: 'true' | 'false' = 'false';
 
     try {
-      const client =
+      const client: RedisClient =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
-      const database = await this.databaseService.get(
-        clientMetadata.sessionMetadata,
-        clientMetadata.databaseId,
+
+      environment =
+        (
+          await this.databaseService.get(
+            clientMetadata.sessionMetadata,
+            clientMetadata.databaseId,
+          )
+        ).environment ?? Environment.Unspecified;
+
+      const formatter = this.outputFormatterManager.getStrategy(outputFormat);
+      [command, ...args] = splitCliCommandLine(commandLine);
+      isDangerous = (await this.dangerousCommandsProvider.isDangerous(
+        client,
+        command,
+      ))
+        ? 'true'
+        : 'false';
+      const replyEncoding = checkHumanReadableCommands(`${command} ${args[0]}`)
+        ? 'utf8'
+        : undefined;
+      this.checkUnsupportedCommands(`${command} ${args[0]}`);
+
+      this.recommendationService.check(
+        clientMetadata,
+        RECOMMENDATION_NAMES.SEARCH_VISUALIZATION,
+        command,
       );
 
-      try {
-        const formatter = this.outputFormatterManager.getStrategy(outputFormat);
-        [command, ...args] = splitCliCommandLine(commandLine);
+      const reply = await client.sendCommand([command, ...args], {
+        replyEncoding,
+      });
 
-        isDangerous = (await this.dangerousCommandsProvider.isDangerous(
-          client,
+      this.cliAnalyticsService.sendCommandExecutedEvent(
+        clientMetadata.sessionMetadata,
+        clientMetadata.databaseId,
+        environment,
+        isDangerous,
+        {
           command,
-        ))
-          ? 'true'
-          : 'false';
+          outputFormat,
+        },
+      );
 
-        const replyEncoding = checkHumanReadableCommands(
-          `${command} ${args[0]}`,
-        )
-          ? 'utf8'
-          : undefined;
-        this.checkUnsupportedCommands(`${command} ${args[0]}`);
-
-        this.recommendationService.check(
-          clientMetadata,
-          RECOMMENDATION_NAMES.SEARCH_VISUALIZATION,
-          command,
-        );
-
-        const reply = await client.sendCommand([command, ...args], {
-          replyEncoding,
-        });
-
-        this.cliAnalyticsService.sendCommandExecutedEvent(
+      if (command.toLowerCase() === 'ft.info') {
+        this.cliAnalyticsService.sendIndexInfoEvent(
           clientMetadata.sessionMetadata,
-          database,
+          clientMetadata.databaseId,
+          getAnalyticsDataFromIndexInfo(reply as string[]),
+        );
+      }
+
+      this.logger.debug(
+        'Succeed to execute redis CLI command.',
+        clientMetadata,
+      );
+
+      return {
+        response: formatter.format(reply),
+        status: CommandExecutionStatus.Success,
+      };
+    } catch (error) {
+      this.logger.error(
+        'Failed to execute redis CLI command.',
+        error,
+        clientMetadata,
+      );
+
+      if (
+        error instanceof CommandParsingError ||
+        error instanceof CommandNotSupportedError ||
+        error?.name === 'ReplyError'
+      ) {
+        this.cliAnalyticsService.sendCommandErrorEvent(
+          clientMetadata.sessionMetadata,
+          clientMetadata.databaseId,
+          error,
+          environment,
           isDangerous,
           {
             command,
@@ -239,57 +283,8 @@ export class CliBusinessService {
           },
         );
 
-        if (command.toLowerCase() === 'ft.info') {
-          this.cliAnalyticsService.sendIndexInfoEvent(
-            clientMetadata.sessionMetadata,
-            clientMetadata.databaseId,
-            getAnalyticsDataFromIndexInfo(reply as string[]),
-          );
-        }
-
-        this.logger.debug(
-          'Succeed to execute redis CLI command.',
-          clientMetadata,
-        );
-
-        return {
-          response: formatter.format(reply),
-          status: CommandExecutionStatus.Success,
-        };
-      } catch (error) {
-        if (
-          error instanceof CommandParsingError ||
-          error instanceof CommandNotSupportedError ||
-          error?.name === 'ReplyError'
-        ) {
-          this.logger.error(
-            'Failed to execute redis CLI command.',
-            error,
-            clientMetadata,
-          );
-          this.cliAnalyticsService.sendCommandErrorEvent(
-            clientMetadata.sessionMetadata,
-            database,
-            error,
-            isDangerous,
-            {
-              command,
-              outputFormat,
-            },
-          );
-          return {
-            response: error.message,
-            status: CommandExecutionStatus.Fail,
-          };
-        }
-        throw error;
+        return { response: error.message, status: CommandExecutionStatus.Fail };
       }
-    } catch (error) {
-      this.logger.error(
-        'Failed to execute redis CLI command.',
-        error,
-        clientMetadata,
-      );
 
       this.cliAnalyticsService.sendConnectionErrorEvent(
         clientMetadata.sessionMetadata,
