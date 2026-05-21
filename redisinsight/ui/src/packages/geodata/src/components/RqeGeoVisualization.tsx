@@ -33,6 +33,18 @@ const getTitle = (mode: RqeGeoVisualizationProps['mode']): string => {
   return 'Search geospatial details'
 }
 
+const getResultsErrorTitle = (
+  mode: RqeGeoVisualizationProps['mode'],
+): string => {
+  if (mode === 'shape') {
+    return 'Cannot render RQE geo shape'
+  }
+  if (mode === 'inspector') {
+    return 'Cannot inspect RQE geo results'
+  }
+  return 'Cannot render RQE geo map'
+}
+
 const toNativeGeoCommand = (command: ParsedRqeGeoCommand): ParsedGeoCommand => {
   if (command.overlay.type !== 'radius') {
     return {
@@ -169,9 +181,7 @@ export const RqeGeoVisualization = ({
     return (
       <div className="geodata-shell">
         <GeoHeader title={title} status={status} resultCount={0} />
-        <Message
-          title={`Cannot render ${mode === 'shape' ? 'RQE geo shape' : 'RQE geo map'}`}
-        >
+        <Message title={getResultsErrorTitle(mode)}>
           {parsedResults.error}
         </Message>
       </div>
