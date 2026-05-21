@@ -8,8 +8,6 @@ import { CommandTelemetryBaseService } from 'src/modules/analytics/command.telem
 import { SessionMetadata } from 'src/common/models';
 import { Database } from 'src/modules/database/models/database';
 import { Environment } from 'src/modules/database/entities/database.entity';
-import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
-import { RedisClient } from 'src/modules/redis/client';
 import { CommandExecutionType } from './models/command-execution';
 
 export interface IExecResult {
@@ -28,7 +26,6 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
   constructor(
     protected eventEmitter: EventEmitter2,
     protected readonly commandsService: CommandsService,
-    private readonly dangerousCommandsProvider: DangerousCommandsProvider,
   ) {
     super(eventEmitter, commandsService);
   }
@@ -64,28 +61,19 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     database: Database,
     commandExecutionType: CommandExecutionType,
     results: IExecResult[],
-    client: RedisClient | undefined,
+    isDangerous: 'true' | 'false',
     additionalData: WorkbenchCommandEventData = {},
   ): Promise<void> {
     try {
-      // Resolve isDangerous once for the whole batch — every result shares
-      // the same command. Environment is already on `database`.
-      const isDangerous = (await this.dangerousCommandsProvider.isDangerous(
-        client,
-        additionalData.command,
-      ))
-        ? 'true'
-        : 'false';
-
       await Promise.all(
         results.map((result) =>
-          this.emitCommandExecuted(
+          this.sendCommandExecutedEvent(
             sessionMetadata,
             database,
             commandExecutionType,
             result,
-            additionalData,
             isDangerous,
+            additionalData,
           ),
         ),
       );
@@ -99,37 +87,8 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     database: Database,
     commandExecutionType: CommandExecutionType,
     result: IExecResult,
-    client: RedisClient | undefined,
-    additionalData: WorkbenchCommandEventData = {},
-  ): Promise<void> {
-    try {
-      const isDangerous = (await this.dangerousCommandsProvider.isDangerous(
-        client,
-        additionalData.command,
-      ))
-        ? 'true'
-        : 'false';
-
-      await this.emitCommandExecuted(
-        sessionMetadata,
-        database,
-        commandExecutionType,
-        result,
-        additionalData,
-        isDangerous,
-      );
-    } catch (e) {
-      // continue regardless of error
-    }
-  }
-
-  private async emitCommandExecuted(
-    sessionMetadata: SessionMetadata,
-    database: Database,
-    commandExecutionType: CommandExecutionType,
-    result: IExecResult,
-    additionalData: WorkbenchCommandEventData,
     isDangerous: 'true' | 'false',
+    additionalData: WorkbenchCommandEventData = {},
   ): Promise<void> {
     const { status } = result;
     try {
@@ -156,8 +115,8 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
           database,
           result.error,
           commandExecutionType,
-          additionalData,
           isDangerous,
+          additionalData,
         );
       }
     } catch (e) {
@@ -181,8 +140,8 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     database: Database,
     error: any,
     commandExecutionType: CommandExecutionType,
+    isDangerous: 'true' | 'false',
     additionalData: WorkbenchCommandEventData = {},
-    isDangerous: 'true' | 'false' = 'false',
   ): Promise<void> {
     try {
       const event =

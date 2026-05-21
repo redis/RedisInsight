@@ -25,6 +25,7 @@ import { RunQueryMode } from 'src/modules/workbench/models/command-execution';
 import { WorkbenchAnalytics } from 'src/modules/workbench/workbench.analytics';
 import { DatabaseService } from 'src/modules/database/database.service';
 import { Database } from 'src/modules/database/models/database';
+import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 
 @Injectable()
 export class WorkbenchCommandsExecutor {
@@ -35,6 +36,7 @@ export class WorkbenchCommandsExecutor {
   constructor(
     private analyticsService: WorkbenchAnalytics,
     private readonly databaseService: DatabaseService,
+    private readonly dangerousCommandsProvider: DangerousCommandsProvider,
   ) {
     this.formatterManager = new FormatterManager();
     this.formatterManager.addStrategy(
@@ -62,6 +64,7 @@ export class WorkbenchCommandsExecutor {
     let command = unknownCommand;
     let commandArgs: string[] = [];
     let database: Database | undefined;
+    let isDangerous: 'true' | 'false' = 'false';
 
     // Resolve once so analytics emits get environment without each method
     // doing its own repository lookup. Failure is non-fatal — analytics
@@ -78,6 +81,16 @@ export class WorkbenchCommandsExecutor {
     try {
       const { command: commandLine, mode } = dto;
       [command, ...commandArgs] = splitCliCommandLine(commandLine);
+
+      // Resolve dangerous flag against the parsed command. If parsing throws
+      // above, `isDangerous` stays `'false'` (we don't know the command) and
+      // the error emit in `catch` uses that default.
+      isDangerous = (await this.dangerousCommandsProvider.isDangerous(
+        client,
+        command,
+      ))
+        ? 'true'
+        : 'false';
 
       const formatter = this.getFormatter(mode);
       const replyEncoding = checkHumanReadableCommands(
@@ -100,7 +113,7 @@ export class WorkbenchCommandsExecutor {
           database,
           dto.type,
           result,
-          client,
+          isDangerous,
           {
             command,
             rawMode: mode === RunQueryMode.Raw,
@@ -131,7 +144,7 @@ export class WorkbenchCommandsExecutor {
           database,
           dto.type,
           { ...errorResult, error },
-          client,
+          isDangerous,
           {
             command,
             rawMode: dto.mode === RunQueryMode.Raw,

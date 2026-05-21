@@ -11,8 +11,6 @@ import { CommandTelemetryBaseService } from 'src/modules/analytics/command.telem
 import { SessionMetadata } from 'src/common/models';
 import { Database } from 'src/modules/database/models/database';
 import { Environment } from 'src/modules/database/entities/database.entity';
-import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
-import { RedisClient } from 'src/modules/redis/client';
 import { CliOutputFormatterTypes } from 'src/modules/cli/services/cli-business/output-formatter/output-formatter.interface';
 
 export interface CliCommandEventData {
@@ -25,7 +23,6 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
   constructor(
     protected eventEmitter: EventEmitter2,
     protected readonly commandsService: CommandsService,
-    private readonly dangerousCommandsProvider: DangerousCommandsProvider,
   ) {
     super(eventEmitter, commandsService);
   }
@@ -109,7 +106,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
   public async sendCommandExecutedEvent(
     sessionMetadata: SessionMetadata,
     database: Database,
-    client: RedisClient | undefined,
+    isDangerous: 'true' | 'false',
     additionalData: CliCommandEventData = {},
   ): Promise<void> {
     try {
@@ -119,12 +116,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
         ...(await this.getCommandAdditionalInfo(command)),
         ...additionalData,
         environment: database.environment ?? Environment.Unspecified,
-        isDangerous: (await this.dangerousCommandsProvider.isDangerous(
-          client,
-          command,
-        ))
-          ? 'true'
-          : 'false',
+        isDangerous,
       });
     } catch (e) {
       // ignore error
@@ -135,7 +127,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
     sessionMetadata: SessionMetadata,
     database: Database,
     error: ReplyError,
-    client: RedisClient | undefined,
+    isDangerous: 'true' | 'false',
     additionalData: CliCommandEventData = {},
   ): Promise<void> {
     try {
@@ -147,12 +139,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
         ...(await this.getCommandAdditionalInfo(command)),
         ...additionalData,
         environment: database.environment ?? Environment.Unspecified,
-        isDangerous: (await this.dangerousCommandsProvider.isDangerous(
-          client,
-          command,
-        ))
-          ? 'true'
-          : 'false',
+        isDangerous,
       });
     } catch (e) {
       // continue regardless of error
@@ -163,19 +150,13 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
     sessionMetadata: SessionMetadata,
     database: Database,
     result: ICliExecResultFromNode,
-    client: RedisClient | undefined,
+    isDangerous: 'true' | 'false',
     additionalData: CliCommandEventData = {},
   ): Promise<void> {
     const { status, error } = result;
     try {
       const { command } = additionalData;
       const environment = database.environment ?? Environment.Unspecified;
-      const isDangerous = (await this.dangerousCommandsProvider.isDangerous(
-        client,
-        command,
-      ))
-        ? 'true'
-        : 'false';
       if (status === CommandExecutionStatus.Success) {
         this.sendEvent(
           sessionMetadata,

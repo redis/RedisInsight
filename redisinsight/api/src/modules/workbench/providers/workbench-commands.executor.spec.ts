@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { get } from 'lodash';
 import {
+  mockDangerousCommandsProvider,
   mockDatabase,
   mockDatabaseClientFactory,
   mockDatabaseService,
@@ -29,6 +30,7 @@ import {
 } from 'src/common/transformers';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { DatabaseService } from 'src/modules/database/database.service';
+import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import {
   CommandExecutionType,
   RunQueryMode,
@@ -75,6 +77,10 @@ describe('WorkbenchCommandsExecutor', () => {
           provide: DatabaseService,
           useFactory: mockDatabaseService,
         },
+        {
+          provide: DangerousCommandsProvider,
+          useFactory: mockDangerousCommandsProvider,
+        },
       ],
     }).compile();
 
@@ -117,7 +123,7 @@ describe('WorkbenchCommandsExecutor', () => {
               status: CommandExecutionStatus.Success,
             },
           ],
-          client,
+          'false',
           {
             command: 'ft.info',
             rawMode: true,
@@ -158,7 +164,7 @@ describe('WorkbenchCommandsExecutor', () => {
               status: CommandExecutionStatus.Success,
             },
           ],
-          client,
+          'false',
           {
             command: mockSetCommand,
             rawMode: false,
@@ -194,7 +200,7 @@ describe('WorkbenchCommandsExecutor', () => {
             error: new CommandNotSupportedError(MOCK_ERROR_MESSAGE),
             status: CommandExecutionStatus.Fail,
           },
-          client,
+          'false',
           {
             command: mockSetCommand,
             rawMode: false,
@@ -233,7 +239,7 @@ describe('WorkbenchCommandsExecutor', () => {
             error: replyError,
             status: CommandExecutionStatus.Fail,
           },
-          client,
+          'false',
           {
             command: mockSetCommand,
             rawMode: false,
@@ -273,7 +279,7 @@ describe('WorkbenchCommandsExecutor', () => {
               status: CommandExecutionStatus.Success,
             },
           ],
-          client,
+          'false',
           {
             command: mockSetCommand,
             rawMode: false,
@@ -313,7 +319,7 @@ describe('WorkbenchCommandsExecutor', () => {
               status: CommandExecutionStatus.Success,
             },
           ],
-          client,
+          'false',
           {
             command: mockSetCommand,
             rawMode: true,
@@ -349,7 +355,7 @@ describe('WorkbenchCommandsExecutor', () => {
             error: new ServiceUnavailableException(MOCK_ERROR_MESSAGE),
             status: CommandExecutionStatus.Fail,
           },
-          client,
+          'false',
           {
             command: mockSetCommand,
             rawMode: false,
@@ -386,7 +392,7 @@ describe('WorkbenchCommandsExecutor', () => {
             ),
             status: CommandExecutionStatus.Fail,
           },
-          client,
+          'false',
           {
             command: unknownCommand,
             rawMode: false,

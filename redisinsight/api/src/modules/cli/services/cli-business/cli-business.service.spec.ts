@@ -14,6 +14,7 @@ import {
   mockCliClientMetadata,
   mockDatabaseClientFactory,
   mockDatabaseService,
+  mockDangerousCommandsProvider,
   mockStandaloneRedisClient,
   mockClusterRedisClient,
   mockRedisFtInfoReply,
@@ -38,6 +39,7 @@ import { CommandsService } from 'src/modules/commands/commands.service';
 import { DatabaseRecommendationService } from 'src/modules/database-recommendation/database-recommendation.service';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { DatabaseService } from 'src/modules/database/database.service';
+import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import { OutputFormatterManager } from './output-formatter/output-formatter-manager';
 import {
   CliOutputFormatterTypes,
@@ -95,6 +97,10 @@ describe('CliBusinessService', () => {
         {
           provide: DatabaseService,
           useFactory: mockDatabaseService,
+        },
+        {
+          provide: DangerousCommandsProvider,
+          useFactory: mockDangerousCommandsProvider,
         },
       ],
     }).compile();

@@ -31,6 +31,7 @@ import { RedisClient } from 'src/modules/redis/client';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { DatabaseService } from 'src/modules/database/database.service';
 import { Database } from 'src/modules/database/models/database';
+import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import { v4 as uuidv4 } from 'uuid';
 import { getAnalyticsDataFromIndexInfo } from 'src/utils';
 import { OutputFormatterManager } from './output-formatter/output-formatter-manager';
@@ -50,6 +51,7 @@ export class CliBusinessService {
     private readonly commandsService: CommandsService,
     private databaseClientFactory: DatabaseClientFactory,
     private readonly databaseService: DatabaseService,
+    private readonly dangerousCommandsProvider: DangerousCommandsProvider,
   ) {
     this.outputFormatterManager = new OutputFormatterManager();
     this.outputFormatterManager.addStrategy(
@@ -193,6 +195,7 @@ export class CliBusinessService {
     let args: string[] = [];
     let client: RedisClient | undefined;
     let database: Database | undefined;
+    let isDangerous: 'true' | 'false' = 'false';
 
     try {
       client =
@@ -212,6 +215,17 @@ export class CliBusinessService {
 
       const formatter = this.outputFormatterManager.getStrategy(outputFormat);
       [command, ...args] = splitCliCommandLine(commandLine);
+
+      // Resolve dangerous flag against the parsed command. If parsing throws
+      // above, `isDangerous` stays `'false'` and the error emit in `catch`
+      // uses that default.
+      isDangerous = (await this.dangerousCommandsProvider.isDangerous(
+        client,
+        command,
+      ))
+        ? 'true'
+        : 'false';
+
       const replyEncoding = checkHumanReadableCommands(`${command} ${args[0]}`)
         ? 'utf8'
         : undefined;
@@ -231,7 +245,7 @@ export class CliBusinessService {
         this.cliAnalyticsService.sendCommandExecutedEvent(
           clientMetadata.sessionMetadata,
           database,
-          client,
+          isDangerous,
           {
             command,
             outputFormat,
@@ -273,7 +287,7 @@ export class CliBusinessService {
             clientMetadata.sessionMetadata,
             database,
             error,
-            client,
+            isDangerous,
             {
               command,
               outputFormat,
