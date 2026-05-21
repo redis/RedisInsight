@@ -137,6 +137,34 @@ jobs:
         if: steps.resolve-targets.outputs.should_build == 'true'
         run: node ./scripts/verify-native-modules-linux.js --arch=${{ matrix.arch }}
 
+      - name: Verify RPM file-digest algorithm (FIPS-safe)
+        if: steps.resolve-targets.outputs.should_build == 'true'
+        run: |
+          shopt -s nullglob
+          rpms=( ./release/Redis-Insight*.rpm )
+          if [ ${#rpms[@]} -eq 0 ]; then
+            echo "No RPMs built for arch ${{ matrix.arch }} — skipping digest check."
+            exit 0
+          fi
+          if ! command -v rpm >/dev/null 2>&1; then
+            sudo apt-get update -qy
+            sudo apt-get install -qy rpm
+          fi
+          failed=0
+          for rpm_file in "${rpms[@]}"; do
+            algo=$(rpm -qp --qf '%{FILEDIGESTALGO}\n' "$rpm_file")
+            case "$algo" in
+              8|10)
+                echo "OK: $rpm_file uses FILEDIGESTALGO=$algo"
+                ;;
+              *)
+                echo "FAIL: $rpm_file uses FILEDIGESTALGO=$algo (must be 8 SHA-256 or 10 SHA-512 for FIPS hosts)"
+                failed=1
+                ;;
+            esac
+          done
+          exit $failed
+
       - uses: actions/upload-artifact@v7
         name: Upload vendor for plugins
         if: steps.resolve-targets.outputs.should_build == 'true'

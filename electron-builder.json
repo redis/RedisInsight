@@ -133,6 +133,9 @@
     "afterInstall": "scripts/deb-after-install.sh",
     "afterRemove": "scripts/deb-before-remove.sh"
   },
+  "rpm": {
+    "fpm": ["--rpm-digest", "sha256"]
+  },
   "snap": {
     "plugs": ["default", "password-manager-service"],
     "confinement": "strict",
