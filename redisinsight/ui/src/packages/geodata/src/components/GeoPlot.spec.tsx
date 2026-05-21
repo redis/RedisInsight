@@ -199,8 +199,8 @@ describe('GeoPlot', () => {
     expect(mockExtend).not.toHaveBeenCalled()
     expect(mockLeaflet.heatLayer).toHaveBeenCalledWith(
       [
-        [38.115556, 13.361389, 10],
-        [37.502669, 15.087269, 100],
+        [38.115556, 13.361389, 1],
+        [37.502669, 15.087269, 1],
       ],
       expect.objectContaining({ radius: 24 }),
     )
