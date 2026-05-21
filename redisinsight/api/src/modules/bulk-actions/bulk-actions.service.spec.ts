@@ -3,8 +3,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   MockType,
   mockBulkActionsAnalytics,
-  mockSessionMetadata,
   mockDatabase,
+  mockDatabaseService,
+  mockSessionMetadata,
 } from 'src/__mocks__';
 import { BulkActionsProvider } from 'src/modules/bulk-actions/providers/bulk-actions.provider';
 import { RedisDataType } from 'src/modules/browser/keys/dto';
@@ -14,6 +15,7 @@ import { BulkActionFilter } from 'src/modules/bulk-actions/models/bulk-action-fi
 import { BulkAction } from 'src/modules/bulk-actions/models/bulk-action';
 import { BulkActionsService } from 'src/modules/bulk-actions/bulk-actions.service';
 import { BulkActionsAnalytics } from 'src/modules/bulk-actions/bulk-actions.analytics';
+import { DatabaseService } from 'src/modules/database/database.service';
 
 export const mockSocket1 = new MockedSocket();
 mockSocket1.id = '1';
@@ -68,6 +70,10 @@ describe('BulkActionsService', () => {
         {
           provide: BulkActionsAnalytics,
           useFactory: mockBulkActionsAnalytics,
+        },
+        {
+          provide: DatabaseService,
+          useFactory: mockDatabaseService,
         },
       ],
     }).compile();

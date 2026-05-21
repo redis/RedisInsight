@@ -16,64 +16,55 @@ import { UnlinkBulkActionSimpleRunner } from 'src/modules/bulk-actions/models/ru
 import { BulkActionsAnalytics } from 'src/modules/bulk-actions/bulk-actions.analytics';
 import { ClientContext, SessionMetadata } from 'src/common/models';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
-import { DatabaseService } from 'src/modules/database/database.service';
+import { Database } from 'src/modules/database/models/database';
 
 @Injectable()
 export class BulkActionsProvider {
   private bulkActions: Map<string, BulkAction> = new Map();
-
-  // Ids whose construction is in flight (before the BulkAction is stored in
-  // `bulkActions`). Reserved synchronously on entry to `create` so concurrent
-  // calls with the same id fail the duplicate check despite the await on
-  // `databaseService.get` that precedes the map insertion.
-  private inFlightIds: Set<string> = new Set();
 
   private logger: Logger = new Logger('BulkActionsProvider');
 
   constructor(
     private readonly databaseClientFactory: DatabaseClientFactory,
     private readonly analytics: BulkActionsAnalytics,
-    private readonly databaseService: DatabaseService,
   ) {}
 
   /**
-   * Create and run new bulk action
+   * Create and run new bulk action.
+   *
+   * The check-and-set on `bulkActions` runs synchronously (no `await` between
+   * `has(...)` and `set(...)`), so concurrent calls with the same id are
+   * guaranteed to see each other — the first one wins, the rest throw.
+   * Callers must therefore resolve `database` themselves before invoking this.
+   *
+   * @param sessionMetadata
    * @param dto
    * @param socket
+   * @param database
    */
   async create(
     sessionMetadata: SessionMetadata,
     dto: CreateBulkActionDto,
     socket: Socket,
+    database: Database,
   ): Promise<BulkAction> {
-    if (this.bulkActions.has(dto.id) || this.inFlightIds.has(dto.id)) {
+    if (this.bulkActions.has(dto.id)) {
       throw new Error('You already have bulk action with such id');
     }
-    this.inFlightIds.add(dto.id);
 
-    let bulkAction: BulkAction;
-    try {
-      const database = await this.databaseService.get(
-        sessionMetadata,
-        dto.databaseId,
-      );
+    const bulkAction = new BulkAction(
+      dto.id,
+      database,
+      dto.type,
+      dto.filter,
+      socket,
+      this.analytics,
+      sessionMetadata,
+      dto.generateReport,
+      dto.confirmedThrough ?? null,
+    );
 
-      bulkAction = new BulkAction(
-        dto.id,
-        database,
-        dto.type,
-        dto.filter,
-        socket,
-        this.analytics,
-        sessionMetadata,
-        dto.generateReport,
-        dto.confirmedThrough ?? null,
-      );
-
-      this.bulkActions.set(dto.id, bulkAction);
-    } finally {
-      this.inFlightIds.delete(dto.id);
-    }
+    this.bulkActions.set(dto.id, bulkAction);
 
     // todo: add multi user support
     // todo: use own client and close it after

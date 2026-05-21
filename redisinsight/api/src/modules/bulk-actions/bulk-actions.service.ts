@@ -10,12 +10,14 @@ import { CreateBulkActionDto } from 'src/modules/bulk-actions/dto/create-bulk-ac
 import { BulkActionIdDto } from 'src/modules/bulk-actions/dto/bulk-action-id.dto';
 import { BulkActionsAnalytics } from 'src/modules/bulk-actions/bulk-actions.analytics';
 import { SessionMetadata } from 'src/common/models';
+import { DatabaseService } from 'src/modules/database/database.service';
 
 @Injectable()
 export class BulkActionsService {
   constructor(
     private readonly bulkActionsProvider: BulkActionsProvider,
     private readonly analytics: BulkActionsAnalytics,
+    private readonly databaseService: DatabaseService,
   ) {}
 
   async create(
@@ -23,18 +25,20 @@ export class BulkActionsService {
     dto: CreateBulkActionDto,
     socket: Socket,
   ) {
+    const database = await this.databaseService.get(
+      sessionMetadata,
+      dto.databaseId,
+    );
+
     const bulkAction = await this.bulkActionsProvider.create(
       sessionMetadata,
       dto,
       socket,
+      database,
     );
     const overview = bulkAction.getOverview();
 
-    this.analytics.sendActionStarted(
-      sessionMetadata,
-      overview,
-      bulkAction.getDatabase(),
-    );
+    this.analytics.sendActionStarted(sessionMetadata, overview, database);
 
     return overview;
   }
