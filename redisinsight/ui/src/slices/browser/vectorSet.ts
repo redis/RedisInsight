@@ -427,7 +427,7 @@ export function deleteVectorSetElements(
         dispatch(removeVectorSetElementsSuccess())
         dispatch(removeElementsFromList(elements))
         if (newTotalValue > 0) {
-          dispatch<any>(refreshKeyInfoAction(key))
+          dispatch(refreshKeyInfoAction(key))
           dispatch(
             addMessageNotification(
               successMessages.REMOVED_KEY_VALUE(
@@ -560,7 +560,7 @@ export function addVectorSetElements(
       if (isStatusSuccessful(status)) {
         onSuccessAction?.()
         dispatch(addElementsSuccess())
-        dispatch<any>(fetchKeyInfo(data.keyName))
+        dispatch(fetchKeyInfo(data.keyName))
       } else {
         onFailAction?.()
         dispatch(addElementsFailure(DEFAULT_ERROR_MESSAGE))
