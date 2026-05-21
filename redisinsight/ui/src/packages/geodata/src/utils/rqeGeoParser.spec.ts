@@ -372,6 +372,36 @@ describe('rqeGeoParser', () => {
     })
   })
 
+  it('ignores comma-separated coordinate strings with blank parts', () => {
+    const command = unwrapCommand(
+      'FT.SEARCH cities "@coords:[2.34 48.86 1000 km]" RETURN 1 coords',
+    )
+
+    expect(
+      parseRqeGeoResults(
+        [
+          4,
+          'city:1',
+          ['coords', ','],
+          'city:2',
+          ['coords', ' , '],
+          'city:3',
+          ['coords', '0,'],
+          'city:4',
+          ['coords', '2.34,48.86'],
+        ],
+        command,
+      ),
+    ).toMatchObject({
+      ok: true,
+      value: {
+        points: [
+          { id: 'city:4', field: 'coords', lon: 2.34, lat: 48.86 },
+        ],
+      },
+    })
+  })
+
   it('normalizes nested and numeric array coordinate fields', () => {
     const command = unwrapCommand(
       'FT.SEARCH cities "@coords:[2.34 48.86 1000 km]" RETURN 1 coords',

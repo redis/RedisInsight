@@ -510,11 +510,16 @@ const hasNoResultRows = (
 }
 
 const parseCoordinateString = (value: string): number[] | null => {
-  const parts = value.split(',').map((part) => Number(part.trim()))
-  if (parts.length !== 2 || !parts.every(Number.isFinite)) {
+  const parts = value.split(',').map((part) => part.trim())
+  if (parts.some((part) => part === '')) {
     return null
   }
-  return parts
+
+  const coordinates = parts.map(Number)
+  if (coordinates.length !== 2 || !coordinates.every(Number.isFinite)) {
+    return null
+  }
+  return coordinates
 }
 
 const getCoordinatePairs = (value: unknown): Array<{ lon: number; lat: number }> => {
