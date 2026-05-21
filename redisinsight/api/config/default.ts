@@ -283,25 +283,25 @@ export default {
       name: 'main',
       url:
         process.env.RI_COMMANDS_MAIN_URL ||
-        'https://raw.githubusercontent.com/redis/redis-doc/master/commands.json',
+        'https://raw.githubusercontent.com/redis/docs/main/data/commands_core.json',
     },
     {
       name: 'redisearch',
       url:
         process.env.RI_COMMANDS_REDISEARCH_URL ||
-        'https://raw.githubusercontent.com/RediSearch/RediSearch/master/commands.json',
+        'https://raw.githubusercontent.com/redis/docs/main/data/commands_redisearch.json',
     },
     {
       name: 'redisjson',
       url:
         process.env.RI_COMMANDS_REDIJSON_URL ||
-        'https://raw.githubusercontent.com/RedisJSON/RedisJSON/master/commands.json',
+        'https://raw.githubusercontent.com/redis/docs/main/data/commands_redisjson.json',
     },
     {
       name: 'redistimeseries',
       url:
         process.env.RI_COMMANDS_REDISTIMESERIES_URL ||
-        'https://raw.githubusercontent.com/RedisTimeSeries/RedisTimeSeries/master/commands.json',
+        'https://raw.githubusercontent.com/redis/docs/main/data/commands_redistimeseries.json',
     },
     {
       name: 'redisgraph',
@@ -319,7 +319,7 @@ export default {
       name: 'redisbloom',
       url:
         process.env.RI_COMMANDS_REDISBLOOM_URL ||
-        'https://raw.githubusercontent.com/RedisBloom/RedisBloom/master/commands.json',
+        'https://raw.githubusercontent.com/redis/docs/main/data/commands_redisbloom.json',
     },
   ],
   connections: {
