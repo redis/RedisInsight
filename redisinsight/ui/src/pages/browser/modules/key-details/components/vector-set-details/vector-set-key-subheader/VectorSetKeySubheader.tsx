@@ -25,7 +25,7 @@ const VectorSetKeySubheader = ({
     <S.Container>
       <AutoSizer disableHeight>
         {({ width = 0 }) => (
-          <div style={{ width }}>
+          <FlexItem style={{ width }}>
             <Row justify={showPreview ? 'between' : 'end'} align="center">
               {showPreview && (
                 <FlexItem grow={false}>
@@ -63,7 +63,7 @@ const VectorSetKeySubheader = ({
                 ) : null}
               </Row>
             </Row>
-          </div>
+          </FlexItem>
         )}
       </AutoSizer>
     </S.Container>
