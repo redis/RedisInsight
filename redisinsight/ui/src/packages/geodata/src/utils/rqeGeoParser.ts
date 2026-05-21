@@ -99,19 +99,20 @@ const getSearchExpressions = (
   const expressions: string[] = []
   const upperTokens = tokens.map((token) => token.toUpperCase())
   const paramsRange = getParamsRange(tokens)
-  upperTokens.forEach((token, index) => {
+  for (let index = 2; index < upperTokens.length; index++) {
+    const token = upperTokens[index]
     if (
       paramsRange &&
       index >= paramsRange.start &&
       index < paramsRange.end
     ) {
-      return
+      continue
     }
 
     if ((token === 'SEARCH' || token === 'FILTER') && tokens[index + 1]) {
       expressions.push(tokens[index + 1])
     }
-  })
+  }
   return expressions
 }
 
@@ -439,6 +440,7 @@ const getHybridResults = (response: unknown): unknown[] | null => {
         return response[index + 1]
       }
     }
+    return null
   }
 
   if (response && typeof response === 'object') {
