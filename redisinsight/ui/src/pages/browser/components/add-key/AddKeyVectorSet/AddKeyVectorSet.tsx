@@ -11,6 +11,11 @@ import {
 import { KeyTypes } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import {
+  VectorSetCreationSource,
+  VectorSetVectorFormat,
+} from 'uiSrc/pages/browser/modules/key-details/components/vector-set-details/telemetry.constants'
 import { CreateVectorSetWithExpireDto } from 'uiSrc/slices/interfaces/vectorSet'
 import { useLoadData } from 'uiSrc/services/hooks'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
@@ -95,7 +100,26 @@ const AddKeyVectorSet = ({
       })),
       ...(keyTTL !== undefined ? { expire: toNumber(keyTTL) } : {}),
     }
-    dispatch(addVectorSetKey(data, () => onCancel()))
+    const vectorFormat = elements.some((el) => el.vectorFp32 !== undefined)
+      ? VectorSetVectorFormat.Fp32
+      : VectorSetVectorFormat.Values
+    const hasAttributes = elements.some(
+      (el) => typeof el.attributes === 'string' && el.attributes.length > 0,
+    )
+    dispatch(
+      addVectorSetKey(data, () => {
+        sendEventTelemetry({
+          event: TelemetryEvent.VECTOR_SET_CREATED,
+          eventData: {
+            databaseId: instanceId,
+            source: VectorSetCreationSource.Scratch,
+            vectorFormat,
+            hasAttributes,
+          },
+        })
+        onCancel()
+      }),
+    )
   }
 
   const formApi = useVectorSetElementForm({ onSubmit: handleSubmit })
@@ -131,6 +155,21 @@ const AddKeyVectorSet = ({
           keyType: KeyTypes.VectorSet,
         }),
       )
+      sendEventTelemetry({
+        event: TelemetryEvent.VECTOR_SET_SAMPLE_DATASET_LOADED,
+        eventData: { databaseId: instanceId },
+      })
+      // The bundled vec2word dataset uses raw numeric vectors with no
+      // attributes — values fixed at bundle time.
+      sendEventTelemetry({
+        event: TelemetryEvent.VECTOR_SET_CREATED,
+        eventData: {
+          databaseId: instanceId,
+          source: VectorSetCreationSource.SampleDataset,
+          vectorFormat: VectorSetVectorFormat.Values,
+          hasAttributes: false,
+        },
+      })
       dispatch(addMessageNotification(sampleDatasetLoadedNotification()))
       onCancel()
     } catch {
