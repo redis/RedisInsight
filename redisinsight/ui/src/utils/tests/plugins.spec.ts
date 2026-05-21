@@ -72,6 +72,64 @@ describe('getVisualizationsByCommand', () => {
     ).toHaveLength(1)
   })
 
+  it('matches literal command tokens without prefix bleed', () => {
+    const visualizations = [
+      { matchCommands: ['GEOSEARCH'], id: 'geo-search' },
+      { matchCommands: ['FT.SEARCH'], id: 'ft-search' },
+      { matchCommands: ['ft.*'], id: 'ft-wildcard' },
+    ] as IPluginVisualization[]
+
+    expect(
+      getVisualizationsByCommand(
+        'GEOSEARCHSTORE dst src BYRADIUS 1 km',
+        visualizations,
+      ).map((view) => view.id),
+    ).toEqual([])
+    expect(
+      getVisualizationsByCommand('FT.SEARCHX idx "*"', visualizations).map(
+        (view) => view.id,
+      ),
+    ).toEqual(['ft-wildcard'])
+    expect(
+      getVisualizationsByCommand('FTASEARCH idx "*"', visualizations).map(
+        (view) => view.id,
+      ),
+    ).toEqual([])
+    expect(
+      getVisualizationsByCommand('FT.SEARCH idx "*"', visualizations).map(
+        (view) => view.id,
+      ),
+    ).toEqual(['ft-search', 'ft-wildcard'])
+  })
+
+  it('supports negative query predicates', () => {
+    const visualizations = [
+      {
+        id: 'with-coord',
+        matchCommands: ['GEOSEARCH'],
+        matchQuery: { anyRegex: [String.raw`\bWITHCOORD\b`] },
+      },
+      {
+        id: 'without-coord',
+        matchCommands: ['GEOSEARCH'],
+        matchQuery: { noneRegex: [String.raw`\bWITHCOORD\b`] },
+      },
+    ] as IPluginVisualization[]
+
+    expect(
+      getVisualizationsByCommand(
+        'GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 300 km WITHCOORD',
+        visualizations,
+      ).map((view) => view.id),
+    ).toEqual(['with-coord'])
+    expect(
+      getVisualizationsByCommand(
+        'GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 300 km',
+        visualizations,
+      ).map((view) => view.id),
+    ).toEqual(['without-coord'])
+  })
+
   it('ignores invalid query predicate regexes without throwing', () => {
     const invalidVisualization = {
       matchCommands: ['FT.SEARCH'],
