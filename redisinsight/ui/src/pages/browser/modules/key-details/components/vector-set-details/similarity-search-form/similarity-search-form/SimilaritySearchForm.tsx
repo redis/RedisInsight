@@ -13,13 +13,7 @@ import { useSimilaritySearch } from '../../hooks/useSimilaritySearch'
 
 import { CommandPreview } from '../command-preview'
 import { FilterSyntaxHelpPopover } from '../filter-syntax-help-popover'
-import {
-  CountInlineLabel,
-  FilterLabel,
-  FormContainer,
-  ModeButtonContent,
-  ModeInfoIcon,
-} from './SimilaritySearchForm.styles'
+import * as S from './SimilaritySearchForm.styles'
 import {
   ELEMENT_MODE_TOOLTIP,
   ELEMENT_PLACEHOLDER,
@@ -106,7 +100,7 @@ export const SimilaritySearchForm = ({
   }
 
   return (
-    <FormContainer data-testid={TEST_ID} gap="m" grow={false}>
+    <S.FormContainer data-testid={TEST_ID} gap="m" grow={false}>
       <Row align="center" gap="m">
         <FlexItem grow={false}>
           <ButtonGroup data-testid={`${TEST_ID}-mode-toggle`}>
@@ -115,34 +109,34 @@ export const SimilaritySearchForm = ({
               onClick={() => setMode(SimilaritySearchMode.Vector)}
               data-testid={`${TEST_ID}-mode-vector`}
             >
-              <ModeButtonContent>
+              <S.ModeButtonContent>
                 Vector
                 <RiTooltip content={VECTOR_MODE_TOOLTIP} position="top">
-                  <ModeInfoIcon
+                  <S.ModeInfoIcon
                     aria-label={VECTOR_MODE_TOOLTIP}
                     data-testid={`${TEST_ID}-mode-vector-info`}
                   >
                     <InfoIcon />
-                  </ModeInfoIcon>
+                  </S.ModeInfoIcon>
                 </RiTooltip>
-              </ModeButtonContent>
+              </S.ModeButtonContent>
             </ButtonGroup.Button>
             <ButtonGroup.Button
               isSelected={state.mode === SimilaritySearchMode.Element}
               onClick={() => setMode(SimilaritySearchMode.Element)}
               data-testid={`${TEST_ID}-mode-element`}
             >
-              <ModeButtonContent>
+              <S.ModeButtonContent>
                 Element
                 <RiTooltip content={ELEMENT_MODE_TOOLTIP} position="top">
-                  <ModeInfoIcon
+                  <S.ModeInfoIcon
                     aria-label={ELEMENT_MODE_TOOLTIP}
                     data-testid={`${TEST_ID}-mode-element-info`}
                   >
                     <InfoIcon />
-                  </ModeInfoIcon>
+                  </S.ModeInfoIcon>
                 </RiTooltip>
-              </ModeButtonContent>
+              </S.ModeButtonContent>
             </ButtonGroup.Button>
           </ButtonGroup>
         </FlexItem>
@@ -174,9 +168,9 @@ export const SimilaritySearchForm = ({
         </FlexItem>
         <FlexItem grow={false}>
           <Row align="center" gap="m">
-            <CountInlineLabel data-testid={`${TEST_ID}-count-label`}>
+            <S.CountInlineLabel data-testid={`${TEST_ID}-count-label`}>
               Result count
-            </CountInlineLabel>
+            </S.CountInlineLabel>
             <QuantityCounter
               value={state.count ?? SIMILARITY_SEARCH_COUNT_DEFAULT}
               onChange={(value: number | null) =>
@@ -195,10 +189,10 @@ export const SimilaritySearchForm = ({
         <FlexItem grow>
           <FormField>
             <Row align="center" gap="s">
-              <FilterLabel>
+              <S.FilterLabel>
                 Filter expression
                 <FilterSyntaxHelpPopover />
-              </FilterLabel>
+              </S.FilterLabel>
               <FlexItem grow>
                 <TextInput
                   placeholder={FILTER_PLACEHOLDER}
@@ -240,6 +234,6 @@ export const SimilaritySearchForm = ({
           </PrimaryButton>
         </FlexItem>
       </Row>
-    </FormContainer>
+    </S.FormContainer>
   )
 }
