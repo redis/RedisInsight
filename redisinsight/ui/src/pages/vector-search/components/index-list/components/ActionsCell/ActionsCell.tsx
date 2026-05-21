@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
+import { IconButton } from '@redis-ui/components'
 
-import { Button, IconButton } from 'uiSrc/components/base/forms/buttons'
+import { Button } from 'uiSrc/components/base/forms/buttons'
 
 import { ActionsCellProps } from '../../IndexList.types'
 import {
