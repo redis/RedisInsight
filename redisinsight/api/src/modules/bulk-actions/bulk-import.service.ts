@@ -114,7 +114,16 @@ export class BulkImportService {
       confirmedThrough: null,
     };
 
-    this.analytics.sendActionStarted(clientMetadata.sessionMetadata, result);
+    const database = await this.databaseService.get(
+      clientMetadata.sessionMetadata,
+      clientMetadata.databaseId,
+    );
+
+    this.analytics.sendActionStarted(
+      clientMetadata.sessionMetadata,
+      result,
+      database,
+    );
 
     let parseErrors = 0;
 
@@ -153,6 +162,7 @@ export class BulkImportService {
           clientMetadata.sessionMetadata,
           result,
           e,
+          database,
         );
       }
 
@@ -172,6 +182,7 @@ export class BulkImportService {
         this.analytics.sendActionSucceed(
           clientMetadata.sessionMetadata,
           result,
+          database,
         );
       }
 
@@ -185,6 +196,7 @@ export class BulkImportService {
         clientMetadata.sessionMetadata,
         result,
         exception,
+        database,
       );
       client?.disconnect();
       throw exception;
@@ -272,6 +284,7 @@ export class BulkImportService {
       this.analytics.sendImportSamplesUploaded(
         clientMetadata.sessionMetadata,
         result,
+        database,
       );
 
       return result;

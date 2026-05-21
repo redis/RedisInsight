@@ -4,6 +4,7 @@ import { LogFile } from 'src/modules/profiler/models/log-file';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { ProfilerAnalyticsService } from 'src/modules/profiler/profiler-analytics.service';
 import { SessionMetadata } from 'src/common/models';
+import { Database } from 'src/modules/database/models/database';
 
 @Injectable()
 export class LogFileProvider implements OnModuleDestroy {
@@ -16,11 +17,13 @@ export class LogFileProvider implements OnModuleDestroy {
    * @param instanceId
    * @param id
    * @param sessionMetadata
+   * @param database
    */
   getOrCreate(
     instanceId: string,
     id: string,
     sessionMetadata?: SessionMetadata,
+    database?: Database,
   ): LogFile {
     if (!this.profilerLogFiles.has(id)) {
       this.profilerLogFiles.set(
@@ -30,6 +33,7 @@ export class LogFileProvider implements OnModuleDestroy {
           id,
           this.analyticsService.getEventsEmitters(),
           sessionMetadata,
+          database,
         ),
       );
     }

@@ -30,7 +30,11 @@ export class BulkActionsService {
     );
     const overview = bulkAction.getOverview();
 
-    this.analytics.sendActionStarted(sessionMetadata, overview);
+    this.analytics.sendActionStarted(
+      sessionMetadata,
+      overview,
+      bulkAction.getDatabase(),
+    );
 
     return overview;
   }

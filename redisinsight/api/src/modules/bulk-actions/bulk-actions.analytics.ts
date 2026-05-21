@@ -1,26 +1,19 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { TelemetryEvents } from 'src/constants';
 import { TelemetryBaseService } from 'src/modules/analytics/telemetry.base.service';
 import { getRangeForNumber, BULK_ACTIONS_BREAKPOINTS } from 'src/utils';
 import { IBulkActionOverview } from 'src/modules/bulk-actions/interfaces/bulk-action-overview.interface';
 import { SessionMetadata } from 'src/common/models';
-import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
-import { resolveEnvironment } from 'src/modules/database/utils/resolve-environment';
+import { Database } from 'src/modules/database/models/database';
+import { Environment } from 'src/modules/database/entities/database.entity';
 
 @Injectable()
 export class BulkActionsAnalytics extends TelemetryBaseService {
-  constructor(
-    protected eventEmitter: EventEmitter2,
-    private readonly databaseRepository: DatabaseRepository,
-  ) {
-    super(eventEmitter);
-  }
-
-  async sendActionStarted(
+  sendActionStarted(
     sessionMetadata: SessionMetadata,
     overview: IBulkActionOverview,
-  ): Promise<void> {
+    database: Database,
+  ): void {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.BulkActionsStarted, {
         databaseId: overview.databaseId,
@@ -42,11 +35,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
-        environment: await resolveEnvironment(
-          this.databaseRepository,
-          sessionMetadata,
-          overview.databaseId,
-        ),
+        environment: database?.environment ?? Environment.Unspecified,
         confirmedThrough: overview.confirmedThrough ?? null,
       });
     } catch (e) {
@@ -54,10 +43,11 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
     }
   }
 
-  async sendActionStopped(
+  sendActionStopped(
     sessionMetadata: SessionMetadata,
     overview: IBulkActionOverview,
-  ): Promise<void> {
+    database: Database,
+  ): void {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.BulkActionsStopped, {
         databaseId: overview.databaseId,
@@ -96,11 +86,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
-        environment: await resolveEnvironment(
-          this.databaseRepository,
-          sessionMetadata,
-          overview.databaseId,
-        ),
+        environment: database?.environment ?? Environment.Unspecified,
         confirmedThrough: overview.confirmedThrough ?? null,
       });
     } catch (e) {
@@ -108,10 +94,11 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
     }
   }
 
-  async sendActionSucceed(
+  sendActionSucceed(
     sessionMetadata: SessionMetadata,
     overview: IBulkActionOverview,
-  ): Promise<void> {
+    database: Database,
+  ): void {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.BulkActionsSucceed, {
         databaseId: overview.databaseId,
@@ -138,11 +125,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
-        environment: await resolveEnvironment(
-          this.databaseRepository,
-          sessionMetadata,
-          overview.databaseId,
-        ),
+        environment: database?.environment ?? Environment.Unspecified,
         confirmedThrough: overview.confirmedThrough ?? null,
       });
     } catch (e) {
@@ -150,21 +133,18 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
     }
   }
 
-  async sendActionFailed(
+  sendActionFailed(
     sessionMetadata: SessionMetadata,
     overview: IBulkActionOverview,
     error: HttpException | Error,
-  ): Promise<void> {
+    database: Database,
+  ): void {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.BulkActionsFailed, {
         databaseId: overview.databaseId,
         action: overview.type,
         error,
-        environment: await resolveEnvironment(
-          this.databaseRepository,
-          sessionMetadata,
-          overview.databaseId,
-        ),
+        environment: database?.environment ?? Environment.Unspecified,
         confirmedThrough: overview.confirmedThrough ?? null,
       });
     } catch (e) {
@@ -172,10 +152,11 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
     }
   }
 
-  async sendImportSamplesUploaded(
+  sendImportSamplesUploaded(
     sessionMetadata: SessionMetadata,
     overview: IBulkActionOverview,
-  ): Promise<void> {
+    database: Database,
+  ): void {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.ImportSamplesUploaded, {
         databaseId: overview.databaseId,
@@ -198,11 +179,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
-        environment: await resolveEnvironment(
-          this.databaseRepository,
-          sessionMetadata,
-          overview.databaseId,
-        ),
+        environment: database?.environment ?? Environment.Unspecified,
       });
     } catch (e) {
       // continue regardless of error

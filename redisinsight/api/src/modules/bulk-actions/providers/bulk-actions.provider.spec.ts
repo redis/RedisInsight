@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   mockBulkActionsAnalytics,
   mockDatabaseClientFactory,
+  mockDatabaseService,
   mockSessionMetadata,
 } from 'src/__mocks__';
 import { BulkActionsProvider } from 'src/modules/bulk-actions/providers/bulk-actions.provider';
@@ -14,6 +15,7 @@ import { BulkAction } from 'src/modules/bulk-actions/models/bulk-action';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { BulkActionsAnalytics } from 'src/modules/bulk-actions/bulk-actions.analytics';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
+import { DatabaseService } from 'src/modules/database/database.service';
 
 export const mockSocket1 = new MockedSocket();
 mockSocket1.id = '1';
@@ -50,6 +52,10 @@ describe('BulkActionsProvider', () => {
         {
           provide: BulkActionsAnalytics,
           useFactory: mockBulkActionsAnalytics,
+        },
+        {
+          provide: DatabaseService,
+          useFactory: mockDatabaseService,
         },
       ],
     }).compile();

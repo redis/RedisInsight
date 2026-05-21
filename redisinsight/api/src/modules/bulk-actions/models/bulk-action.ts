@@ -16,6 +16,7 @@ import { IBulkActionOverview } from 'src/modules/bulk-actions/interfaces/bulk-ac
 import { BulkActionsAnalytics } from 'src/modules/bulk-actions/bulk-actions.analytics';
 import { RedisClient, RedisClientNodeRole } from 'src/modules/redis/client';
 import { SessionMetadata } from 'src/common/models';
+import { Database } from 'src/modules/database/models/database';
 
 export class BulkAction implements IBulkAction {
   private logger: Logger = new Logger('BulkAction');
@@ -42,7 +43,7 @@ export class BulkAction implements IBulkAction {
 
   constructor(
     private readonly id: string,
-    private readonly databaseId: string,
+    private readonly database: Database,
     private readonly type: BulkActionType,
     private readonly filter: BulkActionFilter,
     private readonly socket: Socket,
@@ -250,7 +251,7 @@ export class BulkAction implements IBulkAction {
 
     const overview: IBulkActionOverview = {
       id: this.id,
-      databaseId: this.databaseId,
+      databaseId: this.database.id,
       type: this.type,
       duration: (this.endTime || Date.now()) - this.startTime,
       status: this.status,
@@ -272,7 +273,7 @@ export class BulkAction implements IBulkAction {
   }
 
   private getDownloadUrl(): string {
-    return `databases/${this.databaseId}/bulk-actions/${this.id}/report/download`;
+    return `databases/${this.database.id}/bulk-actions/${this.id}/report/download`;
   }
 
   getId() {
@@ -317,6 +318,10 @@ export class BulkAction implements IBulkAction {
     return this.socket;
   }
 
+  getDatabase(): Database {
+    return this.database;
+  }
+
   changeState() {
     this.debounce();
   }
@@ -328,13 +333,26 @@ export class BulkAction implements IBulkAction {
   sendOverview(sessionMetadata: SessionMetadata = this.sessionMetadata) {
     const overview = this.getOverview();
     if (overview.status === BulkActionStatus.Completed) {
-      this.analytics.sendActionSucceed(sessionMetadata, overview);
+      this.analytics.sendActionSucceed(
+        sessionMetadata,
+        overview,
+        this.database,
+      );
     }
     if (overview.status === BulkActionStatus.Failed) {
-      this.analytics.sendActionFailed(sessionMetadata, overview, this.error);
+      this.analytics.sendActionFailed(
+        sessionMetadata,
+        overview,
+        this.error,
+        this.database,
+      );
     }
     if (overview.status === BulkActionStatus.Aborted) {
-      this.analytics.sendActionStopped(sessionMetadata, overview);
+      this.analytics.sendActionStopped(
+        sessionMetadata,
+        overview,
+        this.database,
+      );
     }
     try {
       this.socket.emit('overview', overview);

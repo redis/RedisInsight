@@ -1,6 +1,7 @@
 import * as fs from 'fs-extra';
 import { LogFile } from 'src/modules/profiler/models/log-file';
 import {
+  mockDatabase,
   mockLogFile,
   mockProfilerAnalyticsEvents,
   mockSessionMetadata,
@@ -24,6 +25,7 @@ describe('LogFile', () => {
       mockLogFile.id,
       mockProfilerAnalyticsEvents,
       mockSessionMetadata,
+      mockDatabase,
     );
   });
 
@@ -133,7 +135,7 @@ describe('LogFile', () => {
       mockProfilerAnalyticsEvents.get(TelemetryEvents.ProfilerLogDeleted),
     ).toHaveBeenCalledWith(
       mockSessionMetadata,
-      mockLogFile.instanceId,
+      mockDatabase,
       expect.any(Number),
     );
   });

@@ -16,6 +16,7 @@ import { UnlinkBulkActionSimpleRunner } from 'src/modules/bulk-actions/models/ru
 import { BulkActionsAnalytics } from 'src/modules/bulk-actions/bulk-actions.analytics';
 import { ClientContext, SessionMetadata } from 'src/common/models';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
+import { DatabaseService } from 'src/modules/database/database.service';
 
 @Injectable()
 export class BulkActionsProvider {
@@ -26,6 +27,7 @@ export class BulkActionsProvider {
   constructor(
     private readonly databaseClientFactory: DatabaseClientFactory,
     private readonly analytics: BulkActionsAnalytics,
+    private readonly databaseService: DatabaseService,
   ) {}
 
   /**
@@ -42,9 +44,14 @@ export class BulkActionsProvider {
       throw new Error('You already have bulk action with such id');
     }
 
+    const database = await this.databaseService.get(
+      sessionMetadata,
+      dto.databaseId,
+    );
+
     const bulkAction = new BulkAction(
       dto.id,
-      dto.databaseId,
+      database,
       dto.type,
       dto.filter,
       socket,

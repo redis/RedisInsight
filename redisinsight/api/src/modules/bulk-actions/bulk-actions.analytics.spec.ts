@@ -3,8 +3,6 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
   mockBulkActionOverview,
   mockDatabase,
-  mockDatabaseRepository,
-  MockType,
   mockRedisNoAuthError,
   mockSessionMetadata,
 } from 'src/__mocks__';
@@ -12,38 +10,34 @@ import { TelemetryEvents } from 'src/constants';
 import { BulkActionsAnalytics } from 'src/modules/bulk-actions/bulk-actions.analytics';
 import { IBulkActionOverview } from 'src/modules/bulk-actions/interfaces/bulk-action-overview.interface';
 import { BulkActionConfirmation } from 'src/modules/bulk-actions/constants';
-import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 import { Environment } from 'src/modules/database/entities/database.entity';
+
+const productionDatabase = {
+  ...mockDatabase,
+  environment: Environment.Production,
+};
 
 describe('BulkActionsAnalytics', () => {
   let service: BulkActionsAnalytics;
   let sendEventSpy: jest.SpyInstance;
   let sendFailedEventSpy: jest.SpyInstance;
-  let databaseRepository: MockType<DatabaseRepository>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        BulkActionsAnalytics,
-        EventEmitter2,
-        {
-          provide: DatabaseRepository,
-          useFactory: mockDatabaseRepository,
-        },
-      ],
+      providers: [BulkActionsAnalytics, EventEmitter2],
     }).compile();
 
     service = await module.get(BulkActionsAnalytics);
-    databaseRepository = module.get(DatabaseRepository);
     sendEventSpy = jest.spyOn(service as any, 'sendEvent');
     sendFailedEventSpy = jest.spyOn(service as any, 'sendFailedEvent');
   });
 
   describe('sendActionStarted', () => {
-    it('should emit event when action started (without summary)', async () => {
-      await service.sendActionStarted(
+    it('should emit event when action started (without summary)', () => {
+      service.sendActionStarted(
         mockSessionMetadata,
         mockBulkActionOverview,
+        mockDatabase,
       );
 
       expect(sendEventSpy).toHaveBeenCalledWith(
@@ -68,12 +62,16 @@ describe('BulkActionsAnalytics', () => {
         },
       );
     });
-    it('should emit event when action started without progress data and filter as "PATTERN"', async () => {
-      await service.sendActionStarted(mockSessionMetadata, {
-        ...mockBulkActionOverview,
-        filter: { match: 'some query', type: null },
-        progress: undefined,
-      });
+    it('should emit event when action started without progress data and filter as "PATTERN"', () => {
+      service.sendActionStarted(
+        mockSessionMetadata,
+        {
+          ...mockBulkActionOverview,
+          filter: { match: 'some query', type: null },
+          progress: undefined,
+        },
+        mockDatabase,
+      );
 
       expect(sendEventSpy).toHaveBeenCalledWith(
         mockSessionMetadata,
@@ -92,12 +90,16 @@ describe('BulkActionsAnalytics', () => {
         },
       );
     });
-    it('should emit event when action started without progress and filter', async () => {
-      await service.sendActionStarted(mockSessionMetadata, {
-        ...mockBulkActionOverview,
-        filter: undefined,
-        progress: undefined,
-      });
+    it('should emit event when action started without progress and filter', () => {
+      service.sendActionStarted(
+        mockSessionMetadata,
+        {
+          ...mockBulkActionOverview,
+          filter: undefined,
+          progress: undefined,
+        },
+        mockDatabase,
+      );
 
       expect(sendEventSpy).toHaveBeenCalledWith(
         mockSessionMetadata,
@@ -115,15 +117,11 @@ describe('BulkActionsAnalytics', () => {
         },
       );
     });
-    it('should emit environment=production when database is production', async () => {
-      databaseRepository.get.mockResolvedValueOnce({
-        ...mockDatabase,
-        environment: Environment.Production,
-      });
-
-      await service.sendActionStarted(
+    it('should emit environment=production when database is production', () => {
+      service.sendActionStarted(
         mockSessionMetadata,
         mockBulkActionOverview as unknown as IBulkActionOverview,
+        productionDatabase,
       );
 
       expect(sendEventSpy).toHaveBeenCalledWith(
@@ -132,11 +130,15 @@ describe('BulkActionsAnalytics', () => {
         expect.objectContaining({ environment: Environment.Production }),
       );
     });
-    it('should round-trip confirmedThrough from overview', async () => {
-      await service.sendActionStarted(mockSessionMetadata, {
-        ...mockBulkActionOverview,
-        confirmedThrough: BulkActionConfirmation.TypeToConfirm,
-      } as unknown as IBulkActionOverview);
+    it('should round-trip confirmedThrough from overview', () => {
+      service.sendActionStarted(
+        mockSessionMetadata,
+        {
+          ...mockBulkActionOverview,
+          confirmedThrough: BulkActionConfirmation.TypeToConfirm,
+        } as unknown as IBulkActionOverview,
+        mockDatabase,
+      );
 
       expect(sendEventSpy).toHaveBeenCalledWith(
         mockSessionMetadata,
@@ -144,17 +146,18 @@ describe('BulkActionsAnalytics', () => {
         expect.objectContaining({ confirmedThrough: 'type-to-confirm' }),
       );
     });
-    it('should not emit event in case of an error and should not fail', async () => {
-      await service.sendActionStarted(mockSessionMetadata, undefined);
+    it('should not emit event in case of an error and should not fail', () => {
+      service.sendActionStarted(mockSessionMetadata, undefined, mockDatabase);
       expect(sendEventSpy).not.toHaveBeenCalled();
     });
   });
 
   describe('sendActionStopped', () => {
-    it('should emit event when action paused/stopped', async () => {
-      await service.sendActionStopped(
+    it('should emit event when action paused/stopped', () => {
+      service.sendActionStopped(
         mockSessionMetadata,
         mockBulkActionOverview,
+        mockDatabase,
       );
 
       expect(sendEventSpy).toHaveBeenCalledWith(
@@ -187,13 +190,17 @@ describe('BulkActionsAnalytics', () => {
         },
       );
     });
-    it('should emit event when action paused/stopped without progress, filter and summary', async () => {
-      await service.sendActionStopped(mockSessionMetadata, {
-        ...mockBulkActionOverview,
-        filter: undefined,
-        progress: undefined,
-        summary: undefined,
-      });
+    it('should emit event when action paused/stopped without progress, filter and summary', () => {
+      service.sendActionStopped(
+        mockSessionMetadata,
+        {
+          ...mockBulkActionOverview,
+          filter: undefined,
+          progress: undefined,
+          summary: undefined,
+        },
+        mockDatabase,
+      );
 
       expect(sendEventSpy).toHaveBeenCalledWith(
         mockSessionMetadata,
@@ -212,17 +219,18 @@ describe('BulkActionsAnalytics', () => {
         },
       );
     });
-    it('should not emit event in case of an error and should not fail', async () => {
-      await service.sendActionStopped(mockSessionMetadata, undefined);
+    it('should not emit event in case of an error and should not fail', () => {
+      service.sendActionStopped(mockSessionMetadata, undefined, mockDatabase);
       expect(sendEventSpy).not.toHaveBeenCalled();
     });
   });
 
   describe('sendActionSucceed', () => {
-    it('should emit event when action succeed (without progress)', async () => {
-      await service.sendActionSucceed(
+    it('should emit event when action succeed (without progress)', () => {
+      service.sendActionSucceed(
         mockSessionMetadata,
         mockBulkActionOverview,
+        mockDatabase,
       );
 
       expect(sendEventSpy).toHaveBeenCalledWith(
@@ -249,12 +257,16 @@ describe('BulkActionsAnalytics', () => {
         },
       );
     });
-    it('should emit event when action succeed without filter and summary', async () => {
-      await service.sendActionSucceed(mockSessionMetadata, {
-        ...mockBulkActionOverview,
-        filter: undefined,
-        summary: undefined,
-      });
+    it('should emit event when action succeed without filter and summary', () => {
+      service.sendActionSucceed(
+        mockSessionMetadata,
+        {
+          ...mockBulkActionOverview,
+          filter: undefined,
+          summary: undefined,
+        },
+        mockDatabase,
+      );
 
       expect(sendEventSpy).toHaveBeenCalledWith(
         mockSessionMetadata,
@@ -272,18 +284,19 @@ describe('BulkActionsAnalytics', () => {
         },
       );
     });
-    it('should not emit event in case of an error and should not fail', async () => {
-      await service.sendActionSucceed(mockSessionMetadata, undefined);
+    it('should not emit event in case of an error and should not fail', () => {
+      service.sendActionSucceed(mockSessionMetadata, undefined, mockDatabase);
       expect(sendEventSpy).not.toHaveBeenCalled();
     });
   });
 
   describe('sendActionFailed', () => {
-    it('should emit event when action failed (without progress)', async () => {
-      await service.sendActionFailed(
+    it('should emit event when action failed (without progress)', () => {
+      service.sendActionFailed(
         mockSessionMetadata,
         mockBulkActionOverview,
         mockRedisNoAuthError,
+        mockDatabase,
       );
 
       expect(sendEventSpy).toHaveBeenCalledWith(
@@ -298,17 +311,23 @@ describe('BulkActionsAnalytics', () => {
         },
       );
     });
-    it('should not emit event in case of an error and should not fail', async () => {
-      await service.sendActionFailed(mockSessionMetadata, undefined, undefined);
+    it('should not emit event in case of an error and should not fail', () => {
+      service.sendActionFailed(
+        mockSessionMetadata,
+        undefined,
+        undefined,
+        mockDatabase,
+      );
       expect(sendFailedEventSpy).not.toHaveBeenCalled();
     });
   });
 
   describe('sendImportSamplesUploaded', () => {
-    it('should emit event when action succeed (without progress)', async () => {
-      await service.sendImportSamplesUploaded(
+    it('should emit event when action succeed (without progress)', () => {
+      service.sendImportSamplesUploaded(
         mockSessionMetadata,
         mockBulkActionOverview,
+        mockDatabase,
       );
 
       expect(sendEventSpy).toHaveBeenCalledWith(
@@ -330,12 +349,16 @@ describe('BulkActionsAnalytics', () => {
         },
       );
     });
-    it('should emit event when action succeed without filter and summary', async () => {
-      await service.sendImportSamplesUploaded(mockSessionMetadata, {
-        ...mockBulkActionOverview,
-        filter: undefined,
-        summary: undefined,
-      });
+    it('should emit event when action succeed without filter and summary', () => {
+      service.sendImportSamplesUploaded(
+        mockSessionMetadata,
+        {
+          ...mockBulkActionOverview,
+          filter: undefined,
+          summary: undefined,
+        },
+        mockDatabase,
+      );
 
       expect(sendEventSpy).toHaveBeenCalledWith(
         mockSessionMetadata,
@@ -349,8 +372,12 @@ describe('BulkActionsAnalytics', () => {
         },
       );
     });
-    it('should not emit event in case of an error and should not fail', async () => {
-      await service.sendImportSamplesUploaded(mockSessionMetadata, undefined);
+    it('should not emit event in case of an error and should not fail', () => {
+      service.sendImportSamplesUploaded(
+        mockSessionMetadata,
+        undefined,
+        mockDatabase,
+      );
       expect(sendEventSpy).not.toHaveBeenCalled();
     });
   });

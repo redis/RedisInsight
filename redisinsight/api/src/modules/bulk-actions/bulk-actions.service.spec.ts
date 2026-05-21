@@ -4,6 +4,7 @@ import {
   MockType,
   mockBulkActionsAnalytics,
   mockSessionMetadata,
+  mockDatabase,
 } from 'src/__mocks__';
 import { BulkActionsProvider } from 'src/modules/bulk-actions/providers/bulk-actions.provider';
 import { RedisDataType } from 'src/modules/browser/keys/dto';
@@ -33,7 +34,7 @@ const mockCreateBulkActionDto = Object.assign(new CreateBulkActionDto(), {
 
 const mockBulkAction = new BulkAction(
   mockCreateBulkActionDto.id,
-  mockCreateBulkActionDto.databaseId,
+  mockDatabase,
   mockCreateBulkActionDto.type,
   mockBulkActionFilter,
   mockSocket1,

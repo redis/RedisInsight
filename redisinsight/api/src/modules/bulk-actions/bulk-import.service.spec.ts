@@ -222,6 +222,7 @@ describe('BulkImportService', () => {
           ...mockImportResult,
           duration: expect.anything(),
         },
+        expect.anything(),
       );
     });
 
@@ -333,6 +334,7 @@ describe('BulkImportService', () => {
           mockSessionMetadata,
           { ...mockEmptyImportResult },
           wrapHttpError(e),
+          expect.anything(),
         );
         expect(e).toBeInstanceOf(NotFoundException);
       }

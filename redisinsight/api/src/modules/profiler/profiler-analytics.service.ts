@@ -5,8 +5,8 @@ import { TelemetryBaseService } from 'src/modules/analytics/telemetry.base.servi
 import { CommandExecutionStatus } from 'src/modules/cli/dto/cli.dto';
 import { RedisError, ReplyError } from 'src/models';
 import { SessionMetadata } from 'src/common/models';
-import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
-import { resolveEnvironment } from 'src/modules/database/utils/resolve-environment';
+import { Database } from 'src/modules/database/models/database';
+import { Environment } from 'src/modules/database/entities/database.entity';
 
 export interface IExecResult {
   response: any;
@@ -18,10 +18,7 @@ export interface IExecResult {
 export class ProfilerAnalyticsService extends TelemetryBaseService {
   private events: Map<TelemetryEvents, Function> = new Map();
 
-  constructor(
-    protected eventEmitter: EventEmitter2,
-    private readonly databaseRepository: DatabaseRepository,
-  ) {
+  constructor(protected eventEmitter: EventEmitter2) {
     super(eventEmitter);
     this.events.set(
       TelemetryEvents.ProfilerLogDownloaded,
@@ -33,58 +30,46 @@ export class ProfilerAnalyticsService extends TelemetryBaseService {
     );
   }
 
-  async sendLogDeleted(
+  sendLogDeleted(
     sessionMetadata: SessionMetadata,
-    databaseId: string,
+    database: Database,
     fileSizeBytes: number,
-  ): Promise<void> {
+  ): void {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.ProfilerLogDeleted, {
-        databaseId,
+        databaseId: database?.id,
         fileSizeBytes,
-        environment: await resolveEnvironment(
-          this.databaseRepository,
-          sessionMetadata,
-          databaseId,
-        ),
+        environment: database?.environment ?? Environment.Unspecified,
       });
     } catch (e) {
       // continue regardless of error
     }
   }
 
-  async sendLogDownloaded(
+  sendLogDownloaded(
     sessionMetadata: SessionMetadata,
-    databaseId: string,
+    database: Database,
     fileSizeBytes: number,
-  ): Promise<void> {
+  ): void {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.ProfilerLogDownloaded, {
-        databaseId,
+        databaseId: database?.id,
         fileSizeBytes,
-        environment: await resolveEnvironment(
-          this.databaseRepository,
-          sessionMetadata,
-          databaseId,
-        ),
+        environment: database?.environment ?? Environment.Unspecified,
       });
     } catch (e) {
       // continue regardless of error
     }
   }
 
-  async sendProfilerStartedEvent(
+  sendProfilerStartedEvent(
     sessionMetadata: SessionMetadata,
-    databaseId: string,
-  ): Promise<void> {
+    database: Database,
+  ): void {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.ProfilerStarted, {
-        databaseId,
-        environment: await resolveEnvironment(
-          this.databaseRepository,
-          sessionMetadata,
-          databaseId,
-        ),
+        databaseId: database?.id,
+        environment: database?.environment ?? Environment.Unspecified,
       });
     } catch (e) {
       // continue regardless of error
