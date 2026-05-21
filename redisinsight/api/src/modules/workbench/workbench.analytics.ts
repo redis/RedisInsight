@@ -18,6 +18,11 @@ export interface IExecResult {
   error?: RedisError | ReplyError | Error;
 }
 
+export interface WorkbenchCommandEventData {
+  command?: string;
+  rawMode?: boolean;
+}
+
 @Injectable()
 export class WorkbenchAnalytics extends CommandTelemetryBaseService {
   constructor(
@@ -33,7 +38,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     sessionMetadata: SessionMetadata,
     databaseId: string,
     commandExecutionType: CommandExecutionType,
-    additionalData: object,
+    additionalData: object | null,
   ): Promise<void> {
     if (!additionalData) {
       return;
@@ -65,7 +70,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     commandExecutionType: CommandExecutionType,
     results: IExecResult[],
     client: RedisClient | undefined,
-    additionalData: object = {},
+    additionalData: WorkbenchCommandEventData = {},
   ): Promise<void> {
     try {
       await Promise.all(
@@ -91,11 +96,11 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     commandExecutionType: CommandExecutionType,
     result: IExecResult,
     client: RedisClient | undefined,
-    additionalData: object = {},
+    additionalData: WorkbenchCommandEventData = {},
   ): Promise<void> {
     const { status } = result;
     try {
-      const command = (additionalData as { command?: string }).command;
+      const { command } = additionalData;
       if (status === CommandExecutionStatus.Success) {
         const event =
           commandExecutionType === CommandExecutionType.Search
@@ -126,10 +131,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
           result.error,
           commandExecutionType,
           client,
-          {
-            ...(await this.getCommandAdditionalInfo(command)),
-            ...additionalData,
-          },
+          additionalData,
         );
       }
     } catch (e) {
@@ -154,7 +156,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     error: any,
     commandExecutionType: CommandExecutionType,
     client: RedisClient | undefined,
-    additionalData: object = {},
+    additionalData: WorkbenchCommandEventData = {},
   ): Promise<void> {
     try {
       const event =
@@ -162,7 +164,8 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
           ? TelemetryEvents.SearchCommandErrorReceived
           : TelemetryEvents.WorkbenchCommandErrorReceived;
 
-      const command = (additionalData as { command?: string }).command;
+      const { command } = additionalData;
+      const commandInfo = await this.getCommandAdditionalInfo(command);
       const environment = await resolveEnvironment(
         this.databaseRepository,
         sessionMetadata,
@@ -176,6 +179,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
       if (error instanceof HttpException) {
         this.sendFailedEvent(sessionMetadata, event, error, {
           databaseId,
+          ...commandInfo,
           ...additionalData,
           environment,
           isDangerous,
@@ -185,6 +189,7 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
           databaseId,
           error: error.name,
           command: error?.command?.name,
+          ...commandInfo,
           ...additionalData,
           environment,
           isDangerous,

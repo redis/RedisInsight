@@ -365,7 +365,7 @@ describe('WorkbenchAnalytics', () => {
           status: CommandExecutionStatus.Fail,
         },
         mockStandaloneRedisClient,
-        { command: 'set', data: 'Some data' },
+        { command: 'set' },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -378,7 +378,6 @@ describe('WorkbenchAnalytics', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
-          data: 'Some data',
           environment: Environment.Unspecified,
           isDangerous: 'false',
         },
@@ -495,7 +494,7 @@ describe('WorkbenchAnalytics', () => {
           status: CommandExecutionStatus.Fail,
         },
         mockStandaloneRedisClient,
-        { command: 'set', data: 'Some data' },
+        { command: 'set' },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -508,7 +507,6 @@ describe('WorkbenchAnalytics', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
-          data: 'Some data',
           environment: Environment.Unspecified,
           isDangerous: 'false',
         },

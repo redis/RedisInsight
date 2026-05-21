@@ -488,9 +488,6 @@
   "src/modules/cli/services/cli-analytics/cli-analytics.service.spec.ts": {
     "TS2345": 1
   },
-  "src/modules/cli/services/cli-analytics/cli-analytics.service.ts": {
-    "TS7053": 1
-  },
   "src/modules/cli/services/cli-business/cli-business.service.spec.ts": {
     "TS2322": 1,
     "TS7005": 4,
@@ -1360,9 +1357,6 @@
   "src/modules/workbench/repositories/local-plugin-state.repository.spec.ts": {
     "TS7005": 5,
     "TS7034": 1
-  },
-  "src/modules/workbench/workbench.analytics.spec.ts": {
-    "TS2345": 1
   },
   "src/modules/workbench/workbench.module.ts": {
     "TS7031": 2

@@ -5,7 +5,6 @@ import { TelemetryBaseService } from 'src/modules/analytics/telemetry.base.servi
 import { getRangeForNumber, BULK_ACTIONS_BREAKPOINTS } from 'src/utils';
 import { IBulkActionOverview } from 'src/modules/bulk-actions/interfaces/bulk-action-overview.interface';
 import { SessionMetadata } from 'src/common/models';
-import { BulkActionConfirmation } from 'src/modules/bulk-actions/constants';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 import { resolveEnvironment } from 'src/modules/database/utils/resolve-environment';
 
@@ -16,12 +15,6 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
     private readonly databaseRepository: DatabaseRepository,
   ) {
     super(eventEmitter);
-  }
-
-  private resolveConfirmedThrough(
-    overview: IBulkActionOverview,
-  ): BulkActionConfirmation | null {
-    return overview.confirmedThrough ?? null;
   }
 
   async sendActionStarted(
@@ -54,7 +47,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
           sessionMetadata,
           overview.databaseId,
         ),
-        confirmedThrough: this.resolveConfirmedThrough(overview),
+        confirmedThrough: overview.confirmedThrough ?? null,
       });
     } catch (e) {
       // continue regardless of error
@@ -108,7 +101,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
           sessionMetadata,
           overview.databaseId,
         ),
-        confirmedThrough: this.resolveConfirmedThrough(overview),
+        confirmedThrough: overview.confirmedThrough ?? null,
       });
     } catch (e) {
       // continue regardless of error
@@ -150,7 +143,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
           sessionMetadata,
           overview.databaseId,
         ),
-        confirmedThrough: this.resolveConfirmedThrough(overview),
+        confirmedThrough: overview.confirmedThrough ?? null,
       });
     } catch (e) {
       // continue regardless of error
@@ -172,7 +165,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
           sessionMetadata,
           overview.databaseId,
         ),
-        confirmedThrough: this.resolveConfirmedThrough(overview),
+        confirmedThrough: overview.confirmedThrough ?? null,
       });
     } catch (e) {
       // continue regardless of error

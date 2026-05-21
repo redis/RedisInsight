@@ -13,6 +13,12 @@ import { DatabaseRepository } from 'src/modules/database/repositories/database.r
 import { resolveEnvironment } from 'src/modules/database/utils/resolve-environment';
 import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import { RedisClient } from 'src/modules/redis/client';
+import { CliOutputFormatterTypes } from 'src/modules/cli/services/cli-business/output-formatter/output-formatter.interface';
+
+export interface CliCommandEventData {
+  command?: string;
+  outputFormat?: CliOutputFormatterTypes;
+}
 
 @Injectable()
 export class CliAnalyticsService extends CommandTelemetryBaseService {
@@ -105,10 +111,10 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
     sessionMetadata: SessionMetadata,
     databaseId: string,
     client: RedisClient | undefined,
-    additionalData: object = {},
+    additionalData: CliCommandEventData = {},
   ): Promise<void> {
     try {
-      const command = (additionalData as { command?: string }).command;
+      const { command } = additionalData;
       this.sendEvent(sessionMetadata, TelemetryEvents.CliCommandExecuted, {
         databaseId,
         ...(await this.getCommandAdditionalInfo(command)),
@@ -135,10 +141,10 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
     databaseId: string,
     error: ReplyError,
     client: RedisClient | undefined,
-    additionalData: object = {},
+    additionalData: CliCommandEventData = {},
   ): Promise<void> {
     try {
-      const command = (additionalData as { command?: string }).command;
+      const { command } = additionalData;
       this.sendEvent(sessionMetadata, TelemetryEvents.CliCommandErrorReceived, {
         databaseId,
         error: error?.name,
@@ -167,11 +173,11 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
     databaseId: string,
     result: ICliExecResultFromNode,
     client: RedisClient | undefined,
-    additionalData: object = {},
+    additionalData: CliCommandEventData = {},
   ): Promise<void> {
     const { status, error } = result;
     try {
-      const command = (additionalData as { command?: string }).command;
+      const { command } = additionalData;
       const environment = await resolveEnvironment(
         this.databaseRepository,
         sessionMetadata,
@@ -220,7 +226,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
     sessionMetadata: SessionMetadata,
     databaseId: string,
     exception: HttpException,
-    additionalData: object = {},
+    additionalData: CliCommandEventData = {},
   ): Promise<void> {
     this.sendFailedEvent(
       sessionMetadata,
@@ -228,7 +234,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
       exception,
       {
         databaseId,
-        ...(await this.getCommandAdditionalInfo(additionalData['command'])),
+        ...(await this.getCommandAdditionalInfo(additionalData.command)),
         ...additionalData,
       },
     );
