@@ -1,7 +1,8 @@
-import React from 'react'
-import { useTheme } from '@redis-ui/styles'
+import React, { useContext } from 'react'
 
 import { Text } from 'uiSrc/components/base/text'
+import { ThemeContext } from 'uiSrc/contexts/themeContext'
+import { Theme } from 'uiSrc/constants'
 
 import { IndexDetails } from '../../../components/index-details'
 import { IndexDetailsMode } from '../../../components/index-details/IndexDetails.types'
@@ -20,7 +21,7 @@ import { CreateIndexFooter } from './CreateIndexFooter'
 import * as S from '../VectorSearchCreateIndexPage.styles'
 
 export const CreateIndexContent = () => {
-  const theme = useTheme()
+  const { theme } = useContext(ThemeContext)
   const {
     mode,
     activeTab,
@@ -36,8 +37,7 @@ export const CreateIndexContent = () => {
   } = useCreateIndexPage()
 
   const isExistingData = mode === CreateIndexMode.ExistingData
-  const EmptyStateImg =
-    theme.name === 'dark' ? SelectDataImgDark : SelectDataImg
+  const EmptyStateImg = theme === Theme.Dark ? SelectDataImgDark : SelectDataImg
 
   if (isExistingData && fields.length === 0) {
     return (
