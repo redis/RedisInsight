@@ -147,6 +147,26 @@ describe('rqeGeoParser', () => {
     })
   })
 
+  it('ignores FT.HYBRID index names that match SEARCH and FILTER keywords', () => {
+    expect(
+      parseRqeGeoCommand(
+        'FT.HYBRID SEARCH "@coords:[2.34 48.86 1000 km]" VSIM @embedding $vec PARAMS 2 vec blob',
+      ),
+    ).toEqual({
+      ok: false,
+      error: 'No Redis Query Engine geospatial predicate found.',
+    })
+
+    expect(
+      parseRqeGeoCommand(
+        'FT.HYBRID FILTER "@coords:[2.34 48.86 1000 km]" VSIM @embedding $vec PARAMS 2 vec blob',
+      ),
+    ).toEqual({
+      ok: false,
+      error: 'No Redis Query Engine geospatial predicate found.',
+    })
+  })
+
   it('parses GEOSHAPE point and polygon predicates', () => {
     expect(
       parseRqeGeoCommand(
@@ -546,6 +566,22 @@ describe('rqeGeoParser', () => {
           { id: 'row-1', name: 'Lille', field: 'coords', lon: 3.0573, lat: 50.6292 },
         ],
       },
+    })
+  })
+
+  it('does not treat FT.HYBRID array responses as map-style result objects', () => {
+    const command = unwrapCommand(
+      'FT.HYBRID idx SEARCH "@coords:[2.34 48.86 1000 km]" VSIM @embedding $vec LOAD 1 coords PARAMS 2 vec blob',
+    )
+    const response = [1, ['name', 'Paris']] as unknown[] & {
+      results?: unknown[]
+    }
+    response.results = [['coords', '2.34,48.86']]
+
+    expect(parseRqeGeoResults(response, command)).toEqual({
+      ok: false,
+      error:
+        'No returned geospatial fields found. Add LOAD 1 coords to the FT.HYBRID command.',
     })
   })
 
