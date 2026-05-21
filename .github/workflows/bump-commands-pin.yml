@@ -1,0 +1,41 @@
+name: Bump redis/docs commands pin
+
+on:
+  schedule:
+    # Mondays 06:00 UTC
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Detect bump and write summary
+        id: bump
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/bump-commands-pin.mjs
+
+      - name: Open / update PR
+        if: steps.bump.outputs.changes == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: chore/bump-commands-pin
+          base: main
+          commit-message: |
+            chore: bump redis/docs commands pin to ${{ steps.bump.outputs.new_short_sha }}
+          title: 'chore: bump redis/docs commands pin to ${{ steps.bump.outputs.new_short_sha }}'
+          body-path: commands-pin-diff.md
+          labels: |
+            dependencies
+          delete-branch: true
