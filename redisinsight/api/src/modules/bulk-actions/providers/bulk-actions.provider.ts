@@ -30,13 +30,7 @@ export class BulkActionsProvider {
   ) {}
 
   /**
-   * Create and run new bulk action.
-   *
-   * The check-and-set on `bulkActions` runs synchronously (no `await` between
-   * `has(...)` and `set(...)`), so concurrent calls with the same id are
-   * guaranteed to see each other — the first one wins, the rest throw.
-   * Callers must therefore resolve `database` themselves before invoking this.
-   *
+   * Create and run new bulk action
    * @param sessionMetadata
    * @param dto
    * @param socket
