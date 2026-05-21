@@ -140,6 +140,12 @@ const FilterKeyType = ({ modules }: Props) => {
     const filterValue = value === ALL_KEY_TYPES_VALUE ? null : value
     setTypeSelected(value)
     setIsSelectOpen(false)
+    if (filterValue === KeyTypes.VectorSet) {
+      sendEventTelemetry({
+        event: TelemetryEvent.VECTOR_SET_KEY_TYPE_FILTERED,
+        eventData: { databaseId: instanceId },
+      })
+    }
     dispatch(setFilter(filterValue))
     // Sync filter to bulk delete state (for when bulk actions panel is open)
     dispatch(setBulkDeleteFilter(filterValue as KeyTypes))
