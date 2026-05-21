@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 
 import { RqeGeoVisualization } from './RqeGeoVisualization'
 import { ParsedRqeGeoCommand } from '../types'
@@ -55,6 +55,10 @@ const parsedCommand: ParsedRqeGeoCommand = {
 }
 
 describe('RqeGeoVisualization', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   it('memoizes parsed command and results for stable inputs', () => {
     const response = [1, 'city:1', ['name', 'Paris', 'coords', '2.34,48.86']]
     const parseRqeGeoCommand = jest
@@ -98,5 +102,31 @@ describe('RqeGeoVisualization', () => {
 
     expect(parseRqeGeoCommand).toHaveBeenCalledTimes(1)
     expect(parseRqeGeoResults).toHaveBeenCalledTimes(1)
+  })
+
+  it('shows an inspector-specific error title when inspector results cannot be parsed', () => {
+    jest
+      .spyOn(rqeGeoParser, 'parseRqeGeoCommand')
+      .mockReturnValue({ ok: true, value: parsedCommand })
+    jest.spyOn(rqeGeoParser, 'parseRqeGeoResults').mockReturnValue({
+      ok: false,
+      error: 'Add RETURN 1 coords to the FT.SEARCH command.',
+    })
+
+    render(
+      <RqeGeoVisualization
+        command='FT.SEARCH cities "@coords:[2.34 48.86 1000 km]" RETURN 1 name'
+        response={[1, 'city:1', ['name', 'Paris']]}
+        status="success"
+        mode="inspector"
+      />,
+    )
+
+    expect(
+      screen.getByText('Cannot inspect RQE geo results'),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText('Cannot render RQE geo map'),
+    ).not.toBeInTheDocument()
   })
 })
