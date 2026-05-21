@@ -162,17 +162,17 @@ describe('SimilaritySearchResultsTable', () => {
       expect(
         screen.getByTestId('vector-set-similarity-attribute-cell-1-city'),
       ).toHaveTextContent('LA')
-      // b has no `count` attribute → (nil) placeholder
+      // b has no `count` attribute → Empty placeholder
       expect(
         screen.getByTestId('vector-set-similarity-attribute-cell-1-count'),
-      ).toHaveTextContent('(nil)')
+      ).toHaveTextContent('Empty')
     })
 
-    it('renders (nil) for keys colliding with Object.prototype', () => {
+    it('renders Empty for keys colliding with Object.prototype', () => {
       // `a` literally has an attribute named `toString`; `b` does not.
       // Using `key in attrs` would resolve `toString` via the prototype
       // chain for `b` and render `function toString() { ... }` instead of
-      // the (nil) placeholder.
+      // the Empty placeholder.
       const matches = [
         buildMatch('a', 0.9, '{"toString":"hello"}'),
         buildMatch('b', 0.8, '{}'),
@@ -185,7 +185,7 @@ describe('SimilaritySearchResultsTable', () => {
       ).toHaveTextContent('hello')
       expect(
         screen.getByTestId('vector-set-similarity-attribute-cell-1-toString'),
-      ).toHaveTextContent('(nil)')
+      ).toHaveTextContent('Empty')
     })
 
     it('hides columns whose visibility is explicitly false', () => {
