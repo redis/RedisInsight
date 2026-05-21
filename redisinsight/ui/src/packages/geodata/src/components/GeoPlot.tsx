@@ -438,10 +438,12 @@ export const GeoPlot = ({ mode, results, command }: GeoPlotProps) => {
       }
     }
 
-    map.fitBounds(bounds.pad(MAP_FIT_BOUNDS_PADDING_RATIO), {
-      animate: false,
-      maxZoom: MAP_INITIAL_MAX_ZOOM,
-    })
+    if (bounds.isValid()) {
+      map.fitBounds(bounds.pad(MAP_FIT_BOUNDS_PADDING_RATIO), {
+        animate: false,
+        maxZoom: MAP_INITIAL_MAX_ZOOM,
+      })
+    }
 
     return () => {
       removeZoomListener?.()

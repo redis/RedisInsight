@@ -18,9 +18,11 @@ const mockMap = {
 
 const mockPad = jest.fn(() => 'padded-bounds')
 const mockExtend = jest.fn()
+const mockIsBoundsValid = jest.fn(() => true)
 const mockBounds = {
   pad: mockPad,
   extend: mockExtend,
+  isValid: mockIsBoundsValid,
 }
 
 const mockShapeAddTo = jest.fn()
@@ -138,6 +140,7 @@ describe('GeoPlot', () => {
   beforeEach(() => {
     process.env.NODE_ENV = 'development'
     jest.clearAllMocks()
+    mockIsBoundsValid.mockReturnValue(true)
     mockMapGetZoom.mockReturnValue(12)
   })
 
@@ -211,6 +214,15 @@ describe('GeoPlot', () => {
       animate: false,
       maxZoom: 12,
     })
+  })
+
+  it('does not fit invalid bounds', () => {
+    mockIsBoundsValid.mockReturnValue(false)
+
+    render(<GeoPlot mode="markers" results={results} command={radiusCommand} />)
+
+    expect(mockPad).not.toHaveBeenCalled()
+    expect(mockFitBounds).not.toHaveBeenCalled()
   })
 
   it('uses clustered markers for large result sets', () => {
