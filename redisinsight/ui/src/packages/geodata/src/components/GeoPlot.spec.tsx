@@ -186,14 +186,16 @@ describe('GeoPlot', () => {
   it('renders heatmaps with box search shape', () => {
     render(<GeoPlot mode="heatmap" results={results} command={boxCommand} />)
 
+    const latDelta = 10 / 111
+    const lonDelta = 20 / (111 * Math.cos((37 * Math.PI) / 180))
     expect(
       screen.getByRole('img', { name: 'Leaflet geospatial plot' }),
     ).toBeInTheDocument()
     expect(mockLeaflet.rectangle).toHaveBeenCalledWith(
-      expect.arrayContaining([
-        [expect.any(Number), expect.any(Number)],
-        [expect.any(Number), expect.any(Number)],
-      ]),
+      [
+        [37 - latDelta / 2, 15 - lonDelta / 2],
+        [37 + latDelta / 2, 15 + lonDelta / 2],
+      ],
       expect.objectContaining({ fillOpacity: 0.08 }),
     )
     expect(mockExtend).not.toHaveBeenCalled()

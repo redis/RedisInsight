@@ -204,6 +204,25 @@ describe('geoParser', () => {
     })
   })
 
+  it('does not treat positional GEO token values as search options', () => {
+    expect(
+      parseSearchParams('GEOSEARCH WITHCOORD FROMLONLAT 15 37 BYRADIUS 300 km'),
+    ).toEqual({
+      ok: false,
+      error: 'Geo map visualizations require WITHCOORD in the Redis command.',
+    })
+
+    expect(parseGeoCommand('GEORADIUS STORE 15 37 1 km')).toMatchObject({
+      ok: true,
+      value: {
+        command: 'GEORADIUS',
+        kind: 'searchResults',
+        key: 'STORE',
+        storeKey: undefined,
+      },
+    })
+  })
+
   it('returns clear parse errors for malformed commands', () => {
     expect(parseGeoCommand('')).toEqual({
       ok: false,
@@ -249,6 +268,10 @@ describe('geoParser', () => {
       ok: false,
       error: 'GEOSEARCH requires FROMLONLAT or FROMMEMBER.',
     })
+    expect(parseGeoCommand('GEOSEARCH Sicily FROMMEMBER BYRADIUS 1 km')).toEqual({
+      ok: false,
+      error: 'GEOSEARCH requires BYRADIUS or BYBOX.',
+    })
     expect(parseGeoCommand('GEOSEARCH Sicily FROMLONLAT 15 37')).toEqual({
       ok: false,
       error: 'GEOSEARCH requires BYRADIUS or BYBOX.',
@@ -286,6 +309,10 @@ describe('geoParser', () => {
     expect(parseGeoCommand('GEOSEARCHSTORE Nearby')).toEqual({
       ok: false,
       error: 'GEOSEARCHSTORE requires destination and source keys.',
+    })
+    expect(parseGeoCommand('GEOHASH Sicily')).toEqual({
+      ok: false,
+      error: 'GEOHASH requires at least one member.',
     })
     expect(parseGeoCommand('GEORADIUS')).toEqual({
       ok: false,

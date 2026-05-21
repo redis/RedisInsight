@@ -136,6 +136,17 @@ describe('rqeGeoParser', () => {
     })
   })
 
+  it('ignores FT.HYBRID SEARCH and FILTER names inside PARAMS', () => {
+    expect(
+      parseRqeGeoCommand(
+        'FT.HYBRID idx VSIM @embedding $vec LOAD 1 coords PARAMS 4 search "@coords:[2.34 48.86 1000 km]" filter "@coords:[2.34 48.86 1000 km]"',
+      ),
+    ).toEqual({
+      ok: false,
+      error: 'No Redis Query Engine geospatial predicate found.',
+    })
+  })
+
   it('parses GEOSHAPE point and polygon predicates', () => {
     expect(
       parseRqeGeoCommand(

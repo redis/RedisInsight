@@ -13,6 +13,14 @@ describe('getVisualizationsByCommand', () => {
     String.raw`[-+$A-Za-z0-9_.]{1,128}\s+` +
     String.raw`[-+$A-Za-z0-9_.]{1,128}\s+` +
     String.raw`[-+$A-Za-z0-9_.]{1,128}\s+(?:m|km|mi|ft)\b`
+  const redisTokenRegex = String.raw`(?:"[^"]{0,512}"|'[^']{0,512}'|\S{1,512})`
+  const nativeWithCoordRegex =
+    String.raw`(?:\bGEOSEARCH\b\s+${redisTokenRegex}\s+` +
+    String.raw`(?:FROMLONLAT\s+${redisTokenRegex}\s+${redisTokenRegex}|FROMMEMBER\s+${redisTokenRegex})\s+` +
+    String.raw`(?:BYRADIUS\s+${redisTokenRegex}\s+${redisTokenRegex}|BYBOX\s+${redisTokenRegex}\s+${redisTokenRegex}\s+${redisTokenRegex})|` +
+    String.raw`\bGEORADIUS(?:_RO)?\b\s+${redisTokenRegex}\s+${redisTokenRegex}\s+${redisTokenRegex}\s+${redisTokenRegex}\s+${redisTokenRegex}|` +
+    String.raw`\bGEORADIUSBYMEMBER(?:_RO)?\b\s+${redisTokenRegex}\s+${redisTokenRegex}\s+${redisTokenRegex}\s+${redisTokenRegex})` +
+    String.raw`\s+[\s\S]{0,4096}\bWITHCOORD\b`
 
   const getVisualizationsByCommandTests: [string, number][] = [
     ['ft.search sa', 2],
@@ -112,7 +120,7 @@ describe('getVisualizationsByCommand', () => {
       {
         id: 'without-coord',
         matchCommands: ['GEOSEARCH'],
-        matchQuery: { noneRegex: [String.raw`\bWITHCOORD\b`] },
+        matchQuery: { noneRegex: [nativeWithCoordRegex] },
       },
     ] as IPluginVisualization[]
 
@@ -135,13 +143,13 @@ describe('getVisualizationsByCommand', () => {
       {
         id: 'ri-geodata-map',
         matchCommands: ['GEOSEARCH'],
-        matchQuery: { anyRegex: [String.raw`\bWITHCOORD\b`] },
+        matchQuery: { anyRegex: [nativeWithCoordRegex] },
         default: true,
       },
       {
         id: 'ri-geodata-heatmap',
         matchCommands: ['GEOSEARCH'],
-        matchQuery: { anyRegex: [String.raw`\bWITHCOORD\b`] },
+        matchQuery: { anyRegex: [nativeWithCoordRegex] },
         default: false,
       },
       {
@@ -164,7 +172,7 @@ describe('getVisualizationsByCommand', () => {
           'GEORADIUSBYMEMBER',
           'GEORADIUSBYMEMBER_RO',
         ],
-        matchQuery: { noneRegex: [String.raw`\bWITHCOORD\b`] },
+        matchQuery: { noneRegex: [nativeWithCoordRegex] },
         default: true,
       },
       {
@@ -176,7 +184,7 @@ describe('getVisualizationsByCommand', () => {
           'GEORADIUSBYMEMBER',
           'GEORADIUSBYMEMBER_RO',
         ],
-        matchQuery: { anyRegex: [String.raw`\bWITHCOORD\b`] },
+        matchQuery: { anyRegex: [nativeWithCoordRegex] },
         default: false,
       },
     ] as IPluginVisualization[]
@@ -193,6 +201,9 @@ describe('getVisualizationsByCommand', () => {
     ).toEqual(['ri-geodata-map'])
     expect(
       defaultsFor('GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 300 km'),
+    ).toEqual(['ri-geodata-search-inspector'])
+    expect(
+      defaultsFor('GEOSEARCH WITHCOORD FROMLONLAT 15 37 BYRADIUS 300 km'),
     ).toEqual(['ri-geodata-search-inspector'])
     expect(defaultsFor('GEODIST Sicily Palermo Catania km')).toEqual([
       'ri-geodata-inspector',
