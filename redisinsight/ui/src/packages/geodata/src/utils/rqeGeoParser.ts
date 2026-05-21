@@ -70,6 +70,24 @@ const parseParams = (tokens: string[]): Record<string, string> => {
   return params
 }
 
+const getParamsRange = (tokens: string[]): { start: number; end: number } | null => {
+  const upperTokens = tokens.map((token) => token.toUpperCase())
+  const paramsIndex = upperTokens.indexOf('PARAMS')
+  if (paramsIndex < 0) {
+    return null
+  }
+
+  const count = Number(tokens[paramsIndex + 1])
+  if (!Number.isInteger(count) || count <= 0) {
+    return { start: paramsIndex, end: tokens.length }
+  }
+
+  return {
+    start: paramsIndex,
+    end: Math.min(paramsIndex + 2 + count, tokens.length),
+  }
+}
+
 const getSearchExpressions = (
   command: RqeGeoCommand,
   tokens: string[],
@@ -80,7 +98,16 @@ const getSearchExpressions = (
 
   const expressions: string[] = []
   const upperTokens = tokens.map((token) => token.toUpperCase())
+  const paramsRange = getParamsRange(tokens)
   upperTokens.forEach((token, index) => {
+    if (
+      paramsRange &&
+      index >= paramsRange.start &&
+      index < paramsRange.end
+    ) {
+      return
+    }
+
     if ((token === 'SEARCH' || token === 'FILTER') && tokens[index + 1]) {
       expressions.push(tokens[index + 1])
     }
