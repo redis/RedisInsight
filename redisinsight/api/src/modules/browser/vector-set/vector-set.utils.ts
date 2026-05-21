@@ -310,7 +310,9 @@ export function parseVsimReply(
     // Redis returning null/undefined for VSIM is unusual — an empty array is
     // the documented "no matches" reply. Log at debug so the case is visible
     // when chasing why a search came back empty without crashing the parser.
-    logger?.debug('VSIM returned null/undefined reply; treating as no matches.');
+    logger?.debug(
+      'VSIM returned null/undefined reply; treating as no matches.',
+    );
     return [];
   }
 
