@@ -27,20 +27,29 @@ jest.mock('uiSrc/slices/browser/vectorSet', () => {
   }
 })
 
+const onRemoveKey = jest.fn()
+const onViewElement = jest.fn()
+const onSearchByElement = jest.fn()
+
 const defaultProps: Props = {
-  onRemoveKey: jest.fn(),
-  onViewElement: jest.fn(),
-  onSearchByElement: jest.fn(),
+  onRemoveKey,
+  onViewElement,
+  onSearchByElement,
 }
 
 const renderComponent = (propsOverride?: Partial<Props>) =>
-  render(<VectorSetElementList {...defaultProps} {...propsOverride} />)
+  render(
+    React.createElement(VectorSetElementList, {
+      ...defaultProps,
+      ...propsOverride,
+    }),
+  )
 
 describe('VectorSetElementList', () => {
   beforeEach(() => {
     jest.mocked(deleteVectorSetElements).mockClear()
-    ;(defaultProps.onViewElement as jest.Mock).mockClear()
-    ;(defaultProps.onSearchByElement as jest.Mock).mockClear()
+    onViewElement.mockClear()
+    onSearchByElement.mockClear()
   })
 
   it('should render', () => {
@@ -71,7 +80,7 @@ describe('VectorSetElementList', () => {
   it('should call onViewElement when view button is clicked', () => {
     renderComponent()
     fireEvent.click(screen.getAllByRole('button', { name: 'View' })[0])
-    expect(defaultProps.onViewElement).toHaveBeenCalledTimes(1)
+    expect(onViewElement).toHaveBeenCalledTimes(1)
   })
 
   it('should render a "Find similar elements" button for each element row', () => {
@@ -86,7 +95,7 @@ describe('VectorSetElementList', () => {
     fireEvent.click(
       screen.getAllByRole('button', { name: 'Find similar elements' })[0],
     )
-    expect(defaultProps.onSearchByElement).toHaveBeenCalledTimes(1)
+    expect(onSearchByElement).toHaveBeenCalledTimes(1)
   })
 
   it('should open delete confirmation after clicking remove on a row', () => {
