@@ -19,27 +19,36 @@ const testRegex = (pattern: string, query: string): boolean => {
   }
 }
 
+const escapeRegex = (value: string): string =>
+  value.replace(/[|\\{}()[\]^$+?.]/g, '\\$&')
+
+const createCommandPattern = (matchCommand: string): string =>
+  `^${matchCommand.split('*').map(escapeRegex).join('\\S*')}(?:\\s|$)`
+
 const doesCommandMatch = (query: string, matchCommand: string): boolean =>
-  query?.startsWith(matchCommand) || testRegex(`^${matchCommand}`, query)
+  testRegex(createCommandPattern(matchCommand), query)
 
 const doesQueryPredicateMatch = (
   query: string,
   visualization: IPluginVisualization,
 ): boolean => {
   const anyRegex = visualization.matchQuery?.anyRegex
-  if (!anyRegex?.length) {
-    return true
-  }
-
+  const noneRegex = visualization.matchQuery?.noneRegex
   const matchTarget = getRegexMatchTarget(query)
+  const hasRequiredMatch =
+    !anyRegex?.length ||
+    anyRegex.some((pattern) => testRegex(pattern, matchTarget))
+  const hasExcludedMatch = noneRegex?.some((pattern) =>
+    testRegex(pattern, matchTarget),
+  )
 
-  return anyRegex.some((pattern) => testRegex(pattern, matchTarget))
+  return hasRequiredMatch && !hasExcludedMatch
 }
 
 export const getVisualizationsByCommand = (
   query: string = '',
   visualizations: IPluginVisualization[],
-) =>
+): IPluginVisualization[] =>
   visualizations.filter(
     (visualization: IPluginVisualization) =>
       visualization.matchCommands.some((matchCommand) =>

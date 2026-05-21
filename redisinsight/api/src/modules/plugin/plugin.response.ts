@@ -12,15 +12,25 @@ import {
 import { Type } from 'class-transformer';
 
 export class PluginVisualizationQueryMatcher {
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     isArray: true,
   })
-  @IsDefined()
+  @IsOptional()
   @IsArray()
   @ArrayNotEmpty()
   @Type(() => String)
-  anyRegex: string[];
+  anyRegex?: string[];
+
+  @ApiPropertyOptional({
+    type: String,
+    isArray: true,
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayNotEmpty()
+  @Type(() => String)
+  noneRegex?: string[];
 }
 
 export class PluginVisualization {
