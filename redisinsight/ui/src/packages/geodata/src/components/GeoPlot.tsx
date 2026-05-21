@@ -262,11 +262,7 @@ const addMarkers = (
 
 const addHeatmap = (map: L.Map, results: GeoResult[]): void => {
   L.heatLayer(
-    results.map(({ lat, lon, distance = 1 }) => [
-      lat,
-      lon,
-      Math.max(0.25, distance),
-    ]),
+    results.map(({ lat, lon }) => [lat, lon, 1]),
     {
       radius: 24,
       blur: 18,
