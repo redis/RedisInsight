@@ -23,6 +23,12 @@ const proxyPath = trim(process.env.RI_PROXY_PATH, '/');
 
 const customPluginsUri = posix.join('/', proxyPath, 'plugins');
 const staticUri = posix.join('/', proxyPath, 'static');
+
+// Pinned commit on redis/docs. Bumped by .github/workflows/bump-commands-pin.yml.
+// Do not edit this line manually — the bump workflow matches it by regex.
+const REDIS_DOCS_COMMANDS_SHA = '3ecfac43f3bd7ae703554e939560a52b0ceac583';
+const redisDocsCommandsUrl = (file: string): string =>
+  `https://raw.githubusercontent.com/redis/docs/${REDIS_DOCS_COMMANDS_SHA}/data/${file}.json`;
 const tutorialsUri = posix.join('/', proxyPath, 'static', 'tutorials');
 const customTutorialsUri = posix.join(
   '/',
@@ -283,25 +289,25 @@ export default {
       name: 'main',
       url:
         process.env.RI_COMMANDS_MAIN_URL ||
-        'https://raw.githubusercontent.com/redis/docs/main/data/commands_core.json',
+        redisDocsCommandsUrl('commands_core'),
     },
     {
       name: 'redisearch',
       url:
         process.env.RI_COMMANDS_REDISEARCH_URL ||
-        'https://raw.githubusercontent.com/redis/docs/main/data/commands_redisearch.json',
+        redisDocsCommandsUrl('commands_redisearch'),
     },
     {
       name: 'redisjson',
       url:
         process.env.RI_COMMANDS_REDIJSON_URL ||
-        'https://raw.githubusercontent.com/redis/docs/main/data/commands_redisjson.json',
+        redisDocsCommandsUrl('commands_redisjson'),
     },
     {
       name: 'redistimeseries',
       url:
         process.env.RI_COMMANDS_REDISTIMESERIES_URL ||
-        'https://raw.githubusercontent.com/redis/docs/main/data/commands_redistimeseries.json',
+        redisDocsCommandsUrl('commands_redistimeseries'),
     },
     {
       name: 'redisgraph',
@@ -319,7 +325,7 @@ export default {
       name: 'redisbloom',
       url:
         process.env.RI_COMMANDS_REDISBLOOM_URL ||
-        'https://raw.githubusercontent.com/redis/docs/main/data/commands_redisbloom.json',
+        redisDocsCommandsUrl('commands_redisbloom'),
     },
   ],
   connections: {
