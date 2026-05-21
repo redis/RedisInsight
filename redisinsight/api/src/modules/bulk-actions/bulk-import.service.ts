@@ -31,6 +31,7 @@ import {
 import config, { Config } from 'src/utils/config';
 import * as CombinedStream from 'combined-stream';
 import { DatabaseService } from 'src/modules/database/database.service';
+import { Database } from 'src/modules/database/models/database';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 
 const BATCH_LIMIT = 10_000;
@@ -90,10 +91,13 @@ export class BulkImportService {
   /**
    * @param clientMetadata
    * @param fileStream
+   * @param prefetchedDatabase Optional pre-fetched Database to avoid a redundant
+   *   repository lookup when the caller already has it (e.g. `importDefaultData`).
    */
   public async import(
     clientMetadata: ClientMetadata,
     fileStream: Readable,
+    prefetchedDatabase?: Database,
   ): Promise<IBulkActionOverview> {
     const startTime = Date.now();
     const result: IBulkActionOverview = {
@@ -114,22 +118,25 @@ export class BulkImportService {
       confirmedThrough: null,
     };
 
-    const database = await this.databaseService.get(
-      clientMetadata.sessionMetadata,
-      clientMetadata.databaseId,
-    );
-
-    this.analytics.sendActionStarted(
-      clientMetadata.sessionMetadata,
-      result,
-      database,
-    );
-
     let parseErrors = 0;
 
     let client;
+    let database: Database | undefined;
 
     try {
+      database =
+        prefetchedDatabase ??
+        (await this.databaseService.get(
+          clientMetadata.sessionMetadata,
+          clientMetadata.databaseId,
+        ));
+
+      this.analytics.sendActionStarted(
+        clientMetadata.sessionMetadata,
+        result,
+        database,
+      );
+
       client = await this.databaseClientFactory.createClient(clientMetadata);
 
       let batch = [];
@@ -192,12 +199,16 @@ export class BulkImportService {
     } catch (e) {
       this.logger.error('Unable to process an import file', e, clientMetadata);
       const exception = wrapHttpError(e);
-      this.analytics.sendActionFailed(
-        clientMetadata.sessionMetadata,
-        result,
-        exception,
-        database,
-      );
+      // `database` may be undefined if the lookup itself threw — skip the
+      // analytics emit in that case; environment can't be reported without it.
+      if (database) {
+        this.analytics.sendActionFailed(
+          clientMetadata.sessionMetadata,
+          result,
+          exception,
+          database,
+        );
+      }
       client?.disconnect();
       throw exception;
     }
@@ -279,7 +290,11 @@ export class BulkImportService {
         commandsStream.append('\r\n');
       });
 
-      const result = await this.import(clientMetadata, commandsStream);
+      const result = await this.import(
+        clientMetadata,
+        commandsStream,
+        database,
+      );
 
       this.analytics.sendImportSamplesUploaded(
         clientMetadata.sessionMetadata,
