@@ -31,6 +31,7 @@ import { RedisClient } from 'src/modules/redis/client';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { DatabaseService } from 'src/modules/database/database.service';
 import { Database } from 'src/modules/database/models/database';
+import { Environment } from 'src/modules/database/entities/database.entity';
 import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import { v4 as uuidv4 } from 'uuid';
 import { getAnalyticsDataFromIndexInfo } from 'src/utils';
@@ -194,23 +195,30 @@ export class CliBusinessService {
     let command: string = unknownCommand;
     let args: string[] = [];
     let client: RedisClient | undefined;
-    let database: Database | undefined;
     let isDangerous: 'true' | 'false' = 'false';
+
+    // Pre-seed with a stub so analytics always has something to emit (with
+    // environment defaulting to Unspecified). We overwrite below once the
+    // real Database is fetched; if the lookup throws — or if we never get
+    // that far — the stub is what reaches the analytics calls. The stub
+    // only carries `id` + `environment`; that's all the analytics services
+    // read.
+    let database: Database = {
+      id: clientMetadata.databaseId,
+      environment: Environment.Unspecified,
+    } as Database;
 
     try {
       client =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
 
-      // Resolve once so analytics emits get environment without each method
-      // doing its own repository lookup. Failure is non-fatal — analytics
-      // calls check for undefined and skip the emit.
       try {
         database = await this.databaseService.get(
           clientMetadata.sessionMetadata,
           clientMetadata.databaseId,
         );
       } catch (e) {
-        // proceed without database — environment will be unknown
+        // keep the stub — analytics still emits with environment=unspecified
       }
 
       const formatter = this.outputFormatterManager.getStrategy(outputFormat);
@@ -241,17 +249,15 @@ export class CliBusinessService {
         replyEncoding,
       });
 
-      if (database) {
-        this.cliAnalyticsService.sendCommandExecutedEvent(
-          clientMetadata.sessionMetadata,
-          database,
-          isDangerous,
-          {
-            command,
-            outputFormat,
-          },
-        );
-      }
+      this.cliAnalyticsService.sendCommandExecutedEvent(
+        clientMetadata.sessionMetadata,
+        database,
+        isDangerous,
+        {
+          command,
+          outputFormat,
+        },
+      );
 
       if (command.toLowerCase() === 'ft.info') {
         this.cliAnalyticsService.sendIndexInfoEvent(
@@ -282,18 +288,16 @@ export class CliBusinessService {
         error instanceof CommandNotSupportedError ||
         error?.name === 'ReplyError'
       ) {
-        if (database) {
-          this.cliAnalyticsService.sendCommandErrorEvent(
-            clientMetadata.sessionMetadata,
-            database,
-            error,
-            isDangerous,
-            {
-              command,
-              outputFormat,
-            },
-          );
-        }
+        this.cliAnalyticsService.sendCommandErrorEvent(
+          clientMetadata.sessionMetadata,
+          database,
+          error,
+          isDangerous,
+          {
+            command,
+            outputFormat,
+          },
+        );
 
         return { response: error.message, status: CommandExecutionStatus.Fail };
       }

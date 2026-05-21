@@ -25,6 +25,7 @@ import { RunQueryMode } from 'src/modules/workbench/models/command-execution';
 import { WorkbenchAnalytics } from 'src/modules/workbench/workbench.analytics';
 import { DatabaseService } from 'src/modules/database/database.service';
 import { Database } from 'src/modules/database/models/database';
+import { Environment } from 'src/modules/database/entities/database.entity';
 import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 
 @Injectable()
@@ -63,19 +64,26 @@ export class WorkbenchCommandsExecutor {
     this.logger.debug('Executing workbench command.');
     let command = unknownCommand;
     let commandArgs: string[] = [];
-    let database: Database | undefined;
     let isDangerous: 'true' | 'false' = 'false';
 
-    // Resolve once so analytics emits get environment without each method
-    // doing its own repository lookup. Failure is non-fatal — analytics
-    // calls check for undefined and skip the emit.
+    // Pre-seed with a stub so analytics always has something to emit (with
+    // environment defaulting to Unspecified). We overwrite below once the
+    // real Database is fetched; if the lookup throws — or if we never get
+    // that far — the stub is what reaches the analytics calls. The stub
+    // only carries `id` + `environment`; that's all the analytics services
+    // read.
+    let database: Database = {
+      id: client.clientMetadata.databaseId,
+      environment: Environment.Unspecified,
+    } as Database;
+
     try {
       database = await this.databaseService.get(
         client.clientMetadata.sessionMetadata,
         client.clientMetadata.databaseId,
       );
     } catch (e) {
-      // proceed without database — environment will be unknown
+      // keep the stub — analytics still emits with environment=unspecified
     }
 
     try {
@@ -107,27 +115,25 @@ export class WorkbenchCommandsExecutor {
       ];
 
       this.logger.debug('Succeed to execute workbench command.');
-      if (database) {
-        this.analyticsService.sendCommandExecutedEvents(
+      this.analyticsService.sendCommandExecutedEvents(
+        client.clientMetadata.sessionMetadata,
+        database,
+        dto.type,
+        result,
+        isDangerous,
+        {
+          command,
+          rawMode: mode === RunQueryMode.Raw,
+        },
+      );
+
+      if (command.toLowerCase() === 'ft.info') {
+        this.analyticsService.sendIndexInfoEvent(
           client.clientMetadata.sessionMetadata,
           database,
           dto.type,
-          result,
-          isDangerous,
-          {
-            command,
-            rawMode: mode === RunQueryMode.Raw,
-          },
+          getAnalyticsDataFromIndexInfo(response as string[]),
         );
-
-        if (command.toLowerCase() === 'ft.info') {
-          this.analyticsService.sendIndexInfoEvent(
-            client.clientMetadata.sessionMetadata,
-            database,
-            dto.type,
-            getAnalyticsDataFromIndexInfo(response as string[]),
-          );
-        }
       }
 
       return result;
@@ -138,19 +144,17 @@ export class WorkbenchCommandsExecutor {
         response: error.message,
         status: CommandExecutionStatus.Fail,
       };
-      if (database) {
-        this.analyticsService.sendCommandExecutedEvent(
-          client.clientMetadata.sessionMetadata,
-          database,
-          dto.type,
-          { ...errorResult, error },
-          isDangerous,
-          {
-            command,
-            rawMode: dto.mode === RunQueryMode.Raw,
-          },
-        );
-      }
+      this.analyticsService.sendCommandExecutedEvent(
+        client.clientMetadata.sessionMetadata,
+        database,
+        dto.type,
+        { ...errorResult, error },
+        isDangerous,
+        {
+          command,
+          rawMode: dto.mode === RunQueryMode.Raw,
+        },
+      );
 
       if (
         error instanceof CommandParsingError ||

@@ -10,7 +10,6 @@ import {
   mockSessionMetadata,
   mockStandaloneRedisClient,
   mockWorkbenchAnalyticsService,
-  mockWorkbenchClientMetadata,
 } from 'src/__mocks__';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { unknownCommand } from 'src/constants';
