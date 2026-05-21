@@ -24,8 +24,6 @@ import { getAnalyticsDataFromIndexInfo } from 'src/utils';
 import { RunQueryMode } from 'src/modules/workbench/models/command-execution';
 import { WorkbenchAnalytics } from 'src/modules/workbench/workbench.analytics';
 import { DatabaseService } from 'src/modules/database/database.service';
-import { Database } from 'src/modules/database/models/database';
-import { Environment } from 'src/modules/database/entities/database.entity';
 import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 
 @Injectable()
@@ -66,33 +64,15 @@ export class WorkbenchCommandsExecutor {
     let commandArgs: string[] = [];
     let isDangerous: 'true' | 'false' = 'false';
 
-    // Pre-seed with a stub so analytics always has something to emit (with
-    // environment defaulting to Unspecified). We overwrite below once the
-    // real Database is fetched; if the lookup throws — or if we never get
-    // that far — the stub is what reaches the analytics calls. The stub
-    // only carries `id` + `environment`; that's all the analytics services
-    // read.
-    let database: Database = {
-      id: client.clientMetadata.databaseId,
-      environment: Environment.Unspecified,
-    } as Database;
-
-    try {
-      database = await this.databaseService.get(
-        client.clientMetadata.sessionMetadata,
-        client.clientMetadata.databaseId,
-      );
-    } catch (e) {
-      // keep the stub — analytics still emits with environment=unspecified
-    }
+    const database = await this.databaseService.get(
+      client.clientMetadata.sessionMetadata,
+      client.clientMetadata.databaseId,
+    );
 
     try {
       const { command: commandLine, mode } = dto;
       [command, ...commandArgs] = splitCliCommandLine(commandLine);
 
-      // Resolve dangerous flag against the parsed command. If parsing throws
-      // above, `isDangerous` stays `'false'` (we don't know the command) and
-      // the error emit in `catch` uses that default.
       isDangerous = (await this.dangerousCommandsProvider.isDangerous(
         client,
         command,
