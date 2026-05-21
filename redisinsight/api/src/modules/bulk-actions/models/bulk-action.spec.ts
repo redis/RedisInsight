@@ -37,6 +37,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
       mockBulkActionFilter,
       mockSocket,
       mockBulkActionsAnalytics() as any,
+      mockSessionMetadata,
     );
 
     analytics = bulkAction[
@@ -483,9 +484,9 @@ describe('AbstractBulkActionSimpleRunner', () => {
         mockBulkActionFilter,
         mockSocket,
         mockBulkActionsAnalytics() as any,
+        mockSessionMetadata,
         false,
         null,
-        mockSessionMetadata,
       );
       const innerAnalytics = bulkActionWithSession[
         'analytics'
@@ -533,6 +534,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
         expect(bulkActionWithReport.isReportEnabled()).toBe(true);
@@ -548,6 +550,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
 
@@ -570,6 +573,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
 
@@ -595,6 +599,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
 
@@ -624,6 +629,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
         bulkActionWithReport['streamingResponse'] = mockResponse;
@@ -641,6 +647,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
         bulkActionWithReport['streamingResponse'] = mockResponse;
@@ -664,6 +671,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
         bulkActionWithReport['streamingResponse'] = mockResponse;
@@ -690,6 +698,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
         bulkActionWithReport['streamingResponse'] = mockResponse;
@@ -723,6 +732,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
 
@@ -748,6 +758,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
 
@@ -775,6 +786,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
 
@@ -799,6 +811,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
 
@@ -826,6 +839,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
 

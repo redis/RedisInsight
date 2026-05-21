@@ -38,6 +38,7 @@ const mockBulkAction = new BulkAction(
   mockBulkActionFilter,
   mockSocket1,
   mockBulkActionsAnalytics as any,
+  mockSessionMetadata,
 );
 const mockOverview = 'mocked overview...';
 

@@ -47,9 +47,9 @@ export class BulkAction implements IBulkAction {
     private readonly filter: BulkActionFilter,
     private readonly socket: Socket,
     private readonly analytics: BulkActionsAnalytics,
+    private readonly sessionMetadata: SessionMetadata,
     generateReport: boolean = false,
     confirmedThrough: BulkActionConfirmation | null = null,
-    private readonly sessionMetadata: SessionMetadata | undefined = undefined,
   ) {
     this.debounce = debounce(this.sendOverview.bind(this), 1000, {
       maxWait: 1000,
@@ -325,20 +325,16 @@ export class BulkAction implements IBulkAction {
    * Send overview to a client
    * @param sessionMetadata defaults to the value stored at construction time
    */
-  sendOverview(
-    sessionMetadata: SessionMetadata | undefined = this.sessionMetadata,
-  ) {
+  sendOverview(sessionMetadata: SessionMetadata = this.sessionMetadata) {
     const overview = this.getOverview();
-    if (sessionMetadata) {
-      if (overview.status === BulkActionStatus.Completed) {
-        this.analytics.sendActionSucceed(sessionMetadata, overview);
-      }
-      if (overview.status === BulkActionStatus.Failed) {
-        this.analytics.sendActionFailed(sessionMetadata, overview, this.error);
-      }
-      if (overview.status === BulkActionStatus.Aborted) {
-        this.analytics.sendActionStopped(sessionMetadata, overview);
-      }
+    if (overview.status === BulkActionStatus.Completed) {
+      this.analytics.sendActionSucceed(sessionMetadata, overview);
+    }
+    if (overview.status === BulkActionStatus.Failed) {
+      this.analytics.sendActionFailed(sessionMetadata, overview, this.error);
+    }
+    if (overview.status === BulkActionStatus.Aborted) {
+      this.analytics.sendActionStopped(sessionMetadata, overview);
     }
     try {
       this.socket.emit('overview', overview);

@@ -3,6 +3,7 @@ import {
   mockBulkActionsAnalytics,
   mockCreateBulkActionDto,
   mockStandaloneRedisClient,
+  mockSessionMetadata,
 } from 'src/__mocks__';
 import { DeleteBulkActionSimpleRunner } from 'src/modules/bulk-actions/models/runners/simple/delete.bulk-action.simple.runner';
 import { BulkAction } from 'src/modules/bulk-actions/models/bulk-action';
@@ -22,6 +23,7 @@ const bulkAction = new BulkAction(
   mockBulkActionFilter,
   mockSocket,
   mockBulkActionsAnalytics as any,
+  mockSessionMetadata,
 );
 
 const mockKey = 'mockedKey';

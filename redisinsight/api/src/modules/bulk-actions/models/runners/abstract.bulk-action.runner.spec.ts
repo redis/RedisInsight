@@ -2,6 +2,7 @@ import {
   mockSocket,
   mockBulkActionsAnalytics,
   mockStandaloneRedisClient,
+  mockSessionMetadata,
 } from 'src/__mocks__';
 import { DeleteBulkActionSimpleRunner } from 'src/modules/bulk-actions/models/runners/simple/delete.bulk-action.simple.runner';
 import { BulkAction } from 'src/modules/bulk-actions/models/bulk-action';
@@ -32,6 +33,7 @@ describe('AbstractBulkActionRunner', () => {
       mockBulkActionFilter,
       mockSocket,
       mockBulkActionsAnalytics as any,
+      mockSessionMetadata,
     );
 
     deleteRunner = new DeleteBulkActionSimpleRunner(bulkAction, client);

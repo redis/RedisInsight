@@ -49,9 +49,9 @@ export class BulkActionsProvider {
       dto.filter,
       socket,
       this.analytics,
+      sessionMetadata,
       dto.generateReport,
       dto.confirmedThrough ?? null,
-      sessionMetadata,
     );
 
     this.bulkActions.set(dto.id, bulkAction);
