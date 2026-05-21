@@ -37,9 +37,9 @@ export class ProfilerAnalyticsService extends TelemetryBaseService {
   ): void {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.ProfilerLogDeleted, {
-        databaseId: database?.id,
+        databaseId: database.id,
         fileSizeBytes,
-        environment: database?.environment ?? Environment.Unspecified,
+        environment: database.environment ?? Environment.Unspecified,
       });
     } catch (e) {
       // continue regardless of error
@@ -53,9 +53,9 @@ export class ProfilerAnalyticsService extends TelemetryBaseService {
   ): void {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.ProfilerLogDownloaded, {
-        databaseId: database?.id,
+        databaseId: database.id,
         fileSizeBytes,
-        environment: database?.environment ?? Environment.Unspecified,
+        environment: database.environment ?? Environment.Unspecified,
       });
     } catch (e) {
       // continue regardless of error
@@ -68,8 +68,8 @@ export class ProfilerAnalyticsService extends TelemetryBaseService {
   ): void {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.ProfilerStarted, {
-        databaseId: database?.id,
-        environment: database?.environment ?? Environment.Unspecified,
+        databaseId: database.id,
+        environment: database.environment ?? Environment.Unspecified,
       });
     } catch (e) {
       // continue regardless of error

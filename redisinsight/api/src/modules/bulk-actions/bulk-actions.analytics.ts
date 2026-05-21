@@ -35,7 +35,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
-        environment: database?.environment ?? Environment.Unspecified,
+        environment: database.environment ?? Environment.Unspecified,
         confirmedThrough: overview.confirmedThrough ?? null,
       });
     } catch (e) {
@@ -86,7 +86,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
-        environment: database?.environment ?? Environment.Unspecified,
+        environment: database.environment ?? Environment.Unspecified,
         confirmedThrough: overview.confirmedThrough ?? null,
       });
     } catch (e) {
@@ -125,7 +125,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
-        environment: database?.environment ?? Environment.Unspecified,
+        environment: database.environment ?? Environment.Unspecified,
         confirmedThrough: overview.confirmedThrough ?? null,
       });
     } catch (e) {
@@ -144,7 +144,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
         databaseId: overview.databaseId,
         action: overview.type,
         error,
-        environment: database?.environment ?? Environment.Unspecified,
+        environment: database.environment ?? Environment.Unspecified,
         confirmedThrough: overview.confirmedThrough ?? null,
       });
     } catch (e) {
@@ -179,7 +179,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
-        environment: database?.environment ?? Environment.Unspecified,
+        environment: database.environment ?? Environment.Unspecified,
       });
     } catch (e) {
       // continue regardless of error
