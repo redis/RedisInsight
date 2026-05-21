@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { catchAclError, catchMultiTransactionError } from 'src/utils';
 import { RedisErrorCodes } from 'src/constants';
+import { ReplyError } from 'src/models';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import {
   BrowserToolKeysCommands,
@@ -90,10 +91,7 @@ export class VectorSetService {
         error,
         clientMetadata,
       );
-      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
-        throw new BadRequestException(error.message);
-      }
-      throw catchAclError(error);
+      this.throwWrongTypeOrAcl(error);
     }
   }
 
@@ -130,10 +128,7 @@ export class VectorSetService {
         error,
         clientMetadata,
       );
-      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
-        throw new BadRequestException(error.message);
-      }
-      throw catchAclError(error);
+      this.throwWrongTypeOrAcl(error);
     }
   }
 
@@ -210,10 +205,7 @@ export class VectorSetService {
         error,
         clientMetadata,
       );
-      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
-        throw new BadRequestException(error.message);
-      }
-      throw catchAclError(error);
+      this.throwWrongTypeOrAcl(error);
     }
   }
 
@@ -264,10 +256,7 @@ export class VectorSetService {
         error,
         clientMetadata,
       );
-      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
-        throw new BadRequestException(error.message);
-      }
-      throw catchAclError(error);
+      this.throwWrongTypeOrAcl(error);
     }
   }
 
@@ -304,10 +293,7 @@ export class VectorSetService {
         error,
         clientMetadata,
       );
-      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
-        throw new BadRequestException(error.message);
-      }
-      throw catchAclError(error);
+      this.throwWrongTypeOrAcl(error);
     }
   }
 
@@ -353,10 +339,7 @@ export class VectorSetService {
         error,
         clientMetadata,
       );
-      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
-        throw new BadRequestException(error.message);
-      }
-      throw catchAclError(error);
+      this.throwWrongTypeOrAcl(error);
     }
   }
 
@@ -388,10 +371,7 @@ export class VectorSetService {
         error,
         clientMetadata,
       );
-      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
-        throw new BadRequestException(error.message);
-      }
-      throw catchAclError(error);
+      this.throwWrongTypeOrAcl(error);
     }
   }
 
@@ -444,10 +424,7 @@ export class VectorSetService {
         error,
         clientMetadata,
       );
-      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
-        throw new BadRequestException(error.message);
-      }
-      throw catchAclError(error);
+      this.throwWrongTypeOrAcl(error);
     }
   }
 
@@ -495,6 +472,20 @@ export class VectorSetService {
    * debug) so a single failing VGETATTR cannot drop the whole search reply;
    * elements without attributes simply keep `attributes` undefined.
    */
+  /**
+   * Translate a thrown Redis error into the appropriate HTTP exception:
+   * `WRONGTYPE` becomes a 400 (the client targeted a non-vector-set key), and
+   * everything else flows through `catchAclError` so NOPERM / unknown-command
+   * errors map to 403 / 500 as expected. Used by every public service method
+   * to keep the 8 copies of this catch logic in sync.
+   */
+  private throwWrongTypeOrAcl(error: ReplyError): never {
+    if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+      throw new BadRequestException(error.message);
+    }
+    throw catchAclError(error);
+  }
+
   private async fetchAttributesForMatches(
     client: RedisClient,
     keyName: Buffer | string,
