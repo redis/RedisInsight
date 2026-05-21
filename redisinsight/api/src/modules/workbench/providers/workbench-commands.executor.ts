@@ -24,6 +24,7 @@ import { getAnalyticsDataFromIndexInfo } from 'src/utils';
 import { RunQueryMode } from 'src/modules/workbench/models/command-execution';
 import { WorkbenchAnalytics } from 'src/modules/workbench/workbench.analytics';
 import { DatabaseService } from 'src/modules/database/database.service';
+import { Database } from 'src/modules/database/models/database';
 import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 
 @Injectable()
@@ -62,14 +63,15 @@ export class WorkbenchCommandsExecutor {
     this.logger.debug('Executing workbench command.');
     let command = unknownCommand;
     let commandArgs: string[] = [];
+    let database: Database | undefined;
     let isDangerous: 'true' | 'false' = 'false';
 
-    const database = await this.databaseService.get(
-      client.clientMetadata.sessionMetadata,
-      client.clientMetadata.databaseId,
-    );
-
     try {
+      database = await this.databaseService.get(
+        client.clientMetadata.sessionMetadata,
+        client.clientMetadata.databaseId,
+      );
+
       const { command: commandLine, mode } = dto;
       [command, ...commandArgs] = splitCliCommandLine(commandLine);
 
@@ -126,7 +128,7 @@ export class WorkbenchCommandsExecutor {
       };
       this.analyticsService.sendCommandExecutedEvent(
         client.clientMetadata.sessionMetadata,
-        database,
+        database!,
         dto.type,
         { ...errorResult, error },
         isDangerous,
