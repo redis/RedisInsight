@@ -7,7 +7,7 @@ Standalone Playwright E2E test suite for RedisInsight.
 | Document | Purpose |
 |----------|---------|
 | [`TEST_PLAN.md`](./TEST_PLAN.md) | Test coverage status and priorities |
-| [`.ai/rules/e2e-testing.md`](../../.ai/rules/e2e-testing.md) | Standards and patterns for writing tests |
+| [`.ai/skills/e2e-testing/SKILL.md`](../../.ai/skills/e2e-testing/SKILL.md) | Standards and patterns for writing tests |
 
 ### AI Commands
 

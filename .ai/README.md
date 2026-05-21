@@ -7,18 +7,14 @@ This directory contains the **single source of truth** for AI-assisted developme
 This repository uses a centralized approach to AI development rules:
 
 - **`AGENTS.md`** (at repository root) - Entry point for AI agents with essential commands, testing instructions, and quick reference
-- **`.ai/rules/`** - Detailed development standards organized by topic
-- **`.ai/skills/`** - Agent skills (local and from npm packages)
+- **`.ai/skills/`** - Detailed development standards as skills, plus skills from npm packages
 - **`.ai/commands/`** - AI workflow commands and templates
 
-These rules are used by multiple AI coding assistants:
+These standards are consumed by:
 
-- **Cursor** (via symlinks: `.cursor/rules/` and `.cursor/commands/`)
-- **Augment** (via symlink: `.augment/`)
-- **Windsurf** (via symlink: `.windsurfrules`)
-- **GitHub Copilot** (via file: `.github/copilot-instructions.md`)
-- **Claude Code** (via `CLAUDE.md` plus `.claude/commands/` and `.claude/skills/` symlinks)
-- **Codex** (via `AGENTS.md` and `.agents/skills` symlink)
+- **Claude Code** (via `CLAUDE.md -> AGENTS.md` plus `.claude/commands/` and `.claude/skills/` symlinks)
+- **Codex** (via `AGENTS.md` and the `.agents/skills` symlink)
+- **GitHub Copilot** (via file: `.github/copilot-instructions.md`, optional)
 
 ## Structure
 
@@ -27,18 +23,19 @@ AGENTS.md                              # 🎯 AI agent entry point
 CLAUDE.md -> AGENTS.md                 # Claude Code entry point
 .ai/                                   # Single source of truth
 ├── README.md                          # This file (human-readable overview)
-├── rules/                             # Development standards (modular)
-│   ├── code-quality.md                # Linting, TypeScript standards
-│   ├── frontend.md                    # React, Redux, UI patterns
-│   ├── backend.md                     # NestJS, API patterns
-│   ├── testing.md                     # Testing standards
-│   ├── commits.md                     # Commit message guidelines
-│   └── pull-requests.md               # Pull request process
-├── skills/                            # Agent skills
-│   ├── branches/                      # Branch naming skill
-│   ├── commits/                       # Commit message skill
-│   ├── pull-requests/                 # Pull request skill
-|   └── feature-flags/SKILL.md         # Feature flag lifecycle
+├── skills/                            # Development standards and agent skills
+│   ├── code-quality/SKILL.md          # Linting, TypeScript standards, naming, imports
+│   ├── frontend/SKILL.md              # React, Redux, styled-components, UI patterns
+│   ├── backend/SKILL.md               # NestJS, API patterns, DI, error handling
+│   ├── testing/SKILL.md               # Jest/Testing Library standards, faker, helpers
+│   ├── e2e-testing/SKILL.md           # Playwright standards, page objects, fixtures
+│   ├── git-safety/SKILL.md            # Protected-branch guardrails
+│   ├── branches/SKILL.md              # Branch naming
+│   ├── commits/SKILL.md               # Commit messages (Conventional Commits)
+│   ├── pull-requests/SKILL.md         # Pull request process
+│   ├── feature-flags/SKILL.md         # Feature flag lifecycle
+│   ├── tsconfigs/SKILL.md             # TypeScript configuration
+│   ├── type-check-baselines/SKILL.md  # TS error baseline workflow
 │   └── redis-ui-components/ -> node_modules/@redis-ui/components/skills/redis-ui-components
 │       ├── SKILL.md                   # Component catalog and usage patterns
 │       └── references/                # Per-component API docs (Button, Select, etc.)
@@ -47,19 +44,16 @@ CLAUDE.md -> AGENTS.md                 # Claude Code entry point
     ├── commit-message.md              # Commit message generation
     └── pull-request-review.md         # PR review workflow
 
-# Symlinks (all AI tools read from .ai/)
-.cursor/
-  ├── rules/ -> ../.ai/rules/          # Cursor AI (rules)
-  ├── commands/ -> ../.ai/commands/    # Cursor AI (commands)
-  └── skills/ -> ../.ai/skills/        # Cursor AI (skills)
-.augment/ -> .ai/                      # Augment AI
-.windsurfrules -> .ai/                 # Windsurf AI
-.github/copilot-instructions.md        # GitHub Copilot
+# Symlinks
+.claude/
+  ├── commands/ -> ../.ai/commands/    # Claude Code (commands)
+  └── skills/ -> ../.ai/skills/        # Claude Code (skills)
 .agents/
-  └── skills -> ../.ai/skills          # Codex repo skills
+  └── skills -> ../.ai/skills          # Codex (skills)
+.github/copilot-instructions.md        # GitHub Copilot reference (if used)
 ```
 
-**Codex note**: Codex reads `AGENTS.md` for project instructions and discovers repo skills from `.agents/skills`. Do not symlink `.ai/rules/` into `.codex/rules/`: Codex `.rules` files are command execution policies, not Markdown development guidelines.
+**Codex note**: Codex reads `AGENTS.md` for project instructions and discovers repo skills from `.agents/skills`. Do not create `.codex/rules/`: Codex `.rules` files are command execution policies, not Markdown development guidelines.
 
 ## For AI Agents
 
@@ -71,20 +65,23 @@ CLAUDE.md -> AGENTS.md                 # Claude Code entry point
 - Git workflow guidelines
 - Boundaries and best practices
 
-**Then refer to**: `.ai/rules/` for detailed guidelines on specific topics.
+**Then refer to**: `.ai/skills/` for detailed guidelines on specific topics.
 
 ## For Human Developers
 
-This directory contains comprehensive development standards that are automatically used by AI coding assistants. The rules are organized into modular files for easy maintenance:
+This directory contains comprehensive development standards used by AI coding assistants. Each topic lives in its own skill folder:
 
-- **Code Quality Standards**: `.ai/rules/code-quality.md` - TypeScript standards, import organization, best practices
-- **Frontend Patterns**: `.ai/rules/frontend.md` - React, Redux, styled-components, UI component usage
-- **Backend Patterns**: `.ai/rules/backend.md` - NestJS, dependency injection, API patterns
-- **Testing Standards**: `.ai/rules/testing.md` - Testing patterns, faker usage, test helpers
-- **Branch Naming**: `.ai/skills/branches/SKILL.md` - Branch naming conventions
-- **Commit Messages**: `.ai/rules/commits.md` - Commit message guidelines (Conventional Commits)
-- **Pull Request Process**: `.ai/rules/pull-requests.md` - PR creation and review guidelines
+- **Code Quality**: `.ai/skills/code-quality/SKILL.md` - TypeScript standards, import organization, best practices
+- **Frontend**: `.ai/skills/frontend/SKILL.md` - React, Redux, styled-components, UI component usage
+- **Backend**: `.ai/skills/backend/SKILL.md` - NestJS, dependency injection, API patterns
+- **Testing**: `.ai/skills/testing/SKILL.md` - Jest/Testing Library patterns, faker, helpers
+- **E2E Testing**: `.ai/skills/e2e-testing/SKILL.md` - Playwright standards, page objects
+- **Git Safety**: `.ai/skills/git-safety/SKILL.md` - Protected-branch guardrails
+- **Branches**: `.ai/skills/branches/SKILL.md` - Branch naming conventions
+- **Commits**: `.ai/skills/commits/SKILL.md` - Commit message guidelines (Conventional Commits)
+- **Pull Requests**: `.ai/skills/pull-requests/SKILL.md` - PR creation and review guidelines
 - **Feature Flags**: `.ai/skills/feature-flags/SKILL.md` - Adding, promoting, and removing feature flags
+- **TS Error Baselines**: `.ai/skills/type-check-baselines/SKILL.md` - TypeScript error baseline workflow
 - **Redis UI Components**: `.ai/skills/redis-ui-components/` - Component API references, props, and usage examples (sourced from `@redis-ui/components` npm package via symlink)
 
 ## MCP (Model Context Protocol) Setup
@@ -143,11 +140,11 @@ The `mcp.json` file configures these services:
 
 ## Updating These Rules
 
-To update AI rules:
+To update AI standards:
 
-1. **Edit files in `.ai/` only** (never edit symlinked files directly)
-2. **Update `AGENTS.md`** if you change commands, testing instructions, or boundaries
-3. Changes automatically propagate to all AI tools via symlinks
+1. **Edit `SKILL.md` files under `.ai/skills/`** (never edit symlinked files directly)
+2. **Update `AGENTS.md`** if you change commands, testing instructions, or the always-on rules block
+3. Changes propagate to Claude Code automatically via the `.claude/` symlinks
 4. Commit changes to version control
 
 **Remember**: These rules exist to maintain code quality and consistency. Follow them, but also use good judgment.

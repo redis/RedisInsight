@@ -1,8 +1,14 @@
 ---
-description: Playwright E2E testing standards, page object models, test structure, fixtures, and navigation patterns
-globs: tests/e2e-playwright/**/*.ts
-alwaysApply: false
+name: e2e-testing
+description: >-
+  Playwright end-to-end testing standards for RedisInsight: page
+  object models, test structure, fixtures, navigation patterns, and
+  flaky-test prevention. Use when editing files under
+  tests/e2e-playwright/**, writing Playwright tests, adding page
+  objects, or when the user mentions Playwright, E2E tests, page
+  objects, or end-to-end testing.
 ---
+
 
 # E2E Testing Standards (Playwright)
 

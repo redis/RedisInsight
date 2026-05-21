@@ -1,8 +1,15 @@
 ---
-description: Jest and Testing Library standards, test patterns, faker usage, renderComponent helper, and mocking
-globs: "redisinsight/**/*.spec.{ts,tsx}"
-alwaysApply: false
+name: testing
+description: >-
+  Unit/integration testing standards for RedisInsight using Jest and
+  Testing Library: test structure, the `renderComponent` helper, faker
+  for test data, mocking patterns, and `waitFor` instead of fixed
+  time waits. Use when writing or modifying any `*.spec.ts` or
+  `*.spec.tsx` file, when adding component or slice tests, when
+  debugging flaky tests, or when the user mentions jest, testing
+  library, faker, or test patterns.
 ---
+
 
 # Testing Standards and Practices
 

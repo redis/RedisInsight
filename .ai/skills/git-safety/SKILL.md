@@ -1,7 +1,15 @@
 ---
-description: Critical safety guardrails for protected branches - prevents direct commits, pushes, and force pushes to main, latest, and release branches
-alwaysApply: true
+name: git-safety
+description: >-
+  Critical safety guardrails for protected branches: never commit,
+  push, or force-push directly to main, latest, or release branches;
+  no destructive history rewrites without explicit user approval.
+  Use before any git operation that touches protected branches,
+  before force-push, reset --hard, history rewrite, or branch
+  deletion, or whenever the user asks about merging, pushing, or
+  release branches.
 ---
+
 
 # Git Safety Rules for AI Agents
 
@@ -54,4 +62,3 @@ If accidentally on a protected branch with uncommitted changes:
 - All changes must go through code review via Pull Requests
 - Direct pushes bypass CI/CD checks and team review
 - Mistakes on protected branches can affect the entire team and deployment pipeline
-

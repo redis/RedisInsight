@@ -1,8 +1,14 @@
 ---
-description: NestJS backend development patterns, module structure, services, controllers, DTOs, and error handling
-globs: redisinsight/api/**/*.ts
-alwaysApply: false
+name: backend
+description: >-
+  NestJS backend development patterns for the RedisInsight API:
+  module structure, services, controllers, DTOs, dependency injection,
+  and error handling. Use when editing any file under
+  redisinsight/api/**, writing or modifying NestJS modules,
+  controllers, services, DTOs, providers, or when the user mentions
+  the backend, API, or NestJS.
 ---
+
 
 # Backend Development (NestJS/API)
 

@@ -1,8 +1,14 @@
 ---
-description: React frontend development patterns, Redux, styled-components, UI components, and hooks
-globs: redisinsight/ui/**/*.{ts,tsx}
-alwaysApply: false
+name: frontend
+description: >-
+  React/Redux frontend development patterns for RedisInsight UI:
+  component folder structure, styled-components, hooks, named exports,
+  barrel files, layout components, and theme usage. Use when editing
+  any file under redisinsight/ui/**, writing or modifying React
+  components, Redux slices, styled-components, custom hooks, or when
+  the user mentions UI, frontend, React, Redux, or styled-components.
 ---
+
 
 # Frontend Development (React/Redux)
 

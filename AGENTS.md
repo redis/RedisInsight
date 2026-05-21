@@ -92,12 +92,35 @@ yarn test:api          # Backend tests
 
 **Fix any linting errors, type errors, or test failures before committing.**
 
-All detailed development standards are maintained in `.ai/rules/`:
+## Always-On Rules
 
-- **Code Quality**: `.ai/rules/code-quality.md` - Linting, TypeScript standards
-- **Frontend**: `.ai/rules/frontend.md` - React, Redux, UI patterns, styled-components
-- **Backend**: `.ai/rules/backend.md` - NestJS, API patterns, dependency injection
-- **Testing**: `.ai/rules/testing.md` - Testing standards, faker usage, test patterns
+These apply to every change in the repo. Skill files contain the full detail; the essentials are listed here so they're never missed.
+
+### Code quality (always)
+
+- Run `yarn lint` and `yarn type-check` before committing — both must pass.
+- TypeScript everywhere. Avoid `any`; use `unknown` if you must.
+- Naming: `PascalCase` components, `camelCase` functions/variables, `UPPER_SNAKE_CASE` constants, `is/has/should` prefix for booleans.
+- No `console.log` in production code (use `console.warn`/`error`).
+- Imports: external → built-ins → internal aliases (`uiSrc/*`, `apiClient`, `desktopSrc/*`) → relative → styles last. UI must not import from backend directly — use `apiClient`.
+- No magic numbers; extract duplicated strings to constants.
+
+### Git safety (always)
+
+- **Never commit, push, or force-push directly to `main`, `latest`, or `release/*`.** Always create a feature branch first.
+- Verify current branch with `git branch --show-current` before any push.
+- All changes go through pull requests.
+
+## Skills
+
+All detailed development standards are exposed as skills under `.ai/skills/`. Claude Code auto-discovers them; each skill triggers when its description matches the task.
+
+- **Code Quality**: `.ai/skills/code-quality/SKILL.md` - Linting, TypeScript standards, naming, import order
+- **Frontend**: `.ai/skills/frontend/SKILL.md` - React, Redux, UI patterns, styled-components
+- **Backend**: `.ai/skills/backend/SKILL.md` - NestJS, API patterns, dependency injection
+- **Testing**: `.ai/skills/testing/SKILL.md` - Jest/Testing Library standards, faker, test patterns
+- **E2E Testing**: `.ai/skills/e2e-testing/SKILL.md` - Playwright standards, page objects
+- **Git Safety**: `.ai/skills/git-safety/SKILL.md` - Protected-branch guardrails (detail)
 - **Branches**: `.ai/skills/branches/SKILL.md` - Branch naming conventions
 - **Commits**: `.ai/skills/commits/SKILL.md` - Commit message guidelines
 - **Pull Requests**: `.ai/skills/pull-requests/SKILL.md` - PR process and review guidelines
