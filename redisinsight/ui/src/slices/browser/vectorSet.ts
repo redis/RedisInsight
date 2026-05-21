@@ -14,6 +14,7 @@ import {
   stringToBuffer,
 } from 'uiSrc/utils'
 import successMessages from 'uiSrc/components/notifications/success-messages'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import {
   deleteKeyFromList,
@@ -423,6 +424,12 @@ export function deleteVectorSetElements(
       if (isStatusSuccessful(status)) {
         const newTotalValue = state.browser.vectorSet.data.total - data.affected
 
+        sendEventTelemetry({
+          event: TelemetryEvent.VECTOR_SET_ELEMENT_DELETED,
+          eventData: {
+            databaseId: state.connections.instances.connectedInstance?.id,
+          },
+        })
         onSuccessAction?.(newTotalValue)
         dispatch(removeVectorSetElementsSuccess())
         dispatch(removeElementsFromList(elements))

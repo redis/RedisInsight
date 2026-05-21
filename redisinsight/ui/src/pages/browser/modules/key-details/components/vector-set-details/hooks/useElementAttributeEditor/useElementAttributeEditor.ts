@@ -3,7 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { setVectorSetElementAttribute } from 'uiSrc/slices/browser/vectorSet'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { bufferToString } from 'uiSrc/utils'
 
 import {
@@ -16,6 +18,7 @@ export const useElementAttributeEditor = ({
 }: UseElementAttributeEditorParams): UseElementAttributeEditorResult => {
   const dispatch = useDispatch()
   const { name: keyName } = useSelector(selectedKeyDataSelector) ?? {}
+  const { id: databaseId } = useSelector(connectedInstanceSelector)
 
   const [isEditing, setIsEditing] = useState(false)
   const [value, setValue] = useState('')
@@ -48,13 +51,17 @@ export const useElementAttributeEditor = ({
         element.name,
         trimmed,
         () => {
+          sendEventTelemetry({
+            event: TelemetryEvent.VECTOR_SET_ELEMENT_ATTRIBUTES_EDITED,
+            eventData: { databaseId },
+          })
           setIsEditing(false)
           setValue(trimmed)
           setSavedValue(trimmed)
         },
       ),
     )
-  }, [dispatch, element, keyName, value, isSaveDisabled])
+  }, [databaseId, dispatch, element, keyName, value, isSaveDisabled])
 
   return {
     isEditing,

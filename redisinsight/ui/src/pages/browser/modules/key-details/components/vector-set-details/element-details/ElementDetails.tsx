@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
@@ -20,6 +20,8 @@ import { RiTooltip } from 'uiSrc/components'
 import { downloadFile } from 'uiSrc/utils/dom/downloadFile'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { fetchDownloadVectorEmbedding } from 'uiSrc/slices/browser/vectorSet'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { bufferToString } from 'uiSrc/utils'
 import { AttributeEditor } from '../attribute-editor'
 import { useElementAttributeEditor } from '../hooks'
@@ -36,6 +38,7 @@ const ElementDetails = ({
 }: ElementDetailsProps) => {
   const dispatch = useDispatch()
   const { name: keyName } = useSelector(selectedKeyDataSelector) ?? {}
+  const { id: databaseId } = useSelector(connectedInstanceSelector)
 
   const {
     isEditing,
@@ -52,6 +55,29 @@ const ElementDetails = ({
     [element],
   )
 
+  // Fire vector + attributes "viewed" events once per drawer-open per element.
+  // Both fields are shown together in this drawer, so opening counts as
+  // viewing both.
+  const lastViewedElementRef = useRef<string | undefined>(undefined)
+  useEffect(() => {
+    if (!isOpen || !element) {
+      lastViewedElementRef.current = undefined
+      return
+    }
+    if (lastViewedElementRef.current === elementName) {
+      return
+    }
+    lastViewedElementRef.current = elementName
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SET_ELEMENT_VECTOR_VIEWED,
+      eventData: { databaseId },
+    })
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SET_ELEMENT_ATTRIBUTES_VIEWED,
+      eventData: { databaseId },
+    })
+  }, [databaseId, element, elementName, isOpen])
+
   const isTruncatedVector = element?.vectorTruncated ?? false
 
   const vectorText = useMemo(
@@ -61,6 +87,10 @@ const ElementDetails = ({
 
   const handleDownloadVector = () => {
     if (!element || !keyName) return
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SET_ELEMENT_VECTOR_DOWNLOADED,
+      eventData: { databaseId },
+    })
     dispatch(
       fetchDownloadVectorEmbedding(
         keyName as RedisResponseBuffer,
@@ -68,6 +98,13 @@ const ElementDetails = ({
         downloadFile,
       ),
     )
+  }
+
+  const handleCopyVector = () => {
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SET_ELEMENT_VECTOR_COPIED,
+      eventData: { databaseId },
+    })
   }
 
   return (
@@ -102,6 +139,7 @@ const ElementDetails = ({
                       <CopyButton
                         copy={vectorText}
                         aria-label="Copy vector"
+                        onCopy={handleCopyVector}
                         data-testid="vector-set-copy-vector-btn"
                       />
                     )}
