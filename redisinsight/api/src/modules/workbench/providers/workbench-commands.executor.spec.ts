@@ -1,7 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { get } from 'lodash';
 import {
+  mockDatabase,
   mockDatabaseClientFactory,
+  mockDatabaseService,
   mockFtInfoAnalyticsData,
   mockRedisFtInfoReply,
   mockSessionMetadata,
@@ -26,6 +28,7 @@ import {
   FormatterTypes,
 } from 'src/common/transformers';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
+import { DatabaseService } from 'src/modules/database/database.service';
 import {
   CommandExecutionType,
   RunQueryMode,
@@ -68,6 +71,10 @@ describe('WorkbenchCommandsExecutor', () => {
           provide: DatabaseClientFactory,
           useFactory: mockDatabaseClientFactory,
         },
+        {
+          provide: DatabaseService,
+          useFactory: mockDatabaseService,
+        },
       ],
     }).compile();
 
@@ -102,7 +109,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvents,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockWorkbenchClientMetadata.databaseId,
+          mockDatabase,
           CommandExecutionType.Workbench,
           [
             {
@@ -118,7 +125,7 @@ describe('WorkbenchCommandsExecutor', () => {
         );
         expect(mockAnalyticsService.sendIndexInfoEvent).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockWorkbenchClientMetadata.databaseId,
+          mockDatabase,
           CommandExecutionType.Workbench,
           mockFtInfoAnalyticsData,
         );
@@ -143,7 +150,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvents,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockWorkbenchClientMetadata.databaseId,
+          mockDatabase,
           CommandExecutionType.Workbench,
           [
             {
@@ -180,7 +187,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvent,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockWorkbenchClientMetadata.databaseId,
+          mockDatabase,
           CommandExecutionType.Workbench,
           {
             response: MOCK_ERROR_MESSAGE,
@@ -219,7 +226,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvent,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockWorkbenchClientMetadata.databaseId,
+          mockDatabase,
           CommandExecutionType.Workbench,
           {
             response: MOCK_ERROR_MESSAGE,
@@ -258,7 +265,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvents,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockWorkbenchClientMetadata.databaseId,
+          mockDatabase,
           CommandExecutionType.Workbench,
           [
             {
@@ -298,7 +305,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvents,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockWorkbenchClientMetadata.databaseId,
+          mockDatabase,
           CommandExecutionType.Workbench,
           [
             {
@@ -335,7 +342,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvent,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockWorkbenchClientMetadata.databaseId,
+          mockDatabase,
           CommandExecutionType.Workbench,
           {
             response: MOCK_ERROR_MESSAGE,
@@ -370,7 +377,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvent,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockWorkbenchClientMetadata.databaseId,
+          mockDatabase,
           CommandExecutionType.Workbench,
           {
             response: ERROR_MESSAGES.CLI_UNTERMINATED_QUOTES(),

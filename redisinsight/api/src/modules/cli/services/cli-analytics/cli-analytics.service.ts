@@ -9,8 +9,8 @@ import {
 import { CommandsService } from 'src/modules/commands/commands.service';
 import { CommandTelemetryBaseService } from 'src/modules/analytics/command.telemetry.base.service';
 import { SessionMetadata } from 'src/common/models';
-import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
-import { resolveEnvironment } from 'src/modules/database/utils/resolve-environment';
+import { Database } from 'src/modules/database/models/database';
+import { Environment } from 'src/modules/database/entities/database.entity';
 import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import { RedisClient } from 'src/modules/redis/client';
 import { CliOutputFormatterTypes } from 'src/modules/cli/services/cli-business/output-formatter/output-formatter.interface';
@@ -25,7 +25,6 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
   constructor(
     protected eventEmitter: EventEmitter2,
     protected readonly commandsService: CommandsService,
-    private readonly databaseRepository: DatabaseRepository,
     private readonly dangerousCommandsProvider: DangerousCommandsProvider,
   ) {
     super(eventEmitter, commandsService);
@@ -109,21 +108,17 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
 
   public async sendCommandExecutedEvent(
     sessionMetadata: SessionMetadata,
-    databaseId: string,
+    database: Database,
     client: RedisClient | undefined,
     additionalData: CliCommandEventData = {},
   ): Promise<void> {
     try {
       const { command } = additionalData;
       this.sendEvent(sessionMetadata, TelemetryEvents.CliCommandExecuted, {
-        databaseId,
+        databaseId: database.id,
         ...(await this.getCommandAdditionalInfo(command)),
         ...additionalData,
-        environment: await resolveEnvironment(
-          this.databaseRepository,
-          sessionMetadata,
-          databaseId,
-        ),
+        environment: database.environment ?? Environment.Unspecified,
         isDangerous: (await this.dangerousCommandsProvider.isDangerous(
           client,
           command,
@@ -138,7 +133,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
 
   public async sendCommandErrorEvent(
     sessionMetadata: SessionMetadata,
-    databaseId: string,
+    database: Database,
     error: ReplyError,
     client: RedisClient | undefined,
     additionalData: CliCommandEventData = {},
@@ -146,16 +141,12 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
     try {
       const { command } = additionalData;
       this.sendEvent(sessionMetadata, TelemetryEvents.CliCommandErrorReceived, {
-        databaseId,
+        databaseId: database.id,
         error: error?.name,
         command: error?.command?.name,
         ...(await this.getCommandAdditionalInfo(command)),
         ...additionalData,
-        environment: await resolveEnvironment(
-          this.databaseRepository,
-          sessionMetadata,
-          databaseId,
-        ),
+        environment: database.environment ?? Environment.Unspecified,
         isDangerous: (await this.dangerousCommandsProvider.isDangerous(
           client,
           command,
@@ -170,7 +161,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
 
   public async sendClusterCommandExecutedEvent(
     sessionMetadata: SessionMetadata,
-    databaseId: string,
+    database: Database,
     result: ICliExecResultFromNode,
     client: RedisClient | undefined,
     additionalData: CliCommandEventData = {},
@@ -178,11 +169,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
     const { status, error } = result;
     try {
       const { command } = additionalData;
-      const environment = await resolveEnvironment(
-        this.databaseRepository,
-        sessionMetadata,
-        databaseId,
-      );
+      const environment = database.environment ?? Environment.Unspecified;
       const isDangerous = (await this.dangerousCommandsProvider.isDangerous(
         client,
         command,
@@ -194,7 +181,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
           sessionMetadata,
           TelemetryEvents.CliClusterNodeCommandExecuted,
           {
-            databaseId,
+            databaseId: database.id,
             ...(await this.getCommandAdditionalInfo(command)),
             ...additionalData,
             environment,
@@ -207,7 +194,7 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
           sessionMetadata,
           TelemetryEvents.CliCommandErrorReceived,
           {
-            databaseId,
+            databaseId: database.id,
             error: error.name,
             command: error?.command?.name,
             ...(await this.getCommandAdditionalInfo(command)),

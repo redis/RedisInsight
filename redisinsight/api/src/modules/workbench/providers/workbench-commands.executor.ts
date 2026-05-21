@@ -23,6 +23,8 @@ import { RedisClient } from 'src/modules/redis/client';
 import { getAnalyticsDataFromIndexInfo } from 'src/utils';
 import { RunQueryMode } from 'src/modules/workbench/models/command-execution';
 import { WorkbenchAnalytics } from 'src/modules/workbench/workbench.analytics';
+import { DatabaseService } from 'src/modules/database/database.service';
+import { Database } from 'src/modules/database/models/database';
 
 @Injectable()
 export class WorkbenchCommandsExecutor {
@@ -30,7 +32,10 @@ export class WorkbenchCommandsExecutor {
 
   private formatterManager: FormatterManager;
 
-  constructor(private analyticsService: WorkbenchAnalytics) {
+  constructor(
+    private analyticsService: WorkbenchAnalytics,
+    private readonly databaseService: DatabaseService,
+  ) {
     this.formatterManager = new FormatterManager();
     this.formatterManager.addStrategy(
       FormatterTypes.UTF8,
@@ -56,6 +61,19 @@ export class WorkbenchCommandsExecutor {
     this.logger.debug('Executing workbench command.');
     let command = unknownCommand;
     let commandArgs: string[] = [];
+    let database: Database | undefined;
+
+    // Resolve once so analytics emits get environment without each method
+    // doing its own repository lookup. Failure is non-fatal — analytics
+    // calls check for undefined and skip the emit.
+    try {
+      database = await this.databaseService.get(
+        client.clientMetadata.sessionMetadata,
+        client.clientMetadata.databaseId,
+      );
+    } catch (e) {
+      // proceed without database — environment will be unknown
+    }
 
     try {
       const { command: commandLine, mode } = dto;
@@ -76,25 +94,27 @@ export class WorkbenchCommandsExecutor {
       ];
 
       this.logger.debug('Succeed to execute workbench command.');
-      this.analyticsService.sendCommandExecutedEvents(
-        client.clientMetadata.sessionMetadata,
-        client.clientMetadata.databaseId,
-        dto.type,
-        result,
-        client,
-        {
-          command,
-          rawMode: mode === RunQueryMode.Raw,
-        },
-      );
-
-      if (command.toLowerCase() === 'ft.info') {
-        this.analyticsService.sendIndexInfoEvent(
+      if (database) {
+        this.analyticsService.sendCommandExecutedEvents(
           client.clientMetadata.sessionMetadata,
-          client.clientMetadata.databaseId,
+          database,
           dto.type,
-          getAnalyticsDataFromIndexInfo(response as string[]),
+          result,
+          client,
+          {
+            command,
+            rawMode: mode === RunQueryMode.Raw,
+          },
         );
+
+        if (command.toLowerCase() === 'ft.info') {
+          this.analyticsService.sendIndexInfoEvent(
+            client.clientMetadata.sessionMetadata,
+            database,
+            dto.type,
+            getAnalyticsDataFromIndexInfo(response as string[]),
+          );
+        }
       }
 
       return result;
@@ -105,17 +125,19 @@ export class WorkbenchCommandsExecutor {
         response: error.message,
         status: CommandExecutionStatus.Fail,
       };
-      this.analyticsService.sendCommandExecutedEvent(
-        client.clientMetadata.sessionMetadata,
-        client.clientMetadata.databaseId,
-        dto.type,
-        { ...errorResult, error },
-        client,
-        {
-          command,
-          rawMode: dto.mode === RunQueryMode.Raw,
-        },
-      );
+      if (database) {
+        this.analyticsService.sendCommandExecutedEvent(
+          client.clientMetadata.sessionMetadata,
+          database,
+          dto.type,
+          { ...errorResult, error },
+          client,
+          {
+            command,
+            rawMode: dto.mode === RunQueryMode.Raw,
+          },
+        );
+      }
 
       if (
         error instanceof CommandParsingError ||

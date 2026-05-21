@@ -6,7 +6,6 @@ import {
   mockDatabase,
   MockType,
   mockSessionMetadata,
-  mockDatabaseRepository,
   mockDangerousCommandsProvider,
   mockStandaloneRedisClient,
 } from 'src/__mocks__';
@@ -18,7 +17,6 @@ import {
   ICliExecResultFromNode,
 } from 'src/modules/cli/dto/cli.dto';
 import { CommandsService } from 'src/modules/commands/commands.service';
-import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 import { Environment } from 'src/modules/database/entities/database.entity';
 import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import { CliAnalyticsService } from './cli-analytics.service';
@@ -42,7 +40,6 @@ describe('CliAnalyticsService', () => {
   let sendEventMethod: jest.SpyInstance<CliAnalyticsService, unknown[]>;
   let sendFailedEventMethod: jest.SpyInstance<CliAnalyticsService, unknown[]>;
   let commandsService: MockType<CommandsService>;
-  let databaseRepository: MockType<DatabaseRepository>;
   let dangerousCommandsProvider: MockType<DangerousCommandsProvider>;
 
   beforeEach(async () => {
@@ -53,10 +50,6 @@ describe('CliAnalyticsService', () => {
           useFactory: () => mockCommandsService,
         },
         {
-          provide: DatabaseRepository,
-          useFactory: mockDatabaseRepository,
-        },
-        {
           provide: DangerousCommandsProvider,
           useFactory: mockDangerousCommandsProvider,
         },
@@ -65,7 +58,6 @@ describe('CliAnalyticsService', () => {
       ],
     }).compile();
 
-    databaseRepository = module.get(DatabaseRepository);
     dangerousCommandsProvider = module.get(DangerousCommandsProvider);
 
     service = module.get<CliAnalyticsService>(CliAnalyticsService);
@@ -277,7 +269,7 @@ describe('CliAnalyticsService', () => {
     it('should emit CliCommandExecuted event', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        databaseId,
+        mockDatabase,
         mockStandaloneRedisClient,
         mockAdditionalData,
       );
@@ -299,7 +291,7 @@ describe('CliAnalyticsService', () => {
     it('should emit CliCommandExecuted event without additional data', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        databaseId,
+        mockDatabase,
         mockStandaloneRedisClient,
       );
 
@@ -314,14 +306,9 @@ describe('CliAnalyticsService', () => {
       );
     });
     it('should emit environment=production when database is marked production', async () => {
-      databaseRepository.get.mockResolvedValueOnce({
-        ...mockDatabase,
-        environment: Environment.Production,
-      });
-
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        databaseId,
+        { ...mockDatabase, environment: Environment.Production },
         mockStandaloneRedisClient,
         mockAdditionalData,
       );
@@ -337,7 +324,7 @@ describe('CliAnalyticsService', () => {
 
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        databaseId,
+        mockDatabase,
         mockStandaloneRedisClient,
         mockAdditionalData,
       );
@@ -348,29 +335,13 @@ describe('CliAnalyticsService', () => {
         expect.objectContaining({ isDangerous: 'true' }),
       );
     });
-    it('should default environment to unspecified when database lookup throws', async () => {
-      databaseRepository.get.mockRejectedValueOnce(new Error('boom'));
-
-      await service.sendCommandExecutedEvent(
-        mockSessionMetadata,
-        databaseId,
-        mockStandaloneRedisClient,
-        mockAdditionalData,
-      );
-
-      expect(sendEventMethod).toHaveBeenCalledWith(
-        mockSessionMetadata,
-        TelemetryEvents.CliCommandExecuted,
-        expect.objectContaining({ environment: Environment.Unspecified }),
-      );
-    });
   });
 
   describe('sendCliCommandErrorEvent', () => {
     it('should emit CliCommandError event', async () => {
       await service.sendCommandErrorEvent(
         mockSessionMetadata,
-        databaseId,
+        mockDatabase,
         redisReplyError,
         mockStandaloneRedisClient,
         mockAdditionalData,
@@ -394,7 +365,7 @@ describe('CliAnalyticsService', () => {
     it('should emit CliCommandError event without additional data', async () => {
       await service.sendCommandErrorEvent(
         mockSessionMetadata,
-        databaseId,
+        mockDatabase,
         redisReplyError,
         mockStandaloneRedisClient,
       );
@@ -415,7 +386,7 @@ describe('CliAnalyticsService', () => {
       const error: any = CommandParsingError;
       await service.sendCommandErrorEvent(
         mockSessionMetadata,
-        databaseId,
+        mockDatabase,
         error,
         mockStandaloneRedisClient,
         mockAdditionalData,
@@ -489,7 +460,7 @@ describe('CliAnalyticsService', () => {
 
       await service.sendClusterCommandExecutedEvent(
         mockSessionMetadata,
-        databaseId,
+        mockDatabase,
         nodExecResult,
         mockStandaloneRedisClient,
         mockAdditionalData,
@@ -520,7 +491,7 @@ describe('CliAnalyticsService', () => {
 
       await service.sendClusterCommandExecutedEvent(
         mockSessionMetadata,
-        databaseId,
+        mockDatabase,
         nodExecResult,
         mockStandaloneRedisClient,
       );
@@ -548,7 +519,7 @@ describe('CliAnalyticsService', () => {
 
       await service.sendClusterCommandExecutedEvent(
         mockSessionMetadata,
-        databaseId,
+        mockDatabase,
         nodExecResult,
         mockStandaloneRedisClient,
       );
@@ -573,7 +544,7 @@ describe('CliAnalyticsService', () => {
       };
       await service.sendClusterCommandExecutedEvent(
         mockSessionMetadata,
-        databaseId,
+        mockDatabase,
         nodExecResult,
         mockStandaloneRedisClient,
       );

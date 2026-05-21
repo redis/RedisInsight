@@ -29,6 +29,8 @@ import { ClientNotFoundErrorException } from 'src/modules/redis/exceptions/clien
 import { DatabaseRecommendationService } from 'src/modules/database-recommendation/database-recommendation.service';
 import { RedisClient } from 'src/modules/redis/client';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
+import { DatabaseService } from 'src/modules/database/database.service';
+import { Database } from 'src/modules/database/models/database';
 import { v4 as uuidv4 } from 'uuid';
 import { getAnalyticsDataFromIndexInfo } from 'src/utils';
 import { OutputFormatterManager } from './output-formatter/output-formatter-manager';
@@ -47,6 +49,7 @@ export class CliBusinessService {
     private recommendationService: DatabaseRecommendationService,
     private readonly commandsService: CommandsService,
     private databaseClientFactory: DatabaseClientFactory,
+    private readonly databaseService: DatabaseService,
   ) {
     this.outputFormatterManager = new OutputFormatterManager();
     this.outputFormatterManager.addStrategy(
@@ -189,10 +192,23 @@ export class CliBusinessService {
     let command: string = unknownCommand;
     let args: string[] = [];
     let client: RedisClient | undefined;
+    let database: Database | undefined;
 
     try {
       client =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+
+      // Resolve once so analytics emits get environment without each method
+      // doing its own repository lookup. Failure is non-fatal — analytics
+      // calls check for undefined and skip the emit.
+      try {
+        database = await this.databaseService.get(
+          clientMetadata.sessionMetadata,
+          clientMetadata.databaseId,
+        );
+      } catch (e) {
+        // proceed without database — environment will be unknown
+      }
 
       const formatter = this.outputFormatterManager.getStrategy(outputFormat);
       [command, ...args] = splitCliCommandLine(commandLine);
@@ -211,15 +227,17 @@ export class CliBusinessService {
         replyEncoding,
       });
 
-      this.cliAnalyticsService.sendCommandExecutedEvent(
-        clientMetadata.sessionMetadata,
-        clientMetadata.databaseId,
-        client,
-        {
-          command,
-          outputFormat,
-        },
-      );
+      if (database) {
+        this.cliAnalyticsService.sendCommandExecutedEvent(
+          clientMetadata.sessionMetadata,
+          database,
+          client,
+          {
+            command,
+            outputFormat,
+          },
+        );
+      }
 
       if (command.toLowerCase() === 'ft.info') {
         this.cliAnalyticsService.sendIndexInfoEvent(
@@ -250,16 +268,18 @@ export class CliBusinessService {
         error instanceof CommandNotSupportedError ||
         error?.name === 'ReplyError'
       ) {
-        this.cliAnalyticsService.sendCommandErrorEvent(
-          clientMetadata.sessionMetadata,
-          clientMetadata.databaseId,
-          error,
-          client,
-          {
-            command,
-            outputFormat,
-          },
-        );
+        if (database) {
+          this.cliAnalyticsService.sendCommandErrorEvent(
+            clientMetadata.sessionMetadata,
+            database,
+            error,
+            client,
+            {
+              command,
+              outputFormat,
+            },
+          );
+        }
 
         return { response: error.message, status: CommandExecutionStatus.Fail };
       }

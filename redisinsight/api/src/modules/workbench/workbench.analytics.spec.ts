@@ -6,7 +6,6 @@ import {
   mockDatabase,
   MockType,
   mockSessionMetadata,
-  mockDatabaseRepository,
   mockDangerousCommandsProvider,
   mockStandaloneRedisClient,
 } from 'src/__mocks__';
@@ -15,7 +14,6 @@ import { ReplyError } from 'src/models';
 import { CommandExecutionStatus } from 'src/modules/cli/dto/cli.dto';
 import { CommandParsingError } from 'src/modules/cli/constants/errors';
 import { CommandsService } from 'src/modules/commands/commands.service';
-import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 import { Environment } from 'src/modules/database/entities/database.entity';
 import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import { WorkbenchAnalytics } from './workbench.analytics';
@@ -36,7 +34,6 @@ describe('WorkbenchAnalytics', () => {
   let sendEventMethod: jest.SpyInstance<WorkbenchAnalytics, unknown[]>;
   let sendFailedEventMethod: jest.SpyInstance<WorkbenchAnalytics, unknown[]>;
   let commandsService: MockType<CommandsService>;
-  let databaseRepository: MockType<DatabaseRepository>;
   let dangerousCommandsProvider: MockType<DangerousCommandsProvider>;
 
   beforeEach(async () => {
@@ -50,10 +47,6 @@ describe('WorkbenchAnalytics', () => {
           useFactory: () => mockCommandsService,
         },
         {
-          provide: DatabaseRepository,
-          useFactory: mockDatabaseRepository,
-        },
-        {
           provide: DangerousCommandsProvider,
           useFactory: mockDangerousCommandsProvider,
         },
@@ -61,7 +54,6 @@ describe('WorkbenchAnalytics', () => {
       ],
     }).compile();
 
-    databaseRepository = module.get(DatabaseRepository);
     dangerousCommandsProvider = module.get(DangerousCommandsProvider);
 
     service = module.get<WorkbenchAnalytics>(WorkbenchAnalytics);
@@ -104,7 +96,7 @@ describe('WorkbenchAnalytics', () => {
     it('should emit index info event for Workbench commands', async () => {
       await service.sendIndexInfoEvent(
         mockSessionMetadata,
-        instanceId,
+        mockDatabase,
         CommandExecutionType.Workbench,
         {
           any: 'fields',
@@ -124,7 +116,7 @@ describe('WorkbenchAnalytics', () => {
     it('should emit index info event for Search commands', async () => {
       await service.sendIndexInfoEvent(
         mockSessionMetadata,
-        instanceId,
+        mockDatabase,
         CommandExecutionType.Search,
         {
           any: 'fields',
@@ -144,7 +136,7 @@ describe('WorkbenchAnalytics', () => {
     it('should not fail and should not emit when no data to send', async () => {
       await service.sendIndexInfoEvent(
         mockSessionMetadata,
-        instanceId,
+        mockDatabase,
         CommandExecutionType.Workbench,
         null,
       );
@@ -156,7 +148,7 @@ describe('WorkbenchAnalytics', () => {
     it('should emit multiple Workbench events', async () => {
       await service.sendCommandExecutedEvents(
         mockSessionMetadata,
-        instanceId,
+        mockDatabase,
         CommandExecutionType.Workbench,
         [
           { response: 'OK', status: CommandExecutionStatus.Success },
@@ -184,7 +176,7 @@ describe('WorkbenchAnalytics', () => {
     it('should emit multiple Search events', async () => {
       await service.sendCommandExecutedEvents(
         mockSessionMetadata,
-        instanceId,
+        mockDatabase,
         CommandExecutionType.Search,
         [
           { response: 'OK', status: CommandExecutionStatus.Success },
@@ -214,7 +206,7 @@ describe('WorkbenchAnalytics', () => {
     it('should emit WorkbenchCommandExecuted event', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        instanceId,
+        mockDatabase,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
         mockStandaloneRedisClient,
@@ -242,7 +234,7 @@ describe('WorkbenchAnalytics', () => {
 
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        instanceId,
+        mockDatabase,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
         mockStandaloneRedisClient,
@@ -263,7 +255,7 @@ describe('WorkbenchAnalytics', () => {
     it('should emit WorkbenchCommandExecuted event (module with cap.)', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        instanceId,
+        mockDatabase,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
         mockStandaloneRedisClient,
@@ -287,7 +279,7 @@ describe('WorkbenchAnalytics', () => {
     it('should emit WorkbenchCommandExecuted event (module w\\o cap.)', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        instanceId,
+        mockDatabase,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
         mockStandaloneRedisClient,
@@ -311,7 +303,7 @@ describe('WorkbenchAnalytics', () => {
     it('should emit WorkbenchCommandExecuted event (custom module)', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        instanceId,
+        mockDatabase,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
         mockStandaloneRedisClient,
@@ -335,7 +327,7 @@ describe('WorkbenchAnalytics', () => {
     it('should emit WorkbenchCommandExecuted event without additional data', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        instanceId,
+        mockDatabase,
         CommandExecutionType.Workbench,
         {
           response: 'OK',
@@ -357,7 +349,7 @@ describe('WorkbenchAnalytics', () => {
     it('should emit WorkbenchCommandError event', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        instanceId,
+        mockDatabase,
         CommandExecutionType.Workbench,
         {
           response: 'Error',
@@ -386,7 +378,7 @@ describe('WorkbenchAnalytics', () => {
     it('should emit WorkbenchCommandError event without additional data', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        instanceId,
+        mockDatabase,
         CommandExecutionType.Workbench,
         {
           response: 'Error',
@@ -412,7 +404,7 @@ describe('WorkbenchAnalytics', () => {
       const error: any = CommandParsingError;
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        instanceId,
+        mockDatabase,
         CommandExecutionType.Workbench,
         {
           response: 'Error',
@@ -438,7 +430,7 @@ describe('WorkbenchAnalytics', () => {
       const error = new ServiceUnavailableException();
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        instanceId,
+        mockDatabase,
         CommandExecutionType.Workbench,
         {
           response: 'Error',
@@ -462,7 +454,7 @@ describe('WorkbenchAnalytics', () => {
     it('should emit SearchCommandExecuted event', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        instanceId,
+        mockDatabase,
         CommandExecutionType.Search,
         { response: 'OK', status: CommandExecutionStatus.Success },
         mockStandaloneRedisClient,
@@ -486,7 +478,7 @@ describe('WorkbenchAnalytics', () => {
     it('should emit SearchCommandError event', async () => {
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        instanceId,
+        mockDatabase,
         CommandExecutionType.Search,
         {
           response: 'Error',
@@ -515,14 +507,9 @@ describe('WorkbenchAnalytics', () => {
   });
   describe('environment and isDangerous flag enrichment', () => {
     it('should emit environment=production when database is marked production', async () => {
-      databaseRepository.get.mockResolvedValueOnce({
-        ...mockDatabase,
-        environment: Environment.Production,
-      });
-
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        instanceId,
+        { ...mockDatabase, environment: Environment.Production },
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
         mockStandaloneRedisClient,
@@ -541,7 +528,7 @@ describe('WorkbenchAnalytics', () => {
 
       await service.sendCommandExecutedEvent(
         mockSessionMetadata,
-        instanceId,
+        mockDatabase,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
         mockStandaloneRedisClient,
@@ -552,25 +539,6 @@ describe('WorkbenchAnalytics', () => {
         mockSessionMetadata,
         TelemetryEvents.WorkbenchCommandExecuted,
         expect.objectContaining({ isDangerous: 'true' }),
-      );
-    });
-
-    it('should default environment to unspecified when lookup throws', async () => {
-      databaseRepository.get.mockRejectedValueOnce(new Error('boom'));
-
-      await service.sendCommandExecutedEvent(
-        mockSessionMetadata,
-        instanceId,
-        CommandExecutionType.Workbench,
-        { response: 'OK', status: CommandExecutionStatus.Success },
-        mockStandaloneRedisClient,
-        { command: 'set' },
-      );
-
-      expect(sendEventMethod).toHaveBeenCalledWith(
-        mockSessionMetadata,
-        TelemetryEvents.WorkbenchCommandExecuted,
-        expect.objectContaining({ environment: Environment.Unspecified }),
       );
     });
   });
