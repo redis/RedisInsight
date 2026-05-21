@@ -464,15 +464,6 @@ export class VectorSetService {
   }
 
   /**
-   * Back-fill the `attributes` field on each match by issuing one VGETATTR
-   * per element in a single pipeline. Used as the fallback path for Redis
-   * 8.0.0–8.0.2 where VSIM rejects the WITHATTRIBS option.
-   *
-   * Mutates `matches` in place. Per-element errors are swallowed (logged at
-   * debug) so a single failing VGETATTR cannot drop the whole search reply;
-   * elements without attributes simply keep `attributes` undefined.
-   */
-  /**
    * Translate a thrown Redis error into the appropriate HTTP exception:
    * `WRONGTYPE` becomes a 400 (the client targeted a non-vector-set key), and
    * everything else flows through `catchAclError` so NOPERM / unknown-command
@@ -486,6 +477,15 @@ export class VectorSetService {
     throw catchAclError(error);
   }
 
+  /**
+   * Back-fill the `attributes` field on each match by issuing one VGETATTR
+   * per element in a single pipeline. Used as the fallback path for Redis
+   * 8.0.0–8.0.2 where VSIM rejects the WITHATTRIBS option.
+   *
+   * Mutates `matches` in place. Per-element errors are swallowed (logged at
+   * debug) so a single failing VGETATTR cannot drop the whole search reply;
+   * elements without attributes simply keep `attributes` undefined.
+   */
   private async fetchAttributesForMatches(
     client: RedisClient,
     keyName: Buffer | string,
