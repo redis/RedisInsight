@@ -1,5 +1,6 @@
 import { getVisualizationsByCommand } from 'uiSrc/utils'
 import { IPluginVisualization } from 'uiSrc/slices/interfaces'
+import geodataPackage from '../../packages/geodata/package.json'
 
 describe('getVisualizationsByCommand', () => {
   const boundedGeoRadiusRegex =
@@ -13,14 +14,14 @@ describe('getVisualizationsByCommand', () => {
     String.raw`[-+$A-Za-z0-9_.]{1,128}\s+` +
     String.raw`[-+$A-Za-z0-9_.]{1,128}\s+` +
     String.raw`[-+$A-Za-z0-9_.]{1,128}\s+(?:m|km|mi|ft)\b`
-  const redisTokenRegex = String.raw`(?:"[^"]{0,512}"|'[^']{0,512}'|\S{1,512})`
+  const redisTokenRegex = String.raw`(?:"[^"\r\n]{0,512}"|'[^'\r\n]{0,512}'|[^\s"']{1,512})`
   const nativeWithCoordRegex =
     String.raw`(?:\bGEOSEARCH\b\s+${redisTokenRegex}\s+` +
     String.raw`(?:FROMLONLAT\s+${redisTokenRegex}\s+${redisTokenRegex}|FROMMEMBER\s+${redisTokenRegex})\s+` +
     String.raw`(?:BYRADIUS\s+${redisTokenRegex}\s+${redisTokenRegex}|BYBOX\s+${redisTokenRegex}\s+${redisTokenRegex}\s+${redisTokenRegex})|` +
     String.raw`\bGEORADIUS(?:_RO)?\b\s+${redisTokenRegex}\s+${redisTokenRegex}\s+${redisTokenRegex}\s+${redisTokenRegex}\s+${redisTokenRegex}|` +
     String.raw`\bGEORADIUSBYMEMBER(?:_RO)?\b\s+${redisTokenRegex}\s+${redisTokenRegex}\s+${redisTokenRegex}\s+${redisTokenRegex})` +
-    String.raw`\s+[\s\S]{0,4096}\bWITHCOORD\b`
+    String.raw`(?=[\s\S]{0,4096}\bWITHCOORD\b)`
 
   const getVisualizationsByCommandTests: [string, number][] = [
     ['ft.search sa', 2],
@@ -318,5 +319,27 @@ describe('getVisualizationsByCommand', () => {
         [geodataVisualization],
       ),
     ).toHaveLength(1)
+  })
+
+  it('uses linear native GEO WITHCOORD regexes in the geodata manifest', () => {
+    const nativeGeoSearchVisualizations = geodataPackage.visualizations.filter(
+      (visualization) =>
+        visualization.matchCommands.includes('GEOSEARCH') &&
+        visualization.matchQuery &&
+        ('anyRegex' in visualization.matchQuery ||
+          'noneRegex' in visualization.matchQuery),
+    )
+    const nativeGeoRegexes = nativeGeoSearchVisualizations.flatMap(
+      (visualization) => [
+        ...(visualization.matchQuery?.anyRegex ?? []),
+        ...(visualization.matchQuery?.noneRegex ?? []),
+      ],
+    )
+
+    expect(nativeGeoRegexes).toHaveLength(4)
+    nativeGeoRegexes.forEach((pattern) => {
+      expect(pattern).not.toContain(String.raw`\S{1,512}`)
+      expect(pattern).not.toContain(String.raw`\s+[\s\S]{0,4096}`)
+    })
   })
 })
