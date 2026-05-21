@@ -30,6 +30,11 @@
         "GEORADIUSBYMEMBER",
         "GEORADIUSBYMEMBER_RO"
       ],
+      "matchQuery": {
+        "anyRegex": [
+          "\\bWITHCOORD\\b"
+        ]
+      },
       "iconDark": "./dist/geodata_icon_dark.svg",
       "iconLight": "./dist/geodata_icon_light.svg",
       "description": "Show geospatial command results as plotted locations",
@@ -46,6 +51,11 @@
         "GEORADIUSBYMEMBER",
         "GEORADIUSBYMEMBER_RO"
       ],
+      "matchQuery": {
+        "anyRegex": [
+          "\\bWITHCOORD\\b"
+        ]
+      },
       "iconDark": "./dist/geodata_heatmap_icon_dark.svg",
       "iconLight": "./dist/geodata_heatmap_icon_light.svg",
       "description": "Show geospatial command result density",
@@ -60,17 +70,54 @@
         "GEODIST",
         "GEOHASH",
         "GEOPOS",
-        "GEORADIUS",
-        "GEORADIUS_RO",
-        "GEORADIUSBYMEMBER",
-        "GEORADIUSBYMEMBER_RO",
-        "GEOSEARCH",
         "GEOSEARCHSTORE"
       ],
       "iconDark": "./dist/geodata_inspector_icon_dark.svg",
       "iconLight": "./dist/geodata_inspector_icon_light.svg",
       "description": "Inspect Redis geospatial command inputs and results",
       "default": true
+    },
+    {
+      "id": "ri-geodata-search-inspector",
+      "name": "Geospatial details",
+      "activationMethod": "renderGeoInspector",
+      "matchCommands": [
+        "GEOSEARCH",
+        "GEORADIUS",
+        "GEORADIUS_RO",
+        "GEORADIUSBYMEMBER",
+        "GEORADIUSBYMEMBER_RO"
+      ],
+      "matchQuery": {
+        "noneRegex": [
+          "\\bWITHCOORD\\b"
+        ]
+      },
+      "iconDark": "./dist/geodata_inspector_icon_dark.svg",
+      "iconLight": "./dist/geodata_inspector_icon_light.svg",
+      "description": "Inspect Redis geospatial command inputs and results",
+      "default": true
+    },
+    {
+      "id": "ri-geodata-coordinate-inspector",
+      "name": "Geospatial details",
+      "activationMethod": "renderGeoInspector",
+      "matchCommands": [
+        "GEOSEARCH",
+        "GEORADIUS",
+        "GEORADIUS_RO",
+        "GEORADIUSBYMEMBER",
+        "GEORADIUSBYMEMBER_RO"
+      ],
+      "matchQuery": {
+        "anyRegex": [
+          "\\bWITHCOORD\\b"
+        ]
+      },
+      "iconDark": "./dist/geodata_inspector_icon_dark.svg",
+      "iconLight": "./dist/geodata_inspector_icon_light.svg",
+      "description": "Inspect Redis geospatial command inputs and results",
+      "default": false
     },
     {
       "id": "ri-geodata-rqe-map",

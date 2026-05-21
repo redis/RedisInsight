@@ -130,6 +130,80 @@ describe('getVisualizationsByCommand', () => {
     ).toEqual(['without-coord'])
   })
 
+  it('selects one geodata default per GEO command shape', () => {
+    const views = [
+      {
+        id: 'ri-geodata-map',
+        matchCommands: ['GEOSEARCH'],
+        matchQuery: { anyRegex: [String.raw`\bWITHCOORD\b`] },
+        default: true,
+      },
+      {
+        id: 'ri-geodata-heatmap',
+        matchCommands: ['GEOSEARCH'],
+        matchQuery: { anyRegex: [String.raw`\bWITHCOORD\b`] },
+        default: false,
+      },
+      {
+        id: 'ri-geodata-inspector',
+        matchCommands: [
+          'GEOADD',
+          'GEODIST',
+          'GEOHASH',
+          'GEOPOS',
+          'GEOSEARCHSTORE',
+        ],
+        default: true,
+      },
+      {
+        id: 'ri-geodata-search-inspector',
+        matchCommands: [
+          'GEOSEARCH',
+          'GEORADIUS',
+          'GEORADIUS_RO',
+          'GEORADIUSBYMEMBER',
+          'GEORADIUSBYMEMBER_RO',
+        ],
+        matchQuery: { noneRegex: [String.raw`\bWITHCOORD\b`] },
+        default: true,
+      },
+      {
+        id: 'ri-geodata-coordinate-inspector',
+        matchCommands: [
+          'GEOSEARCH',
+          'GEORADIUS',
+          'GEORADIUS_RO',
+          'GEORADIUSBYMEMBER',
+          'GEORADIUSBYMEMBER_RO',
+        ],
+        matchQuery: { anyRegex: [String.raw`\bWITHCOORD\b`] },
+        default: false,
+      },
+    ] as IPluginVisualization[]
+
+    const defaultsFor = (query: string) =>
+      getVisualizationsByCommand(query, views)
+        .filter((view) => view.default)
+        .map((view) => view.id)
+
+    expect(
+      defaultsFor(
+        'GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 300 km WITHCOORD',
+      ),
+    ).toEqual(['ri-geodata-map'])
+    expect(
+      defaultsFor('GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 300 km'),
+    ).toEqual(['ri-geodata-search-inspector'])
+    expect(defaultsFor('GEODIST Sicily Palermo Catania km')).toEqual([
+      'ri-geodata-inspector',
+    ])
+    expect(
+      defaultsFor(
+        'GEOSEARCHSTORE Nearby Sicily FROMLONLAT 15 37 BYRADIUS 300 km STOREDIST',
+      ),
+    ).toEqual(['ri-geodata-inspector'])
+  })
+
   it('ignores invalid query predicate regexes without throwing', () => {
     const invalidVisualization = {
       matchCommands: ['FT.SEARCH'],
