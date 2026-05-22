@@ -113,6 +113,10 @@ jest.mock('uiSrc/slices/workbench/wb-tutorials', () => {
   }
 })
 
+const sendWbQueryActionMock = sendWbQueryAction as jest.Mock
+const useDatabaseEnvironmentMock = useDatabaseEnvironment as jest.Mock
+const connectedInstanceSelectorMock = connectedInstanceSelector as jest.Mock
+
 describe('WBViewWrapper', () => {
   beforeAll(() => {
     QueryWrapper.mockImplementation(QueryWrapperMock)
@@ -182,21 +186,19 @@ describe('WBViewWrapper', () => {
 
     beforeEach(() => {
       capturedOnSubmit = null
-      ;(sendWbQueryAction as jest.Mock).mockClear()
-      ;(connectedInstanceSelector as jest.Mock).mockImplementation(
-        () => instance,
-      )
+      sendWbQueryActionMock.mockClear()
+      connectedInstanceSelectorMock.mockImplementation(() => instance)
     })
 
     afterEach(() => {
-      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+      useDatabaseEnvironmentMock.mockReturnValue({
         environment: 'unspecified',
         isDangerousCommand: () => false,
       })
     })
 
     it('does not show the modal and dispatches when no command is dangerous', () => {
-      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+      useDatabaseEnvironmentMock.mockReturnValue({
         environment: Environment.Production,
         isDangerousCommand: () => false,
       })
@@ -210,11 +212,11 @@ describe('WBViewWrapper', () => {
         screen.queryByTestId('type-to-confirm-modal-title'),
       ).not.toBeInTheDocument()
       expect(sendWbQueryAction).toHaveBeenCalledTimes(1)
-      expect((sendWbQueryAction as jest.Mock).mock.calls[0][0]).toBe('PING')
+      expect(sendWbQueryActionMock.mock.calls[0][0]).toBe('PING')
     })
 
     it('shows the modal and defers dispatch when a command is dangerous', () => {
-      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+      useDatabaseEnvironmentMock.mockReturnValue({
         environment: Environment.Production,
         isDangerousCommand: (cmd: string) =>
           ['FLUSHALL', 'FLUSHDB'].includes(cmd.toUpperCase()),
@@ -237,7 +239,7 @@ describe('WBViewWrapper', () => {
     })
 
     it('gates a multi-line dangerous command (Monaco continuation)', () => {
-      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+      useDatabaseEnvironmentMock.mockReturnValue({
         environment: Environment.Production,
         isDangerousCommand: (cmd: string) => cmd.toUpperCase() === 'FLUSHALL',
       })
@@ -262,10 +264,8 @@ describe('WBViewWrapper', () => {
         port: 6379,
         connectionType: ConnectionType.Standalone,
       })
-      ;(connectedInstanceSelector as jest.Mock).mockImplementation(
-        () => namelessInstance,
-      )
-      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+      connectedInstanceSelectorMock.mockImplementation(() => namelessInstance)
+      useDatabaseEnvironmentMock.mockReturnValue({
         environment: Environment.Production,
         isDangerousCommand: (cmd: string) => cmd.toUpperCase() === 'FLUSHALL',
       })
@@ -281,7 +281,7 @@ describe('WBViewWrapper', () => {
     })
 
     it('dispatches the original batch after typing the database name and confirming', () => {
-      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+      useDatabaseEnvironmentMock.mockReturnValue({
         environment: Environment.Production,
         isDangerousCommand: (cmd: string) => cmd.toUpperCase() === 'FLUSHALL',
       })
@@ -300,13 +300,11 @@ describe('WBViewWrapper', () => {
         screen.queryByTestId('type-to-confirm-modal-title'),
       ).not.toBeInTheDocument()
       expect(sendWbQueryAction).toHaveBeenCalledTimes(1)
-      expect((sendWbQueryAction as jest.Mock).mock.calls[0][0]).toBe(
-        'PING\nFLUSHALL',
-      )
+      expect(sendWbQueryActionMock.mock.calls[0][0]).toBe('PING\nFLUSHALL')
     })
 
     it('does not dispatch when the modal is cancelled', () => {
-      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+      useDatabaseEnvironmentMock.mockReturnValue({
         environment: Environment.Production,
         isDangerousCommand: (cmd: string) => cmd.toUpperCase() === 'FLUSHALL',
       })
