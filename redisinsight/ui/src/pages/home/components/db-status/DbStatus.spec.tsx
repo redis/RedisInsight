@@ -98,6 +98,54 @@ describe('DbStatus', () => {
     ).not.toBeInTheDocument()
   })
 
+  describe('fallback', () => {
+    it('renders the fallback when no temporary indicator applies', () => {
+      render(
+        <DbStatus
+          {...mockedProps}
+          id="1"
+          isNew={false}
+          isFree={false}
+          fallback={<div data-testid="env-fallback" />}
+        />,
+      )
+
+      expect(screen.getByTestId('env-fallback')).toBeInTheDocument()
+    })
+
+    it('renders the temporary indicator instead of the fallback when "isNew" is true', () => {
+      render(
+        <DbStatus
+          {...mockedProps}
+          id="1"
+          isNew
+          fallback={<div data-testid="env-fallback" />}
+        />,
+      )
+
+      expect(screen.getByTestId('database-status-new-1')).toBeInTheDocument()
+      expect(screen.queryByTestId('env-fallback')).not.toBeInTheDocument()
+    })
+
+    it('renders the temporary indicator instead of the fallback for an unused cloud db', () => {
+      const lastConnection = new Date(Date.now() - daysToMs(5))
+      render(
+        <DbStatus
+          {...mockedProps}
+          id="1"
+          lastConnection={lastConnection}
+          isFree
+          fallback={<div data-testid="env-fallback" />}
+        />,
+      )
+
+      expect(
+        screen.getByTestId(`database-status-${WarningTypes.TryDatabase}-1`),
+      ).toBeInTheDocument()
+      expect(screen.queryByTestId('env-fallback')).not.toBeInTheDocument()
+    })
+  })
+
   it('should render new status', async () => {
     const sendEventTelemetryMock = jest.fn()
     ;(sendEventTelemetry as jest.Mock).mockImplementation(

@@ -37,7 +37,8 @@ const OAuthConnectFreeDb = ({
   className,
 }: Props) => {
   const { loading } = useSelector(instancesSelector) ?? {}
-  const { modules, provider } = useSelector(connectedInstanceSelector) ?? {}
+  const { modules, provider, environment } =
+    useSelector(connectedInstanceSelector) ?? {}
   const [firstFreeInstance] = useSelector(freeInstancesSelector) ?? []
 
   const targetDatabaseId = id || firstFreeInstance?.id
@@ -58,6 +59,7 @@ const OAuthConnectFreeDb = ({
         databaseId: targetDatabaseId,
         provider,
         source,
+        environment,
         ...modulesSummary,
         ...infoData,
       },

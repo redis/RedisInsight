@@ -72,6 +72,7 @@ const InstancesList = ({
         databaseId: instance.id,
         source: 'navigation_panel',
         provider: instance.provider,
+        environment: instance.environment,
         ...modulesSummary,
         ...infoData,
       },

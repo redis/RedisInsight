@@ -68,6 +68,7 @@ describe('OAuthConnectFreeDb', () => {
         databaseId: 'providedId',
         provider: undefined,
         source: OAuthSocialSource.ListOfDatabases,
+        environment: 'unspecified',
         ...getRedisModulesSummary(),
         ...MOCK_ADDITIONAL_INFO,
       },

@@ -21,12 +21,21 @@ import {
 } from './texts'
 import { IconWrapper, InfoIcon } from './DbStatus.styles'
 
+const LAST_CONNECTION_SM = 3
+const LAST_CONNECTION_L = 16
+
 export interface Props {
   id: string
   lastConnection: Maybe<Date>
   createdAt: Maybe<Date>
   isNew: boolean
   isFree?: boolean
+  /**
+   * Rendered when no temporary indicator (cloud warning / "new" badge) applies.
+   * Lets the caller declare a precedence chain without duplicating DbStatus's
+   * own decision logic.
+   */
+  fallback?: React.ReactNode
 }
 
 export enum WarningTypes {
@@ -42,11 +51,15 @@ interface WarningTooltipProps {
   isCapabilityNotShown?: boolean
 }
 
-const LAST_CONNECTION_SM = 3
-const LAST_CONNECTION_L = 16
-
 const DbStatus = (props: Props) => {
-  const { id, lastConnection, createdAt, isNew, isFree } = props
+  const {
+    id,
+    lastConnection,
+    createdAt,
+    isNew,
+    isFree,
+    fallback = null,
+  } = props
 
   const { source } = useSelector(appContextCapability)
   const capability = getTutorialCapability(source!)
@@ -108,7 +121,7 @@ const DbStatus = (props: Props) => {
     )
   }
 
-  return null
+  return <>{fallback}</>
 }
 
 // separated to send event when content is displayed

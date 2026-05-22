@@ -73,6 +73,7 @@ const instance = {
   id: '1',
   provider: 'LOCALHOST',
   modules: [],
+  environment: 'production',
 }
 
 describe('databases-list methods/handlers', () => {
@@ -97,6 +98,7 @@ describe('databases-list methods/handlers', () => {
         eventData: expect.objectContaining({
           databaseId: '1',
           provider: 'LOCALHOST',
+          environment: 'production',
         }),
       }),
     )
