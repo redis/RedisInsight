@@ -8,6 +8,7 @@ import {
   SimilaritySearchDto,
 } from 'src/modules/browser/vector-set/dto';
 import {
+  VECTOR_SET_TOKENS,
   VSIM_REPLY_STRIDE,
   VSIM_REPLY_STRIDE_NO_ATTRIBS,
 } from 'src/modules/browser/vector-set/constants';
@@ -144,32 +145,44 @@ function writeVsimTokens<T>(
   ];
 
   if (query.mode === 'ELE') {
-    tokens.push(tokenWriter.literal('ELE'), tokenWriter.element(query.element));
+    tokens.push(
+      tokenWriter.literal(VECTOR_SET_TOKENS.ELE),
+      tokenWriter.element(query.element),
+    );
   } else if (query.mode === 'VALUES') {
     tokens.push(
-      tokenWriter.literal('VALUES'),
+      tokenWriter.literal(VECTOR_SET_TOKENS.VALUES),
       tokenWriter.number(query.values.length),
       ...query.values.map((n) => tokenWriter.vectorValue(n)),
     );
   } else {
-    tokens.push(tokenWriter.literal('FP32'), tokenWriter.fp32(query.bytes));
+    tokens.push(
+      tokenWriter.literal(VECTOR_SET_TOKENS.FP32),
+      tokenWriter.fp32(query.bytes),
+    );
   }
 
   if (dto.count !== undefined && Number.isFinite(dto.count)) {
-    tokens.push(tokenWriter.literal('COUNT'), tokenWriter.number(dto.count));
+    tokens.push(
+      tokenWriter.literal(VECTOR_SET_TOKENS.COUNT),
+      tokenWriter.number(dto.count),
+    );
   }
 
   // WITHSCORES is always appended so the response shape is stable; they are
   // intentionally not part of the DTO. WITHATTRIBS is conditional because
   // Redis 8.0.0–8.0.2 errors out on it; the service back-fills attributes
   // via VGETATTR in that case.
-  tokens.push(tokenWriter.literal('WITHSCORES'));
+  tokens.push(tokenWriter.literal(VECTOR_SET_TOKENS.WITHSCORES));
   if (withAttribs) {
-    tokens.push(tokenWriter.literal('WITHATTRIBS'));
+    tokens.push(tokenWriter.literal(VECTOR_SET_TOKENS.WITHATTRIBS));
   }
 
   if (dto.filter !== undefined && dto.filter !== '') {
-    tokens.push(tokenWriter.literal('FILTER'), tokenWriter.filter(dto.filter));
+    tokens.push(
+      tokenWriter.literal(VECTOR_SET_TOKENS.FILTER),
+      tokenWriter.filter(dto.filter),
+    );
   }
 
   return tokens;
@@ -207,10 +220,14 @@ export function buildVaddCommand(
   }
 
   if (hasVectorFp32) {
-    args.push('FP32', Buffer.from(element.vectorFp32, 'base64'), element.name);
+    args.push(
+      VECTOR_SET_TOKENS.FP32,
+      Buffer.from(element.vectorFp32, 'base64'),
+      element.name,
+    );
   } else if (hasVectorValues) {
     args.push(
-      'VALUES',
+      VECTOR_SET_TOKENS.VALUES,
       element.vectorValues.length,
       ...element.vectorValues.map(String),
       element.name,
@@ -222,7 +239,7 @@ export function buildVaddCommand(
   }
 
   if (element.attributes !== undefined) {
-    args.push('SETATTR', element.attributes);
+    args.push(VECTOR_SET_TOKENS.SETATTR, element.attributes);
   }
 
   return args as RedisClientCommand;
@@ -289,7 +306,17 @@ export function parseVsimReply(
   logger?: Logger,
   options: VsimWithAttribsOption = {},
 ): SearchVectorSetMatchDto[] {
-  if (!reply || reply.length === 0) {
+  if (reply === null || reply === undefined) {
+    // Redis returning null/undefined for VSIM is unusual — an empty array is
+    // the documented "no matches" reply. Log at debug so the case is visible
+    // when chasing why a search came back empty without crashing the parser.
+    logger?.debug(
+      'VSIM returned null/undefined reply; treating as no matches.',
+    );
+    return [];
+  }
+
+  if (reply.length === 0) {
     return [];
   }
 
