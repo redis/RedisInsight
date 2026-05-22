@@ -67,13 +67,19 @@ jest.mock('react-router-dom', () => ({
   }),
 }))
 
+const mockedConnectedInstanceSelector =
+  connectedInstanceSelector as jest.Mock
+const mockedConnectedInstanceInfoSelector =
+  connectedInstanceInfoSelector as jest.Mock
+const mockedAppContextDbIndex = appContextDbIndex as jest.Mock
+
 describe('InstanceHeader', () => {
   it('should render', () => {
     expect(render(<InstanceHeader {...instance(mockedProps)} />)).toBeTruthy()
   })
 
   it('should render change index button with databases = 1', () => {
-    ;(connectedInstanceInfoSelector as jest.Mock).mockReturnValueOnce({
+    mockedConnectedInstanceInfoSelector.mockReturnValueOnce({
       databases: 1,
     })
 
@@ -115,7 +121,7 @@ describe('InstanceHeader', () => {
   })
 
   it('should be disabled db index button with loading state', () => {
-    ;(connectedInstanceSelector as jest.Mock).mockReturnValueOnce({
+    mockedConnectedInstanceSelector.mockReturnValueOnce({
       loading: true,
     })
 
@@ -125,7 +131,7 @@ describe('InstanceHeader', () => {
   })
 
   it('should be disabled db index button with disabled state', () => {
-    ;(appContextDbIndex as jest.Mock).mockReturnValueOnce({
+    mockedAppContextDbIndex.mockReturnValueOnce({
       disabled: true,
     })
 
@@ -259,7 +265,7 @@ describe('InstanceHeader', () => {
 
   describe('environment indicator', () => {
     const renderWithEnv = (env: Environment) => {
-      ;(connectedInstanceSelector as jest.Mock).mockReturnValue({
+      mockedConnectedInstanceSelector.mockReturnValue({
         username: 'username',
         id: 'instanceId',
         loading: false,
@@ -317,7 +323,7 @@ describe('InstanceHeader', () => {
     })
 
     it('does not render the badge when the dev-prodMode flag is off', () => {
-      ;(connectedInstanceSelector as jest.Mock).mockReturnValue({
+      mockedConnectedInstanceSelector.mockReturnValue({
         username: 'username',
         id: 'instanceId',
         loading: false,
