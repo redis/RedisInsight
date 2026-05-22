@@ -49,10 +49,13 @@ const BulkDeleteFooter = (props: Props) => {
   const { loading, generateReport, filter, search } = useSelector(
     bulkActionsDeleteSelector,
   )
-  const { name: databaseName = '' } = useSelector(connectedInstanceSelector)
+  const { name, host, port } = useSelector(connectedInstanceSelector)
   const { status } = useSelector(bulkActionsDeleteOverviewSelector) ?? {}
   const { environment } = useDatabaseEnvironment()
   const isProduction = environment === Environment.Production
+  // Fall back to host:port when name is empty so the modal never matches an
+  // empty input (which would bypass the type-to-confirm safety check).
+  const confirmationText = name || `${host}:${port}`
 
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false)
   const [isTypeToConfirmOpen, setIsTypeToConfirmOpen] = useState<boolean>(false)
@@ -221,7 +224,7 @@ const BulkDeleteFooter = (props: Props) => {
             {isTypeToConfirmOpen && (
               <TypeToConfirmModal
                 title="Delete all matching keys"
-                confirmationText={databaseName}
+                confirmationText={confirmationText}
                 confirmButtonText="Delete"
                 actionDescription={
                   <>

@@ -10,6 +10,7 @@ import {
   setBulkDeleteGenerateReport,
   toggleBulkDeleteActionTriggered,
 } from 'uiSrc/slices/browser/bulkActions'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { BulkActionConfirmation } from 'uiSrc/constants'
 
 jest.mock('uiSrc/slices/browser/bulkActions', () => ({
@@ -26,14 +27,25 @@ jest.mock('uiSrc/slices/browser/bulkActions', () => ({
 }))
 
 const DB_NAME = 'prod-db'
+const DB_HOST = '127.0.0.1'
+const DB_PORT = 6379
 
 jest.mock('uiSrc/slices/instances/instances', () => ({
   ...jest.requireActual('uiSrc/slices/instances/instances'),
-  connectedInstanceSelector: jest.fn().mockReturnValue({
+  connectedInstanceSelector: jest.fn(),
+}))
+
+const mockConnectedInstance = (
+  overrides: Partial<{ name: string; host: string; port: number }> = {},
+) => {
+  ;(connectedInstanceSelector as jest.Mock).mockReturnValue({
     id: 'instanceId',
     name: DB_NAME,
-  }),
-}))
+    host: DB_HOST,
+    port: DB_PORT,
+    ...overrides,
+  })
+}
 
 const mockedProps = {
   ...mock<Props>(),
@@ -52,6 +64,7 @@ beforeEach(() => {
   cleanup()
   jest.clearAllMocks()
   mockEnvironment(Environment.Unspecified)
+  mockConnectedInstance()
 })
 
 afterEach(() => {
@@ -152,6 +165,21 @@ describe('BulkDeleteFooter', () => {
       expect(confirmBtn).toBeDisabled()
 
       fireEvent.change(input, { target: { value: DB_NAME } })
+      expect(confirmBtn).not.toBeDisabled()
+    })
+
+    it('falls back to host:port when the DB name is empty', () => {
+      mockConnectedInstance({ name: '' })
+      render(<BulkDeleteFooter {...mockedProps} />)
+      fireEvent.click(screen.getByTestId('bulk-action-warning-btn'))
+
+      const confirmBtn = screen.getByTestId('type-to-confirm-modal-confirm-btn')
+      const input = screen.getByTestId('type-to-confirm-modal-input')
+
+      // Empty input must NOT enable confirm — that would bypass the safety check.
+      expect(confirmBtn).toBeDisabled()
+
+      fireEvent.change(input, { target: { value: `${DB_HOST}:${DB_PORT}` } })
       expect(confirmBtn).not.toBeDisabled()
     })
 
