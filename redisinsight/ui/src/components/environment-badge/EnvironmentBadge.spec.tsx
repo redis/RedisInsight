@@ -34,7 +34,7 @@ describe('EnvironmentBadge', () => {
     expect(screen.getByText('PROD')).toBeInTheDocument()
   })
 
-  it('renders the Development label for development environment', () => {
+  it('renders the DEV label for development environment', () => {
     render(
       <EnvironmentBadge environment={Environment.Development} />,
       withDevProdFlag(true),
@@ -43,7 +43,7 @@ describe('EnvironmentBadge', () => {
     expect(
       screen.getByTestId(`environment-badge-${Environment.Development}`),
     ).toBeInTheDocument()
-    expect(screen.getByText('Development')).toBeInTheDocument()
+    expect(screen.getByText('DEV')).toBeInTheDocument()
   })
 
   it('renders nothing for unspecified environment', () => {

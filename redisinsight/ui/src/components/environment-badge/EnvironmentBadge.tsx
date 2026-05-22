@@ -33,7 +33,7 @@ const BADGE_CONFIG: Partial<Record<Environment, EnvironmentBadgeConfig>> = {
     tooltip: PRODUCTION_TOOLTIP,
   },
   [Environment.Development]: {
-    label: 'Development',
+    label: 'DEV',
     variant: 'default',
     tooltip: DEVELOPMENT_TOOLTIP,
   },

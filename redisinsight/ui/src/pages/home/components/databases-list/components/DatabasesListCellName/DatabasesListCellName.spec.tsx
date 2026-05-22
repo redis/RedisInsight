@@ -46,11 +46,11 @@ describe('DatabasesListCellName', () => {
       expect(screen.getByText('PROD')).toBeInTheDocument()
     })
 
-    it('renders the Development label when environment is Development', () => {
+    it('renders the DEV label when environment is Development', () => {
       renderCell({ ...baseInstance, environment: Environment.Development })
 
       expect(screen.getByTestId('environment-badge-db-1')).toBeInTheDocument()
-      expect(screen.getByText('Development')).toBeInTheDocument()
+      expect(screen.getByText('DEV')).toBeInTheDocument()
     })
 
     it('renders no badge when environment is Unspecified', () => {
@@ -60,7 +60,7 @@ describe('DatabasesListCellName', () => {
         screen.queryByTestId('environment-badge-db-1'),
       ).not.toBeInTheDocument()
       expect(screen.queryByText('PROD')).not.toBeInTheDocument()
-      expect(screen.queryByText('Development')).not.toBeInTheDocument()
+      expect(screen.queryByText('DEV')).not.toBeInTheDocument()
     })
 
     it('does not render the badge when the dev-prodMode flag is off', () => {
