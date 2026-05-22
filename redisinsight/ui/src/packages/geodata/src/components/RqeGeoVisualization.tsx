@@ -126,7 +126,7 @@ export const RqeGeoVisualization = ({
     () =>
       parsedCommand.ok
         ? parseRqeGeoResults(response, parsedCommand.value)
-        : null,
+        : { ok: false as const, error: parsedCommand.error },
     [parsedCommand, response],
   )
   const pointRows = useMemo(
@@ -171,10 +171,6 @@ export const RqeGeoVisualization = ({
         </Message>
       </div>
     )
-  }
-
-  if (parsedResults === null) {
-    return null
   }
 
   if (!parsedResults.ok) {

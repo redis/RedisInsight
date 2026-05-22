@@ -29,7 +29,7 @@ export const GeoSearchVisualization = ({
     () =>
       parsedCommand.ok
         ? parseGeoSearchResults(response, parsedCommand.value)
-        : null,
+        : { ok: false as const, error: parsedCommand.error },
     [parsedCommand, response],
   )
   const rows = useMemo(
@@ -53,10 +53,6 @@ export const GeoSearchVisualization = ({
         <Message title={errorTitle}>{parsedCommand.error}</Message>
       </div>
     )
-  }
-
-  if (parsedResults === null) {
-    return null
   }
 
   if (!parsedResults.ok) {
