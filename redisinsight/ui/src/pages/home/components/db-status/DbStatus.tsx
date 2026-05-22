@@ -30,11 +30,6 @@ export interface Props {
   createdAt: Maybe<Date>
   isNew: boolean
   isFree?: boolean
-  /**
-   * Rendered when no temporary indicator (cloud warning / "new" badge) applies.
-   * Lets the caller declare a precedence chain without duplicating DbStatus's
-   * own decision logic.
-   */
   fallback?: React.ReactNode
 }
 
