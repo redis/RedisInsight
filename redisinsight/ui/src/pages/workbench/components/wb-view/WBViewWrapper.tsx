@@ -50,7 +50,17 @@ import {
   changeSidePanel,
 } from 'uiSrc/slices/panels/sidePanels'
 import { InsightsPanelTabs, SidePanels } from 'uiSrc/slices/interfaces/insights'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
+import TypeToConfirmModal from 'uiSrc/components/type-to-confirm-modal'
+import { getCommandsForExecution } from 'uiSrc/utils/monaco/monacoUtils'
 import WBView from './WBView'
+
+interface PendingSubmit {
+  value: string
+  commandId?: Nullable<string>
+  executeParams: CodeButtonParams
+  dangerousCommands: string[]
+}
 
 interface IState {
   loading: boolean
@@ -91,8 +101,11 @@ const WBViewWrapper = () => {
   const [script, setScript] = useState(scriptContext)
   const [scriptEl, setScriptEl] =
     useState<Nullable<monacoEditor.editor.IStandaloneCodeEditor>>(null)
+  const [pendingSubmit, setPendingSubmit] =
+    useState<Nullable<PendingSubmit>>(null)
 
   const instance = useSelector(connectedInstanceSelector)
+  const { isDangerousCommand } = useDatabaseEnvironment()
   const { visualizations = [] } = useSelector(appPluginsSelector)
   state = {
     scriptEl,
@@ -235,13 +248,11 @@ const WBViewWrapper = () => {
     setScript('')
   }
 
-  const sourceValueSubmit = (
-    value: string = script,
-    commandId?: Nullable<string>,
-    executeParams: CodeButtonParams = { clearEditor: true },
+  const runSubmission = (
+    value: string,
+    commandId: Maybe<Nullable<string>>,
+    executeParams: CodeButtonParams,
   ) => {
-    if (state.loading || (!value && !script)) return
-
     const lines = getMonacoLines(value)
     const parsedParams: Maybe<CodeButtonParams> = getParsedParamsInQuery(value)
 
@@ -253,25 +264,85 @@ const WBViewWrapper = () => {
     }
   }
 
+  const sourceValueSubmit = (
+    value: string = script,
+    commandId?: Nullable<string>,
+    executeParams: CodeButtonParams = { clearEditor: true },
+  ) => {
+    if (state.loading || (!value && !script)) return
+
+    const effectiveValue = value || script
+    const commands = getCommandsForExecution(effectiveValue)
+    const dangerousCommands = commands.filter((cmd) =>
+      isDangerousCommand(cmd.split(' ')[0]),
+    )
+    if (dangerousCommands.length > 0) {
+      setPendingSubmit({
+        value: effectiveValue,
+        commandId,
+        executeParams,
+        dangerousCommands,
+      })
+      return
+    }
+
+    runSubmission(value, commandId, executeParams)
+  }
+
+  const handleConfirmPendingSubmit = () => {
+    if (!pendingSubmit) return
+    const submission = pendingSubmit
+    setPendingSubmit(null)
+    runSubmission(
+      submission.value,
+      submission.commandId,
+      submission.executeParams,
+    )
+  }
+
   return (
-    <WBView
-      items={items}
-      clearing={clearing}
-      processing={processing}
-      isResultsLoaded={isLoaded}
-      script={script}
-      setScript={setScript}
-      setScriptEl={setScriptEl}
-      scrollDivRef={scrollDivRef}
-      activeMode={activeRunQueryMode}
-      onSubmit={sourceValueSubmit}
-      onQueryOpen={handleQueryOpen}
-      onQueryDelete={handleQueryDelete}
-      onAllQueriesDelete={handleAllQueriesDelete}
-      onQueryChangeMode={handleChangeQueryRunMode}
-      resultsMode={resultsMode}
-      onChangeGroupMode={handleChangeGroupMode}
-    />
+    <>
+      <WBView
+        items={items}
+        clearing={clearing}
+        processing={processing}
+        isResultsLoaded={isLoaded}
+        script={script}
+        setScript={setScript}
+        setScriptEl={setScriptEl}
+        scrollDivRef={scrollDivRef}
+        activeMode={activeRunQueryMode}
+        onSubmit={sourceValueSubmit}
+        onQueryOpen={handleQueryOpen}
+        onQueryDelete={handleQueryDelete}
+        onAllQueriesDelete={handleAllQueriesDelete}
+        onQueryChangeMode={handleChangeQueryRunMode}
+        resultsMode={resultsMode}
+        onChangeGroupMode={handleChangeGroupMode}
+      />
+      {pendingSubmit && (
+        <TypeToConfirmModal
+          title="Run dangerous commands?"
+          confirmationText={
+            instance?.name || `${instance?.host}:${instance?.port}`
+          }
+          actionDescription={
+            <>
+              You&apos;re about to run{' '}
+              <strong>{pendingSubmit.dangerousCommands.join(', ')}</strong>{' '}
+              against the production database{' '}
+              <strong>
+                {instance?.name || `${instance?.host}:${instance?.port}`}
+              </strong>
+              .
+            </>
+          }
+          confirmButtonText="Run command"
+          onConfirm={handleConfirmPendingSubmit}
+          onCancel={() => setPendingSubmit(null)}
+        />
+      )}
+    </>
   )
 }
 
