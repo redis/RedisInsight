@@ -1,4 +1,5 @@
 import {
+  BulkActionConfirmation,
   BulkActionsStatus,
   BulkActionsType,
   KeyTypes,
@@ -52,6 +53,7 @@ export interface StateBulkActions {
     filter: Nullable<KeyTypes>
     search: string
     keyCount: Nullable<number>
+    confirmedThrough: Nullable<BulkActionConfirmation>
   }
   bulkUpload: {
     loading: boolean

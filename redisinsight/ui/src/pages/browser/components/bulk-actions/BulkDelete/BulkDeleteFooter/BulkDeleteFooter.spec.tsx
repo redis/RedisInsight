@@ -1,20 +1,62 @@
 import React from 'react'
 import { mock } from 'ts-mockito'
-import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import { Environment } from 'apiClient'
+import { cleanup, fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import * as useDatabaseEnvironmentModule from 'uiSrc/components/hooks/useDatabaseEnvironment'
 
 import BulkDeleteFooter, { Props } from './BulkDeleteFooter'
-import { setBulkDeleteGenerateReport } from 'uiSrc/slices/browser/bulkActions'
+import {
+  setBulkDeleteConfirmedThrough,
+  setBulkDeleteGenerateReport,
+  toggleBulkDeleteActionTriggered,
+} from 'uiSrc/slices/browser/bulkActions'
+import { BulkActionConfirmation } from 'uiSrc/constants'
 
 jest.mock('uiSrc/slices/browser/bulkActions', () => ({
   ...jest.requireActual('uiSrc/slices/browser/bulkActions'),
   setBulkDeleteGenerateReport: jest.fn().mockReturnValue({
     type: 'bulkActions/setBulkDeleteGenerateReport',
   }),
+  setBulkDeleteConfirmedThrough: jest.fn().mockReturnValue({
+    type: 'bulkActions/setBulkDeleteConfirmedThrough',
+  }),
+  toggleBulkDeleteActionTriggered: jest.fn().mockReturnValue({
+    type: 'bulkActions/toggleBulkDeleteActionTriggered',
+  }),
+}))
+
+const DB_NAME = 'prod-db'
+
+jest.mock('uiSrc/slices/instances/instances', () => ({
+  ...jest.requireActual('uiSrc/slices/instances/instances'),
+  connectedInstanceSelector: jest.fn().mockReturnValue({
+    id: 'instanceId',
+    name: DB_NAME,
+  }),
 }))
 
 const mockedProps = {
   ...mock<Props>(),
 }
+
+const mockEnvironment = (environment: Environment) => {
+  jest
+    .spyOn(useDatabaseEnvironmentModule, 'useDatabaseEnvironment')
+    .mockReturnValue({
+      environment,
+      isDangerousCommand: () => false,
+    })
+}
+
+beforeEach(() => {
+  cleanup()
+  jest.clearAllMocks()
+  mockEnvironment(Environment.Unspecified)
+})
+
+afterEach(() => {
+  jest.restoreAllMocks()
+})
 
 describe('BulkDeleteFooter', () => {
   it('should render', () => {
@@ -43,5 +85,101 @@ describe('BulkDeleteFooter', () => {
 
     // Checkbox default is false, clicking toggles to true
     expect(setBulkDeleteGenerateReport).toHaveBeenCalledWith(true)
+  })
+
+  describe('non-production environment', () => {
+    it.each([Environment.Unspecified, Environment.Development])(
+      'uses the existing popover flow when environment is %s',
+      (environment) => {
+        mockEnvironment(environment)
+        render(<BulkDeleteFooter {...mockedProps} />)
+
+        fireEvent.click(screen.getByTestId('bulk-action-warning-btn'))
+
+        // Popover is rendered (apply button is its confirm slot), modal is not
+        expect(screen.getByTestId('bulk-action-apply-btn')).toBeInTheDocument()
+        expect(
+          screen.queryByTestId('type-to-confirm-modal-title'),
+        ).not.toBeInTheDocument()
+      },
+    )
+
+    it('dispatches the toggle without confirmedThrough on confirm', () => {
+      mockEnvironment(Environment.Development)
+      render(<BulkDeleteFooter {...mockedProps} />)
+
+      fireEvent.click(screen.getByTestId('bulk-action-warning-btn'))
+      fireEvent.click(screen.getByTestId('bulk-action-apply-btn'))
+
+      expect(toggleBulkDeleteActionTriggered).toHaveBeenCalled()
+      expect(setBulkDeleteConfirmedThrough).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('production environment', () => {
+    beforeEach(() => {
+      mockEnvironment(Environment.Production)
+    })
+
+    it('opens the TypeToConfirmModal instead of the popover', () => {
+      render(<BulkDeleteFooter {...mockedProps} />)
+
+      expect(
+        screen.queryByTestId('type-to-confirm-modal-title'),
+      ).not.toBeInTheDocument()
+
+      fireEvent.click(screen.getByTestId('bulk-action-warning-btn'))
+
+      expect(
+        screen.getByTestId('type-to-confirm-modal-title'),
+      ).toBeInTheDocument()
+      // The popover confirm slot is not present in the prod branch
+      expect(
+        screen.queryByTestId('bulk-action-apply-btn'),
+      ).not.toBeInTheDocument()
+    })
+
+    it('keeps the confirm button disabled until the DB name is typed exactly', () => {
+      render(<BulkDeleteFooter {...mockedProps} />)
+      fireEvent.click(screen.getByTestId('bulk-action-warning-btn'))
+
+      const confirmBtn = screen.getByTestId('type-to-confirm-modal-confirm-btn')
+      const input = screen.getByTestId('type-to-confirm-modal-input')
+
+      expect(confirmBtn).toBeDisabled()
+
+      fireEvent.change(input, { target: { value: 'wrong' } })
+      expect(confirmBtn).toBeDisabled()
+
+      fireEvent.change(input, { target: { value: DB_NAME } })
+      expect(confirmBtn).not.toBeDisabled()
+    })
+
+    it('dispatches confirmedThrough and the toggle when confirmed', () => {
+      render(<BulkDeleteFooter {...mockedProps} />)
+      fireEvent.click(screen.getByTestId('bulk-action-warning-btn'))
+
+      fireEvent.change(screen.getByTestId('type-to-confirm-modal-input'), {
+        target: { value: DB_NAME },
+      })
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+      expect(setBulkDeleteConfirmedThrough).toHaveBeenCalledWith(
+        BulkActionConfirmation.TypeToConfirm,
+      )
+      expect(toggleBulkDeleteActionTriggered).toHaveBeenCalled()
+    })
+
+    it('closes the modal without dispatching when cancelled', () => {
+      render(<BulkDeleteFooter {...mockedProps} />)
+      fireEvent.click(screen.getByTestId('bulk-action-warning-btn'))
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-cancel-btn'))
+
+      expect(
+        screen.queryByTestId('type-to-confirm-modal-title'),
+      ).not.toBeInTheDocument()
+      expect(setBulkDeleteConfirmedThrough).not.toHaveBeenCalled()
+      expect(toggleBulkDeleteActionTriggered).not.toHaveBeenCalled()
+    })
   })
 })
