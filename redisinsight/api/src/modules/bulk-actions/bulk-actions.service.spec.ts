@@ -3,6 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import {
   MockType,
   mockBulkActionsAnalytics,
+  mockDatabase,
+  mockDatabaseService,
   mockSessionMetadata,
 } from 'src/__mocks__';
 import { BulkActionsProvider } from 'src/modules/bulk-actions/providers/bulk-actions.provider';
@@ -13,6 +15,7 @@ import { BulkActionFilter } from 'src/modules/bulk-actions/models/bulk-action-fi
 import { BulkAction } from 'src/modules/bulk-actions/models/bulk-action';
 import { BulkActionsService } from 'src/modules/bulk-actions/bulk-actions.service';
 import { BulkActionsAnalytics } from 'src/modules/bulk-actions/bulk-actions.analytics';
+import { DatabaseService } from 'src/modules/database/database.service';
 
 export const mockSocket1 = new MockedSocket();
 mockSocket1.id = '1';
@@ -33,11 +36,12 @@ const mockCreateBulkActionDto = Object.assign(new CreateBulkActionDto(), {
 
 const mockBulkAction = new BulkAction(
   mockCreateBulkActionDto.id,
-  mockCreateBulkActionDto.databaseId,
+  mockDatabase,
   mockCreateBulkActionDto.type,
   mockBulkActionFilter,
   mockSocket1,
   mockBulkActionsAnalytics as any,
+  mockSessionMetadata,
 );
 const mockOverview = 'mocked overview...';
 
@@ -66,6 +70,10 @@ describe('BulkActionsService', () => {
         {
           provide: BulkActionsAnalytics,
           useFactory: mockBulkActionsAnalytics,
+        },
+        {
+          provide: DatabaseService,
+          useFactory: mockDatabaseService,
         },
       ],
     }).compile();

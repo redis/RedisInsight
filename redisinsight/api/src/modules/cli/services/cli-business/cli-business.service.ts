@@ -29,6 +29,9 @@ import { ClientNotFoundErrorException } from 'src/modules/redis/exceptions/clien
 import { DatabaseRecommendationService } from 'src/modules/database-recommendation/database-recommendation.service';
 import { RedisClient } from 'src/modules/redis/client';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
+import { DatabaseService } from 'src/modules/database/database.service';
+import { Environment } from 'src/modules/database/entities/database.entity';
+import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import { v4 as uuidv4 } from 'uuid';
 import { getAnalyticsDataFromIndexInfo } from 'src/utils';
 import { OutputFormatterManager } from './output-formatter/output-formatter-manager';
@@ -47,6 +50,8 @@ export class CliBusinessService {
     private recommendationService: DatabaseRecommendationService,
     private readonly commandsService: CommandsService,
     private databaseClientFactory: DatabaseClientFactory,
+    private readonly databaseService: DatabaseService,
+    private readonly dangerousCommandsProvider: DangerousCommandsProvider,
   ) {
     this.outputFormatterManager = new OutputFormatterManager();
     this.outputFormatterManager.addStrategy(
@@ -193,8 +198,20 @@ export class CliBusinessService {
       const client: RedisClient =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
 
+      const environment =
+        (
+          await this.databaseService.get(
+            clientMetadata.sessionMetadata,
+            clientMetadata.databaseId,
+          )
+        ).environment ?? Environment.Unspecified;
+
       const formatter = this.outputFormatterManager.getStrategy(outputFormat);
       [command, ...args] = splitCliCommandLine(commandLine);
+      const isDangerous: 'true' | 'false' =
+        (await this.dangerousCommandsProvider.isDangerous(client, command))
+          ? 'true'
+          : 'false';
       const replyEncoding = checkHumanReadableCommands(`${command} ${args[0]}`)
         ? 'utf8'
         : undefined;
@@ -216,6 +233,8 @@ export class CliBusinessService {
         {
           command,
           outputFormat,
+          environment,
+          isDangerous,
         },
       );
 
@@ -255,6 +274,8 @@ export class CliBusinessService {
           {
             command,
             outputFormat,
+            environment: Environment.Unspecified,
+            isDangerous: 'false',
           },
         );
 

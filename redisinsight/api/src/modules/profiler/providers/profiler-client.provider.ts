@@ -1,27 +1,24 @@
-import { get } from 'lodash';
 import { Socket } from 'socket.io';
 import { Injectable } from '@nestjs/common';
 import { ProfilerClient } from 'src/modules/profiler/models/profiler.client';
 import { ClientLogsEmitter } from 'src/modules/profiler/emitters/client.logs-emitter';
 import { MonitorSettings } from 'src/modules/profiler/models/monitor-settings';
 import { LogFileProvider } from 'src/modules/profiler/providers/log-file.provider';
-import { DatabaseService } from 'src/modules/database/database.service';
 import { SessionMetadata } from 'src/common/models';
+import { Database } from 'src/modules/database/models/database';
 
 @Injectable()
 export class ProfilerClientProvider {
   private profilerClients: Map<string, ProfilerClient> = new Map();
 
-  constructor(
-    private logFileProvider: LogFileProvider,
-    private databaseService: DatabaseService,
-  ) {}
+  constructor(private logFileProvider: LogFileProvider) {}
 
   async getOrCreateClient(
     sessionMetadata: SessionMetadata,
     instanceId: string,
     socket: Socket,
     settings: MonitorSettings,
+    database?: Database,
   ): Promise<ProfilerClient> {
     if (!this.profilerClients.has(socket.id)) {
       const clientObserver = new ProfilerClient(socket.id, socket);
@@ -33,16 +30,13 @@ export class ProfilerClientProvider {
         const profilerLogFile = this.logFileProvider.getOrCreate(
           instanceId,
           settings.logFileId,
+          sessionMetadata,
+          database,
         );
 
-        // set database alias as part of the log file name
-        const alias = (
-          await this.databaseService.get(
-            sessionMetadata,
-            get(socket, 'handshake.query.instanceId') as string,
-          )
-        ).name;
-        profilerLogFile.setAlias(alias);
+        if (database?.name) {
+          profilerLogFile.setAlias(database.name);
+        }
 
         clientObserver.addLogsEmitter(await profilerLogFile.getEmitter());
       }

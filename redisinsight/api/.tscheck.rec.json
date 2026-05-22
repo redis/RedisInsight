@@ -407,9 +407,7 @@
   },
   "src/modules/bulk-actions/bulk-actions.analytics.spec.ts": {
     "TS2322": 11,
-    "TS2345": 10,
-    "TS7005": 15,
-    "TS7034": 2
+    "TS2345": 10
   },
   "src/modules/bulk-actions/bulk-actions.service.spec.ts": {
     "TS7016": 1
@@ -489,9 +487,6 @@
   },
   "src/modules/cli/services/cli-analytics/cli-analytics.service.spec.ts": {
     "TS2345": 1
-  },
-  "src/modules/cli/services/cli-analytics/cli-analytics.service.ts": {
-    "TS7053": 5
   },
   "src/modules/cli/services/cli-business/cli-business.service.spec.ts": {
     "TS2322": 1,
@@ -1362,12 +1357,6 @@
   "src/modules/workbench/repositories/local-plugin-state.repository.spec.ts": {
     "TS7005": 5,
     "TS7034": 1
-  },
-  "src/modules/workbench/workbench.analytics.spec.ts": {
-    "TS2345": 1
-  },
-  "src/modules/workbench/workbench.analytics.ts": {
-    "TS7053": 2
   },
   "src/modules/workbench/workbench.module.ts": {
     "TS7031": 2

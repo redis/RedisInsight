@@ -10,6 +10,11 @@ export enum BulkActionType {
   Unlink = 'unlink',
 }
 
+export enum BulkActionConfirmation {
+  Standard = 'standard',
+  TypeToConfirm = 'type-to-confirm',
+}
+
 export enum BulkActionStatus {
   Initializing = 'initializing',
   Initialized = 'initialized',

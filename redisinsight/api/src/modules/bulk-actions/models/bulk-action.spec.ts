@@ -16,6 +16,7 @@ import {
   MockType,
   mockBulkActionOverviewMatcher,
   mockSessionMetadata,
+  mockDatabase,
 } from 'src/__mocks__';
 import { DeleteBulkActionSimpleRunner } from 'src/modules/bulk-actions/models/runners/simple/delete.bulk-action.simple.runner';
 import { BulkAction } from 'src/modules/bulk-actions/models/bulk-action';
@@ -32,11 +33,12 @@ describe('AbstractBulkActionSimpleRunner', () => {
 
     bulkAction = new BulkAction(
       mockCreateBulkActionDto.id,
-      mockCreateBulkActionDto.databaseId,
+      mockDatabase,
       mockCreateBulkActionDto.type,
       mockBulkActionFilter,
       mockSocket,
       mockBulkActionsAnalytics() as any,
+      mockSessionMetadata,
     );
 
     analytics = bulkAction[
@@ -406,12 +408,12 @@ describe('AbstractBulkActionSimpleRunner', () => {
         throw new Error('some error');
       });
 
-      bulkAction.sendOverview(mockSessionMetadata);
+      bulkAction.sendOverview();
     });
     it('Should send overview', () => {
       mockSocket.emit.mockReturnValue();
 
-      bulkAction.sendOverview(mockSessionMetadata);
+      bulkAction.sendOverview();
 
       expect(sendOverviewSpy).toHaveBeenCalledTimes(1);
     });
@@ -421,7 +423,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
 
       bulkAction['status'] = BulkActionStatus.Completed;
 
-      bulkAction.sendOverview(mockSessionMetadata);
+      bulkAction.sendOverview();
 
       expect(sendOverviewSpy).toHaveBeenCalledTimes(1);
       expect(analytics.sendActionFailed).not.toHaveBeenCalled();
@@ -429,6 +431,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
       expect(analytics.sendActionSucceed).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockBulkActionOverviewMatcher,
+        mockDatabase,
       );
     });
 
@@ -438,7 +441,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
       bulkAction['status'] = BulkActionStatus.Failed;
       bulkAction['error'] = new Error('some error');
 
-      bulkAction.sendOverview(mockSessionMetadata);
+      bulkAction.sendOverview();
 
       expect(sendOverviewSpy).toHaveBeenCalledTimes(1);
       expect(analytics.sendActionSucceed).not.toHaveBeenCalled();
@@ -451,6 +454,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
           error: 'some error',
         },
         new Error('some error'),
+        mockDatabase,
       );
     });
 
@@ -459,7 +463,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
 
       bulkAction['status'] = BulkActionStatus.Aborted;
 
-      bulkAction.sendOverview(mockSessionMetadata);
+      bulkAction.sendOverview();
 
       expect(sendOverviewSpy).toHaveBeenCalledTimes(1);
       expect(analytics.sendActionSucceed).not.toHaveBeenCalled();
@@ -470,6 +474,36 @@ describe('AbstractBulkActionSimpleRunner', () => {
           ...mockBulkActionOverviewMatcher,
           status: 'aborted',
         },
+        mockDatabase,
+      );
+    });
+
+    it('falls back to constructor-stored sessionMetadata when invoked without args (debounce path)', () => {
+      mockSocket.emit.mockReturnValue();
+
+      const bulkActionWithSession = new BulkAction(
+        mockCreateBulkActionDto.id,
+        mockDatabase,
+        mockCreateBulkActionDto.type,
+        mockBulkActionFilter,
+        mockSocket,
+        mockBulkActionsAnalytics() as any,
+        mockSessionMetadata,
+        false,
+        null,
+      );
+      const innerAnalytics = bulkActionWithSession[
+        'analytics'
+      ] as unknown as MockType<BulkActionsAnalytics>;
+      bulkActionWithSession['status'] = BulkActionStatus.Completed;
+
+      // Simulate the debounced invocation: no args.
+      bulkActionWithSession.sendOverview();
+
+      expect(innerAnalytics.sendActionSucceed).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        expect.any(Object),
+        mockDatabase,
       );
     });
   });
@@ -500,11 +534,12 @@ describe('AbstractBulkActionSimpleRunner', () => {
       it('should return true when generateReport is true', () => {
         const bulkActionWithReport = new BulkAction(
           mockCreateBulkActionDto.id,
-          mockCreateBulkActionDto.databaseId,
+          mockDatabase,
           mockCreateBulkActionDto.type,
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
         expect(bulkActionWithReport.isReportEnabled()).toBe(true);
@@ -515,11 +550,12 @@ describe('AbstractBulkActionSimpleRunner', () => {
       it('should set streaming response and resolve promise when waiting', async () => {
         const bulkActionWithReport = new BulkAction(
           mockCreateBulkActionDto.id,
-          mockCreateBulkActionDto.databaseId,
+          mockDatabase,
           mockCreateBulkActionDto.type,
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
 
@@ -537,11 +573,12 @@ describe('AbstractBulkActionSimpleRunner', () => {
       it('should write header when response is set', async () => {
         const bulkActionWithReport = new BulkAction(
           mockCreateBulkActionDto.id,
-          mockCreateBulkActionDto.databaseId,
+          mockDatabase,
           mockCreateBulkActionDto.type,
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
 
@@ -562,11 +599,12 @@ describe('AbstractBulkActionSimpleRunner', () => {
       it('should immediately end response when called without waiting', () => {
         const bulkActionWithReport = new BulkAction(
           mockCreateBulkActionDto.id,
-          mockCreateBulkActionDto.databaseId,
+          mockDatabase,
           mockCreateBulkActionDto.type,
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
 
@@ -591,11 +629,12 @@ describe('AbstractBulkActionSimpleRunner', () => {
       it('should write success entry to stream', () => {
         const bulkActionWithReport = new BulkAction(
           mockCreateBulkActionDto.id,
-          mockCreateBulkActionDto.databaseId,
+          mockDatabase,
           mockCreateBulkActionDto.type,
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
         bulkActionWithReport['streamingResponse'] = mockResponse;
@@ -608,11 +647,12 @@ describe('AbstractBulkActionSimpleRunner', () => {
       it('should write error entry to stream', () => {
         const bulkActionWithReport = new BulkAction(
           mockCreateBulkActionDto.id,
-          mockCreateBulkActionDto.databaseId,
+          mockDatabase,
           mockCreateBulkActionDto.type,
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
         bulkActionWithReport['streamingResponse'] = mockResponse;
@@ -631,11 +671,12 @@ describe('AbstractBulkActionSimpleRunner', () => {
       it('should write unknown error when error message not provided', () => {
         const bulkActionWithReport = new BulkAction(
           mockCreateBulkActionDto.id,
-          mockCreateBulkActionDto.databaseId,
+          mockDatabase,
           mockCreateBulkActionDto.type,
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
         bulkActionWithReport['streamingResponse'] = mockResponse;
@@ -657,11 +698,12 @@ describe('AbstractBulkActionSimpleRunner', () => {
       it('should write summary and close stream', () => {
         const bulkActionWithReport = new BulkAction(
           mockCreateBulkActionDto.id,
-          mockCreateBulkActionDto.databaseId,
+          mockDatabase,
           mockCreateBulkActionDto.type,
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
         bulkActionWithReport['streamingResponse'] = mockResponse;
@@ -690,11 +732,12 @@ describe('AbstractBulkActionSimpleRunner', () => {
       it('should include downloadUrl when generateReport is true', () => {
         const bulkActionWithReport = new BulkAction(
           mockCreateBulkActionDto.id,
-          mockCreateBulkActionDto.databaseId,
+          mockDatabase,
           mockCreateBulkActionDto.type,
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
 
@@ -715,11 +758,12 @@ describe('AbstractBulkActionSimpleRunner', () => {
       it('should wait for stream when generateReport is true', async () => {
         const bulkActionWithReport = new BulkAction(
           mockCreateBulkActionDto.id,
-          mockCreateBulkActionDto.databaseId,
+          mockDatabase,
           mockCreateBulkActionDto.type,
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
 
@@ -742,11 +786,12 @@ describe('AbstractBulkActionSimpleRunner', () => {
 
         const bulkActionWithReport = new BulkAction(
           mockCreateBulkActionDto.id,
-          mockCreateBulkActionDto.databaseId,
+          mockDatabase,
           mockCreateBulkActionDto.type,
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
 
@@ -766,11 +811,12 @@ describe('AbstractBulkActionSimpleRunner', () => {
 
         const bulkActionWithReport = new BulkAction(
           mockCreateBulkActionDto.id,
-          mockCreateBulkActionDto.databaseId,
+          mockDatabase,
           mockCreateBulkActionDto.type,
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
 
@@ -793,11 +839,12 @@ describe('AbstractBulkActionSimpleRunner', () => {
 
         const bulkActionWithReport = new BulkAction(
           mockCreateBulkActionDto.id,
-          mockCreateBulkActionDto.databaseId,
+          mockDatabase,
           mockCreateBulkActionDto.type,
           mockBulkActionFilter,
           mockSocket,
           mockBulkActionsAnalytics() as any,
+          mockSessionMetadata,
           true,
         );
 

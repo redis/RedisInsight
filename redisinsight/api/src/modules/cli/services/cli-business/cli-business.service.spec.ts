@@ -12,6 +12,8 @@ import {
   mockDatabaseRecommendationService,
   mockCliClientMetadata,
   mockDatabaseClientFactory,
+  mockDatabaseService,
+  mockDangerousCommandsProvider,
   mockStandaloneRedisClient,
   mockClusterRedisClient,
   mockRedisFtInfoReply,
@@ -35,6 +37,8 @@ import { KeytarUnavailableException } from 'src/modules/encryption/exceptions';
 import { CommandsService } from 'src/modules/commands/commands.service';
 import { DatabaseRecommendationService } from 'src/modules/database-recommendation/database-recommendation.service';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
+import { DatabaseService } from 'src/modules/database/database.service';
+import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import { OutputFormatterManager } from './output-formatter/output-formatter-manager';
 import {
   CliOutputFormatterTypes,
@@ -88,6 +92,14 @@ describe('CliBusinessService', () => {
         {
           provide: DatabaseRecommendationService,
           useFactory: mockDatabaseRecommendationService,
+        },
+        {
+          provide: DatabaseService,
+          useFactory: mockDatabaseService,
+        },
+        {
+          provide: DangerousCommandsProvider,
+          useFactory: mockDangerousCommandsProvider,
         },
       ],
     }).compile();
@@ -282,10 +294,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
-        {
+        expect.objectContaining({
           command: 'ft.info',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
       expect(analyticsService.sendIndexInfoEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
@@ -312,10 +324,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
-        {
+        expect.objectContaining({
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -340,10 +352,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
-        {
+        expect.objectContaining({
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -366,10 +378,10 @@ describe('CliBusinessService', () => {
         new CommandNotSupportedError(
           ERROR_MESSAGES.CLI_COMMAND_NOT_SUPPORTED(command.toUpperCase()),
         ),
-        {
+        expect.objectContaining({
           command: 'script',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -388,10 +400,10 @@ describe('CliBusinessService', () => {
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
         new CommandParsingError(ERROR_MESSAGES.CLI_UNTERMINATED_QUOTES()),
-        {
+        expect.objectContaining({
           command: unknownCommand,
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -415,10 +427,10 @@ describe('CliBusinessService', () => {
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
         replyError,
-        {
+        expect.objectContaining({
           command: 'get',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -484,10 +496,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
-        {
+        expect.objectContaining({
           command: 'info',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -531,10 +543,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
-        {
+        expect.objectContaining({
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -559,10 +571,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
-        {
+        expect.objectContaining({
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -585,10 +597,10 @@ describe('CliBusinessService', () => {
         new CommandNotSupportedError(
           ERROR_MESSAGES.CLI_COMMAND_NOT_SUPPORTED(command.toUpperCase()),
         ),
-        {
+        expect.objectContaining({
           command: 'script',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -607,10 +619,10 @@ describe('CliBusinessService', () => {
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
         new CommandParsingError(ERROR_MESSAGES.CLI_UNTERMINATED_QUOTES()),
-        {
+        expect.objectContaining({
           command: unknownCommand,
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -634,10 +646,10 @@ describe('CliBusinessService', () => {
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
         replyError,
-        {
+        expect.objectContaining({
           command: 'get',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -703,10 +715,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
-        {
+        expect.objectContaining({
           command: 'info',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 

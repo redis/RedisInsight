@@ -5,10 +5,11 @@ import {
 import { BulkActionFilter } from 'src/modules/bulk-actions/models/bulk-action-filter';
 import { BulkActionProgress } from 'src/modules/bulk-actions/models/bulk-action-progress';
 import { BulkActionSummary } from 'src/modules/bulk-actions/models/bulk-action-summary';
+import { mockDatabase } from 'src/__mocks__/databases';
 
 export const mockCreateBulkActionDto = {
   id: 'bulk-action-id',
-  databaseId: 'database-id',
+  databaseId: mockDatabase.id,
   type: BulkActionType.Delete,
 };
 
@@ -28,6 +29,7 @@ export const mockBulkActionOverview = {
     errors: [],
     keys: [],
   },
+  confirmedThrough: null,
 };
 
 export const mockDefaultDataManifest = {

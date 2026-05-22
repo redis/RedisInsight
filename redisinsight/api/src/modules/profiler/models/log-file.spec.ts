@@ -1,8 +1,10 @@
 import * as fs from 'fs-extra';
 import { LogFile } from 'src/modules/profiler/models/log-file';
 import {
+  mockDatabase,
   mockLogFile,
   mockProfilerAnalyticsEvents,
+  mockSessionMetadata,
   mockSocket,
 } from 'src/__mocks__';
 import config from 'src/utils/config';
@@ -17,10 +19,13 @@ describe('LogFile', () => {
   let logFile: LogFile;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     logFile = new LogFile(
       mockLogFile.instanceId,
       mockLogFile.id,
       mockProfilerAnalyticsEvents,
+      mockSessionMetadata,
+      mockDatabase,
     );
   });
 
@@ -128,6 +133,10 @@ describe('LogFile', () => {
     expect(stream['_writableState'].ended).toEqual(true);
     expect(
       mockProfilerAnalyticsEvents.get(TelemetryEvents.ProfilerLogDeleted),
-    ).toHaveBeenCalled();
+    ).toHaveBeenCalledWith(
+      mockSessionMetadata,
+      mockDatabase,
+      expect.any(Number),
+    );
   });
 });

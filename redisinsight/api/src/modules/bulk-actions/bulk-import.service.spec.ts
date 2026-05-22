@@ -89,6 +89,7 @@ const mockImportResult: IBulkActionOverview = {
   filter: null,
   status: BulkActionStatus.Completed,
   duration: 100,
+  confirmedThrough: null,
 };
 
 const mockEmptyImportResult: IBulkActionOverview = {
@@ -100,6 +101,7 @@ const mockEmptyImportResult: IBulkActionOverview = {
   filter: null,
   status: BulkActionStatus.Completed,
   duration: 0,
+  confirmedThrough: null,
 };
 
 const mockReadableStream = Readable.from(Buffer.from('SET foo bar'));
@@ -220,6 +222,7 @@ describe('BulkImportService', () => {
           ...mockImportResult,
           duration: expect.anything(),
         },
+        expect.anything(),
       );
     });
 
@@ -331,6 +334,7 @@ describe('BulkImportService', () => {
           mockSessionMetadata,
           { ...mockEmptyImportResult },
           wrapHttpError(e),
+          expect.anything(),
         );
         expect(e).toBeInstanceOf(NotFoundException);
       }

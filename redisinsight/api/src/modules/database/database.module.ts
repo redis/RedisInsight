@@ -58,6 +58,7 @@ export class DatabaseModule {
         DatabaseService,
         DatabaseConnectionService,
         DatabaseClientFactory,
+        DangerousCommandsProvider,
         // todo: rethink everything below
         DatabaseFactory,
         DatabaseInfoService,

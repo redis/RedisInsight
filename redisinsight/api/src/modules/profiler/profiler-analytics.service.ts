@@ -5,6 +5,8 @@ import { TelemetryBaseService } from 'src/modules/analytics/telemetry.base.servi
 import { CommandExecutionStatus } from 'src/modules/cli/dto/cli.dto';
 import { RedisError, ReplyError } from 'src/models';
 import { SessionMetadata } from 'src/common/models';
+import { Database } from 'src/modules/database/models/database';
+import { Environment } from 'src/modules/database/entities/database.entity';
 
 export interface IExecResult {
   response: any;
@@ -30,13 +32,14 @@ export class ProfilerAnalyticsService extends TelemetryBaseService {
 
   sendLogDeleted(
     sessionMetadata: SessionMetadata,
-    databaseId: string,
+    database: Database,
     fileSizeBytes: number,
   ): void {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.ProfilerLogDeleted, {
-        databaseId,
+        databaseId: database.id,
         fileSizeBytes,
+        environment: database.environment ?? Environment.Unspecified,
       });
     } catch (e) {
       // continue regardless of error
@@ -45,13 +48,28 @@ export class ProfilerAnalyticsService extends TelemetryBaseService {
 
   sendLogDownloaded(
     sessionMetadata: SessionMetadata,
-    databaseId: string,
+    database: Database,
     fileSizeBytes: number,
   ): void {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.ProfilerLogDownloaded, {
-        databaseId,
+        databaseId: database.id,
         fileSizeBytes,
+        environment: database.environment ?? Environment.Unspecified,
+      });
+    } catch (e) {
+      // continue regardless of error
+    }
+  }
+
+  sendProfilerStartedEvent(
+    sessionMetadata: SessionMetadata,
+    database: Database,
+  ): void {
+    try {
+      this.sendEvent(sessionMetadata, TelemetryEvents.ProfilerStarted, {
+        databaseId: database.id,
+        environment: database.environment ?? Environment.Unspecified,
       });
     } catch (e) {
       // continue regardless of error

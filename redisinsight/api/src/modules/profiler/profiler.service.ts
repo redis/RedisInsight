@@ -6,7 +6,9 @@ import { MonitorSettings } from 'src/modules/profiler/models/monitor-settings';
 import { LogFileProvider } from 'src/modules/profiler/providers/log-file.provider';
 import { RedisObserverProvider } from 'src/modules/profiler/providers/redis-observer.provider';
 import { ProfilerClientProvider } from 'src/modules/profiler/providers/profiler-client.provider';
+import { ProfilerAnalyticsService } from 'src/modules/profiler/profiler-analytics.service';
 import { SessionMetadata } from 'src/common/models';
+import { DatabaseService } from 'src/modules/database/database.service';
 
 @Injectable()
 export class ProfilerService {
@@ -16,6 +18,8 @@ export class ProfilerService {
     private logFileProvider: LogFileProvider,
     private redisObserverProvider: RedisObserverProvider,
     private profilerClientProvider: ProfilerClientProvider,
+    private analyticsService: ProfilerAnalyticsService,
+    private databaseService: DatabaseService,
   ) {}
 
   /**
@@ -38,11 +42,17 @@ export class ProfilerService {
       sessionMetadata,
     );
 
+    const database = await this.databaseService.get(
+      sessionMetadata,
+      instanceId,
+    );
+
     const profilerClient = await this.profilerClientProvider.getOrCreateClient(
       sessionMetadata,
       instanceId,
       client,
       settings,
+      database,
     );
     const monitorObserver =
       await this.redisObserverProvider.getOrCreateObserver(
@@ -50,6 +60,8 @@ export class ProfilerService {
         instanceId,
       );
     await monitorObserver.subscribe(profilerClient);
+
+    this.analyticsService.sendProfilerStartedEvent(sessionMetadata, database);
   }
 
   /**
