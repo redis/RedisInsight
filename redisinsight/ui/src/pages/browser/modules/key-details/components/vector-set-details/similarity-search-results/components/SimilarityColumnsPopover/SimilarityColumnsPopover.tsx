@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 
 import { MIDDLE_SCREEN_RESOLUTION } from 'uiSrc/constants'
 import { RiPopover } from 'uiSrc/components/base'
@@ -7,6 +8,8 @@ import { ColumnsIcon } from 'uiSrc/components/base/icons'
 import { EmptyButton, IconButton } from 'uiSrc/components/base/forms/buttons'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { Col } from 'uiSrc/components/base/layout/flex'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import {
   COLUMNS_BUTTON_TEST_ID,
@@ -31,6 +34,7 @@ const SimilarityColumnsPopover = ({
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false)
   const showLabel = width > MIDDLE_SCREEN_RESOLUTION
+  const { id: databaseId } = useSelector(connectedInstanceSelector)
 
   const toggle = () => setIsOpen((v) => !v)
   const close = () => setIsOpen(false)
@@ -39,6 +43,13 @@ const SimilarityColumnsPopover = ({
     if (!checked && shownColumns.length === 1 && shownColumns.includes(col)) {
       return
     }
+
+    sendEventTelemetry({
+      event: checked
+        ? TelemetryEvent.VECTOR_SET_ATTRIBUTE_COLUMN_ADDED
+        : TelemetryEvent.VECTOR_SET_ATTRIBUTE_COLUMN_REMOVED,
+      eventData: { databaseId },
+    })
 
     const next = checked
       ? [...shownColumns, col]

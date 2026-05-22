@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 
 import {
   IconButton,
@@ -9,6 +10,8 @@ import { RiPopover } from 'uiSrc/components/base/popover'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
 import { Row } from 'uiSrc/components/base/layout/flex'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { FILTER_EXAMPLES, FILTER_OPERATORS } from './constants'
 import * as S from './FilterSyntaxHelpPopover.styles'
@@ -17,6 +20,19 @@ const TEST_ID = 'similarity-search-filter-help'
 
 export const FilterSyntaxHelpPopover = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const { id: databaseId } = useSelector(connectedInstanceSelector)
+
+  const handleTriggerClick = () => {
+    setIsOpen((prev) => {
+      if (!prev) {
+        sendEventTelemetry({
+          event: TelemetryEvent.VECTOR_SET_ATTRIBUTE_FILTER_SYNTAX_VIEWED,
+          eventData: { databaseId },
+        })
+      }
+      return !prev
+    })
+  }
 
   return (
     <RiPopover
@@ -29,7 +45,7 @@ export const FilterSyntaxHelpPopover = () => {
         <IconButton
           icon={InfoIcon}
           aria-label="Filter syntax help"
-          onClick={() => setIsOpen((prev) => !prev)}
+          onClick={handleTriggerClick}
           data-testid={`${TEST_ID}-trigger`}
         />
       }
