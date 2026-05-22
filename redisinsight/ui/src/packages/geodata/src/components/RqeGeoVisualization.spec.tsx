@@ -129,4 +129,49 @@ describe('RqeGeoVisualization', () => {
       screen.queryByText('Cannot render RQE geo map'),
     ).not.toBeInTheDocument()
   })
+
+  it('shows a heatmap-specific error title when heatmap command parsing fails', () => {
+    jest.spyOn(rqeGeoParser, 'parseRqeGeoCommand').mockReturnValue({
+      ok: false,
+      error: 'No Redis Query Engine geospatial predicate found.',
+    })
+
+    render(
+      <RqeGeoVisualization
+        command='FT.SEARCH cities "*"'
+        response={[0]}
+        status="success"
+        mode="heatmap"
+      />,
+    )
+
+    expect(screen.getByText('Cannot render RQE geo heatmap')).toBeInTheDocument()
+    expect(
+      screen.queryByText('Cannot inspect RQE geo command'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('shows a heatmap-specific error title when heatmap results cannot be parsed', () => {
+    jest
+      .spyOn(rqeGeoParser, 'parseRqeGeoCommand')
+      .mockReturnValue({ ok: true, value: parsedCommand })
+    jest.spyOn(rqeGeoParser, 'parseRqeGeoResults').mockReturnValue({
+      ok: false,
+      error: 'Add RETURN 1 coords to the FT.SEARCH command.',
+    })
+
+    render(
+      <RqeGeoVisualization
+        command='FT.SEARCH cities "@coords:[2.34 48.86 1000 km]" RETURN 1 name'
+        response={[1, 'city:1', ['name', 'Paris']]}
+        status="success"
+        mode="heatmap"
+      />,
+    )
+
+    expect(screen.getByText('Cannot render RQE geo heatmap')).toBeInTheDocument()
+    expect(
+      screen.queryByText('Cannot render RQE geo map'),
+    ).not.toBeInTheDocument()
+  })
 })
