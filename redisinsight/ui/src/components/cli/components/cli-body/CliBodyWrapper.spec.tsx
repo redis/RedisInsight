@@ -10,10 +10,14 @@ import {
   clearStoreActions,
 } from 'uiSrc/utils/test-utils'
 
-import { sendCliClusterCommandAction } from 'uiSrc/slices/cli/cli-output'
+import {
+  sendCliClusterCommandAction,
+  sendCliCommandAction,
+} from 'uiSrc/slices/cli/cli-output'
 import { processCliClient } from 'uiSrc/slices/cli/cli-settings'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { processUnsupportedCommand } from 'uiSrc/utils/cliOutputActions'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 
 import CliBodyWrapper from './CliBodyWrapper'
 
@@ -44,9 +48,23 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
 jest.mock('uiSrc/slices/cli/cli-output', () => ({
   ...jest.requireActual('uiSrc/slices/cli/cli-output'),
   sendCliClusterCommandAction: jest.fn(),
+  sendCliCommandAction: jest.fn(),
   processUnsupportedCommand: jest.fn(),
   updateCliCommandHistory: jest.fn,
   concatToOutput: () => jest.fn(),
+}))
+
+jest.mock('uiSrc/utils', () => ({
+  ...jest.requireActual('uiSrc/utils'),
+  getCommandRepeat: jest.fn().mockReturnValue(['', 1]),
+  isRepeatCountCorrect: jest.fn().mockReturnValue(true),
+}))
+
+jest.mock('uiSrc/components/hooks/useDatabaseEnvironment', () => ({
+  useDatabaseEnvironment: jest.fn().mockReturnValue({
+    environment: 'unspecified',
+    isDangerousCommand: () => false,
+  }),
 }))
 
 jest.mock('uiSrc/utils/cliHelper', () => ({
@@ -112,6 +130,96 @@ describe('CliBodyWrapper', () => {
     })
 
     expect(processUnsupportedCommandMock).toBeCalled()
+  })
+
+  describe('dangerous-command gating', () => {
+    const { getCommandRepeat } = jest.requireMock('uiSrc/utils')
+
+    beforeEach(() => {
+      ;(connectedInstanceSelector as jest.Mock).mockImplementation(() => ({
+        id: '123',
+        connectionType: 'STANDALONE',
+        db: 0,
+        host: 'h',
+        port: 6379,
+        name: 'prod-db',
+      }))
+      ;(getCommandRepeat as jest.Mock).mockReturnValue(['FLUSHDB', 1])
+    })
+
+    it('does not dispatch the command and shows the modal when the command is dangerous', () => {
+      const sendCliCommandActionMock = jest.fn()
+      ;(sendCliCommandAction as jest.Mock).mockImplementation(
+        () => sendCliCommandActionMock,
+      )
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+        environment: 'production',
+        isDangerousCommand: () => true,
+      })
+
+      render(<CliBodyWrapper />)
+
+      fireEvent.keyDown(screen.getByTestId(cliCommandTestId), { key: 'Enter' })
+
+      expect(sendCliCommandActionMock).not.toHaveBeenCalled()
+      expect(screen.getByTestId('type-to-confirm-modal-title')).toBeTruthy()
+    })
+
+    it('dispatches the command after the user confirms in the modal', () => {
+      const sendCliCommandActionMock = jest.fn()
+      ;(sendCliCommandAction as jest.Mock).mockImplementation(
+        () => sendCliCommandActionMock,
+      )
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+        environment: 'production',
+        isDangerousCommand: () => true,
+      })
+
+      render(<CliBodyWrapper />)
+      fireEvent.keyDown(screen.getByTestId(cliCommandTestId), { key: 'Enter' })
+
+      fireEvent.change(screen.getByTestId('type-to-confirm-modal-input'), {
+        target: { value: 'prod-db' },
+      })
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+      expect(sendCliCommandActionMock).toHaveBeenCalled()
+    })
+
+    it('does not dispatch the command when the user cancels the modal', () => {
+      const sendCliCommandActionMock = jest.fn()
+      ;(sendCliCommandAction as jest.Mock).mockImplementation(
+        () => sendCliCommandActionMock,
+      )
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+        environment: 'production',
+        isDangerousCommand: () => true,
+      })
+
+      render(<CliBodyWrapper />)
+      fireEvent.keyDown(screen.getByTestId(cliCommandTestId), { key: 'Enter' })
+
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-cancel-btn'))
+
+      expect(sendCliCommandActionMock).not.toHaveBeenCalled()
+    })
+
+    it('passes commands through without modal when isDangerousCommand returns false', () => {
+      const sendCliCommandActionMock = jest.fn()
+      ;(sendCliCommandAction as jest.Mock).mockImplementation(
+        () => sendCliCommandActionMock,
+      )
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+        environment: 'unspecified',
+        isDangerousCommand: () => false,
+      })
+
+      render(<CliBodyWrapper />)
+      fireEvent.keyDown(screen.getByTestId(cliCommandTestId), { key: 'Enter' })
+
+      expect(sendCliCommandActionMock).toHaveBeenCalled()
+      expect(screen.queryByTestId('type-to-confirm-modal-title')).toBeNull()
+    })
   })
 
   it('"onSubmit" for Cluster connection should call "sendCliClusterCommandAction"', () => {

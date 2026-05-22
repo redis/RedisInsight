@@ -743,6 +743,7 @@ export function fetchConnectedInstanceAction(
 
       if (data !== null) {
         dispatch(setConnectedInstanceSuccess(data))
+        dispatch(fetchConnectedInstanceDangerousCommandsAction(data.id))
         dispatch(setDefaultInstanceSuccess())
       }
       onSuccess?.()

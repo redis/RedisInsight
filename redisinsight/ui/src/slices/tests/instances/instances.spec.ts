@@ -60,6 +60,7 @@ import reducer, {
   checkDatabaseIndexAction,
   setConnectedInfoInstance,
   setConnectedInfoInstanceSuccess,
+  fetchConnectedInstanceAction,
   fetchConnectedInstanceInfoAction,
   testInstanceStandaloneAction,
   updateEditedInstance,
@@ -1550,6 +1551,38 @@ describe('instances slice', () => {
         const expectedActions = [setConnectedInfoInstance()]
 
         expect(store.getActions()).toEqual(expectedActions)
+      })
+    })
+
+    describe('fetchConnectedInstanceAction', () => {
+      it('dispatches setConnectedInstanceDangerousCommands after a successful connect', async () => {
+        // Arrange
+        const instanceData = instances[0]
+        const dangerousCommands = ['FLUSHDB', 'FLUSHALL']
+
+        apiService.get = jest.fn().mockImplementation((url: string) => {
+          if (url.endsWith('/dangerous-commands')) {
+            return Promise.resolve({ status: 200, data: dangerousCommands })
+          }
+          return Promise.resolve({ status: 200, data: instanceData })
+        })
+
+        // Act
+        await store.dispatch<any>(fetchConnectedInstanceAction(instanceData.id))
+        // Flush microtasks so the fire-and-forget dangerous-commands thunk resolves.
+        await Promise.resolve()
+        await Promise.resolve()
+
+        // Assert
+        expect(store.getActions()).toEqual(
+          expect.arrayContaining([
+            setDefaultInstance(),
+            setConnectedInstance(),
+            setConnectedInstanceSuccess(instanceData),
+            setDefaultInstanceSuccess(),
+            setConnectedInstanceDangerousCommands(dangerousCommands),
+          ]),
+        )
       })
     })
 
