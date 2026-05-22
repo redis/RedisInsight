@@ -39,10 +39,22 @@ const getResultsErrorTitle = (
   if (mode === 'shape') {
     return 'Cannot render RQE geo shape'
   }
+  if (mode === 'heatmap') {
+    return 'Cannot render RQE geo heatmap'
+  }
   if (mode === 'inspector') {
     return 'Cannot inspect RQE geo results'
   }
   return 'Cannot render RQE geo map'
+}
+
+const getCommandErrorTitle = (
+  mode: RqeGeoVisualizationProps['mode'],
+): string => {
+  if (mode === 'inspector') {
+    return 'Cannot inspect RQE geo command'
+  }
+  return getResultsErrorTitle(mode)
 }
 
 const toNativeGeoCommand = (command: ParsedRqeGeoCommand): ParsedGeoCommand => {
@@ -166,7 +178,7 @@ export const RqeGeoVisualization = ({
     return (
       <div className="geodata-shell">
         <GeoHeader title={title} status={status} resultCount={0} />
-        <Message title="Cannot inspect RQE geo command">
+        <Message title={getCommandErrorTitle(mode)}>
           {parsedCommand.error}
         </Message>
       </div>
