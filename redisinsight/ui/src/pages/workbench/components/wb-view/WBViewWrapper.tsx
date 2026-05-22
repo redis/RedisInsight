@@ -300,6 +300,9 @@ const WBViewWrapper = () => {
     )
   }
 
+  const confirmationText =
+    instance?.name || `${instance?.host}:${instance?.port}`
+
   return (
     <>
       <WBView
@@ -323,18 +326,13 @@ const WBViewWrapper = () => {
       {pendingSubmit && (
         <TypeToConfirmModal
           title="Run dangerous commands?"
-          confirmationText={
-            instance?.name || `${instance?.host}:${instance?.port}`
-          }
+          confirmationText={confirmationText}
           actionDescription={
             <>
               You&apos;re about to run{' '}
               <strong>{pendingSubmit.dangerousCommands.join(', ')}</strong>{' '}
               against the production database{' '}
-              <strong>
-                {instance?.name || `${instance?.host}:${instance?.port}`}
-              </strong>
-              .
+              <strong>{confirmationText}</strong>.
             </>
           }
           confirmButtonText="Run command"
