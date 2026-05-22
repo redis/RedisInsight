@@ -67,8 +67,7 @@ jest.mock('react-router-dom', () => ({
   }),
 }))
 
-const mockedConnectedInstanceSelector =
-  connectedInstanceSelector as jest.Mock
+const mockedConnectedInstanceSelector = connectedInstanceSelector as jest.Mock
 const mockedConnectedInstanceInfoSelector =
   connectedInstanceInfoSelector as jest.Mock
 const mockedAppContextDbIndex = appContextDbIndex as jest.Mock
