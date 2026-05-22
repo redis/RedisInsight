@@ -88,9 +88,9 @@ describe('WorkbenchAnalytics', () => {
         mockSessionMetadata,
         instanceId,
         CommandExecutionType.Workbench,
-        Environment.Unspecified,
         {
           any: 'fields',
+          environment: Environment.Unspecified,
         },
       );
 
@@ -109,9 +109,9 @@ describe('WorkbenchAnalytics', () => {
         mockSessionMetadata,
         instanceId,
         CommandExecutionType.Search,
-        Environment.Unspecified,
         {
           any: 'fields',
+          environment: Environment.Unspecified,
         },
       );
 
@@ -130,7 +130,6 @@ describe('WorkbenchAnalytics', () => {
         mockSessionMetadata,
         instanceId,
         CommandExecutionType.Workbench,
-        Environment.Unspecified,
         null,
       );
 
@@ -147,9 +146,11 @@ describe('WorkbenchAnalytics', () => {
           { response: 'OK', status: CommandExecutionStatus.Success },
           { response: 'OK', status: CommandExecutionStatus.Success },
         ],
-        Environment.Unspecified,
-        'false',
-        { command: 'set' },
+        {
+          command: 'set',
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
+        },
       );
 
       expect(sendEventMethod).toHaveBeenCalledTimes(2);
@@ -176,9 +177,11 @@ describe('WorkbenchAnalytics', () => {
           { response: 'OK', status: CommandExecutionStatus.Success },
           { response: 'OK', status: CommandExecutionStatus.Success },
         ],
-        Environment.Unspecified,
-        'false',
-        { command: 'set' },
+        {
+          command: 'set',
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
+        },
       );
 
       expect(sendEventMethod).toHaveBeenCalledTimes(2);
@@ -204,9 +207,11 @@ describe('WorkbenchAnalytics', () => {
         instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
-        Environment.Unspecified,
-        'false',
-        { command: 'set' },
+        {
+          command: 'set',
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
+        },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -233,9 +238,11 @@ describe('WorkbenchAnalytics', () => {
         instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
-        Environment.Unspecified,
-        'false',
-        { command: 'set' },
+        {
+          command: 'set',
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
+        },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -255,9 +262,11 @@ describe('WorkbenchAnalytics', () => {
         instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
-        Environment.Unspecified,
-        'false',
-        { command: 'bF.rEsErvE' },
+        {
+          command: 'bF.rEsErvE',
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
+        },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -280,9 +289,11 @@ describe('WorkbenchAnalytics', () => {
         instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
-        Environment.Unspecified,
-        'false',
-        { command: 'CUSTOM.COMMAnd' },
+        {
+          command: 'CUSTOM.COMMAnd',
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
+        },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -305,9 +316,11 @@ describe('WorkbenchAnalytics', () => {
         instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
-        Environment.Unspecified,
-        'false',
-        { command: 'some.command' },
+        {
+          command: 'some.command',
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
+        },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -333,8 +346,7 @@ describe('WorkbenchAnalytics', () => {
           response: 'OK',
           status: CommandExecutionStatus.Success,
         },
-        Environment.Unspecified,
-        'false',
+        { environment: Environment.Unspecified, isDangerous: 'false' },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -357,9 +369,11 @@ describe('WorkbenchAnalytics', () => {
           error: redisReplyError,
           status: CommandExecutionStatus.Fail,
         },
-        Environment.Unspecified,
-        'false',
-        { command: 'set' },
+        {
+          command: 'set',
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
+        },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -387,8 +401,7 @@ describe('WorkbenchAnalytics', () => {
           error: redisReplyError,
           status: CommandExecutionStatus.Fail,
         },
-        Environment.Unspecified,
-        'false',
+        { environment: Environment.Unspecified, isDangerous: 'false' },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -414,8 +427,7 @@ describe('WorkbenchAnalytics', () => {
           status: CommandExecutionStatus.Fail,
           error,
         },
-        Environment.Unspecified,
-        'false',
+        { environment: Environment.Unspecified, isDangerous: 'false' },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -441,8 +453,7 @@ describe('WorkbenchAnalytics', () => {
           status: CommandExecutionStatus.Fail,
           error,
         },
-        Environment.Unspecified,
-        'false',
+        { environment: Environment.Unspecified, isDangerous: 'false' },
       );
 
       expect(sendFailedEventMethod).toHaveBeenCalledWith(
@@ -462,9 +473,11 @@ describe('WorkbenchAnalytics', () => {
         instanceId,
         CommandExecutionType.Search,
         { response: 'OK', status: CommandExecutionStatus.Success },
-        Environment.Unspecified,
-        'false',
-        { command: 'set' },
+        {
+          command: 'set',
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
+        },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -491,9 +504,11 @@ describe('WorkbenchAnalytics', () => {
           error: redisReplyError,
           status: CommandExecutionStatus.Fail,
         },
-        Environment.Unspecified,
-        'false',
-        { command: 'set' },
+        {
+          command: 'set',
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
+        },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -519,9 +534,11 @@ describe('WorkbenchAnalytics', () => {
         instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
-        Environment.Production,
-        'false',
-        { command: 'set' },
+        {
+          command: 'set',
+          environment: Environment.Production,
+          isDangerous: 'false',
+        },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -537,9 +554,11 @@ describe('WorkbenchAnalytics', () => {
         instanceId,
         CommandExecutionType.Workbench,
         { response: 'OK', status: CommandExecutionStatus.Success },
-        Environment.Unspecified,
-        'true',
-        { command: 'flushdb' },
+        {
+          command: 'flushdb',
+          environment: Environment.Unspecified,
+          isDangerous: 'true',
+        },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(

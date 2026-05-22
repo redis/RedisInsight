@@ -123,19 +123,18 @@ describe('WorkbenchCommandsExecutor', () => {
               status: CommandExecutionStatus.Success,
             },
           ],
-          Environment.Unspecified,
-          'false',
           {
             command: 'ft.info',
             rawMode: true,
+            environment: Environment.Unspecified,
+            isDangerous: 'false',
           },
         );
         expect(mockAnalyticsService.sendIndexInfoEvent).toHaveBeenCalledWith(
           mockSessionMetadata,
           mockDatabase.id,
           CommandExecutionType.Workbench,
-          Environment.Unspecified,
-          mockFtInfoAnalyticsData,
+          { ...mockFtInfoAnalyticsData, environment: Environment.Unspecified },
         );
       });
       it('should successfully send command for standalone', async () => {
@@ -166,11 +165,11 @@ describe('WorkbenchCommandsExecutor', () => {
               status: CommandExecutionStatus.Success,
             },
           ],
-          Environment.Unspecified,
-          'false',
           {
             command: mockSetCommand,
             rawMode: false,
+            environment: Environment.Unspecified,
+            isDangerous: 'false',
           },
         );
       });
@@ -203,11 +202,11 @@ describe('WorkbenchCommandsExecutor', () => {
             error: new CommandNotSupportedError(MOCK_ERROR_MESSAGE),
             status: CommandExecutionStatus.Fail,
           },
-          Environment.Unspecified,
-          'false',
           {
             command: mockSetCommand,
             rawMode: false,
+            environment: Environment.Unspecified,
+            isDangerous: 'false',
           },
         );
       });
@@ -243,11 +242,11 @@ describe('WorkbenchCommandsExecutor', () => {
             error: replyError,
             status: CommandExecutionStatus.Fail,
           },
-          Environment.Unspecified,
-          'false',
           {
             command: mockSetCommand,
             rawMode: false,
+            environment: Environment.Unspecified,
+            isDangerous: 'false',
           },
         );
       });
@@ -284,11 +283,11 @@ describe('WorkbenchCommandsExecutor', () => {
               status: CommandExecutionStatus.Success,
             },
           ],
-          Environment.Unspecified,
-          'false',
           {
             command: mockSetCommand,
             rawMode: false,
+            environment: Environment.Unspecified,
+            isDangerous: 'false',
           },
         );
       });
@@ -325,11 +324,11 @@ describe('WorkbenchCommandsExecutor', () => {
               status: CommandExecutionStatus.Success,
             },
           ],
-          Environment.Unspecified,
-          'false',
           {
             command: mockSetCommand,
             rawMode: true,
+            environment: Environment.Unspecified,
+            isDangerous: 'false',
           },
         );
       });
@@ -362,11 +361,11 @@ describe('WorkbenchCommandsExecutor', () => {
             error: new ServiceUnavailableException(MOCK_ERROR_MESSAGE),
             status: CommandExecutionStatus.Fail,
           },
-          Environment.Unspecified,
-          'false',
           {
             command: mockSetCommand,
             rawMode: false,
+            environment: Environment.Unspecified,
+            isDangerous: 'false',
           },
         );
       });
@@ -400,11 +399,11 @@ describe('WorkbenchCommandsExecutor', () => {
             ),
             status: CommandExecutionStatus.Fail,
           },
-          Environment.Unspecified,
-          'false',
           {
             command: unknownCommand,
             rawMode: false,
+            environment: Environment.Unspecified,
+            isDangerous: 'false',
           },
         );
       });

@@ -100,11 +100,11 @@ export class WorkbenchCommandsExecutor {
         client.clientMetadata.databaseId,
         dto.type,
         result,
-        environment,
-        isDangerous,
         {
           command,
           rawMode: mode === RunQueryMode.Raw,
+          environment,
+          isDangerous,
         },
       );
 
@@ -113,8 +113,10 @@ export class WorkbenchCommandsExecutor {
           client.clientMetadata.sessionMetadata,
           client.clientMetadata.databaseId,
           dto.type,
-          environment,
-          getAnalyticsDataFromIndexInfo(response as string[]),
+          {
+            ...getAnalyticsDataFromIndexInfo(response as string[]),
+            environment,
+          },
         );
       }
 
@@ -131,11 +133,11 @@ export class WorkbenchCommandsExecutor {
         client.clientMetadata.databaseId,
         dto.type,
         { ...errorResult, error },
-        Environment.Unspecified,
-        'false',
         {
           command,
           rawMode: dto.mode === RunQueryMode.Raw,
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
         },
       );
 

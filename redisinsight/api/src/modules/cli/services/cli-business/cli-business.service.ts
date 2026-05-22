@@ -230,11 +230,11 @@ export class CliBusinessService {
       this.cliAnalyticsService.sendCommandExecutedEvent(
         clientMetadata.sessionMetadata,
         clientMetadata.databaseId,
-        environment,
-        isDangerous,
         {
           command,
           outputFormat,
+          environment,
+          isDangerous,
         },
       );
 
@@ -271,11 +271,11 @@ export class CliBusinessService {
           clientMetadata.sessionMetadata,
           clientMetadata.databaseId,
           error,
-          Environment.Unspecified,
-          'false',
           {
             command,
             outputFormat,
+            environment: Environment.Unspecified,
+            isDangerous: 'false',
           },
         );
 

@@ -294,12 +294,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
-        expect.anything(),
-        expect.anything(),
-        {
+        expect.objectContaining({
           command: 'ft.info',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
       expect(analyticsService.sendIndexInfoEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
@@ -326,12 +324,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
-        expect.anything(),
-        expect.anything(),
-        {
+        expect.objectContaining({
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -356,12 +352,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
-        expect.anything(),
-        expect.anything(),
-        {
+        expect.objectContaining({
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -384,12 +378,10 @@ describe('CliBusinessService', () => {
         new CommandNotSupportedError(
           ERROR_MESSAGES.CLI_COMMAND_NOT_SUPPORTED(command.toUpperCase()),
         ),
-        expect.anything(),
-        expect.anything(),
-        {
+        expect.objectContaining({
           command: 'script',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -408,12 +400,10 @@ describe('CliBusinessService', () => {
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
         new CommandParsingError(ERROR_MESSAGES.CLI_UNTERMINATED_QUOTES()),
-        expect.anything(),
-        expect.anything(),
-        {
+        expect.objectContaining({
           command: unknownCommand,
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -437,12 +427,10 @@ describe('CliBusinessService', () => {
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
         replyError,
-        expect.anything(),
-        expect.anything(),
-        {
+        expect.objectContaining({
           command: 'get',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -508,12 +496,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
-        expect.anything(),
-        expect.anything(),
-        {
+        expect.objectContaining({
           command: 'info',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -557,12 +543,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
-        expect.anything(),
-        expect.anything(),
-        {
+        expect.objectContaining({
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -587,12 +571,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
-        expect.anything(),
-        expect.anything(),
-        {
+        expect.objectContaining({
           command: 'memory',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -615,12 +597,10 @@ describe('CliBusinessService', () => {
         new CommandNotSupportedError(
           ERROR_MESSAGES.CLI_COMMAND_NOT_SUPPORTED(command.toUpperCase()),
         ),
-        expect.anything(),
-        expect.anything(),
-        {
+        expect.objectContaining({
           command: 'script',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -639,12 +619,10 @@ describe('CliBusinessService', () => {
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
         new CommandParsingError(ERROR_MESSAGES.CLI_UNTERMINATED_QUOTES()),
-        expect.anything(),
-        expect.anything(),
-        {
+        expect.objectContaining({
           command: unknownCommand,
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -668,12 +646,10 @@ describe('CliBusinessService', () => {
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
         replyError,
-        expect.anything(),
-        expect.anything(),
-        {
+        expect.objectContaining({
           command: 'get',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 
@@ -739,12 +715,10 @@ describe('CliBusinessService', () => {
       expect(analyticsService.sendCommandExecutedEvent).toHaveBeenCalledWith(
         mockSessionMetadata,
         mockCliClientMetadata.databaseId,
-        expect.anything(),
-        expect.anything(),
-        {
+        expect.objectContaining({
           command: 'info',
           outputFormat: CliOutputFormatterTypes.Raw,
-        },
+        }),
       );
     });
 

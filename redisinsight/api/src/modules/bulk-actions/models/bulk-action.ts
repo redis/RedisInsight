@@ -328,20 +328,19 @@ export class BulkAction implements IBulkAction {
 
   /**
    * Send overview to a client
-   * @param sessionMetadata defaults to the value stored at construction time
    */
-  sendOverview(sessionMetadata: SessionMetadata = this.sessionMetadata) {
+  sendOverview() {
     const overview = this.getOverview();
     if (overview.status === BulkActionStatus.Completed) {
       this.analytics.sendActionSucceed(
-        sessionMetadata,
+        this.sessionMetadata,
         overview,
         this.database,
       );
     }
     if (overview.status === BulkActionStatus.Failed) {
       this.analytics.sendActionFailed(
-        sessionMetadata,
+        this.sessionMetadata,
         overview,
         this.error,
         this.database,
@@ -349,7 +348,7 @@ export class BulkAction implements IBulkAction {
     }
     if (overview.status === BulkActionStatus.Aborted) {
       this.analytics.sendActionStopped(
-        sessionMetadata,
+        this.sessionMetadata,
         overview,
         this.database,
       );
@@ -357,7 +356,7 @@ export class BulkAction implements IBulkAction {
     try {
       this.socket.emit('overview', overview);
     } catch (e) {
-      this.logger.error('Unable to send overview', e, sessionMetadata);
+      this.logger.error('Unable to send overview', e, this.sessionMetadata);
     }
   }
 }

@@ -18,6 +18,8 @@ export interface IExecResult {
 export interface WorkbenchCommandEventData {
   command?: string;
   rawMode?: boolean;
+  environment?: Environment;
+  isDangerous?: 'true' | 'false';
 }
 
 @Injectable()
@@ -33,7 +35,6 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     sessionMetadata: SessionMetadata,
     databaseId: string,
     commandExecutionType: CommandExecutionType,
-    environment: Environment,
     additionalData: object | null,
   ): Promise<void> {
     if (!additionalData) {
@@ -49,7 +50,6 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
       this.sendEvent(sessionMetadata, event, {
         databaseId,
         ...additionalData,
-        environment,
       });
     } catch (e) {
       // ignore error
@@ -61,8 +61,6 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     databaseId: string,
     commandExecutionType: CommandExecutionType,
     results: IExecResult[],
-    environment: Environment,
-    isDangerous: 'true' | 'false',
     additionalData: WorkbenchCommandEventData = {},
   ): Promise<void> {
     try {
@@ -73,8 +71,6 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
             databaseId,
             commandExecutionType,
             result,
-            environment,
-            isDangerous,
             additionalData,
           ),
         ),
@@ -89,8 +85,6 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     databaseId: string,
     commandExecutionType: CommandExecutionType,
     result: IExecResult,
-    environment: Environment,
-    isDangerous: 'true' | 'false',
     additionalData: WorkbenchCommandEventData = {},
   ): Promise<void> {
     const { status } = result;
@@ -106,8 +100,6 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
           databaseId,
           ...(await this.getCommandAdditionalInfo(command)),
           ...additionalData,
-          environment,
-          isDangerous,
         });
       }
       if (status === CommandExecutionStatus.Fail) {
@@ -116,8 +108,6 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
           databaseId,
           result.error,
           commandExecutionType,
-          environment,
-          isDangerous,
           additionalData,
         );
       }
@@ -142,8 +132,6 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
     databaseId: string,
     error: any,
     commandExecutionType: CommandExecutionType,
-    environment: Environment,
-    isDangerous: 'true' | 'false',
     additionalData: WorkbenchCommandEventData = {},
   ): Promise<void> {
     try {
@@ -160,8 +148,6 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
           databaseId,
           ...commandInfo,
           ...additionalData,
-          environment,
-          isDangerous,
         });
       } else {
         this.sendEvent(sessionMetadata, event, {
@@ -170,8 +156,6 @@ export class WorkbenchAnalytics extends CommandTelemetryBaseService {
           command: error?.command?.name,
           ...commandInfo,
           ...additionalData,
-          environment,
-          isDangerous,
         });
       }
     } catch (e) {

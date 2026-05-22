@@ -15,6 +15,8 @@ import { CliOutputFormatterTypes } from 'src/modules/cli/services/cli-business/o
 export interface CliCommandEventData {
   command?: string;
   outputFormat?: CliOutputFormatterTypes;
+  environment?: Environment;
+  isDangerous?: 'true' | 'false';
 }
 
 @Injectable()
@@ -105,8 +107,6 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
   public async sendCommandExecutedEvent(
     sessionMetadata: SessionMetadata,
     databaseId: string,
-    environment: Environment,
-    isDangerous: 'true' | 'false',
     additionalData: CliCommandEventData = {},
   ): Promise<void> {
     try {
@@ -114,8 +114,6 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
         databaseId,
         ...(await this.getCommandAdditionalInfo(additionalData.command)),
         ...additionalData,
-        environment,
-        isDangerous,
       });
     } catch (e) {
       // ignore error
@@ -126,8 +124,6 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
     sessionMetadata: SessionMetadata,
     databaseId: string,
     error: ReplyError,
-    environment: Environment,
-    isDangerous: 'true' | 'false',
     additionalData: CliCommandEventData = {},
   ): Promise<void> {
     try {
@@ -137,8 +133,6 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
         command: error?.command?.name,
         ...(await this.getCommandAdditionalInfo(additionalData.command)),
         ...additionalData,
-        environment,
-        isDangerous,
       });
     } catch (e) {
       // continue regardless of error
@@ -149,8 +143,6 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
     sessionMetadata: SessionMetadata,
     databaseId: string,
     result: ICliExecResultFromNode,
-    environment: Environment,
-    isDangerous: 'true' | 'false',
     additionalData: CliCommandEventData = {},
   ): Promise<void> {
     const { status, error } = result;
@@ -163,8 +155,6 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
             databaseId,
             ...(await this.getCommandAdditionalInfo(additionalData.command)),
             ...additionalData,
-            environment,
-            isDangerous,
           },
         );
       }
@@ -178,8 +168,6 @@ export class CliAnalyticsService extends CommandTelemetryBaseService {
             command: error?.command?.name,
             ...(await this.getCommandAdditionalInfo(additionalData.command)),
             ...additionalData,
-            environment,
-            isDangerous,
           },
         );
       }

@@ -442,11 +442,7 @@ describe('BulkImportService', () => {
 
       expect(mockCombinedStream.append).toHaveBeenCalledTimes(4);
       expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy).toHaveBeenCalledWith(
-        mockClientMetadata,
-        mockCombinedStream,
-        expect.objectContaining({ id: mockDatabase.id }),
-      );
+      expect(spy).toHaveBeenCalledWith(mockClientMetadata, mockCombinedStream);
     });
 
     it('should import default data for search module', async () => {
@@ -481,11 +477,7 @@ describe('BulkImportService', () => {
 
       expect(mockCombinedStream.append).toHaveBeenCalledTimes(2);
       expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy).toHaveBeenCalledWith(
-        mockClientMetadata,
-        mockCombinedStream,
-        expect.objectContaining({ id: mockDatabase.id }),
-      );
+      expect(spy).toHaveBeenCalledWith(mockClientMetadata, mockCombinedStream);
     });
 
     it('should import default data for searchlight module', async () => {
@@ -520,11 +512,7 @@ describe('BulkImportService', () => {
 
       expect(mockCombinedStream.append).toHaveBeenCalledTimes(2);
       expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy).toHaveBeenCalledWith(
-        mockClientMetadata,
-        mockCombinedStream,
-        expect.objectContaining({ id: mockDatabase.id }),
-      );
+      expect(spy).toHaveBeenCalledWith(mockClientMetadata, mockCombinedStream);
     });
 
     it('should import default data for core module only', async () => {
@@ -540,11 +528,7 @@ describe('BulkImportService', () => {
 
       expect(mockCombinedStream.append).toHaveBeenCalledTimes(2);
       expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy).toHaveBeenCalledWith(
-        mockClientMetadata,
-        mockCombinedStream,
-        expect.objectContaining({ id: mockDatabase.id }),
-      );
+      expect(spy).toHaveBeenCalledWith(mockClientMetadata, mockCombinedStream);
     });
 
     it('should throw an error in case when something went wrong', async () => {

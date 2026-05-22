@@ -408,12 +408,12 @@ describe('AbstractBulkActionSimpleRunner', () => {
         throw new Error('some error');
       });
 
-      bulkAction.sendOverview(mockSessionMetadata);
+      bulkAction.sendOverview();
     });
     it('Should send overview', () => {
       mockSocket.emit.mockReturnValue();
 
-      bulkAction.sendOverview(mockSessionMetadata);
+      bulkAction.sendOverview();
 
       expect(sendOverviewSpy).toHaveBeenCalledTimes(1);
     });
@@ -423,7 +423,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
 
       bulkAction['status'] = BulkActionStatus.Completed;
 
-      bulkAction.sendOverview(mockSessionMetadata);
+      bulkAction.sendOverview();
 
       expect(sendOverviewSpy).toHaveBeenCalledTimes(1);
       expect(analytics.sendActionFailed).not.toHaveBeenCalled();
@@ -441,7 +441,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
       bulkAction['status'] = BulkActionStatus.Failed;
       bulkAction['error'] = new Error('some error');
 
-      bulkAction.sendOverview(mockSessionMetadata);
+      bulkAction.sendOverview();
 
       expect(sendOverviewSpy).toHaveBeenCalledTimes(1);
       expect(analytics.sendActionSucceed).not.toHaveBeenCalled();
@@ -463,7 +463,7 @@ describe('AbstractBulkActionSimpleRunner', () => {
 
       bulkAction['status'] = BulkActionStatus.Aborted;
 
-      bulkAction.sendOverview(mockSessionMetadata);
+      bulkAction.sendOverview();
 
       expect(sendOverviewSpy).toHaveBeenCalledTimes(1);
       expect(analytics.sendActionSucceed).not.toHaveBeenCalled();

@@ -91,13 +91,10 @@ export class BulkImportService {
   /**
    * @param clientMetadata
    * @param fileStream
-   * @param prefetchedDatabase Optional pre-fetched Database to avoid a redundant
-   *   repository lookup when the caller already has it (e.g. `importDefaultData`).
    */
   public async import(
     clientMetadata: ClientMetadata,
     fileStream: Readable,
-    prefetchedDatabase?: Database,
   ): Promise<IBulkActionOverview> {
     const startTime = Date.now();
     const result: IBulkActionOverview = {
@@ -124,12 +121,10 @@ export class BulkImportService {
     let database: Database | undefined;
 
     try {
-      database =
-        prefetchedDatabase ??
-        (await this.databaseService.get(
-          clientMetadata.sessionMetadata,
-          clientMetadata.databaseId,
-        ));
+      database = await this.databaseService.get(
+        clientMetadata.sessionMetadata,
+        clientMetadata.databaseId,
+      );
 
       this.analytics.sendActionStarted(
         clientMetadata.sessionMetadata,
@@ -290,11 +285,7 @@ export class BulkImportService {
         commandsStream.append('\r\n');
       });
 
-      const result = await this.import(
-        clientMetadata,
-        commandsStream,
-        database,
-      );
+      const result = await this.import(clientMetadata, commandsStream);
 
       this.analytics.sendImportSamplesUploaded(
         clientMetadata.sessionMetadata,
