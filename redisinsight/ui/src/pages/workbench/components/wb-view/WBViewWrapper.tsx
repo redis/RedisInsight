@@ -274,7 +274,7 @@ const WBViewWrapper = () => {
     const effectiveValue = value || script
     const commands = getCommandsForExecution(effectiveValue)
     const dangerousCommands = commands.filter((cmd) =>
-      isDangerousCommand(cmd.split(' ')[0]),
+      isDangerousCommand(cmd.split(/\s+/)[0]),
     )
     if (dangerousCommands.length > 0) {
       setPendingSubmit({

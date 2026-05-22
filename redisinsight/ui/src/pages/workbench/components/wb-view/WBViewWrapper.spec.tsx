@@ -236,6 +236,25 @@ describe('WBViewWrapper', () => {
       expect(sendWbQueryAction).not.toHaveBeenCalled()
     })
 
+    it('gates a multi-line dangerous command (Monaco continuation)', () => {
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+        environment: Environment.Production,
+        isDangerousCommand: (cmd: string) => cmd.toUpperCase() === 'FLUSHALL',
+      })
+
+      render(<WBViewWrapper />)
+      // Monaco joins continuation lines (the leading whitespace on the next
+      // line is preserved), so the verb arrives with an embedded newline.
+      act(() => {
+        capturedOnSubmit?.('FLUSHALL\n  ASYNC')
+      })
+
+      expect(
+        screen.getByTestId('type-to-confirm-modal-title'),
+      ).toBeInTheDocument()
+      expect(sendWbQueryAction).not.toHaveBeenCalled()
+    })
+
     it('falls back to host:port when the connected instance has no name', () => {
       const namelessInstance = DBInstanceFactory.build({
         name: undefined,
