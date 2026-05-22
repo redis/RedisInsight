@@ -35,10 +35,12 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
   connectedInstanceSelector: jest.fn(),
 }))
 
+const connectedInstanceSelectorMock = connectedInstanceSelector as jest.Mock
+
 const mockConnectedInstance = (
   overrides: Partial<{ name: string; host: string; port: number }> = {},
 ) => {
-  ;(connectedInstanceSelector as jest.Mock).mockReturnValue({
+  connectedInstanceSelectorMock.mockReturnValue({
     id: 'instanceId',
     name: DB_NAME,
     host: DB_HOST,
