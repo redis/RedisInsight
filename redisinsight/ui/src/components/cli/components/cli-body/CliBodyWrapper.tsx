@@ -44,12 +44,18 @@ import {
   processUnrepeatableNumber,
   processUnsupportedCommand,
 } from 'uiSrc/utils/cliOutputActions'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
+import TypeToConfirmModal from 'uiSrc/components/type-to-confirm-modal/TypeToConfirmModal'
 import CliBody from './CliBody'
 
 import styles from './CliBody/styles.module.scss'
 
 const CliBodyWrapper = () => {
   const [command, setCommand] = useState('')
+  const [pendingCommand, setPendingCommand] = useState<{
+    commandLine: string
+    countRepeat: number
+  } | null>(null)
 
   const history = useHistory()
   const dispatch = useDispatch()
@@ -63,10 +69,11 @@ const CliBodyWrapper = () => {
     matchedCommand,
     cliClientUuid,
   } = useSelector(cliSettingsSelector)
-  const { connectionType, host, port, db } = useSelector(
+  const { connectionType, host, port, db, name } = useSelector(
     connectedInstanceSelector,
   )
   const { db: currentDbIndex } = useSelector(outputSelector)
+  const { isDangerousCommand } = useDatabaseEnvironment()
 
   useEffect(() => {
     if (!cliClientUuid) {
@@ -187,6 +194,11 @@ const CliBodyWrapper = () => {
       return
     }
 
+    if (isDangerousCommand(commandLine.trim().split(' ')[0])) {
+      setPendingCommand({ commandLine, countRepeat })
+      return
+    }
+
     for (let i = 0; i < countRepeat; i++) {
       sendCommand(commandLine)
     }
@@ -219,6 +231,8 @@ const CliBodyWrapper = () => {
     setCommand('')
   }
 
+  const confirmationText = name || `${host}:${port}`
+
   return (
     <section ref={refHotkeys} className={styles.section}>
       <CliBody
@@ -228,6 +242,31 @@ const CliBodyWrapper = () => {
         setCommand={setCommand}
         onSubmit={handleSubmit}
       />
+      {pendingCommand && (
+        <TypeToConfirmModal
+          confirmationText={confirmationText}
+          title="Run dangerous command?"
+          actionDescription={
+            <>
+              You&apos;re about to run{' '}
+              <strong>{pendingCommand.commandLine}</strong> against the
+              production database <strong>{confirmationText}</strong>.
+            </>
+          }
+          confirmButtonText="Run command"
+          onConfirm={() => {
+            for (let i = 0; i < pendingCommand.countRepeat; i++) {
+              sendCommand(pendingCommand.commandLine)
+            }
+            setPendingCommand(null)
+          }}
+          onCancel={() => {
+            dispatch(concatToOutput(cliTexts.DANGEROUS_COMMAND_CANCELLED))
+            resetCommand()
+            setPendingCommand(null)
+          }}
+        />
+      )}
     </section>
   )
 }
