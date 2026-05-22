@@ -286,7 +286,7 @@ const WBViewWrapper = () => {
       return
     }
 
-    runSubmission(value, commandId, executeParams)
+    runSubmission(effectiveValue, commandId, executeParams)
   }
 
   const handleConfirmPendingSubmit = () => {
