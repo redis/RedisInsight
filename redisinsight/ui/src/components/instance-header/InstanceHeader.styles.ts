@@ -1,6 +1,8 @@
+import React from 'react'
 import styled, { css } from 'styled-components'
 
-interface InstanceHeaderContainerProps {
+interface InstanceHeaderContainerProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   $isProductionEnv?: boolean
 }
 
