@@ -31,45 +31,53 @@ export const tokenizeRedisCommand = (command: string): string[] => {
   let current = ''
   let quote: '"' | "'" | null = null
   let isEscaped = false
+  let hasToken = false
 
   for (const char of command.trim()) {
     if (isEscaped) {
       current += char
       isEscaped = false
+      hasToken = true
       continue
     }
 
     if (char === '\\') {
       isEscaped = true
+      hasToken = true
       continue
     }
 
     if (quote) {
       if (char === quote) {
         quote = null
+        hasToken = true
       } else {
         current += char
+        hasToken = true
       }
       continue
     }
 
     if (char === '"' || char === "'") {
       quote = char
+      hasToken = true
       continue
     }
 
     if (/\s/.test(char)) {
-      if (current.length > 0) {
+      if (hasToken) {
         tokens.push(current)
         current = ''
+        hasToken = false
       }
       continue
     }
 
     current += char
+    hasToken = true
   }
 
-  if (current.length > 0) {
+  if (hasToken) {
     tokens.push(current)
   }
 
@@ -79,6 +87,10 @@ export const tokenizeRedisCommand = (command: string): string[] => {
 const parseNumber = (value: string | undefined, field: string): ParseResult<number> => {
   if (value === undefined) {
     return { ok: false, error: `Missing ${field}.` }
+  }
+
+  if (value.trim() === '') {
+    return { ok: false, error: `Invalid ${field}: ${value}.` }
   }
 
   const parsed = Number(value)

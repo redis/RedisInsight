@@ -38,6 +38,22 @@ describe('geoParser', () => {
     ])
   })
 
+  it('keeps empty quoted Redis command tokens as positional arguments', () => {
+    expect(tokenizeRedisCommand('GEOHASH Sicily "" next')).toEqual([
+      'GEOHASH',
+      'Sicily',
+      '',
+      'next',
+    ])
+
+    expect(tokenizeRedisCommand("GEOHASH Sicily '' next")).toEqual([
+      'GEOHASH',
+      'Sicily',
+      '',
+      'next',
+    ])
+  })
+
   it('keeps escaped whitespace inside tokens', () => {
     expect(tokenizeRedisCommand('GEOHASH Sicily New\\ York')).toEqual([
       'GEOHASH',
@@ -247,6 +263,10 @@ describe('geoParser', () => {
     expect(parseGeoCommand('GEOADD Sicily nope 38.1 Palermo')).toEqual({
       ok: false,
       error: 'Invalid longitude: nope.',
+    })
+    expect(parseGeoCommand('GEOADD Sicily "" 38.1 Palermo')).toEqual({
+      ok: false,
+      error: 'Invalid longitude: .',
     })
     expect(parseGeoCommand('GEOADD Sicily 13.3 38.1')).toEqual({
       ok: false,
