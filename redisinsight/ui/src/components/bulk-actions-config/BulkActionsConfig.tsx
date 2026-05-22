@@ -36,6 +36,7 @@ const BulkActionsConfig = () => {
     generateReport,
     filter,
     search,
+    confirmedThrough,
   } = useSelector(bulkActionsDeleteSelector)
   const { token } = useSelector(appCsrfSelector)
   const socketRef = useRef<Nullable<Socket>>(null)
@@ -132,6 +133,7 @@ const BulkActionsConfig = () => {
           match: search || '*',
         },
         generateReport,
+        ...(confirmedThrough ? { confirmedThrough } : {}),
       },
       onBulkDeleting,
     )

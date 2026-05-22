@@ -1,6 +1,11 @@
 import { cloneDeep } from 'lodash'
 import { AxiosError } from 'axios'
-import { BulkActionsStatus, BulkActionsType, KeyTypes } from 'uiSrc/constants'
+import {
+  BulkActionConfirmation,
+  BulkActionsStatus,
+  BulkActionsType,
+  KeyTypes,
+} from 'uiSrc/constants'
 import reducer, {
   bulkActionsSelector,
   initialState,
@@ -17,6 +22,7 @@ import reducer, {
   setBulkDeleteStartAgain,
   setBulkUploadStartAgain,
   setBulkDeleteLoading,
+  setBulkDeleteConfirmedThrough,
   setBulkDeleteFilter,
   setBulkDeleteSearch,
   setBulkDeleteKeyCount,
@@ -265,6 +271,45 @@ describe('bulkActions slice', () => {
           browser: { bulkActions: nextState },
         })
         expect(bulkActionsSelector(rootState)).toEqual(state)
+      })
+    })
+
+    describe('setBulkDeleteConfirmedThrough', () => {
+      it('should set confirmedThrough', () => {
+        const state = {
+          ...initialState.bulkDelete,
+          confirmedThrough: BulkActionConfirmation.TypeToConfirm,
+        }
+
+        const nextState = reducer(
+          initialState,
+          setBulkDeleteConfirmedThrough(BulkActionConfirmation.TypeToConfirm),
+        )
+
+        const rootState = Object.assign(initialStateDefault, {
+          browser: { bulkActions: nextState },
+        })
+        expect(bulkActionsDeleteSelector(rootState)).toEqual(state)
+      })
+
+      it('should reset confirmedThrough to null', () => {
+        const currentState = {
+          ...initialState,
+          bulkDelete: {
+            ...initialState.bulkDelete,
+            confirmedThrough: BulkActionConfirmation.TypeToConfirm,
+          },
+        }
+
+        const nextState = reducer(
+          currentState,
+          setBulkDeleteConfirmedThrough(null),
+        )
+
+        const rootState = Object.assign(initialStateDefault, {
+          browser: { bulkActions: nextState },
+        })
+        expect(bulkActionsDeleteSelector(rootState).confirmedThrough).toBeNull()
       })
     })
 
