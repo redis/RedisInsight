@@ -18,6 +18,8 @@ import { processCliClient } from 'uiSrc/slices/cli/cli-settings'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { processUnsupportedCommand } from 'uiSrc/utils/cliOutputActions'
 import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
+import { DBInstanceFactory } from 'uiSrc/mocks/factories/database/DBInstance.factory'
+import { ConnectionType } from 'uiSrc/slices/interfaces'
 
 import CliBodyWrapper from './CliBodyWrapper'
 
@@ -133,29 +135,35 @@ describe('CliBodyWrapper', () => {
   })
 
   describe('dangerous-command gating', () => {
-    const { getCommandRepeat } = jest.requireMock('uiSrc/utils')
+    const mockedConnectedInstanceSelector =
+      connectedInstanceSelector as jest.Mock
+    const mockedSendCliCommandAction = sendCliCommandAction as jest.Mock
+    const mockedUseDatabaseEnvironment = useDatabaseEnvironment as jest.Mock
+    const mockedGetCommandRepeat = jest.requireMock('uiSrc/utils')
+      .getCommandRepeat as jest.Mock
 
     beforeEach(() => {
-      ;(connectedInstanceSelector as jest.Mock).mockImplementation(() => ({
-        id: '123',
-        connectionType: 'STANDALONE',
-        db: 0,
-        host: 'h',
-        port: 6379,
+      const prodInstance = DBInstanceFactory.build({
         name: 'prod-db',
-      }))
-      ;(getCommandRepeat as jest.Mock).mockReturnValue(['FLUSHDB', 1])
+        connectionType: ConnectionType.Standalone,
+      })
+      mockedConnectedInstanceSelector.mockReturnValue(prodInstance)
+      mockedGetCommandRepeat.mockReturnValue(['FLUSHDB', 1])
     })
+
+    const setDangerousEnvironment = (isDangerous: boolean) => {
+      mockedUseDatabaseEnvironment.mockReturnValue({
+        environment: isDangerous ? 'production' : 'unspecified',
+        isDangerousCommand: () => isDangerous,
+      })
+    }
 
     it('does not dispatch the command and shows the modal when the command is dangerous', () => {
       const sendCliCommandActionMock = jest.fn()
-      ;(sendCliCommandAction as jest.Mock).mockImplementation(
+      mockedSendCliCommandAction.mockImplementation(
         () => sendCliCommandActionMock,
       )
-      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
-        environment: 'production',
-        isDangerousCommand: () => true,
-      })
+      setDangerousEnvironment(true)
 
       render(<CliBodyWrapper />)
 
@@ -167,13 +175,10 @@ describe('CliBodyWrapper', () => {
 
     it('dispatches the command after the user confirms in the modal', () => {
       const sendCliCommandActionMock = jest.fn()
-      ;(sendCliCommandAction as jest.Mock).mockImplementation(
+      mockedSendCliCommandAction.mockImplementation(
         () => sendCliCommandActionMock,
       )
-      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
-        environment: 'production',
-        isDangerousCommand: () => true,
-      })
+      setDangerousEnvironment(true)
 
       render(<CliBodyWrapper />)
       fireEvent.keyDown(screen.getByTestId(cliCommandTestId), { key: 'Enter' })
@@ -188,13 +193,10 @@ describe('CliBodyWrapper', () => {
 
     it('does not dispatch the command when the user cancels the modal', () => {
       const sendCliCommandActionMock = jest.fn()
-      ;(sendCliCommandAction as jest.Mock).mockImplementation(
+      mockedSendCliCommandAction.mockImplementation(
         () => sendCliCommandActionMock,
       )
-      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
-        environment: 'production',
-        isDangerousCommand: () => true,
-      })
+      setDangerousEnvironment(true)
 
       render(<CliBodyWrapper />)
       fireEvent.keyDown(screen.getByTestId(cliCommandTestId), { key: 'Enter' })
@@ -206,13 +208,10 @@ describe('CliBodyWrapper', () => {
 
     it('passes commands through without modal when isDangerousCommand returns false', () => {
       const sendCliCommandActionMock = jest.fn()
-      ;(sendCliCommandAction as jest.Mock).mockImplementation(
+      mockedSendCliCommandAction.mockImplementation(
         () => sendCliCommandActionMock,
       )
-      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
-        environment: 'unspecified',
-        isDangerousCommand: () => false,
-      })
+      setDangerousEnvironment(false)
 
       render(<CliBodyWrapper />)
       fireEvent.keyDown(screen.getByTestId(cliCommandTestId), { key: 'Enter' })

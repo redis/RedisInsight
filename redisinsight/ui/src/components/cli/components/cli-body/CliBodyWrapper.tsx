@@ -194,7 +194,7 @@ const CliBodyWrapper = () => {
       return
     }
 
-    if (isDangerousCommand(commandLine.split(' ')[0])) {
+    if (isDangerousCommand(commandLine.trim().split(' ')[0])) {
       setPendingCommand({ commandLine, countRepeat })
       return
     }
@@ -261,6 +261,7 @@ const CliBodyWrapper = () => {
             setPendingCommand(null)
           }}
           onCancel={() => {
+            dispatch(concatToOutput(cliTexts.DANGEROUS_COMMAND_CANCELLED))
             resetCommand()
             setPendingCommand(null)
           }}
