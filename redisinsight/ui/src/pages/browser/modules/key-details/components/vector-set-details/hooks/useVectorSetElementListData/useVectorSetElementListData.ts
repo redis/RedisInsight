@@ -42,9 +42,6 @@ export const useVectorSetElementListData = ({
     vectorSetDataSelector,
   )
   const { name: key } = useSelector(selectedKeyDataSelector) ?? { name: '' }
-  // `Instance` does not surface `compressor` in its public type, but the
-  // selector returns the raw connection state which does carry it. Match the
-  // pattern used by sibling key-detail tables (e.g. SimilaritySearchResultsTable).
   const { compressor = null } = useSelector(
     connectedInstanceSelector,
   ) as unknown as {

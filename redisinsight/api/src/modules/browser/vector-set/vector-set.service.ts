@@ -139,9 +139,6 @@ export class VectorSetService {
       const client: RedisClient =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
 
-      // 404 only when the key is genuinely missing. VCARD === 0 for an
-      // existing-but-empty set must be returned as a valid empty response,
-      // not conflated with "not found".
       await checkIfKeyNotExists(keyName, client);
 
       const total = (await client.sendCommand([
