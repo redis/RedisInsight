@@ -33,6 +33,7 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
   freeInstancesSelector: jest.fn().mockReturnValue([
     {
       id: 'instanceId',
+      environment: 'production',
     },
   ]),
 }))
@@ -68,7 +69,9 @@ describe('OAuthConnectFreeDb', () => {
         databaseId: 'providedId',
         provider: undefined,
         source: OAuthSocialSource.ListOfDatabases,
-        environment: 'unspecified',
+        // sourced from firstFreeInstance (the launch target), not the
+        // currently connected instance
+        environment: 'production',
         ...getRedisModulesSummary(),
         ...MOCK_ADDITIONAL_INFO,
       },

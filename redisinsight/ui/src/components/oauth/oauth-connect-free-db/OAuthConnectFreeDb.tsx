@@ -37,11 +37,14 @@ const OAuthConnectFreeDb = ({
   className,
 }: Props) => {
   const { loading } = useSelector(instancesSelector) ?? {}
-  const { modules, provider, environment } =
-    useSelector(connectedInstanceSelector) ?? {}
+  const { modules, provider } = useSelector(connectedInstanceSelector) ?? {}
   const [firstFreeInstance] = useSelector(freeInstancesSelector) ?? []
 
   const targetDatabaseId = id || firstFreeInstance?.id
+  // environment should describe the database we're about to launch (the
+  // target), not the one currently connected — sourced from the target so
+  // analytics reflect the actual classification of the free DB.
+  const targetEnvironment = firstFreeInstance?.environment
 
   const dispatch = useDispatch()
   const { search } = useLocation()
@@ -59,7 +62,7 @@ const OAuthConnectFreeDb = ({
         databaseId: targetDatabaseId,
         provider,
         source,
-        environment,
+        environment: targetEnvironment,
         ...modulesSummary,
         ...infoData,
       },
