@@ -25,6 +25,9 @@ env:
     https://s3.amazonaws.com/redisinsight.download/public/latest/Redis-Insight-linux-x86_64.AppImage
     https://s3.amazonaws.com/redisinsight.download/public/latest/Redis-Insight-linux-amd64.deb
 
+permissions:
+  contents: read
+
 jobs:
   analyze:
     name: VirusTotal Analyze
