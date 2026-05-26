@@ -32,14 +32,12 @@ const DatabasesListCellName: IDatabaseListCell = ({ row }) => {
           lastConnection={lastConnection}
           createdAt={createdAt}
           isFree={cloudDetails?.free}
-          fallback={
-            <EnvironmentBadge
-              environment={environment}
-              dataTestId={`environment-badge-${id}`}
-            />
-          }
         />
       </div>
+      <EnvironmentBadge
+        environment={environment}
+        dataTestId={`environment-badge-${id}`}
+      />
 
       <RiTooltip
         position="bottom"

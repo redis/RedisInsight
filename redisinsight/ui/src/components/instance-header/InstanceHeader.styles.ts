@@ -6,15 +6,10 @@ interface InstanceHeaderContainerProps
   $isProductionEnv?: boolean
 }
 
-const productionGradient = css`
-  background: linear-gradient(
-    90deg,
-    ${({ theme }) => theme.semantic.color.background.danger200} 0%,
-    ${({ theme }) => theme.semantic.color.background.danger100} 25%,
-    transparent 60%
-  );
+const productionTint = css`
+  background-color: ${({ theme }) => theme.semantic.color.background.danger100};
 `
 
 export const InstanceHeaderContainer = styled.div<InstanceHeaderContainerProps>`
-  ${({ $isProductionEnv }) => $isProductionEnv && productionGradient}
+  ${({ $isProductionEnv }) => $isProductionEnv && productionTint}
 `

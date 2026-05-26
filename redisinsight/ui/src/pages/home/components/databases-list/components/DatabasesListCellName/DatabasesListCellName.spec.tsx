@@ -75,8 +75,8 @@ describe('DatabasesListCellName', () => {
     })
   })
 
-  describe('temporary indicator precedence', () => {
-    it('shows the "new" temp indicator instead of the PROD badge', () => {
+  describe('with a temporary indicator', () => {
+    it('renders the env badge alongside the "new" temp indicator', () => {
       renderCell({
         ...baseInstance,
         new: true,
@@ -84,12 +84,10 @@ describe('DatabasesListCellName', () => {
       })
 
       expect(screen.getByTestId('database-status-new-db-1')).toBeInTheDocument()
-      expect(
-        screen.queryByTestId('environment-badge-db-1'),
-      ).not.toBeInTheDocument()
+      expect(screen.getByTestId('environment-badge-db-1')).toBeInTheDocument()
     })
 
-    it('shows the cloud warning indicator instead of the Development label', () => {
+    it('renders the env badge alongside the cloud warning indicator', () => {
       const fiveDaysAgo = new Date()
       fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5)
 
@@ -100,21 +98,6 @@ describe('DatabasesListCellName', () => {
         environment: Environment.Development,
       })
 
-      expect(
-        screen.queryByTestId('environment-badge-db-1'),
-      ).not.toBeInTheDocument()
-    })
-
-    it('falls back to the env badge once the temp indicator clears', () => {
-      renderCell({
-        ...baseInstance,
-        new: false,
-        environment: Environment.Production,
-      })
-
-      expect(
-        screen.queryByTestId('database-status-new-db-1'),
-      ).not.toBeInTheDocument()
       expect(screen.getByTestId('environment-badge-db-1')).toBeInTheDocument()
     })
   })

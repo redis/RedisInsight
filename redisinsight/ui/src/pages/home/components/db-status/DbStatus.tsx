@@ -30,7 +30,6 @@ export interface Props {
   createdAt: Maybe<Date>
   isNew: boolean
   isFree?: boolean
-  fallback?: React.ReactNode
 }
 
 export enum WarningTypes {
@@ -47,14 +46,7 @@ interface WarningTooltipProps {
 }
 
 const DbStatus = (props: Props) => {
-  const {
-    id,
-    lastConnection,
-    createdAt,
-    isNew,
-    isFree,
-    fallback = null,
-  } = props
+  const { id, lastConnection, createdAt, isNew, isFree } = props
 
   const { source } = useSelector(appContextCapability)
   const capability = getTutorialCapability(source!)
@@ -116,7 +108,7 @@ const DbStatus = (props: Props) => {
     )
   }
 
-  return <>{fallback}</>
+  return null
 }
 
 // separated to send event when content is displayed
