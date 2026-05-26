@@ -37,8 +37,9 @@ export const attributeColumnId = (key: string): string =>
 /**
  * Column-visibility state for the similarity-search results table.
  *
- * Tracks *hidden* ids (not shown) so new attribute keys default to visible
- * while previously-hidden ones stay hidden across re-searches. Element +
+ * Tracks *explicitly shown* attribute ids so attribute columns default to
+ * hidden — the user opts them in via the Columns popover, and that decision
+ * is preserved when new searches surface new attribute keys. Element +
  * Similarity are always visible and excluded from `columnsMap`.
  */
 export const useSimilarityResultColumns = (
@@ -54,9 +55,9 @@ export const useSimilarityResultColumns = (
     [matches, parsedAttributesCache],
   )
 
-  const [hiddenColumns, setHiddenColumns] = useState<Set<string>>(
-    () => new Set(),
-  )
+  const [shownAttributeColumns, setShownAttributeColumns] = useState<
+    Set<string>
+  >(() => new Set())
 
   const columns = useMemo(
     () => buildSimilarityResultsColumns(attributeKeys),
@@ -75,28 +76,32 @@ export const useSimilarityResultColumns = (
     () => [
       SimilarityResultsColumn.Name,
       SimilarityResultsColumn.Similarity,
-      ...Array.from(columnsMap.keys()).filter((id) => !hiddenColumns.has(id)),
+      ...Array.from(columnsMap.keys()).filter((id) =>
+        shownAttributeColumns.has(id),
+      ),
     ],
-    [columnsMap, hiddenColumns],
+    [columnsMap, shownAttributeColumns],
   )
 
   const onShownColumnsChange = useCallback(
     (next: string[]) => {
-      const nextShown = new Set(next)
-      const nextHidden = new Set<string>()
+      const nextSet = new Set(next)
+      const nextShownAttrs = new Set<string>()
       for (const id of columnsMap.keys()) {
-        if (!nextShown.has(id)) nextHidden.add(id)
+        if (nextSet.has(id)) nextShownAttrs.add(id)
       }
-      setHiddenColumns(nextHidden)
+      setShownAttributeColumns(nextShownAttrs)
     },
     [columnsMap],
   )
 
   const columnVisibility = useMemo<Record<string, boolean>>(() => {
     const out: Record<string, boolean> = {}
-    for (const id of hiddenColumns) out[id] = false
+    for (const id of columnsMap.keys()) {
+      if (!shownAttributeColumns.has(id)) out[id] = false
+    }
     return out
-  }, [hiddenColumns])
+  }, [columnsMap, shownAttributeColumns])
 
   return {
     columns,
