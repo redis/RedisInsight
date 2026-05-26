@@ -21,9 +21,6 @@ import {
 } from './texts'
 import { IconWrapper, InfoIcon } from './DbStatus.styles'
 
-const LAST_CONNECTION_SM = 3
-const LAST_CONNECTION_L = 16
-
 export interface Props {
   id: string
   lastConnection: Maybe<Date>
@@ -44,6 +41,9 @@ interface WarningTooltipProps {
   type?: string
   isCapabilityNotShown?: boolean
 }
+
+const LAST_CONNECTION_SM = 3
+const LAST_CONNECTION_L = 16
 
 const DbStatus = (props: Props) => {
   const { id, lastConnection, createdAt, isNew, isFree } = props
