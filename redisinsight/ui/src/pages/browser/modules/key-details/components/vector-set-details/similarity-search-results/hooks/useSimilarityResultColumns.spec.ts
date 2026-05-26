@@ -63,7 +63,7 @@ describe('useSimilarityResultColumns', () => {
     expect(result.current.columnsMap.size).toBe(0)
   })
 
-  it('keeps Element + Similarity anchored in shownColumns alongside visible attribute keys', () => {
+  it('keeps Element + Similarity anchored in shownColumns with attribute columns hidden by default', () => {
     const { result } = renderHook(() =>
       useSimilarityResultColumns([match('a', 0.9, '{"foo":1}')]),
     )
@@ -71,12 +71,13 @@ describe('useSimilarityResultColumns', () => {
     expect(result.current.shownColumns).toEqual([
       SimilarityResultsColumn.Name,
       SimilarityResultsColumn.Similarity,
-      attributeColumnId('foo'),
     ])
-    expect(result.current.columnVisibility).toEqual({})
+    expect(result.current.columnVisibility).toEqual({
+      [attributeColumnId('foo')]: false,
+    })
   })
 
-  it('hides columns when onShownColumnsChange omits them', () => {
+  it('shows columns when onShownColumnsChange includes them', () => {
     const { result } = renderHook(() =>
       useSimilarityResultColumns([match('a', 0.9, '{"foo":1,"bar":2}')]),
     )
@@ -117,7 +118,7 @@ describe('useSimilarityResultColumns', () => {
     expect(result.current.columnVisibility).toEqual({})
   })
 
-  it('preserves hidden state when new matches surface new attribute keys', () => {
+  it('preserves shown state when new matches surface new attribute keys', () => {
     const initial = [match('a', 0.9, '{"foo":1}')]
     const { result, rerender } = renderHook(
       (matches: VectorSetSimilarityMatch[]) =>
@@ -129,22 +130,21 @@ describe('useSimilarityResultColumns', () => {
       result.current.onShownColumnsChange([
         SimilarityResultsColumn.Name,
         SimilarityResultsColumn.Similarity,
+        attributeColumnId('foo'),
       ])
     })
-    expect(result.current.columnVisibility).toEqual({
-      [attributeColumnId('foo')]: false,
-    })
+    expect(result.current.columnVisibility).toEqual({})
 
-    // New search introduces a `bar` attribute → it should default to visible
-    // while the user's existing decision to hide `foo` is preserved.
+    // New search introduces a `bar` attribute → it should default to hidden
+    // while the user's existing decision to show `foo` is preserved.
     rerender([match('c', 0.7, '{"foo":1,"bar":2}')])
     expect(result.current.shownColumns).toEqual([
       SimilarityResultsColumn.Name,
       SimilarityResultsColumn.Similarity,
-      attributeColumnId('bar'),
+      attributeColumnId('foo'),
     ])
     expect(result.current.columnVisibility).toEqual({
-      [attributeColumnId('foo')]: false,
+      [attributeColumnId('bar')]: false,
     })
   })
 
