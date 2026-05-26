@@ -14,6 +14,8 @@ import {
   vectorSetSelector,
 } from 'uiSrc/slices/browser/vectorSet'
 import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces'
+import { KeyValueCompressor } from 'uiSrc/constants'
+import { Nullable } from 'uiSrc/utils'
 
 import { getVectorSetColumns } from '../../vector-set-element-list/VectorSetElementList.config'
 import {
@@ -40,7 +42,11 @@ export const useVectorSetElementListData = ({
     vectorSetDataSelector,
   )
   const { name: key } = useSelector(selectedKeyDataSelector) ?? { name: '' }
-  const { compressor = null } = useSelector(connectedInstanceSelector)
+  const { compressor = null } = useSelector(
+    connectedInstanceSelector,
+  ) as unknown as {
+    compressor: Nullable<KeyValueCompressor>
+  }
   const { viewFormat } = useSelector(selectedKeySelector)
 
   const dispatch = useDispatch()
@@ -95,7 +101,7 @@ export const useVectorSetElementListData = ({
       handleRemoveIconClick,
     }
     const listConfig: ElementsListConfig = {
-      compressor: compressor as any,
+      compressor,
       viewFormat,
       elementDeleteConfig: deleteConfig,
       onViewElement,

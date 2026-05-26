@@ -2,6 +2,7 @@ import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { stringToBuffer } from 'uiSrc/utils'
 import { vectorSetSimilaritySearchSelector } from 'uiSrc/slices/browser/vectorSet'
+import { VectorSetSimilaritySearchResponse } from 'uiSrc/slices/interfaces/vectorSet'
 
 import { Props, VectorSetDetails } from './VectorSetDetails'
 
@@ -9,11 +10,19 @@ const mockedVectorSetSimilaritySearchSelector = jest.mocked(
   vectorSetSimilaritySearchSelector,
 )
 
-const defaultProps = {
+const defaultProps: Props = {
   onRemoveKey: jest.fn(),
   onOpenAddItemPanel: jest.fn(),
   onCloseAddItemPanel: jest.fn(),
-} as unknown as Props
+  onCloseKey: jest.fn(),
+  onEditKey: jest.fn(),
+  isFullScreen: false,
+  arePanelsCollapsed: false,
+  onToggleFullScreen: jest.fn(),
+}
+
+const renderComponent = (propsOverride?: Partial<Props>) =>
+  render(<VectorSetDetails {...defaultProps} {...propsOverride} />)
 
 jest.mock('uiSrc/slices/browser/vectorSet', () => {
   const defaultState = jest.requireActual(
@@ -40,10 +49,7 @@ jest.mock('uiSrc/slices/browser/vectorSet', () => {
   }
 })
 
-const setSimilaritySearchData = (data?: {
-  keyName: any
-  elements: { name: any; score: number }[]
-}) => {
+const setSimilaritySearchData = (data?: VectorSetSimilaritySearchResponse) => {
   mockedVectorSetSimilaritySearchSelector.mockReturnValue({
     loading: false,
     error: '',
@@ -57,26 +63,26 @@ describe('VectorSetDetails', () => {
   })
 
   it('should render', () => {
-    expect(render(<VectorSetDetails {...defaultProps} />)).toBeTruthy()
+    expect(renderComponent()).toBeTruthy()
   })
 
   it('should render key details header', () => {
-    render(<VectorSetDetails {...defaultProps} />)
+    renderComponent()
     expect(screen.getByTestId('key-details-header')).toBeInTheDocument()
   })
 
   it('should render subheader with format selector', () => {
-    render(<VectorSetDetails {...defaultProps} />)
+    renderComponent()
     expect(screen.getByTestId('select-format-key-value')).toBeInTheDocument()
   })
 
   it('should render add elements button', () => {
-    render(<VectorSetDetails {...defaultProps} />)
+    renderComponent()
     expect(screen.getByTestId('add-key-value-items-btn')).toBeInTheDocument()
   })
 
   it('should open add element panel when add button is clicked', () => {
-    render(<VectorSetDetails {...defaultProps} />)
+    renderComponent()
 
     expect(screen.queryByTestId('save-elements-btn')).not.toBeInTheDocument()
 
@@ -87,7 +93,7 @@ describe('VectorSetDetails', () => {
   })
 
   it('should close add element panel when cancel is clicked', () => {
-    render(<VectorSetDetails {...defaultProps} />)
+    renderComponent()
 
     fireEvent.click(screen.getByTestId('add-key-value-items-btn'))
     expect(screen.getByTestId('save-elements-btn')).toBeInTheDocument()
@@ -97,7 +103,7 @@ describe('VectorSetDetails', () => {
   })
 
   it('shows the regular elements list when no similarity search has run', () => {
-    render(<VectorSetDetails {...defaultProps} />)
+    renderComponent()
     expect(screen.getByTestId('vector-set-details')).toBeInTheDocument()
     expect(
       screen.queryByTestId('vector-set-similarity-results'),
@@ -113,7 +119,7 @@ describe('VectorSetDetails', () => {
       ],
     })
 
-    render(<VectorSetDetails {...defaultProps} />)
+    renderComponent()
 
     expect(
       screen.getByTestId('vector-set-similarity-results'),

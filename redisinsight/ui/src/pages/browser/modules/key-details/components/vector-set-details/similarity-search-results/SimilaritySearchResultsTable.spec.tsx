@@ -7,11 +7,26 @@ import { vectorSetSimilarityMatchFactory } from 'uiSrc/mocks/factories/browser/v
 
 import { SimilaritySearchResultsTable } from './SimilaritySearchResultsTable'
 import { buildSimilarityResultsColumns } from './SimilaritySearchResultsTable.config'
-import { ParsedAttributesCache } from './SimilaritySearchResultsTable.types'
+import {
+  ParsedAttributesCache,
+  SimilaritySearchResultsTableProps,
+} from './SimilaritySearchResultsTable.types'
 import {
   buildParsedAttributesCache,
   collectAttributeKeys,
 } from './utils/parseAttributes'
+
+const defaultProps: SimilaritySearchResultsTableProps = {
+  matches: [],
+  columns: buildSimilarityResultsColumns([]),
+  columnVisibility: {},
+  parsedAttributesCache: new WeakMap(),
+}
+
+const renderComponent = (
+  propsOverride?: Partial<SimilaritySearchResultsTableProps>,
+) =>
+  render(<SimilaritySearchResultsTable {...defaultProps} {...propsOverride} />)
 
 const buildMatch = (
   name: string,
@@ -36,14 +51,12 @@ const renderTable = (
   const parsedAttributesCache = buildParsedAttributesCache(matches)
   const attributeKeys = collectAttributeKeys(matches, parsedAttributesCache)
   const columns = buildSimilarityResultsColumns(attributeKeys)
-  return render(
-    <SimilaritySearchResultsTable
-      matches={matches}
-      columns={columns}
-      columnVisibility={options.columnVisibility ?? {}}
-      parsedAttributesCache={parsedAttributesCache}
-    />,
-  )
+  return renderComponent({
+    matches,
+    columns,
+    columnVisibility: options.columnVisibility ?? {},
+    parsedAttributesCache,
+  })
 }
 
 describe('SimilaritySearchResultsTable', () => {
@@ -213,14 +226,12 @@ describe('SimilaritySearchResultsTable', () => {
       const parsedAttributesCache: ParsedAttributesCache = new WeakMap()
       parsedAttributesCache.set(match, { city: 'FROM_CACHE' })
 
-      render(
-        <SimilaritySearchResultsTable
-          matches={[match]}
-          columns={columns}
-          columnVisibility={{}}
-          parsedAttributesCache={parsedAttributesCache}
-        />,
-      )
+      renderComponent({
+        matches: [match],
+        columns,
+        columnVisibility: {},
+        parsedAttributesCache,
+      })
 
       expect(
         screen.getByTestId('vector-set-similarity-attribute-cell-0-city'),

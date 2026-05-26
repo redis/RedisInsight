@@ -1,13 +1,7 @@
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { catchAclError, catchMultiTransactionError } from 'src/utils';
 import { RedisErrorCodes } from 'src/constants';
 import { ReplyError } from 'src/models';
-import ERROR_MESSAGES from 'src/constants/error-messages';
 import {
   BrowserToolKeysCommands,
   BrowserToolVectorSetCommands,
@@ -145,21 +139,12 @@ export class VectorSetService {
       const client: RedisClient =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
 
-      // Get total count using VCARD
+      await checkIfKeyNotExists(keyName, client);
+
       const total = (await client.sendCommand([
         BrowserToolVectorSetCommands.VCard,
         keyName,
       ])) as number;
-
-      if (!total) {
-        this.logger.error(
-          `Failed to get elements of the VectorSet data type. Not Found key: ${keyName}.`,
-          clientMetadata,
-        );
-        return Promise.reject(
-          new NotFoundException(ERROR_MESSAGES.KEY_NOT_EXIST),
-        );
-      }
 
       const isVRangeSupported = await client.isFeatureSupported(
         RedisFeature.VRangeCommand,

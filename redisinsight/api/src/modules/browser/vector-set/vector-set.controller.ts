@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Logger,
   Post,
   Put,
   Res,
@@ -39,6 +40,8 @@ import { Response } from 'express';
 @Controller('vector-set')
 @UsePipes(new ValidationPipe({ transform: true }))
 export class VectorSetController extends BrowserBaseController {
+  private readonly logger = new Logger(VectorSetController.name);
+
   constructor(private vectorSetService: VectorSetService) {
     super();
   }
@@ -134,12 +137,18 @@ export class VectorSetController extends BrowserBaseController {
   @Post('/download-embedding')
   @ApiRedisInstanceOperation({
     description:
-      'Download the full vector embedding of an element in the VectorSet stored at key',
+      'Download the full vector embedding of an element in the VectorSet stored at key. ' +
+      'Response is streamed as `application/octet-stream` with a `Content-Disposition` attachment header.',
     statusCode: 200,
     responses: [
       {
         status: 200,
-        description: 'Ok',
+        description: 'Vector embedding stream',
+        content: {
+          'application/octet-stream': {
+            schema: { type: 'string', format: 'binary' },
+          },
+        },
       },
     ],
   })
@@ -162,9 +171,14 @@ export class VectorSetController extends BrowserBaseController {
     res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
 
     stream
-      .on('error', () => {
+      .on('error', (error) => {
+        this.logger.error(
+          'Failed to stream vector embedding download.',
+          error,
+          clientMetadata,
+        );
         if (!res.headersSent) {
-          res.status(404).send();
+          res.status(500).send();
         } else {
           res.destroy();
         }

@@ -4,6 +4,7 @@ import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { MIDDLE_SCREEN_RESOLUTION } from 'uiSrc/constants'
 
 import { SimilarityColumnsPopover } from './SimilarityColumnsPopover'
+import { Props } from './SimilarityColumnsPopover.types'
 import {
   COLUMNS_BUTTON_TEST_ID,
   COLUMNS_POPOVER_TEST_ID,
@@ -22,17 +23,20 @@ const attrColumnsMap = new Map<string, string>([
 
 const anchoredShownColumns = ['name', 'similarity', 'attr_city', 'attr_count']
 
+const defaultProps: Props = {
+  width: WIDE,
+  columnsMap: attrColumnsMap,
+  shownColumns: anchoredShownColumns,
+  onShownColumnsChange: jest.fn(),
+}
+
+const renderComponent = (propsOverride?: Partial<Props>) =>
+  render(<SimilarityColumnsPopover {...defaultProps} {...propsOverride} />)
+
 describe('SimilarityColumnsPopover', () => {
   describe('responsive trigger', () => {
     it('renders the trigger with label on wide screens', () => {
-      render(
-        <SimilarityColumnsPopover
-          width={WIDE}
-          columnsMap={attrColumnsMap}
-          shownColumns={anchoredShownColumns}
-          onShownColumnsChange={jest.fn()}
-        />,
-      )
+      renderComponent({ width: WIDE })
 
       const btn = screen.getByTestId(COLUMNS_BUTTON_TEST_ID)
       expect(btn).toBeInTheDocument()
@@ -40,14 +44,7 @@ describe('SimilarityColumnsPopover', () => {
     })
 
     it('renders icon-only trigger on narrow screens', () => {
-      render(
-        <SimilarityColumnsPopover
-          width={NARROW}
-          columnsMap={attrColumnsMap}
-          shownColumns={anchoredShownColumns}
-          onShownColumnsChange={jest.fn()}
-        />,
-      )
+      renderComponent({ width: NARROW })
 
       const btn = screen.getByTestId(COLUMNS_BUTTON_TEST_ID)
       expect(btn).toBeInTheDocument()
@@ -58,14 +55,7 @@ describe('SimilarityColumnsPopover', () => {
 
   describe('popover content', () => {
     it('opens the popover and lists only the columnsMap entries (no Element/Similarity)', () => {
-      render(
-        <SimilarityColumnsPopover
-          width={WIDE}
-          columnsMap={attrColumnsMap}
-          shownColumns={anchoredShownColumns}
-          onShownColumnsChange={jest.fn()}
-        />,
-      )
+      renderComponent()
 
       fireEvent.click(screen.getByTestId(COLUMNS_BUTTON_TEST_ID))
 
@@ -79,14 +69,7 @@ describe('SimilarityColumnsPopover', () => {
 
     it('invokes onShownColumnsChange with the next shown ids when a checkbox toggles', () => {
       const onChange = jest.fn()
-      render(
-        <SimilarityColumnsPopover
-          width={WIDE}
-          columnsMap={attrColumnsMap}
-          shownColumns={anchoredShownColumns}
-          onShownColumnsChange={onChange}
-        />,
-      )
+      renderComponent({ onShownColumnsChange: onChange })
 
       fireEvent.click(screen.getByTestId(COLUMNS_BUTTON_TEST_ID))
       fireEvent.click(screen.getByTestId('show-attr_city'))

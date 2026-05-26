@@ -1,15 +1,16 @@
-import React from 'react'
-import { useTheme } from '@redis-ui/styles'
+import React, { useContext } from 'react'
 import { Text } from 'uiSrc/components/base/text'
+import { ThemeContext } from 'uiSrc/contexts/themeContext'
+import { Theme } from 'uiSrc/constants'
 import NoQueryResultsIcon from 'uiSrc/assets/img/vector-search/no-query-results.svg'
 import NoQueryResultsIconDark from 'uiSrc/assets/img/vector-search/no-query-results-dark.svg'
 
 import * as S from './NoSearchResults.styles'
 
 export const NoSearchResults = () => {
-  const theme = useTheme()
+  const { theme } = useContext(ThemeContext)
   const icon =
-    theme.name === 'dark' ? NoQueryResultsIconDark : NoQueryResultsIcon
+    theme === Theme.Dark ? NoQueryResultsIconDark : NoQueryResultsIcon
 
   return (
     <S.Container

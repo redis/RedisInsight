@@ -4,6 +4,7 @@ import {
   IsArray,
   IsBase64,
   IsDefined,
+  IsJSON,
   IsOptional,
   IsString,
   ValidateIf,
@@ -50,9 +51,11 @@ export class AddVectorSetElementDto {
 
   @ApiPropertyOptional({
     type: String,
-    description: 'Attributes string to associate with the element.',
+    description:
+      'Attributes JSON string to associate with the element. Must be valid JSON.',
   })
   @IsOptional()
   @IsString()
+  @IsJSON()
   attributes?: string;
 }

@@ -324,6 +324,10 @@ describe('VectorSetService', () => {
       client.isFeatureSupported = jest.fn().mockResolvedValue(true);
 
       when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, mockDto.keyName])
+        .mockResolvedValue(true);
+
+      when(client.sendCommand)
         .calledWith([BrowserToolVectorSetCommands.VCard, mockDto.keyName])
         .mockResolvedValue(mockElements.length);
 
@@ -382,12 +386,37 @@ describe('VectorSetService', () => {
 
     it('should throw NotFoundException when key does not exist', async () => {
       when(client.sendCommand)
-        .calledWith([BrowserToolVectorSetCommands.VCard, mockDto.keyName])
-        .mockResolvedValue(0);
+        .calledWith([BrowserToolKeysCommands.Exists, mockDto.keyName])
+        .mockResolvedValue(false);
 
       await expect(
         service.getElements(mockBrowserClientMetadata, mockDto),
       ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should return an empty response for an existing but empty vector set', async () => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolVectorSetCommands.VCard, mockDto.keyName])
+        .mockResolvedValue(0);
+
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolVectorSetCommands.VRange,
+          mockDto.keyName,
+          mockDto.start,
+          mockDto.end,
+          mockDto.count,
+        ])
+        .mockResolvedValue([]);
+
+      const result = await service.getElements(
+        mockBrowserClientMetadata,
+        mockDto,
+      );
+
+      expect(result.total).toEqual(0);
+      expect(result.elementNames).toEqual([]);
+      expect(result.nextCursor).toBeUndefined();
     });
 
     it('should throw BadRequestException for wrong type error', async () => {
