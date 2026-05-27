@@ -16,7 +16,6 @@ import {
   KeyDetailsHeader,
   KeyDetailsHeaderProps,
 } from 'uiSrc/pages/browser/modules'
-import { MIDDLE_SCREEN_RESOLUTION } from 'uiSrc/constants'
 
 import { ArrayElementList } from './array-element-list/ArrayElementList'
 import { AddKeyArray } from './array-add-element-form/ArrayAddElementForm'
@@ -88,9 +87,7 @@ const ArrayDetails = (props: Props) => {
                   color="primary"
                   data-testid="array-count-summary"
                 >
-                  {width > MIDDLE_SCREEN_RESOLUTION
-                    ? `Count: ${total} · Length: ${logicalLength}${nextInsertIndex !== undefined ? ` · Next Insert Index: ${nextInsertIndex}` : ''}`
-                    : `${total} / ${logicalLength}${nextInsertIndex !== undefined ? ` · NII: ${nextInsertIndex}` : ''}`}
+                  {`Count: ${total} · Length: ${logicalLength}${nextInsertIndex !== undefined ? ` · Next Insert Index: ${nextInsertIndex}` : ''}`}
                 </Text>
               </FlexItem>
               <Row align="center" grow={false}>

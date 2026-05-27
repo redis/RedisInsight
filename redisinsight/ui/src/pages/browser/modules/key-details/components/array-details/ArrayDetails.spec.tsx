@@ -72,13 +72,11 @@ describe('ArrayDetails', () => {
     expect(screen.getByTestId('key-details-header')).toBeInTheDocument()
   })
 
-  // AutoSizer reports width=0 in jsdom, so the component always renders the
-  // compact form: "${total} / ${logicalLength}[· NII: X]"
   it('should render count summary element', () => {
     renderComponent()
     const summary = screen.getByTestId('array-count-summary')
     expect(summary).toBeInTheDocument()
-    expect(summary.textContent).toMatch(/\d+ \/ \d+/)
+    expect(summary.textContent).toMatch(/Count: \d+/)
   })
 
   it('should not show NII when nextInsertIndex is undefined', () => {
@@ -87,7 +85,7 @@ describe('ArrayDetails', () => {
     expect(summary.textContent).not.toContain('NII')
   })
 
-  it('should show NII when nextInsertIndex is provided', () => {
+  it('should show Next Insert Index when nextInsertIndex is provided', () => {
     selectedKeyDataSelector.mockReturnValue({
       name: stringToBuffer('myarray'),
       nameString: 'myarray',
@@ -101,10 +99,10 @@ describe('ArrayDetails', () => {
     renderComponent()
 
     const summary = screen.getByTestId('array-count-summary')
-    expect(summary.textContent).toContain('NII: 3')
+    expect(summary.textContent).toContain('Next Insert Index: 3')
   })
 
-  it('should show NII: 0 when nextInsertIndex is 0', () => {
+  it('should show Next Insert Index: 0 when nextInsertIndex is 0', () => {
     selectedKeyDataSelector.mockReturnValue({
       name: stringToBuffer('myarray'),
       nameString: 'myarray',
@@ -118,7 +116,7 @@ describe('ArrayDetails', () => {
     renderComponent()
 
     const summary = screen.getByTestId('array-count-summary')
-    expect(summary.textContent).toContain('NII: 0')
+    expect(summary.textContent).toContain('Next Insert Index: 0')
   })
 
   it('should render Add Elements button', () => {
