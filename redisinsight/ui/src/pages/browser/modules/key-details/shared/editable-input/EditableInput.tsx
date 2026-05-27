@@ -9,6 +9,7 @@ import { Props as InlineItemEditorProps } from 'uiSrc/components/inline-item-edi
 import { Text } from 'uiSrc/components/base/text'
 import { EditIcon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -45,6 +46,7 @@ const EditableInput = (props: Props) => {
   } = props
 
   const [isHovering, setIsHovering] = useState(false)
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   if (!isEditing) {
     return (
@@ -101,8 +103,16 @@ const EditableInput = (props: Props) => {
             onEdit?.(false)
           }}
           onApply={(value, event) => {
-            onApply(value, event)
-            onEdit?.(false)
+            requestConfirmation({
+              title: 'Edit value on production database?',
+              actionDescription:
+                'You are about to modify a value on a production database.',
+              confirmButtonText: 'Save',
+              onConfirm: () => {
+                onApply(value, event)
+                onEdit?.(false)
+              },
+            })
           }}
           validation={validation}
           variant={variant}

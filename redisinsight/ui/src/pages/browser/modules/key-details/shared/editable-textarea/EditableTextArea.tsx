@@ -9,6 +9,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { EditIcon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { TextArea } from 'uiSrc/components/base/inputs'
+import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -59,6 +60,7 @@ const EditableTextArea = (props: Props) => {
   const [value, setValue] = useState('')
   const [isHovering, setIsHovering] = useState(false)
   const textAreaRef: Ref<HTMLTextAreaElement> = useRef(null)
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(() => {
     setValue(initialValue)
@@ -152,9 +154,17 @@ const EditableTextArea = (props: Props) => {
                 onEdit(false)
               }}
               onApply={(_, event) => {
-                onApply(value, event)
-                setValue(initialValue)
-                onEdit(false)
+                requestConfirmation({
+                  title: 'Edit value on production database?',
+                  actionDescription:
+                    'You are about to modify a value on a production database.',
+                  confirmButtonText: 'Save',
+                  onConfirm: () => {
+                    onApply(value, event)
+                    setValue(initialValue)
+                    onEdit(false)
+                  },
+                })
               }}
               approveText={approveText}
               approveByValidation={() => approveByValidation?.(value)}

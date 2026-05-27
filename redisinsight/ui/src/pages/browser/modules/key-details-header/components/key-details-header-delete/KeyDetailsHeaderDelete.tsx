@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 
+import { Environment } from 'apiClient'
 import {
   initialKeyInfo,
   keysSelector,
@@ -21,6 +22,7 @@ import {
   IconButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { ConfirmationPopover } from 'uiSrc/components'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 
 export interface Props {
   onDelete: (key: RedisResponseBuffer) => void
@@ -36,6 +38,8 @@ const KeyDetailsHeaderDelete = ({ onDelete }: Props) => {
   const { viewType } = useSelector(keysSelector)
 
   const [isPopoverDeleteOpen, setIsPopoverDeleteOpen] = useState(false)
+  const { environment } = useDatabaseEnvironment()
+  const bypassConfirmation = environment === Environment.Development
 
   const tooltipContent = formatLongName(keyProp || '')
 
@@ -44,6 +48,22 @@ const KeyDetailsHeaderDelete = ({ onDelete }: Props) => {
   }
 
   const showPopoverDelete = () => {
+    if (bypassConfirmation && keyBuffer) {
+      sendEventTelemetry({
+        event: getBasedOnViewTypeEvent(
+          viewType,
+          TelemetryEvent.BROWSER_KEY_DELETE_CLICKED,
+          TelemetryEvent.TREE_VIEW_KEY_DELETE_CLICKED,
+        ),
+        eventData: {
+          databaseId: instanceId,
+          source: 'keyValue',
+          keyType: type,
+        },
+      })
+      onDelete(keyBuffer)
+      return
+    }
     setIsPopoverDeleteOpen((isPopoverDeleteOpen) => !isPopoverDeleteOpen)
     sendEventTelemetry({
       event: getBasedOnViewTypeEvent(

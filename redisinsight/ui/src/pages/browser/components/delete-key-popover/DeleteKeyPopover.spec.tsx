@@ -1,8 +1,26 @@
 import React from 'react'
+import { Environment } from 'apiClient'
 import { render, screen, fireEvent } from 'uiSrc/utils/test-utils'
 import { stringToBuffer } from 'uiSrc/utils'
 import { KeyTypes } from 'uiSrc/constants'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 import { DeleteKeyPopover } from './DeleteKeyPopover'
+
+jest.mock('uiSrc/components/hooks/useDatabaseEnvironment', () => ({
+  useDatabaseEnvironment: jest.fn().mockReturnValue({
+    environment: 'unspecified',
+    isDangerousCommand: () => false,
+  }),
+}))
+
+const mockedUseDatabaseEnvironment = useDatabaseEnvironment as jest.Mock
+
+const setEnvironment = (environment: Environment) => {
+  mockedUseDatabaseEnvironment.mockReturnValue({
+    environment,
+    isDangerousCommand: () => false,
+  })
+}
 
 describe('DeleteKeyPopover', () => {
   const mockProps = {
@@ -16,6 +34,7 @@ describe('DeleteKeyPopover', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    setEnvironment(Environment.Unspecified)
   })
 
   it('should render delete button with proper data-testid', () => {
@@ -87,6 +106,50 @@ describe('DeleteKeyPopover', () => {
     )
 
     expect(screen.getByTestId('submit-delete-key')).toBeDisabled()
+  })
+
+  describe('environment gating', () => {
+    it('bypasses popover and calls onDelete directly in Development', () => {
+      setEnvironment(Environment.Development)
+      render(<DeleteKeyPopover {...mockProps} />)
+
+      fireEvent.click(
+        screen.getByTestId(`delete-key-btn-${mockProps.nameString}`),
+      )
+
+      expect(mockProps.onDelete).toHaveBeenCalledWith(mockProps.name)
+      expect(mockProps.onOpenPopover).not.toHaveBeenCalled()
+    })
+
+    it('opens popover in Production (current behavior)', () => {
+      setEnvironment(Environment.Production)
+      render(<DeleteKeyPopover {...mockProps} />)
+
+      fireEvent.click(
+        screen.getByTestId(`delete-key-btn-${mockProps.nameString}`),
+      )
+
+      expect(mockProps.onOpenPopover).toHaveBeenCalledWith(
+        mockProps.rowId,
+        mockProps.type,
+      )
+      expect(mockProps.onDelete).not.toHaveBeenCalled()
+    })
+
+    it('opens popover in Unspecified (current behavior)', () => {
+      setEnvironment(Environment.Unspecified)
+      render(<DeleteKeyPopover {...mockProps} />)
+
+      fireEvent.click(
+        screen.getByTestId(`delete-key-btn-${mockProps.nameString}`),
+      )
+
+      expect(mockProps.onOpenPopover).toHaveBeenCalledWith(
+        mockProps.rowId,
+        mockProps.type,
+      )
+      expect(mockProps.onDelete).not.toHaveBeenCalled()
+    })
   })
 
   it('should format long names in the confirmation message', () => {

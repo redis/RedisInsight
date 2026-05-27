@@ -42,7 +42,12 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import { DeleteListElementsDto, ListElementDestination } from 'apiClient'
+import {
+  DeleteListElementsDto,
+  Environment,
+  ListElementDestination,
+} from 'apiClient'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 
 import {
   HEAD_DESTINATION,
@@ -90,6 +95,8 @@ const RemoveListElements = (props: Props) => {
   )
   const { id: instanceId } = useSelector(connectedInstanceSelector)
   const { viewType } = useSelector(keysSelector)
+  const { environment } = useDatabaseEnvironment()
+  const bypassConfirmation = environment === Environment.Development
 
   const countInput = useRef<HTMLInputElement>(null)
 
@@ -121,7 +128,6 @@ const RemoveListElements = (props: Props) => {
   }
 
   const showPopover = () => {
-    setIsPopoverOpen((isPopoverOpen) => !isPopoverOpen)
     sendEventTelemetry({
       event: getBasedOnViewTypeEvent(
         viewType,
@@ -133,6 +139,11 @@ const RemoveListElements = (props: Props) => {
         keyType: KeyTypes.List,
       },
     })
+    if (bypassConfirmation) {
+      submitData()
+      return
+    }
+    setIsPopoverOpen((isPopoverOpen) => !isPopoverOpen)
   }
 
   const closePopover = () => {

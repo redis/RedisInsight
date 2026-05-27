@@ -13,6 +13,7 @@ import {
   Nullable,
 } from 'uiSrc/utils'
 import FieldMessage from 'uiSrc/components/field-message/FieldMessage'
+import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
 
 import { JSONScalarProps } from '../interfaces'
 import {
@@ -46,6 +47,7 @@ const RejsonScalar = (props: JSONScalarProps) => {
   const [deleting, setDeleting] = useState<string>('')
 
   const dispatch = useDispatch()
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(() => {
     setChangedValue(stringifyScalarValue(value))
@@ -62,16 +64,24 @@ const RejsonScalar = (props: JSONScalarProps) => {
       return
     }
 
-    dispatch<any>(
-      setReJSONDataAction(
-        selectedKey,
-        path,
-        String(value),
-        true,
-        undefined,
-        () => setEditing(false),
-      ),
-    )
+    requestConfirmation({
+      title: 'Edit value on production database?',
+      actionDescription:
+        'You are about to modify a JSON value on a production database.',
+      confirmButtonText: 'Save',
+      onConfirm: () => {
+        dispatch<any>(
+          setReJSONDataAction(
+            selectedKey,
+            path,
+            String(value),
+            true,
+            undefined,
+            () => setEditing(false),
+          ),
+        )
+      },
+    })
   }
 
   return (

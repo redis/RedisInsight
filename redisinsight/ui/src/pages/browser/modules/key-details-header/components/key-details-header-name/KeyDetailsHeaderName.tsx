@@ -27,6 +27,7 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
 import { CopyButton } from 'uiSrc/components/copy-button'
 import { TextInput } from 'uiSrc/components/base/inputs'
+import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
 import styles from './styles.module.scss'
 
 const StyledInputWrapper = styled(Row)`
@@ -63,6 +64,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
   const [keyIsEditing, setKeyIsEditing] = useState(false)
   const [keyIsHovering, setKeyIsHovering] = useState(false)
   const [keyIsEditable, setKeyIsEditable] = useState(true)
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(() => {
     setKey(keyProp)
@@ -100,7 +102,19 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
       !isEqualBuffers(keyBuffer, newKeyBuffer) &&
       !isNull(keyProp)
     ) {
-      onEditKey(keyBuffer, newKeyBuffer, () => setKey(keyProp))
+      requestConfirmation({
+        title: 'Rename key on production database?',
+        actionDescription: (
+          <>
+            You are about to rename <strong>{keyProp}</strong> to{' '}
+            <strong>{key}</strong> on a production database.
+          </>
+        ),
+        confirmButtonText: 'Rename',
+        onConfirm: () =>
+          onEditKey(keyBuffer, newKeyBuffer, () => setKey(keyProp)),
+        onCancel: () => setKey(keyProp),
+      })
     }
   }
 

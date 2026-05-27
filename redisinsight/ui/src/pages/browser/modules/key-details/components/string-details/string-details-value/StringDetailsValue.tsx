@@ -60,6 +60,7 @@ import { Text } from 'uiSrc/components/base/text'
 import { TextArea } from 'uiSrc/components/base/inputs'
 import { RiTooltip } from 'uiSrc/components'
 import { ProgressBarLoader } from 'uiSrc/components/base/display'
+import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
 import styles from './styles.module.scss'
 
 const MIN_ROWS = 8
@@ -108,6 +109,7 @@ const StringDetailsValue = (props: Props) => {
   const containerRef: Ref<HTMLDivElement> = useRef(null)
 
   const dispatch = useDispatch()
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(
     () => () => {
@@ -193,12 +195,22 @@ const StringDetailsValue = (props: Props) => {
   }, [isEditItem])
 
   const onApplyChanges = () => {
-    const data = stringToSerializedBufferFormat(viewFormat, areaValue)
-    const onSuccess = () => {
-      setIsEdit(false)
-      setValue(formattingBuffer(data, viewFormat, { expanded: true })?.value)
-    }
-    dispatch(updateStringValueAction(key, data, onSuccess))
+    requestConfirmation({
+      title: 'Edit value on production database?',
+      actionDescription:
+        'You are about to modify a value on a production database.',
+      confirmButtonText: 'Save',
+      onConfirm: () => {
+        const data = stringToSerializedBufferFormat(viewFormat, areaValue)
+        const onSuccess = () => {
+          setIsEdit(false)
+          setValue(
+            formattingBuffer(data, viewFormat, { expanded: true })?.value,
+          )
+        }
+        dispatch(updateStringValueAction(key, data, onSuccess))
+      },
+    })
   }
 
   const onDeclineChanges = useCallback(() => {

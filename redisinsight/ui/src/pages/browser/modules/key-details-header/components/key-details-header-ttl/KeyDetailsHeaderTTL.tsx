@@ -15,6 +15,7 @@ import { FlexItem, Grid } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { TextInput } from 'uiSrc/components/base/inputs'
+import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -32,6 +33,7 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
   const [ttl, setTTL] = useState(`${ttlProp}`)
   const [ttlIsEditing, setTTLIsEditing] = useState(false)
   const [ttlIsHovering, setTTLIsHovering] = useState(false)
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(() => {
     setTTL(`${ttlProp}`)
@@ -60,7 +62,19 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
     setTTLIsHovering(false)
 
     if (`${ttlProp}` !== ttlValue && keyBuffer) {
-      onEditTTL(keyBuffer, +ttlValue)
+      requestConfirmation({
+        title: 'Change TTL on production database?',
+        actionDescription: (
+          <>
+            You are about to change the TTL of <strong>{keyProp}</strong> to{' '}
+            <strong>{ttlValue === '-1' ? 'No limit' : `${ttlValue} s`}</strong>{' '}
+            on a production database.
+          </>
+        ),
+        confirmButtonText: 'Change TTL',
+        onConfirm: () => onEditTTL(keyBuffer, +ttlValue),
+        onCancel: () => setTTL(`${ttlProp}`),
+      })
     }
   }
 

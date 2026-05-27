@@ -25,6 +25,7 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { AddStreamEntriesDto } from 'apiClient'
+import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
 
 import StreamEntryFields from './StreamEntryFields/StreamEntryFields'
 import { Panel } from 'uiSrc/components/panel'
@@ -52,6 +53,7 @@ const AddStreamEntries = (props: Props) => {
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
 
   const dispatch = useDispatch()
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(() => {
     const isValid = !entryIdError
@@ -132,6 +134,17 @@ const AddStreamEntries = (props: Props) => {
     }
   }
 
+  const handleSubmit = () => {
+    if (!isFormValid) return
+    requestConfirmation({
+      title: 'Add entry on production database?',
+      actionDescription:
+        'You are about to add a new entry to a stream on a production database.',
+      confirmButtonText: 'Add entry',
+      onConfirm: submitData,
+    })
+  }
+
   return (
     <Col gap="m">
       <EntryContent data-test-subj="add-stream-field-panel">
@@ -153,7 +166,7 @@ const AddStreamEntries = (props: Props) => {
         <PrimaryButton
           size="m"
           color="secondary"
-          onClick={submitData}
+          onClick={handleSubmit}
           disabled={!isFormValid}
           data-testid="save-elements-btn"
         >

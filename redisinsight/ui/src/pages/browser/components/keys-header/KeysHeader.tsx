@@ -1,6 +1,7 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/no-this-in-sfc */
-import React, { Ref, useRef, useState } from 'react'
+import React, { Ref, useEffect, useRef, useState } from 'react'
+import { Environment } from 'apiClient'
 import { useDispatch, useSelector } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { IconType, EqualIcon, FoldersIcon } from 'uiSrc/components/base/icons'
@@ -42,7 +43,12 @@ import { incrementOnboardStepAction } from 'uiSrc/slices/app/features'
 import { AutoRefresh, OnboardingTour } from 'uiSrc/components'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
-import { BrowserColumns, KeyValueFormat, SortOrder } from 'uiSrc/constants'
+import {
+  BrowserColumns,
+  BrowserStorageItem,
+  KeyValueFormat,
+  SortOrder,
+} from 'uiSrc/constants'
 import { ISortedColumn } from 'uiSrc/components/virtual-table/interfaces'
 
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
@@ -52,6 +58,8 @@ import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGrou
 import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Text } from 'uiSrc/components/base/text'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
+import { localStorageService } from 'uiSrc/services'
 import styles from './styles.module.scss'
 import * as S from './KeysHeader.styles'
 
@@ -107,12 +115,32 @@ const KeysHeader = (props: Props) => {
   const { viewType, searchMode, isFiltered } = useSelector(keysSelector)
   const { shownColumns } = useSelector(appContextDbConfig)
   const { selectedIndex } = useSelector(redisearchSelector)
+  const { environment } = useDatabaseEnvironment()
 
   const [columnsConfigShown, setColumnsConfigShown] = useState(false)
 
   const rootDivRef: Ref<HTMLDivElement> = useRef(null)
+  const productionDefaultAppliedRef = useRef(false)
 
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (productionDefaultAppliedRef.current) return
+    if (environment !== Environment.Production || !instanceId) return
+
+    const storedConfig = localStorageService.get(
+      BrowserStorageItem.dbConfig + instanceId,
+    )
+    const hasUserConfigured = storedConfig?.shownColumns !== undefined
+    if (!hasUserConfigured) {
+      dispatch(
+        setBrowserShownColumns(
+          shownColumns.filter((col) => col !== BrowserColumns.Size),
+        ),
+      )
+    }
+    productionDefaultAppliedRef.current = true
+  }, [environment, instanceId])
 
   // TODO: Check if encoding can be reused from BE and FE
   const format = keyNameFormat as unknown as KeyValueFormat

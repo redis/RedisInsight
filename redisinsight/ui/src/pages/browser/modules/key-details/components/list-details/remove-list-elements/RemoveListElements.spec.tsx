@@ -12,6 +12,7 @@ const COUNT_INPUT = 'count-input'
 const mockedProps = mock<Props>()
 
 jest.mock('uiSrc/slices/instances/instances', () => ({
+  ...jest.requireActual('uiSrc/slices/instances/instances'),
   connectedInstanceOverviewSelector: jest.fn().mockReturnValue({
     version: '6.2.1',
   }),

@@ -26,6 +26,7 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextInput } from 'uiSrc/components/base/inputs'
+import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
 
 import { EntryContent } from '../../common/AddKeysContainer.styled'
 
@@ -45,6 +46,7 @@ const AddZsetMembers = (props: Props) => {
     name: undefined,
   }
   const lastAddedMemberName = useRef<HTMLInputElement>(null)
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(
     () =>
@@ -172,6 +174,21 @@ const AddZsetMembers = (props: Props) => {
     dispatch(fetchAddZSetMembers(data, closePanel))
   }
 
+  const handleSubmit = () => {
+    requestConfirmation({
+      title: 'Add members on production database?',
+      actionDescription: (
+        <>
+          You are about to add {members.length} member
+          {members.length === 1 ? '' : 's'} to a sorted set on a production
+          database.
+        </>
+      ),
+      confirmButtonText: 'Add members',
+      onConfirm: submitData,
+    })
+  }
+
   const isClearDisabled = (item: IZsetMemberState): boolean =>
     members.length === 1 && !(item.name.length || item.score.length)
 
@@ -243,7 +260,7 @@ const AddZsetMembers = (props: Props) => {
             <PrimaryButton
               disabled={loading || !isFormValid}
               loading={loading}
-              onClick={submitData}
+              onClick={handleSubmit}
               data-testid="save-members-btn"
             >
               Save

@@ -24,6 +24,7 @@ import {
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { ListElementDestination, PushElementToListDto } from 'apiClient'
+import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
 
 import { EntryContent } from '../../common/AddKeysContainer.styled'
 
@@ -64,6 +65,7 @@ const AddListElements = (props: Props) => {
   const elementInput = useRef<HTMLInputElement>(null)
 
   const dispatch = useDispatch()
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(() => {
     // ComponentDidMount
@@ -116,6 +118,20 @@ const AddListElements = (props: Props) => {
     dispatch(insertListElementsAction(data, onSuccessAdded))
   }
 
+  const handleSubmit = () => {
+    requestConfirmation({
+      title: 'Add elements on production database?',
+      actionDescription: (
+        <>
+          You are about to push {elements.length} element
+          {elements.length === 1 ? '' : 's'} to a list on a production database.
+        </>
+      ),
+      confirmButtonText: 'Add elements',
+      onConfirm: submitData,
+    })
+  }
+
   return (
     <Col gap="m">
       <EntryContent gap="m">
@@ -160,7 +176,10 @@ const AddListElements = (props: Props) => {
         </FlexItem>
         <FlexItem>
           <div>
-            <PrimaryButton onClick={submitData} data-testid="save-elements-btn">
+            <PrimaryButton
+              onClick={handleSubmit}
+              data-testid="save-elements-btn"
+            >
               Save
             </PrimaryButton>
           </div>
