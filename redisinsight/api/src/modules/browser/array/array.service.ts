@@ -140,7 +140,7 @@ export class ArrayService {
       // ARSCAN key start end [LIMIT limit]
       // start/end are inclusive integer index bounds; LIMIT caps the number of results.
       // Use Number.MAX_SAFE_INTEGER as the upper bound so LIMIT drives pagination.
-      // Returns a flat list: [index, value, index, value, ...]
+      // Returns an array of [index, value] pairs: [[0, "foo"], [1, "bar"], ...]
       const rawScan = (await client.sendCommand([
         BrowserToolArrayCommands.ArScan,
         keyName,
@@ -150,7 +150,7 @@ export class ArrayService {
         count,
       ])) as [number | Buffer, Buffer][];
 
-      // ARSCAN returns an array of [index, value] pairs: [[0, "foo"], [1, "bar"], ...]
+      // Map each [index, value] pair into an ArrayElementDto
       const elements: ArrayElementDto[] = (
         rawScan as [number | Buffer, Buffer][]
       ).map((pair) =>
