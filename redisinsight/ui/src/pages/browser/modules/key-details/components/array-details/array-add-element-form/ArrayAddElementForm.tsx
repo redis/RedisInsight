@@ -19,11 +19,7 @@ export interface ArrayElementEntry {
 }
 
 export interface Props {
-  onSubmit: (
-    elements: ArrayElementEntry[],
-    onSuccess?: () => void,
-    onFail?: () => void,
-  ) => void
+  onSubmit: (elements: ArrayElementEntry[]) => void
   onCancel: () => void
 }
 

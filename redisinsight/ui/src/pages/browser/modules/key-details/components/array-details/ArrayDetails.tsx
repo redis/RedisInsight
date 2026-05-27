@@ -50,22 +50,14 @@ const ArrayDetails = (props: Props) => {
   }, [onCloseAddItemPanel])
 
   const handleAddElements = useCallback(
-    (
-      elements: { index: number; value: string }[],
-      onSuccess?: () => void,
-      onFail?: () => void,
-    ) => {
+    (elements: { index: number; value: string }[]) => {
       dispatch(
         addArrayElements(
           {
             keyName: selectedKeyData?.name as RedisResponseBuffer,
             elements,
           },
-          () => {
-            onSuccess?.()
-            closeAddItemPanel()
-          },
-          onFail,
+          closeAddItemPanel,
         ),
       )
     },

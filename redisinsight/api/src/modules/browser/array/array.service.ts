@@ -131,6 +131,9 @@ export class ArrayService {
 
       // Fetch metadata and elements in a single pipeline — all three commands are
       // independent of each other's results so there is no ordering requirement.
+      // Issuing ARLEN and ARSCAN in the same pipeline guarantees they reflect the
+      // same point-in-time snapshot, so logicalLength is never stale relative to
+      // the scan results.
       // ARSCAN key start end [LIMIT limit]: returns [[index, value], ...] pairs.
       // Use Number.MAX_SAFE_INTEGER as the upper bound so LIMIT drives pagination.
       const [[, total = 0], [, logicalLength = 0], [, rawScan]] =
