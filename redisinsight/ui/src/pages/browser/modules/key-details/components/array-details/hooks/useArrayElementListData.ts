@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { PaginationState } from 'uiSrc/components/base/layout/table'
@@ -46,9 +46,11 @@ export const useArrayElementListData = ({
   })
   const [deleting, setDeleting] = useState('')
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
+  const lastAttemptedCursor = useRef<number | undefined>(undefined)
 
   useEffect(() => {
     setPagination((prev) => ({ ...prev, pageIndex: 0 }))
+    lastAttemptedCursor.current = undefined
   }, [key])
 
   const closePopover = useCallback(() => {
@@ -155,12 +157,21 @@ export const useArrayElementListData = ({
     return 'No elements found.'
   }, [loading])
 
-  // Fetch more elements when the user pages past what we've already loaded
+  // Fetch more elements when the user pages past what we've already loaded.
+  // Guard against infinite retry loops: if a fetch for the current cursor
+  // already failed, nextCursor remains unchanged and lastAttemptedCursor
+  // prevents us from dispatching again until the cursor advances.
   useEffect(() => {
     const { pageIndex, pageSize } = pagination
     const requiredEnd = (pageIndex + 1) * pageSize
 
-    if (requiredEnd > elements.length && nextCursor !== undefined && !loading) {
+    if (
+      requiredEnd > elements.length &&
+      nextCursor !== undefined &&
+      !loading &&
+      lastAttemptedCursor.current !== nextCursor
+    ) {
+      lastAttemptedCursor.current = nextCursor
       dispatch(
         fetchMoreArrayElements({
           key: key as RedisResponseBuffer,
