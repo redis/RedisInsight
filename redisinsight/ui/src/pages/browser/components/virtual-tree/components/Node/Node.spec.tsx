@@ -60,6 +60,13 @@ jest.mock('uiSrc/services', () => ({
   }),
 }))
 
+jest.mock('uiSrc/components/hooks/useDatabaseEnvironment', () => ({
+  useDatabaseEnvironment: () => ({
+    environment: 'unspecified',
+    isDangerousCommand: () => false,
+  }),
+}))
+
 let store: typeof mockedStore
 beforeEach(() => {
   cleanup()

@@ -120,14 +120,17 @@ const KeysHeader = (props: Props) => {
   const [columnsConfigShown, setColumnsConfigShown] = useState(false)
 
   const rootDivRef: Ref<HTMLDivElement> = useRef(null)
-  const productionDefaultAppliedRef = useRef(false)
 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (productionDefaultAppliedRef.current) return
     if (environment !== Environment.Production || !instanceId) return
 
+    // Hide the Size column by default on production connections that the
+    // user hasn't configured yet. Once setBrowserShownColumns dispatches,
+    // localStorage gets the user's preference and subsequent runs of this
+    // effect (e.g., switching to another DB) see hasUserConfigured=true
+    // and skip — no double-dispatch.
     const storedConfig = localStorageService.get(
       BrowserStorageItem.dbConfig + instanceId,
     )
@@ -139,7 +142,7 @@ const KeysHeader = (props: Props) => {
         ),
       )
     }
-    productionDefaultAppliedRef.current = true
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [environment, instanceId])
 
   // TODO: Check if encoding can be reused from BE and FE
