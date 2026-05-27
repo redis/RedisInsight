@@ -121,13 +121,16 @@ const arraySlice = createSlice({
     },
     removeIndicesFromList: (
       state,
-      { payload: indices }: PayloadAction<number[]>,
+      {
+        payload: { indices, affected },
+      }: PayloadAction<{ indices: number[]; affected: number }>,
     ) => {
-      const before = state.data.elements.length
       state.data.elements = state.data.elements.filter(
         (el) => !indices.includes(el.index),
       )
-      state.data.total -= before - state.data.elements.length
+      // Use the server-reported affected count so total stays accurate even
+      // when not all deleted indices are present in the loaded page.
+      state.data.total -= affected
     },
 
     addElements: (state) => {
@@ -280,11 +283,6 @@ export function deleteArrayElements(
       )
 
       if (isStatusSuccessful(status)) {
-        // Re-read state after the async call so concurrent deletes don't produce
-        // a stale total that mis-triggers (or skips) the key-removal branch.
-        const newTotalValue =
-          stateInit().browser.array.data.total - data.affected
-
         sendEventTelemetry({
           event: TelemetryEvent.BROWSER_KEY_VALUE_REMOVED,
           eventData: {
@@ -293,9 +291,15 @@ export function deleteArrayElements(
           },
         })
 
-        onSuccessAction?.(newTotalValue)
+        // Use data.affected (server truth) for both the callback and the reducer
+        // so there is a single source of truth — no separate computation paths.
+        const newTotalValue =
+          stateInit().browser.array.data.total - data.affected
+
         dispatch(removeArrayElementsSuccess())
-        dispatch(removeIndicesFromList(indices))
+        dispatch(removeIndicesFromList({ indices, affected: data.affected }))
+
+        onSuccessAction?.(newTotalValue)
 
         if (newTotalValue > 0) {
           dispatch(refreshKeyInfoAction(key))

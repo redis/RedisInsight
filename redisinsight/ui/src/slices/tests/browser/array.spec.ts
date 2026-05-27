@@ -220,7 +220,7 @@ describe('array slice', () => {
       const indexToRemove = elements[0].index
       const nextState = reducer(
         stateWithElements,
-        removeIndicesFromList([indexToRemove]),
+        removeIndicesFromList({ indices: [indexToRemove], affected: 1 }),
       )
       expect(nextState.data.elements).toHaveLength(2)
       expect(nextState.data.total).toBe(2)
@@ -413,7 +413,12 @@ describe('array slice', () => {
         const actions = storeWithArray.getActions()
         expect(actions).toContainEqual(removeArrayElements())
         expect(actions).toContainEqual(removeArrayElementsSuccess())
-        expect(actions).toContainEqual(removeIndicesFromList(indicesToDelete))
+        expect(actions).toContainEqual(
+          removeIndicesFromList({
+            indices: indicesToDelete,
+            affected: indicesToDelete.length,
+          }),
+        )
       })
 
       it('dispatches deleteSelectedKeySuccess when last elements are removed', async () => {
