@@ -1,5 +1,6 @@
 import React from 'react'
 import { cloneDeep } from 'lodash'
+import { Environment } from 'apiClient'
 import { cleanup, mockedStore, render, userEvent } from 'uiSrc/utils/test-utils'
 import {
   getRedisModulesSummary,
@@ -28,15 +29,19 @@ jest.mock('uiSrc/slices/oauth/cloud', () => ({
   }),
 }))
 
-jest.mock('uiSrc/slices/instances/instances', () => ({
-  ...jest.requireActual('uiSrc/slices/instances/instances'),
-  freeInstancesSelector: jest.fn().mockReturnValue([
-    {
-      id: 'instanceId',
-      environment: 'production',
-    },
-  ]),
-}))
+jest.mock('uiSrc/slices/instances/instances', () => {
+  // eslint-disable-next-line global-require
+  const { Environment: MockEnvironment } = require('apiClient')
+  return {
+    ...jest.requireActual('uiSrc/slices/instances/instances'),
+    freeInstancesSelector: jest.fn().mockReturnValue([
+      {
+        id: 'instanceId',
+        environment: MockEnvironment.Production,
+      },
+    ]),
+  }
+})
 
 let store: typeof mockedStore
 beforeEach(() => {
@@ -69,7 +74,7 @@ describe('OAuthConnectFreeDb', () => {
         databaseId: 'providedId',
         provider: undefined,
         source: OAuthSocialSource.ListOfDatabases,
-        environment: 'production',
+        environment: Environment.Production,
         ...getRedisModulesSummary(),
         ...MOCK_ADDITIONAL_INFO,
       },

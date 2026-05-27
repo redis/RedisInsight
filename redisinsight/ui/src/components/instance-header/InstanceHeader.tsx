@@ -49,7 +49,10 @@ import { NumericInput } from 'uiSrc/components/base/inputs'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Link } from 'uiSrc/components/base/link/Link'
 import InstancesNavigationPopover from './components/instances-navigation-popover'
-import { InstanceHeaderContainer } from './InstanceHeader.styles'
+import {
+  EnvironmentBadgeSlot,
+  InstanceHeaderContainer,
+} from './InstanceHeader.styles'
 import styles from './styles.module.scss'
 
 const riConfig = getConfig()
@@ -226,12 +229,9 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                       <InstancesNavigationPopover name={name} />
                     )}
                   </FlexItem>
-                  <FlexItem
-                    style={{ paddingLeft: 8 }}
-                    data-testid="instance-header-environment"
-                  >
+                  <EnvironmentBadgeSlot data-testid="instance-header-environment">
                     <EnvironmentBadge environment={environment} />
-                  </FlexItem>
+                  </EnvironmentBadgeSlot>
                   {databases > 1 && (
                     <FlexItem style={{ paddingLeft: 12 }}>
                       <div
