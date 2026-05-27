@@ -123,10 +123,11 @@ const arraySlice = createSlice({
       state,
       { payload: indices }: PayloadAction<number[]>,
     ) => {
+      const before = state.data.elements.length
       state.data.elements = state.data.elements.filter(
         (el) => !indices.includes(el.index),
       )
-      state.data.total -= indices.length
+      state.data.total -= before - state.data.elements.length
     },
 
     addElements: (state) => {

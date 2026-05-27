@@ -59,11 +59,14 @@ export const useArrayElementListData = ({
     setDeleting(`${item}${ELEMENT_DELETE_POPOVER_SUFFIX}`)
   }, [])
 
-  const onSuccessRemoved = (newTotal: number) => {
-    if (newTotal === 0) {
-      onRemoveKey()
-    }
-  }
+  const onSuccessRemoved = useCallback(
+    (newTotal: number) => {
+      if (newTotal === 0) {
+        onRemoveKey()
+      }
+    },
+    [onRemoveKey],
+  )
 
   const handleDeleteElement = useCallback(
     (index: number) => {
@@ -76,7 +79,7 @@ export const useArrayElementListData = ({
       )
       closePopover()
     },
-    [key, dispatch, closePopover],
+    [key, dispatch, closePopover, onSuccessRemoved],
   )
 
   const handleEditElement = useCallback(
