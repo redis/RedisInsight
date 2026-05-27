@@ -127,14 +127,16 @@ const KeysHeader = (props: Props) => {
     if (environment !== Environment.Production || !instanceId) return
 
     // Hide the Size column by default on production connections that the
-    // user hasn't configured yet. Once setBrowserShownColumns dispatches,
-    // localStorage gets the user's preference and subsequent runs of this
-    // effect (e.g., switching to another DB) see hasUserConfigured=true
-    // and skip — no double-dispatch.
+    // user hasn't configured yet. setBrowserShownColumns persists under
+    // the `browserShownColumns` key (BrowserStorageItem.browserShownColumns)
+    // — must check the same key, not `shownColumns`, otherwise the effect
+    // would re-fire after a user explicitly toggles Size on and clobber
+    // their preference.
     const storedConfig = localStorageService.get(
       BrowserStorageItem.dbConfig + instanceId,
     )
-    const hasUserConfigured = storedConfig?.shownColumns !== undefined
+    const hasUserConfigured =
+      storedConfig?.[BrowserStorageItem.browserShownColumns] !== undefined
     if (!hasUserConfigured) {
       dispatch(
         setBrowserShownColumns(
