@@ -116,14 +116,11 @@ export enum BrowserToolVectorSetCommands {
 
 export enum BrowserToolArrayCommands {
   ArSet = 'ARSET',
-  ArGet = 'ARGET',
   ArMSet = 'ARMSET',
-  ArMGet = 'ARMGET',
   ArDel = 'ARDEL',
   ArLen = 'ARLEN',
   ArCount = 'ARCOUNT',
   ArScan = 'ARSCAN',
-  ArInsert = 'ARINSERT',
   ArInfo = 'ARINFO',
 }
 

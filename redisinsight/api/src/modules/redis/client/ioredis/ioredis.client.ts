@@ -48,14 +48,11 @@ export abstract class IoredisClient extends RedisClient {
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VSim);
     // Array commands
     client.addBuiltinCommand(BrowserToolArrayCommands.ArSet);
-    client.addBuiltinCommand(BrowserToolArrayCommands.ArGet);
     client.addBuiltinCommand(BrowserToolArrayCommands.ArMSet);
-    client.addBuiltinCommand(BrowserToolArrayCommands.ArMGet);
     client.addBuiltinCommand(BrowserToolArrayCommands.ArDel);
     client.addBuiltinCommand(BrowserToolArrayCommands.ArLen);
     client.addBuiltinCommand(BrowserToolArrayCommands.ArCount);
     client.addBuiltinCommand(BrowserToolArrayCommands.ArScan);
-    client.addBuiltinCommand(BrowserToolArrayCommands.ArInsert);
     client.addBuiltinCommand(BrowserToolArrayCommands.ArInfo);
   }
 
