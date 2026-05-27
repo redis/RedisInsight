@@ -48,23 +48,6 @@ const KeyDetailsHeaderDelete = ({ onDelete }: Props) => {
   }
 
   const showPopoverDelete = () => {
-    if (bypassConfirmation && keyBuffer) {
-      sendEventTelemetry({
-        event: getBasedOnViewTypeEvent(
-          viewType,
-          TelemetryEvent.BROWSER_KEY_DELETE_CLICKED,
-          TelemetryEvent.TREE_VIEW_KEY_DELETE_CLICKED,
-        ),
-        eventData: {
-          databaseId: instanceId,
-          source: 'keyValue',
-          keyType: type,
-        },
-      })
-      onDelete(keyBuffer)
-      return
-    }
-    setIsPopoverDeleteOpen((isPopoverDeleteOpen) => !isPopoverDeleteOpen)
     sendEventTelemetry({
       event: getBasedOnViewTypeEvent(
         viewType,
@@ -77,6 +60,11 @@ const KeyDetailsHeaderDelete = ({ onDelete }: Props) => {
         keyType: type,
       },
     })
+    if (bypassConfirmation && keyBuffer) {
+      onDelete(keyBuffer)
+      return
+    }
+    setIsPopoverDeleteOpen((isPopoverDeleteOpen) => !isPopoverDeleteOpen)
   }
 
   return (
