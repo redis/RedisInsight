@@ -25,7 +25,6 @@ import {
   AddArrayElementsData,
   AddArrayElementsState,
   ArrayData,
-  CreateArrayWithExpireDto,
   FetchArrayElementsParams,
   FetchMoreArrayElementsParams,
   GetArrayElementsResponse,
@@ -348,48 +347,6 @@ export function addArrayElements(
         dispatch(addElementsSuccess())
         dispatch<any>(fetchArrayElements({ key: data.keyName }))
         dispatch(refreshKeyInfoAction(data.keyName))
-      } else {
-        dispatch(addElementsFailure(DEFAULT_ERROR_MESSAGE))
-        onFailAction?.()
-      }
-    } catch (_err) {
-      const error = _err as AxiosError
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
-      dispatch(addElementsFailure(errorMessage))
-      onFailAction?.()
-    }
-  }
-}
-
-export function createArrayKey(
-  data: CreateArrayWithExpireDto,
-  onSuccessAction?: () => void,
-  onFailAction?: () => void,
-) {
-  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
-    dispatch(addElements())
-    try {
-      const state = stateInit()
-      const { encoding } = state.app.info
-      const { status } = await apiService.post(
-        getUrl(
-          state.connections.instances.connectedInstance?.id,
-          ApiEndpoints.ARRAY,
-        ),
-        data,
-        { params: { encoding } },
-      )
-      if (isStatusSuccessful(status)) {
-        onSuccessAction?.()
-        dispatch(addElementsSuccess())
-        sendEventTelemetry({
-          event: TelemetryEvent.BROWSER_KEY_ADDED,
-          eventData: {
-            databaseId: state.connections.instances.connectedInstance?.id,
-            keyType: 'array',
-          },
-        })
       } else {
         dispatch(addElementsFailure(DEFAULT_ERROR_MESSAGE))
         onFailAction?.()

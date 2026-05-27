@@ -44,7 +44,6 @@ import reducer, {
   fetchMoreArrayElements,
   deleteArrayElements,
   addArrayElements,
-  createArrayKey,
 } from '../../browser/array'
 
 jest.mock('uiSrc/services', () => ({
@@ -501,52 +500,6 @@ describe('array slice', () => {
         expect(actions).toContainEqual(
           addErrorNotification(responsePayload as IAddInstanceErrorPayload),
         )
-        expect(actions).toContainEqual(addElementsFailure(errorMessage))
-      })
-    })
-
-    describe('createArrayKey', () => {
-      it('dispatches addElementsSuccess when POST is successful', async () => {
-        apiService.post = jest.fn().mockResolvedValue({ status: 200 })
-        const onSuccess = jest.fn()
-
-        await store.dispatch<any>(
-          createArrayKey(
-            {
-              keyName: arrayTestKeyName() as any,
-              elements: [],
-            },
-            onSuccess,
-          ),
-        )
-
-        expect(onSuccess).toHaveBeenCalledTimes(1)
-        const actions = store.getActions()
-        expect(actions).toContainEqual(addElements())
-        expect(actions).toContainEqual(addElementsSuccess())
-      })
-
-      it('dispatches addElementsFailure when POST fails', async () => {
-        const errorMessage = 'Create failed!'
-        const responsePayload = {
-          response: { status: 500, data: { message: errorMessage } },
-        }
-        apiService.post = jest.fn().mockRejectedValue(responsePayload)
-        const onFail = jest.fn()
-
-        await store.dispatch<any>(
-          createArrayKey(
-            {
-              keyName: arrayTestKeyName() as any,
-              elements: [],
-            },
-            undefined,
-            onFail,
-          ),
-        )
-
-        expect(onFail).toHaveBeenCalledTimes(1)
-        const actions = store.getActions()
         expect(actions).toContainEqual(addElementsFailure(errorMessage))
       })
     })

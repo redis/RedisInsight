@@ -53,6 +53,7 @@ export const ADD_KEY_TYPE_OPTIONS: AddKeyTypeOption[] = [
     text: 'Array',
     value: KeyTypes.Array,
     color: GROUP_TYPES_COLORS[KeyTypes.Array],
+    minVersion: CommandsVersions.ARRAY.since,
     isEnabledSelector: isDevArrayEnabledSelector,
   },
 ]
