@@ -74,6 +74,16 @@ describe('ArrayAddElementForm (AddKeyArray)', () => {
     expect(screen.getByTestId('array-add-element-btn')).toBeDisabled()
   })
 
+  it('should disable Save when index is a decimal number', () => {
+    renderComponent()
+
+    fireEvent.change(screen.getByTestId('array-element-index-0'), {
+      target: { value: '1.5' },
+    })
+
+    expect(screen.getByTestId('array-add-element-btn')).toBeDisabled()
+  })
+
   it('should enable Save when a valid non-negative index is entered', () => {
     renderComponent()
 

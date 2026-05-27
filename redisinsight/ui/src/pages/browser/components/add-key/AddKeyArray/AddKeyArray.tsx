@@ -44,6 +44,7 @@ const AddKeyArray = ({ keyName = '', keyTTL, onCancel }: Props) => {
       (el) =>
         el.index !== '' &&
         !Number.isNaN(Number(el.index)) &&
+        Number.isInteger(Number(el.index)) &&
         Number(el.index) >= 0,
     )
     setIsFormValid(keyName.length > 0 && allIndicesValid)
@@ -58,8 +59,11 @@ const AddKeyArray = ({ keyName = '', keyTTL, onCancel }: Props) => {
 
   const addField = () => {
     const lastId = elements[elements.length - 1].id
+    const validIndices = elements
+      .map((el) => toNumber(el.index))
+      .filter((n) => !Number.isNaN(n))
     const nextIndex = String(
-      Math.max(...elements.map((el) => toNumber(el.index))) + 1,
+      (validIndices.length > 0 ? Math.max(...validIndices) : -1) + 1,
     )
     setElements([...elements, { id: lastId + 1, index: nextIndex, value: '' }])
   }
