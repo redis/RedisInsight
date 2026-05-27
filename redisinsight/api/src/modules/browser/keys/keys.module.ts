@@ -17,6 +17,7 @@ import { TsKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/
 import { UnsupportedKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/unsupported.key-info.strategy';
 import { VectorSetKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/vector-set.key-info.strategy';
 import { ZSetKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/z-set.key-info.strategy';
+import { ArrayKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/array.key-info.strategy';
 
 @Module({})
 export class KeysModule {
@@ -53,6 +54,7 @@ export class KeysModule {
         UnsupportedKeyInfoStrategy,
         VectorSetKeyInfoStrategy,
         ZSetKeyInfoStrategy,
+        ArrayKeyInfoStrategy,
       ],
     };
   }

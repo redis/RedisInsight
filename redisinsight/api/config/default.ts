@@ -321,6 +321,10 @@ export default {
         process.env.RI_COMMANDS_REDISBLOOM_URL ||
         'https://raw.githubusercontent.com/RedisBloom/RedisBloom/master/commands.json',
     },
+    {
+      name: 'redis-array',
+      url: process.env.RI_COMMANDS_ARRAY_URL || '',
+    },
   ],
   connections: {
     timeout:

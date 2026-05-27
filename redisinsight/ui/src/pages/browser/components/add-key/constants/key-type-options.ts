@@ -1,6 +1,9 @@
 import { GROUP_TYPES_COLORS, KeyTypes } from 'uiSrc/constants'
 import { CommandsVersions } from 'uiSrc/constants/commandsVersions'
-import { isDevVectorSetEnabledSelector } from 'uiSrc/slices/app/features'
+import {
+  isDevArrayEnabledSelector,
+  isDevVectorSetEnabledSelector,
+} from 'uiSrc/slices/app/features'
 import { AddKeyTypeOption } from '../AddKey.types'
 
 export const ADD_KEY_TYPE_OPTIONS: AddKeyTypeOption[] = [
@@ -45,5 +48,11 @@ export const ADD_KEY_TYPE_OPTIONS: AddKeyTypeOption[] = [
     color: GROUP_TYPES_COLORS[KeyTypes.VectorSet],
     minVersion: CommandsVersions.VECTOR_SET.since,
     isEnabledSelector: isDevVectorSetEnabledSelector,
+  },
+  {
+    text: 'Array',
+    value: KeyTypes.Array,
+    color: GROUP_TYPES_COLORS[KeyTypes.Array],
+    isEnabledSelector: isDevArrayEnabledSelector,
   },
 ]

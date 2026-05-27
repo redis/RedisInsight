@@ -45,6 +45,7 @@ import {
 import { NamespaceSearchableResult } from 'uiSrc/slices/interfaces/keys'
 
 import { CreateVectorSetWithExpireDto } from 'uiSrc/slices/interfaces/vectorSet'
+import { CreateArrayWithExpireDto } from 'uiSrc/slices/interfaces/array'
 
 import { fetchString } from './string'
 import {
@@ -54,6 +55,7 @@ import {
 } from './zset'
 import { fetchSetMembers, refreshSetMembersAction } from './set'
 import { fetchVectorSetElements } from './vectorSet'
+import { fetchArrayElements } from './array'
 import { fetchReJSON, setEditorType, setIsWithinThreshold } from './rejson'
 import {
   setHashInitialState,
@@ -167,6 +169,9 @@ export const initialKeyInfo = {
   length: 0,
   quantType: undefined,
   vectorDim: undefined,
+  nextInsertIndex: undefined,
+  slices: undefined,
+  sliceSize: undefined,
 }
 
 const getInitialSelectedKeyState = (state: KeysStore) => ({
@@ -890,6 +895,9 @@ export function fetchKeyInfo(
       if (data.type === KeyTypes.VectorSet) {
         dispatch<any>(fetchVectorSetElements({ key, resetData }))
       }
+      if (data.type === KeyTypes.Array) {
+        dispatch<any>(fetchArrayElements({ key, resetData }))
+      }
     } catch (_err) {
       const error = _err as AxiosError
       const errorMessage = getApiErrorMessage(error)
@@ -1069,6 +1077,14 @@ export function addVectorSetKey(
   onFailAction?: () => void,
 ) {
   return addTypedKey(data, KeyTypes.VectorSet, onSuccessAction, onFailAction)
+}
+
+export function addArrayKey(
+  data: CreateArrayWithExpireDto,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return addTypedKey(data, KeyTypes.Array, onSuccessAction, onFailAction)
 }
 
 // Asynchronous thunk action
@@ -1605,6 +1621,10 @@ export function refreshKey(
       }
       case KeyTypes.VectorSet: {
         dispatch(fetchVectorSetElements({ key, resetData }))
+        break
+      }
+      case KeyTypes.Array: {
+        dispatch(fetchArrayElements({ key, resetData }))
         break
       }
       default:

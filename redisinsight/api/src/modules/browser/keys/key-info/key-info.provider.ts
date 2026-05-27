@@ -9,6 +9,7 @@ import { TsKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/
 import { UnsupportedKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/unsupported.key-info.strategy';
 import { VectorSetKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/vector-set.key-info.strategy';
 import { ZSetKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/z-set.key-info.strategy';
+import { ArrayKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/array.key-info.strategy';
 import { KeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/key-info.strategy';
 import { RedisDataType } from 'src/modules/browser/keys/dto';
 import { Injectable } from '@nestjs/common';
@@ -27,6 +28,7 @@ export class KeyInfoProvider {
     private readonly unsupportedKeyInfoStrategy: UnsupportedKeyInfoStrategy,
     private readonly vectorSetKeyInfoStrategy: VectorSetKeyInfoStrategy,
     private readonly zSetKeyInfoStrategy: ZSetKeyInfoStrategy,
+    private readonly arrayKeyInfoStrategy: ArrayKeyInfoStrategy,
   ) {}
 
   getStrategy(type?: string): KeyInfoStrategy {
@@ -51,6 +53,8 @@ export class KeyInfoProvider {
         return this.vectorSetKeyInfoStrategy;
       case RedisDataType.ZSet:
         return this.zSetKeyInfoStrategy;
+      case RedisDataType.Array:
+        return this.arrayKeyInfoStrategy;
       default:
         return this.unsupportedKeyInfoStrategy;
     }

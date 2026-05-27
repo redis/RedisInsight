@@ -45,6 +45,7 @@ import AddKeyList from './AddKeyList'
 import AddKeyReJSON from './AddKeyReJSON'
 import AddKeyStream from './AddKeyStream'
 import AddKeyVectorSet from './AddKeyVectorSet'
+import AddKeyArray from './AddKeyArray'
 import { ContentFields } from './AddKey.styles'
 
 import styles from './styles.module.scss'
@@ -239,6 +240,9 @@ const AddKey = (props: Props) => {
                   setKeyNameDisabled={setKeyNameDisabled}
                   {...defaultFields}
                 />
+              )}
+              {typeSelected === KeyTypes.Array && (
+                <AddKeyArray onCancel={closeAddKeyPanel} {...defaultFields} />
               )}
             </ContentFields>
           </div>

@@ -14,4 +14,7 @@ export const CommandsVersions = {
   VECTOR_SET: {
     since: '8.0',
   },
+  ARRAY: {
+    since: '8.0',
+  },
 }

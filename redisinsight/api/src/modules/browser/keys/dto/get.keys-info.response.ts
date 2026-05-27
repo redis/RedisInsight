@@ -45,4 +45,22 @@ export class GetKeyInfoResponse {
     description: 'The vector dimensions for vector set keys.',
   })
   vectorDim?: number;
+
+  @ApiPropertyOptional({
+    type: Number,
+    description: 'The next insert index for array keys.',
+  })
+  nextInsertIndex?: number;
+
+  @ApiPropertyOptional({
+    type: Number,
+    description: 'The number of slices for array keys.',
+  })
+  slices?: number;
+
+  @ApiPropertyOptional({
+    type: Number,
+    description: 'The slice size in bytes for array keys.',
+  })
+  sliceSize?: number;
 }

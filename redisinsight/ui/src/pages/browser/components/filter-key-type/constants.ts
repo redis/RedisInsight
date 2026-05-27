@@ -5,7 +5,10 @@ import {
   FeatureFlags,
 } from 'uiSrc/constants'
 import { CommandsVersions } from 'uiSrc/constants/commandsVersions'
-import { isDevVectorSetEnabledSelector } from 'uiSrc/slices/app/features'
+import {
+  isDevArrayEnabledSelector,
+  isDevVectorSetEnabledSelector,
+} from 'uiSrc/slices/app/features'
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
 import { FilterKeyTypeOption } from './FilterKeyType.types'
 
@@ -51,6 +54,13 @@ export const FILTER_KEY_TYPE_OPTIONS: FilterKeyTypeOption[] = [
     color: GROUP_TYPES_COLORS[KeyTypes.VectorSet],
     minVersion: CommandsVersions.VECTOR_SET.since,
     isEnabledSelector: isDevVectorSetEnabledSelector,
+  },
+  {
+    text: 'Array',
+    value: KeyTypes.Array,
+    color: GROUP_TYPES_COLORS[KeyTypes.Array],
+    minVersion: CommandsVersions.ARRAY.since,
+    isEnabledSelector: isDevArrayEnabledSelector,
   },
   {
     text: 'Graph',
