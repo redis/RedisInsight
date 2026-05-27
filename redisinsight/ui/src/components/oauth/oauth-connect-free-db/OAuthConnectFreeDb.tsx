@@ -41,6 +41,7 @@ const OAuthConnectFreeDb = ({
   const [firstFreeInstance] = useSelector(freeInstancesSelector) ?? []
 
   const targetDatabaseId = id || firstFreeInstance?.id
+  const targetEnvironment = firstFreeInstance?.environment
 
   const dispatch = useDispatch()
   const { search } = useLocation()
@@ -58,6 +59,7 @@ const OAuthConnectFreeDb = ({
         databaseId: targetDatabaseId,
         provider,
         source,
+        environment: targetEnvironment,
         ...modulesSummary,
         ...infoData,
       },

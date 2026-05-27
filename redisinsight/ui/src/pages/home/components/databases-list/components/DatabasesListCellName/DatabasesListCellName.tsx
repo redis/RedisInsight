@@ -5,6 +5,7 @@ import { RiTooltip } from 'uiSrc/components'
 import { replaceSpaces, formatLongName, getDbIndex } from 'uiSrc/utils'
 import DbStatus from 'uiSrc/pages/home/components/db-status'
 import { Text } from 'uiSrc/components/base/text'
+import { EnvironmentBadge } from 'uiSrc/components/environment-badge'
 
 import { StyledCellNameWrapper } from './DatabasesListCellName.styles'
 
@@ -18,6 +19,7 @@ const DatabasesListCellName: IDatabaseListCell = ({ row }) => {
     lastConnection,
     createdAt,
     cloudDetails,
+    environment,
   } = instance
   const cellContent = replaceSpaces(name.substring(0, 200))
 
@@ -32,6 +34,10 @@ const DatabasesListCellName: IDatabaseListCell = ({ row }) => {
           isFree={cloudDetails?.free}
         />
       </div>
+      <EnvironmentBadge
+        environment={environment}
+        dataTestId={`environment-badge-${id}`}
+      />
 
       <RiTooltip
         position="bottom"
