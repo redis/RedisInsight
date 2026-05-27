@@ -157,23 +157,15 @@ export class ArrayService {
         }),
       );
 
-      // Determine whether there is more data to page through.
+      // ARSCAN scans the full range [cursor, MAX_SAFE_INTEGER] and returns all
+      // populated entries up to LIMIT. Zero results therefore definitively means
+      // no more elements exist from this cursor onwards — advance past the last
+      // returned index only when there are results and space remains.
       let nextCursor: number | undefined;
       if (elements.length > 0) {
-        // Normal case: advance past the last returned element's index.
         const candidate = elements[elements.length - 1].index + 1;
         if (candidate < logicalLength) {
           nextCursor = candidate;
-        }
-      } else if (cursor < logicalLength) {
-        // ARSCAN returned zero elements — the scanned region contained no
-        // populated slots within its iteration budget (extremely sparse array).
-        // Advance by count to skip the empty gap and continue pagination.
-        // If the advanced position still falls within the array, set nextCursor
-        // so the frontend knows to keep going.
-        const advanced = cursor + count;
-        if (advanced < logicalLength) {
-          nextCursor = advanced;
         }
       }
 
