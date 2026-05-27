@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { GeoResult, ParsedGeoCommand } from '../types'
+import { GeoResult, ParsedGeoCommand } from '../../types'
 
 const mockMapRemove = jest.fn()
 const mockFitBounds = jest.fn()

@@ -2,8 +2,8 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 
 import { RqeGeoVisualization } from './RqeGeoVisualization'
-import { ParsedRqeGeoCommand } from '../types'
-import * as rqeGeoParser from '../utils/rqeGeoParser'
+import { ParsedRqeGeoCommand } from '../../types'
+import * as rqeGeoParser from '../../utils/rqeGeoParser'
 
 function mockGeoHeader() {
   return <div data-testid="geo-header" />
@@ -21,16 +21,16 @@ function mockGeoTable() {
   return <div data-testid="geo-table" />
 }
 
-jest.mock('./GeoHeader', () => ({
+jest.mock('../GeoHeader', () => ({
   GeoHeader: mockGeoHeader,
 }))
-jest.mock('./GeoPlot', () => ({
+jest.mock('../GeoPlot', () => ({
   GeoPlot: mockGeoPlot,
 }))
-jest.mock('./GeoShapePlot', () => ({
+jest.mock('../GeoShapePlot', () => ({
   GeoShapePlot: mockGeoShapePlot,
 }))
-jest.mock('./GeoTable', () => ({
+jest.mock('../GeoTable', () => ({
   GeoTable: mockGeoTable,
 }))
 

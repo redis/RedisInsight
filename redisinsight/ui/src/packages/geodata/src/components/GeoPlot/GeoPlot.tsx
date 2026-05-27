@@ -13,9 +13,9 @@ import {
   MAP_FIT_BOUNDS_PADDING_RATIO,
   MAP_INITIAL_MAX_ZOOM,
   THRESHOLD_VISIBLE_ZOOM,
-} from '../constants'
-import { GeoResult, ParsedGeoCommand } from '../types'
-import { convertToKm } from '../utils/distance'
+} from '../../constants'
+import { GeoResult, ParsedGeoCommand } from '../../types'
+import { convertToKm } from '../../utils/distance'
 import {
   DEFAULT_DISTANCE_THRESHOLDS,
   EARTH_RADIUS_KM,

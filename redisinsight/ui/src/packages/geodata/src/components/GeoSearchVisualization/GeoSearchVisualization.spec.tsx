@@ -2,8 +2,8 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 
 import { GeoSearchVisualization } from './GeoSearchVisualization'
-import { ParsedGeoCommand } from '../types'
-import * as geoParser from '../utils/geoParser'
+import { ParsedGeoCommand } from '../../types'
+import * as geoParser from '../../utils/geoParser'
 
 function mockGeoHeader() {
   return <div data-testid="geo-header" />
@@ -17,13 +17,13 @@ function mockGeoTable() {
   return <div data-testid="geo-table" />
 }
 
-jest.mock('./GeoHeader', () => ({
+jest.mock('../GeoHeader', () => ({
   GeoHeader: mockGeoHeader,
 }))
-jest.mock('./GeoPlot', () => ({
+jest.mock('../GeoPlot', () => ({
   GeoPlot: mockGeoPlot,
 }))
-jest.mock('./GeoTable', () => ({
+jest.mock('../GeoTable', () => ({
   GeoTable: mockGeoTable,
 }))
 

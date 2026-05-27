@@ -1,9 +1,11 @@
 import React from 'react'
 
-import { GeoInspector } from './components/GeoInspector'
-import { GeoSearchVisualization } from './components/GeoSearchVisualization'
-import { Message } from './components/Message'
-import { RqeGeoVisualization } from './components/RqeGeoVisualization'
+import {
+  GeoInspector,
+  GeoSearchVisualization,
+  Message,
+  RqeGeoVisualization,
+} from './components'
 import { PluginProps, WorkbenchResult } from './types'
 
 export enum GeodataMode {
