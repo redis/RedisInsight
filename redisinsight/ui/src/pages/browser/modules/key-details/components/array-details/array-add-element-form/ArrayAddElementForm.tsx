@@ -114,4 +114,4 @@ const ArrayAddElementForm = ({ onSubmit, onCancel }: Props) => {
   )
 }
 
-export { ArrayAddElementForm as AddKeyArray }
+export { ArrayAddElementForm }

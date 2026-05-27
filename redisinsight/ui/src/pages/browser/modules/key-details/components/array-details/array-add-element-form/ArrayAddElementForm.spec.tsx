@@ -1,7 +1,10 @@
 import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 
-import { AddKeyArray, Props } from './ArrayAddElementForm'
+import {
+  ArrayAddElementForm as AddKeyArray,
+  Props,
+} from './ArrayAddElementForm'
 
 jest.mock('uiSrc/slices/browser/array', () => ({
   ...jest.requireActual('uiSrc/slices/browser/array'),
@@ -69,6 +72,16 @@ describe('ArrayAddElementForm (AddKeyArray)', () => {
 
     fireEvent.change(screen.getByTestId('array-element-index-0'), {
       target: { value: '-1' },
+    })
+
+    expect(screen.getByTestId('array-add-element-btn')).toBeDisabled()
+  })
+
+  it('should disable Save when index is whitespace only', () => {
+    renderComponent()
+
+    fireEvent.change(screen.getByTestId('array-element-index-0'), {
+      target: { value: '   ' },
     })
 
     expect(screen.getByTestId('array-add-element-btn')).toBeDisabled()

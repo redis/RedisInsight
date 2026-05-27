@@ -20,7 +20,7 @@ interface Options {
 
 /** Returns true if the index string represents a valid non-negative integer. */
 export const isIndexValid = (index: string): boolean =>
-  index !== '' &&
+  index.trim() !== '' &&
   !Number.isNaN(Number(index)) &&
   Number.isInteger(Number(index)) &&
   Number(index) >= 0

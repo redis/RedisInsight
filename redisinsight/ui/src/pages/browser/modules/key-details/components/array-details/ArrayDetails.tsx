@@ -18,7 +18,7 @@ import {
 } from 'uiSrc/pages/browser/modules'
 
 import { ArrayElementList } from './array-element-list/ArrayElementList'
-import { AddKeyArray } from './array-add-element-form/ArrayAddElementForm'
+import { ArrayAddElementForm } from './array-add-element-form/ArrayAddElementForm'
 import { AddKeysContainer } from '../common/AddKeysContainer.styled'
 import * as S from './ArrayDetails.styles'
 
@@ -111,7 +111,7 @@ const ArrayDetails = (props: Props) => {
         )}
         {isAddItemPanelOpen && (
           <AddKeysContainer>
-            <AddKeyArray
+            <ArrayAddElementForm
               onSubmit={handleAddElements}
               onCancel={closeAddItemPanel}
             />
