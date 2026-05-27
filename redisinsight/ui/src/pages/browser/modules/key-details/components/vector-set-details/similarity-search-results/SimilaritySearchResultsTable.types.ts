@@ -5,6 +5,7 @@ import { Nullable } from 'uiSrc/utils'
 
 export enum SimilarityResultsColumn {
   Name = 'name',
+  Rank = 'rank',
   Similarity = 'similarity',
 }
 

@@ -144,16 +144,17 @@ describe('SimilaritySearchResultsTable', () => {
 
       renderTable(matches)
 
-      // Header order: Element, Similarity, then attributes alphabetically.
+      // Header order: Element, then attributes alphabetically, then Rank, Similarity.
       const headers = screen
         .getAllByRole('columnheader')
         .map((h) => h.textContent?.trim())
       expect(headers).toEqual([
         'Element',
-        'Similarity',
         'alpha',
         'beta',
         'zeta',
+        'Rank',
+        'Similarity',
       ])
     })
 
@@ -212,7 +213,7 @@ describe('SimilaritySearchResultsTable', () => {
       const headers = screen
         .getAllByRole('columnheader')
         .map((h) => h.textContent?.trim())
-      expect(headers).toEqual(['Element', 'Similarity', 'count'])
+      expect(headers).toEqual(['Element', 'count', 'Rank', 'Similarity'])
     })
 
     // Regression: attribute cells must read from `parsedAttributesCache`

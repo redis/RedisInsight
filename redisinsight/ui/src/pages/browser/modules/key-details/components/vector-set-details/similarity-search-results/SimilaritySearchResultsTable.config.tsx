@@ -7,6 +7,7 @@ import {
 } from 'uiSrc/components/base/layout/table'
 import { VectorSetSimilarityMatch } from 'uiSrc/slices/interfaces/vectorSet'
 
+import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import { ElementNameCell } from '../vector-set-element-list/components/ElementNameCell/ElementNameCell'
 import { formatSimilarity } from './utils'
 import { parseAttributes, renderAttributeValue } from './utils/parseAttributes'
@@ -16,6 +17,7 @@ import {
   SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE,
   SIMILARITY_RESULTS_COLUMN_HEADERS,
   SIMILARITY_RESULTS_NAME_COLUMN_MIN_SIZE,
+  SIMILARITY_RESULTS_RANK_COLUMN_SIZE,
   SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE,
 } from './constants'
 import {
@@ -48,6 +50,26 @@ const nameColumn: ColumnDef<VectorSetSimilarityMatch> = {
         element={row.original}
         compressor={compressor}
         viewFormat={viewFormat ?? KeyValueFormat.JSON}
+      />
+    )
+  },
+}
+
+const rankColumn: ColumnDef<VectorSetSimilarityMatch> = {
+  id: SimilarityResultsColumn.Rank,
+  accessorKey: SimilarityResultsColumn.Rank,
+  header: SIMILARITY_RESULTS_COLUMN_HEADERS[SimilarityResultsColumn.Rank],
+  enableSorting: false,
+  size: SIMILARITY_RESULTS_RANK_COLUMN_SIZE,
+  minSize: SIMILARITY_RESULTS_RANK_COLUMN_SIZE,
+  maxSize: SIMILARITY_RESULTS_RANK_COLUMN_SIZE,
+  sizeUnit: 'px',
+  cell: ({ row }: { row: TableRow<VectorSetSimilarityMatch> }) => {
+    const { rank } = row.original
+    return (
+      <RiBadge
+        data-testid={`vector-set-similarity-rank-cell-${row.index}`}
+        label={rank !== undefined ? `#${rank}` : ''}
       />
     )
   },
@@ -113,14 +135,11 @@ const buildAttributeColumn = (
   },
 })
 
-/**
- * Element + Similarity (sticky-left), followed by one column per attribute
- * key. `attributeKeys` is expected to be in stable alphabetical order.
- */
 export const buildSimilarityResultsColumns = (
   attributeKeys: string[],
 ): ColumnDef<VectorSetSimilarityMatch>[] => [
   nameColumn,
-  similarityColumn,
   ...attributeKeys.map(buildAttributeColumn),
+  rankColumn,
+  similarityColumn,
 ]
