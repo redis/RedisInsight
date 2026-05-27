@@ -94,9 +94,6 @@ const EditablePopover = (props: Props) => {
         setIsPopoverOpen(false)
         onApply()
       },
-      // Also close the popover on cancel so we don't leave the
-      // (ownFocus) RiPopover open in a focus-trap limbo behind a
-      // dismissed modal.
       onCancel: () => setIsPopoverOpen(false),
     })
   }

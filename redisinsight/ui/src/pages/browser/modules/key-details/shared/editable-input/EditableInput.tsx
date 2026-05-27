@@ -103,9 +103,6 @@ const EditableInput = (props: Props) => {
             onEdit?.(false)
           }}
           onApply={(value) => {
-            // Drop the InlineItemEditor's MouseEvent — consumers don't read
-            // it, and capturing it across the deferred type-to-confirm
-            // closure would forward a stale reference.
             requestConfirmation({
               title: 'Edit value on production database?',
               actionDescription:
