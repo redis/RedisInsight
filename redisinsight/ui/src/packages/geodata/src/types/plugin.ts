@@ -1,3 +1,13 @@
+export enum GeodataMode {
+  Markers = 'markers',
+  Heatmap = 'heatmap',
+  Inspector = 'inspector',
+  RqeMarkers = 'rqe-markers',
+  RqeHeatmap = 'rqe-heatmap',
+  RqeInspector = 'rqe-inspector',
+  RqeShape = 'rqe-shape',
+}
+
 export interface WorkbenchResult {
   response: unknown
   status: string

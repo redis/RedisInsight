@@ -3,8 +3,8 @@ import React from 'react'
 import { render } from 'react-dom'
 import { ThemeProvider } from 'uiSrc/components/base/utils/pluginsThemeContext'
 
-import App, { GeodataMode } from './App'
-import { PluginProps } from './types'
+import App from './App'
+import { GeodataMode, PluginProps } from './types'
 
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.css'

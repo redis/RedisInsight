@@ -6,17 +6,7 @@ import {
   Message,
   RqeGeoVisualization,
 } from './components'
-import { PluginProps, WorkbenchResult } from './types'
-
-export enum GeodataMode {
-  Markers = 'markers',
-  Heatmap = 'heatmap',
-  Inspector = 'inspector',
-  RqeMarkers = 'rqe-markers',
-  RqeHeatmap = 'rqe-heatmap',
-  RqeInspector = 'rqe-inspector',
-  RqeShape = 'rqe-shape',
-}
+import { GeodataMode, PluginProps, WorkbenchResult } from './types'
 
 interface AppProps extends PluginProps {
   mode: GeodataMode
