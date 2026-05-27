@@ -91,6 +91,8 @@ export interface VectorSetSimilarityMatch {
   name: RedisResponseBuffer
   score: number
   attributes?: string
+  /** 1-based position in the BE response order. Stamped by the FE reducer. */
+  rank?: number
 }
 
 export interface VectorSetSimilaritySearchResponse {

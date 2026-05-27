@@ -1095,7 +1095,7 @@ describe('vectorSet slice', () => {
       expect(nextState.similaritySearch.error).toBe('')
     })
 
-    it('loadSimilaritySearchSuccess: should store the response and clear loading', () => {
+    it('loadSimilaritySearchSuccess: should store the response with 1-based rank stamped per element and clear loading', () => {
       const response = buildSearchResponse()
       const prevState = {
         ...initialState,
@@ -1112,7 +1112,13 @@ describe('vectorSet slice', () => {
       expect(nextState.similaritySearch).toEqual({
         loading: false,
         error: '',
-        data: response,
+        data: {
+          ...response,
+          elements: response.elements.map((element, index) => ({
+            ...element,
+            rank: index + 1,
+          })),
+        },
       })
     })
 

@@ -212,7 +212,13 @@ const vectorSetSlice = createSlice({
       state.similaritySearch = {
         loading: false,
         error: '',
-        data: payload,
+        data: {
+          ...payload,
+          elements: payload.elements.map((element, index) => ({
+            ...element,
+            rank: index + 1,
+          })),
+        },
       }
     },
     loadSimilaritySearchFailure: (
