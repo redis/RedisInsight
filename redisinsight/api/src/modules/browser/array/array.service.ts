@@ -129,30 +129,27 @@ export class ArrayService {
 
       await checkIfKeyNotExists(keyName, client);
 
-      // Fetch element count (ARCOUNT) and logical length (ARLEN) in one pipeline
-      const [[, total = 0], [, logicalLength = 0]] = (await client.sendPipeline(
-        [
+      // Fetch metadata and elements in a single pipeline — all three commands are
+      // independent of each other's results so there is no ordering requirement.
+      // ARSCAN key start end [LIMIT limit]: returns [[index, value], ...] pairs.
+      // Use Number.MAX_SAFE_INTEGER as the upper bound so LIMIT drives pagination.
+      const [[, total = 0], [, logicalLength = 0], [, rawScan]] =
+        (await client.sendPipeline([
           [BrowserToolArrayCommands.ArCount, keyName],
           [BrowserToolArrayCommands.ArLen, keyName],
-        ],
-      )) as [any, number][];
-
-      // ARSCAN key start end [LIMIT limit]
-      // start/end are inclusive integer index bounds; LIMIT caps the number of results.
-      // Use Number.MAX_SAFE_INTEGER as the upper bound so LIMIT drives pagination.
-      // Returns an array of [index, value] pairs: [[0, "foo"], [1, "bar"], ...]
-      const rawScan = (await client.sendCommand([
-        BrowserToolArrayCommands.ArScan,
-        keyName,
-        cursor,
-        Number.MAX_SAFE_INTEGER,
-        'LIMIT',
-        count,
-      ])) as [number | Buffer, Buffer][];
+          [
+            BrowserToolArrayCommands.ArScan,
+            keyName,
+            cursor,
+            Number.MAX_SAFE_INTEGER,
+            'LIMIT',
+            count,
+          ],
+        ])) as [any, any][];
 
       // Map each [index, value] pair into an ArrayElementDto
       const elements: ArrayElementDto[] = (
-        rawScan as [number | Buffer, Buffer][]
+        (rawScan ?? []) as [number | Buffer, Buffer][]
       ).map((pair) =>
         plainToInstance(ArrayElementDto, {
           index: Number(pair[0]),
