@@ -47,8 +47,8 @@ export function useArrayElementRows({ emptyIndexValue = '' }: Options = {}) {
   const addField = () => {
     const lastId = elements[elements.length - 1].id
     const validIndices = elements
+      .filter((el) => isIndexValid(el.index))
       .map((el) => toNumber(el.index))
-      .filter((n) => !Number.isNaN(n))
     const nextIndex = String(
       (validIndices.length > 0 ? Math.max(...validIndices) : -1) + 1,
     )

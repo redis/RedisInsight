@@ -160,10 +160,16 @@ export class ArrayService {
         }),
       );
 
-      // If we got a full page, the next scan starts one past the last returned index
+      // If we got a full page, the next scan starts one past the last returned index.
+      // Only set nextCursor when the candidate position is still within the array's
+      // logical length — this avoids an unnecessary follow-up request when the number
+      // of populated elements is an exact multiple of the page size.
       let nextCursor: number | undefined;
       if (elements.length >= count && elements.length > 0) {
-        nextCursor = elements[elements.length - 1].index + 1;
+        const candidate = elements[elements.length - 1].index + 1;
+        if (candidate < logicalLength) {
+          nextCursor = candidate;
+        }
       }
 
       this.logger.debug(
