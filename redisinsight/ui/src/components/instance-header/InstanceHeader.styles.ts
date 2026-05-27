@@ -18,4 +18,8 @@ export const InstanceHeaderContainer = styled.div<InstanceHeaderContainerProps>`
 
 export const EnvironmentBadgeSlot = styled(FlexItem)`
   padding-left: 8px;
+
+  &:empty {
+    display: none;
+  }
 `
