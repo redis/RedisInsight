@@ -1,6 +1,5 @@
-import React, { FormEvent, useEffect, useRef, useState } from 'react'
+import React, { FormEvent } from 'react'
 import { useSelector } from 'react-redux'
-import { toNumber } from 'lodash'
 
 import { addArrayElementsStateSelector } from 'uiSrc/slices/browser/array'
 import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-fields'
@@ -12,15 +11,10 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
+import { useArrayElementRows } from 'uiSrc/pages/browser/hooks/useArrayElementRows'
 
 export interface ArrayElementEntry {
   index: number
-  value: string
-}
-
-interface ElementRow {
-  id: number
-  index: string
   value: string
 }
 
@@ -36,66 +30,19 @@ export interface Props {
 const ArrayAddElementForm = ({ onSubmit, onCancel }: Props) => {
   const { loading } = useSelector(addArrayElementsStateSelector)
 
-  const [elements, setElements] = useState<ElementRow[]>([
-    { id: 0, index: '', value: '' },
-  ])
-  const lastAddedIndex = useRef<HTMLInputElement>(null)
-  const prevCount = useRef<number>(0)
-
-  useEffect(() => {
-    if (prevCount.current !== 0 && prevCount.current < elements.length) {
-      lastAddedIndex.current?.focus()
-    }
-    prevCount.current = elements.length
-  }, [elements.length])
-
-  const isFormValid = elements.every(
-    (el) =>
-      el.index !== '' &&
-      !Number.isNaN(Number(el.index)) &&
-      Number.isInteger(Number(el.index)) &&
-      Number(el.index) >= 0,
-  )
-
-  const addField = () => {
-    const lastId = elements[elements.length - 1].id
-    const validIndices = elements
-      .map((el) => toNumber(el.index))
-      .filter((n) => !Number.isNaN(n))
-    const nextIndex = String(
-      (validIndices.length > 0 ? Math.max(...validIndices) : -1) + 1,
-    )
-    setElements([...elements, { id: lastId + 1, index: nextIndex, value: '' }])
-  }
-
-  const clearElement = (id: number) => {
-    setElements(
-      elements.map((el) =>
-        el.id === id ? { ...el, index: '', value: '' } : el,
-      ),
-    )
-  }
-
-  const onClickRemove = ({ id }: ElementRow) => {
-    if (elements.length === 1) {
-      clearElement(id)
-      return
-    }
-    setElements(elements.filter((el) => el.id !== id))
-  }
-
-  const isClearDisabled = (item: ElementRow): boolean =>
-    elements.length === 1 && !item.value.length && item.index === ''
-
-  const handleChange = (field: 'index' | 'value', id: number, val: string) => {
-    setElements(
-      elements.map((el) => (el.id === id ? { ...el, [field]: val } : el)),
-    )
-  }
+  const {
+    elements,
+    lastAddedIndex,
+    addField,
+    onClickRemove,
+    isClearDisabled,
+    handleChange,
+    allIndicesValid,
+  } = useArrayElementRows()
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    if (!isFormValid) return
+    if (!allIndicesValid) return
     onSubmit(
       elements.map((el) => ({ index: Number(el.index), value: el.value })),
     )
@@ -156,7 +103,7 @@ const ArrayAddElementForm = ({ onSubmit, onCancel }: Props) => {
           <PrimaryButton
             type="submit"
             loading={loading}
-            disabled={!isFormValid || loading}
+            disabled={!allIndicesValid || loading}
             data-testid="array-add-element-btn"
           >
             Save

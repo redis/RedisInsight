@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useRef, useState } from 'react'
+import React, { FormEvent } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toNumber } from 'lodash'
 
@@ -9,6 +9,7 @@ import AddMultipleFields from 'uiSrc/pages/browser/components/add-multiple-field
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { CreateArrayWithExpireDto } from 'uiSrc/slices/interfaces/array'
+import { useArrayElementRows } from 'uiSrc/pages/browser/hooks/useArrayElementRows'
 
 export interface Props {
   keyName: string
@@ -16,86 +17,21 @@ export interface Props {
   onCancel: (isCancelled?: boolean) => void
 }
 
-interface ArrayElementEntry {
-  id: number
-  index: string
-  value: string
-}
-
-const INITIAL_ELEMENT = (): ArrayElementEntry => ({
-  id: 0,
-  index: '0',
-  value: '',
-})
-
 const AddKeyArray = ({ keyName = '', keyTTL, onCancel }: Props) => {
   const dispatch = useDispatch()
   const { loading } = useSelector(addKeyStateSelector)
 
-  const [elements, setElements] = useState<ArrayElementEntry[]>([
-    INITIAL_ELEMENT(),
-  ])
-  const [isFormValid, setIsFormValid] = useState(false)
-  const lastAddedIndex = useRef<HTMLInputElement>(null)
-  const prevCount = useRef<number>(0)
+  const {
+    elements,
+    lastAddedIndex,
+    addField,
+    onClickRemove,
+    isClearDisabled,
+    handleChange,
+    allIndicesValid,
+  } = useArrayElementRows({ emptyIndexValue: '0' })
 
-  useEffect(() => {
-    const allIndicesValid = elements.every(
-      (el) =>
-        el.index !== '' &&
-        !Number.isNaN(Number(el.index)) &&
-        Number.isInteger(Number(el.index)) &&
-        Number(el.index) >= 0,
-    )
-    setIsFormValid(keyName.length > 0 && allIndicesValid)
-  }, [keyName, elements])
-
-  useEffect(() => {
-    if (prevCount.current !== 0 && prevCount.current < elements.length) {
-      lastAddedIndex.current?.focus()
-    }
-    prevCount.current = elements.length
-  }, [elements.length])
-
-  const addField = () => {
-    const lastId = elements[elements.length - 1].id
-    const validIndices = elements
-      .map((el) => toNumber(el.index))
-      .filter((n) => !Number.isNaN(n))
-    const nextIndex = String(
-      (validIndices.length > 0 ? Math.max(...validIndices) : -1) + 1,
-    )
-    setElements([...elements, { id: lastId + 1, index: nextIndex, value: '' }])
-  }
-
-  const clearElement = (id: number) => {
-    setElements(
-      elements.map((el) =>
-        el.id === id ? { ...el, index: '0', value: '' } : el,
-      ),
-    )
-  }
-
-  const onClickRemove = ({ id }: ArrayElementEntry) => {
-    if (elements.length === 1) {
-      clearElement(id)
-      return
-    }
-    setElements(elements.filter((el) => el.id !== id))
-  }
-
-  const isClearDisabled = (item: ArrayElementEntry): boolean =>
-    elements.length === 1 && !item.value.length && item.index === '0'
-
-  const handleChange = (
-    field: 'index' | 'value',
-    id: number,
-    value: string,
-  ) => {
-    setElements(
-      elements.map((el) => (el.id === id ? { ...el, [field]: value } : el)),
-    )
-  }
+  const isFormValid = keyName.length > 0 && allIndicesValid
 
   const onFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
