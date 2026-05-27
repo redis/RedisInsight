@@ -13,13 +13,7 @@ export interface ArrayData {
   elements: ArrayElement[]
 }
 
-export interface GetArrayElementsResponse {
-  total: number
-  logicalLength: number
-  keyName: RedisString
-  nextCursor?: number
-  elements: ArrayElement[]
-}
+export type GetArrayElementsResponse = ArrayData
 
 export interface AddArrayElementsState {
   loading: boolean
