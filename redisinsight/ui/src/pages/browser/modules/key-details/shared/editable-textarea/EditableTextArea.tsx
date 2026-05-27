@@ -30,7 +30,7 @@ export interface Props {
   onUpdateTextAreaHeight?: () => void
   onChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void
   onDecline: (event?: React.MouseEvent<HTMLElement>) => void
-  onApply: (value: string, event: React.MouseEvent) => void
+  onApply: (value: string, event?: React.MouseEvent) => void
   testIdPrefix?: string
 }
 
@@ -153,14 +153,17 @@ const EditableTextArea = (props: Props) => {
                 setValue(initialValue)
                 onEdit(false)
               }}
-              onApply={(_, event) => {
+              onApply={() => {
+                // Drop the InlineItemEditor's MouseEvent — consumers don't
+                // read it, and capturing it across the deferred type-to-
+                // confirm closure would forward a stale reference.
                 requestConfirmation({
                   title: 'Edit value on production database?',
                   actionDescription:
                     'You are about to modify a value on a production database.',
                   confirmButtonText: 'Save',
                   onConfirm: () => {
-                    onApply(value, event)
+                    onApply(value)
                     setValue(initialValue)
                     onEdit(false)
                   },

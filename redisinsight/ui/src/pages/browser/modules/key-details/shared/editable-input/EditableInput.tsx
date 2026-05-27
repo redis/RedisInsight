@@ -23,7 +23,7 @@ export interface Props {
   validation?: (value: string) => string
   editToolTipContent?: React.ReactNode
   onDecline: (event?: React.MouseEvent<HTMLElement>) => void
-  onApply: (value: string, event: React.MouseEvent) => void
+  onApply: (value: string, event?: React.MouseEvent) => void
   testIdPrefix?: string
   variant?: InlineItemEditorProps['variant']
 }
@@ -102,14 +102,17 @@ const EditableInput = (props: Props) => {
             onDecline(event)
             onEdit?.(false)
           }}
-          onApply={(value, event) => {
+          onApply={(value) => {
+            // Drop the InlineItemEditor's MouseEvent — consumers don't read
+            // it, and capturing it across the deferred type-to-confirm
+            // closure would forward a stale reference.
             requestConfirmation({
               title: 'Edit value on production database?',
               actionDescription:
                 'You are about to modify a value on a production database.',
               confirmButtonText: 'Save',
               onConfirm: () => {
-                onApply(value, event)
+                onApply(value)
                 onEdit?.(false)
               },
             })
