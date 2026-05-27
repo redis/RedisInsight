@@ -69,6 +69,7 @@ describe('RqeGeoVisualization', () => {
       .mockReturnValue({
         ok: true,
         value: {
+          command: parsedCommand,
           points: [
             {
               id: 'city:1',

@@ -63,6 +63,13 @@ const mockTileLayer = {
   on: mockTileLayerOn,
 }
 
+interface MockClusterOptions {
+  disableClusteringAtZoom: number
+  iconCreateFunction: (cluster: {
+    getAllChildMarkers: () => Array<{ options: { distanceKm?: number } }>
+  }) => unknown
+}
+
 const mockLeaflet = {
   circle: jest.fn(() => mockShapeLayer),
   circleMarker: jest.fn((_latLng, options) => createMarker(options)),
@@ -72,7 +79,9 @@ const mockLeaflet = {
   layerGroup: jest.fn(() => mockMarkerLayer),
   map: jest.fn(() => mockMap),
   marker: jest.fn((_latLng, options) => createMarker(options)),
-  markerClusterGroup: jest.fn(() => mockMarkerLayer),
+  markerClusterGroup: jest.fn(
+    (_options: MockClusterOptions) => mockMarkerLayer,
+  ),
   rectangle: jest.fn(() => mockShapeLayer),
   tileLayer: jest.fn(() => mockTileLayer),
 }
