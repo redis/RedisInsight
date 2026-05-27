@@ -176,7 +176,6 @@ export const useArrayElementListData = ({
         fetchMoreArrayElements({
           key: key as RedisResponseBuffer,
           cursor: nextCursor,
-          count: pageSize,
         }),
       )
     }
