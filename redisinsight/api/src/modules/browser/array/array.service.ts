@@ -157,12 +157,14 @@ export class ArrayService {
         }),
       );
 
-      // If we got a full page, the next scan starts one past the last returned index.
-      // Only set nextCursor when the candidate position is still within the array's
-      // logical length — this avoids an unnecessary follow-up request when the number
-      // of populated elements is an exact multiple of the page size.
+      // Set nextCursor to one past the last returned index if that position is
+      // still within the array's logical length. Using logicalLength as the sole
+      // gate (rather than elements.length >= count) correctly handles both cases:
+      // - exact-multiple page size: last index + 1 === logicalLength → no cursor
+      // - sparse arrays where ARSCAN may return fewer than count elements due to
+      //   its internal iteration budget but more populated elements still exist
       let nextCursor: number | undefined;
-      if (elements.length >= count && elements.length > 0) {
+      if (elements.length > 0) {
         const candidate = elements[elements.length - 1].index + 1;
         if (candidate < logicalLength) {
           nextCursor = candidate;

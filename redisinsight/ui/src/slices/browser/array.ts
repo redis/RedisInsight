@@ -280,7 +280,10 @@ export function deleteArrayElements(
       )
 
       if (isStatusSuccessful(status)) {
-        const newTotalValue = state.browser.array.data.total - data.affected
+        // Re-read state after the async call so concurrent deletes don't produce
+        // a stale total that mis-triggers (or skips) the key-removal branch.
+        const newTotalValue =
+          stateInit().browser.array.data.total - data.affected
 
         sendEventTelemetry({
           event: TelemetryEvent.BROWSER_KEY_VALUE_REMOVED,
