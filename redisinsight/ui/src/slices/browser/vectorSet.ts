@@ -144,10 +144,24 @@ const vectorSetSlice = createSlice({
       state,
       { payload: elements }: PayloadAction<RedisResponseBuffer[]>,
     ) => {
+      const isDeleted = (name: RedisResponseBuffer) =>
+        elements.some((element) => isEqualBuffers(name, element))
+
       state.data.elements = state.data.elements.filter(
-        (el) => !elements.some((element) => isEqualBuffers(el.name, element)),
+        (el) => !isDeleted(el.name),
       )
       state.data.total -= elements.length
+
+      // Keep similarity-search results in sync so a row deleted via its action
+      // column disappears immediately instead of lingering until the next
+      // search. Ranks are preserved (we don't re-index) so the remaining
+      // matches keep their BE-assigned order.
+      if (state.similaritySearch.data) {
+        state.similaritySearch.data.elements =
+          state.similaritySearch.data.elements.filter(
+            (el) => !isDeleted(el.name),
+          )
+      }
     },
     updateElementAttributes: (
       state,
