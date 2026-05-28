@@ -6,8 +6,12 @@ import {
   MAP_COLORS,
   MAP_FIT_BOUNDS_PADDING_RATIO,
   MAP_INITIAL_MAX_ZOOM,
-} from '../constants'
-import { GeoQueryOverlay, GeoShapeGeometry, GeoShapeResult } from '../types'
+} from '../../constants'
+import {
+  GeoQueryOverlay,
+  GeoShapeGeometry,
+  GeoShapeResult,
+} from '../../types'
 
 interface GeoShapePlotProps {
   shapes: GeoShapeResult[]

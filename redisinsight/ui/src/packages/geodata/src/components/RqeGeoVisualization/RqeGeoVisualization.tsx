@@ -1,17 +1,20 @@
 import React, { useMemo } from 'react'
 
-import { GeoHeader } from './GeoHeader'
-import { GeoPlot } from './GeoPlot'
-import { GeoShapePlot } from './GeoShapePlot'
-import { GeoTable } from './GeoTable'
-import { Message } from './Message'
+import { GeoHeader } from '../GeoHeader'
+import { GeoPlot } from '../GeoPlot'
+import { GeoShapePlot } from '../GeoShapePlot'
+import { GeoTable } from '../GeoTable'
+import { Message } from '../Message'
 import {
   GeoPointResult,
   GeoShapeResult,
   ParsedGeoCommand,
   ParsedRqeGeoCommand,
-} from '../types'
-import { parseRqeGeoCommand, parseRqeGeoResults } from '../utils/rqeGeoParser'
+} from '../../types'
+import {
+  parseRqeGeoCommand,
+  parseRqeGeoResults,
+} from '../../utils/rqeGeoParser'
 
 interface RqeGeoVisualizationProps {
   command: string
