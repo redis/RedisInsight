@@ -5,6 +5,7 @@ export const SIMILARITY_RESULTS_COLUMN_HEADERS: Record<
   string
 > = {
   [SimilarityResultsColumn.Name]: 'Element',
+  [SimilarityResultsColumn.Rank]: 'Rank',
   [SimilarityResultsColumn.Similarity]: 'Similarity',
 }
 
@@ -30,5 +31,6 @@ export const SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_ID_PREFIX = 'attr_'
  * `getHeaderCellProps` and can grow to absorb leftover space.
  */
 export const SIMILARITY_RESULTS_NAME_COLUMN_MIN_SIZE = 200
+export const SIMILARITY_RESULTS_RANK_COLUMN_SIZE = 80
 export const SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE = 100
 export const SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE = 140

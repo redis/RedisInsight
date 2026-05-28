@@ -35,10 +35,11 @@ describe('useSimilarityResultColumns', () => {
     const ids = result.current.columns.map((c) => c.id)
     expect(ids).toEqual([
       SimilarityResultsColumn.Name,
-      SimilarityResultsColumn.Similarity,
       attributeColumnId('alpha'),
       attributeColumnId('beta'),
       attributeColumnId('zeta'),
+      SimilarityResultsColumn.Rank,
+      SimilarityResultsColumn.Similarity,
     ])
     expect(result.current.attributeKeys).toEqual(['alpha', 'beta', 'zeta'])
   })
@@ -63,13 +64,14 @@ describe('useSimilarityResultColumns', () => {
     expect(result.current.columnsMap.size).toBe(0)
   })
 
-  it('keeps Element + Similarity anchored in shownColumns with attribute columns hidden by default', () => {
+  it('keeps Element + Rank + Similarity anchored in shownColumns with attribute columns hidden by default', () => {
     const { result } = renderHook(() =>
       useSimilarityResultColumns([match('a', 0.9, '{"foo":1}')]),
     )
 
     expect(result.current.shownColumns).toEqual([
       SimilarityResultsColumn.Name,
+      SimilarityResultsColumn.Rank,
       SimilarityResultsColumn.Similarity,
     ])
     expect(result.current.columnVisibility).toEqual({
@@ -85,6 +87,7 @@ describe('useSimilarityResultColumns', () => {
     act(() => {
       result.current.onShownColumnsChange([
         SimilarityResultsColumn.Name,
+        SimilarityResultsColumn.Rank,
         SimilarityResultsColumn.Similarity,
         attributeColumnId('bar'),
       ])
@@ -92,6 +95,7 @@ describe('useSimilarityResultColumns', () => {
 
     expect(result.current.shownColumns).toEqual([
       SimilarityResultsColumn.Name,
+      SimilarityResultsColumn.Rank,
       SimilarityResultsColumn.Similarity,
       attributeColumnId('bar'),
     ])
@@ -100,7 +104,7 @@ describe('useSimilarityResultColumns', () => {
     })
   })
 
-  it('keeps Element + Similarity visible even if onShownColumnsChange forgets them', () => {
+  it('keeps Element + Rank + Similarity visible even if onShownColumnsChange forgets them', () => {
     const { result } = renderHook(() =>
       useSimilarityResultColumns([match('a', 0.9, '{"foo":1}')]),
     )
@@ -112,6 +116,7 @@ describe('useSimilarityResultColumns', () => {
 
     expect(result.current.shownColumns).toEqual([
       SimilarityResultsColumn.Name,
+      SimilarityResultsColumn.Rank,
       SimilarityResultsColumn.Similarity,
       attributeColumnId('foo'),
     ])
@@ -129,6 +134,7 @@ describe('useSimilarityResultColumns', () => {
     act(() => {
       result.current.onShownColumnsChange([
         SimilarityResultsColumn.Name,
+        SimilarityResultsColumn.Rank,
         SimilarityResultsColumn.Similarity,
         attributeColumnId('foo'),
       ])
@@ -140,6 +146,7 @@ describe('useSimilarityResultColumns', () => {
     rerender([match('c', 0.7, '{"foo":1,"bar":2}')])
     expect(result.current.shownColumns).toEqual([
       SimilarityResultsColumn.Name,
+      SimilarityResultsColumn.Rank,
       SimilarityResultsColumn.Similarity,
       attributeColumnId('foo'),
     ])
@@ -163,6 +170,6 @@ describe('useSimilarityResultColumns', () => {
     )
 
     expect(result.current.attributeKeys).toEqual([])
-    expect(result.current.columns).toHaveLength(2)
+    expect(result.current.columns).toHaveLength(3)
   })
 })

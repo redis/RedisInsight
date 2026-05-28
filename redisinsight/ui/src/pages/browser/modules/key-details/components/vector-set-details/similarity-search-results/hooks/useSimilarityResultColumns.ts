@@ -75,6 +75,7 @@ export const useSimilarityResultColumns = (
   const shownColumns = useMemo(
     () => [
       SimilarityResultsColumn.Name,
+      SimilarityResultsColumn.Rank,
       SimilarityResultsColumn.Similarity,
       ...Array.from(columnsMap.keys()).filter((id) =>
         shownAttributeColumns.has(id),
