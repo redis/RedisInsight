@@ -6,6 +6,7 @@ import { getVectorSetElementDetails } from 'uiSrc/slices/browser/vectorSet'
 import { bufferToString } from 'uiSrc/utils'
 import { VectorSetElement, RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
+import { VectorSetActionTarget } from '../../vector-set-element-list/VectorSetElementList.types'
 import { UseElementDetailsResult } from './useElementDetails.types'
 
 export const useElementDetails = (): UseElementDetailsResult => {
@@ -29,7 +30,7 @@ export const useElementDetails = (): UseElementDetailsResult => {
   }, [keyNameString])
 
   const handleViewElement = useCallback(
-    (element: VectorSetElement) => {
+    (element: VectorSetActionTarget) => {
       if (!keyName) return
 
       dispatch(

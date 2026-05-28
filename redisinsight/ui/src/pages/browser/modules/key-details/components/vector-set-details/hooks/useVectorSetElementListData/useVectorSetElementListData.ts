@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { PaginationState } from 'uiSrc/components/base/layout/table'
@@ -8,20 +8,16 @@ import {
   selectedKeySelector,
 } from 'uiSrc/slices/browser/keys'
 import {
-  deleteVectorSetElements,
   fetchMoreVectorSetElements,
   vectorSetDataSelector,
   vectorSetSelector,
 } from 'uiSrc/slices/browser/vectorSet'
-import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces'
+import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { KeyValueCompressor } from 'uiSrc/constants'
 import { Nullable } from 'uiSrc/utils'
 
 import { getVectorSetColumns } from '../../vector-set-element-list/VectorSetElementList.config'
-import {
-  ElementDeleteConfig,
-  ElementsListConfig,
-} from '../../vector-set-element-list/VectorSetElementList.types'
+import { ElementsListConfig } from '../../vector-set-element-list/VectorSetElementList.types'
 import { DEFAULT_PAGE_SIZE } from '../../vector-set-element-list/constants'
 
 import {
@@ -29,13 +25,10 @@ import {
   UseVectorSetElementListDataResult,
 } from './useVectorSetElementListData.types'
 
-const ELEMENT_DELETE_POPOVER_SUFFIX = '_vectorSet'
 const MIN_COLUMN_WIDTH = 100
 
 export const useVectorSetElementListData = ({
-  onRemoveKey,
-  onViewElement,
-  onSearchByElement,
+  actionsConfig,
 }: UseVectorSetElementListDataParams): UseVectorSetElementListDataResult => {
   const { loading } = useSelector(vectorSetSelector)
   const { elements, nextCursor, total, isPaginationSupported } = useSelector(
@@ -55,70 +48,19 @@ export const useVectorSetElementListData = ({
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,
   })
-  const [deleting, setDeleting] = useState('')
 
   useEffect(() => {
     setPagination((prev) => ({ ...prev, pageIndex: 0 }))
   }, [key])
 
-  const closePopover = useCallback(() => {
-    setDeleting('')
-  }, [])
-
-  const showPopover = useCallback((item = '') => {
-    setDeleting(`${item + ELEMENT_DELETE_POPOVER_SUFFIX}`)
-  }, [])
-
-  const onSuccessRemoved = (newTotal: number) => {
-    // If the vector set is empty, remove the vector set key
-    if (newTotal === 0) {
-      onRemoveKey()
-    }
-  }
-
-  const handleDeleteElement = (element: RedisString | string = '') => {
-    dispatch(
-      deleteVectorSetElements(
-        key as RedisResponseBuffer,
-        [element as RedisResponseBuffer],
-        onSuccessRemoved,
-      ),
-    )
-    closePopover()
-  }
-
-  const handleRemoveIconClick = () => {}
-
   const columns = useMemo(() => {
-    const deleteConfig: ElementDeleteConfig = {
-      deleting,
-      suffix: ELEMENT_DELETE_POPOVER_SUFFIX,
-      total,
-      keyName: key,
-      closePopover,
-      showPopover,
-      handleDeleteElement,
-      handleRemoveIconClick,
-    }
     const listConfig: ElementsListConfig = {
       compressor,
       viewFormat,
-      elementDeleteConfig: deleteConfig,
-      onViewElement,
-      onSearchByElement,
+      actionsConfig,
     }
     return getVectorSetColumns(listConfig)
-  }, [
-    compressor,
-    viewFormat,
-    deleting,
-    total,
-    key,
-    closePopover,
-    showPopover,
-    onViewElement,
-    onSearchByElement,
-  ])
+  }, [compressor, viewFormat, actionsConfig])
 
   const tableMinWidth = useMemo(
     () => `${Math.max(columns.length * MIN_COLUMN_WIDTH, 550)}px`,

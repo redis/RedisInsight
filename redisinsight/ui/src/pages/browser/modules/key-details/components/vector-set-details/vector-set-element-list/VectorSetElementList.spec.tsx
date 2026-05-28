@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
-import { deleteVectorSetElements } from 'uiSrc/slices/browser/vectorSet'
 import { Props, VectorSetElementList } from './VectorSetElementList'
+import { VectorSetActionsConfig } from './VectorSetElementList.types'
 
 jest.mock('uiSrc/slices/browser/vectorSet', () => {
   const actual = jest.requireActual('uiSrc/slices/browser/vectorSet')
@@ -27,29 +27,43 @@ jest.mock('uiSrc/slices/browser/vectorSet', () => {
   }
 })
 
-const onRemoveKey = jest.fn()
 const onViewElement = jest.fn()
 const onSearchByElement = jest.fn()
+const handleDeleteElement = jest.fn()
 
-const defaultProps: Props = {
-  onRemoveKey,
-  onViewElement,
-  onSearchByElement,
+const SUFFIX = '_vectorSet'
+
+/**
+ * Wraps the list with stateful delete-popover wiring so the PopoverDelete
+ * actually opens/closes — its visibility key is `item + suffix === deleting`.
+ */
+const StatefulListWrapper = (props: Partial<Props>) => {
+  const [deleting, setDeleting] = useState('')
+  const actionsConfig: VectorSetActionsConfig = {
+    elementDeleteConfig: {
+      deleting,
+      suffix: SUFFIX,
+      total: 3,
+      keyName: '',
+      closePopover: () => setDeleting(''),
+      showPopover: (item: string) => setDeleting(`${item}${SUFFIX}`),
+      handleDeleteElement,
+      handleRemoveIconClick: jest.fn(),
+    },
+    onViewElement,
+    onSearchByElement,
+  }
+  return <VectorSetElementList actionsConfig={actionsConfig} {...props} />
 }
 
 const renderComponent = (propsOverride?: Partial<Props>) =>
-  render(
-    React.createElement(VectorSetElementList, {
-      ...defaultProps,
-      ...propsOverride,
-    }),
-  )
+  render(<StatefulListWrapper {...propsOverride} />)
 
 describe('VectorSetElementList', () => {
   beforeEach(() => {
-    jest.mocked(deleteVectorSetElements).mockClear()
     onViewElement.mockClear()
     onSearchByElement.mockClear()
+    handleDeleteElement.mockClear()
   })
 
   it('should render', () => {
@@ -104,10 +118,10 @@ describe('VectorSetElementList', () => {
     expect(screen.getByRole('button', { name: 'Remove' })).toBeInTheDocument()
   })
 
-  it('should call deleteVectorSetElements when delete is confirmed', () => {
+  it('should call handleDeleteElement from actionsConfig when delete is confirmed', () => {
     renderComponent()
     fireEvent.click(screen.getAllByLabelText(/remove field/i)[0])
     fireEvent.click(screen.getByRole('button', { name: 'Remove' }))
-    expect(deleteVectorSetElements).toHaveBeenCalledTimes(1)
+    expect(handleDeleteElement).toHaveBeenCalledTimes(1)
   })
 })

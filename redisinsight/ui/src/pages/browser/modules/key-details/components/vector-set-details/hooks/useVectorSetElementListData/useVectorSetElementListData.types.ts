@@ -3,10 +3,10 @@ import { Dispatch, SetStateAction } from 'react'
 import { ColumnDef, PaginationState } from 'uiSrc/components/base/layout/table'
 import { VectorSetElement } from 'uiSrc/slices/interfaces'
 
+import { VectorSetActionsConfig } from '../../vector-set-element-list/VectorSetElementList.types'
+
 export interface UseVectorSetElementListDataParams {
-  onRemoveKey: () => void
-  onViewElement: (element: VectorSetElement) => void
-  onSearchByElement: (element: VectorSetElement) => void
+  actionsConfig: VectorSetActionsConfig
 }
 
 export interface UseVectorSetElementListDataResult {
