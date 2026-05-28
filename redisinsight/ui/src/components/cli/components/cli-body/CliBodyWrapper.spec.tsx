@@ -18,10 +18,18 @@ import { processCliClient } from 'uiSrc/slices/cli/cli-settings'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { processUnsupportedCommand } from 'uiSrc/utils/cliOutputActions'
 import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
+import { ProductionWriteConfirmationProvider } from 'uiSrc/components/production-write-confirmation'
 import { DBInstanceFactory } from 'uiSrc/mocks/factories/database/DBInstance.factory'
 import { ConnectionType } from 'uiSrc/slices/interfaces'
 
 import CliBodyWrapper from './CliBodyWrapper'
+
+const renderWithProvider = (ui: React.ReactElement) =>
+  render(
+    <ProductionWriteConfirmationProvider>
+      {ui}
+    </ProductionWriteConfirmationProvider>,
+  )
 
 let store: typeof mockedStore
 beforeEach(() => {
@@ -165,7 +173,7 @@ describe('CliBodyWrapper', () => {
       )
       setDangerousEnvironment(true)
 
-      render(<CliBodyWrapper />)
+      renderWithProvider(<CliBodyWrapper />)
 
       fireEvent.keyDown(screen.getByTestId(cliCommandTestId), { key: 'Enter' })
 
@@ -180,7 +188,7 @@ describe('CliBodyWrapper', () => {
       )
       setDangerousEnvironment(true)
 
-      render(<CliBodyWrapper />)
+      renderWithProvider(<CliBodyWrapper />)
       fireEvent.keyDown(screen.getByTestId(cliCommandTestId), { key: 'Enter' })
 
       fireEvent.change(screen.getByTestId('type-to-confirm-modal-input'), {
@@ -198,12 +206,70 @@ describe('CliBodyWrapper', () => {
       )
       setDangerousEnvironment(true)
 
-      render(<CliBodyWrapper />)
+      renderWithProvider(<CliBodyWrapper />)
       fireEvent.keyDown(screen.getByTestId(cliCommandTestId), { key: 'Enter' })
 
       fireEvent.click(screen.getByTestId('type-to-confirm-modal-cancel-btn'))
 
       expect(sendCliCommandActionMock).not.toHaveBeenCalled()
+    })
+
+    it('skips the modal on subsequent runs of the same command after opt-in', () => {
+      const sendCliCommandActionMock = jest.fn()
+      mockedSendCliCommandAction.mockImplementation(
+        () => sendCliCommandActionMock,
+      )
+      setDangerousEnvironment(true)
+
+      renderWithProvider(<CliBodyWrapper />)
+
+      // First FLUSHDB — opt out for the session
+      fireEvent.keyDown(screen.getByTestId(cliCommandTestId), { key: 'Enter' })
+      fireEvent.change(screen.getByTestId('type-to-confirm-modal-input'), {
+        target: { value: 'prod-db' },
+      })
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-skip-checkbox'))
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+      expect(sendCliCommandActionMock).toHaveBeenCalledTimes(1)
+
+      // Second FLUSHDB — should run without showing the modal
+      fireEvent.keyDown(screen.getByTestId(cliCommandTestId), { key: 'Enter' })
+
+      expect(sendCliCommandActionMock).toHaveBeenCalledTimes(2)
+      expect(
+        screen.queryByTestId('type-to-confirm-modal-title'),
+      ).not.toBeInTheDocument()
+    })
+
+    it('still prompts for a different dangerous command after opting out of one', () => {
+      const sendCliCommandActionMock = jest.fn()
+      mockedSendCliCommandAction.mockImplementation(
+        () => sendCliCommandActionMock,
+      )
+      setDangerousEnvironment(true)
+
+      renderWithProvider(<CliBodyWrapper />)
+
+      // Opt out for FLUSHDB
+      mockedGetCommandRepeat.mockReturnValue(['FLUSHDB', 1])
+      fireEvent.keyDown(screen.getByTestId(cliCommandTestId), { key: 'Enter' })
+      fireEvent.change(screen.getByTestId('type-to-confirm-modal-input'), {
+        target: { value: 'prod-db' },
+      })
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-skip-checkbox'))
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+      expect(sendCliCommandActionMock).toHaveBeenCalledTimes(1)
+
+      // DEBUG SLEEP — different verb, must still prompt
+      mockedGetCommandRepeat.mockReturnValue(['DEBUG SLEEP 1', 1])
+      fireEvent.keyDown(screen.getByTestId(cliCommandTestId), { key: 'Enter' })
+
+      expect(
+        screen.getByTestId('type-to-confirm-modal-title'),
+      ).toBeInTheDocument()
+      expect(sendCliCommandActionMock).toHaveBeenCalledTimes(1)
     })
 
     it('passes commands through without modal when isDangerousCommand returns false', () => {
@@ -213,7 +279,7 @@ describe('CliBodyWrapper', () => {
       )
       setDangerousEnvironment(false)
 
-      render(<CliBodyWrapper />)
+      renderWithProvider(<CliBodyWrapper />)
       fireEvent.keyDown(screen.getByTestId(cliCommandTestId), { key: 'Enter' })
 
       expect(sendCliCommandActionMock).toHaveBeenCalled()

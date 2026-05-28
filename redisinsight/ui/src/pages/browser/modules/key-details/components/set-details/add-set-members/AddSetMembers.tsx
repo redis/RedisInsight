@@ -30,7 +30,10 @@ import {
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
+import {
+  BrowserConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 
 import { EntryContent } from '../../common/AddKeysContainer.styled'
 
@@ -143,6 +146,7 @@ const AddSetMembers = (props: Props) => {
         </>
       ),
       confirmButtonText: 'Add members',
+      commandId: BrowserConfirmationCommandId.AddSetMembers,
       onConfirm: submitData,
     })
   }

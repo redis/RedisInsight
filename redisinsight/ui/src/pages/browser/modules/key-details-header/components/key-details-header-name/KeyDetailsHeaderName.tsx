@@ -27,7 +27,10 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
 import { CopyButton } from 'uiSrc/components/copy-button'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
+import {
+  BrowserConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 import styles from './styles.module.scss'
 
 const StyledInputWrapper = styled(Row)`
@@ -111,6 +114,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
           </>
         ),
         confirmButtonText: 'Rename',
+        commandId: BrowserConfirmationCommandId.RenameKey,
         onConfirm: () =>
           onEditKey(keyBuffer, newKeyBuffer, () => setKey(keyProp)),
         onCancel: () => setKey(keyProp),

@@ -60,7 +60,10 @@ import { Text } from 'uiSrc/components/base/text'
 import { TextArea } from 'uiSrc/components/base/inputs'
 import { RiTooltip } from 'uiSrc/components'
 import { ProgressBarLoader } from 'uiSrc/components/base/display'
-import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
+import {
+  BrowserConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 import styles from './styles.module.scss'
 
 const MIN_ROWS = 8
@@ -200,6 +203,7 @@ const StringDetailsValue = (props: Props) => {
       actionDescription:
         'You are about to modify a value on a production database.',
       confirmButtonText: 'Save',
+      commandId: BrowserConfirmationCommandId.EditValue,
       onConfirm: () => {
         const data = stringToSerializedBufferFormat(viewFormat, areaValue)
         const onSuccess = () => {

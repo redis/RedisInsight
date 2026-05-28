@@ -7,6 +7,7 @@ import {
   DestructiveButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
+import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
@@ -14,11 +15,13 @@ import { Text } from 'uiSrc/components/base/text'
 export interface Props {
   confirmationText: string
   actionDescription: React.ReactNode
-  onConfirm: () => void
+  onConfirm: (skipForSession: boolean) => void
   onCancel: () => void
   title?: React.ReactNode
   confirmButtonText?: string
   cancelButtonText?: string
+  showSkipForSession?: boolean
+  skipForSessionLabel?: React.ReactNode
 }
 
 const TypeToConfirmModal = ({
@@ -29,13 +32,16 @@ const TypeToConfirmModal = ({
   title = 'Confirm action',
   confirmButtonText = 'Confirm',
   cancelButtonText = 'Cancel',
+  showSkipForSession = false,
+  skipForSessionLabel = "Don't ask again for this command in this session",
 }: Props) => {
   const [value, setValue] = useState('')
+  const [skipForSession, setSkipForSession] = useState(false)
   const isMatch = value === confirmationText
 
   const handleConfirm = () => {
     if (!isMatch) return
-    onConfirm()
+    onConfirm(skipForSession)
   }
 
   return (
@@ -75,6 +81,17 @@ const TypeToConfirmModal = ({
                   data-testid="type-to-confirm-modal-input"
                 />
               </FormField>
+              {showSkipForSession && (
+                <Checkbox
+                  id="type-to-confirm-modal-skip-checkbox"
+                  name="skip-for-session"
+                  label={skipForSessionLabel}
+                  labelSize="M"
+                  checked={skipForSession}
+                  onChange={(e) => setSkipForSession(e.target.checked)}
+                  data-testid="type-to-confirm-modal-skip-checkbox"
+                />
+              )}
             </Col>
           }
         />

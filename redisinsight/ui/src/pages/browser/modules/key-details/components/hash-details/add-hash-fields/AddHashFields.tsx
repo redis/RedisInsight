@@ -32,7 +32,10 @@ import {
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { AddFieldsToHashDto, HashFieldDto } from 'apiClient'
-import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
+import {
+  BrowserConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 
 import { EntryContent } from '../../common/AddKeysContainer.styled'
 
@@ -168,6 +171,7 @@ const AddHashFields = (props: Props) => {
         </>
       ),
       confirmButtonText: 'Add fields',
+      commandId: BrowserConfirmationCommandId.AddHashFields,
       onConfirm: submitData,
     })
   }

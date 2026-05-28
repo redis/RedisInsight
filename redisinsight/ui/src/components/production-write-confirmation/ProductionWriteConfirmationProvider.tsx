@@ -2,7 +2,9 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react'
 import { useSelector } from 'react-redux'
@@ -12,8 +14,10 @@ import TypeToConfirmModal from 'uiSrc/components/type-to-confirm-modal'
 import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 import {
   ProductionWriteConfirmationContextValue,
+  ProductionWriteConfirmationProviderProps,
   ProductionWriteConfirmationRequest,
 } from './ProductionWriteConfirmationProvider.types'
+import { toCommandIdArray } from './ProductionWriteConfirmationProvider.utils'
 
 const ProductionWriteConfirmationContext =
   createContext<ProductionWriteConfirmationContextValue | null>(null)
@@ -26,15 +30,20 @@ export const useProductionWriteConfirmation =
   (): ProductionWriteConfirmationContextValue =>
     useContext(ProductionWriteConfirmationContext) ?? fallbackValue
 
-interface Props {
-  children: React.ReactNode
-}
-
-export const ProductionWriteConfirmationProvider = ({ children }: Props) => {
+export const ProductionWriteConfirmationProvider = ({
+  children,
+}: ProductionWriteConfirmationProviderProps) => {
   const { environment } = useDatabaseEnvironment()
-  const { name, host, port } = useSelector(connectedInstanceSelector)
+  const { id, name, host, port } = useSelector(connectedInstanceSelector)
   const [pending, setPending] =
     useState<ProductionWriteConfirmationRequest | null>(null)
+  const skippedCommandsRef = useRef<Set<string>>(new Set())
+
+  // Reset the per-session skip list whenever the connected database changes
+  // so opting out of a confirmation never leaks across databases.
+  useEffect(() => {
+    skippedCommandsRef.current = new Set()
+  }, [id])
 
   // Fall back to host:port when name is empty so the modal never matches
   // an empty input (which would bypass the type-to-confirm safety check).
@@ -42,11 +51,19 @@ export const ProductionWriteConfirmationProvider = ({ children }: Props) => {
 
   const requestConfirmation = useCallback(
     (confirmation: ProductionWriteConfirmationRequest) => {
-      if (environment === Environment.Production) {
-        setPending(confirmation)
+      if (environment !== Environment.Production) {
+        confirmation.onConfirm()
         return
       }
-      confirmation.onConfirm()
+      const commandIds = toCommandIdArray(confirmation.commandId)
+      if (
+        commandIds.length > 0 &&
+        commandIds.every((id) => skippedCommandsRef.current.has(id))
+      ) {
+        confirmation.onConfirm()
+        return
+      }
+      setPending(confirmation)
     },
     [environment],
   )
@@ -63,7 +80,13 @@ export const ProductionWriteConfirmationProvider = ({ children }: Props) => {
           actionDescription={pending.actionDescription}
           confirmButtonText={pending.confirmButtonText}
           cancelButtonText={pending.cancelButtonText}
-          onConfirm={() => {
+          showSkipForSession={toCommandIdArray(pending.commandId).length > 0}
+          onConfirm={(skipForSession) => {
+            if (skipForSession) {
+              toCommandIdArray(pending.commandId).forEach((id) =>
+                skippedCommandsRef.current.add(id),
+              )
+            }
             pending.onConfirm()
             setPending(null)
           }}

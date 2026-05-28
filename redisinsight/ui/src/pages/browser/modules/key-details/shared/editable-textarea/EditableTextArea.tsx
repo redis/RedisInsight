@@ -9,7 +9,10 @@ import { Text } from 'uiSrc/components/base/text'
 import { EditIcon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { TextArea } from 'uiSrc/components/base/inputs'
-import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
+import {
+  BrowserConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -159,6 +162,7 @@ const EditableTextArea = (props: Props) => {
                   actionDescription:
                     'You are about to modify a value on a production database.',
                   confirmButtonText: 'Save',
+                  commandId: BrowserConfirmationCommandId.EditValue,
                   onConfirm: () => {
                     onApply(value)
                     setValue(initialValue)
