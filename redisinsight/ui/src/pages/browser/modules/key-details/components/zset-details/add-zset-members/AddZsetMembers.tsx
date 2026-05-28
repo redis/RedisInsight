@@ -189,6 +189,7 @@ const AddZsetMembers = (props: Props) => {
       ),
       confirmButtonText: 'Add members',
       commandId: BrowserConfirmationCommandId.AddZsetMembers,
+      disableConfirmationInput: true,
       onConfirm: submitData,
     })
   }

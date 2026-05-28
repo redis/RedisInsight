@@ -147,6 +147,7 @@ const AddSetMembers = (props: Props) => {
       ),
       confirmButtonText: 'Add members',
       commandId: BrowserConfirmationCommandId.AddSetMembers,
+      disableConfirmationInput: true,
       onConfirm: submitData,
     })
   }

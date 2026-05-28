@@ -115,6 +115,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
         ),
         confirmButtonText: 'Rename',
         commandId: BrowserConfirmationCommandId.RenameKey,
+        disableConfirmationInput: true,
         onConfirm: () =>
           onEditKey(keyBuffer, newKeyBuffer, () => setKey(keyProp)),
         onCancel: () => setKey(keyProp),

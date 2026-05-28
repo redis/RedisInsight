@@ -52,6 +52,7 @@ import {
 import { InsightsPanelTabs, SidePanels } from 'uiSrc/slices/interfaces/insights'
 import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 import {
+  AclTip,
   toRedisConfirmationCommandId,
   useProductionWriteConfirmation,
 } from 'uiSrc/components/production-write-confirmation'
@@ -282,17 +283,22 @@ const WBViewWrapper = () => {
           ),
         ),
       )
+      const isPlural = dangerousCommands.length > 1
       requestConfirmation({
-        title: 'Run dangerous commands?',
+        title: 'Proceed with caution in production',
         actionDescription: (
           <>
             You&apos;re about to run{' '}
-            <strong>{dangerousCommands.join(', ')}</strong> against the
-            production database <strong>{confirmationText}</strong>.
+            <strong>{dangerousCommands.join(', ')}</strong> on{' '}
+            <strong>{confirmationText}</strong>.{' '}
+            {isPlural ? 'These commands are' : 'This command is'} part of the
+            list of dangerous commands. This operation may affect server
+            stability.
           </>
         ),
         confirmButtonText: 'Run command',
         commandId: dangerousVerbs,
+        tip: <AclTip />,
         onConfirm: () => {
           runSubmission(effectiveValue, commandId, executeParams)
         },

@@ -46,6 +46,7 @@ import {
 } from 'uiSrc/utils/cliOutputActions'
 import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 import {
+  AclTip,
   toRedisConfirmationCommandId,
   useProductionWriteConfirmation,
 } from 'uiSrc/components/production-write-confirmation'
@@ -199,15 +200,18 @@ const CliBodyWrapper = () => {
     const verb = commandLine.trim().split(/\s+/)[0]?.toUpperCase() ?? ''
     if (isDangerousCommand(verb)) {
       requestConfirmation({
-        title: 'Run dangerous command?',
+        title: 'Proceed with caution in production',
         actionDescription: (
           <>
-            You&apos;re about to run <strong>{commandLine}</strong> against the
-            production database <strong>{confirmationText}</strong>.
+            You&apos;re about to run <strong>{commandLine}</strong> on{' '}
+            <strong>{confirmationText}</strong>. This command is part of the
+            list of dangerous commands. This operation may affect server
+            stability.
           </>
         ),
         confirmButtonText: 'Run command',
         commandId: toRedisConfirmationCommandId(verb),
+        tip: <AclTip />,
         onConfirm: () => {
           for (let i = 0; i < countRepeat; i++) {
             sendCommand(commandLine)

@@ -17,6 +17,8 @@ export interface ProductionWriteConfirmationRequest {
    * been opted out, and opting in adds *every* id to the skip set.
    */
   commandId?: string | string[]
+  disableConfirmationInput?: boolean
+  tip?: React.ReactNode
 }
 
 export interface ProductionWriteConfirmationContextValue {
