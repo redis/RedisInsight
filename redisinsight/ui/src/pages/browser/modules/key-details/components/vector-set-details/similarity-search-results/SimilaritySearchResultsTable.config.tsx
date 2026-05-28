@@ -8,9 +8,10 @@ import {
 import { VectorSetSimilarityMatch } from 'uiSrc/slices/interfaces/vectorSet'
 
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
-import { ElementNameCell } from '../vector-set-element-list/components/ElementNameCell/ElementNameCell'
-import { formatSimilarity } from './utils'
 import { bufferToString } from 'uiSrc/utils'
+import { ElementNameCell } from '../vector-set-element-list/components/ElementNameCell/ElementNameCell'
+import { RowActionsCell } from '../vector-set-element-list/components/RowActionsCell/RowActionsCell'
+import { formatSimilarity } from './utils'
 import {
   getParsedAttributes,
   parseAttributes,
@@ -18,6 +19,7 @@ import {
 } from './utils/parseAttributes'
 import {
   HIGH_SIMILARITY_THRESHOLD,
+  SIMILARITY_RESULTS_ACTIONS_COLUMN_SIZE,
   SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_ID_PREFIX,
   SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE,
   SIMILARITY_RESULTS_COLUMN_HEADERS,
@@ -151,6 +153,30 @@ const buildAttributeColumn = (
   },
 })
 
+const actionsColumn: ColumnDef<VectorSetSimilarityMatch> = {
+  id: SimilarityResultsColumn.Actions,
+  header: SIMILARITY_RESULTS_COLUMN_HEADERS[SimilarityResultsColumn.Actions],
+  enableSorting: false,
+  enableResizing: false,
+  size: SIMILARITY_RESULTS_ACTIONS_COLUMN_SIZE,
+  minSize: SIMILARITY_RESULTS_ACTIONS_COLUMN_SIZE,
+  maxSize: SIMILARITY_RESULTS_ACTIONS_COLUMN_SIZE,
+  sizeUnit: 'px',
+  cell: ({ row, table }: CellContext<VectorSetSimilarityMatch, unknown>) => {
+    const { actionsConfig, viewFormat } = table.options
+      .meta as SimilarityResultsCellMeta
+    if (!actionsConfig) return null
+    return (
+      <RowActionsCell
+        target={row.original}
+        actionsConfig={actionsConfig}
+        viewFormat={viewFormat}
+        testIdPrefix="vector-set-similarity"
+      />
+    )
+  },
+}
+
 export const buildSimilarityResultsColumns = (
   attributeKeys: string[],
 ): ColumnDef<VectorSetSimilarityMatch>[] => [
@@ -158,4 +184,5 @@ export const buildSimilarityResultsColumns = (
   ...attributeKeys.map(buildAttributeColumn),
   rankColumn,
   similarityColumn,
+  actionsColumn,
 ]

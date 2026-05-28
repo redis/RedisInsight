@@ -155,6 +155,7 @@ describe('SimilaritySearchResultsTable', () => {
         'zeta',
         'Rank',
         'Similarity',
+        'Actions',
       ])
     })
 
@@ -213,7 +214,13 @@ describe('SimilaritySearchResultsTable', () => {
       const headers = screen
         .getAllByRole('columnheader')
         .map((h) => h.textContent?.trim())
-      expect(headers).toEqual(['Element', 'count', 'Rank', 'Similarity'])
+      expect(headers).toEqual([
+        'Element',
+        'count',
+        'Rank',
+        'Similarity',
+        'Actions',
+      ])
     })
 
     // Regression: attribute cells must read from `parsedAttributesCache`

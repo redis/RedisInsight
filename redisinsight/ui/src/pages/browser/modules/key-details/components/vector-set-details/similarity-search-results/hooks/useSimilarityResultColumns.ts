@@ -80,6 +80,7 @@ export const useSimilarityResultColumns = (
       ...Array.from(columnsMap.keys()).filter((id) =>
         shownAttributeColumns.has(id),
       ),
+      SimilarityResultsColumn.Actions,
     ],
     [columnsMap, shownAttributeColumns],
   )
