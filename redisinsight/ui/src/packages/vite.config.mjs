@@ -45,6 +45,7 @@ export default defineConfig({
       '@redislabsdev/redis-ui-table': '@redis-ui/table',
       uiSrc: fileURLToPath(new URL('../../src', import.meta.url)),
     },
+    dedupe: ['react', 'react-dom'],
   },
   server: {
     port: 8081,

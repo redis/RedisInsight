@@ -61,6 +61,15 @@ const renderRqeGeoShape = (props: PluginProps): void => {
 }
 
 if (process.env.NODE_ENV === 'development') {
+  // Allow switching the plugin theme via `?theme=light` / `?theme=dark` so the
+  // dev server can be screenshotted in both themes without editing index.html.
+  const themeParam = new URLSearchParams(window.location.search).get('theme')
+  if (themeParam === 'light') {
+    document.body.className = 'theme_LIGHT'
+  } else if (themeParam === 'dark') {
+    document.body.className = 'theme_DARK'
+  }
+
   renderGeoInspector({
     command: 'GEOPOS Sicily Palermo Catania',
     data: [
