@@ -70,8 +70,7 @@ const renderWithProvider = (ui: React.ReactElement) =>
 const renderTrigger = (
   onConfirm: jest.Mock,
   overrides?: Partial<ProductionWriteConfirmationRequest>,
-) =>
-  renderWithProvider(<Trigger onConfirm={onConfirm} overrides={overrides} />)
+) => renderWithProvider(<Trigger onConfirm={onConfirm} overrides={overrides} />)
 
 describe('ProductionWriteConfirmationProvider', () => {
   let defaultInstance: ReturnType<typeof DBInstanceFactory.build>
