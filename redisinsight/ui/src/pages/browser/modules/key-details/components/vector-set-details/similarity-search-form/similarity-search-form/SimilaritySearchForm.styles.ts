@@ -1,8 +1,15 @@
 import { HTMLAttributes } from 'react'
 import styled, { css } from 'styled-components'
-import { Col } from 'uiSrc/components/base/layout/flex'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { MIDDLE_SCREEN_RESOLUTION } from 'uiSrc/constants'
+
+/**
+ * Height of the bottom action row, sized to fit the expanded
+ * `CommandPreview` bar so toggling the preview on/off doesn't reflow the
+ * surrounding form layout.
+ */
+const ACTION_ROW_HEIGHT = '40px'
 
 export const FormContainer = styled(Col)`
   width: 100%;
@@ -64,4 +71,13 @@ export const PreviewToggleButton = styled(IconButton)<{ $active?: boolean }>`
       background: ${theme.semantic.color.background.neutral400};
       color: ${theme.semantic.color.text.informative400};
     `}
+`
+
+/**
+ * Bottom action row (submit / reset / preview-toggle / preview). Fixed
+ * `min-height` keeps the row at the size it has when the preview is
+ * expanded, so toggling the preview on/off doesn't shift the form.
+ */
+export const ActionRow = styled(Row)`
+  min-height: ${ACTION_ROW_HEIGHT};
 `

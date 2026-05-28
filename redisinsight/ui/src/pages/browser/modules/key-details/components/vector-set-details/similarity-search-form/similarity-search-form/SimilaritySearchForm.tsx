@@ -246,7 +246,7 @@ export const SimilaritySearchForm = ({
         </FlexItem>
       </Row>
 
-      <Row align="center" gap="m">
+      <S.ActionRow align="center" gap="m">
         <FlexItem grow={false}>
           <PrimaryButton
             onClick={handleSubmit}
@@ -291,7 +291,7 @@ export const SimilaritySearchForm = ({
             <CommandPreview command={preview ?? ''} />
           </FlexItem>
         )}
-      </Row>
+      </S.ActionRow>
     </S.FormContainer>
   )
 }
