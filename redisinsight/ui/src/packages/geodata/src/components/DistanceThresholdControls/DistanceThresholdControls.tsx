@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { Slider, TextButton } from '@redis-ui/components'
 
+import { Slider } from 'uiSrc/components/base/inputs'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { TextButton } from 'uiSrc/components/base/forms/buttons/TextButton'
 import { Text } from 'uiSrc/components/base/text'
 
 import { DEFAULT_DISTANCE_THRESHOLDS } from '../GeoPlot/GeoPlot.constants'
