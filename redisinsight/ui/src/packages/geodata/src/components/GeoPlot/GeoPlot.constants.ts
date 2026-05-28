@@ -1,4 +1,4 @@
-import { DISTANCE_THRESHOLDS } from '../constants'
+import { DISTANCE_THRESHOLDS } from '../../constants'
 import { DistanceThresholds } from './GeoPlot.types'
 
 export const EARTH_RADIUS_KM = 6371

@@ -1,10 +1,13 @@
 import React, { useMemo } from 'react'
 
-import { GeoHeader } from './GeoHeader'
-import { GeoPlot } from './GeoPlot'
-import { GeoTable } from './GeoTable'
-import { Message } from './Message'
-import { parseGeoSearchResults, parseSearchParams } from '../utils/geoParser'
+import { GeoHeader } from '../GeoHeader'
+import { GeoPlot } from '../GeoPlot'
+import { GeoTable } from '../GeoTable'
+import { Message } from '../Message'
+import {
+  parseGeoSearchResults,
+  parseSearchParams,
+} from '../../utils/geoParser'
 
 interface GeoSearchVisualizationProps {
   command: string

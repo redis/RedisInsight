@@ -1,6 +1,6 @@
 import * as L from 'leaflet'
 
-import { GeoResult, ParsedGeoCommand } from '../types'
+import { GeoResult, ParsedGeoCommand } from '../../types'
 
 export interface GeoPlotProps {
   mode: 'markers' | 'heatmap'

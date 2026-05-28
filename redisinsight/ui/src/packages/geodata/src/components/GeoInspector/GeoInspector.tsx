@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { GeoHeader } from './GeoHeader'
-import { GeoTable } from './GeoTable'
-import { Message } from './Message'
+import { GeoHeader } from '../GeoHeader'
+import { GeoTable } from '../GeoTable'
+import { Message } from '../Message'
 import {
   getSearchMemberRows,
   parseGeoCommand,
@@ -11,8 +11,8 @@ import {
   parseGeoPositionResults,
   parseGeoSearchResults,
   parseIntegerResult,
-} from '../utils/geoParser'
-import { ParsedGeoCommand } from '../types'
+} from '../../utils/geoParser'
+import { ParsedGeoCommand } from '../../types'
 
 interface GeoInspectorProps {
   command: string

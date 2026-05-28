@@ -1,7 +1,8 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 
-import App, { GeodataMode } from './App'
+import App from './App'
+import { GeodataMode } from './types'
 
 const renderComponent = (
   command: string,

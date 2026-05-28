@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 
-import { GeoQueryOverlay, GeoShapeResult } from '../types'
+import { GeoQueryOverlay, GeoShapeResult } from '../../types'
 
 const mockMapRemove = jest.fn()
 const mockFitBounds = jest.fn()

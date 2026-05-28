@@ -1,20 +1,12 @@
 import React from 'react'
 
-import { GeoInspector } from './components/GeoInspector'
-import { GeoSearchVisualization } from './components/GeoSearchVisualization'
-import { Message } from './components/Message'
-import { RqeGeoVisualization } from './components/RqeGeoVisualization'
-import { PluginProps, WorkbenchResult } from './types'
-
-export enum GeodataMode {
-  Markers = 'markers',
-  Heatmap = 'heatmap',
-  Inspector = 'inspector',
-  RqeMarkers = 'rqe-markers',
-  RqeHeatmap = 'rqe-heatmap',
-  RqeInspector = 'rqe-inspector',
-  RqeShape = 'rqe-shape',
-}
+import {
+  GeoInspector,
+  GeoSearchVisualization,
+  Message,
+  RqeGeoVisualization,
+} from './components'
+import { GeodataMode, PluginProps, WorkbenchResult } from './types'
 
 interface AppProps extends PluginProps {
   mode: GeodataMode
