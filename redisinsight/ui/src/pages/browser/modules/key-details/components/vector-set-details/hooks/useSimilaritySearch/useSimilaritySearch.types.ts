@@ -21,6 +21,13 @@ export interface UseSimilaritySearchResult {
    */
   runSimilaritySearchPreview: (state: SimilaritySearchFormState) => void
   /**
+   * Stop the preview pipeline without touching the search results: cancels
+   * the debounced dispatch, aborts any in-flight request, and clears the
+   * preview slice. Used when the form hides the preview so no work continues
+   * in the background.
+   */
+  cancelSimilaritySearchPreview: () => void
+  /**
    * Clear the search results and preview slice state. Used by the form's
    * reset button and triggered automatically when the selected key changes
    * or the consumer unmounts.

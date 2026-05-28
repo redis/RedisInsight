@@ -5,7 +5,7 @@ import { RiTooltip } from 'uiSrc/components'
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
 import { IconButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { InfoIcon, ResetIcon } from 'uiSrc/components/base/icons'
+import { CliIcon, InfoIcon, ResetIcon } from 'uiSrc/components/base/icons'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { TextInput, QuantityCounter } from 'uiSrc/components/base/inputs'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -46,11 +46,17 @@ export const SimilaritySearchForm = ({
     preview,
     runSimilaritySearch,
     runSimilaritySearchPreview,
+    cancelSimilaritySearchPreview,
     resetSimilaritySearch,
   } = useSimilaritySearch()
 
   const [state, setState] =
     useState<SimilaritySearchFormState>(initialFormState)
+
+  // Preview is hidden by default. When off, the preview pipeline is fully
+  // stopped — no debounced dispatches, no in-flight requests, no slice
+  // updates — so nothing runs in the background.
+  const [previewVisible, setPreviewVisible] = useState(false)
 
   const { id: databaseId } = useAppSelector(connectedInstanceSelector)
 
@@ -77,12 +83,23 @@ export const SimilaritySearchForm = ({
     setState((prev) => ({ ...prev, [key]: value }))
   }
 
-  // Refresh the BE-built preview on every form-state change (and on mount, to
-  // seed the initial preview). The hook debounces the actual request so we
-  // can fire freely on each render.
+  // Refresh the BE-built preview on every form-state change while the
+  // preview is visible. The hook debounces the actual request so we can fire
+  // freely on each render. When hidden, this effect is a no-op.
   useEffect(() => {
+    if (!previewVisible) return
     runSimilaritySearchPreview(state)
-  }, [state, runSimilaritySearchPreview])
+  }, [state, runSimilaritySearchPreview, previewVisible])
+
+  const togglePreview = () => {
+    setPreviewVisible((prev) => {
+      const next = !prev
+      if (!next) {
+        cancelSimilaritySearchPreview()
+      }
+      return next
+    })
+  }
 
   const vectorFieldInfo = useMemo(
     () => getVectorFieldInfo(state.vectorInput, vectorDim),
@@ -92,8 +109,8 @@ export const SimilaritySearchForm = ({
   const queryReady = isQueryReady(state, vectorDim)
   // The button mirrors *both* loading flags so the user can see we are still
   // resolving the command before letting them dispatch the search.
-  const submitLoading = loading || previewLoading
-  const submitDisabled = submitLoading || !queryReady
+  const isLoading = loading || previewLoading
+  const submitDisabled = isLoading || !queryReady
 
   const handleSubmit = () => {
     if (!queryReady) return
@@ -230,8 +247,14 @@ export const SimilaritySearchForm = ({
       </Row>
 
       <Row align="center" gap="m">
-        <FlexItem grow>
-          <CommandPreview command={preview ?? ''} />
+        <FlexItem grow={false}>
+          <PrimaryButton
+            onClick={handleSubmit}
+            disabled={submitDisabled}
+            data-testid={`${TEST_ID}-submit`}
+          >
+            Find similar items
+          </PrimaryButton>
         </FlexItem>
         <FlexItem grow={false}>
           <RiTooltip content="Reset form" position="top">
@@ -246,15 +269,28 @@ export const SimilaritySearchForm = ({
           </RiTooltip>
         </FlexItem>
         <FlexItem grow={false}>
-          <PrimaryButton
-            onClick={handleSubmit}
-            disabled={submitDisabled}
-            loading={submitLoading}
-            data-testid={`${TEST_ID}-submit`}
+          <RiTooltip
+            content={
+              previewVisible ? 'Hide command preview' : 'Show command preview'
+            }
+            position="top"
           >
-            Find similar items
-          </PrimaryButton>
+            <S.PreviewToggleButton
+              size="M"
+              icon={CliIcon}
+              onClick={togglePreview}
+              aria-label="Toggle command preview"
+              aria-pressed={previewVisible}
+              $active={previewVisible}
+              data-testid={`${TEST_ID}-preview-toggle`}
+            />
+          </RiTooltip>
         </FlexItem>
+        {previewVisible && (
+          <FlexItem grow>
+            <CommandPreview command={preview ?? ''} />
+          </FlexItem>
+        )}
       </Row>
     </S.FormContainer>
   )

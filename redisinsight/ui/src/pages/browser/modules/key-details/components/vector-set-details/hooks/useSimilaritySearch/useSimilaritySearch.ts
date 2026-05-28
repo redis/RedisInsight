@@ -150,6 +150,16 @@ export const useSimilaritySearch = (): UseSimilaritySearchResult => {
     [buildSimilaritySearchPayload, debouncedDispatchPreview, dispatch],
   )
 
+  // Tear down the preview pipeline without touching the search results: drop
+  // any queued debounced dispatch, abort an in-flight request, and clear the
+  // preview slice. Used when the form toggles preview visibility off so no
+  // work continues in the background.
+  const cancelSimilaritySearchPreview = useCallback(() => {
+    debouncedDispatchPreview.cancel()
+    abortVectorSetSimilaritySearchPreview()
+    dispatch(clearSimilaritySearchPreview())
+  }, [debouncedDispatchPreview, dispatch])
+
   return {
     loading,
     previewLoading,
@@ -157,6 +167,7 @@ export const useSimilaritySearch = (): UseSimilaritySearchResult => {
     preview,
     runSimilaritySearch,
     runSimilaritySearchPreview,
+    cancelSimilaritySearchPreview,
     resetSimilaritySearch,
     buildSimilaritySearchPayload,
   }

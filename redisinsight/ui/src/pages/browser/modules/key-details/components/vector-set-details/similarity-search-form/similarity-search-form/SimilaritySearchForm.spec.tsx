@@ -41,8 +41,21 @@ describe('SimilaritySearchForm', () => {
     expect(screen.getByTestId(`${TEST_ID}-submit`)).toBeInTheDocument()
   })
 
-  it('falls back to the "Redis Command Preview" placeholder when the hook has no preview', () => {
+  it('hides the command preview by default', () => {
     renderComponent()
+
+    expect(
+      screen.queryByTestId('similarity-search-command-preview-text'),
+    ).not.toBeInTheDocument()
+    expect(screen.getByTestId(`${TEST_ID}-preview-toggle`)).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    )
+  })
+
+  it('falls back to the "Redis Command Preview" placeholder when the preview is toggled on with no preview', () => {
+    renderComponent()
+    fireEvent.click(screen.getByTestId(`${TEST_ID}-preview-toggle`))
 
     expect(
       screen.getByTestId('similarity-search-command-preview-text'),
@@ -52,13 +65,14 @@ describe('SimilaritySearchForm', () => {
     ).toBeDisabled()
   })
 
-  it('renders the hook-supplied preview verbatim and enables the copy button', () => {
+  it('renders the hook-supplied preview verbatim once toggled on', () => {
     mockedUseSimilaritySearch.mockReturnValue(
       useSimilaritySearchResultFactory.build({
         preview: 'VSIM mykey ELE seed WITHSCORES WITHATTRIBS',
       }),
     )
     renderComponent()
+    fireEvent.click(screen.getByTestId(`${TEST_ID}-preview-toggle`))
 
     expect(
       screen.getByTestId('similarity-search-command-preview-text'),
@@ -66,6 +80,48 @@ describe('SimilaritySearchForm', () => {
     expect(
       screen.getByTestId('similarity-search-command-preview-copy-btn'),
     ).toBeEnabled()
+  })
+
+  it('does not dispatch the preview pipeline while the preview is hidden', () => {
+    const runSimilaritySearchPreview = jest.fn()
+    mockedUseSimilaritySearch.mockReturnValue(
+      useSimilaritySearchResultFactory.build({ runSimilaritySearchPreview }),
+    )
+    renderComponent()
+
+    fireEvent.change(screen.getByTestId(`${TEST_ID}-vector-input`), {
+      target: { value: '1, 2, 3' },
+    })
+
+    expect(runSimilaritySearchPreview).not.toHaveBeenCalled()
+  })
+
+  it('starts dispatching the preview pipeline once toggled on', () => {
+    const runSimilaritySearchPreview = jest.fn()
+    mockedUseSimilaritySearch.mockReturnValue(
+      useSimilaritySearchResultFactory.build({ runSimilaritySearchPreview }),
+    )
+    renderComponent()
+
+    fireEvent.click(screen.getByTestId(`${TEST_ID}-preview-toggle`))
+
+    expect(runSimilaritySearchPreview).toHaveBeenCalled()
+  })
+
+  it('cancels the preview pipeline when toggled off', () => {
+    const cancelSimilaritySearchPreview = jest.fn()
+    mockedUseSimilaritySearch.mockReturnValue(
+      useSimilaritySearchResultFactory.build({
+        cancelSimilaritySearchPreview,
+      }),
+    )
+    renderComponent()
+
+    const toggle = screen.getByTestId(`${TEST_ID}-preview-toggle`)
+    fireEvent.click(toggle) // on
+    fireEvent.click(toggle) // off
+
+    expect(cancelSimilaritySearchPreview).toHaveBeenCalledTimes(1)
   })
 
   it('keeps the submit button disabled until a valid query is provided', () => {

@@ -21,6 +21,7 @@ export const useSimilaritySearchResultFactory =
     preview: '',
     runSimilaritySearch: jest.fn(),
     runSimilaritySearchPreview: jest.fn(),
+    cancelSimilaritySearchPreview: jest.fn(),
     resetSimilaritySearch: jest.fn(),
     buildSimilaritySearchPayload: jest.fn(),
   }))
