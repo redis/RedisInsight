@@ -48,7 +48,11 @@ const renderSearchRows = (response: unknown, command: ParsedGeoCommand) => {
   if (command.withCoord) {
     const parsedResults = parseGeoSearchResults(response, command)
     if (!parsedResults.ok) {
-      return <Message title="Unsupported response">{parsedResults.error}</Message>
+      return (
+        <Message title="Unsupported response" variant="danger">
+          {parsedResults.error}
+        </Message>
+      )
     }
 
     return (
@@ -78,7 +82,9 @@ const renderInspectorBody = (response: unknown, command: ParsedGeoCommand) => {
   if (command.kind === 'distance') {
     const parsedResult = parseGeoDistanceResult(response, command)
     if (!parsedResult.ok) {
-      return <Message title="Unsupported response">{parsedResult.error}</Message>
+      return <Message title="Unsupported response" variant="danger">
+        {parsedResult.error}
+      </Message>
     }
 
     const { distance, unit } = parsedResult.value
@@ -93,7 +99,9 @@ const renderInspectorBody = (response: unknown, command: ParsedGeoCommand) => {
   if (command.kind === 'hashList') {
     const parsedResult = parseGeoHashResults(response, command)
     if (!parsedResult.ok) {
-      return <Message title="Unsupported response">{parsedResult.error}</Message>
+      return <Message title="Unsupported response" variant="danger">
+        {parsedResult.error}
+      </Message>
     }
 
     return (
@@ -107,7 +115,9 @@ const renderInspectorBody = (response: unknown, command: ParsedGeoCommand) => {
   if (command.kind === 'pointList') {
     const parsedResult = parseGeoPositionResults(response, command)
     if (!parsedResult.ok) {
-      return <Message title="Unsupported response">{parsedResult.error}</Message>
+      return <Message title="Unsupported response" variant="danger">
+        {parsedResult.error}
+      </Message>
     }
 
     return (
@@ -126,7 +136,9 @@ const renderInspectorBody = (response: unknown, command: ParsedGeoCommand) => {
   if (command.kind === 'addSummary' || command.kind === 'storeSummary') {
     const parsedResult = parseIntegerResult(response, command)
     if (!parsedResult.ok) {
-      return <Message title="Unsupported response">{parsedResult.error}</Message>
+      return <Message title="Unsupported response" variant="danger">
+        {parsedResult.error}
+      </Message>
     }
 
     return (
@@ -148,7 +160,9 @@ export const GeoInspector = ({ command, response, status }: GeoInspectorProps) =
     return (
       <div className="geodata-shell">
         <GeoHeader title={title} status={status} />
-        <Message title="Cannot inspect command">{parsedCommand.error}</Message>
+        <Message title="Cannot inspect command" variant="danger">
+          {parsedCommand.error}
+        </Message>
       </div>
     )
   }

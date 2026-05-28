@@ -22,7 +22,9 @@ const App = ({ command = '', data = [], mode }: AppProps) => {
   if (status === 'fail') {
     return (
       <div className="geodata-shell">
-        <Message title="Command failed">{JSON.stringify(response)}</Message>
+        <Message title="Command failed" variant="danger">
+          {JSON.stringify(response)}
+        </Message>
       </div>
     )
   }
