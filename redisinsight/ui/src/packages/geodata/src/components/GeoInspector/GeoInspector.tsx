@@ -1,8 +1,11 @@
 import React from 'react'
 
 import { GeoHeader } from '../GeoHeader'
+import { GeoMetric } from '../GeoMetric'
+import { GeoSummary } from '../GeoSummary'
 import { GeoTable } from '../GeoTable'
 import { Message } from '../Message'
+import { Shell } from '../Shell'
 import {
   getSearchMemberRows,
   parseGeoCommand,
@@ -24,24 +27,15 @@ const getDestination = (command: ParsedGeoCommand): string =>
   command.destinationKey || command.storeKey || command.storeDistKey || '-'
 
 const renderCommandSummary = (command: ParsedGeoCommand) => (
-  <dl className="geodata-summary-grid" aria-label="Command summary">
-    <div>
-      <dt>Command</dt>
-      <dd>{command.command}</dd>
-    </div>
-    <div>
-      <dt>Source key</dt>
-      <dd>{command.key || '-'}</dd>
-    </div>
-    <div>
-      <dt>Destination</dt>
-      <dd>{getDestination(command)}</dd>
-    </div>
-    <div>
-      <dt>Shape</dt>
-      <dd>{command.searchType}</dd>
-    </div>
-  </dl>
+  <GeoSummary
+    ariaLabel="Command summary"
+    items={[
+      { label: 'Command', value: command.command },
+      { label: 'Source key', value: command.key || '-' },
+      { label: 'Destination', value: getDestination(command) },
+      { label: 'Shape', value: command.searchType },
+    ]}
+  />
 )
 
 const renderSearchRows = (response: unknown, command: ParsedGeoCommand) => {
@@ -82,32 +76,39 @@ const renderInspectorBody = (response: unknown, command: ParsedGeoCommand) => {
   if (command.kind === 'distance') {
     const parsedResult = parseGeoDistanceResult(response, command)
     if (!parsedResult.ok) {
-      return <Message title="Unsupported response" variant="danger">
-        {parsedResult.error}
-      </Message>
+      return (
+        <Message title="Unsupported response" variant="danger">
+          {parsedResult.error}
+        </Message>
+      )
     }
 
     const { distance, unit } = parsedResult.value
     return (
-      <section className="geodata-metric">
-        <span>Distance</span>
-        <strong>{distance === null ? 'Not found' : `${distance} ${unit}`}</strong>
-      </section>
+      <GeoMetric
+        label="Distance"
+        value={distance === null ? 'Not found' : `${distance} ${unit}`}
+      />
     )
   }
 
   if (command.kind === 'hashList') {
     const parsedResult = parseGeoHashResults(response, command)
     if (!parsedResult.ok) {
-      return <Message title="Unsupported response" variant="danger">
-        {parsedResult.error}
-      </Message>
+      return (
+        <Message title="Unsupported response" variant="danger">
+          {parsedResult.error}
+        </Message>
+      )
     }
 
     return (
       <GeoTable
         columns={['Member', 'Geohash']}
-        rows={parsedResult.value.map(({ member, hash }) => [member, hash || 'Not found'])}
+        rows={parsedResult.value.map(({ member, hash }) => [
+          member,
+          hash || 'Not found',
+        ])}
       />
     )
   }
@@ -115,9 +116,11 @@ const renderInspectorBody = (response: unknown, command: ParsedGeoCommand) => {
   if (command.kind === 'pointList') {
     const parsedResult = parseGeoPositionResults(response, command)
     if (!parsedResult.ok) {
-      return <Message title="Unsupported response" variant="danger">
-        {parsedResult.error}
-      </Message>
+      return (
+        <Message title="Unsupported response" variant="danger">
+          {parsedResult.error}
+        </Message>
+      )
     }
 
     return (
@@ -136,42 +139,48 @@ const renderInspectorBody = (response: unknown, command: ParsedGeoCommand) => {
   if (command.kind === 'addSummary' || command.kind === 'storeSummary') {
     const parsedResult = parseIntegerResult(response, command)
     if (!parsedResult.ok) {
-      return <Message title="Unsupported response" variant="danger">
-        {parsedResult.error}
-      </Message>
+      return (
+        <Message title="Unsupported response" variant="danger">
+          {parsedResult.error}
+        </Message>
+      )
     }
 
     return (
-      <section className="geodata-metric">
-        <span>{parsedResult.value.label}</span>
-        <strong>{parsedResult.value.count}</strong>
-      </section>
+      <GeoMetric
+        label={parsedResult.value.label}
+        value={parsedResult.value.count}
+      />
     )
   }
 
   return renderSearchRows(response, command)
 }
 
-export const GeoInspector = ({ command, response, status }: GeoInspectorProps) => {
+export const GeoInspector = ({
+  command,
+  response,
+  status,
+}: GeoInspectorProps) => {
   const parsedCommand = parseGeoCommand(command)
   const title = 'Geospatial details'
 
   if (!parsedCommand.ok) {
     return (
-      <div className="geodata-shell">
+      <Shell>
         <GeoHeader title={title} status={status} />
         <Message title="Cannot inspect command" variant="danger">
           {parsedCommand.error}
         </Message>
-      </div>
+      </Shell>
     )
   }
 
   return (
-    <div className="geodata-shell">
+    <Shell>
       <GeoHeader title={title} status={status} />
       {renderCommandSummary(parsedCommand.value)}
       {renderInspectorBody(response, parsedCommand.value)}
-    </div>
+    </Shell>
   )
 }

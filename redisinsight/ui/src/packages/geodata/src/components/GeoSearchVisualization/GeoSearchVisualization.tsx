@@ -4,6 +4,7 @@ import { GeoHeader } from '../GeoHeader'
 import { GeoPlot } from '../GeoPlot'
 import { GeoTable } from '../GeoTable'
 import { Message } from '../Message'
+import { Shell } from '../Shell'
 import {
   parseGeoSearchResults,
   parseSearchParams,
@@ -51,29 +52,29 @@ export const GeoSearchVisualization = ({
 
   if (!parsedCommand.ok) {
     return (
-      <div className="geodata-shell">
+      <Shell>
         <GeoHeader title={title} status={status} resultCount={0} />
         <Message title={errorTitle} variant="danger">
           {parsedCommand.error}
         </Message>
-      </div>
+      </Shell>
     )
   }
 
   if (!parsedResults.ok) {
     return (
-      <div className="geodata-shell">
+      <Shell>
         <GeoHeader title={title} status={status} resultCount={0} />
         <Message title={errorTitle} variant="danger">
           {parsedResults.error}
         </Message>
-      </div>
+      </Shell>
     )
   }
 
   const results = parsedResults.value
   return (
-    <div className="geodata-shell">
+    <Shell>
       <GeoHeader title={title} status={status} resultCount={results.length} />
       {results.length === 0 ? (
         <Message>No geospatial rows returned.</Message>
@@ -90,6 +91,6 @@ export const GeoSearchVisualization = ({
           />
         </>
       )}
-    </div>
+    </Shell>
   )
 }

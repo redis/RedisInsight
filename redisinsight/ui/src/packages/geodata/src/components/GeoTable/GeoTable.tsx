@@ -3,7 +3,6 @@ import React, { useMemo } from 'react'
 import { ColumnDef, Table } from 'uiSrc/components/base/layout/table'
 
 import { GeoTableProps } from './GeoTable.types'
-import * as S from './GeoTable.styles'
 
 type GeoTableRow = Record<string, React.ReactNode>
 
@@ -30,9 +29,5 @@ export const GeoTable = ({ columns, rows }: GeoTableProps) => {
     [columns],
   )
 
-  return (
-    <S.Wrapper>
-      <Table columns={tableColumns} data={data} />
-    </S.Wrapper>
-  )
+  return <Table columns={tableColumns} data={data} />
 }
