@@ -46,6 +46,7 @@ export default defineConfig({
       uiSrc: fileURLToPath(new URL('../../src', import.meta.url)),
       apiClient: fileURLToPath(new URL('../../../api-client', import.meta.url)),
     },
+    dedupe: ['react', 'react-dom'],
   },
   server: {
     port: 8081,
