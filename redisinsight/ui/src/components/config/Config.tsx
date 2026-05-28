@@ -50,6 +50,7 @@ const Config = () => {
   const {
     [FeatureFlags.cloudSso]: cloudSsoFeature,
     [FeatureFlags.envDependent]: envDependentFeature,
+    [FeatureFlags.customTutorials]: customTutorialsFeature,
   } = useSelector(appFeatureFlagsFeaturesSelector)
   const { changeTheme } = useContext(ThemeContext)
   const { pathname } = useLocation()
@@ -62,7 +63,9 @@ const Config = () => {
     if (envDependentFeature?.flag) {
       dispatch(fetchServerInfo())
       dispatch(fetchNotificationsAction())
-      dispatch(fetchCustomTutorials())
+      if (customTutorialsFeature?.flag) {
+        dispatch(fetchCustomTutorials())
+      }
     } else {
       dispatch(setServerLoaded())
     }

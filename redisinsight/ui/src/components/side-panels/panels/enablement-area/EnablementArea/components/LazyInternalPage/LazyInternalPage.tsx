@@ -6,8 +6,10 @@ import { AxiosError } from 'axios'
 
 import { getApiErrorMessage, isStatusSuccessful, Nullable } from 'uiSrc/utils'
 import { resourcesService } from 'uiSrc/services'
+import { ApiEndpoints, FeatureFlags } from 'uiSrc/constants'
 import { IS_ABSOLUTE_PATH } from 'uiSrc/constants/regex'
 import { IEnablementAreaItem } from 'uiSrc/slices/interfaces'
+import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { workbenchTutorialsSelector } from 'uiSrc/slices/workbench/wb-tutorials'
 import { workbenchCustomTutorialsSelector } from 'uiSrc/slices/workbench/wb-custom-tutorials'
 
@@ -70,6 +72,8 @@ const LazyInternalPage = ({
   const { loading: customTutorialsLoading } = useSelector(
     workbenchCustomTutorialsSelector,
   )
+  const { [FeatureFlags.customTutorials]: customTutorialsFeature } =
+    useSelector(appFeatureFlagsFeaturesSelector)
   const [isLoading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
   const [pageData, setPageData] = useState<IPageData>(DEFAULT_PAGE_DATA)
@@ -106,6 +110,14 @@ const LazyInternalPage = ({
     try {
       if (IS_ABSOLUTE_PATH.test(path)) {
         throw new Error('External content is not allowed')
+      }
+
+      // Custom tutorials are deprecated (RED-194229)
+      if (
+        !customTutorialsFeature?.flag &&
+        path?.startsWith(ApiEndpoints.CUSTOM_TUTORIALS_PATH)
+      ) {
+        throw new Error('Custom tutorials are disabled')
       }
 
       const formatter = FormatSelector.selectFor(pageInfo.extension)

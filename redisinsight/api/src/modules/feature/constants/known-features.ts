@@ -58,6 +58,14 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
       flag: SERVER_CONFIG.databaseManagement,
     }),
   },
+  [KnownFeatures.CustomTutorials]: {
+    name: KnownFeatures.CustomTutorials,
+    storage: FeatureStorage.Custom,
+    factory: () => ({
+      name: KnownFeatures.CustomTutorials,
+      flag: SERVER_CONFIG.customTutorials,
+    }),
+  },
   [KnownFeatures.VectorSearchV2]: {
     name: KnownFeatures.VectorSearchV2,
     storage: FeatureStorage.Database,
