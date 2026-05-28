@@ -221,7 +221,7 @@ jobs:
 
   clean:
     uses: ./.github/workflows/clean-deployments.yml
-    if: always()
+    if: ${{ always() && github.actor != 'dependabot[bot]' }}
     permissions:
       actions: write
       contents: read
@@ -236,6 +236,7 @@ jobs:
   # Remove artifacts from github actions
   remove-artifacts:
     name: Remove artifacts
+    if: ${{ github.actor != 'dependabot[bot]' }}
     needs:
       [
         frontend-tests,

@@ -289,6 +289,7 @@ jobs:
           path: integration-coverage.txt
 
       - name: Delete Artifact
+        if: ${{ github.actor != 'dependabot[bot]' }}
         uses: actions/github-script@v9
         with:
           script: |
