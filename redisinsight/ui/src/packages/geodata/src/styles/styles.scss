@@ -112,7 +112,7 @@ body.theme_LIGHT .geodata-shell {
   position: absolute;
   top: 10px;
   left: 64px;
-  z-index: 2;
+  z-index: 1100;
   max-width: calc(100% - 84px);
   padding: 6px 8px;
   border: 1px solid var(--geodata-border);
