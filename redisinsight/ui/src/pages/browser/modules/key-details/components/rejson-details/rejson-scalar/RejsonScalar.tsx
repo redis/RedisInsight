@@ -13,7 +13,10 @@ import {
   Nullable,
 } from 'uiSrc/utils'
 import FieldMessage from 'uiSrc/components/field-message/FieldMessage'
-import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
+import {
+  BrowserConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 
 import { JSONScalarProps } from '../interfaces'
 import {
@@ -69,7 +72,7 @@ const RejsonScalar = (props: JSONScalarProps) => {
       actionDescription:
         'You are about to modify a JSON value on a production database.',
       confirmButtonText: 'Save',
-      commandId: 'browser:edit-rejson-value',
+      commandId: BrowserConfirmationCommandId.EditRejsonValue,
       onConfirm: () => {
         dispatch<any>(
           setReJSONDataAction(

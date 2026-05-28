@@ -45,7 +45,10 @@ import {
   processUnsupportedCommand,
 } from 'uiSrc/utils/cliOutputActions'
 import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
-import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
+import {
+  toRedisConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 import CliBody from './CliBody'
 
 import styles from './CliBody/styles.module.scss'
@@ -204,7 +207,7 @@ const CliBodyWrapper = () => {
           </>
         ),
         confirmButtonText: 'Run command',
-        commandId: `cmd:${verb}`,
+        commandId: toRedisConfirmationCommandId(verb),
         onConfirm: () => {
           for (let i = 0; i < countRepeat; i++) {
             sendCommand(commandLine)

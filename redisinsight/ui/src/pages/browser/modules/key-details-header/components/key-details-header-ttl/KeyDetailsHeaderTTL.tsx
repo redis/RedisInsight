@@ -15,7 +15,10 @@ import { FlexItem, Grid } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
+import {
+  BrowserConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -72,7 +75,7 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
           </>
         ),
         confirmButtonText: 'Change TTL',
-        commandId: 'browser:change-ttl',
+        commandId: BrowserConfirmationCommandId.ChangeTtl,
         onConfirm: () => onEditTTL(keyBuffer, +ttlValue),
         onCancel: () => setTTL(`${ttlProp}`),
       })

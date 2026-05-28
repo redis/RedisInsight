@@ -51,7 +51,10 @@ import {
 } from 'uiSrc/slices/panels/sidePanels'
 import { InsightsPanelTabs, SidePanels } from 'uiSrc/slices/interfaces/insights'
 import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
-import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
+import {
+  toRedisConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 import { getCommandsForExecution } from 'uiSrc/utils/monaco/monacoUtils'
 import WBView from './WBView'
 
@@ -274,8 +277,8 @@ const WBViewWrapper = () => {
     if (dangerousCommands.length > 0) {
       const dangerousVerbs = Array.from(
         new Set(
-          dangerousCommands.map(
-            (cmd) => `cmd:${cmd.split(/\s+/)[0].toUpperCase()}`,
+          dangerousCommands.map((cmd) =>
+            toRedisConfirmationCommandId(cmd.split(/\s+/)[0].toUpperCase()),
           ),
         ),
       )

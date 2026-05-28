@@ -3,6 +3,7 @@ import { Environment } from 'apiClient'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import * as useDatabaseEnvironmentModule from 'uiSrc/components/hooks/useDatabaseEnvironment'
+import { DBInstanceFactory } from 'uiSrc/mocks/factories/database/DBInstance.factory'
 
 import {
   ProductionWriteConfirmationProvider,
@@ -10,14 +11,11 @@ import {
   useProductionWriteConfirmation,
 } from '.'
 
+const defaultInstance = DBInstanceFactory.build({ name: 'prod-cache' })
+
 jest.mock('uiSrc/slices/instances/instances', () => ({
   ...jest.requireActual('uiSrc/slices/instances/instances'),
-  connectedInstanceSelector: jest.fn().mockReturnValue({
-    id: 'instance-1',
-    name: 'prod-cache',
-    host: 'localhost',
-    port: 6379,
-  }),
+  connectedInstanceSelector: jest.fn(),
 }))
 
 const mockedConnectedInstanceSelector = connectedInstanceSelector as jest.Mock
@@ -71,12 +69,7 @@ const renderWithProvider = (ui: React.ReactElement) =>
 describe('ProductionWriteConfirmationProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    mockedConnectedInstanceSelector.mockReturnValue({
-      id: 'instance-1',
-      name: 'prod-cache',
-      host: 'localhost',
-      port: 6379,
-    })
+    mockedConnectedInstanceSelector.mockReturnValue(defaultInstance)
     mockEnvironment(Environment.Unspecified)
   })
 
@@ -140,12 +133,8 @@ describe('ProductionWriteConfirmationProvider', () => {
   })
 
   it('falls back to host:port when DB name is empty', () => {
-    mockedConnectedInstanceSelector.mockReturnValue({
-      id: 'instance-1',
-      name: '',
-      host: 'localhost',
-      port: 6379,
-    })
+    const namelessInstance = DBInstanceFactory.build({ name: '' })
+    mockedConnectedInstanceSelector.mockReturnValue(namelessInstance)
     mockEnvironment(Environment.Production)
     const action = jest.fn()
 
@@ -156,7 +145,7 @@ describe('ProductionWriteConfirmationProvider', () => {
       screen.getByTestId('type-to-confirm-modal-confirm-btn'),
     ).toBeDisabled()
 
-    typeInConfirmInput('localhost:6379')
+    typeInConfirmInput(`${namelessInstance.host}:${namelessInstance.port}`)
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
 
     expect(action).toHaveBeenCalledTimes(1)
@@ -408,12 +397,9 @@ describe('ProductionWriteConfirmationProvider', () => {
     // previous KeyDetails subtree and re-mounts when a new key is opened
     // on the new database).
     unmount()
-    mockedConnectedInstanceSelector.mockReturnValue({
-      id: 'instance-2',
-      name: 'another-db',
-      host: 'localhost',
-      port: 6380,
-    })
+    mockedConnectedInstanceSelector.mockReturnValue(
+      DBInstanceFactory.build({ name: 'another-db' }),
+    )
 
     renderWithProvider(
       <Trigger onConfirm={action} overrides={{ commandId: 'edit-value' }} />,

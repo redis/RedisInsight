@@ -24,7 +24,10 @@ import {
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { ListElementDestination, PushElementToListDto } from 'apiClient'
-import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
+import {
+  BrowserConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 
 import { EntryContent } from '../../common/AddKeysContainer.styled'
 
@@ -128,7 +131,7 @@ const AddListElements = (props: Props) => {
         </>
       ),
       confirmButtonText: 'Add elements',
-      commandId: 'browser:add-list-elements',
+      commandId: BrowserConfirmationCommandId.AddListElements,
       onConfirm: submitData,
     })
   }

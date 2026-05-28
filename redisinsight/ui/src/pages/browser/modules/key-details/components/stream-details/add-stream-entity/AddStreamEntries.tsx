@@ -25,7 +25,10 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { AddStreamEntriesDto } from 'apiClient'
-import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
+import {
+  BrowserConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 
 import StreamEntryFields from './StreamEntryFields/StreamEntryFields'
 import { Panel } from 'uiSrc/components/panel'
@@ -141,7 +144,7 @@ const AddStreamEntries = (props: Props) => {
       actionDescription:
         'You are about to add a new entry to a stream on a production database.',
       confirmButtonText: 'Add entry',
-      commandId: 'browser:add-stream-entry',
+      commandId: BrowserConfirmationCommandId.AddStreamEntry,
       onConfirm: submitData,
     })
   }
