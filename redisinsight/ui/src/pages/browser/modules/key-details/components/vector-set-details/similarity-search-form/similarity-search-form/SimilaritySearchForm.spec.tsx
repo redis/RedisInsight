@@ -1,6 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { useSimilaritySearchResultFactory } from 'uiSrc/mocks/factories/browser/vectorSet/useSimilaritySearch.factory'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { useSimilaritySearch } from '../../hooks/useSimilaritySearch'
 
@@ -21,7 +22,13 @@ jest.mock('../../hooks/useSimilaritySearch', () => ({
   useSimilaritySearch: jest.fn(),
 }))
 
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
+}))
+
 const mockedUseSimilaritySearch = jest.mocked(useSimilaritySearch)
+const mockedSendEventTelemetry = jest.mocked(sendEventTelemetry)
 
 beforeEach(() => {
   jest.clearAllMocks()
@@ -122,6 +129,23 @@ describe('SimilaritySearchForm', () => {
     fireEvent.click(toggle) // off
 
     expect(cancelSimilaritySearchPreview).toHaveBeenCalledTimes(1)
+  })
+
+  it('sends telemetry on each preview toggle with the new visibility state', () => {
+    renderComponent()
+
+    const toggle = screen.getByTestId(`${TEST_ID}-preview-toggle`)
+    fireEvent.click(toggle) // shown
+    fireEvent.click(toggle) // hidden
+
+    const calls = mockedSendEventTelemetry.mock.calls.filter(
+      ([arg]) =>
+        arg.event ===
+        TelemetryEvent.VECTOR_SET_SIMILARITY_SEARCH_COMMAND_PREVIEW_TOGGLED,
+    )
+    expect(calls).toHaveLength(2)
+    expect(calls[0][0].eventData).toMatchObject({ state: 'shown' })
+    expect(calls[1][0].eventData).toMatchObject({ state: 'hidden' })
   })
 
   it('keeps the submit button disabled until a valid query is provided', () => {

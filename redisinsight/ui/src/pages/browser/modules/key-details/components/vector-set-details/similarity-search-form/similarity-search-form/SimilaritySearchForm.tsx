@@ -94,6 +94,14 @@ export const SimilaritySearchForm = ({
   const togglePreview = () => {
     setPreviewVisible((prev) => {
       const next = !prev
+      sendEventTelemetry({
+        event:
+          TelemetryEvent.VECTOR_SET_SIMILARITY_SEARCH_COMMAND_PREVIEW_TOGGLED,
+        eventData: {
+          databaseId,
+          state: next ? 'shown' : 'hidden',
+        },
+      })
       if (!next) {
         cancelSimilaritySearchPreview()
       }
