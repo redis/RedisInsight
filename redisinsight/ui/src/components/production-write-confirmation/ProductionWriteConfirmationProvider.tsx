@@ -14,15 +14,10 @@ import TypeToConfirmModal from 'uiSrc/components/type-to-confirm-modal'
 import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 import {
   ProductionWriteConfirmationContextValue,
+  ProductionWriteConfirmationProviderProps,
   ProductionWriteConfirmationRequest,
 } from './ProductionWriteConfirmationProvider.types'
-
-const toCommandIdArray = (
-  commandId: ProductionWriteConfirmationRequest['commandId'],
-): string[] => {
-  if (!commandId) return []
-  return Array.isArray(commandId) ? commandId : [commandId]
-}
+import { toCommandIdArray } from './ProductionWriteConfirmationProvider.utils'
 
 const ProductionWriteConfirmationContext =
   createContext<ProductionWriteConfirmationContextValue | null>(null)
@@ -35,11 +30,9 @@ export const useProductionWriteConfirmation =
   (): ProductionWriteConfirmationContextValue =>
     useContext(ProductionWriteConfirmationContext) ?? fallbackValue
 
-interface Props {
-  children: React.ReactNode
-}
-
-export const ProductionWriteConfirmationProvider = ({ children }: Props) => {
+export const ProductionWriteConfirmationProvider = ({
+  children,
+}: ProductionWriteConfirmationProviderProps) => {
   const { environment } = useDatabaseEnvironment()
   const { id, name, host, port } = useSelector(connectedInstanceSelector)
   const [pending, setPending] =

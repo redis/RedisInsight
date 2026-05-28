@@ -24,3 +24,7 @@ export interface ProductionWriteConfirmationContextValue {
     confirmation: ProductionWriteConfirmationRequest,
   ) => void
 }
+
+export interface ProductionWriteConfirmationProviderProps {
+  children: React.ReactNode
+}

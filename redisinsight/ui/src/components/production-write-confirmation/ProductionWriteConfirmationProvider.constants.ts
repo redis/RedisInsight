@@ -25,11 +25,4 @@ export enum BrowserConfirmationCommandId {
   ChangeTtl = 'browser:change-ttl',
 }
 
-const REDIS_CONFIRMATION_COMMAND_PREFIX = 'cmd:'
-
-/**
- * Build the commandId used by CLI and Workbench for a Redis verb (e.g.
- * `FLUSHDB`). Callers should pass an already-uppercased verb.
- */
-export const toRedisConfirmationCommandId = (verb: string): string =>
-  `${REDIS_CONFIRMATION_COMMAND_PREFIX}${verb}`
+export const REDIS_CONFIRMATION_COMMAND_PREFIX = 'cmd:'
