@@ -19,6 +19,7 @@ import {
 import { ImperativePanelGroupHandle } from 'uiSrc/components/base/layout/resize'
 import { AppNavigation } from 'uiSrc/components'
 import { AppNavigationActionsProvider } from 'uiSrc/contexts/AppNavigationActionsProvider'
+import { ProductionWriteConfirmationProvider } from 'uiSrc/components/production-write-confirmation'
 import { Nullable } from 'uiSrc/utils'
 import { useNavigation } from 'uiSrc/components/navigation-menu/hooks/useNavigation'
 
@@ -100,42 +101,44 @@ const InstancePageTemplate = (props: Props) => {
         routes={privateRoutes}
       />
       <Spacer size="m" />
-      <ResizableContainer
-        ref={ref}
-        direction="vertical"
-        onLayout={onPanelWidthChange}
-      >
-        <ResizablePanel
-          id={firstPanelId}
-          minSize={7}
-          defaultSize={isShowBottomGroup ? sizes[0] : 100}
-          data-testid={firstPanelId}
+      <ProductionWriteConfirmationProvider>
+        <ResizableContainer
+          ref={ref}
+          direction="vertical"
+          onLayout={onPanelWidthChange}
         >
-          <AppNavigationActionsProvider
-            value={{
-              actions,
-              setActions,
-            }}
+          <ResizablePanel
+            id={firstPanelId}
+            minSize={7}
+            defaultSize={isShowBottomGroup ? sizes[0] : 100}
+            data-testid={firstPanelId}
           >
-            <ExplorePanelTemplate>{children}</ExplorePanelTemplate>
-          </AppNavigationActionsProvider>
-        </ResizablePanel>
-        <ResizablePanelHandle
-          direction="horizontal"
-          id="resize-btn-browser-cli"
-          data-testid="resize-btn-browser-cli"
-          style={{ display: isShowBottomGroup ? 'inherit' : 'none' }}
-        />
-        {!isShowBottomGroup && <Spacer size="l" />}
-        <ButtonGroupResizablePanel
-          id={secondPanelId}
-          defaultSize={isShowBottomGroup ? sizes[1] : 0}
-          minSize={isShowBottomGroup ? 20 : 0}
-          data-testid={secondPanelId}
-        >
-          <BottomGroupComponents />
-        </ButtonGroupResizablePanel>
-      </ResizableContainer>
+            <AppNavigationActionsProvider
+              value={{
+                actions,
+                setActions,
+              }}
+            >
+              <ExplorePanelTemplate>{children}</ExplorePanelTemplate>
+            </AppNavigationActionsProvider>
+          </ResizablePanel>
+          <ResizablePanelHandle
+            direction="horizontal"
+            id="resize-btn-browser-cli"
+            data-testid="resize-btn-browser-cli"
+            style={{ display: isShowBottomGroup ? 'inherit' : 'none' }}
+          />
+          {!isShowBottomGroup && <Spacer size="l" />}
+          <ButtonGroupResizablePanel
+            id={secondPanelId}
+            defaultSize={isShowBottomGroup ? sizes[1] : 0}
+            minSize={isShowBottomGroup ? 20 : 0}
+            data-testid={secondPanelId}
+          >
+            <BottomGroupComponents />
+          </ButtonGroupResizablePanel>
+        </ResizableContainer>
+      </ProductionWriteConfirmationProvider>
     </>
   )
 }

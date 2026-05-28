@@ -143,6 +143,7 @@ const AddSetMembers = (props: Props) => {
         </>
       ),
       confirmButtonText: 'Add members',
+      commandId: 'browser:add-set-members',
       onConfirm: submitData,
     })
   }

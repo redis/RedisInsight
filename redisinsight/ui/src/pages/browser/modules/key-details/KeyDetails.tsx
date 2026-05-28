@@ -21,7 +21,6 @@ import {
 } from 'uiSrc/telemetry'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { isTruncatedString, Nullable } from 'uiSrc/utils'
-import { ProductionWriteConfirmationProvider } from 'uiSrc/components/production-write-confirmation'
 import { NoKeySelected } from './components/no-key-selected'
 import { DynamicTypeDetails } from './components/dynamic-type-details'
 
@@ -132,14 +131,12 @@ const KeyDetails = (props: Props) => {
             onClosePanel={onCloseKey}
           />
         ) : (
-          <ProductionWriteConfirmationProvider>
-            <DynamicTypeDetails
-              {...props}
-              keyType={keyType}
-              onOpenAddItemPanel={onOpenAddItemPanel}
-              onCloseAddItemPanel={onCloseAddItemPanel}
-            />
-          </ProductionWriteConfirmationProvider>
+          <DynamicTypeDetails
+            {...props}
+            keyType={keyType}
+            onOpenAddItemPanel={onOpenAddItemPanel}
+            onCloseAddItemPanel={onCloseAddItemPanel}
+          />
         )}
       </div>
     </div>

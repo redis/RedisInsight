@@ -13,6 +13,7 @@ import {
 jest.mock('uiSrc/slices/instances/instances', () => ({
   ...jest.requireActual('uiSrc/slices/instances/instances'),
   connectedInstanceSelector: jest.fn().mockReturnValue({
+    id: 'instance-1',
     name: 'prod-cache',
     host: 'localhost',
     port: 6379,
@@ -71,6 +72,7 @@ describe('ProductionWriteConfirmationProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockedConnectedInstanceSelector.mockReturnValue({
+      id: 'instance-1',
       name: 'prod-cache',
       host: 'localhost',
       port: 6379,
@@ -139,6 +141,7 @@ describe('ProductionWriteConfirmationProvider', () => {
 
   it('falls back to host:port when DB name is empty', () => {
     mockedConnectedInstanceSelector.mockReturnValue({
+      id: 'instance-1',
       name: '',
       host: 'localhost',
       port: 6379,
@@ -184,5 +187,242 @@ describe('ProductionWriteConfirmationProvider', () => {
     expect(
       screen.queryByTestId('type-to-confirm-modal-input'),
     ).not.toBeInTheDocument()
+  })
+
+  it('hides the skip-for-session checkbox when commandId is not provided', () => {
+    mockEnvironment(Environment.Production)
+
+    renderWithProvider(<Trigger onConfirm={jest.fn()} />)
+    fireEvent.click(screen.getByTestId('trigger'))
+
+    expect(
+      screen.queryByTestId('type-to-confirm-modal-skip-checkbox'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('shows the skip-for-session checkbox when commandId is provided', () => {
+    mockEnvironment(Environment.Production)
+
+    renderWithProvider(
+      <Trigger onConfirm={jest.fn()} overrides={{ commandId: 'edit-value' }} />,
+    )
+    fireEvent.click(screen.getByTestId('trigger'))
+
+    expect(
+      screen.getByTestId('type-to-confirm-modal-skip-checkbox'),
+    ).toBeInTheDocument()
+  })
+
+  it('skips the modal on subsequent calls with the same commandId when user opts in', () => {
+    mockEnvironment(Environment.Production)
+    const action = jest.fn()
+
+    renderWithProvider(
+      <Trigger onConfirm={action} overrides={{ commandId: 'edit-value' }} />,
+    )
+
+    // First call shows the modal; confirm with "don't ask again" checked
+    fireEvent.click(screen.getByTestId('trigger'))
+    typeInConfirmInput('prod-cache')
+    fireEvent.click(screen.getByTestId('type-to-confirm-modal-skip-checkbox'))
+    fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+    expect(action).toHaveBeenCalledTimes(1)
+
+    // Second call with the same commandId should bypass the modal entirely
+    fireEvent.click(screen.getByTestId('trigger'))
+
+    expect(action).toHaveBeenCalledTimes(2)
+    expect(
+      screen.queryByTestId('type-to-confirm-modal-input'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('still shows the modal on subsequent calls when user did not opt in', () => {
+    mockEnvironment(Environment.Production)
+    const action = jest.fn()
+
+    renderWithProvider(
+      <Trigger onConfirm={action} overrides={{ commandId: 'edit-value' }} />,
+    )
+
+    fireEvent.click(screen.getByTestId('trigger'))
+    typeInConfirmInput('prod-cache')
+    fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+    expect(action).toHaveBeenCalledTimes(1)
+
+    fireEvent.click(screen.getByTestId('trigger'))
+
+    expect(
+      screen.getByTestId('type-to-confirm-modal-input'),
+    ).toBeInTheDocument()
+  })
+
+  it('does not skip the modal for a different commandId', () => {
+    mockEnvironment(Environment.Production)
+    const action = jest.fn()
+
+    const Multi = () => {
+      const { requestConfirmation } = useProductionWriteConfirmation()
+      return (
+        <>
+          <button
+            type="button"
+            data-testid="trigger-edit"
+            onClick={() =>
+              requestConfirmation({
+                actionDescription: 'edit',
+                commandId: 'edit-value',
+                onConfirm: action,
+              })
+            }
+          >
+            edit
+          </button>
+          <button
+            type="button"
+            data-testid="trigger-rename"
+            onClick={() =>
+              requestConfirmation({
+                actionDescription: 'rename',
+                commandId: 'rename-key',
+                onConfirm: action,
+              })
+            }
+          >
+            rename
+          </button>
+        </>
+      )
+    }
+
+    renderWithProvider(<Multi />)
+
+    fireEvent.click(screen.getByTestId('trigger-edit'))
+    typeInConfirmInput('prod-cache')
+    fireEvent.click(screen.getByTestId('type-to-confirm-modal-skip-checkbox'))
+    fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+    // The other commandId must still trigger the modal
+    fireEvent.click(screen.getByTestId('trigger-rename'))
+
+    expect(
+      screen.getByTestId('type-to-confirm-modal-input'),
+    ).toBeInTheDocument()
+  })
+
+  it('only skips when every commandId in an array request is already in the skip set', () => {
+    mockEnvironment(Environment.Production)
+    const action = jest.fn()
+
+    renderWithProvider(
+      <Trigger
+        onConfirm={action}
+        overrides={{ commandId: ['FLUSHALL', 'FLUSHDB'] }}
+      />,
+    )
+
+    fireEvent.click(screen.getByTestId('trigger'))
+    typeInConfirmInput('prod-cache')
+    fireEvent.click(screen.getByTestId('type-to-confirm-modal-skip-checkbox'))
+    fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+    expect(action).toHaveBeenCalledTimes(1)
+
+    // Same array — fully covered → no modal
+    fireEvent.click(screen.getByTestId('trigger'))
+    expect(action).toHaveBeenCalledTimes(2)
+    expect(
+      screen.queryByTestId('type-to-confirm-modal-input'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('does not skip when an array request contains a not-yet-skipped commandId', () => {
+    mockEnvironment(Environment.Production)
+    const action = jest.fn()
+
+    const Multi = () => {
+      const { requestConfirmation } = useProductionWriteConfirmation()
+      return (
+        <>
+          <button
+            type="button"
+            data-testid="trigger-flushall"
+            onClick={() =>
+              requestConfirmation({
+                actionDescription: 'flushall',
+                commandId: 'FLUSHALL',
+                onConfirm: action,
+              })
+            }
+          >
+            flushall
+          </button>
+          <button
+            type="button"
+            data-testid="trigger-mixed"
+            onClick={() =>
+              requestConfirmation({
+                actionDescription: 'mixed',
+                commandId: ['FLUSHALL', 'DEBUG'],
+                onConfirm: action,
+              })
+            }
+          >
+            mixed
+          </button>
+        </>
+      )
+    }
+
+    renderWithProvider(<Multi />)
+
+    // Opt out of FLUSHALL only
+    fireEvent.click(screen.getByTestId('trigger-flushall'))
+    typeInConfirmInput('prod-cache')
+    fireEvent.click(screen.getByTestId('type-to-confirm-modal-skip-checkbox'))
+    fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+    // Array contains DEBUG which is not in the skip set → must prompt
+    fireEvent.click(screen.getByTestId('trigger-mixed'))
+    expect(
+      screen.getByTestId('type-to-confirm-modal-input'),
+    ).toBeInTheDocument()
+  })
+
+  it('resets the skip list when the connected database changes', () => {
+    mockEnvironment(Environment.Production)
+    const action = jest.fn()
+
+    const { unmount } = renderWithProvider(
+      <Trigger onConfirm={action} overrides={{ commandId: 'edit-value' }} />,
+    )
+
+    fireEvent.click(screen.getByTestId('trigger'))
+    typeInConfirmInput('prod-cache')
+    fireEvent.click(screen.getByTestId('type-to-confirm-modal-skip-checkbox'))
+    fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+    // A fresh mount represents switching DBs (provider unmounts with the
+    // previous KeyDetails subtree and re-mounts when a new key is opened
+    // on the new database).
+    unmount()
+    mockedConnectedInstanceSelector.mockReturnValue({
+      id: 'instance-2',
+      name: 'another-db',
+      host: 'localhost',
+      port: 6380,
+    })
+
+    renderWithProvider(
+      <Trigger onConfirm={action} overrides={{ commandId: 'edit-value' }} />,
+    )
+
+    fireEvent.click(screen.getByTestId('trigger'))
+
+    expect(
+      screen.getByTestId('type-to-confirm-modal-input'),
+    ).toBeInTheDocument()
   })
 })

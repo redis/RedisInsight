@@ -128,6 +128,7 @@ const AddListElements = (props: Props) => {
         </>
       ),
       confirmButtonText: 'Add elements',
+      commandId: 'browser:add-list-elements',
       onConfirm: submitData,
     })
   }

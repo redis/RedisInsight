@@ -148,4 +148,53 @@ describe('TypeToConfirmModal', () => {
       screen.getByTestId('type-to-confirm-modal-cancel-btn'),
     ).toHaveTextContent('Back')
   })
+
+  it('should not render the skip-for-session checkbox by default', () => {
+    render(<TypeToConfirmModal {...mockProps} />)
+
+    expect(
+      screen.queryByTestId('type-to-confirm-modal-skip-checkbox'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should render the skip-for-session checkbox when showSkipForSession is true', () => {
+    render(<TypeToConfirmModal {...mockProps} showSkipForSession />)
+
+    expect(
+      screen.getByTestId('type-to-confirm-modal-skip-checkbox'),
+    ).toBeInTheDocument()
+  })
+
+  it('should pass skipForSession=false to onConfirm when checkbox is not checked', () => {
+    const onConfirm = jest.fn()
+    render(
+      <TypeToConfirmModal
+        {...mockProps}
+        onConfirm={onConfirm}
+        showSkipForSession
+      />,
+    )
+
+    typeInConfirmInput('prod-cache-eu-west-1')
+    fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+    expect(onConfirm).toHaveBeenCalledWith(false)
+  })
+
+  it('should pass skipForSession=true to onConfirm when checkbox is checked', () => {
+    const onConfirm = jest.fn()
+    render(
+      <TypeToConfirmModal
+        {...mockProps}
+        onConfirm={onConfirm}
+        showSkipForSession
+      />,
+    )
+
+    typeInConfirmInput('prod-cache-eu-west-1')
+    fireEvent.click(screen.getByTestId('type-to-confirm-modal-skip-checkbox'))
+    fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+    expect(onConfirm).toHaveBeenCalledWith(true)
+  })
 })

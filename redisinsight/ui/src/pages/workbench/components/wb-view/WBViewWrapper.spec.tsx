@@ -22,11 +22,19 @@ import {
   workbenchResultsSelector,
 } from 'uiSrc/slices/workbench/wb-results'
 import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
+import { ProductionWriteConfirmationProvider } from 'uiSrc/components/production-write-confirmation'
 import { Environment } from 'apiClient'
 import { DBInstanceFactory } from 'uiSrc/mocks/factories/database/DBInstance.factory'
 import { ConnectionType } from 'uiSrc/slices/interfaces'
 
 import WBViewWrapper from './WBViewWrapper'
+
+const renderWithProvider = (ui: React.ReactElement) =>
+  render(
+    <ProductionWriteConfirmationProvider>
+      {ui}
+    </ProductionWriteConfirmationProvider>,
+  )
 
 let store: typeof mockedStore
 beforeEach(() => {
@@ -203,7 +211,7 @@ describe('WBViewWrapper', () => {
         isDangerousCommand: () => false,
       })
 
-      render(<WBViewWrapper />)
+      renderWithProvider(<WBViewWrapper />)
       act(() => {
         capturedOnSubmit?.('PING')
       })
@@ -222,7 +230,7 @@ describe('WBViewWrapper', () => {
           ['FLUSHALL', 'FLUSHDB'].includes(cmd.toUpperCase()),
       })
 
-      render(<WBViewWrapper />)
+      renderWithProvider(<WBViewWrapper />)
       act(() => {
         capturedOnSubmit?.('PING\nFLUSHALL\nFLUSHDB')
       })
@@ -244,7 +252,7 @@ describe('WBViewWrapper', () => {
         isDangerousCommand: (cmd: string) => cmd.toUpperCase() === 'FLUSHALL',
       })
 
-      render(<WBViewWrapper />)
+      renderWithProvider(<WBViewWrapper />)
       // Monaco joins continuation lines (the leading whitespace on the next
       // line is preserved), so the verb arrives with an embedded newline.
       act(() => {
@@ -270,7 +278,7 @@ describe('WBViewWrapper', () => {
         isDangerousCommand: (cmd: string) => cmd.toUpperCase() === 'FLUSHALL',
       })
 
-      render(<WBViewWrapper />)
+      renderWithProvider(<WBViewWrapper />)
       act(() => {
         capturedOnSubmit?.('FLUSHALL')
       })
@@ -286,7 +294,7 @@ describe('WBViewWrapper', () => {
         isDangerousCommand: (cmd: string) => cmd.toUpperCase() === 'FLUSHALL',
       })
 
-      render(<WBViewWrapper />)
+      renderWithProvider(<WBViewWrapper />)
       act(() => {
         capturedOnSubmit?.('PING\nFLUSHALL')
       })
@@ -309,7 +317,7 @@ describe('WBViewWrapper', () => {
         isDangerousCommand: (cmd: string) => cmd.toUpperCase() === 'FLUSHALL',
       })
 
-      render(<WBViewWrapper />)
+      renderWithProvider(<WBViewWrapper />)
       act(() => {
         capturedOnSubmit?.('FLUSHALL')
       })
@@ -320,6 +328,67 @@ describe('WBViewWrapper', () => {
         screen.queryByTestId('type-to-confirm-modal-title'),
       ).not.toBeInTheDocument()
       expect(sendWbQueryAction).not.toHaveBeenCalled()
+    })
+
+    it('skips the modal on subsequent runs of the same dangerous batch after opt-in', () => {
+      useDatabaseEnvironmentMock.mockReturnValue({
+        environment: Environment.Production,
+        isDangerousCommand: (cmd: string) =>
+          ['FLUSHALL', 'FLUSHDB'].includes(cmd.toUpperCase()),
+      })
+
+      renderWithProvider(<WBViewWrapper />)
+
+      act(() => {
+        capturedOnSubmit?.('FLUSHALL\nFLUSHDB')
+      })
+      fireEvent.change(screen.getByTestId('type-to-confirm-modal-input'), {
+        target: { value: instance.name },
+      })
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-skip-checkbox'))
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+      expect(sendWbQueryAction).toHaveBeenCalledTimes(1)
+
+      // Same dangerous batch — should bypass the modal entirely
+      act(() => {
+        capturedOnSubmit?.('FLUSHALL\nFLUSHDB')
+      })
+
+      expect(sendWbQueryAction).toHaveBeenCalledTimes(2)
+      expect(
+        screen.queryByTestId('type-to-confirm-modal-title'),
+      ).not.toBeInTheDocument()
+    })
+
+    it('still prompts when the batch includes a not-yet-skipped dangerous command', () => {
+      useDatabaseEnvironmentMock.mockReturnValue({
+        environment: Environment.Production,
+        isDangerousCommand: (cmd: string) =>
+          ['FLUSHALL', 'FLUSHDB', 'DEBUG'].includes(cmd.toUpperCase()),
+      })
+
+      renderWithProvider(<WBViewWrapper />)
+
+      // Opt out of FLUSHALL only
+      act(() => {
+        capturedOnSubmit?.('FLUSHALL')
+      })
+      fireEvent.change(screen.getByTestId('type-to-confirm-modal-input'), {
+        target: { value: instance.name },
+      })
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-skip-checkbox'))
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+      // New batch contains DEBUG — must still prompt
+      act(() => {
+        capturedOnSubmit?.('FLUSHALL\nDEBUG SLEEP 1')
+      })
+
+      expect(
+        screen.getByTestId('type-to-confirm-modal-title'),
+      ).toBeInTheDocument()
+      expect(sendWbQueryAction).toHaveBeenCalledTimes(1)
     })
   })
 

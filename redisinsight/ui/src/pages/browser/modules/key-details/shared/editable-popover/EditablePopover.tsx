@@ -90,6 +90,7 @@ const EditablePopover = (props: Props) => {
       actionDescription:
         'You are about to modify a value on a production database.',
       confirmButtonText: 'Save',
+      commandId: 'browser:edit-value',
       onConfirm: () => {
         setIsPopoverOpen(false)
         onApply()

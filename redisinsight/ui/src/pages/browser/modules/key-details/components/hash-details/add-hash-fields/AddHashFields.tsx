@@ -168,6 +168,7 @@ const AddHashFields = (props: Props) => {
         </>
       ),
       confirmButtonText: 'Add fields',
+      commandId: 'browser:add-hash-fields',
       onConfirm: submitData,
     })
   }

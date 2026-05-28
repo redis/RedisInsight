@@ -69,6 +69,7 @@ const RejsonScalar = (props: JSONScalarProps) => {
       actionDescription:
         'You are about to modify a JSON value on a production database.',
       confirmButtonText: 'Save',
+      commandId: 'browser:edit-rejson-value',
       onConfirm: () => {
         dispatch<any>(
           setReJSONDataAction(
