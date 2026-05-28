@@ -24,9 +24,7 @@ jest.mock('@testing-library/react', () => {
 
   return {
     ...actual,
-    render: (
-      ui: React.ReactElement,
-      options: Parameters<typeof actual.render>[1] = {},
-    ) => actual.render(ui, { wrapper: ThemedWrapper, ...options }),
+    render: (ui: React.ReactElement, options: Record<string, unknown> = {}) =>
+      actual.render(ui, { wrapper: ThemedWrapper, ...options }),
   }
 })
