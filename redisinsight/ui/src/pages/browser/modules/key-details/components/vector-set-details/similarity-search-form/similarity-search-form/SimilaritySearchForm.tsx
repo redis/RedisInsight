@@ -256,27 +256,6 @@ export const SimilaritySearchForm = ({
 
       <S.ActionRow align="center" gap="m">
         <FlexItem grow={false}>
-          <PrimaryButton
-            onClick={handleSubmit}
-            disabled={submitDisabled}
-            data-testid={`${TEST_ID}-submit`}
-          >
-            Find similar items
-          </PrimaryButton>
-        </FlexItem>
-        <FlexItem grow={false}>
-          <RiTooltip content="Reset form" position="top">
-            <IconButton
-              size="M"
-              icon={ResetIcon}
-              onClick={handleReset}
-              disabled={loading}
-              aria-label="Reset similarity search form"
-              data-testid={`${TEST_ID}-reset`}
-            />
-          </RiTooltip>
-        </FlexItem>
-        <FlexItem grow={false}>
           <RiTooltip
             content={
               previewVisible ? 'Hide command preview' : 'Show command preview'
@@ -293,11 +272,30 @@ export const SimilaritySearchForm = ({
             />
           </RiTooltip>
         </FlexItem>
-        {previewVisible && (
-          <FlexItem grow>
-            <CommandPreview command={preview ?? ''} />
-          </FlexItem>
-        )}
+        <FlexItem grow>
+          {previewVisible && <CommandPreview command={preview ?? ''} />}
+        </FlexItem>
+        <FlexItem grow={false}>
+          <RiTooltip content="Reset form" position="top">
+            <IconButton
+              size="M"
+              icon={ResetIcon}
+              onClick={handleReset}
+              disabled={loading}
+              aria-label="Reset similarity search form"
+              data-testid={`${TEST_ID}-reset`}
+            />
+          </RiTooltip>
+        </FlexItem>
+        <FlexItem grow={false}>
+          <PrimaryButton
+            onClick={handleSubmit}
+            disabled={submitDisabled}
+            data-testid={`${TEST_ID}-submit`}
+          >
+            Find similar items
+          </PrimaryButton>
+        </FlexItem>
       </S.ActionRow>
     </S.FormContainer>
   )
