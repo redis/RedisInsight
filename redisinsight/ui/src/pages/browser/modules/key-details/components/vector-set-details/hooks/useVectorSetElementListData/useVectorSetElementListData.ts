@@ -26,6 +26,16 @@ import {
 } from './useVectorSetElementListData.types'
 
 const MIN_COLUMN_WIDTH = 100
+const MIN_TABLE_WIDTH_FLOOR = 550
+
+/**
+ * The element-list column set is static, so the table-min-width is computed
+ * once at module scope — no need to recalculate per render.
+ */
+const TABLE_MIN_WIDTH = `${Math.max(
+  vectorSetColumns.length * MIN_COLUMN_WIDTH,
+  MIN_TABLE_WIDTH_FLOOR,
+)}px`
 
 export const useVectorSetElementListData = ({
   actionsConfig,
@@ -65,21 +75,13 @@ export const useVectorSetElementListData = ({
     [compressor, viewFormat, actionsConfig],
   )
 
-  const tableMinWidth = useMemo(
-    () => `${Math.max(vectorSetColumns.length * MIN_COLUMN_WIDTH, 550)}px`,
-    [],
-  )
-
   const currentPageData = useMemo(() => {
     if (!isPaginationSupported) return elements
     const { pageIndex, pageSize } = pagination
     return elements.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize)
   }, [elements, pagination, isPaginationSupported])
 
-  const emptyMessage = useMemo(() => {
-    if (loading) return 'Loading...'
-    return 'No results found.'
-  }, [loading])
+  const emptyMessage = loading ? 'Loading...' : 'No results found.'
 
   useEffect(() => {
     const { pageIndex, pageSize } = pagination
@@ -99,7 +101,7 @@ export const useVectorSetElementListData = ({
   return {
     meta,
     currentPageData,
-    tableMinWidth,
+    tableMinWidth: TABLE_MIN_WIDTH,
     pagination,
     setPagination,
     emptyMessage,
