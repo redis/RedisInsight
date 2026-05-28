@@ -283,13 +283,12 @@ export const SimilaritySearchForm = ({
             }
             position="top"
           >
-            <S.PreviewToggleButton
+            <IconButton
               size="M"
               icon={CliIcon}
               onClick={togglePreview}
               aria-label="Toggle command preview"
               aria-pressed={previewVisible}
-              $active={previewVisible}
               data-testid={`${TEST_ID}-preview-toggle`}
             />
           </RiTooltip>

@@ -1,7 +1,6 @@
 import { HTMLAttributes } from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
-import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { MIDDLE_SCREEN_RESOLUTION } from 'uiSrc/constants'
 
 /**
@@ -58,19 +57,6 @@ export const FilterLabel = styled.span<HTMLAttributes<HTMLSpanElement>>`
   display: inline-flex;
   align-items: center;
   gap: ${({ theme }) => theme.core.space.space050};
-`
-
-/**
- * Cli-icon toggle that controls preview visibility. The pressed state gets a
- * filled background so the user can tell the preview pipeline is "on".
- */
-export const PreviewToggleButton = styled(IconButton)<{ $active?: boolean }>`
-  ${({ $active, theme }) =>
-    $active &&
-    css`
-      background: ${theme.semantic.color.background.neutral400};
-      color: ${theme.semantic.color.text.informative400};
-    `}
 `
 
 /**
