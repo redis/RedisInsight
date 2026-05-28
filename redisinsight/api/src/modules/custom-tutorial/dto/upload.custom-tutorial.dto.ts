@@ -7,6 +7,10 @@ import {
   MemoryStoredFile,
 } from 'nestjs-form-data';
 
+/**
+ * @deprecated Custom tutorials are deprecated (RED-194229) and disabled by
+ * default via the `customTutorials` feature flag. Slated for removal.
+ */
 export class UploadCustomTutorialDto {
   @ApiPropertyOptional({
     type: 'string',

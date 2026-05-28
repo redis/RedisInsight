@@ -28,6 +28,11 @@ import { Validator } from 'class-validator';
 import { CustomTutorialAnalytics } from 'src/modules/custom-tutorial/custom-tutorial.analytics';
 import { SessionMetadata } from 'src/common/models';
 
+/**
+ * @deprecated Custom tutorials are deprecated (RED-194229) and disabled by
+ * default via the `customTutorials` feature flag. Slated for removal.
+ */
+
 @Injectable()
 export class CustomTutorialService {
   private logger = new Logger('CustomTutorialService');

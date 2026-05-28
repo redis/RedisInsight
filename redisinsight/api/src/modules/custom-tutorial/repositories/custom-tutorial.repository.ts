@@ -1,5 +1,9 @@
 import { CustomTutorial } from 'src/modules/custom-tutorial/models/custom-tutorial';
 
+/**
+ * @deprecated Custom tutorials are deprecated (RED-194229) and disabled by
+ * default via the `customTutorials` feature flag. Slated for removal.
+ */
 export abstract class CustomTutorialRepository {
   /**
    * Create custom tutorial entity
