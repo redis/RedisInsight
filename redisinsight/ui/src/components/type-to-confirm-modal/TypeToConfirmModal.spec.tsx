@@ -1,14 +1,8 @@
 import React from 'react'
+import { faker } from '@faker-js/faker'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 
 import TypeToConfirmModal, { Props } from './TypeToConfirmModal'
-
-const mockProps: Props = {
-  confirmationText: 'prod-cache-eu-west-1',
-  actionDescription: 'This will run FLUSHDB against prod-cache-eu-west-1.',
-  onConfirm: jest.fn(),
-  onCancel: jest.fn(),
-}
 
 jest.mock('uiSrc/components/base/display', () => {
   const actual = jest.requireActual('uiSrc/components/base/display')
@@ -28,6 +22,18 @@ jest.mock('uiSrc/components/base/display', () => {
   }
 })
 
+const confirmationText = faker.lorem.slug()
+
+const defaultProps: Props = {
+  confirmationText,
+  actionDescription: faker.lorem.sentence(),
+  onConfirm: jest.fn(),
+  onCancel: jest.fn(),
+}
+
+const renderComponent = (propsOverride?: Partial<Props>) =>
+  render(<TypeToConfirmModal {...defaultProps} {...propsOverride} />)
+
 const typeInConfirmInput = (value: string) => {
   fireEvent.change(screen.getByTestId('type-to-confirm-modal-input'), {
     target: { value },
@@ -40,30 +46,28 @@ describe('TypeToConfirmModal', () => {
   })
 
   it('should render', () => {
-    expect(render(<TypeToConfirmModal {...mockProps} />)).toBeTruthy()
+    expect(renderComponent()).toBeTruthy()
   })
 
   it('should render the action description', () => {
-    render(<TypeToConfirmModal {...mockProps} />)
+    const actionDescription = faker.lorem.sentence()
+    renderComponent({ actionDescription })
 
     expect(
       screen.getByTestId('type-to-confirm-modal-description'),
-    ).toHaveTextContent('This will run FLUSHDB against prod-cache-eu-west-1.')
+    ).toHaveTextContent(actionDescription)
   })
 
   it('should accept a ReactNode as actionDescription', () => {
-    render(
-      <TypeToConfirmModal
-        {...mockProps}
-        actionDescription={<span data-testid="custom-desc">custom desc</span>}
-      />,
-    )
+    renderComponent({
+      actionDescription: <span data-testid="custom-desc">custom desc</span>,
+    })
 
     expect(screen.getByTestId('custom-desc')).toBeInTheDocument()
   })
 
   it('should render the confirmation input by default', () => {
-    render(<TypeToConfirmModal {...mockProps} />)
+    renderComponent()
 
     expect(
       screen.getByTestId('type-to-confirm-modal-input'),
@@ -71,7 +75,7 @@ describe('TypeToConfirmModal', () => {
   })
 
   it('confirm button should be disabled by default', () => {
-    render(<TypeToConfirmModal {...mockProps} />)
+    renderComponent()
 
     expect(
       screen.getByTestId('type-to-confirm-modal-confirm-btn'),
@@ -79,7 +83,7 @@ describe('TypeToConfirmModal', () => {
   })
 
   it('confirm button should be disabled when typed value does not match confirmationText', () => {
-    render(<TypeToConfirmModal {...mockProps} />)
+    renderComponent()
 
     typeInConfirmInput('not-the-name')
 
@@ -89,9 +93,9 @@ describe('TypeToConfirmModal', () => {
   })
 
   it('confirm button should be enabled when typed value exactly matches confirmationText', () => {
-    render(<TypeToConfirmModal {...mockProps} />)
+    renderComponent()
 
-    typeInConfirmInput('prod-cache-eu-west-1')
+    typeInConfirmInput(confirmationText)
 
     expect(
       screen.getByTestId('type-to-confirm-modal-confirm-btn'),
@@ -99,9 +103,9 @@ describe('TypeToConfirmModal', () => {
   })
 
   it('match should be case-sensitive', () => {
-    render(<TypeToConfirmModal {...mockProps} />)
+    renderComponent()
 
-    typeInConfirmInput('PROD-CACHE-EU-WEST-1')
+    typeInConfirmInput(confirmationText.toUpperCase())
 
     expect(
       screen.getByTestId('type-to-confirm-modal-confirm-btn'),
@@ -109,57 +113,56 @@ describe('TypeToConfirmModal', () => {
   })
 
   it('should not fire onConfirm when typed value does not match', () => {
-    render(<TypeToConfirmModal {...mockProps} />)
+    const onConfirm = jest.fn()
+    renderComponent({ onConfirm })
 
     typeInConfirmInput('mismatch')
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
 
-    expect(mockProps.onConfirm).not.toHaveBeenCalled()
+    expect(onConfirm).not.toHaveBeenCalled()
   })
 
   it('should fire onConfirm when typed value matches and confirm is clicked', () => {
-    render(<TypeToConfirmModal {...mockProps} />)
+    const onConfirm = jest.fn()
+    renderComponent({ onConfirm })
 
-    typeInConfirmInput('prod-cache-eu-west-1')
+    typeInConfirmInput(confirmationText)
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
 
-    expect(mockProps.onConfirm).toHaveBeenCalledTimes(1)
+    expect(onConfirm).toHaveBeenCalledTimes(1)
   })
 
   it('should fire onCancel when cancel button is clicked', () => {
-    render(<TypeToConfirmModal {...mockProps} />)
+    const onCancel = jest.fn()
+    renderComponent({ onCancel })
 
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-cancel-btn'))
 
-    expect(mockProps.onCancel).toHaveBeenCalledTimes(1)
+    expect(onCancel).toHaveBeenCalledTimes(1)
   })
 
   it('cancel button should be the default-focused action', () => {
-    render(<TypeToConfirmModal {...mockProps} />)
+    renderComponent()
 
     expect(screen.getByTestId('type-to-confirm-modal-cancel-btn')).toHaveFocus()
   })
 
   it('should render custom button labels when provided', () => {
-    render(
-      <TypeToConfirmModal
-        {...mockProps}
-        confirmButtonText="Run FLUSHDB"
-        cancelButtonText="Back"
-      />,
-    )
+    const confirmButtonText = faker.lorem.words(2)
+    const cancelButtonText = faker.lorem.words(2)
+    renderComponent({ confirmButtonText, cancelButtonText })
 
     expect(
       screen.getByTestId('type-to-confirm-modal-confirm-btn'),
-    ).toHaveTextContent('Run FLUSHDB')
+    ).toHaveTextContent(confirmButtonText)
     expect(
       screen.getByTestId('type-to-confirm-modal-cancel-btn'),
-    ).toHaveTextContent('Back')
+    ).toHaveTextContent(cancelButtonText)
   })
 
   describe('with disableConfirmationInput', () => {
     it('should not render the confirmation input', () => {
-      render(<TypeToConfirmModal {...mockProps} disableConfirmationInput />)
+      renderComponent({ disableConfirmationInput: true })
 
       expect(
         screen.queryByTestId('type-to-confirm-modal-input'),
@@ -167,7 +170,7 @@ describe('TypeToConfirmModal', () => {
     })
 
     it('confirm button should be enabled immediately', () => {
-      render(<TypeToConfirmModal {...mockProps} disableConfirmationInput />)
+      renderComponent({ disableConfirmationInput: true })
 
       expect(
         screen.getByTestId('type-to-confirm-modal-confirm-btn'),
@@ -175,16 +178,17 @@ describe('TypeToConfirmModal', () => {
     })
 
     it('should fire onConfirm when confirm is clicked', () => {
-      render(<TypeToConfirmModal {...mockProps} disableConfirmationInput />)
+      const onConfirm = jest.fn()
+      renderComponent({ disableConfirmationInput: true, onConfirm })
 
       fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
 
-      expect(mockProps.onConfirm).toHaveBeenCalledTimes(1)
+      expect(onConfirm).toHaveBeenCalledTimes(1)
     })
   })
 
   it('should not render the skip-for-session checkbox by default', () => {
-    render(<TypeToConfirmModal {...mockProps} />)
+    renderComponent()
 
     expect(
       screen.queryByTestId('type-to-confirm-modal-skip-checkbox'),
@@ -192,7 +196,7 @@ describe('TypeToConfirmModal', () => {
   })
 
   it('should render the skip-for-session checkbox when showSkipForSession is true', () => {
-    render(<TypeToConfirmModal {...mockProps} showSkipForSession />)
+    renderComponent({ showSkipForSession: true })
 
     expect(
       screen.getByTestId('type-to-confirm-modal-skip-checkbox'),
@@ -200,7 +204,7 @@ describe('TypeToConfirmModal', () => {
   })
 
   it('should render the default skip-for-session label', () => {
-    render(<TypeToConfirmModal {...mockProps} showSkipForSession />)
+    renderComponent({ showSkipForSession: true })
 
     expect(
       screen.getByText("Don't ask again for this command during this session"),
@@ -209,15 +213,9 @@ describe('TypeToConfirmModal', () => {
 
   it('should pass skipForSession=false to onConfirm when checkbox is not checked', () => {
     const onConfirm = jest.fn()
-    render(
-      <TypeToConfirmModal
-        {...mockProps}
-        onConfirm={onConfirm}
-        showSkipForSession
-      />,
-    )
+    renderComponent({ onConfirm, showSkipForSession: true })
 
-    typeInConfirmInput('prod-cache-eu-west-1')
+    typeInConfirmInput(confirmationText)
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
 
     expect(onConfirm).toHaveBeenCalledWith(false)
@@ -225,15 +223,9 @@ describe('TypeToConfirmModal', () => {
 
   it('should pass skipForSession=true to onConfirm when checkbox is checked', () => {
     const onConfirm = jest.fn()
-    render(
-      <TypeToConfirmModal
-        {...mockProps}
-        onConfirm={onConfirm}
-        showSkipForSession
-      />,
-    )
+    renderComponent({ onConfirm, showSkipForSession: true })
 
-    typeInConfirmInput('prod-cache-eu-west-1')
+    typeInConfirmInput(confirmationText)
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-skip-checkbox'))
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
 
@@ -241,7 +233,7 @@ describe('TypeToConfirmModal', () => {
   })
 
   it('should not render the tip section by default', () => {
-    render(<TypeToConfirmModal {...mockProps} />)
+    renderComponent()
 
     expect(
       screen.queryByTestId('type-to-confirm-modal-tip'),
@@ -249,12 +241,9 @@ describe('TypeToConfirmModal', () => {
   })
 
   it('should render the tip when provided', () => {
-    render(
-      <TypeToConfirmModal
-        {...mockProps}
-        tip={<span data-testid="tip-content">helpful tip</span>}
-      />,
-    )
+    renderComponent({
+      tip: <span data-testid="tip-content">helpful tip</span>,
+    })
 
     expect(screen.getByTestId('type-to-confirm-modal-tip')).toBeInTheDocument()
     expect(screen.getByTestId('tip-content')).toBeInTheDocument()
