@@ -1,7 +1,26 @@
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
+import { Environment } from 'apiClient'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
+import * as useDatabaseEnvironmentModule from 'uiSrc/components/hooks/useDatabaseEnvironment'
+import { ProductionWriteConfirmationProvider } from 'uiSrc/components/production-write-confirmation'
 import AddHashFields, { Props } from './AddHashFields'
+
+const mockEnvironment = (environment: Environment) => {
+  jest
+    .spyOn(useDatabaseEnvironmentModule, 'useDatabaseEnvironment')
+    .mockReturnValue({
+      environment,
+      isDangerousCommand: () => false,
+    })
+}
+
+const renderWithProvider = (ui: React.ReactElement) =>
+  render(
+    <ProductionWriteConfirmationProvider>
+      {ui}
+    </ProductionWriteConfirmationProvider>,
+  )
 
 const HASH_FIELD = 'hash-field'
 const HASH_VALUE = 'hash-value'
@@ -9,6 +28,15 @@ const HASH_VALUE = 'hash-value'
 const mockedProps = mock<Props>()
 
 describe('AddHashFields', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+    mockEnvironment(Environment.Unspecified)
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   it('should render', () => {
     expect(render(<AddHashFields {...instance(mockedProps)} />)).toBeTruthy()
   })
@@ -50,5 +78,40 @@ describe('AddHashFields', () => {
 
     expect(fieldName).toHaveValue('')
     expect(fieldValue).toHaveValue('')
+  })
+
+  describe('environment gating', () => {
+    it('shows production confirmation when saving in Production', () => {
+      mockEnvironment(Environment.Production)
+      renderWithProvider(<AddHashFields {...instance(mockedProps)} />)
+
+      fireEvent.click(screen.getByTestId('save-fields-btn'))
+
+      expect(
+        screen.getByTestId('type-to-confirm-modal-input'),
+      ).toBeInTheDocument()
+    })
+
+    it('does not show confirmation in Development', () => {
+      mockEnvironment(Environment.Development)
+      renderWithProvider(<AddHashFields {...instance(mockedProps)} />)
+
+      fireEvent.click(screen.getByTestId('save-fields-btn'))
+
+      expect(
+        screen.queryByTestId('type-to-confirm-modal-input'),
+      ).not.toBeInTheDocument()
+    })
+
+    it('does not show confirmation in Unspecified', () => {
+      mockEnvironment(Environment.Unspecified)
+      renderWithProvider(<AddHashFields {...instance(mockedProps)} />)
+
+      fireEvent.click(screen.getByTestId('save-fields-btn'))
+
+      expect(
+        screen.queryByTestId('type-to-confirm-modal-input'),
+      ).not.toBeInTheDocument()
+    })
   })
 })

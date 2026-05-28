@@ -18,6 +18,13 @@ jest.mock('uiSrc/slices/browser/rejson', () => ({
   fetchReJSON: jest.fn((key) => ({ type: 'FETCH_REJSON', payload: key })),
 }))
 
+jest.mock('uiSrc/components/hooks/useDatabaseEnvironment', () => ({
+  useDatabaseEnvironment: () => ({
+    environment: 'unspecified',
+    isDangerousCommand: () => false,
+  }),
+}))
+
 const mockedProps = mock<Props>()
 
 const mockUseSelector = useSelector as jest.Mock

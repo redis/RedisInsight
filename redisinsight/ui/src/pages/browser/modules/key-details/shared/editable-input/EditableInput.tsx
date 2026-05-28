@@ -9,6 +9,7 @@ import { Props as InlineItemEditorProps } from 'uiSrc/components/inline-item-edi
 import { Text } from 'uiSrc/components/base/text'
 import { EditIcon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
+import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -22,7 +23,7 @@ export interface Props {
   validation?: (value: string) => string
   editToolTipContent?: React.ReactNode
   onDecline: (event?: React.MouseEvent<HTMLElement>) => void
-  onApply: (value: string, event: React.MouseEvent) => void
+  onApply: (value: string, event?: React.MouseEvent) => void
   testIdPrefix?: string
   variant?: InlineItemEditorProps['variant']
 }
@@ -45,6 +46,7 @@ const EditableInput = (props: Props) => {
   } = props
 
   const [isHovering, setIsHovering] = useState(false)
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   if (!isEditing) {
     return (
@@ -100,9 +102,17 @@ const EditableInput = (props: Props) => {
             onDecline(event)
             onEdit?.(false)
           }}
-          onApply={(value, event) => {
-            onApply(value, event)
-            onEdit?.(false)
+          onApply={(value) => {
+            requestConfirmation({
+              title: 'Edit value on production database?',
+              actionDescription:
+                'You are about to modify a value on a production database.',
+              confirmButtonText: 'Save',
+              onConfirm: () => {
+                onApply(value)
+                onEdit?.(false)
+              },
+            })
           }}
           validation={validation}
           variant={variant}

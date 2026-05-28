@@ -10,6 +10,7 @@ import {
 import { EditIcon } from 'uiSrc/components/base/icons'
 import { Loader } from 'uiSrc/components/base/display'
 import { RiPopover } from 'uiSrc/components/base'
+import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -53,6 +54,7 @@ const EditablePopover = (props: Props) => {
   const [isHovering, setIsHovering] = useState(false)
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(isOpen)
   const [isDelayed, setIsDelayed] = useState(false)
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   const delayPopover = () => {
     if (!delay) return
@@ -83,8 +85,17 @@ const EditablePopover = (props: Props) => {
   }
 
   const handleApply = (): void => {
-    setIsPopoverOpen(false)
-    onApply()
+    requestConfirmation({
+      title: 'Edit value on production database?',
+      actionDescription:
+        'You are about to modify a value on a production database.',
+      confirmButtonText: 'Save',
+      onConfirm: () => {
+        setIsPopoverOpen(false)
+        onApply()
+      },
+      onCancel: () => setIsPopoverOpen(false),
+    })
   }
 
   const handleDecline = () => {

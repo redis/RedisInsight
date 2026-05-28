@@ -32,6 +32,7 @@ import {
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { AddFieldsToHashDto, HashFieldDto } from 'apiClient'
+import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
 
 import { EntryContent } from '../../common/AddKeysContainer.styled'
 
@@ -54,6 +55,7 @@ const AddHashFields = (props: Props) => {
   const { id: instanceId } = useSelector(connectedInstanceSelector)
 
   const lastAddedFieldName = useRef<HTMLInputElement>(null)
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(
     () =>
@@ -156,6 +158,20 @@ const AddHashFields = (props: Props) => {
     dispatch(addHashFieldsAction(data, onSuccessAdded))
   }
 
+  const handleSubmit = () => {
+    requestConfirmation({
+      title: 'Add fields on production database?',
+      actionDescription: (
+        <>
+          You are about to add {fields.length} field
+          {fields.length === 1 ? '' : 's'} to a hash on a production database.
+        </>
+      ),
+      confirmButtonText: 'Add fields',
+      onConfirm: submitData,
+    })
+  }
+
   const isClearDisabled = (item: IHashFieldState): boolean =>
     fields.length === 1 &&
     !(item.fieldName.length || item.fieldValue.length || item.fieldTTL?.length)
@@ -245,7 +261,7 @@ const AddHashFields = (props: Props) => {
             <PrimaryButton
               disabled={loading}
               loading={loading}
-              onClick={submitData}
+              onClick={handleSubmit}
               data-testid="save-fields-btn"
             >
               Save

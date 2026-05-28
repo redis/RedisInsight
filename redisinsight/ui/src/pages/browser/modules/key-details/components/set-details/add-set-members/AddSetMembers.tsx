@@ -30,6 +30,7 @@ import {
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { useProductionWriteConfirmation } from 'uiSrc/components/production-write-confirmation'
 
 import { EntryContent } from '../../common/AddKeysContainer.styled'
 
@@ -50,6 +51,7 @@ const AddSetMembers = (props: Props) => {
   const { viewType } = useSelector(keysSelector)
   const { id: instanceId } = useSelector(connectedInstanceSelector)
   const lastAddedMemberName = useRef<HTMLInputElement>(null)
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(() => {
     lastAddedMemberName.current?.focus()
@@ -131,6 +133,20 @@ const AddSetMembers = (props: Props) => {
     dispatch(addSetMembersAction(data, onSuccessAdded))
   }
 
+  const handleSubmit = () => {
+    requestConfirmation({
+      title: 'Add members on production database?',
+      actionDescription: (
+        <>
+          You are about to add {members.length} member
+          {members.length === 1 ? '' : 's'} to a set on a production database.
+        </>
+      ),
+      confirmButtonText: 'Add members',
+      onConfirm: submitData,
+    })
+  }
+
   const isClearDisabled = (item: ISetMemberState): boolean =>
     members.length === 1 && !item.name.length
 
@@ -180,7 +196,7 @@ const AddSetMembers = (props: Props) => {
           <PrimaryButton
             disabled={loading}
             loading={loading}
-            onClick={submitData}
+            onClick={handleSubmit}
             data-testid="save-members-btn"
           >
             Save
