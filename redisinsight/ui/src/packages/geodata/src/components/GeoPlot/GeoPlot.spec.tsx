@@ -439,12 +439,10 @@ describe('GeoPlot', () => {
     mockLeaflet.map.mockClear()
     mockSetStyle.mockClear()
 
-    fireEvent.change(screen.getByLabelText('Close threshold'), {
-      target: { value: '0.3' },
-    })
-    fireEvent.change(screen.getByLabelText('Mid threshold'), {
-      target: { value: '0.9' },
-    })
+    const closeThumb = screen.getByRole('slider', { name: 'Close threshold' })
+    const midThumb = screen.getByRole('slider', { name: 'Mid threshold' })
+    fireEvent.keyDown(closeThumb, { key: 'ArrowLeft' })
+    fireEvent.keyDown(midThumb, { key: 'ArrowRight' })
     fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
 
     expect(mockLeaflet.map).not.toHaveBeenCalled()
@@ -482,12 +480,15 @@ describe('GeoPlot', () => {
 
     mockRefreshClusters.mockClear()
     fireEvent.click(screen.getByRole('button', { name: 'Distance thresholds' }))
-    fireEvent.change(screen.getByLabelText('Close threshold'), {
-      target: { value: '0.3' },
-    })
-    fireEvent.change(screen.getByLabelText('Mid threshold'), {
-      target: { value: '0.6' },
-    })
+    const closeThumb = screen.getByRole('slider', { name: 'Close threshold' })
+    const midThumb = screen.getByRole('slider', { name: 'Mid threshold' })
+    // Drag both thumbs to their minimums so close goes from 0.5 -> 0.2 and
+    // mid goes from 0.85 -> 0.6, which moves the 70 km marker into the
+    // "far" colour bucket.
+    for (let i = 0; i < 10; i += 1)
+      fireEvent.keyDown(closeThumb, { key: 'ArrowLeft' })
+    for (let i = 0; i < 10; i += 1)
+      fireEvent.keyDown(midThumb, { key: 'ArrowLeft' })
 
     expect(mockRefreshClusters).toHaveBeenCalled()
 

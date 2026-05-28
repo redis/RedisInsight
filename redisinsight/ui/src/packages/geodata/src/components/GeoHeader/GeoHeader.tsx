@@ -14,7 +14,7 @@ export const GeoHeader = ({ title, status, resultCount }: GeoHeaderProps) => (
         <S.Label size="XS" color="subdued">
           Status
         </S.Label>
-        <Text size="S" variant="semiBold">
+        <Text size="XS" variant="semiBold">
           {status || 'unknown'}
         </Text>
       </Col>
@@ -23,7 +23,7 @@ export const GeoHeader = ({ title, status, resultCount }: GeoHeaderProps) => (
           <S.Label size="XS" color="subdued">
             Results
           </S.Label>
-          <Text size="S" variant="semiBold">
+          <Text size="XS" variant="semiBold">
             {resultCount}
           </Text>
         </Col>

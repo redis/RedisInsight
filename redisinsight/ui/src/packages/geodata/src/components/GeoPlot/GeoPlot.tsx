@@ -17,15 +17,14 @@ import {
 import { GeoResult, ParsedGeoCommand } from '../../types'
 import { convertToKm } from '../../utils/distance'
 import {
+  DistanceThresholdControls,
+  DistanceThresholds,
+} from '../DistanceThresholdControls'
+import {
   DEFAULT_DISTANCE_THRESHOLDS,
   EARTH_RADIUS_KM,
 } from './GeoPlot.constants'
-import {
-  DistanceMarkerOptions,
-  DistanceThresholds,
-  GeoPlotProps,
-  ThresholdControlsProps,
-} from './GeoPlot.types'
+import { DistanceMarkerOptions, GeoPlotProps } from './GeoPlot.types'
 
 const toRadians = (value: number): number => (value * Math.PI) / 180
 const KM_PER_LATITUDE_DEGREE = 111
@@ -290,83 +289,6 @@ const addHeatmap = (map: L.Map, results: GeoResult[]): void => {
       },
     },
   ).addTo(map)
-}
-
-const DistanceThresholdControls = ({
-  thresholds,
-  onChange,
-}: ThresholdControlsProps) => {
-  const [expanded, setExpanded] = React.useState(false)
-  const isDefault =
-    thresholds.close === DEFAULT_DISTANCE_THRESHOLDS.close &&
-    thresholds.middle === DEFAULT_DISTANCE_THRESHOLDS.middle
-
-  const updateClose = (value: number) => {
-    onChange({
-      close: Math.min(value, thresholds.middle - 0.05),
-      middle: thresholds.middle,
-    })
-  }
-
-  const updateMiddle = (value: number) => {
-    onChange({
-      close: thresholds.close,
-      middle: Math.max(value, thresholds.close + 0.05),
-    })
-  }
-
-  return (
-    <div className="geodata-threshold-panel" data-testid="threshold-controls">
-      <div className="geodata-threshold-header">
-        <button
-          type="button"
-          className="geodata-threshold-toggle"
-          onClick={() => setExpanded((value) => !value)}
-          aria-expanded={expanded}
-        >
-          Distance thresholds
-        </button>
-        {expanded && (
-          <button
-            type="button"
-            className="geodata-threshold-reset"
-            onClick={() => onChange(DEFAULT_DISTANCE_THRESHOLDS)}
-            disabled={isDefault}
-          >
-            Reset
-          </button>
-        )}
-      </div>
-      {expanded && (
-        <div className="geodata-threshold-sliders">
-          <label className="geodata-threshold-slider geodata-threshold-slider--close">
-            <span>Close {Math.round(thresholds.close * 100)}%</span>
-            <input
-              type="range"
-              min="0.2"
-              max="0.6"
-              step="0.05"
-              value={thresholds.close}
-              onChange={(event) => updateClose(Number(event.target.value))}
-              aria-label="Close threshold"
-            />
-          </label>
-          <label className="geodata-threshold-slider geodata-threshold-slider--middle">
-            <span>Mid {Math.round(thresholds.middle * 100)}%</span>
-            <input
-              type="range"
-              min="0.6"
-              max="0.95"
-              step="0.05"
-              value={thresholds.middle}
-              onChange={(event) => updateMiddle(Number(event.target.value))}
-              aria-label="Mid threshold"
-            />
-          </label>
-        </div>
-      )}
-    </div>
-  )
 }
 
 const tileConfig = DEFAULT_GEO_CONFIG.tiles
