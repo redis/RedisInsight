@@ -1,6 +1,7 @@
 import React, { memo } from 'react'
 
 import { useVectorSetElementListData } from '../hooks'
+import { vectorSetColumns } from './VectorSetElementList.config'
 import { VectorSetActionsConfig } from './VectorSetElementList.types'
 import * as S from './VectorSetElementList.styles'
 
@@ -10,7 +11,7 @@ export interface Props {
 
 const VectorSetElementList = memo(({ actionsConfig }: Props) => {
   const {
-    columns,
+    meta,
     currentPageData,
     tableMinWidth,
     pagination,
@@ -23,8 +24,9 @@ const VectorSetElementList = memo(({ actionsConfig }: Props) => {
   return (
     <S.Container data-testid="vector-set-details">
       <S.StyledTable
-        columns={columns}
+        columns={vectorSetColumns}
         data={currentPageData}
+        meta={meta}
         stripedRows
         minWidth={tableMinWidth}
         paginationEnabled={isPaginationSupported}

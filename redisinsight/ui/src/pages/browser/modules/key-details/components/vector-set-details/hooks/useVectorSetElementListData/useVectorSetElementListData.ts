@@ -16,7 +16,7 @@ import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { KeyValueCompressor } from 'uiSrc/constants'
 import { Nullable } from 'uiSrc/utils'
 
-import { getVectorSetColumns } from '../../vector-set-element-list/VectorSetElementList.config'
+import { vectorSetColumns } from '../../vector-set-element-list/VectorSetElementList.config'
 import { ElementsListConfig } from '../../vector-set-element-list/VectorSetElementList.types'
 import { DEFAULT_PAGE_SIZE } from '../../vector-set-element-list/constants'
 
@@ -53,18 +53,21 @@ export const useVectorSetElementListData = ({
     setPagination((prev) => ({ ...prev, pageIndex: 0 }))
   }, [key])
 
-  const columns = useMemo(() => {
-    const listConfig: ElementsListConfig = {
+  // Shared listConfig is passed via the table's `meta` so cells can read
+  // `compressor` / `viewFormat` / `actionsConfig` without each column closing
+  // over them. Lets the column defs stay static at module scope.
+  const meta = useMemo<ElementsListConfig>(
+    () => ({
       compressor,
       viewFormat,
       actionsConfig,
-    }
-    return getVectorSetColumns(listConfig)
-  }, [compressor, viewFormat, actionsConfig])
+    }),
+    [compressor, viewFormat, actionsConfig],
+  )
 
   const tableMinWidth = useMemo(
-    () => `${Math.max(columns.length * MIN_COLUMN_WIDTH, 550)}px`,
-    [columns.length],
+    () => `${Math.max(vectorSetColumns.length * MIN_COLUMN_WIDTH, 550)}px`,
+    [],
   )
 
   const currentPageData = useMemo(() => {
@@ -94,7 +97,7 @@ export const useVectorSetElementListData = ({
   }, [pagination, elements, nextCursor, loading, key, dispatch])
 
   return {
-    columns,
+    meta,
     currentPageData,
     tableMinWidth,
     pagination,
