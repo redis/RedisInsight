@@ -253,6 +253,9 @@ jobs:
     name: Final coverage
     needs: run-tests
     if: always()
+    permissions:
+      actions: write
+      contents: read
     steps:
       - uses: actions/checkout@v6
 
