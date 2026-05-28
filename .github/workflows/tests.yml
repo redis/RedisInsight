@@ -202,6 +202,7 @@ jobs:
     permissions:
       actions: write
       contents: read
+      checks: write
     with:
       short_rte_list: ${{ inputs.short_rte_list || true }}
       redis_client: ${{ inputs.redis_client || '' }}
