@@ -145,6 +145,7 @@ const AddStreamEntries = (props: Props) => {
         'You are about to add a new entry to a stream on a production database.',
       confirmButtonText: 'Add entry',
       commandId: BrowserConfirmationCommandId.AddStreamEntry,
+      disableConfirmationInput: true,
       onConfirm: submitData,
     })
   }

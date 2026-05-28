@@ -31,6 +31,12 @@ const mockEnvironment = (environment: Environment) => {
 
 const MODAL_DESCRIPTION_TEST_ID = 'type-to-confirm-modal-description'
 
+const typeInConfirmInput = (value: string) => {
+  fireEvent.change(screen.getByTestId('type-to-confirm-modal-input'), {
+    target: { value },
+  })
+}
+
 interface TriggerProps {
   onConfirm: jest.Mock
   overrides?: Partial<ProductionWriteConfirmationRequest>
@@ -99,7 +105,7 @@ describe('ProductionWriteConfirmationProvider', () => {
     ).not.toBeInTheDocument()
   })
 
-  it('defers action and shows confirmation modal when environment is Production', () => {
+  it('defers action and shows the type-to-confirm modal in Production', () => {
     mockEnvironment(Environment.Production)
     const action = jest.fn()
 
@@ -109,43 +115,21 @@ describe('ProductionWriteConfirmationProvider', () => {
     expect(action).not.toHaveBeenCalled()
     expect(screen.getByTestId(MODAL_DESCRIPTION_TEST_ID)).toBeInTheDocument()
     expect(
-      screen.queryByTestId('type-to-confirm-modal-input'),
-    ).not.toBeInTheDocument()
-  })
-
-  it('runs action when user clicks confirm in production (no typing required)', () => {
-    mockEnvironment(Environment.Production)
-    const action = jest.fn()
-
-    renderWithProvider(<Trigger onConfirm={action} />)
-    fireEvent.click(screen.getByTestId('trigger'))
-    fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
-
-    expect(action).toHaveBeenCalledTimes(1)
-  })
-
-  it('renders the type-to-confirm input when requireConfirmationInput is true', () => {
-    mockEnvironment(Environment.Production)
-    const action = jest.fn()
-
-    renderWithProvider(
-      <Trigger
-        onConfirm={action}
-        overrides={{ requireConfirmationInput: true }}
-      />,
-    )
-    fireEvent.click(screen.getByTestId('trigger'))
-
-    expect(
       screen.getByTestId('type-to-confirm-modal-input'),
     ).toBeInTheDocument()
     expect(
       screen.getByTestId('type-to-confirm-modal-confirm-btn'),
     ).toBeDisabled()
+  })
 
-    fireEvent.change(screen.getByTestId('type-to-confirm-modal-input'), {
-      target: { value: 'prod-cache' },
-    })
+  it('runs action after the user types the DB name and confirms', () => {
+    mockEnvironment(Environment.Production)
+    const action = jest.fn()
+
+    renderWithProvider(<Trigger onConfirm={action} />)
+    fireEvent.click(screen.getByTestId('trigger'))
+
+    typeInConfirmInput('prod-cache')
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
 
     expect(action).toHaveBeenCalledTimes(1)
@@ -157,21 +141,35 @@ describe('ProductionWriteConfirmationProvider', () => {
     mockEnvironment(Environment.Production)
     const action = jest.fn()
 
-    renderWithProvider(
-      <Trigger
-        onConfirm={action}
-        overrides={{ requireConfirmationInput: true }}
-      />,
-    )
+    renderWithProvider(<Trigger onConfirm={action} />)
     fireEvent.click(screen.getByTestId('trigger'))
 
     expect(
       screen.getByTestId('type-to-confirm-modal-confirm-btn'),
     ).toBeDisabled()
 
-    fireEvent.change(screen.getByTestId('type-to-confirm-modal-input'), {
-      target: { value: `${namelessInstance.host}:${namelessInstance.port}` },
-    })
+    typeInConfirmInput(`${namelessInstance.host}:${namelessInstance.port}`)
+    fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+    expect(action).toHaveBeenCalledTimes(1)
+  })
+
+  it('hides the type-to-confirm input when disableConfirmationInput is true', () => {
+    mockEnvironment(Environment.Production)
+    const action = jest.fn()
+
+    renderWithProvider(
+      <Trigger
+        onConfirm={action}
+        overrides={{ disableConfirmationInput: true }}
+      />,
+    )
+    fireEvent.click(screen.getByTestId('trigger'))
+
+    expect(
+      screen.queryByTestId('type-to-confirm-modal-input'),
+    ).not.toBeInTheDocument()
+
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
 
     expect(action).toHaveBeenCalledTimes(1)
@@ -247,7 +245,13 @@ describe('ProductionWriteConfirmationProvider', () => {
     const action = jest.fn()
 
     renderWithProvider(
-      <Trigger onConfirm={action} overrides={{ commandId: 'edit-value' }} />,
+      <Trigger
+        onConfirm={action}
+        overrides={{
+          commandId: 'edit-value',
+          disableConfirmationInput: true,
+        }}
+      />,
     )
 
     // First call shows the modal; confirm with "don't ask again" checked
@@ -271,7 +275,13 @@ describe('ProductionWriteConfirmationProvider', () => {
     const action = jest.fn()
 
     renderWithProvider(
-      <Trigger onConfirm={action} overrides={{ commandId: 'edit-value' }} />,
+      <Trigger
+        onConfirm={action}
+        overrides={{
+          commandId: 'edit-value',
+          disableConfirmationInput: true,
+        }}
+      />,
     )
 
     fireEvent.click(screen.getByTestId('trigger'))
@@ -299,6 +309,7 @@ describe('ProductionWriteConfirmationProvider', () => {
               requestConfirmation({
                 actionDescription: 'edit',
                 commandId: 'edit-value',
+                disableConfirmationInput: true,
                 onConfirm: action,
               })
             }
@@ -312,6 +323,7 @@ describe('ProductionWriteConfirmationProvider', () => {
               requestConfirmation({
                 actionDescription: 'rename',
                 commandId: 'rename-key',
+                disableConfirmationInput: true,
                 onConfirm: action,
               })
             }
@@ -341,7 +353,10 @@ describe('ProductionWriteConfirmationProvider', () => {
     renderWithProvider(
       <Trigger
         onConfirm={action}
-        overrides={{ commandId: ['FLUSHALL', 'FLUSHDB'] }}
+        overrides={{
+          commandId: ['FLUSHALL', 'FLUSHDB'],
+          disableConfirmationInput: true,
+        }}
       />,
     )
 
@@ -374,6 +389,7 @@ describe('ProductionWriteConfirmationProvider', () => {
               requestConfirmation({
                 actionDescription: 'flushall',
                 commandId: 'FLUSHALL',
+                disableConfirmationInput: true,
                 onConfirm: action,
               })
             }
@@ -387,6 +403,7 @@ describe('ProductionWriteConfirmationProvider', () => {
               requestConfirmation({
                 actionDescription: 'mixed',
                 commandId: ['FLUSHALL', 'DEBUG'],
+                disableConfirmationInput: true,
                 onConfirm: action,
               })
             }
@@ -414,7 +431,13 @@ describe('ProductionWriteConfirmationProvider', () => {
     const action = jest.fn()
 
     const { unmount } = renderWithProvider(
-      <Trigger onConfirm={action} overrides={{ commandId: 'edit-value' }} />,
+      <Trigger
+        onConfirm={action}
+        overrides={{
+          commandId: 'edit-value',
+          disableConfirmationInput: true,
+        }}
+      />,
     )
 
     fireEvent.click(screen.getByTestId('trigger'))
@@ -430,7 +453,13 @@ describe('ProductionWriteConfirmationProvider', () => {
     )
 
     renderWithProvider(
-      <Trigger onConfirm={action} overrides={{ commandId: 'edit-value' }} />,
+      <Trigger
+        onConfirm={action}
+        overrides={{
+          commandId: 'edit-value',
+          disableConfirmationInput: true,
+        }}
+      />,
     )
 
     fireEvent.click(screen.getByTestId('trigger'))

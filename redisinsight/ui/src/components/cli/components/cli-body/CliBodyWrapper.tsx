@@ -211,7 +211,6 @@ const CliBodyWrapper = () => {
         ),
         confirmButtonText: 'Run command',
         commandId: toRedisConfirmationCommandId(verb),
-        requireConfirmationInput: true,
         tip: (
           <>
             <strong>Tip:</strong> Prevent accidental dangerous operations by

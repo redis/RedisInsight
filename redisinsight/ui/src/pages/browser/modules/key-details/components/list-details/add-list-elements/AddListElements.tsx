@@ -132,6 +132,7 @@ const AddListElements = (props: Props) => {
       ),
       confirmButtonText: 'Add elements',
       commandId: BrowserConfirmationCommandId.AddListElements,
+      disableConfirmationInput: true,
       onConfirm: submitData,
     })
   }

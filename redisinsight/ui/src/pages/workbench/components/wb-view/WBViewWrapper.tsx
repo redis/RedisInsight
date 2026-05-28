@@ -296,7 +296,6 @@ const WBViewWrapper = () => {
         ),
         confirmButtonText: 'Run command',
         commandId: dangerousVerbs,
-        requireConfirmationInput: true,
         tip: (
           <>
             <strong>Tip:</strong> Prevent accidental dangerous operations by

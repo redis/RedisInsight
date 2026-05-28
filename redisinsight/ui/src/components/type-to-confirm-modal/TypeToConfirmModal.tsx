@@ -22,7 +22,7 @@ export interface Props {
   cancelButtonText?: string
   showSkipForSession?: boolean
   skipForSessionLabel?: React.ReactNode
-  requireConfirmationInput?: boolean
+  disableConfirmationInput?: boolean
   tip?: React.ReactNode
 }
 
@@ -36,12 +36,12 @@ const TypeToConfirmModal = ({
   cancelButtonText = 'Cancel',
   showSkipForSession = false,
   skipForSessionLabel = "Don't ask again for this command during this session",
-  requireConfirmationInput = false,
+  disableConfirmationInput = false,
   tip,
 }: Props) => {
   const [value, setValue] = useState('')
   const [skipForSession, setSkipForSession] = useState(false)
-  const isMatch = !requireConfirmationInput || value === confirmationText
+  const isMatch = disableConfirmationInput || value === confirmationText
 
   const handleConfirm = () => {
     if (!isMatch) return
@@ -69,7 +69,7 @@ const TypeToConfirmModal = ({
               <Text data-testid="type-to-confirm-modal-description">
                 {actionDescription}
               </Text>
-              {requireConfirmationInput && (
+              {!disableConfirmationInput && (
                 <FormField
                   label={
                     <span>

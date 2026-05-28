@@ -76,6 +76,7 @@ const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
         ),
         confirmButtonText: 'Change TTL',
         commandId: BrowserConfirmationCommandId.ChangeTtl,
+        disableConfirmationInput: true,
         onConfirm: () => onEditTTL(keyBuffer, +ttlValue),
         onCancel: () => setTTL(`${ttlProp}`),
       })

@@ -172,6 +172,7 @@ const AddHashFields = (props: Props) => {
       ),
       confirmButtonText: 'Add fields',
       commandId: BrowserConfirmationCommandId.AddHashFields,
+      disableConfirmationInput: true,
       onConfirm: submitData,
     })
   }

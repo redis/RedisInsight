@@ -204,6 +204,7 @@ const StringDetailsValue = (props: Props) => {
         'You are about to modify a value on a production database.',
       confirmButtonText: 'Save',
       commandId: BrowserConfirmationCommandId.EditValue,
+      disableConfirmationInput: true,
       onConfirm: () => {
         const data = stringToSerializedBufferFormat(viewFormat, areaValue)
         const onSuccess = () => {
