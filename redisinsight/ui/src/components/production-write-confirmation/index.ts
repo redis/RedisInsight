@@ -9,3 +9,4 @@ export type {
 } from './ProductionWriteConfirmationProvider.types'
 export { BrowserConfirmationCommandId } from './ProductionWriteConfirmationProvider.constants'
 export { toRedisConfirmationCommandId } from './ProductionWriteConfirmationProvider.utils'
+export { AclTip } from './AclTip'

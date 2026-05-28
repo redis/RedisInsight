@@ -46,10 +46,10 @@ import {
 } from 'uiSrc/utils/cliOutputActions'
 import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 import {
+  AclTip,
   toRedisConfirmationCommandId,
   useProductionWriteConfirmation,
 } from 'uiSrc/components/production-write-confirmation'
-import { Link } from 'uiSrc/components/base/link/Link'
 import CliBody from './CliBody'
 
 import styles from './CliBody/styles.module.scss'
@@ -211,22 +211,7 @@ const CliBodyWrapper = () => {
         ),
         confirmButtonText: 'Run command',
         commandId: toRedisConfirmationCommandId(verb),
-        tip: (
-          <>
-            <strong>Tip:</strong> Prevent accidental dangerous operations by
-            restricting commands per user with{' '}
-            <Link
-              color="subdued"
-              target="_blank"
-              variant="inline"
-              size="S"
-              href="https://redis.io/docs/management/security/acl/"
-            >
-              Redis ACLs
-            </Link>
-            .
-          </>
-        ),
+        tip: <AclTip />,
         onConfirm: () => {
           for (let i = 0; i < countRepeat; i++) {
             sendCommand(commandLine)
