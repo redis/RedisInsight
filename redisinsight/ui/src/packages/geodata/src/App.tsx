@@ -5,6 +5,7 @@ import {
   GeoSearchVisualization,
   Message,
   RqeGeoVisualization,
+  Shell,
 } from './components'
 import { GeodataMode, PluginProps, WorkbenchResult } from './types'
 
@@ -21,11 +22,11 @@ const App = ({ command = '', data = [], mode }: AppProps) => {
 
   if (status === 'fail') {
     return (
-      <div className="geodata-shell">
+      <Shell>
         <Message title="Command failed" variant="danger">
           {JSON.stringify(response)}
         </Message>
-      </div>
+      </Shell>
     )
   }
 

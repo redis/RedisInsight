@@ -3,8 +3,10 @@ import React, { useMemo } from 'react'
 import { GeoHeader } from '../GeoHeader'
 import { GeoPlot } from '../GeoPlot'
 import { GeoShapePlot } from '../GeoShapePlot'
+import { GeoSummary } from '../GeoSummary'
 import { GeoTable } from '../GeoTable'
 import { Message } from '../Message'
+import { Shell } from '../Shell'
 import {
   GeoPointResult,
   GeoShapeResult,
@@ -104,28 +106,19 @@ const renderSummary = (command: ParsedRqeGeoCommand, rowCount: number) => {
       : command.overlay.operation
 
   return (
-    <dl className="geodata-summary-grid" aria-label="RQE command summary">
-      <div>
-        <dt>Command</dt>
-        <dd>{command.command}</dd>
-      </div>
-      <div>
-        <dt>Index</dt>
-        <dd>{command.index}</dd>
-      </div>
-      <div>
-        <dt>Geo field</dt>
-        <dd>{command.geoField}</dd>
-      </div>
-      <div>
-        <dt>{command.overlay.type === 'radius' ? 'Radius' : 'Operation'}</dt>
-        <dd>{overlayValue}</dd>
-      </div>
-      <div>
-        <dt>Rows</dt>
-        <dd>{rowCount}</dd>
-      </div>
-    </dl>
+    <GeoSummary
+      ariaLabel="RQE command summary"
+      items={[
+        { label: 'Command', value: command.command },
+        { label: 'Index', value: command.index },
+        { label: 'Geo field', value: command.geoField },
+        {
+          label: command.overlay.type === 'radius' ? 'Radius' : 'Operation',
+          value: overlayValue,
+        },
+        { label: 'Rows', value: rowCount },
+      ]}
+    />
   )
 }
 
@@ -179,30 +172,30 @@ export const RqeGeoVisualization = ({
 
   if (!parsedCommand.ok) {
     return (
-      <div className="geodata-shell">
+      <Shell>
         <GeoHeader title={title} status={status} resultCount={0} />
         <Message title={getCommandErrorTitle(mode)} variant="danger">
           {parsedCommand.error}
         </Message>
-      </div>
+      </Shell>
     )
   }
 
   if (!parsedResults.ok) {
     return (
-      <div className="geodata-shell">
+      <Shell>
         <GeoHeader title={title} status={status} resultCount={0} />
         <Message title={getResultsErrorTitle(mode)} variant="danger">
           {parsedResults.error}
         </Message>
-      </div>
+      </Shell>
     )
   }
 
   const { points, shapes } = parsedResults.value
   if (mode === 'shape') {
     return (
-      <div className="geodata-shell">
+      <Shell>
         <GeoHeader title={title} status={status} resultCount={shapes.length} />
         {shapes.length === 0 ? (
           <Message>No geospatial shapes returned.</Message>
@@ -219,13 +212,13 @@ export const RqeGeoVisualization = ({
             />
           </>
         )}
-      </div>
+      </Shell>
     )
   }
 
   if (mode === 'inspector') {
     return (
-      <div className="geodata-shell">
+      <Shell>
         <GeoHeader
           title={title}
           status={status}
@@ -241,12 +234,12 @@ export const RqeGeoVisualization = ({
         {shapes.length > 0 && (
           <GeoTable columns={['Name', 'ID', 'Field', 'WKT']} rows={shapeRows} />
         )}
-      </div>
+      </Shell>
     )
   }
 
   return (
-    <div className="geodata-shell">
+    <Shell>
       <GeoHeader title={title} status={status} resultCount={points.length} />
       {points.length === 0 ? (
         <Message>No geospatial rows returned.</Message>
@@ -259,6 +252,6 @@ export const RqeGeoVisualization = ({
           />
         </>
       )}
-    </div>
+    </Shell>
   )
 }
