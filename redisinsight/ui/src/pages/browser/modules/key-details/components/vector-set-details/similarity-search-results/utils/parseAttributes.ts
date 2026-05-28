@@ -36,6 +36,26 @@ export const buildParsedAttributesCache = (
 }
 
 /**
+ * Memoized `parseAttributes` for callers that can't reach
+ * `meta.parsedAttributesCache` (tanstack `accessorFn` / `sortingFn` don't
+ * receive the table), so sorting doesn't re-parse on every comparison.
+ */
+const moduleParsedAttributesCache: WeakMap<
+  VectorSetSimilarityMatch,
+  Record<string, unknown>
+> = new WeakMap()
+
+export const getParsedAttributes = (
+  match: VectorSetSimilarityMatch,
+): Record<string, unknown> => {
+  const cached = moduleParsedAttributesCache.get(match)
+  if (cached) return cached
+  const parsed = parseAttributes(match.attributes)
+  moduleParsedAttributesCache.set(match, parsed)
+  return parsed
+}
+
+/**
  * Union of top-level attribute keys across `matches`, alphabetically sorted.
  * Stable ordering keeps the column list referentially stable across renders.
  *

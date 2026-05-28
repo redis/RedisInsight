@@ -4,6 +4,7 @@ import { vectorSetSimilarityMatchFactory } from 'uiSrc/mocks/factories/browser/v
 
 import {
   collectAttributeKeys,
+  getParsedAttributes,
   parseAttributes,
   renderAttributeValue,
 } from './parseAttributes'
@@ -83,6 +84,37 @@ describe('collectAttributeKeys', () => {
       match('e', 0.5, '{"y":2}'),
     ])
     expect(keys).toEqual(['x', 'y'])
+  })
+})
+
+describe('getParsedAttributes', () => {
+  it('returns the parsed attributes for a match', () => {
+    const m = match('a', 0.9, '{"city":"NYC","count":3}')
+    expect(getParsedAttributes(m)).toEqual({ city: 'NYC', count: 3 })
+  })
+
+  it('returns the same object reference on repeated calls for the same match', () => {
+    // Identity check proves memoization: a fresh `JSON.parse` would produce a
+    // different reference each call.
+    const m = match('a', 0.9, '{"city":"NYC"}')
+    const first = getParsedAttributes(m)
+    const second = getParsedAttributes(m)
+    expect(second).toBe(first)
+  })
+
+  it('does not share parsed entries across distinct match objects', () => {
+    const m1 = match('a', 0.9, '{"city":"NYC"}')
+    const m2 = match('b', 0.8, '{"city":"LA"}')
+    expect(getParsedAttributes(m1)).not.toBe(getParsedAttributes(m2))
+    expect(getParsedAttributes(m1)).toEqual({ city: 'NYC' })
+    expect(getParsedAttributes(m2)).toEqual({ city: 'LA' })
+  })
+
+  it('returns {} for malformed attributes and memoizes that too', () => {
+    const m = match('a', 0.9, '{not json')
+    const first = getParsedAttributes(m)
+    expect(first).toEqual({})
+    expect(getParsedAttributes(m)).toBe(first)
   })
 })
 

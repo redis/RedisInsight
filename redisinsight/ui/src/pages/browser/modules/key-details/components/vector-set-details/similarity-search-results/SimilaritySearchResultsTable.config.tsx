@@ -11,7 +11,11 @@ import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import { ElementNameCell } from '../vector-set-element-list/components/ElementNameCell/ElementNameCell'
 import { formatSimilarity } from './utils'
 import { bufferToString } from 'uiSrc/utils'
-import { parseAttributes, renderAttributeValue } from './utils/parseAttributes'
+import {
+  getParsedAttributes,
+  parseAttributes,
+  renderAttributeValue,
+} from './utils/parseAttributes'
 import {
   HIGH_SIMILARITY_THRESHOLD,
   SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_ID_PREFIX,
@@ -113,14 +117,15 @@ const buildAttributeColumn = (
   size: SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE,
   sizeUnit: 'px',
   enableSorting: true,
-  // Accessor required for tanstack to treat this as a sortable data column.
-  accessorFn: (row) => parseAttributes(row.attributes)[key],
+  // `getParsedAttributes` memoizes per match so sorting doesn't re-parse JSON
+  // on every comparison. `accessorFn` makes this a sortable data column.
+  accessorFn: (row) => getParsedAttributes(row)[key],
   sortingFn: (rowA, rowB) =>
-    renderAttributeValue(parseAttributes(rowA.original.attributes)[key])
+    renderAttributeValue(getParsedAttributes(rowA.original)[key])
       .toLowerCase()
       .localeCompare(
         renderAttributeValue(
-          parseAttributes(rowB.original.attributes)[key],
+          getParsedAttributes(rowB.original)[key],
         ).toLowerCase(),
       ),
   cell: ({ row, table }: CellContext<VectorSetSimilarityMatch, unknown>) => {
