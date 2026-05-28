@@ -174,6 +174,7 @@ jobs:
 
   frontend-tests-coverage:
     needs: frontend-tests
+    if: ${{ github.actor != 'dependabot[bot]' }}
     uses: ./.github/workflows/code-coverage.yml
     secrets: inherit
     with:
@@ -188,6 +189,7 @@ jobs:
 
   backend-tests-coverage:
     needs: backend-tests
+    if: ${{ github.actor != 'dependabot[bot]' }}
     uses: ./.github/workflows/code-coverage.yml
     secrets: inherit
     with:
@@ -210,6 +212,7 @@ jobs:
 
   integration-tests-coverage:
     needs: integration-tests
+    if: ${{ github.actor != 'dependabot[bot]' }}
     uses: ./.github/workflows/code-coverage.yml
     secrets: inherit
     with:
