@@ -1,13 +1,19 @@
 import React from 'react'
 
-interface MessageProps {
-  title?: string
-  children: React.ReactNode
-}
+import { Col } from 'uiSrc/components/base/layout/flex'
 
-export const Message = ({ title = 'Geodata visualization', children }: MessageProps) => (
-  <section className="geodata-message" role="status">
-    <h3>{title}</h3>
-    <div>{children}</div>
-  </section>
+import { MessageProps } from './Message.types'
+import * as S from './Message.styles'
+
+export const Message = ({
+  title,
+  children,
+  variant = 'notice',
+}: MessageProps) => (
+  <S.StyledBanner variant={variant} role="status">
+    <Col gap="s">
+      {title && <strong>{title}</strong>}
+      {children}
+    </Col>
+  </S.StyledBanner>
 )

@@ -181,7 +181,7 @@ export const RqeGeoVisualization = ({
     return (
       <div className="geodata-shell">
         <GeoHeader title={title} status={status} resultCount={0} />
-        <Message title={getCommandErrorTitle(mode)}>
+        <Message title={getCommandErrorTitle(mode)} variant="danger">
           {parsedCommand.error}
         </Message>
       </div>
@@ -192,7 +192,7 @@ export const RqeGeoVisualization = ({
     return (
       <div className="geodata-shell">
         <GeoHeader title={title} status={status} resultCount={0} />
-        <Message title={getResultsErrorTitle(mode)}>
+        <Message title={getResultsErrorTitle(mode)} variant="danger">
           {parsedResults.error}
         </Message>
       </div>

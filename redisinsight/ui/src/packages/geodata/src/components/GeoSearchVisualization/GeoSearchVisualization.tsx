@@ -53,7 +53,9 @@ export const GeoSearchVisualization = ({
     return (
       <div className="geodata-shell">
         <GeoHeader title={title} status={status} resultCount={0} />
-        <Message title={errorTitle}>{parsedCommand.error}</Message>
+        <Message title={errorTitle} variant="danger">
+          {parsedCommand.error}
+        </Message>
       </div>
     )
   }
@@ -62,7 +64,9 @@ export const GeoSearchVisualization = ({
     return (
       <div className="geodata-shell">
         <GeoHeader title={title} status={status} resultCount={0} />
-        <Message title={errorTitle}>{parsedResults.error}</Message>
+        <Message title={errorTitle} variant="danger">
+          {parsedResults.error}
+        </Message>
       </div>
     )
   }
