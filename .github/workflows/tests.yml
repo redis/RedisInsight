@@ -218,6 +218,10 @@ jobs:
   clean:
     uses: ./.github/workflows/clean-deployments.yml
     if: always()
+    permissions:
+      actions: write
+      contents: read
+      deployments: write
     needs:
       [
         frontend-tests,
