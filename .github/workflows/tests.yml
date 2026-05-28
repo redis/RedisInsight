@@ -199,6 +199,10 @@ jobs:
     if: needs.should-run.outputs.integration == 'true'
     uses: ./.github/workflows/tests-integration.yml
     secrets: inherit
+    permissions:
+      actions: write
+      contents: read
+      checks: write
     with:
       short_rte_list: ${{ inputs.short_rte_list || true }}
       redis_client: ${{ inputs.redis_client || '' }}
@@ -215,6 +219,10 @@ jobs:
   clean:
     uses: ./.github/workflows/clean-deployments.yml
     if: always()
+    permissions:
+      actions: write
+      contents: read
+      deployments: write
     needs:
       [
         frontend-tests,

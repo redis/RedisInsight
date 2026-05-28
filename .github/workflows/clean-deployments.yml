@@ -6,6 +6,10 @@ jobs:
   clean:
     name: Clean deployments
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+      deployments: write
     steps:
       - name: 🗑 Delete deployment (staging)
         uses: strumwolf/delete-deployment-environment@v4

@@ -121,6 +121,10 @@ jobs:
     # secrets: inherit
     needs: [aws-upload]
     if: always()
+    permissions:
+      actions: write
+      contents: read
+      deployments: write
 
   # Remove artifacts from github actions
   remove-artifacts:
