@@ -80,7 +80,11 @@ const calculateDistanceKm = (
     Math.sin(latDelta / 2) ** 2 +
     Math.cos(startLat) * Math.cos(endLat) * Math.sin(lonDelta / 2) ** 2
 
-  return 2 * EARTH_RADIUS_KM * Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine))
+  return (
+    2 *
+    EARTH_RADIUS_KM *
+    Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine))
+  )
 }
 
 const getDistanceScaleKm = (
@@ -129,7 +133,8 @@ const createClusterIcon = (
   const averageDistance =
     distances.length === 0
       ? undefined
-      : distances.reduce((sum, distance) => sum + distance, 0) / distances.length
+      : distances.reduce((sum, distance) => sum + distance, 0) /
+        distances.length
   const count = childMarkers.length
   const size = count > 100 ? 50 : count > 10 ? 40 : 30
   const node = document.createElement('div')
@@ -189,10 +194,7 @@ const getLongitudeDelta = (widthKm: number, centerLat: number): number => {
   return Math.min(widthKm / longitudeKmPerDegree, MAX_LONGITUDE_DEGREES)
 }
 
-const addSearchShape = (
-  map: L.Map,
-  command: ParsedGeoCommand,
-): void => {
+const addSearchShape = (map: L.Map, command: ParsedGeoCommand): void => {
   if (command.centerLat === undefined || command.centerLon === undefined) {
     return
   }
@@ -372,7 +374,9 @@ const tileConfig = DEFAULT_GEO_CONFIG.tiles
 export const GeoPlot = ({ mode, results, command }: GeoPlotProps) => {
   const mapRef = useRef<HTMLDivElement>(null)
   const markersRef = useRef<L.CircleMarker[]>([])
-  const markerLayerRef = useRef<L.LayerGroup | L.MarkerClusterGroup | null>(null)
+  const markerLayerRef = useRef<L.LayerGroup | L.MarkerClusterGroup | null>(
+    null,
+  )
   const distanceScaleRef = useRef<number>(0)
   const [tileNotice, setTileNotice] = React.useState<string | null>(
     tileConfig.enabled ? null : 'Map tiles disabled',
@@ -459,7 +463,11 @@ export const GeoPlot = ({ mode, results, command }: GeoPlotProps) => {
     markersRef.current.forEach((marker) => {
       const distanceKm = (marker.options as DistanceMarkerOptions).distanceKm
       marker.setStyle({
-        fillColor: getPointColor(distanceKm, distanceScaleRef.current, thresholds),
+        fillColor: getPointColor(
+          distanceKm,
+          distanceScaleRef.current,
+          thresholds,
+        ),
       })
     })
 
