@@ -22,6 +22,8 @@ export interface Props {
   cancelButtonText?: string
   showSkipForSession?: boolean
   skipForSessionLabel?: React.ReactNode
+  requireConfirmationInput?: boolean
+  tip?: React.ReactNode
 }
 
 const TypeToConfirmModal = ({
@@ -33,11 +35,13 @@ const TypeToConfirmModal = ({
   confirmButtonText = 'Confirm',
   cancelButtonText = 'Cancel',
   showSkipForSession = false,
-  skipForSessionLabel = "Don't ask again for this command in this session",
+  skipForSessionLabel = "Don't ask again for this command during this session",
+  requireConfirmationInput = false,
+  tip,
 }: Props) => {
   const [value, setValue] = useState('')
   const [skipForSession, setSkipForSession] = useState(false)
-  const isMatch = value === confirmationText
+  const isMatch = !requireConfirmationInput || value === confirmationText
 
   const handleConfirm = () => {
     if (!isMatch) return
@@ -65,22 +69,24 @@ const TypeToConfirmModal = ({
               <Text data-testid="type-to-confirm-modal-description">
                 {actionDescription}
               </Text>
-              <FormField
-                label={
-                  <span>
-                    Type <strong>{confirmationText}</strong> to confirm
-                  </span>
-                }
-              >
-                <TextInput
-                  autoFocus={false}
-                  value={value}
-                  onChange={setValue}
-                  autoComplete="off"
-                  spellCheck={false}
-                  data-testid="type-to-confirm-modal-input"
-                />
-              </FormField>
+              {requireConfirmationInput && (
+                <FormField
+                  label={
+                    <span>
+                      Type <strong>{confirmationText}</strong> to confirm
+                    </span>
+                  }
+                >
+                  <TextInput
+                    autoFocus={false}
+                    value={value}
+                    onChange={setValue}
+                    autoComplete="off"
+                    spellCheck={false}
+                    data-testid="type-to-confirm-modal-input"
+                  />
+                </FormField>
+              )}
               {showSkipForSession && (
                 <Checkbox
                   id="type-to-confirm-modal-skip-checkbox"
@@ -91,6 +97,11 @@ const TypeToConfirmModal = ({
                   onChange={(e) => setSkipForSession(e.target.checked)}
                   data-testid="type-to-confirm-modal-skip-checkbox"
                 />
+              )}
+              {tip && (
+                <Text data-testid="type-to-confirm-modal-tip" size="S">
+                  {tip}
+                </Text>
               )}
             </Col>
           }

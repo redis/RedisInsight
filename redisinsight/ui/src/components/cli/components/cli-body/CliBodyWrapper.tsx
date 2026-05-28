@@ -49,6 +49,7 @@ import {
   toRedisConfirmationCommandId,
   useProductionWriteConfirmation,
 } from 'uiSrc/components/production-write-confirmation'
+import { Link } from 'uiSrc/components/base/link/Link'
 import CliBody from './CliBody'
 
 import styles from './CliBody/styles.module.scss'
@@ -199,15 +200,34 @@ const CliBodyWrapper = () => {
     const verb = commandLine.trim().split(/\s+/)[0]?.toUpperCase() ?? ''
     if (isDangerousCommand(verb)) {
       requestConfirmation({
-        title: 'Run dangerous command?',
+        title: 'Proceed with caution in production',
         actionDescription: (
           <>
-            You&apos;re about to run <strong>{commandLine}</strong> against the
-            production database <strong>{confirmationText}</strong>.
+            You&apos;re about to run <strong>{commandLine}</strong> on{' '}
+            <strong>{confirmationText}</strong>. This command is part of the
+            list of dangerous commands. This operation may affect server
+            stability.
           </>
         ),
         confirmButtonText: 'Run command',
         commandId: toRedisConfirmationCommandId(verb),
+        requireConfirmationInput: true,
+        tip: (
+          <>
+            <strong>Tip:</strong> Prevent accidental dangerous operations by
+            restricting commands per user with{' '}
+            <Link
+              color="subdued"
+              target="_blank"
+              variant="inline"
+              size="S"
+              href="https://redis.io/docs/management/security/acl/"
+            >
+              Redis ACLs
+            </Link>
+            .
+          </>
+        ),
         onConfirm: () => {
           for (let i = 0; i < countRepeat; i++) {
             sendCommand(commandLine)

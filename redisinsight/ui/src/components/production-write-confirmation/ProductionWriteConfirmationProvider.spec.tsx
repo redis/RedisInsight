@@ -29,11 +29,7 @@ const mockEnvironment = (environment: Environment) => {
     })
 }
 
-const typeInConfirmInput = (value: string) => {
-  fireEvent.change(screen.getByTestId('type-to-confirm-modal-input'), {
-    target: { value },
-  })
-}
+const MODAL_DESCRIPTION_TEST_ID = 'type-to-confirm-modal-description'
 
 interface TriggerProps {
   onConfirm: jest.Mock
@@ -86,7 +82,7 @@ describe('ProductionWriteConfirmationProvider', () => {
 
     expect(action).toHaveBeenCalledTimes(1)
     expect(
-      screen.queryByTestId('type-to-confirm-modal-input'),
+      screen.queryByTestId(MODAL_DESCRIPTION_TEST_ID),
     ).not.toBeInTheDocument()
   })
 
@@ -99,11 +95,11 @@ describe('ProductionWriteConfirmationProvider', () => {
 
     expect(action).toHaveBeenCalledTimes(1)
     expect(
-      screen.queryByTestId('type-to-confirm-modal-input'),
+      screen.queryByTestId(MODAL_DESCRIPTION_TEST_ID),
     ).not.toBeInTheDocument()
   })
 
-  it('defers action and shows TypeToConfirm modal when environment is Production', () => {
+  it('defers action and shows confirmation modal when environment is Production', () => {
     mockEnvironment(Environment.Production)
     const action = jest.fn()
 
@@ -111,44 +107,88 @@ describe('ProductionWriteConfirmationProvider', () => {
     fireEvent.click(screen.getByTestId('trigger'))
 
     expect(action).not.toHaveBeenCalled()
+    expect(screen.getByTestId(MODAL_DESCRIPTION_TEST_ID)).toBeInTheDocument()
+    expect(
+      screen.queryByTestId('type-to-confirm-modal-input'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('runs action when user clicks confirm in production (no typing required)', () => {
+    mockEnvironment(Environment.Production)
+    const action = jest.fn()
+
+    renderWithProvider(<Trigger onConfirm={action} />)
+    fireEvent.click(screen.getByTestId('trigger'))
+    fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+    expect(action).toHaveBeenCalledTimes(1)
+  })
+
+  it('renders the type-to-confirm input when requireConfirmationInput is true', () => {
+    mockEnvironment(Environment.Production)
+    const action = jest.fn()
+
+    renderWithProvider(
+      <Trigger
+        onConfirm={action}
+        overrides={{ requireConfirmationInput: true }}
+      />,
+    )
+    fireEvent.click(screen.getByTestId('trigger'))
+
     expect(
       screen.getByTestId('type-to-confirm-modal-input'),
     ).toBeInTheDocument()
     expect(
       screen.getByTestId('type-to-confirm-modal-confirm-btn'),
     ).toBeDisabled()
-  })
 
-  it('runs action only after user types DB name and confirms in production', () => {
-    mockEnvironment(Environment.Production)
-    const action = jest.fn()
-
-    renderWithProvider(<Trigger onConfirm={action} />)
-    fireEvent.click(screen.getByTestId('trigger'))
-
-    typeInConfirmInput('prod-cache')
+    fireEvent.change(screen.getByTestId('type-to-confirm-modal-input'), {
+      target: { value: 'prod-cache' },
+    })
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
 
     expect(action).toHaveBeenCalledTimes(1)
   })
 
-  it('falls back to host:port when DB name is empty', () => {
+  it('falls back to host:port for the type-to-confirm input when DB name is empty', () => {
     const namelessInstance = DBInstanceFactory.build({ name: '' })
     mockedConnectedInstanceSelector.mockReturnValue(namelessInstance)
     mockEnvironment(Environment.Production)
     const action = jest.fn()
 
-    renderWithProvider(<Trigger onConfirm={action} />)
+    renderWithProvider(
+      <Trigger
+        onConfirm={action}
+        overrides={{ requireConfirmationInput: true }}
+      />,
+    )
     fireEvent.click(screen.getByTestId('trigger'))
 
     expect(
       screen.getByTestId('type-to-confirm-modal-confirm-btn'),
     ).toBeDisabled()
 
-    typeInConfirmInput(`${namelessInstance.host}:${namelessInstance.port}`)
+    fireEvent.change(screen.getByTestId('type-to-confirm-modal-input'), {
+      target: { value: `${namelessInstance.host}:${namelessInstance.port}` },
+    })
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
 
     expect(action).toHaveBeenCalledTimes(1)
+  })
+
+  it('renders the tip when provided', () => {
+    mockEnvironment(Environment.Production)
+
+    renderWithProvider(
+      <Trigger
+        onConfirm={jest.fn()}
+        overrides={{ tip: <span data-testid="acl-tip">acl tip</span> }}
+      />,
+    )
+    fireEvent.click(screen.getByTestId('trigger'))
+
+    expect(screen.getByTestId('acl-tip')).toBeInTheDocument()
   })
 
   it('cancels action and calls onCancel when user cancels in production', () => {
@@ -174,7 +214,7 @@ describe('ProductionWriteConfirmationProvider', () => {
 
     expect(action).toHaveBeenCalledTimes(1)
     expect(
-      screen.queryByTestId('type-to-confirm-modal-input'),
+      screen.queryByTestId(MODAL_DESCRIPTION_TEST_ID),
     ).not.toBeInTheDocument()
   })
 
@@ -212,7 +252,6 @@ describe('ProductionWriteConfirmationProvider', () => {
 
     // First call shows the modal; confirm with "don't ask again" checked
     fireEvent.click(screen.getByTestId('trigger'))
-    typeInConfirmInput('prod-cache')
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-skip-checkbox'))
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
 
@@ -223,7 +262,7 @@ describe('ProductionWriteConfirmationProvider', () => {
 
     expect(action).toHaveBeenCalledTimes(2)
     expect(
-      screen.queryByTestId('type-to-confirm-modal-input'),
+      screen.queryByTestId(MODAL_DESCRIPTION_TEST_ID),
     ).not.toBeInTheDocument()
   })
 
@@ -236,16 +275,13 @@ describe('ProductionWriteConfirmationProvider', () => {
     )
 
     fireEvent.click(screen.getByTestId('trigger'))
-    typeInConfirmInput('prod-cache')
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
 
     expect(action).toHaveBeenCalledTimes(1)
 
     fireEvent.click(screen.getByTestId('trigger'))
 
-    expect(
-      screen.getByTestId('type-to-confirm-modal-input'),
-    ).toBeInTheDocument()
+    expect(screen.getByTestId(MODAL_DESCRIPTION_TEST_ID)).toBeInTheDocument()
   })
 
   it('does not skip the modal for a different commandId', () => {
@@ -289,16 +325,13 @@ describe('ProductionWriteConfirmationProvider', () => {
     renderWithProvider(<Multi />)
 
     fireEvent.click(screen.getByTestId('trigger-edit'))
-    typeInConfirmInput('prod-cache')
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-skip-checkbox'))
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
 
     // The other commandId must still trigger the modal
     fireEvent.click(screen.getByTestId('trigger-rename'))
 
-    expect(
-      screen.getByTestId('type-to-confirm-modal-input'),
-    ).toBeInTheDocument()
+    expect(screen.getByTestId(MODAL_DESCRIPTION_TEST_ID)).toBeInTheDocument()
   })
 
   it('only skips when every commandId in an array request is already in the skip set', () => {
@@ -313,7 +346,6 @@ describe('ProductionWriteConfirmationProvider', () => {
     )
 
     fireEvent.click(screen.getByTestId('trigger'))
-    typeInConfirmInput('prod-cache')
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-skip-checkbox'))
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
 
@@ -323,7 +355,7 @@ describe('ProductionWriteConfirmationProvider', () => {
     fireEvent.click(screen.getByTestId('trigger'))
     expect(action).toHaveBeenCalledTimes(2)
     expect(
-      screen.queryByTestId('type-to-confirm-modal-input'),
+      screen.queryByTestId(MODAL_DESCRIPTION_TEST_ID),
     ).not.toBeInTheDocument()
   })
 
@@ -369,15 +401,12 @@ describe('ProductionWriteConfirmationProvider', () => {
 
     // Opt out of FLUSHALL only
     fireEvent.click(screen.getByTestId('trigger-flushall'))
-    typeInConfirmInput('prod-cache')
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-skip-checkbox'))
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
 
     // Array contains DEBUG which is not in the skip set → must prompt
     fireEvent.click(screen.getByTestId('trigger-mixed'))
-    expect(
-      screen.getByTestId('type-to-confirm-modal-input'),
-    ).toBeInTheDocument()
+    expect(screen.getByTestId(MODAL_DESCRIPTION_TEST_ID)).toBeInTheDocument()
   })
 
   it('resets the skip list when the connected database changes', () => {
@@ -389,7 +418,6 @@ describe('ProductionWriteConfirmationProvider', () => {
     )
 
     fireEvent.click(screen.getByTestId('trigger'))
-    typeInConfirmInput('prod-cache')
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-skip-checkbox'))
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
 
@@ -407,8 +435,6 @@ describe('ProductionWriteConfirmationProvider', () => {
 
     fireEvent.click(screen.getByTestId('trigger'))
 
-    expect(
-      screen.getByTestId('type-to-confirm-modal-input'),
-    ).toBeInTheDocument()
+    expect(screen.getByTestId(MODAL_DESCRIPTION_TEST_ID)).toBeInTheDocument()
   })
 })

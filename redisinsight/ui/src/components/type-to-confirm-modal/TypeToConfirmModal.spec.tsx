@@ -62,57 +62,25 @@ describe('TypeToConfirmModal', () => {
     expect(screen.getByTestId('custom-desc')).toBeInTheDocument()
   })
 
-  it('confirm button should be disabled by default', () => {
+  it('should not render the confirmation input by default', () => {
     render(<TypeToConfirmModal {...mockProps} />)
 
     expect(
-      screen.getByTestId('type-to-confirm-modal-confirm-btn'),
-    ).toBeDisabled()
+      screen.queryByTestId('type-to-confirm-modal-input'),
+    ).not.toBeInTheDocument()
   })
 
-  it('confirm button should be disabled when typed value does not match confirmationText', () => {
+  it('confirm button should be enabled by default (no input required)', () => {
     render(<TypeToConfirmModal {...mockProps} />)
-
-    typeInConfirmInput('not-the-name')
-
-    expect(
-      screen.getByTestId('type-to-confirm-modal-confirm-btn'),
-    ).toBeDisabled()
-  })
-
-  it('confirm button should be enabled when typed value exactly matches confirmationText', () => {
-    render(<TypeToConfirmModal {...mockProps} />)
-
-    typeInConfirmInput('prod-cache-eu-west-1')
 
     expect(
       screen.getByTestId('type-to-confirm-modal-confirm-btn'),
     ).not.toBeDisabled()
   })
 
-  it('match should be case-sensitive', () => {
+  it('should fire onConfirm when confirm is clicked (no input required)', () => {
     render(<TypeToConfirmModal {...mockProps} />)
 
-    typeInConfirmInput('PROD-CACHE-EU-WEST-1')
-
-    expect(
-      screen.getByTestId('type-to-confirm-modal-confirm-btn'),
-    ).toBeDisabled()
-  })
-
-  it('should not fire onConfirm when typed value does not match', () => {
-    render(<TypeToConfirmModal {...mockProps} />)
-
-    typeInConfirmInput('mismatch')
-    fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
-
-    expect(mockProps.onConfirm).not.toHaveBeenCalled()
-  })
-
-  it('should fire onConfirm when typed value matches and confirm is clicked', () => {
-    render(<TypeToConfirmModal {...mockProps} />)
-
-    typeInConfirmInput('prod-cache-eu-west-1')
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
 
     expect(mockProps.onConfirm).toHaveBeenCalledTimes(1)
@@ -149,6 +117,86 @@ describe('TypeToConfirmModal', () => {
     ).toHaveTextContent('Back')
   })
 
+  describe('with requireConfirmationInput', () => {
+    it('should render the confirmation input', () => {
+      render(
+        <TypeToConfirmModal {...mockProps} requireConfirmationInput />,
+      )
+
+      expect(
+        screen.getByTestId('type-to-confirm-modal-input'),
+      ).toBeInTheDocument()
+    })
+
+    it('confirm button should be disabled by default', () => {
+      render(
+        <TypeToConfirmModal {...mockProps} requireConfirmationInput />,
+      )
+
+      expect(
+        screen.getByTestId('type-to-confirm-modal-confirm-btn'),
+      ).toBeDisabled()
+    })
+
+    it('confirm button should be disabled when typed value does not match confirmationText', () => {
+      render(
+        <TypeToConfirmModal {...mockProps} requireConfirmationInput />,
+      )
+
+      typeInConfirmInput('not-the-name')
+
+      expect(
+        screen.getByTestId('type-to-confirm-modal-confirm-btn'),
+      ).toBeDisabled()
+    })
+
+    it('confirm button should be enabled when typed value exactly matches confirmationText', () => {
+      render(
+        <TypeToConfirmModal {...mockProps} requireConfirmationInput />,
+      )
+
+      typeInConfirmInput('prod-cache-eu-west-1')
+
+      expect(
+        screen.getByTestId('type-to-confirm-modal-confirm-btn'),
+      ).not.toBeDisabled()
+    })
+
+    it('match should be case-sensitive', () => {
+      render(
+        <TypeToConfirmModal {...mockProps} requireConfirmationInput />,
+      )
+
+      typeInConfirmInput('PROD-CACHE-EU-WEST-1')
+
+      expect(
+        screen.getByTestId('type-to-confirm-modal-confirm-btn'),
+      ).toBeDisabled()
+    })
+
+    it('should not fire onConfirm when typed value does not match', () => {
+      render(
+        <TypeToConfirmModal {...mockProps} requireConfirmationInput />,
+      )
+
+      typeInConfirmInput('mismatch')
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+      expect(mockProps.onConfirm).not.toHaveBeenCalled()
+    })
+
+    it('should fire onConfirm when typed value matches and confirm is clicked', () => {
+      render(
+        <TypeToConfirmModal {...mockProps} requireConfirmationInput />,
+      )
+
+      typeInConfirmInput('prod-cache-eu-west-1')
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+      expect(mockProps.onConfirm).toHaveBeenCalledTimes(1)
+    })
+  })
+
   it('should not render the skip-for-session checkbox by default', () => {
     render(<TypeToConfirmModal {...mockProps} />)
 
@@ -165,6 +213,14 @@ describe('TypeToConfirmModal', () => {
     ).toBeInTheDocument()
   })
 
+  it('should render the default skip-for-session label', () => {
+    render(<TypeToConfirmModal {...mockProps} showSkipForSession />)
+
+    expect(
+      screen.getByText("Don't ask again for this command during this session"),
+    ).toBeInTheDocument()
+  })
+
   it('should pass skipForSession=false to onConfirm when checkbox is not checked', () => {
     const onConfirm = jest.fn()
     render(
@@ -175,7 +231,6 @@ describe('TypeToConfirmModal', () => {
       />,
     )
 
-    typeInConfirmInput('prod-cache-eu-west-1')
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
 
     expect(onConfirm).toHaveBeenCalledWith(false)
@@ -191,10 +246,29 @@ describe('TypeToConfirmModal', () => {
       />,
     )
 
-    typeInConfirmInput('prod-cache-eu-west-1')
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-skip-checkbox'))
     fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
 
     expect(onConfirm).toHaveBeenCalledWith(true)
+  })
+
+  it('should not render the tip section by default', () => {
+    render(<TypeToConfirmModal {...mockProps} />)
+
+    expect(
+      screen.queryByTestId('type-to-confirm-modal-tip'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should render the tip when provided', () => {
+    render(
+      <TypeToConfirmModal
+        {...mockProps}
+        tip={<span data-testid="tip-content">helpful tip</span>}
+      />,
+    )
+
+    expect(screen.getByTestId('type-to-confirm-modal-tip')).toBeInTheDocument()
+    expect(screen.getByTestId('tip-content')).toBeInTheDocument()
   })
 })

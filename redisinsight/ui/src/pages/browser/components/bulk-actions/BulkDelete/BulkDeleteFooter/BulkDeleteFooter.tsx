@@ -226,6 +226,7 @@ const BulkDeleteFooter = (props: Props) => {
                 title="Delete all matching keys"
                 confirmationText={confirmationText}
                 confirmButtonText="Delete"
+                requireConfirmationInput
                 actionDescription={
                   <>
                     This will delete all keys matching the selected type and

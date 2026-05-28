@@ -92,7 +92,7 @@ describe('KeyDetailsHeaderTTL', () => {
       editTTL()
       expect(onEditTTL).toHaveBeenCalledTimes(1)
       expect(
-        screen.queryByTestId('type-to-confirm-modal-input'),
+        screen.queryByTestId('type-to-confirm-modal-description'),
       ).not.toBeInTheDocument()
     })
 
@@ -104,23 +104,20 @@ describe('KeyDetailsHeaderTTL', () => {
       expect(onEditTTL).toHaveBeenCalledTimes(1)
     })
 
-    it('defers onEditTTL behind a type-to-confirm modal when Production', () => {
+    it('defers onEditTTL behind a confirmation modal when Production', () => {
       const onEditTTL = jest.fn()
       mockEnvironment(Environment.Production)
       renderWithProvider(<KeyDetailsHeaderTTL onEditTTL={onEditTTL} />)
       editTTL()
       expect(onEditTTL).not.toHaveBeenCalled()
       expect(
-        screen.getByTestId('type-to-confirm-modal-input'),
+        screen.getByTestId('type-to-confirm-modal-description'),
       ).toBeInTheDocument()
-      // Confirm is disabled until the user types the DB name
+      // No typing required for Browser modals — confirm is enabled immediately
       expect(
-        screen.getByTestId('type-to-confirm-modal-confirm-btn'),
-      ).toBeDisabled()
+        screen.queryByTestId('type-to-confirm-modal-input'),
+      ).not.toBeInTheDocument()
 
-      fireEvent.change(screen.getByTestId('type-to-confirm-modal-input'), {
-        target: { value: 'prod-cache' },
-      })
       fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
       expect(onEditTTL).toHaveBeenCalledTimes(1)
     })

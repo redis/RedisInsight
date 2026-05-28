@@ -88,7 +88,7 @@ describe('AddHashFields', () => {
       fireEvent.click(screen.getByTestId('save-fields-btn'))
 
       expect(
-        screen.getByTestId('type-to-confirm-modal-input'),
+        screen.getByTestId('type-to-confirm-modal-description'),
       ).toBeInTheDocument()
     })
 
@@ -99,7 +99,7 @@ describe('AddHashFields', () => {
       fireEvent.click(screen.getByTestId('save-fields-btn'))
 
       expect(
-        screen.queryByTestId('type-to-confirm-modal-input'),
+        screen.queryByTestId('type-to-confirm-modal-description'),
       ).not.toBeInTheDocument()
     })
 
@@ -110,7 +110,7 @@ describe('AddHashFields', () => {
       fireEvent.click(screen.getByTestId('save-fields-btn'))
 
       expect(
-        screen.queryByTestId('type-to-confirm-modal-input'),
+        screen.queryByTestId('type-to-confirm-modal-description'),
       ).not.toBeInTheDocument()
     })
   })

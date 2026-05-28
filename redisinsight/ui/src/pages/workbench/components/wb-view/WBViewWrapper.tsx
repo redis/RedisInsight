@@ -55,6 +55,7 @@ import {
   toRedisConfirmationCommandId,
   useProductionWriteConfirmation,
 } from 'uiSrc/components/production-write-confirmation'
+import { Link } from 'uiSrc/components/base/link/Link'
 import { getCommandsForExecution } from 'uiSrc/utils/monaco/monacoUtils'
 import WBView from './WBView'
 
@@ -283,16 +284,35 @@ const WBViewWrapper = () => {
         ),
       )
       requestConfirmation({
-        title: 'Run dangerous commands?',
+        title: 'Proceed with caution in production',
         actionDescription: (
           <>
             You&apos;re about to run{' '}
-            <strong>{dangerousCommands.join(', ')}</strong> against the
-            production database <strong>{confirmationText}</strong>.
+            <strong>{dangerousCommands.join(', ')}</strong> on{' '}
+            <strong>{confirmationText}</strong>. This command is part of the
+            list of dangerous commands. This operation may affect server
+            stability.
           </>
         ),
         confirmButtonText: 'Run command',
         commandId: dangerousVerbs,
+        requireConfirmationInput: true,
+        tip: (
+          <>
+            <strong>Tip:</strong> Prevent accidental dangerous operations by
+            restricting commands per user with{' '}
+            <Link
+              color="subdued"
+              target="_blank"
+              variant="inline"
+              size="S"
+              href="https://redis.io/docs/management/security/acl/"
+            >
+              Redis ACLs
+            </Link>
+            .
+          </>
+        ),
         onConfirm: () => {
           runSubmission(effectiveValue, commandId, executeParams)
         },

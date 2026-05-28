@@ -80,6 +80,8 @@ export const ProductionWriteConfirmationProvider = ({
           actionDescription={pending.actionDescription}
           confirmButtonText={pending.confirmButtonText}
           cancelButtonText={pending.cancelButtonText}
+          requireConfirmationInput={pending.requireConfirmationInput}
+          tip={pending.tip}
           showSkipForSession={toCommandIdArray(pending.commandId).length > 0}
           onConfirm={(skipForSession) => {
             if (skipForSession) {
