@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
@@ -42,21 +42,19 @@ export const useVectorSetActionsConfig = ({
   const { id: databaseId } = useSelector(connectedInstanceSelector)
   const { total = 0 } = useSelector(vectorSetDataSelector) ?? {}
 
-  // Element-mode prefill for the similarity-search form. The nonce lets the
-  // same value be re-applied on repeat clicks.
-  const [similarityPrefill, setSimilarityPrefill] =
-    useState<SimilaritySearchPrefill>()
-
-  // Clear the prefill when switching to a different vector set key so the
-  // remounted form (keyed on the key name) doesn't re-apply the previous
-  // key's element value via its prefill effect.
+  // Element-mode prefill for the similarity-search form. Tagged with the key
+  // it was set for so the prefill never crosses key boundaries — when the
+  // user navigates to a different vector set, the render-time guard below
+  // returns `undefined` immediately, preventing the remounted form from
+  // re-applying a stale element value that doesn't exist in the new key.
   const keyNameString = keyNameBuffer ? bufferToString(keyNameBuffer) : ''
-  useEffect(() => {
-    setSimilarityPrefill(undefined)
-  }, [keyNameString])
+  const [prefillState, setPrefillState] = useState<
+    (SimilaritySearchPrefill & { forKey: string }) | undefined
+  >()
 
   const handleSearchByElement = useCallback(
     (target: VectorSetActionTarget) => {
+      if (!keyNameString) return
       const value = bufferToString(target.name)
       sendEventTelemetry({
         event: TelemetryEvent.VECTOR_SET_FIND_SIMILAR_CLICKED,
@@ -65,13 +63,19 @@ export const useVectorSetActionsConfig = ({
           entryPoint: VectorSetSimilarityEntryPoint.ElementRow,
         },
       })
-      setSimilarityPrefill((prev) => ({
+      setPrefillState((prev) => ({
         value,
         nonce: (prev?.nonce ?? 0) + 1,
+        forKey: keyNameString,
       }))
     },
-    [databaseId],
+    [databaseId, keyNameString],
   )
+
+  const similarityPrefill: SimilaritySearchPrefill | undefined =
+    prefillState && prefillState.forKey === keyNameString
+      ? { value: prefillState.value, nonce: prefillState.nonce }
+      : undefined
 
   // Delete-popover state driving both action columns. The two tables are
   // mutually exclusive in the UI so a single state covers both.
