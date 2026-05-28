@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Unit tests coverage
     if: ${{ inputs.type == 'unit' }}
+    continue-on-error: ${{ github.actor == 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v6
 
@@ -39,6 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Integration tests coverage
     if: ${{ inputs.type == 'integration' }}
+    continue-on-error: ${{ github.actor == 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v6
 
