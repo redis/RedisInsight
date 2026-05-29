@@ -70,9 +70,10 @@ const PATHS = {
 const Navigation = (props: Props) => {
   const { tutorials, customTutorials, isInternalPageVisible } = props
   const { currentStep, isActive } = useSelector(appFeatureOnboardingSelector)
-  const { [FeatureFlags.envDependent]: envDependentFeature } = useSelector(
-    appFeatureFlagsFeaturesSelector,
-  )
+  const {
+    [FeatureFlags.envDependent]: envDependentFeature,
+    [FeatureFlags.customTutorials]: customTutorialsFeature,
+  } = useSelector(appFeatureFlagsFeaturesSelector)
 
   const [isCreateOpen, setIsCreateOpen] = useState(false)
 
@@ -262,6 +263,7 @@ const Navigation = (props: Props) => {
         renderTreeView(getManifestItems(tutorials), PATHS.tutorials)}
       {customTutorials &&
         envDependentFeature?.flag &&
+        customTutorialsFeature?.flag &&
         renderTreeView(
           getManifestItems(customTutorials),
           PATHS.customTutorials,

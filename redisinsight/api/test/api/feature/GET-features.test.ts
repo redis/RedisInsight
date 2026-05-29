@@ -99,6 +99,10 @@ describe('GET /features', () => {
                 flag: true,
                 name: 'databaseManagement',
               },
+              customTutorials: {
+                flag: false,
+                name: 'customTutorials',
+              },
             },
           },
           syncEndpoint,
@@ -120,6 +124,10 @@ describe('GET /features', () => {
           databaseManagement: {
             flag: true,
             name: 'databaseManagement',
+          },
+          customTutorials: {
+            flag: false,
+            name: 'customTutorials',
           },
         });
         expect(body.controlNumber).to.eq(config.controlNumber);
@@ -168,6 +176,10 @@ describe('GET /features', () => {
                 flag: true,
                 name: 'databaseManagement',
               },
+              customTutorials: {
+                flag: false,
+                name: 'customTutorials',
+              },
             },
           },
           syncEndpoint,
@@ -187,6 +199,10 @@ describe('GET /features', () => {
           databaseManagement: {
             flag: true,
             name: 'databaseManagement',
+          },
+          customTutorials: {
+            flag: false,
+            name: 'customTutorials',
           },
         },
       },
@@ -238,6 +254,10 @@ describe('GET /features', () => {
                 flag: true,
                 name: 'databaseManagement',
               },
+              customTutorials: {
+                flag: false,
+                name: 'customTutorials',
+              },
             },
           },
           syncEndpoint,
@@ -257,6 +277,10 @@ describe('GET /features', () => {
           databaseManagement: {
             flag: true,
             name: 'databaseManagement',
+          },
+          customTutorials: {
+            flag: false,
+            name: 'customTutorials',
           },
         },
       },
@@ -278,6 +302,10 @@ describe('GET /features', () => {
               databaseManagement: {
                 flag: true,
                 name: 'databaseManagement',
+              },
+              customTutorials: {
+                flag: false,
+                name: 'customTutorials',
               },
             },
           },
@@ -303,6 +331,10 @@ describe('GET /features', () => {
           databaseManagement: {
             flag: true,
             name: 'databaseManagement',
+          },
+          customTutorials: {
+            flag: false,
+            name: 'customTutorials',
           },
         },
       },

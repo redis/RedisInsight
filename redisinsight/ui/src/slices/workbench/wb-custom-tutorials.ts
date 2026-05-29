@@ -24,6 +24,11 @@ import successMessages from 'uiSrc/components/notifications/success-messages'
 import { getFileNameFromPath } from 'uiSrc/utils/pathUtil'
 import { AppDispatch, RootState } from '../store'
 
+/**
+ * @deprecated Custom tutorials are deprecated (RED-194229) and disabled by
+ * default via the `customTutorials` feature flag. All exports in this file
+ * (slice, actions, selectors, thunks) are slated for removal.
+ */
 export const defaultItems: IEnablementAreaItem[] = [
   {
     id: 'custom-tutorials',

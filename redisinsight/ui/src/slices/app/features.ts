@@ -53,6 +53,9 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.databaseManagement]: {
         flag: true,
       },
+      [FeatureFlags.customTutorials]: {
+        flag: false,
+      },
       [FeatureFlags.envDependent]: {
         flag: riConfig.features.envDependent.defaultFlag,
       },

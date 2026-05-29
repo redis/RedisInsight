@@ -11,12 +11,22 @@ import {
   ValidateNested,
 } from 'class-validator';
 
+/**
+ * @deprecated Custom tutorials are deprecated (RED-194229) and disabled by
+ * default via the `customTutorials` feature flag. All exports in this file
+ * are slated for removal.
+ */
 export enum CustomTutorialManifestType {
   CodeButton = 'code-button',
   Group = 'group',
   InternalLink = 'internal-link',
 }
 
+/**
+ * @deprecated Custom tutorials are deprecated (RED-194229) and disabled by
+ * default via the `customTutorials` feature flag. All exports in this file
+ * are slated for removal.
+ */
 export interface ICustomTutorialManifest {
   id: string;
   type: CustomTutorialManifestType;
@@ -27,6 +37,11 @@ export interface ICustomTutorialManifest {
   _path?: string;
 }
 
+/**
+ * @deprecated Custom tutorials are deprecated (RED-194229) and disabled by
+ * default via the `customTutorials` feature flag. All exports in this file
+ * are slated for removal.
+ */
 export class CustomTutorialManifestArgs {
   @ApiPropertyOptional({ type: Boolean })
   @IsOptional()
@@ -48,6 +63,11 @@ export class CustomTutorialManifestArgs {
   withBorder?: boolean;
 }
 
+/**
+ * @deprecated Custom tutorials are deprecated (RED-194229) and disabled by
+ * default via the `customTutorials` feature flag. All exports in this file
+ * are slated for removal.
+ */
 export class CustomTutorialManifest {
   @ApiProperty({ type: String })
   @Expose()
@@ -91,6 +111,11 @@ export class CustomTutorialManifest {
   children?: CustomTutorialManifest[];
 }
 
+/**
+ * @deprecated Custom tutorials are deprecated (RED-194229) and disabled by
+ * default via the `customTutorials` feature flag. All exports in this file
+ * are slated for removal.
+ */
 export class RootCustomTutorialManifest extends CustomTutorialManifest {
   @ApiPropertyOptional({ enum: CustomTutorialActions })
   @IsOptional()

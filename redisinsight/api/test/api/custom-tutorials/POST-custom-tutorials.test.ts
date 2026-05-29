@@ -121,7 +121,9 @@ const globalManifest = {
 
 const nockScope = nock('https://github.com/somerepo');
 
-describe('POST /custom-tutorials', () => {
+// Custom tutorials are deprecated (RED-194229)
+// TODO: remove this file when the feature is fully deleted.
+describe.skip('POST /custom-tutorials', () => {
   requirements('rte.serverType=local');
 
   before(async () => {

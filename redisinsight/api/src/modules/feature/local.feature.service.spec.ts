@@ -8,6 +8,7 @@ import {
   mockFeatureAnalytics,
   mockFeatureFlagProvider,
   mockFeatureRepository,
+  mockFeatureCustomTutorials,
   mockFeatureDatabaseManagement,
   mockFeaturesConfig,
   mockFeaturesConfigJson,
@@ -207,6 +208,7 @@ describe('FeatureService', () => {
           [KnownFeatures.InsightsRecommendations]: mockFeature,
           [KnownFeatures.CloudSso]: mockFeatureSso,
           [KnownFeatures.DatabaseManagement]: mockFeatureDatabaseManagement,
+          [KnownFeatures.CustomTutorials]: mockFeatureCustomTutorials,
         },
       });
     });
@@ -242,6 +244,7 @@ describe('FeatureService', () => {
             [KnownFeatures.InsightsRecommendations]: mockFeature,
             [KnownFeatures.CloudSso]: mockFeatureSso,
             [KnownFeatures.DatabaseManagement]: mockFeatureDatabaseManagement,
+            [KnownFeatures.CustomTutorials]: mockFeatureCustomTutorials,
           },
           force: {
             [KnownFeatures.CloudSso]: false,

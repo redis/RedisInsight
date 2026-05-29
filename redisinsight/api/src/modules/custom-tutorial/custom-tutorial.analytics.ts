@@ -4,6 +4,10 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { TelemetryEvents } from 'src/constants';
 import { SessionMetadata } from 'src/common/models';
 
+/**
+ * @deprecated Custom tutorials are deprecated (RED-194229) and disabled by
+ * default via the `customTutorials` feature flag. Slated for removal.
+ */
 @Injectable()
 export class CustomTutorialAnalytics extends TelemetryBaseService {
   constructor(protected eventEmitter: EventEmitter2) {
