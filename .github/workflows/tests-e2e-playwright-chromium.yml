@@ -73,53 +73,11 @@ jobs:
             echo "127.0.0.1 host.docker.internal" | sudo tee -a /etc/hosts
           fi
 
-      - name: Login to Docker Hub (avoid pull rate limits)
-        continue-on-error: true
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Pull Redis test environment images (with retry)
-        run: |
-          DC="docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml"
-          for i in 1 2 3 4 5; do
-            if $DC pull; then
-              echo "✅ Image pull succeeded on attempt $i"
-              exit 0
-            fi
-            BACKOFF=$((i * 30))
-            echo "⚠️  Image pull failed on attempt $i; sleeping ${BACKOFF}s before retry..."
-            sleep "$BACKOFF"
-          done
-          echo "::error::Image pull failed after 5 attempts"
-          exit 1
-
       - name: Start Redis test environment
-        run: |
-          TEST_BIG_DB_DUMP=$TEST_BIG_DB_DUMP \
-          docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml up --detach --force-recreate
-
-      - name: Wait for Redis clusters to be ready
-        run: |
-          DC="docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml"
-
-          wait_for_cluster() {
-            local svc=$1 label=$2
-            echo "Waiting for $label to form..."
-            for i in $(seq 1 60); do
-              if $DC exec -T "$svc" redis-cli CLUSTER INFO 2>/dev/null | grep -q "cluster_state:ok"; then
-                echo "✅ $label ready after ~$((i*2))s"; return 0
-              fi
-              sleep 2
-            done
-            echo "::error::$label did NOT become ready within 120 s"
-            $DC exec -T "$svc" redis-cli CLUSTER INFO 2>/dev/null || true
-            return 1
-          }
-
-          wait_for_cluster master-plain-7-1    "IP-based cluster (8200)"
-          wait_for_cluster master-hostname-7-1  "Hostname-based cluster (8210)"
+        uses: ./.github/actions/redis-test-env-up
+        with:
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Run Playwright tests (Chromium)
         working-directory: ${{ env.E2E_DIR }}
@@ -145,6 +103,5 @@ jobs:
 
       - name: Stop Redis test environment
         if: always()
-        run: |
-          docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml down --volumes --remove-orphans
+        uses: ./.github/actions/redis-test-env-down
 
