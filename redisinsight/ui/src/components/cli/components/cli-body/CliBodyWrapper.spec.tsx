@@ -97,7 +97,7 @@ describe('CliBodyWrapper', () => {
   beforeEach(() => {
     const state: any = store.getState()
 
-    ;(useSelector as jest.Mock).mockImplementation(
+    ;(useSelector as unknown as jest.Mock).mockImplementation(
       (callback: (arg0: any) => any) =>
         callback({
           ...state,

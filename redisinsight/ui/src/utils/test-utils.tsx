@@ -2,7 +2,7 @@
 import React from 'react'
 import { cloneDeep, first, map } from 'lodash'
 import { Provider } from 'react-redux'
-import thunk from 'redux-thunk'
+import { thunk } from 'redux-thunk'
 import { BrowserRouter } from 'react-router-dom'
 import configureMockStore from 'redux-mock-store'
 import {
@@ -16,6 +16,7 @@ import {
 import { ThemeProvider } from 'styled-components'
 import { theme } from '@redis-ui/styles'
 import userEvent from '@testing-library/user-event'
+import type { EnhancedStore } from '@reduxjs/toolkit'
 import type { RootState, ReduxStore } from 'uiSrc/slices/store'
 import { initialState as initialStateInstances } from 'uiSrc/slices/instances/instances'
 import { initialState as initialStateTags } from 'uiSrc/slices/instances/tags'
@@ -23,6 +24,7 @@ import { initialState as initialStateCaCerts } from 'uiSrc/slices/instances/caCe
 import { initialState as initialStateClientCerts } from 'uiSrc/slices/instances/clientCerts'
 import { initialState as initialStateCluster } from 'uiSrc/slices/instances/cluster'
 import { initialState as initialStateCloud } from 'uiSrc/slices/instances/cloud'
+import { initialState as initialStateAzure } from 'uiSrc/slices/instances/azure'
 import { initialState as initialStateSentinel } from 'uiSrc/slices/instances/sentinel'
 import { initialState as initialStateKeys } from 'uiSrc/slices/browser/keys'
 import { initialState as initialStateString } from 'uiSrc/slices/browser/string'
@@ -59,6 +61,7 @@ import { initialState as initialStateAnalyticsSettings } from 'uiSrc/slices/anal
 import { initialState as initialStateDbAnalysis } from 'uiSrc/slices/analytics/dbAnalysis'
 import { initialState as initialStatePubSub } from 'uiSrc/slices/pubsub/pubsub'
 import { initialState as initialStateRedisearch } from 'uiSrc/slices/browser/redisearch'
+import { initialState as initialStateVectorSet } from 'uiSrc/slices/browser/vectorSet'
 import { initialState as initialStateRecommendations } from 'uiSrc/slices/recommendations/recommendations'
 import { initialState as initialStateOAuth } from 'uiSrc/slices/oauth/cloud'
 import { initialState as initialStateAzureAuth } from 'uiSrc/slices/oauth/azure'
@@ -79,7 +82,7 @@ import { setStoreRef } from './test-store'
 
 interface Options {
   initialState?: RootState
-  store?: ReduxStore
+  store?: ReduxStore | EnhancedStore<any>
   withRouter?: boolean
   [property: string]: any
 }
@@ -107,6 +110,7 @@ const initialStateDefault: RootState = {
     cluster: cloneDeep(initialStateCluster),
     cloud: cloneDeep(initialStateCloud),
     sentinel: cloneDeep(initialStateSentinel),
+    azure: cloneDeep(initialStateAzure),
     tags: cloneDeep(initialStateTags),
   },
   browser: {
@@ -120,6 +124,7 @@ const initialStateDefault: RootState = {
     stream: cloneDeep(initialStateStream),
     bulkActions: cloneDeep(initialStateBulkActions),
     redisearch: cloneDeep(initialStateRedisearch),
+    vectorSet: cloneDeep(initialStateVectorSet),
   },
   cli: {
     settings: cloneDeep(initialStateCliSettings),

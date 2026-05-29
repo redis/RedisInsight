@@ -58,7 +58,7 @@ describe('OAuthJobs', () => {
   beforeEach(() => {
     const state = store.getState() as RootState
 
-    ;(useSelector as jest.Mock).mockImplementation(
+    ;(useSelector as unknown as jest.Mock).mockImplementation(
       (callback: (arg0: any) => any) =>
         callback({
           ...state,

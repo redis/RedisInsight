@@ -30,8 +30,8 @@ jest.mock('uiSrc/utils', () => ({
 
 describe('useRedisearchListData', () => {
   const mockDispatch = jest.fn()
-  const mockUseSelector = useSelector as jest.Mock
-  const mockUseDispatch = useDispatch as jest.Mock
+  const mockUseSelector = useSelector as unknown as jest.Mock
+  const mockUseDispatch = useDispatch as unknown as jest.Mock
   const mockIsRedisearchAvailable = isRedisearchAvailable as jest.Mock
 
   beforeEach(() => {

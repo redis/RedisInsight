@@ -5,7 +5,9 @@ import { FeatureFlags } from 'uiSrc/constants'
 import cloudReducer from 'uiSrc/slices/instances/cloud'
 import instancesReducer from 'uiSrc/slices/instances/instances'
 import appOauthReducer from 'uiSrc/slices/oauth/cloud'
-import appFeaturesReducer from 'uiSrc/slices/app/features'
+import appFeaturesReducer, {
+  initialState as initialFeaturesState,
+} from 'uiSrc/slices/app/features'
 import { VersionNotSupported } from './VersionNotSupported'
 
 const createTestStore = () =>
@@ -21,7 +23,9 @@ const createTestStore = () =>
     preloadedState: {
       app: {
         features: {
+          ...initialFeaturesState,
           featureFlags: {
+            loading: false,
             features: {
               [FeatureFlags.cloudSso]: { flag: true },
               [FeatureFlags.cloudAds]: { flag: true },

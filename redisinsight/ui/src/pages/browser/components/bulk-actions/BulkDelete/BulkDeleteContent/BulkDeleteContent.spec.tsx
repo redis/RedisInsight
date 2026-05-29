@@ -29,7 +29,7 @@ jest.mock('react-redux', () => ({
 beforeEach(() => {
   const state: any = store.getState()
 
-  ;(useSelector as jest.Mock).mockImplementation(
+  ;(useSelector as unknown as jest.Mock).mockImplementation(
     (callback: (arg0: RootState) => RootState) =>
       callback({
         ...state,

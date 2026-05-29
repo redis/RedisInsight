@@ -62,8 +62,8 @@ const mockInstanceId = faker.string.uuid()
 const mockDatabaseId = faker.string.uuid()
 
 describe('useListContent', () => {
-  const mockUseSelector = useSelector as jest.Mock
-  const mockUseDispatch = useDispatch as jest.Mock
+  const mockUseSelector = useSelector as unknown as jest.Mock
+  const mockUseDispatch = useDispatch as unknown as jest.Mock
 
   beforeEach(() => {
     jest.clearAllMocks()

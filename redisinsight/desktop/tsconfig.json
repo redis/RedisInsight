@@ -32,6 +32,6 @@
       "apiClient/*": ["redisinsight/api-client/*"]
     }
   },
-  "include": ["**/*"],
+  "include": ["**/*", "../ui/src/types/redux-augment.d.ts"],
   "exclude": ["dll/*", "dist", "node_modules"]
 }

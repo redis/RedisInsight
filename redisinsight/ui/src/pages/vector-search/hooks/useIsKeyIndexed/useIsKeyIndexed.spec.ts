@@ -22,8 +22,8 @@ jest.mock('uiSrc/slices/browser/redisearch', () => ({
 
 describe('useIsKeyIndexed', () => {
   const mockDispatch = jest.fn()
-  const mockUseSelector = useSelector as jest.Mock
-  const mockUseDispatch = useDispatch as jest.Mock
+  const mockUseSelector = useSelector as unknown as jest.Mock
+  const mockUseDispatch = useDispatch as unknown as jest.Mock
 
   beforeEach(() => {
     jest.clearAllMocks()

@@ -490,9 +490,10 @@ describe('Node', () => {
             instances: { connectedInstance: { id: mockInstanceId } },
           },
         }
+        let currentState = { ...initialState, ...connectionState }
         const customStore = {
-          getState: () => ({ ...initialState, ...connectionState }),
-          subscribe: jest.fn(),
+          getState: () => currentState,
+          subscribe: jest.fn(() => () => {}),
           dispatch: jest.fn(),
         }
 
@@ -501,10 +502,7 @@ describe('Node', () => {
           { store: customStore },
         )
 
-        customStore.getState = () => ({
-          ...updatedState,
-          ...connectionState,
-        })
+        currentState = { ...updatedState, ...connectionState }
 
         rerender(
           <MakeSearchableModalProvider>
@@ -532,20 +530,21 @@ describe('Node', () => {
         onDeleteClicked: jest.fn(),
       }
 
-      const customStore = {
-        getState: () => ({
-          app: {
-            context: {
-              dbConfig: {
-                shownColumns: columns,
-              },
+      const customState = {
+        app: {
+          context: {
+            dbConfig: {
+              shownColumns: columns,
             },
           },
-          connections: {
-            instances: { connectedInstance: { id: mockInstanceId } },
-          },
-        }),
-        subscribe: jest.fn(),
+        },
+        connections: {
+          instances: { connectedInstance: { id: mockInstanceId } },
+        },
+      }
+      const customStore = {
+        getState: () => customState,
+        subscribe: jest.fn(() => () => {}),
         dispatch: jest.fn(),
       }
 

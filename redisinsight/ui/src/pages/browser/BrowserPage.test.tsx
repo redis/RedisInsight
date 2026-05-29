@@ -63,7 +63,7 @@ beforeEach(() => {
 })
 
 const selectKey = (state: any, selectedKey: any, data?: any = {}) => {
-  ;(useSelector as jest.Mock).mockImplementation(
+  ;(useSelector as unknown as jest.Mock).mockImplementation(
     (callback: (arg0: RootState) => RootState) =>
       callback({
         ...state,
@@ -125,7 +125,9 @@ describe('BrowserPage', () => {
   }
 
   beforeAll(() => {
-    ;(useSelector as jest.Mock).mockImplementation(originalUseSelector)
+    ;(useSelector as unknown as jest.Mock).mockImplementation(
+      originalUseSelector,
+    )
   })
 
   it.each([true, false])(

@@ -46,7 +46,7 @@ jest.mock('react-redux', () => ({
 beforeEach(() => {
   const state: any = store.getState()
 
-  ;(useSelector as jest.Mock).mockImplementation(
+  ;(useSelector as unknown as jest.Mock).mockImplementation(
     (callback: (arg0: RootState) => RootState) =>
       callback({
         ...state,
@@ -75,7 +75,7 @@ describe('BulkActions', () => {
   it('bulk actions summary should render with any search', () => {
     const state: any = store.getState()
 
-    ;(useSelector as jest.Mock).mockImplementation(
+    ;(useSelector as unknown as jest.Mock).mockImplementation(
       (callback: (arg0: any) => any) =>
         callback({
           ...state,
@@ -108,7 +108,7 @@ describe('BulkActions', () => {
   it('bulk actions summary should render with any filter', () => {
     const state: any = store.getState()
 
-    ;(useSelector as jest.Mock).mockImplementation(
+    ;(useSelector as unknown as jest.Mock).mockImplementation(
       (callback: (arg0: any) => any) =>
         callback({
           ...state,
@@ -150,7 +150,7 @@ describe('BulkActions', () => {
   describe('Telemetry', () => {
     it('should call proper telemetry events', async () => {
       const state: any = store.getState()
-      ;(useSelector as jest.Mock).mockImplementation(
+      ;(useSelector as unknown as jest.Mock).mockImplementation(
         (callback: (arg0: any) => any) =>
           callback({
             ...state,

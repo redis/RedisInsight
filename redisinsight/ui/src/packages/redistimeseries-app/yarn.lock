@@ -1420,6 +1420,9 @@ react@^17.0.2:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
 
+"redisinsight-plugin-sdk@file:../redisinsight-plugin-sdk":
+  version "1.1.0"
+
 redux@^4.0.0, redux@^4.0.4:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/redux/-/redux-4.2.1.tgz#c08f4306826c49b5e9dc901dee0452ea8fce6197"
@@ -1851,7 +1854,7 @@ vfile@^4.0.0, vfile@^4.2.0:
     vfile-message "^2.0.0"
 
 "vite@file:../node_modules/vite":
-  version "6.3.4"
+  version "6.4.1"
   dependencies:
     esbuild "^0.25.0"
     fdir "^6.4.4"

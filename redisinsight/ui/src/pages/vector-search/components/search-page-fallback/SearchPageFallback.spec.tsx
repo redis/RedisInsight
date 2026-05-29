@@ -6,7 +6,9 @@ import { FeatureFlags } from 'uiSrc/constants'
 import cloudReducer from 'uiSrc/slices/instances/cloud'
 import instancesReducer from 'uiSrc/slices/instances/instances'
 import appOauthReducer from 'uiSrc/slices/oauth/cloud'
-import appFeaturesReducer from 'uiSrc/slices/app/features'
+import appFeaturesReducer, {
+  initialState as initialFeaturesState,
+} from 'uiSrc/slices/app/features'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { SearchPageFallback } from './SearchPageFallback'
 import { SearchPageFallbackContent } from './SearchPageFallback.types'
@@ -24,7 +26,9 @@ const createTestStore = (featureFlagsEnabled = true) =>
     preloadedState: {
       app: {
         features: {
+          ...initialFeaturesState,
           featureFlags: {
+            loading: false,
             features: {
               [FeatureFlags.cloudSso]: { flag: featureFlagsEnabled },
               [FeatureFlags.cloudAds]: { flag: featureFlagsEnabled },

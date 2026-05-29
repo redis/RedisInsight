@@ -108,7 +108,7 @@ const mockInitialState = (
   instances: Instance[],
   options?: { selectedTags?: Set<string> },
 ) => {
-  ;(useSelector as jest.Mock).mockImplementation(
+  ;(useSelector as unknown as jest.Mock).mockImplementation(
     (callback: (arg0: RootState) => RootState) =>
       callback({
         ...state,

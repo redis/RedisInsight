@@ -29,7 +29,7 @@ jest.mock('react-redux', () => ({
 beforeEach(() => {
   const state: any = store.getState()
 
-  ;(useSelector as jest.Mock).mockImplementation(
+  ;(useSelector as unknown as jest.Mock).mockImplementation(
     (callback: (arg0: RootState) => RootState) =>
       callback({
         ...state,
@@ -54,7 +54,7 @@ describe('BulkDeleteSummary', () => {
   it('summary should contain calculated text', () => {
     const state: any = store.getState()
 
-    ;(useSelector as jest.Mock).mockImplementation(
+    ;(useSelector as unknown as jest.Mock).mockImplementation(
       (callback: (arg0: RootState) => RootState) =>
         callback({
           ...state,
@@ -83,7 +83,7 @@ describe('BulkDeleteSummary', () => {
   it('should show folder key count when keyCount is set (folder delete)', () => {
     const state: any = store.getState()
 
-    ;(useSelector as jest.Mock).mockImplementation(
+    ;(useSelector as unknown as jest.Mock).mockImplementation(
       (callback: (arg0: RootState) => RootState) =>
         callback({
           ...state,
@@ -120,7 +120,7 @@ describe('BulkDeleteSummary', () => {
   it('should show approximate title for folder delete when scan not complete', () => {
     const state: any = store.getState()
 
-    ;(useSelector as jest.Mock).mockImplementation(
+    ;(useSelector as unknown as jest.Mock).mockImplementation(
       (callback: (arg0: RootState) => RootState) =>
         callback({
           ...state,
@@ -154,7 +154,7 @@ describe('BulkDeleteSummary', () => {
   it('should show N/A when scanned is 0 (avoid division by zero)', () => {
     const state: any = store.getState()
 
-    ;(useSelector as jest.Mock).mockImplementation(
+    ;(useSelector as unknown as jest.Mock).mockImplementation(
       (callback: (arg0: RootState) => RootState) =>
         callback({
           ...state,

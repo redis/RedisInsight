@@ -16,8 +16,12 @@ jest.mock('react-redux', () => ({
   connect: () => (Component: any) => Component,
 }))
 
-const mockDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>
-const mockSelector = useSelector as jest.MockedFunction<typeof useSelector>
+const mockDispatch = useDispatch as unknown as jest.MockedFunction<
+  typeof useDispatch
+>
+const mockSelector = useSelector as unknown as jest.MockedFunction<
+  typeof useSelector
+>
 
 const mockTags: Tag[] = [
   {

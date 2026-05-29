@@ -15,8 +15,8 @@ jest.mock('uiSrc/slices/browser/rejson', () => ({
   fetchReJSON: jest.fn((key) => ({ type: 'FETCH_REJSON', payload: key })),
 }))
 
-const mockedUseDispatch = reactRedux.useDispatch as jest.Mock
-const mockedUseSelector = reactRedux.useSelector as jest.Mock
+const mockedUseDispatch = reactRedux.useDispatch as unknown as jest.Mock
+const mockedUseSelector = reactRedux.useSelector as unknown as jest.Mock
 const mockKeyName = stringToBuffer('test-key')
 
 describe('useChangeEditorType', () => {

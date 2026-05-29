@@ -1,5 +1,5 @@
 import { renderHook, act, cleanup } from '@testing-library/react-hooks'
-import * as reactRedux from 'react-redux'
+import { useSelector } from 'react-redux'
 import { faker } from '@faker-js/faker'
 import { cloneDeep } from 'lodash'
 
@@ -19,9 +19,14 @@ jest.mock('uiSrc/telemetry', () => ({
   sendPageViewTelemetry: jest.fn(),
 }))
 
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useSelector: jest.fn(),
+}))
+
 describe('usePageViewTelemetry', () => {
   let store: typeof mockedStore
-  let mockUseSelector: jest.SpyInstance
+  const mockUseSelector = useSelector as unknown as jest.Mock
 
   const mockPage = faker.helpers.enumValue(TelemetryPageView)
 
@@ -32,12 +37,7 @@ describe('usePageViewTelemetry', () => {
     store = cloneDeep(mockedStore)
     store.clearActions()
 
-    mockUseSelector = jest.spyOn(reactRedux, 'useSelector')
     mockUseSelector.mockReturnValue(INSTANCES_MOCK[0])
-  })
-
-  afterEach(() => {
-    jest.restoreAllMocks()
   })
 
   it('should send page view telemetry on mount if connected to instance', () => {

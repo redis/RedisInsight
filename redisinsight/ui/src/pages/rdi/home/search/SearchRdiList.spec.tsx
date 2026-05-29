@@ -57,7 +57,7 @@ describe('SearchRdiList', () => {
     storeMock.clearActions()
 
     const state: RootState = store.getState()
-    ;(useSelector as jest.Mock).mockImplementation(
+    ;(useSelector as unknown as jest.Mock).mockImplementation(
       (callback: (arg0: RootState) => RootState) =>
         callback({
           ...state,

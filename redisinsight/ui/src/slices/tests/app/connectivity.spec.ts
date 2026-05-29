@@ -127,9 +127,9 @@ describe('app connectivity slice', () => {
         id: '123', // Match the test database ID
       }
 
-      jest.spyOn(store, 'dispatch').mockImplementation((action: any) => {
-        testStore.dispatch(action)
-      })
+      jest
+        .spyOn(store, 'dispatch')
+        .mockImplementation((action: any) => testStore.dispatch(action))
       const getDbOverviewMock = jest.fn(() => {
         return HttpResponse.json(
           { code: 'serviceUnavailable', message: 'Test error' },
@@ -172,9 +172,9 @@ describe('app connectivity slice', () => {
         id: 'different-instance-id', // Different from request URL
       }
 
-      jest.spyOn(store, 'dispatch').mockImplementation((action: any) => {
-        testStore.dispatch(action)
-      })
+      jest
+        .spyOn(store, 'dispatch')
+        .mockImplementation((action: any) => testStore.dispatch(action))
 
       const getDbOverviewMock = jest.fn(async () => {
         return HttpResponse.json(

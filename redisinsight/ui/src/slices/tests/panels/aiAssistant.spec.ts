@@ -63,7 +63,7 @@ describe('ai assistant slice', () => {
 
       // Act
       const result = reducer(undefined, {
-        type: undefined,
+        type: '@@INIT',
       })
 
       // Assert

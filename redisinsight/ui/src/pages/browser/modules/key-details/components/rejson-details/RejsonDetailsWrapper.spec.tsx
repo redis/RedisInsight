@@ -27,8 +27,8 @@ jest.mock('uiSrc/components/hooks/useDatabaseEnvironment', () => ({
 
 const mockedProps = mock<Props>()
 
-const mockUseSelector = useSelector as jest.Mock
-const mockUseDispatch = useDispatch as jest.Mock
+const mockUseSelector = useSelector as unknown as jest.Mock
+const mockUseDispatch = useDispatch as unknown as jest.Mock
 
 type Selector = {
   name: string
