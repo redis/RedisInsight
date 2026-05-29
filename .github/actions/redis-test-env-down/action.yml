@@ -1,0 +1,9 @@
+name: Stop Redis test environment
+description: Tear down the e2e-rte compose project and remove its volumes.
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        docker compose -p e2e-rte -f tests/e2e/rte.docker-compose.yml down --volumes --remove-orphans
