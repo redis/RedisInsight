@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import {
@@ -12,21 +12,16 @@ import {
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { bufferToString } from 'uiSrc/utils'
-import { VectorSetSimilarityEntryPoint } from './telemetry.constants'
 import {
   KeyDetailsHeader,
   KeyDetailsHeaderProps,
 } from 'uiSrc/pages/browser/modules'
-import { VectorSetElement } from 'uiSrc/slices/interfaces'
 import { VectorSetElementForm, SubmitElement } from './vector-set-element-form'
 import { AddKeysContainer } from '../common/AddKeysContainer.styled'
 import { VectorSetElementList } from './vector-set-element-list'
 import { VectorSetKeySubheader } from './vector-set-key-subheader'
 import { ElementDetails } from './element-details'
-import {
-  SimilaritySearchForm,
-  SimilaritySearchPrefill,
-} from './similarity-search-form'
+import { SimilaritySearchForm } from './similarity-search-form'
 import {
   SimilarityColumnsPopover,
   SimilaritySearchResultsTable,
@@ -37,6 +32,7 @@ import {
   useAddElements,
   useElementDetails,
   useSimilaritySearchResults,
+  useVectorSetActionsConfig,
 } from './hooks'
 import * as S from './VectorSetDetails.styles'
 
@@ -106,29 +102,10 @@ const VectorSetDetails = (props: Props) => {
     dispatch(clearSimilaritySearch())
   }, [databaseId, dispatch])
 
-  // Drives the similarity-search form's Element-mode prefill when a user
-  // clicks "Search similar" on an element row. The nonce lets the same value
-  // be re-applied on repeat clicks.
-  const [similarityPrefill, setSimilarityPrefill] =
-    useState<SimilaritySearchPrefill>()
-
-  const handleSearchByElement = useCallback(
-    (element: VectorSetElement) => {
-      const value = bufferToString(element.name)
-      sendEventTelemetry({
-        event: TelemetryEvent.VECTOR_SET_FIND_SIMILAR_CLICKED,
-        eventData: {
-          databaseId,
-          entryPoint: VectorSetSimilarityEntryPoint.ElementRow,
-        },
-      })
-      setSimilarityPrefill((prev) => ({
-        value,
-        nonce: (prev?.nonce ?? 0) + 1,
-      }))
-    },
-    [databaseId],
-  )
+  const { actionsConfig, similarityPrefill } = useVectorSetActionsConfig({
+    onRemoveKey,
+    onViewElement: handleViewElement,
+  })
 
   // Single source of truth shared by the results table and the Columns popover.
   const {
@@ -197,13 +174,10 @@ const VectorSetDetails = (props: Props) => {
                 columns={similarityColumns}
                 columnVisibility={similarityColumnVisibility}
                 parsedAttributesCache={similarityParsedAttributesCache}
+                actionsConfig={actionsConfig}
               />
             ) : (
-              <VectorSetElementList
-                onRemoveKey={onRemoveKey}
-                onViewElement={handleViewElement}
-                onSearchByElement={handleSearchByElement}
-              />
+              <VectorSetElementList actionsConfig={actionsConfig} />
             )}
           </S.ListWrapper>
         )}

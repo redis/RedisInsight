@@ -1,18 +1,21 @@
 import { Dispatch, SetStateAction } from 'react'
 
-import { ColumnDef, PaginationState } from 'uiSrc/components/base/layout/table'
+import { PaginationState } from 'uiSrc/components/base/layout/table'
 import { VectorSetElement } from 'uiSrc/slices/interfaces'
 
+import {
+  ElementsListConfig,
+  VectorSetActionsConfig,
+} from '../../vector-set-element-list/VectorSetElementList.types'
+
 export interface UseVectorSetElementListDataParams {
-  onRemoveKey: () => void
-  onViewElement: (element: VectorSetElement) => void
-  onSearchByElement: (element: VectorSetElement) => void
+  actionsConfig: VectorSetActionsConfig
 }
 
 export interface UseVectorSetElementListDataResult {
-  columns: ColumnDef<VectorSetElement>[]
+  /** Passed to the table's `meta` prop; cells read it via `table.options.meta`. */
+  meta: ElementsListConfig
   currentPageData: VectorSetElement[]
-  tableMinWidth: string
   pagination: PaginationState
   setPagination: Dispatch<SetStateAction<PaginationState>>
   emptyMessage: string

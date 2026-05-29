@@ -16,8 +16,10 @@ import {
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { MOCK_TIMESTAMP } from 'uiSrc/mocks/data/dateNow'
 import {
+  mockKeyBuffer,
   vectorSetElementFactory,
   vectorSetElementWithAttributesFactory,
+  vectorSetSimilarityMatchFactory,
   vectorSetTestKeyName,
   vectorSetPaginationCursorAfter,
   addVectorSetElementsDataFactory,
@@ -485,6 +487,62 @@ describe('vectorSet slice', () => {
 
       expect(nextState.data.elements).toHaveLength(2)
       expect(nextState.data.total).toEqual(2)
+    })
+
+    it('should also filter out deleted elements from similarity-search results', () => {
+      const elements = vectorSetElementFactory.buildList(3)
+      const matches = vectorSetSimilarityMatchFactory.buildList(3)
+      // Share names so deleting an element also matches a similarity row.
+      matches[0].name = elements[0].name
+      matches[1].name = elements[1].name
+
+      const stateWithSimilarity = {
+        ...initialState,
+        data: {
+          ...initialState.data,
+          total: 3,
+          elements,
+        },
+        similaritySearch: {
+          loading: false,
+          error: '',
+          data: {
+            keyName: mockKeyBuffer,
+            elements: matches,
+          },
+        },
+      }
+
+      const nextState = reducer(
+        stateWithSimilarity,
+        removeElementsFromList([elements[0].name]),
+      )
+
+      expect(nextState.similaritySearch.data?.elements).toHaveLength(2)
+      expect(
+        nextState.similaritySearch.data?.elements.some(
+          (el) => el.name === elements[0].name,
+        ),
+      ).toBe(false)
+    })
+
+    it('should leave similarity-search untouched when no search has been run', () => {
+      const elements = vectorSetElementFactory.buildList(2)
+      const stateWithElements = {
+        ...initialState,
+        data: {
+          ...initialState.data,
+          total: 2,
+          elements,
+        },
+      }
+
+      const nextState = reducer(
+        stateWithElements,
+        removeElementsFromList([elements[0].name]),
+      )
+
+      expect(nextState.similaritySearch.data).toBeUndefined()
     })
   })
 

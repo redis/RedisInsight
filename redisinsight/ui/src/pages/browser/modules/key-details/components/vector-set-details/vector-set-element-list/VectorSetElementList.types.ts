@@ -1,5 +1,9 @@
 import { KeyValueCompressor, KeyValueFormat } from 'uiSrc/constants'
-import { RedisString, VectorSetElement } from 'uiSrc/slices/interfaces'
+import {
+  RedisResponseBuffer,
+  RedisString,
+  VectorSetElement,
+} from 'uiSrc/slices/interfaces'
 import { Nullable } from 'uiSrc/utils'
 
 export enum VectorSetColumn {
@@ -18,12 +22,25 @@ export interface ElementDeleteConfig {
   handleRemoveIconClick: () => void
 }
 
+/** Action target shape — both `VectorSetElement` and `VectorSetSimilarityMatch` satisfy this. */
+export interface VectorSetActionTarget {
+  name: RedisResponseBuffer
+}
+
+/**
+ * Shared by `VectorSetElementList` and `SimilaritySearchResultsTable` so a
+ * single delete-state + handlers can drive both rows-actions columns.
+ */
+export interface VectorSetActionsConfig {
+  elementDeleteConfig: ElementDeleteConfig
+  onViewElement: (element: VectorSetActionTarget) => void
+  onSearchByElement: (element: VectorSetActionTarget) => void
+}
+
 export interface ElementsListConfig {
   compressor: Nullable<KeyValueCompressor>
   viewFormat: KeyValueFormat
-  elementDeleteConfig: ElementDeleteConfig
-  onViewElement: (element: VectorSetElement) => void
-  onSearchByElement: (element: VectorSetElement) => void
+  actionsConfig: VectorSetActionsConfig
 }
 
 export interface ElementNameCellProps {

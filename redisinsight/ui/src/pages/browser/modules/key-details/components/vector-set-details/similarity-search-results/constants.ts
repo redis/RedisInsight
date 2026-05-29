@@ -7,6 +7,7 @@ export const SIMILARITY_RESULTS_COLUMN_HEADERS: Record<
   [SimilarityResultsColumn.Name]: 'Element',
   [SimilarityResultsColumn.Rank]: 'Rank',
   [SimilarityResultsColumn.Similarity]: 'Similarity',
+  [SimilarityResultsColumn.Actions]: '',
 }
 
 export const SIMILARITY_RESULTS_EMPTY_MESSAGE = 'No matching elements found.'
@@ -34,3 +35,4 @@ export const SIMILARITY_RESULTS_NAME_COLUMN_MIN_SIZE = 200
 export const SIMILARITY_RESULTS_RANK_COLUMN_SIZE = 80
 export const SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE = 100
 export const SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE = 140
+export const SIMILARITY_RESULTS_ACTIONS_COLUMN_SIZE = 120

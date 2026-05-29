@@ -1,50 +1,46 @@
 import React, { memo } from 'react'
 
-import { VectorSetElement } from 'uiSrc/slices/interfaces'
 import { useVectorSetElementListData } from '../hooks'
+import {
+  TABLE_MIN_WIDTH,
+  vectorSetColumns,
+} from './VectorSetElementList.config'
+import { VectorSetActionsConfig } from './VectorSetElementList.types'
 import * as S from './VectorSetElementList.styles'
 
 export interface Props {
-  onRemoveKey: () => void
-  onViewElement: (element: VectorSetElement) => void
-  onSearchByElement: (element: VectorSetElement) => void
+  actionsConfig: VectorSetActionsConfig
 }
 
-const VectorSetElementList = memo(
-  ({ onRemoveKey, onViewElement, onSearchByElement }: Props) => {
-    const {
-      columns,
-      currentPageData,
-      tableMinWidth,
-      pagination,
-      setPagination,
-      emptyMessage,
-      isPaginationSupported,
-      total,
-    } = useVectorSetElementListData({
-      onRemoveKey,
-      onViewElement,
-      onSearchByElement,
-    })
+const VectorSetElementList = memo(({ actionsConfig }: Props) => {
+  const {
+    meta,
+    currentPageData,
+    pagination,
+    setPagination,
+    emptyMessage,
+    isPaginationSupported,
+    total,
+  } = useVectorSetElementListData({ actionsConfig })
 
-    return (
-      <S.Container data-testid="vector-set-details">
-        <S.StyledTable
-          columns={columns}
-          data={currentPageData}
-          stripedRows
-          minWidth={tableMinWidth}
-          paginationEnabled={isPaginationSupported}
-          manualPagination={isPaginationSupported}
-          totalRowCount={isPaginationSupported ? total : undefined}
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          emptyState={emptyMessage}
-          data-testid="vector-set-details-table"
-        />
-      </S.Container>
-    )
-  },
-)
+  return (
+    <S.Container data-testid="vector-set-details">
+      <S.StyledTable
+        columns={vectorSetColumns}
+        data={currentPageData}
+        meta={meta}
+        stripedRows
+        minWidth={TABLE_MIN_WIDTH}
+        paginationEnabled={isPaginationSupported}
+        manualPagination={isPaginationSupported}
+        totalRowCount={isPaginationSupported ? total : undefined}
+        pagination={pagination}
+        onPaginationChange={setPagination}
+        emptyState={emptyMessage}
+        data-testid="vector-set-details-table"
+      />
+    </S.Container>
+  )
+})
 
 export { VectorSetElementList }

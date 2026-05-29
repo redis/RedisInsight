@@ -40,6 +40,7 @@ describe('useSimilarityResultColumns', () => {
       attributeColumnId('zeta'),
       SimilarityResultsColumn.Rank,
       SimilarityResultsColumn.Similarity,
+      SimilarityResultsColumn.Actions,
     ])
     expect(result.current.attributeKeys).toEqual(['alpha', 'beta', 'zeta'])
   })
@@ -73,6 +74,7 @@ describe('useSimilarityResultColumns', () => {
       SimilarityResultsColumn.Name,
       SimilarityResultsColumn.Rank,
       SimilarityResultsColumn.Similarity,
+      SimilarityResultsColumn.Actions,
     ])
     expect(result.current.columnVisibility).toEqual({
       [attributeColumnId('foo')]: false,
@@ -98,6 +100,7 @@ describe('useSimilarityResultColumns', () => {
       SimilarityResultsColumn.Rank,
       SimilarityResultsColumn.Similarity,
       attributeColumnId('bar'),
+      SimilarityResultsColumn.Actions,
     ])
     expect(result.current.columnVisibility).toEqual({
       [attributeColumnId('foo')]: false,
@@ -119,6 +122,7 @@ describe('useSimilarityResultColumns', () => {
       SimilarityResultsColumn.Rank,
       SimilarityResultsColumn.Similarity,
       attributeColumnId('foo'),
+      SimilarityResultsColumn.Actions,
     ])
     expect(result.current.columnVisibility).toEqual({})
   })
@@ -149,6 +153,7 @@ describe('useSimilarityResultColumns', () => {
       SimilarityResultsColumn.Rank,
       SimilarityResultsColumn.Similarity,
       attributeColumnId('foo'),
+      SimilarityResultsColumn.Actions,
     ])
     expect(result.current.columnVisibility).toEqual({
       [attributeColumnId('bar')]: false,
@@ -170,6 +175,7 @@ describe('useSimilarityResultColumns', () => {
     )
 
     expect(result.current.attributeKeys).toEqual([])
-    expect(result.current.columns).toHaveLength(3)
+    // Name + Rank + Similarity + Actions
+    expect(result.current.columns).toHaveLength(4)
   })
 })

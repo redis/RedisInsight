@@ -5,6 +5,7 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
 
 import {
+  SIMILARITY_RESULTS_ACTIONS_COLUMN_SIZE,
   SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_ID_PREFIX,
   SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE,
   SIMILARITY_RESULTS_EMPTY_MESSAGE,
@@ -26,6 +27,7 @@ const SimilaritySearchResultsTable = memo(
     columns,
     columnVisibility,
     parsedAttributesCache,
+    actionsConfig,
   }: SimilaritySearchResultsTableProps) => {
     const { compressor = null } = useSelector(connectedInstanceSelector)
     const { viewFormat } = useSelector(selectedKeySelector)
@@ -41,8 +43,9 @@ const SimilaritySearchResultsTable = memo(
           compressor,
           viewFormat,
           parsedAttributesCache,
+          actionsConfig,
         }) as SimilarityResultsCellMeta,
-      [compressor, viewFormat, parsedAttributesCache],
+      [compressor, viewFormat, parsedAttributesCache, actionsConfig],
     )
 
     // Force the table to overflow (and scroll horizontally) once the columns
@@ -60,6 +63,7 @@ const SimilaritySearchResultsTable = memo(
         SIMILARITY_RESULTS_NAME_COLUMN_MIN_SIZE +
         SIMILARITY_RESULTS_RANK_COLUMN_SIZE +
         SIMILARITY_RESULTS_SIMILARITY_COLUMN_SIZE +
+        SIMILARITY_RESULTS_ACTIONS_COLUMN_SIZE +
         visibleAttributeCount * SIMILARITY_RESULTS_ATTRIBUTE_COLUMN_SIZE
       return `${total}px`
     }, [columns, columnVisibility])
