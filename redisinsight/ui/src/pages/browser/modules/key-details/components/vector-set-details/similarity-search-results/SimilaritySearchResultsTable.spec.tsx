@@ -144,16 +144,16 @@ describe('SimilaritySearchResultsTable', () => {
 
       renderTable(matches)
 
-      // Header order: Element, then attributes alphabetically, then Rank, Similarity.
+      // Header order: Rank, Element, then attributes alphabetically, then Similarity, Actions.
       const headers = screen
         .getAllByRole('columnheader')
         .map((h) => h.textContent?.trim())
       expect(headers).toEqual([
+        'Rank',
         'Element',
         'alpha',
         'beta',
         'zeta',
-        'Rank',
         'Similarity',
         'Actions',
       ])
@@ -215,9 +215,9 @@ describe('SimilaritySearchResultsTable', () => {
         .getAllByRole('columnheader')
         .map((h) => h.textContent?.trim())
       expect(headers).toEqual([
+        'Rank',
         'Element',
         'count',
-        'Rank',
         'Similarity',
         'Actions',
       ])

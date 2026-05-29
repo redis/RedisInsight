@@ -180,9 +180,9 @@ const actionsColumn: ColumnDef<VectorSetSimilarityMatch> = {
 export const buildSimilarityResultsColumns = (
   attributeKeys: string[],
 ): ColumnDef<VectorSetSimilarityMatch>[] => [
+  rankColumn,
   nameColumn,
   ...attributeKeys.map(buildAttributeColumn),
-  rankColumn,
   similarityColumn,
   actionsColumn,
 ]
