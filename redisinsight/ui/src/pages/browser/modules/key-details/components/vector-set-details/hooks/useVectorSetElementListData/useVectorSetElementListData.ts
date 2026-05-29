@@ -16,26 +16,17 @@ import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { KeyValueCompressor } from 'uiSrc/constants'
 import { Nullable } from 'uiSrc/utils'
 
-import { vectorSetColumns } from '../../vector-set-element-list/VectorSetElementList.config'
 import { ElementsListConfig } from '../../vector-set-element-list/VectorSetElementList.types'
-import { DEFAULT_PAGE_SIZE } from '../../vector-set-element-list/constants'
+import {
+  DEFAULT_PAGE_SIZE,
+  ELEMENT_LIST_EMPTY_MESSAGE,
+  ELEMENT_LIST_LOADING_MESSAGE,
+} from '../../vector-set-element-list/constants'
 
 import {
   UseVectorSetElementListDataParams,
   UseVectorSetElementListDataResult,
 } from './useVectorSetElementListData.types'
-
-const MIN_COLUMN_WIDTH = 100
-const MIN_TABLE_WIDTH_FLOOR = 550
-
-/**
- * The element-list column set is static, so the table-min-width is computed
- * once at module scope — no need to recalculate per render.
- */
-const TABLE_MIN_WIDTH = `${Math.max(
-  vectorSetColumns.length * MIN_COLUMN_WIDTH,
-  MIN_TABLE_WIDTH_FLOOR,
-)}px`
 
 export const useVectorSetElementListData = ({
   actionsConfig,
@@ -81,7 +72,9 @@ export const useVectorSetElementListData = ({
     return elements.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize)
   }, [elements, pagination, isPaginationSupported])
 
-  const emptyMessage = loading ? 'Loading...' : 'No results found.'
+  const emptyMessage = loading
+    ? ELEMENT_LIST_LOADING_MESSAGE
+    : ELEMENT_LIST_EMPTY_MESSAGE
 
   useEffect(() => {
     const { pageIndex, pageSize } = pagination
@@ -101,7 +94,6 @@ export const useVectorSetElementListData = ({
   return {
     meta,
     currentPageData,
-    tableMinWidth: TABLE_MIN_WIDTH,
     pagination,
     setPagination,
     emptyMessage,

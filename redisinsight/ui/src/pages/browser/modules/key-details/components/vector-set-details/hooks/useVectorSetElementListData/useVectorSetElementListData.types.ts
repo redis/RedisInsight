@@ -16,7 +16,6 @@ export interface UseVectorSetElementListDataResult {
   /** Passed to the table's `meta` prop; cells read it via `table.options.meta`. */
   meta: ElementsListConfig
   currentPageData: VectorSetElement[]
-  tableMinWidth: string
   pagination: PaginationState
   setPagination: Dispatch<SetStateAction<PaginationState>>
   emptyMessage: string

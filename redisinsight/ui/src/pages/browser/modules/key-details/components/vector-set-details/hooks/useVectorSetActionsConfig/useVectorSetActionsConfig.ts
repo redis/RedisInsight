@@ -16,14 +16,13 @@ import {
   VectorSetActionsConfig,
   VectorSetActionTarget,
 } from '../../vector-set-element-list/VectorSetElementList.types'
+import { ELEMENT_DELETE_POPOVER_SUFFIX } from '../../vector-set-element-list/constants'
 import { SimilaritySearchPrefill } from '../../similarity-search-form'
 import { VectorSetSimilarityEntryPoint } from '../../telemetry.constants'
 import {
   UseVectorSetActionsConfigParams,
   UseVectorSetActionsConfigResult,
 } from './useVectorSetActionsConfig.types'
-
-const ELEMENT_DELETE_POPOVER_SUFFIX = '_vectorSet'
 
 const noop = () => {}
 

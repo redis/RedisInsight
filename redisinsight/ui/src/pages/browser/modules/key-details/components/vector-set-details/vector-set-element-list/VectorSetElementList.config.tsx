@@ -9,7 +9,12 @@ import {
   ElementsListConfig,
   VectorSetColumn,
 } from './VectorSetElementList.types'
-import { VECTOR_SET_COLUMN_HEADERS } from './constants'
+import {
+  ACTIONS_COLUMN_SIZE,
+  MIN_COLUMN_WIDTH,
+  MIN_TABLE_WIDTH_FLOOR,
+  VECTOR_SET_COLUMN_HEADERS,
+} from './constants'
 
 const nameColumn: ColumnDef<VectorSetElement> = {
   id: VectorSetColumn.Name,
@@ -33,7 +38,7 @@ const actionsColumn: ColumnDef<VectorSetElement> = {
   header: VECTOR_SET_COLUMN_HEADERS[VectorSetColumn.Actions],
   enableSorting: false,
   enableResizing: false,
-  size: 100,
+  size: ACTIONS_COLUMN_SIZE,
   sizeUnit: 'px',
   cell: ({ row, table }: CellContext<VectorSetElement, unknown>) => {
     const { actionsConfig, viewFormat } = table.options
@@ -58,3 +63,12 @@ export const vectorSetColumns: ColumnDef<VectorSetElement>[] = [
   nameColumn,
   actionsColumn,
 ]
+
+/**
+ * The element-list column set is static, so the table-min-width is computed
+ * once at module scope — no need to recalculate per render.
+ */
+export const TABLE_MIN_WIDTH = `${Math.max(
+  vectorSetColumns.length * MIN_COLUMN_WIDTH,
+  MIN_TABLE_WIDTH_FLOOR,
+)}px`

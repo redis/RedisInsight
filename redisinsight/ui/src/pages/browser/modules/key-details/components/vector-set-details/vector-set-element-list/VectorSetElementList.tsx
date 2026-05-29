@@ -1,7 +1,10 @@
 import React, { memo } from 'react'
 
 import { useVectorSetElementListData } from '../hooks'
-import { vectorSetColumns } from './VectorSetElementList.config'
+import {
+  TABLE_MIN_WIDTH,
+  vectorSetColumns,
+} from './VectorSetElementList.config'
 import { VectorSetActionsConfig } from './VectorSetElementList.types'
 import * as S from './VectorSetElementList.styles'
 
@@ -13,7 +16,6 @@ const VectorSetElementList = memo(({ actionsConfig }: Props) => {
   const {
     meta,
     currentPageData,
-    tableMinWidth,
     pagination,
     setPagination,
     emptyMessage,
@@ -28,7 +30,7 @@ const VectorSetElementList = memo(({ actionsConfig }: Props) => {
         data={currentPageData}
         meta={meta}
         stripedRows
-        minWidth={tableMinWidth}
+        minWidth={TABLE_MIN_WIDTH}
         paginationEnabled={isPaginationSupported}
         manualPagination={isPaginationSupported}
         totalRowCount={isPaginationSupported ? total : undefined}
