@@ -35,6 +35,8 @@ test.describe('Browser > Bulk Actions — environment gating', () => {
       await browserPage.bulkActionsPanel.selectDeleteKeysTab();
       await browserPage.bulkActionsPanel.clickDelete();
 
+      // Mistyped value keeps Confirm disabled; only the exact DB name enables it.
+      await typeToConfirmModal.expectConfirmDisabledWhen(`${database.name}-wrong`);
       await typeToConfirmModal.confirm(database.name);
       await browserPage.bulkActionsPanel.waitForDeleteComplete();
 
