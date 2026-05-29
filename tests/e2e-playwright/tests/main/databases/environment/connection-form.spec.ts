@@ -32,11 +32,7 @@ test.describe('Environment classification — connection form', () => {
     createdDatabaseNames.length = 0;
   });
 
-  test('Production environment shows PROD badge in list and header', async ({
-    databasesPage,
-    browserPage,
-    page,
-  }) => {
+  test('Production environment shows PROD badge in list and header', async ({ databasesPage, browserPage, page }) => {
     const { addDatabaseDialog, databaseList } = databasesPage;
     const config = StandaloneConfigFactory.build({ environment: Environment.Production });
     createdDatabaseNames.push(config.name);
@@ -64,11 +60,7 @@ test.describe('Environment classification — connection form', () => {
     await browserPage.goToDatabases();
   });
 
-  test('Development environment shows DEV label in list and header', async ({
-    databasesPage,
-    browserPage,
-    page,
-  }) => {
+  test('Development environment shows DEV label in list and header', async ({ databasesPage, browserPage, page }) => {
     const { addDatabaseDialog, databaseList } = databasesPage;
     const config = StandaloneConfigFactory.build({ environment: Environment.Development });
     createdDatabaseNames.push(config.name);
@@ -93,11 +85,7 @@ test.describe('Environment classification — connection form', () => {
     await browserPage.goToDatabases();
   });
 
-  test('Unspecified environment renders no badge or label', async ({
-    databasesPage,
-    browserPage,
-    page,
-  }) => {
+  test('Unspecified environment renders no badge or label', async ({ databasesPage, browserPage, page }) => {
     const { addDatabaseDialog, databaseList } = databasesPage;
     // Default form value is "Unspecified" — explicitly omit `environment` to assert default.
     const config = StandaloneConfigFactory.build();

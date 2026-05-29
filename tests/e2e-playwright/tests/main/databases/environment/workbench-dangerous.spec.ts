@@ -13,9 +13,7 @@ test.describe('Environment classification — Workbench dangerous batch', () => 
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
-    database = await apiHelper.createDatabase(
-      StandaloneConfigFactory.build({ environment: Environment.Production }),
-    );
+    database = await apiHelper.createDatabase(StandaloneConfigFactory.build({ environment: Environment.Production }));
   });
 
   test.afterAll(async ({ apiHelper }) => {
@@ -53,8 +51,6 @@ test.describe('Environment classification — Workbench dangerous batch', () => 
     await workbenchPage.submitButton.click();
     await typeToConfirmModal.confirm(database.name);
 
-    await expect
-      .poll(async () => Number(await apiHelper.sendCommand(database.id, `EXISTS ${sentinelKey}`)))
-      .toBe(0);
+    await expect.poll(async () => Number(await apiHelper.sendCommand(database.id, `EXISTS ${sentinelKey}`))).toBe(0);
   });
 });

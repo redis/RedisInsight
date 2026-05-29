@@ -14,9 +14,7 @@ test.describe('Environment classification — Bulk delete', () => {
   const keyPrefix = `test-bulk-${faker.string.alphanumeric(6)}:`;
 
   test.beforeAll(async ({ apiHelper }) => {
-    database = await apiHelper.createDatabase(
-      StandaloneConfigFactory.build({ environment: Environment.Production }),
-    );
+    database = await apiHelper.createDatabase(StandaloneConfigFactory.build({ environment: Environment.Production }));
     for (let i = 0; i < 5; i++) {
       await apiHelper.createStringKey(database.id, `${keyPrefix}${i}`, `value-${i}`);
     }

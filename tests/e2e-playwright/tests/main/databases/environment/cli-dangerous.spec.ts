@@ -14,9 +14,7 @@ test.describe('Environment classification — CLI dangerous commands', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
-    database = await apiHelper.createDatabase(
-      StandaloneConfigFactory.build({ environment: Environment.Production }),
-    );
+    database = await apiHelper.createDatabase(StandaloneConfigFactory.build({ environment: Environment.Production }));
   });
 
   test.afterAll(async ({ apiHelper }) => {

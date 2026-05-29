@@ -62,10 +62,7 @@ test.describe('Environment classification — Profiler & Tutorials', () => {
     await expect(page.getByTestId('profiler-start-confirm')).toHaveCount(0);
   });
 
-  test('Production DB: Tutorial Run button is disabled', async ({
-    browserPage,
-    insightsPanel,
-  }) => {
+  test('Production DB: Tutorial Run button is disabled', async ({ browserPage, insightsPanel }) => {
     await browserPage.goto(productionDb.id);
     await insightsPanel.open();
     await insightsPanel.switchToTutorialsTab();
