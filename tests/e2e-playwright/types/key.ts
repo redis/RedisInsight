@@ -1,7 +1,7 @@
 /**
  * Redis key types
  */
-export type KeyType = 'Hash' | 'List' | 'Set' | 'Sorted Set' | 'String' | 'JSON' | 'Stream';
+export type KeyType = 'Hash' | 'List' | 'Set' | 'Sorted Set' | 'String' | 'JSON' | 'Stream' | 'Vector Set';
 
 /**
  * Key data for creating keys
@@ -40,6 +40,15 @@ export interface JsonKeyData extends BaseKeyData {
   value: string;
 }
 
+export interface VectorSetElement {
+  name: string;
+  vector: string;
+}
+
+export interface VectorSetKeyData extends BaseKeyData {
+  elements: VectorSetElement[];
+}
+
 export type KeyData =
   | StringKeyData
   | HashKeyData
@@ -47,4 +56,5 @@ export type KeyData =
   | SetKeyData
   | ZSetKeyData
   | StreamKeyData
-  | JsonKeyData;
+  | JsonKeyData
+  | VectorSetKeyData;

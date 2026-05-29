@@ -8,6 +8,7 @@ import {
   ZSetKeyData,
   StreamKeyData,
   JsonKeyData,
+  VectorSetKeyData,
 } from 'e2eSrc/types';
 
 /**
@@ -85,6 +86,27 @@ export const JsonKeyFactory = Factory.define<JsonKeyData>(() => ({
 }));
 
 /**
+ * Build a comma-separated random unit-vector string of length `dim`.
+ * Deterministic per call via faker — values land in [-1, 1].
+ */
+const buildRandomVector = (dim: number): string =>
+  Array.from({ length: dim }, () => faker.number.float({ min: -1, max: 1, fractionDigits: 4 })).join(',');
+
+/**
+ * Vector Set key data factory
+ *
+ * Two elements with matching dimensions (3) so the same key can serve both
+ * VADD and VSIM tests.
+ */
+export const VectorSetKeyFactory = Factory.define<VectorSetKeyData>(() => ({
+  keyName: `${TEST_KEY_PREFIX}vector-set-${faker.string.alphanumeric(8)}`,
+  elements: [
+    { name: `element-${faker.string.alphanumeric(6)}`, vector: buildRandomVector(3) },
+    { name: `element-${faker.string.alphanumeric(6)}`, vector: buildRandomVector(3) },
+  ],
+}));
+
+/**
  * Key factories by type
  */
 export const keyFactories = {
@@ -95,4 +117,5 @@ export const keyFactories = {
   'Sorted Set': ZSetKeyFactory,
   Stream: StreamKeyFactory,
   JSON: JsonKeyFactory,
+  'Vector Set': VectorSetKeyFactory,
 };

@@ -1,2 +1,2 @@
 export { BrowserPage } from './BrowserPage';
-export { AddKeyDialog, KeyList } from './components';
+export { AddKeyDialog, KeyList, VectorSetKeyDetails } from './components';
