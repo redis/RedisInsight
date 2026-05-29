@@ -66,17 +66,20 @@ export class DatabaseList {
 
   /**
    * Get a database row by name
-   * Uses a strict text match in the database alias column (2nd column)
-   * Handles optional [dbX] suffix for logical databases
+   * Uses a strict text match against the inner name `<p>` of the database
+   * alias column (2nd column). Matching on the inner paragraph keeps the
+   * locator tolerant of sibling elements in the same cell — e.g. the
+   * environment badge (`PROD` / `DEV`) introduced by RI-8181 — while still
+   * rejecting partial-name collisions.
+   * Handles optional [dbX] suffix for logical databases.
    */
   getRow(name: string): Locator {
     const escapedName = this.escapeRegex(name);
+    const nameRegex = new RegExp(`^${escapedName}(\\s*\\[db\\d+\\])?\\s*$`);
     return this.page
       .locator('table tbody tr')
       .filter({
-        has: this.page
-          .locator('td:nth-child(2)')
-          .filter({ hasText: new RegExp(`^${escapedName}(\\s*\\[db\\d+\\])?\\s*$`) }),
+        has: this.page.locator('td:nth-child(2) p', { hasText: nameRegex }),
       })
       .first();
   }
