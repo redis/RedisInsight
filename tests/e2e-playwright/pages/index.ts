@@ -1,6 +1,6 @@
 export { BasePage } from './BasePage';
 export { InstancePage } from './InstancePage';
-export { InstanceHeader, NavigationTabs, BottomPanel } from './components';
+export { InstanceHeader, NavigationTabs, BottomPanel, TypeToConfirmModal } from './components';
 export { BrowserPage, AddKeyDialog, KeyList } from './browser';
 export { CliPanel } from './cli';
 export { CommandHelperPanel } from './command-helper';

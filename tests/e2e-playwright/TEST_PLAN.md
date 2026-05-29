@@ -203,6 +203,26 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 |--------|-------|-----------|
 | ✅ | main | Confirm setting a decompression type works |
 
+### 1.9 Environment Modes (Prod vs Non-Prod) — RI-8190
+> Requires the `dev-prodMode` feature flag (enabled per-spec via `test.use`).
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| ✅ | main | Production env → red PROD badge in DB list and instance header |
+| ✅ | main | Development env → DEV label in DB list and instance header |
+| ✅ | main | Unspecified env (default) → no badge or label rendered |
+| ✅ | main | Production DB: rename key opens modal (no input per RI-8201); cancel reverts, confirm renames |
+| ✅ | main | Production DB: edit TTL opens modal (no input per RI-8201); confirm applies |
+| ✅ | main | Production DB: add hash field opens modal (no input per RI-8201); confirm adds |
+| ✅ | main | Development DB: in-Browser writes bypass the modal (per-connection gating) |
+| ✅ | main | Production DB: bulk delete still requires typing DB name; mistyped keeps Confirm disabled |
+| ✅ | main | Production DB: CLI `FLUSHDB` shows "Proceed with caution" title + ACL tip + input; cancel preserves keys; confirm runs |
+| ✅ | main | Production DB: Workbench dangerous batch shows "Proceed with caution" title + ACL tip + input |
+| ✅ | main | Production DB: Profiler shows confirmation popover; advisory banner always present |
+| ✅ | main | Unspecified DB: Profiler advisory rendered; no confirmation popover |
+| ✅ | main | Production DB: Tutorial Run button is disabled |
+| ✅ | main | Unspecified DB: Tutorial Run button is enabled |
+
 ---
 
 ## 2. Browser Page
