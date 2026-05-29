@@ -1,10 +1,12 @@
 import React from 'react'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, set } from 'lodash'
 import { instance, mock } from 'ts-mockito'
 import reactRouterDom from 'react-router-dom'
 import {
   cleanup,
+  initialStateDefault,
   mockedStore,
+  mockStore,
   render,
   screen,
   fireEvent,
@@ -12,6 +14,7 @@ import {
   waitFor,
 } from 'uiSrc/utils/test-utils'
 import {
+  FeatureFlags,
   MOCK_TUTORIALS_ITEMS,
   MOCK_CUSTOM_TUTORIALS_ITEMS,
 } from 'uiSrc/constants'
@@ -37,6 +40,20 @@ beforeEach(() => {
   store = cloneDeep(mockedStore)
   store.clearActions()
 })
+
+// Custom tutorials are deprecated (RED-194229) and disabled by default.
+// Tests that exercise the upload/delete UI need to render with the flag
+// explicitly enabled and use the returned mock store for action assertions.
+const renderWithCustomTutorialsEnabled = (ui: React.ReactElement) => {
+  const initialStoreState = set(
+    cloneDeep(initialStateDefault),
+    `app.features.featureFlags.features.${FeatureFlags.customTutorials}`,
+    { flag: true },
+  )
+  const customStore = mockStore(initialStoreState)
+  const result = render(ui, { store: customStore })
+  return { ...result, store: customStore }
+}
 
 jest.mock('uiSrc/telemetry', () => ({
   ...jest.requireActual('uiSrc/telemetry'),
@@ -169,7 +186,7 @@ describe('EnablementArea', () => {
 
   describe('Custom Tutorials', () => {
     it('should render custom tutorials', () => {
-      render(
+      renderWithCustomTutorialsEnabled(
         <EnablementArea
           {...instance(mockedProps)}
           customTutorials={MOCK_CUSTOM_TUTORIALS_ITEMS}
@@ -181,7 +198,7 @@ describe('EnablementArea', () => {
     })
 
     it('should render add button and open form', () => {
-      render(
+      renderWithCustomTutorialsEnabled(
         <EnablementArea
           {...instance(mockedProps)}
           customTutorials={MOCK_CUSTOM_TUTORIALS_ITEMS}
@@ -196,7 +213,7 @@ describe('EnablementArea', () => {
       const customTutorials = [
         { ...MOCK_CUSTOM_TUTORIALS_ITEMS[0], children: [] },
       ]
-      render(
+      renderWithCustomTutorialsEnabled(
         <EnablementArea
           {...instance(mockedProps)}
           customTutorials={customTutorials}
@@ -206,14 +223,14 @@ describe('EnablementArea', () => {
     })
 
     it('should call proper actions after upload form submit', async () => {
-      render(
+      const { store: customStore } = renderWithCustomTutorialsEnabled(
         <EnablementArea
           {...instance(mockedProps)}
           customTutorials={MOCK_CUSTOM_TUTORIALS_ITEMS}
         />,
       )
 
-      const afterRenderActions = [...store.getActions()]
+      const afterRenderActions = [...customStore.getActions()]
 
       fireEvent.click(screen.getByTestId('open-upload-tutorial-btn'))
 
@@ -228,25 +245,25 @@ describe('EnablementArea', () => {
       })
 
       const expectedActions = [...afterRenderActions, uploadWbCustomTutorial()]
-      expect(store.getActions().slice(0, expectedActions.length)).toEqual(
+      expect(customStore.getActions().slice(0, expectedActions.length)).toEqual(
         expectedActions,
       )
     })
 
     it('should render delete button and call proper actions after click on delete', () => {
-      render(
+      const { store: customStore } = renderWithCustomTutorialsEnabled(
         <EnablementArea
           {...instance(mockedProps)}
           customTutorials={MOCK_CUSTOM_TUTORIALS_ITEMS}
         />,
       )
-      const afterRenderActions = [...store.getActions()]
+      const afterRenderActions = [...customStore.getActions()]
 
       fireEvent.click(screen.getByTestId('delete-tutorial-icon-12mfp-rem'))
       fireEvent.click(screen.getByTestId('delete-tutorial-12mfp-rem'))
 
       const expectedActions = [...afterRenderActions, deleteWbCustomTutorial()]
-      expect(store.getActions().slice(0, expectedActions.length)).toEqual(
+      expect(customStore.getActions().slice(0, expectedActions.length)).toEqual(
         expectedActions,
       )
     })
@@ -259,7 +276,7 @@ describe('EnablementArea', () => {
         () => sendEventTelemetryMock,
       )
 
-      render(
+      renderWithCustomTutorialsEnabled(
         <EnablementArea
           {...instance(mockedProps)}
           customTutorials={MOCK_CUSTOM_TUTORIALS_ITEMS}
@@ -283,7 +300,7 @@ describe('EnablementArea', () => {
         () => sendEventTelemetryMock,
       )
 
-      render(
+      renderWithCustomTutorialsEnabled(
         <EnablementArea
           {...instance(mockedProps)}
           customTutorials={MOCK_CUSTOM_TUTORIALS_ITEMS}
@@ -322,7 +339,7 @@ describe('EnablementArea', () => {
         () => sendEventTelemetryMock,
       )
 
-      render(
+      renderWithCustomTutorialsEnabled(
         <EnablementArea
           {...instance(mockedProps)}
           customTutorials={MOCK_CUSTOM_TUTORIALS_ITEMS}
