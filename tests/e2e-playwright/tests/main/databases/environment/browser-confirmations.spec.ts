@@ -4,150 +4,108 @@ import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
 import { DatabaseInstance, Environment } from 'e2eSrc/types';
 
 /**
- * RI-8190 — E2E coverage for prod vs non-prod modes.
+ * End-to-end: Browser write actions go through the production-write
+ * confirmation provider on Production databases and bypass it on Development
+ * databases (per-connection gating).
  *
- * Browser write confirmations:
- *  - Scenario 2: dangerous writes on a Production-classified DB open the
- *    type-to-confirm modal. Per RI-8201, the Browser variant of the modal
- *    no longer requires typing the DB name — the user just confirms.
- *  - Scenario 8 (per-connection Development): writes on a Development DB skip
- *    the modal, proving the gating is per-connection, not a global setting.
+ * One representative write action is exercised per environment — modal logic,
+ * per-component wiring, and per-action confirmation strings are covered by
+ * unit tests.
  */
 test.use({ featureFlags: { 'dev-prodMode': true } });
 
 const uniqueId = () => faker.string.alphanumeric(6);
 
-test.describe('Environment classification — Browser confirmations', () => {
-  let productionDb: DatabaseInstance;
-  let developmentDb: DatabaseInstance;
-  const productionKeys: string[] = [];
-  const developmentKeys: string[] = [];
+test.describe('Browser > Key Details — environment gating', () => {
+  test.describe('Production DB', () => {
+    let database: DatabaseInstance;
+    const keys: string[] = [];
 
-  test.beforeAll(async ({ apiHelper }) => {
-    productionDb = await apiHelper.createDatabase(
-      StandaloneConfigFactory.build({ environment: Environment.Production }),
-    );
-    developmentDb = await apiHelper.createDatabase(
-      StandaloneConfigFactory.build({ environment: Environment.Development }),
-    );
+    test.beforeAll(async ({ apiHelper }) => {
+      database = await apiHelper.createDatabase(StandaloneConfigFactory.build({ environment: Environment.Production }));
+    });
+
+    test.afterAll(async ({ apiHelper }) => {
+      for (const key of keys) {
+        await apiHelper.deleteKeysByPattern(database.id, key).catch(() => {});
+      }
+      await apiHelper.deleteDatabase(database.id).catch(() => {});
+    });
+
+    test('should require type-to-confirm modal when renaming a key', async ({
+      apiHelper,
+      browserPage,
+      typeToConfirmModal,
+    }) => {
+      const keyName = `test-rename-${uniqueId()}`;
+      keys.push(keyName);
+      await apiHelper.createStringKey(database.id, keyName, 'original-value');
+
+      await browserPage.goto(database.id);
+      await browserPage.keyList.searchKeys(keyName);
+      await browserPage.keyList.clickKey(keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
+
+      const newName = `${keyName}-renamed`;
+      keys.push(newName);
+
+      // Enter rename mode, type the new name, click Apply.
+      const renameInput = browserPage.page.getByRole('textbox', { name: 'Enter Key Name' });
+      await browserPage.keyDetails.keyName.click();
+      await renameInput.waitFor({ state: 'visible' });
+      await renameInput.fill(newName);
+      await browserPage.page.getByRole('button', { name: 'Apply' }).click();
+
+      // Cancel the modal — the key keeps its original name.
+      await typeToConfirmModal.cancel();
+      await expect(browserPage.keyDetails.keyName).toContainText(keyName);
+
+      // Retry and confirm — the rename goes through.
+      await browserPage.keyDetails.keyName.click();
+      await renameInput.fill(newName);
+      await browserPage.page.getByRole('button', { name: 'Apply' }).click();
+      await typeToConfirmModal.confirmWithoutInput();
+
+      await expect(browserPage.keyDetails.keyName).toContainText(newName);
+    });
   });
 
-  test.afterAll(async ({ apiHelper }) => {
-    for (const key of productionKeys) {
-      await apiHelper.deleteKeysByPattern(productionDb.id, key).catch(() => {});
-    }
-    for (const key of developmentKeys) {
-      await apiHelper.deleteKeysByPattern(developmentDb.id, key).catch(() => {});
-    }
-    await apiHelper.deleteDatabase(productionDb.id).catch(() => {});
-    await apiHelper.deleteDatabase(developmentDb.id).catch(() => {});
-  });
+  test.describe('Development DB', () => {
+    let database: DatabaseInstance;
+    const keys: string[] = [];
 
-  test('Production DB: rename key opens modal — cancel reverts, confirm renames (no typing required)', async ({
-    apiHelper,
-    browserPage,
-    typeToConfirmModal,
-  }) => {
-    const keyName = `test-rename-${uniqueId()}`;
-    productionKeys.push(keyName);
-    await apiHelper.createStringKey(productionDb.id, keyName, 'original-value');
+    test.beforeAll(async ({ apiHelper }) => {
+      database = await apiHelper.createDatabase(
+        StandaloneConfigFactory.build({ environment: Environment.Development }),
+      );
+    });
 
-    await browserPage.goto(productionDb.id);
-    await browserPage.keyList.searchKeys(keyName);
-    await browserPage.keyList.clickKey(keyName);
-    await browserPage.keyDetails.waitForKeyDetails();
+    test.afterAll(async ({ apiHelper }) => {
+      for (const key of keys) {
+        await apiHelper.deleteKeysByPattern(database.id, key).catch(() => {});
+      }
+      await apiHelper.deleteDatabase(database.id).catch(() => {});
+    });
 
-    const newName = `${keyName}-renamed`;
-    productionKeys.push(newName);
+    test('should bypass type-to-confirm modal when editing a key', async ({
+      apiHelper,
+      browserPage,
+      typeToConfirmModal,
+    }) => {
+      const keyName = `test-dev-${uniqueId()}`;
+      keys.push(keyName);
+      await apiHelper.createStringKey(database.id, keyName, 'dev-value');
 
-    // Click on the key name to enter rename mode, type, and click Apply.
-    await browserPage.keyDetails.keyName.click();
-    const renameInput = browserPage.page.getByRole('textbox', { name: 'Enter Key Name' });
-    await renameInput.waitFor({ state: 'visible' });
-    await renameInput.fill(newName);
-    await browserPage.page.getByRole('button', { name: 'Apply' }).click();
+      await browserPage.goto(database.id);
+      await browserPage.keyList.searchKeys(keyName);
+      await browserPage.keyList.clickKey(keyName);
+      await browserPage.keyDetails.waitForKeyDetails();
 
-    // Cancel the first time — key should remain.
-    await typeToConfirmModal.cancel();
-    await expect(browserPage.keyDetails.keyName).toContainText(keyName);
+      await browserPage.keyDetails.editStringValue('new-dev-value');
 
-    // Retry, confirm. Browser variant skips the typing step (RI-8201).
-    await browserPage.keyDetails.keyName.click();
-    await renameInput.fill(newName);
-    await browserPage.page.getByRole('button', { name: 'Apply' }).click();
-    await typeToConfirmModal.confirmWithoutInput();
-
-    await expect(browserPage.keyDetails.keyName).toContainText(newName);
-  });
-
-  test('Production DB: edit TTL opens modal with no typing required', async ({
-    apiHelper,
-    browserPage,
-    typeToConfirmModal,
-  }) => {
-    const keyName = `test-ttl-${uniqueId()}`;
-    productionKeys.push(keyName);
-    await apiHelper.createStringKey(productionDb.id, keyName, 'value');
-
-    await browserPage.goto(productionDb.id);
-    await browserPage.keyList.searchKeys(keyName);
-    await browserPage.keyList.clickKey(keyName);
-    await browserPage.keyDetails.waitForKeyDetails();
-
-    await browserPage.keyDetails.ttlValue.click();
-    const ttlInput = browserPage.page.getByRole('textbox', { name: /no limit/i });
-    await ttlInput.fill('600');
-    await browserPage.keyDetails.ttlApplyButton.click();
-
-    // Per RI-8201, Browser variant of the modal has no type-to-confirm input.
-    await typeToConfirmModal.confirmWithoutInput();
-
-    await expect(browserPage.keyDetails.ttlValue).toContainText(/^TTL:\s*\d/);
-  });
-
-  test('Production DB: add hash field opens modal with no typing required', async ({
-    apiHelper,
-    browserPage,
-    typeToConfirmModal,
-  }) => {
-    const keyName = `test-hash-${uniqueId()}`;
-    productionKeys.push(keyName);
-    await apiHelper.createHashKey(productionDb.id, keyName, [{ field: 'seed', value: 'seed-value' }]);
-
-    await browserPage.goto(productionDb.id);
-    await browserPage.keyList.searchKeys(keyName);
-    await browserPage.keyList.clickKey(keyName);
-    await browserPage.keyDetails.waitForKeyDetails();
-
-    const newField = `field-${uniqueId()}`;
-    await browserPage.page.getByRole('button', { name: 'Add Fields' }).click();
-    await browserPage.page.getByPlaceholder('Enter Field').fill(newField);
-    await browserPage.page.getByPlaceholder('Enter Value').fill('new-value');
-    await browserPage.page.getByRole('button', { name: 'Save' }).click();
-
-    await typeToConfirmModal.confirmWithoutInput();
-
-    await expect(browserPage.page.getByRole('gridcell', { name: newField })).toBeVisible();
-  });
-
-  test('Development DB: in-Browser writes are NOT gated by the modal', async ({
-    apiHelper,
-    browserPage,
-    typeToConfirmModal,
-  }) => {
-    const keyName = `test-dev-${uniqueId()}`;
-    developmentKeys.push(keyName);
-    await apiHelper.createStringKey(developmentDb.id, keyName, 'dev-value');
-
-    await browserPage.goto(developmentDb.id);
-    await browserPage.keyList.searchKeys(keyName);
-    await browserPage.keyList.clickKey(keyName);
-    await browserPage.keyDetails.waitForKeyDetails();
-
-    await browserPage.keyDetails.editStringValue('new-dev-value');
-
-    // No modal must appear — Development is per-connection bypass.
-    expect(await typeToConfirmModal.isOpen()).toBe(false);
-    await expect(browserPage.keyDetails.stringValue).toHaveText('new-dev-value');
+      // Development is per-connection bypass — no modal should appear.
+      expect(await typeToConfirmModal.isOpen()).toBe(false);
+      await expect(browserPage.keyDetails.stringValue).toHaveText('new-dev-value');
+    });
   });
 });

@@ -4,45 +4,41 @@ import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
 import { DatabaseInstance, Environment } from 'e2eSrc/types';
 
 /**
- * RI-8190 — Scenario 3: bulk delete on a Production DB requires typing the DB
- * name in the type-to-confirm modal.
+ * End-to-end: bulk delete on a Production database requires the user to
+ * type the database name in the type-to-confirm modal before the
+ * destructive action runs against the real Redis backend.
  */
 test.use({ featureFlags: { 'dev-prodMode': true } });
 
-test.describe('Environment classification — Bulk delete', () => {
-  let database: DatabaseInstance;
-  const keyPrefix = `test-bulk-${faker.string.alphanumeric(6)}:`;
+test.describe('Browser > Bulk Actions — environment gating', () => {
+  test.describe('Production DB', () => {
+    let database: DatabaseInstance;
+    const keyPrefix = `test-bulk-${faker.string.alphanumeric(6)}:`;
 
-  test.beforeAll(async ({ apiHelper }) => {
-    database = await apiHelper.createDatabase(StandaloneConfigFactory.build({ environment: Environment.Production }));
-    for (let i = 0; i < 5; i++) {
-      await apiHelper.createStringKey(database.id, `${keyPrefix}${i}`, `value-${i}`);
-    }
-  });
+    test.beforeAll(async ({ apiHelper }) => {
+      database = await apiHelper.createDatabase(StandaloneConfigFactory.build({ environment: Environment.Production }));
+      for (let i = 0; i < 5; i++) {
+        await apiHelper.createStringKey(database.id, `${keyPrefix}${i}`, `value-${i}`);
+      }
+    });
 
-  test.afterAll(async ({ apiHelper }) => {
-    await apiHelper.deleteKeysByPattern(database.id, `${keyPrefix}*`).catch(() => {});
-    await apiHelper.deleteDatabase(database.id).catch(() => {});
-  });
+    test.afterAll(async ({ apiHelper }) => {
+      await apiHelper.deleteKeysByPattern(database.id, `${keyPrefix}*`).catch(() => {});
+      await apiHelper.deleteDatabase(database.id).catch(() => {});
+    });
 
-  test('Production DB: bulk delete requires correct DB name, mistyped keeps button disabled', async ({
-    browserPage,
-    typeToConfirmModal,
-  }) => {
-    await browserPage.goto(database.id);
-    await browserPage.keyList.searchKeys(`${keyPrefix}*`);
+    test('should require typing the database name to bulk-delete', async ({ browserPage, typeToConfirmModal }) => {
+      await browserPage.goto(database.id);
+      await browserPage.keyList.searchKeys(`${keyPrefix}*`);
 
-    await browserPage.bulkActionsPanel.open();
-    await browserPage.bulkActionsPanel.selectDeleteKeysTab();
-    await browserPage.bulkActionsPanel.clickDelete();
+      await browserPage.bulkActionsPanel.open();
+      await browserPage.bulkActionsPanel.selectDeleteKeysTab();
+      await browserPage.bulkActionsPanel.clickDelete();
 
-    // Mistyped value keeps Confirm disabled.
-    await typeToConfirmModal.expectConfirmDisabledWhen('not-the-db-name');
+      await typeToConfirmModal.confirm(database.name);
+      await browserPage.bulkActionsPanel.waitForDeleteComplete();
 
-    // Correct DB name enables and completes the bulk delete.
-    await typeToConfirmModal.confirm(database.name);
-    await browserPage.bulkActionsPanel.waitForDeleteComplete();
-
-    await expect(browserPage.bulkActionsPanel.statusCompleted).toBeVisible();
+      await expect(browserPage.bulkActionsPanel.statusCompleted).toBeVisible();
+    });
   });
 });

@@ -69,8 +69,8 @@ export class DatabaseList {
    * Uses a strict text match against the inner name `<p>` of the database
    * alias column (2nd column). Matching on the inner paragraph keeps the
    * locator tolerant of sibling elements in the same cell — e.g. the
-   * environment badge (`PROD` / `DEV`) introduced by RI-8181 — while still
-   * rejecting partial-name collisions.
+   * environment badge (`PROD` / `DEV`) — while still rejecting partial-name
+   * collisions.
    * Handles optional [dbX] suffix for logical databases.
    */
   getRow(name: string): Locator {

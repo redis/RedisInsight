@@ -140,6 +140,9 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Search by connection type (OSS Cluster, Sentinel) |
 | 🔲 | main | Search by last connection time |
 | ✅ | main | Verify Redis Stack icon displayed for databases with modules |
+| ✅ | main | Production DB > should show PROD badge in databases list and instance header |
+| ✅ | main | Development DB > should show DEV label in databases list and instance header |
+| ✅ | main | Unspecified DB > should not render an environment badge in list or header |
 
 ### 1.3 Clone Database
 | Status | Group | Test Case |
@@ -203,26 +206,6 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 |--------|-------|-----------|
 | ✅ | main | Confirm setting a decompression type works |
 
-### 1.9 Environment Modes (Prod vs Non-Prod) — RI-8190
-> Requires the `dev-prodMode` feature flag (enabled per-spec via `test.use`).
-
-| Status | Group | Test Case |
-|--------|-------|-----------|
-| ✅ | main | Production env → red PROD badge in DB list and instance header |
-| ✅ | main | Development env → DEV label in DB list and instance header |
-| ✅ | main | Unspecified env (default) → no badge or label rendered |
-| ✅ | main | Production DB: rename key opens modal (no input per RI-8201); cancel reverts, confirm renames |
-| ✅ | main | Production DB: edit TTL opens modal (no input per RI-8201); confirm applies |
-| ✅ | main | Production DB: add hash field opens modal (no input per RI-8201); confirm adds |
-| ✅ | main | Development DB: in-Browser writes bypass the modal (per-connection gating) |
-| ✅ | main | Production DB: bulk delete still requires typing DB name; mistyped keeps Confirm disabled |
-| ✅ | main | Production DB: CLI `FLUSHDB` shows "Proceed with caution" title + ACL tip + input; cancel preserves keys; confirm runs |
-| ✅ | main | Production DB: Workbench dangerous batch shows "Proceed with caution" title + ACL tip + input |
-| ✅ | main | Production DB: Profiler shows confirmation popover; advisory banner always present |
-| ✅ | main | Unspecified DB: Profiler advisory rendered; no confirmation popover |
-| ✅ | main | Production DB: Tutorial Run button is disabled |
-| ✅ | main | Unspecified DB: Tutorial Run button is enabled |
-
 ---
 
 ## 2. Browser Page
@@ -278,6 +261,8 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | ✅ | main | should view, edit, rename a String key and show copy-on-hover |
 | ✅ | main | should view, edit TTL and have the key expire after countdown |
 | ✅ | main | should change value format between Unicode, HEX and Binary |
+| ✅ | main | Production DB > should require type-to-confirm modal when renaming a key |
+| ✅ | main | Development DB > should bypass type-to-confirm modal when editing a key |
 
 ### 2.5 Key Details - Hash
 | Status | Group | Test Case |
@@ -375,6 +360,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Confirm deletion failures surfaced in summary log |
 | 🔲 | main | Confirm performance when deleting thousands of keys |
 | 🔲 | main | Confirm performance when bulk uploading large datasets (>10K keys) |
+| ✅ | main | Production DB > should require typing the database name to bulk-delete |
 
 ### 2.12 Value Formatters
 | Status | Group | Test Case |
@@ -467,6 +453,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | History limited to 30 commands (oldest replaced by newest) |
 | 🔲 | main | Quick-access to command history with Up Arrow |
 | 🔲 | main | Use Non-Redis Editor with Shift+Space |
+| ✅ | main | Production DB > should require type-to-confirm modal for dangerous workbench batches |
 
 ### 3.1.1 Workbench Context
 | Status | Group | Test Case |
@@ -506,6 +493,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Open Intro to vector search tutorial |
 | 🔲 | main | Click Explore button |
 | 🔲 | main | Close insights panel |
+| ✅ | main | Production DB > should disable the tutorial Run button |
 
 ### 3.4 Profiler (Bottom Panel)
 | Status | Group | Test Case |
@@ -517,6 +505,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Hide/close profiler panel |
 | 🔲 | main | Reset profiler |
 | 🔲 | main | Open profiler panel |
+| ✅ | main | Production DB > should require confirmation to start the profiler |
 
 ### 3.5 Command Helper (Bottom Panel)
 | Status | Group | Test Case |
@@ -543,6 +532,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | ✅ | main | Execute multiple commands in sequence |
 | ✅ | main | Command history (up/down arrows) |
 | ✅ | main | Tab completion |
+| ✅ | main | Production DB > should require type-to-confirm modal for dangerous CLI commands |
 
 ### 4.2 Command Helper Integration
 | Status | Group | Test Case |

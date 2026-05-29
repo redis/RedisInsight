@@ -4,53 +4,49 @@ import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
 import { DatabaseInstance, Environment } from 'e2eSrc/types';
 
 /**
- * RI-8190 — Scenario 5: a Workbench batch containing a dangerous command
- * triggers the type-to-confirm modal mid-batch on a Production-classified DB.
+ * End-to-end: a Workbench batch containing a dangerous command on a
+ * Production database opens the type-to-confirm modal mid-batch. The
+ * command only runs after the user confirms — verified against the
+ * real Redis backend by polling a sentinel key.
  */
 test.use({ featureFlags: { 'dev-prodMode': true } });
 
-test.describe('Environment classification — Workbench dangerous batch', () => {
-  let database: DatabaseInstance;
+test.describe('Workbench > Command Execution — environment gating', () => {
+  test.describe('Production DB', () => {
+    let database: DatabaseInstance;
 
-  test.beforeAll(async ({ apiHelper }) => {
-    database = await apiHelper.createDatabase(StandaloneConfigFactory.build({ environment: Environment.Production }));
-  });
+    test.beforeAll(async ({ apiHelper }) => {
+      database = await apiHelper.createDatabase(StandaloneConfigFactory.build({ environment: Environment.Production }));
+    });
 
-  test.afterAll(async ({ apiHelper }) => {
-    await apiHelper.deleteDatabase(database.id).catch(() => {});
-  });
+    test.afterAll(async ({ apiHelper }) => {
+      await apiHelper.deleteDatabase(database.id).catch(() => {});
+    });
 
-  test('Production DB: batch with a dangerous command opens the type-to-confirm modal', async ({
-    apiHelper,
-    workbenchPage,
-    typeToConfirmModal,
-  }) => {
-    const sentinelKey = `test-wb-batch-${faker.string.alphanumeric(6)}`;
-    await apiHelper.createStringKey(database.id, sentinelKey, 'present');
+    test('should require type-to-confirm modal for dangerous workbench batches', async ({
+      apiHelper,
+      workbenchPage,
+      typeToConfirmModal,
+    }) => {
+      const sentinelKey = `test-wb-batch-${faker.string.alphanumeric(6)}`;
+      await apiHelper.createStringKey(database.id, sentinelKey, 'present');
 
-    await workbenchPage.goto(database.id);
+      await workbenchPage.goto(database.id);
 
-    // Build a batch where the dangerous command is not the first line.
-    const batch = ['PING', `GET ${sentinelKey}`, 'FLUSHDB'].join('\n');
-    await workbenchPage.editor.setCommand(batch);
-    await workbenchPage.submitButton.click();
+      const batch = ['PING', `GET ${sentinelKey}`, 'FLUSHDB'].join('\n');
+      await workbenchPage.editor.setCommand(batch);
+      await workbenchPage.submitButton.click();
 
-    await typeToConfirmModal.waitForOpen();
-    // Per RI-8201 the Workbench dangerous-command modal shows the production
-    // safety copy, keeps the type-to-confirm input, and surfaces the ACL tip.
-    await expect(typeToConfirmModal.title).toHaveText(/Proceed with caution in production/i);
-    await expect(typeToConfirmModal.input).toBeVisible();
-    await expect(typeToConfirmModal.tip).toBeVisible();
+      // Cancel — sentinel key must still exist.
+      await typeToConfirmModal.cancel();
+      expect(Number(await apiHelper.sendCommand(database.id, `EXISTS ${sentinelKey}`))).toBe(1);
 
-    // Cancel — sentinel key must still exist.
-    await typeToConfirmModal.cancel();
-    expect(Number(await apiHelper.sendCommand(database.id, `EXISTS ${sentinelKey}`))).toBe(1);
+      // Re-submit and confirm — FLUSHDB runs.
+      await workbenchPage.editor.setCommand(batch);
+      await workbenchPage.submitButton.click();
+      await typeToConfirmModal.confirm(database.name);
 
-    // Re-submit and confirm — FLUSHDB runs.
-    await workbenchPage.editor.setCommand(batch);
-    await workbenchPage.submitButton.click();
-    await typeToConfirmModal.confirm(database.name);
-
-    await expect.poll(async () => Number(await apiHelper.sendCommand(database.id, `EXISTS ${sentinelKey}`))).toBe(0);
+      await expect.poll(async () => Number(await apiHelper.sendCommand(database.id, `EXISTS ${sentinelKey}`))).toBe(0);
+    });
   });
 });

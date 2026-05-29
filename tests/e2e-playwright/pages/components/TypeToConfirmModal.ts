@@ -3,7 +3,7 @@ import { Page, Locator, expect } from '@playwright/test';
 /**
  * Type-to-confirm modal — gates dangerous actions on Production databases.
  *
- * Two variants (per RI-8201):
+ * Two variants:
  *  - **Input required** (CLI, Workbench dangerous commands, Bulk delete): user
  *    must type the DB name before Confirm enables.
  *  - **Input disabled** (Browser writes — rename, TTL, edit value, add hash
@@ -69,8 +69,7 @@ export class TypeToConfirmModal {
 
   /**
    * Click Confirm directly. Use this for the **input-disabled** variant
-   * (Browser writes after RI-8201): no input rendered; Confirm is enabled on
-   * first paint.
+   * (Browser writes): no input rendered; Confirm is enabled on first paint.
    */
   async confirmWithoutInput(options: { skipForSession?: boolean } = {}): Promise<void> {
     await this.waitForOpen();

@@ -157,15 +157,13 @@ export class AddDatabaseDialog {
   /**
    * Select an environment in the connection form's Environment dropdown.
    * The dropdown is only rendered when the `dev-prodMode` feature flag is enabled.
+   *
+   * Each `Environment` enum value (`unspecified` | `production` | `development`)
+   * is rendered by the form as its capitalized counterpart in
+   * `ENVIRONMENT_OPTIONS` — derive the option label directly from the value.
    */
   async selectEnvironment(environment: Environment): Promise<void> {
-    const label =
-      environment === Environment.Production
-        ? 'Production'
-        : environment === Environment.Development
-          ? 'Development'
-          : 'Unspecified';
-
+    const label = environment.charAt(0).toUpperCase() + environment.slice(1);
     await this.environmentSelect.click();
     await this.page.getByRole('option', { name: label, exact: true }).click();
   }
