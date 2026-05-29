@@ -34,11 +34,11 @@ describe('useSimilarityResultColumns', () => {
 
     const ids = result.current.columns.map((c) => c.id)
     expect(ids).toEqual([
+      SimilarityResultsColumn.Rank,
       SimilarityResultsColumn.Name,
       attributeColumnId('alpha'),
       attributeColumnId('beta'),
       attributeColumnId('zeta'),
-      SimilarityResultsColumn.Rank,
       SimilarityResultsColumn.Similarity,
       SimilarityResultsColumn.Actions,
     ])
