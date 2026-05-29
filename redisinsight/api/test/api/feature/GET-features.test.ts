@@ -303,6 +303,10 @@ describe('GET /features', () => {
                 flag: true,
                 name: 'databaseManagement',
               },
+              customTutorials: {
+                flag: false,
+                name: 'customTutorials',
+              },
             },
           },
           () =>
