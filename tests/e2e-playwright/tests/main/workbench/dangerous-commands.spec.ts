@@ -37,6 +37,12 @@ test.describe('Workbench > Command Execution — environment gating', () => {
       await workbenchPage.editor.setCommand(batch);
       await workbenchPage.submitButton.click();
 
+      await typeToConfirmModal.waitForOpen();
+      // Workbench description lists the dangerous commands in the batch — only
+      // FLUSHDB in this case — and names the target DB.
+      await expect(typeToConfirmModal.description).toContainText('FLUSHDB');
+      await expect(typeToConfirmModal.description).toContainText(database.name);
+
       // Cancel — sentinel key must still exist.
       await typeToConfirmModal.cancel();
       expect(Number(await apiHelper.sendCommand(database.id, `EXISTS ${sentinelKey}`))).toBe(1);

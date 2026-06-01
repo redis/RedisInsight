@@ -1,10 +1,11 @@
-import { test, expect } from 'e2eSrc/fixtures/base';
+import { test } from 'e2eSrc/fixtures/base';
 import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
 import { DatabaseInstance, Environment } from 'e2eSrc/types';
 
 /**
- * End-to-end: Start Profiler against a Production database opens a
- * confirmation popover before profiling begins.
+ * End-to-end: starting the Profiler on a Production database requires a
+ * confirmation popover. Cancelling keeps the profiler stopped; confirming
+ * actually starts the profiler against the real Redis backend.
  */
 test.use({ featureFlags: { 'dev-prodMode': true } });
 
@@ -20,18 +21,19 @@ test.describe('Workbench > Profiler (Bottom Panel) — environment gating', () =
       await apiHelper.deleteDatabase(database.id).catch(() => {});
     });
 
-    test('should require confirmation to start the profiler', async ({ browserPage, page }) => {
+    test('should require confirmation to start the profiler', async ({ browserPage, profilerPanel }) => {
       await browserPage.goto(database.id);
       await browserPage.openProfiler();
 
-      await page.getByTestId('start-monitor').click();
-      await expect(page.getByTestId('profiler-start-confirm')).toBeVisible();
-      await expect(page.getByTestId('profiler-start-cancel')).toBeVisible();
+      // Cancel first attempt — the profiler does not start.
+      await profilerPanel.clickStart();
+      await profilerPanel.cancelProductionStart();
+      await profilerPanel.expectNotRunning();
 
-      // Cancel — popover closes and profiler does not start.
-      await page.getByTestId('profiler-start-cancel').click();
-      await expect(page.getByTestId('profiler-start-confirm')).toBeHidden();
-      await expect(page.getByTestId('start-monitor')).toBeVisible();
+      // Confirm second attempt — the profiler actually starts.
+      await profilerPanel.clickStart();
+      await profilerPanel.confirmProductionStart();
+      await profilerPanel.expectRunning();
     });
   });
 });

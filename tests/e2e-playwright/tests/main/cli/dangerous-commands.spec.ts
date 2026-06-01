@@ -37,6 +37,10 @@ test.describe('CLI Panel — environment gating', () => {
 
       // Cancel — sentinel key must still exist.
       await cliPanel.executeCommand('FLUSHDB');
+      await typeToConfirmModal.waitForOpen();
+      // Modal description lists the command being gated, on the named DB.
+      await expect(typeToConfirmModal.description).toContainText('FLUSHDB');
+      await expect(typeToConfirmModal.description).toContainText(database.name);
       await typeToConfirmModal.cancel();
       expect(Number(await apiHelper.sendCommand(database.id, `EXISTS ${sentinelKey}`))).toBe(1);
 
