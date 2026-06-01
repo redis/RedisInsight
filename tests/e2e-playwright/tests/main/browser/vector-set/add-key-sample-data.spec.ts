@@ -32,11 +32,18 @@ test.describe('Browser > Vector Set > Add Key (sample data)', () => {
   test.beforeEach(async ({ browserPage, apiHelper }) => {
     // Ensure no pre-existing vec2word key — sample-mode short-circuits with an
     // info toast if the key already exists.
+    //
+    // We swallow errors here: DEL on a missing key returns 0 successfully, so
+    // the only failures would be transient API/connection hiccups during
+    // setup or teardown. Surfacing those would mask the actual test
+    // failure that follows; the test itself will fail loudly if the key
+    // really is in a bad state.
     await apiHelper.sendCommand(database.id, `DEL ${VEC2WORD_KEY}`).catch(() => {});
     await browserPage.goto(database.id);
   });
 
   test.afterEach(async ({ apiHelper }) => {
+    // Same rationale as the beforeEach DEL — see comment above.
     await apiHelper.sendCommand(database.id, `DEL ${VEC2WORD_KEY}`).catch(() => {});
   });
 
