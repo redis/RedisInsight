@@ -1,7 +1,8 @@
 import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneV8ConfigFactory } from 'e2eSrc/test-data/databases';
 import { TEST_KEY_PREFIX, VectorSetKeyFactory } from 'e2eSrc/test-data/browser';
-import { DatabaseInstance, VectorSetKeyData } from 'e2eSrc/types';
+import { DatabaseInstance } from 'e2eSrc/types';
+import { seedVectorSet } from './helpers';
 
 /**
  * Browser > Vector Set > Similarity search
@@ -11,22 +12,6 @@ import { DatabaseInstance, VectorSetKeyData } from 'e2eSrc/types';
  * exercised here.
  */
 test.use({ featureFlags: { 'dev-vectorSet': true } });
-
-/**
- * Seed a vector set with all elements via repeated VADD. The first VADD
- * creates the key; subsequent ones append.
- */
-const seedFullVectorSet = async (
-  apiHelper: { sendCommand(databaseId: string, command: string): Promise<unknown> },
-  databaseId: string,
-  keyData: VectorSetKeyData,
-): Promise<void> => {
-  for (const element of keyData.elements) {
-    const components = element.vector.split(',').map((v) => v.trim());
-    const cmd = `VADD ${keyData.keyName} VALUES ${components.length} ${components.join(' ')} ${element.name}`;
-    await apiHelper.sendCommand(databaseId, cmd);
-  }
-};
 
 test.describe('Browser > Vector Set > Similarity search', () => {
   let database: DatabaseInstance;
@@ -47,7 +32,7 @@ test.describe('Browser > Vector Set > Similarity search', () => {
 
   test('should run similarity search by vector and show ranked results', async ({ browserPage, apiHelper }) => {
     const keyData = VectorSetKeyFactory.build();
-    await seedFullVectorSet(apiHelper, database.id, keyData);
+    await seedVectorSet(apiHelper, database.id, keyData.keyName, keyData.elements);
     await browserPage.goto(database.id);
 
     await browserPage.keyList.searchKeys(keyData.keyName);
@@ -66,7 +51,7 @@ test.describe('Browser > Vector Set > Similarity search', () => {
     apiHelper,
   }) => {
     const keyData = VectorSetKeyFactory.build();
-    await seedFullVectorSet(apiHelper, database.id, keyData);
+    await seedVectorSet(apiHelper, database.id, keyData.keyName, keyData.elements);
     await browserPage.goto(database.id);
 
     await browserPage.keyList.searchKeys(keyData.keyName);
@@ -82,7 +67,7 @@ test.describe('Browser > Vector Set > Similarity search', () => {
 
   test('should reset the similarity search form', async ({ browserPage, apiHelper }) => {
     const keyData = VectorSetKeyFactory.build();
-    await seedFullVectorSet(apiHelper, database.id, keyData);
+    await seedVectorSet(apiHelper, database.id, keyData.keyName, keyData.elements);
     await browserPage.goto(database.id);
 
     await browserPage.keyList.searchKeys(keyData.keyName);
@@ -101,7 +86,7 @@ test.describe('Browser > Vector Set > Similarity search', () => {
     apiHelper,
   }) => {
     const keyData = VectorSetKeyFactory.build();
-    await seedFullVectorSet(apiHelper, database.id, keyData);
+    await seedVectorSet(apiHelper, database.id, keyData.keyName, keyData.elements);
     await browserPage.goto(database.id);
 
     await browserPage.keyList.searchKeys(keyData.keyName);

@@ -2,7 +2,8 @@ import { faker } from '@faker-js/faker';
 import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneV8ConfigFactory } from 'e2eSrc/test-data/databases';
 import { TEST_KEY_PREFIX, VectorSetKeyFactory } from 'e2eSrc/test-data/browser';
-import { DatabaseInstance, VectorSetKeyData } from 'e2eSrc/types';
+import { DatabaseInstance } from 'e2eSrc/types';
+import { seedVectorSet } from './helpers';
 
 /**
  * Browser > Vector Set > Add Elements
@@ -11,21 +12,6 @@ import { DatabaseInstance, VectorSetKeyData } from 'e2eSrc/types';
  * form on the key details view.
  */
 test.use({ featureFlags: { 'dev-vectorSet': true } });
-
-/**
- * Seed a vector set with its first element via VADD.
- * Vector values are passed as space-separated floats per VADD syntax.
- */
-const seedVectorSet = async (
-  apiHelper: { sendCommand(databaseId: string, command: string): Promise<unknown> },
-  databaseId: string,
-  keyData: VectorSetKeyData,
-): Promise<void> => {
-  const [first] = keyData.elements;
-  const components = first.vector.split(',').map((v) => v.trim());
-  const cmd = `VADD ${keyData.keyName} VALUES ${components.length} ${components.join(' ')} ${first.name}`;
-  await apiHelper.sendCommand(databaseId, cmd);
-};
 
 /**
  * Encode an array of floats as an FP32 little-endian escaped-byte string —
@@ -64,7 +50,7 @@ test.describe('Browser > Vector Set > Add Elements', () => {
     const keyData = VectorSetKeyFactory.build();
     const [first, second] = keyData.elements;
 
-    await seedVectorSet(apiHelper, database.id, keyData);
+    await seedVectorSet(apiHelper, database.id, keyData.keyName, [keyData.elements[0]]);
     await browserPage.goto(database.id);
 
     await browserPage.keyList.searchKeys(keyData.keyName);
@@ -89,7 +75,7 @@ test.describe('Browser > Vector Set > Add Elements', () => {
     const fp32ElementName = `element-fp32-${faker.string.alphanumeric(6)}`;
     const fp32Vector = toFp32EscapedString([0.25, -0.5, 0.75]);
 
-    await seedVectorSet(apiHelper, database.id, keyData);
+    await seedVectorSet(apiHelper, database.id, keyData.keyName, [keyData.elements[0]]);
     await browserPage.goto(database.id);
 
     await browserPage.keyList.searchKeys(keyData.keyName);

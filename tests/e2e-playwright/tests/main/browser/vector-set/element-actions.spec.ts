@@ -1,7 +1,8 @@
 import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneV8ConfigFactory } from 'e2eSrc/test-data/databases';
 import { TEST_KEY_PREFIX, VectorSetKeyFactory } from 'e2eSrc/test-data/browser';
-import { DatabaseInstance, VectorSetKeyData } from 'e2eSrc/types';
+import { DatabaseInstance } from 'e2eSrc/types';
+import { seedVectorSet } from './helpers';
 
 /**
  * Browser > Vector Set > Element actions
@@ -10,18 +11,6 @@ import { DatabaseInstance, VectorSetKeyData } from 'e2eSrc/types';
  * value + copy button), and remove (popover-confirmed deletion).
  */
 test.use({ featureFlags: { 'dev-vectorSet': true } });
-
-const seedFullVectorSet = async (
-  apiHelper: { sendCommand(databaseId: string, command: string): Promise<unknown> },
-  databaseId: string,
-  keyData: VectorSetKeyData,
-): Promise<void> => {
-  for (const element of keyData.elements) {
-    const components = element.vector.split(',').map((v) => v.trim());
-    const cmd = `VADD ${keyData.keyName} VALUES ${components.length} ${components.join(' ')} ${element.name}`;
-    await apiHelper.sendCommand(databaseId, cmd);
-  }
-};
 
 test.describe('Browser > Vector Set > Element actions', () => {
   let database: DatabaseInstance;
@@ -44,7 +33,7 @@ test.describe('Browser > Vector Set > Element actions', () => {
 
   test('should open element details drawer and show the vector value', async ({ browserPage, apiHelper }) => {
     const keyData = VectorSetKeyFactory.build();
-    await seedFullVectorSet(apiHelper, database.id, keyData);
+    await seedVectorSet(apiHelper, database.id, keyData.keyName, keyData.elements);
     await browserPage.goto(database.id);
 
     await browserPage.keyList.searchKeys(keyData.keyName);
@@ -61,7 +50,7 @@ test.describe('Browser > Vector Set > Element actions', () => {
 
   test('should remove an element from the Vector Set via the row action', async ({ browserPage, apiHelper }) => {
     const keyData = VectorSetKeyFactory.build();
-    await seedFullVectorSet(apiHelper, database.id, keyData);
+    await seedVectorSet(apiHelper, database.id, keyData.keyName, keyData.elements);
     await browserPage.goto(database.id);
 
     await browserPage.keyList.searchKeys(keyData.keyName);
