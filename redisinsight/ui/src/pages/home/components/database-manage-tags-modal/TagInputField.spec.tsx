@@ -12,7 +12,9 @@ jest.mock('react-redux', () => ({
   connect: () => (Component: any) => Component,
 }))
 
-const mockSelector = useAppSelector as jest.MockedFunction<typeof useAppSelector>
+const mockSelector = useAppSelector as jest.MockedFunction<
+  typeof useAppSelector
+>
 
 describe('TagInputField', () => {
   const mockOnChange = jest.fn()

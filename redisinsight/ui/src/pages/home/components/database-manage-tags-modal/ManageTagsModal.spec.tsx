@@ -19,7 +19,9 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
   updateInstanceAction: jest.fn().mockReturnValue({ type: 'UPDATE_INSTANCE' }),
 }))
 
-const mockDispatch = useAppDispatch as jest.MockedFunction<typeof useAppDispatch>
+const mockDispatch = useAppDispatch as jest.MockedFunction<
+  typeof useAppDispatch
+>
 const mockInstance: Partial<Instance> = {
   id: '1',
   name: 'Test Instance',

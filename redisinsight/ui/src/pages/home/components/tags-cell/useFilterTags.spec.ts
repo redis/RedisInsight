@@ -27,8 +27,12 @@ const mockTags: Tag[] = [
   },
 ]
 
-const mockDispatch = useAppDispatch as jest.MockedFunction<typeof useAppDispatch>
-const mockSelector = useAppSelector as jest.MockedFunction<typeof useAppSelector>
+const mockDispatch = useAppDispatch as jest.MockedFunction<
+  typeof useAppDispatch
+>
+const mockSelector = useAppSelector as jest.MockedFunction<
+  typeof useAppSelector
+>
 
 describe('useFilterTags', () => {
   beforeEach(() => {
