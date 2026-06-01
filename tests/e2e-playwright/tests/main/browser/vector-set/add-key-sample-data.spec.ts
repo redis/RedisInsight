@@ -1,6 +1,7 @@
 import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneV8ConfigFactory } from 'e2eSrc/test-data/databases';
 import { DatabaseInstance } from 'e2eSrc/types';
+import { getRedisMajorVersion, VECTOR_SET_MIN_REDIS_MAJOR, VECTOR_SET_SKIP_REASON } from './helpers';
 
 /**
  * Browser > Vector Set > Add Key (sample data)
@@ -18,9 +19,11 @@ test.use({ featureFlags: { 'dev-vectorSet': true } });
 
 test.describe('Browser > Vector Set > Add Key (sample data)', () => {
   let database: DatabaseInstance;
+  let redisMajorVersion: number;
 
   test.beforeAll(async ({ apiHelper }) => {
     database = await apiHelper.createDatabase(StandaloneV8ConfigFactory.build({ name: 'test-vector-set-add-sample' }));
+    redisMajorVersion = await getRedisMajorVersion(apiHelper, database.id);
   });
 
   test.afterAll(async ({ apiHelper }) => {
@@ -30,6 +33,7 @@ test.describe('Browser > Vector Set > Add Key (sample data)', () => {
   });
 
   test.beforeEach(async ({ browserPage, apiHelper }) => {
+    test.skip(redisMajorVersion < VECTOR_SET_MIN_REDIS_MAJOR, VECTOR_SET_SKIP_REASON);
     // Ensure no pre-existing vec2word key — sample-mode short-circuits with an
     // info toast if the key already exists.
     //

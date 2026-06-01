@@ -2,6 +2,7 @@ import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneV8ConfigFactory } from 'e2eSrc/test-data/databases';
 import { TEST_KEY_PREFIX, VectorSetKeyFactory } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
+import { getRedisMajorVersion, VECTOR_SET_MIN_REDIS_MAJOR, VECTOR_SET_SKIP_REASON } from './helpers';
 
 /**
  * Browser > Vector Set > Add Key (manual)
@@ -14,9 +15,11 @@ test.use({ featureFlags: { 'dev-vectorSet': true } });
 
 test.describe('Browser > Vector Set > Add Key (manual)', () => {
   let database: DatabaseInstance;
+  let redisMajorVersion: number;
 
   test.beforeAll(async ({ apiHelper }) => {
     database = await apiHelper.createDatabase(StandaloneV8ConfigFactory.build({ name: 'test-vector-set-add-manual' }));
+    redisMajorVersion = await getRedisMajorVersion(apiHelper, database.id);
   });
 
   test.afterAll(async ({ apiHelper }) => {
@@ -26,6 +29,7 @@ test.describe('Browser > Vector Set > Add Key (manual)', () => {
   });
 
   test.beforeEach(async ({ browserPage }) => {
+    test.skip(redisMajorVersion < VECTOR_SET_MIN_REDIS_MAJOR, VECTOR_SET_SKIP_REASON);
     await browserPage.goto(database.id);
   });
 

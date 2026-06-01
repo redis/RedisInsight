@@ -2,7 +2,7 @@ import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneV8ConfigFactory } from 'e2eSrc/test-data/databases';
 import { TEST_KEY_PREFIX, VectorSetKeyFactory } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
-import { seedVectorSet } from './helpers';
+import { seedVectorSet, getRedisMajorVersion, VECTOR_SET_MIN_REDIS_MAJOR, VECTOR_SET_SKIP_REASON } from './helpers';
 
 /**
  * Browser > Vector Set > Similarity search
@@ -15,15 +15,21 @@ test.use({ featureFlags: { 'dev-vectorSet': true } });
 
 test.describe('Browser > Vector Set > Similarity search', () => {
   let database: DatabaseInstance;
+  let redisMajorVersion: number;
 
   test.beforeAll(async ({ apiHelper }) => {
     database = await apiHelper.createDatabase(StandaloneV8ConfigFactory.build({ name: 'test-vector-set-similarity' }));
+    redisMajorVersion = await getRedisMajorVersion(apiHelper, database.id);
   });
 
   test.afterAll(async ({ apiHelper }) => {
     if (database?.id) {
       await apiHelper.deleteDatabase(database.id);
     }
+  });
+
+  test.beforeEach(() => {
+    test.skip(redisMajorVersion < VECTOR_SET_MIN_REDIS_MAJOR, VECTOR_SET_SKIP_REASON);
   });
 
   test.afterEach(async ({ apiHelper }) => {
