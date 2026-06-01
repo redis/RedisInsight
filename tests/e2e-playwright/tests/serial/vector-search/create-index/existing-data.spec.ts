@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { test, expect } from 'e2eSrc/fixtures/base';
-import { StandaloneSerialConfigFactory } from 'e2eSrc/test-data/databases';
+import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
 import {
   IndexConfigFactory,
   IndexHashKeyFactory,
@@ -30,7 +30,7 @@ test.describe('Vector Search > Create Index - Existing Data', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
-    database = await apiHelper.createDatabase(StandaloneSerialConfigFactory.build());
+    database = await apiHelper.createDatabase(StandaloneConfigFactory.build());
 
     await apiHelper.createHashKey(database.id, hashKey.keyName, hashKey.fields);
     await apiHelper.createJsonKey(database.id, jsonKey.keyName, JSON.stringify(jsonKey.value));

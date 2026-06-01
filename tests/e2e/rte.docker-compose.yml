@@ -86,27 +86,6 @@ services:
       ssh:
         ipv4_address: 172.33.100.110
 
-  # Dedicated instance for tests/serial/* (e2e Playwright). Keeps serial
-  # tests isolated from chromium-parallel which uses oss-standalone (8100)
-  # and oss-standalone-empty (8105), so the two projects can run concurrently.
-  oss-standalone-serial:
-    logging: *logging
-    image: redislabs/redismod
-    command: [
-      "--loadmodule", "/usr/lib/redis/modules/redisearch.so",
-      "--loadmodule", "/usr/lib/redis/modules/redisgraph.so",
-      "--loadmodule", "/usr/lib/redis/modules/redistimeseries.so",
-      "--loadmodule", "/usr/lib/redis/modules/rejson.so",
-      "--loadmodule", "/usr/lib/redis/modules/redisbloom.so"
-    ]
-    ports:
-      - 8110:6379
-    networks:
-      default:
-        ipv4_address: 172.31.100.114
-      ssh:
-        ipv4_address: 172.33.100.114
-
   # oss standalone v5
   oss-standalone-v5:
     logging: *logging

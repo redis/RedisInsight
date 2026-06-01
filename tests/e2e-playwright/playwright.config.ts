@@ -77,7 +77,10 @@ const config: PlaywrightTestConfig<CustomTestOptions> = {
     {
       name: 'chromium-serial',
       testDir: './tests/serial',
-      dependencies: ['browser-setup'],
+      // Depend on 'chromium-parallel' to force sequential execution: serial
+      // tests share Redis state (FLUSHDB, broad index cleanups) with parallel
+      // tests, so the two projects must not run concurrently.
+      dependencies: ['browser-setup', 'chromium-parallel'],
       use: {
         ...devices['Desktop Chrome'],
         baseURL: appConfig.clientUrl,

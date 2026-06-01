@@ -266,18 +266,20 @@ The folder a test lives in determines its execution mode. Each browser platform 
 
 \* Electron currently runs with a single worker because there is one app instance.
 
-### Concurrency between projects
+### Execution order
 
-- **Chromium**: `chromium-parallel` and `chromium-serial` run **concurrently** on the same runner. They never race because they target different Redis instances — see "Redis isolation" below.
-- **Electron**: `electron-serial` is sequenced after `electron-parallel` (via Playwright `dependencies`). The Electron app binds its embedded API on a fixed port (`5530`), so two app instances on the same machine would collide. Until the test fixture supports per-worker ports, electron projects must run sequentially.
+For each platform, the serial project depends on the parallel project (`dependencies: ['<platform>-parallel']` in `playwright.config.ts`), so the order is always:
 
-### Redis isolation (tests/serial only)
+1. `<platform>-parallel` runs first (with up to N workers)
+2. `<platform>-serial` runs after, one worker at a time
 
-**Any test placed under `tests/serial/` MUST use `StandaloneSerialConfigFactory`** for its Redis connection. This factory points at a dedicated container (`oss-standalone-serial`, port `8110`) reserved exclusively for serial tests. Parallel tests use `oss-standalone` (8100) or `oss-standalone-empty` (8105) and never touch 8110.
+Why sequential instead of running them concurrently:
 
-Why: `chromium-serial` and `chromium-parallel` are peer projects (no dependency) so they run concurrently. Using different Redis instances is what makes that safe — a `FLUSHDB` or broad `deleteAllIndexes` in a serial test cannot affect a parallel test.
+- Serial tests perform destructive operations on the shared RTE Redis (`FLUSHDB`, broad `deleteAllIndexes`, dangerous commands). Letting them run alongside parallel tests means a parallel test can observe a flushed/wiped database between its own steps.
+- Electron also can't run the two projects concurrently because the desktop app binds its embedded API on a fixed port (`5530`), and two app instances would collide.
+- Keeping chromium and electron on the same execution model keeps the mental model simple — folder location maps directly to position in the run.
 
-**Do not** use `StandaloneConfigFactory` or `StandaloneEmptyConfigFactory` in `tests/serial/`. If a serial test needs another shape of Redis (e.g. an old version), add a new dedicated serial-only container to [tests/e2e/rte.docker-compose.yml](../e2e/rte.docker-compose.yml) and a matching factory rather than reusing one a parallel test relies on.
+If the serial suite grows large enough that this ordering becomes a CI bottleneck, the right next step is to give serial tests a dedicated Redis instance (or split into a separate CI job), not to revert the ordering.
 
 Run specific projects:
 ```bash

@@ -1,6 +1,10 @@
 import { faker } from '@faker-js/faker';
 import { test, expect } from 'e2eSrc/fixtures/base';
-import { StandaloneSerialConfigFactory, StandaloneV7ConfigFactory } from 'e2eSrc/test-data/databases';
+import {
+  StandaloneConfigFactory,
+  StandaloneEmptyConfigFactory,
+  StandaloneV7ConfigFactory,
+} from 'e2eSrc/test-data/databases';
 import { IndexConfigFactory } from 'e2eSrc/test-data/vector-search';
 import { DatabaseInstance } from 'e2eSrc/types';
 
@@ -29,7 +33,7 @@ test.describe('Vector Search > Navigation and RQE Availability', () => {
 
   test('should show welcome screen when no indexes exist', async ({ vectorSearchPage, apiHelper }) => {
     // Guarantee a completely empty Redis: no keys, no indexes
-    database = await apiHelper.createDatabase(StandaloneSerialConfigFactory.build());
+    database = await apiHelper.createDatabase(StandaloneEmptyConfigFactory.build());
     await apiHelper.sendCommand(database.id, 'FLUSHDB');
     await apiHelper.deleteAllIndexes(database.id);
 
@@ -42,7 +46,7 @@ test.describe('Vector Search > Navigation and RQE Availability', () => {
   });
 
   test('should show list screen when indexes exist', async ({ vectorSearchPage, apiHelper }) => {
-    database = await apiHelper.createDatabase(StandaloneSerialConfigFactory.build());
+    database = await apiHelper.createDatabase(StandaloneConfigFactory.build());
 
     // Seed index
     const indexConfig = IndexConfigFactory.build({ indexName: TEST_INDEX_NAME, prefix: TEST_INDEX_PREFIX });

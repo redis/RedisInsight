@@ -29,15 +29,6 @@ export const standaloneEmptyConfig: RedisConnectionConfig = {
   port: getEnvNumber('OSS_STANDALONE_EMPTY_PORT', 8105),
 };
 
-/**
- * Dedicated standalone Redis for tests/serial/* (e2e Playwright).
- * Kept isolated from chromium-parallel so the two projects can run concurrently.
- */
-export const standaloneSerialConfig: RedisConnectionConfig = {
-  host: getEnv('OSS_STANDALONE_SERIAL_HOST', '127.0.0.1'),
-  port: getEnvNumber('OSS_STANDALONE_SERIAL_PORT', 8110),
-};
-
 export const standaloneBigConfig: RedisConnectionConfig = {
   host: getEnv('OSS_STANDALONE_BIG_HOST', '127.0.0.1'),
   port: getEnvNumber('OSS_STANDALONE_BIG_PORT', 8103),

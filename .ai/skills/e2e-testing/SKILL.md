@@ -62,25 +62,16 @@ The folder a test lives in determines its execution mode. Each browser platform 
 
 \* Electron uses one worker today because there is a single app instance.
 
-### Concurrency between projects
+### Execution order
 
-- **Chromium**: `chromium-parallel` and `chromium-serial` run **concurrently**. They never race because serial tests use a dedicated Redis container — see "Redis isolation" below.
-- **Electron**: `electron-serial` is sequenced after `electron-parallel` (via `dependencies: ['electron-parallel']` in `playwright.config.ts`). The Electron app binds its embedded API on a fixed port (`5530`), so two app instances on the same machine collide. Until the fixture supports per-worker ports, electron projects must run sequentially.
+For each platform, the serial project depends on the parallel project via `dependencies: ['<platform>-parallel']` in [playwright.config.ts](../../tests/e2e-playwright/playwright.config.ts), so the order is always:
 
-### Redis isolation (tests/serial only)
+1. `<platform>-parallel` runs first (with up to N workers)
+2. `<platform>-serial` runs after, one worker at a time
 
-**Every test under `tests/serial/` MUST use `StandaloneSerialConfigFactory`.** That factory points at `oss-standalone-serial` (port `8110`), a Redis container reserved exclusively for serial tests. Parallel tests use `oss-standalone` (8100) and `oss-standalone-empty` (8105), so a `FLUSHDB` or broad cleanup in a serial test can never touch a parallel test's Redis.
+Serial tests perform destructive operations on the shared RTE Redis (`FLUSHDB`, broad `deleteAllIndexes`, dangerous commands) so they can't safely run alongside parallel tests on the same RTE. Electron also can't run its two projects concurrently because the desktop app binds its embedded API on a fixed port (`5530`).
 
-```typescript
-// ✅ Correct — in tests/serial/
-import { StandaloneSerialConfigFactory } from 'e2eSrc/test-data/databases';
-const db = await apiHelper.createDatabase(StandaloneSerialConfigFactory.build());
-
-// ❌ Wrong — these are shared with parallel tests
-import { StandaloneConfigFactory, StandaloneEmptyConfigFactory } from 'e2eSrc/test-data/databases';
-```
-
-If a serial test needs a different *shape* of Redis (e.g. an older version, no modules), add a new dedicated serial-only container to [tests/e2e/rte.docker-compose.yml](../../tests/e2e/rte.docker-compose.yml) and a matching factory — do **not** reuse a factory that a parallel test depends on.
+If serial grows large enough to become a CI bottleneck, the next step is to give serial tests a dedicated Redis instance (or split into a separate CI job) — not to revert the ordering.
 
 ### Running Projects
 

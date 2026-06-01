@@ -1,5 +1,5 @@
 import { test, expect } from 'e2eSrc/fixtures/base';
-import { StandaloneSerialConfigFactory } from 'e2eSrc/test-data/databases';
+import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
 import { IndexConfigFactory } from 'e2eSrc/test-data/vector-search';
 import { DatabaseInstance } from 'e2eSrc/types';
 
@@ -26,7 +26,7 @@ test.describe('Vector Search > Create Index - Sample Data', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
-    database = await apiHelper.createDatabase(StandaloneSerialConfigFactory.build());
+    database = await apiHelper.createDatabase(StandaloneConfigFactory.build());
   });
 
   test.afterAll(async ({ apiHelper }) => {

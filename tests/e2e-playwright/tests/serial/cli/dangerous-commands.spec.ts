@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { test, expect } from 'e2eSrc/fixtures/base';
-import { StandaloneSerialConfigFactory } from 'e2eSrc/test-data/databases';
+import { StandaloneEmptyConfigFactory } from 'e2eSrc/test-data/databases';
 import { DatabaseInstance, Environment } from 'e2eSrc/types';
 
 /**
@@ -21,7 +21,7 @@ test.describe('CLI Panel — environment gating', () => {
 
     test.beforeAll(async ({ apiHelper }) => {
       database = await apiHelper.createDatabase(
-        StandaloneSerialConfigFactory.build({ environment: Environment.Production }),
+        StandaloneEmptyConfigFactory.build({ environment: Environment.Production }),
       );
     });
 
