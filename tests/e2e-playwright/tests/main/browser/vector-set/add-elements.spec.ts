@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneV8ConfigFactory } from 'e2eSrc/test-data/databases';
-import { TEST_KEY_PREFIX, VectorSetKeyFactory } from 'e2eSrc/test-data/browser';
+import { TEST_KEY_PREFIX, VectorSetKeyFactory, toFp32EscapedString } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
 import { seedVectorSet } from './helpers';
 
@@ -12,20 +12,6 @@ import { seedVectorSet } from './helpers';
  * form on the key details view.
  */
 test.use({ featureFlags: { 'dev-vectorSet': true } });
-
-/**
- * Encode an array of floats as an FP32 little-endian escaped-byte string —
- * the format the element-vector input auto-detects (e.g. `\x00\x00\x80\x3f`
- * for 1.0). Byte length must be a multiple of 4 and the resulting dim
- * (bytes / 4) must match the vector set's existing dimension.
- */
-const toFp32EscapedString = (floats: number[]): string => {
-  const buf = new ArrayBuffer(floats.length * 4);
-  const view = new DataView(buf);
-  floats.forEach((v, i) => view.setFloat32(i * 4, v, true));
-  const bytes = new Uint8Array(buf);
-  return Array.from(bytes, (b) => `\\x${b.toString(16).padStart(2, '0')}`).join('');
-};
 
 test.describe('Browser > Vector Set > Add Elements', () => {
   let database: DatabaseInstance;

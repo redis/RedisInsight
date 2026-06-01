@@ -93,6 +93,20 @@ const buildRandomVector = (dim: number): string =>
   Array.from({ length: dim }, () => faker.number.float({ min: -1, max: 1, fractionDigits: 4 })).join(',');
 
 /**
+ * Encode an array of floats as an FP32 little-endian escaped-byte string —
+ * the format the Vector Set element-vector input auto-detects (e.g.
+ * `\x00\x00\x80\x3f` for 1.0). Byte length must be a multiple of 4 and the
+ * resulting dim (bytes / 4) must match the vector set's existing dimension.
+ */
+export const toFp32EscapedString = (floats: number[]): string => {
+  const buf = new ArrayBuffer(floats.length * 4);
+  const view = new DataView(buf);
+  floats.forEach((v, i) => view.setFloat32(i * 4, v, true));
+  const bytes = new Uint8Array(buf);
+  return Array.from(bytes, (b) => `\\x${b.toString(16).padStart(2, '0')}`).join('');
+};
+
+/**
  * Vector Set key data factory
  *
  * Two elements with matching dimensions (3) so the same key can serve both
