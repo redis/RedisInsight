@@ -187,6 +187,17 @@ export class AddKeyDialog {
     await target.click();
   }
 
+  /**
+   * Assert that the given Vector Set populate mode is the currently-selected
+   * radio option. The card testid wraps a Radix radio control; the active
+   * control carries `aria-checked="true"`, so we drill into the role
+   * locator and use Playwright's `toBeChecked()`.
+   */
+  async expectVectorSetPopulateModeSelected(mode: 'manual' | 'sample'): Promise<void> {
+    const card = mode === 'sample' ? this.vectorSetPopulateSample : this.vectorSetPopulateManual;
+    await expect(card.getByRole('radio')).toBeChecked();
+  }
+
   async fillVectorSetElement(name: string, vector: string): Promise<void> {
     await this.vectorSetElementNameInput.fill(name);
     await this.vectorSetElementVectorInput.fill(vector);

@@ -40,8 +40,9 @@ test.describe('Browser > Vector Set > Add Key (manual)', () => {
     await browserPage.openAddKeyDialog();
     await browserPage.addKeyDialog.selectKeyType('Vector Set');
 
-    // Manual mode is the default — but assert it's selected before continuing
-    await expect(browserPage.addKeyDialog.vectorSetPopulateRadio).toBeVisible();
+    // Manual mode is the default render — verify the radio is actually
+    // checked rather than just that the wrapper rendered.
+    await browserPage.addKeyDialog.expectVectorSetPopulateModeSelected('manual');
 
     await browserPage.addKeyDialog.fillKeyName(keyData.keyName);
     await browserPage.addKeyDialog.fillVectorSetElement(first.name, first.vector);
