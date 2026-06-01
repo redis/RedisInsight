@@ -8,6 +8,7 @@ import {
   standaloneV5Config,
   standaloneV7Config,
   standaloneV8Config,
+  standaloneV880Config,
   standaloneEmptyConfig,
   standaloneBigConfig,
 } from './standalone';
@@ -25,6 +26,7 @@ export const redisConfig = {
   standaloneV5: standaloneV5Config,
   standaloneV7: standaloneV7Config,
   standaloneV8: standaloneV8Config,
+  standaloneV880: standaloneV880Config,
   standaloneEmpty: standaloneEmptyConfig,
   standaloneBig: standaloneBigConfig,
   cluster: clusterConfig,
