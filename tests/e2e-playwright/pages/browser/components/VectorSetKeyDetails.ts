@@ -32,8 +32,6 @@ export class VectorSetKeyDetails {
   readonly similarityModeElementButton: Locator;
   readonly similarityVectorInput: Locator;
   readonly similarityElementInput: Locator;
-  readonly similarityFilterInput: Locator;
-  readonly similarityCountInput: Locator;
   readonly similaritySubmitButton: Locator;
   readonly similarityResetButton: Locator;
 
@@ -71,8 +69,6 @@ export class VectorSetKeyDetails {
     this.similarityModeElementButton = page.getByTestId(`${formId}-mode-element`);
     this.similarityVectorInput = page.getByTestId(`${formId}-vector-input`);
     this.similarityElementInput = page.getByTestId(`${formId}-element-input`);
-    this.similarityFilterInput = page.getByTestId(`${formId}-filter-input`);
-    this.similarityCountInput = page.getByTestId(`${formId}-count-input`);
     this.similaritySubmitButton = page.getByTestId(`${formId}-submit`);
     this.similarityResetButton = page.getByTestId(`${formId}-reset`);
 

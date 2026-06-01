@@ -44,7 +44,6 @@ export class AddKeyDialog {
   readonly jsonValueInput: Locator;
 
   // Vector Set–specific fields
-  readonly vectorSetPopulateRadio: Locator;
   readonly vectorSetPopulateManual: Locator;
   readonly vectorSetPopulateSample: Locator;
   readonly vectorSetSampleDatasetPreview: Locator;
@@ -98,7 +97,6 @@ export class AddKeyDialog {
     this.jsonValueInput = page.locator('[data-testid="json-value"] textarea, .monaco-editor textarea').first();
 
     // Vector Set fields
-    this.vectorSetPopulateRadio = page.getByTestId('add-key-vector-set-populate');
     this.vectorSetPopulateManual = page.getByTestId('add-key-vector-set-populate-manual');
     this.vectorSetPopulateSample = page.getByTestId('add-key-vector-set-populate-sample');
     this.vectorSetSampleDatasetPreview = page.getByTestId('add-key-vector-set-load-sample-dataset');
