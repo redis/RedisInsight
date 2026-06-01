@@ -1,6 +1,6 @@
 import { isNil } from 'lodash'
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory, useParams } from 'react-router-dom'
 
 import { GroupBadge, RiTooltip } from 'uiSrc/components'
@@ -55,11 +55,11 @@ const TopKeysTable = ({
   dataTestid = '',
 }: Props) => {
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const { instanceId } = useParams<{ instanceId: string }>()
 
-  const { viewType } = useSelector(keysSelector)
+  const { viewType } = useAppSelector(keysSelector)
 
   const handleRedirect = (name: string) => {
     dispatch(changeSearchMode(SearchMode.Pattern))

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory, useParams } from 'react-router-dom'
 import { isNull } from 'lodash'
 import cx from 'classnames'
@@ -43,16 +43,16 @@ const RecommendationContent = styled(Card)`
 `
 
 const Recommendations = () => {
-  const { data, loading } = useSelector(dbAnalysisSelector)
-  const { provider } = useSelector(connectedInstanceSelector)
-  const { content: recommendationsContent } = useSelector(
+  const { data, loading } = useAppSelector(dbAnalysisSelector)
+  const { provider } = useAppSelector(connectedInstanceSelector)
+  const { content: recommendationsContent } = useAppSelector(
     recommendationsSelector,
   )
   const { recommendations = [] } = data ?? {}
 
   const { theme } = useContext(ThemeContext)
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { instanceId } = useParams<{ instanceId: string }>()
 
   const handleToggle = (isOpen: boolean, id: string) =>

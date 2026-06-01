@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { ExplorePanelTemplate } from 'uiSrc/templates'
 import HomeTabs from 'uiSrc/components/home-tabs'
@@ -30,14 +30,16 @@ const HomePageTemplate = (props: Props) => {
   const {
     [FeatureFlags.databaseChat]: databaseChatFeature,
     [FeatureFlags.documentationChat]: documentationChatFeature,
-  } = useSelector(appFeatureFlagsFeaturesSelector)
+  } = useAppSelector(appFeatureFlagsFeaturesSelector)
   const isAnyChatAvailable = isAnyFeatureEnabled([
     databaseChatFeature,
     documentationChatFeature,
   ])
 
-  const { loading: instancesLoading } = useSelector(databaseInstancesSelector)
-  const { loading: rdiLoading } = useSelector(rdiInstancesSelector)
+  const { loading: instancesLoading } = useAppSelector(
+    databaseInstancesSelector,
+  )
+  const { loading: rdiLoading } = useAppSelector(rdiInstancesSelector)
 
   const loading = instancesLoading || rdiLoading
 

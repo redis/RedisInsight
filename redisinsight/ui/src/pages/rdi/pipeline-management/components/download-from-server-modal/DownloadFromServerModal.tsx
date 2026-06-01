@@ -6,7 +6,7 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import {
   fetchRdiPipeline,
   rdiPipelineSelector,
@@ -22,13 +22,13 @@ export interface Props {
 const DownloadFromServerModal = (props: Props) => {
   const { trigger, onClose } = props
 
-  const { loading, data } = useSelector(rdiPipelineSelector)
+  const { loading, data } = useAppSelector(rdiPipelineSelector)
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
 
   const [isOpen, setIsOpen] = useState(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleDownloadFromServer = () => {
     dispatch(

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import {
   sidePanelsSelector,
   toggleSidePanel,
@@ -11,8 +11,8 @@ import { SidePanels } from 'uiSrc/slices/interfaces/insights'
 import { CopilotWrapper, CopilotIconButton } from './CopilotTrigger.styles'
 
 const CopilotTrigger = () => {
-  const { openedPanel } = useSelector(sidePanelsSelector)
-  const dispatch = useDispatch()
+  const { openedPanel } = useAppSelector(sidePanelsSelector)
+  const dispatch = useAppDispatch()
 
   const handleClickTrigger = () => {
     dispatch(toggleSidePanel(SidePanels.AiAssistant))

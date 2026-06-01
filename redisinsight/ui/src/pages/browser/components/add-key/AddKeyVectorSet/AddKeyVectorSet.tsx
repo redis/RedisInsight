@@ -1,5 +1,5 @@
 import React, { FormEvent, useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { toNumber } from 'lodash'
 
 import { stringToBuffer } from 'uiSrc/utils'
@@ -53,9 +53,9 @@ const AddKeyVectorSet = ({
   setKeyName,
   setKeyNameDisabled,
 }: Props) => {
-  const dispatch = useDispatch()
-  const { loading } = useSelector(addKeyStateSelector)
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
+  const dispatch = useAppDispatch()
+  const { loading } = useAppSelector(addKeyStateSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
 
   const [populateMode, setPopulateMode] = useState<PopulateMode>(
     PopulateMode.Manual,

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { BuildType } from 'uiSrc/constants/env'
 import { ConnectionType, Instance } from 'uiSrc/slices/interfaces'
 
@@ -25,7 +25,7 @@ interface InstanceHeaderArgs {
 }
 
 const StorePopulator = ({ args }: { args: InstanceHeaderArgs }) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     // Build instance from factory with optional overrides

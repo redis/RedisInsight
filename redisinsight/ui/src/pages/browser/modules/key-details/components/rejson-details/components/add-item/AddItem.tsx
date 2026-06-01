@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import styled from 'styled-components'
 
 import * as keys from 'uiSrc/constants/keys'
@@ -39,7 +39,7 @@ const AddItem = (props: Props) => {
   const [isConfirmationVisible, setIsConfirmationVisible] =
     useState<boolean>(false)
 
-  const { data } = useSelector(rejsonDataSelector)
+  const { data } = useAppSelector(rejsonDataSelector)
   const jsonContent = parseJsonData(data)
 
   const [key, setKey] = useState<string>('')

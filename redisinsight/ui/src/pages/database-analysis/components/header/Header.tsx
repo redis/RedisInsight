@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { CaretRightIcon } from 'uiSrc/components/base/icons'
 import { createNewAnalysis } from 'uiSrc/slices/analytics/dbAnalysis'
@@ -43,12 +43,12 @@ const Header = (props: Props) => {
     analysisLoading,
   } = props
 
-  const { connectionType, provider } = useSelector(connectedInstanceSelector)
+  const { connectionType, provider } = useAppSelector(connectedInstanceSelector)
   const { instanceId } = useParams<{ instanceId: string }>()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const { treeViewDelimiter = [DEFAULT_DELIMITER] } =
-    useSelector(appContextDbConfig)
+    useAppSelector(appContextDbConfig)
 
   const analysisOptions = items.map((item) => {
     const { createdAt, id, db } = item

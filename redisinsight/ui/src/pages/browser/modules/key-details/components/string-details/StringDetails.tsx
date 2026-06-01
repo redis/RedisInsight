@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import {
   initialKeyInfo,
@@ -44,10 +44,10 @@ const StringDetails = (props: Props) => {
   const keyType = KeyTypes.String
 
   const { loading, viewFormat: viewFormatProp } =
-    useSelector(selectedKeySelector)
-  const { length } = useSelector(selectedKeyDataSelector) ?? initialKeyInfo
-  const { value: keyValue } = useSelector(stringDataSelector)
-  const { isCompressed: isStringCompressed } = useSelector(stringSelector)
+    useAppSelector(selectedKeySelector)
+  const { length } = useAppSelector(selectedKeyDataSelector) ?? initialKeyInfo
+  const { value: keyValue } = useAppSelector(stringDataSelector)
+  const { isCompressed: isStringCompressed } = useAppSelector(stringSelector)
 
   const isTruncatedValue = isTruncatedString(keyValue)
   const isEditable =
@@ -66,7 +66,7 @@ const StringDetails = (props: Props) => {
 
   const [editItem, setEditItem] = useState<boolean>(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleRefreshKey = (
     key: RedisResponseBuffer,

@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
 import { MonacoLanguage } from 'uiSrc/constants'
@@ -41,10 +41,10 @@ const Query = (props: Props) => {
     items: execHistoryItems,
     loading,
     processing,
-  } = useSelector(workbenchResultsSelector)
+  } = useAppSelector(workbenchResultsSelector)
 
   const input = useRef<HTMLDivElement>(null)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   // Command history
   const { onQuickHistoryAccess, resetHistoryPos, isHistoryScrolled } =

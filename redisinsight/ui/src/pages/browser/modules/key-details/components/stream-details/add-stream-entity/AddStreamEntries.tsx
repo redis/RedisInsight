@@ -1,6 +1,6 @@
 import { toNumber } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { entryIdRegex, stringToBuffer } from 'uiSrc/utils'
 import {
   keysSelector,
@@ -41,12 +41,12 @@ export interface Props {
 
 const AddStreamEntries = (props: Props) => {
   const { closePanel } = props
-  const { lastGeneratedId } = useSelector(streamDataSelector)
-  const { name: keyName = '' } = useSelector(selectedKeyDataSelector) ?? {
+  const { lastGeneratedId } = useAppSelector(streamDataSelector)
+  const { name: keyName = '' } = useAppSelector(selectedKeyDataSelector) ?? {
     name: undefined,
   }
-  const { viewType } = useSelector(keysSelector)
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
+  const { viewType } = useAppSelector(keysSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
 
   const [entryID, setEntryID] = useState<string>('*')
   const [entryIdError, setEntryIdError] = useState('')
@@ -55,7 +55,7 @@ const AddStreamEntries = (props: Props) => {
   ])
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(() => {

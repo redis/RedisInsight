@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { formatTimestamp } from 'uiSrc/utils'
 import { DATETIME_FORMATTER_DEFAULT, TimezoneOption } from 'uiSrc/constants'
 import { userSettingsConfigSelector } from 'uiSrc/slices/user/user-settings'
@@ -13,7 +13,7 @@ import { TextInput } from 'uiSrc/components/base/inputs'
 
 const DateTimeFormatter = () => {
   const [preview, setPreview] = useState('')
-  const config = useSelector(userSettingsConfigSelector)
+  const config = useAppSelector(userSettingsConfigSelector)
 
   useEffect(() => {
     setPreview(

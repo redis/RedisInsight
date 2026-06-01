@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { riToast } from 'uiSrc/components/base/display/toast'
 import { InfiniteMessage } from 'uiSrc/slices/interfaces'
@@ -25,8 +25,8 @@ const showNotification = (notification: InfiniteMessage) => {
 }
 
 export const useInfiniteNotifications = () => {
-  const notifications = useSelector(infiniteNotificationsSelector)
-  const dispatch = useDispatch()
+  const notifications = useAppSelector(infiniteNotificationsSelector)
+  const dispatch = useAppDispatch()
   const notificationsData = useMemo(() => {
     return notifications.map(
       ({

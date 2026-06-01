@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { ColorText } from 'uiSrc/components/base/text'
 
 import {
@@ -43,16 +43,18 @@ export interface Props {
 
 const AddSetMembers = (props: Props) => {
   const { closePanel } = props
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [members, setMembers] = useState<ISetMemberState[]>([
     { ...INITIAL_SET_MEMBER_STATE },
   ])
-  const { loading } = useSelector(setSelector)
-  const { name: selectedKey = '' } = useSelector(selectedKeyDataSelector) ?? {
+  const { loading } = useAppSelector(setSelector)
+  const { name: selectedKey = '' } = useAppSelector(
+    selectedKeyDataSelector,
+  ) ?? {
     name: undefined,
   }
-  const { viewType } = useSelector(keysSelector)
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
+  const { viewType } = useAppSelector(keysSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
   const lastAddedMemberName = useRef<HTMLInputElement>(null)
   const { requestConfirmation } = useProductionWriteConfirmation()
 

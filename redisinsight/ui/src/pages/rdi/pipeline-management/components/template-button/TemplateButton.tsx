@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { useParams } from 'react-router-dom'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -19,9 +19,9 @@ export interface TemplateButtonProps {
 }
 
 const TemplateButton = ({ setFieldValue, value }: TemplateButtonProps) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
-  const { loading, data } = useSelector(rdiPipelineStrategiesSelector)
+  const { loading, data } = useAppSelector(rdiPipelineStrategiesSelector)
 
   const templateOption = data?.length
     ? data.find((strategy) => strategy.strategy === INGEST_OPTION)?.strategy ||

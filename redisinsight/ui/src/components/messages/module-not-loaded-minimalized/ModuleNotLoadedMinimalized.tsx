@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
 import TelescopeImg from 'uiSrc/assets/img/telescope-dark.svg'
@@ -43,11 +43,11 @@ export interface Props {
 
 const ModuleNotLoadedMinimalized = (props: Props) => {
   const history = useHistory()
-  const { [FeatureFlags.cloudAds]: cloudAdsFeature } = useSelector(
+  const { [FeatureFlags.cloudAds]: cloudAdsFeature } = useAppSelector(
     appFeatureFlagsFeaturesSelector,
   )
   const { moduleName, source, onClose } = props
-  const freeInstances = useSelector(freeInstancesSelector) || []
+  const freeInstances = useAppSelector(freeInstancesSelector) || []
 
   const sourceTutorial = getSourceTutorialByCapability(moduleName)
   const moduleText = cloudAdsFeature?.flag

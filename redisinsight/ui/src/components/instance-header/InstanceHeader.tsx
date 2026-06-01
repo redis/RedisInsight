@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 import cx from 'classnames'
 import { useTheme } from '@redis-ui/styles'
@@ -74,17 +74,17 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
     id,
     loading: instanceLoading,
     modules = [],
-  } = useSelector(connectedInstanceSelector)
-  const { version } = useSelector(connectedInstanceOverviewSelector)
-  const { server } = useSelector(appInfoSelector)
-  const { disabled: isDbIndexDisabled } = useSelector(appContextDbIndex)
-  const { databases = 0 } = useSelector(connectedInstanceInfoSelector)
-  const returnUrl = useSelector(appReturnUrlSelector)
+  } = useAppSelector(connectedInstanceSelector)
+  const { version } = useAppSelector(connectedInstanceOverviewSelector)
+  const { server } = useAppSelector(appInfoSelector)
+  const { disabled: isDbIndexDisabled } = useAppSelector(appContextDbIndex)
+  const { databases = 0 } = useAppSelector(connectedInstanceInfoSelector)
+  const returnUrl = useAppSelector(appReturnUrlSelector)
   const {
     [FeatureFlags.databaseChat]: databaseChatFeature,
     [FeatureFlags.documentationChat]: documentationChatFeature,
     [FeatureFlags.envDependent]: envDependentFeature,
-  } = useSelector(appFeatureFlagsFeaturesSelector)
+  } = useAppSelector(appFeatureFlagsFeaturesSelector)
   const isAnyChatAvailable = isAnyFeatureEnabled([
     databaseChatFeature,
     documentationChatFeature,
@@ -96,7 +96,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
   const [dbIndex, setDbIndex] = useState<string>(String(db || 0))
   const [isDbIndexEditing, setIsDbIndexEditing] = useState<boolean>(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setDbIndex(String(db || 0))

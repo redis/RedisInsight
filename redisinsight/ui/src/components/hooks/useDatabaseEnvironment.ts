@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { Environment } from 'apiClient'
 import { appFeatureFlagProdModeSelector } from 'uiSrc/slices/app/features'
 import {
@@ -13,11 +13,11 @@ export interface UseDatabaseEnvironmentResult {
 }
 
 export const useDatabaseEnvironment = (): UseDatabaseEnvironmentResult => {
-  const flagEnabled = useSelector(appFeatureFlagProdModeSelector)
-  const dangerousCommands = useSelector(
+  const flagEnabled = useAppSelector(appFeatureFlagProdModeSelector)
+  const dangerousCommands = useAppSelector(
     connectedInstanceDangerousCommandsSelector,
   )
-  const connectedInstance = useSelector(connectedInstanceSelector)
+  const connectedInstance = useAppSelector(connectedInstanceSelector)
 
   const environment: Environment = flagEnabled
     ? connectedInstance.environment

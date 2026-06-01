@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { Environment } from 'apiClient'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import TypeToConfirmModal from 'uiSrc/components/type-to-confirm-modal'
@@ -34,7 +34,7 @@ export const ProductionWriteConfirmationProvider = ({
   children,
 }: ProductionWriteConfirmationProviderProps) => {
   const { environment } = useDatabaseEnvironment()
-  const { id, name, host, port } = useSelector(connectedInstanceSelector)
+  const { id, name, host, port } = useAppSelector(connectedInstanceSelector)
   const [pending, setPending] =
     useState<ProductionWriteConfirmationRequest | null>(null)
   const skippedCommandsRef = useRef<Set<string>>(new Set())

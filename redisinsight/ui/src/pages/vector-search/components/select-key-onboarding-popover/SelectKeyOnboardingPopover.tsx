@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { RiPopover } from 'uiSrc/components/base'
 import { Button, IconButton } from 'uiSrc/components/base/forms/buttons'
@@ -22,7 +22,7 @@ interface PopoverContentProps {
 }
 
 const PopoverContent = ({ children, onDismiss }: PopoverContentProps) => {
-  const selectedKey = useSelector(selectedKeyDataSelector)
+  const selectedKey = useAppSelector(selectedKeyDataSelector)
 
   useEffect(() => {
     if (selectedKey?.name) {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import {
   checkUnsupportedCommand,
@@ -28,9 +28,9 @@ import { showMonitor } from 'uiSrc/slices/cli/monitor'
 const CommonErrorResponse = (id: string, command = '', result?: any) => {
   const { instanceId = '' } = useParams<{ instanceId: string }>()
   const { unsupportedCommands: cliUnsupportedCommands, blockingCommands } =
-    useSelector(cliSettingsSelector)
-  const { modules } = useSelector(connectedInstanceSelector)
-  const dispatch = useDispatch()
+    useAppSelector(cliSettingsSelector)
+  const { modules } = useAppSelector(connectedInstanceSelector)
+  const dispatch = useAppDispatch()
   const unsupportedCommands = [
     SelectCommand.toLowerCase(),
     ...cliUnsupportedCommands,

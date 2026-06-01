@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { FormikErrors, useFormik } from 'formik'
 import { isEmpty } from 'lodash'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import * as keys from 'uiSrc/constants/keys'
 import { validateField } from 'uiSrc/utils/validations'
@@ -69,7 +69,7 @@ const options = [
 const CloudConnectionForm = (props: Props) => {
   const { accessKey, secretKey, onClose, onSubmit, loading } = props
 
-  const { [FeatureFlags.cloudSso]: cloudSsoFeature } = useSelector(
+  const { [FeatureFlags.cloudSso]: cloudSsoFeature } = useAppSelector(
     appFeatureFlagsFeaturesSelector,
   )
 

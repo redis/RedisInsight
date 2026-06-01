@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { get, throttle } from 'lodash'
 
@@ -51,14 +51,14 @@ const Config = () => {
     schema,
     data,
     config,
-  } = useSelector(rdiPipelineSelector)
-  const { loading: testingConnections } = useSelector(
+  } = useAppSelector(rdiPipelineSelector)
+  const { loading: testingConnections } = useAppSelector(
     rdiTestConnectionsSelector,
   )
-  const { isOpenDialog } = useSelector(appContextPipelineManagement)
+  const { isOpenDialog } = useAppSelector(appContextPipelineManagement)
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     sendPageViewTelemetry({

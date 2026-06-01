@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 
@@ -25,7 +25,7 @@ export const useIndexListData = (
   const [data, setData] = useState<IndexListRow[]>([])
   const [loading, setLoading] = useState(false)
 
-  const connectedInstance = useSelector(connectedInstanceSelector)
+  const connectedInstance = useAppSelector(connectedInstanceSelector)
   const instanceId = connectedInstance?.id
 
   const indexNamesKey = JSON.stringify(indexNames)

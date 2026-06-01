@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useFormik } from 'formik'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router'
 import { toNumber } from 'lodash'
 
@@ -62,9 +62,9 @@ const ConnectionUrlError = (
 const AddDatabaseScreen = (props: Props) => {
   const { onSelectOption, onClose } = props
   const [isInvalid, setIsInvalid] = useState<Boolean>(false)
-  const { loadingChanging: isLoading } = useSelector(instancesSelector)
+  const { loadingChanging: isLoading } = useAppSelector(instancesSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
 
   const validate = (values: Values) => {

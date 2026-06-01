@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { BulkActionsType } from 'uiSrc/constants'
 import { selectedBulkActionsSelector } from 'uiSrc/slices/browser/bulkActions'
@@ -23,9 +23,9 @@ export interface Props {
 
 const BulkActionsTabs = (props: Props) => {
   const { onChangeType } = props
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
-  const { filter, search } = useSelector(keysSelector)
-  const { type } = useSelector(selectedBulkActionsSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
+  const { filter, search } = useAppSelector(keysSelector)
+  const { type } = useAppSelector(selectedBulkActionsSelector)
 
   const onSelectedTabChanged = (id: string) => {
     const eventData: Record<string, any> = {

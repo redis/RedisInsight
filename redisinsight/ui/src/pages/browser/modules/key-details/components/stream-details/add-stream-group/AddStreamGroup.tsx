@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import { lastDeliveredIDTooltipText } from 'uiSrc/constants/texts'
@@ -35,7 +35,7 @@ export interface Props {
 
 const AddStreamGroup = (props: Props) => {
   const { closePanel } = props
-  const { name: keyName = '' } = useSelector(selectedKeyDataSelector) ?? {
+  const { name: keyName = '' } = useAppSelector(selectedKeyDataSelector) ?? {
     name: undefined,
   }
 
@@ -47,7 +47,7 @@ const AddStreamGroup = (props: Props) => {
 
   const { instanceId } = useParams<{ instanceId: string }>()
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     const isValid = !!groupName.length && !idError

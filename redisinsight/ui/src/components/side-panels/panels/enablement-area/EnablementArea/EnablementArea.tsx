@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import { IEnablementAreaItem } from 'uiSrc/slices/interfaces'
 import {
@@ -50,12 +50,12 @@ const EnablementArea = (props: Props) => {
   } = props
   const { search } = useLocation()
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const {
     manifest,
     search: searchEAContext,
     isPageOpen: isInternalPageVisible,
-  } = useSelector(explorePanelSelector)
+  } = useAppSelector(explorePanelSelector)
 
   const contextManifestPath = new URLSearchParams(searchEAContext).get('path')
 

@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { setCapability } from 'uiSrc/slices/app/context'
 
 export const useCapability = (source = '') => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     dispatch(setCapability({ source, tutorialPopoverShown: false }))

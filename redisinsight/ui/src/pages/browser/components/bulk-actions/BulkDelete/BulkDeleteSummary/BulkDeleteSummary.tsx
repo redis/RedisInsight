@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { isUndefined } from 'lodash'
 
 import { numberWithSpaces, nullableNumberWithSpaces } from 'uiSrc/utils/numbers'
@@ -19,12 +19,12 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 
 const BulkDeleteSummary = () => {
   const [title, setTitle] = useState<string>('')
-  const { scanned = 0, total = 0, keys } = useSelector(keysDataSelector)
-  const { keyCount } = useSelector(bulkActionsDeleteSelector)
+  const { scanned = 0, total = 0, keys } = useAppSelector(keysDataSelector)
+  const { keyCount } = useAppSelector(bulkActionsDeleteSelector)
   const { processed, succeed, failed } =
-    useSelector(bulkActionsDeleteSummarySelector) ?? {}
+    useAppSelector(bulkActionsDeleteSummarySelector) ?? {}
   const { duration = 0, status } =
-    useSelector(bulkActionsDeleteOverviewSelector) ?? {}
+    useAppSelector(bulkActionsDeleteOverviewSelector) ?? {}
 
   // Check if this is a folder delete (keyCount is set)
   const isFolderDelete = keyCount !== null && keyCount !== undefined

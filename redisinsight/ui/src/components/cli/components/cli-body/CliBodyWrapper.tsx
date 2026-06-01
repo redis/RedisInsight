@@ -1,6 +1,6 @@
 import { decode } from 'html-entities'
 import React, { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from 'uiSrc/slices/hooks'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useHistory, useParams } from 'react-router-dom'
 
@@ -58,9 +58,9 @@ const CliBodyWrapper = () => {
   const [command, setCommand] = useState('')
 
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { instanceId = '' } = useParams<{ instanceId: string }>()
-  const { data = [] } = useSelector(outputSelector)
+  const { data = [] } = useAppSelector(outputSelector)
   const {
     errorClient: error,
     unsupportedCommands,
@@ -68,11 +68,11 @@ const CliBodyWrapper = () => {
     isSearching,
     matchedCommand,
     cliClientUuid,
-  } = useSelector(cliSettingsSelector)
-  const { connectionType, host, port, db, name } = useSelector(
+  } = useAppSelector(cliSettingsSelector)
+  const { connectionType, host, port, db, name } = useAppSelector(
     connectedInstanceSelector,
   )
-  const { db: currentDbIndex } = useSelector(outputSelector)
+  const { db: currentDbIndex } = useAppSelector(outputSelector)
   const { isDangerousCommand } = useDatabaseEnvironment()
   const { requestConfirmation } = useProductionWriteConfirmation()
 

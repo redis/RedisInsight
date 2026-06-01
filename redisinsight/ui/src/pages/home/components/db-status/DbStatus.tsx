@@ -1,7 +1,7 @@
 import React from 'react'
 import { differenceInDays } from 'date-fns'
 
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { getTutorialCapability, Maybe } from 'uiSrc/utils'
 
 import { appContextCapability } from 'uiSrc/slices/app/context'
@@ -48,7 +48,7 @@ const LAST_CONNECTION_L = 16
 const DbStatus = (props: Props) => {
   const { id, lastConnection, createdAt, isNew, isFree } = props
 
-  const { source } = useSelector(appContextCapability)
+  const { source } = useAppSelector(appContextCapability)
   const capability = getTutorialCapability(source!)
   const isCapabilityNotShown = Boolean(isShowCapabilityTutorialPopover(isFree))
   let daysDiff = 0

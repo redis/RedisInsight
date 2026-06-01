@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 
 import { setReJSONDataAction } from 'uiSrc/slices/browser/rejson'
@@ -49,7 +49,7 @@ const RejsonScalar = (props: JSONScalarProps) => {
   const [editing, setEditing] = useState<boolean>(false)
   const [deleting, setDeleting] = useState<string>('')
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(() => {

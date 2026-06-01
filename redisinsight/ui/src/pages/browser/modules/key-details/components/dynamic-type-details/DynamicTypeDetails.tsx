@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import {
   KeyTypes,
   MODULES_KEY_TYPES_NAMES,
@@ -30,7 +30,7 @@ export interface Props extends KeyDetailsHeaderProps {
 
 const DynamicTypeDetails = (props: Props) => {
   const { keyType: selectedKeyType, keyProp } = props
-  const isDevVectorSet = useSelector(isDevVectorSetEnabledSelector)
+  const isDevVectorSet = useAppSelector(isDevVectorSetEnabledSelector)
 
   const TypeDetails: any = {
     [KeyTypes.ZSet]: <ZSetDetails {...props} />,

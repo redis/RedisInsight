@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from 'uiSrc/slices/hooks'
 import { isEmpty } from 'lodash'
 import cx from 'classnames'
 
@@ -39,9 +39,9 @@ export interface Props {
 }
 
 const DatabaseListHeader = ({ onAddInstance }: Props) => {
-  const { data: instances, shownColumns } = useSelector(instancesSelector)
-  const featureFlags = useSelector(appFeatureFlagsFeaturesSelector)
-  const { loading, data } = useSelector(contentSelector)
+  const { data: instances, shownColumns } = useAppSelector(instancesSelector)
+  const featureFlags = useAppSelector(appFeatureFlagsFeaturesSelector)
+  const { loading, data } = useAppSelector(contentSelector)
 
   const [promoData, setPromoData] = useState<ContentCreateRedis>()
 
@@ -50,7 +50,7 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
     featureFlags
   const isShowPromoBtn = !enhancedCloudUIFeature?.flag
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (loading || !data || isEmpty(data)) {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { FeatureFlags } from 'uiSrc/constants'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { OAuthUserProfile } from 'uiSrc/components'
@@ -12,7 +12,7 @@ const UserProfile = () => {
     [FeatureFlags.envDependent]: envDependentFeature,
     [FeatureFlags.cloudAds]: cloudAds,
     [FeatureFlags.cloudSso]: cloudSso,
-  } = useSelector(appFeatureFlagsFeaturesSelector)
+  } = useAppSelector(appFeatureFlagsFeaturesSelector)
 
   if (!envDependentFeature?.flag) {
     return (

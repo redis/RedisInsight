@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState, useCallback } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import {
   ColumnDef,
@@ -20,7 +20,7 @@ const useRdiInstancesListData = () => {
     data: instances,
     loading,
     shownColumns,
-  } = useSelector(instancesSelector)
+  } = useAppSelector(instancesSelector)
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   const resetRowSelection = useCallback(() => setRowSelection({}), [])

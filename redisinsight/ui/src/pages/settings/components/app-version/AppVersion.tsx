@@ -1,11 +1,11 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { appServerInfoSelector } from 'uiSrc/slices/app/info'
 import { Text } from 'uiSrc/components/base/text'
 
 const AppVersion = () => {
-  const server = useSelector(appServerInfoSelector)
+  const server = useAppSelector(appServerInfoSelector)
 
   if (!server?.appVersion) return null
 

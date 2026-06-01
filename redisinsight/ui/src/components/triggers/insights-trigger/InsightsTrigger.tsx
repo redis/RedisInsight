@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useLocation, useParams } from 'react-router-dom'
 
 import {
@@ -37,14 +37,14 @@ export interface Props {
 
 const InsightsTrigger = (props: Props) => {
   const { source = 'overview' } = props
-  const { openedPanel } = useSelector(sidePanelsSelector)
-  const { tabSelected } = useSelector(insightsPanelSelector)
-  const { isHighlighted } = useSelector(recommendationsSelector)
-  const { provider } = useSelector(connectedInstanceSelector)
+  const { openedPanel } = useAppSelector(sidePanelsSelector)
+  const { tabSelected } = useAppSelector(insightsPanelSelector)
+  const { isHighlighted } = useAppSelector(recommendationsSelector)
+  const { provider } = useAppSelector(connectedInstanceSelector)
 
   const isInsightsOpen = openedPanel === SidePanels.Insights
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { pathname, search } = useLocation()
   const { instanceId } = useParams<{ instanceId: string }>()
 

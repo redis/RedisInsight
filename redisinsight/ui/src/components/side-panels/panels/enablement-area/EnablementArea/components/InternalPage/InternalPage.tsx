@@ -3,7 +3,7 @@ import JsxParser from 'react-jsx-parser'
 import cx from 'classnames'
 import { debounce } from 'lodash'
 import { useLocation, useParams } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { ChevronLeftIcon, RocketIcon } from 'uiSrc/components/base/icons'
 import { HorizontalRule, LoadingContent } from 'uiSrc/components'
@@ -83,8 +83,8 @@ const InternalPage = (props: Props) => {
   }
   const containerRef = useRef<HTMLDivElement>(null)
   const { instanceId = '' } = useParams<{ instanceId: string }>()
-  const { source } = useSelector(appContextCapability)
-  const { free = false } = useSelector(connectedInstanceCDSelector) ?? {}
+  const { source } = useAppSelector(appContextCapability)
+  const { free = false } = useAppSelector(connectedInstanceCDSelector) ?? {}
   const [showCapabilityPopover, setShowCapabilityPopover] = useState(false)
   const tutorialCapability = getTutorialCapability(source!)
 

@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { monaco } from 'react-monaco-editor'
 import JSONbig from 'json-bigint'
 
@@ -30,7 +30,7 @@ const jsonToReadableString = (data: any) =>
 
 const MonacoEditor = (props: BaseProps) => {
   const { data, length, selectedKey } = props
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
 
   const originalData = jsonToReadableString(data)

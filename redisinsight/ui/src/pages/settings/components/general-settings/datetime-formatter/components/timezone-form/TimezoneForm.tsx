@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useFormik } from 'formik'
 
 import { TimezoneOption, timezoneOptions } from 'uiSrc/constants'
@@ -18,8 +18,8 @@ interface InitialValuesType {
 }
 
 const TimezoneForm = () => {
-  const config = useSelector(userSettingsConfigSelector)
-  const dispatch = useDispatch()
+  const config = useAppSelector(userSettingsConfigSelector)
+  const dispatch = useAppDispatch()
 
   const getInitialValues: InitialValuesType = useMemo(
     () => ({ timezone: config?.timezone || TimezoneOption.Local }),

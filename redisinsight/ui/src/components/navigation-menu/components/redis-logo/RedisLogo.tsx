@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { BuildType } from 'uiSrc/constants/env'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
@@ -31,8 +31,8 @@ const RedisLogoIcon = styled.span`
 `
 
 export const RedisLogo = ({ isRdiWorkspace }: Props) => {
-  const { envDependent } = useSelector(appFeatureFlagsFeaturesSelector)
-  const { server } = useSelector(appInfoSelector)
+  const { envDependent } = useAppSelector(appFeatureFlagsFeaturesSelector)
+  const { server } = useAppSelector(appInfoSelector)
 
   if (!envDependent?.flag) {
     return (

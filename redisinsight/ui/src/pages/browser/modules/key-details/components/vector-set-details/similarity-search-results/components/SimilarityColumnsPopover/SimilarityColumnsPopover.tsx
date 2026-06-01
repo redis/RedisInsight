@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { MIDDLE_SCREEN_RESOLUTION } from 'uiSrc/constants'
 import { RiPopover } from 'uiSrc/components/base'
@@ -34,7 +34,7 @@ const SimilarityColumnsPopover = ({
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false)
   const showLabel = width > MIDDLE_SCREEN_RESOLUTION
-  const { id: databaseId } = useSelector(connectedInstanceSelector)
+  const { id: databaseId } = useAppSelector(connectedInstanceSelector)
 
   const toggle = () => setIsOpen((v) => !v)
   const close = () => setIsOpen(false)

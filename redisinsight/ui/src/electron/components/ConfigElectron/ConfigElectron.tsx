@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 import { UpdateInfo } from 'electron-updater'
 import { IParsedDeepLink } from 'uiSrc/electron/constants'
@@ -19,10 +19,10 @@ import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 
 const ConfigElectron = () => {
   let isCheckedUpdates = false
-  const { isReleaseNotesViewed } = useSelector(appElectronInfoSelector)
-  const serverInfo = useSelector(appServerInfoSelector)
+  const { isReleaseNotesViewed } = useAppSelector(appElectronInfoSelector)
+  const serverInfo = useAppSelector(appServerInfoSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
 
   useEffect(() => {

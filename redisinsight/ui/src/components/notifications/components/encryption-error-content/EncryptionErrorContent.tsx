@@ -1,6 +1,6 @@
 import React from 'react'
 import { matchPath, useHistory, useLocation } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { Pages } from 'uiSrc/constants'
 import { ColorText } from 'uiSrc/components/base/text'
 import { updateUserConfigSettingsAction } from 'uiSrc/slices/user/user-settings'
@@ -21,7 +21,7 @@ const EncryptionErrorContent = (props: Props) => {
   const { onClose, instanceId } = props
   const { pathname } = useLocation()
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   // useParams() hook can't be used because the Notifications component is outside of the MainRouter
   const getInstanceIdFromUrl = (): string => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router'
 
 import {
@@ -49,12 +49,12 @@ const SentinelConnectionWrapper = (props: Props) => {
   const { onClose } = props
   const [initialValues, setInitialValues] = useState(INITIAL_VALUES)
 
-  const { loading } = useSelector(sentinelSelector)
-  const { data: caCertificates } = useSelector(caCertsSelector)
-  const { data: certificates } = useSelector(clientCertsSelector)
+  const { loading } = useAppSelector(sentinelSelector)
+  const { data: caCertificates } = useAppSelector(caCertsSelector)
+  const { data: certificates } = useAppSelector(clientCertsSelector)
 
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { setModalHeader } = useModalHeader()
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
 import {
@@ -38,9 +38,9 @@ const DEFAULT_STATE = { loading: true, error: '', data: null }
 
 const EditConnection = () => {
   const history = useHistory()
-  const dispatch = useDispatch()
-  const { server } = useSelector(appInfoSelector)
-  const { data: createDbContent } = useSelector(contentSelector)
+  const dispatch = useAppDispatch()
+  const { server } = useAppSelector(appInfoSelector)
+  const { data: createDbContent } = useAppSelector(contentSelector)
   const [state, setState] = useState<IState>(DEFAULT_STATE)
   const { theme } = useContext(ThemeContext)
 

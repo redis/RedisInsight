@@ -7,7 +7,7 @@ import {
   InfiniteMessagesIds,
 } from 'uiSrc/components/notifications/components'
 import { CloudJobStep } from 'uiSrc/electron/constants'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import {
   addInfiniteNotification,
   removeInfiniteNotification,
@@ -86,7 +86,7 @@ const sampleNotifications: SampleNotification[] = [
 ]
 
 const useNotificationUpdates = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const timeoutRefs = useRef<NodeJS.Timeout[]>([])
 
   useEffect(() => {

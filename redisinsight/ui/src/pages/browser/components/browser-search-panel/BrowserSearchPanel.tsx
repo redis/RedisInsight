@@ -1,7 +1,7 @@
 /* eslint-disable react/no-this-in-sfc */
 /* eslint-disable react/destructuring-assignment */
 import React, { useCallback, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import styled from 'styled-components'
 
 import {
@@ -66,13 +66,13 @@ const SwitchSearchModeButtonGroup = styled(ButtonGroup)`
 
 const BrowserSearchPanel = (props: Props) => {
   const { handleCreateIndexPanel } = props
-  const { viewType, searchMode } = useSelector(keysSelector)
-  const { id: instanceId, modules } = useSelector(connectedInstanceSelector)
+  const { viewType, searchMode } = useAppSelector(keysSelector)
+  const { id: instanceId, modules } = useAppSelector(connectedInstanceSelector)
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [isVersionModalOpen, setIsVersionModalOpen] = useState(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const hasRedisearch = isRedisearchAvailable(modules)
 

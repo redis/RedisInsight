@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import ExploreGuides from 'uiSrc/components/explore-guides'
 import { Nullable } from 'uiSrc/utils'
 
@@ -22,7 +22,7 @@ export interface Props {
 export const NoKeySelected = (props: Props) => {
   const { keyProp, totalKeys, onClosePanel, error, keysLastRefreshTime } = props
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleClosePanel = () => {
     dispatch(toggleBrowserFullScreen(true))

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
 import { ApiStatusCode, Pages } from 'uiSrc/constants'
@@ -72,7 +72,7 @@ export const useSentinelDatabasesResultConfig = () => {
   const [items, setItems] = useState<ModifiedSentinelMaster[]>([])
   const [isInvalid, setIsInvalid] = useState(true)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
 
   const handleBackAdding = useCallback(() => {
@@ -85,7 +85,7 @@ export const useSentinelDatabasesResultConfig = () => {
     history.push(Pages.home)
   }, [])
 
-  const { data: masters } = useSelector(sentinelSelector)
+  const { data: masters } = useAppSelector(sentinelSelector)
   const mastersLength = masters.length
 
   const countSuccessAdded = masters.filter(

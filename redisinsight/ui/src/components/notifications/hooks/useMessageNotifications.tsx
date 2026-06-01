@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { ToastVariant } from '@redis-ui/components'
 import { riToast } from 'uiSrc/components/base/display/toast'
 import { messagesSelector, removeMessage } from 'uiSrc/slices/app/notifications'
@@ -14,9 +14,9 @@ const getDescriptionText = (
 ) => <ColorText color={variant}>{text}</ColorText>
 
 export const useMessageNotifications = () => {
-  const messagesData = useSelector(messagesSelector)
+  const messagesData = useAppSelector(messagesSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const toastIdsRef = useRef(new Map<string, number | string>())
   const removeToast = (id: string) => {
     if (toastIdsRef.current.has(id)) {

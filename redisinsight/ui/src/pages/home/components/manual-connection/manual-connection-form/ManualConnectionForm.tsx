@@ -2,7 +2,7 @@ import { FormikErrors, useFormik } from 'formik'
 import { isEmpty, pick } from 'lodash'
 import React, { useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import * as keys from 'uiSrc/constants/keys'
 import { resetInstanceUpdateAction } from 'uiSrc/slices/instances/instances'
@@ -89,10 +89,10 @@ const ManualConnectionForm = (props: Props) => {
     modules,
   } = formFields
 
-  const { action } = useSelector(appRedirectionSelector)
-  const { data: caCertificates } = useSelector(caCertsSelector)
-  const { data: certificates } = useSelector(clientCertsSelector)
-  const { server } = useSelector(appInfoSelector)
+  const { action } = useAppSelector(appRedirectionSelector)
+  const { data: caCertificates } = useAppSelector(caCertsSelector)
+  const { data: certificates } = useAppSelector(clientCertsSelector)
+  const { server } = useAppSelector(appInfoSelector)
 
   const [errors, setErrors] = useState<FormikErrors<DbConnectionInfo>>(
     getInitFieldsDisplayNames({ host, port, name }),
@@ -103,7 +103,7 @@ const ManualConnectionForm = (props: Props) => {
 
   const { setModalHeader } = useModalHeader()
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const formRef = useRef<HTMLDivElement>(null)
 

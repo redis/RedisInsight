@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import {
   instancesSelector,
@@ -20,10 +20,10 @@ export const instanceHasTags = (
 
 const SearchDatabasesList = () => {
   const [value, setValue] = useState('')
-  const { data: instances } = useSelector(instancesSelector)
-  const { selectedTags } = useSelector(tagsSelector)
+  const { data: instances } = useAppSelector(instancesSelector)
+  const { selectedTags } = useAppSelector(tagsSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     const isInitialRender =

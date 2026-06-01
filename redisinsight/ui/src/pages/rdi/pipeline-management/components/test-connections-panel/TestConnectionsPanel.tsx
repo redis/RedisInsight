@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import TestConnectionsLog from 'uiSrc/pages/rdi/pipeline-management/components/test-connections-log'
 import { rdiTestConnectionsSelector } from 'uiSrc/slices/rdi/testConnections'
@@ -46,7 +46,7 @@ export interface Props {
 
 const TestConnectionsPanel = (props: Props) => {
   const { onClose } = props
-  const { loading, results } = useSelector(rdiTestConnectionsSelector)
+  const { loading, results } = useAppSelector(rdiTestConnectionsSelector)
 
   if (loading) {
     return (

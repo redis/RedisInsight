@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 
 import { streamGroupsSelector } from 'uiSrc/slices/browser/stream'
@@ -32,8 +32,8 @@ const MessagesView = (props: Props) => {
     noItemsMessageString = 'Your Consumer has no pending messages.',
   } = props
 
-  const { loading } = useSelector(streamGroupsSelector)
-  const { name: key = '' } = useSelector(selectedKeyDataSelector) ?? {}
+  const { loading } = useAppSelector(streamGroupsSelector)
+  const { name: key = '' } = useAppSelector(selectedKeyDataSelector) ?? {}
 
   return (
     <>

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { SearchMode } from 'uiSrc/slices/interfaces/keys'
 
 import {
@@ -26,12 +26,12 @@ const NoKeysMessage = (props: Props) => {
   const { total, scanned, onAddKeyPanel, isLoading } = props
 
   const { selectedIndex, isSearched: redisearchIsSearched } =
-    useSelector(redisearchSelector)
+    useAppSelector(redisearchSelector)
   const {
     isSearched: patternIsSearched,
     isFiltered,
     searchMode,
-  } = useSelector(keysSelector)
+  } = useAppSelector(keysSelector)
 
   if (searchMode === SearchMode.Redisearch) {
     if (!selectedIndex) {

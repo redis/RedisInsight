@@ -1,5 +1,5 @@
 import { useHistory, useLocation } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useEffect } from 'react'
 import { isNull, isNumber, every, values, pick, some } from 'lodash'
 import { Pages } from 'uiSrc/constants'
@@ -30,13 +30,13 @@ import { localStorageService } from 'uiSrc/services'
 import { AppStorageItem } from 'uiSrc/constants/storage'
 
 const GlobalUrlHandler = () => {
-  const { fromUrl } = useSelector(appRedirectionSelector)
+  const { fromUrl } = useAppSelector(appRedirectionSelector)
   const { isShowConceptsPopup: isShowConsents, config } =
-    useSelector(userSettingsSelector)
+    useAppSelector(userSettingsSelector)
   const { search } = useLocation()
 
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const location = useLocation()
 
   useEffect(() => {

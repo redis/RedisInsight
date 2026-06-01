@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import TemplateForm from 'uiSrc/pages/rdi/pipeline-management/components/template-form'
@@ -32,7 +32,7 @@ const TemplatePopover = (props: Props) => {
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleOpen = () => {
     dispatch(fetchPipelineStrategies(rdiInstanceId))

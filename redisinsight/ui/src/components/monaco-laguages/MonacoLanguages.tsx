@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { monaco } from 'react-monaco-editor'
 import { findIndex } from 'lodash'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
@@ -21,7 +21,7 @@ import { ModuleCommandPrefix } from 'uiSrc/pages/workbench/constants'
 const MonacoLanguages = () => {
   const { theme } = useContext(ThemeContext)
   const { commandsArray: REDIS_COMMANDS_ARRAY, spec: COMMANDS_SPEC } =
-    useSelector(appRedisCommandsSelector)
+    useAppSelector(appRedisCommandsSelector)
 
   useEffect(() => {
     if (monaco?.editor) {

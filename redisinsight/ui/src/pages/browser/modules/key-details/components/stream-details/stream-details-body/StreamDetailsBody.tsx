@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { isNull, last, toString } from 'lodash'
 import cx from 'classnames'
 
@@ -42,14 +42,14 @@ const StreamDetailsBody = (props: Props) => {
     viewType,
     loading,
     sortOrder: entryColumnSortOrder,
-  } = useSelector(streamSelector)
-  const { loading: loadingGroups } = useSelector(streamGroupsSelector)
-  const { start, end } = useSelector(streamRangeSelector)
-  const { firstEntry, lastEntry, entries } = useSelector(streamDataSelector)
-  const { name: key } = useSelector(selectedKeyDataSelector) ?? { name: '' }
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
+  } = useAppSelector(streamSelector)
+  const { loading: loadingGroups } = useAppSelector(streamGroupsSelector)
+  const { start, end } = useAppSelector(streamRangeSelector)
+  const { firstEntry, lastEntry, entries } = useAppSelector(streamDataSelector)
+  const { name: key } = useAppSelector(selectedKeyDataSelector) ?? { name: '' }
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const firstEntryTimeStamp = useMemo(
     () => getTimestampFromId(firstEntry?.id),

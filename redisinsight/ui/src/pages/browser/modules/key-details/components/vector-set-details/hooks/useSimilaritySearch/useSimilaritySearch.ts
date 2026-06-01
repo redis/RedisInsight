@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { debounce } from 'lodash'
 
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
@@ -35,10 +35,10 @@ import { areKeysEqual } from './useSimilaritySearch.utils'
 const PREVIEW_DEBOUNCE_MS = 250
 
 export const useSimilaritySearch = (): UseSimilaritySearchResult => {
-  const dispatch = useDispatch()
-  const selectedKeyData = useSelector(selectedKeyDataSelector)
-  const { loading } = useSelector(vectorSetSimilaritySearchSelector)
-  const { loading: previewLoading, preview } = useSelector(
+  const dispatch = useAppDispatch()
+  const selectedKeyData = useAppSelector(selectedKeyDataSelector)
+  const { loading } = useAppSelector(vectorSetSimilaritySearchSelector)
+  const { loading: previewLoading, preview } = useAppSelector(
     vectorSetSimilaritySearchPreviewSelector,
   )
 

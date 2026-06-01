@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import cx from 'classnames'
 import { RdiInstance } from 'uiSrc/slices/interfaces'
@@ -48,7 +48,7 @@ const RdiPage = () => {
     setIsConnectionFormOpen,
   } = useRdiPageDataProvider()
 
-  const { data, loading, loadingChanging } = useSelector(instancesSelector)
+  const { data, loading, loadingChanging } = useAppSelector(instancesSelector)
   const hideInstancesList = data.length === 0 && !loading && !loadingChanging
 
   useEffect(() => {

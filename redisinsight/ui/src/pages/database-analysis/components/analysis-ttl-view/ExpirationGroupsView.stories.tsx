@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 
 import ExpirationGroupsView from './ExpirationGroupsView'
 import { setShowNoExpiryGroup } from 'uiSrc/slices/analytics/dbAnalysis'
@@ -37,7 +37,7 @@ const sampleData = {
 }
 
 const DefaultRender = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const data = useMemo(() => sampleData, [])
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { isArray } from 'lodash'
 import { useParams } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { Group as ListGroup } from 'uiSrc/components/base/layout/list'
 import {
   EnablementAreaComponent,
@@ -69,15 +69,15 @@ const PATHS = {
 
 const Navigation = (props: Props) => {
   const { tutorials, customTutorials, isInternalPageVisible } = props
-  const { currentStep, isActive } = useSelector(appFeatureOnboardingSelector)
+  const { currentStep, isActive } = useAppSelector(appFeatureOnboardingSelector)
   const {
     [FeatureFlags.envDependent]: envDependentFeature,
     [FeatureFlags.customTutorials]: customTutorialsFeature,
-  } = useSelector(appFeatureFlagsFeaturesSelector)
+  } = useAppSelector(appFeatureFlagsFeaturesSelector)
 
   const [isCreateOpen, setIsCreateOpen] = useState(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { instanceId = '' } = useParams<{ instanceId: string }>()
 
   const isCustomTutorialsOnboarding =

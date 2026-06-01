@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { sidePanelsSelector } from 'uiSrc/slices/panels/sidePanels'
 import SidePanels from 'uiSrc/components/side-panels'
 
@@ -24,7 +24,7 @@ const SIDE_PANEL_MAX_SIZE = 50
 
 const ExplorePanelTemplate = (props: Props) => {
   const { children, panelClassName } = props
-  const { openedPanel } = useSelector(sidePanelsSelector)
+  const { openedPanel } = useAppSelector(sidePanelsSelector)
   const isPanelOpen = !!openedPanel
 
   useCapabilityAutoOpen()

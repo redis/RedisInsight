@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
 import {
   appContextSelector,
@@ -33,15 +33,15 @@ export interface Props {
 }
 
 const RdiInstancePage = ({ routes = [] }: Props) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
   const { pathname } = useLocation()
   const { privateRdiRoutes } = useNavigation()
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
-  const { lastPage, contextRdiInstanceId } = useSelector(appContextSelector)
-  const { data: rdiInstances } = useSelector(rdiInstancesSelector)
-  const { data: dbInstances } = useSelector(dbInstancesSelector)
+  const { lastPage, contextRdiInstanceId } = useAppSelector(appContextSelector)
+  const { data: rdiInstances } = useAppSelector(rdiInstancesSelector)
+  const { data: dbInstances } = useAppSelector(dbInstancesSelector)
 
   const [actions, setActions] = useState<Nullable<React.ReactNode>>(null)
 

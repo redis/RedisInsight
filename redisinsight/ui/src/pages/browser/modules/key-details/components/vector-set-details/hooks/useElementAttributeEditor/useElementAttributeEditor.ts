@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { setVectorSetElementAttribute } from 'uiSrc/slices/browser/vectorSet'
@@ -16,9 +16,9 @@ import {
 export const useElementAttributeEditor = ({
   element,
 }: UseElementAttributeEditorParams): UseElementAttributeEditorResult => {
-  const dispatch = useDispatch()
-  const { name: keyName } = useSelector(selectedKeyDataSelector) ?? {}
-  const { id: databaseId } = useSelector(connectedInstanceSelector)
+  const dispatch = useAppDispatch()
+  const { name: keyName } = useAppSelector(selectedKeyDataSelector) ?? {}
+  const { id: databaseId } = useAppSelector(connectedInstanceSelector)
 
   const [isEditing, setIsEditing] = useState(false)
   const [value, setValue] = useState('')

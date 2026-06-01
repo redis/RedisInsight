@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { NodePublicState } from 'react-vtree/dist/es/Tree'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import * as keys from 'uiSrc/constants/keys'
 import { Maybe } from 'uiSrc/utils'
@@ -78,13 +78,13 @@ const Node = ({
   const delimiterView = delimiters.length === 1 ? delimiters[0] : '-'
   const folderPrefix = `${fullName}${delimiterView}`
 
-  const { shownColumns } = useSelector(appContextDbConfig)
+  const { shownColumns } = useAppSelector(appContextDbConfig)
   const visibleColumns = visibleColumnsProp ?? shownColumns
   const includeSize = visibleColumns.includes(BrowserColumns.Size)
   const includeTTL = visibleColumns.includes(BrowserColumns.TTL)
 
   const { openMakeSearchableModal } = useMakeSearchableModal()
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
 
   const [deletePopoverId, setDeletePopoverId] =
     useState<Maybe<string>>(undefined)

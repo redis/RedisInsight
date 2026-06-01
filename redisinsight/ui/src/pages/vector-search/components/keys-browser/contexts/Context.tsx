@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import {
@@ -57,19 +57,19 @@ export const Provider = ({
   children,
 }: KeysBrowserProps & { children: React.ReactNode }) => {
   const { instanceId } = useParams<{ instanceId: string }>()
-  const keysState = useSelector(keysDataSelector)
+  const keysState = useAppSelector(keysDataSelector)
   const {
     loading,
     isSearched,
     isFiltered,
     filter,
     error: keysError,
-  } = useSelector(keysSelector)
-  const { id: connectedInstanceId } = useSelector(connectedInstanceSelector)
+  } = useAppSelector(keysSelector)
+  const { id: connectedInstanceId } = useAppSelector(connectedInstanceSelector)
   const {
     keyList: { scrollPatternTopPosition },
-  } = useSelector(appContextBrowser)
-  const dispatch = useDispatch()
+  } = useAppSelector(appContextBrowser)
+  const dispatch = useAppDispatch()
 
   const [activeTab, setActiveTab] = useState<KeyTypes>(
     initialKeyType ?? SUPPORTED_TABS[0],

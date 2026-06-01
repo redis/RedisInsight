@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
 import {
@@ -31,8 +31,8 @@ const StreamDetails = (props: Props) => {
   const keyType = KeyTypes.Stream
   const { onOpenAddItemPanel, onCloseAddItemPanel } = props
 
-  const { loading } = useSelector(selectedKeySelector)
-  const { viewType: streamViewType } = useSelector(streamSelector)
+  const { loading } = useAppSelector(selectedKeySelector)
+  const { viewType: streamViewType } = useAppSelector(streamSelector)
 
   const [isAddItemPanelOpen, setIsAddItemPanelOpen] = useState<boolean>(false)
 

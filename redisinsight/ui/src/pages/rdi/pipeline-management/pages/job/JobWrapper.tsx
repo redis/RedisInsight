@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory, useParams } from 'react-router-dom'
 import { findIndex } from 'lodash'
 
@@ -23,7 +23,7 @@ const JobWrapper = () => {
 
   const history = useHistory()
 
-  const { data, jobs } = useSelector(rdiPipelineSelector)
+  const { data, jobs } = useAppSelector(rdiPipelineSelector)
 
   useEffect(() => {
     const jobIndex = findIndex(jobs, ({ name }) => name === decodedJobName)

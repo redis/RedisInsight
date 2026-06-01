@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import {
   appFeatureOnboardingSelector,
   setOnboardNextStep,
@@ -18,11 +18,11 @@ import { Row } from 'uiSrc/components/base/layout/flex'
 import styles from './styles.module.scss'
 
 const OnboardingStartPopover = () => {
-  const { id: connectedInstanceId = '' } = useSelector(
+  const { id: connectedInstanceId = '' } = useAppSelector(
     connectedInstanceSelector,
   )
-  const { isActive, currentStep } = useSelector(appFeatureOnboardingSelector)
-  const dispatch = useDispatch()
+  const { isActive, currentStep } = useAppSelector(appFeatureOnboardingSelector)
+  const dispatch = useAppDispatch()
 
   const sendTelemetry = (action: string) =>
     sendEventTelemetry({

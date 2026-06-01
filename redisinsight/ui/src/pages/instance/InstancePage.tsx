@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useLocation, useParams } from 'react-router-dom'
 
 import {
@@ -44,18 +44,18 @@ const InstancePage = ({ routes = [] }: Props) => {
   const [isShouldChildrenRerender, setIsShouldChildrenRerender] =
     useState(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { pathname } = useLocation()
 
-  const { data: rdiInstances } = useSelector(rdiInstancesSelector)
-  const { data: dbInstances } = useSelector(dbInstancesSelector)
+  const { data: rdiInstances } = useAppSelector(rdiInstancesSelector)
+  const { data: dbInstances } = useAppSelector(dbInstancesSelector)
 
   const { instanceId: connectionInstanceId } = useParams<{
     instanceId: string
   }>()
-  const { contextInstanceId } = useSelector(appContextSelector)
-  const connectivityError = useSelector(appConnectivityError)
-  const { [FeatureFlags.envDependent]: envDependent } = useSelector(
+  const { contextInstanceId } = useAppSelector(appContextSelector)
+  const connectivityError = useAppSelector(appConnectivityError)
+  const { [FeatureFlags.envDependent]: envDependent } = useAppSelector(
     appFeatureFlagsFeaturesSelector,
   )
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { DurationUnits } from 'uiSrc/constants'
@@ -37,8 +37,8 @@ const Actions = (props: Props) => {
     onRefresh,
   } = props
   const { instanceId } = useParams<{ instanceId: string }>()
-  const { name = '' } = useSelector(connectedInstanceSelector)
-  const { loading, lastRefreshTime } = useSelector(slowLogSelector)
+  const { name = '' } = useAppSelector(connectedInstanceSelector)
+  const { loading, lastRefreshTime } = useAppSelector(slowLogSelector)
 
   const [isClearModalOpen, setIsClearModalOpen] = useState(false)
   const [isPopoverConfigOpen, setIsPopoverConfigOpen] = useState(false)

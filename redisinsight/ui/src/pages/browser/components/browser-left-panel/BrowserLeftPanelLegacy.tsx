@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import {
@@ -54,11 +54,13 @@ const BrowserLeftPanelLegacy = (props: Props) => {
   } = props
 
   const { instanceId } = useParams<{ instanceId: string }>()
-  const patternKeysState = useSelector(keysDataSelector)
-  const redisearchKeysState = useSelector(redisearchDataSelector)
+  const patternKeysState = useAppSelector(keysDataSelector)
+  const redisearchKeysState = useAppSelector(redisearchDataSelector)
   const { loading: redisearchLoading, isSearched: redisearchIsSearched } =
-    useSelector(redisearchSelector)
-  const { loading: redisearchListLoading } = useSelector(redisearchListSelector)
+    useAppSelector(redisearchSelector)
+  const { loading: redisearchListLoading } = useAppSelector(
+    redisearchListSelector,
+  )
   const {
     loading: patternLoading,
     viewType,
@@ -67,8 +69,8 @@ const BrowserLeftPanelLegacy = (props: Props) => {
     filter,
     deleting,
     error: keysError,
-  } = useSelector(keysSelector)
-  const { contextInstanceId } = useSelector(appContextSelector)
+  } = useAppSelector(keysSelector)
+  const { contextInstanceId } = useAppSelector(appContextSelector)
   const {
     keyList: {
       isDataPatternLoaded,
@@ -76,13 +78,13 @@ const BrowserLeftPanelLegacy = (props: Props) => {
       scrollPatternTopPosition,
       scrollRedisearchTopPosition,
     },
-  } = useSelector(appContextBrowser)
+  } = useAppSelector(appContextBrowser)
 
   const keyListRef = useRef<any>()
 
   const [sortedColumn, setSortedColumn] = useState<ISortedColumn | null>(null)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const isDataLoaded =
     searchMode === SearchMode.Pattern

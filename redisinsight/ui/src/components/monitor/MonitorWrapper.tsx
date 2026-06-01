@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import {
@@ -19,10 +19,10 @@ import styles from './Monitor/styles.module.scss'
 const MonitorWrapper = () => {
   const { instanceId = '' } = useParams<{ instanceId: string }>()
   const { items, isStarted, isRunning, isPaused, isSaveToFile, error } =
-    useSelector(monitorSelector)
-  const { isShowCli, isShowHelper } = useSelector(cliSettingsSelector)
+    useAppSelector(monitorSelector)
+  const { isShowCli, isShowHelper } = useAppSelector(cliSettingsSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleRunMonitor = () => {
     sendEventTelemetry({

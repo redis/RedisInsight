@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import { useHistory } from 'react-router-dom'
 import {
@@ -34,7 +34,7 @@ const ModuleNotLoadedButton = ({
   module,
 }: IProps) => {
   const history = useHistory()
-  const { [FeatureFlags.envDependent]: envDependentFeature } = useSelector(
+  const { [FeatureFlags.envDependent]: envDependentFeature } = useAppSelector(
     appFeatureFlagsFeaturesSelector,
   )
 

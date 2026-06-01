@@ -1,6 +1,6 @@
 import { minBy, toNumber } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { AutoSizer } from 'react-virtualized'
 
@@ -59,19 +59,20 @@ const SlowLogPage = () => {
     connectionType,
     name: connectedInstanceName,
     db,
-  } = useSelector(connectedInstanceSelector)
-  const { data, loading, config } = useSelector(slowLogSelector)
-  const { slowLogDurationUnit: durationUnit } = useSelector(appContextDbConfig)
-  const { slowlogLogSlowerThan = 0, slowlogMaxLen } = useSelector(
+  } = useAppSelector(connectedInstanceSelector)
+  const { data, loading, config } = useAppSelector(slowLogSelector)
+  const { slowLogDurationUnit: durationUnit } =
+    useAppSelector(appContextDbConfig)
+  const { slowlogLogSlowerThan = 0, slowlogMaxLen } = useAppSelector(
     slowLogConfigSelector,
   )
-  const { viewTab } = useSelector(analyticsSettingsSelector)
+  const { viewTab } = useAppSelector(analyticsSettingsSelector)
   const { instanceId } = useParams<{ instanceId: string }>()
 
   const [count, setCount] = useState<string>(DEFAULT_COUNT_VALUE)
   const [isPageViewSent, setIsPageViewSent] = useState(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const lastTimestamp = minBy(data, 'time')?.time
   const dbName = `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)}`

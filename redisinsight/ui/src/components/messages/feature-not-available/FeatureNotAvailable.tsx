@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { OAuthSocialAction } from 'uiSrc/slices/interfaces'
 import {
@@ -27,7 +27,7 @@ const FeatureNotAvailable = ({
   onClose,
   content,
 }: FeatureNotAvailableProps) => {
-  const freeInstances = useSelector(freeInstancesSelector) || []
+  const freeInstances = useAppSelector(freeInstancesSelector) || []
   const learnMoreUtm = {
     medium: UTM_MEDIUMS.Main,
     campaign: UTM_CAMPAINGS[content.oauthSource],

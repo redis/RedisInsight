@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { Pages } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -50,7 +50,7 @@ export const MakeSearchableModalProvider = ({
 }) => {
   const [config, setConfig] = useState<MakeSearchableModalConfig | null>(null)
   const history = useHistory()
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
 
   const openMakeSearchableModal = useCallback(
     (cfg: MakeSearchableModalConfig) => setConfig(cfg),

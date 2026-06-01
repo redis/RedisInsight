@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { oauthCloudPAgreementSelector } from 'uiSrc/slices/oauth/cloud'
 import { OAuthStrategy } from 'uiSrc/slices/interfaces'
 
@@ -40,7 +40,7 @@ const socialLinks = [
 const OAuthSocialButtons = (props: Props) => {
   const { onClick, className, inline, disabled } = props
 
-  const agreement = useSelector(oauthCloudPAgreementSelector)
+  const agreement = useAppSelector(oauthCloudPAgreementSelector)
 
   return (
     <Row

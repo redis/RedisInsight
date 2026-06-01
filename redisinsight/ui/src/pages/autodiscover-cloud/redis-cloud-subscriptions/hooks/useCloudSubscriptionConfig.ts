@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
 import {
@@ -26,7 +26,7 @@ import { UseCloudSubscriptionConfigReturn } from './useCloudSubscriptionConfig.t
 
 export const useCloudSubscriptionConfig =
   (): UseCloudSubscriptionConfigReturn => {
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
     const history = useHistory()
 
     const {
@@ -37,8 +37,8 @@ export const useCloudSubscriptionConfig =
       error: subscriptionsError,
       loaded: { instances: instancesLoaded },
       account: { error: accountError, data: account },
-    } = useSelector(cloudSelector)
-    const { data: userOAuthProfile } = useSelector(oauthCloudUserSelector)
+    } = useAppSelector(cloudSelector)
+    const { data: userOAuthProfile } = useAppSelector(oauthCloudUserSelector)
     const currentAccountIdRef = useRef(userOAuthProfile?.id)
     const ssoFlowRef = useRef(ssoFlow)
 

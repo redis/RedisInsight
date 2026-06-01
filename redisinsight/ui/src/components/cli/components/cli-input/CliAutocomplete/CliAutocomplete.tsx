@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { findIndex } from 'lodash'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 
 import { ICommandArg } from 'uiSrc/constants'
 import { generateArgsNames } from 'uiSrc/utils'
@@ -26,7 +26,7 @@ const CliAutocomplete = (props: Props) => {
     wordsTyped,
   } = props
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     dispatch(setMatchedCommand(commandName))

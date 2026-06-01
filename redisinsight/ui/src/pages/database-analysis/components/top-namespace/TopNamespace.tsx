@@ -1,6 +1,6 @@
 import { isNull } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { useHistory, useParams } from 'react-router-dom'
 import { Pages } from 'uiSrc/constants'
 import {
@@ -44,7 +44,7 @@ const TopNamespace = (props: Props) => {
 
   const { instanceId } = useParams<{ instanceId: string }>()
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setIsExtrapolated(extrapolation !== DEFAULT_EXTRAPOLATION)

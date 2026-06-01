@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { last, mergeWith, toNumber } from 'lodash'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
@@ -60,14 +60,14 @@ const StreamDataViewWrapper = (props: Props) => {
     keyName: key,
     keyNameString: keyString,
     lastRefreshTime,
-  } = useSelector(streamDataSelector)
-  const { id: instanceId, compressor = null } = useSelector(
+  } = useAppSelector(streamDataSelector)
+  const { id: instanceId, compressor = null } = useAppSelector(
     connectedInstanceSelector,
   )
-  const { viewType: browserViewType } = useSelector(keysSelector)
-  const { viewFormat: viewFormatProp } = useSelector(selectedKeySelector)
+  const { viewType: browserViewType } = useAppSelector(keysSelector)
+  const { viewFormat: viewFormatProp } = useAppSelector(selectedKeySelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   // for Manager columns
   // const [uniqFields, setUniqFields] = useState({})

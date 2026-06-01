@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { cliSettingsSelector } from 'uiSrc/slices/cli/cli-settings'
 
@@ -16,7 +16,7 @@ const CHSearchInput = ({ submitSearch, isLoading = false }: Props) => {
     isEnteringCommand,
     searchingCommand = '',
     matchedCommand = '',
-  } = useSelector(cliSettingsSelector)
+  } = useAppSelector(cliSettingsSelector)
   const [searchValue, setSearchValue] = useState<string>(
     matchedCommand || searchingCommand,
   )

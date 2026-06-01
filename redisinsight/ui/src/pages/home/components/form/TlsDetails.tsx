@@ -2,7 +2,7 @@ import React, { ChangeEvent, useState } from 'react'
 import cx from 'classnames'
 import { FormikProps } from 'formik'
 
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { Nullable, validateCertName, validateField } from 'uiSrc/utils'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
 
@@ -38,7 +38,7 @@ export interface Props {
 }
 
 const TlsDetails = (props: Props) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { formik, caCertificates, certificates } = props
   const [activeCertId, setActiveCertId] = useState<Nullable<string>>(null)
 

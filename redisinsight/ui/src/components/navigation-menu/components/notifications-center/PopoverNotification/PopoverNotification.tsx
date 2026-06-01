@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import {
   notificationCenterSelector,
   setIsCenterOpen,
@@ -20,14 +20,14 @@ const CLOSE_NOTIFICATION_TIME = 6000
 
 const PopoverNotification = () => {
   const { isNotificationOpen, isCenterOpen, lastReceivedNotification } =
-    useSelector(notificationCenterSelector)
+    useAppSelector(notificationCenterSelector)
   const [isHovering, setIsHovering] = useState(false)
   const [isShowNotification, setIsShowNotification] =
     useState(isNotificationOpen)
 
   const timeOutRef = useRef<NodeJS.Timeout>()
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (isShowNotification && isCenterOpen) {

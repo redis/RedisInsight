@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { format } from 'date-fns'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { isNull } from 'lodash'
 
 import { formatLongName, Nullable } from 'uiSrc/utils'
@@ -32,7 +32,7 @@ export interface Props {
 
 const UserApiKeysTable = ({ items, loading }: Props) => {
   const [deleting, setDeleting] = useState('')
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleCopy = () => {
     sendEventTelemetry({

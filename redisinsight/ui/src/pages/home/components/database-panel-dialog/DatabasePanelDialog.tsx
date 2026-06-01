@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { Nullable } from 'uiSrc/utils'
 import { UrlHandlingActions } from 'uiSrc/slices/interfaces/urlHandling'
@@ -57,12 +57,12 @@ const DatabasePanelDialog = (props: Props) => {
   const [modalHeader, setModalHeader] =
     useState<Nullable<React.ReactNode>>(null)
 
-  const { credentials: clusterCredentials } = useSelector(clusterSelector)
-  const { credentials: cloudCredentials } = useSelector(cloudSelector)
-  const { data: sentinelMasters } = useSelector(sentinelSelector)
-  const { action, dbConnection } = useSelector(appRedirectionSelector)
+  const { credentials: clusterCredentials } = useAppSelector(clusterSelector)
+  const { credentials: cloudCredentials } = useAppSelector(cloudSelector)
+  const { data: sentinelMasters } = useAppSelector(sentinelSelector)
+  const { action, dbConnection } = useAppSelector(appRedirectionSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (editMode) return

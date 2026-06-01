@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import { orderBy } from 'lodash'
 
@@ -30,8 +30,8 @@ export interface Props {
 const ConsumerGroups = (props: Props) => {
   const { data = [], columns = [], onClosePopover, onSelectGroup } = props
 
-  const { loading } = useSelector(streamGroupsSelector)
-  const { name: key = '' } = useSelector(selectedKeyDataSelector) ?? {}
+  const { loading } = useAppSelector(streamGroupsSelector)
+  const { name: key = '' } = useAppSelector(selectedKeyDataSelector) ?? {}
 
   const [groups, setGroups] = useState<IConsumerGroup[]>([])
   const [sortedColumnName, setSortedColumnName] = useState<string>('name')

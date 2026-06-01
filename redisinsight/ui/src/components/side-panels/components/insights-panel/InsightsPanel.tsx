@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { Header } from 'uiSrc/components/side-panels/components'
 import { InsightsPanelTabs } from 'uiSrc/slices/interfaces/insights'
@@ -30,12 +30,12 @@ export interface Props {
 
 const InsightsPanel = (props: Props) => {
   const { isFullScreen, onToggleFullScreen, onClose } = props
-  const { tabSelected } = useSelector(insightsPanelSelector)
+  const { tabSelected } = useAppSelector(insightsPanelSelector)
   const {
     data: { totalUnread },
-  } = useSelector(recommendationsSelector)
+  } = useAppSelector(recommendationsSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { instanceId } = useParams<{ instanceId: string }>()
 
   const handleChangeTab = (name: InsightsPanelTabs) => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { RiTooltip } from 'uiSrc/components'
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
@@ -52,7 +52,7 @@ export const SimilaritySearchForm = ({
   const [state, setState] =
     useState<SimilaritySearchFormState>(initialFormState)
 
-  const { id: databaseId } = useSelector(connectedInstanceSelector)
+  const { id: databaseId } = useAppSelector(connectedInstanceSelector)
 
   // React to external prefill requests: switch to Element mode and seed the
   // element input. Keyed on `nonce` so re-requesting the same value still

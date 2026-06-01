@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { CodeButtonParams } from 'uiSrc/constants'
 import { sendWbQueryAction } from 'uiSrc/slices/workbench/wb-results'
 import { CodeButtonBlock } from 'uiSrc/components/markdown'
@@ -16,7 +16,7 @@ export interface Props {
 const CodeBlock = (props: Props) => {
   const { children, lang, modules, onRunCommand } = props
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleApply = (params?: CodeButtonParams, onFinish?: () => void) => {
     onRunCommand?.(children)

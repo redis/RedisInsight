@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { OAuthAdvantages, OAuthAgreement } from 'uiSrc/components/oauth/shared'
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -21,7 +21,7 @@ export interface Props {
 const OAuthSignIn = (props: Props) => {
   const { source, action = OAuthSocialAction.SignIn } = props
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleSocialButtonClick = (accountOption: string) => {
     dispatch(setSSOFlow(action))

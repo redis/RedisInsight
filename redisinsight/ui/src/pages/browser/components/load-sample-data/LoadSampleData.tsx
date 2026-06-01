@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import {
@@ -32,12 +32,12 @@ const LoadSampleData = (props: Props) => {
   const { anchorClassName, onSuccess } = props
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false)
 
-  const { id } = useSelector(connectedInstanceSelector)
-  const { loading } = useSelector(bulkActionsSelector)
+  const { id } = useAppSelector(connectedInstanceSelector)
+  const { loading } = useAppSelector(bulkActionsSelector)
   const { environment } = useDatabaseEnvironment()
   const isProduction = environment === Environment.Production
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleSampleData = () => {
     setIsConfirmationOpen(false)

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { startCase } from 'lodash'
 import { useHistory } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { AxiosError } from 'axios'
 
 import { getApiErrorMessage, isStatusSuccessful, Nullable } from 'uiSrc/utils'
@@ -67,17 +67,19 @@ const LazyInternalPage = ({
     itemScrollTop,
     data: contentContext,
     url,
-  } = useSelector(explorePanelSelector)
-  const { loading: tutorialsLoading } = useSelector(workbenchTutorialsSelector)
-  const { loading: customTutorialsLoading } = useSelector(
+  } = useAppSelector(explorePanelSelector)
+  const { loading: tutorialsLoading } = useAppSelector(
+    workbenchTutorialsSelector,
+  )
+  const { loading: customTutorialsLoading } = useAppSelector(
     workbenchCustomTutorialsSelector,
   )
   const { [FeatureFlags.customTutorials]: customTutorialsFeature } =
-    useSelector(appFeatureFlagsFeaturesSelector)
+    useAppSelector(appFeatureFlagsFeaturesSelector)
   const [isLoading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
   const [pageData, setPageData] = useState<IPageData>(DEFAULT_PAGE_DATA)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const scrollTopRef = useRef(0)
 

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { isEqual } from 'lodash'
 import styled from 'styled-components'
@@ -61,7 +61,7 @@ const KeyTreeSettings = ({ loading }: Props) => {
   const {
     treeViewDelimiter = [DEFAULT_DELIMITER],
     treeViewSort = DEFAULT_TREE_SORTING,
-  } = useSelector(appContextDbConfig)
+  } = useAppSelector(appContextDbConfig)
   const [sorting, setSorting] = useState<SortOrder>(treeViewSort)
   const [delimiters, setDelimiters] =
     useState<AutoTagOption[]>(treeViewDelimiter)
@@ -69,7 +69,7 @@ const KeyTreeSettings = ({ loading }: Props) => {
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setSorting(treeViewSort)

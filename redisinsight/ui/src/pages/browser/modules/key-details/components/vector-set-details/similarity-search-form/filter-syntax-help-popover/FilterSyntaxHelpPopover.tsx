@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import {
   IconButton,
@@ -20,7 +20,7 @@ const TEST_ID = 'similarity-search-filter-help'
 
 export const FilterSyntaxHelpPopover = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const { id: databaseId } = useSelector(connectedInstanceSelector)
+  const { id: databaseId } = useAppSelector(connectedInstanceSelector)
 
   const handleTriggerClick = () => {
     setIsOpen((prev) => {

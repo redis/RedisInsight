@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import {
@@ -35,11 +35,11 @@ export const useVectorSetActionsConfig = ({
   onRemoveKey,
   onViewElement,
 }: UseVectorSetActionsConfigParams): UseVectorSetActionsConfigResult => {
-  const dispatch = useDispatch()
-  const selectedKeyData = useSelector(selectedKeyDataSelector)
+  const dispatch = useAppDispatch()
+  const selectedKeyData = useAppSelector(selectedKeyDataSelector)
   const keyNameBuffer = selectedKeyData?.name
-  const { id: databaseId } = useSelector(connectedInstanceSelector)
-  const { total = 0 } = useSelector(vectorSetDataSelector) ?? {}
+  const { id: databaseId } = useAppSelector(connectedInstanceSelector)
+  const { total = 0 } = useAppSelector(vectorSetDataSelector) ?? {}
 
   // Element-mode prefill for the similarity-search form. Tagged with the key
   // it was set for so the prefill never crosses key boundaries — when the

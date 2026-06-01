@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { Spacer } from 'uiSrc/components/base/layout'
 import { AutodiscoveryPageTemplate } from 'uiSrc/templates'
@@ -52,7 +52,7 @@ const AzureSubscriptions = ({
   onRefresh,
   onManualConnection,
 }: Props) => {
-  const account = useSelector(azureAuthAccountSelector)
+  const account = useAppSelector(azureAuthAccountSelector)
   const [items, setItems] = useState<AzureSubscription[]>(subscriptions)
   const [selectedId, setSelectedId] = useState<string | null>(null)
 

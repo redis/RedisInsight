@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
 import {
@@ -50,7 +50,7 @@ const sendCancelEvent = () => {
   })
 }
 export const useClusterDatabasesConfig = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
 
   const {
@@ -58,7 +58,7 @@ export const useClusterDatabasesConfig = () => {
     data: instances,
     dataAdded: instancesAdded,
     loading,
-  } = useSelector(clusterSelector)
+  } = useAppSelector(clusterSelector)
 
   useEffect(() => {
     setTitle('Auto-Discover Redis Enterprise Databases')

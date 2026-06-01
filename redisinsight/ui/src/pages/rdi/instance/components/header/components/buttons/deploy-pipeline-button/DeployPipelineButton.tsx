@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import {
@@ -32,10 +32,10 @@ const DeployPipelineButton = ({ loading, disabled, onReset }: Props) => {
   const [resetPipeline, setResetPipeline] = useState(false)
 
   const { config, jobs, resetChecked, isPipelineValid } =
-    useSelector(rdiPipelineSelector)
+    useAppSelector(rdiPipelineSelector)
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const updatePipelineStatus = () => {
     if (resetChecked) {

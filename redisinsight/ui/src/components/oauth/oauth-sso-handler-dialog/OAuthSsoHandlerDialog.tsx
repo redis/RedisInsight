@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import React from 'react'
 
 import { useHistory } from 'react-router-dom'
@@ -37,12 +37,12 @@ const telemetryEventByAction = {
 }
 
 const OAuthSsoHandlerDialog = ({ children }: Props) => {
-  const { data } = useSelector(oauthCloudUserSelector)
-  const { [FeatureFlags.cloudSso]: feature } = useSelector(
+  const { data } = useAppSelector(oauthCloudUserSelector)
+  const { [FeatureFlags.cloudSso]: feature } = useAppSelector(
     appFeatureFlagsFeaturesSelector,
   )
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
 
   const ssoCloudHandlerClick = (

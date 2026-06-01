@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import { ReleaseNotesSource } from 'uiSrc/constants/telemetry'
@@ -32,13 +32,13 @@ import navStyles from '../../styles.module.scss'
 import styles from './styles.module.scss'
 
 const HelpMenu = () => {
-  const { id: connectedInstanceId = '' } = useSelector(
+  const { id: connectedInstanceId = '' } = useAppSelector(
     connectedInstanceSelector,
   )
-  const { isReleaseNotesViewed } = useSelector(appElectronInfoSelector)
+  const { isReleaseNotesViewed } = useAppSelector(appElectronInfoSelector)
   const [isHelpMenuActive, setIsHelpMenuActive] = useState(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const onKeyboardShortcutClick = () => {
     setIsHelpMenuActive(false)

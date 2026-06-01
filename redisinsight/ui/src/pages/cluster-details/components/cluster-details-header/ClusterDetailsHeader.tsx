@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { LoadingContent } from 'uiSrc/components/base/layout'
 import {
@@ -38,9 +38,9 @@ const ClusterDetailsHeader = () => {
   const {
     username = DEFAULT_USERNAME,
     connectionType = ConnectionType.Cluster,
-  } = useSelector(connectedInstanceSelector)
+  } = useAppSelector(connectedInstanceSelector)
 
-  const { data, loading } = useSelector(clusterDetailsSelector)
+  const { data, loading } = useAppSelector(clusterDetailsSelector)
 
   const metrics: IMetrics[] = [
     {

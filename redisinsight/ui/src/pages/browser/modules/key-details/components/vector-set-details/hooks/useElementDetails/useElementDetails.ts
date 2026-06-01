@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { getVectorSetElementDetails } from 'uiSrc/slices/browser/vectorSet'
@@ -10,8 +10,8 @@ import { VectorSetActionTarget } from '../../vector-set-element-list/VectorSetEl
 import { UseElementDetailsResult } from './useElementDetails.types'
 
 export const useElementDetails = (): UseElementDetailsResult => {
-  const dispatch = useDispatch()
-  const { name: keyName } = useSelector(selectedKeyDataSelector) ?? {}
+  const dispatch = useAppDispatch()
+  const { name: keyName } = useAppSelector(selectedKeyDataSelector) ?? {}
   const keyNameString = bufferToString(keyName)
 
   const [viewedElement, setViewedElement] = useState<VectorSetElement | null>(

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { validateCountNumber } from 'uiSrc/utils'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
@@ -11,9 +11,10 @@ import {
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 
 const AdvancedSettings = () => {
-  const { scanThreshold = '' } = useSelector(userSettingsConfigSelector) ?? {}
+  const { scanThreshold = '' } =
+    useAppSelector(userSettingsConfigSelector) ?? {}
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleApplyKeysToScanChanges = (value: string) => {
     // eslint-disable-next-line no-nested-ternary

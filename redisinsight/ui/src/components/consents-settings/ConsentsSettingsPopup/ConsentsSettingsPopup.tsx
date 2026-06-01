@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
 import { BuildType } from 'uiSrc/constants/env'
@@ -16,7 +16,7 @@ import styles from '../styles.module.scss'
 
 const ConsentsSettingsPopup = () => {
   const history = useHistory()
-  const { server } = useSelector(appInfoSelector)
+  const { server } = useAppSelector(appInfoSelector)
 
   const handleSubmitted = () => {
     if (

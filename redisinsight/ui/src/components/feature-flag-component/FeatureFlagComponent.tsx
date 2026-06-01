@@ -1,6 +1,6 @@
 import React from 'react'
 import { isArray } from 'lodash'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { FeatureFlags } from 'uiSrc/constants/featureFlags'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 
@@ -13,7 +13,7 @@ export interface Props {
 
 const FeatureFlagComponent = (props: Props) => {
   const { children, name, otherwise, enabledByDefault } = props
-  const features = useSelector(appFeatureFlagsFeaturesSelector)
+  const features = useAppSelector(appFeatureFlagsFeaturesSelector)
 
   const nameArray = isArray(name) ? name : [name]
   const matchingFeatures = nameArray.map(

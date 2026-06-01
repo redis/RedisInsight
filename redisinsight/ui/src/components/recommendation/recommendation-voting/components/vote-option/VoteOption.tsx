@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import { Vote } from 'uiSrc/constants/recommendations'
@@ -78,11 +78,11 @@ const VoteOption = (props: Props) => {
     name,
   } = props
 
-  const dispatch = useDispatch()
-  const { id: instanceId = '', provider } = useSelector(
+  const dispatch = useAppDispatch()
+  const { id: instanceId = '', provider } = useAppSelector(
     connectedInstanceSelector,
   )
-  const { content: recommendationsContent } = useSelector(
+  const { content: recommendationsContent } = useAppSelector(
     recommendationsSelector,
   )
 

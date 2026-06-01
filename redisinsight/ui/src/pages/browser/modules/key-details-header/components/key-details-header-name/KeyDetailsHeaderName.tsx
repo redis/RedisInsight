@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { isNull } from 'lodash'
 import styled from 'styled-components'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { formatLongName, isEqualBuffers, stringToBuffer } from 'uiSrc/utils'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor/InlineItemEditor'
@@ -53,15 +53,15 @@ export interface Props {
 const COPY_KEY_NAME_ICON = 'copyKeyNameIcon'
 
 const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
-  const { loading } = useSelector(selectedKeySelector)
+  const { loading } = useAppSelector(selectedKeySelector)
   const {
     ttl: ttlProp,
     type,
     nameString: keyProp,
     name: keyBuffer,
-  } = useSelector(selectedKeyDataSelector) ?? initialKeyInfo
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
-  const { viewType } = useSelector(keysSelector)
+  } = useAppSelector(selectedKeyDataSelector) ?? initialKeyInfo
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
+  const { viewType } = useAppSelector(keysSelector)
 
   const [key, setKey] = useState(keyProp)
   const [keyIsEditing, setKeyIsEditing] = useState(false)

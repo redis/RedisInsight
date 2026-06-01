@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useRef,
 } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import {
@@ -78,11 +78,13 @@ export const Context = ({
   children,
 }: Props & { children: React.ReactNode }) => {
   const { instanceId } = useParams<{ instanceId: string }>()
-  const patternKeysState = useSelector(keysDataSelector)
-  const redisearchKeysState = useSelector(redisearchDataSelector)
+  const patternKeysState = useAppSelector(keysDataSelector)
+  const redisearchKeysState = useAppSelector(redisearchDataSelector)
   const { loading: redisearchLoading, isSearched: redisearchIsSearched } =
-    useSelector(redisearchSelector)
-  const { loading: redisearchListLoading } = useSelector(redisearchListSelector)
+    useAppSelector(redisearchSelector)
+  const { loading: redisearchListLoading } = useAppSelector(
+    redisearchListSelector,
+  )
   const {
     loading: patternLoading,
     viewType,
@@ -92,13 +94,13 @@ export const Context = ({
     filter,
     deleting,
     error: keysError,
-  } = useSelector(keysSelector)
-  const { id: connectedInstanceId, keyNameFormat } = useSelector(
+  } = useAppSelector(keysSelector)
+  const { id: connectedInstanceId, keyNameFormat } = useAppSelector(
     connectedInstanceSelector,
   )
-  const { contextInstanceId } = useSelector(appContextSelector)
-  const { shownColumns } = useSelector(appContextDbConfig)
-  const { selectedIndex } = useSelector(redisearchSelector)
+  const { contextInstanceId } = useAppSelector(appContextSelector)
+  const { shownColumns } = useAppSelector(appContextDbConfig)
+  const { selectedIndex } = useAppSelector(redisearchSelector)
   const {
     keyList: {
       isDataPatternLoaded,
@@ -106,10 +108,10 @@ export const Context = ({
       scrollPatternTopPosition,
       scrollRedisearchTopPosition,
     },
-  } = useSelector(appContextBrowser)
+  } = useAppSelector(appContextBrowser)
 
   const keyListRef = useRef<any>()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const { effectiveColumns, containerRef } = useResponsiveColumns(shownColumns)
 

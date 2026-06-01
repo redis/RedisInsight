@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import cx from 'classnames'
 import { localStorageService } from 'uiSrc/services'
@@ -22,9 +22,9 @@ export interface Props {
 
 const OAuthAgreement = (props: Props) => {
   const { size = 'm' } = props
-  const agreement = useSelector(oauthCloudPAgreementSelector)
+  const agreement = useAppSelector(oauthCloudPAgreementSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleCheck = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {

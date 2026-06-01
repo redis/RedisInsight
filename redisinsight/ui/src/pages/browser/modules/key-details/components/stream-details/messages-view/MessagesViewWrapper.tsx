@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { last, toNumber } from 'lodash'
 import cx from 'classnames'
@@ -49,15 +49,15 @@ const MessagesViewWrapper = (props: Props) => {
     data: loadedMessages = [],
     name: consumerName,
     pending = 0,
-  } = useSelector(selectedConsumerSelector) ?? {}
+  } = useAppSelector(selectedConsumerSelector) ?? {}
   const isTruncatedConsumerName = isTruncatedString(consumerName)
-  const { name: group } = useSelector(selectedGroupSelector) ?? { name: '' }
-  const { name: key } = useSelector(selectedKeyDataSelector) ?? { name: '' }
+  const { name: group } = useAppSelector(selectedGroupSelector) ?? { name: '' }
+  const { name: key } = useAppSelector(selectedKeyDataSelector) ?? { name: '' }
   const { instanceId } = useParams<{ instanceId: string }>()
 
   const [openPopover, setOpenPopover] = useState<string>('')
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     dispatch(updateSelectedKeyRefreshTime(lastRefreshTime))
