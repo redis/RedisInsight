@@ -1,6 +1,6 @@
 import React from 'react'
 import { cloneDeep, first } from 'lodash'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import {
   cleanup,
   fireEvent,
@@ -88,16 +88,16 @@ jest.mock('uiSrc/utils/cliHelper', () => ({
 const unsupportedCommands = ['sync', 'subscription']
 const cliCommandTestId = 'cli-command'
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(),
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppSelector: jest.fn(),
 }))
 
 describe('CliBodyWrapper', () => {
   beforeEach(() => {
     const state: any = store.getState()
 
-    ;(useSelector as jest.Mock).mockImplementation(
+    ;(useAppSelector as jest.Mock).mockImplementation(
       (callback: (arg0: any) => any) =>
         callback({
           ...state,

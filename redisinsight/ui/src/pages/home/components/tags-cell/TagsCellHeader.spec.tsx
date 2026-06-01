@@ -1,6 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import {
   fireEvent,
   render,
@@ -10,14 +9,18 @@ import {
 import { Tag } from 'uiSrc/slices/interfaces/tag'
 import { TagsCellHeader } from './TagsCellHeader'
 
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppDispatch: jest.fn(),
+  useAppSelector: jest.fn(),
+}))
+
 jest.mock('react-redux', () => ({
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
   connect: () => (Component: any) => Component,
 }))
 
-const mockDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>
-const mockSelector = useSelector as jest.MockedFunction<typeof useSelector>
+const mockDispatch = useAppDispatch as jest.MockedFunction<typeof useAppDispatch>
+const mockSelector = useAppSelector as jest.MockedFunction<typeof useAppSelector>
 
 const mockTags: Tag[] = [
   {

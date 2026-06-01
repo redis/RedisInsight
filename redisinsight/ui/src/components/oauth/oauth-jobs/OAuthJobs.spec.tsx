@@ -1,6 +1,6 @@
 import React from 'react'
 import { cloneDeep } from 'lodash'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { AxiosError } from 'axios'
 import {
   cleanup,
@@ -34,9 +34,9 @@ import { CustomErrorCodes } from 'uiSrc/constants'
 import { setSSOFlow } from 'uiSrc/slices/instances/cloud'
 import OAuthJobs from './OAuthJobs'
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(),
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppSelector: jest.fn(),
 }))
 
 jest.mock('uiSrc/slices/oauth/cloud', () => ({
@@ -58,7 +58,7 @@ describe('OAuthJobs', () => {
   beforeEach(() => {
     const state = store.getState() as RootState
 
-    ;(useSelector as jest.Mock).mockImplementation(
+    ;(useAppSelector as jest.Mock).mockImplementation(
       (callback: (arg0: any) => any) =>
         callback({
           ...state,

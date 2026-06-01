@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash'
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { INSTANCE_ID_MOCK } from 'uiSrc/mocks/handlers/analytics/clusterDetailsHandlers'
 import { RunQueryMode } from 'uiSrc/slices/interfaces'
 import { RootState } from 'uiSrc/slices/store'
@@ -24,9 +24,9 @@ beforeEach(() => {
   store.clearActions()
 })
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(),
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppSelector: jest.fn(),
 }))
 
 jest.mock('uiSrc/slices/app/plugins', () => ({
@@ -50,7 +50,7 @@ describe('WorkbenchPage', () => {
   beforeEach(() => {
     const state: any = store.getState()
 
-    ;(useSelector as jest.Mock).mockImplementation(
+    ;(useAppSelector as jest.Mock).mockImplementation(
       (callback: (arg0: RootState) => RootState) =>
         callback({
           ...state,
@@ -91,7 +91,7 @@ describe('Telemetry', () => {
   beforeEach(() => {
     const state: any = store.getState()
 
-    ;(useSelector as jest.Mock).mockImplementation(
+    ;(useAppSelector as jest.Mock).mockImplementation(
       (callback: (arg0: RootState) => RootState) =>
         callback({
           ...state,
@@ -258,7 +258,7 @@ describe('Raw mode', () => {
   beforeEach(() => {
     const state: any = store.getState()
 
-    ;(useSelector as jest.Mock).mockImplementation(
+    ;(useAppSelector as jest.Mock).mockImplementation(
       (callback: (arg0: RootState) => RootState) =>
         callback({
           ...state,

@@ -1,14 +1,18 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { act, fireEvent, render, screen, waitFor } from 'uiSrc/utils/test-utils'
 import { TagInputField } from './TagInputField'
 
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppSelector: jest.fn(),
+}))
+
 jest.mock('react-redux', () => ({
-  useSelector: jest.fn(),
   connect: () => (Component: any) => Component,
 }))
 
-const mockSelector = useSelector as jest.MockedFunction<typeof useSelector>
+const mockSelector = useAppSelector as jest.MockedFunction<typeof useAppSelector>
 
 describe('TagInputField', () => {
   const mockOnChange = jest.fn()

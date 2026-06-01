@@ -1,4 +1,4 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from 'uiSrc/slices/hooks'
 import { renderHook, act } from 'uiSrc/utils/test-utils'
 
 import { fetchKeyIndexesAction } from 'uiSrc/slices/browser/redisearch'
@@ -6,10 +6,10 @@ import { fetchKeyIndexesAction } from 'uiSrc/slices/browser/redisearch'
 import { useIsKeyIndexed } from './useIsKeyIndexed'
 import { UseIsKeyIndexedStatus } from './useIsKeyIndexed.types'
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppDispatch: jest.fn(),
+  useAppSelector: jest.fn(),
 }))
 
 jest.mock('uiSrc/slices/browser/redisearch', () => ({
@@ -22,8 +22,8 @@ jest.mock('uiSrc/slices/browser/redisearch', () => ({
 
 describe('useIsKeyIndexed', () => {
   const mockDispatch = jest.fn()
-  const mockUseSelector = useSelector as jest.Mock
-  const mockUseDispatch = useDispatch as jest.Mock
+  const mockUseSelector = useAppSelector as jest.Mock
+  const mockUseDispatch = useAppDispatch as jest.Mock
 
   beforeEach(() => {
     jest.clearAllMocks()
