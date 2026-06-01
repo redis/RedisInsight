@@ -124,14 +124,18 @@ export class VectorSetKeyDetails {
   }
 
   /**
-   * Per-row action: delete element. Triggers a confirmation popover.
+   * Per-row action: delete element trigger (the trash icon in the row).
+   * Carries the `-icon` suffix; clicking opens the confirmation popover.
+   * Distinct from `confirmRemoveElementButton`, which lives *inside* the
+   * popover and shares the same testid prefix without the `-icon` suffix.
    */
   removeElementButton(elementName: string): Locator {
     return this.page.getByTestId(`vector-set-remove-btn-${elementName}-icon`);
   }
 
   /**
-   * Confirmation button inside the delete popover.
+   * Confirmation button inside the delete popover (no `-icon` suffix —
+   * see `removeElementButton` above).
    */
   confirmRemoveElementButton(elementName: string): Locator {
     return this.page.getByTestId(`vector-set-remove-btn-${elementName}`);

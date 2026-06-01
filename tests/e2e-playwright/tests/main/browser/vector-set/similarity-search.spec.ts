@@ -61,7 +61,9 @@ test.describe('Browser > Vector Set > Similarity search', () => {
     const queried = keyData.elements[0].name;
     await browserPage.vectorSetKeyDetails.runSimilaritySearchByElement(queried);
 
-    // The queried element is the closest match to itself
+    // Invariant: an element compared to itself yields cosine similarity 1,
+    // so VSIM by element name MUST rank the queried element at index 0
+    // regardless of how the other random vectors land.
     await expect(browserPage.vectorSetKeyDetails.similarityResultCell(0)).toContainText(queried);
   });
 
