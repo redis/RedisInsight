@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { test, expect } from 'e2eSrc/fixtures/base';
 import { CreateIndexOnboarding } from 'e2eSrc/pages/vector-search/components/CreateIndexOnboarding';
-import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
+import { StandaloneSerialConfigFactory } from 'e2eSrc/test-data/databases';
 import { IndexConfigFactory, IndexHashKeyFactory } from 'e2eSrc/test-data/vector-search';
 import { DatabaseInstance } from 'e2eSrc/types';
 
@@ -24,7 +24,7 @@ test.describe('Vector Search > Select Key Onboarding', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
-    database = await apiHelper.createDatabase(StandaloneConfigFactory.build());
+    database = await apiHelper.createDatabase(StandaloneSerialConfigFactory.build());
     const hashKey = IndexHashKeyFactory.build({ keyName: TEST_SELECT_KEY });
     await apiHelper.createHashKey(database.id, hashKey.keyName, hashKey.fields);
   });
@@ -87,7 +87,7 @@ test.describe('Vector Search > Create Index - Onboarding', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
-    database = await apiHelper.createDatabase(StandaloneConfigFactory.build());
+    database = await apiHelper.createDatabase(StandaloneSerialConfigFactory.build());
     const hashKey = IndexHashKeyFactory.build({ keyName: TEST_CREATE_KEY });
     await apiHelper.createHashKey(database.id, hashKey.keyName, hashKey.fields);
   });

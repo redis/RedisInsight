@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { test, expect } from 'e2eSrc/fixtures/base';
-import { StandaloneConfigFactory, StandaloneEmptyConfigFactory } from 'e2eSrc/test-data/databases';
+import { StandaloneSerialConfigFactory } from 'e2eSrc/test-data/databases';
 import { IndexConfigFactory, IndexHashKeyFactory } from 'e2eSrc/test-data/vector-search';
 import { DatabaseInstance } from 'e2eSrc/types';
 
@@ -23,7 +23,7 @@ test.describe('Vector Search > Create Index from List Page', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
-    database = await apiHelper.createDatabase(StandaloneConfigFactory.build());
+    database = await apiHelper.createDatabase(StandaloneSerialConfigFactory.build());
 
     for (let i = 1; i <= 3; i++) {
       const hashKey = IndexHashKeyFactory.build({ keyName: `${TEST_INDEX_PREFIX}key${i}` });
@@ -134,7 +134,7 @@ test.describe('Vector Search > Create Index from List Page - No Hash/JSON Keys',
   const emptyIndex = IndexConfigFactory.build();
 
   test.beforeAll(async ({ apiHelper }) => {
-    database = await apiHelper.createDatabase(StandaloneEmptyConfigFactory.build());
+    database = await apiHelper.createDatabase(StandaloneSerialConfigFactory.build());
   });
 
   test.afterAll(async ({ apiHelper }) => {

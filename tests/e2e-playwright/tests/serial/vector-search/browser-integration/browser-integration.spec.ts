@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { test, expect } from 'e2eSrc/fixtures/base';
-import { StandaloneConfigFactory, StandaloneV7ConfigFactory } from 'e2eSrc/test-data/databases';
+import { StandaloneSerialConfigFactory, StandaloneV7ConfigFactory } from 'e2eSrc/test-data/databases';
 import { IndexConfigFactory, IndexHashKeyFactory, IndexSchemaFieldFactory } from 'e2eSrc/test-data/vector-search';
 import { DatabaseInstance } from 'e2eSrc/types';
 
@@ -24,7 +24,7 @@ test.describe('Vector Search > Browser Page Integration', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
-    database = await apiHelper.createDatabase(StandaloneConfigFactory.build());
+    database = await apiHelper.createDatabase(StandaloneSerialConfigFactory.build());
   });
 
   // Skip create-index onboarding for all tests

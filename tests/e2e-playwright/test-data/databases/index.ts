@@ -85,6 +85,17 @@ export const StandaloneEmptyConfigFactory = Factory.define<AddDatabaseConfig>(()
 }));
 
 /**
+ * Standalone Serial database configuration factory
+ * Dedicated server (port 8110) reserved for tests/serial/*. Lets chromium-parallel
+ * and chromium-serial run concurrently without racing on shared Redis state.
+ */
+export const StandaloneSerialConfigFactory = Factory.define<AddDatabaseConfig>(() => ({
+  host: redisConfig.standaloneSerial.host,
+  port: redisConfig.standaloneSerial.port,
+  name: `${TEST_DB_PREFIX}standalone-serial-${faker.string.alphanumeric(8)}`,
+}));
+
+/**
  * Standalone Big database configuration factory
  * Uses a pre-seeded large database (port 8103) for tests requiring many keys
  */

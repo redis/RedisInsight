@@ -262,9 +262,22 @@ The folder a test lives in determines its execution mode. Each browser platform 
 | `chromium-parallel` | `tests/parallel/`   | Parallel (4 workers) | Standard tests in Chromium browser |
 | `chromium-serial`   | `tests/serial/`     | Serial (1 worker)    | Sequential tests in Chromium browser |
 | `electron-parallel` | `tests/parallel/`   | Serial (1 worker)*   | Standard tests in Electron desktop app |
-| `electron-serial`   | `tests/serial/`     | Serial (1 worker)    | Sequential tests in Electron desktop app |
+| `electron-serial`   | `tests/serial/`     | Serial (1 worker)*   | Sequential tests in Electron desktop app |
 
-\* Electron currently runs with a single worker because there is one app instance. The project split keeps intent symmetric with chromium and prepares for future multi-instance support.
+\* Electron currently runs with a single worker because there is one app instance.
+
+### Concurrency between projects
+
+- **Chromium**: `chromium-parallel` and `chromium-serial` run **concurrently** on the same runner. They never race because they target different Redis instances — see "Redis isolation" below.
+- **Electron**: `electron-serial` is sequenced after `electron-parallel` (via Playwright `dependencies`). The Electron app binds its embedded API on a fixed port (`5530`), so two app instances on the same machine would collide. Until the test fixture supports per-worker ports, electron projects must run sequentially.
+
+### Redis isolation (tests/serial only)
+
+**Any test placed under `tests/serial/` MUST use `StandaloneSerialConfigFactory`** for its Redis connection. This factory points at a dedicated container (`oss-standalone-serial`, port `8110`) reserved exclusively for serial tests. Parallel tests use `oss-standalone` (8100) or `oss-standalone-empty` (8105) and never touch 8110.
+
+Why: `chromium-serial` and `chromium-parallel` are peer projects (no dependency) so they run concurrently. Using different Redis instances is what makes that safe — a `FLUSHDB` or broad `deleteAllIndexes` in a serial test cannot affect a parallel test.
+
+**Do not** use `StandaloneConfigFactory` or `StandaloneEmptyConfigFactory` in `tests/serial/`. If a serial test needs another shape of Redis (e.g. an old version), add a new dedicated serial-only container to [tests/e2e/rte.docker-compose.yml](../e2e/rte.docker-compose.yml) and a matching factory rather than reusing one a parallel test relies on.
 
 Run specific projects:
 ```bash
