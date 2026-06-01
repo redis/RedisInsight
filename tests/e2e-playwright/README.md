@@ -287,9 +287,13 @@ Run specific projects:
 npx playwright test --project=chromium-parallel --project=chromium-serial
 npx playwright test --project=electron-parallel --project=electron-serial
 
-# Just parallel or just serial
+# Just parallel
 npx playwright test --project=chromium-parallel
-npx playwright test --project=chromium-serial
+
+# Just serial — pass --no-deps, otherwise the parallel project runs first
+# (it's listed in chromium-serial's dependencies). --no-deps also skips
+# browser-setup, so make sure the app is already running locally.
+npx playwright test --project=chromium-serial --no-deps
 
 npx playwright test                           # All projects
 ```

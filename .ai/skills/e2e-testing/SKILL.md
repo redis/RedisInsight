@@ -80,9 +80,12 @@ If serial grows large enough to become a CI bottleneck, the next step is to give
 npx playwright test --project=chromium-parallel --project=chromium-serial
 npx playwright test --project=electron-parallel --project=electron-serial
 
-# Just one mode
+# Just parallel
 npx playwright test --project=chromium-parallel
-npx playwright test --project=chromium-serial
+
+# Just serial — needs --no-deps, otherwise parallel runs first (it's a
+# project dependency). --no-deps also skips browser-setup.
+npx playwright test --project=chromium-serial --no-deps
 
 npx playwright test                           # All projects
 ```
@@ -465,11 +468,11 @@ Run these commands from the E2E package directory:
 ```bash
 cd tests/e2e-playwright
 
-npx playwright test                                    # All Playwright projects
-npx playwright test --project=chromium-parallel        # Chromium parallel tests
-npx playwright test --project=chromium-serial         # Chromium serial tests
-npx playwright test --project=electron-parallel        # Electron parallel tests
-npx playwright test --project=electron-serial         # Electron serial tests
+npx playwright test                                              # All Playwright projects
+npx playwright test --project=chromium-parallel                  # Chromium parallel tests
+npx playwright test --project=chromium-serial --no-deps          # Chromium serial only (skips parallel + setup)
+npx playwright test --project=electron-parallel                  # Electron parallel tests
+npx playwright test --project=electron-serial --no-deps          # Electron serial only (skips parallel + setup)
 ENV=ci npx playwright test                             # CI environment
 ENV=staging npx playwright test                        # Staging environment
 ```
