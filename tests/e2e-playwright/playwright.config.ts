@@ -107,7 +107,10 @@ const config: PlaywrightTestConfig<CustomTestOptions> = {
     {
       name: 'electron-serial',
       testDir: './tests/serial',
-      dependencies: ['electron-setup'],
+      // Depend on 'electron' to force sequential execution: each worker spawns
+      // its own Electron app which binds the API on a fixed port, so the two
+      // projects must not run concurrently.
+      dependencies: ['electron-setup', 'electron'],
       use: {
         electronExecutablePath: appConfig.electronExecutablePath,
         apiUrl: appConfig.electronApiUrl,
