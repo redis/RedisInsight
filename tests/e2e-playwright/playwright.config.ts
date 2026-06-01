@@ -23,7 +23,7 @@ const config: PlaywrightTestConfig<CustomTestOptions> = {
   },
 
   // Projects allow different test configurations (parallelism, setup, etc.)
-  // Run specific project: npx playwright test --project=chromium
+  // Run specific project: npx playwright test --project=chromium-parallel
   // Run all projects: npx playwright test
   //
   // Setup projects run before their dependent test projects.
@@ -63,7 +63,7 @@ const config: PlaywrightTestConfig<CustomTestOptions> = {
     //   tests/serial   — must run sequentially (shared DB state, dangerous
     //                    commands, vector-index ops, etc.)
     {
-      name: 'chromium',
+      name: 'chromium-parallel',
       testDir: './tests/parallel',
       dependencies: ['browser-setup'],
       use: {
@@ -92,7 +92,7 @@ const config: PlaywrightTestConfig<CustomTestOptions> = {
     // Electron Projects
     // ============================================
     {
-      name: 'electron',
+      name: 'electron-parallel',
       testDir: './tests/parallel',
       dependencies: ['electron-setup'],
       use: {
@@ -107,10 +107,10 @@ const config: PlaywrightTestConfig<CustomTestOptions> = {
     {
       name: 'electron-serial',
       testDir: './tests/serial',
-      // Depend on 'electron' to force sequential execution: each worker spawns
-      // its own Electron app which binds the API on a fixed port, so the two
-      // projects must not run concurrently.
-      dependencies: ['electron-setup', 'electron'],
+      // Depend on 'electron-parallel' to force sequential execution: each worker
+      // spawns its own Electron app which binds the API on a fixed port, so the
+      // two projects must not run concurrently.
+      dependencies: ['electron-setup', 'electron-parallel'],
       use: {
         electronExecutablePath: appConfig.electronExecutablePath,
         apiUrl: appConfig.electronApiUrl,

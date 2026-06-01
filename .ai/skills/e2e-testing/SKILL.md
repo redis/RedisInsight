@@ -55,9 +55,9 @@ The folder a test lives in determines its execution mode. Each browser platform 
 
 | Project             | Folder            | Parallelism | Use Case |
 |---------------------|-------------------|-------------|----------|
-| `chromium`          | `tests/parallel/` | Parallel (4 workers) | Standard chromium tests |
+| `chromium-parallel` | `tests/parallel/` | Parallel (4 workers) | Standard chromium tests |
 | `chromium-serial`   | `tests/serial/`   | Serial (1 worker)    | Sequential chromium tests |
-| `electron`          | `tests/parallel/` | Serial (1 worker)*   | Standard electron tests |
+| `electron-parallel` | `tests/parallel/` | Serial (1 worker)*   | Standard electron tests |
 | `electron-serial`   | `tests/serial/`   | Serial (1 worker)    | Sequential electron tests |
 
 \* Electron uses one worker today because there is a single app instance.
@@ -66,11 +66,11 @@ The folder a test lives in determines its execution mode. Each browser platform 
 
 ```bash
 # Full platform run (parallel + serial)
-npx playwright test --project=chromium --project=chromium-serial
-npx playwright test --project=electron --project=electron-serial
+npx playwright test --project=chromium-parallel --project=chromium-serial
+npx playwright test --project=electron-parallel --project=electron-serial
 
 # Just one mode
-npx playwright test --project=chromium
+npx playwright test --project=chromium-parallel
 npx playwright test --project=chromium-serial
 
 npx playwright test                           # All projects
@@ -454,13 +454,13 @@ Run these commands from the E2E package directory:
 ```bash
 cd tests/e2e-playwright
 
-npx playwright test                           # All Playwright projects
-npx playwright test --project=chromium        # Chromium browser tests
-npx playwright test --project=electron        # Electron desktop tests
-npx playwright test --project=main            # Main parallel tests only
-npx playwright test --project=auto-update     # Auto-update tests only
-ENV=ci npx playwright test                    # CI environment
-ENV=staging npx playwright test               # Staging environment
+npx playwright test                                    # All Playwright projects
+npx playwright test --project=chromium-parallel        # Chromium parallel tests
+npx playwright test --project=chromium-serial         # Chromium serial tests
+npx playwright test --project=electron-parallel        # Electron parallel tests
+npx playwright test --project=electron-serial         # Electron serial tests
+ENV=ci npx playwright test                             # CI environment
+ENV=staging npx playwright test                        # Staging environment
 ```
 
 ## Code Quality (IMPORTANT)

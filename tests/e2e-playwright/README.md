@@ -259,9 +259,9 @@ The folder a test lives in determines its execution mode. Each browser platform 
 
 | Project             | Folder              | Parallelism | Use Case |
 |---------------------|---------------------|-------------|----------|
-| `chromium`          | `tests/parallel/`   | Parallel (4 workers) | Standard tests in Chromium browser |
+| `chromium-parallel` | `tests/parallel/`   | Parallel (4 workers) | Standard tests in Chromium browser |
 | `chromium-serial`   | `tests/serial/`     | Serial (1 worker)    | Sequential tests in Chromium browser |
-| `electron`          | `tests/parallel/`   | Serial (1 worker)*   | Standard tests in Electron desktop app |
+| `electron-parallel` | `tests/parallel/`   | Serial (1 worker)*   | Standard tests in Electron desktop app |
 | `electron-serial`   | `tests/serial/`     | Serial (1 worker)    | Sequential tests in Electron desktop app |
 
 \* Electron currently runs with a single worker because there is one app instance. The project split keeps intent symmetric with chromium and prepares for future multi-instance support.
@@ -269,11 +269,11 @@ The folder a test lives in determines its execution mode. Each browser platform 
 Run specific projects:
 ```bash
 # Full platform run (parallel + serial)
-npx playwright test --project=chromium --project=chromium-serial
-npx playwright test --project=electron --project=electron-serial
+npx playwright test --project=chromium-parallel --project=chromium-serial
+npx playwright test --project=electron-parallel --project=electron-serial
 
 # Just parallel or just serial
-npx playwright test --project=chromium
+npx playwright test --project=chromium-parallel
 npx playwright test --project=chromium-serial
 
 npx playwright test                           # All projects
