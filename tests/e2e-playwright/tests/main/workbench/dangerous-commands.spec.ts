@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { test, expect } from 'e2eSrc/fixtures/base';
-import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
+import { StandaloneEmptyConfigFactory } from 'e2eSrc/test-data/databases';
 import { DatabaseInstance, Environment } from 'e2eSrc/types';
 
 /**
@@ -8,15 +8,21 @@ import { DatabaseInstance, Environment } from 'e2eSrc/types';
  * Production database opens the type-to-confirm modal mid-batch. The
  * command only runs after the user confirms — verified against the
  * real Redis backend by polling a sentinel key.
+ *
+ * Uses the dedicated empty-Redis instance (port 8105) and runs serial
+ * because the confirm branch issues `FLUSHDB`, which would otherwise wipe
+ * keys other tests rely on on the shared standalone Redis.
  */
 test.use({ featureFlags: { 'dev-prodMode': true } });
 
-test.describe('Workbench > Command Execution — environment gating', () => {
+test.describe('Workbench > Command Execution — environment gating', { tag: '@serial' }, () => {
   test.describe('Production DB', () => {
     let database: DatabaseInstance;
 
     test.beforeAll(async ({ apiHelper }) => {
-      database = await apiHelper.createDatabase(StandaloneConfigFactory.build({ environment: Environment.Production }));
+      database = await apiHelper.createDatabase(
+        StandaloneEmptyConfigFactory.build({ environment: Environment.Production }),
+      );
     });
 
     test.afterAll(async ({ apiHelper }) => {
