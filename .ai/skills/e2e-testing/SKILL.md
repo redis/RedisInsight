@@ -51,27 +51,37 @@ tests/e2e-playwright/
 
 ## Playwright Projects
 
-Tests are organized into **projects** based on execution requirements. Each project can have different parallelism, timeouts, and setup.
+The folder a test lives in determines its execution mode. Each browser platform has a parallel project and a serial project:
 
-| Project | Folder | Parallelism | Use Case |
-|---------|--------|-------------|----------|
-| `main` | `tests/main/` | Parallel | Standard tests that can run concurrently |
-| `auto-update` | `tests/auto-update/` | Serial | Tests requiring special setup or causing flakiness |
-| `electron` | `tests/electron/` | Serial | Electron-specific features (deep links, etc.) |
+| Project             | Folder            | Parallelism | Use Case |
+|---------------------|-------------------|-------------|----------|
+| `chromium`          | `tests/parallel/` | Parallel (4 workers) | Standard chromium tests |
+| `chromium-serial`   | `tests/serial/`   | Serial (1 worker)    | Sequential chromium tests |
+| `electron`          | `tests/parallel/` | Serial (1 worker)*   | Standard electron tests |
+| `electron-serial`   | `tests/serial/`   | Serial (1 worker)    | Sequential electron tests |
+
+\* Electron uses one worker today because there is a single app instance.
 
 ### Running Projects
 
 ```bash
-npx playwright test --project=main           # Only main parallel tests
-npx playwright test --project=auto-update    # Only auto-update tests
+# Full platform run (parallel + serial)
+npx playwright test --project=chromium --project=chromium-serial
+npx playwright test --project=electron --project=electron-serial
+
+# Just one mode
+npx playwright test --project=chromium
+npx playwright test --project=chromium-serial
+
 npx playwright test                           # All projects
 ```
 
-### When to Create a New Project
+### When to put a test in `tests/serial/`
 
-Create a new project folder when tests:
-- Require different parallelism settings (serial vs parallel)
-- Need different global setup/teardown
+Put a test in `tests/serial/` when it:
+- Shares database state across tests via `beforeAll`
+- Runs dangerous commands or mutates global app state
+- Cannot tolerate concurrent execution with other tests
 - Would cause flakiness when run with other tests
 - Require special environment configuration
 
@@ -516,20 +526,20 @@ Follow this naming convention for test and page object paths:
 
 | Feature | Test Path | Page Object Path |
 |---------|-----------|------------------|
-| Database List | `tests/main/databases/list/` | `pages/databases/` |
-| Add Database | `tests/main/databases/add/` | `pages/databases/` |
-| Import Database | `tests/main/databases/import/` | `pages/databases/` |
-| Browser - Key List | `tests/main/browser/key-list/` | `pages/browser/` |
-| Browser - Add Key | `tests/main/browser/add-key/` | `pages/browser/` |
-| Browser - Key Details | `tests/main/browser/key-details/` | `pages/browser/` |
-| Workbench | `tests/main/workbench/` | `pages/workbench/` |
-| CLI | `tests/main/cli/` | `pages/cli/` |
-| Pub/Sub | `tests/main/pubsub/` | `pages/pubsub/` |
-| Slow Log | `tests/main/analytics/slow-log/` | `pages/analytics/` |
-| DB Analysis | `tests/main/analytics/analysis/` | `pages/analytics/` |
-| Settings | `tests/main/settings/` | `pages/settings/` |
-| Navigation | `tests/main/navigation/` | `pages/navigation/` |
+| Database List | `tests/parallel/databases/list/` | `pages/databases/` |
+| Add Database | `tests/parallel/databases/add/` | `pages/databases/` |
+| Import Database | `tests/parallel/databases/import/` | `pages/databases/` |
+| Browser - Key List | `tests/parallel/browser/key-list/` | `pages/browser/` |
+| Browser - Add Key | `tests/parallel/browser/add-key/` | `pages/browser/` |
+| Browser - Key Details | `tests/parallel/browser/key-details/` | `pages/browser/` |
+| Workbench | `tests/parallel/workbench/` | `pages/workbench/` |
+| CLI | `tests/parallel/cli/` | `pages/cli/` |
+| Pub/Sub | `tests/parallel/pubsub/` | `pages/pubsub/` |
+| Slow Log | `tests/parallel/analytics/slow-log/` | `pages/analytics/` |
+| DB Analysis | `tests/parallel/analytics/analysis/` | `pages/analytics/` |
+| Settings | `tests/parallel/settings/` | `pages/settings/` |
+| Navigation | `tests/parallel/navigation/` | `pages/navigation/` |
 | Auto-Update | `tests/auto-update/` | `pages/` (shared) |
 | Deep Links | `tests/electron/deep-links/` | `pages/` (shared) |
 
-**Note**: Most tests go in `tests/main/`. Only use other project folders for tests with special requirements (serial execution, different setup, etc.).
+**Note**: Most tests go in `tests/parallel/`. Only use other project folders for tests with special requirements (serial execution, different setup, etc.).

@@ -73,7 +73,7 @@ Run only the new tests using list reporter (no HTML report):
 
 ```bash
 cd tests/e2e-playwright
-npx playwright test tests/main/{feature}/{action}/ --project=chromium --reporter=list
+npx playwright test tests/parallel/{feature}/{action}/ --project=chromium --reporter=list
 npm run lint && npx tsc --noEmit
 ```
 

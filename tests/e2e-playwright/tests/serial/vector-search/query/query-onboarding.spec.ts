@@ -17,7 +17,7 @@ test.use({ featureFlags: { vectorSearchV2: true } });
  * query page is visited. It introduces the Query editor and Query library
  * tabs. Dismissed via the "Got it" button, it does not appear on subsequent visits.
  */
-test.describe('Vector Search > Query Page Onboarding', { tag: '@serial' }, () => {
+test.describe('Vector Search > Query Page Onboarding', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {

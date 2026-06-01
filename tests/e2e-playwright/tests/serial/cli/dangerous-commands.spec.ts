@@ -15,7 +15,7 @@ import { DatabaseInstance, Environment } from 'e2eSrc/types';
  */
 test.use({ featureFlags: { 'dev-prodMode': true } });
 
-test.describe('CLI Panel — environment gating', { tag: '@serial' }, () => {
+test.describe('CLI Panel — environment gating', () => {
   test.describe('Production DB', () => {
     let database: DatabaseInstance;
 

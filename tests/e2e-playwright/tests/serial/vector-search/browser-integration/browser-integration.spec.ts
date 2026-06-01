@@ -20,7 +20,7 @@ test.use({ featureFlags: { vectorSearchV2: true } });
  *
  * Note: Some tests depend on RI-7944 (Make keys searchable from Browser page).
  */
-test.describe('Vector Search > Browser Page Integration', { tag: '@serial' }, () => {
+test.describe('Vector Search > Browser Page Integration', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
@@ -167,7 +167,7 @@ test.describe('Vector Search > Browser Page Integration', { tag: '@serial' }, ()
   });
 });
 
-test.describe('Vector Search > Browser Page Integration > RQE Not Available', { tag: '@serial' }, () => {
+test.describe('Vector Search > Browser Page Integration > RQE Not Available', () => {
   let databaseNoModules: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {

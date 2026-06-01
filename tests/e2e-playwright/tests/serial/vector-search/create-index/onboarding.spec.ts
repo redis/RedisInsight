@@ -20,7 +20,7 @@ test.use({ featureFlags: { vectorSearchV2: true } });
  * opens for the first time. It is dismissed via "Got it" or automatically
  * when a key is selected.
  */
-test.describe('Vector Search > Select Key Onboarding', { tag: '@serial' }, () => {
+test.describe('Vector Search > Select Key Onboarding', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
@@ -83,7 +83,7 @@ test.describe('Vector Search > Select Key Onboarding', { tag: '@serial' }, () =>
  * which triggers field inference and shows guided popovers through the form steps:
  * DefineIndex → IndexPrefix → FieldName → SampleValue → IndexingType → CommandView
  */
-test.describe('Vector Search > Create Index - Onboarding', { tag: '@serial' }, () => {
+test.describe('Vector Search > Create Index - Onboarding', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {

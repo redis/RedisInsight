@@ -26,7 +26,7 @@ test.use({ featureFlags: { vectorSearchV2: true } });
  * including schema inference, field editing, and view toggling.
  * Each test completes the full flow: make changes → verify command view → create index.
  */
-test.describe('Vector Search > Create Index - Existing Data', { tag: '@serial' }, () => {
+test.describe('Vector Search > Create Index - Existing Data', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {

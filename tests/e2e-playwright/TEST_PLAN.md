@@ -702,7 +702,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.1 Navigation and RQE Availability
 
-> **Spec:** `tests/main/vector-search/navigation/navigation.spec.ts`
+> **Spec:** `tests/serial/vector-search/navigation/navigation.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -712,7 +712,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.2 Select Key Onboarding
 
-> **Spec:** `tests/main/vector-search/create-index/onboarding.spec.ts`
+> **Spec:** `tests/serial/vector-search/create-index/onboarding.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -721,7 +721,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.3 Create Index - Onboarding
 
-> **Spec:** `tests/main/vector-search/create-index/onboarding.spec.ts`
+> **Spec:** `tests/serial/vector-search/create-index/onboarding.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -731,7 +731,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.4 Create Index - Sample Data
 
-> **Spec:** `tests/main/vector-search/create-index/sample-data.spec.ts`
+> **Spec:** `tests/serial/vector-search/create-index/sample-data.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -744,7 +744,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.5 Create Index - Existing Data
 
-> **Spec:** `tests/main/vector-search/create-index/existing-data.spec.ts`
+> **Spec:** `tests/serial/vector-search/create-index/existing-data.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -758,7 +758,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.6 List Indexes
 
-> **Spec:** `tests/main/vector-search/list-indexes/list-indexes.spec.ts`
+> **Spec:** `tests/serial/vector-search/list-indexes/list-indexes.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -770,7 +770,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.7 Create Index from List Page
 
-> **Spec:** `tests/main/vector-search/list-indexes/create-index.spec.ts`
+> **Spec:** `tests/serial/vector-search/list-indexes/create-index.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -781,7 +781,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.8 Query Page
 
-> **Spec:** `tests/main/vector-search/query/query-editor.spec.ts`
+> **Spec:** `tests/serial/vector-search/query/query-editor.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -798,7 +798,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.9 Query Page Onboarding
 
-> **Spec:** `tests/main/vector-search/query/query-onboarding.spec.ts`
+> **Spec:** `tests/serial/vector-search/query/query-onboarding.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -807,7 +807,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.10 Save Query
 
-> **Spec:** `tests/main/vector-search/query/save-query.spec.ts`
+> **Spec:** `tests/serial/vector-search/query/save-query.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -817,7 +817,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.11 Query Library
 
-> **Spec:** `tests/main/vector-search/query/query-library.spec.ts`
+> **Spec:** `tests/serial/vector-search/query/query-library.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -829,7 +829,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.12 Browser Page Integration
 
-> **Spec:** `tests/main/vector-search/browser-integration/browser-integration.spec.ts`
+> **Spec:** `tests/serial/vector-search/browser-integration/browser-integration.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|

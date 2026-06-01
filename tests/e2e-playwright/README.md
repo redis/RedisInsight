@@ -238,7 +238,7 @@ Tests are organized into **projects** (folders) based on execution requirements,
 
 ```
 tests/
-├── main/                   # Default parallel tests
+├── parallel/               # Default — safe to run with multiple workers
 │   ├── browser/
 │   │   ├── add-key/
 │   │   └── key-details/
@@ -246,35 +246,43 @@ tests/
 │   │   ├── add-database/
 │   │   └── edit-database/
 │   └── workbench/
-├── auto-update/            # Serial tests with special setup
-│   └── update-flow.spec.ts
-└── electron/               # Electron-only features
-    └── deep-links.spec.ts
+└── serial/                 # Must run sequentially (shared DB state,
+    │                       # dangerous commands, vector-index ops, etc.)
+    ├── cli/
+    ├── vector-search/
+    └── workbench/
 ```
 
 ### Playwright Projects
 
-Tests are organized into **projects** that can have different configurations:
+The folder a test lives in determines its execution mode. Each browser platform has a parallel project and a serial project:
 
-| Project | Folder | Parallelism | Use Case |
-|---------|--------|-------------|----------|
-| `chromium` | `tests/main/` | Parallel | Standard tests in Chromium browser |
-| `electron` | `tests/main/` | Serial | Same tests in Electron desktop app |
-| `auto-update` | `tests/auto-update/` | Serial | Tests requiring special setup or causing flakiness |
+| Project             | Folder              | Parallelism | Use Case |
+|---------------------|---------------------|-------------|----------|
+| `chromium`          | `tests/parallel/`   | Parallel (4 workers) | Standard tests in Chromium browser |
+| `chromium-serial`   | `tests/serial/`     | Serial (1 worker)    | Sequential tests in Chromium browser |
+| `electron`          | `tests/parallel/`   | Serial (1 worker)*   | Standard tests in Electron desktop app |
+| `electron-serial`   | `tests/serial/`     | Serial (1 worker)    | Sequential tests in Electron desktop app |
+
+\* Electron currently runs with a single worker because there is one app instance. The project split keeps intent symmetric with chromium and prepares for future multi-instance support.
 
 Run specific projects:
 ```bash
-npx playwright test --project=chromium       # Chromium browser tests
-npx playwright test --project=electron       # Electron desktop tests
-npx playwright test --project=auto-update    # Auto-update tests
+# Full platform run (parallel + serial)
+npx playwright test --project=chromium --project=chromium-serial
+npx playwright test --project=electron --project=electron-serial
+
+# Just parallel or just serial
+npx playwright test --project=chromium
+npx playwright test --project=chromium-serial
+
 npx playwright test                           # All projects
 ```
 
-**When to create a new project:**
-- Tests require different parallelism settings (serial vs parallel)
-- Tests need different global setup/teardown
-- Tests would cause flakiness when run with other tests
-- Tests require special environment configuration
+**When to put a test in `tests/serial/`:**
+- Tests share database state via `beforeAll` and would race other workers
+- Tests run dangerous commands or mutate global app state
+- Tests exercise flows that are inherently sequential (e.g. environment gating, single-resource index ops)
 
 ## Writing Tests
 
