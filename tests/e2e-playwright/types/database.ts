@@ -9,6 +9,16 @@ export enum ConnectionType {
 }
 
 /**
+ * Per-database environment classification (prod vs non-prod modes).
+ * Mirrors the `Environment` enum exposed by the API.
+ */
+export enum Environment {
+  Unspecified = 'unspecified',
+  Production = 'production',
+  Development = 'development',
+}
+
+/**
  * Base Redis connection configuration for tests
  */
 export interface RedisConnectionConfig {
@@ -17,6 +27,7 @@ export interface RedisConnectionConfig {
   username?: string;
   password?: string;
   db?: number;
+  environment?: Environment;
 }
 
 /**

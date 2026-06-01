@@ -1,5 +1,5 @@
 import { Page, Locator } from '@playwright/test';
-import { AddDatabaseConfig, TlsConfig } from '../../../types';
+import { AddDatabaseConfig, Environment, TlsConfig } from '../../../types';
 
 /**
  * Component Page Object for the Add Database Dialog
@@ -30,6 +30,7 @@ export class AddDatabaseDialog {
   readonly selectLogicalDatabaseCheckbox: Locator;
   readonly databaseIndexInput: Locator;
   readonly forceStandaloneCheckbox: Locator;
+  readonly environmentSelect: Locator;
 
   // Tabs
   readonly generalTab: Locator;
@@ -93,6 +94,7 @@ export class AddDatabaseDialog {
     this.selectLogicalDatabaseCheckbox = page.getByTestId('showDb');
     this.databaseIndexInput = page.getByRole('spinbutton', { name: /database index/i });
     this.forceStandaloneCheckbox = page.getByTestId('forceStandalone');
+    this.environmentSelect = page.getByTestId('select-environment');
 
     // Tabs
     this.generalTab = page.getByRole('tab', { name: 'General' });
@@ -146,6 +148,24 @@ export class AddDatabaseDialog {
     if (config.password) {
       await this.passwordInput.fill(config.password);
     }
+
+    if (config.environment) {
+      await this.selectEnvironment(config.environment);
+    }
+  }
+
+  /**
+   * Select an environment in the connection form's Environment dropdown.
+   * The dropdown is only rendered when the `dev-prodMode` feature flag is enabled.
+   *
+   * Each `Environment` enum value (`unspecified` | `production` | `development`)
+   * is rendered by the form as its capitalized counterpart in
+   * `ENVIRONMENT_OPTIONS` — derive the option label directly from the value.
+   */
+  async selectEnvironment(environment: Environment): Promise<void> {
+    const label = environment.charAt(0).toUpperCase() + environment.slice(1);
+    await this.environmentSelect.click();
+    await this.page.getByRole('option', { name: label, exact: true }).click();
   }
 
   async submit(): Promise<void> {

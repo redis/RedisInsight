@@ -42,6 +42,7 @@ export class ApiHelper {
         username: config.username || null,
         password: config.password || null,
         db: config.db ?? 0,
+        ...(config.environment ? { environment: config.environment } : {}),
       },
     });
 

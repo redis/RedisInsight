@@ -11,6 +11,8 @@ import {
   EulaPage,
   SidebarPanel,
   InsightsPanel,
+  ProfilerPanel,
+  TypeToConfirmModal,
   VectorSearchPage,
 } from 'e2eSrc/pages';
 import { ApiHelper, retry } from 'e2eSrc/helpers';
@@ -48,6 +50,8 @@ type Fixtures = {
   eulaPage: EulaPage;
   sidebarPanel: SidebarPanel;
   insightsPanel: InsightsPanel;
+  profilerPanel: ProfilerPanel;
+  typeToConfirmModal: TypeToConfirmModal;
   vectorSearchPage: VectorSearchPage;
 };
 
@@ -274,6 +278,14 @@ const baseTest = base.extend<Fixtures, WorkerFixtures>({
 
   insightsPanel: async ({ page }, use) => {
     await use(new InsightsPanel(page));
+  },
+
+  profilerPanel: async ({ page }, use) => {
+    await use(new ProfilerPanel(page));
+  },
+
+  typeToConfirmModal: async ({ page }, use) => {
+    await use(new TypeToConfirmModal(page));
   },
 
   vectorSearchPage: async ({ page }, use) => {
