@@ -15,12 +15,12 @@ import DatabasesListCellName from './DatabasesListCellName'
 
 const renderCell = (
   instance: Partial<Instance>,
-  { devProdMode = true }: { devProdMode?: boolean } = {},
+  { prodMode = true }: { prodMode?: boolean } = {},
 ) => {
   const state = set(
     cloneDeep(initialStateDefault),
-    `app.features.featureFlags.features.${FeatureFlags.devProdMode}`,
-    { flag: devProdMode },
+    `app.features.featureFlags.features.${FeatureFlags.prodMode}`,
+    { flag: prodMode },
   )
 
   const cellProps = { row: { original: instance as Instance } } as any
@@ -63,10 +63,10 @@ describe('DatabasesListCellName', () => {
       expect(screen.queryByText('DEV')).not.toBeInTheDocument()
     })
 
-    it('does not render the badge when the dev-prodMode flag is off', () => {
+    it('does not render the badge when the prodMode flag is off', () => {
       renderCell(
         { ...baseInstance, environment: Environment.Production },
-        { devProdMode: false },
+        { prodMode: false },
       )
 
       expect(

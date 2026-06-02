@@ -104,7 +104,7 @@ export class FeatureFlagProvider {
       new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
     );
     this.strategies.set(
-      KnownFeatures.DevProdMode,
+      KnownFeatures.ProdMode,
       new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
     );
   }

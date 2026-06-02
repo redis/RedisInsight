@@ -1413,9 +1413,9 @@ describe('InstanceForm', () => {
   })
 
   describe('Database mode select', () => {
-    it('should not render the dropdown when the devProdMode flag is off', () => {
+    it('should not render the dropdown when the prodMode flag is off', () => {
       ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValueOnce({
-        [FeatureFlags.devProdMode]: { flag: false },
+        [FeatureFlags.prodMode]: { flag: false },
       })
 
       render(
@@ -1429,9 +1429,9 @@ describe('InstanceForm', () => {
       expect(screen.queryByTestId('select-environment')).not.toBeInTheDocument()
     })
 
-    it('should render the dropdown when the devProdMode flag is on', () => {
+    it('should render the dropdown when the prodMode flag is on', () => {
       ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValue({
-        [FeatureFlags.devProdMode]: { flag: true },
+        [FeatureFlags.prodMode]: { flag: true },
       })
 
       render(

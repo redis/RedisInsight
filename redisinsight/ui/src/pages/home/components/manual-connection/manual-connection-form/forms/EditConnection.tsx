@@ -75,7 +75,7 @@ const EditConnection = (props: Props) => {
           <Divider />
           <Spacer size="m" />
           <ForceStandalone formik={formik} />
-          <FeatureFlagComponent name={FeatureFlags.devProdMode}>
+          <FeatureFlagComponent name={FeatureFlags.prodMode}>
             <>
               <Spacer size="m" />
               <Divider />

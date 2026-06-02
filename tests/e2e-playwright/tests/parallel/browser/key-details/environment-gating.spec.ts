@@ -12,7 +12,7 @@ import { DatabaseInstance, Environment } from 'e2eSrc/types';
  * per-component wiring, and per-action confirmation strings are covered by
  * unit tests.
  */
-test.use({ featureFlags: { 'dev-prodMode': true } });
+test.use({ featureFlags: { prodMode: true } });
 
 const uniqueId = () => faker.string.alphanumeric(6);
 

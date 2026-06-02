@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-import { appFeatureFlagDevProdModeSelector } from 'uiSrc/slices/app/features'
+import { appFeatureFlagProdModeSelector } from 'uiSrc/slices/app/features'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import { RiTooltip } from 'uiSrc/components/base/tooltip/RITooltip'
 
@@ -12,7 +12,7 @@ export const EnvironmentBadge = ({
   environment,
   dataTestId,
 }: EnvironmentBadgeProps) => {
-  const flagEnabled = useSelector(appFeatureFlagDevProdModeSelector)
+  const flagEnabled = useSelector(appFeatureFlagProdModeSelector)
 
   if (!flagEnabled || !environment) return null
 

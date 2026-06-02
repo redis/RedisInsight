@@ -8,7 +8,7 @@ import { DatabaseInstance, Environment } from 'e2eSrc/types';
  * type the database name in the type-to-confirm modal before the
  * destructive action runs against the real Redis backend.
  */
-test.use({ featureFlags: { 'dev-prodMode': true } });
+test.use({ featureFlags: { prodMode: true } });
 
 test.describe('Browser > Bulk Actions — environment gating', () => {
   test.describe('Production DB', () => {
