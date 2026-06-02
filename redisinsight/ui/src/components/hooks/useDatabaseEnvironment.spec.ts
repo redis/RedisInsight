@@ -1,5 +1,5 @@
 import { renderHook } from 'uiSrc/utils/test-utils'
-import { appFeatureFlagDevProdModeSelector } from 'uiSrc/slices/app/features'
+import { appFeatureFlagProdModeSelector } from 'uiSrc/slices/app/features'
 import {
   connectedInstanceDangerousCommandsSelector,
   connectedInstanceSelector,
@@ -10,7 +10,7 @@ import { useDatabaseEnvironment } from './useDatabaseEnvironment'
 
 jest.mock('uiSrc/slices/app/features', () => ({
   ...jest.requireActual('uiSrc/slices/app/features'),
-  appFeatureFlagDevProdModeSelector: jest.fn().mockReturnValue(false),
+  appFeatureFlagProdModeSelector: jest.fn().mockReturnValue(false),
 }))
 
 jest.mock('uiSrc/slices/instances/instances', () => ({
@@ -21,7 +21,7 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
   connectedInstanceDangerousCommandsSelector: jest.fn().mockReturnValue([]),
 }))
 
-const mockedFlag = appFeatureFlagDevProdModeSelector as jest.Mock
+const mockedFlag = appFeatureFlagProdModeSelector as jest.Mock
 const mockedInstance = connectedInstanceSelector as jest.Mock
 const mockedDangerousCommands =
   connectedInstanceDangerousCommandsSelector as jest.Mock

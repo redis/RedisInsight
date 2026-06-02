@@ -8,7 +8,7 @@ import { DatabaseInstance, Environment } from 'e2eSrc/types';
  * provider — this verifies the integration, not the per-button gating
  * logic (which has its own unit tests).
  */
-test.use({ featureFlags: { 'dev-prodMode': true } });
+test.use({ featureFlags: { prodMode: true } });
 
 test.describe('Workbench > Tutorials — environment gating', () => {
   test.describe('Production DB', () => {

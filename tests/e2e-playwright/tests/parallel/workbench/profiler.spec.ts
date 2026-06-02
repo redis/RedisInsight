@@ -7,7 +7,7 @@ import { DatabaseInstance, Environment } from 'e2eSrc/types';
  * confirmation popover. Cancelling keeps the profiler stopped; confirming
  * actually starts the profiler against the real Redis backend.
  */
-test.use({ featureFlags: { 'dev-prodMode': true } });
+test.use({ featureFlags: { prodMode: true } });
 
 test.describe('Workbench > Profiler (Bottom Panel) — environment gating', () => {
   test.describe('Production DB', () => {

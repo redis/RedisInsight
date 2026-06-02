@@ -12,10 +12,10 @@ import {
 
 import { EnvironmentBadge } from './EnvironmentBadge'
 
-const withDevProdFlag = (flag: boolean) => {
+const withProdModeFlag = (flag: boolean) => {
   const state = set(
     cloneDeep(initialStateDefault),
-    `app.features.featureFlags.features.${FeatureFlags.devProdMode}`,
+    `app.features.featureFlags.features.${FeatureFlags.prodMode}`,
     { flag },
   )
   return { store: mockStore(state) }
@@ -25,7 +25,7 @@ describe('EnvironmentBadge', () => {
   it('renders the PROD badge for production environment', () => {
     render(
       <EnvironmentBadge environment={Environment.Production} />,
-      withDevProdFlag(true),
+      withProdModeFlag(true),
     )
 
     expect(
@@ -37,7 +37,7 @@ describe('EnvironmentBadge', () => {
   it('renders the DEV label for development environment', () => {
     render(
       <EnvironmentBadge environment={Environment.Development} />,
-      withDevProdFlag(true),
+      withProdModeFlag(true),
     )
 
     expect(
@@ -49,7 +49,7 @@ describe('EnvironmentBadge', () => {
   it('renders nothing for unspecified environment', () => {
     const { container } = render(
       <EnvironmentBadge environment={Environment.Unspecified} />,
-      withDevProdFlag(true),
+      withProdModeFlag(true),
     )
 
     expect(container).toBeEmptyDOMElement()
@@ -58,16 +58,16 @@ describe('EnvironmentBadge', () => {
   it('renders nothing when environment is undefined', () => {
     const { container } = render(
       <EnvironmentBadge environment={undefined} />,
-      withDevProdFlag(true),
+      withProdModeFlag(true),
     )
 
     expect(container).toBeEmptyDOMElement()
   })
 
-  it('renders nothing when the dev-prodMode feature flag is off', () => {
+  it('renders nothing when the prodMode feature flag is off', () => {
     const { container } = render(
       <EnvironmentBadge environment={Environment.Production} />,
-      withDevProdFlag(false),
+      withProdModeFlag(false),
     )
 
     expect(container).toBeEmptyDOMElement()
@@ -79,7 +79,7 @@ describe('EnvironmentBadge', () => {
         environment={Environment.Production}
         dataTestId="custom-badge"
       />,
-      withDevProdFlag(true),
+      withProdModeFlag(true),
     )
 
     expect(screen.getByTestId('custom-badge')).toBeInTheDocument()

@@ -273,7 +273,7 @@ describe('InstanceHeader', () => {
 
       const state = set(
         cloneDeep(initialStateDefault),
-        `app.features.featureFlags.features.${FeatureFlags.devProdMode}`,
+        `app.features.featureFlags.features.${FeatureFlags.prodMode}`,
         { flag: true },
       )
 
@@ -321,7 +321,7 @@ describe('InstanceHeader', () => {
       ).not.toBeInTheDocument()
     })
 
-    it('does not render the badge when the dev-prodMode flag is off', () => {
+    it('does not render the badge when the prodMode flag is off', () => {
       mockedConnectedInstanceSelector.mockReturnValue({
         username: 'username',
         id: 'instanceId',
@@ -331,7 +331,7 @@ describe('InstanceHeader', () => {
 
       const state = set(
         cloneDeep(initialStateDefault),
-        `app.features.featureFlags.features.${FeatureFlags.devProdMode}`,
+        `app.features.featureFlags.features.${FeatureFlags.prodMode}`,
         { flag: false },
       )
 

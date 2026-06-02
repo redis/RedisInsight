@@ -15,5 +15,5 @@ export enum FeatureFlags {
   devVectorSet = 'dev-vectorSet',
   azureEntraId = 'azureEntraId',
   devBrowser = 'dev-browser',
-  devProdMode = 'dev-prodMode',
+  prodMode = 'prodMode',
 }

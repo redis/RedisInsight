@@ -1,5 +1,5 @@
 {
-  "version": 3.8,
+  "version": 3.9,
   "features": {
     "redisDataIntegration": {
       "flag": true,
@@ -143,7 +143,7 @@
       "flag": false,
       "perc": [[0, 100]]
     },
-    "dev-prodMode": {
+    "prodMode": {
       "flag": false,
       "perc": [[0, 100]]
     }

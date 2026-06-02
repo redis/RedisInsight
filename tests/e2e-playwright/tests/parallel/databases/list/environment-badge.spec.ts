@@ -7,7 +7,7 @@ import { Environment } from 'e2eSrc/types';
  * verified against the rendered badge in the databases list and the
  * instance header after connecting.
  */
-test.use({ featureFlags: { 'dev-prodMode': true } });
+test.use({ featureFlags: { prodMode: true } });
 
 test.describe('Database List — environment badge', () => {
   const createdDatabaseNames: string[] = [];
