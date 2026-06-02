@@ -62,8 +62,12 @@ describe('ai assistant slice', () => {
       const nextState = initialState
 
       // Act
+      // Redux 5 throws if `action.type` is undefined (Redux 4 tolerated it).
+      // `'@@INIT'` is Redux's own internal init action type, so it mirrors
+      // what the store dispatches on first run and the reducer still falls
+      // through to its default branch returning `initialState`.
       const result = reducer(undefined, {
-        type: undefined,
+        type: '@@INIT',
       })
 
       // Assert

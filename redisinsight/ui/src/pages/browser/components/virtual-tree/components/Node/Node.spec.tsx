@@ -490,9 +490,14 @@ describe('Node', () => {
             instances: { connectedInstance: { id: mockInstanceId } },
           },
         }
+        // Hold the snapshot in a closure variable so `getState` returns a
+        // stable reference between renders. react-redux 9's
+        // `useSyncExternalStore` treats a fresh object as "state changed"
+        // and re-subscribes, which loops without this.
+        let stateSnapshot = { ...initialState, ...connectionState }
         const customStore = {
-          getState: () => ({ ...initialState, ...connectionState }),
-          subscribe: jest.fn(),
+          getState: () => stateSnapshot,
+          subscribe: jest.fn(() => () => {}),
           dispatch: jest.fn(),
         }
 
@@ -501,10 +506,7 @@ describe('Node', () => {
           { store: customStore },
         )
 
-        customStore.getState = () => ({
-          ...updatedState,
-          ...connectionState,
-        })
+        stateSnapshot = { ...updatedState, ...connectionState }
 
         rerender(
           <MakeSearchableModalProvider>
@@ -532,20 +534,23 @@ describe('Node', () => {
         onDeleteClicked: jest.fn(),
       }
 
-      const customStore = {
-        getState: () => ({
-          app: {
-            context: {
-              dbConfig: {
-                shownColumns: columns,
-              },
+      // Snapshot held in a closure so `getState` returns the same reference
+      // across react-redux 9's `useSyncExternalStore` calls.
+      const stateSnapshot = {
+        app: {
+          context: {
+            dbConfig: {
+              shownColumns: columns,
             },
           },
-          connections: {
-            instances: { connectedInstance: { id: mockInstanceId } },
-          },
-        }),
-        subscribe: jest.fn(),
+        },
+        connections: {
+          instances: { connectedInstance: { id: mockInstanceId } },
+        },
+      }
+      const customStore = {
+        getState: () => stateSnapshot,
+        subscribe: jest.fn(() => () => {}),
         dispatch: jest.fn(),
       }
 

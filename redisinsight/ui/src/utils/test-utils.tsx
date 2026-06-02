@@ -2,9 +2,10 @@
 import React from 'react'
 import { cloneDeep, first, map } from 'lodash'
 import { Provider } from 'react-redux'
-import thunk from 'redux-thunk'
+import { thunk } from 'redux-thunk'
 import { BrowserRouter } from 'react-router-dom'
-import configureMockStore from 'redux-mock-store'
+import configureMockStore, { MockStoreEnhanced } from 'redux-mock-store'
+import type { EnhancedStore } from '@reduxjs/toolkit'
 import {
   render as rtlRender,
   renderHook as rtlRenderHook,
@@ -24,6 +25,7 @@ import { initialState as initialStateClientCerts } from 'uiSrc/slices/instances/
 import { initialState as initialStateCluster } from 'uiSrc/slices/instances/cluster'
 import { initialState as initialStateCloud } from 'uiSrc/slices/instances/cloud'
 import { initialState as initialStateSentinel } from 'uiSrc/slices/instances/sentinel'
+import { initialState as initialStateAzureInstances } from 'uiSrc/slices/instances/azure'
 import { initialState as initialStateKeys } from 'uiSrc/slices/browser/keys'
 import { initialState as initialStateString } from 'uiSrc/slices/browser/string'
 import { initialState as initialStateZSet } from 'uiSrc/slices/browser/zset'
@@ -32,6 +34,7 @@ import { initialState as initialStateHash } from 'uiSrc/slices/browser/hash'
 import { initialState as initialStateList } from 'uiSrc/slices/browser/list'
 import { initialState as initialStateRejson } from 'uiSrc/slices/browser/rejson'
 import { initialState as initialStateStream } from 'uiSrc/slices/browser/stream'
+import { initialState as initialStateVectorSet } from 'uiSrc/slices/browser/vectorSet'
 import { initialState as initialStateBulkActions } from 'uiSrc/slices/browser/bulkActions'
 import { initialState as initialStateNotifications } from 'uiSrc/slices/app/notifications'
 import { initialState as initialStateAppInfo } from 'uiSrc/slices/app/info'
@@ -79,7 +82,13 @@ import { setStoreRef } from './test-store'
 
 interface Options {
   initialState?: RootState
-  store?: ReduxStore
+  // Accept either the real RTK store, a `redux-mock-store` instance, or any
+  // narrowly-typed `EnhancedStore` produced by `configureStore` in a spec.
+  // The narrow `EnhancedStore<any>` member is the proper-typed escape hatch
+  // for specs that build a focused store with only the slices they read
+  // from (see vector-search specs) — without it, every such spec needs an
+  // `as any` cast at the call site.
+  store?: ReduxStore | MockStoreEnhanced<RootState> | EnhancedStore<any>
   withRouter?: boolean
   [property: string]: any
 }
@@ -107,6 +116,7 @@ const initialStateDefault: RootState = {
     cluster: cloneDeep(initialStateCluster),
     cloud: cloneDeep(initialStateCloud),
     sentinel: cloneDeep(initialStateSentinel),
+    azure: cloneDeep(initialStateAzureInstances),
     tags: cloneDeep(initialStateTags),
   },
   browser: {
@@ -118,6 +128,7 @@ const initialStateDefault: RootState = {
     list: cloneDeep(initialStateList),
     rejson: cloneDeep(initialStateRejson),
     stream: cloneDeep(initialStateStream),
+    vectorSet: cloneDeep(initialStateVectorSet),
     bulkActions: cloneDeep(initialStateBulkActions),
     redisearch: cloneDeep(initialStateRedisearch),
   },

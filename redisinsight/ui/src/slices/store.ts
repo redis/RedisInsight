@@ -1,4 +1,9 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
+import type {
+  ConfigureStoreOptions,
+  ThunkDispatch,
+  UnknownAction,
+} from '@reduxjs/toolkit'
 
 import { getConfig } from 'uiSrc/config'
 import instancesReducer from './instances/instances'
@@ -145,17 +150,40 @@ export const rootReducer = combineReducers({
   }),
 })
 
+// The middleware callback below trips TS2719 "two different types with this
+// name exist, but they are unrelated" between RTK 2 (whose `Middleware` is
+// redux@5's) and the `ThunkMiddleware` baked into `getDefaultMiddleware`'s
+// return type (which resolves `redux` to the v4 copy hoisted at the top of
+// `node_modules` by `@elastic/eui` → `react-beautiful-dnd` → `@types/react-
+// redux@7`). The two shapes are structurally identical at runtime; only the
+// type-checker rejects the assignment. We cast to RTK 2's own expected
+// callback type instead of `any` so the cast still flags real shape
+// regressions, and we keep it local rather than reaching for a yarn
+// `resolutions` entry so the project stays portable to npm `overrides`.
+type StoreMiddleware = NonNullable<
+  ConfigureStoreOptions<RootState>['middleware']
+>
+
 const store = configureStore({
   reducer: rootReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ serializableCheck: false }),
+  middleware: ((getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false })) as StoreMiddleware,
   devTools: riConfig.app.env !== 'production',
 })
 
-const dispatch = store.dispatch
-
-export { store, dispatch }
+export { store }
 
 export type ReduxStore = typeof store
 export type RootState = ReturnType<typeof rootReducer>
-export type AppDispatch = typeof store.dispatch
+// Use ThunkDispatch explicitly so the thunk overload is always available on
+// AppDispatch. With RTK 2 + redux-thunk 3, the implicit `typeof store.dispatch`
+// can drop the ThunkDispatch overload in certain middleware-inference paths
+// and degrade to Dispatch<UnknownAction>, which would force every
+// dispatch(thunk()) callsite to fail with TS2345.
+export type AppDispatch = ThunkDispatch<RootState, unknown, UnknownAction> &
+  typeof store.dispatch
+
+// Bare dispatch reference used by callsites that don't have access to the
+// React hook. Typed as AppDispatch so non-hook handler files can dispatch
+// thunks without losing the thunk overload.
+export const dispatch: AppDispatch = store.dispatch as AppDispatch
