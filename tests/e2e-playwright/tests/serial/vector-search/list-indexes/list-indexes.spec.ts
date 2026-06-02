@@ -16,7 +16,7 @@ test.use({ featureFlags: { vectorSearchV2: true } });
  * Tests for viewing, querying, browsing, inspecting, and deleting
  * indexes from the index list page.
  */
-test.describe('Vector Search > List Indexes', { tag: '@serial' }, () => {
+test.describe('Vector Search > List Indexes', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {

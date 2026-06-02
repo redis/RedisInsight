@@ -19,7 +19,7 @@ test.use({ featureFlags: { vectorSearchV2: true } });
  * on the list page, including sample data flow, existing data flow,
  * and disabled state when no hash/JSON keys exist.
  */
-test.describe('Vector Search > Create Index from List Page', { tag: '@serial' }, () => {
+test.describe('Vector Search > Create Index from List Page', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
@@ -129,7 +129,7 @@ test.describe('Vector Search > Create Index from List Page', { tag: '@serial' },
   });
 });
 
-test.describe('Vector Search > Create Index from List Page - No Hash/JSON Keys', { tag: '@serial' }, () => {
+test.describe('Vector Search > Create Index from List Page - No Hash/JSON Keys', () => {
   let database: DatabaseInstance;
   const emptyIndex = IndexConfigFactory.build();
 

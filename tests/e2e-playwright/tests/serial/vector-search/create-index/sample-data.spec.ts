@@ -22,7 +22,7 @@ test.use({ featureFlags: { vectorSearchV2: true } });
  *
  * Each test cleans up indexes and creates a seed so the list page appears.
  */
-test.describe('Vector Search > Create Index - Sample Data', { tag: '@serial' }, () => {
+test.describe('Vector Search > Create Index - Sample Data', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {

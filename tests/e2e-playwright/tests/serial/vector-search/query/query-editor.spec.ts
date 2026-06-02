@@ -16,7 +16,7 @@ test.use({ featureFlags: { vectorSearchV2: true } });
  * Tests for running queries, viewing results,
  * and result card actions (re-run, expand/collapse, delete, clear all).
  */
-test.describe('Vector Search > Query Page', { tag: '@serial' }, () => {
+test.describe('Vector Search > Query Page', () => {
   let database: DatabaseInstance;
   let testQuery: string;
 

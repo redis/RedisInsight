@@ -23,7 +23,7 @@ test.use({ featureFlags: { vectorSearchV2: true } });
  * Each test creates its own database to avoid interfering
  * with parallel tests' FT indexes.
  */
-test.describe('Vector Search > Navigation and RQE Availability', { tag: '@serial' }, () => {
+test.describe('Vector Search > Navigation and RQE Availability', () => {
   let database: DatabaseInstance;
 
   test.afterEach(async ({ apiHelper }) => {
@@ -61,7 +61,7 @@ test.describe('Vector Search > Navigation and RQE Availability', { tag: '@serial
   });
 });
 
-test.describe('Vector Search > RQE Not Available', { tag: '@serial' }, () => {
+test.describe('Vector Search > RQE Not Available', () => {
   let databaseNoModules: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {

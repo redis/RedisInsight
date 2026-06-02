@@ -139,7 +139,7 @@ jobs:
 
       - name: Run Playwright tests (Electron Linux)
         working-directory: ${{ env.E2E_DIR }}
-        run: npx playwright test --project=electron
+        run: npx playwright test --project=electron-parallel --project=electron-serial
         env:
           CI: true
           ELECTRON_EXECUTABLE_PATH: ${{ steps.appimage.outputs.path }}

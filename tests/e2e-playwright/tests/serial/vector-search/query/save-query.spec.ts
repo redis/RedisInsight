@@ -16,7 +16,7 @@ test.use({ featureFlags: { vectorSearchV2: true } });
  * Tests for saving queries from the query editor
  * and cancelling the save modal.
  */
-test.describe('Vector Search > Save Query', { tag: '@serial' }, () => {
+test.describe('Vector Search > Save Query', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {

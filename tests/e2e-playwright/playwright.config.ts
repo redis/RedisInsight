@@ -23,7 +23,7 @@ const config: PlaywrightTestConfig<CustomTestOptions> = {
   },
 
   // Projects allow different test configurations (parallelism, setup, etc.)
-  // Run specific project: npx playwright test --project=chromium
+  // Run specific project: npx playwright test --project=chromium-parallel
   // Run all projects: npx playwright test
   //
   // Setup projects run before their dependent test projects.
@@ -58,10 +58,13 @@ const config: PlaywrightTestConfig<CustomTestOptions> = {
     // ============================================
     // Browser Projects (Chromium)
     // ============================================
+    // Folder structure determines parallelism:
+    //   tests/parallel — safe to run with multiple workers
+    //   tests/serial   — must run sequentially (shared DB state, dangerous
+    //                    commands, vector-index ops, etc.)
     {
-      name: 'chromium',
-      testDir: './tests/main',
-      grepInvert: /@serial/,
+      name: 'chromium-parallel',
+      testDir: './tests/parallel',
       dependencies: ['browser-setup'],
       use: {
         ...devices['Desktop Chrome'],
@@ -73,9 +76,11 @@ const config: PlaywrightTestConfig<CustomTestOptions> = {
     },
     {
       name: 'chromium-serial',
-      testDir: './tests/main',
-      grep: /@serial/,
-      dependencies: ['browser-setup'],
+      testDir: './tests/serial',
+      // Depend on 'chromium-parallel' to force sequential execution: serial
+      // tests share Redis state (FLUSHDB, broad index cleanups) with parallel
+      // tests, so the two projects must not run concurrently.
+      dependencies: ['browser-setup', 'chromium-parallel'],
       use: {
         ...devices['Desktop Chrome'],
         baseURL: appConfig.clientUrl,
@@ -90,14 +95,29 @@ const config: PlaywrightTestConfig<CustomTestOptions> = {
     // Electron Projects
     // ============================================
     {
-      name: 'electron',
-      testDir: './tests/main',
+      name: 'electron-parallel',
+      testDir: './tests/parallel',
       dependencies: ['electron-setup'],
       use: {
         electronExecutablePath: appConfig.electronExecutablePath,
         apiUrl: appConfig.electronApiUrl,
       },
-      // Electron tests run with single worker (single app instance)
+      // Single electron app instance — keep workers=1 until multi-instance is supported.
+      fullyParallel: false,
+      workers: 1,
+      timeout: 60000,
+    },
+    {
+      name: 'electron-serial',
+      testDir: './tests/serial',
+      // Depend on 'electron-parallel' to force sequential execution: each worker
+      // spawns its own Electron app which binds the API on a fixed port, so the
+      // two projects must not run concurrently.
+      dependencies: ['electron-setup', 'electron-parallel'],
+      use: {
+        electronExecutablePath: appConfig.electronExecutablePath,
+        apiUrl: appConfig.electronApiUrl,
+      },
       fullyParallel: false,
       workers: 1,
       timeout: 60000,

@@ -11,7 +11,7 @@ const TEST_QUERY = '* => [KNN 10 @vec $BLOB]';
 
 test.use({ featureFlags: { vectorSearchV2: true } });
 
-test.describe('Vector Search > Query Library', { tag: '@serial' }, () => {
+test.describe('Vector Search > Query Library', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
