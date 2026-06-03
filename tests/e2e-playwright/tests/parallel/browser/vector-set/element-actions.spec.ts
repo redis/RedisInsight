@@ -4,12 +4,6 @@ import { TEST_KEY_PREFIX, VectorSetKeyFactory } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
 import { seedVectorSet, getRedisMajorVersion, VECTOR_SET_MIN_REDIS_MAJOR, VECTOR_SET_SKIP_REASON } from './helpers';
 
-/**
- * Browser > Vector Set > Element actions
- *
- * Per-row actions on the elements table: view (opens drawer with the vector
- * value + copy button), and remove (popover-confirmed deletion).
- */
 test.use({ featureFlags: { 'dev-vectorSet': true } });
 
 test.describe('Browser > Vector Set > Element actions', () => {
@@ -50,7 +44,6 @@ test.describe('Browser > Vector Set > Element actions', () => {
     await browserPage.vectorSetKeyDetails.openElementDetails(target);
 
     await expect(browserPage.vectorSetKeyDetails.vectorValue).toBeVisible();
-    // Copy vector button is shown for non-truncated vectors (the test data is short)
     await expect(browserPage.vectorSetKeyDetails.copyVectorButton).toBeVisible();
   });
 
@@ -68,7 +61,6 @@ test.describe('Browser > Vector Set > Element actions', () => {
 
     await browserPage.vectorSetKeyDetails.removeElement(first.name);
 
-    // First element gone, second element still listed
     await expect(browserPage.vectorSetKeyDetails.elementValueCell(first.name)).toBeHidden();
     await expect(browserPage.vectorSetKeyDetails.elementValueCell(second.name)).toBeVisible();
   });

@@ -5,12 +5,6 @@ import { TEST_KEY_PREFIX, VectorSetKeyFactory, toFp32EscapedString } from 'e2eSr
 import { DatabaseInstance } from 'e2eSrc/types';
 import { seedVectorSet, getRedisMajorVersion, VECTOR_SET_MIN_REDIS_MAJOR, VECTOR_SET_SKIP_REASON } from './helpers';
 
-/**
- * Browser > Vector Set > Add Elements
- *
- * Seeds a vector set via VADD, then exercises the in-panel "Add Elements"
- * form on the key details view.
- */
 test.use({ featureFlags: { 'dev-vectorSet': true } });
 
 test.describe('Browser > Vector Set > Add Elements', () => {
@@ -49,7 +43,6 @@ test.describe('Browser > Vector Set > Add Elements', () => {
     await browserPage.keyList.clickKey(keyData.keyName);
     await browserPage.vectorSetKeyDetails.waitForLoad();
 
-    // First element is already present
     await expect(browserPage.vectorSetKeyDetails.elementValueCell(first.name)).toBeVisible();
 
     await browserPage.vectorSetKeyDetails.addElement(second.name, second.vector);
@@ -61,7 +54,7 @@ test.describe('Browser > Vector Set > Add Elements', () => {
     browserPage,
     apiHelper,
   }) => {
-    // Factory builds 3-dim vectors; FP32 input must match → 3 floats / 12 bytes.
+    // FP32 vector must match the factory's 3-dim shape (3 floats / 12 bytes).
     const keyData = VectorSetKeyFactory.build();
     const [first] = keyData.elements;
     const fp32ElementName = `element-fp32-${faker.string.alphanumeric(6)}`;
@@ -76,8 +69,6 @@ test.describe('Browser > Vector Set > Add Elements', () => {
 
     await expect(browserPage.vectorSetKeyDetails.elementValueCell(first.name)).toBeVisible();
 
-    // The element-vector input auto-detects the FP32 escaped-byte format;
-    // no explicit mode toggle is needed.
     await browserPage.vectorSetKeyDetails.addElement(fp32ElementName, fp32Vector);
 
     await expect(browserPage.vectorSetKeyDetails.elementValueCell(fp32ElementName)).toBeVisible();

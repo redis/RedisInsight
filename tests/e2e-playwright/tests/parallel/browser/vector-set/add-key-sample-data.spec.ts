@@ -3,16 +3,6 @@ import { StandaloneV880ConfigFactory } from 'e2eSrc/test-data/databases';
 import { DatabaseInstance } from 'e2eSrc/types';
 import { getRedisMajorVersion, VECTOR_SET_MIN_REDIS_MAJOR, VECTOR_SET_SKIP_REASON } from './helpers';
 
-/**
- * Browser > Vector Set > Add Key (sample data)
- *
- * Covers the "Load sample dataset" populate mode — the bundled `vec2word`
- * embeddings. Switching to sample mode locks the key name to `vec2word` and
- * swaps the form for a static preview of the bundled rows.
- *
- * Cleanup deletes the fixed key by name (rather than the test prefix) since
- * the sample dataset uses a non-prefixed key.
- */
 const VEC2WORD_KEY = 'vec2word';
 
 test.use({ featureFlags: { 'dev-vectorSet': true } });
@@ -36,20 +26,14 @@ test.describe('Browser > Vector Set > Add Key (sample data)', () => {
 
   test.beforeEach(async ({ browserPage, apiHelper }) => {
     test.skip(redisMajorVersion < VECTOR_SET_MIN_REDIS_MAJOR, VECTOR_SET_SKIP_REASON);
-    // Ensure no pre-existing vec2word key — sample-mode short-circuits with an
-    // info toast if the key already exists.
-    //
-    // We swallow errors here: DEL on a missing key returns 0 successfully, so
-    // the only failures would be transient API/connection hiccups during
-    // setup or teardown. Surfacing those would mask the actual test
-    // failure that follows; the test itself will fail loudly if the key
-    // really is in a bad state.
+    // Sample mode short-circuits with an info toast if vec2word already exists.
+    // DEL on a missing key returns 0 — swallow transient errors so they don't
+    // mask the real test failure.
     await apiHelper.sendCommand(database.id, `DEL ${VEC2WORD_KEY}`).catch(() => {});
     await browserPage.goto(database.id);
   });
 
   test.afterEach(async ({ apiHelper }) => {
-    // Same rationale as the beforeEach DEL — see comment above.
     await apiHelper.sendCommand(database.id, `DEL ${VEC2WORD_KEY}`).catch(() => {});
   });
 
@@ -59,7 +43,6 @@ test.describe('Browser > Vector Set > Add Key (sample data)', () => {
     await browserPage.addKeyDialog.selectVectorSetPopulateMode('sample');
 
     await expect(browserPage.addKeyDialog.vectorSetSampleDatasetPreview).toBeVisible();
-    // Manual-mode element fields disappear in sample mode
     await expect(browserPage.addKeyDialog.vectorSetElementNameInput).toBeHidden();
   });
 
