@@ -1,32 +1,18 @@
 import { Page, Locator, expect } from '@playwright/test';
 
-/**
- * Vector Set Key Details component — right-side panel shown when a Vector Set
- * key is selected in the Browser.
- *
- * Covers the similarity-search form, the elements table, per-row actions
- * (view / find-similar / remove), and the element-details drawer
- * (vector value, copy, edit attributes).
- *
- * Source testids live under `redisinsight/ui/src/pages/browser/modules/
- * key-details/components/vector-set-details/`.
- */
 export class VectorSetKeyDetails {
   readonly page: Page;
 
-  // Containers
   readonly elementsTable: Locator;
   readonly elementsTableInner: Locator;
   readonly previewSummary: Locator;
 
-  // Add elements (subheader button on the key details panel)
   readonly addElementsButton: Locator;
   readonly saveElementsButton: Locator;
   readonly cancelElementsButton: Locator;
   readonly elementNameInput: Locator;
   readonly elementVectorInput: Locator;
 
-  // Similarity search form
   readonly similaritySearchForm: Locator;
   readonly similarityModeVectorButton: Locator;
   readonly similarityModeElementButton: Locator;
@@ -35,11 +21,9 @@ export class VectorSetKeyDetails {
   readonly similaritySubmitButton: Locator;
   readonly similarityResetButton: Locator;
 
-  // Similarity search results table
   readonly similarityResultsTable: Locator;
   readonly similarityResultsTableInner: Locator;
 
-  // Element details drawer
   readonly vectorValue: Locator;
   readonly copyVectorButton: Locator;
   readonly downloadVectorButton: Locator;
@@ -50,39 +34,32 @@ export class VectorSetKeyDetails {
   constructor(page: Page) {
     this.page = page;
 
-    // Elements table
     this.elementsTable = page.getByTestId('vector-set-details');
     this.elementsTableInner = page.getByTestId('vector-set-details-table');
     this.previewSummary = page.getByTestId('vector-set-preview-summary');
 
-    // Add Elements (shares the generic add-items button testid with other key types)
-    this.addElementsButton = page.getByTestId('add-key-value-items-btn');
+    this.addElementsButton = page.getByRole('button', { name: 'Add Elements' });
     this.saveElementsButton = page.getByTestId('save-elements-btn');
     this.cancelElementsButton = page.getByTestId('cancel-elements-btn');
-    this.elementNameInput = page.getByTestId('element-name').first();
-    this.elementVectorInput = page.getByTestId('element-vector').first();
+    this.elementNameInput = page.getByPlaceholder('Enter Element Name').first();
+    this.elementVectorInput = page.getByPlaceholder(/^Enter Vector/).first();
 
-    // Similarity search form (TEST_ID = 'similarity-search-form')
-    const formId = 'similarity-search-form';
-    this.similaritySearchForm = page.getByTestId(formId);
-    this.similarityModeVectorButton = page.getByTestId(`${formId}-mode-vector`);
-    this.similarityModeElementButton = page.getByTestId(`${formId}-mode-element`);
-    this.similarityVectorInput = page.getByTestId(`${formId}-vector-input`);
-    this.similarityElementInput = page.getByTestId(`${formId}-element-input`);
-    this.similaritySubmitButton = page.getByTestId(`${formId}-submit`);
-    this.similarityResetButton = page.getByTestId(`${formId}-reset`);
+    const similaritySearchForm = page.getByTestId('similarity-search-form');
+    this.similaritySearchForm = similaritySearchForm;
+    this.similarityModeVectorButton = similaritySearchForm.getByRole('button', { name: /^Vector/ });
+    this.similarityModeElementButton = similaritySearchForm.getByRole('button', { name: /^Element/ });
+    this.similarityVectorInput = similaritySearchForm.getByPlaceholder(/^Enter a vector/);
+    this.similarityElementInput = similaritySearchForm.getByPlaceholder('Existing element name');
+    this.similaritySubmitButton = similaritySearchForm.getByRole('button', { name: 'Find similar items' });
+    this.similarityResetButton = similaritySearchForm.getByRole('button', { name: 'Reset similarity search form' });
 
-    // Similarity results
     this.similarityResultsTable = page.getByTestId('vector-set-similarity-results');
     this.similarityResultsTableInner = page.getByTestId('vector-set-similarity-results-table');
 
-    // Element details drawer.
-    // CopyButton wraps the inner control with a `-btn` suffix on the
-    // passed testid, so the rendered button is `vector-set-copy-vector-btn-btn`.
     this.vectorValue = page.getByTestId('vector-set-vector-value');
-    this.copyVectorButton = page.getByTestId('vector-set-copy-vector-btn-btn');
-    this.downloadVectorButton = page.getByTestId('vector-set-download-vector-btn');
-    this.editAttributesButton = page.getByTestId('vector-set-edit-attributes-btn');
+    this.copyVectorButton = page.getByRole('button', { name: 'Copy vector' });
+    this.downloadVectorButton = page.getByRole('button', { name: 'Download vector' });
+    this.editAttributesButton = page.getByRole('button', { name: 'Edit attributes' });
     this.saveAttributesButton = page.getByTestId('vector-set-save-attributes-btn');
     this.cancelAttributesButton = page.getByTestId('vector-set-cancel-attributes-btn');
   }
@@ -91,9 +68,6 @@ export class VectorSetKeyDetails {
     await expect(this.elementsTable).toBeVisible();
   }
 
-  /**
-   * Add an element to the currently-selected Vector Set via the side panel form.
-   */
   async addElement(name: string, vector: string): Promise<void> {
     await this.addElementsButton.click();
     await expect(this.elementNameInput).toBeVisible();
@@ -101,48 +75,27 @@ export class VectorSetKeyDetails {
     await this.elementVectorInput.fill(vector);
     await expect(this.saveElementsButton).toBeEnabled();
     await this.saveElementsButton.click();
-    // Form closes on success
     await expect(this.elementNameInput).toBeHidden();
   }
 
-  /**
-   * Per-row action: view element (opens details drawer).
-   * Element names appear verbatim in the testid suffix.
-   */
   viewElementButton(elementName: string): Locator {
     return this.page.getByTestId(`vector-set-view-btn-${elementName}`);
   }
 
-  /**
-   * Per-row action: find similar by element. Clicking prefills similarity
-   * search in Element mode with this element name.
-   */
   searchSimilarByElementButton(elementName: string): Locator {
     return this.page.getByTestId(`vector-set-search-similar-btn-${elementName}`);
   }
 
-  /**
-   * Per-row action: delete element trigger (the trash icon in the row).
-   * Carries the `-icon` suffix; clicking opens the confirmation popover.
-   * Distinct from `confirmRemoveElementButton`, which lives *inside* the
-   * popover and shares the same testid prefix without the `-icon` suffix.
-   */
+  // `-icon` suffix distinguishes the row trigger from the confirm button
+  // inside the popover, which uses the same testid prefix without the suffix.
   removeElementButton(elementName: string): Locator {
     return this.page.getByTestId(`vector-set-remove-btn-${elementName}-icon`);
   }
 
-  /**
-   * Confirmation button inside the delete popover (no `-icon` suffix —
-   * see `removeElementButton` above).
-   */
   confirmRemoveElementButton(elementName: string): Locator {
     return this.page.getByTestId(`vector-set-remove-btn-${elementName}`);
   }
 
-  /**
-   * Cell containing an element name in the results table (used to assert
-   * presence / absence after CRUD).
-   */
   elementValueCell(elementName: string): Locator {
     return this.page.getByTestId(`vector-set-element-value-${elementName}`);
   }
@@ -159,8 +112,6 @@ export class VectorSetKeyDetails {
     await this.viewElementButton(elementName).click();
     await expect(this.vectorValue).toBeVisible();
   }
-
-  // ---- Similarity search ----
 
   async setSimilarityMode(mode: 'vector' | 'element'): Promise<void> {
     const target = mode === 'vector' ? this.similarityModeVectorButton : this.similarityModeElementButton;
@@ -183,28 +134,18 @@ export class VectorSetKeyDetails {
     await expect(this.similarityResultsTable).toBeVisible();
   }
 
-  /**
-   * Similarity result row by index. Useful for asserting that the top-ranked
-   * row matches the queried element.
-   */
   similarityResultRank(index: number): Locator {
     return this.page.getByTestId(`vector-set-similarity-rank-cell-${index}`);
   }
 
-  /**
-   * Similarity score cell at the given row index. The cell renders a
-   * formatted percentage (e.g. `100.00 %`) — NOT the element name. Use
-   * `similarityResultElementValue` when asserting on the element identity.
-   */
+  // Renders the score percentage, not the element name — use
+  // `similarityResultElementValue` to assert on element identity.
   similarityResultCell(index: number): Locator {
     return this.page.getByTestId(`vector-set-similarity-cell-${index}`);
   }
 
-  /**
-   * Element-name cell within the similarity results table. Scoped to the
-   * results container so it doesn't collide with the same testid in the
-   * main elements table (both tables can be visible simultaneously).
-   */
+  // Scoped to the results container — the same testid appears in the main
+  // elements table, which can be visible simultaneously.
   similarityResultElementValue(elementName: string): Locator {
     return this.similarityResultsTable.getByTestId(`vector-set-element-value-${elementName}`);
   }
