@@ -113,12 +113,7 @@ services:
   # oss standalone v8
   oss-standalone-v8:
     logging: *logging
-    # NOTE: 8.0-M02 reports `redis_version:7.9.225`, which fails the UI's
-    # `isVersionHigherOrEquals(version, '8.0')` gate for the Vector Set
-    # key-type option (see redisinsight/ui/.../key-type-options.ts).
-    # Pin to the 8.0 GA stream so VADD/VSIM are advertised and gated UI
-    # affordances render.
-    image: redis:8.0
+    image: redis:8.0-M02
     ports:
       - 8109:6379
     networks:
