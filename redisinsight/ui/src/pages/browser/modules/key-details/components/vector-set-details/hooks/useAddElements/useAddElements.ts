@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import {
@@ -14,10 +14,10 @@ import { SubmitElement } from '../../vector-set-element-form'
 import { UseAddElementsResult } from './useAddElements.types'
 
 export const useAddElements = (): UseAddElementsResult => {
-  const dispatch = useDispatch()
-  const selectedKeyData = useSelector(selectedKeyDataSelector)
-  const { loading } = useSelector(addVectorSetElementsStateSelector)
-  const { id: databaseId } = useSelector(connectedInstanceSelector)
+  const dispatch = useAppDispatch()
+  const selectedKeyData = useAppSelector(selectedKeyDataSelector)
+  const { loading } = useAppSelector(addVectorSetElementsStateSelector)
+  const { id: databaseId } = useAppSelector(connectedInstanceSelector)
 
   const submitElements = useCallback(
     (elements: SubmitElement[], onSuccess?: () => void) => {

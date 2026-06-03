@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import {
@@ -21,7 +21,7 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
 
 const CliHeader = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const { instanceId = '' } = useParams<{ instanceId: string }>()
 

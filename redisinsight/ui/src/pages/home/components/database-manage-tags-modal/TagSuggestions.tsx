@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { uniqBy } from 'lodash'
 import { tagsSelector } from 'uiSrc/slices/instances/tags'
 import { Text, Title } from 'uiSrc/components/base/text'
@@ -24,7 +24,7 @@ export const TagSuggestions = ({
   currentTagKeys,
   onChange,
 }: TagSuggestionsProps) => {
-  const { data: allTags } = useSelector(tagsSelector)
+  const { data: allTags } = useAppSelector(tagsSelector)
   const tagsSuggestions: SelectOption[] = useMemo(() => {
     const options = uniqBy(presetTagSuggestions.concat(allTags), (tag) =>
       targetKey ? tag.value : tag.key,

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { PaginationState } from 'uiSrc/components/base/layout/table'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -31,19 +31,19 @@ import {
 export const useVectorSetElementListData = ({
   actionsConfig,
 }: UseVectorSetElementListDataParams): UseVectorSetElementListDataResult => {
-  const { loading } = useSelector(vectorSetSelector)
-  const { elements, nextCursor, total, isPaginationSupported } = useSelector(
+  const { loading } = useAppSelector(vectorSetSelector)
+  const { elements, nextCursor, total, isPaginationSupported } = useAppSelector(
     vectorSetDataSelector,
   )
-  const { name: key } = useSelector(selectedKeyDataSelector) ?? { name: '' }
-  const { compressor = null } = useSelector(
+  const { name: key } = useAppSelector(selectedKeyDataSelector) ?? { name: '' }
+  const { compressor = null } = useAppSelector(
     connectedInstanceSelector,
   ) as unknown as {
     compressor: Nullable<KeyValueCompressor>
   }
-  const { viewFormat } = useSelector(selectedKeySelector)
+  const { viewFormat } = useAppSelector(selectedKeySelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,

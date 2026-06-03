@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { Pages } from 'uiSrc/constants'
 import { setTitle } from 'uiSrc/utils'
 import { useAzureAuth } from 'uiSrc/components/hooks/useAzureAuth'
 import { AzureSubscription } from 'uiSrc/slices/interfaces'
-import { AppDispatch } from 'uiSrc/slices/store'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   azureSelector,
@@ -18,9 +17,10 @@ import AzureSubscriptions from './AzureSubscriptions/AzureSubscriptions'
 
 const AzureSubscriptionsPage = () => {
   const history = useHistory()
-  const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useAppDispatch()
   const { initiateLogin, account } = useAzureAuth()
-  const { loading, error, subscriptions, loaded } = useSelector(azureSelector)
+  const { loading, error, subscriptions, loaded } =
+    useAppSelector(azureSelector)
 
   useEffect(() => {
     // Redirect to home if not authenticated

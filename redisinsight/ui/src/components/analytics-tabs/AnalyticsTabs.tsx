@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams, useHistory } from 'react-router-dom'
 
 import { Pages } from 'uiSrc/constants'
@@ -22,14 +22,14 @@ import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
 import { Text } from 'uiSrc/components/base/text'
 
 const AnalyticsTabs = () => {
-  const { viewTab } = useSelector(analyticsSettingsSelector)
+  const { viewTab } = useAppSelector(analyticsSettingsSelector)
   const connectionType = useConnectionType()
-  const { currentStep } = useSelector(appFeatureOnboardingSelector)
+  const { currentStep } = useAppSelector(appFeatureOnboardingSelector)
   const history = useHistory()
 
   const { instanceId } = useParams<{ instanceId: string }>()
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (

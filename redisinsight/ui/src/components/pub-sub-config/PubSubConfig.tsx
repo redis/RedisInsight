@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { Socket } from 'socket.io-client'
 
 import { SocketEvent } from 'uiSrc/constants'
@@ -24,17 +24,17 @@ interface IProps {
 }
 
 const PubSubConfig = ({ retryDelay = 5000 }: IProps) => {
-  const { id: instanceId = '' } = useSelector(connectedInstanceSelector)
+  const { id: instanceId = '' } = useAppSelector(connectedInstanceSelector)
   const { isSubscribeTriggered, isConnected, subscriptions } =
-    useSelector(pubSubSelector)
-  const { token } = useSelector(appCsrfSelector)
+    useAppSelector(pubSubSelector)
+  const { token } = useAppSelector(appCsrfSelector)
   const socketRef = useRef<Nullable<Socket>>(null)
   const connectIo = useIoConnection(getSocketApiUrl('pub-sub'), {
     token,
     query: { instanceId },
   })
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (!isSubscribeTriggered || !instanceId || socketRef.current?.connected) {

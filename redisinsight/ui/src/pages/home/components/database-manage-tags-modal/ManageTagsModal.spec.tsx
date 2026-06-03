@@ -1,13 +1,17 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { updateInstanceAction } from 'uiSrc/slices/instances/instances'
 
 import { Instance } from 'uiSrc/slices/interfaces'
 import { ManageTagsModal, ManageTagsModalProps } from './ManageTagsModal'
 
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppDispatch: jest.fn(),
+}))
+
 jest.mock('react-redux', () => ({
-  useDispatch: jest.fn(),
   connect: () => (Component: any) => Component,
 }))
 
@@ -15,7 +19,9 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
   updateInstanceAction: jest.fn().mockReturnValue({ type: 'UPDATE_INSTANCE' }),
 }))
 
-const mockDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>
+const mockDispatch = useAppDispatch as jest.MockedFunction<
+  typeof useAppDispatch
+>
 const mockInstance: Partial<Instance> = {
   id: '1',
   name: 'Test Instance',

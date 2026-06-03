@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { LoadingContent } from 'uiSrc/components/base/layout'
 import { IRedisCommand } from 'uiSrc/constants'
@@ -34,10 +34,12 @@ const QueryWrapper = (props: Props) => {
     onClear,
     queryProps = {},
   } = props
-  const { loading: isCommandsLoading } = useSelector(appRedisCommandsSelector)
-  const { id: connectedInstanceId } = useSelector(connectedInstanceSelector)
-  const { data: indexes = [] } = useSelector(redisearchListSelector)
-  const { spec: COMMANDS_SPEC } = useSelector(appRedisCommandsSelector)
+  const { loading: isCommandsLoading } = useAppSelector(
+    appRedisCommandsSelector,
+  )
+  const { id: connectedInstanceId } = useAppSelector(connectedInstanceSelector)
+  const { data: indexes = [] } = useAppSelector(redisearchListSelector)
+  const { spec: COMMANDS_SPEC } = useAppSelector(appRedisCommandsSelector)
 
   const REDIS_COMMANDS = useMemo(
     () =>
@@ -48,7 +50,7 @@ const QueryWrapper = (props: Props) => {
     [COMMANDS_SPEC, SEARCH_COMMANDS_SPEC],
   )
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (!connectedInstanceId) return

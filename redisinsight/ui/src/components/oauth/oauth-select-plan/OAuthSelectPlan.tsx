@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { toNumber, filter, get, find, first } from 'lodash'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import {
   createFreeDbJob,
@@ -58,8 +58,8 @@ const OAuthSelectPlan = () => {
     isOpenDialog,
     data: plansInit = [],
     loading,
-  } = useSelector(oauthCloudPlanSelector)
-  const { [FeatureFlags.cloudSso]: cloudSsoFeature = {} } = useSelector(
+  } = useAppSelector(oauthCloudPlanSelector)
+  const { [FeatureFlags.cloudSso]: cloudSsoFeature = {} } = useAppSelector(
     appFeatureFlagsFeaturesSelector,
   )
 
@@ -77,7 +77,7 @@ const OAuthSelectPlan = () => {
     getProviderRegions(rsRegions, providerSelected as OAuthProvider),
   )
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setRsProviderRegions(

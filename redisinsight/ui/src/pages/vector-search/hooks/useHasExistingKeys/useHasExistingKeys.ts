@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { apiService } from 'uiSrc/services'
 import { ApiEndpoints, KeyTypes } from 'uiSrc/constants'
@@ -23,8 +23,8 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
   const [loading, setLoading] = useState(true)
 
   const { pathname } = useLocation()
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
-  const { encoding } = useSelector(appInfoSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
+  const { encoding } = useAppSelector(appInfoSelector)
 
   const checkForKeys = useCallback(
     async (signal?: AbortSignal) => {

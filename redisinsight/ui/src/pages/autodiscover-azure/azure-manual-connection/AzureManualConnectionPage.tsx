@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from 'uiSrc/slices/hooks'
 import { useFormik, FormikErrors } from 'formik'
 import { isEmpty } from 'lodash'
 
@@ -19,7 +19,6 @@ import {
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { azureAuthAccountSelector } from 'uiSrc/slices/oauth/azure'
-import { AppDispatch } from 'uiSrc/slices/store'
 import { createInstanceStandaloneAction } from 'uiSrc/slices/instances/instances'
 import { Instance } from 'uiSrc/slices/interfaces'
 
@@ -51,8 +50,8 @@ const getFormErrors = (
 
 const AzureManualConnectionPage = () => {
   const history = useHistory()
-  const dispatch = useDispatch<AppDispatch>()
-  const account = useSelector(azureAuthAccountSelector)
+  const dispatch = useAppDispatch()
+  const account = useAppSelector(azureAuthAccountSelector)
 
   const [loading, setLoading] = useState(false)
 

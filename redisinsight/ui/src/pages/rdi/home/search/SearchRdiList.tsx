@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { SearchInput } from 'uiSrc/components/base/inputs'
 import { RdiInstance } from 'uiSrc/slices/interfaces'
@@ -11,9 +11,9 @@ import { TelemetryEvent, sendEventTelemetry } from 'uiSrc/telemetry'
 import { lastConnectionFormat } from 'uiSrc/utils'
 
 const SearchRdiList = () => {
-  const { data: instances } = useSelector(instancesSelector)
+  const { data: instances } = useAppSelector(instancesSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const onQueryChange = (term: string) => {
     const value = term?.toLowerCase()

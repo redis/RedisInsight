@@ -1,5 +1,5 @@
 import React, { FormEvent, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import { Maybe, stringToBuffer } from 'uiSrc/utils'
@@ -23,11 +23,11 @@ export interface Props {
 
 const AddKeyReJSON = (props: Props) => {
   const { keyName = '', keyTTL, onCancel } = props
-  const { loading } = useSelector(addKeyStateSelector)
+  const { loading } = useAppSelector(addKeyStateSelector)
   const [ReJSONValue, setReJSONValue] = useState<string>('')
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { instanceId } = useParams<{ instanceId: string }>()
 
   useEffect(() => {

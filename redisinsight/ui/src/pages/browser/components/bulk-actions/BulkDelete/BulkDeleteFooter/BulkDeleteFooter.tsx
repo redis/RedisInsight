@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { Environment } from 'apiClient'
 
@@ -45,12 +45,12 @@ export interface Props {
 const BulkDeleteFooter = (props: Props) => {
   const { onCancel } = props
   const { instanceId = '' } = useParams<{ instanceId: string }>()
-  const { scanned, total } = useSelector(keysDataSelector)
-  const { loading, generateReport, filter, search } = useSelector(
+  const { scanned, total } = useAppSelector(keysDataSelector)
+  const { loading, generateReport, filter, search } = useAppSelector(
     bulkActionsDeleteSelector,
   )
-  const { name, host, port } = useSelector(connectedInstanceSelector)
-  const { status } = useSelector(bulkActionsDeleteOverviewSelector) ?? {}
+  const { name, host, port } = useAppSelector(connectedInstanceSelector)
+  const { status } = useAppSelector(bulkActionsDeleteOverviewSelector) ?? {}
   const { environment } = useDatabaseEnvironment()
   const isProduction = environment === Environment.Production
   // Fall back to host:port when name is empty so the modal never matches an
@@ -60,7 +60,7 @@ const BulkDeleteFooter = (props: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false)
   const [isTypeToConfirmOpen, setIsTypeToConfirmOpen] = useState<boolean>(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleDelete = () => {
     setIsPopoverOpen(false)

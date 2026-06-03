@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { FormikErrors, useFormik } from 'formik'
 import { isEmpty, forEach } from 'lodash'
 import cx from 'classnames'
@@ -64,9 +64,9 @@ const ConsentsSettings = ({ onSubmitted }: Props) => {
   const [isRecommended, setIsRecommended] = useState<boolean>(false)
   const [valuesBuffer, setValuesBuffer] = useState<Values>({})
 
-  const { config, spec } = useSelector(userSettingsSelector)
+  const { config, spec } = useAppSelector(userSettingsSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const submitIsDisabled = () => !isEmpty(errors)
 

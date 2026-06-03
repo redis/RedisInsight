@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 import { ColorText } from 'uiSrc/components/base/text'
 import { removeCapiKeyAction } from 'uiSrc/slices/oauth/cloud'
@@ -24,7 +24,7 @@ const CloudCapiUnAuthorizedErrorContent = ({
   onClose = () => {},
   resourceId,
 }: Props) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
 
   const handleRemoveCapi = () => {

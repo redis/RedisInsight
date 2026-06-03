@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { toNumber } from 'lodash'
 
 import { Text } from 'uiSrc/components/base/text'
@@ -84,23 +84,23 @@ const RemoveListElements = (props: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false)
 
   const [canRemoveMultiple, setCanRemoveMultiple] = useState<boolean>(true)
-  const { name: selectedKey = '', length } = useSelector(
+  const { name: selectedKey = '', length } = useAppSelector(
     selectedKeyDataSelector,
   ) ?? {
     name: undefined,
     length: 0,
   }
-  const { version: databaseVersion = '' } = useSelector(
+  const { version: databaseVersion = '' } = useAppSelector(
     connectedInstanceOverviewSelector,
   )
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
-  const { viewType } = useSelector(keysSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
+  const { viewType } = useAppSelector(keysSelector)
   const { environment } = useDatabaseEnvironment()
   const bypassConfirmation = environment === Environment.Development
 
   const countInput = useRef<HTMLInputElement>(null)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     // ComponentDidMount

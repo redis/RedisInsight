@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory, useParams } from 'react-router-dom'
 
 import { BrowserStorageItem, Pages } from 'uiSrc/constants'
@@ -28,12 +28,12 @@ import { IndexListAction } from '../../components/index-list/IndexList.types'
 import { useIndexListData } from '../useIndexListData'
 
 export const useListContent = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
   const { instanceId } = useParams<{ instanceId: string }>()
 
-  const { data: rawIndexes } = useSelector(redisearchListSelector)
-  const { id: databaseId } = useSelector(connectedInstanceSelector)
+  const { data: rawIndexes } = useAppSelector(redisearchListSelector)
+  const { id: databaseId } = useAppSelector(connectedInstanceSelector)
   const indexes = useMemo(
     () => rawIndexes.map((index) => bufferToString(index)),
     [rawIndexes],

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 import { find } from 'lodash'
 import { OAuthAgreement } from 'uiSrc/components/oauth/shared'
@@ -39,11 +39,11 @@ export interface Props {
 
 const OAuthAutodiscovery = (props: Props) => {
   const { inline, source = OAuthSocialSource.Autodiscovery, onClose } = props
-  const { data } = useSelector(oauthCloudUserSelector)
+  const { data } = useAppSelector(oauthCloudUserSelector)
 
   const [isDiscoverDisabled, setIsDiscoverDisabled] = useState(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
 
   const handleClickDiscover = () => {

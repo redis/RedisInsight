@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import cn from 'classnames'
 
@@ -30,8 +30,8 @@ const CommandHelperWrapper = () => {
     isEnteringCommand,
     searchingCommand,
     searchingCommandFilter,
-  } = useSelector(cliSettingsSelector)
-  const { spec: ALL_REDIS_COMMANDS, commandsArray } = useSelector(
+  } = useAppSelector(cliSettingsSelector)
+  const { spec: ALL_REDIS_COMMANDS, commandsArray } = useAppSelector(
     appRedisCommandsSelector,
   )
   const { instanceId = '' } = useParams<{ instanceId: string }>()

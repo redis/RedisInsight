@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { setTitle } from 'uiSrc/utils'
 import { FeatureFlags } from 'uiSrc/constants'
@@ -42,11 +42,11 @@ import styles from './styles.module.scss'
 
 const SettingsPage = () => {
   const [loading, setLoading] = useState(false)
-  const { loading: settingsLoading } = useSelector(userSettingsSelector)
+  const { loading: settingsLoading } = useAppSelector(userSettingsSelector)
 
   const initialOpenSection = globalThis.location.hash || ''
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     // componentDidMount

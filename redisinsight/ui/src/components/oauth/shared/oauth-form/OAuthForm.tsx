@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { signIn } from 'uiSrc/slices/oauth/cloud'
 import { OAuthSocialAction, OAuthStrategy } from 'uiSrc/slices/interfaces'
 import { ipcAuth } from 'uiSrc/electron/utils'
@@ -15,7 +15,7 @@ export interface Props extends OAuthSocialButtonsProps {
 }
 
 const OAuthForm = ({ children, action, onClick, ...rest }: Props) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const [authStrategy, setAuthStrategy] = useState('')
   const [disabled, setDisabled] = useState(false)

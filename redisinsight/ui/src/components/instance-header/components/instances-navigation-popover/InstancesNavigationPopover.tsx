@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory, useParams } from 'react-router-dom'
 import { instancesSelector as rdiInstancesSelector } from 'uiSrc/slices/rdi/instances'
 import { instancesSelector as dbInstancesSelector } from 'uiSrc/slices/instances/instances'
@@ -45,8 +45,8 @@ const InstancesNavigationPopover = ({ name }: Props) => {
     rdiInstanceId ? InstancesTabs.RDI : InstancesTabs.Databases,
   )
 
-  const { data: rdiInstances } = useSelector(rdiInstancesSelector)
-  const { data: dbInstances } = useSelector(dbInstancesSelector)
+  const { data: rdiInstances } = useAppSelector(rdiInstancesSelector)
+  const { data: dbInstances } = useAppSelector(dbInstancesSelector)
   const history = useHistory()
 
   useEffect(() => {

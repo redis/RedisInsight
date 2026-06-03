@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { throttle } from 'lodash'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
@@ -51,14 +51,14 @@ const Job = (props: Props) => {
   const [shouldOpenDedicatedEditor, setShouldOpenDedicatedEditor] =
     useState<boolean>(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const jobIndexRef = useRef<number>(jobIndex)
   const deployedJobValueRef = useRef<Maybe<string>>(deployedJobValue)
   const jobNameRef = useRef<string>(name)
 
   const { loading, monacoJobsSchema, jobFunctions, jobs } =
-    useSelector(rdiPipelineSelector)
+    useAppSelector(rdiPipelineSelector)
 
   useEffect(() => {
     dispatch(fetchPipelineStrategies(rdiInstanceId))

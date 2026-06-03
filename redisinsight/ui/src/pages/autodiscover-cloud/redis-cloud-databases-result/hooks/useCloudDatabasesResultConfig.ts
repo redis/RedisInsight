@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
 import { Pages } from 'uiSrc/constants'
@@ -15,11 +15,11 @@ import { UseCloudDatabasesResultConfigReturn } from './useCloudDatabasesResultCo
 
 export const useCloudDatabasesResultConfig =
   (): UseCloudDatabasesResultConfigReturn => {
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
     const history = useHistory()
 
     const { data: instancesForOptions, dataAdded: instances } =
-      useSelector(cloudSelector)
+      useAppSelector(cloudSelector)
 
     useEffect(() => {
       if (!instances.length) {

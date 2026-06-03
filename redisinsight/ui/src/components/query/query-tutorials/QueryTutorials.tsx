@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { useHistory, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { findTutorialPath } from 'uiSrc/utils'
@@ -47,7 +47,7 @@ const QueryTutorialsButton = styled(EmptyButton)`
 `
 
 const QueryTutorials = ({ tutorials, source }: Props) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
   const { instanceId } = useParams<{ instanceId: string }>()
 

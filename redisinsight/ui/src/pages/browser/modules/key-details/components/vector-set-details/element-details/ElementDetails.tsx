@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import {
@@ -36,9 +36,9 @@ const ElementDetails = ({
   onClose,
   onDrawerDidClose,
 }: ElementDetailsProps) => {
-  const dispatch = useDispatch()
-  const { name: keyName } = useSelector(selectedKeyDataSelector) ?? {}
-  const { id: databaseId } = useSelector(connectedInstanceSelector)
+  const dispatch = useAppDispatch()
+  const { name: keyName } = useAppSelector(selectedKeyDataSelector) ?? {}
+  const { id: databaseId } = useAppSelector(connectedInstanceSelector)
 
   const {
     isEditing,

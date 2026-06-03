@@ -1,6 +1,7 @@
 import cx from 'classnames'
 import React, { useEffect, useState } from 'react'
-import { shallowEqual, useDispatch, useSelector } from 'react-redux'
+import { shallowEqual } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import {
   SCAN_COUNT_DEFAULT,
@@ -53,14 +54,14 @@ const FilterKeyType = ({ modules }: Props) => {
   const [isVersionSupported, setIsVersionSupported] = useState<boolean>(true)
   const [isInfoPopoverOpen, setIsInfoPopoverOpen] = useState<boolean>(false)
 
-  const { version } = useSelector(connectedInstanceOverviewSelector)
-  const { filter, viewType, searchMode } = useSelector(keysSelector)
-  const features = useSelector(appFeatureFlagsFeaturesSelector)
+  const { version } = useAppSelector(connectedInstanceOverviewSelector)
+  const { filter, viewType, searchMode } = useAppSelector(keysSelector)
+  const features = useAppSelector(appFeatureFlagsFeaturesSelector)
   // Resolve each option's optional `isEnabledSelector` against the store so
   // the option config is the single source of truth for which key types are
   // gated (e.g. behind dev/feature flags). `shallowEqual` keeps the filtered
   // array stable across renders when membership doesn't change.
-  const enabledOptions = useSelector(
+  const enabledOptions = useAppSelector(
     (state: RootState) =>
       FILTER_KEY_TYPE_OPTIONS.filter(
         ({ isEnabledSelector }) => isEnabledSelector?.(state) ?? true,
@@ -69,7 +70,7 @@ const FilterKeyType = ({ modules }: Props) => {
   )
 
   const { instanceId } = useParams<{ instanceId: string }>()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setIsVersionSupported(

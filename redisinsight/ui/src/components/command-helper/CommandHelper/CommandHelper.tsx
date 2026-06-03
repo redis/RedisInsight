@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { CommandGroup } from 'uiSrc/constants'
 import { goBackFromCommand } from 'uiSrc/slices/cli/cli-settings'
 import { getDocUrlForCommand } from 'uiSrc/utils'
@@ -39,7 +39,7 @@ const CommandHelper = (props: Props) => {
     since = '',
   } = props
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const handleBackClick = () => dispatch(goBackFromCommand())
 
   const readMore = (commandName = '') => {

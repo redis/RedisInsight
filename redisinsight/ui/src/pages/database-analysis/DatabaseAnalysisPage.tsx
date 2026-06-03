@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import {
@@ -25,22 +25,22 @@ import { formatLongName, getDbIndex, setTitle } from 'uiSrc/utils'
 import { DatabaseAnalysisPageView } from './DatabaseAnalysisPageView'
 
 export const DatabaseAnalysisPage = () => {
-  const { viewTab } = useSelector(analyticsSettingsSelector)
-  const { loading: analysisLoading, data } = useSelector(dbAnalysisSelector)
-  const { data: reports, selectedAnalysis } = useSelector(
+  const { viewTab } = useAppSelector(analyticsSettingsSelector)
+  const { loading: analysisLoading, data } = useAppSelector(dbAnalysisSelector)
+  const { data: reports, selectedAnalysis } = useAppSelector(
     dbAnalysisReportsSelector,
   )
   const {
     name: connectedInstanceName,
     db,
     provider,
-  } = useSelector(connectedInstanceSelector)
+  } = useAppSelector(connectedInstanceSelector)
 
   const { instanceId } = useParams<{ instanceId: string }>()
 
   const [isPageViewSent, setIsPageViewSent] = useState<boolean>(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const dbName = `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)}`
   setTitle(`${dbName} - Database Analysis`)
 

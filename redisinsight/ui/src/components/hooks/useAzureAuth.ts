@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { getConfig } from 'uiSrc/config'
 
 import {
@@ -10,7 +10,6 @@ import {
   initiateAzureLoginAction,
 } from 'uiSrc/slices/oauth/azure'
 import { AzureLoginSource } from 'uiSrc/slices/interfaces'
-import { AppDispatch } from 'uiSrc/slices/store'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 
 const riConfig = getConfig()
@@ -25,8 +24,8 @@ const POPUP_WIDTH = 500
 const POPUP_HEIGHT = 700
 
 export const useAzureAuth = () => {
-  const dispatch = useDispatch<AppDispatch>()
-  const { loading, account, error } = useSelector(azureAuthSelector)
+  const dispatch = useAppDispatch()
+  const { loading, account, error } = useAppSelector(azureAuthSelector)
   const popupRef = useRef<Window | null>(null)
 
   const openAuthUrl = useCallback((url: string) => {

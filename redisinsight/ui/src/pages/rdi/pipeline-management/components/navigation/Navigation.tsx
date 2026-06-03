@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
 
 import { Nullable } from 'uiSrc/utils'
@@ -33,7 +33,7 @@ const Navigation = () => {
   const history = useHistory()
   const { pathname } = useLocation()
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
-  const { loading } = useSelector(rdiPipelineSelector)
+  const { loading } = useAppSelector(rdiPipelineSelector)
 
   const onSelectedTabChanged = (id: string | RdiPipelineTabs) => {
     if (id === RdiPipelineTabs.Config) {

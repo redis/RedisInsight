@@ -1,6 +1,6 @@
 import JSZip from 'jszip'
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import { validatePipeline } from 'uiSrc/components/yaml-validator'
@@ -39,11 +39,11 @@ const UploadModal = (props: Props) => {
     schema,
     monacoJobsSchema,
     jobNameSchema,
-  } = useSelector(rdiPipelineSelector)
+  } = useAppSelector(rdiPipelineSelector)
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const validateZip = (zip: JSZip) => {
     // check if config.yaml exists

@@ -2,7 +2,7 @@
 /* eslint-disable react/no-this-in-sfc */
 import React, { Ref, useEffect, useRef, useState } from 'react'
 import { Environment } from 'apiClient'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { IconType, EqualIcon, FoldersIcon } from 'uiSrc/components/base/icons'
 import KeysSummary from 'uiSrc/components/keys-summary'
@@ -109,19 +109,19 @@ const KeysHeader = (props: Props) => {
     onChangeSorting,
   } = props
 
-  const { id: instanceId, keyNameFormat } = useSelector(
+  const { id: instanceId, keyNameFormat } = useAppSelector(
     connectedInstanceSelector,
   )
-  const { viewType, searchMode, isFiltered } = useSelector(keysSelector)
-  const { shownColumns } = useSelector(appContextDbConfig)
-  const { selectedIndex } = useSelector(redisearchSelector)
+  const { viewType, searchMode, isFiltered } = useAppSelector(keysSelector)
+  const { shownColumns } = useAppSelector(appContextDbConfig)
+  const { selectedIndex } = useAppSelector(redisearchSelector)
   const { environment } = useDatabaseEnvironment()
 
   const [columnsConfigShown, setColumnsConfigShown] = useState(false)
 
   const rootDivRef: Ref<HTMLDivElement> = useRef(null)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (environment !== Environment.Production || !instanceId) return

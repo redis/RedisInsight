@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useLocation, useParams } from 'react-router-dom'
 
 import { IRedisCommand } from 'uiSrc/constants'
@@ -77,7 +77,7 @@ export const QueryEditorWrapper = ({
 
   const decodedIndexName = indexName ? decodeURIComponent(indexName) : ''
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const queryLibraryService = useRef(new QueryLibraryService()).current
 
   const handleSaveSubmit = useCallback(
@@ -115,10 +115,10 @@ export const QueryEditorWrapper = ({
     [instanceId, decodedIndexName, query, dispatch],
   )
 
-  const { loading: isCommandsLoading, spec: COMMANDS_SPEC } = useSelector(
+  const { loading: isCommandsLoading, spec: COMMANDS_SPEC } = useAppSelector(
     appRedisCommandsSelector,
   )
-  const { data: indexes = [] } = useSelector(redisearchListSelector)
+  const { data: indexes = [] } = useAppSelector(redisearchListSelector)
 
   const REDIS_COMMANDS = useMemo(
     () =>

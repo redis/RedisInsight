@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import cx from 'classnames'
 import {
@@ -16,10 +16,10 @@ import { Modal } from 'uiSrc/components/base/display'
 import styles from './styles.module.scss'
 
 const OAuthSsoDialog = () => {
-  const { ssoFlow } = useSelector(cloudSelector)
-  const { isOpenSocialDialog, source } = useSelector(oauthCloudSelector)
+  const { ssoFlow } = useAppSelector(cloudSelector)
+  const { isOpenSocialDialog, source } = useAppSelector(oauthCloudSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleClose = useCallback(() => {
     sendEventTelemetry({

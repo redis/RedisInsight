@@ -1,6 +1,6 @@
 import React from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { CommandView } from './index'
 import { MOCK_COMMANDS_SPEC } from 'uiSrc/constants'
 import { getRedisCommandsSuccess } from 'uiSrc/slices/app/redis-commands'
@@ -11,7 +11,7 @@ import MonacoLanguages from 'uiSrc/components/monaco-laguages'
 // Decorator to initialize Monaco environment and Redis commands for syntax highlighting
 const withMonacoSetup = (Story: React.ComponentType) => {
   const MonacoSetup = () => {
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
 
     React.useEffect(() => {
       // Initialize Redis commands with mock data so MonacoLanguages can register the language

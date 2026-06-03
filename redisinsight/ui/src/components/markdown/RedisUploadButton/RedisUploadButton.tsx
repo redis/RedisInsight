@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
@@ -41,12 +41,12 @@ export interface Props {
 }
 
 const RedisUploadButton = ({ label, path }: Props) => {
-  const { pathsInProgress } = useSelector(customTutorialsBulkUploadSelector)
+  const { pathsInProgress } = useAppSelector(customTutorialsBulkUploadSelector)
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { instanceId } = useParams<{ instanceId: string }>()
   const { environment } = useDatabaseEnvironment()
   const isProduction = environment === Environment.Production

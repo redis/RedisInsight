@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
@@ -29,8 +29,8 @@ const SimilaritySearchResultsTable = memo(
     parsedAttributesCache,
     actionsConfig,
   }: SimilaritySearchResultsTableProps) => {
-    const { compressor = null } = useSelector(connectedInstanceSelector)
-    const { viewFormat } = useSelector(selectedKeySelector)
+    const { compressor = null } = useAppSelector(connectedInstanceSelector)
+    const { viewFormat } = useAppSelector(selectedKeySelector)
 
     const sortedMatches = useMemo(
       () => [...matches].sort((a, b) => b.score - a.score),

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 import { lastDeliveredIDTooltipText } from 'uiSrc/constants/texts'
@@ -63,12 +63,12 @@ const GroupsViewWrapper = (props: Props) => {
     lastRefreshTime,
     data: loadedGroups = [],
     loading,
-  } = useSelector(streamGroupsSelector)
-  const { name: selectedKey, nameString: selectedKeyString } = useSelector(
+  } = useAppSelector(streamGroupsSelector)
+  const { name: selectedKey, nameString: selectedKeyString } = useAppSelector(
     selectedKeyDataSelector,
   ) ?? { name: '', nameString: '' }
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const [groups, setGroups] = useState<IConsumerGroup[]>([])
   const [deleting, setDeleting] = useState<string>('')

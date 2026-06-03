@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { IError } from 'uiSrc/slices/interfaces'
 import { DEFAULT_ERROR_MESSAGE } from 'uiSrc/utils'
@@ -16,8 +16,8 @@ const DEFAULT_ERROR_TITLE = 'Error'
 const AZURE_TOKEN_EXPIRED_TOAST_ID = 'azure-token-expired'
 
 export const useErrorNotifications = () => {
-  const errorsData = useSelector(errorsSelector)
-  const dispatch = useDispatch()
+  const errorsData = useAppSelector(errorsSelector)
+  const dispatch = useAppDispatch()
   const toastIdsRef = useRef(new Map<string, number | string>())
   const azureErrorIdsRef = useRef(new Set<string>())
 

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
 import { connectedInstanceCDSelector } from 'uiSrc/slices/instances/instances'
@@ -23,9 +23,9 @@ import { InsightsPanelTabs, SidePanels } from 'uiSrc/slices/interfaces/insights'
  * because SidePanelsWrapper is only mounted when a panel is already open.
  */
 export const useCapabilityAutoOpen = () => {
-  const { source: capabilitySource } = useSelector(appContextCapability)
-  const { free = false } = useSelector(connectedInstanceCDSelector) ?? {}
-  const dispatch = useDispatch()
+  const { source: capabilitySource } = useAppSelector(appContextCapability)
+  const { free = false } = useAppSelector(connectedInstanceCDSelector) ?? {}
+  const dispatch = useAppDispatch()
   const history = useHistory()
 
   useEffect(() => {

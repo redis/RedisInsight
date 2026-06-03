@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { isNull } from 'lodash'
@@ -145,7 +145,7 @@ const QueryCard = (props: Props) => {
     db,
   } = props
 
-  const { visualizations = [] } = useSelector(appPluginsSelector)
+  const { visualizations = [] } = useAppSelector(appPluginsSelector)
 
   const { instanceId = '' } = useParams<{ instanceId: string }>()
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false)

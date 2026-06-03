@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import {
   selectedKeyDataSelector,
@@ -45,10 +45,10 @@ export interface Props extends KeyDetailsHeaderProps {
 const VectorSetDetails = (props: Props) => {
   const { onRemoveKey, onOpenAddItemPanel, onCloseAddItemPanel } = props
 
-  const dispatch = useDispatch()
-  const { loading } = useSelector(selectedKeySelector)
-  const selectedKeyData = useSelector(selectedKeyDataSelector)
-  const { id: databaseId } = useSelector(connectedInstanceSelector)
+  const dispatch = useAppDispatch()
+  const { loading } = useAppSelector(selectedKeySelector)
+  const selectedKeyData = useAppSelector(selectedKeyDataSelector)
+  const { id: databaseId } = useAppSelector(connectedInstanceSelector)
   const keyName = selectedKeyData?.name
     ? bufferToString(selectedKeyData.name)
     : ''
@@ -136,7 +136,7 @@ const VectorSetDetails = (props: Props) => {
     total = 0,
     elements: vectorSetElements = [],
     isPaginationSupported,
-  } = useSelector(vectorSetDataSelector) ?? {}
+  } = useAppSelector(vectorSetDataSelector) ?? {}
 
   // Similarity-search results take precedence; otherwise fall back to the
   // element-list preview, which is only shown for non-paginated vector sets.

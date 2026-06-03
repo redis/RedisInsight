@@ -1,7 +1,7 @@
 import { saveAs } from 'file-saver'
 import JSZip from 'jszip'
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import { rdiPipelineSelector } from 'uiSrc/slices/rdi/pipeline'
@@ -13,7 +13,7 @@ export interface Props {
 }
 
 const Download = ({ onClose, trigger }: Props) => {
-  const { loading, jobs, config } = useSelector(rdiPipelineSelector)
+  const { loading, jobs, config } = useAppSelector(rdiPipelineSelector)
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
 

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import {
   aiAssistantChatSelector,
@@ -34,11 +34,11 @@ import {
 import styles from './styles.module.scss'
 
 const AssistanceChat = () => {
-  const { id, messages, agreements, loading } = useSelector(
+  const { id, messages, agreements, loading } = useAppSelector(
     aiAssistantChatSelector,
   )
-  const { modules, provider } = useSelector(connectedInstanceSelector)
-  const { commandsArray: REDIS_COMMANDS_ARRAY } = useSelector(
+  const { modules, provider } = useAppSelector(connectedInstanceSelector)
+  const { commandsArray: REDIS_COMMANDS_ARRAY } = useAppSelector(
     appRedisCommandsSelector,
   )
 
@@ -46,7 +46,7 @@ const AssistanceChat = () => {
     useState<Nullable<AiChatMessage>>(null)
   const { instanceId } = useParams<{ instanceId: string }>()
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (!id || messages.length) return

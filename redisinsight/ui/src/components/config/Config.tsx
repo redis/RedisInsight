@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useLocation } from 'react-router-dom'
 import { isNumber } from 'lodash'
 import { BrowserStorageItem, FeatureFlags } from 'uiSrc/constants'
@@ -44,18 +44,18 @@ import { ThemeContext } from 'uiSrc/contexts/themeContext'
 
 const SETTINGS_PAGE_PATH = '/settings'
 const Config = () => {
-  const serverInfo = useSelector(appServerInfoSelector)
-  const { id } = useSelector(connectedInstanceSelector)
-  const { config, spec } = useSelector(userSettingsSelector)
+  const serverInfo = useAppSelector(appServerInfoSelector)
+  const { id } = useAppSelector(connectedInstanceSelector)
+  const { config, spec } = useAppSelector(userSettingsSelector)
   const {
     [FeatureFlags.cloudSso]: cloudSsoFeature,
     [FeatureFlags.envDependent]: envDependentFeature,
     [FeatureFlags.customTutorials]: customTutorialsFeature,
-  } = useSelector(appFeatureFlagsFeaturesSelector)
+  } = useAppSelector(appFeatureFlagsFeaturesSelector)
   const { changeTheme } = useContext(ThemeContext)
   const { pathname } = useLocation()
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   useEffect(() => {
     dispatch(
       setCapability(localStorageService?.get(BrowserStorageItem.capability)),

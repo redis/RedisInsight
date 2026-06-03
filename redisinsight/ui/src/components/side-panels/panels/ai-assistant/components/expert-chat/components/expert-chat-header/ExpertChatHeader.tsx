@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
 
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
 import {
@@ -37,7 +37,7 @@ const ExpertChatHeader = (props: Props) => {
     props
   const [isTutorialsPopoverOpen, setIsTutorialsPopoverOpen] = useState(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
 
   const handleOpenTutorials = () => {

@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react'
 import { isUndefined } from 'lodash'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
 import {
@@ -76,22 +76,22 @@ const KeyDetailsHeader = ({
   Actions,
 }: KeyDetailsHeaderProps) => {
   const { refreshing, loading, lastRefreshTime, isRefreshDisabled } =
-    useSelector(selectedKeySelector)
+    useAppSelector(selectedKeySelector)
   const {
     type,
     length,
     name: keyBuffer,
     nameString: keyName,
-  } = useSelector(selectedKeyDataSelector) ?? initialKeyInfo
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
-  const { viewType } = useSelector(keysSelector)
+  } = useAppSelector(selectedKeyDataSelector) ?? initialKeyInfo
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
+  const { viewType } = useAppSelector(keysSelector)
 
   const isSearchableType = SEARCHABLE_KEY_TYPES.includes(type as KeyTypes)
   const { indexes, status: keyIndexedStatus } = useIsKeyIndexed(
     isSearchableType ? keyName || '' : '',
   )
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleRefreshKey = () => {
     dispatch(refreshKey(keyBuffer!, type, undefined, length))

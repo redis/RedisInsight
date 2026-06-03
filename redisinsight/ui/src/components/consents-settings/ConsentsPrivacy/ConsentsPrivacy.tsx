@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useFormik } from 'formik'
 import { has } from 'lodash'
 
@@ -21,9 +21,9 @@ const ConsentsPrivacy = () => {
   const [privacyConsents, setPrivacyConsents] = useState<IConsent[]>([])
   const [initialValues, setInitialValues] = useState<any>({})
 
-  const { config, spec } = useSelector(userSettingsSelector)
+  const { config, spec } = useAppSelector(userSettingsSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const formik = useFormik({
     initialValues,

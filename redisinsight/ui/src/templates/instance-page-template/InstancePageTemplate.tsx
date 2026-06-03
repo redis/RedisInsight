@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import styled from 'styled-components'
 
 import InstanceHeader from 'uiSrc/components/instance-header'
@@ -51,8 +51,8 @@ const InstancePageTemplate = (props: Props) => {
   const { children } = props
   const [sizes, setSizes] = useState<number[]>(getDefaultSizes())
 
-  const { isShowCli, isShowHelper } = useSelector(cliSettingsSelector)
-  const { isShowMonitor } = useSelector(monitorSelector)
+  const { isShowCli, isShowHelper } = useAppSelector(cliSettingsSelector)
+  const { isShowMonitor } = useAppSelector(monitorSelector)
   const { privateRoutes } = useNavigation()
 
   const ref = useRef<ImperativePanelGroupHandle>(null)

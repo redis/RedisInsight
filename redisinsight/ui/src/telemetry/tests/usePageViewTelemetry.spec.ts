@@ -1,5 +1,5 @@
 import { renderHook, act, cleanup } from '@testing-library/react-hooks'
-import * as reactRedux from 'react-redux'
+import * as appHooks from 'uiSrc/slices/hooks'
 import { faker } from '@faker-js/faker'
 import { cloneDeep } from 'lodash'
 
@@ -32,7 +32,7 @@ describe('usePageViewTelemetry', () => {
     store = cloneDeep(mockedStore)
     store.clearActions()
 
-    mockUseSelector = jest.spyOn(reactRedux, 'useSelector')
+    mockUseSelector = jest.spyOn(appHooks, 'useAppSelector')
     mockUseSelector.mockReturnValue(INSTANCES_MOCK[0])
   })
 

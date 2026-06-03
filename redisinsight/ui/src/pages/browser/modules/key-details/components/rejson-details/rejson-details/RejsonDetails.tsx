@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 
 import cx from 'classnames'
 import { PlusIcon } from 'uiSrc/components/base/icons'
@@ -35,7 +35,7 @@ const RejsonDetails = (props: BaseProps) => {
 
   const [addRootKVPair, setAddRootKVPair] = useState<boolean>(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleFetchVisualisationResults = (
     path: string,

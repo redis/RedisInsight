@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import OAuthSignInButton from 'uiSrc/components/oauth/oauth-sign-in-button'
 import {
@@ -24,10 +24,10 @@ export interface Props {
 const OAuthUserProfile = (props: Props) => {
   const { source } = props
   const [selectingAccountId, setSelectingAccountId] = useState<number>()
-  const { error, data, initialLoading } = useSelector(oauthCloudUserSelector)
-  const { server } = useSelector(appInfoSelector)
+  const { error, data, initialLoading } = useAppSelector(oauthCloudUserSelector)
+  const { server } = useAppSelector(appInfoSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (data || error) {

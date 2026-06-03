@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { isNull } from 'lodash'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { EmptyMessage } from 'uiSrc/pages/database-analysis/constants'
 import { EmptyAnalysisMessage } from 'uiSrc/pages/database-analysis/components'
 import {
@@ -34,15 +34,15 @@ export interface Props {
 const DatabaseAnalysisTabs = (props: Props) => {
   const { loading, reports, data } = props
 
-  const viewTab = useSelector(dbAnalysisViewTabSelector)
-  const { id: instanceId = '', provider } = useSelector(
+  const viewTab = useAppSelector(dbAnalysisViewTabSelector)
+  const { id: instanceId = '', provider } = useAppSelector(
     connectedInstanceSelector,
   )
-  const { content: recommendationsContent } = useSelector(
+  const { content: recommendationsContent } = useAppSelector(
     recommendationsSelector,
   )
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const tabs: TabInfo[] = useMemo(
     () => [

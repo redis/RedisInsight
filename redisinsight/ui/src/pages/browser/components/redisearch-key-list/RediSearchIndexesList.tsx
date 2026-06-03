@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory, useLocation } from 'react-router-dom'
 
 import {
@@ -53,21 +53,21 @@ export interface Props {
 const RediSearchIndexesList = (props: Props) => {
   const { onCreateIndex } = props
 
-  const { viewType, searchMode } = useSelector(keysSelector)
-  const { selectedIndex } = useSelector(redisearchSelector)
-  const { data: list = [], loading } = useSelector(redisearchListSelector)
+  const { viewType, searchMode } = useAppSelector(keysSelector)
+  const { selectedIndex } = useAppSelector(redisearchSelector)
+  const { data: list = [], loading } = useAppSelector(redisearchListSelector)
   const {
     id: instanceId,
     modules,
     host: instanceHost,
-  } = useSelector(connectedInstanceSelector)
+  } = useAppSelector(connectedInstanceSelector)
 
   const selectedValue = selectedIndex ? bufferToString(selectedIndex) : ''
-  const featureFlags = useSelector(appFeatureFlagsFeaturesSelector)
+  const featureFlags = useAppSelector(appFeatureFlagsFeaturesSelector)
   const isVectorSearch =
     featureFlags?.[FeatureFlags.vectorSearchV2]?.flag ?? false
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const location = useLocation()
   const history = useHistory()
 

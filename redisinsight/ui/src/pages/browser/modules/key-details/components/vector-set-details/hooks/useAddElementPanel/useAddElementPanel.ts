@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { bufferToString } from 'uiSrc/utils'
@@ -13,7 +13,7 @@ export const useAddElementPanel = ({
   onOpenAddItemPanel,
   onCloseAddItemPanel,
 }: UseAddElementPanelParams): UseAddElementPanelResult => {
-  const selectedKeyData = useSelector(selectedKeyDataSelector)
+  const selectedKeyData = useAppSelector(selectedKeyDataSelector)
   const keyName = bufferToString(selectedKeyData?.name)
 
   const [isAddItemPanelOpen, setIsAddItemPanelOpen] = useState(false)

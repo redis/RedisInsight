@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { debounce } from 'lodash'
 import { Socket } from 'socket.io-client'
 import { v4 as uuidv4 } from 'uuid'
@@ -35,7 +35,7 @@ interface IProps {
   retryDelay?: number
 }
 const MonitorConfig = ({ retryDelay = 15000 }: IProps) => {
-  const { id: instanceId = '' } = useSelector(connectedInstanceSelector)
+  const { id: instanceId = '' } = useAppSelector(connectedInstanceSelector)
   const {
     socket,
     isRunning,
@@ -43,8 +43,8 @@ const MonitorConfig = ({ retryDelay = 15000 }: IProps) => {
     isSaveToFile,
     isMinimizedMonitor,
     isShowMonitor,
-  } = useSelector(monitorSelector)
-  const { token } = useSelector(appCsrfSelector)
+  } = useAppSelector(monitorSelector)
+  const { token } = useAppSelector(appCsrfSelector)
 
   const socketRef = useRef<Nullable<Socket>>(null)
   const connectIo = useIoConnection(getSocketApiUrl('monitor'), {
@@ -56,7 +56,7 @@ const MonitorConfig = ({ retryDelay = 15000 }: IProps) => {
   const retryTimerRef = useRef<NodeJS.Timer>()
   const payloadsRef = useRef<IMonitorDataPayload[]>([])
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const setNewItems = debounce(
     (items, onSuccess?) => {

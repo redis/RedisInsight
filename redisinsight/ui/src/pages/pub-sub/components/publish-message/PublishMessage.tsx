@@ -1,5 +1,5 @@
 import React, { FormEvent, useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import {
   appContextPubSub,
@@ -25,7 +25,7 @@ const HIDE_BADGE_TIMER = 3000
 
 const PublishMessage = () => {
   const { channel: channelContext, message: messageContext } =
-    useSelector(appContextPubSub)
+    useAppSelector(appContextPubSub)
   const connectionType = useConnectionType()
 
   const [channel, setChannel] = useState<string>(channelContext)
@@ -37,7 +37,7 @@ const PublishMessage = () => {
   const timeOutRef = useRef<NodeJS.Timeout>()
 
   const { instanceId } = useParams<{ instanceId: string }>()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(
     () => () => {

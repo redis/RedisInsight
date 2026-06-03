@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import {
   LENGTH_NAMING_BY_TYPE,
@@ -23,7 +23,7 @@ export interface Props {
 
 const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
   const { type, size, length, quantType, vectorDim } =
-    useSelector(selectedKeyDataSelector) ?? initialKeyInfo
+    useAppSelector(selectedKeyDataSelector) ?? initialKeyInfo
 
   const isSizeTooLarge = size === -1
 

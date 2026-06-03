@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import InlineItemEditor from 'uiSrc/components/inline-item-editor/InlineItemEditor'
 import {
@@ -26,12 +26,12 @@ export interface Props {
 }
 
 const KeyDetailsHeaderTTL = ({ onEditTTL }: Props) => {
-  const { loading } = useSelector(selectedKeySelector)
+  const { loading } = useAppSelector(selectedKeySelector)
   const {
     ttl: ttlProp,
     nameString: keyProp,
     name: keyBuffer,
-  } = useSelector(selectedKeyDataSelector) ?? initialKeyInfo
+  } = useAppSelector(selectedKeyDataSelector) ?? initialKeyInfo
 
   const [ttl, setTTL] = useState(`${ttlProp}`)
   const [ttlIsEditing, setTTLIsEditing] = useState(false)

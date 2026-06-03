@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import ReactDOM from 'react-dom'
 
 import {
@@ -34,13 +34,13 @@ const MAX_FILE_SIZE = MAX_MB_FILE * 1024 * 1024
 
 const ImportDatabase = (props: Props) => {
   const { onClose } = props
-  const { loading, data, error } = useSelector(importInstancesSelector)
+  const { loading, data, error } = useAppSelector(importInstancesSelector)
   const [files, setFiles] = useState<Nullable<FileList>>(null)
   const [isInvalid, setIsInvalid] = useState<boolean>(false)
   const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(true)
   const [domReady, setDomReady] = useState(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { setModalHeader } = useModalHeader()
 
   useEffect(() => {

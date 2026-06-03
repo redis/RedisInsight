@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
 import { Pages } from 'uiSrc/constants'
@@ -25,10 +25,10 @@ export interface ICloudConnectionSubmit {
 }
 
 const CloudConnectionFormWrapper = ({ onClose }: Props) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const history = useHistory()
-  const { loading, credentials } = useSelector(cloudSelector)
+  const { loading, credentials } = useAppSelector(cloudSelector)
 
   const { setModalHeader } = useModalHeader()
 

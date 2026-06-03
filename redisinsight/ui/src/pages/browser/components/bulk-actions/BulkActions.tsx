@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import {
@@ -50,10 +50,10 @@ const BulkActions = (props: Props) => {
   } = props
   const { instanceId = '' } = useParams<{ instanceId: string }>()
 
-  const { filter, search } = useSelector(keysSelector)
-  const { type } = useSelector(selectedBulkActionsSelector)
+  const { filter, search } = useAppSelector(keysSelector)
+  const { type } = useAppSelector(selectedBulkActionsSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     sendEventTelemetry({

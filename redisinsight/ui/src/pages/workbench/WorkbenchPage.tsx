@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import { formatLongName, getDbIndex, setTitle } from 'uiSrc/utils'
@@ -10,7 +10,7 @@ import WBViewWrapper from './components/wb-view'
 const WorkbenchPage = () => {
   const [isPageViewSent, setIsPageViewSent] = useState(false)
 
-  const { name: connectedInstanceName, db } = useSelector(
+  const { name: connectedInstanceName, db } = useAppSelector(
     connectedInstanceSelector,
   )
 

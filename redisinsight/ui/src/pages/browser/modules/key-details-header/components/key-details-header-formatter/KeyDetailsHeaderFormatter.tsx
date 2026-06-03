@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import {
@@ -38,16 +38,17 @@ const KeyDetailsHeaderFormatter = (props: Props) => {
   const { width } = props
 
   const { instanceId = '' } = useParams<{ instanceId: string }>()
-  const { viewType } = useSelector(keysSelector)
-  const { viewFormat } = useSelector(selectedKeySelector)
-  const { type: keyType, length } = useSelector(selectedKeyDataSelector) ?? {}
-  const { value: keyValue } = useSelector(stringDataSelector)
+  const { viewType } = useAppSelector(keysSelector)
+  const { viewFormat } = useAppSelector(selectedKeySelector)
+  const { type: keyType, length } =
+    useAppSelector(selectedKeyDataSelector) ?? {}
+  const { value: keyValue } = useAppSelector(stringDataSelector)
 
   const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false)
   const [typeSelected, setTypeSelected] = useState<KeyValueFormat>(viewFormat)
   const [options, setOptions] = useState<any[]>([])
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const isStringFormattingEnabled =
     keyType === KeyTypes.String

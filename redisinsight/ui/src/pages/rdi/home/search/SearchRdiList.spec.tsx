@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash'
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { RdiInstance } from 'uiSrc/slices/interfaces'
 import { loadInstancesSuccess } from 'uiSrc/slices/rdi/instances'
 import { RootState, store } from 'uiSrc/slices/store'
@@ -16,9 +16,9 @@ import {
 
 import SearchRdiList from './SearchRdiList'
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(),
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppSelector: jest.fn(),
 }))
 
 jest.mock('uiSrc/telemetry', () => ({
@@ -57,7 +57,7 @@ describe('SearchRdiList', () => {
     storeMock.clearActions()
 
     const state: RootState = store.getState()
-    ;(useSelector as jest.Mock).mockImplementation(
+    ;(useAppSelector as jest.Mock).mockImplementation(
       (callback: (arg0: RootState) => RootState) =>
         callback({
           ...state,

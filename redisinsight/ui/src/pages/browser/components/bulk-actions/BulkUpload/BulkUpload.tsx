@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { Nullable } from 'uiSrc/utils'
 import { BulkActionsStatus, BulkActionsType } from 'uiSrc/constants'
@@ -49,12 +49,12 @@ const MAX_FILE_SIZE = MAX_MB_FILE * 1024 * 1024
 
 const BulkUpload = (props: Props) => {
   const { onCancel } = props
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
-  const { loading, fileName } = useSelector(bulkActionsUploadSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
+  const { loading, fileName } = useAppSelector(bulkActionsUploadSelector)
   const { status, progress, duration } =
-    useSelector(bulkActionsUploadOverviewSelector) ?? {}
+    useAppSelector(bulkActionsUploadOverviewSelector) ?? {}
   const { succeed, processed, failed } =
-    useSelector(bulkActionsUploadSummarySelector) ?? {}
+    useAppSelector(bulkActionsUploadSummarySelector) ?? {}
 
   const [files, setFiles] = useState<Nullable<FileList>>(null)
   const [isInvalid, setIsInvalid] = useState<boolean>(false)
@@ -63,7 +63,7 @@ const BulkUpload = (props: Props) => {
 
   const isCompleted = status && status === BulkActionsStatus.Completed
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const onStartAgain = () => {
     dispatch(setBulkUploadStartAgain())

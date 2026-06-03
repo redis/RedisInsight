@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 
 import {
@@ -53,7 +53,7 @@ const OnboardingTour = (props: Props) => {
     onSkip = () => {},
   } = Inner ? Inner() : {}
 
-  const { [FeatureFlags.vectorSearchV2]: vectorSearchFeature } = useSelector(
+  const { [FeatureFlags.vectorSearchV2]: vectorSearchFeature } = useAppSelector(
     appFeatureFlagsFeaturesSelector,
   )
 
@@ -71,7 +71,7 @@ const OnboardingTour = (props: Props) => {
     }
   }, [currentStep, totalSteps, vectorSearchFeature?.flag])
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setIsOpen(step === currentStep && isActive)

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import cx from 'classnames'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import MobileIcon from 'uiSrc/assets/img/icons/mobile_module_not_loaded.svg?react'
 import DesktopIcon from 'uiSrc/assets/img/icons/module_not_loaded.svg?react'
@@ -67,8 +67,8 @@ const ModuleNotLoaded = ({
   onClose,
 }: IProps) => {
   const [width, setWidth] = useState(0)
-  const freeInstances = useSelector(freeInstancesSelector) || []
-  const { [FeatureFlags.cloudAds]: cloudAdsFeature } = useSelector(
+  const freeInstances = useAppSelector(freeInstancesSelector) || []
+  const { [FeatureFlags.cloudAds]: cloudAdsFeature } = useAppSelector(
     appFeatureFlagsFeaturesSelector,
   )
 

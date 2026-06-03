@@ -1,6 +1,6 @@
 import { format, formatDuration, intervalToDuration } from 'date-fns'
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
 import {
@@ -28,8 +28,8 @@ const SMALL_SCREEN_RESOLUTION = 360 - PADDINGS_OUTSIDE
 const DOWNLOAD_IFRAME_NAME = 'logFileDownloadIFrame'
 
 const MonitorLog = () => {
-  const { timestamp, logFileId, isSaveToFile } = useSelector(monitorSelector)
-  const dispatch = useDispatch()
+  const { timestamp, logFileId, isSaveToFile } = useAppSelector(monitorSelector)
+  const dispatch = useAppDispatch()
 
   const duration = cutDurationText(
     formatDuration(

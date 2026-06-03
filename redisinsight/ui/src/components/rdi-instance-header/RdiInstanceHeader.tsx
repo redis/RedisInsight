@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
 import { CopilotTrigger, InsightsTrigger } from 'uiSrc/components/triggers'
@@ -20,11 +20,11 @@ import InstancesNavigationPopover from '../instance-header/components/instances-
 import styles from './styles.module.scss'
 
 const RdiInstanceHeader = () => {
-  const { name = '' } = useSelector(connectedInstanceSelector)
+  const { name = '' } = useAppSelector(connectedInstanceSelector)
   const {
     [FeatureFlags.databaseChat]: databaseChatFeature,
     [FeatureFlags.documentationChat]: documentationChatFeature,
-  } = useSelector(appFeatureFlagsFeaturesSelector)
+  } = useAppSelector(appFeatureFlagsFeaturesSelector)
   const isAnyChatAvailable = isAnyFeatureEnabled([
     databaseChatFeature,
     documentationChatFeature,

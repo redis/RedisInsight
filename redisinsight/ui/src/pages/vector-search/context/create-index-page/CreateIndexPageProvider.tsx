@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 
 import { Pages } from 'uiSrc/constants'
 import { RowSelectionState } from 'uiSrc/components/base/layout/table'
@@ -88,7 +88,7 @@ export const CreateIndexPageProvider = ({
   )
 
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   // --- Sample data mode hooks (only meaningful when isSampleData) ---
   const { command: sampleCommand } = useCreateIndexCommand(sampleData)

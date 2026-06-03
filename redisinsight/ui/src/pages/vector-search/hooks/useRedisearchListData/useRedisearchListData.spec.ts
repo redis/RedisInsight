@@ -1,5 +1,5 @@
 import { renderHook, waitFor } from 'uiSrc/utils/test-utils'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from 'uiSrc/slices/hooks'
 import {
   redisearchListSelector,
   fetchRedisearchListAction,
@@ -8,10 +8,10 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { isRedisearchAvailable, bufferToString } from 'uiSrc/utils'
 import { useRedisearchListData } from './useRedisearchListData'
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppDispatch: jest.fn(),
+  useAppSelector: jest.fn(),
 }))
 
 jest.mock('uiSrc/slices/browser/redisearch', () => ({
@@ -30,8 +30,8 @@ jest.mock('uiSrc/utils', () => ({
 
 describe('useRedisearchListData', () => {
   const mockDispatch = jest.fn()
-  const mockUseSelector = useSelector as jest.Mock
-  const mockUseDispatch = useDispatch as jest.Mock
+  const mockUseSelector = useAppSelector as jest.Mock
+  const mockUseDispatch = useAppDispatch as jest.Mock
   const mockIsRedisearchAvailable = isRedisearchAvailable as jest.Mock
 
   beforeEach(() => {

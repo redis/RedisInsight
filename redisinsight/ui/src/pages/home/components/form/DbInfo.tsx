@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { capitalize } from 'lodash'
 
 import { Text } from 'uiSrc/components/base/text'
@@ -93,7 +93,7 @@ const DbInfo = (props: Props) => {
     isFromCloud,
   } = props
 
-  const { server } = useSelector(appInfoSelector)
+  const { server } = useAppSelector(appInfoSelector)
 
   const dbInfo: DbInfoLabelValue[] = [
     {

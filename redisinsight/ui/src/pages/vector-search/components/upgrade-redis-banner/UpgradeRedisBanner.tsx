@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { OAuthSsoHandlerDialog } from 'uiSrc/components'
 import { CallOut } from 'uiSrc/components/base/display/call-out/CallOut'
@@ -14,7 +14,7 @@ export const UpgradeRedisBanner = () => {
   const {
     [FeatureFlags.cloudSso]: featureFlagCloudSsl,
     [FeatureFlags.cloudAds]: featureFlagCloudAds,
-  } = useSelector(appFeatureFlagsFeaturesSelector)
+  } = useAppSelector(appFeatureFlagsFeaturesSelector)
 
   const isCloudSsoEnabled =
     featureFlagCloudSsl?.flag && featureFlagCloudAds?.flag

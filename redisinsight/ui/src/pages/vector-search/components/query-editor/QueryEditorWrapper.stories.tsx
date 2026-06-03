@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import type { Meta, StoryObj, StoryContext } from '@storybook/react-vite'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { fn } from 'storybook/test'
 
 import { MOCK_COMMANDS_SPEC } from 'uiSrc/constants'
@@ -22,7 +22,7 @@ const WithMonacoSetup = (Story: React.ComponentType, context: StoryContext) => {
   const isLoading = context.parameters?.loadingState === true
 
   const MonacoSetup = () => {
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
 
     useEffect(() => {
       if (isLoading) {

@@ -1,5 +1,5 @@
 import React, { Ref, useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
@@ -89,20 +89,20 @@ const WBViewWrapper = () => {
     processing,
     activeRunQueryMode,
     resultsMode,
-  } = useSelector(workbenchResultsSelector)
+  } = useAppSelector(workbenchResultsSelector)
   const { unsupportedCommands, blockingCommands } =
-    useSelector(cliSettingsSelector)
-  const { cleanup: cleanupWB } = useSelector(userSettingsWBSelector)
-  const { script: scriptContext } = useSelector(appContextWorkbench)
+    useAppSelector(cliSettingsSelector)
+  const { cleanup: cleanupWB } = useAppSelector(userSettingsWBSelector)
+  const { script: scriptContext } = useAppSelector(appContextWorkbench)
 
   const [script, setScript] = useState(scriptContext)
   const [scriptEl, setScriptEl] =
     useState<Nullable<monacoEditor.editor.IStandaloneCodeEditor>>(null)
 
-  const instance = useSelector(connectedInstanceSelector)
+  const instance = useAppSelector(connectedInstanceSelector)
   const { isDangerousCommand } = useDatabaseEnvironment()
   const { requestConfirmation } = useProductionWriteConfirmation()
-  const { visualizations = [] } = useSelector(appPluginsSelector)
+  const { visualizations = [] } = useAppSelector(appPluginsSelector)
   state = {
     scriptEl,
     loading,
@@ -114,7 +114,7 @@ const WBViewWrapper = () => {
   const scrollDivRef: Ref<HTMLDivElement> = useRef(null)
   const scriptRef = useRef(script)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     dispatch(fetchWBHistoryAction(instanceId))

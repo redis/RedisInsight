@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import {
   selectedKeyDataSelector,
@@ -59,15 +59,17 @@ const AddListElements = (props: Props) => {
   const [elements, setElements] = useState<string[]>([''])
   const [destination, setDestination] =
     useState<ListElementDestination>(TAIL_DESTINATION)
-  const { name: selectedKey = '' } = useSelector(selectedKeyDataSelector) ?? {
+  const { name: selectedKey = '' } = useAppSelector(
+    selectedKeyDataSelector,
+  ) ?? {
     name: undefined,
   }
-  const { viewType } = useSelector(keysSelector)
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
+  const { viewType } = useAppSelector(keysSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
 
   const elementInput = useRef<HTMLInputElement>(null)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(() => {

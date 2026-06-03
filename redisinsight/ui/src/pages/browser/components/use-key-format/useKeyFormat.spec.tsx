@@ -1,15 +1,15 @@
 import { renderHook } from '@testing-library/react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { KeyValueFormat } from 'uiSrc/constants'
 import { bufferToHex, bufferToString } from 'uiSrc/utils'
 import useKeyFormat from './useKeyFormat'
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(),
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppSelector: jest.fn(),
 }))
 
-const mockUseSelector = useSelector as jest.Mock
+const mockUseSelector = useAppSelector as jest.Mock
 
 describe('useKeyFormat hook', () => {
   const renderUseKeyFormat = () => renderHook(() => useKeyFormat())

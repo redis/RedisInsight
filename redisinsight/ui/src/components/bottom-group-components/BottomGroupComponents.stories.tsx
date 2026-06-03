@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import React, { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 
 import BottomGroupComponents from './BottomGroupComponents'
 import {
@@ -23,7 +23,7 @@ type Story = StoryObj<typeof meta>
 export const CLI: Story = {
   decorators: [
     (Story) => {
-      const dispatch = useDispatch()
+      const dispatch = useAppDispatch()
 
       useEffect(() => {
         dispatch(resetCliHelperSettings())
@@ -41,7 +41,7 @@ export const CLI: Story = {
 export const CLIHelper: Story = {
   decorators: [
     (Story) => {
-      const dispatch = useDispatch()
+      const dispatch = useAppDispatch()
 
       useEffect(() => {
         dispatch(resetCliHelperSettings())
@@ -60,7 +60,7 @@ export const CLIHelper: Story = {
 export const Monitor: Story = {
   decorators: [
     (Story) => {
-      const dispatch = useDispatch()
+      const dispatch = useAppDispatch()
 
       useEffect(() => {
         dispatch(resetCliHelperSettings())

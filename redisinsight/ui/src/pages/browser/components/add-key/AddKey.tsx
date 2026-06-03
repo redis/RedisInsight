@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { shallowEqual, useDispatch, useSelector } from 'react-redux'
+import { shallowEqual } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import Divider from 'uiSrc/components/divider/Divider'
 import { KeyTypes } from 'uiSrc/constants'
@@ -56,25 +57,25 @@ export interface Props {
 }
 const AddKey = (props: Props) => {
   const { onAddKeyPanel, onClosePanel, arePanelsCollapsed } = props
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
-  const { loading } = useSelector(addKeyStateSelector)
-  const { id: instanceId, modules = [] } = useSelector(
+  const { loading } = useAppSelector(addKeyStateSelector)
+  const { id: instanceId, modules = [] } = useAppSelector(
     connectedInstanceSelector,
   )
-  const { version } = useSelector(connectedInstanceOverviewSelector)
+  const { version } = useAppSelector(connectedInstanceOverviewSelector)
   // Resolve each option's optional `isEnabledSelector` against the store so
   // the option config is the single source of truth for which key types are
   // gated (e.g. behind dev/feature flags). `shallowEqual` keeps the filtered
   // array stable across renders when membership doesn't change.
-  const enabledOptions = useSelector(
+  const enabledOptions = useAppSelector(
     (state: RootState) =>
       ADD_KEY_TYPE_OPTIONS.filter(
         ({ isEnabledSelector }) => isEnabledSelector?.(state) ?? true,
       ),
     shallowEqual,
   )
-  const { viewType } = useSelector(keysSelector)
+  const { viewType } = useAppSelector(keysSelector)
 
   useEffect(
     () =>

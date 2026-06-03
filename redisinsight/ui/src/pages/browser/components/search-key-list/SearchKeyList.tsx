@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 
 import * as keys from 'uiSrc/constants/keys'
@@ -53,20 +53,20 @@ const placeholders = {
 }
 
 const SearchKeyList = () => {
-  const { id } = useSelector(connectedInstanceSelector)
-  const { search, filter, viewType, searchMode } = useSelector(keysSelector)
+  const { id } = useAppSelector(connectedInstanceSelector)
+  const { search, filter, viewType, searchMode } = useAppSelector(keysSelector)
   const { search: redisearchQuery, selectedIndex } =
-    useSelector(redisearchSelector)
+    useAppSelector(redisearchSelector)
   const { data: rediSearchHistory, loading: rediSearchHistoryLoading } =
-    useSelector(redisearchHistorySelector)
-  const { data: searchHistory, loading: searchHistoryLoading } = useSelector(
+    useAppSelector(redisearchHistorySelector)
+  const { data: searchHistory, loading: searchHistoryLoading } = useAppSelector(
     keysSearchHistorySelector,
   )
 
   const [value, setValue] = useState(search || '')
   const [disableSubmit, setDisableSubmit] = useState(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (id) {

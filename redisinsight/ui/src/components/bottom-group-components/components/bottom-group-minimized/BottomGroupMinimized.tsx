@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
@@ -38,9 +38,9 @@ import {
 const BottomGroupMinimized = () => {
   const { instanceId = '' } = useParams<{ instanceId: string }>()
   const { isShowCli, cliClientUuid, isShowHelper, isMinimizedHelper } =
-    useSelector(cliSettingsSelector)
-  const { isShowMonitor, isMinimizedMonitor } = useSelector(monitorSelector)
-  const dispatch = useDispatch()
+    useAppSelector(cliSettingsSelector)
+  const { isShowMonitor, isMinimizedMonitor } = useAppSelector(monitorSelector)
+  const dispatch = useAppDispatch()
 
   useEffect(
     () => () => {

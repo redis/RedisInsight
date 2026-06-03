@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { appFeatureFlagProdModeSelector } from 'uiSrc/slices/app/features'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
@@ -12,7 +12,7 @@ export const EnvironmentBadge = ({
   environment,
   dataTestId,
 }: EnvironmentBadgeProps) => {
-  const flagEnabled = useSelector(appFeatureFlagProdModeSelector)
+  const flagEnabled = useAppSelector(appFeatureFlagProdModeSelector)
 
   if (!flagEnabled || !environment) return null
 

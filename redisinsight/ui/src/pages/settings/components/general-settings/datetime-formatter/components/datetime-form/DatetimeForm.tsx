@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useFormik } from 'formik'
 import { checkDateTimeFormat, formatTimestamp } from 'uiSrc/utils'
 import {
@@ -38,8 +38,8 @@ export interface Props {
 const DatetimeForm = ({ onFormatChange }: Props) => {
   const [error, setError] = useState('')
   const [saveFormatSucceed, setSaveFormatSucceed] = useState(false)
-  const config = useSelector(userSettingsConfigSelector)
-  const dispatch = useDispatch()
+  const config = useAppSelector(userSettingsConfigSelector)
+  const dispatch = useAppDispatch()
 
   const getInitialDateTime = (): InitialValuesType => {
     const format = config?.dateFormat || DATETIME_FORMATTER_DEFAULT

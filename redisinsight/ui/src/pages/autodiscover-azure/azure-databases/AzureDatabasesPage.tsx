@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { Pages } from 'uiSrc/constants'
 import { setTitle } from 'uiSrc/utils'
@@ -11,7 +11,6 @@ import successMessages from 'uiSrc/components/notifications/success-messages'
 import errorMessages from 'uiSrc/components/notifications/error-messages'
 import { riToast } from 'uiSrc/components/base/display/toast'
 import { defaultContainerId } from 'uiSrc/components/notifications/constants'
-import { AppDispatch } from 'uiSrc/slices/store'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
   ActionStatus,
@@ -80,10 +79,10 @@ const showErrorToast = (
 
 const AzureDatabasesPage = () => {
   const history = useHistory()
-  const dispatch = useDispatch<AppDispatch>()
-  const account = useSelector(azureAuthAccountSelector)
+  const dispatch = useAppDispatch()
+  const account = useAppSelector(azureAuthAccountSelector)
   const { loading, error, databases, selectedSubscription, loaded } =
-    useSelector(azureSelector)
+    useAppSelector(azureSelector)
 
   // Local state for selected databases (UI state)
   const [selectedDatabases, setSelectedDatabases] = useState<

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { ListChildComponentProps, VariableSizeList as List } from 'react-window'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { MAX_BULK_ACTION_ERRORS_LENGTH } from 'uiSrc/constants'
 import { Text } from 'uiSrc/components/base/text'
@@ -12,7 +12,7 @@ const MIN_ROW_HEIGHT = 30
 const PROTRUDING_OFFSET = 2
 
 const BulkDeleteContent = () => {
-  const { errors = [] } = useSelector(bulkActionsDeleteSummarySelector) ?? {}
+  const { errors = [] } = useAppSelector(bulkActionsDeleteSummarySelector) ?? {}
 
   const outerRef = useRef<HTMLDivElement>(null)
   const listRef = useRef<List>(null)

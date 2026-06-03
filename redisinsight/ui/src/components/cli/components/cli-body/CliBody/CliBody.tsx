@@ -1,6 +1,6 @@
 import React, { Ref, useEffect, useRef, useState } from 'react'
 import { KeyboardKeys as keys } from 'uiSrc/constants/keys'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { Nullable, scrollIntoView } from 'uiSrc/utils'
 import { isModifiedEvent } from 'uiSrc/services'
@@ -37,14 +37,14 @@ const CliBody = (props: Props) => {
   const [commandTabPos, setCommandTabPos] = useState<number>(commandTabPosInit)
   const [wordsTyped, setWordsTyped] = useState<number>(0)
   const [matchingCmds, setMatchingCmds] = useState<string[]>([])
-  const { loading: settingsLoading } = useSelector(cliSettingsSelector)
+  const { loading: settingsLoading } = useAppSelector(cliSettingsSelector)
   const { loading, commandHistory: commandHistoryStore } =
-    useSelector(outputSelector)
-  const { commandsArray } = useSelector(appRedisCommandsSelector)
+    useAppSelector(outputSelector)
+  const { commandsArray } = useAppSelector(appRedisCommandsSelector)
 
   const timerClickRef = useRef<NodeJS.Timeout>()
   const scrollDivRef: Ref<HTMLDivElement> = useRef(null)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     inputEl?.focus()

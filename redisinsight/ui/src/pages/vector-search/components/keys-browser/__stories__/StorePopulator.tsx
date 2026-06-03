@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 import { faker } from '@faker-js/faker'
 import { stringToBuffer } from 'uiSrc/utils'
@@ -49,7 +49,7 @@ const buildMockKeysResponse = (keys: ReturnType<typeof generateMockKeys>) => ({
 })
 
 export const StorePopulator = ({ children }: { children: React.ReactNode }) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
   const [ready, setReady] = useState(false)
 

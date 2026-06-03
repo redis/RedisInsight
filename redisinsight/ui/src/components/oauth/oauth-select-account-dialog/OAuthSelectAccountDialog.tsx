@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useFormik } from 'formik'
 import { useHistory } from 'react-router-dom'
 
@@ -52,17 +52,17 @@ interface FormValues {
 }
 
 const OAuthSelectAccountDialog = () => {
-  const { ssoFlow, isRecommendedSettings } = useSelector(cloudSelector)
+  const { ssoFlow, isRecommendedSettings } = useAppSelector(cloudSelector)
   const { accounts = [], currentAccountId } =
-    useSelector(oauthCloudUserDataSelector) ?? {}
-  const { isOpenSelectAccountDialog } = useSelector(oauthCloudSelector)
-  const { loading } = useSelector(oauthCloudUserSelector)
-  const { loading: plansLoadings } = useSelector(oauthCloudPlanSelector)
+    useAppSelector(oauthCloudUserDataSelector) ?? {}
+  const { isOpenSelectAccountDialog } = useAppSelector(oauthCloudSelector)
+  const { loading } = useAppSelector(oauthCloudUserSelector)
+  const { loading: plansLoadings } = useAppSelector(oauthCloudPlanSelector)
 
   const isAutodiscoverySSO = ssoFlow === OAuthSocialAction.Import
 
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const initialValues = {
     accountId: `${currentAccountId}`,

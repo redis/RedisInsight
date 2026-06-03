@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { oauthCloudUserSelector } from 'uiSrc/slices/oauth/cloud'
 import { FeatureFlags } from 'uiSrc/constants'
@@ -9,15 +9,15 @@ import { WelcomeAiAssistant, ChatsWrapper } from './components'
 import styles from './styles.module.scss'
 
 const AiAssistant = () => {
-  const { data: userOAuthProfile } = useSelector(oauthCloudUserSelector)
-  const { [FeatureFlags.cloudSso]: cloudSsoFeature } = useSelector(
+  const { data: userOAuthProfile } = useAppSelector(oauthCloudUserSelector)
+  const { [FeatureFlags.cloudSso]: cloudSsoFeature } = useAppSelector(
     appFeatureFlagsFeaturesSelector,
   )
 
   const currentAccountIdRef = useRef(userOAuthProfile?.id)
   const isShowAuth = cloudSsoFeature?.flag && !userOAuthProfile
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     // user logout

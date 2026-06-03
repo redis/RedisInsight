@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { faker } from '@faker-js/faker'
 import styled from 'styled-components'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { MOCK_COMMANDS_SPEC } from 'uiSrc/constants'
 import { getRedisCommandsSuccess } from 'uiSrc/slices/app/redis-commands'
 import { Col } from 'uiSrc/components/base/layout/flex'
@@ -17,7 +17,7 @@ import {
 
 const withMonacoSetup = (Story: React.ComponentType) => {
   const MonacoSetup = () => {
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
 
     React.useEffect(() => {
       // @ts-ignore

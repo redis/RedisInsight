@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import {
   bufferToSerializedFormat,
@@ -85,16 +85,16 @@ export interface Props {
 const StringDetailsValue = (props: Props) => {
   const { isEditItem, setIsEdit, onRefresh } = props
 
-  const { compressor = null } = useSelector(connectedInstanceSelector)
-  const { loading } = useSelector(stringSelector)
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
-  const { value: initialValue } = useSelector(stringDataSelector)
+  const { compressor = null } = useAppSelector(connectedInstanceSelector)
+  const { loading } = useAppSelector(stringSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
+  const { value: initialValue } = useAppSelector(stringDataSelector)
   const {
     name: key,
     type: keyType,
     length,
-  } = useSelector(selectedKeyDataSelector) ?? { name: '' }
-  const { viewFormat: viewFormatProp } = useSelector(selectedKeySelector)
+  } = useAppSelector(selectedKeyDataSelector) ?? { name: '' }
+  const { viewFormat: viewFormatProp } = useAppSelector(selectedKeySelector)
   const isTruncatedValue = isTruncatedString(initialValue)
 
   const [rows, setRows] = useState<number>(MIN_ROWS)
@@ -111,7 +111,7 @@ const StringDetailsValue = (props: Props) => {
   const textAreaRef: Ref<HTMLTextAreaElement> = useRef(null)
   const containerRef: Ref<HTMLDivElement> = useRef(null)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(

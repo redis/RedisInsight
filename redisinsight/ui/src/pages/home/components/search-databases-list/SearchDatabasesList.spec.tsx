@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { cloneDeep } from 'lodash'
 import {
   cleanup,
@@ -15,9 +15,9 @@ import { Environment } from 'apiClient'
 import { ConnectionType, Instance } from 'uiSrc/slices/interfaces'
 import SearchDatabasesList from './SearchDatabasesList'
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(),
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppSelector: jest.fn(),
 }))
 
 let storeMock: typeof mockedStore
@@ -108,7 +108,7 @@ const mockInitialState = (
   instances: Instance[],
   options?: { selectedTags?: Set<string> },
 ) => {
-  ;(useSelector as jest.Mock).mockImplementation(
+  ;(useAppSelector as jest.Mock).mockImplementation(
     (callback: (arg0: RootState) => RootState) =>
       callback({
         ...state,

@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 
 import { Pages } from 'uiSrc/constants'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
@@ -41,7 +41,7 @@ export interface UseCreateIndexFlowResult {
  */
 export const useCreateIndexFlow = (): UseCreateIndexFlowResult => {
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const { run: createIndex } = useCreateIndex()
   const { stringData: existingIndexes } = useRedisearchListData()

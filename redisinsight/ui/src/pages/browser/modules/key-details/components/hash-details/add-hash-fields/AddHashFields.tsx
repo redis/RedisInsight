@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { toNumber } from 'lodash'
 import {
   keysSelector,
@@ -46,16 +46,18 @@ export interface Props {
 
 const AddHashFields = (props: Props) => {
   const { isExpireFieldsAvailable, closePanel } = props
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [fields, setFields] = useState<IHashFieldState[]>([
     { ...INITIAL_HASH_FIELD_STATE },
   ])
-  const { loading } = useSelector(updateHashValueStateSelector)
-  const { name: selectedKey = '' } = useSelector(selectedKeyDataSelector) ?? {
+  const { loading } = useAppSelector(updateHashValueStateSelector)
+  const { name: selectedKey = '' } = useAppSelector(
+    selectedKeyDataSelector,
+  ) ?? {
     name: undefined,
   }
-  const { viewType } = useSelector(keysSelector)
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
+  const { viewType } = useAppSelector(keysSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
 
   const lastAddedFieldName = useRef<HTMLInputElement>(null)
   const { requestConfirmation } = useProductionWriteConfirmation()

@@ -1,5 +1,5 @@
 import React, { Ref, useCallback, useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { toNumber, isNumber } from 'lodash'
 import cx from 'classnames'
 import { CellMeasurerCache } from 'react-virtualized'
@@ -96,23 +96,25 @@ export interface Props {
 const ZSetDetailsTable = (props: Props) => {
   const { onRemoveKey } = props
 
-  const { loading, searching } = useSelector(zsetSelector)
-  const { loading: updateLoading } = useSelector(updateZsetScoreStateSelector)
+  const { loading, searching } = useAppSelector(zsetSelector)
+  const { loading: updateLoading } = useAppSelector(
+    updateZsetScoreStateSelector,
+  )
   const [sortedColumnOrder, setSortedColumnOrder] = useState(SortOrder.ASC)
-  const { name: key, length } = useSelector(selectedKeyDataSelector) ?? {
+  const { name: key, length } = useAppSelector(selectedKeyDataSelector) ?? {
     name: '',
   }
   const {
     total,
     nextCursor,
     members: loadedMembers,
-  } = useSelector(zsetDataSelector)
-  const { id: instanceId, compressor = null } = useSelector(
+  } = useAppSelector(zsetDataSelector)
+  const { id: instanceId, compressor = null } = useAppSelector(
     connectedInstanceSelector,
   )
-  const { viewType } = useSelector(keysSelector)
-  const { viewFormat: viewFormatProp } = useSelector(selectedKeySelector)
-  const { [KeyTypes.ZSet]: ZSetSizes } = useSelector(
+  const { viewType } = useAppSelector(keysSelector)
+  const { viewFormat: viewFormatProp } = useAppSelector(selectedKeySelector)
+  const { [KeyTypes.ZSet]: ZSetSizes } = useAppSelector(
     appContextBrowserKeyDetails,
   )
 
@@ -124,7 +126,7 @@ const ZSetDetailsTable = (props: Props) => {
   const [expandedRows, setExpandedRows] = useState<number[]>([])
   const [viewFormat, setViewFormat] = useState(viewFormatProp)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const formattedLastIndexRef = useRef(OVER_RENDER_BUFFER_COUNT)
   const tableRef: Ref<any> = useRef(null)

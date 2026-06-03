@@ -8,7 +8,7 @@ import {
   loadDBAnalysisReportsSuccess,
   setSelectedAnalysisId,
 } from 'uiSrc/slices/analytics/dbAnalysis'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { fn } from 'storybook/test'
 
 const meta: Meta<typeof DatabaseAnalysisPageView> = {
@@ -36,7 +36,7 @@ export const Loading: Story = {
 }
 
 const WithDataRender = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { data, reports } = useMemo(
     () => buildDatabaseAnalysisWithTopKeys(),
     [],

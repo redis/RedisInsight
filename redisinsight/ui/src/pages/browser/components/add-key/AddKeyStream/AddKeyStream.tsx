@@ -1,5 +1,5 @@
 import React, { FormEvent, useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { addStreamKey } from 'uiSrc/slices/browser/keys'
 import {
   entryIdRegex,
@@ -36,7 +36,7 @@ const AddKeyStream = (props: Props) => {
   ])
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     const isValid = isRequiredStringsValid(keyName) && !entryIdError

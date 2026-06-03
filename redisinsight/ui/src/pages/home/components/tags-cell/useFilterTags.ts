@@ -1,10 +1,10 @@
 import { useState, useCallback, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { tagsSelector, setSelectedTags } from 'uiSrc/slices/instances/tags'
 
 export const useFilterTags = () => {
-  const dispatch = useDispatch()
-  const { data: tagsData, selectedTags } = useSelector(tagsSelector)
+  const dispatch = useAppDispatch()
+  const { data: tagsData, selectedTags } = useAppSelector(tagsSelector)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [tagSearch, setTagSearch] = useState('')
 

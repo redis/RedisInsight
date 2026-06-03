@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import {
   DeleteIcon,
@@ -24,10 +24,10 @@ import * as S from './SubscribeForm.styles'
 import SubscribeInformation from '../subscribe-information'
 
 const SubscribeForm = (props: SubscribeFormProps) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const { isSubscribed, subscriptions, loading, count } =
-    useSelector(pubSubSelector)
+    useAppSelector(pubSubSelector)
   const { instanceId = '' } = useParams<{ instanceId: string }>()
 
   const [channels, setChannels] = useState(() =>

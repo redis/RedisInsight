@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { isUndefined } from 'lodash'
 
 import { rejsonDataSelector, rejsonSelector } from 'uiSrc/slices/browser/rejson'
@@ -30,16 +30,16 @@ import styles from './styles.module.scss'
 export interface Props extends KeyDetailsHeaderProps {}
 
 const RejsonDetailsWrapper = (props: Props) => {
-  const { loading, editorType } = useSelector(rejsonSelector)
-  const { data, downloaded, type, path } = useSelector(rejsonDataSelector)
+  const { loading, editorType } = useAppSelector(rejsonSelector)
+  const { data, downloaded, type, path } = useAppSelector(rejsonDataSelector)
 
   const {
     name: selectedKey,
     nameString,
     length,
-  } = useSelector(selectedKeyDataSelector) || {}
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
-  const { viewType } = useSelector(keysSelector)
+  } = useAppSelector(selectedKeyDataSelector) || {}
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
+  const { viewType } = useAppSelector(keysSelector)
 
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
 

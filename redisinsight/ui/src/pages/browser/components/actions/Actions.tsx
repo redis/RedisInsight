@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import {
   getBasedOnViewTypeEvent,
   sendEventTelemetry,
@@ -27,9 +27,9 @@ export interface Props {
   handleBulkActionsPanel: (value: boolean) => void
 }
 const Actions = ({ handleAddKeyPanel, handleBulkActionsPanel }: Props) => {
-  const dispatch = useDispatch()
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
-  const { viewType, search, filter } = useSelector(keysSelector)
+  const dispatch = useAppDispatch()
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
+  const { viewType, search, filter } = useAppSelector(keysSelector)
   const openAddKeyPanel = () => {
     handleAddKeyPanel(true)
     sendEventTelemetry({

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 import NoDataImg from 'uiSrc/assets/img/no-data.svg'
 
@@ -32,10 +32,10 @@ export interface Props {
 
 const NoKeysFound = (props: Props) => {
   const { onAddKeyPanel } = props
-  const { openedPanel } = useSelector(sidePanelsSelector)
-  const { viewType } = useSelector(keysSelector)
+  const { openedPanel } = useAppSelector(sidePanelsSelector)
+  const { viewType } = useAppSelector(keysSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
 
   const onSuccessLoadData = () => {

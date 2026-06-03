@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import parse from 'html-react-parser'
 import { monaco } from 'react-monaco-editor'
 
@@ -14,7 +14,7 @@ export interface Props {
 const NO_COMMANDS_MESSAGE = 'No Redis commands provided by the server.'
 
 const DryRunJobCommands = ({ target }: Props) => {
-  const { results } = useSelector(rdiDryRunJobSelector)
+  const { results } = useAppSelector(rdiDryRunJobSelector)
   const [commands, setCommands] = useState<string>('')
 
   useEffect(() => {

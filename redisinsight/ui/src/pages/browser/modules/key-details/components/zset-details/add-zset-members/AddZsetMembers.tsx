@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { toNumber } from 'lodash'
 
 import { stringToBuffer, validateScoreNumber } from 'uiSrc/utils'
@@ -39,13 +39,15 @@ export interface Props {
 
 const AddZsetMembers = (props: Props) => {
   const { closePanel } = props
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
   const [members, setMembers] = useState<IZsetMemberState[]>([
     { ...INITIAL_ZSET_MEMBER_STATE },
   ])
-  const { loading } = useSelector(updateZsetScoreStateSelector)
-  const { name: selectedKey = '' } = useSelector(selectedKeyDataSelector) ?? {
+  const { loading } = useAppSelector(updateZsetScoreStateSelector)
+  const { name: selectedKey = '' } = useAppSelector(
+    selectedKeyDataSelector,
+  ) ?? {
     name: undefined,
   }
   const lastAddedMemberName = useRef<HTMLInputElement>(null)

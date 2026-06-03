@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
 import {
@@ -24,7 +24,7 @@ import { UseCloudDatabasesConfigReturn } from './useCloudDatabasesConfig.types'
 import { colFactory } from '../utils/colFactory'
 
 export const useCloudDatabasesConfig = (): UseCloudDatabasesConfigReturn => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
 
   const {
@@ -33,8 +33,8 @@ export const useCloudDatabasesConfig = (): UseCloudDatabasesConfigReturn => {
     loading,
     data: instances,
     dataAdded: instancesAdded,
-  } = useSelector(cloudSelector)
-  const { data: userOAuthProfile } = useSelector(oauthCloudUserSelector)
+  } = useAppSelector(cloudSelector)
+  const { data: userOAuthProfile } = useAppSelector(oauthCloudUserSelector)
 
   const currentAccountIdRef = useRef(userOAuthProfile?.id)
   const ssoFlowRef = useRef(ssoFlow)

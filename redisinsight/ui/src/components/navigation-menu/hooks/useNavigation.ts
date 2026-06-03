@@ -1,6 +1,6 @@
 import { useHistory, useLocation } from 'react-router-dom'
 import { last } from 'lodash'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { useEffect, useState } from 'react'
 import { Props as HighlightedFeatureProps } from 'uiSrc/components/hightlighted-feature/HighlightedFeature'
@@ -35,20 +35,20 @@ const pubSubPath = `/${PageNames.pubSub}`
 export function useNavigation() {
   const history = useHistory()
   const location = useLocation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const [activePage, setActivePage] = useState(Pages.home)
 
-  const { workspace } = useSelector(appContextSelector)
+  const { workspace } = useAppSelector(appContextSelector)
 
-  const { id: connectedInstanceId = '' } = useSelector(
+  const { id: connectedInstanceId = '' } = useAppSelector(
     connectedInstanceSelector,
   )
-  const { id: connectedRdiInstanceId = '' } = useSelector(
+  const { id: connectedRdiInstanceId = '' } = useAppSelector(
     connectedRdiInstanceSelector,
   )
-  const highlightedPages = useSelector(appFeaturePagesHighlightingSelector)
-  const { [FeatureFlags.vectorSearchV2]: vectorSearchFeature } = useSelector(
+  const highlightedPages = useAppSelector(appFeaturePagesHighlightingSelector)
+  const { [FeatureFlags.vectorSearchV2]: vectorSearchFeature } = useAppSelector(
     appFeatureFlagsFeaturesSelector,
   )
 

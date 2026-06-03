@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useCallback, useMemo, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { PlusIcon } from 'uiSrc/components/base/icons'
 import { ConnectionProvider, Instance } from 'uiSrc/slices/interfaces'
 import { FormDialog } from 'uiSrc/components'
@@ -36,7 +36,7 @@ export const ManageTagsModal = ({
   instance,
   onClose,
 }: ManageTagsModalProps) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const editedInstanceTags = useMemo(
     () => (instance?.tags || []).map(({ key, value }) => ({ key, value })),
     [instance?.tags],

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useLocation, useParams } from 'react-router-dom'
 import { KeyboardKeys as keys } from 'uiSrc/constants/keys'
 
@@ -31,13 +31,13 @@ export interface Props {
 
 const SidePanelsWrapper = (props: Props) => {
   const { panelClassName } = props
-  const { openedPanel } = useSelector(sidePanelsSelector)
-  const { tabSelected } = useSelector(insightsPanelSelector)
-  const { provider } = useSelector(connectedInstanceSelector)
+  const { openedPanel } = useAppSelector(sidePanelsSelector)
+  const { tabSelected } = useAppSelector(insightsPanelSelector)
+  const { provider } = useAppSelector(connectedInstanceSelector)
   const {
     [FeatureFlags.databaseChat]: databaseChatFeature,
     [FeatureFlags.documentationChat]: documentationChatFeature,
-  } = useSelector(appFeatureFlagsFeaturesSelector)
+  } = useAppSelector(appFeatureFlagsFeaturesSelector)
   const isAnyChatAvailable = isAnyFeatureEnabled([
     databaseChatFeature,
     documentationChatFeature,
@@ -46,7 +46,7 @@ const SidePanelsWrapper = (props: Props) => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
 
   const { pathname } = useLocation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { instanceId } = useParams<{ instanceId: string }>()
   const pathnameRef = useRef<string>(pathname)
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { useLocation } from 'react-router-dom'
 import cx from 'classnames'
@@ -36,14 +36,14 @@ const OAuthConnectFreeDb = ({
   onSuccessClick,
   className,
 }: Props) => {
-  const { loading } = useSelector(instancesSelector) ?? {}
-  const { modules, provider } = useSelector(connectedInstanceSelector) ?? {}
-  const [firstFreeInstance] = useSelector(freeInstancesSelector) ?? []
+  const { loading } = useAppSelector(instancesSelector) ?? {}
+  const { modules, provider } = useAppSelector(connectedInstanceSelector) ?? {}
+  const [firstFreeInstance] = useAppSelector(freeInstancesSelector) ?? []
 
   const targetDatabaseId = id || firstFreeInstance?.id
   const targetEnvironment = firstFreeInstance?.environment
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { search } = useLocation()
 
   if (!targetDatabaseId) {
