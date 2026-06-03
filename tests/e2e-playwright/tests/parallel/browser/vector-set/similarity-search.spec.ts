@@ -92,7 +92,15 @@ test.describe('Browser > Vector Set > Similarity search', () => {
     await browserPage.vectorSetKeyDetails.similarityElementInput.fill(keyData.elements[0].name);
     await browserPage.vectorSetKeyDetails.similarityResetButton.click();
 
-    await expect(browserPage.vectorSetKeyDetails.similarityElementInput).toHaveValue('');
+    // Reset re-applies `initialFormState()` (see SimilaritySearchForm.utils.ts),
+    // which sets `mode: Vector`. The form re-renders in Vector mode, so the
+    // element input is unmounted — asserting `toHaveValue('')` on it would
+    // hang because the locator never resolves. Instead, verify the form
+    // returned to Vector mode (element input hidden, vector input visible
+    // and empty).
+    await expect(browserPage.vectorSetKeyDetails.similarityElementInput).toBeHidden();
+    await expect(browserPage.vectorSetKeyDetails.similarityVectorInput).toBeVisible();
+    await expect(browserPage.vectorSetKeyDetails.similarityVectorInput).toHaveValue('');
   });
 
   test('should prefill similarity search by clicking the row "Find similar" button', async ({
