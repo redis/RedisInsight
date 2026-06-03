@@ -194,6 +194,24 @@ module.exports = {
         'prefer-template': 'error',
         'prefer-const': 'error',
         '@typescript-eslint/no-unused-vars': noUnusedVarsConfig,
+        // Force every UI callsite onto the typed Redux hooks so the
+        // `AppDispatch` (incl. thunk overload) and `RootState` types are
+        // never accidentally dropped. The wrapper file itself
+        // (`uiSrc/slices/hooks.ts`) is allowed to import the originals — see
+        // the override below.
+        'no-restricted-imports': [
+          'error',
+          {
+            paths: [
+              {
+                name: 'react-redux',
+                importNames: ['useDispatch', 'useSelector'],
+                message:
+                  'Use useAppDispatch / useAppSelector from uiSrc/slices/hooks instead.',
+              },
+            ],
+          },
+        ],
         'import/order': [
           1,
           {
@@ -221,6 +239,14 @@ module.exports = {
             pathGroupsExcludedImportTypes: ['builtin'],
           },
         ],
+      },
+    },
+    // Typed Redux hooks wrapper — only file allowed to import the bare
+    // `useDispatch` / `useSelector` from `react-redux` (it's what wraps them).
+    {
+      files: ['redisinsight/ui/src/slices/hooks.ts'],
+      rules: {
+        'no-restricted-imports': 'off',
       },
     },
     // UI test files
