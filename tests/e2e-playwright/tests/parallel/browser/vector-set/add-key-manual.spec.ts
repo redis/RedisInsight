@@ -4,13 +4,6 @@ import { TEST_KEY_PREFIX, VectorSetKeyFactory } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
 import { getRedisMajorVersion, VECTOR_SET_MIN_REDIS_MAJOR, VECTOR_SET_SKIP_REASON } from './helpers';
 
-/**
- * Browser > Vector Set > Add Key (manual)
- *
- * Covers the "Create manually" populate mode in the Add Key dialog for
- * Vector Set keys. Requires Redis 8+ (VADD/VSIM commands) and the
- * `dev-vectorSet` feature flag enabled.
- */
 test.use({ featureFlags: { 'dev-vectorSet': true } });
 
 test.describe('Browser > Vector Set > Add Key (manual)', () => {
@@ -45,9 +38,6 @@ test.describe('Browser > Vector Set > Add Key (manual)', () => {
 
     await browserPage.openAddKeyDialog();
     await browserPage.addKeyDialog.selectKeyType('Vector Set');
-
-    // Manual mode is the default render — verify the radio is actually
-    // checked rather than just that the wrapper rendered.
     await browserPage.addKeyDialog.expectVectorSetPopulateModeSelected('manual');
 
     await browserPage.addKeyDialog.fillKeyName(keyData.keyName);
@@ -66,11 +56,9 @@ test.describe('Browser > Vector Set > Add Key (manual)', () => {
     await browserPage.addKeyDialog.selectKeyType('Vector Set');
     await browserPage.addKeyDialog.fillKeyName(keyData.keyName);
 
-    // Only element name → still disabled, vector input is required
     await browserPage.addKeyDialog.vectorSetElementNameInput.fill(keyData.elements[0].name);
     await browserPage.addKeyDialog.expectAddKeyDisabled();
 
-    // Add vector → enabled
     await browserPage.addKeyDialog.vectorSetElementVectorInput.fill(keyData.elements[0].vector);
     await browserPage.addKeyDialog.expectAddKeyEnabled();
   });
@@ -84,5 +72,10 @@ test.describe('Browser > Vector Set > Add Key (manual)', () => {
     await browserPage.addKeyDialog.clickCancel();
 
     expect(await browserPage.addKeyDialog.isVisible()).toBe(false);
+
+    // The dialog also disappears on successful submit, so confirm the key
+    // wasn't created.
+    await browserPage.keyList.searchKeys(keyData.keyName);
+    await browserPage.expectKeyNotInList(keyData.keyName);
   });
 });

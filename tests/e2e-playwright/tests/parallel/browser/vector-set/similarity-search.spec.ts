@@ -4,13 +4,6 @@ import { TEST_KEY_PREFIX, VectorSetKeyFactory } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
 import { seedVectorSet, getRedisMajorVersion, VECTOR_SET_MIN_REDIS_MAJOR, VECTOR_SET_SKIP_REASON } from './helpers';
 
-/**
- * Browser > Vector Set > Similarity search
- *
- * Tests run on a seeded vector set with multiple elements so VSIM has data
- * to rank against. The form supports Vector and Element modes — both are
- * exercised here.
- */
 test.use({ featureFlags: { 'dev-vectorSet': true } });
 
 test.describe('Browser > Vector Set > Similarity search', () => {
@@ -47,14 +40,12 @@ test.describe('Browser > Vector Set > Similarity search', () => {
     await browserPage.keyList.clickKey(keyData.keyName);
     await browserPage.vectorSetKeyDetails.waitForLoad();
 
-    // Reuse the first seeded vector to guarantee a near-perfect match
     await browserPage.vectorSetKeyDetails.runSimilaritySearchByVector(keyData.elements[0].vector);
 
-    // At least one result row rendered
     await expect(browserPage.vectorSetKeyDetails.similarityResultRank(0)).toBeVisible();
   });
 
-  test('should run similarity search by element name and rank the queried element first', async ({
+  test('should run similarity search by element name, rank the queried element first, and reset the form', async ({
     browserPage,
     apiHelper,
   }) => {
@@ -69,37 +60,14 @@ test.describe('Browser > Vector Set > Similarity search', () => {
     const queried = keyData.elements[0].name;
     await browserPage.vectorSetKeyDetails.runSimilaritySearchByElement(queried);
 
-    // Invariant: an element compared to itself yields cosine similarity 1
-    // (= 100%), so VSIM by element name MUST rank the queried element at
-    // index 0 regardless of how the other random vectors land.
-    //
-    // The similarity *cell* renders the score as a percentage, not the
-    // element name — so verify (a) the score cell at rank 0 shows the
-    // perfect self-match, and (b) the queried element is present in the
-    // results.
+    // Self-match: an element vs. itself has cosine similarity 1 (= 100%),
+    // so VSIM by element name must rank the queried element first.
     await expect(browserPage.vectorSetKeyDetails.similarityResultCell(0)).toContainText('100');
     await expect(browserPage.vectorSetKeyDetails.similarityResultElementValue(queried)).toBeVisible();
-  });
 
-  test('should reset the similarity search form', async ({ browserPage, apiHelper }) => {
-    const keyData = VectorSetKeyFactory.build();
-    await seedVectorSet(apiHelper, database.id, keyData.keyName, keyData.elements);
-    await browserPage.goto(database.id);
-
-    await browserPage.keyList.searchKeys(keyData.keyName);
-    await browserPage.keyList.clickKey(keyData.keyName);
-    await browserPage.vectorSetKeyDetails.waitForLoad();
-
-    await browserPage.vectorSetKeyDetails.setSimilarityMode('element');
-    await browserPage.vectorSetKeyDetails.similarityElementInput.fill(keyData.elements[0].name);
+    // Reset returns the form to Vector mode (see SimilaritySearchForm.utils
+    // `initialFormState`), unmounting the element input.
     await browserPage.vectorSetKeyDetails.similarityResetButton.click();
-
-    // Reset re-applies `initialFormState()` (see SimilaritySearchForm.utils.ts),
-    // which sets `mode: Vector`. The form re-renders in Vector mode, so the
-    // element input is unmounted — asserting `toHaveValue('')` on it would
-    // hang because the locator never resolves. Instead, verify the form
-    // returned to Vector mode (element input hidden, vector input visible
-    // and empty).
     await expect(browserPage.vectorSetKeyDetails.similarityElementInput).toBeHidden();
     await expect(browserPage.vectorSetKeyDetails.similarityVectorInput).toBeVisible();
     await expect(browserPage.vectorSetKeyDetails.similarityVectorInput).toHaveValue('');
