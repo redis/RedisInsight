@@ -22,14 +22,19 @@ const getState: ReduxStore['getState'] = () => {
   return storeRef.getState()
 }
 
-export const dispatch: AppDispatch = (action) => {
+// `action: any` because `AppDispatch` is an intersection of `ThunkDispatch`
+// overloads — TypeScript can't infer a single parameter type across the
+// overload set, so a direct `(action) => ...` form fails with TS7006. The
+// outer `as AppDispatch` keeps the exported binding correctly typed for
+// callers.
+export const dispatch = ((action: any) => {
   if (!storeRef) {
     throw new Error(
       'Store not initialized. Make sure store-dynamic is imported after store creation.',
     )
   }
   return storeRef.dispatch(action)
-}
+}) as AppDispatch
 
 const subscribe: ReduxStore['subscribe'] = (listener: () => void) => {
   if (!storeRef) {
