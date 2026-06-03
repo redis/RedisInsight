@@ -179,11 +179,6 @@ export class KeyList {
     const keyEl = this.getKeyRow(keyName);
     const isListRowVisible = await keyEl.isVisible();
     if (isListRowVisible) {
-      // No explicit scrollIntoViewIfNeeded: in Electron the virtual list
-      // can re-mount the row between the isVisible() snapshot and the
-      // scroll call, detaching the element handle. click() performs its
-      // own actionability checks (attached + visible + stable + scroll
-      // into view) and re-queries on each retry, so it survives the race.
       await keyEl.click();
       return;
     }
