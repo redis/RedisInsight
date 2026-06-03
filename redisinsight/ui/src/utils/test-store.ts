@@ -22,14 +22,14 @@ const getState: ReduxStore['getState'] = () => {
   return storeRef.getState()
 }
 
-export const dispatch = ((action: any) => {
+export const dispatch: AppDispatch = (action) => {
   if (!storeRef) {
     throw new Error(
       'Store not initialized. Make sure store-dynamic is imported after store creation.',
     )
   }
   return storeRef.dispatch(action)
-}) as AppDispatch
+}
 
 const subscribe: ReduxStore['subscribe'] = (listener: () => void) => {
   if (!storeRef) {

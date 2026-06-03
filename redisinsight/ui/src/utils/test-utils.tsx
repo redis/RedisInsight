@@ -17,7 +17,7 @@ import {
 import { ThemeProvider } from 'styled-components'
 import { theme } from '@redis-ui/styles'
 import userEvent from '@testing-library/user-event'
-import type { RootState, ReduxStore } from 'uiSrc/slices/store'
+import type { RootState } from 'uiSrc/slices/store'
 import { initialState as initialStateInstances } from 'uiSrc/slices/instances/instances'
 import { initialState as initialStateTags } from 'uiSrc/slices/instances/tags'
 import { initialState as initialStateCaCerts } from 'uiSrc/slices/instances/caCerts'
@@ -82,13 +82,12 @@ import { setStoreRef } from './test-store'
 
 interface Options {
   initialState?: RootState
-  // Accept either the real RTK store, a `redux-mock-store` instance, or any
-  // narrowly-typed `EnhancedStore` produced by `configureStore` in a spec.
-  // The narrow `EnhancedStore<any>` member is the proper-typed escape hatch
-  // for specs that build a focused store with only the slices they read
-  // from (see vector-search specs) — without it, every such spec needs an
-  // `as any` cast at the call site.
-  store?: ReduxStore | MockStoreEnhanced<RootState> | EnhancedStore<any>
+  // `EnhancedStore<any>` covers both the production `ReduxStore` and any
+  // narrow `configureStore` produced inside a spec (e.g. vector-search
+  // specs that wire only the slices they read). `MockStoreEnhanced` is
+  // the separate branch because `redux-mock-store` doesn't extend
+  // `EnhancedStore`.
+  store?: EnhancedStore<any> | MockStoreEnhanced<RootState>
   withRouter?: boolean
   [property: string]: any
 }
