@@ -1,5 +1,4 @@
 import React from 'react'
-import { NodePublicState } from 'react-vtree/dist/es/Tree'
 import { instance, mock } from 'ts-mockito'
 import { cloneDeep } from 'lodash'
 import reactRouterDom from 'react-router-dom'
@@ -19,7 +18,7 @@ import { CreateIndexMode } from 'uiSrc/pages/vector-search/pages/VectorSearchCre
 import { MakeSearchableModalProvider } from 'uiSrc/pages/browser/components/make-searchable-modal'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { SearchBrowserSource } from 'uiSrc/pages/vector-search/telemetry.constants'
-import Node from './Node'
+import Node, { NodeProps } from './Node'
 import { TreeData } from '../../VirtualTree.types'
 import { mockVirtualTreeResult } from '../../VirtualTree.spec'
 
@@ -27,7 +26,7 @@ const mockPush = jest.fn()
 const mockInstanceId = faker.string.uuid()
 
 const mockDataFullName = 'test'
-const mockedProps = mock<NodePublicState<TreeData>>()
+const mockedProps = mock<NodeProps>()
 const mockedPropsData = mock<TreeData>()
 
 const mockedData: TreeData = {
@@ -82,7 +81,7 @@ afterEach(() => {
 })
 
 const renderNode = (
-  props: Partial<NodePublicState<TreeData>> = {},
+  props: Partial<NodeProps> = {},
   options?: { store?: any },
 ) => {
   const mergedProps = { ...instance(mockedProps), ...props }
