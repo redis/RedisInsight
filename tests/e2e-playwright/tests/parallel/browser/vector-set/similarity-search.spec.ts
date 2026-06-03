@@ -67,10 +67,16 @@ test.describe('Browser > Vector Set > Similarity search', () => {
     const queried = keyData.elements[0].name;
     await browserPage.vectorSetKeyDetails.runSimilaritySearchByElement(queried);
 
-    // Invariant: an element compared to itself yields cosine similarity 1,
-    // so VSIM by element name MUST rank the queried element at index 0
-    // regardless of how the other random vectors land.
-    await expect(browserPage.vectorSetKeyDetails.similarityResultCell(0)).toContainText(queried);
+    // Invariant: an element compared to itself yields cosine similarity 1
+    // (= 100%), so VSIM by element name MUST rank the queried element at
+    // index 0 regardless of how the other random vectors land.
+    //
+    // The similarity *cell* renders the score as a percentage, not the
+    // element name — so verify (a) the score cell at rank 0 shows the
+    // perfect self-match, and (b) the queried element is present in the
+    // results.
+    await expect(browserPage.vectorSetKeyDetails.similarityResultCell(0)).toContainText('100');
+    await expect(browserPage.vectorSetKeyDetails.similarityResultElementValue(queried)).toBeVisible();
   });
 
   test('should reset the similarity search form', async ({ browserPage, apiHelper }) => {

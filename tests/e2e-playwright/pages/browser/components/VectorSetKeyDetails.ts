@@ -76,9 +76,11 @@ export class VectorSetKeyDetails {
     this.similarityResultsTable = page.getByTestId('vector-set-similarity-results');
     this.similarityResultsTableInner = page.getByTestId('vector-set-similarity-results-table');
 
-    // Element details drawer
+    // Element details drawer.
+    // CopyButton wraps the inner control with a `-btn` suffix on the
+    // passed testid, so the rendered button is `vector-set-copy-vector-btn-btn`.
     this.vectorValue = page.getByTestId('vector-set-vector-value');
-    this.copyVectorButton = page.getByTestId('vector-set-copy-vector-btn');
+    this.copyVectorButton = page.getByTestId('vector-set-copy-vector-btn-btn');
     this.downloadVectorButton = page.getByTestId('vector-set-download-vector-btn');
     this.editAttributesButton = page.getByTestId('vector-set-edit-attributes-btn');
     this.saveAttributesButton = page.getByTestId('vector-set-save-attributes-btn');
@@ -189,7 +191,21 @@ export class VectorSetKeyDetails {
     return this.page.getByTestId(`vector-set-similarity-rank-cell-${index}`);
   }
 
+  /**
+   * Similarity score cell at the given row index. The cell renders a
+   * formatted percentage (e.g. `100.00 %`) — NOT the element name. Use
+   * `similarityResultElementValue` when asserting on the element identity.
+   */
   similarityResultCell(index: number): Locator {
     return this.page.getByTestId(`vector-set-similarity-cell-${index}`);
+  }
+
+  /**
+   * Element-name cell within the similarity results table. Scoped to the
+   * results container so it doesn't collide with the same testid in the
+   * main elements table (both tables can be visible simultaneously).
+   */
+  similarityResultElementValue(elementName: string): Locator {
+    return this.similarityResultsTable.getByTestId(`vector-set-element-value-${elementName}`);
   }
 }
