@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { test, expect } from 'e2eSrc/fixtures/base';
-import { StandaloneV8ConfigFactory } from 'e2eSrc/test-data/databases';
+import { StandaloneV880ConfigFactory } from 'e2eSrc/test-data/databases';
 import { TEST_KEY_PREFIX, VectorSetKeyFactory, toFp32EscapedString } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
 import { seedVectorSet, getRedisMajorVersion, VECTOR_SET_MIN_REDIS_MAJOR, VECTOR_SET_SKIP_REASON } from './helpers';
@@ -19,7 +19,7 @@ test.describe('Browser > Vector Set > Add Elements', () => {
 
   test.beforeAll(async ({ apiHelper }) => {
     database = await apiHelper.createDatabase(
-      StandaloneV8ConfigFactory.build({ name: 'test-vector-set-add-elements' }),
+      StandaloneV880ConfigFactory.build({ name: 'test-vector-set-add-elements' }),
     );
     redisMajorVersion = await getRedisMajorVersion(apiHelper, database.id);
   });

@@ -1,5 +1,5 @@
 import { test, expect } from 'e2eSrc/fixtures/base';
-import { StandaloneV8ConfigFactory } from 'e2eSrc/test-data/databases';
+import { StandaloneV880ConfigFactory } from 'e2eSrc/test-data/databases';
 import { DatabaseInstance } from 'e2eSrc/types';
 import { getRedisMajorVersion, VECTOR_SET_MIN_REDIS_MAJOR, VECTOR_SET_SKIP_REASON } from './helpers';
 
@@ -22,7 +22,9 @@ test.describe('Browser > Vector Set > Add Key (sample data)', () => {
   let redisMajorVersion: number;
 
   test.beforeAll(async ({ apiHelper }) => {
-    database = await apiHelper.createDatabase(StandaloneV8ConfigFactory.build({ name: 'test-vector-set-add-sample' }));
+    database = await apiHelper.createDatabase(
+      StandaloneV880ConfigFactory.build({ name: 'test-vector-set-add-sample' }),
+    );
     redisMajorVersion = await getRedisMajorVersion(apiHelper, database.id);
   });
 

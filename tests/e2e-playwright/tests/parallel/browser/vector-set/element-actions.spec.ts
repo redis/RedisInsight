@@ -1,5 +1,5 @@
 import { test, expect } from 'e2eSrc/fixtures/base';
-import { StandaloneV8ConfigFactory } from 'e2eSrc/test-data/databases';
+import { StandaloneV880ConfigFactory } from 'e2eSrc/test-data/databases';
 import { TEST_KEY_PREFIX, VectorSetKeyFactory } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
 import { seedVectorSet, getRedisMajorVersion, VECTOR_SET_MIN_REDIS_MAJOR, VECTOR_SET_SKIP_REASON } from './helpers';
@@ -18,7 +18,7 @@ test.describe('Browser > Vector Set > Element actions', () => {
 
   test.beforeAll(async ({ apiHelper }) => {
     database = await apiHelper.createDatabase(
-      StandaloneV8ConfigFactory.build({ name: 'test-vector-set-element-actions' }),
+      StandaloneV880ConfigFactory.build({ name: 'test-vector-set-element-actions' }),
     );
     redisMajorVersion = await getRedisMajorVersion(apiHelper, database.id);
   });
