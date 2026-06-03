@@ -1,5 +1,9 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
-import type { ThunkDispatch, UnknownAction } from '@reduxjs/toolkit'
+import type {
+  ConfigureStoreOptions,
+  ThunkDispatch,
+  UnknownAction,
+} from '@reduxjs/toolkit'
 
 import { getConfig } from 'uiSrc/config'
 import instancesReducer from './instances/instances'
@@ -146,10 +150,27 @@ export const rootReducer = combineReducers({
   }),
 })
 
+// The middleware callback below trips TS2719 "two different types with this
+// name exist, but they are unrelated" between RTK 2 (whose `Middleware` is
+// redux@5's) and the `ThunkMiddleware` baked into `getDefaultMiddleware`'s
+// return type. We pin `redux@^5.0.1` as a direct dep so v5 wins yarn's
+// top-level hoist locally, but on a clean install (CI) the redux@4 copy
+// pulled in by `@elastic/eui` → `react-beautiful-dnd` → `@types/react-
+// redux@7` can still win that contest — yarn hoisting is non-deterministic
+// when two majors are equally eligible. The shapes are structurally
+// identical at runtime; only the type-checker rejects the assignment. We
+// cast to RTK 2's own expected callback type instead of `any` so the cast
+// still flags real shape regressions, and we keep the workaround local
+// rather than reaching for a yarn `resolutions` entry so the project stays
+// portable to npm `overrides`.
+type StoreMiddleware = NonNullable<
+  ConfigureStoreOptions<RootState>['middleware']
+>
+
 const store = configureStore({
   reducer: rootReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ serializableCheck: false }),
+  middleware: ((getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false })) as StoreMiddleware,
   devTools: riConfig.app.env !== 'production',
 })
 

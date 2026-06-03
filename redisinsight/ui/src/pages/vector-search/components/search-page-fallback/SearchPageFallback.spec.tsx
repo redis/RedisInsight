@@ -1,5 +1,6 @@
 import React from 'react'
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
+import type { ConfigureStoreOptions } from '@reduxjs/toolkit'
 import { fireEvent, render, screen, waitFor } from 'uiSrc/utils/test-utils'
 import { OAuthSsoDialog } from 'uiSrc/components'
 import { FeatureFlags } from 'uiSrc/constants'
@@ -14,7 +15,9 @@ import { SearchPageFallback } from './SearchPageFallback'
 import { SearchPageFallbackContent } from './SearchPageFallback.types'
 
 // Real `configureStore` (not `mockStore`) because the OAuth-dialog open test
-// dispatches a real action that the reducer has to handle.
+// dispatches a real action that the reducer has to handle. The middleware
+// cast defuses the same `redux-thunk@3` ↔ RTK 2 TS2719 collision
+// documented in `slices/store.ts`.
 const testReducer = combineReducers({
   connections: combineReducers({
     cloud: cloudReducer,
@@ -23,6 +26,9 @@ const testReducer = combineReducers({
   oauth: combineReducers({ cloud: appOauthReducer }),
   app: combineReducers({ features: appFeaturesReducer }),
 })
+type TestStoreMiddleware = NonNullable<
+  ConfigureStoreOptions<ReturnType<typeof testReducer>>['middleware']
+>
 
 const createTestStore = (featureFlagsEnabled = true) =>
   configureStore({
@@ -42,10 +48,10 @@ const createTestStore = (featureFlagsEnabled = true) =>
         },
       },
     },
-    middleware: (getDefaultMiddleware) =>
+    middleware: ((getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: false,
-      }),
+      })) as TestStoreMiddleware,
   })
 
 const CONTENT_WITH_FEATURES: SearchPageFallbackContent = {
