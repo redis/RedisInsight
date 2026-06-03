@@ -430,7 +430,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 #### 2.16.1 Add Key (manual)
 
-> **Spec:** `tests/main/browser/vector-set/add-key-manual.spec.ts`
+> **Spec:** `tests/parallel/browser/vector-set/add-key-manual.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -440,7 +440,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 #### 2.16.2 Add Key (sample data)
 
-> **Spec:** `tests/main/browser/vector-set/add-key-sample-data.spec.ts`
+> **Spec:** `tests/parallel/browser/vector-set/add-key-sample-data.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -449,7 +449,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 #### 2.16.3 Add Elements
 
-> **Spec:** `tests/main/browser/vector-set/add-elements.spec.ts`
+> **Spec:** `tests/parallel/browser/vector-set/add-elements.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -458,7 +458,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 #### 2.16.4 Similarity Search
 
-> **Spec:** `tests/main/browser/vector-set/similarity-search.spec.ts`
+> **Spec:** `tests/parallel/browser/vector-set/similarity-search.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -469,7 +469,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 #### 2.16.5 Element Actions
 
-> **Spec:** `tests/main/browser/vector-set/element-actions.spec.ts`
+> **Spec:** `tests/parallel/browser/vector-set/element-actions.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
