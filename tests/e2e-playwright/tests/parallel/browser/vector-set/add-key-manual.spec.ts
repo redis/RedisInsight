@@ -38,7 +38,7 @@ test.describe('Browser > Vector Set > Add Key (manual)', () => {
 
     await browserPage.openAddKeyDialog();
     await browserPage.addKeyDialog.selectKeyType('Vector Set');
-    await browserPage.addKeyDialog.expectVectorSetPopulateModeSelected('manual');
+    await browserPage.addKeyDialog.expectVectorSetManualModeSelected();
 
     await browserPage.addKeyDialog.fillKeyName(keyData.keyName);
     await browserPage.addKeyDialog.fillVectorSetElement(first.name, first.vector);

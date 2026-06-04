@@ -175,14 +175,20 @@ export class AddKeyDialog {
     await this.jsonValueInput.fill(value);
   }
 
-  async selectVectorSetPopulateMode(mode: 'manual' | 'sample'): Promise<void> {
-    const target = mode === 'sample' ? this.vectorSetPopulateSample : this.vectorSetPopulateManual;
-    await target.click();
+  async selectVectorSetManualMode(): Promise<void> {
+    await this.vectorSetPopulateManual.click();
   }
 
-  async expectVectorSetPopulateModeSelected(mode: 'manual' | 'sample'): Promise<void> {
-    const radio = mode === 'sample' ? this.vectorSetPopulateSample : this.vectorSetPopulateManual;
-    await expect(radio).toBeChecked();
+  async selectVectorSetSampleMode(): Promise<void> {
+    await this.vectorSetPopulateSample.click();
+  }
+
+  async expectVectorSetManualModeSelected(): Promise<void> {
+    await expect(this.vectorSetPopulateManual).toBeChecked();
+  }
+
+  async expectVectorSetSampleModeSelected(): Promise<void> {
+    await expect(this.vectorSetPopulateSample).toBeChecked();
   }
 
   async fillVectorSetElement(name: string, vector: string): Promise<void> {
