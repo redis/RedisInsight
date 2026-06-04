@@ -93,6 +93,12 @@ export default defineConfig({
   },
   envPrefix: 'RI_',
   optimizeDeps: {
+    // Pin the entry scan to the main UI's index.html. Without this, Vite's
+    // default ('**/*.html' under the project root, which is the workspace
+    // root when invoked from the root postinstall) also crawls each plugin
+    // sub-package's index.html in src/packages/*, whose deps live only in
+    // the sub-package's own node_modules and fail to resolve at root install.
+    entries: fileURLToPath(new URL('./index.html', import.meta.url)),
     include: ['monaco-editor', 'monaco-yaml/yaml.worker'],
     exclude: [
       'react-json-tree',
