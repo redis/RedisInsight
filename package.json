@@ -114,7 +114,7 @@
     "@babel/preset-react": "^7.28.5",
     "@babel/preset-typescript": "^7.23.2",
     "@electron/rebuild": "^4.0.1",
-    "@faker-js/faker": "^8.4.1",
+    "@faker-js/faker": "^10.4.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
     "@storybook/addon-a11y": "^9.1.19",
     "@storybook/addon-docs": "^9.1.11",
