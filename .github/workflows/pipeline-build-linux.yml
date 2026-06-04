@@ -64,7 +64,7 @@ jobs:
             needsSystemFpm: true
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
 
       # SSH Debug
       - name: Enable SSH
