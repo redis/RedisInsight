@@ -179,7 +179,6 @@ export class KeyList {
     const keyEl = this.getKeyRow(keyName);
     const isListRowVisible = await keyEl.isVisible();
     if (isListRowVisible) {
-      await keyEl.scrollIntoViewIfNeeded();
       await keyEl.click();
       return;
     }

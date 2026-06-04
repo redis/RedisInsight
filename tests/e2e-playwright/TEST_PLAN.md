@@ -424,6 +424,58 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | CLI command history preserved in context |
 | 🔲 | main | Context cleared when navigating to different database |
 
+### 2.16 Vector Set Browser Support (RI-7390)
+
+> ⚠️ Requires Redis 8+ (VADD / VSIM commands) and the `dev-vectorSet` feature flag (set via `test.use({ featureFlags: { 'dev-vectorSet': true } })`).
+
+#### 2.16.1 Add Key (manual)
+
+> **Spec:** `tests/parallel/browser/vector-set/add-key-manual.spec.ts`
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| ✅ | main | should add a Vector Set key with a single element manually |
+| ✅ | main | should disable Add Key button until both element name and vector are filled |
+| ✅ | main | should cancel adding a Vector Set key |
+
+#### 2.16.2 Add Key (sample data)
+
+> **Spec:** `tests/parallel/browser/vector-set/add-key-sample-data.spec.ts`
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| ✅ | main | should show sample dataset preview when switching populate mode to sample |
+| ✅ | main | should load the vec2word sample dataset and add it to the key list |
+
+#### 2.16.3 Add Elements
+
+> **Spec:** `tests/parallel/browser/vector-set/add-elements.spec.ts`
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| ✅ | main | should add a new element to an existing Vector Set via the side panel |
+| ✅ | main | should add a new element with an FP32-encoded vector to an existing Vector Set |
+
+#### 2.16.4 Similarity Search
+
+> **Spec:** `tests/parallel/browser/vector-set/similarity-search.spec.ts`
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| ✅ | main | should run similarity search by vector and show ranked results |
+| ✅ | main | should run similarity search by element name and rank the queried element first |
+| ✅ | main | should reset the similarity search form |
+| ✅ | main | should prefill similarity search by clicking the row "Find similar" button |
+
+#### 2.16.5 Element Actions
+
+> **Spec:** `tests/parallel/browser/vector-set/element-actions.spec.ts`
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| ✅ | main | should open element details drawer and show the vector value |
+| ✅ | main | should remove an element from the Vector Set via the row action |
+
 ---
 
 ## 3. Workbench

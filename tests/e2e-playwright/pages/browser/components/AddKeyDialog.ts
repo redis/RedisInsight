@@ -43,6 +43,12 @@ export class AddKeyDialog {
   // JSON-specific fields (Monaco editor)
   readonly jsonValueInput: Locator;
 
+  readonly vectorSetPopulateManual: Locator;
+  readonly vectorSetPopulateSample: Locator;
+  readonly vectorSetSampleDatasetPreview: Locator;
+  readonly vectorSetElementNameInput: Locator;
+  readonly vectorSetElementVectorInput: Locator;
+
   // Action buttons
   readonly addItemButton: Locator;
   readonly removeItemButton: Locator;
@@ -88,6 +94,14 @@ export class AddKeyDialog {
 
     // JSON fields - Monaco editor
     this.jsonValueInput = page.locator('[data-testid="json-value"] textarea, .monaco-editor textarea').first();
+
+    // S.RadioCard is a <label>, so getByLabel resolves to the radio control.
+    this.vectorSetPopulateManual = page.getByLabel('Create manually');
+    this.vectorSetPopulateSample = page.getByLabel('Load sample dataset');
+    this.vectorSetSampleDatasetPreview = page.getByTestId('add-key-vector-set-load-sample-dataset');
+    // testids are reused across rendered element rows
+    this.vectorSetElementNameInput = page.getByTestId('element-name').first();
+    this.vectorSetElementVectorInput = page.getByTestId('element-vector').first();
 
     // Action buttons - use testid for specificity
     this.addItemButton = page.getByRole('button', { name: /add new item/i });
@@ -159,6 +173,27 @@ export class AddKeyDialog {
 
   async fillJsonValue(value: string): Promise<void> {
     await this.jsonValueInput.fill(value);
+  }
+
+  async selectVectorSetManualMode(): Promise<void> {
+    await this.vectorSetPopulateManual.click();
+  }
+
+  async selectVectorSetSampleMode(): Promise<void> {
+    await this.vectorSetPopulateSample.click();
+  }
+
+  async expectVectorSetManualModeSelected(): Promise<void> {
+    await expect(this.vectorSetPopulateManual).toBeChecked();
+  }
+
+  async expectVectorSetSampleModeSelected(): Promise<void> {
+    await expect(this.vectorSetPopulateSample).toBeChecked();
+  }
+
+  async fillVectorSetElement(name: string, vector: string): Promise<void> {
+    await this.vectorSetElementNameInput.fill(name);
+    await this.vectorSetElementVectorInput.fill(vector);
   }
 
   async clickBack(): Promise<void> {
