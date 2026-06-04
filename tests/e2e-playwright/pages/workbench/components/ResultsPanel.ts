@@ -1,4 +1,5 @@
 import { Page, Locator, FrameLocator } from '@playwright/test';
+import { GeodataPlugin } from './GeodataPlugin';
 
 /**
  * Results Panel component for Workbench
@@ -12,6 +13,7 @@ export class ResultsPanel {
   readonly resultText: Locator;
   readonly pluginResult: Locator;
   readonly pluginIframe: Locator;
+  readonly geodataPlugin: GeodataPlugin;
 
   constructor(page: Page) {
     this.page = page;
@@ -21,6 +23,7 @@ export class ResultsPanel {
     this.resultText = page.getByTestId('query-cli-card-result').first();
     this.pluginResult = page.getByTestId('query-plugin-result').first();
     this.pluginIframe = page.getByTestId('pluginIframe').first();
+    this.geodataPlugin = new GeodataPlugin(page);
   }
 
   /**

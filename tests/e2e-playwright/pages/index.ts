@@ -13,7 +13,7 @@ export {
   TagsDialog,
   DatabaseList,
 } from './databases';
-export { WorkbenchPage, Editor, ResultsPanel } from './workbench';
+export { WorkbenchPage, Editor, ResultsPanel, GeodataPlugin } from './workbench';
 export { AnalyticsPage } from './analytics';
 export { SettingsPage } from './settings';
 export { PubSubPage } from './pubsub';

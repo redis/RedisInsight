@@ -2,9 +2,6 @@ import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
 import { DatabaseInstance } from 'e2eSrc/types';
 
-const MARKERS_VIEW_NAME = 'Geospatial map';
-const HEATMAP_VIEW_NAME = 'Geospatial heatmap';
-
 const GEO_KEY = 'Sicily';
 const GEOADD_COMMAND = [
   `GEOADD ${GEO_KEY}`,
@@ -43,39 +40,39 @@ test.describe('Workbench > Geodata plugin', () => {
   test('renders Geospatial map by default for coordinate search results', async ({ workbenchPage }) => {
     await workbenchPage.executeCommand(GEOSEARCH_COMMAND);
 
-    const frame = workbenchPage.resultsPanel.pluginFrame();
-    await expect(workbenchPage.resultsPanel.pluginResult).toBeVisible();
-    await expect(frame.getByRole('heading', { name: MARKERS_VIEW_NAME })).toBeVisible();
-    await expect(frame.getByRole('img', { name: 'Leaflet geospatial plot' })).toBeVisible();
-    await expect(frame.getByText('Map tiles disabled')).not.toBeVisible();
+    const { geodataPlugin, pluginResult } = workbenchPage.resultsPanel;
+    await expect(pluginResult).toBeVisible();
+    await expect(geodataPlugin.mapTitle).toBeVisible();
+    await expect(geodataPlugin.plot).toBeVisible();
+    await expect(geodataPlugin.mapTilesDisabledMessage).not.toBeVisible();
   });
 
   test('switches coordinate search results to Geospatial heatmap', async ({ workbenchPage }) => {
     await workbenchPage.executeCommand(GEOSEARCH_COMMAND);
-    await workbenchPage.selectPluginView(HEATMAP_VIEW_NAME);
 
-    const frame = workbenchPage.resultsPanel.pluginFrame();
-    await expect(frame.getByRole('heading', { name: HEATMAP_VIEW_NAME })).toBeVisible();
-    await expect(frame.locator('canvas').first()).toBeVisible();
+    const { geodataPlugin } = workbenchPage.resultsPanel;
+    await geodataPlugin.showHeatmap();
+    await expect(geodataPlugin.heatmapTitle).toBeVisible();
+    await expect(geodataPlugin.heatmapCanvas).toBeVisible();
   });
 
   test('switches coordinate search results back to Geospatial map', async ({ workbenchPage }) => {
     await workbenchPage.executeCommand(GEOSEARCH_COMMAND);
-    await workbenchPage.selectPluginView(HEATMAP_VIEW_NAME);
-    await workbenchPage.selectPluginView(MARKERS_VIEW_NAME);
 
-    const frame = workbenchPage.resultsPanel.pluginFrame();
-    await expect(frame.getByRole('heading', { name: MARKERS_VIEW_NAME })).toBeVisible();
-    await expect(frame.getByRole('img', { name: 'Leaflet geospatial plot' })).toBeVisible();
-    await expect(frame.getByRole('cell', { name: 'Palermo' })).toBeVisible();
+    const { geodataPlugin } = workbenchPage.resultsPanel;
+    await geodataPlugin.showHeatmap();
+    await geodataPlugin.showMarkers();
+    await expect(geodataPlugin.mapTitle).toBeVisible();
+    await expect(geodataPlugin.plot).toBeVisible();
+    await expect(geodataPlugin.memberCell('Palermo')).toBeVisible();
   });
 
   test('renders Geospatial details by default for scalar GEO commands', async ({ workbenchPage }) => {
     await workbenchPage.executeCommand(GEODIST_COMMAND);
 
-    const frame = workbenchPage.resultsPanel.pluginFrame();
-    await expect(frame.getByRole('heading', { name: 'Geospatial details' })).toBeVisible();
-    await expect(frame.getByText('Distance')).toBeVisible();
-    await expect(frame.getByText(/^\d+(\.\d+)? km$/)).toBeVisible();
+    const { geodataPlugin } = workbenchPage.resultsPanel;
+    await expect(geodataPlugin.detailsTitle).toBeVisible();
+    await expect(geodataPlugin.distanceLabel).toBeVisible();
+    await expect(geodataPlugin.distanceValue).toBeVisible();
   });
 });
