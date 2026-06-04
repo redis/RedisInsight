@@ -20,7 +20,7 @@ runs:
     - name: Setup Node
       uses: actions/setup-node@v4.0.4
       with:
-        node-version: '24.16.0'
+        node-version-file: '.nvmrc'
 
     - name: Cache node_modules
       id: cache-node-modules
