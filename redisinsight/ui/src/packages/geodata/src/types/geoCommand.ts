@@ -67,6 +67,12 @@ export interface GeoResult {
   hash?: number
 }
 
+export interface GeoSearchMemberRow {
+  member: string
+  distance?: number
+  hash?: number
+}
+
 export interface GeoPositionResult {
   member: string
   lon?: number

@@ -35,6 +35,28 @@ describe('GeoInspector', () => {
     expect(screen.getByRole('cell', { name: 'Catania' })).toBeInTheDocument()
   })
 
+  it('renders distance and hash columns when WITHCOORD is absent', () => {
+    renderInspector(
+      'GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 300 km WITHDIST WITHHASH',
+      [['Palermo', '190.4424', 3479447370796909]],
+    )
+
+    expect(
+      screen.getByRole('columnheader', { name: 'Member' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('columnheader', { name: 'Distance' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('columnheader', { name: 'Hash' }),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('cell', { name: 'Palermo' })).toBeInTheDocument()
+    expect(screen.getByRole('cell', { name: '190.4424' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('cell', { name: '3479447370796909' }),
+    ).toBeInTheDocument()
+  })
+
   it('renders unsupported search response messages', () => {
     renderInspector(
       'GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 300 km WITHCOORD',

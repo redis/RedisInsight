@@ -7,11 +7,11 @@ import { GeoTable } from '../GeoTable'
 import { Message } from '../Message'
 import { Shell } from '../Shell'
 import {
-  getSearchMemberRows,
   parseGeoCommand,
   parseGeoDistanceResult,
   parseGeoHashResults,
   parseGeoPositionResults,
+  parseGeoSearchMemberRows,
   parseGeoSearchResults,
   parseIntegerResult,
 } from '../../utils/geoParser'
@@ -63,11 +63,21 @@ const renderSearchRows = (response: unknown, command: ParsedGeoCommand) => {
     )
   }
 
-  const members = getSearchMemberRows(response)
+  const rows = parseGeoSearchMemberRows(response, command)
+  const columns = [
+    'Member',
+    ...(command.withDist ? ['Distance'] : []),
+    ...(command.withHash ? ['Hash'] : []),
+  ]
+
   return (
     <GeoTable
-      columns={['Member']}
-      rows={members.map((member) => [member])}
+      columns={columns}
+      rows={rows.map((row) => [
+        row.member,
+        ...(command.withDist ? [row.distance ?? '-'] : []),
+        ...(command.withHash ? [row.hash ?? '-'] : []),
+      ])}
     />
   )
 }

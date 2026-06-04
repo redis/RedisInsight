@@ -1,9 +1,9 @@
 import {
-  getSearchMemberRows,
   parseGeoCommand,
   parseGeoDistanceResult,
   parseGeoHashResults,
   parseGeoPositionResults,
+  parseGeoSearchMemberRows,
   parseGeoSearchResults,
   parseIntegerResult,
   parseSearchParams,
@@ -530,11 +530,61 @@ describe('geoParser', () => {
     })
   })
 
-  it('extracts plain member rows', () => {
-    expect(getSearchMemberRows('bad')).toEqual([])
-    expect(getSearchMemberRows(['Palermo', ['Catania', '56.4']])).toEqual([
-      'Palermo',
-      'Catania',
+  it('returns no rows for non-array responses', () => {
+    const command = unwrapCommand(
+      'GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 300 km',
+    )
+    expect(parseGeoSearchMemberRows('bad', command)).toEqual([])
+  })
+
+  it('extracts plain member rows when no WITH options are set', () => {
+    const command = unwrapCommand(
+      'GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 300 km',
+    )
+    expect(parseGeoSearchMemberRows(['Palermo', 'Catania'], command)).toEqual([
+      { member: 'Palermo' },
+      { member: 'Catania' },
     ])
+  })
+
+  it('extracts distance rows for WITHDIST without WITHCOORD', () => {
+    const command = unwrapCommand(
+      'GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 300 km WITHDIST',
+    )
+    expect(
+      parseGeoSearchMemberRows([['Palermo', '190.4424']], command),
+    ).toEqual([{ member: 'Palermo', distance: 190.4424 }])
+  })
+
+  it('extracts hash rows for WITHHASH without WITHCOORD', () => {
+    const command = unwrapCommand(
+      'GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 300 km WITHHASH',
+    )
+    expect(
+      parseGeoSearchMemberRows([['Palermo', 3479447370796909]], command),
+    ).toEqual([{ member: 'Palermo', hash: 3479447370796909 }])
+  })
+
+  it('extracts distance and hash rows for WITHDIST WITHHASH without WITHCOORD', () => {
+    const command = unwrapCommand(
+      'GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 300 km WITHDIST WITHHASH',
+    )
+    expect(
+      parseGeoSearchMemberRows(
+        [['Palermo', '190.4424', 3479447370796909]],
+        command,
+      ),
+    ).toEqual([
+      { member: 'Palermo', distance: 190.4424, hash: 3479447370796909 },
+    ])
+  })
+
+  it('omits non-finite distance and hash values', () => {
+    const command = unwrapCommand(
+      'GEOSEARCH Sicily FROMLONLAT 15 37 BYRADIUS 300 km WITHDIST WITHHASH',
+    )
+    expect(
+      parseGeoSearchMemberRows([['Palermo', 'bad', 'bad']], command),
+    ).toEqual([{ member: 'Palermo' }])
   })
 })

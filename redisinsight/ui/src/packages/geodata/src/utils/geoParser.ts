@@ -6,6 +6,7 @@ import {
   GeoIntegerResult,
   GeoPositionResult,
   GeoResult,
+  GeoSearchMemberRow,
   ParseResult,
   ParsedGeoCommand,
 } from '../types'
@@ -629,15 +630,38 @@ export const parseIntegerResult = (
   }
 }
 
-export const getSearchMemberRows = (response: unknown): string[] => {
+export const parseGeoSearchMemberRows = (
+  response: unknown,
+  command: ParsedGeoCommand,
+): GeoSearchMemberRow[] => {
   if (!Array.isArray(response)) {
     return []
   }
 
   return response.map((item) => {
-    if (Array.isArray(item)) {
-      return String(item[0])
+    if (!Array.isArray(item)) {
+      return { member: String(item) }
     }
-    return String(item)
+
+    let index = 1
+    const row: GeoSearchMemberRow = { member: String(item[0]) }
+
+    if (command.withDist) {
+      const distance = Number(item[index])
+      if (Number.isFinite(distance)) {
+        row.distance = distance
+      }
+      index += 1
+    }
+
+    if (command.withHash) {
+      const hash = Number(item[index])
+      if (Number.isFinite(hash)) {
+        row.hash = hash
+      }
+      index += 1
+    }
+
+    return row
   })
 }
