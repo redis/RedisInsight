@@ -1,4 +1,4 @@
-import thunk from 'redux-thunk'
+import { thunk } from 'redux-thunk'
 import configureStore from 'redux-mock-store'
 import { EditorType } from 'uiSrc/slices/interfaces'
 

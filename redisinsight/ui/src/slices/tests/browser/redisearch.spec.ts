@@ -1532,7 +1532,10 @@ describe('redisearch slice', () => {
         const actions = searchStore.getActions()
         expect(actions[0]).toEqual(loadKeyIndexes(keyName))
         expect(actions[1].type).toEqual(loadKeyIndexesFailure.type)
-        expect(actions[1].payload[0]).toEqual(keyName)
+        // `payload` is `unknown` on `UnknownAction` under redux 5; the
+        // `loadKeyIndexesFailure` action is dispatched with a `[keyName, ...]`
+        // tuple so indexing is safe at runtime.
+        expect((actions[1].payload as unknown[])[0]).toEqual(keyName)
       })
 
       it('should dispatch loadKeyIndexesSuccess with empty data when redisearch module is not available', async () => {

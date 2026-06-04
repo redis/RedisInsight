@@ -1,4 +1,4 @@
-import type { ReduxStore } from 'uiSrc/slices/store'
+import type { AppDispatch, ReduxStore } from 'uiSrc/slices/store'
 
 // Re-export all types and exports from the real store to avoid circular dependencies during tests
 
@@ -22,7 +22,9 @@ const getState: ReduxStore['getState'] = () => {
   return storeRef.getState()
 }
 
-export const dispatch: ReduxStore['dispatch'] = (action: any) => {
+// `action: any` because TS can't infer a single parameter type when
+// implementing an overloaded call signature like `AppDispatch`.
+export const dispatch: AppDispatch = (action: any) => {
   if (!storeRef) {
     throw new Error(
       'Store not initialized. Make sure store-dynamic is imported after store creation.',

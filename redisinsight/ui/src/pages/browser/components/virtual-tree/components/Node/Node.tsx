@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { NodePublicState } from 'react-vtree/dist/es/Tree'
+import { NodeComponentProps, NodePublicState } from 'react-vtree/dist/es/Tree'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import * as keys from 'uiSrc/constants/keys'
@@ -36,13 +36,19 @@ import { DeleteKeyPopover } from '../../../delete-key-popover/DeleteKeyPopover'
 
 const MAX_NESTING_LEVEL = 20
 
-const Node = ({
-  data,
-  isOpen,
-  index,
-  style,
-  setOpen,
-}: NodePublicState<TreeData>) => {
+// react-vtree's `NodeComponentProps` `Omit`s `index` from
+// `ListChildComponentProps`, but the underlying react-window list still
+// forwards `index` at runtime — and we rely on it for alternating row
+// styling. Add it back here as optional so the component still satisfies
+// the `<Tree>` `children` prop type expected by react-vtree.
+export type NodeProps = NodeComponentProps<
+  TreeData,
+  NodePublicState<TreeData>
+> & {
+  index?: number
+}
+
+const Node = ({ data, isOpen, index, style, setOpen }: NodeProps) => {
   const {
     id: nodeId,
     isLeaf,
@@ -368,7 +374,7 @@ const Node = ({
             : nestingLevel) * 8,
       }}
       $isSelected={isSelected && isLeaf}
-      $isEven={index % 2 === 0}
+      $isEven={(index ?? 0) % 2 === 0}
     >
       {NodeItem}
     </S.NodeContainer>

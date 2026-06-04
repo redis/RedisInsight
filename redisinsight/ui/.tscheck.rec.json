@@ -1163,9 +1163,6 @@
   "src/utils/streamUtils.ts": {
     "TS2345": 2
   },
-  "src/utils/test-utils.tsx": {
-    "TS2322": 2
-  },
   "src/utils/tests/apiResponse.spec.ts": {
     "TS2345": 1,
     "TS2739": 2,

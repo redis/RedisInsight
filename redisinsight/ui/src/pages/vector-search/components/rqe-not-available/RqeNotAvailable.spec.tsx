@@ -1,39 +1,26 @@
 import React from 'react'
-import { configureStore, combineReducers } from '@reduxjs/toolkit'
-import { render, screen } from 'uiSrc/utils/test-utils'
+import { cloneDeep } from 'lodash'
+import {
+  initialStateDefault,
+  mockStore,
+  render,
+  screen,
+} from 'uiSrc/utils/test-utils'
 import { FeatureFlags } from 'uiSrc/constants'
-import cloudReducer from 'uiSrc/slices/instances/cloud'
-import instancesReducer from 'uiSrc/slices/instances/instances'
-import appOauthReducer from 'uiSrc/slices/oauth/cloud'
-import appFeaturesReducer from 'uiSrc/slices/app/features'
 import { RqeNotAvailable } from './RqeNotAvailable'
 
-const createTestStore = () =>
-  configureStore({
-    reducer: combineReducers({
-      connections: combineReducers({
-        cloud: cloudReducer,
-        instances: instancesReducer,
-      }),
-      oauth: combineReducers({ cloud: appOauthReducer }),
-      app: combineReducers({ features: appFeaturesReducer }),
-    }),
-    preloadedState: {
-      app: {
-        features: {
-          featureFlags: {
-            features: {
-              [FeatureFlags.cloudSso]: { flag: true },
-              [FeatureFlags.cloudAds]: { flag: true },
-              [FeatureFlags.envDependent]: { flag: true },
-            },
-          },
-        },
-      },
+const createTestStore = () => {
+  const state = cloneDeep(initialStateDefault)
+  state.app.features.featureFlags = {
+    loading: false,
+    features: {
+      [FeatureFlags.cloudSso]: { flag: true },
+      [FeatureFlags.cloudAds]: { flag: true },
+      [FeatureFlags.envDependent]: { flag: true },
     },
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({ serializableCheck: false }),
-  })
+  }
+  return mockStore(state)
+}
 
 describe('RqeNotAvailable', () => {
   it('should render with RQE not available content', () => {

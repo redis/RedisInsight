@@ -12,7 +12,7 @@ import {
 import { CommandExecutionStatus } from 'uiSrc/slices/interfaces/cli'
 import { concatToOutput } from 'uiSrc/slices/cli/cli-output'
 
-import { store } from 'uiSrc/slices/store'
+import { dispatch, store } from 'uiSrc/slices/store'
 import ApiErrors from 'uiSrc/constants/apiErrors'
 import { getApiErrorMessage, getApiErrorName } from 'uiSrc/utils/apiResponse'
 
@@ -21,7 +21,7 @@ export function processUnsupportedCommand(
   unsupportedCommand: string = '',
   onSuccessAction?: () => void,
 ) {
-  const { getState, dispatch } = store
+  const { getState } = store
 
   const state = getState()
   // Due to requirements, the monitor command should not appear in the list of supported commands
@@ -50,7 +50,7 @@ export function processUnrepeatableNumber(
   command: string = '',
   onSuccessAction?: () => void,
 ) {
-  store.dispatch(
+  dispatch(
     concatToOutput(
       cliParseTextResponseWithOffset(
         cliTexts.REPEAT_COUNT_INVALID,
@@ -64,7 +64,7 @@ export function processUnrepeatableNumber(
 }
 
 export function handleRecreateClient(command = ''): void {
-  const { getState, dispatch } = store
+  const { getState } = store
 
   const state = getState()
   const { cliClientUuid } = state.cli.settings
@@ -99,7 +99,7 @@ export function handleRecreateClient(command = ''): void {
 }
 
 export function cliCommandError(error: AxiosError, command: string) {
-  const { getState, dispatch } = store
+  const { getState } = store
   const errorName = getApiErrorName(error)
   const errorMessage = getApiErrorMessage(error)
 

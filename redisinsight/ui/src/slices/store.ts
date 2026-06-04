@@ -152,10 +152,10 @@ const store = configureStore({
   devTools: riConfig.app.env !== 'production',
 })
 
-const dispatch = store.dispatch
-
-export { store, dispatch }
+export { store }
 
 export type ReduxStore = typeof store
 export type RootState = ReturnType<typeof rootReducer>
 export type AppDispatch = typeof store.dispatch
+
+export const dispatch: AppDispatch = store.dispatch
