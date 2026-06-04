@@ -177,6 +177,10 @@ export interface IPluginVisualization {
   plugin: any
   activationMethod: string
   matchCommands: string[]
+  matchQuery?: {
+    anyRegex?: string[]
+    noneRegex?: string[]
+  }
   default?: boolean
   iconDark?: string
   iconLight?: string

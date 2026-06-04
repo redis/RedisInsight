@@ -33,6 +33,9 @@ call yarn --cwd "%RI_EXPLIAIN_DIR%"
 set CLIENTS_LIST_DIR=".\redisinsight\ui\src\packages\clients-list"
 call yarn --cwd "%CLIENTS_LIST_DIR%"
 
+set GEODATA_DIR=".\redisinsight\ui\src\packages\geodata"
+call yarn --cwd "%GEODATA_DIR%"
+
 ::  Build all plugins and common libraries
 call yarn --cwd "%PACKAGES_DIR%" build
 
@@ -72,3 +75,9 @@ if not exist "%PLUGINS_DIR%\clients-list" mkdir "%PLUGINS_DIR%\clients-list"
 if not exist "%PLUGINS_DIR%\clients-list\dist" mkdir "%PLUGINS_DIR%\clients-list\dist"
 xcopy "%CLIENTS_LIST_DIR%\dist" "%PLUGINS_DIR%\clients-list\dist\" /s /e /y
 copy "%CLIENTS_LIST_DIR%\package.json" "%PLUGINS_DIR%\clients-list\"
+
+:: Copy geodata plugin
+if not exist "%PLUGINS_DIR%\geodata" mkdir "%PLUGINS_DIR%\geodata"
+if not exist "%PLUGINS_DIR%\geodata\dist" mkdir "%PLUGINS_DIR%\geodata\dist"
+xcopy "%GEODATA_DIR%\dist" "%PLUGINS_DIR%\geodata\dist\" /s /e /y
+copy "%GEODATA_DIR%\package.json" "%PLUGINS_DIR%\geodata\"

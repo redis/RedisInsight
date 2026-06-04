@@ -1692,8 +1692,7 @@
     "TS7031": 1
   },
   "test/api/plugins/GET-plugins.test.ts": {
-    "TS7006": 1,
-    "TS7031": 1
+    "TS7006": 1
   },
   "test/api/plugins/POST-databases-id-plugins-command_executions.test.ts": {
     "TS18047": 5,

@@ -11,6 +11,28 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
+export class PluginVisualizationQueryMatcher {
+  @ApiPropertyOptional({
+    type: String,
+    isArray: true,
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayNotEmpty()
+  @Type(() => String)
+  anyRegex?: string[];
+
+  @ApiPropertyOptional({
+    type: String,
+    isArray: true,
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayNotEmpty()
+  @Type(() => String)
+  noneRegex?: string[];
+}
+
 export class PluginVisualization {
   @ApiProperty({
     type: String,
@@ -42,6 +64,14 @@ export class PluginVisualization {
   @ArrayNotEmpty()
   @Type(() => String)
   matchCommands: string[];
+
+  @ApiPropertyOptional({
+    type: PluginVisualizationQueryMatcher,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => PluginVisualizationQueryMatcher)
+  matchQuery?: PluginVisualizationQueryMatcher;
 
   @ApiPropertyOptional({
     type: Boolean,

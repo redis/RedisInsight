@@ -1,0 +1,96 @@
+export type GeoCommand =
+  | 'GEOADD'
+  | 'GEODIST'
+  | 'GEOHASH'
+  | 'GEOPOS'
+  | 'GEORADIUS'
+  | 'GEORADIUS_RO'
+  | 'GEORADIUSBYMEMBER'
+  | 'GEORADIUSBYMEMBER_RO'
+  | 'GEOSEARCH'
+  | 'GEOSEARCHSTORE'
+
+export type GeoCommandKind =
+  | 'addSummary'
+  | 'distance'
+  | 'hashList'
+  | 'pointList'
+  | 'searchResults'
+  | 'storeSummary'
+
+export type SearchType = 'radius' | 'box' | 'unknown'
+
+export type ParseResult<T> =
+  | { ok: true; value: T }
+  | { ok: false; error: string }
+
+export interface GeoAddPoint {
+  lon: number
+  lat: number
+  member: string
+}
+
+export interface ParsedGeoCommand {
+  command: GeoCommand
+  kind: GeoCommandKind
+  rawTokens: string[]
+  key?: string
+  destinationKey?: string
+  members?: string[]
+  points?: GeoAddPoint[]
+  addOptions?: string[]
+  memberName?: string
+  centerFromMember?: boolean
+  centerLon?: number
+  centerLat?: number
+  radius?: number
+  boxWidth?: number
+  boxHeight?: number
+  unit?: string
+  searchType: SearchType
+  withCoord?: boolean
+  withDist?: boolean
+  withHash?: boolean
+  order?: 'ASC' | 'DESC'
+  count?: number
+  isAnyCount?: boolean
+  storeKey?: string
+  storeDistKey?: string
+  storeDist?: boolean
+}
+
+export interface GeoResult {
+  name: string
+  lon: number
+  lat: number
+  distance?: number
+  hash?: number
+}
+
+export interface GeoSearchMemberRow {
+  member: string
+  distance?: number
+  hash?: number
+}
+
+export interface GeoPositionResult {
+  member: string
+  lon?: number
+  lat?: number
+  missing: boolean
+}
+
+export interface GeoHashResult {
+  member: string
+  hash: string | null
+}
+
+export interface GeoDistanceResult {
+  distance: number | null
+  unit: string
+}
+
+export interface GeoIntegerResult {
+  count: number
+  label: string
+}
