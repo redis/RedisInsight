@@ -1,7 +1,6 @@
 import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneV880ConfigFactory } from 'e2eSrc/test-data/databases';
 import { DatabaseInstance } from 'e2eSrc/types';
-import { getRedisMajorVersion, VECTOR_SET_MIN_REDIS_MAJOR, VECTOR_SET_SKIP_REASON } from './helpers';
 
 const VEC2WORD_KEY = 'vec2word';
 
@@ -9,13 +8,11 @@ test.use({ featureFlags: { 'dev-vectorSet': true } });
 
 test.describe('Browser > Vector Set > Add Key (sample data)', () => {
   let database: DatabaseInstance;
-  let redisMajorVersion: number;
 
   test.beforeAll(async ({ apiHelper }) => {
     database = await apiHelper.createDatabase(
       StandaloneV880ConfigFactory.build({ name: 'test-vector-set-add-sample' }),
     );
-    redisMajorVersion = await getRedisMajorVersion(apiHelper, database.id);
   });
 
   test.afterAll(async ({ apiHelper }) => {
@@ -25,7 +22,6 @@ test.describe('Browser > Vector Set > Add Key (sample data)', () => {
   });
 
   test.beforeEach(async ({ browserPage, apiHelper }) => {
-    test.skip(redisMajorVersion < VECTOR_SET_MIN_REDIS_MAJOR, VECTOR_SET_SKIP_REASON);
     // Sample mode short-circuits with an info toast if vec2word already exists.
     // DEL on a missing key returns 0 — swallow transient errors so they don't
     // mask the real test failure.
