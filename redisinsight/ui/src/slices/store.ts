@@ -1,9 +1,4 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
-import type {
-  ConfigureStoreOptions,
-  ThunkDispatch,
-  UnknownAction,
-} from '@reduxjs/toolkit'
 
 import { getConfig } from 'uiSrc/config'
 import instancesReducer from './instances/instances'
@@ -150,27 +145,10 @@ export const rootReducer = combineReducers({
   }),
 })
 
-// The middleware callback below trips TS2719 "two different types with this
-// name exist, but they are unrelated" between RTK 2 (whose `Middleware` is
-// redux@5's) and the `ThunkMiddleware` baked into `getDefaultMiddleware`'s
-// return type. We pin `redux@^5.0.1` as a direct dep so v5 wins yarn's
-// top-level hoist locally, but on a clean install (CI) the redux@4 copy
-// pulled in by `@elastic/eui` → `react-beautiful-dnd` → `@types/react-
-// redux@7` can still win that contest — yarn hoisting is non-deterministic
-// when two majors are equally eligible. The shapes are structurally
-// identical at runtime; only the type-checker rejects the assignment. We
-// cast to RTK 2's own expected callback type instead of `any` so the cast
-// still flags real shape regressions, and we keep the workaround local
-// rather than reaching for a yarn `resolutions` entry so the project stays
-// portable to npm `overrides`.
-type StoreMiddleware = NonNullable<
-  ConfigureStoreOptions<RootState>['middleware']
->
-
 const store = configureStore({
   reducer: rootReducer,
-  middleware: ((getDefaultMiddleware) =>
-    getDefaultMiddleware({ serializableCheck: false })) as StoreMiddleware,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }),
   devTools: riConfig.app.env !== 'production',
 })
 
@@ -178,15 +156,6 @@ export { store }
 
 export type ReduxStore = typeof store
 export type RootState = ReturnType<typeof rootReducer>
-// Use ThunkDispatch explicitly so the thunk overload is always available on
-// AppDispatch. With RTK 2 + redux-thunk 3, the implicit `typeof store.dispatch`
-// can drop the ThunkDispatch overload in certain middleware-inference paths
-// and degrade to Dispatch<UnknownAction>, which would force every
-// dispatch(thunk()) callsite to fail with TS2345.
-export type AppDispatch = ThunkDispatch<RootState, unknown, UnknownAction> &
-  typeof store.dispatch
+export type AppDispatch = typeof store.dispatch
 
-// Bare dispatch reference used by callsites that don't have access to the
-// React hook. Typed as AppDispatch so non-hook handler files can dispatch
-// thunks without losing the thunk overload.
-export const dispatch: AppDispatch = store.dispatch as AppDispatch
+export const dispatch: AppDispatch = store.dispatch
