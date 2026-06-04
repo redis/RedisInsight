@@ -2934,10 +2934,10 @@
     color-alpha "^2.0.0"
     polished "^4.3.1"
 
-"@redis-ui/table@^3.7.0":
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/@redis-ui/table/-/table-3.7.0.tgz#4d9fd5f305c83e611552221ee8f2a7ff7467c5f8"
-  integrity sha512-uLeMgecqwMwdmk7sIxMHlfKPi4ZAivtfW9t2M3CPvlftQM7IY9ur2fwRgF4V8Fl8PrePyQ5V9/38GSSz0CPscg==
+"@redis-ui/table@^3.8.0":
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/@redis-ui/table/-/table-3.8.0.tgz#cd96362456d0028bf8a064beb2b4a465a7a8799a"
+  integrity sha512-qW4vGjX4lkCuxWD3YpLJB8hLfIVUQkYPStUtQOKexvfCcvqfuA8SM3wf0haZlNxO8vuBiBcT7UA9B9Icj6l78g==
   dependencies:
     "@redis-ui/components" "^44.0.0"
     "@redis-ui/icons" "^6.9.2"
