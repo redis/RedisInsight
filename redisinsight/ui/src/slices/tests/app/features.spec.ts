@@ -15,6 +15,7 @@ import reducer, {
   getFeatureFlagsFailure,
   fetchFeatureFlags,
   isAzureEntraIdEnabledSelector,
+  isDevArrayEnabledSelector,
 } from 'uiSrc/slices/app/features'
 import { FeatureFlags } from 'uiSrc/constants'
 import {
@@ -607,6 +608,44 @@ describe('slices', () => {
       })
 
       expect(isAzureEntraIdEnabledSelector(rootState)).toBe(false)
+    })
+  })
+
+  describe('isDevArrayEnabledSelector', () => {
+    const createRootState = (features: Record<string, { flag: boolean }>) => ({
+      ...initialStateDefault,
+      app: {
+        ...initialStateDefault.app,
+        features: {
+          ...initialState,
+          featureFlags: {
+            ...initialState.featureFlags,
+            features,
+          },
+        },
+      },
+    })
+
+    it('should return true when devArray flag is enabled', () => {
+      const rootState = createRootState({
+        [FeatureFlags.devArray]: { flag: true },
+      })
+
+      expect(isDevArrayEnabledSelector(rootState)).toBe(true)
+    })
+
+    it('should return false when devArray flag is disabled', () => {
+      const rootState = createRootState({
+        [FeatureFlags.devArray]: { flag: false },
+      })
+
+      expect(isDevArrayEnabledSelector(rootState)).toBe(false)
+    })
+
+    it('should return false when devArray flag is missing', () => {
+      const rootState = createRootState({})
+
+      expect(isDevArrayEnabledSelector(rootState)).toBe(false)
     })
   })
 })

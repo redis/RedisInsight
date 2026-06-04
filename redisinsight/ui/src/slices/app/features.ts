@@ -68,6 +68,9 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.devVectorSet]: {
         flag: false,
       },
+      [FeatureFlags.devArray]: {
+        flag: false,
+      },
       [FeatureFlags.azureEntraId]: {
         flag: false,
       },
@@ -234,6 +237,15 @@ export const isDevVectorSetEnabledSelector = (state: RootState): boolean => {
 
   const features = state.app.features.featureFlags.features
   return features[FeatureFlags.devVectorSet]?.flag ?? false
+}
+
+export const isDevArrayEnabledSelector = (state: RootState): boolean => {
+  if (isDevelopment) {
+    return true
+  }
+
+  const features = state.app.features.featureFlags.features
+  return features[FeatureFlags.devArray]?.flag ?? false
 }
 
 export default appFeaturesSlice.reducer

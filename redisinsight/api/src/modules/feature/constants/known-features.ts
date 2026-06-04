@@ -87,6 +87,10 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
     name: KnownFeatures.DevVectorSet,
     storage: FeatureStorage.Database,
   },
+  [KnownFeatures.DevArray]: {
+    name: KnownFeatures.DevArray,
+    storage: FeatureStorage.Database,
+  },
   [KnownFeatures.ProdMode]: {
     name: KnownFeatures.ProdMode,
     storage: FeatureStorage.Database,
