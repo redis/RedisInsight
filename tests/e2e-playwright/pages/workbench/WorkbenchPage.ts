@@ -22,7 +22,6 @@ export class WorkbenchPage extends InstancePage {
   readonly clearResultsButton: Locator;
   readonly rawModeButton: Locator;
   readonly groupResultsButton: Locator;
-  readonly viewTypeSelect: Locator;
 
   // Tutorial links
   readonly introToSearchLink: Locator;
@@ -46,7 +45,6 @@ export class WorkbenchPage extends InstancePage {
     this.clearResultsButton = page.locator('button:has-text("Clear Results")');
     this.rawModeButton = page.getByTestId('btn-change-mode');
     this.groupResultsButton = page.getByTestId('btn-change-group-mode');
-    this.viewTypeSelect = page.getByTestId('select-view-type').first();
 
     // Tutorial links
     this.introToSearchLink = page.getByTestId('query-tutorials-link_sq-intro');
@@ -119,14 +117,6 @@ export class WorkbenchPage extends InstancePage {
    */
   async toggleGroupResults(): Promise<void> {
     await this.groupResultsButton.click();
-  }
-
-  /**
-   * Select a Workbench result plugin view by its visible label.
-   */
-  async selectPluginView(viewName: string): Promise<void> {
-    await this.viewTypeSelect.click();
-    await this.page.getByText(viewName, { exact: true }).last().click();
   }
 
   /**
