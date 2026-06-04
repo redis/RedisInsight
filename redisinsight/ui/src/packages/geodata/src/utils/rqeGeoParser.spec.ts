@@ -36,6 +36,29 @@ describe('rqeGeoParser', () => {
     })
   })
 
+  it('falls back to the in-query predicate when GEOFILTER is malformed', () => {
+    expect(
+      parseRqeGeoCommand(
+        'FT.SEARCH idx "@coords:[2.34 48.86 1000 km]" GEOFILTER coords 2.34 48.86 1000 yd',
+      ),
+    ).toMatchObject({
+      ok: true,
+      value: {
+        command: 'FT.SEARCH',
+        kind: 'pointRadius',
+        geoField: 'coords',
+        overlay: {
+          type: 'radius',
+          source: 'query',
+          lon: 2.34,
+          lat: 48.86,
+          radius: 1000,
+          unit: 'km',
+        },
+      },
+    })
+  })
+
   it('parses legacy FT.SEARCH GEOFILTER options', () => {
     expect(
       parseRqeGeoCommand(
@@ -322,6 +345,38 @@ describe('rqeGeoParser', () => {
     expect(
       parseRqeGeoResults(
         [2, 'city:1', ['name', 'Paris', 'coords', '2.34,48.86'], 'city:2', ['coords', '3.1,49.2']],
+        command,
+      ),
+    ).toMatchObject({
+      ok: true,
+      value: {
+        points: [
+          { id: 'city:1', name: 'Paris', field: 'coords', lon: 2.34, lat: 48.86 },
+          { id: 'city:2', name: 'city:2', field: 'coords', lon: 3.1, lat: 49.2 },
+        ],
+        shapes: [],
+      },
+    })
+  })
+
+  it('skips FT.SEARCH score and sort-key metadata before field arrays', () => {
+    const command = unwrapCommand(
+      'FT.SEARCH cities "@coords:[2.34 48.86 1000 km]" WITHSCORES WITHSORTKEYS RETURN 1 coords',
+    )
+
+    expect(
+      parseRqeGeoResults(
+        [
+          2,
+          'city:1',
+          '1.5',
+          '$sortkey1',
+          ['name', 'Paris', 'coords', '2.34,48.86'],
+          'city:2',
+          '0.9',
+          '$sortkey2',
+          ['coords', '3.1,49.2'],
+        ],
         command,
       ),
     ).toMatchObject({

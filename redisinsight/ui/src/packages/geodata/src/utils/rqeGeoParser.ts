@@ -320,8 +320,17 @@ export const parseRqeGeoCommand = (
   const geofilterOverlay = commandToken === 'FT.SEARCH'
     ? parseGeofilterOverlay(tokens, params)
     : null
-  const parsedOverlay =
-    geofilterOverlay || parseQueryOverlay(getSearchExpressions(commandToken, tokens), params)
+  const queryOverlay = parseQueryOverlay(
+    getSearchExpressions(commandToken, tokens),
+    params,
+  )
+  // Prefer a successfully parsed overlay so a malformed GEOFILTER does not mask
+  // a valid in-query predicate; only surface an error when neither source parses.
+  const parsedOverlay: ParseResult<GeoQueryOverlay> | null =
+    (geofilterOverlay?.ok ? geofilterOverlay : null) ??
+    (queryOverlay?.ok ? queryOverlay : null) ??
+    geofilterOverlay ??
+    queryOverlay
 
   if (!parsedOverlay) {
     return { ok: false, error: 'No Redis Query Engine geospatial predicate found.' }
@@ -366,11 +375,38 @@ const fieldPairsToRecord = (fields: unknown): Record<string, unknown> | null => 
   return result
 }
 
-const parseSearchRows = (response: unknown[]): RqeRow[] => {
+interface SearchReplyLayout {
+  metadataCount: number
+  noContent: boolean
+}
+
+// FT.SEARCH inserts optional score/payload/sort-key values between each document
+// id and its returned field array, so the field array is not always at id + 1.
+const getSearchReplyLayout = (tokens: string[]): SearchReplyLayout => {
+  const upperTokens = tokens.map((token) => token.toUpperCase())
+  const metadataCount =
+    (upperTokens.includes('WITHSCORES') ? 1 : 0) +
+    (upperTokens.includes('WITHPAYLOADS') ? 1 : 0) +
+    (upperTokens.includes('WITHSORTKEYS') ? 1 : 0)
+  return {
+    metadataCount,
+    noContent: upperTokens.includes('NOCONTENT'),
+  }
+}
+
+const parseSearchRows = (response: unknown[], tokens: string[] = []): RqeRow[] => {
+  const { metadataCount, noContent } = getSearchReplyLayout(tokens)
+  // NOCONTENT omits the field arrays entirely, so there is nothing to map.
+  if (noContent) {
+    return []
+  }
+
+  // Each document block is: id, [score], [payload], [sortkey], fields.
+  const stride = 2 + metadataCount
   const rows: RqeRow[] = []
-  for (let index = 1; index < response.length; index += 2) {
+  for (let index = 1; index < response.length; index += stride) {
     const id = String(response[index])
-    const fields = fieldPairsToRecord(response[index + 1])
+    const fields = fieldPairsToRecord(response[index + 1 + metadataCount])
     if (fields) {
       rows.push({ id, fields })
     }
@@ -490,7 +526,7 @@ const parseRqeRows = (
   }
 
   if (command.command === 'FT.SEARCH') {
-    return { ok: true, value: parseSearchRows(response) }
+    return { ok: true, value: parseSearchRows(response, command.rawTokens) }
   }
   if (command.command === 'FT.AGGREGATE') {
     return { ok: true, value: parseAggregateRows(response) }
