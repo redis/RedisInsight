@@ -46,7 +46,7 @@ export interface IAddInstanceErrorPayload extends AxiosError {
   }
 }
 // A slice for recipes
-const notificationsSlice = createSlice({
+export const notificationsSlice = createSlice({
   name: 'notifications',
   initialState,
   reducers: {

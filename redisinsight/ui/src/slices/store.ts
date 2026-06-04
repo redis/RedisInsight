@@ -1,4 +1,5 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
+import type { ThunkDispatch } from '@reduxjs/toolkit'
 
 import { getConfig } from 'uiSrc/config'
 import instancesReducer from './instances/instances'
@@ -156,6 +157,24 @@ export { store }
 
 export type ReduxStore = typeof store
 export type RootState = ReturnType<typeof rootReducer>
-export type AppDispatch = typeof store.dispatch
+
+// SPIKE: discriminated union of every action shape in the app. Currently
+// covers a 2-slice subset (`appConnectivitySlice`, `notificationsSlice`)
+// to measure blast radius before rolling out to all ~80 slices.
+import { appConnectivitySlice } from './app/connectivity'
+import { notificationsSlice } from './app/notifications'
+
+type ActionsOf<S extends { actions: Record<string, (...args: any[]) => any> }> =
+  ReturnType<S['actions'][keyof S['actions']]>
+
+export type AppAction =
+  | ActionsOf<typeof appConnectivitySlice>
+  | ActionsOf<typeof notificationsSlice>
+
+// Strict dispatch: only accepts AppAction (the union of all known slice
+// action shapes) or thunks. NOT intersected with `typeof store.dispatch`
+// because that would re-introduce the broad `Dispatch<UnknownAction>`
+// overload via RTK's augmented type, defeating the narrowing.
+export type AppDispatch = ThunkDispatch<RootState, unknown, AppAction>
 
 export const dispatch: AppDispatch = store.dispatch

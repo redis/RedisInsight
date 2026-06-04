@@ -9,7 +9,7 @@ export const initialState: StateAppConnectivity = {
   error: undefined,
 }
 
-const appConnectivitySlice = createSlice({
+export const appConnectivitySlice = createSlice({
   name: 'appConnectivity',
   initialState,
   reducers: {
