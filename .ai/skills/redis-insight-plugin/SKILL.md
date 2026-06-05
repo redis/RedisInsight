@@ -32,7 +32,9 @@ See [references/official-docs-summary.md](references/official-docs-summary.md) f
 >   (`Row` / `Col` / `FlexGroup`) instead of raw `div`, and theme usage.
 > - **[redis-ui-components](../redis-ui-components/)** — build all plugin UI from Redis UI
 >   components. Import the internal `uiSrc/components/ui` wrappers; **never** import raw
->   `@redis-ui/*`.
+>   `@redis-ui/*`. (This skill is a symlink into the installed `@redis-ui/components` package,
+>   so it resolves after `yarn install`; if it is missing, run install — the canonical source is
+>   `node_modules/@redis-ui/components/skills/redis-ui-components/`.)
 > - **[code-quality](../code-quality/SKILL.md)** — TypeScript everywhere (no `any`), naming
 >   (`PascalCase` / `camelCase` / `UPPER_SNAKE_CASE`), import order, no magic numbers, no
 >   `!important` in styles, semantic theme colors over CSS variables.
