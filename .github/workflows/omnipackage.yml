@@ -49,4 +49,4 @@ jobs:
       - run: echo "${{ secrets.OMNIPACKAGE_DOTENV }}" > .env
 
       - name: Release packages for ${{ matrix.distro }}
-        run: omnipackage release . --distros "${{ matrix.distro }}" --respositoty "R2 test repo"
+        run: omnipackage release . --distros "${{ matrix.distro }}" --respository "R2 test repo"
