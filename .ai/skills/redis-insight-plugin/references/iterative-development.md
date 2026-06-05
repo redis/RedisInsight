@@ -58,9 +58,22 @@ Goal: prove React mounts inside the iframe and displays props.
 
 ```tsx
 import * as React from 'react';
-import { createRoot } from 'react-dom/client';
+import { createRoot, type Root } from 'react-dom/client';
 
 const PREFIX = '[EXAMPLE_PLUGIN]';
+
+// Workbench can re-activate the same iframe. Reuse one root per host element;
+// calling createRoot() twice on the same node warns and breaks rendering.
+const roots = new WeakMap<HTMLElement, Root>();
+
+function getRoot(host: HTMLElement): Root {
+  let root = roots.get(host);
+  if (!root) {
+    root = createRoot(host);
+    roots.set(host, root);
+  }
+  return root;
+}
 
 function ExampleApp({ command, data }: { command: string; data: unknown }) {
   return (
@@ -84,7 +97,7 @@ export function renderExampleView(props: any) {
   const host = document.getElementById('app');
   if (!host) return;
   try {
-    const root = createRoot(host);
+    const root = getRoot(host);
     root.render(<ExampleApp command={String(props?.command ?? '')} data={props?.data} />);
   } catch (err) {
     console.error(PREFIX, 'render failed', err);
