@@ -53,6 +53,18 @@ describe('getStringCopyValue', () => {
     expect(getStringCopyValue(value, KeyValueFormat.Pickle)).toEqual('1')
   })
 
+  it('should copy Msgpack 64-bit integers without losing precision', () => {
+    // msgpack uint64 = 9007199254740993 (2^53 + 1): 0xcf + big-endian 8 bytes
+    const value = {
+      type: 'Buffer',
+      data: [207, 0, 32, 0, 0, 0, 0, 0, 1],
+    } as RedisResponseBuffer
+
+    expect(getStringCopyValue(value, KeyValueFormat.Msgpack)).toEqual(
+      '9007199254740993',
+    )
+  })
+
   it('should copy vectors as the displayed JSON array (not comma-separated)', () => {
     // Float32 little-endian bytes for [1, 2]
     const value = {

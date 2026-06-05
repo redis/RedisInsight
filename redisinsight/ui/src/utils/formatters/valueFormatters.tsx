@@ -264,7 +264,9 @@ const bufferToSerializedFormat = (
     case KeyValueFormat.Msgpack: {
       try {
         const decoded = decodeMsgpackWithLz4(Uint8Array.from(value.data))
-        const stringified = JSON.stringify(decoded)
+        // Use JSONBigInt (like formattingBuffer) so 64-bit integers/BigInts are
+        // preserved instead of throwing and falling back to raw UTF-8.
+        const stringified = JSONBigInt.stringify(decoded)
         return reSerializeJSON(stringified, space)
       } catch (e) {
         return bufferToUTF8(value)
