@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { monaco } from 'react-monaco-editor'
-import JSONbig from 'json-bigint'
 
 import {
   MonacoEditor as Editor,
@@ -16,17 +15,11 @@ import { Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout'
 import { BaseProps } from '../interfaces'
 import { useChangeEditorType } from '../../change-editor-type-button'
+import { jsonToReadableString } from '../utils'
 
 import styles from '../styles.module.scss'
 
 const ROOT_PATH = '$'
-
-// We use `storeAsString: true` to ensure large numbers are serialized as strings.
-// This avoids precision loss for values larger than Number.MAX_SAFE_INTEGER (2^53 - 1),
-// which would otherwise be inaccurately represented in JavaScript.
-// Ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER
-const jsonToReadableString = (data: any) =>
-  JSONbig({ storeAsString: true }).stringify(data, null, 2)
 
 const MonacoEditor = (props: BaseProps) => {
   const { data, length, selectedKey } = props

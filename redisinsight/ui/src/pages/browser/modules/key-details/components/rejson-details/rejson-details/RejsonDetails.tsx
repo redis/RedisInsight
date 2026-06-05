@@ -16,7 +16,7 @@ import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { getBrackets, isRealArray, isRealObject, wrapPath } from '../utils'
 import { BaseProps, ObjectTypes } from '../interfaces'
 import RejsonDynamicTypes from '../rejson-dynamic-types'
-import { AddItem } from '../components'
+import { AddItem, JsonValueActions } from '../components'
 import ChangeEditorTypeButton from '../../change-editor-type-button'
 
 import styles from '../styles.module.scss'
@@ -99,7 +99,14 @@ const RejsonDetails = (props: BaseProps) => {
                 'start',
               )}
             </span>
-            <ChangeEditorTypeButton />
+            <div className={styles.actionButtons}>
+              <ChangeEditorTypeButton />
+              <JsonValueActions
+                data={data}
+                selectedKey={selectedKey}
+                isDownloaded={isDownloaded}
+              />
+            </div>
           </div>
         )}
         <RejsonDynamicTypes
