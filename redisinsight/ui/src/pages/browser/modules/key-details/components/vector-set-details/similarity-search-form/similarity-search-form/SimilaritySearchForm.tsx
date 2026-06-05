@@ -297,6 +297,7 @@ export const SimilaritySearchForm = ({
             <PrimaryButton
               onClick={handleSubmit}
               disabled={submitDisabled}
+              loading={isLoading}
               data-testid={`${TEST_ID}-submit`}
             >
               Find similar items
