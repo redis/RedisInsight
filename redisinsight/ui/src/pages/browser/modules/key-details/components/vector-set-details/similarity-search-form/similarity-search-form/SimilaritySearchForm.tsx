@@ -245,7 +245,7 @@ export const SimilaritySearchForm = ({
                   onChange={(value) => setField('filter', value)}
                   disabled={loading}
                   suggestions={attributeKeys}
-                  data-testid={`${TEST_ID}-filter-input`}
+                  testId={`${TEST_ID}-filter-input`}
                 />
               </FlexItem>
             </Row>

@@ -4,7 +4,7 @@ export interface FilterInputWithSuggestionsProps {
   suggestions: string[]
   placeholder?: string
   disabled?: boolean
-  'data-testid'?: string
+  testId?: string
 }
 
 export interface ActiveDotToken {

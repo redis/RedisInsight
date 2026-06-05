@@ -24,7 +24,7 @@ export const FilterInputWithSuggestions = ({
   suggestions,
   placeholder,
   disabled,
-  'data-testid': dataTestId,
+  testId,
 }: FilterInputWithSuggestionsProps) => {
   const inputRef = useRef<HTMLInputElement>(null)
   const [caret, setCaret] = useState<number>(value.length)
@@ -120,7 +120,7 @@ export const FilterInputWithSuggestions = ({
     [onChange],
   )
 
-  const listboxId = dataTestId ? `${dataTestId}-suggestions` : undefined
+  const listboxId = testId ? `${testId}-suggestions` : undefined
   const activeOptionId =
     showDropdown && listboxId ? `${listboxId}-option-${activeIndex}` : undefined
 
@@ -130,7 +130,7 @@ export const FilterInputWithSuggestions = ({
       aria-expanded={showDropdown}
       aria-haspopup="listbox"
       aria-controls={listboxId}
-      data-testid={dataTestId ? `${dataTestId}-wrapper` : undefined}
+      data-testid={testId ? `${testId}-wrapper` : undefined}
     >
       <TextInput
         ref={inputRef}
@@ -148,7 +148,7 @@ export const FilterInputWithSuggestions = ({
         onBlur={() => setIsFocused(false)}
         aria-autocomplete="list"
         aria-activedescendant={activeOptionId}
-        data-testid={dataTestId}
+        data-testid={testId}
       />
       {showDropdown && (
         <S.SuggestionsList
@@ -164,8 +164,8 @@ export const FilterInputWithSuggestions = ({
               role="option"
               aria-selected={index === activeIndex}
               data-testid={
-                dataTestId
-                  ? `${dataTestId}-suggestion-${key}`
+                testId
+                  ? `${testId}-suggestion-${key}`
                   : `filter-suggestion-${key}`
               }
               onMouseDown={(event) => {

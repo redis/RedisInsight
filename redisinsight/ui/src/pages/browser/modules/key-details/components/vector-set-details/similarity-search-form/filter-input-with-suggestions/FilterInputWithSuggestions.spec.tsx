@@ -18,7 +18,7 @@ const renderForm = (
       value={props.value ?? ''}
       onChange={onChange}
       suggestions={props.suggestions ?? ['price', 'category', 'color']}
-      data-testid={TEST_ID}
+      testId={TEST_ID}
     />,
   )
   return { ...utils, onChange }
