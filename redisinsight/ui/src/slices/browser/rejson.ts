@@ -43,6 +43,7 @@ const TELEMETRY_KEY_LEVEL_ENTIRE_KEY = 'entireKey'
 
 export const initialState: InitialStateRejson = {
   loading: false,
+  downloading: false,
   error: null,
   data: {
     downloaded: false,
@@ -121,14 +122,14 @@ const rejsonSlice = createSlice({
       state.isWithinThreshold = payload
     },
     downloadReJSON: (state) => {
-      state.loading = true
+      state.downloading = true
       state.error = null
     },
     downloadReJSONSuccess: (state) => {
-      state.loading = false
+      state.downloading = false
     },
     downloadReJSONFailure: (state, { payload }) => {
-      state.loading = false
+      state.downloading = false
       state.error = payload
     },
   },

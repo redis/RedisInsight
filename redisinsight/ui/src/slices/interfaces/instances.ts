@@ -504,6 +504,7 @@ export enum EditorType {
 
 export interface InitialStateRejson {
   loading: boolean
+  downloading: boolean
   error: Nullable<string>
   data: GetRejsonRlResponse
   editorType: EditorType
