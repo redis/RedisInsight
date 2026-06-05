@@ -30,6 +30,12 @@ jest.mock('uiSrc/telemetry', () => ({
 const mockedUseSimilaritySearch = jest.mocked(useSimilaritySearch)
 const mockedSendEventTelemetry = jest.mocked(sendEventTelemetry)
 
+const fillValidVector = () => {
+  fireEvent.change(screen.getByTestId(`${TEST_ID}-vector-input`), {
+    target: { value: '1, 2, 3' },
+  })
+}
+
 beforeEach(() => {
   jest.clearAllMocks()
   mockedUseSimilaritySearch.mockReturnValue(
@@ -60,12 +66,6 @@ describe('SimilaritySearchForm', () => {
     )
   })
 
-  const fillValidVector = () => {
-    fireEvent.change(screen.getByTestId(`${TEST_ID}-vector-input`), {
-      target: { value: '1, 2, 3' },
-    })
-  }
-
   it('disables the preview toggle until the form has a valid query', () => {
     renderComponent()
 
@@ -73,6 +73,20 @@ describe('SimilaritySearchForm', () => {
     expect(toggle).toBeDisabled()
 
     fillValidVector()
+
+    expect(toggle).toBeEnabled()
+  })
+
+  it('enables the preview toggle once the element input has a value (Element mode)', () => {
+    renderComponent()
+
+    fireEvent.click(screen.getByTestId(`${TEST_ID}-mode-element`))
+    const toggle = screen.getByTestId(`${TEST_ID}-preview-toggle`)
+    expect(toggle).toBeDisabled()
+
+    fireEvent.change(screen.getByTestId(`${TEST_ID}-element-input`), {
+      target: { value: 'alpha' },
+    })
 
     expect(toggle).toBeEnabled()
   })

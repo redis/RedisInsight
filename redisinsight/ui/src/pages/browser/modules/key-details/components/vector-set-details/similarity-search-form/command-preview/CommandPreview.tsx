@@ -13,7 +13,12 @@ export const CommandPreview = ({
   loading = false,
 }: CommandPreviewProps) => {
   const isEmpty = command.length === 0
-  const displayText = loading ? LOADING_PLACEHOLDER : isEmpty ? '' : command
+  let displayText = command
+  if (loading) {
+    displayText = LOADING_PLACEHOLDER
+  } else if (isEmpty) {
+    displayText = ''
+  }
 
   return (
     <PreviewBar data-testid={TEST_ID} gap="m" align="center">

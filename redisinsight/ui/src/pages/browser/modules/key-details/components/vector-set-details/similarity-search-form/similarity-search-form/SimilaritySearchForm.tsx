@@ -87,22 +87,19 @@ export const SimilaritySearchForm = ({
     runSimilaritySearchPreview(state)
   }, [state, runSimilaritySearchPreview, previewVisible])
 
-  const togglePreview = () => {
-    setPreviewVisible((prev) => {
-      const next = !prev
-      sendEventTelemetry({
-        event:
-          TelemetryEvent.VECTOR_SET_SIMILARITY_SEARCH_COMMAND_PREVIEW_TOGGLED,
-        eventData: {
-          databaseId,
-          state: next ? 'shown' : 'hidden',
-        },
-      })
-      if (!next) {
-        cancelSimilaritySearchPreview()
-      }
-      return next
+  const togglePreview = (next: boolean) => {
+    sendEventTelemetry({
+      event:
+        TelemetryEvent.VECTOR_SET_SIMILARITY_SEARCH_COMMAND_PREVIEW_TOGGLED,
+      eventData: {
+        databaseId,
+        state: next ? 'shown' : 'hidden',
+      },
     })
+    if (!next) {
+      cancelSimilaritySearchPreview()
+    }
+    setPreviewVisible(next)
   }
 
   const vectorFieldInfo = useMemo(
