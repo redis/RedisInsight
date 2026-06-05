@@ -10,6 +10,7 @@ import {
 } from 'uiSrc/slices/browser/keys'
 import {
   KeyTypes,
+  KeyValueCompressor,
   ModulesKeyTypes,
   TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
   TEXT_DISABLED_COMPRESSED_VALUE,
@@ -32,8 +33,14 @@ import {
   isTruncatedString,
   isFormatEditable,
   isFullStringLoaded,
+  Nullable,
 } from 'uiSrc/utils'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { CopyButton } from 'uiSrc/components/copy-button'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import { StringDetailsValue } from './string-details-value'
+import { getStringCopyValue } from './StringDetails.utils'
 import { EditItemAction } from '../key-details-actions'
 import { KeyDetailsSubheader } from '../key-details-subheader/KeyDetailsSubheader'
 
@@ -48,6 +55,9 @@ const StringDetails = (props: Props) => {
   const { length } = useAppSelector(selectedKeyDataSelector) ?? initialKeyInfo
   const { value: keyValue } = useAppSelector(stringDataSelector)
   const { isCompressed: isStringCompressed } = useAppSelector(stringSelector)
+  const { id: instanceId, compressor = null } = useAppSelector(
+    connectedInstanceSelector,
+  )
 
   const isTruncatedValue = isTruncatedString(keyValue)
   const isEditable =
@@ -64,9 +74,27 @@ const StringDetails = (props: Props) => {
       ? TEXT_DISABLED_STRING_EDITING
       : null
 
+  // The full value can be copied as text only when it is entirely loaded and not
+  // truncated. For large/lazy-loaded or truncated values the footer "Load all" /
+  // "Download" controls remain the way to retrieve the complete value.
+  const isFullyAvailable =
+    isFullStringLoaded(keyValue?.data?.length, length) && !isTruncatedValue
+  const copyValue = getStringCopyValue(
+    keyValue,
+    viewFormatProp,
+    compressor as Nullable<KeyValueCompressor>,
+  )
+
   const [editItem, setEditItem] = useState<boolean>(false)
 
   const dispatch = useAppDispatch()
+
+  const handleCopyValue = () => {
+    sendEventTelemetry({
+      event: TelemetryEvent.STRING_VALUE_COPIED,
+      eventData: { databaseId: instanceId },
+    })
+  }
 
   const handleRefreshKey = (
     key: RedisResponseBuffer,
@@ -82,15 +110,27 @@ const StringDetails = (props: Props) => {
   }
 
   const Actions = () => (
-    <EditItemAction
-      title="Edit Value"
-      tooltipContent={editToolTip}
-      isEditable={isStringEditable && isEditable}
-      onEditItem={() => {
-        dispatch(setSelectedKeyRefreshDisabled(!editItem))
-        setEditItem(!editItem)
-      }}
-    />
+    <Row align="center" gap="s" grow={false}>
+      {/* Hidden while editing: copyValue comes from the saved Redis value, not
+          the unsaved textarea the user is currently editing. */}
+      {keyValue && isFullyAvailable && !editItem && (
+        <CopyButton
+          copy={copyValue}
+          aria-label="Copy value"
+          onCopy={handleCopyValue}
+          data-testid="copy-string-value"
+        />
+      )}
+      <EditItemAction
+        title="Edit Value"
+        tooltipContent={editToolTip}
+        isEditable={isStringEditable && isEditable}
+        onEditItem={() => {
+          dispatch(setSelectedKeyRefreshDisabled(!editItem))
+          setEditItem(!editItem)
+        }}
+      />
+    </Row>
   )
 
   return (

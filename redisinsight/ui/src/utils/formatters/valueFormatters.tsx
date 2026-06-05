@@ -264,7 +264,9 @@ const bufferToSerializedFormat = (
     case KeyValueFormat.Msgpack: {
       try {
         const decoded = decodeMsgpackWithLz4(Uint8Array.from(value.data))
-        const stringified = JSON.stringify(decoded)
+        // Use JSONBigInt (like formattingBuffer) so 64-bit integers/BigInts are
+        // preserved instead of throwing and falling back to raw UTF-8.
+        const stringified = JSONBigInt.stringify(decoded)
         return reSerializeJSON(stringified, space)
       } catch (e) {
         return bufferToUTF8(value)
@@ -282,6 +284,39 @@ const bufferToSerializedFormat = (
         // (matches the view path in formattingBuffer).
         const stringified = JSONBigInt.stringify(decoded)
         return reSerializeJSON(stringified, space)
+      } catch (e) {
+        return bufferToUTF8(value)
+      }
+    }
+    // The formats below are decoded for display (formattingBuffer renders them
+    // as a JSON tree). Mirror that decode here so a copied value matches the
+    // displayed value instead of falling through to raw UTF-8.
+    case KeyValueFormat.JAVA: {
+      try {
+        const decoded = bufferToJava(value)
+        return reSerializeJSON(JSONBigInt.stringify(decoded), space)
+      } catch (e) {
+        return bufferToUTF8(value)
+      }
+    }
+    case KeyValueFormat.Pickle: {
+      try {
+        const decoded = new Parser().parse(new Uint8Array(value.data))
+        if (isUndefined(decoded)) {
+          return bufferToUTF8(value)
+        }
+        return reSerializeJSON(JSONBigInt.stringify(decoded), space)
+      } catch (e) {
+        return bufferToUTF8(value)
+      }
+    }
+    case KeyValueFormat.Protobuf: {
+      try {
+        if (value.data?.length === 0) {
+          throw new Error()
+        }
+        const decoded = getData(Buffer.from(value.data))
+        return reSerializeJSON(JSONBigInt.stringify(decoded), space)
       } catch (e) {
         return bufferToUTF8(value)
       }

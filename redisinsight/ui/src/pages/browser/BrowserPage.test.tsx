@@ -269,10 +269,10 @@ describe('KeyDetailsWrapper', () => {
 
     const afterRenderActions = [...store.getActions()]
 
-    fireEvent.click(screen.getByTestId(/string-value/))
+    fireEvent.click(screen.getByTestId('string-value'))
 
-    expect(screen.getByTestId(/string-value/)).toBeInTheDocument()
-    fireEvent.change(screen.getByTestId(/string-value/), {
+    expect(screen.getByTestId('string-value')).toBeInTheDocument()
+    fireEvent.change(screen.getByTestId('string-value'), {
       target: { value: 'val123' },
     })
 
