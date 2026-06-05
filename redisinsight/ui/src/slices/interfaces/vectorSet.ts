@@ -18,6 +18,11 @@ export interface VectorSetData {
    * Union of top-level JSON attribute keys collected from `elements.attributes`,
    * alphabetically sorted. Grows monotonically across pagination so the similarity
    * search filter can suggest attribute names the user has already seen.
+   *
+   * Keys are never pruned: removing an attribute from a single element via the
+   * attribute editor does not retract its key from the dropdown. We trade some
+   * staleness for a referentially stable array that memoized selectors can
+   * depend on.
    */
   attributeKeys: string[]
 }

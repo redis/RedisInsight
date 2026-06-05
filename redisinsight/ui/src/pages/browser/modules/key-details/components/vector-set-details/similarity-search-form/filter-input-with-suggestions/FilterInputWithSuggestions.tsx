@@ -67,19 +67,17 @@ export const findActiveDotToken = (
  * same one twice. The token currently being typed (its dot at
  * `excludeDotIndex`) is skipped so editing it doesn't make its own suggestion
  * disappear.
+ *
+ * The regex is created per-call rather than hoisted so we never have to worry
+ * about a stale `lastIndex` from an earlier invocation leaking across calls.
  */
-const USED_DOT_TOKEN_RE = /(^|[^A-Za-z0-9_])\.([A-Za-z0-9_]+)/g
-
 export const findUsedAttributeKeys = (
   value: string,
   excludeDotIndex?: number,
 ): Set<string> => {
   const used = new Set<string>()
-  USED_DOT_TOKEN_RE.lastIndex = 0
-  let match: RegExpExecArray | null
-  // eslint-disable-next-line no-cond-assign
-  while ((match = USED_DOT_TOKEN_RE.exec(value)) !== null) {
-    const dotIndex = match.index + match[1].length
+  for (const match of value.matchAll(/(^|[^A-Za-z0-9_])\.([A-Za-z0-9_]+)/g)) {
+    const dotIndex = (match.index ?? 0) + match[1].length
     if (dotIndex === excludeDotIndex) continue
     used.add(match[2])
   }
@@ -151,7 +149,15 @@ export const FilterInputWithSuggestions = ({
     (key: string) => {
       if (!activeToken) return
       const before = value.substring(0, activeToken.dotIndex + 1)
-      const after = value.substring(caret)
+      // Scan forward from the caret while we're still inside a word so the
+      // suggestion replaces the WHOLE token, not just the chars typed so far —
+      // otherwise editing `.ca|t` and accepting `category` produces
+      // `.categoryt` with the trailing `t` left dangling.
+      let tokenEnd = caret
+      while (tokenEnd < value.length && isWordChar(value[tokenEnd])) {
+        tokenEnd += 1
+      }
+      const after = value.substring(tokenEnd)
       const nextValue = `${before}${key}${after}`
       const nextCaret = before.length + key.length
       pendingCaretRef.current = nextCaret
@@ -186,19 +192,33 @@ export const FilterInputWithSuggestions = ({
   const handleChange = useCallback(
     (next: string) => {
       onChange(next)
-      // Defer to next tick so the input has applied the new value before we
-      // read its caret position back.
-      setTimeout(() => {
-        const el = inputRef.current
-        if (!el) return
-        setCaret(el.selectionStart ?? next.length)
-      }, 0)
+      // React's synthetic `onChange` fires after the DOM input has flushed its
+      // value and selection, so we can read `selectionStart` synchronously.
+      const el = inputRef.current
+      setCaret(el?.selectionStart ?? next.length)
     },
     [onChange],
   )
 
+  // Stable IDs for ARIA wiring so the input can advertise the listbox and the
+  // currently-highlighted option to assistive tech.
+  const listboxId = dataTestId ? `${dataTestId}-suggestions` : undefined
+  const activeOptionId =
+    showDropdown && listboxId ? `${listboxId}-option-${activeIndex}` : undefined
+
   return (
-    <S.Wrapper data-testid={dataTestId ? `${dataTestId}-wrapper` : undefined}>
+    // ARIA 1.2 combobox pattern: the wrapper takes the combobox role +
+    // expanded/haspopup/controls so the relationship is announced regardless
+    // of which inner element ends up focused. `aria-activedescendant`
+    // / `aria-autocomplete` go on the input itself since they describe the
+    // textbox behaviour.
+    <S.Wrapper
+      role="combobox"
+      aria-expanded={showDropdown}
+      aria-haspopup="listbox"
+      aria-controls={listboxId}
+      data-testid={dataTestId ? `${dataTestId}-wrapper` : undefined}
+    >
       <TextInput
         ref={inputRef}
         placeholder={placeholder}
@@ -212,23 +232,25 @@ export const FilterInputWithSuggestions = ({
           setIsFocused(true)
           syncCaret()
         }}
-        onBlur={() => {
-          // Defer so a mousedown on a suggestion item can fire first; the
-          // suggestion handler re-focuses the input itself.
-          setTimeout(() => setIsFocused(false), 100)
-        }}
+        // `onMouseDown` on suggestion items calls `preventDefault`, which keeps
+        // focus on the input, so the dropdown stays open during a click. A
+        // genuine blur (Tab away, outside click) closes the dropdown
+        // immediately — no timeout needed.
+        onBlur={() => setIsFocused(false)}
+        aria-autocomplete="list"
+        aria-activedescendant={activeOptionId}
         data-testid={dataTestId}
       />
       {showDropdown && (
         <S.SuggestionsList
-          data-testid={
-            dataTestId ? `${dataTestId}-suggestions` : 'filter-suggestions'
-          }
+          id={listboxId}
+          data-testid={listboxId ?? 'filter-suggestions'}
           role="listbox"
         >
           {filteredSuggestions.map((key, index) => (
             <S.SuggestionItem
               key={key}
+              id={listboxId ? `${listboxId}-option-${index}` : undefined}
               $active={index === activeIndex}
               role="option"
               aria-selected={index === activeIndex}

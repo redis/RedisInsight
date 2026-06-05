@@ -161,4 +161,97 @@ describe('FilterInputWithSuggestions', () => {
       screen.getByTestId(`${TEST_ID}-suggestion-price`),
     ).toBeInTheDocument()
   })
+
+  it('replaces the whole word-token when the caret is mid-token', () => {
+    // `.ca|t` — caret at index 2, the `t` after the caret is still part of
+    // the token. Picking `category` must produce `.category`, not
+    // `.categoryt` (regression test for the half-token replacement bug).
+    const value = '.cat'
+    const { onChange } = renderForm({ value })
+    const input = screen.getByTestId(TEST_ID) as HTMLInputElement
+    fireEvent.focus(input)
+    input.setSelectionRange(2, 2)
+    fireEvent.keyUp(input, { key: 'ArrowLeft' })
+
+    fireEvent.mouseDown(screen.getByTestId(`${TEST_ID}-suggestion-category`))
+    expect(onChange).toHaveBeenCalledWith('.category')
+  })
+
+  describe('keyboard navigation', () => {
+    const openDropdown = () => {
+      const utils = renderForm({ value: '.' })
+      const input = screen.getByTestId(TEST_ID) as HTMLInputElement
+      fireEvent.focus(input)
+      input.setSelectionRange(1, 1)
+      fireEvent.keyUp(input, { key: '.' })
+      return { ...utils, input }
+    }
+
+    it('ArrowDown wraps through the suggestion list', () => {
+      const { input } = openDropdown()
+      // 3 suggestions: price, category, color (order = order of `suggestions`
+      // prop). activeIndex starts at 0.
+      fireEvent.keyDown(input, { key: 'ArrowDown' })
+      expect(
+        screen.getByTestId(`${TEST_ID}-suggestion-category`),
+      ).toHaveAttribute('aria-selected', 'true')
+      fireEvent.keyDown(input, { key: 'ArrowDown' })
+      fireEvent.keyDown(input, { key: 'ArrowDown' })
+      // wrapped back to index 0
+      expect(screen.getByTestId(`${TEST_ID}-suggestion-price`)).toHaveAttribute(
+        'aria-selected',
+        'true',
+      )
+    })
+
+    it('ArrowUp wraps to the last item from index 0', () => {
+      const { input } = openDropdown()
+      fireEvent.keyDown(input, { key: 'ArrowUp' })
+      expect(screen.getByTestId(`${TEST_ID}-suggestion-color`)).toHaveAttribute(
+        'aria-selected',
+        'true',
+      )
+    })
+
+    it('Enter picks the highlighted suggestion', () => {
+      const { input, onChange } = openDropdown()
+      fireEvent.keyDown(input, { key: 'ArrowDown' }) // category
+      fireEvent.keyDown(input, { key: 'Enter' })
+      expect(onChange).toHaveBeenCalledWith('.category')
+    })
+
+    it('Tab picks the highlighted suggestion (and preventDefault keeps focus)', () => {
+      const { input, onChange } = openDropdown()
+      fireEvent.keyDown(input, { key: 'Tab' })
+      expect(onChange).toHaveBeenCalledWith('.price')
+    })
+
+    it('Escape closes the dropdown', () => {
+      const { input } = openDropdown()
+      expect(screen.getByTestId(`${TEST_ID}-suggestions`)).toBeInTheDocument()
+      fireEvent.keyDown(input, { key: 'Escape' })
+      expect(
+        screen.queryByTestId(`${TEST_ID}-suggestions`),
+      ).not.toBeInTheDocument()
+    })
+  })
+
+  it('exposes ARIA combobox wiring on the wrapper and aria-activedescendant on the input', () => {
+    renderForm({ value: '.' })
+    const input = screen.getByTestId(TEST_ID) as HTMLInputElement
+    const wrapper = screen.getByTestId(`${TEST_ID}-wrapper`)
+    fireEvent.focus(input)
+    input.setSelectionRange(1, 1)
+    fireEvent.keyUp(input, { key: '.' })
+
+    expect(wrapper).toHaveAttribute('role', 'combobox')
+    expect(wrapper).toHaveAttribute('aria-expanded', 'true')
+    expect(wrapper).toHaveAttribute('aria-haspopup', 'listbox')
+    expect(wrapper).toHaveAttribute('aria-controls', `${TEST_ID}-suggestions`)
+    expect(input).toHaveAttribute('aria-autocomplete', 'list')
+    expect(input).toHaveAttribute(
+      'aria-activedescendant',
+      `${TEST_ID}-suggestions-option-0`,
+    )
+  })
 })

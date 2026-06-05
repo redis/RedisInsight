@@ -13,6 +13,10 @@ import {
   addMessageNotification,
   IAddInstanceErrorPayload,
 } from 'uiSrc/slices/app/notifications'
+import {
+  GetVectorSetElementsResponse,
+  RedisResponseBuffer,
+} from 'uiSrc/slices/interfaces'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { MOCK_TIMESTAMP } from 'uiSrc/mocks/data/dateNow'
 import {
@@ -552,7 +556,7 @@ describe('vectorSet slice', () => {
   describe('thunks', () => {
     describe('fetchVectorSetElements', () => {
       const thunkElements = vectorSetElementFactory.buildList(3)
-      const apiResponse = {
+      const apiResponse: GetVectorSetElementsResponse = {
         keyName: vectorSetTestKeyName(),
         total: thunkElements.length,
         nextCursor: vectorSetPaginationCursorAfter(
@@ -568,14 +572,14 @@ describe('vectorSet slice', () => {
 
         await store.dispatch<any>(
           fetchVectorSetElements({
-            key: apiResponse.keyName as any,
+            key: apiResponse.keyName as RedisResponseBuffer,
             count: 10,
           }),
         )
 
         const expectedActions = [
           loadVectorSetElements(undefined),
-          loadVectorSetElementsSuccess(apiResponse as any),
+          loadVectorSetElementsSuccess(apiResponse),
           updateSelectedKeyRefreshTime(Date.now()),
         ]
 
@@ -611,7 +615,7 @@ describe('vectorSet slice', () => {
 
     describe('fetchMoreVectorSetElements', () => {
       const moreElements = vectorSetElementFactory.buildList(3)
-      const moreApiResponse = {
+      const moreApiResponse: GetVectorSetElementsResponse = {
         keyName: vectorSetTestKeyName(),
         total: faker.number.int({ min: moreElements.length + 1, max: 100 }),
         nextCursor: vectorSetPaginationCursorAfter(
@@ -630,7 +634,7 @@ describe('vectorSet slice', () => {
 
         await store.dispatch<any>(
           fetchMoreVectorSetElements({
-            key: moreApiResponse.keyName as any,
+            key: moreApiResponse.keyName as RedisResponseBuffer,
             nextCursor: requestCursor,
             count: 10,
           }),
@@ -638,7 +642,7 @@ describe('vectorSet slice', () => {
 
         const expectedActions = [
           loadMoreVectorSetElements(),
-          loadMoreVectorSetElementsSuccess(moreApiResponse as any),
+          loadMoreVectorSetElementsSuccess(moreApiResponse),
         ]
 
         expect(mockedStore.getActions()).toEqual(expectedActions)
