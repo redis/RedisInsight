@@ -5,9 +5,10 @@ import { RiTooltip } from 'uiSrc/components'
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
 import { IconButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { CliIcon, InfoIcon, ResetIcon } from 'uiSrc/components/base/icons'
+import { InfoIcon, ResetIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { TextInput, QuantityCounter } from 'uiSrc/components/base/inputs'
+import { Text } from 'uiSrc/components/base/text'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
@@ -22,6 +23,7 @@ import {
   ELEMENT_MODE_TOOLTIP,
   ELEMENT_PLACEHOLDER,
   FILTER_PLACEHOLDER,
+  QUERY_NOT_READY_TOOLTIP,
   SIMILARITY_SEARCH_COUNT_DEFAULT,
   SIMILARITY_SEARCH_COUNT_MAX,
   SIMILARITY_SEARCH_COUNT_MIN,
@@ -258,18 +260,24 @@ export const SimilaritySearchForm = ({
         <FlexItem grow={false}>
           <RiTooltip
             content={
-              previewVisible ? 'Hide command preview' : 'Show command preview'
+              !queryReady
+                ? QUERY_NOT_READY_TOOLTIP
+                : previewVisible
+                  ? 'Hide command preview'
+                  : 'Show command preview'
             }
             position="top"
           >
-            <IconButton
-              size="M"
-              icon={CliIcon}
-              onClick={togglePreview}
+            <S.PreviewToggleButton
+              pressed={previewVisible}
+              onPressedChange={togglePreview}
+              disabled={!queryReady}
               aria-label="Toggle command preview"
-              aria-pressed={previewVisible}
               data-testid={`${TEST_ID}-preview-toggle`}
-            />
+            >
+              <RiIcon size="m" type="CliIcon" />
+              <Text size="s">Preview</Text>
+            </S.PreviewToggleButton>
           </RiTooltip>
         </FlexItem>
         <FlexItem grow>
@@ -290,13 +298,18 @@ export const SimilaritySearchForm = ({
           </RiTooltip>
         </FlexItem>
         <FlexItem grow={false}>
-          <PrimaryButton
-            onClick={handleSubmit}
-            disabled={submitDisabled}
-            data-testid={`${TEST_ID}-submit`}
+          <RiTooltip
+            content={!queryReady ? QUERY_NOT_READY_TOOLTIP : null}
+            position="top"
           >
-            Find similar items
-          </PrimaryButton>
+            <PrimaryButton
+              onClick={handleSubmit}
+              disabled={submitDisabled}
+              data-testid={`${TEST_ID}-submit`}
+            >
+              Find similar items
+            </PrimaryButton>
+          </RiTooltip>
         </FlexItem>
       </S.ActionRow>
     </S.FormContainer>

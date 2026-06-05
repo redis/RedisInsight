@@ -1,5 +1,6 @@
 import { HTMLAttributes } from 'react'
 import styled from 'styled-components'
+import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { MIDDLE_SCREEN_RESOLUTION } from 'uiSrc/constants'
 
@@ -66,4 +67,9 @@ export const FilterLabel = styled.span<HTMLAttributes<HTMLSpanElement>>`
  */
 export const ActionRow = styled(Row)`
   min-height: ${ACTION_ROW_HEIGHT};
+`
+
+export const PreviewToggleButton = styled(ToggleButton)`
+  ${({ theme, pressed }) =>
+    !pressed && `border-color: ${theme.semantic.color.border.neutral600};`}
 `

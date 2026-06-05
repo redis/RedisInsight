@@ -11,3 +11,5 @@ export const FILTER_PLACEHOLDER = 'e.g. .price > 50 and .category == "books"'
 
 export const VECTOR_MODE_TOOLTIP = 'Search by raw vector values'
 export const ELEMENT_MODE_TOOLTIP = 'Search by an existing element.'
+
+export const QUERY_NOT_READY_TOOLTIP = 'Enter a vector or element to search'

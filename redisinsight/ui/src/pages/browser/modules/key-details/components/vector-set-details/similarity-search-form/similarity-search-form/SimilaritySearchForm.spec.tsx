@@ -60,8 +60,26 @@ describe('SimilaritySearchForm', () => {
     )
   })
 
+  const fillValidVector = () => {
+    fireEvent.change(screen.getByTestId(`${TEST_ID}-vector-input`), {
+      target: { value: '1, 2, 3' },
+    })
+  }
+
+  it('disables the preview toggle until the form has a valid query', () => {
+    renderComponent()
+
+    const toggle = screen.getByTestId(`${TEST_ID}-preview-toggle`)
+    expect(toggle).toBeDisabled()
+
+    fillValidVector()
+
+    expect(toggle).toBeEnabled()
+  })
+
   it('renders empty preview text when toggled on with no preview', () => {
     renderComponent()
+    fillValidVector()
     fireEvent.click(screen.getByTestId(`${TEST_ID}-preview-toggle`))
 
     expect(
@@ -77,6 +95,7 @@ describe('SimilaritySearchForm', () => {
       useSimilaritySearchResultFactory.build({ previewLoading: true }),
     )
     renderComponent()
+    fillValidVector()
     fireEvent.click(screen.getByTestId(`${TEST_ID}-preview-toggle`))
 
     expect(
@@ -91,6 +110,7 @@ describe('SimilaritySearchForm', () => {
       }),
     )
     renderComponent()
+    fillValidVector()
     fireEvent.click(screen.getByTestId(`${TEST_ID}-preview-toggle`))
 
     expect(
@@ -108,9 +128,7 @@ describe('SimilaritySearchForm', () => {
     )
     renderComponent()
 
-    fireEvent.change(screen.getByTestId(`${TEST_ID}-vector-input`), {
-      target: { value: '1, 2, 3' },
-    })
+    fillValidVector()
 
     expect(runSimilaritySearchPreview).not.toHaveBeenCalled()
   })
@@ -122,6 +140,7 @@ describe('SimilaritySearchForm', () => {
     )
     renderComponent()
 
+    fillValidVector()
     fireEvent.click(screen.getByTestId(`${TEST_ID}-preview-toggle`))
 
     expect(runSimilaritySearchPreview).toHaveBeenCalled()
@@ -136,6 +155,7 @@ describe('SimilaritySearchForm', () => {
     )
     renderComponent()
 
+    fillValidVector()
     const toggle = screen.getByTestId(`${TEST_ID}-preview-toggle`)
     fireEvent.click(toggle) // on
     fireEvent.click(toggle) // off
@@ -146,6 +166,7 @@ describe('SimilaritySearchForm', () => {
   it('sends telemetry on each preview toggle with the new visibility state', () => {
     renderComponent()
 
+    fillValidVector()
     const toggle = screen.getByTestId(`${TEST_ID}-preview-toggle`)
     fireEvent.click(toggle) // shown
     fireEvent.click(toggle) // hidden
