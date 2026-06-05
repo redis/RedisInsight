@@ -92,24 +92,23 @@ const RejsonDetails = (props: BaseProps) => {
   return (
     <div className={styles.jsonData} id="jsonData" data-testid="json-data">
       <>
-        {(isObject || isArray) && (
-          <div className={cx(styles.row, styles.topRow)}>
-            <span>
-              {getBrackets(
+        <div className={cx(styles.row, styles.topRow)}>
+          <span>
+            {(isObject || isArray) &&
+              getBrackets(
                 isObject ? ObjectTypes.Object : ObjectTypes.Array,
                 'start',
               )}
-            </span>
-            <TopRowActions align="center" justify="end" grow={false}>
-              <ChangeEditorTypeButton />
-              <JsonValueActions
-                data={data}
-                selectedKey={selectedKey}
-                isDownloaded={isDownloaded}
-              />
-            </TopRowActions>
-          </div>
-        )}
+          </span>
+          <TopRowActions align="center" justify="end" grow={false}>
+            {(isObject || isArray) && <ChangeEditorTypeButton />}
+            <JsonValueActions
+              data={data}
+              selectedKey={selectedKey}
+              isDownloaded={isDownloaded}
+            />
+          </TopRowActions>
+        </div>
         <RejsonDynamicTypes
           data={data}
           parentPath={parentPath}

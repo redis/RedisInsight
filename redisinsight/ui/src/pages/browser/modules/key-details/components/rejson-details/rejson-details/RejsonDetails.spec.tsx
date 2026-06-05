@@ -231,6 +231,38 @@ describe('RejsonDetails', () => {
     ).toBeTruthy()
   })
 
+  describe('value action for a scalar root value', () => {
+    it('should render the copy button when a scalar root is fully downloaded', () => {
+      render(
+        <RejsonDetails
+          {...instance(mockedProps)}
+          data={mockedJSONString}
+          dataType="string"
+          parentPath="$"
+          selectedKey={mockedSelectedKey}
+          isDownloaded
+        />,
+      )
+
+      expect(screen.getByTestId('copy-json-value-btn')).toBeInTheDocument()
+    })
+
+    it('should render the download button when a scalar root is lazy-loaded', () => {
+      render(
+        <RejsonDetails
+          {...instance(mockedProps)}
+          data={mockedJSONString}
+          dataType="string"
+          parentPath="$"
+          selectedKey={mockedSelectedKey}
+          isDownloaded={false}
+        />,
+      )
+
+      expect(screen.getByTestId('download-json-value')).toBeInTheDocument()
+    })
+  })
+
   it('should open inline editor to add JSON key value for object', () => {
     render(
       <RejsonDetails
