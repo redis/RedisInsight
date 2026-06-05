@@ -1,0 +1,29 @@
+#!/usr/bin/make -f
+# debian/rules — indents are TABS, not spaces.
+# -*- makefile -*-
+
+export DESTROOT=$(CURDIR)/debian/{{ package_name }}
+# export DH_VERBOSE=1
+
+%:
+	dh $@
+
+# The real build runs inside install.sh; dh's auto build-system must stay out.
+override_dh_auto_configure:
+override_dh_auto_build:
+override_dh_auto_test:
+
+override_dh_auto_install:
+	$(CURDIR)/.omnipackage/install.sh $(DESTROOT)
+
+# Electron ships prebuilt binaries: never strip them (strip segfaults them and
+# chokes on the bundled .node files).
+override_dh_strip:
+override_dh_strip_nondeterminism:
+
+# Keep dh_shlibdeps for accurate, per-distro runtime Depends. -l points it at the
+# staged app dir so the one bundled NEEDED lib (libffmpeg.so) is recognised as a
+# private library instead of erroring "couldn't find library"; every other
+# NEEDED soname resolves to a system package.
+override_dh_shlibdeps:
+	dh_shlibdeps -l$(DESTROOT)/opt/redisinsight

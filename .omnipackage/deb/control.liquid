@@ -1,0 +1,14 @@
+Source: {{ package_name }}
+Section: devel
+Priority: optional
+Maintainer: {{ maintainer }}
+Build-Depends: debhelper (>= 10), {{ build_dependencies | join: ', ' }}
+Standards-Version: 4.6.2
+Homepage: {{ homepage }}
+
+Package: {{ package_name }}
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, {{ runtime_dependencies | join: ', ' }}
+Description: {{ description }}
+ Redis Insight is a powerful GUI for Redis, letting you visually browse and
+ interact with your data, run commands in Workbench, and profile performance.

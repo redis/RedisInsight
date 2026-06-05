@@ -1,0 +1,16 @@
+#!/bin/sh
+# Debian post-install hook: chrome-sandbox needs setuid root for the renderer
+# sandbox to work. Without this, Electron crashes on launch.
+
+set -e
+
+if [ -f /opt/redisinsight/chrome-sandbox ]; then
+  chown root:root /opt/redisinsight/chrome-sandbox || true
+  chmod 4755 /opt/redisinsight/chrome-sandbox || true
+fi
+
+if command -v update-desktop-database >/dev/null 2>&1; then
+  update-desktop-database -q /usr/share/applications || true
+fi
+
+exit 0

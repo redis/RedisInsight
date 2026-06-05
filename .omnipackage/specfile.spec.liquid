@@ -1,0 +1,68 @@
+Name:       {{ package_name }}
+Version:    {{ version }}
+Release:    1%{?dist}
+Summary:    {{ description }}
+License:    SSPL-1.0
+URL:        {{ homepage }}
+Source0:    {{ source_folder_name }}.tar.gz
+Vendor:     Redis Ltd.
+
+BuildRequires: {{ build_dependencies | join: ' ' }}
+{% if runtime_dependencies.size > 0 %}
+Requires: {{ runtime_dependencies | join: ', ' }}
+{% endif %}
+
+# The only NEEDED lib Electron bundles (no system provider) is libffmpeg.so,
+# loaded from the app dir via RPATH -> drop just that auto-Requires. All other
+# unversioned sonames the binary needs (libnss3.so, libnspr4.so, libsmime3.so,
+# libnssutil3.so) are real system NSS/NSPR libs and MUST stay required, so the
+# exclude is scoped to libffmpeg only (not a blanket .so() match). Parens are
+# double-escaped: the spec parser eats one backslash.
+%global __requires_exclude ^libffmpeg\\.so
+# Don't advertise the bundled private libs (libEGL.so, libGLESv2.so, …) as
+# system-wide Provides; they're internal to the app.
+%global __provides_exclude_from ^/opt/redisinsight/
+
+# Do not strip/relocate Electron's prebuilt binaries (strip segfaults them and
+# chokes on the bundled .node files).
+%define __os_install_post %{nil}
+%define debug_package %{nil}
+%define _build_id_links none
+# Bundled scripts carry versionless shebangs; skip Fedora's shebang mangling.
+%undefine __brp_mangle_shebangs
+
+%description
+{{ description }}
+
+
+%prep
+%setup -q
+
+
+%build
+
+
+%install
+.omnipackage/install.sh %{buildroot}
+
+
+%post
+# chrome-sandbox needs setuid root for Electron's renderer sandbox. Set it
+# imperatively here (like the deb postinst) so the whole /opt/redisinsight tree
+# can be listed once below without rpm's "file listed twice" warning.
+if [ -f /opt/redisinsight/chrome-sandbox ]; then
+  chmod 4755 /opt/redisinsight/chrome-sandbox || :
+fi
+
+
+%files
+%defattr(-,root,root,-)
+/opt/redisinsight/
+/usr/bin/redisinsight
+/usr/share/applications/redisinsight.desktop
+/usr/share/icons/hicolor/*/apps/redisinsight.png
+
+
+%changelog
+* Thu Jun 04 2026 {{ maintainer }}
+- Initial package release
