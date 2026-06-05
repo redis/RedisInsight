@@ -31,6 +31,7 @@ import {
 } from 'uiSrc/slices/browser/string'
 import {
   bufferToSerializedFormat,
+  formattingBuffer,
   isTruncatedString,
   isFormatEditable,
   isFullStringLoaded,
@@ -80,19 +81,26 @@ const StringDetails = (props: Props) => {
   // "Download" controls remain the way to retrieve the complete value.
   const isFullyAvailable =
     isFullStringLoaded(keyValue?.data?.length, length) && !isTruncatedValue
-  // Serialize using the same format-aware helper the value panel/editor uses, so
-  // the copied text matches what is shown on screen (HEX, Binary, JSON, etc.) and
-  // does not silently fall back to UTF-8.
-  const copyValue = keyValue
-    ? bufferToSerializedFormat(
-        viewFormatProp,
-        decompressingBuffer(
-          keyValue,
-          compressor as Nullable<KeyValueCompressor>,
-        ).value as RedisResponseBuffer,
-        4,
-      )
+  // Copy what is actually shown on screen. formattingBuffer is the same helper
+  // the value panel uses: for text/decoded formats (Unicode, ASCII, HEX, Binary,
+  // DateTime, …) it returns the displayed string, which we copy directly. For the
+  // formats it renders as a JSON tree we fall back to the serialized text form.
+  const decompressedValue = keyValue
+    ? (decompressingBuffer(keyValue, compressor as Nullable<KeyValueCompressor>)
+        .value as RedisResponseBuffer)
+    : undefined
+  const displayedValue = decompressedValue
+    ? formattingBuffer(decompressedValue, viewFormatProp, { expanded: true })
+        .value
     : ''
+  const copyValue =
+    typeof displayedValue === 'string'
+      ? displayedValue
+      : bufferToSerializedFormat(
+          viewFormatProp,
+          decompressedValue as RedisResponseBuffer,
+          4,
+        )
 
   const [editItem, setEditItem] = useState<boolean>(false)
 
