@@ -60,16 +60,28 @@ describe('SimilaritySearchForm', () => {
     )
   })
 
-  it('falls back to the "Redis Command Preview" placeholder when the preview is toggled on with no preview', () => {
+  it('renders empty preview text when toggled on with no preview', () => {
     renderComponent()
     fireEvent.click(screen.getByTestId(`${TEST_ID}-preview-toggle`))
 
     expect(
       screen.getByTestId('similarity-search-command-preview-text'),
-    ).toHaveTextContent('Redis Command Preview')
+    ).toHaveTextContent('')
     expect(
       screen.getByTestId('similarity-search-command-preview-copy-btn'),
     ).toBeDisabled()
+  })
+
+  it('shows a loading placeholder while the preview is being fetched', () => {
+    mockedUseSimilaritySearch.mockReturnValue(
+      useSimilaritySearchResultFactory.build({ previewLoading: true }),
+    )
+    renderComponent()
+    fireEvent.click(screen.getByTestId(`${TEST_ID}-preview-toggle`))
+
+    expect(
+      screen.getByTestId('similarity-search-command-preview-text'),
+    ).toHaveTextContent('command is loading...')
   })
 
   it('renders the hook-supplied preview verbatim once toggled on', () => {

@@ -273,7 +273,9 @@ export const SimilaritySearchForm = ({
           </RiTooltip>
         </FlexItem>
         <FlexItem grow>
-          {previewVisible && <CommandPreview command={preview ?? ''} />}
+          {previewVisible && (
+            <CommandPreview command={preview ?? ''} loading={previewLoading} />
+          )}
         </FlexItem>
         <FlexItem grow={false}>
           <RiTooltip content="Reset form" position="top">
