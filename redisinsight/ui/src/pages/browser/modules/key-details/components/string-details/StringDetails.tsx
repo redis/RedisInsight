@@ -30,7 +30,7 @@ import {
   stringSelector,
 } from 'uiSrc/slices/browser/string'
 import {
-  bufferToString,
+  bufferToSerializedFormat,
   isTruncatedString,
   isFormatEditable,
   isFullStringLoaded,
@@ -80,13 +80,17 @@ const StringDetails = (props: Props) => {
   // "Download" controls remain the way to retrieve the complete value.
   const isFullyAvailable =
     isFullStringLoaded(keyValue?.data?.length, length) && !isTruncatedValue
+  // Serialize using the same format-aware helper the value panel/editor uses, so
+  // the copied text matches what is shown on screen (HEX, Binary, JSON, etc.) and
+  // does not silently fall back to UTF-8.
   const copyValue = keyValue
-    ? bufferToString(
+    ? bufferToSerializedFormat(
+        viewFormatProp,
         decompressingBuffer(
           keyValue,
           compressor as Nullable<KeyValueCompressor>,
-        ).value,
-        viewFormatProp,
+        ).value as RedisResponseBuffer,
+        4,
       )
     : ''
 
