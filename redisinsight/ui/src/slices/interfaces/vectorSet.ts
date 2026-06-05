@@ -14,6 +14,17 @@ export interface VectorSetData {
   /** From API: whether cursor-based pagination is supported for listing elements. */
   isPaginationSupported?: boolean
   elements: VectorSetElement[]
+  /**
+   * Union of top-level JSON attribute keys collected from `elements.attributes`,
+   * alphabetically sorted. Grows monotonically across pagination so the similarity
+   * search filter can suggest attribute names the user has already seen.
+   */
+  attributeKeys: string[]
+}
+
+export interface VectorSetElementListItem {
+  name: RedisResponseBuffer
+  attributes?: string
 }
 
 export interface GetVectorSetElementsResponse {
@@ -21,7 +32,7 @@ export interface GetVectorSetElementsResponse {
   keyName: RedisString
   nextCursor?: string
   isPaginationSupported?: boolean
-  elementNames: RedisResponseBuffer[]
+  elements: VectorSetElementListItem[]
 }
 
 export interface AddVectorSetElementsState {

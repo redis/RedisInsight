@@ -143,6 +143,7 @@ describe('vectorSet slice', () => {
         similaritySearchPreview: initialState.similaritySearchPreview,
         data: {
           ...data,
+          attributeKeys: [],
         },
       }
 
@@ -208,6 +209,7 @@ describe('vectorSet slice', () => {
         similaritySearchPreview: initialState.similaritySearchPreview,
         data: {
           ...data,
+          attributeKeys: [],
         },
       }
 
@@ -245,6 +247,7 @@ describe('vectorSet slice', () => {
         similaritySearchPreview: initialState.similaritySearchPreview,
         data: {
           ...data,
+          attributeKeys: [],
         },
       }
 
@@ -556,7 +559,7 @@ describe('vectorSet slice', () => {
           thunkElements[thunkElements.length - 1],
         ),
         isPaginationSupported: true,
-        elementNames: thunkElements.map((el) => el.name),
+        elements: thunkElements.map((el) => ({ name: el.name })),
       }
 
       it('call fetchVectorSetElements, loadVectorSetElementsSuccess when fetch is successful', async () => {
@@ -570,13 +573,9 @@ describe('vectorSet slice', () => {
           }),
         )
 
-        const { elementNames, ...rest } = apiResponse
         const expectedActions = [
           loadVectorSetElements(undefined),
-          loadVectorSetElementsSuccess({
-            ...rest,
-            elements: elementNames.map((name) => ({ name })),
-          }),
+          loadVectorSetElementsSuccess(apiResponse as any),
           updateSelectedKeyRefreshTime(Date.now()),
         ]
 
@@ -619,7 +618,7 @@ describe('vectorSet slice', () => {
           moreElements[moreElements.length - 1],
         ),
         isPaginationSupported: true,
-        elementNames: moreElements.map((el) => el.name),
+        elements: moreElements.map((el) => ({ name: el.name })),
       }
       const requestCursor = vectorSetPaginationCursorAfter(
         vectorSetElementFactory.build(),
@@ -637,13 +636,9 @@ describe('vectorSet slice', () => {
           }),
         )
 
-        const { elementNames: moreElementNames, ...moreRest } = moreApiResponse
         const expectedActions = [
           loadMoreVectorSetElements(),
-          loadMoreVectorSetElementsSuccess({
-            ...moreRest,
-            elements: moreElementNames.map((name) => ({ name })),
-          }),
+          loadMoreVectorSetElementsSuccess(moreApiResponse as any),
         ]
 
         expect(mockedStore.getActions()).toEqual(expectedActions)

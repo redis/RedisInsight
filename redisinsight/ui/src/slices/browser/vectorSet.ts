@@ -11,6 +11,7 @@ import {
   isEqualBuffers,
   isStatusSuccessful,
   Maybe,
+  mergeAttributeKeys,
   stringToBuffer,
 } from 'uiSrc/utils'
 import successMessages from 'uiSrc/components/notifications/success-messages'
@@ -59,6 +60,7 @@ export const initialState: InitialStateVectorSet = {
     keyName: '',
     nextCursor: undefined,
     elements: [],
+    attributeKeys: [],
   },
   adding: {
     loading: false,
@@ -93,11 +95,14 @@ const vectorSetSlice = createSlice({
     },
     loadVectorSetElementsSuccess: (
       state,
-      { payload }: PayloadAction<VectorSetData>,
+      { payload }: PayloadAction<Omit<VectorSetData, 'attributeKeys'>>,
     ) => {
+      const elements = payload.elements ?? []
       state.data = {
         ...state.data,
         ...payload,
+        elements,
+        attributeKeys: mergeAttributeKeys([], elements),
       }
       state.loading = false
     },
@@ -114,14 +119,19 @@ const vectorSetSlice = createSlice({
       state,
       {
         payload: { elements, nextCursor, ...rest },
-      }: PayloadAction<VectorSetData>,
+      }: PayloadAction<Omit<VectorSetData, 'attributeKeys'>>,
     ) => {
       state.loading = false
+      const incoming = elements ?? []
       state.data = {
         ...state.data,
         ...rest,
         nextCursor,
-        elements: (state.data?.elements ?? []).concat(elements),
+        elements: (state.data?.elements ?? []).concat(incoming),
+        attributeKeys: mergeAttributeKeys(
+          state.data?.attributeKeys ?? [],
+          incoming,
+        ),
       }
     },
     loadMoreVectorSetElementsFailure: (state, { payload }) => {
@@ -177,6 +187,10 @@ const vectorSetSlice = createSlice({
       )
       if (el) {
         el.attributes = payload.attributes
+        state.data.attributeKeys = mergeAttributeKeys(
+          state.data.attributeKeys ?? [],
+          [{ attributes: payload.attributes }],
+        )
       }
     },
 
@@ -313,6 +327,8 @@ export const {
 export const vectorSetSelector = (state: RootState) => state.browser.vectorSet
 export const vectorSetDataSelector = (state: RootState) =>
   state.browser.vectorSet?.data
+export const vectorSetAttributeKeysSelector = (state: RootState): string[] =>
+  state.browser.vectorSet?.data?.attributeKeys ?? []
 export const addVectorSetElementsStateSelector = (
   state: RootState,
 ): AddVectorSetElementsState => state.browser.vectorSet?.adding
@@ -351,13 +367,7 @@ export function fetchVectorSetElements({
         )
 
       if (isStatusSuccessful(status)) {
-        const { elementNames, ...rest } = data
-        dispatch(
-          loadVectorSetElementsSuccess({
-            ...rest,
-            elements: elementNames.map((name) => ({ name })),
-          }),
-        )
+        dispatch(loadVectorSetElementsSuccess(data))
         dispatch(updateSelectedKeyRefreshTime(Date.now()))
       } else {
         dispatch(loadVectorSetElementsFailure(DEFAULT_ERROR_MESSAGE))
@@ -397,13 +407,7 @@ export function fetchMoreVectorSetElements({
         )
 
       if (isStatusSuccessful(status)) {
-        const { elementNames, ...rest } = data
-        dispatch(
-          loadMoreVectorSetElementsSuccess({
-            ...rest,
-            elements: elementNames.map((name) => ({ name })),
-          }),
-        )
+        dispatch(loadMoreVectorSetElementsSuccess(data))
       } else {
         dispatch(loadMoreVectorSetElementsFailure(DEFAULT_ERROR_MESSAGE))
       }
