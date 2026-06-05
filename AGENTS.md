@@ -127,6 +127,7 @@ All detailed development standards are exposed as skills under `.ai/skills/`. Cl
 - **Feature Flags**: `.ai/skills/feature-flags/SKILL.md` - Adding, promoting, and removing feature flags
 - **TS Error Baselines**: `.ai/skills/type-check-baselines/SKILL.md` - Running and refreshing TypeScript error baselines
 - **Redis UI Components**: `.ai/skills/redis-ui-components/SKILL.md` - Component API references, props, and usage examples (from `@redis-ui/components` package)
+- **RedisInsight Plugins**: `.ai/skills/redis-insight-plugin/SKILL.md` - Building, deploying, and validating Workbench visualization plugins (manifests, `activationMethod`, phased workflow, command parsing); internal plugins under `redisinsight/ui/src/packages/` must also follow the Frontend, Code Quality, Redis UI Components, and Testing skills
 
 **Refer to these files for comprehensive guidelines on each topic.**
 
@@ -145,6 +146,7 @@ All detailed development standards are exposed as skills under `.ai/skills/`. Cl
 - Use layout components (Row/Col/FlexGroup) instead of div
 - Pass layout props as component props (not hardcoded in styles)
 - Consult the `redis-ui-components` skill (`.ai/skills/redis-ui-components/`) for component APIs when writing frontend code
+- Consult the `redis-insight-plugin` skill (`.ai/skills/redis-insight-plugin/`) when creating or modifying anything under `redisinsight/ui/src/packages/**` or any plugin manifest with a `visualizations` field
 
 ### ⚠️ Ask First
 

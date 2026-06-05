@@ -1,0 +1,145 @@
+:root {
+  font-size: 62.5%;
+  --ri-font-body: "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --ri-font-code: "Source Code Pro", "SFMono-Regular", Consolas, monospace;
+}
+
+body.theme_LIGHT,
+body:not(.theme_DARK) {
+  --ri-bg: #ffffff;
+  --ri-surface: #f7f8fa;
+  --ri-surface-strong: #eef1f4;
+  --ri-border: #d9dfe5;
+  --ri-text: #0f1f2a;
+  --ri-muted: #5f6f7a;
+  --ri-primary: #3366ff;
+  --ri-primary-soft: #edf3ff;
+  --ri-success: #0b7a4b;
+  --ri-success-soft: #e8f6ef;
+  --ri-danger: #b3261e;
+  --ri-danger-soft: #fdeceb;
+  --ri-code-bg: #101820;
+  --ri-code-text: #f5f7fa;
+}
+
+body.theme_DARK {
+  --ri-bg: #101820;
+  --ri-surface: #17232d;
+  --ri-surface-strong: #20303c;
+  --ri-border: #334654;
+  --ri-text: #eef3f7;
+  --ri-muted: #aab7c0;
+  --ri-primary: #8fb3ff;
+  --ri-primary-soft: #172a45;
+  --ri-success: #54d18f;
+  --ri-success-soft: #103123;
+  --ri-danger: #ff8a80;
+  --ri-danger-soft: #3a1d1b;
+  --ri-code-bg: #0a1117;
+  --ri-code-text: #f5f7fa;
+}
+
+body {
+  margin: 0;
+  background: var(--ri-bg);
+  color: var(--ri-text);
+  font-family: var(--ri-font-body);
+  font-size: 1.4rem;
+}
+
+.ri-plugin-shell {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 1.6rem;
+  background: var(--ri-bg);
+}
+
+.ri-plugin-panel {
+  border: 1px solid var(--ri-border);
+  border-radius: 0.6rem;
+  background: var(--ri-surface);
+  overflow: hidden;
+}
+
+.ri-plugin-header,
+.ri-plugin-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+}
+
+.ri-plugin-header {
+  padding: 1.4rem 1.6rem;
+  border-bottom: 1px solid var(--ri-border);
+}
+
+.ri-plugin-title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.ri-plugin-subtitle,
+.ri-plugin-meta {
+  color: var(--ri-muted);
+}
+
+.ri-plugin-subtitle {
+  margin: 0.4rem 0 0;
+}
+
+.ri-plugin-content {
+  display: grid;
+  gap: 1.2rem;
+  padding: 1.6rem;
+}
+
+.ri-plugin-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.4rem;
+  padding: 0 0.8rem;
+  border-radius: 999px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ri-plugin-badge--success {
+  background: var(--ri-success-soft);
+  color: var(--ri-success);
+}
+
+.ri-plugin-command,
+.ri-plugin-code {
+  font-family: var(--ri-font-code);
+}
+
+.ri-plugin-command {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ri-plugin-code {
+  margin: 0;
+  max-height: 36rem;
+  overflow: auto;
+  padding: 1.2rem;
+  border-radius: 0.6rem;
+  background: var(--ri-code-bg);
+  color: var(--ri-code-text);
+  font-size: 1.3rem;
+  line-height: 1.45;
+}
+
+.ri-plugin-error {
+  margin: 1.6rem;
+  padding: 1.2rem;
+  border: 1px solid var(--ri-danger);
+  border-radius: 0.6rem;
+  background: var(--ri-danger-soft);
+  color: var(--ri-danger);
+}
