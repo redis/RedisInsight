@@ -146,6 +146,20 @@ describe('StringDetails', () => {
       expect(mockedHandleCopy).toHaveBeenCalledWith('1234')
     })
 
+    it('should hide the copy button while editing the value', async () => {
+      render(<StringDetails {...mockedProps} />)
+
+      expect(screen.getByTestId(COPY_VALUE_BTN_TEST_ID)).toBeInTheDocument()
+
+      await act(() => {
+        fireEvent.click(screen.getByTestId(EDIT_VALUE_BTN_TEST_ID))
+      })
+
+      expect(
+        screen.queryByTestId(COPY_VALUE_BTN_TEST_ID),
+      ).not.toBeInTheDocument()
+    })
+
     it('should keep the copy button available for compressed values', () => {
       const mockStringSelector = stringSelector as jest.Mock
       mockStringSelector.mockReturnValueOnce({ isCompressed: true })

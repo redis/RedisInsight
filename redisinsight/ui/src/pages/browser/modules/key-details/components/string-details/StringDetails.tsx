@@ -30,19 +30,17 @@ import {
   stringSelector,
 } from 'uiSrc/slices/browser/string'
 import {
-  bufferToSerializedFormat,
-  formattingBuffer,
   isTruncatedString,
   isFormatEditable,
   isFullStringLoaded,
   Nullable,
 } from 'uiSrc/utils'
-import { decompressingBuffer } from 'uiSrc/utils/decompressors'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { CopyButton } from 'uiSrc/components/copy-button'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { StringDetailsValue } from './string-details-value'
+import { getStringCopyValue } from './StringDetails.utils'
 import { EditItemAction } from '../key-details-actions'
 import { KeyDetailsSubheader } from '../key-details-subheader/KeyDetailsSubheader'
 
@@ -81,26 +79,11 @@ const StringDetails = (props: Props) => {
   // "Download" controls remain the way to retrieve the complete value.
   const isFullyAvailable =
     isFullStringLoaded(keyValue?.data?.length, length) && !isTruncatedValue
-  // Copy what is actually shown on screen. formattingBuffer is the same helper
-  // the value panel uses: for text/decoded formats (Unicode, ASCII, HEX, Binary,
-  // DateTime, …) it returns the displayed string, which we copy directly. For the
-  // formats it renders as a JSON tree we fall back to the serialized text form.
-  const decompressedValue = keyValue
-    ? (decompressingBuffer(keyValue, compressor as Nullable<KeyValueCompressor>)
-        .value as RedisResponseBuffer)
-    : undefined
-  const displayedValue = decompressedValue
-    ? formattingBuffer(decompressedValue, viewFormatProp, { expanded: true })
-        .value
-    : ''
-  const copyValue =
-    typeof displayedValue === 'string'
-      ? displayedValue
-      : bufferToSerializedFormat(
-          viewFormatProp,
-          decompressedValue as RedisResponseBuffer,
-          4,
-        )
+  const copyValue = getStringCopyValue(
+    keyValue,
+    viewFormatProp,
+    compressor as Nullable<KeyValueCompressor>,
+  )
 
   const [editItem, setEditItem] = useState<boolean>(false)
 
@@ -128,7 +111,9 @@ const StringDetails = (props: Props) => {
 
   const Actions = () => (
     <Row align="center" gap="s" grow={false}>
-      {keyValue && isFullyAvailable && (
+      {/* Hidden while editing: copyValue comes from the saved Redis value, not
+          the unsaved textarea the user is currently editing. */}
+      {keyValue && isFullyAvailable && !editItem && (
         <CopyButton
           copy={copyValue}
           aria-label="Copy value"
