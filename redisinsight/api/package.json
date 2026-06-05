@@ -128,7 +128,7 @@
     "@types/ioredis-mock": "^8",
     "@types/jest": "^29.5.14",
     "@types/lodash": "^4.14.167",
-    "@types/node": "^18.11.18",
+    "@types/node": "^24",
     "@types/ssh2": "^1.11.6",
     "@types/supertest": "^2.0.8",
     "babel-jest": "^29.7.0",
