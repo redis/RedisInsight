@@ -14,16 +14,7 @@ export interface VectorSetData {
   /** From API: whether cursor-based pagination is supported for listing elements. */
   isPaginationSupported?: boolean
   elements: VectorSetElement[]
-  /**
-   * Union of top-level JSON attribute keys collected from `elements.attributes`,
-   * alphabetically sorted. Grows monotonically across pagination so the similarity
-   * search filter can suggest attribute names the user has already seen.
-   *
-   * Keys are never pruned: removing an attribute from a single element via the
-   * attribute editor does not retract its key from the dropdown. We trade some
-   * staleness for a referentially stable array that memoized selectors can
-   * depend on.
-   */
+  /** Top-level JSON attribute keys seen so far. Monotonic — never pruned. */
   attributeKeys: string[]
 }
 
