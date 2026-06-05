@@ -33,7 +33,6 @@ import {
   FetchVectorSetElementsParams,
   GetVectorSetElementsResponse,
   InitialStateVectorSet,
-  VectorSetData,
   VectorSetElement,
   VectorSetSimilaritySearchPayload,
   VectorSetSimilaritySearchPreviewPayload,
@@ -95,7 +94,7 @@ const vectorSetSlice = createSlice({
     },
     loadVectorSetElementsSuccess: (
       state,
-      { payload }: PayloadAction<Omit<VectorSetData, 'attributeKeys'>>,
+      { payload }: PayloadAction<GetVectorSetElementsResponse>,
     ) => {
       const elements = payload.elements ?? []
       state.data = {
@@ -119,7 +118,7 @@ const vectorSetSlice = createSlice({
       state,
       {
         payload: { elements, nextCursor, ...rest },
-      }: PayloadAction<Omit<VectorSetData, 'attributeKeys'>>,
+      }: PayloadAction<GetVectorSetElementsResponse>,
     ) => {
       state.loading = false
       const incoming = elements ?? []
