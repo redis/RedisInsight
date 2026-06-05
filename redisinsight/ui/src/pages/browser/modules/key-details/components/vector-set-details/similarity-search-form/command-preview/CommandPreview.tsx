@@ -2,10 +2,10 @@ import React from 'react'
 
 import { CopyButton } from 'uiSrc/components/copy-button'
 
+import { COMMAND_PREVIEW_LOADING_PLACEHOLDER } from '../similarity-search-form/constants'
 import { PreviewBar, PreviewText } from './CommandPreview.styles'
 import { CommandPreviewProps } from './CommandPreview.types'
 
-const LOADING_PLACEHOLDER = 'command is loading...'
 const TEST_ID = 'similarity-search-command-preview'
 
 export const CommandPreview = ({
@@ -15,7 +15,7 @@ export const CommandPreview = ({
   const isEmpty = command.length === 0
   let displayText = command
   if (loading) {
-    displayText = LOADING_PLACEHOLDER
+    displayText = COMMAND_PREVIEW_LOADING_PLACEHOLDER
   } else if (isEmpty) {
     displayText = ''
   }

@@ -23,6 +23,10 @@ import {
   ELEMENT_MODE_TOOLTIP,
   ELEMENT_PLACEHOLDER,
   FILTER_PLACEHOLDER,
+  PREVIEW_TOGGLE_ARIA_LABEL,
+  PREVIEW_TOGGLE_HIDE_TOOLTIP,
+  PREVIEW_TOGGLE_LABEL,
+  PREVIEW_TOGGLE_SHOW_TOOLTIP,
   QUERY_NOT_READY_TOOLTIP,
   SIMILARITY_SEARCH_COUNT_DEFAULT,
   SIMILARITY_SEARCH_COUNT_MAX,
@@ -250,10 +254,10 @@ export const SimilaritySearchForm = ({
           <RiTooltip
             content={
               previewVisible
-                ? 'Hide command preview'
+                ? PREVIEW_TOGGLE_HIDE_TOOLTIP
                 : !queryReady
                   ? QUERY_NOT_READY_TOOLTIP
-                  : 'Show command preview'
+                  : PREVIEW_TOGGLE_SHOW_TOOLTIP
             }
             position="top"
           >
@@ -261,11 +265,11 @@ export const SimilaritySearchForm = ({
               pressed={previewVisible}
               onPressedChange={togglePreview}
               disabled={!queryReady && !previewVisible}
-              aria-label="Toggle command preview"
+              aria-label={PREVIEW_TOGGLE_ARIA_LABEL}
               data-testid={`${TEST_ID}-preview-toggle`}
             >
               <RiIcon size="m" type="CliIcon" />
-              <Text size="s">Preview</Text>
+              <Text size="s">{PREVIEW_TOGGLE_LABEL}</Text>
             </S.PreviewToggleButton>
           </RiTooltip>
         </FlexItem>
