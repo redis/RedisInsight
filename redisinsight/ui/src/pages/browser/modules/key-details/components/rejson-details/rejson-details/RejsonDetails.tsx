@@ -20,6 +20,7 @@ import { AddItem, JsonValueActions } from '../components'
 import ChangeEditorTypeButton from '../../change-editor-type-button'
 
 import styles from '../styles.module.scss'
+import { TopRowActions } from './RejsonDetails.styles'
 
 const RejsonDetails = (props: BaseProps) => {
   const {
@@ -99,14 +100,14 @@ const RejsonDetails = (props: BaseProps) => {
                 'start',
               )}
             </span>
-            <div className={styles.actionButtons}>
+            <TopRowActions align="center" justify="end" grow={false}>
               <ChangeEditorTypeButton />
               <JsonValueActions
                 data={data}
                 selectedKey={selectedKey}
                 isDownloaded={isDownloaded}
               />
-            </div>
+            </TopRowActions>
           </div>
         )}
         <RejsonDynamicTypes
