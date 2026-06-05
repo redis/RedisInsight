@@ -77,6 +77,21 @@ describe('SimilaritySearchForm', () => {
     expect(toggle).toBeEnabled()
   })
 
+  it('keeps the preview toggle enabled while pressed even if the query becomes invalid', () => {
+    renderComponent()
+
+    fillValidVector()
+    const toggle = screen.getByTestId(`${TEST_ID}-preview-toggle`)
+    fireEvent.click(toggle)
+    expect(toggle).toHaveAttribute('aria-pressed', 'true')
+
+    fireEvent.change(screen.getByTestId(`${TEST_ID}-vector-input`), {
+      target: { value: '' },
+    })
+
+    expect(toggle).toBeEnabled()
+  })
+
   it('renders empty preview text when toggled on with no preview', () => {
     renderComponent()
     fillValidVector()

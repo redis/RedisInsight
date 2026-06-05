@@ -252,10 +252,10 @@ export const SimilaritySearchForm = ({
         <FlexItem grow={false}>
           <RiTooltip
             content={
-              !queryReady
-                ? QUERY_NOT_READY_TOOLTIP
-                : previewVisible
-                  ? 'Hide command preview'
+              previewVisible
+                ? 'Hide command preview'
+                : !queryReady
+                  ? QUERY_NOT_READY_TOOLTIP
                   : 'Show command preview'
             }
             position="top"
@@ -263,7 +263,7 @@ export const SimilaritySearchForm = ({
             <S.PreviewToggleButton
               pressed={previewVisible}
               onPressedChange={togglePreview}
-              disabled={!queryReady}
+              disabled={!queryReady && !previewVisible}
               aria-label="Toggle command preview"
               data-testid={`${TEST_ID}-preview-toggle`}
             >
