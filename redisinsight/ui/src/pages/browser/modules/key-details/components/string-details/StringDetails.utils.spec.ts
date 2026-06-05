@@ -43,6 +43,16 @@ describe('getStringCopyValue', () => {
     expect(result).toContain('"a"')
   })
 
+  it('should copy decoded values (e.g. Pickle) as JSON instead of raw bytes', () => {
+    // pickle (protocol 0) of the integer 1 — raw bytes decode to "I1\n."
+    const value = {
+      type: 'Buffer',
+      data: [73, 49, 10, 46],
+    } as RedisResponseBuffer
+
+    expect(getStringCopyValue(value, KeyValueFormat.Pickle)).toEqual('1')
+  })
+
   it('should copy vectors as the displayed JSON array (not comma-separated)', () => {
     // Float32 little-endian bytes for [1, 2]
     const value = {
