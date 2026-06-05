@@ -55,9 +55,6 @@ export const SimilaritySearchForm = ({
   const [state, setState] =
     useState<SimilaritySearchFormState>(initialFormState)
 
-  // Preview is hidden by default. When off, the preview pipeline is fully
-  // stopped — no debounced dispatches, no in-flight requests, no slice
-  // updates — so nothing runs in the background.
   const [previewVisible, setPreviewVisible] = useState(false)
 
   const { id: databaseId } = useAppSelector(connectedInstanceSelector)
@@ -85,9 +82,6 @@ export const SimilaritySearchForm = ({
     setState((prev) => ({ ...prev, [key]: value }))
   }
 
-  // Refresh the BE-built preview on every form-state change while the
-  // preview is visible. The hook debounces the actual request so we can fire
-  // freely on each render. When hidden, this effect is a no-op.
   useEffect(() => {
     if (!previewVisible) return
     runSimilaritySearchPreview(state)
@@ -117,8 +111,6 @@ export const SimilaritySearchForm = ({
   )
 
   const queryReady = isQueryReady(state, vectorDim)
-  // The button mirrors *both* loading flags so the user can see we are still
-  // resolving the command before letting them dispatch the search.
   const isLoading = loading || previewLoading
   const submitDisabled = isLoading || !queryReady
 
