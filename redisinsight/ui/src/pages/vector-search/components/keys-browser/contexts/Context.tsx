@@ -24,6 +24,7 @@ import {
   resetKeyInfo,
   resetKeysData,
   setFilter,
+  setPatternSearchMatch,
 } from 'uiSrc/slices/browser/keys'
 import { SearchMode } from 'uiSrc/slices/interfaces/keys'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
@@ -99,10 +100,12 @@ export const Provider = ({
     dispatch(resetKeysData(SearchMode.Pattern))
     dispatch(resetBrowserTree())
     dispatch(setFilter(activeTab))
+    dispatch(setPatternSearchMatch(''))
     loadKeys()
 
     return () => {
       dispatch(setFilter(null))
+      dispatch(setPatternSearchMatch(''))
       dispatch(resetKeyInfo())
       dispatch(resetKeysData(SearchMode.Pattern))
       dispatch(resetBrowserTree())
