@@ -76,7 +76,7 @@ on:
         required: false
 
       show_build_commit_sha:
-        description: Display build commit SHA in app version (overrides default per-env behaviour)
+        description: Display build commit SHA in app version
         type: boolean
         default: false
         required: false
