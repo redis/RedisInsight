@@ -1,10 +1,12 @@
 import {
   BadRequestException,
   ConflictException,
+  HttpException,
   Injectable,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
+import { Readable } from 'stream';
 import * as JSONBigInt from 'json-bigint';
 import { AdditionalRedisModuleName, RedisErrorCodes } from 'src/constants';
 import ERROR_MESSAGES from 'src/constants/error-messages';
@@ -13,6 +15,7 @@ import config, { Config } from 'src/utils/config';
 import { ClientMetadata } from 'src/common/models';
 import {
   CreateRejsonRlWithExpireDto,
+  DownloadRejsonRlDto,
   GetRejsonRlDto,
   GetRejsonRlResponseDto,
   ModifyRejsonRlArrAppendDto,
@@ -406,6 +409,55 @@ export class RejsonRlService {
 
       // todo: refactor error handling across the project
       if (error instanceof BadRequestException) {
+        throw error;
+      }
+
+      throw catchAclError(error);
+    }
+  }
+
+  /**
+   * Get the full JSON value at the given path as a downloadable stream.
+   * Used when the value is too large to keep fully in memory in the UI.
+   */
+  public async downloadJsonValue(
+    clientMetadata: ClientMetadata,
+    dto: DownloadRejsonRlDto,
+  ): Promise<{ stream: Readable }> {
+    try {
+      this.logger.debug('Downloading json value.', clientMetadata);
+      const { keyName, path = '$' } = dto;
+      const client: RedisClient =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+
+      await checkIfKeyNotExists(keyName, client);
+
+      const jsonPath = await this.prepareJsonPath(clientMetadata, path);
+
+      // forceGetJson returns a compact JSON string; pretty-print it for the file.
+      const data = await this.forceGetJson(client, keyName, jsonPath);
+      const formatted = JSONbig.stringify(JSONbig.parse(data), null, 2);
+
+      const stream = Readable.from(formatted);
+      return { stream };
+    } catch (error) {
+      this.logger.error(
+        'Failed to download json value.',
+        error,
+        clientMetadata,
+      );
+
+      if (error.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+
+      if (error.message?.includes(RedisErrorCodes.UnknownCommand)) {
+        throw new BadRequestException({
+          message: ERROR_MESSAGES.REDIS_MODULE_IS_REQUIRED('JSON'),
+        });
+      }
+
+      if (error instanceof HttpException) {
         throw error;
       }
 

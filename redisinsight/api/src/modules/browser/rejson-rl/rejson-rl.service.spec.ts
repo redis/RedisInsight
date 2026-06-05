@@ -1358,4 +1358,69 @@ describe('JsonService', () => {
       ]);
     });
   });
+
+  describe('downloadJsonValue', () => {
+    beforeEach(() => {
+      databaseService.get.mockResolvedValue(mockDatabaseWithModules);
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, testKey])
+        .mockResolvedValue(1);
+    });
+
+    it('should return a stream with the pretty-printed json value', async () => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolRejsonRlCommands.JsonGet, testKey, testPath], {
+          replyEncoding: 'utf8',
+        })
+        .mockResolvedValue(JSON.stringify([{ some: 'object' }]));
+
+      const { stream } = await service.downloadJsonValue(
+        mockBrowserClientMetadata,
+        { keyName: testKey, path: testPath },
+      );
+
+      const chunks: string[] = [];
+      // eslint-disable-next-line no-restricted-syntax
+      for await (const chunk of stream) {
+        chunks.push(chunk.toString());
+      }
+
+      expect(chunks.join('')).toEqual(
+        JSON.stringify({ some: 'object' }, null, 2),
+      );
+    });
+
+    it('should throw NotFound error when no key found in the database', async () => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, testKey])
+        .mockResolvedValue(0);
+
+      await expect(
+        service.downloadJsonValue(mockBrowserClientMetadata, {
+          keyName: testKey,
+          path: testPath,
+        }),
+      ).rejects.toBeInstanceOf(NotFoundException);
+    });
+
+    it('should throw BadRequest error when module not loaded', async () => {
+      const replyError: ReplyError = {
+        name: 'ReplyError',
+        message: `unknown command ${BrowserToolRejsonRlCommands.JsonGet}`,
+        command: BrowserToolRejsonRlCommands.JsonGet,
+      };
+      when(client.sendCommand)
+        .calledWith([BrowserToolRejsonRlCommands.JsonGet, testKey, testPath], {
+          replyEncoding: 'utf8',
+        })
+        .mockRejectedValue(replyError);
+
+      await expect(
+        service.downloadJsonValue(mockBrowserClientMetadata, {
+          keyName: testKey,
+          path: testPath,
+        }),
+      ).rejects.toBeInstanceOf(BadRequestException);
+    });
+  });
 });
