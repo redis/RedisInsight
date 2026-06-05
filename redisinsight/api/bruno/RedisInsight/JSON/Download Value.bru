@@ -20,7 +20,7 @@ body:json {
 docs {
   # Download JSON Value
 
-  Downloads the full JSON value at the given path as a binary file stream. Uses the Redis `JSON.GET` command internally and pretty-prints the result.
+  Downloads the full JSON value at the given path as a binary file stream. Uses the Redis `JSON.GET` command internally and streams the result as-is.
 
   This endpoint backs the "Download" action in the Browser JSON key view. It is used when the value is too large to be kept fully in memory (lazy-loaded in the tree view), providing a way to retrieve the complete value as a downloadable file.
 

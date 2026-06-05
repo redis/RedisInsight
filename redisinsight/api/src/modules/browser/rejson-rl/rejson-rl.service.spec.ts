@@ -1367,7 +1367,7 @@ describe('JsonService', () => {
         .mockResolvedValue(1);
     });
 
-    it('should return a stream with the pretty-printed json value', async () => {
+    it('should return a stream with the json value', async () => {
       when(client.sendCommand)
         .calledWith([BrowserToolRejsonRlCommands.JsonGet, testKey, testPath], {
           replyEncoding: 'utf8',
@@ -1385,9 +1385,8 @@ describe('JsonService', () => {
         chunks.push(chunk.toString());
       }
 
-      expect(chunks.join('')).toEqual(
-        JSON.stringify({ some: 'object' }, null, 2),
-      );
+      // The raw JSON.GET result is streamed as-is (no re-formatting).
+      expect(chunks.join('')).toEqual(JSON.stringify({ some: 'object' }));
     });
 
     it('should throw NotFound error when no key found in the database', async () => {

@@ -434,11 +434,12 @@ export class RejsonRlService {
 
       const jsonPath = await this.prepareJsonPath(clientMetadata, path);
 
-      // forceGetJson returns a compact JSON string; pretty-print it for the file.
+      // Stream the JSON.GET result as-is. The download endpoint is mainly hit by
+      // large, lazy-loaded keys, so we avoid re-parsing and re-stringifying the
+      // whole payload (which would hold several full copies in memory at once).
       const data = await this.forceGetJson(client, keyName, jsonPath);
-      const formatted = JSONbig.stringify(JSONbig.parse(data), null, 2);
 
-      const stream = Readable.from(formatted);
+      const stream = Readable.from(data);
       return { stream };
     } catch (error) {
       this.logger.error(
