@@ -169,7 +169,6 @@ builds:
 
   - { distro: "opensuse_tumbleweed", <<: *opensuse }
   - { distro: "opensuse_16.0", <<: *opensuse }
-  - { distro: "opensuse_15.6", <<: *opensuse }
 
   - { distro: "almalinux_9", <<: *redhat }
   - { distro: "almalinux_10", <<: *redhat }
@@ -177,7 +176,6 @@ builds:
   - { distro: "rockylinux_10", <<: *redhat }
 
   - { distro: "mageia_9", <<: *mageia }
-  - { distro: "mageia_cauldron", <<: *mageia }
 
   - { distro: "debian_12", <<: *debian }
   - { distro: "debian_13", <<: *debian }
@@ -186,4 +184,5 @@ builds:
   - { distro: "ubuntu_22.04", <<: *debian }
   - { distro: "ubuntu_24.04", <<: *debian }
   - { distro: "ubuntu_25.04", <<: *debian }
+  - { distro: "ubuntu_25.10", <<: *debian }
   - { distro: "ubuntu_26.04", <<: *debian }
