@@ -9,6 +9,7 @@ import { InfoIcon, ResetIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { TextInput, QuantityCounter } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
+import { vectorSetAttributeKeysSelector } from 'uiSrc/slices/browser/vectorSet'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
@@ -17,6 +18,7 @@ import { getVectorFieldInfo } from '../../vector-set-element-form/utils'
 import { useSimilaritySearch } from '../../hooks/useSimilaritySearch'
 
 import { CommandPreview } from '../command-preview'
+import { FilterInputWithSuggestions } from '../filter-input-with-suggestions'
 import { FilterSyntaxHelpPopover } from '../filter-syntax-help-popover'
 import * as S from './SimilaritySearchForm.styles'
 import {
@@ -62,6 +64,7 @@ export const SimilaritySearchForm = ({
   const [previewVisible, setPreviewVisible] = useState(false)
 
   const { id: databaseId } = useAppSelector(connectedInstanceSelector)
+  const attributeKeys = useAppSelector(vectorSetAttributeKeysSelector)
 
   // React to external prefill requests: switch to Element mode and seed the
   // element input. Keyed on `nonce` so re-requesting the same value still
@@ -236,11 +239,12 @@ export const SimilaritySearchForm = ({
                 <FilterSyntaxHelpPopover />
               </S.FilterLabel>
               <FlexItem grow>
-                <TextInput
+                <FilterInputWithSuggestions
                   placeholder={FILTER_PLACEHOLDER}
                   value={state.filter}
                   onChange={(value) => setField('filter', value)}
                   disabled={loading}
+                  suggestions={attributeKeys}
                   data-testid={`${TEST_ID}-filter-input`}
                 />
               </FlexItem>
