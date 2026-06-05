@@ -89,6 +89,7 @@ jobs:
           --build-arg DIST=release/web/Redis-Insight-web-linux-musl.x64.tar.gz \
           --build-arg NODE_ENV="$ENV" \
           --build-arg RI_SEGMENT_WRITE_KEY="$RI_SEGMENT_WRITE_KEY" \
+          --build-arg RI_APP_BUILD_COMMIT_SHA="$RI_APP_BUILD_COMMIT_SHA" \
           -t redisinsight:amd64 \
           .
 
@@ -105,6 +106,7 @@ jobs:
           --build-arg DIST=release/web/Redis-Insight-web-linux-musl.arm64.tar.gz \
           --build-arg NODE_ENV="$ENV" \
           --build-arg RI_SEGMENT_WRITE_KEY="$RI_SEGMENT_WRITE_KEY" \
+          --build-arg RI_APP_BUILD_COMMIT_SHA="$RI_APP_BUILD_COMMIT_SHA" \
           -t redisinsight:arm64 \
           .
 
