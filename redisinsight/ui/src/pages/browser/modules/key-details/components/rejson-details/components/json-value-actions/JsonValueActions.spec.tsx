@@ -73,4 +73,12 @@ describe('JsonValueActions', () => {
       downloadFile,
     )
   })
+
+  it('should render copy for a scalar root even when not downloaded', () => {
+    // Scalar roots are fully loaded in memory even with downloaded === false.
+    renderComponent({ data: 'big text' as any, isDownloaded: false })
+
+    expect(screen.getByTestId('copy-json-value-btn')).toBeInTheDocument()
+    expect(screen.queryByTestId('download-json-value')).not.toBeInTheDocument()
+  })
 })

@@ -17,7 +17,7 @@ import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { DownloadIcon } from 'uiSrc/components/base/icons'
 
 import { IJSONData } from '../../interfaces'
-import { jsonToReadableString } from '../../utils'
+import { isScalar, jsonToReadableString } from '../../utils'
 
 export interface Props {
   data: IJSONData
@@ -53,9 +53,13 @@ const JsonValueActions = ({ data, selectedKey, isDownloaded }: Props) => {
     })
   }
 
-  // When the whole value is in memory we can copy it directly; otherwise the
-  // value is lazy-loaded, so we download the full value to a file instead.
-  return isDownloaded ? (
+  // Scalar roots (string/number/boolean/null) are always fully loaded in memory
+  // even when `downloaded` is false (the backend lazy-loads only objects/arrays),
+  // so they can be copied directly. Objects/arrays that aren't downloaded only
+  // hold the top-level structure, so we download the full value to a file.
+  const canCopy = isDownloaded || isScalar(data as never)
+
+  return canCopy ? (
     <CopyButton
       copy={jsonToReadableString(data)}
       aria-label="Copy value"

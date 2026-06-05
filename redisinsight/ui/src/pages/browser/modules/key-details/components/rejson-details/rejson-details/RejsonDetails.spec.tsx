@@ -247,7 +247,9 @@ describe('RejsonDetails', () => {
       expect(screen.getByTestId('copy-json-value-btn')).toBeInTheDocument()
     })
 
-    it('should render the download button when a scalar root is lazy-loaded', () => {
+    it('should still render the copy button for a lazy-loaded scalar root', () => {
+      // Scalar roots are fully loaded in memory even when downloaded is false,
+      // so they should be copyable rather than offered for download.
       render(
         <RejsonDetails
           {...instance(mockedProps)}
@@ -259,7 +261,10 @@ describe('RejsonDetails', () => {
         />,
       )
 
-      expect(screen.getByTestId('download-json-value')).toBeInTheDocument()
+      expect(screen.getByTestId('copy-json-value-btn')).toBeInTheDocument()
+      expect(
+        screen.queryByTestId('download-json-value'),
+      ).not.toBeInTheDocument()
     })
   })
 
