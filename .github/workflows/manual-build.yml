@@ -75,6 +75,12 @@ on:
         default: 'development'
         required: false
 
+      show_build_commit_sha:
+        description: Display build commit SHA in app version (overrides default per-env behaviour)
+        type: boolean
+        default: false
+        required: false
+
       debug:
         description: Enable SSH Debug
         type: boolean
@@ -109,6 +115,7 @@ jobs:
       debug: ${{ inputs.debug }}
       environment: ${{ inputs.environment }}
       enterprise: false
+      show_build_commit_sha: ${{ inputs.show_build_commit_sha && 'true' || 'false' }}
 
   aws-upload:
     uses: ./.github/workflows/aws-upload-dev.yml

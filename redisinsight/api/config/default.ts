@@ -1,9 +1,27 @@
 import { join, posix } from 'path';
 import * as os from 'os';
+import { execSync } from 'child_process';
 import { trim } from 'lodash';
 import { version } from '../package.json';
 
 const homedir = join(__dirname, '..');
+
+const resolveBuildCommitSha = (): string | undefined => {
+  if (process.env.RI_APP_BUILD_COMMIT_SHA) {
+    return process.env.RI_APP_BUILD_COMMIT_SHA;
+  }
+  try {
+    return (
+      execSync('git rev-parse --short HEAD', {
+        stdio: ['ignore', 'pipe', 'ignore'],
+      })
+        .toString()
+        .trim() || undefined
+    );
+  } catch {
+    return undefined;
+  }
+};
 
 const buildInfoFileName = 'build.json';
 const dataZipFileName = 'data.zip';
@@ -109,6 +127,7 @@ export default {
     buildType: process.env.RI_BUILD_TYPE || 'DOCKER_ON_PREMISE',
     appType: process.env.RI_APP_TYPE,
     appVersion: process.env.RI_APP_VERSION || '3.4.2',
+    buildCommitSha: resolveBuildCommitSha(),
     requestTimeout: parseInt(process.env.RI_REQUEST_TIMEOUT, 10) || 25000,
     excludeRoutes: [],
     excludeAuthRoutes: [],
