@@ -18,7 +18,7 @@ export const BADGE_CONFIG: Partial<
   },
   [Environment.Development]: {
     label: 'DEV',
-    variant: 'default',
+    variant: 'informative',
     tooltip: DEVELOPMENT_TOOLTIP,
   },
 }
