@@ -111,6 +111,13 @@ These apply to every change in the repo. Skill files contain the full detail; th
 - Verify current branch with `git branch --show-current` before any push.
 - All changes go through pull requests.
 
+### Dependency / lockfile management (always)
+
+- The root `postinstall` runs `yarn-deduplicate yarn.lock`, so `yarn install` rewrites the lockfile whenever it isn't dedup-clean. After modifying any `package.json` (root, `redisinsight/`, or `redisinsight/api/`), run `yarn install` from that directory and commit the resulting lockfile changes.
+- Never edit `yarn.lock` files by hand and never run `yarn install --ignore-scripts` (or otherwise skip `postinstall`) when preparing a commit — the lockfile shipped to CI must match what `yarn install` produces locally.
+- CI runs `yarn install --frozen-lockfile` and then fails if `yarn.lock` is modified by the install. A green local install in every changed package's directory is required before pushing.
+- Use the right package manager for the change: `yarn add` / `yarn remove` (or `yarn upgrade`) for dependency changes, never manual edits to `package.json` versions without re-running install.
+
 ## Skills
 
 All detailed development standards are exposed as skills under `.ai/skills/`. Claude Code auto-discovers them; each skill triggers when its description matches the task.
@@ -160,6 +167,7 @@ All detailed development standards are exposed as skills under `.ai/skills/`. Cl
 
 - Commit secrets or API keys
 - Edit `node_modules/` or `vendor/` directories
+- Edit `yarn.lock` by hand or commit a lockfile produced with `--ignore-scripts` / a skipped `postinstall`
 - Use fixed time waits in tests (use `waitFor` instead)
 - Use `!important` in styled-components
 - Import directly from `@redis-ui/*` (use internal wrappers from `uiSrc/components/ui`)
