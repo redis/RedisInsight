@@ -67,13 +67,19 @@ runs:
       with:
         dir-path: './redisinsight/api'
 
+    - name: Install dependencies for root package.js
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
+      uses: ./.github/actions/install-deps
+      with:
+        dir-path: './'
+        keytar-host-mirror: ${{ inputs.keytar-host-mirror }}
+        sqlite3-host-mirror: ${{ inputs.sqlite3-host-mirror }}
+
     # The OpenAPI client (`redisinsight/api-client/`) is gitignored and produced
     # by the `postinstall` hook in `redisinsight/api`. When the node_modules
-    # cache is restored, that postinstall is skipped, so the directory ends up
-    # missing and any subsequent step that imports `apiClient` fails — in
-    # particular the root postinstall below, which runs `vite optimize` and
-    # resolves the `apiClient` alias during dep scanning. Generate it here
-    # when it isn't present, before the root install runs.
+    # cache is restored, postinstall is skipped, so the directory ends up
+    # missing and the UI workspace fails to resolve `from 'apiClient'`.
+    # Generate it here when it isn't present.
     - name: Generate OpenAPI client (if missing)
       shell: bash
       run: |
@@ -81,23 +87,11 @@ runs:
           yarn --cwd redisinsight/api generate:api-client
         fi
 
-    # Deliberately not gated on cache hit — the root `postinstall` runs
-    # `yarn-deduplicate yarn.lock`, which is what the lockfile-drift
-    # check below relies on to detect non-dedup-clean lockfiles. With
-    # node_modules restored from cache, this step is fast (mostly just
-    # postinstall).
-    - name: Install dependencies for root package.js
-      uses: ./.github/actions/install-deps
-      with:
-        dir-path: './'
-        keytar-host-mirror: ${{ inputs.keytar-host-mirror }}
-        sqlite3-host-mirror: ${{ inputs.sqlite3-host-mirror }}
-
-    # The root install above always runs, so its postinstall
-    # (`yarn-deduplicate yarn.lock`) always runs. If the committed
-    # lockfile is non-dedup-clean, postinstall rewrote it in place and
-    # this diff fails. `--frozen-lockfile` already catches the case where
-    # the lockfile disagrees with package.json.
+    # When install ran (cache miss), its postinstall executed
+    # `yarn-deduplicate yarn.lock`. If the committed lockfile was not
+    # dedup-clean, postinstall rewrote it in place and this diff fails.
+    # On cache hit install was skipped — the lockfile is byte-identical
+    # to a previously verified state, so the diff is a no-op.
     - name: Verify root yarn.lock is unchanged after install
       shell: bash
       run: |
