@@ -104,3 +104,4 @@ runs:
           git --no-pager diff --stat -- yarn.lock
           exit 1
         fi
+        echo "yarn.lock is unchanged after install — dedup-clean ✅"
