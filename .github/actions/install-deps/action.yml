@@ -31,3 +31,19 @@ runs:
         # export npm_config_node_sqlite3_binary_host_mirror=${{ inputs.sqlite3-host-mirror }}
 
         yarn install --frozen-lockfile --network-timeout 1000000
+
+    # Detects lockfile drift caused by `yarn install` running the root
+    # `postinstall` (which executes `yarn-deduplicate yarn.lock`). A PR may
+    # pass `--frozen-lockfile` yet still ship a non-dedup-clean lockfile,
+    # which dirties every local install. Fail fast here so authors re-run
+    # `yarn install` locally and commit the deduped lockfile.
+    - name: Verify yarn.lock is unchanged after install
+      if: hashFiles(format('{0}/yarn.lock', inputs.dir-path)) != ''
+      working-directory: ${{ inputs.dir-path }}
+      shell: bash
+      run: |
+        if ! git diff --exit-code --quiet -- yarn.lock; then
+          echo "::error file=${{ inputs.dir-path }}/yarn.lock::yarn.lock was modified by 'yarn install' in ${{ inputs.dir-path }}. The committed lockfile is not dedup-clean. Run 'yarn install' locally in ${{ inputs.dir-path }} and commit the updated yarn.lock."
+          git --no-pager diff --stat -- yarn.lock
+          exit 1
+        fi
