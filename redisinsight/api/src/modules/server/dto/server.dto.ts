@@ -23,6 +23,13 @@ export class GetServerInfoResponse {
   })
   appVersion: string;
 
+  @ApiPropertyOptional({
+    description: 'SHA of the commit the application was built from.',
+    type: String,
+    example: 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0',
+  })
+  buildCommitSha?: string;
+
   @ApiProperty({
     description: 'The operating system platform.',
     type: String,

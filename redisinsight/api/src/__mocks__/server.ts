@@ -23,6 +23,7 @@ export const mockGetServerInfoResponse = Object.assign(
   {
     ...mockServer,
     appVersion: SERVER_CONFIG.appVersion,
+    buildCommitSha: SERVER_CONFIG.buildCommitSha,
     osPlatform: process.platform,
     buildType: SERVER_CONFIG.buildType,
     appType: AppType.Docker,

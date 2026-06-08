@@ -9,6 +9,7 @@ const responseSchema = Joi.object()
     id: Joi.string().required(),
     createDateTime: Joi.date().required(),
     appVersion: Joi.string().required(),
+    buildCommitSha: Joi.string().optional(),
     osPlatform: Joi.string().required(),
     buildType: Joi.string()
       .valid('ELECTRON', 'DOCKER_ON_PREMISE', 'REDIS_STACK')

@@ -48,6 +48,10 @@ export const defaultConfig = {
   app: {
     version: packageJson.version,
     sha: process.env.GITHUB_SHA,
+    showBuildCommitSha: booleanEnv(
+      'RI_SHOW_BUILD_COMMIT_SHA',
+      process.env.NODE_ENV !== 'production',
+    ),
     env: process.env.NODE_ENV,
     type: process.env.RI_APP_TYPE,
     resourcesBaseUrl: process.env.RI_RESOURCES_BASE_URL ?? apiUrl, // todo: no usage found

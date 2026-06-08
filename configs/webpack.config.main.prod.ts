@@ -68,6 +68,8 @@ export default merge(baseConfig, {
       RI_APP_HOST: '127.0.0.1',
       RI_BUILD_TYPE: 'ELECTRON',
       RI_APP_VERSION: version,
+      RI_APP_BUILD_COMMIT_SHA: process.env.RI_APP_BUILD_COMMIT_SHA || '',
+      RI_SHOW_BUILD_COMMIT_SHA: process.env.RI_SHOW_BUILD_COMMIT_SHA || 'false',
       RI_SEGMENT_WRITE_KEY:
         'RI_SEGMENT_WRITE_KEY' in process.env
           ? process.env.RI_SEGMENT_WRITE_KEY

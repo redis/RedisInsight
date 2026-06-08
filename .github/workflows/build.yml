@@ -22,6 +22,12 @@ on:
         description: Enterprise build
         type: boolean
 
+      show_build_commit_sha:
+        description: Explicit override for RI_SHOW_BUILD_COMMIT_SHA ('true'/'false'); empty falls back to per-env default.
+        type: string
+        required: false
+        default: ''
+
 jobs:
   build-linux:
     if: contains(inputs.target, 'linux') || inputs.target == 'all'
@@ -32,6 +38,7 @@ jobs:
       target: ${{ inputs.target }}
       debug: ${{ inputs.debug }}
       enterprise: ${{ inputs.enterprise }}
+      show_build_commit_sha: ${{ inputs.show_build_commit_sha }}
 
   build-macos:
     if: contains(inputs.target, 'macos') || inputs.target == 'all'
@@ -42,6 +49,7 @@ jobs:
       target: ${{ inputs.target }}
       debug: ${{ inputs.debug }}
       enterprise: ${{ inputs.enterprise }}
+      show_build_commit_sha: ${{ inputs.show_build_commit_sha }}
 
   build-windows:
     if: contains(inputs.target, 'windows') || inputs.target == 'all'
@@ -51,6 +59,7 @@ jobs:
       environment: ${{ inputs.environment }}
       debug: ${{ inputs.debug }}
       enterprise: ${{ inputs.enterprise }}
+      show_build_commit_sha: ${{ inputs.show_build_commit_sha }}
 
   build-docker:
     if: contains(inputs.target, 'docker') || inputs.target == 'all'
@@ -60,3 +69,4 @@ jobs:
       environment: ${{ inputs.environment }}
       debug: ${{ inputs.debug }}
       enterprise: ${{ inputs.enterprise }}
+      show_build_commit_sha: ${{ inputs.show_build_commit_sha }}

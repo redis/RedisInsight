@@ -55,6 +55,7 @@ export class LocalServerService extends ServerService {
         ...info,
         sessionId: this.sessionId,
         appVersion: SERVER_CONFIG.appVersion,
+        buildCommitSha: SERVER_CONFIG.buildCommitSha,
         osPlatform: process.platform,
         buildType: SERVER_CONFIG.buildType,
         appType: ServerService.getAppType(SERVER_CONFIG.buildType),
