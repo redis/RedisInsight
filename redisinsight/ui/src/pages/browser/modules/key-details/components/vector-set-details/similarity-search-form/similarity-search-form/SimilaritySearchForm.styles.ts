@@ -1,7 +1,15 @@
 import { HTMLAttributes } from 'react'
 import styled from 'styled-components'
-import { Col } from 'uiSrc/components/base/layout/flex'
+import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
+import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { MIDDLE_SCREEN_RESOLUTION } from 'uiSrc/constants'
+
+/**
+ * Height of the bottom action row, sized to fit the expanded
+ * `CommandPreview` bar so toggling the preview on/off doesn't reflow the
+ * surrounding form layout.
+ */
+const ACTION_ROW_HEIGHT = '40px'
 
 export const FormContainer = styled(Col)`
   width: 100%;
@@ -50,4 +58,13 @@ export const FilterLabel = styled.span<HTMLAttributes<HTMLSpanElement>>`
   display: inline-flex;
   align-items: center;
   gap: ${({ theme }) => theme.core.space.space050};
+`
+
+export const ActionRow = styled(Row)`
+  min-height: ${ACTION_ROW_HEIGHT};
+`
+
+export const PreviewToggleButton = styled(ToggleButton)`
+  ${({ theme, pressed }) =>
+    !pressed && `border-color: ${theme.semantic.color.border.neutral600};`}
 `

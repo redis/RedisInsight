@@ -1,6 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { useSimilaritySearchResultFactory } from 'uiSrc/mocks/factories/browser/vectorSet/useSimilaritySearch.factory'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { useSimilaritySearch } from '../../hooks/useSimilaritySearch'
 
@@ -21,7 +22,19 @@ jest.mock('../../hooks/useSimilaritySearch', () => ({
   useSimilaritySearch: jest.fn(),
 }))
 
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
+}))
+
 const mockedUseSimilaritySearch = jest.mocked(useSimilaritySearch)
+const mockedSendEventTelemetry = jest.mocked(sendEventTelemetry)
+
+const fillValidVector = () => {
+  fireEvent.change(screen.getByTestId(`${TEST_ID}-vector-input`), {
+    target: { value: '1, 2, 3' },
+  })
+}
 
 beforeEach(() => {
   jest.clearAllMocks()
@@ -41,24 +54,93 @@ describe('SimilaritySearchForm', () => {
     expect(screen.getByTestId(`${TEST_ID}-submit`)).toBeInTheDocument()
   })
 
-  it('falls back to the "Redis Command Preview" placeholder when the hook has no preview', () => {
+  it('hides the command preview by default', () => {
     renderComponent()
 
     expect(
+      screen.queryByTestId('similarity-search-command-preview-text'),
+    ).not.toBeInTheDocument()
+    expect(screen.getByTestId(`${TEST_ID}-preview-toggle`)).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    )
+  })
+
+  it('disables the preview toggle until the form has a valid query', () => {
+    renderComponent()
+
+    const toggle = screen.getByTestId(`${TEST_ID}-preview-toggle`)
+    expect(toggle).toBeDisabled()
+
+    fillValidVector()
+
+    expect(toggle).toBeEnabled()
+  })
+
+  it('enables the preview toggle once the element input has a value (Element mode)', () => {
+    renderComponent()
+
+    fireEvent.click(screen.getByTestId(`${TEST_ID}-mode-element`))
+    const toggle = screen.getByTestId(`${TEST_ID}-preview-toggle`)
+    expect(toggle).toBeDisabled()
+
+    fireEvent.change(screen.getByTestId(`${TEST_ID}-element-input`), {
+      target: { value: 'alpha' },
+    })
+
+    expect(toggle).toBeEnabled()
+  })
+
+  it('keeps the preview toggle enabled while pressed even if the query becomes invalid', () => {
+    renderComponent()
+
+    fillValidVector()
+    const toggle = screen.getByTestId(`${TEST_ID}-preview-toggle`)
+    fireEvent.click(toggle)
+    expect(toggle).toHaveAttribute('aria-pressed', 'true')
+
+    fireEvent.change(screen.getByTestId(`${TEST_ID}-vector-input`), {
+      target: { value: '' },
+    })
+
+    expect(toggle).toBeEnabled()
+  })
+
+  it('renders empty preview text when toggled on with no preview', () => {
+    renderComponent()
+    fillValidVector()
+    fireEvent.click(screen.getByTestId(`${TEST_ID}-preview-toggle`))
+
+    expect(
       screen.getByTestId('similarity-search-command-preview-text'),
-    ).toHaveTextContent('Redis Command Preview')
+    ).toHaveTextContent('')
     expect(
       screen.getByTestId('similarity-search-command-preview-copy-btn'),
     ).toBeDisabled()
   })
 
-  it('renders the hook-supplied preview verbatim and enables the copy button', () => {
+  it('shows a loading placeholder while the preview is being fetched', () => {
+    mockedUseSimilaritySearch.mockReturnValue(
+      useSimilaritySearchResultFactory.build({ previewLoading: true }),
+    )
+    renderComponent()
+    fillValidVector()
+    fireEvent.click(screen.getByTestId(`${TEST_ID}-preview-toggle`))
+
+    expect(
+      screen.getByTestId('similarity-search-command-preview-text'),
+    ).toHaveTextContent('command is loading...')
+  })
+
+  it('renders the hook-supplied preview verbatim once toggled on', () => {
     mockedUseSimilaritySearch.mockReturnValue(
       useSimilaritySearchResultFactory.build({
         preview: 'VSIM mykey ELE seed WITHSCORES WITHATTRIBS',
       }),
     )
     renderComponent()
+    fillValidVector()
+    fireEvent.click(screen.getByTestId(`${TEST_ID}-preview-toggle`))
 
     expect(
       screen.getByTestId('similarity-search-command-preview-text'),
@@ -66,6 +148,66 @@ describe('SimilaritySearchForm', () => {
     expect(
       screen.getByTestId('similarity-search-command-preview-copy-btn'),
     ).toBeEnabled()
+  })
+
+  it('does not dispatch the preview pipeline while the preview is hidden', () => {
+    const runSimilaritySearchPreview = jest.fn()
+    mockedUseSimilaritySearch.mockReturnValue(
+      useSimilaritySearchResultFactory.build({ runSimilaritySearchPreview }),
+    )
+    renderComponent()
+
+    fillValidVector()
+
+    expect(runSimilaritySearchPreview).not.toHaveBeenCalled()
+  })
+
+  it('starts dispatching the preview pipeline once toggled on', () => {
+    const runSimilaritySearchPreview = jest.fn()
+    mockedUseSimilaritySearch.mockReturnValue(
+      useSimilaritySearchResultFactory.build({ runSimilaritySearchPreview }),
+    )
+    renderComponent()
+
+    fillValidVector()
+    fireEvent.click(screen.getByTestId(`${TEST_ID}-preview-toggle`))
+
+    expect(runSimilaritySearchPreview).toHaveBeenCalled()
+  })
+
+  it('cancels the preview pipeline when toggled off', () => {
+    const cancelSimilaritySearchPreview = jest.fn()
+    mockedUseSimilaritySearch.mockReturnValue(
+      useSimilaritySearchResultFactory.build({
+        cancelSimilaritySearchPreview,
+      }),
+    )
+    renderComponent()
+
+    fillValidVector()
+    const toggle = screen.getByTestId(`${TEST_ID}-preview-toggle`)
+    fireEvent.click(toggle) // on
+    fireEvent.click(toggle) // off
+
+    expect(cancelSimilaritySearchPreview).toHaveBeenCalledTimes(1)
+  })
+
+  it('sends telemetry on each preview toggle with the new visibility state', () => {
+    renderComponent()
+
+    fillValidVector()
+    const toggle = screen.getByTestId(`${TEST_ID}-preview-toggle`)
+    fireEvent.click(toggle) // shown
+    fireEvent.click(toggle) // hidden
+
+    const calls = mockedSendEventTelemetry.mock.calls.filter(
+      ([arg]) =>
+        arg.event ===
+        TelemetryEvent.VECTOR_SET_SIMILARITY_SEARCH_COMMAND_PREVIEW_TOGGLED,
+    )
+    expect(calls).toHaveLength(2)
+    expect(calls[0][0].eventData).toMatchObject({ state: 'shown' })
+    expect(calls[1][0].eventData).toMatchObject({ state: 'hidden' })
   })
 
   it('keeps the submit button disabled until a valid query is provided', () => {

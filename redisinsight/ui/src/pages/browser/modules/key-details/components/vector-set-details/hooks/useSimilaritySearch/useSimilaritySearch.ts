@@ -150,6 +150,12 @@ export const useSimilaritySearch = (): UseSimilaritySearchResult => {
     [buildSimilaritySearchPayload, debouncedDispatchPreview, dispatch],
   )
 
+  const cancelSimilaritySearchPreview = useCallback(() => {
+    debouncedDispatchPreview.cancel()
+    abortVectorSetSimilaritySearchPreview()
+    dispatch(clearSimilaritySearchPreview())
+  }, [debouncedDispatchPreview, dispatch])
+
   return {
     loading,
     previewLoading,
@@ -157,6 +163,7 @@ export const useSimilaritySearch = (): UseSimilaritySearchResult => {
     preview,
     runSimilaritySearch,
     runSimilaritySearchPreview,
+    cancelSimilaritySearchPreview,
     resetSimilaritySearch,
     buildSimilaritySearchPayload,
   }
