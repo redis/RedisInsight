@@ -1,5 +1,5 @@
 {
-  "version": 3.9,
+  "version": 3.91,
   "features": {
     "redisDataIntegration": {
       "flag": true,
@@ -140,6 +140,10 @@
       "perc": [[0, 100]]
     },
     "dev-vectorSet": {
+      "flag": false,
+      "perc": [[0, 100]]
+    },
+    "dev-array": {
       "flag": false,
       "perc": [[0, 100]]
     },
