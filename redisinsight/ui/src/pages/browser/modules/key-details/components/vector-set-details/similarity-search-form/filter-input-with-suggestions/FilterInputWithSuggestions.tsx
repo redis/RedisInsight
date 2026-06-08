@@ -31,6 +31,12 @@ export const FilterInputWithSuggestions = ({
   const [caret, setCaret] = useState<number>(value.length)
   const [isFocused, setIsFocused] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
+  // `dotIndex` of the token that was dismissed via Escape. Suppresses the
+  // dropdown while the caret stays on the same token; cleared as soon as the
+  // active token changes so later `.tokens` still get suggestions.
+  const [dismissedDotIndex, setDismissedDotIndex] = useState<number | null>(
+    null,
+  )
   const pendingCaretRef = useRef<number | null>(null)
 
   // Restore caret after `applySuggestion` once React has flushed the new value.
@@ -64,7 +70,21 @@ export const FilterInputWithSuggestions = ({
     }
   }, [filteredSuggestions, activeIndex])
 
-  const showDropdown = activeToken != null && filteredSuggestions.length > 0
+  // Clear Escape suppression once the caret leaves the dismissed token so a
+  // later `.attribute` (or a return to this one) gets suggestions again.
+  useEffect(() => {
+    if (
+      dismissedDotIndex != null &&
+      activeToken?.dotIndex !== dismissedDotIndex
+    ) {
+      setDismissedDotIndex(null)
+    }
+  }, [activeToken, dismissedDotIndex])
+
+  const showDropdown =
+    activeToken != null &&
+    filteredSuggestions.length > 0 &&
+    activeToken.dotIndex !== dismissedDotIndex
 
   const syncCaret = useCallback(() => {
     const el = inputRef.current
@@ -106,10 +126,16 @@ export const FilterInputWithSuggestions = ({
         applySuggestion(filteredSuggestions[activeIndex])
       } else if (event.key === keys.ESCAPE) {
         event.preventDefault()
-        setIsFocused(false)
+        if (activeToken) setDismissedDotIndex(activeToken.dotIndex)
       }
     },
-    [activeIndex, applySuggestion, filteredSuggestions, showDropdown],
+    [
+      activeIndex,
+      activeToken,
+      applySuggestion,
+      filteredSuggestions,
+      showDropdown,
+    ],
   )
 
   const handleChange = useCallback(

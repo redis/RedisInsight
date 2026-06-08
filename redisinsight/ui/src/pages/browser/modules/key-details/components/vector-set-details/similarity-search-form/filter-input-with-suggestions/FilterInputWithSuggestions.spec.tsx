@@ -154,6 +154,31 @@ describe('FilterInputWithSuggestions', () => {
         screen.queryByTestId(`${TEST_ID}-suggestions`),
       ).not.toBeInTheDocument()
     })
+
+    it('Escape suppression releases when the caret moves to a later token', () => {
+      // Open at `.` (dotIndex 0), press Escape, then move the caret to a new
+      // `.` further in the expression — the dropdown should reappear.
+      const { input, rerender, onChange } = openDropdown()
+      fireEvent.keyDown(input, { key: 'Escape' })
+      expect(
+        screen.queryByTestId(`${TEST_ID}-suggestions`),
+      ).not.toBeInTheDocument()
+
+      // Simulate the user typing past the first dot and adding ` and .`
+      // with the new dot at index 5.
+      rerender(
+        <FilterInputWithSuggestions
+          value=". and ."
+          onChange={onChange}
+          suggestions={['price', 'category', 'color']}
+          testId={TEST_ID}
+        />,
+      )
+      const refreshed = screen.getByTestId(TEST_ID) as HTMLInputElement
+      focusAt(refreshed, 7, '.')
+
+      expect(screen.getByTestId(`${TEST_ID}-suggestions`)).toBeInTheDocument()
+    })
   })
 
   it('exposes ARIA combobox wiring on the wrapper and aria-activedescendant on the input', () => {
