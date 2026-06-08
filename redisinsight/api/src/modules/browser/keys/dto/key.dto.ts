@@ -17,6 +17,7 @@ export enum RedisDataType {
   Graph = 'graphdata',
   TS = 'TSDB-TYPE',
   VectorSet = 'vectorset',
+  Array = 'array',
 }
 
 export class KeyDto {

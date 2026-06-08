@@ -12,6 +12,7 @@ export enum KeyTypes {
   JSON = 'json',
   Stream = 'stream',
   VectorSet = 'vectorset',
+  Array = 'array',
 }
 
 export const SEARCHABLE_KEY_TYPES: KeyTypes[] = [KeyTypes.Hash, KeyTypes.ReJSON]
@@ -31,6 +32,7 @@ export const GROUP_TYPES_DISPLAY = Object.freeze({
   [KeyTypes.JSON]: 'JSON',
   [KeyTypes.Stream]: 'Stream',
   [KeyTypes.VectorSet]: 'Vector Set',
+  [KeyTypes.Array]: 'Array',
   [ModulesKeyTypes.TimeSeries]: 'Time Series',
   [CommandGroup.Bitmap]: 'Bitmap',
   [CommandGroup.Cluster]: 'Cluster',
@@ -64,6 +66,7 @@ export const GROUP_TYPES_COLORS = Object.freeze({
   [KeyTypes.JSON]: 'var(--typeReJSONColor)',
   [KeyTypes.Stream]: 'var(--typeStreamColor)',
   [KeyTypes.VectorSet]: 'var(--typeVectorSetColor)',
+  [KeyTypes.Array]: 'var(--typeArrayColor)',
   [ModulesKeyTypes.Graph]: 'var(--typeGraphColor)',
   [ModulesKeyTypes.TimeSeries]: 'var(--typeTimeSeriesColor)',
   [CommandGroup.SortedSet]: 'var(--groupSortedSetColor)',
