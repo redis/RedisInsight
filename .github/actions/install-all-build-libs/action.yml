@@ -30,7 +30,12 @@ runs:
           node_modules
           redisinsight/node_modules
           redisinsight/api/node_modules
-        key: node-modules-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('yarn.lock', 'redisinsight/yarn.lock', 'redisinsight/api/yarn.lock') }}
+        # Hash both package.json and yarn.lock for every workspace so a
+        # change to either invalidates the cache. Hashing only yarn.lock
+        # let package.json edits without `yarn install` cache-hit, which
+        # skipped `yarn install --frozen-lockfile` and hid the resulting
+        # package.json / yarn.lock mismatch.
+        key: node-modules-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package.json', 'yarn.lock', 'redisinsight/package.json', 'redisinsight/yarn.lock', 'redisinsight/api/package.json', 'redisinsight/api/yarn.lock') }}
         restore-keys: |
           node-modules-${{ runner.os }}-${{ runner.arch }}-
 
