@@ -139,7 +139,8 @@
   "snap": {
     "plugs": ["default", "password-manager-service"],
     "confinement": "strict",
-    "stagePackages": ["default"]
+    "stagePackages": ["default"],
+    "allowNativeWayland": false
   },
   "flatpak": {
     "runtimeVersion": "20.08",
