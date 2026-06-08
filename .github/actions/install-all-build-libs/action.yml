@@ -87,22 +87,22 @@ runs:
           yarn --cwd redisinsight/api generate:api-client
         fi
 
-    # Detects lockfile drift caused by `yarn install` running the root
-    # `postinstall` (which executes `yarn-deduplicate yarn.lock`). A PR may
-    # pass `--frozen-lockfile` yet still ship a non-dedup-clean lockfile,
-    # which dirties every local install. Runs unconditionally so an exact
-    # node_modules cache hit (which skips the install steps above) does
-    # not bypass the check.
-    - name: Verify yarn.lock files are unchanged after install
+    # Verifies the root yarn.lock is dedup-clean by running yarn-deduplicate
+    # in read-only check mode (`--list --fail`). This is the property the
+    # root `postinstall` enforces locally (via `yarn-deduplicate yarn.lock`)
+    # but that `--frozen-lockfile` does not. Runs unconditionally so an
+    # exact node_modules cache hit (which skips the install steps above)
+    # does not bypass the check, and so pre-existing lockfile drift is
+    # caught on code-only PRs too.
+    #
+    # Scoped to the root lockfile only — the non-root lockfiles
+    # (redisinsight/yarn.lock, redisinsight/api/yarn.lock) have never had
+    # dedup enforcement and currently contain duplicates; enabling the
+    # check there is a separate follow-up.
+    - name: Verify root yarn.lock is dedup-clean
       shell: bash
       run: |
-        fail=0
-        for lock in yarn.lock redisinsight/yarn.lock redisinsight/api/yarn.lock; do
-          if [ -f "$lock" ] && ! git diff --exit-code --quiet -- "$lock"; then
-            dir=$(dirname "$lock")
-            echo "::error file=$lock::$lock was modified by 'yarn install'. The committed lockfile is not dedup-clean. Run 'yarn install' in $dir locally and commit the updated lockfile."
-            git --no-pager diff --stat -- "$lock"
-            fail=1
-          fi
-        done
-        exit $fail
+        if ! ./node_modules/.bin/yarn-deduplicate --list --fail yarn.lock; then
+          echo "::error file=yarn.lock::Root yarn.lock is not dedup-clean. The root 'postinstall' (yarn-deduplicate yarn.lock) would rewrite it during 'yarn install'. Run 'yarn install' at the repo root locally and commit the updated yarn.lock."
+          exit 1
+        fi
