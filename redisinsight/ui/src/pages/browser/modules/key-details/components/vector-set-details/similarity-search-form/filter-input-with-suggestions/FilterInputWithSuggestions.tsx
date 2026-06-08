@@ -10,6 +10,7 @@ import React, {
 import { TextInput } from 'uiSrc/components/base/inputs'
 import * as keys from 'uiSrc/constants/keys'
 
+import { SUGGESTIONS_HINT } from './constants'
 import * as S from './FilterInputWithSuggestions.styles'
 import { FilterInputWithSuggestionsProps } from './FilterInputWithSuggestions.types'
 import {
@@ -151,34 +152,41 @@ export const FilterInputWithSuggestions = ({
         data-testid={testId}
       />
       {showDropdown && (
-        <S.SuggestionsList
-          id={listboxId}
-          data-testid={listboxId ?? 'filter-suggestions'}
-          role="listbox"
-        >
-          {filteredSuggestions.map((key, index) => (
-            <S.SuggestionItem
-              key={key}
-              id={listboxId ? `${listboxId}-option-${index}` : undefined}
-              $active={index === activeIndex}
-              role="option"
-              aria-selected={index === activeIndex}
-              data-testid={
-                testId
-                  ? `${testId}-suggestion-${key}`
-                  : `filter-suggestion-${key}`
-              }
-              onMouseDown={(event) => {
-                event.preventDefault()
-                applySuggestion(key)
-                inputRef.current?.focus()
-              }}
-              onMouseEnter={() => setActiveIndex(index)}
-            >
-              {key}
-            </S.SuggestionItem>
-          ))}
-        </S.SuggestionsList>
+        <S.SuggestionsPanel>
+          <S.SuggestionsHint
+            data-testid={testId ? `${testId}-suggestions-hint` : undefined}
+          >
+            {SUGGESTIONS_HINT}
+          </S.SuggestionsHint>
+          <S.SuggestionsList
+            id={listboxId}
+            data-testid={listboxId ?? 'filter-suggestions'}
+            role="listbox"
+          >
+            {filteredSuggestions.map((key, index) => (
+              <S.SuggestionItem
+                key={key}
+                id={listboxId ? `${listboxId}-option-${index}` : undefined}
+                $active={index === activeIndex}
+                role="option"
+                aria-selected={index === activeIndex}
+                data-testid={
+                  testId
+                    ? `${testId}-suggestion-${key}`
+                    : `filter-suggestion-${key}`
+                }
+                onMouseDown={(event) => {
+                  event.preventDefault()
+                  applySuggestion(key)
+                  inputRef.current?.focus()
+                }}
+                onMouseEnter={() => setActiveIndex(index)}
+              >
+                {key}
+              </S.SuggestionItem>
+            ))}
+          </S.SuggestionsList>
+        </S.SuggestionsPanel>
       )}
     </S.Wrapper>
   )

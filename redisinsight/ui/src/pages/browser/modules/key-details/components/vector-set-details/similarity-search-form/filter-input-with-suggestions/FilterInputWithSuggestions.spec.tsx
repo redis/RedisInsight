@@ -3,6 +3,7 @@ import { fireEvent, screen } from '@testing-library/react'
 import { render } from 'uiSrc/utils/test-utils'
 
 import { FilterInputWithSuggestions } from './FilterInputWithSuggestions'
+import { SUGGESTIONS_HINT } from './constants'
 
 const TEST_ID = 'filter'
 
@@ -52,6 +53,15 @@ describe('FilterInputWithSuggestions', () => {
     expect(
       screen.queryByTestId(`${TEST_ID}-suggestion-price`),
     ).not.toBeInTheDocument()
+  })
+
+  it('renders the muted hint above the suggestion list', () => {
+    renderForm({ value: '.' })
+    focusAt(screen.getByTestId(TEST_ID) as HTMLInputElement, 1, '.')
+
+    expect(screen.getByTestId(`${TEST_ID}-suggestions-hint`)).toHaveTextContent(
+      SUGGESTIONS_HINT,
+    )
   })
 
   it('inserts a suggestion on click and emits onChange', () => {
