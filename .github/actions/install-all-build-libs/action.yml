@@ -67,6 +67,20 @@ runs:
       with:
         dir-path: './redisinsight/api'
 
+    # The OpenAPI client (`redisinsight/api-client/`) is gitignored and produced
+    # by the `postinstall` hook in `redisinsight/api`. When the node_modules
+    # cache is restored, that postinstall is skipped, so the directory ends up
+    # missing and any subsequent step that imports `apiClient` fails — in
+    # particular the root postinstall below, which runs `vite optimize` and
+    # resolves the `apiClient` alias during dep scanning. Generate it here
+    # when it isn't present, before the root install runs.
+    - name: Generate OpenAPI client (if missing)
+      shell: bash
+      run: |
+        if [ ! -f redisinsight/api-client/index.ts ]; then
+          yarn --cwd redisinsight/api generate:api-client
+        fi
+
     # Deliberately not gated on cache hit — the root `postinstall` runs
     # `yarn-deduplicate yarn.lock`, which is what the lockfile-drift
     # check below relies on to detect non-dedup-clean lockfiles. With
@@ -78,18 +92,6 @@ runs:
         dir-path: './'
         keytar-host-mirror: ${{ inputs.keytar-host-mirror }}
         sqlite3-host-mirror: ${{ inputs.sqlite3-host-mirror }}
-
-    # The OpenAPI client (`redisinsight/api-client/`) is gitignored and produced
-    # by the `postinstall` hook in `redisinsight/api`. When the node_modules
-    # cache is restored, postinstall is skipped, so the directory ends up
-    # missing and the UI workspace fails to resolve `from 'apiClient'`.
-    # Generate it here when it isn't present.
-    - name: Generate OpenAPI client (if missing)
-      shell: bash
-      run: |
-        if [ ! -f redisinsight/api-client/index.ts ]; then
-          yarn --cwd redisinsight/api generate:api-client
-        fi
 
     # The root install above always runs, so its postinstall
     # (`yarn-deduplicate yarn.lock`) always runs. If the committed
