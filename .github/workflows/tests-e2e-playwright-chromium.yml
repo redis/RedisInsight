@@ -44,6 +44,8 @@ jobs:
 
       - name: Install application dependencies
         uses: ./.github/actions/install-all-build-libs
+        with:
+          cache-node-modules: '0'
 
       - name: Setup E2E environment
         uses: ./.github/actions/setup-e2e-playwright

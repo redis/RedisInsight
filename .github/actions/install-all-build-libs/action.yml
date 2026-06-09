@@ -14,6 +14,11 @@ inputs:
     description: SQLite3 binary host mirror
     required: false
 
+  cache-node-modules:
+    description: Cache node_modules between runs ('1' enabled, '0' disabled). Disable for jobs that build the application to avoid stale nested deps surviving lockfile changes.
+    default: '1'
+    required: false
+
 runs:
   using: 'composite'
   steps:
@@ -24,6 +29,7 @@ runs:
 
     - name: Cache node_modules
       id: cache-node-modules
+      if: inputs.cache-node-modules != '0'
       uses: actions/cache@v5
       with:
         path: |
