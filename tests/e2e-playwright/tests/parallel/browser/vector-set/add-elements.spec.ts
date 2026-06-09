@@ -5,7 +5,7 @@ import { TEST_KEY_PREFIX, VectorSetKeyFactory, toFp32EscapedString } from 'e2eSr
 import { DatabaseInstance } from 'e2eSrc/types';
 import { seedVectorSet } from './helpers';
 
-test.use({ featureFlags: { 'dev-vectorSet': true } });
+test.use({ featureFlags: { vectorSet: true } });
 
 test.describe('Browser > Vector Set > Add Elements', () => {
   let database: DatabaseInstance;

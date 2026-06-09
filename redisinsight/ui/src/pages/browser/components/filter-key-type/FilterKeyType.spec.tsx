@@ -201,7 +201,7 @@ describe('FilterKeyType', () => {
     }))
     const initialStoreState = set(
       cloneDeep(initialStateDefault),
-      `app.features.featureFlags.features.${FeatureFlags.devVectorSet}`,
+      `app.features.featureFlags.features.${FeatureFlags.vectorSet}`,
       { flag: true },
     )
     const { queryByText } = render(<FilterKeyType />, {
@@ -232,7 +232,7 @@ describe('FilterKeyType', () => {
     }))
     const initialStoreState = set(
       cloneDeep(initialStateDefault),
-      `app.features.featureFlags.features.${FeatureFlags.devVectorSet}`,
+      `app.features.featureFlags.features.${FeatureFlags.vectorSet}`,
       { flag: true },
     )
     const { queryByText } = render(<FilterKeyType />, {
