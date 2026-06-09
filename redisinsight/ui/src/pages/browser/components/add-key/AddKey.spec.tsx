@@ -41,7 +41,7 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
 }))
 
 /**
- * Build a fresh store with the `devVectorSet` feature flag pre-seeded so the
+ * Build a fresh store with the `vectorSet` feature flag pre-seeded so the
  * Vector Set option's `isEnabledSelector` (which reads the flag from the
  * features slice) resolves correctly. We seed the store rather than spying
  * on the selector because the option config holds an import-time reference
@@ -50,7 +50,7 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
 const renderWithVectorSetFlag = (enabled: boolean) => {
   const storeState = set(
     cloneDeep(initialStateDefault),
-    `app.features.featureFlags.features.${FeatureFlags.devVectorSet}`,
+    `app.features.featureFlags.features.${FeatureFlags.vectorSet}`,
     { flag: enabled },
   )
   return render(
