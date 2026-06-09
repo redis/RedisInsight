@@ -14,6 +14,8 @@ import {
   CustomErrorCodes,
   DatabaseListColumn,
 } from 'uiSrc/constants'
+import { CommandsVersions } from 'uiSrc/constants/commandsVersions'
+import { isVersionHigherOrEquals } from 'uiSrc/utils/comparisons/compareVersions'
 import { setAppContextInitialState } from 'uiSrc/slices/app/context'
 import { resetKeys } from 'uiSrc/slices/browser/keys'
 import successMessages from 'uiSrc/components/notifications/success-messages'
@@ -390,6 +392,13 @@ export const connectedInstanceOverviewSelector = (state: RootState) =>
   state.connections.instances.instanceOverview
 export const importInstancesSelector = (state: RootState) =>
   state.connections.instances.importInstances
+
+export const isArraySupportedSelector = (state: RootState): boolean => {
+  const { version } = state.connections.instances.instanceOverview
+  return (
+    !!version && isVersionHigherOrEquals(version, CommandsVersions.ARRAY.since)
+  )
+}
 
 // The reducer
 export default instancesSlice.reducer

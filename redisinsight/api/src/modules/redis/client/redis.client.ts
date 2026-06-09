@@ -9,6 +9,7 @@ import * as semverCompare from 'node-version-compare';
 import { RedisDatabaseHelloResponse } from 'src/modules/database/dto/redis-info.dto';
 import { plainToClass } from 'class-transformer';
 import { Database } from 'src/modules/database/models/database';
+import { BrowserToolArrayCommands } from 'src/modules/browser/constants/browser-tool-commands';
 
 const REDIS_CLIENTS_CONFIG = apiConfig.get('redis_clients');
 
@@ -58,6 +59,7 @@ export enum RedisFeature {
   UnlinkCommand = 'UnlinkCommand',
   VRangeCommand = 'VRangeCommand',
   VsimWithAttribs = 'VsimWithAttribs',
+  ArrayCommands = 'ArrayCommands',
 }
 
 const CLIENT_DATABASE_FIELDS: (keyof Database)[] = ['providerDetails'];
@@ -70,6 +72,8 @@ export abstract class RedisClient extends EventEmitter2 {
   protected _redisVersion: string | undefined;
 
   protected _isInfoCommandDisabled: boolean | undefined;
+
+  protected _arrayCommandGroupSupported: boolean | undefined;
 
   protected lastTimeUsed: number;
 
@@ -187,9 +191,34 @@ export abstract class RedisClient extends EventEmitter2 {
       case RedisFeature.VsimWithAttribs:
         // VSIM WITHATTRIBS option is broken on 8.0.0–8.0.2 and was fixed in 8.0.3
         return this.isRedisVersionAtLeast('8.0.3');
+      case RedisFeature.ArrayCommands:
+        // @array command group is preview-status in Redis 8.8+. Some 8.8.0+
+        // builds may omit it, so probe via COMMAND INFO rather than relying on
+        // the version string alone.
+        return this.isArrayCommandGroupSupported();
       default:
         return false;
     }
+  }
+
+  private async isArrayCommandGroupSupported(): Promise<boolean> {
+    if (this._arrayCommandGroupSupported !== undefined) {
+      return this._arrayCommandGroupSupported;
+    }
+
+    try {
+      const reply = (await this.call(
+        ['command', 'info', BrowserToolArrayCommands.ARGet],
+        { replyEncoding: 'utf8' },
+      )) as RedisClientCommandReply[];
+
+      this._arrayCommandGroupSupported =
+        Array.isArray(reply) && reply.some((info) => info != null);
+    } catch (e) {
+      this._arrayCommandGroupSupported = false;
+    }
+
+    return this._arrayCommandGroupSupported;
   }
 
   private async isRedisVersionAtLeast(minVersion: string): Promise<boolean> {
