@@ -32,7 +32,7 @@ import { areKeysEqual } from './useSimilaritySearch.utils'
  * Tuned to feel responsive without spamming the BE during fast typing — the
  * preview is best-effort, not a hot path.
  */
-const PREVIEW_DEBOUNCE_MS = 250
+const PREVIEW_DEBOUNCE_MS = 600
 
 export const useSimilaritySearch = (): UseSimilaritySearchResult => {
   const dispatch = useAppDispatch()

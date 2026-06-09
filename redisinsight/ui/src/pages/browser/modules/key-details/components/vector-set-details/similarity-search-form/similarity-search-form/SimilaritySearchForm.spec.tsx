@@ -119,9 +119,25 @@ describe('SimilaritySearchForm', () => {
     ).toBeDisabled()
   })
 
-  it('shows a loading placeholder while the preview is being fetched', () => {
+  it('shows the loading placeholder while the preview is being fetched', () => {
     mockedUseSimilaritySearch.mockReturnValue(
       useSimilaritySearchResultFactory.build({ previewLoading: true }),
+    )
+    renderComponent()
+    fillValidVector()
+    fireEvent.click(screen.getByTestId(`${TEST_ID}-preview-toggle`))
+
+    expect(
+      screen.getByTestId('similarity-search-command-preview-text'),
+    ).toHaveTextContent('command is loading...')
+  })
+
+  it('shows the loading placeholder even when a previous command exists', () => {
+    mockedUseSimilaritySearch.mockReturnValue(
+      useSimilaritySearchResultFactory.build({
+        previewLoading: true,
+        preview: 'VSIM mykey ELE seed WITHSCORES WITHATTRIBS',
+      }),
     )
     renderComponent()
     fillValidVector()

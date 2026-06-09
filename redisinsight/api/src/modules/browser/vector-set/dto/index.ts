@@ -1,5 +1,6 @@
 export * from './vector-set-element-details.dto';
 export * from './vector-set-element-key.dto';
+export * from './vector-set-element-list-item.dto';
 export * from './add.vector-set-element.dto';
 export * from './add.elements-to-vector-set.dto';
 export * from './create.vector-set.dto';

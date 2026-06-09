@@ -13,6 +13,10 @@ import {
   addMessageNotification,
   IAddInstanceErrorPayload,
 } from 'uiSrc/slices/app/notifications'
+import {
+  GetVectorSetElementsResponse,
+  RedisResponseBuffer,
+} from 'uiSrc/slices/interfaces'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { MOCK_TIMESTAMP } from 'uiSrc/mocks/data/dateNow'
 import {
@@ -143,6 +147,7 @@ describe('vectorSet slice', () => {
         similaritySearchPreview: initialState.similaritySearchPreview,
         data: {
           ...data,
+          attributeKeys: [],
         },
       }
 
@@ -208,6 +213,7 @@ describe('vectorSet slice', () => {
         similaritySearchPreview: initialState.similaritySearchPreview,
         data: {
           ...data,
+          attributeKeys: [],
         },
       }
 
@@ -245,6 +251,7 @@ describe('vectorSet slice', () => {
         similaritySearchPreview: initialState.similaritySearchPreview,
         data: {
           ...data,
+          attributeKeys: [],
         },
       }
 
@@ -549,14 +556,14 @@ describe('vectorSet slice', () => {
   describe('thunks', () => {
     describe('fetchVectorSetElements', () => {
       const thunkElements = vectorSetElementFactory.buildList(3)
-      const apiResponse = {
+      const apiResponse: GetVectorSetElementsResponse = {
         keyName: vectorSetTestKeyName(),
         total: thunkElements.length,
         nextCursor: vectorSetPaginationCursorAfter(
           thunkElements[thunkElements.length - 1],
         ),
         isPaginationSupported: true,
-        elementNames: thunkElements.map((el) => el.name),
+        elements: thunkElements.map((el) => ({ name: el.name })),
       }
 
       it('call fetchVectorSetElements, loadVectorSetElementsSuccess when fetch is successful', async () => {
@@ -565,18 +572,14 @@ describe('vectorSet slice', () => {
 
         await store.dispatch<any>(
           fetchVectorSetElements({
-            key: apiResponse.keyName as any,
+            key: apiResponse.keyName as RedisResponseBuffer,
             count: 10,
           }),
         )
 
-        const { elementNames, ...rest } = apiResponse
         const expectedActions = [
           loadVectorSetElements(undefined),
-          loadVectorSetElementsSuccess({
-            ...rest,
-            elements: elementNames.map((name) => ({ name })),
-          }),
+          loadVectorSetElementsSuccess(apiResponse),
           updateSelectedKeyRefreshTime(Date.now()),
         ]
 
@@ -612,14 +615,14 @@ describe('vectorSet slice', () => {
 
     describe('fetchMoreVectorSetElements', () => {
       const moreElements = vectorSetElementFactory.buildList(3)
-      const moreApiResponse = {
+      const moreApiResponse: GetVectorSetElementsResponse = {
         keyName: vectorSetTestKeyName(),
         total: faker.number.int({ min: moreElements.length + 1, max: 100 }),
         nextCursor: vectorSetPaginationCursorAfter(
           moreElements[moreElements.length - 1],
         ),
         isPaginationSupported: true,
-        elementNames: moreElements.map((el) => el.name),
+        elements: moreElements.map((el) => ({ name: el.name })),
       }
       const requestCursor = vectorSetPaginationCursorAfter(
         vectorSetElementFactory.build(),
@@ -631,19 +634,15 @@ describe('vectorSet slice', () => {
 
         await store.dispatch<any>(
           fetchMoreVectorSetElements({
-            key: moreApiResponse.keyName as any,
+            key: moreApiResponse.keyName as RedisResponseBuffer,
             nextCursor: requestCursor,
             count: 10,
           }),
         )
 
-        const { elementNames: moreElementNames, ...moreRest } = moreApiResponse
         const expectedActions = [
           loadMoreVectorSetElements(),
-          loadMoreVectorSetElementsSuccess({
-            ...moreRest,
-            elements: moreElementNames.map((name) => ({ name })),
-          }),
+          loadMoreVectorSetElementsSuccess(moreApiResponse),
         ]
 
         expect(mockedStore.getActions()).toEqual(expectedActions)

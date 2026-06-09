@@ -173,6 +173,13 @@ export class VectorSetService {
         ])) as string[];
       }
 
+      const elements: { name: string | Buffer; attributes?: string }[] =
+        elementNames.map((name) => ({ name }));
+
+      if (elements.length > 0) {
+        await this.fetchAttributesForMatches(client, keyName, elements);
+      }
+
       this.logger.debug(
         'Succeed to get elements of the VectorSet data type.',
         clientMetadata,
@@ -182,7 +189,7 @@ export class VectorSetService {
         total,
         nextCursor,
         isPaginationSupported: isVRangeSupported,
-        elementNames,
+        elements,
       });
     } catch (error) {
       this.logger.error(
@@ -463,12 +470,13 @@ export class VectorSetService {
   }
 
   /**
-   * Back-fill the `attributes` field on each match by issuing one VGETATTR
-   * per element in a single pipeline. Used as the fallback path for Redis
-   * 8.0.0–8.0.2 where VSIM rejects the WITHATTRIBS option.
+   * Back-fill the `attributes` field on each item by issuing one VGETATTR
+   * per element in a single pipeline. Used by `getElements` (VRANGE /
+   * VRANDMEMBER don't return attributes) and as the fallback path of
+   * `similaritySearch` on Redis 8.0.0–8.0.2 where VSIM rejects WITHATTRIBS.
    *
    * Mutates `matches` in place. Per-element errors are swallowed (logged at
-   * debug) so a single failing VGETATTR cannot drop the whole search reply;
+   * debug) so a single failing VGETATTR cannot drop the whole reply;
    * elements without attributes simply keep `attributes` undefined.
    */
   private async fetchAttributesForMatches(

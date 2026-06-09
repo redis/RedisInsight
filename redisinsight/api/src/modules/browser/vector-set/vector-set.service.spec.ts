@@ -320,6 +320,11 @@ describe('VectorSetService', () => {
   });
 
   describe('getElements', () => {
+    const mockAttributePipelineReply = mockElementNames.map((_, i) => [
+      null,
+      i === 0 ? '{"color":"red"}' : null,
+    ]);
+
     beforeEach(() => {
       client.isFeatureSupported = jest.fn().mockResolvedValue(true);
 
@@ -340,6 +345,10 @@ describe('VectorSetService', () => {
           mockDto.count,
         ])
         .mockResolvedValue(mockElementNames);
+
+      client.sendPipeline = jest
+        .fn()
+        .mockResolvedValue(mockAttributePipelineReply);
     });
 
     it('should get elements successfully', async () => {
@@ -358,9 +367,21 @@ describe('VectorSetService', () => {
         mockDto.end,
         mockDto.count,
       ]);
+      expect(client.sendPipeline).toHaveBeenCalledWith(
+        mockElementNames.map((name) => [
+          BrowserToolVectorSetCommands.VGetAttr,
+          mockDto.keyName,
+          name,
+        ]),
+      );
       expect(result.keyName).toEqual(mockDto.keyName);
       expect(result.total).toEqual(mockElements.length);
-      expect(result.elementNames).toHaveLength(mockElements.length);
+      expect(result.elements).toHaveLength(mockElements.length);
+      expect(Buffer.from(result.elements[0].name as any).toString()).toEqual(
+        mockElementNames[0],
+      );
+      expect(result.elements[0].attributes).toEqual('{"color":"red"}');
+      expect(result.elements[1].attributes).toBeUndefined();
       expect(result.isPaginationSupported).toBe(true);
     });
 
@@ -415,8 +436,9 @@ describe('VectorSetService', () => {
       );
 
       expect(result.total).toEqual(0);
-      expect(result.elementNames).toEqual([]);
+      expect(result.elements).toEqual([]);
       expect(result.nextCursor).toBeUndefined();
+      expect(client.sendPipeline).not.toHaveBeenCalled();
     });
 
     it('should throw BadRequestException for wrong type error', async () => {
@@ -467,9 +489,27 @@ describe('VectorSetService', () => {
         mockDto.keyName,
         mockDto.count,
       ]);
-      expect(result.elementNames).toHaveLength(mockElements.length);
+      expect(result.elements).toHaveLength(mockElements.length);
       expect(result.nextCursor).toBeUndefined();
       expect(result.isPaginationSupported).toBe(false);
+    });
+
+    it('should keep attributes undefined when VGETATTR fails for an element', async () => {
+      client.sendPipeline = jest
+        .fn()
+        .mockResolvedValue(
+          mockElementNames.map(() => [new Error('boom'), null]),
+        );
+
+      const result = await service.getElements(
+        mockBrowserClientMetadata,
+        mockDto,
+      );
+
+      expect(result.elements).toHaveLength(mockElementNames.length);
+      result.elements.forEach((el) => {
+        expect(el.attributes).toBeUndefined();
+      });
     });
   });
 

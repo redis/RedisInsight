@@ -32,5 +32,6 @@ export * from './redisearch'
 export * from './capability'
 export * from './rdi'
 export * from './bigString'
+export * from './vectorSet'
 
 export { Maybe, Nullable, RouterWithSubRoutes, getLetterByIndex }
