@@ -132,6 +132,26 @@ describe('SimilaritySearchForm', () => {
     ).toHaveTextContent('command is loading...')
   })
 
+  it('keeps the previous command visible while a refresh is in flight (no flicker)', () => {
+    mockedUseSimilaritySearch.mockReturnValue(
+      useSimilaritySearchResultFactory.build({
+        previewLoading: true,
+        preview: 'VSIM mykey ELE seed WITHSCORES WITHATTRIBS',
+      }),
+    )
+    renderComponent()
+    fillValidVector()
+    fireEvent.click(screen.getByTestId(`${TEST_ID}-preview-toggle`))
+
+    const previewText = screen.getByTestId(
+      'similarity-search-command-preview-text',
+    )
+    expect(previewText).toHaveTextContent(
+      'VSIM mykey ELE seed WITHSCORES WITHATTRIBS',
+    )
+    expect(previewText).not.toHaveTextContent('command is loading...')
+  })
+
   it('renders the hook-supplied preview verbatim once toggled on', () => {
     mockedUseSimilaritySearch.mockReturnValue(
       useSimilaritySearchResultFactory.build({
