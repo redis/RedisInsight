@@ -7,7 +7,7 @@ import {
 } from 'uiSrc/constants'
 import { KeyDetailsHeaderProps } from 'uiSrc/pages/browser/modules'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
-import { isDevVectorSetEnabledSelector } from 'uiSrc/slices/app/features'
+import { isVectorSetEnabledSelector } from 'uiSrc/slices/app/features'
 import { isTruncatedString } from 'uiSrc/utils'
 import TooLongKeyNameDetails from 'uiSrc/pages/browser/modules/key-details/components/too-long-key-name-details/TooLongKeyNameDetails'
 import ModulesTypeDetails from '../modules-type-details/ModulesTypeDetails'
@@ -30,7 +30,7 @@ export interface Props extends KeyDetailsHeaderProps {
 
 const DynamicTypeDetails = (props: Props) => {
   const { keyType: selectedKeyType, keyProp } = props
-  const isDevVectorSet = useAppSelector(isDevVectorSetEnabledSelector)
+  const isVectorSet = useAppSelector(isVectorSetEnabledSelector)
 
   const TypeDetails: any = {
     [KeyTypes.ZSet]: <ZSetDetails {...props} />,
@@ -40,7 +40,7 @@ const DynamicTypeDetails = (props: Props) => {
     [KeyTypes.List]: <ListDetails {...props} />,
     [KeyTypes.ReJSON]: <RejsonDetailsWrapper {...props} />,
     [KeyTypes.Stream]: <StreamDetails {...props} />,
-    ...(isDevVectorSet && {
+    ...(isVectorSet && {
       [KeyTypes.VectorSet]: <VectorSetDetails {...props} />,
     }),
   }

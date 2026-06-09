@@ -65,7 +65,7 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.vectorSearchV2]: {
         flag: false,
       },
-      [FeatureFlags.devVectorSet]: {
+      [FeatureFlags.vectorSet]: {
         flag: false,
       },
       [FeatureFlags.devArray]: {
@@ -230,13 +230,13 @@ export const isAzureEntraIdEnabledSelector = (state: RootState): boolean => {
   return azureEntraIdEnabled && envDependentEnabled
 }
 
-export const isDevVectorSetEnabledSelector = (state: RootState): boolean => {
+export const isVectorSetEnabledSelector = (state: RootState): boolean => {
   if (isDevelopment) {
     return true
   }
 
   const features = state.app.features.featureFlags.features
-  return features[FeatureFlags.devVectorSet]?.flag ?? false
+  return features[FeatureFlags.vectorSet]?.flag ?? false
 }
 
 export const isDevArrayEnabledSelector = (state: RootState): boolean => {

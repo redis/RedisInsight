@@ -100,7 +100,7 @@ export class FeatureFlagProvider {
       new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
     );
     this.strategies.set(
-      KnownFeatures.DevVectorSet,
+      KnownFeatures.VectorSet,
       new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
     );
     this.strategies.set(

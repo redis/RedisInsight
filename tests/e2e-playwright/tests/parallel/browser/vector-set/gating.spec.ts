@@ -4,7 +4,7 @@ import { DatabaseInstance } from 'e2eSrc/types';
 
 test.describe('Browser > Vector Set > Gating > Redis below 8.0, flag on', () => {
   // V8 factory points at redis:8.0-M02, which reports redis_version:7.9.225.
-  test.use({ featureFlags: { 'dev-vectorSet': true } });
+  test.use({ featureFlags: { vectorSet: true } });
 
   let database: DatabaseInstance;
 
@@ -45,7 +45,7 @@ test.describe('Browser > Vector Set > Gating > Redis below 8.0, flag on', () => 
 });
 
 test.describe('Browser > Vector Set > Gating > Redis 8.8.0, flag off', () => {
-  test.use({ featureFlags: { 'dev-vectorSet': false } });
+  test.use({ featureFlags: { vectorSet: false } });
 
   let database: DatabaseInstance;
 
