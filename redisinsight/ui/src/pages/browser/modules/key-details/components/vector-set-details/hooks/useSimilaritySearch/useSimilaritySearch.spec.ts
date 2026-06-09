@@ -262,7 +262,7 @@ describe('useSimilaritySearch', () => {
         })
 
         act(() => {
-          jest.advanceTimersByTime(300)
+          jest.advanceTimersByTime(700)
         })
 
         expect(fetchVectorSetSimilaritySearchPreview).not.toHaveBeenCalled()
@@ -316,7 +316,7 @@ describe('useSimilaritySearch', () => {
         unmount()
 
         act(() => {
-          jest.advanceTimersByTime(300)
+          jest.advanceTimersByTime(700)
         })
 
         expect(fetchVectorSetSimilaritySearchPreview).not.toHaveBeenCalled()
@@ -394,7 +394,7 @@ describe('useSimilaritySearch', () => {
         expect(fetchVectorSetSimilaritySearchPreview).not.toHaveBeenCalled()
 
         act(() => {
-          jest.advanceTimersByTime(300)
+          jest.advanceTimersByTime(700)
         })
 
         expect(fetchVectorSetSimilaritySearchPreview).toHaveBeenCalledTimes(1)
@@ -414,7 +414,7 @@ describe('useSimilaritySearch', () => {
 
         act(() => {
           result.current.runSimilaritySearchPreview(baseState())
-          jest.advanceTimersByTime(300)
+          jest.advanceTimersByTime(700)
         })
 
         expect(fetchVectorSetSimilaritySearchPreview).not.toHaveBeenCalled()
@@ -440,7 +440,7 @@ describe('useSimilaritySearch', () => {
             ...baseState(),
             vectorInput: '1, 2',
           })
-          jest.advanceTimersByTime(300)
+          jest.advanceTimersByTime(700)
         })
 
         expect(fetchVectorSetSimilaritySearchPreview).not.toHaveBeenCalled()
@@ -460,7 +460,7 @@ describe('useSimilaritySearch', () => {
             mode: SimilaritySearchMode.Element,
             elementInput: 'book-1',
           })
-          jest.advanceTimersByTime(300)
+          jest.advanceTimersByTime(700)
         })
 
         expect(fetchVectorSetSimilaritySearchPreview).toHaveBeenCalledWith(

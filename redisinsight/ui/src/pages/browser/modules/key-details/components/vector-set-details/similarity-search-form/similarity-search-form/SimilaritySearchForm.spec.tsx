@@ -119,7 +119,7 @@ describe('SimilaritySearchForm', () => {
     ).toBeDisabled()
   })
 
-  it('shows a loading placeholder while the preview is being fetched', () => {
+  it('shows the loading placeholder while the preview is being fetched', () => {
     mockedUseSimilaritySearch.mockReturnValue(
       useSimilaritySearchResultFactory.build({ previewLoading: true }),
     )
@@ -132,7 +132,7 @@ describe('SimilaritySearchForm', () => {
     ).toHaveTextContent('command is loading...')
   })
 
-  it('keeps the previous command visible while a refresh is in flight (no flicker)', () => {
+  it('shows the loading placeholder even when a previous command exists', () => {
     mockedUseSimilaritySearch.mockReturnValue(
       useSimilaritySearchResultFactory.build({
         previewLoading: true,
@@ -143,13 +143,9 @@ describe('SimilaritySearchForm', () => {
     fillValidVector()
     fireEvent.click(screen.getByTestId(`${TEST_ID}-preview-toggle`))
 
-    const previewText = screen.getByTestId(
-      'similarity-search-command-preview-text',
-    )
-    expect(previewText).toHaveTextContent(
-      'VSIM mykey ELE seed WITHSCORES WITHATTRIBS',
-    )
-    expect(previewText).not.toHaveTextContent('command is loading...')
+    expect(
+      screen.getByTestId('similarity-search-command-preview-text'),
+    ).toHaveTextContent('command is loading...')
   })
 
   it('renders the hook-supplied preview verbatim once toggled on', () => {

@@ -13,13 +13,11 @@ export const CommandPreview = ({
   loading = false,
 }: CommandPreviewProps) => {
   const isEmpty = command.length === 0
-  // Keep showing the previous command while a refresh is in flight so the
-  // preview doesn't flicker between the old text and a placeholder on every
-  // keystroke. Only fall back to the placeholder on the very first load,
-  // when there's nothing to show yet.
   let displayText = command
-  if (isEmpty) {
-    displayText = loading ? COMMAND_PREVIEW_LOADING_PLACEHOLDER : ''
+  if (loading) {
+    displayText = COMMAND_PREVIEW_LOADING_PLACEHOLDER
+  } else if (isEmpty) {
+    displayText = ''
   }
 
   return (
