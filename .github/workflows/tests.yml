@@ -44,9 +44,17 @@ on:
         default: false
         type: boolean
 
-# Cancel a previous run workflow
+# Cancel a previous run workflow.
+# Key by head identity (not github.ref) so the push-triggered run and the
+# pull_request-triggered run for the same branch share one concurrency group
+# and cancel each other, instead of running the full suite twice in parallel.
+# - push:         head_ref is empty -> falls back to ref_name (branch name)
+# - pull_request: head_ref is the source branch name
+# Qualify by the head repo so fork PRs that happen to share a branch name
+# (e.g. "main") don't collide and cancel each other's runs; for same-repo
+# events this resolves to github.repository, preserving the push<->PR merge.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.head.repo.full_name || github.repository }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
