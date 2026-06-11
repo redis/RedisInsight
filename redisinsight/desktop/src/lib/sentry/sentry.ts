@@ -211,7 +211,11 @@ export const triggerTestCrash = (): void => {
   }
 
   log.info('[Sentry] Triggering test crash for Electron main process')
-  throw new Error('Sentry test crash - Electron main process')
+  // NOTE: a synchronous `throw` from within a globalShortcut/native callback is
+  // swallowed by Electron's native dispatch and never reaches Sentry's
+  // uncaughtException handler. Capture explicitly so the event is reported
+  // without crashing the app.
+  captureException(new Error('Sentry test crash - Electron main process'))
 }
 
 /**
