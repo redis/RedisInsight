@@ -208,12 +208,20 @@ Scope for the security review (track as its own item):
 
 ---
 
-## 8. Open questions for Legal / Security
+## 8. Legal / Security — decisions
 
-1. **Legal sign-off on the Tier-1 allowlist** (§4) as a non-identifying, no-consent payload — same
-   theory as the existing `nonTracking` `APPLICATION_STARTED` event, carried in Sentry instead of
-   Segment. Is the allowlist acceptable, and is the fixed sentinel id sufficient?
-2. **IP address**: confirm "do not store IP" at the Sentry project level for both tiers. Any case
-   where IP retention is permitted (Tier 2 only)?
-3. **Data residency / processor**: is Sentry an approved sub-processor; which region/instance?
-4. **Retention**: crash-data retention period in the Sentry project.
+1. **Tier-1 allowlist as a no-consent payload** — ✅ **Accepted.** The §4 allowlist under the fixed
+   sentinel id is approved as a non-identifying, no-consent payload (same theory as the existing
+   `nonTracking` `APPLICATION_STARTED` event, carried in Sentry instead of Segment).
+2. **IP address** — ✅ **Not tracked.** IP must not be stored, for either tier. Enforce via
+   "Prevent Storing of IP Addresses" at the Sentry project level (§6) plus `sendDefaultPii: false`.
+3. **Data residency / region** — ⚠️ **Confirm region.** Sentry's data region is fixed at
+   org-creation and encoded in the DSN host (`*.ingest.sentry.io` = US, `*.ingest.de.sentry.io`
+   = EU). Confirm the org/project lives in the intended region (EU recommended for an EU/global
+   product) — it cannot be changed later without a new org. Confirm Sentry is an approved vendor and
+   listed as a sub-processor if the privacy policy enumerates them (lower-stakes given anonymous
+   Tier 1 + no IP).
+4. **Retention** — **90 days (Sentry SaaS default).** Adopted as the default for crash data; long
+   enough to correlate against a release, short enough to be minimal. Shortening (e.g. 30 days)
+   requires Enterprise custom retention or self-hosted; revisit only if Legal requires stricter
+   minimization.
