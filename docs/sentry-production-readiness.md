@@ -215,12 +215,17 @@ Scope for the security review (track as its own item):
    `nonTracking` `APPLICATION_STARTED` event, carried in Sentry instead of Segment).
 2. **IP address** — ✅ **Not tracked.** IP must not be stored, for either tier. Enforce via
    "Prevent Storing of IP Addresses" at the Sentry project level (§6) plus `sendDefaultPii: false`.
-3. **Data residency / region** — ⚠️ **Confirm region.** Sentry's data region is fixed at
-   org-creation and encoded in the DSN host (`*.ingest.sentry.io` = US, `*.ingest.de.sentry.io`
-   = EU). Confirm the org/project lives in the intended region (EU recommended for an EU/global
-   product) — it cannot be changed later without a new org. Confirm Sentry is an approved vendor and
-   listed as a sub-processor if the privacy policy enumerates them (lower-stakes given anonymous
-   Tier 1 + no IP).
+3. **Data residency / region** — ⚠️ **Currently US; Legal to confirm acceptable.** The
+   `redis-ltd` Sentry org is in the **US** region (verified via the DSN ingest host `*.ingest.us.sentry.io`;
+   `*.ingest.de.sentry.io` would be EU). Region is **fixed at org-creation** and cannot be changed
+   without a new org (new DSNs, CI secrets, source-map config) — so decide before launch, not after.
+   US residency is likely fine given the anonymized Tier-1 payload + no IP, but for an EU/global
+   product it is a data-residency decision for Legal: **accept US, or stand up an EU org now.** Also
+   confirm Sentry is an approved vendor / listed sub-processor if the privacy policy enumerates them.
+
+   *How to verify region:* project → **Client Keys (DSN)**
+   (`https://redis-ltd.sentry.io/settings/projects/redis-insight-electron/keys/`) and read the DSN
+   host (`.us.` vs `.de.`); or Organization Settings → **Data Storage Location**.
 4. **Retention** — **90 days (Sentry SaaS default).** Adopted as the default for crash data; long
    enough to correlate against a release, short enough to be minimal. Shortening (e.g. 30 days)
    requires Enterprise custom retention or self-hosted; revisit only if Legal requires stricter
