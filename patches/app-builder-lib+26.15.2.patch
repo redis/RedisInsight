@@ -1,0 +1,24 @@
+diff --git a/node_modules/app-builder-lib/out/targets/snap/coreLegacy.js b/node_modules/app-builder-lib/out/targets/snap/coreLegacy.js
+index 63dc31f..e74038f 100644
+--- a/node_modules/app-builder-lib/out/targets/snap/coreLegacy.js
++++ b/node_modules/app-builder-lib/out/targets/snap/coreLegacy.js
+@@ -321,6 +321,19 @@ class SnapCoreLegacy extends SnapTarget_1.SnapCore {
+         const commandContent = buildCommandShContent({ isTemplate, executableName: this.packager.executableName, extraAppArgs });
+         await (0, promises_1.writeFile)(commandWrapperPath, commandContent, { mode: 0o755 });
+         await (0, promises_1.chmod)(commandWrapperPath, 0o755);
++        // Template builds (mksquashfs, no snapcraft) assume the prebuilt snap template tarball ships
++        // the desktop-integration scripts at the snap root, but it does not — so command.sh fails at
++        // runtime with "$SNAP/desktop-init.sh: No such file or directory". Stage them next to command.sh
++        // at the stage root. No-template builds already copy these into scripts/ in buildWithoutTemplate.
++        if (isTemplate) {
++            const snapTemplateDir = (0, pathManager_1.getTemplatePath)("snap");
++            for (const script of ["desktop-init.sh", "desktop-common.sh", "desktop-gnome-specific.sh"]) {
++                const dest = path.join(stageDir, script);
++                await (0, promises_1.copyFile)(path.join(snapTemplateDir, script), dest);
++                // copyFile doesn't preserve mode; chmod 755 explicitly
++                await (0, promises_1.chmod)(dest, 0o755);
++            }
++        }
+     }
+     normalizePlugConfiguration(raw) {
+         if (raw == null) {
