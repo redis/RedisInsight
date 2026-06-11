@@ -10,6 +10,7 @@ import MonacoLanguages from 'uiSrc/components/monaco-laguages'
 import AppInit from 'uiSrc/components/init/AppInit'
 import { Page, PageBody } from 'uiSrc/components/base/layout/page'
 import { useSystemThemeListener } from 'uiSrc/services/hooks/useSystemThemeListener'
+import { useSentryConsentSync } from 'uiSrc/services/hooks/useSentryConsentSync'
 import { SentryErrorBoundary } from 'uiSrc/components/error-boundary'
 import { Pages, Theme } from './constants'
 import { themeService } from './services'
@@ -57,6 +58,7 @@ const App = ({ children }: { children?: ReactElement[] }) => {
     }
   }, [serverLoading])
   useSystemThemeListener()
+  useSentryConsentSync()
   return (
     <div className="main-container">
       <MonacoEnvironmentInitializer />

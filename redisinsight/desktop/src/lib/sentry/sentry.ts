@@ -2,66 +2,38 @@ import * as Sentry from '@sentry/electron/main'
 import { IPCMode } from '@sentry/electron/main'
 import { crashReporter } from 'electron'
 import log from 'electron-log'
+import { electronStore } from 'desktopSrc/lib/store/store'
+import { ElectronStorageItem } from 'uiSrc/electron/constants'
+import {
+  minimizeEvent,
+  scrubEvent,
+  scrubSensitiveData,
+} from 'uiSrc/services/sentry'
 import pkg from '../../../../package.json'
 import configInit from '../../../config.json'
-
-/**
- * Sensitive field names to scrub from error reports.
- * Fields containing these substrings (case-insensitive) will be redacted.
- */
-const SENSITIVE_FIELDS = [
-  'password',
-  'pass',
-  'secret',
-  'token',
-  'apiKey',
-  'api_key',
-  'privateKey',
-  'private_key',
-  'certificate',
-  'cert',
-  'clientCert',
-  'clientKey',
-  'caCert',
-  'sshPassphrase',
-  'sshPrivateKey',
-  'sentinelPassword',
-  'passphrase',
-]
 
 let initialized = false
 
 /**
- * Recursively scrub sensitive data from objects before sending to Sentry.
+ * Whether the user has granted analytics consent. Default-deny: until consent
+ * is known, Sentry runs in the anonymous (Tier 1) mode. Mutated by
+ * `setConsent` once the renderer reports the agreement; read by `beforeSend`
+ * per-event so the decision is made at send time.
+ *
+ * See docs/sentry-production-readiness.md (§3, §5).
  */
-const scrubSensitiveData = (obj: unknown): unknown => {
-  if (!obj || typeof obj !== 'object') {
-    return obj
-  }
+let consentGranted = false
 
-  if (Array.isArray(obj)) {
-    return obj.map((item) => scrubSensitiveData(item))
-  }
+/** Native crash uploader is start-once per session (Electron has no stop). */
+let crashReporterStarted = false
 
-  const scrubbed: Record<string, unknown> = {}
-
-  for (const [key, value] of Object.entries(obj)) {
-    const lowerKey = key.toLowerCase()
-    const isSensitive = SENSITIVE_FIELDS.some((field) =>
-      lowerKey.includes(field),
-    )
-
-    if (isSensitive) {
-      scrubbed[key] = '[REDACTED]'
-    } else if (typeof value === 'object' && value !== null) {
-      scrubbed[key] = scrubSensitiveData(value)
-    } else {
-      scrubbed[key] = value
-    }
-  }
-
-  return scrubbed
-}
+/**
+ * Read the consent cached in electron-store. Lets the main process pick the
+ * correct tier synchronously at boot (before the agreements DB is available).
+ * First-ever run has no value -> false -> Tier 1.
+ */
+const readCachedConsent = (): boolean =>
+  electronStore?.get(ElectronStorageItem.analyticsConsent) === true
 
 /**
  * Parse Sentry DSN to extract components for crashReporter.
@@ -86,6 +58,14 @@ const initCrashReporter = (dsn: string, environment: string): void => {
     return
   }
 
+  // Electron's crashReporter can only be started once per session and has no
+  // stop API. We therefore only ever start it (when consent is granted) and
+  // never restart; native-crash upload toggled off mid-session takes effect on
+  // the next launch (which reads cached consent). See readiness doc §5.
+  if (crashReporterStarted) {
+    return
+  }
+
   const dsnParts = parseDsn(dsn)
   if (!dsnParts) {
     log.warn('[Sentry] Failed to parse DSN for crashReporter')
@@ -106,6 +86,7 @@ const initCrashReporter = (dsn: string, environment: string): void => {
     },
   })
 
+  crashReporterStarted = true
   log.info('[Sentry] crashReporter configured for native crash reporting')
 }
 
@@ -131,35 +112,71 @@ export const initSentry = (): void => {
     return
   }
 
+  consentGranted = readCachedConsent()
+
   try {
     Sentry.init({
       dsn,
       environment,
       release: pkg.version,
       ipcMode: IPCMode.Classic,
+      // Do not attach IP / machine identifiers.
+      sendDefaultPii: false,
+      serverName: 'redacted',
+      // Breadcrumbs (console / requests / navigation) can carry sensitive data,
+      // so only keep them when consent is granted.
+      beforeBreadcrumb: (breadcrumb) => (consentGranted ? breadcrumb : null),
       beforeSend(event) {
-        if (event.extra) {
-          event.extra = scrubSensitiveData(event.extra) as Record<
-            string,
-            unknown
-          >
-        }
-        if (event.contexts) {
-          event.contexts = scrubSensitiveData(
-            event.contexts,
-          ) as typeof event.contexts
-        }
-        return event
+        const scrubbed = scrubEvent(event)
+        // No consent -> reduce to the anonymous Tier 1 allowlist.
+        return consentGranted ? scrubbed : minimizeEvent(scrubbed)
       },
     })
 
-    initCrashReporter(dsn, environment)
+    // Native minidumps cannot be scrubbed (they capture process memory), so the
+    // uploader is only started when consent is granted.
+    if (consentGranted) {
+      initCrashReporter(dsn, environment)
+    }
 
     initialized = true
-    log.info(`[Sentry] Initialized for environment: ${environment}`)
+    log.info(
+      `[Sentry] Initialized for environment: ${environment} (consent: ${consentGranted})`,
+    )
   } catch (error) {
     log.error('[Sentry] Failed to initialize:', error)
   }
+}
+
+/**
+ * Update analytics consent at runtime. Flips the tier used by `beforeSend`,
+ * persists the value for the next boot, starts the native crash uploader when
+ * consent is granted, and closes the Sentry client when it is revoked.
+ *
+ * See docs/sentry-production-readiness.md (§3, §5).
+ */
+export const setConsent = (granted: boolean): void => {
+  consentGranted = granted
+  electronStore?.set(ElectronStorageItem.analyticsConsent, granted)
+
+  if (!initialized) {
+    return
+  }
+
+  // On grant, start the native crash uploader (start-once). On revoke we do
+  // NOT close the client — Tier 1 anonymous reporting continues without
+  // consent; `beforeSend` minimizes every event while `consentGranted` is
+  // false. (The already-started crashReporter cannot be stopped mid-session;
+  // it respects cached consent on next launch.)
+  if (granted) {
+    const dsn = process.env.RI_SENTRY_ELECTRON_DSN
+    const environment = process.env.RI_SENTRY_ENVIRONMENT || 'development'
+    if (dsn) {
+      initCrashReporter(dsn, environment)
+    }
+  }
+
+  log.info(`[Sentry] Consent updated: ${granted}`)
 }
 
 /**

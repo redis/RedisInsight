@@ -6,6 +6,7 @@ enum IpcInvokeEvent {
   windowOpen = 'window:open',
   themeChange = 'theme:change',
   appRestart = 'app:restart',
+  setSentryConsent = 'sentry:set:consent',
 }
 
 enum IpcOnEvent {

@@ -1,0 +1,201 @@
+import type { Breadcrumb, Event, StackFrame } from '@sentry/core'
+
+/**
+ * Shared Sentry scrubbing / minimization helpers.
+ *
+ * Used by BOTH the Electron main process (`desktopSrc`, via the `uiSrc` alias)
+ * and the renderer (`uiSrc`) so the two layers cannot drift. Keep this module
+ * SDK-agnostic: it operates on the `@sentry/core` `Event` shape (type-only
+ * import) and must not import `@sentry/react`, `@sentry/electron`, Node, or
+ * browser globals.
+ *
+ * See docs/sentry-production-readiness.md (§4, §6).
+ */
+
+export const REDACTED = '[REDACTED]'
+
+/**
+ * Fixed anonymous id used for the no-consent (Tier 1) payload. Mirrors
+ * `NON_TRACKING_ANONYMOUS_ID` in
+ * `api/src/modules/analytics/analytics.service.ts` — every non-consenting user
+ * shares this id so individuals cannot be distinguished.
+ */
+export const NON_TRACKING_ANONYMOUS_ID = '00000000-0000-0000-0000-000000000001'
+
+/**
+ * Sensitive field-name substrings (case-insensitive). Any key containing one of
+ * these is redacted. Defense-in-depth — prefer also minimizing what is sent.
+ */
+export const SENSITIVE_FIELDS = [
+  'password',
+  'pass',
+  'passphrase',
+  'secret',
+  'token',
+  'apikey',
+  'api_key',
+  'privatekey',
+  'private_key',
+  'certificate',
+  'cert',
+  'clientcert',
+  'clientkey',
+  'cacert',
+  'sshpassphrase',
+  'sshprivatekey',
+  'sentinelpassword',
+  'credential',
+  'authorization',
+]
+
+/**
+ * Recursively redact sensitive values from an arbitrary object/array.
+ */
+export const scrubSensitiveData = (obj: unknown): unknown => {
+  if (!obj || typeof obj !== 'object') {
+    return obj
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map((item) => scrubSensitiveData(item))
+  }
+
+  const scrubbed: Record<string, unknown> = {}
+
+  for (const [key, value] of Object.entries(obj)) {
+    const lowerKey = key.toLowerCase()
+    const isSensitive = SENSITIVE_FIELDS.some((field) =>
+      lowerKey.includes(field),
+    )
+
+    if (isSensitive) {
+      scrubbed[key] = REDACTED
+    } else if (typeof value === 'object' && value !== null) {
+      scrubbed[key] = scrubSensitiveData(value)
+    } else {
+      scrubbed[key] = value
+    }
+  }
+
+  return scrubbed
+}
+
+/**
+ * Replace the OS-user segment of a filesystem path with `<user>` so stack-frame
+ * paths cannot leak the account/owner name (PII).
+ *   /Users/jane/...        -> /Users/<user>/...
+ *   /home/jane/...         -> /home/<user>/...
+ *   C:\Users\jane\...      -> C:\Users\<user>\...
+ */
+export const normalizePath = (filePath?: string): string | undefined => {
+  if (!filePath) return filePath
+  return filePath
+    .replace(/(\/(?:Users|home)\/)[^/]+/gi, '$1<user>')
+    .replace(/([A-Za-z]:\\Users\\)[^\\]+/gi, '$1<user>')
+}
+
+const normalizeFrame = (frame: StackFrame): StackFrame => ({
+  ...frame,
+  filename: normalizePath(frame.filename),
+  abs_path: normalizePath(frame.abs_path),
+})
+
+const normalizeFrames = (event: Event): void => {
+  event.exception?.values?.forEach((value) => {
+    if (value.stacktrace?.frames) {
+      value.stacktrace.frames = value.stacktrace.frames.map(normalizeFrame)
+    }
+  })
+}
+
+/**
+ * Applied to EVERY event (both tiers). Redacts sensitive fields from the
+ * structured bags, normalizes stack-frame paths, scrubs breadcrumb data, and
+ * strips host/IP identifiers that Sentry would otherwise attach.
+ */
+export const scrubEvent = <T extends Event>(event: T): T => {
+  if (event.extra) {
+    event.extra = scrubSensitiveData(event.extra) as Event['extra']
+  }
+  if (event.contexts) {
+    event.contexts = scrubSensitiveData(event.contexts) as Event['contexts']
+  }
+  if (event.request) {
+    event.request = scrubSensitiveData(event.request) as Event['request']
+  }
+  if (event.breadcrumbs) {
+    event.breadcrumbs = event.breadcrumbs.map(
+      (breadcrumb): Breadcrumb => ({
+        ...breadcrumb,
+        data: scrubSensitiveData(breadcrumb.data) as Breadcrumb['data'],
+      }),
+    )
+  }
+
+  normalizeFrames(event)
+
+  // Never report the machine hostname (often contains the owner's name).
+  event.server_name = undefined
+  // Never store the client IP.
+  if (event.user) {
+    delete event.user.ip_address
+  }
+
+  return event
+}
+
+/**
+ * Keep only function/module/location info from a stack frame; drop locals,
+ * surrounding source lines, and anything free-text.
+ */
+const minimizeFrame = (frame: StackFrame): StackFrame => ({
+  function: frame.function,
+  module: frame.module,
+  filename: normalizePath(frame.filename),
+  lineno: frame.lineno,
+  colno: frame.colno,
+  in_app: frame.in_app,
+})
+
+/**
+ * Reduce an event to the Tier 1 (no-consent) allowlist: error type + sanitized
+ * stack + build/OS metadata, under the shared anonymous id. Drops the message,
+ * breadcrumbs, request, extra, user identity, and device context.
+ *
+ * `scrubEvent` should be applied before this; `minimizeEvent` is the final
+ * gate for the no-consent path.
+ */
+export const minimizeEvent = <T extends Event>(event: T): T => {
+  const minimized: Event = {
+    event_id: event.event_id,
+    timestamp: event.timestamp,
+    platform: event.platform,
+    level: event.level,
+    release: event.release,
+    environment: event.environment,
+    exception: event.exception
+      ? {
+          values: event.exception.values?.map((value) => ({
+            type: value.type,
+            // Drop the message — it is free text and may contain data.
+            value: '',
+            mechanism: value.mechanism,
+            stacktrace: value.stacktrace?.frames
+              ? { frames: value.stacktrace.frames.map(minimizeFrame) }
+              : undefined,
+          })),
+        }
+      : undefined,
+    // Only non-identifying contexts: OS + runtime versions. Device context can
+    // carry the machine name / serial, so it is intentionally omitted.
+    contexts: {
+      os: event.contexts?.os,
+      runtime: event.contexts?.runtime,
+    },
+    tags: { ...event.tags, tier: 'anonymous' },
+    user: { id: NON_TRACKING_ANONYMOUS_ID },
+  }
+
+  // The minimized object is a deliberate subset of the incoming event type.
+  return minimized as unknown as T
+}
