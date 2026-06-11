@@ -174,7 +174,7 @@
     "deep-object-diff": "^1.1.9",
     "dotenv": "^16.4.5",
     "electron": "^40.10.2",
-    "electron-builder": "^26.15.2",
+    "electron-builder": "26.14.0",
     "electron-builder-notarize": "^1.5.2",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.2.0",
