@@ -133,7 +133,7 @@ class SentryErrorBoundary extends Component<Props, State> {
             }}
           >
             An unexpected error occurred. We've tracked it and will look into
-            it. Please refresh the page and try again.
+            it. Please reload the page and try again.
           </p>
           {error && (
             <pre
