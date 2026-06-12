@@ -78,6 +78,8 @@ export default {
   DATABASE_ALREADY_EXISTS: 'The database already exists.',
 
   INCORRECT_CLUSTER_CURSOR_FORMAT: 'Incorrect cluster cursor format.',
+  ARRAY_RANGE_TOO_LARGE: (max: number) =>
+    `Requested range exceeds the maximum of ${numberWithSpaces(max)} elements per call. Narrow the range and try again.`,
   REMOVING_MULTIPLE_ELEMENTS_NOT_SUPPORT: () =>
     'Removing multiple elements is available for Redis databases v. 6.2 or later.',
   SCAN_PER_KEY_TYPE_NOT_SUPPORT: () =>

@@ -1,21 +1,52 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
+import { RedisErrorCodes } from 'src/constants';
+import ERROR_MESSAGES from 'src/constants/error-messages';
 import { catchAclError, catchMultiTransactionError } from 'src/utils';
 import { ClientMetadata } from 'src/common/models';
-import {
-  ArrayCreationMode,
-  CreateArrayWithExpireDto,
-} from 'src/modules/browser/array/dto';
+import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import {
   BrowserToolArrayCommands,
   BrowserToolKeysCommands,
 } from 'src/modules/browser/constants/browser-tool-commands';
-import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import {
   RedisClient,
   RedisClientCommand,
   RedisClientCommandReply,
 } from 'src/modules/redis/client';
-import { checkIfKeyExists } from 'src/modules/browser/utils';
+import {
+  checkIfKeyExists,
+  checkIfKeyNotExists,
+} from 'src/modules/browser/utils';
+import { KeyDto } from 'src/modules/browser/keys/dto';
+import { ARRAY_RANGE_MAX_ELEMENTS } from 'src/modules/browser/array/constants';
+import {
+  ArrayCreationMode,
+  ArrayElement,
+  CreateArrayWithExpireDto,
+  GetArrayCountResponse,
+  GetArrayElementDto,
+  GetArrayElementResponse,
+  GetArrayLengthResponse,
+  GetArrayMultiElementsDto,
+  GetArrayMultiElementsResponse,
+  GetArrayNextIndexResponse,
+  GetArrayRangeDto,
+  GetArrayRangeResponse,
+  GetArrayScanDto,
+  GetArrayScanResponse,
+} from 'src/modules/browser/array/dto';
+
+// Integer/bulk replies for indexes and counts may arrive as Buffer, string,
+// number, or bigint depending on the client mode. Normalize to a decimal
+// string so the unsigned 64-bit contract is preserved on the wire.
+const toIndexString = (value: unknown): string => {
+  if (typeof value === 'string') return value;
+  if (typeof value === 'bigint') return value.toString();
+  if (typeof value === 'number') return String(value);
+  if (Buffer.isBuffer(value)) return value.toString('utf8');
+  return String(value);
+};
 
 @Injectable()
 export class ArrayService {
@@ -48,6 +79,56 @@ export class ArrayService {
         error,
         clientMetadata,
       );
+      throw catchAclError(error);
+    }
+  }
+
+  // Inputs are validated as canonical decimal strings ≤ 2^64-1, so BigInt()
+  // is safe. Ranges are reversible (start > end).
+  private assertRangeWithinCap(start: string, end: string): void {
+    const startBig = BigInt(start);
+    const endBig = BigInt(end);
+    const span =
+      startBig > endBig
+        ? startBig - endBig + BigInt(1)
+        : endBig - startBig + BigInt(1);
+
+    if (span > BigInt(ARRAY_RANGE_MAX_ELEMENTS)) {
+      throw new BadRequestException(
+        ERROR_MESSAGES.ARRAY_RANGE_TOO_LARGE(ARRAY_RANGE_MAX_ELEMENTS),
+      );
+    }
+  }
+
+  public async getRange(
+    clientMetadata: ClientMetadata,
+    dto: GetArrayRangeDto,
+  ): Promise<GetArrayRangeResponse> {
+    try {
+      this.logger.debug('Getting array range.', clientMetadata);
+      const { keyName, start, end } = dto;
+
+      this.assertRangeWithinCap(start, end);
+
+      const client =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+      await checkIfKeyNotExists(keyName, client);
+
+      const elements = (await client.sendCommand([
+        BrowserToolArrayCommands.ARGetRange,
+        keyName,
+        start,
+        end,
+      ])) as (Buffer | string | null)[];
+
+      this.logger.debug('Succeed to get array range.', clientMetadata);
+      return plainToInstance(GetArrayRangeResponse, { keyName, elements });
+    } catch (error) {
+      this.logger.error('Failed to get array range.', error, clientMetadata);
+      if (error instanceof BadRequestException) throw error;
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
       throw catchAclError(error);
     }
   }
@@ -91,5 +172,205 @@ export class ArrayService {
       keyName,
       ...elements.flatMap(({ index, value }) => [index, value]),
     ];
+  }
+
+  public async scan(
+    clientMetadata: ClientMetadata,
+    dto: GetArrayScanDto,
+  ): Promise<GetArrayScanResponse> {
+    try {
+      this.logger.debug('Scanning array range.', clientMetadata);
+      const { keyName, start, end, limit } = dto;
+
+      const client =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+      await checkIfKeyNotExists(keyName, client);
+
+      const baseArgs = [
+        BrowserToolArrayCommands.ARScan as string,
+        keyName,
+        start,
+        end,
+      ] as const;
+      const flat = (await client.sendCommand(
+        limit !== undefined ? [...baseArgs, 'LIMIT', limit] : [...baseArgs],
+      )) as (Buffer | string)[];
+
+      // Server returns a flat [index, value, index, value, ...] reply;
+      // pair them into structured elements for the UI.
+      const elements: ArrayElement[] = [];
+      for (let i = 0; i < flat.length; i += 2) {
+        elements.push({
+          index: toIndexString(flat[i]),
+          value: flat[i + 1],
+        });
+      }
+
+      this.logger.debug('Succeed to scan array range.', clientMetadata);
+      return plainToInstance(GetArrayScanResponse, { keyName, elements });
+    } catch (error) {
+      this.logger.error('Failed to scan array range.', error, clientMetadata);
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
+  public async getLength(
+    clientMetadata: ClientMetadata,
+    dto: KeyDto,
+  ): Promise<GetArrayLengthResponse> {
+    try {
+      this.logger.debug('Getting array length.', clientMetadata);
+      const { keyName } = dto;
+      const client =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+      await checkIfKeyNotExists(keyName, client);
+
+      const reply = await client.sendCommand([
+        BrowserToolArrayCommands.ARLen,
+        keyName,
+      ]);
+
+      this.logger.debug('Succeed to get array length.', clientMetadata);
+      return plainToInstance(GetArrayLengthResponse, {
+        keyName,
+        length: toIndexString(reply),
+      });
+    } catch (error) {
+      this.logger.error('Failed to get array length.', error, clientMetadata);
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
+  public async getCount(
+    clientMetadata: ClientMetadata,
+    dto: KeyDto,
+  ): Promise<GetArrayCountResponse> {
+    try {
+      this.logger.debug('Getting array count.', clientMetadata);
+      const { keyName } = dto;
+      const client =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+      await checkIfKeyNotExists(keyName, client);
+
+      const reply = await client.sendCommand([
+        BrowserToolArrayCommands.ARCount,
+        keyName,
+      ]);
+
+      this.logger.debug('Succeed to get array count.', clientMetadata);
+      return plainToInstance(GetArrayCountResponse, {
+        keyName,
+        count: toIndexString(reply),
+      });
+    } catch (error) {
+      this.logger.error('Failed to get array count.', error, clientMetadata);
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
+  public async getNextIndex(
+    clientMetadata: ClientMetadata,
+    dto: KeyDto,
+  ): Promise<GetArrayNextIndexResponse> {
+    try {
+      this.logger.debug('Getting array next index.', clientMetadata);
+      const { keyName } = dto;
+      const client =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+      await checkIfKeyNotExists(keyName, client);
+
+      const reply = await client.sendCommand([
+        BrowserToolArrayCommands.ARNext,
+        keyName,
+      ]);
+
+      this.logger.debug('Succeed to get array next index.', clientMetadata);
+      return plainToInstance(GetArrayNextIndexResponse, {
+        keyName,
+        index: toIndexString(reply),
+      });
+    } catch (error) {
+      this.logger.error(
+        'Failed to get array next index.',
+        error,
+        clientMetadata,
+      );
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
+  public async getElement(
+    clientMetadata: ClientMetadata,
+    dto: GetArrayElementDto,
+  ): Promise<GetArrayElementResponse> {
+    try {
+      this.logger.debug('Getting array element.', clientMetadata);
+      const { keyName, index } = dto;
+      const client =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+      await checkIfKeyNotExists(keyName, client);
+
+      const value = (await client.sendCommand([
+        BrowserToolArrayCommands.ARGet,
+        keyName,
+        index,
+      ])) as Buffer | string | null;
+
+      this.logger.debug('Succeed to get array element.', clientMetadata);
+      return plainToInstance(GetArrayElementResponse, { keyName, value });
+    } catch (error) {
+      this.logger.error('Failed to get array element.', error, clientMetadata);
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
+  public async getMultiElements(
+    clientMetadata: ClientMetadata,
+    dto: GetArrayMultiElementsDto,
+  ): Promise<GetArrayMultiElementsResponse> {
+    try {
+      this.logger.debug('Getting array multi elements.', clientMetadata);
+      const { keyName, indexes } = dto;
+      const client =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+      await checkIfKeyNotExists(keyName, client);
+
+      const elements = (await client.sendCommand([
+        BrowserToolArrayCommands.ARMGet,
+        keyName,
+        ...indexes,
+      ])) as (Buffer | string | null)[];
+
+      this.logger.debug('Succeed to get array multi elements.', clientMetadata);
+      return plainToInstance(GetArrayMultiElementsResponse, {
+        keyName,
+        elements,
+      });
+    } catch (error) {
+      this.logger.error(
+        'Failed to get array multi elements.',
+        error,
+        clientMetadata,
+      );
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
   }
 }

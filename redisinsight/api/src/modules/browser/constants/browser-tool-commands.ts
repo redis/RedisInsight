@@ -118,6 +118,12 @@ export enum BrowserToolArrayCommands {
   ARGet = 'arget',
   ArSet = 'arset',
   ArMSet = 'armset',
+  ARMGet = 'armget',
+  ARLen = 'arlen',
+  ARCount = 'arcount',
+  ARGetRange = 'argetrange',
+  ARScan = 'arscan',
+  ARNext = 'arnext',
 }
 
 export type BrowserToolCommands =
