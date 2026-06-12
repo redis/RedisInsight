@@ -120,6 +120,31 @@ jobs:
           sudo apt-get install -qy ruby ruby-dev build-essential
           sudo gem install --no-document fpm
 
+      # The snap target builds on core24 via snapcraft + the GNOME extension,
+      # which requires an isolated build environment (LXD). x64 only — snap is x64.
+      - name: Install snapcraft + LXD (for core24 snap build)
+        if: >-
+          matrix.arch == 'x64'
+          && steps.resolve-targets.outputs.should_build == 'true'
+          && (steps.resolve-targets.outputs.mode == 'default'
+              || contains(steps.resolve-targets.outputs.custom_targets, 'snap'))
+        run: |
+          sudo snap install snapcraft --classic
+          sudo snap install lxd
+          sudo lxd waitready --timeout=60
+          sudo lxd init --auto
+          sudo usermod -aG lxd "$USER"
+          # The build step runs in a shell started before the group change, so the
+          # new 'lxd' group isn't active there and snapcraft's pylxd can't reach the
+          # socket ("LXD requires additional permissions"). Grant the socket directly
+          # so snapcraft can connect without a re-login.
+          sudo chmod 0666 /var/snap/lxd/common/lxd/unix.socket
+          # GitHub runners run Docker, which sets the iptables FORWARD policy to DROP.
+          # That blocks the LXD bridge's NAT traffic, so the snapcraft build container
+          # has no internet ("A network related operation failed..."). Allow forwarding
+          # so the container can fetch the base, GNOME extension, and stage-packages.
+          sudo iptables -P FORWARD ACCEPT
+
       - name: Build linux packages (production)
         if: vars.ENV == 'production' && steps.resolve-targets.outputs.mode == 'default'
         run: yarn package:prod --linux ${{ matrix.defaultTargets }}
