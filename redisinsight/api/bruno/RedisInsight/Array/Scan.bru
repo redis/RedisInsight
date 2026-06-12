@@ -1,0 +1,63 @@
+meta {
+  name: Scan
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/array/scan
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "readings",
+    "start": "0",
+    "end": "6",
+    "limit": 100
+  }
+}
+
+docs {
+  # ARSCAN
+
+  Read a range of populated elements from an Array key, skipping empty slots.
+  Cheaper than `Get Range` for sparse arrays.
+
+  ## Request body
+
+  | Field     | Type             | Notes                                                    |
+  |-----------|------------------|----------------------------------------------------------|
+  | `keyName` | string           | The Array key name.                                      |
+  | `start`   | string           | Inclusive start index. Unsigned 64-bit integer as string.|
+  | `end`     | string           | Inclusive end index. Unsigned 64-bit integer as string.  |
+  | `limit`   | number, optional | Maps to ARSCAN `LIMIT`.                                  |
+
+  ## Response
+
+  ```
+  {
+    "keyName": "readings",
+    "elements": [
+      { "index": "0", "value": "20.1" },
+      { "index": "1", "value": "20.4" },
+      { "index": "2", "value": "20.9" },
+      { "index": "5", "value": "21.4" },
+      { "index": "6", "value": "21.9" }
+    ]
+  }
+  ```
+
+  ## Errors
+
+  | Status | When |
+  |--------|------|
+  | `400`  | Key holds a non-array type. |
+  | `403`  | User has no permission for `ARSCAN`. |
+  | `404`  | Key does not exist. |
+}
+
+settings {
+  encodeUrl: true
+}

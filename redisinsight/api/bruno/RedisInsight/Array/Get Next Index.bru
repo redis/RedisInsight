@@ -1,0 +1,45 @@
+meta {
+  name: Get Next Index
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/array/get-next-index
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "readings"
+  }
+}
+
+docs {
+  # ARNEXT
+
+  Returns the next index that `ARINSERT` would use. Read-only.
+  Unsigned 64-bit integer returned as a numeric string.
+
+  ## Response
+
+  ```
+  {
+    "keyName": "readings",
+    "index": "7"
+  }
+  ```
+
+  ## Errors
+
+  | Status | When |
+  |--------|------|
+  | `400`  | Key holds a non-array type. |
+  | `403`  | User has no permission for `ARNEXT`. |
+  | `404`  | Key does not exist. |
+}
+
+settings {
+  encodeUrl: true
+}

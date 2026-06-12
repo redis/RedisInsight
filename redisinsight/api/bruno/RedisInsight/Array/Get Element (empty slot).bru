@@ -1,0 +1,52 @@
+meta {
+  name: Get Element (empty slot)
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/array/get-element
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "readings",
+    "index": "3"
+  }
+}
+
+docs {
+  # ARGET — empty slot
+
+  Same endpoint as **Get Element**, pre-filled to query an **unset index**
+  on the seeded `readings` key. With the `Seed Sample Data` fixture
+  populating indexes `0`, `1`, `5`, asking for index `3` exercises the
+  gap-preserving semantics of Redis arrays.
+
+  ## Why this preset exists
+
+  A common reviewer assumption is "missing index → 404". For arrays it
+  isn't: the key exists and the array's logical length still spans the
+  requested index, so the API returns `200 OK` with a `null` `value`.
+  Only a missing **key** returns 404.
+
+  ## Response
+
+  ```
+  {
+    "keyName": "readings",
+    "value": null
+  }
+  ```
+
+  ## Compare with
+
+  - **Get Element** (`index: "1"`) → `"value": "20.4"` (slot is set).
+  - **Get Element** (`keyName: "no-such-key"`) → `404 Not Found` (key missing).
+}
+
+settings {
+  encodeUrl: true
+}

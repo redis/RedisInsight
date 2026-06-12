@@ -1,0 +1,4 @@
+DEL readings
+ARSET readings 0 "20.1"
+ARSET readings 1 "20.4"
+ARSET readings 5 "99.9"
