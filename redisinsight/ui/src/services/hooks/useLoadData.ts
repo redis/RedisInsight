@@ -10,7 +10,9 @@ interface UseLoadDataResult {
   error: Error | null
 }
 
-export const useLoadData = (): UseLoadDataResult => {
+export const useLoadData = (
+  endpoint: ApiEndpoints = ApiEndpoints.BULK_ACTIONS_IMPORT_VECTOR_COLLECTION,
+): UseLoadDataResult => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
 
@@ -23,27 +25,21 @@ export const useLoadData = (): UseLoadDataResult => {
       setError(null)
 
       try {
-        const { data } = await apiService.post(
-          getUrl(
-            instanceId,
-            ApiEndpoints.BULK_ACTIONS_IMPORT_VECTOR_COLLECTION,
-          ),
-          { collectionName },
-        )
+        const { data } = await apiService.post(getUrl(instanceId, endpoint), {
+          collectionName,
+        })
 
         return data
       } catch (err) {
         const error =
-          err instanceof Error
-            ? err
-            : new Error('Failed to import vector collection')
+          err instanceof Error ? err : new Error('Failed to import collection')
         setError(error)
         throw error
       } finally {
         setLoading(false)
       }
     },
-    [],
+    [endpoint],
   )
 
   return {

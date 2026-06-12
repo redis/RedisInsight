@@ -623,4 +623,83 @@ describe('BulkImportService', () => {
       ).rejects.toThrow('Invalid collection name');
     });
   });
+
+  describe('importArrayCollection', () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    beforeEach(() => {
+      (mockedFs.pathExists as jest.Mock).mockReset();
+      (mockedFs.createReadStream as jest.Mock).mockReset();
+    });
+
+    it('should import array collection successfully', async () => {
+      const spy = jest.spyOn(service, 'import');
+      spy.mockResolvedValue(mockImportResult);
+
+      (mockedFs.pathExists as jest.Mock).mockResolvedValue(true);
+      (mockedFs.createReadStream as jest.Mock).mockReturnValue(new Readable());
+
+      const result = await service.importArrayCollection(mockClientMetadata, {
+        collectionName: 'temperature-readings',
+      });
+
+      expect(mockedFs.pathExists).toHaveBeenCalledWith(
+        expect.stringContaining('array-collections/temperature-readings'),
+      );
+      expect(mockedFs.createReadStream).toHaveBeenCalledWith(
+        expect.stringContaining('array-collections/temperature-readings'),
+      );
+      expect(spy).toHaveBeenCalledWith(
+        mockClientMetadata,
+        expect.any(Readable),
+      );
+      expect(result).toEqual(mockImportResult);
+    });
+
+    it('should throw BadRequestException when collectionName file does not exist', async () => {
+      (mockedFs.pathExists as jest.Mock).mockResolvedValue(false);
+
+      await expect(
+        service.importArrayCollection(mockClientMetadata, {
+          collectionName: 'temperature-readings',
+        }),
+      ).rejects.toThrow(
+        'No data file found for collection: temperature-readings',
+      );
+
+      expect(mockedFs.pathExists).toHaveBeenCalledWith(
+        expect.stringContaining('array-collections/temperature-readings'),
+      );
+    });
+
+    it('should handle import errors', async () => {
+      const spy = jest.spyOn(service, 'import');
+      const importError = new Error('Import failed');
+      spy.mockRejectedValue(importError);
+
+      (mockedFs.pathExists as jest.Mock).mockResolvedValue(true);
+      (mockedFs.createReadStream as jest.Mock).mockReturnValue(new Readable());
+
+      await expect(
+        service.importArrayCollection(mockClientMetadata, {
+          collectionName: 'temperature-readings',
+        }),
+      ).rejects.toThrow('Import failed');
+
+      expect(spy).toHaveBeenCalledWith(
+        mockClientMetadata,
+        expect.any(Readable),
+      );
+    });
+
+    it('should throw BadRequestException when collectionName is not in allowed list', async () => {
+      await expect(
+        service.importArrayCollection(mockClientMetadata, {
+          collectionName: '../../etc/passwd', // malicious input
+        }),
+      ).rejects.toThrow('Invalid collection name');
+    });
+  });
 });
