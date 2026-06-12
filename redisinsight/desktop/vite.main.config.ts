@@ -4,6 +4,22 @@ import path from 'path'
 
 const apiDistPath = path.resolve(__dirname, '../api/dist/src')
 
+// Modules/patterns kept out of the main bundle. Rollup's `external` array only
+// accepts string | RegExp, so the predicate (api dist files) is folded into a
+// single function form instead of being mixed into the array.
+const externalModules = new Set<string>([
+  'electron',
+  'ts-node',
+  ...builtinModules,
+  ...builtinModules.map((m) => `node:${m}`),
+])
+const externalPatterns = [/^@nestjs\/.*/, /^@sentry\/.*/, /^src\//]
+
+const isExternal = (id: string): boolean =>
+  externalModules.has(id) ||
+  externalPatterns.some((pattern) => pattern.test(id)) ||
+  id.startsWith(apiDistPath)
+
 export default defineConfig({
   plugins: [
     {
@@ -37,16 +53,7 @@ export default defineConfig({
       fileName: () => 'index.js',
     },
     rollupOptions: {
-      external: [
-        'electron',
-        'ts-node',
-        ...builtinModules,
-        ...builtinModules.map((m) => `node:${m}`),
-        /^@nestjs\/.*/,
-        /^@sentry\/.*/,
-        /^src\//,
-        (id) => id.startsWith(apiDistPath),
-      ],
+      external: isExternal,
       output: {
         format: 'cjs',
         entryFileNames: '[name].js',
