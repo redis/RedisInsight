@@ -116,6 +116,8 @@ export enum BrowserToolVectorSetCommands {
 
 export enum BrowserToolArrayCommands {
   ARGet = 'arget',
+  ArSet = 'arset',
+  ArMSet = 'armset',
 }
 
 export type BrowserToolCommands =

@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash'
+import { faker } from '@faker-js/faker'
 import { AxiosError } from 'axios'
 import { configureStore } from '@reduxjs/toolkit'
 import { getConfig } from 'uiSrc/config'
@@ -10,6 +11,7 @@ import {
 } from 'uiSrc/constants'
 import {
   ListElementDestination,
+  CreateArrayWithExpireDto,
   CreateHashWithExpireDto,
   CreateListWithExpireDto,
   CreateRejsonRlWithExpireDto,
@@ -52,6 +54,7 @@ import reducer, {
   addKey,
   addKeyFailure,
   addKeySuccess,
+  addArrayKey,
   addListKey,
   addReJSONKey,
   addSetKey,
@@ -1756,6 +1759,33 @@ describe('keys slice', () => {
           addKeySuccess(),
           updateKeyList({ keyName: data.keyName, keyType: 'list' }),
           addMessageNotification(successMessages.ADDED_NEW_KEY(data.keyName)),
+        ]
+        expect(store.getActions()).toEqual(expectedActions)
+      })
+    })
+
+    describe('addArrayKey', () => {
+      it('success to add key', async () => {
+        // Arrange
+        const keyName = stringToBuffer(faker.string.alphanumeric(10))
+        const data = {
+          keyName,
+          mode: 'sparse',
+          elements: [{ index: '5', value: 'value' }],
+        } as unknown as CreateArrayWithExpireDto
+        const responsePayload = { data, status: 200 }
+
+        apiService.post = jest.fn().mockResolvedValue(responsePayload)
+
+        // Act
+        await store.dispatch<any>(addArrayKey(data, jest.fn()))
+
+        // Assert
+        const expectedActions = [
+          addKey(),
+          addKeySuccess(),
+          updateKeyList({ keyName: data.keyName, keyType: KeyTypes.Array }),
+          addMessageNotification(successMessages.ADDED_NEW_KEY(keyName)),
         ]
         expect(store.getActions()).toEqual(expectedActions)
       })
