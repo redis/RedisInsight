@@ -71,8 +71,40 @@ describe('RedisClient', () => {
       expect(result).toBe(false);
     });
 
-    it('returns false when COMMAND INFO throws (e.g., ACL-restricted)', async () => {
+    it('falls back to a version check when COMMAND INFO throws on a 8.8+ server', async () => {
+      // Reproduces the ACL-restricted user case: COMMAND INFO is forbidden
+      // (@slow / @connection) but @array data commands are permitted.
       client.call = jest.fn().mockRejectedValue(new Error('NOPERM'));
+      client.getInfo = jest
+        .fn()
+        .mockResolvedValue({ server: { redis_version: '8.8.0' } });
+
+      const result = await callRealIsFeatureSupported(
+        client,
+        RedisFeature.ArrayCommands,
+      );
+
+      expect(result).toBe(true);
+    });
+
+    it('returns false when COMMAND INFO throws on a pre-8.8 server', async () => {
+      client.call = jest.fn().mockRejectedValue(new Error('NOPERM'));
+      client.getInfo = jest
+        .fn()
+        .mockResolvedValue({ server: { redis_version: '8.4.0' } });
+
+      const result = await callRealIsFeatureSupported(
+        client,
+        RedisFeature.ArrayCommands,
+      );
+
+      expect(result).toBe(false);
+    });
+
+    it('returns false when COMMAND INFO throws and the server version is unknown', async () => {
+      client.call = jest.fn().mockRejectedValue(new Error('NOPERM'));
+      // Default MockRedisClient.getInfo resolves to undefined, leaving the
+      // probe with no fallback signal.
 
       const result = await callRealIsFeatureSupported(
         client,

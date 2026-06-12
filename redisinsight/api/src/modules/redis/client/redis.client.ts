@@ -192,9 +192,9 @@ export abstract class RedisClient extends EventEmitter2 {
         // VSIM WITHATTRIBS option is broken on 8.0.0–8.0.2 and was fixed in 8.0.3
         return this.isRedisVersionAtLeast('8.0.3');
       case RedisFeature.ArrayCommands:
-        // @array command group is preview-status in Redis 8.8+. Some 8.8.0+
-        // builds may omit it, so probe via COMMAND INFO rather than relying on
-        // the version string alone.
+        // @array command group is preview-status in Redis 8.8+. Probe via
+        // COMMAND INFO because some 8.8.0+ builds may omit the group; fall
+        // back to a version check if the probe itself is not allowed.
         return this.isArrayCommandGroupSupported();
       default:
         return false;
@@ -215,7 +215,14 @@ export abstract class RedisClient extends EventEmitter2 {
       this._arrayCommandGroupSupported =
         Array.isArray(reply) && reply.some((info) => info != null);
     } catch (e) {
-      this._arrayCommandGroupSupported = false;
+      // COMMAND INFO is categorised under @slow / @connection in Redis ACL,
+      // so a least-privilege user with only data-command access can still
+      // run @array commands but cannot run the probe. Fall back to a
+      // version check so we don't misclassify supported servers as
+      // unsupported; this matches how every other RedisFeature case resolves
+      // support today.
+      this._arrayCommandGroupSupported =
+        await this.isRedisVersionAtLeast('8.8');
     }
 
     return this._arrayCommandGroupSupported;
