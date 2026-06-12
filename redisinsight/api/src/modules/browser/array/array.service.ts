@@ -192,17 +192,34 @@ export class ArrayService {
         start,
         end,
       ] as const;
-      const flat = (await client.sendCommand(
+      const reply = (await client.sendCommand(
         limit !== undefined ? [...baseArgs, 'LIMIT', limit] : [...baseArgs],
-      )) as (Buffer | string)[];
+      )) as unknown[];
 
-      // Server returns a flat [index, value, index, value, ...] reply;
-      // pair them into structured elements for the UI.
+      // ARSCAN's wire shape varies by client: some clients surface a flat
+      // [index, value, index, value, ...] reply, others group it into
+      // [[index, value], [index, value], ...]. Detect by sniffing the first
+      // element and normalize both into pairs. Malformed pairs (missing
+      // half) are dropped to honor the "populated-only" contract —
+      // JSON.stringify would otherwise drop an undefined value and reach
+      // the client as `{ index }` with no value.
+      const pairs: Array<[unknown, unknown]> = [];
+      if (Array.isArray(reply[0])) {
+        for (const entry of reply as unknown[][]) {
+          if (entry?.length >= 2) pairs.push([entry[0], entry[1]]);
+        }
+      } else {
+        for (let i = 0; i < reply.length; i += 2) {
+          pairs.push([reply[i], reply[i + 1]]);
+        }
+      }
+
       const elements: ArrayElement[] = [];
-      for (let i = 0; i < flat.length; i += 2) {
+      for (const [rawIndex, value] of pairs) {
+        if (rawIndex == null || value == null) continue;
         elements.push({
-          index: toIndexString(flat[i]),
-          value: flat[i + 1],
+          index: toIndexString(rawIndex),
+          value: value as Buffer | string,
         });
       }
 

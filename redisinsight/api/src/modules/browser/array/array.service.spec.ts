@@ -298,6 +298,52 @@ describe('ArrayService', () => {
       expect(result.elements).toHaveLength(1);
     });
 
+    it('should also accept the nested [[index, value], ...] reply shape', async () => {
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([
+          BrowserToolArrayCommands.ARScan,
+          mockGetArrayScanDto.keyName,
+          mockGetArrayScanDto.start,
+          mockGetArrayScanDto.end,
+        ])
+        .mockResolvedValue([
+          [Buffer.from('0'), mockArrayElement1],
+          [Buffer.from('1'), Buffer.from('20.4')],
+        ] as unknown as (Buffer | string)[]);
+
+      const result = await service.scan(
+        mockBrowserClientMetadata,
+        mockGetArrayScanDto,
+      );
+      expect(result.elements).toHaveLength(2);
+      expect(result.elements[0].index).toBe('0');
+      expect(result.elements[1].index).toBe('1');
+    });
+
+    it('should drop pairs whose value or index is null/undefined', async () => {
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([
+          BrowserToolArrayCommands.ARScan,
+          mockGetArrayScanDto.keyName,
+          mockGetArrayScanDto.start,
+          mockGetArrayScanDto.end,
+        ])
+        .mockResolvedValue([
+          Buffer.from('0'),
+          mockArrayElement1,
+          Buffer.from('1'),
+          null,
+          Buffer.from('2'),
+        ] as (Buffer | string | null)[]);
+
+      const result = await service.scan(
+        mockBrowserClientMetadata,
+        mockGetArrayScanDto,
+      );
+      expect(result.elements).toHaveLength(1);
+      expect(result.elements[0].index).toBe('0');
+    });
+
     it('should reject when key does not exist', async () => {
       when(mockStandaloneRedisClient.sendCommand)
         .calledWith([BrowserToolKeysCommands.Exists, mockKeyDto.keyName])
