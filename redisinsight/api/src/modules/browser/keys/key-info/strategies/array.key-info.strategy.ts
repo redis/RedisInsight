@@ -1,0 +1,63 @@
+import {
+  GetKeyInfoResponse,
+  RedisDataType,
+} from 'src/modules/browser/keys/dto';
+import {
+  BrowserToolArrayCommands,
+  BrowserToolKeysCommands,
+} from 'src/modules/browser/constants/browser-tool-commands';
+import { RedisString } from 'src/common/constants';
+import { KeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/key-info.strategy';
+import { RedisClient } from 'src/modules/redis/client';
+import { MAX_KEY_SIZE } from 'src/modules/browser/keys/key-info/constants';
+
+/**
+ * Key-info strategy for the Array data type. Returns the standard
+ * TTL / size / length triple plus a `count` field carrying the number of
+ * populated slots (ARCOUNT). Length reflects total addressable slots
+ * (ARLEN, including gaps); count reflects only the populated ones — the
+ * two diverge for sparse arrays and the View tab surfaces both.
+ */
+export class ArrayKeyInfoStrategy extends KeyInfoStrategy {
+  public async getInfo(
+    client: RedisClient,
+    key: RedisString,
+    type: string,
+    includeSize: boolean,
+  ): Promise<GetKeyInfoResponse> {
+    this.logger.debug(`Getting ${RedisDataType.Array} type info.`);
+
+    if (includeSize !== false) {
+      const [
+        [, ttl = null],
+        [, length = null],
+        [, count = null],
+        [, size = null],
+      ] = (await client.sendPipeline([
+        [BrowserToolKeysCommands.Ttl, key],
+        [BrowserToolArrayCommands.ARLen, key],
+        [BrowserToolArrayCommands.ARCount, key],
+        [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],
+      ])) as [any, any][];
+
+      return { name: key, type, ttl, size, length, count };
+    }
+
+    const [[, ttl = null], [, length = null], [, count = null]] =
+      (await client.sendPipeline([
+        [BrowserToolKeysCommands.Ttl, key],
+        [BrowserToolArrayCommands.ARLen, key],
+        [BrowserToolArrayCommands.ARCount, key],
+      ])) as [any, any][];
+
+    let size = -1;
+    if (length < MAX_KEY_SIZE) {
+      const sizeData = (await client.sendPipeline([
+        [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],
+      ])) as [any, number][];
+      size = sizeData && sizeData[0] && sizeData[0][1];
+    }
+
+    return { name: key, type, ttl, size, length, count };
+  }
+}

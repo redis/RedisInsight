@@ -45,4 +45,11 @@ export class GetKeyInfoResponse {
     description: 'The vector dimensions for vector set keys.',
   })
   vectorDim?: number;
+
+  @ApiPropertyOptional({
+    type: Number,
+    description:
+      'The populated element count for array keys (excludes empty slots).',
+  })
+  count?: number;
 }

@@ -46,9 +46,18 @@ export abstract class IoredisClient extends RedisClient {
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VSetAttr);
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VRem);
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VSim);
-    // Array commands
+    // Array commands — registered so they can be issued via the pipeline
+    // path (which maps commands to prototype methods); sendCommand works
+    // without registration but sendPipeline does not.
     client.addBuiltinCommand(BrowserToolArrayCommands.ArSet);
     client.addBuiltinCommand(BrowserToolArrayCommands.ArMSet);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARGet);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARMGet);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARLen);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARCount);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARGetRange);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARScan);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ARNext);
   }
 
   static prepareCommandOptions(options: IRedisClientCommandOptions): any {
