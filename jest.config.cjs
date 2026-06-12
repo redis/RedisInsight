@@ -16,6 +16,7 @@ module.exports = {
     'uiSrc/(.*)': '<rootDir>/redisinsight/ui/src/$1',
     '^apiClient$': '<rootDir>/redisinsight/api-client',
     'apiClient/(.*)': '<rootDir>/redisinsight/api-client/$1',
+    '^riShared/(.*)$': '<rootDir>/redisinsight/api/src/ri-shared/$1',
     '@redislabsdev/redis-ui-components': '@redis-ui/components',
     '@redislabsdev/redis-ui-styles': '@redis-ui/styles',
     '@redislabsdev/redis-ui-icons': '@redis-ui/icons',

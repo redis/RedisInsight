@@ -3,10 +3,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import {
-  ARRAY_INDEX_MAX,
-  parseArrayIndex,
-} from 'src/common/utils/array-index.helper';
+import { ARRAY_INDEX_MAX, parseArrayIndex } from 'src/common/utils';
 
 @ValidatorConstraint({ name: 'ArrayIndexValidator', async: false })
 export class ArrayIndexValidator implements ValidatorConstraintInterface {
