@@ -142,8 +142,8 @@ class ErrorBoundary extends Component<Props, State> {
               color: palette.subdued,
             }}
           >
-            An unexpected error occurred. We've tracked it and will look into
-            it. Please refresh the page and try again.
+            An unexpected error occurred. We've been notified about the issue.
+            Please reload the page and try again.
           </p>
           {error && (
             <pre
