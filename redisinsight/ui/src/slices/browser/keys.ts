@@ -54,6 +54,7 @@ import {
 } from './zset'
 import { fetchSetMembers, refreshSetMembersAction } from './set'
 import { fetchVectorSetElements } from './vectorSet'
+import { refreshArray } from './array'
 import { fetchReJSON, setEditorType, setIsWithinThreshold } from './rejson'
 import {
   setHashInitialState,
@@ -168,6 +169,7 @@ export const initialKeyInfo = {
   length: 0,
   quantType: undefined,
   vectorDim: undefined,
+  count: undefined,
 }
 
 const getInitialSelectedKeyState = (state: KeysStore) => ({
@@ -1615,6 +1617,10 @@ export function refreshKey(
       }
       case KeyTypes.VectorSet: {
         dispatch(fetchVectorSetElements({ key, resetData }))
+        break
+      }
+      case KeyTypes.Array: {
+        dispatch(refreshArray(key))
         break
       }
       default:

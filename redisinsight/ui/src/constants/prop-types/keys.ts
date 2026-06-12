@@ -10,6 +10,7 @@ export interface IKeyPropTypes {
   length: number
   quantType?: string
   vectorDim?: number
+  count?: number
 }
 
 export interface IFetchKeyArgs {

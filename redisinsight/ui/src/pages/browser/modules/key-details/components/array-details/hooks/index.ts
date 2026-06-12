@@ -1,0 +1,1 @@
+export { useArrayRangeQuery } from './useArrayRangeQuery'

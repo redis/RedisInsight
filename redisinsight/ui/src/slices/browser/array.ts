@@ -288,6 +288,35 @@ export function fetchArrayElement(
   }
 }
 
+/**
+ * Reloads the array's currently-displayed surface in response to the
+ * header's refresh button (dispatched via `refreshKey` in
+ * `slices/browser/keys`). Refetches the default range plus length/count;
+ * keeps `resetData: false` so the table doesn't flash through an empty
+ * loading state.
+ */
+/** Inclusive default range bounds for the View tab. Mirrored client-side in
+ * `pages/.../array-details/constants.ts`; kept duplicated here so the slice
+ * stays free of UI-layer imports.
+ */
+const DEFAULT_REFRESH_START = '0'
+const DEFAULT_REFRESH_END = '9'
+
+export function refreshArray(key: RedisString) {
+  return async (dispatch: AppDispatch) => {
+    dispatch(fetchArrayLength(key))
+    dispatch(fetchArrayCount(key))
+    dispatch(
+      fetchArrayRange({
+        key,
+        start: DEFAULT_REFRESH_START,
+        end: DEFAULT_REFRESH_END,
+        resetData: false,
+      }),
+    )
+  }
+}
+
 export function fetchArrayMultiElements(
   params: FetchArrayMultiElementsParams,
   onSuccess?: (response: GetArrayMultiElementsResponse) => void,
