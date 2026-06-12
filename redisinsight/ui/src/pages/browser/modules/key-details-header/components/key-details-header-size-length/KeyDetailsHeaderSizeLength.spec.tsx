@@ -162,4 +162,48 @@ describe('KeyDetailsHeaderSizeLength', () => {
       'Vector dim: 0',
     )
   })
+
+  it('should render count when provided (Array key type)', () => {
+    mockSelectedKeyDataSelector.mockReturnValueOnce({
+      type: KeyTypes.Array,
+      size: 1024,
+      length: 10,
+      count: 7,
+    })
+
+    render(
+      <KeyDetailsHeaderSizeLength {...instance(mockedProps)} width={1920} />,
+    )
+
+    expect(screen.getByTestId('key-count-text')).toHaveTextContent('Count: 7')
+  })
+
+  it('should not render count when not provided', () => {
+    mockSelectedKeyDataSelector.mockReturnValueOnce({
+      type: KeyTypes.Array,
+      size: 1024,
+      length: 10,
+    })
+
+    render(
+      <KeyDetailsHeaderSizeLength {...instance(mockedProps)} width={1920} />,
+    )
+
+    expect(screen.queryByTestId('key-count-text')).not.toBeInTheDocument()
+  })
+
+  it('should render count when value is 0', () => {
+    mockSelectedKeyDataSelector.mockReturnValueOnce({
+      type: KeyTypes.Array,
+      size: 1024,
+      length: 10,
+      count: 0,
+    })
+
+    render(
+      <KeyDetailsHeaderSizeLength {...instance(mockedProps)} width={1920} />,
+    )
+
+    expect(screen.getByTestId('key-count-text')).toHaveTextContent('Count: 0')
+  })
 })
