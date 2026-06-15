@@ -13,12 +13,6 @@ const reportToSentry = (error: Error, errorInfo: ErrorInfo): void => {
   })
 }
 
-/**
- * Error boundary that reports caught errors to Sentry. The catch + fallback UI
- * live in the generic `ErrorBoundary`; this only injects the reporting
- * side-effect. `ErrorBoundary` invokes `onError` inside a try/catch, so a
- * Sentry failure can never stop the fallback from rendering.
- */
 const SentryErrorBoundary = ({ children, fallback }: Props): JSX.Element => (
   <ErrorBoundary fallback={fallback} onError={reportToSentry}>
     {children}

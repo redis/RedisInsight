@@ -3,11 +3,6 @@ import { ErrorInfo, ReactNode } from 'react'
 export interface ErrorBoundaryProps {
   children: ReactNode
   fallback?: ReactNode
-  /**
-   * Reporting side-effect invoked when an error is caught. Called inside a
-   * try/catch so a failure in the handler (e.g. the reporting SDK throwing)
-   * can never prevent the fallback UI from rendering.
-   */
   onError?: (error: Error, errorInfo: ErrorInfo) => void
 }
 
