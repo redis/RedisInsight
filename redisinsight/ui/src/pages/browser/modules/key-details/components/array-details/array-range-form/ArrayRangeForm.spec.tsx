@@ -60,10 +60,39 @@ describe('ArrayRangeForm', () => {
     expect(screen.getByTestId('array-range-form-run')).toBeDisabled()
   })
 
-  it('disables Run when end < start', () => {
+  it.each(['007', ' 7 ', '7.0', '1e3'])(
+    'disables Run for non-canonical index input %p (matches backend @IsArrayIndex)',
+    (input) => {
+      renderComponent({ start: input })
+
+      expect(screen.getByTestId('array-range-form-run')).toBeDisabled()
+    },
+  )
+
+  it('disables Run when end < start (backend rejects reversed ranges)', () => {
     renderComponent({ start: '500', end: '100' })
 
     expect(screen.getByTestId('array-range-form-run')).toBeDisabled()
+  })
+
+  it('quotes key names containing whitespace in the command preview', () => {
+    renderComponent({ keyName: 'a b' })
+
+    fireEvent.click(screen.getByTestId(PREVIEW_TOGGLE_TESTID))
+
+    expect(screen.getByTestId(PREVIEW_TEXT_TESTID)).toHaveTextContent(
+      /ARGETRANGE\s+"a b"\s+0\s+9/,
+    )
+  })
+
+  it('escapes embedded quotes/backslashes in keys for the command preview', () => {
+    renderComponent({ keyName: 'a"b\\c' })
+
+    fireEvent.click(screen.getByTestId(PREVIEW_TOGGLE_TESTID))
+
+    expect(screen.getByTestId(PREVIEW_TEXT_TESTID)).toHaveTextContent(
+      /ARGETRANGE\s+"a\\"b\\\\c"\s+0\s+9/,
+    )
   })
 
   it('calls onRun when Run is clicked with a valid range', () => {

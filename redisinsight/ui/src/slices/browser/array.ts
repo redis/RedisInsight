@@ -20,6 +20,7 @@ import {
 } from 'uiSrc/utils'
 
 import {
+  ArrayActiveQuery,
   ArrayDataElement,
   StateArray,
   FetchArrayElementParams,
@@ -32,9 +33,21 @@ import { updateSelectedKeyRefreshTime } from './keys'
 import { AppDispatch, RootState } from '../store'
 import { addErrorNotification } from '../app/notifications'
 
+/** Inclusive default range bounds for the View tab. Mirrored in
+ * `pages/.../array-details/constants.ts`; kept duplicated here so the slice
+ * stays free of UI-layer imports.
+ */
+const DEFAULT_QUERY_START = '0'
+const DEFAULT_QUERY_END = '9'
+
 export const initialState: StateArray = {
   loading: false,
   error: '',
+  query: {
+    start: DEFAULT_QUERY_START,
+    end: DEFAULT_QUERY_END,
+    showEmpty: true,
+  },
   data: {
     keyName: '',
     length: '0',
@@ -125,6 +138,17 @@ const arraySlice = createSlice({
     ) => {
       state.data = { ...state.data, nextIndex: payload.index }
     },
+
+    /**
+     * Records the query that was just dispatched so the header refresh
+     * button can replay it instead of falling back to the default range.
+     */
+    setArrayActiveQuery: (
+      state,
+      { payload }: PayloadAction<ArrayActiveQuery>,
+    ) => {
+      state.query = payload
+    },
   },
 })
 
@@ -137,6 +161,7 @@ export const {
   loadArrayLengthSuccess,
   loadArrayCountSuccess,
   loadArrayNextIndexSuccess,
+  setArrayActiveQuery,
 } = arraySlice.actions
 
 export const arraySelector = (state: RootState) => state.browser.array
@@ -156,6 +181,13 @@ const encodingParams = (state: RootState) => ({
 export function fetchArrayRange(params: FetchArrayRangeParams) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     dispatch(loadArrayRange(params.resetData))
+    dispatch(
+      setArrayActiveQuery({
+        start: params.start,
+        end: params.end,
+        showEmpty: true,
+      }),
+    )
     try {
       const state = stateInit()
       const { data, status } = await apiService.post<GetArrayRangeResponse>(
@@ -179,6 +211,13 @@ export function fetchArrayRange(params: FetchArrayRangeParams) {
 export function scanArrayRange(params: FetchArrayScanParams) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     dispatch(loadArrayRange(params.resetData))
+    dispatch(
+      setArrayActiveQuery({
+        start: params.start,
+        end: params.end,
+        showEmpty: false,
+      }),
+    )
     try {
       const state = stateInit()
       const { data, status } = await apiService.post<GetArrayScanResponse>(
@@ -291,29 +330,23 @@ export function fetchArrayElement(
 /**
  * Reloads the array's currently-displayed surface in response to the
  * header's refresh button (dispatched via `refreshKey` in
- * `slices/browser/keys`). Refetches the default range plus length/count;
- * keeps `resetData: false` so the table doesn't flash through an empty
- * loading state.
+ * `slices/browser/keys`). Replays whichever query the form last ran —
+ * range/scan and the user's bounds — so refresh doesn't silently swap
+ * the table for a different slice. Keeps `resetData: false` so the
+ * table doesn't flash through an empty loading state.
  */
-/** Inclusive default range bounds for the View tab. Mirrored client-side in
- * `pages/.../array-details/constants.ts`; kept duplicated here so the slice
- * stays free of UI-layer imports.
- */
-const DEFAULT_REFRESH_START = '0'
-const DEFAULT_REFRESH_END = '9'
-
 export function refreshArray(key: RedisString) {
-  return async (dispatch: AppDispatch) => {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    const { start, end, showEmpty } = stateInit().browser.array.query
+
     dispatch(fetchArrayLength(key))
     dispatch(fetchArrayCount(key))
-    dispatch(
-      fetchArrayRange({
-        key,
-        start: DEFAULT_REFRESH_START,
-        end: DEFAULT_REFRESH_END,
-        resetData: false,
-      }),
-    )
+
+    if (showEmpty) {
+      dispatch(fetchArrayRange({ key, start, end, resetData: false }))
+    } else {
+      dispatch(scanArrayRange({ key, start, end, resetData: false }))
+    }
   }
 }
 

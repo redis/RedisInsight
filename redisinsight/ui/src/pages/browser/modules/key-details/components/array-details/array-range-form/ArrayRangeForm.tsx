@@ -8,7 +8,7 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { Text } from 'uiSrc/components/base/text'
-import { isValidArrayIndex } from 'uiSrc/utils/arrayIndex'
+import { parseArrayIndex } from 'uiSrc/utils/arrayIndex'
 
 import { CommandPreview } from '../command-preview'
 import {
@@ -24,6 +24,16 @@ import {
 } from './ArrayRangeForm.constants'
 import { ArrayRangeFormProps } from './ArrayRangeForm.types'
 import * as S from './ArrayRangeForm.styles'
+
+// Wraps a Redis argument that may contain whitespace or quotes so the
+// preview text stays runnable when copied into CLI / Workbench. Mirrors
+// the same escaping rules the redis-cli parser applies to double-quoted
+// strings: backslash and double-quote get backslash-escaped.
+const quoteRedisArgument = (value: string): string => {
+  if (value.length === 0) return '""'
+  if (!/[\s"\\]/.test(value)) return value
+  return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+}
 
 /**
  * Range/scan query form for the array View tab. Lays out inputs above a
@@ -49,8 +59,14 @@ export const ArrayRangeForm = ({
 }: ArrayRangeFormProps) => {
   const [previewVisible, setPreviewVisible] = useState(false)
 
-  const startInvalid = !isValidArrayIndex(start)
-  const endInvalid = !isValidArrayIndex(end)
+  // Match the backend's @IsArrayIndex validator exactly: accept only
+  // canonical decimal strings (no leading zeros, no whitespace, etc.).
+  // Loose-acceptance values like "007" or " 7 " would pass `parseArrayIndex`
+  // but be rejected with a 400 once the request reaches the API.
+  const startInvalid = parseArrayIndex(start) !== start
+  const endInvalid = parseArrayIndex(end) !== end
+  // Reversed ranges (start > end) are rejected by the backend (matches
+  // every Redis range command). Surface the constraint inline.
   const orderInvalid =
     !startInvalid && !endInvalid && BigInt(start) > BigInt(end)
   const rangeInvalid = startInvalid || endInvalid || orderInvalid
@@ -65,7 +81,9 @@ export const ArrayRangeForm = ({
   const command = useMemo(() => {
     // Always surface the command verb so the preview is meaningful even
     // before a key is selected; substitute a placeholder for the key.
-    const name = keyName || '<key>'
+    // Quote the key so binary-unsafe names (whitespace, quotes) stay
+    // runnable when copied into CLI / Workbench.
+    const name = keyName ? quoteRedisArgument(keyName) : '<key>'
     const verb = showEmpty ? 'ARGETRANGE' : 'ARSCAN'
     return `${verb} ${name} ${start} ${end}`
   }, [keyName, start, end, showEmpty])

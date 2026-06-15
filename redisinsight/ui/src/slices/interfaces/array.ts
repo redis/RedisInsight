@@ -43,9 +43,23 @@ export interface ArrayData {
   elements: ArrayDataElement[]
 }
 
+/**
+ * Last query the user (or initial-load effect) actually executed. Tracked
+ * on the slice so the key-header refresh button can replay it instead of
+ * falling back to fixed defaults that ignore the form's current bounds /
+ * gap-mode toggle.
+ */
+export interface ArrayActiveQuery {
+  start: string
+  end: string
+  /** true → ARGETRANGE (gap-preserving); false → ARSCAN (populated-only). */
+  showEmpty: boolean
+}
+
 export interface StateArray {
   loading: boolean
   error: string
+  query: ArrayActiveQuery
   data: ArrayData
 }
 

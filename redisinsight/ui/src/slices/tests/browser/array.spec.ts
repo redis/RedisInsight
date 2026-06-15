@@ -5,12 +5,14 @@ import {
   cleanup,
   initialStateDefault,
   mockedStore,
+  mockStore,
 } from 'uiSrc/utils/test-utils'
 import { MOCK_TIMESTAMP } from 'uiSrc/mocks/data/dateNow'
 
 import reducer, {
   initialState,
   setArrayInitialState,
+  setArrayActiveQuery,
   loadArrayRange,
   loadArrayRangeSuccess,
   loadArrayRangeFailure,
@@ -27,6 +29,7 @@ import reducer, {
   fetchArrayNextIndex,
   fetchArrayElement,
   fetchArrayMultiElements,
+  refreshArray,
 } from '../../browser/array'
 import { updateSelectedKeyRefreshTime } from '../../browser/keys'
 import { addErrorNotification } from '../../app/notifications'
@@ -191,6 +194,7 @@ describe('array slice', () => {
 
         expect(store.getActions()).toEqual([
           loadArrayRange(undefined),
+          setArrayActiveQuery({ start: '0', end: '1', showEmpty: true }),
           loadArrayRangeSuccess({ start: '0', response: response.data }),
           updateSelectedKeyRefreshTime(MOCK_TIMESTAMP),
         ])
@@ -209,6 +213,7 @@ describe('array slice', () => {
 
         expect(store.getActions()).toEqual([
           loadArrayRange(undefined),
+          setArrayActiveQuery({ start: '0', end: '1', showEmpty: true }),
           addErrorNotification(rejected as IAddInstanceErrorPayload),
           loadArrayRangeFailure(errorMessage),
         ])
@@ -232,9 +237,81 @@ describe('array slice', () => {
 
         expect(store.getActions()).toEqual([
           loadArrayRange(undefined),
+          setArrayActiveQuery({ start: '0', end: '10', showEmpty: false }),
           loadArrayScanSuccess(response.data),
           updateSelectedKeyRefreshTime(MOCK_TIMESTAMP),
         ])
+      })
+    })
+
+    describe('refreshArray', () => {
+      // `mockedStore` snapshots `initialStateDefault` and ignores dispatched
+      // actions, so use the factory to seed the active query into state.
+      const storeWithQuery = (query: {
+        start: string
+        end: string
+        showEmpty: boolean
+      }) =>
+        mockStore({
+          ...initialStateDefault,
+          browser: {
+            ...initialStateDefault.browser,
+            array: { ...initialState, query },
+          },
+        })
+
+      it('replays the active range query (showEmpty: true → ARGETRANGE)', async () => {
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+        const local = storeWithQuery({
+          start: '5',
+          end: '15',
+          showEmpty: true,
+        })
+
+        await local.dispatch<any>(refreshArray(mockKey))
+
+        const rangeCall = (apiService.post as jest.Mock).mock.calls.find(
+          ([url]) => url.includes('array/get-range'),
+        )
+        expect(rangeCall?.[1]).toEqual({
+          keyName: mockKey,
+          start: '5',
+          end: '15',
+        })
+        expect(
+          (apiService.post as jest.Mock).mock.calls.find(([url]) =>
+            url.includes('array/scan'),
+          ),
+        ).toBeUndefined()
+      })
+
+      it('replays the active scan query (showEmpty: false → ARSCAN)', async () => {
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+        const local = storeWithQuery({
+          start: '5',
+          end: '15',
+          showEmpty: false,
+        })
+
+        await local.dispatch<any>(refreshArray(mockKey))
+
+        const scanCall = (apiService.post as jest.Mock).mock.calls.find(
+          ([url]) => url.includes('array/scan'),
+        )
+        expect(scanCall?.[1]).toEqual({
+          keyName: mockKey,
+          start: '5',
+          end: '15',
+        })
+        expect(
+          (apiService.post as jest.Mock).mock.calls.find(([url]) =>
+            url.includes('array/get-range'),
+          ),
+        ).toBeUndefined()
       })
     })
 
