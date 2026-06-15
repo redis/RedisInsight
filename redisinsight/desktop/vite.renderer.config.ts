@@ -26,7 +26,6 @@ export default defineConfig({
   resolve: {
     alias: {
       uiSrc: path.resolve(__dirname, '../ui/src'),
-      apiSrc: path.resolve(__dirname, '../api/src'),
     },
   },
   optimizeDeps: {

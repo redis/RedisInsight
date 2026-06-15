@@ -1,6 +1,6 @@
 import React from 'react'
 import { Redirect, Route } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { Pages } from 'uiSrc/constants'
 
@@ -9,7 +9,7 @@ interface IProps {
 }
 
 const ProtectedRoute = ({ children, ...rest }: IProps) => {
-  const { id: connected } = useSelector(connectedInstanceSelector)
+  const { id: connected } = useAppSelector(connectedInstanceSelector)
   return (
     <Route
       {...rest}

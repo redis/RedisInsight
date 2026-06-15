@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { isNull } from 'lodash'
 import styled from 'styled-components'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { formatLongName, isEqualBuffers, stringToBuffer } from 'uiSrc/utils'
 import InlineItemEditor from 'uiSrc/components/inline-item-editor/InlineItemEditor'
@@ -27,6 +27,10 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiTooltip } from 'uiSrc/components'
 import { CopyButton } from 'uiSrc/components/copy-button'
 import { TextInput } from 'uiSrc/components/base/inputs'
+import {
+  BrowserConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 import styles from './styles.module.scss'
 
 const StyledInputWrapper = styled(Row)`
@@ -49,20 +53,21 @@ export interface Props {
 const COPY_KEY_NAME_ICON = 'copyKeyNameIcon'
 
 const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
-  const { loading } = useSelector(selectedKeySelector)
+  const { loading } = useAppSelector(selectedKeySelector)
   const {
     ttl: ttlProp,
     type,
     nameString: keyProp,
     name: keyBuffer,
-  } = useSelector(selectedKeyDataSelector) ?? initialKeyInfo
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
-  const { viewType } = useSelector(keysSelector)
+  } = useAppSelector(selectedKeyDataSelector) ?? initialKeyInfo
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
+  const { viewType } = useAppSelector(keysSelector)
 
   const [key, setKey] = useState(keyProp)
   const [keyIsEditing, setKeyIsEditing] = useState(false)
   const [keyIsHovering, setKeyIsHovering] = useState(false)
   const [keyIsEditable, setKeyIsEditable] = useState(true)
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(() => {
     setKey(keyProp)
@@ -100,7 +105,21 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
       !isEqualBuffers(keyBuffer, newKeyBuffer) &&
       !isNull(keyProp)
     ) {
-      onEditKey(keyBuffer, newKeyBuffer, () => setKey(keyProp))
+      requestConfirmation({
+        title: 'Rename key on production database?',
+        actionDescription: (
+          <>
+            You are about to rename <strong>{keyProp}</strong> to{' '}
+            <strong>{key}</strong> on a production database.
+          </>
+        ),
+        confirmButtonText: 'Rename',
+        commandId: BrowserConfirmationCommandId.RenameKey,
+        disableConfirmationInput: true,
+        onConfirm: () =>
+          onEditKey(keyBuffer, newKeyBuffer, () => setKey(keyProp)),
+        onCancel: () => setKey(keyProp),
+      })
     }
   }
 

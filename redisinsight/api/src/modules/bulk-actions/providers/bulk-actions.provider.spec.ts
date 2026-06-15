@@ -2,6 +2,7 @@ import * as MockedSocket from 'socket.io-mock';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   mockBulkActionsAnalytics,
+  mockDatabase,
   mockDatabaseClientFactory,
   mockSessionMetadata,
 } from 'src/__mocks__';
@@ -65,6 +66,7 @@ describe('BulkActionsProvider', () => {
         mockSessionMetadata,
         mockCreateBulkActionDto,
         mockSocket1,
+        mockDatabase,
       );
 
       expect(bulkAction).toBeInstanceOf(BulkAction);
@@ -75,6 +77,7 @@ describe('BulkActionsProvider', () => {
           mockSessionMetadata,
           mockCreateBulkActionDto,
           mockSocket1,
+          mockDatabase,
         );
         fail();
       } catch (e) {
@@ -87,6 +90,7 @@ describe('BulkActionsProvider', () => {
         mockSessionMetadata,
         { ...mockCreateBulkActionDto, id: 'new one' },
         mockSocket1,
+        mockDatabase,
       );
 
       expect(service['bulkActions'].size).toEqual(2);
@@ -96,6 +100,7 @@ describe('BulkActionsProvider', () => {
         mockSessionMetadata,
         { ...mockCreateBulkActionDto, type: BulkActionType.Unlink },
         mockSocket1,
+        mockDatabase,
       );
 
       expect(bulkAction).toBeInstanceOf(BulkAction);
@@ -110,6 +115,7 @@ describe('BulkActionsProvider', () => {
             type: undefined,
           },
           mockSocket1,
+          mockDatabase,
         );
         fail();
       } catch (e) {
@@ -123,11 +129,13 @@ describe('BulkActionsProvider', () => {
         mockSessionMetadata,
         mockCreateBulkActionDto,
         mockSocket1,
+        mockDatabase,
       );
       await service.create(
         mockSessionMetadata,
         { ...mockCreateBulkActionDto, id: 'new one' },
         mockSocket1,
+        mockDatabase,
       );
 
       expect(service['bulkActions'].size).toEqual(2);
@@ -152,11 +160,13 @@ describe('BulkActionsProvider', () => {
         mockSessionMetadata,
         mockCreateBulkActionDto,
         mockSocket1,
+        mockDatabase,
       );
       await service.create(
         mockSessionMetadata,
         { ...mockCreateBulkActionDto, id: 'new one' },
         mockSocket1,
+        mockDatabase,
       );
 
       expect(service['bulkActions'].size).toEqual(2);
@@ -183,16 +193,19 @@ describe('BulkActionsProvider', () => {
         mockSessionMetadata,
         mockCreateBulkActionDto,
         mockSocket1,
+        mockDatabase,
       );
       await service.create(
         mockSessionMetadata,
         { ...mockCreateBulkActionDto, id: 'new one' },
         mockSocket1,
+        mockDatabase,
       );
       await service.create(
         mockSessionMetadata,
         { ...mockCreateBulkActionDto, id: 'new one 2' },
         mockSocket2,
+        mockDatabase,
       );
 
       expect(service['bulkActions'].size).toEqual(3);

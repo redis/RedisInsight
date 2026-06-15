@@ -1,5 +1,4 @@
 import React from 'react'
-import { NodePublicState } from 'react-vtree/dist/es/Tree'
 import { instance, mock } from 'ts-mockito'
 import { cloneDeep } from 'lodash'
 import reactRouterDom from 'react-router-dom'
@@ -19,7 +18,7 @@ import { CreateIndexMode } from 'uiSrc/pages/vector-search/pages/VectorSearchCre
 import { MakeSearchableModalProvider } from 'uiSrc/pages/browser/components/make-searchable-modal'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { SearchBrowserSource } from 'uiSrc/pages/vector-search/telemetry.constants'
-import Node from './Node'
+import Node, { NodeProps } from './Node'
 import { TreeData } from '../../VirtualTree.types'
 import { mockVirtualTreeResult } from '../../VirtualTree.spec'
 
@@ -27,7 +26,7 @@ const mockPush = jest.fn()
 const mockInstanceId = faker.string.uuid()
 
 const mockDataFullName = 'test'
-const mockedProps = mock<NodePublicState<TreeData>>()
+const mockedProps = mock<NodeProps>()
 const mockedPropsData = mock<TreeData>()
 
 const mockedData: TreeData = {
@@ -60,6 +59,13 @@ jest.mock('uiSrc/services', () => ({
   }),
 }))
 
+jest.mock('uiSrc/components/hooks/useDatabaseEnvironment', () => ({
+  useDatabaseEnvironment: () => ({
+    environment: 'unspecified',
+    isDangerousCommand: () => false,
+  }),
+}))
+
 let store: typeof mockedStore
 beforeEach(() => {
   cleanup()
@@ -75,7 +81,7 @@ afterEach(() => {
 })
 
 const renderNode = (
-  props: Partial<NodePublicState<TreeData>> = {},
+  props: Partial<NodeProps> = {},
   options?: { store?: any },
 ) => {
   const mergedProps = { ...instance(mockedProps), ...props }
@@ -483,9 +489,14 @@ describe('Node', () => {
             instances: { connectedInstance: { id: mockInstanceId } },
           },
         }
+        // Hold the snapshot in a closure variable so `getState` returns a
+        // stable reference between renders. react-redux 9's
+        // `useSyncExternalStore` treats a fresh object as "state changed"
+        // and re-subscribes, which loops without this.
+        let stateSnapshot = { ...initialState, ...connectionState }
         const customStore = {
-          getState: () => ({ ...initialState, ...connectionState }),
-          subscribe: jest.fn(),
+          getState: () => stateSnapshot,
+          subscribe: jest.fn(() => () => {}),
           dispatch: jest.fn(),
         }
 
@@ -494,10 +505,7 @@ describe('Node', () => {
           { store: customStore },
         )
 
-        customStore.getState = () => ({
-          ...updatedState,
-          ...connectionState,
-        })
+        stateSnapshot = { ...updatedState, ...connectionState }
 
         rerender(
           <MakeSearchableModalProvider>
@@ -525,20 +533,23 @@ describe('Node', () => {
         onDeleteClicked: jest.fn(),
       }
 
-      const customStore = {
-        getState: () => ({
-          app: {
-            context: {
-              dbConfig: {
-                shownColumns: columns,
-              },
+      // Snapshot held in a closure so `getState` returns the same reference
+      // across react-redux 9's `useSyncExternalStore` calls.
+      const stateSnapshot = {
+        app: {
+          context: {
+            dbConfig: {
+              shownColumns: columns,
             },
           },
-          connections: {
-            instances: { connectedInstance: { id: mockInstanceId } },
-          },
-        }),
-        subscribe: jest.fn(),
+        },
+        connections: {
+          instances: { connectedInstance: { id: mockInstanceId } },
+        },
+      }
+      const customStore = {
+        getState: () => stateSnapshot,
+        subscribe: jest.fn(() => () => {}),
         dispatch: jest.fn(),
       }
 

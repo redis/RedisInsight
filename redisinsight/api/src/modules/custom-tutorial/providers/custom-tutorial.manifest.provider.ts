@@ -14,6 +14,10 @@ import { winPathToNormalPath } from 'src/utils';
 const MANIFEST_FILE = 'manifest.json';
 const SYS_MANIFEST_FILE = '_manifest.json';
 
+/**
+ * @deprecated Custom tutorials are deprecated (RED-194229) and disabled by
+ * default via the `customTutorials` feature flag. Slated for removal.
+ */
 @Injectable()
 export class CustomTutorialManifestProvider {
   private logger = new Logger('CustomTutorialManifestProvider');

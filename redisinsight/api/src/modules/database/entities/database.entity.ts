@@ -62,6 +62,12 @@ export enum Encoding {
   HEX = 'HEX',
 }
 
+export enum Environment {
+  Unspecified = 'unspecified',
+  Production = 'production',
+  Development = 'development',
+}
+
 @Entity('database_instance')
 export class DatabaseEntity {
   @Expose()
@@ -290,4 +296,8 @@ export class DatabaseEntity {
   @Expose()
   @Column({ nullable: true, default: Encoding.UNICODE })
   keyNameFormat: string;
+
+  @Expose()
+  @Column({ nullable: false, default: Environment.Unspecified })
+  environment: Environment;
 }

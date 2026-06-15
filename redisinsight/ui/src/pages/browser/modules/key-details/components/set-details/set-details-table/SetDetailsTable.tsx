@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import { CellMeasurerCache } from 'react-virtualized'
 
@@ -49,7 +49,7 @@ import {
 } from 'uiSrc/components/virtual-table/interfaces'
 import { decompressingBuffer } from 'uiSrc/utils/decompressors'
 import { FormattedValue } from 'uiSrc/pages/browser/modules/key-details/shared'
-import { GetSetMembersResponse } from 'apiSrc/modules/browser/set/dto'
+import { GetSetMembersResponse } from 'apiClient'
 import styles from './styles.module.scss'
 
 const suffix = '_set'
@@ -70,18 +70,19 @@ export interface Props {
 const SetDetailsTable = (props: Props) => {
   const { onRemoveKey } = props
 
-  const { loading } = useSelector(setSelector)
+  const { loading } = useAppSelector(setSelector)
   const {
     members: loadedMembers,
     total,
     nextCursor,
-  } = useSelector(setDataSelector)
-  const { length = 0, name: key } = useSelector(selectedKeyDataSelector) ?? {}
-  const { id: instanceId, compressor = null } = useSelector(
+  } = useAppSelector(setDataSelector)
+  const { length = 0, name: key } =
+    useAppSelector(selectedKeyDataSelector) ?? {}
+  const { id: instanceId, compressor = null } = useAppSelector(
     connectedInstanceSelector,
   )
-  const { viewType } = useSelector(keysSelector)
-  const { viewFormat: viewFormatProp } = useSelector(selectedKeySelector)
+  const { viewType } = useAppSelector(keysSelector)
+  const { viewFormat: viewFormatProp } = useAppSelector(selectedKeySelector)
 
   const [match, setMatch] = useState('*')
   const [deleting, setDeleting] = useState('')
@@ -92,7 +93,7 @@ const SetDetailsTable = (props: Props) => {
 
   const formattedLastIndexRef = useRef(OVER_RENDER_BUFFER_COUNT)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setMembers(loadedMembers)

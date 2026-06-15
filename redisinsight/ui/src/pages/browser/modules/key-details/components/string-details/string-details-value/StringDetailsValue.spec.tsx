@@ -68,9 +68,9 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useDispatch: () => jest.fn().mockReturnValue(() => jest.fn()),
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppDispatch: () => jest.fn().mockReturnValue(() => jest.fn()),
 }))
 
 beforeEach(async () => {

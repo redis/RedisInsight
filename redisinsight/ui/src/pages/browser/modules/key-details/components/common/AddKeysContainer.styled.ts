@@ -19,7 +19,7 @@ export const AddKeysContainer = styled.div<
   border-top-width: 1px;
   width: 100%;
 
-  z-index: 2;
+  z-index: 3;
 
   max-height: 100%;
   overflow-y: auto;

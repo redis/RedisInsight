@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import cx from 'classnames'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { findIndex, isNumber } from 'lodash'
 import { ColorText } from 'uiSrc/components/base/text'
@@ -125,8 +125,8 @@ const QueryCardHeader = (props: Props) => {
     db,
   } = props
 
-  const { visualizations = [] } = useSelector(appPluginsSelector)
-  const { spec: COMMANDS_SPEC } = useSelector(appRedisCommandsSelector)
+  const { visualizations = [] } = useAppSelector(appPluginsSelector)
+  const { spec: COMMANDS_SPEC } = useAppSelector(appRedisCommandsSelector)
   const { instanceId = '' } = useParams<{ instanceId: string }>()
 
   const { theme } = useContext(ThemeContext)

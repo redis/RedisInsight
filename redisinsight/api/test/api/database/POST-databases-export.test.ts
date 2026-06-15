@@ -88,6 +88,9 @@ const responseSchema = Joi.array()
         azureAccountId: Joi.string(),
       }).allow(null),
       isPreSetup: Joi.boolean().allow(null),
+      environment: Joi.string()
+        .valid('unspecified', 'production', 'development')
+        .allow(null),
     }),
   )
   .required()

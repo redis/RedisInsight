@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import RqeIllustration from 'uiSrc/assets/img/vector-search/rqe-not-available.svg?react'
 import { FeatureFlags } from 'uiSrc/constants'
@@ -21,7 +21,7 @@ interface SearchPageFallbackProps {
 }
 
 export const SearchPageFallback = ({ content }: SearchPageFallbackProps) => {
-  const { [FeatureFlags.envDependent]: envDependentFeature } = useSelector(
+  const { [FeatureFlags.envDependent]: envDependentFeature } = useAppSelector(
     appFeatureFlagsFeaturesSelector,
   )
 

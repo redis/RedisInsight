@@ -1,5 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import axios, { AxiosError, CancelTokenSource } from 'axios'
+import axios, {
+  AxiosError,
+  AxiosResponseHeaders,
+  CancelTokenSource,
+} from 'axios'
 
 import { isNumber } from 'lodash'
 import { ApiEndpoints } from 'uiSrc/constants'
@@ -19,10 +23,7 @@ import {
 } from 'uiSrc/utils'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { parseJsonData } from 'uiSrc/pages/browser/modules/key-details/components/rejson-details/utils'
-import {
-  GetRejsonRlResponseDto,
-  RemoveRejsonRlResponse,
-} from 'apiSrc/modules/browser/rejson-rl/dto'
+import { GetRejsonRlResponseDto, RemoveRejsonRlResponse } from 'apiClient'
 
 import { refreshKeyInfoAction } from './keys'
 import {
@@ -33,6 +34,7 @@ import {
 import {
   addErrorNotification,
   addMessageNotification,
+  IAddInstanceErrorPayload,
 } from '../app/notifications'
 import { AppDispatch, RootState } from '../store'
 
@@ -41,6 +43,7 @@ const TELEMETRY_KEY_LEVEL_ENTIRE_KEY = 'entireKey'
 
 export const initialState: InitialStateRejson = {
   loading: false,
+  downloading: false,
   error: null,
   data: {
     downloaded: false,
@@ -118,6 +121,17 @@ const rejsonSlice = createSlice({
     setIsWithinThreshold: (state, { payload }: PayloadAction<boolean>) => {
       state.isWithinThreshold = payload
     },
+    downloadReJSON: (state) => {
+      state.downloading = true
+      state.error = null
+    },
+    downloadReJSONSuccess: (state) => {
+      state.downloading = false
+    },
+    downloadReJSONFailure: (state, { payload }) => {
+      state.downloading = false
+      state.error = payload
+    },
   },
 })
 
@@ -137,6 +151,9 @@ export const {
   removeRejsonKeyFailure,
   setEditorType,
   setIsWithinThreshold,
+  downloadReJSON,
+  downloadReJSONSuccess,
+  downloadReJSONFailure,
 } = rejsonSlice.actions
 
 // A selector
@@ -373,6 +390,39 @@ export function removeReJSONKeyAction(
       const errorMessage = getApiErrorMessage(error as AxiosError)
       dispatch(removeRejsonKeyFailure(errorMessage))
       dispatch(addErrorNotification(error as AxiosError))
+    }
+  }
+}
+
+// Asynchronous thunk action
+export function fetchDownloadJsonValue(
+  key: RedisResponseBuffer,
+  path = '$',
+  onSuccessAction?: (data: string, headers: AxiosResponseHeaders) => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    dispatch(downloadReJSON())
+
+    try {
+      const state = stateInit()
+      const { data, status, headers } = await apiService.post(
+        getUrl(
+          state.connections.instances.connectedInstance?.id,
+          ApiEndpoints.REJSON_DOWNLOAD,
+        ),
+        { keyName: key, path },
+        { responseType: 'arraybuffer' },
+      )
+
+      if (isStatusSuccessful(status)) {
+        dispatch(downloadReJSONSuccess())
+        onSuccessAction?.(data, headers as AxiosResponseHeaders)
+      }
+    } catch (_err) {
+      const error = _err as AxiosError
+      const errorMessage = getApiErrorMessage(error)
+      dispatch(downloadReJSONFailure(errorMessage))
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
     }
   }
 }

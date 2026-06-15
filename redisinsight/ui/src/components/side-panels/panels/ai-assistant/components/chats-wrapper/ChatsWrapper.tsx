@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { filter } from 'lodash'
 import { aiChatSelector, setSelectedTab } from 'uiSrc/slices/panels/aiAssistant'
 import { AiChatType } from 'uiSrc/slices/interfaces/aiAssistant'
@@ -23,11 +23,11 @@ interface ChatWithTabs {
 }
 
 const ChatsWrapper = () => {
-  const { activeTab } = useSelector(aiChatSelector)
+  const { activeTab } = useAppSelector(aiChatSelector)
   const {
     [FeatureFlags.documentationChat]: documentationChatFeature,
     [FeatureFlags.databaseChat]: databaseChatFeature,
-  } = useSelector(appFeatureFlagsFeaturesSelector)
+  } = useAppSelector(appFeatureFlagsFeaturesSelector)
 
   const chats = filter<ChatWithTabs>(
     [
@@ -43,7 +43,7 @@ const ChatsWrapper = () => {
     ({ feature }) => !!feature?.flag,
   )
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (!chats.length) return

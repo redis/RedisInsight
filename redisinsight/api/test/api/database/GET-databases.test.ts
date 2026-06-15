@@ -55,6 +55,11 @@ const responseSchema = Joi.array()
         )
         .allow(null),
       isPreSetup: Joi.boolean().allow(null),
+      environment: Joi.string().valid(
+        'unspecified',
+        'production',
+        'development',
+      ),
     }),
   )
   .required()

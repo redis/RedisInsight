@@ -1,5 +1,5 @@
 import React, { FormEvent, useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { toNumber } from 'lodash'
 import { Maybe, stringToBuffer, validateScoreNumber } from 'uiSrc/utils'
 import { isNaNConvertedString } from 'uiSrc/utils/numbers'
@@ -15,7 +15,7 @@ import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import { CreateZSetWithExpireDto } from 'apiSrc/modules/browser/z-set/dto'
+import { CreateZSetWithExpireDto } from 'apiClient'
 import { AddZsetFormConfig as config } from '../constants/fields-config'
 
 export interface Props {
@@ -26,7 +26,7 @@ export interface Props {
 
 const AddKeyZset = (props: Props) => {
   const { keyName = '', keyTTL, onCancel } = props
-  const { loading } = useSelector(addKeyStateSelector)
+  const { loading } = useAppSelector(addKeyStateSelector)
   const [members, setMembers] = useState<IZsetMemberState[]>([
     { ...INITIAL_ZSET_MEMBER_STATE },
   ])
@@ -34,7 +34,7 @@ const AddKeyZset = (props: Props) => {
   const lastAddedMemberName = useRef<HTMLInputElement>(null)
   const prevCountMembers = useRef<number>(0)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     members.every((member) => {

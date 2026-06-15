@@ -14,7 +14,8 @@ module.exports = {
     '\\.scss\\?inline$': '<rootDir>/redisinsight/__mocks__/scssRaw.js',
     'uiSrc/slices/store$': '<rootDir>/redisinsight/ui/src/utils/test-store.ts',
     'uiSrc/(.*)': '<rootDir>/redisinsight/ui/src/$1',
-    'apiSrc/(.*)': '<rootDir>/redisinsight/api/src/$1',
+    '^apiClient$': '<rootDir>/redisinsight/api-client',
+    'apiClient/(.*)': '<rootDir>/redisinsight/api-client/$1',
     '@redislabsdev/redis-ui-components': '@redis-ui/components',
     '@redislabsdev/redis-ui-styles': '@redis-ui/styles',
     '@redislabsdev/redis-ui-icons': '@redis-ui/icons',
@@ -47,7 +48,7 @@ module.exports = {
     '\\.mjs$': 'babel-jest',
   },
   transformIgnorePatterns: [
-    'node_modules/(?!(monaco-editor|react-monaco-editor|brotli-dec-wasm|until-async|rettime)/)',
+    'node_modules/(?!(monaco-editor|react-monaco-editor|brotli-dec-wasm|until-async|rettime|uuid|react-jsx-parser)/)',
   ],
   // TODO: add tests for plugins
   modulePathIgnorePatterns: [

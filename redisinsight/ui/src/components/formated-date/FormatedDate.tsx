@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { DATETIME_FORMATTER_DEFAULT, TimezoneOption } from 'uiSrc/constants'
 import { userSettingsConfigSelector } from 'uiSrc/slices/user/user-settings'
 import { formatTimestamp } from 'uiSrc/utils'
@@ -11,7 +11,7 @@ export interface Props {
 }
 
 const FormatedDate = ({ date }: Props) => {
-  const config = useSelector(userSettingsConfigSelector)
+  const config = useAppSelector(userSettingsConfigSelector)
   const dateFormat = config?.dateFormat || DATETIME_FORMATTER_DEFAULT
   const timezone = config?.timezone || TimezoneOption.Local
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
@@ -23,9 +23,9 @@ import {
 import { ContentWrapper } from './AnalysisDataView.styles'
 
 const AnalysisDataView = () => {
-  const { id: instanceId, provider } = useSelector(connectedInstanceSelector)
-  const { loading, data } = useSelector(dbAnalysisSelector)
-  const { data: reports } = useSelector(dbAnalysisReportsSelector)
+  const { id: instanceId, provider } = useAppSelector(connectedInstanceSelector)
+  const { loading, data } = useAppSelector(dbAnalysisSelector)
+  const { data: reports } = useAppSelector(dbAnalysisReportsSelector)
 
   const [extrapolation, setExtrapolation] = useState(DEFAULT_EXTRAPOLATION)
 

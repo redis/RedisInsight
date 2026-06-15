@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { RedisStringType } from 'src/common/decorators';
+import { ApiRedisString, RedisStringType } from 'src/common/decorators';
 import { RedisString } from 'src/common/constants';
 
 export class SetListElementResponse {
@@ -10,10 +10,7 @@ export class SetListElementResponse {
   })
   index: number;
 
-  @ApiProperty({
-    description: 'List element',
-    type: String,
-  })
+  @ApiRedisString('List element')
   @RedisStringType()
   element: RedisString;
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import { orderBy } from 'lodash'
 
@@ -8,7 +8,7 @@ import VirtualTable from 'uiSrc/components/virtual-table/VirtualTable'
 import { ITableColumn } from 'uiSrc/components/virtual-table/interfaces'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { SortOrder } from 'uiSrc/constants'
-import { ConsumerDto } from 'apiSrc/modules/browser/stream/dto'
+import { ConsumerDto } from 'apiClient'
 
 import styles from './styles.module.scss'
 
@@ -32,8 +32,8 @@ const ConsumersView = (props: Props) => {
     noItemsMessageString = 'Your Consumer Group has no Consumers available.',
   } = props
 
-  const { loading } = useSelector(streamGroupsSelector)
-  const { name: key = '' } = useSelector(selectedKeyDataSelector) ?? {}
+  const { loading } = useAppSelector(streamGroupsSelector)
+  const { name: key = '' } = useAppSelector(selectedKeyDataSelector) ?? {}
 
   const [consumers, setConsumers] = useState(data)
   const [sortedColumnName, setSortedColumnName] = useState<string>('name')

@@ -34,6 +34,10 @@ export interface Props {
   isPageOpened?: boolean
 }
 
+/**
+ * @deprecated Custom tutorials are deprecated (RED-194229) and disabled by
+ * default via the `customTutorials` feature flag. Slated for removal.
+ */
 const UploadTutorialForm = (props: Props) => {
   const { onSubmit, onCancel, isPageOpened } = props
   const [errors, setErrors] = useState<FormikErrors<FormValues>>({})

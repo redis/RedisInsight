@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Logger,
   Post,
   Put,
   Res,
@@ -15,14 +16,18 @@ import { BrowserClientMetadata } from 'src/modules/browser/decorators/browser-cl
 import { ApiQueryRedisStringEncoding } from 'src/common/decorators';
 import { ClientMetadata } from 'src/common/models';
 import {
+  AddElementsToVectorSetDto,
+  CreateVectorSetDto,
   DeleteVectorSetElementsDto,
   DeleteVectorSetElementsResponse,
-  GetVectorSetElementDetailsDto,
   GetVectorSetElementsDto,
   GetVectorSetElementsResponse,
+  SimilaritySearchDto,
+  SearchVectorSetPreviewResponse,
+  SearchVectorSetResponse,
   SetVectorSetElementAttributeDto,
   SetVectorSetElementAttributeResponse,
-  VectorSetElementDto,
+  VectorSetElementDetailsDto,
   VectorSetElementKeyDto,
 } from 'src/modules/browser/vector-set/dto';
 import { VectorSetService } from 'src/modules/browser/vector-set/vector-set.service';
@@ -35,8 +40,36 @@ import { Response } from 'express';
 @Controller('vector-set')
 @UsePipes(new ValidationPipe({ transform: true }))
 export class VectorSetController extends BrowserBaseController {
+  private readonly logger = new Logger(VectorSetController.name);
+
   constructor(private vectorSetService: VectorSetService) {
     super();
+  }
+
+  @Post('')
+  @ApiRedisInstanceOperation({
+    description: 'Set key to hold VectorSet data type',
+    statusCode: 201,
+  })
+  @ApiQueryRedisStringEncoding()
+  async createVectorSet(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: CreateVectorSetDto,
+  ): Promise<void> {
+    return await this.vectorSetService.createVectorSet(clientMetadata, dto);
+  }
+
+  @Put('')
+  @ApiRedisInstanceOperation({
+    description: 'Add elements to the VectorSet stored at key',
+    statusCode: 200,
+  })
+  @ApiQueryRedisStringEncoding()
+  async addElements(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: AddElementsToVectorSetDto,
+  ): Promise<void> {
+    return await this.vectorSetService.addElements(clientMetadata, dto);
   }
 
   // The key name can be very large, so it is better to send it in the request body
@@ -69,15 +102,15 @@ export class VectorSetController extends BrowserBaseController {
       {
         status: 200,
         description: 'Ok',
-        type: VectorSetElementDto,
+        type: VectorSetElementDetailsDto,
       },
     ],
   })
   @ApiQueryRedisStringEncoding()
   async getElementDetails(
     @BrowserClientMetadata() clientMetadata: ClientMetadata,
-    @Body() dto: GetVectorSetElementDetailsDto,
-  ): Promise<VectorSetElementDto> {
+    @Body() dto: VectorSetElementKeyDto,
+  ): Promise<VectorSetElementDetailsDto> {
     return await this.vectorSetService.getElementDetails(clientMetadata, dto);
   }
 
@@ -104,12 +137,18 @@ export class VectorSetController extends BrowserBaseController {
   @Post('/download-embedding')
   @ApiRedisInstanceOperation({
     description:
-      'Download the full vector embedding of an element in the VectorSet stored at key',
+      'Download the full vector embedding of an element in the VectorSet stored at key. ' +
+      'Response is streamed as `application/octet-stream` with a `Content-Disposition` attachment header.',
     statusCode: 200,
     responses: [
       {
         status: 200,
-        description: 'Ok',
+        description: 'Vector embedding stream',
+        content: {
+          'application/octet-stream': {
+            schema: { type: 'string', format: 'binary' },
+          },
+        },
       },
     ],
   })
@@ -132,9 +171,14 @@ export class VectorSetController extends BrowserBaseController {
     res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
 
     stream
-      .on('error', () => {
+      .on('error', (error) => {
+        this.logger.error(
+          'Failed to stream vector embedding download.',
+          error,
+          clientMetadata,
+        );
         if (!res.headersSent) {
-          res.status(404).send();
+          res.status(500).send();
         } else {
           res.destroy();
         }
@@ -161,5 +205,53 @@ export class VectorSetController extends BrowserBaseController {
     @Body() dto: DeleteVectorSetElementsDto,
   ): Promise<DeleteVectorSetElementsResponse> {
     return await this.vectorSetService.deleteElements(clientMetadata, dto);
+  }
+
+  @Post('/similarity-search')
+  @ApiRedisInstanceOperation({
+    description:
+      'Run a vector similarity search (VSIM) against the VectorSet stored at key. ' +
+      'WITHSCORES is always applied so each match carries a similarity score; element attributes are returned when present (resolved server-side either via WITHATTRIBS on Redis ≥ 8.0.3 or per-element VGETATTR on 8.0.0–8.0.2 where WITHATTRIBS is unsupported).',
+    statusCode: 200,
+    responses: [
+      {
+        status: 200,
+        description: 'Ok',
+        type: SearchVectorSetResponse,
+      },
+    ],
+  })
+  @ApiQueryRedisStringEncoding()
+  async similaritySearch(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: SimilaritySearchDto,
+  ): Promise<SearchVectorSetResponse> {
+    return await this.vectorSetService.similaritySearch(clientMetadata, dto);
+  }
+
+  @Post('/similarity-search/preview')
+  @ApiRedisInstanceOperation({
+    description:
+      'Build a human-readable preview of the VSIM command that the similarity-search endpoint would execute for the supplied DTO. ' +
+      'Reuses the same internal command builder as the search endpoint so the preview cannot drift from what is actually executed. ' +
+      'Requires exactly one of `elementName` / `vectorValues` / `vectorFp32` — under- or over-specified payloads are rejected with `400`.',
+    statusCode: 200,
+    responses: [
+      {
+        status: 200,
+        description: 'Ok',
+        type: SearchVectorSetPreviewResponse,
+      },
+    ],
+  })
+  @ApiQueryRedisStringEncoding()
+  async getSimilaritySearchPreview(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: SimilaritySearchDto,
+  ): Promise<SearchVectorSetPreviewResponse> {
+    return await this.vectorSetService.getSimilaritySearchPreview(
+      clientMetadata,
+      dto,
+    );
   }
 }

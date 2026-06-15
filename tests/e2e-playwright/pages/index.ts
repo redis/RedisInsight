@@ -1,8 +1,9 @@
 export { BasePage } from './BasePage';
 export { InstancePage } from './InstancePage';
-export { InstanceHeader, NavigationTabs, BottomPanel } from './components';
+export { InstanceHeader, NavigationTabs, BottomPanel, TypeToConfirmModal } from './components';
 export { BrowserPage, AddKeyDialog, KeyList } from './browser';
 export { CliPanel } from './cli';
+export { ProfilerPanel } from './profiler';
 export { CommandHelperPanel } from './command-helper';
 export {
   DatabasesPage,
@@ -12,7 +13,7 @@ export {
   TagsDialog,
   DatabaseList,
 } from './databases';
-export { WorkbenchPage, Editor, ResultsPanel } from './workbench';
+export { WorkbenchPage, Editor, ResultsPanel, GeodataPlugin } from './workbench';
 export { AnalyticsPage } from './analytics';
 export { SettingsPage } from './settings';
 export { PubSubPage } from './pubsub';

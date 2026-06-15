@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { format } from 'date-fns'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { isNull } from 'lodash'
 
 import { formatLongName, Nullable } from 'uiSrc/utils'
@@ -32,7 +32,7 @@ export interface Props {
 
 const UserApiKeysTable = ({ items, loading }: Props) => {
   const [deleting, setDeleting] = useState('')
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleCopy = () => {
     sendEventTelemetry({
@@ -142,6 +142,11 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
       header: '',
       id: 'actions',
       accessorKey: 'id',
+      size: 48,
+      sizeUnit: 'px',
+      maxSize: 48,
+      enableResizing: false,
+      enableSorting: false,
       cell: ({
         row: {
           original: { id, name },
@@ -216,13 +221,12 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
             Cloud database.
           </Text>
           <Spacer />
-          <div className={styles.actions}>
+          <Row align="center" justify="end" grow={false} gap="s">
             <OAuthSsoHandlerDialog>
               {(socialCloudHandlerClick) => (
                 <EmptyButton
                   size="small"
                   color="ghost"
-                  className={styles.autodiscoverBtn}
                   onClick={(e: React.MouseEvent) =>
                     socialCloudHandlerClick(e, {
                       source: OAuthSocialSource.SettingsPage,
@@ -251,7 +255,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
                 </PrimaryButton>
               )}
             </OAuthSsoHandlerDialog>
-          </div>
+          </Row>
         </div>
         <Spacer />
       </>
@@ -262,6 +266,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
     <Table
       columns={columns}
       data={items}
+      enableColumnResizing
       defaultSorting={[
         {
           id: 'createdAt',

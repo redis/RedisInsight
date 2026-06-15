@@ -35,4 +35,18 @@ describe('KeyRowType', () => {
     expect(queryByTestId(loadingTestId + nameString)).not.toBeInTheDocument()
     expect(queryByTestId(`badge-${type}_${nameString}`)).toBeInTheDocument()
   })
+
+  it('should render the Array badge for array keys', () => {
+    const type = KeyTypes.Array
+    const { queryByTestId, getByText } = render(
+      <KeyRowType
+        {...instance(mockedProps)}
+        nameString={nameString}
+        type={type}
+      />,
+    )
+
+    expect(queryByTestId(`badge-${type}_${nameString}`)).toBeInTheDocument()
+    expect(getByText('Array')).toBeInTheDocument()
+  })
 })

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
@@ -28,8 +28,8 @@ const UnderlineReverseLink = styled(Link)`
 
 const CHSearchOutput = ({ searchedCommands }: Props) => {
   const { instanceId = '' } = useParams<{ instanceId: string }>()
-  const dispatch = useDispatch()
-  const { spec: ALL_REDIS_COMMANDS } = useSelector(appRedisCommandsSelector)
+  const dispatch = useAppDispatch()
+  const { spec: ALL_REDIS_COMMANDS } = useAppSelector(appRedisCommandsSelector)
 
   const handleClickCommand = (
     e: React.MouseEvent<HTMLAnchorElement>,

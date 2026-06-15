@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import {
@@ -58,7 +58,7 @@ export const getTooltipContent = (
 const TemplateForm = (props: Props) => {
   const { closePopover, setTemplate, source, value } = props
 
-  const { loading, data } = useSelector(rdiPipelineStrategiesSelector)
+  const { loading, data } = useAppSelector(rdiPipelineStrategiesSelector)
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
 
@@ -70,7 +70,7 @@ const TemplateForm = (props: Props) => {
   const [selectedDbType, setSelectedDbType] = useState<string>('')
   const [selectedPipelineType, setSelectedPipelineType] = useState<string>('')
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleCancel = () => {
     closePopover()

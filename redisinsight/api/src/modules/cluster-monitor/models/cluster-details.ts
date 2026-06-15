@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ClusterNodeDetails } from 'src/modules/cluster-monitor/models/cluster-node-details';
 
 export class ClusterDetails {
@@ -17,7 +17,7 @@ export class ClusterDetails {
   })
   mode: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     description:
       'Username from the connection or undefined in case when connected with default user',
@@ -40,35 +40,35 @@ export class ClusterDetails {
   state: string;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     description: 'cluster_slots_assigned from CLUSTER INFO command',
     example: 16384,
   })
   slotsAssigned: number;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     description: 'cluster_slots_ok from CLUSTER INFO command',
     example: 16384,
   })
   slotsOk: number;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     description: 'cluster_slots_pfail from CLUSTER INFO command',
     example: 0,
   })
   slotsPFail: number;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     description: 'cluster_slots_fail from CLUSTER INFO command',
     example: 0,
   })
   slotsFail: number;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     description:
       'Calculated from (16384 - cluster_slots_assigned from CLUSTER INFO command)',
     example: 0,
@@ -76,42 +76,42 @@ export class ClusterDetails {
   slotsUnassigned: number;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     description: 'cluster_stats_messages_sent from CLUSTER INFO command',
     example: 2451,
   })
   statsMessagesSent: number;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     description: 'cluster_stats_messages_received from CLUSTER INFO command',
     example: 2451,
   })
   statsMessagesReceived: number;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     description: 'cluster_current_epoch from CLUSTER INFO command',
     example: 6,
   })
   currentEpoch: number;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     description: 'cluster_my_epoch from CLUSTER INFO command',
     example: 2,
   })
   myEpoch: number;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     description: 'Number of shards. cluster_size from CLUSTER INFO command',
     example: 3,
   })
   size: number;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     description:
       'All nodes number in the Cluster. cluster_known_nodes from CLUSTER INFO command',
     example: 9,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import {
@@ -27,7 +27,7 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import { Text } from 'uiSrc/components/base/text'
 import { RiTooltip } from 'uiSrc/components'
-import { ConsumerDto } from 'apiSrc/modules/browser/stream/dto'
+import { ConsumerDto } from 'apiClient'
 import ConsumersView from './ConsumersView'
 
 import styles from './ConsumersView/styles.module.scss'
@@ -38,7 +38,7 @@ const actionsWidth = 50
 export interface Props {}
 
 const ConsumersViewWrapper = (props: Props) => {
-  const { name: key = '' } = useSelector(selectedKeyDataSelector) ?? {
+  const { name: key = '' } = useAppSelector(selectedKeyDataSelector) ?? {
     name: '',
   }
   const {
@@ -46,13 +46,13 @@ const ConsumersViewWrapper = (props: Props) => {
     nameString: selectedGroupNameString = '',
     lastRefreshTime,
     data: loadedConsumers = [],
-  } = useSelector(selectedGroupSelector) ?? {}
+  } = useAppSelector(selectedGroupSelector) ?? {}
 
   const isTruncatedGroupName = isTruncatedString(selectedGroupName)
 
   const { instanceId } = useParams<{ instanceId: string }>()
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const [deleting, setDeleting] = useState<string>('')
 

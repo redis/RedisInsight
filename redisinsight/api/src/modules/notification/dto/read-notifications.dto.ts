@@ -15,6 +15,8 @@ export class ReadNotificationsDto {
 
   @ApiPropertyOptional({
     enum: NotificationType,
+
+    enumName: 'NotificationType',
     example: NotificationType.Global,
     description: 'Type of notification',
   })

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { Text } from 'uiSrc/components/base/text'
 import { Pages } from 'uiSrc/constants'
@@ -19,7 +19,7 @@ const ModulesTypeDetails = ({
   onClose,
 }: ModulesTypeDetailsProps) => {
   const history = useHistory()
-  const { id: connectedInstanceId = '' } = useSelector(
+  const { id: connectedInstanceId = '' } = useAppSelector(
     connectedInstanceSelector,
   )
 

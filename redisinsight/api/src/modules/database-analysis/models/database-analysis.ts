@@ -77,6 +77,7 @@ export class DatabaseAnalysis {
   @ApiProperty({
     description: 'Top namespaces by keys number',
     type: () => NspSummary,
+    isArray: true,
   })
   @Expose()
   @Type(() => NspSummary)
@@ -85,6 +86,7 @@ export class DatabaseAnalysis {
   @ApiProperty({
     description: 'Top namespaces by memory',
     type: () => NspSummary,
+    isArray: true,
   })
   @Expose()
   @Type(() => NspSummary)

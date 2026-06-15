@@ -163,6 +163,37 @@ describe('bufferToSerializedFormat', () => {
         ).toEqual(val)
       })
     })
+
+    // php-serialize v5.1+ returns BigInt for integers outside JS safe range.
+    // Regression: JSON.stringify throws on BigInt, which previously caused
+    // the editor to fall back to the raw serialized string.
+    describe('should handle BigInt values from large integers', () => {
+      const testValues = [
+        {
+          input: stringToBuffer('i:9999999999999999999;'),
+          expected: '9999999999999999999',
+        },
+        {
+          input: stringToBuffer('i:-9999999999999999999;'),
+          expected: '-9999999999999999999',
+        },
+        {
+          input: stringToBuffer(
+            'a:2:{s:5:"small";i:42;s:7:"big_int";i:9999999999999999999;}',
+          ),
+          expected: '{"small":42,"big_int":9999999999999999999}',
+        },
+      ]
+
+      test.each(testValues)(
+        'preserves precision for %j',
+        ({ input, expected }) => {
+          expect(bufferToSerializedFormat(KeyValueFormat.PHP, input)).toEqual(
+            expected,
+          )
+        },
+      )
+    })
   })
 })
 
@@ -246,6 +277,34 @@ describe('stringToSerializedBufferFormat', () => {
         expect(stringToSerializedBufferFormat(KeyValueFormat.PHP, val)).toEqual(
           stringToBuffer(val),
         )
+      })
+    })
+
+    // Regression: plain JSON.parse converts integers outside the JS safe
+    // range to imprecise numbers (e.g. 9999999999999999999 → 1e19),
+    // silently corrupting values on save.
+    describe('should preserve BigInt precision on save', () => {
+      const testValues = [
+        {
+          input: '9999999999999999999',
+          expected: stringToBuffer('i:9999999999999999999;'),
+        },
+        {
+          input: '-9999999999999999999',
+          expected: stringToBuffer('i:-9999999999999999999;'),
+        },
+        {
+          input: '{"small":42,"big_int":9999999999999999999}',
+          expected: stringToBuffer(
+            'a:2:{s:5:"small";i:42;s:7:"big_int";i:9999999999999999999;}',
+          ),
+        },
+      ]
+
+      test.each(testValues)('round-trips %j', ({ input, expected }) => {
+        expect(
+          stringToSerializedBufferFormat(KeyValueFormat.PHP, input),
+        ).toEqual(expected)
       })
     })
   })

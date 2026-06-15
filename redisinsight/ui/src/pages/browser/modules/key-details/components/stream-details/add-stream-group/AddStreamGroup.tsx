@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import { lastDeliveredIDTooltipText } from 'uiSrc/constants/texts'
@@ -19,7 +19,7 @@ import {
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { RiTooltip } from 'uiSrc/components'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import { CreateConsumerGroupsDto } from 'apiSrc/modules/browser/stream/dto'
+import { CreateConsumerGroupsDto } from 'apiClient'
 
 import { Panel } from 'uiSrc/components/panel'
 import { Text } from 'uiSrc/components/base/text'
@@ -35,7 +35,7 @@ export interface Props {
 
 const AddStreamGroup = (props: Props) => {
   const { closePanel } = props
-  const { name: keyName = '' } = useSelector(selectedKeyDataSelector) ?? {
+  const { name: keyName = '' } = useAppSelector(selectedKeyDataSelector) ?? {
     name: undefined,
   }
 
@@ -47,7 +47,7 @@ const AddStreamGroup = (props: Props) => {
 
   const { instanceId } = useParams<{ instanceId: string }>()
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     const isValid = !!groupName.length && !idError

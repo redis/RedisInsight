@@ -2,7 +2,7 @@ import { ColumnDef, PaginationState } from 'uiSrc/components/base/layout/table'
 import { BrowserStorageItem } from 'uiSrc/constants'
 import { TableStorageKey } from 'uiSrc/constants/storage'
 import { setObjectStorageField, getObjectStorageField } from 'uiSrc/services'
-import { IMessage } from 'apiSrc/modules/pub-sub/interfaces/message.interface'
+import { PubSubMessage } from 'uiSrc/slices/interfaces'
 import {
   PUB_SUB_TABLE_COLUMN_FIELD_NAME_MAP,
   PubSubTableColumn,
@@ -10,7 +10,7 @@ import {
 import MessagesListTableCellTimestamp from './components/MessagesListTableCellTimestamp'
 import MessagesListTableCellMessage from './components/MessagesListTableCellMessage'
 
-export const PUB_SUB_TABLE_COLUMNS: ColumnDef<IMessage>[] = [
+export const PUB_SUB_TABLE_COLUMNS: ColumnDef<PubSubMessage>[] = [
   {
     id: PubSubTableColumn.Timestamp,
     accessorKey: PubSubTableColumn.Timestamp,

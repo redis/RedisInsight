@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import reactRouterDom from 'react-router-dom'
 import { faker } from '@faker-js/faker'
 import { renderHook, act } from 'uiSrc/utils/test-utils'
@@ -15,10 +15,10 @@ import { SearchIndexDetailsSource } from 'uiSrc/pages/vector-search/telemetry.co
 import { useListContent } from './useListContent'
 import { useIndexListData } from '../useIndexListData'
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppDispatch: jest.fn(),
+  useAppSelector: jest.fn(),
 }))
 
 jest.mock('../useIndexListData', () => ({
@@ -62,8 +62,8 @@ const mockInstanceId = faker.string.uuid()
 const mockDatabaseId = faker.string.uuid()
 
 describe('useListContent', () => {
-  const mockUseSelector = useSelector as jest.Mock
-  const mockUseDispatch = useDispatch as jest.Mock
+  const mockUseSelector = useAppSelector as jest.Mock
+  const mockUseDispatch = useAppDispatch as jest.Mock
 
   beforeEach(() => {
     jest.clearAllMocks()

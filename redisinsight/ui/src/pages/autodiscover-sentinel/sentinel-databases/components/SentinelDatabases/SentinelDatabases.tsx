@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { sentinelSelector } from 'uiSrc/slices/instances/sentinel'
 import { type ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
@@ -52,7 +52,7 @@ const SentinelDatabases = ({
   const [message, setMessage] = useState(loadingMsg)
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
-  const { loading } = useSelector(sentinelSelector)
+  const { loading } = useAppSelector(sentinelSelector)
 
   const handleSubmit = () => {
     onSubmit(selection)

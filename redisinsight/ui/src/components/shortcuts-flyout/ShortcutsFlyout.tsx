@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { appInfoSelector, setShortcutsFlyoutState } from 'uiSrc/slices/app/info'
 import { KeyboardShortcut } from 'uiSrc/components'
 import { BuildType } from 'uiSrc/constants/env'
@@ -15,9 +15,9 @@ import { Table, ColumnDefinition } from 'uiSrc/components/base/layout/table'
 import { SHORTCUTS, ShortcutGroup, separator } from './schema'
 
 const ShortcutsFlyout = () => {
-  const { isShortcutsFlyoutOpen, server } = useSelector(appInfoSelector)
+  const { isShortcutsFlyoutOpen, server } = useAppSelector(appInfoSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const tableColumns: ColumnDefinition<any>[] = [
     {

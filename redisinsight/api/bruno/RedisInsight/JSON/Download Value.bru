@@ -1,0 +1,55 @@
+meta {
+  name: Download Value
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/rejson-rl/download-value
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "json:big",
+    "path": "$"
+  }
+}
+
+docs {
+  # Download JSON Value
+
+  Downloads the full JSON value at the given path as a binary file stream. Uses the Redis `JSON.GET` command internally and streams the result as-is.
+
+  This endpoint backs the "Download" action in the Browser JSON key view. It is used when the value is too large to be kept fully in memory (lazy-loaded in the tree view), providing a way to retrieve the complete value as a downloadable file.
+
+  ## Request Body
+
+  | Field | Type | Description |
+  |-------|------|-------------|
+  | `keyName` | string | The JSON (ReJSON-RL) key name |
+  | `path` | string | Path to look for data (defaults to `$`, the whole document) |
+
+  ## Response
+
+  Returns a binary stream (`application/octet-stream`) with `Content-Disposition: attachment;filename="json_value"`. The body contains the pretty-printed JSON value at the requested path.
+
+  ## Response Headers
+
+  | Header | Value |
+  |--------|-------|
+  | `Content-Type` | `application/octet-stream` |
+  | `Content-Disposition` | `attachment;filename="json_value"` |
+
+  ## Error Responses
+
+  | Status | Condition |
+  |--------|-----------|
+  | `400` | Key exists but is not a JSON document (WRONGTYPE), or the RedisJSON module is not loaded |
+  | `404` | Key does not exist |
+}
+
+settings {
+  encodeUrl: true
+}

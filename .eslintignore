@@ -63,3 +63,9 @@ redisinsight/ui/src/packages/redistimeseries-app
 
 /report
 __mocks__
+
+# Auto-generated API client (output of `yarn generate:api-client`)
+redisinsight/api-client
+
+# Storybook build output
+storybook-static

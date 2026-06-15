@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
 import {
@@ -31,12 +31,12 @@ const ClusterConnectionFormWrapper = ({ onClose }: Props) => {
   })
 
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { setModalHeader } = useModalHeader()
 
   const formRef = useRef<HTMLDivElement>(null)
 
-  const { loading, credentials } = useSelector(clusterSelector)
+  const { loading, credentials } = useAppSelector(clusterSelector)
 
   useEffect(() => {
     setModalHeader(<Title size="M">Redis Software</Title>, true)

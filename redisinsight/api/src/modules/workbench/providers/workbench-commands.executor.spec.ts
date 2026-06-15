@@ -1,13 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { get } from 'lodash';
 import {
+  mockDangerousCommandsProvider,
+  mockDatabase,
   mockDatabaseClientFactory,
+  mockDatabaseService,
   mockFtInfoAnalyticsData,
   mockRedisFtInfoReply,
   mockSessionMetadata,
   mockStandaloneRedisClient,
   mockWorkbenchAnalyticsService,
-  mockWorkbenchClientMetadata,
 } from 'src/__mocks__';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { unknownCommand } from 'src/constants';
@@ -26,6 +28,9 @@ import {
   FormatterTypes,
 } from 'src/common/transformers';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
+import { DatabaseService } from 'src/modules/database/database.service';
+import { Environment } from 'src/modules/database/entities/database.entity';
+import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import {
   CommandExecutionType,
   RunQueryMode,
@@ -68,6 +73,14 @@ describe('WorkbenchCommandsExecutor', () => {
           provide: DatabaseClientFactory,
           useFactory: mockDatabaseClientFactory,
         },
+        {
+          provide: DatabaseService,
+          useFactory: mockDatabaseService,
+        },
+        {
+          provide: DangerousCommandsProvider,
+          useFactory: mockDangerousCommandsProvider,
+        },
       ],
     }).compile();
 
@@ -102,7 +115,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvents,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockWorkbenchClientMetadata.databaseId,
+          mockDatabase.id,
           CommandExecutionType.Workbench,
           [
             {
@@ -113,13 +126,15 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: 'ft.info',
             rawMode: true,
+            environment: Environment.Unspecified,
+            isDangerous: 'false',
           },
         );
         expect(mockAnalyticsService.sendIndexInfoEvent).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockWorkbenchClientMetadata.databaseId,
+          mockDatabase.id,
           CommandExecutionType.Workbench,
-          mockFtInfoAnalyticsData,
+          { ...mockFtInfoAnalyticsData, environment: Environment.Unspecified },
         );
       });
       it('should successfully send command for standalone', async () => {
@@ -142,7 +157,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvents,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockWorkbenchClientMetadata.databaseId,
+          mockDatabase.id,
           CommandExecutionType.Workbench,
           [
             {
@@ -153,6 +168,8 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: mockSetCommand,
             rawMode: false,
+            environment: Environment.Unspecified,
+            isDangerous: 'false',
           },
         );
       });
@@ -178,7 +195,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvent,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockWorkbenchClientMetadata.databaseId,
+          mockDatabase.id,
           CommandExecutionType.Workbench,
           {
             response: MOCK_ERROR_MESSAGE,
@@ -188,6 +205,8 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: mockSetCommand,
             rawMode: false,
+            environment: Environment.Unspecified,
+            isDangerous: 'false',
           },
         );
       });
@@ -216,7 +235,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvent,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockWorkbenchClientMetadata.databaseId,
+          mockDatabase.id,
           CommandExecutionType.Workbench,
           {
             response: MOCK_ERROR_MESSAGE,
@@ -226,6 +245,8 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: mockSetCommand,
             rawMode: false,
+            environment: Environment.Unspecified,
+            isDangerous: 'false',
           },
         );
       });
@@ -254,7 +275,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvents,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockWorkbenchClientMetadata.databaseId,
+          mockDatabase.id,
           CommandExecutionType.Workbench,
           [
             {
@@ -265,6 +286,8 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: mockSetCommand,
             rawMode: false,
+            environment: Environment.Unspecified,
+            isDangerous: 'false',
           },
         );
       });
@@ -293,7 +316,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvents,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockWorkbenchClientMetadata.databaseId,
+          mockDatabase.id,
           CommandExecutionType.Workbench,
           [
             {
@@ -304,6 +327,8 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: mockSetCommand,
             rawMode: true,
+            environment: Environment.Unspecified,
+            isDangerous: 'false',
           },
         );
       });
@@ -329,7 +354,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvent,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockWorkbenchClientMetadata.databaseId,
+          mockDatabase.id,
           CommandExecutionType.Workbench,
           {
             response: MOCK_ERROR_MESSAGE,
@@ -339,6 +364,8 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: mockSetCommand,
             rawMode: false,
+            environment: Environment.Unspecified,
+            isDangerous: 'false',
           },
         );
       });
@@ -363,7 +390,7 @@ describe('WorkbenchCommandsExecutor', () => {
           mockAnalyticsService.sendCommandExecutedEvent,
         ).toHaveBeenCalledWith(
           mockSessionMetadata,
-          mockWorkbenchClientMetadata.databaseId,
+          mockDatabase.id,
           CommandExecutionType.Workbench,
           {
             response: ERROR_MESSAGES.CLI_UNTERMINATED_QUOTES(),
@@ -375,6 +402,8 @@ describe('WorkbenchCommandsExecutor', () => {
           {
             command: unknownCommand,
             rawMode: false,
+            environment: Environment.Unspecified,
+            isDangerous: 'false',
           },
         );
       });

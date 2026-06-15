@@ -10,3 +10,4 @@ export * from './is-bigger-than.decorator';
 export * from './is-github-link.decorator';
 export * from './database-management.decorator';
 export * from './no-duplicates.decorator';
+export * from './redis-string-schema.decorator';

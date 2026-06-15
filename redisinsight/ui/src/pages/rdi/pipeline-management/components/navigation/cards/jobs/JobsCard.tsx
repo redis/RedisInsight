@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useLocation, useParams } from 'react-router-dom'
 import { isNumber } from 'lodash'
 
@@ -44,9 +44,9 @@ const JobsCard = (props: JobsCardProps) => {
     jobs = [],
     jobsValidationErrors,
     changes = {},
-  } = useSelector(rdiPipelineSelector)
+  } = useAppSelector(rdiPipelineSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
   const { pathname } = useLocation()
 

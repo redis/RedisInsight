@@ -32,6 +32,8 @@ export class AddRedisEnterpriseDatabaseResponse {
     description: 'Add Redis Enterprise database status',
     default: ActionStatus.Success,
     enum: ActionStatus,
+
+    enumName: 'ActionStatus',
   })
   status: ActionStatus;
 

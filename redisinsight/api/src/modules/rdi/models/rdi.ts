@@ -48,7 +48,7 @@ export class Rdi {
   @IsString()
   password?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Time of the last connection to RDI.',
     type: String,
     format: 'date-time',

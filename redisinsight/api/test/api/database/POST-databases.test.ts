@@ -50,6 +50,9 @@ const dataSchema = Joi.object({
     privateKey: Joi.string().allow(null),
     passphrase: Joi.string().allow(null),
   }).allow(null),
+  environment: Joi.string()
+    .valid('unspecified', 'production', 'development')
+    .allow(null),
 })
   .messages({
     'any.required': '{#label} should not be empty',
@@ -224,6 +227,64 @@ describe('POST /databases', () => {
             username: null,
             connectionType: constants.STANDALONE,
             new: true,
+          },
+        });
+      });
+      it('Create standalone with environment=production', async () => {
+        const dbName = constants.getRandomString();
+
+        await validateApiCall({
+          endpoint,
+          statusCode: 201,
+          data: {
+            name: dbName,
+            host: constants.TEST_REDIS_HOST,
+            port: constants.TEST_REDIS_PORT,
+            environment: 'production',
+          },
+          responseSchema,
+          responseBody: {
+            name: dbName,
+            host: constants.TEST_REDIS_HOST,
+            port: constants.TEST_REDIS_PORT,
+            environment: 'production',
+          },
+        });
+      });
+      it('Create standalone with environment=fast', async () => {
+        const dbName = constants.getRandomString();
+
+        await validateApiCall({
+          endpoint,
+          statusCode: 201,
+          data: {
+            name: dbName,
+            host: constants.TEST_REDIS_HOST,
+            port: constants.TEST_REDIS_PORT,
+            environment: 'development',
+          },
+          responseSchema,
+          responseBody: {
+            name: dbName,
+            environment: 'development',
+          },
+        });
+      });
+      it('Create standalone defaults environment to unmarked when omitted', async () => {
+        const dbName = constants.getRandomString();
+
+        await validateApiCall({
+          endpoint,
+          statusCode: 201,
+          data: {
+            name: dbName,
+            host: constants.TEST_REDIS_HOST,
+            port: constants.TEST_REDIS_PORT,
+          },
+          responseSchema,
+          responseBody: {
+            name: dbName,
+            environment: 'unspecified',
           },
         });
       });

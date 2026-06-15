@@ -1,10 +1,11 @@
 import { Nullable } from 'uiSrc/utils'
-import { SlowLog, SlowLogConfig } from 'apiSrc/modules/slow-log/models'
-import { ClusterDetails } from 'apiSrc/modules/cluster-monitor/models/cluster-details'
 import {
+  SlowLog,
+  SlowLogConfig,
+  ClusterDetails,
   DatabaseAnalysis,
   ShortDatabaseAnalysis,
-} from 'apiSrc/modules/database-analysis/models'
+} from 'apiClient'
 
 export interface StateSlowLog {
   loading: boolean

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { debounce } from 'lodash'
 import { Socket } from 'socket.io-client'
 import { v4 as uuidv4 } from 'uuid'
@@ -24,11 +24,10 @@ import {
   SocketErrors,
   SocketEvent,
 } from 'uiSrc/constants'
-import { IMonitorDataPayload } from 'uiSrc/slices/interfaces'
+import { IMonitorDataPayload, IMonitorData } from 'uiSrc/slices/interfaces'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { appCsrfSelector } from 'uiSrc/slices/app/csrf'
 import { useIoConnection } from 'uiSrc/services/hooks/useIoConnection'
-import { IMonitorData } from 'apiSrc/modules/profiler/interfaces/monitor-data.interface'
 
 import ApiStatusCode from '../../constants/apiStatusCode'
 
@@ -36,7 +35,7 @@ interface IProps {
   retryDelay?: number
 }
 const MonitorConfig = ({ retryDelay = 15000 }: IProps) => {
-  const { id: instanceId = '' } = useSelector(connectedInstanceSelector)
+  const { id: instanceId = '' } = useAppSelector(connectedInstanceSelector)
   const {
     socket,
     isRunning,
@@ -44,8 +43,8 @@ const MonitorConfig = ({ retryDelay = 15000 }: IProps) => {
     isSaveToFile,
     isMinimizedMonitor,
     isShowMonitor,
-  } = useSelector(monitorSelector)
-  const { token } = useSelector(appCsrfSelector)
+  } = useAppSelector(monitorSelector)
+  const { token } = useAppSelector(appCsrfSelector)
 
   const socketRef = useRef<Nullable<Socket>>(null)
   const connectIo = useIoConnection(getSocketApiUrl('monitor'), {
@@ -57,7 +56,7 @@ const MonitorConfig = ({ retryDelay = 15000 }: IProps) => {
   const retryTimerRef = useRef<NodeJS.Timer>()
   const payloadsRef = useRef<IMonitorDataPayload[]>([])
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const setNewItems = debounce(
     (items, onSuccess?) => {

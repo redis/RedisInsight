@@ -55,7 +55,7 @@ describe('EditableTextArea', () => {
     })
     fireEvent.click(screen.getByTestId('apply-btn'))
 
-    expect(onApply).toBeCalledWith('value', expect.any(Object))
+    expect(onApply).toBeCalledWith('value')
   })
 
   it('should call on decline', () => {

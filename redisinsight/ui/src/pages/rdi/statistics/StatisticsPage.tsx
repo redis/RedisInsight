@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import { Text } from 'uiSrc/components/base/text'
@@ -55,11 +55,11 @@ const StatisticsPage = () => {
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
   const [lastRefreshTime, setLastRefreshTime] = React.useState(Date.now())
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const { loading: isStatisticsLoading, results: statisticsResults } =
-    useSelector(rdiStatisticsSelector)
-  const { name: connectedRdiInstanceName } = useSelector(
+    useAppSelector(rdiStatisticsSelector)
+  const { name: connectedRdiInstanceName } = useAppSelector(
     connectedInstanceSelector,
   )
   const rdiInstanceName = formatLongName(connectedRdiInstanceName, 33, 0, '...')

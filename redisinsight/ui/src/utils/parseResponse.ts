@@ -1,9 +1,7 @@
 import { find, map, sortBy, omit, forEach, isNull } from 'lodash'
 import { ModifiedSentinelMaster } from 'uiSrc/slices/interfaces'
 import { initialStateSentinelStatus } from 'uiSrc/slices/instances/sentinel'
-
-import { AddSentinelMasterResponse } from 'apiSrc/modules/instances/dto/redis-sentinel.dto'
-import { SentinelMaster } from 'apiSrc/modules/redis-sentinel/models/sentinel'
+import { CreateSentinelDatabaseResponse, SentinelMaster } from 'apiClient'
 
 const DEFAULT_NODE_ID = 'standalone'
 
@@ -21,7 +19,7 @@ export const parseMastersSentinel = (
 
 export const parseAddedMastersSentinel = (
   masters: ModifiedSentinelMaster[],
-  statuses: AddSentinelMasterResponse[],
+  statuses: CreateSentinelDatabaseResponse[],
 ): ModifiedSentinelMaster[] =>
   sortBy(masters, 'message').map((master) => ({
     ...master,

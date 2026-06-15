@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
 import { GoogleIdpCloudAuthStrategy } from 'src/modules/cloud/auth/auth-strategy/google-idp.cloud.auth-strategy';
 import {
@@ -31,6 +31,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CloudAuthServerEvent } from 'src/modules/cloud/common/constants';
 import { CloudApiUnauthorizedException } from 'src/modules/cloud/common/exceptions';
 import { CloudOauthSsoUnsupportedEmailException } from 'src/modules/cloud/auth/exceptions/cloud-oauth.sso-unsupported-email.exception';
+import { CloudOauthCallbackQueryDto } from './dto/cloud-oauth-callback-query.dto';
 
 @Injectable()
 export class CloudAuthService {
@@ -57,10 +58,16 @@ export class CloudAuthService {
     };
   }
 
+  /**
+   * Get the appropriate error based on OAuth authorization server redirect error
+   * @param query OAuth callback query with error information
+   * @param authRequest The original auth request
+   * @returns The appropriate error instance
+   */
   static getAuthorizationServerRedirectError(
-    query: { error_description: string; error: string },
+    query: CloudOauthCallbackQueryDto,
     authRequest?: CloudAuthRequest,
-  ) {
+  ): HttpException {
     if (query?.error_description?.indexOf('canceled') > -1) {
       return new CloudOauthCanceledException();
     }
@@ -83,6 +90,12 @@ export class CloudAuthService {
     });
   }
 
+  /**
+   * Get the appropriate authentication strategy based on the identity provider type
+   * @param strategy Identity provider type
+   * @returns The authentication strategy for the specified provider
+   * @throws CloudOauthUnknownAuthorizationRequestException if the strategy is unknown
+   */
   getAuthStrategy(strategy: CloudAuthIdpType): CloudAuthStrategy {
     switch (strategy) {
       case CloudAuthIdpType.Google:
@@ -100,15 +113,16 @@ export class CloudAuthService {
 
   /**
    * Returns authorization url to open in the native browser to initialize oauth flow
-   * @param sessionMetadata
-   * @param options
+   * @param sessionMetadata Session metadata for the request
+   * @param options Authentication request options
+   * @returns Authorization URL for OAuth flow
    */
   async getAuthorizationUrl(
     sessionMetadata: SessionMetadata,
     options: CloudAuthRequestOptions,
   ): Promise<string> {
     try {
-      const authRequest: any = await this.getAuthStrategy(
+      const authRequest: CloudAuthRequest = await this.getAuthStrategy(
         options?.strategy,
       ).generateAuthRequest(sessionMetadata, options);
       authRequest.callback = options?.callback;
@@ -167,10 +181,12 @@ export class CloudAuthService {
   /**
    * Get some useful not sensitive information about auth request for analytics purpose
    * Will not remove auth request from the pool
-   * @param query
+   * @param query OAuth callback query parameters
    * @private
    */
-  private async getAuthRequestInfo(query): Promise<CloudAuthRequestInfo> {
+  private async getAuthRequestInfo(
+    query: CloudOauthCallbackQueryDto,
+  ): Promise<CloudAuthRequestInfo> {
     if (!this.authRequests.has(query?.state)) {
       this.logger.log(
         `${query?.state ? 'Auth Request matching query state not found' : 'Query state field is empty'}`,
@@ -191,9 +207,11 @@ export class CloudAuthService {
    * Process oauth callback
    * Exchanges code and modify user session
    * Generates proper errors
-   * @param query
+   * @param query OAuth callback query parameters
    */
-  private async callback(query): Promise<Function | void> {
+  private async callback(
+    query: CloudOauthCallbackQueryDto,
+  ): Promise<(result: CloudAuthResponse) => Promise<any>> {
     if (!this.authRequests.has(query?.state)) {
       this.logger.log(
         `${query?.state ? 'Auth Request matching query state not found' : 'Query state field is empty'}`,
@@ -266,11 +284,11 @@ export class CloudAuthService {
 
   /**
    * Handle OAuth callback from Web or by deep link
-   * @param query
-   * @param from
+   * @param query OAuth callback query parameters
+   * @param from Source of the callback request
    */
   async handleCallback(
-    query,
+    query: CloudOauthCallbackQueryDto,
     from = CloudSsoFeatureStrategy.DeepLink,
   ): Promise<CloudAuthResponse> {
     this.logger.log(
@@ -281,7 +299,7 @@ export class CloudAuthService {
       message: 'Successfully authenticated',
     };
 
-    let callback;
+    let callback: (result: CloudAuthResponse) => Promise<any>;
     let reqInfo: CloudAuthRequestInfo;
     try {
       reqInfo = await this.getAuthRequestInfo(query);
@@ -314,7 +332,7 @@ export class CloudAuthService {
       if (!callback) {
         this.logger.log('Callback is undefined');
       }
-      callback?.(result)?.catch((e: Error) =>
+      callback(result)?.catch((e: Error) =>
         this.logger.error('Async callback failed', e),
       );
     } catch (e) {
@@ -376,11 +394,20 @@ export class CloudAuthService {
     }
   }
 
-  isRequestInProgress(query) {
+  /**
+   * Check if a request is currently in progress
+   * @param query OAuth callback query parameters
+   * @returns True if the request is in progress
+   */
+  isRequestInProgress(query: CloudOauthCallbackQueryDto): boolean {
     return !!this.inProgressRequests.has(query?.state);
   }
 
-  finishInProgressRequest(query) {
+  /**
+   * Mark a request as finished
+   * @param query OAuth callback query parameters
+   */
+  finishInProgressRequest(query: CloudOauthCallbackQueryDto): void {
     this.inProgressRequests.delete(query?.state);
   }
 }

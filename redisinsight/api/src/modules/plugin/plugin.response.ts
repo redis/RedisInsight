@@ -11,6 +11,28 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
+export class PluginVisualizationQueryMatcher {
+  @ApiPropertyOptional({
+    type: String,
+    isArray: true,
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayNotEmpty()
+  @Type(() => String)
+  anyRegex?: string[];
+
+  @ApiPropertyOptional({
+    type: String,
+    isArray: true,
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayNotEmpty()
+  @Type(() => String)
+  noneRegex?: string[];
+}
+
 export class PluginVisualization {
   @ApiProperty({
     type: String,
@@ -43,7 +65,15 @@ export class PluginVisualization {
   @Type(() => String)
   matchCommands: string[];
 
-  @ApiProperty({
+  @ApiPropertyOptional({
+    type: PluginVisualizationQueryMatcher,
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => PluginVisualizationQueryMatcher)
+  matchQuery?: PluginVisualizationQueryMatcher;
+
+  @ApiPropertyOptional({
     type: Boolean,
   })
   @IsOptional()
@@ -51,7 +81,7 @@ export class PluginVisualization {
   @IsBoolean()
   default?: boolean;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
   })
   @IsOptional()
@@ -59,7 +89,7 @@ export class PluginVisualization {
   @IsString()
   iconDark?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
   })
   @IsOptional()
@@ -97,7 +127,7 @@ export class Plugin {
   @IsString()
   main: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Uri to css file on the local server',
     type: String,
   })

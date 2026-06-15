@@ -2,7 +2,7 @@
 
 This document outlines the comprehensive E2E testing strategy for RedisInsight features.
 
-> **📋 Rules**: Before implementing tests, read [`.ai/rules/e2e-testing.md`](../../.ai/rules/e2e-testing.md) for coding standards, patterns, and best practices.
+> **📋 Rules**: Before implementing tests, read [`.ai/skills/e2e-testing/SKILL.md`](../../.ai/skills/e2e-testing/SKILL.md) for coding standards, patterns, and best practices.
 
 ## Overview
 
@@ -140,6 +140,9 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Search by connection type (OSS Cluster, Sentinel) |
 | 🔲 | main | Search by last connection time |
 | ✅ | main | Verify Redis Stack icon displayed for databases with modules |
+| ✅ | main | Production DB > should show PROD badge in databases list and instance header |
+| ✅ | main | Development DB > should show DEV label in databases list and instance header |
+| ✅ | main | Unspecified DB > should not render an environment badge in list or header |
 
 ### 1.3 Clone Database
 | Status | Group | Test Case |
@@ -210,37 +213,32 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 2.1 Key List View
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | View key list |
-| 🔲 | main | Search/filter keys by pattern |
-| 🔲 | main | Filter by key type |
-| 🔲 | main | Filter keys by exact name |
-| 🔲 | main | Clear search filter |
-| 🔲 | main | Click on key to view details |
-| 🔲 | main | Refresh key list |
-| 🔲 | main | Show no results message for non-matching pattern |
-| 🔲 | main | Delete key |
-| 🔲 | main | Delete multiple keys (bulk) |
-| 🔲 | main | Search by Values of Keys |
-| 🔲 | main | Configure columns visibility |
-| 🔲 | main | Configure auto-refresh |
-| 🔲 | main | View database stats (CPU, Keys, Memory, Clients) |
+| ✅ | main | View key list |
+| ✅ | main | Search/filter keys by pattern |
+| ✅ | main | Filter by key type, then narrow by exact key name |
+| ✅ | main | Clear search filter |
+| ✅ | main | Click on key to view details |
+| ✅ | main | Refresh key list |
+| ✅ | main | Show no results message for non-matching pattern |
+| ✅ | main | Delete key |
+| ✅ | main | Delete multiple keys (bulk) |
+| ✅ | main | Search by Values of Keys |
+| ✅ | main | Configure columns visibility |
+| ✅ | main | Configure auto-refresh |
+| ✅ | main | Show empty database welcome and open Add key manually |
+| ✅ | main | Display keys summary and scroll key list in list view |
 
 ### 2.2 Key Tree View
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | Switch to tree view |
-| 🔲 | main | Expand/collapse tree nodes |
-| 🔲 | main | Configure delimiter |
-| 🔲 | main | Sort tree nodes |
-| 🔲 | main | View folder percentage and count |
-| 🔲 | main | Scan more keys (covered by "should show scan more button when searching" test) |
-| 🔲 | main | Open tree view settings |
-| 🔲 | main | Tree view mode state persists after page refresh |
-| 🔲 | main | Filter state preserved when switching between Browser and Tree view |
-| 🔲 | main | Key type filter state preserved when switching views |
-| 🔲 | main | Configure multiple delimiters in tree view |
-| 🔲 | main | Cancel delimiter change reverts to previous value |
-| 🔲 | main | Verify namespace tooltip shows key pattern and delimiter |
+| ✅ | main | Group keys into folders, expand/collapse them, and show folder badges/tooltip |
+| ✅ | main | Open tree view settings, change the delimiter and regroup folders |
+| ✅ | main | Sort tree nodes ascending and descending |
+| ✅ | main | Scan more keys |
+| ✅ | main | Selected view (List/Tree) persists after page refresh |
+| ✅ | main | Pattern and key-type filters preserved when switching List <-> Tree |
+| ✅ | main | Configure multiple delimiters in tree view |
+| ✅ | main | Cancel delimiter change reverts to previous value |
 | 🔲 | main | Scan DB by 10K keys in tree view |
 
 ### 2.3 Add Keys
@@ -260,13 +258,11 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 ### 2.4 Key Details - String
 | Status | Group | Test Case |
 |--------|-------|-----------|
-| 🔲 | main | View string value |
-| 🔲 | main | Edit string value |
-| 🔲 | main | View/edit TTL |
-| 🔲 | main | Copy key name (covered by "should show copy key name button on hover" test) |
-| 🔲 | main | Change value format (text/binary/hex) |
-| 🔲 | main | Rename key and confirm new name propagates across Browser |
-| 🔲 | main | Confirm TTL countdown updates in real time |
+| ✅ | main | should view, edit, rename a String key and show copy-on-hover |
+| ✅ | main | should view, edit TTL and have the key expire after countdown |
+| ✅ | main | should change value format between Unicode, HEX and Binary |
+| ✅ | main | Production DB > should require type-to-confirm modal when renaming a key |
+| ✅ | main | Development DB > should bypass type-to-confirm modal when editing a key |
 
 ### 2.5 Key Details - Hash
 | Status | Group | Test Case |
@@ -364,6 +360,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Confirm deletion failures surfaced in summary log |
 | 🔲 | main | Confirm performance when deleting thousands of keys |
 | 🔲 | main | Confirm performance when bulk uploading large datasets (>10K keys) |
+| ✅ | main | Production DB > should require typing the database name to bulk-delete |
 
 ### 2.12 Value Formatters
 | Status | Group | Test Case |
@@ -427,6 +424,58 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | CLI command history preserved in context |
 | 🔲 | main | Context cleared when navigating to different database |
 
+### 2.16 Vector Set Browser Support (RI-7390)
+
+> ⚠️ Requires Redis 8+ (VADD / VSIM commands) and the `dev-vectorSet` feature flag (set via `test.use({ featureFlags: { 'dev-vectorSet': true } })`).
+
+#### 2.16.1 Add Key (manual)
+
+> **Spec:** `tests/parallel/browser/vector-set/add-key-manual.spec.ts`
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| ✅ | main | should add a Vector Set key with a single element manually |
+| ✅ | main | should disable Add Key button until both element name and vector are filled |
+| ✅ | main | should cancel adding a Vector Set key |
+
+#### 2.16.2 Add Key (sample data)
+
+> **Spec:** `tests/parallel/browser/vector-set/add-key-sample-data.spec.ts`
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| ✅ | main | should show sample dataset preview when switching populate mode to sample |
+| ✅ | main | should load the vec2word sample dataset and add it to the key list |
+
+#### 2.16.3 Add Elements
+
+> **Spec:** `tests/parallel/browser/vector-set/add-elements.spec.ts`
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| ✅ | main | should add a new element to an existing Vector Set via the side panel |
+| ✅ | main | should add a new element with an FP32-encoded vector to an existing Vector Set |
+
+#### 2.16.4 Similarity Search
+
+> **Spec:** `tests/parallel/browser/vector-set/similarity-search.spec.ts`
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| ✅ | main | should run similarity search by vector and show ranked results |
+| ✅ | main | should run similarity search by element name and rank the queried element first |
+| ✅ | main | should reset the similarity search form |
+| ✅ | main | should prefill similarity search by clicking the row "Find similar" button |
+
+#### 2.16.5 Element Actions
+
+> **Spec:** `tests/parallel/browser/vector-set/element-actions.spec.ts`
+
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| ✅ | main | should open element details drawer and show the vector value |
+| ✅ | main | should remove an element from the Vector Set via the row action |
+
 ---
 
 ## 3. Workbench
@@ -456,6 +505,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | History limited to 30 commands (oldest replaced by newest) |
 | 🔲 | main | Quick-access to command history with Up Arrow |
 | 🔲 | main | Use Non-Redis Editor with Shift+Space |
+| ✅ | main | Production DB > should require type-to-confirm modal for dangerous workbench batches |
 
 ### 3.1.1 Workbench Context
 | Status | Group | Test Case |
@@ -486,6 +536,10 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Confirm plugins display module-specific icons and metadata |
 | 🔲 | main | Switch between views (Table ↔ Text) and confirm format updates instantly |
 | 🔲 | main | Confirm TimeSeries visualization displays correct axes, values, and units |
+| ✅ | main | renders Geo Map by default for coordinate search results |
+| ✅ | main | switches coordinate search results to Geo Heatmap |
+| ✅ | main | switches coordinate search results back to Geo Map |
+| ✅ | main | renders Geo Inspector by default for scalar GEO commands |
 
 ### 3.3 Tutorials
 | Status | Group | Test Case |
@@ -495,6 +549,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Open Intro to vector search tutorial |
 | 🔲 | main | Click Explore button |
 | 🔲 | main | Close insights panel |
+| ✅ | main | Production DB > should disable the tutorial Run button |
 
 ### 3.4 Profiler (Bottom Panel)
 | Status | Group | Test Case |
@@ -506,6 +561,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Hide/close profiler panel |
 | 🔲 | main | Reset profiler |
 | 🔲 | main | Open profiler panel |
+| ✅ | main | Production DB > should require confirmation to start the profiler |
 
 ### 3.5 Command Helper (Bottom Panel)
 | Status | Group | Test Case |
@@ -532,6 +588,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | ✅ | main | Execute multiple commands in sequence |
 | ✅ | main | Command history (up/down arrows) |
 | ✅ | main | Tab completion |
+| ✅ | main | Production DB > should require type-to-confirm modal for dangerous CLI commands |
 
 ### 4.2 Command Helper Integration
 | Status | Group | Test Case |
@@ -701,7 +758,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.1 Navigation and RQE Availability
 
-> **Spec:** `tests/main/vector-search/navigation/navigation.spec.ts`
+> **Spec:** `tests/serial/vector-search/navigation/navigation.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -711,7 +768,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.2 Select Key Onboarding
 
-> **Spec:** `tests/main/vector-search/create-index/onboarding.spec.ts`
+> **Spec:** `tests/serial/vector-search/create-index/onboarding.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -720,7 +777,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.3 Create Index - Onboarding
 
-> **Spec:** `tests/main/vector-search/create-index/onboarding.spec.ts`
+> **Spec:** `tests/serial/vector-search/create-index/onboarding.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -730,7 +787,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.4 Create Index - Sample Data
 
-> **Spec:** `tests/main/vector-search/create-index/sample-data.spec.ts`
+> **Spec:** `tests/serial/vector-search/create-index/sample-data.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -743,7 +800,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.5 Create Index - Existing Data
 
-> **Spec:** `tests/main/vector-search/create-index/existing-data.spec.ts`
+> **Spec:** `tests/serial/vector-search/create-index/existing-data.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -757,7 +814,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.6 List Indexes
 
-> **Spec:** `tests/main/vector-search/list-indexes/list-indexes.spec.ts`
+> **Spec:** `tests/serial/vector-search/list-indexes/list-indexes.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -769,7 +826,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.7 Create Index from List Page
 
-> **Spec:** `tests/main/vector-search/list-indexes/create-index.spec.ts`
+> **Spec:** `tests/serial/vector-search/list-indexes/create-index.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -780,7 +837,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.8 Query Page
 
-> **Spec:** `tests/main/vector-search/query/query-editor.spec.ts`
+> **Spec:** `tests/serial/vector-search/query/query-editor.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -797,7 +854,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.9 Query Page Onboarding
 
-> **Spec:** `tests/main/vector-search/query/query-onboarding.spec.ts`
+> **Spec:** `tests/serial/vector-search/query/query-onboarding.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -806,7 +863,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.10 Save Query
 
-> **Spec:** `tests/main/vector-search/query/save-query.spec.ts`
+> **Spec:** `tests/serial/vector-search/query/save-query.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -816,7 +873,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.11 Query Library
 
-> **Spec:** `tests/main/vector-search/query/query-library.spec.ts`
+> **Spec:** `tests/serial/vector-search/query/query-library.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -828,7 +885,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ### 8.12 Browser Page Integration
 
-> **Spec:** `tests/main/vector-search/browser-integration/browser-integration.spec.ts`
+> **Spec:** `tests/serial/vector-search/browser-integration/browser-integration.spec.ts`
 
 | Status | Group | Test Case |
 |--------|-------|-----------|
@@ -1154,4 +1211,3 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 |--------|-------|-----------|
 | 🔲 | main | Display GitHub repository link |
 | 🔲 | main | GitHub link opens correct repository URL |
-

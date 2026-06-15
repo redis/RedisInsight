@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { debounce, get, set } from 'lodash'
 import { TreeWalker, TreeWalkerValue, FixedSizeTree as Tree } from 'react-vtree'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 
 import { bufferToString, Nullable, stringToBuffer } from 'uiSrc/utils'
 import { useDisposableWebworker } from 'uiSrc/services'
@@ -19,7 +19,7 @@ import {
   RiImage,
 } from 'uiSrc/components/base/display'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
-import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
+import { GetKeyInfoResponse } from 'apiClient'
 
 import { Node } from './components/Node'
 import {
@@ -66,7 +66,7 @@ const VirtualTree = (props: VirtualTreeProps) => {
 
   const { result, run: runWebworker } = useDisposableWebworker(webworkerFn)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(
     () => () => {

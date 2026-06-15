@@ -5,14 +5,14 @@ runs:
   steps:
     - name: Merge artifacts by pattern
       id: merge-artifacts
-      uses: actions/upload-artifact/merge@v4
+      uses: actions/upload-artifact/merge@v7
       with:
         name: remove-artifacts
         pattern: '*'
         delete-merged: true
 
     - name: Delete merged artifact
-      uses: actions/github-script@v7
+      uses: actions/github-script@v9
       with:
         script: |
           github.rest.actions.deleteArtifact({

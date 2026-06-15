@@ -1,4 +1,5 @@
 import React from 'react'
+import { Environment } from 'apiClient'
 import { cloneDeep } from 'lodash'
 import reactRouterDom from 'react-router-dom'
 import { AxiosError } from 'axios'
@@ -9,6 +10,7 @@ import {
   mockedStore,
   render,
   screen,
+  waitForRiTooltipVisible,
 } from 'uiSrc/utils/test-utils'
 import {
   customTutorialsBulkUploadSelector,
@@ -18,7 +20,11 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { checkResourse } from 'uiSrc/services/resourcesService'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 import RedisUploadButton, { Props } from './RedisUploadButton'
+
+const PRODUCTION_DISABLED_TOOLTIP =
+  'Button disabled for your production database to avoid accidental data modifications.'
 
 jest.mock('uiSrc/slices/workbench/wb-custom-tutorials', () => ({
   ...jest.requireActual('uiSrc/slices/workbench/wb-custom-tutorials'),
@@ -37,11 +43,20 @@ jest.mock('uiSrc/telemetry', () => ({
   sendEventTelemetry: jest.fn(),
 }))
 
+jest.mock('uiSrc/components/hooks/useDatabaseEnvironment', () => ({
+  ...jest.requireActual('uiSrc/components/hooks/useDatabaseEnvironment'),
+  useDatabaseEnvironment: jest.fn(),
+}))
+
 let store: typeof mockedStore
 beforeEach(() => {
   cleanup()
   store = cloneDeep(mockedStore)
   store.clearActions()
+  ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+    environment: Environment.Unspecified,
+    isDangerousCommand: () => false,
+  })
 })
 
 const props: Props = {
@@ -160,5 +175,59 @@ describe('RedisUploadButton', () => {
       },
     })
     ;(sendEventTelemetry as jest.Mock).mockRestore()
+  })
+
+  describe('production mode', () => {
+    it('should disable the bulk-import button when mode is production', () => {
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+        environment: Environment.Production,
+        isDangerousCommand: () => false,
+      })
+
+      render(<RedisUploadButton {...props} />)
+
+      const btn = screen.getByTestId('upload-data-bulk-btn')
+      expect(btn).toBeDisabled()
+    })
+
+    it('should not open popover or fire telemetry when clicked in production', () => {
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+        environment: Environment.Production,
+        isDangerousCommand: () => false,
+      })
+      const sendEventTelemetryMock = jest.fn()
+      ;(sendEventTelemetry as jest.Mock).mockImplementation(
+        sendEventTelemetryMock,
+      )
+
+      render(<RedisUploadButton {...props} />)
+
+      fireEvent.click(screen.getByTestId('upload-data-bulk-btn'))
+
+      expect(
+        screen.queryByTestId('upload-data-bulk-tooltip'),
+      ).not.toBeInTheDocument()
+      expect(sendEventTelemetryMock).not.toBeCalled()
+    })
+
+    it('should show the production tooltip copy on focus in production', async () => {
+      ;(useDatabaseEnvironment as jest.Mock).mockReturnValue({
+        environment: Environment.Production,
+        isDangerousCommand: () => false,
+      })
+
+      render(<RedisUploadButton {...props} />)
+
+      await act(async () => {
+        fireEvent.focus(
+          screen.getByTestId('upload-data-bulk-btn').parentElement!,
+        )
+      })
+      await waitForRiTooltipVisible()
+
+      expect(
+        screen.getAllByText(PRODUCTION_DISABLED_TOOLTIP)[0],
+      ).toBeInTheDocument()
+    })
   })
 })

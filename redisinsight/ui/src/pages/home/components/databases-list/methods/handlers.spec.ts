@@ -1,3 +1,5 @@
+import { Environment } from 'apiClient'
+
 import {
   TelemetryEvent,
   sendEventTelemetry,
@@ -73,6 +75,7 @@ const instance = {
   id: '1',
   provider: 'LOCALHOST',
   modules: [],
+  environment: Environment.Production,
 }
 
 describe('databases-list methods/handlers', () => {
@@ -97,6 +100,7 @@ describe('databases-list methods/handlers', () => {
         eventData: expect.objectContaining({
           databaseId: '1',
           provider: 'LOCALHOST',
+          environment: Environment.Production,
         }),
       }),
     )

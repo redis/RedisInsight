@@ -1,7 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
 import { isNull } from 'lodash'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { Text, ColorText } from 'uiSrc/components/base/text'
 
@@ -49,7 +49,7 @@ const KeysSummary = (props: Props) => {
       ? '~'
       : ''
 
-  const { viewType } = useSelector(keysSelector)
+  const { viewType } = useAppSelector(keysSelector)
 
   return (
     <>

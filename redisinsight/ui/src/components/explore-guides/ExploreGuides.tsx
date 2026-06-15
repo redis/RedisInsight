@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory, useParams } from 'react-router-dom'
 import { guideLinksSelector } from 'uiSrc/slices/content/guide-links'
 
@@ -16,13 +16,13 @@ import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import * as S from './ExploreGuides.styles'
 
 const ExploreGuides = () => {
-  const { data } = useSelector(guideLinksSelector)
-  const { provider } = useSelector(connectedInstanceSelector)
+  const { data } = useAppSelector(guideLinksSelector)
+  const { provider } = useAppSelector(connectedInstanceSelector)
 
   const { instanceId = '' } = useParams<{ instanceId: string }>()
 
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleLinkClick = (tutorialId: string) => {
     sendEventTelemetry({

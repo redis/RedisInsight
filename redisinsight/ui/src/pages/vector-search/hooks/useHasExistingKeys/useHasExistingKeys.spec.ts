@@ -9,9 +9,9 @@ jest.mock('react-router-dom', () => ({
   useLocation: jest.fn(() => ({ pathname: '/test' })),
 }))
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: jest.fn((selector) => {
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppSelector: jest.fn((selector) => {
     const state = {
       connections: {
         instances: {

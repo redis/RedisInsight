@@ -82,7 +82,7 @@ export default defineConfig({
       '@redislabsdev/redis-ui-icons': '@redis-ui/icons',
       '@redislabsdev/redis-ui-table': '@redis-ui/table',
       uiSrc: fileURLToPath(new URL('./src', import.meta.url)),
-      apiSrc: fileURLToPath(new URL('../api/src', import.meta.url)),
+      apiClient: fileURLToPath(new URL('../api-client', import.meta.url)),
     },
   },
   server: {
@@ -93,6 +93,12 @@ export default defineConfig({
   },
   envPrefix: 'RI_',
   optimizeDeps: {
+    // Pin the entry scan to the main UI's index.html. Without this, Vite's
+    // default ('**/*.html' under the project root, which is the workspace
+    // root when invoked from the root postinstall) also crawls each plugin
+    // sub-package's index.html in src/packages/*, whose deps live only in
+    // the sub-package's own node_modules and fail to resolve at root install.
+    entries: fileURLToPath(new URL('./index.html', import.meta.url)),
     include: ['monaco-editor', 'monaco-yaml/yaml.worker'],
     exclude: [
       'react-json-tree',
@@ -151,6 +157,11 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
+        // Pin the Sass API to the legacy compiler. Vite 6 silently switched the
+        // default to 'modern-compiler' when sass-embedded is installed, which
+        // changes how @import and additionalData are resolved and breaks the
+        // existing stylesheets that still rely on @import.
+        api: 'legacy',
         // add @layer app for css ordering. Styles without layer have the highest priority
         // https://github.com/vitejs/vite/issues/3924
         additionalData: (source, filename) => {

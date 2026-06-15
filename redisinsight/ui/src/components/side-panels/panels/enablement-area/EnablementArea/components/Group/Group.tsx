@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 
@@ -54,7 +54,7 @@ const Group = (props: Props) => {
     isShowFolder,
     hasChildren = true,
   } = props
-  const { deleting: deletingCustomTutorials } = useSelector(
+  const { deleting: deletingCustomTutorials } = useAppSelector(
     workbenchCustomTutorialsSelector,
   )
   const { instanceId = '' } = useParams<{ instanceId: string }>()

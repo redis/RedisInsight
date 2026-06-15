@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import {
@@ -25,10 +25,10 @@ import UserApiKeysTable from './components/user-api-keys-table'
 import styles from './styles.module.scss'
 
 const CloudSettings = () => {
-  const { loading, data } = useSelector(oauthCapiKeysSelector)
+  const { loading, data } = useAppSelector(oauthCapiKeysSelector)
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     dispatch(getCapiKeysAction())
@@ -107,6 +107,7 @@ const CloudSettings = () => {
                 {'To delete API keys from Redis Cloud, '}
                 <Link
                   target="_blank"
+                  variant="inline"
                   color="text"
                   tabIndex={-1}
                   href="https://redis.io/redis-enterprise-cloud/overview/?utm_source=redisinsight&utm_medium=settings&utm_campaign=clear_keys"

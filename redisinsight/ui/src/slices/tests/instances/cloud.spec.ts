@@ -6,10 +6,7 @@ import {
   initialStateDefault,
   mockedStore,
 } from 'uiSrc/utils/test-utils'
-import {
-  GetCloudAccountShortInfoResponse,
-  RedisCloudDatabase,
-} from 'apiSrc/modules/redis-enterprise/dto/cloud.dto'
+import { CloudAccountInfo, CloudDatabase } from 'apiClient'
 import reducer, {
   loadSubscriptionsRedisCloud,
   initialState,
@@ -40,8 +37,8 @@ jest.mock('uiSrc/services', () => ({
 }))
 
 let store: typeof mockedStore
-let account: GetCloudAccountShortInfoResponse
-let instances: RedisCloudDatabase[]
+let account: CloudAccountInfo
+let instances: CloudDatabase[]
 beforeEach(() => {
   cleanup()
   store = cloneDeep(mockedStore)

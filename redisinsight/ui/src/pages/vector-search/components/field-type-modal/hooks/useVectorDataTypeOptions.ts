@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { REDISEARCH_MODULES } from 'uiSrc/slices/interfaces'
 import { isRedisVersionSupported } from 'uiSrc/utils/comparisons/compareVersions'
@@ -13,7 +13,7 @@ import {
 const REDISEARCH_MODULE_SET = new Set(REDISEARCH_MODULES)
 
 export const useVectorDataTypeOptions = () => {
-  const { modules = [] } = useSelector(connectedInstanceSelector)
+  const { modules = [] } = useAppSelector(connectedInstanceSelector)
 
   return useMemo(() => {
     const rqeModule = modules.find((m) => REDISEARCH_MODULE_SET.has(m.name))

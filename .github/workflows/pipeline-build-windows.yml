@@ -16,6 +16,12 @@ on:
         description: Enterprise build
         type: boolean
 
+      show_build_commit_sha:
+        description: Explicit override for RI_SHOW_BUILD_COMMIT_SHA ('true'/'false'); empty falls back to per-env default.
+        required: false
+        default: ''
+        type: string
+
 jobs:
   build:
     name: Build windows
@@ -23,7 +29,7 @@ jobs:
     environment: ${{ inputs.environment }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6.0.2
 
       # SSH Debug
       - name: Enable SSH
@@ -60,7 +66,7 @@ jobs:
           rm -rf release/win-unpacked
         shell: bash
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: windows-builds
           if-no-files-found: error
@@ -92,3 +98,5 @@ jobs:
       RI_FEATURES_CLOUD_ADS_DEFAULT_FLAG: ${{ inputs.enterprise == false }}
       RI_DISABLE_AUTO_UPGRADE: ${{ inputs.enterprise }}
       RI_APP_TYPE: ${{ inputs.enterprise && 'ELECTRON_ENTERPRISE' || 'ELECTRON' }}
+      RI_APP_BUILD_COMMIT_SHA: ${{ github.sha }}
+      RI_SHOW_BUILD_COMMIT_SHA: ${{ inputs.show_build_commit_sha != '' && inputs.show_build_commit_sha || (vars.ENV != 'production' && 'true' || 'false') }}

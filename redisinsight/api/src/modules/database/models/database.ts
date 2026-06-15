@@ -7,6 +7,7 @@ import {
   Compressor,
   ConnectionType,
   Encoding,
+  Environment,
   HostingProvider,
 } from 'src/modules/database/entities/database.entity';
 import {
@@ -121,6 +122,8 @@ export class Database {
     description: 'Connection Type',
     default: ConnectionType.STANDALONE,
     enum: ConnectionType,
+
+    enumName: 'ConnectionType',
   })
   @Expose()
   @IsEnum(ConnectionType)
@@ -143,16 +146,16 @@ export class Database {
   @IsString()
   provider?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Time of the last connection to the database.',
-    type: String,
+    type: Date,
     format: 'date-time',
     example: '2021-01-06T12:44:39.000Z',
   })
   @Expose()
   lastConnection?: Date;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Date of creation',
     type: Date,
   })
@@ -298,6 +301,8 @@ export class Database {
     description: 'Database compressor',
     default: Compressor.NONE,
     enum: Compressor,
+
+    enumName: 'Compressor',
   })
   @Expose()
   @IsEnum(Compressor, {
@@ -312,6 +317,8 @@ export class Database {
     description: 'Key name format',
     default: Encoding.UNICODE,
     enum: Encoding,
+
+    enumName: 'Encoding',
   })
   @Expose()
   @IsEnum(Encoding, {
@@ -361,4 +368,20 @@ export class Database {
   @IsBoolean()
   @IsOptional()
   isPreSetup?: boolean;
+
+  @ApiPropertyOptional({
+    description:
+      'Environment classification for the database connection. Controls confirmation friction for risky operations.',
+    default: Environment.Unspecified,
+    enum: Environment,
+    enumName: 'Environment',
+  })
+  @Expose()
+  @IsEnum(Environment, {
+    message: `environment must be a valid enum value. Valid values: ${Object.values(
+      Environment,
+    )}.`,
+  })
+  @IsOptional()
+  environment?: Environment = Environment.Unspecified;
 }

@@ -23,6 +23,9 @@ import { RedisClient } from 'src/modules/redis/client';
 import { getAnalyticsDataFromIndexInfo } from 'src/utils';
 import { RunQueryMode } from 'src/modules/workbench/models/command-execution';
 import { WorkbenchAnalytics } from 'src/modules/workbench/workbench.analytics';
+import { DatabaseService } from 'src/modules/database/database.service';
+import { Environment } from 'src/modules/database/entities/database.entity';
+import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 
 @Injectable()
 export class WorkbenchCommandsExecutor {
@@ -30,7 +33,11 @@ export class WorkbenchCommandsExecutor {
 
   private formatterManager: FormatterManager;
 
-  constructor(private analyticsService: WorkbenchAnalytics) {
+  constructor(
+    private analyticsService: WorkbenchAnalytics,
+    private readonly databaseService: DatabaseService,
+    private readonly dangerousCommandsProvider: DangerousCommandsProvider,
+  ) {
     this.formatterManager = new FormatterManager();
     this.formatterManager.addStrategy(
       FormatterTypes.UTF8,
@@ -61,6 +68,18 @@ export class WorkbenchCommandsExecutor {
       const { command: commandLine, mode } = dto;
       [command, ...commandArgs] = splitCliCommandLine(commandLine);
 
+      const environment =
+        (
+          await this.databaseService.get(
+            client.clientMetadata.sessionMetadata,
+            client.clientMetadata.databaseId,
+          )
+        ).environment ?? Environment.Unspecified;
+      const isDangerous: 'true' | 'false' =
+        (await this.dangerousCommandsProvider.isDangerous(client, command))
+          ? 'true'
+          : 'false';
+
       const formatter = this.getFormatter(mode);
       const replyEncoding = checkHumanReadableCommands(
         `${command} ${commandArgs[0]}`,
@@ -81,7 +100,12 @@ export class WorkbenchCommandsExecutor {
         client.clientMetadata.databaseId,
         dto.type,
         result,
-        { command, rawMode: mode === RunQueryMode.Raw },
+        {
+          command,
+          rawMode: mode === RunQueryMode.Raw,
+          environment,
+          isDangerous,
+        },
       );
 
       if (command.toLowerCase() === 'ft.info') {
@@ -89,7 +113,10 @@ export class WorkbenchCommandsExecutor {
           client.clientMetadata.sessionMetadata,
           client.clientMetadata.databaseId,
           dto.type,
-          getAnalyticsDataFromIndexInfo(response as string[]),
+          {
+            ...getAnalyticsDataFromIndexInfo(response as string[]),
+            environment,
+          },
         );
       }
 
@@ -106,7 +133,12 @@ export class WorkbenchCommandsExecutor {
         client.clientMetadata.databaseId,
         dto.type,
         { ...errorResult, error },
-        { command, rawMode: dto.mode === RunQueryMode.Raw },
+        {
+          command,
+          rawMode: dto.mode === RunQueryMode.Raw,
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
+        },
       );
 
       if (

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { keys } from '@elastic/eui'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -34,11 +34,11 @@ const SourcePipelineDialog = () => {
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
 
-  const { isOpenDialog } = useSelector(appContextPipelineManagement)
+  const { isOpenDialog } = useAppSelector(appContextPipelineManagement)
 
   // data is original response from the server converted to config and jobs yaml strings
   // since by default it is null we can determine if it was fetched and it's content
-  const { data } = useSelector(rdiPipelineSelector)
+  const { data } = useAppSelector(rdiPipelineSelector)
 
   useEffect(() => {
     if (data?.config === '') {
@@ -46,7 +46,7 @@ const SourcePipelineDialog = () => {
     }
   }, [data])
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const onSelect = (option: PipelineSourceOptions) => {
     sendEventTelemetry({

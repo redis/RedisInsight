@@ -3,7 +3,7 @@
   "appName": "Redis Insight",
   "productName": "RedisInsight",
   "private": true,
-  "version": "3.4.2",
+  "version": "3.6.0",
   "description": "Redis Insight",
   "main": "./dist/main/main.js",
   "author": {
@@ -19,7 +19,7 @@
     "**/cpu-features": "file:./api/stubs/cpu-features"
   },
   "dependencies": {
-    "better-sqlite3": "^12.8.0",
+    "better-sqlite3": "^12.10.1",
     "keytar": "^7.9.0",
     "tunnel-ssh": "^5.1.2"
   }

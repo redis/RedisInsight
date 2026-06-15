@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -27,14 +27,14 @@ const FooterPanel = styled(FlexItem)`
 `
 
 const PubSubPage = () => {
-  const { name: connectedInstanceName, db } = useSelector(
+  const { name: connectedInstanceName, db } = useAppSelector(
     connectedInstanceSelector,
   )
   const { instanceId } = useParams<{ instanceId: string }>()
 
   const [isPageViewSent, setIsPageViewSent] = useState(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const dbName = `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)}`
   setTitle(`${dbName} - Pub/Sub`)

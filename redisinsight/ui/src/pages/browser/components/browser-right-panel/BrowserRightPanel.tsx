@@ -1,6 +1,6 @@
 import { every } from 'lodash'
 import React, { useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import AddKey from 'uiSrc/pages/browser/components/add-key/AddKey'
@@ -46,16 +46,16 @@ const BrowserRightPanel = (props: Props) => {
     closeRightPanels,
   } = props
 
-  const { isBrowserFullScreen, viewType } = useSelector(keysSelector)
+  const { isBrowserFullScreen, viewType } = useAppSelector(keysSelector)
   const { total, lastRefreshTime: keysLastRefreshTime } =
-    useSelector(keysDataSelector)
-  const { type, length } = useSelector(selectedKeyDataSelector) ?? {
+    useAppSelector(keysDataSelector)
+  const { type, length } = useAppSelector(selectedKeyDataSelector) ?? {
     type: '',
     length: 0,
   }
 
   const { instanceId } = useParams<{ instanceId: string }>()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const closePanel = () => {
     dispatch(toggleBrowserFullScreen(true))

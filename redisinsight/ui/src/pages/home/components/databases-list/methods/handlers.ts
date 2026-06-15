@@ -32,7 +32,7 @@ const connectToInstance = (id: string) => {
 }
 
 export const handleCheckConnectToInstance = async (instance: Instance) => {
-  const { id, provider, modules } = instance
+  const { id, provider, modules, environment } = instance
   const { contextInstanceId } = appContextSelector(store.getState())
 
   dispatch(
@@ -53,6 +53,7 @@ export const handleCheckConnectToInstance = async (instance: Instance) => {
       databaseId: id,
       provider,
       source: 'db_list',
+      environment,
       ...modulesSummary,
       ...infoData,
     },

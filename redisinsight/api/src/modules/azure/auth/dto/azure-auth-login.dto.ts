@@ -29,6 +29,7 @@ export class AzureAuthLoginDto {
       'OAuth prompt parameter to control login behavior. ' +
       '"select_account" shows account picker, "login" forces re-auth, "consent" forces consent dialog.',
     enum: AzureOAuthPrompt,
+    enumName: 'AzureOAuthPrompt',
     example: AzureOAuthPrompt.SelectAccount,
   })
   @IsOptional()
@@ -42,6 +43,7 @@ export class AzureAuthLoginDto {
       'OAuth redirect type. ' +
       '"deeplink" uses redisinsight:// protocol for Electron, "web" uses localhost HTTP callback for browser/Docker.',
     enum: AzureOAuthRedirectType,
+    enumName: 'AzureOAuthRedirectType',
     example: AzureOAuthRedirectType.Deeplink,
     default: AzureOAuthRedirectType.Deeplink,
   })

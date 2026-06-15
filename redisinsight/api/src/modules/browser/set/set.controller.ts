@@ -39,6 +39,9 @@ export class SetController extends BrowserBaseController {
   @ApiOperation({ description: 'Set key to hold Set data type' })
   @ApiRedisParams()
   @ApiBody({ type: CreateSetWithExpireDto })
+  @ApiOkResponse({
+    description: 'Set key created successfully',
+  })
   @ApiQueryRedisStringEncoding()
   async createSet(
     @BrowserClientMetadata() clientMetadata: ClientMetadata,
@@ -73,6 +76,9 @@ export class SetController extends BrowserBaseController {
   })
   @ApiRedisParams()
   @ApiBody({ type: AddMembersToSetDto })
+  @ApiOkResponse({
+    description: 'Members added to set successfully',
+  })
   @ApiQueryRedisStringEncoding()
   async addMembers(
     @BrowserClientMetadata() clientMetadata: ClientMetadata,
@@ -87,6 +93,10 @@ export class SetController extends BrowserBaseController {
   })
   @ApiRedisParams()
   @ApiBody({ type: DeleteMembersFromSetDto })
+  @ApiOkResponse({
+    description: 'Members removed from set',
+    type: DeleteMembersFromSetResponse,
+  })
   @ApiQueryRedisStringEncoding()
   async deleteMembers(
     @BrowserClientMetadata() clientMetadata: ClientMetadata,

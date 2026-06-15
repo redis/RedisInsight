@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback, useRef } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { Instance } from 'uiSrc/slices/interfaces'
 import { instancesSelector } from 'uiSrc/slices/instances/instances'
@@ -20,7 +20,7 @@ const useDatabaseListData = () => {
     data: instances,
     loading,
     shownColumns,
-  } = useSelector(instancesSelector)
+  } = useAppSelector(instancesSelector)
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   const resetRowSelection = useCallback(() => {
     setRowSelection({})

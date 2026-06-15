@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory, useParams } from 'react-router-dom'
 import cx from 'classnames'
 
@@ -24,17 +24,17 @@ import PopoverRunAnalyze from '../popover-run-analyze'
 import styles from './styles.module.scss'
 
 const NoRecommendationsScreen = () => {
-  const { provider, connectionType } = useSelector(connectedInstanceSelector)
+  const { provider, connectionType } = useAppSelector(connectedInstanceSelector)
   const {
     data: { recommendations },
-  } = useSelector(recommendationsSelector)
+  } = useAppSelector(recommendationsSelector)
   const { treeViewDelimiter = [DEFAULT_DELIMITER] } =
-    useSelector(appContextDbConfig)
+    useAppSelector(appContextDbConfig)
 
   const [isShowInfo, setIsShowInfo] = useState(false)
 
   const { instanceId } = useParams<{ instanceId: string }>()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
 
   const handleClickDbAnalysisLink = () => {

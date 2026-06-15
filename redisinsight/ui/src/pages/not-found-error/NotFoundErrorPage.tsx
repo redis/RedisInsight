@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { FeatureFlags } from 'uiSrc/constants/featureFlags'
 import { getConfig } from 'uiSrc/config'
@@ -15,7 +15,7 @@ import styles from './styles.module.scss'
 const NotFoundErrorPage = () => {
   const history = useHistory()
   const config = getConfig()
-  const { [FeatureFlags.envDependent]: envDependentFeature } = useSelector(
+  const { [FeatureFlags.envDependent]: envDependentFeature } = useAppSelector(
     appFeatureFlagsFeaturesSelector,
   )
 

@@ -20,6 +20,7 @@ import { DatabaseRecommendationService } from 'src/modules/database-recommendati
 import { RECOMMENDATION_NAMES } from 'src/constants';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { DatabaseInfoProvider } from 'src/modules/database/providers/database-info.provider';
+import { DangerousCommandsProvider } from 'src/modules/database/providers/dangerous-commands.provider';
 import { DatabaseService } from './database.service';
 
 describe('DatabaseInfoService', () => {
@@ -28,6 +29,7 @@ describe('DatabaseInfoService', () => {
   let databaseClientFactory: MockType<DatabaseClientFactory>;
   let recommendationService: MockType<DatabaseRecommendationService>;
   let databaseService: MockType<DatabaseService>;
+  let dangerousCommandsProvider: MockType<DangerousCommandsProvider>;
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -55,6 +57,12 @@ describe('DatabaseInfoService', () => {
           provide: DatabaseService,
           useFactory: mockDatabaseService,
         },
+        {
+          provide: DangerousCommandsProvider,
+          useFactory: () => ({
+            getDangerousCommands: jest.fn().mockResolvedValue([]),
+          }),
+        },
       ],
     }).compile();
 
@@ -62,6 +70,7 @@ describe('DatabaseInfoService', () => {
     databaseClientFactory = await module.get(DatabaseClientFactory);
     recommendationService = module.get(DatabaseRecommendationService);
     databaseService = module.get(DatabaseService);
+    dangerousCommandsProvider = module.get(DangerousCommandsProvider);
   });
 
   describe('getInfo', () => {
@@ -80,6 +89,23 @@ describe('DatabaseInfoService', () => {
           mockDatabaseOverviewCurrentKeyspace,
         ),
       ).toEqual(mockDatabaseOverview);
+    });
+  });
+
+  describe('getDangerousCommands', () => {
+    it('should create client and get dangerous commands', async () => {
+      dangerousCommandsProvider.getDangerousCommands.mockResolvedValueOnce([
+        'FLUSHALL',
+        'FLUSHDB',
+      ]);
+
+      expect(
+        await service.getDangerousCommands(mockCommonClientMetadata),
+      ).toEqual(['FLUSHALL', 'FLUSHDB']);
+      expect(databaseClientFactory.getOrCreateClient).toHaveBeenCalledWith(
+        mockCommonClientMetadata,
+      );
+      expect(dangerousCommandsProvider.getDangerousCommands).toHaveBeenCalled();
     });
   });
 

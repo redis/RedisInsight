@@ -1,21 +1,24 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
+import { Environment } from 'apiClient'
 
 import {
   bulkActionsDeleteOverviewSelector,
   setBulkDeleteStartAgain,
   toggleBulkDeleteActionTriggered,
   setBulkDeleteGenerateReport,
+  setBulkDeleteConfirmedThrough,
   bulkActionsDeleteSelector,
 } from 'uiSrc/slices/browser/bulkActions'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { keysDataSelector } from 'uiSrc/slices/browser/keys'
 import {
   getMatchType,
   sendEventTelemetry,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import { BulkActionsType } from 'uiSrc/constants'
+import { BulkActionConfirmation, BulkActionsType } from 'uiSrc/constants'
 import { getRangeForNumber, BULK_THRESHOLD_BREAKPOINTS } from 'uiSrc/utils'
 
 import { DEFAULT_SEARCH_MATCH } from 'uiSrc/constants/api'
@@ -27,6 +30,8 @@ import {
 import { RefreshIcon } from 'uiSrc/components/base/icons'
 import { Text } from 'uiSrc/components/base/text'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
+import { TypeToConfirmModal } from 'uiSrc/components/type-to-confirm-modal'
 import { isProcessedBulkAction } from '../../utils'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { ConfirmationPopover, RiTooltip } from 'uiSrc/components'
@@ -40,24 +45,37 @@ export interface Props {
 const BulkDeleteFooter = (props: Props) => {
   const { onCancel } = props
   const { instanceId = '' } = useParams<{ instanceId: string }>()
-  const { scanned, total } = useSelector(keysDataSelector)
-  const { loading, generateReport, filter, search } = useSelector(
+  const { scanned, total } = useAppSelector(keysDataSelector)
+  const { loading, generateReport, filter, search } = useAppSelector(
     bulkActionsDeleteSelector,
   )
-  const { status } = useSelector(bulkActionsDeleteOverviewSelector) ?? {}
+  const { name, host, port } = useAppSelector(connectedInstanceSelector)
+  const { status } = useAppSelector(bulkActionsDeleteOverviewSelector) ?? {}
+  const { environment } = useDatabaseEnvironment()
+  const isProduction = environment === Environment.Production
+  // Fall back to host:port when name is empty so the modal never matches an
+  // empty input (which would bypass the type-to-confirm safety check).
+  const confirmationText = name || `${host}:${port}`
 
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false)
+  const [isTypeToConfirmOpen, setIsTypeToConfirmOpen] = useState<boolean>(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleDelete = () => {
     setIsPopoverOpen(false)
     dispatch(toggleBulkDeleteActionTriggered())
   }
 
-  const handleDeleteWarning = () => {
-    setIsPopoverOpen(true)
+  const handleTypeToConfirm = () => {
+    setIsTypeToConfirmOpen(false)
+    dispatch(
+      setBulkDeleteConfirmedThrough(BulkActionConfirmation.TypeToConfirm),
+    )
+    dispatch(toggleBulkDeleteActionTriggered())
+  }
 
+  const sendDeleteWarningTelemetry = () => {
     let matchValue = DEFAULT_SEARCH_MATCH
     if (search !== DEFAULT_SEARCH_MATCH && !!search) {
       matchValue = getMatchType(search)
@@ -80,6 +98,16 @@ const BulkDeleteFooter = (props: Props) => {
         action: BulkActionsType.Delete,
       },
     })
+  }
+
+  const handleDeleteWarning = () => {
+    setIsPopoverOpen(true)
+    sendDeleteWarningTelemetry()
+  }
+
+  const handleOpenTypeToConfirm = () => {
+    setIsTypeToConfirmOpen(true)
+    sendDeleteWarningTelemetry()
   }
 
   const handleStartNew = () => {
@@ -141,7 +169,7 @@ const BulkDeleteFooter = (props: Props) => {
           </SecondaryButton>
         )}
 
-        {!isProcessedBulkAction(status) && (
+        {!isProcessedBulkAction(status) && !isProduction && (
           <ConfirmationPopover
             anchorPosition="upCenter"
             ownFocus
@@ -182,6 +210,34 @@ const BulkDeleteFooter = (props: Props) => {
               </DestructiveButton>
             }
           />
+        )}
+        {!isProcessedBulkAction(status) && isProduction && (
+          <>
+            <PrimaryButton
+              loading={loading}
+              disabled={loading}
+              onClick={handleOpenTypeToConfirm}
+              data-testid="bulk-action-warning-btn"
+            >
+              Delete
+            </PrimaryButton>
+            {isTypeToConfirmOpen && (
+              <TypeToConfirmModal
+                title="Delete all matching keys"
+                confirmationText={confirmationText}
+                confirmButtonText="Delete"
+                actionDescription={
+                  <>
+                    This will delete all keys matching the selected type and
+                    pattern. Bulk deletion may impact performance and cause
+                    memory spikes.
+                  </>
+                }
+                onConfirm={handleTypeToConfirm}
+                onCancel={() => setIsTypeToConfirmOpen(false)}
+              />
+            )}
+          </>
         )}
         {isProcessedBulkAction(status) && (
           <PrimaryButton

@@ -142,7 +142,7 @@ module.exports = {
       parserOptions: {
         ecmaVersion: 2020,
         sourceType: 'module',
-        project: path.join(__dirname, 'tsconfig.json'),
+        project: path.join(__dirname, 'redisinsight/ui/tsconfig.json'),
       },
       rules: {
         radix: 'off',
@@ -194,6 +194,24 @@ module.exports = {
         'prefer-template': 'error',
         'prefer-const': 'error',
         '@typescript-eslint/no-unused-vars': noUnusedVarsConfig,
+        // Force every UI callsite onto the typed Redux hooks so the
+        // `AppDispatch` (incl. thunk overload) and `RootState` types are
+        // never accidentally dropped. The wrapper file itself
+        // (`uiSrc/slices/hooks.ts`) is allowed to import the originals — see
+        // the override below.
+        'no-restricted-imports': [
+          'error',
+          {
+            paths: [
+              {
+                name: 'react-redux',
+                importNames: ['useDispatch', 'useSelector'],
+                message:
+                  'Use useAppDispatch / useAppSelector from uiSrc/slices/hooks instead.',
+              },
+            ],
+          },
+        ],
         'import/order': [
           1,
           {
@@ -212,11 +230,6 @@ module.exports = {
                 position: 'after',
               },
               {
-                pattern: 'apiSrc/**',
-                group: 'internal',
-                position: 'after',
-              },
-              {
                 pattern: '{.,..}/*.scss',
                 group: 'object',
                 position: 'after',
@@ -226,6 +239,14 @@ module.exports = {
             pathGroupsExcludedImportTypes: ['builtin'],
           },
         ],
+      },
+    },
+    // Typed Redux hooks wrapper — only file allowed to import the bare
+    // `useDispatch` / `useSelector` from `react-redux` (it's what wraps them).
+    {
+      files: ['redisinsight/ui/src/slices/hooks.ts'],
+      rules: {
+        'no-restricted-imports': 'off',
       },
     },
     // UI test files
@@ -385,7 +406,7 @@ module.exports = {
     },
   ],
   parserOptions: {
-    project: './tsconfig.json',
+    project: true,
     ecmaVersion: 2020,
     sourceType: 'module',
   },

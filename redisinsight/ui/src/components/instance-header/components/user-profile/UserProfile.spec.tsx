@@ -1,6 +1,6 @@
 import { cloneDeep, set } from 'lodash'
 import React from 'react'
-import { CloudUser } from 'src/modules/cloud/user/models'
+import { CloudUser } from 'apiClient'
 import { FeatureFlags } from 'uiSrc/constants'
 import {
   cleanup,

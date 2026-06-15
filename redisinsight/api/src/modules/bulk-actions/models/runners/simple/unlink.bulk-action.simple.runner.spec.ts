@@ -3,6 +3,8 @@ import {
   mockBulkActionsAnalytics,
   mockCreateBulkActionDto,
   mockStandaloneRedisClient,
+  mockSessionMetadata,
+  mockDatabase,
 } from 'src/__mocks__';
 import { BrowserToolKeysCommands } from 'src/modules/browser/constants/browser-tool-commands';
 import { UnlinkBulkActionSimpleRunner } from 'src/modules/bulk-actions/models/runners/simple/unlink.bulk-action.simple.runner';
@@ -19,11 +21,12 @@ const mockBulkActionFilter = Object.assign(new BulkActionFilter(), {
 
 const bulkAction = new BulkAction(
   mockCreateBulkActionDto.id,
-  mockCreateBulkActionDto.databaseId,
+  mockDatabase,
   mockCreateBulkActionDto.type,
   mockBulkActionFilter,
   mockSocket,
   mockBulkActionsAnalytics as any,
+  mockSessionMetadata,
 );
 
 const mockKey = 'mockedKey';

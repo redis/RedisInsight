@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { ColorText } from 'uiSrc/components/base/text'
 
 import {
@@ -30,6 +30,10 @@ import {
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
+import {
+  BrowserConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 
 import { EntryContent } from '../../common/AddKeysContainer.styled'
 
@@ -39,17 +43,20 @@ export interface Props {
 
 const AddSetMembers = (props: Props) => {
   const { closePanel } = props
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [members, setMembers] = useState<ISetMemberState[]>([
     { ...INITIAL_SET_MEMBER_STATE },
   ])
-  const { loading } = useSelector(setSelector)
-  const { name: selectedKey = '' } = useSelector(selectedKeyDataSelector) ?? {
+  const { loading } = useAppSelector(setSelector)
+  const { name: selectedKey = '' } = useAppSelector(
+    selectedKeyDataSelector,
+  ) ?? {
     name: undefined,
   }
-  const { viewType } = useSelector(keysSelector)
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
+  const { viewType } = useAppSelector(keysSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
   const lastAddedMemberName = useRef<HTMLInputElement>(null)
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(() => {
     lastAddedMemberName.current?.focus()
@@ -131,6 +138,22 @@ const AddSetMembers = (props: Props) => {
     dispatch(addSetMembersAction(data, onSuccessAdded))
   }
 
+  const handleSubmit = () => {
+    requestConfirmation({
+      title: 'Add members on production database?',
+      actionDescription: (
+        <>
+          You are about to add {members.length} member
+          {members.length === 1 ? '' : 's'} to a set on a production database.
+        </>
+      ),
+      confirmButtonText: 'Add members',
+      commandId: BrowserConfirmationCommandId.AddSetMembers,
+      disableConfirmationInput: true,
+      onConfirm: submitData,
+    })
+  }
+
   const isClearDisabled = (item: ISetMemberState): boolean =>
     members.length === 1 && !item.name.length
 
@@ -180,7 +203,7 @@ const AddSetMembers = (props: Props) => {
           <PrimaryButton
             disabled={loading}
             loading={loading}
-            onClick={submitData}
+            onClick={handleSubmit}
             data-testid="save-members-btn"
           >
             Save

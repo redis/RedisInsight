@@ -37,14 +37,19 @@ export class StaticsManagementModule {
             setHeaders: downloadableStaticFiles,
           },
         }),
-        ServeStaticModule.forRoot({
-          serveRoot: SERVER_CONFIG.customTutorialsUri,
-          rootPath: join(PATH_CONFIG.customTutorials),
-          serveStaticOptions: {
-            fallthrough: false,
-            setHeaders: downloadableStaticFiles,
-          },
-        }),
+        // Custom tutorials are deprecated (RED-194229)
+        ...(SERVER_CONFIG.customTutorials
+          ? [
+              ServeStaticModule.forRoot({
+                serveRoot: SERVER_CONFIG.customTutorialsUri,
+                rootPath: join(PATH_CONFIG.customTutorials),
+                serveStaticOptions: {
+                  fallthrough: false,
+                  setHeaders: downloadableStaticFiles,
+                },
+              }),
+            ]
+          : []),
         ServeStaticModule.forRoot({
           serveRoot: SERVER_CONFIG.contentUri,
           rootPath: join(PATH_CONFIG.content),

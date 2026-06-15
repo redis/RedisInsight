@@ -15,7 +15,7 @@ runs:
   using: 'composite'
   steps:
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v5
       with:
         node-version-file: '.nvmrc'
         # Note: We don't use setup-node's npm cache here because:
@@ -24,7 +24,7 @@ runs:
 
     - name: Cache E2E node_modules
       id: cache-e2e-deps
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ${{ inputs.working-directory }}/node_modules
         key: e2e-node-modules-${{ runner.os }}-${{ hashFiles(format('{0}/package-lock.json', inputs.working-directory)) }}
@@ -38,7 +38,7 @@ runs:
     - name: Cache Playwright browsers
       if: inputs.browsers != 'none'
       id: cache-playwright
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cache/ms-playwright
         # Use package-lock.json hash as cache key - it changes when Playwright version changes

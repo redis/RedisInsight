@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { AxiosError } from 'axios'
 
 import { apiService } from 'uiSrc/services'
@@ -24,8 +24,8 @@ export const useLoadKeyData = (): UseLoadKeyDataResult => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
-  const { encoding } = useSelector(appInfoSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
+  const { encoding } = useAppSelector(appInfoSelector)
 
   const loadHashData = useCallback(
     async (key: RedisResponseBuffer): Promise<InferredFieldsResult> => {

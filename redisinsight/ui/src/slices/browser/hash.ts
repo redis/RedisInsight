@@ -21,7 +21,7 @@ import {
   GetHashFieldsResponse,
   AddFieldsToHashDto,
   UpdateHashFieldsTtlDto,
-} from 'apiSrc/modules/browser/hash/dto'
+} from 'apiClient'
 import {
   deleteKeyFromList,
   deleteSelectedKeySuccess,

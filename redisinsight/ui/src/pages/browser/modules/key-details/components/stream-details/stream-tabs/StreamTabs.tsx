@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import {
@@ -16,19 +16,19 @@ import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { SortOrder } from 'uiSrc/constants'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
-import { ConsumerGroupDto } from 'apiSrc/modules/browser/stream/dto'
+import { ConsumerGroupDto } from 'apiClient'
 
 const StreamTabs = () => {
-  const { viewType } = useSelector(streamSelector)
-  const { name: key } = useSelector(selectedKeyDataSelector) ?? { name: '' }
+  const { viewType } = useAppSelector(streamSelector)
+  const { name: key } = useAppSelector(selectedKeyDataSelector) ?? { name: '' }
   const { nameString: selectedGroupName = '' } =
-    useSelector(selectedGroupSelector) ?? {}
+    useAppSelector(selectedGroupSelector) ?? {}
   const { nameString: selectedConsumerName = '' } =
-    useSelector(selectedConsumerSelector) ?? {}
+    useAppSelector(selectedConsumerSelector) ?? {}
 
   const { instanceId } = useParams<{ instanceId: string }>()
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const onSuccessLoadedConsumerGroups = (data: ConsumerGroupDto[]) => {
     sendEventTelemetry({

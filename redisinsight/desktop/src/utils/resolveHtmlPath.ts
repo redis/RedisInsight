@@ -1,6 +1,6 @@
 /* eslint import/prefer-default-export: off */
 import path from 'path'
-import { IParsedDeepLink } from 'desktopSrc/lib/app/deep-link.handlers'
+import { IParsedDeepLink } from 'uiSrc/electron/constants'
 
 export const resolveHtmlPath = (
   htmlFileName: string,

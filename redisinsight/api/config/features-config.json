@@ -1,5 +1,5 @@
 {
-  "version": 3.6,
+  "version": 3.93,
   "features": {
     "redisDataIntegration": {
       "flag": true,
@@ -120,7 +120,7 @@
     },
     "vectorSearchV2": {
       "flag": true,
-      "perc": [[0, 10]],
+      "perc": [[0, 100]],
       "filters": []
     },
     "databasesListV2": {
@@ -139,9 +139,17 @@
       "flag": false,
       "perc": [[0, 100]]
     },
-    "dev-vectorSet": {
+    "vectorSet": {
+      "flag": true,
+      "perc": [[0, 10]]
+    },
+    "dev-array": {
       "flag": false,
       "perc": [[0, 100]]
+    },
+    "prodMode": {
+      "flag": true,
+      "perc": [[0, 10]]
     }
   }
 }

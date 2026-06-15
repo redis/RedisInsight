@@ -1,5 +1,6 @@
 import React, { ReactElement, useEffect } from 'react'
-import { Provider, useSelector } from 'react-redux'
+import { Provider } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { Route, Switch } from 'react-router-dom'
 import { store } from 'uiSrc/slices/store'
@@ -46,7 +47,7 @@ const AppWrapper = ({ children }: { children?: ReactElement[] }) => (
   </Provider>
 )
 const App = ({ children }: { children?: ReactElement[] }) => {
-  const { loading: serverLoading } = useSelector(appInfoSelector)
+  const { loading: serverLoading } = useAppSelector(appInfoSelector)
   useEffect(() => {
     if (!serverLoading) {
       removePagePlaceholder()

@@ -13,6 +13,8 @@ import { appRedirectionSelector } from 'uiSrc/slices/app/url-handling'
 import { UrlHandlingActions } from 'uiSrc/slices/interfaces/urlHandling'
 import { ADD_NEW_CA_CERT, SshPassType } from 'uiSrc/pages/home/constants'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
+import { FeatureFlags } from 'uiSrc/constants/featureFlags'
+import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 
 import ManualConnectionForm, { Props } from './ManualConnectionForm'
 
@@ -42,6 +44,11 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
 jest.mock('uiSrc/slices/app/url-handling', () => ({
   ...jest.requireActual('uiSrc/slices/app/url-handling'),
   appRedirectionSelector: jest.fn().mockReturnValue(() => ({ action: null })),
+}))
+
+jest.mock('uiSrc/slices/app/features', () => ({
+  ...jest.requireActual('uiSrc/slices/app/features'),
+  appFeatureFlagsFeaturesSelector: jest.fn().mockReturnValue({}),
 }))
 
 describe('InstanceForm', () => {
@@ -1403,5 +1410,40 @@ describe('InstanceForm', () => {
       })
     })
     expect(handleSubmit).toHaveBeenCalled()
+  })
+
+  describe('Database mode select', () => {
+    it('should not render the dropdown when the prodMode flag is off', () => {
+      ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValueOnce({
+        [FeatureFlags.prodMode]: { flag: false },
+      })
+
+      render(
+        <ManualConnectionForm
+          {...instance(mockedProps)}
+          isEditMode={false}
+          formFields={formFields}
+        />,
+      )
+
+      expect(screen.queryByTestId('select-environment')).not.toBeInTheDocument()
+    })
+
+    it('should render the dropdown when the prodMode flag is on', () => {
+      ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReturnValue({
+        [FeatureFlags.prodMode]: { flag: true },
+      })
+
+      render(
+        <ManualConnectionForm
+          {...instance(mockedProps)}
+          isEditMode={false}
+          formFields={formFields}
+        />,
+      )
+
+      expect(screen.getByTestId('select-environment')).toBeInTheDocument()
+      ;(appFeatureFlagsFeaturesSelector as jest.Mock).mockReset()
+    })
   })
 })

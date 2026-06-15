@@ -1,15 +1,39 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useCallback, useEffect, useRef } from 'react'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
-import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
+import {
+  selectedKeyDataSelector,
+  selectedKeySelector,
+} from 'uiSrc/slices/browser/keys'
+import {
+  clearSimilaritySearch,
+  vectorSetDataSelector,
+} from 'uiSrc/slices/browser/vectorSet'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { bufferToString } from 'uiSrc/utils'
 import {
   KeyDetailsHeader,
   KeyDetailsHeaderProps,
 } from 'uiSrc/pages/browser/modules'
+import { VectorSetElementForm, SubmitElement } from './vector-set-element-form'
+import { AddKeysContainer } from '../common/AddKeysContainer.styled'
 import { VectorSetElementList } from './vector-set-element-list'
 import { VectorSetKeySubheader } from './vector-set-key-subheader'
 import { ElementDetails } from './element-details'
-import { useElementDetails } from './hooks'
+import { SimilaritySearchForm } from './similarity-search-form'
+import {
+  SimilarityColumnsPopover,
+  SimilaritySearchResultsTable,
+  useSimilarityResultColumns,
+} from './similarity-search-results'
+import {
+  useAddElementPanel,
+  useAddElements,
+  useElementDetails,
+  useSimilaritySearchResults,
+  useVectorSetActionsConfig,
+} from './hooks'
 import * as S from './VectorSetDetails.styles'
 
 export interface Props extends KeyDetailsHeaderProps {
@@ -19,8 +43,40 @@ export interface Props extends KeyDetailsHeaderProps {
 }
 
 const VectorSetDetails = (props: Props) => {
-  const { onRemoveKey } = props
-  const { loading } = useSelector(selectedKeySelector)
+  const { onRemoveKey, onOpenAddItemPanel, onCloseAddItemPanel } = props
+
+  const dispatch = useAppDispatch()
+  const { loading } = useAppSelector(selectedKeySelector)
+  const selectedKeyData = useAppSelector(selectedKeyDataSelector)
+  const { id: databaseId } = useAppSelector(connectedInstanceSelector)
+  const keyName = selectedKeyData?.name
+    ? bufferToString(selectedKeyData.name)
+    : ''
+
+  // Fire VECTOR_SET_KEY_VIEWED once per key once VINFO-derived properties are
+  // available. Re-fires when the user switches to a different vector set key.
+  const lastViewedKeyRef = useRef<string | undefined>(undefined)
+  const quantizationType = selectedKeyData?.quantType
+  const vectorDimension = selectedKeyData?.vectorDim
+  const length = selectedKeyData?.length
+  useEffect(() => {
+    if (!keyName || quantizationType === undefined) {
+      return
+    }
+    if (lastViewedKeyRef.current === keyName) {
+      return
+    }
+    lastViewedKeyRef.current = keyName
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SET_KEY_VIEWED,
+      eventData: {
+        databaseId,
+        quantizationType,
+        vectorDimension,
+        length,
+      },
+    })
+  }, [databaseId, keyName, quantizationType, vectorDimension, length])
 
   const {
     viewedElement,
@@ -30,18 +86,110 @@ const VectorSetDetails = (props: Props) => {
     handleDrawerDidClose,
   } = useElementDetails()
 
+  const { isAddItemPanelOpen, openAddItemPanel, closeAddItemPanel } =
+    useAddElementPanel({ onOpenAddItemPanel, onCloseAddItemPanel })
+
+  const { loading: addingLoading, vectorDim, submitElements } = useAddElements()
+
+  const { hasResults: hasSimilarityResults, matches: similarityMatches } =
+    useSimilaritySearchResults()
+
+  const handleClearResults = useCallback(() => {
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SET_SIMILARITY_SEARCH_RESULTS_CLEARED,
+      eventData: { databaseId },
+    })
+    dispatch(clearSimilaritySearch())
+  }, [databaseId, dispatch])
+
+  const { actionsConfig, similarityPrefill } = useVectorSetActionsConfig({
+    onRemoveKey,
+    onViewElement: handleViewElement,
+  })
+
+  // Single source of truth shared by the results table and the Columns popover.
+  const {
+    columns: similarityColumns,
+    columnVisibility: similarityColumnVisibility,
+    columnsMap: similarityColumnsMap,
+    shownColumns: similarityShownColumns,
+    onShownColumnsChange: handleSimilarityColumnsChange,
+    parsedAttributesCache: similarityParsedAttributesCache,
+  } = useSimilarityResultColumns(similarityMatches)
+
+  // Hide the Columns popover when there are no toggleable (attribute) columns.
+  const showSimilarityColumnsPopover =
+    hasSimilarityResults && similarityColumnsMap.size > 0
+
+  const similarityAdditionalActions = showSimilarityColumnsPopover
+    ? (width: number) => (
+        <SimilarityColumnsPopover
+          width={width}
+          columnsMap={similarityColumnsMap}
+          shownColumns={similarityShownColumns}
+          onShownColumnsChange={handleSimilarityColumnsChange}
+        />
+      )
+    : undefined
+
+  const {
+    total = 0,
+    elements: vectorSetElements = [],
+    isPaginationSupported,
+  } = useAppSelector(vectorSetDataSelector) ?? {}
+
+  // Similarity-search results take precedence; otherwise fall back to the
+  // element-list preview, which is only shown for non-paginated vector sets.
+  const showPreview = hasSimilarityResults || isPaginationSupported === false
+  const previewCount = hasSimilarityResults
+    ? similarityMatches.length
+    : vectorSetElements.length
+
+  const handleSubmitElements = useCallback(
+    (elements: SubmitElement[]) => {
+      submitElements(elements, () => closeAddItemPanel())
+    },
+    [submitElements, closeAddItemPanel],
+  )
+
   return (
     <S.Container>
       <KeyDetailsHeader {...props} key="key-details-header" />
-      <VectorSetKeySubheader />
+      <SimilaritySearchForm key={keyName} prefillElement={similarityPrefill} />
+      <VectorSetKeySubheader
+        openAddItemPanel={openAddItemPanel}
+        showPreview={showPreview}
+        previewCount={previewCount}
+        total={total}
+        hasSimilarityResults={hasSimilarityResults}
+        onClearResults={handleClearResults}
+        additionalActions={similarityAdditionalActions}
+      />
       <S.DetailsBody>
         {!loading && (
           <S.ListWrapper>
-            <VectorSetElementList
-              onRemoveKey={onRemoveKey}
-              onViewElement={handleViewElement}
-            />
+            {hasSimilarityResults ? (
+              <SimilaritySearchResultsTable
+                matches={similarityMatches}
+                columns={similarityColumns}
+                columnVisibility={similarityColumnVisibility}
+                parsedAttributesCache={similarityParsedAttributesCache}
+                actionsConfig={actionsConfig}
+              />
+            ) : (
+              <VectorSetElementList actionsConfig={actionsConfig} />
+            )}
           </S.ListWrapper>
+        )}
+        {isAddItemPanelOpen && (
+          <AddKeysContainer>
+            <VectorSetElementForm
+              onSubmit={handleSubmitElements}
+              onCancel={closeAddItemPanel}
+              loading={addingLoading}
+              vectorDim={vectorDim}
+            />
+          </AddKeysContainer>
         )}
       </S.DetailsBody>
       <ElementDetails

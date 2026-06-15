@@ -6,17 +6,29 @@ import notificationsReducer, {
   addInfiniteNotification,
 } from 'uiSrc/slices/app/notifications'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import type { ConfigureStoreOptions } from '@reduxjs/toolkit'
 import { InfiniteMessage } from 'uiSrc/slices/interfaces'
 import Notifications from '../../Notifications'
 import { INFINITE_MESSAGES } from './InfiniteMessages'
 
+// Real `configureStore` (not `mockStore`) because these tests rely on the
+// notifications reducer actually running so the toast renders. The
+// middleware cast defuses the same `redux-thunk@3` ↔ RTK 2 TS2719
+// collision documented in `slices/store.ts`.
+const testReducer = combineReducers({
+  app: combineReducers({ notifications: notificationsReducer }),
+})
+type TestStoreMiddleware = NonNullable<
+  ConfigureStoreOptions<ReturnType<typeof testReducer>>['middleware']
+>
+
 const createTestStore = () =>
   configureStore({
-    reducer: combineReducers({
-      app: combineReducers({ notifications: notificationsReducer }),
-    }),
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({ serializableCheck: false }),
+    reducer: testReducer,
+    middleware: ((getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: false,
+      })) as TestStoreMiddleware,
   })
 
 const renderToast = async (notification: InfiniteMessage) => {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { IInternalPage } from 'uiSrc/pages/workbench/contexts/enablementAreaContext'
 import { workbenchTutorialsSelector } from 'uiSrc/slices/workbench/wb-tutorials'
@@ -17,14 +17,14 @@ import EnablementArea from './EnablementArea'
 export interface Props {}
 
 const EnablementAreaWrapper = () => {
-  const { loading: loadingTutorials, items: tutorials } = useSelector(
+  const { loading: loadingTutorials, items: tutorials } = useAppSelector(
     workbenchTutorialsSelector,
   )
   const { loading: loadingCustomTutorials, items: customTutorials } =
-    useSelector(workbenchCustomTutorialsSelector)
+    useAppSelector(workbenchCustomTutorialsSelector)
 
   const { instanceId = '' } = useParams<{ instanceId: string }>()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const openScript = (
     script: string,

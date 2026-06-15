@@ -7,7 +7,7 @@ Standalone Playwright E2E test suite for RedisInsight.
 | Document | Purpose |
 |----------|---------|
 | [`TEST_PLAN.md`](./TEST_PLAN.md) | Test coverage status and priorities |
-| [`.ai/rules/e2e-testing.md`](../../.ai/rules/e2e-testing.md) | Standards and patterns for writing tests |
+| [`.ai/skills/e2e-testing/SKILL.md`](../../.ai/skills/e2e-testing/SKILL.md) | Standards and patterns for writing tests |
 
 ### AI Commands
 
@@ -238,7 +238,7 @@ Tests are organized into **projects** (folders) based on execution requirements,
 
 ```
 tests/
-├── main/                   # Default parallel tests
+├── parallel/               # Default — safe to run with multiple workers
 │   ├── browser/
 │   │   ├── add-key/
 │   │   └── key-details/
@@ -246,35 +246,62 @@ tests/
 │   │   ├── add-database/
 │   │   └── edit-database/
 │   └── workbench/
-├── auto-update/            # Serial tests with special setup
-│   └── update-flow.spec.ts
-└── electron/               # Electron-only features
-    └── deep-links.spec.ts
+└── serial/                 # Must run sequentially (shared DB state,
+    │                       # dangerous commands, vector-index ops, etc.)
+    ├── cli/
+    ├── vector-search/
+    └── workbench/
 ```
 
 ### Playwright Projects
 
-Tests are organized into **projects** that can have different configurations:
+The folder a test lives in determines its execution mode. Each browser platform has a parallel project and a serial project:
 
-| Project | Folder | Parallelism | Use Case |
-|---------|--------|-------------|----------|
-| `chromium` | `tests/main/` | Parallel | Standard tests in Chromium browser |
-| `electron` | `tests/main/` | Serial | Same tests in Electron desktop app |
-| `auto-update` | `tests/auto-update/` | Serial | Tests requiring special setup or causing flakiness |
+| Project             | Folder              | Parallelism | Use Case |
+|---------------------|---------------------|-------------|----------|
+| `chromium-parallel` | `tests/parallel/`   | Parallel (4 workers) | Standard tests in Chromium browser |
+| `chromium-serial`   | `tests/serial/`     | Serial (1 worker)    | Sequential tests in Chromium browser |
+| `electron-parallel` | `tests/parallel/`   | Serial (1 worker)*   | Standard tests in Electron desktop app |
+| `electron-serial`   | `tests/serial/`     | Serial (1 worker)*   | Sequential tests in Electron desktop app |
+
+\* Electron currently runs with a single worker because there is one app instance.
+
+### Execution order
+
+For each platform, the serial project depends on the parallel project (`dependencies: ['<platform>-parallel']` in `playwright.config.ts`), so the order is always:
+
+1. `<platform>-parallel` runs first (with up to N workers)
+2. `<platform>-serial` runs after, one worker at a time
+
+Why sequential instead of running them concurrently:
+
+- Serial tests perform destructive operations on the shared RTE Redis (`FLUSHDB`, broad `deleteAllIndexes`, dangerous commands). Letting them run alongside parallel tests means a parallel test can observe a flushed/wiped database between its own steps.
+- Electron also can't run the two projects concurrently because the desktop app binds its embedded API on a fixed port (`5530`), and two app instances would collide.
+- Keeping chromium and electron on the same execution model keeps the mental model simple — folder location maps directly to position in the run.
+
+If the serial suite grows large enough that this ordering becomes a CI bottleneck, the right next step is to give serial tests a dedicated Redis instance (or split into a separate CI job), not to revert the ordering.
 
 Run specific projects:
 ```bash
-npx playwright test --project=chromium       # Chromium browser tests
-npx playwright test --project=electron       # Electron desktop tests
-npx playwright test --project=auto-update    # Auto-update tests
+# Full platform run (parallel + serial)
+npx playwright test --project=chromium-parallel --project=chromium-serial
+npx playwright test --project=electron-parallel --project=electron-serial
+
+# Just parallel
+npx playwright test --project=chromium-parallel
+
+# Just serial — pass --no-deps, otherwise the parallel project runs first
+# (it's listed in chromium-serial's dependencies). --no-deps also skips
+# browser-setup, so make sure the app is already running locally.
+npx playwright test --project=chromium-serial --no-deps
+
 npx playwright test                           # All projects
 ```
 
-**When to create a new project:**
-- Tests require different parallelism settings (serial vs parallel)
-- Tests need different global setup/teardown
-- Tests would cause flakiness when run with other tests
-- Tests require special environment configuration
+**When to put a test in `tests/serial/`:**
+- Tests share database state via `beforeAll` and would race other workers
+- Tests run dangerous commands or mutate global app state
+- Tests exercise flows that are inherently sequential (e.g. environment gating, single-resource index ops)
 
 ## Writing Tests
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { Socket } from 'socket.io-client'
 
 import {
@@ -29,22 +29,23 @@ import { useIoConnection } from 'uiSrc/services/hooks/useIoConnection'
 import { getBaseUrl } from 'uiSrc/services/apiService'
 
 const BulkActionsConfig = () => {
-  const { id: instanceId = '', db } = useSelector(connectedInstanceSelector)
-  const { isConnected } = useSelector(bulkActionsSelector)
+  const { id: instanceId = '', db } = useAppSelector(connectedInstanceSelector)
+  const { isConnected } = useAppSelector(bulkActionsSelector)
   const {
     isActionTriggered: isDeleteTriggered,
     generateReport,
     filter,
     search,
-  } = useSelector(bulkActionsDeleteSelector)
-  const { token } = useSelector(appCsrfSelector)
+    confirmedThrough,
+  } = useAppSelector(bulkActionsDeleteSelector)
+  const { token } = useAppSelector(appCsrfSelector)
   const socketRef = useRef<Nullable<Socket>>(null)
   const connectIo = useIoConnection(getSocketApiUrl('bulk-actions'), {
     token,
     query: { instanceId },
   })
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (!isDeleteTriggered || !instanceId || socketRef.current?.connected) {
@@ -132,6 +133,7 @@ const BulkActionsConfig = () => {
           match: search || '*',
         },
         generateReport,
+        ...(confirmedThrough ? { confirmedThrough } : {}),
       },
       onBulkDeleting,
     )

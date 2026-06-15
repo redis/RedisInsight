@@ -5,7 +5,7 @@ import { ReleaseNotesSource } from 'uiSrc/constants/telemetry'
 import { setElectronInfo, setReleaseNotesViewed } from 'uiSrc/slices/app/info'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import successMessages from 'uiSrc/components/notifications/success-messages'
-import { GetServerInfoResponse } from 'apiSrc/modules/server/dto/server.dto'
+import { GetServerInfoResponse } from 'apiClient'
 import { ElectronStorageItem, IpcInvokeEvent } from '../constants'
 
 export const ipcCheckUpdates = async (

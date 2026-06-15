@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { flatMap, isNull } from 'lodash'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
@@ -22,7 +22,7 @@ import {
   sendEventTelemetry,
   TelemetryEvent,
 } from 'uiSrc/telemetry'
-import { StreamEntryDto } from 'apiSrc/modules/browser/stream/dto'
+import { StreamEntryDto } from 'apiClient'
 
 import styles from './styles.module.scss'
 
@@ -46,13 +46,13 @@ const StreamDataView = (props: Props) => {
     onClosePopover,
     loadMoreItems,
   } = props
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const { instanceId = '' } = useParams<{ instanceId: string }>()
-  const { viewType } = useSelector(keysSelector)
-  const { loading } = useSelector(streamSelector)
-  const { total, firstEntry, lastEntry } = useSelector(streamDataSelector)
-  const { name: key } = useSelector(selectedKeyDataSelector) ?? { name: '' }
+  const { viewType } = useAppSelector(keysSelector)
+  const { loading } = useAppSelector(streamSelector)
+  const { total, firstEntry, lastEntry } = useAppSelector(streamDataSelector)
+  const { name: key } = useAppSelector(selectedKeyDataSelector) ?? { name: '' }
 
   const [sortedColumnName, setSortedColumnName] = useState<string>('id')
   const [sortedColumnOrder, setSortedColumnOrder] = useState<SortOrder>(

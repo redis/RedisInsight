@@ -15,18 +15,18 @@ jobs:
     name: Release s3 private
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6.0.2
 
       - name: Merge builds by pattern
         id: merge-builds
-        uses: actions/upload-artifact/merge@v4
+        uses: actions/upload-artifact/merge@v7
         with:
           name: 'all-builds'
           pattern: '*-builds'
           delete-merged: true
 
       - name: Download builds
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: 'all-builds'
           path: release
@@ -51,7 +51,7 @@ jobs:
     needs: 'release-private'
     environment: 'production-approve'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6.0.2
 
       - name: Init variables
         run: |

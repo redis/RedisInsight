@@ -18,6 +18,8 @@ export class AiQueryMessage {
 
   @ApiProperty({
     enum: AiQueryMessageType,
+
+    enumName: 'AiQueryMessageType',
   })
   @Expose()
   @IsEnum(AiQueryMessageType)
@@ -56,7 +58,7 @@ export class AiQueryMessage {
   @IsString()
   content: string = '';
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     isArray: true,
   })

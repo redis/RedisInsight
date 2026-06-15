@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { monaco } from 'react-monaco-editor'
+import React, { useEffect, useMemo, useRef } from 'react'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import {
@@ -19,20 +18,15 @@ import { DownloadIcon, EditIcon } from 'uiSrc/components/base/icons'
 import { CopyButton } from 'uiSrc/components/copy-button'
 import { RiTooltip } from 'uiSrc/components'
 import { downloadFile } from 'uiSrc/utils/dom/downloadFile'
-import { CodeEditor } from 'uiSrc/components/base/code-editor'
-import { useMonacoValidation } from 'uiSrc/components/monaco-editor'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
-import {
-  fetchDownloadVectorEmbedding,
-  setVectorSetElementAttribute,
-} from 'uiSrc/slices/browser/vectorSet'
+import { fetchDownloadVectorEmbedding } from 'uiSrc/slices/browser/vectorSet'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { bufferToString } from 'uiSrc/utils'
+import { AttributeEditor } from '../attribute-editor'
+import { useElementAttributeEditor } from '../hooks'
 import { formatVector } from './utils'
-import {
-  VECTOR_DESCRIPTION,
-  ATTRIBUTES_DESCRIPTION,
-  ATTRIBUTES_EDITOR_OPTIONS,
-} from './constants'
+import { VECTOR_DESCRIPTION, ATTRIBUTES_DESCRIPTION } from './constants'
 import { ElementDetailsProps } from './ElementDetails.types'
 import * as S from './ElementDetails.styles'
 
@@ -42,30 +36,47 @@ const ElementDetails = ({
   onClose,
   onDrawerDidClose,
 }: ElementDetailsProps) => {
-  const dispatch = useDispatch()
-  const { name: keyName } = useSelector(selectedKeyDataSelector) ?? {}
+  const dispatch = useAppDispatch()
+  const { name: keyName } = useAppSelector(selectedKeyDataSelector) ?? {}
+  const { id: databaseId } = useAppSelector(connectedInstanceSelector)
 
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
-  const { isValid, isValidating } = useMonacoValidation(editorRef)
-
-  const onEditorDidMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
-    editorRef.current = editor
-  }
-
-  const [isEditing, setIsEditing] = useState(false)
-  const [value, setValue] = useState('')
-  const [savedValue, setSavedValue] = useState('')
-
-  useEffect(() => {
-    const formatted = bufferToString(element?.attributes)
-    setValue(formatted)
-    setIsEditing(false)
-  }, [element])
+  const {
+    isEditing,
+    value,
+    isSaveDisabled,
+    onChange,
+    startEditing,
+    cancelEditing,
+    saveAttribute,
+  } = useElementAttributeEditor({ element })
 
   const elementName = useMemo(
     () => (element ? bufferToString(element.name) : ''),
     [element],
   )
+
+  // Fire vector + attributes "viewed" events once per drawer-open per element.
+  // Both fields are shown together in this drawer, so opening counts as
+  // viewing both.
+  const lastViewedElementRef = useRef<string | undefined>(undefined)
+  useEffect(() => {
+    if (!isOpen || !element) {
+      lastViewedElementRef.current = undefined
+      return
+    }
+    if (lastViewedElementRef.current === elementName) {
+      return
+    }
+    lastViewedElementRef.current = elementName
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SET_ELEMENT_VECTOR_VIEWED,
+      eventData: { databaseId },
+    })
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SET_ELEMENT_ATTRIBUTES_VIEWED,
+      eventData: { databaseId },
+    })
+  }, [databaseId, element, elementName, isOpen])
 
   const isTruncatedVector = element?.vectorTruncated ?? false
 
@@ -74,8 +85,12 @@ const ElementDetails = ({
     [element?.vector, isTruncatedVector],
   )
 
-  const handleDownloadVector = useCallback(() => {
+  const handleDownloadVector = () => {
     if (!element || !keyName) return
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SET_ELEMENT_VECTOR_DOWNLOADED,
+      eventData: { databaseId },
+    })
     dispatch(
       fetchDownloadVectorEmbedding(
         keyName as RedisResponseBuffer,
@@ -83,55 +98,14 @@ const ElementDetails = ({
         downloadFile,
       ),
     )
-  }, [dispatch, element, keyName])
+  }
 
-  const startEditing = useCallback(() => {
-    setSavedValue(value)
-    setIsEditing(true)
-  }, [value])
-
-  const handleCancelEditing = useCallback(() => {
-    setValue(savedValue)
-    setIsEditing(false)
-  }, [savedValue])
-
-  const isValueValid = isValid && !isValidating
-  const isSaveDisabled = !isValueValid || value === savedValue
-
-  const handleSave = useCallback(() => {
-    if (!element || isSaveDisabled) return
-
-    const trimmed = value.trim()
-
-    // Guard against invalid JSON that can slip through due to a race condition
-    // in useMonacoValidation (decorations reset isValidating before markers update isValid)
-    let formatted: string
-    try {
-      formatted = trimmed ? JSON.stringify(JSON.parse(trimmed), null, 2) : ''
-    } catch {
-      return
-    }
-
-    const applyFormatted = () => {
-      setIsEditing(false)
-      setValue(formatted)
-      setSavedValue(formatted)
-    }
-
-    if (formatted === savedValue) {
-      applyFormatted()
-      return
-    }
-
-    dispatch(
-      setVectorSetElementAttribute(
-        keyName as RedisResponseBuffer,
-        element.name,
-        formatted,
-        applyFormatted,
-      ),
-    )
-  }, [dispatch, value, element, keyName, isSaveDisabled, savedValue])
+  const handleCopyVector = () => {
+    sendEventTelemetry({
+      event: TelemetryEvent.VECTOR_SET_ELEMENT_VECTOR_COPIED,
+      eventData: { databaseId },
+    })
+  }
 
   return (
     <Drawer
@@ -165,6 +139,7 @@ const ElementDetails = ({
                       <CopyButton
                         copy={vectorText}
                         aria-label="Copy vector"
+                        onCopy={handleCopyVector}
                         data-testid="vector-set-copy-vector-btn"
                       />
                     )}
@@ -192,29 +167,26 @@ const ElementDetails = ({
                       data-testid="vector-set-edit-attributes-btn"
                     />
                   )}
-                  <CodeEditor
-                    language="json"
+                  <AttributeEditor
+                    key={elementName}
                     value={value}
-                    options={{
-                      ...ATTRIBUTES_EDITOR_OPTIONS,
-                      readOnly: !isEditing,
-                    }}
-                    onChange={setValue}
-                    editorDidMount={onEditorDidMount}
+                    onChange={onChange}
+                    isInEditMode={isEditing}
+                    testId="vector-set-attributes-editor"
                   />
                 </S.EditorWrapper>
               </Col>
               {isEditing && (
                 <Row justify="end" gap="m">
                   <SecondaryButton
-                    onClick={handleCancelEditing}
+                    onClick={cancelEditing}
                     data-testid="vector-set-cancel-attributes-btn"
                   >
                     Cancel
                   </SecondaryButton>
                   <PrimaryButton
                     disabled={isSaveDisabled}
-                    onClick={handleSave}
+                    onClick={saveAttribute}
                     data-testid="vector-set-save-attributes-btn"
                   >
                     Save

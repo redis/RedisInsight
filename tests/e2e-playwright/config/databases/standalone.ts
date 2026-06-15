@@ -24,6 +24,11 @@ export const standaloneV8Config: RedisConnectionConfig = {
   port: getEnvNumber('OSS_STANDALONE_V8_PORT', 8109),
 };
 
+export const standaloneV880Config: RedisConnectionConfig = {
+  host: getEnv('OSS_STANDALONE_V8_8_0_HOST', '127.0.0.1'),
+  port: getEnvNumber('OSS_STANDALONE_V8_8_0_PORT', 8110),
+};
+
 export const standaloneEmptyConfig: RedisConnectionConfig = {
   host: getEnv('OSS_STANDALONE_EMPTY_HOST', '127.0.0.1'),
   port: getEnvNumber('OSS_STANDALONE_EMPTY_PORT', 8105),

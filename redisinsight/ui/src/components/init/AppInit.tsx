@@ -1,5 +1,5 @@
 import React, { ReactElement, useCallback, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import {
   appInitSelector,
   initializeAppAction,
@@ -17,8 +17,8 @@ type Props = {
 }
 
 const AppInit = ({ children, onSuccess, onFail }: Props) => {
-  const dispatch = useDispatch()
-  const { status } = useSelector(appInitSelector)
+  const dispatch = useAppDispatch()
+  const { status } = useAppSelector(appInitSelector)
 
   const initApp = useCallback(
     () => dispatch(initializeAppAction(onSuccess, onFail)),

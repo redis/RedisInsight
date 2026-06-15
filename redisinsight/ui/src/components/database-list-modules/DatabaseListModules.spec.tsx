@@ -5,7 +5,7 @@ import {
   DATABASE_LIST_MODULES_TEXT,
 } from 'uiSrc/slices/interfaces'
 import { fireEvent, render } from 'uiSrc/utils/test-utils'
-import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
+import { AdditionalRedisModule } from 'apiClient'
 import { DatabaseListModules } from './DatabaseListModules'
 import { DatabaseListModulesProps } from './DatabaseListModules.types'
 

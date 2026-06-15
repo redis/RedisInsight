@@ -71,7 +71,7 @@ export class DatabaseOverview {
   })
   maxCpuUsagePercentage?: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Database server name',
     type: String,
   })

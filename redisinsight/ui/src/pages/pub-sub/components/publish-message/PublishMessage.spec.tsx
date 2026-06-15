@@ -16,6 +16,11 @@ import PublishMessage from './PublishMessage'
 import { publishMessageAction } from 'uiSrc/slices/pubsub/pubsub'
 import { setPubSubFieldsContext } from 'uiSrc/slices/app/context'
 
+// Shape of the mocked `publishMessageAction` payload defined below. Typed
+// explicitly because `mockedStore.getActions()` is `UnknownAction[]` under
+// redux 5, so `payload` is `unknown` and can't be destructured directly.
+type PublishPayload = [string, string, string, (clients: number) => void]
+
 let mockedConnType = ConnectionType.Standalone
 jest.mock('uiSrc/components/hooks/useConnectionType', () => ({
   useConnectionType: () => mockedConnType,
@@ -146,7 +151,7 @@ describe('PublishMessage', () => {
     const actions = mockedStore.getActions()
     expect(actions[0].type).toBe('pubsub/publishMessageAction')
 
-    const [iid, ch, msg, cb] = actions[0].payload
+    const [iid, ch, msg, cb] = actions[0].payload as PublishPayload
     expect(iid).toBe('instanceId')
     expect(ch).toBe('news')
     expect(msg).toBe('ping')
@@ -164,7 +169,8 @@ describe('PublishMessage', () => {
     })
     fireEvent.click(getSubmitBtn())
 
-    const [, , , onSuccess] = mockedStore.getActions()[0].payload
+    const [, , , onSuccess] = mockedStore.getActions()[0]
+      .payload as PublishPayload
     const affectedClients = 7
     act(() => onSuccess(affectedClients))
 
@@ -185,7 +191,8 @@ describe('PublishMessage', () => {
     render(<PublishMessage />)
 
     fireEvent.click(getSubmitBtn())
-    const [, , , onSuccess] = mockedStore.getActions()[0].payload
+    const [, , , onSuccess] = mockedStore.getActions()[0]
+      .payload as PublishPayload
     const affectedClients = 123
     act(() => onSuccess(affectedClients))
 
@@ -201,7 +208,8 @@ describe('PublishMessage', () => {
     render(<PublishMessage />)
 
     fireEvent.click(getSubmitBtn())
-    const [, , , onSuccess] = mockedStore.getActions()[0].payload
+    const [, , , onSuccess] = mockedStore.getActions()[0]
+      .payload as PublishPayload
     act(() => onSuccess(1))
 
     expect(screen.getByText(/Published/)).toBeInTheDocument()
@@ -233,6 +241,6 @@ describe('PublishMessage', () => {
       (a: any) => a.type === 'app/setPubSubFieldsContext',
     )
     expect(setCtx).toBeTruthy()
-    expect(setCtx.payload).toEqual({ channel: 'finalCh', message: 'finalMsg' })
+    expect(setCtx!.payload).toEqual({ channel: 'finalCh', message: 'finalMsg' })
   })
 })

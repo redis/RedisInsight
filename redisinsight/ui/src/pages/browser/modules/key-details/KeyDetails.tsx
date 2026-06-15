@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { isNull } from 'lodash'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 
@@ -42,19 +42,19 @@ const KeyDetails = (props: Props) => {
   const { onCloseKey, keyProp, totalKeys, keysLastRefreshTime } = props
 
   const { instanceId } = useParams<{ instanceId: string }>()
-  const { viewType } = useSelector(keysSelector)
+  const { viewType } = useAppSelector(keysSelector)
   const {
     loading,
     error = '',
     data,
     viewFormat,
-  } = useSelector(selectedKeySelector)
-  const isKeySelected = !isNull(useSelector(selectedKeyDataSelector))
-  const { type: keyType } = useSelector(selectedKeyDataSelector) ?? {
+  } = useAppSelector(selectedKeySelector)
+  const isKeySelected = !isNull(useAppSelector(selectedKeyDataSelector))
+  const { type: keyType } = useAppSelector(selectedKeyDataSelector) ?? {
     type: KeyTypes.String,
   }
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (keyProp === null) return

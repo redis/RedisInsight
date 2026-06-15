@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import styled from 'styled-components'
 
@@ -26,8 +26,8 @@ const GroupComponents = styled.div`
 `
 
 const BottomGroupComponents = () => {
-  const { isShowCli, isShowHelper } = useSelector(cliSettingsSelector)
-  const { isShowMonitor } = useSelector(monitorSelector)
+  const { isShowCli, isShowHelper } = useAppSelector(cliSettingsSelector)
+  const { isShowMonitor } = useAppSelector(monitorSelector)
 
   return (
     <GroupComponentsWrapper>

@@ -10,7 +10,7 @@ import {
   Maybe,
   Nullable,
 } from 'uiSrc/utils'
-import { NotificationsDto } from 'apiSrc/modules/notification/dto'
+import { NotificationsDto } from 'apiClient'
 import {
   IError,
   IGlobalNotification,

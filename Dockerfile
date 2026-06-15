@@ -6,7 +6,7 @@
 # the best way to minimize the number of node_module restores and build steps
 # while still keeping the final image small.
 
-FROM node:22.22.0-alpine AS build
+FROM node:24.16.0-alpine AS build
 
 # update apk repository and install build dependencies
 RUN apk update && apk add --no-cache --virtual .gyp \
@@ -21,7 +21,7 @@ RUN apk update && apk add --no-cache --virtual .gyp \
 WORKDIR /usr/src/app
 
 # restore node_modules for front-end
-COPY package.json yarn.lock tsconfig.json ./
+COPY package.json yarn.lock ./
 COPY patches ./patches
 COPY redisinsight/ui/vite.config.mjs ./redisinsight/ui/
 COPY redisinsight/ui/src/config ./redisinsight/ui/src/config
@@ -45,7 +45,7 @@ RUN yarn --cwd ./redisinsight/api install --production
 COPY ./redisinsight/api/.yarnclean.prod ./redisinsight/api/.yarnclean
 RUN yarn --cwd ./redisinsight/api autoclean --force
 
-FROM node:22.22.0-alpine
+FROM node:24.16.0-alpine
 
 # runtime args and environment variables
 ARG NODE_ENV=production

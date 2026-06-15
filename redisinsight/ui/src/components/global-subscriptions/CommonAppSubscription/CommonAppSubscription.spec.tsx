@@ -23,7 +23,7 @@ import { RecommendationsSocketEvents } from 'uiSrc/constants/recommendations'
 import { addUnreadRecommendations } from 'uiSrc/slices/recommendations/recommendations'
 
 import { GlobalSubscriptions } from 'uiSrc/components'
-import { NotificationsDto } from 'apiSrc/modules/notification/dto'
+import { NotificationsDto } from 'apiClient'
 import CommonAppSubscription from './CommonAppSubscription'
 
 let store: typeof mockedStore

@@ -89,6 +89,7 @@ export class RedisEnterpriseDatabase {
   @ApiProperty({
     description: 'Database status',
     enum: RedisEnterpriseDatabaseStatus,
+    enumName: 'RedisEnterpriseDatabaseStatus',
     default: RedisEnterpriseDatabaseStatus.Active,
   })
   status: RedisEnterpriseDatabaseStatus;

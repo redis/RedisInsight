@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import { v4 as uuidv4 } from 'uuid'
 import { useParams } from 'react-router-dom'
@@ -70,9 +70,9 @@ const QueryCardCliPlugin = (props: Props) => {
     commandId,
     mode = RunQueryMode.Raw,
   } = props
-  const { visualizations = [], staticPath } = useSelector(appPluginsSelector)
-  const { modules = [] } = useSelector(connectedInstanceSelector)
-  const serverInfo = useSelector(appServerInfoSelector)
+  const { visualizations = [], staticPath } = useAppSelector(appPluginsSelector)
+  const { modules = [] } = useAppSelector(connectedInstanceSelector)
+  const serverInfo = useAppSelector(appServerInfoSelector)
   const { instanceId = '' } = useParams<{ instanceId: string }>()
 
   const [currentView, setCurrentView] = useState<Nullable<any>>(null)
@@ -84,7 +84,7 @@ const QueryCardCliPlugin = (props: Props) => {
   const generatedIframeNameRef = useRef<string>('')
   const { theme } = useContext(ThemeContext)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const sendMessageToPlugin = (data = {}) => {
     const event: any = document.createEvent('Event')

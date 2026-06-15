@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import {
   clusterSelector,
   resetDataRedisCluster,
@@ -73,12 +73,12 @@ enum OpenDialogName {
 const HomePage = () => {
   const { openDialog, setOpenDialog } = useHomePageDataProvider()
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
-  const { credentials: clusterCredentials } = useSelector(clusterSelector)
-  const { credentials: cloudCredentials } = useSelector(cloudSelector)
-  const { instance: sentinelInstance } = useSelector(sentinelSelector)
-  const { action, dbConnection } = useSelector(appRedirectionSelector)
+  const { credentials: clusterCredentials } = useAppSelector(clusterSelector)
+  const { credentials: cloudCredentials } = useAppSelector(cloudSelector)
+  const { instance: sentinelInstance } = useAppSelector(sentinelSelector)
+  const { action, dbConnection } = useAppSelector(appRedirectionSelector)
 
   const {
     loading,
@@ -86,11 +86,11 @@ const HomePage = () => {
     data: instances,
     changedSuccessfully: isChangedInstance,
     deletedSuccessfully: isDeletedInstance,
-  } = useSelector(instancesSelector)
+  } = useAppSelector(instancesSelector)
 
-  const { data: editedInstance } = useSelector(editedInstanceSelector)
+  const { data: editedInstance } = useAppSelector(editedInstanceSelector)
 
-  const { contextInstanceId } = useSelector(appContextSelector)
+  const { contextInstanceId } = useAppSelector(appContextSelector)
 
   const hideDbList = instances.length === 0 && !loading && !loadingChanging
 

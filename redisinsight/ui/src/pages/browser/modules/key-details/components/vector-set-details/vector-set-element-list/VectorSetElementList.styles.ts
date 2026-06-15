@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import { Table } from 'uiSrc/components/base/layout/table'
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
-import { TextButton } from 'uiSrc/components/base/forms/buttons'
 
 export const Container = styled(FlexItem)`
   display: flex;
@@ -26,9 +25,4 @@ export const StyledTable = styled(Table)`
     border-top: 1px solid
       ${({ theme }) => theme.semantic.color.border.neutral500};
   }
-`
-
-export const StyledTextButton = styled(TextButton)`
-  margin-top: ${({ theme }) => theme.core.space.space025};
-  color: ${({ theme }) => theme.semantic.color.text.informative400};
 `

@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { apiService } from 'uiSrc/services'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { getUrl, isStatusSuccessful } from 'uiSrc/utils'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-import { IndexInfoDto } from 'apiSrc/modules/browser/redisearch/dto/index.info.dto'
+import { IndexInfoDto } from 'apiClient'
 
 import {
   IndexInfo,
@@ -28,7 +28,7 @@ export const useIndexInfo = ({
   const [error, setError] = useState<string | null>(null)
 
   // Only selector needed - get instance ID for API URL
-  const connectedInstance = useSelector(connectedInstanceSelector)
+  const connectedInstance = useAppSelector(connectedInstanceSelector)
   const instanceId = connectedInstance?.id
 
   // Track the current fetch request to ignore stale responses

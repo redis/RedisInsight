@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { cloneDeep } from 'lodash'
 
 import { RootState } from 'uiSrc/slices/store'
@@ -21,15 +21,15 @@ jest.mock('uiSrc/slices/browser/bulkActions', () => ({
   }),
 }))
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(),
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppSelector: jest.fn(),
 }))
 
 beforeEach(() => {
   const state: any = store.getState()
 
-  ;(useSelector as jest.Mock).mockImplementation(
+  ;(useAppSelector as jest.Mock).mockImplementation(
     (callback: (arg0: RootState) => RootState) =>
       callback({
         ...state,

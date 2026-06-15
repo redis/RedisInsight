@@ -9,10 +9,7 @@ import {
   DatabaseAnalysisViewTab,
 } from 'uiSrc/slices/interfaces/analytics'
 import { getApiErrorMessage, getUrl, isStatusSuccessful } from 'uiSrc/utils'
-import {
-  DatabaseAnalysis,
-  ShortDatabaseAnalysis,
-} from 'apiSrc/modules/database-analysis/models'
+import { DatabaseAnalysis, ShortDatabaseAnalysis } from 'apiClient'
 
 import { AppDispatch, RootState } from '../store'
 

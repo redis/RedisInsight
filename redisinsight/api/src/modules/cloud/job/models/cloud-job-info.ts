@@ -31,12 +31,16 @@ export class CloudJobInfo {
 
   @ApiProperty({
     enum: CloudJobName,
+
+    enumName: 'CloudJobName',
   })
   @Expose()
   name: CloudJobName;
 
   @ApiProperty({
     enum: CloudJobStatus,
+
+    enumName: 'CloudJobStatus',
   })
   @Expose()
   status: CloudJobStatus;

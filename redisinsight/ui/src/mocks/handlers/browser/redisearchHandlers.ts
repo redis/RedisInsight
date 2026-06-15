@@ -3,10 +3,7 @@ import { ApiEndpoints } from 'uiSrc/constants'
 import { getMswURL } from 'uiSrc/utils/test-utils'
 import { getUrl, stringToBuffer } from 'uiSrc/utils'
 import { indexInfoFactory } from 'uiSrc/mocks/factories/redisearch/IndexInfo.factory'
-import {
-  IndexInfoDto,
-  ListRedisearchIndexesResponse,
-} from 'apiSrc/modules/browser/redisearch/dto'
+import { IndexInfoDto, ListRedisearchIndexesResponse } from 'apiClient'
 import { INSTANCE_ID_MOCK } from '../instances/instancesHandlers'
 
 export const REDISEARCH_LIST_DATA_MOCK_UTF8 = ['idx: 1', 'idx:2']

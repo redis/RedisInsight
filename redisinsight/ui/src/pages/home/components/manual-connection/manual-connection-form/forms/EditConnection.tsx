@@ -2,6 +2,7 @@ import React from 'react'
 import { FormikProps } from 'formik'
 import {
   DatabaseForm,
+  EnvironmentSelect,
   DbIndex,
   ForceStandalone,
   SSHDetails,
@@ -11,6 +12,8 @@ import { Spacer } from 'uiSrc/components/base/layout'
 import Divider from 'uiSrc/components/divider/Divider'
 import { BuildType } from 'uiSrc/constants/env'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
+import FeatureFlagComponent from 'uiSrc/components/feature-flag-component'
+import { FeatureFlags } from 'uiSrc/constants/featureFlags'
 import DecompressionAndFormatters from './DecompressionAndFormatters'
 
 import { AZURE_READONLY_FIELDS, ManualFormTab } from '../constants'
@@ -72,6 +75,14 @@ const EditConnection = (props: Props) => {
           <Divider />
           <Spacer size="m" />
           <ForceStandalone formik={formik} />
+          <FeatureFlagComponent name={FeatureFlags.prodMode}>
+            <>
+              <Spacer size="m" />
+              <Divider />
+              <Spacer size="m" />
+              <EnvironmentSelect formik={formik} />
+            </>
+          </FeatureFlagComponent>
           {isCloneMode && (
             <>
               <Spacer size="m" />

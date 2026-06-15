@@ -1,6 +1,7 @@
 import { debounce } from 'lodash';
 import { Response } from 'express';
 import {
+  BulkActionConfirmation,
   BulkActionStatus,
   BulkActionType,
 } from 'src/modules/bulk-actions/constants';
@@ -15,6 +16,7 @@ import { IBulkActionOverview } from 'src/modules/bulk-actions/interfaces/bulk-ac
 import { BulkActionsAnalytics } from 'src/modules/bulk-actions/bulk-actions.analytics';
 import { RedisClient, RedisClientNodeRole } from 'src/modules/redis/client';
 import { SessionMetadata } from 'src/common/models';
+import { Database } from 'src/modules/database/models/database';
 
 export class BulkAction implements IBulkAction {
   private logger: Logger = new Logger('BulkAction');
@@ -33,24 +35,29 @@ export class BulkAction implements IBulkAction {
 
   private readonly generateReport: boolean;
 
+  private readonly confirmedThrough: BulkActionConfirmation | null;
+
   private streamingResponse: Response | null = null;
 
   private streamReadyResolver: (() => void) | null = null;
 
   constructor(
     private readonly id: string,
-    private readonly databaseId: string,
+    private readonly database: Database,
     private readonly type: BulkActionType,
     private readonly filter: BulkActionFilter,
     private readonly socket: Socket,
     private readonly analytics: BulkActionsAnalytics,
+    private readonly sessionMetadata: SessionMetadata,
     generateReport: boolean = false,
+    confirmedThrough: BulkActionConfirmation | null = null,
   ) {
     this.debounce = debounce(this.sendOverview.bind(this), 1000, {
       maxWait: 1000,
     });
     this.status = BulkActionStatus.Initialized;
     this.generateReport = generateReport;
+    this.confirmedThrough = confirmedThrough;
   }
 
   /**
@@ -244,13 +251,14 @@ export class BulkAction implements IBulkAction {
 
     const overview: IBulkActionOverview = {
       id: this.id,
-      databaseId: this.databaseId,
+      databaseId: this.database.id,
       type: this.type,
       duration: (this.endTime || Date.now()) - this.startTime,
       status: this.status,
       filter: this.filter.getOverview(),
       progress,
       summary,
+      confirmedThrough: this.confirmedThrough,
     };
 
     if (this.generateReport) {
@@ -265,7 +273,7 @@ export class BulkAction implements IBulkAction {
   }
 
   private getDownloadUrl(): string {
-    return `databases/${this.databaseId}/bulk-actions/${this.id}/report/download`;
+    return `databases/${this.database.id}/bulk-actions/${this.id}/report/download`;
   }
 
   getId() {
@@ -310,29 +318,45 @@ export class BulkAction implements IBulkAction {
     return this.socket;
   }
 
+  getDatabase(): Database {
+    return this.database;
+  }
+
   changeState() {
     this.debounce();
   }
 
   /**
    * Send overview to a client
-   * @param sessionMetadata
    */
-  sendOverview(sessionMetadata: SessionMetadata) {
+  sendOverview() {
     const overview = this.getOverview();
     if (overview.status === BulkActionStatus.Completed) {
-      this.analytics.sendActionSucceed(sessionMetadata, overview);
+      this.analytics.sendActionSucceed(
+        this.sessionMetadata,
+        overview,
+        this.database,
+      );
     }
     if (overview.status === BulkActionStatus.Failed) {
-      this.analytics.sendActionFailed(sessionMetadata, overview, this.error);
+      this.analytics.sendActionFailed(
+        this.sessionMetadata,
+        overview,
+        this.error,
+        this.database,
+      );
     }
     if (overview.status === BulkActionStatus.Aborted) {
-      this.analytics.sendActionStopped(sessionMetadata, overview);
+      this.analytics.sendActionStopped(
+        this.sessionMetadata,
+        overview,
+        this.database,
+      );
     }
     try {
       this.socket.emit('overview', overview);
     } catch (e) {
-      this.logger.error('Unable to send overview', e, sessionMetadata);
+      this.logger.error('Unable to send overview', e, this.sessionMetadata);
     }
   }
 }

@@ -52,6 +52,9 @@ const dataSchema = Joi.object({
     certificate: Joi.string(),
     key: Joi.string(),
   }).allow(null),
+  environment: Joi.string()
+    .valid('unspecified', 'production', 'development')
+    .allow(null),
 })
   .messages({
     'any.required': '{#label} should not be empty',
@@ -157,6 +160,22 @@ describe(`PATCH /databases/:id`, () => {
             constants.TEST_INSTANCE_ID,
           );
           expect(newDatabase.name).to.eq(newName);
+        },
+      },
+      {
+        name: 'Should change environment for existing database',
+        data: {
+          environment: 'production',
+        },
+        responseSchema,
+        responseBody: {
+          environment: 'production',
+        },
+        after: async () => {
+          newDatabase = await localDb.getInstanceById(
+            constants.TEST_INSTANCE_ID,
+          );
+          expect(newDatabase.environment).to.eq('production');
         },
       },
       {

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { toNumber, filter, get, find, first } from 'lodash'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import {
   createFreeDbJob,
@@ -26,7 +26,7 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Modal } from 'uiSrc/components/base/display'
 import { CancelIcon } from 'uiSrc/components/base/icons'
-import { CloudSubscriptionPlanResponse } from 'apiSrc/modules/cloud/subscription/dto'
+import { CloudSubscriptionPlanResponse } from 'apiClient'
 import { OAuthProvider, OAuthProviders } from './constants'
 import {
   StyledFooter,
@@ -58,8 +58,8 @@ const OAuthSelectPlan = () => {
     isOpenDialog,
     data: plansInit = [],
     loading,
-  } = useSelector(oauthCloudPlanSelector)
-  const { [FeatureFlags.cloudSso]: cloudSsoFeature = {} } = useSelector(
+  } = useAppSelector(oauthCloudPlanSelector)
+  const { [FeatureFlags.cloudSso]: cloudSsoFeature = {} } = useAppSelector(
     appFeatureFlagsFeaturesSelector,
   )
 
@@ -77,7 +77,7 @@ const OAuthSelectPlan = () => {
     getProviderRegions(rsRegions, providerSelected as OAuthProvider),
   )
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setRsProviderRegions(

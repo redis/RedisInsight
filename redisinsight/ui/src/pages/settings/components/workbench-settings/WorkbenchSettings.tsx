@@ -1,6 +1,6 @@
 import { toNumber } from 'lodash'
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { SettingItem } from 'uiSrc/components'
 import { PIPELINE_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import {
@@ -18,11 +18,11 @@ import { Title } from 'uiSrc/components/base/text/Title'
 import { Link } from 'uiSrc/components/base/link/Link'
 
 const WorkbenchSettings = () => {
-  const { cleanup } = useSelector(userSettingsWBSelector)
+  const { cleanup } = useAppSelector(userSettingsWBSelector)
   const { batchSize = PIPELINE_COUNT_DEFAULT } =
-    useSelector(userSettingsConfigSelector) ?? {}
+    useAppSelector(userSettingsConfigSelector) ?? {}
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const onSwitchWbCleanUp = (val: boolean) => {
     dispatch(setWorkbenchCleanUp(val))

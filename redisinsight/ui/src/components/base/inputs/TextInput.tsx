@@ -7,16 +7,10 @@ export type RedisInputProps = ComponentProps<typeof RedisInput>
 const TextInput = forwardRef<
   React.ElementRef<typeof RedisInput>,
   RedisInputProps
->((props, ref) => {
-  // eslint-disable-next-line react/destructuring-assignment
-  if (props.error) {
-    return (
-      <TooltipProvider>
-        <RedisInput ref={ref} {...props} />
-      </TooltipProvider>
-    )
-  }
-  return <RedisInput ref={ref} {...props} />
-})
+>((props, ref) => (
+  <TooltipProvider>
+    <RedisInput ref={ref} {...props} />
+  </TooltipProvider>
+))
 
 export default TextInput

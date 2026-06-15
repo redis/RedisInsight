@@ -16,22 +16,47 @@ Use lowercase, kebab-case, and a type prefix:
 
 **Example**: `bugfix/fix-header-alignment`
 
-_Note: It will trigger some CI, like unit tests and lint checks_
-
-For frontend/backend only, prefix with `fe/` or `be/` to trigger fewer checks:
+For frontend/backend only changes, prefix with `fe/` or `be/`:
 
 - `fe/feature/<short-title>`
 - `be/bugfix/<short-title>`
 
 **Example**: `be/bugfix/update-databases-api`
 
-_Note: It will trigger only checks related to the back-end_
-
 ## Commits
 
 - Keep commits small and focused.
 - This makes it easier for reviewers to understand and track changes.
 - Use meaningful commit messages (see [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for inspiration).
+
+## TypeScript Configuration
+
+TypeScript config is split across the repo rather than centralised in a single root `tsconfig.json`. Each area owns its own:
+
+| Path | Purpose |
+| - | - |
+| `redisinsight/ui/tsconfig.json` | UI build, vite, ESLint for UI files |
+| `redisinsight/api/tsconfig.json` | API build, ESLint for API files |
+| `redisinsight/desktop/tsconfig.json` | Desktop main/preload paths consumed by webpack's `TsconfigPathsPlugin`; ESLint for desktop files |
+| `configs/tsconfig.json` | Loaded by `ts-node` when webpack executes the `.ts` configs in `configs/` (`build:main`, `build:main:stage`) |
+| `.storybook/tsconfig.json` | Storybook setup |
+| `stories/tsconfig.json` | Storybook stories — extends UI config |
+| `tests/e2e-playwright/tsconfig.json` | Playwright E2E sub-project |
+
+ESLint's root config uses `parserOptions.project: true`, so each linted file picks up its nearest tsconfig automatically. When you add a new top-level TS area, drop a tsconfig in it.
+
+There is intentionally no root `tsconfig.json`. Running bare `tsc` from the repo root will fail — use `yarn type-check:ui` or pass `--project <path>` explicitly.
+
+### Type-error baselines
+
+Per-project type-check runs in CI and fails if any new TS error is introduced. For `ui`, `api`, and `desktop` we lock the current error counts in `.tscheck.rec.json` files next to each tsconfig; `configs` is checked with no baseline (must stay clean). The `api` check uses [`redisinsight/api/tsconfig.check.json`](redisinsight/api/tsconfig.check.json), which extends the base config with `strict: true` (minus `strictPropertyInitialization` and `useUnknownInCatchVariables`) — the base `tsconfig.json` stays as-is so `nest build` is unaffected.
+
+Common flows:
+
+- **Check locally** (all projects): `yarn type-check`.
+- **Check one project**: `yarn --cwd redisinsight/{ui,api,desktop} type-check`.
+- **You fixed errors**: CI will say "baseline is outdated". Run `yarn --cwd redisinsight/{ui,api,desktop} tscheck` locally to refresh the matching `.tscheck.rec.json` and commit it.
+- **You introduced new errors**: fix them. Do not use `tscheck:force` in any workspace to overwrite the baseline upward — error counts must only decrease. Reviewers should reject PRs that bump baselines without a corresponding fix.
 
 ## Pull Requests
 
@@ -48,7 +73,7 @@ git checkout -b bugfix/<short-title>
 3. Make the changes and push to your branch (see [Commits](#commits))
 
 ```bash
-git push bugfix/<short-title>
+git push origin bugfix/<short-title>
 ```
 
 4. Initiate a pull request on GitHub (_[How to create a PR?](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request)_)

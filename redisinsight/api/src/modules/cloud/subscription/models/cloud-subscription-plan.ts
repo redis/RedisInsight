@@ -21,6 +21,8 @@ export class CloudSubscriptionPlan {
   @ApiProperty({
     description: 'Subscription type',
     enum: CloudSubscriptionType,
+
+    enumName: 'CloudSubscriptionType',
   })
   type: CloudSubscriptionType;
 

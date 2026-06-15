@@ -1,44 +1,7 @@
 version: "3.4"
 
 services:
-  e2e:
-    profiles:
-      - e2e
-    shm_size: 2gb
-    build:
-      context: .
-      dockerfile: e2e.Dockerfile
-    tty: true
-    volumes:
-      - ${E2E_VOLUME_PATH:-.}/results:/usr/src/app/results
-      - ${E2E_VOLUME_PATH:-.}/report:/usr/src/app/report
-      - ./plugins:/usr/src/app/plugins
-      - rihomedir:/root/.redis-insight
-      - tmp:/tmp
-      - ./remote:/root/remote
-      # - ./rdi:/root/rdi
-    env_file:
-      - ./.env
-    entrypoint: [
-      './upload-custom-plugins.sh',
-    ]
-    environment:
-      TEST_FILES: $TEST_FILES
-      E2E_CLOUD_DATABASE_HOST: $E2E_CLOUD_DATABASE_HOST
-      E2E_CLOUD_DATABASE_PORT: $E2E_CLOUD_DATABASE_PORT
-      E2E_CLOUD_DATABASE_PASSWORD: $E2E_CLOUD_DATABASE_PASSWORD
-      E2E_CLOUD_DATABASE_USERNAME: $E2E_CLOUD_DATABASE_USERNAME
-      E2E_CLOUD_DATABASE_NAME: $E2E_CLOUD_DATABASE_NAME
-      E2E_CLOUD_API_ACCESS_KEY: $E2E_CLOUD_API_ACCESS_KEY
-      E2E_CLOUD_API_SECRET_KEY: $E2E_CLOUD_API_SECRET_KEY
-      REMOTE_FOLDER_PATH: "/root/remote"
-    command: [
-      './wait-for-it.sh', "${E2E_SLOWEST_SERVICE:-oss-standalone:6379}", '-s', '-t', '240',
-      '--',
-      'npm', 'run', 'test:chrome:ci'
-    ]
-
-  # Built image
+  # Built RedisInsight image
   app:
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -55,7 +18,6 @@ services:
     volumes:
       - rihomedir:/data
       - tmp:/tmp
-      - ./test-data:/test-data
     ports:
       - 5540:5540
 

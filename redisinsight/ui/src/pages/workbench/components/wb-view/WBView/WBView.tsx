@@ -1,5 +1,5 @@
 import React, { Ref, useCallback, useEffect, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import { isEmpty } from 'lodash'
 import { useParams } from 'react-router-dom'
@@ -101,15 +101,15 @@ const WBView = (props: Props) => {
   }
 
   const { instanceId = '' } = useParams<{ instanceId: string }>()
-  const { panelSizes } = useSelector(appContextWorkbench)
-  const { commandsArray: REDIS_COMMANDS_ARRAY } = useSelector(
+  const { panelSizes } = useAppSelector(appContextWorkbench)
+  const { commandsArray: REDIS_COMMANDS_ARRAY } = useAppSelector(
     appRedisCommandsSelector,
   )
   const { batchSize = PIPELINE_COUNT_DEFAULT } =
-    useSelector(userSettingsConfigSelector) ?? {}
+    useAppSelector(userSettingsConfigSelector) ?? {}
   const verticalPanelSizesRef = useRef(panelSizes)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(
     () => () => {

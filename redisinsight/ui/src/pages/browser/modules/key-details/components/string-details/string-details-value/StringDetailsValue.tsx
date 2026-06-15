@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import {
   bufferToSerializedFormat,
@@ -60,6 +60,10 @@ import { Text } from 'uiSrc/components/base/text'
 import { TextArea } from 'uiSrc/components/base/inputs'
 import { RiTooltip } from 'uiSrc/components'
 import { ProgressBarLoader } from 'uiSrc/components/base/display'
+import {
+  BrowserConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 import styles from './styles.module.scss'
 
 const MIN_ROWS = 8
@@ -81,16 +85,16 @@ export interface Props {
 const StringDetailsValue = (props: Props) => {
   const { isEditItem, setIsEdit, onRefresh } = props
 
-  const { compressor = null } = useSelector(connectedInstanceSelector)
-  const { loading } = useSelector(stringSelector)
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
-  const { value: initialValue } = useSelector(stringDataSelector)
+  const { compressor = null } = useAppSelector(connectedInstanceSelector)
+  const { loading } = useAppSelector(stringSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
+  const { value: initialValue } = useAppSelector(stringDataSelector)
   const {
     name: key,
     type: keyType,
     length,
-  } = useSelector(selectedKeyDataSelector) ?? { name: '' }
-  const { viewFormat: viewFormatProp } = useSelector(selectedKeySelector)
+  } = useAppSelector(selectedKeyDataSelector) ?? { name: '' }
+  const { viewFormat: viewFormatProp } = useAppSelector(selectedKeySelector)
   const isTruncatedValue = isTruncatedString(initialValue)
 
   const [rows, setRows] = useState<number>(MIN_ROWS)
@@ -107,7 +111,8 @@ const StringDetailsValue = (props: Props) => {
   const textAreaRef: Ref<HTMLTextAreaElement> = useRef(null)
   const containerRef: Ref<HTMLDivElement> = useRef(null)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(
     () => () => {
@@ -193,12 +198,24 @@ const StringDetailsValue = (props: Props) => {
   }, [isEditItem])
 
   const onApplyChanges = () => {
-    const data = stringToSerializedBufferFormat(viewFormat, areaValue)
-    const onSuccess = () => {
-      setIsEdit(false)
-      setValue(formattingBuffer(data, viewFormat, { expanded: true })?.value)
-    }
-    dispatch(updateStringValueAction(key, data, onSuccess))
+    requestConfirmation({
+      title: 'Edit value on production database?',
+      actionDescription:
+        'You are about to modify a value on a production database.',
+      confirmButtonText: 'Save',
+      commandId: BrowserConfirmationCommandId.EditValue,
+      disableConfirmationInput: true,
+      onConfirm: () => {
+        const data = stringToSerializedBufferFormat(viewFormat, areaValue)
+        const onSuccess = () => {
+          setIsEdit(false)
+          setValue(
+            formattingBuffer(data, viewFormat, { expanded: true })?.value,
+          )
+        }
+        dispatch(updateStringValueAction(key, data, onSuccess))
+      },
+    })
   }
 
   const onDeclineChanges = useCallback(() => {

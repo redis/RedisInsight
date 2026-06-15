@@ -4,15 +4,14 @@ import { getUrl } from 'uiSrc/utils'
 import { getMswURL } from 'uiSrc/utils/test-utils'
 import {
   ClusterDetails,
+  Database as DatabaseInstanceResponse,
   HealthStatus,
   NodeRole,
-} from 'apiSrc/modules/cluster-monitor/models'
-import { Database as DatabaseInstanceResponse } from 'apiSrc/modules/database/models/database'
+} from 'apiClient'
 
 export const INSTANCE_ID_MOCK = 'instanceId'
 
 const handlers: HttpHandler[] = [
-  // useGetClusterDetailsQuery
   http.get<any, DatabaseInstanceResponse[]>(
     getMswURL(getUrl(INSTANCE_ID_MOCK, ApiEndpoints.CLUSTER_DETAILS)),
     async () => {

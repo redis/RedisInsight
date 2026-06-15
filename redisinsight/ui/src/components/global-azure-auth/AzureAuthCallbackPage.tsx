@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Title, Text } from 'uiSrc/components/base/text'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
-import {
-  AZURE_OAUTH_STORAGE_KEY,
-  AzureAuthStatus,
-} from 'apiSrc/modules/azure/constants'
+import { AZURE_OAUTH_STORAGE_KEY, AzureAuthStatus } from 'uiSrc/constants'
 import * as S from './AzureAuthCallbackPage.styles'
 
 /**

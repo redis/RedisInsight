@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { RiTooltip } from 'uiSrc/components'
@@ -18,7 +18,7 @@ export const MakeSearchableButton = ({
   keyType,
 }: MakeSearchableButtonProps) => {
   const { openMakeSearchableModal } = useMakeSearchableModal()
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
 
   const prefix = useMemo(() => extractNamespace(keyNameString), [keyNameString])
 

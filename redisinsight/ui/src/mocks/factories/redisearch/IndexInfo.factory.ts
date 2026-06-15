@@ -1,11 +1,7 @@
 import { Factory } from 'fishery'
 import { faker } from '@faker-js/faker'
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
-import {
-  FieldStatisticsDto,
-  IndexAttibuteDto,
-  IndexInfoDto,
-} from 'apiSrc/modules/browser/redisearch/dto'
+import { FieldStatisticsDto, IndexAttibuteDto, IndexInfoDto } from 'apiClient'
 
 export const INDEX_INFO_SEPARATORS: string[] = [',', ';', '|', ':']
 

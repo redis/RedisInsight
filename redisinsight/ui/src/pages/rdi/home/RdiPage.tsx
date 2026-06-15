@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import cx from 'classnames'
 import { RdiInstance } from 'uiSrc/slices/interfaces'
@@ -18,7 +18,7 @@ import {
 import HomePageTemplate from 'uiSrc/templates/home-page-template'
 import { setTitle } from 'uiSrc/utils'
 import { Page, PageBody } from 'uiSrc/components/base/layout/page'
-import { Rdi as RdiInstanceResponse } from 'apiSrc/modules/rdi/models/rdi'
+import { Rdi as RdiInstanceResponse } from 'apiClient'
 import { dispatch } from 'uiSrc/slices/store'
 import EmptyMessage from './empty-message/EmptyMessage'
 import ConnectionForm from './connection-form/ConnectionFormWrapper'
@@ -48,7 +48,7 @@ const RdiPage = () => {
     setIsConnectionFormOpen,
   } = useRdiPageDataProvider()
 
-  const { data, loading, loadingChanging } = useSelector(instancesSelector)
+  const { data, loading, loadingChanging } = useAppSelector(instancesSelector)
   const hideInstancesList = data.length === 0 && !loading && !loadingChanging
 
   useEffect(() => {

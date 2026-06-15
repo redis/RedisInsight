@@ -1,0 +1,15 @@
+{
+  "extends": "../redisinsight/ui/tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react",
+    "types": ["node", "vite/client"],
+    "module": "ESNext",
+    "baseUrl": "../redisinsight/ui",
+    "paths": {
+      "uiSrc/*": ["src/*"],
+      "apiClient": ["../api-client"],
+      "apiClient/*": ["../api-client/*"]
+    }
+  },
+  "include": ["./**/*"]
+}

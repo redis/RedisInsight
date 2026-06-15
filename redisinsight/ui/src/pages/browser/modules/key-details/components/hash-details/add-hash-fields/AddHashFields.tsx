@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { toNumber } from 'lodash'
 import {
   keysSelector,
@@ -31,10 +31,11 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
+import { AddFieldsToHashDto, HashFieldDto } from 'apiClient'
 import {
-  AddFieldsToHashDto,
-  HashFieldDto,
-} from 'apiSrc/modules/browser/hash/dto'
+  BrowserConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 
 import { EntryContent } from '../../common/AddKeysContainer.styled'
 
@@ -45,18 +46,21 @@ export interface Props {
 
 const AddHashFields = (props: Props) => {
   const { isExpireFieldsAvailable, closePanel } = props
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [fields, setFields] = useState<IHashFieldState[]>([
     { ...INITIAL_HASH_FIELD_STATE },
   ])
-  const { loading } = useSelector(updateHashValueStateSelector)
-  const { name: selectedKey = '' } = useSelector(selectedKeyDataSelector) ?? {
+  const { loading } = useAppSelector(updateHashValueStateSelector)
+  const { name: selectedKey = '' } = useAppSelector(
+    selectedKeyDataSelector,
+  ) ?? {
     name: undefined,
   }
-  const { viewType } = useSelector(keysSelector)
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
+  const { viewType } = useAppSelector(keysSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
 
   const lastAddedFieldName = useRef<HTMLInputElement>(null)
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(
     () =>
@@ -159,6 +163,22 @@ const AddHashFields = (props: Props) => {
     dispatch(addHashFieldsAction(data, onSuccessAdded))
   }
 
+  const handleSubmit = () => {
+    requestConfirmation({
+      title: 'Add fields on production database?',
+      actionDescription: (
+        <>
+          You are about to add {fields.length} field
+          {fields.length === 1 ? '' : 's'} to a hash on a production database.
+        </>
+      ),
+      confirmButtonText: 'Add fields',
+      commandId: BrowserConfirmationCommandId.AddHashFields,
+      disableConfirmationInput: true,
+      onConfirm: submitData,
+    })
+  }
+
   const isClearDisabled = (item: IHashFieldState): boolean =>
     fields.length === 1 &&
     !(item.fieldName.length || item.fieldValue.length || item.fieldTTL?.length)
@@ -248,7 +268,7 @@ const AddHashFields = (props: Props) => {
             <PrimaryButton
               disabled={loading}
               loading={loading}
-              onClick={submitData}
+              onClick={handleSubmit}
               data-testid="save-fields-btn"
             >
               Save

@@ -12,8 +12,8 @@ post {
 
 body:json {
   {
-    "keyName": "vset:small_3d",
-    "element": "item_1"
+    "keyName": "compass",
+    "element": "northeast"
   }
 }
 
@@ -35,7 +35,7 @@ docs {
 
   Returns a binary stream (`application/octet-stream`) with `Content-Disposition: attachment;filename="vector_embedding"`.
 
-  The body contains the vector formatted as a JSON array string: `[0.10, 0.20, 0.30, ...]`
+  The body contains the vector formatted as a JSON array string. For the `northeast` element above, the download would contain `[1, 1]`.
 
   ## Response Headers
 

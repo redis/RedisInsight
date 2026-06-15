@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { debounce } from 'lodash'
 
@@ -11,7 +11,7 @@ import { queryLibraryNotifications } from 'uiSrc/pages/vector-search/constants'
 const SEARCH_DEBOUNCE_MS = 300
 
 export const useQueryLibrary = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { instanceId: databaseId, indexName: rawIndexName } = useParams<{
     instanceId: string
     indexName?: string

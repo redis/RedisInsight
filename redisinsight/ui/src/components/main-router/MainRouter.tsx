@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import {
   Redirect,
   Route,
@@ -30,12 +30,12 @@ import DEFAULT_ROUTES from './constants/defaultRoutes'
 import { useActivityMonitor } from './hooks/useActivityMonitor'
 
 const MainRouter = () => {
-  const { server } = useSelector(appInfoSelector)
+  const { server } = useAppSelector(appInfoSelector)
   const { isShowConceptsPopup: isShowConsents } =
-    useSelector(userSettingsSelector)
-  const { workspace } = useSelector(appContextSelector)
+    useAppSelector(userSettingsSelector)
+  const { workspace } = useAppSelector(appContextSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
   const { pathname } = useLocation()
   useActivityMonitor()

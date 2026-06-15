@@ -33,6 +33,16 @@ export class VectorSetKeyInfoStrategy extends KeyInfoStrategy {
       return result;
     }
 
+    // VINFO is documented as flat key/value pairs, so an odd length means
+    // Redis returned a malformed reply (or the protocol changed). Log a
+    // warning and drop the trailing unpaired entry rather than silently
+    // misaligning the loop or crashing on `undefined`.
+    if (vInfoResponse.length % 2 !== 0) {
+      this.logger.warn(
+        `VINFO response length ${vInfoResponse.length} is odd; dropping trailing unpaired entry.`,
+      );
+    }
+
     for (let i = 0; i < vInfoResponse.length - 1; i += 2) {
       const key = String(vInfoResponse[i]).toLowerCase();
       const value = vInfoResponse[i + 1];

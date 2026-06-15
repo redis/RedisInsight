@@ -1,5 +1,5 @@
 import React, { useState, useEffect, ChangeEvent } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { useFormik } from 'formik'
 import { orderBy, filter } from 'lodash'
@@ -31,7 +31,7 @@ import {
   ClaimPendingEntryDto,
   ClaimPendingEntriesResponse,
   ConsumerDto,
-} from 'apiSrc/modules/browser/stream/dto'
+} from 'apiClient'
 
 import styles from './styles.module.scss'
 
@@ -84,8 +84,8 @@ const MessageClaimPopover = (props: Props) => {
     handleCancelClaim,
   } = props
 
-  const { data: consumers = [] } = useSelector(selectedGroupSelector) ?? {}
-  const { name: currentConsumerName, pending = 0 } = useSelector(
+  const { data: consumers = [] } = useAppSelector(selectedGroupSelector) ?? {}
+  const { name: currentConsumerName, pending = 0 } = useAppSelector(
     selectedConsumerSelector,
   ) ?? { name: '' }
 

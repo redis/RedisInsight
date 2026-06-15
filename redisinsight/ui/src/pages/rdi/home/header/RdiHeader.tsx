@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { instancesSelector, setShownColumns } from 'uiSrc/slices/rdi/instances'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
@@ -16,8 +16,8 @@ export interface Props {
 }
 
 const RdiHeader = ({ onRdiInstanceClick }: Props) => {
-  const dispatch = useDispatch()
-  const { data: instances, shownColumns } = useSelector(instancesSelector)
+  const dispatch = useAppDispatch()
+  const { data: instances, shownColumns } = useAppSelector(instancesSelector)
 
   if (instances.length === 0) {
     return null

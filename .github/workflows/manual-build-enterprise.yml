@@ -75,6 +75,12 @@ on:
         default: 'development'
         required: false
 
+      show_build_commit_sha:
+        description: Display build commit SHA in app version
+        type: boolean
+        default: false
+        required: false
+
       debug:
         description: Enable SSH Debug
         type: boolean
@@ -90,10 +96,10 @@ jobs:
     outputs: # Set this to consume the output on other job
       selected: ${{ steps.get-selected.outputs.selected}}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6.0.2
 
       - id: get-selected
-        uses: joao-zanutto/get-selected@v1.1.1
+        uses: joao-zanutto/get-selected@v2.0.0
         with:
           format: 'list'
 
@@ -109,6 +115,7 @@ jobs:
       debug: ${{ inputs.debug }}
       environment: ${{ inputs.environment }}
       enterprise: true
+      show_build_commit_sha: ${{ inputs.show_build_commit_sha && 'true' || 'false' }}
 
   aws-upload:
     uses: ./.github/workflows/aws-upload-enterprise.yml
@@ -123,6 +130,10 @@ jobs:
     # secrets: inherit
     needs: [aws-upload]
     if: always()
+    permissions:
+      actions: write
+      contents: read
+      deployments: write
 
   # Remove artifacts from github actions
   remove-artifacts:
@@ -132,6 +143,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6.0.2
       - name: Remove all artifacts
         uses: ./.github/actions/remove-artifacts

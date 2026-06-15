@@ -1,0 +1,52 @@
+{
+  "name": "ri-plugin-example",
+  "version": "0.0.1",
+  "description": "Example external Redis Insight Workbench plugin built with Parcel.",
+  "source": "./src/main.tsx",
+  "main": "./dist/index.js",
+  "styles": "./dist/styles.css",
+  "scripts": {
+    "start": "parcel src/index.html",
+    "build": "concurrently \"yarn build:js\" \"yarn build:css\"",
+    "build:js": "parcel build src/main.tsx --no-source-maps --dist-dir dist --target module",
+    "build:css": "parcel build src/styles/styles.scss --no-source-maps --dist-dir dist",
+    "minify:js": "terser dist/index.js -o dist/index.js -c -m",
+    "clean": "rimraf dist",
+    "verify": "bash scripts/verify-plugin.sh",
+    "deploy:external": "bash scripts/deploy-external.sh",
+    "deploy:internal": "bash scripts/deploy-internal-docker.sh"
+  },
+  "targets": {
+    "main": false,
+    "module": {
+      "includeNodeModules": true,
+      "outputFormat": "esmodule",
+      "isLibrary": false
+    }
+  },
+  "visualizations": [
+    {
+      "id": "example-view",
+      "name": "Example View",
+      "activationMethod": "renderExampleView",
+      "matchCommands": ["XRANGE"],
+      "description": "Example visualization rendered for XRANGE results.",
+      "default": false
+    }
+  ],
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "redisinsight-plugin-sdk": "^1.1.0"
+  },
+  "devDependencies": {
+    "parcel": "^2.12.0",
+    "terser": "^5.30.0",
+    "rimraf": "^5.0.5",
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "typescript": "^5.4.0",
+    "@types/react": "^17.0.79",
+    "@types/react-dom": "^17.0.25"
+  }
+}

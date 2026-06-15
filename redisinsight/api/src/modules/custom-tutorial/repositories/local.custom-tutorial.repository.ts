@@ -5,6 +5,10 @@ import { CustomTutorialEntity } from 'src/modules/custom-tutorial/entities/custo
 import { CustomTutorial } from 'src/modules/custom-tutorial/models/custom-tutorial';
 import { CustomTutorialRepository } from 'src/modules/custom-tutorial/repositories/custom-tutorial.repository';
 
+/**
+ * @deprecated Custom tutorials are deprecated (RED-194229) and disabled by
+ * default via the `customTutorials` feature flag. Slated for removal.
+ */
 export class LocalCustomTutorialRepository extends CustomTutorialRepository {
   constructor(
     @InjectRepository(CustomTutorialEntity)

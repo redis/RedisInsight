@@ -1,5 +1,6 @@
 export * from './create.rejson-rl.dto';
 export * from './create.rejson-rl-with-expire.dto';
+export * from './download.rejson-rl.dto';
 export * from './get.rejson-rl.dto';
 export * from './get.rejson-rl.response';
 export * from './modify.rejson-rl-arr-append.dto';

@@ -9,6 +9,10 @@ import { Text } from 'uiSrc/components/base/text'
 import { EditIcon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { TextArea } from 'uiSrc/components/base/inputs'
+import {
+  BrowserConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 import styles from './styles.module.scss'
 
 export interface Props {
@@ -29,7 +33,7 @@ export interface Props {
   onUpdateTextAreaHeight?: () => void
   onChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void
   onDecline: (event?: React.MouseEvent<HTMLElement>) => void
-  onApply: (value: string, event: React.MouseEvent) => void
+  onApply: (value: string, event?: React.MouseEvent) => void
   testIdPrefix?: string
 }
 
@@ -59,6 +63,7 @@ const EditableTextArea = (props: Props) => {
   const [value, setValue] = useState('')
   const [isHovering, setIsHovering] = useState(false)
   const textAreaRef: Ref<HTMLTextAreaElement> = useRef(null)
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(() => {
     setValue(initialValue)
@@ -151,10 +156,20 @@ const EditableTextArea = (props: Props) => {
                 setValue(initialValue)
                 onEdit(false)
               }}
-              onApply={(_, event) => {
-                onApply(value, event)
-                setValue(initialValue)
-                onEdit(false)
+              onApply={() => {
+                requestConfirmation({
+                  title: 'Edit value on production database?',
+                  actionDescription:
+                    'You are about to modify a value on a production database.',
+                  confirmButtonText: 'Save',
+                  commandId: BrowserConfirmationCommandId.EditValue,
+                  disableConfirmationInput: true,
+                  onConfirm: () => {
+                    onApply(value)
+                    setValue(initialValue)
+                    onEdit(false)
+                  },
+                })
               }}
               approveText={approveText}
               approveByValidation={() => approveByValidation?.(value)}

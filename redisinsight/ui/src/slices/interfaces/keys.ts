@@ -6,7 +6,7 @@ import {
 } from 'uiSrc/constants'
 import { IKeyPropTypes } from 'uiSrc/constants/prop-types/keys'
 import { Maybe, Nullable } from 'uiSrc/utils'
-import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
+import { GetKeyInfoResponse } from 'apiClient'
 
 export interface Key {
   name: string

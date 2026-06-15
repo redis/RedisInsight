@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { shallowEqual } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import Divider from 'uiSrc/components/divider/Divider'
 import { KeyTypes } from 'uiSrc/constants'
@@ -10,13 +11,22 @@ import {
   resetAddKey,
   keysSelector,
 } from 'uiSrc/slices/browser/keys'
-import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import {
+  connectedInstanceOverviewSelector,
+  connectedInstanceSelector,
+} from 'uiSrc/slices/instances/instances'
+import { RootState } from 'uiSrc/slices/store'
 import {
   sendEventTelemetry,
   TelemetryEvent,
   getBasedOnViewTypeEvent,
 } from 'uiSrc/telemetry'
-import { isContainJSONModule, Maybe, stringToBuffer } from 'uiSrc/utils'
+import {
+  isContainJSONModule,
+  isVersionHigherOrEquals,
+  Maybe,
+  stringToBuffer,
+} from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
@@ -35,6 +45,7 @@ import AddKeySet from './AddKeySet'
 import AddKeyList from './AddKeyList'
 import AddKeyReJSON from './AddKeyReJSON'
 import AddKeyStream from './AddKeyStream'
+import AddKeyVectorSet from './AddKeyVectorSet'
 import { ContentFields } from './AddKey.styles'
 
 import styles from './styles.module.scss'
@@ -46,13 +57,25 @@ export interface Props {
 }
 const AddKey = (props: Props) => {
   const { onAddKeyPanel, onClosePanel, arePanelsCollapsed } = props
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
-  const { loading } = useSelector(addKeyStateSelector)
-  const { id: instanceId, modules = [] } = useSelector(
+  const { loading } = useAppSelector(addKeyStateSelector)
+  const { id: instanceId, modules = [] } = useAppSelector(
     connectedInstanceSelector,
   )
-  const { viewType } = useSelector(keysSelector)
+  const { version } = useAppSelector(connectedInstanceOverviewSelector)
+  // Resolve each option's optional `isEnabledSelector` against the store so
+  // the option config is the single source of truth for which key types are
+  // gated (e.g. behind dev/feature flags). `shallowEqual` keeps the filtered
+  // array stable across renders when membership doesn't change.
+  const enabledOptions = useAppSelector(
+    (state: RootState) =>
+      ADD_KEY_TYPE_OPTIONS.filter(
+        ({ isEnabledSelector }) => isEnabledSelector?.(state) ?? true,
+      ),
+    shallowEqual,
+  )
+  const { viewType } = useAppSelector(keysSelector)
 
   useEffect(
     () =>
@@ -63,25 +86,33 @@ const AddKey = (props: Props) => {
     [],
   )
 
-  const options = ADD_KEY_TYPE_OPTIONS.map((item) => {
-    const { value, color, text } = item
-    return {
-      value,
-      inputDisplay: (
-        <HealthText
-          color={color}
-          style={{ lineHeight: 'inherit' }}
-          data-test-subj={value}
-          data-testid={value}
-        >
-          {text}
-        </HealthText>
-      ),
-    }
-  })
-  const [typeSelected, setTypeSelected] = useState<string>(options[0].value)
+  const options = enabledOptions
+    .filter(
+      ({ minVersion }) =>
+        !minVersion || isVersionHigherOrEquals(version, minVersion),
+    )
+    .map((item) => {
+      const { value, color, text } = item
+      return {
+        value,
+        inputDisplay: (
+          <HealthText
+            color={color}
+            style={{ lineHeight: 'inherit' }}
+            data-test-subj={value}
+            data-testid={value}
+          >
+            {text}
+          </HealthText>
+        ),
+      }
+    })
+  const [typeSelected, setTypeSelected] = useState<string>(
+    options[0]?.value ?? KeyTypes.Hash,
+  )
   const [keyName, setKeyName] = useState<string>('')
   const [keyTTL, setKeyTTL] = useState<Maybe<number>>(undefined)
+  const [keyNameDisabled, setKeyNameDisabled] = useState<boolean>(false)
 
   const onChangeType = (value: string) => {
     setTypeSelected(value)
@@ -159,6 +190,7 @@ const AddKey = (props: Props) => {
                 setKeyName={setKeyName}
                 keyTTL={keyTTL}
                 setKeyTTL={setKeyTTL}
+                keyNameDisabled={keyNameDisabled}
               />
 
               <Spacer size="xl" />
@@ -200,6 +232,14 @@ const AddKey = (props: Props) => {
               )}
               {typeSelected === KeyTypes.Stream && (
                 <AddKeyStream onCancel={closeAddKeyPanel} {...defaultFields} />
+              )}
+              {typeSelected === KeyTypes.VectorSet && (
+                <AddKeyVectorSet
+                  onCancel={closeAddKeyPanel}
+                  setKeyName={setKeyName}
+                  setKeyNameDisabled={setKeyNameDisabled}
+                  {...defaultFields}
+                />
               )}
             </ContentFields>
           </div>

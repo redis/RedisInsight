@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { isNumber } from 'lodash'
 
 import {
@@ -74,23 +74,23 @@ const BrowserPage = () => {
     name: connectedInstanceName,
     db = 0,
     isFreeDb,
-  } = useSelector(connectedInstanceSelector)
+  } = useAppSelector(connectedInstanceSelector)
   const {
     panelSizes,
     keyList: { selectedKey: selectedKeyContext },
     bulkActions: { opened: bulkActionOpenContext },
-  } = useSelector(appContextBrowser)
-  const { contextInstanceId } = useSelector(appContextSelector)
+  } = useAppSelector(appContextBrowser)
+  const { contextInstanceId } = useAppSelector(appContextSelector)
 
-  const { isBrowserFullScreen } = useSelector(keysSelector)
-  const { type } = useSelector(selectedKeyDataSelector) ?? {
+  const { isBrowserFullScreen } = useAppSelector(keysSelector)
+  const { type } = useAppSelector(selectedKeyDataSelector) ?? {
     type: '',
     length: 0,
   }
-  const { viewType, searchMode } = useSelector(keysSelector)
-  const { openedPanel: openedSidePanel } = useSelector(sidePanelsSelector)
-  const overview = useSelector(connectedInstanceOverviewSelector)
-  const featureFlags = useSelector(appFeatureFlagsFeaturesSelector)
+  const { viewType, searchMode } = useAppSelector(keysSelector)
+  const { openedPanel: openedSidePanel } = useAppSelector(sidePanelsSelector)
+  const overview = useAppSelector(connectedInstanceOverviewSelector)
+  const featureFlags = useAppSelector(appFeatureFlagsFeaturesSelector)
   const isDevBrowser = featureFlags?.[FeatureFlags.devBrowser]?.flag ?? false
   const isVectorSearch =
     featureFlags?.[FeatureFlags.vectorSearchV2]?.flag ?? false
@@ -119,7 +119,7 @@ const BrowserPage = () => {
   const isSidePanelOpenRef = useRef<boolean>(!!openedSidePanel)
 
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const dbName = `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)}`
   setTitle(`${dbName} - Browser`)

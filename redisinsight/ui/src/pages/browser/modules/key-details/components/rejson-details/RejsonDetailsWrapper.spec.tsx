@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { instance, mock } from 'ts-mockito'
 import { render } from 'uiSrc/utils/test-utils'
 import { EditorType } from 'uiSrc/slices/interfaces'
@@ -7,9 +7,13 @@ import { stringToBuffer } from 'uiSrc/utils'
 
 import { RejsonDetailsWrapper, Props } from './RejsonDetailsWrapper'
 
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppDispatch: jest.fn(),
+  useAppSelector: jest.fn(),
+}))
+
 jest.mock('react-redux', () => ({
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
   connect: () => (Component: any) => Component,
 }))
 
@@ -18,10 +22,17 @@ jest.mock('uiSrc/slices/browser/rejson', () => ({
   fetchReJSON: jest.fn((key) => ({ type: 'FETCH_REJSON', payload: key })),
 }))
 
+jest.mock('uiSrc/components/hooks/useDatabaseEnvironment', () => ({
+  useDatabaseEnvironment: () => ({
+    environment: 'unspecified',
+    isDangerousCommand: () => false,
+  }),
+}))
+
 const mockedProps = mock<Props>()
 
-const mockUseSelector = useSelector as jest.Mock
-const mockUseDispatch = useDispatch as jest.Mock
+const mockUseSelector = useAppSelector as jest.Mock
+const mockUseDispatch = useAppDispatch as jest.Mock
 
 type Selector = {
   name: string

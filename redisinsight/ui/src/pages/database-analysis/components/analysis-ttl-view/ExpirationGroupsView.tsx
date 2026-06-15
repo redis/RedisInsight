@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import React, { useEffect, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
@@ -25,7 +25,7 @@ import {
   setShowNoExpiryGroup,
 } from 'uiSrc/slices/analytics/dbAnalysis'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
+import { DatabaseAnalysis } from 'apiClient'
 
 import {
   SectionTitleWrapper,
@@ -51,11 +51,11 @@ const ExpirationGroupsView = (props: Props) => {
   const { data, loading, extrapolation, onSwitchExtrapolation } = props
   const { totalMemory, totalKeys } = data || {}
 
-  const { showNoExpiryGroup } = useSelector(dbAnalysisReportsSelector)
+  const { showNoExpiryGroup } = useAppSelector(dbAnalysisReportsSelector)
   const [expirationGroups, setExpirationGroups] = useState<BarChartData[]>([])
   const [isExtrapolated, setIsExtrapolated] = useState<boolean>(true)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setIsExtrapolated(extrapolation !== DEFAULT_EXTRAPOLATION)

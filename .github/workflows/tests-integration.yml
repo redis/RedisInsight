@@ -115,7 +115,7 @@ jobs:
       matrix:
         rte: ${{ fromJson(needs.set-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6.0.2
 
       # SSH Debug
       - name: Enable SSH
@@ -126,7 +126,7 @@ jobs:
 
       - name: Download Docker Artifacts
         if: inputs.build == 'docker'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: docker-builds
           path: ./release
@@ -165,7 +165,7 @@ jobs:
 
       - name: Upload coverage files as artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverages-${{ matrix.rte }}
           path: ./itest/coverages
@@ -231,7 +231,7 @@ jobs:
           fi
 
       - name: Generate test results
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v3
         id: test-reporter
         if: always()
         with:
@@ -253,19 +253,22 @@ jobs:
     name: Final coverage
     needs: run-tests
     if: always()
+    permissions:
+      actions: write
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6.0.2
 
       - name: Merge coverage artifacts
         id: merge-artifacts
-        uses: actions/upload-artifact/merge@v4
+        uses: actions/upload-artifact/merge@v7
         with:
           name: coverages-artifacts
           pattern: coverages-*
           delete-merged: true
 
       - name: Download coverage artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: coverages-artifacts
           path: ./coverages
@@ -280,13 +283,14 @@ jobs:
           cp integration-coverage.txt $GITHUB_WORKSPACE/integration-coverage.txt
 
       - name: Upload integration-coverage as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: integration-coverage
           path: integration-coverage.txt
 
       - name: Delete Artifact
-        uses: actions/github-script@v7
+        if: ${{ github.actor != 'dependabot[bot]' }}
+        uses: actions/github-script@v9
         with:
           script: |
             github.rest.actions.deleteArtifact({

@@ -1,8 +1,8 @@
 import { orderBy } from 'lodash'
 import React, { useContext, useEffect, useState, useMemo } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
-import { ClusterNodeDetails } from 'src/modules/cluster-monitor/models'
+import { ClusterNodeDetails } from 'apiClient'
 
 import { Theme } from 'uiSrc/constants'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
@@ -49,13 +49,13 @@ const ClusterDetailsPage = () => {
     db,
     name: connectedInstanceName,
     connectionType,
-  } = useSelector(connectedInstanceSelector)
-  const { viewTab } = useSelector(analyticsSettingsSelector)
-  const { loading, data } = useSelector(clusterDetailsSelector)
+  } = useAppSelector(connectedInstanceSelector)
+  const { viewTab } = useAppSelector(analyticsSettingsSelector)
+  const { loading, data } = useAppSelector(clusterDetailsSelector)
 
   const [isPageViewSent, setIsPageViewSent] = useState(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { theme } = useContext(ThemeContext)
 
   const dbName = `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)}`

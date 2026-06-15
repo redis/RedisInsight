@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
 import { isAzureEntraIdEnabledSelector } from 'uiSrc/slices/app/features'
@@ -21,7 +21,7 @@ export const useConnectivityOptions = ({
   onClickOption,
 }: UseConnectivityOptionsProps): ConnectivityOption[] => {
   const history = useHistory()
-  const isAzureEntraIdEnabled = useSelector(isAzureEntraIdEnabledSelector)
+  const isAzureEntraIdEnabled = useAppSelector(isAzureEntraIdEnabledSelector)
   const {
     initiateLogin,
     cancelLogin,

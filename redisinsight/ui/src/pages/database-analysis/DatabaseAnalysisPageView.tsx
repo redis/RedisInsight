@@ -1,8 +1,5 @@
 import React from 'react'
-import {
-  type DatabaseAnalysis,
-  type ShortDatabaseAnalysis,
-} from 'apiSrc/modules/database-analysis/models'
+import { type DatabaseAnalysis, type ShortDatabaseAnalysis } from 'apiClient'
 import { Nullable } from 'uiSrc/utils'
 import { AnalysisPageContainer } from './components/analysis-page-container'
 import { Header } from './components'

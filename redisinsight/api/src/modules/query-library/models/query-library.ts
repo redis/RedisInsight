@@ -31,6 +31,8 @@ export class QueryLibraryItem {
   @ApiProperty({
     description: 'Query type',
     enum: QueryLibraryType,
+
+    enumName: 'QueryLibraryType',
   })
   @IsEnum(QueryLibraryType, {
     message: `type must be a valid enum value. Valid values: ${Object.values(

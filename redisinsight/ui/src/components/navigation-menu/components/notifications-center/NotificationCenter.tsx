@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import {
   fetchNotificationsAction,
   notificationCenterSelector,
@@ -16,11 +16,11 @@ import Notification from './Notification'
 import styles from './styles.module.scss'
 
 const NotificationCenter = () => {
-  const { isCenterOpen, notifications } = useSelector(
+  const { isCenterOpen, notifications } = useAppSelector(
     notificationCenterSelector,
   )
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (isCenterOpen) {

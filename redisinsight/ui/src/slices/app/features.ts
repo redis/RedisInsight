@@ -53,6 +53,9 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.databaseManagement]: {
         flag: true,
       },
+      [FeatureFlags.customTutorials]: {
+        flag: false,
+      },
       [FeatureFlags.envDependent]: {
         flag: riConfig.features.envDependent.defaultFlag,
       },
@@ -62,13 +65,19 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.vectorSearchV2]: {
         flag: false,
       },
-      [FeatureFlags.devVectorSet]: {
+      [FeatureFlags.vectorSet]: {
+        flag: false,
+      },
+      [FeatureFlags.devArray]: {
         flag: false,
       },
       [FeatureFlags.azureEntraId]: {
         flag: false,
       },
       [FeatureFlags.devBrowser]: {
+        flag: false,
+      },
+      [FeatureFlags.prodMode]: {
         flag: false,
       },
     },
@@ -204,6 +213,8 @@ export const appFeatureFlagsSelector = (state: RootState) =>
   state.app.features.featureFlags
 export const appFeatureFlagsFeaturesSelector = (state: RootState) =>
   state.app.features.featureFlags.features
+export const appFeatureFlagProdModeSelector = (state: RootState): boolean =>
+  state.app.features.featureFlags.features[FeatureFlags.prodMode]?.flag ?? false
 
 export const isDevelopment = riConfig.app.env === 'development'
 
@@ -219,13 +230,22 @@ export const isAzureEntraIdEnabledSelector = (state: RootState): boolean => {
   return azureEntraIdEnabled && envDependentEnabled
 }
 
-export const isDevVectorSetEnabledSelector = (state: RootState): boolean => {
+export const isVectorSetEnabledSelector = (state: RootState): boolean => {
   if (isDevelopment) {
     return true
   }
 
   const features = state.app.features.featureFlags.features
-  return features[FeatureFlags.devVectorSet]?.flag ?? false
+  return features[FeatureFlags.vectorSet]?.flag ?? false
+}
+
+export const isDevArrayEnabledSelector = (state: RootState): boolean => {
+  if (isDevelopment) {
+    return true
+  }
+
+  const features = state.app.features.featureFlags.features
+  return features[FeatureFlags.devArray]?.flag ?? false
 }
 
 export default appFeaturesSlice.reducer

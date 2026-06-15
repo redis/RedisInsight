@@ -96,7 +96,7 @@ export class DatabaseRecommendationController {
       {
         status: 200,
         description: 'Delete many recommendations by ids response',
-        type: DeleteDatabaseRecommendationDto,
+        type: DeleteDatabaseRecommendationResponse,
       },
     ],
   })

@@ -35,6 +35,7 @@ export abstract class IoredisClient extends RedisClient {
     // fix not existing command in pipeline
     client.addBuiltinCommand(BrowserToolHashCommands.HGETALL);
     // Vector Set commands
+    client.addBuiltinCommand(BrowserToolVectorSetCommands.VAdd);
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VCard);
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VInfo);
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VRange);
@@ -43,6 +44,7 @@ export abstract class IoredisClient extends RedisClient {
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VGetAttr);
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VSetAttr);
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VRem);
+    client.addBuiltinCommand(BrowserToolVectorSetCommands.VSim);
   }
 
   static prepareCommandOptions(options: IRedisClientCommandOptions): any {

@@ -1,6 +1,6 @@
 import { toNumber } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { entryIdRegex, stringToBuffer } from 'uiSrc/utils'
 import {
   keysSelector,
@@ -24,7 +24,11 @@ import {
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
-import { AddStreamEntriesDto } from 'apiSrc/modules/browser/stream/dto'
+import { AddStreamEntriesDto } from 'apiClient'
+import {
+  BrowserConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 
 import StreamEntryFields from './StreamEntryFields/StreamEntryFields'
 import { Panel } from 'uiSrc/components/panel'
@@ -37,12 +41,12 @@ export interface Props {
 
 const AddStreamEntries = (props: Props) => {
   const { closePanel } = props
-  const { lastGeneratedId } = useSelector(streamDataSelector)
-  const { name: keyName = '' } = useSelector(selectedKeyDataSelector) ?? {
+  const { lastGeneratedId } = useAppSelector(streamDataSelector)
+  const { name: keyName = '' } = useAppSelector(selectedKeyDataSelector) ?? {
     name: undefined,
   }
-  const { viewType } = useSelector(keysSelector)
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
+  const { viewType } = useAppSelector(keysSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
 
   const [entryID, setEntryID] = useState<string>('*')
   const [entryIdError, setEntryIdError] = useState('')
@@ -51,7 +55,8 @@ const AddStreamEntries = (props: Props) => {
   ])
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(() => {
     const isValid = !entryIdError
@@ -132,6 +137,19 @@ const AddStreamEntries = (props: Props) => {
     }
   }
 
+  const handleSubmit = () => {
+    if (!isFormValid) return
+    requestConfirmation({
+      title: 'Add entry on production database?',
+      actionDescription:
+        'You are about to add a new entry to a stream on a production database.',
+      confirmButtonText: 'Add entry',
+      commandId: BrowserConfirmationCommandId.AddStreamEntry,
+      disableConfirmationInput: true,
+      onConfirm: submitData,
+    })
+  }
+
   return (
     <Col gap="m">
       <EntryContent data-test-subj="add-stream-field-panel">
@@ -153,7 +171,7 @@ const AddStreamEntries = (props: Props) => {
         <PrimaryButton
           size="m"
           color="secondary"
-          onClick={submitData}
+          onClick={handleSubmit}
           disabled={!isFormValid}
           data-testid="save-elements-btn"
         >

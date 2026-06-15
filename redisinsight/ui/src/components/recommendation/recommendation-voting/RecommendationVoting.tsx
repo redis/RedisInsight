@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import { userSettingsConfigSelector } from 'uiSrc/slices/user/user-settings'
 import { Vote } from 'uiSrc/constants/recommendations'
@@ -25,7 +25,7 @@ const RecommendationVoting = ({
   live = false,
   containerClass = '',
 }: Props) => {
-  const config = useSelector(userSettingsConfigSelector)
+  const config = useAppSelector(userSettingsConfigSelector)
   const [popover, setPopover] = useState<string>('')
 
   return (

@@ -7,6 +7,7 @@ enum ApiEndpoints {
   DATABASES_IMPORT = 'databases/import',
   DATABASES_TEST_CONNECTION = 'databases/test',
   DATABASES_EXPORT = 'databases/export',
+  DANGEROUS_COMMANDS = 'dangerous-commands',
 
   TAGS = 'tags',
 
@@ -62,12 +63,16 @@ enum ApiEndpoints {
   REJSON_GET = 'rejson-rl/get',
   REJSON_SET = 'rejson-rl/set',
   REJSON_ARRAPPEND = 'rejson-rl/arrappend',
+  REJSON_DOWNLOAD = 'rejson-rl/download-value',
 
+  VECTOR_SET = 'vector-set',
   VECTOR_SET_GET_ELEMENTS = 'vector-set/get-elements',
   VECTOR_SET_ELEMENTS = 'vector-set/elements',
   VECTOR_SET_GET_ELEMENT_DETAILS = 'vector-set/get-details',
   VECTOR_SET_ELEMENT_ATTRIBUTES = 'vector-set/attributes',
   VECTOR_SET_DOWNLOAD_EMBEDDING = 'vector-set/download-embedding',
+  VECTOR_SET_SIMILARITY_SEARCH = 'vector-set/similarity-search',
+  VECTOR_SET_SIMILARITY_SEARCH_PREVIEW = 'vector-set/similarity-search/preview',
 
   STREAMS = 'streams',
   STREAMS_ENTRIES = 'streams/entries',

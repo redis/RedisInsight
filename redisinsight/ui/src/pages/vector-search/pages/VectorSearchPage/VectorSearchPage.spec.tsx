@@ -178,7 +178,7 @@ describe('VectorSearchPage', () => {
     renderComponent()
 
     expect(document.title).toBe(
-      `${INSTANCES_MOCK[0].name} [db${INSTANCES_MOCK[0].db}] - Vector Search`,
+      `${INSTANCES_MOCK[0].name} [db${INSTANCES_MOCK[0].db}] - Search`,
     )
   })
 })

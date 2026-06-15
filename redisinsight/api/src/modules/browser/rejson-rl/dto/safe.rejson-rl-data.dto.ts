@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-enum RejsonRlDataType {
+export enum RejsonRlDataType {
   String = 'string',
   Number = 'number',
   Integer = 'integer',
@@ -32,6 +32,8 @@ export class SafeRejsonRlDataDto {
 
   @ApiProperty({
     enum: RejsonRlDataType,
+
+    enumName: 'RejsonRlDataType',
     description: 'Type of the field',
   })
   type: RejsonRlDataType;

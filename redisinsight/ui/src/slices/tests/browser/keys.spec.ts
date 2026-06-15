@@ -8,6 +8,15 @@ import {
   KeyValueFormat,
   ModulesKeyTypes,
 } from 'uiSrc/constants'
+import {
+  ListElementDestination,
+  CreateHashWithExpireDto,
+  CreateListWithExpireDto,
+  CreateRejsonRlWithExpireDto,
+  CreateSetWithExpireDto,
+  CreateZSetWithExpireDto,
+  SetStringWithExpireDto,
+} from 'apiClient'
 import { apiService } from 'uiSrc/services'
 import {
   parseKeysListResponse,
@@ -33,15 +42,7 @@ import {
   setIsWithinThreshold,
 } from 'uiSrc/slices/browser/rejson'
 import { EditorType } from 'uiSrc/slices/interfaces'
-import { CreateHashWithExpireDto } from 'apiSrc/modules/browser/hash/dto'
-import {
-  CreateListWithExpireDto,
-  ListElementDestination,
-} from 'apiSrc/modules/browser/list/dto'
-import { CreateRejsonRlWithExpireDto } from 'apiSrc/modules/browser/rejson-rl/dto'
-import { CreateSetWithExpireDto } from 'apiSrc/modules/browser/set/dto'
-import { CreateZSetWithExpireDto } from 'apiSrc/modules/browser/z-set/dto'
-import { SetStringWithExpireDto } from 'apiSrc/modules/browser/string/dto'
+
 import { rootReducer } from '../../store'
 import { loadVectorSetElements } from '../../browser/vectorSet'
 import { mockVectorSetKeyInfo } from 'uiSrc/mocks/factories/browser/vectorSet/vectorSetElement.factory'
@@ -55,6 +56,7 @@ import reducer, {
   addReJSONKey,
   addSetKey,
   addStringKey,
+  addVectorSetKey,
   addZsetKey,
   defaultSelectedKeyAction,
   defaultSelectedKeyActionFailure,
@@ -1784,6 +1786,58 @@ describe('keys slice', () => {
       })
     })
 
+    describe('addVectorSetKey', () => {
+      it('success to add vector set key', async () => {
+        const data = {
+          keyName: stringToBuffer('myVectorSet'),
+          elements: [
+            { name: stringToBuffer('el-1'), vectorValues: [0.1, 0.2, 0.3] },
+          ],
+        }
+        const responsePayload = { status: 200 }
+
+        apiService.post = jest.fn().mockResolvedValue(responsePayload)
+
+        await store.dispatch<any>(addVectorSetKey(data, jest.fn()))
+
+        const expectedActions = [
+          addKey(),
+          addKeySuccess(),
+          updateKeyList({
+            keyName: data.keyName,
+            keyType: KeyTypes.VectorSet,
+          }),
+          addMessageNotification(successMessages.ADDED_NEW_KEY(data.keyName)),
+        ]
+        expect(store.getActions()).toEqual(expectedActions)
+      })
+
+      it('calls onFailAction and dispatches failure on error', async () => {
+        const data = {
+          keyName: stringToBuffer('myVectorSet'),
+          elements: [
+            { name: stringToBuffer('el-1'), vectorValues: [0.1, 0.2, 0.3] },
+          ],
+        }
+        const errorMessage = 'Something went wrong'
+        const responsePayload = {
+          response: { status: 500, data: { message: errorMessage } },
+        }
+
+        apiService.post = jest.fn().mockRejectedValue(responsePayload)
+        const onFail = jest.fn()
+
+        await store.dispatch<any>(addVectorSetKey(data, jest.fn(), onFail))
+
+        expect(onFail).toHaveBeenCalled()
+        expect(
+          store
+            .getActions()
+            .some((action) => action.type === 'keys/addKeyFailure'),
+        ).toBe(true)
+      })
+    })
+
     describe('deleteSelectedKey', () => {
       it('should call proper actions on success', async () => {
         // Arrange
@@ -1867,6 +1921,10 @@ describe('keys slice', () => {
         const responsePayload = { status: 200 }
 
         apiService.patch = jest.fn().mockResolvedValue(responsePayload)
+        apiService.post = jest.fn().mockResolvedValue({
+          data: { data: '{}', keyName: 'keyName' },
+          status: 200,
+        })
 
         // Act
         await store.dispatch<any>(editKeyTTL(key, ttl))

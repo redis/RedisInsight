@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import {
   createFreeDbJob,
   fetchPlans,
@@ -46,16 +46,16 @@ export interface Props {
 
 const OAuthCreateDb = (props: Props) => {
   const { source } = props
-  const { data } = useSelector(oauthCloudUserSelector)
+  const { data } = useAppSelector(oauthCloudUserSelector)
   const {
     [FeatureFlags.cloudSsoRecommendedSettings]: isRecommendedFeatureEnabled,
-  } = useSelector(appFeatureFlagsFeaturesSelector)
+  } = useAppSelector(appFeatureFlagsFeaturesSelector)
 
   const [isRecommended, setIsRecommended] = useState(
     isRecommendedFeatureEnabled?.flag ? true : undefined,
   )
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleSocialButtonClick = (accountOption: string) => {
     dispatch(setIsRecommendedSettingsSSO(isRecommended))

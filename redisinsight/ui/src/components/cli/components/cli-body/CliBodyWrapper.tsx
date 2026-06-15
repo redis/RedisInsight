@@ -1,6 +1,6 @@
 import { decode } from 'html-entities'
 import React, { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from 'uiSrc/slices/hooks'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useHistory, useParams } from 'react-router-dom'
 
@@ -44,6 +44,12 @@ import {
   processUnrepeatableNumber,
   processUnsupportedCommand,
 } from 'uiSrc/utils/cliOutputActions'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
+import {
+  AclTip,
+  toRedisConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 import CliBody from './CliBody'
 
 import styles from './CliBody/styles.module.scss'
@@ -52,9 +58,9 @@ const CliBodyWrapper = () => {
   const [command, setCommand] = useState('')
 
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { instanceId = '' } = useParams<{ instanceId: string }>()
-  const { data = [] } = useSelector(outputSelector)
+  const { data = [] } = useAppSelector(outputSelector)
   const {
     errorClient: error,
     unsupportedCommands,
@@ -62,11 +68,15 @@ const CliBodyWrapper = () => {
     isSearching,
     matchedCommand,
     cliClientUuid,
-  } = useSelector(cliSettingsSelector)
-  const { connectionType, host, port, db } = useSelector(
+  } = useAppSelector(cliSettingsSelector)
+  const { connectionType, host, port, db, name } = useAppSelector(
     connectedInstanceSelector,
   )
-  const { db: currentDbIndex } = useSelector(outputSelector)
+  const { db: currentDbIndex } = useAppSelector(outputSelector)
+  const { isDangerousCommand } = useDatabaseEnvironment()
+  const { requestConfirmation } = useProductionWriteConfirmation()
+
+  const confirmationText = name || `${host}:${port}`
 
   useEffect(() => {
     if (!cliClientUuid) {
@@ -184,6 +194,34 @@ const CliBodyWrapper = () => {
 
     if (unsupportedCommand) {
       processUnsupportedCommand(commandLine, unsupportedCommand, resetCommand)
+      return
+    }
+
+    const verb = commandLine.trim().split(/\s+/)[0]?.toUpperCase() ?? ''
+    if (isDangerousCommand(verb)) {
+      requestConfirmation({
+        title: 'Proceed with caution in production',
+        actionDescription: (
+          <>
+            You&apos;re about to run <strong>{commandLine}</strong> on{' '}
+            <strong>{confirmationText}</strong>. This command is part of the
+            list of dangerous commands. This operation may affect server
+            stability.
+          </>
+        ),
+        confirmButtonText: 'Run command',
+        commandId: toRedisConfirmationCommandId(verb),
+        tip: <AclTip />,
+        onConfirm: () => {
+          for (let i = 0; i < countRepeat; i++) {
+            sendCommand(commandLine)
+          }
+        },
+        onCancel: () => {
+          dispatch(concatToOutput(cliTexts.DANGEROUS_COMMAND_CANCELLED))
+          resetCommand()
+        },
+      })
       return
     }
 

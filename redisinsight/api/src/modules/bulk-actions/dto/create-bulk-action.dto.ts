@@ -1,5 +1,8 @@
 import { BulkActionFilter } from 'src/modules/bulk-actions/models/bulk-action-filter';
-import { BulkActionType } from 'src/modules/bulk-actions/constants';
+import {
+  BulkActionConfirmation,
+  BulkActionType,
+} from 'src/modules/bulk-actions/constants';
 import {
   IsBoolean,
   IsEnum,
@@ -41,4 +44,12 @@ export class CreateBulkActionDto extends BulkActionIdDto {
   @IsBoolean()
   @Type(() => Boolean)
   generateReport?: boolean;
+
+  @IsOptional()
+  @IsEnum(BulkActionConfirmation, {
+    message: `confirmedThrough must be a valid enum value. Valid values: ${Object.values(
+      BulkActionConfirmation,
+    )}.`,
+  })
+  confirmedThrough?: BulkActionConfirmation;
 }

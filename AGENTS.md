@@ -51,7 +51,7 @@ yarn test              # Run all UI tests
 yarn test:api          # Run all API tests
 
 # E2E tests
-yarn --cwd tests/e2e test
+yarn --cwd tests/e2e-playwright test
 ```
 
 ### Run Specific Frontend Tests
@@ -77,27 +77,64 @@ yarn lint              # All code
 yarn lint:ui           # Frontend only
 yarn lint:api          # Backend only
 
-# Type checking
-yarn type-check:ui     # Frontend TypeScript
+# Type checking (compares against .tscheck.rec.json baselines for ui/api/desktop + configs)
+yarn type-check
+
+# Refresh baselines after intentionally adding or fixing TS errors (do not run casually)
+yarn tscheck
 
 # Tests
 yarn test              # Frontend tests
 yarn test:api          # Backend tests
 ```
 
+`yarn type-check` is the gate — CI fails if any (file × error-code) TS-error count increases. If you intentionally changed TS-error counts, run `yarn tscheck` to refresh the baselines and commit the updated `.tscheck.rec.json` files. See `.ai/skills/type-check-baselines/SKILL.md` for details (including the `yarn tscheck:force` escape hatch).
+
 **Fix any linting errors, type errors, or test failures before committing.**
 
-All detailed development standards are maintained in `.ai/rules/`:
+## Always-On Rules
 
-- **Code Quality**: `.ai/rules/code-quality.md` - Linting, TypeScript standards
-- **Frontend**: `.ai/rules/frontend.md` - React, Redux, UI patterns, styled-components
-- **Backend**: `.ai/rules/backend.md` - NestJS, API patterns, dependency injection
-- **Testing**: `.ai/rules/testing.md` - Testing standards, faker usage, test patterns
+These apply to every change in the repo. Skill files contain the full detail; the essentials are listed here so they're never missed.
+
+### Code quality (always)
+
+- Run `yarn lint` and `yarn type-check` before committing — both must pass.
+- TypeScript everywhere. Avoid `any`; use `unknown` if you must.
+- Naming: `PascalCase` components, `camelCase` functions/variables, `UPPER_SNAKE_CASE` constants, `is/has/should` prefix for booleans.
+- No `console.log` in production code (use `console.warn`/`error`).
+- Imports: external → built-ins → internal aliases (`uiSrc/*`, `apiClient`, `desktopSrc/*`) → relative → styles last. UI must not import from backend directly — use `apiClient`.
+- No magic numbers; extract duplicated strings to constants.
+
+### Git safety (always)
+
+- **Never commit, push, or force-push directly to `main`, `latest`, or `release/*`.** Always create a feature branch first.
+- Verify current branch with `git branch --show-current` before any push.
+- All changes go through pull requests.
+
+### Dependency / lockfile management (always)
+
+- The root `postinstall` runs `yarn-deduplicate yarn.lock`, so `yarn install` rewrites the lockfile whenever it isn't dedup-clean. After modifying any `package.json` (root, `redisinsight/`, or `redisinsight/api/`), run `yarn install` from that directory and commit the resulting lockfile changes.
+- Never edit `yarn.lock` files by hand and never run `yarn install --ignore-scripts` (or otherwise skip `postinstall`) when preparing a commit — the lockfile shipped to CI must match what `yarn install` produces locally.
+- CI runs `yarn install --frozen-lockfile` and then fails if `yarn.lock` is modified by the install. A green local install in every changed package's directory is required before pushing.
+- Use the right package manager for the change: `yarn add` / `yarn remove` (or `yarn upgrade`) for dependency changes, never manual edits to `package.json` versions without re-running install.
+
+## Skills
+
+All detailed development standards are exposed as skills under `.ai/skills/`. Claude Code auto-discovers them; each skill triggers when its description matches the task.
+
+- **Code Quality**: `.ai/skills/code-quality/SKILL.md` - Linting, TypeScript standards, naming, import order
+- **Frontend**: `.ai/skills/frontend/SKILL.md` - React, Redux, UI patterns, styled-components
+- **Backend**: `.ai/skills/backend/SKILL.md` - NestJS, API patterns, dependency injection
+- **Testing**: `.ai/skills/testing/SKILL.md` - Jest/Testing Library standards, faker, test patterns
+- **E2E Testing**: `.ai/skills/e2e-testing/SKILL.md` - Playwright standards, page objects
+- **Git Safety**: `.ai/skills/git-safety/SKILL.md` - Protected-branch guardrails (detail)
 - **Branches**: `.ai/skills/branches/SKILL.md` - Branch naming conventions
 - **Commits**: `.ai/skills/commits/SKILL.md` - Commit message guidelines
 - **Pull Requests**: `.ai/skills/pull-requests/SKILL.md` - PR process and review guidelines
 - **Feature Flags**: `.ai/skills/feature-flags/SKILL.md` - Adding, promoting, and removing feature flags
+- **TS Error Baselines**: `.ai/skills/type-check-baselines/SKILL.md` - Running and refreshing TypeScript error baselines
 - **Redis UI Components**: `.ai/skills/redis-ui-components/SKILL.md` - Component API references, props, and usage examples (from `@redis-ui/components` package)
+- **RedisInsight Plugins**: `.ai/skills/redis-insight-plugin/SKILL.md` - Building, deploying, and validating Workbench visualization plugins (manifests, `activationMethod`, phased workflow, command parsing); internal plugins under `redisinsight/ui/src/packages/` must also follow the Frontend, Code Quality, Redis UI Components, and Testing skills
 
 **Refer to these files for comprehensive guidelines on each topic.**
 
@@ -105,6 +142,7 @@ All detailed development standards are maintained in `.ai/rules/`:
 
 ### ✅ Always Do
 
+- Ensure the current branch name follows `.ai/skills/branches/SKILL.md` before opening a PR; rename it if it doesn't
 - Write to `src/` and `tests/` directories
 - Run `yarn lint` and `yarn test` before commits
 - Follow naming conventions (camelCase, PascalCase, UPPER_SNAKE_CASE)
@@ -115,6 +153,7 @@ All detailed development standards are maintained in `.ai/rules/`:
 - Use layout components (Row/Col/FlexGroup) instead of div
 - Pass layout props as component props (not hardcoded in styles)
 - Consult the `redis-ui-components` skill (`.ai/skills/redis-ui-components/`) for component APIs when writing frontend code
+- Consult the `redis-insight-plugin` skill (`.ai/skills/redis-insight-plugin/`) when creating or modifying anything under `redisinsight/ui/src/packages/**` or any plugin manifest with a `visualizations` field
 
 ### ⚠️ Ask First
 
@@ -128,6 +167,7 @@ All detailed development standards are maintained in `.ai/rules/`:
 
 - Commit secrets or API keys
 - Edit `node_modules/` or `vendor/` directories
+- Edit `yarn.lock` by hand or commit a lockfile produced with `--ignore-scripts` / a skipped `postinstall`
 - Use fixed time waits in tests (use `waitFor` instead)
 - Use `!important` in styled-components
 - Import directly from `@redis-ui/*` (use internal wrappers from `uiSrc/components/ui`)

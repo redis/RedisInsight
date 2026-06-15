@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { toNumber } from 'lodash'
 
 import { Text } from 'uiSrc/components/base/text'
@@ -42,11 +42,15 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { RiPopover, RiTooltip } from 'uiSrc/components/base'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import { DeleteListElementsDto } from 'apiSrc/modules/browser/list/dto'
+import {
+  DeleteListElementsDto,
+  Environment,
+  ListElementDestination,
+} from 'apiClient'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 
 import {
   HEAD_DESTINATION,
-  ListElementDestination,
   TAIL_DESTINATION,
 } from '../add-list-elements/AddListElements'
 
@@ -80,21 +84,23 @@ const RemoveListElements = (props: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false)
 
   const [canRemoveMultiple, setCanRemoveMultiple] = useState<boolean>(true)
-  const { name: selectedKey = '', length } = useSelector(
+  const { name: selectedKey = '', length } = useAppSelector(
     selectedKeyDataSelector,
   ) ?? {
     name: undefined,
     length: 0,
   }
-  const { version: databaseVersion = '' } = useSelector(
+  const { version: databaseVersion = '' } = useAppSelector(
     connectedInstanceOverviewSelector,
   )
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
-  const { viewType } = useSelector(keysSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
+  const { viewType } = useAppSelector(keysSelector)
+  const { environment } = useDatabaseEnvironment()
+  const bypassConfirmation = environment === Environment.Development
 
   const countInput = useRef<HTMLInputElement>(null)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     // ComponentDidMount
@@ -122,7 +128,6 @@ const RemoveListElements = (props: Props) => {
   }
 
   const showPopover = () => {
-    setIsPopoverOpen((isPopoverOpen) => !isPopoverOpen)
     sendEventTelemetry({
       event: getBasedOnViewTypeEvent(
         viewType,
@@ -134,6 +139,11 @@ const RemoveListElements = (props: Props) => {
         keyType: KeyTypes.List,
       },
     })
+    if (bypassConfirmation) {
+      submitData()
+      return
+    }
+    setIsPopoverOpen((isPopoverOpen) => !isPopoverOpen)
   }
 
   const closePopover = () => {

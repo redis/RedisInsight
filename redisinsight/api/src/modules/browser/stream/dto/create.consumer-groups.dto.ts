@@ -1,5 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsRedisString, RedisStringType } from 'src/common/decorators';
+import {
+  ApiRedisString,
+  IsRedisString,
+  RedisStringType,
+} from 'src/common/decorators';
 import { RedisString } from 'src/common/constants';
 import {
   ArrayNotEmpty,
@@ -12,11 +16,7 @@ import { KeyDto } from 'src/modules/browser/keys/dto';
 import { Type } from 'class-transformer';
 
 export class ConsumerGroupDto {
-  @ApiProperty({
-    type: String,
-    description: 'Consumer Group name',
-    example: 'group',
-  })
+  @ApiRedisString('Consumer Group name')
   @RedisStringType()
   name: RedisString;
 
@@ -57,11 +57,7 @@ export class ConsumerGroupDto {
 }
 
 export class CreateConsumerGroupDto {
-  @ApiProperty({
-    type: String,
-    description: 'Consumer group name',
-    example: 'group',
-  })
+  @ApiRedisString('Consumer group name')
   @IsNotEmpty()
   @IsRedisString()
   @RedisStringType()

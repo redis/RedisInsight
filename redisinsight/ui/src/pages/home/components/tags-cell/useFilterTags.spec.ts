@@ -1,13 +1,13 @@
 import { renderHook, act } from '@testing-library/react-hooks'
-import { useDispatch, useSelector } from 'react-redux'
-
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { setSelectedTags } from 'uiSrc/slices/instances/tags'
 import { Tag } from 'uiSrc/slices/interfaces/tag'
 import { useFilterTags } from './useFilterTags'
 
-jest.mock('react-redux', () => ({
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppDispatch: jest.fn(),
+  useAppSelector: jest.fn(),
 }))
 
 const mockTags: Tag[] = [
@@ -27,8 +27,12 @@ const mockTags: Tag[] = [
   },
 ]
 
-const mockDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>
-const mockSelector = useSelector as jest.MockedFunction<typeof useSelector>
+const mockDispatch = useAppDispatch as jest.MockedFunction<
+  typeof useAppDispatch
+>
+const mockSelector = useAppSelector as jest.MockedFunction<
+  typeof useAppSelector
+>
 
 describe('useFilterTags', () => {
   beforeEach(() => {

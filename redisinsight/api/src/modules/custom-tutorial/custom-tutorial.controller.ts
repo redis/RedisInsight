@@ -26,6 +26,10 @@ import { RootCustomTutorialManifest } from 'src/modules/custom-tutorial/models/c
 import { RequestSessionMetadata } from 'src/common/decorators';
 import { SessionMetadata } from 'src/common/models';
 
+/**
+ * @deprecated Custom tutorials are deprecated (RED-194229) and disabled by
+ * default via the `customTutorials` feature flag. Slated for removal.
+ */
 @ApiExtraModels(
   CreateCaCertificateDto,
   UseCaCertificateDto,
@@ -50,7 +54,8 @@ export class CustomTutorialController {
     statusCode: 201,
     responses: [
       {
-        type: Object,
+        status: 201,
+        type: RootCustomTutorialManifest,
       },
     ],
   })
@@ -67,7 +72,8 @@ export class CustomTutorialController {
     statusCode: 200,
     responses: [
       {
-        type: Object,
+        status: 200,
+        type: RootCustomTutorialManifest,
       },
     ],
   })

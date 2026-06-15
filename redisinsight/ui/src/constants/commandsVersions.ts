@@ -11,4 +11,10 @@ export const CommandsVersions = {
   HASH_TTL: {
     since: '7.3',
   },
+  VECTOR_SET: {
+    since: '8.0',
+  },
+  ARRAY: {
+    since: '8.8',
+  },
 }

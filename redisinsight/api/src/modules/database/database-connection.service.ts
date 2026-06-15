@@ -2,7 +2,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { RECOMMENDATION_NAMES } from 'src/constants';
 import { DatabaseRepository } from 'src/modules/database/repositories/database.repository';
 import { DatabaseAnalytics } from 'src/modules/database/database.analytics';
-import { HostingProvider } from 'src/modules/database/entities/database.entity';
+import {
+  Environment,
+  HostingProvider,
+} from 'src/modules/database/entities/database.entity';
 import { DatabaseInfoProvider } from 'src/modules/database/providers/database-info.provider';
 import { DatabaseRecommendationService } from 'src/modules/database-recommendation/database-recommendation.service';
 import { Database } from 'src/modules/database/models/database';
@@ -48,7 +51,7 @@ export class DatabaseConnectionService {
       version: await this.databaseInfoProvider.determineDatabaseServer(client),
     };
 
-    const { host, provider } = await this.repository.get(
+    const { host, provider, environment } = await this.repository.get(
       clientMetadata.sessionMetadata,
       clientMetadata.databaseId,
     );
@@ -102,7 +105,12 @@ export class DatabaseConnectionService {
       );
     }
 
-    this.collectClientInfo(clientMetadata, client, generalInfo?.version);
+    this.collectClientInfo(
+      clientMetadata,
+      client,
+      generalInfo?.version,
+      environment,
+    );
 
     this.logger.debug(
       `Succeed to connect to database ${clientMetadata.databaseId}`,
@@ -114,6 +122,7 @@ export class DatabaseConnectionService {
     clientMetadata: ClientMetadata,
     client: RedisClient,
     version?: string,
+    environment?: Environment,
   ) {
     try {
       const intVersion = parseInt(version, 10) || 0;
@@ -124,6 +133,7 @@ export class DatabaseConnectionService {
         clientMetadata.sessionMetadata,
         {
           databaseId: clientMetadata.databaseId,
+          environment: environment ?? Environment.Unspecified,
           ...(client.isInfoCommandDisabled
             ? { info_command_is_disabled: true }
             : {}),

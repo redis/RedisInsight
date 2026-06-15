@@ -1,6 +1,7 @@
 import React from 'react'
 
 import cx from 'classnames'
+import { Environment } from 'apiClient'
 import { KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
 import { formatLongName } from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
@@ -10,6 +11,7 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import ConfirmationPopover from 'uiSrc/components/confirmation-popover'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
 
 export interface DeleteProps {
   nameString: string
@@ -32,8 +34,15 @@ export const DeleteKeyPopover = ({
   onDelete,
   onOpenPopover,
 }: DeleteProps) => {
+  const { environment } = useDatabaseEnvironment()
+  const bypassConfirmation = environment === Environment.Development
+
   const onClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation()
+    if (bypassConfirmation) {
+      onDelete(name)
+      return
+    }
     onOpenPopover(rowId, type)
   }
 

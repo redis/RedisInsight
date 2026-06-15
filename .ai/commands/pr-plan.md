@@ -307,8 +307,8 @@ After saving the plan document:
 - **ALWAYS save the plan document** - use `write` tool to save to `docs/pr-plan-{ticket-id}-{brief-description}.md`
 - **Use main branch as baseline** - all analysis should be against current main
 - **Be specific and actionable** - every task should be clear and verifiable
-- **Consider PR stacking** - plan for small, reviewable PRs (see `.ai/rules/pull-requests.md`). plan breaking the implementation in a stack of PRs.
-- **Follow all project standards** - reference rules in `.ai/rules/`
+- **Consider PR stacking** - plan for small, reviewable PRs (see `.ai/skills/pull-requests/SKILL.md`). plan breaking the implementation in a stack of PRs.
+- **Follow all project standards** - reference skills in `.ai/skills/`
 - **Document assumptions** - if anything is unclear, document the assumption made
 - **Identify blockers early** - surface dependencies and knowledge gaps upfront
 

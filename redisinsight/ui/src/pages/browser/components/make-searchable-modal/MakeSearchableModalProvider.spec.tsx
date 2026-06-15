@@ -29,9 +29,9 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const mockUseSelector = jest.fn()
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: (...args: unknown[]) => mockUseSelector(...args),
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppSelector: (...args: unknown[]) => mockUseSelector(...args),
 }))
 
 const TestConsumer = () => {

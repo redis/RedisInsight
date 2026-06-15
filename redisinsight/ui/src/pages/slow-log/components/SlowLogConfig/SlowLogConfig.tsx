@@ -1,6 +1,6 @@
 import { toNumber } from 'lodash'
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import {
   DEFAULT_SLOWLOG_DURATION_UNIT,
@@ -45,12 +45,12 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
   const options = DURATION_UNITS
   const { instanceId } = useParams<{ instanceId: string }>()
   const connectionType = useConnectionType()
-  const { loading } = useSelector(slowLogSelector)
-  const { slowLogDurationUnit } = useSelector(appContextDbConfig)
+  const { loading } = useAppSelector(slowLogSelector)
+  const { slowLogDurationUnit } = useAppSelector(appContextDbConfig)
   const {
     slowlogMaxLen = DEFAULT_SLOWLOG_MAX_LEN,
     slowlogLogSlowerThan = DEFAULT_SLOWLOG_SLOWER_THAN,
-  } = useSelector(slowLogConfigSelector)
+  } = useAppSelector(slowLogConfigSelector)
 
   const [durationUnit, setDurationUnit] = useState(
     slowLogDurationUnit ?? DEFAULT_SLOWLOG_DURATION_UNIT,
@@ -63,7 +63,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
       : `${MINUS_ONE}`,
   )
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const onChangeUnit = (value: DurationUnits) => {
     setDurationUnit(value)

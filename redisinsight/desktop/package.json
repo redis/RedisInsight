@@ -6,6 +6,9 @@
     "dev": "cross-env ELECTRON_DEV=true ELECTRON_ENABLE_LOGGING=true ELECTRON_DEBUG_LOGGING=true ELECTRON_ENABLE_STACK_DUMPING=true NODE_ENV=development yarn build && yarn build:preload && yarn build:renderer && electron . --enable-logging --inspect=5858",
     "build": "cross-env ELECTRON_DEV=true ELECTRON_ENABLE_LOGGING=true ELECTRON_DEBUG_LOGGING=true ELECTRON_ENABLE_STACK_DUMPING=true NODE_ENV=development vite build --config vite.main.config.ts",
     "build:preload": "cross-env ELECTRON_DEV=true ELECTRON_ENABLE_LOGGING=true ELECTRON_DEBUG_LOGGING=true ELECTRON_ENABLE_STACK_DUMPING=true NODE_ENV=development vite build --config vite.preload.config.ts",
-    "build:renderer": "cross-env ELECTRON_DEV=true ELECTRON_ENABLE_LOGGING=true ELECTRON_DEBUG_LOGGING=true ELECTRON_ENABLE_STACK_DUMPING=true NODE_ENV=development vite build --config vite.renderer.config.ts"
+    "build:renderer": "cross-env ELECTRON_DEV=true ELECTRON_ENABLE_LOGGING=true ELECTRON_DEBUG_LOGGING=true ELECTRON_ENABLE_STACK_DUMPING=true NODE_ENV=development vite build --config vite.renderer.config.ts",
+    "type-check": "tsc --project tsconfig.json --noEmit --pretty false | tsc-output-parser | tsx ../../scripts/ts-error-check.ts compare .tscheck.rec.json 'yarn --cwd redisinsight/desktop tscheck'",
+    "tscheck": "tsc --project tsconfig.json --noEmit --pretty false | tsc-output-parser | tsx ../../scripts/ts-error-check.ts overwrite .tscheck.rec.json",
+    "tscheck:force": "tsc --project tsconfig.json --noEmit --pretty false | tsc-output-parser | tsx ../../scripts/ts-error-check.ts force_overwrite .tscheck.rec.json"
   }
 }

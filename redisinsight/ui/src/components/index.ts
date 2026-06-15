@@ -41,6 +41,7 @@ import {
 import { FormatedDate } from './formated-date'
 import { UploadWarning } from './upload-warning'
 import FormDialog from './form-dialog'
+import TypeToConfirmModal from './type-to-confirm-modal'
 
 export { FullScreen } from './full-screen'
 
@@ -88,4 +89,5 @@ export {
   FormatedDate,
   UploadWarning,
   FormDialog,
+  TypeToConfirmModal,
 }

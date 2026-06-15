@@ -3,7 +3,7 @@ import webpack from 'webpack'
 import { merge } from 'webpack-merge'
 import { toString } from 'lodash'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
-import baseConfig from './webpack.config.base.ts'
+import baseConfig from './webpack.config.base'
 import DeleteSourceMaps from '../scripts/DeleteSourceMaps'
 import { version } from '../redisinsight/package.json'
 import webpackPaths from './webpack.paths'
@@ -68,6 +68,8 @@ export default merge(baseConfig, {
       RI_APP_HOST: '127.0.0.1',
       RI_BUILD_TYPE: 'ELECTRON',
       RI_APP_VERSION: version,
+      RI_APP_BUILD_COMMIT_SHA: process.env.RI_APP_BUILD_COMMIT_SHA || '',
+      RI_SHOW_BUILD_COMMIT_SHA: process.env.RI_SHOW_BUILD_COMMIT_SHA || 'false',
       RI_SEGMENT_WRITE_KEY:
         'RI_SEGMENT_WRITE_KEY' in process.env
           ? process.env.RI_SEGMENT_WRITE_KEY

@@ -69,7 +69,8 @@ const STATICS_CONFIG = config.get('statics') as Config['statics'];
     NotificationModule.register(),
     BulkActionsModule,
     ClusterMonitorModule,
-    CustomTutorialModule.register(),
+    // Custom tutorials are deprecated (RED-194229).
+    ...(SERVER_CONFIG.customTutorials ? [CustomTutorialModule.register()] : []),
     DatabaseAnalysisModule,
     DatabaseImportModule,
     CloudModule.register(),

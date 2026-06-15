@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import {
   selectedKeyDataSelector,
@@ -23,17 +23,16 @@ import {
 } from 'uiSrc/components/base/forms/buttons'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import { PushElementToListDto } from 'apiSrc/modules/browser/list/dto'
+import { ListElementDestination, PushElementToListDto } from 'apiClient'
+import {
+  BrowserConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 
 import { EntryContent } from '../../common/AddKeysContainer.styled'
 
 export interface Props {
   closePanel: (isCancelled?: boolean) => void
-}
-
-export enum ListElementDestination {
-  Tail = 'TAIL',
-  Head = 'HEAD',
 }
 
 export const TAIL_DESTINATION: ListElementDestination =
@@ -60,15 +59,18 @@ const AddListElements = (props: Props) => {
   const [elements, setElements] = useState<string[]>([''])
   const [destination, setDestination] =
     useState<ListElementDestination>(TAIL_DESTINATION)
-  const { name: selectedKey = '' } = useSelector(selectedKeyDataSelector) ?? {
+  const { name: selectedKey = '' } = useAppSelector(
+    selectedKeyDataSelector,
+  ) ?? {
     name: undefined,
   }
-  const { viewType } = useSelector(keysSelector)
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
+  const { viewType } = useAppSelector(keysSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
 
   const elementInput = useRef<HTMLInputElement>(null)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(() => {
     // ComponentDidMount
@@ -121,6 +123,22 @@ const AddListElements = (props: Props) => {
     dispatch(insertListElementsAction(data, onSuccessAdded))
   }
 
+  const handleSubmit = () => {
+    requestConfirmation({
+      title: 'Add elements on production database?',
+      actionDescription: (
+        <>
+          You are about to push {elements.length} element
+          {elements.length === 1 ? '' : 's'} to a list on a production database.
+        </>
+      ),
+      confirmButtonText: 'Add elements',
+      commandId: BrowserConfirmationCommandId.AddListElements,
+      disableConfirmationInput: true,
+      onConfirm: submitData,
+    })
+  }
+
   return (
     <Col gap="m">
       <EntryContent gap="m">
@@ -165,7 +183,10 @@ const AddListElements = (props: Props) => {
         </FlexItem>
         <FlexItem>
           <div>
-            <PrimaryButton onClick={submitData} data-testid="save-elements-btn">
+            <PrimaryButton
+              onClick={handleSubmit}
+              data-testid="save-elements-btn"
+            >
               Save
             </PrimaryButton>
           </div>

@@ -1,7 +1,7 @@
-import { join } from 'path';
-import rimraf from 'rimraf';
+const { join } = require('path');
+const rimraf = require('rimraf');
 
-export default function deleteSourceMaps() {
+module.exports = function deleteSourceMaps() {
   rimraf.sync(join(__dirname, '../redisinsight/ui/dist/*.js.map'));
   rimraf.sync(join(__dirname, '../redisinsight/ui/*.js.map'));
-}
+};

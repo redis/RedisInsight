@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 
 import { setReJSONDataAction } from 'uiSrc/slices/browser/rejson'
@@ -13,6 +13,10 @@ import {
   Nullable,
 } from 'uiSrc/utils'
 import FieldMessage from 'uiSrc/components/field-message/FieldMessage'
+import {
+  BrowserConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 
 import { JSONScalarProps } from '../interfaces'
 import {
@@ -45,7 +49,8 @@ const RejsonScalar = (props: JSONScalarProps) => {
   const [editing, setEditing] = useState<boolean>(false)
   const [deleting, setDeleting] = useState<string>('')
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
+  const { requestConfirmation } = useProductionWriteConfirmation()
 
   useEffect(() => {
     setChangedValue(stringifyScalarValue(value))
@@ -62,16 +67,26 @@ const RejsonScalar = (props: JSONScalarProps) => {
       return
     }
 
-    dispatch<any>(
-      setReJSONDataAction(
-        selectedKey,
-        path,
-        String(value),
-        true,
-        undefined,
-        () => setEditing(false),
-      ),
-    )
+    requestConfirmation({
+      title: 'Edit value on production database?',
+      actionDescription:
+        'You are about to modify a JSON value on a production database.',
+      confirmButtonText: 'Save',
+      commandId: BrowserConfirmationCommandId.EditRejsonValue,
+      disableConfirmationInput: true,
+      onConfirm: () => {
+        dispatch<any>(
+          setReJSONDataAction(
+            selectedKey,
+            path,
+            String(value),
+            true,
+            undefined,
+            () => setEditing(false),
+          ),
+        )
+      },
+    })
   }
 
   return (

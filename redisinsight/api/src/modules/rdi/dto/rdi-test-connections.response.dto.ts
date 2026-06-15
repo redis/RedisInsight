@@ -27,6 +27,8 @@ export class RdiTestTargetConnectionResult {
   @ApiProperty({
     description: 'Connection status',
     enum: RdiTestConnectionStatus,
+
+    enumName: 'RdiTestConnectionStatus',
   })
   @Expose()
   status: RdiTestConnectionStatus;
@@ -45,7 +47,7 @@ export class RdiTestSourceConnectionResult {
   @Expose()
   connected: boolean;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Error message if connection fails',
     required: false,
   })

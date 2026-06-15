@@ -1,17 +1,17 @@
 import React from 'react'
 import { Redirect, Route } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { userSettingsSelector } from 'uiSrc/slices/user/user-settings'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { IRoute, FeatureFlags, Pages } from 'uiSrc/constants'
 
 const PrivateRoute = (route: IRoute) => {
   const { path, exact, routes, featureFlag, redirect } = route
-  const { [featureFlag as FeatureFlags]: feature } = useSelector(
+  const { [featureFlag as FeatureFlags]: feature } = useAppSelector(
     appFeatureFlagsFeaturesSelector,
   )
   const { isShowConceptsPopup: haveToAcceptAgreements } =
-    useSelector(userSettingsSelector)
+    useAppSelector(userSettingsSelector)
 
   return (
     <Route

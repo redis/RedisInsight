@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/no-identical-functions */
 import React from 'react'
 import { cloneDeep } from 'lodash'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import {
   render,
   screen,
@@ -25,9 +25,9 @@ import {
 import BrowserPage from './BrowserPage'
 import KeyList, { Props as KeyListProps } from './components/key-list/KeyList'
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(),
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppSelector: jest.fn(),
 }))
 
 jest.mock('./components/key-list/KeyList', () => ({
@@ -63,7 +63,7 @@ beforeEach(() => {
 })
 
 const selectKey = (state: any, selectedKey: any, data?: any = {}) => {
-  ;(useSelector as jest.Mock).mockImplementation(
+  ;(useAppSelector as jest.Mock).mockImplementation(
     (callback: (arg0: RootState) => RootState) =>
       callback({
         ...state,
@@ -125,7 +125,7 @@ describe('BrowserPage', () => {
   }
 
   beforeAll(() => {
-    ;(useSelector as jest.Mock).mockImplementation(originalUseSelector)
+    ;(useAppSelector as jest.Mock).mockImplementation(originalUseSelector)
   })
 
   it.each([true, false])(
@@ -269,10 +269,10 @@ describe('KeyDetailsWrapper', () => {
 
     const afterRenderActions = [...store.getActions()]
 
-    fireEvent.click(screen.getByTestId(/string-value/))
+    fireEvent.click(screen.getByTestId('string-value'))
 
-    expect(screen.getByTestId(/string-value/)).toBeInTheDocument()
-    fireEvent.change(screen.getByTestId(/string-value/), {
+    expect(screen.getByTestId('string-value')).toBeInTheDocument()
+    fireEvent.change(screen.getByTestId('string-value'), {
       target: { value: 'val123' },
     })
 

@@ -23,6 +23,10 @@ const UPLOAD_FROM_REMOTE_ORIGINS_WHITELIST = [
   'https://raw.githubusercontent.com',
 ];
 
+/**
+ * @deprecated Custom tutorials are deprecated (RED-194229) and disabled by
+ * default via the `customTutorials` feature flag. Slated for removal.
+ */
 @Injectable()
 export class CustomTutorialFsProvider {
   private logger = new Logger('CustomTutorialFsProvider');

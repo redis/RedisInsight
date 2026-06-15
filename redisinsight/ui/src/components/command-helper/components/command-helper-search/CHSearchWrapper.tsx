@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -18,10 +18,10 @@ import styles from './styles.module.scss'
 
 const CHSearchWrapper = () => {
   const { instanceId = '' } = useParams<{ instanceId: string }>()
-  const { loading } = useSelector(appRedisCommandsSelector)
+  const { loading } = useAppSelector(appRedisCommandsSelector)
   const [filterType, setFilterType] = useState<string>('')
   const [searchValue, setSearchValue] = useState<string>('')
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const onChangeSearch = (value: string) => {
     setSearchValue(value)

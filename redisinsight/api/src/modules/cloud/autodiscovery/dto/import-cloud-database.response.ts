@@ -19,6 +19,8 @@ export class ImportCloudDatabaseResponse {
     description: 'Add Redis Cloud database status',
     default: ActionStatus.Success,
     enum: ActionStatus,
+
+    enumName: 'ActionStatus',
   })
   status: ActionStatus;
 

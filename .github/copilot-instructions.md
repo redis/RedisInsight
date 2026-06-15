@@ -5,20 +5,20 @@
 This project uses a centralized AI rules structure:
 
 - **`AGENTS.md`** (repository root) - Entry point with commands, testing, and boundaries
-- **`.ai/rules/`** - Detailed development standards organized by topic
+- **`.ai/skills/`** - Detailed development standards as skill files (one folder per topic, each with a `SKILL.md`)
 - **`.ai/commands/`** - AI workflow commands and templates
 
-## 📂 Rules Structure
+## 📂 Skills Structure
 
-### Core Development Rules
+### Core Development Skills
 
-- **Code Quality**: `.ai/rules/code-quality.md`
+- **Code Quality**: `.ai/skills/code-quality/SKILL.md`
 
   - TypeScript best practices
   - Import organization
   - SonarJS complexity rules
 
-- **Frontend Development**: `.ai/rules/frontend.md`
+- **Frontend Development**: `.ai/skills/frontend/SKILL.md`
 
   - React 18 patterns and best practices
   - Redux Toolkit state management
@@ -27,7 +27,7 @@ This project uses a centralized AI rules structure:
   - Internal UI component wrappers (never import from @redis-ui directly)
   - Elastic UI deprecation (use Redis UI wrappers)
 
-- **Backend Development**: `.ai/rules/backend.md`
+- **Backend Development**: `.ai/skills/backend/SKILL.md`
 
   - NestJS module architecture
   - Service and controller patterns
@@ -35,24 +35,27 @@ This project uses a centralized AI rules structure:
   - Error handling
   - Redis integration patterns
 
-- **Testing Standards**: `.ai/rules/testing.md`
+- **Testing Standards**: `.ai/skills/testing/SKILL.md`
 
   - Jest and Testing Library patterns
   - Component testing with renderComponent helper
   - Faker for test data generation
   - No fixed timeouts (use waitFor)
   - Backend testing with NestJS
-  - E2E testing with Playwright
 
-- **Branch Naming**: `.ai/rules/branches.md`
+- **E2E Testing**: `.ai/skills/e2e-testing/SKILL.md`
 
-  - Branch naming conventions (type/RI-XXX/title or type/XXX/title)
+  - Playwright standards, page object models, fixtures
 
-- **Commit Messages**: `.ai/rules/commits.md`
+- **Git Safety**: `.ai/skills/git-safety/SKILL.md`
+
+  - Protected-branch guardrails (no direct commits to main/latest/release)
+
+- **Commit Messages**: `.ai/skills/commits/SKILL.md`
 
   - Commit message format (Conventional Commits)
 
-- **Pull Requests**: `.ai/rules/pull-requests.md`
+- **Pull Requests**: `.ai/skills/pull-requests/SKILL.md`
   - PR process and review guidelines
   - Pre-commit checklist
 
@@ -74,7 +77,7 @@ This project uses a centralized AI rules structure:
 **Module Aliases:**
 
 - `uiSrc/*` → `redisinsight/ui/src/*`
-- `apiSrc/*` → `redisinsight/api/src/*`
+- `apiClient` → `redisinsight/api-client` (auto-generated OpenAPI types consumed by the UI)
 - `desktopSrc/*` → `redisinsight/desktop/src/*`
 
 ## 📖 Additional Documentation
@@ -84,4 +87,4 @@ This project uses a centralized AI rules structure:
 
 ---
 
-**Note**: This is a minimal reference file. GitHub Copilot cannot read the referenced files directly, but developers can access the full guidelines. Other AI tools (Cursor, Augment, Windsurf) access these rules via symlinks and can read `AGENTS.md` directly.
+**Note**: This is a minimal reference file. GitHub Copilot cannot read the referenced files directly, but developers can access the full guidelines. Claude Code and Codex read `AGENTS.md` directly; Claude Code additionally auto-discovers skills under `.ai/skills/` (Codex via the `.agents/skills` symlink).

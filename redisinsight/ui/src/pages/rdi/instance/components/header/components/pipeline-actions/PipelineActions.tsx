@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import styled from 'styled-components'
@@ -48,14 +48,14 @@ const PipelineActions = ({ pipelineStatus }: Props) => {
     jobNameSchema,
     config,
     jobs,
-  } = useSelector(rdiPipelineSelector)
-  const { loading: actionLoading, action } = useSelector(
+  } = useAppSelector(rdiPipelineSelector)
+  const { loading: actionLoading, action } = useAppSelector(
     rdiPipelineActionSelector,
   )
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (!jobs && !config) {

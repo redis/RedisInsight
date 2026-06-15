@@ -5,6 +5,7 @@ import {
   initialStateDefault,
   renderHook,
 } from 'uiSrc/utils/test-utils'
+import { Environment } from 'apiClient'
 import { DatabaseListColumn } from 'uiSrc/constants'
 import { Instance } from 'uiSrc/slices/interfaces'
 import { DBInstanceFactory } from 'uiSrc/mocks/factories/database/DBInstance.factory'
@@ -160,6 +161,7 @@ describe('useDatabaseListData', () => {
         modules: [],
         version: null,
         visible: false,
+        environment: Environment.Unspecified,
       },
     ]
     const store = getStoreWith({ instances })
@@ -189,6 +191,7 @@ describe('useDatabaseListData', () => {
         modules: [],
         version: null,
         visible: true,
+        environment: Environment.Unspecified,
       }),
     )
     const store = getStoreWith({ instances })
@@ -209,6 +212,7 @@ describe('useDatabaseListData', () => {
         modules: [],
         version: null,
         visible: true,
+        environment: Environment.Unspecified,
       }),
     )
     const store = getStoreWith({ instances })

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { OAuthAgreement } from 'uiSrc/components/oauth/shared'
 
 import { OAuthSocialAction, OAuthSocialSource } from 'uiSrc/slices/interfaces'
@@ -13,7 +13,7 @@ import { Text } from 'uiSrc/components/base/text'
 import styles from './styles.module.scss'
 
 const WelcomeAiAssistant = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleSsoClick = (accountOption: string) => {
     dispatch(setSSOFlow(OAuthSocialAction.SignIn))

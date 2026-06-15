@@ -1,12 +1,14 @@
-import { RedisNodeInfoResponse } from 'src/modules/database/dto/redis-info.dto'
-import { Database as DatabaseInstanceResponse } from 'src/modules/database/models/database'
-import { ExportDatabase } from 'src/modules/database/models/export-database'
 import axios, { CancelTokenSource } from 'axios'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { apiService } from 'uiSrc/services'
 import { isStatusSuccessful, Nullable } from 'uiSrc/utils'
 import { Instance } from 'uiSrc/slices/interfaces'
 import { PartialInstance } from 'uiSrc/slices/instances/instances'
+import {
+  RedisNodeInfoResponse,
+  Database as DatabaseInstanceResponse,
+  ExportDatabase,
+} from 'apiClient'
 
 const endpoint = ApiEndpoints.DATABASES
 
@@ -19,6 +21,13 @@ export async function getInstanceInfo(id: string) {
 export async function getInstanceOverview(id: string) {
   const { data, status } = await apiService.get<RedisNodeInfoResponse>(
     `${endpoint}/${id}/overview`,
+  )
+
+  return isStatusSuccessful(status) ? data : null
+}
+export async function getInstanceDangerousCommands(id: string) {
+  const { data, status } = await apiService.get<string[]>(
+    `${endpoint}/${id}/${ApiEndpoints.DANGEROUS_COMMANDS}`,
   )
 
   return isStatusSuccessful(status) ? data : null

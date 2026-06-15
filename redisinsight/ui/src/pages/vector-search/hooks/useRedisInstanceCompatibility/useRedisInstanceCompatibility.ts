@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import {
   connectedInstanceInfoSelector,
   connectedInstanceSelector,
@@ -26,9 +26,9 @@ const decodeModuleVersion = (version: number): string => {
 
 export const useRedisInstanceCompatibility =
   (): UseRedisInstanceCompatibilityReturn => {
-    const { version } = useSelector(connectedInstanceInfoSelector)
+    const { version } = useAppSelector(connectedInstanceInfoSelector)
 
-    const { loading, modules = [] } = useSelector(connectedInstanceSelector)
+    const { loading, modules = [] } = useAppSelector(connectedInstanceSelector)
 
     const isInitialized = loading !== undefined
 

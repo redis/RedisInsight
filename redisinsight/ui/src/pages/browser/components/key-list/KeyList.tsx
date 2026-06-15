@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { debounce, findIndex, isUndefined, orderBy, reject } from 'lodash'
 
@@ -55,7 +55,7 @@ import KeyRowSize from 'uiSrc/pages/browser/components/key-row-size'
 import KeyRowName from 'uiSrc/pages/browser/components/key-row-name'
 import KeyRowType from 'uiSrc/pages/browser/components/key-row-type'
 
-import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
+import { GetKeyInfoResponse } from 'apiClient'
 
 import * as S from './KeyList.styles'
 import { Props } from './KeyList.types'
@@ -89,14 +89,14 @@ const KeyList = forwardRef((props: Props, ref) => {
   const { instanceId = '' } = useParams<{ instanceId: string }>()
   const { handler: keyFormatConvertor } = useKeyFormat()
 
-  const selectedKey = useSelector(selectedKeySelector)
-  const { nextCursor, previousResultCount } = useSelector(keysDataSelector)
-  const { isSearched, isFiltered, searchMode } = useSelector(keysSelector)
-  const { shownColumns } = useSelector(appContextDbConfig)
+  const selectedKey = useAppSelector(selectedKeySelector)
+  const { nextCursor, previousResultCount } = useAppSelector(keysDataSelector)
+  const { isSearched, isFiltered, searchMode } = useAppSelector(keysSelector)
+  const { shownColumns } = useAppSelector(appContextDbConfig)
   const visibleColumns = visibleColumnsProp ?? shownColumns
   const {
     keyList: { isNotRendered: isNotRenderedContext },
-  } = useSelector(appContextBrowser)
+  } = useAppSelector(appContextBrowser)
 
   const [, rerender] = useState({})
   const [firstDataLoaded, setFirstDataLoaded] = useState<boolean>(
@@ -111,7 +111,7 @@ const KeyList = forwardRef((props: Props, ref) => {
   const renderedRowsIndexesRef = useRef({ startIndex: 0, lastIndex: 0 })
   const sortedColumnMountedRef = useRef(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const prevIncludeSize = useRef(shownColumns?.includes(BrowserColumns.Size))
   const prevIncludeTTL = useRef(shownColumns?.includes(BrowserColumns.TTL))

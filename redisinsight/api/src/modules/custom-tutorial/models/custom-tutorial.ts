@@ -4,12 +4,22 @@ import config from 'src/utils/config';
 
 const PATH_CONFIG = config.get('dir_path');
 
+/**
+ * @deprecated Custom tutorials are deprecated (RED-194229) and disabled by
+ * default via the `customTutorials` feature flag. All exports in this file
+ * are slated for removal.
+ */
 export enum CustomTutorialActions {
   CREATE = 'create',
   DELETE = 'delete',
   SYNC = 'sync',
 }
 
+/**
+ * @deprecated Custom tutorials are deprecated (RED-194229) and disabled by
+ * default via the `customTutorials` feature flag. All exports in this file
+ * are slated for removal.
+ */
 export class CustomTutorial {
   @Expose()
   id: string;

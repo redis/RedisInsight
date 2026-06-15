@@ -9,7 +9,7 @@ import { getApiErrorMessage, getUrl, isStatusSuccessful } from 'uiSrc/utils'
 import {
   DeleteDatabaseRecommendationResponse,
   ModifyDatabaseRecommendationDto,
-} from 'apiSrc/modules/database-recommendation/dto'
+} from 'apiClient'
 
 import { AppDispatch, RootState } from '../store'
 import {

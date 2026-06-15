@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import React, { useEffect, useState } from 'react'
 import { PopoverAnchorPosition } from '@elastic/eui/src/components/popover/popover'
 import { appFeatureOnboardingSelector } from 'uiSrc/slices/app/features'
@@ -21,7 +21,7 @@ export interface Props {
 const OnboardingTourWrapper = (props: Props) => {
   const { options, children, delay, rerenderWithDelay } = props
   const { step } = options
-  const { currentStep, isActive, totalSteps } = useSelector(
+  const { currentStep, isActive, totalSteps } = useAppSelector(
     appFeatureOnboardingSelector,
   )
   const [isDelayed, setIsDelayed] = useState(true)

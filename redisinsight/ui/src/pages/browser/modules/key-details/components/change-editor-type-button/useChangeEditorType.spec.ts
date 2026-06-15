@@ -1,13 +1,14 @@
-import * as reactRedux from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { renderHook, act } from '@testing-library/react-hooks'
 import { EditorType } from 'uiSrc/slices/interfaces'
 import { FeatureFlags } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
 import { useChangeEditorType } from './useChangeEditorType'
 
-jest.mock('react-redux', () => ({
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppDispatch: jest.fn(),
+  useAppSelector: jest.fn(),
 }))
 
 jest.mock('uiSrc/slices/browser/rejson', () => ({
@@ -15,8 +16,8 @@ jest.mock('uiSrc/slices/browser/rejson', () => ({
   fetchReJSON: jest.fn((key) => ({ type: 'FETCH_REJSON', payload: key })),
 }))
 
-const mockedUseDispatch = reactRedux.useDispatch as jest.Mock
-const mockedUseSelector = reactRedux.useSelector as jest.Mock
+const mockedUseDispatch = useAppDispatch as unknown as jest.Mock
+const mockedUseSelector = useAppSelector as unknown as jest.Mock
 const mockKeyName = stringToBuffer('test-key')
 
 describe('useChangeEditorType', () => {

@@ -2,13 +2,10 @@ name: ✅ Tests
 
 on:
   push:
-    branches:
-      - 'fe/**'
-      - 'be/**'
-      - 'fe-be/**'
-      - 'feature/**'
-      - 'bugfix/**'
-      - 'ric/**'
+    branches-ignore:
+      - main
+      - latest
+      - 'release/**'
   pull_request:
     types: [labeled]
 
@@ -47,9 +44,17 @@ on:
         default: false
         type: boolean
 
-# Cancel a previous run workflow
+# Cancel a previous run workflow.
+# Key by head identity (not github.ref) so the push-triggered run and the
+# pull_request-triggered run for the same branch share one concurrency group
+# and cancel each other, instead of running the full suite twice in parallel.
+# - push:         head_ref is empty -> falls back to ref_name (branch name)
+# - pull_request: head_ref is the source branch name
+# Qualify by the head repo so fork PRs that happen to share a branch name
+# (e.g. "main") don't collide and cancel each other's runs; for same-repo
+# events this resolves to github.repository, preserving the push<->PR merge.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.head.repo.full_name || github.repository }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -59,12 +64,17 @@ jobs:
       frontend: ${{ steps.filter.outputs.frontend }}
       backend: ${{ steps.filter.outputs.backend }}
       desktop: ${{ steps.filter.outputs.desktop }}
+      docker: ${{ steps.filter.outputs.docker }}
+      infra: ${{ steps.filter.outputs.infra }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v3.0.2
+      - uses: actions/checkout@v6.0.2
+      - uses: dorny/paths-filter@v4.0.1
         id: filter
         with:
-          base: ${{ github.ref }}
+          # Compare against main so each push's gating reflects the
+          # cumulative branch diff, not just the latest commit. Keeps
+          # the merge-gate aligned with what would actually land.
+          base: main
           filters: |
             frontend:
               - 'redisinsight/ui/**'
@@ -72,50 +82,107 @@ jobs:
               - 'redisinsight/api/**'
             desktop:
               - 'redisinsight/desktop/**'
+            docker:
+              - 'Dockerfile*'
+              - '.dockerignore'
+              - '*docker*.sh'
+            # Shared toolchain / CI config — when these change, run everything.
+            infra:
+              - 'package.json'
+              - 'yarn.lock'
+              - '.yarnrc'
+              - '.nvmrc'
+              - '.eslintrc*'
+              - '.eslintignore'
+              - 'babel.config*'
+              - 'jest.config*'
+              - 'jest-resolver.js'
+              - 'configs/**'
+              - 'scripts/**'
+              - '.github/workflows/**'
+              - '.github/actions/**'
 
-  # Check common conditions that trigger all test suites
-  should-run-all-tests:
+  # Compute per-consumer "should this run" decisions from changes, labels,
+  # pre-release input, and manual dispatch. One job, one source of truth.
+  should-run:
+    needs: changes
     runs-on: ubuntu-latest
     outputs:
-      result: ${{ steps.check.outputs.result }}
+      ui: ${{ steps.eval.outputs.ui }}
+      api: ${{ steps.eval.outputs.api }}
+      desktop: ${{ steps.eval.outputs.desktop }}
+      integration: ${{ steps.eval.outputs.integration }}
+      docker: ${{ steps.eval.outputs.docker }}
     steps:
-      - id: check
+      - id: eval
         env:
-          PRERELEASE_CONDITION: ${{ inputs.pre_release == true }}
+          PRE_RELEASE: ${{ inputs.pre_release == true }}
+          DISPATCH: ${{ github.event_name == 'workflow_dispatch' }}
+          LABEL_ALL: ${{ contains(github.event.pull_request.labels.*.name, 'run-all-tests') }}
+          LABEL_FE: ${{ contains(github.event.pull_request.labels.*.name, 'run-frontend-tests') }}
+          LABEL_BE: ${{ contains(github.event.pull_request.labels.*.name, 'run-backend-tests') }}
+          LABEL_IT: ${{ contains(github.event.pull_request.labels.*.name, 'run-integration-tests') }}
+          CHG_FRONTEND: ${{ needs.changes.outputs.frontend }}
+          CHG_BACKEND: ${{ needs.changes.outputs.backend }}
+          CHG_DESKTOP: ${{ needs.changes.outputs.desktop }}
+          CHG_DOCKER: ${{ needs.changes.outputs.docker }}
+          CHG_INFRA: ${{ needs.changes.outputs.infra }}
         run: |
-          OTHER_CONDITIONS="${{ github.event_name == 'workflow_dispatch' ||
-              startsWith(github.ref_name, 'feature/') ||
-              startsWith(github.ref_name, 'bugfix/') ||
-              startsWith(github.ref_name, 'ric/') ||
-              startsWith(github.ref_name, 'release/') ||
-              github.ref_name == 'latest' ||
-              contains(github.event.pull_request.labels.*.name, 'run-all-tests') }}"
-
-          if [[ "$PRERELEASE_CONDITION" == "true" ]] || [[ "$OTHER_CONDITIONS" == "true" ]]; then
-            echo "result=true" >> $GITHUB_OUTPUT
+          # "Run everything" — pre-release builds, manual dispatch, the
+          # run-all-tests label, or shared toolchain/CI changes.
+          if [[ "$PRE_RELEASE" == "true" || "$DISPATCH" == "true" || "$LABEL_ALL" == "true" || "$CHG_INFRA" == "true" ]]; then
+            ALL=true
           else
-            echo "result=false" >> $GITHUB_OUTPUT
+            ALL=false
           fi
+
+          ui=$ALL
+          api=$ALL
+          desktop=$ALL
+          integration=$ALL
+          docker=$ALL
+
+          [[ "$CHG_FRONTEND" == "true" || "$LABEL_FE" == "true" ]] && ui=true
+          [[ "$CHG_BACKEND"  == "true" || "$LABEL_BE" == "true" ]] && api=true
+          [[ "$CHG_DESKTOP"  == "true" ]] && desktop=true
+          [[ "$CHG_BACKEND"  == "true" || "$LABEL_IT" == "true" ]] && integration=true
+          [[ "$CHG_FRONTEND" == "true" || "$CHG_BACKEND" == "true" || "$CHG_DOCKER" == "true" ]] && docker=true
+
+          {
+            echo "ui=$ui"
+            echo "api=$api"
+            echo "desktop=$desktop"
+            echo "integration=$integration"
+            echo "docker=$docker"
+          } >> "$GITHUB_OUTPUT"
 
   lint:
     uses: ./.github/workflows/lint.yml
     secrets: inherit
 
+  type-check:
+    needs: should-run
+    uses: ./.github/workflows/type-check.yml
+    with:
+      run-ui: ${{ needs.should-run.outputs.ui == 'true' }}
+      run-api: ${{ needs.should-run.outputs.api == 'true' }}
+      run-desktop: ${{ needs.should-run.outputs.desktop == 'true' }}
+    secrets: inherit
+
   docker-build:
+    needs: should-run
+    if: needs.should-run.outputs.docker == 'true'
     uses: ./.github/workflows/docker-build.yml
 
   frontend-tests:
-    needs: [changes, lint, should-run-all-tests]
-    if: |
-      needs.should-run-all-tests.outputs.result == 'true' ||
-      startsWith(github.ref_name, 'fe/') ||
-      startsWith(github.ref_name, 'fe-be/') ||
-      contains(github.event.pull_request.labels.*.name, 'run-frontend-tests')
+    needs: [should-run, lint, type-check]
+    if: needs.should-run.outputs.ui == 'true'
     uses: ./.github/workflows/tests-frontend.yml
     secrets: inherit
 
   frontend-tests-coverage:
     needs: frontend-tests
+    if: ${{ github.actor != 'dependabot[bot]' }}
     uses: ./.github/workflows/code-coverage.yml
     secrets: inherit
     with:
@@ -123,17 +190,14 @@ jobs:
       type: unit
 
   backend-tests:
-    needs: [changes, lint, should-run-all-tests]
-    if: |
-      needs.should-run-all-tests.outputs.result == 'true' ||
-      startsWith(github.ref_name, 'be/') ||
-      startsWith(github.ref_name, 'fe-be/') ||
-      contains(github.event.pull_request.labels.*.name, 'run-backend-tests')
+    needs: [should-run, lint, type-check]
+    if: needs.should-run.outputs.api == 'true'
     uses: ./.github/workflows/tests-backend.yml
     secrets: inherit
 
   backend-tests-coverage:
     needs: backend-tests
+    if: ${{ github.actor != 'dependabot[bot]' }}
     uses: ./.github/workflows/code-coverage.yml
     secrets: inherit
     with:
@@ -141,14 +205,14 @@ jobs:
       type: unit
 
   integration-tests:
-    needs: [changes, lint, should-run-all-tests]
-    if: |
-      needs.should-run-all-tests.outputs.result == 'true' ||
-      startsWith(github.ref_name, 'be/') ||
-      startsWith(github.ref_name, 'fe-be/') ||
-      contains(github.event.pull_request.labels.*.name, 'run-integration-tests')
+    needs: [should-run, lint, type-check]
+    if: needs.should-run.outputs.integration == 'true'
     uses: ./.github/workflows/tests-integration.yml
     secrets: inherit
+    permissions:
+      actions: write
+      contents: read
+      checks: write
     with:
       short_rte_list: ${{ inputs.short_rte_list || true }}
       redis_client: ${{ inputs.redis_client || '' }}
@@ -156,6 +220,7 @@ jobs:
 
   integration-tests-coverage:
     needs: integration-tests
+    if: ${{ github.actor != 'dependabot[bot]' }}
     uses: ./.github/workflows/code-coverage.yml
     secrets: inherit
     with:
@@ -164,7 +229,11 @@ jobs:
 
   clean:
     uses: ./.github/workflows/clean-deployments.yml
-    if: always()
+    if: ${{ always() && github.actor != 'dependabot[bot]' }}
+    permissions:
+      actions: write
+      contents: read
+      deployments: write
     needs:
       [
         frontend-tests,
@@ -175,6 +244,7 @@ jobs:
   # Remove artifacts from github actions
   remove-artifacts:
     name: Remove artifacts
+    if: ${{ github.actor != 'dependabot[bot]' }}
     needs:
       [
         frontend-tests,
@@ -183,6 +253,6 @@ jobs:
       ]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6.0.2
       - name: Remove all artifacts
         uses: ./.github/actions/remove-artifacts

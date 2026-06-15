@@ -1,0 +1,79 @@
+// The plugin still hosts a small set of leaflet-driven elements (the plot
+// panel, cluster markers, and the offline-tile notice) that need plain CSS
+// because their nodes are created imperatively by leaflet. Everything else
+// has moved to styled-components in the per-component .styles.ts files.
+
+.geodata-shell {
+  --geodata-background: #10131a;
+  --geodata-border: rgba(255, 255, 255, 0.12);
+  --geodata-offline-background: rgba(16, 19, 26, 0.78);
+  --geodata-plot-background: #0c1117;
+  --geodata-plot-panel-background: #151b24;
+  --geodata-text: #e7ecf2;
+  --geodata-white: #ffffff;
+
+  box-sizing: border-box;
+  min-height: 100%;
+  padding: 12px;
+  color: var(--geodata-text);
+  background: var(--geodata-background);
+  font-family: Graphik, sans-serif;
+}
+
+body.theme_LIGHT .geodata-shell {
+  --geodata-background: #f7f9fc;
+  --geodata-border: rgba(23, 32, 46, 0.14);
+  --geodata-plot-background: #eef2f7;
+  --geodata-plot-panel-background: #ffffff;
+  --geodata-text: #17202e;
+}
+
+.geodata-plot-panel {
+  position: relative;
+  margin: 12px 0;
+  border: 1px solid var(--geodata-border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--geodata-plot-panel-background);
+}
+
+.geodata-plot {
+  width: 100%;
+  height: 440px;
+  background: var(--geodata-plot-background);
+}
+
+.geodata-cluster {
+  background: transparent;
+  border: 0;
+}
+
+.geodata-cluster-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.65);
+  border-radius: 50%;
+  background: var(--geodata-current-cluster-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.32);
+  color: var(--geodata-white);
+  font-weight: 700;
+}
+
+.geodata-offline-note {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: var(--geodata-offline-background);
+  color: var(--geodata-white);
+  font-size: 12px;
+}
+
+@media (max-width: 720px) {
+  .geodata-plot {
+    height: 420px;
+  }
+}

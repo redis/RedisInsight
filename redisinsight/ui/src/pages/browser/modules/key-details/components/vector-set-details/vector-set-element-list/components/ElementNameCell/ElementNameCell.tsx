@@ -16,7 +16,7 @@ export const ElementNameCell = ({
   const memberBuffer = element.name as RedisResponseBuffer
   const { value: decompressedItem } = decompressingBuffer(
     memberBuffer,
-    compressor as any,
+    compressor,
   )
 
   const { value, isValid } = formattingBuffer(

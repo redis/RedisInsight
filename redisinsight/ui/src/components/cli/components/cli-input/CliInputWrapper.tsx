@@ -1,6 +1,6 @@
 import { isUndefined } from 'lodash'
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { getCommandRepeat } from 'uiSrc/utils'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
 import { outputSelector } from 'uiSrc/slices/cli/cli-output'
@@ -19,8 +19,8 @@ export interface Props {
 
 const CliInputWrapper = (props: Props) => {
   const { command = '', wordsTyped, setInputEl, setCommand, onKeyDown } = props
-  const { spec: ALL_REDIS_COMMANDS } = useSelector(appRedisCommandsSelector)
-  const { db } = useSelector(outputSelector)
+  const { spec: ALL_REDIS_COMMANDS } = useAppSelector(appRedisCommandsSelector)
+  const { db } = useAppSelector(outputSelector)
 
   const [commandLine, repeatCommand] = getCommandRepeat(command || '')
   const [firstCommand, secondCommand] = commandLine.split(' ')

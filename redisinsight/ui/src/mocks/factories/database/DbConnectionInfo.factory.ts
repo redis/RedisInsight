@@ -1,5 +1,6 @@
 import { Factory } from 'fishery'
 import { faker } from '@faker-js/faker'
+import { Environment } from 'apiClient'
 import { KeyValueFormat } from 'uiSrc/constants/keys'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 
@@ -15,4 +16,5 @@ export const dbConnectionInfoFactory = Factory.define<DbConnectionInfo>(() => ({
   keyNameFormat: KeyValueFormat,
   modules: [],
   version: faker.system.semver(),
+  environment: Environment.Unspecified,
 }))

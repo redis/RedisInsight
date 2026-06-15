@@ -57,6 +57,8 @@ export class DatabaseRecommendation {
     description: 'Recommendation vote',
     default: Vote.Like,
     enum: Vote,
+
+    enumName: 'Vote',
   })
   @IsEnum(Vote)
   @IsOptional()

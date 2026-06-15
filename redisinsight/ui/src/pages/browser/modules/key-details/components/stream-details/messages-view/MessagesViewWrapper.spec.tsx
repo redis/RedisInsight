@@ -19,7 +19,7 @@ import {
   MOCK_TRUNCATED_STRING_VALUE,
 } from 'uiSrc/mocks/data/bigString'
 import { TEXT_CONSUMER_NAME_TOO_LONG } from 'uiSrc/constants'
-import { PendingEntryDto } from 'apiSrc/modules/browser/stream/dto'
+import { PendingEntryDto } from 'apiClient'
 import MessagesView, { Props as MessagesViewProps } from './MessagesView'
 import MessagesViewWrapper, { Props } from './MessagesViewWrapper'
 

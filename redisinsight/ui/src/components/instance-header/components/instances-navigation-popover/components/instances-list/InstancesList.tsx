@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { useHistory, useParams } from 'react-router-dom'
 import { checkConnectToRdiInstanceAction } from 'uiSrc/slices/rdi/instances'
 import {
@@ -45,7 +45,7 @@ const InstancesList = ({
     rdiInstanceId: string
   }>()
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const instances =
     selectedTab === InstancesTabs.Databases
       ? filteredDbInstances
@@ -72,6 +72,7 @@ const InstancesList = ({
         databaseId: instance.id,
         source: 'navigation_panel',
         provider: instance.provider,
+        environment: instance.environment,
         ...modulesSummary,
         ...infoData,
       },

@@ -1,11 +1,10 @@
 import { useEffect, useCallback } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from 'uiSrc/slices/hooks'
 
 import {
   keyIndexesSelector,
   fetchKeyIndexesAction,
 } from 'uiSrc/slices/browser/redisearch'
-import { AppDispatch } from 'uiSrc/slices/store'
 
 import {
   UseIsKeyIndexedResult,
@@ -20,8 +19,8 @@ import {
  * @returns { isIndexed, indexes, status, refresh }
  */
 export const useIsKeyIndexed = (keyName: string): UseIsKeyIndexedResult => {
-  const dispatch = useDispatch<AppDispatch>()
-  const keyIndexes = useSelector(keyIndexesSelector)
+  const dispatch = useAppDispatch()
+  const keyIndexes = useAppSelector(keyIndexesSelector)
   const entry = keyName ? keyIndexes[keyName] : undefined
 
   useEffect(() => {

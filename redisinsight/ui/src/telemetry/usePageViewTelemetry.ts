@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { sendPageViewTelemetry, TelemetryPageView } from 'uiSrc/telemetry'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -20,7 +20,7 @@ export const usePageViewTelemetry = ({
   ready = true,
 }: PageViewTelemetryProps): PageViewTelemetryHook => {
   const [isPageViewSent, setIsPageViewSent] = useState(false)
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
 
   useEffect(() => {
     if (instanceId && ready && !isPageViewSent) {

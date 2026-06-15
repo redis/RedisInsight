@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
 import { KeyTypes } from 'uiSrc/constants'
@@ -27,7 +27,7 @@ export interface Props extends KeyDetailsHeaderProps {
 const ListDetails = (props: Props) => {
   const keyType = KeyTypes.List
   const { onRemoveKey, onOpenAddItemPanel, onCloseAddItemPanel } = props
-  const { loading } = useSelector(selectedKeySelector)
+  const { loading } = useAppSelector(selectedKeySelector)
 
   const [isRemoveItemPanelOpen, setIsRemoveItemPanelOpen] =
     useState<boolean>(false)

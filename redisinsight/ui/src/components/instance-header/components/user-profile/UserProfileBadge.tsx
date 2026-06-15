@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 import { logoutUserAction } from 'uiSrc/slices/oauth/cloud'
 
@@ -17,7 +17,7 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { FeatureFlags, Pages } from 'uiSrc/constants'
 import { FeatureFlagComponent } from 'uiSrc/components'
 import { getConfig } from 'uiSrc/config'
-import { CloudUser } from 'apiSrc/modules/cloud/user/models'
+import { CloudUser } from 'apiClient'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { DownloadIcon, SignoutIcon } from '@redis-ui/icons'
 import { Menu } from 'uiSrc/components/base/layout/menu'
@@ -46,14 +46,14 @@ const UserProfileBadge = (props: UserProfileBadgeProps) => {
     'data-testid': dataTestId,
   } = props
 
-  const connectedInstance = useSelector(connectedInstanceSelector)
+  const connectedInstance = useAppSelector(connectedInstanceSelector)
 
   const riDesktopLink = buildRedisInsightUrl(connectedInstance)
 
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [isImportLoading, setIsImportLoading] = useState(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
 
   if (!data || error) {

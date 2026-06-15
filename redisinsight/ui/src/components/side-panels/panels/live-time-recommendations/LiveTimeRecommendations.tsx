@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory, useParams } from 'react-router-dom'
 import { remove } from 'lodash'
 import styled from 'styled-components'
@@ -62,22 +62,22 @@ const FooterLink = styled.button<{
 `
 
 const LiveTimeRecommendations = () => {
-  const { provider, connectionType } = useSelector(connectedInstanceSelector)
+  const { provider, connectionType } = useAppSelector(connectedInstanceSelector)
   const {
     loading,
     data: { recommendations },
     content: recommendationsContent,
-  } = useSelector(recommendationsSelector)
+  } = useAppSelector(recommendationsSelector)
   const {
     showHiddenRecommendations: isShowHidden,
     treeViewDelimiter = [DEFAULT_DELIMITER],
-  } = useSelector(appContextDbConfig)
+  } = useAppSelector(appContextDbConfig)
 
   const { instanceId } = useParams<{ instanceId: string }>()
 
   const [isShowApproveRun, setIsShowApproveRun] = useState<boolean>(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
 
   const isShowHiddenDisplayed = recommendations.filter((r) => r.hide).length > 0

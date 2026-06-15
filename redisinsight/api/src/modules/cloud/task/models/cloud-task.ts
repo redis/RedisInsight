@@ -22,6 +22,8 @@ export class CloudTask {
   @ApiProperty({
     description: 'Current status of the task',
     enum: CloudTaskStatus,
+
+    enumName: 'CloudTaskStatus',
   })
   status: CloudTaskStatus;
 

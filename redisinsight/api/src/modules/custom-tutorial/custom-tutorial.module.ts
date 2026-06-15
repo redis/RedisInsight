@@ -7,6 +7,10 @@ import { CustomTutorialRepository } from 'src/modules/custom-tutorial/repositori
 import { LocalCustomTutorialRepository } from 'src/modules/custom-tutorial/repositories/local.custom-tutorial.repository';
 import { CustomTutorialAnalytics } from 'src/modules/custom-tutorial/custom-tutorial.analytics';
 
+/**
+ * @deprecated Custom tutorials are deprecated (RED-194229) and disabled by
+ * default via the `customTutorials` feature flag. Slated for removal.
+ */
 @Module({})
 export class CustomTutorialModule {
   static register(

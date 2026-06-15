@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { FormikProps } from 'formik'
 
 import { BuildType } from 'uiSrc/constants/env'
@@ -55,7 +55,7 @@ const DatabaseForm = (props: Props) => {
     readyOnlyFields = [],
   } = props
 
-  const { server } = useSelector(appInfoSelector)
+  const { server } = useAppSelector(appInfoSelector)
 
   const isShowPort =
     server?.buildType !== BuildType.RedisStack && showFields.port

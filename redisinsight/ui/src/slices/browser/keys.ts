@@ -44,17 +44,7 @@ import {
 } from 'uiSrc/slices/app/context'
 import { NamespaceSearchableResult } from 'uiSrc/slices/interfaces/keys'
 
-import { CreateListWithExpireDto } from 'apiSrc/modules/browser/list/dto'
-import { SetStringWithExpireDto } from 'apiSrc/modules/browser/string/dto'
-import { CreateZSetWithExpireDto } from 'apiSrc/modules/browser/z-set/dto'
-import { CreateHashWithExpireDto } from 'apiSrc/modules/browser/hash/dto'
-import { CreateRejsonRlWithExpireDto } from 'apiSrc/modules/browser/rejson-rl/dto'
-import { CreateSetWithExpireDto } from 'apiSrc/modules/browser/set/dto'
-import {
-  GetKeyInfoResponse,
-  GetKeysWithDetailsResponse,
-} from 'apiSrc/modules/browser/keys/dto'
-import { CreateStreamDto } from 'apiSrc/modules/browser/stream/dto'
+import { CreateVectorSetWithExpireDto } from 'uiSrc/slices/interfaces/vectorSet'
 
 import { fetchString } from './string'
 import {
@@ -105,6 +95,17 @@ import {
 import { AppDispatch, RootState } from '../store'
 import { StreamViewType } from '../interfaces/stream'
 import { EditorType, RedisResponseBuffer, RedisString } from '../interfaces'
+import {
+  CreateListWithExpireDto,
+  SetStringWithExpireDto,
+  CreateZSetWithExpireDto,
+  CreateHashWithExpireDto,
+  CreateRejsonRlWithExpireDto,
+  CreateSetWithExpireDto,
+  GetKeyInfoResponse,
+  GetKeysWithDetailsResponse,
+  CreateStreamDto,
+} from 'apiClient'
 
 const riConfig = getConfig()
 
@@ -1057,6 +1058,17 @@ export function addStreamKey(
   onFailAction?: () => void,
 ) {
   return addTypedKey(data, KeyTypes.Stream, onSuccessAction, onFailAction)
+}
+
+// Asynchronous thunk action
+// Vector set create uses POST /vector-set (create-only; VADD against a new key).
+// The element PUT endpoint reuses the same path for adding to an existing key.
+export function addVectorSetKey(
+  data: CreateVectorSetWithExpireDto,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return addTypedKey(data, KeyTypes.VectorSet, onSuccessAction, onFailAction)
 }
 
 // Asynchronous thunk action

@@ -1,6 +1,6 @@
 import { pick, toNumber, omit } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router'
 
 import {
@@ -76,16 +76,17 @@ const ManualConnectionWrapper = (props: Props) => {
 
   const [isCloneMode, setIsCloneMode] = useState<boolean>(false)
 
-  const { loadingChanging: loadingStandalone } = useSelector(instancesSelector)
-  const { server } = useSelector(appInfoSelector)
-  const { properties: urlHandlingProperties } = useSelector(
+  const { loadingChanging: loadingStandalone } =
+    useAppSelector(instancesSelector)
+  const { server } = useAppSelector(appInfoSelector)
+  const { properties: urlHandlingProperties } = useAppSelector(
     appRedirectionSelector,
   )
 
   const connectionType = editedInstance?.connectionType ?? DbType.STANDALONE
 
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     dispatch(fetchCaCerts())
@@ -211,6 +212,7 @@ const ManualConnectionWrapper = (props: Props) => {
       tls,
       forceStandalone,
       keyNameFormat,
+      environment,
     } = values
 
     const database: any = {
@@ -227,6 +229,7 @@ const ManualConnectionWrapper = (props: Props) => {
       tls,
       forceStandalone,
       keyNameFormat,
+      environment,
     }
 
     // add tls & ssh for database (modifies database object)

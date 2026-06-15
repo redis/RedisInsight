@@ -40,10 +40,11 @@ export const QueryOnboardingPopover = ({
     >
       <S.Content gap="l" data-testid="query-library-onboarding-content">
         <Text size="L" variant="semiBold" color="primary">
-          Index created successfully.
+          Start exploring your data
         </Text>
         <Text size="m" color="secondary">
-          Your data is now searchable. Choose how you&apos;d like to search
+          Build queries in the Query Editor or save them for later in the Query
+          Library.
         </Text>
 
         <S.Section>

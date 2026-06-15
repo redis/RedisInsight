@@ -4,11 +4,14 @@ import {
   Delete,
   Patch,
   Post,
+  Res,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
 import {
+  DownloadRejsonRlDto,
   GetRejsonRlDto,
   GetRejsonRlResponseDto,
   CreateRejsonRlWithExpireDto,
@@ -51,6 +54,42 @@ export class RejsonRlController extends BrowserBaseController {
     return this.service.getJson(clientMetadata, dto);
   }
 
+  @Post('/download-value')
+  @ApiRedisInstanceOperation({
+    description:
+      'Download the full JSON value at the given path as a file. ' +
+      'Response is streamed as `application/octet-stream` with a ' +
+      '`Content-Disposition` attachment header.',
+    statusCode: 200,
+    responses: [
+      {
+        status: 200,
+        description: 'JSON value stream',
+        content: {
+          'application/octet-stream': {
+            schema: { type: 'string', format: 'binary' },
+          },
+        },
+      },
+    ],
+  })
+  async downloadJsonFile(
+    @Res() res: Response,
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: DownloadRejsonRlDto,
+  ): Promise<void> {
+    const { stream } = await this.service.downloadJsonValue(
+      clientMetadata,
+      dto,
+    );
+
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Content-Disposition', 'attachment;filename="json_value"');
+    res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+
+    stream.on('error', () => res.status(404).send()).pipe(res);
+  }
+
   @Post('')
   @ApiRedisInstanceOperation({
     description: 'Create new REJSON-RL data type',
@@ -91,6 +130,13 @@ export class RejsonRlController extends BrowserBaseController {
   @ApiRedisInstanceOperation({
     description: 'Removes path in the REJSON-RL',
     statusCode: 200,
+    responses: [
+      {
+        status: 200,
+        description: 'Ok',
+        type: RemoveRejsonRlResponse,
+      },
+    ],
   })
   async remove(
     @BrowserClientMetadata() clientMetadata: ClientMetadata,

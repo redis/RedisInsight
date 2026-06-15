@@ -1,6 +1,6 @@
 import React from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import {
   extrapolate,
@@ -33,7 +33,7 @@ import {
 import { TableTextBtn } from 'uiSrc/pages/database-analysis/components/base/TableTextBtn'
 import { Table, ColumnDef } from 'uiSrc/components/base/layout/table'
 import { CellText } from 'uiSrc/components/auto-discover'
-import { NspSummary } from 'apiSrc/modules/database-analysis/models'
+import { NspSummary } from 'apiClient'
 
 import { ExpandedRowItem, TruncatedContent } from './TopNamespace.styles'
 
@@ -55,11 +55,11 @@ const NameSpacesTable = ({
   dataTestid = '',
 }: Props) => {
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const { instanceId } = useParams<{ instanceId: string }>()
 
-  const { viewType } = useSelector(keysSelector)
+  const { viewType } = useAppSelector(keysSelector)
 
   const handleRedirect = (nsp: string, filter: string | null) => {
     dispatch(changeSearchMode(SearchMode.Pattern))

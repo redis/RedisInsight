@@ -9,7 +9,7 @@ export const rdiInstanceFactory = Factory.define<RdiInstance>(() => ({
   username: faker.internet.userName(),
   password: faker.internet.password(),
   version: faker.system.semver(),
-  lastConnection: faker.date.past(),
+  lastConnection: faker.date.past().toISOString(),
   error: '',
   loading: false,
 }))

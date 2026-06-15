@@ -1,6 +1,6 @@
 import { isNull } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { useHistory, useParams } from 'react-router-dom'
 import { Pages } from 'uiSrc/constants'
 import {
@@ -16,7 +16,7 @@ import { Nullable } from 'uiSrc/utils'
 import { TextBtn } from 'uiSrc/pages/database-analysis/components/base/TextBtn'
 import { SwitchInput } from 'uiSrc/components/base/inputs'
 import { Title } from 'uiSrc/components/base/text/Title'
-import { DatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
+import { DatabaseAnalysis } from 'apiClient'
 import TopNamespacesTable from './TopNamespacesTable'
 import {
   Section,
@@ -44,7 +44,7 @@ const TopNamespace = (props: Props) => {
 
   const { instanceId } = useParams<{ instanceId: string }>()
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setIsExtrapolated(extrapolation !== DEFAULT_EXTRAPOLATION)

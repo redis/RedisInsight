@@ -1,5 +1,5 @@
 import React, { FormEvent, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { Maybe, stringToBuffer } from 'uiSrc/utils'
 import { addKeyStateSelector, addListKey } from 'uiSrc/slices/browser/keys'
@@ -11,10 +11,7 @@ import {
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { Spacer } from 'uiSrc/components/base/layout'
-import {
-  CreateListWithExpireDto,
-  ListElementDestination,
-} from 'apiSrc/modules/browser/list/dto'
+import { CreateListWithExpireDto, ListElementDestination } from 'apiClient'
 
 import { AddListFormConfig as config } from '../constants/fields-config'
 import AddMultipleFields from '../../add-multiple-fields'
@@ -33,9 +30,9 @@ const AddKeyList = (props: Props) => {
 
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
 
-  const { loading } = useSelector(addKeyStateSelector)
+  const { loading } = useAppSelector(addKeyStateSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setIsFormValid(keyName.length > 0)

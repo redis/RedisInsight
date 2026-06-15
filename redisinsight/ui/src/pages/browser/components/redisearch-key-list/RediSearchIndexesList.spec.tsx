@@ -1,8 +1,7 @@
 import { merge } from 'lodash'
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
-import { useSelector } from 'react-redux'
-
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import {
   cleanup,
   clearStoreActions,
@@ -55,9 +54,9 @@ beforeEach(() => {
 
 const mockedProps = mock<Props>()
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(),
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppSelector: jest.fn(),
 }))
 
 jest.mock('uiSrc/slices/browser/keys', () => ({
@@ -102,7 +101,7 @@ describe('RediSearchIndexesList', () => {
   beforeEach(() => {
     const state: any = store.getState()
 
-    ;(useSelector as jest.Mock).mockImplementation(
+    ;(useAppSelector as jest.Mock).mockImplementation(
       (callback: (arg0: any) => any) =>
         callback({
           ...state,

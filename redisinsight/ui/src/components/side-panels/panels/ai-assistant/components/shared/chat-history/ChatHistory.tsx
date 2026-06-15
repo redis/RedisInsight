@@ -14,7 +14,7 @@ import {
 import { Nullable, scrollIntoView } from 'uiSrc/utils'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Loader } from 'uiSrc/components/base/display'
-import { AdditionalRedisModule } from 'apiSrc/modules/database/models/additional.redis.module'
+import { AdditionalRedisModule } from 'apiClient'
 
 import LoadingMessage from '../loading-message'
 import MarkdownMessage from '../markdown-message'

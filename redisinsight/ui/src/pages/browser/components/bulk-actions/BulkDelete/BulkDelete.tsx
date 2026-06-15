@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { isUndefined } from 'lodash'
 import { Text } from 'uiSrc/components/base/text'
@@ -19,13 +19,13 @@ export interface Props {
 
 const BulkDelete = (props: Props) => {
   const { onCancel } = props
-  const { filter, search, loading } = useSelector(bulkActionsDeleteSelector)
+  const { filter, search, loading } = useAppSelector(bulkActionsDeleteSelector)
   const {
     status,
     filter: { match, type: filterType },
     progress,
     error,
-  } = useSelector(bulkActionsDeleteOverviewSelector) ?? { filter: {} }
+  } = useAppSelector(bulkActionsDeleteOverviewSelector) ?? { filter: {} }
 
   const hasSearchOrFilter = !!search || filter !== null
 

@@ -179,6 +179,13 @@ export const parseJsonData = (data: any) => {
   }
 }
 
+// We use `storeAsString: true` to ensure large numbers are serialized as strings.
+// This avoids precision loss for values larger than Number.MAX_SAFE_INTEGER (2^53 - 1),
+// which would otherwise be inaccurately represented in JavaScript.
+// Ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER
+export const jsonToReadableString = (data: any) =>
+  JSONBigInt({ storeAsString: true }).stringify(data, null, 2)
+
 export const stringifyScalarValue = (
   value: string | number | boolean | bigint,
 ): string => {

@@ -8,7 +8,7 @@ import {
   mockStore,
 } from 'uiSrc/utils/test-utils'
 import successMessages from 'uiSrc/components/notifications/success-messages'
-import { GetRejsonRlResponseDto } from 'apiSrc/modules/browser/rejson-rl/dto'
+import { GetRejsonRlResponseDto } from 'apiClient'
 import reducer, {
   initialState,
   loadRejsonBranch,
@@ -26,6 +26,10 @@ import reducer, {
   rejsonSelector,
   fetchReJSON,
   fetchVisualisationResults,
+  fetchDownloadJsonValue,
+  downloadReJSON,
+  downloadReJSONSuccess,
+  downloadReJSONFailure,
   setReJSONDataAction,
   appendReJSONArrayItemAction,
   removeReJSONKeyAction,
@@ -34,6 +38,7 @@ import reducer, {
 import {
   addErrorNotification,
   addMessageNotification,
+  IAddInstanceErrorPayload,
 } from '../../app/notifications'
 import { refreshKeyInfo } from '../../browser/keys'
 import { EditorType } from 'uiSrc/slices/interfaces'
@@ -752,6 +757,41 @@ describe('rejson slice', () => {
 
         // Assert
         expect(result).toEqual(expectedResult)
+      })
+    })
+
+    describe('fetchDownloadJsonValue', () => {
+      it('dispatches success actions and calls onSuccessAction', async () => {
+        const key = stringToBuffer('key')
+        const headers = {}
+        const responsePayload = { data: 'json-data', status: 200, headers }
+        apiService.post = jest.fn().mockResolvedValue(responsePayload)
+        const onSuccess = jest.fn()
+
+        await store.dispatch<any>(fetchDownloadJsonValue(key, '$', onSuccess))
+
+        expect(store.getActions()).toEqual([
+          downloadReJSON(),
+          downloadReJSONSuccess(),
+        ])
+        expect(onSuccess).toHaveBeenCalledWith('json-data', headers)
+      })
+
+      it('dispatches failure actions on error', async () => {
+        const key = stringToBuffer('key')
+        const errorMessage = 'Something went wrong'
+        const responsePayload = {
+          response: { status: 500, data: { message: errorMessage } },
+        }
+        apiService.post = jest.fn().mockRejectedValueOnce(responsePayload)
+
+        await store.dispatch<any>(fetchDownloadJsonValue(key))
+
+        expect(store.getActions()).toEqual([
+          downloadReJSON(),
+          downloadReJSONFailure(errorMessage),
+          addErrorNotification(responsePayload as IAddInstanceErrorPayload),
+        ])
       })
     })
   })

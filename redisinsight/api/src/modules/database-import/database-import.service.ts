@@ -114,6 +114,7 @@ export class DatabaseImportService {
     ['forceStandalone', ['forceStandalone']],
     ['tags', ['tags']],
     ['providerDetails', ['providerDetails']],
+    ['environment', ['environment']],
   ];
 
   constructor(

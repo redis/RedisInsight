@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import React, { Ref, useCallback, useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { CellMeasurerCache } from 'react-virtualized'
 
 import { isNumber, toNumber } from 'lodash'
@@ -86,7 +86,7 @@ import {
   GetHashFieldsResponse,
   HashFieldDto,
   UpdateHashFieldsTtlDto,
-} from 'apiSrc/modules/browser/hash/dto'
+} from 'apiClient'
 
 import styles from './styles.module.scss'
 
@@ -114,19 +114,21 @@ const HashDetailsTable = (props: Props) => {
     total,
     nextCursor,
     fields: loadedFields,
-  } = useSelector(hashDataSelector)
-  const { loading } = useSelector(hashSelector)
-  const { viewType } = useSelector(keysSelector)
-  const { id: instanceId, compressor = null } = useSelector(
+  } = useAppSelector(hashDataSelector)
+  const { loading } = useAppSelector(hashSelector)
+  const { viewType } = useAppSelector(keysSelector)
+  const { id: instanceId, compressor = null } = useAppSelector(
     connectedInstanceSelector,
   )
   const { viewFormat: viewFormatProp, lastRefreshTime } =
-    useSelector(selectedKeySelector)
-  const { name: key, length } = useSelector(selectedKeyDataSelector) ?? {
+    useAppSelector(selectedKeySelector)
+  const { name: key, length } = useAppSelector(selectedKeyDataSelector) ?? {
     name: '',
   }
-  const { loading: updateLoading } = useSelector(updateHashValueStateSelector)
-  const { [KeyTypes.Hash]: hashSizes } = useSelector(
+  const { loading: updateLoading } = useAppSelector(
+    updateHashValueStateSelector,
+  )
+  const { [KeyTypes.Hash]: hashSizes } = useAppSelector(
     appContextBrowserKeyDetails,
   )
 
@@ -142,7 +144,7 @@ const HashDetailsTable = (props: Props) => {
   const formattedLastIndexRef = useRef(OVER_RENDER_BUFFER_COUNT)
   const tableRef: Ref<any> = useRef(null)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     resetState()

@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 import cx from 'classnames'
 import { useTheme } from '@redis-ui/styles'
+import { Environment } from 'apiClient'
 
 import { FeatureFlags, Pages } from 'uiSrc/constants'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
+import { EnvironmentBadge } from 'uiSrc/components/environment-badge'
 import { selectOnFocus } from 'uiSrc/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { BuildType } from 'uiSrc/constants/env'
@@ -46,6 +49,10 @@ import { NumericInput } from 'uiSrc/components/base/inputs'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { Link } from 'uiSrc/components/base/link/Link'
 import InstancesNavigationPopover from './components/instances-navigation-popover'
+import {
+  EnvironmentBadgeSlot,
+  InstanceHeaderContainer,
+} from './InstanceHeader.styles'
 import styles from './styles.module.scss'
 
 const riConfig = getConfig()
@@ -67,27 +74,29 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
     id,
     loading: instanceLoading,
     modules = [],
-  } = useSelector(connectedInstanceSelector)
-  const { version } = useSelector(connectedInstanceOverviewSelector)
-  const { server } = useSelector(appInfoSelector)
-  const { disabled: isDbIndexDisabled } = useSelector(appContextDbIndex)
-  const { databases = 0 } = useSelector(connectedInstanceInfoSelector)
-  const returnUrl = useSelector(appReturnUrlSelector)
+  } = useAppSelector(connectedInstanceSelector)
+  const { version } = useAppSelector(connectedInstanceOverviewSelector)
+  const { server } = useAppSelector(appInfoSelector)
+  const { disabled: isDbIndexDisabled } = useAppSelector(appContextDbIndex)
+  const { databases = 0 } = useAppSelector(connectedInstanceInfoSelector)
+  const returnUrl = useAppSelector(appReturnUrlSelector)
   const {
     [FeatureFlags.databaseChat]: databaseChatFeature,
     [FeatureFlags.documentationChat]: documentationChatFeature,
     [FeatureFlags.envDependent]: envDependentFeature,
-  } = useSelector(appFeatureFlagsFeaturesSelector)
+  } = useAppSelector(appFeatureFlagsFeaturesSelector)
   const isAnyChatAvailable = isAnyFeatureEnabled([
     databaseChatFeature,
     documentationChatFeature,
   ])
+  const { environment } = useDatabaseEnvironment()
+  const isProductionEnv = environment === Environment.Production
 
   const history = useHistory()
   const [dbIndex, setDbIndex] = useState<string>(String(db || 0))
   const [isDbIndexEditing, setIsDbIndexEditing] = useState<boolean>(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setDbIndex(String(db || 0))
@@ -133,11 +142,14 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
   }
 
   return (
-    <div
+    <InstanceHeaderContainer
       className={cx(styles.container)}
       style={{
         borderBottom: theme.components.sideBar.collapsed.borderRight,
       }}
+      data-testid="instance-header"
+      data-environment={environment}
+      $isProductionEnv={isProductionEnv}
     >
       <Row
         responsive
@@ -217,6 +229,9 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                       <InstancesNavigationPopover name={name} />
                     )}
                   </FlexItem>
+                  <EnvironmentBadgeSlot data-testid="instance-header-environment">
+                    <EnvironmentBadge environment={environment} />
+                  </EnvironmentBadgeSlot>
                   {databases > 1 && (
                     <FlexItem style={{ paddingLeft: 12 }}>
                       <div
@@ -327,7 +342,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
           </Row>
         </FlexItem>
       </Row>
-    </div>
+    </InstanceHeaderContainer>
   )
 }
 

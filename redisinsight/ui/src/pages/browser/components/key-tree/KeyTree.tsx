@@ -4,7 +4,7 @@ import React, {
   useImperativeHandle,
   useState,
 } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { escapeRegExp } from 'lodash'
@@ -34,7 +34,7 @@ import {
   setBulkDeleteStartAgain,
 } from 'uiSrc/slices/browser/bulkActions'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { GetKeyInfoResponse } from 'apiSrc/modules/browser/keys/dto'
+import { GetKeyInfoResponse } from 'apiClient'
 
 import styles from './styles.module.scss'
 import { KeyTreeProps } from './KeyTree.types'
@@ -67,11 +67,11 @@ const KeyTree = forwardRef((props: KeyTreeProps, ref) => {
   } = props
 
   const { instanceId } = useParams<{ instanceId: string }>()
-  const { openNodes } = useSelector(appContextBrowserTree)
+  const { openNodes } = useAppSelector(appContextBrowserTree)
   const { treeViewDelimiter, treeViewSort: sorting } =
-    useSelector(appContextDbConfig)
+    useAppSelector(appContextDbConfig)
   const { nameString: selectedKeyName = null } =
-    useSelector(selectedKeyDataSelector) ?? {}
+    useAppSelector(selectedKeyDataSelector) ?? {}
 
   const [statusOpen, setStatusOpen] = useState(openNodes)
   const [constructingTree, setConstructingTree] = useState(false)
@@ -86,7 +86,7 @@ const KeyTree = forwardRef((props: KeyTreeProps, ref) => {
   const delimiters = comboBoxToArray(treeViewDelimiter)
   const delimiterPattern = delimiters.map(escapeRegExp).join('|')
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useImperativeHandle(ref, () => ({
     handleLoadMoreItems(config: { startIndex: number; stopIndex: number }) {

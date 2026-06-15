@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { useParams } from 'react-router-dom'
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
@@ -33,11 +33,11 @@ const HashDetails = (props: Props) => {
   const keyType = KeyTypes.Hash
   const { onRemoveKey, onOpenAddItemPanel, onCloseAddItemPanel } = props
 
-  const { loading } = useSelector(selectedKeySelector)
-  const { version } = useSelector(connectedInstanceOverviewSelector)
+  const { loading } = useAppSelector(selectedKeySelector)
+  const { version } = useAppSelector(connectedInstanceOverviewSelector)
   const { instanceId } = useParams<{ instanceId: string }>()
   const { [FeatureFlags.hashFieldExpiration]: hashFieldExpirationFeature } =
-    useSelector(appFeatureFlagsFeaturesSelector)
+    useAppSelector(appFeatureFlagsFeaturesSelector)
 
   const [isAddItemPanelOpen, setIsAddItemPanelOpen] = useState<boolean>(false)
   const [showTtl, setShowTtl] = useState<boolean>(true)

@@ -8,7 +8,7 @@ import {
   GetAgreementsSpecResponse,
   GetAppSettingsResponse,
   UpdateSettingsDto,
-} from 'apiSrc/modules/settings/dto/settings.dto'
+} from 'apiClient'
 
 import { AppDispatch, RootState } from '../store'
 import { StateUserSettings } from '../interfaces/user'

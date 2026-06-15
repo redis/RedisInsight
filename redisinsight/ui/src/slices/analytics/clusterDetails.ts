@@ -6,7 +6,7 @@ import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { StateClusterDetails } from 'uiSrc/slices/interfaces/analytics'
 import { getApiErrorMessage, getUrl, isStatusSuccessful } from 'uiSrc/utils'
 
-import { ClusterDetails } from 'apiSrc/modules/cluster-monitor/models/cluster-details'
+import { ClusterDetails } from 'apiClient'
 import { AppDispatch, RootState } from '../store'
 
 export const initialState: StateClusterDetails = {

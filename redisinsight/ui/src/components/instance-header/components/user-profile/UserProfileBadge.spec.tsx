@@ -1,5 +1,5 @@
 import React from 'react'
-import { CloudUser } from 'src/modules/cloud/user/models'
+import { CloudUser } from 'apiClient'
 import {
   act,
   fireEvent,

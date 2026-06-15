@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import Tabs from 'uiSrc/components/base/layout/tabs'
@@ -9,7 +9,7 @@ import { tabs } from './constants'
 const HomeTabs = () => {
   const history = useHistory()
   const { pathname } = useLocation()
-  const featureFlags = useSelector(appFeatureFlagsFeaturesSelector)
+  const featureFlags = useAppSelector(appFeatureFlagsFeaturesSelector)
 
   const filteredTabs = useMemo(
     () =>

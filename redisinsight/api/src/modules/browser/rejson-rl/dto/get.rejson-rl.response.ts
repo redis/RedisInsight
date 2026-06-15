@@ -1,6 +1,12 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  ApiExtraModels,
+  ApiProperty,
+  ApiPropertyOptional,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import { SafeRejsonRlDataDto } from './safe.rejson-rl-data.dto';
 
+@ApiExtraModels(SafeRejsonRlDataDto)
 export class GetRejsonRlResponseDto {
   @ApiProperty({
     type: Boolean,
@@ -21,8 +27,17 @@ export class GetRejsonRlResponseDto {
   path?: string;
 
   @ApiProperty({
-    type: () => SafeRejsonRlDataDto,
-    isArray: true,
+    oneOf: [
+      {
+        type: 'array',
+        items: { $ref: getSchemaPath(SafeRejsonRlDataDto) },
+      },
+      { type: 'string' },
+      { type: 'number' },
+      { type: 'boolean' },
+      { type: 'null' },
+    ],
+    description: 'JSON data that can be of various types',
   })
   data: SafeRejsonRlDataDto[] | string | number | boolean | null;
 }

@@ -19,7 +19,12 @@ export class KeyList {
   readonly listViewButton: Locator;
   readonly treeViewButton: Locator;
   readonly columnsButton: Locator;
+  /** Keys browser panel refresh (distinct from instance header refresh) */
   readonly refreshButton: Locator;
+  readonly keysAutoRefreshConfigButton: Locator;
+  readonly keysAutoRefreshSwitch: Locator;
+  readonly emptyDatabasePanel: Locator;
+  readonly addKeyFromEmptyButton: Locator;
   readonly treeSettingsButton: Locator;
 
   // Results info
@@ -31,7 +36,10 @@ export class KeyList {
 
   // Key list container
   readonly keyListContainer: Locator;
-  readonly container: Locator;
+  readonly keysBrowserPanel: Locator;
+  /** List view table root — present in both legacy left panel and `devBrowser` keys-browser-panel */
+  readonly keyListTable: Locator;
+  readonly keysSummary: Locator;
   readonly noKeysMessage: Locator;
 
   // Index selector (Redisearch mode)
@@ -58,8 +66,12 @@ export class KeyList {
     // View controls
     this.listViewButton = page.getByTestId('view-type-browser-btn');
     this.treeViewButton = page.getByTestId('view-type-list-btn');
-    this.columnsButton = page.getByRole('button', { name: 'columns' });
-    this.refreshButton = page.getByRole('button', { name: /refresh/i }).first();
+    this.columnsButton = page.getByTestId('btn-columns-actions');
+    this.refreshButton = page.getByTestId('keys-refresh-btn');
+    this.keysAutoRefreshConfigButton = page.getByTestId('keys-auto-refresh-config-btn');
+    this.keysAutoRefreshSwitch = page.getByTestId('keys-auto-refresh-switch');
+    this.emptyDatabasePanel = page.getByTestId('no-result-found-msg');
+    this.addKeyFromEmptyButton = page.getByTestId('add-key-msg-btn');
     this.treeSettingsButton = page.getByTestId('tree-view-settings-btn');
 
     // Results info
@@ -73,9 +85,9 @@ export class KeyList {
     this.keyListContainer = page.locator(
       '[data-testid="keys-browser-panel"], [data-testid="keyList-table"], [data-testid="virtual-tree"]',
     );
-    this.container = page.locator(
-      '[data-testid="keys-browser-panel"], [data-testid="keyList-table"], [data-testid="virtual-tree"]',
-    );
+    this.keysBrowserPanel = page.getByTestId('keys-browser-panel');
+    this.keyListTable = page.getByTestId('keyList-table');
+    this.keysSummary = page.getByTestId('keys-summary');
     this.noKeysMessage = page.getByText(/no keys/i);
   }
 
@@ -97,8 +109,9 @@ export class KeyList {
   async searchKeys(pattern: string): Promise<void> {
     await this.searchInput.fill(pattern);
     await this.searchButton.click();
-    // Wait for "Results:" to appear (indicates filter is applied)
-    await this.resultsCount.waitFor({ state: 'visible', timeout: 10000 });
+    // Search can end with either "Results:" or an empty-state message; reset button confirms filter applied.
+    await expect(this.resetFilterButton).toBeVisible();
+    await expect(this.resultsCount.or(this.emptyDatabasePanel).first()).toBeVisible();
   }
 
   /**
@@ -107,7 +120,7 @@ export class KeyList {
   async clearSearch(): Promise<void> {
     await this.resetFilterButton.click();
     // Wait for reset button to disappear (indicates filter is cleared)
-    await this.resetFilterButton.waitFor({ state: 'hidden', timeout: 10000 });
+    await expect(this.resetFilterButton).toBeHidden();
   }
 
   /**
@@ -132,12 +145,7 @@ export class KeyList {
    * Check if scan more button is visible
    */
   async isScanMoreVisible(): Promise<boolean> {
-    try {
-      await this.scanMoreButton.waitFor({ state: 'visible', timeout: 3000 });
-      return true;
-    } catch {
-      return false;
-    }
+    return this.scanMoreButton.isVisible();
   }
 
   /**
@@ -153,6 +161,7 @@ export class KeyList {
    */
   async switchToListView(): Promise<void> {
     await this.listViewButton.click();
+    await this.waitForKeysLoaded();
   }
 
   /**
@@ -160,24 +169,20 @@ export class KeyList {
    */
   async switchToTreeView(): Promise<void> {
     await this.treeViewButton.click();
+    await this.waitForKeysLoaded();
   }
 
   /**
    * Click on a key by name
    */
   async clickKey(keyName: string): Promise<void> {
-    const escapedKeyName = keyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-    // Try grid row first (list view), then treeitem (tree view)
-    const gridRow = this.page.getByRole('row', { name: new RegExp(escapedKeyName) });
-    const treeItem = this.page.getByRole('treeitem', { name: new RegExp(escapedKeyName) });
-    const keyElement = gridRow.or(treeItem);
-
-    if (await keyElement.isVisible()) {
-      await keyElement.click();
-    } else {
-      await this.selectKeyInTree(keyName);
+    const keyEl = this.getKeyRow(keyName);
+    const isListRowVisible = await keyEl.isVisible();
+    if (isListRowVisible) {
+      await keyEl.click();
+      return;
     }
+    await this.selectKeyInTree(keyName);
   }
 
   /**
@@ -186,9 +191,16 @@ export class KeyList {
    * @param delimiter tree delimiter (default `:`)
    */
   async selectKeyInTree(keyName: string, delimiter = ':'): Promise<void> {
+    // browserViewType persists in localStorage across specs in the same Electron instance.
+    // If list view leaked from a previous spec, switch to tree view here so the rest of this
+    // helper (which only matches tree-view test ids) doesn't time out.
+    if (await this.keyListTable.isVisible()) {
+      await this.switchToTreeView();
+    }
+
     const delimiterIndex = keyName.lastIndexOf(delimiter);
     const leafName = keyName.substring(delimiterIndex + delimiter.length) || keyName;
-    const leafNode = this.container.getByRole('treeitem').filter({ hasText: leafName });
+    const leafNode = this.keyListContainer.getByRole('treeitem').filter({ hasText: leafName });
 
     if (delimiterIndex !== -1) {
       const folder = keyName.substring(0, delimiterIndex);
@@ -216,17 +228,7 @@ export class KeyList {
    */
   async keyExists(keyName: string, timeout = 5000): Promise<boolean> {
     try {
-      // Escape special regex characters in key name
-      const escapedKeyName = keyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-      // Try grid cell (list view) - look for exact key name in gridcell
-      const gridCell = this.page.getByRole('gridcell', { name: keyName });
-
-      // Try treeitem (tree view) - key name appears in the treeitem accessible name
-      const treeItem = this.page.getByRole('treeitem', { name: new RegExp(escapedKeyName) });
-
-      const keyElement = gridCell.or(treeItem);
-      await keyElement.waitFor({ state: 'visible', timeout });
+      await this.getKeyLocator(keyName).waitFor({ state: 'visible', timeout });
       return true;
     } catch {
       return false;
@@ -241,6 +243,10 @@ export class KeyList {
    * trigger a Playwright strict-mode violation.
    */
   getKeyRow(keyName: string): Locator {
+    return this.getKeyLocator(keyName);
+  }
+
+  private getKeyLocator(keyName: string): Locator {
     const escapedKeyName = keyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
     return this.page
@@ -275,10 +281,52 @@ export class KeyList {
   }
 
   /**
+   * Parsed integer from footer spans (handles thousand separators and leading ~).
+   */
+  private parseFormattedCount(text: string): number {
+    const digitsOnly = text.replace(/\D/g, '');
+    return digitsOnly ? parseInt(digitsOnly, 10) : 0;
+  }
+
+  /**
+   * "Results" count from keys summary (tree view / search); matches `keys-number-of-results`.
+   */
+  async getFooterResultsCount(): Promise<number> {
+    const el = this.keysSummary.getByTestId('keys-number-of-results');
+    await el.waitFor({ state: 'visible' });
+    return this.parseFormattedCount(await el.innerText());
+  }
+
+  /**
+   * "Scanned" count from keys summary; matches `keys-number-of-scanned`.
+   */
+  async getFooterScannedCount(): Promise<number> {
+    const el = this.keysSummary.getByTestId('keys-number-of-scanned');
+    await el.waitFor({ state: 'visible' });
+    return this.parseFormattedCount(await el.innerText());
+  }
+
+  /**
    * Refresh the key list
    */
   async refresh(): Promise<void> {
     await this.refreshButton.click();
+  }
+
+  /**
+   * Open the Columns popover (TTL / Key size toggles)
+   */
+  async openColumnsPopover(): Promise<void> {
+    await this.columnsButton.click();
+    await expect(this.page.getByTestId('show-key-size')).toBeVisible();
+  }
+
+  /**
+   * Open keys Auto Refresh configuration popover
+   */
+  async openKeysAutoRefreshPopover(): Promise<void> {
+    await this.keysAutoRefreshConfigButton.click();
+    await expect(this.keysAutoRefreshSwitch).toBeVisible();
   }
 
   /**
@@ -319,135 +367,205 @@ export class KeyList {
   }
 
   /**
-   * Open tree view settings dialog
+   * Open tree view settings popover
    */
   async openTreeViewSettings(): Promise<void> {
     await this.treeSettingsButton.click();
-    // Wait for dialog to appear
-    await this.page.getByRole('dialog').waitFor({ state: 'visible' });
+    await expect(this.page.getByTestId('tree-view-apply-btn')).toBeVisible();
   }
 
   /**
    * Hover over a folder node in the tree view (expanded or collapsed)
    */
   async hoverFolderNode(folderName: string): Promise<void> {
-    const collapsed = this.page.getByTestId(`node-item_${folderName}`);
-    const expanded = this.page.getByTestId(`node-item_${folderName}--expanded`);
-    const folderNode = expanded.or(collapsed);
-    await folderNode.hover();
+    const folder = this.getFolderByName(folderName);
+    await expect(folder).toBeVisible();
+
+    // Move the mouse off any previously hovered element so the next hover always
+    // dispatches a fresh `mouseenter` (Radix tooltips won't re-open otherwise,
+    // e.g. when this is called right after a click on the same folder).
+    await this.page.mouse.move(0, 0);
+    await folder.locator('.node-folder-anchor').first().hover();
   }
 
   /**
-   * Get folder by name in tree view
+   * Get the tree-view tooltip for a hovered folder.
+   * Retries the hover until the tooltip is visible — a React re-render between
+   * hover and tooltip open silently swallows the mouseenter event (Radix behaviour).
+   */
+  async namespaceTooltip(folderName: string): Promise<Locator> {
+    const tooltip = this.page.getByRole('tooltip').filter({ hasText: folderName });
+    await expect
+      .poll(async () => {
+        await this.hoverFolderNode(folderName);
+        return tooltip.isVisible();
+      })
+      .toBe(true);
+    return tooltip;
+  }
+
+  /**
+   * Get folder treeitem by name in tree view.
+   * Matches whether the folder is currently expanded or collapsed.
    */
   getFolderByName(folderName: string): Locator {
-    return this.page.getByRole('treeitem', { name: new RegExp(`Folder ${folderName}`) });
+    const collapsed = this.page.getByTestId(`node-item_${folderName}`);
+    const expanded = this.page.getByTestId(`node-item_${folderName}--expanded`);
+    return expanded.or(collapsed).first();
   }
 
   /**
-   * Expand folder in tree view
+   * Ordered, lower-case folder labels currently visible in the tree.
+   * Useful for asserting sort-order changes.
    */
-  async expandFolder(folderName: string): Promise<void> {
+  async getVisibleTreeFolderNames(): Promise<string[]> {
+    const folderLabels = this.page.locator('[data-testid^="folder-"]');
+    return folderLabels.allInnerTexts();
+  }
+
+  /**
+   * Expand a folder in tree view so its direct child becomes visible.
+   * Uses `childName` visibility as ground truth — the VirtualTree may auto-expand
+   * single-child folders while keeping the collapsed `node-item_*` testid, so the
+   * testid suffix alone is unreliable.
+   */
+  async expandFolder(folderName: string, childName: string): Promise<void> {
     const folder = this.getFolderByName(folderName);
+    await expect(folder).toBeVisible();
+
+    const isExpanded = await this.isFolderExpanded(folderName, childName);
+    if (isExpanded) {
+      return;
+    }
+
     await folder.click();
-    // Wait for chevron to change to down
-    await this.page
-      .getByRole('treeitem', { name: new RegExp(`Chevron Down.*${folderName}`) })
-      .waitFor({ state: 'visible' });
+    const child = this.getFolderByName(childName);
+    await expect(child).toBeVisible();
   }
 
   /**
-   * Collapse folder in tree view
+   * Collapse a folder in tree view so its direct child becomes hidden.
    */
-  async collapseFolder(folderName: string): Promise<void> {
+  async collapseFolder(folderName: string, childName: string): Promise<void> {
     const folder = this.getFolderByName(folderName);
+    await expect(folder).toBeVisible();
+
+    const isExpanded = await this.isFolderExpanded(folderName, childName);
+    if (!isExpanded) {
+      return;
+    }
+
     await folder.click();
-    // Wait for chevron to change to right
-    await this.page
-      .getByRole('treeitem', { name: new RegExp(`Chevron Right.*${folderName}`) })
-      .waitFor({ state: 'visible' });
+    const child = this.getFolderByName(childName);
+    await expect(child).toBeHidden();
   }
 
   /**
-   * Check if folder is expanded
+   * Whether a folder appears expanded (its direct child is rendered).
    */
-  async isFolderExpanded(folderName: string): Promise<boolean> {
-    const expandedFolder = this.page.getByRole('treeitem', { name: new RegExp(`Chevron Down.*${folderName}`) });
-    return expandedFolder.isVisible();
+  async isFolderExpanded(folderName: string, childName: string): Promise<boolean> {
+    if (!(await this.getFolderByName(folderName).isVisible())) {
+      return false;
+    }
+    return this.getFolderByName(childName).isVisible();
   }
 
   /**
-   * Get folder percentage text
+   * Folder percentage text (e.g. `33%`, `<1%`).
    */
   async getFolderPercentage(folderName: string): Promise<string | null> {
-    const folder = this.getFolderByName(folderName);
-    const percentageElement = folder
-      .locator('div')
-      .filter({ hasText: /\d+%|<1%/ })
-      .first();
-    return percentageElement.textContent();
+    return this.page.getByTestId(`percentage_${folderName}`).textContent();
   }
 
   /**
-   * Get folder count
+   * Folder key count text (number of keys under the folder).
    */
   async getFolderCount(folderName: string): Promise<string | null> {
-    const folder = this.getFolderByName(folderName);
-    // The count is the last number in the folder row
-    const countElement = folder.locator('div').last();
-    return countElement.textContent();
+    return this.page.getByTestId(`count_${folderName}`).textContent();
   }
 
   /**
-   * Get current delimiter from tree view settings
+   * All currently visible delimiter chips inside the tree-view settings popover.
    */
-  async getCurrentDelimiter(): Promise<string> {
-    const delimiterChip = this.page.getByRole('dialog').locator('[class*="chip"]').first();
-    const text = await delimiterChip.textContent();
-    return text?.replace('Remove', '').trim() || '';
+  delimiterChips(): Locator {
+    return this.page.locator('[data-testid="delimiter-combobox"] [data-test-subj="autoTagChip"]');
   }
 
   /**
-   * Add delimiter in tree view settings
+   * Read all configured delimiter labels (chip titles) in order.
+   */
+  async getCurrentDelimiters(): Promise<string[]> {
+    const chips = this.delimiterChips();
+    const titles = await chips.evaluateAll((nodes) =>
+      nodes.map((node) => node.getAttribute('title') ?? node.textContent ?? ''),
+    );
+    return titles.map((title) => title.trim()).filter(Boolean);
+  }
+
+  /**
+   * Add a delimiter via the AutoTag input inside the tree-view settings popover.
    */
   async addDelimiter(delimiter: string): Promise<void> {
-    const delimiterInput = this.page.getByRole('textbox', { name: 'Delimiter' });
+    const delimiterInput = this.page.locator('[data-testid="delimiter-combobox"] [data-test-subj="autoTagInput"]');
     await delimiterInput.fill(delimiter);
     await delimiterInput.press('Enter');
+    await expect(
+      this.page.locator(`[data-testid="delimiter-combobox"] [data-test-subj="autoTagChip"][title="${delimiter}"]`),
+    ).toBeVisible();
   }
 
   /**
-   * Remove delimiter in tree view settings
+   * Remove a delimiter chip by its label.
    */
   async removeDelimiter(delimiter: string): Promise<void> {
-    const delimiterChip = this.page.getByRole('dialog').locator(`[class*="chip"]`).filter({ hasText: delimiter });
-    await delimiterChip.getByRole('button', { name: 'Remove' }).click();
+    const chip = this.page.locator(
+      `[data-testid="delimiter-combobox"] [data-test-subj="autoTagChip"][title="${delimiter}"]`,
+    );
+    await chip.locator('button').click();
+    await expect(chip).toBeHidden();
   }
 
   /**
-   * Apply tree view settings
+   * Apply tree view settings (closes popover).
    */
   async applyTreeViewSettings(): Promise<void> {
-    await this.page.getByRole('button', { name: 'Apply' }).click();
-    // Wait for dialog to close
-    await this.page.getByRole('dialog').waitFor({ state: 'hidden' });
+    const applyButton = this.page.getByTestId('tree-view-apply-btn');
+    await applyButton.click();
+    await expect(applyButton).toBeHidden();
   }
 
   /**
-   * Cancel tree view settings
+   * Cancel tree view settings (closes popover, discards changes).
    */
   async cancelTreeViewSettings(): Promise<void> {
-    await this.page.getByRole('button', { name: 'Cancel' }).click();
-    // Wait for dialog to close
-    await this.page.getByRole('dialog').waitFor({ state: 'hidden' });
+    const cancelButton = this.page.getByTestId('tree-view-cancel-btn');
+    await cancelButton.click();
+    await expect(cancelButton).toBeHidden();
   }
 
   /**
-   * Change sort by option in tree view settings
+   * Change sort order in tree view settings popover.
    */
-  async changeSortBy(option: string): Promise<void> {
-    const sortByDropdown = this.page.getByRole('combobox', { name: 'Sort by' });
-    await sortByDropdown.click();
-    await this.page.getByRole('option', { name: option }).click();
+  async changeSortBy(order: 'ASC' | 'DESC'): Promise<void> {
+    await this.page.getByTestId('tree-view-sorting-select').click();
+    await this.page.getByTestId(`tree-view-sorting-item-${order}`).click();
+  }
+
+  /**
+   * Close columns popover by clicking outside (Escape)
+   */
+  async closeColumnsPopover(): Promise<void> {
+    await this.page.keyboard.press('Escape');
+    await expect(this.page.getByTestId('show-key-size')).toBeHidden();
+  }
+
+  /**
+   * Scroll the keys browser panel (virtualized list/tree) with the mouse wheel.
+   * Hovers the virtual table area — not the top of the panel (summary/header), so the wheel reaches the grid.
+   */
+  async scrollKeysPanelVertically(deltaY: number): Promise<void> {
+    const grid = this.keyListTable.getByRole('grid').first();
+    await grid.hover({ position: { x: 120, y: 160 } });
+    await this.page.mouse.wheel(0, deltaY);
   }
 }

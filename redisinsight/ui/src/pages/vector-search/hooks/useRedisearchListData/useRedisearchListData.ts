@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from 'uiSrc/slices/hooks'
 
 import {
   redisearchListSelector,
@@ -9,9 +9,11 @@ import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { bufferToString, isRedisearchAvailable } from 'uiSrc/utils'
 
 export const useRedisearchListData = () => {
-  const dispatch = useDispatch()
-  const { loading, data, error } = useSelector(redisearchListSelector)
-  const { modules, host: instanceHost } = useSelector(connectedInstanceSelector)
+  const dispatch = useAppDispatch()
+  const { loading, data, error } = useAppSelector(redisearchListSelector)
+  const { modules, host: instanceHost } = useAppSelector(
+    connectedInstanceSelector,
+  )
 
   const stringData = useMemo(
     () => data.map((index) => bufferToString(index)),

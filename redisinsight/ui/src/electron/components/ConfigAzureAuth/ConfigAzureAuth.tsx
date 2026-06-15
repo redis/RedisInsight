@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
 import {
@@ -13,9 +13,7 @@ import {
   addErrorNotification,
   addMessageNotification,
 } from 'uiSrc/slices/app/notifications'
-import { AzureAuthStatus } from 'apiSrc/modules/azure/constants'
-import { AppDispatch } from 'uiSrc/slices/store'
-import { Pages } from 'uiSrc/constants'
+import { AzureAuthStatus, Pages } from 'uiSrc/constants'
 
 interface MsalAccountInfo {
   homeAccountId: string
@@ -30,9 +28,9 @@ interface AzureAuthCallbackResponse {
 }
 
 const ConfigAzureAuth = () => {
-  const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useAppDispatch()
   const history = useHistory()
-  const source = useSelector(azureAuthSourceSelector)
+  const source = useAppSelector(azureAuthSourceSelector)
   const sourceRef = useRef(source)
   sourceRef.current = source
 

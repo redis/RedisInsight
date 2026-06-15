@@ -1,6 +1,13 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { InstancePage } from '../InstancePage';
-import { AddKeyDialog, BulkActionsPanel, KeyDetails, KeyList, MakeSearchableModal } from './components';
+import {
+  AddKeyDialog,
+  BulkActionsPanel,
+  KeyDetails,
+  KeyList,
+  MakeSearchableModal,
+  VectorSetKeyDetails,
+} from './components';
 
 /**
  * Browser Page Object
@@ -18,6 +25,7 @@ export class BrowserPage extends InstancePage {
   readonly keyDetails: KeyDetails;
   readonly keyList: KeyList;
   readonly makeSearchableModal: MakeSearchableModal;
+  readonly vectorSetKeyDetails: VectorSetKeyDetails;
 
   // Browser-specific action buttons
   readonly addKeyButton: Locator;
@@ -42,6 +50,7 @@ export class BrowserPage extends InstancePage {
     this.keyDetails = new KeyDetails(page);
     this.keyList = new KeyList(page);
     this.makeSearchableModal = new MakeSearchableModal(page);
+    this.vectorSetKeyDetails = new VectorSetKeyDetails(page);
 
     // Browser-specific action buttons
     this.addKeyButton = page.getByText('Add key', { exact: true });

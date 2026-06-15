@@ -167,6 +167,7 @@ export const cliTexts = {
     </ColorText>
   ),
   HELLO3_COMMAND_CLI: () => [cliTexts.HELLO3_COMMAND(), '\n'],
+  DANGEROUS_COMMAND_CANCELLED: ['Command cancelled.', '\n'],
   CLI_ERROR_MESSAGE: (message: string) => [
     '\n',
     <ColorText color="danger" key={Date.now()}>

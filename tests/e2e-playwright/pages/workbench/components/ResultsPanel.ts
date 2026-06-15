@@ -1,4 +1,5 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, FrameLocator } from '@playwright/test';
+import { GeodataPlugin } from './GeodataPlugin';
 
 /**
  * Results Panel component for Workbench
@@ -10,6 +11,9 @@ export class ResultsPanel {
   readonly resultCards: Locator;
   readonly lastResult: Locator;
   readonly resultText: Locator;
+  readonly pluginResult: Locator;
+  readonly pluginIframe: Locator;
+  readonly geodataPlugin: GeodataPlugin;
 
   constructor(page: Page) {
     this.page = page;
@@ -17,6 +21,9 @@ export class ResultsPanel {
     this.resultCards = page.locator('[data-testid^="query-card-container-"]');
     this.lastResult = page.getByTestId('query-cli-result').first();
     this.resultText = page.getByTestId('query-cli-card-result').first();
+    this.pluginResult = page.getByTestId('query-plugin-result').first();
+    this.pluginIframe = page.getByTestId('pluginIframe').first();
+    this.geodataPlugin = new GeodataPlugin(page);
   }
 
   /**
@@ -114,6 +121,13 @@ export class ResultsPanel {
   async getLastExecutionTime(): Promise<string> {
     const timeValue = this.page.getByTestId('command-execution-time-value').first();
     return timeValue.innerText();
+  }
+
+  /**
+   * Get the most recent plugin iframe as a Playwright frame locator.
+   */
+  pluginFrame(): FrameLocator {
+    return this.page.frameLocator('[data-testid="pluginIframe"]').first();
   }
 
   /**

@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios'
 import { apiService } from 'uiSrc/services'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { getUrl, isStatusSuccessful } from 'uiSrc/utils'
-import { IndexInfoDto } from 'apiSrc/modules/browser/redisearch/dto/index.info.dto'
+import { IndexInfoDto } from 'apiClient'
 
 import { transformIndexInfo } from '../useIndexInfo/useIndexInfo.utils'
 import { IndexInfo } from '../useIndexInfo/useIndexInfo.types'

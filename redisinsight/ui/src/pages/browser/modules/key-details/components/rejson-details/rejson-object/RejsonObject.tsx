@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { AxiosError } from 'axios'
 import { isTruncatedString } from 'uiSrc/utils'
 import { addErrorNotification } from 'uiSrc/slices/app/notifications'
@@ -54,7 +54,7 @@ const RejsonObject = (props: JSONObjectProps) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (!expandedRows?.has(path)) {

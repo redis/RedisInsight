@@ -8,6 +8,7 @@ import {
   ZSetKeyData,
   StreamKeyData,
   JsonKeyData,
+  VectorSetKeyData,
 } from 'e2eSrc/types';
 
 /**
@@ -84,6 +85,29 @@ export const JsonKeyFactory = Factory.define<JsonKeyData>(() => ({
   }),
 }));
 
+const buildRandomVector = (dim: number): string =>
+  Array.from({ length: dim }, () => faker.number.float({ min: -1, max: 1, fractionDigits: 4 })).join(',');
+
+// FP32 little-endian escaped-byte string (e.g. `\x00\x00\x80\x3f` for 1.0) —
+// the format the Vector Set element-vector input auto-detects. Resulting dim
+// (bytes / 4) must match the existing vector set's dimension.
+export const toFp32EscapedString = (floats: number[]): string => {
+  const buf = new ArrayBuffer(floats.length * 4);
+  const view = new DataView(buf);
+  floats.forEach((v, i) => view.setFloat32(i * 4, v, true));
+  const bytes = new Uint8Array(buf);
+  return Array.from(bytes, (b) => `\\x${b.toString(16).padStart(2, '0')}`).join('');
+};
+
+// Two elements with matching dim (3) so the same key serves both VADD and VSIM.
+export const VectorSetKeyFactory = Factory.define<VectorSetKeyData>(() => ({
+  keyName: `${TEST_KEY_PREFIX}vector-set-${faker.string.alphanumeric(8)}`,
+  elements: [
+    { name: `element-${faker.string.alphanumeric(6)}`, vector: buildRandomVector(3) },
+    { name: `element-${faker.string.alphanumeric(6)}`, vector: buildRandomVector(3) },
+  ],
+}));
+
 /**
  * Key factories by type
  */
@@ -95,4 +119,5 @@ export const keyFactories = {
   'Sorted Set': ZSetKeyFactory,
   Stream: StreamKeyFactory,
   JSON: JsonKeyFactory,
+  'Vector Set': VectorSetKeyFactory,
 };

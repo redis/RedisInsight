@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import {
   connectedInstanceOverviewSelector,
@@ -29,14 +29,14 @@ function getUsedMemoryPercent(
 
 export const useDatabaseOverview = () => {
   const { theme } = useContext(ThemeContext)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [lastRefreshTime, setLastRefreshTime] = useState<number | null>(null)
-  const { id: connectedInstanceId = '', db } = useSelector(
+  const { id: connectedInstanceId = '', db } = useAppSelector(
     connectedInstanceSelector,
   )
-  const connectivityError = useSelector(appConnectivityError)
+  const connectivityError = useAppSelector(appConnectivityError)
 
-  const overview = useSelector(connectedInstanceOverviewSelector)
+  const overview = useAppSelector(connectedInstanceOverviewSelector)
   const {
     usedMemory,
     cloudDetails: {

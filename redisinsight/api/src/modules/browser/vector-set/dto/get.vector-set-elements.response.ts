@@ -1,6 +1,7 @@
 import { KeyResponse } from 'src/modules/browser/keys/dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { VectorSetElementDto } from './vector-set-element.dto';
+import { Type } from 'class-transformer';
+import { VectorSetElementListItemDto } from './vector-set-element-list-item.dto';
 
 export class GetVectorSetElementsResponse extends KeyResponse {
   @ApiProperty({
@@ -26,9 +27,10 @@ export class GetVectorSetElementsResponse extends KeyResponse {
   isPaginationSupported: boolean;
 
   @ApiProperty({
-    description: 'Array of vector set elements.',
+    description: 'Array of vector set elements with their attributes when set.',
     isArray: true,
-    type: () => VectorSetElementDto,
+    type: VectorSetElementListItemDto,
   })
-  elements: VectorSetElementDto[];
+  @Type(() => VectorSetElementListItemDto)
+  elements: VectorSetElementListItemDto[];
 }

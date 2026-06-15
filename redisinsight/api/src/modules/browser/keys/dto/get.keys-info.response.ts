@@ -1,20 +1,18 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { RedisStringType } from 'src/common/decorators';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { RedisStringType, ApiRedisString } from 'src/common/decorators';
 import { RedisString } from 'src/common/constants';
 
 export class GetKeyInfoResponse {
-  @ApiProperty({
-    type: String,
-  })
+  @ApiRedisString()
   @RedisStringType()
   name: RedisString;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
   })
   type?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: Number,
     description:
       'The remaining time to live of a key.' +
@@ -22,7 +20,7 @@ export class GetKeyInfoResponse {
   })
   ttl?: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: Number,
     description:
       'The number of bytes that a key and its value require to be stored in RAM.',

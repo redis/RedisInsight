@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios, { AxiosError } from 'axios'
 import {
   ApiEndpoints,
+  BulkActionConfirmation,
   BulkActionsType,
   KeyTypes,
   MAX_BULK_ACTION_ERRORS_LENGTH,
@@ -38,6 +39,7 @@ export const initialState: StateBulkActions = {
     filter: null,
     search: '',
     keyCount: null,
+    confirmedThrough: null,
   },
   bulkUpload: {
     loading: false,
@@ -88,6 +90,12 @@ const bulkActionsSlice = createSlice({
       { payload }: PayloadAction<boolean>,
     ) => {
       state.bulkDelete.generateReport = payload
+    },
+    setBulkDeleteConfirmedThrough: (
+      state,
+      { payload }: PayloadAction<Nullable<BulkActionConfirmation>>,
+    ) => {
+      state.bulkDelete.confirmedThrough = payload
     },
     setBulkDeleteFilter: (
       state,
@@ -180,6 +188,7 @@ export const {
   disconnectBulkDeleteAction,
   toggleBulkDeleteActionTriggered,
   setBulkDeleteGenerateReport,
+  setBulkDeleteConfirmedThrough,
   setBulkDeleteFilter,
   setBulkDeleteSearch,
   setBulkDeleteKeyCount,

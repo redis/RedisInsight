@@ -19,6 +19,8 @@ export class DatabaseImportResult {
   @ApiProperty({
     description: 'Import status',
     enum: DatabaseImportStatus,
+
+    enumName: 'DatabaseImportStatus',
   })
   @Expose()
   status: DatabaseImportStatus;

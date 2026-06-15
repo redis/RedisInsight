@@ -1,13 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDefined, IsInt, IsString } from 'class-validator';
-import { IsRedisString, RedisStringType } from 'src/common/decorators';
+import {
+  ApiRedisString,
+  IsRedisString,
+  RedisStringType,
+} from 'src/common/decorators';
 import { RedisString } from 'src/common/constants';
 
 export class SearchRedisearchDto {
-  @ApiProperty({
-    description: 'Index Name',
-    type: String,
-  })
+  @ApiRedisString('Index Name')
   @IsDefined()
   @RedisStringType()
   @IsRedisString()

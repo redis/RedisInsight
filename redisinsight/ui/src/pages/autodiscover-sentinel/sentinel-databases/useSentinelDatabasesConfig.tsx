@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { map, pick } from 'lodash'
 import { useHistory } from 'react-router-dom'
 
@@ -14,7 +14,7 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Pages } from 'uiSrc/constants'
 import { setTitle } from 'uiSrc/utils'
-import { CreateSentinelDatabaseDto } from 'apiSrc/modules/redis-sentinel/dto/create.sentinel.database.dto'
+import { CreateSentinelDatabaseDto } from 'apiClient'
 import {
   ColumnDef,
   RowSelectionState,
@@ -70,10 +70,10 @@ export const getRowId = (row: ModifiedSentinelMaster) => row.id || ''
 export const useSentinelDatabasesConfig = () => {
   const [items, setItems] = useState<ModifiedSentinelMaster[]>([])
 
-  const { data: masters } = useSelector(sentinelSelector)
+  const { data: masters } = useAppSelector(sentinelSelector)
 
   const [selection, setSelection] = useState<ModifiedSentinelMaster[]>([])
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
   useEffect(() => {
     if (masters.length) {

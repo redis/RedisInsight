@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "../redisinsight/ui/tsconfig.json",
   "compilerOptions": {
     "jsx": "react",
     "types": ["node", "vite/client"],

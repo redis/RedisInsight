@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
 import { MonacoLanguage } from 'uiSrc/constants'
@@ -57,9 +57,9 @@ export const useRedisCompletions = ({
   const disposeSignatureRef = useRef<() => void>(() => {})
 
   const { commandsArray: REDIS_COMMANDS_ARRAY, spec: REDIS_COMMANDS_SPEC } =
-    useSelector(appRedisCommandsSelector)
+    useAppSelector(appRedisCommandsSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const compositeTokens = useMemo(
     () =>

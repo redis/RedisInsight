@@ -18,10 +18,23 @@ import {
   loadWBHistory,
   processWBCommand,
   sendWBCommandAction,
+  sendWbQueryAction,
   workbenchResultsSelector,
 } from 'uiSrc/slices/workbench/wb-results'
+import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
+import { ProductionWriteConfirmationProvider } from 'uiSrc/components/production-write-confirmation'
+import { Environment } from 'apiClient'
+import { DBInstanceFactory } from 'uiSrc/mocks/factories/database/DBInstance.factory'
+import { ConnectionType } from 'uiSrc/slices/interfaces'
 
 import WBViewWrapper from './WBViewWrapper'
+
+const renderWithProvider = (ui: React.ReactElement) =>
+  render(
+    <ProductionWriteConfirmationProvider>
+      {ui}
+    </ProductionWriteConfirmationProvider>,
+  )
 
 let store: typeof mockedStore
 beforeEach(() => {
@@ -36,15 +49,20 @@ jest.mock('uiSrc/pages/workbench/components/query', () => ({
   default: jest.fn(),
 }))
 
-const QueryWrapperMock = (props: QueryProps) => (
-  <div
-    onKeyDown={(e: any) => props.onKeyDown?.(e, 'get')}
-    data-testid="query"
-    aria-label="query"
-    role="textbox"
-    tabIndex={0}
-  />
-)
+let capturedOnSubmit: QueryProps['onSubmit'] | null = null
+
+const QueryWrapperMock = (props: QueryProps) => {
+  capturedOnSubmit = props.onSubmit
+  return (
+    <div
+      onKeyDown={(e: any) => props.onKeyDown?.(e, 'get')}
+      data-testid="query"
+      aria-label="query"
+      role="textbox"
+      tabIndex={0}
+    />
+  )
+}
 
 jest.mock('uiSrc/services', () => ({
   ...jest.requireActual('uiSrc/services'),
@@ -71,12 +89,23 @@ jest.mock('uiSrc/slices/app/plugins', () => ({
 
 jest.mock('uiSrc/slices/workbench/wb-results', () => ({
   ...jest.requireActual('uiSrc/slices/workbench/wb-results'),
+  sendWbQueryAction: jest.fn(() => ({ type: '__test_sendWbQueryAction__' })),
+  sendWBCommandAction: jest.fn(() => ({
+    type: '__test_sendWBCommandAction__',
+  })),
   sendWBCommandClusterAction: jest.fn(),
   processUnsupportedCommand: jest.fn(),
   updateCliCommandHistory: jest.fn,
   workbenchResultsSelector: jest.fn().mockReturnValue({
     loading: false,
     items: [],
+  }),
+}))
+
+jest.mock('uiSrc/components/hooks/useDatabaseEnvironment', () => ({
+  useDatabaseEnvironment: jest.fn().mockReturnValue({
+    environment: 'unspecified',
+    isDangerousCommand: () => false,
   }),
 }))
 
@@ -91,6 +120,10 @@ jest.mock('uiSrc/slices/workbench/wb-tutorials', () => {
     }),
   }
 })
+
+const sendWbQueryActionMock = sendWbQueryAction as jest.Mock
+const useDatabaseEnvironmentMock = useDatabaseEnvironment as jest.Mock
+const connectedInstanceSelectorMock = connectedInstanceSelector as jest.Mock
 
 describe('WBViewWrapper', () => {
   beforeAll(() => {
@@ -151,6 +184,212 @@ describe('WBViewWrapper', () => {
     render(<WBViewWrapper />)
 
     expect(screen.queryByTestId('clear-history-btn')).not.toBeInTheDocument()
+  })
+
+  describe('dangerous-command gating', () => {
+    const instance = DBInstanceFactory.build({
+      name: 'prod-db',
+      connectionType: ConnectionType.Standalone,
+    })
+
+    beforeEach(() => {
+      capturedOnSubmit = null
+      sendWbQueryActionMock.mockClear()
+      connectedInstanceSelectorMock.mockImplementation(() => instance)
+    })
+
+    afterEach(() => {
+      useDatabaseEnvironmentMock.mockReturnValue({
+        environment: 'unspecified',
+        isDangerousCommand: () => false,
+      })
+    })
+
+    it('does not show the modal and dispatches when no command is dangerous', () => {
+      useDatabaseEnvironmentMock.mockReturnValue({
+        environment: Environment.Production,
+        isDangerousCommand: () => false,
+      })
+
+      renderWithProvider(<WBViewWrapper />)
+      act(() => {
+        capturedOnSubmit?.('PING')
+      })
+
+      expect(
+        screen.queryByTestId('type-to-confirm-modal-title'),
+      ).not.toBeInTheDocument()
+      expect(sendWbQueryAction).toHaveBeenCalledTimes(1)
+      expect(sendWbQueryActionMock.mock.calls[0][0]).toBe('PING')
+    })
+
+    it('shows the modal and defers dispatch when a command is dangerous', () => {
+      useDatabaseEnvironmentMock.mockReturnValue({
+        environment: Environment.Production,
+        isDangerousCommand: (cmd: string) =>
+          ['FLUSHALL', 'FLUSHDB'].includes(cmd.toUpperCase()),
+      })
+
+      renderWithProvider(<WBViewWrapper />)
+      act(() => {
+        capturedOnSubmit?.('PING\nFLUSHALL\nFLUSHDB')
+      })
+
+      expect(
+        screen.getByTestId('type-to-confirm-modal-title'),
+      ).toBeInTheDocument()
+      const description = screen.getByTestId(
+        'type-to-confirm-modal-description',
+      )
+      expect(description).toHaveTextContent(instance.name!)
+      expect(description).toHaveTextContent('FLUSHALL, FLUSHDB')
+      expect(sendWbQueryAction).not.toHaveBeenCalled()
+    })
+
+    it('gates a multi-line dangerous command (Monaco continuation)', () => {
+      useDatabaseEnvironmentMock.mockReturnValue({
+        environment: Environment.Production,
+        isDangerousCommand: (cmd: string) => cmd.toUpperCase() === 'FLUSHALL',
+      })
+
+      renderWithProvider(<WBViewWrapper />)
+      // Monaco joins continuation lines (the leading whitespace on the next
+      // line is preserved), so the verb arrives with an embedded newline.
+      act(() => {
+        capturedOnSubmit?.('FLUSHALL\n  ASYNC')
+      })
+
+      expect(
+        screen.getByTestId('type-to-confirm-modal-title'),
+      ).toBeInTheDocument()
+      expect(sendWbQueryAction).not.toHaveBeenCalled()
+    })
+
+    it('falls back to host:port when the connected instance has no name', () => {
+      const namelessInstance = DBInstanceFactory.build({
+        name: undefined,
+        host: 'h',
+        port: 6379,
+        connectionType: ConnectionType.Standalone,
+      })
+      connectedInstanceSelectorMock.mockImplementation(() => namelessInstance)
+      useDatabaseEnvironmentMock.mockReturnValue({
+        environment: Environment.Production,
+        isDangerousCommand: (cmd: string) => cmd.toUpperCase() === 'FLUSHALL',
+      })
+
+      renderWithProvider(<WBViewWrapper />)
+      act(() => {
+        capturedOnSubmit?.('FLUSHALL')
+      })
+
+      expect(
+        screen.getByTestId('type-to-confirm-modal-description'),
+      ).toHaveTextContent('h:6379')
+    })
+
+    it('dispatches the original batch after typing the database name and confirming', () => {
+      useDatabaseEnvironmentMock.mockReturnValue({
+        environment: Environment.Production,
+        isDangerousCommand: (cmd: string) => cmd.toUpperCase() === 'FLUSHALL',
+      })
+
+      renderWithProvider(<WBViewWrapper />)
+      act(() => {
+        capturedOnSubmit?.('PING\nFLUSHALL')
+      })
+
+      fireEvent.change(screen.getByTestId('type-to-confirm-modal-input'), {
+        target: { value: instance.name },
+      })
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+      expect(
+        screen.queryByTestId('type-to-confirm-modal-title'),
+      ).not.toBeInTheDocument()
+      expect(sendWbQueryAction).toHaveBeenCalledTimes(1)
+      expect(sendWbQueryActionMock.mock.calls[0][0]).toBe('PING\nFLUSHALL')
+    })
+
+    it('does not dispatch when the modal is cancelled', () => {
+      useDatabaseEnvironmentMock.mockReturnValue({
+        environment: Environment.Production,
+        isDangerousCommand: (cmd: string) => cmd.toUpperCase() === 'FLUSHALL',
+      })
+
+      renderWithProvider(<WBViewWrapper />)
+      act(() => {
+        capturedOnSubmit?.('FLUSHALL')
+      })
+
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-cancel-btn'))
+
+      expect(
+        screen.queryByTestId('type-to-confirm-modal-title'),
+      ).not.toBeInTheDocument()
+      expect(sendWbQueryAction).not.toHaveBeenCalled()
+    })
+
+    it('skips the modal on subsequent runs of the same dangerous batch after opt-in', () => {
+      useDatabaseEnvironmentMock.mockReturnValue({
+        environment: Environment.Production,
+        isDangerousCommand: (cmd: string) =>
+          ['FLUSHALL', 'FLUSHDB'].includes(cmd.toUpperCase()),
+      })
+
+      renderWithProvider(<WBViewWrapper />)
+
+      act(() => {
+        capturedOnSubmit?.('FLUSHALL\nFLUSHDB')
+      })
+      fireEvent.change(screen.getByTestId('type-to-confirm-modal-input'), {
+        target: { value: instance.name },
+      })
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-skip-checkbox'))
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+      expect(sendWbQueryAction).toHaveBeenCalledTimes(1)
+
+      // Same dangerous batch — should bypass the modal entirely
+      act(() => {
+        capturedOnSubmit?.('FLUSHALL\nFLUSHDB')
+      })
+
+      expect(sendWbQueryAction).toHaveBeenCalledTimes(2)
+      expect(
+        screen.queryByTestId('type-to-confirm-modal-title'),
+      ).not.toBeInTheDocument()
+    })
+
+    it('still prompts when the batch includes a not-yet-skipped dangerous command', () => {
+      useDatabaseEnvironmentMock.mockReturnValue({
+        environment: Environment.Production,
+        isDangerousCommand: (cmd: string) =>
+          ['FLUSHALL', 'FLUSHDB', 'DEBUG'].includes(cmd.toUpperCase()),
+      })
+
+      renderWithProvider(<WBViewWrapper />)
+
+      // Opt out of FLUSHALL only
+      act(() => {
+        capturedOnSubmit?.('FLUSHALL')
+      })
+      fireEvent.change(screen.getByTestId('type-to-confirm-modal-input'), {
+        target: { value: instance.name },
+      })
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-skip-checkbox'))
+      fireEvent.click(screen.getByTestId('type-to-confirm-modal-confirm-btn'))
+
+      // New batch contains DEBUG — must still prompt
+      act(() => {
+        capturedOnSubmit?.('FLUSHALL\nDEBUG SLEEP 1')
+      })
+
+      expect(
+        screen.getByTestId('type-to-confirm-modal-title'),
+      ).toBeInTheDocument()
+      expect(sendWbQueryAction).toHaveBeenCalledTimes(1)
+    })
   })
 
   it.skip('"onSubmit" for Cluster connection should call "sendWBCommandClusterAction"', async () => {

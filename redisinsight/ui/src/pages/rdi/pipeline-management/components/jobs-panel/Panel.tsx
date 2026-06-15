@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { isArray, upperFirst } from 'lodash'
 
@@ -56,7 +56,8 @@ const getTargetOption = (value: string) => {
 
 const DryRunJobPanel = (props: Props) => {
   const { job, name, onClose } = props
-  const { loading: isDryRunning, results } = useSelector(rdiDryRunJobSelector)
+  const { loading: isDryRunning, results } =
+    useAppSelector(rdiDryRunJobSelector)
 
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
   const [selectedTab, changeSelectedTab] = useState<PipelineJobsTabs>(
@@ -67,7 +68,7 @@ const DryRunJobPanel = (props: Props) => {
   const [targetOptions, setTargetOptions] = useState<RiSelectOption[]>([])
   const [selectedTarget, setSelectedTarget] = useState<string>()
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
 

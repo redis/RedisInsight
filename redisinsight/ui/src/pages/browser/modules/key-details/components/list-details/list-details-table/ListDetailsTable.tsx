@@ -1,5 +1,5 @@
 import React, { Ref, useCallback, useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import { isNull, isNumber } from 'lodash'
 import { CellMeasurerCache } from 'react-virtualized'
@@ -72,10 +72,7 @@ import {
   FormattedValue,
 } from 'uiSrc/pages/browser/modules/key-details/shared'
 import { Text } from 'uiSrc/components/base/text'
-import {
-  SetListElementDto,
-  SetListElementResponse,
-} from 'apiSrc/modules/browser/list/dto'
+import { SetListElementDto, SetListElementResponse } from 'apiClient'
 
 import styles from './styles.module.scss'
 
@@ -92,21 +89,23 @@ const cellCache = new CellMeasurerCache({
 interface IListElement extends SetListElementResponse {}
 
 const ListDetailsTable = () => {
-  const { loading } = useSelector(listSelector)
-  const { loading: updateLoading } = useSelector(updateListValueStateSelector)
+  const { loading } = useAppSelector(listSelector)
+  const { loading: updateLoading } = useAppSelector(
+    updateListValueStateSelector,
+  )
   const {
     elements: loadedElements,
     total,
     searchedIndex,
-  } = useSelector(listDataSelector)
-  const { name: key } = useSelector(selectedKeyDataSelector) ?? { name: '' }
-  const { id: instanceId, compressor = null } = useSelector(
+  } = useAppSelector(listDataSelector)
+  const { name: key } = useAppSelector(selectedKeyDataSelector) ?? { name: '' }
+  const { id: instanceId, compressor = null } = useAppSelector(
     connectedInstanceSelector,
   )
-  const { viewType } = useSelector(keysSelector)
+  const { viewType } = useAppSelector(keysSelector)
   const { viewFormat: viewFormatProp, lastRefreshTime } =
-    useSelector(selectedKeySelector)
-  const { [KeyTypes.List]: listSizes } = useSelector(
+    useAppSelector(selectedKeySelector)
+  const { [KeyTypes.List]: listSizes } = useAppSelector(
     appContextBrowserKeyDetails,
   )
 
@@ -119,7 +118,7 @@ const ListDetailsTable = () => {
   const formattedLastIndexRef = useRef(OVER_RENDER_BUFFER_COUNT)
   const tableRef: Ref<any> = useRef(null)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     resetState()

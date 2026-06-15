@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { rdiPipelineSelector } from 'uiSrc/slices/rdi/pipeline'
 
 export interface ConfigurationState {
@@ -8,7 +8,8 @@ export interface ConfigurationState {
 }
 
 export const useConfigurationState = (): ConfigurationState => {
-  const { changes, configValidationErrors } = useSelector(rdiPipelineSelector)
+  const { changes, configValidationErrors } =
+    useAppSelector(rdiPipelineSelector)
 
   const hasChanges = !!changes.config
   const isValid = configValidationErrors.length === 0

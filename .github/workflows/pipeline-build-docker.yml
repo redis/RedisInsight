@@ -21,13 +21,19 @@ on:
         description: Enterprise build
         type: boolean
 
+      show_build_commit_sha:
+        description: Explicit override for RI_SHOW_BUILD_COMMIT_SHA ('true'/'false'); empty falls back to per-env default.
+        required: false
+        default: ''
+        type: string
+
 jobs:
   build:
     name: Build docker
     runs-on: ubuntu-24.04
     environment: ${{ inputs.environment }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6.0.2
 
       # SSH Debug
       - name: Enable SSH
@@ -37,7 +43,7 @@ jobs:
           detached: true
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
 
       - name: Install all libs and dependencies
         uses: ./.github/actions/install-all-build-libs
@@ -83,6 +89,7 @@ jobs:
           --build-arg DIST=release/web/Redis-Insight-web-linux-musl.x64.tar.gz \
           --build-arg NODE_ENV="$ENV" \
           --build-arg RI_SEGMENT_WRITE_KEY="$RI_SEGMENT_WRITE_KEY" \
+          --build-arg RI_APP_BUILD_COMMIT_SHA="$RI_APP_BUILD_COMMIT_SHA" \
           -t redisinsight:amd64 \
           .
 
@@ -99,13 +106,14 @@ jobs:
           --build-arg DIST=release/web/Redis-Insight-web-linux-musl.arm64.tar.gz \
           --build-arg NODE_ENV="$ENV" \
           --build-arg RI_SEGMENT_WRITE_KEY="$RI_SEGMENT_WRITE_KEY" \
+          --build-arg RI_APP_BUILD_COMMIT_SHA="$RI_APP_BUILD_COMMIT_SHA" \
           -t redisinsight:arm64 \
           .
 
           mkdir -p release/docker
           docker image save -o release/docker/docker-linux-alpine.arm64.tar redisinsight:arm64
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         name: Upload docker builds
         with:
           if-no-files-found: warn
@@ -136,3 +144,5 @@ jobs:
       RI_UPGRADES_LINK: ${{ secrets.RI_UPGRADES_LINK_NEW }}
       RI_FEATURES_CLOUD_ADS_DEFAULT_FLAG: ${{ inputs.enterprise == false }}
       RI_DISABLE_AUTO_UPGRADE: ${{ inputs.enterprise }}
+      RI_APP_BUILD_COMMIT_SHA: ${{ github.sha }}
+      RI_SHOW_BUILD_COMMIT_SHA: ${{ inputs.show_build_commit_sha != '' && inputs.show_build_commit_sha || (vars.ENV != 'production' && 'true' || 'false') }}

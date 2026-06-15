@@ -4,12 +4,15 @@ import { TelemetryBaseService } from 'src/modules/analytics/telemetry.base.servi
 import { getRangeForNumber, BULK_ACTIONS_BREAKPOINTS } from 'src/utils';
 import { IBulkActionOverview } from 'src/modules/bulk-actions/interfaces/bulk-action-overview.interface';
 import { SessionMetadata } from 'src/common/models';
+import { Database } from 'src/modules/database/models/database';
+import { Environment } from 'src/modules/database/entities/database.entity';
 
 @Injectable()
 export class BulkActionsAnalytics extends TelemetryBaseService {
   sendActionStarted(
     sessionMetadata: SessionMetadata,
     overview: IBulkActionOverview,
+    database: Database,
   ): void {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.BulkActionsStarted, {
@@ -32,6 +35,8 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
+        environment: database.environment ?? Environment.Unspecified,
+        confirmedThrough: overview.confirmedThrough ?? null,
       });
     } catch (e) {
       // continue regardless of error
@@ -41,6 +46,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
   sendActionStopped(
     sessionMetadata: SessionMetadata,
     overview: IBulkActionOverview,
+    database: Database,
   ): void {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.BulkActionsStopped, {
@@ -80,6 +86,8 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
+        environment: database.environment ?? Environment.Unspecified,
+        confirmedThrough: overview.confirmedThrough ?? null,
       });
     } catch (e) {
       // continue regardless of error
@@ -89,6 +97,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
   sendActionSucceed(
     sessionMetadata: SessionMetadata,
     overview: IBulkActionOverview,
+    database: Database,
   ): void {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.BulkActionsSucceed, {
@@ -116,6 +125,8 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
+        environment: database.environment ?? Environment.Unspecified,
+        confirmedThrough: overview.confirmedThrough ?? null,
       });
     } catch (e) {
       // continue regardless of error
@@ -126,12 +137,15 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
     sessionMetadata: SessionMetadata,
     overview: IBulkActionOverview,
     error: HttpException | Error,
+    database: Database,
   ): void {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.BulkActionsFailed, {
         databaseId: overview.databaseId,
         action: overview.type,
         error,
+        environment: database.environment ?? Environment.Unspecified,
+        confirmedThrough: overview.confirmedThrough ?? null,
       });
     } catch (e) {
       // continue regardless of error
@@ -141,6 +155,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
   sendImportSamplesUploaded(
     sessionMetadata: SessionMetadata,
     overview: IBulkActionOverview,
+    database: Database,
   ): void {
     try {
       this.sendEvent(sessionMetadata, TelemetryEvents.ImportSamplesUploaded, {
@@ -164,6 +179,7 @@ export class BulkActionsAnalytics extends TelemetryBaseService {
             BULK_ACTIONS_BREAKPOINTS,
           ),
         },
+        environment: database.environment ?? Environment.Unspecified,
       });
     } catch (e) {
       // continue regardless of error

@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from 'uiSrc/slices/hooks'
 import { FeatureFlags } from 'uiSrc/constants'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import {
@@ -12,13 +12,13 @@ import { EditorType } from 'uiSrc/slices/interfaces'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 
 export const useChangeEditorType = () => {
-  const dispatch = useDispatch()
-  const { editorType, isWithinThreshold } = useSelector(rejsonSelector)
-  const { [FeatureFlags.envDependent]: envDependentFeature } = useSelector(
+  const dispatch = useAppDispatch()
+  const { editorType, isWithinThreshold } = useAppSelector(rejsonSelector)
+  const { [FeatureFlags.envDependent]: envDependentFeature } = useAppSelector(
     appFeatureFlagsFeaturesSelector,
   )
 
-  const selectedKey = useSelector(selectedKeyDataSelector)?.name
+  const selectedKey = useAppSelector(selectedKeyDataSelector)?.name
 
   const isTextEditorDisabled = !isWithinThreshold && !envDependentFeature?.flag
 

@@ -15,7 +15,7 @@ import {
   Maybe,
   Nullable,
 } from 'uiSrc/utils'
-import { Rdi as RdiInstanceResponse } from 'apiSrc/modules/rdi/models/rdi'
+import { Rdi as RdiInstanceResponse } from 'apiClient'
 
 import { AppDispatch, RootState } from '../store'
 import {

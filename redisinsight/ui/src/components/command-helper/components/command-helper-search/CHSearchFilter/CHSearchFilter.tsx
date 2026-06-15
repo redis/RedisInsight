@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { GROUP_TYPES_DISPLAY } from 'uiSrc/constants'
 import { appRedisCommandsSelector } from 'uiSrc/slices/app/redis-commands'
@@ -17,9 +17,9 @@ export interface Props {
 }
 
 const CHSearchFilter = ({ submitFilter, isLoading }: Props) => {
-  const { commandGroups = [] } = useSelector(appRedisCommandsSelector)
+  const { commandGroups = [] } = useAppSelector(appRedisCommandsSelector)
   const { isEnteringCommand, matchedCommand, searchingCommandFilter } =
-    useSelector(cliSettingsSelector)
+    useAppSelector(cliSettingsSelector)
 
   const [typeSelected, setTypeSelected] = useState<string>(
     searchingCommandFilter,

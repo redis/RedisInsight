@@ -133,10 +133,25 @@
     "afterInstall": "scripts/deb-after-install.sh",
     "afterRemove": "scripts/deb-before-remove.sh"
   },
-  "snap": {
-    "plugs": ["default", "password-manager-service"],
-    "confinement": "strict",
-    "stagePackages": ["default"]
+  "rpm": {
+    "fpm": ["--rpm-digest", "sha256"]
+  },
+  "snapcraft": {
+    "base": "core24",
+    "core24": {
+      "confinement": "strict",
+      "useLXD": true,
+      "stagePackages": ["default"],
+      "environment": {
+        "XDG_SESSION_TYPE": "x11"
+      },
+      "plugs": [
+        "network",
+        "home",
+        "password-manager-service",
+        "browser-support"
+      ]
+    }
   },
   "flatpak": {
     "runtimeVersion": "20.08",

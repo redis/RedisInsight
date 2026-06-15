@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { TelemetryPageView } from 'uiSrc/telemetry'
 import { usePageViewTelemetry } from 'uiSrc/telemetry/usePageViewTelemetry'
@@ -32,7 +32,7 @@ export const VectorSearchPage = () => {
     db,
     provider,
     modules,
-  } = useSelector(connectedInstanceSelector)
+  } = useAppSelector(connectedInstanceSelector)
 
   const isReady = indexesLoading === false
 
@@ -48,7 +48,7 @@ export const VectorSearchPage = () => {
   })
 
   setTitle(
-    `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)} - Vector Search`,
+    `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)} - Search`,
   )
 
   if (indexesLoading !== false) {

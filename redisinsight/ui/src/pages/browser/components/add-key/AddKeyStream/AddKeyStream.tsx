@@ -1,5 +1,5 @@
 import React, { FormEvent, useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { addStreamKey } from 'uiSrc/slices/browser/keys'
 import {
   entryIdRegex,
@@ -10,7 +10,7 @@ import {
 import { AddStreamFormConfig as config } from 'uiSrc/pages/browser/components/add-key/constants/fields-config'
 import { StreamEntryFields } from 'uiSrc/pages/browser/modules/key-details/components/stream-details/add-stream-entity'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
-import { CreateStreamDto } from 'apiSrc/modules/browser/stream/dto'
+import { CreateStreamDto } from 'apiClient'
 
 import styles from './styles.module.scss'
 
@@ -36,7 +36,7 @@ const AddKeyStream = (props: Props) => {
   ])
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     const isValid = isRequiredStringsValid(keyName) && !entryIdError

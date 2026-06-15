@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 import { cloneDeep } from 'lodash'
 import {
   cleanup,
@@ -11,12 +11,13 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { loadInstancesSuccess } from 'uiSrc/slices/instances/instances'
 import { RootState, store } from 'uiSrc/slices/store'
+import { Environment } from 'apiClient'
 import { ConnectionType, Instance } from 'uiSrc/slices/interfaces'
 import SearchDatabasesList from './SearchDatabasesList'
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(),
+jest.mock('uiSrc/slices/hooks', () => ({
+  ...jest.requireActual('uiSrc/slices/hooks'),
+  useAppSelector: jest.fn(),
 }))
 
 let storeMock: typeof mockedStore
@@ -40,6 +41,7 @@ const connectedInstancesMock: Instance[] = [
       },
     ],
     version: '',
+    environment: Environment.Unspecified,
   },
   {
     id: '2',
@@ -52,6 +54,7 @@ const connectedInstancesMock: Instance[] = [
     lastConnection: new Date(),
     tags: [],
     version: '',
+    environment: Environment.Unspecified,
   },
 ]
 
@@ -72,6 +75,7 @@ const otherInstancesMock: Instance[] = [
     connectionType: 'NOT CONNECTED' as any,
     tags: [],
     version: '',
+    environment: Environment.Unspecified,
   },
   {
     id: '4',
@@ -83,6 +87,7 @@ const otherInstancesMock: Instance[] = [
     connectionType: 'UNRECOGNIZED' as any,
     tags: [],
     version: '',
+    environment: Environment.Unspecified,
   },
   {
     id: '5',
@@ -94,6 +99,7 @@ const otherInstancesMock: Instance[] = [
     connectionType: undefined,
     tags: [],
     version: '',
+    environment: Environment.Unspecified,
   },
 ]
 
@@ -102,7 +108,7 @@ const mockInitialState = (
   instances: Instance[],
   options?: { selectedTags?: Set<string> },
 ) => {
-  ;(useSelector as jest.Mock).mockImplementation(
+  ;(useAppSelector as jest.Mock).mockImplementation(
     (callback: (arg0: RootState) => RootState) =>
       callback({
         ...state,

@@ -58,6 +58,14 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
       flag: SERVER_CONFIG.databaseManagement,
     }),
   },
+  [KnownFeatures.CustomTutorials]: {
+    name: KnownFeatures.CustomTutorials,
+    storage: FeatureStorage.Custom,
+    factory: () => ({
+      name: KnownFeatures.CustomTutorials,
+      flag: SERVER_CONFIG.customTutorials,
+    }),
+  },
   [KnownFeatures.VectorSearchV2]: {
     name: KnownFeatures.VectorSearchV2,
     storage: FeatureStorage.Database,
@@ -75,8 +83,16 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
     name: KnownFeatures.DevBrowser,
     storage: FeatureStorage.Database,
   },
-  [KnownFeatures.DevVectorSet]: {
-    name: KnownFeatures.DevVectorSet,
+  [KnownFeatures.VectorSet]: {
+    name: KnownFeatures.VectorSet,
+    storage: FeatureStorage.Database,
+  },
+  [KnownFeatures.DevArray]: {
+    name: KnownFeatures.DevArray,
+    storage: FeatureStorage.Database,
+  },
+  [KnownFeatures.ProdMode]: {
+    name: KnownFeatures.ProdMode,
     storage: FeatureStorage.Database,
   },
 };

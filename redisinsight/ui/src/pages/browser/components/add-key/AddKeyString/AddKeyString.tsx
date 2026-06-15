@@ -1,5 +1,5 @@
 import React, { FormEvent, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { Maybe, stringToBuffer } from 'uiSrc/utils'
 
@@ -8,7 +8,7 @@ import { addKeyStateSelector, addStringKey } from 'uiSrc/slices/browser/keys'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextArea } from 'uiSrc/components/base/inputs'
-import { SetStringWithExpireDto } from 'apiSrc/modules/browser/string/dto'
+import { SetStringWithExpireDto } from 'apiClient'
 import { AddStringFormConfig as config } from '../constants/fields-config'
 
 export interface Props {
@@ -19,11 +19,11 @@ export interface Props {
 
 const AddKeyString = (props: Props) => {
   const { keyName = '', keyTTL, onCancel } = props
-  const { loading } = useSelector(addKeyStateSelector)
+  const { loading } = useAppSelector(addKeyStateSelector)
   const [value, setValue] = useState<string>('')
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setIsFormValid(keyName.length > 0)

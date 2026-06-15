@@ -60,13 +60,19 @@ import reducer, {
   checkDatabaseIndexAction,
   setConnectedInfoInstance,
   setConnectedInfoInstanceSuccess,
+  fetchConnectedInstanceAction,
   fetchConnectedInstanceInfoAction,
   testInstanceStandaloneAction,
   updateEditedInstance,
   exportInstancesAction,
   autoCreateAndConnectToInstanceAction,
   cloneInstanceAction,
+  setConnectedInstanceDangerousCommands,
+  resetConnectedInstanceDangerousCommands,
+  fetchConnectedInstanceDangerousCommandsAction,
+  connectedInstanceDangerousCommandsSelector,
 } from '../../instances/instances'
+import { Environment } from 'apiClient'
 import {
   addErrorNotification,
   addInfiniteNotification,
@@ -105,6 +111,7 @@ beforeEach(() => {
       nameFromProvider: null,
       modules: [],
       lastConnection: new Date('2021-04-22T09:03:56.917Z'),
+      environment: Environment.Unspecified,
     },
     {
       id: 'a0db1bc8-a353-4c43-a856-b72f4811d2d4',
@@ -121,6 +128,7 @@ beforeEach(() => {
         caCertId: '70b95d32-c19d-4311-bb24-e684af12cf15',
         clientCertPairId: '70b95d32-c19d-4311-b23b24-e684af12cf15',
       },
+      environment: Environment.Unspecified,
     },
     {
       id: 'b83a3932-e95f-4f09-9d8a-55079f400186',
@@ -147,6 +155,7 @@ beforeEach(() => {
       sentinelMaster: {
         name: 'mymaster',
       },
+      environment: Environment.Unspecified,
     },
   ]
 })
@@ -912,6 +921,67 @@ describe('instances slice', () => {
     })
   })
 
+  describe('setConnectedInstanceDangerousCommands', () => {
+    it('should store commands in uppercase', () => {
+      // Act
+      const nextState = reducer(
+        initialState,
+        setConnectedInstanceDangerousCommands(['flushdb', 'KEYS', 'flushAll']),
+      )
+
+      // Assert
+      const rootState = Object.assign(initialStateDefault, {
+        connections: { instances: nextState },
+      })
+      expect(connectedInstanceDangerousCommandsSelector(rootState)).toEqual([
+        'FLUSHDB',
+        'KEYS',
+        'FLUSHALL',
+      ])
+    })
+  })
+
+  describe('resetConnectedInstanceDangerousCommands', () => {
+    it('should clear the list', () => {
+      // Arrange
+      const seeded = reducer(
+        initialState,
+        setConnectedInstanceDangerousCommands(['FLUSHDB']),
+      )
+
+      // Act
+      const nextState = reducer(
+        seeded,
+        resetConnectedInstanceDangerousCommands(),
+      )
+
+      // Assert
+      const rootState = Object.assign(initialStateDefault, {
+        connections: { instances: nextState },
+      })
+      expect(connectedInstanceDangerousCommandsSelector(rootState)).toEqual([])
+    })
+  })
+
+  describe('resetConnectedInstance', () => {
+    it('also clears dangerousCommands so they do not leak across connections', () => {
+      // Arrange
+      const seeded = reducer(
+        initialState,
+        setConnectedInstanceDangerousCommands(['FLUSHDB']),
+      )
+
+      // Act
+      const nextState = reducer(seeded, resetConnectedInstance())
+
+      // Assert
+      const rootState = Object.assign(initialStateDefault, {
+        connections: { instances: nextState },
+      })
+      expect(connectedInstanceDangerousCommandsSelector(rootState)).toEqual([])
+    })
+  })
+
   describe('thunks', () => {
     describe('fetchInstances', () => {
       it('call both fetchInstances and loadInstancesSuccess when fetch is successed', async () => {
@@ -1484,6 +1554,38 @@ describe('instances slice', () => {
       })
     })
 
+    describe('fetchConnectedInstanceAction', () => {
+      it('dispatches setConnectedInstanceDangerousCommands after a successful connect', async () => {
+        // Arrange
+        const instanceData = instances[0]
+        const dangerousCommands = ['FLUSHDB', 'FLUSHALL']
+
+        apiService.get = jest.fn().mockImplementation((url: string) => {
+          if (url.endsWith('/dangerous-commands')) {
+            return Promise.resolve({ status: 200, data: dangerousCommands })
+          }
+          return Promise.resolve({ status: 200, data: instanceData })
+        })
+
+        // Act
+        await store.dispatch<any>(fetchConnectedInstanceAction(instanceData.id))
+        // Flush microtasks so the fire-and-forget dangerous-commands thunk resolves.
+        await Promise.resolve()
+        await Promise.resolve()
+
+        // Assert
+        expect(store.getActions()).toEqual(
+          expect.arrayContaining([
+            setDefaultInstance(),
+            setConnectedInstance(),
+            setConnectedInstanceSuccess(instanceData),
+            setDefaultInstanceSuccess(),
+            setConnectedInstanceDangerousCommands(dangerousCommands),
+          ]),
+        )
+      })
+    })
+
     describe('changeInstanceAliasAction', () => {
       const requestPayload = {
         id: 'e37cc441-a4f2-402c-8bdb-fc2413cbbaff',
@@ -1951,6 +2053,45 @@ describe('instances slice', () => {
           addErrorNotification(responsePayload as AxiosError),
         ]
         expect(store.getActions()).toEqual(expectedActions)
+      })
+    })
+
+    describe('fetchConnectedInstanceDangerousCommandsAction', () => {
+      it('dispatches setConnectedInstanceDangerousCommands on success', async () => {
+        // Arrange
+        const data = ['FLUSHDB', 'KEYS']
+        apiService.get = jest.fn().mockResolvedValue({ status: 200, data })
+
+        // Act
+        const onSuccess = jest.fn()
+        await store.dispatch<any>(
+          fetchConnectedInstanceDangerousCommandsAction('db-1', onSuccess),
+        )
+
+        // Assert
+        expect(store.getActions()).toEqual([
+          setConnectedInstanceDangerousCommands(data),
+        ])
+        expect(onSuccess).toHaveBeenCalledWith(data)
+      })
+
+      it('calls onFailAction and dispatches nothing on error', async () => {
+        // Arrange
+        apiService.get = jest.fn().mockRejectedValue(new Error('boom'))
+
+        // Act
+        const onFail = jest.fn()
+        await store.dispatch<any>(
+          fetchConnectedInstanceDangerousCommandsAction(
+            'db-1',
+            undefined,
+            onFail,
+          ),
+        )
+
+        // Assert
+        expect(store.getActions()).toEqual([])
+        expect(onFail).toHaveBeenCalled()
       })
     })
   })

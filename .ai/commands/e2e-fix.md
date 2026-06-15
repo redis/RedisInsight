@@ -7,7 +7,7 @@ argument-hint: <test-pattern>
 
 Run E2E tests matching a pattern, analyze failures, and fix them.
 
-**Follow all standards in `.ai/rules/e2e-testing.md`**
+**Follow all standards in `.ai/skills/e2e-testing/SKILL.md`**
 
 ## Input
 

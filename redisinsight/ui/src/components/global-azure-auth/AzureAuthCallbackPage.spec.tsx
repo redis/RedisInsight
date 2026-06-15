@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from 'uiSrc/utils/test-utils'
-import { AzureAuthStatus } from 'apiSrc/modules/azure/constants'
+import { AzureAuthStatus } from 'uiSrc/constants'
 
 import AzureAuthCallbackPage from './AzureAuthCallbackPage'
 

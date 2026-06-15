@@ -1,6 +1,6 @@
 import { isNil } from 'lodash'
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory, useParams } from 'react-router-dom'
 
 import { GroupBadge, RiTooltip } from 'uiSrc/components'
@@ -38,7 +38,7 @@ import {
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
 import { TableTextBtn } from 'uiSrc/pages/database-analysis/components/base/TableTextBtn'
 import { Table, ColumnDef } from 'uiSrc/components/base/layout/table'
-import { Key } from 'apiSrc/modules/database-analysis/models/key'
+import { Key } from 'apiClient'
 import { CellText } from 'uiSrc/components/auto-discover'
 
 export interface Props {
@@ -55,11 +55,11 @@ const TopKeysTable = ({
   dataTestid = '',
 }: Props) => {
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const { instanceId } = useParams<{ instanceId: string }>()
 
-  const { viewType } = useSelector(keysSelector)
+  const { viewType } = useAppSelector(keysSelector)
 
   const handleRedirect = (name: string) => {
     dispatch(changeSearchMode(SearchMode.Pattern))

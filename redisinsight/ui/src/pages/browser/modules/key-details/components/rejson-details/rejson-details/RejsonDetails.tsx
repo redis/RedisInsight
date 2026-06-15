@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 
 import cx from 'classnames'
 import { PlusIcon } from 'uiSrc/components/base/icons'
@@ -16,10 +16,11 @@ import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import { getBrackets, isRealArray, isRealObject, wrapPath } from '../utils'
 import { BaseProps, ObjectTypes } from '../interfaces'
 import RejsonDynamicTypes from '../rejson-dynamic-types'
-import { AddItem } from '../components'
+import { AddItem, JsonValueActions } from '../components'
 import ChangeEditorTypeButton from '../../change-editor-type-button'
 
 import styles from '../styles.module.scss'
+import { TopRowActions } from './RejsonDetails.styles'
 
 const RejsonDetails = (props: BaseProps) => {
   const {
@@ -35,7 +36,7 @@ const RejsonDetails = (props: BaseProps) => {
 
   const [addRootKVPair, setAddRootKVPair] = useState<boolean>(false)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleFetchVisualisationResults = (
     path: string,
@@ -91,17 +92,23 @@ const RejsonDetails = (props: BaseProps) => {
   return (
     <div className={styles.jsonData} id="jsonData" data-testid="json-data">
       <>
-        {(isObject || isArray) && (
-          <div className={cx(styles.row, styles.topRow)}>
-            <span>
-              {getBrackets(
+        <div className={cx(styles.row, styles.topRow)}>
+          <span>
+            {(isObject || isArray) &&
+              getBrackets(
                 isObject ? ObjectTypes.Object : ObjectTypes.Array,
                 'start',
               )}
-            </span>
-            <ChangeEditorTypeButton />
-          </div>
-        )}
+          </span>
+          <TopRowActions align="center" justify="end" grow={false}>
+            {(isObject || isArray) && <ChangeEditorTypeButton />}
+            <JsonValueActions
+              data={data}
+              selectedKey={selectedKey}
+              isDownloaded={isDownloaded}
+            />
+          </TopRowActions>
+        </div>
         <RejsonDynamicTypes
           data={data}
           parentPath={parentPath}

@@ -1,33 +1,36 @@
 import React, { memo } from 'react'
 
-import { VectorSetElement } from 'uiSrc/slices/interfaces'
-import useVectorSetElementListData from './hooks/useVectorSetElementListData'
+import { useVectorSetElementListData } from '../hooks'
+import {
+  TABLE_MIN_WIDTH,
+  vectorSetColumns,
+} from './VectorSetElementList.config'
+import { VectorSetActionsConfig } from './VectorSetElementList.types'
 import * as S from './VectorSetElementList.styles'
 
 export interface Props {
-  onRemoveKey: () => void
-  onViewElement: (element: VectorSetElement) => void
+  actionsConfig: VectorSetActionsConfig
 }
 
-const VectorSetElementList = memo(({ onRemoveKey, onViewElement }: Props) => {
+const VectorSetElementList = memo(({ actionsConfig }: Props) => {
   const {
-    columns,
+    meta,
     currentPageData,
-    tableMinWidth,
     pagination,
     setPagination,
     emptyMessage,
     isPaginationSupported,
     total,
-  } = useVectorSetElementListData({ onRemoveKey, onViewElement })
+  } = useVectorSetElementListData({ actionsConfig })
 
   return (
     <S.Container data-testid="vector-set-details">
       <S.StyledTable
-        columns={columns}
+        columns={vectorSetColumns}
         data={currentPageData}
+        meta={meta}
         stripedRows
-        minWidth={tableMinWidth}
+        minWidth={TABLE_MIN_WIDTH}
         paginationEnabled={isPaginationSupported}
         manualPagination={isPaginationSupported}
         totalRowCount={isPaginationSupported ? total : undefined}

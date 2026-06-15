@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 import { get } from 'lodash'
 
@@ -45,10 +45,10 @@ const OAuthJobs = () => {
     error,
     step,
     result,
-  } = useSelector(oauthCloudJobSelector) ?? {}
-  const { showProgress } = useSelector(oauthCloudSelector)
+  } = useAppSelector(oauthCloudJobSelector) ?? {}
+  const { showProgress } = useAppSelector(oauthCloudSelector)
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const history = useHistory()
 
   useEffect(() => {

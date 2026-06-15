@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from 'uiSrc/slices/hooks'
 
 import { PubSubMessage } from 'uiSrc/slices/interfaces/pubsub'
 import {
@@ -29,7 +29,7 @@ interface MessagesListTableArgs {
 const SAMPLE_MESSAGES: PubSubMessage[] = PubSubMessageFactory.buildList(20)
 
 const StorePopulator = ({ args }: { args: MessagesListTableArgs }) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     dispatch(setInitialPubSubState())

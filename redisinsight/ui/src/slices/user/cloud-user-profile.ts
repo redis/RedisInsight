@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { apiService } from 'uiSrc/services'
 import { ApiEndpoints } from 'uiSrc/constants'
 import { getApiErrorMessage, isStatusSuccessful } from 'uiSrc/utils'
-import { CloudUser } from 'apiSrc/modules/cloud/user/models'
+import { CloudUser } from 'apiClient'
 
 import { AppDispatch, RootState } from '../store'
 import { StateUserProfile } from '../interfaces/user'

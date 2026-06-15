@@ -24,7 +24,7 @@ import {
   SearchZSetMembersResponse,
   ZSetMemberDto,
   GetZSetResponse,
-} from 'apiSrc/modules/browser/z-set/dto'
+} from 'apiClient'
 import {
   deleteKeyFromList,
   deleteSelectedKeySuccess,

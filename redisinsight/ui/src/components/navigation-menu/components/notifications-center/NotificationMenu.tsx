@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import {
   notificationCenterSelector,
@@ -16,9 +16,11 @@ import PopoverNotification from './PopoverNotification'
 import styles from './styles.module.scss'
 
 const NavButton = () => {
-  const { isCenterOpen, totalUnread } = useSelector(notificationCenterSelector)
+  const { isCenterOpen, totalUnread } = useAppSelector(
+    notificationCenterSelector,
+  )
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const onClickIcon = () => {
     dispatch(setIsCenterOpen())

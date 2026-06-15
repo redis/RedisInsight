@@ -46,6 +46,15 @@ export const StandaloneV8ConfigFactory = Factory.define<AddDatabaseConfig>(() =>
 }));
 
 /**
+ * Standalone Redis 8.8.0 database configuration factory
+ */
+export const StandaloneV880ConfigFactory = Factory.define<AddDatabaseConfig>(() => ({
+  host: redisConfig.standaloneV880.host,
+  port: redisConfig.standaloneV880.port,
+  name: `${TEST_DB_PREFIX}standalone-v8-8-0-${faker.string.alphanumeric(8)}`,
+}));
+
+/**
  * Cluster database configuration factory
  */
 export const ClusterConfigFactory = Factory.define<AddDatabaseConfig>(() => ({

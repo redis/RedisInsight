@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { CaretRightIcon } from 'uiSrc/components/base/icons'
 import { createNewAnalysis } from 'uiSrc/slices/analytics/dbAnalysis'
@@ -21,11 +21,10 @@ import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { HideFor } from 'uiSrc/components/base/utils/ShowHide'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
-import { ShortDatabaseAnalysis } from 'apiSrc/modules/database-analysis/models'
-import { AnalysisProgress } from 'apiSrc/modules/database-analysis/models/analysis-progress'
 
 import styles from './styles.module.scss'
 import { Container, HeaderSelect, InfoIcon } from './Header.styles'
+import { ShortDatabaseAnalysis, AnalysisProgress } from 'apiClient'
 
 export interface Props {
   items: ShortDatabaseAnalysis[]
@@ -44,12 +43,12 @@ const Header = (props: Props) => {
     analysisLoading,
   } = props
 
-  const { connectionType, provider } = useSelector(connectedInstanceSelector)
+  const { connectionType, provider } = useAppSelector(connectedInstanceSelector)
   const { instanceId } = useParams<{ instanceId: string }>()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const { treeViewDelimiter = [DEFAULT_DELIMITER] } =
-    useSelector(appContextDbConfig)
+    useAppSelector(appContextDbConfig)
 
   const analysisOptions = items.map((item) => {
     const { createdAt, id, db } = item

@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { ApiEndpoint } from 'src/decorators/api-endpoint.decorator';
+import { ApiRedisParams } from 'src/decorators/api-redis-params.decorator';
 import { BulkActionsService } from 'src/modules/bulk-actions/bulk-actions.service';
 import { BulkActionIdDto } from 'src/modules/bulk-actions/dto/bulk-action-id.dto';
 
@@ -22,6 +23,7 @@ export class BulkActionsController {
     description: 'Stream bulk action report as downloadable file',
     statusCode: 200,
   })
+  @ApiRedisParams()
   @ApiParam({
     name: 'id',
     description: 'Bulk action id',

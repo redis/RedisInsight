@@ -7,7 +7,9 @@ import ManualConnectionFrom, {
   Props as ManualConnectionFromProps,
 } from 'uiSrc/pages/home/components/manual-connection/manual-connection-form/ManualConnectionForm'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { createInstanceStandaloneAction } from 'uiSrc/slices/instances/instances'
 import ManualConnectionWrapper, { Props } from './ManualConnectionWrapper'
+import { DbConnectionInfo } from '../../interfaces'
 
 const mockedProps = mock<Props>()
 
@@ -20,6 +22,11 @@ jest.mock('./manual-connection-form/ManualConnectionForm', () => ({
 jest.mock('uiSrc/telemetry', () => ({
   ...jest.requireActual('uiSrc/telemetry'),
   sendEventTelemetry: jest.fn(),
+}))
+
+jest.mock('uiSrc/slices/instances/instances', () => ({
+  ...jest.requireActual('uiSrc/slices/instances/instances'),
+  createInstanceStandaloneAction: jest.fn(() => ({ type: 'noop' })),
 }))
 
 const mockManualConnectionFrom = (props: ManualConnectionFromProps) => (
@@ -41,9 +48,23 @@ const mockManualConnectionFrom = (props: ManualConnectionFromProps) => (
     <button
       type="submit"
       data-testid="btn-submit"
-      onClick={() => props.onSubmit({})}
+      onClick={() => props.onSubmit({} as DbConnectionInfo)}
     >
       {props.submitButtonText}
+    </button>
+    <button
+      type="button"
+      data-testid="btn-submit-prod"
+      onClick={() =>
+        props.onSubmit({
+          name: 'db',
+          host: 'localhost',
+          port: '6379',
+          environment: 'production',
+        } as DbConnectionInfo)
+      }
+    >
+      submit with environment
     </button>
     <button
       type="button"
@@ -120,6 +141,19 @@ describe('ManualConnectionWrapper', () => {
     expect(sendEventTelemetry).toBeCalledWith({
       event: TelemetryEvent.CONFIG_DATABASES_MANUALLY_SUBMITTED,
     })
+  })
+
+  it('should pass environment through preparePayload to the create action', () => {
+    ;(createInstanceStandaloneAction as jest.Mock).mockClear()
+    render(<ManualConnectionWrapper {...instance(mockedProps)} />)
+    act(() => {
+      fireEvent.click(screen.getByTestId('btn-submit-prod'))
+    })
+
+    expect(createInstanceStandaloneAction).toHaveBeenCalledWith(
+      expect.objectContaining({ environment: 'production' }),
+      expect.anything(),
+    )
   })
 
   it('should call proper telemetry event on Clone database', () => {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -25,10 +25,10 @@ import styles from './styles.module.scss'
 import { Panel } from 'uiSrc/components/panel'
 
 const WbNoResultsMessage = () => {
-  const { provider } = useSelector(connectedInstanceSelector)
+  const { provider } = useAppSelector(connectedInstanceSelector)
 
   const { instanceId } = useParams<{ instanceId: string }>()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleOpenInsights = () => {
     dispatch(changeSelectedTab(InsightsPanelTabs.Explore))

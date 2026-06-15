@@ -26,4 +26,5 @@ export class ExportDatabase extends PickType(Database, [
   'forceStandalone',
   'tags',
   'providerDetails',
+  'environment',
 ] as const) {}

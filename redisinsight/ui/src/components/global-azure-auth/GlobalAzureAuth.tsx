@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 import { getConfig } from 'uiSrc/config'
 
@@ -14,12 +14,11 @@ import {
   addErrorNotification,
   addMessageNotification,
 } from 'uiSrc/slices/app/notifications'
-import { AppDispatch } from 'uiSrc/slices/store'
-import { Pages } from 'uiSrc/constants'
 import {
+  Pages,
   AzureAuthStatus,
   AZURE_OAUTH_STORAGE_KEY,
-} from 'apiSrc/modules/azure/constants'
+} from 'uiSrc/constants'
 const STORAGE_POLL_INTERVAL = 500 // ms
 const STORAGE_RESULT_MAX_AGE = 30000 // 30 seconds
 
@@ -42,9 +41,9 @@ const isElectron = riConfig.app.type === 'ELECTRON'
  * This component should be mounted in the main App for non-Electron builds.
  */
 const GlobalAzureAuth = () => {
-  const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useAppDispatch()
   const history = useHistory()
-  const source = useSelector(azureAuthSourceSelector)
+  const source = useAppSelector(azureAuthSourceSelector)
   const sourceRef = useRef(source)
   sourceRef.current = source
 

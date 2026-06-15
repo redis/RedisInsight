@@ -1,15 +1,15 @@
 import { KeyDto } from 'src/modules/browser/keys/dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
-import { IsRedisString, RedisStringType } from 'src/common/decorators';
+import {
+  ApiRedisString,
+  IsRedisString,
+  RedisStringType,
+} from 'src/common/decorators';
 import { RedisString } from 'src/common/constants';
 
 export class ConsumerDto {
-  @ApiProperty({
-    type: String,
-    description: "The consumer's name",
-    example: 'consumer-2',
-  })
+  @ApiRedisString("The consumer's name")
   @RedisStringType()
   name: RedisString;
 
@@ -32,11 +32,7 @@ export class ConsumerDto {
 }
 
 export class GetConsumersDto extends KeyDto {
-  @ApiProperty({
-    type: String,
-    description: 'Consumer group name',
-    example: 'group-1',
-  })
+  @ApiRedisString('Consumer group name')
   @IsNotEmpty()
   @IsRedisString()
   @RedisStringType()

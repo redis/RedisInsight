@@ -9,7 +9,7 @@ import {
   mockStore,
   initialStateDefault,
 } from 'uiSrc/utils/test-utils'
-import { AzureAuthStatus } from 'apiSrc/modules/azure/constants'
+import { AzureAuthStatus } from 'uiSrc/constants'
 import {
   azureOAuthCallbackSuccess,
   azureOAuthCallbackFailure,

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { Socket } from 'socket.io-client'
 
 import {
@@ -19,12 +19,12 @@ import { oauthCloudJobSelector, setJob } from 'uiSrc/slices/oauth/cloud'
 import { CloudJobName } from 'uiSrc/electron/constants'
 import { appCsrfSelector } from 'uiSrc/slices/app/csrf'
 import { useIoConnection } from 'uiSrc/services/hooks/useIoConnection'
-import { CloudJobInfo } from 'apiSrc/modules/cloud/job/models'
+import { CloudJobInfo } from 'apiClient'
 
 const CommonAppSubscription = () => {
-  const { id: jobId = '' } = useSelector(oauthCloudJobSelector) ?? {}
-  const { id: instanceId } = useSelector(connectedInstanceSelector)
-  const { token } = useSelector(appCsrfSelector)
+  const { id: jobId = '' } = useAppSelector(oauthCloudJobSelector) ?? {}
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
+  const { token } = useAppSelector(appCsrfSelector)
   const socketRef = useRef<Nullable<Socket>>(null)
   const connectIo = useIoConnection(getSocketApiUrl(), {
     forceNew: false,
@@ -32,7 +32,7 @@ const CommonAppSubscription = () => {
     reconnection: true,
   })
 
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (socketRef.current?.connected) {

@@ -36,6 +36,8 @@ export class GetZSetMembersDto extends KeyDto {
       ' In order to sort the members from the highest to the lowest score, use the DESC value, else ASC value',
     default: SortOrder.Desc,
     enum: SortOrder,
+
+    enumName: 'SortOrder',
   })
   @IsNotEmpty()
   @IsEnum(SortOrder, {

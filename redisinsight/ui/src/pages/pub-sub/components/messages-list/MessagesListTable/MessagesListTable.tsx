@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { connectedInstanceOverviewSelector } from 'uiSrc/slices/instances/instances'
 import { pubSubSelector } from 'uiSrc/slices/pubsub/pubsub'
@@ -29,9 +29,9 @@ const MessagesListTable = () => {
     messages = [],
     isSubscribed,
     subscriptions,
-  } = useSelector(pubSubSelector)
+  } = useAppSelector(pubSubSelector)
   const connectionType = useConnectionType()
-  const { version } = useSelector(connectedInstanceOverviewSelector)
+  const { version } = useAppSelector(connectedInstanceOverviewSelector)
 
   const channels = subscriptions?.length
     ? subscriptions.map((sub) => sub.channel).join(' ')

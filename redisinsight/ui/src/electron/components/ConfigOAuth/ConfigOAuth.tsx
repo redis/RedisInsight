@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useHistory } from 'react-router-dom'
 
 import {
@@ -38,14 +38,14 @@ import { localStorageService } from 'uiSrc/services'
 import { CustomError, OAuthSocialAction } from 'uiSrc/slices/interfaces'
 
 const ConfigOAuth = () => {
-  const { ssoFlow, isRecommendedSettings } = useSelector(cloudSelector)
+  const { ssoFlow, isRecommendedSettings } = useAppSelector(cloudSelector)
 
   const ssoFlowRef = useRef(ssoFlow)
   const isRecommendedSettingsRef = useRef(isRecommendedSettings)
   const isFlowInProgress = useRef(false)
 
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     window.app?.cloudOauthCallback?.(cloudOauthCallback)

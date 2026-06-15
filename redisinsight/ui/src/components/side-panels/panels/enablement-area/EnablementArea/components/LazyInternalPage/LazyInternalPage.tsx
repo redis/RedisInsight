@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { startCase } from 'lodash'
 import { useHistory } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { AxiosError } from 'axios'
 
 import { getApiErrorMessage, isStatusSuccessful, Nullable } from 'uiSrc/utils'
 import { resourcesService } from 'uiSrc/services'
+import { ApiEndpoints, FeatureFlags } from 'uiSrc/constants'
 import { IS_ABSOLUTE_PATH } from 'uiSrc/constants/regex'
 import { IEnablementAreaItem } from 'uiSrc/slices/interfaces'
+import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { workbenchTutorialsSelector } from 'uiSrc/slices/workbench/wb-tutorials'
 import { workbenchCustomTutorialsSelector } from 'uiSrc/slices/workbench/wb-custom-tutorials'
 
@@ -65,15 +67,19 @@ const LazyInternalPage = ({
     itemScrollTop,
     data: contentContext,
     url,
-  } = useSelector(explorePanelSelector)
-  const { loading: tutorialsLoading } = useSelector(workbenchTutorialsSelector)
-  const { loading: customTutorialsLoading } = useSelector(
+  } = useAppSelector(explorePanelSelector)
+  const { loading: tutorialsLoading } = useAppSelector(
+    workbenchTutorialsSelector,
+  )
+  const { loading: customTutorialsLoading } = useAppSelector(
     workbenchCustomTutorialsSelector,
   )
+  const { [FeatureFlags.customTutorials]: customTutorialsFeature } =
+    useAppSelector(appFeatureFlagsFeaturesSelector)
   const [isLoading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
   const [pageData, setPageData] = useState<IPageData>(DEFAULT_PAGE_DATA)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const scrollTopRef = useRef(0)
 
@@ -106,6 +112,14 @@ const LazyInternalPage = ({
     try {
       if (IS_ABSOLUTE_PATH.test(path)) {
         throw new Error('External content is not allowed')
+      }
+
+      // Custom tutorials are deprecated (RED-194229)
+      if (
+        !customTutorialsFeature?.flag &&
+        path?.startsWith(ApiEndpoints.CUSTOM_TUTORIALS_PATH)
+      ) {
+        throw new Error('Custom tutorials are disabled')
       }
 
       const formatter = FormatSelector.selectFor(pageInfo.extension)

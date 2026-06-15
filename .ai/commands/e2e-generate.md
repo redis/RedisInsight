@@ -7,7 +7,7 @@ argument-hint: <ticket-id or ticket-url>
 
 Use Playwright MCP to explore a page, discover testable functionality, and generate E2E tests based on a Jira ticket.
 
-**Follow all standards in `.ai/rules/e2e-testing.md`**
+**Follow all standards in `.ai/skills/e2e-testing/SKILL.md`**
 
 **Reference:** @tests/e2e-playwright/TEST_PLAN.md
 
@@ -73,11 +73,11 @@ Run only the new tests using list reporter (no HTML report):
 
 ```bash
 cd tests/e2e-playwright
-npx playwright test tests/main/{feature}/{action}/ --project=chromium --reporter=list
+npx playwright test tests/parallel/{feature}/{action}/ --project=chromium-parallel --reporter=list
 npm run lint && npx tsc --noEmit
 ```
 
-**Note:** Use `--reporter=list` to avoid Playwright generating and hosting an HTML report. Use `--project=chromium` to run only browser tests (faster feedback).
+**Note:** Use `--reporter=list` to avoid Playwright generating and hosting an HTML report. Use `--project=chromium-parallel` to run only browser tests (faster feedback).
 
 ### Step 7: Update Test Plan
 

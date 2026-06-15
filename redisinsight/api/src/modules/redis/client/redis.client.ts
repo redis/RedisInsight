@@ -57,6 +57,7 @@ export enum RedisFeature {
   HashFieldsExpiration = 'HashFieldsExpiration',
   UnlinkCommand = 'UnlinkCommand',
   VRangeCommand = 'VRangeCommand',
+  VsimWithAttribs = 'VsimWithAttribs',
 }
 
 const CLIENT_DATABASE_FIELDS: (keyof Database)[] = ['providerDetails'];
@@ -176,34 +177,34 @@ export abstract class RedisClient extends EventEmitter2 {
   public async isFeatureSupported(feature: RedisFeature): Promise<boolean> {
     switch (feature) {
       case RedisFeature.HashFieldsExpiration:
-        try {
-          const redisVersion = await this.getRedisVersion();
-          return redisVersion && semverCompare('7.3', redisVersion) < 1;
-        } catch (e) {
-          return false;
-        }
+        return this.isRedisVersionAtLeast('7.3');
       case RedisFeature.UnlinkCommand:
-        try {
-          const redisVersion = await this.getRedisVersion();
-          // UNLINK command was introduced in Redis 4.0.0
-          return redisVersion && semverCompare('4.0.0', redisVersion) < 1;
-        } catch (e) {
-          return false;
-        }
+        // UNLINK command was introduced in Redis 4.0.0
+        return this.isRedisVersionAtLeast('4.0.0');
       case RedisFeature.VRangeCommand:
-        try {
-          const redisVersion = await this.getRedisVersion();
-          // VRANGE command was introduced in Redis 8.4
-          return redisVersion && semverCompare('8.4', redisVersion) < 1;
-        } catch (e) {
-          return false;
-        }
+        // VRANGE command was introduced in Redis 8.4
+        return this.isRedisVersionAtLeast('8.4');
+      case RedisFeature.VsimWithAttribs:
+        // VSIM WITHATTRIBS option is broken on 8.0.0–8.0.2 and was fixed in 8.0.3
+        return this.isRedisVersionAtLeast('8.0.3');
       default:
         return false;
     }
   }
 
-  private async getRedisVersion(): Promise<string> {
+  private async isRedisVersionAtLeast(minVersion: string): Promise<boolean> {
+    try {
+      const redisVersion = await this.getRedisVersion();
+      if (!redisVersion) {
+        return false;
+      }
+      return semverCompare(minVersion, redisVersion) < 1;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  private async getRedisVersion(): Promise<string | undefined> {
     if (!this._redisVersion) {
       const infoData = await this.getInfo('server');
       this._redisVersion = infoData?.server?.redis_version;

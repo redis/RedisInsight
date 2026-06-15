@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { KeyResponse } from 'src/modules/browser/keys/dto';
-import { RedisStringType } from 'src/common/decorators';
+import { ApiRedisString, RedisStringType } from 'src/common/decorators';
 import { RedisString } from 'src/common/constants';
 
 export class SetScanResponse extends KeyResponse {
@@ -13,11 +13,7 @@ export class SetScanResponse extends KeyResponse {
   })
   nextCursor: number;
 
-  @ApiProperty({
-    type: () => String,
-    description: 'Array of members.',
-    isArray: true,
-  })
+  @ApiRedisString('Array of members', true)
   @RedisStringType({ each: true })
   members: RedisString[];
 }

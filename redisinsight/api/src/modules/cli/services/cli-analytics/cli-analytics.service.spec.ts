@@ -15,6 +15,7 @@ import {
   ICliExecResultFromNode,
 } from 'src/modules/cli/dto/cli.dto';
 import { CommandsService } from 'src/modules/commands/commands.service';
+import { Environment } from 'src/modules/database/entities/database.entity';
 import { CliAnalyticsService } from './cli-analytics.service';
 
 const mockCommandsService = {
@@ -256,11 +257,11 @@ describe('CliAnalyticsService', () => {
 
   describe('sendCliCommandExecutedEvent', () => {
     it('should emit CliCommandExecuted event', async () => {
-      await service.sendCommandExecutedEvent(
-        mockSessionMetadata,
-        databaseId,
-        mockAdditionalData,
-      );
+      await service.sendCommandExecutedEvent(mockSessionMetadata, databaseId, {
+        ...mockAdditionalData,
+        environment: Environment.Unspecified,
+        isDangerous: 'false',
+      });
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
@@ -271,18 +272,51 @@ describe('CliAnalyticsService', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
         },
       );
     });
     it('should emit CliCommandExecuted event without additional data', async () => {
-      await service.sendCommandExecutedEvent(mockSessionMetadata, databaseId);
+      await service.sendCommandExecutedEvent(mockSessionMetadata, databaseId, {
+        environment: Environment.Unspecified,
+        isDangerous: 'false',
+      });
 
       expect(sendEventMethod).toHaveBeenCalledWith(
         mockSessionMetadata,
         TelemetryEvents.CliCommandExecuted,
         {
           databaseId,
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
         },
+      );
+    });
+    it('should emit environment=production when database is marked production', async () => {
+      await service.sendCommandExecutedEvent(mockSessionMetadata, databaseId, {
+        ...mockAdditionalData,
+        environment: Environment.Production,
+        isDangerous: 'false',
+      });
+
+      expect(sendEventMethod).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        TelemetryEvents.CliCommandExecuted,
+        expect.objectContaining({ environment: Environment.Production }),
+      );
+    });
+    it('should emit isDangerous=true when caller marks the command as dangerous', async () => {
+      await service.sendCommandExecutedEvent(mockSessionMetadata, databaseId, {
+        ...mockAdditionalData,
+        environment: Environment.Unspecified,
+        isDangerous: 'true',
+      });
+
+      expect(sendEventMethod).toHaveBeenCalledWith(
+        mockSessionMetadata,
+        TelemetryEvents.CliCommandExecuted,
+        expect.objectContaining({ isDangerous: 'true' }),
       );
     });
   });
@@ -293,7 +327,11 @@ describe('CliAnalyticsService', () => {
         mockSessionMetadata,
         databaseId,
         redisReplyError,
-        mockAdditionalData,
+        {
+          ...mockAdditionalData,
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
+        },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -306,6 +344,8 @@ describe('CliAnalyticsService', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
         },
       );
     });
@@ -314,6 +354,7 @@ describe('CliAnalyticsService', () => {
         mockSessionMetadata,
         databaseId,
         redisReplyError,
+        { environment: Environment.Unspecified, isDangerous: 'false' },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -323,6 +364,8 @@ describe('CliAnalyticsService', () => {
           databaseId,
           error: ReplyError.name,
           command: 'sadd',
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
         },
       );
     });
@@ -332,7 +375,11 @@ describe('CliAnalyticsService', () => {
         mockSessionMetadata,
         databaseId,
         error,
-        mockAdditionalData,
+        {
+          ...mockAdditionalData,
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
+        },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -345,6 +392,8 @@ describe('CliAnalyticsService', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
         },
       );
     });
@@ -403,7 +452,11 @@ describe('CliAnalyticsService', () => {
         mockSessionMetadata,
         databaseId,
         nodExecResult,
-        mockAdditionalData,
+        {
+          ...mockAdditionalData,
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
+        },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -415,6 +468,8 @@ describe('CliAnalyticsService', () => {
           commandType: CommandType.Core,
           moduleName: 'n/a',
           capability: 'string',
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
         },
       );
     });
@@ -431,6 +486,7 @@ describe('CliAnalyticsService', () => {
         mockSessionMetadata,
         databaseId,
         nodExecResult,
+        { environment: Environment.Unspecified, isDangerous: 'false' },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -440,6 +496,8 @@ describe('CliAnalyticsService', () => {
           databaseId,
           error: redisReplyError.name,
           command: 'sadd',
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
         },
       );
     });
@@ -456,6 +514,7 @@ describe('CliAnalyticsService', () => {
         mockSessionMetadata,
         databaseId,
         nodExecResult,
+        { environment: Environment.Unspecified, isDangerous: 'false' },
       );
 
       expect(sendEventMethod).toHaveBeenCalledWith(
@@ -464,6 +523,8 @@ describe('CliAnalyticsService', () => {
         {
           databaseId,
           error: CommandParsingError.name,
+          environment: Environment.Unspecified,
+          isDangerous: 'false',
         },
       );
     });
@@ -478,6 +539,7 @@ describe('CliAnalyticsService', () => {
         mockSessionMetadata,
         databaseId,
         nodExecResult,
+        { environment: Environment.Unspecified, isDangerous: 'false' },
       );
 
       expect(sendEventMethod).not.toHaveBeenCalled();

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { IRoute, PageNames, Pages } from 'uiSrc/constants'
 import { connectedInstanceSelector } from 'uiSrc/slices/rdi/instances'
@@ -33,15 +33,15 @@ export interface Props {
 
 const PipelineManagementPage = ({ routes = [] }: Props) => {
   const { rdiInstanceId } = useParams<{ rdiInstanceId: string }>()
-  const { lastViewedPage } = useSelector(appContextPipelineManagement)
-  const { name: connectedRdiInstanceName } = useSelector(
+  const { lastViewedPage } = useAppSelector(appContextPipelineManagement)
+  const { name: connectedRdiInstanceName } = useAppSelector(
     connectedInstanceSelector,
   )
 
   const pathnameRef = useRef<string>('')
 
   const history = useHistory()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { pathname } = useLocation()
 
   const rdiInstanceName = formatLongName(connectedRdiInstanceName, 33, 0, '...')

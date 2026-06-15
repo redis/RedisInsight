@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 
@@ -41,10 +41,10 @@ const MonitorHeader = ({ handleRunMonitor }: Props) => {
     items = [],
     error,
     loadingPause,
-  } = useSelector(monitorSelector)
+  } = useAppSelector(monitorSelector)
   const isErrorShown = !!error && !isRunning
   const disabledPause = isErrorShown || isResumeLocked || loadingPause
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleCloseMonitor = () => {
     if (isRunning) {
