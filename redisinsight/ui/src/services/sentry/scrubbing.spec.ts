@@ -177,8 +177,8 @@ describe('minimizeEvent', () => {
   })
 
   it('strips frame locals/source and normalizes paths', () => {
-    const frame = minimizeEvent(fullEvent).exception!.values![0].stacktrace!
-      .frames![0]
+    const frame =
+      minimizeEvent(fullEvent).exception!.values![0].stacktrace!.frames![0]
     expect(frame.function).toBe('connect')
     expect(frame.filename).toBe('/Users/<user>/app/db.js')
     expect((frame as any).vars).toBeUndefined()
