@@ -3,6 +3,7 @@ import webpack from 'webpack'
 import { merge } from 'webpack-merge'
 import { toString } from 'lodash'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import { sentryWebpackPlugin } from '@sentry/webpack-plugin'
 import baseConfig from './webpack.config.base'
 import DeleteSourceMaps from '../scripts/DeleteSourceMaps'
 import { version } from '../redisinsight/package.json'
@@ -10,8 +11,11 @@ import webpackPaths from './webpack.paths'
 
 DeleteSourceMaps()
 
+// Generate source maps when debugging the prod bundle, or when uploading them
+// to Sentry (the upload plugin below deletes them again so they never ship).
+const shouldUploadSourceMaps = !!process.env.SENTRY_AUTH_TOKEN
 const devtoolsConfig =
-  process.env.DEBUG_PROD === 'true'
+  process.env.DEBUG_PROD === 'true' || shouldUploadSourceMaps
     ? {
         devtool: 'source-map',
       }
@@ -139,6 +143,26 @@ export default merge(baseConfig, {
     new webpack.DefinePlugin({
       'process.type': '"browser"',
     }),
+
+    // Upload Electron-main source maps to Sentry (debug IDs match bundle↔map),
+    // then delete them so they never ship inside the app. Active only when
+    // SENTRY_AUTH_TOKEN is set (i.e. in CI); a no-op for local/dev builds.
+    ...(shouldUploadSourceMaps
+      ? [
+          sentryWebpackPlugin({
+            org: process.env.SENTRY_ORG,
+            project: process.env.SENTRY_PROJECT_ELECTRON,
+            authToken: process.env.SENTRY_AUTH_TOKEN,
+            release: { name: version },
+            sourcemaps: {
+              filesToDeleteAfterUpload: [
+                './redisinsight/dist/main/**/*.js.map',
+              ],
+            },
+            telemetry: false,
+          }),
+        ]
+      : []),
   ],
 
   /**

@@ -6,6 +6,7 @@ import fixReactVirtualized from 'esbuild-plugin-react-virtualized';
 import { reactClickToComponent } from 'vite-plugin-react-click-to-component';
 import { ViteEjsPlugin } from 'vite-plugin-ejs';
 import istanbul from 'vite-plugin-istanbul';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 // import { compression } from 'vite-plugin-compression2'
 import { fileURLToPath, URL } from 'url';
 import path from 'path';
@@ -72,6 +73,24 @@ export default defineConfig({
     //   include: [/\.(js)$/, /\.(css)$/],
     //   deleteOriginalAssets: true
     // }),
+    // Upload renderer source maps to Sentry (debug IDs match bundle↔map), then
+    // delete them so they never ship inside the app. Active only when
+    // SENTRY_AUTH_TOKEN is set (i.e. in CI); a no-op for local/dev builds.
+    // Must stay last in the plugins array.
+    ...(process.env.SENTRY_AUTH_TOKEN
+      ? [
+          sentryVitePlugin({
+            org: process.env.SENTRY_ORG,
+            project: process.env.SENTRY_PROJECT_UI,
+            authToken: process.env.SENTRY_AUTH_TOKEN,
+            release: { name: defaultConfig.app.version },
+            sourcemaps: {
+              filesToDeleteAfterUpload: ['../dist/renderer/**/*.js.map'],
+            },
+            telemetry: false,
+          }),
+        ]
+      : []),
   ],
   resolve: {
     alias: {
@@ -132,6 +151,9 @@ export default defineConfig({
     outDir,
     target: 'es2020',
     minify: 'esbuild',
+    // Emit hidden source maps only when uploading to Sentry (the plugin above
+    // deletes them after upload, so they never ship). Off otherwise.
+    sourcemap: process.env.SENTRY_AUTH_TOKEN ? 'hidden' : false,
     rollupOptions: {
       output: {
         manualChunks(id) {

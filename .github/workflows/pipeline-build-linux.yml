@@ -204,8 +204,15 @@ jobs:
       RI_CLOUD_IDP_TOKEN_URL: ${{ secrets.RI_CLOUD_IDP_TOKEN_URL }}
       RI_SEGMENT_WRITE_KEY: ${{ secrets.RI_SEGMENT_WRITE_KEY }}
       RI_SENTRY_ELECTRON_DSN: ${{ secrets.RI_SENTRY_ELECTRON_DSN }}
+      RI_SENTRY_UI_DSN: ${{ secrets.RI_SENTRY_UI_DSN }}
       RI_SENTRY_ENABLED: ${{ secrets.RI_SENTRY_ENABLED }}
       RI_SENTRY_ENVIRONMENT: ${{ vars.ENV }}
+      # Source-map upload to Sentry (via @sentry/{vite,webpack}-plugin).
+      # Active only when SENTRY_AUTH_TOKEN is set; otherwise a no-op.
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+      SENTRY_PROJECT_UI: ${{ vars.SENTRY_PROJECT_UI }}
+      SENTRY_PROJECT_ELECTRON: ${{ vars.SENTRY_PROJECT_ELECTRON }}
       RI_SERVER_TLS_CERT: ${{ secrets.RI_SERVER_TLS_CERT }}
       RI_SERVER_TLS_KEY: ${{ secrets.RI_SERVER_TLS_KEY }}
       RI_FEATURES_CONFIG_URL: ${{ secrets.RI_FEATURES_CONFIG_URL }}
