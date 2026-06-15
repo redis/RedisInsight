@@ -192,16 +192,18 @@ Scope for the security review (track as its own item):
       generic `ErrorBoundary` and guarded so a Sentry failure can't block the fallback. Remaining:
       optional designer sign-off on the literal palette (can't read the live theme — boundary
       renders above `ThemeProvider`).
-- [ ] **CI/CD Sentry env via secrets** → `RI_SENTRY_UI_DSN`, `RI_SENTRY_ELECTRON_DSN`,
-      `RI_SENTRY_ENABLED`, `RI_SENTRY_ENVIRONMENT` already wired in the build workflows; confirm
-      secrets/vars exist in all four pipelines.
+- [ ] **CI/CD Sentry env via secrets** → all four pipelines now reference `RI_SENTRY_ELECTRON_DSN`,
+      `RI_SENTRY_UI_DSN`, `RI_SENTRY_ENABLED`, `RI_SENTRY_ENVIRONMENT` + the source-map vars (§9).
+      Maintainer must **create** the missing ones: `RI_SENTRY_UI_DSN` and `SENTRY_AUTH_TOKEN`
+      (secrets), `SENTRY_ORG` / `SENTRY_PROJECT_UI` / `SENTRY_PROJECT_ELECTRON` (vars). Currently set:
+      `RI_SENTRY_ELECTRON_DSN`, `RI_SENTRY_ENABLED`, `RI_SENTRY_ENVIRONMENT`.
 - [ ] **Remove PoC test triggers** → `triggerTestCrash`/`triggerNativeCrash` + global shortcuts
       (`desktop/app.ts`), Help-menu `Crash Handler`/`Crash React` (`HelpMenu.tsx`), and the
       `// Test Helpers` block in `sentry.ts`.
 
 ### Recommended
-- [ ] Source maps upload to Sentry → §9 (decision: version-only release + debug IDs).
-- [ ] Release tracking → §9 (`release` = `pkg.version`; SHA as metadata, not in the identifier).
+- [x] Source maps upload to Sentry → §9 (implemented via bundler plugins; pending CI secrets/vars).
+- [x] Release tracking → §9 (`release` = `pkg.version` + debug IDs; SHA as metadata, not identifier).
 - [ ] User context (per-install anonymous id, **Tier 2 only**).
 - [ ] Performance monitoring / dashboard.
 
@@ -273,18 +275,38 @@ that.
   `commit`/property so "which commit shipped this version" is answerable, without putting it in the
   release identifier.
 
-### Implementation outline (~1–1.5 days)
+### Implementation — DONE (pending CI config)
 
-1. Generate `hidden` source maps: Vite `build.sourcemap: 'hidden'`; webpack `devtool: 'source-map'`.
-2. Add `@sentry/cli`; in CI, after build: `sourcemaps inject` → upload (renderer and main are
-   separate bundler outputs → two uploads, same release) → **then** delete maps from the shippable
-   artifact (sequence the existing `DeleteSourceMaps` step *after* upload so maps never ship in the asar).
-3. Add `SENTRY_AUTH_TOKEN` secret + org/project (US region) to the four `pipeline-build-*.yml`.
-4. Keep `release: pkg.version` in both inits.
+Implemented via the Sentry **bundler plugins** (simpler than a separate `sentry-cli` CI step — the
+upload runs inside the existing build, on every pipeline automatically, and the plugin handles
+inject + upload + delete-after-upload):
 
-### Open question
+- `@sentry/vite-plugin` (renderer) and `@sentry/webpack-plugin` (main), both **gated on
+  `SENTRY_AUTH_TOKEN`** → no-op for local/dev builds.
+- Source maps are `hidden` and generated only when uploading; the plugin **deletes them after
+  upload**, so they never ship in the app.
+- `release` = `pkg.version`; **debug IDs** match bundle↔map (no per-build SHA).
+- Renderer and main are separate bundler outputs → two uploads (projects `SENTRY_PROJECT_UI` /
+  `SENTRY_PROJECT_ELECTRON`), same release name.
+
+### Required CI configuration (must be added by a maintainer)
+
+| Name | Kind | Notes |
+|---|---|---|
+| `SENTRY_AUTH_TOKEN` | **secret** | enables upload; absent → plugins no-op |
+| `SENTRY_ORG` | var | Sentry org slug |
+| `SENTRY_PROJECT_UI` | var | renderer project slug |
+| `SENTRY_PROJECT_ELECTRON` | var | main-process project slug |
+| `RI_SENTRY_UI_DSN` | **secret** | **was missing** — the renderer Sentry layer reads it; without it the UI layer never reports |
+
+All five are referenced in the four `pipeline-build-*.yml` env blocks.
+
+### Open questions
 
 - **Build determinism across the four platform pipelines** (mac/win/linux/docker): each builds the
-  renderer/main JS separately. If builds are byte-identical, one upload covers all; if not, debug IDs
-  handle it cleanly (each build's maps carry their own IDs), whereas version-only *without* debug IDs
-  could leave some platforms with "no map found". Another reason to adopt debug IDs.
+  JS separately. Debug IDs make this safe (each build's maps carry their own IDs), so no action
+  needed — but worth confirming we're not uploading redundant artifacts.
+- **Docker = web build, not Electron.** `pipeline-build-docker.yml` runs `build:ui` (web,
+  `index.tsx`), not the Electron renderer (`indexElectron.tsx`) where Sentry is initialized. The env
+  vars are wired there for consistency, but the web build only produces useful maps if/when the web
+  entry initializes Sentry. Decide whether the docker/web variant should report at all.
