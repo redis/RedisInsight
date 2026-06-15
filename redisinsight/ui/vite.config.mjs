@@ -81,7 +81,7 @@ export default defineConfig({
       ? [
           sentryVitePlugin({
             org: process.env.RI_SENTRY_ORG,
-            project: process.env.RI_SENTRY_PROJECT_UI,
+            project: process.env.RI_SENTRY_PROJECT,
             authToken: process.env.RI_SENTRY_AUTH_TOKEN,
             release: { name: defaultConfig.app.version },
             sourcemaps: {

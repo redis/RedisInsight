@@ -195,8 +195,8 @@ Scope for the security review (track as its own item):
 - [ ] **CI/CD Sentry env via secrets** → all four pipelines reference a single `RI_SENTRY_DSN`
       (shared by main + renderer + web; one Sentry project), `RI_SENTRY_ENABLED`,
       `RI_SENTRY_ENVIRONMENT` + the source-map vars (§9). Maintainer must **create**:
-      `RI_SENTRY_DSN` and `RI_SENTRY_AUTH_TOKEN` (secrets), `RI_SENTRY_ORG` / `RI_SENTRY_PROJECT_UI`
-      / `RI_SENTRY_PROJECT_ELECTRON` (vars). Already set: `RI_SENTRY_ENABLED`, `RI_SENTRY_ENVIRONMENT`
+      `RI_SENTRY_DSN` and `RI_SENTRY_AUTH_TOKEN` (secrets), `RI_SENTRY_ORG` / `RI_SENTRY_PROJECT`
+      (vars). Already set: `RI_SENTRY_ENABLED`, `RI_SENTRY_ENVIRONMENT`
       (the previously-set `RI_SENTRY_ELECTRON_DSN` is replaced by `RI_SENTRY_DSN`).
 - [ ] **Remove PoC test triggers** → `triggerTestCrash`/`triggerNativeCrash` + global shortcuts
       (`desktop/app.ts`), Help-menu `Crash Handler`/`Crash React` (`HelpMenu.tsx`), and the
@@ -287,8 +287,8 @@ inject + upload + delete-after-upload):
 - Source maps are `hidden` and generated only when uploading; the plugin **deletes them after
   upload**, so they never ship in the app.
 - `release` = `pkg.version`; **debug IDs** match bundle↔map (no per-build SHA).
-- Renderer and main are separate bundler outputs → two uploads (projects `RI_SENTRY_PROJECT_UI` /
-  `RI_SENTRY_PROJECT_ELECTRON`), same release name.
+- Renderer and main are separate bundler outputs → two uploads to the same project
+  (`RI_SENTRY_PROJECT`), same release name.
 
 ### Required CI configuration (must be added by a maintainer)
 
@@ -296,8 +296,7 @@ inject + upload + delete-after-upload):
 |---|---|---|
 | `RI_SENTRY_AUTH_TOKEN` | **secret** | enables upload; absent → plugins no-op. Build-time only — never reference via `import.meta.env` in client code (the `RI_` prefix makes it client-exposable). |
 | `RI_SENTRY_ORG` | var | Sentry org slug |
-| `RI_SENTRY_PROJECT_UI` | var | renderer/web project slug |
-| `RI_SENTRY_PROJECT_ELECTRON` | var | main-process project slug |
+| `RI_SENTRY_PROJECT` | var | project slug for source-map uploads (renderer + main upload here) |
 | `RI_SENTRY_DSN` | **secret** | single DSN shared by main + renderer + web (one project); replaces the former split `RI_SENTRY_ELECTRON_DSN` / `RI_SENTRY_UI_DSN` |
 
 All five are referenced in the four `pipeline-build-*.yml` env blocks.

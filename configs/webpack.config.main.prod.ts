@@ -151,7 +151,7 @@ export default merge(baseConfig, {
       ? [
           sentryWebpackPlugin({
             org: process.env.RI_SENTRY_ORG,
-            project: process.env.RI_SENTRY_PROJECT_ELECTRON,
+            project: process.env.RI_SENTRY_PROJECT,
             authToken: process.env.RI_SENTRY_AUTH_TOKEN,
             release: { name: version },
             sourcemaps: {
