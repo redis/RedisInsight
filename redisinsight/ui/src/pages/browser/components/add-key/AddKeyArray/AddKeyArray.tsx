@@ -1,16 +1,9 @@
 import React from 'react'
 
-import { Maybe } from 'uiSrc/utils'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
 import { Text } from 'uiSrc/components/base/text'
 
-export interface Props {
-  keyName: string
-  keyTTL: Maybe<number>
-  onCancel: (isCancelled?: boolean) => void
-  setKeyName?: (value: string) => void
-  setKeyNameDisabled?: (disabled: boolean) => void
-}
+import { Props } from './AddKeyArray.types'
 
 // Creation forms land in follow-up PRs; submit stays disabled until then.
 const AddKeyArray = ({ onCancel }: Props) => (

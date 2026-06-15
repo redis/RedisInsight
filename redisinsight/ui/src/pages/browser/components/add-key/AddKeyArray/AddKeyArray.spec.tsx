@@ -1,7 +1,8 @@
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
 import { render, screen } from 'uiSrc/utils/test-utils'
-import AddKeyArray, { Props } from './AddKeyArray'
+import AddKeyArray from './AddKeyArray'
+import { Props } from './AddKeyArray.types'
 
 const mockedProps = mock<Props>()
 
