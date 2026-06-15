@@ -41,8 +41,8 @@ describe('ArrayKeyInfoStrategy', () => {
         when(mockStandaloneRedisClient.sendPipeline)
           .calledWith([
             [BrowserToolKeysCommands.Ttl, key],
-            [BrowserToolArrayCommands.ARLen, key],
-            [BrowserToolArrayCommands.ARCount, key],
+            [BrowserToolArrayCommands.ArLen, key],
+            [BrowserToolArrayCommands.ArCount, key],
             [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],
           ])
           .mockResolvedValueOnce([
@@ -68,8 +68,8 @@ describe('ArrayKeyInfoStrategy', () => {
         when(mockStandaloneRedisClient.sendPipeline)
           .calledWith([
             [BrowserToolKeysCommands.Ttl, key],
-            [BrowserToolArrayCommands.ARLen, key],
-            [BrowserToolArrayCommands.ARCount, key],
+            [BrowserToolArrayCommands.ArLen, key],
+            [BrowserToolArrayCommands.ArCount, key],
           ])
           .mockResolvedValueOnce([
             [null, ttl],
@@ -95,8 +95,8 @@ describe('ArrayKeyInfoStrategy', () => {
         when(mockStandaloneRedisClient.sendPipeline)
           .calledWith([
             [BrowserToolKeysCommands.Ttl, key],
-            [BrowserToolArrayCommands.ARLen, key],
-            [BrowserToolArrayCommands.ARCount, key],
+            [BrowserToolArrayCommands.ArLen, key],
+            [BrowserToolArrayCommands.ArCount, key],
           ])
           .mockResolvedValueOnce([
             [null, ttl],

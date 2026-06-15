@@ -115,7 +115,7 @@ export class ArrayService {
       await checkIfKeyNotExists(keyName, client);
 
       const elements = (await client.sendCommand([
-        BrowserToolArrayCommands.ARGetRange,
+        BrowserToolArrayCommands.ArGetRange,
         keyName,
         start,
         end,
@@ -187,7 +187,7 @@ export class ArrayService {
       await checkIfKeyNotExists(keyName, client);
 
       const baseArgs = [
-        BrowserToolArrayCommands.ARScan as string,
+        BrowserToolArrayCommands.ArScan as string,
         keyName,
         start,
         end,
@@ -246,7 +246,7 @@ export class ArrayService {
       await checkIfKeyNotExists(keyName, client);
 
       const reply = await client.sendCommand([
-        BrowserToolArrayCommands.ARLen,
+        BrowserToolArrayCommands.ArLen,
         keyName,
       ]);
 
@@ -276,7 +276,7 @@ export class ArrayService {
       await checkIfKeyNotExists(keyName, client);
 
       const reply = await client.sendCommand([
-        BrowserToolArrayCommands.ARCount,
+        BrowserToolArrayCommands.ArCount,
         keyName,
       ]);
 
@@ -306,7 +306,7 @@ export class ArrayService {
       await checkIfKeyNotExists(keyName, client);
 
       const reply = await client.sendCommand([
-        BrowserToolArrayCommands.ARNext,
+        BrowserToolArrayCommands.ArNext,
         keyName,
       ]);
 
@@ -340,7 +340,7 @@ export class ArrayService {
       await checkIfKeyNotExists(keyName, client);
 
       const value = (await client.sendCommand([
-        BrowserToolArrayCommands.ARGet,
+        BrowserToolArrayCommands.ArGet,
         keyName,
         index,
       ])) as Buffer | string | null;
@@ -368,7 +368,7 @@ export class ArrayService {
       await checkIfKeyNotExists(keyName, client);
 
       const elements = (await client.sendCommand([
-        BrowserToolArrayCommands.ARMGet,
+        BrowserToolArrayCommands.ArMGet,
         keyName,
         ...indexes,
       ])) as (Buffer | string | null)[];

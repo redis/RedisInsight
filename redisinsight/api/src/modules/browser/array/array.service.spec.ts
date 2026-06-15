@@ -177,7 +177,7 @@ describe('ArrayService', () => {
     beforeEach(() => {
       when(mockStandaloneRedisClient.sendCommand)
         .calledWith([
-          BrowserToolArrayCommands.ARGetRange,
+          BrowserToolArrayCommands.ArGetRange,
           mockGetArrayRangeDto.keyName,
           mockGetArrayRangeDto.start,
           mockGetArrayRangeDto.end,
@@ -229,7 +229,7 @@ describe('ArrayService', () => {
       };
       when(mockStandaloneRedisClient.sendCommand)
         .calledWith([
-          BrowserToolArrayCommands.ARGetRange,
+          BrowserToolArrayCommands.ArGetRange,
           expect.anything(),
           expect.anything(),
           expect.anything(),
@@ -263,7 +263,7 @@ describe('ArrayService', () => {
     beforeEach(() => {
       when(mockStandaloneRedisClient.sendCommand)
         .calledWith([
-          BrowserToolArrayCommands.ARScan,
+          BrowserToolArrayCommands.ArScan,
           mockGetArrayScanDto.keyName,
           mockGetArrayScanDto.start,
           mockGetArrayScanDto.end,
@@ -282,7 +282,7 @@ describe('ArrayService', () => {
     it('should append LIMIT when provided', async () => {
       when(mockStandaloneRedisClient.sendCommand)
         .calledWith([
-          BrowserToolArrayCommands.ARScan,
+          BrowserToolArrayCommands.ArScan,
           mockGetArrayScanDto.keyName,
           mockGetArrayScanDto.start,
           mockGetArrayScanDto.end,
@@ -301,7 +301,7 @@ describe('ArrayService', () => {
     it('should also accept the nested [[index, value], ...] reply shape', async () => {
       when(mockStandaloneRedisClient.sendCommand)
         .calledWith([
-          BrowserToolArrayCommands.ARScan,
+          BrowserToolArrayCommands.ArScan,
           mockGetArrayScanDto.keyName,
           mockGetArrayScanDto.start,
           mockGetArrayScanDto.end,
@@ -323,7 +323,7 @@ describe('ArrayService', () => {
     it('should drop pairs whose value or index is null/undefined', async () => {
       when(mockStandaloneRedisClient.sendCommand)
         .calledWith([
-          BrowserToolArrayCommands.ARScan,
+          BrowserToolArrayCommands.ArScan,
           mockGetArrayScanDto.keyName,
           mockGetArrayScanDto.start,
           mockGetArrayScanDto.end,
@@ -359,7 +359,7 @@ describe('ArrayService', () => {
         command: 'ARSCAN',
       };
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ARScan]))
+        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ArScan]))
         .mockRejectedValue(replyError);
       await expect(
         service.scan(mockBrowserClientMetadata, mockGetArrayScanDto),
@@ -381,7 +381,7 @@ describe('ArrayService', () => {
   describe.each([
     {
       name: 'getLength',
-      command: BrowserToolArrayCommands.ARLen,
+      command: BrowserToolArrayCommands.ArLen,
       reply: 7,
       expected: mockGetArrayLengthResponse,
       stringValue: mockArrayLength,
@@ -390,7 +390,7 @@ describe('ArrayService', () => {
     },
     {
       name: 'getCount',
-      command: BrowserToolArrayCommands.ARCount,
+      command: BrowserToolArrayCommands.ArCount,
       reply: 5,
       expected: mockGetArrayCountResponse,
       stringValue: mockArrayCount,
@@ -399,7 +399,7 @@ describe('ArrayService', () => {
     },
     {
       name: 'getNextIndex',
-      command: BrowserToolArrayCommands.ARNext,
+      command: BrowserToolArrayCommands.ArNext,
       reply: 7,
       expected: mockGetArrayNextIndexResponse,
       stringValue: mockArrayNextIndex,
@@ -450,7 +450,7 @@ describe('ArrayService', () => {
     beforeEach(() => {
       when(mockStandaloneRedisClient.sendCommand)
         .calledWith([
-          BrowserToolArrayCommands.ARGet,
+          BrowserToolArrayCommands.ArGet,
           mockGetArrayElementDto.keyName,
           mockGetArrayElementDto.index,
         ])
@@ -468,7 +468,7 @@ describe('ArrayService', () => {
     it('should return null for an empty slot', async () => {
       when(mockStandaloneRedisClient.sendCommand)
         .calledWith([
-          BrowserToolArrayCommands.ARGet,
+          BrowserToolArrayCommands.ArGet,
           mockGetArrayElementDto.keyName,
           mockGetArrayElementDto.index,
         ])
@@ -495,7 +495,7 @@ describe('ArrayService', () => {
         command: 'ARGET',
       };
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ARGet]))
+        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ArGet]))
         .mockRejectedValue(replyError);
       await expect(
         service.getElement(mockBrowserClientMetadata, mockGetArrayElementDto),
@@ -518,7 +518,7 @@ describe('ArrayService', () => {
     beforeEach(() => {
       when(mockStandaloneRedisClient.sendCommand)
         .calledWith([
-          BrowserToolArrayCommands.ARMGet,
+          BrowserToolArrayCommands.ArMGet,
           mockGetArrayMultiElementsDto.keyName,
           ...mockGetArrayMultiElementsDto.indexes,
         ])
@@ -551,7 +551,7 @@ describe('ArrayService', () => {
         command: 'ARMGET',
       };
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ARMGet]))
+        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ArMGet]))
         .mockRejectedValue(replyError);
       await expect(
         service.getMultiElements(

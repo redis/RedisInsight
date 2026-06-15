@@ -115,15 +115,15 @@ export enum BrowserToolVectorSetCommands {
 }
 
 export enum BrowserToolArrayCommands {
-  ARGet = 'arget',
   ArSet = 'arset',
   ArMSet = 'armset',
-  ARMGet = 'armget',
-  ARLen = 'arlen',
-  ARCount = 'arcount',
-  ARGetRange = 'argetrange',
-  ARScan = 'arscan',
-  ARNext = 'arnext',
+  ArGet = 'arget',
+  ArMGet = 'armget',
+  ArLen = 'arlen',
+  ArCount = 'arcount',
+  ArGetRange = 'argetrange',
+  ArScan = 'arscan',
+  ArNext = 'arnext',
 }
 
 export type BrowserToolCommands =

@@ -33,7 +33,7 @@ describe('RedisClient', () => {
 
       expect(result).toBe(true);
       expect(client.call).toHaveBeenCalledWith(
-        ['command', 'info', BrowserToolArrayCommands.ARGet],
+        ['command', 'info', BrowserToolArrayCommands.ArGet],
         { replyEncoding: 'utf8' },
       );
     });

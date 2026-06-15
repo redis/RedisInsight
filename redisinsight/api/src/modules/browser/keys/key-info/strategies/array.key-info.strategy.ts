@@ -35,8 +35,8 @@ export class ArrayKeyInfoStrategy extends KeyInfoStrategy {
         [, size = null],
       ] = (await client.sendPipeline([
         [BrowserToolKeysCommands.Ttl, key],
-        [BrowserToolArrayCommands.ARLen, key],
-        [BrowserToolArrayCommands.ARCount, key],
+        [BrowserToolArrayCommands.ArLen, key],
+        [BrowserToolArrayCommands.ArCount, key],
         [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],
       ])) as [any, any][];
 
@@ -46,8 +46,8 @@ export class ArrayKeyInfoStrategy extends KeyInfoStrategy {
     const [[, ttl = null], [, length = null], [, count = null]] =
       (await client.sendPipeline([
         [BrowserToolKeysCommands.Ttl, key],
-        [BrowserToolArrayCommands.ARLen, key],
-        [BrowserToolArrayCommands.ARCount, key],
+        [BrowserToolArrayCommands.ArLen, key],
+        [BrowserToolArrayCommands.ArCount, key],
       ])) as [any, any][];
 
     let size = -1;

@@ -51,13 +51,13 @@ export abstract class IoredisClient extends RedisClient {
     // without registration but sendPipeline does not.
     client.addBuiltinCommand(BrowserToolArrayCommands.ArSet);
     client.addBuiltinCommand(BrowserToolArrayCommands.ArMSet);
-    client.addBuiltinCommand(BrowserToolArrayCommands.ARGet);
-    client.addBuiltinCommand(BrowserToolArrayCommands.ARMGet);
-    client.addBuiltinCommand(BrowserToolArrayCommands.ARLen);
-    client.addBuiltinCommand(BrowserToolArrayCommands.ARCount);
-    client.addBuiltinCommand(BrowserToolArrayCommands.ARGetRange);
-    client.addBuiltinCommand(BrowserToolArrayCommands.ARScan);
-    client.addBuiltinCommand(BrowserToolArrayCommands.ARNext);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArGet);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArMGet);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArLen);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArCount);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArGetRange);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArScan);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArNext);
   }
 
   static prepareCommandOptions(options: IRedisClientCommandOptions): any {
