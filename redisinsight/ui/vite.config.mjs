@@ -22,6 +22,12 @@ process.env.RI_INDEX_NAME = isElectron ? 'indexElectron.tsx' : 'index.tsx';
 const shouldUploadSourceMaps =
   !!process.env.RI_SENTRY_AUTH_TOKEN &&
   process.env.RI_SENTRY_ENABLED === 'true';
+
+// Label the uploaded source-map bundle by the OS it was built on, so the
+// per-platform bundles are distinguishable in Sentry's Source Maps view.
+const buildOs =
+  { darwin: 'macos', win32: 'windows', linux: 'linux' }[process.platform] ||
+  process.platform;
 const outDir = isElectron ? '../dist/renderer' : './dist';
 
 let base;
@@ -89,7 +95,13 @@ export default defineConfig({
             org: process.env.RI_SENTRY_ORG,
             project: process.env.RI_SENTRY_PROJECT,
             authToken: process.env.RI_SENTRY_AUTH_TOKEN,
-            release: { name: defaultConfig.app.version },
+            // inject: false — release/dist are set in Sentry.init; this keeps
+            // dist on the uploaded source-map bundle only, not on events.
+            release: {
+              name: defaultConfig.app.version,
+              dist: buildOs,
+              inject: false,
+            },
             sourcemaps: {
               filesToDeleteAfterUpload: ['../dist/renderer/**/*.js.map'],
             },
