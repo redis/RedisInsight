@@ -309,3 +309,39 @@ All five are referenced in the four `pipeline-build-*.yml` env blocks.
 - ~~Docker/web reporting~~ — **resolved:** the web entry (`index.tsx`) now initializes Sentry via
   `services/sentryWeb.ts` (`@sentry/react`), so all three targets report — Electron main, Electron
   renderer, and web/docker. The web build's maps upload through the same Vite plugin.
+
+---
+
+## 10. RedisInsight-Cloud compatibility (follow-up, not in this PR's scope)
+
+`RedisInsight-Cloud` consumes this repo as a submodule and serves the RedisInsight **web** UI. Its
+**production** UI is a **prebuilt web artifact downloaded from S3** (`bin/build-api-statics.sh` →
+`…/latest-v3/web/…tar.gz`), not built from the submodule — the submodule is used for the API and
+local dev. It overrides config **at runtime, per host**, via `ui-config/domain.ts`, but only the
+`api`/`app` sections today (not `sentry`).
+
+### This PR is forward-compatible by design — no refactor needed for cloud
+
+The init code reads `getConfig().sentry`, never `process.env` directly, and `getConfig()`
+(`config/index.ts`) deep-merges the per-host `domainConfig` over the build-time defaults:
+
+```
+config = cloneDeep(riConfig); merge(config, domainConfig)   // domainConfig = config[window.location.host]
+```
+
+`PartialConfig = DeepPartial<Config>`, so a partial `sentry` override is already type-valid, and
+`domainConfig` resolves **synchronously** at module load — so `initSentry()` at the top of the entry
+already sees the merged config (no async re-init).
+
+### The cloud work is therefore additive
+
+1. Supply a `sentry: { dsn, environment, enabled }` block in the cloud's per-host config
+   (`ui-config/domain.ts`) → `getConfig().sentry` picks it up; `sentryWeb.ts` is unchanged. This lets
+   cloud use its **own** Sentry project + `environment` (e.g. `cloud-prod`), distinct from desktop.
+2. Ensure the **S3 web artifact** is rebuilt from a RedisInsight version containing these commits —
+   the runtime override swaps *config*, not *code*, so the artifact must already include the init.
+3. Separate Legal/privacy sign-off for the hosted multi-tenant context (more users, server-captured
+   IP, customer data in a shared service) — stricter than the desktop case.
+
+Integration point for whoever picks this up: `redisinsight/ui/src/config/default.ts` (the `sentry`
+block, documented inline) + `config/index.ts` (the `domainConfig` merge).
