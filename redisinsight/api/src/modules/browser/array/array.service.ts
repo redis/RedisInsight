@@ -84,15 +84,18 @@ export class ArrayService {
   }
 
   // Inputs are validated as canonical decimal strings ≤ 2^64-1, so BigInt()
-  // is safe. Ranges are reversible (start > end).
-  private assertRangeWithinCap(start: string, end: string): void {
+  // is safe. The contract is start ≤ end — matches every Redis range
+  // command and avoids any ambiguity about how a reversed reply would be
+  // ordered or paginated.
+  private assertValidRange(start: string, end: string): void {
     const startBig = BigInt(start);
     const endBig = BigInt(end);
-    const span =
-      startBig > endBig
-        ? startBig - endBig + BigInt(1)
-        : endBig - startBig + BigInt(1);
 
+    if (startBig > endBig) {
+      throw new BadRequestException(ERROR_MESSAGES.ARRAY_RANGE_REVERSED);
+    }
+
+    const span = endBig - startBig + BigInt(1);
     if (span > BigInt(ARRAY_RANGE_MAX_ELEMENTS)) {
       throw new BadRequestException(
         ERROR_MESSAGES.ARRAY_RANGE_TOO_LARGE(ARRAY_RANGE_MAX_ELEMENTS),
@@ -108,7 +111,7 @@ export class ArrayService {
       this.logger.debug('Getting array range.', clientMetadata);
       const { keyName, start, end } = dto;
 
-      this.assertRangeWithinCap(start, end);
+      this.assertValidRange(start, end);
 
       const client =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
@@ -183,10 +186,11 @@ export class ArrayService {
       const { keyName, start, end, limit } = dto;
 
       // ARSCAN skips empty slots in the response but still walks the index
-      // range server-side (O(|end-start|+1)). Apply the same span cap as
-      // ARGETRANGE so an unbounded range cannot tie up Redis even when LIMIT
-      // is omitted; LIMIT remains a complementary result-set cap.
-      this.assertRangeWithinCap(start, end);
+      // range server-side (O(|end-start|+1)). Apply the same range checks
+      // as ARGETRANGE so an unbounded or malformed range cannot tie up
+      // Redis even when LIMIT is omitted; LIMIT remains a complementary
+      // result-set cap.
+      this.assertValidRange(start, end);
 
       const client =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);

@@ -212,11 +212,11 @@ describe('ArrayService', () => {
       ).rejects.toThrow(BadRequestException);
     });
 
-    it('should reject when reversed range exceeds the 1M cap', async () => {
+    it('should reject reversed ranges (start > end)', async () => {
       await expect(
         service.getRange(mockBrowserClientMetadata, {
           ...mockGetArrayRangeDto,
-          start: String(ARRAY_RANGE_MAX_ELEMENTS),
+          start: '5',
           end: '0',
         }),
       ).rejects.toThrow(BadRequestException);
@@ -378,11 +378,11 @@ describe('ArrayService', () => {
       ).rejects.toThrow(BadRequestException);
     });
 
-    it('should reject when reversed range exceeds the 1M cap', async () => {
+    it('should reject reversed ranges (start > end)', async () => {
       await expect(
         service.scan(mockBrowserClientMetadata, {
           ...mockGetArrayScanDto,
-          start: String(ARRAY_RANGE_MAX_ELEMENTS),
+          start: '5',
           end: '0',
         }),
       ).rejects.toThrow(BadRequestException);
