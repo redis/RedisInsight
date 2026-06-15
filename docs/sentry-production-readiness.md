@@ -187,8 +187,11 @@ Scope for the security review (track as its own item):
 - [ ] **Consent gating** → §3 + §5 (two-tier; default-deny; consent cached for early boot;
       minidumps consent-only).
 - [ ] **Security review of scrubbing** → §6.
-- [ ] **Refine ErrorBoundary screen with designer** → `SentryErrorBoundary.tsx` currently has a
-      placeholder UI marked `// TODO: Design`.
+- [x] **Refine ErrorBoundary screen** → redesigned (title as focal point, calm primary action,
+      theme-aware palette via the persisted `document.body` theme class); reporting split from the
+      generic `ErrorBoundary` and guarded so a Sentry failure can't block the fallback. Remaining:
+      optional designer sign-off on the literal palette (can't read the live theme — boundary
+      renders above `ThemeProvider`).
 - [ ] **CI/CD Sentry env via secrets** → `RI_SENTRY_UI_DSN`, `RI_SENTRY_ELECTRON_DSN`,
       `RI_SENTRY_ENABLED`, `RI_SENTRY_ENVIRONMENT` already wired in the build workflows; confirm
       secrets/vars exist in all four pipelines.
@@ -197,8 +200,8 @@ Scope for the security review (track as its own item):
       `// Test Helpers` block in `sentry.ts`.
 
 ### Recommended
-- [ ] Source maps upload to Sentry (CI step + `SENTRY_AUTH_TOKEN`).
-- [ ] Release tracking (`release` = `redisinsight@<version>+<gitSha>`).
+- [ ] Source maps upload to Sentry → §9 (decision: version-only release + debug IDs).
+- [ ] Release tracking → §9 (`release` = `pkg.version`; SHA as metadata, not in the identifier).
 - [ ] User context (per-install anonymous id, **Tier 2 only**).
 - [ ] Performance monitoring / dashboard.
 
@@ -226,3 +229,62 @@ Scope for the security review (track as its own item):
    enough to correlate against a release, short enough to be minimal. Shortening (e.g. 30 days)
    requires Enterprise custom retention or self-hosted; revisit only if Legal requires stricter
    minimization.
+
+---
+
+## 9. Source maps & release identifier
+
+### Why it matters
+
+Production bundles are minified, so without uploaded source maps every Sentry stack trace is
+`at t (index-DvBBho49.js:1:48211)` — you get crash *counts* but not crash *causes*. Source maps let
+**Sentry's server** symbolicate back to `KeyList.tsx:142`. This is most of Sentry's debugging value,
+so treat it as **required for a real production rollout** (the ticket lists it as "Recommended").
+
+Orthogonal to privacy: maps are uploaded to Sentry at build time and **must not ship inside the
+app** (`hidden` mode). They never touch the user's machine or the payload, so they don't affect the
+consent/scrubbing model.
+
+### Current build state (as of this branch)
+
+- **Renderer (Vite)** — `build.sourcemap` unset → **no maps generated** (`redisinsight/ui/vite.config.mjs`).
+- **Main (webpack)** — `devtool: 'source-map'` only when `DEBUG_PROD=true`; otherwise none, and
+  `scripts/DeleteSourceMaps.js` **deletes** renderer maps at main-build time.
+- **Tooling** — only runtime SDKs installed; no `@sentry/cli` / `@sentry/vite-plugin` / `@sentry/webpack-plugin`.
+- **CI** — no upload step; `RI_APP_BUILD_COMMIT_SHA = github.sha` is already available in all four pipelines.
+- **Release** — both layers send `release: pkg.version` (currently `3.6.0`), static per version.
+
+### Decision: version-only release + debug IDs
+
+Releases ship ~monthly with a `package.json` version bump, so the release identifier does **not**
+need to be unique per build. What symbolication actually requires is that the release tag
+correspond 1:1 to the exact artifact whose maps were uploaded — a monthly version bump satisfies
+that.
+
+- **`release` = `pkg.version`** (no `+<sha>`). Human-readable, matches the user-facing version, and
+  keeps the runtime string and the upload string trivially in sync (both derive from `package.json`).
+- **Use debug IDs for matching** (`sentry-cli sourcemaps inject` + upload, or the bundler plugins):
+  a unique ID is stamped into both the minified file and its map, so symbolication matches
+  bundle↔map by that ID, **not** by release name. This removes the only real risk of version-only
+  releases (a same-version rebuild overwriting maps and mis-symbolicating old events) without adding
+  the SHA's downsides (noisy release list, and a *silent* failure if the runtime/upload release
+  strings ever drift).
+- **SHA as metadata, not identity** — attach `RI_APP_BUILD_COMMIT_SHA` as a Sentry release
+  `commit`/property so "which commit shipped this version" is answerable, without putting it in the
+  release identifier.
+
+### Implementation outline (~1–1.5 days)
+
+1. Generate `hidden` source maps: Vite `build.sourcemap: 'hidden'`; webpack `devtool: 'source-map'`.
+2. Add `@sentry/cli`; in CI, after build: `sourcemaps inject` → upload (renderer and main are
+   separate bundler outputs → two uploads, same release) → **then** delete maps from the shippable
+   artifact (sequence the existing `DeleteSourceMaps` step *after* upload so maps never ship in the asar).
+3. Add `SENTRY_AUTH_TOKEN` secret + org/project (US region) to the four `pipeline-build-*.yml`.
+4. Keep `release: pkg.version` in both inits.
+
+### Open question
+
+- **Build determinism across the four platform pipelines** (mac/win/linux/docker): each builds the
+  renderer/main JS separately. If builds are byte-identical, one upload covers all; if not, debug IDs
+  handle it cleanly (each build's maps carry their own IDs), whereas version-only *without* debug IDs
+  could leave some platforms with "no map found". Another reason to adopt debug IDs.
