@@ -26,8 +26,7 @@ export const initSentry = (): void => {
   const { sentry } = riConfig
 
   if (!sentry.enabled || !sentry.dsn) {
-    // eslint-disable-next-line no-console
-    console.log('[Sentry] Disabled or DSN not configured')
+    console.warn('[Sentry] Disabled or DSN not configured')
     return
   }
 
@@ -48,7 +47,4 @@ export const initSentry = (): void => {
     },
     reactInit,
   )
-
-  // eslint-disable-next-line no-console
-  console.log(`[Sentry] Electron renderer initialized`)
 }

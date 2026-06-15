@@ -150,8 +150,9 @@ export const initSentry = (): void => {
 
 /**
  * Update analytics consent at runtime. Flips the tier used by `beforeSend`,
- * persists the value for the next boot, starts the native crash uploader when
- * consent is granted, and closes the Sentry client when it is revoked.
+ * persists the value for the next boot, and starts the native crash uploader
+ * when consent is granted. On revoke the client is NOT closed — anonymous
+ * Tier 1 reporting continues and `beforeSend` minimizes every event.
  *
  * See docs/sentry-production-readiness.md (§3, §5).
  */
