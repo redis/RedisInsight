@@ -353,6 +353,26 @@ describe('ArrayService', () => {
       ).rejects.toThrow(NotFoundException);
     });
 
+    it('should reject when range exceeds the 1M cap', async () => {
+      await expect(
+        service.scan(mockBrowserClientMetadata, {
+          ...mockGetArrayScanDto,
+          start: '0',
+          end: String(ARRAY_RANGE_MAX_ELEMENTS),
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should reject when reversed range exceeds the 1M cap', async () => {
+      await expect(
+        service.scan(mockBrowserClientMetadata, {
+          ...mockGetArrayScanDto,
+          start: String(ARRAY_RANGE_MAX_ELEMENTS),
+          end: '0',
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
     it('should rethrow BadRequest on WrongType', async () => {
       const replyError: ReplyError = {
         ...mockRedisWrongTypeError,

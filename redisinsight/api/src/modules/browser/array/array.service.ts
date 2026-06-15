@@ -182,6 +182,12 @@ export class ArrayService {
       this.logger.debug('Scanning array range.', clientMetadata);
       const { keyName, start, end, limit } = dto;
 
+      // ARSCAN skips empty slots in the response but still walks the index
+      // range server-side (O(|end-start|+1)). Apply the same span cap as
+      // ARGETRANGE so an unbounded range cannot tie up Redis even when LIMIT
+      // is omitted; LIMIT remains a complementary result-set cap.
+      this.assertRangeWithinCap(start, end);
+
       const client =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
       await checkIfKeyNotExists(keyName, client);
@@ -227,6 +233,7 @@ export class ArrayService {
       return plainToInstance(GetArrayScanResponse, { keyName, elements });
     } catch (error) {
       this.logger.error('Failed to scan array range.', error, clientMetadata);
+      if (error instanceof BadRequestException) throw error;
       if (error?.message?.includes(RedisErrorCodes.WrongType)) {
         throw new BadRequestException(error.message);
       }
