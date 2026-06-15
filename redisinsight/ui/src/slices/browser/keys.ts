@@ -102,6 +102,7 @@ import {
   CreateHashWithExpireDto,
   CreateRejsonRlWithExpireDto,
   CreateSetWithExpireDto,
+  CreateArrayWithExpireDto,
   GetKeyInfoResponse,
   GetKeysWithDetailsResponse,
   CreateStreamDto,
@@ -1040,6 +1041,15 @@ export function addListKey(
   onFailAction?: () => void,
 ) {
   return addTypedKey(data, KeyTypes.List, onSuccessAction, onFailAction)
+}
+
+// Asynchronous thunk action
+export function addArrayKey(
+  data: CreateArrayWithExpireDto,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return addTypedKey(data, KeyTypes.Array, onSuccessAction, onFailAction)
 }
 
 // Asynchronous thunk action

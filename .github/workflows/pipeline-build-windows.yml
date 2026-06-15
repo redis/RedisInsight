@@ -40,6 +40,8 @@ jobs:
 
       - name: Install all libs and dependencies
         uses: ./.github/actions/install-all-build-libs
+        with:
+          cache-node-modules: '0'
 
       - name: Setup certs
         uses: ./.github/actions/install-windows-certs

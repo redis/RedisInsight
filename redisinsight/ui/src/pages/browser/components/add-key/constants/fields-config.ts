@@ -125,6 +125,33 @@ export const AddJSONFormConfig: IAddJSONFormConfig = {
   },
 }
 
+interface IAddArrayFormConfig {
+  startIndex: IFormField
+  index: IFormField
+  value: IFormField
+}
+
+export const AddArrayFormConfig: IAddArrayFormConfig = {
+  startIndex: {
+    name: 'startIndex',
+    isRequire: true,
+    label: 'Start Index*',
+    placeholder: 'Enter Start Index',
+  },
+  index: {
+    name: 'index',
+    isRequire: true,
+    label: 'Index*',
+    placeholder: 'Enter Index',
+  },
+  value: {
+    name: 'value',
+    isRequire: true,
+    label: 'Value*',
+    placeholder: 'Enter Value',
+  },
+}
+
 interface IAddStreamFormConfig {
   entryId: IFormField
   name: IFormField

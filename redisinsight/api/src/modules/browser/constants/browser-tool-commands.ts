@@ -114,6 +114,12 @@ export enum BrowserToolVectorSetCommands {
   VSim = 'VSIM',
 }
 
+export enum BrowserToolArrayCommands {
+  ARGet = 'arget',
+  ArSet = 'arset',
+  ArMSet = 'armset',
+}
+
 export type BrowserToolCommands =
   | BrowserToolKeysCommands
   | BrowserToolStringCommands
@@ -125,4 +131,5 @@ export type BrowserToolCommands =
   | BrowserToolStreamCommands
   | BrowserToolGraphCommands
   | BrowserToolTSCommands
-  | BrowserToolVectorSetCommands;
+  | BrowserToolVectorSetCommands
+  | BrowserToolArrayCommands;

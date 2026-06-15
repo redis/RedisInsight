@@ -10,6 +10,7 @@ import {
 import { RedisString } from 'src/common/constants';
 import { ClientMetadata } from 'src/common/models';
 import {
+  BrowserToolArrayCommands,
   BrowserToolHashCommands,
   BrowserToolVectorSetCommands,
 } from 'src/modules/browser/constants/browser-tool-commands';
@@ -45,6 +46,9 @@ export abstract class IoredisClient extends RedisClient {
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VSetAttr);
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VRem);
     client.addBuiltinCommand(BrowserToolVectorSetCommands.VSim);
+    // Array commands
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArSet);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArMSet);
   }
 
   static prepareCommandOptions(options: IRedisClientCommandOptions): any {
