@@ -7,12 +7,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import {
-  ApiBody,
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiRedisParams } from 'src/decorators/api-redis-params.decorator';
 import { ApiQueryRedisStringEncoding } from 'src/common/decorators';
 import { ClientMetadata } from 'src/common/models';
