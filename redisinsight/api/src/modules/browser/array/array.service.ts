@@ -321,11 +321,14 @@ export class ArrayService {
         keyName,
       ]);
 
+      // ARNEXT returns nil when the insertion cursor is exhausted. Surface
+      // that as `null` so clients can distinguish absence from a real index;
+      // folding it through toIndexString would produce the string "null".
+      const index =
+        reply === null || reply === undefined ? null : toIndexString(reply);
+
       this.logger.debug('Succeed to get array next index.', clientMetadata);
-      return plainToInstance(GetArrayNextIndexResponse, {
-        keyName,
-        index: toIndexString(reply),
-      });
+      return plainToInstance(GetArrayNextIndexResponse, { keyName, index });
     } catch (error) {
       this.logger.error(
         'Failed to get array next index.',

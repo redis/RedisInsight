@@ -64,7 +64,7 @@ describe('ArrayKeyInfoStrategy', () => {
     });
 
     describe('when includeSize is false', () => {
-      it('should skip MEMORY USAGE when length exceeds MAX_KEY_SIZE', async () => {
+      it('should skip MEMORY USAGE when count exceeds MAX_KEY_SIZE', async () => {
         when(mockStandaloneRedisClient.sendPipeline)
           .calledWith([
             [BrowserToolKeysCommands.Ttl, key],
@@ -73,8 +73,8 @@ describe('ArrayKeyInfoStrategy', () => {
           ])
           .mockResolvedValueOnce([
             [null, ttl],
+            [null, length],
             [null, MAX_KEY_SIZE + 1],
-            [null, count],
           ]);
 
         const result = await strategy.getInfo(
@@ -86,12 +86,43 @@ describe('ArrayKeyInfoStrategy', () => {
 
         expect(result).toEqual({
           ...getKeyInfoResponse,
-          length: MAX_KEY_SIZE + 1,
+          count: MAX_KEY_SIZE + 1,
           size: -1,
         });
       });
 
-      it('should issue MEMORY USAGE separately when length is small', async () => {
+      it('should still issue MEMORY USAGE for sparse arrays where length is huge but count is small', async () => {
+        when(mockStandaloneRedisClient.sendPipeline)
+          .calledWith([
+            [BrowserToolKeysCommands.Ttl, key],
+            [BrowserToolArrayCommands.ArLen, key],
+            [BrowserToolArrayCommands.ArCount, key],
+          ])
+          .mockResolvedValueOnce([
+            [null, ttl],
+            [null, MAX_KEY_SIZE * 10],
+            [null, count],
+          ]);
+        when(mockStandaloneRedisClient.sendPipeline)
+          .calledWith([
+            [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],
+          ])
+          .mockResolvedValueOnce([[null, size]]);
+
+        const result = await strategy.getInfo(
+          mockStandaloneRedisClient,
+          key,
+          RedisDataType.Array,
+          false,
+        );
+
+        expect(result).toEqual({
+          ...getKeyInfoResponse,
+          length: MAX_KEY_SIZE * 10,
+        });
+      });
+
+      it('should issue MEMORY USAGE separately when count is small', async () => {
         when(mockStandaloneRedisClient.sendPipeline)
           .calledWith([
             [BrowserToolKeysCommands.Ttl, key],

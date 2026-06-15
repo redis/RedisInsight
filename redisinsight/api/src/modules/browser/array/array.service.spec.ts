@@ -481,6 +481,21 @@ describe('ArrayService', () => {
     });
   });
 
+  describe('getNextIndex (exhausted)', () => {
+    it('should surface null index when ARNEXT returns nil', async () => {
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([BrowserToolArrayCommands.ArNext, mockKeyDto.keyName])
+        .mockResolvedValue(null);
+
+      const result = await service.getNextIndex(
+        mockBrowserClientMetadata,
+        mockKeyDto,
+      );
+
+      expect(result).toEqual({ keyName: mockKeyDto.keyName, index: null });
+    });
+  });
+
   describe('getElement', () => {
     beforeEach(() => {
       when(mockStandaloneRedisClient.sendCommand)

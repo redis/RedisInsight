@@ -50,8 +50,12 @@ export class ArrayKeyInfoStrategy extends KeyInfoStrategy {
         [BrowserToolArrayCommands.ArCount, key],
       ])) as [any, any][];
 
+    // Sparse arrays can have huge `length` (ARLEN, total addressable slots)
+    // while `count` (ARCOUNT, populated slots) stays small. MEMORY USAGE cost
+    // scales with stored data, so gate on `count` — otherwise a sparse key
+    // with few populated slots would report `size: -1` despite being cheap.
     let size = -1;
-    if (length < MAX_KEY_SIZE) {
+    if (count < MAX_KEY_SIZE) {
       const sizeData = (await client.sendPipeline([
         [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],
       ])) as [any, number][];
