@@ -95,7 +95,7 @@ const initCrashReporter = (dsn: string, environment: string): void => {
  *
  * Configuration via environment variables:
  * - RI_SENTRY_ENABLED: 'true' to enable
- * - RI_SENTRY_ELECTRON_DSN: Sentry DSN
+ * - RI_SENTRY_DSN: Sentry DSN
  * - RI_SENTRY_ENVIRONMENT: Environment name (default: 'production')
  */
 export const initSentry = (): void => {
@@ -103,7 +103,7 @@ export const initSentry = (): void => {
     return
   }
 
-  const dsn = process.env.RI_SENTRY_ELECTRON_DSN
+  const dsn = process.env.RI_SENTRY_DSN
   const enabled = process.env.RI_SENTRY_ENABLED === 'true'
   const environment = process.env.RI_SENTRY_ENVIRONMENT || 'development'
 
@@ -169,7 +169,7 @@ export const setConsent = (granted: boolean): void => {
   // false. (The already-started crashReporter cannot be stopped mid-session;
   // it respects cached consent on next launch.)
   if (granted) {
-    const dsn = process.env.RI_SENTRY_ELECTRON_DSN
+    const dsn = process.env.RI_SENTRY_DSN
     const environment = process.env.RI_SENTRY_ENVIRONMENT || 'development'
     if (dsn) {
       initCrashReporter(dsn, environment)

@@ -20,8 +20,8 @@ checks user consent:
 
 | Layer | Init | DSN env var | Consent check? | Scrubbing? |
 |---|---|---|---|---|
-| Electron main | `redisinsight/desktop/src/lib/sentry/sentry.ts` (`initSentry`) | `RI_SENTRY_ELECTRON_DSN` | ❌ none | partial — `event.extra` + `event.contexts` only |
-| UI renderer | `redisinsight/ui/src/services/sentryElectron.ts` (`initSentry`) | `RI_SENTRY_UI_DSN` | ❌ none | ❌ **none** (no `beforeSend`) |
+| Electron main | `redisinsight/desktop/src/lib/sentry/sentry.ts` (`initSentry`) | `RI_SENTRY_DSN` | ❌ none | partial — `event.extra` + `event.contexts` only |
+| UI renderer | `redisinsight/ui/src/services/sentryElectron.ts` (`initSentry`) | `RI_SENTRY_DSN` | ❌ none | ❌ **none** (no `beforeSend`) |
 
 Native crash reporting (`crashReporter`, minidumps) is started **unconditionally** with
 `uploadToServer: true` in `initCrashReporter` (`sentry.ts`).
@@ -192,11 +192,12 @@ Scope for the security review (track as its own item):
       generic `ErrorBoundary` and guarded so a Sentry failure can't block the fallback. Remaining:
       optional designer sign-off on the literal palette (can't read the live theme — boundary
       renders above `ThemeProvider`).
-- [ ] **CI/CD Sentry env via secrets** → all four pipelines now reference `RI_SENTRY_ELECTRON_DSN`,
-      `RI_SENTRY_UI_DSN`, `RI_SENTRY_ENABLED`, `RI_SENTRY_ENVIRONMENT` + the source-map vars (§9).
-      Maintainer must **create** the missing ones: `RI_SENTRY_UI_DSN` and `RI_SENTRY_AUTH_TOKEN`
-      (secrets), `RI_SENTRY_ORG` / `RI_SENTRY_PROJECT_UI` / `RI_SENTRY_PROJECT_ELECTRON` (vars).
-      Currently set: `RI_SENTRY_ELECTRON_DSN`, `RI_SENTRY_ENABLED`, `RI_SENTRY_ENVIRONMENT`.
+- [ ] **CI/CD Sentry env via secrets** → all four pipelines reference a single `RI_SENTRY_DSN`
+      (shared by main + renderer + web; one Sentry project), `RI_SENTRY_ENABLED`,
+      `RI_SENTRY_ENVIRONMENT` + the source-map vars (§9). Maintainer must **create**:
+      `RI_SENTRY_DSN` and `RI_SENTRY_AUTH_TOKEN` (secrets), `RI_SENTRY_ORG` / `RI_SENTRY_PROJECT_UI`
+      / `RI_SENTRY_PROJECT_ELECTRON` (vars). Already set: `RI_SENTRY_ENABLED`, `RI_SENTRY_ENVIRONMENT`
+      (the previously-set `RI_SENTRY_ELECTRON_DSN` is replaced by `RI_SENTRY_DSN`).
 - [ ] **Remove PoC test triggers** → `triggerTestCrash`/`triggerNativeCrash` + global shortcuts
       (`desktop/app.ts`), Help-menu `Crash Handler`/`Crash React` (`HelpMenu.tsx`), and the
       `// Test Helpers` block in `sentry.ts`.
@@ -297,7 +298,7 @@ inject + upload + delete-after-upload):
 | `RI_SENTRY_ORG` | var | Sentry org slug |
 | `RI_SENTRY_PROJECT_UI` | var | renderer/web project slug |
 | `RI_SENTRY_PROJECT_ELECTRON` | var | main-process project slug |
-| `RI_SENTRY_UI_DSN` | **secret** | **was missing** — the renderer/web Sentry layer reads it; without it the UI layer never reports |
+| `RI_SENTRY_DSN` | **secret** | single DSN shared by main + renderer + web (one project); replaces the former split `RI_SENTRY_ELECTRON_DSN` / `RI_SENTRY_UI_DSN` |
 
 All five are referenced in the four `pipeline-build-*.yml` env blocks.
 
