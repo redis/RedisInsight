@@ -88,6 +88,14 @@ export default defineConfig({
               filesToDeleteAfterUpload: ['../dist/renderer/**/*.js.map'],
             },
             telemetry: false,
+            // A failed source-map upload must not fail the build.
+            errorHandler: (err) => {
+              // eslint-disable-next-line no-console
+              console.warn(
+                '[Sentry] renderer source-map upload failed (continuing):',
+                err.message,
+              );
+            },
           }),
         ]
       : []),
