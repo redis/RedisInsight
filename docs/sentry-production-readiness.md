@@ -194,9 +194,9 @@ Scope for the security review (track as its own item):
       renders above `ThemeProvider`).
 - [ ] **CI/CD Sentry env via secrets** → all four pipelines now reference `RI_SENTRY_ELECTRON_DSN`,
       `RI_SENTRY_UI_DSN`, `RI_SENTRY_ENABLED`, `RI_SENTRY_ENVIRONMENT` + the source-map vars (§9).
-      Maintainer must **create** the missing ones: `RI_SENTRY_UI_DSN` and `SENTRY_AUTH_TOKEN`
-      (secrets), `SENTRY_ORG` / `SENTRY_PROJECT_UI` / `SENTRY_PROJECT_ELECTRON` (vars). Currently set:
-      `RI_SENTRY_ELECTRON_DSN`, `RI_SENTRY_ENABLED`, `RI_SENTRY_ENVIRONMENT`.
+      Maintainer must **create** the missing ones: `RI_SENTRY_UI_DSN` and `RI_SENTRY_AUTH_TOKEN`
+      (secrets), `RI_SENTRY_ORG` / `RI_SENTRY_PROJECT_UI` / `RI_SENTRY_PROJECT_ELECTRON` (vars).
+      Currently set: `RI_SENTRY_ELECTRON_DSN`, `RI_SENTRY_ENABLED`, `RI_SENTRY_ENVIRONMENT`.
 - [ ] **Remove PoC test triggers** → `triggerTestCrash`/`triggerNativeCrash` + global shortcuts
       (`desktop/app.ts`), Help-menu `Crash Handler`/`Crash React` (`HelpMenu.tsx`), and the
       `// Test Helpers` block in `sentry.ts`.
@@ -282,22 +282,22 @@ upload runs inside the existing build, on every pipeline automatically, and the 
 inject + upload + delete-after-upload):
 
 - `@sentry/vite-plugin` (renderer) and `@sentry/webpack-plugin` (main), both **gated on
-  `SENTRY_AUTH_TOKEN`** → no-op for local/dev builds.
+  `RI_SENTRY_AUTH_TOKEN`** → no-op for local/dev builds.
 - Source maps are `hidden` and generated only when uploading; the plugin **deletes them after
   upload**, so they never ship in the app.
 - `release` = `pkg.version`; **debug IDs** match bundle↔map (no per-build SHA).
-- Renderer and main are separate bundler outputs → two uploads (projects `SENTRY_PROJECT_UI` /
-  `SENTRY_PROJECT_ELECTRON`), same release name.
+- Renderer and main are separate bundler outputs → two uploads (projects `RI_SENTRY_PROJECT_UI` /
+  `RI_SENTRY_PROJECT_ELECTRON`), same release name.
 
 ### Required CI configuration (must be added by a maintainer)
 
 | Name | Kind | Notes |
 |---|---|---|
-| `SENTRY_AUTH_TOKEN` | **secret** | enables upload; absent → plugins no-op |
-| `SENTRY_ORG` | var | Sentry org slug |
-| `SENTRY_PROJECT_UI` | var | renderer project slug |
-| `SENTRY_PROJECT_ELECTRON` | var | main-process project slug |
-| `RI_SENTRY_UI_DSN` | **secret** | **was missing** — the renderer Sentry layer reads it; without it the UI layer never reports |
+| `RI_SENTRY_AUTH_TOKEN` | **secret** | enables upload; absent → plugins no-op. Build-time only — never reference via `import.meta.env` in client code (the `RI_` prefix makes it client-exposable). |
+| `RI_SENTRY_ORG` | var | Sentry org slug |
+| `RI_SENTRY_PROJECT_UI` | var | renderer/web project slug |
+| `RI_SENTRY_PROJECT_ELECTRON` | var | main-process project slug |
+| `RI_SENTRY_UI_DSN` | **secret** | **was missing** — the renderer/web Sentry layer reads it; without it the UI layer never reports |
 
 All five are referenced in the four `pipeline-build-*.yml` env blocks.
 
@@ -306,7 +306,6 @@ All five are referenced in the four `pipeline-build-*.yml` env blocks.
 - **Build determinism across the four platform pipelines** (mac/win/linux/docker): each builds the
   JS separately. Debug IDs make this safe (each build's maps carry their own IDs), so no action
   needed — but worth confirming we're not uploading redundant artifacts.
-- **Docker = web build, not Electron.** `pipeline-build-docker.yml` runs `build:ui` (web,
-  `index.tsx`), not the Electron renderer (`indexElectron.tsx`) where Sentry is initialized. The env
-  vars are wired there for consistency, but the web build only produces useful maps if/when the web
-  entry initializes Sentry. Decide whether the docker/web variant should report at all.
+- ~~Docker/web reporting~~ — **resolved:** the web entry (`index.tsx`) now initializes Sentry via
+  `services/sentryWeb.ts` (`@sentry/react`), so all three targets report — Electron main, Electron
+  renderer, and web/docker. The web build's maps upload through the same Vite plugin.

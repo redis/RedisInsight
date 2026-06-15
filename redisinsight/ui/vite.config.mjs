@@ -77,12 +77,12 @@ export default defineConfig({
     // delete them so they never ship inside the app. Active only when
     // SENTRY_AUTH_TOKEN is set (i.e. in CI); a no-op for local/dev builds.
     // Must stay last in the plugins array.
-    ...(process.env.SENTRY_AUTH_TOKEN
+    ...(process.env.RI_SENTRY_AUTH_TOKEN
       ? [
           sentryVitePlugin({
-            org: process.env.SENTRY_ORG,
-            project: process.env.SENTRY_PROJECT_UI,
-            authToken: process.env.SENTRY_AUTH_TOKEN,
+            org: process.env.RI_SENTRY_ORG,
+            project: process.env.RI_SENTRY_PROJECT_UI,
+            authToken: process.env.RI_SENTRY_AUTH_TOKEN,
             release: { name: defaultConfig.app.version },
             sourcemaps: {
               filesToDeleteAfterUpload: ['../dist/renderer/**/*.js.map'],
@@ -153,7 +153,7 @@ export default defineConfig({
     minify: 'esbuild',
     // Emit hidden source maps only when uploading to Sentry (the plugin above
     // deletes them after upload, so they never ship). Off otherwise.
-    sourcemap: process.env.SENTRY_AUTH_TOKEN ? 'hidden' : false,
+    sourcemap: process.env.RI_SENTRY_AUTH_TOKEN ? 'hidden' : false,
     rollupOptions: {
       output: {
         manualChunks(id) {
