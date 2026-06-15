@@ -13,7 +13,8 @@ DeleteSourceMaps()
 
 // Generate source maps when debugging the prod bundle, or when uploading them
 // to Sentry (the upload plugin below deletes them again so they never ship).
-const shouldUploadSourceMaps = !!process.env.RI_SENTRY_AUTH_TOKEN
+const shouldUploadSourceMaps =
+  !!process.env.RI_SENTRY_AUTH_TOKEN && process.env.RI_SENTRY_ENABLED === 'true'
 const devtoolsConfig =
   process.env.DEBUG_PROD === 'true' || shouldUploadSourceMaps
     ? {
@@ -145,8 +146,8 @@ export default merge(baseConfig, {
     }),
 
     // Upload Electron-main source maps to Sentry (debug IDs match bundle↔map),
-    // then delete them so they never ship inside the app. Active only when
-    // SENTRY_AUTH_TOKEN is set (i.e. in CI); a no-op for local/dev builds.
+    // then delete them so they never ship inside the app. Gated on
+    // shouldUploadSourceMaps (Sentry enabled + auth token).
     ...(shouldUploadSourceMaps
       ? [
           sentryWebpackPlugin({

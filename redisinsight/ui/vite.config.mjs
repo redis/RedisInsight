@@ -15,6 +15,13 @@ import { defaultConfig } from './src/config/default';
 const isElectron = defaultConfig.app.type === 'ELECTRON';
 // set path to index.tsx in the index.html
 process.env.RI_INDEX_NAME = isElectron ? 'indexElectron.tsx' : 'index.tsx';
+
+// Only generate + upload source maps when Sentry is enabled AND we have an
+// auth token. This keeps disabled builds from generating maps that would
+// otherwise ship (the upload plugin is what deletes them afterwards).
+const shouldUploadSourceMaps =
+  !!process.env.RI_SENTRY_AUTH_TOKEN &&
+  process.env.RI_SENTRY_ENABLED === 'true';
 const outDir = isElectron ? '../dist/renderer' : './dist';
 
 let base;
@@ -74,10 +81,9 @@ export default defineConfig({
     //   deleteOriginalAssets: true
     // }),
     // Upload renderer source maps to Sentry (debug IDs match bundle↔map), then
-    // delete them so they never ship inside the app. Active only when
-    // SENTRY_AUTH_TOKEN is set (i.e. in CI); a no-op for local/dev builds.
-    // Must stay last in the plugins array.
-    ...(process.env.RI_SENTRY_AUTH_TOKEN
+    // delete them so they never ship inside the app. Gated on
+    // shouldUploadSourceMaps (Sentry enabled + auth token). Must stay last.
+    ...(shouldUploadSourceMaps
       ? [
           sentryVitePlugin({
             org: process.env.RI_SENTRY_ORG,
@@ -161,7 +167,7 @@ export default defineConfig({
     minify: 'esbuild',
     // Emit hidden source maps only when uploading to Sentry (the plugin above
     // deletes them after upload, so they never ship). Off otherwise.
-    sourcemap: process.env.RI_SENTRY_AUTH_TOKEN ? 'hidden' : false,
+    sourcemap: shouldUploadSourceMaps ? 'hidden' : false,
     rollupOptions: {
       output: {
         manualChunks(id) {
