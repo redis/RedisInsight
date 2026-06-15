@@ -35,6 +35,7 @@ export const initSentry = (): void => {
       dsn: sentry.dsn,
       environment: sentry.environment,
       release: pkg.version,
+      initialScope: { tags: { 'app.layer': 'electron-renderer' } },
       // Do not attach IP / cookies / headers. (`serverName` is a Node-only
       // option; in the renderer `scrubEvent` nulls `server_name` per-event.)
       sendDefaultPii: false,

@@ -30,6 +30,7 @@ export const initSentry = (): void => {
     dsn: sentry.dsn,
     environment: sentry.environment,
     release: pkg.version,
+    initialScope: { tags: { 'app.layer': 'web' } },
     sendDefaultPii: false,
     beforeBreadcrumb: (breadcrumb) =>
       checkIsAnalyticsGranted() ? breadcrumb : null,

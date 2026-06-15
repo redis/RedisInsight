@@ -120,6 +120,7 @@ export const initSentry = (): void => {
       environment,
       release: pkg.version,
       ipcMode: IPCMode.Classic,
+      initialScope: { tags: { 'app.layer': 'electron-main' } },
       // Do not attach IP / machine identifiers.
       sendDefaultPii: false,
       serverName: 'redacted',
