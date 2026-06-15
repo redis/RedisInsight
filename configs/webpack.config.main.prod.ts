@@ -63,7 +63,7 @@ export default merge(baseConfig, {
       RI_APP_TYPE: process.env.RI_APP_TYPE || 'ELECTRON',
       RI_SENTRY_ENABLED: process.env.RI_SENTRY_ENABLED || '',
       RI_SENTRY_DSN: process.env.RI_SENTRY_DSN || '',
-      RI_SENTRY_ENVIRONMENT: process.env.RI_SENTRY_ENVIRONMENT || 'production',
+      RI_SENTRY_ENVIRONMENT: process.env.RI_SENTRY_ENVIRONMENT || 'development',
       RI_AUTO_BOOTSTRAP: 'false',
       RI_SERVER_TLS_CERT: process.env.RI_SERVER_TLS_CERT || '',
       RI_SERVER_TLS_KEY: process.env.RI_SERVER_TLS_KEY || '',

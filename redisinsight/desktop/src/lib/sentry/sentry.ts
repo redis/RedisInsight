@@ -96,7 +96,7 @@ const initCrashReporter = (dsn: string, environment: string): void => {
  * Configuration via environment variables:
  * - RI_SENTRY_ENABLED: 'true' to enable
  * - RI_SENTRY_DSN: Sentry DSN
- * - RI_SENTRY_ENVIRONMENT: Environment name (default: 'production')
+ * - RI_SENTRY_ENVIRONMENT: Environment name (default: 'development')
  */
 export const initSentry = (): void => {
   if (initialized) {
