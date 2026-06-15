@@ -110,8 +110,13 @@ export const defaultConfig = {
       defaultFlag: booleanEnv('RI_FEATURES_CLOUD_ADS_DEFAULT_FLAG', true),
     },
   },
+  // Sentry config for the UI layers (Electron renderer + web). The Electron
+  // main process reads RI_SENTRY_ELECTRON_DSN separately. This block is also
+  // runtime-overridable per host via the domain config merge in config/index.ts
+  // (getConfig deep-merges domainConfig over these defaults), which is how the
+  // cloud deployment can point the web build at its own Sentry project.
   sentry: {
-    dsn: process.env.RI_SENTRY_ELECTRON_DSN ?? '',
+    dsn: process.env.RI_SENTRY_UI_DSN ?? '',
     environment: process.env.RI_SENTRY_ENVIRONMENT ?? 'development',
     enabled: booleanEnv('RI_SENTRY_ENABLED', false),
   },
