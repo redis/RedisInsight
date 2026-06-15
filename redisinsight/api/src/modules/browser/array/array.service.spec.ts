@@ -3,41 +3,22 @@ import { ConflictException, ForbiddenException } from '@nestjs/common';
 import { when } from 'jest-when';
 import { ReplyError } from 'src/models/redis-client';
 import { mockBrowserClientMetadata, mockRedisNoPermError } from 'src/__mocks__';
-import { mockKeyDto } from 'src/modules/browser/__mocks__';
 import {
   BrowserToolArrayCommands,
   BrowserToolKeysCommands,
 } from 'src/modules/browser/constants/browser-tool-commands';
 import {
-  ArrayCreationMode,
-  CreateArrayWithExpireDto,
-} from 'src/modules/browser/array/dto';
+  createContiguousArrayDtoFactory,
+  createSparseArrayDtoFactory,
+} from 'src/modules/browser/array/__tests__/array.factory';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { mockDatabaseClientFactory } from 'src/__mocks__/databases-client';
 import { mockStandaloneRedisClient } from 'src/__mocks__/redis-client';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { ArrayService } from 'src/modules/browser/array/array.service';
 
-const mockArrayValue = Buffer.from('Lorem ipsum dolor sit amet.');
-const mockArrayValue2 = Buffer.from('Lorem ipsum dolor sit amet2.');
-
-const mockCreateContiguousArrayDto: CreateArrayWithExpireDto = {
-  keyName: mockKeyDto.keyName,
-  mode: ArrayCreationMode.Contiguous,
-  startIndex: '0',
-  values: [mockArrayValue, mockArrayValue2],
-};
-
-const mockCreateSparseArrayDto: CreateArrayWithExpireDto = {
-  keyName: mockKeyDto.keyName,
-  mode: ArrayCreationMode.Sparse,
-  elements: [
-    { index: '5', value: mockArrayValue },
-    { index: '17', value: mockArrayValue2 },
-  ],
-};
-
 describe('ArrayService', () => {
+  const client = mockStandaloneRedisClient;
   let service: ArrayService;
 
   beforeEach(async () => {
@@ -52,12 +33,8 @@ describe('ArrayService', () => {
     }).compile();
 
     service = module.get(ArrayService);
-    mockStandaloneRedisClient.sendCommand = jest
-      .fn()
-      .mockResolvedValue(undefined);
-    mockStandaloneRedisClient.sendPipeline = jest
-      .fn()
-      .mockResolvedValue(undefined);
+    client.sendCommand = jest.fn().mockResolvedValue(undefined);
+    client.sendPipeline = jest.fn().mockResolvedValue(undefined);
   });
 
   it('should be defined', () => {
@@ -65,58 +42,54 @@ describe('ArrayService', () => {
   });
 
   describe('createArray', () => {
-    beforeEach(() => {
-      when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([BrowserToolKeysCommands.Exists, mockKeyDto.keyName])
-        .mockResolvedValue(false);
-    });
-
     it('create contiguous array without expiration', async () => {
+      const dto = createContiguousArrayDtoFactory.build();
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, dto.keyName])
+        .mockResolvedValue(false);
+
       await expect(
-        service.createArray(
-          mockBrowserClientMetadata,
-          mockCreateContiguousArrayDto,
-        ),
+        service.createArray(mockBrowserClientMetadata, dto),
       ).resolves.not.toThrow();
-      expect(mockStandaloneRedisClient.sendCommand).toHaveBeenCalledWith([
+      expect(client.sendCommand).toHaveBeenCalledWith([
         BrowserToolArrayCommands.ArSet,
-        mockKeyDto.keyName,
-        '0',
-        mockArrayValue,
-        mockArrayValue2,
+        dto.keyName,
+        dto.startIndex,
+        ...(dto.values ?? []),
       ]);
-      expect(mockStandaloneRedisClient.sendPipeline).not.toHaveBeenCalled();
+      expect(client.sendPipeline).not.toHaveBeenCalled();
     });
 
     it('create sparse array without expiration', async () => {
+      const dto = createSparseArrayDtoFactory.build();
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, dto.keyName])
+        .mockResolvedValue(false);
+
       await expect(
-        service.createArray(
-          mockBrowserClientMetadata,
-          mockCreateSparseArrayDto,
-        ),
+        service.createArray(mockBrowserClientMetadata, dto),
       ).resolves.not.toThrow();
-      expect(mockStandaloneRedisClient.sendCommand).toHaveBeenCalledWith([
+      expect(client.sendCommand).toHaveBeenCalledWith([
         BrowserToolArrayCommands.ArMSet,
-        mockKeyDto.keyName,
-        '5',
-        mockArrayValue,
-        '17',
-        mockArrayValue2,
+        dto.keyName,
+        ...(dto.elements ?? []).flatMap(({ index, value }) => [index, value]),
       ]);
-      expect(mockStandaloneRedisClient.sendPipeline).not.toHaveBeenCalled();
+      expect(client.sendPipeline).not.toHaveBeenCalled();
     });
 
     it('create contiguous array with expiration', async () => {
-      const dto: CreateArrayWithExpireDto = {
-        keyName: mockKeyDto.keyName,
-        mode: ArrayCreationMode.Contiguous,
-        startIndex: '0',
-        values: [mockArrayValue],
-        expire: 1000,
-      };
-      when(mockStandaloneRedisClient.sendPipeline)
+      const dto = createContiguousArrayDtoFactory.build({ expire: 1000 });
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, dto.keyName])
+        .mockResolvedValue(false);
+      when(client.sendPipeline)
         .calledWith([
-          [BrowserToolArrayCommands.ArSet, dto.keyName, '0', mockArrayValue],
+          [
+            BrowserToolArrayCommands.ArSet,
+            dto.keyName,
+            dto.startIndex,
+            ...(dto.values ?? []),
+          ],
           [BrowserToolKeysCommands.Expire, dto.keyName, dto.expire],
         ])
         .mockResolvedValue([
@@ -127,42 +100,43 @@ describe('ArrayService', () => {
       await expect(
         service.createArray(mockBrowserClientMetadata, dto),
       ).resolves.not.toThrow();
-      expect(mockStandaloneRedisClient.sendPipeline).toHaveBeenCalledWith([
-        [BrowserToolArrayCommands.ArSet, dto.keyName, '0', mockArrayValue],
+      expect(client.sendPipeline).toHaveBeenCalledWith([
+        [
+          BrowserToolArrayCommands.ArSet,
+          dto.keyName,
+          dto.startIndex,
+          ...(dto.values ?? []),
+        ],
         [BrowserToolKeysCommands.Expire, dto.keyName, dto.expire],
       ]);
     });
 
     it('key with this name exist', async () => {
-      when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([BrowserToolKeysCommands.Exists, mockKeyDto.keyName])
+      const dto = createContiguousArrayDtoFactory.build();
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, dto.keyName])
         .mockResolvedValue(true);
 
       await expect(
-        service.createArray(
-          mockBrowserClientMetadata,
-          mockCreateContiguousArrayDto,
-        ),
+        service.createArray(mockBrowserClientMetadata, dto),
       ).rejects.toThrow(new ConflictException(ERROR_MESSAGES.KEY_NAME_EXIST));
-      expect(mockStandaloneRedisClient.sendCommand).toHaveBeenCalledTimes(1);
-      expect(mockStandaloneRedisClient.sendPipeline).not.toHaveBeenCalled();
+      expect(client.sendCommand).toHaveBeenCalledTimes(1);
+      expect(client.sendPipeline).not.toHaveBeenCalled();
     });
 
     it("user don't have required permissions for createArray", async () => {
+      const dto = createContiguousArrayDtoFactory.build();
       const replyError: ReplyError = {
         ...mockRedisNoPermError,
         command: 'ARSET',
       };
-      mockStandaloneRedisClient.sendCommand.mockRejectedValue(replyError);
+      client.sendCommand.mockRejectedValue(replyError);
 
       await expect(
-        service.createArray(
-          mockBrowserClientMetadata,
-          mockCreateContiguousArrayDto,
-        ),
+        service.createArray(mockBrowserClientMetadata, dto),
       ).rejects.toThrow(ForbiddenException);
-      expect(mockStandaloneRedisClient.sendCommand).toHaveBeenCalledTimes(1);
-      expect(mockStandaloneRedisClient.sendPipeline).not.toHaveBeenCalled();
+      expect(client.sendCommand).toHaveBeenCalledTimes(1);
+      expect(client.sendPipeline).not.toHaveBeenCalled();
     });
   });
 });
