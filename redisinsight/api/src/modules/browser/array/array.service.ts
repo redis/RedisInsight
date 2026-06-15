@@ -198,8 +198,12 @@ export class ArrayService {
         start,
         end,
       ] as const;
+      // Treat an explicit JSON `null` the same as an omitted limit. @IsOptional()
+      // skips downstream validators for null, so the DTO accepts it; forwarding
+      // `LIMIT null` to Redis would otherwise surface as a 500.
+      const hasLimit = typeof limit === 'number';
       const reply = (await client.sendCommand(
-        limit !== undefined ? [...baseArgs, 'LIMIT', limit] : [...baseArgs],
+        hasLimit ? [...baseArgs, 'LIMIT', limit] : [...baseArgs],
       )) as unknown[];
 
       // ARSCAN's wire shape varies by client: some clients surface a flat

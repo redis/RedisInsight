@@ -298,6 +298,21 @@ describe('ArrayService', () => {
       expect(result.elements).toHaveLength(1);
     });
 
+    it('should treat an explicit null limit the same as omitted', async () => {
+      const result = await service.scan(mockBrowserClientMetadata, {
+        ...mockGetArrayScanDto,
+        limit: null as unknown as number,
+      });
+
+      expect(mockStandaloneRedisClient.sendCommand).toHaveBeenCalledWith([
+        BrowserToolArrayCommands.ArScan,
+        mockGetArrayScanDto.keyName,
+        mockGetArrayScanDto.start,
+        mockGetArrayScanDto.end,
+      ]);
+      expect(result).toEqual(mockGetArrayScanResponse);
+    });
+
     it('should also accept the nested [[index, value], ...] reply shape', async () => {
       when(mockStandaloneRedisClient.sendCommand)
         .calledWith([
