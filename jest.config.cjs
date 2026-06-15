@@ -16,14 +16,10 @@ module.exports = {
     'uiSrc/(.*)': '<rootDir>/redisinsight/ui/src/$1',
     '^apiClient$': '<rootDir>/redisinsight/api-client',
     'apiClient/(.*)': '<rootDir>/redisinsight/api-client/$1',
-    // Map the legacy @redislabsdev/* scope to the current @redis-ui/* packages.
-    // Capture the optional subpath ($1) so deep imports survive the rename —
-    // e.g. @redislabsdev/redis-ui-icons/multicolor -> @redis-ui/icons/multicolor
-    // (@redis-ui/components v44 imports icons via these subpaths).
-    '^@redislabsdev/redis-ui-components(/.*)?$': '@redis-ui/components$1',
-    '^@redislabsdev/redis-ui-styles(/.*)?$': '@redis-ui/styles$1',
-    '^@redislabsdev/redis-ui-icons(/.*)?$': '@redis-ui/icons$1',
-    '^@redislabsdev/redis-ui-table(/.*)?$': '@redis-ui/table$1',
+    '@redislabsdev/redis-ui-components': '@redis-ui/components',
+    '@redislabsdev/redis-ui-styles': '@redis-ui/styles',
+    '@redislabsdev/redis-ui-icons': '@redis-ui/icons',
+    '@redislabsdev/redis-ui-table': '@redis-ui/table',
     'monaco-editor': '<rootDir>/redisinsight/__mocks__/monacoMock.js',
     'monaco-yaml': '<rootDir>/redisinsight/__mocks__/monacoYamlMock.js',
     unified: '<rootDir>/redisinsight/__mocks__/unified.js',
