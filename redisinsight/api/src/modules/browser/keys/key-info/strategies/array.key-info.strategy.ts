@@ -13,16 +13,13 @@ import { MAX_KEY_SIZE } from 'src/modules/browser/keys/key-info/constants';
 import { toRequiredIndexString } from 'src/modules/browser/array/utils';
 
 /**
- * Key-info strategy for the Array data type. Returns the standard
- * TTL / size triple plus `length` (ARLEN, includes gaps) and `count`
- * (ARCOUNT, populated slots) — the two diverge for sparse arrays and
- * the View tab surfaces both.
+ * Key-info strategy for the Array data type. Returns TTL / size plus
+ * `length` (ARLEN, includes gaps) and `count` (ARCOUNT, populated only) —
+ * the two diverge for sparse arrays.
  *
- * Returns a dedicated `GetArrayKeyInfoResponse` so that `length` and
- * `count` are typed as decimal strings end-to-end. The Array index
- * space is unsigned 64-bit and can exceed Number.MAX_SAFE_INTEGER for
- * sparse keys; the shared `GetKeyInfoResponse.length: number` used by
- * other key types would silently lose precision.
+ * Uses a dedicated `GetArrayKeyInfoResponse` so `length` / `count` stay
+ * decimal strings; the shared `GetKeyInfoResponse.length: number` would
+ * silently lose precision for u64 indexes.
  */
 export class ArrayKeyInfoStrategy extends KeyInfoStrategy {
   public async getInfo(

@@ -76,8 +76,6 @@ export class ArrayService {
     }
   }
 
-  // Inputs are validated as canonical decimal strings ≤ 2^64-2, so BigInt()
-  // is safe. ARGETRANGE / ARSCAN require start ≤ end.
   private assertValidRange(start: string, end: string): void {
     const startBig = BigInt(start);
     const endBig = BigInt(end);
@@ -156,11 +154,9 @@ export class ArrayService {
     const { keyName, mode, startIndex = '0', values = [], elements = [] } = dto;
 
     if (mode === ArrayCreationMode.Contiguous) {
-      // ARSET key startIndex value [value ...] — contiguous run from startIndex
       return [BrowserToolArrayCommands.ArSet, keyName, startIndex, ...values];
     }
 
-    // ARMSET key index value [index value ...] — sparse index/value pairs
     return [
       BrowserToolArrayCommands.ArMSet,
       keyName,
@@ -176,11 +172,6 @@ export class ArrayService {
       this.logger.debug('Scanning array range.', clientMetadata);
       const { keyName, start, end, limit } = dto;
 
-      // ARSCAN skips empty slots in the response but still walks the index
-      // range server-side (O(|end-start|+1)). Apply the same range checks
-      // as ARGETRANGE so an unbounded or malformed range cannot tie up
-      // Redis even when LIMIT is omitted; LIMIT remains a complementary
-      // result-set cap.
       this.assertValidRange(start, end);
 
       const client =
@@ -193,18 +184,13 @@ export class ArrayService {
         start,
         end,
       ] as const;
-      // Treat an explicit JSON `null` the same as an omitted limit. @IsOptional()
-      // skips downstream validators for null, so the DTO accepts it; forwarding
-      // `LIMIT null` to Redis would otherwise surface as a 500.
+      // typeof 'number' so an explicit JSON null is treated as omitted.
       const hasLimit = typeof limit === 'number';
       const reply = (await client.sendCommand(
         hasLimit ? [...baseArgs, 'LIMIT', limit] : [...baseArgs],
       )) as unknown[];
 
-      // ARSCAN returns a flat [index, value, index, value, ...] reply.
-      // Skip pairs with a nil index or value to honor the "populated-only"
-      // contract — JSON.stringify would otherwise drop an undefined value
-      // and reach the client as `{ index }` with no value.
+      // Skip pairs with a nil index or value (populated-only contract).
       const elements: ArrayElement[] = [];
       for (let i = 0; i < reply.length; i += 2) {
         const rawIndex = reply[i];
@@ -304,9 +290,6 @@ export class ArrayService {
         keyName,
       ]);
 
-      // ARNEXT returns nil when the insertion cursor is exhausted; toIndexString
-      // passes that through as null so clients can distinguish absence from a
-      // real index.
       this.logger.debug('Succeed to get array next index.', clientMetadata);
       return plainToInstance(GetArrayNextIndexResponse, {
         keyName,
