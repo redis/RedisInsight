@@ -8,7 +8,9 @@ import {
   scanArrayRange,
   setArrayInitialState,
 } from 'uiSrc/slices/browser/array'
+import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { isEqualBuffers } from 'uiSrc/utils'
+import { KeyTypes } from 'uiSrc/constants'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { DEFAULT_RANGE_END, DEFAULT_RANGE_START } from '../constants'
 
@@ -31,6 +33,7 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
   const dispatch = useAppDispatch()
   const { loading, error } = useAppSelector(arraySelector)
   const data = useAppSelector(arrayDataSelector)
+  const selectedKeyData = useAppSelector(selectedKeyDataSelector)
 
   const [start, setStart] = useState<string>(DEFAULT_RANGE_START)
   const [end, setEnd] = useState<string>(DEFAULT_RANGE_END)
@@ -68,22 +71,60 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
   // equality on the dep array would otherwise refire on every render that
   // produces a fresh buffer instance for the same logical key.
   //
+  // Switch detection and fetching are split across two effects so the
+  // fetch can be gated on the resolved key type (avoiding a WrongType
+  // 400 when the user clicks a non-array key while ArrayDetails is still
+  // mounted from the previous selection). The first effect handles the
+  // synchronous part — abort, reset form, wipe slice — keyed off
+  // `keyProp` alone. The second effect waits for `selectedKeyData` to
+  // catch up via `fetchKeyInfo` and only fires the request once the
+  // confirmed type is Array AND the confirmed name matches `keyProp`.
+  //
   // Refresh is owned by `refreshKey` (in `slices/browser/keys`) so this
   // effect intentionally does NOT depend on `lastRefreshTime` — the range
   // thunks update `lastRefreshTime` themselves on success, which would
   // otherwise create a fetch-update-fetch loop.
   const lastKeyRef = useRef<RedisResponseBuffer | null>(null)
+  const fetchedKeyRef = useRef<RedisResponseBuffer | null>(null)
   useEffect(() => {
     if (!keyProp) return
     if (lastKeyRef.current && isEqualBuffers(lastKeyRef.current, keyProp)) {
       return
     }
     lastKeyRef.current = keyProp
+    fetchedKeyRef.current = null
 
+    abortArrayRange()
     dispatch(setArrayInitialState())
     setStart(DEFAULT_RANGE_START)
     setEnd(DEFAULT_RANGE_END)
     setShowEmpty(true)
+  }, [dispatch, keyProp])
+
+  useEffect(() => {
+    if (!keyProp) return
+    // Gate on confirmed type from the selected-key slice: until
+    // `fetchKeyInfo` resolves with `type === Array` and a `name` that
+    // matches our `keyProp`, dispatching ARGETRANGE would hit the API
+    // with a key of unknown / mismatched type and surface a WrongType
+    // 400. Skip silently — this effect refires when the slice catches
+    // up.
+    if (
+      selectedKeyData?.type !== KeyTypes.Array ||
+      !selectedKeyData?.name ||
+      !isEqualBuffers(selectedKeyData.name, keyProp)
+    ) {
+      return
+    }
+    // Fire only once per key switch; subsequent renders for the same
+    // confirmed selection (e.g. unrelated slice updates) must not refire.
+    if (
+      fetchedKeyRef.current &&
+      isEqualBuffers(fetchedKeyRef.current, keyProp)
+    ) {
+      return
+    }
+    fetchedKeyRef.current = keyProp
     dispatch(
       fetchArrayRange({
         key: keyProp,
@@ -91,7 +132,7 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
         end: DEFAULT_RANGE_END,
       }),
     )
-  }, [dispatch, keyProp])
+  }, [dispatch, keyProp, selectedKeyData?.type, selectedKeyData?.name])
 
   // On unmount (e.g. user navigates away from an array key), cancel any
   // in-flight range/scan so its late response can't land into a stale
