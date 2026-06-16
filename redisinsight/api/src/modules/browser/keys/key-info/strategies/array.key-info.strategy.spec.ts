@@ -6,13 +6,13 @@ import {
   BrowserToolKeysCommands,
 } from 'src/modules/browser/constants/browser-tool-commands';
 import {
-  GetKeyInfoResponse,
+  GetArrayKeyInfoResponse,
   RedisDataType,
 } from 'src/modules/browser/keys/dto';
 import { ArrayKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/array.key-info.strategy';
 import { MAX_KEY_SIZE } from 'src/modules/browser/keys/key-info/constants';
 
-const getKeyInfoResponse: GetKeyInfoResponse = {
+const getKeyInfoResponse: GetArrayKeyInfoResponse = {
   name: 'testArray',
   type: 'array',
   ttl: -1,

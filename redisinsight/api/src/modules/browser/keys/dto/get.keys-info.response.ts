@@ -29,11 +29,9 @@ export class GetKeyInfoResponse {
 
   @ApiPropertyOptional({
     type: Number,
-    description:
-      'The length of the value stored in a key.' +
-      ' For array keys, returned as an unsigned 64-bit integer decimal string.',
+    description: 'The length of the value stored in a key.',
   })
-  length?: number | string;
+  length?: number;
 
   @ApiPropertyOptional({
     type: String,
@@ -47,12 +45,4 @@ export class GetKeyInfoResponse {
     description: 'The vector dimensions for vector set keys.',
   })
   vectorDim?: number;
-
-  @ApiPropertyOptional({
-    type: Number,
-    description:
-      'The populated element count for array keys (excludes empty slots).' +
-      ' For array keys, returned as an unsigned 64-bit integer decimal string.',
-  })
-  count?: number | string;
 }

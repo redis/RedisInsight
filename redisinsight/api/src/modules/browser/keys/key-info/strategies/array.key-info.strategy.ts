@@ -1,5 +1,5 @@
 import {
-  GetKeyInfoResponse,
+  GetArrayKeyInfoResponse,
   RedisDataType,
 } from 'src/modules/browser/keys/dto';
 import {
@@ -14,14 +14,15 @@ import { toIndexString } from 'src/modules/browser/array/utils';
 
 /**
  * Key-info strategy for the Array data type. Returns the standard
- * TTL / size / length triple plus a `count` field carrying the number of
- * populated slots (ARCOUNT). Length reflects total addressable slots
- * (ARLEN, including gaps); count reflects only the populated ones — the
- * two diverge for sparse arrays and the View tab surfaces both.
+ * TTL / size triple plus `length` (ARLEN, includes gaps) and `count`
+ * (ARCOUNT, populated slots) — the two diverge for sparse arrays and
+ * the View tab surfaces both.
  *
- * `length` and `count` are normalized to decimal strings to match the
- * unsigned 64-bit contract used by the array read endpoints (ARLEN can
- * exceed Number.MAX_SAFE_INTEGER for sparse arrays).
+ * Returns a dedicated `GetArrayKeyInfoResponse` so that `length` and
+ * `count` are typed as decimal strings end-to-end. The Array index
+ * space is unsigned 64-bit and can exceed Number.MAX_SAFE_INTEGER for
+ * sparse keys; the shared `GetKeyInfoResponse.length: number` used by
+ * other key types would silently lose precision.
  */
 export class ArrayKeyInfoStrategy extends KeyInfoStrategy {
   public async getInfo(
@@ -29,7 +30,7 @@ export class ArrayKeyInfoStrategy extends KeyInfoStrategy {
     key: RedisString,
     type: string,
     includeSize: boolean,
-  ): Promise<GetKeyInfoResponse> {
+  ): Promise<GetArrayKeyInfoResponse> {
     this.logger.debug(`Getting ${RedisDataType.Array} type info.`);
 
     if (includeSize !== false) {
@@ -50,8 +51,8 @@ export class ArrayKeyInfoStrategy extends KeyInfoStrategy {
         type,
         ttl,
         size,
-        length: rawLength == null ? undefined : toIndexString(rawLength),
-        count: rawCount == null ? undefined : toIndexString(rawCount),
+        length: toIndexString(rawLength),
+        count: toIndexString(rawCount),
       };
     }
 
@@ -79,8 +80,8 @@ export class ArrayKeyInfoStrategy extends KeyInfoStrategy {
       type,
       ttl,
       size,
-      length: rawLength == null ? undefined : toIndexString(rawLength),
-      count: rawCount == null ? undefined : toIndexString(rawCount),
+      length: toIndexString(rawLength),
+      count: toIndexString(rawCount),
     };
   }
 }
