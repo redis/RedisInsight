@@ -85,6 +85,12 @@ const esbuildProblemMatcherPlugin = {
         path.resolve(__dirname, outDir, 'defaults'),
       );
       console.debug('[esbuild] copied "defaults" folder');
+
+      copySource(
+        path.resolve(__dirname, 'data'),
+        path.resolve(__dirname, outDir, 'data'),
+      );
+      console.debug('[esbuild] copied "data" folder');
     });
   },
 };
