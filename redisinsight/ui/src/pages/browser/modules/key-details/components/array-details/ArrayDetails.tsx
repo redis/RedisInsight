@@ -1,10 +1,7 @@
 import React from 'react'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 
-import {
-  selectedKeyDataSelector,
-  selectedKeySelector,
-} from 'uiSrc/slices/browser/keys'
+import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
 import {
   KeyDetailsHeader,
   KeyDetailsHeaderProps,
@@ -17,7 +14,9 @@ import { ArrayRangeForm } from './array-range-form'
 import { useArrayRangeQuery } from './hooks'
 import * as S from './ArrayDetails.styles'
 
-export interface Props extends KeyDetailsHeaderProps {}
+export interface Props extends KeyDetailsHeaderProps {
+  keyProp: RedisResponseBuffer | null
+}
 
 /**
  * View / Browse vertical container for the array key type. Composes the
@@ -28,11 +27,13 @@ export interface Props extends KeyDetailsHeaderProps {}
  * docs/redis-array-type-initiative.md §6 Tasks 2,4-7).
  */
 const ArrayDetails = (props: Props) => {
+  const { keyProp } = props
   const { loading } = useAppSelector(selectedKeySelector)
-  const selectedKeyData = useAppSelector(selectedKeyDataSelector)
-  const keyName = selectedKeyData?.name
-    ? bufferToString(selectedKeyData.name as RedisResponseBuffer)
-    : ''
+  // Render the form's CLI preview off `keyProp` rather than the cached
+  // `selectedKeyData?.name` so the displayed key matches the one the
+  // form will actually query — avoids a one-fetch lag while
+  // `fetchKeyInfo` populates the selected-key slice.
+  const keyName = keyProp ? bufferToString(keyProp) : ''
 
   const {
     start,
@@ -45,7 +46,7 @@ const ArrayDetails = (props: Props) => {
     resetQuery,
     elements,
     loading: rangeLoading,
-  } = useArrayRangeQuery()
+  } = useArrayRangeQuery(keyProp)
 
   return (
     <S.Container data-testid="array-details">

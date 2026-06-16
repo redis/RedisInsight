@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import {
   arrayDataSelector,
@@ -7,8 +7,8 @@ import {
   scanArrayRange,
   setArrayInitialState,
 } from 'uiSrc/slices/browser/array'
-import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
-import { bufferToString } from 'uiSrc/utils'
+import { isEqualBuffers } from 'uiSrc/utils'
+import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { DEFAULT_RANGE_END, DEFAULT_RANGE_START } from '../constants'
 
 /**
@@ -19,10 +19,15 @@ import { DEFAULT_RANGE_END, DEFAULT_RANGE_START } from '../constants'
  * want narrower or wider slices change the bounds directly. Auto-fires
  * the initial query when a new key is selected and on user-triggered
  * refresh.
+ *
+ * Takes the raw `keyProp` buffer (the same identity threaded through
+ * `KeyDetails` → `DynamicTypeDetails`) rather than reading
+ * `selectedKeyData?.name`. The selector lags behind selection by one
+ * `fetchKeyInfo` round-trip, which would render the previous key's
+ * data until that completes; `keyProp` updates synchronously on click.
  */
-export const useArrayRangeQuery = () => {
+export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
   const dispatch = useAppDispatch()
-  const selectedKeyData = useAppSelector(selectedKeyDataSelector)
   const { loading, error } = useAppSelector(arraySelector)
   const data = useAppSelector(arrayDataSelector)
 
@@ -30,16 +35,13 @@ export const useArrayRangeQuery = () => {
   const [end, setEnd] = useState<string>(DEFAULT_RANGE_END)
   const [showEmpty, setShowEmpty] = useState<boolean>(true)
 
-  const keyBuffer = selectedKeyData?.name
-  const keyName = keyBuffer ? bufferToString(keyBuffer) : ''
-
   const runQuery = useCallback(
     (nextStart: string = start, nextEnd: string = end) => {
-      if (!keyBuffer) return
+      if (!keyProp) return
       if (showEmpty) {
         dispatch(
           fetchArrayRange({
-            key: keyBuffer,
+            key: keyProp,
             start: nextStart,
             end: nextEnd,
           }),
@@ -47,36 +49,48 @@ export const useArrayRangeQuery = () => {
       } else {
         dispatch(
           scanArrayRange({
-            key: keyBuffer,
+            key: keyProp,
             start: nextStart,
             end: nextEnd,
           }),
         )
       }
     },
-    [dispatch, keyBuffer, showEmpty, start, end],
+    [dispatch, keyProp, showEmpty, start, end],
   )
 
-  // Reset slice + fire the default-range query whenever the user switches
-  // keys. Refresh is owned by `refreshKey` (in `slices/browser/keys`) so
-  // this effect intentionally does NOT depend on `lastRefreshTime` — the
-  // range thunks update `lastRefreshTime` themselves on success, which
-  // would otherwise create a fetch-update-fetch loop.
+  // Detect key switches by raw-buffer byte equality so two binary-distinct
+  // keys whose lossy `bufferToString` forms collide (e.g. invalid UTF-8
+  // decoded with the U+FFFD replacement character) still trigger a
+  // refetch. Stored in a ref because two buffer references with the same
+  // bytes should be treated as the same key — React's default referential
+  // equality on the dep array would otherwise refire on every render that
+  // produces a fresh buffer instance for the same logical key.
+  //
+  // Refresh is owned by `refreshKey` (in `slices/browser/keys`) so this
+  // effect intentionally does NOT depend on `lastRefreshTime` — the range
+  // thunks update `lastRefreshTime` themselves on success, which would
+  // otherwise create a fetch-update-fetch loop.
+  const lastKeyRef = useRef<RedisResponseBuffer | null>(null)
   useEffect(() => {
-    if (!keyBuffer) return
+    if (!keyProp) return
+    if (lastKeyRef.current && isEqualBuffers(lastKeyRef.current, keyProp)) {
+      return
+    }
+    lastKeyRef.current = keyProp
+
     dispatch(setArrayInitialState())
     setStart(DEFAULT_RANGE_START)
     setEnd(DEFAULT_RANGE_END)
     setShowEmpty(true)
     dispatch(
       fetchArrayRange({
-        key: keyBuffer,
+        key: keyProp,
         start: DEFAULT_RANGE_START,
         end: DEFAULT_RANGE_END,
       }),
     )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, keyName])
+  }, [dispatch, keyProp])
 
   // Restore form defaults and refire the default-range query. The slice
   // is intentionally NOT wiped — keeping the current data prevents a
@@ -85,15 +99,15 @@ export const useArrayRangeQuery = () => {
     setStart(DEFAULT_RANGE_START)
     setEnd(DEFAULT_RANGE_END)
     setShowEmpty(true)
-    if (!keyBuffer) return
+    if (!keyProp) return
     dispatch(
       fetchArrayRange({
-        key: keyBuffer,
+        key: keyProp,
         start: DEFAULT_RANGE_START,
         end: DEFAULT_RANGE_END,
       }),
     )
-  }, [dispatch, keyBuffer])
+  }, [dispatch, keyProp])
 
   return {
     start,
