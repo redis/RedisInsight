@@ -313,28 +313,6 @@ describe('ArrayService', () => {
       expect(result).toEqual(mockGetArrayScanResponse);
     });
 
-    it('should also accept the nested [[index, value], ...] reply shape', async () => {
-      when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArScan,
-          mockGetArrayScanDto.keyName,
-          mockGetArrayScanDto.start,
-          mockGetArrayScanDto.end,
-        ])
-        .mockResolvedValue([
-          [Buffer.from('0'), mockArrayElement1],
-          [Buffer.from('1'), Buffer.from('20.4')],
-        ] as unknown as (Buffer | string)[]);
-
-      const result = await service.scan(
-        mockBrowserClientMetadata,
-        mockGetArrayScanDto,
-      );
-      expect(result.elements).toHaveLength(2);
-      expect(result.elements[0].index).toBe('0');
-      expect(result.elements[1].index).toBe('1');
-    });
-
     it('should drop pairs whose value or index is null/undefined', async () => {
       when(mockStandaloneRedisClient.sendCommand)
         .calledWith([

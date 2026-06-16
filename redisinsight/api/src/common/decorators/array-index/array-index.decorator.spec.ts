@@ -18,7 +18,7 @@ const validateSingle = async (index: any) => {
 };
 
 describe('IsArrayIndex', () => {
-  it.each(['0', '42', '18446744073709551615'])(
+  it.each(['0', '42', '18446744073709551614'])(
     'should pass for valid index %p',
     async (input) => {
       expect(await validateSingle(input)).toHaveLength(0);
@@ -30,6 +30,7 @@ describe('IsArrayIndex', () => {
     '1.5',
     'abc',
     '',
+    '18446744073709551615',
     '18446744073709551616',
     42,
     undefined,
@@ -45,7 +46,7 @@ describe('IsArrayIndex', () => {
     // Consumers may match on this exact format — changing it is breaking.
     expect(errors[0].constraints).toEqual({
       ArrayIndexValidator:
-        'index must be an integer string between 0 and 18446744073709551615',
+        'index must be an integer string between 0 and 18446744073709551614',
     });
   });
 
@@ -58,7 +59,7 @@ describe('IsArrayIndex', () => {
 
   it('should pass with { each: true } when all elements are valid', async () => {
     const dto = new MultiIndexDto();
-    dto.indexes = ['1', '2', '18446744073709551615'];
+    dto.indexes = ['1', '2', '18446744073709551614'];
 
     expect(await validate(dto)).toHaveLength(0);
   });

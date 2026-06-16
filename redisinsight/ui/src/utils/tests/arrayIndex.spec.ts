@@ -5,8 +5,8 @@ import {
 } from 'uiSrc/utils'
 
 describe('arrayIndex', () => {
-  it('should expose max unsigned 64-bit value', () => {
-    expect(ARRAY_INDEX_MAX).toEqual(BigInt('18446744073709551615'))
+  it('should expose the max valid Redis array index (2^64 - 2)', () => {
+    expect(ARRAY_INDEX_MAX).toEqual(BigInt('18446744073709551614'))
   })
 
   describe('parseArrayIndex', () => {
@@ -15,8 +15,9 @@ describe('arrayIndex', () => {
       { input: '7', expected: '7' },
       { input: '007', expected: '7' }, // leading zeros normalized
       { input: ' 42 ', expected: '42' }, // outer whitespace trimmed
-      { input: '18446744073709551615', expected: '18446744073709551615' }, // max u64
-      { input: '18446744073709551616', expected: null }, // max + 1
+      { input: '18446744073709551614', expected: '18446744073709551614' }, // max valid (2^64 - 2)
+      { input: '18446744073709551615', expected: null }, // 2^64 - 1 — reserved
+      { input: '18446744073709551616', expected: null }, // 2^64
       { input: '184467440737095516150', expected: null }, // 21 digits — length guard
       { input: '00000000000000000000042', expected: null }, // >20 chars — guard trumps normalization
       { input: '-1', expected: null },

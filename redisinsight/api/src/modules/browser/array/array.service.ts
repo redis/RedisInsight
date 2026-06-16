@@ -76,10 +76,8 @@ export class ArrayService {
     }
   }
 
-  // Inputs are validated as canonical decimal strings ≤ 2^64-1, so BigInt()
-  // is safe. The contract is start ≤ end — matches every Redis range
-  // command and avoids any ambiguity about how a reversed reply would be
-  // ordered or paginated.
+  // Inputs are validated as canonical decimal strings ≤ 2^64-2, so BigInt()
+  // is safe. ARGETRANGE / ARSCAN require start ≤ end.
   private assertValidRange(start: string, end: string): void {
     const startBig = BigInt(start);
     const endBig = BigInt(end);
@@ -203,26 +201,14 @@ export class ArrayService {
         hasLimit ? [...baseArgs, 'LIMIT', limit] : [...baseArgs],
       )) as unknown[];
 
-      // ARSCAN's wire shape varies by client: some clients surface a flat
-      // [index, value, index, value, ...] reply, others group it into
-      // [[index, value], [index, value], ...]. Detect by sniffing the first
-      // element and normalize both into pairs. Malformed pairs (missing
-      // half) are dropped to honor the "populated-only" contract —
-      // JSON.stringify would otherwise drop an undefined value and reach
-      // the client as `{ index }` with no value.
-      const pairs: Array<[unknown, unknown]> = [];
-      if (Array.isArray(reply[0])) {
-        for (const entry of reply as unknown[][]) {
-          if (entry?.length >= 2) pairs.push([entry[0], entry[1]]);
-        }
-      } else {
-        for (let i = 0; i < reply.length; i += 2) {
-          pairs.push([reply[i], reply[i + 1]]);
-        }
-      }
-
+      // ARSCAN returns a flat [index, value, index, value, ...] reply.
+      // Skip pairs with a nil index or value to honor the "populated-only"
+      // contract — JSON.stringify would otherwise drop an undefined value
+      // and reach the client as `{ index }` with no value.
       const elements: ArrayElement[] = [];
-      for (const [rawIndex, value] of pairs) {
+      for (let i = 0; i < reply.length; i += 2) {
+        const rawIndex = reply[i];
+        const value = reply[i + 1];
         if (rawIndex == null || value == null) continue;
         elements.push({
           index: toRequiredIndexString(rawIndex),

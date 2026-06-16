@@ -1,6 +1,5 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { RedisStringType, ApiRedisString } from 'src/common/decorators';
-import { RedisString } from 'src/common/constants';
+import { ApiProperty, PickType } from '@nestjs/swagger';
+import { GetKeyInfoResponse } from 'src/modules/browser/keys/dto/get.keys-info.response';
 
 /**
  * Key-info response for the Array data type.
@@ -11,32 +10,12 @@ import { RedisString } from 'src/common/constants';
  * `array` key type before reading these fields and avoid silent numeric
  * coercion that would round large values.
  */
-export class GetArrayKeyInfoResponse {
-  @ApiRedisString()
-  @RedisStringType()
-  name: RedisString;
-
-  @ApiPropertyOptional({
-    type: String,
-    description: 'Always "array" for this response shape.',
-  })
-  type?: string;
-
-  @ApiPropertyOptional({
-    type: Number,
-    description:
-      'The remaining time to live of a key.' +
-      ' If the property has value of -1, then the key has no expiration time (no limit).',
-  })
-  ttl?: number;
-
-  @ApiPropertyOptional({
-    type: Number,
-    description:
-      'The number of bytes that the array key and its value require to be stored in RAM.',
-  })
-  size?: number;
-
+export class GetArrayKeyInfoResponse extends PickType(GetKeyInfoResponse, [
+  'name',
+  'type',
+  'ttl',
+  'size',
+] as const) {
   @ApiProperty({
     type: String,
     description:

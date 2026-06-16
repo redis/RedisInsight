@@ -1,14 +1,17 @@
 /**
- * Redis array indexes are unsigned 64-bit integers (0 … 2^64−1) and exceed
- * Number.MAX_SAFE_INTEGER, so they travel as numeric strings end-to-end —
- * never parseInt/Number, no JS-side arithmetic on indexes.
+ * Redis array indexes are unsigned 64-bit integers in the range
+ * [0, 2^64−1) (max valid is 2^64−2) and exceed Number.MAX_SAFE_INTEGER,
+ * so they travel as numeric strings end-to-end — never parseInt/Number,
+ * no JS-side arithmetic on indexes.
  *
  * Mirrored in redisinsight/ui/src/utils/arrayIndex.ts — keep semantics and
  * tests in sync.
  */
-// 2^64 - 1; BigInt() call (not a literal) — this tsconfig targets es2019,
-// where BigInt literals are a syntax error (TS2737).
-export const ARRAY_INDEX_MAX = BigInt('18446744073709551615');
+// 2^64 - 2 — Redis accepts indexes in the half-open range [0, 2^64-1),
+// so the max valid index is 2^64-2 (2^64-1 is reserved). BigInt() call
+// form (not a literal) — this tsconfig targets es2019, where BigInt
+// literals are a syntax error (TS2737).
+export const ARRAY_INDEX_MAX = BigInt('18446744073709551614');
 
 const ARRAY_INDEX_REGEX = /^\d+$/;
 
@@ -19,7 +22,7 @@ const ARRAY_INDEX_MAX_LENGTH = 20;
 /**
  * Returns the canonical decimal string for a valid index ("007" → "7"),
  * or null for anything else (empty or whitespace-only, negative,
- * fractional, exponent, hex, > 2^64−1, non-string input).
+ * fractional, exponent, hex, > 2^64−2, non-string input).
  */
 export const parseArrayIndex = (input: unknown): string | null => {
   if (typeof input !== 'string') {

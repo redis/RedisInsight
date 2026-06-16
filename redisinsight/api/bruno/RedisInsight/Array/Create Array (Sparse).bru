@@ -38,7 +38,7 @@ docs {
   | `keyName` | string | The key name for the new Array |
   | `mode` | string | Must be `sparse` for this request shape |
   | `elements` | array | Index/value pairs to write |
-  | `elements[].index` | string | Element index as a numeric string (`0` to `18446744073709551615`) |
+  | `elements[].index` | string | Element index as a numeric string (`0` to `18446744073709551614`) |
   | `elements[].value` | string | Element value |
   | `expire` | number (optional) | TTL in seconds |
 
@@ -50,7 +50,7 @@ docs {
 
   | Status | Condition |
   |--------|-----------|
-  | `400` | Validation failed, e.g. a non-canonical index: `elements.0.index must be an integer string between 0 and 18446744073709551615` |
+  | `400` | Validation failed, e.g. a non-canonical index: `elements.0.index must be an integer string between 0 and 18446744073709551614` |
   | `403` | User has no permissions |
   | `409` | Key with this name already exists |
 }
