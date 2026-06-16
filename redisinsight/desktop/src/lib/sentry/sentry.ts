@@ -59,9 +59,9 @@ const initCrashReporter = (dsn: string, environment: string): void => {
   }
 
   // Electron's crashReporter can only be started once per session and has no
-  // stop API. We therefore only ever start it (when consent is granted) and
-  // never restart; native-crash upload toggled off mid-session takes effect on
-  // the next launch (which reads cached consent). See readiness doc §5.
+  // stop API, so we start it at most once (guarded below). Mid-session consent
+  // changes are honoured by toggling minidump uploads via `setUploadToServer`
+  // in `setConsent`, not by restarting. See readiness doc §5.
   if (crashReporterStarted) {
     return
   }
@@ -120,6 +120,18 @@ export const initSentry = (): void => {
       environment,
       release: pkg.version,
       ipcMode: IPCMode.Classic,
+      // Disable the SDK's default native-crash (minidump) integration. It
+      // starts Electron's crashReporter at init and uploads minidumps (which
+      // can contain process memory) via the SDK transport regardless of our
+      // consent gate — and `beforeSend` cannot scrub a minidump attachment.
+      // Native crashes are handled instead by the consent-gated crashReporter
+      // in `initCrashReporter`.
+      integrations: (defaults) =>
+        defaults.filter(
+          (integration) =>
+            integration.name !== 'SentryMinidump' &&
+            integration.name !== 'ElectronMinidump',
+        ),
       initialScope: { tags: { 'app.layer': 'electron-main' } },
       // Do not attach IP / machine identifiers.
       sendDefaultPii: false,
@@ -151,9 +163,9 @@ export const initSentry = (): void => {
 
 /**
  * Update analytics consent at runtime. Flips the tier used by `beforeSend`,
- * persists the value for the next boot, and starts the native crash uploader
- * when consent is granted. On revoke the client is NOT closed — anonymous
- * Tier 1 reporting continues and `beforeSend` minimizes every event.
+ * persists the value for the next boot, and toggles native crash reporting.
+ * On revoke the client is NOT closed — anonymous Tier 1 reporting continues
+ * and `beforeSend` minimizes every event.
  *
  * See docs/sentry-production-readiness.md (§3, §5).
  */
@@ -165,17 +177,24 @@ export const setConsent = (granted: boolean): void => {
     return
   }
 
-  // On grant, start the native crash uploader (start-once). On revoke we do
-  // NOT close the client — Tier 1 anonymous reporting continues without
-  // consent; `beforeSend` minimizes every event while `consentGranted` is
-  // false. (The already-started crashReporter cannot be stopped mid-session;
-  // it respects cached consent on next launch.)
+  // Native crashes: Electron's crashReporter has no stop API, but minidump
+  // *uploads* can be toggled at runtime, so consent is honoured immediately in
+  // both directions. First grant starts the (consent-gated) reporter; revoke
+  // stops uploads; re-grant re-enables them. On revoke we do NOT close the
+  // client — Tier 1 anonymous reporting continues and `beforeSend` minimizes
+  // every event.
   if (granted) {
-    const dsn = process.env.RI_SENTRY_DSN
-    const environment = process.env.RI_SENTRY_ENVIRONMENT || 'development'
-    if (dsn) {
-      initCrashReporter(dsn, environment)
+    if (crashReporterStarted) {
+      crashReporter.setUploadToServer(true)
+    } else {
+      const dsn = process.env.RI_SENTRY_DSN
+      const environment = process.env.RI_SENTRY_ENVIRONMENT || 'development'
+      if (dsn) {
+        initCrashReporter(dsn, environment)
+      }
     }
+  } else if (crashReporterStarted) {
+    crashReporter.setUploadToServer(false)
   }
 
   log.info(`[Sentry] Consent updated: ${granted}`)
