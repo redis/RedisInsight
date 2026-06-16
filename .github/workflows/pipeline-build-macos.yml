@@ -35,7 +35,7 @@ jobs:
     runs-on: macos-14
     environment: ${{ inputs.environment }}
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v6.0.3
 
       # SSH Debug
       - name: Enable SSH
