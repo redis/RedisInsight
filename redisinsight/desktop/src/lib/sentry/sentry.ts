@@ -214,3 +214,40 @@ export const setUser = (anonymousId: string): void => {
  * Check if Sentry is initialized
  */
 export const isSentryInitialized = (): boolean => initialized
+
+// =============================================================================
+// Test Helpers (TODO: Remove before production release)
+// =============================================================================
+
+/**
+ * Trigger a test error to verify Sentry integration.
+ * TODO: Remove before production release.
+ */
+export const triggerTestCrash = (): void => {
+  if (!initialized) {
+    log.warn('[Sentry] Cannot trigger test crash - Sentry not initialized')
+    return
+  }
+
+  log.info('[Sentry] Triggering test crash for Electron main process')
+  // NOTE: a synchronous `throw` from within a globalShortcut/native callback is
+  // swallowed by Electron's native dispatch and never reaches Sentry's
+  // uncaughtException handler. Capture explicitly so the event is reported
+  // without crashing the app.
+  captureException(new Error('Sentry test crash - Electron main process'))
+}
+
+/**
+ * Trigger a native crash to test crashReporter integration.
+ * WARNING: This will immediately crash the app!
+ * TODO: Remove before production release.
+ */
+export const triggerNativeCrash = (): void => {
+  if (!initialized) {
+    log.warn('[Sentry] Cannot trigger native crash - Sentry not initialized')
+    return
+  }
+
+  log.info('[Sentry] Triggering native crash via process.crash()')
+  process.crash()
+}
