@@ -3,7 +3,6 @@ import * as Sentry from '@sentry/react'
 import { getConfig } from 'uiSrc/config'
 import { checkIsAnalyticsGranted } from 'uiSrc/telemetry/checkAnalytics'
 import { minimizeEvent, scrubEvent } from 'uiSrc/services/sentry'
-import pkg from '../../package.json'
 
 const riConfig = getConfig()
 
@@ -19,7 +18,7 @@ const riConfig = getConfig()
  * See docs/sentry-production-readiness.md (§3, §4).
  */
 export const initSentry = (): void => {
-  const { sentry } = riConfig
+  const { sentry, app } = riConfig
 
   if (!sentry.enabled || !sentry.dsn) {
     console.warn('[Sentry] Disabled or DSN not configured')
@@ -29,7 +28,9 @@ export const initSentry = (): void => {
   Sentry.init({
     dsn: sentry.dsn,
     environment: sentry.environment,
-    release: pkg.version,
+    // Must match the release the Vite plugin uploads maps under
+    // (`defaultConfig.app.version`), otherwise web events won't symbolicate.
+    release: app.version,
     initialScope: { tags: { 'app.layer': 'web' } },
     sendDefaultPii: false,
     beforeBreadcrumb: (breadcrumb) =>
