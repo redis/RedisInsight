@@ -63,6 +63,19 @@ describe('scrubSecretsInText', () => {
     expect(scrubSecretsInText('apiKey="xyz"')).toBe(`apiKey=${REDACTED}`)
   })
 
+  it('redacts bearer tokens and OAuth-style token names', () => {
+    const bearer = scrubSecretsInText('Authorization: Bearer abc123xyz')
+    expect(bearer).not.toContain('abc123xyz')
+    expect(bearer).toContain(REDACTED)
+
+    expect(scrubSecretsInText('access_token=abc123')).toBe(
+      `access_token=${REDACTED}`,
+    )
+    expect(scrubSecretsInText('refreshToken: "r3fr3sh"')).toBe(
+      `refreshToken: ${REDACTED}`,
+    )
+  })
+
   it('leaves clean text and credential-free URLs intact', () => {
     expect(scrubSecretsInText('connection refused')).toBe('connection refused')
     expect(scrubSecretsInText('https://example.com/api?id=1')).toBe(
