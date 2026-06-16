@@ -20,7 +20,10 @@ import {
 } from 'src/modules/browser/utils';
 import { KeyDto } from 'src/modules/browser/keys/dto';
 import { ARRAY_RANGE_MAX_ELEMENTS } from 'src/modules/browser/array/constants';
-import { toIndexString } from 'src/modules/browser/array/utils';
+import {
+  toIndexString,
+  toRequiredIndexString,
+} from 'src/modules/browser/array/utils';
 import {
   ArrayCreationMode,
   ArrayElement,
@@ -222,7 +225,7 @@ export class ArrayService {
       for (const [rawIndex, value] of pairs) {
         if (rawIndex == null || value == null) continue;
         elements.push({
-          index: toIndexString(rawIndex),
+          index: toRequiredIndexString(rawIndex),
           value: value as Buffer | string,
         });
       }
@@ -258,7 +261,7 @@ export class ArrayService {
       this.logger.debug('Succeed to get array length.', clientMetadata);
       return plainToInstance(GetArrayLengthResponse, {
         keyName,
-        length: toIndexString(reply),
+        length: toRequiredIndexString(reply),
       });
     } catch (error) {
       this.logger.error('Failed to get array length.', error, clientMetadata);
@@ -288,7 +291,7 @@ export class ArrayService {
       this.logger.debug('Succeed to get array count.', clientMetadata);
       return plainToInstance(GetArrayCountResponse, {
         keyName,
-        count: toIndexString(reply),
+        count: toRequiredIndexString(reply),
       });
     } catch (error) {
       this.logger.error('Failed to get array count.', error, clientMetadata);
@@ -315,14 +318,14 @@ export class ArrayService {
         keyName,
       ]);
 
-      // ARNEXT returns nil when the insertion cursor is exhausted. Surface
-      // that as `null` so clients can distinguish absence from a real index;
-      // folding it through toIndexString would produce the string "null".
-      const index =
-        reply === null || reply === undefined ? null : toIndexString(reply);
-
+      // ARNEXT returns nil when the insertion cursor is exhausted; toIndexString
+      // passes that through as null so clients can distinguish absence from a
+      // real index.
       this.logger.debug('Succeed to get array next index.', clientMetadata);
-      return plainToInstance(GetArrayNextIndexResponse, { keyName, index });
+      return plainToInstance(GetArrayNextIndexResponse, {
+        keyName,
+        index: toIndexString(reply),
+      });
     } catch (error) {
       this.logger.error(
         'Failed to get array next index.',

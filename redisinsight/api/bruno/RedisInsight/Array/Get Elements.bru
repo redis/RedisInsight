@@ -28,7 +28,7 @@ docs {
   | Field     | Type     | Notes                                                |
   |-----------|----------|------------------------------------------------------|
   | `keyName` | string   | The Array key name.                                  |
-  | `indexes` | string[] | One or more indexes; each unsigned 64-bit as string. |
+  | `indexes` | string[] | 1 to 1,000,000 indexes; each unsigned 64-bit as string. |
 
   ## Response
 
@@ -43,7 +43,7 @@ docs {
 
   | Status | When |
   |--------|------|
-  | `400`  | Any index is not a valid unsigned 64-bit integer string, or the key holds a non-array type. |
+  | `400`  | `indexes` is empty or exceeds 1,000,000 entries, any index is not a valid unsigned 64-bit integer string, or the key holds a non-array type. |
   | `403`  | User has no permission for `ARMGET`. |
   | `404`  | Key does not exist. |
 }

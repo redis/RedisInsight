@@ -10,7 +10,7 @@ import { RedisString } from 'src/common/constants';
 import { KeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/key-info.strategy';
 import { RedisClient } from 'src/modules/redis/client';
 import { MAX_KEY_SIZE } from 'src/modules/browser/keys/key-info/constants';
-import { toIndexString } from 'src/modules/browser/array/utils';
+import { toRequiredIndexString } from 'src/modules/browser/array/utils';
 
 /**
  * Key-info strategy for the Array data type. Returns the standard
@@ -51,8 +51,8 @@ export class ArrayKeyInfoStrategy extends KeyInfoStrategy {
         type,
         ttl,
         size,
-        length: toIndexString(rawLength),
-        count: toIndexString(rawCount),
+        length: toRequiredIndexString(rawLength),
+        count: toRequiredIndexString(rawCount),
       };
     }
 
@@ -80,8 +80,8 @@ export class ArrayKeyInfoStrategy extends KeyInfoStrategy {
       type,
       ttl,
       size,
-      length: toIndexString(rawLength),
-      count: toIndexString(rawCount),
+      length: toRequiredIndexString(rawLength),
+      count: toRequiredIndexString(rawCount),
     };
   }
 }
