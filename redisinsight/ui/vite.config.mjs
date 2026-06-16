@@ -19,9 +19,11 @@ process.env.RI_INDEX_NAME = isElectron ? 'indexElectron.tsx' : 'index.tsx';
 // Only generate + upload source maps when Sentry is enabled AND we have an
 // auth token. This keeps disabled builds from generating maps that would
 // otherwise ship (the upload plugin is what deletes them afterwards).
+// Mirror the runtime/booleanEnv semantics ('true' OR '1') so a build configured
+// with RI_SENTRY_ENABLED=1 still generates + uploads (and deletes) source maps.
 const shouldUploadSourceMaps =
   !!process.env.RI_SENTRY_AUTH_TOKEN &&
-  process.env.RI_SENTRY_ENABLED === 'true';
+  ['true', '1'].includes(process.env.RI_SENTRY_ENABLED ?? '');
 
 const outDir = isElectron ? '../dist/renderer' : './dist';
 

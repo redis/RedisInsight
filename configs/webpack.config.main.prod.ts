@@ -13,8 +13,11 @@ DeleteSourceMaps()
 
 // Generate source maps when debugging the prod bundle, or when uploading them
 // to Sentry (the upload plugin below deletes them again so they never ship).
+// Mirror the runtime/booleanEnv semantics ('true' OR '1') so RI_SENTRY_ENABLED=1
+// builds still generate + upload (then delete) source maps.
 const shouldUploadSourceMaps =
-  !!process.env.RI_SENTRY_AUTH_TOKEN && process.env.RI_SENTRY_ENABLED === 'true'
+  !!process.env.RI_SENTRY_AUTH_TOKEN &&
+  ['true', '1'].includes(process.env.RI_SENTRY_ENABLED ?? '')
 const devtoolsConfig =
   process.env.DEBUG_PROD === 'true' || shouldUploadSourceMaps
     ? {

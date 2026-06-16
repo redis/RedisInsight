@@ -90,24 +90,35 @@ export const scrubSensitiveData = (obj: unknown): unknown => {
 const URI_CREDENTIALS = /([a-z][a-z0-9+.-]*:\/\/)[^/\s@]+@/gi
 
 /**
- * `password=...`, `token: ...`, `apiKey="..."` style assignments. Keyword-driven
- * like SENSITIVE_FIELDS; redacts the value, keeps the key for context. Anchored
- * on word boundaries so substrings ("compass", "tokens") do not match.
+ * `Authorization: Bearer <token>` / `Basic <creds>` — redact the credential
+ * after the scheme. The assignment pattern below would only catch the scheme
+ * word ("Bearer") and leave the token, so this runs first.
+ */
+const AUTH_SCHEME = /\b(bearer|basic)\s+[\w.+/=~-]+/gi
+
+/**
+ * `password=...`, `token: ...`, `apiKey="..."`, `access_token=...` style
+ * assignments. Keyword-driven like SENSITIVE_FIELDS, with an optional OAuth
+ * prefix (access_/refresh_/id_/client_/app_) so `access_token`, `refreshToken`,
+ * etc. are caught. The required `=`/`:` separator stops it matching unrelated
+ * words ("tokenizer", "compass").
  */
 const SECRET_ASSIGNMENT =
-  /\b(pass(?:word|phrase|wd)?|pwd|secret|token|api[-_]?key|apikey|auth(?:orization)?|credentials?)(\s*[:=]\s*)("[^"]*"|'[^']*'|\S+)/gi
+  /\b((?:(?:access|refresh|id|client|app)[_-]?)?(?:pass(?:word|phrase|wd)?|pwd|secret|token|api[_-]?key|apikey|auth(?:orization)?|credentials?))(\s*[:=]\s*)("[^"]*"|'[^']*'|\S+)/gi
 
 /**
  * Redact secrets embedded in FREE-TEXT (error messages, breadcrumb messages,
  * URLs, source-context lines). `scrubSensitiveData` only redacts by key NAME,
  * so a secret living inside a string value — e.g. a Redis URI in a thrown
  * error — would otherwise survive on the consented path. Best-effort
- * (heuristic) defense-in-depth, not a guarantee.
+ * (heuristic) defense-in-depth, not a guarantee; the authoritative backstop is
+ * Sentry's server-side data scrubbing.
  */
 export const scrubSecretsInText = (text?: string): string | undefined => {
   if (!text) return text
   return text
     .replace(URI_CREDENTIALS, `$1${REDACTED}@`)
+    .replace(AUTH_SCHEME, (_match, scheme) => `${scheme} ${REDACTED}`)
     .replace(SECRET_ASSIGNMENT, `$1$2${REDACTED}`)
 }
 
