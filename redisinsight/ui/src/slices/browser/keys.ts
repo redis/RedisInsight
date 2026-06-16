@@ -249,9 +249,17 @@ const keysSlice = createSlice({
       }
     },
     refreshKeyInfoSuccess: (state, { payload }) => {
+      // Replace `data` outright (mirroring `loadKeyInfoSuccess`) rather
+      // than spreading the payload over the previous data. The merge
+      // form preserved any field absent from the new payload, which
+      // leaked type-specific fields when an underlying key was
+      // overwritten as a different type — e.g. an array key's `count`
+      // (or a vector set's `vectorDim` / `quantType`) would survive
+      // into the refreshed header for a String/List/etc. key, since
+      // those payloads omit the field entirely.
       state.selectedKey = {
         ...state.selectedKey,
-        data: { ...state.selectedKey.data, ...payload },
+        data: { ...payload, nameString: bufferToString(payload.name) },
         refreshing: false,
       }
     },
