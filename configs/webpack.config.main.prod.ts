@@ -15,16 +15,6 @@ DeleteSourceMaps()
 // to Sentry (the upload plugin below deletes them again so they never ship).
 const shouldUploadSourceMaps =
   !!process.env.RI_SENTRY_AUTH_TOKEN && process.env.RI_SENTRY_ENABLED === 'true'
-
-// Label the uploaded source-map bundle by the OS it was built on, so the
-// per-platform bundles are distinguishable in Sentry's Source Maps view.
-const buildOs =
-  (
-    { darwin: 'macos', win32: 'windows', linux: 'linux' } as Record<
-      string,
-      string
-    >
-  )[process.platform] || process.platform
 const devtoolsConfig =
   process.env.DEBUG_PROD === 'true' || shouldUploadSourceMaps
     ? {
@@ -164,9 +154,10 @@ export default merge(baseConfig, {
             org: process.env.RI_SENTRY_ORG,
             project: process.env.RI_SENTRY_PROJECT,
             authToken: process.env.RI_SENTRY_AUTH_TOKEN,
-            // inject: false — release/dist are set in Sentry.init; this keeps
-            // dist on the uploaded source-map bundle only, not on events.
-            release: { name: version, dist: buildOs, inject: false },
+            // dist labels the source-map bundle by build OS; inject: false
+            // keeps release/dist on the uploaded bundle only (set in
+            // Sentry.init), not on events.
+            release: { name: version, dist: process.platform, inject: false },
             sourcemaps: {
               filesToDeleteAfterUpload: [
                 './redisinsight/dist/main/**/*.js.map',
