@@ -4,11 +4,7 @@ import { crashReporter } from 'electron'
 import log from 'electron-log'
 import { electronStore } from 'desktopSrc/lib/store/store'
 import { ElectronStorageItem } from 'uiSrc/electron/constants'
-import {
-  minimizeEvent,
-  scrubEvent,
-  scrubSensitiveData,
-} from 'uiSrc/services/sentry'
+import { minimizeEvent, scrubEvent } from 'uiSrc/services/sentry'
 import pkg from '../../../../package.json'
 import configInit from '../../../config.json'
 
@@ -199,37 +195,3 @@ export const setConsent = (granted: boolean): void => {
 
   log.info(`[Sentry] Consent updated: ${granted}`)
 }
-
-/**
- * Capture an exception and send to Sentry
- */
-export const captureException = (
-  error: Error,
-  context?: Record<string, unknown>,
-): string | undefined => {
-  if (!initialized) {
-    return undefined
-  }
-
-  return Sentry.captureException(error, {
-    extra: context
-      ? (scrubSensitiveData(context) as Record<string, unknown>)
-      : undefined,
-  })
-}
-
-/**
- * Set user context for Sentry
- */
-export const setUser = (anonymousId: string): void => {
-  if (!initialized) {
-    return
-  }
-
-  Sentry.setUser({ id: anonymousId })
-}
-
-/**
- * Check if Sentry is initialized
- */
-export const isSentryInitialized = (): boolean => initialized
