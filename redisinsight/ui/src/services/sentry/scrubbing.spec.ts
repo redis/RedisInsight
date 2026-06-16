@@ -84,6 +84,13 @@ describe('normalizePath', () => {
     ['/Users/jane/app/main.js', '/Users/<user>/app/main.js'],
     ['/home/jane/app/main.js', '/home/<user>/app/main.js'],
     ['C:\\Users\\jane\\app\\main.js', 'C:\\Users\\<user>\\app\\main.js'],
+    // Windows renderer frames arrive as file:// URLs with forward slashes; the
+    // `/Users/` branch handles these too (prefix-agnostic).
+    ['C:/Users/jane/app/main.js', 'C:/Users/<user>/app/main.js'],
+    [
+      'file:///C:/Users/jane/app/main.js',
+      'file:///C:/Users/<user>/app/main.js',
+    ],
   ])('strips the user segment from %s', (input, expected) => {
     expect(normalizePath(input)).toBe(expected)
   })
