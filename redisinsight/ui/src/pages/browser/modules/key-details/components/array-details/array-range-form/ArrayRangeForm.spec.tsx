@@ -75,6 +75,20 @@ describe('ArrayRangeForm', () => {
     expect(screen.getByTestId('array-range-form-run')).toBeDisabled()
   })
 
+  it('disables Run when the span exceeds the backend cap (1,000,000)', () => {
+    // span = end - start + 1 = 1_000_001, one past the cap
+    renderComponent({ start: '0', end: '1000000' })
+
+    expect(screen.getByTestId('array-range-form-run')).toBeDisabled()
+  })
+
+  it('allows Run when the span equals the backend cap (1,000,000)', () => {
+    // span = end - start + 1 = 1_000_000, exactly at the cap
+    renderComponent({ start: '0', end: '999999' })
+
+    expect(screen.getByTestId('array-range-form-run')).not.toBeDisabled()
+  })
+
   it('quotes key names containing whitespace in the command preview', () => {
     renderComponent({ keyName: 'a b' })
 

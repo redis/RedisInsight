@@ -13,8 +13,10 @@ import { parseArrayIndex } from 'uiSrc/utils/arrayIndex'
 import { CommandPreview } from '../command-preview'
 import {
   ARRAY_RANGE_FORM_TEST_ID as TEST_ID,
+  ARRAY_RANGE_MAX_SPAN,
   INVALID_INDEX_MESSAGE,
   INVALID_ORDER_MESSAGE,
+  INVALID_RANGE_TOO_LARGE_MESSAGE,
   PREVIEW_TOGGLE_ARIA_LABEL,
   PREVIEW_TOGGLE_HIDE_TOOLTIP,
   PREVIEW_TOGGLE_LABEL,
@@ -69,14 +71,24 @@ export const ArrayRangeForm = ({
   // every Redis range command). Surface the constraint inline.
   const orderInvalid =
     !startInvalid && !endInvalid && BigInt(start) > BigInt(end)
-  const rangeInvalid = startInvalid || endInvalid || orderInvalid
+  // Mirror the backend's ARRAY_RANGE_MAX_ELEMENTS cap so we fail fast
+  // instead of round-tripping a request that will 400. Span is
+  // (end - start + 1) per the inclusive-bounds contract.
+  const spanInvalid =
+    !startInvalid &&
+    !endInvalid &&
+    !orderInvalid &&
+    BigInt(end) - BigInt(start) + 1n > ARRAY_RANGE_MAX_SPAN
+  const rangeInvalid = startInvalid || endInvalid || orderInvalid || spanInvalid
 
   const startError = startInvalid ? INVALID_INDEX_MESSAGE : undefined
   const endError = endInvalid
     ? INVALID_INDEX_MESSAGE
     : orderInvalid
       ? INVALID_ORDER_MESSAGE
-      : undefined
+      : spanInvalid
+        ? INVALID_RANGE_TOO_LARGE_MESSAGE
+        : undefined
 
   const command = useMemo(() => {
     // Always surface the command verb so the preview is meaningful even
