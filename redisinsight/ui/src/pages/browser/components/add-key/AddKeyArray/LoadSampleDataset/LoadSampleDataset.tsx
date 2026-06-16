@@ -12,7 +12,7 @@ import * as S from './LoadSampleDataset.styles'
 // Presentational preview only; the bulk-import load lives in the parent's Add
 // Key action. Full data lives in backend data files, so this shows just the
 // first rows.
-const LoadSampleDataset = ({ dataset, onDatasetChange }: Props) => {
+const LoadSampleDataset = ({ dataset, onDatasetChange, disabled }: Props) => {
   const remaining = dataset.elementCount - dataset.previewRows.length
 
   return (
@@ -20,6 +20,7 @@ const LoadSampleDataset = ({ dataset, onDatasetChange }: Props) => {
       <RiSelect
         value={dataset.collectionName}
         options={DATASET_OPTIONS}
+        disabled={disabled}
         onChange={(value) => {
           const next = SAMPLE_DATASETS.find(
             ({ collectionName }) => collectionName === value,

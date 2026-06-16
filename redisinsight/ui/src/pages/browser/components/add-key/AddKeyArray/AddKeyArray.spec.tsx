@@ -340,6 +340,27 @@ describe('AddKeyArray', () => {
       expect(onCancel).toHaveBeenCalled()
     })
 
+    it('should lock the dataset select while a sample import is in flight', async () => {
+      let resolveLoad: (overview: unknown) => void = () => {}
+      mockLoad.mockReturnValue(
+        new Promise((resolve) => {
+          resolveLoad = resolve
+        }),
+      )
+      renderComponent()
+
+      selectSampleMode()
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('add-key-array-btn'))
+      })
+
+      expect(screen.getByTestId('sample-dataset-select')).toBeDisabled()
+
+      await act(async () => {
+        resolveLoad(succeededOverview())
+      })
+    })
+
     describe('on a production database', () => {
       beforeEach(() => {
         mockUseDatabaseEnvironment.mockReturnValue({

@@ -150,6 +150,7 @@ const AddKeyArray = (props: Props) => {
         <RiRadioGroupRoot
           value={populateMode}
           onChange={(value: PopulateMode) => setPopulateMode(value)}
+          disabled={isSubmittingSampleDataset}
           data-testid="add-key-array-populate"
         >
           <S.RadioCardList gap="m">
@@ -183,7 +184,11 @@ const AddKeyArray = (props: Props) => {
       <Spacer size="l" />
       {isSampleMode ? (
         <>
-          <LoadSampleDataset dataset={dataset} onDatasetChange={setDataset} />
+          <LoadSampleDataset
+            dataset={dataset}
+            onDatasetChange={setDataset}
+            disabled={isSubmittingSampleDataset}
+          />
           {isProductionDatabase && (
             <>
               <Spacer size="m" />

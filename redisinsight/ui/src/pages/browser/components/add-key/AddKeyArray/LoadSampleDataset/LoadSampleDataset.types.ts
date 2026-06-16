@@ -11,4 +11,5 @@ export interface SampleArrayDataset {
 export interface Props {
   dataset: SampleArrayDataset
   onDatasetChange: (dataset: SampleArrayDataset) => void
+  disabled?: boolean
 }
