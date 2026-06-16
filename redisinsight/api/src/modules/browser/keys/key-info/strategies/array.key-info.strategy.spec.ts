@@ -17,8 +17,8 @@ const getKeyInfoResponse: GetKeyInfoResponse = {
   type: 'array',
   ttl: -1,
   size: 50,
-  length: 10,
-  count: 7,
+  length: '10',
+  count: '7',
 };
 
 describe('ArrayKeyInfoStrategy', () => {
@@ -34,7 +34,9 @@ describe('ArrayKeyInfoStrategy', () => {
 
   describe('getInfo', () => {
     const key = getKeyInfoResponse.name;
-    const { ttl, length, size, count } = getKeyInfoResponse;
+    const { ttl, size } = getKeyInfoResponse;
+    const rawLength = 10;
+    const rawCount = 7;
 
     describe('when includeSize is true', () => {
       it('should return ttl, length, count, and size in single pipeline', async () => {
@@ -47,8 +49,8 @@ describe('ArrayKeyInfoStrategy', () => {
           ])
           .mockResolvedValueOnce([
             [null, ttl],
-            [null, length],
-            [null, count],
+            [null, rawLength],
+            [null, rawCount],
             [null, size],
           ]);
 
@@ -60,6 +62,40 @@ describe('ArrayKeyInfoStrategy', () => {
         );
 
         expect(result).toEqual(getKeyInfoResponse);
+      });
+
+      it('should preserve u64 length and count as decimal strings', async () => {
+        // ARLEN can exceed Number.MAX_SAFE_INTEGER for sparse arrays; the
+        // strategy must surface the value as a string so precision is kept
+        // when the client passes back bigint or string replies.
+        const hugeLength = BigInt('18446744073709551610');
+        const hugeCount = '18446744073709551500';
+        when(mockStandaloneRedisClient.sendPipeline)
+          .calledWith([
+            [BrowserToolKeysCommands.Ttl, key],
+            [BrowserToolArrayCommands.ArLen, key],
+            [BrowserToolArrayCommands.ArCount, key],
+            [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],
+          ])
+          .mockResolvedValueOnce([
+            [null, ttl],
+            [null, hugeLength],
+            [null, hugeCount],
+            [null, size],
+          ]);
+
+        const result = await strategy.getInfo(
+          mockStandaloneRedisClient,
+          key,
+          RedisDataType.Array,
+          true,
+        );
+
+        expect(result).toEqual({
+          ...getKeyInfoResponse,
+          length: '18446744073709551610',
+          count: '18446744073709551500',
+        });
       });
     });
 
@@ -73,7 +109,7 @@ describe('ArrayKeyInfoStrategy', () => {
           ])
           .mockResolvedValueOnce([
             [null, ttl],
-            [null, length],
+            [null, rawLength],
             [null, MAX_KEY_SIZE + 1],
           ]);
 
@@ -86,7 +122,7 @@ describe('ArrayKeyInfoStrategy', () => {
 
         expect(result).toEqual({
           ...getKeyInfoResponse,
-          count: MAX_KEY_SIZE + 1,
+          count: String(MAX_KEY_SIZE + 1),
           size: -1,
         });
       });
@@ -101,7 +137,7 @@ describe('ArrayKeyInfoStrategy', () => {
           .mockResolvedValueOnce([
             [null, ttl],
             [null, MAX_KEY_SIZE * 10],
-            [null, count],
+            [null, rawCount],
           ]);
         when(mockStandaloneRedisClient.sendPipeline)
           .calledWith([
@@ -118,7 +154,7 @@ describe('ArrayKeyInfoStrategy', () => {
 
         expect(result).toEqual({
           ...getKeyInfoResponse,
-          length: MAX_KEY_SIZE * 10,
+          length: String(MAX_KEY_SIZE * 10),
         });
       });
 
@@ -131,8 +167,8 @@ describe('ArrayKeyInfoStrategy', () => {
           ])
           .mockResolvedValueOnce([
             [null, ttl],
-            [null, length],
-            [null, count],
+            [null, rawLength],
+            [null, rawCount],
           ]);
         when(mockStandaloneRedisClient.sendPipeline)
           .calledWith([
