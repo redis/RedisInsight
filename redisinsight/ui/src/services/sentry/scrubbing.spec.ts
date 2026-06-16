@@ -5,6 +5,7 @@ import {
   minimizeEvent,
   normalizePath,
   scrubEvent,
+  scrubSecretsInText,
   scrubSensitiveData,
 } from './scrubbing'
 
@@ -44,11 +45,52 @@ describe('scrubSensitiveData', () => {
   })
 })
 
+describe('scrubSecretsInText', () => {
+  it('redacts credentials embedded in connection URIs', () => {
+    expect(
+      scrubSecretsInText('connect redis://user:p4ss@host:6379 failed'),
+    ).toBe(`connect redis://${REDACTED}@host:6379 failed`)
+    expect(scrubSecretsInText('rediss://default:secret@h')).toBe(
+      `rediss://${REDACTED}@h`,
+    )
+  })
+
+  it('redacts secret assignments in free text', () => {
+    expect(scrubSecretsInText('password=hunter2 ok')).toBe(
+      `password=${REDACTED} ok`,
+    )
+    expect(scrubSecretsInText('token: abc.def')).toBe(`token: ${REDACTED}`)
+    expect(scrubSecretsInText('apiKey="xyz"')).toBe(`apiKey=${REDACTED}`)
+  })
+
+  it('leaves clean text and credential-free URLs intact', () => {
+    expect(scrubSecretsInText('connection refused')).toBe('connection refused')
+    expect(scrubSecretsInText('https://example.com/api?id=1')).toBe(
+      'https://example.com/api?id=1',
+    )
+    expect(scrubSecretsInText('compass bearing set')).toBe(
+      'compass bearing set',
+    )
+  })
+
+  it('returns falsy input unchanged', () => {
+    expect(scrubSecretsInText(undefined)).toBeUndefined()
+    expect(scrubSecretsInText('')).toBe('')
+  })
+})
+
 describe('normalizePath', () => {
   it.each([
     ['/Users/jane/app/main.js', '/Users/<user>/app/main.js'],
     ['/home/jane/app/main.js', '/home/<user>/app/main.js'],
     ['C:\\Users\\jane\\app\\main.js', 'C:\\Users\\<user>\\app\\main.js'],
+    // Windows renderer frames arrive as file:// URLs with forward slashes; the
+    // `/Users/` branch handles these too (prefix-agnostic).
+    ['C:/Users/jane/app/main.js', 'C:/Users/<user>/app/main.js'],
+    [
+      'file:///C:/Users/jane/app/main.js',
+      'file:///C:/Users/<user>/app/main.js',
+    ],
   ])('strips the user segment from %s', (input, expected) => {
     expect(normalizePath(input)).toBe(expected)
   })
@@ -107,6 +149,53 @@ describe('scrubEvent', () => {
     const frame = scrubEvent(event).exception!.values![0].stacktrace!.frames![0]
     expect(frame.filename).toBe('/Users/<user>/app/x.js')
     expect(frame.abs_path).toBe('/Users/<user>/app/x.js')
+  })
+
+  it('redacts secrets in message, exception value, breadcrumb message and request', () => {
+    const event: Event = {
+      message: 'connect redis://user:pw@host failed',
+      exception: {
+        values: [{ type: 'Error', value: 'auth to redis://u:p@h failed' }],
+      },
+      breadcrumbs: [{ message: 'using token: abc123' }],
+      request: { url: 'redis://user:pw@host/0', query_string: 'password=x' },
+    }
+
+    const result = scrubEvent(event)
+
+    expect(result.message).toBe(`connect redis://${REDACTED}@host failed`)
+    expect(result.exception!.values![0].value).toBe(
+      `auth to redis://${REDACTED}@h failed`,
+    )
+    expect(result.breadcrumbs?.[0].message).toBe(`using token: ${REDACTED}`)
+    expect((result.request as any).url).toBe(`redis://${REDACTED}@host/0`)
+    expect((result.request as any).query_string).toBe(`password=${REDACTED}`)
+  })
+
+  it('scrubs secrets from frame source context', () => {
+    const event: Event = {
+      exception: {
+        values: [
+          {
+            type: 'Error',
+            value: 'x',
+            stacktrace: {
+              frames: [
+                {
+                  filename: '/app/db.js',
+                  context_line: "connect('redis://u:pw@h')",
+                  pre_context: ['const token = "abc123secret"'],
+                },
+              ],
+            },
+          },
+        ],
+      },
+    }
+
+    const frame = scrubEvent(event).exception!.values![0].stacktrace!.frames![0]
+    expect(frame.context_line).toBe(`connect('redis://${REDACTED}@h')`)
+    expect(frame.pre_context?.[0]).toContain(REDACTED)
   })
 
   it('clears server_name and the client IP', () => {

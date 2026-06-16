@@ -94,7 +94,7 @@ const initCrashReporter = (dsn: string, environment: string): void => {
  * Initialize Sentry for Electron main process.
  *
  * Configuration via environment variables:
- * - RI_SENTRY_ENABLED: 'true' to enable
+ * - RI_SENTRY_ENABLED: 'true' or '1' to enable
  * - RI_SENTRY_DSN: Sentry DSN
  * - RI_SENTRY_ENVIRONMENT: Environment name (default: 'development')
  */
@@ -104,7 +104,9 @@ export const initSentry = (): void => {
   }
 
   const dsn = process.env.RI_SENTRY_DSN
-  const enabled = process.env.RI_SENTRY_ENABLED === 'true'
+  // Match the renderer/web config's `booleanEnv` semantics ('true' OR '1') so
+  // the main and renderer layers don't diverge on e.g. RI_SENTRY_ENABLED=1.
+  const enabled = ['true', '1'].includes(process.env.RI_SENTRY_ENABLED ?? '')
   const environment = process.env.RI_SENTRY_ENVIRONMENT || 'development'
 
   if (!enabled || !dsn) {

@@ -81,6 +81,37 @@ export const scrubSensitiveData = (obj: unknown): unknown => {
 }
 
 /**
+ * Credentials embedded in a connection URI's userinfo:
+ *   redis://user:pass@host:6379  ->  redis://[REDACTED]@host:6379
+ * Covers this app's most likely leak — Redis connection strings (redis://,
+ * rediss://) carrying a password inside a thrown error or log line. Only URIs
+ * with userinfo (an `@` before the host) match, so plain URLs are left intact.
+ */
+const URI_CREDENTIALS = /([a-z][a-z0-9+.-]*:\/\/)[^/\s@]+@/gi
+
+/**
+ * `password=...`, `token: ...`, `apiKey="..."` style assignments. Keyword-driven
+ * like SENSITIVE_FIELDS; redacts the value, keeps the key for context. Anchored
+ * on word boundaries so substrings ("compass", "tokens") do not match.
+ */
+const SECRET_ASSIGNMENT =
+  /\b(pass(?:word|phrase|wd)?|pwd|secret|token|api[-_]?key|apikey|auth(?:orization)?|credentials?)(\s*[:=]\s*)("[^"]*"|'[^']*'|\S+)/gi
+
+/**
+ * Redact secrets embedded in FREE-TEXT (error messages, breadcrumb messages,
+ * URLs, source-context lines). `scrubSensitiveData` only redacts by key NAME,
+ * so a secret living inside a string value — e.g. a Redis URI in a thrown
+ * error — would otherwise survive on the consented path. Best-effort
+ * (heuristic) defense-in-depth, not a guarantee.
+ */
+export const scrubSecretsInText = (text?: string): string | undefined => {
+  if (!text) return text
+  return text
+    .replace(URI_CREDENTIALS, `$1${REDACTED}@`)
+    .replace(SECRET_ASSIGNMENT, `$1$2${REDACTED}`)
+}
+
+/**
  * Replace the OS-user segment of a filesystem path with `<user>` so stack-frame
  * paths cannot leak the account/owner name (PII).
  *   /Users/jane/...        -> /Users/<user>/...
@@ -98,6 +129,14 @@ const normalizeFrame = (frame: StackFrame): StackFrame => ({
   ...frame,
   filename: normalizePath(frame.filename),
   abs_path: normalizePath(frame.abs_path),
+  // Source context lines can contain hard-coded secrets.
+  context_line: scrubSecretsInText(frame.context_line),
+  pre_context: frame.pre_context?.map(
+    (line) => scrubSecretsInText(line) ?? line,
+  ),
+  post_context: frame.post_context?.map(
+    (line) => scrubSecretsInText(line) ?? line,
+  ),
 })
 
 const normalizeFrames = (event: Event): void => {
@@ -114,6 +153,20 @@ const normalizeFrames = (event: Event): void => {
  * strips host/IP identifiers that Sentry would otherwise attach.
  */
 export const scrubEvent = <T extends Event>(event: T): T => {
+  // Free-text fields: redact secrets embedded inside the string itself, since
+  // scrubSensitiveData only redacts by key name (a Redis URI in the message
+  // would otherwise pass through on the consented path).
+  if (typeof event.message === 'string') {
+    event.message = scrubSecretsInText(event.message) ?? event.message
+  }
+  if (event.exception?.values) {
+    event.exception.values.forEach((value) => {
+      if (typeof value.value === 'string') {
+        value.value = scrubSecretsInText(value.value) ?? value.value
+      }
+    })
+  }
+
   if (event.extra) {
     event.extra = scrubSensitiveData(event.extra) as Event['extra']
   }
@@ -121,12 +174,23 @@ export const scrubEvent = <T extends Event>(event: T): T => {
     event.contexts = scrubSensitiveData(event.contexts) as Event['contexts']
   }
   if (event.request) {
-    event.request = scrubSensitiveData(event.request) as Event['request']
+    const request = scrubSensitiveData(event.request) as Event['request']
+    if (request) {
+      if (typeof request.url === 'string') {
+        request.url = scrubSecretsInText(request.url) ?? request.url
+      }
+      if (typeof request.query_string === 'string') {
+        request.query_string =
+          scrubSecretsInText(request.query_string) ?? request.query_string
+      }
+    }
+    event.request = request
   }
   if (event.breadcrumbs) {
     event.breadcrumbs = event.breadcrumbs.map(
       (breadcrumb): Breadcrumb => ({
         ...breadcrumb,
+        message: scrubSecretsInText(breadcrumb.message),
         data: scrubSensitiveData(breadcrumb.data) as Breadcrumb['data'],
       }),
     )
