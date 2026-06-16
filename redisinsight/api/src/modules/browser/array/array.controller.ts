@@ -58,7 +58,8 @@ export class ArrayController extends BrowserBaseController {
   @ApiOperation({
     description:
       'Read a range of elements from the array stored at key (ARGETRANGE). ' +
-      'Empty slots are returned as null; range is inclusive and reversible.',
+      'Empty slots are returned as null. The range is inclusive and ' +
+      'requires start ≤ end; a reversed range is rejected with 400.',
   })
   @ApiRedisParams()
   @ApiOkResponse({ type: GetArrayRangeResponse })
@@ -75,7 +76,8 @@ export class ArrayController extends BrowserBaseController {
   @ApiOperation({
     description:
       'Scan a range of populated elements from the array stored at key (ARSCAN). ' +
-      'Empty slots are skipped.',
+      'Empty slots are skipped. The range is inclusive and requires ' +
+      'start ≤ end; a reversed range is rejected with 400.',
   })
   @ApiRedisParams()
   @ApiOkResponse({ type: GetArrayScanResponse })

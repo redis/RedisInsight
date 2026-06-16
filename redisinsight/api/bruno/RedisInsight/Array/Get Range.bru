@@ -22,16 +22,15 @@ docs {
   # ARGETRANGE
 
   Read an inclusive range of elements from an Array key. Empty slots are
-  returned as `null`. The range is reversible (`start` > `end` returns the
-  range reversed).
+  returned as `null`. `start` must be less than or equal to `end`.
 
   ## Request body
 
-  | Field     | Type   | Notes                                                    |
-  |-----------|--------|----------------------------------------------------------|
-  | `keyName` | string | The Array key name.                                      |
-  | `start`   | string | Inclusive start index. Unsigned 64-bit integer as string.|
-  | `end`     | string | Inclusive end index. Unsigned 64-bit integer as string.  |
+  | Field     | Type   | Notes                                                     |
+  |-----------|--------|-----------------------------------------------------------|
+  | `keyName` | string | The Array key name.                                       |
+  | `start`   | string | Inclusive start index. Unsigned 64-bit integer as string. |
+  | `end`     | string | Inclusive end index. Unsigned 64-bit integer as string. Must be ≥ `start`. |
 
   ## Response
 
@@ -46,7 +45,7 @@ docs {
 
   | Status | When |
   |--------|------|
-  | `400`  | Range exceeds 1,000,000 elements per call, or the key holds a non-array type. |
+  | `400`  | `start` is greater than `end`, range exceeds 1,000,000 elements per call, or the key holds a non-array type. |
   | `403`  | User has no permission for `ARGETRANGE`. |
   | `404`  | Key does not exist. |
 }
