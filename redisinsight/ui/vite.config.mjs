@@ -81,8 +81,8 @@ export default defineConfig({
     //   include: [/\.(js)$/, /\.(css)$/],
     //   deleteOriginalAssets: true
     // }),
-    // Upload renderer source maps to Sentry (debug IDs match bundle↔map), then
-    // delete them so they never ship inside the app. Gated on
+    // Upload source maps to Sentry (debug IDs match bundle↔map), then delete
+    // them so they never ship inside the app (Electron renderer or web). Gated on
     // shouldUploadSourceMaps (Sentry enabled + auth token). Must stay last.
     ...(shouldUploadSourceMaps
       ? [
@@ -99,7 +99,10 @@ export default defineConfig({
               inject: false,
             },
             sourcemaps: {
-              filesToDeleteAfterUpload: ['../dist/renderer/**/*.js.map'],
+              // Delete maps from whichever outDir this build wrote to
+              // (`../dist/renderer` for Electron, `./dist` for web/Docker) so
+              // they are never shipped.
+              filesToDeleteAfterUpload: [`${outDir}/**/*.js.map`],
             },
             telemetry: false,
             // A failed source-map upload must not fail the build.
