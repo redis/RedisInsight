@@ -18,4 +18,11 @@ export interface ArrayRangeFormProps {
    * actual reset semantics (resetting Redux state alongside form state).
    */
   onReset?: () => void
+  /**
+   * Disables the Run / Reset actions in addition to the form's internal
+   * range validation. Container passes `true` while the selected key's
+   * confirmed type/name has not caught up with the clicked key yet so a
+   * quick click cannot dispatch a query against a non-array key.
+   */
+  disabled?: boolean
 }

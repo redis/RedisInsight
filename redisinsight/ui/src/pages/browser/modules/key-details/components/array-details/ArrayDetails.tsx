@@ -44,6 +44,7 @@ const ArrayDetails = (props: Props) => {
     setShowEmpty,
     runQuery,
     resetQuery,
+    isArrayKeyReady,
     elements,
     loading: rangeLoading,
   } = useArrayRangeQuery(keyProp)
@@ -62,6 +63,11 @@ const ArrayDetails = (props: Props) => {
         onToggleShowEmpty={setShowEmpty}
         onRun={runQuery}
         onReset={resetQuery}
+        // While the selected-key slice hasn't caught up with `keyProp`
+        // (or the resolved type isn't Array), disable manual actions —
+        // the hook also guards internally but this gives the user
+        // immediate feedback rather than a no-op click.
+        disabled={!isArrayKeyReady}
       />
       <S.DetailsBody>
         {!loading && (

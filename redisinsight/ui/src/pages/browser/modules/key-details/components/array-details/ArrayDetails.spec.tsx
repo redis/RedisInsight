@@ -30,6 +30,7 @@ jest.mock('./hooks', () => ({
     setShowEmpty: jest.fn(),
     runQuery: jest.fn(),
     resetQuery: jest.fn(),
+    isArrayKeyReady: true,
     elements: [],
     loading: false,
   }),

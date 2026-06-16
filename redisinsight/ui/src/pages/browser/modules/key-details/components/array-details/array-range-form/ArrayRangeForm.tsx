@@ -58,6 +58,7 @@ export const ArrayRangeForm = ({
   onToggleShowEmpty,
   onRun,
   onReset,
+  disabled = false,
 }: ArrayRangeFormProps) => {
   const [previewVisible, setPreviewVisible] = useState(false)
 
@@ -167,7 +168,7 @@ export const ArrayRangeForm = ({
                 size="M"
                 icon={ResetIcon}
                 onClick={onReset}
-                disabled={loading}
+                disabled={loading || disabled}
                 aria-label="Reset array range form"
                 data-testid={`${TEST_ID}-reset`}
               />
@@ -177,7 +178,7 @@ export const ArrayRangeForm = ({
         <FlexItem grow={false}>
           <PrimaryButton
             onClick={() => onRun()}
-            disabled={rangeInvalid || loading}
+            disabled={rangeInvalid || loading || disabled}
             data-testid={`${TEST_ID}-run`}
           >
             {RUN_BUTTON_LABEL}

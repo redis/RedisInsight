@@ -39,9 +39,21 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
   const [end, setEnd] = useState<string>(DEFAULT_RANGE_END)
   const [showEmpty, setShowEmpty] = useState<boolean>(true)
 
+  // True only once `fetchKeyInfo` has resolved and the resulting
+  // `selectedKeyData` matches the currently selected `keyProp` AND has
+  // type Array. Manual user actions (Run / Reset) are gated on this so a
+  // quick click during the key-switch window can't dispatch ARGETRANGE /
+  // ARSCAN against a non-array key (which the API rejects with a
+  // WrongType 400). The auto-fetch effect uses the same condition.
+  const isArrayKeyReady =
+    !!keyProp &&
+    selectedKeyData?.type === KeyTypes.Array &&
+    !!selectedKeyData?.name &&
+    isEqualBuffers(selectedKeyData.name, keyProp)
+
   const runQuery = useCallback(
     (nextStart: string = start, nextEnd: string = end) => {
-      if (!keyProp) return
+      if (!isArrayKeyReady || !keyProp) return
       if (showEmpty) {
         dispatch(
           fetchArrayRange({
@@ -60,7 +72,7 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
         )
       }
     },
-    [dispatch, keyProp, showEmpty, start, end],
+    [dispatch, isArrayKeyReady, keyProp, showEmpty, start, end],
   )
 
   // Detect key switches by raw-buffer byte equality so two binary-distinct
@@ -102,20 +114,13 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
   }, [dispatch, keyProp])
 
   useEffect(() => {
-    if (!keyProp) return
     // Gate on confirmed type from the selected-key slice: until
     // `fetchKeyInfo` resolves with `type === Array` and a `name` that
     // matches our `keyProp`, dispatching ARGETRANGE would hit the API
     // with a key of unknown / mismatched type and surface a WrongType
     // 400. Skip silently — this effect refires when the slice catches
     // up.
-    if (
-      selectedKeyData?.type !== KeyTypes.Array ||
-      !selectedKeyData?.name ||
-      !isEqualBuffers(selectedKeyData.name, keyProp)
-    ) {
-      return
-    }
+    if (!isArrayKeyReady || !keyProp) return
     // Fire only once per key switch; subsequent renders for the same
     // confirmed selection (e.g. unrelated slice updates) must not refire.
     if (
@@ -132,7 +137,7 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
         end: DEFAULT_RANGE_END,
       }),
     )
-  }, [dispatch, keyProp, selectedKeyData?.type, selectedKeyData?.name])
+  }, [dispatch, isArrayKeyReady, keyProp])
 
   // On unmount (e.g. user navigates away from an array key), cancel any
   // in-flight range/scan so its late response can't land into a stale
@@ -143,11 +148,13 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
   // Restore form defaults and refire the default-range query. The slice
   // is intentionally NOT wiped — keeping the current data prevents a
   // visible "blank" flicker between reset and the fresh ARGETRANGE.
+  // Same readiness gate as `runQuery` so a Reset click during a key
+  // switch can't dispatch against a non-array key either.
   const resetQuery = useCallback(() => {
     setStart(DEFAULT_RANGE_START)
     setEnd(DEFAULT_RANGE_END)
     setShowEmpty(true)
-    if (!keyProp) return
+    if (!isArrayKeyReady || !keyProp) return
     dispatch(
       fetchArrayRange({
         key: keyProp,
@@ -155,7 +162,7 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
         end: DEFAULT_RANGE_END,
       }),
     )
-  }, [dispatch, keyProp])
+  }, [dispatch, isArrayKeyReady, keyProp])
 
   return {
     start,
@@ -166,6 +173,7 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
     setShowEmpty,
     runQuery,
     resetQuery,
+    isArrayKeyReady,
     elements: data?.elements ?? [],
     loading,
     error,
