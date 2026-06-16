@@ -21,6 +21,7 @@ import { IBulkActionOverview } from 'src/modules/bulk-actions/interfaces/bulk-ac
 import {
   UploadImportFileByPathDto,
   ImportVectorCollectionDto,
+  ImportArrayCollectionDto,
 } from 'src/modules/bulk-actions/dto/upload-import-file-by-path.dto';
 
 @UsePipes(new ValidationPipe({ transform: true }))
@@ -104,5 +105,22 @@ export class BulkImportController {
     @ClientMetadataParam() clientMetadata: ClientMetadata,
   ): Promise<IBulkActionOverview> {
     return this.service.importVectorCollection(clientMetadata, dto);
+  }
+
+  @Post('/array-collection')
+  @HttpCode(200)
+  @ApiEndpoint({
+    description: 'Import array collection data',
+    responses: [
+      {
+        type: Object,
+      },
+    ],
+  })
+  async importArrayCollection(
+    @Body() dto: ImportArrayCollectionDto,
+    @ClientMetadataParam() clientMetadata: ClientMetadata,
+  ): Promise<IBulkActionOverview> {
+    return this.service.importArrayCollection(clientMetadata, dto);
   }
 }

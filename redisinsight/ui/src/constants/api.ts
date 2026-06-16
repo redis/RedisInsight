@@ -15,6 +15,7 @@ enum ApiEndpoints {
   BULK_ACTIONS_IMPORT_DEFAULT_DATA = 'bulk-actions/import/default-data',
   BULK_ACTIONS_IMPORT_TUTORIAL_DATA = 'bulk-actions/import/tutorial-data',
   BULK_ACTIONS_IMPORT_VECTOR_COLLECTION = 'bulk-actions/import/vector-collection',
+  BULK_ACTIONS_IMPORT_ARRAY_COLLECTION = 'bulk-actions/import/array-collection',
 
   CA_CERTIFICATES = 'certificates/ca',
   CLIENT_CERTIFICATES = 'certificates/client',
