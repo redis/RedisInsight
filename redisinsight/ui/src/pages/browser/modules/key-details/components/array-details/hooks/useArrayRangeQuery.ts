@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import {
+  abortArrayRange,
   arrayDataSelector,
   arraySelector,
   fetchArrayRange,
@@ -91,6 +92,12 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
       }),
     )
   }, [dispatch, keyProp])
+
+  // On unmount (e.g. user navigates away from an array key), cancel any
+  // in-flight range/scan so its late response can't land into a stale
+  // slice. The slice-level controller is shared between range and scan,
+  // so this also covers a pending ARSCAN.
+  useEffect(() => () => abortArrayRange(), [])
 
   // Restore form defaults and refire the default-range query. The slice
   // is intentionally NOT wiped — keeping the current data prevents a

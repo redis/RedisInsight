@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { cloneDeep } from 'lodash'
 import { apiService } from 'uiSrc/services'
 import { IAddInstanceErrorPayload } from 'uiSrc/slices/app/notifications'
@@ -10,6 +11,7 @@ import {
 import { MOCK_TIMESTAMP } from 'uiSrc/mocks/data/dateNow'
 
 import reducer, {
+  abortArrayRange,
   initialState,
   setArrayInitialState,
   setArrayActiveQuery,
@@ -241,6 +243,84 @@ describe('array slice', () => {
           loadArrayScanSuccess(response.data),
           updateSelectedKeyRefreshTime(MOCK_TIMESTAMP),
         ])
+      })
+    })
+
+    describe('abort plumbing (race-safety)', () => {
+      afterEach(() => abortArrayRange())
+
+      it('passes an AbortSignal to apiService.post', async () => {
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, elements: [] },
+        })
+
+        await store.dispatch<any>(
+          fetchArrayRange({ key: mockKey, start: '0', end: '1' }),
+        )
+
+        const [, , config] = (apiService.post as jest.Mock).mock.calls[0]
+        expect(config?.signal).toBeInstanceOf(AbortSignal)
+      })
+
+      it('does not dispatch success/failure when the request is aborted', async () => {
+        let capturedSignal: AbortSignal | undefined
+        apiService.post = jest
+          .fn()
+          .mockImplementation((_url, _body, config) => {
+            capturedSignal = config?.signal
+            return new Promise((_resolve, reject) => {
+              capturedSignal?.addEventListener('abort', () => {
+                reject(new axios.Cancel('aborted by client'))
+              })
+            })
+          })
+
+        const dispatchPromise = store.dispatch<any>(
+          fetchArrayRange({ key: mockKey, start: '0', end: '1' }),
+        )
+
+        abortArrayRange()
+        await dispatchPromise
+
+        expect(store.getActions()).toEqual([
+          loadArrayRange(undefined),
+          setArrayActiveQuery({ start: '0', end: '1', showEmpty: true }),
+        ])
+      })
+
+      it('aborts the previous in-flight range request when a newer dispatch is made', async () => {
+        const signals: AbortSignal[] = []
+        apiService.post = jest
+          .fn()
+          .mockImplementation((_url, _body, config) => {
+            signals.push(config?.signal)
+            return new Promise((resolve, reject) => {
+              config?.signal?.addEventListener('abort', () => {
+                reject(new axios.Cancel('aborted by client'))
+              })
+              // Resolve only the second call; the first stays pending so the
+              // newer dispatch can abort it.
+              if (signals.length > 1) {
+                resolve({
+                  status: 200,
+                  data: { keyName: mockKey, elements: ['b'] },
+                })
+              }
+            })
+          })
+
+        const first = store.dispatch<any>(
+          fetchArrayRange({ key: mockKey, start: '0', end: '1' }),
+        )
+        const second = store.dispatch<any>(
+          scanArrayRange({ key: mockKey, start: '2', end: '3' }),
+        )
+
+        await Promise.all([first, second])
+
+        expect(signals[0].aborted).toBe(true)
+        expect(signals[1].aborted).toBe(false)
       })
     })
 

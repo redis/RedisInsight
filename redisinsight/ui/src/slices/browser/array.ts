@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AxiosError } from 'axios'
+import axios, { AxiosError } from 'axios'
 import { IAddInstanceErrorPayload } from 'uiSrc/slices/app/notifications'
 import {
   GetArrayCountResponse,
@@ -177,9 +177,33 @@ const encodingParams = (state: RootState) => ({
   params: { encoding: state.app.info.encoding },
 })
 
+/**
+ * Module-scoped controller shared between `fetchArrayRange` and
+ * `scanArrayRange` since both write to the same `data.elements` slice.
+ * A newer dispatch aborts the previous in-flight request so a slower
+ * response for a previously selected key can't land on top of the
+ * fresh selection's data. Mirrors the pattern used by Vector Set's
+ * similarity-search preview.
+ */
+let arrayRangeController: AbortController | null = null
+
+/**
+ * Abort the in-flight ARGETRANGE / ARSCAN request (if any) so its late
+ * response cannot dispatch into the just-cleared slice. Called by the
+ * View tab hook on unmount; safe no-op when nothing is in flight.
+ */
+export const abortArrayRange = (): void => {
+  arrayRangeController?.abort()
+  arrayRangeController = null
+}
+
 // ARGETRANGE — gap-preserving fetch of a contiguous slot range.
 export function fetchArrayRange(params: FetchArrayRangeParams) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    arrayRangeController?.abort()
+    const controller = new AbortController()
+    arrayRangeController = controller
+
     dispatch(loadArrayRange(params.resetData))
     dispatch(
       setArrayActiveQuery({
@@ -193,16 +217,24 @@ export function fetchArrayRange(params: FetchArrayRangeParams) {
       const { data, status } = await apiService.post<GetArrayRangeResponse>(
         arrayUrl(state, ApiEndpoints.ARRAY_GET_RANGE),
         { keyName: params.key, start: params.start, end: params.end },
-        encodingParams(state),
+        { ...encodingParams(state), signal: controller.signal },
       )
+      if (controller.signal.aborted) return
       if (isStatusSuccessful(status)) {
         dispatch(loadArrayRangeSuccess({ start: params.start, response: data }))
         dispatch(updateSelectedKeyRefreshTime(Date.now()))
       }
     } catch (error) {
+      if (axios.isCancel(error)) return
       const errorMessage = getApiErrorMessage(error as AxiosError)
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
       dispatch(loadArrayRangeFailure(errorMessage))
+    } finally {
+      // Only clear the module-scoped controller if it still points to ours
+      // — a later dispatch may have already swapped a fresh one in.
+      if (arrayRangeController === controller) {
+        arrayRangeController = null
+      }
     }
   }
 }
@@ -210,6 +242,10 @@ export function fetchArrayRange(params: FetchArrayRangeParams) {
 // ARSCAN — populated-only fetch within a slot range. Gaps are skipped.
 export function scanArrayRange(params: FetchArrayScanParams) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    arrayRangeController?.abort()
+    const controller = new AbortController()
+    arrayRangeController = controller
+
     dispatch(loadArrayRange(params.resetData))
     dispatch(
       setArrayActiveQuery({
@@ -228,16 +264,22 @@ export function scanArrayRange(params: FetchArrayScanParams) {
           end: params.end,
           ...(params.limit !== undefined ? { limit: params.limit } : {}),
         },
-        encodingParams(state),
+        { ...encodingParams(state), signal: controller.signal },
       )
+      if (controller.signal.aborted) return
       if (isStatusSuccessful(status)) {
         dispatch(loadArrayScanSuccess(data))
         dispatch(updateSelectedKeyRefreshTime(Date.now()))
       }
     } catch (error) {
+      if (axios.isCancel(error)) return
       const errorMessage = getApiErrorMessage(error as AxiosError)
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
       dispatch(loadArrayRangeFailure(errorMessage))
+    } finally {
+      if (arrayRangeController === controller) {
+        arrayRangeController = null
+      }
     }
   }
 }
