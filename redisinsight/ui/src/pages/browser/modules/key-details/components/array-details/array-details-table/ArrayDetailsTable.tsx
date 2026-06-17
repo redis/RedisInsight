@@ -42,9 +42,13 @@ const ArrayDetailsTable = memo(
       [compressor, viewFormat],
     )
 
+    // Use `||` rather than `??` here: the array slice clears `error` to `''`
+    // after a successful request, and `''` is not nullish, so `??` would
+    // surface the empty string and the table would render with no text on
+    // an empty-but-successful range/scan.
     const emptyState = loading
       ? ARRAY_TABLE_LOADING_MESSAGE
-      : (error ?? ARRAY_TABLE_EMPTY_MESSAGE)
+      : error || ARRAY_TABLE_EMPTY_MESSAGE
 
     return (
       <S.Container data-testid={TEST_ID}>

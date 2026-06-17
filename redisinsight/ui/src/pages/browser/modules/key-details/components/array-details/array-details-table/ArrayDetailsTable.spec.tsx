@@ -80,4 +80,11 @@ describe('ArrayDetailsTable', () => {
     expect(screen.getByText('Loading…')).toBeInTheDocument()
     expect(screen.queryByText('Network unreachable')).not.toBeInTheDocument()
   })
+
+  it('falls back to the default empty message when error is an empty string', () => {
+    // The array slice resets `error` to `''` after a successful request, so
+    // a nullish-only fallback would leave the table blank on an empty range.
+    renderComponent([], false, '')
+    expect(screen.getByText('No elements in range')).toBeInTheDocument()
+  })
 })
