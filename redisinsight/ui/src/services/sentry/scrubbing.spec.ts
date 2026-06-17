@@ -211,6 +211,24 @@ describe('scrubEvent', () => {
     expect(frame.pre_context?.[0]).toContain(REDACTED)
   })
 
+  it('redacts secrets in breadcrumb data URLs and normalizes request url', () => {
+    const event: Event = {
+      breadcrumbs: [
+        { data: { url: 'https://api.example.com/x?access_token=abc123' } },
+      ],
+      request: { url: 'file:///C:/Users/jane/dist/renderer/index.html' },
+    }
+
+    const result = scrubEvent(event)
+
+    expect(result.breadcrumbs?.[0].data?.url).toBe(
+      `https://api.example.com/x?access_token=${REDACTED}`,
+    )
+    expect((result.request as any).url).toBe(
+      'file:///C:/Users/<user>/dist/renderer/index.html',
+    )
+  })
+
   it('clears server_name and the client IP', () => {
     const event: Event = {
       server_name: 'jane-macbook',

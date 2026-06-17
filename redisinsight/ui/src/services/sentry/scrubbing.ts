@@ -123,6 +123,26 @@ export const scrubSecretsInText = (text?: string): string | undefined => {
 }
 
 /**
+ * Recursively run `scrubSecretsInText` over every string in a structured value.
+ * `scrubSensitiveData` only redacts by key NAME, so this is what catches secrets
+ * that live inside string VALUES — e.g. a token in a breadcrumb's `data.url`.
+ */
+const scrubSecretsDeep = (value: unknown): unknown => {
+  if (typeof value === 'string') {
+    return scrubSecretsInText(value)
+  }
+  if (Array.isArray(value)) {
+    return value.map((item) => scrubSecretsDeep(item))
+  }
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, val]) => [key, scrubSecretsDeep(val)]),
+    )
+  }
+  return value
+}
+
+/**
  * Replace the OS-user segment of a filesystem path with `<user>` so stack-frame
  * paths cannot leak the account/owner name (PII).
  *   /Users/jane/...        -> /Users/<user>/...
@@ -178,22 +198,26 @@ export const scrubEvent = <T extends Event>(event: T): T => {
     })
   }
 
+  // Structured bags: redact by key name (scrubSensitiveData) AND scrub secrets
+  // inside string values (scrubSecretsDeep) — a token in `data.url`/`request.url`
+  // lives in a value, not a sensitive key, so key-redaction alone misses it.
   if (event.extra) {
-    event.extra = scrubSensitiveData(event.extra) as Event['extra']
+    event.extra = scrubSecretsDeep(
+      scrubSensitiveData(event.extra),
+    ) as Event['extra']
   }
   if (event.contexts) {
-    event.contexts = scrubSensitiveData(event.contexts) as Event['contexts']
+    event.contexts = scrubSecretsDeep(
+      scrubSensitiveData(event.contexts),
+    ) as Event['contexts']
   }
   if (event.request) {
-    const request = scrubSensitiveData(event.request) as Event['request']
-    if (request) {
-      if (typeof request.url === 'string') {
-        request.url = scrubSecretsInText(request.url) ?? request.url
-      }
-      if (typeof request.query_string === 'string') {
-        request.query_string =
-          scrubSecretsInText(request.query_string) ?? request.query_string
-      }
+    const request = scrubSecretsDeep(
+      scrubSensitiveData(event.request),
+    ) as Event['request']
+    // The page URL can be a file:///C:/Users/<name>/… path on Windows.
+    if (request && typeof request.url === 'string') {
+      request.url = normalizePath(request.url) ?? request.url
     }
     event.request = request
   }
@@ -202,7 +226,9 @@ export const scrubEvent = <T extends Event>(event: T): T => {
       (breadcrumb): Breadcrumb => ({
         ...breadcrumb,
         message: scrubSecretsInText(breadcrumb.message),
-        data: scrubSensitiveData(breadcrumb.data) as Breadcrumb['data'],
+        data: scrubSecretsDeep(
+          scrubSensitiveData(breadcrumb.data),
+        ) as Breadcrumb['data'],
       }),
     )
   }
