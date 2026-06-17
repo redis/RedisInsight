@@ -4,7 +4,6 @@ import { init as reactInit } from '@sentry/react'
 import { getConfig } from 'uiSrc/config'
 import { checkIsAnalyticsGranted } from 'uiSrc/telemetry/checkAnalytics'
 import { minimizeEvent, scrubEvent } from 'uiSrc/services/sentry'
-import pkg from '../../../package.json'
 
 const riConfig = getConfig()
 
@@ -23,7 +22,7 @@ const riConfig = getConfig()
  * @see https://docs.sentry.io/platforms/javascript/guides/electron/#using-framework-specific-sdks
  */
 export const initSentry = (): void => {
-  const { sentry } = riConfig
+  const { sentry, app } = riConfig
 
   if (!sentry.enabled || !sentry.dsn) {
     console.warn('[Sentry] Disabled or DSN not configured')
@@ -34,11 +33,17 @@ export const initSentry = (): void => {
     {
       dsn: sentry.dsn,
       environment: sentry.environment,
-      release: pkg.version,
+      // Same app-version source as the Vite upload plugin and web init, so
+      // renderer events symbolicate against the uploaded maps.
+      release: app.version,
       initialScope: { tags: { 'app.layer': 'electron-renderer' } },
       // Do not attach IP / cookies / headers. (`serverName` is a Node-only
       // option; in the renderer `scrubEvent` nulls `server_name` per-event.)
       sendDefaultPii: false,
+      // Release-health session envelopes bypass `beforeSend` and would emit
+      // usage telemetry without consent — disable session tracking entirely.
+      integrations: (defaults) =>
+        defaults.filter((integration) => integration.name !== 'BrowserSession'),
       beforeBreadcrumb: (breadcrumb) =>
         checkIsAnalyticsGranted() ? breadcrumb : null,
       beforeSend(event) {

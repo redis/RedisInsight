@@ -33,6 +33,11 @@ export const initSentry = (): void => {
     release: app.version,
     initialScope: { tags: { 'app.layer': 'web' } },
     sendDefaultPii: false,
+    // Release-health session envelopes are not events, so they bypass
+    // `beforeSend` and would emit usage telemetry without consent. We do
+    // crash/error reporting only — disable session tracking entirely.
+    integrations: (defaults) =>
+      defaults.filter((integration) => integration.name !== 'BrowserSession'),
     beforeBreadcrumb: (breadcrumb) =>
       checkIsAnalyticsGranted() ? breadcrumb : null,
     beforeSend(event) {
