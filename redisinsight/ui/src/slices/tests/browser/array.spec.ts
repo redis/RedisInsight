@@ -95,6 +95,7 @@ describe('array slice', () => {
         initialState,
         loadArrayRangeSuccess({
           start: '10',
+          end: '12',
           response: {
             keyName: mockKey,
             elements: ['a', null, 'b'],
@@ -107,6 +108,25 @@ describe('array slice', () => {
         { index: '10', value: 'a' },
         { index: '11', value: null },
         { index: '12', value: 'b' },
+      ])
+    })
+
+    it('loadArrayRangeSuccess steps the offset downwards for reversed ranges', () => {
+      const next = reducer(
+        initialState,
+        loadArrayRangeSuccess({
+          start: '12',
+          end: '10',
+          response: {
+            keyName: mockKey,
+            elements: ['c', null, 'a'],
+          },
+        }),
+      )
+      expect(next.data.elements).toEqual([
+        { index: '12', value: 'c' },
+        { index: '11', value: null },
+        { index: '10', value: 'a' },
       ])
     })
 
@@ -185,7 +205,11 @@ describe('array slice', () => {
         expect(store.getActions()).toEqual([
           loadArrayRange(undefined),
           setArrayActiveQuery({ start: '0', end: '1', showEmpty: true }),
-          loadArrayRangeSuccess({ start: '0', response: response.data }),
+          loadArrayRangeSuccess({
+            start: '0',
+            end: '1',
+            response: response.data,
+          }),
           updateSelectedKeyRefreshTime(MOCK_TIMESTAMP),
         ])
       })

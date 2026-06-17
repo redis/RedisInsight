@@ -53,15 +53,19 @@ export const initialState: StateArray = {
 
 // Adapts an ARGETRANGE response (gap-preserving, parallel array starting at
 // `start`) into the slice's `{ index, value }` shape so range and scan
-// reducers can write to the same `data.elements` field.
+// reducers can write to the same `data.elements` field. Reversed ranges
+// (`start > end`) step the offset downwards so the table reflects the
+// descending order the BE returned the elements in.
 const expandRangeElements = (
   start: string,
+  end: string,
   values: GetArrayRangeResponse['elements'],
 ): ArrayDataElement[] => {
   if (!values) return []
   const base = BigInt(start)
+  const step = BigInt(start) > BigInt(end) ? BigInt(-1) : BigInt(1)
   return values.map((value, offset) => ({
-    index: (base + BigInt(offset)).toString(),
+    index: (base + BigInt(offset) * step).toString(),
     value: (value ?? null) as ArrayDataElement['value'],
   }))
 }
@@ -84,12 +88,20 @@ const arraySlice = createSlice({
       state,
       {
         payload,
-      }: PayloadAction<{ start: string; response: GetArrayRangeResponse }>,
+      }: PayloadAction<{
+        start: string
+        end: string
+        response: GetArrayRangeResponse
+      }>,
     ) => {
       state.data = {
         ...state.data,
         keyName: payload.response.keyName as RedisString,
-        elements: expandRangeElements(payload.start, payload.response.elements),
+        elements: expandRangeElements(
+          payload.start,
+          payload.end,
+          payload.response.elements,
+        ),
       }
       state.loading = false
     },
@@ -208,7 +220,13 @@ export function fetchArrayRange(params: FetchArrayRangeParams) {
       )
       if (controller.signal.aborted) return
       if (isStatusSuccessful(status)) {
-        dispatch(loadArrayRangeSuccess({ start: params.start, response: data }))
+        dispatch(
+          loadArrayRangeSuccess({
+            start: params.start,
+            end: params.end,
+            response: data,
+          }),
+        )
         dispatch(updateSelectedKeyRefreshTime(Date.now()))
       }
     } catch (error) {
