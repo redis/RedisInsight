@@ -400,15 +400,11 @@ describe('ArrayService', () => {
       ).rejects.toThrow(NotFoundException);
     });
 
-    it('should reject when range exceeds the 1M cap', async () => {
-      await expect(
-        service.scan(mockBrowserClientMetadata, {
-          ...mockGetArrayScanDto,
-          start: '0',
-          end: String(ARRAY_RANGE_MAX_ELEMENTS),
-        }),
-      ).rejects.toThrow(BadRequestException);
-    });
+    // No span cap on scan: ARSCAN skips empty slots server-side and the
+    // sparse-array use case routinely spans far more indexes than it
+    // returns. The DTO caps `limit` at ARRAY_RANGE_MAX_ELEMENTS to keep
+    // result-set size bounded — exercised via DTO validation tests, not
+    // here (the service trusts the DTO).
 
     it('should forward reversed ranges (start > end) to Redis as-is', async () => {
       when(mockStandaloneRedisClient.sendCommand)

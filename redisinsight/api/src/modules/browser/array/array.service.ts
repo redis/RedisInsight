@@ -169,8 +169,10 @@ export class ArrayService {
       this.logger.debug('Scanning array range.', clientMetadata);
       const { keyName, start, end, limit } = dto;
 
-      this.assertValidRange(start, end);
-
+      // No |end - start| span cap here (unlike ARGETRANGE): ARSCAN skips
+      // empty slots server-side and the sparse-array use case routinely
+      // spans far more indexes than it returns. LIMIT (capped on the DTO)
+      // is the natural backpressure on result-set size.
       const client =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
       await checkIfKeyNotExists(keyName, client);
