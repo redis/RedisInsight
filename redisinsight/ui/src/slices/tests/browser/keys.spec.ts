@@ -543,7 +543,7 @@ describe('keys slice', () => {
             ttl: -1,
             size: 100,
             length: 6,
-            count: 7,
+            count: '7',
             nameString: 'keyName',
           },
         },

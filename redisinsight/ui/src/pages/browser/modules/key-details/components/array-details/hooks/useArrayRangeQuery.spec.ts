@@ -37,11 +37,8 @@ const renderWithStore = (
 ) => {
   const store = mockStore(state)
   store.clearActions()
-  const { result, rerender } = renderHook(
-    ({ key }: { key: typeof prop }) => useArrayRangeQuery(key),
-    { store, initialProps: { key: prop } } as any,
-  )
-  return { result, rerender, store }
+  const { result } = renderHook(() => useArrayRangeQuery(prop), { store })
+  return { result, store }
 }
 
 describe('useArrayRangeQuery', () => {
