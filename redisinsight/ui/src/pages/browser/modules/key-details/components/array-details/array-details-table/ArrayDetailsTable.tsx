@@ -28,7 +28,7 @@ import * as S from './ArrayDetailsTable.styles'
  * verticals (see docs/redis-array-type-initiative.md §6 Tasks 6-7).
  */
 const ArrayDetailsTable = memo(
-  ({ elements, loading }: ArrayDetailsTableProps) => {
+  ({ elements, loading, error }: ArrayDetailsTableProps) => {
     const { compressor = null } = useAppSelector(
       connectedInstanceSelector,
     ) as unknown as { compressor: Nullable<KeyValueCompressor> }
@@ -44,7 +44,7 @@ const ArrayDetailsTable = memo(
 
     const emptyState = loading
       ? ARRAY_TABLE_LOADING_MESSAGE
-      : ARRAY_TABLE_EMPTY_MESSAGE
+      : (error ?? ARRAY_TABLE_EMPTY_MESSAGE)
 
     return (
       <S.Container data-testid={TEST_ID}>

@@ -107,12 +107,21 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
     )
   }, [dispatch, isArrayKeyReady, keyProp])
 
-  // Cancel any in-flight range/scan on unmount so a late response
-  // doesn't land into a stale slice.
-  useEffect(() => () => abortArrayRange(), [])
+  // Cancel any in-flight range/scan AND wipe the slice on unmount so a
+  // later re-mount (e.g. user navigates away from an array key and then
+  // opens another one) doesn't paint the previous key's elements for one
+  // frame before the switch effect runs.
+  useEffect(
+    () => () => {
+      abortArrayRange()
+      dispatch(setArrayInitialState())
+    },
+    [dispatch],
+  )
 
   // Restore form defaults and refire the default-range query. Keeps the
-  // current data in the slice to avoid a visible blank flicker.
+  // current data in the slice (`resetData: false`) to avoid a visible
+  // blank flicker between reset and the fresh ARGETRANGE result.
   const resetQuery = useCallback(() => {
     setStart(DEFAULT_RANGE_START)
     setEnd(DEFAULT_RANGE_END)
@@ -123,6 +132,7 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
         key: keyProp,
         start: DEFAULT_RANGE_START,
         end: DEFAULT_RANGE_END,
+        resetData: false,
       }),
     )
   }, [dispatch, isArrayKeyReady, keyProp])

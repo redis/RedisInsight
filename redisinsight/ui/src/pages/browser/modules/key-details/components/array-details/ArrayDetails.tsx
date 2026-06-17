@@ -47,6 +47,7 @@ const ArrayDetails = (props: Props) => {
     isArrayKeyReady,
     elements,
     loading: rangeLoading,
+    error: rangeError,
   } = useArrayRangeQuery(keyProp)
 
   return (
@@ -72,7 +73,11 @@ const ArrayDetails = (props: Props) => {
       <S.DetailsBody>
         {!loading && (
           <S.TableWrapper>
-            <ArrayDetailsTable elements={elements} loading={rangeLoading} />
+            <ArrayDetailsTable
+              elements={elements}
+              loading={rangeLoading}
+              error={rangeError}
+            />
           </S.TableWrapper>
         )}
       </S.DetailsBody>

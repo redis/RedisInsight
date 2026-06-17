@@ -7,7 +7,11 @@ import { ArrayDetailsTable } from './ArrayDetailsTable'
 const renderComponent = (
   elements: ArrayDataElement[],
   loading: boolean = false,
-) => render(<ArrayDetailsTable elements={elements} loading={loading} />)
+  error?: string,
+) =>
+  render(
+    <ArrayDetailsTable elements={elements} loading={loading} error={error} />,
+  )
 
 describe('ArrayDetailsTable', () => {
   it('renders an index cell for each element', () => {
@@ -64,5 +68,16 @@ describe('ArrayDetailsTable', () => {
   it('smoke-renders without crashing when there are no elements', () => {
     const { container } = renderComponent([])
     expect(container).toBeTruthy()
+  })
+
+  it('shows the error message in the empty state when the fetch failed', () => {
+    renderComponent([], false, 'Network unreachable')
+    expect(screen.getByText('Network unreachable')).toBeInTheDocument()
+  })
+
+  it('prefers the loading message over the error while a retry is in flight', () => {
+    renderComponent([], true, 'Network unreachable')
+    expect(screen.getByText('Loading…')).toBeInTheDocument()
+    expect(screen.queryByText('Network unreachable')).not.toBeInTheDocument()
   })
 })
