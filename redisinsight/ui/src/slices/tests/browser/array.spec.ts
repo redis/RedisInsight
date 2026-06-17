@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { cloneDeep } from 'lodash'
 import { apiService } from 'uiSrc/services'
+import { DEFAULT_ERROR_MESSAGE } from 'uiSrc/utils'
 import { IAddInstanceErrorPayload } from 'uiSrc/slices/app/notifications'
 import {
   cleanup,
@@ -232,6 +233,22 @@ describe('array slice', () => {
           loadArrayRangeFailure(errorMessage),
         ])
       })
+
+      it('dispatches failure when the response resolves with a non-success status', async () => {
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 304, data: null })
+
+        await store.dispatch<any>(
+          fetchArrayRange({ key: mockKey, start: '0', end: '1' }),
+        )
+
+        expect(store.getActions()).toEqual([
+          loadArrayRange(undefined),
+          setArrayActiveQuery({ start: '0', end: '1', showEmpty: true }),
+          loadArrayRangeFailure(DEFAULT_ERROR_MESSAGE),
+        ])
+      })
     })
 
     describe('scanArrayRange', () => {
@@ -278,6 +295,22 @@ describe('array slice', () => {
           end: '10000000',
           limit: 1_000_000,
         })
+      })
+
+      it('dispatches failure when the response resolves with a non-success status', async () => {
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 304, data: null })
+
+        await store.dispatch<any>(
+          scanArrayRange({ key: mockKey, start: '0', end: '10' }),
+        )
+
+        expect(store.getActions()).toEqual([
+          loadArrayRange(undefined),
+          setArrayActiveQuery({ start: '0', end: '10', showEmpty: false }),
+          loadArrayRangeFailure(DEFAULT_ERROR_MESSAGE),
+        ])
       })
     })
 

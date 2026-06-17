@@ -10,6 +10,7 @@ import {
 import { apiService } from 'uiSrc/services'
 import { ApiEndpoints } from 'uiSrc/constants'
 import {
+  DEFAULT_ERROR_MESSAGE,
   getApiErrorMessage,
   getUrl,
   isStatusSuccessful,
@@ -239,6 +240,8 @@ export function fetchArrayRange(params: FetchArrayRangeParams) {
           }),
         )
         dispatch(updateSelectedKeyRefreshTime(Date.now()))
+      } else {
+        dispatch(loadArrayRangeFailure(DEFAULT_ERROR_MESSAGE))
       }
     } catch (error) {
       if (axios.isCancel(error)) return
@@ -286,6 +289,8 @@ export function scanArrayRange(params: FetchArrayScanParams) {
       if (isStatusSuccessful(status)) {
         dispatch(loadArrayScanSuccess(data))
         dispatch(updateSelectedKeyRefreshTime(Date.now()))
+      } else {
+        dispatch(loadArrayRangeFailure(DEFAULT_ERROR_MESSAGE))
       }
     } catch (error) {
       if (axios.isCancel(error)) return
