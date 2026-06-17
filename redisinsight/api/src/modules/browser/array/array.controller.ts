@@ -58,8 +58,8 @@ export class ArrayController extends BrowserBaseController {
   @ApiOperation({
     description:
       'Read a range of elements from the array stored at key (ARGETRANGE). ' +
-      'Empty slots are returned as null. The range is inclusive and ' +
-      'requires start ≤ end; a reversed range is rejected with 400.',
+      'Empty slots are returned as null. The range is inclusive; passing ' +
+      'start > end returns elements in reverse index order.',
   })
   @ApiRedisParams()
   @ApiOkResponse({ type: GetArrayRangeResponse })

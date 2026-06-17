@@ -80,7 +80,6 @@ export default {
   INCORRECT_CLUSTER_CURSOR_FORMAT: 'Incorrect cluster cursor format.',
   ARRAY_RANGE_TOO_LARGE: (max: number) =>
     `Requested range exceeds the maximum of ${numberWithSpaces(max)} elements per call. Narrow the range and try again.`,
-  ARRAY_RANGE_REVERSED: 'Start index must be less than or equal to end index.',
   REMOVING_MULTIPLE_ELEMENTS_NOT_SUPPORT: () =>
     'Removing multiple elements is available for Redis databases v. 6.2 or later.',
   SCAN_PER_KEY_TYPE_NOT_SUPPORT: () =>

@@ -212,14 +212,28 @@ describe('ArrayService', () => {
       ).rejects.toThrow(BadRequestException);
     });
 
-    it('should reject reversed ranges (start > end)', async () => {
-      await expect(
-        service.getRange(mockBrowserClientMetadata, {
-          ...mockGetArrayRangeDto,
-          start: '5',
-          end: '0',
-        }),
-      ).rejects.toThrow(BadRequestException);
+    it('should forward reversed ranges (start > end) to Redis as-is', async () => {
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([
+          BrowserToolArrayCommands.ArGetRange,
+          mockGetArrayRangeDto.keyName,
+          '5',
+          '0',
+        ])
+        .mockResolvedValue(mockArrayRangeWithGaps);
+
+      await service.getRange(mockBrowserClientMetadata, {
+        ...mockGetArrayRangeDto,
+        start: '5',
+        end: '0',
+      });
+
+      expect(mockStandaloneRedisClient.sendCommand).toHaveBeenCalledWith([
+        BrowserToolArrayCommands.ArGetRange,
+        mockGetArrayRangeDto.keyName,
+        '5',
+        '0',
+      ]);
     });
 
     it('should rethrow BadRequest on WrongType', async () => {

@@ -76,7 +76,7 @@ export class ArrayService {
     }
   }
 
-  private assertSpanWithinCap(start: string, end: string): void {
+  private assertValidRange(start: string, end: string): void {
     const startBig = BigInt(start);
     const endBig = BigInt(end);
     const span =
@@ -86,17 +86,6 @@ export class ArrayService {
       throw new BadRequestException(
         ERROR_MESSAGES.ARRAY_RANGE_TOO_LARGE(ARRAY_RANGE_MAX_ELEMENTS),
       );
-    }
-  }
-
-  // ARGETRANGE does not support reversed ranges (per its command docs), so we
-  // pre-flight start ≤ end here. ARSCAN does support reversal and uses only
-  // the span cap.
-  private assertValidRange(start: string, end: string): void {
-    this.assertSpanWithinCap(start, end);
-
-    if (BigInt(start) > BigInt(end)) {
-      throw new BadRequestException(ERROR_MESSAGES.ARRAY_RANGE_REVERSED);
     }
   }
 
@@ -180,7 +169,7 @@ export class ArrayService {
       this.logger.debug('Scanning array range.', clientMetadata);
       const { keyName, start, end, limit } = dto;
 
-      this.assertSpanWithinCap(start, end);
+      this.assertValidRange(start, end);
 
       const client =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
