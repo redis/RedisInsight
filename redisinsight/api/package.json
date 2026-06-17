@@ -34,7 +34,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand -w 1",
     "test:e2e": "jest --config ./test/jest-e2e.json -w 1",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./config/ormconfig.ts",
-    "test:api": "cross-env NODE_ENV=test ts-mocha --paths --config ./test/api/.mocharc.yml",
+    "test:api": "cross-env NODE_ENV=test ts-mocha --paths --config ./test/api/.mocharc.cjs",
     "test:api:cov": "nyc --reporter=html --reporter=text --reporter=text-summary yarn run test:api",
     "test:api:ci:cov": "cross-env nyc -r text -r text-summary -r html yarn run test:api --reporter mocha-multi-reporters --reporter-options configFile=test/api/reporters.json && nyc merge .nyc_output ./coverage/test-run-coverage.json",
     "typeorm:migrate": "cross-env NODE_ENV=staging yarn typeorm migration:generate ./migration/migration",
