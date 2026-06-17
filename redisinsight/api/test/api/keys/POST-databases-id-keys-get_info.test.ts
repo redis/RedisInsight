@@ -226,6 +226,10 @@ describe('POST /databases/:instanceId/keys/get-info', () => {
         },
       ].map(mainCheckFn);
     });
+
+    // Array coverage for this endpoint lives in
+    // test/api/array/POST-databases-id-keys-get_info-array.test.ts so it is
+    // picked up by the array-tagged spec set on the Redis 8.8 RTE.
   });
 
   describe('ACL', () => {
