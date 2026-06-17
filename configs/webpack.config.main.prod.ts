@@ -11,6 +11,11 @@ import webpackPaths from './webpack.paths'
 
 DeleteSourceMaps()
 
+// rimraf has no types; require keeps it `any` (configs/ is not type-strict here)
+const rimraf = require('rimraf')
+// Hidden main-process source maps emitted for upload; must never ship.
+const MAIN_SOURCE_MAPS_GLOB = './redisinsight/dist/main/**/*.js.map'
+
 // Generate source maps when debugging the prod bundle, or when uploading them
 // to Sentry (the upload plugin below deletes them again so they never ship).
 // Mirror the runtime/booleanEnv semantics ('true' OR '1') so RI_SENTRY_ENABLED=1
@@ -162,18 +167,19 @@ export default merge(baseConfig, {
             // Sentry.init), not on events.
             release: { name: version, dist: process.platform, inject: false },
             sourcemaps: {
-              filesToDeleteAfterUpload: [
-                './redisinsight/dist/main/**/*.js.map',
-              ],
+              filesToDeleteAfterUpload: [MAIN_SOURCE_MAPS_GLOB],
             },
             telemetry: false,
-            // A failed source-map upload must not fail the build.
+            // A failed upload must not fail the build — but the maps are already
+            // emitted and `filesToDeleteAfterUpload` only runs on success, so
+            // delete them here too, or a failed upload would ship the maps.
             errorHandler: (err) => {
               // eslint-disable-next-line no-console
               console.warn(
                 '[Sentry] main source-map upload failed (continuing):',
                 err.message,
               )
+              rimraf.sync(MAIN_SOURCE_MAPS_GLOB)
             },
           }),
         ]

@@ -10,6 +10,7 @@ import { sentryVitePlugin } from '@sentry/vite-plugin';
 // import { compression } from 'vite-plugin-compression2'
 import { fileURLToPath, URL } from 'url';
 import path from 'path';
+import rimraf from 'rimraf';
 import { defaultConfig } from './src/config/default';
 
 const isElectron = defaultConfig.app.type === 'ELECTRON';
@@ -26,6 +27,8 @@ const shouldUploadSourceMaps =
   ['true', '1'].includes(process.env.RI_SENTRY_ENABLED ?? '');
 
 const outDir = isElectron ? '../dist/renderer' : './dist';
+// Hidden source maps emitted for upload; must never ship in the artifact.
+const sourceMapsGlob = `${outDir}/**/*.js.map`;
 
 let base;
 if (defaultConfig.api.hostedBase) {
@@ -104,16 +107,20 @@ export default defineConfig({
               // Delete maps from whichever outDir this build wrote to
               // (`../dist/renderer` for Electron, `./dist` for web/Docker) so
               // they are never shipped.
-              filesToDeleteAfterUpload: [`${outDir}/**/*.js.map`],
+              filesToDeleteAfterUpload: [sourceMapsGlob],
             },
             telemetry: false,
-            // A failed source-map upload must not fail the build.
+            // A failed upload must not fail the build — but the hidden maps are
+            // already emitted and `filesToDeleteAfterUpload` only runs on
+            // success, so delete them here too, or a failed upload would ship
+            // the maps.
             errorHandler: (err) => {
               // eslint-disable-next-line no-console
               console.warn(
                 '[Sentry] renderer source-map upload failed (continuing):',
                 err.message,
               );
+              rimraf.sync(sourceMapsGlob);
             },
           }),
         ]
