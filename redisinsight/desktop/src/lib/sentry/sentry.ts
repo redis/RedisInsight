@@ -118,17 +118,20 @@ export const initSentry = (): void => {
       environment,
       release: pkg.version,
       ipcMode: IPCMode.Classic,
-      // Disable the SDK's default native-crash (minidump) integration. It
-      // starts Electron's crashReporter at init and uploads minidumps (which
-      // can contain process memory) via the SDK transport regardless of our
-      // consent gate — and `beforeSend` cannot scrub a minidump attachment.
-      // Native crashes are handled instead by the consent-gated crashReporter
-      // in `initCrashReporter`.
+      // Drop default integrations that bypass our consent gate:
+      //  - SentryMinidump/ElectronMinidump start Electron's crashReporter and
+      //    upload minidumps (process memory) via the SDK transport regardless
+      //    of consent; `beforeSend` cannot scrub a minidump attachment. Native
+      //    crashes are handled by the consent-gated crashReporter below.
+      //  - MainProcessSession emits release-health session envelopes (not
+      //    events, so they skip `beforeSend`) — usage telemetry without
+      //    consent. We only do crash/error reporting.
       integrations: (defaults) =>
         defaults.filter(
           (integration) =>
             integration.name !== 'SentryMinidump' &&
-            integration.name !== 'ElectronMinidump',
+            integration.name !== 'ElectronMinidump' &&
+            integration.name !== 'MainProcessSession',
         ),
       initialScope: { tags: { 'app.layer': 'electron-main' } },
       // Do not attach IP / machine identifiers.
