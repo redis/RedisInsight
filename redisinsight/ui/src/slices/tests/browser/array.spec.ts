@@ -21,16 +21,12 @@ import reducer, {
   loadArrayScanSuccess,
   loadArrayLengthSuccess,
   loadArrayCountSuccess,
-  loadArrayNextIndexSuccess,
   arraySelector,
   arrayDataSelector,
   fetchArrayRange,
   scanArrayRange,
   fetchArrayLength,
   fetchArrayCount,
-  fetchArrayNextIndex,
-  fetchArrayElement,
-  fetchArrayMultiElements,
   refreshArray,
 } from '../../browser/array'
 import { updateSelectedKeyRefreshTime } from '../../browser/keys'
@@ -155,14 +151,6 @@ describe('array slice', () => {
         loadArrayCountSuccess({ keyName: mockKey, count: '7' }),
       )
       expect(next.data.count).toBe('7')
-    })
-
-    it('loadArrayNextIndexSuccess writes only nextIndex', () => {
-      const next = reducer(
-        initialState,
-        loadArrayNextIndexSuccess({ keyName: mockKey, index: '100' }),
-      )
-      expect(next.data.nextIndex).toBe('100')
     })
   })
 
@@ -424,89 +412,6 @@ describe('array slice', () => {
         expect(store.getActions()).toEqual([
           loadArrayCountSuccess(response.data),
         ])
-      })
-    })
-
-    describe('fetchArrayNextIndex', () => {
-      it('dispatches loadArrayNextIndexSuccess on 200', async () => {
-        const response = {
-          status: 200,
-          data: { keyName: mockKey, index: '6' },
-        }
-        apiService.post = jest.fn().mockResolvedValue(response)
-
-        await store.dispatch<any>(fetchArrayNextIndex(mockKey))
-
-        expect(store.getActions()).toEqual([
-          loadArrayNextIndexSuccess(response.data),
-        ])
-      })
-
-      it('dispatches error notification on rejection', async () => {
-        const rejected = {
-          response: { status: 500, data: { message: 'nope' } },
-        }
-        apiService.post = jest.fn().mockRejectedValue(rejected)
-
-        await store.dispatch<any>(fetchArrayNextIndex(mockKey))
-
-        expect(store.getActions()).toEqual([
-          addErrorNotification(rejected as IAddInstanceErrorPayload),
-        ])
-      })
-    })
-
-    describe('fetchArrayElement', () => {
-      it('invokes onSuccess with the response value on 200', async () => {
-        const response = {
-          status: 200,
-          data: { keyName: mockKey, value: '20.1' },
-        }
-        apiService.post = jest.fn().mockResolvedValue(response)
-        const onSuccess = jest.fn()
-        const onFail = jest.fn()
-
-        await store.dispatch<any>(
-          fetchArrayElement({ key: mockKey, index: '0' }, onSuccess, onFail),
-        )
-
-        expect(onSuccess).toHaveBeenCalledWith(response.data)
-        expect(onFail).not.toHaveBeenCalled()
-      })
-
-      it('invokes onFail on rejection', async () => {
-        apiService.post = jest.fn().mockRejectedValue({
-          response: { status: 500, data: { message: 'nope' } },
-        })
-        const onSuccess = jest.fn()
-        const onFail = jest.fn()
-
-        await store.dispatch<any>(
-          fetchArrayElement({ key: mockKey, index: '0' }, onSuccess, onFail),
-        )
-
-        expect(onSuccess).not.toHaveBeenCalled()
-        expect(onFail).toHaveBeenCalled()
-      })
-    })
-
-    describe('fetchArrayMultiElements', () => {
-      it('invokes onSuccess with the response on 200', async () => {
-        const response = {
-          status: 200,
-          data: { keyName: mockKey, elements: ['a', null, 'b'] },
-        }
-        apiService.post = jest.fn().mockResolvedValue(response)
-        const onSuccess = jest.fn()
-
-        await store.dispatch<any>(
-          fetchArrayMultiElements(
-            { key: mockKey, indexes: ['0', '1', '2'] },
-            onSuccess,
-          ),
-        )
-
-        expect(onSuccess).toHaveBeenCalledWith(response.data)
       })
     })
   })

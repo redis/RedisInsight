@@ -168,7 +168,7 @@ describe('KeyDetailsHeaderSizeLength', () => {
       type: KeyTypes.Array,
       size: 1024,
       length: 10,
-      count: 7,
+      count: '7',
     })
 
     render(
@@ -197,7 +197,7 @@ describe('KeyDetailsHeaderSizeLength', () => {
       type: KeyTypes.Array,
       size: 1024,
       length: 10,
-      count: 0,
+      count: '0',
     })
 
     render(

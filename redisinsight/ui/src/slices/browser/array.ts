@@ -3,10 +3,7 @@ import axios, { AxiosError } from 'axios'
 import { IAddInstanceErrorPayload } from 'uiSrc/slices/app/notifications'
 import {
   GetArrayCountResponse,
-  GetArrayElementResponse,
   GetArrayLengthResponse,
-  GetArrayMultiElementsResponse,
-  GetArrayNextIndexResponse,
   GetArrayRangeResponse,
   GetArrayScanResponse,
 } from 'apiClient'
@@ -23,8 +20,6 @@ import {
   ArrayActiveQuery,
   ArrayDataElement,
   StateArray,
-  FetchArrayElementParams,
-  FetchArrayMultiElementsParams,
   FetchArrayRangeParams,
   FetchArrayScanParams,
 } from 'uiSrc/slices/interfaces/array'
@@ -132,13 +127,6 @@ const arraySlice = createSlice({
       state.data = { ...state.data, count: payload.count }
     },
 
-    loadArrayNextIndexSuccess: (
-      state,
-      { payload }: PayloadAction<GetArrayNextIndexResponse>,
-    ) => {
-      state.data = { ...state.data, nextIndex: payload.index }
-    },
-
     /**
      * Records the query that was just dispatched so the header refresh
      * button can replay it instead of falling back to the default range.
@@ -160,7 +148,6 @@ export const {
   loadArrayScanSuccess,
   loadArrayLengthSuccess,
   loadArrayCountSuccess,
-  loadArrayNextIndexSuccess,
   setArrayActiveQuery,
 } = arraySlice.actions
 
@@ -284,30 +271,16 @@ export function scanArrayRange(params: FetchArrayScanParams) {
   }
 }
 
-// Shared body for the metadata reads (ARLEN / ARCOUNT / ARNEXT) — they all
-// take a single keyName and write a single field into `data` on success.
-async function fetchArrayMetadata<R>(
-  state: RootState,
-  endpoint: ApiEndpoints,
-  key: RedisString,
-): Promise<R | null> {
-  const { data, status } = await apiService.post<R>(
-    arrayUrl(state, endpoint),
-    { keyName: key },
-    encodingParams(state),
-  )
-  return isStatusSuccessful(status) ? data : null
-}
-
 export function fetchArrayLength(key: RedisString) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     try {
-      const data = await fetchArrayMetadata<GetArrayLengthResponse>(
-        stateInit(),
-        ApiEndpoints.ARRAY_GET_LENGTH,
-        key,
+      const state = stateInit()
+      const { data, status } = await apiService.post<GetArrayLengthResponse>(
+        arrayUrl(state, ApiEndpoints.ARRAY_GET_LENGTH),
+        { keyName: key },
+        encodingParams(state),
       )
-      if (data) dispatch(loadArrayLengthSuccess(data))
+      if (isStatusSuccessful(status)) dispatch(loadArrayLengthSuccess(data))
     } catch (error) {
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
     }
@@ -317,54 +290,15 @@ export function fetchArrayLength(key: RedisString) {
 export function fetchArrayCount(key: RedisString) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     try {
-      const data = await fetchArrayMetadata<GetArrayCountResponse>(
-        stateInit(),
-        ApiEndpoints.ARRAY_GET_COUNT,
-        key,
-      )
-      if (data) dispatch(loadArrayCountSuccess(data))
-    } catch (error) {
-      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
-    }
-  }
-}
-
-export function fetchArrayNextIndex(key: RedisString) {
-  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
-    try {
-      const data = await fetchArrayMetadata<GetArrayNextIndexResponse>(
-        stateInit(),
-        ApiEndpoints.ARRAY_GET_NEXT_INDEX,
-        key,
-      )
-      if (data) dispatch(loadArrayNextIndexSuccess(data))
-    } catch (error) {
-      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
-    }
-  }
-}
-
-// Point reads — used by edit/inspect flows. Results are returned via the
-// optional `onSuccess` callback instead of being stored on the slice, since
-// they don't influence the list view directly.
-export function fetchArrayElement(
-  params: FetchArrayElementParams,
-  onSuccess?: (response: GetArrayElementResponse) => void,
-  onFail?: () => void,
-) {
-  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
-    try {
       const state = stateInit()
-      const { data, status } = await apiService.post<GetArrayElementResponse>(
-        arrayUrl(state, ApiEndpoints.ARRAY_GET_ELEMENT),
-        { keyName: params.key, index: params.index },
+      const { data, status } = await apiService.post<GetArrayCountResponse>(
+        arrayUrl(state, ApiEndpoints.ARRAY_GET_COUNT),
+        { keyName: key },
         encodingParams(state),
       )
-      if (isStatusSuccessful(status)) onSuccess?.(data)
-      else onFail?.()
+      if (isStatusSuccessful(status)) dispatch(loadArrayCountSuccess(data))
     } catch (error) {
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
-      onFail?.()
     }
   }
 }
@@ -388,29 +322,6 @@ export function refreshArray(key: RedisString) {
       dispatch(fetchArrayRange({ key, start, end, resetData: false }))
     } else {
       dispatch(scanArrayRange({ key, start, end, resetData: false }))
-    }
-  }
-}
-
-export function fetchArrayMultiElements(
-  params: FetchArrayMultiElementsParams,
-  onSuccess?: (response: GetArrayMultiElementsResponse) => void,
-  onFail?: () => void,
-) {
-  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
-    try {
-      const state = stateInit()
-      const { data, status } =
-        await apiService.post<GetArrayMultiElementsResponse>(
-          arrayUrl(state, ApiEndpoints.ARRAY_GET_ELEMENTS),
-          { keyName: params.key, indexes: params.indexes },
-          encodingParams(state),
-        )
-      if (isStatusSuccessful(status)) onSuccess?.(data)
-      else onFail?.()
-    } catch (error) {
-      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
-      onFail?.()
     }
   }
 }
