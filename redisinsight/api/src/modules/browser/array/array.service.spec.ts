@@ -293,6 +293,46 @@ describe('ArrayService', () => {
       expect(result).toEqual(mockGetArrayScanResponse);
     });
 
+    it('should pair nested [[index, value], ...] reply (Redis 8.8 shape)', async () => {
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([
+          BrowserToolArrayCommands.ArScan,
+          mockGetArrayScanDto.keyName,
+          mockGetArrayScanDto.start,
+          mockGetArrayScanDto.end,
+        ])
+        .mockResolvedValue([
+          [Buffer.from('0'), mockArrayElement1],
+          [Buffer.from('1'), Buffer.from('20.4')],
+        ]);
+      const result = await service.scan(
+        mockBrowserClientMetadata,
+        mockGetArrayScanDto,
+      );
+      expect(result).toEqual(mockGetArrayScanResponse);
+    });
+
+    it('should drop nested entries with a nil half', async () => {
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([
+          BrowserToolArrayCommands.ArScan,
+          mockGetArrayScanDto.keyName,
+          mockGetArrayScanDto.start,
+          mockGetArrayScanDto.end,
+        ])
+        .mockResolvedValue([
+          [Buffer.from('0'), mockArrayElement1],
+          [Buffer.from('1'), null],
+          [Buffer.from('2')],
+        ]);
+      const result = await service.scan(
+        mockBrowserClientMetadata,
+        mockGetArrayScanDto,
+      );
+      expect(result.elements).toHaveLength(1);
+      expect(result.elements[0].index).toBe('0');
+    });
+
     it('should append LIMIT when provided', async () => {
       when(mockStandaloneRedisClient.sendCommand)
         .calledWith([

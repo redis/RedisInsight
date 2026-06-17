@@ -187,16 +187,33 @@ export class ArrayService {
         hasLimit ? [...baseArgs, 'LIMIT', limit] : [...baseArgs],
       )) as unknown[];
 
-      // Skip pairs with a nil index or value (populated-only contract).
+      // ARSCAN wire shape varies by Redis version / client: Redis 8.8
+      // returns nested [[index, value], ...] entries, while some earlier
+      // builds surface a flat [index, value, index, value, ...] reply.
+      // Detect by sniffing the first element and normalize both. Pairs
+      // with a nil half are dropped (populated-only contract).
       const elements: ArrayElement[] = [];
-      for (let i = 0; i < reply.length; i += 2) {
-        const rawIndex = reply[i];
-        const value = reply[i + 1];
-        if (rawIndex == null || value == null) continue;
-        elements.push({
-          index: toRequiredIndexString(rawIndex),
-          value: value as Buffer | string,
-        });
+      if (Array.isArray(reply[0])) {
+        for (const entry of reply as unknown[][]) {
+          if (!entry || entry.length < 2) continue;
+          const rawIndex = entry[0];
+          const value = entry[1];
+          if (rawIndex == null || value == null) continue;
+          elements.push({
+            index: toRequiredIndexString(rawIndex),
+            value: value as Buffer | string,
+          });
+        }
+      } else {
+        for (let i = 0; i < reply.length; i += 2) {
+          const rawIndex = reply[i];
+          const value = reply[i + 1];
+          if (rawIndex == null || value == null) continue;
+          elements.push({
+            index: toRequiredIndexString(rawIndex),
+            value: value as Buffer | string,
+          });
+        }
       }
 
       this.logger.debug('Succeed to scan array range.', clientMetadata);
