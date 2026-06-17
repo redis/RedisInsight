@@ -17,7 +17,7 @@ export class GetArrayScanDto extends KeyDto {
   @ApiProperty({
     description:
       'End index of the range (inclusive). Unsigned 64-bit integer as string. ' +
-      'Must be greater than or equal to start.',
+      'When start > end, pairs are returned in reverse index order.',
     type: String,
     example: '99',
   })

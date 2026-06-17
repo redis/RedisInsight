@@ -76,8 +76,8 @@ export class ArrayController extends BrowserBaseController {
   @ApiOperation({
     description:
       'Scan a range of populated elements from the array stored at key (ARSCAN). ' +
-      'Empty slots are skipped. The range is inclusive and requires ' +
-      'start ≤ end; a reversed range is rejected with 400.',
+      'Empty slots are skipped. The range is inclusive; passing start > end ' +
+      'returns pairs in reverse index order.',
   })
   @ApiRedisParams()
   @ApiOkResponse({ type: GetArrayScanResponse })
