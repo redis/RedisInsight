@@ -140,7 +140,7 @@ export const ArrayRangeForm = ({
           </FormField>
         </FlexItem>
         <FlexItem grow={false}>
-          <S.InputAlignedBox>
+          <S.InputAlignedBox align="center">
             <Checkbox
               id={`${TEST_ID}-show-empty`}
               name="show-empty-indexes"

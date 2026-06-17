@@ -4,10 +4,7 @@ import { RiTooltip } from 'uiSrc/components/base/tooltip/RITooltip'
 import { Text } from 'uiSrc/components/base/text'
 import { formatLongName } from 'uiSrc/utils'
 
-interface ArrayIndexCellProps {
-  /** Decimal-string index (BigInt-as-string contract). */
-  index: string
-}
+import { ArrayIndexCellProps } from './ArrayIndexCell.types'
 
 const TEST_ID_PREFIX = 'array-details-table-index'
 

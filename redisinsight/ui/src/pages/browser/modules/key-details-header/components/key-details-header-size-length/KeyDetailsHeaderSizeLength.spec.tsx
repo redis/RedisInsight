@@ -10,6 +10,7 @@ import {
 } from 'uiSrc/utils/test-utils'
 import * as keysSlice from 'uiSrc/slices/browser/keys'
 import { KeyTypes } from 'uiSrc/constants'
+import { selectedArrayKeyInfoFactory } from 'uiSrc/mocks/factories/browser/array/arrayElement.factory'
 import { Props, KeyDetailsHeaderSizeLength } from './KeyDetailsHeaderSizeLength'
 
 let store: typeof mockedStore
@@ -164,12 +165,9 @@ describe('KeyDetailsHeaderSizeLength', () => {
   })
 
   it('should render count when provided (Array key type)', () => {
-    mockSelectedKeyDataSelector.mockReturnValueOnce({
-      type: KeyTypes.Array,
-      size: 1024,
-      length: 10,
-      count: '7',
-    })
+    mockSelectedKeyDataSelector.mockReturnValueOnce(
+      selectedArrayKeyInfoFactory.build({ count: '7' }),
+    )
 
     render(
       <KeyDetailsHeaderSizeLength {...instance(mockedProps)} width={1920} />,
@@ -179,11 +177,9 @@ describe('KeyDetailsHeaderSizeLength', () => {
   })
 
   it('should not render count when not provided', () => {
-    mockSelectedKeyDataSelector.mockReturnValueOnce({
-      type: KeyTypes.Array,
-      size: 1024,
-      length: 10,
-    })
+    mockSelectedKeyDataSelector.mockReturnValueOnce(
+      selectedArrayKeyInfoFactory.build({ count: undefined }),
+    )
 
     render(
       <KeyDetailsHeaderSizeLength {...instance(mockedProps)} width={1920} />,
@@ -193,12 +189,9 @@ describe('KeyDetailsHeaderSizeLength', () => {
   })
 
   it('should render count when value is 0', () => {
-    mockSelectedKeyDataSelector.mockReturnValueOnce({
-      type: KeyTypes.Array,
-      size: 1024,
-      length: 10,
-      count: '0',
-    })
+    mockSelectedKeyDataSelector.mockReturnValueOnce(
+      selectedArrayKeyInfoFactory.build({ count: '0' }),
+    )
 
     render(
       <KeyDetailsHeaderSizeLength {...instance(mockedProps)} width={1920} />,

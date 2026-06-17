@@ -1,23 +1,13 @@
 import React from 'react'
 
 import { Text } from 'uiSrc/components/base/text'
-import {
-  KeyValueCompressor,
-  KeyValueFormat,
-  TEXT_FAILED_CONVENT_FORMATTER,
-} from 'uiSrc/constants'
-import { createTooltipContent, formattingBuffer, Nullable } from 'uiSrc/utils'
+import { TEXT_FAILED_CONVENT_FORMATTER } from 'uiSrc/constants'
+import { createTooltipContent, formattingBuffer } from 'uiSrc/utils'
 import { decompressingBuffer } from 'uiSrc/utils/decompressors'
 import { FormattedValue } from 'uiSrc/pages/browser/modules/key-details/shared'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
-import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 
-interface ArrayValueCellProps {
-  index: string
-  value: ArrayDataElement['value']
-  compressor: Nullable<KeyValueCompressor>
-  viewFormat: KeyValueFormat
-}
+import { ArrayValueCellProps } from './ArrayValueCell.types'
 
 const TEST_ID_PREFIX = 'array-details-table'
 

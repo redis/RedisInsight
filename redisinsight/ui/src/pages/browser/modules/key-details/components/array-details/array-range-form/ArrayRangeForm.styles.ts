@@ -29,9 +29,11 @@ export const ActionRow = styled(Row)`
   min-height: ${ACTION_ROW_HEIGHT};
 `
 
-export const InputAlignedBox = styled.div`
-  display: flex;
-  align-items: center;
+// `Row` (`FlexGroup direction="row"`) supplies the flex container; only
+// the fixed height needs to live in the styles file so the checkbox lines
+// up with the adjacent TextInput's vertical midline. The consuming JSX
+// passes `align="center"` as a prop rather than hardcoding it here.
+export const InputAlignedBox = styled(Row)`
   height: ${INPUT_HEIGHT};
 `
 
