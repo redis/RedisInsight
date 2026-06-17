@@ -1,0 +1,45 @@
+meta {
+  name: Get Length
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/array/get-length
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "readings"
+  }
+}
+
+docs {
+  # ARLEN
+
+  Returns the logical length of the array — highest set index + 1 (includes
+  gaps). Unsigned 64-bit integer returned as a numeric string.
+
+  ## Response
+
+  ```
+  {
+    "keyName": "readings",
+    "length": "7"
+  }
+  ```
+
+  ## Errors
+
+  | Status | When |
+  |--------|------|
+  | `400`  | Key holds a non-array type. |
+  | `403`  | User has no permission for `ARLEN`. |
+  | `404`  | Key does not exist. |
+}
+
+settings {
+  encodeUrl: true
+}

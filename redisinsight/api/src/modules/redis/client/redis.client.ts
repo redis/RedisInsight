@@ -208,7 +208,7 @@ export abstract class RedisClient extends EventEmitter2 {
 
     try {
       const reply = (await this.call(
-        ['command', 'info', BrowserToolArrayCommands.ARGet],
+        ['command', 'info', BrowserToolArrayCommands.ArGet],
         { replyEncoding: 'utf8' },
       )) as RedisClientCommandReply[];
 

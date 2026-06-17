@@ -6,6 +6,7 @@ import { ClusterScannerStrategy } from 'src/modules/browser/keys/scanner/strateg
 import { Scanner } from 'src/modules/browser/keys/scanner/scanner';
 import { KeysService } from 'src/modules/browser/keys/keys.service';
 import { KeyInfoProvider } from 'src/modules/browser/keys/key-info/key-info.provider';
+import { ArrayKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/array.key-info.strategy';
 import { GraphKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/graph.key-info.strategy';
 import { HashKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/hash.key-info.strategy';
 import { ListKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/list.key-info.strategy';
@@ -42,6 +43,7 @@ export class KeysModule {
         StandaloneScannerStrategy,
         ClusterScannerStrategy,
         // key info strategies
+        ArrayKeyInfoStrategy,
         GraphKeyInfoStrategy,
         HashKeyInfoStrategy,
         ListKeyInfoStrategy,

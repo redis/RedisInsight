@@ -35,7 +35,7 @@ docs {
   |-------|------|-------------|
   | `keyName` | string | The key name for the new Array |
   | `mode` | string | Must be `contiguous` for this request shape |
-  | `startIndex` | string | Start index as a numeric string (`0` to `18446744073709551615`) |
+  | `startIndex` | string | Start index as a numeric string (`0` to `18446744073709551614`) |
   | `values` | string[] | Value(s) to write starting at `startIndex` |
   | `expire` | number (optional) | TTL in seconds |
 
@@ -47,7 +47,7 @@ docs {
 
   | Status | Condition |
   |--------|-----------|
-  | `400` | Validation failed, e.g. a non-canonical index: `startIndex must be an integer string between 0 and 18446744073709551615` |
+  | `400` | Validation failed, e.g. a non-canonical index: `startIndex must be an integer string between 0 and 18446744073709551614` |
   | `403` | User has no permissions |
   | `409` | Key with this name already exists |
 }

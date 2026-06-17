@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { KeyInfoProvider } from 'src/modules/browser/keys/key-info/key-info.provider';
 import { RedisDataType } from 'src/modules/browser/keys/dto';
 import { UnsupportedKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/unsupported.key-info.strategy';
+import { ArrayKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/array.key-info.strategy';
 import { GraphKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/graph.key-info.strategy';
 import { HashKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/hash.key-info.strategy';
 import { ListKeyInfoStrategy } from 'src/modules/browser/keys/key-info/strategies/list.key-info.strategy';
@@ -20,6 +21,7 @@ describe('KeyInfoProvider', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         KeyInfoProvider,
+        ArrayKeyInfoStrategy,
         GraphKeyInfoStrategy,
         HashKeyInfoStrategy,
         ListKeyInfoStrategy,
@@ -43,6 +45,7 @@ describe('KeyInfoProvider', () => {
         input: 'unknown' as RedisDataType,
         strategy: UnsupportedKeyInfoStrategy,
       },
+      { input: RedisDataType.Array, strategy: ArrayKeyInfoStrategy },
       { input: RedisDataType.Graph, strategy: GraphKeyInfoStrategy },
       { input: RedisDataType.Hash, strategy: HashKeyInfoStrategy },
       { input: RedisDataType.List, strategy: ListKeyInfoStrategy },

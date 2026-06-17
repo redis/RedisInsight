@@ -3,6 +3,7 @@ export * from './delete.keys.response';
 export * from './get.keys.dto';
 export * from './get.keys-info.dto';
 export * from './get.keys-info.response';
+export * from './get.array-key-info.response';
 export * from './get.keys-with-details.response';
 export * from './key.dto';
 export * from './key-with-expire.dto';

@@ -1,7 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { GetKeyInfoResponse } from 'src/modules/browser/keys/dto';
+import {
+  GetArrayKeyInfoResponse,
+  GetKeyInfoResponse,
+} from 'src/modules/browser/keys/dto';
 import { RedisString } from 'src/common/constants';
 import { RedisClient } from 'src/modules/redis/client';
+
+export type KeyInfoResponse = GetKeyInfoResponse | GetArrayKeyInfoResponse;
 
 @Injectable()
 export abstract class KeyInfoStrategy {
@@ -12,5 +17,5 @@ export abstract class KeyInfoStrategy {
     key: RedisString,
     type: string,
     includeSize: boolean,
-  ): Promise<GetKeyInfoResponse>;
+  ): Promise<KeyInfoResponse>;
 }

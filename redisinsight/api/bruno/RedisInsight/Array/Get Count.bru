@@ -1,0 +1,45 @@
+meta {
+  name: Get Count
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/array/get-count
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "readings"
+  }
+}
+
+docs {
+  # ARCOUNT
+
+  Returns the number of populated (non-empty) elements in the array.
+  Unsigned 64-bit integer returned as a numeric string.
+
+  ## Response
+
+  ```
+  {
+    "keyName": "readings",
+    "count": "5"
+  }
+  ```
+
+  ## Errors
+
+  | Status | When |
+  |--------|------|
+  | `400`  | Key holds a non-array type. |
+  | `403`  | User has no permission for `ARCOUNT`. |
+  | `404`  | Key does not exist. |
+}
+
+settings {
+  encodeUrl: true
+}

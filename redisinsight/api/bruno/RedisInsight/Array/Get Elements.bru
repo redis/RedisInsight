@@ -1,0 +1,53 @@
+meta {
+  name: Get Elements
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/array/get-elements
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "readings",
+    "indexes": ["0", "3", "5"]
+  }
+}
+
+docs {
+  # ARMGET
+
+  Get values at multiple indexes in one round-trip. Returns an array of
+  `value | null`, one entry per requested index, in request order.
+
+  ## Request body
+
+  | Field     | Type     | Notes                                                |
+  |-----------|----------|------------------------------------------------------|
+  | `keyName` | string   | The Array key name.                                  |
+  | `indexes` | string[] | 1 to 1,000,000 indexes; each unsigned 64-bit as string. |
+
+  ## Response
+
+  ```
+  {
+    "keyName": "readings",
+    "elements": ["20.1", null, "21.4"]
+  }
+  ```
+
+  ## Errors
+
+  | Status | When |
+  |--------|------|
+  | `400`  | `indexes` is empty or exceeds 1,000,000 entries, any index is not a valid unsigned 64-bit integer string, or the key holds a non-array type. |
+  | `403`  | User has no permission for `ARMGET`. |
+  | `404`  | Key does not exist. |
+}
+
+settings {
+  encodeUrl: true
+}
