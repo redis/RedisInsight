@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { KeyResponse } from 'src/modules/browser/keys/dto';
-import { RedisStringType } from 'src/common/decorators';
+import { ApiRedisString, RedisStringType } from 'src/common/decorators';
 import { RedisString } from 'src/common/constants';
 import { Type } from 'class-transformer';
 
@@ -12,10 +12,7 @@ export class ArrayElement {
   })
   index: string;
 
-  @ApiProperty({
-    description: 'Value stored at this index.',
-    type: String,
-  })
+  @ApiRedisString('Value stored at this index.')
   @RedisStringType()
   value: RedisString;
 }
