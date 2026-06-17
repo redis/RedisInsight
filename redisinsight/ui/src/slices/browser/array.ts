@@ -35,6 +35,17 @@ import { addErrorNotification } from '../app/notifications'
 const DEFAULT_QUERY_START = '0'
 const DEFAULT_QUERY_END = '9'
 
+/**
+ * Safety cap on ARSCAN result-set size. The form intentionally lets users
+ * type ranges far wider than `ARRAY_RANGE_MAX_ELEMENTS` here (unlike
+ * ARGETRANGE) because ARSCAN only returns populated slots, but a dense
+ * 0..10M region would still blow up the response. Pin to the BE's
+ * `ARRAY_RANGE_MAX_ELEMENTS` so the worst case matches what ARGETRANGE
+ * already guarantees. A dedicated Limit input will replace this default
+ * with the next vertical.
+ */
+const DEFAULT_SCAN_LIMIT = 1_000_000
+
 export const initialState: StateArray = {
   loading: false,
   error: '',
@@ -263,7 +274,12 @@ export function scanArrayRange(params: FetchArrayScanParams) {
       const state = stateInit()
       const { data, status } = await apiService.post<GetArrayScanResponse>(
         arrayUrl(state, ApiEndpoints.ARRAY_SCAN),
-        { keyName: params.key, start: params.start, end: params.end },
+        {
+          keyName: params.key,
+          start: params.start,
+          end: params.end,
+          limit: DEFAULT_SCAN_LIMIT,
+        },
         { ...encodingParams(state), signal: controller.signal },
       )
       if (controller.signal.aborted) return

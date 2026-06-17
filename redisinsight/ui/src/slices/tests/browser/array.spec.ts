@@ -256,6 +256,29 @@ describe('array slice', () => {
           updateSelectedKeyRefreshTime(MOCK_TIMESTAMP),
         ])
       })
+
+      it('sends the default safety LIMIT so wide ranges stay bounded', async () => {
+        // ARSCAN has no span cap on the BE; the UI form allows ranges far
+        // wider than 1M for sparse browsing. Without LIMIT, a dense
+        // 0..10M range would return millions of elements — the thunk
+        // always pins LIMIT to the BE's ARRAY_RANGE_MAX_ELEMENTS.
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, elements: [] },
+        })
+
+        await store.dispatch<any>(
+          scanArrayRange({ key: mockKey, start: '0', end: '10000000' }),
+        )
+
+        const [, body] = (apiService.post as jest.Mock).mock.calls[0]
+        expect(body).toEqual({
+          keyName: mockKey,
+          start: '0',
+          end: '10000000',
+          limit: 1_000_000,
+        })
+      })
     })
 
     describe('abort plumbing (race-safety)', () => {
@@ -398,6 +421,7 @@ describe('array slice', () => {
           keyName: mockKey,
           start: '5',
           end: '15',
+          limit: 1_000_000,
         })
         expect(
           (apiService.post as jest.Mock).mock.calls.find(([url]) =>

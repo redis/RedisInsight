@@ -107,7 +107,12 @@ describe('useArrayRangeQuery', () => {
     const call = (apiService.post as jest.Mock).mock.calls.find(([url]) =>
       url.includes('array/scan'),
     )
-    expect(call?.[1]).toEqual({ keyName: keyBuffer, start: '0', end: '99' })
+    expect(call?.[1]).toEqual({
+      keyName: keyBuffer,
+      start: '0',
+      end: '99',
+      limit: 1_000_000,
+    })
   })
 
   it('runQuery is a no-op while isArrayKeyReady=false', async () => {
