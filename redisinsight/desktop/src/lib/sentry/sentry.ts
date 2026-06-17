@@ -58,6 +58,13 @@ const initCrashReporter = (dsn: string, environment: string): void => {
     return
   }
 
+  // Electron's crashReporter is unsupported in sandboxed Mac App Store builds;
+  // skip native minidumps there. JS-level Sentry reporting still works.
+  if (process.mas) {
+    log.info('[Sentry] Skipping native crashReporter in MAS build')
+    return
+  }
+
   // Electron's crashReporter can only be started once per session and has no
   // stop API, so we start it at most once (guarded below). Mid-session consent
   // changes are honoured by toggling minidump uploads via `setUploadToServer`
