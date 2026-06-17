@@ -98,14 +98,9 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
       return
     }
     fetchedKeyRef.current = keyProp
-    dispatch(
-      fetchArrayRange({
-        key: keyProp,
-        start: DEFAULT_RANGE_START,
-        end: DEFAULT_RANGE_END,
-      }),
-    )
-  }, [dispatch, isArrayKeyReady, keyProp])
+    const params = { key: keyProp, start, end }
+    dispatch(showEmpty ? fetchArrayRange(params) : scanArrayRange(params))
+  }, [dispatch, isArrayKeyReady, keyProp, start, end, showEmpty])
 
   // Cancel any in-flight range/scan AND wipe the slice on unmount so a
   // later re-mount (e.g. user navigates away from an array key and then

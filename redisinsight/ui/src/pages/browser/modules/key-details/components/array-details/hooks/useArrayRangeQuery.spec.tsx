@@ -1,3 +1,5 @@
+import React, { useState } from 'react'
+import { Provider } from 'react-redux'
 import { cloneDeep } from 'lodash'
 import {
   act,
@@ -136,6 +138,50 @@ describe('useArrayRangeQuery', () => {
       url.includes('array/get-range'),
     )
     expect(call?.[1]).toEqual({ keyName: keyBuffer, start: '0', end: '9' })
+  })
+
+  it('honors pre-ready form edits when isArrayKeyReady flips to true', async () => {
+    const notReadyStore = mockStore(buildState({ selectedKeyName: null }))
+    const readyStore = mockStore(buildState({ selectedKeyName: keyBuffer }))
+
+    let swapStore: React.Dispatch<React.SetStateAction<any>> = () => {}
+    const SwappableProvider = ({ children }: { children: React.ReactNode }) => {
+      const [store, setStore] = useState<any>(notReadyStore)
+      swapStore = setStore
+      return <Provider store={store}>{children}</Provider>
+    }
+
+    const { result } = renderHook(() => useArrayRangeQuery(keyBuffer), {
+      wrapper: SwappableProvider,
+    } as any)
+
+    expect(result.current.isArrayKeyReady).toBe(false)
+
+    act(() => {
+      result.current.setShowEmpty(false)
+      result.current.setStart('5')
+      result.current.setEnd('15')
+    })
+    ;(apiService.post as jest.Mock).mockClear()
+
+    act(() => {
+      swapStore(readyStore)
+    })
+
+    const scanCall = (apiService.post as jest.Mock).mock.calls.find(([url]) =>
+      url.includes('array/scan'),
+    )
+    expect(scanCall?.[1]).toEqual({
+      keyName: keyBuffer,
+      start: '5',
+      end: '15',
+      limit: 1_000_000,
+    })
+
+    const rangeCall = (apiService.post as jest.Mock).mock.calls.find(([url]) =>
+      url.includes('array/get-range'),
+    )
+    expect(rangeCall).toBeUndefined()
   })
 
   it('resetQuery restores defaults and refires the default range', async () => {
