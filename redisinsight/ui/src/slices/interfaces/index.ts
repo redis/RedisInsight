@@ -1,5 +1,6 @@
 export * from './instances'
 export * from './vectorSet'
+export * from './array'
 export * from './hash'
 export * from './app'
 export * from './workbench'

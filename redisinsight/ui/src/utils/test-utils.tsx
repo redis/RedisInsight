@@ -35,6 +35,7 @@ import { initialState as initialStateList } from 'uiSrc/slices/browser/list'
 import { initialState as initialStateRejson } from 'uiSrc/slices/browser/rejson'
 import { initialState as initialStateStream } from 'uiSrc/slices/browser/stream'
 import { initialState as initialStateVectorSet } from 'uiSrc/slices/browser/vectorSet'
+import { initialState as initialStateArray } from 'uiSrc/slices/browser/array'
 import { initialState as initialStateBulkActions } from 'uiSrc/slices/browser/bulkActions'
 import { initialState as initialStateNotifications } from 'uiSrc/slices/app/notifications'
 import { initialState as initialStateAppInfo } from 'uiSrc/slices/app/info'
@@ -128,6 +129,7 @@ const initialStateDefault: RootState = {
     rejson: cloneDeep(initialStateRejson),
     stream: cloneDeep(initialStateStream),
     vectorSet: cloneDeep(initialStateVectorSet),
+    array: cloneDeep(initialStateArray),
     bulkActions: cloneDeep(initialStateBulkActions),
     redisearch: cloneDeep(initialStateRedisearch),
   },

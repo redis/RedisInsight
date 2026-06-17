@@ -1,7 +1,8 @@
+import { cloneDeep, set } from 'lodash'
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
-import { render } from 'uiSrc/utils/test-utils'
-import { KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
+import { initialStateDefault, mockStore, render } from 'uiSrc/utils/test-utils'
+import { FeatureFlags, KeyTypes, ModulesKeyTypes } from 'uiSrc/constants'
 import { MOCK_TRUNCATED_BUFFER_VALUE } from 'uiSrc/mocks/data/bigString'
 import { Props, DynamicTypeDetails } from './DynamicTypeDetails'
 
@@ -44,5 +45,32 @@ describe('DynamicTypeDetails', () => {
       />,
     )
     expect(queryByTestId('too-long-key-name-details')).toBeInTheDocument()
+  })
+
+  it('does not render array-details when dev-array flag is disabled', () => {
+    const { queryByTestId } = render(
+      <DynamicTypeDetails
+        {...instance(mockedProps)}
+        keyType={KeyTypes.Array}
+      />,
+    )
+    expect(queryByTestId('array-details')).not.toBeInTheDocument()
+    expect(queryByTestId('unsupported-type-details')).toBeInTheDocument()
+  })
+
+  it('renders array-details when dev-array flag is enabled', () => {
+    const stateWithFlag = set(
+      cloneDeep(initialStateDefault),
+      `app.features.featureFlags.features.${FeatureFlags.devArray}`,
+      { flag: true },
+    )
+    const { queryByTestId } = render(
+      <DynamicTypeDetails
+        {...instance(mockedProps)}
+        keyType={KeyTypes.Array}
+      />,
+      { store: mockStore(stateWithFlag) },
+    )
+    expect(queryByTestId('array-details')).toBeInTheDocument()
   })
 })

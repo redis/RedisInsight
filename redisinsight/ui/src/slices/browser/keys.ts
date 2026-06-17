@@ -54,6 +54,7 @@ import {
 } from './zset'
 import { fetchSetMembers, refreshSetMembersAction } from './set'
 import { fetchVectorSetElements } from './vectorSet'
+import { refreshArray } from './array'
 import { fetchReJSON, setEditorType, setIsWithinThreshold } from './rejson'
 import {
   setHashInitialState,
@@ -168,6 +169,7 @@ export const initialKeyInfo = {
   length: 0,
   quantType: undefined,
   vectorDim: undefined,
+  count: undefined,
 }
 
 const getInitialSelectedKeyState = (state: KeysStore) => ({
@@ -247,9 +249,17 @@ const keysSlice = createSlice({
       }
     },
     refreshKeyInfoSuccess: (state, { payload }) => {
+      // Replace `data` outright (mirroring `loadKeyInfoSuccess`) rather
+      // than spreading the payload over the previous data. The merge
+      // form preserved any field absent from the new payload, which
+      // leaked type-specific fields when an underlying key was
+      // overwritten as a different type — e.g. an array key's `count`
+      // (or a vector set's `vectorDim` / `quantType`) would survive
+      // into the refreshed header for a String/List/etc. key, since
+      // those payloads omit the field entirely.
       state.selectedKey = {
         ...state.selectedKey,
-        data: { ...state.selectedKey.data, ...payload },
+        data: { ...payload, nameString: bufferToString(payload.name) },
         refreshing: false,
       }
     },
@@ -1615,6 +1625,10 @@ export function refreshKey(
       }
       case KeyTypes.VectorSet: {
         dispatch(fetchVectorSetElements({ key, resetData }))
+        break
+      }
+      case KeyTypes.Array: {
+        dispatch(refreshArray(key))
         break
       }
       default:

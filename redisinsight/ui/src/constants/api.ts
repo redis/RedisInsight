@@ -77,6 +77,11 @@ enum ApiEndpoints {
   VECTOR_SET_SIMILARITY_SEARCH = 'vector-set/similarity-search',
   VECTOR_SET_SIMILARITY_SEARCH_PREVIEW = 'vector-set/similarity-search/preview',
 
+  ARRAY_GET_RANGE = 'array/get-range',
+  ARRAY_SCAN = 'array/scan',
+  ARRAY_GET_LENGTH = 'array/get-length',
+  ARRAY_GET_COUNT = 'array/get-count',
+
   STREAMS = 'streams',
   STREAMS_ENTRIES = 'streams/entries',
   STREAMS_ENTRIES_GET = 'streams/entries/get',
