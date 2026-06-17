@@ -29,7 +29,8 @@
       "apiSrc/*": ["redisinsight/api/src/*"],
       "uiSrc/*": ["redisinsight/ui/src/*"],
       "apiClient": ["redisinsight/api-client"],
-      "apiClient/*": ["redisinsight/api-client/*"]
+      "apiClient/*": ["redisinsight/api-client/*"],
+      "riShared/*": ["redisinsight/api/src/ri-shared/*"]
     }
   },
   "include": ["**/*"],

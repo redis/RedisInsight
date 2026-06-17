@@ -4,7 +4,7 @@ import RouterWithSubRoutes from './routerWithSubRoutes'
 
 export * from './common'
 export * from './validations'
-export * from './arrayIndex'
+export * from 'riShared/utils/array-index'
 export * from './statuses'
 export * from './instance'
 export * from './apiResponse'

@@ -2,12 +2,12 @@ import {
   ARRAY_INDEX_MAX,
   isValidArrayIndex,
   parseArrayIndex,
-} from 'uiSrc/utils'
+} from './array-index';
 
-describe('arrayIndex', () => {
+describe('shared array-index', () => {
   it('should expose max unsigned 64-bit value', () => {
-    expect(ARRAY_INDEX_MAX).toEqual(BigInt('18446744073709551615'))
-  })
+    expect(ARRAY_INDEX_MAX).toEqual(BigInt('18446744073709551615'));
+  });
 
   describe('parseArrayIndex', () => {
     it.each([
@@ -28,26 +28,26 @@ describe('arrayIndex', () => {
       { input: '', expected: null },
       { input: '   ', expected: null },
     ])('should return $expected for $input', ({ input, expected }) => {
-      expect(parseArrayIndex(input)).toEqual(expected)
-    })
+      expect(parseArrayIndex(input)).toEqual(expected);
+    });
 
     it.each([null, undefined, 7, BigInt(7), {}])(
       'should return null for non-string %p',
       (input) => {
-        expect(parseArrayIndex(input)).toEqual(null)
+        expect(parseArrayIndex(input)).toEqual(null);
       },
-    )
-  })
+    );
+  });
 
   describe('isValidArrayIndex', () => {
     it('should return true for a valid index', () => {
-      expect(isValidArrayIndex('123')).toEqual(true)
-    })
+      expect(isValidArrayIndex('123')).toEqual(true);
+    });
     it('should return false for an invalid index', () => {
-      expect(isValidArrayIndex('-1')).toEqual(false)
-    })
+      expect(isValidArrayIndex('-1')).toEqual(false);
+    });
     it('should return false for non-string input', () => {
-      expect(isValidArrayIndex(42)).toEqual(false)
-    })
-  })
-})
+      expect(isValidArrayIndex(42)).toEqual(false);
+    });
+  });
+});

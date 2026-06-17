@@ -29,7 +29,8 @@
     "paths": {
       "uiSrc/*": ["src/*"],
       "apiClient": ["../api-client"],
-      "apiClient/*": ["../api-client/*"]
+      "apiClient/*": ["../api-client/*"],
+      "riShared/*": ["../api/src/ri-shared/*"]
     }
   },
   "include": [

@@ -46,6 +46,9 @@ export default defineConfig({
       apiClient: fileURLToPath(
         new URL('../redisinsight/api-client', import.meta.url),
       ),
+      'riShared': fileURLToPath(
+        new URL('../redisinsight/api/src/ri-shared', import.meta.url),
+      ),
     },
   },
   server: {
