@@ -144,7 +144,7 @@ describe('AddKeyArray', () => {
       ).toBeInTheDocument()
       expect(screen.getByTestId('start-index')).toHaveValue('0')
       expect(screen.getByTestId(valueFindingRegex)).toBeInTheDocument()
-      expect(screen.queryByTestId('sparse-index')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('sparse-index-0')).not.toBeInTheDocument()
     })
 
     it('should show paired index and value inputs after switching to sparse mode', async () => {
@@ -152,8 +152,8 @@ describe('AddKeyArray', () => {
 
       await selectSparseMode()
 
-      expect(screen.getByTestId('sparse-index')).toBeInTheDocument()
-      expect(screen.getByTestId('sparse-value')).toBeInTheDocument()
+      expect(screen.getByTestId('sparse-index-0')).toBeInTheDocument()
+      expect(screen.getByTestId('sparse-value-0')).toBeInTheDocument()
       expect(screen.queryByTestId('start-index')).not.toBeInTheDocument()
     })
 
@@ -196,7 +196,7 @@ describe('AddKeyArray', () => {
 
       expect(screen.getByTestId('add-key-array-btn')).toBeDisabled()
 
-      fireEvent.change(screen.getByTestId('sparse-index'), {
+      fireEvent.change(screen.getByTestId('sparse-index-0'), {
         target: { value: '5' },
       })
 
@@ -230,10 +230,10 @@ describe('AddKeyArray', () => {
 
       await selectSparseMode()
 
-      fireEvent.change(screen.getByTestId('sparse-index'), {
+      fireEvent.change(screen.getByTestId('sparse-index-0'), {
         target: { value: '0042' },
       })
-      fireEvent.change(screen.getByTestId('sparse-value'), {
+      fireEvent.change(screen.getByTestId('sparse-value-0'), {
         target: { value: 'answer' },
       })
       fireEvent.click(screen.getByTestId('add-key-array-btn'))

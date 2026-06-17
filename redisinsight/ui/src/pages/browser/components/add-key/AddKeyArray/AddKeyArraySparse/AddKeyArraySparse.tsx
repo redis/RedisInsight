@@ -11,9 +11,9 @@ import {
   IArraySparseElement,
   INITIAL_SPARSE_ELEMENT,
 } from '../AddKeyArray.types'
-import { Props } from './AddKeyArraySparse.types'
+import { AddKeyArraySparseProps } from './AddKeyArraySparse.types'
 
-const AddKeyArraySparse = (props: Props) => {
+const AddKeyArraySparse = (props: AddKeyArraySparseProps) => {
   const { disabled, value, onChange } = props
   const { elements } = value
 
@@ -75,28 +75,24 @@ const AddKeyArraySparse = (props: Props) => {
           <FlexItem grow={1}>
             <FormField>
               <TextInput
-                name={`index-${item.id}`}
-                id={`index-${item.id}`}
                 placeholder={config.index.placeholder}
                 value={item.index}
                 disabled={disabled}
                 onChange={(next) =>
                   handleElementChange('index', item.id, validateListIndex(next))
                 }
-                data-testid="sparse-index"
+                data-testid={`sparse-index-${item.id}`}
               />
             </FormField>
           </FlexItem>
           <FlexItem grow={2}>
             <FormField>
               <TextInput
-                name={`elementValue-${item.id}`}
-                id={`elementValue-${item.id}`}
                 placeholder={config.value.placeholder}
                 value={item.value}
                 disabled={disabled}
                 onChange={(next) => handleElementChange('value', item.id, next)}
-                data-testid="sparse-value"
+                data-testid={`sparse-value-${item.id}`}
               />
             </FormField>
           </FlexItem>

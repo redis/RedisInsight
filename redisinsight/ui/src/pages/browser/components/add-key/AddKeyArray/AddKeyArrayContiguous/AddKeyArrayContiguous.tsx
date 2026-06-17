@@ -7,9 +7,9 @@ import { FormField } from 'uiSrc/components/base/forms/FormField'
 
 import { AddArrayFormConfig as config } from '../../constants/fields-config'
 import AddMultipleFields from '../../../add-multiple-fields'
-import { Props } from './AddKeyArrayContiguous.types'
+import { AddKeyArrayContiguousProps } from './AddKeyArrayContiguous.types'
 
-const AddKeyArrayContiguous = (props: Props) => {
+const AddKeyArrayContiguous = (props: AddKeyArrayContiguousProps) => {
   const { disabled, value, onChange } = props
   const { startIndex, values } = value
 
@@ -41,7 +41,6 @@ const AddKeyArrayContiguous = (props: Props) => {
     <>
       <FormField label={config.startIndex.label}>
         <TextInput
-          name={config.startIndex.name}
           id={config.startIndex.name}
           placeholder={config.startIndex.placeholder}
           value={startIndex}
@@ -59,8 +58,6 @@ const AddKeyArrayContiguous = (props: Props) => {
       >
         {(item, index) => (
           <TextInput
-            name={`value-${index}`}
-            id={`value-${index}`}
             placeholder={config.value.placeholder}
             value={item}
             disabled={disabled}
