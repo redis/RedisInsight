@@ -38,13 +38,16 @@ describe('ArrayRangeForm', () => {
     )
   })
 
-  it('reveals the ARSCAN preview when the toggle is pressed (showEmpty=false)', () => {
+  it('reveals the ARSCAN preview with the matching LIMIT when toggled (showEmpty=false)', () => {
+    // The preview must mirror what `scanArrayRange` actually sends — the
+    // slice always pins LIMIT to DEFAULT_SCAN_LIMIT — so copying the
+    // preview into CLI/Workbench can't issue an unbounded ARSCAN.
     renderComponent({ showEmpty: false })
 
     fireEvent.click(screen.getByTestId(PREVIEW_TOGGLE_TESTID))
 
     expect(screen.getByTestId(PREVIEW_TEXT_TESTID)).toHaveTextContent(
-      /ARSCAN\s+\S+\s+0\s+9/,
+      /ARSCAN\s+\S+\s+0\s+9\s+LIMIT\s+1000000/,
     )
   })
 

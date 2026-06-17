@@ -9,6 +9,7 @@ import { TextInput } from 'uiSrc/components/base/inputs'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { Text } from 'uiSrc/components/base/text'
 import { parseArrayIndex } from 'uiSrc/utils/arrayIndex'
+import { DEFAULT_SCAN_LIMIT } from 'uiSrc/slices/browser/array'
 
 import { CommandPreview } from '../command-preview'
 import {
@@ -99,9 +100,14 @@ export const ArrayRangeForm = ({
     // before a key is selected; substitute a placeholder for the key.
     // Quote the key so binary-unsafe names (whitespace, quotes) stay
     // runnable when copied into CLI / Workbench.
+    //
+    // ARSCAN includes the same `LIMIT` the slice thunk pins to every
+    // request — without it, the copied command would issue an unbounded
+    // ARSCAN against CLI/Workbench and return far more rows than what
+    // Run actually executes.
     const name = keyName ? quoteRedisArgument(keyName) : '<key>'
-    const verb = showEmpty ? 'ARGETRANGE' : 'ARSCAN'
-    return `${verb} ${name} ${start} ${end}`
+    if (showEmpty) return `ARGETRANGE ${name} ${start} ${end}`
+    return `ARSCAN ${name} ${start} ${end} LIMIT ${DEFAULT_SCAN_LIMIT}`
   }, [keyName, start, end, showEmpty])
 
   const previewTooltip = previewVisible

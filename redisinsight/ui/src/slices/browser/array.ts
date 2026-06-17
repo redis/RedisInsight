@@ -44,7 +44,7 @@ const DEFAULT_QUERY_END = '9'
  * already guarantees. A dedicated Limit input will replace this default
  * with the next vertical.
  */
-const DEFAULT_SCAN_LIMIT = 1_000_000
+export const DEFAULT_SCAN_LIMIT = 1_000_000
 
 export const initialState: StateArray = {
   loading: false,
