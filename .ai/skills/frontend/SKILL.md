@@ -343,6 +343,50 @@ Always clean up subscriptions, timers, and event listeners in `useEffect` return
 
 Create custom hooks for reusable stateful logic. Store component-specific hooks in the component's `/hooks` directory.
 
+### Naming
+
+- Always prefix with `use` and use `camelCase`: `useIndexInfo`, `useSimilaritySearch`, `useVectorSetElementForm`.
+- **Named export only** — never `export default` a hook.
+- The file is named exactly like the hook it exports: `useIndexInfo.ts` exports `useIndexInfo`.
+- Hook implementation files use `camelCase.ts` (not PascalCase, even though the surrounding component files are PascalCase).
+- Context hooks are an exception: they are defined inline in the provider file (e.g. `useVectorSearch` lives in `VectorSearchContext.tsx`), not in their own hook folder.
+
+### Organization
+
+Place hooks in a `hooks/` directory, scoped as narrowly as the hook is used:
+
+- **Feature-wide hooks** → the feature's top-level `hooks/` (e.g. `pages/vector-search/hooks/`).
+- **Component-specific hooks** → that component's `hooks/` (e.g. `components/query-library-view/hooks/`).
+
+Give each non-trivial hook **its own folder** named after the hook, colocating its companion files. A hook with no types/utils/tests can stay a single flat file in `hooks/`.
+
+```
+hooks/
+  index.ts                         # barrel (3+ hooks)
+  useIndexInfo/
+    index.ts                       # re-exports the hook + its public types
+    useIndexInfo.ts                # hook implementation (named export)
+    useIndexInfo.types.ts          # types: UseIndexInfoOptions, UseIndexInfoResult, …
+    useIndexInfo.utils.ts          # extracted pure helpers (only if needed)
+    useIndexInfo.spec.ts           # tests, colocated
+    useIndexInfo.utils.spec.ts     # tests for the utils
+```
+
+Companion-file conventions (all colocated, all `camelCase` matching the hook):
+
+- `*.types.ts` — type definitions. Name the params/result types `Use<Hook>Params`/`Use<Hook>Options` and `Use<Hook>Result`.
+- `*.utils.ts` — pure helpers extracted from the hook.
+- `*.spec.ts` — tests, named `<hookName>.spec.ts` and colocated (no separate `__tests__` dir).
+
+### Barrels
+
+- The per-hook `index.ts` re-exports the hook and its public types (and any utils meant to be shared):
+  ```typescript
+  export { useIndexInfo } from './useIndexInfo'
+  export type { UseIndexInfoOptions, UseIndexInfoResult } from './useIndexInfo.types'
+  ```
+- The `hooks/index.ts` barrel aggregates the folders (`export * from './useIndexInfo'`). Per the barrel-file rule, only add it when there are **3 or more** hooks.
+
 ## Form Handling
 
 Use Formik with Yup for validation. Keep form logic in custom hooks when complex.
