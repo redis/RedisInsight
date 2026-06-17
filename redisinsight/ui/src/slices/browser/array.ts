@@ -263,12 +263,7 @@ export function scanArrayRange(params: FetchArrayScanParams) {
       const state = stateInit()
       const { data, status } = await apiService.post<GetArrayScanResponse>(
         arrayUrl(state, ApiEndpoints.ARRAY_SCAN),
-        {
-          keyName: params.key,
-          start: params.start,
-          end: params.end,
-          ...(params.limit !== undefined ? { limit: params.limit } : {}),
-        },
+        { keyName: params.key, start: params.start, end: params.end },
         { ...encodingParams(state), signal: controller.signal },
       )
       if (controller.signal.aborted) return

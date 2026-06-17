@@ -65,7 +65,6 @@ export interface FetchArrayScanParams {
   key: RedisString
   start: string
   end: string
-  limit?: number
   resetData?: boolean
 }
 

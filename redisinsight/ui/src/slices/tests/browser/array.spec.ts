@@ -246,7 +246,7 @@ describe('array slice', () => {
         apiService.post = jest.fn().mockResolvedValue(response)
 
         await store.dispatch<any>(
-          scanArrayRange({ key: mockKey, start: '0', end: '10', limit: 5 }),
+          scanArrayRange({ key: mockKey, start: '0', end: '10' }),
         )
 
         expect(store.getActions()).toEqual([
