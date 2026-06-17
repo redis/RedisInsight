@@ -10,8 +10,6 @@ export const RUN_BUTTON_LABEL = 'Run'
 export const RESET_TOOLTIP = 'Reset to defaults'
 export const INVALID_INDEX_MESSAGE =
   'Index must be a valid 64-bit unsigned integer'
-export const INVALID_ORDER_MESSAGE =
-  'End must be greater than or equal to start'
 
 /**
  * Mirror of the backend's `ARRAY_RANGE_MAX_ELEMENTS` cap used by

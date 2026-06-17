@@ -15,7 +15,6 @@ import {
   ARRAY_RANGE_FORM_TEST_ID as TEST_ID,
   ARRAY_RANGE_MAX_SPAN,
   INVALID_INDEX_MESSAGE,
-  INVALID_ORDER_MESSAGE,
   INVALID_RANGE_TOO_LARGE_MESSAGE,
   PREVIEW_TOGGLE_ARIA_LABEL,
   PREVIEW_TOGGLE_HIDE_TOOLTIP,
@@ -68,28 +67,26 @@ export const ArrayRangeForm = ({
   // but be rejected with a 400 once the request reaches the API.
   const startInvalid = parseArrayIndex(start) !== start
   const endInvalid = parseArrayIndex(end) !== end
-  // Reversed ranges (start > end) are rejected by the backend (matches
-  // every Redis range command). Surface the constraint inline.
-  const orderInvalid =
-    !startInvalid && !endInvalid && BigInt(start) > BigInt(end)
   // Mirror the backend's ARRAY_RANGE_MAX_ELEMENTS cap so we fail fast
   // instead of round-tripping a request that will 400. Span is
-  // (end - start + 1) per the inclusive-bounds contract.
+  // (|end - start| + 1) per the inclusive-bounds contract — reversed
+  // ranges (start > end) are valid and return elements in reverse order.
   const spanInvalid =
     !startInvalid &&
     !endInvalid &&
-    !orderInvalid &&
-    BigInt(end) - BigInt(start) + 1n > ARRAY_RANGE_MAX_SPAN
-  const rangeInvalid = startInvalid || endInvalid || orderInvalid || spanInvalid
+    (BigInt(start) > BigInt(end)
+      ? BigInt(start) - BigInt(end)
+      : BigInt(end) - BigInt(start)) +
+      1n >
+      ARRAY_RANGE_MAX_SPAN
+  const rangeInvalid = startInvalid || endInvalid || spanInvalid
 
   const startError = startInvalid ? INVALID_INDEX_MESSAGE : undefined
   const endError = endInvalid
     ? INVALID_INDEX_MESSAGE
-    : orderInvalid
-      ? INVALID_ORDER_MESSAGE
-      : spanInvalid
-        ? INVALID_RANGE_TOO_LARGE_MESSAGE
-        : undefined
+    : spanInvalid
+      ? INVALID_RANGE_TOO_LARGE_MESSAGE
+      : undefined
 
   const command = useMemo(() => {
     // Always surface the command verb so the preview is meaningful even

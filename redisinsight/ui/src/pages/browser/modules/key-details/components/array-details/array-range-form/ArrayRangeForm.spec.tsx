@@ -69,15 +69,22 @@ describe('ArrayRangeForm', () => {
     },
   )
 
-  it('disables Run when end < start (backend rejects reversed ranges)', () => {
+  it('allows Run when end < start (backend returns reverse-order results)', () => {
     renderComponent({ start: '500', end: '100' })
 
-    expect(screen.getByTestId('array-range-form-run')).toBeDisabled()
+    expect(screen.getByTestId('array-range-form-run')).not.toBeDisabled()
   })
 
   it('disables Run when the span exceeds the backend cap (1,000,000)', () => {
     // span = end - start + 1 = 1_000_001, one past the cap
     renderComponent({ start: '0', end: '1000000' })
+
+    expect(screen.getByTestId('array-range-form-run')).toBeDisabled()
+  })
+
+  it('disables Run when a reversed range exceeds the backend cap', () => {
+    // span = |end - start| + 1 = 1_000_001, one past the cap
+    renderComponent({ start: '1000000', end: '0' })
 
     expect(screen.getByTestId('array-range-form-run')).toBeDisabled()
   })
