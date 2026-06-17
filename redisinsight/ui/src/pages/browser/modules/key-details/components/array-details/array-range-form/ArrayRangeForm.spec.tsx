@@ -96,6 +96,14 @@ describe('ArrayRangeForm', () => {
     expect(screen.getByTestId('array-range-form-run')).not.toBeDisabled()
   })
 
+  it('allows Run for an over-cap span when ARSCAN is selected (showEmpty=false)', () => {
+    // ARSCAN has no span cap on the backend — sparse arrays are routinely
+    // browsed with ranges far larger than 1M; LIMIT is the backpressure.
+    renderComponent({ start: '0', end: '10000000', showEmpty: false })
+
+    expect(screen.getByTestId('array-range-form-run')).not.toBeDisabled()
+  })
+
   it('disables Run and Reset when the disabled prop is set', () => {
     // Container passes disabled=true while the selected-key slice has
     // not confirmed the new key is an array, so manual clicks during a

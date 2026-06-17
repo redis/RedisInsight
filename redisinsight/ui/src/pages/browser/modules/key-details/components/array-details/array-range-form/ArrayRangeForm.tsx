@@ -71,7 +71,13 @@ export const ArrayRangeForm = ({
   // instead of round-tripping a request that will 400. Span is
   // (|end - start| + 1) per the inclusive-bounds contract — reversed
   // ranges (start > end) are valid and return elements in reverse order.
+  //
+  // Only applied to ARGETRANGE (`showEmpty: true`). ARSCAN skips empty
+  // slots server-side and intentionally has no span cap — sparse arrays
+  // are routinely browsed with ranges far larger than 1M; LIMIT is the
+  // natural backpressure there.
   const spanInvalid =
+    showEmpty &&
     !startInvalid &&
     !endInvalid &&
     (BigInt(start) > BigInt(end)
