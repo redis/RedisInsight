@@ -107,15 +107,19 @@ describe('ArrayRangeForm', () => {
     expect(screen.getByTestId('array-range-form-run')).not.toBeDisabled()
   })
 
-  it('disables Run and Reset when the disabled prop is set', () => {
+  it('disables Run, Reset, inputs and checkbox when the disabled prop is set', () => {
     // Container passes disabled=true while the selected-key slice has
-    // not confirmed the new key is an array, so manual clicks during a
-    // key switch can't dispatch ARGETRANGE/ARSCAN at a non-array key.
+    // not confirmed the new key is an array. Inputs/checkbox are also
+    // disabled so the auto-fetch effect can't pick up half-typed or
+    // over-cap drafts that bypass the form's rangeInvalid guard.
     const onReset = jest.fn()
     renderComponent({ onReset, disabled: true })
 
     expect(screen.getByTestId('array-range-form-run')).toBeDisabled()
     expect(screen.getByTestId('array-range-form-reset')).toBeDisabled()
+    expect(screen.getByTestId('array-range-form-start')).toBeDisabled()
+    expect(screen.getByTestId('array-range-form-end')).toBeDisabled()
+    expect(screen.getByTestId('array-range-form-show-empty')).toBeDisabled()
   })
 
   it('quotes key names containing whitespace in the command preview', () => {

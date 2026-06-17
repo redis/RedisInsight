@@ -125,6 +125,7 @@ export const ArrayRangeForm = ({
               data-testid={`${TEST_ID}-start`}
               error={startError}
               placeholder="0"
+              disabled={disabled}
             />
           </FormField>
         </FlexItem>
@@ -136,6 +137,7 @@ export const ArrayRangeForm = ({
               data-testid={`${TEST_ID}-end`}
               error={endError}
               placeholder="9"
+              disabled={disabled}
             />
           </FormField>
         </FlexItem>
@@ -148,6 +150,7 @@ export const ArrayRangeForm = ({
               checked={showEmpty}
               onChange={(e) => onToggleShowEmpty(e.target.checked)}
               data-testid={`${TEST_ID}-show-empty`}
+              disabled={disabled}
             />
           </S.InputAlignedBox>
         </FlexItem>
