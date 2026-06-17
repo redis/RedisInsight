@@ -1,4 +1,26 @@
+import { CreateArrayWithExpireDto } from 'apiClient'
+
 import type { PopulateOption } from './AddKeyArray.types'
+
+export type ArrayCreationMode = CreateArrayWithExpireDto['mode']
+
+export const CONTIGUOUS_MODE: ArrayCreationMode = 'contiguous'
+export const SPARSE_MODE: ArrayCreationMode = 'sparse'
+
+export const CREATION_MODE_OPTIONS = [
+  {
+    value: CONTIGUOUS_MODE,
+    inputDisplay: 'Contiguous (sequential indexes)',
+    label: 'Contiguous (sequential indexes)',
+  },
+  {
+    value: SPARSE_MODE,
+    inputDisplay: 'Sparse (explicit indexes)',
+    label: 'Sparse (explicit indexes)',
+  },
+]
+
+export const DEFAULT_START_INDEX = '0'
 
 export enum PopulateMode {
   Sample = 'sample',

@@ -1,9 +1,11 @@
 import { RootState, store } from 'uiSrc/slices/store'
+import { ApiEndpoints, KeyTypes } from 'uiSrc/constants'
 import { TelemetryEvent } from '../events'
 import {
   getRedisModulesSummary,
   getFreeDbFlag,
   getJsonPathLevel,
+  getAdditionalAddedEventData,
 } from '../telemetryUtils'
 
 const DEFAULT_SUMMARY = Object.freeze({
@@ -199,5 +201,27 @@ describe('getJsonPathLevel', () => {
     expect(getJsonPathLevel(undefined)).toBe(0)
     // @ts-expect-error testing runtime failure
     expect(getJsonPathLevel({})).toBe(0)
+  })
+})
+
+describe('getAdditionalAddedEventData', () => {
+  it('includes array metadata for a contiguous create (values length + TTL)', () => {
+    expect(
+      getAdditionalAddedEventData(ApiEndpoints.ARRAY, {
+        values: ['a', 'b', 'c'],
+        expire: 3600,
+      }),
+    ).toEqual({ keyType: KeyTypes.Array, length: 3, TTL: 3600 })
+  })
+
+  it('includes array metadata for a sparse create (elements length, default TTL)', () => {
+    expect(
+      getAdditionalAddedEventData(ApiEndpoints.ARRAY, {
+        elements: [
+          { index: '0', value: 'a' },
+          { index: '5', value: 'b' },
+        ],
+      }),
+    ).toEqual({ keyType: KeyTypes.Array, length: 2, TTL: -1 })
   })
 })

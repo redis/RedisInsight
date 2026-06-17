@@ -8,7 +8,7 @@ import {
   userEvent,
   waitFor,
 } from 'uiSrc/utils/test-utils'
-import { addKeyIntoList } from 'uiSrc/slices/browser/keys'
+import { addArrayKey, addKeyIntoList } from 'uiSrc/slices/browser/keys'
 import { stringToBuffer } from 'uiSrc/utils'
 import { Environment } from 'apiClient'
 import {
@@ -17,6 +17,11 @@ import {
 } from 'uiSrc/mocks/factories/browser/bulkActions/bulkActionOverview.factory'
 import AddKeyArray from './AddKeyArray'
 import { Props } from './AddKeyArray.types'
+import {
+  CONTIGUOUS_MODE,
+  CREATION_MODE_OPTIONS,
+  SPARSE_MODE,
+} from './constants'
 import { DEFAULT_SAMPLE_DATASET, SAMPLE_DATASETS } from './LoadSampleDataset'
 
 const defaultProps: Props = {
@@ -28,6 +33,7 @@ const defaultProps: Props = {
 jest.mock('uiSrc/slices/browser/keys', () => ({
   ...jest.requireActual('uiSrc/slices/browser/keys'),
   addKeyIntoList: jest.fn(() => ({ type: 'keys/addKeyIntoList' })),
+  addArrayKey: jest.fn(() => ({ type: 'keys/addArrayKey' })),
 }))
 
 const mockLoad = jest.fn()
@@ -69,10 +75,21 @@ const contiguousDataset = SAMPLE_DATASETS.find(
   ({ collectionName }) => collectionName === 'readme-document',
 )!
 
+const valueFindingRegex = /^value-\d+$/
+
+const getModeOptionLabel = (mode: string) =>
+  CREATION_MODE_OPTIONS.find(({ value }) => value === mode)?.label ?? ''
+
 const selectSampleMode = () =>
   fireEvent.click(screen.getByTestId('add-key-array-populate-sample'))
 const selectManualMode = () =>
   fireEvent.click(screen.getByTestId('add-key-array-populate-manual'))
+const selectSparseMode = async () => {
+  await userEvent.click(screen.getByTestId('creation-mode-select'))
+  await userEvent.click(
+    await screen.findByText(getModeOptionLabel(SPARSE_MODE)),
+  )
+}
 const selectDataset = async (label: string) => {
   await userEvent.click(screen.getByTestId('sample-dataset-select'))
   await userEvent.click(await screen.findByText(label))
@@ -118,11 +135,129 @@ describe('AddKeyArray', () => {
     expect(renderComponent()).toBeTruthy()
   })
 
-  it('should keep the manual side as a placeholder with a disabled submit button', () => {
-    renderComponent({ keyName: 'name' })
+  describe('manual mode', () => {
+    it('should render contiguous mode with default start index by default', () => {
+      renderComponent()
 
-    expect(screen.getByTestId('add-key-array-placeholder')).toBeInTheDocument()
-    expect(screen.getByTestId('add-key-array-btn')).toBeDisabled()
+      expect(
+        screen.getByText(getModeOptionLabel(CONTIGUOUS_MODE)),
+      ).toBeInTheDocument()
+      expect(screen.getByTestId('start-index')).toHaveValue('0')
+      expect(screen.getByTestId(valueFindingRegex)).toBeInTheDocument()
+      expect(screen.queryByTestId('sparse-index-0')).not.toBeInTheDocument()
+    })
+
+    it('should show paired index and value inputs after switching to sparse mode', async () => {
+      renderComponent()
+
+      await selectSparseMode()
+
+      expect(screen.getByTestId('sparse-index-0')).toBeInTheDocument()
+      expect(screen.getByTestId('sparse-value-0')).toBeInTheDocument()
+      expect(screen.queryByTestId('start-index')).not.toBeInTheDocument()
+    })
+
+    it('should disable the submit button with empty keyName', () => {
+      renderComponent({ keyName: '' })
+
+      expect(screen.getByTestId('add-key-array-btn')).toBeDisabled()
+    })
+
+    it('should disable the submit button when the start index is cleared', () => {
+      renderComponent({ keyName: 'name' })
+
+      expect(screen.getByTestId('add-key-array-btn')).not.toBeDisabled()
+
+      fireEvent.change(screen.getByTestId('start-index'), {
+        target: { value: '' },
+      })
+
+      expect(screen.getByTestId('add-key-array-btn')).toBeDisabled()
+    })
+
+    it('should disable submit when a contiguous range would exceed the u64 max', () => {
+      renderComponent({ keyName: 'name' })
+
+      fireEvent.change(screen.getByTestId('start-index'), {
+        target: { value: '18446744073709551615' },
+      })
+      // a single value at the max index is still in range
+      expect(screen.getByTestId('add-key-array-btn')).not.toBeDisabled()
+
+      // a second value would land one past the u64 range
+      fireEvent.click(screen.getByTestId('add-item'))
+      expect(screen.getByTestId('add-key-array-btn')).toBeDisabled()
+    })
+
+    it('should disable the submit button in sparse mode until every index is filled', async () => {
+      renderComponent({ keyName: 'name' })
+
+      await selectSparseMode()
+
+      expect(screen.getByTestId('add-key-array-btn')).toBeDisabled()
+
+      fireEvent.change(screen.getByTestId('sparse-index-0'), {
+        target: { value: '5' },
+      })
+
+      expect(screen.getByTestId('add-key-array-btn')).not.toBeDisabled()
+    })
+
+    it('should dispatch addArrayKey with a canonical start index on contiguous submit', () => {
+      renderComponent({ keyName: 'name', onCancel: jest.fn() })
+
+      fireEvent.change(screen.getByTestId('start-index'), {
+        target: { value: '007' },
+      })
+      fireEvent.change(screen.getByTestId('value-0'), {
+        target: { value: 'first' },
+      })
+      fireEvent.click(screen.getByTestId('add-key-array-btn'))
+
+      expect(addArrayKey).toHaveBeenCalledWith(
+        {
+          keyName: stringToBuffer('name'),
+          mode: CONTIGUOUS_MODE,
+          startIndex: '7',
+          values: [stringToBuffer('first')],
+        },
+        expect.any(Function),
+      )
+    })
+
+    it('should dispatch addArrayKey with canonical element indexes on sparse submit', async () => {
+      renderComponent({ keyName: 'name', onCancel: jest.fn() })
+
+      await selectSparseMode()
+
+      fireEvent.change(screen.getByTestId('sparse-index-0'), {
+        target: { value: '0042' },
+      })
+      fireEvent.change(screen.getByTestId('sparse-value-0'), {
+        target: { value: 'answer' },
+      })
+      fireEvent.click(screen.getByTestId('add-key-array-btn'))
+
+      expect(addArrayKey).toHaveBeenCalledWith(
+        {
+          keyName: stringToBuffer('name'),
+          mode: SPARSE_MODE,
+          elements: [{ index: '42', value: stringToBuffer('answer') }],
+        },
+        expect.any(Function),
+      )
+    })
+
+    it('should include expire in payload when keyTTL is provided', () => {
+      renderComponent({ keyName: 'name', keyTTL: 60, onCancel: jest.fn() })
+
+      fireEvent.click(screen.getByTestId('add-key-array-btn'))
+
+      expect(addArrayKey).toHaveBeenCalledWith(
+        expect.objectContaining({ expire: 60 }),
+        expect.any(Function),
+      )
+    })
   })
 
   describe('sample data mode', () => {
@@ -140,7 +275,7 @@ describe('AddKeyArray', () => {
         screen.getByTestId('add-key-array-load-sample-dataset'),
       ).toBeInTheDocument()
       expect(
-        screen.queryByTestId('add-key-array-placeholder'),
+        screen.queryByTestId('creation-mode-select'),
       ).not.toBeInTheDocument()
       expect(setKeyName).toHaveBeenLastCalledWith(
         DEFAULT_SAMPLE_DATASET.keyName,
@@ -148,9 +283,7 @@ describe('AddKeyArray', () => {
       expect(setKeyNameDisabled).toHaveBeenLastCalledWith(true)
 
       selectManualMode()
-      expect(
-        screen.getByTestId('add-key-array-placeholder'),
-      ).toBeInTheDocument()
+      expect(screen.getByTestId('creation-mode-select')).toBeInTheDocument()
       expect(setKeyName).toHaveBeenLastCalledWith('')
       expect(setKeyNameDisabled).toHaveBeenLastCalledWith(false)
     })

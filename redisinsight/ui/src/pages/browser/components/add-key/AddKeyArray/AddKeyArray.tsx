@@ -1,13 +1,23 @@
 import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
-import { stringToBuffer } from 'uiSrc/utils'
-import { addKeyIntoList, addKeyStateSelector } from 'uiSrc/slices/browser/keys'
+import {
+  ARRAY_INDEX_MAX,
+  isValidArrayIndex,
+  parseArrayIndex,
+  stringToBuffer,
+} from 'uiSrc/utils'
+import {
+  addArrayKey,
+  addKeyIntoList,
+  addKeyStateSelector,
+} from 'uiSrc/slices/browser/keys'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { ApiEndpoints, KeyTypes } from 'uiSrc/constants'
 import { useLoadData } from 'uiSrc/services/hooks'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
+import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import {
   RiRadioGroupItemIndicator,
   RiRadioGroupItemRoot,
@@ -18,7 +28,7 @@ import { Col } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { useDatabaseEnvironment } from 'uiSrc/components/hooks/useDatabaseEnvironment'
-import { Environment } from 'apiClient'
+import { CreateArrayWithExpireDto, Environment } from 'apiClient'
 
 import LoadSampleDataset, {
   DEFAULT_SAMPLE_DATASET,
@@ -30,13 +40,46 @@ import LoadSampleDataset, {
   sampleDatasetLoadedNotification,
   sampleDatasetTtlFailedNotification,
 } from './LoadSampleDataset'
-import { POPULATE_LABEL, POPULATE_OPTIONS, PopulateMode } from './constants'
+import {
+  ArrayCreationMode,
+  CONTIGUOUS_MODE,
+  CREATION_MODE_OPTIONS,
+  DEFAULT_START_INDEX,
+  POPULATE_LABEL,
+  POPULATE_OPTIONS,
+  PopulateMode,
+} from './constants'
+import {
+  transformToContiguousMode,
+  transformToSparseMode,
+} from './AddKeyArray.transforms'
+import AddKeyArrayContiguous from './AddKeyArrayContiguous'
+import AddKeyArraySparse from './AddKeyArraySparse'
 import * as S from './AddKeyArray.styles'
 
-import { Props } from './AddKeyArray.types'
+import {
+  ContiguousValue,
+  INITIAL_SPARSE_ELEMENT,
+  Props,
+  SparseValue,
+} from './AddKeyArray.types'
+
+// Contiguous mode writes values to consecutive indexes, so the last one
+// (start + count - 1) must also stay within the u64 range.
+const isValidContiguousRange = (startIndex: string, count: number): boolean => {
+  const start = parseArrayIndex(startIndex)
+  if (start === null) return false
+  return BigInt(start) + BigInt(Math.max(count - 1, 0)) <= ARRAY_INDEX_MAX
+}
 
 const AddKeyArray = (props: Props) => {
-  const { keyTTL, onCancel, setKeyName, setKeyNameDisabled } = props
+  const {
+    keyName = '',
+    keyTTL,
+    onCancel,
+    setKeyName,
+    setKeyNameDisabled,
+  } = props
   const [populateMode, setPopulateMode] = useState<PopulateMode>(
     PopulateMode.Manual,
   )
@@ -44,6 +87,15 @@ const AddKeyArray = (props: Props) => {
   const [dataset, setDataset] = useState<SampleArrayDataset>(
     DEFAULT_SAMPLE_DATASET,
   )
+
+  const [mode, setMode] = useState<ArrayCreationMode>(CONTIGUOUS_MODE)
+  const [contiguous, setContiguous] = useState<ContiguousValue>({
+    startIndex: DEFAULT_START_INDEX,
+    values: [''],
+  })
+  const [sparse, setSparse] = useState<SparseValue>({
+    elements: [{ ...INITIAL_SPARSE_ELEMENT }],
+  })
 
   const { loading } = useAppSelector(addKeyStateSelector)
   const { id: instanceId } = useAppSelector(connectedInstanceSelector)
@@ -53,6 +105,14 @@ const AddKeyArray = (props: Props) => {
   const isProductionDatabase = environment === Environment.Production
 
   const dispatch = useAppDispatch()
+
+  // Mirror AddKeyList: values may stay empty strings — only the key name and
+  // the indexes gate submission.
+  const isManualFormValid =
+    keyName.length > 0 &&
+    (mode === CONTIGUOUS_MODE
+      ? isValidContiguousRange(contiguous.startIndex, contiguous.values.length)
+      : sparse.elements.every(({ index }) => isValidArrayIndex(index)))
 
   // The ref short-circuits synchronous double-clicks before React flushes the
   // state update; the state drives the button's disabled/loading.
@@ -133,9 +193,26 @@ const AddKeyArray = (props: Props) => {
     }
   }
 
+  const submitManualData = (): void => {
+    const data: CreateArrayWithExpireDto =
+      mode === CONTIGUOUS_MODE
+        ? transformToContiguousMode({
+            keyName,
+            startIndex: contiguous.startIndex,
+            values: contiguous.values,
+          })
+        : transformToSparseMode({ keyName, elements: sparse.elements })
+    if (keyTTL !== undefined && keyTTL !== null) {
+      data.expire = keyTTL
+    }
+    dispatch(addArrayKey(data, onCancel))
+  }
+
   const onClickAction = () => {
     if (isSampleMode) {
       submitSampleDataset()
+    } else if (isManualFormValid) {
+      submitManualData()
     }
   }
 
@@ -204,13 +281,28 @@ const AddKeyArray = (props: Props) => {
           )}
         </>
       ) : (
-        <Text
-          size="M"
-          color="secondary"
-          data-testid="add-key-array-placeholder"
-        >
-          Array creation options are coming soon.
-        </Text>
+        <>
+          <RiSelect
+            value={mode}
+            options={CREATION_MODE_OPTIONS}
+            onChange={(value) => setMode(value as ArrayCreationMode)}
+            data-testid="creation-mode-select"
+          />
+          <Spacer size="m" />
+          {mode === CONTIGUOUS_MODE ? (
+            <AddKeyArrayContiguous
+              disabled={loading}
+              value={contiguous}
+              onChange={setContiguous}
+            />
+          ) : (
+            <AddKeyArraySparse
+              disabled={loading}
+              value={sparse}
+              onChange={setSparse}
+            />
+          )}
+        </>
       )}
       <ActionFooter
         onCancel={() => onCancel(true)}
@@ -218,7 +310,9 @@ const AddKeyArray = (props: Props) => {
         actionText="Add Key"
         loading={loading || isSubmittingSampleDataset}
         disabled={
-          !isSampleMode || isSubmittingSampleDataset || isProductionDatabase
+          isSampleMode
+            ? isSubmittingSampleDataset || isProductionDatabase
+            : !isManualFormValid
         }
         actionTestId="add-key-array-btn"
       />
