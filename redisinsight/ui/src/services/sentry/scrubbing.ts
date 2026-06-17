@@ -123,6 +123,26 @@ export const scrubSecretsInText = (text?: string): string | undefined => {
 }
 
 /**
+ * Recursively run `scrubSecretsInText` over every string in a structured value.
+ * `scrubSensitiveData` only redacts by key NAME, so this is what catches secrets
+ * that live inside string VALUES — e.g. a token in a breadcrumb's `data.url`.
+ */
+const scrubSecretsDeep = (value: unknown): unknown => {
+  if (typeof value === 'string') {
+    return scrubSecretsInText(value)
+  }
+  if (Array.isArray(value)) {
+    return value.map((item) => scrubSecretsDeep(item))
+  }
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, val]) => [key, scrubSecretsDeep(val)]),
+    )
+  }
+  return value
+}
+
+/**
  * Replace the OS-user segment of a filesystem path with `<user>` so stack-frame
  * paths cannot leak the account/owner name (PII).
  *   /Users/jane/...        -> /Users/<user>/...
@@ -178,22 +198,26 @@ export const scrubEvent = <T extends Event>(event: T): T => {
     })
   }
 
+  // Structured bags: redact by key name (scrubSensitiveData) AND scrub secrets
+  // inside string values (scrubSecretsDeep) — a token in `data.url`/`request.url`
+  // lives in a value, not a sensitive key, so key-redaction alone misses it.
   if (event.extra) {
-    event.extra = scrubSensitiveData(event.extra) as Event['extra']
+    event.extra = scrubSecretsDeep(
+      scrubSensitiveData(event.extra),
+    ) as Event['extra']
   }
   if (event.contexts) {
-    event.contexts = scrubSensitiveData(event.contexts) as Event['contexts']
+    event.contexts = scrubSecretsDeep(
+      scrubSensitiveData(event.contexts),
+    ) as Event['contexts']
   }
   if (event.request) {
-    const request = scrubSensitiveData(event.request) as Event['request']
-    if (request) {
-      if (typeof request.url === 'string') {
-        request.url = scrubSecretsInText(request.url) ?? request.url
-      }
-      if (typeof request.query_string === 'string') {
-        request.query_string =
-          scrubSecretsInText(request.query_string) ?? request.query_string
-      }
+    const request = scrubSecretsDeep(
+      scrubSensitiveData(event.request),
+    ) as Event['request']
+    // The page URL can be a file:///C:/Users/<name>/… path on Windows.
+    if (request && typeof request.url === 'string') {
+      request.url = normalizePath(request.url) ?? request.url
     }
     event.request = request
   }
@@ -202,7 +226,9 @@ export const scrubEvent = <T extends Event>(event: T): T => {
       (breadcrumb): Breadcrumb => ({
         ...breadcrumb,
         message: scrubSecretsInText(breadcrumb.message),
-        data: scrubSensitiveData(breadcrumb.data) as Breadcrumb['data'],
+        data: scrubSecretsDeep(
+          scrubSensitiveData(breadcrumb.data),
+        ) as Breadcrumb['data'],
       }),
     )
   }
@@ -227,15 +253,39 @@ const minimizeFrame = (frame: StackFrame): StackFrame => ({
   function: frame.function,
   module: frame.module,
   filename: normalizePath(frame.filename),
+  // Kept (with debug_meta) so debug-id symbolication still works; it is a build
+  // path (app:///…), normalized in case it ever carries a user directory.
+  abs_path: normalizePath(frame.abs_path),
   lineno: frame.lineno,
   colno: frame.colno,
   in_app: frame.in_app,
 })
 
 /**
+ * Keep the debug-image references (code_file + debug_id) so Tier-1 events still
+ * symbolicate against uploaded source maps. These carry no PII — build paths +
+ * debug-id UUIDs — but code_file is normalized defensively in case a
+ * main-process image ever holds an absolute user path.
+ */
+const minimizeDebugMeta = (
+  debugMeta: Event['debug_meta'],
+): Event['debug_meta'] => {
+  if (!debugMeta?.images) return debugMeta
+  return {
+    ...debugMeta,
+    images: debugMeta.images.map((image) => {
+      const codeFile = (image as { code_file?: string }).code_file
+      if (typeof codeFile !== 'string') return image
+      return { ...image, code_file: normalizePath(codeFile) } as typeof image
+    }),
+  }
+}
+
+/**
  * Reduce an event to the Tier 1 (no-consent) allowlist: error type + sanitized
  * stack + build/OS metadata, under the shared anonymous id. Drops the message,
- * breadcrumbs, request, extra, user identity, and device context.
+ * breadcrumbs, request, extra, user identity, and device context. Keeps
+ * debug_meta so the (anonymous) stack still symbolicates — it carries no PII.
  *
  * `scrubEvent` should be applied before this; `minimizeEvent` is the final
  * gate for the no-consent path.
@@ -248,6 +298,7 @@ export const minimizeEvent = <T extends Event>(event: T): T => {
     level: event.level,
     release: event.release,
     environment: event.environment,
+    debug_meta: minimizeDebugMeta(event.debug_meta),
     exception: event.exception
       ? {
           values: event.exception.values?.map((value) => ({

@@ -211,6 +211,24 @@ describe('scrubEvent', () => {
     expect(frame.pre_context?.[0]).toContain(REDACTED)
   })
 
+  it('redacts secrets in breadcrumb data URLs and normalizes request url', () => {
+    const event: Event = {
+      breadcrumbs: [
+        { data: { url: 'https://api.example.com/x?access_token=abc123' } },
+      ],
+      request: { url: 'file:///C:/Users/jane/dist/renderer/index.html' },
+    }
+
+    const result = scrubEvent(event)
+
+    expect(result.breadcrumbs?.[0].data?.url).toBe(
+      `https://api.example.com/x?access_token=${REDACTED}`,
+    )
+    expect((result.request as any).url).toBe(
+      'file:///C:/Users/<user>/dist/renderer/index.html',
+    )
+  })
+
   it('clears server_name and the client IP', () => {
     const event: Event = {
       server_name: 'jane-macbook',
@@ -240,6 +258,7 @@ describe('minimizeEvent', () => {
               {
                 function: 'connect',
                 filename: '/Users/jane/app/db.js',
+                abs_path: '/Users/jane/app/db.js',
                 lineno: 10,
                 vars: { password: 'p' } as any,
                 context_line: 'const x = secret',
@@ -258,6 +277,20 @@ describe('minimizeEvent', () => {
       device: { name: 'jane-macbook' } as any,
     },
     user: { id: 'real-anon-id' },
+    debug_meta: {
+      images: [
+        {
+          type: 'sourcemap',
+          code_file: 'app:///dist/renderer/assets/index.js',
+          debug_id: 'b76225bc-8e92-465c-accc-66d0a79a17da',
+        },
+        {
+          type: 'sourcemap',
+          code_file: '/Users/jane/app/main.js',
+          debug_id: 'aaaa1111-bbbb-2222-cccc-333344445555',
+        },
+      ],
+    } as any,
   }
 
   it('keeps only the allowlisted fields', () => {
@@ -283,8 +316,18 @@ describe('minimizeEvent', () => {
       minimizeEvent(fullEvent).exception!.values![0].stacktrace!.frames![0]
     expect(frame.function).toBe('connect')
     expect(frame.filename).toBe('/Users/<user>/app/db.js')
+    expect(frame.abs_path).toBe('/Users/<user>/app/db.js')
     expect((frame as any).vars).toBeUndefined()
     expect(frame.context_line).toBeUndefined()
+  })
+
+  it('keeps debug_meta for symbolication and normalizes code_file paths', () => {
+    const images = minimizeEvent(fullEvent).debug_meta?.images as any[]
+    expect(images).toHaveLength(2)
+    expect(images[0].debug_id).toBe('b76225bc-8e92-465c-accc-66d0a79a17da')
+    expect(images[0].code_file).toBe('app:///dist/renderer/assets/index.js')
+    // a user path in code_file is normalized
+    expect(images[1].code_file).toBe('/Users/<user>/app/main.js')
   })
 
   it('forces the shared anonymous id and drops device context', () => {
