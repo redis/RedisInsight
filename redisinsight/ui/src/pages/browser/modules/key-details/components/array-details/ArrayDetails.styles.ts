@@ -13,3 +13,9 @@ export const TabsWrapper = styled.div`
   border-bottom: 1px solid
     ${({ theme }) => theme.semantic.color.border.neutral500};
 `
+
+export const TabSlot = styled(Col)<{ $hidden?: boolean }>`
+  flex: 1;
+  min-height: 0;
+  display: ${({ $hidden }) => ($hidden ? 'none' : 'flex')};
+`

@@ -50,23 +50,27 @@ describe('ArrayDetails', () => {
     expect(screen.getByTestId('array-details-table-mock')).toBeInTheDocument()
   })
 
-  it.each([
-    [ArrayDetailsTab.Aggregate, 'array-aggregate-placeholder'],
-    [ArrayDetailsTab.Search, 'array-search-placeholder'],
-  ])(
-    'swaps the body for the %s placeholder and hides the View surfaces',
-    (tab, placeholderTestId) => {
-      render(<ArrayDetails {...instance(mockedProps)} />)
+  it('keeps every tab mounted and toggles visibility on tab change', () => {
+    render(<ArrayDetails {...instance(mockedProps)} />)
 
-      fireEvent.mouseDown(screen.getByText(ARRAY_DETAILS_TAB_LABELS[tab]))
+    expect(screen.getByTestId('array-range-form-mock')).toBeVisible()
+    expect(screen.getByTestId('array-search-placeholder')).not.toBeVisible()
+    expect(screen.getByTestId('array-aggregate-placeholder')).not.toBeVisible()
 
-      expect(screen.getByTestId(placeholderTestId)).toBeInTheDocument()
-      expect(
-        screen.queryByTestId('array-range-form-mock'),
-      ).not.toBeInTheDocument()
-      expect(
-        screen.queryByTestId('array-details-table-mock'),
-      ).not.toBeInTheDocument()
-    },
-  )
+    fireEvent.mouseDown(
+      screen.getByText(ARRAY_DETAILS_TAB_LABELS[ArrayDetailsTab.Search]),
+    )
+
+    expect(screen.getByTestId('array-range-form-mock')).not.toBeVisible()
+    expect(screen.getByTestId('array-search-placeholder')).toBeVisible()
+    expect(screen.getByTestId('array-aggregate-placeholder')).not.toBeVisible()
+
+    fireEvent.mouseDown(
+      screen.getByText(ARRAY_DETAILS_TAB_LABELS[ArrayDetailsTab.Aggregate]),
+    )
+
+    expect(screen.getByTestId('array-range-form-mock')).not.toBeVisible()
+    expect(screen.getByTestId('array-search-placeholder')).not.toBeVisible()
+    expect(screen.getByTestId('array-aggregate-placeholder')).toBeVisible()
+  })
 })
