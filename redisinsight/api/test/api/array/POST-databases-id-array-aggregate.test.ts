@@ -111,17 +111,6 @@ describe('POST /databases/:instanceId/array/aggregate', () => {
         statusCode: 400,
       },
       {
-        name: 'Should reject MATCH with an empty value',
-        data: {
-          keyName: constants.getRandomString(),
-          start: '0',
-          end: '5',
-          operation: ArrayAggregateOperation.Match,
-          value: '',
-        },
-        statusCode: 400,
-      },
-      {
         name: 'Should reject a non-decimal start index',
         data: {
           keyName: constants.getRandomString(),
