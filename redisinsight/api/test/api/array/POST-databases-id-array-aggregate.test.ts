@@ -28,6 +28,12 @@ const endpoint = (instanceId = constants.TEST_INSTANCE_ID) =>
 // actually returns ("must be an integer string between 0 and 2^64-2").
 const ARRAY_INDEX_MSG = 'must be an integer string between';
 
+// class-validator's @IsEnum emits a single message for missing / non-string /
+// out-of-enum inputs ("operation must be one of the following values: SUM,
+// MIN, ..."). Override every Joi rule the harness generates with a shared
+// substring so the `body.message.join() includes message` check passes.
+const OPERATION_ENUM_MSG = 'operation must be one of the following values';
+
 const dataSchema = Joi.object({
   keyName: Joi.string().allow('').required(),
   start: Joi.string().required().messages({
@@ -40,8 +46,15 @@ const dataSchema = Joi.object({
   }),
   operation: Joi.string()
     .valid(...Object.values(ArrayAggregateOperation))
-    .required(),
-  value: Joi.string().optional(),
+    .required()
+    .messages({
+      'string.base': OPERATION_ENUM_MSG,
+      'any.required': OPERATION_ENUM_MSG,
+      'any.only': OPERATION_ENUM_MSG,
+    }),
+  // `value` is conditionally validated server-side (@ValidateIf operation ===
+  // MATCH), so the auto-generated invalid cases would skip validation and 404
+  // on the missing key. MATCH-specific coverage is added explicitly below.
 }).strict();
 
 const validInputData = {
