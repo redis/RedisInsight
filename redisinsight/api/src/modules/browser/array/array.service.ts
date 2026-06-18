@@ -4,6 +4,7 @@ import { RedisErrorCodes } from 'src/constants';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { catchAclError, catchMultiTransactionError } from 'src/utils';
 import { ClientMetadata } from 'src/common/models';
+import { RedisString } from 'src/common/constants';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import {
   BrowserToolArrayCommands,
@@ -366,28 +367,43 @@ export class ArrayService {
       // Same span cap as ARGETRANGE: AROP scans the dense [start..end] window.
       this.assertValidRange(start, end);
 
+      // MATCH requires a non-empty comparison value. IsRedisString accepts
+      // strings and Buffers but doesn't enforce non-emptiness on the post-
+      // transform Buffer, so check it here.
+      if (operation === ArrayAggregateOperation.Match) {
+        const len = typeof value === 'string' ? value.length : value?.length;
+        if (!len) {
+          throw new BadRequestException(
+            'value must be a non-empty string or Buffer for MATCH operation.',
+          );
+        }
+      }
+
       const client =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
       await checkIfKeyNotExists(keyName, client);
 
-      const baseArgs = [
-        BrowserToolArrayCommands.ArOp as string,
+      // MATCH is the only operation with a trailing value arg; the guard
+      // above guarantees `value` is a non-empty RedisString when we get here.
+      const args: RedisClientCommand = [
+        BrowserToolArrayCommands.ArOp,
         keyName,
         start,
         end,
         operation,
-      ] as const;
-      // MATCH is the only operation with a trailing value arg.
-      const needsValue =
-        operation === ArrayAggregateOperation.Match && value !== undefined;
-      const reply = await client.sendCommand(
-        needsValue ? [...baseArgs, value] : [...baseArgs],
-      );
+      ];
+      if (operation === ArrayAggregateOperation.Match) {
+        args.push(value as RedisString);
+      }
+      const reply = await client.sendCommand(args);
 
       this.logger.debug('Succeed to aggregate array range.', clientMetadata);
+      // AROP returns nil for numeric ops over a range with no numeric values
+      // and for bitwise ops over an empty range; surface that as `null` rather
+      // than throwing a 500 from toRequiredIndexString.
       return plainToInstance(AggregateArrayResponse, {
         keyName,
-        result: toRequiredIndexString(reply),
+        result: toIndexString(reply),
       });
     } catch (error) {
       this.logger.error(

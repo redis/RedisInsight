@@ -1,7 +1,13 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString, ValidateIf } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEnum, ValidateIf } from 'class-validator';
 import { KeyDto } from 'src/modules/browser/keys/dto';
-import { IsArrayIndex } from 'src/common/decorators';
+import {
+  ApiRedisString,
+  IsArrayIndex,
+  IsRedisString,
+  RedisStringType,
+} from 'src/common/decorators';
+import { RedisString } from 'src/common/constants';
 
 export enum ArrayAggregateOperation {
   Sum = 'SUM',
@@ -46,17 +52,17 @@ export class AggregateArrayDto extends KeyDto {
   @IsEnum(ArrayAggregateOperation)
   operation: ArrayAggregateOperation;
 
-  @ApiPropertyOptional({
-    description:
-      'Comparison value for the MATCH operation. Required when operation is ' +
-      'MATCH, ignored otherwise.',
-    type: String,
-    example: '20.4',
-  })
+  @ApiRedisString(
+    'Comparison value for the MATCH operation. Required when operation is ' +
+      'MATCH, ignored otherwise. Accepts strings and binary buffers so it can ' +
+      'match elements stored as raw bytes.',
+    false,
+    false,
+  )
   @ValidateIf(
     (o: AggregateArrayDto) => o.operation === ArrayAggregateOperation.Match,
   )
-  @IsString()
-  @IsNotEmpty()
-  value?: string;
+  @IsRedisString()
+  @RedisStringType()
+  value?: RedisString;
 }

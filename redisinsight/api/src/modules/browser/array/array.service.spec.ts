@@ -747,6 +747,80 @@ describe('ArrayService', () => {
       expect(result.result).toBe('5');
     });
 
+    it('should return null when AROP yields a nil reply', async () => {
+      // SUM over an empty/non-numeric range returns nil; the API surfaces
+      // that as `result: null` instead of throwing a 500.
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([
+          BrowserToolArrayCommands.ArOp,
+          mockAggregateArrayDto.keyName,
+          mockAggregateArrayDto.start,
+          mockAggregateArrayDto.end,
+          mockAggregateArrayDto.operation,
+        ])
+        .mockResolvedValue(null);
+
+      const result = await service.aggregate(
+        mockBrowserClientMetadata,
+        mockAggregateArrayDto,
+      );
+      expect(result.result).toBeNull();
+    });
+
+    it('should pass a Buffer value through to AROP for MATCH', async () => {
+      // Elements stored as binary (RedisString) must be matchable by a
+      // Buffer comparison value — string-only DTOs would reject this.
+      const dto = {
+        ...mockAggregateArrayDto,
+        operation: ArrayAggregateOperation.Match,
+        value: Buffer.from([0x00, 0xff, 0x10]),
+      };
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([
+          BrowserToolArrayCommands.ArOp,
+          dto.keyName,
+          dto.start,
+          dto.end,
+          dto.operation,
+          dto.value,
+        ])
+        .mockResolvedValue(2);
+
+      const result = await service.aggregate(mockBrowserClientMetadata, dto);
+      expect(result.result).toBe('2');
+    });
+
+    it('should reject MATCH with an empty string value', async () => {
+      await expect(
+        service.aggregate(mockBrowserClientMetadata, {
+          ...mockAggregateArrayDto,
+          operation: ArrayAggregateOperation.Match,
+          value: '',
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should reject MATCH with an empty Buffer value', async () => {
+      await expect(
+        service.aggregate(mockBrowserClientMetadata, {
+          ...mockAggregateArrayDto,
+          operation: ArrayAggregateOperation.Match,
+          value: Buffer.alloc(0),
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should reject MATCH when value is undefined', async () => {
+      // Mirrors the DTO @ValidateIf/@IsRedisString contract for the
+      // case where the controller layer is bypassed.
+      await expect(
+        service.aggregate(mockBrowserClientMetadata, {
+          ...mockAggregateArrayDto,
+          operation: ArrayAggregateOperation.Match,
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
     it('should reject when key does not exist', async () => {
       when(mockStandaloneRedisClient.sendCommand)
         .calledWith([BrowserToolKeysCommands.Exists, mockKeyDto.keyName])

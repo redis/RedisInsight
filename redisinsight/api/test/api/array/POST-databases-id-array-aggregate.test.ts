@@ -67,7 +67,9 @@ const validInputData = {
 const responseSchema = Joi.object()
   .keys({
     keyName: JoiRedisString.required(),
-    result: Joi.string().required(),
+    // Nullable: AROP returns nil for numeric ops over a range with no
+    // numeric values and for bitwise ops over an empty range.
+    result: Joi.string().allow(null).required(),
   })
   .required();
 
@@ -261,6 +263,67 @@ describe('POST /databases/:instanceId/array/aggregate', () => {
         },
         responseSchema,
         responseBody: { keyName, result: '2' },
+      });
+    });
+
+    it('Should MATCH binary (Buffer) values stored as raw bytes', async () => {
+      const keyName = constants.getRandomString();
+      // Element with unprintable bytes that can't round-trip through a
+      // JSON string body — only the Buffer-typed `value` reaches the
+      // backend intact.
+      const binValue = Buffer.from([0x00, 0xff, 0x10, 0x7f]);
+      await rte.client.call('ARSET', keyName, '0', binValue, 'other', binValue);
+
+      await validateApiCall({
+        endpoint,
+        data: {
+          keyName,
+          start: '0',
+          end: '1',
+          operation: ArrayAggregateOperation.Match,
+          value: { type: 'Buffer', data: [...binValue] },
+        },
+        responseSchema,
+        responseBody: { keyName, result: '2' },
+      });
+    });
+
+    it('Should return null when SUM has no numeric values in range', async () => {
+      const keyName = constants.getRandomString();
+      // Seed only non-numeric values; SUM over the range yields a nil
+      // AROP reply, which the API surfaces as `result: null` rather than
+      // a 500 from the strict index normalizer.
+      await rte.client.call('ARSET', keyName, '0', 'alpha', 'beta');
+
+      await validateApiCall({
+        endpoint,
+        data: {
+          keyName,
+          start: '0',
+          end: '1',
+          operation: ArrayAggregateOperation.Sum,
+        },
+        responseSchema,
+        responseBody: { keyName, result: null },
+      });
+    });
+
+    it('Should return null when AND is applied to an empty range', async () => {
+      const keyName = constants.getRandomString();
+      // Key exists (sparse fixture populates 0,1,5), but the [10..12]
+      // window is empty so the bitwise AND has nothing to fold → nil.
+      await seedSparse(keyName);
+
+      await validateApiCall({
+        endpoint,
+        data: {
+          keyName,
+          start: '10',
+          end: '12',
+          operation: ArrayAggregateOperation.And,
+        },
+        responseSchema,
+        responseBody: { keyName, result: null },
       });
     });
 
