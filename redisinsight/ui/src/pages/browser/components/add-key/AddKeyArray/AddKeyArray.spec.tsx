@@ -178,8 +178,9 @@ describe('AddKeyArray', () => {
     it('should disable submit when a contiguous range would exceed the u64 max', () => {
       renderComponent({ keyName: 'name' })
 
+      // ARRAY_INDEX_MAX = 2^64 − 2, the largest valid index.
       fireEvent.change(screen.getByTestId('start-index'), {
-        target: { value: '18446744073709551615' },
+        target: { value: '18446744073709551614' },
       })
       // a single value at the max index is still in range
       expect(screen.getByTestId('add-key-array-btn')).not.toBeDisabled()
