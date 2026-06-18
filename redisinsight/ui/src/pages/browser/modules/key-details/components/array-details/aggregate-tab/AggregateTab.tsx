@@ -1,4 +1,5 @@
 import React from 'react'
+import { noop } from 'lodash'
 
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Loader } from 'uiSrc/components/base/display'
@@ -72,23 +73,20 @@ const AggregateTab = ({ keyProp }: AggregateTabProps) => {
             </L.ErrorText>
           )}
           {hasResult && (
-            <L.ResultRow
-              align="center"
-              gap="s"
-              grow={false}
-              data-testid={`${AGGREGATE_TAB_TEST_ID}-result`}
-            >
-              <L.ResultLabel>Result:</L.ResultLabel>
-              <L.ResultValue
+            <L.ResultField label="Result">
+              <L.ResultInput
+                value={result}
+                onChange={noop}
                 data-testid={`${AGGREGATE_TAB_TEST_ID}-result-value`}
-              >
-                {result}
-              </L.ResultValue>
-              <CopyButton
-                copy={result}
-                data-testid={`${AGGREGATE_TAB_TEST_ID}-result-copy`}
+                after={
+                  <CopyButton
+                    copy={result}
+                    withTooltip={false}
+                    data-testid={`${AGGREGATE_TAB_TEST_ID}-result-copy`}
+                  />
+                }
               />
-            </L.ResultRow>
+            </L.ResultField>
           )}
         </L.ResultPanel>
       </S.TabBody>
