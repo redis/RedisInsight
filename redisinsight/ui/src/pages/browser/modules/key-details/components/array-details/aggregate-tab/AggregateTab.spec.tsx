@@ -22,7 +22,9 @@ const baseHookResult = {
   result: '',
 }
 
-const mockUseArrayAggregateQuery = jest.fn(() => baseHookResult)
+const mockUseArrayAggregateQuery = jest.fn(
+  (..._args: unknown[]) => baseHookResult,
+)
 
 jest.mock('../array-aggregate-form', () => ({
   ArrayAggregateForm: () => {
