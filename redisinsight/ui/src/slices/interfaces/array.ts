@@ -1,10 +1,28 @@
 import {
+  AggregateArrayDto,
+  AggregateArrayResponse,
   GetArrayCountResponse,
   GetArrayLengthResponse,
   GetArrayRangeResponse,
   GetArrayScanResponse,
 } from 'apiClient'
 import { RedisString } from 'uiSrc/slices/interfaces/app'
+
+/**
+ * Mirror of the backend `ArrayAggregateOperation` enum (BE
+ * `dto/aggregate.array.dto.ts`). Kept as a TS enum so the UI form / select
+ * can reference named members instead of bare strings.
+ */
+export enum ArrayAggregateOperation {
+  Sum = 'SUM',
+  Min = 'MIN',
+  Max = 'MAX',
+  And = 'AND',
+  Or = 'OR',
+  Xor = 'XOR',
+  Match = 'MATCH',
+  Used = 'USED',
+}
 
 /**
  * Redis array indexes are unsigned 64-bit integers (0 … 2^64-1) and exceed
@@ -47,11 +65,24 @@ export interface ArrayActiveQuery {
   showEmpty: boolean
 }
 
+/**
+ * Aggregate (AROP) result slice. Held alongside the range/scan data so the
+ * Aggregate tab can keep its last result visible while the View tab updates
+ * independently. `result` is the BE-returned decimal string (or empty when
+ * no aggregation has run yet for the current key).
+ */
+export interface ArrayAggregateState {
+  loading: boolean
+  error: string
+  result: string
+}
+
 export interface StateArray {
   loading: boolean
   error: string
   query: ArrayActiveQuery
   data: ArrayData
+  aggregate: ArrayAggregateState
 }
 
 export interface FetchArrayRangeParams {
@@ -68,12 +99,23 @@ export interface FetchArrayScanParams {
   resetData?: boolean
 }
 
+export interface FetchArrayAggregateParams {
+  key: RedisString
+  start: string
+  end: string
+  operation: ArrayAggregateOperation
+  /** Required when `operation === Match`; ignored otherwise. */
+  value?: string
+}
+
 /**
  * Re-export the auto-generated SDK response shapes for consumers that need
  * to pass them around. The slice itself narrows them into `ArrayData` /
  * `ArrayDataElement` for storage.
  */
 export type {
+  AggregateArrayDto,
+  AggregateArrayResponse,
   GetArrayCountResponse,
   GetArrayLengthResponse,
   GetArrayRangeResponse,

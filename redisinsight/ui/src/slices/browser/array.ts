@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios, { AxiosError } from 'axios'
 import { IAddInstanceErrorPayload } from 'uiSrc/slices/app/notifications'
 import {
+  AggregateArrayResponse,
   GetArrayCountResponse,
   GetArrayLengthResponse,
   GetArrayRangeResponse,
@@ -21,6 +22,7 @@ import {
   ArrayActiveQuery,
   ArrayDataElement,
   StateArray,
+  FetchArrayAggregateParams,
   FetchArrayRangeParams,
   FetchArrayScanParams,
 } from 'uiSrc/slices/interfaces/array'
@@ -60,6 +62,11 @@ export const initialState: StateArray = {
     length: '0',
     count: '0',
     elements: [],
+  },
+  aggregate: {
+    loading: false,
+    error: '',
+    result: '',
   },
 }
 
@@ -161,6 +168,26 @@ const arraySlice = createSlice({
     ) => {
       state.query = payload
     },
+
+    loadArrayAggregate: (state) => {
+      state.aggregate.loading = true
+      state.aggregate.error = ''
+    },
+    loadArrayAggregateSuccess: (
+      state,
+      { payload }: PayloadAction<AggregateArrayResponse>,
+    ) => {
+      state.aggregate.loading = false
+      state.aggregate.error = ''
+      state.aggregate.result = payload.result
+    },
+    loadArrayAggregateFailure: (state, { payload }: PayloadAction<string>) => {
+      state.aggregate.loading = false
+      state.aggregate.error = payload
+    },
+    clearArrayAggregate: (state) => {
+      state.aggregate = { ...initialState.aggregate }
+    },
   },
 })
 
@@ -173,10 +200,16 @@ export const {
   loadArrayLengthSuccess,
   loadArrayCountSuccess,
   setArrayActiveQuery,
+  loadArrayAggregate,
+  loadArrayAggregateSuccess,
+  loadArrayAggregateFailure,
+  clearArrayAggregate,
 } = arraySlice.actions
 
 export const arraySelector = (state: RootState) => state.browser.array
 export const arrayDataSelector = (state: RootState) => state.browser.array?.data
+export const arrayAggregateSelector = (state: RootState) =>
+  state.browser.array?.aggregate
 
 export default arraySlice.reducer
 
@@ -333,6 +366,59 @@ export function fetchArrayCount(key: RedisString) {
       if (isStatusSuccessful(status)) dispatch(loadArrayCountSuccess(data))
     } catch (error) {
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+    }
+  }
+}
+
+/**
+ * Dedicated controller for AROP so an in-flight aggregate isn't aborted by
+ * a concurrent range/scan in the View tab (which uses
+ * `arrayRangeController`). A newer aggregate dispatch still aborts the
+ * previous one so stale results don't land on top of a fresh request.
+ */
+let arrayAggregateController: AbortController | null = null
+
+export const abortArrayAggregate = (): void => {
+  arrayAggregateController?.abort()
+  arrayAggregateController = null
+}
+
+// AROP — aggregate elements over a range.
+export function aggregateArray(params: FetchArrayAggregateParams) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    arrayAggregateController?.abort()
+    const controller = new AbortController()
+    arrayAggregateController = controller
+
+    dispatch(loadArrayAggregate())
+    try {
+      const state = stateInit()
+      const { data, status } = await apiService.post<AggregateArrayResponse>(
+        arrayUrl(state, ApiEndpoints.ARRAY_AGGREGATE),
+        {
+          keyName: params.key,
+          start: params.start,
+          end: params.end,
+          operation: params.operation,
+          ...(params.value !== undefined ? { value: params.value } : {}),
+        },
+        { ...encodingParams(state), signal: controller.signal },
+      )
+      if (controller.signal.aborted) return
+      if (isStatusSuccessful(status)) {
+        dispatch(loadArrayAggregateSuccess(data))
+      } else {
+        dispatch(loadArrayAggregateFailure(DEFAULT_ERROR_MESSAGE))
+      }
+    } catch (error) {
+      if (axios.isCancel(error)) return
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      dispatch(loadArrayAggregateFailure(errorMessage))
+    } finally {
+      if (arrayAggregateController === controller) {
+        arrayAggregateController = null
+      }
     }
   }
 }
