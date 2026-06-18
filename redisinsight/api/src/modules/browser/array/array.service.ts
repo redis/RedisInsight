@@ -367,24 +367,23 @@ export class ArrayService {
       // Same span cap as ARGETRANGE: AROP scans the dense [start..end] window.
       this.assertValidRange(start, end);
 
-      // MATCH requires a non-empty comparison value. IsRedisString accepts
-      // strings and Buffers but doesn't enforce non-emptiness on the post-
-      // transform Buffer, so check it here.
-      if (operation === ArrayAggregateOperation.Match) {
-        const len = typeof value === 'string' ? value.length : value?.length;
-        if (!len) {
-          throw new BadRequestException(
-            'value must be a non-empty string or Buffer for MATCH operation.',
-          );
-        }
+      // MATCH requires a comparison value, but empty strings / empty Buffers
+      // are valid — Redis stores zero-length bulk strings as real elements,
+      // and the create DTO allows them. Only an omitted value is rejected.
+      if (
+        operation === ArrayAggregateOperation.Match &&
+        (value === undefined || value === null)
+      ) {
+        throw new BadRequestException(
+          'value is required for MATCH operation.',
+        );
       }
 
       const client =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
       await checkIfKeyNotExists(keyName, client);
 
-      // MATCH is the only operation with a trailing value arg; the guard
-      // above guarantees `value` is a non-empty RedisString when we get here.
+      // MATCH is the only operation with a trailing value arg.
       const args: RedisClientCommand = [
         BrowserToolArrayCommands.ArOp,
         keyName,

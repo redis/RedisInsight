@@ -790,24 +790,48 @@ describe('ArrayService', () => {
       expect(result.result).toBe('2');
     });
 
-    it('should reject MATCH with an empty string value', async () => {
-      await expect(
-        service.aggregate(mockBrowserClientMetadata, {
-          ...mockAggregateArrayDto,
-          operation: ArrayAggregateOperation.Match,
-          value: '',
-        }),
-      ).rejects.toThrow(BadRequestException);
+    it('should pass an empty string value through to AROP for MATCH', async () => {
+      // Redis stores zero-length bulk strings as real elements and the
+      // create DTO accepts them, so MATCH must be able to count them.
+      const dto = {
+        ...mockAggregateArrayDto,
+        operation: ArrayAggregateOperation.Match,
+        value: '',
+      };
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([
+          BrowserToolArrayCommands.ArOp,
+          dto.keyName,
+          dto.start,
+          dto.end,
+          dto.operation,
+          dto.value,
+        ])
+        .mockResolvedValue(3);
+
+      const result = await service.aggregate(mockBrowserClientMetadata, dto);
+      expect(result.result).toBe('3');
     });
 
-    it('should reject MATCH with an empty Buffer value', async () => {
-      await expect(
-        service.aggregate(mockBrowserClientMetadata, {
-          ...mockAggregateArrayDto,
-          operation: ArrayAggregateOperation.Match,
-          value: Buffer.alloc(0),
-        }),
-      ).rejects.toThrow(BadRequestException);
+    it('should pass an empty Buffer value through to AROP for MATCH', async () => {
+      const dto = {
+        ...mockAggregateArrayDto,
+        operation: ArrayAggregateOperation.Match,
+        value: Buffer.alloc(0),
+      };
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([
+          BrowserToolArrayCommands.ArOp,
+          dto.keyName,
+          dto.start,
+          dto.end,
+          dto.operation,
+          dto.value,
+        ])
+        .mockResolvedValue(3);
+
+      const result = await service.aggregate(mockBrowserClientMetadata, dto);
+      expect(result.result).toBe('3');
     });
 
     it('should reject MATCH when value is undefined', async () => {

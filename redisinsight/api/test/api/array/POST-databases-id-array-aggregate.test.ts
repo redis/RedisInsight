@@ -288,6 +288,26 @@ describe('POST /databases/:instanceId/array/aggregate', () => {
       });
     });
 
+    it('Should MATCH empty-string elements with an empty value', async () => {
+      const keyName = constants.getRandomString();
+      // Two slots hold the zero-length bulk string; MATCH with value=''
+      // must count them, not be rejected by the service guard.
+      await rte.client.call('ARMSET', keyName, '0', '', '1', 'x', '2', '');
+
+      await validateApiCall({
+        endpoint,
+        data: {
+          keyName,
+          start: '0',
+          end: '2',
+          operation: ArrayAggregateOperation.Match,
+          value: '',
+        },
+        responseSchema,
+        responseBody: { keyName, result: '2' },
+      });
+    });
+
     it('Should return null when SUM has no numeric values in range', async () => {
       const keyName = constants.getRandomString();
       // Seed only non-numeric values; SUM over the range yields a nil
