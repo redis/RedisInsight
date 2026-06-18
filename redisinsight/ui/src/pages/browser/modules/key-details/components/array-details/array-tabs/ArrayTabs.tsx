@@ -2,11 +2,7 @@ import React, { useMemo } from 'react'
 
 import Tabs, { TabInfo } from 'uiSrc/components/base/layout/tabs'
 import { ARRAY_DETAILS_TAB_LABELS, ArrayDetailsTab } from '../constants'
-
-export interface ArrayTabsProps {
-  value: ArrayDetailsTab
-  onChange: (tab: ArrayDetailsTab) => void
-}
+import { ArrayTabsProps } from './ArrayTabs.types'
 
 const ArrayTabs = ({ value, onChange }: ArrayTabsProps) => {
   const tabs: TabInfo[] = useMemo(

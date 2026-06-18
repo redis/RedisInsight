@@ -3,16 +3,12 @@ import React from 'react'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
 import { bufferToString } from 'uiSrc/utils'
-import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 import { ArrayDetailsTable } from '../array-details-table'
 import { ArrayRangeForm } from '../array-range-form'
 import { useArrayRangeQuery } from '../hooks'
 import * as S from '../tabs.styles'
-
-export interface ViewTabProps {
-  keyProp: RedisResponseBuffer | null
-}
+import { ViewTabProps } from './ViewTab.types'
 
 const ViewTab = ({ keyProp }: ViewTabProps) => {
   const { loading } = useAppSelector(selectedKeySelector)
