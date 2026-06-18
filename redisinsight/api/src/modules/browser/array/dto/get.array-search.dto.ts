@@ -6,7 +6,6 @@ import {
   IsBoolean,
   IsEnum,
   IsInt,
-  IsNotEmpty,
   IsOptional,
   IsString,
   Max,
@@ -36,7 +35,6 @@ export class ArrayGrepPredicate {
 
   @ApiProperty({ description: 'Pattern / value to match.', type: String })
   @IsString()
-  @IsNotEmpty()
   value: string;
 }
 
@@ -54,10 +52,9 @@ export class GetArraySearchDto extends KeyDto {
 
   @ApiPropertyOptional({
     description:
-      'Single global connective applied across all predicates (default AND). ' +
-      'Ignored with a single predicate.',
+      'Single global connective applied across all predicates. When omitted, ' +
+      'the server default (OR) applies. Ignored with a single predicate.',
     enum: ArrayCombinator,
-    default: ArrayCombinator.And,
   })
   @IsOptional()
   @IsEnum(ArrayCombinator)

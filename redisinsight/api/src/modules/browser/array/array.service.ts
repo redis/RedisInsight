@@ -5,7 +5,6 @@ import { RedisString } from 'src/common/constants';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { catchAclError, catchMultiTransactionError } from 'src/utils';
 import { ClientMetadata } from 'src/common/models';
-import { RedisString } from 'src/common/constants';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import {
   BrowserToolArrayCommands,
@@ -248,7 +247,7 @@ export class ArrayService {
       const {
         keyName,
         predicates,
-        combinator = ArrayCombinator.And,
+        combinator,
         start,
         end,
         nocase,
@@ -272,16 +271,30 @@ export class ArrayService {
           predicate.value,
         ]),
       ];
-      if (predicates.length > 1) args.push(combinator);
+      // The connective only applies with 2+ predicates; when omitted we send
+      // nothing so the server applies its own default (OR).
+      if (combinator && predicates.length > 1) args.push(combinator);
       if (nocase) args.push('NOCASE');
       if (withValues) args.push('WITHVALUES');
       if (typeof limit === 'number') args.push('LIMIT', limit);
 
       const reply = (await client.sendCommand(args)) as unknown[];
 
-      // WITHVALUES ⇒ flat [index, value, index, value, ...]; otherwise [index, ...].
+      // WITHVALUES wire shape varies: Redis 8.8 returns nested
+      // [[index, value], ...] entries; some builds surface a flat
+      // [index, value, index, value, ...] reply. Without WITHVALUES the reply
+      // is a flat list of indexes. Detect by sniffing the first element.
       const elements: ArraySearchElement[] = [];
-      if (withValues) {
+      if (Array.isArray(reply[0])) {
+        for (const entry of reply as unknown[][]) {
+          const rawIndex = entry?.[0];
+          if (rawIndex == null) continue;
+          elements.push({
+            index: toRequiredIndexString(rawIndex),
+            value: (entry[1] ?? null) as RedisString | null,
+          });
+        }
+      } else if (withValues) {
         for (let i = 0; i < reply.length; i += 2) {
           const rawIndex = reply[i];
           if (rawIndex == null) continue;

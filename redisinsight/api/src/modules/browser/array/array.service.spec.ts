@@ -665,7 +665,7 @@ describe('ArrayService', () => {
       ]);
     });
 
-    it('defaults the connective to AND when omitted with 2+ predicates', async () => {
+    it('sends no connective when omitted so the server applies its default', async () => {
       when(client.sendCommand).mockResolvedValue([]);
 
       await service.search(mockBrowserClientMetadata, {
@@ -685,9 +685,24 @@ describe('ArrayService', () => {
         'a',
         'MATCH',
         'b',
-        'AND',
         'WITHVALUES',
       ]);
+    });
+
+    it('parses the nested [[index, value], ...] reply shape (Redis 8.8)', async () => {
+      when(client.sendCommand)
+        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ArGrep]))
+        .mockResolvedValue([
+          ['5', '21.4'],
+          ['6', '21.9'],
+        ]);
+
+      const result = await service.search(
+        mockBrowserClientMetadata,
+        mockGetArraySearchDto,
+      );
+
+      expect(result).toEqual(mockGetArraySearchResponse);
     });
 
     it('passes range, NOCASE and LIMIT and omits WITHVALUES when withValues=false', async () => {

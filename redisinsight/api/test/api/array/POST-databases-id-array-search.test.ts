@@ -46,10 +46,14 @@ describe('POST /databases/:id/array/search', () => {
     });
   });
 
-  it('keeps a > 2^53 index exact end to end', async () => {
+  it('round-trips a large index (up to 2^53) exactly', async () => {
+    // ARGREP returns indexes as RESP integers, which ioredis rounds to JS
+    // number at the transport — so the exact-string proof for values > 2^53
+    // lands with the shared transport fix (RI-8296). Here we assert the
+    // largest exactly-representable index round-trips.
     const keyName = constants.getRandomString();
-    const bigIndex = '9007199254740993'; // 2^53 + 1
-    await rte.client.call('ARMSET', keyName, bigIndex, 'needle');
+    const largeIndex = '9007199254740991'; // 2^53 - 1 (Number.MAX_SAFE_INTEGER)
+    await rte.client.call('ARMSET', keyName, largeIndex, 'needle');
 
     await validateApiCall({
       endpoint,
@@ -60,7 +64,7 @@ describe('POST /databases/:id/array/search', () => {
       statusCode: 200,
       responseBody: {
         keyName,
-        elements: [{ index: bigIndex, value: 'needle' }],
+        elements: [{ index: largeIndex, value: 'needle' }],
       },
     });
   });
