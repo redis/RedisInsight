@@ -13,3 +13,17 @@ export const DEFAULT_RANGE_START = '0'
  * so the table comfortably fits without scrolling on first load.
  */
 export const DEFAULT_RANGE_END = '9'
+
+export enum ArrayDetailsTab {
+  View = 'view',
+  Aggregate = 'aggregate',
+  Search = 'search',
+}
+
+export const DEFAULT_ARRAY_DETAILS_TAB = ArrayDetailsTab.View
+
+export const ARRAY_DETAILS_TAB_LABELS: Record<ArrayDetailsTab, string> = {
+  [ArrayDetailsTab.View]: 'View',
+  [ArrayDetailsTab.Aggregate]: 'Aggregate',
+  [ArrayDetailsTab.Search]: 'Search',
+}

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
@@ -8,9 +8,16 @@ import {
 } from 'uiSrc/pages/browser/modules'
 import { bufferToString } from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
+import { Text } from 'uiSrc/components/base/text'
 
 import { ArrayDetailsTable } from './array-details-table'
 import { ArrayRangeForm } from './array-range-form'
+import ArrayTabs from './array-tabs'
+import {
+  ARRAY_DETAILS_TAB_LABELS,
+  ArrayDetailsTab,
+  DEFAULT_ARRAY_DETAILS_TAB,
+} from './constants'
 import { useArrayRangeQuery } from './hooks'
 import * as S from './ArrayDetails.styles'
 
@@ -35,6 +42,10 @@ const ArrayDetails = (props: Props) => {
   // `fetchKeyInfo` populates the selected-key slice.
   const keyName = keyProp ? bufferToString(keyProp) : ''
 
+  const [activeTab, setActiveTab] = useState<ArrayDetailsTab>(
+    DEFAULT_ARRAY_DETAILS_TAB,
+  )
+
   const {
     start,
     end,
@@ -50,28 +61,31 @@ const ArrayDetails = (props: Props) => {
     error: rangeError,
   } = useArrayRangeQuery(keyProp)
 
+  const isViewTab = activeTab === ArrayDetailsTab.View
+
   return (
     <S.Container data-testid="array-details">
       <KeyDetailsHeader {...props} key="key-details-header" />
-      <ArrayRangeForm
-        keyName={keyName}
-        start={start}
-        end={end}
-        showEmpty={showEmpty}
-        loading={rangeLoading}
-        onChangeStart={setStart}
-        onChangeEnd={setEnd}
-        onToggleShowEmpty={setShowEmpty}
-        onRun={runQuery}
-        onReset={resetQuery}
-        // While the selected-key slice hasn't caught up with `keyProp`
-        // (or the resolved type isn't Array), disable manual actions —
-        // the hook also guards internally but this gives the user
-        // immediate feedback rather than a no-op click.
-        disabled={!isArrayKeyReady}
-      />
+      <S.TabsWrapper>
+        <ArrayTabs value={activeTab} onChange={setActiveTab} />
+      </S.TabsWrapper>
+      {isViewTab && (
+        <ArrayRangeForm
+          keyName={keyName}
+          start={start}
+          end={end}
+          showEmpty={showEmpty}
+          loading={rangeLoading}
+          onChangeStart={setStart}
+          onChangeEnd={setEnd}
+          onToggleShowEmpty={setShowEmpty}
+          onRun={runQuery}
+          onReset={resetQuery}
+          disabled={!isArrayKeyReady}
+        />
+      )}
       <S.DetailsBody>
-        {!loading && (
+        {isViewTab && !loading && (
           <S.TableWrapper>
             <ArrayDetailsTable
               elements={elements}
@@ -79,6 +93,11 @@ const ArrayDetails = (props: Props) => {
               error={rangeError}
             />
           </S.TableWrapper>
+        )}
+        {!isViewTab && (
+          <S.PlaceholderWrapper data-testid={`array-${activeTab}-placeholder`}>
+            <Text>{`This is ${ARRAY_DETAILS_TAB_LABELS[activeTab]}`}</Text>
+          </S.PlaceholderWrapper>
         )}
       </S.DetailsBody>
     </S.Container>
