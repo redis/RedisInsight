@@ -13,23 +13,3 @@ export const TabsWrapper = styled.div`
   border-bottom: 1px solid
     ${({ theme }) => theme.semantic.color.border.neutral500};
 `
-
-export const DetailsBody = styled(Col)`
-  position: relative;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-`
-
-export const TableWrapper = styled(Col)`
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-`
-
-export const PlaceholderWrapper = styled(Col)`
-  flex: 1;
-  min-height: 0;
-  align-items: center;
-  justify-content: center;
-`
