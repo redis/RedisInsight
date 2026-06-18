@@ -40,12 +40,16 @@ const AggregateTab = ({ keyProp }: AggregateTabProps) => {
     hasResult,
   } = useArrayAggregateQuery(keyProp)
 
+  // When switching keys, hide the previous key's loader/error/result
+  // until the new key is ready.
+  const showLoader = isArrayKeyReady && loading
+  const showError = isArrayKeyReady && !loading && !!error
   // `hasResult` distinguishes "no AROP run yet" from "ran and got nil" —
   // both leave `result === null`, but only the latter should surface in the
   // result panel. A nil reply is rendered as a non-copyable placeholder; a
   // value reply keeps the input + copy button so the caller can grab the
   // raw bytes (BigInt-safe).
-  const showResult = !loading && !error && hasResult
+  const showResult = isArrayKeyReady && !loading && !error && hasResult
   const isNilResult = showResult && result === null
   const resultValue = result ?? ''
 
@@ -68,12 +72,12 @@ const AggregateTab = ({ keyProp }: AggregateTabProps) => {
       />
       <S.TabBody data-testid={AGGREGATE_TAB_TEST_ID}>
         <L.ResultPanel>
-          {loading && (
+          {showLoader && (
             <FlexItem data-testid={`${AGGREGATE_TAB_TEST_ID}-loading`}>
               <Loader size="m" />
             </FlexItem>
           )}
-          {!loading && error && (
+          {showError && (
             <L.ErrorText
               size="s"
               data-testid={`${AGGREGATE_TAB_TEST_ID}-error`}

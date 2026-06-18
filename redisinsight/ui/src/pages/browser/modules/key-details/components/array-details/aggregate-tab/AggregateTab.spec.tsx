@@ -134,6 +134,25 @@ describe('AggregateTab', () => {
     ).not.toBeInTheDocument()
   })
 
+  it('suppresses stale slice state while the selected key is not ready', () => {
+    mockUseArrayAggregateQuery.mockReturnValue({
+      ...baseHookResult,
+      isArrayKeyReady: false,
+      loading: true,
+      error: 'stale error from the prior key',
+      result: '999',
+      hasResult: true,
+    })
+
+    render(<AggregateTab keyProp={keyBuffer} />)
+
+    expect(screen.queryByTestId(`${TEST_ID}-loading`)).not.toBeInTheDocument()
+    expect(screen.queryByTestId(`${TEST_ID}-error`)).not.toBeInTheDocument()
+    expect(
+      screen.queryByTestId(`${TEST_ID}-result-value`),
+    ).not.toBeInTheDocument()
+  })
+
   it('forwards the key buffer to the hook', () => {
     render(<AggregateTab keyProp={keyBuffer} />)
 
