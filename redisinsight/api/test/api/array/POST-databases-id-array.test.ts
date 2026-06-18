@@ -120,6 +120,7 @@ describe('POST /databases/:id/array', () => {
   describe('Sparse (ARMSET)', () => {
     const sparseKey = constants.getRandomString();
     const sparseTtlKey = constants.getRandomString();
+    const dupIndexKey = constants.getRandomString();
 
     [
       {
@@ -157,6 +158,25 @@ describe('POST /databases/:id/array', () => {
           expect(await rte.client.ttl(sparseTtlKey)).to.gte(95);
         },
       },
+      {
+        // Pin "last write wins" for duplicate indexes — ARMSET accepts the
+        // duplicate server-side and the trailing value overwrites the earlier
+        // one. Count stays 1 because only one slot ends up populated.
+        name: 'Should accept a duplicate index and keep the last value (sparse, last wins)',
+        data: {
+          keyName: dupIndexKey,
+          mode: ArrayCreationMode.Sparse,
+          elements: [
+            { index: '5', value: 'first' },
+            { index: '5', value: 'second' },
+          ],
+        },
+        statusCode: 201,
+        after: async () => {
+          expect(await arget(dupIndexKey, '5')).to.eql('second');
+          expect(await arcount(dupIndexKey)).to.eql(1);
+        },
+      },
     ].map(createCheckFn);
   });
 
@@ -182,12 +202,34 @@ describe('POST /databases/:id/array', () => {
         statusCode: 400,
       },
       {
+        // 2^64-1 is reserved by Redis as the "no-index" sentinel — ARSET /
+        // ARMSET reject it server-side, so the API validator must too.
+        name: 'Should reject the reserved 2^64-1 sentinel index',
+        data: {
+          keyName: constants.getRandomString(),
+          mode: ArrayCreationMode.Sparse,
+          elements: [{ index: '18446744073709551615', value: 'x' }],
+        },
+        statusCode: 400,
+      },
+      {
         name: 'Should reject contiguous mode with empty values',
         data: {
           keyName: constants.getRandomString(),
           mode: ArrayCreationMode.Contiguous,
           startIndex: '0',
           values: [],
+        },
+        statusCode: 400,
+      },
+      {
+        // Symmetric @ArrayMinSize(1) guard for the sparse path — without it,
+        // we'd issue ARMSET with no pairs and surface the server error.
+        name: 'Should reject sparse mode with an empty elements array',
+        data: {
+          keyName: constants.getRandomString(),
+          mode: ArrayCreationMode.Sparse,
+          elements: [],
         },
         statusCode: 400,
       },
