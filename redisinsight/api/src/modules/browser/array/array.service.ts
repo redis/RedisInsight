@@ -244,16 +244,12 @@ export class ArrayService {
   ): Promise<GetArraySearchResponse> {
     try {
       this.logger.debug('Searching array.', clientMetadata);
-      const {
-        keyName,
-        predicates,
-        combinator,
-        start,
-        end,
-        nocase,
-        withValues = true,
-        limit,
-      } = dto;
+      const { keyName, predicates, combinator, start, end, nocase, limit } =
+        dto;
+      // `?? true` (not a destructuring default) so an explicit null body value
+      // also falls back — @IsOptional() lets null through, and a default only
+      // fills undefined.
+      const withValues = dto.withValues ?? true;
 
       const client =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);

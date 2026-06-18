@@ -705,6 +705,26 @@ describe('ArrayService', () => {
       expect(result).toEqual(mockGetArraySearchResponse);
     });
 
+    it('treats an explicit null withValues like omitted (defaults to WITHVALUES)', async () => {
+      when(client.sendCommand).mockResolvedValue([]);
+
+      await service.search(mockBrowserClientMetadata, {
+        keyName: mockGetArraySearchDto.keyName,
+        predicates: [{ criteria: ArrayGrepCriteria.Match, value: 'x' }],
+        withValues: null as unknown as boolean,
+      });
+
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolArrayCommands.ArGrep,
+        mockGetArraySearchDto.keyName,
+        '-',
+        '+',
+        'MATCH',
+        'x',
+        'WITHVALUES',
+      ]);
+    });
+
     it('passes range, NOCASE and LIMIT and omits WITHVALUES when withValues=false', async () => {
       when(client.sendCommand).mockResolvedValue(
         mockArraySearchReplyIndexesOnly,
