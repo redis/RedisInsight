@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { Text } from 'uiSrc/components/base/text'
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Loader } from 'uiSrc/components/base/display'
+import { CopyButton } from 'uiSrc/components/copy-button'
 import { bufferToString } from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
@@ -57,35 +57,40 @@ const AggregateTab = ({ keyProp }: AggregateTabProps) => {
         disabled={!isArrayKeyReady}
       />
       <S.TabBody data-testid={AGGREGATE_TAB_TEST_ID}>
-        <L.ResultContainer gap="m">
+        <L.ResultPanel>
           {loading && (
             <FlexItem data-testid={`${AGGREGATE_TAB_TEST_ID}-loading`}>
               <Loader size="m" />
             </FlexItem>
           )}
           {!loading && error && (
-            <L.ErrorRow
-              align="center"
+            <L.ErrorText
+              size="s"
               data-testid={`${AGGREGATE_TAB_TEST_ID}-error`}
             >
-              <Text size="s">{error}</Text>
-            </L.ErrorRow>
+              {error}
+            </L.ErrorText>
           )}
           {hasResult && (
             <L.ResultRow
               align="center"
-              gap="m"
+              gap="s"
+              grow={false}
               data-testid={`${AGGREGATE_TAB_TEST_ID}-result`}
             >
-              <Text size="s">Result:</Text>
+              <L.ResultLabel>Result:</L.ResultLabel>
               <L.ResultValue
                 data-testid={`${AGGREGATE_TAB_TEST_ID}-result-value`}
               >
                 {result}
               </L.ResultValue>
+              <CopyButton
+                copy={result}
+                data-testid={`${AGGREGATE_TAB_TEST_ID}-result-copy`}
+              />
             </L.ResultRow>
           )}
-        </L.ResultContainer>
+        </L.ResultPanel>
       </S.TabBody>
     </>
   )

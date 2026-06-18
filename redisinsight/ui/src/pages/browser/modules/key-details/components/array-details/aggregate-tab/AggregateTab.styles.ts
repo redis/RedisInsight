@@ -1,19 +1,18 @@
 import styled from 'styled-components'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { Text } from 'uiSrc/components/base/text'
 
-export const ResultContainer = styled(Col)`
+export const ResultPanel = styled(Col)`
   flex: 1;
   min-height: 0;
   padding: ${({ theme }) => theme.core.space.space150};
   overflow: auto;
 `
 
-export const ResultRow = styled(Row)`
-  padding: ${({ theme }) => theme.core.space.space100}
-    ${({ theme }) => theme.core.space.space150};
-  border-radius: ${({ theme }) => theme.core.space.space050};
-  background: ${({ theme }) => theme.semantic.color.background.neutral300};
-  border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
+export const ResultRow = styled(Row)``
+
+export const ResultLabel = styled(Text)`
+  color: ${({ theme }) => theme.semantic.color.text.neutral700};
 `
 
 export const ResultValue = styled.span<{ children?: React.ReactNode }>`
@@ -22,6 +21,6 @@ export const ResultValue = styled.span<{ children?: React.ReactNode }>`
   word-break: break-all;
 `
 
-export const ErrorRow = styled(Row)`
+export const ErrorText = styled(Text)`
   color: ${({ theme }) => theme.semantic.color.text.danger500};
 `
