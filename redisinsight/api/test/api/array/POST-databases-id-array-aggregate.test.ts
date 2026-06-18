@@ -272,7 +272,7 @@ describe('POST /databases/:instanceId/array/aggregate', () => {
       // JSON string body — only the Buffer-typed `value` reaches the
       // backend intact.
       const binValue = Buffer.from([0x00, 0xff, 0x10, 0x7f]);
-      await rte.client.call('ARSET', keyName, '0', binValue, 'other', binValue);
+      await rte.client.call('ARMSET', keyName, '0', binValue, '1', binValue);
 
       await validateApiCall({
         endpoint,
