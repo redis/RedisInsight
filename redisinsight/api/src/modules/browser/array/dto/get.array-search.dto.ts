@@ -4,16 +4,22 @@ import {
   ArrayMinSize,
   IsArray,
   IsBoolean,
+  IsDefined,
   IsEnum,
   IsInt,
   IsOptional,
-  IsString,
   Max,
   Min,
   ValidateNested,
 } from 'class-validator';
 import { KeyDto } from 'src/modules/browser/keys/dto';
-import { IsArrayIndex } from 'src/common/decorators';
+import {
+  ApiRedisString,
+  IsArrayIndex,
+  IsRedisString,
+  RedisStringType,
+} from 'src/common/decorators';
+import { RedisString } from 'src/common/constants';
 import { ARRAY_RANGE_MAX_ELEMENTS } from 'src/modules/browser/array/constants';
 
 export enum ArrayGrepCriteria {
@@ -33,9 +39,11 @@ export class ArrayGrepPredicate {
   @IsEnum(ArrayGrepCriteria)
   criteria: ArrayGrepCriteria;
 
-  @ApiProperty({ description: 'Pattern / value to match.', type: String })
-  @IsString()
-  value: string;
+  @ApiRedisString('Pattern / value to match.')
+  @IsDefined()
+  @IsRedisString()
+  @RedisStringType()
+  value: RedisString;
 }
 
 export class GetArraySearchDto extends KeyDto {
