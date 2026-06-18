@@ -374,9 +374,7 @@ export class ArrayService {
         operation === ArrayAggregateOperation.Match &&
         (value === undefined || value === null)
       ) {
-        throw new BadRequestException(
-          'value is required for MATCH operation.',
-        );
+        throw new BadRequestException('value is required for MATCH operation.');
       }
 
       const client =
