@@ -1,4 +1,6 @@
 import {
+  ArrayCombinator,
+  ArrayGrepCriteria,
   GetArrayCountResponse,
   GetArrayElementDto,
   GetArrayElementResponse,
@@ -10,6 +12,8 @@ import {
   GetArrayRangeResponse,
   GetArrayScanDto,
   GetArrayScanResponse,
+  GetArraySearchDto,
+  GetArraySearchResponse,
 } from 'src/modules/browser/array/dto';
 import { mockKeyDto } from 'src/modules/browser/__mocks__/keys';
 
@@ -88,4 +92,22 @@ export const mockGetArrayCountResponse: GetArrayCountResponse = {
 export const mockGetArrayNextIndexResponse: GetArrayNextIndexResponse = {
   keyName: mockKeyDto.keyName,
   index: mockArrayNextIndex,
+};
+
+export const mockGetArraySearchDto: GetArraySearchDto = {
+  keyName: mockKeyDto.keyName,
+  predicates: [{ criteria: ArrayGrepCriteria.Match, value: '21.4' }],
+};
+
+// Reply with WITHVALUES (default): flat [index, value, index, value, ...].
+export const mockArraySearchReplyWithValues = ['5', '21.4', '6', '21.9'];
+// Reply without WITHVALUES: flat [index, index, ...].
+export const mockArraySearchReplyIndexesOnly = ['5', '6'];
+
+export const mockGetArraySearchResponse: GetArraySearchResponse = {
+  keyName: mockKeyDto.keyName,
+  elements: [
+    { index: '5', value: Buffer.from('21.4') },
+    { index: '6', value: Buffer.from('21.9') },
+  ],
 };

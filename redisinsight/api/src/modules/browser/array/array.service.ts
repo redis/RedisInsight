@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { RedisErrorCodes } from 'src/constants';
+import { RedisString } from 'src/common/constants';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { catchAclError, catchMultiTransactionError } from 'src/utils';
 import { ClientMetadata } from 'src/common/models';
@@ -29,8 +30,10 @@ import {
   AggregateArrayDto,
   AggregateArrayResponse,
   ArrayAggregateOperation,
+  ArrayCombinator,
   ArrayCreationMode,
   ArrayElement,
+  ArraySearchElement,
   CreateArrayWithExpireDto,
   GetArrayCountResponse,
   GetArrayElementDto,
@@ -43,6 +46,8 @@ import {
   GetArrayRangeResponse,
   GetArrayScanDto,
   GetArrayScanResponse,
+  GetArraySearchDto,
+  GetArraySearchResponse,
 } from 'src/modules/browser/array/dto';
 
 @Injectable()
@@ -227,6 +232,78 @@ export class ArrayService {
     } catch (error) {
       this.logger.error('Failed to scan array range.', error, clientMetadata);
       if (error instanceof BadRequestException) throw error;
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
+  public async search(
+    clientMetadata: ClientMetadata,
+    dto: GetArraySearchDto,
+  ): Promise<GetArraySearchResponse> {
+    try {
+      this.logger.debug('Searching array.', clientMetadata);
+      const {
+        keyName,
+        predicates,
+        combinator = ArrayCombinator.And,
+        start,
+        end,
+        nocase,
+        withValues = true,
+        limit,
+      } = dto;
+
+      const client =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+      await checkIfKeyNotExists(keyName, client);
+
+      // ARGREP key start end <CRITERIA value>... [AND|OR] [NOCASE] [WITHVALUES] [LIMIT n]
+      // Omitted bounds map to the `-` (first) / `+` (last) shorthands.
+      const args: RedisClientCommand = [
+        BrowserToolArrayCommands.ArGrep,
+        keyName,
+        start ?? '-',
+        end ?? '+',
+        ...predicates.flatMap((predicate) => [
+          predicate.criteria,
+          predicate.value,
+        ]),
+      ];
+      if (predicates.length > 1) args.push(combinator);
+      if (nocase) args.push('NOCASE');
+      if (withValues) args.push('WITHVALUES');
+      if (typeof limit === 'number') args.push('LIMIT', limit);
+
+      const reply = (await client.sendCommand(args)) as unknown[];
+
+      // WITHVALUES ⇒ flat [index, value, index, value, ...]; otherwise [index, ...].
+      const elements: ArraySearchElement[] = [];
+      if (withValues) {
+        for (let i = 0; i < reply.length; i += 2) {
+          const rawIndex = reply[i];
+          if (rawIndex == null) continue;
+          elements.push({
+            index: toRequiredIndexString(rawIndex),
+            value: (reply[i + 1] ?? null) as RedisString | null,
+          });
+        }
+      } else {
+        for (const rawIndex of reply) {
+          if (rawIndex == null) continue;
+          elements.push({
+            index: toRequiredIndexString(rawIndex),
+            value: null,
+          });
+        }
+      }
+
+      this.logger.debug('Succeed to search array.', clientMetadata);
+      return plainToInstance(GetArraySearchResponse, { keyName, elements });
+    } catch (error) {
+      this.logger.error('Failed to search array.', error, clientMetadata);
       if (error?.message?.includes(RedisErrorCodes.WrongType)) {
         throw new BadRequestException(error.message);
       }

@@ -12,3 +12,5 @@ export * from './get.array-count.response';
 export * from './get.array-next-index.response';
 export * from './aggregate.array.dto';
 export * from './aggregate.array.response';
+export * from './get.array-search.dto';
+export * from './get.array-search.response';

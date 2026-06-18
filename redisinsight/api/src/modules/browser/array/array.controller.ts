@@ -31,6 +31,8 @@ import {
   GetArrayRangeResponse,
   GetArrayScanDto,
   GetArrayScanResponse,
+  GetArraySearchDto,
+  GetArraySearchResponse,
 } from 'src/modules/browser/array/dto';
 
 @ApiTags('Browser: Array')
@@ -152,6 +154,23 @@ export class ArrayController extends BrowserBaseController {
     @Body() dto: GetArrayElementDto,
   ): Promise<GetArrayElementResponse> {
     return this.arrayService.getElement(clientMetadata, dto);
+  }
+
+  @Post('/search')
+  @HttpCode(200)
+  @ApiOperation({
+    description:
+      'Search a range of the array by predicate (ARGREP). Predicates are ' +
+      'combined by a single global AND/OR. Returns index + value pairs.',
+  })
+  @ApiRedisParams()
+  @ApiOkResponse({ type: GetArraySearchResponse })
+  @ApiQueryRedisStringEncoding()
+  async search(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: GetArraySearchDto,
+  ): Promise<GetArraySearchResponse> {
+    return this.arrayService.search(clientMetadata, dto);
   }
 
   @Post('/get-elements')

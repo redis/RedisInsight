@@ -56,6 +56,7 @@ export abstract class IoredisClient extends RedisClient {
     client.addBuiltinCommand(BrowserToolArrayCommands.ArGetRange);
     client.addBuiltinCommand(BrowserToolArrayCommands.ArScan);
     client.addBuiltinCommand(BrowserToolArrayCommands.ArNext);
+    client.addBuiltinCommand(BrowserToolArrayCommands.ArGrep);
   }
 
   static prepareCommandOptions(options: IRedisClientCommandOptions): any {
