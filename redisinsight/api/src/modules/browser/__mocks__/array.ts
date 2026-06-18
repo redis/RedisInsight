@@ -1,4 +1,7 @@
 import {
+  AggregateArrayDto,
+  AggregateArrayResponse,
+  ArrayAggregateOperation,
   GetArrayCountResponse,
   GetArrayElementDto,
   GetArrayElementResponse,
@@ -88,4 +91,18 @@ export const mockGetArrayCountResponse: GetArrayCountResponse = {
 export const mockGetArrayNextIndexResponse: GetArrayNextIndexResponse = {
   keyName: mockKeyDto.keyName,
   index: mockArrayNextIndex,
+};
+
+export const mockArrayAggregateSumResult = '104.7';
+
+export const mockAggregateArrayDto: AggregateArrayDto = {
+  keyName: mockKeyDto.keyName,
+  start: '0',
+  end: '6',
+  operation: ArrayAggregateOperation.Sum,
+};
+
+export const mockAggregateArrayResponse: AggregateArrayResponse = {
+  keyName: mockKeyDto.keyName,
+  result: mockArrayAggregateSumResult,
 };

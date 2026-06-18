@@ -25,6 +25,9 @@ import {
   toRequiredIndexString,
 } from 'src/modules/browser/array/utils';
 import {
+  AggregateArrayDto,
+  AggregateArrayResponse,
+  ArrayAggregateOperation,
   ArrayCreationMode,
   ArrayElement,
   CreateArrayWithExpireDto,
@@ -345,6 +348,54 @@ export class ArrayService {
       return plainToInstance(GetArrayElementResponse, { keyName, value });
     } catch (error) {
       this.logger.error('Failed to get array element.', error, clientMetadata);
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
+  public async aggregate(
+    clientMetadata: ClientMetadata,
+    dto: AggregateArrayDto,
+  ): Promise<AggregateArrayResponse> {
+    try {
+      this.logger.debug('Aggregating array range.', clientMetadata);
+      const { keyName, start, end, operation, value } = dto;
+
+      // Same span cap as ARGETRANGE: AROP scans the dense [start..end] window.
+      this.assertValidRange(start, end);
+
+      const client =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+      await checkIfKeyNotExists(keyName, client);
+
+      const baseArgs = [
+        BrowserToolArrayCommands.ArOp as string,
+        keyName,
+        start,
+        end,
+        operation,
+      ] as const;
+      // MATCH is the only operation with a trailing value arg.
+      const needsValue =
+        operation === ArrayAggregateOperation.Match && value !== undefined;
+      const reply = await client.sendCommand(
+        needsValue ? [...baseArgs, value] : [...baseArgs],
+      );
+
+      this.logger.debug('Succeed to aggregate array range.', clientMetadata);
+      return plainToInstance(AggregateArrayResponse, {
+        keyName,
+        result: toRequiredIndexString(reply),
+      });
+    } catch (error) {
+      this.logger.error(
+        'Failed to aggregate array range.',
+        error,
+        clientMetadata,
+      );
+      if (error instanceof BadRequestException) throw error;
       if (error?.message?.includes(RedisErrorCodes.WrongType)) {
         throw new BadRequestException(error.message);
       }

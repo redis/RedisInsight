@@ -10,3 +10,5 @@ export * from './get.array-multi-elements.response';
 export * from './get.array-length.response';
 export * from './get.array-count.response';
 export * from './get.array-next-index.response';
+export * from './aggregate.array.dto';
+export * from './aggregate.array.response';
