@@ -52,7 +52,8 @@ jest.mock('./hooks', () => ({
     isArrayKeyReady: true,
     loading: false,
     error: '',
-    result: '',
+    result: null,
+    hasResult: false,
   }),
 }))
 

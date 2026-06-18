@@ -66,7 +66,8 @@ export const initialState: StateArray = {
   aggregate: {
     loading: false,
     error: '',
-    result: '',
+    result: null,
+    hasResult: false,
   },
 }
 
@@ -172,6 +173,8 @@ const arraySlice = createSlice({
     loadArrayAggregate: (state) => {
       state.aggregate.loading = true
       state.aggregate.error = ''
+      state.aggregate.hasResult = false
+      state.aggregate.result = null
     },
     loadArrayAggregateSuccess: (
       state,
@@ -180,6 +183,7 @@ const arraySlice = createSlice({
       state.aggregate.loading = false
       state.aggregate.error = ''
       state.aggregate.result = payload.result
+      state.aggregate.hasResult = true
     },
     loadArrayAggregateFailure: (state, { payload }: PayloadAction<string>) => {
       state.aggregate.loading = false

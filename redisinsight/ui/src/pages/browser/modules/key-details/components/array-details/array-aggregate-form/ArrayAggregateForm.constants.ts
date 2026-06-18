@@ -15,9 +15,6 @@ export const ARRAY_RANGE_MAX_SPAN = 1_000_000n
 export const INVALID_RANGE_TOO_LARGE_MESSAGE =
   'Range too large — aggregate at most 1,000,000 indexes per query'
 
-export const INVALID_MATCH_VALUE_MESSAGE =
-  'Value is required for the MATCH operation'
-
 export const OPERATION_OPTIONS: ReadonlyArray<{
   value: ArrayAggregateOperation
   inputDisplay: string

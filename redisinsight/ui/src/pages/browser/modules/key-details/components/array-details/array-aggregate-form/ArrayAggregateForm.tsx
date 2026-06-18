@@ -20,7 +20,6 @@ import {
   ARRAY_AGGREGATE_FORM_TEST_ID as TEST_ID,
   ARRAY_RANGE_MAX_SPAN,
   INVALID_INDEX_MESSAGE,
-  INVALID_MATCH_VALUE_MESSAGE,
   INVALID_RANGE_TOO_LARGE_MESSAGE,
   OPERATION_OPTIONS,
   RESET_TOOLTIP,
@@ -75,11 +74,10 @@ export const ArrayAggregateForm = ({
       1n >
       ARRAY_RANGE_MAX_SPAN
 
-  const matchValueInvalid =
-    operation === ArrayAggregateOperation.Match && value.trim() === ''
-
-  const formInvalid =
-    startInvalid || endInvalid || spanInvalid || matchValueInvalid
+  // MATCH accepts any RedisString — including empty strings / empty buffers
+  // — so populated zero-length slots can be counted. The BE only rejects an
+  // omitted `value` field, which the form never produces (defaults to '').
+  const formInvalid = startInvalid || endInvalid || spanInvalid
 
   const startError = startInvalid ? INVALID_INDEX_MESSAGE : undefined
   const endError = endInvalid
@@ -87,7 +85,6 @@ export const ArrayAggregateForm = ({
     : spanInvalid
       ? INVALID_RANGE_TOO_LARGE_MESSAGE
       : undefined
-  const valueError = matchValueInvalid ? INVALID_MATCH_VALUE_MESSAGE : undefined
 
   const command = useMemo(() => {
     const name = keyName ? quoteRedisArgument(keyName) : '<key>'
@@ -153,7 +150,6 @@ export const ArrayAggregateForm = ({
                 value={value}
                 onChange={onChangeValue}
                 data-testid={`${TEST_ID}-value`}
-                error={valueError}
                 placeholder="value to match"
                 disabled={disabled}
               />

@@ -25,7 +25,9 @@ const DEFAULT_VALUE = ''
  */
 export const useArrayAggregateQuery = (keyProp: RedisResponseBuffer | null) => {
   const dispatch = useAppDispatch()
-  const { loading, error, result } = useAppSelector(arrayAggregateSelector)
+  const { loading, error, result, hasResult } = useAppSelector(
+    arrayAggregateSelector,
+  )
   const selectedKeyData = useAppSelector(selectedKeyDataSelector)
 
   const [start, setStart] = useState<string>(DEFAULT_RANGE_START)
@@ -109,5 +111,6 @@ export const useArrayAggregateQuery = (keyProp: RedisResponseBuffer | null) => {
     loading,
     error,
     result,
+    hasResult,
   }
 }

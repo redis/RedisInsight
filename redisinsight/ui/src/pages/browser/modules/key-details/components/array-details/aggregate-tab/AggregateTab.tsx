@@ -17,6 +17,7 @@ export interface AggregateTabProps {
 }
 
 const AGGREGATE_TAB_TEST_ID = 'array-aggregate-tab'
+const NIL_RESULT_LABEL = '(nil)'
 
 const AggregateTab = ({ keyProp }: AggregateTabProps) => {
   const keyName = keyProp ? bufferToString(keyProp) : ''
@@ -36,9 +37,17 @@ const AggregateTab = ({ keyProp }: AggregateTabProps) => {
     loading,
     error,
     result,
+    hasResult,
   } = useArrayAggregateQuery(keyProp)
 
-  const hasResult = !loading && !error && result !== ''
+  // `hasResult` distinguishes "no AROP run yet" from "ran and got nil" —
+  // both leave `result === null`, but only the latter should surface in the
+  // result panel. A nil reply is rendered as a non-copyable placeholder; a
+  // value reply keeps the input + copy button so the caller can grab the
+  // raw bytes (BigInt-safe).
+  const showResult = !loading && !error && hasResult
+  const isNilResult = showResult && result === null
+  const resultValue = result ?? ''
 
   return (
     <>
@@ -72,19 +81,23 @@ const AggregateTab = ({ keyProp }: AggregateTabProps) => {
               {error}
             </L.ErrorText>
           )}
-          {hasResult && (
+          {showResult && (
             <L.ResultField label="Result">
               <L.ResultInput
-                value={result}
+                value={isNilResult ? NIL_RESULT_LABEL : resultValue}
                 onChange={noop}
                 data-testid={`${AGGREGATE_TAB_TEST_ID}-result-value`}
-                after={
-                  <CopyButton
-                    copy={result}
-                    withTooltip={false}
-                    data-testid={`${AGGREGATE_TAB_TEST_ID}-result-copy`}
-                  />
-                }
+                {...(isNilResult
+                  ? {}
+                  : {
+                      after: (
+                        <CopyButton
+                          copy={resultValue}
+                          withTooltip={false}
+                          data-testid={`${AGGREGATE_TAB_TEST_ID}-result-copy`}
+                        />
+                      ),
+                    })}
               />
             </L.ResultField>
           )}

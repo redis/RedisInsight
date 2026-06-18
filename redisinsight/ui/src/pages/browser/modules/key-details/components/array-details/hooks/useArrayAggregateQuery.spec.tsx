@@ -57,6 +57,30 @@ describe('useArrayAggregateQuery', () => {
     expect(result.current.operation).toBe(ArrayAggregateOperation.Sum)
     expect(result.current.value).toBe('')
     expect(result.current.isArrayKeyReady).toBe(true)
+    expect(result.current.result).toBeNull()
+    expect(result.current.hasResult).toBe(false)
+  })
+
+  it('dispatches loadArrayAggregateSuccess with a nil reply forwarded verbatim', async () => {
+    // redux-mock-store doesn't run reducers, so we assert on the dispatched
+    // success action — the slice spec covers the hasResult flip and the
+    // null-result passthrough.
+    ;(apiService.post as jest.Mock).mockResolvedValueOnce({
+      status: 200,
+      data: { result: null },
+    })
+    const { result, store } = renderWithStore(keyBuffer)
+    store.clearActions()
+
+    await act(async () => {
+      result.current.runQuery()
+    })
+
+    const success = store
+      .getActions()
+      .find((a) => a.type === 'array/loadArrayAggregateSuccess')
+    expect(success).toBeDefined()
+    expect(success?.payload).toEqual({ result: null })
   })
 
   it('isArrayKeyReady=false until selectedKeyData catches up with keyProp', () => {

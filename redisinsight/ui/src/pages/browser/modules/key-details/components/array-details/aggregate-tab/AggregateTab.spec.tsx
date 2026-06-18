@@ -19,7 +19,8 @@ const baseHookResult = {
   isArrayKeyReady: true,
   loading: false,
   error: '',
-  result: '',
+  result: null as string | null,
+  hasResult: false,
 }
 
 const mockUseArrayAggregateQuery = jest.fn(
@@ -97,6 +98,7 @@ describe('AggregateTab', () => {
     mockUseArrayAggregateQuery.mockReturnValue({
       ...baseHookResult,
       result: bigResult,
+      hasResult: true,
     })
 
     render(<AggregateTab keyProp={keyBuffer} />)
@@ -108,6 +110,28 @@ describe('AggregateTab', () => {
     expect(screen.getByTestId(`${TEST_ID}-result-copy-btn`)).toBeInTheDocument()
     expect(screen.queryByTestId(`${TEST_ID}-loading`)).not.toBeInTheDocument()
     expect(screen.queryByTestId(`${TEST_ID}-error`)).not.toBeInTheDocument()
+  })
+
+  it('renders the nil placeholder without copy when AROP returned null', () => {
+    // hasResult=true with result=null signals AROP completed with a RESP
+    // nil reply (e.g. SUM over a range with no numeric values). The panel
+    // surfaces "(nil)" so the user can tell the query ran, and hides the
+    // copy button because there are no bytes to copy.
+    mockUseArrayAggregateQuery.mockReturnValue({
+      ...baseHookResult,
+      result: null,
+      hasResult: true,
+    })
+
+    render(<AggregateTab keyProp={keyBuffer} />)
+
+    const wrapper = screen.getByTestId(`${TEST_ID}-result-value`)
+    const input = wrapper.querySelector('input') as HTMLInputElement
+    expect(input).not.toBeNull()
+    expect(input.value).toBe('(nil)')
+    expect(
+      screen.queryByTestId(`${TEST_ID}-result-copy-btn`),
+    ).not.toBeInTheDocument()
   })
 
   it('forwards the key buffer to the hook', () => {

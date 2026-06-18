@@ -68,13 +68,17 @@ export interface ArrayActiveQuery {
 /**
  * Aggregate (AROP) result slice. Held alongside the range/scan data so the
  * Aggregate tab can keep its last result visible while the View tab updates
- * independently. `result` is the BE-returned decimal string (or empty when
- * no aggregation has run yet for the current key).
+ * independently. `result` mirrors the BE response (`string | null`): a
+ * decimal/integer string for a value reply, or `null` for a nil reply (e.g.
+ * SUM over a range with no numeric values). `hasResult` distinguishes
+ * "pristine — no AROP has run yet" from "ran and got nil"; both shapes
+ * present `result: null`.
  */
 export interface ArrayAggregateState {
   loading: boolean
   error: string
-  result: string
+  result: string | null
+  hasResult: boolean
 }
 
 export interface StateArray {
