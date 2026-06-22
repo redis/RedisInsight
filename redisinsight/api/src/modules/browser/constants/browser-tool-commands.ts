@@ -130,6 +130,16 @@ export enum BrowserToolArrayCommands {
   ArDelRange = 'ardelrange',
 }
 
+// Array commands whose integer replies are u64 (indexes / counts) and must
+// stay exact above 2^53 — callers request them with { integerReply: 'bigint' }.
+export const ARRAY_U64_INTEGER_REPLY_COMMANDS = new Set<string>([
+  BrowserToolArrayCommands.ArLen,
+  BrowserToolArrayCommands.ArCount,
+  BrowserToolArrayCommands.ArNext,
+  BrowserToolArrayCommands.ArScan,
+  BrowserToolArrayCommands.ArGrep,
+]);
+
 export type BrowserToolCommands =
   | BrowserToolKeysCommands
   | BrowserToolStringCommands

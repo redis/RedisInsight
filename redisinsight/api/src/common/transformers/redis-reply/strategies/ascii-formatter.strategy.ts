@@ -4,6 +4,9 @@ import { IFormatterStrategy } from '../formatter.interface';
 
 export class ASCIIFormatterStrategy implements IFormatterStrategy {
   public format(reply: any): any {
+    if (typeof reply === 'bigint') {
+      return reply.toString();
+    }
     if (reply instanceof Buffer) {
       return getASCIISafeStringFromBuffer(reply);
     }
