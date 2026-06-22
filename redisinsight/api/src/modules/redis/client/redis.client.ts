@@ -28,6 +28,7 @@ export interface IRedisClientCommandOptions {
   firstKey?: RedisString;
   readOnly?: boolean;
   replyEncoding?: 'utf8' | null;
+  integerReply?: 'number' | 'bigint';
   unknownCommands?: boolean;
 }
 
@@ -49,6 +50,7 @@ export type RedisClientCommand = [
 export type RedisClientCommandReply =
   | string
   | number
+  | bigint
   | Buffer
   | null
   | undefined

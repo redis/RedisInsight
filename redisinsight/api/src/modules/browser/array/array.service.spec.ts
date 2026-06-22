@@ -273,15 +273,22 @@ describe('ArrayService', () => {
       Buffer.from('1'),
       Buffer.from('20.4'),
     ];
+    const scanReplyOptions = {
+      integerReply: 'bigint' as const,
+      replyEncoding: null,
+    };
 
     beforeEach(() => {
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArScan,
-          mockGetArrayScanDto.keyName,
-          mockGetArrayScanDto.start,
-          mockGetArrayScanDto.end,
-        ])
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArScan,
+            mockGetArrayScanDto.keyName,
+            mockGetArrayScanDto.start,
+            mockGetArrayScanDto.end,
+          ],
+          scanReplyOptions,
+        )
         .mockResolvedValue(flatReply);
     });
 
@@ -295,12 +302,15 @@ describe('ArrayService', () => {
 
     it('should pair nested [[index, value], ...] reply (Redis 8.8 shape)', async () => {
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArScan,
-          mockGetArrayScanDto.keyName,
-          mockGetArrayScanDto.start,
-          mockGetArrayScanDto.end,
-        ])
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArScan,
+            mockGetArrayScanDto.keyName,
+            mockGetArrayScanDto.start,
+            mockGetArrayScanDto.end,
+          ],
+          scanReplyOptions,
+        )
         .mockResolvedValue([
           [Buffer.from('0'), mockArrayElement1],
           [Buffer.from('1'), Buffer.from('20.4')],
@@ -314,12 +324,15 @@ describe('ArrayService', () => {
 
     it('should drop nested entries with a nil half', async () => {
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArScan,
-          mockGetArrayScanDto.keyName,
-          mockGetArrayScanDto.start,
-          mockGetArrayScanDto.end,
-        ])
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArScan,
+            mockGetArrayScanDto.keyName,
+            mockGetArrayScanDto.start,
+            mockGetArrayScanDto.end,
+          ],
+          scanReplyOptions,
+        )
         .mockResolvedValue([
           [Buffer.from('0'), mockArrayElement1],
           [Buffer.from('1'), null],
@@ -335,14 +348,17 @@ describe('ArrayService', () => {
 
     it('should append LIMIT when provided', async () => {
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArScan,
-          mockGetArrayScanDto.keyName,
-          mockGetArrayScanDto.start,
-          mockGetArrayScanDto.end,
-          'LIMIT',
-          50,
-        ])
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArScan,
+            mockGetArrayScanDto.keyName,
+            mockGetArrayScanDto.start,
+            mockGetArrayScanDto.end,
+            'LIMIT',
+            50,
+          ],
+          scanReplyOptions,
+        )
         .mockResolvedValue([Buffer.from('0'), mockArrayElement1]);
 
       const result = await service.scan(mockBrowserClientMetadata, {
@@ -358,23 +374,29 @@ describe('ArrayService', () => {
         limit: null as unknown as number,
       });
 
-      expect(mockStandaloneRedisClient.sendCommand).toHaveBeenCalledWith([
-        BrowserToolArrayCommands.ArScan,
-        mockGetArrayScanDto.keyName,
-        mockGetArrayScanDto.start,
-        mockGetArrayScanDto.end,
-      ]);
+      expect(mockStandaloneRedisClient.sendCommand).toHaveBeenCalledWith(
+        [
+          BrowserToolArrayCommands.ArScan,
+          mockGetArrayScanDto.keyName,
+          mockGetArrayScanDto.start,
+          mockGetArrayScanDto.end,
+        ],
+        scanReplyOptions,
+      );
       expect(result).toEqual(mockGetArrayScanResponse);
     });
 
     it('should drop pairs whose value or index is null/undefined', async () => {
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArScan,
-          mockGetArrayScanDto.keyName,
-          mockGetArrayScanDto.start,
-          mockGetArrayScanDto.end,
-        ])
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArScan,
+            mockGetArrayScanDto.keyName,
+            mockGetArrayScanDto.start,
+            mockGetArrayScanDto.end,
+          ],
+          scanReplyOptions,
+        )
         .mockResolvedValue([
           Buffer.from('0'),
           mockArrayElement1,
@@ -408,12 +430,15 @@ describe('ArrayService', () => {
 
     it('should forward reversed ranges (start > end) to Redis as-is', async () => {
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArScan,
-          mockGetArrayScanDto.keyName,
-          '5',
-          '0',
-        ])
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArScan,
+            mockGetArrayScanDto.keyName,
+            '5',
+            '0',
+          ],
+          scanReplyOptions,
+        )
         .mockResolvedValue(flatReply);
 
       await service.scan(mockBrowserClientMetadata, {
@@ -422,12 +447,15 @@ describe('ArrayService', () => {
         end: '0',
       });
 
-      expect(mockStandaloneRedisClient.sendCommand).toHaveBeenCalledWith([
-        BrowserToolArrayCommands.ArScan,
-        mockGetArrayScanDto.keyName,
-        '5',
-        '0',
-      ]);
+      expect(mockStandaloneRedisClient.sendCommand).toHaveBeenCalledWith(
+        [
+          BrowserToolArrayCommands.ArScan,
+          mockGetArrayScanDto.keyName,
+          '5',
+          '0',
+        ],
+        scanReplyOptions,
+      );
     });
 
     it('should rethrow BadRequest on WrongType', async () => {
@@ -436,7 +464,15 @@ describe('ArrayService', () => {
         command: 'ARSCAN',
       };
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ArScan]))
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArScan,
+            mockGetArrayScanDto.keyName,
+            mockGetArrayScanDto.start,
+            mockGetArrayScanDto.end,
+          ],
+          scanReplyOptions,
+        )
         .mockRejectedValue(replyError);
       await expect(
         service.scan(mockBrowserClientMetadata, mockGetArrayScanDto),

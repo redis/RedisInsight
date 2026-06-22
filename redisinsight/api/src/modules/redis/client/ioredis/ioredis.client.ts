@@ -67,6 +67,7 @@ export abstract class IoredisClient extends RedisClient {
 
     return {
       replyEncoding,
+      integerReply: options?.integerReply,
     };
   }
 

@@ -187,6 +187,7 @@ export class ArrayService {
       const hasLimit = typeof limit === 'number';
       const reply = (await client.sendCommand(
         hasLimit ? [...baseArgs, 'LIMIT', limit] : [...baseArgs],
+        { replyEncoding: null, integerReply: 'bigint' },
       )) as unknown[];
 
       // ARSCAN wire shape varies by Redis version / client: Redis 8.8
