@@ -1,6 +1,8 @@
 import React, { ReactElement, useEffect } from 'react'
 import { Provider } from 'react-redux'
+import { I18nextProvider } from 'react-i18next'
 import { useAppSelector } from 'uiSrc/slices/hooks'
+import i18n from 'uiSrc/i18n'
 
 import { Route, Switch } from 'react-router-dom'
 import { store } from 'uiSrc/slices/store'
@@ -40,15 +42,17 @@ themeService.registerTheme(Theme.Dark, themeDark)
 themeService.registerTheme(Theme.Light, themeLight)
 
 const AppWrapper = ({ children }: { children?: ReactElement[] }) => (
-  <Provider store={store}>
-    <SentryErrorBoundary>
-      <ThemeProvider>
-        <AppInit>
-          <App>{children}</App>
-        </AppInit>
-      </ThemeProvider>
-    </SentryErrorBoundary>
-  </Provider>
+  <I18nextProvider i18n={i18n}>
+    <Provider store={store}>
+      <SentryErrorBoundary>
+        <ThemeProvider>
+          <AppInit>
+            <App>{children}</App>
+          </AppInit>
+        </ThemeProvider>
+      </SentryErrorBoundary>
+    </Provider>
+  </I18nextProvider>
 )
 const App = ({ children }: { children?: ReactElement[] }) => {
   const { loading: serverLoading } = useAppSelector(appInfoSelector)
