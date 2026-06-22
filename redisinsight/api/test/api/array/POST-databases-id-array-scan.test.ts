@@ -181,6 +181,25 @@ describe('POST /databases/:instanceId/array/scan', () => {
       });
     });
 
+    it('Should keep an index exact in the (2^53, 2^63) RESP-integer zone', async () => {
+      const keyName = constants.getRandomString();
+      // 2^53 + 1: below 2^63 so Redis sends it as a RESP integer (not a bulk
+      // string), and above 2^53 so a JS number would round it to 2^53. Proves
+      // the per-command bigint path, which the 2^64-2 case above can't.
+      const gapIndex = '9007199254740993';
+      await rte.client.call('ARSET', keyName, gapIndex, 'needle');
+
+      await validateApiCall({
+        endpoint,
+        data: { keyName, start: gapIndex, end: gapIndex },
+        responseSchema,
+        responseBody: {
+          keyName,
+          elements: [{ index: gapIndex, value: 'needle' }],
+        },
+      });
+    });
+
     it('Should accept explicit limit:null as if it were omitted', async () => {
       const keyName = constants.getRandomString();
       await seedSparse(keyName);
