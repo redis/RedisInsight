@@ -23,6 +23,7 @@ i18n.use(initReactI18next).init({
   },
   lng: queryLanguage ?? DEFAULT_LANGUAGE,
   fallbackLng: DEFAULT_LANGUAGE,
+  returnEmptyString: false,
   supportedLngs: [...SUPPORTED_LANGUAGES],
   ns: [DEFAULT_NAMESPACE],
   defaultNS: DEFAULT_NAMESPACE,
