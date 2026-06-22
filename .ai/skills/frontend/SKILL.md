@@ -9,7 +9,6 @@ description: >-
   the user mentions UI, frontend, React, Redux, or styled-components.
 ---
 
-
 # Frontend Development (React/Redux)
 
 ## Component Structure
@@ -97,10 +96,10 @@ export { ExternalStyledComponent } from '../ExternalComponent/ExternalComponent.
 
 ```typescript
 // ❌ BAD: Importing styled components directly from external component
-import * as S from '../ExternalComponent/ExternalComponent.styles'
+import * as S from '../ExternalComponent/ExternalComponent.styles';
 
 // ❌ BAD: Named imports instead of namespace
-import { Container, Title, Content } from './Component.styles'
+import { Container, Title, Content } from './Component.styles';
 ```
 
 ### Use Layout Components Instead of div
@@ -401,11 +400,14 @@ Only create custom SVG icons if:
 
 **CRITICAL**: Create a `renderComponent` helper function for each component test file:
 
+Pull entity data from a shared Fishery factory in `redisinsight/ui/src/mocks/factories/`
+(reuse one, or add a new `<domain>/<TypeName>.factory.ts`); inline only callbacks/primitives.
+
 ```typescript
 describe('MyComponent', () => {
+  const mockUser = UserFactory.build();
   const defaultProps: MyComponentProps = {
-    id: faker.string.uuid(),
-    name: faker.person.fullName(),
+    user: mockUser,
     onComplete: jest.fn(),
   }
 
