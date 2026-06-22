@@ -109,7 +109,7 @@
     "source-map-support": "^0.5.19",
     "swagger-ui-express": "^4.1.4",
     "tunnel-ssh": "^5.1.2",
-    "typeorm": "^0.3.26",
+    "typeorm": "^0.3.29",
     "uuid": "^14.0.0",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.0"
