@@ -38,6 +38,17 @@ import { OutputFormatterManager } from './output-formatter/output-formatter-mana
 import { CliOutputFormatterTypes } from './output-formatter/output-formatter.interface';
 import { TextFormatterStrategy } from './output-formatter/strategies/text-formatter.strategy';
 import { RawFormatterStrategy } from './output-formatter/strategies/raw-formatter.strategy';
+import { BrowserToolArrayCommands } from 'src/modules/browser/constants/browser-tool-commands';
+
+// Array commands whose integer replies are u64 (indexes/counts); request
+// BigInt so the CLI shows them exactly instead of rounding above 2^53.
+const ARRAY_U64_INTEGER_REPLY_COMMANDS = new Set<string>([
+  BrowserToolArrayCommands.ArLen,
+  BrowserToolArrayCommands.ArCount,
+  BrowserToolArrayCommands.ArNext,
+  BrowserToolArrayCommands.ArScan,
+  BrowserToolArrayCommands.ArGrep,
+]);
 
 @Injectable()
 export class CliBusinessService {
@@ -223,8 +234,14 @@ export class CliBusinessService {
         command,
       );
 
+      const integerReply = ARRAY_U64_INTEGER_REPLY_COMMANDS.has(
+        command.toLowerCase(),
+      )
+        ? 'bigint'
+        : undefined;
       const reply = await client.sendCommand([command, ...args], {
         replyEncoding,
+        integerReply,
       });
 
       this.cliAnalyticsService.sendCommandExecutedEvent(

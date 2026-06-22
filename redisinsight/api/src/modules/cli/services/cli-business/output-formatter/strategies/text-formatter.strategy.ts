@@ -8,7 +8,7 @@ export class TextFormatterStrategy implements IOutputFormatterStrategy {
     let result;
     if (isNull(reply)) {
       result = '(nil)';
-    } else if (isInteger(reply)) {
+    } else if (isInteger(reply) || typeof reply === 'bigint') {
       result = `(integer) ${reply}`;
     } else if (reply instanceof Buffer) {
       result = this.formatRedisBufferReply(reply);
