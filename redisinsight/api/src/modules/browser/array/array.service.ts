@@ -198,6 +198,7 @@ export class ArrayService {
       const hasLimit = typeof limit === 'number';
       const reply = (await client.sendCommand(
         hasLimit ? [...baseArgs, 'LIMIT', limit] : [...baseArgs],
+        { integerReply: 'bigint' },
       )) as unknown[];
 
       // ARSCAN wire shape varies by Redis version / client: Redis 8.8
@@ -277,7 +278,9 @@ export class ArrayService {
       if (withValues) args.push('WITHVALUES');
       if (typeof limit === 'number') args.push('LIMIT', limit);
 
-      const reply = (await client.sendCommand(args)) as unknown[];
+      const reply = (await client.sendCommand(args, {
+        integerReply: 'bigint',
+      })) as unknown[];
 
       // WITHVALUES wire shape varies: Redis 8.8 returns nested
       // [[index, value], ...] entries; some builds surface a flat
@@ -338,10 +341,10 @@ export class ArrayService {
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
       await checkIfKeyNotExists(keyName, client);
 
-      const reply = await client.sendCommand([
-        BrowserToolArrayCommands.ArLen,
-        keyName,
-      ]);
+      const reply = await client.sendCommand(
+        [BrowserToolArrayCommands.ArLen, keyName],
+        { integerReply: 'bigint' },
+      );
 
       this.logger.debug('Succeed to get array length.', clientMetadata);
       return plainToInstance(GetArrayLengthResponse, {
@@ -368,10 +371,10 @@ export class ArrayService {
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
       await checkIfKeyNotExists(keyName, client);
 
-      const reply = await client.sendCommand([
-        BrowserToolArrayCommands.ArCount,
-        keyName,
-      ]);
+      const reply = await client.sendCommand(
+        [BrowserToolArrayCommands.ArCount, keyName],
+        { integerReply: 'bigint' },
+      );
 
       this.logger.debug('Succeed to get array count.', clientMetadata);
       return plainToInstance(GetArrayCountResponse, {
@@ -398,10 +401,10 @@ export class ArrayService {
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
       await checkIfKeyNotExists(keyName, client);
 
-      const reply = await client.sendCommand([
-        BrowserToolArrayCommands.ArNext,
-        keyName,
-      ]);
+      const reply = await client.sendCommand(
+        [BrowserToolArrayCommands.ArNext, keyName],
+        { integerReply: 'bigint' },
+      );
 
       this.logger.debug('Succeed to get array next index.', clientMetadata);
       return plainToInstance(GetArrayNextIndexResponse, {
