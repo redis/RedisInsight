@@ -5,16 +5,23 @@ import {
   DEFAULT_LANGUAGE,
   DEFAULT_NAMESPACE,
   SUPPORTED_LANGUAGES,
+  SupportedLanguage,
 } from './i18n.constants'
 import en from './locales/en.json'
 import bg from './locales/bg.json'
+
+// TODO: Temporary let `?lang=bg` force the initial language so
+// translations can be eyeballed before the real language switcher is introduced.
+const queryLanguage = new URLSearchParams(window.location.search).get(
+  'lang',
+) as SupportedLanguage
 
 i18n.use(initReactI18next).init({
   resources: {
     en: { translation: en },
     bg: { translation: bg },
   },
-  lng: DEFAULT_LANGUAGE,
+  lng: queryLanguage ?? DEFAULT_LANGUAGE,
   fallbackLng: DEFAULT_LANGUAGE,
   supportedLngs: [...SUPPORTED_LANGUAGES],
   ns: [DEFAULT_NAMESPACE],

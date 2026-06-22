@@ -1,1 +1,11 @@
-{}
+{
+  "settings.advancedWarning": "Разширените настройки трябва да се променят само ако разбирате тяхното въздействие.",
+  "settings.title": "Настройки",
+  "settings.language.label": "Изберете езика, използван в Redis Insight:",
+  "settings.language.title": "Език",
+  "settings.section.advanced": "Разширени",
+  "settings.section.cloud": "Redis Cloud",
+  "settings.section.general": "Общи",
+  "settings.section.privacy": "Поверителност",
+  "settings.section.workbench": "Работна среда"
+}
