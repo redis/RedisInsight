@@ -38,21 +38,31 @@ describe('ArrayKeyInfoStrategy', () => {
     const rawLength = 10;
     const rawCount = 7;
 
+    const mockCounts = (lengthReply: any, countReply: any) => {
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([BrowserToolArrayCommands.ArLen, key], {
+          integerReply: 'bigint',
+        })
+        .mockResolvedValueOnce(lengthReply);
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([BrowserToolArrayCommands.ArCount, key], {
+          integerReply: 'bigint',
+        })
+        .mockResolvedValueOnce(countReply);
+    };
+
     describe('when includeSize is true', () => {
-      it('should return ttl, length, count, and size in single pipeline', async () => {
+      it('should return ttl, length, count, and size', async () => {
         when(mockStandaloneRedisClient.sendPipeline)
           .calledWith([
             [BrowserToolKeysCommands.Ttl, key],
-            [BrowserToolArrayCommands.ArLen, key],
-            [BrowserToolArrayCommands.ArCount, key],
             [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],
           ])
           .mockResolvedValueOnce([
             [null, ttl],
-            [null, rawLength],
-            [null, rawCount],
             [null, size],
           ]);
+        mockCounts(rawLength, rawCount);
 
         const result = await strategy.getInfo(
           mockStandaloneRedisClient,
@@ -73,16 +83,13 @@ describe('ArrayKeyInfoStrategy', () => {
         when(mockStandaloneRedisClient.sendPipeline)
           .calledWith([
             [BrowserToolKeysCommands.Ttl, key],
-            [BrowserToolArrayCommands.ArLen, key],
-            [BrowserToolArrayCommands.ArCount, key],
             [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],
           ])
           .mockResolvedValueOnce([
             [null, ttl],
-            [null, hugeLength],
-            [null, hugeCount],
             [null, size],
           ]);
+        mockCounts(hugeLength, hugeCount);
 
         const result = await strategy.getInfo(
           mockStandaloneRedisClient,
@@ -100,18 +107,14 @@ describe('ArrayKeyInfoStrategy', () => {
     });
 
     describe('when includeSize is false', () => {
-      it('should skip MEMORY USAGE when count exceeds MAX_KEY_SIZE', async () => {
+      const mockTtl = () =>
         when(mockStandaloneRedisClient.sendPipeline)
-          .calledWith([
-            [BrowserToolKeysCommands.Ttl, key],
-            [BrowserToolArrayCommands.ArLen, key],
-            [BrowserToolArrayCommands.ArCount, key],
-          ])
-          .mockResolvedValueOnce([
-            [null, ttl],
-            [null, rawLength],
-            [null, MAX_KEY_SIZE + 1],
-          ]);
+          .calledWith([[BrowserToolKeysCommands.Ttl, key]])
+          .mockResolvedValueOnce([[null, ttl]]);
+
+      it('should skip MEMORY USAGE when count exceeds MAX_KEY_SIZE', async () => {
+        mockTtl();
+        mockCounts(rawLength, MAX_KEY_SIZE + 1);
 
         const result = await strategy.getInfo(
           mockStandaloneRedisClient,
@@ -128,17 +131,8 @@ describe('ArrayKeyInfoStrategy', () => {
       });
 
       it('should still issue MEMORY USAGE for sparse arrays where length is huge but count is small', async () => {
-        when(mockStandaloneRedisClient.sendPipeline)
-          .calledWith([
-            [BrowserToolKeysCommands.Ttl, key],
-            [BrowserToolArrayCommands.ArLen, key],
-            [BrowserToolArrayCommands.ArCount, key],
-          ])
-          .mockResolvedValueOnce([
-            [null, ttl],
-            [null, MAX_KEY_SIZE * 10],
-            [null, rawCount],
-          ]);
+        mockTtl();
+        mockCounts(MAX_KEY_SIZE * 10, rawCount);
         when(mockStandaloneRedisClient.sendPipeline)
           .calledWith([
             [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],
@@ -159,17 +153,8 @@ describe('ArrayKeyInfoStrategy', () => {
       });
 
       it('should issue MEMORY USAGE separately when count is small', async () => {
-        when(mockStandaloneRedisClient.sendPipeline)
-          .calledWith([
-            [BrowserToolKeysCommands.Ttl, key],
-            [BrowserToolArrayCommands.ArLen, key],
-            [BrowserToolArrayCommands.ArCount, key],
-          ])
-          .mockResolvedValueOnce([
-            [null, ttl],
-            [null, rawLength],
-            [null, rawCount],
-          ]);
+        mockTtl();
+        mockCounts(rawLength, rawCount);
         when(mockStandaloneRedisClient.sendPipeline)
           .calledWith([
             [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],

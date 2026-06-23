@@ -504,8 +504,8 @@
     "TS7053": 2
   },
   "src/modules/cli/services/cli-business/output-formatter/strategies/text-formatter.strategy.spec.ts": {
-    "TS7005": 10,
-    "TS7034": 2
+    "TS7005": 1,
+    "TS7034": 1
   },
   "src/modules/cli/services/cli-business/output-formatter/strategies/utf-8-formatter.strategy.ts": {
     "TS7053": 2

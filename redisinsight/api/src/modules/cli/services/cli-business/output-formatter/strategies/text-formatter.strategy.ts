@@ -37,11 +37,12 @@ export class TextFormatterStrategy implements IOutputFormatterStrategy {
           })
           .join('\n');
       }
+    } else if (reply instanceof Buffer) {
+      result = this.formatRedisBufferReply(reply);
+    } else if (typeof reply === 'bigint') {
+      result = `(integer) ${reply}`;
     } else {
-      result =
-        reply instanceof Buffer
-          ? this.formatRedisBufferReply(reply)
-          : JSON.stringify(reply);
+      result = JSON.stringify(reply);
     }
     return result;
   }

@@ -1,7 +1,7 @@
 import { TextFormatterStrategy } from './text-formatter.strategy';
 
 describe('Cli TextFormatterStrategy', () => {
-  let strategy;
+  let strategy: TextFormatterStrategy;
   beforeEach(async () => {
     strategy = new TextFormatterStrategy();
   });
@@ -20,6 +20,22 @@ describe('Cli TextFormatterStrategy', () => {
       const output = strategy.format(input);
 
       expect(output).toEqual(`(integer) ${input}`);
+    });
+    it('should return correct value for bigint', () => {
+      const input = BigInt('9007199254740993');
+
+      const output = strategy.format(input);
+
+      expect(output).toEqual(`(integer) ${input}`);
+    });
+    it('should format bigint leaves nested in an array (ARSCAN/ARGREP)', () => {
+      // u64 indexes come back as BigInt; the recursive leaf must not reach
+      // JSON.stringify, which throws on BigInt.
+      const input = [BigInt('9007199254740993'), Buffer.from('value')];
+
+      const output = strategy.format(input);
+
+      expect(output).toEqual('1) (integer) 9007199254740993\n2) "value"');
     });
     it('should return correct value for string', () => {
       const input = Buffer.from('string value');
