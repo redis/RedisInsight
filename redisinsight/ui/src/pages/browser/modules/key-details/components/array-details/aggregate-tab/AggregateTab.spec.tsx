@@ -4,6 +4,7 @@ import { stringToBuffer } from 'uiSrc/utils'
 import { ArrayAggregateOperation } from 'uiSrc/slices/interfaces/array'
 
 import AggregateTab from './AggregateTab'
+import { AggregateTabProps } from './AggregateTab.types'
 
 const baseHookResult = {
   start: '0',
@@ -43,6 +44,13 @@ jest.mock('../hooks', () => ({
 const TEST_ID = 'array-aggregate-tab'
 const keyBuffer = stringToBuffer('numbers')
 
+const defaultProps: AggregateTabProps = {
+  keyProp: keyBuffer,
+}
+
+const renderComponent = (propsOverride: Partial<AggregateTabProps> = {}) =>
+  render(<AggregateTab {...defaultProps} {...propsOverride} />)
+
 describe('AggregateTab', () => {
   beforeEach(() => {
     mockUseArrayAggregateQuery.mockReset()
@@ -50,7 +58,7 @@ describe('AggregateTab', () => {
   })
 
   it('renders the form and an empty results area by default', () => {
-    render(<AggregateTab keyProp={keyBuffer} />)
+    renderComponent()
 
     expect(screen.getByTestId('array-aggregate-form-mock')).toBeInTheDocument()
     expect(screen.getByTestId(TEST_ID)).toBeInTheDocument()
@@ -67,7 +75,7 @@ describe('AggregateTab', () => {
       loading: true,
     })
 
-    render(<AggregateTab keyProp={keyBuffer} />)
+    renderComponent()
 
     expect(screen.getByTestId(`${TEST_ID}-loading`)).toBeInTheDocument()
     expect(
@@ -81,7 +89,7 @@ describe('AggregateTab', () => {
       error: 'Range too large',
     })
 
-    render(<AggregateTab keyProp={keyBuffer} />)
+    renderComponent()
 
     expect(screen.getByTestId(`${TEST_ID}-error`)).toHaveTextContent(
       'Range too large',
@@ -101,7 +109,7 @@ describe('AggregateTab', () => {
       hasResult: true,
     })
 
-    render(<AggregateTab keyProp={keyBuffer} />)
+    renderComponent()
 
     const wrapper = screen.getByTestId(`${TEST_ID}-result-value`)
     const input = wrapper.querySelector('input') as HTMLInputElement
@@ -123,7 +131,7 @@ describe('AggregateTab', () => {
       hasResult: true,
     })
 
-    render(<AggregateTab keyProp={keyBuffer} />)
+    renderComponent()
 
     const wrapper = screen.getByTestId(`${TEST_ID}-result-value`)
     const input = wrapper.querySelector('input') as HTMLInputElement
@@ -144,7 +152,7 @@ describe('AggregateTab', () => {
       hasResult: true,
     })
 
-    render(<AggregateTab keyProp={keyBuffer} />)
+    renderComponent()
 
     expect(screen.queryByTestId(`${TEST_ID}-loading`)).not.toBeInTheDocument()
     expect(screen.queryByTestId(`${TEST_ID}-error`)).not.toBeInTheDocument()
@@ -154,13 +162,13 @@ describe('AggregateTab', () => {
   })
 
   it('forwards the key buffer to the hook', () => {
-    render(<AggregateTab keyProp={keyBuffer} />)
+    renderComponent()
 
     expect(mockUseArrayAggregateQuery).toHaveBeenCalledWith(keyBuffer)
   })
 
   it('renders an empty form context when keyProp is null', () => {
-    render(<AggregateTab keyProp={null} />)
+    renderComponent({ keyProp: null })
 
     expect(screen.getByTestId('array-aggregate-form-mock')).toBeInTheDocument()
     expect(mockUseArrayAggregateQuery).toHaveBeenCalledWith(null)

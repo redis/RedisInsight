@@ -5,16 +5,12 @@ import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Loader } from 'uiSrc/components/base/display'
 import { CopyButton } from 'uiSrc/components/copy-button'
 import { bufferToString } from 'uiSrc/utils'
-import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 import { ArrayAggregateForm } from '../array-aggregate-form'
 import { useArrayAggregateQuery } from '../hooks'
 import * as S from '../tabs.styles'
 import * as L from './AggregateTab.styles'
-
-export interface AggregateTabProps {
-  keyProp: RedisResponseBuffer | null
-}
+import { AggregateTabProps } from './AggregateTab.types'
 
 const AGGREGATE_TAB_TEST_ID = 'array-aggregate-tab'
 const NIL_RESULT_LABEL = '(nil)'
