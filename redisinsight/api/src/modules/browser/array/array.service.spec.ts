@@ -24,6 +24,8 @@ import {
   aggregateArrayDtoFactory,
   createContiguousArrayDtoFactory,
   createSparseArrayDtoFactory,
+  getArraySearchDtoFactory,
+  getArraySearchResponseFactory,
 } from 'src/modules/browser/array/__tests__/array.factory';
 import {
   mockArrayCount,
@@ -31,6 +33,8 @@ import {
   mockArrayLength,
   mockArrayNextIndex,
   mockArrayRangeWithGaps,
+  mockArraySearchReplyIndexesOnly,
+  mockArraySearchReplyWithValues,
   mockGetArrayCountResponse,
   mockGetArrayElementDto,
   mockGetArrayElementResponse,
@@ -45,7 +49,11 @@ import {
   mockKeyDto,
 } from 'src/modules/browser/__mocks__';
 import { ARRAY_RANGE_MAX_ELEMENTS } from 'src/modules/browser/array/constants';
-import { ArrayAggregateOperation } from 'src/modules/browser/array/dto';
+import {
+  ArrayAggregateOperation,
+  ArrayCombinator,
+  ArrayGrepCriteria,
+} from 'src/modules/browser/array/dto';
 import { ArrayService } from 'src/modules/browser/array/array.service';
 
 describe('ArrayService', () => {
@@ -605,6 +613,186 @@ describe('ArrayService', () => {
       await expect(
         service.getElement(mockBrowserClientMetadata, mockGetArrayElementDto),
       ).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe('search', () => {
+    // keyName matches mockKeyDto so the shared key-existence stub resolves.
+    const mockGetArraySearchDto = getArraySearchDtoFactory.build({
+      keyName: mockKeyDto.keyName,
+    });
+    const mockGetArraySearchResponse = getArraySearchResponseFactory.build({
+      keyName: mockGetArraySearchDto.keyName,
+    });
+
+    it('runs ARGREP with WITHVALUES by default and parses index/value pairs', async () => {
+      when(client.sendCommand)
+        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ArGrep]))
+        .mockResolvedValue(mockArraySearchReplyWithValues);
+
+      const result = await service.search(
+        mockBrowserClientMetadata,
+        mockGetArraySearchDto,
+      );
+
+      expect(result).toEqual(mockGetArraySearchResponse);
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolArrayCommands.ArGrep,
+        mockGetArraySearchDto.keyName,
+        '-',
+        '+',
+        'MATCH',
+        '21.4',
+        'WITHVALUES',
+      ]);
+    });
+
+    it('appends the global connective only with 2+ predicates', async () => {
+      when(client.sendCommand).mockResolvedValue([]);
+
+      await service.search(mockBrowserClientMetadata, {
+        keyName: mockGetArraySearchDto.keyName,
+        predicates: [
+          { criteria: ArrayGrepCriteria.Glob, value: '21.*' },
+          { criteria: ArrayGrepCriteria.Exact, value: '99' },
+        ],
+        combinator: ArrayCombinator.Or,
+      });
+
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolArrayCommands.ArGrep,
+        mockGetArraySearchDto.keyName,
+        '-',
+        '+',
+        'GLOB',
+        '21.*',
+        'EXACT',
+        '99',
+        'OR',
+        'WITHVALUES',
+      ]);
+    });
+
+    it('sends no connective when omitted so the server applies its default', async () => {
+      when(client.sendCommand).mockResolvedValue([]);
+
+      await service.search(mockBrowserClientMetadata, {
+        keyName: mockGetArraySearchDto.keyName,
+        predicates: [
+          { criteria: ArrayGrepCriteria.Match, value: 'a' },
+          { criteria: ArrayGrepCriteria.Match, value: 'b' },
+        ],
+      });
+
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolArrayCommands.ArGrep,
+        mockGetArraySearchDto.keyName,
+        '-',
+        '+',
+        'MATCH',
+        'a',
+        'MATCH',
+        'b',
+        'WITHVALUES',
+      ]);
+    });
+
+    it('parses the nested [[index, value], ...] reply shape (Redis 8.8)', async () => {
+      when(client.sendCommand)
+        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ArGrep]))
+        .mockResolvedValue([
+          ['5', '21.4'],
+          ['6', '21.9'],
+        ]);
+
+      const result = await service.search(
+        mockBrowserClientMetadata,
+        mockGetArraySearchDto,
+      );
+
+      expect(result).toEqual(mockGetArraySearchResponse);
+    });
+
+    it('treats an explicit null withValues like omitted (defaults to WITHVALUES)', async () => {
+      when(client.sendCommand).mockResolvedValue([]);
+
+      await service.search(mockBrowserClientMetadata, {
+        keyName: mockGetArraySearchDto.keyName,
+        predicates: [{ criteria: ArrayGrepCriteria.Match, value: 'x' }],
+        withValues: null as unknown as boolean,
+      });
+
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolArrayCommands.ArGrep,
+        mockGetArraySearchDto.keyName,
+        '-',
+        '+',
+        'MATCH',
+        'x',
+        'WITHVALUES',
+      ]);
+    });
+
+    it('passes range, NOCASE and LIMIT and omits WITHVALUES when withValues=false', async () => {
+      when(client.sendCommand).mockResolvedValue(
+        mockArraySearchReplyIndexesOnly,
+      );
+
+      const result = await service.search(mockBrowserClientMetadata, {
+        keyName: mockGetArraySearchDto.keyName,
+        predicates: [{ criteria: ArrayGrepCriteria.Match, value: 'x' }],
+        start: '10',
+        end: '20',
+        nocase: true,
+        withValues: false,
+        limit: 50,
+      });
+
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolArrayCommands.ArGrep,
+        mockGetArraySearchDto.keyName,
+        '10',
+        '20',
+        'MATCH',
+        'x',
+        'NOCASE',
+        'LIMIT',
+        50,
+      ]);
+      expect(result.elements).toEqual([
+        { index: '5', value: null },
+        { index: '6', value: null },
+      ]);
+    });
+
+    it('throws BadRequest on a wrong-type key', async () => {
+      when(client.sendCommand).mockRejectedValue(mockRedisWrongTypeError);
+
+      await expect(
+        service.search(mockBrowserClientMetadata, mockGetArraySearchDto),
+      ).rejects.toBeInstanceOf(BadRequestException);
+    });
+
+    [
+      "ERR invalid regular expression: Missing ']'",
+      'ERR regular expression is empty',
+      'ERR regular expression backreferences are not supported',
+    ].forEach((message) => {
+      it(`maps RE validation error to BadRequest: "${message}"`, async () => {
+        when(client.sendCommand).mockRejectedValue({ message });
+
+        await expect(
+          service.search(mockBrowserClientMetadata, mockGetArraySearchDto),
+        ).rejects.toBeInstanceOf(BadRequestException);
+      });
+    });
+
+    it('throws Forbidden on an ACL error', async () => {
+      when(client.sendCommand).mockRejectedValue(mockRedisNoPermError);
+
+      await expect(
+        service.search(mockBrowserClientMetadata, mockGetArraySearchDto),
+      ).rejects.toBeInstanceOf(ForbiddenException);
     });
   });
 

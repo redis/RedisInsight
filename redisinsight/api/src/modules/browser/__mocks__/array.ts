@@ -89,3 +89,8 @@ export const mockGetArrayNextIndexResponse: GetArrayNextIndexResponse = {
   keyName: mockKeyDto.keyName,
   index: mockArrayNextIndex,
 };
+
+// Reply with WITHVALUES (default): flat [index, value, index, value, ...].
+export const mockArraySearchReplyWithValues = ['5', '21.4', '6', '21.9'];
+// Reply without WITHVALUES: flat [index, index, ...].
+export const mockArraySearchReplyIndexesOnly = ['5', '6'];
