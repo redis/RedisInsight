@@ -30,7 +30,7 @@ docs {
   |--------------|------------------------------|----------------------------------------------------------------|
   | `keyName`    | string                       | The Array key name.                                            |
   | `predicates` | ArrayGrepPredicate[]         | At least one predicate. Each has `criteria` and `value`.       |
-  | `combinator` | `"AND"` \| `"OR"`, optional  | Global connective across predicates. Default `AND`.            |
+  | `combinator` | `"AND"` \| `"OR"`, optional  | Global connective across predicates. Default `OR` (server default). |
   | `start`      | string, optional             | Inclusive start index. Unsigned 64-bit integer as string.      |
   | `end`        | string, optional             | Inclusive end index. Unsigned 64-bit integer as string.        |
   | `nocase`     | boolean, optional            | Case-insensitive matching (ARGREP NOCASE).                     |
@@ -45,6 +45,38 @@ docs {
   | `MATCH` | Pattern match.           |
   | `GLOB`  | Glob-style match.        |
   | `RE`    | Regular expression.      |
+
+  ### Examples
+
+  Either pattern within a range, case-insensitive (default `OR`):
+
+  ```
+  {
+    "keyName": "readings",
+    "start": "0",
+    "end": "99",
+    "nocase": true,
+    "predicates": [
+      { "criteria": "GLOB", "value": "21.*" },
+      { "criteria": "EXACT", "value": "ERR" }
+    ]
+  }
+  ```
+
+  Both must match (`AND`), indexes only, capped to 50:
+
+  ```
+  {
+    "keyName": "readings",
+    "combinator": "AND",
+    "withValues": false,
+    "limit": 50,
+    "predicates": [
+      { "criteria": "RE", "value": "^2[0-9]" },
+      { "criteria": "MATCH", "value": "*.4" }
+    ]
+  }
+  ```
 
   ## Response
 
