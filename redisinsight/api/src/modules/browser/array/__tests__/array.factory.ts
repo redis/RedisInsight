@@ -5,7 +5,10 @@ import {
   ArrayAggregateOperation,
   ArrayCreationMode,
   ArrayElementDto,
+  ArrayGrepCriteria,
   CreateArrayWithExpireDto,
+  GetArraySearchDto,
+  GetArraySearchResponse,
 } from 'src/modules/browser/array/dto';
 
 const arrayKeyName = () => Buffer.from(`array:${faker.string.alphanumeric(6)}`);
@@ -41,3 +44,21 @@ export const aggregateArrayDtoFactory = Factory.define<AggregateArrayDto>(
     operation: ArrayAggregateOperation.Sum,
   }),
 );
+
+export const getArraySearchDtoFactory = Factory.define<GetArraySearchDto>(
+  () => ({
+    keyName: arrayKeyName(),
+    predicates: [{ criteria: ArrayGrepCriteria.Match, value: '21.4' }],
+  }),
+);
+
+// Defaults match mockArraySearchReplyWithValues; build with the search DTO's
+// keyName so the echoed response key lines up.
+export const getArraySearchResponseFactory =
+  Factory.define<GetArraySearchResponse>(() => ({
+    keyName: arrayKeyName(),
+    elements: [
+      { index: '5', value: Buffer.from('21.4') },
+      { index: '6', value: Buffer.from('21.9') },
+    ],
+  }));

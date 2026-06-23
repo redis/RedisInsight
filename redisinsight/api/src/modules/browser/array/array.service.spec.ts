@@ -24,6 +24,8 @@ import {
   aggregateArrayDtoFactory,
   createContiguousArrayDtoFactory,
   createSparseArrayDtoFactory,
+  getArraySearchDtoFactory,
+  getArraySearchResponseFactory,
 } from 'src/modules/browser/array/__tests__/array.factory';
 import {
   mockArrayCount,
@@ -44,8 +46,6 @@ import {
   mockGetArrayRangeResponse,
   mockGetArrayScanDto,
   mockGetArrayScanResponse,
-  mockGetArraySearchDto,
-  mockGetArraySearchResponse,
   mockKeyDto,
 } from 'src/modules/browser/__mocks__';
 import { ARRAY_RANGE_MAX_ELEMENTS } from 'src/modules/browser/array/constants';
@@ -617,6 +617,14 @@ describe('ArrayService', () => {
   });
 
   describe('search', () => {
+    // keyName matches mockKeyDto so the shared key-existence stub resolves.
+    const mockGetArraySearchDto = getArraySearchDtoFactory.build({
+      keyName: mockKeyDto.keyName,
+    });
+    const mockGetArraySearchResponse = getArraySearchResponseFactory.build({
+      keyName: mockGetArraySearchDto.keyName,
+    });
+
     it('runs ARGREP with WITHVALUES by default and parses index/value pairs', async () => {
       when(client.sendCommand)
         .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ArGrep]))
