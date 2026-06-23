@@ -142,6 +142,25 @@ describe('AggregateTab', () => {
     ).not.toBeInTheDocument()
   })
 
+  it('keeps the existing result visible (no loader) while a refresh recompute is in flight', () => {
+    // Header-refresh replay dispatches AROP with resetData=false, so the
+    // slice keeps the prior result/hasResult while loading. The panel must
+    // hold the value on screen rather than flashing the loader.
+    mockUseArrayAggregateQuery.mockReturnValue({
+      ...baseHookResult,
+      loading: true,
+      result: '42',
+      hasResult: true,
+    })
+
+    renderComponent()
+
+    expect(screen.queryByTestId(`${TEST_ID}-loading`)).not.toBeInTheDocument()
+    const wrapper = screen.getByTestId(`${TEST_ID}-result-value`)
+    const input = wrapper.querySelector('input') as HTMLInputElement
+    expect(input.value).toBe('42')
+  })
+
   it('suppresses stale slice state while the selected key is not ready', () => {
     mockUseArrayAggregateQuery.mockReturnValue({
       ...baseHookResult,

@@ -37,15 +37,18 @@ const AggregateTab = ({ keyProp }: AggregateTabProps) => {
   } = useArrayAggregateQuery(keyProp)
 
   // When switching keys, hide the previous key's loader/error/result
-  // until the new key is ready.
-  const showLoader = isArrayKeyReady && loading
+  // until the new key is ready. The loader only shows for a fresh run
+  // (`!hasResult`); a header-refresh recompute keeps the prior result on
+  // screen (it stays in the slice via `resetData: false`) so the panel
+  // updates in place instead of flashing the loader every auto-refresh.
+  const showLoader = isArrayKeyReady && loading && !hasResult
   const showError = isArrayKeyReady && !loading && !!error
   // `hasResult` distinguishes "no AROP run yet" from "ran and got nil" —
   // both leave `result === null`, but only the latter should surface in the
   // result panel. A nil reply is rendered as a non-copyable placeholder; a
   // value reply keeps the input + copy button so the caller can grab the
   // raw bytes (BigInt-safe).
-  const showResult = isArrayKeyReady && !loading && !error && hasResult
+  const showResult = isArrayKeyReady && !error && hasResult
   const isNilResult = showResult && result === null
   const resultValue = result ?? ''
 

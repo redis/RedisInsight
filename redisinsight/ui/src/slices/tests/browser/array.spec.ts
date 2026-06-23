@@ -32,6 +32,7 @@ import reducer, {
 } from '../../browser/array'
 import { updateSelectedKeyRefreshTime } from '../../browser/keys'
 import { addErrorNotification } from '../../app/notifications'
+import { ArrayAggregateOperation } from '../../interfaces/array'
 
 jest.mock('uiSrc/services', () => ({
   ...jest.requireActual('uiSrc/services'),
@@ -459,6 +460,60 @@ describe('array slice', () => {
         expect(
           (apiService.post as jest.Mock).mock.calls.find(([url]) =>
             url.includes('array/get-range'),
+          ),
+        ).toBeUndefined()
+      })
+
+      it('replays the last AROP (recompute) when an aggregate result exists', async () => {
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+        const local = mockStore({
+          ...initialStateDefault,
+          browser: {
+            ...initialStateDefault.browser,
+            array: {
+              ...initialState,
+              aggregate: {
+                ...initialState.aggregate,
+                hasResult: true,
+                result: '42',
+                query: {
+                  start: '5',
+                  end: '15',
+                  operation: ArrayAggregateOperation.Match,
+                  value: 'needle',
+                },
+              },
+            },
+          },
+        })
+
+        await local.dispatch<any>(refreshArray(mockKey))
+
+        const aggregateCall = (apiService.post as jest.Mock).mock.calls.find(
+          ([url]) => url.includes('array/aggregate'),
+        )
+        expect(aggregateCall?.[1]).toEqual({
+          keyName: mockKey,
+          start: '5',
+          end: '15',
+          operation: ArrayAggregateOperation.Match,
+          value: 'needle',
+        })
+      })
+
+      it('does not replay AROP when no aggregate has been run', async () => {
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+        const local = storeWithQuery({ start: '0', end: '9', showEmpty: true })
+
+        await local.dispatch<any>(refreshArray(mockKey))
+
+        expect(
+          (apiService.post as jest.Mock).mock.calls.find(([url]) =>
+            url.includes('array/aggregate'),
           ),
         ).toBeUndefined()
       })

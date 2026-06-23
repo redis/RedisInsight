@@ -74,11 +74,27 @@ export interface ArrayActiveQuery {
  * "pristine — no AROP has run yet" from "ran and got nil"; both shapes
  * present `result: null`.
  */
+/**
+ * Last AROP query the user executed. Tracked on the slice (mirroring
+ * `ArrayActiveQuery`) so the key-header refresh button can replay it and
+ * keep the displayed aggregate in sync with the array's current contents
+ * — without it, refresh would update length/count but leave a stale
+ * aggregate result on screen. `null` until the first run.
+ */
+export interface ArrayAggregateActiveQuery {
+  start: string
+  end: string
+  operation: ArrayAggregateOperation
+  /** Present only when `operation === Match`. */
+  value?: string
+}
+
 export interface ArrayAggregateState {
   loading: boolean
   error: string
   result: string | null
   hasResult: boolean
+  query: ArrayAggregateActiveQuery | null
 }
 
 export interface StateArray {
@@ -110,6 +126,12 @@ export interface FetchArrayAggregateParams {
   operation: ArrayAggregateOperation
   /** Required when `operation === Match`; ignored otherwise. */
   value?: string
+  /**
+   * When `false` (header refresh replay), keeps the last result/`hasResult`
+   * visible while the recompute is in flight so the panel doesn't flash a
+   * loader. Defaults to a fresh run that clears the previous result.
+   */
+  resetData?: boolean
 }
 
 /**
