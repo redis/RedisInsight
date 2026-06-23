@@ -303,7 +303,7 @@
     "pako": "^2.1.0",
     "php-serialize": "^5.1.3",
     "pickleparser": "^0.2.1",
-    "rawproto": "^0.7.6",
+    "rawproto": "^1.0.3",
     "react": "^18.2.0",
     "react-contenteditable": "^3.3.5",
     "react-dom": "^18.2.0",
