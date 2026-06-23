@@ -1,10 +1,28 @@
 import {
+  AggregateArrayDto,
+  AggregateArrayResponse,
   GetArrayCountResponse,
   GetArrayLengthResponse,
   GetArrayRangeResponse,
   GetArrayScanResponse,
 } from 'apiClient'
 import { RedisString } from 'uiSrc/slices/interfaces/app'
+
+/**
+ * Mirror of the backend `ArrayAggregateOperation` enum (BE
+ * `dto/aggregate.array.dto.ts`). Kept as a TS enum so the UI form / select
+ * can reference named members instead of bare strings.
+ */
+export enum ArrayAggregateOperation {
+  Sum = 'SUM',
+  Min = 'MIN',
+  Max = 'MAX',
+  And = 'AND',
+  Or = 'OR',
+  Xor = 'XOR',
+  Match = 'MATCH',
+  Used = 'USED',
+}
 
 /**
  * Redis array indexes are unsigned 64-bit integers (0 … 2^64-1) and exceed
@@ -47,11 +65,44 @@ export interface ArrayActiveQuery {
   showEmpty: boolean
 }
 
+/**
+ * Aggregate (AROP) result slice. Held alongside the range/scan data so the
+ * Aggregate tab can keep its last result visible while the View tab updates
+ * independently. `result` mirrors the BE response (`string | null`): a
+ * decimal/integer string for a value reply, or `null` for a nil reply (e.g.
+ * SUM over a range with no numeric values). `hasResult` distinguishes
+ * "pristine — no AROP has run yet" from "ran and got nil"; both shapes
+ * present `result: null`.
+ */
+/**
+ * Last AROP query the user executed. Tracked on the slice (mirroring
+ * `ArrayActiveQuery`) so the key-header refresh button can replay it and
+ * keep the displayed aggregate in sync with the array's current contents
+ * — without it, refresh would update length/count but leave a stale
+ * aggregate result on screen. `null` until the first run.
+ */
+export interface ArrayAggregateActiveQuery {
+  start: string
+  end: string
+  operation: ArrayAggregateOperation
+  /** Present only when `operation === Match`. */
+  value?: string
+}
+
+export interface ArrayAggregateState {
+  loading: boolean
+  error: string
+  result: string | null
+  hasResult: boolean
+  query: ArrayAggregateActiveQuery | null
+}
+
 export interface StateArray {
   loading: boolean
   error: string
   query: ArrayActiveQuery
   data: ArrayData
+  aggregate: ArrayAggregateState
 }
 
 export interface FetchArrayRangeParams {
@@ -68,12 +119,29 @@ export interface FetchArrayScanParams {
   resetData?: boolean
 }
 
+export interface FetchArrayAggregateParams {
+  key: RedisString
+  start: string
+  end: string
+  operation: ArrayAggregateOperation
+  /** Required when `operation === Match`; ignored otherwise. */
+  value?: string
+  /**
+   * When `false` (header refresh replay), keeps the last result/`hasResult`
+   * visible while the recompute is in flight so the panel doesn't flash a
+   * loader. Defaults to a fresh run that clears the previous result.
+   */
+  resetData?: boolean
+}
+
 /**
  * Re-export the auto-generated SDK response shapes for consumers that need
  * to pass them around. The slice itself narrows them into `ArrayData` /
  * `ArrayDataElement` for storage.
  */
 export type {
+  AggregateArrayDto,
+  AggregateArrayResponse,
   GetArrayCountResponse,
   GetArrayLengthResponse,
   GetArrayRangeResponse,

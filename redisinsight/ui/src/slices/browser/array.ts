@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios, { AxiosError } from 'axios'
 import { IAddInstanceErrorPayload } from 'uiSrc/slices/app/notifications'
 import {
+  AggregateArrayResponse,
   GetArrayCountResponse,
   GetArrayLengthResponse,
   GetArrayRangeResponse,
@@ -19,8 +20,10 @@ import {
 
 import {
   ArrayActiveQuery,
+  ArrayAggregateActiveQuery,
   ArrayDataElement,
   StateArray,
+  FetchArrayAggregateParams,
   FetchArrayRangeParams,
   FetchArrayScanParams,
 } from 'uiSrc/slices/interfaces/array'
@@ -60,6 +63,13 @@ export const initialState: StateArray = {
     length: '0',
     count: '0',
     elements: [],
+  },
+  aggregate: {
+    loading: false,
+    error: '',
+    result: null,
+    hasResult: false,
+    query: null,
   },
 }
 
@@ -161,6 +171,44 @@ const arraySlice = createSlice({
     ) => {
       state.query = payload
     },
+
+    loadArrayAggregate: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        query: ArrayAggregateActiveQuery
+        resetData?: boolean
+      }>,
+    ) => {
+      state.aggregate.loading = true
+      state.aggregate.error = ''
+      // Record the query so the header refresh can replay it. On a header
+      // refresh (`resetData: false`) keep the previous result/`hasResult`
+      // on screen so the recompute swaps in place without a loader flash;
+      // a fresh run clears them first.
+      state.aggregate.query = payload.query
+      if (payload.resetData !== false) {
+        state.aggregate.hasResult = false
+        state.aggregate.result = null
+      }
+    },
+    loadArrayAggregateSuccess: (
+      state,
+      { payload }: PayloadAction<AggregateArrayResponse>,
+    ) => {
+      state.aggregate.loading = false
+      state.aggregate.error = ''
+      state.aggregate.result = payload.result
+      state.aggregate.hasResult = true
+    },
+    loadArrayAggregateFailure: (state, { payload }: PayloadAction<string>) => {
+      state.aggregate.loading = false
+      state.aggregate.error = payload
+    },
+    clearArrayAggregate: (state) => {
+      state.aggregate = { ...initialState.aggregate }
+    },
   },
 })
 
@@ -173,10 +221,16 @@ export const {
   loadArrayLengthSuccess,
   loadArrayCountSuccess,
   setArrayActiveQuery,
+  loadArrayAggregate,
+  loadArrayAggregateSuccess,
+  loadArrayAggregateFailure,
+  clearArrayAggregate,
 } = arraySlice.actions
 
 export const arraySelector = (state: RootState) => state.browser.array
 export const arrayDataSelector = (state: RootState) => state.browser.array?.data
+export const arrayAggregateSelector = (state: RootState) =>
+  state.browser.array?.aggregate
 
 export default arraySlice.reducer
 
@@ -338,6 +392,69 @@ export function fetchArrayCount(key: RedisString) {
 }
 
 /**
+ * Dedicated controller for AROP so an in-flight aggregate isn't aborted by
+ * a concurrent range/scan in the View tab (which uses
+ * `arrayRangeController`). A newer aggregate dispatch still aborts the
+ * previous one so stale results don't land on top of a fresh request.
+ */
+let arrayAggregateController: AbortController | null = null
+
+export const abortArrayAggregate = (): void => {
+  arrayAggregateController?.abort()
+  arrayAggregateController = null
+}
+
+// AROP — aggregate elements over a range.
+export function aggregateArray(params: FetchArrayAggregateParams) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    arrayAggregateController?.abort()
+    const controller = new AbortController()
+    arrayAggregateController = controller
+
+    dispatch(
+      loadArrayAggregate({
+        query: {
+          start: params.start,
+          end: params.end,
+          operation: params.operation,
+          ...(params.value !== undefined ? { value: params.value } : {}),
+        },
+        resetData: params.resetData,
+      }),
+    )
+    try {
+      const state = stateInit()
+      const { data, status } = await apiService.post<AggregateArrayResponse>(
+        arrayUrl(state, ApiEndpoints.ARRAY_AGGREGATE),
+        {
+          keyName: params.key,
+          start: params.start,
+          end: params.end,
+          operation: params.operation,
+          ...(params.value !== undefined ? { value: params.value } : {}),
+        },
+        { ...encodingParams(state), signal: controller.signal },
+      )
+      if (controller.signal.aborted) return
+      if (isStatusSuccessful(status)) {
+        dispatch(loadArrayAggregateSuccess(data))
+      } else {
+        dispatch(loadArrayAggregateFailure(DEFAULT_ERROR_MESSAGE))
+      }
+    } catch (error) {
+      if (axios.isCancel(error)) return
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      dispatch(loadArrayAggregateFailure(errorMessage))
+    } finally {
+      if (arrayAggregateController === controller) {
+        arrayAggregateController = null
+      }
+    }
+  }
+}
+
+/**
  * Reloads the array's currently-displayed surface in response to the
  * header's refresh button (dispatched via `refreshKey` in
  * `slices/browser/keys`). Replays whichever query the form last ran —
@@ -347,7 +464,8 @@ export function fetchArrayCount(key: RedisString) {
  */
 export function refreshArray(key: RedisString) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
-    const { start, end, showEmpty } = stateInit().browser.array.query
+    const { query, aggregate } = stateInit().browser.array
+    const { start, end, showEmpty } = query
 
     dispatch(fetchArrayLength(key))
     dispatch(fetchArrayCount(key))
@@ -356,6 +474,16 @@ export function refreshArray(key: RedisString) {
       dispatch(fetchArrayRange({ key, start, end, resetData: false }))
     } else {
       dispatch(scanArrayRange({ key, start, end, resetData: false }))
+    }
+
+    // Replay the last AROP so the Aggregate tab's result reflects the
+    // array's current contents instead of a value computed before the
+    // refresh. `resetData: false` keeps the existing value on screen while
+    // the recompute is in flight (no loader flash), mirroring the
+    // range/scan replay above. Only runs once an aggregate has actually
+    // been computed for this key (`hasResult` + a stored query).
+    if (aggregate.hasResult && aggregate.query) {
+      dispatch(aggregateArray({ key, ...aggregate.query, resetData: false }))
     }
   }
 }

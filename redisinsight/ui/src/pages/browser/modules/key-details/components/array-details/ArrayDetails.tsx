@@ -37,7 +37,7 @@ const ArrayDetails = (props: Props) => {
         <SearchTab />
       </S.TabSlot>
       <S.TabSlot $hidden={activeTab !== ArrayDetailsTab.Aggregate}>
-        <AggregateTab />
+        <AggregateTab keyProp={keyProp} />
       </S.TabSlot>
     </S.Container>
   )

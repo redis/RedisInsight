@@ -18,6 +18,9 @@ jest.mock('./array-details-table', () => ({
 jest.mock('./array-range-form', () => ({
   ArrayRangeForm: stubChild('array-range-form-mock'),
 }))
+jest.mock('./array-aggregate-form', () => ({
+  ArrayAggregateForm: stubChild('array-aggregate-form-mock'),
+}))
 jest.mock('uiSrc/pages/browser/modules', () => ({
   KeyDetailsHeader: stubChild('key-details-header-mock'),
 }))
@@ -34,6 +37,23 @@ jest.mock('./hooks', () => ({
     isArrayKeyReady: true,
     elements: [],
     loading: false,
+  }),
+  useArrayAggregateQuery: () => ({
+    start: '0',
+    end: '9',
+    operation: 'SUM',
+    value: '',
+    setStart: jest.fn(),
+    setEnd: jest.fn(),
+    setOperation: jest.fn(),
+    setValue: jest.fn(),
+    runQuery: jest.fn(),
+    resetQuery: jest.fn(),
+    isArrayKeyReady: true,
+    loading: false,
+    error: '',
+    result: null,
+    hasResult: false,
   }),
 }))
 
@@ -55,7 +75,7 @@ describe('ArrayDetails', () => {
 
     expect(screen.getByTestId('array-range-form-mock')).toBeVisible()
     expect(screen.getByTestId('array-search-placeholder')).not.toBeVisible()
-    expect(screen.getByTestId('array-aggregate-placeholder')).not.toBeVisible()
+    expect(screen.getByTestId('array-aggregate-form-mock')).not.toBeVisible()
 
     fireEvent.mouseDown(
       screen.getByText(ARRAY_DETAILS_TAB_LABELS[ArrayDetailsTab.Search]),
@@ -63,7 +83,7 @@ describe('ArrayDetails', () => {
 
     expect(screen.getByTestId('array-range-form-mock')).not.toBeVisible()
     expect(screen.getByTestId('array-search-placeholder')).toBeVisible()
-    expect(screen.getByTestId('array-aggregate-placeholder')).not.toBeVisible()
+    expect(screen.getByTestId('array-aggregate-form-mock')).not.toBeVisible()
 
     fireEvent.mouseDown(
       screen.getByText(ARRAY_DETAILS_TAB_LABELS[ArrayDetailsTab.Aggregate]),
@@ -71,6 +91,6 @@ describe('ArrayDetails', () => {
 
     expect(screen.getByTestId('array-range-form-mock')).not.toBeVisible()
     expect(screen.getByTestId('array-search-placeholder')).not.toBeVisible()
-    expect(screen.getByTestId('array-aggregate-placeholder')).toBeVisible()
+    expect(screen.getByTestId('array-aggregate-form-mock')).toBeVisible()
   })
 })
