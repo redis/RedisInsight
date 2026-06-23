@@ -9,7 +9,7 @@ import {
   connectedInstanceSelector,
   instancesSelector,
 } from 'uiSrc/slices/instances/instances'
-import { EditDatabaseField } from 'uiSrc/slices/interfaces'
+import { ConnectionType, EditDatabaseField } from 'uiSrc/slices/interfaces'
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem, Pages } from 'uiSrc/constants'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -30,9 +30,12 @@ export const usePromoteProductionPrompt =
     const { data: instances } = useAppSelector(instancesSelector)
 
     const history = useHistory()
-    const [isOpen, setIsOpen] = useState(false)
+    const [dismissed, setDismissed] = useState(false)
     const displayedRef = useRef(false)
 
+    // Wait for the database list to include the connected database before
+    // deciding, otherwise `featureDiscovered` is unreliable while it loads.
+    const instancesLoaded = instances.some((db) => db.id === id)
     // Once any database is classified, the feature is considered discovered.
     const featureDiscovered = instances.some(
       (db) => !!db.environment && db.environment !== Environment.Unspecified,
@@ -51,22 +54,28 @@ export const usePromoteProductionPrompt =
 
     const shouldPromote =
       prodModeEnabled &&
+      instancesLoaded &&
       !featureDiscovered &&
       !alreadyActioned &&
-      !!id &&
       environment === Environment.Unspecified &&
+      // Sentinel connections have no Environment field in their edit form, so
+      // the CTA would lead nowhere useful.
+      connectionType !== ConnectionType.Sentinel &&
       looksLikeProduction(signals)
 
+    // Derived (not latched) so the prompt hides again if the database stops
+    // qualifying (e.g. the list loads and another database is classified).
+    const isOpen = shouldPromote && !dismissed
+
     useEffect(() => {
-      if (shouldPromote && !displayedRef.current) {
+      if (isOpen && !displayedRef.current) {
         displayedRef.current = true
-        setIsOpen(true)
         sendEventTelemetry({
           event: TelemetryEvent.PROD_MODE_PROMOTION_PROMPT_DISPLAYED,
           eventData: { databaseId: id, totalKeys, ...signals },
         })
       }
-    }, [shouldPromote])
+    }, [isOpen])
 
     // Persist on click (not on display) so the prompt never appears again.
     const markActioned = () =>
@@ -78,7 +87,7 @@ export const usePromoteProductionPrompt =
         eventData: { databaseId: id },
       })
       markActioned()
-      setIsOpen(false)
+      setDismissed(true)
     }
 
     const onMarkProduction = () => {

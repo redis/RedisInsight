@@ -187,6 +187,32 @@ describe('PromoteProductionPrompt', () => {
     ).not.toBeInTheDocument()
   })
 
+  it('does not render until the database list has loaded', () => {
+    setMocks({ instances: [] })
+    renderComponent()
+
+    expect(
+      screen.queryByTestId('promote-production-prompt'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('does not render for a Sentinel connection (no Environment field to set)', () => {
+    setMocks({
+      connectedInstance: DBInstanceFactory.build({
+        id: DATABASE_ID,
+        environment: Environment.Unspecified,
+        host: 'redis.prod.example.com',
+        tls: true,
+        connectionType: ConnectionType.Sentinel,
+      }),
+    })
+    renderComponent()
+
+    expect(
+      screen.queryByTestId('promote-production-prompt'),
+    ).not.toBeInTheDocument()
+  })
+
   it('does not render for a local database that does not look like production', () => {
     setMocks({
       connectedInstance: DBInstanceFactory.build({
