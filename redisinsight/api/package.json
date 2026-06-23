@@ -9,7 +9,7 @@
     "url": "https://redis.com/redis-enterprise/redis-insight"
   },
   "scripts": {
-    "postinstall": "npx patch-package && node ./scripts/postinstall-generate-client.js",
+    "postinstall": "npx patch-package && node -e \"const f='./scripts/postinstall-generate-client.js'; require('fs').existsSync(f) && require(f);\"",
     "build:defaults:commands": "ts-node ./scripts/default-commands.ts",
     "build:defaults:tutorials": "ts-node ./scripts/default-tutorials.ts",
     "build:defaults:content": "ts-node ./scripts/default-content.ts",
