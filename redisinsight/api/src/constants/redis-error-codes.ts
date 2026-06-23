@@ -11,7 +11,10 @@ export enum RedisErrorCodes {
   ConnectionReset = 'ECONNRESET',
   Timeout = 'ETIMEDOUT',
   CommandSyntaxError = 'syntax error',
-  InvalidRegex = 'invalid regular expression',
+  // ARGREP rejects bad RE input with several messages — "invalid regular
+  // expression: …", "regular expression is empty", "… backreferences are not
+  // supported" — all sharing this substring.
+  RegexError = 'regular expression',
   BusyGroup = 'BUSYGROUP',
   NoGroup = 'NOGROUP',
   UnknownCommand = 'unknown command',

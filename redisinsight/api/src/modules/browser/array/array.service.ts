@@ -29,7 +29,6 @@ import {
   AggregateArrayDto,
   AggregateArrayResponse,
   ArrayAggregateOperation,
-  ArrayCombinator,
   ArrayCreationMode,
   ArrayElement,
   ArraySearchElement,
@@ -313,10 +312,10 @@ export class ArrayService {
       return plainToInstance(GetArraySearchResponse, { keyName, elements });
     } catch (error) {
       this.logger.error('Failed to search array.', error, clientMetadata);
-      // A malformed RE predicate is bad client input, not a server fault.
+      // A bad RE predicate is client input, not a server fault.
       if (
         error?.message?.includes(RedisErrorCodes.WrongType) ||
-        error?.message?.includes(RedisErrorCodes.InvalidRegex)
+        error?.message?.includes(RedisErrorCodes.RegexError)
       ) {
         throw new BadRequestException(error.message);
       }

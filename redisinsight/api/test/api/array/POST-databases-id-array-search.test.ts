@@ -142,9 +142,21 @@ describe('POST /databases/:id/array/search', () => {
         },
         data: {
           keyName: reKey,
-          // Unterminated character class — Redis rejects the regex as
-          // "ERR invalid regular expression: Missing ']'".
+          // Unterminated character class — "ERR invalid regular expression…".
           predicates: [{ criteria: 'RE', value: '[unterminated' }],
+        },
+        statusCode: 400,
+      },
+      {
+        name: 'Should return BadRequest on a backreference RE predicate',
+        before: async () => {
+          await rte.client.call('ARSET', reKey, '0', 'a', 'b', 'c');
+        },
+        data: {
+          keyName: reKey,
+          // "ERR regular expression backreferences are not supported" — a
+          // different RE error than the malformed case, same 400 mapping.
+          predicates: [{ criteria: 'RE', value: '(a)\\1' }],
         },
         statusCode: 400,
       },

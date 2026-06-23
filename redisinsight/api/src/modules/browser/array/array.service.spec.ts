@@ -773,14 +773,18 @@ describe('ArrayService', () => {
       ).rejects.toBeInstanceOf(BadRequestException);
     });
 
-    it('throws BadRequest on a malformed RE predicate', async () => {
-      when(client.sendCommand).mockRejectedValue({
-        message: "ERR invalid regular expression: Missing ']'",
-      });
+    [
+      "ERR invalid regular expression: Missing ']'",
+      'ERR regular expression is empty',
+      'ERR regular expression backreferences are not supported',
+    ].forEach((message) => {
+      it(`maps RE validation error to BadRequest: "${message}"`, async () => {
+        when(client.sendCommand).mockRejectedValue({ message });
 
-      await expect(
-        service.search(mockBrowserClientMetadata, mockGetArraySearchDto),
-      ).rejects.toBeInstanceOf(BadRequestException);
+        await expect(
+          service.search(mockBrowserClientMetadata, mockGetArraySearchDto),
+        ).rejects.toBeInstanceOf(BadRequestException);
+      });
     });
 
     it('throws Forbidden on an ACL error', async () => {
