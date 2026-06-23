@@ -21,13 +21,11 @@ import {
   BrowserToolKeysCommands,
 } from 'src/modules/browser/constants/browser-tool-commands';
 import {
+  aggregateArrayDtoFactory,
   createContiguousArrayDtoFactory,
   createSparseArrayDtoFactory,
 } from 'src/modules/browser/array/__tests__/array.factory';
 import {
-  mockAggregateArrayDto,
-  mockAggregateArrayResponse,
-  mockArrayAggregateSumResult,
   mockArrayCount,
   mockArrayElement1,
   mockArrayLength,
@@ -673,7 +671,21 @@ describe('ArrayService', () => {
   });
 
   describe('aggregate', () => {
+    const mockAggregateArrayDto = aggregateArrayDtoFactory.build();
+    const mockArrayAggregateSumResult = '104.7';
+    const mockAggregateArrayResponse = {
+      keyName: mockAggregateArrayDto.keyName,
+      result: mockArrayAggregateSumResult,
+    };
+
     beforeEach(() => {
+      // Key exists by default; the not-exists test overrides it.
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([
+          BrowserToolKeysCommands.Exists,
+          mockAggregateArrayDto.keyName,
+        ])
+        .mockResolvedValue(1);
       when(mockStandaloneRedisClient.sendCommand)
         .calledWith([
           BrowserToolArrayCommands.ArOp,
@@ -847,7 +859,10 @@ describe('ArrayService', () => {
 
     it('should reject when key does not exist', async () => {
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([BrowserToolKeysCommands.Exists, mockKeyDto.keyName])
+        .calledWith([
+          BrowserToolKeysCommands.Exists,
+          mockAggregateArrayDto.keyName,
+        ])
         .mockResolvedValue(0);
       await expect(
         service.aggregate(mockBrowserClientMetadata, mockAggregateArrayDto),
