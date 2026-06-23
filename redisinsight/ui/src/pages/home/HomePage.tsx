@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
-import { EDIT_INSTANCE_QUERY_PARAM } from 'uiSrc/constants'
+import {
+  EDIT_INSTANCE_QUERY_PARAM,
+  FOCUS_FIELD_QUERY_PARAM,
+} from 'uiSrc/constants'
 import {
   clusterSelector,
   resetDataRedisCluster,
@@ -196,6 +199,14 @@ const HomePage = () => {
   const closeEditDialog = () => {
     dispatch(setEditedInstance(null))
     setOpenDialog(null)
+
+    // Drop a leftover focus param (if the field component never consumed it)
+    // so a later edit can't auto-open that field.
+    const params = new URLSearchParams(search)
+    if (params.has(FOCUS_FIELD_QUERY_PARAM)) {
+      params.delete(FOCUS_FIELD_QUERY_PARAM)
+      history.replace({ search: params.toString() })
+    }
 
     sendEventTelemetry({
       event: TelemetryEvent.CONFIG_DATABASES_DATABASE_EDIT_CANCELLED_CLICKED,
