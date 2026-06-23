@@ -356,6 +356,13 @@ export interface InitialStateInstances {
   dangerousCommands: string[]
 }
 
+// Fields on the edit-database form that can be deep-linked to via the
+// `focusField` query param (see `Pages.homeEditInstance`). Feature-agnostic —
+// each field's component reacts only to its own key, so intents never collide.
+export enum EditDatabaseField {
+  Environment = 'environment',
+}
+
 export interface ErrorImportResult {
   statusCode: number
   message: string

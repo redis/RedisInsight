@@ -3,6 +3,7 @@ import { useAppSelector } from 'uiSrc/slices/hooks'
 import styled from 'styled-components'
 
 import InstanceHeader from 'uiSrc/components/instance-header'
+import { PromoteProductionPrompt } from 'uiSrc/components/instance-header/components/promote-production-prompt/PromoteProductionPrompt'
 import { ExplorePanelTemplate } from 'uiSrc/templates'
 import BottomGroupComponents from 'uiSrc/components/bottom-group-components/BottomGroupComponents'
 import { cliSettingsSelector } from 'uiSrc/slices/cli/cli-settings'
@@ -95,6 +96,7 @@ const InstancePageTemplate = (props: Props) => {
   return (
     <>
       <InstanceHeader />
+      <PromoteProductionPrompt />
       <AppNavigation
         actions={actions}
         onChange={() => setActions(null)}
