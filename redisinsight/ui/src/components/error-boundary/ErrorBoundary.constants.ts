@@ -31,5 +31,5 @@ export const LIGHT_PALETTE: Palette = {
 
 export const ERROR_TITLE = 'Something went wrong'
 export const ERROR_MESSAGE =
-  "An unexpected error occurred. We've been notified about the issue. Please reload the page and try again."
+  "An unexpected error occurred. We've been notified about the issue. Please reload and try again."
 export const RELOAD_LABEL = 'Reload'
