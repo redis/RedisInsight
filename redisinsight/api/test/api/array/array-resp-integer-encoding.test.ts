@@ -47,8 +47,7 @@ const readReply = (socket: net.Socket): Promise<Buffer> =>
 describe('Array u64 integer reply — RESP wire encoding', () => {
   // Array commands are Redis 8.8 preview; the raw single-socket probe below
   // can't address a cluster, so this runs only on a standalone 8.8 server.
-  requirements('rte.version>=8.8');
-  requirements('rte.type<>CLUSTER');
+  requirements('rte.version>=8.8', '!rte.type=CLUSTER');
 
   // 2^53 = 9007199254740992 (highest exactly-representable index);
   // length becomes 2^53 + 1 = 9007199254740993 — a u64 inside i64 range, so
