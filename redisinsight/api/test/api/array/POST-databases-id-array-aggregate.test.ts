@@ -418,17 +418,14 @@ describe('POST /databases/:instanceId/array/aggregate', () => {
 
     it('Should preserve precision for numeric results above MAX_SAFE_INTEGER', async () => {
       const keyName = constants.getRandomString();
-      // Two integer-valued elements whose sum is > Number.MAX_SAFE_INTEGER
-      // (2^53 - 1). The contract is that the API returns the SUM as a
-      // decimal string so precision survives — coercing to Number would
-      // round to the nearest 2.
-      await rte.client.call(
-        'ARSET',
-        keyName,
-        '0',
-        '9007199254740992',
-        '9007199254740990',
-      );
+      // Sum must be ODD and above 2^53 to be a real precision probe: values in
+      // [2^53, 2^54) are only representable as even float64s, so an odd target
+      // (here 2^53 - 1 + 2 = 2^53 + 1 = 9007199254740993) cannot survive a
+      // Number round-trip — it would round to the even 9007199254740992. The
+      // contract is that the API returns SUM as a decimal string, so the exact
+      // odd value must come back intact. (An even sum would pass even if the
+      // result were coerced through Number, proving nothing.)
+      await rte.client.call('ARSET', keyName, '0', '9007199254740991', '2');
 
       await validateApiCall({
         endpoint,
@@ -441,7 +438,7 @@ describe('POST /databases/:instanceId/array/aggregate', () => {
         responseSchema,
         checkFn: ({ body }: any) => {
           expect(typeof body.result).to.eql('string');
-          expect(body.result).to.eql('18014398509481982');
+          expect(body.result).to.eql('9007199254740993');
         },
       });
     });

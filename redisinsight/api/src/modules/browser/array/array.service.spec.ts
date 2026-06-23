@@ -779,72 +779,36 @@ describe('ArrayService', () => {
       expect(result.result).toBeNull();
     });
 
-    it('should pass a Buffer value through to AROP for MATCH', async () => {
-      // Elements stored as binary (RedisString) must be matchable by a
-      // Buffer comparison value — string-only DTOs would reject this.
-      const dto = {
-        ...mockAggregateArrayDto,
-        operation: ArrayAggregateOperation.Match,
-        value: Buffer.from([0x00, 0xff, 0x10]),
-      };
-      when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArOp,
-          dto.keyName,
-          dto.start,
-          dto.end,
-          dto.operation,
-          dto.value,
-        ])
-        .mockResolvedValue(2);
+    // Binary elements and zero-length bulk strings are valid RedisString
+    // values the create DTO accepts, so MATCH must forward them verbatim
+    // rather than reject them.
+    it.each([
+      { description: 'a Buffer', value: Buffer.from([0x00, 0xff, 0x10]) },
+      { description: 'an empty string', value: '' },
+      { description: 'an empty Buffer', value: Buffer.alloc(0) },
+    ])(
+      'should pass $description value through to AROP for MATCH',
+      async ({ value }) => {
+        const dto = {
+          ...mockAggregateArrayDto,
+          operation: ArrayAggregateOperation.Match,
+          value,
+        };
+        when(mockStandaloneRedisClient.sendCommand)
+          .calledWith([
+            BrowserToolArrayCommands.ArOp,
+            dto.keyName,
+            dto.start,
+            dto.end,
+            dto.operation,
+            dto.value,
+          ])
+          .mockResolvedValue(2);
 
-      const result = await service.aggregate(mockBrowserClientMetadata, dto);
-      expect(result.result).toBe('2');
-    });
-
-    it('should pass an empty string value through to AROP for MATCH', async () => {
-      // Redis stores zero-length bulk strings as real elements and the
-      // create DTO accepts them, so MATCH must be able to count them.
-      const dto = {
-        ...mockAggregateArrayDto,
-        operation: ArrayAggregateOperation.Match,
-        value: '',
-      };
-      when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArOp,
-          dto.keyName,
-          dto.start,
-          dto.end,
-          dto.operation,
-          dto.value,
-        ])
-        .mockResolvedValue(3);
-
-      const result = await service.aggregate(mockBrowserClientMetadata, dto);
-      expect(result.result).toBe('3');
-    });
-
-    it('should pass an empty Buffer value through to AROP for MATCH', async () => {
-      const dto = {
-        ...mockAggregateArrayDto,
-        operation: ArrayAggregateOperation.Match,
-        value: Buffer.alloc(0),
-      };
-      when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArOp,
-          dto.keyName,
-          dto.start,
-          dto.end,
-          dto.operation,
-          dto.value,
-        ])
-        .mockResolvedValue(3);
-
-      const result = await service.aggregate(mockBrowserClientMetadata, dto);
-      expect(result.result).toBe('3');
-    });
+        const result = await service.aggregate(mockBrowserClientMetadata, dto);
+        expect(result.result).toBe('2');
+      },
+    );
 
     it('should reject MATCH when value is undefined', async () => {
       // Mirrors the DTO @ValidateIf/@IsRedisString contract for the
