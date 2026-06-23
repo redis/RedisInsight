@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Docker Build
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@v7.0.0
 
       - name: Build Docker image
         run: docker build -t redisinsight-local .
