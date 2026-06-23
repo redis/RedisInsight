@@ -1,6 +1,8 @@
 import { Factory } from 'fishery';
 import { faker } from '@faker-js/faker';
 import {
+  AggregateArrayDto,
+  ArrayAggregateOperation,
   ArrayCreationMode,
   ArrayElementDto,
   CreateArrayWithExpireDto,
@@ -30,3 +32,12 @@ export const createSparseArrayDtoFactory =
     mode: ArrayCreationMode.Sparse,
     elements: arrayElementFactory.buildList(2),
   }));
+
+export const aggregateArrayDtoFactory = Factory.define<AggregateArrayDto>(
+  () => ({
+    keyName: arrayKeyName(),
+    start: '0',
+    end: '6',
+    operation: ArrayAggregateOperation.Sum,
+  }),
+);

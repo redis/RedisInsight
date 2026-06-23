@@ -21,6 +21,7 @@ import {
   BrowserToolKeysCommands,
 } from 'src/modules/browser/constants/browser-tool-commands';
 import {
+  aggregateArrayDtoFactory,
   createContiguousArrayDtoFactory,
   createSparseArrayDtoFactory,
 } from 'src/modules/browser/array/__tests__/array.factory';
@@ -44,6 +45,7 @@ import {
   mockKeyDto,
 } from 'src/modules/browser/__mocks__';
 import { ARRAY_RANGE_MAX_ELEMENTS } from 'src/modules/browser/array/constants';
+import { ArrayAggregateOperation } from 'src/modules/browser/array/dto';
 import { ArrayService } from 'src/modules/browser/array/array.service';
 
 describe('ArrayService', () => {
@@ -664,6 +666,204 @@ describe('ArrayService', () => {
           mockBrowserClientMetadata,
           mockGetArrayMultiElementsDto,
         ),
+      ).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe('aggregate', () => {
+    const mockAggregateArrayDto = aggregateArrayDtoFactory.build();
+    const mockArrayAggregateSumResult = '104.7';
+    const mockAggregateArrayResponse = {
+      keyName: mockAggregateArrayDto.keyName,
+      result: mockArrayAggregateSumResult,
+    };
+
+    beforeEach(() => {
+      // Key exists by default; the not-exists test overrides it.
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([
+          BrowserToolKeysCommands.Exists,
+          mockAggregateArrayDto.keyName,
+        ])
+        .mockResolvedValue(1);
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([
+          BrowserToolArrayCommands.ArOp,
+          mockAggregateArrayDto.keyName,
+          mockAggregateArrayDto.start,
+          mockAggregateArrayDto.end,
+          mockAggregateArrayDto.operation,
+        ])
+        .mockResolvedValue(Buffer.from(mockArrayAggregateSumResult));
+    });
+
+    it('should return the aggregation result as a string', async () => {
+      const result = await service.aggregate(
+        mockBrowserClientMetadata,
+        mockAggregateArrayDto,
+      );
+      expect(result).toEqual(mockAggregateArrayResponse);
+    });
+
+    it('should append the value arg for MATCH', async () => {
+      const dto = {
+        ...mockAggregateArrayDto,
+        operation: ArrayAggregateOperation.Match,
+        value: '20.4',
+      };
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([
+          BrowserToolArrayCommands.ArOp,
+          dto.keyName,
+          dto.start,
+          dto.end,
+          dto.operation,
+          dto.value,
+        ])
+        .mockResolvedValue(1);
+
+      const result = await service.aggregate(mockBrowserClientMetadata, dto);
+      expect(result.result).toBe('1');
+    });
+
+    it('should not append a value arg for non-MATCH operations', async () => {
+      await service.aggregate(mockBrowserClientMetadata, {
+        ...mockAggregateArrayDto,
+        // value intentionally set — should be ignored when operation !== MATCH.
+        value: 'ignored',
+      });
+      expect(mockStandaloneRedisClient.sendCommand).toHaveBeenCalledWith([
+        BrowserToolArrayCommands.ArOp,
+        mockAggregateArrayDto.keyName,
+        mockAggregateArrayDto.start,
+        mockAggregateArrayDto.end,
+        mockAggregateArrayDto.operation,
+      ]);
+    });
+
+    it('should normalize integer replies (USED) to a string', async () => {
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([
+          BrowserToolArrayCommands.ArOp,
+          mockAggregateArrayDto.keyName,
+          mockAggregateArrayDto.start,
+          mockAggregateArrayDto.end,
+          ArrayAggregateOperation.Used,
+        ])
+        .mockResolvedValue(5);
+
+      const result = await service.aggregate(mockBrowserClientMetadata, {
+        ...mockAggregateArrayDto,
+        operation: ArrayAggregateOperation.Used,
+      });
+      expect(result.result).toBe('5');
+    });
+
+    it('should return null when AROP yields a nil reply', async () => {
+      // SUM over an empty/non-numeric range returns nil; the API surfaces
+      // that as `result: null` instead of throwing a 500.
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([
+          BrowserToolArrayCommands.ArOp,
+          mockAggregateArrayDto.keyName,
+          mockAggregateArrayDto.start,
+          mockAggregateArrayDto.end,
+          mockAggregateArrayDto.operation,
+        ])
+        .mockResolvedValue(null);
+
+      const result = await service.aggregate(
+        mockBrowserClientMetadata,
+        mockAggregateArrayDto,
+      );
+      expect(result.result).toBeNull();
+    });
+
+    // Binary elements and zero-length bulk strings are valid RedisString
+    // values the create DTO accepts, so MATCH must forward them verbatim
+    // rather than reject them.
+    it.each([
+      { description: 'a Buffer', value: Buffer.from([0x00, 0xff, 0x10]) },
+      { description: 'an empty string', value: '' },
+      { description: 'an empty Buffer', value: Buffer.alloc(0) },
+    ])(
+      'should pass $description value through to AROP for MATCH',
+      async ({ value }) => {
+        const dto = {
+          ...mockAggregateArrayDto,
+          operation: ArrayAggregateOperation.Match,
+          value,
+        };
+        when(mockStandaloneRedisClient.sendCommand)
+          .calledWith([
+            BrowserToolArrayCommands.ArOp,
+            dto.keyName,
+            dto.start,
+            dto.end,
+            dto.operation,
+            dto.value,
+          ])
+          .mockResolvedValue(2);
+
+        const result = await service.aggregate(mockBrowserClientMetadata, dto);
+        expect(result.result).toBe('2');
+      },
+    );
+
+    it('should reject MATCH when value is undefined', async () => {
+      // Mirrors the DTO @ValidateIf/@IsRedisString contract for the
+      // case where the controller layer is bypassed.
+      await expect(
+        service.aggregate(mockBrowserClientMetadata, {
+          ...mockAggregateArrayDto,
+          operation: ArrayAggregateOperation.Match,
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should reject when key does not exist', async () => {
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([
+          BrowserToolKeysCommands.Exists,
+          mockAggregateArrayDto.keyName,
+        ])
+        .mockResolvedValue(0);
+      await expect(
+        service.aggregate(mockBrowserClientMetadata, mockAggregateArrayDto),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should reject when range exceeds the 1M cap', async () => {
+      await expect(
+        service.aggregate(mockBrowserClientMetadata, {
+          ...mockAggregateArrayDto,
+          start: '0',
+          end: String(ARRAY_RANGE_MAX_ELEMENTS),
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should rethrow BadRequest on WrongType', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisWrongTypeError,
+        command: 'AROP',
+      };
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ArOp]))
+        .mockRejectedValue(replyError);
+      await expect(
+        service.aggregate(mockBrowserClientMetadata, mockAggregateArrayDto),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should map ACL error to Forbidden', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisNoPermError,
+        command: 'AROP',
+      };
+      mockStandaloneRedisClient.sendCommand.mockRejectedValue(replyError);
+      await expect(
+        service.aggregate(mockBrowserClientMetadata, mockAggregateArrayDto),
       ).rejects.toThrow(ForbiddenException);
     });
   });

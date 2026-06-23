@@ -124,6 +124,7 @@ export enum BrowserToolArrayCommands {
   ArGetRange = 'argetrange',
   ArScan = 'arscan',
   ArNext = 'arnext',
+  ArOp = 'arop',
 }
 
 export type BrowserToolCommands =

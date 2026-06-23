@@ -17,6 +17,8 @@ import { BrowserBaseController } from 'src/modules/browser/browser.base.controll
 import { KeyDto } from 'src/modules/browser/keys/dto';
 import { ArrayService } from 'src/modules/browser/array/array.service';
 import {
+  AggregateArrayDto,
+  AggregateArrayResponse,
   CreateArrayWithExpireDto,
   GetArrayCountResponse,
   GetArrayElementDto,
@@ -167,5 +169,23 @@ export class ArrayController extends BrowserBaseController {
     @Body() dto: GetArrayMultiElementsDto,
   ): Promise<GetArrayMultiElementsResponse> {
     return this.arrayService.getMultiElements(clientMetadata, dto);
+  }
+
+  @Post('/aggregate')
+  @HttpCode(200)
+  @ApiOperation({
+    description:
+      'Aggregate elements over a range — AROP. Operation is one of ' +
+      'SUM/MIN/MAX/AND/OR/XOR/MATCH/USED. Numeric ops error server-side if ' +
+      'any element in range is non-numeric; MATCH requires a `value` arg.',
+  })
+  @ApiRedisParams()
+  @ApiOkResponse({ type: AggregateArrayResponse })
+  @ApiQueryRedisStringEncoding()
+  async aggregate(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: AggregateArrayDto,
+  ): Promise<AggregateArrayResponse> {
+    return this.arrayService.aggregate(clientMetadata, dto);
   }
 }

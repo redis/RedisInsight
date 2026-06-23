@@ -4,6 +4,7 @@ import { RedisErrorCodes } from 'src/constants';
 import ERROR_MESSAGES from 'src/constants/error-messages';
 import { catchAclError, catchMultiTransactionError } from 'src/utils';
 import { ClientMetadata } from 'src/common/models';
+import { RedisString } from 'src/common/constants';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import {
   BrowserToolArrayCommands,
@@ -25,6 +26,9 @@ import {
   toRequiredIndexString,
 } from 'src/modules/browser/array/utils';
 import {
+  AggregateArrayDto,
+  AggregateArrayResponse,
+  ArrayAggregateOperation,
   ArrayCreationMode,
   ArrayElement,
   CreateArrayWithExpireDto,
@@ -345,6 +349,68 @@ export class ArrayService {
       return plainToInstance(GetArrayElementResponse, { keyName, value });
     } catch (error) {
       this.logger.error('Failed to get array element.', error, clientMetadata);
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
+  public async aggregate(
+    clientMetadata: ClientMetadata,
+    dto: AggregateArrayDto,
+  ): Promise<AggregateArrayResponse> {
+    try {
+      this.logger.debug('Aggregating array range.', clientMetadata);
+      const { keyName, start, end, operation, value } = dto;
+
+      // Same span cap as ARGETRANGE: AROP scans the dense [start..end] window.
+      this.assertValidRange(start, end);
+
+      // MATCH requires a comparison value, but empty strings / empty Buffers
+      // are valid — Redis stores zero-length bulk strings as real elements,
+      // and the create DTO allows them. Only an omitted value is rejected.
+      if (
+        operation === ArrayAggregateOperation.Match &&
+        (value === undefined || value === null)
+      ) {
+        throw new BadRequestException(
+          ERROR_MESSAGES.ARRAY_MATCH_VALUE_REQUIRED,
+        );
+      }
+
+      const client =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+      await checkIfKeyNotExists(keyName, client);
+
+      // MATCH is the only operation with a trailing value arg.
+      const args: RedisClientCommand = [
+        BrowserToolArrayCommands.ArOp,
+        keyName,
+        start,
+        end,
+        operation,
+      ];
+      if (operation === ArrayAggregateOperation.Match) {
+        args.push(value as RedisString);
+      }
+      const reply = await client.sendCommand(args);
+
+      this.logger.debug('Succeed to aggregate array range.', clientMetadata);
+      // AROP returns nil for numeric ops over a range with no numeric values
+      // and for bitwise ops over an empty range; surface that as `null` rather
+      // than throwing a 500 from toRequiredIndexString.
+      return plainToInstance(AggregateArrayResponse, {
+        keyName,
+        result: toIndexString(reply),
+      });
+    } catch (error) {
+      this.logger.error(
+        'Failed to aggregate array range.',
+        error,
+        clientMetadata,
+      );
+      if (error instanceof BadRequestException) throw error;
       if (error?.message?.includes(RedisErrorCodes.WrongType)) {
         throw new BadRequestException(error.message);
       }
