@@ -267,9 +267,5 @@
   "src/lib/window/window.handlers.ts": {
     "TS2769": 1,
     "TS7006": 2
-  },
-  "vite.main.config.ts": {
-    "TS2769": 5,
-    "TS7006": 1
   }
 }

@@ -1,3 +1,7 @@
+// Sets up the @sentry/electron IPC bridge so the renderer SDK can forward
+// events to the main process. Without it the renderer falls back to the
+// unsupported `sentry-ipc://` protocol and renderer crashes are never reported.
+import '@sentry/electron/preload'
 import { contextBridge, ipcRenderer } from 'electron'
 import { configRenderer as config } from 'desktopSrc/config/configRenderer'
 import { IpcInvokeEvent, IpcOnEvent } from 'uiSrc/electron/constants'

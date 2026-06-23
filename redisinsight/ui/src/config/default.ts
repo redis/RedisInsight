@@ -110,6 +110,11 @@ export const defaultConfig = {
       defaultFlag: booleanEnv('RI_FEATURES_CLOUD_ADS_DEFAULT_FLAG', true),
     },
   },
+  sentry: {
+    dsn: process.env.RI_SENTRY_DSN ?? '',
+    environment: process.env.RI_SENTRY_ENVIRONMENT ?? 'development',
+    enabled: booleanEnv('RI_SENTRY_ENABLED', false),
+  },
 }
 
 export type Config = typeof defaultConfig
