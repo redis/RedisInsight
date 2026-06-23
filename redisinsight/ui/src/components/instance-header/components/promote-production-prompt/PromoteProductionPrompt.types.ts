@@ -6,6 +6,9 @@ export interface ProductionHeuristicInput {
   tls?: boolean
   connectionType?: ConnectionType
   username?: Nullable<string>
+  // Boolean flag from the API (true when a password is set), typed loosely as
+  // the connected-instance object declares it as a string.
+  password?: Nullable<string> | boolean
   totalKeys?: Nullable<number>
 }
 

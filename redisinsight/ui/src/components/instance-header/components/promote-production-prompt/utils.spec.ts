@@ -44,7 +44,11 @@ describe('getProductionSignals', () => {
         .isClustered,
     ).toBe(false)
     expect(getProductionSignals({ username: 'default' }).hasAuth).toBe(true)
-    expect(getProductionSignals({ username: null }).hasAuth).toBe(false)
+    // Password-only auth (API exposes `password` as a boolean flag).
+    expect(getProductionSignals({ password: true }).hasAuth).toBe(true)
+    expect(
+      getProductionSignals({ username: null, password: null }).hasAuth,
+    ).toBe(false)
   })
 })
 
@@ -84,7 +88,8 @@ describe('looksLikeProduction', () => {
     ['remote host', { host: 'redis.prod.example.com' }],
     ['tls', { tls: true }],
     ['cluster', { connectionType: ConnectionType.Cluster }],
-    ['auth', { username: 'default' }],
+    ['username auth', { username: 'default' }],
+    ['password auth', { password: true }],
   ])('matches when key count is high and %s is present', (_label, extra) => {
     expect(
       looksLikeProduction(getProductionSignals({ ...bigDb, ...extra })),

@@ -24,7 +24,7 @@ import { UsePromoteProductionPromptResult } from '../PromoteProductionPrompt.typ
 export const usePromoteProductionPrompt =
   (): UsePromoteProductionPromptResult => {
     const prodModeEnabled = useAppSelector(appFeatureFlagProdModeSelector)
-    const { id, environment, host, tls, connectionType, username } =
+    const { id, environment, host, tls, connectionType, username, password } =
       useAppSelector(connectedInstanceSelector)
     const { totalKeys } = useAppSelector(connectedInstanceOverviewSelector)
     const { data: instances } = useAppSelector(instancesSelector)
@@ -49,6 +49,7 @@ export const usePromoteProductionPrompt =
       tls,
       connectionType,
       username,
+      password,
       totalKeys,
     })
 

@@ -14,6 +14,7 @@ export const getProductionSignals = ({
   tls,
   connectionType,
   username,
+  password,
   totalKeys,
 }: ProductionHeuristicInput): ProductionSignals => ({
   hasKeyCountSignal: (totalKeys ?? 0) > PRODUCTION_KEY_COUNT_THRESHOLD,
@@ -22,7 +23,7 @@ export const getProductionSignals = ({
   isClustered:
     connectionType === ConnectionType.Cluster ||
     connectionType === ConnectionType.Sentinel,
-  hasAuth: !!username,
+  hasAuth: !!username || !!password,
 })
 
 // Needs the key-count signal AND one connection signal — key count alone would
