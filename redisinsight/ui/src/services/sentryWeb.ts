@@ -7,15 +7,8 @@ import { minimizeEvent, scrubEvent } from 'uiSrc/services/sentry'
 const riConfig = getConfig()
 
 /**
- * Initialize Sentry for the web build (`index.tsx`). Uses `@sentry/react`
- * directly (the Electron renderer uses `@sentry/electron/renderer` instead).
- *
- * Same two-tier model as the Electron renderer: consent is evaluated per-event
- * via `checkIsAnalyticsGranted`, so without consent events are reduced to the
- * anonymous Tier 1 allowlist and breadcrumbs are dropped; with consent the full
- * (still secret-scrubbed) event is sent.
- *
- * See docs/sentry-production-readiness.md (§3, §4).
+ * Initialize Sentry for the web build. Consent is evaluated per-event, so
+ * without consent events are reduced to the anonymous Tier 1 allowlist.
  */
 export const initSentry = (): void => {
   const { sentry, app } = riConfig
@@ -25,24 +18,25 @@ export const initSentry = (): void => {
     return
   }
 
-  Sentry.init({
-    dsn: sentry.dsn,
-    environment: sentry.environment,
-    // Must match the release the Vite plugin uploads maps under
-    // (`defaultConfig.app.version`), otherwise web events won't symbolicate.
-    release: app.version,
-    initialScope: { tags: { 'app.layer': 'web' } },
-    sendDefaultPii: false,
-    // Release-health session envelopes are not events, so they bypass
-    // `beforeSend` and would emit usage telemetry without consent. We do
-    // crash/error reporting only — disable session tracking entirely.
-    integrations: (defaults) =>
-      defaults.filter((integration) => integration.name !== 'BrowserSession'),
-    beforeBreadcrumb: (breadcrumb) =>
-      checkIsAnalyticsGranted() ? breadcrumb : null,
-    beforeSend(event) {
-      const scrubbed = scrubEvent(event)
-      return checkIsAnalyticsGranted() ? scrubbed : minimizeEvent(scrubbed)
-    },
-  })
+  try {
+    Sentry.init({
+      dsn: sentry.dsn,
+      environment: sentry.environment,
+      // Match the release the Vite plugin uploads maps under.
+      release: app.version,
+      initialScope: { tags: { 'app.layer': 'web' } },
+      sendDefaultPii: false,
+      // Sessions bypass beforeSend, so they would report without consent.
+      integrations: (defaults) =>
+        defaults.filter((integration) => integration.name !== 'BrowserSession'),
+      beforeBreadcrumb: (breadcrumb) =>
+        checkIsAnalyticsGranted() ? breadcrumb : null,
+      beforeSend(event) {
+        const scrubbed = scrubEvent(event)
+        return checkIsAnalyticsGranted() ? scrubbed : minimizeEvent(scrubbed)
+      },
+    })
+  } catch (e) {
+    console.warn('[Sentry] init failed (continuing without Sentry):', e)
+  }
 }
