@@ -132,8 +132,22 @@ describe('POST /databases/:id/array/search', () => {
     // 403/ACL is covered by the service unit spec; an integration ACL case
     // would need an array key seeded on the ACL instance, which has no fixture.
     const wrongTypeKey = constants.getRandomString();
+    const reKey = constants.getRandomString();
 
     [
+      {
+        name: 'Should return BadRequest on a malformed RE predicate',
+        before: async () => {
+          await rte.client.call('ARSET', reKey, '0', 'a', 'b', 'c');
+        },
+        data: {
+          keyName: reKey,
+          // Unterminated character class — Redis rejects the regex as
+          // "ERR invalid regular expression: Missing ']'".
+          predicates: [{ criteria: 'RE', value: '[unterminated' }],
+        },
+        statusCode: 400,
+      },
       {
         name: 'Should return NotFound error if key does not exist',
         data: {

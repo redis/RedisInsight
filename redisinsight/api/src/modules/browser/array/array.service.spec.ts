@@ -773,6 +773,16 @@ describe('ArrayService', () => {
       ).rejects.toBeInstanceOf(BadRequestException);
     });
 
+    it('throws BadRequest on a malformed RE predicate', async () => {
+      when(client.sendCommand).mockRejectedValue({
+        message: "ERR invalid regular expression: Missing ']'",
+      });
+
+      await expect(
+        service.search(mockBrowserClientMetadata, mockGetArraySearchDto),
+      ).rejects.toBeInstanceOf(BadRequestException);
+    });
+
     it('throws Forbidden on an ACL error', async () => {
       when(client.sendCommand).mockRejectedValue(mockRedisNoPermError);
 
