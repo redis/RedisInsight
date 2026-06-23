@@ -1,0 +1,131 @@
+meta {
+  name: Aggregate
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/array/aggregate
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "readings",
+    "start": "0",
+    "end": "6",
+    "operation": "SUM"
+  }
+}
+
+docs {
+  # AROP
+
+  Aggregate the populated elements of an inclusive range with a single
+  operation. Empty slots are skipped (not treated as `0`). Range bounds are
+  reversible — the same set of populated slots is aggregated regardless of
+  `start`/`end` ordering.
+
+  ## Request body
+
+  | Field       | Type             | Notes                                                                                  |
+  |-------------|------------------|----------------------------------------------------------------------------------------|
+  | `keyName`   | string           | The Array key name.                                                                    |
+  | `start`     | string           | Inclusive start index. Unsigned 64-bit integer as string.                              |
+  | `end`       | string           | Inclusive end index. Unsigned 64-bit integer as string.                                |
+  | `operation` | string           | One of `SUM` / `MIN` / `MAX` / `AND` / `OR` / `XOR` / `MATCH` / `USED`.                 |
+  | `value`     | RedisString      | Required only for `MATCH` (the value to count, accepts strings and binary buffers); ignored otherwise. |
+
+  ### Operations
+
+  | Value   | Description                                                                 |
+  |---------|-----------------------------------------------------------------------------|
+  | `SUM`   | Sum of numeric elements. Errors if any element in range is non-numeric.     |
+  | `MIN`   | Minimum numeric element. Errors on non-numeric.                             |
+  | `MAX`   | Maximum numeric element. Errors on non-numeric.                             |
+  | `AND`   | Bitwise AND fold. Errors on non-numeric.                                    |
+  | `OR`    | Bitwise OR fold. Errors on non-numeric.                                     |
+  | `XOR`   | Bitwise XOR fold. Errors on non-numeric.                                    |
+  | `MATCH` | Count of elements equal to `value`.                                         |
+  | `USED`  | Count of populated slots in range.                                          |
+
+  ## Response
+
+  ```
+  {
+    "keyName": "readings",
+    "result": "104.7"
+  }
+  ```
+
+  `result` is a decimal string for numeric ops and an integer count as a
+  string for `MATCH` / `USED`. It is `null` when AROP yields a nil reply
+  (numeric ops over a range with no numeric values; bitwise ops over an empty
+  range). `SUM` / `MIN` / `MAX` preserve full precision; `AND` / `OR` / `XOR`
+  results above 2^53 may be rounded (see RI-8296).
+
+  ## Errors
+
+  | Status | When |
+  |--------|------|
+  | `400`  | Range exceeds 1,000,000 elements per call, `MATCH` is missing `value`, an element is non-numeric for a numeric op, or the key holds a non-array type. |
+  | `403`  | User has no permission for `AROP`. |
+  | `404`  | Key does not exist. |
+
+  ## Examples
+
+  Examples run against the `readings` sample
+  (`0:"20.1" 1:"20.4" 2:"20.9" 5:"21.4" 6:"21.9"`, gaps at `3,4`) — see
+  `Seed Sample Data` — except the bitwise `XOR` example, which needs an
+  integer-valued array.
+
+  ### SUM — total of the numeric elements
+
+  Empty slots are skipped, not counted as `0`.
+
+  ```json
+  { "keyName": "readings", "start": "0", "end": "6", "operation": "SUM" }
+  ```
+
+  → `{ "keyName": "readings", "result": "104.7" }`
+
+  ### MAX — largest numeric element
+
+  ```json
+  { "keyName": "readings", "start": "0", "end": "6", "operation": "MAX" }
+  ```
+
+  → `{ "keyName": "readings", "result": "21.9" }`
+
+  ### USED — count populated slots (works on non-numeric arrays too)
+
+  ```json
+  { "keyName": "readings", "start": "0", "end": "6", "operation": "USED" }
+  ```
+
+  → `{ "keyName": "readings", "result": "5" }`
+
+  ### MATCH — count elements equal to a value
+
+  `MATCH` is the only operation that takes the extra `value` field.
+
+  ```json
+  { "keyName": "readings", "start": "0", "end": "6", "operation": "MATCH", "value": "20.4" }
+  ```
+
+  → `{ "keyName": "readings", "result": "1" }`
+
+  ### XOR — bitwise fold over integer elements
+
+  Bitwise ops require integer elements. Results above 2^53 may be rounded by
+  the client (see RI-8296); `SUM` / `MIN` / `MAX` are unaffected.
+
+  ```json
+  { "keyName": "counters", "start": "0", "end": "9", "operation": "XOR" }
+  ```
+}
+
+settings {
+  encodeUrl: true
+}
