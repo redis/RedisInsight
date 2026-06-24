@@ -1,5 +1,10 @@
 import React, { useEffect } from 'react'
+import { useHistory, useLocation } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
+import {
+  EDIT_INSTANCE_QUERY_PARAM,
+  FOCUS_FIELD_QUERY_PARAM,
+} from 'uiSrc/constants'
 import {
   clusterSelector,
   resetDataRedisCluster,
@@ -92,6 +97,9 @@ const HomePage = () => {
 
   const { contextInstanceId } = useAppSelector(appContextSelector)
 
+  const history = useHistory()
+  const { search } = useLocation()
+
   const hideDbList = instances.length === 0 && !loading && !loadingChanging
 
   useEffect(() => {
@@ -144,6 +152,26 @@ const HomePage = () => {
     }
   }, [instances])
 
+  // Open the edit-database dialog when deep-linked via `?editInstance=<id>`
+  // (e.g. from the production-mode CTA, or the encryption-error flow). Any
+  // `focusField` param is left for the relevant field component to consume.
+  useEffect(() => {
+    const params = new URLSearchParams(search)
+    const editInstanceId = params.get(EDIT_INSTANCE_QUERY_PARAM)
+    if (!editInstanceId || !instances.length) {
+      return
+    }
+
+    const found = instances.find((item: Instance) => item.id === editInstanceId)
+    if (found) {
+      dispatch(fetchEditedInstanceAction(found))
+      setOpenDialog(OpenDialogName.EditDatabase)
+      // Consume the id param so closing the dialog can't reopen it on re-render.
+      params.delete(EDIT_INSTANCE_QUERY_PARAM)
+      history.replace({ search: params.toString() })
+    }
+  }, [search, instances])
+
   const handleOpenPage = (instances: Instance[]) => {
     const instancesWithTagsCount = instances.filter(
       (instance) => instance.tags && instance.tags.length > 0,
@@ -171,6 +199,14 @@ const HomePage = () => {
   const closeEditDialog = () => {
     dispatch(setEditedInstance(null))
     setOpenDialog(null)
+
+    // Drop a leftover focus param (if the field component never consumed it)
+    // so a later edit can't auto-open that field.
+    const params = new URLSearchParams(search)
+    if (params.has(FOCUS_FIELD_QUERY_PARAM)) {
+      params.delete(FOCUS_FIELD_QUERY_PARAM)
+      history.replace({ search: params.toString() })
+    }
 
     sendEventTelemetry({
       event: TelemetryEvent.CONFIG_DATABASES_DATABASE_EDIT_CANCELLED_CLICKED,
