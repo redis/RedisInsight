@@ -7,15 +7,13 @@ import { ResetIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
-import {
-  defaultValueRender,
-  RiSelect,
-} from 'uiSrc/components/base/forms/select/RiSelect'
+import { defaultValueRender } from 'uiSrc/components/base/forms/select/RiSelect'
 import { parseArrayIndex } from 'uiSrc/utils/arrayIndex'
 import { ArrayAggregateOperation } from 'uiSrc/slices/interfaces/array'
 
 import { CommandPreview } from '../command-preview'
 import * as RangeStyles from '../array-range-form/ArrayRangeForm.styles'
+import * as S from './ArrayAggregateForm.styles'
 import {
   ARRAY_AGGREGATE_FORM_TEST_ID as TEST_ID,
   ARRAY_RANGE_MAX_SPAN,
@@ -128,7 +126,7 @@ export const ArrayAggregateForm = ({
         </FlexItem>
         <FlexItem grow={false}>
           <FormField label="Operation">
-            <RiSelect
+            <S.OperationSelect
               options={OPERATION_OPTIONS.map((option) => ({
                 ...option,
                 'data-test-subj': `${TEST_ID}-operation-option-${option.value}`,
