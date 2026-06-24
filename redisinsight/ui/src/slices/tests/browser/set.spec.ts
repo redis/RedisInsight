@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash'
+import { RootState } from 'uiSrc/slices/store'
 import { AxiosError } from 'axios'
 import { apiService } from 'uiSrc/services'
 import {
@@ -89,9 +90,9 @@ describe('set slice', () => {
       const nextState = reducer(initialState, loadSetMembers(['', undefined]))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { set: nextState },
+        browser: { ...initialStateDefault.browser, set: nextState },
       }
       expect(setSelector(rootState)).toEqual(state)
     })
@@ -121,9 +122,9 @@ describe('set slice', () => {
       const nextState = reducer(initialState, loadSetMembersSuccess(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { set: nextState },
+        browser: { ...initialStateDefault.browser, set: nextState },
       }
       expect(setSelector(rootState)).toEqual(state)
     })
@@ -148,9 +149,9 @@ describe('set slice', () => {
       const nextState = reducer(initialState, loadSetMembersSuccess(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { set: nextState },
+        browser: { ...initialStateDefault.browser, set: nextState },
       }
       expect(setSelector(rootState)).toEqual(state)
     })
@@ -177,9 +178,9 @@ describe('set slice', () => {
       const nextState = reducer(initialState, loadSetMembersFailure(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { set: nextState },
+        browser: { ...initialStateDefault.browser, set: nextState },
       }
       expect(setSelector(rootState)).toEqual(state)
     })
@@ -205,9 +206,9 @@ describe('set slice', () => {
       const nextState = reducer(initialState, loadMoreSetMembers())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { set: nextState },
+        browser: { ...initialStateDefault.browser, set: nextState },
       }
       expect(setSelector(rootState)).toEqual(state)
     })
@@ -236,9 +237,9 @@ describe('set slice', () => {
       const nextState = reducer(initialState, loadMoreSetMembersSuccess(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { set: nextState },
+        browser: { ...initialStateDefault.browser, set: nextState },
       }
       expect(setSelector(rootState)).toEqual(state)
     })
@@ -266,9 +267,9 @@ describe('set slice', () => {
       const nextState = reducer(initialState, loadMoreSetMembersSuccess(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { set: nextState },
+        browser: { ...initialStateDefault.browser, set: nextState },
       }
       expect(setSelector(rootState)).toEqual(state)
     })
@@ -295,9 +296,9 @@ describe('set slice', () => {
       const nextState = reducer(initialState, loadMoreSetMembersFailure(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { set: nextState },
+        browser: { ...initialStateDefault.browser, set: nextState },
       }
       expect(setSelector(rootState)).toEqual(state)
     })
@@ -315,9 +316,9 @@ describe('set slice', () => {
       const nextState = reducer(initialState, addSetMembers())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { set: nextState },
+        browser: { ...initialStateDefault.browser, set: nextState },
       }
       expect(setSelector(rootState)).toEqual(state)
     })
@@ -335,9 +336,9 @@ describe('set slice', () => {
       const nextState = reducer(initialState, addSetMembersSuccess())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { set: nextState },
+        browser: { ...initialStateDefault.browser, set: nextState },
       }
       expect(setSelector(rootState)).toEqual(state)
     })
@@ -357,9 +358,9 @@ describe('set slice', () => {
       const nextState = reducer(initialState, addSetMembersFailure(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { set: nextState },
+        browser: { ...initialStateDefault.browser, set: nextState },
       }
       expect(setSelector(rootState)).toEqual(state)
     })
@@ -377,9 +378,9 @@ describe('set slice', () => {
       const nextState = reducer(initialState, removeSetMembers())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { set: nextState },
+        browser: { ...initialStateDefault.browser, set: nextState },
       }
       expect(setSelector(rootState)).toEqual(state)
     })
@@ -401,9 +402,9 @@ describe('set slice', () => {
       const nextState = reducer(initailStateRemove, removeSetMembersSuccess())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { set: nextState },
+        browser: { ...initialStateDefault.browser, set: nextState },
       }
       expect(setSelector(rootState)).toEqual(initailStateRemove)
     })
@@ -430,9 +431,9 @@ describe('set slice', () => {
       const nextState = reducer(initialState, removeSetMembersFailure(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { set: nextState },
+        browser: { ...initialStateDefault.browser, set: nextState },
       }
       expect(setSelector(rootState)).toEqual(state)
     })
@@ -464,9 +465,9 @@ describe('set slice', () => {
       const nextState = reducer(initialStateRemove, removeMembersFromList(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: { set: nextState },
+        browser: { ...initialStateDefault.browser, set: nextState },
       }
       expect(setSelector(rootState)).toEqual(state)
     })

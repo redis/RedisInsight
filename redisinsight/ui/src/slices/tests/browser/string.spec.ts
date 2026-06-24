@@ -1,4 +1,5 @@
 import { AxiosError } from 'axios'
+import { RootState } from 'uiSrc/slices/store'
 import { cloneDeep } from 'lodash'
 import { apiService } from 'uiSrc/services'
 import {
@@ -80,11 +81,9 @@ describe('string slice', () => {
       const nextState = reducer(initialState, getString())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          string: nextState,
-        },
+        browser: { ...initialStateDefault.browser, string: nextState },
       }
       expect(stringSelector(rootState)).toEqual(state)
       expect(stringDataSelector(rootState)).toEqual(state.data)
@@ -111,11 +110,9 @@ describe('string slice', () => {
       const nextState = reducer(initialState, getStringSuccess(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          string: nextState,
-        },
+        browser: { ...initialStateDefault.browser, string: nextState },
       }
       expect(stringSelector(rootState)).toEqual(state)
       expect(stringDataSelector(rootState)).toEqual(state.data)
@@ -141,11 +138,9 @@ describe('string slice', () => {
       const nextState = reducer(initialState, getStringSuccess(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          string: nextState,
-        },
+        browser: { ...initialStateDefault.browser, string: nextState },
       }
       expect(stringSelector(rootState)).toEqual(state)
       expect(stringDataSelector(rootState)).toEqual(state.data)
@@ -166,11 +161,9 @@ describe('string slice', () => {
       const nextState = reducer(initialState, getStringFailure(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          string: nextState,
-        },
+        browser: { ...initialStateDefault.browser, string: nextState },
       }
       expect(stringSelector(rootState)).toEqual(state)
       expect(stringDataSelector(rootState)).toEqual(state.data)
@@ -189,11 +182,9 @@ describe('string slice', () => {
       const nextState = reducer(initialState, downloadString())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          string: nextState,
-        },
+        browser: { ...initialStateDefault.browser, string: nextState },
       }
       expect(stringSelector(rootState)).toEqual(state)
       expect(stringDataSelector(rootState)).toEqual(state.data)
@@ -213,11 +204,9 @@ describe('string slice', () => {
       const nextState = reducer(initialState, downloadStringSuccess())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          string: nextState,
-        },
+        browser: { ...initialStateDefault.browser, string: nextState },
       }
       expect(stringSelector(rootState)).toEqual(state)
       expect(stringDataSelector(rootState)).toEqual(state.data)
@@ -234,11 +223,9 @@ describe('string slice', () => {
       const nextState = reducer(initialState, downloadStringSuccess())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          string: nextState,
-        },
+        browser: { ...initialStateDefault.browser, string: nextState },
       }
       expect(stringSelector(rootState)).toEqual(state)
       expect(stringDataSelector(rootState)).toEqual(state.data)
@@ -259,11 +246,9 @@ describe('string slice', () => {
       const nextState = reducer(initialState, downloadStringFailure(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          string: nextState,
-        },
+        browser: { ...initialStateDefault.browser, string: nextState },
       }
       expect(stringSelector(rootState)).toEqual(state)
       expect(stringDataSelector(rootState)).toEqual(state.data)
@@ -282,11 +267,9 @@ describe('string slice', () => {
       const nextState = reducer(initialState, updateValue())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          string: nextState,
-        },
+        browser: { ...initialStateDefault.browser, string: nextState },
       }
       expect(stringSelector(rootState)).toEqual(state)
       expect(stringDataSelector(rootState)).toEqual(state.data)
@@ -311,11 +294,9 @@ describe('string slice', () => {
       const nextState = reducer(initialState, updateValueSuccess(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          string: nextState,
-        },
+        browser: { ...initialStateDefault.browser, string: nextState },
       }
       expect(stringSelector(rootState)).toEqual(state)
       expect(stringDataSelector(rootState)).toEqual(state.data)
@@ -338,11 +319,9 @@ describe('string slice', () => {
       const nextState = reducer(initialState, updateValueSuccess(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          string: nextState,
-        },
+        browser: { ...initialStateDefault.browser, string: nextState },
       }
       expect(stringSelector(rootState)).toEqual(state)
       expect(stringDataSelector(rootState)).toEqual(state.data)
@@ -363,11 +342,9 @@ describe('string slice', () => {
       const nextState = reducer(initialState, updateValueFailure(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          string: nextState,
-        },
+        browser: { ...initialStateDefault.browser, string: nextState },
       }
       expect(stringSelector(rootState)).toEqual(state)
       expect(stringDataSelector(rootState)).toEqual(state.data)
@@ -385,11 +362,9 @@ describe('string slice', () => {
       const nextState = reducer(initialState, resetStringValue())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          string: nextState,
-        },
+        browser: { ...initialStateDefault.browser, string: nextState },
       }
       expect(stringSelector(rootState)).toEqual(state)
       expect(stringDataSelector(rootState)).toEqual(state.data)
@@ -409,11 +384,9 @@ describe('string slice', () => {
       const nextState = reducer(initialState, setIsStringCompressed(true))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          string: nextState,
-        },
+        browser: { ...initialStateDefault.browser, string: nextState },
       }
       expect(stringSelector(rootState)).toEqual(state)
       expect(stringDataSelector(rootState)).toEqual(state.data)
