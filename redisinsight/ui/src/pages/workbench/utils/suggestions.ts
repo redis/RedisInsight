@@ -195,7 +195,7 @@ export const getMandatoryArgumentSuggestions = (
 
 export const getCommandSuggestions = (
   foundArg: Nullable<FoundCommandArgument>,
-  allArgs: string[],
+  _allArgs: string[],
   range: monaco.IRange,
 ) => {
   const appendCommands = foundArg?.append ?? []

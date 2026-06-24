@@ -1,3 +1,4 @@
+import { ObjectInputStream } from 'java-object-serialization'
 import { RedisResponseBufferType } from 'uiSrc/slices/interfaces'
 import JavaDate from 'uiSrc/utils/formatters/java-date'
 import {
