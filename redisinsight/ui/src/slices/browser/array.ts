@@ -23,7 +23,7 @@ import {
   ArrayActiveQuery,
   ArrayAggregateActiveQuery,
   ArrayDataElement,
-  ArrayGrepPredicate,
+  ArraySearchActiveQuery,
   StateArray,
   FetchArrayAggregateParams,
   FetchArrayRangeParams,
@@ -53,14 +53,6 @@ const DEFAULT_QUERY_END = '9'
  */
 export const DEFAULT_SCAN_LIMIT = 1_000_000
 
-/**
- * Safety cap on ARGREP result-set size. Without a LIMIT, a broad predicate
- * would return every match (with values) and could build a huge response /
- * table. Pinned to the backend's `ARRAY_RANGE_MAX_ELEMENTS`, mirroring the
- * scan cap.
- */
-export const DEFAULT_SEARCH_LIMIT = 1_000_000
-
 export const initialState: StateArray = {
   loading: false,
   error: '',
@@ -87,7 +79,7 @@ export const initialState: StateArray = {
     error: '',
     loaded: false,
     data: [],
-    predicates: [],
+    query: null,
   },
 }
 
@@ -229,16 +221,16 @@ const arraySlice = createSlice({
     },
 
     // ARGREP search lives in its own sub-state so the View and Search tabs
-    // (both mounted at once) never overwrite each other's results. The
-    // predicates are recorded so the header refresh button can replay them.
+    // (both mounted at once) never overwrite each other's results. The full
+    // query is recorded so the header refresh button can replay it.
     loadArraySearch: (
       state,
-      { payload }: PayloadAction<ArrayGrepPredicate[]>,
+      { payload }: PayloadAction<ArraySearchActiveQuery>,
     ) => {
       state.search.loading = true
       state.search.error = ''
       state.search.data = []
-      state.search.predicates = payload
+      state.search.query = payload
     },
     loadArraySearchSuccess: (
       state,
@@ -432,25 +424,39 @@ export const abortArraySearch = (): void => {
   arraySearchController = null
 }
 
-// ARGREP — predicate search across the array's index range. WITHVALUES is
-// left to the API default (true) so results carry values for the table; a
-// safety LIMIT caps the result set like ARSCAN does.
+// ARGREP — predicate search across the array's index range. Blank bounds are
+// dropped so the server applies its `-`/`+` (whole-array) defaults; the
+// connective is sent only with 2+ predicates; WITHVALUES is sent only when
+// turned off (the server defaults it on, so results carry values for the
+// table); LIMIT is sent only when the user sets one, otherwise the search is
+// uncapped (the server omits LIMIT and returns every match).
 export function searchArray(params: SearchArrayParams) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    const { key, ...query } = params
+
     arraySearchController?.abort()
     const controller = new AbortController()
     arraySearchController = controller
 
-    dispatch(loadArraySearch(params.predicates))
+    dispatch(loadArraySearch(query))
     try {
       const state = stateInit()
+      const body: Record<string, unknown> = {
+        keyName: key,
+        predicates: query.predicates,
+      }
+      if (query.combinator && query.predicates.length > 1) {
+        body.combinator = query.combinator
+      }
+      if (query.start) body.start = query.start
+      if (query.end) body.end = query.end
+      if (query.nocase) body.nocase = true
+      if (query.withValues === false) body.withValues = false
+      if (typeof query.limit === 'number') body.limit = query.limit
+
       const { data, status } = await apiService.post<GetArraySearchResponse>(
         arrayUrl(state, ApiEndpoints.ARRAY_SEARCH),
-        {
-          keyName: params.key,
-          predicates: params.predicates,
-          limit: DEFAULT_SEARCH_LIMIT,
-        },
+        body,
         { ...encodingParams(state), signal: controller.signal },
       )
       if (controller.signal.aborted) return
@@ -600,8 +606,8 @@ export function refreshArray(key: RedisString) {
       dispatch(aggregateArray({ key, ...aggregate.query, resetData: false }))
     }
 
-    if (search.predicates.length > 0) {
-      dispatch(searchArray({ key, predicates: search.predicates }))
+    if (search.query) {
+      dispatch(searchArray({ key, ...search.query }))
     }
   }
 }

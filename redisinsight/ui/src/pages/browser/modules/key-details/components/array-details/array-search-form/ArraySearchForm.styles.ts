@@ -24,11 +24,28 @@ export const ActionRow = styled(Row)`
 `
 
 /**
+ * Compact fixed-width box for the Range / LIMIT inputs so they read as small
+ * inline fields (`Range [-] to [+]`) rather than stretching the row.
+ */
+export const NarrowInputBox = styled(Row)`
+  width: 110px;
+`
+
+/**
  * Fixed minimum width so the action row doesn't reflow when the selected
  * criteria label changes width (Exact / Match / Glob / Regex).
  */
 export const CriteriaSelect = styled(RiSelect)`
   min-width: 85px;
+`
+
+/**
+ * The AND/OR connective sits in the gap between two predicate rows, indented
+ * so it reads as joining the rows above and below rather than starting a new
+ * field. Offset roughly tracks the criteria column width.
+ */
+export const ConnectiveRow = styled(Row)`
+  padding-left: 48px;
 `
 
 export const PreviewToggleButton = styled(ToggleButton)`
