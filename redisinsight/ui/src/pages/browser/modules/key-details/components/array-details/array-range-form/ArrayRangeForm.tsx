@@ -12,6 +12,7 @@ import { parseArrayIndex } from 'uiSrc/utils/arrayIndex'
 import { DEFAULT_SCAN_LIMIT } from 'uiSrc/slices/browser/array'
 
 import { CommandPreview } from '../command-preview'
+import { quoteRedisArgument } from '../utils'
 import {
   ARRAY_RANGE_FORM_TEST_ID as TEST_ID,
   ARRAY_RANGE_MAX_SPAN,
@@ -26,16 +27,6 @@ import {
 } from './ArrayRangeForm.constants'
 import { ArrayRangeFormProps } from './ArrayRangeForm.types'
 import * as S from './ArrayRangeForm.styles'
-
-// Wraps a Redis argument that may contain whitespace or quotes so the
-// preview text stays runnable when copied into CLI / Workbench. Mirrors
-// the same escaping rules the redis-cli parser applies to double-quoted
-// strings: backslash and double-quote get backslash-escaped.
-const quoteRedisArgument = (value: string): string => {
-  if (value.length === 0) return '""'
-  if (!/[\s"\\]/.test(value)) return value
-  return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
-}
 
 /**
  * Range/scan query form for the array View tab. Lays out inputs above a
