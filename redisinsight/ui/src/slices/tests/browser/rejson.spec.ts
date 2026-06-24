@@ -1,4 +1,5 @@
 import { AxiosError } from 'axios'
+import { RootState } from 'uiSrc/slices/store'
 import { cloneDeep } from 'lodash'
 import { apiService } from 'uiSrc/services'
 import {
@@ -107,11 +108,9 @@ describe('rejson slice', () => {
       const nextState = reducer(initialState, loadRejsonBranch())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          rejson: nextState,
-        },
+        browser: { ...initialStateDefault.browser, rejson: nextState },
       }
       expect(rejsonSelector(rootState)).toEqual(state)
     })
@@ -134,11 +133,9 @@ describe('rejson slice', () => {
       )
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          rejson: nextState,
-        },
+        browser: { ...initialStateDefault.browser, rejson: nextState },
       }
       expect(rejsonSelector(rootState)).toEqual(state)
     })
@@ -157,11 +154,9 @@ describe('rejson slice', () => {
       const nextState = reducer(initialState, loadRejsonBranchSuccess(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          rejson: nextState,
-        },
+        browser: { ...initialStateDefault.browser, rejson: nextState },
       }
       expect(rejsonSelector(rootState)).toEqual(state)
     })
@@ -181,11 +176,9 @@ describe('rejson slice', () => {
       const nextState = reducer(initialState, loadRejsonBranchFailure(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          rejson: nextState,
-        },
+        browser: { ...initialStateDefault.browser, rejson: nextState },
       }
       expect(rejsonSelector(rootState)).toEqual(state)
     })
@@ -203,11 +196,9 @@ describe('rejson slice', () => {
       const nextState = reducer(initialState, appendReJSONArrayItem())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          rejson: nextState,
-        },
+        browser: { ...initialStateDefault.browser, rejson: nextState },
       }
       expect(rejsonSelector(rootState)).toEqual(state)
     })
@@ -224,11 +215,9 @@ describe('rejson slice', () => {
       const nextState = reducer(initialState, appendReJSONArrayItemSuccess())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          rejson: nextState,
-        },
+        browser: { ...initialStateDefault.browser, rejson: nextState },
       }
       expect(rejsonSelector(rootState)).toEqual(state)
     })
@@ -251,11 +240,9 @@ describe('rejson slice', () => {
       )
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          rejson: nextState,
-        },
+        browser: { ...initialStateDefault.browser, rejson: nextState },
       }
       expect(rejsonSelector(rootState)).toEqual(state)
     })
@@ -273,11 +260,9 @@ describe('rejson slice', () => {
       const nextState = reducer(initialState, setReJSONData())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          rejson: nextState,
-        },
+        browser: { ...initialStateDefault.browser, rejson: nextState },
       }
       expect(rejsonSelector(rootState)).toEqual(state)
     })
@@ -294,11 +279,9 @@ describe('rejson slice', () => {
       const nextState = reducer(initialState, setReJSONDataSuccess())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          rejson: nextState,
-        },
+        browser: { ...initialStateDefault.browser, rejson: nextState },
       }
       expect(rejsonSelector(rootState)).toEqual(state)
     })
@@ -318,11 +301,9 @@ describe('rejson slice', () => {
       const nextState = reducer(initialState, setReJSONDataFailure(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          rejson: nextState,
-        },
+        browser: { ...initialStateDefault.browser, rejson: nextState },
       }
       expect(rejsonSelector(rootState)).toEqual(state)
     })
@@ -340,11 +321,9 @@ describe('rejson slice', () => {
       const nextState = reducer(initialState, removeRejsonKey())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          rejson: nextState,
-        },
+        browser: { ...initialStateDefault.browser, rejson: nextState },
       }
       expect(rejsonSelector(rootState)).toEqual(state)
     })
@@ -361,11 +340,9 @@ describe('rejson slice', () => {
       const nextState = reducer(initialState, removeRejsonKeySuccess())
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          rejson: nextState,
-        },
+        browser: { ...initialStateDefault.browser, rejson: nextState },
       }
       expect(rejsonSelector(rootState)).toEqual(state)
     })
@@ -385,11 +362,9 @@ describe('rejson slice', () => {
       const nextState = reducer(initialState, removeRejsonKeyFailure(data))
 
       // Assert
-      const rootState = {
+      const rootState: RootState = {
         ...initialStateDefault,
-        browser: {
-          rejson: nextState,
-        },
+        browser: { ...initialStateDefault.browser, rejson: nextState },
       }
       expect(rejsonSelector(rootState)).toEqual(state)
     })
