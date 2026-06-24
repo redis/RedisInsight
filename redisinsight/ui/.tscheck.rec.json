@@ -928,44 +928,32 @@
     "TS2345": 3
   },
   "src/slices/tests/analytics/clusterDetails.spec.ts": {
-    "TS2345": 2
+    "TS2345": 1
   },
   "src/slices/tests/analytics/dbAnalysis.spec.ts": {
     "TS2322": 1,
-    "TS2345": 10
-  },
-  "src/slices/tests/analytics/settings.spec.ts": {
-    "TS2345": 1
+    "TS2345": 9
   },
   "src/slices/tests/analytics/slowlog.spec.ts": {
-    "TS2345": 5
+    "TS2345": 4
   },
   "src/slices/tests/app/features.spec.ts": {
     "TS2345": 4
   },
-  "src/slices/tests/app/info.spec.ts": {
-    "TS2345": 1
-  },
-  "src/slices/tests/app/notifications.spec.ts": {
-    "TS2345": 1
-  },
-  "src/slices/tests/app/plugins.spec.ts": {
-    "TS2345": 1
-  },
   "src/slices/tests/app/redis-commands.spec.ts": {
-    "TS2345": 4
+    "TS2345": 3
   },
   "src/slices/tests/browser/bulkActions.spec.ts": {
-    "TS2345": 7,
+    "TS2345": 6,
     "TS2740": 2
   },
   "src/slices/tests/browser/hash.spec.ts": {
-    "TS2345": 15
+    "TS2345": 14
   },
   "src/slices/tests/browser/keys.spec.ts": {
     "TS2322": 4,
     "TS2339": 4,
-    "TS2345": 28
+    "TS2345": 27
   },
   "src/slices/tests/browser/list.spec.ts": {
     "TS2322": 3,
@@ -975,22 +963,22 @@
   },
   "src/slices/tests/browser/redisearch.spec.ts": {
     "TS2322": 2,
-    "TS2345": 14,
+    "TS2345": 13,
     "TS2739": 6
   },
   "src/slices/tests/browser/rejson.spec.ts": {
-    "TS2345": 13,
+    "TS2345": 12,
     "TS2554": 2
   },
   "src/slices/tests/browser/set.spec.ts": {
-    "TS2345": 18
+    "TS2345": 17
   },
   "src/slices/tests/browser/stream.spec.ts": {
     "TS2322": 11,
-    "TS2345": 25
+    "TS2345": 24
   },
   "src/slices/tests/browser/string.spec.ts": {
-    "TS2345": 10,
+    "TS2345": 9,
     "TS2554": 1
   },
   "src/slices/tests/browser/vectorSet.spec.ts": {
@@ -998,7 +986,7 @@
   },
   "src/slices/tests/browser/zset.spec.ts": {
     "TS2322": 2,
-    "TS2345": 29,
+    "TS2345": 28,
     "TS2554": 2
   },
   "src/slices/tests/cli/cli-output.spec.ts": {
@@ -1012,48 +1000,39 @@
   "src/slices/tests/cli/monitor.spec.ts": {
     "TS7016": 1
   },
-  "src/slices/tests/content/create-redis-buttons.spec.ts": {
-    "TS2345": 1
-  },
-  "src/slices/tests/content/guide-links.spec.ts": {
-    "TS2345": 1
-  },
   "src/slices/tests/instances/caCerts.spec.ts": {
-    "TS2345": 5
+    "TS2345": 4
   },
   "src/slices/tests/instances/clientCerts.spec.ts": {
-    "TS2345": 2
+    "TS2345": 1
   },
   "src/slices/tests/instances/cloud.spec.ts": {
     "TS2322": 3,
-    "TS2345": 7
+    "TS2345": 6
   },
   "src/slices/tests/instances/cluster.spec.ts": {
     "TS2322": 6,
-    "TS2345": 3
+    "TS2345": 2
   },
   "src/slices/tests/instances/instances.spec.ts": {
     "TS2322": 1,
-    "TS2345": 23
+    "TS2345": 22
   },
   "src/slices/tests/instances/sentinel.spec.ts": {
     "TS2322": 3,
-    "TS2345": 8
+    "TS2345": 7
   },
   "src/slices/tests/oauth/azure.spec.ts": {
     "TS2322": 1
   },
   "src/slices/tests/oauth/cloud.spec.ts": {
-    "TS2345": 14
+    "TS2345": 13
   },
   "src/slices/tests/panels/aiAssistant.spec.ts": {
     "TS2345": 1
   },
-  "src/slices/tests/panels/sidePanels.spec.ts": {
-    "TS2345": 1
-  },
   "src/slices/tests/pubsub/pubsub.spec.ts": {
-    "TS2345": 3
+    "TS2345": 2
   },
   "src/slices/tests/rdi/dryRun.spec.tsx": {
     "TS2345": 1
@@ -1069,22 +1048,19 @@
   },
   "src/slices/tests/recommendations/recommendations.spec.ts": {
     "TS2322": 4,
-    "TS2345": 11,
+    "TS2345": 10,
     "TS2559": 1
   },
   "src/slices/tests/user/user-settings.spec.ts": {
-    "TS2345": 2
+    "TS2345": 1
   },
   "src/slices/tests/workbench/wb-custom-tutorials.spec.ts": {
-    "TS2345": 4
+    "TS2345": 3
   },
   "src/slices/tests/workbench/wb-results.spec.ts": {
     "TS2322": 7,
     "TS2345": 20,
     "TS2741": 1
-  },
-  "src/slices/tests/workbench/wb-tutorials.spec.ts": {
-    "TS2345": 1
   },
   "src/slices/user/user-settings.ts": {
     "TS2345": 1
