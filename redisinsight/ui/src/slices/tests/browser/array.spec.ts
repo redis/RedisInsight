@@ -13,6 +13,7 @@ import { MOCK_TIMESTAMP } from 'uiSrc/mocks/data/dateNow'
 
 import reducer, {
   abortArrayRange,
+  abortArraySearch,
   initialState,
   setArrayInitialState,
   setArrayActiveQuery,
@@ -22,14 +23,21 @@ import reducer, {
   loadArrayScanSuccess,
   loadArrayLengthSuccess,
   loadArrayCountSuccess,
+  loadArraySearch,
+  loadArraySearchSuccess,
+  loadArraySearchFailure,
+  resetArraySearch,
   arraySelector,
   arrayDataSelector,
+  arraySearchSelector,
   fetchArrayRange,
   scanArrayRange,
   fetchArrayLength,
   fetchArrayCount,
   refreshArray,
+  searchArray,
 } from '../../browser/array'
+import { arrayGrepPredicateFactory } from 'uiSrc/mocks/factories/browser/array/arrayGrepPredicate.factory'
 import { updateSelectedKeyRefreshTime } from '../../browser/keys'
 import { addErrorNotification } from '../../app/notifications'
 import { ArrayAggregateOperation } from '../../interfaces/array'
@@ -174,6 +182,76 @@ describe('array slice', () => {
       )
       expect(next.data.count).toBe('7')
     })
+
+    describe('search sub-state', () => {
+      const dirtySearch = {
+        ...initialState,
+        search: {
+          loading: false,
+          error: 'boom',
+          loaded: true,
+          data: [{ index: '1', value: 'x' }],
+          predicates: arrayGrepPredicateFactory.buildList(1),
+        },
+      }
+
+      it('loadArraySearch flips loading, drops stale results, and records the query', () => {
+        const query = arrayGrepPredicateFactory.buildList(1)
+        const next = reducer(dirtySearch, loadArraySearch(query))
+        expect(next.search.loading).toBe(true)
+        expect(next.search.error).toBe('')
+        expect(next.search.data).toEqual([])
+        // `loaded` stays put until the request resolves — the tab keeps
+        // showing the loading state rather than briefly going blank.
+        expect(next.search.loaded).toBe(true)
+        // Records the predicates so refresh can replay them.
+        expect(next.search.predicates).toEqual(query)
+      })
+
+      it('loadArraySearchSuccess stores matches (u64 index as string) and marks loaded', () => {
+        const next = reducer(
+          {
+            ...initialState,
+            search: { ...initialState.search, loading: true },
+          },
+          loadArraySearchSuccess({
+            keyName: mockKey,
+            elements: [
+              { index: '3', value: 'a' },
+              { index: '900719925474099300000', value: null },
+            ],
+          }),
+        )
+        expect(next.search.loading).toBe(false)
+        expect(next.search.loaded).toBe(true)
+        expect(next.search.error).toBe('')
+        expect(next.search.data).toEqual([
+          { index: '3', value: 'a' },
+          { index: '900719925474099300000', value: null },
+        ])
+      })
+
+      it('loadArraySearchFailure records a distinct error and marks loaded', () => {
+        const next = reducer(
+          {
+            ...initialState,
+            search: { ...initialState.search, loading: true },
+          },
+          loadArraySearchFailure('nope'),
+        )
+        expect(next.search.loading).toBe(false)
+        expect(next.search.loaded).toBe(true)
+        expect(next.search.error).toBe('nope')
+        expect(next.search.data).toEqual([])
+      })
+
+      it('resetArraySearch restores the initial search sub-state only', () => {
+        const next = reducer(dirtySearch, resetArraySearch())
+        expect(next.search).toEqual(initialState.search)
+        // View-tab range state is untouched.
+        expect(next.data).toEqual(dirtySearch.data)
+      })
+    })
   })
 
   describe('selectors', () => {
@@ -188,6 +266,21 @@ describe('array slice', () => {
       }
       expect(arraySelector(root)).toEqual(next)
       expect(arrayDataSelector(root)).toEqual(next.data)
+    })
+
+    it('arraySearchSelector reads state.browser.array.search', () => {
+      const next = reducer(
+        initialState,
+        loadArraySearchSuccess({
+          keyName: mockKey,
+          elements: [{ index: '0', value: 'a' }],
+        }),
+      )
+      const root = {
+        ...initialStateDefault,
+        browser: { ...initialStateDefault.browser, array: next },
+      }
+      expect(arraySearchSelector(root)).toEqual(next.search)
     })
   })
 
@@ -517,6 +610,50 @@ describe('array slice', () => {
           ),
         ).toBeUndefined()
       })
+
+      it('replays the active search when predicates were recorded', async () => {
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, elements: [] },
+        })
+        const predicates = arrayGrepPredicateFactory.buildList(1)
+        const local = mockStore({
+          ...initialStateDefault,
+          browser: {
+            ...initialStateDefault.browser,
+            array: {
+              ...initialState,
+              search: { ...initialState.search, loaded: true, predicates },
+            },
+          },
+        })
+
+        await local.dispatch<any>(refreshArray(mockKey))
+
+        const searchCall = (apiService.post as jest.Mock).mock.calls.find(
+          ([url]) => url.includes('array/search'),
+        )
+        expect(searchCall?.[1]).toEqual({
+          keyName: mockKey,
+          predicates,
+          limit: 1_000_000,
+        })
+      })
+
+      it('does not replay a search on refresh when none has run', async () => {
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+        const local = storeWithQuery({ start: '0', end: '9', showEmpty: true })
+
+        await local.dispatch<any>(refreshArray(mockKey))
+
+        expect(
+          (apiService.post as jest.Mock).mock.calls.find(([url]) =>
+            url.includes('array/search'),
+          ),
+        ).toBeUndefined()
+      })
     })
 
     describe('fetchArrayLength', () => {
@@ -548,6 +685,88 @@ describe('array slice', () => {
         expect(store.getActions()).toEqual([
           loadArrayCountSuccess(response.data),
         ])
+      })
+    })
+
+    describe('searchArray', () => {
+      const predicates = arrayGrepPredicateFactory.buildList(1)
+
+      afterEach(() => abortArraySearch())
+
+      it('posts keyName + predicates and dispatches success', async () => {
+        const response = {
+          status: 200,
+          data: {
+            keyName: mockKey,
+            elements: [{ index: '0', value: 'redis' }],
+          },
+        }
+        apiService.post = jest.fn().mockResolvedValue(response)
+
+        await store.dispatch<any>(searchArray({ key: mockKey, predicates }))
+
+        const [url, body] = (apiService.post as jest.Mock).mock.calls[0]
+        expect(url).toContain('array/search')
+        // WITHVALUES is intentionally omitted so the API default (true)
+        // applies; a safety LIMIT caps the result set like ARSCAN does.
+        expect(body).toEqual({
+          keyName: mockKey,
+          predicates,
+          limit: 1_000_000,
+        })
+        expect(store.getActions()).toEqual([
+          loadArraySearch(predicates),
+          loadArraySearchSuccess(response.data),
+        ])
+      })
+
+      it('dispatches failure + notification on error', async () => {
+        const rejected = {
+          response: { status: 500, data: { message: 'boom' } },
+        }
+        apiService.post = jest.fn().mockRejectedValue(rejected)
+
+        await store.dispatch<any>(searchArray({ key: mockKey, predicates }))
+
+        expect(store.getActions()).toEqual([
+          loadArraySearch(predicates),
+          addErrorNotification(rejected as IAddInstanceErrorPayload),
+          loadArraySearchFailure('boom'),
+        ])
+      })
+
+      it('dispatches failure when the response resolves with a non-success status', async () => {
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 304, data: null })
+
+        await store.dispatch<any>(searchArray({ key: mockKey, predicates }))
+
+        expect(store.getActions()).toEqual([
+          loadArraySearch(predicates),
+          loadArraySearchFailure(DEFAULT_ERROR_MESSAGE),
+        ])
+      })
+
+      it('passes an AbortSignal and stays silent once aborted', async () => {
+        apiService.post = jest.fn().mockImplementation(
+          (_url, _body, config) =>
+            new Promise((_resolve, reject) => {
+              config?.signal?.addEventListener('abort', () => {
+                reject(new axios.Cancel('aborted by client'))
+              })
+            }),
+        )
+
+        const dispatchPromise = store.dispatch<any>(
+          searchArray({ key: mockKey, predicates }),
+        )
+        abortArraySearch()
+        await dispatchPromise
+
+        const [, , config] = (apiService.post as jest.Mock).mock.calls[0]
+        expect(config?.signal).toBeInstanceOf(AbortSignal)
+        expect(store.getActions()).toEqual([loadArraySearch(predicates)])
       })
     })
   })

@@ -4,6 +4,7 @@ import {
   GetArrayCountResponse,
   GetArrayLengthResponse,
   GetArrayRangeResponse,
+  GetArraySearchResponse,
   GetArrayScanResponse,
 } from 'apiClient'
 import { RedisString } from 'uiSrc/slices/interfaces/app'
@@ -36,6 +37,24 @@ export interface ArrayDataElement {
   index: string
   /** Stored value, or `null` for an empty slot. */
   value: RedisString | null
+}
+
+/**
+ * Match criteria for an ARGREP predicate. Values are the literal command
+ * tokens; mirrors the backend `ArrayGrepCriteria` enum.
+ */
+export enum ArrayGrepCriteria {
+  Exact = 'EXACT',
+  Match = 'MATCH',
+  Glob = 'GLOB',
+  Re = 'RE',
+}
+
+/** One criteria/value pair sent to ARGREP. */
+export interface ArrayGrepPredicate {
+  criteria: ArrayGrepCriteria
+  /** Pattern / value to match — a plain string is a valid `RedisString`. */
+  value: string
 }
 
 export interface ArrayData {
@@ -97,12 +116,29 @@ export interface ArrayAggregateState {
   query: ArrayAggregateActiveQuery | null
 }
 
+/**
+ * Search (ARGREP) sub-state, kept separate from the View tab's range state
+ * so the two tabs — both mounted at once — never clobber each other's
+ * results. `loaded` flips true once the first search resolves (success or
+ * failure) so the tab can stay blank until the user actually runs one.
+ * `predicates` records the last-run query so the key-details refresh button
+ * can replay it (mirrors `ArrayActiveQuery` for the View tab).
+ */
+export interface ArraySearchState {
+  loading: boolean
+  error: string
+  loaded: boolean
+  data: ArrayDataElement[]
+  predicates: ArrayGrepPredicate[]
+}
+
 export interface StateArray {
   loading: boolean
   error: string
   query: ArrayActiveQuery
   data: ArrayData
   aggregate: ArrayAggregateState
+  search: ArraySearchState
 }
 
 export interface FetchArrayRangeParams {
@@ -135,6 +171,16 @@ export interface FetchArrayAggregateParams {
 }
 
 /**
+ * ARGREP search request. Only the predicates are modelled here; the thunk
+ * pins a safety LIMIT and lets the API default the rest (range, NOCASE, and
+ * WITHVALUES — `true`, so the response carries values for the table).
+ */
+export interface SearchArrayParams {
+  key: RedisString
+  predicates: ArrayGrepPredicate[]
+}
+
+/**
  * Re-export the auto-generated SDK response shapes for consumers that need
  * to pass them around. The slice itself narrows them into `ArrayData` /
  * `ArrayDataElement` for storage.
@@ -145,5 +191,6 @@ export type {
   GetArrayCountResponse,
   GetArrayLengthResponse,
   GetArrayRangeResponse,
+  GetArraySearchResponse,
   GetArrayScanResponse,
 }

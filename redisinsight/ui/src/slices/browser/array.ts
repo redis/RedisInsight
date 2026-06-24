@@ -6,6 +6,7 @@ import {
   GetArrayCountResponse,
   GetArrayLengthResponse,
   GetArrayRangeResponse,
+  GetArraySearchResponse,
   GetArrayScanResponse,
 } from 'apiClient'
 import { apiService } from 'uiSrc/services'
@@ -22,10 +23,12 @@ import {
   ArrayActiveQuery,
   ArrayAggregateActiveQuery,
   ArrayDataElement,
+  ArrayGrepPredicate,
   StateArray,
   FetchArrayAggregateParams,
   FetchArrayRangeParams,
   FetchArrayScanParams,
+  SearchArrayParams,
 } from 'uiSrc/slices/interfaces/array'
 import { RedisString } from 'uiSrc/slices/interfaces/app'
 import { updateSelectedKeyRefreshTime } from './keys'
@@ -50,6 +53,14 @@ const DEFAULT_QUERY_END = '9'
  */
 export const DEFAULT_SCAN_LIMIT = 1_000_000
 
+/**
+ * Safety cap on ARGREP result-set size. Without a LIMIT, a broad predicate
+ * would return every match (with values) and could build a huge response /
+ * table. Pinned to the backend's `ARRAY_RANGE_MAX_ELEMENTS`, mirroring the
+ * scan cap.
+ */
+export const DEFAULT_SEARCH_LIMIT = 1_000_000
+
 export const initialState: StateArray = {
   loading: false,
   error: '',
@@ -70,6 +81,13 @@ export const initialState: StateArray = {
     result: null,
     hasResult: false,
     query: null,
+  },
+  search: {
+    loading: false,
+    error: '',
+    loaded: false,
+    data: [],
+    predicates: [],
   },
 }
 
@@ -209,6 +227,38 @@ const arraySlice = createSlice({
     clearArrayAggregate: (state) => {
       state.aggregate = { ...initialState.aggregate }
     },
+
+    // ARGREP search lives in its own sub-state so the View and Search tabs
+    // (both mounted at once) never overwrite each other's results. The
+    // predicates are recorded so the header refresh button can replay them.
+    loadArraySearch: (
+      state,
+      { payload }: PayloadAction<ArrayGrepPredicate[]>,
+    ) => {
+      state.search.loading = true
+      state.search.error = ''
+      state.search.data = []
+      state.search.predicates = payload
+    },
+    loadArraySearchSuccess: (
+      state,
+      { payload }: PayloadAction<GetArraySearchResponse>,
+    ) => {
+      state.search.loading = false
+      state.search.loaded = true
+      state.search.data = payload.elements.map((element) => ({
+        index: element.index,
+        value: element.value as ArrayDataElement['value'],
+      }))
+    },
+    loadArraySearchFailure: (state, { payload }: PayloadAction<string>) => {
+      state.search.loading = false
+      state.search.loaded = true
+      state.search.error = payload
+    },
+    resetArraySearch: (state) => {
+      state.search = { ...initialState.search }
+    },
   },
 })
 
@@ -225,12 +275,18 @@ export const {
   loadArrayAggregateSuccess,
   loadArrayAggregateFailure,
   clearArrayAggregate,
+  loadArraySearch,
+  loadArraySearchSuccess,
+  loadArraySearchFailure,
+  resetArraySearch,
 } = arraySlice.actions
 
 export const arraySelector = (state: RootState) => state.browser.array
 export const arrayDataSelector = (state: RootState) => state.browser.array?.data
 export const arrayAggregateSelector = (state: RootState) =>
   state.browser.array?.aggregate
+export const arraySearchSelector = (state: RootState) =>
+  state.browser.array?.search
 
 export default arraySlice.reducer
 
@@ -359,6 +415,63 @@ export function scanArrayRange(params: FetchArrayScanParams) {
   }
 }
 
+/**
+ * Search-tab counterpart to `arrayRangeController`. Kept separate so a
+ * search and a View-tab range fetch can be in flight at once (both tabs
+ * stay mounted) without aborting each other. A newer search aborts the
+ * previous one so a slow earlier response can't land on fresh results.
+ */
+let arraySearchController: AbortController | null = null
+
+/**
+ * Abort the in-flight ARGREP search (if any). Called by the Search tab hook
+ * on key switch / unmount; safe no-op when nothing is in flight.
+ */
+export const abortArraySearch = (): void => {
+  arraySearchController?.abort()
+  arraySearchController = null
+}
+
+// ARGREP — predicate search across the array's index range. WITHVALUES is
+// left to the API default (true) so results carry values for the table; a
+// safety LIMIT caps the result set like ARSCAN does.
+export function searchArray(params: SearchArrayParams) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    arraySearchController?.abort()
+    const controller = new AbortController()
+    arraySearchController = controller
+
+    dispatch(loadArraySearch(params.predicates))
+    try {
+      const state = stateInit()
+      const { data, status } = await apiService.post<GetArraySearchResponse>(
+        arrayUrl(state, ApiEndpoints.ARRAY_SEARCH),
+        {
+          keyName: params.key,
+          predicates: params.predicates,
+          limit: DEFAULT_SEARCH_LIMIT,
+        },
+        { ...encodingParams(state), signal: controller.signal },
+      )
+      if (controller.signal.aborted) return
+      if (isStatusSuccessful(status)) {
+        dispatch(loadArraySearchSuccess(data))
+      } else {
+        dispatch(loadArraySearchFailure(DEFAULT_ERROR_MESSAGE))
+      }
+    } catch (error) {
+      if (axios.isCancel(error)) return
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      dispatch(loadArraySearchFailure(errorMessage))
+    } finally {
+      if (arraySearchController === controller) {
+        arraySearchController = null
+      }
+    }
+  }
+}
+
 export function fetchArrayLength(key: RedisString) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     try {
@@ -460,11 +573,12 @@ export function aggregateArray(params: FetchArrayAggregateParams) {
  * `slices/browser/keys`). Replays whichever query the form last ran —
  * range/scan and the user's bounds — so refresh doesn't silently swap
  * the table for a different slice. Keeps `resetData: false` so the
- * table doesn't flash through an empty loading state.
+ * table doesn't flash through an empty loading state. Also replays the
+ * last Search-tab query so its results don't go stale after a refresh.
  */
 export function refreshArray(key: RedisString) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
-    const { query, aggregate } = stateInit().browser.array
+    const { query, aggregate, search } = stateInit().browser.array
     const { start, end, showEmpty } = query
 
     dispatch(fetchArrayLength(key))
@@ -484,6 +598,10 @@ export function refreshArray(key: RedisString) {
     // been computed for this key (`hasResult` + a stored query).
     if (aggregate.hasResult && aggregate.query) {
       dispatch(aggregateArray({ key, ...aggregate.query, resetData: false }))
+    }
+
+    if (search.predicates.length > 0) {
+      dispatch(searchArray({ key, predicates: search.predicates }))
     }
   }
 }

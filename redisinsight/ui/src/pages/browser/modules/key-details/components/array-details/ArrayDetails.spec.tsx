@@ -21,6 +21,9 @@ jest.mock('./array-range-form', () => ({
 jest.mock('./array-aggregate-form', () => ({
   ArrayAggregateForm: stubChild('array-aggregate-form-mock'),
 }))
+jest.mock('./array-search-form', () => ({
+  ArraySearchForm: stubChild('array-search-form-mock'),
+}))
 jest.mock('uiSrc/pages/browser/modules', () => ({
   KeyDetailsHeader: stubChild('key-details-header-mock'),
 }))
@@ -55,6 +58,18 @@ jest.mock('./hooks', () => ({
     result: null,
     hasResult: false,
   }),
+  useArraySearchQuery: () => ({
+    criteria: 'EXACT',
+    value: '',
+    setCriteria: jest.fn(),
+    setValue: jest.fn(),
+    runSearch: jest.fn(),
+    isArrayKeyReady: true,
+    elements: [],
+    loading: false,
+    error: '',
+    loaded: false,
+  }),
 }))
 
 const mockedProps = mock<Props>()
@@ -74,7 +89,7 @@ describe('ArrayDetails', () => {
     render(<ArrayDetails {...instance(mockedProps)} />)
 
     expect(screen.getByTestId('array-range-form-mock')).toBeVisible()
-    expect(screen.getByTestId('array-search-placeholder')).not.toBeVisible()
+    expect(screen.getByTestId('array-search-form-mock')).not.toBeVisible()
     expect(screen.getByTestId('array-aggregate-form-mock')).not.toBeVisible()
 
     fireEvent.mouseDown(
@@ -82,7 +97,7 @@ describe('ArrayDetails', () => {
     )
 
     expect(screen.getByTestId('array-range-form-mock')).not.toBeVisible()
-    expect(screen.getByTestId('array-search-placeholder')).toBeVisible()
+    expect(screen.getByTestId('array-search-form-mock')).toBeVisible()
     expect(screen.getByTestId('array-aggregate-form-mock')).not.toBeVisible()
 
     fireEvent.mouseDown(
@@ -90,7 +105,7 @@ describe('ArrayDetails', () => {
     )
 
     expect(screen.getByTestId('array-range-form-mock')).not.toBeVisible()
-    expect(screen.getByTestId('array-search-placeholder')).not.toBeVisible()
+    expect(screen.getByTestId('array-search-form-mock')).not.toBeVisible()
     expect(screen.getByTestId('array-aggregate-form-mock')).toBeVisible()
   })
 })

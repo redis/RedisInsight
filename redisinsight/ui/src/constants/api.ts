@@ -82,6 +82,7 @@ enum ApiEndpoints {
   ARRAY_GET_LENGTH = 'array/get-length',
   ARRAY_GET_COUNT = 'array/get-count',
   ARRAY_AGGREGATE = 'array/aggregate',
+  ARRAY_SEARCH = 'array/search',
 
   STREAMS = 'streams',
   STREAMS_ENTRIES = 'streams/entries',

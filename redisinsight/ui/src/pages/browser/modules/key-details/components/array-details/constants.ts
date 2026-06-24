@@ -4,6 +4,8 @@
  * strings to preserve the BigInt-as-string contract (§8.1) — never numbers.
  */
 
+import { ArrayGrepCriteria } from 'uiSrc/slices/interfaces/array'
+
 /** Inclusive lower bound for the initial range query. */
 export const DEFAULT_RANGE_START = '0'
 
@@ -13,6 +15,9 @@ export const DEFAULT_RANGE_START = '0'
  * so the table comfortably fits without scrolling on first load.
  */
 export const DEFAULT_RANGE_END = '9'
+
+/** Criteria pre-selected when the Search tab opens. */
+export const DEFAULT_SEARCH_CRITERIA = ArrayGrepCriteria.Exact
 
 export enum ArrayDetailsTab {
   View = 'view',
