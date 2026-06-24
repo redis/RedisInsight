@@ -172,3 +172,5 @@ export const useListContent = () => {
     onCloseDelete: handleCloseDelete,
   }
 }
+
+export type UseListContentReturn = ReturnType<typeof useListContent>

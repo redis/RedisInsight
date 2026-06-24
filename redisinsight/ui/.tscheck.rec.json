@@ -34,9 +34,6 @@
     "TS2339": 1,
     "TS2551": 1
   },
-  "src/components/base/display/collapsible-nav-group/RICollapsibleNavGroup.tsx": {
-    "TS2724": 1
-  },
   "src/components/base/forms/buttons/EmptyButton.stories.tsx": {
     "TS2322": 1
   },
@@ -45,9 +42,6 @@
   },
   "src/components/base/icons/RiIcon.tsx": {
     "TS2339": 1
-  },
-  "src/components/base/utils/resize-observer/ResizeObserver.tsx": {
-    "TS7030": 1
   },
   "src/components/bulk-actions-config/BulkActionsConfig.spec.tsx": {
     "TS2322": 1,
@@ -80,9 +74,6 @@
   "src/components/consents-settings/ConsentsSettings.tsx": {
     "TS2339": 1
   },
-  "src/components/divider/Divider.spec.tsx": {
-    "TS2614": 1
-  },
   "src/components/formated-date/FormatedDate.tsx": {
     "TS2345": 1
   },
@@ -101,9 +92,6 @@
   },
   "src/components/json-viewer/utils.spec.ts": {
     "TS2345": 3
-  },
-  "src/components/main-router/components/RedisStackRoutes.spec.tsx": {
-    "TS2614": 1
   },
   "src/components/main-router/constants/defaultRoutes.ts": {
     "TS2322": 4
@@ -203,9 +191,6 @@
   },
   "src/components/side-panels/panels/ai-assistant/components/expert-chat/components/no-indexes-initial-message/NoIndexesInitialMessage.spec.tsx": {
     "TS2741": 3
-  },
-  "src/components/side-panels/panels/ai-assistant/components/shared/markdown-message/components/chat-external-link/ChatExternalLink.tsx": {
-    "TS2305": 1
   },
   "src/components/side-panels/panels/enablement-area/EnablementArea/components/DeleteTutorialButton/DeleteTutorialButton.tsx": {
     "TS2769": 1
@@ -316,9 +301,6 @@
     "TS7031": 1,
     "TS7034": 4,
     "TS7053": 3
-  },
-  "src/packages/redisgraph/src/parser.ts": {
-    "TS6133": 1
   },
   "src/packages/redisgraph/src/utils.ts": {
     "TS7006": 11
@@ -453,9 +435,6 @@
   "src/pages/browser/modules/key-details/components/list-details/add-list-elements/AddListElements.tsx": {
     "TS2322": 2
   },
-  "src/pages/browser/modules/key-details/components/list-details/list-details-table/ListDetailsTable.spec.tsx": {
-    "TS2305": 1
-  },
   "src/pages/browser/modules/key-details/components/list-details/list-details-table/ListDetailsTable.tsx": {
     "TS2322": 3,
     "TS2339": 1,
@@ -589,9 +568,6 @@
   },
   "src/pages/database-analysis/components/analysis-data-view/AnalysisDataView.spec.tsx": {
     "TS2339": 2
-  },
-  "src/pages/home/components/add-database-screen/AddDatabaseScreen.styles.ts": {
-    "TS2304": 1
   },
   "src/pages/home/components/cloud-connection/cloud-connection-form/CloudConnectionForm.tsx": {
     "TS7053": 1
@@ -753,9 +729,6 @@
   "src/pages/vector-search/hooks/useCreateIndexFlow/useCreateIndexFlow.spec.ts": {
     "TS2345": 1
   },
-  "src/pages/vector-search/hooks/useListContent/index.ts": {
-    "TS2724": 1
-  },
   "src/pages/vector-search/hooks/useListContent/useListContent.ts": {
     "TS2322": 1
   },
@@ -777,9 +750,6 @@
   },
   "src/pages/workbench/components/wb-view/WBViewWrapper.spec.tsx": {
     "TS2339": 1
-  },
-  "src/pages/workbench/utils/suggestions.ts": {
-    "TS6133": 1
   },
   "src/pages/workbench/utils/tests/monaco.spec.ts": {
     "TS2345": 1
@@ -1181,9 +1151,6 @@
   },
   "src/utils/tests/events/handleDownloadButton.spec.ts": {
     "TS2345": 1
-  },
-  "src/utils/tests/formatters/bufferFormatters.spec.ts": {
-    "TS2304": 1
   },
   "src/utils/tests/formatters/markdown/remarkRedisUpload.spec.ts": {
     "TS2339": 3

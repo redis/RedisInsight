@@ -73,7 +73,7 @@ function responseParser(data: any): IResponseParser {
       danglingEdgeIds,
     }
 
-  const entries = data[1].map((entry: any) => {
+  data[1].map((entry: any) => {
     /* entry -> has headers number of items */
     entry.map((item: any) => {
       if (Array.isArray(item)) {

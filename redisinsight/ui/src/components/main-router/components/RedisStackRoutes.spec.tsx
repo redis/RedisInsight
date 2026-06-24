@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash'
 import React from 'react'
 import { instance, mock } from 'ts-mockito'
 import { cleanup, mockedStore, render } from 'uiSrc/utils/test-utils'
-import RedisStackRoutes, { Props } from './RedisStackRoutes'
+import RedisStackRoutes, { IProps as Props } from './RedisStackRoutes'
 
 const mockedProps = mock<Props>()
 
