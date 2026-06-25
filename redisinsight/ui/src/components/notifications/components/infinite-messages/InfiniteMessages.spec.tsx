@@ -246,10 +246,10 @@ describe('INFINITE_MESSAGES', () => {
         'Your subscription does not have a free Redis Cloud database.',
       )
       const description = await screen.findByText(
-        'Do you want to create a free database in your existing subscription?',
+        'Do you want to build a free database in your existing subscription?',
       )
       const createButton = await screen.findByRole('button', {
-        name: /Create/,
+        name: /Build database/,
       })
       const closeButton = await screen.findByRole('button', { name: /Close/ })
 
@@ -259,14 +259,14 @@ describe('INFINITE_MESSAGES', () => {
       expect(closeButton).toBeInTheDocument()
     })
 
-    it('should call onSuccess callback when clicking on the "Create" button', async () => {
+    it('should call onSuccess callback when clicking on the "Build database" button', async () => {
       const onSuccess = jest.fn()
       const onClose = jest.fn()
 
       renderToast(INFINITE_MESSAGES.SUBSCRIPTION_EXISTS(onSuccess, onClose))
 
       const createButton = await screen.findByRole('button', {
-        name: /Create/,
+        name: /Build database/,
       })
       expect(createButton).toBeInTheDocument()
 
