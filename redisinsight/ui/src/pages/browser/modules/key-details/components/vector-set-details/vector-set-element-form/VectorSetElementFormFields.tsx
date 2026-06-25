@@ -72,7 +72,7 @@ const VectorSetElementFormFields = ({
                     id={`element-vector-${item.id}`}
                     placeholder={
                       rowVectorDim !== undefined
-                        ? `Enter Vector (${rowVectorDim} dimensions)`
+                        ? `Enter vector (${rowVectorDim} dimensions)`
                         : 'Enter Vector'
                     }
                     value={item.vector}

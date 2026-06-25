@@ -129,7 +129,7 @@ export class KeyDetails {
     this.streamEntries = page.locator('[data-testid="stream-entries-container"]');
     this.newGroupButton = page.getByRole('button', { name: 'New Group' });
     this.consumerGroupsGrid = page.locator('grid').filter({ hasText: /Group Name/ });
-    this.noConsumerGroupsMessage = page.getByText('Your Key has no Consumer Groups available.');
+    this.noConsumerGroupsMessage = page.getByText('Your key has no consumer groups available.');
 
     // JSON-specific
     this.jsonContent = page.getByTestId('json-details');

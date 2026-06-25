@@ -61,7 +61,7 @@ export const useClusterDatabasesConfig = () => {
   } = useAppSelector(clusterSelector)
 
   useEffect(() => {
-    setTitle('Auto-Discover Redis Enterprise Databases')
+    setTitle('Auto-discover Redis Enterprise databases')
   }, [])
 
   const handleClose = useCallback(

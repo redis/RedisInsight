@@ -47,7 +47,7 @@ const DatabaseAnalysisTabs = (props: Props) => {
   const tabs: TabInfo[] = useMemo(
     () => [
       {
-        label: <Text>Data Summary</Text>,
+        label: <Text>Data summary</Text>,
         value: DatabaseAnalysisViewTab.DataSummary,
         content: <AnalysisDataView />,
       },

@@ -87,7 +87,7 @@ describe('ModuleNotLoadedMinimalized', () => {
 
     expect(
       screen.getByText(
-        /Create a free Redis Cloud database with search and query/,
+        /Build a free Redis Cloud database with search and query/,
       ),
     ).toBeInTheDocument()
   })

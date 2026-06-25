@@ -88,7 +88,7 @@ const PublishMessage = () => {
               <TextInput
                 name="channel"
                 id="channel"
-                placeholder="Enter Channel Name"
+                placeholder="Enter channel name"
                 value={channel}
                 onChange={(value) => setChannel(value)}
                 autoComplete="off"
@@ -102,7 +102,7 @@ const PublishMessage = () => {
             <TextInput
               name="message"
               id="message"
-              placeholder="Enter Message"
+              placeholder="Enter message"
               value={message}
               onChange={(value) => setMessage(value)}
               autoComplete="off"

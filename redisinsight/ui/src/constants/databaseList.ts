@@ -9,9 +9,9 @@ export enum DatabaseListColumn {
 }
 
 export const COLUMN_FIELD_NAME_MAP = new Map<DatabaseListColumn, string>([
-  [DatabaseListColumn.Name, 'Database Alias'],
+  [DatabaseListColumn.Name, 'Database alias'],
   [DatabaseListColumn.Host, 'Host:Port'],
-  [DatabaseListColumn.ConnectionType, 'Connection Type'],
+  [DatabaseListColumn.ConnectionType, 'Connection type'],
   [DatabaseListColumn.Modules, 'Capabilities'],
   [DatabaseListColumn.LastConnection, 'Last connection'],
   [DatabaseListColumn.Tags, 'Tags'],

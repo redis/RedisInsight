@@ -89,9 +89,7 @@ export const SearchPageFallback = ({ content }: SearchPageFallbackProps) => {
                         }}
                         data-testid={`${content.testId}-get-started-button`}
                       >
-                        <PrimaryButton size="m">
-                          Get started for free
-                        </PrimaryButton>
+                        <PrimaryButton size="m">Build database</PrimaryButton>
                       </Link>
                     )}
                   </OAuthSsoHandlerDialog>

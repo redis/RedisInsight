@@ -421,7 +421,7 @@ test.describe('Analytics > Database Analysis (Large Dataset)', () => {
       // The namespace table header has sortable button elements with aria-description
       const keyPatternHeader = analyticsPage.nspTableMemory
         .getByRole('columnheader')
-        .filter({ hasText: 'Key Pattern' })
+        .filter({ hasText: 'Key pattern' })
         .getByRole('button');
 
       await expect(keyPatternHeader).toBeVisible();

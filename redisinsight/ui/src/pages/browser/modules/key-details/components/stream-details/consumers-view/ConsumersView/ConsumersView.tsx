@@ -29,7 +29,7 @@ const ConsumersView = (props: Props) => {
     columns = [],
     onClosePopover,
     onSelectConsumer,
-    noItemsMessageString = 'Your Consumer Group has no Consumers available.',
+    noItemsMessageString = 'Your consumer group has no consumers available.',
   } = props
 
   const { loading } = useAppSelector(streamGroupsSelector)

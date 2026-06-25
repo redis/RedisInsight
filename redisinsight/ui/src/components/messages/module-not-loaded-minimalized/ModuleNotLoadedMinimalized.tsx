@@ -109,7 +109,7 @@ const ModuleNotLoadedMinimalized = (props: Props) => {
                     }}
                     data-testid="tutorials-get-started-link"
                   >
-                    Start with Cloud for free
+                    Build a free Redis Cloud database
                   </Link>
                 )}
               </OAuthSsoHandlerDialog>

@@ -29,7 +29,7 @@ const MessagesView = (props: Props) => {
     total,
     onClosePopover,
     loadMoreItems,
-    noItemsMessageString = 'Your Consumer has no pending messages.',
+    noItemsMessageString = 'Your consumer has no pending messages.',
   } = props
 
   const { loading } = useAppSelector(streamGroupsSelector)

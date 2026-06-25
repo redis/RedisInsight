@@ -109,7 +109,7 @@ export class SettingsPage extends BasePage {
     this.apiUserKeysText = page.getByText('API user keys', { exact: true });
     this.removeApiKeysButton = page.getByRole('button', { name: 'Remove all API keys' });
     this.autodiscoverButton = page.getByRole('button', { name: 'Autodiscover' });
-    this.createCloudDbButton = page.getByRole('button', { name: 'Create Redis Cloud database' });
+    this.createCloudDbButton = page.getByRole('button', { name: 'Build Redis Cloud database' });
   }
 
   /**

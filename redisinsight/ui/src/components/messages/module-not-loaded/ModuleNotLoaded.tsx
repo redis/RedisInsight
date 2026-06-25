@@ -101,7 +101,7 @@ const ModuleNotLoaded = ({
 
       return !freeDbWithModule ? (
         <Text className={cx(styles.text, styles.marginBottom)}>
-          Create a free all-in-one Redis Cloud database to start exploring these
+          Build a free all-in-one Redis Cloud database to start exploring these
           capabilities.
         </Text>
       ) : (

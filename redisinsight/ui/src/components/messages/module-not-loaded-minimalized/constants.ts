@@ -8,19 +8,19 @@ export const MODULE_CAPABILITY_TEXT_NOT_AVAILABLE: {
 } = {
   [RedisDefaultModules.Bloom]: {
     title: 'Probabilistic data structures are not available',
-    text: 'Create a free Redis Cloud database with probabilistic data structures that extend the core capabilities of your Redis.',
+    text: 'Build a free Redis Cloud database with probabilistic data structures that extend the core capabilities of your Redis.',
   },
   [RedisDefaultModules.ReJSON]: {
     title: 'JSON data structure is not available',
-    text: 'Create a free Redis Cloud database with JSON capability that extends the core capabilities of your Redis.',
+    text: 'Build a free Redis Cloud database with JSON capability that extends the core capabilities of your Redis.',
   },
   [RedisDefaultModules.Search]: {
     title: 'Redis Search capability is not available',
-    text: 'Create a free Redis Cloud database with search and query features that extend the core capabilities of your Redis.',
+    text: 'Build a free Redis Cloud database with search and query features that extend the core capabilities of your Redis.',
   },
   [RedisDefaultModules.TimeSeries]: {
     title: 'Time series data structure is not available',
-    text: 'Create a free Redis Cloud database with the time series data structure that extends the core capabilities of your Redis.',
+    text: 'Build a free Redis Cloud database with the time series data structure that extends the core capabilities of your Redis.',
   },
 }
 

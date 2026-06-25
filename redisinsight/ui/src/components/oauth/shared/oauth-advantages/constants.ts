@@ -3,7 +3,7 @@ export const OAUTH_ADVANTAGES_ITEMS = [
     title: 'Structured querying and full-text search',
   },
   {
-    title: 'Document Store with JSON native',
+    title: 'Document store with native JSON',
   },
   {
     title: 'Scalable and fully managed',

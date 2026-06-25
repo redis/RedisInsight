@@ -118,7 +118,7 @@ const RedisClusterDatabases = ({
     <AutodiscoveryPageTemplate>
       <DatabaseContainer>
         <Header
-          title="Auto-Discover Redis Enterprise Databases"
+          title="Auto-discover Redis Enterprise databases"
           onBack={onBack}
           onQueryChange={onQueryChange}
           subTitle={getSubtitle(items)}

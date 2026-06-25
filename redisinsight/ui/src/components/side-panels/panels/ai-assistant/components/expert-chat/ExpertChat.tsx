@@ -198,7 +198,7 @@ const ExpertChat = () => {
       return {
         title: 'Open a database',
         content:
-          'Open your Redis database with Redis Search, or create a new database to get started.',
+          'Open your Redis database with Redis Search, or build a new database to get started.',
       }
     }
 
@@ -207,7 +207,7 @@ const ExpertChat = () => {
         title: 'Redis Search capability is not available',
         content: freeInstances?.length
           ? 'Use your free all-in-one Redis Cloud database to start exploring these capabilities.'
-          : 'Create a free Redis Cloud database with Redis Search capability that extends the core capabilities of open-source Redis.',
+          : 'Build a free Redis Cloud database with Redis Search capability that extends the core capabilities of open-source Redis.',
         icon: <TelescopeImg className={styles.iconTelescope} />,
       }
     }

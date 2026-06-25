@@ -158,7 +158,7 @@ const LiveTimeRecommendations = () => {
   const renderHeader = () => (
     <Row align="center" justify="between" className={styles.actions}>
       <Row align="center" gap="m">
-        <ColorText variant="semiBold">Our Tips</ColorText>
+        <ColorText variant="semiBold">Our tips</ColorText>
         <RiTooltip
           position="bottom"
           className={styles.tooltip}

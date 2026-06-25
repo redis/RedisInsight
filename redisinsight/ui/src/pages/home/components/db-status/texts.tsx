@@ -9,9 +9,9 @@ export const CHECK_CLOUD_DATABASE = (
     <div>
       Free Redis Cloud DBs auto-delete after 15 days of inactivity.
       <Spacer size="s" />
-      But not to worry, you can always re-create it to test your ideas.
+      But not to worry, you can always rebuild it to test your ideas.
       <br />
-      Includes native support for JSON, Query Engine and more.
+      Includes native support for JSON, Redis Search and more.
     </div>
   </>
 )
@@ -38,7 +38,7 @@ export const WARNING_WITHOUT_CAPABILITY = (
     <div>
       Test ideas and build prototypes.
       <br />
-      Includes native support for JSON, Query Engine and more.
+      Includes native support for JSON, Redis Search and more.
     </div>
     <Spacer size="s" />
     <div>

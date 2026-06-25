@@ -43,7 +43,7 @@ const NotFoundErrorPage = () => {
               <Title size="XXL">
                 Whoops!
                 <br />
-                This Page Is an Empty Set
+                This page is an empty set
               </Title>
               <Text component="div">
                 <p

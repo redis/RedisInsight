@@ -87,7 +87,7 @@ const NoRecommendationsScreen = () => {
               onClick={() => setIsShowInfo(true)}
               data-testid="insights-db-analysis-link"
             >
-              Analyze Database
+              Analyze database
             </PrimaryButton>
           </PopoverRunAnalyze>
         </FeatureFlagComponent>

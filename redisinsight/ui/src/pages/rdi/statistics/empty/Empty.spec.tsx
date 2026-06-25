@@ -14,7 +14,7 @@ describe('Empty', () => {
     ).toBeInTheDocument()
   })
 
-  test('navigates to pipeline config page when "Add Pipeline" button is clicked', () => {
+  test('navigates to pipeline config page when "Add pipeline" button is clicked', () => {
     const history = createMemoryHistory()
     render(
       <Router history={history}>

@@ -21,6 +21,6 @@ export const VERSION_NOT_SUPPORTED_CONTENT: SearchPageFallbackContent = {
     'This page requires Redis Search 2.0 or later (included with Redis 6+). ' +
     'Older versions of the query engine are not compatible with the commands used here.',
   ctaText:
-    'Create a free Redis Cloud database to start exploring these capabilities.',
+    'Build a free Redis Cloud database to start exploring these capabilities.',
   oauthSource: OAuthSocialSource.BrowserFiltering,
 }

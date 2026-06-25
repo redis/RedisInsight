@@ -217,7 +217,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
           <Spacer size="s" />
           <Text size="s" className={styles.smallText} color="primary">
             Cloud API keys will be created and stored when you connect to Redis
-            Cloud to create a free Redis Cloud database or autodiscover your
+            Cloud to build a free Redis Cloud database or autodiscover your
             Cloud database.
           </Text>
           <Spacer />
@@ -251,7 +251,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
                   }
                   data-testid="create-cloud-db-btn"
                 >
-                  Create Redis Cloud database
+                  Build Redis Cloud database
                 </PrimaryButton>
               )}
             </OAuthSsoHandlerDialog>

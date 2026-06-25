@@ -48,7 +48,7 @@ import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import styles from './styles.module.scss'
 
 const placeholders = {
-  [SearchMode.Pattern]: 'Filter by Key Name or Pattern',
+  [SearchMode.Pattern]: 'Filter by key name or pattern',
   [SearchMode.Redisearch]: 'Search per Values of Keys',
 }
 

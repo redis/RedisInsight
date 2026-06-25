@@ -234,9 +234,9 @@ export const INFINITE_MESSAGES: InfiniteMessagesType = {
     id: InfiniteMessagesIds.subscriptionExists,
     message: 'Your subscription does not have a free Redis Cloud database.',
     description:
-      'Do you want to create a free database in your existing subscription?',
+      'Do you want to build a free database in your existing subscription?',
     actions: {
-      primary: { label: 'Create', onClick: () => onSuccess?.() },
+      primary: { label: 'Build database', onClick: () => onSuccess?.() },
     },
     onClose,
   }),

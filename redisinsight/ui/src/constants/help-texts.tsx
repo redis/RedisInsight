@@ -29,7 +29,7 @@ export default {
       .{' '}
       <FeatureFlagComponent name={FeatureFlags.cloudAds}>
         <>
-          You can also create a{' '}
+          You can also build a{' '}
           <CloudLink
             text="free Redis Cloud database"
             url={getUtmExternalLink(EXTERNAL_LINKS.tryFree, {
@@ -52,7 +52,7 @@ export default {
   REMOVING_MULTIPLE_ELEMENTS_NOT_SUPPORT: (
     <>
       Removing multiple elements is available for Redis databases v. 6.2 or
-      later. Update your Redis database or create a new&nbsp;
+      later. Update your Redis database or build a new&nbsp;
       <a
         href={`${EXTERNAL_LINKS.tryFree}?utm_source=redis&utm_medium=app&utm_campaign=redisinsight_redis_latest`}
         target="_blank"

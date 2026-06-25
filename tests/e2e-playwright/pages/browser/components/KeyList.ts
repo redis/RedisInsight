@@ -56,7 +56,7 @@ export class KeyList {
     this.searchByValuesButton = page.getByRole('button', { name: /search by values/i });
     this.keyTypeFilter = page.getByTestId('select-filter-key-type');
     this.keyTypeFilterDropdown = page.locator('[role="listbox"]');
-    this.searchInput = page.getByPlaceholder('Filter by Key Name or Pattern');
+    this.searchInput = page.getByPlaceholder('Filter by key name or pattern');
     this.searchButton = page.getByTestId('search-btn');
     this.resetFilterButton = page.getByTestId('reset-filter-btn');
 

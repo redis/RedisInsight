@@ -174,7 +174,7 @@ const OAuthCreateDb = (props: Props) => {
                 onClick={handleClickCreate}
                 data-testid="oauth-create-db"
               >
-                Create
+                Build database
               </PrimaryButton>
             </>
           )}

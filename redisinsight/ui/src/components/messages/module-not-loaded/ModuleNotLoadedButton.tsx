@@ -57,7 +57,7 @@ const ModuleNotLoadedButton = ({
         })}
         data-testid="learn-more-link"
       >
-        Learn More
+        Learn more
       </Link>
       <FeatureFlagComponent
         name={FeatureFlags.cloudAds}
@@ -103,7 +103,7 @@ const ModuleNotLoadedButton = ({
               data-testid="get-started-link"
             >
               <PrimaryButton size="s" className={styles.btnLink}>
-                Get Started For Free
+                Build a free database
               </PrimaryButton>
             </Link>
           )}

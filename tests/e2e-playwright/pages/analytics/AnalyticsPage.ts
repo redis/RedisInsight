@@ -128,7 +128,7 @@ export class AnalyticsPage extends InstancePage {
     this.scannedKeysText = page.getByText(/Scanned \d+%/);
 
     // Database Analysis sub-tabs
-    this.dataSummaryTab = page.getByRole('tab', { name: 'Data Summary' });
+    this.dataSummaryTab = page.getByRole('tab', { name: 'Data summary' });
     this.tipsTab = page.getByRole('tab', { name: /Tips/ });
 
     // Summary per data (donut charts) — or the "no keys" fallback

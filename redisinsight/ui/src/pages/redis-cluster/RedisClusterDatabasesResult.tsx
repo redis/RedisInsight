@@ -40,7 +40,7 @@ const RedisClusterDatabasesResult = ({
   const [message, setMessage] = useState(loadingMsg)
 
   useEffect(() => {
-    setTitle('Redis Enterprise Databases Added')
+    setTitle('Redis Enterprise databases added')
   }, [])
 
   useEffect(() => {

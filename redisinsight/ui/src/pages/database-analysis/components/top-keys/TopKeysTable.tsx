@@ -118,7 +118,7 @@ const TopKeysTable = ({
         return (
           <div data-testid="top-keys-table-name">
             <RiTooltip
-              title="Key Name"
+              title="Key name"
               position="bottom"
               content={tooltipContent}
             >
@@ -151,7 +151,7 @@ const TopKeysTable = ({
 
         return (
           <RiTooltip
-            title="Time to Live"
+            title="Time to live"
             anchorClassName="truncateText"
             position="bottom"
             content={

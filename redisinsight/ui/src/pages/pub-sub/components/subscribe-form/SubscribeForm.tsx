@@ -65,7 +65,7 @@ const SubscribeForm = (props: SubscribeFormProps) => {
           disabled={isSubscribed}
           onChange={(value) => setChannels(value)}
           onBlur={onFocusOut}
-          placeholder="Enter Pattern"
+          placeholder="Enter pattern"
           aria-label="channel names for filtering"
           data-testid="channels-input"
         />

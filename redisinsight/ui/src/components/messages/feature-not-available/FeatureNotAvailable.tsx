@@ -69,7 +69,7 @@ const FeatureNotAvailable = ({
                   data-testid={`${content.testId}-get-started-link`}
                   size="m"
                 >
-                  Get Started For Free
+                  Build a free database
                 </PrimaryButton>
               )}
             </OAuthSsoHandlerDialog>
@@ -79,7 +79,7 @@ const FeatureNotAvailable = ({
               href={getUtmExternalLink(EXTERNAL_LINKS.redisStack, learnMoreUtm)}
               data-testid={`${content.testId}-learn-more-link`}
             >
-              Learn More
+              Learn more
             </Link>
           </Col>
         </FeatureFlagComponent>
