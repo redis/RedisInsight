@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { AxiosError } from 'axios'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { Socket } from 'socket.io-client'
 
@@ -151,7 +152,11 @@ const BulkActionsConfig = () => {
   const onBulkDeleting = (data: any) => {
     if (data.status === BulkActionsServerEvent.Error) {
       dispatch(disconnectBulkDeleteAction())
-      dispatch(addErrorNotification({ response: { data: data.error } }))
+      dispatch(
+        addErrorNotification({
+          response: { data: data.error },
+        } as AxiosError),
+      )
     }
 
     // Trigger download if report URL is provided

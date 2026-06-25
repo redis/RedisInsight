@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { AxiosError } from 'axios'
 import {
   ContentCreateRedis as IContentItem,
   StateContentCreateRedis as IState,
@@ -61,7 +62,7 @@ export function fetchContentAction() {
         dispatch(getContentSuccess(data))
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
+      const errorMessage = getApiErrorMessage(error as AxiosError)
       dispatch(getContentFailure(errorMessage))
     }
   }

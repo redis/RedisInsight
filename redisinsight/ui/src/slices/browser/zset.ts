@@ -1,4 +1,5 @@
 import { cloneDeep, isNull, remove } from 'lodash'
+import { AxiosError } from 'axios'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import { apiService } from 'uiSrc/services'
@@ -284,8 +285,8 @@ export function fetchZSetMembers(
         dispatch(updateSelectedKeyRefreshTime(Date.now()))
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(loadZSetMembersFailure(errorMessage))
     }
   }
@@ -322,8 +323,8 @@ export function fetchMoreZSetMembers(
         dispatch(loadMoreZSetMembersSuccess(data))
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(loadMoreZSetMembersFailure(errorMessage))
     }
   }
@@ -366,8 +367,8 @@ export function fetchAddZSetMembers(
       }
     } catch (error) {
       onFailAction?.()
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(updateScoreFailure(errorMessage))
     }
   }
@@ -420,8 +421,8 @@ export function deleteZSetMembers(
         }
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(removeZsetMembersFailure(errorMessage))
     }
   }
@@ -464,8 +465,8 @@ export function updateZSetMembers(
       }
     } catch (error) {
       onFailAction?.()
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(updateScoreFailure(errorMessage))
     }
   }
@@ -503,8 +504,8 @@ export function fetchSearchZSetMembers(
         onSuccess?.(data)
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(searchZSetMembersFailure(errorMessage))
     }
   }
@@ -539,8 +540,8 @@ export function fetchSearchMoreZSetMembers(
         dispatch(searchMoreZSetMembersSuccess(data))
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(searchMoreZSetMembersFailure(errorMessage))
     }
   }
@@ -578,8 +579,8 @@ export function refreshZsetMembersAction(
           dispatch(searchZSetMembersSuccess(data))
         }
       } catch (error) {
-        const errorMessage = getApiErrorMessage(error)
-        dispatch(addErrorNotification(error))
+        const errorMessage = getApiErrorMessage(error as AxiosError)
+        dispatch(addErrorNotification(error as AxiosError))
         dispatch(searchZSetMembersFailure(errorMessage))
       }
       return
@@ -608,8 +609,8 @@ export function refreshZsetMembersAction(
         dispatch(loadZSetMembersSuccess(data))
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(loadZSetMembersFailure(errorMessage))
     }
   }
