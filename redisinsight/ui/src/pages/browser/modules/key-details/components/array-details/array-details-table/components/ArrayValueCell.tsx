@@ -42,6 +42,7 @@ export const ArrayValueCell = ({
   compressor,
   viewFormat,
   isEditing = false,
+  updating = false,
   onEdit,
   onApply,
 }: ArrayValueCellProps) => {
@@ -92,8 +93,9 @@ export const ArrayValueCell = ({
     <EditableTextArea
       initialValue={serializedValue}
       isEditing={isEditing}
+      isLoading={updating}
       isDisabled={isUnprintable}
-      isEditDisabled={!isEditable}
+      isEditDisabled={!isEditable || updating}
       disabledTooltipText={TEXT_UNPRINTABLE_CHARACTERS}
       approveText={TEXT_INVALID_VALUE}
       approveByValidation={(editedValue) =>

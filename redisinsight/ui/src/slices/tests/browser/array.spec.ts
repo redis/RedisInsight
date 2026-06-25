@@ -28,6 +28,7 @@ import reducer, {
   loadArraySearchFailure,
   resetArraySearch,
   updateArrayElement,
+  setArrayUpdating,
   arraySelector,
   arrayDataSelector,
   arraySearchSelector,
@@ -222,6 +223,12 @@ describe('array slice', () => {
         updateArrayElement({ index: '9', value: 'x' }),
       )
       expect(next.data.elements).toEqual([{ index: '0', value: 'a' }])
+    })
+
+    it('setArrayUpdating toggles the in-flight ARSET flag', () => {
+      const next = reducer(initialState, setArrayUpdating(true))
+      expect(next.updating).toBe(true)
+      expect(reducer(next, setArrayUpdating(false)).updating).toBe(false)
     })
 
     it('updateArrayElement patches the Search results too (shared table)', () => {
@@ -776,8 +783,10 @@ describe('array slice', () => {
         expect(url).toContain('array/set-element')
         expect(body).toEqual({ keyName: mockKey, index: '5', value: 'B' })
         expect(store.getActions()).toEqual([
+          setArrayUpdating(true),
           updateArrayElement({ index: '5', value: 'B' }),
           updateSelectedKeyRefreshTime(MOCK_TIMESTAMP),
+          setArrayUpdating(false),
         ])
       })
 
@@ -812,7 +821,9 @@ describe('array slice', () => {
 
         expect(onFail).toHaveBeenCalled()
         expect(store.getActions()).toEqual([
+          setArrayUpdating(true),
           addErrorNotification(rejected as IAddInstanceErrorPayload),
+          setArrayUpdating(false),
         ])
       })
     })

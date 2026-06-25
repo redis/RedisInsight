@@ -145,6 +145,9 @@ export interface ArraySearchState {
 export interface StateArray {
   loading: boolean
   error: string
+  /** True while an inline ARSET edit is in flight, so the table can block
+   *  overlapping edits and keep the header refresh paused until it settles. */
+  updating: boolean
   query: ArrayActiveQuery
   data: ArrayData
   aggregate: ArrayAggregateState

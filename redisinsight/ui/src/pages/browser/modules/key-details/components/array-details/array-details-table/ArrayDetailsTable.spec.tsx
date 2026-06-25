@@ -34,7 +34,12 @@ const renderComponent = (
   error?: string,
 ) =>
   render(
-    <ArrayDetailsTable elements={elements} loading={loading} error={error} />,
+    <ArrayDetailsTable
+      elements={elements}
+      loading={loading}
+      error={error}
+      isActive
+    />,
   )
 
 describe('ArrayDetailsTable', () => {
@@ -181,6 +186,7 @@ describe('ArrayDetailsTable', () => {
         <ArrayDetailsTable
           elements={[arrayElementWithValueFactory.build({ index: '1' })]}
           loading={false}
+          isActive
         />,
         { store },
       )
@@ -214,6 +220,7 @@ describe('ArrayDetailsTable', () => {
         <ArrayDetailsTable
           elements={[arrayElementWithValueFactory.build({ index: '1' })]}
           loading={false}
+          isActive
         />,
         { store },
       )
@@ -233,6 +240,47 @@ describe('ArrayDetailsTable', () => {
       // The last refresh-disabled action must be `false` — without an unmount
       // cleanup it would remain `true` and the header refresh would stay
       // disabled after the panel/tab goes away with an editor still open.
+      const refreshActions = store
+        .getActions()
+        .filter((a) => a.type === setSelectedKeyRefreshDisabled(false).type)
+      expect(refreshActions.at(-1)).toEqual(
+        setSelectedKeyRefreshDisabled(false),
+      )
+    })
+
+    it('drops the editor and re-enables refresh when its tab is hidden', () => {
+      const store = mockStore(cloneDeep(initialStateDefault))
+      const element = arrayElementWithValueFactory.build({ index: '1' })
+
+      const { rerender } = render(
+        <ArrayDetailsTable elements={[element]} loading={false} isActive />,
+        { store },
+      )
+
+      act(() => {
+        fireEvent.mouseEnter(
+          screen.getByTestId('array-details-table_content-value-1'),
+        )
+      })
+      fireEvent.click(screen.getByTestId('array-details-table_edit-btn-1'))
+      expect(
+        screen.getByTestId('array-details-table_value-editor-1'),
+      ).toBeInTheDocument()
+
+      // Switch to another tab: this table is no longer the visible one.
+      rerender(
+        <ArrayDetailsTable
+          elements={[element]}
+          loading={false}
+          isActive={false}
+        />,
+      )
+
+      // Editor is abandoned and refresh released — a hidden tab must not keep
+      // the header refresh disabled (tabs stay mounted via display:none).
+      expect(
+        screen.queryByTestId('array-details-table_value-editor-1'),
+      ).not.toBeInTheDocument()
       const refreshActions = store
         .getActions()
         .filter((a) => a.type === setSelectedKeyRefreshDisabled(false).type)

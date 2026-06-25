@@ -9,6 +9,9 @@ export interface ArrayValueCellProps {
   viewFormat: KeyValueFormat
   /** True when this row's value is currently in edit mode. */
   isEditing?: boolean
+  /** True while an ARSET write is in flight — shows the editor's loading
+   *  state and blocks opening another edit until it settles. */
+  updating?: boolean
   /** Toggle edit mode for this row (open via the edit button, close on
    *  decline / successful apply). Omitted in read-only contexts. */
   onEdit?: (isEditing: boolean) => void

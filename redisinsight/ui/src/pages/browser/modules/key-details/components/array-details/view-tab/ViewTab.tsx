@@ -10,7 +10,7 @@ import { useArrayRangeQuery } from '../hooks'
 import * as S from '../tabs.styles'
 import { ViewTabProps } from './ViewTab.types'
 
-const ViewTab = ({ keyProp }: ViewTabProps) => {
+const ViewTab = ({ keyProp, isActive }: ViewTabProps) => {
   const { loading } = useAppSelector(selectedKeySelector)
   const keyName = keyProp ? bufferToString(keyProp) : ''
 
@@ -51,6 +51,7 @@ const ViewTab = ({ keyProp }: ViewTabProps) => {
               elements={elements}
               loading={rangeLoading}
               error={rangeError}
+              isActive={isActive}
             />
           </S.TabTableWrapper>
         )}

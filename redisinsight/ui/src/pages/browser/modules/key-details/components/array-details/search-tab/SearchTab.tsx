@@ -10,7 +10,7 @@ import { useArraySearchQuery } from '../hooks'
 import * as S from '../tabs.styles'
 import { SearchTabProps } from './SearchTab.types'
 
-const SearchTab = ({ keyProp }: SearchTabProps) => {
+const SearchTab = ({ keyProp, isActive }: SearchTabProps) => {
   const { loading: keyLoading } = useAppSelector(selectedKeySelector)
   const keyName = keyProp ? bufferToString(keyProp) : ''
 
@@ -60,6 +60,7 @@ const SearchTab = ({ keyProp }: SearchTabProps) => {
               elements={elements}
               loading={loading}
               error={error}
+              isActive={isActive}
             />
           </S.TabTableWrapper>
         )}

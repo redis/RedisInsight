@@ -9,6 +9,10 @@ export interface ArrayDetailsTableProps {
    *  doesn't misleadingly read "No elements in range" when the request
    *  errored. The slice still also raises a toast via `addErrorNotification`. */
   error?: string
+  /** True when this table is in the visible tab. Both View and Search mount
+   *  a table at once, so only the active one drives the shared key-header
+   *  refresh flag; an inactive table also abandons any open editor. */
+  isActive: boolean
 }
 
 /**
@@ -25,4 +29,7 @@ export interface ArrayTableConfig {
   onEditElement: (index: string, isEditing: boolean) => void
   /** Persist an edited value (plain string from the editor) via ARSET. */
   onApplyEditElement: (index: string, value: string) => void
+  /** True while an ARSET write is in flight — keeps the editor in its loading
+   *  state and blocks a second edit from overlapping the request. */
+  updating: boolean
 }

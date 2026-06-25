@@ -7,7 +7,10 @@ import {
   selectedKeySelector,
   setSelectedKeyRefreshDisabled,
 } from 'uiSrc/slices/browser/keys'
-import { updateArrayElementAction } from 'uiSrc/slices/browser/array'
+import {
+  arraySelector,
+  updateArrayElementAction,
+} from 'uiSrc/slices/browser/array'
 import { KeyValueCompressor } from 'uiSrc/constants'
 import { Nullable, stringToSerializedBufferFormat } from 'uiSrc/utils'
 
@@ -34,12 +37,13 @@ import * as S from './ArrayDetailsTable.styles'
  * with the Delete vertical (docs/redis-array-type-initiative.md §6 Task 7).
  */
 const ArrayDetailsTable = memo(
-  ({ elements, loading, error }: ArrayDetailsTableProps) => {
+  ({ elements, loading, error, isActive }: ArrayDetailsTableProps) => {
     const dispatch = useAppDispatch()
     const { compressor = null } = useAppSelector(
       connectedInstanceSelector,
     ) as unknown as { compressor: Nullable<KeyValueCompressor> }
     const { viewFormat } = useAppSelector(selectedKeySelector)
+    const { updating } = useAppSelector(arraySelector)
     // Use the selected key's name, not the array slice's `data.keyName` —
     // the latter is only set after a View range/scan succeeds, but this table
     // is also rendered by the Search tab, so an edit there (or before View
@@ -51,9 +55,28 @@ const ArrayDetailsTable = memo(
     // Index of the row currently being edited; only one row edits at a time.
     const [editingIndex, setEditingIndex] = useState<Nullable<string>>(null)
 
-    // Re-enable the key-header refresh when this table unmounts (panel close
-    // or tab teardown) so an editor left open can't leave refresh stuck off —
-    // both tabs mount their own table, so this can't rely on a sibling.
+    // Drive the shared key-header refresh flag. Both tabs mount a table, so an
+    // inactive one must not hold refresh off via its own (now-hidden) editor —
+    // it only reflects the global in-flight write. The active table keeps
+    // refresh paused until its editor is closed AND the ARSET has settled, so a
+    // stale reload can't overwrite the optimistic patch mid-write.
+    useEffect(() => {
+      const disabled = isActive ? editingIndex !== null || updating : updating
+      dispatch(setSelectedKeyRefreshDisabled(disabled))
+    }, [isActive, editingIndex, updating, dispatch])
+
+    // Abandon an open editor when this table is hidden (tab switch) or the key
+    // changes, so a background editor can't keep refresh disabled and a stale
+    // editing state can't carry over.
+    useEffect(() => {
+      if (!isActive) setEditingIndex(null)
+    }, [isActive])
+
+    useEffect(() => {
+      setEditingIndex(null)
+    }, [keyName])
+
+    // Re-enable refresh when the table unmounts entirely (panel close).
     useEffect(
       () => () => {
         dispatch(setSelectedKeyRefreshDisabled(false))
@@ -61,21 +84,11 @@ const ArrayDetailsTable = memo(
       [dispatch],
     )
 
-    // On key switch, abandon any open editor and re-enable refresh so a stuck
-    // editing state from the previous key can't carry over.
-    useEffect(() => {
-      setEditingIndex(null)
-      dispatch(setSelectedKeyRefreshDisabled(false))
-    }, [keyName, dispatch])
-
     const handleEditElement = useCallback(
       (index: string, isEditing: boolean) => {
         setEditingIndex(isEditing ? index : null)
-        // Pause the key-header refresh while editing so an in-flight reload
-        // can't swap the table out from under the open editor.
-        dispatch(setSelectedKeyRefreshDisabled(isEditing))
       },
-      [dispatch],
+      [],
     )
 
     const handleApplyEditElement = useCallback(
@@ -104,6 +117,7 @@ const ArrayDetailsTable = memo(
         editingIndex,
         onEditElement: handleEditElement,
         onApplyEditElement: handleApplyEditElement,
+        updating,
       }),
       [
         compressor,
@@ -111,6 +125,7 @@ const ArrayDetailsTable = memo(
         editingIndex,
         handleEditElement,
         handleApplyEditElement,
+        updating,
       ],
     )
 

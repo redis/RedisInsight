@@ -57,6 +57,7 @@ export const DEFAULT_SCAN_LIMIT = 1_000_000
 export const initialState: StateArray = {
   loading: false,
   error: '',
+  updating: false,
   query: {
     start: DEFAULT_QUERY_START,
     end: DEFAULT_QUERY_END,
@@ -253,6 +254,12 @@ const arraySlice = createSlice({
       state.search = { ...initialState.search }
     },
 
+    // Tracks an in-flight inline ARSET so the table can disable overlapping
+    // edits and hold the header refresh until the write settles.
+    setArrayUpdating: (state, { payload }: PayloadAction<boolean>) => {
+      state.updating = payload
+    },
+
     // Optimistically reflect a successful ARSET in the loaded page so the
     // table updates without a refetch. The View tab renders from
     // `data.elements` and the Search tab from `search.data` through the same
@@ -290,6 +297,7 @@ export const {
   loadArraySearchFailure,
   resetArraySearch,
   updateArrayElement,
+  setArrayUpdating,
 } = arraySlice.actions
 
 export const arraySelector = (state: RootState) => state.browser.array
@@ -506,6 +514,7 @@ export function updateArrayElementAction(
   onFailAction?: () => void,
 ) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    dispatch(setArrayUpdating(true))
     try {
       const state = stateInit()
       const { status } = await apiService.post(
@@ -523,6 +532,8 @@ export function updateArrayElementAction(
     } catch (error) {
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
       onFailAction?.()
+    } finally {
+      dispatch(setArrayUpdating(false))
     }
   }
 }
