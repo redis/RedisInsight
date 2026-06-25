@@ -19,4 +19,10 @@ export interface ArrayDetailsTableProps {
 export interface ArrayTableConfig {
   compressor: Nullable<KeyValueCompressor>
   viewFormat: KeyValueFormat
+  /** Index of the row currently in edit mode, or null when none is. */
+  editingIndex: Nullable<string>
+  /** Open / close inline edit for a row's value. */
+  onEditElement: (index: string, isEditing: boolean) => void
+  /** Persist an edited value (plain string from the editor) via ARSET. */
+  onApplyEditElement: (index: string, value: string) => void
 }

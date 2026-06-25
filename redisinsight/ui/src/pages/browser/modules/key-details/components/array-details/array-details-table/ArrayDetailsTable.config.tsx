@@ -27,13 +27,23 @@ const valueColumn: ColumnDef<ArrayDataElement> = {
   enableSorting: false,
   enableResizing: true,
   cell: ({ row, table }: CellContext<ArrayDataElement, unknown>) => {
-    const { compressor, viewFormat } = table.options.meta as ArrayTableConfig
+    const {
+      compressor,
+      viewFormat,
+      editingIndex,
+      onEditElement,
+      onApplyEditElement,
+    } = table.options.meta as ArrayTableConfig
+    const { index } = row.original
     return (
       <ArrayValueCell
-        index={row.original.index}
+        index={index}
         value={row.original.value}
         compressor={compressor}
         viewFormat={viewFormat}
+        isEditing={editingIndex === index}
+        onEdit={(isEditing) => onEditElement(index, isEditing)}
+        onApply={(value) => onApplyEditElement(index, value)}
       />
     )
   },

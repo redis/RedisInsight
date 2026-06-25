@@ -1,5 +1,6 @@
 import React from 'react'
-import { render, screen } from 'uiSrc/utils/test-utils'
+import { act, fireEvent, render, screen, waitFor } from 'uiSrc/utils/test-utils'
+import { apiService } from 'uiSrc/services'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 import {
   arrayElementFactory,
@@ -91,5 +92,64 @@ describe('ArrayDetailsTable', () => {
     // a nullish-only fallback would leave the table blank on an empty range.
     renderComponent([], false, '')
     expect(screen.getByText('No elements in range')).toBeInTheDocument()
+  })
+
+  describe('inline value edit (ARSET)', () => {
+    it('reveals an edit affordance for a populated value and enters edit mode', () => {
+      renderComponent([arrayElementWithValueFactory.build({ index: '1' })])
+
+      act(() => {
+        fireEvent.mouseEnter(
+          screen.getByTestId('array-details-table_content-value-1'),
+        )
+      })
+      fireEvent.click(screen.getByTestId('array-details-table_edit-btn-1'))
+
+      expect(
+        screen.getByTestId('array-details-table_value-editor-1'),
+      ).toBeInTheDocument()
+    })
+
+    it('does not offer editing for an empty slot', () => {
+      renderComponent([arrayElementFactory.build({ index: '3' })])
+
+      expect(
+        screen.queryByTestId('array-details-table_edit-btn-3'),
+      ).not.toBeInTheDocument()
+      expect(
+        screen.getByTestId('array-details-table-empty-3'),
+      ).toBeInTheDocument()
+    })
+
+    it('dispatches ARSET set-element when an edit is applied', async () => {
+      const postSpy = jest
+        .spyOn(apiService, 'post')
+        .mockResolvedValue({ status: 200, data: '' })
+
+      renderComponent([arrayElementWithValueFactory.build({ index: '1' })])
+
+      act(() => {
+        fireEvent.mouseEnter(
+          screen.getByTestId('array-details-table_content-value-1'),
+        )
+      })
+      fireEvent.click(screen.getByTestId('array-details-table_edit-btn-1'))
+
+      fireEvent.change(
+        screen.getByTestId('array-details-table_value-editor-1'),
+        { target: { value: 'updated' } },
+      )
+      fireEvent.click(screen.getByTestId('apply-btn'))
+
+      await waitFor(() => {
+        const setCall = postSpy.mock.calls.find(([url]) =>
+          (url as string).includes('array/set-element'),
+        )
+        expect(setCall).toBeTruthy()
+        expect((setCall?.[1] as { index: string }).index).toBe('1')
+      })
+
+      postSpy.mockRestore()
+    })
   })
 })

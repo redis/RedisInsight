@@ -27,6 +27,7 @@ import reducer, {
   loadArraySearchSuccess,
   loadArraySearchFailure,
   resetArraySearch,
+  updateArrayElement,
   arraySelector,
   arrayDataSelector,
   arraySearchSelector,
@@ -36,6 +37,7 @@ import reducer, {
   fetchArrayCount,
   refreshArray,
   searchArray,
+  updateArrayElementAction,
 } from '../../browser/array'
 import { arrayGrepPredicateFactory } from 'uiSrc/mocks/factories/browser/array/arrayGrepPredicate.factory'
 import { updateSelectedKeyRefreshTime } from '../../browser/keys'
@@ -184,6 +186,42 @@ describe('array slice', () => {
         loadArrayCountSuccess({ keyName: mockKey, count: '7' }),
       )
       expect(next.data.count).toBe('7')
+    })
+
+    it('updateArrayElement replaces the value of the matching index only', () => {
+      const dirty = {
+        ...initialState,
+        data: {
+          ...initialState.data,
+          elements: [
+            { index: '0', value: 'a' },
+            { index: '5', value: 'b' },
+          ],
+        },
+      }
+      const next = reducer(
+        dirty,
+        updateArrayElement({ index: '5', value: 'B' }),
+      )
+      expect(next.data.elements).toEqual([
+        { index: '0', value: 'a' },
+        { index: '5', value: 'B' },
+      ])
+    })
+
+    it('updateArrayElement is a no-op when the index is not loaded', () => {
+      const dirty = {
+        ...initialState,
+        data: {
+          ...initialState.data,
+          elements: [{ index: '0', value: 'a' }],
+        },
+      }
+      const next = reducer(
+        dirty,
+        updateArrayElement({ index: '9', value: 'x' }),
+      )
+      expect(next.data.elements).toEqual([{ index: '0', value: 'a' }])
     })
 
     describe('search sub-state', () => {
@@ -700,6 +738,59 @@ describe('array slice', () => {
 
         expect(store.getActions()).toEqual([
           loadArrayCountSuccess(response.data),
+        ])
+      })
+    })
+
+    describe('updateArrayElementAction', () => {
+      it('posts keyName/index/value and optimistically updates the element', async () => {
+        apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
+
+        await store.dispatch<any>(
+          updateArrayElementAction({ key: mockKey, index: '5', value: 'B' }),
+        )
+
+        const [url, body] = (apiService.post as jest.Mock).mock.calls[0]
+        expect(url).toContain('array/set-element')
+        expect(body).toEqual({ keyName: mockKey, index: '5', value: 'B' })
+        expect(store.getActions()).toEqual([
+          updateArrayElement({ index: '5', value: 'B' }),
+          updateSelectedKeyRefreshTime(MOCK_TIMESTAMP),
+        ])
+      })
+
+      it('calls onSuccessAction on success', async () => {
+        apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
+        const onSuccess = jest.fn()
+
+        await store.dispatch<any>(
+          updateArrayElementAction(
+            { key: mockKey, index: '5', value: 'B' },
+            onSuccess,
+          ),
+        )
+
+        expect(onSuccess).toHaveBeenCalled()
+      })
+
+      it('notifies and calls onFailAction on error without touching the table', async () => {
+        const rejected = {
+          response: { status: 500, data: { message: 'boom' } },
+        }
+        apiService.post = jest.fn().mockRejectedValue(rejected)
+        const onFail = jest.fn()
+
+        await store.dispatch<any>(
+          updateArrayElementAction(
+            { key: mockKey, index: '5', value: 'B' },
+            undefined,
+            onFail,
+          ),
+        )
+
+        expect(onFail).toHaveBeenCalled()
+        expect(store.getActions()).toEqual([
+          addErrorNotification(rejected as IAddInstanceErrorPayload),
         ])
       })
     })

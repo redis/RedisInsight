@@ -29,6 +29,7 @@ import {
   FetchArrayRangeParams,
   FetchArrayScanParams,
   SearchArrayParams,
+  UpdateArrayElementParams,
 } from 'uiSrc/slices/interfaces/array'
 import { RedisString } from 'uiSrc/slices/interfaces/app'
 import { updateSelectedKeyRefreshTime } from './keys'
@@ -251,6 +252,18 @@ const arraySlice = createSlice({
     resetArraySearch: (state) => {
       state.search = { ...initialState.search }
     },
+
+    // Optimistically reflect a successful ARSET in the loaded page so the
+    // table updates without a refetch. No-op if the edited index isn't loaded.
+    updateArrayElement: (
+      state,
+      { payload }: PayloadAction<{ index: string; value: RedisString }>,
+    ) => {
+      const target = state.data.elements.find(
+        (element) => element.index === payload.index,
+      )
+      if (target) target.value = payload.value
+    },
   },
 })
 
@@ -271,6 +284,7 @@ export const {
   loadArraySearchSuccess,
   loadArraySearchFailure,
   resetArraySearch,
+  updateArrayElement,
 } = arraySlice.actions
 
 export const arraySelector = (state: RootState) => state.browser.array
@@ -474,6 +488,36 @@ export function searchArray(params: SearchArrayParams) {
       if (arraySearchController === controller) {
         arraySearchController = null
       }
+    }
+  }
+}
+
+// ARSET — in-place value edit. Editing a populated slot can't change
+// ARLEN/ARCOUNT, so the header counters are intentionally not refreshed.
+// `value` must already be in the formatter's serialized-buffer shape.
+export function updateArrayElementAction(
+  params: UpdateArrayElementParams,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    try {
+      const state = stateInit()
+      const { status } = await apiService.post(
+        arrayUrl(state, ApiEndpoints.ARRAY_SET_ELEMENT),
+        { keyName: params.key, index: params.index, value: params.value },
+        encodingParams(state),
+      )
+      if (isStatusSuccessful(status)) {
+        dispatch(
+          updateArrayElement({ index: params.index, value: params.value }),
+        )
+        dispatch(updateSelectedKeyRefreshTime(Date.now()))
+        onSuccessAction?.()
+      }
+    } catch (error) {
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      onFailAction?.()
     }
   }
 }

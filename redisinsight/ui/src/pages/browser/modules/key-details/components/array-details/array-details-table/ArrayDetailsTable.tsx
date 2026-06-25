@@ -1,10 +1,17 @@
-import React, { memo, useMemo } from 'react'
-import { useAppSelector } from 'uiSrc/slices/hooks'
+import React, { memo, useCallback, useMemo, useState } from 'react'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
-import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
+import {
+  selectedKeySelector,
+  setSelectedKeyRefreshDisabled,
+} from 'uiSrc/slices/browser/keys'
+import {
+  arrayDataSelector,
+  updateArrayElementAction,
+} from 'uiSrc/slices/browser/array'
 import { KeyValueCompressor } from 'uiSrc/constants'
-import { Nullable } from 'uiSrc/utils'
+import { Nullable, stringToSerializedBufferFormat } from 'uiSrc/utils'
 
 import {
   ARRAY_TABLE_EMPTY_MESSAGE,
@@ -23,23 +30,67 @@ import * as S from './ArrayDetailsTable.styles'
 
 /**
  * Renders the array slice's currently-loaded `elements` through the
- * redis-ui `Table` (`@redis-ui/table`). Stays read-only in this vertical;
- * row-level edit/delete affordances ship with the Modify / Delete
- * verticals (see docs/redis-array-type-initiative.md §6 Tasks 6-7).
+ * redis-ui `Table` (`@redis-ui/table`). Populated values are editable in
+ * place (ARSET) via the value cell's inline editor; empty slots stay
+ * read-only (see ArrayValueCell). Row-level delete / range affordances ship
+ * with the Delete vertical (docs/redis-array-type-initiative.md §6 Task 7).
  */
 const ArrayDetailsTable = memo(
   ({ elements, loading, error }: ArrayDetailsTableProps) => {
+    const dispatch = useAppDispatch()
     const { compressor = null } = useAppSelector(
       connectedInstanceSelector,
     ) as unknown as { compressor: Nullable<KeyValueCompressor> }
     const { viewFormat } = useAppSelector(selectedKeySelector)
+    const { keyName } = useAppSelector(arrayDataSelector)
+
+    // Index of the row currently being edited; only one row edits at a time.
+    const [editingIndex, setEditingIndex] = useState<Nullable<string>>(null)
+
+    const handleEditElement = useCallback(
+      (index: string, isEditing: boolean) => {
+        setEditingIndex(isEditing ? index : null)
+        // Pause the key-header refresh while editing so an in-flight reload
+        // can't swap the table out from under the open editor.
+        dispatch(setSelectedKeyRefreshDisabled(isEditing))
+      },
+      [dispatch],
+    )
+
+    const handleApplyEditElement = useCallback(
+      (index: string, value: string) => {
+        dispatch(
+          updateArrayElementAction(
+            {
+              key: keyName,
+              index,
+              value: stringToSerializedBufferFormat(viewFormat, value),
+            },
+            () => handleEditElement(index, false),
+          ),
+        )
+      },
+      [dispatch, keyName, viewFormat, handleEditElement],
+    )
 
     // Pass shared per-cell config via the table's `meta` so the static
     // column defs in `ArrayDetailsTable.config` don't need to close over
-    // them and can be rebuilt only when `compressor` / `viewFormat` change.
+    // them and can be rebuilt only when their inputs change.
     const meta = useMemo<ArrayTableConfig>(
-      () => ({ compressor, viewFormat }),
-      [compressor, viewFormat],
+      () => ({
+        compressor,
+        viewFormat,
+        editingIndex,
+        onEditElement: handleEditElement,
+        onApplyEditElement: handleApplyEditElement,
+      }),
+      [
+        compressor,
+        viewFormat,
+        editingIndex,
+        handleEditElement,
+        handleApplyEditElement,
+      ],
     )
 
     // Use `||` rather than `??` here: the array slice clears `error` to `''`

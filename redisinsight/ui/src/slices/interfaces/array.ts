@@ -217,6 +217,18 @@ export interface ArraySearchOptions {
 }
 
 /**
+ * ARSET single-element edit (Modify vertical). `index` addresses the slot to
+ * overwrite; `value` is the serialized-buffer payload the formatter pipeline
+ * expects (built via `stringToSerializedBufferFormat`). The key must already
+ * exist — this edits a loaded element, it never creates a key.
+ */
+export interface UpdateArrayElementParams {
+  key: RedisString
+  index: string
+  value: RedisString
+}
+
+/**
  * Re-export the auto-generated SDK response shapes for consumers that need
  * to pass them around. The slice itself narrows them into `ArrayData` /
  * `ArrayDataElement` for storage.
