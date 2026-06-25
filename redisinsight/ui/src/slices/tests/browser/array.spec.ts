@@ -40,7 +40,10 @@ import reducer, {
 import { arrayGrepPredicateFactory } from 'uiSrc/mocks/factories/browser/array/arrayGrepPredicate.factory'
 import { updateSelectedKeyRefreshTime } from '../../browser/keys'
 import { addErrorNotification } from '../../app/notifications'
-import { ArrayAggregateOperation } from '../../interfaces/array'
+import {
+  ArrayAggregateOperation,
+  ArrayCombinator,
+} from '../../interfaces/array'
 
 jest.mock('uiSrc/services', () => ({
   ...jest.requireActual('uiSrc/services'),
@@ -191,12 +194,17 @@ describe('array slice', () => {
           error: 'boom',
           loaded: true,
           data: [{ index: '1', value: 'x' }],
-          predicates: arrayGrepPredicateFactory.buildList(1),
+          query: { predicates: arrayGrepPredicateFactory.buildList(1) },
         },
       }
 
-      it('loadArraySearch flips loading, drops stale results, and records the query', () => {
-        const query = arrayGrepPredicateFactory.buildList(1)
+      it('loadArraySearch flips loading, drops stale results, and records the full query', () => {
+        const query = {
+          predicates: arrayGrepPredicateFactory.buildList(2),
+          combinator: ArrayCombinator.And,
+          nocase: true,
+          limit: 500,
+        }
         const next = reducer(dirtySearch, loadArraySearch(query))
         expect(next.search.loading).toBe(true)
         expect(next.search.error).toBe('')
@@ -204,8 +212,8 @@ describe('array slice', () => {
         // `loaded` stays put until the request resolves — the tab keeps
         // showing the loading state rather than briefly going blank.
         expect(next.search.loaded).toBe(true)
-        // Records the predicates so refresh can replay them.
-        expect(next.search.predicates).toEqual(query)
+        // Records predicates + options so refresh can replay the full query.
+        expect(next.search.query).toEqual(query)
       })
 
       it('loadArraySearchSuccess stores matches (u64 index as string) and marks loaded', () => {
@@ -611,19 +619,25 @@ describe('array slice', () => {
         ).toBeUndefined()
       })
 
-      it('replays the active search when predicates were recorded', async () => {
+      it('replays the recorded search query (predicates + options) on refresh', async () => {
         apiService.post = jest.fn().mockResolvedValue({
           status: 200,
           data: { keyName: mockKey, elements: [] },
         })
-        const predicates = arrayGrepPredicateFactory.buildList(1)
+        const predicates = arrayGrepPredicateFactory.buildList(2)
+        const query = {
+          predicates,
+          combinator: ArrayCombinator.And,
+          nocase: true,
+          limit: 250,
+        }
         const local = mockStore({
           ...initialStateDefault,
           browser: {
             ...initialStateDefault.browser,
             array: {
               ...initialState,
-              search: { ...initialState.search, loaded: true, predicates },
+              search: { ...initialState.search, loaded: true, query },
             },
           },
         })
@@ -636,7 +650,9 @@ describe('array slice', () => {
         expect(searchCall?.[1]).toEqual({
           keyName: mockKey,
           predicates,
-          limit: 1_000_000,
+          combinator: ArrayCombinator.And,
+          nocase: true,
+          limit: 250,
         })
       })
 
@@ -708,16 +724,76 @@ describe('array slice', () => {
         const [url, body] = (apiService.post as jest.Mock).mock.calls[0]
         expect(url).toContain('array/search')
         // WITHVALUES is intentionally omitted so the API default (true)
-        // applies; a safety LIMIT caps the result set like ARSCAN does.
+        // applies; no LIMIT is sent, so the server returns every match.
         expect(body).toEqual({
           keyName: mockKey,
           predicates,
-          limit: 1_000_000,
         })
         expect(store.getActions()).toEqual([
-          loadArraySearch(predicates),
+          loadArraySearch({ predicates }),
           loadArraySearchSuccess(response.data),
         ])
+      })
+
+      it('sends options + the global connective (only with 2+ predicates)', async () => {
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, elements: [] },
+        })
+        const twoPredicates = arrayGrepPredicateFactory.buildList(2)
+
+        await store.dispatch<any>(
+          searchArray({
+            key: mockKey,
+            predicates: twoPredicates,
+            combinator: ArrayCombinator.And,
+            start: '5',
+            end: '15',
+            nocase: true,
+            withValues: false,
+            limit: 50,
+          }),
+        )
+
+        const [, body] = (apiService.post as jest.Mock).mock.calls[0]
+        expect(body).toEqual({
+          keyName: mockKey,
+          predicates: twoPredicates,
+          combinator: ArrayCombinator.And,
+          start: '5',
+          end: '15',
+          nocase: true,
+          withValues: false,
+          limit: 50,
+        })
+      })
+
+      it('omits the connective with a single predicate, blank bounds, and default WITHVALUES', async () => {
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, elements: [] },
+        })
+
+        await store.dispatch<any>(
+          searchArray({
+            key: mockKey,
+            predicates,
+            combinator: ArrayCombinator.Or,
+            start: '',
+            end: '',
+            nocase: false,
+            withValues: true,
+          }),
+        )
+
+        const [, body] = (apiService.post as jest.Mock).mock.calls[0]
+        // Single predicate → no connective; blank bounds dropped (server
+        // applies -/+); nocase/withValues at defaults are not sent; no LIMIT
+        // (uncapped).
+        expect(body).toEqual({
+          keyName: mockKey,
+          predicates,
+        })
       })
 
       it('dispatches failure + notification on error', async () => {
@@ -729,7 +805,7 @@ describe('array slice', () => {
         await store.dispatch<any>(searchArray({ key: mockKey, predicates }))
 
         expect(store.getActions()).toEqual([
-          loadArraySearch(predicates),
+          loadArraySearch({ predicates }),
           addErrorNotification(rejected as IAddInstanceErrorPayload),
           loadArraySearchFailure('boom'),
         ])
@@ -743,7 +819,7 @@ describe('array slice', () => {
         await store.dispatch<any>(searchArray({ key: mockKey, predicates }))
 
         expect(store.getActions()).toEqual([
-          loadArraySearch(predicates),
+          loadArraySearch({ predicates }),
           loadArraySearchFailure(DEFAULT_ERROR_MESSAGE),
         ])
       })
@@ -766,7 +842,7 @@ describe('array slice', () => {
 
         const [, , config] = (apiService.post as jest.Mock).mock.calls[0]
         expect(config?.signal).toBeInstanceOf(AbortSignal)
-        expect(store.getActions()).toEqual([loadArraySearch(predicates)])
+        expect(store.getActions()).toEqual([loadArraySearch({ predicates })])
       })
     })
   })

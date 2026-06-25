@@ -50,6 +50,16 @@ export enum ArrayGrepCriteria {
   Re = 'RE',
 }
 
+/**
+ * Single global connective applied across all predicates. Only meaningful
+ * with two or more predicates; a single predicate ignores it. Mirrors the
+ * backend `ArrayCombinator` enum.
+ */
+export enum ArrayCombinator {
+  And = 'AND',
+  Or = 'OR',
+}
+
 /** One criteria/value pair sent to ARGREP. */
 export interface ArrayGrepPredicate {
   criteria: ArrayGrepCriteria
@@ -121,15 +131,15 @@ export interface ArrayAggregateState {
  * so the two tabs — both mounted at once — never clobber each other's
  * results. `loaded` flips true once the first search resolves (success or
  * failure) so the tab can stay blank until the user actually runs one.
- * `predicates` records the last-run query so the key-details refresh button
- * can replay it (mirrors `ArrayActiveQuery` for the View tab).
+ * `query` records the full last-run request (predicates + options) so the
+ * key-details refresh button can replay it; `null` until the first run.
  */
 export interface ArraySearchState {
   loading: boolean
   error: string
   loaded: boolean
   data: ArrayDataElement[]
-  predicates: ArrayGrepPredicate[]
+  query: ArraySearchActiveQuery | null
 }
 
 export interface StateArray {
@@ -171,13 +181,39 @@ export interface FetchArrayAggregateParams {
 }
 
 /**
- * ARGREP search request. Only the predicates are modelled here; the thunk
- * pins a safety LIMIT and lets the API default the rest (range, NOCASE, and
- * WITHVALUES — `true`, so the response carries values for the table).
+ * ARGREP search request, sans key. `combinator` is only meaningful with two
+ * or more predicates. Blank `start`/`end` are omitted by the thunk so the
+ * server applies its `-`/`+` (whole-array) defaults; `nocase`/`withValues`/
+ * `limit` map to the matching ARGREP options.
  */
-export interface SearchArrayParams {
-  key: RedisString
+export interface ArraySearchActiveQuery {
   predicates: ArrayGrepPredicate[]
+  combinator?: ArrayCombinator
+  start?: string
+  end?: string
+  nocase?: boolean
+  withValues?: boolean
+  limit?: number
+}
+
+/** ARGREP search request for the `searchArray` thunk (query + target key). */
+export interface SearchArrayParams extends ArraySearchActiveQuery {
+  key: RedisString
+}
+
+/**
+ * Search-tab form state for the ARGREP options (everything except the
+ * predicate rows + global connective). `limit` is a string so the input can
+ * be edited freely; `limitEnabled` gates whether the user's value is used or
+ * the default safety cap applies. Blank `start`/`end` mean "whole array".
+ */
+export interface ArraySearchOptions {
+  start: string
+  end: string
+  nocase: boolean
+  withValues: boolean
+  limitEnabled: boolean
+  limit: string
 }
 
 /**

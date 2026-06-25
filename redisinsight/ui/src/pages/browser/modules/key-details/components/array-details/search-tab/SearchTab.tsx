@@ -15,11 +15,16 @@ const SearchTab = ({ keyProp }: SearchTabProps) => {
   const keyName = keyProp ? bufferToString(keyProp) : ''
 
   const {
-    criteria,
-    value,
-    setCriteria,
-    setValue,
+    predicates,
+    combinator,
+    options,
+    addPredicate,
+    removePredicate,
+    updatePredicate,
+    setCombinator,
+    updateOptions,
     runSearch,
+    resetQuery,
     isArrayKeyReady,
     elements,
     loading,
@@ -31,12 +36,17 @@ const SearchTab = ({ keyProp }: SearchTabProps) => {
     <>
       <ArraySearchForm
         keyName={keyName}
-        criteria={criteria}
-        value={value}
+        predicates={predicates}
+        combinator={combinator}
+        options={options}
         loading={loading}
-        onChangeCriteria={setCriteria}
-        onChangeValue={setValue}
+        onAddPredicate={addPredicate}
+        onRemovePredicate={removePredicate}
+        onChangePredicate={updatePredicate}
+        onChangeCombinator={setCombinator}
+        onChangeOptions={updateOptions}
         onRun={runSearch}
+        onReset={resetQuery}
         disabled={!isArrayKeyReady}
       />
       <S.TabBody>
