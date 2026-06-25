@@ -15,7 +15,7 @@ interface Props {
 
 const emptyMessageContent: { [key in EmptyMessage]: Content } = {
   [EmptyMessage.Reports]: {
-    title: 'No Reports found',
+    title: 'No reports found',
     text: () => 'Click "Analyze" to generate the first report.',
   },
   [EmptyMessage.Keys]: {
@@ -27,7 +27,7 @@ const emptyMessageContent: { [key in EmptyMessage]: Content } = {
           className={styles.summary}
           data-test-subj="workbench-page-btn"
         >
-          Use Workbench Guides and Tutorials
+          Use Workbench guides and tutorials
         </Link>
         {' to quickly load the data.'}
       </>

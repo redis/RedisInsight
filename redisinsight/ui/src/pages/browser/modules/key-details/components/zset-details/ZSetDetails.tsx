@@ -44,7 +44,7 @@ const ZSetDetails = (props: Props) => {
 
   const Actions = ({ width }: { width: number }) => (
     <AddItemsAction
-      title="Add Members"
+      title="Add members"
       width={width}
       openAddItemPanel={openAddItemPanel}
     />

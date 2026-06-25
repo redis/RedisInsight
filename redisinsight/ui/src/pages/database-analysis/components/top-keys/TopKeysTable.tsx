@@ -89,7 +89,7 @@ const TopKeysTable = ({
 
   const columns: ColumnDef<Key>[] = [
     {
-      header: 'Key Type',
+      header: 'Key type',
       id: 'type',
       accessorKey: 'type',
       enableSorting: true,
@@ -100,7 +100,7 @@ const TopKeysTable = ({
       }) => <GroupBadge key={type} type={type} />,
     },
     {
-      header: 'Key Name',
+      header: 'Key name',
       id: 'name',
       accessorKey: 'name',
       enableSorting: true,
@@ -170,7 +170,7 @@ const TopKeysTable = ({
       },
     },
     {
-      header: 'Key Size',
+      header: 'Key size',
       id: 'memory',
       accessorKey: 'memory',
       enableSorting: true,

@@ -1,27 +1,27 @@
 import { test, expect } from '../../../../fixtures/base';
 
 /**
- * Notification Center tests (TEST_PLAN.md: 0.3 Notification Center)
+ * Notification center tests (TEST_PLAN.md: 0.3 Notification center)
  *
- * Tests for the Notification Center accessed from the sidebar navigation.
- * The Notification Center displays:
+ * Tests for the Notification center accessed from the sidebar navigation.
+ * The Notification center displays:
  * - Unread badge count
  * - Notification list with title, body, date, and category
  * - Links within notification bodies
  */
-test.describe('Notification Center', () => {
+test.describe('Notification center', () => {
   test.beforeEach(async ({ sidebarPanel }) => {
     await sidebarPanel.goto();
   });
 
-  test('should open Notification Center and display notifications', async ({ sidebarPanel }) => {
+  test('should open Notification center and display notifications', async ({ sidebarPanel }) => {
     const { notificationCenter } = sidebarPanel;
     await notificationCenter.open();
 
-    // Verify Notification Center dialog is open with title
+    // Verify Notification center dialog is open with title
     await expect(notificationCenter.notificationCenterDialog).toBeVisible();
     await expect(notificationCenter.notificationCenterTitle).toBeVisible();
-    await expect(notificationCenter.notificationCenterTitle).toHaveText('Notification Center');
+    await expect(notificationCenter.notificationCenterTitle).toHaveText('Notification center');
 
     // Check if notifications list is displayed
     const hasNotifications = await notificationCenter.notificationsList.isVisible();
@@ -41,7 +41,7 @@ test.describe('Notification Center', () => {
     }
   });
 
-  test('should close Notification Center', async ({ sidebarPanel }) => {
+  test('should close Notification center', async ({ sidebarPanel }) => {
     const { notificationCenter } = sidebarPanel;
     await notificationCenter.open();
 

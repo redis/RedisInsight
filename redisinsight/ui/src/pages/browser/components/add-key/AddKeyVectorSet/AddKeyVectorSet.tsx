@@ -246,7 +246,7 @@ const AddKeyVectorSet = ({
       <ActionFooter
         onCancel={() => onCancel(true)}
         onAction={onClickAction}
-        actionText="Add Key"
+        actionText="Add key"
         loading={loading || isSubmittingSampleDataset}
         disabled={!isFormValid || isSubmittingSampleDataset}
         actionTestId="add-key-vector-set-btn"

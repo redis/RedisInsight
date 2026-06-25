@@ -91,7 +91,7 @@ const QueryResults = (props: QueryResultsProps) => {
             disabled={clearing || processing}
             data-testid="clear-history-btn"
           >
-            Clear Results
+            Clear results
           </EmptyButton>
         </S.Header>
       )}

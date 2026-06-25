@@ -54,12 +54,12 @@ const BulkActionsTabs = (props: Props) => {
     () => [
       {
         value: BulkActionsType.Delete,
-        label: <Text size="S">Delete Keys</Text>,
+        label: <Text size="S">Delete keys</Text>,
         content: null,
       },
       {
         value: BulkActionsType.Upload,
-        label: <Text size="S">Upload Data</Text>,
+        label: <Text size="S">Upload data</Text>,
         content: null,
       },
     ],

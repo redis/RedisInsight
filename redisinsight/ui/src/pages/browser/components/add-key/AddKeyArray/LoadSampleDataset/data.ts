@@ -39,7 +39,7 @@ export const SAMPLE_DATASETS: SampleArrayDataset[] = [
     elementCount: 39,
     highestIndex: '38',
     previewRows: [
-      { index: '0', value: '# Redis Insight Prototype' },
+      { index: '0', value: '# Redis Insight prototype' },
       { index: '1', value: '' },
       {
         index: '2',

@@ -102,8 +102,8 @@ const BrowserSearchPanel = (props: Props) => {
     },
     {
       type: SearchMode.Redisearch,
-      tooltipText: 'Search by Values of Keys',
-      ariaLabel: 'Search by Values of Keys button',
+      tooltipText: 'Search by values of keys',
+      ariaLabel: 'Search by values of keys button',
       dataTestId: 'search-mode-redisearch-btn',
       disabled: !hasRedisearch || !hasMinimumRedisearchVersion,
       isActiveView() {

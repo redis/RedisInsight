@@ -34,7 +34,7 @@ const sshPassTypeOptions = [
   {
     id: SshPassType.PrivateKey,
     value: SshPassType.PrivateKey,
-    label: 'Private Key',
+    label: 'Private key',
     // 'data-test-subj': 'radio-btn-privateKey',
   },
 ]
@@ -159,13 +159,13 @@ const SSHDetails = (props: Props) => {
             <Col gap="l">
               <Row responsive>
                 <FlexItem grow>
-                  <FormField label="Private Key" required>
+                  <FormField label="Private key" required>
                     <TextArea
                       name="sshPrivateKey"
                       id="sshPrivateKey"
                       data-testid="sshPrivateKey"
                       maxLength={50_000}
-                      placeholder="Enter SSH Private Key in PEM format"
+                      placeholder="Enter SSH private key in PEM format"
                       value={
                         formik.values.sshPrivateKey === true
                           ? SECURITY_FIELD
@@ -192,7 +192,7 @@ const SSHDetails = (props: Props) => {
                       id="sshPassphrase"
                       data-testid="sshPassphrase"
                       maxLength={50_000}
-                      placeholder="Enter Passphrase for Private Key"
+                      placeholder="Enter passphrase for private key"
                       value={
                         formik.values.sshPassphrase === true
                           ? SECURITY_FIELD

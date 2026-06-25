@@ -46,7 +46,7 @@ describe('DateTimeFormatter', () => {
       fireEvent.change(customInput, { target: { value: 'fffffinvalid' } }),
     )
 
-    expect(getByDisplayValue('Invalid Format')).toBeInTheDocument()
+    expect(getByDisplayValue('Invalid format')).toBeInTheDocument()
   })
 
   it('should call proper telemetry events', async () => {

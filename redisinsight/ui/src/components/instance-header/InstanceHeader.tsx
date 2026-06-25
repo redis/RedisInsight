@@ -258,7 +258,7 @@ const InstanceHeader = ({ onChangeDbIndex }: Props) => {
                                   setDbIndex(value ? value.toString() : '')
                                 }
                                 value={Number(dbIndex)}
-                                placeholder="Database Index"
+                                placeholder="Database index"
                                 className={styles.dbIndexInput}
                                 data-testid="change-index-input"
                               />

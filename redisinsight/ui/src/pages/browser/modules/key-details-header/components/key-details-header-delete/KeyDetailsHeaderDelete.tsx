@@ -78,7 +78,7 @@ const KeyDetailsHeaderDelete = ({ onDelete }: Props) => {
       button={
         <IconButton
           icon={DeleteIcon}
-          aria-label="Delete Key"
+          aria-label="Delete key"
           className="deleteKeyBtn"
           onClick={showPopoverDelete}
           data-testid="delete-key-btn"

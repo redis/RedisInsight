@@ -80,7 +80,7 @@ const HelpMenu = () => {
     >
       <SideBarItemIcon
         icon={SupportIcon}
-        aria-label="Help Menu"
+        aria-label="Help menu"
         data-testid="help-menu-button"
       />
     </SideBarItem>
@@ -97,7 +97,7 @@ const HelpMenu = () => {
     >
       <div className={styles.popover} data-testid="help-center">
         <Title size="XS" className={styles.helpMenuTitle}>
-          Help Center
+          Help center
         </Title>
         <Spacer size="l" />
         <Row
@@ -121,7 +121,7 @@ const HelpMenu = () => {
                   textAlign="center"
                   className={styles.helpMenuText}
                 >
-                  Provide <br /> Feedback
+                  Provide <br /> feedback
                 </Text>
               </Link>
             </FlexItem>
@@ -136,7 +136,7 @@ const HelpMenu = () => {
                 onClick={onKeyboardShortcutClick}
                 data-testid="shortcuts-btn"
               >
-                Keyboard Shortcuts
+                Keyboard shortcuts
               </Text>
             </Row>
 
@@ -157,7 +157,7 @@ const HelpMenu = () => {
                 data-testid="release-notes-btn"
               >
                 <Text size="xs" className={styles.helpMenuTextLink}>
-                  Release Notes
+                  Release notes
                 </Text>
               </Link>
             </Row>
@@ -171,7 +171,7 @@ const HelpMenu = () => {
                   onClick={onResetOnboardingClick}
                   data-testid="reset-onboarding-btn"
                 >
-                  Reset Onboarding
+                  Reset onboarding
                 </Text>
               </Row>
             </FeatureFlagComponent>

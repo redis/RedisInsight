@@ -60,7 +60,7 @@ const KeyRowTTL = (props: Props) => {
         data-testid={`ttl-${nameString}`}
       >
         <RiTooltip
-          title="Time to Live"
+          title="Time to live"
           className={styles.tooltip}
           anchorClassName="truncateText"
           position="right"

@@ -59,7 +59,7 @@ const PopoverContent = ({ children, onDismiss }: PopoverContentProps) => {
             this single key.
           </Text>
           <Text size="m" color="secondary">
-            Indexing available for Hash and JSON data structures.
+            Indexing available for hash and JSON data structures.
           </Text>
         </Col>
         <Row justify="end">

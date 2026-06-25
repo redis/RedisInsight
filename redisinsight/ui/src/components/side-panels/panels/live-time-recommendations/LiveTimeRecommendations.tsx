@@ -172,7 +172,7 @@ const LiveTimeRecommendations = () => {
               <FeatureFlagComponent name={FeatureFlags.envDependent}>
                 <>
                   <Spacer size="s" />
-                  Eager for more tips? Run Database Analysis to get started.
+                  Eager for more tips? Run Database analysis to get started.
                 </>
               </FeatureFlagComponent>
             </Text>
@@ -195,7 +195,7 @@ const LiveTimeRecommendations = () => {
           >
             <RiIcon
               className={styles.githubIcon}
-              aria-label="redis insight github repository"
+              aria-label="Redis Insight GitHub repository"
               type="GithubIcon"
               size="m"
               data-testid="github-repo-icon"
@@ -255,7 +255,7 @@ const LiveTimeRecommendations = () => {
                   onClick={() => setIsShowApproveRun(true)}
                   data-testid="footer-db-analysis-link"
                 >
-                  Database Analysis
+                  Database analysis
                 </FooterLink>
               </PopoverRunAnalyze>
               {' to get more tips'}

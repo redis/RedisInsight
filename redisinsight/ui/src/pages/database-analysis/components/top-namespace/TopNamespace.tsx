@@ -74,7 +74,7 @@ const TopNamespace = (props: Props) => {
     return (
       <Section data-testid="top-namespaces-empty">
         <SectionTitleWrapper>
-          <SectionTitle size="M">TOP NAMESPACES</SectionTitle>
+          <SectionTitle size="M">Top namespaces</SectionTitle>
         </SectionTitleWrapper>
         <SectionContent data-testid="top-namespaces-message">
           <NoNamespaceMsg>
@@ -85,7 +85,7 @@ const TopNamespace = (props: Props) => {
                 data-testid="tree-view-page-link"
                 onClick={handleTreeViewClick}
               >
-                Tree View
+                Tree view
               </NoNamespaceBtn>
               {' to customize the namespaces displayed.'}
             </NoNamespaceText>
@@ -98,7 +98,7 @@ const TopNamespace = (props: Props) => {
   return (
     <Section data-testid="top-namespaces">
       <SectionTitleWrapper gap="m">
-        <SectionTitle size="M">TOP NAMESPACES</SectionTitle>
+        <SectionTitle size="M">Top namespaces</SectionTitle>
         <TextBtn
           $active={tableView === TableView.MEMORY}
           size="small"
@@ -106,7 +106,7 @@ const TopNamespace = (props: Props) => {
           disabled={tableView === TableView.MEMORY}
           data-testid="btn-change-table-memory"
         >
-          by Memory
+          by memory
         </TextBtn>
         <TextBtn
           $active={tableView === TableView.KEYS}
@@ -115,7 +115,7 @@ const TopNamespace = (props: Props) => {
           disabled={tableView === TableView.KEYS}
           data-testid="btn-change-table-keys"
         >
-          by Number of Keys
+          by number of keys
         </TextBtn>
         {extrapolation !== DEFAULT_EXTRAPOLATION && (
           <SwitchInput

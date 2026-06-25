@@ -14,7 +14,7 @@ const EmptyPrompt = () => (
       title={<h2>No information to display</h2>}
       body={
         <p className={styles.body}>
-          <span>Restart the application.</span>
+          <span>Restart the app.</span>
           <br />
           <span>
             If the problem persists, please{' '}

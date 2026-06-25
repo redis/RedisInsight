@@ -58,7 +58,7 @@ const KeyRowSize = (props: Props) => {
           data-testid={`size-${nameString}`}
         >
           <RiTooltip
-            title="Key Size"
+            title="Key size"
             className={styles.tooltip}
             anchorClassName="truncateText"
             position="right"

@@ -62,7 +62,7 @@ const ImportFileModal = <T,>({
 
         <Modal.Content.Header.Compose>
           <Modal.Content.Header.Title data-testid="import-file-modal-title">
-            {!data && !error ? title : resultsTitle || 'Import Results'}
+            {!data && !error ? title : resultsTitle || 'Import results'}
           </Modal.Content.Header.Title>
         </Modal.Content.Header.Compose>
 

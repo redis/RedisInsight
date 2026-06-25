@@ -101,7 +101,7 @@ const AddStreamGroup = (props: Props) => {
                     <TextInput
                       name="group-name"
                       id="group-name"
-                      placeholder="Enter Group Name*"
+                      placeholder="Enter group name*"
                       value={groupName}
                       onChange={(value) => setGroupName(value)}
                       autoComplete="off"
@@ -116,7 +116,7 @@ const AddStreamGroup = (props: Props) => {
                         <RiTooltip
                           anchorClassName="inputAppendIcon"
                           position="left"
-                          title="Enter Valid ID, 0 or $"
+                          title="Enter valid ID, 0 or $"
                           content={lastDeliveredIDTooltipText}
                         >
                           <TimeStampInfoIcon data-testid="entry-id-info-icon" />
@@ -127,7 +127,7 @@ const AddStreamGroup = (props: Props) => {
                             color="primary"
                             data-testid="id-help-text"
                           >
-                            Timestamp - Sequence Number or $
+                            Timestamp - Sequence number or $
                           </Text>
                         )}
                         {showIdError && (

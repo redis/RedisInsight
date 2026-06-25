@@ -146,12 +146,12 @@ const Header = (props: Props) => {
                   disabled={analysisLoading}
                   onClick={handleClick}
                 >
-                  New Report
+                  New report
                 </PrimaryButton>
                 <RiTooltip
                   position="bottom"
                   anchorClassName={styles.tooltipAnchor}
-                  title="Database Analysis"
+                  title="Database analysis"
                   data-testid="db-new-reports-tooltip"
                   content={
                     connectionType === ConnectionType.Cluster

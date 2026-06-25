@@ -100,7 +100,7 @@ export class SettingsPage extends BasePage {
 
     // Advanced settings
     this.advancedWarning = page.getByRole('alert').filter({ hasText: /Advanced settings/i });
-    this.keysToScanText = page.getByRole('heading', { name: 'Keys to Scan in List view' });
+    this.keysToScanText = page.getByRole('heading', { name: 'Keys to scan in list view' });
     this.keysToScanValue = page.getByTestId(/keys-to-scan-value/);
     this.keysToScanInput = page.getByTestId('keys-to-scan-input');
     this.keysToScanApplyButton = page.getByTestId('apply-btn');

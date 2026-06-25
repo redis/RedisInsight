@@ -49,7 +49,7 @@ export class KeyDetails {
   readonly addMembersButton: Locator;
   readonly setGrid: Locator;
 
-  // ZSet-specific (Sorted Set)
+  // ZSet-specific (Sorted set)
   readonly zsetGrid: Locator;
   readonly scoreSortButton: Locator;
 
@@ -93,7 +93,7 @@ export class KeyDetails {
     this.autoRefreshButton = page.getByTestId('key-auto-refresh-config-btn');
     this.backButton = page.getByTestId('back-right-panel-btn');
     this.closeKeyButton = page.getByTestId('close-key-btn');
-    this.copyKeyNameButton = page.getByRole('button', { name: 'Copy Key Name' });
+    this.copyKeyNameButton = page.getByRole('button', { name: 'Copy Key name' });
 
     // Format dropdown
     this.formatDropdown = page.getByTestId('select-format-key-value');
@@ -118,17 +118,17 @@ export class KeyDetails {
     this.addMembersButton = page.getByRole('button', { name: 'Add Members' });
     this.setGrid = page.getByTestId('set-details');
 
-    // ZSet-specific (Sorted Set)
+    // ZSet-specific (Sorted set)
     this.zsetGrid = page.getByTestId('zset-details');
     this.scoreSortButton = page.getByRole('button', { name: /Score/ });
 
     // Stream-specific
     this.newEntryButton = page.getByRole('button', { name: 'New Entry' });
-    this.streamDataTab = page.getByRole('tab', { name: 'Stream Data' });
-    this.consumerGroupsTab = page.getByRole('tab', { name: 'Consumer Groups' });
+    this.streamDataTab = page.getByRole('tab', { name: 'Stream data' });
+    this.consumerGroupsTab = page.getByRole('tab', { name: 'Consumer groups' });
     this.streamEntries = page.locator('[data-testid="stream-entries-container"]');
     this.newGroupButton = page.getByRole('button', { name: 'New Group' });
-    this.consumerGroupsGrid = page.locator('grid').filter({ hasText: /Group Name/ });
+    this.consumerGroupsGrid = page.locator('grid').filter({ hasText: /Group name/ });
     this.noConsumerGroupsMessage = page.getByText('Your key has no consumer groups available.');
 
     // JSON-specific
@@ -163,7 +163,7 @@ export class KeyDetails {
     // Click on the key name to enter edit mode
     await this.keyName.click();
     // Wait for the edit input to appear
-    const keyNameInput = this.page.getByRole('textbox', { name: 'Enter Key Name' });
+    const keyNameInput = this.page.getByRole('textbox', { name: 'Enter Key name' });
     await keyNameInput.waitFor({ state: 'visible' });
     // Clear and fill the new key name
     await keyNameInput.clear();
@@ -531,7 +531,7 @@ export class KeyDetails {
     await searchInput.press('Enter');
   }
 
-  // ZSet (Sorted Set) methods
+  // ZSet (Sorted set) methods
   async getZSetMemberCount(): Promise<number> {
     await this.zsetGrid.waitFor({ state: 'visible' });
     const rows = this.zsetGrid.locator('[role="row"]').filter({ hasNot: this.page.locator('[role="columnheader"]') });
@@ -733,7 +733,7 @@ export class KeyDetails {
     await this.consumerGroupsTab.click();
     await this.newGroupButton.click();
     // Fill in the group name
-    const groupNameInput = this.page.getByPlaceholder('Enter Group Name*');
+    const groupNameInput = this.page.getByPlaceholder('Enter group name*');
     await groupNameInput.waitFor({ state: 'visible' });
     await groupNameInput.fill(groupName);
     // Fill in the ID (default is $)

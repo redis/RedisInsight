@@ -170,7 +170,7 @@ const RediSearchIndexesList = (props: Props) => {
             color="primary"
             data-testid="create-index-btn"
           >
-            Create Index
+            Create index
           </Text>
         </Row>
       ),
@@ -229,14 +229,14 @@ const RediSearchIndexesList = (props: Props) => {
       >
         <RiSelect.Trigger.Compose data-testid="select-search-mode">
           <RiSelect.Trigger.Value
-            placeholder="Select Index"
+            placeholder="Select index"
             data-testid="select-index-placeholder"
             valueRender={selectValueRender}
           />
           <RiSelect.Trigger.LoadingIndicator loading={loading} />
           <RiSelect.Trigger.Arrow data-testid="select-index-arrow" />
           <div style={{ zIndex: 6 }}>
-            <RiTooltip content="Refresh Indexes">
+            <RiTooltip content="Refresh indexes">
               <IconButton
                 size="M"
                 icon={ResetIcon}

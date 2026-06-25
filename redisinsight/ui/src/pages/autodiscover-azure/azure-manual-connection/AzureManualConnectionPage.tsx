@@ -82,7 +82,7 @@ const AzureManualConnectionPage = () => {
   // Send telemetry only once on initial page load (skip if not authenticated)
   useEffect(() => {
     if (!account) return
-    setTitle('Azure Manual Connection')
+    setTitle('Azure manual connection')
     sendEventTelemetry({
       event: TelemetryEvent.AZURE_MANUAL_CONNECTION_OPENED,
     })
@@ -175,7 +175,7 @@ const AzureManualConnectionPage = () => {
     <AutodiscoveryPageTemplate>
       <FormContainer justify="start">
         <Header
-          title="Manual Azure Connection"
+          title="Manual Azure connection"
           onBack={handleBack}
           backButtonText="Databases"
         />
@@ -198,7 +198,7 @@ const AzureManualConnectionPage = () => {
             loading={loading}
             onClick={() => formik.handleSubmit()}
           >
-            Add Database
+            Add database
           </PrimaryButton>
         </Row>
       </AutoDiscoverFooter>

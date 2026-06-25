@@ -31,7 +31,7 @@ const AddMultipleFields = <T,>(props: Props<T>) => {
             <IconButton
               icon={DeleteIcon}
               disabled={isClearDisabled(item, index)}
-              aria-label="Remove Item"
+              aria-label="Remove item"
               onClick={() => onClickRemove(item, index)}
               data-testid="remove-item"
             />

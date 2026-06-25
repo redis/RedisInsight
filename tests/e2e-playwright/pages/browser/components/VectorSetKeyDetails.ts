@@ -42,7 +42,7 @@ export class VectorSetKeyDetails {
     this.saveElementsButton = page.getByTestId('save-elements-btn');
     this.cancelElementsButton = page.getByTestId('cancel-elements-btn');
     this.elementNameInput = page.getByPlaceholder('Enter Element Name').first();
-    this.elementVectorInput = page.getByPlaceholder(/^Enter Vector/).first();
+    this.elementVectorInput = page.getByPlaceholder(/^Enter vector/).first();
 
     const similaritySearchForm = page.getByTestId('similarity-search-form');
     this.similaritySearchForm = similaritySearchForm;

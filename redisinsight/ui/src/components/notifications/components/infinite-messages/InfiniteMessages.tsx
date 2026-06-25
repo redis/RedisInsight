@@ -141,7 +141,7 @@ export const INFINITE_MESSAGES: InfiniteMessagesType = {
                 align="center"
               >
                 <FlexItem>
-                  <Text size="xs">Cloud Vendor</Text>
+                  <Text size="xs">Cloud vendor</Text>
                 </FlexItem>
                 <FlexItem
                   className={styles.vendorLabel}

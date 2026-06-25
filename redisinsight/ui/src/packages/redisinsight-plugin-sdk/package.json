@@ -1,6 +1,6 @@
 {
   "name": "redisinsight-plugin-sdk",
-  "description": "Redis API for creating packages for Redis v.2 application",
+  "description": "Redis API for creating packages for Redis v.2 app",
   "license": "MIT",
   "keywords": [
     "redis",

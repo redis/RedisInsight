@@ -39,7 +39,7 @@ const BulkActionsInfo = (props: Props) => {
     search,
     status,
     progress,
-    title = 'Delete Keys with',
+    title = 'Delete keys with',
     subTitle,
     error,
   } = props

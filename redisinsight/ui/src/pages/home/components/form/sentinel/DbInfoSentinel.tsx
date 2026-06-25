@@ -24,24 +24,24 @@ const DbInfoSentinel = (props: Props) => {
 
   const dbInfo: DbInfoLabelValue[] = [
     {
-      label: 'Connection Type:',
+      label: 'Connection type:',
       value: capitalize(connectionType),
       dataTestId: 'connection-type',
     },
     {
-      label: 'Primary Group Name:',
+      label: 'Primary group name:',
       value: sentinelMaster?.name,
       dataTestId: 'primary-group-name',
       hide: !sentinelMaster?.name,
     },
     {
-      label: 'Database Name from Provider:',
+      label: 'Database name from provider:',
       value: nameFromProvider,
       dataTestId: 'db-name-from-provider',
       hide: !nameFromProvider,
     },
     {
-      label: 'Sentinel Host & Port:',
+      label: 'Sentinel host & port:',
       value: `${host}:${port}`,
       dataTestId: 'host-and-port',
       additionalContent: (

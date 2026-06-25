@@ -97,7 +97,7 @@ export const useSentinelDatabasesResultConfig = () => {
       history.push(Pages.home)
       return
     }
-    setTitle('Redis Sentinel Primary Groups Added')
+    setTitle('Redis Sentinel primary groups added')
 
     setIsInvalid(true)
     setItems(masters)

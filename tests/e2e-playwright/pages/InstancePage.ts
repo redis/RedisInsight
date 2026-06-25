@@ -8,7 +8,7 @@ import { InstanceHeader, NavigationTabs, BottomPanel } from './components';
  * Provides common components:
  * - Instance header (database name, stats, breadcrumb)
  * - Navigation tabs (Browse, Workbench, Analyze, Pub/Sub)
- * - Bottom panel (CLI, Command Helper, Profiler)
+ * - Bottom panel (CLI, Command helper, Profiler)
  *
  * Specific pages (BrowserPage, WorkbenchPage, etc.) should extend this class.
  */
@@ -81,7 +81,7 @@ export abstract class InstancePage extends BasePage {
   }
 
   /**
-   * Open Command Helper panel
+   * Open Command helper panel
    */
   async openCommandHelper(): Promise<void> {
     await this.bottomPanel.openCommandHelper();

@@ -371,7 +371,7 @@ const QueryCardHeader = (props: Props) => {
             >
               {isNumber(executionTime) && (
                 <RiTooltip
-                  title="Processing Time"
+                  title="Processing time"
                   content={getExecutionTimeString(executionTime)}
                   position="left"
                   anchorClassName={styles.executionTime}

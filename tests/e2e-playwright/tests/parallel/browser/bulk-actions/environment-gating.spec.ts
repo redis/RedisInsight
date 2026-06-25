@@ -10,7 +10,7 @@ import { DatabaseInstance, Environment } from 'e2eSrc/types';
  */
 test.use({ featureFlags: { prodMode: true } });
 
-test.describe('Browser > Bulk Actions — environment gating', () => {
+test.describe('Browser > Bulk actions — environment gating', () => {
   test.describe('Production DB', () => {
     let database: DatabaseInstance;
     const keyPrefix = `test-bulk-${faker.string.alphanumeric(6)}:`;

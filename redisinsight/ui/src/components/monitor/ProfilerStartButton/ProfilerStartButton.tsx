@@ -39,7 +39,7 @@ const ProfilerStartButton = ({ onStart }: Props) => {
         aria-label="start monitor"
         data-testid="start-monitor"
       >
-        Start Profiler
+        Start profiler
       </PrimaryButton>
     </RiTooltip>
   )
@@ -54,7 +54,7 @@ const ProfilerStartButton = ({ onStart }: Props) => {
       closePopover={() => setIsConfirmOpen(false)}
       anchorPosition="rightCenter"
       trigger={button}
-      title="Start Profiler"
+      title="Start profiler"
       message="You're connected to a production database. Profiler decreases throughput. Are you sure you want to run it now?"
       confirmButton={
         <Row gap="m" justify="end">

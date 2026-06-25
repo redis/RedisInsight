@@ -40,7 +40,7 @@ const RdiDeployErrorContent = (props: Props) => {
               data-testid="donwload-log-file-btn"
               style={{ marginTop: '10px', paddingLeft: 0 }}
             >
-              Download Error Log File
+              Download error log file
             </Link>
           </FlexItem>
         </Col>

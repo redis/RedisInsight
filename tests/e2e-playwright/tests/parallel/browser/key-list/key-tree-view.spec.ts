@@ -4,13 +4,13 @@ import { TEST_KEY_PREFIX } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
 
 /**
- * Browser Key Tree View — consolidated E2E (TEST_PLAN 2.2).
+ * Browser Key Tree view — consolidated E2E (TEST_PLAN 2.2).
  * Large-dataset "Scan more in tree" lives in ./key-list-scan-more.spec.ts.
  *
  * Serial: shared database, several tests mutate tree-view settings
  * (delimiter / sort) and reset them before exiting.
  */
-test.describe('Browser > Key Tree View', () => {
+test.describe('Browser > Key Tree view', () => {
   test.describe.configure({ mode: 'serial' });
 
   let database: DatabaseInstance;

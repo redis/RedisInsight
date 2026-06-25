@@ -299,7 +299,7 @@ const StringDetailsValue = (props: Props) => {
         {isEditItem && (
           <InlineItemEditor
             controlsPosition="bottom"
-            placeholder="Enter Value"
+            placeholder="Enter value"
             fieldName="value"
             expandable
             isLoading={false}

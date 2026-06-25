@@ -7,7 +7,7 @@
   "bugs": {
     "url": "https://github.com/"
   },
-  "description": "Redis Insight plugin for RediSearch module",
+  "description": "Redis Insight plugin for Redis Search module",
   "source": "./src/index.tsx",
   "styles": "./dist/styles.css",
   "main": "./dist/index.js",
@@ -28,7 +28,7 @@
       ],
       "iconDark": "./dist/table_view_icon_dark.svg",
       "iconLight": "./dist/table_view_icon_light.svg",
-      "description": "RediSearch default plugin",
+      "description": "Redis Search default plugin",
       "default": true
     },
     {
@@ -40,7 +40,7 @@
       ],
       "iconDark": "./dist/table_view_icon_dark.svg",
       "iconLight": "./dist/table_view_icon_light.svg",
-      "description": "RediSearch default plugin",
+      "description": "Redis Search default plugin",
       "default": false
     }
   ],

@@ -14,7 +14,7 @@ describe('RunConfirmationPopover', () => {
     expect(render(<RunConfirmationPopover onApply={jest.fn()} />)).toBeTruthy()
   })
 
-  it('should hide "Change Database" button when feature flag is off', async () => {
+  it('should hide "Change database" button when feature flag is off', async () => {
     const initialStoreState = set(
       cloneDeep(initialStateDefault),
       `app.features.featureFlags.features.${FeatureFlags.envDependent}`,
@@ -25,11 +25,11 @@ describe('RunConfirmationPopover', () => {
       store: mockStore(initialStoreState),
     })
     expect(
-      screen.queryByRole('button', { name: 'Change Database' }),
+      screen.queryByRole('button', { name: 'Change database' }),
     ).toBeInTheDocument()
   })
 
-  it('should hide "Change Database" button when feature flag is on', async () => {
+  it('should hide "Change database" button when feature flag is on', async () => {
     const initialStoreState = set(
       cloneDeep(initialStateDefault),
       `app.features.featureFlags.features.${FeatureFlags.envDependent}`,
@@ -40,7 +40,7 @@ describe('RunConfirmationPopover', () => {
       store: mockStore(initialStoreState),
     })
     expect(
-      screen.queryByRole('button', { name: 'Change Database' }),
+      screen.queryByRole('button', { name: 'Change database' }),
     ).not.toBeInTheDocument()
   })
 })

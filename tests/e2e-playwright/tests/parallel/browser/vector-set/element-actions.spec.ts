@@ -6,7 +6,7 @@ import { seedVectorSet } from './helpers';
 
 test.use({ featureFlags: { vectorSet: true } });
 
-test.describe('Browser > Vector Set > Element actions', () => {
+test.describe('Browser > Vector set > Element actions', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
@@ -41,7 +41,7 @@ test.describe('Browser > Vector Set > Element actions', () => {
     await expect(browserPage.vectorSetKeyDetails.copyVectorButton).toBeVisible();
   });
 
-  test('should remove an element from the Vector Set via the row action', async ({ browserPage, apiHelper }) => {
+  test('should remove an element from the Vector set via the row action', async ({ browserPage, apiHelper }) => {
     const keyData = VectorSetKeyFactory.build();
     await seedVectorSet(apiHelper, database.id, keyData.keyName, keyData.elements);
     await browserPage.goto(database.id);

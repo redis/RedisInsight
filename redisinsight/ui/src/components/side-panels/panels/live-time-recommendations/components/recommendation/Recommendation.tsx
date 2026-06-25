@@ -211,7 +211,7 @@ const Recommendation = ({
             onClick={handleRedirect}
             data-testid={`${name}-to-tutorial-btn`}
           >
-            {tutorialId ? 'Start Tutorial' : 'Workbench'}
+            {tutorialId ? 'Start tutorial' : 'Workbench'}
           </SecondaryButton>
           <Spacer size="m" />
         </Col>

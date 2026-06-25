@@ -13,7 +13,7 @@ export const PasswordCell = ({
     <InputFieldSentinel
       value={password}
       name={`password-${id}`}
-      placeholder="Enter Password"
+      placeholder="Enter password"
       inputType={SentinelInputFieldType.Password}
       onChangedInput={handleChangedInput}
     />

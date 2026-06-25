@@ -133,7 +133,7 @@ const Actions = (props: Props) => {
         <>
           <IconButton
             icon={EraserIcon}
-            aria-label="Clear Slow Log"
+            aria-label="Clear slow log"
             onClick={() => showClearModal()}
             data-testid="clear-btn"
           />
@@ -149,11 +149,11 @@ const Actions = (props: Props) => {
 
       <FlexItem>
         <RiTooltip
-          title="Slow Log"
+          title="Slow log"
           position="bottom"
           content={
             <span data-testid="slowlog-tooltip-text">
-              Slow Log is a list of slow operations for your Redis instance.
+              Slow log is a list of slow operations for your Redis instance.
               These can be used to troubleshoot performance issues.
               <Spacer size="xs" />
               Each entry in the list displays the command, duration and

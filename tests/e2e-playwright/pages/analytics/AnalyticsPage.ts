@@ -3,12 +3,12 @@ import { InstancePage } from '../InstancePage';
 
 /**
  * Analytics Page Object Model
- * Contains Slow Log and Database Analysis sub-pages
+ * Contains Slow log and Database analysis sub-pages
  *
  * Extends InstancePage to get access to:
  * - instanceHeader (database name, stats, breadcrumb)
  * - navigationTabs (Browse, Workbench, Analyze, Pub/Sub)
- * - bottomPanel (CLI, Command Helper, Profiler)
+ * - bottomPanel (CLI, Command helper, Profiler)
  */
 export class AnalyticsPage extends InstancePage {
   // Sub-page tabs
@@ -27,7 +27,7 @@ export class AnalyticsPage extends InstancePage {
   readonly primaryNodesTableLoading: Locator;
   readonly primaryNodesTableEmpty: Locator;
 
-  // Slow Log elements
+  // Slow log elements
   readonly slowLogTable: Locator;
   readonly slowLogRows: Locator;
   readonly configureButton: Locator;
@@ -38,7 +38,7 @@ export class AnalyticsPage extends InstancePage {
   readonly slowLogEmptyState: Locator;
   readonly slowLogEmptyStateMessage: Locator;
 
-  // Database Analysis page and header elements
+  // Database analysis page and header elements
   readonly databaseAnalysisPage: Locator;
   readonly analysisHeader: Locator;
   readonly newReportButton: Locator;
@@ -47,7 +47,7 @@ export class AnalyticsPage extends InstancePage {
   readonly reportHistorySelect: Locator;
   readonly scannedKeysText: Locator;
 
-  // Database Analysis sub-tabs
+  // Database analysis sub-tabs
   readonly dataSummaryTab: Locator;
   readonly tipsTab: Locator;
 
@@ -93,8 +93,8 @@ export class AnalyticsPage extends InstancePage {
 
     // Sub-page tabs (rendered by @redis-ui/components Tabs with role="tab")
     this.overviewTab = page.getByRole('tab', { name: 'Overview' });
-    this.databaseAnalysisTab = page.getByRole('tab', { name: 'Database Analysis' });
-    this.slowLogTab = page.getByRole('tab', { name: 'Slow Log' });
+    this.databaseAnalysisTab = page.getByRole('tab', { name: 'Database analysis' });
+    this.slowLogTab = page.getByRole('tab', { name: 'Slow log' });
 
     // Cluster Details (Overview) elements
     this.clusterDetailsPage = page.getByTestId('cluster-details-page');
@@ -107,18 +107,18 @@ export class AnalyticsPage extends InstancePage {
     this.primaryNodesTableLoading = page.getByTestId('primary-nodes-table-loading');
     this.primaryNodesTableEmpty = page.getByTestId('primary-nodes-table-empty');
 
-    // Slow Log elements
+    // Slow log elements
     this.slowLogTable = page.getByTestId('slowlog-table');
     this.slowLogRows = this.slowLogTable.getByRole('row').filter({ hasNot: page.locator('[role="columnheader"]') });
     this.configureButton = page.getByRole('button', { name: 'Configure' });
-    this.clearSlowLogButton = page.getByRole('button', { name: 'Clear Slow Log' });
+    this.clearSlowLogButton = page.getByRole('button', { name: 'Clear Slow log' });
     this.refreshButton = page.getByTestId('refresh-slowlog-btn').or(page.locator('[data-testid*="refresh"]').first());
     this.displayUpToDropdown = page.getByRole('combobox').filter({ hasText: /^\d+$/ });
     this.executionTimeText = page.getByText(/Execution time:/);
-    this.slowLogEmptyState = page.getByText('No Slow Logs found');
+    this.slowLogEmptyState = page.getByText('No slow logs found');
     this.slowLogEmptyStateMessage = page.getByText(/Either no commands exceeding/);
 
-    // Database Analysis page and header
+    // Database analysis page and header
     this.databaseAnalysisPage = page.getByTestId('database-analysis-page');
     this.analysisHeader = page.getByTestId('db-analysis-header');
     this.newReportButton = page.getByTestId('start-database-analysis-btn');
@@ -127,7 +127,7 @@ export class AnalyticsPage extends InstancePage {
     this.reportHistorySelect = page.getByTestId('select-report');
     this.scannedKeysText = page.getByText(/Scanned \d+%/);
 
-    // Database Analysis sub-tabs
+    // Database analysis sub-tabs
     this.dataSummaryTab = page.getByRole('tab', { name: 'Data summary' });
     this.tipsTab = page.getByRole('tab', { name: /Tips/ });
 
@@ -170,7 +170,7 @@ export class AnalyticsPage extends InstancePage {
   }
 
   /**
-   * Navigate to Analytics page - defaults to Slow Log
+   * Navigate to Analytics page - defaults to Slow log
    */
   async goto(databaseId: string): Promise<void> {
     await this.gotoSlowLog(databaseId);
@@ -181,7 +181,7 @@ export class AnalyticsPage extends InstancePage {
   }
 
   /**
-   * Navigate to Cluster Overview page via UI (only visible for cluster databases)
+   * Navigate to Cluster overview page via UI (only visible for cluster databases)
    */
   async gotoClusterOverview(databaseId: string): Promise<void> {
     await this.gotoDatabase(databaseId);
@@ -191,14 +191,14 @@ export class AnalyticsPage extends InstancePage {
   }
 
   /**
-   * Switch to Cluster Overview sub-tab (when already on Analyze page)
+   * Switch to Cluster overview sub-tab (when already on Analyze page)
    */
   async clickOverviewTab(): Promise<void> {
     await this.overviewTab.click();
   }
 
   /**
-   * Navigate to Slow Log page via UI
+   * Navigate to Slow log page via UI
    */
   async gotoSlowLog(databaseId: string): Promise<void> {
     await this.gotoDatabase(databaseId);
@@ -208,7 +208,7 @@ export class AnalyticsPage extends InstancePage {
   }
 
   /**
-   * Navigate to Database Analysis page via UI
+   * Navigate to Database analysis page via UI
    */
   async gotoDatabaseAnalysis(databaseId: string): Promise<void> {
     await this.gotoDatabase(databaseId);
@@ -218,14 +218,14 @@ export class AnalyticsPage extends InstancePage {
   }
 
   /**
-   * Switch to Slow Log sub-tab
+   * Switch to Slow log sub-tab
    */
   async clickSlowLogTab(): Promise<void> {
     await this.slowLogTab.click();
   }
 
   /**
-   * Switch to Database Analysis sub-tab
+   * Switch to Database analysis sub-tab
    */
   async clickDatabaseAnalysisTab(): Promise<void> {
     await this.databaseAnalysisTab.click();
@@ -248,7 +248,7 @@ export class AnalyticsPage extends InstancePage {
   }
 
   /**
-   * Click New Report button to generate analysis
+   * Click New report button to generate analysis
    */
   async clickNewReport(): Promise<void> {
     await this.newReportButton.click();
@@ -438,7 +438,7 @@ export class AnalyticsPage extends InstancePage {
   // ===== Top Namespaces Methods =====
 
   /**
-   * Switch top namespaces table to view by Memory
+   * Switch top namespaces table to view by memory
    */
   async switchTopNamespacesView(view: 'memory' | 'keys'): Promise<void> {
     const testId = view === 'memory' ? 'btn-change-table-memory' : 'btn-change-table-keys';
@@ -458,7 +458,7 @@ export class AnalyticsPage extends InstancePage {
   // ===== Top Keys Methods =====
 
   /**
-   * Switch top keys table to view by Memory or Length
+   * Switch top keys table to view by memory or Length
    */
   async switchTopKeysView(view: 'memory' | 'length'): Promise<void> {
     const testId = view === 'memory' ? 'btn-change-table-memory' : 'btn-change-table-keys';

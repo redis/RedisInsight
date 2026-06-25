@@ -1,7 +1,7 @@
 import { Page, Locator, expect } from '@playwright/test';
 
 /**
- * Bulk Actions Panel component - for bulk delete and upload operations
+ * Bulk actions Panel component - for bulk delete and upload operations
  */
 export class BulkActionsPanel {
   readonly page: Page;
@@ -15,7 +15,7 @@ export class BulkActionsPanel {
   readonly deleteKeysTab: Locator;
   readonly uploadDataTab: Locator;
 
-  // Delete Keys elements
+  // Delete keys elements
   readonly deleteButton: Locator;
   readonly confirmDeleteButton: Locator;
   readonly cancelButton: Locator;
@@ -25,7 +25,7 @@ export class BulkActionsPanel {
   readonly downloadReportCheckbox: Locator;
   readonly statusCompleted: Locator;
 
-  // Upload Data elements
+  // Upload data elements
   readonly fileInput: Locator;
   readonly uploadContainer: Locator;
   readonly uploadButton: Locator;
@@ -41,10 +41,10 @@ export class BulkActionsPanel {
     this.content = page.getByTestId('bulk-actions-content');
 
     // Tabs
-    this.deleteKeysTab = page.getByRole('tab', { name: 'Delete Keys' });
-    this.uploadDataTab = page.getByRole('tab', { name: 'Upload Data' });
+    this.deleteKeysTab = page.getByRole('tab', { name: 'Delete keys' });
+    this.uploadDataTab = page.getByRole('tab', { name: 'Upload data' });
 
-    // Delete Keys elements
+    // Delete keys elements
     this.deleteButton = page.getByTestId('bulk-action-warning-btn');
     this.confirmDeleteButton = page.getByTestId('bulk-action-apply-btn');
     this.cancelButton = page.getByTestId('bulk-action-cancel-btn');
@@ -54,7 +54,7 @@ export class BulkActionsPanel {
     this.downloadReportCheckbox = page.getByRole('checkbox', { name: 'Download report' });
     this.statusCompleted = page.getByTestId('bulk-status-completed');
 
-    // Upload Data elements
+    // Upload data elements
     this.fileInput = page.getByTestId('bulk-upload-file-input');
     this.uploadContainer = page.getByTestId('bulk-upload-container');
     this.uploadButton = page.getByTestId('bulk-action-warning-btn');

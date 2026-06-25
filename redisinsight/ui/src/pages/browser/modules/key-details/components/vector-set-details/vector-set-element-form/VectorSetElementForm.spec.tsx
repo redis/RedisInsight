@@ -205,7 +205,7 @@ describe('VectorSetElementForm', () => {
     renderComponent({ vectorDim: 5 })
     expect(screen.getByTestId(ELEMENT_VECTOR)).toHaveAttribute(
       'placeholder',
-      'Enter Vector (5 dimensions)',
+      'Enter vector (5 dimensions)',
     )
   })
 
@@ -263,7 +263,7 @@ describe('VectorSetElementForm', () => {
       const vectorInputs = screen.getAllByTestId(ELEMENT_VECTOR)
       expect(vectorInputs[1]).toHaveAttribute(
         'placeholder',
-        'Enter Vector (3 dimensions)',
+        'Enter vector (3 dimensions)',
       )
     })
   })
@@ -283,7 +283,7 @@ describe('VectorSetElementForm', () => {
       const vectorInputs = screen.getAllByTestId(ELEMENT_VECTOR)
       expect(vectorInputs[1]).toHaveAttribute(
         'placeholder',
-        'Enter Vector (3 dimensions)',
+        'Enter vector (3 dimensions)',
       )
     })
 

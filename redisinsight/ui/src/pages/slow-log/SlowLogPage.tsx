@@ -76,7 +76,7 @@ const SlowLogPage = () => {
 
   const lastTimestamp = minBy(data, 'time')?.time
   const dbName = `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)}`
-  setTitle(`${dbName} - Slow Log`)
+  setTitle(`${dbName} - Slow log`)
 
   useEffect(() => {
     getConfig()
@@ -188,7 +188,7 @@ const SlowLogPage = () => {
               <Row align="center" justify="between">
                 <FlexItem>
                   <Title size="L" color="primary">
-                    Slow Log
+                    Slow log
                   </Title>
                 </FlexItem>
                 <FlexItem>

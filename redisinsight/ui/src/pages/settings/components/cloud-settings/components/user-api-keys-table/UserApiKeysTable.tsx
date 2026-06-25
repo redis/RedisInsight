@@ -69,7 +69,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
 
   const columns: ColumnDef<CloudCapiKey>[] = [
     {
-      header: 'API Key Name',
+      header: 'API key name',
       id: 'name',
       accessorKey: 'name',
       enableSorting: true,
@@ -93,7 +93,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
                 />
               </RiTooltip>
             )}
-            <RiTooltip title="API Key Name" content={tooltipContent}>
+            <RiTooltip title="API key name" content={tooltipContent}>
               <>{name}</>
             </RiTooltip>
           </div>
@@ -159,7 +159,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
             aria-label="Copy API key"
             successLabel=""
             tooltipConfig={{
-              content: 'Copy API Key Name',
+              content: 'Copy API key name',
             }}
             data-testid={`copy-api-key-${name}`}
           />
@@ -212,7 +212,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
               type="StarsIcon"
               color="attention300"
             />
-            <Title size="XS">The ultimate Redis starting point</Title>
+            <Title size="XS">Get started with Redis Cloud</Title>
           </Row>
           <Spacer size="s" />
           <Text size="s" className={styles.smallText} color="primary">

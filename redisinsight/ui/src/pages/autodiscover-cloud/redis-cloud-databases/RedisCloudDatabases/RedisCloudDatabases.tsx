@@ -164,7 +164,7 @@ const RedisCloudDatabasesPage = ({
         icon={isDisabled ? InfoIcon : undefined}
         data-testid="btn-add-databases"
       >
-        Add selected Databases
+        Add selected databases
       </PrimaryButton>
     </RiTooltip>
   )

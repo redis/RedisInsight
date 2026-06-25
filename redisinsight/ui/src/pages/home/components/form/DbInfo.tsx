@@ -97,13 +97,13 @@ const DbInfo = (props: Props) => {
 
   const dbInfo: DbInfoLabelValue[] = [
     {
-      label: 'Connection Type:',
+      label: 'Connection type:',
       value: capitalize(connectionType),
       dataTestId: 'connection-type',
       hide: isFromCloud,
     },
     {
-      label: 'Database Name from Provider:',
+      label: 'Database name from provider:',
       value: nameFromProvider,
       dataTestId: 'db-name-from-provider',
       hide: !nameFromProvider,
@@ -123,7 +123,7 @@ const DbInfo = (props: Props) => {
       hide: server?.buildType !== BuildType.RedisStack && !isFromCloud,
     },
     {
-      label: 'Database Index:',
+      label: 'Database index:',
       value: db?.toString(),
       dataTestId: 'db-index',
       hide: !db,

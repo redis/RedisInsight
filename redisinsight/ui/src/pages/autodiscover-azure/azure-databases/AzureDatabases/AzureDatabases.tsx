@@ -141,7 +141,7 @@ const AzureDatabases = ({
     <AutodiscoveryPageTemplate>
       <DatabaseContainer justify="start">
         <Header
-          title="Azure Redis Databases"
+          title="Azure Redis databases"
           onBack={onBack}
           onQueryChange={onQueryChange}
           backButtonText="Subscriptions"
@@ -185,7 +185,7 @@ const AzureDatabases = ({
                       data-testid="auth-type-access-key"
                     >
                       <RiRadioGroupItemIndicator />
-                      <RiRadioGroupItemLabel>Access Key</RiRadioGroupItemLabel>
+                      <RiRadioGroupItemLabel>Access key</RiRadioGroupItemLabel>
                     </RiRadioGroupItemRoot>
                   </Row>
                 </Row>
@@ -242,7 +242,7 @@ const AzureDatabases = ({
               data-testid="btn-manual-connection"
               onClick={onManualConnection}
             >
-              Manual Connection
+              Manual connection
             </SecondaryButton>
             <PrimaryButton
               data-testid="btn-submit"
@@ -254,7 +254,7 @@ const AzureDatabases = ({
               {selectedDatabases.length > 0
                 ? `(${selectedDatabases.length})`
                 : ''}{' '}
-              Database
+              database
               {selectedDatabases.length !== 1 ? 's' : ''}
             </PrimaryButton>
           </Row>

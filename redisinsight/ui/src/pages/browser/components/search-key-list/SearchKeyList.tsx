@@ -196,7 +196,7 @@ const SearchKeyList = () => {
               ? searchHistory
               : rediSearchHistory,
           ),
-          buttonTooltipTitle: 'Show History',
+          buttonTooltipTitle: 'Show history',
           loading:
             searchMode === SearchMode.Pattern
               ? searchHistoryLoading

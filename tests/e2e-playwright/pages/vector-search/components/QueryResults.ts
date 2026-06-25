@@ -5,7 +5,7 @@ import { Page, Locator } from '@playwright/test';
  * Displays results from search queries.
  *
  * The results panel contains:
- * - A "Clear Results" button to remove all results
+ * - A "Clear results" button to remove all results
  * - Individual query cards, each with actions (re-run, delete, expand, fullscreen)
  */
 export class QueryResults {
@@ -20,7 +20,7 @@ export class QueryResults {
 
     this.container = page.getByTestId('query-results');
     this.noResults = page.getByText('Your query results will appear here once you run a query.');
-    this.clearResultsButton = page.getByRole('button', { name: 'Clear Results' });
+    this.clearResultsButton = page.getByRole('button', { name: 'Clear results' });
   }
 
   /**

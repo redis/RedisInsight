@@ -105,7 +105,7 @@ const DatetimeForm = ({ onFormatChange }: Props) => {
       setError('Format should not exceed 50 characters')
     } else if (!valid) {
       setError(errorMsg || 'This format is not supported')
-      onFormatChange?.('Invalid Format')
+      onFormatChange?.('Invalid format')
     } else {
       setError('')
       const newPreview = formatTimestamp(

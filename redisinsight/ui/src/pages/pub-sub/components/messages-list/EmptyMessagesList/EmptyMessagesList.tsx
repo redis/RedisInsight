@@ -31,7 +31,7 @@ const EmptyMessagesList = ({
         <Title size="XXL">You are not subscribed</Title>
 
         <Text>
-          Subscribe to the Channel to see all the messages published to your
+          Subscribe to the channel to see all the messages published to your
           database
         </Text>
       </Col>

@@ -53,7 +53,7 @@ export const SetKeyFactory = Factory.define<SetKeyData>(() => ({
 }));
 
 /**
- * Sorted Set (ZSet) key data factory
+ * Sorted set (ZSet) key data factory
  */
 export const ZSetKeyFactory = Factory.define<ZSetKeyData>(() => ({
   keyName: `${TEST_KEY_PREFIX}zset-${faker.string.alphanumeric(8)}`,
@@ -89,7 +89,7 @@ const buildRandomVector = (dim: number): string =>
   Array.from({ length: dim }, () => faker.number.float({ min: -1, max: 1, fractionDigits: 4 })).join(',');
 
 // FP32 little-endian escaped-byte string (e.g. `\x00\x00\x80\x3f` for 1.0) —
-// the format the Vector Set element-vector input auto-detects. Resulting dim
+// the format the Vector set element-vector input auto-detects. Resulting dim
 // (bytes / 4) must match the existing vector set's dimension.
 export const toFp32EscapedString = (floats: number[]): string => {
   const buf = new ArrayBuffer(floats.length * 4);
@@ -116,8 +116,8 @@ export const keyFactories = {
   Hash: HashKeyFactory,
   List: ListKeyFactory,
   Set: SetKeyFactory,
-  'Sorted Set': ZSetKeyFactory,
+  'Sorted set': ZSetKeyFactory,
   Stream: StreamKeyFactory,
   JSON: JsonKeyFactory,
-  'Vector Set': VectorSetKeyFactory,
+  'Vector set': VectorSetKeyFactory,
 };

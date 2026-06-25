@@ -76,7 +76,7 @@ const WbNoResultsMessage = () => {
               className={styles.noResultsText}
               data-testid="wb_no-results__summary"
             >
-              Try Workbench with our interactive Tutorials to learn how Redis
+              Try Workbench with our interactive tutorials to learn how Redis
               can solve your use cases.
             </Text>
             <Spacer size="xl" />

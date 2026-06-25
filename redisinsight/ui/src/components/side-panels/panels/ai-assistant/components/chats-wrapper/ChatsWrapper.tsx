@@ -71,7 +71,7 @@ const ChatsWrapper = () => {
       content: null,
     },
     {
-      label: <span>My Data</span>,
+      label: <span>My data</span>,
       value: AiChatType.Query,
       content: null,
     },

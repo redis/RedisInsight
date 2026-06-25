@@ -181,7 +181,7 @@ const SummaryPerData = ({
   return (
     <Section data-testid="summary-per-data">
       <SectionTitleWrapper>
-        <Title size="M">SUMMARY PER DATA TYPE</Title>
+        <Title size="M">Summary per data type</Title>
         {extrapolation !== DEFAULT_EXTRAPOLATION && (
           <SwitchExtrapolateResults
             title="Extrapolate results"

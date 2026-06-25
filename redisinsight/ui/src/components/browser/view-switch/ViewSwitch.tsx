@@ -18,7 +18,7 @@ const ViewSwitch = ({
   const viewTypes: ISwitchType[] = [
     {
       type: KeyViewType.Browser,
-      tooltipText: 'List View',
+      tooltipText: 'List view',
       ariaLabel: 'List view button',
       dataTestId: 'view-type-browser-btn',
       getIconType: () => EqualIcon,
@@ -26,8 +26,8 @@ const ViewSwitch = ({
     {
       type: KeyViewType.Tree,
       tooltipText: isTreeViewDisabled
-        ? 'Tree View is unavailable when the HEX key name format is selected.'
-        : 'Tree View',
+        ? 'Tree view is unavailable when the HEX key name format is selected.'
+        : 'Tree view',
       ariaLabel: 'Tree view button',
       dataTestId: 'view-type-list-btn',
       disabled: isTreeViewDisabled,

@@ -25,7 +25,7 @@ export const ASSISTANCE_CHAT_AGREEMENTS = (
         target="_blank"
         href="https://redis.io/legal/redis-copilot-terms-of-use/"
       >
-        REDIS COPILOT TERMS
+        Redis Copilot terms
       </Link>{' '}
       and{' '}
       <Link
@@ -67,7 +67,7 @@ export const EXPERT_CHAT_AGREEMENTS = (
         target="_blank"
         href="https://redis.io/legal/redis-copilot-terms-of-use/"
       >
-        REDIS COPILOT TERMS
+        Redis Copilot terms
       </Link>{' '}
       and{' '}
       <Link

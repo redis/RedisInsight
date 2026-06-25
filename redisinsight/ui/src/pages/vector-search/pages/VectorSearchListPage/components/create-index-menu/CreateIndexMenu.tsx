@@ -29,7 +29,7 @@ export const CreateIndexMenu = () => {
     }
 
     if (!hasExistingKeys) {
-      return 'No Hash or JSON keys found in your database'
+      return 'No hash or JSON keys found in your database'
     }
 
     return null

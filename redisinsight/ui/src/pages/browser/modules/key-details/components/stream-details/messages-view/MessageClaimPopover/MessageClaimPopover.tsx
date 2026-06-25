@@ -58,7 +58,7 @@ const getConsumersOptions = (consumers: ConsumerDto[]) =>
   }))
 
 const timeOptions = [
-  { value: ClaimTimeOptions.RELATIVE, label: 'Relative Time' },
+  { value: ClaimTimeOptions.RELATIVE, label: 'Relative time' },
   { value: ClaimTimeOptions.ABSOLUTE, label: 'Timestamp' },
 ]
 
@@ -224,7 +224,7 @@ const MessageClaimPopover = (props: Props) => {
             </FormField>
           </FlexItem>
           <FlexItem grow>
-            <FormField label="Min Idle Time">
+            <FormField label="Min idle time">
               <div className={styles.timeWrapper}>
                 <NumericInput
                   autoValidate
@@ -249,7 +249,7 @@ const MessageClaimPopover = (props: Props) => {
             <Spacer size="xl" />
             <Row align="center" justify="between" gap="m">
               <FlexItem grow>
-                <FormField label="Idle Time">
+                <FormField label="Idle time">
                   <div className={styles.timeWrapper}>
                     <NumericInput
                       autoValidate
@@ -281,7 +281,7 @@ const MessageClaimPopover = (props: Props) => {
                 </FormField>
               </FlexItem>
               <FlexItem>
-                <FormField label="Retry Count">
+                <FormField label="Retry count">
                   <NumericInput
                     autoValidate
                     min={0}
@@ -302,7 +302,7 @@ const MessageClaimPopover = (props: Props) => {
                   <Checkbox
                     id="force_claim"
                     name="force"
-                    label="Force Claim"
+                    label="Force claim"
                     checked={formik.values.force}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => {
                       formik.setFieldValue(e.target.name, !formik.values.force)
@@ -318,7 +318,7 @@ const MessageClaimPopover = (props: Props) => {
         <Row responsive justify="between" align="center">
           <FlexItem>
             <SwitchInput
-              title="Optional Parameters"
+              title="Optional parameters"
               checked={isOptionalShow}
               onCheckedChange={setIsOptionalShow}
               data-testid="optional-parameters-switcher"

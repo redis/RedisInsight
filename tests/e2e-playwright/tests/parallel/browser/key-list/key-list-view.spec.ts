@@ -4,12 +4,12 @@ import { TEST_KEY_PREFIX } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
 
 /**
- * Browser Key List View — consolidated E2E (TEST_PLAN 2.1).
+ * Browser Key List view — consolidated E2E (TEST_PLAN 2.1).
  * Pattern/wildcard matrix lives in ../key-filtering/key-filtering.spec.ts (2.14).
  *
  * Serial: shared database with destructive tests (delete / bulk delete).
  */
-test.describe('Browser > Key List View', () => {
+test.describe('Browser > Key List view', () => {
   test.describe.configure({ mode: 'serial' });
 
   let database: DatabaseInstance;
@@ -93,7 +93,7 @@ test.describe('Browser > Key List View', () => {
 
     // Verify reset path back to all key types
     await browserPage.keyList.clearSearch();
-    await browserPage.keyList.filterByType('All Key Types');
+    await browserPage.keyList.filterByType('All key types');
     await browserPage.keyList.waitForKeysLoaded();
     await expect(browserPage.keyList.getKeyRow(stringKey)).toBeVisible();
     await expect(browserPage.keyList.getKeyRow(hashKey)).toBeVisible();

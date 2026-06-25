@@ -3,7 +3,7 @@ import { Page, Locator } from '@playwright/test';
 /**
  * Bottom Panel component
  * Common bottom panel shown on all database instance pages
- * Contains CLI, Command Helper, and Profiler buttons
+ * Contains CLI, Command helper, and Profiler buttons
  */
 export class BottomPanel {
   readonly page: Page;
@@ -21,7 +21,7 @@ export class BottomPanel {
 
     // Bottom panel buttons - using text content with parent element
     this.cliButton = page.getByText('CLI').locator('..');
-    this.commandHelperButton = page.getByText('Command Helper').locator('..');
+    this.commandHelperButton = page.getByText('Command helper').locator('..');
     this.profilerButton = page.getByText('Profiler').locator('..');
 
     // Feedback link
@@ -36,7 +36,7 @@ export class BottomPanel {
   }
 
   /**
-   * Open Command Helper panel
+   * Open Command helper panel
    */
   async openCommandHelper(): Promise<void> {
     await this.commandHelperButton.click();
@@ -57,7 +57,7 @@ export class BottomPanel {
   }
 
   /**
-   * Check if Command Helper button is visible
+   * Check if Command helper button is visible
    */
   async isCommandHelperButtonVisible(): Promise<boolean> {
     return this.commandHelperButton.isVisible();

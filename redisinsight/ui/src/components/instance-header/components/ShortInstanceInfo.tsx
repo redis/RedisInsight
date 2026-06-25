@@ -72,7 +72,7 @@ const ShortInstanceInfo = ({ info, databases, modules }: Props) => {
               <Text color="secondary" size="s">
                 <WordBreakWrapper>
                   Select logical databases to work with in Browser, Workbench,
-                  and Database Analysis.
+                  and Database analysis.
                 </WordBreakWrapper>
               </Text>
             </Col>

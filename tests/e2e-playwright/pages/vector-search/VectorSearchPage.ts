@@ -23,7 +23,7 @@ import {
  * Extends InstancePage which provides:
  * - instanceHeader: Database name, stats, breadcrumb
  * - navigationTabs: Browse, Search, Workbench, Analyze, Pub/Sub tabs
- * - bottomPanel: CLI, Command Helper, Profiler buttons
+ * - bottomPanel: CLI, Command helper, Profiler buttons
  */
 export class VectorSearchPage extends InstancePage {
   readonly rqeNotAvailableWrapper: Locator;

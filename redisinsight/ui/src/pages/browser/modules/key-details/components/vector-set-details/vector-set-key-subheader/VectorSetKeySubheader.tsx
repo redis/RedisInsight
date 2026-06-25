@@ -50,7 +50,7 @@ const VectorSetKeySubheader = ({
                   />
                 ) : (
                   <AddItemsAction
-                    title="Add Elements"
+                    title="Add elements"
                     width={width}
                     openAddItemPanel={openAddItemPanel}
                   />

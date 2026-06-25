@@ -55,12 +55,12 @@ const MonitorNotStarted = ({
 
       <div data-testid="save-log-container">
         <RiTooltip
-          title="Allows you to download the generated log file after pausing the Profiler."
-          content="Profiler log is saved to a file on your local machine with no size limitation. The temporary log file will be automatically rewritten when the Profiler is reset."
+          title="Allows you to download the generated log file after pausing the profiler."
+          content="Profiler log is saved to a file on your local machine with no size limitation. The temporary log file will be automatically rewritten when the profiler is reset."
           data-testid="save-log-tooltip"
         >
           <SwitchInput
-            title="Save Log"
+            title="Save log"
             checked={saveLogValue}
             onCheckedChange={setSaveLogValue}
             data-testid="save-log-switch"
@@ -72,7 +72,7 @@ const MonitorNotStarted = ({
         variant="attention"
         showIcon
         data-testid="monitor-warning-message"
-        message="Running Profiler will decrease throughput, avoid running it in production databases."
+        message="Running profiler will decrease throughput, avoid running it in production databases."
       />
     </Col>
   </Row>

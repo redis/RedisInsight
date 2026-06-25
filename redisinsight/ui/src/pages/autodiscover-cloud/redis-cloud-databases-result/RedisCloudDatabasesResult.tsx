@@ -111,7 +111,7 @@ const RedisCloudDatabaseListResult = ({
             data-testid="btn-view-databases"
             disabled={items.length === 0}
           >
-            View Databases
+            View databases
           </PrimaryButton>
         </Row>
       </Footer>

@@ -30,7 +30,7 @@ export const DbCell = ({
         value={`${db}` || '0'}
         name={`db-${id}`}
         isInvalid={isDBInvalid}
-        placeholder="Enter Index"
+        placeholder="Enter index"
         inputType={SentinelInputFieldType.Number}
         onChangedInput={handleChangedInput}
       />

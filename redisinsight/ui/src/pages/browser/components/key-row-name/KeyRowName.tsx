@@ -42,7 +42,7 @@ const KeyRowName = (props: Props) => {
           data-testid={`key-${shortName}`}
         >
           <RiTooltip
-            title="Key Name"
+            title="Key name"
             className={styles.tooltip}
             position="bottom"
             content={nameTooltipContent}

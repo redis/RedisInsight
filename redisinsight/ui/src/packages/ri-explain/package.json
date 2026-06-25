@@ -7,7 +7,7 @@
   "bugs": {
     "url": "https://github.com/"
   },
-  "description": "Show Profile/Explain Visualization",
+  "description": "Show Profile/Explain visualization",
   "source": "./src/main.tsx",
   "styles": "./dist/styles.css",
   "main": "./dist/index.js",
@@ -36,7 +36,7 @@
       ],
       "iconDark": "./dist/profile_icon_dark.svg",
       "iconLight": "./dist/profile_icon_light.svg",
-      "description": "Profile/Explain plugin Visualization",
+      "description": "Profile/Explain plugin visualization",
       "default": true
     }
   ],

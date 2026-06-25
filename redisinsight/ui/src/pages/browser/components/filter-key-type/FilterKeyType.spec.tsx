@@ -87,7 +87,7 @@ describe('FilterKeyType', () => {
     expectActionsToContain(store.getActions(), expectedActions)
   })
 
-  it('"setBulkDeleteFilter" should be called with null when selecting "All Key Types"', async () => {
+  it('"setBulkDeleteFilter" should be called with null when selecting "All key types"', async () => {
     const initialStoreState = set(
       cloneDeep(initialStateDefault),
       'browser.keys.filter',
@@ -100,7 +100,7 @@ describe('FilterKeyType', () => {
     })
 
     await userEvent.click(screen.getByTestId(filterSelectId))
-    await userEvent.click(await findByText('All Key Types'))
+    await userEvent.click(await findByText('All key types'))
 
     const expectedActions = [setFilter(null), setBulkDeleteFilter(null)]
 
@@ -195,7 +195,7 @@ describe('FilterKeyType', () => {
     expect(graphElement).not.toBeInTheDocument()
   })
 
-  it('should show Vector Set when vector set feature flag is enabled and redis version >= 8.0', async () => {
+  it('should show Vector set when vector set feature flag is enabled and redis version >= 8.0', async () => {
     connectedInstanceOverviewSelectorMock.mockImplementationOnce(() => ({
       version: '8.0.0',
     }))
@@ -210,10 +210,10 @@ describe('FilterKeyType', () => {
 
     await userEvent.click(screen.getByTestId(filterSelectId))
 
-    expect(queryByText('Vector Set')).toBeInTheDocument()
+    expect(queryByText('Vector set')).toBeInTheDocument()
   })
 
-  it('should hide Vector Set when vector set feature flag is disabled', () => {
+  it('should hide Vector set when vector set feature flag is disabled', () => {
     // Ensure the version gate is satisfied so the assertion truly
     // exercises the feature-flag path and not the version path.
     connectedInstanceOverviewSelectorMock.mockImplementationOnce(() => ({
@@ -223,10 +223,10 @@ describe('FilterKeyType', () => {
 
     fireEvent.click(screen.getByTestId(filterSelectId))
 
-    expect(queryByText('Vector Set')).not.toBeInTheDocument()
+    expect(queryByText('Vector set')).not.toBeInTheDocument()
   })
 
-  it('should hide Vector Set when redis version < 8.0 even if feature flag is enabled', async () => {
+  it('should hide Vector set when redis version < 8.0 even if feature flag is enabled', async () => {
     connectedInstanceOverviewSelectorMock.mockImplementationOnce(() => ({
       version: '7.4.0',
     }))
@@ -241,7 +241,7 @@ describe('FilterKeyType', () => {
 
     await userEvent.click(screen.getByTestId(filterSelectId))
 
-    expect(queryByText('Vector Set')).not.toBeInTheDocument()
+    expect(queryByText('Vector set')).not.toBeInTheDocument()
   })
 
   it('should show Array when dev-array feature flag is enabled and redis version >= 8.8', async () => {

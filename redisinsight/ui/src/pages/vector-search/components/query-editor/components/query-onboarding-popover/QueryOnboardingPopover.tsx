@@ -43,8 +43,8 @@ export const QueryOnboardingPopover = ({
           Start exploring your data
         </Text>
         <Text size="m" color="secondary">
-          Build queries in the Query Editor or save them for later in the Query
-          Library.
+          Build queries in the Query editor or save them for later in the Query
+          library.
         </Text>
 
         <S.Section>

@@ -69,7 +69,7 @@ const NoRecommendationsScreen = () => {
             className={styles.text}
             data-testid="no-recommendations-analyse-text"
           >
-            Eager for more tips? Run Database Analysis to get started.
+            Eager for more tips? Run Database analysis to get started.
           </Text>
 
           <PopoverRunAnalyze

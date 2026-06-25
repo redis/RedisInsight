@@ -43,7 +43,7 @@ describe('BulkActionsTabs', () => {
 
     render(<BulkActionsTabs {...mockedProps} onChangeType={jest.fn()} />)
 
-    fireEvent.mouseDown(screen.getByText('Upload Data'))
+    fireEvent.mouseDown(screen.getByText('Upload data'))
 
     expect(sendEventTelemetry).toBeCalledWith({
       event: TelemetryEvent.BULK_ACTIONS_OPENED,

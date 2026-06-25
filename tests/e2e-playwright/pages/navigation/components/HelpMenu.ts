@@ -2,7 +2,7 @@ import { Page, Locator } from '@playwright/test';
 
 /**
  * Component for Help Menu interactions
- * Handles the Help Center dropdown and its menu items
+ * Handles the Help center dropdown and its menu items
  */
 export class HelpMenu {
   readonly page: Page;
@@ -30,19 +30,19 @@ export class HelpMenu {
 
     // Help menu trigger and dialog
     this.helpMenuButton = page.getByTestId('help-menu-button');
-    this.helpMenuDialog = page.getByRole('dialog').filter({ hasText: 'Help Center' });
+    this.helpMenuDialog = page.getByRole('dialog').filter({ hasText: 'Help center' });
 
     // Menu items
     this.provideFeedbackLink = page.getByRole('link', { name: /Provide Feedback/i });
-    this.keyboardShortcutsButton = page.getByText('Keyboard Shortcuts');
-    this.releaseNotesLink = page.getByRole('link', { name: 'Release Notes' });
-    this.resetOnboardingButton = page.getByText('Reset Onboarding');
+    this.keyboardShortcutsButton = page.getByText('Keyboard shortcuts');
+    this.releaseNotesLink = page.getByRole('link', { name: 'Release notes' });
+    this.resetOnboardingButton = page.getByText('Reset onboarding');
 
     // Keyboard shortcuts dialog
     this.shortcutsDialog = page.getByRole('dialog', { name: 'Shortcuts' });
     this.shortcutsTitle = this.shortcutsDialog.getByText('Shortcuts', { exact: true });
     this.shortcutsCloseButton = this.shortcutsDialog.getByRole('button', { name: 'close drawer' });
-    this.shortcutsDesktopSection = this.shortcutsDialog.getByText('Desktop application');
+    this.shortcutsDesktopSection = this.shortcutsDialog.getByText('Desktop app');
     this.shortcutsCliSection = this.shortcutsDialog.getByText('CLI', { exact: true });
     this.shortcutsWorkbenchSection = this.shortcutsDialog.getByText('Workbench', { exact: true });
   }

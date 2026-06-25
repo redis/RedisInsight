@@ -103,7 +103,7 @@ describe('CreateIndexMenu', () => {
     await waitForRiTooltipVisible()
 
     expect(
-      screen.getAllByText('No Hash or JSON keys found in your database')[0],
+      screen.getAllByText('No hash or JSON keys found in your database')[0],
     ).toBeInTheDocument()
   })
 

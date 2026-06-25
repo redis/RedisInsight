@@ -2,7 +2,7 @@ import { Page, Locator } from '@playwright/test';
 import { FieldTypeModal } from './FieldTypeModal';
 
 /**
- * Create Index Form component
+ * Create index Form component
  * Form for creating a new search index (sample data or existing data)
  */
 export class CreateIndexForm {

@@ -62,7 +62,7 @@ const EncryptionErrorContent = (props: Props) => {
               className="toast-danger-btn euiBorderWidthThick"
               data-testid="toast-action-btn"
             >
-              Disable Encryption
+              Disable encryption
             </DestructiveButton>
           </div>
         </FlexItem>

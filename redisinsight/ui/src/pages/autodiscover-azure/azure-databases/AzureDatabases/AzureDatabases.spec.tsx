@@ -53,7 +53,7 @@ describe('AzureDatabases', () => {
 
   it('should render title', () => {
     renderComponent()
-    expect(screen.getByText('Azure Redis Databases')).toBeInTheDocument()
+    expect(screen.getByText('Azure Redis databases')).toBeInTheDocument()
   })
 
   it('should render subscription name', () => {
@@ -217,7 +217,7 @@ describe('AzureDatabases', () => {
     expect(
       screen.queryByTestId('max-selection-message'),
     ).not.toBeInTheDocument()
-    expect(screen.getByText(/Add Database/)).toBeInTheDocument()
+    expect(screen.getByText(/Add database/)).toBeInTheDocument()
   })
 
   it('should show max selection message when 10 databases are selected', () => {

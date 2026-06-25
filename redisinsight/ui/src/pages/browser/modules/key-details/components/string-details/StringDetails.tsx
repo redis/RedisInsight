@@ -122,7 +122,7 @@ const StringDetails = (props: Props) => {
         />
       )}
       <EditItemAction
-        title="Edit Value"
+        title="Edit value"
         tooltipContent={editToolTip}
         isEditable={isStringEditable && isEditable}
         onEditItem={() => {

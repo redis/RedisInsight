@@ -5,7 +5,7 @@ import { DatabaseInstance } from 'e2eSrc/types';
 
 test.use({ featureFlags: { vectorSet: true } });
 
-test.describe('Browser > Vector Set > Add Key (manual)', () => {
+test.describe('Browser > Vector set > Add Key (manual)', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
@@ -28,12 +28,12 @@ test.describe('Browser > Vector Set > Add Key (manual)', () => {
     await apiHelper.deleteKeysByPattern(database.id, `${TEST_KEY_PREFIX}*`);
   });
 
-  test('should add a Vector Set key with a single element manually', async ({ browserPage }) => {
+  test('should add a Vector set key with a single element manually', async ({ browserPage }) => {
     const keyData = VectorSetKeyFactory.build();
     const [first] = keyData.elements;
 
     await browserPage.openAddKeyDialog();
-    await browserPage.addKeyDialog.selectKeyType('Vector Set');
+    await browserPage.addKeyDialog.selectKeyType('Vector set');
     await browserPage.addKeyDialog.expectVectorSetManualModeSelected();
 
     await browserPage.addKeyDialog.fillKeyName(keyData.keyName);
@@ -49,7 +49,7 @@ test.describe('Browser > Vector Set > Add Key (manual)', () => {
     const keyData = VectorSetKeyFactory.build();
 
     await browserPage.openAddKeyDialog();
-    await browserPage.addKeyDialog.selectKeyType('Vector Set');
+    await browserPage.addKeyDialog.selectKeyType('Vector set');
     await browserPage.addKeyDialog.fillKeyName(keyData.keyName);
 
     await browserPage.addKeyDialog.vectorSetElementNameInput.fill(keyData.elements[0].name);
@@ -59,11 +59,11 @@ test.describe('Browser > Vector Set > Add Key (manual)', () => {
     await browserPage.addKeyDialog.expectAddKeyEnabled();
   });
 
-  test('should cancel adding a Vector Set key', async ({ browserPage }) => {
+  test('should cancel adding a Vector set key', async ({ browserPage }) => {
     const keyData = VectorSetKeyFactory.build();
 
     await browserPage.openAddKeyDialog();
-    await browserPage.addKeyDialog.selectKeyType('Vector Set');
+    await browserPage.addKeyDialog.selectKeyType('Vector set');
     await browserPage.addKeyDialog.fillKeyName(keyData.keyName);
     await browserPage.addKeyDialog.clickCancel();
 

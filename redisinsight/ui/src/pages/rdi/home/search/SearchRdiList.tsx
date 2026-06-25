@@ -41,7 +41,7 @@ const SearchRdiList = () => {
 
   return (
     <SearchInput
-      placeholder="Endpoint List Search"
+      placeholder="Endpoint list search"
       onChange={onQueryChange}
       aria-label="Search rdi instance list"
       data-testid="search-rdi-instance-list"

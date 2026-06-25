@@ -10,7 +10,7 @@ import { ResultsPanel } from './components/ResultsPanel';
  * Extends InstancePage to get access to:
  * - instanceHeader (database name, stats, breadcrumb)
  * - navigationTabs (Browse, Workbench, Analyze, Pub/Sub)
- * - bottomPanel (CLI, Command Helper, Profiler)
+ * - bottomPanel (CLI, Command helper, Profiler)
  */
 export class WorkbenchPage extends InstancePage {
   // Components
@@ -42,7 +42,7 @@ export class WorkbenchPage extends InstancePage {
 
     // Main elements
     this.submitButton = page.getByTestId('btn-submit');
-    this.clearResultsButton = page.locator('button:has-text("Clear Results")');
+    this.clearResultsButton = page.locator('button:has-text("Clear results")');
     this.rawModeButton = page.getByTestId('btn-change-mode');
     this.groupResultsButton = page.getByTestId('btn-change-group-mode');
 

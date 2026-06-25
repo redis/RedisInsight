@@ -13,7 +13,7 @@ export const UsernameCell = ({
     <InputFieldSentinel
       value={username}
       name={`username-${id}`}
-      placeholder="Enter Username"
+      placeholder="Enter username"
       inputType={SentinelInputFieldType.Text}
       onChangedInput={handleChangedInput}
     />

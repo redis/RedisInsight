@@ -17,12 +17,12 @@ const mockedProps = {
   initValue: '10000',
   onApply: jest.fn(),
   validation: jest.fn((x) => x),
-  title: 'Keys to Scan in List view',
+  title: 'Keys to scan in list view',
   summary:
     'Sets the amount of keys to scan per one iteration. Filtering by pattern per a large number of keys may decrease performance.',
   testid: 'keys-to-scan',
   placeholder: '10 000',
-  label: 'Keys to Scan:',
+  label: 'Keys to scan:',
 }
 
 describe('SettingItem', () => {

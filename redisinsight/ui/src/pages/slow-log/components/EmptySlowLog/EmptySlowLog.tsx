@@ -25,10 +25,10 @@ const EmptySlowLog = (props: Props) => {
   return (
     <Col justify="center" grow data-testid="empty-slow-log">
       <Col align="center" justify="center" gap="xxl">
-        <StyledImage as="img" src={icon} alt="No Slow Logs" />
+        <StyledImage as="img" src={icon} alt="No slow logs" />
         <Col align="center" gap="m" grow={false}>
           <Title size="M" color="primary">
-            No Slow Logs found
+            No slow logs found
           </Title>
           <Text color="primary">
             Either no commands exceeding&nbsp;
@@ -39,7 +39,7 @@ const EmptySlowLog = (props: Props) => {
             {durationUnit === DurationUnits.milliSeconds
               ? DurationUnits.mSeconds
               : DurationUnits.microSeconds}
-            &nbsp;were found or Slow Log is disabled on the server.
+            &nbsp;were found or slow log is disabled on the server.
           </Text>
         </Col>
       </Col>

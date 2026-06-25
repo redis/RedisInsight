@@ -57,7 +57,7 @@ export const ClearSlowLogModal = ({
       <FlexGroup direction="column" gap="l">
         <Col>
           <Text size="m" color="primary">
-            Slow Log will be cleared for&nbsp;{name}
+            Slow log will be cleared for&nbsp;{name}
           </Text>
           <Text size="m" color="secondary">
             NOTE: This is server configuration

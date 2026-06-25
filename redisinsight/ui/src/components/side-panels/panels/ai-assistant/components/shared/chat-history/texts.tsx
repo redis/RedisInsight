@@ -10,7 +10,7 @@ export const AssistanceChatInitialMessage = (
       Feel free to engage in a general conversation with me about Redis.
     </Text>
     <Text size="xs">
-      Or switch to <b>My Data</b> tab to get assistance in the context of your
+      Or switch to <b>My data</b> tab to get assistance in the context of your
       data.
     </Text>
     <Text size="xs">

@@ -83,7 +83,7 @@ const SubscribeForm = (props: SubscribeFormProps) => {
       >
         {isSubscribed ? 'Unsubscribe' : 'Subscribe'}
       </Button>
-      <RiTooltip content={!!count ? 'Clear Messages' : ''}>
+      <RiTooltip content={!!count ? 'Clear messages' : ''}>
         <IconButton
           disabled={!count}
           icon={DeleteIcon}

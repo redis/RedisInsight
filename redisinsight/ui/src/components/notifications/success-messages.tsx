@@ -201,10 +201,10 @@ export default {
     updateDownloadedVersion: string,
     onClickLink?: () => void,
   ) => ({
-    title: 'Application updated',
+    title: 'App updated',
     message: (
       <>
-        <span>{`Your application has been updated to ${updateDownloadedVersion}. Find more information in `}</span>
+        <span>{`Your app has been updated to ${updateDownloadedVersion}. Find more information in `}</span>
         <a
           href={EXTERNAL_LINKS.releaseNotes}
           onClick={() => onClickLink?.()}
@@ -212,7 +212,7 @@ export default {
           target="_blank"
           rel="noreferrer"
         >
-          Release Notes.
+          Release notes.
         </a>
       </>
     ),
@@ -274,7 +274,7 @@ export default {
         <Row align="start" gap="xl">
           <FlexItem>
             <Text>{numberWithSpaces(processed)}</Text>
-            <Text size="xs">Commands Processed</Text>
+            <Text size="xs">Commands processed</Text>
           </FlexItem>
           <FlexItem>
             <Text>{numberWithSpaces(succeed)}</Text>
@@ -288,7 +288,7 @@ export default {
             <Text>
               {millisecondsFormat(data?.duration || 0, 'H:mm:ss.SSS')}
             </Text>
-            <Text size="xs">Time Taken</Text>
+            <Text size="xs">Time taken</Text>
           </FlexItem>
         </Row>
       ),
@@ -323,7 +323,7 @@ export default {
     message: 'All API keys have been removed from Redis Insight.',
   }),
   REMOVED_CAPI_KEY: (name: string) => ({
-    title: 'API Key has been removed',
+    title: 'API key has been removed',
     message: `${formatNameShort(name)} has been removed from Redis Insight.`,
   }),
   DATABASE_ALREADY_EXISTS: () => ({

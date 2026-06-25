@@ -126,11 +126,11 @@ export class KeyList {
   /**
    * Filter by key type
    */
-  async filterByType(type: KeyType | 'All Key Types'): Promise<void> {
+  async filterByType(type: KeyType | 'All key types'): Promise<void> {
     await this.keyTypeFilter.click();
     // Wait for dropdown to appear
     await this.keyTypeFilterDropdown.waitFor({ state: 'visible' });
-    // Use exact match for type to avoid "Set" matching "Sorted Set"
+    // Use exact match for type to avoid "Set" matching "Sorted set"
     await this.page.getByRole('option', { name: type, exact: true }).click();
   }
 
@@ -322,7 +322,7 @@ export class KeyList {
   }
 
   /**
-   * Open keys Auto Refresh configuration popover
+   * Open keys Auto refresh configuration popover
    */
   async openKeysAutoRefreshPopover(): Promise<void> {
     await this.keysAutoRefreshConfigButton.click();

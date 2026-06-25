@@ -245,7 +245,7 @@ const BulkDeleteFooter = (props: Props) => {
             onClick={handleStartNew}
             data-testid="bulk-action-start-again-btn"
           >
-            Start New
+            Start new
           </PrimaryButton>
         )}
       </BulkDeleteFooterContainer>

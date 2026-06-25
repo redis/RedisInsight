@@ -14,7 +14,7 @@ export const AliasCell = ({
     <InputFieldSentinel
       name={`alias-${id}`}
       value={alias || name}
-      placeholder="Enter Database Alias"
+      placeholder="Enter database alias"
       inputType={SentinelInputFieldType.Text}
       onChangedInput={handleChangedInput}
       maxLength={500}

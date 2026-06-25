@@ -227,10 +227,10 @@ const mockMetrics: IMetric[] = [
   {
     id: 'overview-total-memory',
     value: 13,
-    unavailableText: 'Total Memory is not available',
-    title: 'Total Memory',
+    unavailableText: 'Total memory is not available',
+    title: 'Total memory',
     tooltip: {
-      title: 'Total Memory',
+      title: 'Total memory',
       icon: 'MemoryLightIcon',
       content: '13 / 30 (43%)',
     },
@@ -244,23 +244,23 @@ const mockMetrics: IMetric[] = [
   {
     id: 'overview-total-keys',
     value: 5000,
-    unavailableText: 'Total Keys are not available',
-    title: 'Total Keys',
+    unavailableText: 'Total keys are not available',
+    title: 'Total keys',
     icon: 'KeyLightIcon',
     content: truncateNumberToRange(5000),
     tooltip: {
       icon: 'KeyLightIcon',
       content: <b>5 000</b>,
-      title: 'Total Keys',
+      title: 'Total keys',
     },
     children: [
       {
         id: 'total-keys-tip',
         value: 5000,
-        unavailableText: 'Total Keys are not available',
-        title: 'Total Keys',
+        unavailableText: 'Total keys are not available',
+        title: 'Total keys',
         tooltip: {
-          title: 'Total Keys',
+          title: 'Total keys',
           content: <b>5 000</b>,
         },
         content: <b>5 000</b>,

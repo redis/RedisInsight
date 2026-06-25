@@ -31,7 +31,7 @@ describe('AnalyticsTabs', () => {
 
     render(<AnalyticsTabs />)
 
-    fireEvent.mouseDown(screen.getByText('Database Analysis'))
+    fireEvent.mouseDown(screen.getByText('Database analysis'))
 
     expect(pushMock).toHaveBeenCalledTimes(1)
     expect(pushMock).toHaveBeenCalledWith(
@@ -44,7 +44,7 @@ describe('AnalyticsTabs', () => {
 
     render(<AnalyticsTabs />)
 
-    fireEvent.mouseDown(screen.getByText('Slow Log'))
+    fireEvent.mouseDown(screen.getByText('Slow log'))
 
     expect(pushMock).toHaveBeenCalledTimes(1)
     expect(pushMock).toHaveBeenCalledWith('/instanceId/analytics/slowlog')
@@ -77,7 +77,7 @@ describe('AnalyticsTabs', () => {
 
     render(<AnalyticsTabs />)
 
-    fireEvent.mouseDown(screen.getByText('Slow Log'))
+    fireEvent.mouseDown(screen.getByText('Slow log'))
 
     expect(pushMock).toHaveBeenCalledTimes(1)
     expect(pushMock).toHaveBeenCalledWith('/instanceId/analytics/slowlog')

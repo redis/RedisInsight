@@ -50,7 +50,7 @@ test.describe('Browser > Key Details — environment gating', () => {
       keys.push(newName);
 
       // Enter rename mode, type the new name, click Apply.
-      const renameInput = browserPage.page.getByRole('textbox', { name: 'Enter Key Name' });
+      const renameInput = browserPage.page.getByRole('textbox', { name: 'Enter Key name' });
       await browserPage.keyDetails.keyName.click();
       await renameInput.waitFor({ state: 'visible' });
       await renameInput.fill(newName);

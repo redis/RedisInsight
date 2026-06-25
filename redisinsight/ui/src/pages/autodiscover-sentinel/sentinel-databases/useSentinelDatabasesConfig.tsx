@@ -82,7 +82,7 @@ export const useSentinelDatabasesConfig = () => {
     }
   }, [masters.length])
 
-  useEffect(() => setTitle('Auto-Discover Redis Sentinel Primary Groups'), [])
+  useEffect(() => setTitle('Auto-discover Redis Sentinel primary groups'), [])
   const handleClose = useCallback(() => {
     sendCancelEvent()
     dispatch(resetDataSentinel())

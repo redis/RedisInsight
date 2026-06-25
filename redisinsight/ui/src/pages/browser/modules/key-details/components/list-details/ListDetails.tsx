@@ -58,13 +58,13 @@ const ListDetails = (props: Props) => {
   const Actions = ({ width }: { width: number }) => (
     <>
       <AddItemsAction
-        title="Add Elements"
+        title="Add elements"
         width={width}
         openAddItemPanel={openAddItemPanel}
       />
       <div className={styles.removeBtnContainer}>
         <RemoveItemsAction
-          title="Remove Elements"
+          title="Remove elements"
           openRemoveItemPanel={openRemoveItemPanel}
         />
       </div>

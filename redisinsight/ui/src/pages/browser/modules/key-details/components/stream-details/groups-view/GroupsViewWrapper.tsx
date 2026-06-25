@@ -210,7 +210,7 @@ const GroupsViewWrapper = (props: Props) => {
   const columns: ITableColumn[] = [
     {
       id: 'name',
-      label: 'Group Name',
+      label: 'Group name',
       truncateText: true,
       isSortable: true,
       minWidth: 100,
@@ -290,7 +290,7 @@ const GroupsViewWrapper = (props: Props) => {
             >
               {!!pending && (
                 <RiTooltip
-                  title={`${pending} Pending Messages`}
+                  title={`${pending} Pending messages`}
                   className={styles.tooltip}
                   anchorClassName="truncateText"
                   position="bottom"
@@ -307,7 +307,7 @@ const GroupsViewWrapper = (props: Props) => {
     },
     {
       id: 'lastDeliveredId',
-      label: 'Last Delivered ID',
+      label: 'Last delivered ID',
       minWidth: 200,
       maxWidth: 200,
       absoluteWidth: 200,
@@ -385,7 +385,7 @@ const GroupsViewWrapper = (props: Props) => {
                   <RiTooltip
                     anchorClassName="inputAppendIcon"
                     position="left"
-                    title="Enter Valid ID, 0 or $"
+                    title="Enter valid ID, 0 or $"
                     content={lastDeliveredIDTooltipText}
                   >
                     <RiIcon type="InfoIcon" style={{ cursor: 'pointer' }} />
@@ -394,7 +394,7 @@ const GroupsViewWrapper = (props: Props) => {
               />
               {!showIdError && (
                 <span className={styles.idText} data-testid="id-help-text">
-                  Timestamp - Sequence Number or $
+                  Timestamp - Sequence number or $
                 </span>
               )}
               {showIdError && (

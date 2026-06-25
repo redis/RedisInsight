@@ -73,12 +73,12 @@ const EditSentinelConnection = (props: Props) => {
     <Col gap="l">
       <Row gap="m">
         <FlexItem grow>
-          <FormField label="Database Alias" required>
+          <FormField label="Database alias" required>
             <TextInput
               name="name"
               id="name"
               data-testid="name"
-              placeholder="Enter Database Alias"
+              placeholder="Enter database alias"
               onFocus={selectOnFocus}
               value={formik.values.name ?? ''}
               maxLength={500}

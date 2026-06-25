@@ -177,7 +177,7 @@ const EditableTextArea = (props: Props) => {
               <TextArea
                 name="value"
                 id="value"
-                placeholder="Enter Value"
+                placeholder="Enter value"
                 value={value}
                 onChangeCapture={handleOnChange}
                 disabled={isLoading}

@@ -12,7 +12,7 @@ export const EDITOR_OPTIONS = merge({}, defaultMonacoOptions, {
 })
 
 export const EDITOR_PLACEHOLDER =
-  'Start typing FT. to access search commands or switch to Query Library to access saved commands.'
+  'Start typing FT. to access search commands or switch to Query library to access saved commands.'
 
 /** Commands that support FT.EXPLAIN and FT.PROFILE. */
 export const EXPLAINABLE_COMMANDS = ['FT.SEARCH', 'FT.AGGREGATE'] as const

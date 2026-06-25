@@ -20,13 +20,13 @@ const seedIndex = IndexConfigFactory.build();
 test.use({ featureFlags: { vectorSearchV2: true } });
 
 /**
- * Vector Search > Create Index - Existing Data
+ * Vector Search > Create index - Existing Data
  *
  * Tests for creating an index from existing database keys,
  * including schema inference, field editing, and view toggling.
  * Each test completes the full flow: make changes → verify command view → create index.
  */
-test.describe('Vector Search > Create Index - Existing Data', () => {
+test.describe('Vector Search > Create index - Existing Data', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {

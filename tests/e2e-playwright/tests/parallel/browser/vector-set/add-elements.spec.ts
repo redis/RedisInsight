@@ -7,7 +7,7 @@ import { seedVectorSet } from './helpers';
 
 test.use({ featureFlags: { vectorSet: true } });
 
-test.describe('Browser > Vector Set > Add Elements', () => {
+test.describe('Browser > Vector set > Add Elements', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
@@ -26,7 +26,7 @@ test.describe('Browser > Vector Set > Add Elements', () => {
     await apiHelper.deleteKeysByPattern(database.id, `${TEST_KEY_PREFIX}*`);
   });
 
-  test('should add a new element to an existing Vector Set via the side panel', async ({ browserPage, apiHelper }) => {
+  test('should add a new element to an existing Vector set via the side panel', async ({ browserPage, apiHelper }) => {
     const keyData = VectorSetKeyFactory.build();
     const [first, second] = keyData.elements;
 
@@ -44,7 +44,7 @@ test.describe('Browser > Vector Set > Add Elements', () => {
     await expect(browserPage.vectorSetKeyDetails.elementValueCell(second.name)).toBeVisible();
   });
 
-  test('should add a new element with an FP32-encoded vector to an existing Vector Set', async ({
+  test('should add a new element with an FP32-encoded vector to an existing Vector set', async ({
     browserPage,
     apiHelper,
   }) => {

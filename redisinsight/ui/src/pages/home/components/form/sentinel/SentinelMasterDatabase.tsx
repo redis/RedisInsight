@@ -35,7 +35,7 @@ const SentinelMasterDatabase = (props: Props) => {
               name="sentinelMasterUsername"
               id="sentinelMasterUsername"
               maxLength={200}
-              placeholder="Enter Username"
+              placeholder="Enter username"
               value={formik.values.sentinelMasterUsername ?? ''}
               onChange={(value) =>
                 formik.setFieldValue('sentinelMasterUsername', value)
@@ -53,7 +53,7 @@ const SentinelMasterDatabase = (props: Props) => {
               id="sentinelMasterPassword"
               data-testid="sentinel-master-password"
               maxLength={200}
-              placeholder="Enter Password"
+              placeholder="Enter password"
               value={
                 formik.values.sentinelMasterPassword === true
                   ? SECURITY_FIELD

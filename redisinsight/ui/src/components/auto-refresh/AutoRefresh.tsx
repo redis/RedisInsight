@@ -279,7 +279,7 @@ const AutoRefresh = ({
         <Row align="center" gap="none">
           <FlexItem>
             <RiTooltip
-              title={!disabled && 'Last Refresh'}
+              title={!disabled && 'Last refresh'}
               className={styles.tooltip}
               position="top"
               content={disabled ? disabledRefreshButtonMessage : refreshMessage}
@@ -327,7 +327,7 @@ const AutoRefresh = ({
               }
             >
               <SwitchInput
-                title="Auto Refresh"
+                title="Auto refresh"
                 checked={enableAutoRefresh}
                 onCheckedChange={onChangeEnableAutoRefresh}
                 className={styles.switchOption}

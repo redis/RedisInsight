@@ -17,7 +17,7 @@ export const separator = KEYBOARD_SHORTCUTS._separator
 
 export const SHORTCUTS: ShortcutGroup[] = [
   {
-    name: 'Desktop application',
+    name: 'Desktop app',
     excludeFor: [BuildType.RedisStack, BuildType.DockerOnPremise],
     items: [
       KEYBOARD_SHORTCUTS.desktop.newWindow,

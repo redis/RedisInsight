@@ -8,7 +8,7 @@ import { InstancePage } from '../InstancePage';
  * Extends InstancePage to get access to:
  * - instanceHeader (database name, stats, breadcrumb)
  * - navigationTabs (Browse, Workbench, Analyze, Pub/Sub)
- * - bottomPanel (CLI, Command Helper, Profiler)
+ * - bottomPanel (CLI, Command helper, Profiler)
  */
 export class PubSubPage extends InstancePage {
   // Subscribe section

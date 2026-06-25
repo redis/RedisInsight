@@ -169,7 +169,7 @@ const NameSpacesTable = ({
       },
     },
     {
-      header: 'Data Type',
+      header: 'Data type',
       id: 'types',
       accessorKey: 'types',
       cell: ({
@@ -185,7 +185,7 @@ const NameSpacesTable = ({
       ),
     },
     {
-      header: 'Total Memory',
+      header: 'Total memory',
       id: 'memory',
       accessorKey: 'memory',
       enableSorting: true,
@@ -220,7 +220,7 @@ const NameSpacesTable = ({
       },
     },
     {
-      header: 'Total Keys',
+      header: 'Total keys',
       id: 'keys',
       accessorKey: 'keys',
       enableSorting: true,

@@ -31,7 +31,7 @@ export const createIndexNotifications = {
   sampleDataAlreadyExists: (): NotificationMessage => ({
     title: 'Your sample data is already searchable using an existing index.',
     message:
-      'You can start building new queries or explore existing ones in the Query Library.',
+      'You can start building new queries or explore existing ones in the Query library.',
     variant: 'notice' as ToastVariant,
     showCloseButton: false,
     actions: {},
@@ -59,11 +59,11 @@ export const createIndexNotifications = {
 export const queryLibraryNotifications = {
   querySaved: (onGoToLibrary?: VoidFunction): NotificationMessage => ({
     title: 'Query saved to your library.',
-    message: 'You can find it anytime in the Query Library.',
+    message: 'You can find it anytime in the Query library.',
     showCloseButton: false,
     actions: {
       primary: {
-        label: 'Go to Query Library',
+        label: 'Go to Query library',
         onClick: onGoToLibrary ?? (() => {}),
         closes: true,
       },

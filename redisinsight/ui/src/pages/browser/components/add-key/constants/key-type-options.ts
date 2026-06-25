@@ -30,7 +30,7 @@ export const ADD_KEY_TYPE_OPTIONS: AddKeyTypeOption[] = [
     color: GROUP_TYPES_COLORS[KeyTypes.Set],
   },
   {
-    text: 'Sorted Set',
+    text: 'Sorted set',
     value: KeyTypes.ZSet,
     color: GROUP_TYPES_COLORS[KeyTypes.ZSet],
   },
@@ -50,7 +50,7 @@ export const ADD_KEY_TYPE_OPTIONS: AddKeyTypeOption[] = [
     color: GROUP_TYPES_COLORS[KeyTypes.Stream],
   },
   {
-    text: 'Vector Set',
+    text: 'Vector set',
     value: KeyTypes.VectorSet,
     color: GROUP_TYPES_COLORS[KeyTypes.VectorSet],
     minVersion: CommandsVersions.VECTOR_SET.since,

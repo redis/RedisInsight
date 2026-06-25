@@ -1,7 +1,7 @@
 import { Page, Locator } from '@playwright/test';
 
 /**
- * Create Index Onboarding component
+ * Create index Onboarding component
  * Guided popovers that walk the user through the create index form steps:
  * DefineIndex → IndexPrefix → FieldName → SampleValue → IndexingType → CommandView
  */

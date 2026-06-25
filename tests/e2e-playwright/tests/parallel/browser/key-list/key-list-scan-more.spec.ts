@@ -2,7 +2,7 @@ import { test, expect } from 'e2eSrc/fixtures/base';
 import { databaseFactories } from 'e2eSrc/test-data/databases';
 import { ConnectionType, DatabaseInstance } from 'e2eSrc/types';
 
-test.describe('Browser > Key List View (large dataset)', () => {
+test.describe('Browser > Key List view (large dataset)', () => {
   let bigDatabase: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
