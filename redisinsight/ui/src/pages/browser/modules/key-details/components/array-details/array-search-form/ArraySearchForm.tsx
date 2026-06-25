@@ -18,7 +18,6 @@ import {
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
-import { parseArrayIndex } from 'uiSrc/utils/arrayIndex'
 import {
   ArrayCombinator,
   ArrayGrepCriteria,
@@ -32,7 +31,6 @@ import {
   APPLIES_TO_ALL_LABEL,
   ARRAY_GREP_CRITERIA_OPTIONS,
   ARRAY_SEARCH_FORM_TEST_ID as TEST_ID,
-  ARRAY_SEARCH_LIMIT_MAX,
   COMBINATOR_ARIA,
   REMOVE_PREDICATE_ARIA,
   END_PLACEHOLDER,
@@ -58,22 +56,9 @@ import {
   WITHVALUES_LABEL,
 } from './ArraySearchForm.constants'
 import { ArraySearchFormProps } from './ArraySearchForm.types'
+import { isBoundInvalid, isLimitInvalid } from './ArraySearchForm.utils'
+import { InfoHint } from './components/InfoHint'
 import * as S from './ArraySearchForm.styles'
-
-// A blank bound is valid (omitted → server `-`/`+`); a non-blank one must be a
-// canonical u64 index, matching the backend `@IsArrayIndex` validator.
-const isBoundInvalid = (bound: string): boolean =>
-  bound !== '' && parseArrayIndex(bound) !== bound
-
-// LIMIT must be a whole number in 1..ARRAY_SEARCH_LIMIT_MAX (the backend cap).
-const isLimitInvalid = (limit: string): boolean =>
-  !/^[1-9]\d*$/.test(limit) || Number(limit) > ARRAY_SEARCH_LIMIT_MAX
-
-const InfoHint = ({ content }: { content: string }) => (
-  <RiTooltip content={content} position="top" anchorClassName="inline-flex">
-    <RiIcon type="InfoIcon" size="m" />
-  </RiTooltip>
-)
 
 /**
  * Multi-predicate ARGREP search form for the array Search tab: a list of
