@@ -254,15 +254,20 @@ const arraySlice = createSlice({
     },
 
     // Optimistically reflect a successful ARSET in the loaded page so the
-    // table updates without a refetch. No-op if the edited index isn't loaded.
+    // table updates without a refetch. The View tab renders from
+    // `data.elements` and the Search tab from `search.data` through the same
+    // table, so patch the matching index in both. No-op where the edited
+    // index isn't loaded.
     updateArrayElement: (
       state,
       { payload }: PayloadAction<{ index: string; value: RedisString }>,
     ) => {
-      const target = state.data.elements.find(
-        (element) => element.index === payload.index,
-      )
-      if (target) target.value = payload.value
+      ;[state.data.elements, state.search.data].forEach((elements) => {
+        const target = elements.find(
+          (element) => element.index === payload.index,
+        )
+        if (target) target.value = payload.value
+      })
     },
   },
 })

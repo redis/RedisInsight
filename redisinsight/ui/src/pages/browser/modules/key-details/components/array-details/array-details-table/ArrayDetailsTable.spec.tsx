@@ -1,6 +1,16 @@
 import React from 'react'
-import { act, fireEvent, render, screen, waitFor } from 'uiSrc/utils/test-utils'
+import { cloneDeep } from 'lodash'
+import {
+  act,
+  fireEvent,
+  initialStateDefault,
+  mockStore,
+  render,
+  screen,
+  waitFor,
+} from 'uiSrc/utils/test-utils'
 import { apiService } from 'uiSrc/services'
+import { setSelectedKeyRefreshDisabled } from 'uiSrc/slices/browser/keys'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 import {
   arrayElementFactory,
@@ -8,6 +18,15 @@ import {
 } from 'uiSrc/mocks/factories/browser/array/arrayElement.factory'
 
 import { ArrayDetailsTable } from './ArrayDetailsTable'
+
+// Store whose selected key is set but whose array `data.keyName` is still
+// empty — the Search-tab / pre-View-load condition the edit key must survive.
+const storeWithSelectedKey = (name: string) => {
+  const state = cloneDeep(initialStateDefault)
+  state.browser.keys.selectedKey.data = { name } as any
+  state.browser.array.data.keyName = ''
+  return mockStore(state)
+}
 
 const renderComponent = (
   elements: ArrayDataElement[],
@@ -150,6 +169,76 @@ describe('ArrayDetailsTable', () => {
       })
 
       postSpy.mockRestore()
+    })
+
+    it('uses the selected key name for ARSET even when the View range has not loaded', async () => {
+      const postSpy = jest
+        .spyOn(apiService, 'post')
+        .mockResolvedValue({ status: 200, data: '' })
+      const store = storeWithSelectedKey('mykey')
+
+      render(
+        <ArrayDetailsTable
+          elements={[arrayElementWithValueFactory.build({ index: '1' })]}
+          loading={false}
+        />,
+        { store },
+      )
+
+      act(() => {
+        fireEvent.mouseEnter(
+          screen.getByTestId('array-details-table_content-value-1'),
+        )
+      })
+      fireEvent.click(screen.getByTestId('array-details-table_edit-btn-1'))
+      fireEvent.change(
+        screen.getByTestId('array-details-table_value-editor-1'),
+        { target: { value: 'updated' } },
+      )
+      fireEvent.click(screen.getByTestId('apply-btn'))
+
+      await waitFor(() => {
+        const setCall = postSpy.mock.calls.find(([url]) =>
+          (url as string).includes('array/set-element'),
+        )
+        expect((setCall?.[1] as { keyName: string }).keyName).toBe('mykey')
+      })
+
+      postSpy.mockRestore()
+    })
+
+    it('re-enables the key-header refresh when unmounted mid-edit', () => {
+      const store = mockStore(cloneDeep(initialStateDefault))
+
+      const { unmount } = render(
+        <ArrayDetailsTable
+          elements={[arrayElementWithValueFactory.build({ index: '1' })]}
+          loading={false}
+        />,
+        { store },
+      )
+
+      act(() => {
+        fireEvent.mouseEnter(
+          screen.getByTestId('array-details-table_content-value-1'),
+        )
+      })
+      fireEvent.click(screen.getByTestId('array-details-table_edit-btn-1'))
+      expect(store.getActions()).toContainEqual(
+        setSelectedKeyRefreshDisabled(true),
+      )
+
+      unmount()
+
+      // The last refresh-disabled action must be `false` — without an unmount
+      // cleanup it would remain `true` and the header refresh would stay
+      // disabled after the panel/tab goes away with an editor still open.
+      const refreshActions = store
+        .getActions()
+        .filter((a) => a.type === setSelectedKeyRefreshDisabled(false).type)
+      expect(refreshActions.at(-1)).toEqual(
+        setSelectedKeyRefreshDisabled(false),
+      )
     })
   })
 })

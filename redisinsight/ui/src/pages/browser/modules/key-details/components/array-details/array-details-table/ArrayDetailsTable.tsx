@@ -1,15 +1,13 @@
-import React, { memo, useCallback, useMemo, useState } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import {
+  selectedKeyDataSelector,
   selectedKeySelector,
   setSelectedKeyRefreshDisabled,
 } from 'uiSrc/slices/browser/keys'
-import {
-  arrayDataSelector,
-  updateArrayElementAction,
-} from 'uiSrc/slices/browser/array'
+import { updateArrayElementAction } from 'uiSrc/slices/browser/array'
 import { KeyValueCompressor } from 'uiSrc/constants'
 import { Nullable, stringToSerializedBufferFormat } from 'uiSrc/utils'
 
@@ -42,10 +40,33 @@ const ArrayDetailsTable = memo(
       connectedInstanceSelector,
     ) as unknown as { compressor: Nullable<KeyValueCompressor> }
     const { viewFormat } = useAppSelector(selectedKeySelector)
-    const { keyName } = useAppSelector(arrayDataSelector)
+    // Use the selected key's name, not the array slice's `data.keyName` —
+    // the latter is only set after a View range/scan succeeds, but this table
+    // is also rendered by the Search tab, so an edit there (or before View
+    // loads) would otherwise POST ARSET with an empty key.
+    const { name: keyName } = useAppSelector(selectedKeyDataSelector) ?? {
+      name: '',
+    }
 
     // Index of the row currently being edited; only one row edits at a time.
     const [editingIndex, setEditingIndex] = useState<Nullable<string>>(null)
+
+    // Re-enable the key-header refresh when this table unmounts (panel close
+    // or tab teardown) so an editor left open can't leave refresh stuck off —
+    // both tabs mount their own table, so this can't rely on a sibling.
+    useEffect(
+      () => () => {
+        dispatch(setSelectedKeyRefreshDisabled(false))
+      },
+      [dispatch],
+    )
+
+    // On key switch, abandon any open editor and re-enable refresh so a stuck
+    // editing state from the previous key can't carry over.
+    useEffect(() => {
+      setEditingIndex(null)
+      dispatch(setSelectedKeyRefreshDisabled(false))
+    }, [keyName, dispatch])
 
     const handleEditElement = useCallback(
       (index: string, isEditing: boolean) => {

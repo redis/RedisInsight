@@ -224,6 +224,28 @@ describe('array slice', () => {
       expect(next.data.elements).toEqual([{ index: '0', value: 'a' }])
     })
 
+    it('updateArrayElement patches the Search results too (shared table)', () => {
+      const dirty = {
+        ...initialState,
+        data: {
+          ...initialState.data,
+          elements: [{ index: '5', value: 'b' }],
+        },
+        search: {
+          ...initialState.search,
+          data: [{ index: '5', value: 'b' }],
+        },
+      }
+      const next = reducer(
+        dirty,
+        updateArrayElement({ index: '5', value: 'B' }),
+      )
+      expect(next.data.elements).toEqual([{ index: '5', value: 'B' }])
+      // The Search tab renders the same ArrayDetailsTable from search.data, so
+      // an edit issued there must reflect in the search results too.
+      expect(next.search.data).toEqual([{ index: '5', value: 'B' }])
+    })
+
     describe('search sub-state', () => {
       const dirtySearch = {
         ...initialState,
