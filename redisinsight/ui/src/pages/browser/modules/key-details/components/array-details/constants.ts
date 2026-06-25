@@ -1,7 +1,6 @@
 /**
- * Defaults for the array View / Browse vertical (see
- * `docs/redis-array-type-initiative.md` §6 Task 3). All indexes are decimal
- * strings to preserve the BigInt-as-string contract (§8.1) — never numbers.
+ * Defaults for the array View / Browse vertical. All indexes are decimal
+ * strings, never numbers, to preserve the full u64 range.
  */
 
 import {
@@ -29,19 +28,10 @@ export const DEFAULT_SEARCH_CRITERIA = ArrayGrepCriteria.Exact
  */
 export const DEFAULT_SEARCH_COMBINATOR = ArrayCombinator.Or
 
-/**
- * Pre-filled LIMIT value. The input stays visible (but disabled) until the
- * user ticks LIMIT, so it shows a sensible starting count and ticking the box
- * doesn't shift the layout. Only applied once enabled — otherwise no LIMIT is
- * sent and the search runs uncapped.
- */
+/** Pre-filled LIMIT value, applied only once the user enables LIMIT. */
 export const DEFAULT_LIMIT = '10'
 
-/**
- * Initial Search-tab options. Blank bounds search the whole array; WITHVALUES
- * is on so results carry values; LIMIT is pre-filled but only applied once the
- * user enables it.
- */
+/** Initial Search-tab option state. */
 export const DEFAULT_SEARCH_OPTIONS: ArraySearchOptions = {
   start: '',
   end: '',
