@@ -1,4 +1,5 @@
 import { cloneDeep, isNull } from 'lodash'
+import { AxiosError } from 'axios'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import { apiService } from 'uiSrc/services'
@@ -272,8 +273,8 @@ export function fetchListElements(
         dispatch(updateSelectedKeyRefreshTime(Date.now()))
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(loadListElementsFailure(errorMessage))
     }
   }
@@ -308,8 +309,8 @@ export function fetchMoreListElements(
         dispatch(loadMoreListElementsSuccess(data))
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(loadMoreListElementsFailure(errorMessage))
     }
   }
@@ -346,8 +347,8 @@ export function fetchSearchingListElementAction(
         onSuccess?.()
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(loadSearchingListElementFailure(errorMessage))
     }
   }
@@ -407,8 +408,8 @@ export function updateListElementAction(
         dispatch<any>(refreshKeyInfoAction(data.keyName))
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(updateValueFailure(errorMessage))
 
       onFailAction?.()
@@ -441,8 +442,8 @@ export function insertListElementsAction(
         dispatch<any>(fetchKeyInfo(data.keyName))
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(insertListElementsFailure(errorMessage))
 
       onFailAction?.()
@@ -494,8 +495,8 @@ export function deleteListElementsAction(
         }
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
-      dispatch(addErrorNotification(error))
+      const errorMessage = getApiErrorMessage(error as AxiosError)
+      dispatch(addErrorNotification(error as AxiosError))
       dispatch(deleteListElementsFailure(errorMessage))
 
       onFailAction?.()

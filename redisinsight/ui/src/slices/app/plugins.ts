@@ -1,4 +1,5 @@
 import { flatMap, isEmpty, reject } from 'lodash'
+import { AxiosError } from 'axios'
 import { createSlice } from '@reduxjs/toolkit'
 
 import {
@@ -93,7 +94,7 @@ export function loadPluginsAction() {
         dispatch(getAllPluginsSuccess(data))
       }
     } catch (error) {
-      const errorMessage = getApiErrorMessage(error)
+      const errorMessage = getApiErrorMessage(error as AxiosError)
       dispatch(getAllPluginsFailure(errorMessage))
     }
   }
