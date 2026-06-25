@@ -1,0 +1,51 @@
+meta {
+  name: Set Element
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/array/set-element
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "readings",
+    "index": "1",
+    "value": "20.5"
+  }
+}
+
+docs {
+  # ARSET (single element)
+
+  Set the value of a single element at an explicit index — `ARSET key index
+  value`. Overwrites a populated slot or fills an empty one. The key must
+  already exist (Modify edits an existing array; it does not create one).
+
+  ## Request body
+
+  | Field     | Type   | Notes                                              |
+  |-----------|--------|----------------------------------------------------|
+  | `keyName` | string | The Array key name.                                |
+  | `index`   | string | Unsigned 64-bit integer as string.                 |
+  | `value`   | string | Value to store at the index.                       |
+
+  ## Response
+
+  `200 OK` with an empty body.
+
+  ## Errors
+
+  | Status | When |
+  |--------|------|
+  | `400`  | Key holds a non-array type. |
+  | `403`  | User has no permission for `ARSET`. |
+  | `404`  | Key does not exist. |
+}
+
+settings {
+  encodeUrl: true
+}

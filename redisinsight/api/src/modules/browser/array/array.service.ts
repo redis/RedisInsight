@@ -46,6 +46,7 @@ import {
   GetArrayScanResponse,
   GetArraySearchDto,
   GetArraySearchResponse,
+  SetArrayElementDto,
 } from 'src/modules/browser/array/dto';
 
 @Injectable()
@@ -500,6 +501,36 @@ export class ArrayService {
         clientMetadata,
       );
       if (error instanceof BadRequestException) throw error;
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
+  public async setElement(
+    clientMetadata: ClientMetadata,
+    dto: SetArrayElementDto,
+  ): Promise<void> {
+    try {
+      this.logger.debug('Setting array element.', clientMetadata);
+      const { keyName, index, value } = dto;
+      const client =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+      // Modify edits an existing slot, so the key must already exist —
+      // guard rather than letting ARSET create a fresh key from an edit.
+      await checkIfKeyNotExists(keyName, client);
+
+      await client.sendCommand([
+        BrowserToolArrayCommands.ArSet,
+        keyName,
+        index,
+        value,
+      ]);
+
+      this.logger.debug('Succeed to set array element.', clientMetadata);
+    } catch (error) {
+      this.logger.error('Failed to set array element.', error, clientMetadata);
       if (error?.message?.includes(RedisErrorCodes.WrongType)) {
         throw new BadRequestException(error.message);
       }

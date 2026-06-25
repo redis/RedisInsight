@@ -26,6 +26,7 @@ import {
   createSparseArrayDtoFactory,
   getArraySearchDtoFactory,
   getArraySearchResponseFactory,
+  setArrayElementDtoFactory,
 } from 'src/modules/browser/array/__tests__/array.factory';
 import {
   mockArrayCount,
@@ -612,6 +613,59 @@ describe('ArrayService', () => {
       mockStandaloneRedisClient.sendCommand.mockRejectedValue(replyError);
       await expect(
         service.getElement(mockBrowserClientMetadata, mockGetArrayElementDto),
+      ).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe('setElement', () => {
+    // keyName matches mockKeyDto so the shared key-existence stub resolves.
+    const dto = setArrayElementDtoFactory.build({
+      keyName: mockKeyDto.keyName,
+      index: '5',
+    });
+
+    it('should set the element via ARSET key index value', async () => {
+      await expect(
+        service.setElement(mockBrowserClientMetadata, dto),
+      ).resolves.not.toThrow();
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolArrayCommands.ArSet,
+        dto.keyName,
+        dto.index,
+        dto.value,
+      ]);
+    });
+
+    it('should reject when key does not exist', async () => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, dto.keyName])
+        .mockResolvedValue(0);
+      await expect(
+        service.setElement(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should rethrow BadRequest on WrongType', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisWrongTypeError,
+        command: 'ARSET',
+      };
+      when(client.sendCommand)
+        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ArSet]))
+        .mockRejectedValue(replyError);
+      await expect(
+        service.setElement(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should map ACL error to Forbidden', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisNoPermError,
+        command: 'ARSET',
+      };
+      client.sendCommand.mockRejectedValue(replyError);
+      await expect(
+        service.setElement(mockBrowserClientMetadata, dto),
       ).rejects.toThrow(ForbiddenException);
     });
   });

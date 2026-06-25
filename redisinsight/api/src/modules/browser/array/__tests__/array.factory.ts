@@ -9,6 +9,7 @@ import {
   CreateArrayWithExpireDto,
   GetArraySearchDto,
   GetArraySearchResponse,
+  SetArrayElementDto,
 } from 'src/modules/browser/array/dto';
 
 const arrayKeyName = () => Buffer.from(`array:${faker.string.alphanumeric(6)}`);
@@ -35,6 +36,14 @@ export const createSparseArrayDtoFactory =
     mode: ArrayCreationMode.Sparse,
     elements: arrayElementFactory.buildList(2),
   }));
+
+export const setArrayElementDtoFactory = Factory.define<SetArrayElementDto>(
+  () => ({
+    keyName: arrayKeyName(),
+    index: '0',
+    value: arrayValue(),
+  }),
+);
 
 export const aggregateArrayDtoFactory = Factory.define<AggregateArrayDto>(
   () => ({
