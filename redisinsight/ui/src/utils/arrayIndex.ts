@@ -37,3 +37,22 @@ export const parseArrayIndex = (input: unknown): string | null => {
 
 export const isValidArrayIndex = (input: unknown): boolean =>
   parseArrayIndex(input) !== null
+
+/**
+ * Inclusive ±count index window around a match, for the search context
+ * band. Clamps the lower bound at 0 (no negative indexes) and the upper
+ * bound at ARRAY_INDEX_MAX. All math in BigInt to stay exact past 2^53.
+ */
+export const getNeighbourRange = (
+  index: string,
+  count: number,
+): { start: string; end: string } => {
+  const center = BigInt(index)
+  const span = BigInt(count)
+  const lower = center - span
+  const upper = center + span
+  return {
+    start: (lower < BigInt(0) ? BigInt(0) : lower).toString(),
+    end: (upper > ARRAY_INDEX_MAX ? ARRAY_INDEX_MAX : upper).toString(),
+  }
+}

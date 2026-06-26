@@ -1,6 +1,8 @@
 import React from 'react'
 import { cloneDeep } from 'lodash'
+import userEvent from '@testing-library/user-event'
 import {
+  fireEvent,
   initialStateDefault,
   mockStore,
   render,
@@ -8,10 +10,15 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { KeyTypes } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
+import { apiService } from 'uiSrc/services'
 import { initialState as initialStateArray } from 'uiSrc/slices/browser/array'
 import { ArraySearchState } from 'uiSrc/slices/interfaces/array'
 import { arrayElementWithValueFactory } from 'uiSrc/mocks/factories/browser/array/arrayElement.factory'
 import SearchTab from './SearchTab'
+
+jest.mock('uiSrc/services', () => ({
+  ...jest.requireActual('uiSrc/services'),
+}))
 
 const KEY = 'readings'
 const keyBuffer = stringToBuffer(KEY)
@@ -101,5 +108,66 @@ describe('SearchTab', () => {
     renderTab({ loaded: true, loading: false, error: '', data: [] })
 
     expect(screen.getByText('No elements in range')).toBeInTheDocument()
+  })
+
+  it('expands a match to show its neighbour band once context is enabled', async () => {
+    const user = userEvent.setup()
+    apiService.post = jest.fn().mockResolvedValue({
+      status: 200,
+      data: {
+        keyName: KEY,
+        elements: [
+          'v2',
+          'v3',
+          'v4',
+          'v5',
+          'v6',
+          'v7',
+          'v8',
+          'v9',
+          'v10',
+          'v11',
+          'v12',
+        ],
+      },
+    })
+    renderTab({
+      loaded: true,
+      loading: false,
+      error: '',
+      data: [arrayElementWithValueFactory.build({ index: '7' })],
+    })
+
+    // Context is off by default, so the row isn't expandable yet — open the
+    // Options section and tick the Context toggle before clicking the match.
+    // fireEvent on the toggles sidesteps the redis-ui control's
+    // `pointer-events: none` wrapper that blocks userEvent's pointer guard.
+    fireEvent.click(screen.getByTestId('array-search-form-options-toggle'))
+    fireEvent.click(screen.getByTestId('array-search-form-context-toggle'))
+
+    await user.click(screen.getByTestId('array-details-table-index-7'))
+
+    expect(
+      await screen.findByTestId('array-context-band-7'),
+    ).toBeInTheDocument()
+    expect(screen.getByTestId('array-context-band-match-7')).toBeInTheDocument()
+  })
+
+  it('does not expand a match while context is off (default)', async () => {
+    const user = userEvent.setup()
+    const post = jest.fn()
+    apiService.post = post
+    renderTab({
+      loaded: true,
+      loading: false,
+      error: '',
+      data: [arrayElementWithValueFactory.build({ index: '7' })],
+    })
+
+    // Default state: context disabled → clicking the row must not expand it.
+    await user.click(screen.getByTestId('array-details-table-index-7'))
+
+    expect(screen.queryByTestId('array-context-band-7')).not.toBeInTheDocument()
+    expect(post).not.toHaveBeenCalled()
   })
 })

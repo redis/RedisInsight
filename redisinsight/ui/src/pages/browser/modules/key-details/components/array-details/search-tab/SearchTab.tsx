@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { useAppSelector } from 'uiSrc/slices/hooks'
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
@@ -6,13 +6,25 @@ import { bufferToString } from 'uiSrc/utils'
 
 import { ArrayDetailsTable } from '../array-details-table'
 import { ArraySearchForm } from '../array-search-form'
+import { ContextOption } from '../array-search-form/ArraySearchForm.types'
 import { useArraySearchQuery } from '../hooks'
+import { DEFAULT_CONTEXT_COUNT, DEFAULT_CONTEXT_ENABLED } from '../constants'
 import * as S from '../tabs.styles'
+import { NeighbourBand } from './NeighbourBand'
 import { SearchTabProps } from './SearchTab.types'
 
 const SearchTab = ({ keyProp }: SearchTabProps) => {
   const { loading: keyLoading } = useAppSelector(selectedKeySelector)
   const keyName = keyProp ? bufferToString(keyProp) : ''
+
+  // Context is a display concern (±N neighbours on expand), off by default so
+  // result rows aren't expandable until the user opts in.
+  const [context, setContext] = useState<ContextOption>({
+    enabled: DEFAULT_CONTEXT_ENABLED,
+    count: DEFAULT_CONTEXT_COUNT,
+  })
+  const onChangeContext = (patch: Partial<ContextOption>) =>
+    setContext((c) => ({ ...c, ...patch }))
 
   const {
     predicates,
@@ -45,6 +57,8 @@ const SearchTab = ({ keyProp }: SearchTabProps) => {
         onChangePredicate={updatePredicate}
         onChangeCombinator={setCombinator}
         onChangeOptions={updateOptions}
+        context={context}
+        onChangeContext={onChangeContext}
         onRun={runSearch}
         onReset={resetQuery}
         disabled={!isArrayKeyReady}
@@ -60,6 +74,17 @@ const SearchTab = ({ keyProp }: SearchTabProps) => {
               elements={elements}
               loading={loading}
               error={error}
+              expandRowOnClick
+              getIsRowExpandable={() => context.enabled && !!keyProp}
+              renderExpandedRow={(row) =>
+                keyProp ? (
+                  <NeighbourBand
+                    keyProp={keyProp}
+                    matchIndex={row.original.index}
+                    count={context.count}
+                  />
+                ) : null
+              }
             />
           </S.TabTableWrapper>
         )}

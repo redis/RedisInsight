@@ -28,7 +28,14 @@ import * as S from './ArrayDetailsTable.styles'
  * verticals (see docs/redis-array-type-initiative.md §6 Tasks 6-7).
  */
 const ArrayDetailsTable = memo(
-  ({ elements, loading, error }: ArrayDetailsTableProps) => {
+  ({
+    elements,
+    loading,
+    error,
+    renderExpandedRow,
+    getIsRowExpandable,
+    expandRowOnClick,
+  }: ArrayDetailsTableProps) => {
     const { compressor = null } = useAppSelector(
       connectedInstanceSelector,
     ) as unknown as { compressor: Nullable<KeyValueCompressor> }
@@ -59,6 +66,9 @@ const ArrayDetailsTable = memo(
           stripedRows
           minWidth={TABLE_MIN_WIDTH}
           emptyState={emptyState}
+          renderExpandedRow={renderExpandedRow}
+          getIsRowExpandable={getIsRowExpandable}
+          expandRowOnClick={expandRowOnClick}
           data-testid={`${TEST_ID}-table`}
         />
       </S.Container>
