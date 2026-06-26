@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ForbiddenException,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -39,6 +40,7 @@ import { BrowserToolKeysCommands } from 'src/modules/browser/constants/browser-t
 import { VectorSetService } from 'src/modules/browser/vector-set/vector-set.service';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { RedisFeature } from 'src/modules/redis/client';
+import ERROR_MESSAGES from 'src/constants/error-messages';
 
 describe('VectorSetService', () => {
   const client = mockStandaloneRedisClient;
@@ -326,8 +328,6 @@ describe('VectorSetService', () => {
     ]);
 
     beforeEach(() => {
-      client.isFeatureSupported = jest.fn().mockResolvedValue(true);
-
       when(client.sendCommand)
         .calledWith([BrowserToolKeysCommands.Exists, mockDto.keyName])
         .mockResolvedValue(true);
@@ -357,9 +357,6 @@ describe('VectorSetService', () => {
         mockDto,
       );
 
-      expect(client.isFeatureSupported).toHaveBeenCalledWith(
-        RedisFeature.VRangeCommand,
-      );
       expect(client.sendCommand).toHaveBeenCalledWith([
         BrowserToolVectorSetCommands.VRange,
         mockDto.keyName,
@@ -465,8 +462,16 @@ describe('VectorSetService', () => {
       ).rejects.toThrow(ForbiddenException);
     });
 
-    it('should fallback to VRANDMEMBER when VRANGE is not supported', async () => {
-      client.isFeatureSupported = jest.fn().mockResolvedValue(false);
+    it('should fallback to VRANDMEMBER when VRANGE fails', async () => {
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolVectorSetCommands.VRange,
+          mockDto.keyName,
+          mockDto.start,
+          mockDto.end,
+          mockDto.count,
+        ])
+        .mockRejectedValue(new Error('ERR VRANGE is not supported'));
 
       when(client.sendCommand)
         .calledWith([
@@ -481,9 +486,6 @@ describe('VectorSetService', () => {
         mockDto,
       );
 
-      expect(client.isFeatureSupported).toHaveBeenCalledWith(
-        RedisFeature.VRangeCommand,
-      );
       expect(client.sendCommand).toHaveBeenCalledWith([
         BrowserToolVectorSetCommands.VRandMember,
         mockDto.keyName,
@@ -492,6 +494,37 @@ describe('VectorSetService', () => {
       expect(result.elements).toHaveLength(mockElements.length);
       expect(result.nextCursor).toBeUndefined();
       expect(result.isPaginationSupported).toBe(false);
+    });
+
+    it('should throw a server error when neither VRANGE nor VRANDMEMBER can list elements', async () => {
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolVectorSetCommands.VRange,
+          mockDto.keyName,
+          mockDto.start,
+          mockDto.end,
+          mockDto.count,
+        ])
+        .mockRejectedValue(new Error('ERR VRANGE is not supported'));
+
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolVectorSetCommands.VRandMember,
+          mockDto.keyName,
+          mockDto.count,
+        ])
+        .mockRejectedValue(new Error('ERR VRANDMEMBER is not supported'));
+
+      await expect(
+        service.getElements(mockBrowserClientMetadata, mockDto),
+      ).rejects.toThrow(
+        new InternalServerErrorException(
+          ERROR_MESSAGES.UNABLE_TO_LIST_VECTOR_SET_ELEMENTS([
+            BrowserToolVectorSetCommands.VRange,
+            BrowserToolVectorSetCommands.VRandMember,
+          ]),
+        ),
+      );
     });
 
     it('should keep attributes undefined when VGETATTR fails for an element', async () => {

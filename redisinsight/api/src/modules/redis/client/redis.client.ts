@@ -57,7 +57,6 @@ export type RedisClientCommandReply =
 export enum RedisFeature {
   HashFieldsExpiration = 'HashFieldsExpiration',
   UnlinkCommand = 'UnlinkCommand',
-  VRangeCommand = 'VRangeCommand',
   VsimWithAttribs = 'VsimWithAttribs',
   ArrayCommands = 'ArrayCommands',
 }
@@ -185,9 +184,6 @@ export abstract class RedisClient extends EventEmitter2 {
       case RedisFeature.UnlinkCommand:
         // UNLINK command was introduced in Redis 4.0.0
         return this.isRedisVersionAtLeast('4.0.0');
-      case RedisFeature.VRangeCommand:
-        // VRANGE command was introduced in Redis 8.4
-        return this.isRedisVersionAtLeast('8.4');
       case RedisFeature.VsimWithAttribs:
         // VSIM WITHATTRIBS option is broken on 8.0.0–8.0.2 and was fixed in 8.0.3
         return this.isRedisVersionAtLeast('8.0.3');
