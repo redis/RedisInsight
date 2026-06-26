@@ -32,7 +32,7 @@ import {
   UpdateArrayElementParams,
 } from 'uiSrc/slices/interfaces/array'
 import { RedisString } from 'uiSrc/slices/interfaces/app'
-import { updateSelectedKeyRefreshTime } from './keys'
+import { selectedKeyDataSelector, updateSelectedKeyRefreshTime } from './keys'
 import { AppDispatch, RootState } from '../store'
 import { addErrorNotification } from '../app/notifications'
 
@@ -523,10 +523,16 @@ export function updateArrayElementAction(
         encodingParams(state),
       )
       if (isStatusSuccessful(status)) {
-        dispatch(
-          updateArrayElement({ index: params.index, value: params.value }),
-        )
-        dispatch(updateSelectedKeyRefreshTime(Date.now()))
+        // The user may have switched keys while the POST was in flight. Only
+        // patch the table if the edited key is still selected, so a late
+        // success can't overwrite a same-index row in a different key.
+        const selectedKey = selectedKeyDataSelector(stateInit())?.name
+        if (selectedKey === params.key) {
+          dispatch(
+            updateArrayElement({ index: params.index, value: params.value }),
+          )
+          dispatch(updateSelectedKeyRefreshTime(Date.now()))
+        }
         onSuccessAction?.()
       }
     } catch (error) {

@@ -772,17 +772,29 @@ describe('array slice', () => {
     })
 
     describe('updateArrayElementAction', () => {
+      // The optimistic patch only applies when the edited key is still the
+      // selected one, so these tests run against a store whose selected key
+      // matches `mockKey`.
+      const storeWithSelectedKey = (name: string) => {
+        const state = cloneDeep(initialStateDefault)
+        state.browser.keys.selectedKey.data = { name } as any
+        const s = mockStore(state)
+        s.clearActions()
+        return s
+      }
+
       it('posts keyName/index/value and optimistically updates the element', async () => {
         apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
+        const keyedStore = storeWithSelectedKey(mockKey)
 
-        await store.dispatch<any>(
+        await keyedStore.dispatch<any>(
           updateArrayElementAction({ key: mockKey, index: '5', value: 'B' }),
         )
 
         const [url, body] = (apiService.post as jest.Mock).mock.calls[0]
         expect(url).toContain('array/set-element')
         expect(body).toEqual({ keyName: mockKey, index: '5', value: 'B' })
-        expect(store.getActions()).toEqual([
+        expect(keyedStore.getActions()).toEqual([
           setArrayUpdating(true),
           updateArrayElement({ index: '5', value: 'B' }),
           updateSelectedKeyRefreshTime(MOCK_TIMESTAMP),
@@ -790,11 +802,34 @@ describe('array slice', () => {
         ])
       })
 
-      it('calls onSuccessAction on success', async () => {
+      it('skips the optimistic patch when the selected key changed mid-write', async () => {
         apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
+        // User switched to another key before the POST resolved.
+        const keyedStore = storeWithSelectedKey('another-key')
         const onSuccess = jest.fn()
 
-        await store.dispatch<any>(
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction(
+            { key: mockKey, index: '5', value: 'B' },
+            onSuccess,
+          ),
+        )
+
+        // No table patch / refresh-time for the now-current key; the write
+        // still succeeded so onSuccess (editor close) is honoured.
+        expect(keyedStore.getActions()).toEqual([
+          setArrayUpdating(true),
+          setArrayUpdating(false),
+        ])
+        expect(onSuccess).toHaveBeenCalled()
+      })
+
+      it('calls onSuccessAction on success', async () => {
+        apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
+        const keyedStore = storeWithSelectedKey(mockKey)
+        const onSuccess = jest.fn()
+
+        await keyedStore.dispatch<any>(
           updateArrayElementAction(
             { key: mockKey, index: '5', value: 'B' },
             onSuccess,

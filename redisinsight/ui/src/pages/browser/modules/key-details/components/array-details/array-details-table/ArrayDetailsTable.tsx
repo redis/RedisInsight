@@ -55,15 +55,24 @@ const ArrayDetailsTable = memo(
     // Index of the row currently being edited; only one row edits at a time.
     const [editingIndex, setEditingIndex] = useState<Nullable<string>>(null)
 
-    // Drive the shared key-header refresh flag. Both tabs mount a table, so an
-    // inactive one must not hold refresh off via its own (now-hidden) editor —
-    // it only reflects the global in-flight write. The active table keeps
-    // refresh paused until its editor is closed AND the ARSET has settled, so a
-    // stale reload can't overwrite the optimistic patch mid-write.
+    // Only the visible tab's table drives the editor-driven refresh pause, so
+    // a hidden table can't re-enable refresh while the active one has an editor
+    // open. Stays paused until the editor closes AND the ARSET settles, so a
+    // stale reload can't overwrite the optimistic patch mid-write. (This effect
+    // intentionally omits `editingIndex` from the inactive path — only the
+    // active table reacts to it.)
     useEffect(() => {
-      const disabled = isActive ? editingIndex !== null || updating : updating
-      dispatch(setSelectedKeyRefreshDisabled(disabled))
+      if (!isActive) return
+      dispatch(setSelectedKeyRefreshDisabled(editingIndex !== null || updating))
     }, [isActive, editingIndex, updating, dispatch])
+
+    // When a table is hidden (tab switch) or unmounts, it releases the shared
+    // flag but still respects an in-flight write (global), so switching to a
+    // tab without a table can't leave refresh stuck disabled.
+    useEffect(() => {
+      if (isActive) return
+      dispatch(setSelectedKeyRefreshDisabled(updating))
+    }, [isActive, updating, dispatch])
 
     // Abandon an open editor when this table is hidden (tab switch) or the key
     // changes, so a background editor can't keep refresh disabled and a stale
