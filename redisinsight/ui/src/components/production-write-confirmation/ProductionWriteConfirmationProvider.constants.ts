@@ -20,6 +20,7 @@ export enum BrowserConfirmationCommandId {
   AddListElements = 'browser:add-list-elements',
   AddSetMembers = 'browser:add-set-members',
   AddHashFields = 'browser:add-hash-fields',
+  AddArrayElements = 'browser:add-array-elements',
   AddStreamEntry = 'browser:add-stream-entry',
   RenameKey = 'browser:rename-key',
   ChangeTtl = 'browser:change-ttl',
