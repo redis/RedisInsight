@@ -1,0 +1,11 @@
+{
+  "settings.advancedWarning": "Advanced settings should only be changed if you understand their impact.",
+  "settings.title": "Settings",
+  "settings.language.label": "Specifies the language used in Redis Insight:",
+  "settings.language.title": "Language",
+  "settings.section.advanced": "Advanced",
+  "settings.section.cloud": "Redis Cloud",
+  "settings.section.general": "General",
+  "settings.section.privacy": "Privacy",
+  "settings.section.workbench": "Workbench"
+}
