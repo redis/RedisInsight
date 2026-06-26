@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
@@ -42,28 +42,39 @@ export const NeighbourBand = ({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
+  // Identifies the requested window. A response is applied only if it still
+  // matches the latest request, so a slow fetch for a previous ±N count can't
+  // overwrite the band once the count changed — the effect's abort cleanup is
+  // deferred and may not have run yet when that stale response settles.
+  const requestKey = `${matchIndex}:${count}`
+  const latestRequestKey = useRef(requestKey)
+  latestRequestKey.current = requestKey
+
   useEffect(() => {
     const controller = new AbortController()
     const { start, end } = getNeighbourRange(matchIndex, count)
     setLoading(true)
     setError('')
 
+    const isStale = () =>
+      controller.signal.aborted || latestRequestKey.current !== requestKey
+
     dispatch(
       fetchArrayNeighbours({ key: keyProp, start, end }, controller.signal),
     )
       .then((result) => {
-        if (controller.signal.aborted) return
+        if (isStale()) return
         setElements(result)
         setLoading(false)
       })
       .catch((e) => {
-        if (axios.isCancel(e) || controller.signal.aborted) return
+        if (axios.isCancel(e) || isStale()) return
         setError(e?.message || DEFAULT_ERROR_MESSAGE)
         setLoading(false)
       })
 
     return () => controller.abort()
-  }, [dispatch, keyProp, matchIndex, count])
+  }, [dispatch, keyProp, matchIndex, count, requestKey])
 
   if (loading) {
     return (
