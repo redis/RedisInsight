@@ -505,6 +505,14 @@ export function searchArray(params: SearchArrayParams) {
   }
 }
 
+/**
+ * Monotonic token identifying the most recently started ARSET edit. A key
+ * switch resets the slice (clearing `updating`) and can let a new edit begin
+ * before an earlier request settles; the token lets a stale completion skip
+ * releasing the lock so it can't re-enable refresh/edits for the newer write.
+ */
+let latestEditRequestToken = 0
+
 // ARSET — in-place value edit. Editing a populated slot can't change
 // ARLEN/ARCOUNT, so the header counters are intentionally not refreshed.
 // `value` must already be in the formatter's serialized-buffer shape.
@@ -514,6 +522,8 @@ export function updateArrayElementAction(
   onFailAction?: () => void,
 ) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    latestEditRequestToken += 1
+    const requestToken = latestEditRequestToken
     dispatch(setArrayUpdating(true))
     try {
       const state = stateInit()
@@ -531,6 +541,10 @@ export function updateArrayElementAction(
           dispatch(
             updateArrayElement({ index: params.index, value: params.value }),
           )
+          // The edit can change a value a previously-run AROP was computed
+          // from, so drop the stored aggregate rather than show a stale number
+          // when the user returns to the (still-mounted) Aggregate tab.
+          dispatch(clearArrayAggregate())
           dispatch(updateSelectedKeyRefreshTime(Date.now()))
         }
         onSuccessAction?.()
@@ -539,7 +553,11 @@ export function updateArrayElementAction(
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
       onFailAction?.()
     } finally {
-      dispatch(setArrayUpdating(false))
+      // Only the latest edit releases the lock; a stale completion (e.g. after
+      // a key switch let a newer edit start) leaves it held for the newer write.
+      if (requestToken === latestEditRequestToken) {
+        dispatch(setArrayUpdating(false))
+      }
     }
   }
 }

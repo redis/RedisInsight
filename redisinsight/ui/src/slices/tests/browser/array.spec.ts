@@ -29,6 +29,7 @@ import reducer, {
   resetArraySearch,
   updateArrayElement,
   setArrayUpdating,
+  clearArrayAggregate,
   arraySelector,
   arrayDataSelector,
   arraySearchSelector,
@@ -797,6 +798,7 @@ describe('array slice', () => {
         expect(keyedStore.getActions()).toEqual([
           setArrayUpdating(true),
           updateArrayElement({ index: '5', value: 'B' }),
+          clearArrayAggregate(),
           updateSelectedKeyRefreshTime(MOCK_TIMESTAMP),
           setArrayUpdating(false),
         ])
@@ -822,6 +824,51 @@ describe('array slice', () => {
           setArrayUpdating(false),
         ])
         expect(onSuccess).toHaveBeenCalled()
+      })
+
+      it('only the latest ARSET clears the update lock when two overlap', async () => {
+        const keyedStore = storeWithSelectedKey(mockKey)
+        let resolveFirst: () => void = () => {}
+        let resolveSecond: () => void = () => {}
+        apiService.post = jest
+          .fn()
+          .mockImplementationOnce(
+            () =>
+              new Promise((r) => {
+                resolveFirst = () => r({ status: 200, data: '' })
+              }),
+          )
+          .mockImplementationOnce(
+            () =>
+              new Promise((r) => {
+                resolveSecond = () => r({ status: 200, data: '' })
+              }),
+          )
+
+        const first = keyedStore.dispatch<any>(
+          updateArrayElementAction({ key: mockKey, index: '1', value: 'a' }),
+        )
+        const second = keyedStore.dispatch<any>(
+          updateArrayElementAction({ key: mockKey, index: '2', value: 'b' }),
+        )
+
+        const isSetUpdatingFalse = (a: { type: string; payload?: unknown }) =>
+          a.type === setArrayUpdating(false).type && a.payload === false
+
+        // The stale first completion must NOT release the lock — a second
+        // ARSET is still pending.
+        resolveFirst()
+        await first
+        expect(keyedStore.getActions().filter(isSetUpdatingFalse)).toHaveLength(
+          0,
+        )
+
+        // The latest one clears it.
+        resolveSecond()
+        await second
+        expect(keyedStore.getActions().filter(isSetUpdatingFalse)).toHaveLength(
+          1,
+        )
       })
 
       it('calls onSuccessAction on success', async () => {
