@@ -288,7 +288,7 @@
     "fzstd": "^0.1.0",
     "get-port": "^7.2.0",
     "html-entities": "^2.3.2",
-    "html-react-parser": "^1.2.4",
+    "html-react-parser": "^6.1.3",
     "i18next": "^23.16",
     "java-object-serialization": "^0.1.2",
     "js-yaml": "^4.2.0",
