@@ -42,7 +42,10 @@ import reducer, {
   updateArrayElementAction,
 } from '../../browser/array'
 import { arrayGrepPredicateFactory } from 'uiSrc/mocks/factories/browser/array/arrayGrepPredicate.factory'
-import { updateSelectedKeyRefreshTime } from '../../browser/keys'
+import {
+  refreshKeyInfo,
+  updateSelectedKeyRefreshTime,
+} from '../../browser/keys'
 import { addErrorNotification } from '../../app/notifications'
 import {
   ArrayAggregateOperation,
@@ -795,13 +798,16 @@ describe('array slice', () => {
         const [url, body] = (apiService.post as jest.Mock).mock.calls[0]
         expect(url).toContain('array/set-element')
         expect(body).toEqual({ keyName: mockKey, index: '5', value: 'B' })
-        expect(keyedStore.getActions()).toEqual([
-          setArrayUpdating(true),
+        const actions = keyedStore.getActions()
+        expect(actions).toContainEqual(setArrayUpdating(true))
+        expect(actions).toContainEqual(
           updateArrayElement({ index: '5', value: 'B' }),
-          clearArrayAggregate(),
-          updateSelectedKeyRefreshTime(MOCK_TIMESTAMP),
-          setArrayUpdating(false),
-        ])
+        )
+        expect(actions).toContainEqual(clearArrayAggregate())
+        // Refetch key info (not just stamp the time) so the header Key Size
+        // reflects a value edited to a different byte length.
+        expect(actions).toContainEqual(refreshKeyInfo())
+        expect(actions).toContainEqual(setArrayUpdating(false))
       })
 
       it('skips the optimistic patch when the selected key changed mid-write', async () => {

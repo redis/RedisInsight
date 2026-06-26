@@ -34,7 +34,11 @@ import {
   UpdateArrayElementParams,
 } from 'uiSrc/slices/interfaces/array'
 import { RedisString } from 'uiSrc/slices/interfaces/app'
-import { selectedKeyDataSelector, updateSelectedKeyRefreshTime } from './keys'
+import {
+  refreshKeyInfoAction,
+  selectedKeyDataSelector,
+  updateSelectedKeyRefreshTime,
+} from './keys'
 import { AppDispatch, RootState } from '../store'
 import { addErrorNotification } from '../app/notifications'
 
@@ -566,7 +570,10 @@ export function updateArrayElementAction(
           // from, so drop the stored aggregate rather than show a stale number
           // when the user returns to the (still-mounted) Aggregate tab.
           dispatch(clearArrayAggregate())
-          dispatch(updateSelectedKeyRefreshTime(Date.now()))
+          // Refetch key info (not just stamp the refresh time): editing a value
+          // to a different byte length changes the key's Size even though
+          // ARLEN/ARCOUNT don't — matches the List/Hash/String edit thunks.
+          dispatch(refreshKeyInfoAction(params.key as RedisResponseBuffer))
         }
         onSuccessAction?.()
       }
