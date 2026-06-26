@@ -44,6 +44,18 @@ describe('SearchTab', () => {
     expect(screen.getByTestId('array-search-form')).toBeInTheDocument()
   })
 
+  it('disables the search form while the key is locked for editing', () => {
+    // isRefreshDisabled is set by the active table while a value editor is open
+    // or an ARSET is in flight; the query form must not reload the table then.
+    const state = buildState()
+    state.browser.keys.selectedKey.isRefreshDisabled = true
+    const store = mockStore(state)
+
+    render(<SearchTab keyProp={keyBuffer} isActive />, { store })
+
+    expect(screen.getByTestId('array-search-form-run')).toBeDisabled()
+  })
+
   it('does not render the results table before a search has run', () => {
     renderTab({ loaded: false, loading: false, data: [] })
 

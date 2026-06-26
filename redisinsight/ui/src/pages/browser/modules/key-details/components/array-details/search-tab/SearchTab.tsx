@@ -11,7 +11,8 @@ import * as S from '../tabs.styles'
 import { SearchTabProps } from './SearchTab.types'
 
 const SearchTab = ({ keyProp, isActive }: SearchTabProps) => {
-  const { loading: keyLoading } = useAppSelector(selectedKeySelector)
+  const { loading: keyLoading, isRefreshDisabled } =
+    useAppSelector(selectedKeySelector)
   const keyName = keyProp ? bufferToString(keyProp) : ''
 
   const {
@@ -47,7 +48,7 @@ const SearchTab = ({ keyProp, isActive }: SearchTabProps) => {
         onChangeOptions={updateOptions}
         onRun={runSearch}
         onReset={resetQuery}
-        disabled={!isArrayKeyReady}
+        disabled={!isArrayKeyReady || isRefreshDisabled}
       />
       <S.TabBody>
         {/* Keep the tab blank until the user runs a search, then let

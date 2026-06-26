@@ -11,7 +11,7 @@ import * as S from '../tabs.styles'
 import { ViewTabProps } from './ViewTab.types'
 
 const ViewTab = ({ keyProp, isActive }: ViewTabProps) => {
-  const { loading } = useAppSelector(selectedKeySelector)
+  const { loading, isRefreshDisabled } = useAppSelector(selectedKeySelector)
   const keyName = keyProp ? bufferToString(keyProp) : ''
 
   const {
@@ -42,7 +42,7 @@ const ViewTab = ({ keyProp, isActive }: ViewTabProps) => {
         onToggleShowEmpty={setShowEmpty}
         onRun={runQuery}
         onReset={resetQuery}
-        disabled={!isArrayKeyReady}
+        disabled={!isArrayKeyReady || isRefreshDisabled}
       />
       <S.TabBody>
         {!loading && (
