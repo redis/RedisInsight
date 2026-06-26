@@ -43,7 +43,17 @@ const ArrayDetailsTable = memo(
       connectedInstanceSelector,
     ) as unknown as { compressor: Nullable<KeyValueCompressor> }
     const { viewFormat } = useAppSelector(selectedKeySelector)
-    const { updating } = useAppSelector(arraySelector)
+    const {
+      updating,
+      loading: rangeLoading,
+      search,
+    } = useAppSelector(arraySelector)
+    // Block opening an edit while any read that writes a patched view is in
+    // flight — range/scan (data.elements) or search (search.data), from either
+    // tab — so a late response can't overwrite the optimistic patch. Read from
+    // the slice, not the `loading` prop, so the View table also sees a search
+    // loading on the hidden Search tab (and vice-versa).
+    const readLoading = rangeLoading || search.loading
     // Use the selected key's name, not the array slice's `data.keyName` —
     // the latter is only set after a View range/scan succeeds, but this table
     // is also rendered by the Search tab, so an edit there (or before View
@@ -127,7 +137,7 @@ const ArrayDetailsTable = memo(
         onEditElement: handleEditElement,
         onApplyEditElement: handleApplyEditElement,
         updating,
-        loading,
+        loading: readLoading,
       }),
       [
         compressor,
@@ -136,7 +146,7 @@ const ArrayDetailsTable = memo(
         handleEditElement,
         handleApplyEditElement,
         updating,
-        loading,
+        readLoading,
       ],
     )
 

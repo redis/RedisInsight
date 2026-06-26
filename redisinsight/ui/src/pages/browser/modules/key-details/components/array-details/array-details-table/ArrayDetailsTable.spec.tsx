@@ -134,13 +134,25 @@ describe('ArrayDetailsTable', () => {
       ).toBeInTheDocument()
     })
 
-    it('disables editing while a range/scan refresh is loading', () => {
-      // A header refresh replays range/scan with resetData:false, so old rows
-      // stay visible while loading; starting an edit then would let the late
-      // refresh response overwrite the optimistic patch.
-      renderComponent(
-        [arrayElementWithValueFactory.build({ index: '1' })],
-        true,
+    // A read that writes a patched view must block editing while in flight, so
+    // its late response can't overwrite the optimistic patch — and this holds
+    // across tabs (the View table must see a Search loading and vice-versa),
+    // so it's driven from the slice, not the per-tab `loading` prop.
+    it.each([
+      ['range/scan', (s: any) => (s.browser.array.loading = true)],
+      ['search', (s: any) => (s.browser.array.search.loading = true)],
+    ])('disables editing while a %s read is in flight', (_name, setLoading) => {
+      const state = cloneDeep(initialStateDefault)
+      setLoading(state)
+      const store = mockStore(state)
+
+      render(
+        <ArrayDetailsTable
+          elements={[arrayElementWithValueFactory.build({ index: '1' })]}
+          loading={false}
+          isActive
+        />,
+        { store },
       )
 
       act(() => {
