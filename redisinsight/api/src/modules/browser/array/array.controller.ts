@@ -33,6 +33,7 @@ import {
   GetArrayScanResponse,
   GetArraySearchDto,
   GetArraySearchResponse,
+  SetArrayElementDto,
 } from 'src/modules/browser/array/dto';
 
 @ApiTags('Browser: Array')
@@ -56,7 +57,24 @@ export class ArrayController extends BrowserBaseController {
     return this.arrayService.createArray(clientMetadata, dto);
   }
 
-  // The key name can be very large, so it is better to send it in the request body
+  @Post('/set-element')
+  @HttpCode(200)
+  @ApiOperation({
+    description:
+      'Set the value of a single element at an explicit index (ARSET key ' +
+      'index value). Overwrites a populated slot or fills an empty one; the ' +
+      'key must already exist.',
+  })
+  @ApiRedisParams()
+  @ApiBody({ type: SetArrayElementDto })
+  @ApiQueryRedisStringEncoding()
+  async setElement(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: SetArrayElementDto,
+  ): Promise<void> {
+    return this.arrayService.setElement(clientMetadata, dto);
+  }
+
   @Post('/get-range')
   @HttpCode(200)
   @ApiOperation({
