@@ -489,8 +489,8 @@ export class VectorSetService {
 
     throw new InternalServerErrorException(
       ERROR_MESSAGES.UNABLE_TO_LIST_VECTOR_SET_ELEMENTS([
-        `${vRangeCommand[0]}`,
-        `${vRandMemberCommand[0]}`,
+        `${BrowserToolVectorSetCommands.VRange}`,
+        `${BrowserToolVectorSetCommands.VRandMember}`,
       ]),
     );
   }
