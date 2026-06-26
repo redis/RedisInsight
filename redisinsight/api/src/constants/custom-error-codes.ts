@@ -86,4 +86,14 @@ export enum CustomErrorCodes {
   TunnelConnectionLost = 11_601,
   UnableToCreateTunnel = 11_602,
   UnableToCreateLocalServer = 11_603,
+
+  // Encryption [11800, 11899]
+  EncryptionServiceError = 11_800,
+  KeyDecryptionError = 11_801,
+  KeyEncryptionError = 11_802,
+  KeyUnavailable = 11_803,
+  KeytarDecryptionError = 11_804,
+  KeytarEncryptionError = 11_805,
+  KeytarUnavailable = 11_806,
+  UnsupportedEncryptionStrategy = 11_807,
 }
