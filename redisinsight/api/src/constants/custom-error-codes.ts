@@ -114,4 +114,16 @@ export enum CustomErrorCodes {
   // Misc / server [11900, 11999]
   UnableToFetchRemoteConfig = 11_900,
   ClientNotFound = 11_901,
+
+  // Generic fallbacks (injected by GlobalExceptionFilter); last 3 digits
+  // mirror the HTTP status, i.e. 12_000 + status [12400, 12599]
+  GenericBadRequest = 12_400,
+  GenericUnauthorized = 12_401,
+  GenericForbidden = 12_403,
+  GenericNotFound = 12_404,
+  GenericConflict = 12_409,
+  GenericServerError = 12_500,
+
+  // Validation, class-validator failures [12100, 12199]
+  ValidationError = 12_100,
 }
