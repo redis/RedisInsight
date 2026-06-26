@@ -462,7 +462,7 @@ describe('VectorSetService', () => {
       ).rejects.toThrow(ForbiddenException);
     });
 
-    it('should fallback to VRANDMEMBER when VRANGE fails', async () => {
+    it('should fallback to VRANDMEMBER when VRANGE is an unknown command', async () => {
       when(client.sendCommand)
         .calledWith([
           BrowserToolVectorSetCommands.VRange,
@@ -471,7 +471,7 @@ describe('VectorSetService', () => {
           mockDto.end,
           mockDto.count,
         ])
-        .mockRejectedValue(new Error('ERR VRANGE is not supported'));
+        .mockRejectedValue(new Error("ERR unknown command 'VRANGE'"));
 
       when(client.sendCommand)
         .calledWith([
@@ -496,7 +496,7 @@ describe('VectorSetService', () => {
       expect(result.isPaginationSupported).toBe(false);
     });
 
-    it('should throw a server error when neither VRANGE nor VRANDMEMBER can list elements', async () => {
+    it('should not fallback and should surface the error when VRANGE fails with a non-command error', async () => {
       when(client.sendCommand)
         .calledWith([
           BrowserToolVectorSetCommands.VRange,
@@ -505,7 +505,32 @@ describe('VectorSetService', () => {
           mockDto.end,
           mockDto.count,
         ])
-        .mockRejectedValue(new Error('ERR VRANGE is not supported'));
+        .mockRejectedValue({
+          ...mockRedisNoPermError,
+          command: 'VRANGE',
+        });
+
+      await expect(
+        service.getElements(mockBrowserClientMetadata, mockDto),
+      ).rejects.toThrow(ForbiddenException);
+
+      expect(client.sendCommand).not.toHaveBeenCalledWith([
+        BrowserToolVectorSetCommands.VRandMember,
+        mockDto.keyName,
+        mockDto.count,
+      ]);
+    });
+
+    it('should throw a server error when both VRANGE and VRANDMEMBER are unknown commands', async () => {
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolVectorSetCommands.VRange,
+          mockDto.keyName,
+          mockDto.start,
+          mockDto.end,
+          mockDto.count,
+        ])
+        .mockRejectedValue(new Error("ERR unknown command 'VRANGE'"));
 
       when(client.sendCommand)
         .calledWith([
@@ -513,7 +538,7 @@ describe('VectorSetService', () => {
           mockDto.keyName,
           mockDto.count,
         ])
-        .mockRejectedValue(new Error('ERR VRANDMEMBER is not supported'));
+        .mockRejectedValue(new Error("ERR unknown command 'VRANDMEMBER'"));
 
       await expect(
         service.getElements(mockBrowserClientMetadata, mockDto),

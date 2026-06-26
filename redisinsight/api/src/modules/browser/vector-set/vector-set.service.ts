@@ -496,9 +496,12 @@ export class VectorSetService {
   }
 
   /**
-   * Send a command and return its reply, or `null` when the command is rejected
-   * (e.g. unsupported on the connected Redis version) so callers can fall back.
-   * `null` is distinct from an empty reply, which is a valid result.
+   * Send a command and return its reply, or `null` when the command itself is
+   * unavailable (unknown/unsupported on the connected Redis version or proxy)
+   * so callers can fall back. `null` is distinct from an empty reply, which is a
+   * valid result. Any other error (permission, bad arguments, transient) is
+   * rethrown so it surfaces to the caller instead of triggering a silent
+   * fallback.
    */
   private async trySendCommand(
     client: RedisClient,
@@ -506,9 +509,17 @@ export class VectorSetService {
   ): Promise<string[] | null> {
     try {
       return (await client.sendCommand(command)) as string[];
-    } catch {
-      return null;
+    } catch (error) {
+      if (this.isUnsupportedCommandError(error)) {
+        return null;
+      }
+      throw error;
     }
+  }
+
+  private isUnsupportedCommandError(error: unknown): boolean {
+    const message = (error as ReplyError)?.message ?? '';
+    return message.includes(RedisErrorCodes.UnknownCommand);
   }
 
   /**
