@@ -78,5 +78,14 @@ describe('arrayIndex', () => {
         end: '9007199254740995',
       })
     })
+
+    it('truncates a fractional count instead of throwing in BigInt', () => {
+      expect(getNeighbourRange('42', 1.5)).toEqual({ start: '41', end: '43' })
+    })
+
+    it('treats a non-finite or negative count as 0', () => {
+      expect(getNeighbourRange('42', NaN)).toEqual({ start: '42', end: '42' })
+      expect(getNeighbourRange('42', -3)).toEqual({ start: '42', end: '42' })
+    })
   })
 })

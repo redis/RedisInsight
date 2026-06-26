@@ -47,8 +47,12 @@ export const getNeighbourRange = (
   index: string,
   count: number,
 ): { start: string; end: string } => {
+  // Coerce count to a non-negative integer: a fractional/NaN value would make
+  // BigInt() throw and break the caller mid-render.
+  const span = BigInt(
+    Number.isFinite(count) ? Math.max(0, Math.trunc(count)) : 0,
+  )
   const center = BigInt(index)
-  const span = BigInt(count)
   const lower = center - span
   const upper = center + span
   return {

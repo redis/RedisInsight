@@ -349,7 +349,9 @@ export const ArraySearchForm = ({
                         value={context.count}
                         onChange={(next) =>
                           onChangeContext({
-                            count: Number(next ?? CONTEXT_COUNT_MIN),
+                            count: Math.round(
+                              Number(next ?? CONTEXT_COUNT_MIN),
+                            ),
                           })
                         }
                         disabled={disabled || !context.enabled}
