@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { cloneDeep } from 'lodash'
 import { apiService } from 'uiSrc/services'
-import { DEFAULT_ERROR_MESSAGE } from 'uiSrc/utils'
+import { DEFAULT_ERROR_MESSAGE, stringToBuffer } from 'uiSrc/utils'
 import { IAddInstanceErrorPayload } from 'uiSrc/slices/app/notifications'
 import {
   cleanup,
@@ -776,7 +776,7 @@ describe('array slice', () => {
       // The optimistic patch only applies when the edited key is still the
       // selected one, so these tests run against a store whose selected key
       // matches `mockKey`.
-      const storeWithSelectedKey = (name: string) => {
+      const storeWithSelectedKey = (name: unknown) => {
         const state = cloneDeep(initialStateDefault)
         state.browser.keys.selectedKey.data = { name } as any
         const s = mockStore(state)
@@ -868,6 +868,25 @@ describe('array slice', () => {
         await second
         expect(keyedStore.getActions().filter(isSetUpdatingFalse)).toHaveLength(
           1,
+        )
+      })
+
+      it('still patches when the selected key is the same bytes but a new buffer instance', async () => {
+        apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
+        // Redux can replace the name buffer with a fresh instance for the same
+        // key (e.g. a key-info refetch) while the POST is in flight.
+        const keyedStore = storeWithSelectedKey(stringToBuffer('readings'))
+
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction({
+            key: stringToBuffer('readings'),
+            index: '5',
+            value: 'B',
+          }),
+        )
+
+        expect(keyedStore.getActions()).toContainEqual(
+          updateArrayElement({ index: '5', value: 'B' }),
         )
       })
 

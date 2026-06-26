@@ -15,9 +15,11 @@ import {
   DEFAULT_ERROR_MESSAGE,
   getApiErrorMessage,
   getUrl,
+  isEqualBuffers,
   isStatusSuccessful,
   Maybe,
 } from 'uiSrc/utils'
+import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 import {
   ArrayActiveQuery,
@@ -513,6 +515,25 @@ export function searchArray(params: SearchArrayParams) {
  */
 let latestEditRequestToken = 0
 
+/**
+ * Compares the edited key with the currently selected one by value. In
+ * buffer-encoding mode key names are `RedisResponseBuffer`s and Redux may swap
+ * the instance for the same bytes (e.g. a key-info refetch), so byte-compare
+ * rather than rely on reference identity; fall back to strict equality for
+ * plain-string names / nullish values.
+ */
+const isSameKey = (a?: unknown, b?: unknown): boolean => {
+  if (
+    a == null ||
+    b == null ||
+    typeof a === 'string' ||
+    typeof b === 'string'
+  ) {
+    return a === b
+  }
+  return isEqualBuffers(a as RedisResponseBuffer, b as RedisResponseBuffer)
+}
+
 // ARSET — in-place value edit. Editing a populated slot can't change
 // ARLEN/ARCOUNT, so the header counters are intentionally not refreshed.
 // `value` must already be in the formatter's serialized-buffer shape.
@@ -537,7 +558,7 @@ export function updateArrayElementAction(
         // patch the table if the edited key is still selected, so a late
         // success can't overwrite a same-index row in a different key.
         const selectedKey = selectedKeyDataSelector(stateInit())?.name
-        if (selectedKey === params.key) {
+        if (isSameKey(selectedKey, params.key)) {
           dispatch(
             updateArrayElement({ index: params.index, value: params.value }),
           )
