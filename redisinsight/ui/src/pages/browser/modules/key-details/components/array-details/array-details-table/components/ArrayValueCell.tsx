@@ -43,6 +43,7 @@ export const ArrayValueCell = ({
   viewFormat,
   isEditing = false,
   updating = false,
+  loading = false,
   onEdit,
   onApply,
 }: ArrayValueCellProps) => {
@@ -95,7 +96,7 @@ export const ArrayValueCell = ({
       isEditing={isEditing}
       isLoading={updating}
       isDisabled={isUnprintable}
-      isEditDisabled={!isEditable || updating}
+      isEditDisabled={!isEditable || updating || loading}
       disabledTooltipText={TEXT_UNPRINTABLE_CHARACTERS}
       approveText={TEXT_INVALID_VALUE}
       approveByValidation={(editedValue) =>

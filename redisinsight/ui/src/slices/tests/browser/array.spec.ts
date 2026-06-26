@@ -30,6 +30,9 @@ import reducer, {
   updateArrayElement,
   setArrayUpdating,
   clearArrayAggregate,
+  loadArrayAggregateSuccess,
+  aggregateArray,
+  abortArrayAggregate,
   arraySelector,
   arrayDataSelector,
   arraySearchSelector,
@@ -894,6 +897,46 @@ describe('array slice', () => {
         expect(keyedStore.getActions()).toContainEqual(
           updateArrayElement({ index: '5', value: 'B' }),
         )
+      })
+
+      it('aborts an in-flight aggregate so a stale AROP cannot repopulate after the edit', async () => {
+        const keyedStore = storeWithSelectedKey(mockKey)
+        let resolveAgg: () => void = () => {}
+        apiService.post = jest
+          .fn()
+          .mockImplementationOnce(
+            () =>
+              new Promise((r) => {
+                resolveAgg = () =>
+                  r({
+                    status: 200,
+                    data: { keyName: mockKey, result: '104.7' },
+                  })
+              }),
+          )
+          .mockResolvedValue({ status: 200, data: '' })
+
+        // AROP in flight, then an edit lands and clears + aborts it.
+        const aggregate = keyedStore.dispatch<any>(
+          aggregateArray({
+            key: mockKey,
+            start: '0',
+            end: '6',
+            operation: ArrayAggregateOperation.Sum,
+          }),
+        )
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction({ key: mockKey, index: '1', value: 'x' }),
+        )
+
+        // The stale aggregate response resolves after the edit.
+        resolveAgg()
+        await aggregate
+
+        // It must not repopulate the (cleared) aggregate state.
+        const types = keyedStore.getActions().map((a) => a.type)
+        expect(types).not.toContain(loadArrayAggregateSuccess.type)
+        abortArrayAggregate()
       })
 
       it('calls onSuccessAction on success', async () => {

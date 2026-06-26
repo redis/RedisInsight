@@ -127,6 +127,7 @@ const ArrayDetailsTable = memo(
         onEditElement: handleEditElement,
         onApplyEditElement: handleApplyEditElement,
         updating,
+        loading,
       }),
       [
         compressor,
@@ -135,6 +136,7 @@ const ArrayDetailsTable = memo(
         handleEditElement,
         handleApplyEditElement,
         updating,
+        loading,
       ],
     )
 

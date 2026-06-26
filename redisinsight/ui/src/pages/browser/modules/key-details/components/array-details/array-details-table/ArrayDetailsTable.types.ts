@@ -32,4 +32,7 @@ export interface ArrayTableConfig {
   /** True while an ARSET write is in flight — keeps the editor in its loading
    *  state and blocks a second edit from overlapping the request. */
   updating: boolean
+  /** True while a range/scan request is in flight — blocks opening an edit so
+   *  a late refresh response can't overwrite the optimistic patch. */
+  loading: boolean
 }

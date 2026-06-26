@@ -34,6 +34,7 @@ const valueColumn: ColumnDef<ArrayDataElement> = {
       onEditElement,
       onApplyEditElement,
       updating,
+      loading,
     } = table.options.meta as ArrayTableConfig
     const { index } = row.original
     return (
@@ -44,6 +45,7 @@ const valueColumn: ColumnDef<ArrayDataElement> = {
         viewFormat={viewFormat}
         isEditing={editingIndex === index}
         updating={updating}
+        loading={loading}
         onEdit={(isEditing) => onEditElement(index, isEditing)}
         onApply={(value) => onApplyEditElement(index, value)}
       />

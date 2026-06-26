@@ -134,6 +134,26 @@ describe('ArrayDetailsTable', () => {
       ).toBeInTheDocument()
     })
 
+    it('disables editing while a range/scan refresh is loading', () => {
+      // A header refresh replays range/scan with resetData:false, so old rows
+      // stay visible while loading; starting an edit then would let the late
+      // refresh response overwrite the optimistic patch.
+      renderComponent(
+        [arrayElementWithValueFactory.build({ index: '1' })],
+        true,
+      )
+
+      act(() => {
+        fireEvent.mouseEnter(
+          screen.getByTestId('array-details-table_content-value-1'),
+        )
+      })
+
+      expect(
+        screen.getByTestId('array-details-table_edit-btn-1'),
+      ).toBeDisabled()
+    })
+
     it('does not offer editing for an empty slot', () => {
       renderComponent([arrayElementFactory.build({ index: '3' })])
 

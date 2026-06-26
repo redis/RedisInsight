@@ -568,7 +568,10 @@ export function updateArrayElementAction(
           )
           // The edit can change a value a previously-run AROP was computed
           // from, so drop the stored aggregate rather than show a stale number
-          // when the user returns to the (still-mounted) Aggregate tab.
+          // when the user returns to the (still-mounted) Aggregate tab. Abort
+          // any in-flight AROP too, or its late success would repopulate the
+          // result we just cleared.
+          abortArrayAggregate()
           dispatch(clearArrayAggregate())
           // Refetch key info (not just stamp the refresh time): editing a value
           // to a different byte length changes the key's Size even though

@@ -12,6 +12,9 @@ export interface ArrayValueCellProps {
   /** True while an ARSET write is in flight — shows the editor's loading
    *  state and blocks opening another edit until it settles. */
   updating?: boolean
+  /** True while a range/scan request is in flight — blocks opening an edit so
+   *  a late refresh response can't overwrite the optimistic patch. */
+  loading?: boolean
   /** Toggle edit mode for this row (open via the edit button, close on
    *  decline / successful apply). Omitted in read-only contexts. */
   onEdit?: (isEditing: boolean) => void
