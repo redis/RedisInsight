@@ -27,6 +27,7 @@ import {
   getArraySearchDtoFactory,
   getArraySearchResponseFactory,
   setArrayElementDtoFactory,
+  appendArrayElementDtoFactory,
 } from 'src/modules/browser/array/__tests__/array.factory';
 import {
   mockArrayCount,
@@ -847,6 +848,87 @@ describe('ArrayService', () => {
       await expect(
         service.search(mockBrowserClientMetadata, mockGetArraySearchDto),
       ).rejects.toBeInstanceOf(ForbiddenException);
+    });
+  });
+
+  describe('appendElement', () => {
+    // keyName matches mockKeyDto so the shared key-existence stub resolves.
+    const dto = appendArrayElementDtoFactory.build({
+      keyName: mockKeyDto.keyName,
+    });
+
+    it('should append at the current length (ARLEN then ARSET) and return the index', async () => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolArrayCommands.ArLen, dto.keyName])
+        .mockResolvedValue(7);
+
+      const result = await service.appendElement(
+        mockBrowserClientMetadata,
+        dto,
+      );
+
+      expect(result).toEqual({ keyName: dto.keyName, index: '7' });
+      // Writes at the length read by ARLEN, passing the index as a string so
+      // the append stays precise once ioredis returns 64-bit integers
+      // losslessly (RI-8296).
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolArrayCommands.ArSet,
+        dto.keyName,
+        '7',
+        dto.value,
+      ]);
+    });
+
+    it('should reject when key does not exist', async () => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, dto.keyName])
+        .mockResolvedValue(0);
+      await expect(
+        service.appendElement(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should reject with BadRequest when the array is full (ARLEN === 2^64-1)', async () => {
+      // Top index already 2^64-2, so the next index is the reserved 2^64-1 —
+      // guard it before ARSET rather than letting Redis 500.
+      when(client.sendCommand)
+        .calledWith([BrowserToolArrayCommands.ArLen, dto.keyName])
+        .mockResolvedValue('18446744073709551615');
+
+      await expect(
+        service.appendElement(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(BadRequestException);
+      expect(client.sendCommand).not.toHaveBeenCalledWith(
+        expect.arrayContaining([
+          BrowserToolArrayCommands.ArSet,
+          dto.keyName,
+          '18446744073709551615',
+        ]),
+      );
+    });
+
+    it('should rethrow BadRequest on WrongType', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisWrongTypeError,
+        command: 'ARLEN',
+      };
+      when(client.sendCommand)
+        .calledWith([BrowserToolArrayCommands.ArLen, dto.keyName])
+        .mockRejectedValue(replyError);
+      await expect(
+        service.appendElement(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should map ACL error to Forbidden', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisNoPermError,
+        command: 'ARSET',
+      };
+      client.sendCommand.mockRejectedValue(replyError);
+      await expect(
+        service.appendElement(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(ForbiddenException);
     });
   });
 

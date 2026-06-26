@@ -6,6 +6,8 @@ export * from './get.array-scan.response';
 export * from './get.array-element.dto';
 export * from './get.array-element.response';
 export * from './set.array-element.dto';
+export * from './append.array-element.dto';
+export * from './append.array-element.response';
 export * from './get.array-multi-elements.dto';
 export * from './get.array-multi-elements.response';
 export * from './get.array-length.response';

@@ -34,6 +34,8 @@ import {
   GetArraySearchDto,
   GetArraySearchResponse,
   SetArrayElementDto,
+  AppendArrayElementDto,
+  AppendArrayElementResponse,
 } from 'src/modules/browser/array/dto';
 
 @ApiTags('Browser: Array')
@@ -73,6 +75,25 @@ export class ArrayController extends BrowserBaseController {
     @Body() dto: SetArrayElementDto,
   ): Promise<void> {
     return this.arrayService.setElement(clientMetadata, dto);
+  }
+
+  @Post('/append')
+  @HttpCode(200)
+  @ApiOperation({
+    description:
+      'Append a value to the end of the array. The end index is computed ' +
+      'server-side (current length); no index is supplied. Returns the index ' +
+      'written. The key must already exist.',
+  })
+  @ApiRedisParams()
+  @ApiBody({ type: AppendArrayElementDto })
+  @ApiOkResponse({ type: AppendArrayElementResponse })
+  @ApiQueryRedisStringEncoding()
+  async appendElement(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: AppendArrayElementDto,
+  ): Promise<AppendArrayElementResponse> {
+    return this.arrayService.appendElement(clientMetadata, dto);
   }
 
   @Post('/get-range')

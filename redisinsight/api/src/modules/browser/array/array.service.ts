@@ -21,6 +21,7 @@ import {
 } from 'src/modules/browser/utils';
 import { KeyDto } from 'src/modules/browser/keys/dto';
 import { ARRAY_RANGE_MAX_ELEMENTS } from 'src/modules/browser/array/constants';
+import { isValidArrayIndex } from 'src/common/utils/array-index.helper';
 import {
   toIndexString,
   toRequiredIndexString,
@@ -47,6 +48,8 @@ import {
   GetArraySearchDto,
   GetArraySearchResponse,
   SetArrayElementDto,
+  AppendArrayElementDto,
+  AppendArrayElementResponse,
 } from 'src/modules/browser/array/dto';
 
 @Injectable()
@@ -531,6 +534,60 @@ export class ArrayService {
       this.logger.debug('Succeed to set array element.', clientMetadata);
     } catch (error) {
       this.logger.error('Failed to set array element.', error, clientMetadata);
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
+  public async appendElement(
+    clientMetadata: ClientMetadata,
+    dto: AppendArrayElementDto,
+  ): Promise<AppendArrayElementResponse> {
+    try {
+      this.logger.debug('Appending array element.', clientMetadata);
+      const { keyName, value } = dto;
+      const client =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+      // Append targets an existing array, so the key must already exist.
+      await checkIfKeyNotExists(keyName, client);
+
+      // Append-to-end = ARSET at the current length. Read the length, then
+      // write there. Not wrapped in a transaction (the client has no
+      // MULTI/WATCH yet), so concurrent appends can race on the same length —
+      // acceptable for the desktop GUI. The index stays a string, so the write
+      // is precise once ioredis returns 64-bit integers losslessly (RI-8296).
+      const index = toRequiredIndexString(
+        await client.sendCommand([BrowserToolArrayCommands.ArLen, keyName]),
+      );
+
+      // A full array (top index already 2^64-2) reports length 2^64-1 — the
+      // reserved index ARSET rejects with "invalid array index". Surface it as
+      // a clean 400 rather than letting it fall through as a 500.
+      if (!isValidArrayIndex(index)) {
+        throw new BadRequestException(ERROR_MESSAGES.ARRAY_IS_FULL);
+      }
+
+      await client.sendCommand([
+        BrowserToolArrayCommands.ArSet,
+        keyName,
+        index,
+        value,
+      ]);
+
+      this.logger.debug('Succeed to append array element.', clientMetadata);
+      return plainToInstance(AppendArrayElementResponse, {
+        keyName,
+        index,
+      });
+    } catch (error) {
+      this.logger.error(
+        'Failed to append array element.',
+        error,
+        clientMetadata,
+      );
+      if (error instanceof BadRequestException) throw error;
       if (error?.message?.includes(RedisErrorCodes.WrongType)) {
         throw new BadRequestException(error.message);
       }
