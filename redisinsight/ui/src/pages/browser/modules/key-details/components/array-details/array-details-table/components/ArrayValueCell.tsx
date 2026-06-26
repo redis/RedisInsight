@@ -94,7 +94,11 @@ export const ArrayValueCell = ({
     <EditableTextArea
       initialValue={serializedValue}
       isEditing={isEditing}
-      isLoading={updating}
+      // Lock the open editor's Save while a write OR a patched-view read is in
+      // flight: `isEditDisabled` only gates opening an edit (ignored once
+      // editing), so a read that began just before the refresh-disabled flag
+      // took effect could otherwise be Saved into and overwrite the patch.
+      isLoading={updating || loading}
       isDisabled={isUnprintable}
       isEditDisabled={!isEditable || updating || loading}
       disabledTooltipText={TEXT_UNPRINTABLE_CHARACTERS}
