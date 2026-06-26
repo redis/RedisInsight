@@ -96,4 +96,17 @@ export enum CustomErrorCodes {
   KeytarEncryptionError = 11_805,
   KeytarUnavailable = 11_806,
   UnsupportedEncryptionStrategy = 11_807,
+
+  // Database Import [11700, 11799]
+  DatabaseImportInvalidSshBody = 11_700,
+  DatabaseImportInvalidSshPrivateKeyBody = 11_701,
+  DatabaseImportInvalidCaCertificateBody = 11_702,
+  DatabaseImportInvalidClientCertificateBody = 11_703,
+  DatabaseImportInvalidClientPrivateKey = 11_704,
+  DatabaseImportInvalidCertificateName = 11_705,
+  DatabaseImportUnableToParseFile = 11_706,
+  DatabaseImportNoFileProvided = 11_707,
+  DatabaseImportSizeLimitExceeded = 11_708,
+  DatabaseImportInvalidCompressor = 11_709,
+  DatabaseImportSshAgentsNotSupported = 11_710,
 }

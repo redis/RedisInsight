@@ -1,5 +1,6 @@
 import { HttpException } from '@nestjs/common';
 import ERROR_MESSAGES from 'src/constants/error-messages';
+import { CustomErrorCodes } from 'src/constants';
 
 export class InvalidCertificateNameException extends HttpException {
   constructor(
@@ -8,6 +9,7 @@ export class InvalidCertificateNameException extends HttpException {
     const response = {
       message,
       statusCode: 400,
+      errorCode: CustomErrorCodes.DatabaseImportInvalidCertificateName,
       error: 'Invalid Certificate Name',
     };
 
