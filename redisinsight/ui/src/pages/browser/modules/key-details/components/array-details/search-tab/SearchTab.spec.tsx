@@ -7,6 +7,7 @@ import {
   mockStore,
   render,
   screen,
+  waitFor,
 } from 'uiSrc/utils/test-utils'
 import { KeyTypes } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
@@ -188,5 +189,55 @@ describe('SearchTab', () => {
     fireEvent.click(screen.getByTestId('array-search-form-reset'))
 
     expect(screen.getByTestId('array-search-form-context')).toBeDisabled()
+  })
+
+  it('collapses the neighbour band when Context is toggled off', async () => {
+    const user = userEvent.setup()
+    apiService.post = jest.fn().mockResolvedValue({
+      status: 200,
+      data: { keyName: KEY, elements: ['v6', 'v7', 'v8'] },
+    })
+    renderTab({
+      loaded: true,
+      loading: false,
+      error: '',
+      data: [arrayElementWithValueFactory.build({ index: '7' })],
+    })
+
+    fireEvent.click(screen.getByTestId('array-search-form-options-toggle'))
+    fireEvent.click(screen.getByTestId('array-search-form-context-toggle'))
+    await user.click(screen.getByTestId('array-details-table-index-7'))
+    expect(
+      await screen.findByTestId('array-context-band-7'),
+    ).toBeInTheDocument()
+
+    // Toggling Context off must unmount the band (and stop its fetch), not
+    // leave an already-expanded match still showing it.
+    fireEvent.click(screen.getByTestId('array-search-form-context-toggle'))
+
+    await waitFor(() =>
+      expect(
+        screen.queryByTestId('array-context-band-7'),
+      ).not.toBeInTheDocument(),
+    )
+  })
+
+  it('resets Context to off when the selected key changes', () => {
+    const { rerender } = renderTab({
+      loaded: true,
+      loading: false,
+      error: '',
+      data: [arrayElementWithValueFactory.build({ index: '7' })],
+    })
+
+    fireEvent.click(screen.getByTestId('array-search-form-options-toggle'))
+    fireEvent.click(screen.getByTestId('array-search-form-context-toggle'))
+    expect(screen.getByRole('checkbox', { name: 'Context' })).toBeChecked()
+
+    // The tab stays mounted across key switches; selecting another key resets
+    // Context to its default rather than inheriting the previous key's.
+    rerender(<SearchTab keyProp={stringToBuffer('other-key')} />)
+
+    expect(screen.getByRole('checkbox', { name: 'Context' })).not.toBeChecked()
   })
 })

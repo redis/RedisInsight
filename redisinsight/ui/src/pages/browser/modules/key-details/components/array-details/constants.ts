@@ -65,3 +65,9 @@ export const DEFAULT_CONTEXT_COUNT = 2
 export const CONTEXT_COUNT_MIN = 0
 /** Upper bound on the context window so an expand can't request a huge range. */
 export const CONTEXT_COUNT_MAX = 50
+
+/** Seed/reset value for the Search tab's Context option. */
+export const DEFAULT_CONTEXT = {
+  enabled: DEFAULT_CONTEXT_ENABLED,
+  count: DEFAULT_CONTEXT_COUNT,
+}

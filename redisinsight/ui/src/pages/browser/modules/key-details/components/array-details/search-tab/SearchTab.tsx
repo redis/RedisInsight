@@ -1,14 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { useAppSelector } from 'uiSrc/slices/hooks'
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
-import { bufferToString } from 'uiSrc/utils'
+import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
+import { bufferToString, isEqualBuffers } from 'uiSrc/utils'
 
 import { ArrayDetailsTable } from '../array-details-table'
 import { ArraySearchForm } from '../array-search-form'
 import { ContextOption } from '../array-search-form/ArraySearchForm.types'
 import { useArraySearchQuery } from '../hooks'
-import { DEFAULT_CONTEXT_COUNT, DEFAULT_CONTEXT_ENABLED } from '../constants'
+import { DEFAULT_CONTEXT } from '../constants'
 import * as S from '../tabs.styles'
 import { NeighbourBand } from './NeighbourBand'
 import { SearchTabProps } from './SearchTab.types'
@@ -19,12 +20,21 @@ const SearchTab = ({ keyProp }: SearchTabProps) => {
 
   // Context is a display concern (±N neighbours on expand), off by default so
   // result rows aren't expandable until the user opts in.
-  const [context, setContext] = useState<ContextOption>({
-    enabled: DEFAULT_CONTEXT_ENABLED,
-    count: DEFAULT_CONTEXT_COUNT,
-  })
+  const [context, setContext] = useState<ContextOption>(DEFAULT_CONTEXT)
   const onChangeContext = (patch: Partial<ContextOption>) =>
     setContext((c) => ({ ...c, ...patch }))
+
+  // Context is SearchTab-owned and the tab stays mounted across key switches,
+  // so reset it on a real key change — otherwise a new key inherits the
+  // previous key's toggle/count (the query hook resets only its own state).
+  const lastKeyRef = useRef<RedisResponseBuffer | null>(null)
+  useEffect(() => {
+    if (!keyProp) return
+    if (lastKeyRef.current && isEqualBuffers(lastKeyRef.current, keyProp))
+      return
+    lastKeyRef.current = keyProp
+    setContext(DEFAULT_CONTEXT)
+  }, [keyProp])
 
   const {
     predicates,
@@ -47,10 +57,7 @@ const SearchTab = ({ keyProp }: SearchTabProps) => {
   // Context lives here, not in the query hook, so the form's reset must
   // restore it too — otherwise reset leaves rows expandable at the old count.
   const handleReset = () => {
-    setContext({
-      enabled: DEFAULT_CONTEXT_ENABLED,
-      count: DEFAULT_CONTEXT_COUNT,
-    })
+    setContext(DEFAULT_CONTEXT)
     resetQuery()
   }
 
@@ -87,7 +94,7 @@ const SearchTab = ({ keyProp }: SearchTabProps) => {
               expandRowOnClick
               getIsRowExpandable={() => context.enabled && !!keyProp}
               renderExpandedRow={(row) =>
-                keyProp ? (
+                context.enabled && keyProp ? (
                   <NeighbourBand
                     keyProp={keyProp}
                     matchIndex={row.original.index}
