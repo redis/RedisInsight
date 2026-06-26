@@ -34,7 +34,7 @@ const buildState = (
 const renderTab = (search?: Partial<ArraySearchState>, keyLoading = false) => {
   const store = mockStore(buildState(search, keyLoading))
   store.clearActions()
-  return render(<SearchTab keyProp={keyBuffer} />, { store })
+  return render(<SearchTab keyProp={keyBuffer} isActive />, { store })
 }
 
 describe('SearchTab', () => {
