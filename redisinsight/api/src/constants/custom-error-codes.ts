@@ -110,4 +110,8 @@ export enum CustomErrorCodes {
   DatabaseImportSizeLimitExceeded = 11_708,
   DatabaseImportInvalidCompressor = 11_709,
   DatabaseImportSshAgentsNotSupported = 11_710,
+
+  // Misc / server [11900, 11999]
+  UnableToFetchRemoteConfig = 11_900,
+  ClientNotFound = 11_901,
 }
