@@ -44,6 +44,16 @@ const SearchTab = ({ keyProp }: SearchTabProps) => {
     loaded,
   } = useArraySearchQuery(keyProp)
 
+  // Context lives here, not in the query hook, so the form's reset must
+  // restore it too — otherwise reset leaves rows expandable at the old count.
+  const handleReset = () => {
+    setContext({
+      enabled: DEFAULT_CONTEXT_ENABLED,
+      count: DEFAULT_CONTEXT_COUNT,
+    })
+    resetQuery()
+  }
+
   return (
     <>
       <ArraySearchForm
@@ -60,7 +70,7 @@ const SearchTab = ({ keyProp }: SearchTabProps) => {
         context={context}
         onChangeContext={onChangeContext}
         onRun={runSearch}
-        onReset={resetQuery}
+        onReset={handleReset}
         disabled={!isArrayKeyReady}
       />
       <S.TabBody>

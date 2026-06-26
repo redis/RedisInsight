@@ -170,4 +170,23 @@ describe('SearchTab', () => {
     expect(screen.queryByTestId('array-context-band-7')).not.toBeInTheDocument()
     expect(post).not.toHaveBeenCalled()
   })
+
+  it('resets context to its default when the form is reset', () => {
+    renderTab({
+      loaded: true,
+      loading: false,
+      error: '',
+      data: [arrayElementWithValueFactory.build({ index: '7' })],
+    })
+
+    // Enabling Context enables its count input; reset must turn it back off
+    // (context state lives in SearchTab, not the query hook's resetQuery).
+    fireEvent.click(screen.getByTestId('array-search-form-options-toggle'))
+    fireEvent.click(screen.getByTestId('array-search-form-context-toggle'))
+    expect(screen.getByTestId('array-search-form-context')).toBeEnabled()
+
+    fireEvent.click(screen.getByTestId('array-search-form-reset'))
+
+    expect(screen.getByTestId('array-search-form-context')).toBeDisabled()
+  })
 })
