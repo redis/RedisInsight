@@ -80,4 +80,10 @@ export enum CustomErrorCodes {
   RdiStartPipelineFailure = 11_408,
   RdiStopPipelineFailure = 11_409,
   RdiBadRequest = 11_410,
+
+  // SSH [11600, 11699]
+  UnableToCreateSshConnection = 11_600,
+  TunnelConnectionLost = 11_601,
+  UnableToCreateTunnel = 11_602,
+  UnableToCreateLocalServer = 11_603,
 }
