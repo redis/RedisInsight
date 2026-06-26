@@ -288,5 +288,39 @@ describe('ArrayDetailsTable', () => {
         setSelectedKeyRefreshDisabled(false),
       )
     })
+
+    it('keeps refresh disabled while editing, even with a hidden sibling table mounted', () => {
+      const store = mockStore(cloneDeep(initialStateDefault))
+      const element = arrayElementWithValueFactory.build({ index: '1' })
+
+      // Both View (active) and Search (hidden) mount a table from the same key.
+      render(
+        <>
+          <ArrayDetailsTable elements={[element]} loading={false} isActive />
+          <ArrayDetailsTable
+            elements={[element]}
+            loading={false}
+            isActive={false}
+          />
+        </>,
+        { store },
+      )
+
+      // Open the editor in the active (first) table.
+      act(() => {
+        fireEvent.mouseEnter(
+          screen.getAllByTestId('array-details-table_content-value-1')[0],
+        )
+      })
+      fireEvent.click(
+        screen.getAllByTestId('array-details-table_edit-btn-1')[0],
+      )
+
+      // The hidden sibling must not re-enable refresh during the edit.
+      const refreshActions = store
+        .getActions()
+        .filter((a) => a.type === setSelectedKeyRefreshDisabled(false).type)
+      expect(refreshActions.at(-1)).toEqual(setSelectedKeyRefreshDisabled(true))
+    })
   })
 })
