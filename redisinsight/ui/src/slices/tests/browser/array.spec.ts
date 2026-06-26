@@ -43,6 +43,8 @@ import reducer, {
   fetchArrayLength,
   fetchArrayCount,
   refreshArray,
+  appendArrayElement,
+  addArrayElement,
   searchArray,
   updateArrayElementAction,
   fetchArrayNeighbours,
@@ -71,6 +73,29 @@ jest.mock('uiSrc/services', () => ({
 // friction with the generated DTO types (which model the Buffer branch as
 // `{ type: 'Buffer'; data: number[] }`).
 const mockKey = 'readings'
+// Buffer form for the write thunks: the selected-key guard compares buffers
+// (isEqualBuffers), exactly as the UI passes them in production.
+const mockKeyBuffer = stringToBuffer(mockKey)
+
+// A store whose live (browser-context) selected key is `name` — array writes
+// only apply their success side effects while that key is still selected.
+const storeWithSelectedKey = (name = mockKeyBuffer) =>
+  mockStore({
+    ...initialStateDefault,
+    app: {
+      ...initialStateDefault.app,
+      context: {
+        ...initialStateDefault.app.context,
+        browser: {
+          ...initialStateDefault.app.context.browser,
+          keyList: {
+            ...initialStateDefault.app.context.browser.keyList,
+            selectedKey: name,
+          },
+        },
+      },
+    },
+  })
 
 let store: typeof mockedStore
 let dateNow: jest.SpyInstance<number>
@@ -1073,6 +1098,143 @@ describe('array slice', () => {
           addErrorNotification(rejected as IAddInstanceErrorPayload),
           setArrayUpdating(false),
         ])
+      })
+    })
+
+    describe('appendArrayElement', () => {
+      it('posts keyName/value to array/append, calls onSuccess, and refreshes', async () => {
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+        const onSuccess = jest.fn()
+        const local = storeWithSelectedKey()
+
+        await local.dispatch<any>(
+          appendArrayElement({ key: mockKeyBuffer, value: 'v' }, onSuccess),
+        )
+
+        const appendCall = (apiService.post as jest.Mock).mock.calls.find(
+          ([url]) => url.includes('array/append'),
+        )
+        expect(appendCall).toBeTruthy()
+        expect(appendCall[1]).toEqual({ keyName: mockKeyBuffer, value: 'v' })
+        expect(onSuccess).toHaveBeenCalled()
+        // refreshArray re-reads length/count after the add.
+        const lengthCall = (apiService.post as jest.Mock).mock.calls.find(
+          ([url]) => url.includes('array/get-length'),
+        )
+        expect(lengthCall).toBeTruthy()
+        // refreshKeyInfoAction re-reads the key header (Length/Count/Size).
+        const keyInfoCall = (apiService.post as jest.Mock).mock.calls.find(
+          ([url]) => url.includes('keys/get-info'),
+        )
+        expect(keyInfoCall).toBeTruthy()
+      })
+
+      it('skips the success side effects when the user has switched to another key', async () => {
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+        const onSuccess = jest.fn()
+        // Live selection moved on before the append resolved.
+        const local = storeWithSelectedKey(stringToBuffer('another-key'))
+
+        await local.dispatch<any>(
+          appendArrayElement({ key: mockKeyBuffer, value: 'v' }, onSuccess),
+        )
+
+        // The write still happens…
+        expect(
+          (apiService.post as jest.Mock).mock.calls.find(([url]) =>
+            url.includes('array/append'),
+          ),
+        ).toBeTruthy()
+        // …but onSuccess (which closes/clears the now-different panel) and the
+        // stale refresh that would clobber the new key's view do not run.
+        expect(onSuccess).not.toHaveBeenCalled()
+        expect(
+          (apiService.post as jest.Mock).mock.calls.find(([url]) =>
+            url.includes('array/get-length'),
+          ),
+        ).toBeUndefined()
+      })
+
+      it('notifies and calls onFail on error', async () => {
+        const rejected = {
+          response: { status: 500, data: { message: 'boom' } },
+        }
+        apiService.post = jest.fn().mockRejectedValue(rejected)
+        const onFail = jest.fn()
+
+        await store.dispatch<any>(
+          appendArrayElement(
+            { key: mockKeyBuffer, value: 'v' },
+            undefined,
+            onFail,
+          ),
+        )
+
+        expect(onFail).toHaveBeenCalled()
+        expect(store.getActions()).toContainEqual(
+          addErrorNotification(rejected as IAddInstanceErrorPayload),
+        )
+      })
+    })
+
+    describe('addArrayElement (set at index)', () => {
+      it('posts keyName/index/value to array/set-element, calls onSuccess, and refreshes', async () => {
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+        const onSuccess = jest.fn()
+        const local = storeWithSelectedKey()
+
+        await local.dispatch<any>(
+          addArrayElement(
+            { key: mockKeyBuffer, index: '5', value: 'v' },
+            onSuccess,
+          ),
+        )
+
+        const setCall = (apiService.post as jest.Mock).mock.calls.find(
+          ([url]) => url.includes('array/set-element'),
+        )
+        expect(setCall).toBeTruthy()
+        expect(setCall[1]).toEqual({
+          keyName: mockKeyBuffer,
+          index: '5',
+          value: 'v',
+        })
+        expect(onSuccess).toHaveBeenCalled()
+        const lengthCall = (apiService.post as jest.Mock).mock.calls.find(
+          ([url]) => url.includes('array/get-length'),
+        )
+        expect(lengthCall).toBeTruthy()
+        const keyInfoCall = (apiService.post as jest.Mock).mock.calls.find(
+          ([url]) => url.includes('keys/get-info'),
+        )
+        expect(keyInfoCall).toBeTruthy()
+      })
+
+      it('notifies and calls onFail on error', async () => {
+        const rejected = {
+          response: { status: 500, data: { message: 'boom' } },
+        }
+        apiService.post = jest.fn().mockRejectedValue(rejected)
+        const onFail = jest.fn()
+
+        await store.dispatch<any>(
+          addArrayElement(
+            { key: mockKeyBuffer, index: '5', value: 'v' },
+            undefined,
+            onFail,
+          ),
+        )
+
+        expect(onFail).toHaveBeenCalled()
+        expect(store.getActions()).toContainEqual(
+          addErrorNotification(rejected as IAddInstanceErrorPayload),
+        )
       })
     })
 
