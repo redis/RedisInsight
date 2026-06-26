@@ -1,0 +1,45 @@
+meta {
+  name: Connection Failed (custom code)
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{API_URL}}/databases/test
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "errorcode-demo",
+    "host": "localhost",
+    "port": 1111
+  }
+}
+
+docs {
+  # RedisConnectionFailed — errorCode 10900
+
+  Tries to connect to a host/port with nothing listening, so the API fails
+  to connect. Demonstrates a **custom exception that carries a specific
+  `errorCode`** — the client translates by that code; `message` is the
+  English fallback.
+
+  ## Expected response (~424)
+
+  ```
+  {
+    "message": "Could not connect to localhost:1111, please check ...",
+    "statusCode": 424,
+    "error": "RedisConnectionFailedException",
+    "errorCode": 10900
+  }
+  ```
+
+  > A refused port may surface a related subclass (e.g. timeout → 10901).
+}
+
+settings {
+  encodeUrl: true
+}
