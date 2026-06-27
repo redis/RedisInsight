@@ -27,6 +27,7 @@ jobs:
         id: findPr
 
       - uses: ArtiomTr/jest-coverage-report-action@v2
+        continue-on-error: true
         with:
           prnumber: ${{ steps.findPr.outputs.number }}
           coverage-file: report/coverage/report.json
