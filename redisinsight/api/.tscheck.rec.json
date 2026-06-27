@@ -1206,9 +1206,6 @@
   "src/modules/redis-sentinel/redis-sentinel.analytics.ts": {
     "TS18048": 1
   },
-  "src/modules/redis/client/ioredis/cluster.ioredis.client.ts": {
-    "TS2488": 1
-  },
   "src/modules/redis/client/ioredis/ioredis.client.ts": {
     "TS2345": 2,
     "TS2532": 1
