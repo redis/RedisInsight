@@ -8,9 +8,14 @@
   padding: 1px 16px 16px !important;
 
   :global {
+    .RI-page-body {
+      min-height: 0;
+    }
+
     .homePage {
-      height: calc(100% - 60px);
-      overflow-y: auto;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
       /* Inset on all sides so table card chrome is not clipped by this scrollport */
       padding: 1px;
     }
