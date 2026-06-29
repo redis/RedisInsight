@@ -5,7 +5,8 @@ import { IOutputFormatterStrategy } from '../output-formatter.interface';
 export class RawFormatterStrategy implements IOutputFormatterStrategy {
   public format(reply: any): any {
     if (typeof reply === 'bigint') {
-      return reply.toString();
+      // Tag u64 integers so the UI prints `(integer) N`, not a quoted string.
+      return { type: 'integer', value: reply.toString() };
     }
     if (reply instanceof Buffer) {
       return getASCIISafeStringFromBuffer(reply);
