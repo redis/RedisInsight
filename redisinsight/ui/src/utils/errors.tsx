@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios'
 import { capitalize, isEmpty, isString, isArray, set, isNumber } from 'lodash'
 import React from 'react'
+import i18n, { Trans } from 'uiSrc/i18n'
 import { CustomErrorCodes } from 'uiSrc/constants'
 import { DEFAULT_ERROR_MESSAGE } from 'uiSrc/utils'
 import { CustomError } from 'uiSrc/slices/interfaces'
@@ -54,138 +55,104 @@ export const parseCustomError = (
     return set(error, 'response.data.message', err) as AxiosError
   }
 
-  let title: string = 'Error'
+  let title: string = i18n.t('error.title.default')
   let message: React.ReactElement | string = ''
   const additionalInfo: Record<string, any> = {}
 
+  // Shared "If the issue persists, please report it." link, reused below.
+  const reportIssue = (
+    <>
+      {i18n.t('error.reportIssue')}{' '}
+      <a href={EXTERNAL_LINKS.githubIssues} target="_blank" rel="noreferrer">
+        {i18n.t('error.reportIssueLink')}
+      </a>
+    </>
+  )
+
   switch (err?.errorCode) {
     case CustomErrorCodes.CloudOauthGithubEmailPermission:
-      title = 'Github Email Permission'
+      title = i18n.t('error.code.11006.title')
       message = (
         <>
-          Unable to get an email from the GitHub account. Make sure that it is
-          available.
+          {i18n.t('error.code.11006.message')}
           <br />
         </>
       )
       break
     case CustomErrorCodes.CloudOauthMisconfiguration:
-      title = 'Misconfiguration'
+      title = i18n.t('error.code.11005.title')
       message = (
         <>
-          Authorization server encountered a misconfiguration error and was
-          unable to complete your request.
+          {i18n.t('error.code.11005.message')}
           <Spacer size="xs" />
-          Try again later.
+          {i18n.t('error.tryAgainLater')}
           <Spacer size="s" />
-          If the issue persists,{' '}
-          <a
-            href={EXTERNAL_LINKS.githubIssues}
-            target="_blank"
-            rel="noreferrer"
-          >
-            report the issue.
-          </a>
+          {reportIssue}
         </>
       )
       break
     case CustomErrorCodes.CloudOauthUnknownAuthorizationRequest:
-      title = 'Error'
+      title = i18n.t('error.title.default')
       message = (
         <>
-          Unknown authorization request.
+          {i18n.t('error.code.11007.message')}
           <Spacer size="s" />
-          If the issue persists,{' '}
-          <a
-            href={EXTERNAL_LINKS.githubIssues}
-            target="_blank"
-            rel="noreferrer"
-          >
-            report the issue.
-          </a>
+          {reportIssue}
         </>
       )
       break
     case CustomErrorCodes.CloudOauthUnexpectedError:
-      title = 'Error'
+      title = i18n.t('error.title.default')
       message = (
         <>
-          An unexpected error occurred.
+          {i18n.t('error.code.11008.message')}
           <Spacer size="s" />
-          If the issue persists,{' '}
-          <a
-            href={EXTERNAL_LINKS.githubIssues}
-            target="_blank"
-            rel="noreferrer"
-          >
-            report the issue.
-          </a>
+          {reportIssue}
         </>
       )
       break
     case CustomErrorCodes.CloudOauthSsoUnsupportedEmail:
-      title = 'Invalid email'
-      message = <>Invalid email.</>
+      title = i18n.t('error.code.11011.title')
+      message = <>{i18n.t('error.code.11011.message')}</>
       break
     case CustomErrorCodes.CloudApiBadRequest:
-      title = 'Bad request'
+      title = i18n.t('error.code.11003.title')
       message = (
         <>
-          Your request resulted in an error.
+          {i18n.t('error.code.11003.message')}
           <Spacer size="xs" />
-          Try again later.
+          {i18n.t('error.tryAgainLater')}
           <Spacer size="s" />
-          If the issue persists,{' '}
-          <a
-            href={EXTERNAL_LINKS.githubIssues}
-            target="_blank"
-            rel="noreferrer"
-          >
-            report the issue.
-          </a>
+          {reportIssue}
         </>
       )
       break
 
     case CustomErrorCodes.CloudApiForbidden:
-      title = 'Access denied'
-      message = <>You do not have permission to access Redis Cloud.</>
+      title = i18n.t('error.code.11002.title')
+      message = <>{i18n.t('error.code.11002.message')}</>
       break
 
     case CustomErrorCodes.CloudApiInternalServerError:
-      title = 'Server error'
+      title = i18n.t('error.code.11000.title')
       message = (
         <>
-          Try restarting Redis Insight.
+          {i18n.t('error.code.11000.message')}
           <Spacer size="s" />
-          If the issue persists,{' '}
-          <a
-            href={EXTERNAL_LINKS.githubIssues}
-            target="_blank"
-            rel="noreferrer"
-          >
-            report the issue.
-          </a>
+          {reportIssue}
         </>
       )
       break
 
     case CustomErrorCodes.CloudApiNotFound:
-      title = 'Resource was not found'
+      title = i18n.t('error.code.11004.title')
       message = (
         <>
-          Resource requested could not be found.
+          {i18n.t('error.code.11004.message')}
           <Spacer size="xs" />
-          Try again later.
+          {i18n.t('error.tryAgainLater')}
           <Spacer size="s" />
-          If the issue persists,{' '}
-          <a
-            href={EXTERNAL_LINKS.githubIssues}
-            target="_blank"
-            rel="noreferrer"
-          >
-            report the issue.
-          </a>
+          {reportIssue}
         </>
       )
       break
@@ -193,32 +160,25 @@ export const parseCustomError = (
     case CustomErrorCodes.CloudCapiUnauthorized:
     case CustomErrorCodes.CloudApiUnauthorized:
     case CustomErrorCodes.QueryAiUnauthorized:
-      title = 'Session expired'
+      title = i18n.t('error.code.11001.title')
       message = (
         <>
-          Sign in again to continue working with Redis Cloud.
+          {i18n.t('error.code.11001.message')}
           <Spacer size="s" />
-          If the issue persists,{' '}
-          <a
-            href={EXTERNAL_LINKS.githubIssues}
-            target="_blank"
-            rel="noreferrer"
-          >
-            report the issue.
-          </a>
+          {reportIssue}
         </>
       )
       break
 
     case CustomErrorCodes.CloudCapiKeyUnauthorized:
-      title = 'Invalid API key'
+      title = i18n.t('error.code.11022.title')
       message = (
         <>
-          Your Redis Cloud authorization failed.
+          {i18n.t('error.code.11022.message')}
           <Spacer size="xs" />
-          Remove the invalid API key from Redis Insight and try again.
+          {i18n.t('error.code.11022.removeKey')}
           <Spacer size="s" />
-          Open the Settings page to manage Redis Cloud API keys.
+          {i18n.t('error.code.11022.manageKeys')}
         </>
       )
       additionalInfo.resourceId = err.resourceId
@@ -226,37 +186,38 @@ export const parseCustomError = (
       break
 
     case CustomErrorCodes.CloudDatabaseAlreadyExistsFree:
-      title = 'Database already exists'
+      title = i18n.t('error.code.11108.title')
       message = (
         <>
-          You already have a free Redis Cloud database running.
+          {i18n.t('error.code.11108.message')}
           <Spacer size="s" />
-          Check out your
-          <a
-            href={getUtmExternalLink(EXTERNAL_LINKS.cloudConsole, {
-              campaign: UTM_CAMPAINGS.Main,
-              medium: UTM_MEDIUMS.Main,
-            })}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Cloud console
-          </a>
-          for connection details.
+          <Trans
+            i18nKey="error.code.11108.console"
+            components={{
+              consoleLink: (
+                <a
+                  href={getUtmExternalLink(EXTERNAL_LINKS.cloudConsole, {
+                    campaign: UTM_CAMPAINGS.Main,
+                    medium: UTM_MEDIUMS.Main,
+                  })}
+                  target="_blank"
+                  rel="noreferrer"
+                />
+              ),
+            }}
+          />
         </>
       )
       break
 
     case CustomErrorCodes.RdiDeployPipelineFailure:
-      title = 'Pipeline not deployed'
-      message =
-        err?.message ||
-        'Unfortunately we’ve found some errors in your pipeline.'
+      title = i18n.t('error.code.11401.title')
+      message = err?.message || i18n.t('error.code.11401.message')
       additionalInfo.errorCode = err.errorCode
       break
 
     case CustomErrorCodes.RdiValidationError:
-      title = 'Validation error'
+      title = i18n.t('error.code.11404.title')
       if (isString(err?.details)) {
         message = err.details
       } else {
@@ -269,17 +230,21 @@ export const parseCustomError = (
       break
 
     case CustomErrorCodes.AzureEntraIdTokenExpired:
-      title = 'Azure session expired'
-      message =
-        err?.message ||
-        'Azure Entra ID token expired. Sign in to Azure again to continue.'
+      title = i18n.t('error.code.11024.title')
+      message = err?.message || i18n.t('error.code.11024.message')
       additionalInfo.errorCode = err.errorCode
       break
 
-    default:
-      title = 'Error'
-      message = err?.message || DEFAULT_ERROR_MESSAGE
+    default: {
+      title = i18n.t('error.title.default')
+      // Generic lookup for any other coded error, with the English message as the fallback.
+      const genericKey = `error.code.${err?.errorCode}.message`
+      message =
+        err?.errorCode && i18n.exists(genericKey)
+          ? i18n.t(genericKey as never, { ...(err?.resource ?? {}) })
+          : err?.message || i18n.t('error.default')
       break
+    }
   }
 
   const parsedError: any = { title, message }
