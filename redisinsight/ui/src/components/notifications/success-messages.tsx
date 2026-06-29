@@ -169,7 +169,9 @@ export default {
     keyValue: RedisResponseBuffer,
     valueType: string,
   ) => ({
-    title: i18n.t('notification.success.removedKeyValue.title', { valueType }),
+    title: i18n.t(
+      `notification.success.removedKeyValue.title.${valueType}` as never,
+    ),
     message: (
       <Trans
         i18nKey="notification.success.removedKeyValue.message"
