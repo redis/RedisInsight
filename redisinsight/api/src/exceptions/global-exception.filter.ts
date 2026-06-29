@@ -1,10 +1,7 @@
 import { BaseExceptionFilter } from '@nestjs/core';
 import { ArgumentsHost, HttpException, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { CustomErrorCodes } from 'src/constants';
-
-// Generic fallback code: 12_000 + HTTP status (404 -> 12_404).
-const GENERIC_ERROR_CODE_BASE = 12_000;
+import { stampErrorCode } from './error-code.util';
 
 export class GlobalExceptionFilter extends BaseExceptionFilter {
   private staticServerLogger = new Logger('GlobalExceptionFilter');
@@ -28,36 +25,17 @@ export class GlobalExceptionFilter extends BaseExceptionFilter {
     return super.catch(this.withErrorCode(exception), host);
   }
 
-  // Stamp an errorCode onto any HttpException that lacks one (additive;
-  // exceptions with their own code are left untouched).
   private withErrorCode(exception: Error): Error {
     if (!(exception instanceof HttpException)) {
       return exception;
     }
 
-    const status = exception.getStatus();
-    const res = exception.getResponse();
+    const body = stampErrorCode(exception);
 
-    // String responses serialize as { statusCode, message } — rebuild as an
-    // object so the errorCode can be attached.
-    if (typeof res === 'string') {
-      return new HttpException(
-        {
-          statusCode: status,
-          message: res,
-          errorCode: GENERIC_ERROR_CODE_BASE + status,
-        },
-        status,
-      );
-    }
-
-    if (res !== null && typeof res === 'object') {
-      const body = res as Record<string, unknown>;
-      if (body.errorCode === undefined) {
-        body.errorCode = Array.isArray(body.message)
-          ? CustomErrorCodes.ValidationError
-          : GENERIC_ERROR_CODE_BASE + status;
-      }
+    // String responses can't carry a code; rebuild. Object responses are
+    // mutated in place, so the original exception stands.
+    if (typeof exception.getResponse() === 'string') {
+      return new HttpException(body, exception.getStatus());
     }
 
     return exception;
