@@ -62,6 +62,19 @@ export function getTranslatedApiError(error: AxiosError): string {
     : apiMessage
 }
 
+// Localized title for a coded error, mirroring getTranslatedApiError: translate
+// by errorCode, else fall back to the title from the response.
+export function getTranslatedApiTitle(error: AxiosError): string | undefined {
+  const data = error?.response?.data as CustomError | undefined
+  const key = `notification.error.code.${data?.errorCode}.title`
+
+  if (data?.errorCode && i18n.exists(key)) {
+    return i18n.t(key as never)
+  }
+
+  return get(error, 'response.data.title')
+}
+
 export function getApiErrorsFromBulkOperation(
   operations: IBulkOperationResult[],
   ...errorNames: string[]

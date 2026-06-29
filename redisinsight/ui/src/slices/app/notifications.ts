@@ -6,6 +6,7 @@ import { apiService } from 'uiSrc/services'
 import {
   getApiErrorName,
   getTranslatedApiError,
+  getTranslatedApiTitle,
   isStatusSuccessful,
   Maybe,
   Nullable,
@@ -56,7 +57,7 @@ const notificationsSlice = createSlice({
     ) => {
       const errorPayload = payload as IAddInstanceErrorPayload
       const { instanceId } = errorPayload
-      const title = errorPayload?.response?.data?.title
+      const title = getTranslatedApiTitle(payload)
       const errorName = getApiErrorName(payload)
       const message = getTranslatedApiError(payload)
       const additionalInfo = errorPayload?.response?.data?.additionalInfo

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
+import i18n from 'uiSrc/i18n'
 import { IError } from 'uiSrc/slices/interfaces'
 import { DEFAULT_ERROR_MESSAGE } from 'uiSrc/utils'
 import { riToast } from 'uiSrc/components/base/display/toast'
@@ -10,8 +11,6 @@ import { CustomErrorCodes } from 'uiSrc/constants'
 import { errorsSelector, removeMessage } from 'uiSrc/slices/app/notifications'
 import { defaultContainerId } from 'uiSrc/components/notifications/constants'
 import { RiToastType } from 'uiSrc/components/base/display/toast/RiToast'
-
-const DEFAULT_ERROR_TITLE = 'Error'
 
 const AZURE_TOKEN_EXPIRED_TOAST_ID = 'azure-token-expired'
 
@@ -45,7 +44,7 @@ export const useErrorNotifications = () => {
         message = DEFAULT_ERROR_MESSAGE,
         instanceId = '',
         name,
-        title = DEFAULT_ERROR_TITLE,
+        title = i18n.t('notification.error.title.default'),
         additionalInfo,
         persistent,
       }) => {
