@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
+import { useTranslation } from 'uiSrc/i18n'
 import { Link } from 'uiSrc/components/base/link/Link'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
@@ -13,6 +14,7 @@ export interface Props {
 
 const RdiDeployErrorContent = (props: Props) => {
   const { message } = props
+  const { t } = useTranslation()
 
   const fileUrl = useMemo(() => {
     const blob = new Blob([message], { type: 'text/plain' })
@@ -31,7 +33,7 @@ const RdiDeployErrorContent = (props: Props) => {
       <ColorText color="danger">
         <Col>
           <FlexItem>
-            <div>Review the error log for details.</div>
+            <div>{t('error.code.11401.reviewLog')}</div>
             <Link
               variant="inline"
               size="S"
@@ -40,7 +42,7 @@ const RdiDeployErrorContent = (props: Props) => {
               data-testid="donwload-log-file-btn"
               style={{ marginTop: '10px', paddingLeft: 0 }}
             >
-              Download Error Log File
+              {t('error.code.11401.downloadLog')}
             </Link>
           </FlexItem>
         </Col>
