@@ -46,11 +46,11 @@ const EncryptionErrorContent = (props: Props) => {
   return (
     <>
       <ColorText color="danger">
-        <b>{t('error.encryption.checkKeychain')}</b>
+        <b>{t('notification.error.encryption.checkKeychain')}</b>
       </ColorText>
       <Spacer />
       <ColorText color="danger" style={{ fontWeight: 300 }}>
-        {t('error.encryption.disableWarning')}
+        {t('notification.error.encryption.disableWarning')}
       </ColorText>
       <Spacer />
       <Row justify="end" gap="m">
@@ -61,7 +61,7 @@ const EncryptionErrorContent = (props: Props) => {
               className="toast-danger-btn euiBorderWidthThick"
               data-testid="toast-action-btn"
             >
-              {t('error.encryption.disable')}
+              {t('notification.error.encryption.button.disable')}
             </DestructiveButton>
           </div>
         </FlexItem>
@@ -72,7 +72,7 @@ const EncryptionErrorContent = (props: Props) => {
             data-testid="toast-cancel-btn"
             className="toast-danger-btn"
           >
-            {t('error.encryption.cancel')}
+            {t('notification.error.encryption.button.cancel')}
           </EmptyButton>
         </FlexItem>
       </Row>

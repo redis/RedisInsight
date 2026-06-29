@@ -42,7 +42,9 @@ const PersistentErrorContent = ({ text }: Props) => {
             size="s"
             data-testid="copy-error-message-btn"
           >
-            {isCopied ? t('error.copied') : t('error.copy')}
+            {isCopied
+              ? t('notification.error.button.copied')
+              : t('notification.error.button.copy')}
           </Button>
         </FlexItem>
       </Row>

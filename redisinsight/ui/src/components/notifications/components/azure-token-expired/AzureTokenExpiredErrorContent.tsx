@@ -33,7 +33,7 @@ const AzureTokenExpiredErrorContent = ({ text, onClose = () => {} }: Props) => {
             loading={loading}
             data-testid="azure-sign-in-btn"
           >
-            {t('error.code.11024.signIn')}
+            {t('notification.error.code.11024.button.signIn')}
           </Button>
         </FlexItem>
       </Row>

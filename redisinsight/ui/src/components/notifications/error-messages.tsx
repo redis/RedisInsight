@@ -15,7 +15,7 @@ export default {
   DEFAULT: (
     text: any,
     onClose = () => {},
-    title: string = i18n.t('error.title.default'),
+    title: string = i18n.t('notification.error.title.default'),
   ) => {
     const isSafeMessage =
       text.length < NotificationTextLengthThreshold || typeof text !== 'string'
@@ -30,7 +30,7 @@ export default {
       actions: {
         secondary: !isSafeMessage
           ? {
-              label: i18n.t('error.downloadFullLog'),
+              label: i18n.t('notification.error.button.downloadFullLog'),
               closes: true,
               onClick: () =>
                 handleDownloadButton(text, 'error-log.txt', onClose),
@@ -42,7 +42,7 @@ export default {
   ENCRYPTION: (onClose = () => {}, instanceId = '') => ({
     'data-testid': 'toast-error-encryption',
     customIcon: InfoIcon,
-    message: i18n.t('error.encryption.title'),
+    message: i18n.t('notification.error.encryption.title'),
     description: (
       <EncryptionErrorContent instanceId={instanceId} onClose={onClose} />
     ),
@@ -96,7 +96,7 @@ export default {
   PERSISTENT: (
     {
       message,
-      title = i18n.t('error.title.default'),
+      title = i18n.t('notification.error.title.default'),
     }: { message: string; title?: string },
     onClose: () => void,
   ) => ({

@@ -33,7 +33,7 @@ const RdiDeployErrorContent = (props: Props) => {
       <ColorText color="danger">
         <Col>
           <FlexItem>
-            <div>{t('error.code.11401.reviewLog')}</div>
+            <div>{t('notification.error.code.11401.reviewLog')}</div>
             <Link
               variant="inline"
               size="S"
@@ -42,7 +42,7 @@ const RdiDeployErrorContent = (props: Props) => {
               data-testid="donwload-log-file-btn"
               style={{ marginTop: '10px', paddingLeft: 0 }}
             >
-              {t('error.code.11401.downloadLog')}
+              {t('notification.error.code.11401.button.downloadLog')}
             </Link>
           </FlexItem>
         </Col>
