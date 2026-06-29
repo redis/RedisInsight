@@ -34,11 +34,14 @@ export class ClusterIoredisClient extends IoredisClient {
           });
 
           if (natAddressString) {
-            const [, natHost, natPort] = natAddressString.match(/(.+):(\d+)$/);
-            natAddress = {
-              natHost,
-              natPort: +natPort,
-            };
+            const natMatch = natAddressString.match(/(.+):(\d+)$/);
+            if (natMatch) {
+              const [, natHost, natPort] = natMatch;
+              natAddress = {
+                natHost,
+                natPort: +natPort,
+              };
+            }
           }
         }
 
