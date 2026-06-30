@@ -1,5 +1,13 @@
 import React from 'react'
-import { act, fireEvent, render, screen, waitFor } from 'uiSrc/utils/test-utils'
+import {
+  act,
+  fireEvent,
+  initialStateDefault,
+  mockStore,
+  render,
+  screen,
+  waitFor,
+} from 'uiSrc/utils/test-utils'
 import { apiService } from 'uiSrc/services'
 import { stringToBuffer } from 'uiSrc/utils'
 
@@ -7,8 +15,29 @@ import { ArrayAddForm } from './ArrayAddForm'
 
 const keyProp = stringToBuffer('mykey')
 
+// The form's key must be the live selected key, otherwise applyArrayWriteResult
+// suppresses the success side effects (onSuccess/closePanel) as a stale write.
+const stateWithKeySelected = {
+  ...initialStateDefault,
+  app: {
+    ...initialStateDefault.app,
+    context: {
+      ...initialStateDefault.app.context,
+      browser: {
+        ...initialStateDefault.app.context.browser,
+        keyList: {
+          ...initialStateDefault.app.context.browser.keyList,
+          selectedKey: keyProp,
+        },
+      },
+    },
+  },
+}
+
 const renderForm = (closePanel = jest.fn()) =>
-  render(<ArrayAddForm keyProp={keyProp} closePanel={closePanel} />)
+  render(<ArrayAddForm keyProp={keyProp} closePanel={closePanel} />, {
+    store: mockStore(stateWithKeySelected),
+  })
 
 const findCall = (fragment: string) =>
   (apiService.post as jest.Mock).mock.calls.find(([url]) =>
