@@ -29,11 +29,9 @@ const ViewTab = ({ keyProp }: ViewTabProps) => {
     error: rangeError,
   } = useArrayRangeQuery(keyProp)
 
-  // Re-run the active range/scan query after a delete so the deleted slot
-  // updates (empty gap or dropped row, depending on the view mode). Null
-  // values here are empty slots, so the delete affordance is hidden on them.
+  // Null values in the gap-preserving range are empty slots, so the delete
+  // affordance is hidden on them. The delete thunk refreshes all loaded views.
   const { deleteConfig } = useArrayElementActions(keyProp, {
-    onDeleted: runQuery,
     hideEmptySlots: true,
   })
 

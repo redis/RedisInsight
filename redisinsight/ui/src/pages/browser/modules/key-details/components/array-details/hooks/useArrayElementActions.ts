@@ -17,12 +17,13 @@ const ELEMENT_DELETE_POPOVER_SUFFIX = '-array-element'
 
 /**
  * Owns the per-row delete popover state for the array element table and
- * dispatches the delete. Used by both the View and Search tabs, each passing
- * its own `onDeleted` to re-run its visible query.
+ * dispatches the delete. Used by both the View and Search tabs; the thunk
+ * refreshes every loaded array view afterwards, so the caller only varies
+ * `hideEmptySlots`.
  */
 export const useArrayElementActions = (
   keyProp: Nullable<RedisResponseBuffer>,
-  { onDeleted, hideEmptySlots }: UseArrayElementActionsParams,
+  { hideEmptySlots }: UseArrayElementActionsParams,
 ): UseArrayElementActionsResult => {
   const dispatch = useAppDispatch()
   const [deleting, setDeleting] = useState('')
@@ -35,10 +36,10 @@ export const useArrayElementActions = (
   const handleDeleteElement = useCallback(
     (index: string) => {
       if (!keyProp) return
-      dispatch(deleteArrayElements(keyProp, [index], onDeleted))
+      dispatch(deleteArrayElements(keyProp, [index]))
       closePopover()
     },
-    [dispatch, keyProp, onDeleted, closePopover],
+    [dispatch, keyProp, closePopover],
   )
 
   const deleteConfig = useMemo<ArrayElementDeleteConfig>(

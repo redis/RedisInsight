@@ -905,21 +905,17 @@ describe('array slice', () => {
     })
 
     describe('deleteArrayElements', () => {
-      it('deletes by index, refreshes count, fires onDeleted, and toasts when the key survives', async () => {
+      it('deletes by index, refreshes every loaded view, and toasts when the key survives', async () => {
         apiService.delete = jest
           .fn()
           .mockResolvedValue({ status: 200, data: { affected: '1' } })
-        // Follow-up ARCOUNT shows the key still has elements; any key-info
-        // refresh posts the same generic 200.
+        // ARCOUNT probe (key still exists) + refreshArray's follow-up fetches.
         apiService.post = jest.fn().mockResolvedValue({
           status: 200,
           data: { keyName: mockKey, count: '4' },
         })
-        const onDeleted = jest.fn()
 
-        await store.dispatch<any>(
-          deleteArrayElements(mockKey, ['2'], onDeleted),
-        )
+        await store.dispatch<any>(deleteArrayElements(mockKey, ['2']))
 
         expect(apiService.delete).toHaveBeenCalledWith(
           expect.stringContaining('array/elements'),
@@ -927,31 +923,32 @@ describe('array slice', () => {
             data: { keyName: mockKey, indexes: ['2'] },
           }),
         )
-        expect(onDeleted).toHaveBeenCalledTimes(1)
         const actions = store.getActions()
-        expect(actions).toContainEqual(
-          loadArrayCountSuccess({ keyName: mockKey, count: '4' }),
+        // refreshArray replays the View range, so the loaded views update.
+        expect(actions.some((a) => a.type === loadArrayRangeSuccess.type)).toBe(
+          true,
         )
         expect(
           actions.some((a) => a.type === addMessageNotification.type),
         ).toBe(true)
+        // Survived ⇒ not treated as a deleted key, no error.
+        expect(
+          actions.some((a) => a.type === deleteSelectedKeySuccess.type),
+        ).toBe(false)
         expect(actions.some((a) => a.type === addErrorNotification.type)).toBe(
           false,
         )
       })
 
-      it('treats a 404 on the follow-up count as a deleted key (last element)', async () => {
+      it('treats a 404 on the ARCOUNT probe as a deleted key (last element)', async () => {
         apiService.delete = jest
           .fn()
           .mockResolvedValue({ status: 200, data: { affected: '1' } })
         apiService.post = jest
           .fn()
           .mockRejectedValue({ response: { status: 404 } })
-        const onDeleted = jest.fn()
 
-        await store.dispatch<any>(
-          deleteArrayElements(mockKey, ['0'], onDeleted),
-        )
+        await store.dispatch<any>(deleteArrayElements(mockKey, ['0']))
 
         const actions = store.getActions()
         expect(
@@ -960,8 +957,36 @@ describe('array slice', () => {
         expect(actions.some((a) => a.type === addErrorNotification.type)).toBe(
           false,
         )
-        // The visible-query re-run is skipped once the key is gone.
-        expect(onDeleted).not.toHaveBeenCalled()
+      })
+
+      it('still refreshes (not masks the delete) when the ARCOUNT probe fails non-404', async () => {
+        apiService.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '1' } })
+        // First POST is the ARCOUNT probe (fails with a non-404); the rest are
+        // refreshArray's follow-up fetches and succeed.
+        apiService.post = jest
+          .fn()
+          .mockRejectedValueOnce({ response: { status: 500 } })
+          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+
+        await store.dispatch<any>(deleteArrayElements(mockKey, ['2']))
+
+        const actions = store.getActions()
+        // The succeeded delete is acknowledged and the views refreshed — not
+        // reported as a failure, and not mistaken for a deleted key.
+        expect(actions.some((a) => a.type === loadArrayRangeSuccess.type)).toBe(
+          true,
+        )
+        expect(
+          actions.some((a) => a.type === addMessageNotification.type),
+        ).toBe(true)
+        expect(
+          actions.some((a) => a.type === deleteSelectedKeySuccess.type),
+        ).toBe(false)
+        expect(actions.some((a) => a.type === addErrorNotification.type)).toBe(
+          false,
+        )
       })
 
       it('shows an error notification when the delete itself fails', async () => {

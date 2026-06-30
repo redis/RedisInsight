@@ -54,11 +54,10 @@ const SearchTab = ({ keyProp }: SearchTabProps) => {
     loaded,
   } = useArraySearchQuery(keyProp)
 
-  // Re-run the search after a delete so the removed match drops from results.
   // Every result is a real match — an index-only row (WITHVALUES off) has a
-  // null value but is still deletable — so empty-slot hiding is off here.
+  // null value but is still deletable — so empty-slot hiding is off here. The
+  // delete thunk refreshes all loaded views (incl. this search) afterwards.
   const { deleteConfig } = useArrayElementActions(keyProp, {
-    onDeleted: runSearch,
     hideEmptySlots: false,
   })
 

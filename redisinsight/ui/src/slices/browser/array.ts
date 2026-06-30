@@ -551,14 +551,11 @@ export function fetchArrayCount(key: RedisString) {
 }
 
 // Per-element delete (ARDEL). The slice's data.count isn't kept fresh and
-// arrays are sparse, so re-read ARCOUNT after the delete to learn whether the
+// arrays are sparse, so probe ARCOUNT after the delete to learn whether the
 // key survived: it 404s once the last element is gone (the server drops the
-// empty key). `onDeleted` lets the calling surface re-run its own visible query.
-export function deleteArrayElements(
-  key: RedisString,
-  indexes: string[],
-  onDeleted?: () => void,
-) {
+// empty key). Any other ARCOUNT outcome leaves the delete intact, so the views
+// are refreshed regardless rather than reporting the delete as failed.
+export function deleteArrayElements(key: RedisString, indexes: string[]) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     try {
       const state = stateInit()
@@ -575,39 +572,47 @@ export function deleteArrayElements(
         },
       })
 
+      let keyDeleted = false
       try {
-        const { data: countData } =
-          await apiService.post<GetArrayCountResponse>(
-            arrayUrl(state, ApiEndpoints.ARRAY_GET_COUNT),
-            { keyName: key },
-            encodingParams(state),
-          )
-        dispatch(loadArrayCountSuccess(countData))
-        onDeleted?.()
-        dispatch(refreshKeyInfoAction(key as RedisResponseBuffer))
-        dispatch(
-          addMessageNotification(
-            successMessages.REMOVED_KEY_VALUE(
-              key as RedisResponseBuffer,
-              indexes.join(', ') as unknown as RedisResponseBuffer,
-              'Element',
-            ),
-          ),
+        await apiService.post<GetArrayCountResponse>(
+          arrayUrl(state, ApiEndpoints.ARRAY_GET_COUNT),
+          { keyName: key },
+          encodingParams(state),
         )
       } catch (countError) {
+        // 404 ⇒ the last element went and the server dropped the key. Any
+        // other ARCOUNT failure is unrelated to the (already-succeeded) delete,
+        // so fall through and refresh instead of masking it as a failure.
         const countStatus = get(countError, ['response', 'status'])
-        if (countStatus && isStatusNotFoundError(countStatus)) {
-          dispatch(deleteSelectedKeySuccess())
-          dispatch(deleteKeyFromList(key as RedisResponseBuffer))
-          dispatch(
-            addMessageNotification(
-              successMessages.DELETED_KEY(key as RedisResponseBuffer),
-            ),
-          )
-        } else {
-          throw countError
-        }
+        keyDeleted = Boolean(countStatus && isStatusNotFoundError(countStatus))
       }
+
+      if (keyDeleted) {
+        dispatch(deleteSelectedKeySuccess())
+        dispatch(deleteKeyFromList(key as RedisResponseBuffer))
+        dispatch(
+          addMessageNotification(
+            successMessages.DELETED_KEY(key as RedisResponseBuffer),
+          ),
+        )
+        return
+      }
+
+      // Replay every loaded array view (View range/scan, Search, Aggregate)
+      // plus the counters — not just the tab that triggered the delete. All
+      // three tabs stay mounted, so a sibling would otherwise keep showing the
+      // deleted element (or a stale aggregate) until a manual refresh.
+      dispatch(refreshArray(key))
+      dispatch(refreshKeyInfoAction(key as RedisResponseBuffer))
+      dispatch(
+        addMessageNotification(
+          successMessages.REMOVED_KEY_VALUE(
+            key as RedisResponseBuffer,
+            indexes.join(', ') as unknown as RedisResponseBuffer,
+            'Element',
+          ),
+        ),
+      )
     } catch (error) {
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
     }
