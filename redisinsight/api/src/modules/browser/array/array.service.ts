@@ -33,6 +33,9 @@ import {
   ArrayElement,
   ArraySearchElement,
   CreateArrayWithExpireDto,
+  DeleteArrayElementsDto,
+  DeleteArrayRangeDto,
+  DeleteArrayResponse,
   GetArrayCountResponse,
   GetArrayElementDto,
   GetArrayElementResponse,
@@ -566,6 +569,77 @@ export class ArrayService {
         error,
         clientMetadata,
       );
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
+  public async deleteElements(
+    clientMetadata: ClientMetadata,
+    dto: DeleteArrayElementsDto,
+  ): Promise<DeleteArrayResponse> {
+    try {
+      this.logger.debug('Deleting array elements.', clientMetadata);
+      const { keyName, indexes } = dto;
+      const client =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+      await checkIfKeyNotExists(keyName, client);
+
+      // ARDEL returns the count actually deleted; indexes at empty slots
+      // count 0. Deleting the last element removes the key server-side.
+      const reply = await client.sendCommand([
+        BrowserToolArrayCommands.ArDel,
+        keyName,
+        ...indexes,
+      ]);
+
+      this.logger.debug('Succeed to delete array elements.', clientMetadata);
+      return plainToInstance(DeleteArrayResponse, {
+        affected: toRequiredIndexString(reply),
+      });
+    } catch (error) {
+      this.logger.error(
+        'Failed to delete array elements.',
+        error,
+        clientMetadata,
+      );
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
+  public async deleteRange(
+    clientMetadata: ClientMetadata,
+    dto: DeleteArrayRangeDto,
+  ): Promise<DeleteArrayResponse> {
+    try {
+      this.logger.debug('Deleting array range.', clientMetadata);
+      const { keyName, start, end } = dto;
+
+      // No |end - start| span cap here (unlike ARGETRANGE): ARDELRANGE deletes
+      // populated elements in the index window server-side and returns only a
+      // count. A reversed range (start > end) is valid and forwarded as-is.
+      const client =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+      await checkIfKeyNotExists(keyName, client);
+
+      const reply = await client.sendCommand([
+        BrowserToolArrayCommands.ArDelRange,
+        keyName,
+        start,
+        end,
+      ]);
+
+      this.logger.debug('Succeed to delete array range.', clientMetadata);
+      return plainToInstance(DeleteArrayResponse, {
+        affected: toRequiredIndexString(reply),
+      });
+    } catch (error) {
+      this.logger.error('Failed to delete array range.', error, clientMetadata);
       if (error?.message?.includes(RedisErrorCodes.WrongType)) {
         throw new BadRequestException(error.message);
       }

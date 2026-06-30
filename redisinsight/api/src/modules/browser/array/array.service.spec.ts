@@ -24,6 +24,8 @@ import {
   aggregateArrayDtoFactory,
   createContiguousArrayDtoFactory,
   createSparseArrayDtoFactory,
+  deleteArrayElementsDtoFactory,
+  deleteArrayRangeDtoFactory,
   getArraySearchDtoFactory,
   getArraySearchResponseFactory,
   setArrayElementDtoFactory,
@@ -908,6 +910,161 @@ describe('ArrayService', () => {
           mockBrowserClientMetadata,
           mockGetArrayMultiElementsDto,
         ),
+      ).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe('deleteElements', () => {
+    // keyName matches mockKeyDto so the shared key-existence stub resolves.
+    const dto = deleteArrayElementsDtoFactory.build({
+      keyName: mockKeyDto.keyName,
+      indexes: ['0', '1', '3'],
+    });
+
+    beforeEach(() => {
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolArrayCommands.ArDel,
+          dto.keyName,
+          ...dto.indexes,
+        ])
+        .mockResolvedValue('2');
+    });
+
+    it('should delete via ARDEL key index... and return the affected count', async () => {
+      const result = await service.deleteElements(
+        mockBrowserClientMetadata,
+        dto,
+      );
+      expect(result).toEqual({ affected: '2' });
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolArrayCommands.ArDel,
+        dto.keyName,
+        ...dto.indexes,
+      ]);
+    });
+
+    it('should reject when key does not exist', async () => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, mockKeyDto.keyName])
+        .mockResolvedValue(0);
+      await expect(
+        service.deleteElements(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should rethrow BadRequest on WrongType', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisWrongTypeError,
+        command: 'ARDEL',
+      };
+      when(client.sendCommand)
+        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ArDel]))
+        .mockRejectedValue(replyError);
+      await expect(
+        service.deleteElements(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should map ACL error to Forbidden', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisNoPermError,
+        command: 'ARDEL',
+      };
+      client.sendCommand.mockRejectedValue(replyError);
+      await expect(
+        service.deleteElements(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe('deleteRange', () => {
+    // keyName matches mockKeyDto so the shared key-existence stub resolves.
+    const dto = deleteArrayRangeDtoFactory.build({
+      keyName: mockKeyDto.keyName,
+      start: '0',
+      end: '3',
+    });
+
+    beforeEach(() => {
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolArrayCommands.ArDelRange,
+          dto.keyName,
+          dto.start,
+          dto.end,
+        ])
+        .mockResolvedValue('2');
+    });
+
+    it('should delete via ARDELRANGE key start end and return the affected count', async () => {
+      const result = await service.deleteRange(mockBrowserClientMetadata, dto);
+      expect(result).toEqual({ affected: '2' });
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolArrayCommands.ArDelRange,
+        dto.keyName,
+        dto.start,
+        dto.end,
+      ]);
+    });
+
+    it('should forward reversed ranges (start > end) to Redis as-is', async () => {
+      const reversed = deleteArrayRangeDtoFactory.build({
+        keyName: mockKeyDto.keyName,
+        start: '3',
+        end: '0',
+      });
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolArrayCommands.ArDelRange,
+          reversed.keyName,
+          reversed.start,
+          reversed.end,
+        ])
+        .mockResolvedValue('2');
+
+      await service.deleteRange(mockBrowserClientMetadata, reversed);
+
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolArrayCommands.ArDelRange,
+        reversed.keyName,
+        '3',
+        '0',
+      ]);
+    });
+
+    it('should reject when key does not exist', async () => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, mockKeyDto.keyName])
+        .mockResolvedValue(0);
+      await expect(
+        service.deleteRange(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should rethrow BadRequest on WrongType', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisWrongTypeError,
+        command: 'ARDELRANGE',
+      };
+      when(client.sendCommand)
+        .calledWith(
+          expect.arrayContaining([BrowserToolArrayCommands.ArDelRange]),
+        )
+        .mockRejectedValue(replyError);
+      await expect(
+        service.deleteRange(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should map ACL error to Forbidden', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisNoPermError,
+        command: 'ARDELRANGE',
+      };
+      client.sendCommand.mockRejectedValue(replyError);
+      await expect(
+        service.deleteRange(mockBrowserClientMetadata, dto),
       ).rejects.toThrow(ForbiddenException);
     });
   });
