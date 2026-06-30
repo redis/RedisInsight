@@ -1,6 +1,12 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { catchAclError, catchMultiTransactionError } from 'src/utils';
 import { RedisErrorCodes } from 'src/constants';
+import ERROR_MESSAGES from 'src/constants/error-messages';
 import { ReplyError } from 'src/models';
 import {
   BrowserToolKeysCommands,
@@ -135,7 +141,7 @@ export class VectorSetService {
         'Getting elements of the VectorSet data type stored at key.',
         clientMetadata,
       );
-      const { keyName, start, end, count } = dto;
+      const { keyName } = dto;
       const client: RedisClient =
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
 
@@ -146,32 +152,8 @@ export class VectorSetService {
         keyName,
       ])) as number;
 
-      const isVRangeSupported = await client.isFeatureSupported(
-        RedisFeature.VRangeCommand,
-      );
-
-      let elementNames: string[];
-      let nextCursor: string | undefined;
-
-      if (isVRangeSupported) {
-        elementNames = (await client.sendCommand([
-          BrowserToolVectorSetCommands.VRange,
-          keyName,
-          start || '-',
-          end || '+',
-          count,
-        ])) as string[];
-
-        if (elementNames.length === count && elementNames.length > 0) {
-          nextCursor = `(${elementNames[elementNames.length - 1]}`;
-        }
-      } else {
-        elementNames = (await client.sendCommand([
-          BrowserToolVectorSetCommands.VRandMember,
-          keyName,
-          count,
-        ])) as string[];
-      }
+      const { elementNames, nextCursor, isPaginationSupported } =
+        await this.listElementNames(client, dto);
 
       const elements: { name: string | Buffer; attributes?: string }[] =
         elementNames.map((name) => ({ name }));
@@ -188,7 +170,7 @@ export class VectorSetService {
         keyName,
         total,
         nextCursor,
-        isPaginationSupported: isVRangeSupported,
+        isPaginationSupported,
         elements,
       });
     } catch (error) {
@@ -453,6 +435,91 @@ export class VectorSetService {
       }
       throw catchAclError(error);
     }
+  }
+
+  /**
+   * Resolve the element names for `getElements`, preferring the ordered,
+   * paginated VRANGE and falling back to the unordered VRANDMEMBER when VRANGE
+   * is unavailable. When neither command can list the elements, throws so the
+   * caller surfaces a server error.
+   */
+  private async listElementNames(
+    client: RedisClient,
+    dto: GetVectorSetElementsDto,
+  ): Promise<{
+    elementNames: string[];
+    nextCursor?: string;
+    isPaginationSupported: boolean;
+  }> {
+    const { keyName, start, end, count } = dto;
+
+    const vRangeCommand: RedisClientCommand = [
+      BrowserToolVectorSetCommands.VRange,
+      keyName,
+      start || '-',
+      end || '+',
+      count,
+    ];
+    const vRangeResult = await this.trySendCommand(client, vRangeCommand);
+    if (vRangeResult !== null) {
+      const nextCursor =
+        vRangeResult.length === count && vRangeResult.length > 0
+          ? `(${vRangeResult[vRangeResult.length - 1]}`
+          : undefined;
+
+      return {
+        elementNames: vRangeResult,
+        nextCursor,
+        isPaginationSupported: true,
+      };
+    }
+
+    const vRandMemberCommand: RedisClientCommand = [
+      BrowserToolVectorSetCommands.VRandMember,
+      keyName,
+      count,
+    ];
+    const vRandMemberResult = await this.trySendCommand(
+      client,
+      vRandMemberCommand,
+    );
+    if (vRandMemberResult !== null) {
+      return { elementNames: vRandMemberResult, isPaginationSupported: false };
+    }
+
+    throw new InternalServerErrorException(
+      ERROR_MESSAGES.UNABLE_TO_LIST_VECTOR_SET_ELEMENTS([
+        `${BrowserToolVectorSetCommands.VRange}`,
+        `${BrowserToolVectorSetCommands.VRandMember}`,
+      ]),
+    );
+  }
+
+  /**
+   * Send a command and return its reply, or `null` when the command itself is
+   * unavailable (unknown/unsupported on the connected Redis version or proxy)
+   * so callers can fall back. `null` is distinct from an empty reply, which is a
+   * valid result. Any other error (permission, bad arguments, transient) is
+   * rethrown so it surfaces to the caller instead of triggering a silent
+   * fallback.
+   */
+  private async trySendCommand(
+    client: RedisClient,
+    command: RedisClientCommand,
+  ): Promise<string[] | null> {
+    try {
+      return (await client.sendCommand(command)) as string[];
+    } catch (error) {
+      if (this.isUnsupportedCommandError(error)) {
+        return null;
+      }
+      throw error;
+    }
+  }
+
+  private isUnsupportedCommandError(error: unknown): boolean {
+    const message = (error as ReplyError)?.message ?? '';
+    return message.includes(RedisErrorCodes.UnknownCommand);
   }
 
   /**
