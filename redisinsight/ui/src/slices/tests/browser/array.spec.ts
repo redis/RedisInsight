@@ -36,6 +36,7 @@ import reducer, {
   fetchArrayCount,
   refreshArray,
   searchArray,
+  fetchArrayNeighbours,
 } from '../../browser/array'
 import { arrayGrepPredicateFactory } from 'uiSrc/mocks/factories/browser/array/arrayGrepPredicate.factory'
 import { updateSelectedKeyRefreshTime } from '../../browser/keys'
@@ -843,6 +844,56 @@ describe('array slice', () => {
         const [, , config] = (apiService.post as jest.Mock).mock.calls[0]
         expect(config?.signal).toBeInstanceOf(AbortSignal)
         expect(store.getActions()).toEqual([loadArraySearch({ predicates })])
+      })
+    })
+
+    describe('fetchArrayNeighbours', () => {
+      it('resolves normalized elements without dispatching slice actions', async () => {
+        const data = { keyName: mockKey, elements: ['a', null, 'c'] }
+        apiService.post = jest.fn().mockResolvedValue({ status: 200, data })
+
+        const result = await store.dispatch<any>(
+          fetchArrayNeighbours({ key: mockKey, start: '37', end: '39' }),
+        )
+
+        expect(result).toEqual([
+          { index: '37', value: 'a' },
+          { index: '38', value: null },
+          { index: '39', value: 'c' },
+        ])
+        // Writes nothing into the shared View-tab slice.
+        expect(store.getActions()).toEqual([])
+      })
+
+      it('sends the clamped range and the abort signal', async () => {
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, elements: [] },
+        })
+        const controller = new AbortController()
+
+        await store.dispatch<any>(
+          fetchArrayNeighbours(
+            { key: mockKey, start: '0', end: '5' },
+            controller.signal,
+          ),
+        )
+
+        const [, body, config] = (apiService.post as jest.Mock).mock.calls[0]
+        expect(body).toEqual({ keyName: mockKey, start: '0', end: '5' })
+        expect(config.signal).toBe(controller.signal)
+      })
+
+      it('throws on a non-success status', async () => {
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 304, data: null })
+
+        await expect(
+          store.dispatch<any>(
+            fetchArrayNeighbours({ key: mockKey, start: '0', end: '5' }),
+          ),
+        ).rejects.toThrow(DEFAULT_ERROR_MESSAGE)
       })
     })
   })

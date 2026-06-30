@@ -1,4 +1,6 @@
+import { ReactNode } from 'react'
 import { KeyValueCompressor, KeyValueFormat } from 'uiSrc/constants'
+import { Row } from 'uiSrc/components/base/layout/table'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 import { Nullable } from 'uiSrc/utils'
 
@@ -9,6 +11,12 @@ export interface ArrayDetailsTableProps {
    *  doesn't misleadingly read "No elements in range" when the request
    *  errored. The slice still also raises a toast via `addErrorNotification`. */
   error?: string
+  /** Search context band only. Renders an expanded panel under each row;
+   *  omitted on the View / Aggregate tabs, which then show no expand
+   *  affordance. */
+  renderExpandedRow?: (row: Row<ArrayDataElement>) => ReactNode
+  getIsRowExpandable?: (rowData: ArrayDataElement) => boolean
+  expandRowOnClick?: boolean
 }
 
 /**

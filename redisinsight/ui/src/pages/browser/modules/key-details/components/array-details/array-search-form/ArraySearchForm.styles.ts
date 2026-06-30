@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
+import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 
@@ -31,12 +32,29 @@ export const NarrowInputBox = styled(Row)`
   width: 110px;
 `
 
+/** Hairline rule between the index-window row and the flags row. */
+export const OptionsDivider = styled(Row)`
+  border-top: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
+`
+
 /**
  * Fixed minimum width so the action row doesn't reflow when the selected
  * criteria label changes width (Exact / Match / Glob / Regex).
  */
 export const CriteriaSelect = styled(RiSelect)`
   min-width: 85px;
+`
+
+/**
+ * Option checkbox with its label's trailing padding removed so a following
+ * InfoHint hugs the text. That padding is on the inner `<label>`, not the
+ * className-bearing root, so it must be targeted as a descendant.
+ */
+export const InlineCheckbox = styled(Checkbox)`
+  & label {
+    padding-inline-end: 0;
+    padding-right: 0;
+  }
 `
 
 /**

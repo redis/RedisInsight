@@ -1,4 +1,5 @@
 import React from 'react'
+import userEvent from '@testing-library/user-event'
 import { render, screen } from 'uiSrc/utils/test-utils'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 import {
@@ -91,5 +92,34 @@ describe('ArrayDetailsTable', () => {
     // a nullish-only fallback would leave the table blank on an empty range.
     renderComponent([], false, '')
     expect(screen.getByText('No elements in range')).toBeInTheDocument()
+  })
+
+  it('renders an expanded panel when a row is expanded via row click', async () => {
+    const user = userEvent.setup()
+    render(
+      <ArrayDetailsTable
+        elements={[arrayElementWithValueFactory.build({ index: '7' })]}
+        loading={false}
+        expandRowOnClick
+        getIsRowExpandable={() => true}
+        renderExpandedRow={(row) => (
+          <div data-testid={`expanded-${row.original.index}`}>panel</div>
+        )}
+      />,
+    )
+
+    await user.click(screen.getByTestId('array-details-table-index-7'))
+
+    expect(await screen.findByTestId('expanded-7')).toBeInTheDocument()
+  })
+
+  it('renders no expand affordance when expansion props are omitted', () => {
+    render(
+      <ArrayDetailsTable
+        elements={[arrayElementWithValueFactory.build({ index: '7' })]}
+        loading={false}
+      />,
+    )
+    expect(screen.queryByTestId('expanded-7')).not.toBeInTheDocument()
   })
 })

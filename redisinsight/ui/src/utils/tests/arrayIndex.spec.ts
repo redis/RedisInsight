@@ -3,6 +3,7 @@ import {
   isValidArrayIndex,
   parseArrayIndex,
 } from 'uiSrc/utils'
+import { getNeighbourRange } from 'uiSrc/utils/arrayIndex'
 
 describe('arrayIndex', () => {
   it('should expose the max valid Redis array index (2^64 - 2)', () => {
@@ -49,6 +50,42 @@ describe('arrayIndex', () => {
     })
     it('should return false for non-string input', () => {
       expect(isValidArrayIndex(42)).toEqual(false)
+    })
+  })
+
+  describe('getNeighbourRange', () => {
+    it('returns ±count around the index', () => {
+      expect(getNeighbourRange('42', 5)).toEqual({ start: '37', end: '47' })
+    })
+
+    it('clamps the lower bound at 0 (never negative)', () => {
+      expect(getNeighbourRange('3', 5)).toEqual({ start: '0', end: '8' })
+    })
+
+    it('returns just the match for count 0', () => {
+      expect(getNeighbourRange('42', 0)).toEqual({ start: '42', end: '42' })
+    })
+
+    it('caps the upper bound at ARRAY_INDEX_MAX', () => {
+      const { start, end } = getNeighbourRange(ARRAY_INDEX_MAX.toString(), 5)
+      expect(end).toBe(ARRAY_INDEX_MAX.toString())
+      expect(start).toBe((ARRAY_INDEX_MAX - BigInt(5)).toString())
+    })
+
+    it('stays exact for indexes beyond 2^53 (BigInt math)', () => {
+      expect(getNeighbourRange('9007199254740993', 2)).toEqual({
+        start: '9007199254740991',
+        end: '9007199254740995',
+      })
+    })
+
+    it('truncates a fractional count instead of throwing in BigInt', () => {
+      expect(getNeighbourRange('42', 1.5)).toEqual({ start: '41', end: '43' })
+    })
+
+    it('treats a non-finite or negative count as 0', () => {
+      expect(getNeighbourRange('42', NaN)).toEqual({ start: '42', end: '42' })
+      expect(getNeighbourRange('42', -3)).toEqual({ start: '42', end: '42' })
     })
   })
 })
