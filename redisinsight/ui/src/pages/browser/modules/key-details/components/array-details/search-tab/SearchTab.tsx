@@ -8,7 +8,7 @@ import { bufferToString, isEqualBuffers } from 'uiSrc/utils'
 import { ArrayDetailsTable } from '../array-details-table'
 import { ArraySearchForm } from '../array-search-form'
 import { ContextOption } from '../array-search-form/ArraySearchForm.types'
-import { useArraySearchQuery } from '../hooks'
+import { useArraySearchQuery, useArrayElementActions } from '../hooks'
 import { DEFAULT_CONTEXT } from '../constants'
 import * as S from '../tabs.styles'
 import { NeighbourBand } from './NeighbourBand'
@@ -54,6 +54,11 @@ const SearchTab = ({ keyProp }: SearchTabProps) => {
     loaded,
   } = useArraySearchQuery(keyProp)
 
+  // Re-run the search after a delete so the removed match drops from results.
+  const { deleteConfig } = useArrayElementActions(keyProp, {
+    onDeleted: runSearch,
+  })
+
   // Context lives here, not in the query hook, so the form's reset must
   // restore it too — otherwise reset leaves rows expandable at the old count.
   const handleReset = () => {
@@ -91,6 +96,7 @@ const SearchTab = ({ keyProp }: SearchTabProps) => {
               elements={elements}
               loading={loading}
               error={error}
+              deleteConfig={deleteConfig}
               expandRowOnClick
               getIsRowExpandable={() => context.enabled && !!keyProp}
               renderExpandedRow={(row) =>

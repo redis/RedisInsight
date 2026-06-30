@@ -240,4 +240,32 @@ describe('SearchTab', () => {
 
     expect(screen.getByRole('checkbox', { name: 'Context' })).not.toBeChecked()
   })
+
+  it('deletes a matched element via ARDEL on confirm', async () => {
+    apiService.delete = jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { affected: '1' } })
+    apiService.post = jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { keyName: KEY, count: '3' } })
+
+    renderTab({
+      loaded: true,
+      loading: false,
+      error: '',
+      data: [arrayElementWithValueFactory.build({ index: '7' })],
+    })
+
+    fireEvent.click(screen.getByTestId('array-remove-btn-7-icon'))
+    fireEvent.click(await screen.findByTestId('array-remove-btn-7'))
+
+    await waitFor(() =>
+      expect(apiService.delete).toHaveBeenCalledWith(
+        expect.stringContaining('array/elements'),
+        expect.objectContaining({
+          data: { keyName: keyBuffer, indexes: ['7'] },
+        }),
+      ),
+    )
+  })
 })

@@ -6,7 +6,7 @@ import { bufferToString } from 'uiSrc/utils'
 
 import { ArrayDetailsTable } from '../array-details-table'
 import { ArrayRangeForm } from '../array-range-form'
-import { useArrayRangeQuery } from '../hooks'
+import { useArrayRangeQuery, useArrayElementActions } from '../hooks'
 import * as S from '../tabs.styles'
 import { ViewTabProps } from './ViewTab.types'
 
@@ -28,6 +28,12 @@ const ViewTab = ({ keyProp }: ViewTabProps) => {
     loading: rangeLoading,
     error: rangeError,
   } = useArrayRangeQuery(keyProp)
+
+  // Re-run the active range/scan query after a delete so the deleted slot
+  // updates (empty gap or dropped row, depending on the view mode).
+  const { deleteConfig } = useArrayElementActions(keyProp, {
+    onDeleted: runQuery,
+  })
 
   return (
     <>
@@ -51,6 +57,7 @@ const ViewTab = ({ keyProp }: ViewTabProps) => {
               elements={elements}
               loading={rangeLoading}
               error={rangeError}
+              deleteConfig={deleteConfig}
             />
           </S.TabTableWrapper>
         )}
