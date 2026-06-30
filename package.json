@@ -172,7 +172,7 @@
     "css-loader": "^5.0.1",
     "css-minimizer-webpack-plugin": "^8.0.0",
     "csv-parser": "^3.2.1",
-    "csv-stringify": "^6.4.0",
+    "csv-stringify": "^6.8.0",
     "deep-object-diff": "^1.1.9",
     "dotenv": "^16.4.5",
     "electron": "^41.7.2",
