@@ -1,7 +1,7 @@
 import { ASCIIFormatterStrategy } from './ascii-formatter.strategy';
 
 describe('ASCIIFormatterStrategy', () => {
-  let strategy;
+  let strategy: ASCIIFormatterStrategy;
   beforeEach(async () => {
     strategy = new ASCIIFormatterStrategy();
   });

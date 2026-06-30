@@ -1,7 +1,7 @@
 import { UTF8FormatterStrategy } from './utf8-formatter.strategy';
 
 describe('UTF8FormatterStrategy', () => {
-  let strategy;
+  let strategy: UTF8FormatterStrategy;
   beforeEach(async () => {
     strategy = new UTF8FormatterStrategy();
   });

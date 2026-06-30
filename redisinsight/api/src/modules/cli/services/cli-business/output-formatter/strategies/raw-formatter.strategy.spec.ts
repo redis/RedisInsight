@@ -1,7 +1,7 @@
 import { RawFormatterStrategy } from './raw-formatter.strategy';
 
 describe('Cli RawFormatterStrategy', () => {
-  let strategy;
+  let strategy: RawFormatterStrategy;
   beforeEach(async () => {
     strategy = new RawFormatterStrategy();
   });
