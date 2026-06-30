@@ -61,7 +61,7 @@ const CloudCapiUnAuthorizedErrorContent = ({
             className="toast-danger-btn euiBorderWidthThick"
             data-testid="go-to-settings-btn"
           >
-            {t('notification.error.code.11022.button.goToSettings')}
+            {t('api.error.code.11022.button.goToSettings')}
           </EmptyButton>
         </FlexItem>
         <FlexItem>
@@ -71,7 +71,7 @@ const CloudCapiUnAuthorizedErrorContent = ({
             className="toast-danger-btn"
             data-testid="remove-api-key-btn"
           >
-            {t('notification.error.code.11022.button.removeApiKey')}
+            {t('api.error.code.11022.button.removeApiKey')}
           </DestructiveButton>
         </FlexItem>
       </Row>

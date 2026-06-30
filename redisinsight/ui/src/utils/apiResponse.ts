@@ -45,12 +45,12 @@ export function getApiErrorName(error: AxiosError): string {
   return get(error, 'response.data.name', 'Error') ?? ''
 }
 
-// Translate a backend error by its stable `errorCode` (`notification.error.code.<code>`),
+// Translate a backend error by its stable `errorCode` (`api.error.code.<code>`),
 // filling interpolation vars from `resource`. Falls back to the API's English
 // `message` when the code is unmapped.
 export function getTranslatedApiError(error: AxiosError): string {
   const data = error?.response?.data as CustomError | undefined
-  const key = `notification.error.code.${data?.errorCode}.message`
+  const key = `api.error.code.${data?.errorCode}.message`
 
   if (data?.errorCode && i18n.exists(key)) {
     return i18n.t(key as never, { ...(data.resource ?? {}) })
@@ -66,7 +66,7 @@ export function getTranslatedApiError(error: AxiosError): string {
 // by errorCode, else fall back to the title from the response.
 export function getTranslatedApiTitle(error: AxiosError): string | undefined {
   const data = error?.response?.data as CustomError | undefined
-  const key = `notification.error.code.${data?.errorCode}.title`
+  const key = `api.error.code.${data?.errorCode}.title`
 
   if (data?.errorCode && i18n.exists(key)) {
     return i18n.t(key as never)
