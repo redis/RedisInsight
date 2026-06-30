@@ -1,7 +1,7 @@
 import { GetServerInfoResponse } from 'apiClient'
 
 const CODE_FENCE = '```'
-const HEADER = 'RedisInsight diagnostics'
+const HEADER = 'Redis Insight diagnostics'
 const LABEL_COLUMN_WIDTH = 15
 const BUILD_COMMIT_SHA_LENGTH = 7
 

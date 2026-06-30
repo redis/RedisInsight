@@ -18,7 +18,7 @@ describe('formatDiagnostics', () => {
     expect(formatDiagnostics(server)).toEqual(
       [
         '```',
-        'RedisInsight diagnostics',
+        'Redis Insight diagnostics',
         'App version:   3.6.0',
         'Build commit:  a1b2c3d',
         'OS:            darwin (arm64)',
