@@ -14,7 +14,10 @@ import { stringToBuffer } from 'uiSrc/utils'
 import { apiService } from 'uiSrc/services'
 import { initialState as initialStateArray } from 'uiSrc/slices/browser/array'
 import { ArraySearchState } from 'uiSrc/slices/interfaces/array'
-import { arrayElementWithValueFactory } from 'uiSrc/mocks/factories/browser/array/arrayElement.factory'
+import {
+  arrayElementFactory,
+  arrayElementWithValueFactory,
+} from 'uiSrc/mocks/factories/browser/array/arrayElement.factory'
 import SearchTab from './SearchTab'
 
 jest.mock('uiSrc/services', () => ({
@@ -267,5 +270,18 @@ describe('SearchTab', () => {
         }),
       ),
     )
+  })
+
+  it('keeps per-element delete on an index-only match (WITHVALUES off, null value)', () => {
+    renderTab({
+      loaded: true,
+      loading: false,
+      error: '',
+      // A WITHVALUES-off match comes back with a null value but is a real,
+      // deletable element — the delete affordance must still show.
+      data: [arrayElementFactory.build({ index: '7' })],
+    })
+
+    expect(screen.getByTestId('array-remove-btn-7-icon')).toBeInTheDocument()
   })
 })

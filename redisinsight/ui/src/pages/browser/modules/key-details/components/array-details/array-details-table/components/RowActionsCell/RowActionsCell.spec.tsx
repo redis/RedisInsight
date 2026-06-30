@@ -15,6 +15,7 @@ const buildConfig = (
 ): ArrayElementDeleteConfig => ({
   deleting: '',
   suffix: SUFFIX,
+  hideEmptySlots: true,
   closePopover: jest.fn(),
   showPopover: jest.fn(),
   handleDeleteElement: jest.fn(),
@@ -51,16 +52,27 @@ describe('RowActionsCell', () => {
     expect(handleDeleteElement).toHaveBeenCalledWith('5')
   })
 
-  it('renders nothing for an empty-slot row (value is null)', () => {
+  it('renders nothing for an empty-slot row when hideEmptySlots is set (View gaps)', () => {
     const { container } = render(
       <RowActionsCell
         element={arrayElementFactory.build({ index: '3' })}
-        deleteConfig={buildConfig()}
+        deleteConfig={buildConfig({ hideEmptySlots: true })}
       />,
     )
 
     expect(
       container.querySelector('[data-testid^="array-remove-btn"]'),
     ).toBeNull()
+  })
+
+  it('still renders delete for a null-value row when hideEmptySlots is false (Search WITHVALUES off)', () => {
+    render(
+      <RowActionsCell
+        element={arrayElementFactory.build({ index: '3' })}
+        deleteConfig={buildConfig({ hideEmptySlots: false })}
+      />,
+    )
+
+    expect(screen.getByTestId('array-remove-btn-3-icon')).toBeInTheDocument()
   })
 })

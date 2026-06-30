@@ -22,7 +22,7 @@ const ELEMENT_DELETE_POPOVER_SUFFIX = '-array-element'
  */
 export const useArrayElementActions = (
   keyProp: Nullable<RedisResponseBuffer>,
-  { onDeleted }: UseArrayElementActionsParams,
+  { onDeleted, hideEmptySlots }: UseArrayElementActionsParams,
 ): UseArrayElementActionsResult => {
   const dispatch = useAppDispatch()
   const [deleting, setDeleting] = useState('')
@@ -45,11 +45,12 @@ export const useArrayElementActions = (
     () => ({
       deleting,
       suffix: ELEMENT_DELETE_POPOVER_SUFFIX,
+      hideEmptySlots,
       closePopover,
       showPopover,
       handleDeleteElement,
     }),
-    [deleting, closePopover, showPopover, handleDeleteElement],
+    [deleting, hideEmptySlots, closePopover, showPopover, handleDeleteElement],
   )
 
   return { deleteConfig }

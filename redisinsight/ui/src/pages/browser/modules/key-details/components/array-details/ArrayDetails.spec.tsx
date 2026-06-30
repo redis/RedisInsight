@@ -86,6 +86,7 @@ jest.mock('./hooks', () => ({
     deleteConfig: {
       deleting: '',
       suffix: '-array-element',
+      hideEmptySlots: true,
       closePopover: jest.fn(),
       showPopover: jest.fn(),
       handleDeleteElement: jest.fn(),

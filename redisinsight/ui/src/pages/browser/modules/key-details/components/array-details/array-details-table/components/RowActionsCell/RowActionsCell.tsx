@@ -8,11 +8,21 @@ export const RowActionsCell = ({
   element,
   deleteConfig,
 }: RowActionsCellProps) => {
-  // Empty slots have nothing to delete — ARDEL on a gap returns affected: 0.
-  if (element.value == null) return null
+  const {
+    deleting,
+    suffix,
+    hideEmptySlots,
+    closePopover,
+    showPopover,
+    handleDeleteElement,
+  } = deleteConfig
 
-  const { deleting, suffix, closePopover, showPopover, handleDeleteElement } =
-    deleteConfig
+  // In the gap-preserving View range a null value is an empty slot with
+  // nothing to delete (ARDEL returns affected: 0). Search results never carry
+  // gaps — an index-only match (WITHVALUES off) has a null value but is a real
+  // element — so the consumer disables this guard there.
+  if (hideEmptySlots && element.value == null) return null
+
   const { index } = element
 
   return (
