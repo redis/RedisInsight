@@ -11,6 +11,7 @@ const responseSchema = Joi.object()
     appVersion: Joi.string().required(),
     buildCommitSha: Joi.string().optional(),
     osPlatform: Joi.string().required(),
+    osArch: Joi.string().required(),
     buildType: Joi.string()
       .valid('ELECTRON', 'DOCKER_ON_PREMISE', 'REDIS_STACK')
       .required(),
@@ -39,6 +40,7 @@ describe('GET /info', () => {
       responseSchema,
       checkFn: ({ body }) => {
         expect(body.osPlatform).to.eql(process.platform);
+        expect(body.osArch).to.eql(process.arch);
       },
     },
   ].map(mainCheckFn);

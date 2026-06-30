@@ -35,6 +35,7 @@ import {
   AdvancedSettings,
   AppVersion,
   CloudSettings,
+  CopyDiagnostics,
   ThemeSettings,
   WorkbenchSettings,
 } from './components'
@@ -186,6 +187,7 @@ const SettingsPage = () => {
             </RICollapsibleNavGroup>
           </Col>
           <AppVersion />
+          <CopyDiagnostics />
         </PageContentBody>
       </PageBody>
     </Page>
