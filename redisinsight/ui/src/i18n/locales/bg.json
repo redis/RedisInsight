@@ -1,5 +1,6 @@
 {
   "settings.advancedWarning": "Разширените настройки трябва да се променят само ако разбирате тяхното въздействие.",
+  "settings.copyDiagnostics": "Копиране на системна информация",
   "settings.title": "Настройки",
   "settings.language.label": "Изберете езика, използван в Redis Insight:",
   "settings.language.title": "Език",

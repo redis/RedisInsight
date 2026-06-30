@@ -1,5 +1,6 @@
 {
   "settings.advancedWarning": "Advanced settings should only be changed if you understand their impact.",
+  "settings.copyDiagnostics": "Copy system info",
   "settings.title": "Settings",
   "settings.language.label": "Specifies the language used in Redis Insight:",
   "settings.language.title": "Language",
