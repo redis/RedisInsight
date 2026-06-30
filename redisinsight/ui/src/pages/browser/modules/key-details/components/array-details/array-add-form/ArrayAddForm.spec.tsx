@@ -71,6 +71,32 @@ describe('ArrayAddForm', () => {
     expect(closePanel).toHaveBeenCalled()
   })
 
+  it('does not close the panel if the form unmounted before the write resolved', async () => {
+    // Hold the write open so we can unmount (key switch + fresh panel) first.
+    let resolvePost: (value: unknown) => void = () => {}
+    apiService.post = jest.fn().mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolvePost = resolve
+        }),
+    )
+    const closePanel = jest.fn()
+    const { unmount } = renderForm(closePanel)
+
+    fireEvent.change(screen.getByTestId('array-add-form-value'), {
+      target: { value: 'hello' },
+    })
+    fireEvent.click(screen.getByTestId('array-add-form-submit'))
+
+    unmount()
+    await act(async () => {
+      resolvePost({ status: 200, data: {} })
+    })
+
+    // The stale success callback must not close the now-current panel.
+    expect(closePanel).not.toHaveBeenCalled()
+  })
+
   it('sets at index (POST /array/set-element) when an index is provided', async () => {
     renderForm()
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
@@ -36,8 +36,8 @@ import { ArrayAddFormProps } from './ArrayAddForm.types'
 /**
  * Content of the "Add element" slide-out panel (rendered inside the shared
  * `AddKeysContainer`, matching List / Vector Set). The index is optional:
- * leaving it empty appends to the end (POST /array/append, atomic ARSET at the
- * current length); providing one sets at that index (POST /array/set-element).
+ * leaving it empty appends to the end (POST /array/append, ARSET at the current
+ * length); providing one sets at that index (POST /array/set-element).
  * `ARINSERT` is intentionally not used — see docs/array-modify-vertical-plan.md.
  */
 export const ArrayAddForm = ({ keyProp, closePanel }: ArrayAddFormProps) => {
@@ -48,6 +48,19 @@ export const ArrayAddForm = ({ keyProp, closePanel }: ArrayAddFormProps) => {
   const [value, setValue] = useState('')
   const [index, setIndex] = useState('')
 
+  // A write resolves asynchronously and the slice still fires onSuccess while
+  // its target key is selected. But the user may have closed this panel (key
+  // switch, then reopened a fresh panel) before it resolved — this instance is
+  // unmounted, and running closePanel would discard the *current* panel. Ignore
+  // the callback once this form is gone.
+  const isMounted = useRef(true)
+  useEffect(
+    () => () => {
+      isMounted.current = false
+    },
+    [],
+  )
+
   // The index input is optional (empty → append). When provided it must be a
   // canonical decimal string, matching the backend @IsArrayIndex validator.
   const trimmedIndex = index.trim()
@@ -55,6 +68,9 @@ export const ArrayAddForm = ({ keyProp, closePanel }: ArrayAddFormProps) => {
     trimmedIndex.length > 0 && parseArrayIndex(trimmedIndex) !== trimmedIndex
 
   const handleSuccess = () => {
+    if (!isMounted.current) {
+      return
+    }
     setValue('')
     setIndex('')
     closePanel()
