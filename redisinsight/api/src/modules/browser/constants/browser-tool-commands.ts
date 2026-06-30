@@ -132,8 +132,9 @@ export enum BrowserToolArrayCommands {
   ArRing = 'arring',
 }
 
-// Array commands whose integer replies are u64 (indexes / counts) and must
-// stay exact above 2^53 — callers request them with { integerReply: 'bigint' }.
+// Array commands whose integer replies are u64 (indexes, counts, or bitwise
+// aggregates) and must stay exact above 2^53 — callers request them with
+// { integerReply: 'bigint' }.
 export const ARRAY_U64_INTEGER_REPLY_COMMANDS = new Set<string>([
   BrowserToolArrayCommands.ArLen,
   BrowserToolArrayCommands.ArCount,
@@ -142,6 +143,7 @@ export const ARRAY_U64_INTEGER_REPLY_COMMANDS = new Set<string>([
   BrowserToolArrayCommands.ArGrep,
   BrowserToolArrayCommands.ArInsert,
   BrowserToolArrayCommands.ArRing,
+  BrowserToolArrayCommands.ArOp,
 ]);
 
 export type BrowserToolCommands =
