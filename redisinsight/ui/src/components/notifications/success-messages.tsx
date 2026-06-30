@@ -35,6 +35,12 @@ const bold = (
   </Text>
 )
 
+// <Trans> parses interpolated values as markup (escapeValue is off), so a
+// user-provided name containing e.g. "<br/>" would be rendered as a tag.
+// Escape such values before passing them to <Trans>.
+const escapeTrans = (value: string) =>
+  value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+
 export default {
   ADDED_NEW_INSTANCE: (instanceName: string) => ({
     title: i18n.t('notification.success.addedInstance.title'),
@@ -42,7 +48,7 @@ export default {
       <Text component="span">
         <Trans
           i18nKey="notification.success.addedInstance.message"
-          values={{ name: formatNameShort(instanceName) }}
+          values={{ name: escapeTrans(formatNameShort(instanceName)) }}
           components={{ bold }}
         />
       </Text>
@@ -54,7 +60,7 @@ export default {
       <Text component="span">
         <Trans
           i18nKey="notification.success.addedRdiInstance.message"
-          values={{ name: formatNameShort(instanceName) }}
+          values={{ name: escapeTrans(formatNameShort(instanceName)) }}
           components={{ bold }}
         />
       </Text>
@@ -66,7 +72,7 @@ export default {
       <Text component="span">
         <Trans
           i18nKey="notification.success.deleteInstance.message"
-          values={{ name: formatNameShort(instanceName) }}
+          values={{ name: escapeTrans(formatNameShort(instanceName)) }}
           components={{ bold }}
         />
       </Text>
@@ -78,7 +84,7 @@ export default {
       <Text component="span">
         <Trans
           i18nKey="notification.success.deleteRdiInstance.message"
-          values={{ name: formatNameShort(instanceName) }}
+          values={{ name: escapeTrans(formatNameShort(instanceName)) }}
           components={{ bold }}
         />
       </Text>
@@ -146,7 +152,9 @@ export default {
       <Text component="span">
         <Trans
           i18nKey="notification.success.addedKey.message"
-          values={{ name: formatNameShort(bufferToString(keyName)) }}
+          values={{
+            name: escapeTrans(formatNameShort(bufferToString(keyName))),
+          }}
           components={{ bold }}
         />
       </Text>
@@ -158,7 +166,9 @@ export default {
       <Text component="span">
         <Trans
           i18nKey="notification.success.deletedKey.message"
-          values={{ name: formatNameShort(bufferToString(keyName)) }}
+          values={{
+            name: escapeTrans(formatNameShort(bufferToString(keyName))),
+          }}
           components={{ bold }}
         />
       </Text>
@@ -176,8 +186,8 @@ export default {
       <Trans
         i18nKey="notification.success.removedKeyValue.message"
         values={{
-          value: formatNameShort(bufferToString(keyValue)),
-          name: formatNameShort(bufferToString(keyName)),
+          value: escapeTrans(formatNameShort(bufferToString(keyValue))),
+          name: escapeTrans(formatNameShort(bufferToString(keyName))),
         }}
         components={{ bold }}
       />
@@ -252,7 +262,7 @@ export default {
         <Text component="span">
           <Trans
             i18nKey="notification.success.messageAction.message"
-            values={{ id, action: actionText }}
+            values={{ id: escapeTrans(id), action: actionText }}
             components={{ bold }}
           />
         </Text>
@@ -273,7 +283,9 @@ export default {
       <Text component="span">
         <Trans
           i18nKey="notification.success.deleteIndex.message"
-          values={{ name: formatNameShort(getIndexDisplayName(indexName)) }}
+          values={{
+            name: escapeTrans(formatNameShort(getIndexDisplayName(indexName))),
+          }}
           components={{ bold }}
         />
       </Text>
@@ -342,7 +354,7 @@ export default {
       <Text component="span">
         <Trans
           i18nKey="notification.success.deleteLibrary.message"
-          values={{ name: formatNameShort(libraryName) }}
+          values={{ name: escapeTrans(formatNameShort(libraryName)) }}
           components={{ bold }}
         />
       </Text>
@@ -354,7 +366,7 @@ export default {
       <Text component="span">
         <Trans
           i18nKey="notification.success.addLibrary.message"
-          values={{ name: formatNameShort(libraryName) }}
+          values={{ name: escapeTrans(formatNameShort(libraryName)) }}
           components={{ bold }}
         />
       </Text>
@@ -387,7 +399,7 @@ export default {
       <Text component="span">
         <Trans
           i18nKey="notification.success.azureAuthSuccess.message"
-          values={{ username }}
+          values={{ username: escapeTrans(username) }}
           components={{ bold }}
         />
       </Text>
