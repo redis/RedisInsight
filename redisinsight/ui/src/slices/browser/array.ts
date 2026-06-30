@@ -11,13 +11,17 @@ import {
 } from 'apiClient'
 import { apiService } from 'uiSrc/services'
 import { ApiEndpoints } from 'uiSrc/constants'
+import { get } from 'lodash'
 import {
   DEFAULT_ERROR_MESSAGE,
   getApiErrorMessage,
   getUrl,
+  isStatusNotFoundError,
   isStatusSuccessful,
   Maybe,
 } from 'uiSrc/utils'
+import successMessages from 'uiSrc/components/notifications/success-messages'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 
 import {
   ArrayActiveQuery,
@@ -30,10 +34,18 @@ import {
   FetchArrayScanParams,
   SearchArrayParams,
 } from 'uiSrc/slices/interfaces/array'
-import { RedisString } from 'uiSrc/slices/interfaces/app'
-import { updateSelectedKeyRefreshTime } from './keys'
+import { RedisString, RedisResponseBuffer } from 'uiSrc/slices/interfaces/app'
+import {
+  updateSelectedKeyRefreshTime,
+  deleteKeyFromList,
+  deleteSelectedKeySuccess,
+  refreshKeyInfoAction,
+} from './keys'
 import { AppDispatch, RootState } from '../store'
-import { addErrorNotification } from '../app/notifications'
+import {
+  addErrorNotification,
+  addMessageNotification,
+} from '../app/notifications'
 
 /** Inclusive default range bounds for the View tab. Mirrored in
  * `pages/.../array-details/constants.ts`; kept duplicated here so the slice
@@ -532,6 +544,70 @@ export function fetchArrayCount(key: RedisString) {
         encodingParams(state),
       )
       if (isStatusSuccessful(status)) dispatch(loadArrayCountSuccess(data))
+    } catch (error) {
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+    }
+  }
+}
+
+// Per-element delete (ARDEL). The slice's data.count isn't kept fresh and
+// arrays are sparse, so re-read ARCOUNT after the delete to learn whether the
+// key survived: it 404s once the last element is gone (the server drops the
+// empty key). `onDeleted` lets the calling surface re-run its own visible query.
+export function deleteArrayElements(
+  key: RedisString,
+  indexes: string[],
+  onDeleted?: () => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    try {
+      const state = stateInit()
+      const { status } = await apiService.delete(
+        arrayUrl(state, ApiEndpoints.ARRAY_ELEMENTS),
+        { data: { keyName: key, indexes }, ...encodingParams(state) },
+      )
+      if (!isStatusSuccessful(status)) return
+
+      sendEventTelemetry({
+        event: TelemetryEvent.ARRAY_ELEMENT_DELETED,
+        eventData: {
+          databaseId: state.connections.instances.connectedInstance?.id,
+        },
+      })
+
+      try {
+        const { data: countData } =
+          await apiService.post<GetArrayCountResponse>(
+            arrayUrl(state, ApiEndpoints.ARRAY_GET_COUNT),
+            { keyName: key },
+            encodingParams(state),
+          )
+        dispatch(loadArrayCountSuccess(countData))
+        onDeleted?.()
+        dispatch(refreshKeyInfoAction(key as RedisResponseBuffer))
+        dispatch(
+          addMessageNotification(
+            successMessages.REMOVED_KEY_VALUE(
+              key as RedisResponseBuffer,
+              indexes.join(', ') as unknown as RedisResponseBuffer,
+              'Element',
+            ),
+          ),
+        )
+      } catch (countError) {
+        const countStatus = get(countError, ['response', 'status'])
+        if (countStatus && isStatusNotFoundError(countStatus)) {
+          dispatch(deleteSelectedKeySuccess())
+          dispatch(deleteKeyFromList(key as RedisResponseBuffer))
+          dispatch(
+            addMessageNotification(
+              successMessages.DELETED_KEY(key as RedisResponseBuffer),
+            ),
+          )
+        } else {
+          throw countError
+        }
+      }
     } catch (error) {
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
     }

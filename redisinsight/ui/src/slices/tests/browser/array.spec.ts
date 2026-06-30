@@ -37,10 +37,17 @@ import reducer, {
   refreshArray,
   searchArray,
   fetchArrayNeighbours,
+  deleteArrayElements,
 } from '../../browser/array'
 import { arrayGrepPredicateFactory } from 'uiSrc/mocks/factories/browser/array/arrayGrepPredicate.factory'
-import { updateSelectedKeyRefreshTime } from '../../browser/keys'
-import { addErrorNotification } from '../../app/notifications'
+import {
+  updateSelectedKeyRefreshTime,
+  deleteSelectedKeySuccess,
+} from '../../browser/keys'
+import {
+  addErrorNotification,
+  addMessageNotification,
+} from '../../app/notifications'
 import {
   ArrayAggregateOperation,
   ArrayCombinator,
@@ -894,6 +901,80 @@ describe('array slice', () => {
             fetchArrayNeighbours({ key: mockKey, start: '0', end: '5' }),
           ),
         ).rejects.toThrow(DEFAULT_ERROR_MESSAGE)
+      })
+    })
+
+    describe('deleteArrayElements', () => {
+      it('deletes by index, refreshes count, fires onDeleted, and toasts when the key survives', async () => {
+        apiService.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '1' } })
+        // Follow-up ARCOUNT shows the key still has elements; any key-info
+        // refresh posts the same generic 200.
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, count: '4' },
+        })
+        const onDeleted = jest.fn()
+
+        await store.dispatch<any>(
+          deleteArrayElements(mockKey, ['2'], onDeleted),
+        )
+
+        expect(apiService.delete).toHaveBeenCalledWith(
+          expect.stringContaining('array/elements'),
+          expect.objectContaining({
+            data: { keyName: mockKey, indexes: ['2'] },
+          }),
+        )
+        expect(onDeleted).toHaveBeenCalledTimes(1)
+        const actions = store.getActions()
+        expect(actions).toContainEqual(
+          loadArrayCountSuccess({ keyName: mockKey, count: '4' }),
+        )
+        expect(
+          actions.some((a) => a.type === addMessageNotification.type),
+        ).toBe(true)
+        expect(actions.some((a) => a.type === addErrorNotification.type)).toBe(
+          false,
+        )
+      })
+
+      it('treats a 404 on the follow-up count as a deleted key (last element)', async () => {
+        apiService.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '1' } })
+        apiService.post = jest
+          .fn()
+          .mockRejectedValue({ response: { status: 404 } })
+        const onDeleted = jest.fn()
+
+        await store.dispatch<any>(
+          deleteArrayElements(mockKey, ['0'], onDeleted),
+        )
+
+        const actions = store.getActions()
+        expect(
+          actions.some((a) => a.type === deleteSelectedKeySuccess.type),
+        ).toBe(true)
+        expect(actions.some((a) => a.type === addErrorNotification.type)).toBe(
+          false,
+        )
+        // The visible-query re-run is skipped once the key is gone.
+        expect(onDeleted).not.toHaveBeenCalled()
+      })
+
+      it('shows an error notification when the delete itself fails', async () => {
+        const rejected = {
+          response: { status: 500, data: { message: 'boom' } },
+        }
+        apiService.delete = jest.fn().mockRejectedValue(rejected)
+
+        await store.dispatch<any>(deleteArrayElements(mockKey, ['1']))
+
+        expect(store.getActions()).toContainEqual(
+          addErrorNotification(rejected as IAddInstanceErrorPayload),
+        )
       })
     })
   })
