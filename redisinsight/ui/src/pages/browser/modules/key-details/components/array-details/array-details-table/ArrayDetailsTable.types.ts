@@ -4,6 +4,8 @@ import { Row } from 'uiSrc/components/base/layout/table'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 import { Nullable } from 'uiSrc/utils'
 
+import { ArrayElementDeleteConfig } from './components/RowActionsCell'
+
 export interface ArrayDetailsTableProps {
   elements: ArrayDataElement[]
   loading: boolean
@@ -17,6 +19,9 @@ export interface ArrayDetailsTableProps {
   renderExpandedRow?: (row: Row<ArrayDataElement>) => ReactNode
   getIsRowExpandable?: (rowData: ArrayDataElement) => boolean
   expandRowOnClick?: boolean
+  /** Enables the per-row delete affordance when provided. Omitted (e.g. the
+   *  Aggregate tab) ⇒ no actions column. */
+  deleteConfig?: ArrayElementDeleteConfig
 }
 
 /**
@@ -27,4 +32,7 @@ export interface ArrayDetailsTableProps {
 export interface ArrayTableConfig {
   compressor: Nullable<KeyValueCompressor>
   viewFormat: KeyValueFormat
+  /** Present only when the consumer enables row deletion; the actions cell
+   *  reads it from the table `meta`. */
+  deleteConfig?: ArrayElementDeleteConfig
 }
