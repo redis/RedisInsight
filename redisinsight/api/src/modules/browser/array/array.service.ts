@@ -490,7 +490,9 @@ export class ArrayService {
       if (operation === ArrayAggregateOperation.Match) {
         args.push(value as RedisString);
       }
-      const reply = await client.sendCommand(args);
+      // AND/OR/XOR (and the MATCH/USED counts) come back as RESP integers that
+      // can exceed 2^53; opt into bigint so they reach toIndexString exact.
+      const reply = await client.sendCommand(args, { integerReply: 'bigint' });
 
       this.logger.debug('Succeed to aggregate array range.', clientMetadata);
       // AROP returns nil for numeric ops over a range with no numeric values

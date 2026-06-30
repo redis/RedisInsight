@@ -1136,13 +1136,16 @@ describe('ArrayService', () => {
         ])
         .mockResolvedValue(1);
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArOp,
-          mockAggregateArrayDto.keyName,
-          mockAggregateArrayDto.start,
-          mockAggregateArrayDto.end,
-          mockAggregateArrayDto.operation,
-        ])
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArOp,
+            mockAggregateArrayDto.keyName,
+            mockAggregateArrayDto.start,
+            mockAggregateArrayDto.end,
+            mockAggregateArrayDto.operation,
+          ],
+          { integerReply: 'bigint' },
+        )
         .mockResolvedValue(Buffer.from(mockArrayAggregateSumResult));
     });
 
@@ -1161,14 +1164,17 @@ describe('ArrayService', () => {
         value: '20.4',
       };
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArOp,
-          dto.keyName,
-          dto.start,
-          dto.end,
-          dto.operation,
-          dto.value,
-        ])
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArOp,
+            dto.keyName,
+            dto.start,
+            dto.end,
+            dto.operation,
+            dto.value,
+          ],
+          { integerReply: 'bigint' },
+        )
         .mockResolvedValue(1);
 
       const result = await service.aggregate(mockBrowserClientMetadata, dto);
@@ -1181,24 +1187,30 @@ describe('ArrayService', () => {
         // value intentionally set — should be ignored when operation !== MATCH.
         value: 'ignored',
       });
-      expect(mockStandaloneRedisClient.sendCommand).toHaveBeenCalledWith([
-        BrowserToolArrayCommands.ArOp,
-        mockAggregateArrayDto.keyName,
-        mockAggregateArrayDto.start,
-        mockAggregateArrayDto.end,
-        mockAggregateArrayDto.operation,
-      ]);
-    });
-
-    it('should normalize integer replies (USED) to a string', async () => {
-      when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
+      expect(mockStandaloneRedisClient.sendCommand).toHaveBeenCalledWith(
+        [
           BrowserToolArrayCommands.ArOp,
           mockAggregateArrayDto.keyName,
           mockAggregateArrayDto.start,
           mockAggregateArrayDto.end,
-          ArrayAggregateOperation.Used,
-        ])
+          mockAggregateArrayDto.operation,
+        ],
+        { integerReply: 'bigint' },
+      );
+    });
+
+    it('should normalize integer replies (USED) to a string', async () => {
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArOp,
+            mockAggregateArrayDto.keyName,
+            mockAggregateArrayDto.start,
+            mockAggregateArrayDto.end,
+            ArrayAggregateOperation.Used,
+          ],
+          { integerReply: 'bigint' },
+        )
         .mockResolvedValue(5);
 
       const result = await service.aggregate(mockBrowserClientMetadata, {
@@ -1212,13 +1224,16 @@ describe('ArrayService', () => {
       // SUM over an empty/non-numeric range returns nil; the API surfaces
       // that as `result: null` instead of throwing a 500.
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArOp,
-          mockAggregateArrayDto.keyName,
-          mockAggregateArrayDto.start,
-          mockAggregateArrayDto.end,
-          mockAggregateArrayDto.operation,
-        ])
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArOp,
+            mockAggregateArrayDto.keyName,
+            mockAggregateArrayDto.start,
+            mockAggregateArrayDto.end,
+            mockAggregateArrayDto.operation,
+          ],
+          { integerReply: 'bigint' },
+        )
         .mockResolvedValue(null);
 
       const result = await service.aggregate(
@@ -1244,14 +1259,17 @@ describe('ArrayService', () => {
           value,
         };
         when(mockStandaloneRedisClient.sendCommand)
-          .calledWith([
-            BrowserToolArrayCommands.ArOp,
-            dto.keyName,
-            dto.start,
-            dto.end,
-            dto.operation,
-            dto.value,
-          ])
+          .calledWith(
+            [
+              BrowserToolArrayCommands.ArOp,
+              dto.keyName,
+              dto.start,
+              dto.end,
+              dto.operation,
+              dto.value,
+            ],
+            { integerReply: 'bigint' },
+          )
           .mockResolvedValue(2);
 
         const result = await service.aggregate(mockBrowserClientMetadata, dto);
@@ -1298,7 +1316,9 @@ describe('ArrayService', () => {
         command: 'AROP',
       };
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ArOp]))
+        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ArOp]), {
+          integerReply: 'bigint',
+        })
         .mockRejectedValue(replyError);
       await expect(
         service.aggregate(mockBrowserClientMetadata, mockAggregateArrayDto),
