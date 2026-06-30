@@ -1,5 +1,4 @@
 {
-  "api.error.code.10900.message": "Unable to connect to the Redis database.",
   "api.error.code.10900.title": "Connection failed",
   "api.error.code.10901.message": "The connection has timed out, please check the connection details.",
   "api.error.code.10901.title": "Connection timed out",
@@ -32,7 +31,6 @@
   "api.error.code.11007.title": "Authorization error",
   "api.error.code.11008.message": "An unexpected error occurred.",
   "api.error.code.11008.title": "Unexpected error",
-  "api.error.code.11009.message": "Unable to get required data from the user profile.",
   "api.error.code.11009.title": "Authorization error",
   "api.error.code.11010.message": "Authorization request was canceled.",
   "api.error.code.11010.title": "Authorization canceled",
