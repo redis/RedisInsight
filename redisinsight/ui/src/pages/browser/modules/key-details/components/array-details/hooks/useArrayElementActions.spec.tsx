@@ -85,6 +85,24 @@ describe('useArrayElementActions', () => {
     expect(result.current.selectedCount).toBe(0)
   })
 
+  it('does not resurrect a stale selection when the index reappears later', () => {
+    const { result, setElements } = renderActions([
+      arrayElementWithValueFactory.build({ index: '5' }),
+    ])
+
+    selectAll(result, ['5'])
+    expect(result.current.selectedCount).toBe(1)
+
+    // Index 5 leaves the current view (a new range/search)...
+    setElements([arrayElementWithValueFactory.build({ index: '9' })])
+    expect(result.current.selectedCount).toBe(0)
+
+    // ...and later reappears in another result set: it must NOT come back
+    // selected without a fresh user selection.
+    setElements([arrayElementWithValueFactory.build({ index: '5' })])
+    expect(result.current.selectedCount).toBe(0)
+  })
+
   it('keeps still-visible selections and bulk-deletes only those indexes', async () => {
     const { result, setElements } = renderActions([
       arrayElementWithValueFactory.build({ index: '1' }),

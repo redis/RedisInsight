@@ -97,10 +97,9 @@ export const useArrayElementActions = (
     [rowSelection, canSelectElement],
   )
 
-  // Prune the selection to the currently-rendered, selectable rows. A new View
-  // range or Search replaces `elements` under a live selection, so counting or
-  // deleting a raw `rowSelection` entry could hit an index the user can no
-  // longer see — unacceptable for a destructive bulk action.
+  // The indexes currently rendered and selectable. A new View range or Search
+  // replaces `elements` under a live selection, so the raw `rowSelection` can
+  // hold indexes the user can no longer see.
   const selectableIndexes = useMemo(
     () =>
       new Set(
@@ -108,6 +107,11 @@ export const useArrayElementActions = (
       ),
     [elements, canSelectElement],
   )
+
+  // Count and delete only the still-visible selection. Derived (not just the
+  // pruned state below) so it's correct on the same render the result set
+  // changes — a bulk delete can never fire against an index scrolled out of
+  // view, which would be unacceptable for a destructive action.
   const selectedIndexes = useMemo(
     () =>
       Object.keys(rowSelection).filter(
@@ -115,6 +119,22 @@ export const useArrayElementActions = (
       ),
     [rowSelection, selectableIndexes],
   )
+
+  // Prune the controlled selection state itself once rows drop out of view. A
+  // stale id left in `rowSelection` would resurrect its checkbox (and the bulk
+  // count) if a later range/search brought that index back. Only writes when an
+  // entry actually drops, so a refresh that keeps every selected row is a no-op.
+  useEffect(() => {
+    setRowSelection((prev) => {
+      const pruned: Record<string, boolean> = {}
+      let changed = false
+      Object.keys(prev).forEach((index) => {
+        if (prev[index] && selectableIndexes.has(index)) pruned[index] = true
+        else changed = true
+      })
+      return changed ? pruned : prev
+    })
+  }, [selectableIndexes])
 
   const handleBulkDelete = useCallback(() => {
     if (!keyProp || selectedIndexes.length === 0) return
