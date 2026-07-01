@@ -69,8 +69,11 @@ const SearchTab = ({ keyProp, isActive }: SearchTabProps) => {
 
   // Context lives here, not in the query hook, so the form's reset must
   // restore it too — otherwise reset leaves rows expandable at the old count.
+  // Reset also drops the multi-select: clearing the results shouldn't leave a
+  // stale selection that a later search could partially restore.
   const handleReset = () => {
     setContext(DEFAULT_CONTEXT)
+    clearSelection()
     resetQuery()
   }
 
