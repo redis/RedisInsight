@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Text } from 'uiSrc/components/base/text'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
@@ -21,6 +21,13 @@ export const BulkDeleteBar = ({
   onClear,
 }: BulkDeleteBarProps) => {
   const [deleting, setDeleting] = useState('')
+
+  // The bar renders nothing while empty but stays mounted, so drop any open
+  // confirm popover when the selection clears (a new range/search, or Clear).
+  // Otherwise the next selection would remount with a stale-open dialog.
+  useEffect(() => {
+    if (selectedCount === 0) setDeleting('')
+  }, [selectedCount])
 
   if (selectedCount === 0) return null
 
