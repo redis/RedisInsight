@@ -16,6 +16,7 @@ import {
   DEFAULT_ERROR_MESSAGE,
   getApiErrorMessage,
   getUrl,
+  isEqualBuffers,
   isStatusNotFoundError,
   isStatusSuccessful,
   Maybe,
@@ -40,6 +41,7 @@ import {
   deleteKeyFromList,
   deleteSelectedKeySuccess,
   refreshKeyInfoAction,
+  selectedKeyDataSelector,
 } from './keys'
 import { AppDispatch, RootState } from '../store'
 import {
@@ -559,6 +561,7 @@ export function deleteArrayElements(key: RedisString, indexes: string[]) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     try {
       const state = stateInit()
+      const startInstanceId = state.connections.instances.connectedInstance?.id
       const { status } = await apiService.delete(
         arrayUrl(state, ApiEndpoints.ARRAY_ELEMENTS),
         { data: { keyName: key, indexes }, ...encodingParams(state) },
@@ -586,6 +589,20 @@ export function deleteArrayElements(key: RedisString, indexes: string[]) {
         const countStatus = get(countError, ['response', 'status'])
         keyDeleted = Boolean(countStatus && isStatusNotFoundError(countStatus))
       }
+
+      // If the user switched database or array key while the delete was in
+      // flight, the shared array slice/header now belong to a different
+      // selection. The delete already applied server-side, so skip the UI
+      // updates rather than clobber the current view with the old key's data.
+      const latest = stateInit()
+      const selectedKey = selectedKeyDataSelector(latest)?.name
+      const sameInstance =
+        latest.connections.instances.connectedInstance?.id === startInstanceId
+      // Compare by bytes: array keys are binary, and distinct binary keys can
+      // decode to the same display string, so a string compare isn't safe.
+      const sameKey =
+        !!selectedKey && isEqualBuffers(selectedKey, key as RedisResponseBuffer)
+      if (!sameInstance || !sameKey) return
 
       if (keyDeleted) {
         dispatch(deleteSelectedKeySuccess())

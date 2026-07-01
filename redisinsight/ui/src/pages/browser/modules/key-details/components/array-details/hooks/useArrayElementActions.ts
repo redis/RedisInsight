@@ -1,8 +1,8 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
-import { Nullable } from 'uiSrc/utils'
+import { Nullable, isEqualBuffers } from 'uiSrc/utils'
 import { deleteArrayElements } from 'uiSrc/slices/browser/array'
 
 import { ArrayElementDeleteConfig } from '../array-details-table/components/RowActionsCell'
@@ -33,6 +33,22 @@ export const useArrayElementActions = (
     (item = '') => setDeleting(`${item}${ELEMENT_DELETE_POPOVER_SUFFIX}`),
     [],
   )
+
+  // Drop any open confirm popover on a real key change (the tab stays mounted
+  // across key switches). Otherwise a row with the same index on the new key
+  // would show a stale-open dialog whose confirm deletes against the wrong key.
+  const lastKeyRef = useRef<Nullable<RedisResponseBuffer>>(null)
+  useEffect(() => {
+    if (
+      lastKeyRef.current &&
+      keyProp &&
+      isEqualBuffers(lastKeyRef.current, keyProp)
+    ) {
+      return
+    }
+    lastKeyRef.current = keyProp
+    closePopover()
+  }, [keyProp, closePopover])
   const handleDeleteElement = useCallback(
     (index: string) => {
       if (!keyProp) return

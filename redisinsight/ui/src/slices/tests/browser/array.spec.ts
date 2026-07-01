@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { cloneDeep } from 'lodash'
 import { apiService } from 'uiSrc/services'
-import { DEFAULT_ERROR_MESSAGE } from 'uiSrc/utils'
+import { DEFAULT_ERROR_MESSAGE, stringToBuffer } from 'uiSrc/utils'
+import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { IAddInstanceErrorPayload } from 'uiSrc/slices/app/notifications'
 import {
   cleanup,
@@ -905,6 +906,24 @@ describe('array slice', () => {
     })
 
     describe('deleteArrayElements', () => {
+      // Array keys are binary; the guard compares them by bytes, so drive the
+      // tests with buffers. The thunk only touches the UI once it confirms the
+      // deleted key is still the selected one, so point the selection at it.
+      const keyBuffer = stringToBuffer(mockKey)
+      const storeWithSelectedKey = (
+        selected: RedisResponseBuffer = keyBuffer,
+      ) => {
+        const state = cloneDeep(initialStateDefault)
+        ;(state.browser.keys.selectedKey as any).data = { name: selected }
+        const next = mockStore(state)
+        next.clearActions()
+        return next
+      }
+
+      beforeEach(() => {
+        store = storeWithSelectedKey()
+      })
+
       it('deletes by index, refreshes every loaded view, and toasts when the key survives', async () => {
         apiService.delete = jest
           .fn()
@@ -915,12 +934,12 @@ describe('array slice', () => {
           data: { keyName: mockKey, count: '4' },
         })
 
-        await store.dispatch<any>(deleteArrayElements(mockKey, ['2']))
+        await store.dispatch<any>(deleteArrayElements(keyBuffer, ['2']))
 
         expect(apiService.delete).toHaveBeenCalledWith(
           expect.stringContaining('array/elements'),
           expect.objectContaining({
-            data: { keyName: mockKey, indexes: ['2'] },
+            data: { keyName: keyBuffer, indexes: ['2'] },
           }),
         )
         const actions = store.getActions()
@@ -948,7 +967,7 @@ describe('array slice', () => {
           .fn()
           .mockRejectedValue({ response: { status: 404 } })
 
-        await store.dispatch<any>(deleteArrayElements(mockKey, ['0']))
+        await store.dispatch<any>(deleteArrayElements(keyBuffer, ['0']))
 
         const actions = store.getActions()
         expect(
@@ -970,7 +989,7 @@ describe('array slice', () => {
           .mockRejectedValueOnce({ response: { status: 500 } })
           .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
 
-        await store.dispatch<any>(deleteArrayElements(mockKey, ['2']))
+        await store.dispatch<any>(deleteArrayElements(keyBuffer, ['2']))
 
         const actions = store.getActions()
         // The succeeded delete is acknowledged and the views refreshed — not
@@ -995,11 +1014,71 @@ describe('array slice', () => {
         }
         apiService.delete = jest.fn().mockRejectedValue(rejected)
 
-        await store.dispatch<any>(deleteArrayElements(mockKey, ['1']))
+        await store.dispatch<any>(deleteArrayElements(keyBuffer, ['1']))
 
         expect(store.getActions()).toContainEqual(
           addErrorNotification(rejected as IAddInstanceErrorPayload),
         )
+      })
+
+      it('skips the UI updates when the selected key changed mid-flight', async () => {
+        // User switched to another key before the round-trip finished — the
+        // delete still applied server-side, but the shared slice/header now
+        // belong to the new key and must not be clobbered.
+        store = storeWithSelectedKey(stringToBuffer('another-key'))
+        apiService.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '1' } })
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, count: '4' },
+        })
+
+        await store.dispatch<any>(deleteArrayElements(keyBuffer, ['2']))
+
+        // The delete was issued, but none of the current key's view is touched.
+        expect(apiService.delete).toHaveBeenCalled()
+        const actions = store.getActions()
+        expect(actions.some((a) => a.type === loadArrayRangeSuccess.type)).toBe(
+          false,
+        )
+        expect(
+          actions.some((a) => a.type === addMessageNotification.type),
+        ).toBe(false)
+        expect(
+          actions.some((a) => a.type === deleteSelectedKeySuccess.type),
+        ).toBe(false)
+      })
+
+      it('bails byte-safely when a different binary key decodes to the same string', async () => {
+        // Two distinct binary keys whose invalid UTF-8 both render as the
+        // replacement char — a string compare would wrongly match them.
+        const deletedKey = {
+          type: 'Buffer',
+          data: [0xff],
+        } as RedisResponseBuffer
+        const currentKey = {
+          type: 'Buffer',
+          data: [0xfe],
+        } as RedisResponseBuffer
+        store = storeWithSelectedKey(currentKey)
+        apiService.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '1' } })
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, count: '4' },
+        })
+
+        await store.dispatch<any>(deleteArrayElements(deletedKey, ['0']))
+
+        const actions = store.getActions()
+        expect(actions.some((a) => a.type === loadArrayRangeSuccess.type)).toBe(
+          false,
+        )
+        expect(
+          actions.some((a) => a.type === deleteSelectedKeySuccess.type),
+        ).toBe(false)
       })
     })
   })
