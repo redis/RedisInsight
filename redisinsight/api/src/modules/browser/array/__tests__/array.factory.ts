@@ -7,6 +7,8 @@ import {
   ArrayElementDto,
   ArrayGrepCriteria,
   CreateArrayWithExpireDto,
+  DeleteArrayElementsDto,
+  DeleteArrayRangeDto,
   GetArraySearchDto,
   GetArraySearchResponse,
   SetArrayElementDto,
@@ -71,3 +73,17 @@ export const getArraySearchResponseFactory =
       { index: '6', value: Buffer.from('21.9') },
     ],
   }));
+
+export const deleteArrayElementsDtoFactory =
+  Factory.define<DeleteArrayElementsDto>(() => ({
+    keyName: arrayKeyName(),
+    indexes: ['0'],
+  }));
+
+export const deleteArrayRangeDtoFactory = Factory.define<DeleteArrayRangeDto>(
+  () => ({
+    keyName: arrayKeyName(),
+    start: '0',
+    end: '3',
+  }),
+);

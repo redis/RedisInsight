@@ -15,3 +15,6 @@ export * from './aggregate.array.dto';
 export * from './aggregate.array.response';
 export * from './get.array-search.dto';
 export * from './get.array-search.response';
+export * from './delete.array-elements.dto';
+export * from './delete.array-range.dto';
+export * from './delete.array.response';
