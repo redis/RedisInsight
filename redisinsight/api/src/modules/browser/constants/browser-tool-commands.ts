@@ -130,6 +130,7 @@ export enum BrowserToolArrayCommands {
   ArDelRange = 'ardelrange',
   ArInsert = 'arinsert',
   ArRing = 'arring',
+  ArInfo = 'arinfo',
 }
 
 // Array commands whose integer replies are u64 (indexes, counts, or bitwise
@@ -144,6 +145,7 @@ export const ARRAY_U64_INTEGER_REPLY_COMMANDS = new Set<string>([
   BrowserToolArrayCommands.ArInsert,
   BrowserToolArrayCommands.ArRing,
   BrowserToolArrayCommands.ArOp,
+  BrowserToolArrayCommands.ArInfo,
 ]);
 
 export type BrowserToolCommands =

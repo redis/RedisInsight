@@ -533,6 +533,23 @@ describe('CliBusinessService', () => {
         expect.objectContaining({ integerReply: 'bigint' }),
       );
     });
+
+    it('requests ARINFO with exact u64 integer replies', async () => {
+      const dto: SendCommandDto = {
+        command: 'ARINFO key',
+        outputFormat: CliOutputFormatterTypes.Raw,
+      };
+      when(standaloneClient.sendCommand)
+        .calledWith(['ARINFO', 'key'], expect.anything())
+        .mockReturnValue(['length', '9007199254740993']);
+
+      await service.sendCommand(mockCliClientMetadata, dto);
+
+      expect(standaloneClient.sendCommand).toHaveBeenCalledWith(
+        ['ARINFO', 'key'],
+        expect.objectContaining({ integerReply: 'bigint' }),
+      );
+    });
   });
 
   describe('sendClusterCommand', () => {
