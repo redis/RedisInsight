@@ -52,9 +52,14 @@ const ArrayDetailsTable = memo(
 
     // The delete column is appended only when the consumer opts in, so the
     // View / Aggregate tabs without a `deleteConfig` show no actions column.
+    // Depend on its presence, not its identity: the cell reads the live popover
+    // state from `meta`, so rebuilding `columns` on every `deleting` change
+    // would needlessly reset table state (e.g. expanded Search context rows).
+    const hasActionsColumn = Boolean(deleteConfig)
     const columns = useMemo(
-      () => (deleteConfig ? [...arrayColumns, actionsColumn] : arrayColumns),
-      [deleteConfig],
+      () =>
+        hasActionsColumn ? [...arrayColumns, actionsColumn] : arrayColumns,
+      [hasActionsColumn],
     )
 
     // Use `||` rather than `??` here: the array slice clears `error` to `''`
