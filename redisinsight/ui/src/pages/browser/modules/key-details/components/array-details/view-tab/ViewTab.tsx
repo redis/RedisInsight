@@ -40,6 +40,15 @@ const ViewTab = ({ keyProp, isActive }: ViewTabProps) => {
     clearSelection,
   } = useArrayElementActions(keyProp, { elements, hideEmptySlots: true })
 
+  // Reset also drops the multi-select: resetQuery keeps the current elements
+  // (resetData: false) while the default range reloads, so without this a
+  // selection made in a custom range would survive reset and could be
+  // bulk-deleted.
+  const handleReset = () => {
+    clearSelection()
+    resetQuery()
+  }
+
   return (
     <>
       <ArrayRangeForm
@@ -52,7 +61,7 @@ const ViewTab = ({ keyProp, isActive }: ViewTabProps) => {
         onChangeEnd={setEnd}
         onToggleShowEmpty={setShowEmpty}
         onRun={runQuery}
-        onReset={resetQuery}
+        onReset={handleReset}
         disabled={!isArrayKeyReady || isRefreshDisabled}
       />
       <S.TabBody>
