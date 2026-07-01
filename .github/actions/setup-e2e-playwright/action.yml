@@ -44,7 +44,9 @@ runs:
         # Use package-lock.json hash as cache key - it changes when Playwright version changes
         key: playwright-${{ runner.os }}-${{ hashFiles(format('{0}/package-lock.json', inputs.working-directory)) }}-${{ inputs.browsers }}
 
-    - name: Install Playwright browsers
+    # System deps (apt) are installed separately from the browser download.
+    # This is NOT the flaky part, so it gets a generous timeout.
+    - name: Install Playwright system dependencies
       if: inputs.browsers != 'none' && steps.cache-playwright.outputs.cache-hit != 'true'
       shell: bash
       working-directory: ${{ inputs.working-directory }}
@@ -52,10 +54,93 @@ runs:
         BROWSERS: ${{ inputs.browsers }}
       run: |
         if [ "$BROWSERS" == "all" ]; then
-          npx playwright install --with-deps
+          timeout 300 npx playwright install-deps
         else
-          npx playwright install "$BROWSERS" --with-deps
+          timeout 300 npx playwright install-deps "$BROWSERS"
         fi
+
+    # Browser binary download — the flaky step that burned every nightly's full
+    # 1h limit since 2026-06-23, silently stalled at "Downloading Chromium...".
+    #
+    # Root cause (confirmed by reading playwright-core 1.57, reproducing the
+    # hang locally, and capturing live runners): reachability from GitHub
+    # runners to cdn.playwright.dev (Azure Front Door / Microsoft msedge
+    # anycast) and its storage backend is intermittently broken — packets
+    # silently dropped, worst in the 00:00 UTC nightly window. Playwright's
+    # downloader uses its own happy-eyeballs agent whose connect sockets have NO
+    # timeout, so a stalled connection never invokes its callback: the request
+    # never gets a socket, the 30s PLAYWRIGHT_DOWNLOAD_CONNECTION_TIMEOUT (a
+    # request.setTimeout, only armed post-connect) never fires, and Playwright's
+    # own 5x retry never runs because the download promise never settles. Only
+    # the 1h job timeout stopped it — and since that is a cancellation (not a
+    # failure) the Slack alert never fired, so it went unnoticed for 9 nights.
+    #
+    # Fix: don't use Playwright's hang-prone downloader at all. Ask it only for
+    # the PLAN (`--dry-run`: install dirs + download URLs, including the
+    # alternate prss.microsoft.com host), then fetch the zips with curl — which
+    # forces IPv4, has real connect/transfer timeouts, retries, and fails over
+    # to the alternate host when cdn.playwright.dev is unreachable. Extract into
+    # the cache dir and drop the INSTALLATION_COMPLETE marker Playwright looks
+    # for. Verified locally: Playwright then treats the browsers as installed
+    # and launches them. Once any run succeeds, the ~/.cache/ms-playwright cache
+    # above carries subsequent runs.
+    - name: Install Playwright browsers
+      if: inputs.browsers != 'none' && steps.cache-playwright.outputs.cache-hit != 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        BROWSERS: ${{ inputs.browsers }}
+      run: |
+        set -uo pipefail
+        if [ "$BROWSERS" == "all" ]; then
+          install_args=()
+        else
+          install_args=("$BROWSERS")
+        fi
+        PW=./node_modules/.bin/playwright
+
+        plan="$("$PW" install --dry-run "${install_args[@]}" 2>/dev/null)"
+        if [ -z "$plan" ]; then
+          echo "::error::could not obtain Playwright install plan (--dry-run)"; exit 1
+        fi
+
+        # Download one browser: try each URL/host in turn with a robust curl.
+        fetch_browser() {
+          local loc="$1"; shift
+          if [ -f "$loc/INSTALLATION_COMPLETE" ]; then
+            echo "already installed: $loc"; return 0
+          fi
+          mkdir -p "$loc"
+          local zip; zip="$(mktemp "${RUNNER_TEMP:-/tmp}/pw-XXXXXX.zip")"
+          local url
+          for url in "$@"; do
+            echo "downloading $(basename "$loc") <- $url"
+            if curl -4 -fsSL --retry 2 --retry-all-errors --retry-delay 3 \
+                    --retry-max-time 200 --connect-timeout 15 --max-time 240 \
+                    -o "$zip" "$url" \
+               && unzip -q -o "$zip" -d "$loc"; then
+              touch "$loc/INSTALLATION_COMPLETE"; rm -f "$zip"
+              echo "installed: $loc"; return 0
+            fi
+            echo "::warning::fetch/extract failed from $url"
+          done
+          rm -f "$zip"
+          echo "::error::could not install $(basename "$loc") from any URL/host"
+          return 1
+        }
+
+        # Parse --dry-run into (install location, [download urls]) records.
+        loc=""; urls=()
+        flush() { [ -z "$loc" ] && return 0; fetch_browser "$loc" "${urls[@]}"; }
+        while IFS= read -r line; do
+          case "$line" in
+            "browser: "*) flush || exit 1; loc=""; urls=() ;;
+            *"Install location:"*) loc="$(echo "$line" | awk '{print $NF}')" ;;
+            *"Download url:"*|*"Download fallback"*) urls+=("$(echo "$line" | awk '{print $NF}')") ;;
+          esac
+        done <<< "$plan"
+        flush || exit 1
+        echo "All Playwright browsers installed via curl."
 
     - name: Install Playwright system dependencies (cache hit)
       if: inputs.browsers != 'none' && steps.cache-playwright.outputs.cache-hit == 'true'
