@@ -41,8 +41,8 @@ import {
   deleteKeyFromList,
   deleteSelectedKeySuccess,
   refreshKeyInfoAction,
-  selectedKeyDataSelector,
 } from './keys'
+import { appContextSelectedKey } from 'uiSrc/slices/app/context'
 import { AppDispatch, RootState } from '../store'
 import {
   addErrorNotification,
@@ -595,7 +595,11 @@ export function deleteArrayElements(key: RedisString, indexes: string[]) {
       // selection. The delete already applied server-side, so skip the UI
       // updates rather than clobber the current view with the old key's data.
       const latest = stateInit()
-      const selectedKey = selectedKeyDataSelector(latest)?.name
+      // Read the user's current selection, not `selectedKey.data`: on a key
+      // switch the details reducer keeps the old `data` in place while the new
+      // key info loads, so `data.name` would still return the deleted key
+      // during that window and the guard below would wrongly pass.
+      const selectedKey = appContextSelectedKey(latest)
       const sameInstance =
         latest.connections.instances.connectedInstance?.id === startInstanceId
       // Compare by bytes: array keys are binary, and distinct binary keys can

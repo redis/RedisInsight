@@ -908,13 +908,15 @@ describe('array slice', () => {
     describe('deleteArrayElements', () => {
       // Array keys are binary; the guard compares them by bytes, so drive the
       // tests with buffers. The thunk only touches the UI once it confirms the
-      // deleted key is still the selected one, so point the selection at it.
+      // deleted key is still the selected one. The guard reads the app-context
+      // selection (updated synchronously on key click), not `selectedKey.data`
+      // (which lags a key switch while the new info loads), so seed that.
       const keyBuffer = stringToBuffer(mockKey)
       const storeWithSelectedKey = (
         selected: RedisResponseBuffer = keyBuffer,
       ) => {
         const state = cloneDeep(initialStateDefault)
-        ;(state.browser.keys.selectedKey as any).data = { name: selected }
+        state.app.context.browser.keyList.selectedKey = selected
         const next = mockStore(state)
         next.clearActions()
         return next
@@ -1048,6 +1050,37 @@ describe('array slice', () => {
         expect(
           actions.some((a) => a.type === deleteSelectedKeySuccess.type),
         ).toBe(false)
+      })
+
+      it('refreshes using the live selection while selectedKey.data still lags on the old key', async () => {
+        // Mid key-switch the details reducer keeps the previous `data` in place
+        // until the new key info loads. The user is still on the deleted-from
+        // key in app context, so the guard must refresh — reading the stale
+        // `selectedKey.data.name` would wrongly bail and leave the view stale.
+        const state = cloneDeep(initialStateDefault)
+        state.app.context.browser.keyList.selectedKey = keyBuffer
+        ;(state.browser.keys.selectedKey as any).data = {
+          name: stringToBuffer('stale-loading-key'),
+        }
+        store = mockStore(state)
+        store.clearActions()
+        apiService.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '1' } })
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, count: '4' },
+        })
+
+        await store.dispatch<any>(deleteArrayElements(keyBuffer, ['2']))
+
+        const actions = store.getActions()
+        expect(actions.some((a) => a.type === loadArrayRangeSuccess.type)).toBe(
+          true,
+        )
+        expect(
+          actions.some((a) => a.type === addMessageNotification.type),
+        ).toBe(true)
       })
 
       it('bails byte-safely when a different binary key decodes to the same string', async () => {
