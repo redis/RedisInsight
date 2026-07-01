@@ -105,7 +105,10 @@ export class FeatureFlagProvider {
     );
     this.strategies.set(
       KnownFeatures.DevArray,
-      new CommonFlagStrategy(this.featuresConfigService, this.settingsService),
+      new SwitchableFlagStrategy(
+        this.featuresConfigService,
+        this.settingsService,
+      ),
     );
     this.strategies.set(
       KnownFeatures.ProdMode,
