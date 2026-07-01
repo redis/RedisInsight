@@ -6,6 +6,17 @@ import { Nullable } from 'uiSrc/utils'
 
 import { ArrayElementDeleteConfig } from './components/RowActionsCell'
 
+/**
+ * Opt-in multi-select wiring forwarded to the redis-ui table's
+ * `RowSelectionPlugin`. `getRowCanSelect` disables the checkbox on rows that
+ * aren't deletable (e.g. empty View gaps); selection keys are element indexes.
+ */
+export interface ArrayElementSelectionConfig {
+  rowSelection: Record<string, boolean>
+  onRowSelectionChange: (state: Record<string, boolean>) => void
+  getRowCanSelect: (element: ArrayDataElement) => boolean
+}
+
 export interface ArrayDetailsTableProps {
   elements: ArrayDataElement[]
   loading: boolean
@@ -22,6 +33,8 @@ export interface ArrayDetailsTableProps {
   /** Enables the per-row delete affordance when provided. Omitted (e.g. the
    *  Aggregate tab) ⇒ no actions column. */
   deleteConfig?: ArrayElementDeleteConfig
+  /** Enables multi-select checkboxes when provided. */
+  selectionConfig?: ArrayElementSelectionConfig
 }
 
 /**
