@@ -7,16 +7,14 @@ import {
 } from 'src/modules/redis/exceptions/connection/redis-connection-failed.exception';
 
 export class RedisConnectionIncorrectCertificateException extends RedisConnectionFailedException {
-  constructor(
-    message: string = ERROR_MESSAGES.INCORRECT_CERTIFICATES('this host'),
-    options?: HttpExceptionOptions,
-  ) {
+  constructor(url: string = 'this host', options?: HttpExceptionOptions) {
     super(
       {
-        message,
+        message: ERROR_MESSAGES.INCORRECT_CERTIFICATES(url),
         error: 'RedisConnectionIncorrectCertificateException',
         statusCode: RedisConnectionFailedStatusCode,
         errorCode: CustomErrorCodes.RedisConnectionIncorrectCertificate,
+        resource: { url },
       },
       options,
     );
