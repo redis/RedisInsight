@@ -21,6 +21,8 @@ import {
 } from 'uiSrc/slices/browser/array'
 import { KeyValueCompressor } from 'uiSrc/constants'
 import { Nullable, stringToSerializedBufferFormat } from 'uiSrc/utils'
+import { Row, Table } from 'uiSrc/components/base/layout/table'
+import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 
 import {
   ARRAY_TABLE_EMPTY_MESSAGE,
@@ -55,6 +57,7 @@ const ArrayDetailsTable = memo(
     getIsRowExpandable,
     expandRowOnClick,
     deleteConfig,
+    selectionConfig,
   }: ArrayDetailsTableProps) => {
     const dispatch = useAppDispatch()
     const { compressor = null } = useAppSelector(
@@ -193,17 +196,40 @@ const ArrayDetailsTable = memo(
       ],
     )
 
-    // The delete column is appended only when the consumer opts in, so the
-    // View / Aggregate tabs without a `deleteConfig` show no actions column.
-    // Depend on its presence, not its identity: the cell reads the live popover
-    // state from `meta`, so rebuilding `columns` on every `deleting` change
-    // would needlessly reset table state (e.g. expanded Search context rows).
-    const hasActionsColumn = Boolean(deleteConfig)
-    const columns = useMemo(
+    // The redis-ui selection checkbox column is opt-in: the plugin only sets up
+    // selection state, the column itself has to be added explicitly. Hide the
+    // header select-all when nothing in the current view is selectable (e.g. an
+    // all-empty View range) so it isn't a dead, clickable-looking control.
+    const hasSelectableRows =
+      !!selectionConfig &&
+      elements.some((element) => selectionConfig.getRowCanSelect(element))
+    // `useRowSelectionColumn` is a plain column-def factory (it calls no hooks
+    // despite the name) that returns a fresh object every render; alias it so
+    // it isn't treated as a hook, and memoize on its only input so `columns`
+    // below stays referentially stable across unrelated re-renders.
+    const buildSelectionColumn = Table.useRowSelectionColumn
+    const selectionColumn = useMemo(
       () =>
-        hasActionsColumn ? [...arrayColumns, actionsColumn] : arrayColumns,
-      [hasActionsColumn],
+        buildSelectionColumn<ArrayDataElement>({
+          disableSelectAll: !hasSelectableRows,
+        }),
+      [buildSelectionColumn, hasSelectableRows],
     )
+
+    // Selection checkbox (leading) and delete column (trailing) are each
+    // appended only when the consumer opts in. Depend on their presence, not
+    // the config objects' identity: the cells read live popover/selection state
+    // from `meta`, so rebuilding `columns` on every toggle would needlessly
+    // reset table state (e.g. expanded Search context rows).
+    const hasSelectionColumn = Boolean(selectionConfig)
+    const hasActionsColumn = Boolean(deleteConfig)
+    const columns = useMemo(() => {
+      const cols = hasSelectionColumn
+        ? [selectionColumn, ...arrayColumns]
+        : [...arrayColumns]
+      if (hasActionsColumn) cols.push(actionsColumn)
+      return cols
+    }, [hasSelectionColumn, hasActionsColumn, selectionColumn])
 
     // Use `||` rather than `??` here: the array slice clears `error` to `''`
     // after a successful request, and `''` is not nullish, so `??` would
@@ -212,6 +238,19 @@ const ArrayDetailsTable = memo(
     const emptyState = loading
       ? ARRAY_TABLE_LOADING_MESSAGE
       : error || ARRAY_TABLE_EMPTY_MESSAGE
+
+    // Multi-select is opt-in. Selection keys are element indexes (`getRowId`),
+    // and gaps/non-deletable rows have their checkbox disabled.
+    const selectionProps = selectionConfig
+      ? {
+          rowSelectionMode: 'multiple' as const,
+          rowSelection: selectionConfig.rowSelection,
+          onRowSelectionChange: selectionConfig.onRowSelectionChange,
+          getRowCanSelect: (row: Row<ArrayDataElement>) =>
+            selectionConfig.getRowCanSelect(row.original),
+          getRowId: (element: ArrayDataElement) => element.index,
+        }
+      : {}
 
     return (
       <S.Container data-testid={TEST_ID}>
@@ -225,6 +264,7 @@ const ArrayDetailsTable = memo(
           renderExpandedRow={renderExpandedRow}
           getIsRowExpandable={getIsRowExpandable}
           expandRowOnClick={expandRowOnClick}
+          {...selectionProps}
           data-testid={`${TEST_ID}-table`}
         />
       </S.Container>

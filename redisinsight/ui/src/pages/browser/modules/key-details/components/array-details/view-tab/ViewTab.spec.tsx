@@ -70,4 +70,38 @@ describe('ViewTab', () => {
       ),
     )
   })
+
+  it('bulk-deletes the selected elements via a single ARDEL', async () => {
+    apiService.delete = jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { affected: '2' } })
+    apiService.post = jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { keyName: KEY, count: '0' } })
+
+    renderTab([
+      arrayElementWithValueFactory.build({ index: '0' }),
+      arrayElementWithValueFactory.build({ index: '5' }),
+    ])
+
+    // The header checkbox selects every loaded row.
+    fireEvent.click(screen.getByRole('checkbox', { name: /all rows/i }))
+
+    // The contextual bar appears once a selection exists.
+    expect(
+      await screen.findByTestId('array-bulk-delete-bar'),
+    ).toHaveTextContent('2 selected')
+
+    fireEvent.click(screen.getByTestId('array-bulk-remove-btn-icon'))
+    fireEvent.click(await screen.findByTestId('array-bulk-remove-btn'))
+
+    await waitFor(() =>
+      expect(apiService.delete).toHaveBeenCalledWith(
+        expect.stringContaining('array/elements'),
+        expect.objectContaining({
+          data: { keyName: keyBuffer, indexes: ['0', '5'] },
+        }),
+      ),
+    )
+  })
 })

@@ -8,6 +8,7 @@ import { bufferToString, isEqualBuffers } from 'uiSrc/utils'
 import { ArrayDetailsTable } from '../array-details-table'
 import { ArraySearchForm } from '../array-search-form'
 import { ContextOption } from '../array-search-form/ArraySearchForm.types'
+import { BulkDeleteBar } from '../components/BulkDeleteBar'
 import { useArraySearchQuery, useArrayElementActions } from '../hooks'
 import { DEFAULT_CONTEXT } from '../constants'
 import * as S from '../tabs.styles'
@@ -58,9 +59,13 @@ const SearchTab = ({ keyProp, isActive }: SearchTabProps) => {
   // Every result is a real match — an index-only row (WITHVALUES off) has a
   // null value but is still deletable — so empty-slot hiding is off here. The
   // delete thunk refreshes all loaded views (incl. this search) afterwards.
-  const { deleteConfig } = useArrayElementActions(keyProp, {
-    hideEmptySlots: false,
-  })
+  const {
+    deleteConfig,
+    selectionConfig,
+    selectedCount,
+    handleBulkDelete,
+    clearSelection,
+  } = useArrayElementActions(keyProp, { elements, hideEmptySlots: false })
 
   // Context lives here, not in the query hook, so the form's reset must
   // restore it too — otherwise reset leaves rows expandable at the old count.
@@ -95,12 +100,18 @@ const SearchTab = ({ keyProp, isActive }: SearchTabProps) => {
             key's matches before the hook's reset effect runs. */}
         {!keyLoading && (loaded || loading) && (
           <S.TabTableWrapper>
+            <BulkDeleteBar
+              selectedCount={selectedCount}
+              onBulkDelete={handleBulkDelete}
+              onClear={clearSelection}
+            />
             <ArrayDetailsTable
               elements={elements}
               loading={loading}
               error={error}
               isActive={isActive}
               deleteConfig={deleteConfig}
+              selectionConfig={selectionConfig}
               expandRowOnClick
               getIsRowExpandable={() => context.enabled && !!keyProp}
               renderExpandedRow={(row) =>

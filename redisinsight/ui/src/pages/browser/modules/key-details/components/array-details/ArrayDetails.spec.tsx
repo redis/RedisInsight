@@ -91,6 +91,14 @@ jest.mock('./hooks', () => ({
       showPopover: jest.fn(),
       handleDeleteElement: jest.fn(),
     },
+    selectionConfig: {
+      rowSelection: {},
+      onRowSelectionChange: jest.fn(),
+      getRowCanSelect: () => true,
+    },
+    selectedCount: 0,
+    handleBulkDelete: jest.fn(),
+    clearSelection: jest.fn(),
   }),
 }))
 

@@ -6,6 +6,7 @@ import { bufferToString } from 'uiSrc/utils'
 
 import { ArrayDetailsTable } from '../array-details-table'
 import { ArrayRangeForm } from '../array-range-form'
+import { BulkDeleteBar } from '../components/BulkDeleteBar'
 import { useArrayRangeQuery, useArrayElementActions } from '../hooks'
 import * as S from '../tabs.styles'
 import { ViewTabProps } from './ViewTab.types'
@@ -29,11 +30,15 @@ const ViewTab = ({ keyProp, isActive }: ViewTabProps) => {
     error: rangeError,
   } = useArrayRangeQuery(keyProp)
 
-  // Null values in the gap-preserving range are empty slots, so the delete
-  // affordance is hidden on them. The delete thunk refreshes all loaded views.
-  const { deleteConfig } = useArrayElementActions(keyProp, {
-    hideEmptySlots: true,
-  })
+  // Null values in the gap-preserving range are empty slots, so delete and
+  // selection are disabled on them. The delete thunk refreshes all loaded views.
+  const {
+    deleteConfig,
+    selectionConfig,
+    selectedCount,
+    handleBulkDelete,
+    clearSelection,
+  } = useArrayElementActions(keyProp, { elements, hideEmptySlots: true })
 
   return (
     <>
@@ -53,12 +58,18 @@ const ViewTab = ({ keyProp, isActive }: ViewTabProps) => {
       <S.TabBody>
         {!loading && (
           <S.TabTableWrapper>
+            <BulkDeleteBar
+              selectedCount={selectedCount}
+              onBulkDelete={handleBulkDelete}
+              onClear={clearSelection}
+            />
             <ArrayDetailsTable
               elements={elements}
               loading={rangeLoading}
               error={rangeError}
               isActive={isActive}
               deleteConfig={deleteConfig}
+              selectionConfig={selectionConfig}
             />
           </S.TabTableWrapper>
         )}
