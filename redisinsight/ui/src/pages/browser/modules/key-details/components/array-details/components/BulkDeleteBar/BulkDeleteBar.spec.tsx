@@ -46,4 +46,45 @@ describe('BulkDeleteBar', () => {
 
     expect(onBulkDelete).toHaveBeenCalledTimes(1)
   })
+
+  it('drops an open confirm popover when the selection empties', async () => {
+    const { rerender } = render(
+      <BulkDeleteBar
+        selectedCount={2}
+        onBulkDelete={jest.fn()}
+        onClear={jest.fn()}
+      />,
+    )
+
+    // Open the confirmation.
+    fireEvent.click(screen.getByTestId('array-bulk-remove-btn-icon'))
+    expect(
+      await screen.findByTestId('array-bulk-remove-btn'),
+    ).toBeInTheDocument()
+
+    // Selection clears (a new range/search) — the bar renders nothing.
+    rerender(
+      <BulkDeleteBar
+        selectedCount={0}
+        onBulkDelete={jest.fn()}
+        onClear={jest.fn()}
+      />,
+    )
+    expect(
+      screen.queryByTestId('array-bulk-delete-bar'),
+    ).not.toBeInTheDocument()
+
+    // A later selection must reopen the bar with the popover closed.
+    rerender(
+      <BulkDeleteBar
+        selectedCount={2}
+        onBulkDelete={jest.fn()}
+        onClear={jest.fn()}
+      />,
+    )
+    expect(screen.getByTestId('array-bulk-delete-bar')).toBeInTheDocument()
+    expect(
+      screen.queryByTestId('array-bulk-remove-btn'),
+    ).not.toBeInTheDocument()
+  })
 })
