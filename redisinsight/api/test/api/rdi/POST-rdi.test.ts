@@ -100,6 +100,7 @@ describe('POST /rdi', () => {
           statusCode: 401,
           error: 'RdiUnauthorized',
           errorCode: 11402,
+          resource: { detail: 'Unauthorized' },
         },
       },
     ].forEach(mainCheckFn);
