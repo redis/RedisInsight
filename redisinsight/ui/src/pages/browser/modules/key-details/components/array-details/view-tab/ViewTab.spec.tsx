@@ -104,4 +104,28 @@ describe('ViewTab', () => {
       ),
     )
   })
+
+  it('drops the multi-select when the range is reset', async () => {
+    // resetQuery refires the default range with resetData:false, so the current
+    // rows stay rendered; the selection must still clear on reset.
+    apiService.post = jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { keyName: KEY, elements: [] } })
+
+    renderTab([
+      arrayElementWithValueFactory.build({ index: '0' }),
+      arrayElementWithValueFactory.build({ index: '5' }),
+    ])
+
+    fireEvent.click(screen.getByRole('checkbox', { name: /all rows/i }))
+    expect(
+      await screen.findByTestId('array-bulk-delete-bar'),
+    ).toBeInTheDocument()
+
+    fireEvent.click(screen.getByTestId('array-range-form-reset'))
+
+    expect(
+      screen.queryByTestId('array-bulk-delete-bar'),
+    ).not.toBeInTheDocument()
+  })
 })
