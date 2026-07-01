@@ -76,6 +76,10 @@ import { stringToBuffer } from 'uiSrc/utils/formatters/bufferFormatters'
 import { decompressingBuffer } from 'uiSrc/utils/decompressors'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
 import {
+  DecodedValueDisplay,
+  ValueDecoderHeaderLabel,
+} from 'uiSrc/pages/browser/components/value-decoder'
+import {
   EditableInput,
   EditableTextArea,
   FormattedValue,
@@ -410,7 +414,7 @@ const HashDetailsTable = (props: Props) => {
     },
     {
       id: 'value',
-      label: 'Value',
+      label: <ValueDecoderHeaderLabel />,
       minWidth: 120,
       truncateText: true,
       alignment: TableCellAlignment.Left,
@@ -488,15 +492,21 @@ const HashDetailsTable = (props: Props) => {
             testIdPrefix="hash"
           >
             <div className="innerCellAsCell">
-              <FormattedValue
-                value={formattedValue}
+              <DecodedValueDisplay
+                buffer={decompressedValueItem}
                 expanded={expanded}
-                title={
-                  isValid
-                    ? 'Value'
-                    : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
+                fallback={
+                  <FormattedValue
+                    value={formattedValue}
+                    expanded={expanded}
+                    title={
+                      isValid
+                        ? 'Value'
+                        : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
+                    }
+                    tooltipContent={tooltipContent}
+                  />
                 }
-                tooltipContent={tooltipContent}
               />
             </div>
           </EditableTextArea>
