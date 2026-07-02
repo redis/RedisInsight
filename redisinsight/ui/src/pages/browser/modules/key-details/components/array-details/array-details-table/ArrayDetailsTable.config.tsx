@@ -5,9 +5,12 @@ import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 
 import { ArrayIndexCell } from './components/ArrayIndexCell'
 import { ArrayValueCell } from './components/ArrayValueCell'
+import { RowActionsCell } from './components/RowActionsCell'
 import { ArrayTableConfig } from './ArrayDetailsTable.types'
 
 export const TEST_ID = 'array-details-table'
+
+const ACTIONS_COLUMN_SIZE = 48
 
 const indexColumn: ColumnDef<ArrayDataElement> = {
   id: 'index',
@@ -36,6 +39,24 @@ const valueColumn: ColumnDef<ArrayDataElement> = {
         viewFormat={viewFormat}
       />
     )
+  },
+}
+
+/**
+ * Per-row delete affordance, appended only when the consumer passes a
+ * `deleteConfig` (via `meta`). The cell renders nothing for empty slots.
+ */
+export const actionsColumn: ColumnDef<ArrayDataElement> = {
+  id: 'actions',
+  header: '',
+  enableSorting: false,
+  enableResizing: false,
+  size: ACTIONS_COLUMN_SIZE,
+  sizeUnit: 'px',
+  cell: ({ row, table }: CellContext<ArrayDataElement, unknown>) => {
+    const { deleteConfig } = table.options.meta as ArrayTableConfig
+    if (!deleteConfig) return null
+    return <RowActionsCell element={row.original} deleteConfig={deleteConfig} />
   },
 }
 

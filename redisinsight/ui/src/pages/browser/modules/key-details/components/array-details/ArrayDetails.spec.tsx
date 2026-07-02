@@ -82,6 +82,16 @@ jest.mock('./hooks', () => ({
     error: '',
     loaded: false,
   }),
+  useArrayElementActions: () => ({
+    deleteConfig: {
+      deleting: '',
+      suffix: '-array-element',
+      hideEmptySlots: true,
+      closePopover: jest.fn(),
+      showPopover: jest.fn(),
+      handleDeleteElement: jest.fn(),
+    },
+  }),
 }))
 
 const mockedProps = mock<Props>()
