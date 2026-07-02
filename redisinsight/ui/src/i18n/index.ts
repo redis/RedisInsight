@@ -6,5 +6,6 @@ export {
   SUPPORTED_LANGUAGES,
   DEFAULT_LANGUAGE,
   DEFAULT_NAMESPACE,
+  LANGUAGE_NAMES,
   type SupportedLanguage,
 } from './i18n.constants'

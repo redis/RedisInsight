@@ -31,11 +31,13 @@ import { Text } from 'uiSrc/components/base/text'
 import { Loader, RICollapsibleNavGroup } from 'uiSrc/components/base/display'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import { useTranslation } from 'uiSrc/i18n'
+import { isDevLanguageEnabledSelector } from 'uiSrc/slices/app/features'
 import {
   AdvancedSettings,
   AppVersion,
   CloudSettings,
   CopyDiagnostics,
+  LanguageSettings,
   ThemeSettings,
   WorkbenchSettings,
 } from './components'
@@ -46,6 +48,7 @@ const SettingsPage = () => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const { loading: settingsLoading } = useAppSelector(userSettingsSelector)
+  const isLanguageEnabled = useAppSelector(isDevLanguageEnabledSelector)
 
   const initialOpenSection = globalThis.location.hash || ''
 
@@ -69,6 +72,7 @@ const SettingsPage = () => {
   const Appearance = () => (
     <>
       <ThemeSettings />
+      {isLanguageEnabled && <LanguageSettings />}
       <ConsentsNotifications />
       <Divider />
       <Spacer />
