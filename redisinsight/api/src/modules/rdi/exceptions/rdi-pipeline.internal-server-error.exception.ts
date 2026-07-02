@@ -4,6 +4,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import ERROR_MESSAGES from 'src/constants/error-messages';
+import { CustomErrorCodes } from 'src/constants';
 
 export class RdiPipelineInternalServerErrorException extends HttpException {
   constructor(
@@ -13,6 +14,7 @@ export class RdiPipelineInternalServerErrorException extends HttpException {
     const response = {
       message,
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+      errorCode: CustomErrorCodes.RdiInternalServerError,
       error: 'RdiInternalServerError',
     };
 

@@ -157,6 +157,7 @@ describe('wrapRdiPipelineError', () => {
       message: errorMessages.INTERNAL_SERVER_ERROR,
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       error: 'RdiInternalServerError',
+      errorCode: CustomErrorCodes.RdiInternalServerError,
     });
   });
 });

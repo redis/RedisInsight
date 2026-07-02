@@ -1,0 +1,44 @@
+meta {
+  name: Validation Error
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{API_URL}}/databases/test
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "errorcode-demo",
+    "host": "localhost",
+    "port": "not-a-number"
+  }
+}
+
+docs {
+  # ValidationError — errorCode 12100
+
+  Sends a body that fails class-validator (`port` is not a number). The
+  `GlobalExceptionFilter` detects the array `message` shape and injects a
+  dedicated **ValidationError** code, leaving the per-field messages intact.
+
+  ## Expected response (400)
+
+  ```
+  {
+    "message": [
+      "port must be a number conforming to the specified constraints"
+    ],
+    "statusCode": 400,
+    "error": "Bad Request",
+    "errorCode": 12100
+  }
+  ```
+}
+
+settings {
+  encodeUrl: true
+}
