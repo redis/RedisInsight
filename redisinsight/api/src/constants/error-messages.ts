@@ -81,6 +81,8 @@ export default {
   ARRAY_RANGE_TOO_LARGE: (max: number) =>
     `Requested range exceeds the maximum of ${numberWithSpaces(max)} elements per call. Narrow the range and try again.`,
   ARRAY_MATCH_VALUE_REQUIRED: 'value is required for MATCH operation.',
+  ARRAY_IS_FULL:
+    'The array has reached the maximum index (2^64-2), so there is no position left to append to.',
   REMOVING_MULTIPLE_ELEMENTS_NOT_SUPPORT: () =>
     'Removing multiple elements is available for Redis databases v. 6.2 or later.',
   SCAN_PER_KEY_TYPE_NOT_SUPPORT: () =>

@@ -1,0 +1,54 @@
+meta {
+  name: Append Element
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/array/append
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "readings",
+    "value": "22.3"
+  }
+}
+
+docs {
+  # Append element (ARSET at end)
+
+  Append a value to the end of the array. The end index is computed
+  server-side (current `ARLEN`), so no index is supplied. The key must already
+  exist (append targets an existing array).
+
+  ## Request body
+
+  | Field     | Type   | Notes                                    |
+  |-----------|--------|------------------------------------------|
+  | `keyName` | string | The Array key name.                      |
+  | `value`   | string | Value to append at the end.              |
+
+  ## Response
+
+  ```
+  {
+    "keyName": "readings",
+    "index": "7"
+  }
+  ```
+
+  ## Errors
+
+  | Status | When |
+  |--------|------|
+  | `400`  | Key holds a non-array type. |
+  | `403`  | User has no permission for the underlying commands. |
+  | `404`  | Key does not exist. |
+}
+
+settings {
+  encodeUrl: true
+}
