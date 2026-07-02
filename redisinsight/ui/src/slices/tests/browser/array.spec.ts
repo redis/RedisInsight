@@ -820,7 +820,7 @@ describe('array slice', () => {
         expect(actions).toContainEqual(setArrayUpdating(false))
       })
 
-      it('skips the optimistic patch when the selected key changed mid-write', async () => {
+      it('skips the patch and the success callback when the selected key changed mid-write', async () => {
         apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
         // User switched to another key before the POST resolved.
         const keyedStore = storeWithSelectedKey('another-key')
@@ -833,13 +833,14 @@ describe('array slice', () => {
           ),
         )
 
-        // No table patch / refresh-time for the now-current key; the write
-        // still succeeded so onSuccess (editor close) is honoured.
+        // No table patch / refresh for the now-current key, and onSuccess must
+        // NOT fire — closing the editor here would discard an edit the user has
+        // opened on the new key's same-index row.
         expect(keyedStore.getActions()).toEqual([
           setArrayUpdating(true),
           setArrayUpdating(false),
         ])
-        expect(onSuccess).toHaveBeenCalled()
+        expect(onSuccess).not.toHaveBeenCalled()
       })
 
       it('only the latest ARSET clears the update lock when two overlap', async () => {

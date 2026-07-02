@@ -586,8 +586,12 @@ export function updateArrayElementAction(
           // to a different byte length changes the key's Size even though
           // ARLEN/ARCOUNT don't — matches the List/Hash/String edit thunks.
           dispatch(refreshKeyInfoAction(params.key as RedisResponseBuffer))
+          // Only close the editor when this completion still belongs to the
+          // selected key. A stale success after a key switch would otherwise
+          // close (and discard) an editor the user has since opened on the new
+          // key's same-index row.
+          onSuccessAction?.()
         }
-        onSuccessAction?.()
       }
     } catch (error) {
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
