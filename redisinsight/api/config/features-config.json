@@ -3,7 +3,8 @@
   "features": {
     "dev-language": {
       "flag": true,
-      "perc": [[0, 0]]
+      "perc": [[0, 0]],
+      "filters": []
     },
     "redisDataIntegration": {
       "flag": true,
