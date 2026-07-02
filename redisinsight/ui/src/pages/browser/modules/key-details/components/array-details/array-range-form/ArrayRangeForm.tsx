@@ -1,9 +1,14 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import { RiTooltip } from 'uiSrc/components'
-import { IconButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import ConfirmationPopover from 'uiSrc/components/confirmation-popover'
+import {
+  DestructiveButton,
+  IconButton,
+  PrimaryButton,
+} from 'uiSrc/components/base/forms/buttons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { ResetIcon, RiIcon } from 'uiSrc/components/base/icons'
+import { DeleteIcon, ResetIcon, RiIcon } from 'uiSrc/components/base/icons'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
@@ -16,6 +21,9 @@ import { quoteRedisArgument } from '../utils'
 import {
   ARRAY_RANGE_FORM_TEST_ID as TEST_ID,
   ARRAY_RANGE_MAX_SPAN,
+  DELETE_RANGE_BUTTON_LABEL,
+  DELETE_RANGE_CONFIRM_LABEL,
+  DELETE_RANGE_TITLE,
   INVALID_INDEX_MESSAGE,
   INVALID_RANGE_TOO_LARGE_MESSAGE,
   PREVIEW_TOGGLE_ARIA_LABEL,
@@ -31,12 +39,14 @@ import * as S from './ArrayRangeForm.styles'
 /**
  * Range/scan query form for the array View tab. Lays out inputs above a
  * single action row containing a toggleable command preview, an optional
- * reset, and the primary Run button — matching the Vector Set similarity-
- * search form pattern so the two verticals feel like siblings.
+ * reset, an optional destructive Delete range, and the primary Run button —
+ * matching the Vector Set similarity-search form pattern so the two
+ * verticals feel like siblings.
  *
  * - `Start` / `End` are decimal-string indexes (BigInt-as-string contract).
  * - `Show empty indexes` ON  → ARGETRANGE (returns `null` for gaps).
  * - `Show empty indexes` OFF → ARSCAN (skips gaps; `Limit` caps result size).
+ * - `Delete range` → ARDELRANGE over the same [start, end] inputs.
  */
 export const ArrayRangeForm = ({
   keyName,
@@ -49,9 +59,19 @@ export const ArrayRangeForm = ({
   onToggleShowEmpty,
   onRun,
   onReset,
+  onDeleteRange,
   disabled = false,
 }: ArrayRangeFormProps) => {
   const [previewVisible, setPreviewVisible] = useState(false)
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+
+  // A delete confirm left open across a key switch (or while the newly
+  // clicked key's type is still unconfirmed) must not carry over: the
+  // inputs reset for the new key, so confirming would run ARDELRANGE
+  // against it with stale or default bounds.
+  useEffect(() => {
+    setDeleteConfirmOpen(false)
+  }, [keyName, disabled])
 
   // Match the backend's @IsArrayIndex validator exactly: accept only
   // canonical decimal strings (no leading zeros, no whitespace, etc.).
@@ -100,6 +120,11 @@ export const ArrayRangeForm = ({
     if (showEmpty) return `ARGETRANGE ${name} ${start} ${end}`
     return `ARSCAN ${name} ${start} ${end} LIMIT ${DEFAULT_SCAN_LIMIT}`
   }, [keyName, start, end, showEmpty])
+
+  // No span cap here on purpose: the 1M cap protects the view response
+  // size (ARGETRANGE), while ARDELRANGE accepts any inclusive window —
+  // deleting 0..10M without loading it first is a supported flow.
+  const deleteDisabled = startInvalid || endInvalid || loading || disabled
 
   const previewTooltip = previewVisible
     ? PREVIEW_TOGGLE_HIDE_TOOLTIP
@@ -176,6 +201,43 @@ export const ArrayRangeForm = ({
                 data-testid={`${TEST_ID}-reset`}
               />
             </RiTooltip>
+          </FlexItem>
+        )}
+        {onDeleteRange && (
+          <FlexItem grow={false}>
+            <ConfirmationPopover
+              anchorPosition="downCenter"
+              ownFocus
+              isOpen={deleteConfirmOpen}
+              closePopover={() => setDeleteConfirmOpen(false)}
+              panelPaddingSize="m"
+              title={DELETE_RANGE_TITLE}
+              message={`Elements in range ${start}-${end} will be permanently removed from the array.`}
+              button={
+                <DestructiveButton
+                  icon={DeleteIcon}
+                  onClick={() => setDeleteConfirmOpen((open) => !open)}
+                  disabled={deleteDisabled}
+                  data-testid={`${TEST_ID}-delete`}
+                >
+                  {DELETE_RANGE_BUTTON_LABEL}
+                </DestructiveButton>
+              }
+              confirmButton={
+                <DestructiveButton
+                  size="small"
+                  icon={DeleteIcon}
+                  disabled={deleteDisabled}
+                  onClick={() => {
+                    onDeleteRange()
+                    setDeleteConfirmOpen(false)
+                  }}
+                  data-testid={`${TEST_ID}-delete-confirm`}
+                >
+                  {DELETE_RANGE_CONFIRM_LABEL}
+                </DestructiveButton>
+              }
+            />
           </FlexItem>
         )}
         <FlexItem grow={false}>

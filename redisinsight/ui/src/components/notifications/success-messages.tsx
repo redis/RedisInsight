@@ -193,6 +193,23 @@ export default {
       />
     ),
   }),
+  // Array range delete (ARDELRANGE): `affected` is the server's count of
+  // elements actually removed — inside a sparse window it can be far smaller
+  // than the window size, so it's the number worth surfacing.
+  REMOVED_ARRAY_RANGE: (keyName: RedisResponseBuffer, affected: string) => ({
+    title: 'Elements have been removed',
+    message: (
+      <>
+        <Text variant="semiBold" component="span">
+          {affected}
+        </Text>{' '}
+        element(s) removed from{' '}
+        <Text variant="semiBold" component="span">
+          {formatNameShort(bufferToString(keyName))}
+        </Text>
+      </>
+    ),
+  }),
   REMOVED_LIST_ELEMENTS: (
     keyName: RedisResponseBuffer,
     numberOfElements: number,

@@ -3,6 +3,7 @@ import axios, { AxiosError } from 'axios'
 import { IAddInstanceErrorPayload } from 'uiSrc/slices/app/notifications'
 import {
   AggregateArrayResponse,
+  DeleteArrayResponse,
   GetArrayCountResponse,
   GetArrayLengthResponse,
   GetArrayRangeResponse,
@@ -689,16 +690,91 @@ export function fetchArrayCount(key: RedisString) {
 // can span thousands, so only a sample is rendered (with the full count).
 const REMOVED_ELEMENTS_TOAST_SAMPLE = 10
 
-// Per-element delete (ARDEL). The slice's data.count isn't kept fresh and
-// arrays are sparse, so probe ARCOUNT after the delete to learn whether the
-// key survived: it 404s once the last element is gone (the server drops the
-// empty key). Any other ARCOUNT outcome leaves the delete intact, so the views
-// are refreshed regardless rather than reporting the delete as failed.
+type ArrayDeleteOutcome = 'stale-selection' | 'key-deleted' | 'key-survived'
+
+/**
+ * Shared tail of the ARDEL / ARDELRANGE thunks. The slice's data.count isn't
+ * kept fresh and arrays are sparse, so probe ARCOUNT after the delete to
+ * learn whether the key survived: it 404s once the last element is gone (the
+ * server drops the empty key). Any other ARCOUNT outcome leaves the delete
+ * intact, so the views are refreshed regardless rather than reporting the
+ * delete as failed.
+ *
+ * `state` is the snapshot taken before the delete request, so the probe and
+ * the stale-selection guard target the instance the delete actually ran on.
+ *
+ * On 'key-survived' the loaded views are already refreshed — the caller only
+ * follows up with its own success notification.
+ */
+async function finalizeArrayDelete(
+  key: RedisString,
+  state: RootState,
+  dispatch: AppDispatch,
+  stateInit: () => RootState,
+): Promise<ArrayDeleteOutcome> {
+  const startInstanceId = state.connections.instances.connectedInstance?.id
+
+  let keyDeleted = false
+  try {
+    await apiService.post<GetArrayCountResponse>(
+      arrayUrl(state, ApiEndpoints.ARRAY_GET_COUNT),
+      { keyName: key },
+      encodingParams(state),
+    )
+  } catch (countError) {
+    // 404 ⇒ the last element went and the server dropped the key. Any
+    // other ARCOUNT failure is unrelated to the (already-succeeded) delete,
+    // so fall through and refresh instead of masking it as a failure.
+    const countStatus = get(countError, ['response', 'status'])
+    keyDeleted = Boolean(countStatus && isStatusNotFoundError(countStatus))
+  }
+
+  // If the user switched database or array key while the delete was in
+  // flight, the shared array slice/header now belong to a different
+  // selection. The delete already applied server-side, so skip the UI
+  // updates rather than clobber the current view with the old key's data.
+  const latest = stateInit()
+  // Read the user's current selection, not `selectedKey.data`: on a key
+  // switch the details reducer keeps the old `data` in place while the new
+  // key info loads, so `data.name` would still return the deleted key
+  // during that window and the guard below would wrongly pass.
+  const selectedKey = appContextSelectedKey(latest)
+  const sameInstance =
+    latest.connections.instances.connectedInstance?.id === startInstanceId
+  // Compare by bytes: array keys are binary, and distinct binary keys can
+  // decode to the same display string, so a string compare isn't safe.
+  const sameKey =
+    !!selectedKey && isEqualBuffers(selectedKey, key as RedisResponseBuffer)
+  if (!sameInstance || !sameKey) return 'stale-selection'
+
+  if (keyDeleted) {
+    dispatch(deleteSelectedKeySuccess())
+    dispatch(deleteKeyFromList(key as RedisResponseBuffer))
+    dispatch(
+      addMessageNotification(
+        successMessages.DELETED_KEY(key as RedisResponseBuffer),
+      ),
+    )
+    return 'key-deleted'
+  }
+
+  // Replay every loaded array view (View range/scan, Search, Aggregate)
+  // plus the counters — not just the tab that triggered the delete. All
+  // three tabs stay mounted, so a sibling would otherwise keep showing the
+  // deleted element (or a stale aggregate) until a manual refresh.
+  dispatch(refreshArray(key))
+  dispatch(refreshKeyInfoAction(key as RedisResponseBuffer))
+  return 'key-survived'
+}
+
+// Per-element delete (ARDEL). Resolves true when the delete completed and
+// the UI was updated; false when it failed or the selection changed
+// mid-flight (so the caller doesn't clear a selection that now belongs to a
+// different key).
 export function deleteArrayElements(key: RedisString, indexes: string[]) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     try {
       const state = stateInit()
-      const startInstanceId = state.connections.instances.connectedInstance?.id
       const { status } = await apiService.delete(
         arrayUrl(state, ApiEndpoints.ARRAY_ELEMENTS),
         { data: { keyName: key, indexes }, ...encodingParams(state) },
@@ -712,58 +788,10 @@ export function deleteArrayElements(key: RedisString, indexes: string[]) {
         },
       })
 
-      let keyDeleted = false
-      try {
-        await apiService.post<GetArrayCountResponse>(
-          arrayUrl(state, ApiEndpoints.ARRAY_GET_COUNT),
-          { keyName: key },
-          encodingParams(state),
-        )
-      } catch (countError) {
-        // 404 ⇒ the last element went and the server dropped the key. Any
-        // other ARCOUNT failure is unrelated to the (already-succeeded) delete,
-        // so fall through and refresh instead of masking it as a failure.
-        const countStatus = get(countError, ['response', 'status'])
-        keyDeleted = Boolean(countStatus && isStatusNotFoundError(countStatus))
-      }
+      const outcome = await finalizeArrayDelete(key, state, dispatch, stateInit)
+      if (outcome === 'stale-selection') return false
+      if (outcome === 'key-deleted') return true
 
-      // If the user switched database or array key while the delete was in
-      // flight, the shared array slice/header now belong to a different
-      // selection. The delete already applied server-side, so skip the UI
-      // updates rather than clobber the current view with the old key's data.
-      const latest = stateInit()
-      // Read the user's current selection, not `selectedKey.data`: on a key
-      // switch the details reducer keeps the old `data` in place while the new
-      // key info loads, so `data.name` would still return the deleted key
-      // during that window and the guard below would wrongly pass.
-      const selectedKey = appContextSelectedKey(latest)
-      const sameInstance =
-        latest.connections.instances.connectedInstance?.id === startInstanceId
-      // Compare by bytes: array keys are binary, and distinct binary keys can
-      // decode to the same display string, so a string compare isn't safe.
-      const sameKey =
-        !!selectedKey && isEqualBuffers(selectedKey, key as RedisResponseBuffer)
-      // Context changed mid-flight: report not-completed so the caller doesn't
-      // clear a selection that now belongs to a different key.
-      if (!sameInstance || !sameKey) return false
-
-      if (keyDeleted) {
-        dispatch(deleteSelectedKeySuccess())
-        dispatch(deleteKeyFromList(key as RedisResponseBuffer))
-        dispatch(
-          addMessageNotification(
-            successMessages.DELETED_KEY(key as RedisResponseBuffer),
-          ),
-        )
-        return true
-      }
-
-      // Replay every loaded array view (View range/scan, Search, Aggregate)
-      // plus the counters — not just the tab that triggered the delete. All
-      // three tabs stay mounted, so a sibling would otherwise keep showing the
-      // deleted element (or a stale aggregate) until a manual refresh.
-      dispatch(refreshArray(key))
-      dispatch(refreshKeyInfoAction(key as RedisResponseBuffer))
       dispatch(
         addMessageNotification(
           indexes.length > 1
@@ -781,6 +809,48 @@ export function deleteArrayElements(key: RedisString, indexes: string[]) {
                 indexes.join(', ') as unknown as RedisResponseBuffer,
                 'Element',
               ),
+        ),
+      )
+      return true
+    } catch (error) {
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      return false
+    }
+  }
+}
+
+// Range delete (ARDELRANGE). The window is inclusive and a reversed range
+// (start > end) deletes the same window. The response's `affected` counts
+// elements actually removed — empty slots inside the window contribute 0 —
+// so the toast reports it instead of the window size. Resolves true/false
+// with the same completion contract as deleteArrayElements.
+export function deleteArrayRange(key: RedisString, start: string, end: string) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    try {
+      const state = stateInit()
+      const { data, status } = await apiService.delete<DeleteArrayResponse>(
+        arrayUrl(state, ApiEndpoints.ARRAY_RANGE),
+        { data: { keyName: key, start, end }, ...encodingParams(state) },
+      )
+      if (!isStatusSuccessful(status)) return false
+
+      sendEventTelemetry({
+        event: TelemetryEvent.ARRAY_RANGE_DELETED,
+        eventData: {
+          databaseId: state.connections.instances.connectedInstance?.id,
+        },
+      })
+
+      const outcome = await finalizeArrayDelete(key, state, dispatch, stateInit)
+      if (outcome === 'stale-selection') return false
+      if (outcome === 'key-deleted') return true
+
+      dispatch(
+        addMessageNotification(
+          successMessages.REMOVED_ARRAY_RANGE(
+            key as RedisResponseBuffer,
+            data.affected,
+          ),
         ),
       )
       return true

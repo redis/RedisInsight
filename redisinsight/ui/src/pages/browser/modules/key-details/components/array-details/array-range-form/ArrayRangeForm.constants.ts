@@ -8,6 +8,10 @@ export const PREVIEW_TOGGLE_HIDE_TOOLTIP = 'Hide the command preview'
 
 export const RUN_BUTTON_LABEL = 'Run'
 export const RESET_TOOLTIP = 'Reset to defaults'
+
+export const DELETE_RANGE_BUTTON_LABEL = 'Delete range'
+export const DELETE_RANGE_TITLE = 'Delete range'
+export const DELETE_RANGE_CONFIRM_LABEL = 'Remove'
 export const INVALID_INDEX_MESSAGE =
   'Index must be a valid 64-bit unsigned integer'
 

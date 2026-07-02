@@ -49,6 +49,7 @@ import reducer, {
   updateArrayElementAction,
   fetchArrayNeighbours,
   deleteArrayElements,
+  deleteArrayRange,
 } from '../../browser/array'
 import { arrayGrepPredicateFactory } from 'uiSrc/mocks/factories/browser/array/arrayGrepPredicate.factory'
 import {
@@ -1820,6 +1821,90 @@ describe('array slice', () => {
         expect(
           actions.some((a) => a.type === deleteSelectedKeySuccess.type),
         ).toBe(false)
+      })
+    })
+
+    // The ARCOUNT probe / stale-selection / key-deleted tail is shared with
+    // deleteArrayElements and exercised in depth there; these cover what is
+    // specific to the range flow.
+    describe('deleteArrayRange', () => {
+      const keyBuffer = stringToBuffer(mockKey)
+
+      beforeEach(() => {
+        const state = cloneDeep(initialStateDefault)
+        state.app.context.browser.keyList.selectedKey = keyBuffer
+        store = mockStore(state)
+        store.clearActions()
+      })
+
+      it('deletes the inclusive window, refreshes the views, and toasts the affected count', async () => {
+        apiService.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '3' } })
+        // ARCOUNT probe (key still exists) + refreshArray's follow-up fetches.
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, count: '4' },
+        })
+
+        await store.dispatch<any>(deleteArrayRange(keyBuffer, '0', '9'))
+
+        expect(apiService.delete).toHaveBeenCalledWith(
+          expect.stringContaining('array/range'),
+          expect.objectContaining({
+            data: { keyName: keyBuffer, start: '0', end: '9' },
+          }),
+        )
+        const actions = store.getActions()
+        expect(actions.some((a) => a.type === loadArrayRangeSuccess.type)).toBe(
+          true,
+        )
+        expect(actions).toContainEqual(
+          expect.objectContaining({
+            type: addMessageNotification.type,
+            payload: expect.objectContaining({
+              title: 'Elements have been removed',
+            }),
+          }),
+        )
+        expect(
+          actions.some((a) => a.type === deleteSelectedKeySuccess.type),
+        ).toBe(false)
+        expect(actions.some((a) => a.type === addErrorNotification.type)).toBe(
+          false,
+        )
+      })
+
+      it('treats a 404 on the ARCOUNT probe as a deleted key (range covered the last elements)', async () => {
+        apiService.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '4' } })
+        apiService.post = jest
+          .fn()
+          .mockRejectedValue({ response: { status: 404 } })
+
+        await store.dispatch<any>(deleteArrayRange(keyBuffer, '0', '9'))
+
+        const actions = store.getActions()
+        expect(
+          actions.some((a) => a.type === deleteSelectedKeySuccess.type),
+        ).toBe(true)
+        expect(actions.some((a) => a.type === addErrorNotification.type)).toBe(
+          false,
+        )
+      })
+
+      it('shows an error notification when the delete itself fails', async () => {
+        const rejected = {
+          response: { status: 500, data: { message: 'boom' } },
+        }
+        apiService.delete = jest.fn().mockRejectedValue(rejected)
+
+        await store.dispatch<any>(deleteArrayRange(keyBuffer, '0', '9'))
+
+        expect(store.getActions()).toContainEqual(
+          addErrorNotification(rejected as IAddInstanceErrorPayload),
+        )
       })
     })
   })
