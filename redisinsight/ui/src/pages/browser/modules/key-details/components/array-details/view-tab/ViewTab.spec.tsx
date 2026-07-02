@@ -87,13 +87,15 @@ describe('ViewTab', () => {
     // The header checkbox selects every loaded row.
     fireEvent.click(screen.getByRole('checkbox', { name: /all rows/i }))
 
-    // The contextual bar appears once a selection exists.
+    // The bulk-delete trigger appears in the actions-column header, and the
+    // confirm popover states the count.
+    fireEvent.click(await screen.findByTestId('array-bulk-remove-btn-icon'))
     expect(
-      await screen.findByTestId('array-bulk-delete-bar'),
-    ).toHaveTextContent('2 selected')
-
-    fireEvent.click(screen.getByTestId('array-bulk-remove-btn-icon'))
-    fireEvent.click(await screen.findByTestId('array-bulk-remove-btn'))
+      await screen.findByText(
+        /2 selected elements will be permanently removed/,
+      ),
+    ).toBeInTheDocument()
+    fireEvent.click(screen.getByTestId('array-bulk-remove-btn'))
 
     await waitFor(() =>
       expect(apiService.delete).toHaveBeenCalledWith(
@@ -119,13 +121,13 @@ describe('ViewTab', () => {
 
     fireEvent.click(screen.getByRole('checkbox', { name: /all rows/i }))
     expect(
-      await screen.findByTestId('array-bulk-delete-bar'),
+      await screen.findByTestId('array-bulk-remove-btn-icon'),
     ).toBeInTheDocument()
 
     fireEvent.click(screen.getByTestId('array-range-form-reset'))
 
     expect(
-      screen.queryByTestId('array-bulk-delete-bar'),
+      screen.queryByTestId('array-bulk-remove-btn-icon'),
     ).not.toBeInTheDocument()
   })
 })

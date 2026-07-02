@@ -96,8 +96,10 @@ jest.mock('./hooks', () => ({
       onRowSelectionChange: jest.fn(),
       getRowCanSelect: () => true,
     },
-    selectedCount: 0,
-    handleBulkDelete: jest.fn(),
+    bulkDeleteConfig: {
+      selectedCount: 0,
+      handleBulkDelete: jest.fn(),
+    },
     clearSelection: jest.fn(),
   }),
 }))

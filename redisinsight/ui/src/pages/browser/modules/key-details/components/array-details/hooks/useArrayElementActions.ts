@@ -7,6 +7,7 @@ import { deleteArrayElements } from 'uiSrc/slices/browser/array'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 
 import { ArrayElementDeleteConfig } from '../array-details-table/components/RowActionsCell'
+import { ArrayBulkDeleteConfig } from '../array-details-table/components/BulkDeleteHeaderCell'
 import { ArrayElementSelectionConfig } from '../array-details-table/ArrayDetailsTable.types'
 import {
   UseArrayElementActionsParams,
@@ -142,11 +143,15 @@ export const useArrayElementActions = (
     clearSelection()
   }, [dispatch, keyProp, selectedIndexes, clearSelection])
 
+  const bulkDeleteConfig = useMemo<ArrayBulkDeleteConfig>(
+    () => ({ selectedCount: selectedIndexes.length, handleBulkDelete }),
+    [selectedIndexes.length, handleBulkDelete],
+  )
+
   return {
     deleteConfig,
     selectionConfig,
-    selectedCount: selectedIndexes.length,
-    handleBulkDelete,
+    bulkDeleteConfig,
     clearSelection,
   }
 }

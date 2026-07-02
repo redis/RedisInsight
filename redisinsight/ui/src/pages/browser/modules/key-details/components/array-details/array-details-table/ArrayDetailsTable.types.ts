@@ -5,6 +5,7 @@ import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 import { Nullable } from 'uiSrc/utils'
 
 import { ArrayElementDeleteConfig } from './components/RowActionsCell'
+import { ArrayBulkDeleteConfig } from './components/BulkDeleteHeaderCell'
 
 /**
  * Opt-in multi-select wiring forwarded to the redis-ui table's
@@ -35,6 +36,8 @@ export interface ArrayDetailsTableProps {
   deleteConfig?: ArrayElementDeleteConfig
   /** Enables multi-select checkboxes when provided. */
   selectionConfig?: ArrayElementSelectionConfig
+  /** Enables the bulk-delete trigger in the actions-column header. */
+  bulkDeleteConfig?: ArrayBulkDeleteConfig
 }
 
 /**
@@ -48,4 +51,7 @@ export interface ArrayTableConfig {
   /** Present only when the consumer enables row deletion; the actions cell
    *  reads it from the table `meta`. */
   deleteConfig?: ArrayElementDeleteConfig
+  /** Present only when multi-select is enabled; the actions-column header
+   *  reads it from the table `meta` to render the bulk-delete trigger. */
+  bulkDeleteConfig?: ArrayBulkDeleteConfig
 }

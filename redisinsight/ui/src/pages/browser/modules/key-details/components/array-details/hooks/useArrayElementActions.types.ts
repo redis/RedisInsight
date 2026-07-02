@@ -1,6 +1,7 @@
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 
 import { ArrayElementDeleteConfig } from '../array-details-table/components/RowActionsCell'
+import { ArrayBulkDeleteConfig } from '../array-details-table/components/BulkDeleteHeaderCell'
 import { ArrayElementSelectionConfig } from '../array-details-table/ArrayDetailsTable.types'
 
 export interface UseArrayElementActionsParams {
@@ -18,9 +19,8 @@ export interface UseArrayElementActionsResult {
   deleteConfig: ArrayElementDeleteConfig
   /** Multi-select config forwarded to the table. */
   selectionConfig: ArrayElementSelectionConfig
-  /** Number of currently-selected rows. */
-  selectedCount: number
-  /** Deletes all selected indexes (ARDEL) and clears the selection. */
-  handleBulkDelete: () => void
+  /** Bulk-delete config for the actions-column header (count + delete). */
+  bulkDeleteConfig: ArrayBulkDeleteConfig
+  /** Clears the multi-select; consumers call it on query reset. */
   clearSelection: () => void
 }

@@ -39,6 +39,7 @@ const ArrayDetailsTable = memo(
     expandRowOnClick,
     deleteConfig,
     selectionConfig,
+    bulkDeleteConfig,
   }: ArrayDetailsTableProps) => {
     const { compressor = null } = useAppSelector(
       connectedInstanceSelector,
@@ -49,8 +50,8 @@ const ArrayDetailsTable = memo(
     // column defs in `ArrayDetailsTable.config` don't need to close over
     // them and can be rebuilt only when `compressor` / `viewFormat` change.
     const meta = useMemo<ArrayTableConfig>(
-      () => ({ compressor, viewFormat, deleteConfig }),
-      [compressor, viewFormat, deleteConfig],
+      () => ({ compressor, viewFormat, deleteConfig, bulkDeleteConfig }),
+      [compressor, viewFormat, deleteConfig, bulkDeleteConfig],
     )
 
     // The redis-ui selection checkbox column is opt-in: the plugin only sets up
