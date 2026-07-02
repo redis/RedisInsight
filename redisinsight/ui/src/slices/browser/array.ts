@@ -283,12 +283,19 @@ const arraySlice = createSlice({
       state,
       { payload }: PayloadAction<{ index: string; value: RedisString }>,
     ) => {
-      ;[state.data.elements, state.search.data].forEach((elements) => {
+      const patch = (elements: ArrayDataElement[]) => {
         const target = elements.find(
           (element) => element.index === payload.index,
         )
         if (target) target.value = payload.value
-      })
+      }
+      patch(state.data.elements)
+      // A WITHVALUES=false search holds index-only rows on purpose; writing a
+      // value here would surface one the active query never asked to load.
+      // Leave those rows value-less (a later refetch/replay fills them).
+      if (state.search.query?.withValues !== false) {
+        patch(state.search.data)
+      }
     },
   },
 })

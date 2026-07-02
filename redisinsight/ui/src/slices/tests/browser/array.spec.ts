@@ -267,6 +267,30 @@ describe('array slice', () => {
       expect(next.search.data).toEqual([{ index: '5', value: 'B' }])
     })
 
+    it('leaves WITHVALUES=false search rows value-less on edit', () => {
+      const dirty = {
+        ...initialState,
+        data: {
+          ...initialState.data,
+          elements: [{ index: '5', value: 'b' }],
+        },
+        search: {
+          ...initialState.search,
+          data: [{ index: '5', value: null }],
+          query: { predicates: [], withValues: false } as any,
+        },
+      }
+      const next = reducer(
+        dirty,
+        updateArrayElement({ index: '5', value: 'B' }),
+      )
+      // The View tab reflects the edit…
+      expect(next.data.elements).toEqual([{ index: '5', value: 'B' }])
+      // …but an index-only search result stays value-less, since the active
+      // query explicitly asked not to load values.
+      expect(next.search.data).toEqual([{ index: '5', value: null }])
+    })
+
     describe('search sub-state', () => {
       const dirtySearch = {
         ...initialState,
