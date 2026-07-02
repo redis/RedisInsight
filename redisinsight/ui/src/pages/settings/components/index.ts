@@ -4,6 +4,7 @@ import WorkbenchSettings from './workbench-settings'
 import CloudSettings from './cloud-settings'
 import GeneralSettings from './general-settings'
 import ThemeSettings from './theme-settings'
+import LanguageSettings from './language-settings'
 import { CopyDiagnostics } from './copy-diagnostics/CopyDiagnostics'
 
 export {
@@ -13,5 +14,6 @@ export {
   CloudSettings,
   GeneralSettings,
   ThemeSettings,
+  LanguageSettings,
   CopyDiagnostics,
 }

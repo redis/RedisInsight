@@ -111,6 +111,7 @@ describe('SettingsService', () => {
 
       expect(result).toEqual({
         theme: null,
+        language: null,
         scanThreshold: REDIS_SCAN_CONFIG.scanThreshold,
         batchSize: WORKBENCH_CONFIG.countBatch,
         dateFormat: null,
@@ -130,6 +131,7 @@ describe('SettingsService', () => {
 
       expect(result).toEqual({
         ...mockSettings.data,
+        language: null,
         acceptTermsAndConditionsOverwritten: false,
         agreements: {
           version: mockAgreements.version,

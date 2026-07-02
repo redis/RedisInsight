@@ -1,6 +1,11 @@
 {
-  "version": 4,
+  "version": 5,
   "features": {
+    "dev-language": {
+      "flag": true,
+      "perc": [[0, 0]],
+      "filters": []
+    },
     "redisDataIntegration": {
       "flag": true,
       "perc": [[0, 100]],

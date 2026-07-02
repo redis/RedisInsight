@@ -138,6 +138,7 @@ describe('SettingsAnalytics', () => {
       dateFormat: null,
       timezone: null,
       theme: null,
+      language: null,
     };
     it('should emit [SETTINGS_KEYS_TO_SCAN_CHANGED] event', async () => {
       service.sendSettingsUpdatedEvent(

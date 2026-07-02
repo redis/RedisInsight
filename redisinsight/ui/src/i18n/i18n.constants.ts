@@ -8,3 +8,9 @@ export const DEFAULT_LANGUAGE: SupportedLanguage = 'en'
 
 // The single namespace all keys live under (also augmented in i18next.d.ts).
 export const DEFAULT_NAMESPACE = 'translation'
+
+// Human-readable names for the language switcher, keyed by locale code.
+export const LANGUAGE_NAMES: Record<SupportedLanguage, string> = {
+  en: 'English',
+  bg: 'Български',
+}
