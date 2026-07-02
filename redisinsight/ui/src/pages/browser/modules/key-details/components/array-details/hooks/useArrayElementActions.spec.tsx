@@ -120,7 +120,7 @@ describe('useArrayElementActions', () => {
     expect(result.current.bulkDeleteConfig.selectedCount).toBe(2)
 
     await act(async () => {
-      result.current.bulkDeleteConfig.handleBulkDelete()
+      await result.current.bulkDeleteConfig.handleBulkDelete()
     })
 
     expect(apiService.delete).toHaveBeenCalledWith(
@@ -141,10 +141,28 @@ describe('useArrayElementActions', () => {
     setElements([arrayElementWithValueFactory.build({ index: '9' })])
 
     await act(async () => {
-      result.current.bulkDeleteConfig.handleBulkDelete()
+      await result.current.bulkDeleteConfig.handleBulkDelete()
     })
 
     expect(apiService.delete).not.toHaveBeenCalled()
+  })
+
+  it('ignores a second bulk delete while the first is in flight', async () => {
+    const { result } = renderActions([
+      arrayElementWithValueFactory.build({ index: '1' }),
+      arrayElementWithValueFactory.build({ index: '2' }),
+    ])
+
+    selectAll(result, ['1', '2'])
+
+    // Two confirms in the same tick (e.g. a double-click) must not
+    // double-dispatch: the in-flight guard drops the second.
+    await act(async () => {
+      result.current.bulkDeleteConfig.handleBulkDelete()
+      await result.current.bulkDeleteConfig.handleBulkDelete()
+    })
+
+    expect(apiService.delete).toHaveBeenCalledTimes(1)
   })
 
   it('excludes empty View slots from the selection', () => {
