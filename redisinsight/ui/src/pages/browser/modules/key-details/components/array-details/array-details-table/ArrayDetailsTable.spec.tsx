@@ -387,4 +387,40 @@ describe('ArrayDetailsTable', () => {
     )
     expect(screen.queryByTestId('expanded-7')).not.toBeInTheDocument()
   })
+
+  const deleteConfig = {
+    deleting: '',
+    suffix: '-array-element',
+    hideEmptySlots: true,
+    closePopover: jest.fn(),
+    showPopover: jest.fn(),
+    handleDeleteElement: jest.fn(),
+  }
+
+  it('renders a per-row delete trigger when deleteConfig is provided', () => {
+    render(
+      <ArrayDetailsTable
+        elements={[arrayElementWithValueFactory.build({ index: '2' })]}
+        loading={false}
+        isActive
+        deleteConfig={deleteConfig}
+      />,
+    )
+
+    expect(screen.getByTestId('array-remove-btn-2-icon')).toBeInTheDocument()
+  })
+
+  it('renders no actions column when deleteConfig is omitted', () => {
+    render(
+      <ArrayDetailsTable
+        elements={[arrayElementWithValueFactory.build({ index: '2' })]}
+        loading={false}
+        isActive
+      />,
+    )
+
+    expect(
+      screen.queryByTestId('array-remove-btn-2-icon'),
+    ).not.toBeInTheDocument()
+  })
 })

@@ -6,7 +6,7 @@ import { bufferToString } from 'uiSrc/utils'
 
 import { ArrayDetailsTable } from '../array-details-table'
 import { ArrayRangeForm } from '../array-range-form'
-import { useArrayRangeQuery } from '../hooks'
+import { useArrayRangeQuery, useArrayElementActions } from '../hooks'
 import * as S from '../tabs.styles'
 import { ViewTabProps } from './ViewTab.types'
 
@@ -28,6 +28,12 @@ const ViewTab = ({ keyProp, isActive }: ViewTabProps) => {
     loading: rangeLoading,
     error: rangeError,
   } = useArrayRangeQuery(keyProp)
+
+  // Null values in the gap-preserving range are empty slots, so the delete
+  // affordance is hidden on them. The delete thunk refreshes all loaded views.
+  const { deleteConfig } = useArrayElementActions(keyProp, {
+    hideEmptySlots: true,
+  })
 
   return (
     <>
@@ -52,6 +58,7 @@ const ViewTab = ({ keyProp, isActive }: ViewTabProps) => {
               loading={rangeLoading}
               error={rangeError}
               isActive={isActive}
+              deleteConfig={deleteConfig}
             />
           </S.TabTableWrapper>
         )}

@@ -8,7 +8,7 @@ import { bufferToString, isEqualBuffers } from 'uiSrc/utils'
 import { ArrayDetailsTable } from '../array-details-table'
 import { ArraySearchForm } from '../array-search-form'
 import { ContextOption } from '../array-search-form/ArraySearchForm.types'
-import { useArraySearchQuery } from '../hooks'
+import { useArraySearchQuery, useArrayElementActions } from '../hooks'
 import { DEFAULT_CONTEXT } from '../constants'
 import * as S from '../tabs.styles'
 import { NeighbourBand } from './NeighbourBand'
@@ -55,6 +55,13 @@ const SearchTab = ({ keyProp, isActive }: SearchTabProps) => {
     loaded,
   } = useArraySearchQuery(keyProp)
 
+  // Every result is a real match — an index-only row (WITHVALUES off) has a
+  // null value but is still deletable — so empty-slot hiding is off here. The
+  // delete thunk refreshes all loaded views (incl. this search) afterwards.
+  const { deleteConfig } = useArrayElementActions(keyProp, {
+    hideEmptySlots: false,
+  })
+
   // Context lives here, not in the query hook, so the form's reset must
   // restore it too — otherwise reset leaves rows expandable at the old count.
   const handleReset = () => {
@@ -93,6 +100,7 @@ const SearchTab = ({ keyProp, isActive }: SearchTabProps) => {
               loading={loading}
               error={error}
               isActive={isActive}
+              deleteConfig={deleteConfig}
               expandRowOnClick
               getIsRowExpandable={() => context.enabled && !!keyProp}
               renderExpandedRow={(row) =>

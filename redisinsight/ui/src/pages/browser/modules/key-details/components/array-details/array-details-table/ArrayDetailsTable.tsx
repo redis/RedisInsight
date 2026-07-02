@@ -19,6 +19,7 @@ import {
   ARRAY_TABLE_LOADING_MESSAGE,
 } from './constants'
 import {
+  actionsColumn,
   arrayColumns,
   TABLE_MIN_WIDTH,
   TEST_ID,
@@ -33,8 +34,8 @@ import * as S from './ArrayDetailsTable.styles'
  * Renders the array slice's currently-loaded `elements` through the
  * redis-ui `Table` (`@redis-ui/table`). Populated values are editable in
  * place (ARSET) via the value cell's inline editor; empty slots stay
- * read-only (see ArrayValueCell). Row-level delete / range affordances ship
- * with the Delete vertical (docs/redis-array-type-initiative.md §6 Task 7).
+ * read-only (see ArrayValueCell). Shows a per-row delete affordance when the
+ * consumer passes `deleteConfig`.
  */
 const ArrayDetailsTable = memo(
   ({
@@ -45,6 +46,7 @@ const ArrayDetailsTable = memo(
     renderExpandedRow,
     getIsRowExpandable,
     expandRowOnClick,
+    deleteConfig,
   }: ArrayDetailsTableProps) => {
     const dispatch = useAppDispatch()
     const { compressor = null } = useAppSelector(
@@ -146,6 +148,7 @@ const ArrayDetailsTable = memo(
         onApplyEditElement: handleApplyEditElement,
         updating,
         loading: readLoading,
+        deleteConfig,
       }),
       [
         compressor,
@@ -155,7 +158,20 @@ const ArrayDetailsTable = memo(
         handleApplyEditElement,
         updating,
         readLoading,
+        deleteConfig,
       ],
+    )
+
+    // The delete column is appended only when the consumer opts in, so the
+    // View / Aggregate tabs without a `deleteConfig` show no actions column.
+    // Depend on its presence, not its identity: the cell reads the live popover
+    // state from `meta`, so rebuilding `columns` on every `deleting` change
+    // would needlessly reset table state (e.g. expanded Search context rows).
+    const hasActionsColumn = Boolean(deleteConfig)
+    const columns = useMemo(
+      () =>
+        hasActionsColumn ? [...arrayColumns, actionsColumn] : arrayColumns,
+      [hasActionsColumn],
     )
 
     // Use `||` rather than `??` here: the array slice clears `error` to `''`
@@ -169,7 +185,7 @@ const ArrayDetailsTable = memo(
     return (
       <S.Container data-testid={TEST_ID}>
         <S.StyledTable
-          columns={arrayColumns}
+          columns={columns}
           data={elements}
           meta={meta}
           stripedRows
