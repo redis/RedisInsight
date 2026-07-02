@@ -109,6 +109,7 @@ describe('POST /rdi/:id/pipeline/dry-run-job', () => {
           errorCode: 11402,
           message: 'Unauthorized',
           statusCode: 401,
+          resource: { detail: 'Unauthorized' },
         });
       },
       before: async () => {

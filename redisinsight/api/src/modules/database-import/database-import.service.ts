@@ -153,9 +153,7 @@ export class DatabaseImportService {
         if (filename.length > 50) {
           filename = `${filename.slice(0, 50)}...`;
         }
-        throw new UnableToParseDatabaseImportFileException(
-          `Unable to parse ${filename}`,
-        );
+        throw new UnableToParseDatabaseImportFileException(filename);
       }
 
       let response = {

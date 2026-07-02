@@ -48,6 +48,7 @@ describe('GET /rdi/:id', () => {
           statusCode: 404,
           error: 'RdiNotFound',
           errorCode: 11405,
+          resource: { id: notExistedRdiId },
         });
       },
       before: async () => {
