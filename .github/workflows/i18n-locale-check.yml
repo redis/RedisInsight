@@ -1,0 +1,22 @@
+name: i18n locales
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'redisinsight/ui/src/i18n/locales/**'
+
+jobs:
+  duplicate-keys:
+    runs-on: ubuntu-latest
+    name: Check duplicate i18n keys
+    steps:
+      - uses: actions/checkout@v7.0.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Check i18n locale files for duplicate keys
+        run: yarn i18n:check
