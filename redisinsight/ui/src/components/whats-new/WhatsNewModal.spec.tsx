@@ -1,0 +1,115 @@
+import React from 'react'
+import { cloneDeep, set } from 'lodash'
+import {
+  render,
+  screen,
+  fireEvent,
+  cleanup,
+  initialStateDefault,
+  mockStore,
+} from 'uiSrc/utils/test-utils'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { FeatureFlags } from 'uiSrc/constants'
+import { closeWhatsNew, whatsNewFeed } from 'uiSrc/slices/app/whatsNew'
+import WhatsNewModal from './WhatsNewModal'
+
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
+}))
+
+const latestVersion = whatsNewFeed[0].version
+
+const getOpenState = (flagsOn = false) => {
+  let state = set(cloneDeep(initialStateDefault), 'app.whatsNew', {
+    isOpen: true,
+    selectedVersion: latestVersion,
+    lastVersionSeen: null,
+  })
+  if (flagsOn) {
+    state = set(
+      state,
+      `app.features.featureFlags.features.${FeatureFlags.vectorSet}`,
+      { flag: true },
+    )
+    state = set(
+      state,
+      `app.features.featureFlags.features.${FeatureFlags.prodMode}`,
+      { flag: true },
+    )
+  }
+  return state
+}
+
+beforeEach(() => {
+  cleanup()
+})
+
+describe('WhatsNewModal', () => {
+  it('should not render when closed', () => {
+    render(<WhatsNewModal />)
+    expect(screen.queryByTestId('whats-new-cards')).not.toBeInTheDocument()
+  })
+
+  it('should render when open with the version selector', () => {
+    render(<WhatsNewModal />, { store: mockStore(getOpenState()) })
+
+    expect(screen.getByTestId('whats-new-cards')).toBeInTheDocument()
+    expect(screen.getByTestId('whats-new-version-select')).toBeInTheDocument()
+  })
+
+  it('should link full release notes to the selected version', () => {
+    render(<WhatsNewModal />, { store: mockStore(getOpenState()) })
+
+    expect(screen.getByTestId('whats-new-release-notes-link')).toHaveAttribute(
+      'href',
+      expect.stringContaining(`/tag/${latestVersion}`),
+    )
+  })
+
+  it('should show where to find a feature', () => {
+    render(<WhatsNewModal />, { store: mockStore(getOpenState()) })
+
+    expect(
+      screen.getByTestId('whats-new-card-location-geodata-workbench'),
+    ).toBeInTheDocument()
+  })
+
+  it('should hide cards whose feature flag is off', () => {
+    render(<WhatsNewModal />, { store: mockStore(getOpenState(false)) })
+
+    // no-flag card always visible
+    expect(
+      screen.getByTestId('whats-new-card-geodata-workbench'),
+    ).toBeInTheDocument()
+    // flag-gated cards hidden when their flags are off
+    expect(
+      screen.queryByTestId('whats-new-card-vector-sets'),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.queryByTestId('whats-new-card-dev-vs-prod-mode'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should show flag-gated cards when their flags are on', () => {
+    render(<WhatsNewModal />, { store: mockStore(getOpenState(true)) })
+
+    expect(screen.getByTestId('whats-new-card-vector-sets')).toBeInTheDocument()
+    expect(
+      screen.getByTestId('whats-new-card-dev-vs-prod-mode'),
+    ).toBeInTheDocument()
+  })
+
+  it('should dispatch close and send telemetry on "Got it"', () => {
+    const store = mockStore(getOpenState())
+    render(<WhatsNewModal />, { store })
+
+    fireEvent.click(screen.getByTestId('whats-new-got-it-btn'))
+
+    expect(store.getActions()).toEqual([closeWhatsNew()])
+    expect(sendEventTelemetry).toBeCalledWith({
+      event: TelemetryEvent.WHATS_NEW_CLOSED,
+      eventData: { version: latestVersion },
+    })
+  })
+})

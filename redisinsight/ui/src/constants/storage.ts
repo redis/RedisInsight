@@ -47,6 +47,7 @@ enum BrowserStorageItem {
   vectorSearchCreateIndexOnboarding = 'vectorSearchCreateIndexOnboarding',
   wbTsResultPreferences = 'wbTsResultPreferences_',
   prodModeCtaActioned = 'prodModeCtaActioned',
+  whatsNewLastVersionSeen = 'whatsNewLastVersionSeen',
 }
 
 export default BrowserStorageItem

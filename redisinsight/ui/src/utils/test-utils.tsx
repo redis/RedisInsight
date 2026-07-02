@@ -46,6 +46,7 @@ import { initialState as initialStateAppRedisCommands } from 'uiSrc/slices/app/r
 import { initialState as initialStateAppPluginsReducer } from 'uiSrc/slices/app/plugins'
 import { initialState as initialStateAppSocketConnectionReducer } from 'uiSrc/slices/app/socket-connection'
 import { initialState as initialStateAppFeaturesReducer } from 'uiSrc/slices/app/features'
+import { initialState as initialStateAppWhatsNewReducer } from 'uiSrc/slices/app/whatsNew'
 import { initialState as initialStateAppUrlHandlingReducer } from 'uiSrc/slices/app/url-handling'
 import { initialState as initialStateAppCsrfReducer } from 'uiSrc/slices/app/csrf'
 import { initialState as initialStateCliSettings } from 'uiSrc/slices/cli/cli-settings'
@@ -105,6 +106,7 @@ const initialStateDefault: RootState = {
     plugins: cloneDeep(initialStateAppPluginsReducer),
     socketConnection: cloneDeep(initialStateAppSocketConnectionReducer),
     features: cloneDeep(initialStateAppFeaturesReducer),
+    whatsNew: cloneDeep(initialStateAppWhatsNewReducer),
     urlHandling: cloneDeep(initialStateAppUrlHandlingReducer),
     csrf: cloneDeep(initialStateAppCsrfReducer),
     init: cloneDeep(initialStateAppInit),
