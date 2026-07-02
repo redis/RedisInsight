@@ -13,12 +13,23 @@ import { stringToBuffer } from 'uiSrc/utils'
 
 import { ArrayAddForm } from './ArrayAddForm'
 
-const keyProp = stringToBuffer('mykey')
+const keyBuffer = stringToBuffer('mykey')
 
-// The form's key must be the live selected key, otherwise applyArrayWriteResult
-// suppresses the success side effects (onSuccess/closePanel) as a stale write.
+// The form reads the write key from the selected key's data (selectedKeyData),
+// and applyArrayWriteResult gates the success side effects (onSuccess/
+// closePanel) on the live browser-context selection — seed both to the key.
 const stateWithKeySelected = {
   ...initialStateDefault,
+  browser: {
+    ...initialStateDefault.browser,
+    keys: {
+      ...initialStateDefault.browser.keys,
+      selectedKey: {
+        ...initialStateDefault.browser.keys.selectedKey,
+        data: { name: keyBuffer } as any,
+      },
+    },
+  },
   app: {
     ...initialStateDefault.app,
     context: {
@@ -27,7 +38,7 @@ const stateWithKeySelected = {
         ...initialStateDefault.app.context.browser,
         keyList: {
           ...initialStateDefault.app.context.browser.keyList,
-          selectedKey: keyProp,
+          selectedKey: keyBuffer,
         },
       },
     },
@@ -35,7 +46,7 @@ const stateWithKeySelected = {
 }
 
 const renderForm = (closePanel = jest.fn()) =>
-  render(<ArrayAddForm keyProp={keyProp} closePanel={closePanel} />, {
+  render(<ArrayAddForm closePanel={closePanel} />, {
     store: mockStore(stateWithKeySelected),
   })
 

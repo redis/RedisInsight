@@ -127,7 +127,7 @@ const ViewTab = ({
         )}
         {isAddPanelOpen && keyProp && (
           <AddKeysContainer>
-            <ArrayAddForm keyProp={keyProp} closePanel={closeAddPanel} />
+            <ArrayAddForm closePanel={closeAddPanel} />
           </AddKeysContainer>
         )}
       </S.TabBody>

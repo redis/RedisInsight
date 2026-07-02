@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
-import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
+import {
+  selectedKeyDataSelector,
+  selectedKeySelector,
+} from 'uiSrc/slices/browser/keys'
 import { appendArrayElement, addArrayElement } from 'uiSrc/slices/browser/array'
 import {
   BrowserConfirmationCommandId,
@@ -40,9 +43,15 @@ import { ArrayAddFormProps } from './ArrayAddForm.types'
  * length); providing one sets at that index (POST /array/set-element).
  * `ARINSERT` is intentionally not used — see docs/array-modify-vertical-plan.md.
  */
-export const ArrayAddForm = ({ keyProp, closePanel }: ArrayAddFormProps) => {
+export const ArrayAddForm = ({ closePanel }: ArrayAddFormProps) => {
   const dispatch = useAppDispatch()
   const { viewFormat } = useAppSelector(selectedKeySelector)
+  // Resolve the target key from the live selection (like the List/Hash add
+  // panels), not a captured prop — so a confirm after switching keys writes to
+  // the currently selected key rather than a stale one.
+  const { name: selectedKey } = useAppSelector(selectedKeyDataSelector) ?? {
+    name: undefined,
+  }
   const { requestConfirmation } = useProductionWriteConfirmation()
 
   const [value, setValue] = useState('')
@@ -84,18 +93,21 @@ export const ArrayAddForm = ({ keyProp, closePanel }: ArrayAddFormProps) => {
       commandId: BrowserConfirmationCommandId.AddArrayElements,
       disableConfirmationInput: true,
       onConfirm: () => {
+        if (!selectedKey) {
+          return
+        }
         const serialized = stringToSerializedBufferFormat(viewFormat, value)
         if (trimmedIndex.length === 0) {
           dispatch(
             appendArrayElement(
-              { key: keyProp, value: serialized },
+              { key: selectedKey, value: serialized },
               handleSuccess,
             ),
           )
         } else {
           dispatch(
             addArrayElement(
-              { key: keyProp, index: trimmedIndex, value: serialized },
+              { key: selectedKey, index: trimmedIndex, value: serialized },
               handleSuccess,
             ),
           )
