@@ -40,7 +40,7 @@ const DatabasesList = () => {
         defaultPagination={getDefaultPagination()}
         onPaginationChange={handlePaginationChange}
         defaultSorting={DEFAULT_SORTING}
-        maxHeight="60rem" // this enables vertical scroll
+        style={{ maxHeight: '100%' }}
       />
       <BulkItemsActions items={selectedInstances} onClose={resetRowSelection} />
     </>
