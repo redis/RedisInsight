@@ -129,6 +129,25 @@ describe('useArrayElementActions', () => {
         data: { keyName: keyBuffer, indexes: ['1', '2'] },
       }),
     )
+    // Cleared on success so the header trigger vanishes right away (no window
+    // to re-delete before the refresh lands).
+    expect(result.current.bulkDeleteConfig.selectedCount).toBe(0)
+  })
+
+  it('keeps the selection when the bulk delete fails, so it can be retried', async () => {
+    const { result } = renderActions([
+      arrayElementWithValueFactory.build({ index: '1' }),
+      arrayElementWithValueFactory.build({ index: '2' }),
+    ])
+
+    selectAll(result, ['1', '2'])
+    apiService.delete = jest.fn().mockRejectedValue(new Error('boom'))
+
+    await act(async () => {
+      await result.current.bulkDeleteConfig.handleBulkDelete()
+    })
+
+    expect(result.current.bulkDeleteConfig.selectedCount).toBe(2)
   })
 
   it('never fires a bulk delete once every selected row is out of view', async () => {

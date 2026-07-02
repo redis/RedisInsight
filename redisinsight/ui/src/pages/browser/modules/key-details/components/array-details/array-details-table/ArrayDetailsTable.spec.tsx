@@ -557,6 +557,7 @@ describe('ArrayDetailsTable', () => {
           arrayElementFactory.build({ index: '1' }),
         ]}
         loading={false}
+        isActive
         selectionConfig={selectionConfig}
       />,
     )
@@ -574,6 +575,7 @@ describe('ArrayDetailsTable', () => {
           arrayElementFactory.build({ index: '7' }),
         ]}
         loading={false}
+        isActive
         selectionConfig={selectionConfig}
       />,
     )

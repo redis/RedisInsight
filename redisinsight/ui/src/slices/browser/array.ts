@@ -701,7 +701,7 @@ export function deleteArrayElements(key: RedisString, indexes: string[]) {
         arrayUrl(state, ApiEndpoints.ARRAY_ELEMENTS),
         { data: { keyName: key, indexes }, ...encodingParams(state) },
       )
-      if (!isStatusSuccessful(status)) return
+      if (!isStatusSuccessful(status)) return false
 
       sendEventTelemetry({
         event: TelemetryEvent.ARRAY_ELEMENT_DELETED,
@@ -741,7 +741,9 @@ export function deleteArrayElements(key: RedisString, indexes: string[]) {
       // decode to the same display string, so a string compare isn't safe.
       const sameKey =
         !!selectedKey && isEqualBuffers(selectedKey, key as RedisResponseBuffer)
-      if (!sameInstance || !sameKey) return
+      // Context changed mid-flight: report not-completed so the caller doesn't
+      // clear a selection that now belongs to a different key.
+      if (!sameInstance || !sameKey) return false
 
       if (keyDeleted) {
         dispatch(deleteSelectedKeySuccess())
@@ -751,7 +753,7 @@ export function deleteArrayElements(key: RedisString, indexes: string[]) {
             successMessages.DELETED_KEY(key as RedisResponseBuffer),
           ),
         )
-        return
+        return true
       }
 
       // Replay every loaded array view (View range/scan, Search, Aggregate)
@@ -779,8 +781,10 @@ export function deleteArrayElements(key: RedisString, indexes: string[]) {
               ),
         ),
       )
+      return true
     } catch (error) {
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      return false
     }
   }
 }
