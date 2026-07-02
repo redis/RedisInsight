@@ -529,13 +529,13 @@ export function searchArray(params: SearchArrayParams) {
 let latestEditRequestToken = 0
 
 /**
- * Compares the edited key with the currently selected one by value. In
- * buffer-encoding mode key names are `RedisResponseBuffer`s and Redux may swap
- * the instance for the same bytes (e.g. a key-info refetch), so byte-compare
- * rather than rely on reference identity; fall back to strict equality for
- * plain-string names / nullish values.
+ * Compares two key names by value. In buffer-encoding mode key names are
+ * `RedisResponseBuffer`s and Redux may swap the instance for the same bytes
+ * (e.g. a key-info refetch), so byte-compare rather than rely on reference
+ * identity; fall back to strict equality for plain-string names / nullish
+ * values.
  */
-const isSameKey = (a?: unknown, b?: unknown): boolean => {
+export const isSameKey = (a?: unknown, b?: unknown): boolean => {
   if (
     a == null ||
     b == null ||

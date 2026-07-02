@@ -1,5 +1,6 @@
 import React from 'react'
 import { cloneDeep } from 'lodash'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import userEvent from '@testing-library/user-event'
 import {
   act,
@@ -11,7 +12,11 @@ import {
   waitFor,
 } from 'uiSrc/utils/test-utils'
 import { apiService } from 'uiSrc/services'
-import { setSelectedKeyRefreshDisabled } from 'uiSrc/slices/browser/keys'
+import keysReducer, {
+  refreshKeyInfoSuccess,
+  setSelectedKeyRefreshDisabled,
+} from 'uiSrc/slices/browser/keys'
+import { stringToBuffer } from 'uiSrc/utils'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 import {
   arrayElementFactory,
@@ -244,6 +249,58 @@ describe('ArrayDetailsTable', () => {
       })
 
       postSpy.mockRestore()
+    })
+
+    it('keeps the open editor when a same-key info refresh swaps the name buffer', () => {
+      // A successful ARSET dispatches `refreshKeyInfoAction`, and
+      // `refreshKeyInfoSuccess` replaces `selectedKey.data` with a *new* name
+      // buffer instance for the unchanged key. A store that runs the real
+      // `keys` reducer is needed to reproduce the swap (`mockStore` doesn't run
+      // reducers); the other branches the table reads are held constant.
+      const keys = cloneDeep(initialStateDefault.browser.keys)
+      keys.selectedKey.data = { name: stringToBuffer('mykey') } as any
+      const store = configureStore({
+        reducer: combineReducers({
+          browser: combineReducers({
+            keys: keysReducer,
+            array: (s = initialStateDefault.browser.array) => s,
+          }),
+          connections: combineReducers({
+            instances: (s = initialStateDefault.connections.instances) => s,
+          }),
+        }),
+        preloadedState: { browser: { keys } },
+        middleware: (getDefault) =>
+          getDefault({ serializableCheck: false, immutableCheck: false }),
+      })
+
+      render(
+        <ArrayDetailsTable
+          elements={[arrayElementWithValueFactory.build({ index: '1' })]}
+          loading={false}
+          isActive
+        />,
+        { store },
+      )
+
+      act(() => {
+        fireEvent.mouseEnter(
+          screen.getByTestId('array-details-table_content-value-1'),
+        )
+      })
+      fireEvent.click(screen.getByTestId('array-details-table_edit-btn-1'))
+      expect(
+        screen.getByTestId('array-details-table_value-editor-1'),
+      ).toBeInTheDocument()
+
+      // Same key, fresh buffer instance — the editor must survive the refresh.
+      act(() => {
+        store.dispatch(refreshKeyInfoSuccess({ name: stringToBuffer('mykey') }))
+      })
+
+      expect(
+        screen.getByTestId('array-details-table_value-editor-1'),
+      ).toBeInTheDocument()
     })
 
     it('re-enables the key-header refresh when unmounted mid-edit', () => {

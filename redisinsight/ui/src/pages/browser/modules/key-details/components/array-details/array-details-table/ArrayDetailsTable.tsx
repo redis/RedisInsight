@@ -1,4 +1,11 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
@@ -9,6 +16,7 @@ import {
 } from 'uiSrc/slices/browser/keys'
 import {
   arraySelector,
+  isSameKey,
   updateArrayElementAction,
 } from 'uiSrc/slices/browser/array'
 import { KeyValueCompressor } from 'uiSrc/constants'
@@ -101,7 +109,15 @@ const ArrayDetailsTable = memo(
       if (!isActive) setEditingIndex(null)
     }, [isActive])
 
+    // Abandon an open editor only on a *real* key change. `keyName` is the
+    // selected key's name buffer, and the post-ARSET `refreshKeyInfoAction`
+    // swaps in a new buffer instance for the same key — comparing by value
+    // (not reference) stops that refresh from closing an editor the user has
+    // meanwhile reopened on another row.
+    const prevKeyRef = useRef(keyName)
     useEffect(() => {
+      if (isSameKey(prevKeyRef.current, keyName)) return
+      prevKeyRef.current = keyName
       setEditingIndex(null)
     }, [keyName])
 
