@@ -1341,8 +1341,8 @@ describe('InstanceForm', () => {
         />,
       )
 
-      // Host is not shown in edit mode (shown as info above form)
-      expect(screen.queryByTestId('host')).not.toBeInTheDocument()
+      // Host is shown but disabled for Azure databases
+      expect(screen.getByTestId('host')).toBeDisabled()
       // Port, username, password should be disabled
       expect(screen.getByTestId('port')).toBeDisabled()
       expect(screen.getByTestId('username')).toBeDisabled()
@@ -1381,8 +1381,8 @@ describe('InstanceForm', () => {
         />,
       )
 
-      // Host is not shown in edit mode (shown as info above form)
-      expect(screen.queryByTestId('host')).not.toBeInTheDocument()
+      // Host is shown and editable for non-Azure databases in edit mode
+      expect(screen.getByTestId('host')).not.toBeDisabled()
       // Port, username, password should NOT be disabled for non-Azure databases
       expect(screen.getByTestId('port')).not.toBeDisabled()
       expect(screen.getByTestId('username')).not.toBeDisabled()
