@@ -95,4 +95,8 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
     name: KnownFeatures.ProdMode,
     storage: FeatureStorage.Database,
   },
+  [KnownFeatures.DevLanguage]: {
+    name: KnownFeatures.DevLanguage,
+    storage: FeatureStorage.Database,
+  },
 };
