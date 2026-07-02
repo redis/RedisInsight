@@ -4,6 +4,8 @@ import styled from 'styled-components'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 import { Text, Title } from 'uiSrc/components/base/text'
 
+import { focusPanelInsteadOfConfirm } from './ConfirmationPopover.utils'
+
 const PopoverContentWrapper = styled(Col)`
   word-break: break-word;
   max-width: 300px;
@@ -21,7 +23,7 @@ const ConfirmationPopover = (props: ConfirmationPopoverProps) => {
   const { title, message, confirmButton, appendInfo, ...rest } = props
 
   return (
-    <RiPopover {...rest}>
+    <RiPopover onOpenAutoFocus={focusPanelInsteadOfConfirm} {...rest}>
       <PopoverContentWrapper gap="l" data-testid="confirm-popover">
         {title && <Title size="S">{title}</Title>}
         {message && <Text size="m">{message}</Text>}
