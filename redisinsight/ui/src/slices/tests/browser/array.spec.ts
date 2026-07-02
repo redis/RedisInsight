@@ -788,10 +788,11 @@ describe('array slice', () => {
     describe('updateArrayElementAction', () => {
       // The optimistic patch only applies when the edited key is still the
       // selected one, so these tests run against a store whose selected key
-      // matches `mockKey`.
+      // matches `mockKey`. The guard reads the live app-context selection
+      // (updated synchronously on key click), not selectedKey.data.
       const storeWithSelectedKey = (name: unknown) => {
         const state = cloneDeep(initialStateDefault)
-        state.browser.keys.selectedKey.data = { name } as any
+        state.app.context.browser.keyList.selectedKey = name as any
         const s = mockStore(state)
         s.clearActions()
         return s
@@ -843,13 +844,40 @@ describe('array slice', () => {
         expect(onSuccess).not.toHaveBeenCalled()
       })
 
+      it('skips the UI updates when selectedKey.data still lags on the old key after a switch', async () => {
+        apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
+        // The user switched to another key; the live app-context selection
+        // updated, but selectedKey.data still holds the edited key while its
+        // successor loads. Guarding on selectedKey.data would wrongly pass.
+        const state = cloneDeep(initialStateDefault)
+        state.app.context.browser.keyList.selectedKey =
+          stringToBuffer('another-key')
+        ;(state.browser.keys.selectedKey as any).data = { name: mockKey }
+        const keyedStore = mockStore(state)
+        keyedStore.clearActions()
+        const onSuccess = jest.fn()
+
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction(
+            { key: mockKey, index: '5', value: 'B' },
+            onSuccess,
+          ),
+        )
+
+        expect(keyedStore.getActions()).toEqual([
+          setArrayUpdating(true),
+          setArrayUpdating(false),
+        ])
+        expect(onSuccess).not.toHaveBeenCalled()
+      })
+
       it('skips the UI updates when the database changed mid-write, even for a same-named key', async () => {
         // The POST is sent using the connection captured before the await. If
         // the user switches to another database whose selected key has the
         // same name, the key-only guard would still pass — so the value
         // written to the old database must not be applied to the new one.
         const state = cloneDeep(initialStateDefault)
-        state.browser.keys.selectedKey.data = { name: mockKey } as any
+        state.app.context.browser.keyList.selectedKey = mockKey as any
         state.connections.instances.connectedInstance = { id: 'db-1' } as any
         const keyedStore = mockStore(state)
         keyedStore.clearActions()

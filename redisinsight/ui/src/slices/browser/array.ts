@@ -39,7 +39,6 @@ import {
 import { RedisString, RedisResponseBuffer } from 'uiSrc/slices/interfaces/app'
 import {
   refreshKeyInfoAction,
-  selectedKeyDataSelector,
   updateSelectedKeyRefreshTime,
   deleteKeyFromList,
   deleteSelectedKeySuccess,
@@ -574,7 +573,11 @@ export function updateArrayElementAction(
         // row in a different key — or, for a same-named key in another
         // database, apply the old connection's value to the new one.
         const latest = stateInit()
-        const selectedKey = selectedKeyDataSelector(latest)?.name
+        // Read the live selection from the app context, not selectedKey.data:
+        // fetchKeyInfo's loading action leaves the previous key's data in place
+        // while the newly selected key loads, so selectedKey.data lags a switch
+        // (the delete thunk below guards the same way).
+        const selectedKey = appContextSelectedKey(latest)
         const sameInstance =
           latest.connections.instances.connectedInstance?.id === startInstanceId
         if (sameInstance && isSameKey(selectedKey, params.key)) {
