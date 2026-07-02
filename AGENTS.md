@@ -124,6 +124,7 @@ All detailed development standards are exposed as skills under `.ai/skills/`. Cl
 
 - **Code Quality**: `.ai/skills/code-quality/SKILL.md` - Linting, TypeScript standards, naming, import order
 - **Frontend**: `.ai/skills/frontend/SKILL.md` - React, Redux, UI patterns, styled-components
+- **i18n**: `.ai/skills/i18n/SKILL.md` - i18next translations, locale key conventions, translating backend errors and notifications
 - **Backend**: `.ai/skills/backend/SKILL.md` - NestJS, API patterns, dependency injection
 - **Testing**: `.ai/skills/testing/SKILL.md` - Jest/Testing Library standards, faker, test patterns
 - **E2E Testing**: `.ai/skills/e2e-testing/SKILL.md` - Playwright standards, page objects
