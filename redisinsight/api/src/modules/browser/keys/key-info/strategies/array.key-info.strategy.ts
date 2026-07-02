@@ -30,18 +30,25 @@ export class ArrayKeyInfoStrategy extends KeyInfoStrategy {
   ): Promise<GetArrayKeyInfoResponse> {
     this.logger.debug(`Getting ${RedisDataType.Array} type info.`);
 
+    // sendPipeline can't pass per-command options, so it would round u64
+    // ARLEN / ARCOUNT replies in (2^53, 2^63); read those per-command with the
+    // bigint opt-in. TTL / MEMORY USAGE stay pipelined to degrade to size: -1.
+    const readCounts = () =>
+      Promise.all([
+        client.sendCommand([BrowserToolArrayCommands.ArLen, key], {
+          integerReply: 'bigint',
+        }),
+        client.sendCommand([BrowserToolArrayCommands.ArCount, key], {
+          integerReply: 'bigint',
+        }),
+      ]);
+
     if (includeSize !== false) {
-      const [
-        [, ttl = null],
-        [, rawLength = null],
-        [, rawCount = null],
-        [, size = null],
-      ] = (await client.sendPipeline([
+      const [[, ttl = null], [, size = null]] = (await client.sendPipeline([
         [BrowserToolKeysCommands.Ttl, key],
-        [BrowserToolArrayCommands.ArLen, key],
-        [BrowserToolArrayCommands.ArCount, key],
         [BrowserToolKeysCommands.MemoryUsage, key, 'samples', '0'],
       ])) as [any, any][];
+      const [rawLength, rawCount] = await readCounts();
 
       return {
         name: key,
@@ -53,12 +60,10 @@ export class ArrayKeyInfoStrategy extends KeyInfoStrategy {
       };
     }
 
-    const [[, ttl = null], [, rawLength = null], [, rawCount = null]] =
-      (await client.sendPipeline([
-        [BrowserToolKeysCommands.Ttl, key],
-        [BrowserToolArrayCommands.ArLen, key],
-        [BrowserToolArrayCommands.ArCount, key],
-      ])) as [any, any][];
+    const [[, ttl = null]] = (await client.sendPipeline([
+      [BrowserToolKeysCommands.Ttl, key],
+    ])) as [any, any][];
+    const [rawLength, rawCount] = await readCounts();
 
     // Sparse arrays can have huge `length` (ARLEN, total addressable slots)
     // while `count` (ARCOUNT, populated slots) stays small. MEMORY USAGE cost

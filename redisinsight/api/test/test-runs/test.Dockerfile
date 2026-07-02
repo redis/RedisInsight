@@ -6,6 +6,9 @@ RUN dbus-uuidgen > /var/lib/dbus/machine-id
 WORKDIR /usr/src/app
 
 COPY package.json yarn.lock ./
+# patch-package (postinstall) reads these, so they must exist before install —
+# otherwise patches silently don't apply (e.g. the ioredis bigint parser).
+COPY patches ./patches
 COPY stubs ./stubs
 COPY scripts ./scripts
 # Skip API client generation during install: integration tests don't need the

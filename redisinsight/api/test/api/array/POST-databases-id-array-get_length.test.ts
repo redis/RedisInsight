@@ -108,6 +108,28 @@ describe('POST /databases/:instanceId/array/get-length', () => {
       });
     });
 
+    it('Should preserve u64 precision in the (2^53, 2^63) RESP-integer zone', async () => {
+      const keyName = constants.getRandomString();
+      // Highest index 2^53, so length is 2^53 + 1 — below 2^63 (so Redis sends
+      // a RESP integer, not a bulk string) and above 2^53 (a JS number would
+      // round it). This is the zone the per-command bigint path protects; the
+      // case above (≥ 2^63) arrives as a bulk string and survives without it.
+      const highIndex = '9007199254740992'; // 2^53
+      const expectedLength = '9007199254740993'; // 2^53 + 1
+      await rte.client.call('ARMSET', keyName, highIndex, 'x');
+
+      await validateApiCall({
+        endpoint,
+        data: { keyName },
+        responseSchema,
+        responseBody: { keyName, length: expectedLength },
+        checkFn: ({ body }: any) => {
+          expect(typeof body.length).to.eql('string');
+          expect(body.length).to.eql(expectedLength);
+        },
+      });
+    });
+
     [
       {
         name: 'Should return BadRequest if key holds a non-array type',

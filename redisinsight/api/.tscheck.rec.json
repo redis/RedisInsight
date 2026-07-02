@@ -84,15 +84,15 @@
     "TS7053": 3
   },
   "src/common/transformers/redis-reply/strategies/ascii-formatter.strategey.spec.ts": {
-    "TS7005": 8,
-    "TS7034": 2
+    "TS7005": 1,
+    "TS7034": 1
   },
   "src/common/transformers/redis-reply/strategies/ascii-formatter.strategy.ts": {
     "TS7053": 2
   },
   "src/common/transformers/redis-reply/strategies/utf8-formatter.strategy.spec.ts": {
-    "TS7005": 9,
-    "TS7034": 2
+    "TS7005": 1,
+    "TS7034": 1
   },
   "src/common/transformers/redis-reply/strategies/utf8-formatter.strategy.ts": {
     "TS7053": 2
@@ -497,15 +497,15 @@
     "TS7053": 3
   },
   "src/modules/cli/services/cli-business/output-formatter/strategies/raw-formatter.strategy.spec.ts": {
-    "TS7005": 8,
-    "TS7034": 2
+    "TS7005": 1,
+    "TS7034": 1
   },
   "src/modules/cli/services/cli-business/output-formatter/strategies/raw-formatter.strategy.ts": {
     "TS7053": 2
   },
   "src/modules/cli/services/cli-business/output-formatter/strategies/text-formatter.strategy.spec.ts": {
-    "TS7005": 10,
-    "TS7034": 2
+    "TS7005": 1,
+    "TS7034": 1
   },
   "src/modules/cli/services/cli-business/output-formatter/strategies/utf-8-formatter.strategy.ts": {
     "TS7053": 2

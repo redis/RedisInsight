@@ -28,6 +28,9 @@ export interface IRedisClientCommandOptions {
   firstKey?: RedisString;
   readOnly?: boolean;
   replyEncoding?: 'utf8' | null;
+  // Opt a command's integer replies into exact BigInt (instead of the default
+  // Number) so u64 values above 2^53 — array indexes/counts — aren't rounded.
+  integerReply?: 'number' | 'bigint';
   unknownCommands?: boolean;
 }
 
@@ -49,6 +52,7 @@ export type RedisClientCommand = [
 export type RedisClientCommandReply =
   | string
   | number
+  | bigint
   | Buffer
   | null
   | undefined

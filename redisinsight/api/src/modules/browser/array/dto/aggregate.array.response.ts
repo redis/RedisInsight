@@ -8,12 +8,9 @@ export class AggregateArrayResponse extends KeyResponse {
       'decimal string; MATCH/USED return an integer count as a string. ' +
       'Returns `null` when AROP yields a nil reply (numeric ops over a ' +
       'range with no numeric values; bitwise ops over an empty range). ' +
-      'Precision: SUM/MIN/MAX preserve full precision (Redis returns a ' +
-      'bulk string); MATCH/USED are bounded by the 1,000,000-element span ' +
-      'cap and always fit safely. AND/OR/XOR return RESP integers and are ' +
-      'parsed by the Node Redis client as JavaScript numbers, so results ' +
-      'above Number.MAX_SAFE_INTEGER (2^53 - 1) may be rounded — use the ' +
-      'raw AROP command via Workbench when full u64 precision is required.',
+      'Full u64 precision is preserved: SUM/MIN/MAX arrive as bulk strings, ' +
+      'and AND/OR/XOR/MATCH/USED integer replies are read with the bigint ' +
+      'opt-in, so results above Number.MAX_SAFE_INTEGER (2^53 - 1) stay exact.',
     type: String,
     nullable: true,
     example: '104.7',
