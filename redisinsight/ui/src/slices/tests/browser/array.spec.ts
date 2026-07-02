@@ -11,6 +11,7 @@ import {
   mockStore,
 } from 'uiSrc/utils/test-utils'
 import { MOCK_TIMESTAMP } from 'uiSrc/mocks/data/dateNow'
+import successMessages from 'uiSrc/components/notifications/success-messages'
 
 import reducer, {
   abortArrayRange,
@@ -959,6 +960,28 @@ describe('array slice', () => {
         expect(actions.some((a) => a.type === addErrorNotification.type)).toBe(
           false,
         )
+      })
+
+      it('summarizes the toast for a bulk delete instead of joining every index', async () => {
+        const listToast = jest.spyOn(successMessages, 'REMOVED_LIST_ELEMENTS')
+        apiService.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '15' } })
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, count: '5' },
+        })
+        const indexes = Array.from({ length: 15 }, (_, i) => String(i))
+
+        await store.dispatch<any>(deleteArrayElements(keyBuffer, indexes))
+
+        // Count is the full selection, but only a capped sample is rendered so
+        // a large select-all can't build a giant notification string.
+        expect(listToast).toHaveBeenCalledTimes(1)
+        const [, count, sample] = listToast.mock.calls[0]
+        expect(count).toBe(15)
+        expect(sample).toHaveLength(10)
+        listToast.mockRestore()
       })
 
       it('treats a 404 on the ARCOUNT probe as a deleted key (last element)', async () => {
