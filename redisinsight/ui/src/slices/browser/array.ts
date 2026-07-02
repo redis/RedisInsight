@@ -34,13 +34,14 @@ import {
   FetchArrayRangeParams,
   FetchArrayScanParams,
   SearchArrayParams,
+  UpdateArrayElementParams,
 } from 'uiSrc/slices/interfaces/array'
 import { RedisString, RedisResponseBuffer } from 'uiSrc/slices/interfaces/app'
 import {
+  refreshKeyInfoAction,
   updateSelectedKeyRefreshTime,
   deleteKeyFromList,
   deleteSelectedKeySuccess,
-  refreshKeyInfoAction,
 } from './keys'
 import { appContextSelectedKey } from 'uiSrc/slices/app/context'
 import { AppDispatch, RootState } from '../store'
@@ -70,6 +71,7 @@ export const DEFAULT_SCAN_LIMIT = 1_000_000
 export const initialState: StateArray = {
   loading: false,
   error: '',
+  updating: false,
   query: {
     start: DEFAULT_QUERY_START,
     end: DEFAULT_QUERY_END,
@@ -265,6 +267,36 @@ const arraySlice = createSlice({
     resetArraySearch: (state) => {
       state.search = { ...initialState.search }
     },
+
+    // Tracks an in-flight inline ARSET so the table can disable overlapping
+    // edits and hold the header refresh until the write settles.
+    setArrayUpdating: (state, { payload }: PayloadAction<boolean>) => {
+      state.updating = payload
+    },
+
+    // Optimistically reflect a successful ARSET in the loaded page so the
+    // table updates without a refetch. The View tab renders from
+    // `data.elements` and the Search tab from `search.data` through the same
+    // table, so patch the matching index in both. No-op where the edited
+    // index isn't loaded.
+    updateArrayElement: (
+      state,
+      { payload }: PayloadAction<{ index: string; value: RedisString }>,
+    ) => {
+      const patch = (elements: ArrayDataElement[]) => {
+        const target = elements.find(
+          (element) => element.index === payload.index,
+        )
+        if (target) target.value = payload.value
+      }
+      patch(state.data.elements)
+      // A WITHVALUES=false search holds index-only rows on purpose; writing a
+      // value here would surface one the active query never asked to load.
+      // Leave those rows value-less (a later refetch/replay fills them).
+      if (state.search.query?.withValues !== false) {
+        patch(state.search.data)
+      }
+    },
   },
 })
 
@@ -285,6 +317,8 @@ export const {
   loadArraySearchSuccess,
   loadArraySearchFailure,
   resetArraySearch,
+  updateArrayElement,
+  setArrayUpdating,
 } = arraySlice.actions
 
 export const arraySelector = (state: RootState) => state.browser.array
@@ -487,6 +521,102 @@ export function searchArray(params: SearchArrayParams) {
     } finally {
       if (arraySearchController === controller) {
         arraySearchController = null
+      }
+    }
+  }
+}
+
+/**
+ * Monotonic token identifying the most recently started ARSET edit. A key
+ * switch resets the slice (clearing `updating`) and can let a new edit begin
+ * before an earlier request settles; the token lets a stale completion skip
+ * releasing the lock so it can't re-enable refresh/edits for the newer write.
+ */
+let latestEditRequestToken = 0
+
+/**
+ * Compares two key names by value. In buffer-encoding mode key names are
+ * `RedisResponseBuffer`s and Redux may swap the instance for the same bytes
+ * (e.g. a key-info refetch), so byte-compare rather than rely on reference
+ * identity; fall back to strict equality for plain-string names / nullish
+ * values.
+ */
+export const isSameKey = (a?: unknown, b?: unknown): boolean => {
+  if (
+    a == null ||
+    b == null ||
+    typeof a === 'string' ||
+    typeof b === 'string'
+  ) {
+    return a === b
+  }
+  return isEqualBuffers(a as RedisResponseBuffer, b as RedisResponseBuffer)
+}
+
+// ARSET — in-place value edit. Editing a populated slot can't change
+// ARLEN/ARCOUNT, so the header counters are intentionally not refreshed.
+// `value` must already be in the formatter's serialized-buffer shape.
+export function updateArrayElementAction(
+  params: UpdateArrayElementParams,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    latestEditRequestToken += 1
+    const requestToken = latestEditRequestToken
+    dispatch(setArrayUpdating(true))
+    try {
+      const state = stateInit()
+      const startInstanceId = state.connections.instances.connectedInstance?.id
+      const { status } = await apiService.post(
+        arrayUrl(state, ApiEndpoints.ARRAY_SET_ELEMENT),
+        { keyName: params.key, index: params.index, value: params.value },
+        encodingParams(state),
+      )
+      if (isStatusSuccessful(status)) {
+        // The user may have switched database or key while the POST was in
+        // flight. Only patch the table when the edit still belongs to the
+        // current selection, so a late success can't overwrite a same-index
+        // row in a different key — or, for a same-named key in another
+        // database, apply the old connection's value to the new one.
+        const latest = stateInit()
+        // Read the live selection from the app context, not selectedKey.data:
+        // fetchKeyInfo's loading action leaves the previous key's data in place
+        // while the newly selected key loads, so selectedKey.data lags a switch
+        // (the delete thunk below guards the same way).
+        const selectedKey = appContextSelectedKey(latest)
+        const sameInstance =
+          latest.connections.instances.connectedInstance?.id === startInstanceId
+        if (sameInstance && isSameKey(selectedKey, params.key)) {
+          dispatch(
+            updateArrayElement({ index: params.index, value: params.value }),
+          )
+          // The edit can change a value a previously-run AROP was computed
+          // from, so drop the stored aggregate rather than show a stale number
+          // when the user returns to the (still-mounted) Aggregate tab. Abort
+          // any in-flight AROP too, or its late success would repopulate the
+          // result we just cleared.
+          abortArrayAggregate()
+          dispatch(clearArrayAggregate())
+          // Refetch key info (not just stamp the refresh time): editing a value
+          // to a different byte length changes the key's Size even though
+          // ARLEN/ARCOUNT don't — matches the List/Hash/String edit thunks.
+          dispatch(refreshKeyInfoAction(params.key as RedisResponseBuffer))
+          // Only close the editor when this completion still belongs to the
+          // current selection. A stale success after a key/database switch
+          // would otherwise close (and discard) an editor the user has since
+          // opened on the new selection's same-index row.
+          onSuccessAction?.()
+        }
+      }
+    } catch (error) {
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      onFailAction?.()
+    } finally {
+      // Only the latest edit releases the lock; a stale completion (e.g. after
+      // a key switch let a newer edit start) leaves it held for the newer write.
+      if (requestToken === latestEditRequestToken) {
+        dispatch(setArrayUpdating(false))
       }
     }
   }

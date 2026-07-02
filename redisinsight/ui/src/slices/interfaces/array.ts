@@ -145,6 +145,9 @@ export interface ArraySearchState {
 export interface StateArray {
   loading: boolean
   error: string
+  /** True while an inline ARSET edit is in flight, so the table can block
+   *  overlapping edits and keep the header refresh paused until it settles. */
+  updating: boolean
   query: ArrayActiveQuery
   data: ArrayData
   aggregate: ArrayAggregateState
@@ -214,6 +217,18 @@ export interface ArraySearchOptions {
   withValues: boolean
   limitEnabled: boolean
   limit: string
+}
+
+/**
+ * ARSET single-element edit (Modify vertical). `index` addresses the slot to
+ * overwrite; `value` is the serialized-buffer payload the formatter pipeline
+ * expects (built via `stringToSerializedBufferFormat`). The key must already
+ * exist — this edits a loaded element, it never creates a key.
+ */
+export interface UpdateArrayElementParams {
+  key: RedisString
+  index: string
+  value: RedisString
 }
 
 /**

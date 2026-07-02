@@ -1,5 +1,11 @@
 import React from 'react'
-import { render, screen } from 'uiSrc/utils/test-utils'
+import { cloneDeep } from 'lodash'
+import {
+  initialStateDefault,
+  mockStore,
+  render,
+  screen,
+} from 'uiSrc/utils/test-utils'
 import { stringToBuffer } from 'uiSrc/utils'
 import { ArrayAggregateOperation } from 'uiSrc/slices/interfaces/array'
 
@@ -28,8 +34,10 @@ const mockUseArrayAggregateQuery = jest.fn(
   (..._args: unknown[]) => baseHookResult,
 )
 
+const mockAggregateFormProps = jest.fn()
 jest.mock('../array-aggregate-form', () => ({
-  ArrayAggregateForm: () => {
+  ArrayAggregateForm: (props: { disabled?: boolean }) => {
+    mockAggregateFormProps(props)
     const ReactLib = require('react')
     return ReactLib.createElement('div', {
       'data-testid': 'array-aggregate-form-mock',
@@ -48,13 +56,41 @@ const defaultProps: AggregateTabProps = {
   keyProp: keyBuffer,
 }
 
-const renderComponent = (propsOverride: Partial<AggregateTabProps> = {}) =>
-  render(<AggregateTab {...defaultProps} {...propsOverride} />)
+const renderComponent = (
+  propsOverride: Partial<AggregateTabProps> = {},
+  store?: ReturnType<typeof mockStore>,
+) =>
+  render(
+    <AggregateTab {...defaultProps} {...propsOverride} />,
+    store ? { store } : undefined,
+  )
 
 describe('AggregateTab', () => {
   beforeEach(() => {
     mockUseArrayAggregateQuery.mockReset()
     mockUseArrayAggregateQuery.mockReturnValue({ ...baseHookResult })
+    mockAggregateFormProps.mockClear()
+  })
+
+  it('disables the form while the edit/refresh lock is active', () => {
+    // isRefreshDisabled is true while an inline edit is open or its ARSET is
+    // in flight; running an AROP then would be aborted+cleared by the edit's
+    // post-write cleanup, so the form must be disabled.
+    const state = cloneDeep(initialStateDefault)
+    state.browser.keys.selectedKey.isRefreshDisabled = true
+    renderComponent({}, mockStore(state))
+
+    expect(mockAggregateFormProps).toHaveBeenLastCalledWith(
+      expect.objectContaining({ disabled: true }),
+    )
+  })
+
+  it('enables the form when the lock is clear and the key is ready', () => {
+    renderComponent()
+
+    expect(mockAggregateFormProps).toHaveBeenLastCalledWith(
+      expect.objectContaining({ disabled: false }),
+    )
   })
 
   it('renders the form and an empty results area by default', () => {

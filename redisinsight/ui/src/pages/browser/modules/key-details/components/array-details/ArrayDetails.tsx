@@ -31,10 +31,16 @@ const ArrayDetails = (props: Props) => {
         <ArrayTabs value={activeTab} onChange={setActiveTab} />
       </S.TabsWrapper>
       <S.TabSlot $hidden={activeTab !== ArrayDetailsTab.View}>
-        <ViewTab keyProp={keyProp} />
+        <ViewTab
+          keyProp={keyProp}
+          isActive={activeTab === ArrayDetailsTab.View}
+        />
       </S.TabSlot>
       <S.TabSlot $hidden={activeTab !== ArrayDetailsTab.Search}>
-        <SearchTab keyProp={keyProp} />
+        <SearchTab
+          keyProp={keyProp}
+          isActive={activeTab === ArrayDetailsTab.Search}
+        />
       </S.TabSlot>
       <S.TabSlot $hidden={activeTab !== ArrayDetailsTab.Aggregate}>
         <AggregateTab keyProp={keyProp} />

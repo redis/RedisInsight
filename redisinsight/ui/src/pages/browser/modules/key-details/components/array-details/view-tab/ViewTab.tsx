@@ -10,8 +10,8 @@ import { useArrayRangeQuery, useArrayElementActions } from '../hooks'
 import * as S from '../tabs.styles'
 import { ViewTabProps } from './ViewTab.types'
 
-const ViewTab = ({ keyProp }: ViewTabProps) => {
-  const { loading } = useAppSelector(selectedKeySelector)
+const ViewTab = ({ keyProp, isActive }: ViewTabProps) => {
+  const { loading, isRefreshDisabled } = useAppSelector(selectedKeySelector)
   const keyName = keyProp ? bufferToString(keyProp) : ''
 
   const {
@@ -48,7 +48,7 @@ const ViewTab = ({ keyProp }: ViewTabProps) => {
         onToggleShowEmpty={setShowEmpty}
         onRun={runQuery}
         onReset={resetQuery}
-        disabled={!isArrayKeyReady}
+        disabled={!isArrayKeyReady || isRefreshDisabled}
       />
       <S.TabBody>
         {!loading && (
@@ -57,6 +57,7 @@ const ViewTab = ({ keyProp }: ViewTabProps) => {
               elements={elements}
               loading={rangeLoading}
               error={rangeError}
+              isActive={isActive}
               deleteConfig={deleteConfig}
             />
           </S.TabTableWrapper>
