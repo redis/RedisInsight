@@ -137,11 +137,23 @@ export const useArrayElementActions = (
     })
   }, [selectableIndexes])
 
-  const handleBulkDelete = useCallback(() => {
-    if (!keyProp || selectedIndexes.length === 0) return
-    dispatch(deleteArrayElements(keyProp, selectedIndexes))
-    clearSelection()
-  }, [dispatch, keyProp, selectedIndexes, clearSelection])
+  // Guard against a double-confirm firing the delete twice: stay busy for the
+  // whole round-trip. The selection isn't cleared here — on success the thunk's
+  // refresh drops the deleted rows, which the prune effect above then removes
+  // from the selection; on failure the selection survives so the user can retry
+  // without re-selecting.
+  const bulkDeletingRef = useRef(false)
+  const handleBulkDelete = useCallback(async () => {
+    if (!keyProp || selectedIndexes.length === 0 || bulkDeletingRef.current) {
+      return
+    }
+    bulkDeletingRef.current = true
+    try {
+      await dispatch(deleteArrayElements(keyProp, selectedIndexes))
+    } finally {
+      bulkDeletingRef.current = false
+    }
+  }, [dispatch, keyProp, selectedIndexes])
 
   const bulkDeleteConfig = useMemo<ArrayBulkDeleteConfig>(
     () => ({ selectedCount: selectedIndexes.length, handleBulkDelete }),
