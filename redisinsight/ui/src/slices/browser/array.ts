@@ -15,6 +15,7 @@ import {
   DEFAULT_ERROR_MESSAGE,
   getApiErrorMessage,
   getUrl,
+  isEqualBuffers,
   isStatusSuccessful,
   Maybe,
 } from 'uiSrc/utils'
@@ -29,9 +30,12 @@ import {
   FetchArrayRangeParams,
   FetchArrayScanParams,
   SearchArrayParams,
+  AppendArrayElementParams,
+  AddArrayElementParams,
 } from 'uiSrc/slices/interfaces/array'
-import { RedisString } from 'uiSrc/slices/interfaces/app'
-import { updateSelectedKeyRefreshTime } from './keys'
+import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces/app'
+import { appContextSelectedKey } from 'uiSrc/slices/app/context'
+import { refreshKeyInfoAction, updateSelectedKeyRefreshTime } from './keys'
 import { AppDispatch, RootState } from '../store'
 import { addErrorNotification } from '../app/notifications'
 
@@ -636,6 +640,92 @@ export function refreshArray(key: RedisString) {
 
     if (search.query) {
       dispatch(searchArray({ key, ...search.query }))
+    }
+  }
+}
+
+/**
+ * Apply a successful write's side effects — close/clear the panel
+ * (`onSuccessAction`) and replay the read surface + key header — but only if
+ * `key` is still the selected key. A write can resolve after the user moved to
+ * another key: `onSuccessAction` would close/clear the now-different panel, and
+ * refreshArray writes into the shared array slice (its range controller would
+ * abort the newly-selected key's load) while the header reads Length/Count/Size
+ * from the keys slice.
+ *
+ * The live selection is read from the browser context, not
+ * `keys.selectedKey.data` — fetchKeyInfo keeps the previous `data` in place
+ * while the newly clicked key loads, so that field is stale during the switch.
+ * Comparison is byte-exact (isEqualBuffers), since two distinct binary names
+ * can decode to the same Unicode string.
+ */
+function applyArrayWriteResult(
+  key: RedisResponseBuffer,
+  onSuccessAction?: () => void,
+) {
+  return (dispatch: AppDispatch, stateInit: () => RootState) => {
+    const selectedKey = appContextSelectedKey(stateInit())
+    if (!selectedKey || !isEqualBuffers(selectedKey, key)) {
+      return
+    }
+    onSuccessAction?.()
+    dispatch<any>(refreshArray(key))
+    dispatch<any>(refreshKeyInfoAction(key))
+  }
+}
+
+/**
+ * Append a value to the end of the array (POST /array/append → ARSET at the
+ * current length). On success the displayed surface, counters, and key header
+ * are refreshed so the new element appears.
+ */
+export function appendArrayElement(
+  params: AppendArrayElementParams,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    try {
+      const state = stateInit()
+      const { status } = await apiService.post(
+        arrayUrl(state, ApiEndpoints.ARRAY_APPEND),
+        { keyName: params.key, value: params.value },
+        encodingParams(state),
+      )
+      if (isStatusSuccessful(status)) {
+        dispatch<any>(applyArrayWriteResult(params.key, onSuccessAction))
+      }
+    } catch (error) {
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      onFailAction?.()
+    }
+  }
+}
+
+/**
+ * Add a value at an explicit index (POST /array/set-element → ARSET key index
+ * value). Used by the "Add element" form when the user points at an index.
+ * Refreshes the displayed surface, counters, and key header on success.
+ */
+export function addArrayElement(
+  params: AddArrayElementParams,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    try {
+      const state = stateInit()
+      const { status } = await apiService.post(
+        arrayUrl(state, ApiEndpoints.ARRAY_SET_ELEMENT),
+        { keyName: params.key, index: params.index, value: params.value },
+        encodingParams(state),
+      )
+      if (isStatusSuccessful(status)) {
+        dispatch<any>(applyArrayWriteResult(params.key, onSuccessAction))
+      }
+    } catch (error) {
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      onFailAction?.()
     }
   }
 }
