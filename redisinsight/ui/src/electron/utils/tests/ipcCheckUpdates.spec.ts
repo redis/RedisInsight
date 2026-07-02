@@ -1,7 +1,12 @@
 import { cloneDeep } from 'lodash'
 
+import { GetServerInfoResponse } from 'apiClient'
 import { cleanup, mockedStore } from 'uiSrc/utils/test-utils'
+import { openWhatsNew, whatsNewFeed } from 'uiSrc/slices/app/whatsNew'
 import { ipcCheckUpdates, ipcSendEvents } from '../ipcCheckUpdates'
+
+const serverInfoMock = (appVersion: string): GetServerInfoResponse =>
+  ({ appVersion }) as unknown as GetServerInfoResponse
 
 const invokeMock = jest.fn()
 let store: typeof mockedStore
@@ -25,6 +30,30 @@ describe('ipcCheckUpdates', () => {
     ipcCheckUpdates({ appVersion: appVersionMock }, () => {})
 
     expect(invokeMock).toBeCalled()
+  })
+
+  it('should open Whats New when enabled and the version is eligible', async () => {
+    const version = whatsNewFeed[0].version
+    invokeMock
+      .mockReturnValueOnce(true)
+      .mockReturnValueOnce(false)
+      .mockReturnValueOnce(version)
+
+    await ipcCheckUpdates(serverInfoMock(version), store.dispatch, true)
+
+    expect(store.getActions()).toContainEqual(openWhatsNew(version))
+  })
+
+  it('should not open Whats New for an ineligible version even when enabled', async () => {
+    const version = '0.0.1'
+    invokeMock
+      .mockReturnValueOnce(true)
+      .mockReturnValueOnce(false)
+      .mockReturnValueOnce(version)
+
+    await ipcCheckUpdates(serverInfoMock(version), store.dispatch, true)
+
+    expect(store.getActions()).not.toContainEqual(openWhatsNew(version))
   })
 })
 describe('ipcSendEvents', () => {

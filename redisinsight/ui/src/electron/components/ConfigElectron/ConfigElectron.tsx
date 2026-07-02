@@ -7,6 +7,8 @@ import {
   appServerInfoSelector,
   appElectronInfoSelector,
 } from 'uiSrc/slices/app/info'
+import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
+import { FeatureFlags } from 'uiSrc/constants'
 import {
   ipcAppRestart,
   ipcCheckUpdates,
@@ -21,6 +23,9 @@ const ConfigElectron = () => {
   let isCheckedUpdates = false
   const { isReleaseNotesViewed } = useAppSelector(appElectronInfoSelector)
   const serverInfo = useAppSelector(appServerInfoSelector)
+  const { [FeatureFlags.whatsNew]: whatsNewFeature } = useAppSelector(
+    appFeatureFlagsFeaturesSelector,
+  )
 
   const dispatch = useAppDispatch()
   const history = useHistory()
@@ -32,7 +37,7 @@ const ConfigElectron = () => {
 
   useEffect(() => {
     if (serverInfo) {
-      ipcCheckUpdates(serverInfo, dispatch)
+      ipcCheckUpdates(serverInfo, dispatch, !!whatsNewFeature?.flag)
     }
   }, [serverInfo])
 

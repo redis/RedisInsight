@@ -3,12 +3,13 @@ import React, { useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
-import { ReleaseNotesSource } from 'uiSrc/constants/telemetry'
+import { ReleaseNotesSource, WhatsNewSource } from 'uiSrc/constants/telemetry'
 import {
   appElectronInfoSelector,
   setReleaseNotesViewed,
   setShortcutsFlyoutState,
 } from 'uiSrc/slices/app/info'
+import { openWhatsNew } from 'uiSrc/slices/app/whatsNew'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { setOnboarding } from 'uiSrc/slices/app/features'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -55,6 +56,17 @@ const HelpMenu = () => {
     if (isReleaseNotesViewed === false) {
       dispatch(setReleaseNotesViewed(true))
     }
+  }
+
+  const onWhatsNewClick = () => {
+    setIsHelpMenuActive(false)
+    sendEventTelemetry({
+      event: TelemetryEvent.WHATS_NEW_OPENED,
+      eventData: {
+        source: WhatsNewSource.helpCenter,
+      },
+    })
+    dispatch(openWhatsNew())
   }
 
   const onResetOnboardingClick = () => {
@@ -161,6 +173,20 @@ const HelpMenu = () => {
                 </Text>
               </Link>
             </Row>
+
+            <FeatureFlagComponent name={FeatureFlags.whatsNew}>
+              <Row className={styles.helpMenuItemLink} align="center" gap="xs">
+                <RiIcon type="RiStarsIcon" size="l" />
+                <Text
+                  size="xs"
+                  className={styles.helpMenuTextLink}
+                  onClick={onWhatsNewClick}
+                  data-testid="whats-new-btn"
+                >
+                  What&apos;s new?
+                </Text>
+              </Row>
+            </FeatureFlagComponent>
 
             <FeatureFlagComponent name={FeatureFlags.envDependent}>
               <Row className={styles.helpMenuItemLink} align="center" gap="xs">
