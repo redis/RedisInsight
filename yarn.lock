@@ -7089,10 +7089,10 @@ csv-parser@^3.2.1:
   resolved "https://registry.yarnpkg.com/csv-parser/-/csv-parser-3.2.1.tgz#af3ef6f591a7edbd99e92e0fe97f325d83701b7b"
   integrity sha512-v8RPMSglouR9od735SnwSxLBbCJqEPSbgm1R5qfr8yIiMUCEFjox56kRZid0SvgHJEkxeIEu3+a9QS3YRh7CuA==
 
-csv-stringify@^6.4.0:
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/csv-stringify/-/csv-stringify-6.4.0.tgz#6d006dca9194700e44f9fbc541bee8bbbd4f459c"
-  integrity sha512-HQsw0QXiN5fdlO+R8/JzCZnR3Fqp8E87YVnhHlaPtNGJjt6ffbV0LpOkieIb1x6V1+xt878IYq77SpXHWAqKkA==
+csv-stringify@^6.8.0:
+  version "6.8.0"
+  resolved "https://registry.yarnpkg.com/csv-stringify/-/csv-stringify-6.8.0.tgz#2eb74e6823f3d7755548aba38d3d246d8bbbf0bc"
+  integrity sha512-Ya0OOHb6XbgPaZKH7dcdmwXe3azUS0TwmlbVdS75HoAhnHApSkiQcfEJoC/s5WwGsrXwOjBDr3FTmCZPjkssgg==
 
 "d3-array@2 - 3", "d3-array@2.10.0 - 3", "d3-array@2.5.0 - 3", d3-array@3, d3-array@^3.2.0:
   version "3.2.3"
