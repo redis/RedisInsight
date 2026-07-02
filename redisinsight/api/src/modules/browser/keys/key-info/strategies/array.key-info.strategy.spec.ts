@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { when } from 'jest-when';
 import { mockStandaloneRedisClient } from 'src/__mocks__';
+import { RedisClientCommandReply } from 'src/modules/redis/client';
 import {
   BrowserToolArrayCommands,
   BrowserToolKeysCommands,
@@ -38,7 +39,10 @@ describe('ArrayKeyInfoStrategy', () => {
     const rawLength = 10;
     const rawCount = 7;
 
-    const mockCounts = (lengthReply: any, countReply: any) => {
+    const mockCounts = (
+      lengthReply: RedisClientCommandReply,
+      countReply: RedisClientCommandReply,
+    ) => {
       when(mockStandaloneRedisClient.sendCommand)
         .calledWith([BrowserToolArrayCommands.ArLen, key], {
           integerReply: 'bigint',
