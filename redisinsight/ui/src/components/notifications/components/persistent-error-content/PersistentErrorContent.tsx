@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'uiSrc/i18n'
 import { ColorText } from 'uiSrc/components/base/text'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
@@ -11,6 +12,7 @@ export interface Props {
 }
 
 const PersistentErrorContent = ({ text }: Props) => {
+  const { t } = useTranslation()
   const [isCopied, setIsCopied] = useState(false)
 
   const handleCopyClick = () => {
@@ -40,7 +42,9 @@ const PersistentErrorContent = ({ text }: Props) => {
             size="s"
             data-testid="copy-error-message-btn"
           >
-            {isCopied ? 'Copied' : 'Copy'}
+            {isCopied
+              ? t('notification.error.button.copied')
+              : t('notification.error.button.copy')}
           </Button>
         </FlexItem>
       </Row>

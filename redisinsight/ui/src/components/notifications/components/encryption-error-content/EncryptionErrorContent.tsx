@@ -1,5 +1,6 @@
 import React from 'react'
 import { matchPath, useHistory, useLocation } from 'react-router-dom'
+import { useTranslation } from 'uiSrc/i18n'
 import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { Pages } from 'uiSrc/constants'
 import { ColorText } from 'uiSrc/components/base/text'
@@ -16,12 +17,12 @@ export interface Props {
   instanceId?: string
 }
 
-// TODO: use i18n file for texts
 const EncryptionErrorContent = (props: Props) => {
   const { onClose, instanceId } = props
   const { pathname } = useLocation()
   const history = useHistory()
   const dispatch = useAppDispatch()
+  const { t } = useTranslation()
 
   // useParams() hook can't be used because the Notifications component is outside of the MainRouter
   const getInstanceIdFromUrl = (): string => {
@@ -45,13 +46,11 @@ const EncryptionErrorContent = (props: Props) => {
   return (
     <>
       <ColorText color="danger">
-        <b>Check the system keychain or disable encryption to proceed.</b>
+        <b>{t('notification.error.encryption.checkKeychain')}</b>
       </ColorText>
       <Spacer />
       <ColorText color="danger" style={{ fontWeight: 300 }}>
-        Disabling encryption will result in storing sensitive information
-        locally in plain text. Re-enter database connection information to work
-        with databases.
+        {t('notification.error.encryption.disableWarning')}
       </ColorText>
       <Spacer />
       <Row justify="end" gap="m">
@@ -62,7 +61,7 @@ const EncryptionErrorContent = (props: Props) => {
               className="toast-danger-btn euiBorderWidthThick"
               data-testid="toast-action-btn"
             >
-              Disable Encryption
+              {t('notification.error.encryption.button.disable')}
             </DestructiveButton>
           </div>
         </FlexItem>
@@ -73,7 +72,7 @@ const EncryptionErrorContent = (props: Props) => {
             data-testid="toast-cancel-btn"
             className="toast-danger-btn"
           >
-            Cancel
+            {t('notification.error.encryption.button.cancel')}
           </EmptyButton>
         </FlexItem>
       </Row>
