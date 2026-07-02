@@ -303,6 +303,68 @@ describe('ArrayDetailsTable', () => {
       ).toBeInTheDocument()
     })
 
+    it('a stale save does not close an editor reopened as a new session', async () => {
+      // Guard passes (same key + instance) so the thunk would call onSuccess;
+      // the edit-session token is what must stop it closing the new editor.
+      const key = stringToBuffer('mykey')
+      const state = cloneDeep(initialStateDefault)
+      state.browser.keys.selectedKey.data = { name: key } as any
+      state.app.context.browser.keyList.selectedKey = key
+      state.connections.instances.connectedInstance = { id: 'db-1' } as any
+      const store = mockStore(state)
+
+      let resolvePost: () => void = () => {}
+      const postSpy = jest.spyOn(apiService, 'post').mockImplementation(
+        () =>
+          new Promise((r) => {
+            resolvePost = () => r({ status: 200, data: '' } as any)
+          }),
+      )
+      const element = arrayElementWithValueFactory.build({ index: '1' })
+      const props = { elements: [element], loading: false }
+
+      const { rerender } = render(<ArrayDetailsTable {...props} isActive />, {
+        store,
+      })
+
+      // Session 1: open and apply — the ARSET stays in flight.
+      act(() => {
+        fireEvent.mouseEnter(
+          screen.getByTestId('array-details-table_content-value-1'),
+        )
+      })
+      fireEvent.click(screen.getByTestId('array-details-table_edit-btn-1'))
+      fireEvent.change(
+        screen.getByTestId('array-details-table_value-editor-1'),
+        { target: { value: 'first' } },
+      )
+      fireEvent.click(screen.getByTestId('apply-btn'))
+
+      // Switch away (closes the editor) and back, then reopen — session 2.
+      rerender(<ArrayDetailsTable {...props} isActive={false} />)
+      rerender(<ArrayDetailsTable {...props} isActive />)
+      act(() => {
+        fireEvent.mouseEnter(
+          screen.getByTestId('array-details-table_content-value-1'),
+        )
+      })
+      fireEvent.click(screen.getByTestId('array-details-table_edit-btn-1'))
+      expect(
+        screen.getByTestId('array-details-table_value-editor-1'),
+      ).toBeInTheDocument()
+
+      // The first (stale) save resolves — it must not close the new editor.
+      await act(async () => {
+        resolvePost()
+      })
+
+      expect(
+        screen.getByTestId('array-details-table_value-editor-1'),
+      ).toBeInTheDocument()
+
+      postSpy.mockRestore()
+    })
+
     it('re-enables the key-header refresh when unmounted mid-edit', () => {
       const store = mockStore(cloneDeep(initialStateDefault))
 

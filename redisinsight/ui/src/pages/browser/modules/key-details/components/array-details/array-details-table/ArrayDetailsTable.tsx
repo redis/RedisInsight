@@ -82,6 +82,10 @@ const ArrayDetailsTable = memo(
 
     // Index of the row currently being edited; only one row edits at a time.
     const [editingIndex, setEditingIndex] = useState<Nullable<string>>(null)
+    // Identifies the current edit session. Bumped whenever an editor opens, so
+    // a still-in-flight save from a previous session can't close an editor the
+    // user has since reopened (which would discard the new input).
+    const editSessionRef = useRef(0)
 
     // Only the visible tab's table drives the editor-driven refresh pause, so
     // a hidden table can't re-enable refresh while the active one has an editor
@@ -131,6 +135,9 @@ const ArrayDetailsTable = memo(
 
     const handleEditElement = useCallback(
       (index: string, isEditing: boolean) => {
+        // Opening an editor starts a new session; a stale save's callback that
+        // compares against its captured session id will then no-op.
+        if (isEditing) editSessionRef.current += 1
         setEditingIndex(isEditing ? index : null)
       },
       [],
@@ -138,6 +145,7 @@ const ArrayDetailsTable = memo(
 
     const handleApplyEditElement = useCallback(
       (index: string, value: string) => {
+        const editSession = editSessionRef.current
         dispatch(
           updateArrayElementAction(
             {
@@ -145,7 +153,14 @@ const ArrayDetailsTable = memo(
               index,
               value: stringToSerializedBufferFormat(viewFormat, value),
             },
-            () => handleEditElement(index, false),
+            () => {
+              // Ignore a completion whose editor the user has since closed and
+              // reopened (a newer session) — closing it would discard the new
+              // input. handleEditElement's own guard runs for the live session.
+              if (editSessionRef.current === editSession) {
+                handleEditElement(index, false)
+              }
+            },
           ),
         )
       },
