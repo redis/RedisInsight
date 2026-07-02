@@ -6,6 +6,7 @@ import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 import { ArrayIndexCell } from './components/ArrayIndexCell'
 import { ArrayValueCell } from './components/ArrayValueCell'
 import { RowActionsCell } from './components/RowActionsCell'
+import { BulkDeleteHeaderCell } from './components/BulkDeleteHeaderCell'
 import { ArrayTableConfig } from './ArrayDetailsTable.types'
 
 export const TEST_ID = 'array-details-table'
@@ -43,12 +44,20 @@ const valueColumn: ColumnDef<ArrayDataElement> = {
 }
 
 /**
- * Per-row delete affordance, appended only when the consumer passes a
- * `deleteConfig` (via `meta`). The cell renders nothing for empty slots.
+ * Delete column, appended only when the consumer passes a `deleteConfig` (via
+ * `meta`). The header hosts the bulk-delete trigger (shown only while rows are
+ * selected); each cell hosts the per-row trash. The cell renders nothing for
+ * empty slots.
  */
 export const actionsColumn: ColumnDef<ArrayDataElement> = {
   id: 'actions',
-  header: '',
+  // Custom so the header renders the bulk trigger raw, not as a column title.
+  isHeaderCustom: true,
+  header: ({ table }) => {
+    const { bulkDeleteConfig } = table.options.meta as ArrayTableConfig
+    if (!bulkDeleteConfig) return null
+    return <BulkDeleteHeaderCell bulkDeleteConfig={bulkDeleteConfig} />
+  },
   enableSorting: false,
   enableResizing: false,
   size: ACTIONS_COLUMN_SIZE,

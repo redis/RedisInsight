@@ -70,4 +70,64 @@ describe('ViewTab', () => {
       ),
     )
   })
+
+  it('bulk-deletes the selected elements via a single ARDEL', async () => {
+    apiService.delete = jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { affected: '2' } })
+    apiService.post = jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { keyName: KEY, count: '0' } })
+
+    renderTab([
+      arrayElementWithValueFactory.build({ index: '0' }),
+      arrayElementWithValueFactory.build({ index: '5' }),
+    ])
+
+    // The header checkbox selects every loaded row.
+    fireEvent.click(screen.getByRole('checkbox', { name: /all rows/i }))
+
+    // The bulk-delete trigger appears in the actions-column header, and the
+    // confirm popover states the count.
+    fireEvent.click(await screen.findByTestId('array-bulk-remove-btn-icon'))
+    expect(
+      await screen.findByText(
+        /2 selected elements will be permanently removed/,
+      ),
+    ).toBeInTheDocument()
+    fireEvent.click(screen.getByTestId('array-bulk-remove-btn'))
+
+    await waitFor(() =>
+      expect(apiService.delete).toHaveBeenCalledWith(
+        expect.stringContaining('array/elements'),
+        expect.objectContaining({
+          data: { keyName: keyBuffer, indexes: ['0', '5'] },
+        }),
+      ),
+    )
+  })
+
+  it('drops the multi-select when the range is reset', async () => {
+    // resetQuery refires the default range with resetData:false, so the current
+    // rows stay rendered; the selection must still clear on reset.
+    apiService.post = jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { keyName: KEY, elements: [] } })
+
+    renderTab([
+      arrayElementWithValueFactory.build({ index: '0' }),
+      arrayElementWithValueFactory.build({ index: '5' }),
+    ])
+
+    fireEvent.click(screen.getByRole('checkbox', { name: /all rows/i }))
+    expect(
+      await screen.findByTestId('array-bulk-remove-btn-icon'),
+    ).toBeInTheDocument()
+
+    fireEvent.click(screen.getByTestId('array-range-form-reset'))
+
+    expect(
+      screen.queryByTestId('array-bulk-remove-btn-icon'),
+    ).not.toBeInTheDocument()
+  })
 })
