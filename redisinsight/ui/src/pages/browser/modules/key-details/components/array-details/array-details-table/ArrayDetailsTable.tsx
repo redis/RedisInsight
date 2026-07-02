@@ -58,6 +58,7 @@ const ArrayDetailsTable = memo(
     expandRowOnClick,
     deleteConfig,
     selectionConfig,
+    bulkDeleteConfig,
   }: ArrayDetailsTableProps) => {
     const dispatch = useAppDispatch()
     const { compressor = null } = useAppSelector(
@@ -183,6 +184,7 @@ const ArrayDetailsTable = memo(
         updating,
         loading: readLoading,
         deleteConfig,
+        bulkDeleteConfig,
       }),
       [
         compressor,
@@ -193,6 +195,7 @@ const ArrayDetailsTable = memo(
         updating,
         readLoading,
         deleteConfig,
+        bulkDeleteConfig,
       ],
     )
 

@@ -217,16 +217,16 @@ describe('SearchTab', () => {
       ],
     })
 
-    // Select every match — the bulk bar appears — then reset the form.
+    // Select every match — the bulk trash appears in the header — then reset.
     fireEvent.click(screen.getByRole('checkbox', { name: /all rows/i }))
     expect(
-      await screen.findByTestId('array-bulk-delete-bar'),
+      await screen.findByTestId('array-bulk-remove-btn-icon'),
     ).toBeInTheDocument()
 
     fireEvent.click(screen.getByTestId('array-search-form-reset'))
 
     expect(
-      screen.queryByTestId('array-bulk-delete-bar'),
+      screen.queryByTestId('array-bulk-remove-btn-icon'),
     ).not.toBeInTheDocument()
   })
 

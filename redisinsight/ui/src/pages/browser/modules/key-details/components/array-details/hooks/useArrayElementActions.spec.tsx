@@ -75,14 +75,14 @@ describe('useArrayElementActions', () => {
     ])
 
     selectAll(result, ['1', '2', '3'])
-    expect(result.current.selectedCount).toBe(3)
+    expect(result.current.bulkDeleteConfig.selectedCount).toBe(3)
 
     // A new range/search replaces the rendered elements entirely.
     setElements([
       arrayElementWithValueFactory.build({ index: '10' }),
       arrayElementWithValueFactory.build({ index: '11' }),
     ])
-    expect(result.current.selectedCount).toBe(0)
+    expect(result.current.bulkDeleteConfig.selectedCount).toBe(0)
   })
 
   it('does not resurrect a stale selection when the index reappears later', () => {
@@ -91,16 +91,16 @@ describe('useArrayElementActions', () => {
     ])
 
     selectAll(result, ['5'])
-    expect(result.current.selectedCount).toBe(1)
+    expect(result.current.bulkDeleteConfig.selectedCount).toBe(1)
 
     // Index 5 leaves the current view (a new range/search)...
     setElements([arrayElementWithValueFactory.build({ index: '9' })])
-    expect(result.current.selectedCount).toBe(0)
+    expect(result.current.bulkDeleteConfig.selectedCount).toBe(0)
 
     // ...and later reappears in another result set: it must NOT come back
     // selected without a fresh user selection.
     setElements([arrayElementWithValueFactory.build({ index: '5' })])
-    expect(result.current.selectedCount).toBe(0)
+    expect(result.current.bulkDeleteConfig.selectedCount).toBe(0)
   })
 
   it('keeps still-visible selections and bulk-deletes only those indexes', async () => {
@@ -117,10 +117,10 @@ describe('useArrayElementActions', () => {
       arrayElementWithValueFactory.build({ index: '1' }),
       arrayElementWithValueFactory.build({ index: '2' }),
     ])
-    expect(result.current.selectedCount).toBe(2)
+    expect(result.current.bulkDeleteConfig.selectedCount).toBe(2)
 
     await act(async () => {
-      result.current.handleBulkDelete()
+      result.current.bulkDeleteConfig.handleBulkDelete()
     })
 
     expect(apiService.delete).toHaveBeenCalledWith(
@@ -141,7 +141,7 @@ describe('useArrayElementActions', () => {
     setElements([arrayElementWithValueFactory.build({ index: '9' })])
 
     await act(async () => {
-      result.current.handleBulkDelete()
+      result.current.bulkDeleteConfig.handleBulkDelete()
     })
 
     expect(apiService.delete).not.toHaveBeenCalled()
@@ -158,6 +158,6 @@ describe('useArrayElementActions', () => {
 
     // Even if a stale/forced selection includes the gap, it isn't counted.
     selectAll(result, ['1', '2'])
-    expect(result.current.selectedCount).toBe(1)
+    expect(result.current.bulkDeleteConfig.selectedCount).toBe(1)
   })
 })
