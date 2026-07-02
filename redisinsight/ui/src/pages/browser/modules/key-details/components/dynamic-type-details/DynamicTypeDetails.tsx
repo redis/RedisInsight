@@ -12,6 +12,7 @@ import {
   isVectorSetEnabledSelector,
 } from 'uiSrc/slices/app/features'
 import { isTruncatedString } from 'uiSrc/utils'
+import { ValueDecoderProvider } from 'uiSrc/pages/browser/components/value-decoder'
 import TooLongKeyNameDetails from 'uiSrc/pages/browser/modules/key-details/components/too-long-key-name-details/TooLongKeyNameDetails'
 import ModulesTypeDetails from '../modules-type-details/ModulesTypeDetails'
 import UnsupportedTypeDetails from '../unsupported-type-details/UnsupportedTypeDetails'
@@ -41,7 +42,11 @@ const DynamicTypeDetails = (props: Props) => {
     [KeyTypes.ZSet]: <ZSetDetails {...props} />,
     [KeyTypes.Set]: <SetDetails {...props} />,
     [KeyTypes.String]: <StringDetails {...props} />,
-    [KeyTypes.Hash]: <HashDetails {...props} />,
+    [KeyTypes.Hash]: (
+      <ValueDecoderProvider keyProp={keyProp}>
+        <HashDetails {...props} />
+      </ValueDecoderProvider>
+    ),
     [KeyTypes.List]: <ListDetails {...props} />,
     [KeyTypes.ReJSON]: <RejsonDetailsWrapper {...props} />,
     [KeyTypes.Stream]: <StreamDetails {...props} />,
