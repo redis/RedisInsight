@@ -843,6 +843,43 @@ describe('array slice', () => {
         expect(onSuccess).not.toHaveBeenCalled()
       })
 
+      it('skips the UI updates when the database changed mid-write, even for a same-named key', async () => {
+        // The POST is sent using the connection captured before the await. If
+        // the user switches to another database whose selected key has the
+        // same name, the key-only guard would still pass — so the value
+        // written to the old database must not be applied to the new one.
+        const state = cloneDeep(initialStateDefault)
+        state.browser.keys.selectedKey.data = { name: mockKey } as any
+        state.connections.instances.connectedInstance = { id: 'db-1' } as any
+        const keyedStore = mockStore(state)
+        keyedStore.clearActions()
+        const onSuccess = jest.fn()
+
+        apiService.post = jest.fn().mockImplementation(async () => {
+          // User switches to another database before the POST resolves.
+          state.connections.instances.connectedInstance = { id: 'db-2' } as any
+          return { status: 200, data: '' }
+        })
+
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction(
+            { key: mockKey, index: '5', value: 'B' },
+            onSuccess,
+          ),
+        )
+
+        const actions = keyedStore.getActions()
+        expect(actions).not.toContainEqual(
+          updateArrayElement({ index: '5', value: 'B' }),
+        )
+        expect(actions.some((a) => a.type === clearArrayAggregate.type)).toBe(
+          false,
+        )
+        expect(onSuccess).not.toHaveBeenCalled()
+        // The lock is still released for the current (latest) write.
+        expect(actions).toContainEqual(setArrayUpdating(false))
+      })
+
       it('only the latest ARSET clears the update lock when two overlap', async () => {
         const keyedStore = storeWithSelectedKey(mockKey)
         let resolveFirst: () => void = () => {}

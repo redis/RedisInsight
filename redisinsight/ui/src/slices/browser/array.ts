@@ -561,17 +561,23 @@ export function updateArrayElementAction(
     dispatch(setArrayUpdating(true))
     try {
       const state = stateInit()
+      const startInstanceId = state.connections.instances.connectedInstance?.id
       const { status } = await apiService.post(
         arrayUrl(state, ApiEndpoints.ARRAY_SET_ELEMENT),
         { keyName: params.key, index: params.index, value: params.value },
         encodingParams(state),
       )
       if (isStatusSuccessful(status)) {
-        // The user may have switched keys while the POST was in flight. Only
-        // patch the table if the edited key is still selected, so a late
-        // success can't overwrite a same-index row in a different key.
-        const selectedKey = selectedKeyDataSelector(stateInit())?.name
-        if (isSameKey(selectedKey, params.key)) {
+        // The user may have switched database or key while the POST was in
+        // flight. Only patch the table when the edit still belongs to the
+        // current selection, so a late success can't overwrite a same-index
+        // row in a different key — or, for a same-named key in another
+        // database, apply the old connection's value to the new one.
+        const latest = stateInit()
+        const selectedKey = selectedKeyDataSelector(latest)?.name
+        const sameInstance =
+          latest.connections.instances.connectedInstance?.id === startInstanceId
+        if (sameInstance && isSameKey(selectedKey, params.key)) {
           dispatch(
             updateArrayElement({ index: params.index, value: params.value }),
           )
@@ -587,9 +593,9 @@ export function updateArrayElementAction(
           // ARLEN/ARCOUNT don't — matches the List/Hash/String edit thunks.
           dispatch(refreshKeyInfoAction(params.key as RedisResponseBuffer))
           // Only close the editor when this completion still belongs to the
-          // selected key. A stale success after a key switch would otherwise
-          // close (and discard) an editor the user has since opened on the new
-          // key's same-index row.
+          // current selection. A stale success after a key/database switch
+          // would otherwise close (and discard) an editor the user has since
+          // opened on the new selection's same-index row.
           onSuccessAction?.()
         }
       }
