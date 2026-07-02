@@ -43,11 +43,15 @@ describe('POST /databases/:instanceId/keys/get-info (Array)', () => {
 
   const denseKey = constants.getRandomString();
   const sparseKey = constants.getRandomString();
+  const gapKey = constants.getRandomString();
 
   before(async () => {
     await rte.client.call('ARSET', denseKey, '0', 'a', 'b', 'c');
     // Sparse: indexes 0,5 populated → length=6, count=2.
     await rte.client.call('ARMSET', sparseKey, '0', 'v0', '5', 'v5');
+    // Highest index 2^53 → length 2^53 + 1, inside the (2^53, 2^63) zone
+    // where Redis sends a RESP integer a JS number would round.
+    await rte.client.call('ARSET', gapKey, '9007199254740992', 'x');
   });
 
   [
@@ -71,6 +75,17 @@ describe('POST /databases/:instanceId/keys/get-info (Array)', () => {
         type: 'array',
         length: '6',
         count: '2',
+      },
+    },
+    {
+      name: 'Should keep a u64 length exact in the (2^53, 2^63) RESP-integer zone',
+      data: { keyName: gapKey },
+      responseSchema,
+      responseBody: {
+        name: gapKey,
+        type: 'array',
+        length: '9007199254740993',
+        count: '1',
       },
     },
   ].map(mainCheckFn);

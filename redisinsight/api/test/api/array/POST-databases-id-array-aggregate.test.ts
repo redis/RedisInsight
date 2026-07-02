@@ -443,6 +443,31 @@ describe('POST /databases/:instanceId/array/aggregate', () => {
       });
     });
 
+    it('Should preserve precision for bitwise results above MAX_SAFE_INTEGER', async () => {
+      const keyName = constants.getRandomString();
+      // OR over a single odd u64 above 2^53 returns that exact value. Unlike
+      // SUM (a bulk string), AND/OR/XOR come back as RESP integers, so without
+      // the bigint opt-in the reply rounds to the even 9007199254740992 before
+      // it reaches the response — the odd value proves the integer path stays
+      // exact end to end.
+      await rte.client.call('ARSET', keyName, '0', '9007199254740993');
+
+      await validateApiCall({
+        endpoint,
+        data: {
+          keyName,
+          start: '0',
+          end: '0',
+          operation: ArrayAggregateOperation.Or,
+        },
+        responseSchema,
+        checkFn: ({ body }: any) => {
+          expect(typeof body.result).to.eql('string');
+          expect(body.result).to.eql('9007199254740993');
+        },
+      });
+    });
+
     [
       {
         name: 'Should return BadRequest if key holds a non-array type',

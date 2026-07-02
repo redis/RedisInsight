@@ -102,6 +102,7 @@ describe('LocalServerService', () => {
         sessionId: expect.any(Number),
         packageType: undefined, // should be undefined for non-electron applications
       });
+      expect(result.osArch).toEqual(process.arch);
     });
     it('should throw ServerInfoNotFoundException', async () => {
       serverRepository.getOrCreate.mockResolvedValue(null);

@@ -37,7 +37,15 @@ import * as S from './ArrayDetailsTable.styles'
  * with the Delete vertical (docs/redis-array-type-initiative.md §6 Task 7).
  */
 const ArrayDetailsTable = memo(
-  ({ elements, loading, error, isActive }: ArrayDetailsTableProps) => {
+  ({
+    elements,
+    loading,
+    error,
+    isActive,
+    renderExpandedRow,
+    getIsRowExpandable,
+    expandRowOnClick,
+  }: ArrayDetailsTableProps) => {
     const dispatch = useAppDispatch()
     const { compressor = null } = useAppSelector(
       connectedInstanceSelector,
@@ -167,6 +175,9 @@ const ArrayDetailsTable = memo(
           stripedRows
           minWidth={TABLE_MIN_WIDTH}
           emptyState={emptyState}
+          renderExpandedRow={renderExpandedRow}
+          getIsRowExpandable={getIsRowExpandable}
+          expandRowOnClick={expandRowOnClick}
           data-testid={`${TEST_ID}-table`}
         />
       </S.Container>

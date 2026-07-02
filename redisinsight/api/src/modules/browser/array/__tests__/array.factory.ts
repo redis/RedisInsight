@@ -7,9 +7,12 @@ import {
   ArrayElementDto,
   ArrayGrepCriteria,
   CreateArrayWithExpireDto,
+  DeleteArrayElementsDto,
+  DeleteArrayRangeDto,
   GetArraySearchDto,
   GetArraySearchResponse,
   SetArrayElementDto,
+  AppendArrayElementDto,
 } from 'src/modules/browser/array/dto';
 
 const arrayKeyName = () => Buffer.from(`array:${faker.string.alphanumeric(6)}`);
@@ -45,6 +48,12 @@ export const setArrayElementDtoFactory = Factory.define<SetArrayElementDto>(
   }),
 );
 
+export const appendArrayElementDtoFactory =
+  Factory.define<AppendArrayElementDto>(() => ({
+    keyName: arrayKeyName(),
+    value: arrayValue(),
+  }));
+
 export const aggregateArrayDtoFactory = Factory.define<AggregateArrayDto>(
   () => ({
     keyName: arrayKeyName(),
@@ -71,3 +80,17 @@ export const getArraySearchResponseFactory =
       { index: '6', value: Buffer.from('21.9') },
     ],
   }));
+
+export const deleteArrayElementsDtoFactory =
+  Factory.define<DeleteArrayElementsDto>(() => ({
+    keyName: arrayKeyName(),
+    indexes: ['0'],
+  }));
+
+export const deleteArrayRangeDtoFactory = Factory.define<DeleteArrayRangeDto>(
+  () => ({
+    keyName: arrayKeyName(),
+    start: '0',
+    end: '3',
+  }),
+);

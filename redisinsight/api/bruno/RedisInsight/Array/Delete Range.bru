@@ -1,0 +1,58 @@
+meta {
+  name: Delete Range
+  type: http
+  seq: 14
+}
+
+delete {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/array/range
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "readings",
+    "start": "0",
+    "end": "1"
+  }
+}
+
+docs {
+  # ARDELRANGE (delete an inclusive range)
+
+  Delete an inclusive range of elements — `ARDELRANGE key start end`. A reversed
+  range (`start > end`) deletes the same inclusive window. Deleting the last
+  element removes the key.
+
+  ## Request body
+
+  | Field     | Type   | Notes                                              |
+  |-----------|--------|----------------------------------------------------|
+  | `keyName` | string | The Array key name.                                |
+  | `start`   | string | Range start (inclusive). Unsigned 64-bit integer.  |
+  | `end`     | string | Range end (inclusive). Unsigned 64-bit integer.    |
+
+  ## Response
+
+  `200 OK`
+
+  ```json
+  { "affected": "2" }
+  ```
+
+  `affected` is the count of populated elements deleted in the range (decimal
+  string).
+
+  ## Errors
+
+  | Status | When |
+  |--------|------|
+  | `400`  | Key holds a non-array type, or a bound is not a valid u64 string. |
+  | `403`  | User has no permission for `ARDELRANGE`. |
+  | `404`  | Key does not exist. |
+}
+
+settings {
+  encodeUrl: true
+}

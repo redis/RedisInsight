@@ -1,4 +1,5 @@
 import { HttpException } from '@nestjs/common';
+import { CustomErrorCodes } from 'src/constants';
 
 export class ClientNotFoundErrorException extends HttpException {
   constructor(
@@ -6,6 +7,7 @@ export class ClientNotFoundErrorException extends HttpException {
       message: 'Client not found or it has been disconnected.',
       name: 'ClientNotFoundError',
       statusCode: 404,
+      errorCode: CustomErrorCodes.ClientNotFound,
     },
     status = 404,
   ) {

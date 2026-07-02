@@ -593,6 +593,34 @@ export function updateArrayElementAction(
   }
 }
 
+/**
+ * Fetches the ±N context window for one search match via ARGETRANGE and
+ * returns the normalized elements. Writes nothing into the shared array
+ * slice — the View tab owns `data.elements`; the search context band holds
+ * this result in local component state. Pass an AbortSignal so a re-expand,
+ * context-count change, or unmount can cancel the request.
+ */
+export function fetchArrayNeighbours(
+  params: { key: RedisString; start: string; end: string },
+  signal?: AbortSignal,
+) {
+  return async (
+    _dispatch: AppDispatch,
+    stateInit: () => RootState,
+  ): Promise<ArrayDataElement[]> => {
+    const state = stateInit()
+    const { data, status } = await apiService.post<GetArrayRangeResponse>(
+      arrayUrl(state, ApiEndpoints.ARRAY_GET_RANGE),
+      { keyName: params.key, start: params.start, end: params.end },
+      { ...encodingParams(state), signal },
+    )
+    if (!isStatusSuccessful(status)) {
+      throw new Error(DEFAULT_ERROR_MESSAGE)
+    }
+    return expandRangeElements(params.start, params.end, data.elements)
+  }
+}
+
 export function fetchArrayLength(key: RedisString) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     try {

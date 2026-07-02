@@ -24,7 +24,11 @@ export const parseClusterCursor = (cursor: string): IScannerNodeKeys[] => {
 
   nodeStrings.forEach((item: string) => {
     const [address, nextCursor] = item.split(CURSOR_SEPARATOR);
-    const [, host, port] = address.match(/(.+):(\d+)$/);
+    const match = address.match(/(.+):(\d+)$/);
+    if (!match) {
+      return;
+    }
+    const [, host, port] = match;
 
     // ignore nodes with cursor -1 (fully scanned)
     if (parseInt(nextCursor, 10) >= 0) {

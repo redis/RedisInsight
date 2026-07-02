@@ -54,3 +54,20 @@ export const ARRAY_DETAILS_TAB_LABELS: Record<ArrayDetailsTab, string> = {
   [ArrayDetailsTab.Search]: 'Search',
   [ArrayDetailsTab.Aggregate]: 'Aggregate',
 }
+
+/**
+ * Context is opt-in: rows aren't expandable until the user enables it, so the
+ * neighbour band never fetches for a match the user didn't ask to expand.
+ */
+export const DEFAULT_CONTEXT_ENABLED = false
+/** Default ± neighbours shown when a search match is expanded. */
+export const DEFAULT_CONTEXT_COUNT = 2
+export const CONTEXT_COUNT_MIN = 0
+/** Upper bound on the context window so an expand can't request a huge range. */
+export const CONTEXT_COUNT_MAX = 50
+
+/** Seed/reset value for the Search tab's Context option. */
+export const DEFAULT_CONTEXT = {
+  enabled: DEFAULT_CONTEXT_ENABLED,
+  count: DEFAULT_CONTEXT_COUNT,
+}

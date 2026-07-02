@@ -1,4 +1,6 @@
+import { ReactNode } from 'react'
 import { KeyValueCompressor, KeyValueFormat } from 'uiSrc/constants'
+import { Row } from 'uiSrc/components/base/layout/table'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 import { Nullable } from 'uiSrc/utils'
 
@@ -13,6 +15,12 @@ export interface ArrayDetailsTableProps {
    *  a table at once, so only the active one drives the shared key-header
    *  refresh flag; an inactive table also abandons any open editor. */
   isActive: boolean
+  /** Search context band only. Renders an expanded panel under each row;
+   *  omitted on the View / Aggregate tabs, which then show no expand
+   *  affordance. */
+  renderExpandedRow?: (row: Row<ArrayDataElement>) => ReactNode
+  getIsRowExpandable?: (rowData: ArrayDataElement) => boolean
+  expandRowOnClick?: boolean
 }
 
 /**
