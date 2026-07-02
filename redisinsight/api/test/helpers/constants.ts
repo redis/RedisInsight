@@ -23,6 +23,7 @@ const APP_DEFAULT_SETTINGS = {
   scanThreshold: 10000,
   batchSize: 5,
   theme: null,
+  language: null,
   dateFormat: null,
   timezone: null,
   agreements: null,

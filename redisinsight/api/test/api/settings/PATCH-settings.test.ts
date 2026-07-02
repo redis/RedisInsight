@@ -20,6 +20,7 @@ const endpoint = () => request(server).patch('/settings');
 const responseSchema = Joi.object()
   .keys({
     theme: Joi.string().allow(null).required(),
+    language: Joi.string().allow(null),
     scanThreshold: Joi.number().required(),
     batchSize: Joi.number().required(),
     dateFormat: Joi.string().allow(null),
