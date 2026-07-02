@@ -1159,6 +1159,33 @@ describe('array slice', () => {
         ).toBeUndefined()
       })
 
+      it('skips the success side effects when the database changed mid-write', async () => {
+        // Same selected key name, but the connection switched while the POST
+        // was in flight — the write landed on the old database, so its result
+        // must not repaint the new one.
+        const state = cloneDeep(initialStateDefault)
+        state.app.context.browser.keyList.selectedKey = mockKeyBuffer
+        state.connections.instances.connectedInstance = { id: 'db-1' } as any
+        const local = mockStore(state)
+        const onSuccess = jest.fn()
+
+        apiService.post = jest.fn().mockImplementation(async () => {
+          state.connections.instances.connectedInstance = { id: 'db-2' } as any
+          return { status: 200, data: { keyName: mockKey } }
+        })
+
+        await local.dispatch<any>(
+          appendArrayElement({ key: mockKeyBuffer, value: 'v' }, onSuccess),
+        )
+
+        expect(onSuccess).not.toHaveBeenCalled()
+        expect(
+          (apiService.post as jest.Mock).mock.calls.find(([url]) =>
+            url.includes('array/get-length'),
+          ),
+        ).toBeUndefined()
+      })
+
       it('notifies and calls onFail on error', async () => {
         const rejected = {
           response: { status: 500, data: { message: 'boom' } },

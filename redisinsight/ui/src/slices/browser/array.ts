@@ -910,11 +910,19 @@ export function refreshArray(key: RedisString) {
  */
 function applyArrayWriteResult(
   key: RedisResponseBuffer,
+  startInstanceId: Maybe<string>,
   onSuccessAction?: () => void,
 ) {
   return (dispatch: AppDispatch, stateInit: () => RootState) => {
-    const selectedKey = appContextSelectedKey(stateInit())
-    if (!selectedKey || !isEqualBuffers(selectedKey, key)) {
+    const latest = stateInit()
+    const selectedKey = appContextSelectedKey(latest)
+    // The user may have switched key or database while the POST was in flight.
+    // Applying the result (closing the panel, refreshing) only makes sense when
+    // both still match, so a same-named key in another database can't be
+    // repainted as if the add happened there (mirrors the edit/delete thunks).
+    const sameInstance =
+      latest.connections.instances.connectedInstance?.id === startInstanceId
+    if (!sameInstance || !selectedKey || !isEqualBuffers(selectedKey, key)) {
       return
     }
     onSuccessAction?.()
@@ -936,13 +944,16 @@ export function appendArrayElement(
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     try {
       const state = stateInit()
+      const startInstanceId = state.connections.instances.connectedInstance?.id
       const { status } = await apiService.post(
         arrayUrl(state, ApiEndpoints.ARRAY_APPEND),
         { keyName: params.key, value: params.value },
         encodingParams(state),
       )
       if (isStatusSuccessful(status)) {
-        dispatch<any>(applyArrayWriteResult(params.key, onSuccessAction))
+        dispatch<any>(
+          applyArrayWriteResult(params.key, startInstanceId, onSuccessAction),
+        )
       }
     } catch (error) {
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
@@ -964,13 +975,16 @@ export function addArrayElement(
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     try {
       const state = stateInit()
+      const startInstanceId = state.connections.instances.connectedInstance?.id
       const { status } = await apiService.post(
         arrayUrl(state, ApiEndpoints.ARRAY_SET_ELEMENT),
         { keyName: params.key, index: params.index, value: params.value },
         encodingParams(state),
       )
       if (isStatusSuccessful(status)) {
-        dispatch<any>(applyArrayWriteResult(params.key, onSuccessAction))
+        dispatch<any>(
+          applyArrayWriteResult(params.key, startInstanceId, onSuccessAction),
+        )
       }
     } catch (error) {
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
