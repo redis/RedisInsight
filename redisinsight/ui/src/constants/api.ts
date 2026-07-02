@@ -84,6 +84,7 @@ enum ApiEndpoints {
   ARRAY_ELEMENTS = 'array/elements',
   ARRAY_AGGREGATE = 'array/aggregate',
   ARRAY_SEARCH = 'array/search',
+  ARRAY_SET_ELEMENT = 'array/set-element',
 
   STREAMS = 'streams',
   STREAMS_ENTRIES = 'streams/entries',

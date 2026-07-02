@@ -45,7 +45,7 @@ const buildState = (
 const renderTab = (search?: Partial<ArraySearchState>, keyLoading = false) => {
   const store = mockStore(buildState(search, keyLoading))
   store.clearActions()
-  return render(<SearchTab keyProp={keyBuffer} />, { store })
+  return render(<SearchTab keyProp={keyBuffer} isActive />, { store })
 }
 
 describe('SearchTab', () => {
@@ -53,6 +53,18 @@ describe('SearchTab', () => {
     renderTab()
 
     expect(screen.getByTestId('array-search-form')).toBeInTheDocument()
+  })
+
+  it('disables the search form while the key is locked for editing', () => {
+    // isRefreshDisabled is set by the active table while a value editor is open
+    // or an ARSET is in flight; the query form must not reload the table then.
+    const state = buildState()
+    state.browser.keys.selectedKey.isRefreshDisabled = true
+    const store = mockStore(state)
+
+    render(<SearchTab keyProp={keyBuffer} isActive />, { store })
+
+    expect(screen.getByTestId('array-search-form-run')).toBeDisabled()
   })
 
   it('does not render the results table before a search has run', () => {
@@ -239,7 +251,7 @@ describe('SearchTab', () => {
 
     // The tab stays mounted across key switches; selecting another key resets
     // Context to its default rather than inheriting the previous key's.
-    rerender(<SearchTab keyProp={stringToBuffer('other-key')} />)
+    rerender(<SearchTab keyProp={stringToBuffer('other-key')} isActive />)
 
     expect(screen.getByRole('checkbox', { name: 'Context' })).not.toBeChecked()
   })

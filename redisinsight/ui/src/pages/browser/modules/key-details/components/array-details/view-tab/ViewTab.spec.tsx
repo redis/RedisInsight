@@ -38,7 +38,7 @@ const buildState = (elements: ArrayDataElement[]) => {
 const renderTab = (elements: ArrayDataElement[]) => {
   const store = mockStore(buildState(elements))
   store.clearActions()
-  return render(<ViewTab keyProp={keyBuffer} />, { store })
+  return render(<ViewTab keyProp={keyBuffer} isActive />, { store })
 }
 
 describe('ViewTab', () => {

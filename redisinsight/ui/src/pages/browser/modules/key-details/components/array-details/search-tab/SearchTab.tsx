@@ -14,8 +14,9 @@ import * as S from '../tabs.styles'
 import { NeighbourBand } from './NeighbourBand'
 import { SearchTabProps } from './SearchTab.types'
 
-const SearchTab = ({ keyProp }: SearchTabProps) => {
-  const { loading: keyLoading } = useAppSelector(selectedKeySelector)
+const SearchTab = ({ keyProp, isActive }: SearchTabProps) => {
+  const { loading: keyLoading, isRefreshDisabled } =
+    useAppSelector(selectedKeySelector)
   const keyName = keyProp ? bufferToString(keyProp) : ''
 
   // Context is a display concern (±N neighbours on expand), off by default so
@@ -85,7 +86,7 @@ const SearchTab = ({ keyProp }: SearchTabProps) => {
         onChangeContext={onChangeContext}
         onRun={runSearch}
         onReset={handleReset}
-        disabled={!isArrayKeyReady}
+        disabled={!isArrayKeyReady || isRefreshDisabled}
       />
       <S.TabBody>
         {/* Keep the tab blank until the user runs a search, then let
@@ -98,6 +99,7 @@ const SearchTab = ({ keyProp }: SearchTabProps) => {
               elements={elements}
               loading={loading}
               error={error}
+              isActive={isActive}
               deleteConfig={deleteConfig}
               expandRowOnClick
               getIsRowExpandable={() => context.enabled && !!keyProp}

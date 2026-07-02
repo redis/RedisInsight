@@ -28,6 +28,12 @@ import reducer, {
   loadArraySearchSuccess,
   loadArraySearchFailure,
   resetArraySearch,
+  updateArrayElement,
+  setArrayUpdating,
+  clearArrayAggregate,
+  loadArrayAggregateSuccess,
+  aggregateArray,
+  abortArrayAggregate,
   arraySelector,
   arrayDataSelector,
   arraySearchSelector,
@@ -37,11 +43,13 @@ import reducer, {
   fetchArrayCount,
   refreshArray,
   searchArray,
+  updateArrayElementAction,
   fetchArrayNeighbours,
   deleteArrayElements,
 } from '../../browser/array'
 import { arrayGrepPredicateFactory } from 'uiSrc/mocks/factories/browser/array/arrayGrepPredicate.factory'
 import {
+  refreshKeyInfo,
   updateSelectedKeyRefreshTime,
   deleteSelectedKeySuccess,
 } from '../../browser/keys'
@@ -193,6 +201,94 @@ describe('array slice', () => {
         loadArrayCountSuccess({ keyName: mockKey, count: '7' }),
       )
       expect(next.data.count).toBe('7')
+    })
+
+    it('updateArrayElement replaces the value of the matching index only', () => {
+      const dirty = {
+        ...initialState,
+        data: {
+          ...initialState.data,
+          elements: [
+            { index: '0', value: 'a' },
+            { index: '5', value: 'b' },
+          ],
+        },
+      }
+      const next = reducer(
+        dirty,
+        updateArrayElement({ index: '5', value: 'B' }),
+      )
+      expect(next.data.elements).toEqual([
+        { index: '0', value: 'a' },
+        { index: '5', value: 'B' },
+      ])
+    })
+
+    it('updateArrayElement is a no-op when the index is not loaded', () => {
+      const dirty = {
+        ...initialState,
+        data: {
+          ...initialState.data,
+          elements: [{ index: '0', value: 'a' }],
+        },
+      }
+      const next = reducer(
+        dirty,
+        updateArrayElement({ index: '9', value: 'x' }),
+      )
+      expect(next.data.elements).toEqual([{ index: '0', value: 'a' }])
+    })
+
+    it('setArrayUpdating toggles the in-flight ARSET flag', () => {
+      const next = reducer(initialState, setArrayUpdating(true))
+      expect(next.updating).toBe(true)
+      expect(reducer(next, setArrayUpdating(false)).updating).toBe(false)
+    })
+
+    it('updateArrayElement patches the Search results too (shared table)', () => {
+      const dirty = {
+        ...initialState,
+        data: {
+          ...initialState.data,
+          elements: [{ index: '5', value: 'b' }],
+        },
+        search: {
+          ...initialState.search,
+          data: [{ index: '5', value: 'b' }],
+        },
+      }
+      const next = reducer(
+        dirty,
+        updateArrayElement({ index: '5', value: 'B' }),
+      )
+      expect(next.data.elements).toEqual([{ index: '5', value: 'B' }])
+      // The Search tab renders the same ArrayDetailsTable from search.data, so
+      // an edit issued there must reflect in the search results too.
+      expect(next.search.data).toEqual([{ index: '5', value: 'B' }])
+    })
+
+    it('leaves WITHVALUES=false search rows value-less on edit', () => {
+      const dirty = {
+        ...initialState,
+        data: {
+          ...initialState.data,
+          elements: [{ index: '5', value: 'b' }],
+        },
+        search: {
+          ...initialState.search,
+          data: [{ index: '5', value: null }],
+          query: { predicates: [], withValues: false } as any,
+        },
+      }
+      const next = reducer(
+        dirty,
+        updateArrayElement({ index: '5', value: 'B' }),
+      )
+      // The View tab reflects the edit…
+      expect(next.data.elements).toEqual([{ index: '5', value: 'B' }])
+      // …but an index-only search result stays value-less, since the active
+      // query explicitly asked not to load values.
+      expect(next.search.data).toEqual([{ index: '5', value: null }])
     })
 
     describe('search sub-state', () => {
@@ -709,6 +805,272 @@ describe('array slice', () => {
 
         expect(store.getActions()).toEqual([
           loadArrayCountSuccess(response.data),
+        ])
+      })
+    })
+
+    describe('updateArrayElementAction', () => {
+      // The optimistic patch only applies when the edited key is still the
+      // selected one, so these tests run against a store whose selected key
+      // matches `mockKey`. The guard reads the live app-context selection
+      // (updated synchronously on key click), not selectedKey.data.
+      const storeWithSelectedKey = (name: unknown) => {
+        const state = cloneDeep(initialStateDefault)
+        state.app.context.browser.keyList.selectedKey = name as any
+        const s = mockStore(state)
+        s.clearActions()
+        return s
+      }
+
+      it('posts keyName/index/value and optimistically updates the element', async () => {
+        apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
+        const keyedStore = storeWithSelectedKey(mockKey)
+
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction({ key: mockKey, index: '5', value: 'B' }),
+        )
+
+        const [url, body] = (apiService.post as jest.Mock).mock.calls[0]
+        expect(url).toContain('array/set-element')
+        expect(body).toEqual({ keyName: mockKey, index: '5', value: 'B' })
+        const actions = keyedStore.getActions()
+        expect(actions).toContainEqual(setArrayUpdating(true))
+        expect(actions).toContainEqual(
+          updateArrayElement({ index: '5', value: 'B' }),
+        )
+        expect(actions).toContainEqual(clearArrayAggregate())
+        // Refetch key info (not just stamp the time) so the header Key Size
+        // reflects a value edited to a different byte length.
+        expect(actions).toContainEqual(refreshKeyInfo())
+        expect(actions).toContainEqual(setArrayUpdating(false))
+      })
+
+      it('skips the patch and the success callback when the selected key changed mid-write', async () => {
+        apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
+        // User switched to another key before the POST resolved.
+        const keyedStore = storeWithSelectedKey('another-key')
+        const onSuccess = jest.fn()
+
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction(
+            { key: mockKey, index: '5', value: 'B' },
+            onSuccess,
+          ),
+        )
+
+        // No table patch / refresh for the now-current key, and onSuccess must
+        // NOT fire — closing the editor here would discard an edit the user has
+        // opened on the new key's same-index row.
+        expect(keyedStore.getActions()).toEqual([
+          setArrayUpdating(true),
+          setArrayUpdating(false),
+        ])
+        expect(onSuccess).not.toHaveBeenCalled()
+      })
+
+      it('skips the UI updates when selectedKey.data still lags on the old key after a switch', async () => {
+        apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
+        // The user switched to another key; the live app-context selection
+        // updated, but selectedKey.data still holds the edited key while its
+        // successor loads. Guarding on selectedKey.data would wrongly pass.
+        const state = cloneDeep(initialStateDefault)
+        state.app.context.browser.keyList.selectedKey =
+          stringToBuffer('another-key')
+        ;(state.browser.keys.selectedKey as any).data = { name: mockKey }
+        const keyedStore = mockStore(state)
+        keyedStore.clearActions()
+        const onSuccess = jest.fn()
+
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction(
+            { key: mockKey, index: '5', value: 'B' },
+            onSuccess,
+          ),
+        )
+
+        expect(keyedStore.getActions()).toEqual([
+          setArrayUpdating(true),
+          setArrayUpdating(false),
+        ])
+        expect(onSuccess).not.toHaveBeenCalled()
+      })
+
+      it('skips the UI updates when the database changed mid-write, even for a same-named key', async () => {
+        // The POST is sent using the connection captured before the await. If
+        // the user switches to another database whose selected key has the
+        // same name, the key-only guard would still pass — so the value
+        // written to the old database must not be applied to the new one.
+        const state = cloneDeep(initialStateDefault)
+        state.app.context.browser.keyList.selectedKey = mockKey as any
+        state.connections.instances.connectedInstance = { id: 'db-1' } as any
+        const keyedStore = mockStore(state)
+        keyedStore.clearActions()
+        const onSuccess = jest.fn()
+
+        apiService.post = jest.fn().mockImplementation(async () => {
+          // User switches to another database before the POST resolves.
+          state.connections.instances.connectedInstance = { id: 'db-2' } as any
+          return { status: 200, data: '' }
+        })
+
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction(
+            { key: mockKey, index: '5', value: 'B' },
+            onSuccess,
+          ),
+        )
+
+        const actions = keyedStore.getActions()
+        expect(actions).not.toContainEqual(
+          updateArrayElement({ index: '5', value: 'B' }),
+        )
+        expect(actions.some((a) => a.type === clearArrayAggregate.type)).toBe(
+          false,
+        )
+        expect(onSuccess).not.toHaveBeenCalled()
+        // The lock is still released for the current (latest) write.
+        expect(actions).toContainEqual(setArrayUpdating(false))
+      })
+
+      it('only the latest ARSET clears the update lock when two overlap', async () => {
+        const keyedStore = storeWithSelectedKey(mockKey)
+        let resolveFirst: () => void = () => {}
+        let resolveSecond: () => void = () => {}
+        apiService.post = jest
+          .fn()
+          .mockImplementationOnce(
+            () =>
+              new Promise((r) => {
+                resolveFirst = () => r({ status: 200, data: '' })
+              }),
+          )
+          .mockImplementationOnce(
+            () =>
+              new Promise((r) => {
+                resolveSecond = () => r({ status: 200, data: '' })
+              }),
+          )
+
+        const first = keyedStore.dispatch<any>(
+          updateArrayElementAction({ key: mockKey, index: '1', value: 'a' }),
+        )
+        const second = keyedStore.dispatch<any>(
+          updateArrayElementAction({ key: mockKey, index: '2', value: 'b' }),
+        )
+
+        const isSetUpdatingFalse = (a: { type: string; payload?: unknown }) =>
+          a.type === setArrayUpdating(false).type && a.payload === false
+
+        // The stale first completion must NOT release the lock — a second
+        // ARSET is still pending.
+        resolveFirst()
+        await first
+        expect(keyedStore.getActions().filter(isSetUpdatingFalse)).toHaveLength(
+          0,
+        )
+
+        // The latest one clears it.
+        resolveSecond()
+        await second
+        expect(keyedStore.getActions().filter(isSetUpdatingFalse)).toHaveLength(
+          1,
+        )
+      })
+
+      it('still patches when the selected key is the same bytes but a new buffer instance', async () => {
+        apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
+        // Redux can replace the name buffer with a fresh instance for the same
+        // key (e.g. a key-info refetch) while the POST is in flight.
+        const keyedStore = storeWithSelectedKey(stringToBuffer('readings'))
+
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction({
+            key: stringToBuffer('readings'),
+            index: '5',
+            value: 'B',
+          }),
+        )
+
+        expect(keyedStore.getActions()).toContainEqual(
+          updateArrayElement({ index: '5', value: 'B' }),
+        )
+      })
+
+      it('aborts an in-flight aggregate so a stale AROP cannot repopulate after the edit', async () => {
+        const keyedStore = storeWithSelectedKey(mockKey)
+        let resolveAgg: () => void = () => {}
+        apiService.post = jest
+          .fn()
+          .mockImplementationOnce(
+            () =>
+              new Promise((r) => {
+                resolveAgg = () =>
+                  r({
+                    status: 200,
+                    data: { keyName: mockKey, result: '104.7' },
+                  })
+              }),
+          )
+          .mockResolvedValue({ status: 200, data: '' })
+
+        // AROP in flight, then an edit lands and clears + aborts it.
+        const aggregate = keyedStore.dispatch<any>(
+          aggregateArray({
+            key: mockKey,
+            start: '0',
+            end: '6',
+            operation: ArrayAggregateOperation.Sum,
+          }),
+        )
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction({ key: mockKey, index: '1', value: 'x' }),
+        )
+
+        // The stale aggregate response resolves after the edit.
+        resolveAgg()
+        await aggregate
+
+        // It must not repopulate the (cleared) aggregate state.
+        const types = keyedStore.getActions().map((a) => a.type)
+        expect(types).not.toContain(loadArrayAggregateSuccess.type)
+        abortArrayAggregate()
+      })
+
+      it('calls onSuccessAction on success', async () => {
+        apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
+        const keyedStore = storeWithSelectedKey(mockKey)
+        const onSuccess = jest.fn()
+
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction(
+            { key: mockKey, index: '5', value: 'B' },
+            onSuccess,
+          ),
+        )
+
+        expect(onSuccess).toHaveBeenCalled()
+      })
+
+      it('notifies and calls onFailAction on error without touching the table', async () => {
+        const rejected = {
+          response: { status: 500, data: { message: 'boom' } },
+        }
+        apiService.post = jest.fn().mockRejectedValue(rejected)
+        const onFail = jest.fn()
+
+        await store.dispatch<any>(
+          updateArrayElementAction(
+            { key: mockKey, index: '5', value: 'B' },
+            undefined,
+            onFail,
+          ),
+        )
+
+        expect(onFail).toHaveBeenCalled()
+        expect(store.getActions()).toEqual([
+          setArrayUpdating(true),
+          addErrorNotification(rejected as IAddInstanceErrorPayload),
+          setArrayUpdating(false),
         ])
       })
     })
