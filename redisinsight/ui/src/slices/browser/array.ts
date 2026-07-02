@@ -20,6 +20,7 @@ import {
   isStatusNotFoundError,
   isStatusSuccessful,
   Maybe,
+  stringToBuffer,
 } from 'uiSrc/utils'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -682,6 +683,10 @@ export function fetchArrayCount(key: RedisString) {
   }
 }
 
+// The success toast lists at most this many deleted indexes; a bulk select-all
+// can span thousands, so only a sample is rendered (with the full count).
+const REMOVED_ELEMENTS_TOAST_SAMPLE = 10
+
 // Per-element delete (ARDEL). The slice's data.count isn't kept fresh and
 // arrays are sparse, so probe ARCOUNT after the delete to learn whether the
 // key survived: it 404s once the last element is gone (the server drops the
@@ -757,11 +762,21 @@ export function deleteArrayElements(key: RedisString, indexes: string[]) {
       dispatch(refreshKeyInfoAction(key as RedisResponseBuffer))
       dispatch(
         addMessageNotification(
-          successMessages.REMOVED_KEY_VALUE(
-            key as RedisResponseBuffer,
-            indexes.join(', ') as unknown as RedisResponseBuffer,
-            'Element',
-          ),
+          indexes.length > 1
+            ? // Summarize a bulk delete: show the count and only a sample, so a
+              // select-all over a large result set can't build a giant string.
+              successMessages.REMOVED_LIST_ELEMENTS(
+                key as RedisResponseBuffer,
+                indexes.length,
+                indexes
+                  .slice(0, REMOVED_ELEMENTS_TOAST_SAMPLE)
+                  .map((index) => stringToBuffer(index)),
+              )
+            : successMessages.REMOVED_KEY_VALUE(
+                key as RedisResponseBuffer,
+                indexes.join(', ') as unknown as RedisResponseBuffer,
+                'Element',
+              ),
         ),
       )
     } catch (error) {
