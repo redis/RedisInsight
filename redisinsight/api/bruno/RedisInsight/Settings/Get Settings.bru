@@ -1,0 +1,41 @@
+meta {
+  name: Get Settings
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{API_URL}}/settings
+  body: none
+  auth: inherit
+}
+
+docs {
+  # Get Settings
+
+  Fetches the current application settings via `GET /settings`. Use this to
+  confirm the `language` value persisted after calling **Update Language**.
+
+  ## Response
+
+  Returns `200 OK` with the full settings object:
+
+  ```
+  {
+    "theme": "DARK",
+    "language": "bg",
+    "dateFormat": null,
+    "timezone": null,
+    "scanThreshold": 10000,
+    "batchSize": 5,
+    "acceptTermsAndConditionsOverwritten": false,
+    "agreements": { "version": "1.0.0", "eula": true, "analytics": true }
+  }
+  ```
+
+  `language` is `null` until a user sets it.
+}
+
+settings {
+  encodeUrl: true
+}
