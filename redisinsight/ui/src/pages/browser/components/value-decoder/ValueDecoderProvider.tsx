@@ -74,7 +74,7 @@ export const ValueDecoderProvider = ({
 
   useEffect(() => {
     setIsDecodeEnabled(false)
-  }, [keyName])
+  }, [keyName, matchedRule?.id ?? null])
 
   const openValueDecoderModal = useCallback(() => {
     setModalConfig({ keyName })
