@@ -70,7 +70,7 @@ describe('ModuleNotLoadedMinimalized', () => {
     expect(screen.queryByTestId('connect-free-db-btn')).not.toBeInTheDocument()
     expect(screen.getByText(/Redis Databases page/)).toBeInTheDocument()
     expect(
-      screen.getByText(/Open a database with Redis Query Engine/),
+      screen.getByText(/Open a database with Redis Search/),
     ).toBeInTheDocument()
   })
 
@@ -87,7 +87,7 @@ describe('ModuleNotLoadedMinimalized', () => {
 
     expect(
       screen.getByText(
-        /Create a free Redis Cloud database with search and query/,
+        /Build a free Redis Cloud database with search and query/,
       ),
     ).toBeInTheDocument()
   })

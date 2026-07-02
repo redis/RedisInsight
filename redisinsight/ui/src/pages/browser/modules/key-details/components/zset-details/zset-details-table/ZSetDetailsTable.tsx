@@ -383,7 +383,7 @@ const ZSetDetailsTable = (props: Props) => {
         return (
           <EditableInput
             initialValue={score.toString()}
-            placeholder="Enter Score"
+            placeholder="Enter score"
             field={rowIndex?.toString()}
             editToolTipContent={!isEditable ? editToolTipContent : null}
             isEditing={editing}

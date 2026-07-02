@@ -28,13 +28,13 @@ const NavButton = () => {
 
   const Btn = (
     <SideBarItem
-      tooltipProps={{ text: 'Notification Center', placement: 'right' }}
+      tooltipProps={{ text: 'Notification center', placement: 'right' }}
       onMouseDownCapture={onClickIcon}
       isActive={isCenterOpen}
     >
       <SideBarItemIcon
         icon={NotificationsIcon}
-        aria-label="Notification Menu"
+        aria-label="Notification menu"
         data-testid="notification-menu-button"
       />
     </SideBarItem>

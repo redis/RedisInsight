@@ -5,7 +5,7 @@ import { DatabaseInstance } from 'e2eSrc/types';
 /**
  * Empty Redis instance (dedicated port, default 8105) — zero-key welcome / CTAs.
  */
-test.describe('Browser > Key List View (empty database)', () => {
+test.describe('Browser > Key List view (empty database)', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {

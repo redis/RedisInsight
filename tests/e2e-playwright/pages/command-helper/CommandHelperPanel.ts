@@ -1,8 +1,8 @@
 import { Page, Locator } from '@playwright/test';
 
 /**
- * Command Helper Panel component
- * Handles the Command Helper panel at the bottom of the page
+ * Command helper Panel component
+ * Handles the Command helper panel at the bottom of the page
  */
 export class CommandHelperPanel {
   readonly page: Page;
@@ -38,7 +38,7 @@ export class CommandHelperPanel {
   }
 
   /**
-   * Open the Command Helper panel
+   * Open the Command helper panel
    */
   async open(): Promise<void> {
     const isVisible = await this.hideButton.isVisible();
@@ -49,7 +49,7 @@ export class CommandHelperPanel {
   }
 
   /**
-   * Close the Command Helper panel (removes it completely)
+   * Close the Command helper panel (removes it completely)
    */
   async close(): Promise<void> {
     const isVisible = await this.closeButton.isVisible();
@@ -59,7 +59,7 @@ export class CommandHelperPanel {
   }
 
   /**
-   * Hide the Command Helper panel (minimize)
+   * Hide the Command helper panel (minimize)
    */
   async hide(): Promise<void> {
     const isVisible = await this.hideButton.isVisible();
@@ -69,7 +69,7 @@ export class CommandHelperPanel {
   }
 
   /**
-   * Check if Command Helper panel is open
+   * Check if Command helper panel is open
    */
   async isOpen(): Promise<boolean> {
     return this.hideButton.isVisible();

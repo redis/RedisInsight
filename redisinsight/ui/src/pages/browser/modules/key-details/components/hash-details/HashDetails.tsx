@@ -85,7 +85,7 @@ const HashDetails = (props: Props) => {
         </>
       )}
       <AddItemsAction
-        title="Add Fields"
+        title="Add fields"
         width={width}
         openAddItemPanel={openAddItemPanel}
       />

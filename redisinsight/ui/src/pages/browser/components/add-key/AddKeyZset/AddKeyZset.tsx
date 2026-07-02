@@ -225,7 +225,7 @@ const AddKeyZset = (props: Props) => {
       <ActionFooter
         onCancel={() => onCancel(true)}
         onAction={submitData}
-        actionText="Add Key"
+        actionText="Add key"
         loading={loading}
         disabled={!isFormValid}
         actionTestId="add-key-zset-btn"

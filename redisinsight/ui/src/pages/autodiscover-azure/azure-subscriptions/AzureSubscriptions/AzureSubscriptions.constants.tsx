@@ -23,7 +23,7 @@ export const AZURE_SUBSCRIPTIONS_COLUMNS: ColumnDef<AzureSubscription>[] = [
   },
   {
     id: 'displayName',
-    header: 'Subscription Name',
+    header: 'Subscription name',
     accessorKey: 'displayName',
     enableSorting: true,
     cell: ({ getValue }) => <Text size="M">{getValue() as string}</Text>,

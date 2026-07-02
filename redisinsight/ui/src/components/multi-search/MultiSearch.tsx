@@ -235,7 +235,7 @@ const MultiSearch = (props: Props) => {
                         <StyledSuggestionRemoveBtn
                           icon={CancelSlimIcon}
                           color="primary"
-                          aria-label="Remove History Record"
+                          aria-label="Remove history record"
                           onClick={(e: React.MouseEvent) => {
                             e.stopPropagation()
                             handleDeleteSuggestion([id])
@@ -263,11 +263,11 @@ const MultiSearch = (props: Props) => {
             </StyledAutoSuggestions>
           )}
           {(value || !!options.length) && (
-            <RiTooltip content="Reset Filters" position="bottom">
+            <RiTooltip content="Reset filters" position="bottom">
               <StyledClearButton
                 icon={CancelSlimIcon}
                 size="XS"
-                aria-label="Reset Filters"
+                aria-label="Reset filters"
                 onClick={onClear}
                 data-testid="reset-filter-btn"
                 variant="secondary"
@@ -293,10 +293,7 @@ const MultiSearch = (props: Props) => {
           )}
           {appendRight}
           {disableSubmit && (
-            <RiTooltip
-              position="top"
-              content="Please choose index in order to preform the search"
-            >
+            <RiTooltip position="top" content="Select an index to search">
               {SubmitBtn()}
             </RiTooltip>
           )}

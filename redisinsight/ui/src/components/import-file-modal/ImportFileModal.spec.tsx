@@ -92,7 +92,7 @@ describe('ImportFileModal', () => {
     render(<ImportFileModal {...mockProps} data={{}} />)
 
     expect(screen.getByTestId('import-file-modal-title')).toHaveTextContent(
-      'Import Results',
+      'Import results',
     )
   })
 

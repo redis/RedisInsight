@@ -14,7 +14,7 @@ import styles from './styles.module.scss'
 
 const headerHeight = 60
 const rowHeight = 54
-const noItemsMessageString = 'Your Key has no Consumer Groups available.'
+const noItemsMessageString = 'Your key has no consumer groups available.'
 
 export interface IConsumerGroup extends ConsumerGroupDto {
   editing: boolean

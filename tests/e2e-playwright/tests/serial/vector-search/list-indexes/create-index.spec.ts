@@ -13,13 +13,13 @@ const SAMPLE_KEY_PREFIXES = ['bikes:*', 'movie:*'];
 test.use({ featureFlags: { vectorSearchV2: true } });
 
 /**
- * Vector Search > Create Index from List Page
+ * Vector Search > Create index from List Page
  *
  * Tests for creating indexes via the "+ Create search index" menu
  * on the list page, including sample data flow, existing data flow,
  * and disabled state when no hash/JSON keys exist.
  */
-test.describe('Vector Search > Create Index from List Page', () => {
+test.describe('Vector Search > Create index from List Page', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
@@ -129,7 +129,7 @@ test.describe('Vector Search > Create Index from List Page', () => {
   });
 });
 
-test.describe('Vector Search > Create Index from List Page - No Hash/JSON Keys', () => {
+test.describe('Vector Search > Create index from List Page - No Hash/JSON Keys', () => {
   let database: DatabaseInstance;
   const emptyIndex = IndexConfigFactory.build();
 

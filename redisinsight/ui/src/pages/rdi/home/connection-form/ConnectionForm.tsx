@@ -125,7 +125,7 @@ const ConnectionForm = (props: Props) => {
                   disabled={!isValid}
                   onClick={onSubmit}
                 >
-                  {editInstance ? 'Apply Changes' : 'Add Endpoint'}
+                  {editInstance ? 'Apply changes' : 'Add endpoint'}
                 </PrimaryButton>
               </ValidationTooltip>
             </FlexItem>

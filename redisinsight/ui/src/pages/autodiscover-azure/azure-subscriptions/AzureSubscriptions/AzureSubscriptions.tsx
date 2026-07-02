@@ -113,7 +113,7 @@ const AzureSubscriptions = ({
     <AutodiscoveryPageTemplate>
       <DatabaseContainer justify="start">
         <Header
-          title="Azure Subscriptions"
+          title="Azure subscriptions"
           onBack={onBack}
           onQueryChange={onQueryChange}
           subTitle={
@@ -183,14 +183,14 @@ const AzureSubscriptions = ({
               data-testid="btn-manual-connection"
               onClick={onManualConnection}
             >
-              Manual Connection
+              Manual connection
             </SecondaryButton>
             <PrimaryButton
               disabled={!selectedId || loading}
               loading={loading}
               onClick={handleSubmit}
             >
-              Show Databases
+              Show databases
             </PrimaryButton>
           </Row>
         </Row>

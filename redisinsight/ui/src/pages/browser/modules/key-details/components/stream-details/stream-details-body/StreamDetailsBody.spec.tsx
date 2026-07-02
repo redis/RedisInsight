@@ -76,7 +76,7 @@ describe('StreamDetailsBody', () => {
     ).toBeTruthy()
   })
 
-  it('should render Stream Data container', () => {
+  it('should render Stream data container', () => {
     render(<StreamDetailsBody {...instance(mockedProps)} />)
 
     expect(screen.getByTestId('stream-entries-container')).toBeInTheDocument()

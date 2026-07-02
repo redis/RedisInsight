@@ -21,7 +21,7 @@ const PrimaryGroupSentinel = (props: Props) => {
               name="name"
               id="name"
               data-testid="name"
-              placeholder="Enter Database Alias"
+              placeholder="Enter database alias"
               value={formik.values.name ?? ''}
               maxLength={500}
               onChange={formik.handleChange}
@@ -36,7 +36,7 @@ const PrimaryGroupSentinel = (props: Props) => {
               name="sentinelMasterName"
               id="sentinelMasterName"
               data-testid="primary-group"
-              placeholder="Enter Primary Group Name"
+              placeholder="Enter primary group name"
               value={formik.values.sentinelMasterName ?? ''}
               maxLength={500}
               onChange={formik.handleChange}

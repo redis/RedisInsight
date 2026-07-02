@@ -76,14 +76,14 @@ test.describe('Vector Search > Select Key Onboarding', () => {
 });
 
 /**
- * Vector Search > Create Index - Onboarding
+ * Vector Search > Create index - Onboarding
  *
  * Tests for the create index onboarding flow.
  * The onboarding starts after the user selects a key from the browser panel,
  * which triggers field inference and shows guided popovers through the form steps:
  * DefineIndex → IndexPrefix → FieldName → SampleValue → IndexingType → CommandView
  */
-test.describe('Vector Search > Create Index - Onboarding', () => {
+test.describe('Vector Search > Create index - Onboarding', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {

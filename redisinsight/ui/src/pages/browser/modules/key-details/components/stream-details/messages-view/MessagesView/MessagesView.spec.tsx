@@ -45,7 +45,7 @@ describe('MessagesView', () => {
     render(<MessagesView {...instance(mockedProps)} data={[]} />)
 
     expect(screen.getByTestId('stream-messages-container')).toHaveTextContent(
-      'Your Consumer has no pending messages.',
+      'Your consumer has no pending messages.',
     )
   })
 })

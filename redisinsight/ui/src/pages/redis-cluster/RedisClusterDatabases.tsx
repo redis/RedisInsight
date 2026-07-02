@@ -118,7 +118,7 @@ const RedisClusterDatabases = ({
     <AutodiscoveryPageTemplate>
       <DatabaseContainer>
         <Header
-          title="Auto-Discover Redis Enterprise Databases"
+          title="Auto-discover Redis Enterprise databases"
           onBack={onBack}
           onQueryChange={onQueryChange}
           subTitle={getSubtitle(items)}
@@ -169,7 +169,7 @@ const RedisClusterDatabases = ({
               icon={isSubmitDisabled() ? InfoIcon : undefined}
               data-testid="btn-add-databases"
             >
-              Add selected Databases
+              Add selected databases
             </PrimaryButton>
           </RiTooltip>
         </Row>

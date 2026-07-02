@@ -86,15 +86,15 @@ describe('TopKeys', () => {
     expect(queryByTestId('table-loader')).toBeInTheDocument()
   })
 
-  it('should render TOP KEYS title', () => {
+  it('should render Top keys title', () => {
     const { queryByText } = render(
       <TopKeys {...instance(mockedProps)} data={mockData} />,
     )
-    expect(queryByText('TOP KEYS')).toBeInTheDocument()
-    expect(queryByText('TOP 15 KEYS')).not.toBeInTheDocument()
+    expect(queryByText('Top keys')).toBeInTheDocument()
+    expect(queryByText('Top 15 keys')).not.toBeInTheDocument()
   })
 
-  it('should render TOP 15 KEYS title', () => {
+  it('should render Top 15 keys title', () => {
     const largeMockData = DatabaseAnalysisFactory.build({
       topKeysLength: Array.from({ length: 15 }, () => mockKey),
       topKeysMemory: Array.from({ length: 15 }, () => mockKey),
@@ -104,7 +104,7 @@ describe('TopKeys', () => {
       <TopKeys {...instance(mockedProps)} data={largeMockData} />,
     )
 
-    expect(queryByText('TOP KEYS')).not.toBeInTheDocument()
-    expect(queryByText('TOP 15 KEYS')).toBeInTheDocument()
+    expect(queryByText('Top keys')).not.toBeInTheDocument()
+    expect(queryByText('Top 15 keys')).toBeInTheDocument()
   })
 })

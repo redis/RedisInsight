@@ -69,7 +69,7 @@ const NoRecommendationsScreen = () => {
             className={styles.text}
             data-testid="no-recommendations-analyse-text"
           >
-            Eager for more tips? Run Database Analysis to get started.
+            Eager for more tips? Run Database analysis to get started.
           </Text>
 
           <PopoverRunAnalyze
@@ -87,7 +87,7 @@ const NoRecommendationsScreen = () => {
               onClick={() => setIsShowInfo(true)}
               data-testid="insights-db-analysis-link"
             >
-              Analyze Database
+              Analyze database
             </PrimaryButton>
           </PopoverRunAnalyze>
         </FeatureFlagComponent>

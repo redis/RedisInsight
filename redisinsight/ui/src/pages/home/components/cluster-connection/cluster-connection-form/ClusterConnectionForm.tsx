@@ -58,7 +58,7 @@ interface Values {
 const fieldDisplayNames: Values = {
   host: 'Cluster Host',
   port: 'Cluster Port',
-  username: 'Admin Username',
+  username: 'Admin username',
   // deepcode ignore NoHardcodedPasswords: <Not a password but "password" field placeholder>
   password: 'Admin Password',
 }
@@ -197,13 +197,13 @@ const ClusterConnectionForm = (props: Props) => {
         <Col gap="l">
           <Row gap="m" responsive>
             <FlexItem grow={4}>
-              <FormField label="Cluster Host" required infoIconProps={hostInfo}>
+              <FormField label="Cluster host" required infoIconProps={hostInfo}>
                 <TextInput
                   name="host"
                   id="host"
                   data-testid="host"
                   maxLength={200}
-                  placeholder="Enter Cluster Host"
+                  placeholder="Enter cluster host"
                   value={formik.values.host}
                   onChange={(value) => {
                     formik.setFieldValue('host', validateField(value.trim()))
@@ -216,7 +216,7 @@ const ClusterConnectionForm = (props: Props) => {
             </FlexItem>
 
             <FlexItem grow={2}>
-              <FormField label="Cluster Port" required>
+              <FormField label="Cluster port" required>
                 <NumericInput
                   autoValidate
                   min={0}
@@ -224,7 +224,7 @@ const ClusterConnectionForm = (props: Props) => {
                   name="port"
                   id="port"
                   data-testid="port"
-                  placeholder="Enter Cluster Port"
+                  placeholder="Enter cluster port"
                   value={Number(formik.values.port)}
                   onChange={(value) => formik.setFieldValue('port', value)}
                 />
@@ -234,13 +234,13 @@ const ClusterConnectionForm = (props: Props) => {
 
           <Row gap="m" responsive>
             <FlexItem grow>
-              <FormField label="Admin Username" required>
+              <FormField label="Admin username" required>
                 <TextInput
                   name="username"
                   id="username"
                   data-testid="username"
                   maxLength={200}
-                  placeholder="Enter Admin Username"
+                  placeholder="Enter admin username"
                   value={formik.values.username}
                   onChange={(value) => formik.setFieldValue('username', value)}
                 />
@@ -248,14 +248,14 @@ const ClusterConnectionForm = (props: Props) => {
             </FlexItem>
 
             <FlexItem grow>
-              <FormField label="Admin Password" required>
+              <FormField label="Admin password" required>
                 <PasswordInput
                   type="dual"
                   name="password"
                   id="password"
                   data-testid="password"
                   maxLength={200}
-                  placeholder="Enter Password"
+                  placeholder="Enter password"
                   value={formik.values.password}
                   onChange={(value) => formik.setFieldValue('password', value)}
                   autoComplete="new-password"

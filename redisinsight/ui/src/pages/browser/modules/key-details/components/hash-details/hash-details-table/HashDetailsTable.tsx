@@ -574,10 +574,10 @@ const HashDetailsTable = (props: Props) => {
           >
             <div className="innerCellAsCell">
               {expire === -1 ? (
-                'No Limit'
+                'No limit'
               ) : (
                 <RiTooltip
-                  title="Time to Live"
+                  title="Time to live"
                   className={styles.tooltip}
                   anchorClassName="truncateText"
                   position="right"

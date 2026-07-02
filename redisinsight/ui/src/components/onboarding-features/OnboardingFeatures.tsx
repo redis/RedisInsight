@@ -229,7 +229,7 @@ const ONBOARDING_FEATURES = {
   },
   BROWSER_COMMAND_HELPER: {
     step: OnboardingSteps.BrowserCommandHelper,
-    title: 'Command Helper',
+    title: 'Command helper',
     Inner: () => {
       const { id: connectedInstanceId = '' } = useAppSelector(
         connectedInstanceSelector,
@@ -243,7 +243,7 @@ const ONBOARDING_FEATURES = {
       return {
         content: (
           <>
-            Command Helper lets you search and learn more about Redis commands,
+            Command helper lets you search and learn more about Redis commands,
             their syntax, and details.
             <Spacer size="xs" />
             Run <b>PING</b> in CLI to see how it works.
@@ -332,8 +332,8 @@ const ONBOARDING_FEATURES = {
         content: (
           <>
             This is Search, where you can index your data and query it using
-            Redis Query Engine. Run full-text search, vector similarity, and
-            filtered queries right from the UI.
+            Redis Search. Run full-text search, vector similarity, and filtered
+            queries right from the UI.
             <Spacer size="xs" />
             Load sample data to create your first index and run sample queries
             to see results instantly.
@@ -540,7 +540,7 @@ const ONBOARDING_FEATURES = {
   },
   ANALYTICS_OVERVIEW: {
     step: OnboardingSteps.AnalyticsOverview,
-    title: 'Cluster Overview',
+    title: 'Cluster overview',
     Inner: () => {
       const { id: connectedInstanceId = '' } = useAppSelector(
         connectedInstanceSelector,
@@ -575,7 +575,7 @@ const ONBOARDING_FEATURES = {
   },
   ANALYTICS_DATABASE_ANALYSIS: {
     step: OnboardingSteps.AnalyticsDatabaseAnalysis,
-    title: 'Database Analysis',
+    title: 'Database analysis',
     Inner: () => {
       const { data } = useAppSelector(dbAnalysisSelector)
       const { id: connectedInstanceId = '', connectionType } = useAppSelector(
@@ -591,7 +591,7 @@ const ONBOARDING_FEATURES = {
       return {
         content: (
           <>
-            Use Database Analysis to get summary of your database and receive
+            Use Database analysis to get summary of your database and receive
             tips to improve memory usage and performance.
             <Spacer size="xs" />
             Run a new report to get an overview of the database and receive tips
@@ -627,7 +627,7 @@ const ONBOARDING_FEATURES = {
   },
   ANALYTICS_RECOMMENDATIONS: {
     step: OnboardingSteps.AnalyticsRecommendations,
-    title: 'Database Tips',
+    title: 'Database tips',
     Inner: () => {
       const { id: connectedInstanceId = '' } = useAppSelector(
         connectedInstanceSelector,
@@ -652,7 +652,7 @@ const ONBOARDING_FEATURES = {
   },
   ANALYTICS_SLOW_LOG: {
     step: OnboardingSteps.AnalyticsSlowLog,
-    title: 'Slow Log',
+    title: 'Slow log',
     Inner: () => {
       const { id: connectedInstanceId = '' } = useAppSelector(
         connectedInstanceSelector,
@@ -668,7 +668,7 @@ const ONBOARDING_FEATURES = {
       return {
         content: (
           <>
-            Check Slow Log to troubleshoot performance issues.
+            Check Slow log to troubleshoot performance issues.
             <Spacer size="xs" />
             See the list of slow logs in chronological order to debug and trace
             your Redis database. Customize parameters to capture logs.

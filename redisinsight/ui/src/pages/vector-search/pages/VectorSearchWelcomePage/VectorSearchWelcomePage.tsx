@@ -20,7 +20,7 @@ export const VectorSearchWelcomePage = () => {
   const useMyDatabaseDisabled = hasExistingKeysLoading
     ? { tooltip: 'Checking for existing keys…' }
     : !hasExistingKeys
-      ? { tooltip: 'No Hash or JSON keys found in your database' }
+      ? { tooltip: 'No hash or JSON keys found in your database' }
       : undefined
 
   const handleTrySampleData = useCallback(

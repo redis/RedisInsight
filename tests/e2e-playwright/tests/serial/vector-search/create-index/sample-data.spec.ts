@@ -15,14 +15,14 @@ const SAMPLE_DATASETS = [
 test.use({ featureFlags: { vectorSearchV2: true } });
 
 /**
- * Vector Search > Create Index - Sample Data
+ * Vector Search > Create index - Sample Data
  *
  * Tests for creating an index from sample data,
  * including "Start querying" and "See index definition" flows.
  *
  * Each test cleans up indexes and creates a seed so the list page appears.
  */
-test.describe('Vector Search > Create Index - Sample Data', () => {
+test.describe('Vector Search > Create index - Sample Data', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {

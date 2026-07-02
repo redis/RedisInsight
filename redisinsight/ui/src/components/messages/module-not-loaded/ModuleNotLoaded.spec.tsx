@@ -57,7 +57,7 @@ describe('ModuleNotLoaded', () => {
     const { queryByText } = render(<ModuleNotLoaded {...props} />)
     expect(
       queryByText(
-        /Create a free all-in-one Redis Cloud database to start exploring these capabilities./,
+        /Build a free all-in-one Redis Cloud database to start exploring these capabilities./,
       ),
     ).toBeInTheDocument()
   })
@@ -80,9 +80,7 @@ describe('ModuleNotLoaded', () => {
     })
     mockGetDbWithModuleLoaded(true) // should not affect output
     const { queryByText } = render(<ModuleNotLoaded {...props} />)
-    expect(
-      queryByText(/Open a database with Redis Query Engine/),
-    ).toBeInTheDocument()
+    expect(queryByText(/Open a database with Redis Search/)).toBeInTheDocument()
   })
 
   it('should not show CTA button when envDependant feature is disabled', () => {
@@ -95,9 +93,9 @@ describe('ModuleNotLoaded', () => {
     expect(queryByTestId(TEST_IDS.ctaWrapper)).toBeEmptyDOMElement()
   })
 
-  it('should show "Get Started For Free" button when envDependant feature is enabled and cloudAds feature is enabled', () => {
+  it('should show "Build a free database" button when envDependant feature is enabled and cloudAds feature is enabled', () => {
     const { queryByText, getByText } = render(<ModuleNotLoaded {...props} />)
-    expect(getByText(/Get Started For Free/)).toBeInTheDocument()
+    expect(getByText(/Build a free database/)).toBeInTheDocument()
     expect(queryByText(/Redis Databases page/)).not.toBeInTheDocument()
   })
 
@@ -114,7 +112,7 @@ describe('ModuleNotLoaded', () => {
     const { queryByText, getByText } = render(<ModuleNotLoaded {...props} />)
     const databasesButton = getByText(/Redis Databases page/)
     expect(databasesButton).toBeInTheDocument()
-    expect(queryByText(/Get Started For Free/)).not.toBeInTheDocument()
+    expect(queryByText(/Build a free database/)).not.toBeInTheDocument()
 
     // click button
     act(() => {
@@ -133,9 +131,7 @@ describe('ModuleNotLoaded', () => {
       },
     })
     const { getByText } = render(<ModuleNotLoaded {...props} />)
-    expect(
-      getByText(/Open a database with Redis Query Engine/),
-    ).toBeInTheDocument()
+    expect(getByText(/Open a database with Redis Search/)).toBeInTheDocument()
   })
 
   it('should show expected text when free db exists', () => {
@@ -152,7 +148,7 @@ describe('ModuleNotLoaded', () => {
     const { getByText } = render(<ModuleNotLoaded {...props} />)
     expect(
       getByText(
-        /Create a free all-in-one Redis Cloud database to start exploring these capabilities./,
+        /Build a free all-in-one Redis Cloud database to start exploring these capabilities./,
       ),
     ).toBeInTheDocument()
   })

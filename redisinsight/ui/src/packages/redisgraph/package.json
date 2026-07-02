@@ -7,7 +7,7 @@
   "bugs": {
     "url": "https://github.com/"
   },
-  "description": "Show graph Visualization/table",
+  "description": "Show graph visualization/table",
   "source": "./src/main.tsx",
   "styles": "./dist/styles.css",
   "main": "./dist/index.js",

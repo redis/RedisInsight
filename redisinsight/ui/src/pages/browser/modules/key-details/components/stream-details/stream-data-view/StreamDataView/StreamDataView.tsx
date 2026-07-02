@@ -29,7 +29,7 @@ import styles from './styles.module.scss'
 const headerHeight = 60
 const rowHeight = 60
 const minColumnWidth = 190
-const noItemsMessageInEmptyStream = 'There are no Entries in the Stream.'
+const noItemsMessageInEmptyStream = 'There are no entries in the stream.'
 const noItemsMessageInRange = 'No results found.'
 
 export interface Props {

@@ -42,7 +42,7 @@ export const DatabaseAnalysisPage = () => {
 
   const dispatch = useAppDispatch()
   const dbName = `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)}`
-  setTitle(`${dbName} - Database Analysis`)
+  setTitle(`${dbName} - Database analysis`)
 
   useEffect(() => {
     dispatch(fetchDBAnalysisReportsHistory(instanceId))

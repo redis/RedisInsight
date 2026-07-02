@@ -44,7 +44,7 @@ const AzureManualConnectionForm = (props: Props) => {
                 name="name"
                 id="name"
                 data-testid="name"
-                placeholder="Enter Database Alias"
+                placeholder="Enter database alias"
                 onFocus={selectOnFocus}
                 value={formik.values.name ?? ''}
                 maxLength={500}
@@ -64,7 +64,7 @@ const AzureManualConnectionForm = (props: Props) => {
                 id="host"
                 data-testid="host"
                 maxLength={200}
-                placeholder="Enter Hostname / IP address / Private Endpoint"
+                placeholder="Enter hostname / IP address / private endpoint"
                 value={formik.values.host ?? ''}
                 onChange={(value) => {
                   formik.setFieldValue('host', validateField(value.trim()))
@@ -80,7 +80,7 @@ const AzureManualConnectionForm = (props: Props) => {
                 name="port"
                 id="port"
                 data-testid="port"
-                placeholder="Enter Port"
+                placeholder="Enter port"
                 onChange={(value) => formik.setFieldValue('port', value)}
                 value={Number(formik.values.port)}
                 min={0}
@@ -106,7 +106,7 @@ const AzureManualConnectionForm = (props: Props) => {
                 id="username"
                 data-testid="username"
                 maxLength={200}
-                placeholder="Enter Username"
+                placeholder="Enter username"
                 value={formik.values.username ?? ''}
                 onChangeCapture={formik.handleChange}
                 disabled
@@ -124,7 +124,7 @@ const AzureManualConnectionForm = (props: Props) => {
                 name="timeout"
                 id="timeout"
                 data-testid="timeout"
-                placeholder="Enter Timeout (in seconds)"
+                placeholder="Enter timeout (in seconds)"
                 onChange={(value) => formik.setFieldValue('timeout', value)}
                 value={Number(formik.values.timeout)}
                 min={1}
@@ -211,7 +211,7 @@ const AzureManualConnectionForm = (props: Props) => {
           {formik.values.sni && (
             <Row gap="m">
               <FlexItem grow>
-                <FormField label="Server Name" required>
+                <FormField label="Server name" required>
                   <TextInput
                     name="servername"
                     id="servername"

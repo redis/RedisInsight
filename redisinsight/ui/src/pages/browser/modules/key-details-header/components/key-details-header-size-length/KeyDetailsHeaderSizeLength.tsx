@@ -37,7 +37,7 @@ const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
             data-testid="key-size-text"
           >
             <RiTooltip
-              title="Key Size"
+              title="Key size"
               position="left"
               content={
                 <>
@@ -48,7 +48,7 @@ const KeyDetailsHeaderSizeLength = ({ width }: Props) => {
               }
             >
               <>
-                {width > MIDDLE_SCREEN_RESOLUTION && 'Key Size: '}
+                {width > MIDDLE_SCREEN_RESOLUTION && 'Key size: '}
                 {formatBytes(size, 0)}
                 {isSizeTooLarge && (
                   <>

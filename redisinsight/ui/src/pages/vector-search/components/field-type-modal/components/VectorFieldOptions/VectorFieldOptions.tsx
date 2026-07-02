@@ -113,7 +113,7 @@ export const VectorFieldOptions = ({ formik }: VectorFieldOptionsProps) => {
           <Row gap="l">
             <FlexItem grow>
               <FormField
-                label="Max Edges"
+                label="Max edges"
                 infoIconProps={{
                   content:
                     'Maximum outgoing edges per node. Higher values improve accuracy but increase memory.',
@@ -134,7 +134,7 @@ export const VectorFieldOptions = ({ formik }: VectorFieldOptionsProps) => {
 
             <FlexItem grow>
               <FormField
-                label="Max Neighbors"
+                label="Max neighbors"
                 infoIconProps={{
                   content:
                     'Maximum neighbors considered during graph build. Higher values improve accuracy but slow indexing.',
@@ -157,7 +157,7 @@ export const VectorFieldOptions = ({ formik }: VectorFieldOptionsProps) => {
           <Row gap="l">
             <FlexItem grow>
               <FormField
-                label="Candidate Limit"
+                label="Candidate limit"
                 infoIconProps={{
                   content:
                     'Max top candidates considered during KNN search. Higher values improve accuracy but increase latency.',

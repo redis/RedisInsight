@@ -53,7 +53,7 @@ describe('AzureDatabases', () => {
 
   it('should render title', () => {
     renderComponent()
-    expect(screen.getByText('Azure Redis Databases')).toBeInTheDocument()
+    expect(screen.getByText('Azure Redis databases')).toBeInTheDocument()
   })
 
   it('should render subscription name', () => {
@@ -217,7 +217,7 @@ describe('AzureDatabases', () => {
     expect(
       screen.queryByTestId('max-selection-message'),
     ).not.toBeInTheDocument()
-    expect(screen.getByText(/Add Database/)).toBeInTheDocument()
+    expect(screen.getByText(/Add database/)).toBeInTheDocument()
   })
 
   it('should show max selection message when 10 databases are selected', () => {
@@ -292,7 +292,7 @@ describe('AzureDatabases', () => {
 
     it('should display Access Key option', () => {
       renderComponent()
-      expect(screen.getByText('Access Key')).toBeInTheDocument()
+      expect(screen.getByText('Access key')).toBeInTheDocument()
     })
 
     it('should call onAuthTypeChange when Access Key is selected', () => {

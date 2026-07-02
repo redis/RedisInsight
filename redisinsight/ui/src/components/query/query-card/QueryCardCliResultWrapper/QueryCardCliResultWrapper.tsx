@@ -108,7 +108,7 @@ const QueryCardCliResultWrapper = (props: Props) => {
               <Text className={styles.alert} data-testid="query-cli-warning">
                 <RiIcon type="ToastDangerIcon" className={styles.alertIcon} />
                 The result is too big to be saved. It will be deleted after the
-                application is closed.
+                app is closed.
               </Text>
             )}
             {isGroupResults(resultsMode) && isArray(result[0]?.response) ? (

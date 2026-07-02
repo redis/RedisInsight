@@ -27,7 +27,7 @@ const DateTimeFormatter = () => {
 
   return (
     <>
-      <Title size="M">Date and Time Format</Title>
+      <Title size="M">Date and time format</Title>
       <Spacer size="m" />
       <Text color="primary">
         Specifies the date and time format to be used in Redis Insight:

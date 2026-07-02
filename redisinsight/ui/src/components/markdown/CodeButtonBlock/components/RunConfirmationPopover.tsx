@@ -76,7 +76,7 @@ const RunConfirmationPopover = ({ onApply }: Props) => {
               onClick={handleChangeDatabase}
               data-testid="tutorial-popover-change-db"
             >
-              Change Database
+              Change database
             </SecondaryButton>
           </FeatureFlagComponent>
           <PrimaryButton

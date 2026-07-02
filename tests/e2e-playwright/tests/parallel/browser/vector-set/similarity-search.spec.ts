@@ -6,7 +6,7 @@ import { seedVectorSet } from './helpers';
 
 test.use({ featureFlags: { vectorSet: true } });
 
-test.describe('Browser > Vector Set > Similarity search', () => {
+test.describe('Browser > Vector set > Similarity search', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {

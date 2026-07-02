@@ -55,7 +55,7 @@ describe('DatetimeForm', () => {
       fireEvent.change(customInput, { target: { value: 'fffffinvalid' } }),
     )
 
-    expect(onFormatChange).toBeCalledWith('Invalid Format')
+    expect(onFormatChange).toBeCalledWith('Invalid format')
   })
 
   it('should call proper telemetry events when custom format is saved', async () => {

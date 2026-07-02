@@ -61,7 +61,7 @@ describe('MakeSearchableModal', () => {
     expect(screen.queryByText(/All keys starting with/)).not.toBeInTheDocument()
   })
 
-  it('should call onConfirm when Continue button is clicked', async () => {
+  it('should call onConfirm when confirm button is clicked', async () => {
     const onConfirm = jest.fn()
     renderComponent({ onConfirm })
 

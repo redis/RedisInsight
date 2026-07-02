@@ -123,14 +123,14 @@ const StreamEntryFields = (props: Props) => {
                 anchorClassName="inputAppendIcon"
                 className={styles.entryIdTooltip}
                 position="left"
-                title="Enter Valid ID or *"
+                title="Enter valid ID or *"
                 content={streamIDTooltipText}
               >
                 <TimeStampInfoIcon />
               </RiTooltip>
               {!showEntryError && (
                 <Text component="span" size="XS" color="primary">
-                  Timestamp - Sequence Number or *
+                  Timestamp - Sequence number or *
                 </Text>
               )}
               {showEntryError && (

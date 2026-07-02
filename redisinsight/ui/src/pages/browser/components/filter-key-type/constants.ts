@@ -36,7 +36,7 @@ export const FILTER_KEY_TYPE_OPTIONS: FilterKeyTypeOption[] = [
     color: GROUP_TYPES_COLORS[KeyTypes.Set],
   },
   {
-    text: 'Sorted Set',
+    text: 'Sorted set',
     value: KeyTypes.ZSet,
     color: GROUP_TYPES_COLORS[KeyTypes.ZSet],
   },
@@ -56,7 +56,7 @@ export const FILTER_KEY_TYPE_OPTIONS: FilterKeyTypeOption[] = [
     color: GROUP_TYPES_COLORS[KeyTypes.Stream],
   },
   {
-    text: 'Vector Set',
+    text: 'Vector set',
     value: KeyTypes.VectorSet,
     color: GROUP_TYPES_COLORS[KeyTypes.VectorSet],
     minVersion: CommandsVersions.VECTOR_SET.since,
@@ -70,7 +70,7 @@ export const FILTER_KEY_TYPE_OPTIONS: FilterKeyTypeOption[] = [
     featureFlag: FeatureFlags.envDependent,
   },
   {
-    text: 'Time Series',
+    text: 'Time series',
     value: ModulesKeyTypes.TimeSeries,
     color: GROUP_TYPES_COLORS[ModulesKeyTypes.TimeSeries],
   },

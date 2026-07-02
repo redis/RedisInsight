@@ -59,7 +59,7 @@ export const useCloudDatabasesConfig = (): UseCloudDatabasesConfigReturn => {
     if (instances === null) {
       history.push(Pages.home)
     }
-    setTitle('Redis Cloud Databases')
+    setTitle('Redis Cloud databases')
 
     dispatch(resetLoadedRedisCloud(LoadedCloud.Instances))
   }, [instances])

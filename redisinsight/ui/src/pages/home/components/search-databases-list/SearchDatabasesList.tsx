@@ -77,7 +77,7 @@ const SearchDatabasesList = () => {
 
   return (
     <SearchInput
-      placeholder="Database List Search"
+      placeholder="Database list search"
       onChange={(value) => setValue(value.toLowerCase())}
       value={value}
       aria-label="Search database list"

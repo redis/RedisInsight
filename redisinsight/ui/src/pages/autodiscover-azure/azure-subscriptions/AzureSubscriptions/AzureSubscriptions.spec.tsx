@@ -49,7 +49,7 @@ describe('AzureSubscriptions', () => {
 
   it('should render title', () => {
     renderComponent()
-    expect(screen.getByText('Azure Subscriptions')).toBeInTheDocument()
+    expect(screen.getByText('Azure subscriptions')).toBeInTheDocument()
   })
 
   it('should render signed in user', () => {
@@ -112,7 +112,7 @@ describe('AzureSubscriptions', () => {
     const subscriptions = [mockSubscription()]
     renderComponent({ subscriptions })
 
-    const submitButton = screen.getByText('Show Databases')
+    const submitButton = screen.getByText('Show databases')
     expect(submitButton).toBeDisabled()
   })
 
@@ -120,7 +120,7 @@ describe('AzureSubscriptions', () => {
     const subscriptions = [mockSubscription()]
     renderComponent({ subscriptions, loading: true })
 
-    const submitButton = screen.getByText('Show Databases')
+    const submitButton = screen.getByText('Show databases')
     expect(submitButton).toBeDisabled()
   })
 

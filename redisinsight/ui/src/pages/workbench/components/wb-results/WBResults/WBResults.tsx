@@ -91,7 +91,7 @@ const WBResults = (props: Props) => {
             disabled={clearing || processing}
             data-testid="clear-history-btn"
           >
-            Clear Results
+            Clear results
           </EmptyButton>
         </div>
       )}

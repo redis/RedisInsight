@@ -36,7 +36,7 @@ export const HeaderTitle = () => {
       >
         <S.PopoverContent>
           <Text>
-            A search index organizes your data to enable fast Vector, full-text,
+            A search index organizes your data to enable fast vector, full-text,
             hybrid, and numeric searches in Redis.
           </Text>
           <Spacer size="s" />

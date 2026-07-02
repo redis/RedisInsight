@@ -48,7 +48,7 @@ export const useCloudSubscriptionConfig =
       if (subscriptions === null) {
         history.push(Pages.home)
       } else {
-        setTitle('Redis Cloud Subscriptions')
+        setTitle('Redis Cloud subscriptions')
       }
     }, [])
 

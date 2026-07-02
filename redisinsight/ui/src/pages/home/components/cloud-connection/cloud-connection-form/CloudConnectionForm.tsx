@@ -186,7 +186,7 @@ const CloudConnectionForm = (props: Props) => {
       <form onSubmit={formik.handleSubmit}>
         <Row responsive>
           <FlexItem grow>
-            <FormField label="API Account Key" required>
+            <FormField label="API account key" required>
               <TextInput
                 name="accessKey"
                 id="accessKey"
@@ -205,7 +205,7 @@ const CloudConnectionForm = (props: Props) => {
         <Spacer size="l" />
         <Row responsive>
           <FlexItem grow>
-            <FormField label="API User Key" required>
+            <FormField label="API user key" required>
               <TextInput
                 name="secretKey"
                 id="secretKey"

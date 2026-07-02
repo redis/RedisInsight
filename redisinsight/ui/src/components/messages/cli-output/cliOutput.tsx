@@ -26,7 +26,7 @@ export const InitOutputText = (
         >
           Workbench
         </Link>
-        , our advanced CLI. Check out our Quick Guides to learn more about Redis
+        , our advanced CLI. Check out our quick guides to learn more about Redis
         capabilities.
       </span>
     )}
@@ -72,7 +72,7 @@ export const cliTexts = {
       className="cli-output-response-fail"
       data-testid="user-pub-sub-link-disabled"
     >
-      PubSub not supported in this environment.
+      Pub/Sub not supported in this environment.
     </div>
   ),
   USE_PSUBSCRIBE_COMMAND: (path: string = '') => (

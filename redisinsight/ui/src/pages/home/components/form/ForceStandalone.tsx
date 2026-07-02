@@ -16,7 +16,7 @@ export interface Props {
 
 const ForceStandaloneLabel = () => (
   <Row align="center" gap="s">
-    <Text>Force Standalone Connection</Text>
+    <Text>Force standalone connection</Text>
     <RiTooltip
       position="right"
       content={

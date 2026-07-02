@@ -227,7 +227,7 @@ const BulkUpload = (props: Props) => {
             onClick={onStartAgain}
             data-testid="bulk-action-start-new-btn"
           >
-            Start New
+            Start new
           </PrimaryButton>
         )}
       </StyledFooter>

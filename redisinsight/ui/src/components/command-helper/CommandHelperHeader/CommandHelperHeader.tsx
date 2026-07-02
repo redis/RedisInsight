@@ -52,7 +52,7 @@ const CommandHelperHeader = () => {
             anchorPosition="upLeft"
             panelClassName={styles.helperOnboardPanel}
           >
-            <Text>Command Helper</Text>
+            <Text>Command helper</Text>
           </OnboardingTour>
         </FlexItem>
         <FlexItem grow />
@@ -60,7 +60,7 @@ const CommandHelperHeader = () => {
           onClose={handleCloseHelper}
           onHide={handleHideHelper}
           id="command-helper"
-          label="Command Helper"
+          label="Command helper"
         />
       </Row>
     </div>

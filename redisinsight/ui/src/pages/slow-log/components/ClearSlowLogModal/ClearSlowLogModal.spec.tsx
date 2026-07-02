@@ -31,7 +31,7 @@ describe('ClearSlowLogModal', () => {
     expect(title).toBeInTheDocument()
 
     const message = screen.getByText(
-      /Slow Log will be cleared for\s+test-database/,
+      /Slow log will be cleared for\s+test-database/,
     )
     expect(message).toBeInTheDocument()
 

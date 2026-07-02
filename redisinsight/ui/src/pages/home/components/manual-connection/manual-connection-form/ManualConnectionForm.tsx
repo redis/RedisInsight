@@ -171,7 +171,7 @@ const ManualConnectionForm = (props: Props) => {
             />
           </FlexItem>
           <FlexItem grow>
-            <Title size="L">Clone Database</Title>
+            <Title size="L">Clone database</Title>
           </FlexItem>
         </Row>,
       )
@@ -179,7 +179,7 @@ const ManualConnectionForm = (props: Props) => {
     }
 
     if (isEditMode) {
-      setModalHeader(<Title size="L">Edit Database</Title>)
+      setModalHeader(<Title size="L">Edit database</Title>)
       return
     }
 

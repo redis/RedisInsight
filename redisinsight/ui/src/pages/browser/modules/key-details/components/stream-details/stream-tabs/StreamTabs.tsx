@@ -56,12 +56,12 @@ const StreamTabs = () => {
     const baseTabs: TabInfo[] = [
       {
         value: StreamViewType.Data,
-        label: 'Stream Data',
+        label: 'Stream data',
         content: null,
       },
       {
         value: StreamViewType.Groups,
-        label: 'Consumer Groups',
+        label: 'Consumer groups',
         content: null,
       },
     ]

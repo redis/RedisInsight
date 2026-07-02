@@ -19,7 +19,7 @@ export class RqeNotAvailable {
     this.page = page;
 
     this.container = page.getByTestId('rqe-not-available');
-    this.title = page.getByText('Redis Query Engine is not available for this database');
+    this.title = page.getByText('Redis Search is not available for this database');
     this.description = page.getByTestId('rqe-description');
     this.featureList = page.getByTestId('rqe-feature-list');
     this.getStartedButton = page.getByRole('button', { name: 'Get started for free' });

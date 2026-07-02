@@ -50,7 +50,7 @@ const ThemeSettings = () => {
 
   return (
     <form>
-      <Title size="XS">Color Theme</Title>
+      <Title size="XS">Color theme</Title>
       <Spacer size="m" />
       <FormField label="Specifies the color theme to be used in Redis Insight:">
         <RiSelect

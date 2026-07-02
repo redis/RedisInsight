@@ -89,7 +89,7 @@ export class CliPanel {
 
   /**
    * Type a command in the CLI without executing it
-   * This triggers the Command Helper integration
+   * This triggers the Command helper integration
    */
   async typeCommand(command: string): Promise<void> {
     await this.commandInput.focus();

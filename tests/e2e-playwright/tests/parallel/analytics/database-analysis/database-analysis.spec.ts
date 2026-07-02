@@ -4,7 +4,7 @@ import { TEST_KEY_PREFIX } from 'e2eSrc/test-data/browser';
 import { ConnectionType, DatabaseInstance } from 'e2eSrc/types';
 
 /**
- * Analytics > Database Analysis Tests
+ * Analytics > Database analysis Tests
  *
  * Tests for database analysis feature including:
  * - Generating analysis reports
@@ -14,7 +14,7 @@ import { ConnectionType, DatabaseInstance } from 'e2eSrc/types';
  * - Recommendations (Tips tab)
  * - Navigation between analytics sub-pages
  */
-test.describe('Analytics > Database Analysis', () => {
+test.describe('Analytics > Database analysis', () => {
   let database: DatabaseInstance;
   // Use unique suffix per run to avoid key conflicts from previous runs
   const uniqueSuffix = Date.now().toString(36);
@@ -73,7 +73,7 @@ test.describe('Analytics > Database Analysis', () => {
     }
   });
 
-  test.describe('View Database Analysis', () => {
+  test.describe('View Database analysis', () => {
     test.beforeEach(async ({ analyticsPage }) => {
       await analyticsPage.gotoDatabaseAnalysis(database.id);
     });
@@ -145,14 +145,14 @@ test.describe('Analytics > Database Analysis', () => {
       await expect(analyticsPage.nspTableMemory).toBeVisible();
     });
 
-    test('should switch namespaces view to by Number of Keys', async ({ analyticsPage }) => {
+    test('should switch namespaces view to by number of keys', async ({ analyticsPage }) => {
       await analyticsPage.switchTopNamespacesView('keys');
 
       // Keys table should now be visible
       await expect(analyticsPage.nspTableKeys).toBeVisible();
     });
 
-    test('should switch namespaces view back to by Memory', async ({ analyticsPage }) => {
+    test('should switch namespaces view back to by memory', async ({ analyticsPage }) => {
       // Switch to keys first
       await analyticsPage.switchTopNamespacesView('keys');
       await expect(analyticsPage.nspTableKeys).toBeVisible();
@@ -177,13 +177,13 @@ test.describe('Analytics > Database Analysis', () => {
       await expect(analyticsPage.topKeysTableMemory).toBeVisible();
     });
 
-    test('should switch top keys view to by Length', async ({ analyticsPage }) => {
+    test('should switch top keys view to by length', async ({ analyticsPage }) => {
       await analyticsPage.switchTopKeysView('length');
 
       await expect(analyticsPage.topKeysTableLength).toBeVisible();
     });
 
-    test('should switch top keys view back to by Memory', async ({ analyticsPage }) => {
+    test('should switch top keys view back to by memory', async ({ analyticsPage }) => {
       // Switch to length first
       await analyticsPage.switchTopKeysView('length');
       await expect(analyticsPage.topKeysTableLength).toBeVisible();
@@ -229,27 +229,27 @@ test.describe('Analytics > Database Analysis', () => {
   });
 
   test.describe('Navigation', () => {
-    test('should navigate from Slow Log to Database Analysis', async ({ analyticsPage }) => {
-      // Start at Slow Log
+    test('should navigate from Slow log to Database analysis', async ({ analyticsPage }) => {
+      // Start at Slow log
       await analyticsPage.gotoSlowLog(database.id);
       await expect(analyticsPage.slowLogTab).toHaveAttribute('aria-selected', 'true');
 
-      // Click Database Analysis tab
+      // Click Database analysis tab
       await analyticsPage.clickDatabaseAnalysisTab();
 
-      // Should now be on Database Analysis
+      // Should now be on Database analysis
       await expect(analyticsPage.databaseAnalysisTab).toHaveAttribute('aria-selected', 'true');
     });
 
-    test('should navigate from Database Analysis to Slow Log', async ({ analyticsPage }) => {
-      // Start at Database Analysis
+    test('should navigate from Database analysis to Slow log', async ({ analyticsPage }) => {
+      // Start at Database analysis
       await analyticsPage.gotoDatabaseAnalysis(database.id);
       await expect(analyticsPage.databaseAnalysisTab).toHaveAttribute('aria-selected', 'true');
 
-      // Click Slow Log tab
+      // Click Slow log tab
       await analyticsPage.clickSlowLogTab();
 
-      // Should now be on Slow Log
+      // Should now be on Slow log
       await expect(analyticsPage.slowLogTab).toHaveAttribute('aria-selected', 'true');
     });
   });
@@ -351,12 +351,12 @@ test.describe('Analytics > Database Analysis', () => {
 });
 
 /**
- * Analytics > Database Analysis - Large Dataset Tests
+ * Analytics > Database analysis - Large Dataset Tests
  *
  * Uses the pre-seeded big database (port 8103) for tests that require
  * a large number of keys (extrapolation, scanned vs estimated, sorting, etc.)
  */
-test.describe('Analytics > Database Analysis (Large Dataset)', () => {
+test.describe('Analytics > Database analysis (Large Dataset)', () => {
   let bigDatabase: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
@@ -421,12 +421,12 @@ test.describe('Analytics > Database Analysis (Large Dataset)', () => {
       // The namespace table header has sortable button elements with aria-description
       const keyPatternHeader = analyticsPage.nspTableMemory
         .getByRole('columnheader')
-        .filter({ hasText: 'Key Pattern' })
+        .filter({ hasText: 'Key pattern' })
         .getByRole('button');
 
       await expect(keyPatternHeader).toBeVisible();
 
-      // Default sort is by Memory desc, so Key Pattern shows "activate to sort ascending"
+      // Default sort is by memory desc, so Key Pattern shows "activate to sort ascending"
       await expect(keyPatternHeader).toHaveAttribute('aria-description', /activate to sort ascending/);
 
       // Click to sort ascending — description now offers "sort descending"

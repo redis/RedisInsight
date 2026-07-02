@@ -3,23 +3,23 @@ import { test, expect } from '../../../../fixtures/base';
 /**
  * Help Menu tests (TEST_PLAN.md: 0.2 Help Menu)
  *
- * Tests for the Help Center menu accessed from the sidebar navigation.
+ * Tests for the Help center menu accessed from the sidebar navigation.
  * The Help Menu provides access to:
  * - Provide Feedback link (GitHub issues)
- * - Keyboard Shortcuts option (detailed tests in 12.8 Keyboard Shortcuts)
- * - Release Notes link
- * - Reset Onboarding option
+ * - Keyboard shortcuts option (detailed tests in 12.8 Keyboard shortcuts)
+ * - Release notes link
+ * - Reset onboarding option
  */
 test.describe('Help Menu', () => {
   test.beforeEach(async ({ sidebarPanel }) => {
     await sidebarPanel.goto();
   });
 
-  test('should open Help Center and display all menu options', async ({ sidebarPanel }) => {
+  test('should open Help center and display all menu options', async ({ sidebarPanel }) => {
     const { helpMenu } = sidebarPanel;
     await helpMenu.open();
 
-    // Verify Help Center dialog is open with all expected options
+    // Verify Help center dialog is open with all expected options
     await expect(helpMenu.helpMenuDialog).toBeVisible();
     await expect(helpMenu.provideFeedbackLink).toBeVisible();
     await expect(helpMenu.keyboardShortcutsButton).toBeVisible();
@@ -27,7 +27,7 @@ test.describe('Help Menu', () => {
     await expect(helpMenu.resetOnboardingButton).toBeVisible();
   });
 
-  test('should have Release Notes link pointing to GitHub releases', async ({ sidebarPanel }) => {
+  test('should have Release notes link pointing to GitHub releases', async ({ sidebarPanel }) => {
     const { helpMenu } = sidebarPanel;
     await helpMenu.open();
 

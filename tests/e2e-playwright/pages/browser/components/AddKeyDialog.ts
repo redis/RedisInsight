@@ -66,7 +66,7 @@ export class AddKeyDialog {
     // Form fields - common
     this.keyTypeSelect = page.getByTestId('select-key-type');
     this.keyTypeDropdown = page.locator('[role="listbox"]');
-    this.keyNameInput = page.getByPlaceholder('Enter Key Name');
+    this.keyNameInput = page.getByPlaceholder('Enter Key name');
     this.ttlInput = page.getByPlaceholder('No limit');
 
     // Hash fields - has Field, Value, TTL per field

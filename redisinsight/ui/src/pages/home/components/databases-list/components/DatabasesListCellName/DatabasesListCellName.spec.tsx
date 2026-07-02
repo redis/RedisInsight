@@ -32,7 +32,7 @@ const renderCell = (
 describe('DatabasesListCellName', () => {
   const baseInstance: Partial<Instance> = {
     id: 'db-1',
-    name: 'My Database',
+    name: 'My database',
     db: 0,
     new: false,
     cloudDetails: undefined,

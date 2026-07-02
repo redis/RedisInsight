@@ -42,7 +42,7 @@ jest.mock('uiSrc/slices/instances/instances', () => ({
 
 /**
  * Build a fresh store with the `vectorSet` feature flag pre-seeded so the
- * Vector Set option's `isEnabledSelector` (which reads the flag from the
+ * Vector set option's `isEnabledSelector` (which reads the flag from the
  * features slice) resolves correctly. We seed the store rather than spying
  * on the selector because the option config holds an import-time reference
  * to the selector, which jest spies on the module export cannot intercept.
@@ -99,7 +99,7 @@ describe('AddKey', () => {
       />,
     )
 
-    expect(screen.getByText(/Key Type\*/i)).toBeInTheDocument()
+    expect(screen.getByText(/Key type\*/i)).toBeInTheDocument()
   })
 
   it('should have key type select with predefined first value from options', () => {
@@ -164,28 +164,28 @@ describe('AddKey', () => {
     ])
   })
 
-  it('should show Vector Set option when redis version >= 8.0 and vector set flag is enabled', async () => {
+  it('should show Vector set option when redis version >= 8.0 and vector set flag is enabled', async () => {
     mockRedisVersion('8.0.0')
     renderWithVectorSetFlag(true)
 
     await userEvent.click(screen.getByTestId('select-key-type'))
-    expect(await screen.findByText('Vector Set')).toBeInTheDocument()
+    expect(await screen.findByText('Vector set')).toBeInTheDocument()
   })
 
-  it('should hide Vector Set option when redis version < 8.0', async () => {
+  it('should hide Vector set option when redis version < 8.0', async () => {
     mockRedisVersion('7.4.0')
     renderWithVectorSetFlag(true)
 
     await userEvent.click(screen.getByTestId('select-key-type'))
-    expect(screen.queryByText('Vector Set')).not.toBeInTheDocument()
+    expect(screen.queryByText('Vector set')).not.toBeInTheDocument()
   })
 
-  it('should hide Vector Set option when vector set flag is disabled', async () => {
+  it('should hide Vector set option when vector set flag is disabled', async () => {
     mockRedisVersion('8.0.0')
     renderWithVectorSetFlag(false)
 
     await userEvent.click(screen.getByTestId('select-key-type'))
-    expect(screen.queryByText('Vector Set')).not.toBeInTheDocument()
+    expect(screen.queryByText('Vector set')).not.toBeInTheDocument()
   })
 
   it('should not show text if db contains ReJSON module', async () => {

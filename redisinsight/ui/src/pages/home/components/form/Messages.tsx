@@ -16,7 +16,7 @@ const MessageCloudApiKeys = () => (
       color="subdued"
       href="https://docs.redis.com/latest/rc/api/get-started/enable-the-api/"
     >
-      documentation
+      docs
     </Link>
     {'.'}
   </Text>

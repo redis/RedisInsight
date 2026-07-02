@@ -9,12 +9,12 @@ export const badgesContent = [
   {
     id: 'code_changes',
     icon: <CodeIcon className={styles.badgeIcon} />,
-    name: 'Code Changes',
+    name: 'Code changes',
   },
   {
     id: 'configuration_changes',
     icon: <ConfigurationIcon className={styles.badgeIcon} />,
-    name: 'Configuration Changes',
+    name: 'Configuration changes',
   },
   {
     id: 'upgrade',

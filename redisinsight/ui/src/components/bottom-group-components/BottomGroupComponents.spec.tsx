@@ -44,7 +44,7 @@ describe('BottomGroupComponents', () => {
     expect(screen.getByTestId(cliId)).toBeInTheDocument()
   })
 
-  it('should render Command Helper when isShowHelper truthy', () => {
+  it('should render Command helper when isShowHelper truthy', () => {
     render(<BottomGroupComponents />)
     expect(screen.getByTestId(commandHelperId)).toBeInTheDocument()
   })

@@ -47,7 +47,7 @@ export const getNoIndexesSuggestion = (range: monaco.IRange) => [
     range,
     detail: 'Create an index',
     documentation: {
-      value: `See the [documentation](${NO_INDEXES_DOC_LINK}) for detailed instructions on how to create an index.`,
+      value: `See the [docs](${NO_INDEXES_DOC_LINK}) for detailed instructions on how to create an index.`,
     },
   },
 ]

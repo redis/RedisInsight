@@ -260,7 +260,7 @@ const OAuthSelectPlan = () => {
                   data-testid="submit-oauth-select-plan-dialog"
                   aria-labelledby="submit oauth select plan dialog"
                 >
-                  Create database
+                  Build database
                 </PrimaryButton>
               </Row>
             </StyledFooter>

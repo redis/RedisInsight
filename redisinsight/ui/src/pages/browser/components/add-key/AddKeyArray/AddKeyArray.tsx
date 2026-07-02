@@ -307,7 +307,7 @@ const AddKeyArray = (props: Props) => {
       <ActionFooter
         onCancel={() => onCancel(true)}
         onAction={onClickAction}
-        actionText="Add Key"
+        actionText="Add key"
         loading={loading || isSubmittingSampleDataset}
         disabled={
           isSampleMode

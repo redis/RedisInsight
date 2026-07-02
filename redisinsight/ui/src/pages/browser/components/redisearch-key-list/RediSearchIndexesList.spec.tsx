@@ -187,7 +187,7 @@ describe('RediSearchIndexesList', () => {
     )
   })
 
-  it('"onCreateIndex" should be called after click Create Index', async () => {
+  it('"onCreateIndex" should be called after click Create index', async () => {
     const onCreateIndexMock = jest.fn()
     const { findByText } = renderRediSearchIndexesList({
       ...instance(mockedProps),
@@ -195,7 +195,7 @@ describe('RediSearchIndexesList', () => {
     })
 
     await userEvent.click(screen.getByTestId('select-search-mode'))
-    await userEvent.click((await findByText('Create Index')) || document)
+    await userEvent.click((await findByText('Create index')) || document)
 
     expect(onCreateIndexMock).toHaveBeenCalled()
   })

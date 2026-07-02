@@ -50,8 +50,7 @@ interface IPopoverProps {
 
 const loadingMsg = 'loading...'
 const notFoundMsg = 'Not found'
-const noResultsMessage =
-  'Your Redis Enterprise Cloud has no databases available'
+const noResultsMessage = 'Your Redis Cloud has no databases available'
 
 const RedisCloudDatabasesPage = ({
   columns,
@@ -165,7 +164,7 @@ const RedisCloudDatabasesPage = ({
         icon={isDisabled ? InfoIcon : undefined}
         data-testid="btn-add-databases"
       >
-        Add selected Databases
+        Add selected databases
       </PrimaryButton>
     </RiTooltip>
   )

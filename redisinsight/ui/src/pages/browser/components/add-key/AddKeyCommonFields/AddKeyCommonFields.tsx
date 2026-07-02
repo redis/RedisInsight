@@ -58,7 +58,7 @@ const AddKeyCommonFields = (props: Props) => {
           <FormFieldset
             legend={{ children: 'Select key type', display: 'hidden' }}
           >
-            <FormField label="Key Type*">
+            <FormField label="Key type*">
               <RiSelect
                 options={options}
                 valueRender={({ option }): JSX.Element =>

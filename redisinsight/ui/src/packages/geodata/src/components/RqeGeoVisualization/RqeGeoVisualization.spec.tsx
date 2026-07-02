@@ -134,7 +134,7 @@ describe('RqeGeoVisualization', () => {
   it('shows a heatmap-specific error title when heatmap command parsing fails', () => {
     jest.spyOn(rqeGeoParser, 'parseRqeGeoCommand').mockReturnValue({
       ok: false,
-      error: 'No Redis Query Engine geospatial predicate found.',
+      error: 'No Redis Search geospatial predicate found.',
     })
 
     render(

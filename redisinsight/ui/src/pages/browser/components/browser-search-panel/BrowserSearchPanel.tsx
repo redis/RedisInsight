@@ -87,8 +87,8 @@ const BrowserSearchPanel = (props: Props) => {
   const searchModes: ISwitchType<SearchMode>[] = [
     {
       type: SearchMode.Pattern,
-      tooltipText: 'Filter by Key Name or Pattern',
-      ariaLabel: 'Filter by Key Name or Pattern button',
+      tooltipText: 'Filter by key name or pattern',
+      ariaLabel: 'Filter by key name or pattern button',
       dataTestId: 'search-mode-pattern-btn',
       isActiveView() {
         return searchMode === this.type
@@ -102,8 +102,8 @@ const BrowserSearchPanel = (props: Props) => {
     },
     {
       type: SearchMode.Redisearch,
-      tooltipText: 'Search by Values of Keys',
-      ariaLabel: 'Search by Values of Keys button',
+      tooltipText: 'Search by values of keys',
+      ariaLabel: 'Search by values of keys button',
       dataTestId: 'search-mode-redisearch-btn',
       disabled: !hasRedisearch || !hasMinimumRedisearchVersion,
       isActiveView() {

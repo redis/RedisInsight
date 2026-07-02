@@ -41,13 +41,13 @@ const WorkbenchSettings = () => {
 
   return (
     <>
-      <Title size="M">Editor Cleanup</Title>
+      <Title size="M">Editor cleanup</Title>
       <Spacer size="m" />
       <FormField>
         <SwitchInput
           checked={cleanup}
           onCheckedChange={onSwitchWbCleanUp}
-          title="Clear the Editor after running commands"
+          title="Clear the editor after running commands"
           data-testid="switch-workbench-cleanup"
         />
       </FormField>
@@ -56,7 +56,7 @@ const WorkbenchSettings = () => {
         initValue={batchSize.toString()}
         onApply={handleApplyPipelineCountChanges}
         validation={(value) => validateNumber(value)}
-        title="Pipeline Mode"
+        title="Pipeline mode"
         testid="pipeline-bunch"
         placeholder={`${PIPELINE_COUNT_DEFAULT}`}
         label="Commands in pipeline:"

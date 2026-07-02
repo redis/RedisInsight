@@ -59,7 +59,7 @@ export const DeleteKeyPopover = ({
         <IconButton
           icon={DeleteIcon}
           onClick={onClick}
-          aria-label="Delete Key"
+          aria-label="Delete key"
           data-testid={`delete-key-btn-${nameString}`}
         />
       }

@@ -109,7 +109,7 @@ const DatabaseListHeader = ({ onAddInstance }: Props) => {
         onClick={handleClickFreeCloudDb}
         data-testid={`${CREATE_CLOUD_DB_ID}-button`}
       >
-        Create free Cloud database
+        Build free Cloud database
       </PrimaryButton>
     </FeatureFlagComponent>
   )

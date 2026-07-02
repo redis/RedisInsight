@@ -18,7 +18,7 @@ describe('BulkActionSummary', () => {
     expect(screen.getByTestId('testid')).toBeInTheDocument()
 
     expect(screen.getByTestId('testid')).toHaveTextContent(
-      '100Keys Processed10Success1Errors0:00:00.010Time Taken',
+      '100Keys processed10Success1Errors0:00:00.010Time taken',
     )
   })
 })

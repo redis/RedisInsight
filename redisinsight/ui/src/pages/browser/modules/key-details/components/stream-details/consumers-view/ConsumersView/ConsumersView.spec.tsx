@@ -28,7 +28,7 @@ describe('ConsumersView', () => {
   it('should render default message when no consumers and custom message is not specified', () => {
     render(<ConsumersView {...instance(mockedProps)} data={[]} />)
     expect(screen.getByTestId('stream-consumers-container')).toHaveTextContent(
-      'Your Consumer Group has no Consumers available.',
+      'Your consumer group has no consumers available.',
     )
   })
 

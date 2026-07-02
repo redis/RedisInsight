@@ -89,7 +89,7 @@ const TopKeysTable = ({
 
   const columns: ColumnDef<Key>[] = [
     {
-      header: 'Key Type',
+      header: 'Key type',
       id: 'type',
       accessorKey: 'type',
       enableSorting: true,
@@ -100,7 +100,7 @@ const TopKeysTable = ({
       }) => <GroupBadge key={type} type={type} />,
     },
     {
-      header: 'Key Name',
+      header: 'Key name',
       id: 'name',
       accessorKey: 'name',
       enableSorting: true,
@@ -118,7 +118,7 @@ const TopKeysTable = ({
         return (
           <div data-testid="top-keys-table-name">
             <RiTooltip
-              title="Key Name"
+              title="Key name"
               position="bottom"
               content={tooltipContent}
             >
@@ -151,7 +151,7 @@ const TopKeysTable = ({
 
         return (
           <RiTooltip
-            title="Time to Live"
+            title="Time to live"
             anchorClassName="truncateText"
             position="bottom"
             content={
@@ -170,7 +170,7 @@ const TopKeysTable = ({
       },
     },
     {
-      header: 'Key Size',
+      header: 'Key size',
       id: 'memory',
       accessorKey: 'memory',
       enableSorting: true,

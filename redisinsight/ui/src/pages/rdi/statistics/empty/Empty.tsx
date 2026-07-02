@@ -38,7 +38,7 @@ const Empty = ({ rdiInstanceId }: Props) => {
             history.push(Pages.rdiPipelineConfig(rdiInstanceId))
           }}
         >
-          Add Pipeline
+          Add pipeline
         </PrimaryButton>
       </div>
     </Panel>

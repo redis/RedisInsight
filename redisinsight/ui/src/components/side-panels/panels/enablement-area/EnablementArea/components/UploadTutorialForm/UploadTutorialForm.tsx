@@ -51,7 +51,7 @@ const UploadTutorialForm = (props: Props) => {
 
   const validate = (values: FormValues) => {
     const errs: FormikErrors<FormValues> = {}
-    if (!values.file && !values.link) errs.file = 'Tutorial Archive or Link'
+    if (!values.file && !values.link) errs.file = 'Tutorial archive or link'
 
     setErrors(errs)
     return errs

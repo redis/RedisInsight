@@ -147,8 +147,8 @@ const Recommendations = () => {
           className={styles.noRecommendationsIcon}
           data-testid="no=recommendations-icon"
         />
-        <Text className={styles.bigText}>AMAZING JOB!</Text>
-        <Text size="m">No Tips at the moment,</Text>
+        <Text className={styles.bigText}>Amazing job!</Text>
+        <Text size="m">No tips at the moment,</Text>
         <br />
         <Text size="m">keep up the good work!</Text>
       </div>

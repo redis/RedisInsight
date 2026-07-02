@@ -96,7 +96,7 @@ const AddKeyReJSON = (props: Props) => {
       <ActionFooter
         onCancel={() => onCancel(true)}
         onAction={submitData}
-        actionText="Add Key"
+        actionText="Add key"
         loading={loading}
         disabled={!isFormValid}
         actionTestId="add-key-json-btn"

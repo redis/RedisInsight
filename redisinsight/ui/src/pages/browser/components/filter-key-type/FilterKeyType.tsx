@@ -130,10 +130,10 @@ const FilterKeyType = ({ modules }: Props) => {
     value: ALL_KEY_TYPES_VALUE,
     inputDisplay: (
       <div className={styles.dropdownOption} data-testid="all-key-types-option">
-        All Key Types
+        All key types
       </div>
     ),
-    dropdownDisplay: <span>All Key Types</span>,
+    dropdownDisplay: <span>All key types</span>,
   })
 
   const onChangeType = (initValue: string) => {

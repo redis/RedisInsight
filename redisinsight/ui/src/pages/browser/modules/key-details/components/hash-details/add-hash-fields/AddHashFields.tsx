@@ -199,7 +199,7 @@ const AddHashFields = (props: Props) => {
                   <TextInput
                     name={`fieldName-${item.id}`}
                     id={`fieldName-${item.id}`}
-                    placeholder="Enter Field"
+                    placeholder="Enter field"
                     value={item.fieldName}
                     disabled={loading}
                     onChange={(value) =>
@@ -217,7 +217,7 @@ const AddHashFields = (props: Props) => {
                   <TextInput
                     name={`fieldValue-${item.id}`}
                     id={`fieldValue-${item.id}`}
-                    placeholder="Enter Value"
+                    placeholder="Enter value"
                     value={item.fieldValue}
                     disabled={loading}
                     onChange={(value) =>

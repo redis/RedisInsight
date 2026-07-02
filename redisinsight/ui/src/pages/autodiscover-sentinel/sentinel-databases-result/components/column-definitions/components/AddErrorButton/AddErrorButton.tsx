@@ -32,7 +32,7 @@ export const AddErrorButton = ({
       <RiTooltip
         position="top"
         title={isDisabled ? validationErrors.REQUIRED_TITLE(1) : null}
-        content={isDisabled ? <span>Database Alias</span> : null}
+        content={isDisabled ? <span>Database alias</span> : null}
       >
         <PrimaryButton
           size="s"
@@ -41,7 +41,7 @@ export const AddErrorButton = ({
           onClick={() => onAddInstance(name)}
           icon={isDisabled ? InfoIcon : undefined}
         >
-          Add Primary Group
+          Add primary group
         </PrimaryButton>
       </RiTooltip>
     </FlexItem>

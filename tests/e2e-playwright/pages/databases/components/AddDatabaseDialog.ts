@@ -2,7 +2,7 @@ import { Page, Locator } from '@playwright/test';
 import { AddDatabaseConfig, Environment, TlsConfig } from '../../../types';
 
 /**
- * Component Page Object for the Add Database Dialog
+ * Component Page Object for the Add database Dialog
  * Handles all interactions with the add database form
  */
 export class AddDatabaseDialog {

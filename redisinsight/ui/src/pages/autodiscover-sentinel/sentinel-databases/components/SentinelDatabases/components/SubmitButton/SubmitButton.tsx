@@ -51,7 +51,7 @@ export const SubmitButton = ({
       }
       data-testid="btn-add-primary-group"
     >
-      Add Primary Group
+      Add primary group
     </PrimaryButton>
   )
 }

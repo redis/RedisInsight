@@ -105,7 +105,7 @@ const AzureDatabasesPage = () => {
       return
     }
 
-    setTitle('Azure Databases')
+    setTitle('Azure databases')
 
     // Only fetch if not already loaded
     if (!loaded.databases) {

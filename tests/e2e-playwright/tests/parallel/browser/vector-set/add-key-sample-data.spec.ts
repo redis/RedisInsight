@@ -6,7 +6,7 @@ const VEC2WORD_KEY = 'vec2word';
 
 test.use({ featureFlags: { vectorSet: true } });
 
-test.describe('Browser > Vector Set > Add Key (sample data)', () => {
+test.describe('Browser > Vector set > Add Key (sample data)', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
@@ -35,7 +35,7 @@ test.describe('Browser > Vector Set > Add Key (sample data)', () => {
 
   test('should show sample dataset preview when switching populate mode to sample', async ({ browserPage }) => {
     await browserPage.openAddKeyDialog();
-    await browserPage.addKeyDialog.selectKeyType('Vector Set');
+    await browserPage.addKeyDialog.selectKeyType('Vector set');
     await browserPage.addKeyDialog.selectVectorSetSampleMode();
 
     await expect(browserPage.addKeyDialog.vectorSetSampleDatasetPreview).toBeVisible();
@@ -44,7 +44,7 @@ test.describe('Browser > Vector Set > Add Key (sample data)', () => {
 
   test('should load the vec2word sample dataset and add it to the key list', async ({ browserPage }) => {
     await browserPage.openAddKeyDialog();
-    await browserPage.addKeyDialog.selectKeyType('Vector Set');
+    await browserPage.addKeyDialog.selectKeyType('Vector set');
     await browserPage.addKeyDialog.selectVectorSetSampleMode();
 
     await browserPage.addKeyDialog.clickAddKey();

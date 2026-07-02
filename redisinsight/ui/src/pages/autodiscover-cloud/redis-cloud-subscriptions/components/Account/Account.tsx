@@ -39,13 +39,13 @@ export const Account = ({
     )}
     {ownerName && (
       <S.AccountItem>
-        <S.AccountItemTitle>Owner Name:</S.AccountItemTitle>
+        <S.AccountItemTitle>Owner name:</S.AccountItemTitle>
         <AccountValue data-testid="account-owner-name" value={ownerName} />
       </S.AccountItem>
     )}
     {ownerEmail && (
       <S.AccountItem>
-        <S.AccountItemTitle>Owner Email:</S.AccountItemTitle>
+        <S.AccountItemTitle>Owner email:</S.AccountItemTitle>
         <AccountValue data-testid="account-owner-email" value={ownerEmail} />
       </S.AccountItem>
     )}

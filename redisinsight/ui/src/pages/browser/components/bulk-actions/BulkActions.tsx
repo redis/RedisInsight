@@ -107,7 +107,7 @@ const BulkActions = (props: Props) => {
     <BulkActionsPage>
       <BulkActionsContainer justify="center" gap="l">
         <BulkActionsHeader align="center" justify="between">
-          <Title size="M">Bulk Actions</Title>
+          <Title size="M">Bulk actions</Title>
           <Row align="center" gap="s" grow={false}>
             {!arePanelsCollapsed && (
               <FullScreen

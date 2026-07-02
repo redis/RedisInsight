@@ -34,7 +34,7 @@ const BulkActionSummary = ({
           {numberWithSpaces(processed)}
         </SummaryValue>
         <SummaryValue color="secondary" size="s">
-          {type === BulkActionsType.Delete ? 'Keys' : 'Commands'} Processed
+          {type === BulkActionsType.Delete ? 'Keys' : 'Commands'} processed
         </SummaryValue>
       </FlexItem>
       <FlexItem grow>
@@ -58,7 +58,7 @@ const BulkActionSummary = ({
           {millisecondsFormat(duration, 'H:mm:ss.SSS')}
         </SummaryValue>
         <SummaryValue color="secondary" size="s">
-          Time Taken
+          Time taken
         </SummaryValue>
       </FlexItem>
     </SummaryContainer>

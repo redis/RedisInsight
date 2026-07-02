@@ -119,7 +119,7 @@ const MonitorHeader = ({ handleRunMonitor }: Props) => {
             </RiTooltip>
             <RiTooltip
               content={
-                !isStarted || !items.length ? '' : 'Clear Profiler Window'
+                !isStarted || !items.length ? '' : 'Clear profiler window'
               }
               anchorClassName={cx('inline-flex', {
                 transparent: !isStarted || !items.length,

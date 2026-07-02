@@ -56,7 +56,7 @@ const NotificationCenter = () => {
         data-testid="notification-center"
       >
         <Title size="S" className={styles.title}>
-          Notification Center
+          Notification center
         </Title>
         {!hasNotifications && (
           <div className={styles.noItemsText}>

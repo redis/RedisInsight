@@ -130,7 +130,7 @@ const SentinelDatabasesResult = ({
             onClick={handleViewDatabases}
             data-testid="btn-view-databases"
           >
-            View Databases
+            View databases
           </PrimaryButton>
         </Row>
       </Footer>

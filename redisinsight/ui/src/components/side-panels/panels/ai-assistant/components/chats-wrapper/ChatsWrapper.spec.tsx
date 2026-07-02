@@ -63,7 +63,7 @@ describe('ChatsWrapper', () => {
   it('should call proper dispatch after click on tab', () => {
     render(<ChatsWrapper />)
 
-    fireEvent.mouseDown(screen.getByText('My Data'))
+    fireEvent.mouseDown(screen.getByText('My data'))
 
     expect(store.getActions()).toEqual([setSelectedTab(AiChatType.Query)])
   })

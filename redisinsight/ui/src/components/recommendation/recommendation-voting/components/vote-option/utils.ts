@@ -9,7 +9,7 @@ export const getVotedText = (vote: Nullable<Vote>) =>
 
 export const voteTooltip = Object.freeze({
   [Vote.Like]: 'Useful',
-  [Vote.Dislike]: 'Not Useful',
+  [Vote.Dislike]: 'Not useful',
 })
 
 export const iconType = {

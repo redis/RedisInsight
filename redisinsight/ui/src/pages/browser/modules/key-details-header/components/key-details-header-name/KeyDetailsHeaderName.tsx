@@ -162,7 +162,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
       data-testid="edit-key-btn"
     >
       <RiTooltip
-        title="Key Name"
+        title="Key name"
         position="left"
         content={tooltipContent}
         anchorClassName={styles.toolTipAnchorKey}
@@ -208,7 +208,7 @@ const KeyDetailsHeaderName = ({ onEditKey }: Props) => {
             id={COPY_KEY_NAME_ICON}
             tooltipConfig={{ anchorClassName: styles.copyKey }}
             data-testid="copy-key-name"
-            aria-label="Copy Key Name"
+            aria-label="Copy key name"
           />
         </Row>
       )}

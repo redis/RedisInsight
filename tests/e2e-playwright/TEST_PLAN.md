@@ -398,7 +398,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Search by index in Tree view |
 | 🔲 | main | View filter history for RediSearch queries |
 | 🔲 | main | Verify context persistence for RediSearch across navigation |
-| 🔲 | main | Display "No Redis Query Engine" message when module not available |
+| 🔲 | main | Display "No Redis Search" message when module not available |
 | 🔲 | main | Delete search index with FT.DROPINDEX |
 
 ### 2.14 Key Filtering Patterns

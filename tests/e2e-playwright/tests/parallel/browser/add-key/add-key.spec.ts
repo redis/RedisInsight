@@ -102,11 +102,11 @@ test.describe('Browser > Add Key', () => {
     await browserPage.expectKeyInList(keyData.keyName);
   });
 
-  test(`should add a Sorted Set key`, async ({ browserPage }) => {
+  test(`should add a Sorted set key`, async ({ browserPage }) => {
     const keyData = ZSetKeyFactory.build();
 
     await browserPage.openAddKeyDialog();
-    await browserPage.addKeyDialog.selectKeyType('Sorted Set');
+    await browserPage.addKeyDialog.selectKeyType('Sorted set');
     await browserPage.addKeyDialog.fillKeyName(keyData.keyName);
     await browserPage.addKeyDialog.fillZSetMember(keyData.members[0].member, keyData.members[0].score);
     await browserPage.addKeyDialog.clickAddKey();

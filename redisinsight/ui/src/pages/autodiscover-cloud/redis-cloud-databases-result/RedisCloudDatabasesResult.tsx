@@ -70,7 +70,7 @@ const RedisCloudDatabaseListResult = ({
     <AutodiscoveryPageTemplate>
       <DatabaseContainer>
         <Header
-          title="Redis Enterprise Databases Added"
+          title="Redis Cloud databases added"
           onBack={onBack}
           onQueryChange={onQueryChange}
         />
@@ -111,7 +111,7 @@ const RedisCloudDatabaseListResult = ({
             data-testid="btn-view-databases"
             disabled={items.length === 0}
           >
-            View Databases
+            View databases
           </PrimaryButton>
         </Row>
       </Footer>

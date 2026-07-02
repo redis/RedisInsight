@@ -50,10 +50,10 @@ const DatabasesListCellControls: IDatabaseListCell = ({ row }) => {
       onClick={(e) => e.stopPropagation()}
     >
       <FeatureFlagComponent name={FeatureFlags.databaseManagement}>
-        <RiTooltip content="Manage Tags">
+        <RiTooltip content="Manage tags">
           <HoverableIconButton
             icon={TagIcon}
-            aria-label="Manage Instance Tags"
+            aria-label="Manage instance tags"
             data-testid={`manage-instance-tags-${instance.id}`}
             onClick={() => {
               handleManageInstanceTags(instance)

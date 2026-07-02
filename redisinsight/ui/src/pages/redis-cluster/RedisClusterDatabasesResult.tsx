@@ -40,7 +40,7 @@ const RedisClusterDatabasesResult = ({
   const [message, setMessage] = useState(loadingMsg)
 
   useEffect(() => {
-    setTitle('Redis Enterprise Databases Added')
+    setTitle('Redis Enterprise databases added')
   }, [])
 
   useEffect(() => {
@@ -118,7 +118,7 @@ const RedisClusterDatabasesResult = ({
             onClick={() => onView(false)}
             data-testid="btn-view-databases"
           >
-            View Databases
+            View databases
           </PrimaryButton>
         </Row>
       </Footer>

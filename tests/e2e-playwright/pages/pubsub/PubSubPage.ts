@@ -8,7 +8,7 @@ import { InstancePage } from '../InstancePage';
  * Extends InstancePage to get access to:
  * - instanceHeader (database name, stats, breadcrumb)
  * - navigationTabs (Browse, Workbench, Analyze, Pub/Sub)
- * - bottomPanel (CLI, Command Helper, Profiler)
+ * - bottomPanel (CLI, Command helper, Profiler)
  */
 export class PubSubPage extends InstancePage {
   // Subscribe section
@@ -50,7 +50,7 @@ export class PubSubPage extends InstancePage {
     super(page);
 
     // Subscribe section
-    this.patternInput = page.getByPlaceholder('Enter Pattern');
+    this.patternInput = page.getByPlaceholder('Enter pattern');
     this.subscribeButton = page.getByRole('button', { name: 'Subscribe' });
     this.unsubscribeButton = page.getByRole('button', { name: 'Unsubscribe' });
     this.notSubscribedMessage = page.getByText('You are not subscribed');
@@ -58,8 +58,8 @@ export class PubSubPage extends InstancePage {
     this.clearMessagesButton = page.getByTestId('clear-pubsub-btn');
 
     // Publish section
-    this.channelNameInput = page.getByPlaceholder('Enter Channel Name');
-    this.messageInput = page.getByPlaceholder('Enter Message');
+    this.channelNameInput = page.getByPlaceholder('Enter channel name');
+    this.messageInput = page.getByPlaceholder('Enter message');
     this.publishButton = page.getByRole('button', { name: 'Publish' });
 
     // Messages table/list

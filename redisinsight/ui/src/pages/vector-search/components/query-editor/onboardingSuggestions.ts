@@ -143,7 +143,7 @@ export const getOnboardingSuggestions = (
     kind: monacoEditor.languages.CompletionItemKind.Snippet,
     detail: t.detail,
     documentation: {
-      value: `**${t.command}** — ${t.detail}\n\n[Documentation](${getDocUrl(t.command)})`,
+      value: `**${t.command}** — ${t.detail}\n\n[Docs](${getDocUrl(t.command)})`,
     },
     insertText: getInsertText(
       t.command,

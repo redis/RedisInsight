@@ -16,7 +16,7 @@ import {
  * Extends InstancePage which provides:
  * - instanceHeader: Database name, stats, breadcrumb
  * - navigationTabs: Browse, Workbench, Analyze, Pub/Sub tabs
- * - bottomPanel: CLI, Command Helper, Profiler buttons
+ * - bottomPanel: CLI, Command helper, Profiler buttons
  */
 export class BrowserPage extends InstancePage {
   // Browser-specific components

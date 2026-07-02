@@ -42,7 +42,7 @@ export const ScanNoResultsFoundText = (
     </Text>
     <br />
     <Text size="s">
-      Use &quot;Scan more&quot; button to proceed or filter per exact Key Name
+      Use &quot;Scan more&quot; button to proceed or filter per exact key name
       to scan more efficiently.
     </Text>
   </>

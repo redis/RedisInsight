@@ -38,7 +38,7 @@ const DbIndex = (props: Props) => {
               id={id}
               name="showDb"
               labelSize="M"
-              label="Select Logical Database"
+              label="Select logical database"
               checked={!!formik.values.showDb}
               onChange={handleChangeDbIndexCheckbox}
               data-testid="showDb"
@@ -50,14 +50,14 @@ const DbIndex = (props: Props) => {
       {formik.values.showDb && (
         <Row gap="m" responsive>
           <FlexItem grow className={styles.dbInput}>
-            <FormField label="Database Index">
+            <FormField label="Database index">
               <NumericInput
                 autoValidate
                 min={0}
                 name="db"
                 id="db"
                 data-testid="db"
-                placeholder="Enter Database Index"
+                placeholder="Enter database index"
                 value={Number(formik.values.db)}
                 onChange={(value) => formik.setFieldValue('db', value)}
               />

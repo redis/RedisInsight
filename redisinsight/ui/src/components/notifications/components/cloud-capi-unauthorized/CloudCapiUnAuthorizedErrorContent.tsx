@@ -59,7 +59,7 @@ const CloudCapiUnAuthorizedErrorContent = ({
             className="toast-danger-btn euiBorderWidthThick"
             data-testid="go-to-settings-btn"
           >
-            Go to Settings
+            Go to settings
           </EmptyButton>
         </FlexItem>
         <FlexItem>

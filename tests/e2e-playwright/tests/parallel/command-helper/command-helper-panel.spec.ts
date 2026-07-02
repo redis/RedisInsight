@@ -2,7 +2,7 @@ import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
 import { DatabaseInstance } from 'e2eSrc/types';
 
-test.describe('Command Helper > Command Helper Panel', () => {
+test.describe('Command helper > Command helper Panel', () => {
   let database: DatabaseInstance;
   const uniqueSuffix = `cmd-helper-${Date.now().toString(36)}`;
 
@@ -24,7 +24,7 @@ test.describe('Command Helper > Command Helper Panel', () => {
   });
 
   test.describe('Panel Lifecycle', () => {
-    test('should open Command Helper panel', async ({ commandHelperPanel }) => {
+    test('should open Command helper panel', async ({ commandHelperPanel }) => {
       await commandHelperPanel.open();
 
       await expect(commandHelperPanel.container).toBeVisible();
@@ -34,7 +34,7 @@ test.describe('Command Helper > Command Helper Panel', () => {
       await expect(commandHelperPanel.defaultText).toBeVisible();
     });
 
-    test('should hide and restore Command Helper panel', async ({ commandHelperPanel }) => {
+    test('should hide and restore Command helper panel', async ({ commandHelperPanel }) => {
       await commandHelperPanel.open();
       await expect(commandHelperPanel.hideButton).toBeVisible();
 
@@ -47,7 +47,7 @@ test.describe('Command Helper > Command Helper Panel', () => {
       await expect(commandHelperPanel.hideButton).toBeVisible();
     });
 
-    test('should close Command Helper panel', async ({ commandHelperPanel }) => {
+    test('should close Command helper panel', async ({ commandHelperPanel }) => {
       await commandHelperPanel.open();
       await expect(commandHelperPanel.container).toBeVisible();
 

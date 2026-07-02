@@ -164,7 +164,7 @@ const AddKey = (props: Props) => {
       >
         <Col justify="center" className={styles.content}>
           <FlexItem grow style={{ marginBottom: '36px' }}>
-            <Title size="M">New Key</Title>
+            <Title size="M">New key</Title>
             {!arePanelsCollapsed && (
               <RiTooltip
                 content="Close"

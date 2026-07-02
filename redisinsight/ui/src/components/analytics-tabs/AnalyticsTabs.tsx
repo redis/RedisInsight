@@ -46,7 +46,7 @@ const AnalyticsTabs = () => {
         value: AnalyticsViewTab.DatabaseAnalysis,
         content: null,
         label: renderOnboardingTourWithChild(
-          <Text>Database Analysis</Text>,
+          <Text>Database analysis</Text>,
           {
             options: ONBOARDING_FEATURES?.ANALYTICS_DATABASE_ANALYSIS,
             anchorPosition: 'downLeft',
@@ -59,7 +59,7 @@ const AnalyticsTabs = () => {
         value: AnalyticsViewTab.SlowLog,
         content: null,
         label: renderOnboardingTourWithChild(
-          <Text>Slow Log</Text>,
+          <Text>Slow log</Text>,
           {
             options: ONBOARDING_FEATURES?.ANALYTICS_SLOW_LOG,
             anchorPosition: 'downLeft',

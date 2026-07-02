@@ -119,7 +119,7 @@ const RedisCloudSubscriptions = ({
     <AutodiscoveryPageTemplate>
       <DatabaseContainer justify="start">
         <Header
-          title="Redis Cloud Subscriptions"
+          title="Redis Cloud subscriptions"
           onBack={onBack}
           onQueryChange={onQueryChange}
         />

@@ -279,7 +279,7 @@ const Node = ({ data, isOpen, index, style, setOpen }: NodeProps) => {
                   onClick={handleDeleteFolder}
                   disabled={isDeleteDisabled}
                   className="showOnHoverKey"
-                  aria-label="Delete Folder Keys"
+                  aria-label="Delete folder keys"
                   data-testid={`delete-folder-btn-${fullName}`}
                 />
               </RiTooltip>

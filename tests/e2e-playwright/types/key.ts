@@ -1,7 +1,7 @@
 /**
  * Redis key types
  */
-export type KeyType = 'Hash' | 'List' | 'Set' | 'Sorted Set' | 'String' | 'JSON' | 'Stream' | 'Vector Set';
+export type KeyType = 'Hash' | 'List' | 'Set' | 'Sorted set' | 'String' | 'JSON' | 'Stream' | 'Vector set';
 
 /**
  * Key data for creating keys

@@ -194,7 +194,7 @@ const VoteOption = (props: Props) => {
                 color="informative100"
                 data-testid="github-repo-icon"
               />
-              To Github
+              To GitHub
             </GitHubLink>
           </FlexItem>
         </Col>

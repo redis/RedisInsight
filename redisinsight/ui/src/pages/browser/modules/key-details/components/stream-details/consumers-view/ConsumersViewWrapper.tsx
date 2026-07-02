@@ -115,7 +115,7 @@ const ConsumersViewWrapper = (props: Props) => {
   const columns: ITableColumn[] = [
     {
       id: 'name',
-      label: 'Consumer Name',
+      label: 'Consumer name',
       minWidth: 200,
       truncateText: true,
       isSortable: true,
@@ -160,7 +160,7 @@ const ConsumersViewWrapper = (props: Props) => {
     },
     {
       id: 'idle',
-      label: 'Idle Time, msec',
+      label: 'Idle time, msec',
       minWidth: 140,
       maxWidth: 140,
       absoluteWidth: 140,
@@ -189,7 +189,7 @@ const ConsumersViewWrapper = (props: Props) => {
               header={viewName}
               text={
                 <>
-                  will be removed from Consumer Group{' '}
+                  will be removed from consumer group{' '}
                   <b>{selectedGroupNameString}</b>
                 </>
               }

@@ -120,7 +120,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
   const clusterContent = () => (
     <>
       <Text color="primary">
-        Each node can have different Slow Log configuration in a clustered
+        Each node can have different slow log configuration in a clustered
         database.
         <Spacer size="s" />
         {'Use '}
@@ -192,7 +192,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                     >
                       Execution time to exceed in order to log the command.
                       <br />
-                      -1 disables Slow Log. 0 logs each command.
+                      -1 disables slow log. 0 logs each command.
                     </Text>
                   </FlexItem>
                 }
@@ -224,7 +224,7 @@ const SlowLogConfig = ({ closePopover, onRefresh }: Props) => {
                 label={<Text color="primary">slowlog-max-len</Text>}
                 additionalText={
                   <Text color="secondary" size="s">
-                    The length of the Slow Log. When a new command is logged the
+                    The length of the slow log. When a new command is logged the
                     oldest
                     <br />
                     one is removed from the queue of logged commands.

@@ -251,7 +251,7 @@ describe('Recommendation', () => {
     )
 
     expect(queryByTestId(`${name}-to-tutorial-btn`)).toHaveTextContent(
-      'Tutorial',
+      'Start tutorial',
     )
   })
 

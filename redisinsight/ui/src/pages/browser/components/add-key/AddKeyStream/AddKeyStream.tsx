@@ -95,7 +95,7 @@ const AddKeyStream = (props: Props) => {
       <ActionFooter
         onCancel={() => onCancel(true)}
         onAction={submitData}
-        actionText="Add Key"
+        actionText="Add key"
         disabled={!isFormValid}
         actionTestId="add-key-hash-btn"
       />

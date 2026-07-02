@@ -13,7 +13,7 @@ describe('EmptyMessagesList', () => {
     expect(screen.getByText('You are not subscribed')).toBeInTheDocument()
     expect(
       screen.getByText(
-        /Subscribe to the Channel to see all the messages published to your database/i,
+        /Subscribe to the channel to see all the messages published to your database/i,
       ),
     ).toBeInTheDocument()
 

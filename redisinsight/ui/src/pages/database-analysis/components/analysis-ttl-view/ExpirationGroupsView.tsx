@@ -115,7 +115,7 @@ const ExpirationGroupsView = (props: Props) => {
       <SectionTitleWrapper>
         <TitleWrapper>
           <Title size="M" className="section-title">
-            MEMORY LIKELY TO BE FREED OVER TIME
+            Memory likely to be freed over time
           </Title>
           {extrapolation !== DEFAULT_EXTRAPOLATION && (
             <SwitchExtrapolateResults
@@ -133,7 +133,7 @@ const ExpirationGroupsView = (props: Props) => {
           )}
         </TitleWrapper>
         <Switch
-          title={'Show "No Expiry"'}
+          title={'Show "No expiry"'}
           checked={showNoExpiryGroup}
           onCheckedChange={onSwitchChange}
           data-testid="show-no-expiry-switch"

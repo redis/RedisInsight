@@ -174,7 +174,7 @@ describe('DatabaseAnalysisTabs', () => {
         />,
       )
 
-      fireEvent.mouseDown(screen.getByText('Data Summary'))
+      fireEvent.mouseDown(screen.getByText('Data summary'))
 
       expect(sendEventTelemetry).toBeCalledWith({
         event: TelemetryEvent.DATABASE_ANALYSIS_DATA_SUMMARY_CLICKED,

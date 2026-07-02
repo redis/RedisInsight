@@ -55,7 +55,7 @@ const EmptyMessage = ({ onAddInstanceClick }: Props) => (
               })
             }}
           >
-            Create a free Redis Cloud database
+            Build a free Redis Cloud database
           </Link>
         )}
       </OAuthSsoHandlerDialog>

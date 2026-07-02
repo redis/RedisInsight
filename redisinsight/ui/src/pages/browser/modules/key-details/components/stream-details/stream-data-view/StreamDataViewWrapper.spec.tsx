@@ -12,7 +12,7 @@ describe('StreamDataViewWrapper', () => {
     ).toBeTruthy()
   })
 
-  it('should render Stream Data container', () => {
+  it('should render Stream data container', () => {
     render(<StreamDataViewWrapper {...instance(mockedProps)} />)
 
     expect(screen.getByTestId('stream-entries-container')).toBeInTheDocument()

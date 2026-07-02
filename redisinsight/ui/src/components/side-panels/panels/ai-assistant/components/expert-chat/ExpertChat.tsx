@@ -198,16 +198,16 @@ const ExpertChat = () => {
       return {
         title: 'Open a database',
         content:
-          'Open your Redis database with Redis Query Engine, or create a new database to get started.',
+          'Open your Redis database with Redis Search, or build a new database to get started.',
       }
     }
 
     if (!isRedisearchAvailable(modules)) {
       return {
-        title: 'Redis Query Engine capability is not available',
+        title: 'Redis Search capability is not available',
         content: freeInstances?.length
           ? 'Use your free all-in-one Redis Cloud database to start exploring these capabilities.'
-          : 'Create a free Redis Cloud database with Redis Query Engine capability that extends the core capabilities of open-source Redis.',
+          : 'Build a free Redis Cloud database with Redis Search capability that extends the core capabilities of open-source Redis.',
         icon: <TelescopeImg className={styles.iconTelescope} />,
       }
     }

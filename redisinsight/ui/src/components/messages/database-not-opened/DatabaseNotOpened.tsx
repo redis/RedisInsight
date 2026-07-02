@@ -30,7 +30,7 @@ const DatabaseNotOpened = (props: Props) => {
         <Spacer size="s" />
         <Col>
           <Text size="s">
-            Open your Redis database, or create a new database to get started.
+            Open your Redis database, or build a new database to get started.
           </Text>
           <Spacer size="m" />
           <OAuthSsoHandlerDialog>
@@ -51,7 +51,7 @@ const DatabaseNotOpened = (props: Props) => {
                 }}
                 data-testid="tutorials-get-started-link"
               >
-                Create a free Redis Cloud database
+                Build a free Redis Cloud database
               </Link>
             )}
           </OAuthSsoHandlerDialog>

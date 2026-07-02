@@ -1,15 +1,15 @@
 import { Page, Locator } from '@playwright/test';
 
 /**
- * NotificationCenter component for Notification Center interactions
+ * NotificationCenter component for Notification center interactions
  *
- * Handles locators and methods for the Notification Center dialog
+ * Handles locators and methods for the Notification center dialog
  * accessed from the sidebar navigation.
  */
 export class NotificationCenter {
   readonly page: Page;
 
-  // Notification Center button and dialog
+  // Notification center button and dialog
   readonly notificationMenuButton: Locator;
   readonly notificationCenterDialog: Locator;
   readonly notificationCenterTitle: Locator;
@@ -34,10 +34,10 @@ export class NotificationCenter {
   constructor(page: Page) {
     this.page = page;
 
-    // Notification Center button and dialog
+    // Notification center button and dialog
     this.notificationMenuButton = page.getByTestId('notification-menu-button');
     this.notificationCenterDialog = page.getByTestId('notification-center');
-    this.notificationCenterTitle = this.notificationCenterDialog.getByText('Notification Center');
+    this.notificationCenterTitle = this.notificationCenterDialog.getByText('Notification center');
 
     // Notification items - use data-testid pattern for notification items
     this.notificationsList = this.notificationCenterDialog;

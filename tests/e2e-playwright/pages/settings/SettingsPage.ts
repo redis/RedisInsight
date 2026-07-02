@@ -100,7 +100,7 @@ export class SettingsPage extends BasePage {
 
     // Advanced settings
     this.advancedWarning = page.getByRole('alert').filter({ hasText: /Advanced settings/i });
-    this.keysToScanText = page.getByRole('heading', { name: 'Keys to Scan in List view' });
+    this.keysToScanText = page.getByRole('heading', { name: 'Keys to scan in list view' });
     this.keysToScanValue = page.getByTestId(/keys-to-scan-value/);
     this.keysToScanInput = page.getByTestId('keys-to-scan-input');
     this.keysToScanApplyButton = page.getByTestId('apply-btn');
@@ -109,7 +109,7 @@ export class SettingsPage extends BasePage {
     this.apiUserKeysText = page.getByText('API user keys', { exact: true });
     this.removeApiKeysButton = page.getByRole('button', { name: 'Remove all API keys' });
     this.autodiscoverButton = page.getByRole('button', { name: 'Autodiscover' });
-    this.createCloudDbButton = page.getByRole('button', { name: 'Create Redis Cloud database' });
+    this.createCloudDbButton = page.getByRole('button', { name: 'Build Redis Cloud database' });
   }
 
   /**

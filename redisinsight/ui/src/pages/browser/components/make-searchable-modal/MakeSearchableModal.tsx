@@ -82,7 +82,7 @@ export const MakeSearchableModal = ({
               onClick={onConfirm}
               data-testid={`${TEST_ID}-confirm`}
             >
-              Continue
+              Make searchable
             </PrimaryButton>
           </Row>
         </Modal.Content.Footer.Compose>

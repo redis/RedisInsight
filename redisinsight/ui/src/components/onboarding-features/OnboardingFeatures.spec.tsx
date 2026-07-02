@@ -499,7 +499,7 @@ describe('ONBOARDING_FEATURES', () => {
         ),
       ).toBeTruthy()
       expect(screen.getByTestId('step-content')).toHaveTextContent(
-        'Command Helper lets you search and learn more about Redis commands',
+        'Command helper lets you search and learn more about Redis commands',
       )
     })
 
@@ -673,7 +673,7 @@ describe('ONBOARDING_FEATURES', () => {
         </OnboardingTour>,
       )
       expect(screen.getByTestId('step-content')).toHaveTextContent(
-        'This is Search, where you can index your data and query it using Redis Query Engine.',
+        'This is Search, where you can index your data and query it using Redis Search.',
       )
       expect(screen.getByTestId('step-content')).toHaveTextContent(
         'Load sample data to create your first index and run sample queries to see results instantly.',
@@ -1206,7 +1206,7 @@ describe('ONBOARDING_FEATURES', () => {
         ),
       ).toBeTruthy()
       expect(screen.getByTestId('step-content')).toHaveTextContent(
-        'Use Database Analysis to get summary of your database and receive',
+        'Use Database analysis to get summary of your database and receive',
       )
     })
 
@@ -1361,7 +1361,7 @@ describe('ONBOARDING_FEATURES', () => {
         ),
       ).toBeTruthy()
       expect(screen.getByTestId('step-content')).toHaveTextContent(
-        'Check Slow Log to troubleshoot performance issues.',
+        'Check Slow log to troubleshoot performance issues.',
       )
     })
 

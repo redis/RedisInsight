@@ -48,7 +48,7 @@ export class DatabasesPage extends BasePage {
   }
 
   /**
-   * Open the Add Database dialog
+   * Open the Add database dialog
    */
   async openAddDatabaseDialog(): Promise<void> {
     await this.connectDatabaseButton.click();

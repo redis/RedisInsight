@@ -141,7 +141,7 @@ describe('BulkActions', () => {
   it('should call proper event after switch tab', async () => {
     render(<BulkActions {...mockedProps} />)
 
-    fireEvent.mouseDown(screen.getByText('Upload Data'))
+    fireEvent.mouseDown(screen.getByText('Upload data'))
 
     const expectedActions = [setBulkActionType(BulkActionsType.Upload)]
     expect(store.getActions()).toEqual(expectedActions)

@@ -71,7 +71,7 @@ const DatabaseForm = (props: Props) => {
                 name="name"
                 id="name"
                 data-testid="name"
-                placeholder="Enter Database Alias"
+                placeholder="Enter database alias"
                 onFocus={selectOnFocus}
                 value={formik.values.name ?? ''}
                 maxLength={500}
@@ -94,7 +94,7 @@ const DatabaseForm = (props: Props) => {
                   data-testid="host"
                   color="secondary"
                   maxLength={200}
-                  placeholder="Enter Hostname / IP address / Connection URL"
+                  placeholder="Enter hostname / IP address / connection URL"
                   value={formik.values.host ?? ''}
                   onChange={(value) => {
                     formik.setFieldValue('host', validateField(value.trim()))
@@ -116,7 +116,7 @@ const DatabaseForm = (props: Props) => {
                   name="port"
                   id="port"
                   data-testid="port"
-                  placeholder="Enter Port"
+                  placeholder="Enter port"
                   onChange={(value) => formik.setFieldValue('port', value)}
                   value={Number(formik.values.port)}
                   min={0}
@@ -138,7 +138,7 @@ const DatabaseForm = (props: Props) => {
               id="username"
               data-testid="username"
               maxLength={200}
-              placeholder="Enter Username"
+              placeholder="Enter username"
               value={formik.values.username ?? ''}
               onChangeCapture={formik.handleChange}
               disabled={isFieldDisabled('username')}
@@ -153,7 +153,7 @@ const DatabaseForm = (props: Props) => {
               id="password"
               data-testid="password"
               maxLength={10_000}
-              placeholder="Enter Password"
+              placeholder="Enter password"
               value={
                 formik.values.password === true
                   ? SECURITY_FIELD
@@ -181,7 +181,7 @@ const DatabaseForm = (props: Props) => {
                 name="timeout"
                 id="timeout"
                 data-testid="timeout"
-                placeholder="Enter Timeout (in seconds)"
+                placeholder="Enter timeout (in seconds)"
                 onChange={(value) => formik.setFieldValue('timeout', value)}
                 value={Number(formik.values.timeout)}
                 min={1}

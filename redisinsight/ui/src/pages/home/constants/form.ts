@@ -17,24 +17,24 @@ export const fieldDisplayNames = {
   port: 'Port',
   host: 'Host',
   name: 'Database alias',
-  selectedCaCertName: 'CA Certificate',
-  newCaCertName: 'CA Certificate Name',
+  selectedCaCertName: 'CA certificate',
+  newCaCertName: 'CA certificate name',
   newCaCert: 'CA certificate',
-  newTlsCertPairName: 'Client Certificate Name',
-  newTlsClientCert: 'Client Certificate',
-  newTlsClientKey: 'Private Key',
-  servername: 'Server Name',
-  sentinelMasterName: 'Primary Group Name',
-  sshHost: 'SSH Host',
-  sshPort: 'SSH Port',
-  sshPrivateKey: 'SSH Private Key',
-  sshUsername: 'SSH Username',
+  newTlsCertPairName: 'Client certificate name',
+  newTlsClientCert: 'Client certificate',
+  newTlsClientKey: 'Private key',
+  servername: 'Server name',
+  sentinelMasterName: 'Primary group name',
+  sshHost: 'SSH host',
+  sshPort: 'SSH port',
+  sshPrivateKey: 'SSH private key',
+  sshUsername: 'SSH username',
 }
 
 export const DEFAULT_TIMEOUT = getConfig().database.defaultConnectionTimeout
 
 export enum SubmitBtnText {
-  AddDatabase = 'Add Redis Database',
-  EditDatabase = 'Apply Changes',
-  CloneDatabase = 'Clone Database',
+  AddDatabase = 'Add Redis database',
+  EditDatabase = 'Apply changes',
+  CloneDatabase = 'Clone database',
 }

@@ -25,7 +25,7 @@ export const useCloudDatabasesResultConfig =
       if (!instances.length) {
         history.push(Pages.home)
       }
-      setTitle('Redis Enterprise Databases Added')
+      setTitle('Redis Cloud databases added')
     }, [instances.length, history])
 
     const handleClose = useCallback(() => {

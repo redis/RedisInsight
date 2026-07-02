@@ -103,7 +103,7 @@ const NameSpacesTable = ({
           >
             <TruncatedContent align="center">
               <RiTooltip
-                title="Key Pattern"
+                title="Key pattern"
                 position="bottom"
                 content={`${item.nsp}:*`}
               >
@@ -140,7 +140,7 @@ const NameSpacesTable = ({
 
   const columns: ColumnDef<NspSummary>[] = [
     {
-      header: 'Key Pattern',
+      header: 'Key pattern',
       id: 'nsp',
       accessorKey: 'nsp',
       enableSorting: true,
@@ -155,7 +155,7 @@ const NameSpacesTable = ({
         const tooltipContent = formatLongName(textWithDelimiter)
         return (
           <RiTooltip
-            title="Key Pattern"
+            title="Key pattern"
             position="bottom"
             content={tooltipContent}
           >
@@ -169,7 +169,7 @@ const NameSpacesTable = ({
       },
     },
     {
-      header: 'Data Type',
+      header: 'Data type',
       id: 'types',
       accessorKey: 'types',
       cell: ({
@@ -185,7 +185,7 @@ const NameSpacesTable = ({
       ),
     },
     {
-      header: 'Total Memory',
+      header: 'Total memory',
       id: 'memory',
       accessorKey: 'memory',
       enableSorting: true,
@@ -220,7 +220,7 @@ const NameSpacesTable = ({
       },
     },
     {
-      header: 'Total Keys',
+      header: 'Total keys',
       id: 'keys',
       accessorKey: 'keys',
       enableSorting: true,

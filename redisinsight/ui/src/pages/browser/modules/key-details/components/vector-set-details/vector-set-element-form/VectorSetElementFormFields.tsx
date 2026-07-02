@@ -50,7 +50,7 @@ const VectorSetElementFormFields = ({
                     aria-required="true"
                     name={`element-name-${item.id}`}
                     id={`element-name-${item.id}`}
-                    placeholder="Enter Element Name"
+                    placeholder="Enter element name"
                     value={item.name}
                     onChange={(value) =>
                       handleFieldChange('name', item.id, value)
@@ -72,8 +72,8 @@ const VectorSetElementFormFields = ({
                     id={`element-vector-${item.id}`}
                     placeholder={
                       rowVectorDim !== undefined
-                        ? `Enter Vector (${rowVectorDim} dimensions)`
-                        : 'Enter Vector'
+                        ? `Enter vector (${rowVectorDim} dimensions)`
+                        : 'Enter vector'
                     }
                     value={item.vector}
                     onChange={(value) =>

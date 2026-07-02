@@ -15,8 +15,8 @@ export const AddCommonFieldsFormConfig: IAddCommonFieldsFormConfig = {
   keyName: {
     name: 'keyName',
     isRequire: true,
-    label: 'Key Name*',
-    placeholder: 'Enter Key Name',
+    label: 'Key name*',
+    placeholder: 'Enter key name',
   },
   keyTTL: {
     name: 'keyTTL',
@@ -36,13 +36,13 @@ export const AddHashFormConfig: IAddHashFormConfig = {
     name: 'fieldName',
     isRequire: false,
     label: 'Field',
-    placeholder: 'Enter Field',
+    placeholder: 'Enter field',
   },
   fieldValue: {
     name: 'fieldValue',
     isRequire: false,
     label: 'Value',
-    placeholder: 'Enter Value',
+    placeholder: 'Enter value',
   },
 }
 
@@ -56,13 +56,13 @@ export const AddZsetFormConfig: IAddZsetFormConfig = {
     name: 'score',
     isRequire: true,
     label: 'Score*',
-    placeholder: 'Enter Score*',
+    placeholder: 'Enter score*',
   },
   member: {
     name: 'member',
     isRequire: false,
     label: 'Member',
-    placeholder: 'Enter Member',
+    placeholder: 'Enter member',
   },
 }
 
@@ -75,7 +75,7 @@ export const AddSetFormConfig: IAddSetFormConfig = {
     name: 'member',
     isRequire: false,
     label: 'Member',
-    placeholder: 'Enter Member',
+    placeholder: 'Enter member',
   },
 }
 
@@ -88,7 +88,7 @@ export const AddStringFormConfig: IAddStringFormConfig = {
     name: 'value',
     isRequire: false,
     label: 'Value',
-    placeholder: 'Enter Value',
+    placeholder: 'Enter value',
   },
 }
 
@@ -102,13 +102,13 @@ export const AddListFormConfig: IAddListFormConfig = {
     name: 'element',
     isRequire: false,
     label: 'Element',
-    placeholder: 'Enter Element',
+    placeholder: 'Enter element',
   },
   count: {
     name: 'count',
     isRequire: true,
     label: 'Count',
-    placeholder: 'Enter Count*',
+    placeholder: 'Enter count*',
   },
 }
 
@@ -135,20 +135,20 @@ export const AddArrayFormConfig: IAddArrayFormConfig = {
   startIndex: {
     name: 'startIndex',
     isRequire: true,
-    label: 'Start Index*',
-    placeholder: 'Enter Start Index',
+    label: 'Start index*',
+    placeholder: 'Enter start index',
   },
   index: {
     name: 'index',
     isRequire: true,
     label: 'Index*',
-    placeholder: 'Enter Index',
+    placeholder: 'Enter index',
   },
   value: {
     name: 'value',
     isRequire: true,
     label: 'Value*',
-    placeholder: 'Enter Value',
+    placeholder: 'Enter value',
   },
 }
 
@@ -164,20 +164,20 @@ export const AddStreamFormConfig: IAddStreamFormConfig = {
     name: 'Entry ID',
     isRequire: true,
     label: 'Entry ID*',
-    placeholder: 'Enter Entry ID',
+    placeholder: 'Enter entry ID',
   },
   name: {
     id: 'name',
-    name: 'Field Name',
+    name: 'Field name',
     isRequire: false,
     label: 'Field',
-    placeholder: 'Enter Field',
+    placeholder: 'Enter field',
   },
   value: {
     id: 'value',
-    name: 'Field Value',
+    name: 'Field value',
     isRequire: false,
     label: 'Value',
-    placeholder: 'Enter Value',
+    placeholder: 'Enter value',
   },
 }

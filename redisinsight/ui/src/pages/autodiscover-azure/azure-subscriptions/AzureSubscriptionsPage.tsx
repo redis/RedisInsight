@@ -29,7 +29,7 @@ const AzureSubscriptionsPage = () => {
       return
     }
 
-    setTitle('Azure Subscriptions')
+    setTitle('Azure subscriptions')
 
     // Only fetch if not already loaded or if account changed
     if (!loaded.subscriptions) {

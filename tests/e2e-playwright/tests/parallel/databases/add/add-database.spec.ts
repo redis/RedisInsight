@@ -3,12 +3,12 @@ import { StandaloneConfigFactory, ClusterConfigFactory } from 'e2eSrc/test-data/
 import { redisConfig } from 'e2eSrc/config/databases';
 
 /**
- * Add Database Tests (TEST_PLAN.md: 1.1 Add Database)
+ * Add database Tests (TEST_PLAN.md: 1.1 Add database)
  *
  * Tests for adding databases via the Connection Settings form.
  * Tests use the existing Redis instances configured in docker-compose.
  */
-test.describe('Add Database', () => {
+test.describe('Add database', () => {
   // Track databases created in tests for cleanup
   const createdDatabaseNames: string[] = [];
 

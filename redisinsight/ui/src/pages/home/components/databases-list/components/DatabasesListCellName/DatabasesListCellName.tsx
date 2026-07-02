@@ -41,7 +41,7 @@ const DatabasesListCellName: IDatabaseListCell = ({ row }) => {
 
       <RiTooltip
         position="bottom"
-        title="Database Alias"
+        title="Database alias"
         content={`${formatLongName(name)} ${getDbIndex(db)}`}
       >
         <Text

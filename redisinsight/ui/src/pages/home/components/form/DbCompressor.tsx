@@ -68,7 +68,7 @@ const DbCompressor = (props: Props) => {
             <Checkbox
               id={id}
               name="showCompressor"
-              label={<Text>Enable Automatic Data Decompression</Text>}
+              label={<Text>Enable automatic data decompression</Text>}
               checked={!!formik.values.showCompressor}
               onChange={handleChangeDbCompressorCheckbox}
               data-testid="showCompressor"
