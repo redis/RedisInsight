@@ -752,6 +752,45 @@ describe('array slice', () => {
         })
       })
 
+      it('replays the AROP when one is still in flight (no result yet)', async () => {
+        // First AROP still loading (query stored, hasResult=false). A pre-add
+        // response would land stale, so refresh must abort + replay it.
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+        const local = mockStore({
+          ...initialStateDefault,
+          browser: {
+            ...initialStateDefault.browser,
+            array: {
+              ...initialState,
+              aggregate: {
+                ...initialState.aggregate,
+                loading: true,
+                hasResult: false,
+                query: {
+                  start: '5',
+                  end: '15',
+                  operation: ArrayAggregateOperation.Sum,
+                },
+              },
+            },
+          },
+        })
+
+        await local.dispatch<any>(refreshArray(mockKey))
+
+        const aggregateCall = (apiService.post as jest.Mock).mock.calls.find(
+          ([url]) => url.includes('array/aggregate'),
+        )
+        expect(aggregateCall?.[1]).toEqual({
+          keyName: mockKey,
+          start: '5',
+          end: '15',
+          operation: ArrayAggregateOperation.Sum,
+        })
+      })
+
       it('does not replay AROP when no aggregate has been run', async () => {
         apiService.post = jest
           .fn()

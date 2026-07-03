@@ -881,9 +881,10 @@ export function refreshArray(key: RedisString) {
     // array's current contents instead of a value computed before the
     // refresh. `resetData: false` keeps the existing value on screen while
     // the recompute is in flight (no loader flash), mirroring the
-    // range/scan replay above. Only runs once an aggregate has actually
-    // been computed for this key (`hasResult` + a stored query).
-    if (aggregate.hasResult && aggregate.query) {
+    // range/scan replay above. Runs whenever a query is stored and either has
+    // a result or is still in flight — replaying aborts a pre-refresh AROP
+    // that would otherwise land later with a stale result.
+    if (aggregate.query && (aggregate.hasResult || aggregate.loading)) {
       dispatch(aggregateArray({ key, ...aggregate.query, resetData: false }))
     }
 
