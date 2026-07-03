@@ -91,6 +91,7 @@ redisinsight/ui/src/packages/common/index*
 static/
 
 .env*
+!.env.example
 .npmrc
 
 # AI rules
