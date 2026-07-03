@@ -76,12 +76,29 @@ const mockKey = 'readings'
 // Buffer form for the write thunks: the selected-key guard compares buffers
 // (isEqualBuffers), exactly as the UI passes them in production.
 const mockKeyBuffer = stringToBuffer(mockKey)
+// Connected instance id the add is requested against; the write is cancelled if
+// the live connection no longer matches `expectedInstanceId`.
+const mockInstanceId = 'instance-1'
 
-// A store whose live (browser-context) selected key is `name` — array writes
-// only apply their success side effects while that key is still selected.
-const storeWithSelectedKey = (name = mockKeyBuffer) =>
+// A store whose live (browser-context) selected key is `name` and connected
+// instance is `instanceId` — array writes only proceed/apply while both still
+// match what they were when the add was requested.
+const storeWithSelectedKey = (
+  name = mockKeyBuffer,
+  instanceId = mockInstanceId,
+) =>
   mockStore({
     ...initialStateDefault,
+    connections: {
+      ...initialStateDefault.connections,
+      instances: {
+        ...initialStateDefault.connections.instances,
+        connectedInstance: {
+          ...initialStateDefault.connections.instances.connectedInstance,
+          id: instanceId,
+        },
+      },
+    },
     app: {
       ...initialStateDefault.app,
       context: {
@@ -1111,7 +1128,14 @@ describe('array slice', () => {
         const local = storeWithSelectedKey()
 
         await local.dispatch<any>(
-          appendArrayElement({ key: mockKeyBuffer, value: 'v' }, onSuccess),
+          appendArrayElement(
+            {
+              key: mockKeyBuffer,
+              value: 'v',
+              expectedInstanceId: mockInstanceId,
+            },
+            onSuccess,
+          ),
         )
 
         const appendCall = (apiService.post as jest.Mock).mock.calls.find(
@@ -1134,53 +1158,85 @@ describe('array slice', () => {
         expect(keyInfoCall).toBeTruthy()
       })
 
-      it('skips the success side effects when the user has switched to another key', async () => {
+      it('cancels the write (no POST) when the selected key changed before confirming', async () => {
         apiService.post = jest
           .fn()
           .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
         const onSuccess = jest.fn()
-        // Live selection moved on before the append resolved.
+        // Selection moved to another key before the confirmation resolved.
         const local = storeWithSelectedKey(stringToBuffer('another-key'))
 
         await local.dispatch<any>(
-          appendArrayElement({ key: mockKeyBuffer, value: 'v' }, onSuccess),
+          appendArrayElement(
+            {
+              key: mockKeyBuffer,
+              value: 'v',
+              expectedInstanceId: mockInstanceId,
+            },
+            onSuccess,
+          ),
         )
 
-        // The write still happens…
+        // The stale confirmation must not write at all, and no side effects run.
+        expect(
+          (apiService.post as jest.Mock).mock.calls.find(([url]) =>
+            url.includes('array/append'),
+          ),
+        ).toBeUndefined()
+        expect(onSuccess).not.toHaveBeenCalled()
+      })
+
+      it('cancels the write (no POST) when the database changed before confirming', async () => {
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+        const onSuccess = jest.fn()
+        // Live connection is a different database than when Add was pressed.
+        const local = storeWithSelectedKey(mockKeyBuffer, 'db-2')
+
+        await local.dispatch<any>(
+          appendArrayElement(
+            { key: mockKeyBuffer, value: 'v', expectedInstanceId: 'db-1' },
+            onSuccess,
+          ),
+        )
+
+        expect(
+          (apiService.post as jest.Mock).mock.calls.find(([url]) =>
+            url.includes('array/append'),
+          ),
+        ).toBeUndefined()
+        expect(onSuccess).not.toHaveBeenCalled()
+      })
+
+      it('skips the success side effects when the database changed mid-write', async () => {
+        // Passes the pre-write check (same db at dispatch), then the connection
+        // switches while the POST is in flight — the write landed on the old
+        // database, so its result must not repaint the new one.
+        const local = storeWithSelectedKey(mockKeyBuffer, 'db-1')
+        const onSuccess = jest.fn()
+
+        apiService.post = jest.fn().mockImplementation(async (url: string) => {
+          if (url.includes('array/append')) {
+            local.getState().connections.instances.connectedInstance.id = 'db-2'
+          }
+          return { status: 200, data: { keyName: mockKey } }
+        })
+
+        await local.dispatch<any>(
+          appendArrayElement(
+            { key: mockKeyBuffer, value: 'v', expectedInstanceId: 'db-1' },
+            onSuccess,
+          ),
+        )
+
+        // The write went out (pre-check passed)…
         expect(
           (apiService.post as jest.Mock).mock.calls.find(([url]) =>
             url.includes('array/append'),
           ),
         ).toBeTruthy()
-        // …but onSuccess (which closes/clears the now-different panel) and the
-        // stale refresh that would clobber the new key's view do not run.
-        expect(onSuccess).not.toHaveBeenCalled()
-        expect(
-          (apiService.post as jest.Mock).mock.calls.find(([url]) =>
-            url.includes('array/get-length'),
-          ),
-        ).toBeUndefined()
-      })
-
-      it('skips the success side effects when the database changed mid-write', async () => {
-        // Same selected key name, but the connection switched while the POST
-        // was in flight — the write landed on the old database, so its result
-        // must not repaint the new one.
-        const state = cloneDeep(initialStateDefault)
-        state.app.context.browser.keyList.selectedKey = mockKeyBuffer
-        state.connections.instances.connectedInstance = { id: 'db-1' } as any
-        const local = mockStore(state)
-        const onSuccess = jest.fn()
-
-        apiService.post = jest.fn().mockImplementation(async () => {
-          state.connections.instances.connectedInstance = { id: 'db-2' } as any
-          return { status: 200, data: { keyName: mockKey } }
-        })
-
-        await local.dispatch<any>(
-          appendArrayElement({ key: mockKeyBuffer, value: 'v' }, onSuccess),
-        )
-
+        // …but the post-write guard suppresses the refresh for the new db.
         expect(onSuccess).not.toHaveBeenCalled()
         expect(
           (apiService.post as jest.Mock).mock.calls.find(([url]) =>
@@ -1195,17 +1251,22 @@ describe('array slice', () => {
         }
         apiService.post = jest.fn().mockRejectedValue(rejected)
         const onFail = jest.fn()
+        const local = storeWithSelectedKey()
 
-        await store.dispatch<any>(
+        await local.dispatch<any>(
           appendArrayElement(
-            { key: mockKeyBuffer, value: 'v' },
+            {
+              key: mockKeyBuffer,
+              value: 'v',
+              expectedInstanceId: mockInstanceId,
+            },
             undefined,
             onFail,
           ),
         )
 
         expect(onFail).toHaveBeenCalled()
-        expect(store.getActions()).toContainEqual(
+        expect(local.getActions()).toContainEqual(
           addErrorNotification(rejected as IAddInstanceErrorPayload),
         )
       })
@@ -1221,7 +1282,12 @@ describe('array slice', () => {
 
         await local.dispatch<any>(
           addArrayElement(
-            { key: mockKeyBuffer, index: '5', value: 'v' },
+            {
+              key: mockKeyBuffer,
+              index: '5',
+              value: 'v',
+              expectedInstanceId: mockInstanceId,
+            },
             onSuccess,
           ),
         )
@@ -1253,17 +1319,23 @@ describe('array slice', () => {
         }
         apiService.post = jest.fn().mockRejectedValue(rejected)
         const onFail = jest.fn()
+        const local = storeWithSelectedKey()
 
-        await store.dispatch<any>(
+        await local.dispatch<any>(
           addArrayElement(
-            { key: mockKeyBuffer, index: '5', value: 'v' },
+            {
+              key: mockKeyBuffer,
+              index: '5',
+              value: 'v',
+              expectedInstanceId: mockInstanceId,
+            },
             undefined,
             onFail,
           ),
         )
 
         expect(onFail).toHaveBeenCalled()
-        expect(store.getActions()).toContainEqual(
+        expect(local.getActions()).toContainEqual(
           addErrorNotification(rejected as IAddInstanceErrorPayload),
         )
       })

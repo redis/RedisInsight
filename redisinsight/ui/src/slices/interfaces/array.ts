@@ -167,6 +167,11 @@ export interface FetchArrayRangeParams {
 export interface AppendArrayElementParams {
   key: RedisResponseBuffer
   value: RedisString
+  /** Connected instance id when the add was requested. The write is cancelled
+   *  if the live connection no longer matches — a pending production-write
+   *  confirmation must not write into a database the user has since switched
+   *  to. */
+  expectedInstanceId?: string
 }
 
 /** Add a value at an explicit index (ARSET key index value). Index is a
@@ -175,6 +180,8 @@ export interface AddArrayElementParams {
   key: RedisResponseBuffer
   index: string
   value: RedisString
+  /** See AppendArrayElementParams.expectedInstanceId. */
+  expectedInstanceId?: string
 }
 
 export interface FetchArrayScanParams {

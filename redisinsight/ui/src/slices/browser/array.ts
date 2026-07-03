@@ -936,6 +936,27 @@ function applyArrayWriteResult(
 }
 
 /**
+ * True while the write's target still matches what it was when the user
+ * requested it: the same connected instance AND the same selected key. A
+ * pending production-write confirmation can fire after a database/key switch,
+ * and the POST URL is built from the live connection — so this stops a stale
+ * confirmation from writing the old form into the newly selected database/key.
+ */
+function isArrayWriteTargetCurrent(
+  state: RootState,
+  key: RedisResponseBuffer,
+  expectedInstanceId: Maybe<string>,
+) {
+  const currentInstanceId = state.connections.instances.connectedInstance?.id
+  const selectedKey = appContextSelectedKey(state)
+  return (
+    currentInstanceId === expectedInstanceId &&
+    !!selectedKey &&
+    isEqualBuffers(selectedKey, key)
+  )
+}
+
+/**
  * Append a value to the end of the array (POST /array/append → ARSET at the
  * current length). On success the displayed surface, counters, and key header
  * are refreshed so the new element appears.
@@ -948,6 +969,11 @@ export function appendArrayElement(
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     try {
       const state = stateInit()
+      if (
+        !isArrayWriteTargetCurrent(state, params.key, params.expectedInstanceId)
+      ) {
+        return
+      }
       const startInstanceId = state.connections.instances.connectedInstance?.id
       const { status, data } = await apiService.post<{ index: string }>(
         arrayUrl(state, ApiEndpoints.ARRAY_APPEND),
@@ -984,6 +1010,11 @@ export function addArrayElement(
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
     try {
       const state = stateInit()
+      if (
+        !isArrayWriteTargetCurrent(state, params.key, params.expectedInstanceId)
+      ) {
+        return
+      }
       const startInstanceId = state.connections.instances.connectedInstance?.id
       const { status } = await apiService.post(
         arrayUrl(state, ApiEndpoints.ARRAY_SET_ELEMENT),

@@ -6,6 +6,7 @@ import {
   selectedKeySelector,
 } from 'uiSrc/slices/browser/keys'
 import { appendArrayElement, addArrayElement } from 'uiSrc/slices/browser/array'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import {
   BrowserConfirmationCommandId,
   useProductionWriteConfirmation,
@@ -57,6 +58,10 @@ export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
   const { name: selectedKey } = useAppSelector(selectedKeyDataSelector) ?? {
     name: undefined,
   }
+  // The instance/key active when Add is pressed. The thunk cancels the write if
+  // the live connection no longer matches — a confirmation left pending across
+  // a database switch must not write into the newly selected database.
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
   const { requestConfirmation } = useProductionWriteConfirmation()
 
   const [value, setValue] = useState('')
@@ -114,14 +119,23 @@ export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
         if (trimmedIndex.length === 0) {
           dispatch(
             appendArrayElement(
-              { key: selectedKey, value: serialized },
+              {
+                key: selectedKey,
+                value: serialized,
+                expectedInstanceId: instanceId,
+              },
               handleSuccess,
             ),
           )
         } else {
           dispatch(
             addArrayElement(
-              { key: selectedKey, index: trimmedIndex, value: serialized },
+              {
+                key: selectedKey,
+                index: trimmedIndex,
+                value: serialized,
+                expectedInstanceId: instanceId,
+              },
               handleSuccess,
             ),
           )
