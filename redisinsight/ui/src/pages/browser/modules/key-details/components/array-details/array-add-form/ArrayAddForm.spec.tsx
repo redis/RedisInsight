@@ -66,6 +66,21 @@ describe('ArrayAddForm', () => {
     expect(screen.getByTestId('array-add-form-index')).toBeInTheDocument()
   })
 
+  it('disables the submit button while a write is in flight', () => {
+    const busyState = {
+      ...stateWithKeySelected,
+      browser: {
+        ...stateWithKeySelected.browser,
+        array: { ...stateWithKeySelected.browser.array, updating: true },
+      },
+    }
+    render(<ArrayAddForm closePanel={jest.fn()} />, {
+      store: mockStore(busyState),
+    })
+
+    expect(screen.getByTestId('array-add-form-submit')).toBeDisabled()
+  })
+
   it('renders the move-to-element checkbox with an info tooltip', () => {
     renderForm()
     expect(

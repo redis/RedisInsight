@@ -5,7 +5,11 @@ import {
   selectedKeyDataSelector,
   selectedKeySelector,
 } from 'uiSrc/slices/browser/keys'
-import { appendArrayElement, addArrayElement } from 'uiSrc/slices/browser/array'
+import {
+  appendArrayElement,
+  addArrayElement,
+  arraySelector,
+} from 'uiSrc/slices/browser/array'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import {
   BrowserConfirmationCommandId,
@@ -47,7 +51,8 @@ import { ArrayAddFormProps } from './ArrayAddForm.types'
  * `AddKeysContainer`, matching List / Vector Set). The index is optional:
  * leaving it empty appends to the end (POST /array/append, ARSET at the current
  * length); providing one sets at that index (POST /array/set-element).
- * `ARINSERT` is intentionally not used — see docs/array-modify-vertical-plan.md.
+ * `ARINSERT` is intentionally not used: its cursor starts at 0 on arrays built
+ * via ARSET/ARMSET, so it would overwrite from the front instead of appending.
  */
 export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
   const dispatch = useAppDispatch()
@@ -58,6 +63,10 @@ export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
   const { name: selectedKey } = useAppSelector(selectedKeyDataSelector) ?? {
     name: undefined,
   }
+  // A write is in flight (this add or an inline edit). Disable submit so a
+  // second click can't dispatch a duplicate append/set when confirmations are
+  // bypassed (non-production db, or skipped for the session).
+  const { updating } = useAppSelector(arraySelector)
   // The instance/key active when Add is pressed. The thunk cancels the write if
   // the live connection no longer matches — a confirmation left pending across
   // a database switch must not write into the newly selected database.
@@ -217,7 +226,8 @@ export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
         <FlexItem grow={false}>
           <PrimaryButton
             onClick={handleAdd}
-            disabled={indexInvalid}
+            disabled={indexInvalid || updating}
+            loading={updating}
             data-testid={`${TEST_ID}-submit`}
           >
             {ADD_BUTTON_LABEL}
