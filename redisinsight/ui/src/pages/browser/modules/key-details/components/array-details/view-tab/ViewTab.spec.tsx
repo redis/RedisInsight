@@ -22,28 +22,44 @@ jest.mock('uiSrc/services', () => ({
 
 const KEY = 'readings'
 const keyBuffer = stringToBuffer(KEY)
+const keyA = stringToBuffer('key-a')
+const keyB = stringToBuffer('key-b')
 
-const buildState = (elements: ArrayDataElement[]) => {
+const ADD_BTN = 'add-key-value-items-btn'
+const PANEL = 'array-add-form'
+
+// isArrayKeyReady requires the selected key to be an Array whose name matches
+// keyProp, so seed the store's selected key to the rendered one.
+const buildState = (
+  elements: ArrayDataElement[],
+  selectedKey: ReturnType<typeof stringToBuffer> = keyBuffer,
+) => {
   const next = cloneDeep(initialStateDefault)
   next.browser.array = cloneDeep(initialStateArray)
   next.browser.array.data = { ...next.browser.array.data, elements }
   next.browser.keys.selectedKey.loading = false
   next.browser.keys.selectedKey.data = {
     type: KeyTypes.Array,
-    name: keyBuffer,
+    name: selectedKey,
   } as any
   return next
 }
 
-const renderTab = (elements: ArrayDataElement[]) => {
-  const store = mockStore(buildState(elements))
+const renderView = (
+  keyProp: ReturnType<typeof stringToBuffer>,
+  props: Partial<React.ComponentProps<typeof ViewTab>> = {},
+  elements: ArrayDataElement[] = [],
+) => {
+  const store = mockStore(buildState(elements, keyProp))
   store.clearActions()
-  return render(<ViewTab keyProp={keyBuffer} isActive />, { store })
+  return render(<ViewTab keyProp={keyProp} isActive {...props} />, { store })
 }
 
 describe('ViewTab', () => {
   it('renders a per-row delete affordance for a populated element', () => {
-    renderTab([arrayElementWithValueFactory.build({ index: '7' })])
+    renderView(keyBuffer, {}, [
+      arrayElementWithValueFactory.build({ index: '7' }),
+    ])
 
     expect(screen.getByTestId('array-remove-btn-7-icon')).toBeInTheDocument()
   })
@@ -56,7 +72,9 @@ describe('ViewTab', () => {
       .fn()
       .mockResolvedValue({ status: 200, data: { keyName: KEY, count: '3' } })
 
-    renderTab([arrayElementWithValueFactory.build({ index: '7' })])
+    renderView(keyBuffer, {}, [
+      arrayElementWithValueFactory.build({ index: '7' }),
+    ])
 
     fireEvent.click(screen.getByTestId('array-remove-btn-7-icon'))
     fireEvent.click(await screen.findByTestId('array-remove-btn-7'))
@@ -79,7 +97,7 @@ describe('ViewTab', () => {
       .fn()
       .mockResolvedValue({ status: 200, data: { keyName: KEY, count: '0' } })
 
-    renderTab([
+    renderView(keyBuffer, {}, [
       arrayElementWithValueFactory.build({ index: '0' }),
       arrayElementWithValueFactory.build({ index: '5' }),
     ])
@@ -114,7 +132,7 @@ describe('ViewTab', () => {
       .fn()
       .mockResolvedValue({ status: 200, data: { keyName: KEY, elements: [] } })
 
-    renderTab([
+    renderView(keyBuffer, {}, [
       arrayElementWithValueFactory.build({ index: '0' }),
       arrayElementWithValueFactory.build({ index: '5' }),
     ])
@@ -129,5 +147,48 @@ describe('ViewTab', () => {
     expect(
       screen.queryByTestId('array-bulk-remove-btn-icon'),
     ).not.toBeInTheDocument()
+  })
+
+  it('opens the add panel and fires open telemetry', () => {
+    const onOpenAddItemPanel = jest.fn()
+    renderView(keyA, { onOpenAddItemPanel })
+
+    expect(screen.queryByTestId(PANEL)).not.toBeInTheDocument()
+    fireEvent.click(screen.getByTestId(ADD_BTN))
+
+    expect(onOpenAddItemPanel).toHaveBeenCalled()
+    expect(screen.getByTestId(PANEL)).toBeInTheDocument()
+  })
+
+  it('fires cancel telemetry and hides the panel on Cancel', () => {
+    const onCloseAddItemPanel = jest.fn()
+    renderView(keyA, { onCloseAddItemPanel })
+
+    fireEvent.click(screen.getByTestId(ADD_BTN))
+    fireEvent.click(screen.getByTestId(`${PANEL}-cancel`))
+
+    expect(onCloseAddItemPanel).toHaveBeenCalled()
+    expect(screen.queryByTestId(PANEL)).not.toBeInTheDocument()
+  })
+
+  it('closes the panel when the selected key changes', () => {
+    const { rerender } = renderView(keyA)
+
+    fireEvent.click(screen.getByTestId(ADD_BTN))
+    expect(screen.getByTestId(PANEL)).toBeInTheDocument()
+
+    rerender(<ViewTab keyProp={keyB} isActive />)
+    expect(screen.queryByTestId(PANEL)).not.toBeInTheDocument()
+  })
+
+  it('keeps the panel open when keyProp is a new buffer with the same bytes', () => {
+    const { rerender } = renderView(keyA)
+
+    fireEvent.click(screen.getByTestId(ADD_BTN))
+    expect(screen.getByTestId(PANEL)).toBeInTheDocument()
+
+    // Same key, fresh buffer object — a byte-exact compare must not close it.
+    rerender(<ViewTab keyProp={stringToBuffer('key-a')} isActive />)
+    expect(screen.getByTestId(PANEL)).toBeInTheDocument()
   })
 })

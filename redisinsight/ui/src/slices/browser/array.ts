@@ -36,6 +36,8 @@ import {
   FetchArrayScanParams,
   SearchArrayParams,
   UpdateArrayElementParams,
+  AppendArrayElementParams,
+  AddArrayElementParams,
 } from 'uiSrc/slices/interfaces/array'
 import { RedisString, RedisResponseBuffer } from 'uiSrc/slices/interfaces/app'
 import {
@@ -879,14 +881,182 @@ export function refreshArray(key: RedisString) {
     // array's current contents instead of a value computed before the
     // refresh. `resetData: false` keeps the existing value on screen while
     // the recompute is in flight (no loader flash), mirroring the
-    // range/scan replay above. Only runs once an aggregate has actually
-    // been computed for this key (`hasResult` + a stored query).
-    if (aggregate.hasResult && aggregate.query) {
+    // range/scan replay above. Runs whenever a query is stored and either has
+    // a result or is still in flight — replaying aborts a pre-refresh AROP
+    // that would otherwise land later with a stale result.
+    if (aggregate.query && (aggregate.hasResult || aggregate.loading)) {
       dispatch(aggregateArray({ key, ...aggregate.query, resetData: false }))
     }
 
     if (search.query) {
       dispatch(searchArray({ key, ...search.query }))
+    }
+  }
+}
+
+/**
+ * Apply a successful write's side effects — close/clear the panel
+ * (`onSuccessAction`) and replay the read surface + key header — but only if
+ * `key` is still the selected key. A write can resolve after the user moved to
+ * another key: `onSuccessAction` would close/clear the now-different panel, and
+ * refreshArray writes into the shared array slice (its range controller would
+ * abort the newly-selected key's load) while the header reads Length/Count/Size
+ * from the keys slice.
+ *
+ * The live selection is read from the browser context, not
+ * `keys.selectedKey.data` — fetchKeyInfo keeps the previous `data` in place
+ * while the newly clicked key loads, so that field is stale during the switch.
+ * Comparison is byte-exact (isEqualBuffers), since two distinct binary names
+ * can decode to the same Unicode string.
+ */
+function applyArrayWriteResult(
+  key: RedisResponseBuffer,
+  startInstanceId: Maybe<string>,
+  index: Maybe<string>,
+  onSuccessAction?: (index?: string) => void,
+) {
+  return (dispatch: AppDispatch, stateInit: () => RootState) => {
+    const latest = stateInit()
+    const selectedKey = appContextSelectedKey(latest)
+    // The user may have switched key or database while the POST was in flight.
+    // Applying the result (closing the panel, refreshing) only makes sense when
+    // both still match, so a same-named key in another database can't be
+    // repainted as if the add happened there (mirrors the edit/delete thunks).
+    const sameInstance =
+      latest.connections.instances.connectedInstance?.id === startInstanceId
+    if (!sameInstance || !selectedKey || !isEqualBuffers(selectedKey, key)) {
+      return
+    }
+    // Pass the landed index so the caller can reveal it: an append lands at the
+    // current length, which may be above the View's active upper bound. Runs
+    // before refreshArray so a range change here is what refreshArray replays.
+    onSuccessAction?.(index)
+    dispatch<any>(refreshArray(key))
+    dispatch<any>(refreshKeyInfoAction(key))
+  }
+}
+
+/**
+ * True while the write's target still matches what it was when the user
+ * requested it: the same connected instance AND the same selected key. A
+ * pending production-write confirmation can fire after a database/key switch,
+ * and the POST URL is built from the live connection — so this stops a stale
+ * confirmation from writing the old form into the newly selected database/key.
+ */
+function isArrayWriteTargetCurrent(
+  state: RootState,
+  key: RedisResponseBuffer,
+  expectedInstanceId: Maybe<string>,
+) {
+  const currentInstanceId = state.connections.instances.connectedInstance?.id
+  const selectedKey = appContextSelectedKey(state)
+  return (
+    currentInstanceId === expectedInstanceId &&
+    !!selectedKey &&
+    isEqualBuffers(selectedKey, key)
+  )
+}
+
+/**
+ * Append a value to the end of the array (POST /array/append → ARSET at the
+ * current length). On success the displayed surface, counters, and key header
+ * are refreshed so the new element appears.
+ */
+export function appendArrayElement(
+  params: AppendArrayElementParams,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    const state = stateInit()
+    if (
+      !isArrayWriteTargetCurrent(state, params.key, params.expectedInstanceId)
+    ) {
+      return
+    }
+    // Hold the same lock inline ARSET uses so the key-header refresh (and
+    // range/aggregate forms) pause while the write is in flight — otherwise a
+    // pre-write refreshKeyInfoAction could resolve after the add and repaint
+    // the header with stale Length/Count/Size.
+    latestEditRequestToken += 1
+    const requestToken = latestEditRequestToken
+    dispatch(setArrayUpdating(true))
+    try {
+      const startInstanceId = state.connections.instances.connectedInstance?.id
+      const { status, data } = await apiService.post<{ index: string }>(
+        arrayUrl(state, ApiEndpoints.ARRAY_APPEND),
+        { keyName: params.key, value: params.value },
+        encodingParams(state),
+      )
+      if (isStatusSuccessful(status)) {
+        dispatch<any>(
+          applyArrayWriteResult(
+            params.key,
+            startInstanceId,
+            data?.index,
+            onSuccessAction,
+          ),
+        )
+      }
+    } catch (error) {
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      onFailAction?.()
+    } finally {
+      // Only the latest write releases the shared lock, so an add overlapping
+      // an edit (or another add) can't re-enable refresh while one is pending.
+      if (requestToken === latestEditRequestToken) {
+        dispatch(setArrayUpdating(false))
+      }
+    }
+  }
+}
+
+/**
+ * Add a value at an explicit index (POST /array/set-element → ARSET key index
+ * value). Used by the "Add element" form when the user points at an index.
+ * Refreshes the displayed surface, counters, and key header on success.
+ */
+export function addArrayElement(
+  params: AddArrayElementParams,
+  onSuccessAction?: () => void,
+  onFailAction?: () => void,
+) {
+  return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    const state = stateInit()
+    if (
+      !isArrayWriteTargetCurrent(state, params.key, params.expectedInstanceId)
+    ) {
+      return
+    }
+    // See appendArrayElement: hold the shared updating lock so a pre-write key
+    // refresh can't resolve after the add and overwrite the header metadata.
+    latestEditRequestToken += 1
+    const requestToken = latestEditRequestToken
+    dispatch(setArrayUpdating(true))
+    try {
+      const startInstanceId = state.connections.instances.connectedInstance?.id
+      const { status } = await apiService.post(
+        arrayUrl(state, ApiEndpoints.ARRAY_SET_ELEMENT),
+        { keyName: params.key, index: params.index, value: params.value },
+        encodingParams(state),
+      )
+      if (isStatusSuccessful(status)) {
+        dispatch<any>(
+          applyArrayWriteResult(
+            params.key,
+            startInstanceId,
+            params.index,
+            onSuccessAction,
+          ),
+        )
+      }
+    } catch (error) {
+      dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
+      onFailAction?.()
+    } finally {
+      if (requestToken === latestEditRequestToken) {
+        dispatch(setArrayUpdating(false))
+      }
     }
   }
 }
