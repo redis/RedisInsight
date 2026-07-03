@@ -42,7 +42,7 @@ const toBigIntOrNull = (value: string): bigint | null => {
  */
 export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
   const dispatch = useAppDispatch()
-  const { loading, error } = useAppSelector(arraySelector)
+  const { loading, error, query } = useAppSelector(arraySelector)
   const data = useAppSelector(arrayDataSelector)
   const selectedKeyData = useAppSelector(selectedKeyDataSelector)
 
@@ -50,15 +50,12 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
   const [end, setEnd] = useState<string>(DEFAULT_RANGE_END)
   const [showEmpty, setShowEmpty] = useState<boolean>(true)
 
-  // Latest-value refs so a stable revealIndex (held by the add form's captured
-  // success callback) reads the CURRENT bounds — the user may edit the range or
-  // toggle options while an add's POST is still in flight.
-  const startRef = useRef(start)
-  const endRef = useRef(end)
-  const showEmptyRef = useRef(showEmpty)
-  startRef.current = start
-  endRef.current = end
-  showEmptyRef.current = showEmpty
+  // Latest-value ref for the *active* query (the one refreshArray replays after
+  // an add), so a stable revealIndex — held by the add form's captured success
+  // callback — decides visibility against what's actually displayed rather than
+  // the form inputs (which may hold an unrun / invalid range).
+  const activeQueryRef = useRef(query)
+  activeQueryRef.current = query
 
   // Manual + auto dispatches are gated on this so a quick click during a
   // key-switch can't fire ARGETRANGE/ARSCAN against a non-array key
@@ -169,14 +166,14 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
       const target = toBigIntOrNull(index)
       if (target === null) return
 
-      // Read the CURRENT bounds via refs, not closure values — this callback is
-      // captured by the add form when Add is pressed, but must reveal against
-      // the range the user has by the time the write resolves.
-      // If the range fields are valid and already cover the index, leave the
-      // window alone. When they can't be parsed, fall through and reveal — that
-      // also replaces the unusable bounds with a valid window ending at `index`.
-      const lo = toBigIntOrNull(startRef.current)
-      const hi = toBigIntOrNull(endRef.current)
+      // Decide visibility against the ACTIVE query (what refreshArray replays),
+      // not the form inputs — those can hold a canonical-but-unrun/invalid range
+      // (e.g. a span over the cap with Run disabled), so the element would be
+      // "within" a range that is never actually fetched. Only skip when the
+      // index truly falls inside the displayed window.
+      const active = activeQueryRef.current
+      const lo = toBigIntOrNull(active.start)
+      const hi = toBigIntOrNull(active.end)
       const withinWindow =
         lo !== null &&
         hi !== null &&
@@ -192,7 +189,7 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
         setArrayActiveQuery({
           start: nextStart,
           end: index,
-          showEmpty: showEmptyRef.current,
+          showEmpty: active.showEmpty,
         }),
       )
     },

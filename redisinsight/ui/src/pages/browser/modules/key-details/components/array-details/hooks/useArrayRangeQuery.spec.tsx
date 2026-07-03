@@ -23,10 +23,14 @@ const buildState = (
   overrides: {
     selectedKeyType?: KeyTypes
     selectedKeyName?: ReturnType<typeof stringToBuffer> | null
+    activeQuery?: { start: string; end: string; showEmpty: boolean }
   } = {},
 ) => {
   const next = cloneDeep(initialStateDefault)
   next.browser.array = cloneDeep(initialStateArray)
+  if (overrides.activeQuery) {
+    next.browser.array.query = overrides.activeQuery
+  }
   next.browser.keys.selectedKey.data = overrides.selectedKeyName
     ? ({
         type: overrides.selectedKeyType ?? KeyTypes.Array,
@@ -243,29 +247,59 @@ describe('useArrayRangeQuery', () => {
     })
 
     it('clamps the window start to 0 near the beginning', () => {
-      const { result } = renderWithStore(keyBuffer)
+      const { result } = renderWithStore(
+        keyBuffer,
+        buildState({
+          selectedKeyName: keyBuffer,
+          activeQuery: { start: '50', end: '60', showEmpty: true },
+        }),
+      )
 
       act(() => {
-        result.current.setStart('50')
-        result.current.setEnd('60')
-      })
-      act(() => {
-        result.current.revealIndex('3') // below the moved window
+        result.current.revealIndex('3') // below the active window
       })
 
       expect(result.current.start).toBe('0')
       expect(result.current.end).toBe('3')
     })
 
-    it('reveals without throwing when the range fields are non-numeric', () => {
-      const { result } = renderWithStore(keyBuffer)
+    it('reveals against the active query, not the (possibly unrun) form range', () => {
+      // The form range would "cover" the index, but the active query — what
+      // refreshArray replays — does not, so the element must still be revealed.
+      const { result, store } = renderWithStore(
+        keyBuffer,
+        buildState({
+          selectedKeyName: keyBuffer,
+          activeQuery: { start: '0', end: '9', showEmpty: true },
+        }),
+      )
 
       act(() => {
-        result.current.setStart('abc')
-        result.current.setEnd('')
+        result.current.setStart('0')
+        result.current.setEnd('1000000') // canonical but unrun (over the cap)
       })
+      act(() => {
+        result.current.revealIndex('10')
+      })
+
+      expect(result.current.start).toBe('1')
+      expect(result.current.end).toBe('10')
+      expect(store.getActions()).toContainEqual(
+        setArrayActiveQuery({ start: '1', end: '10', showEmpty: true }),
+      )
+    })
+
+    it('reveals without throwing when the active bounds are non-numeric', () => {
+      const { result } = renderWithStore(
+        keyBuffer,
+        buildState({
+          selectedKeyName: keyBuffer,
+          activeQuery: { start: 'abc', end: '', showEmpty: true },
+        }),
+      )
+
       // Must not throw (it runs in the post-add success path) and should move
-      // to a valid window ending at the index, replacing the unusable bounds.
+      // to a valid window ending at the index.
       expect(() =>
         act(() => {
           result.current.revealIndex('100')
