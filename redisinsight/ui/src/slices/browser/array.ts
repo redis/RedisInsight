@@ -967,13 +967,20 @@ export function appendArrayElement(
   onFailAction?: () => void,
 ) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    const state = stateInit()
+    if (
+      !isArrayWriteTargetCurrent(state, params.key, params.expectedInstanceId)
+    ) {
+      return
+    }
+    // Hold the same lock inline ARSET uses so the key-header refresh (and
+    // range/aggregate forms) pause while the write is in flight — otherwise a
+    // pre-write refreshKeyInfoAction could resolve after the add and repaint
+    // the header with stale Length/Count/Size.
+    latestEditRequestToken += 1
+    const requestToken = latestEditRequestToken
+    dispatch(setArrayUpdating(true))
     try {
-      const state = stateInit()
-      if (
-        !isArrayWriteTargetCurrent(state, params.key, params.expectedInstanceId)
-      ) {
-        return
-      }
       const startInstanceId = state.connections.instances.connectedInstance?.id
       const { status, data } = await apiService.post<{ index: string }>(
         arrayUrl(state, ApiEndpoints.ARRAY_APPEND),
@@ -993,6 +1000,12 @@ export function appendArrayElement(
     } catch (error) {
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
       onFailAction?.()
+    } finally {
+      // Only the latest write releases the shared lock, so an add overlapping
+      // an edit (or another add) can't re-enable refresh while one is pending.
+      if (requestToken === latestEditRequestToken) {
+        dispatch(setArrayUpdating(false))
+      }
     }
   }
 }
@@ -1008,13 +1021,18 @@ export function addArrayElement(
   onFailAction?: () => void,
 ) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    const state = stateInit()
+    if (
+      !isArrayWriteTargetCurrent(state, params.key, params.expectedInstanceId)
+    ) {
+      return
+    }
+    // See appendArrayElement: hold the shared updating lock so a pre-write key
+    // refresh can't resolve after the add and overwrite the header metadata.
+    latestEditRequestToken += 1
+    const requestToken = latestEditRequestToken
+    dispatch(setArrayUpdating(true))
     try {
-      const state = stateInit()
-      if (
-        !isArrayWriteTargetCurrent(state, params.key, params.expectedInstanceId)
-      ) {
-        return
-      }
       const startInstanceId = state.connections.instances.connectedInstance?.id
       const { status } = await apiService.post(
         arrayUrl(state, ApiEndpoints.ARRAY_SET_ELEMENT),
@@ -1034,6 +1052,10 @@ export function addArrayElement(
     } catch (error) {
       dispatch(addErrorNotification(error as IAddInstanceErrorPayload))
       onFailAction?.()
+    } finally {
+      if (requestToken === latestEditRequestToken) {
+        dispatch(setArrayUpdating(false))
+      }
     }
   }
 }

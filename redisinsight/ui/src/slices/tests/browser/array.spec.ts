@@ -1158,6 +1158,25 @@ describe('array slice', () => {
         expect(keyInfoCall).toBeTruthy()
       })
 
+      it('brackets the write with the updating lock (pauses key refresh)', async () => {
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+        const local = storeWithSelectedKey()
+
+        await local.dispatch<any>(
+          appendArrayElement({
+            key: mockKeyBuffer,
+            value: 'v',
+            expectedInstanceId: mockInstanceId,
+          }),
+        )
+
+        const actions = local.getActions()
+        expect(actions).toContainEqual(setArrayUpdating(true))
+        expect(actions).toContainEqual(setArrayUpdating(false))
+      })
+
       it('cancels the write (no POST) when the selected key changed before confirming', async () => {
         apiService.post = jest
           .fn()
