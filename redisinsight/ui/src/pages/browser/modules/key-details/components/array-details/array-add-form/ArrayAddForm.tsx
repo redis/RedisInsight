@@ -70,6 +70,10 @@ export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
   // View the new element would be invisible. Users who don't want the jump can
   // opt out per add.
   const [moveToElement, setMoveToElement] = useState(true)
+  // handleSuccess is captured by the thunk when Add is confirmed; read the flag
+  // from a ref so a toggle while the POST is in flight is honored.
+  const moveToElementRef = useRef(moveToElement)
+  moveToElementRef.current = moveToElement
 
   // A write resolves asynchronously and the slice still fires onSuccess while
   // its target key is selected. But the user may have closed this panel (key
@@ -96,7 +100,7 @@ export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
     }
     // Move the View to the new element before closing, so an append past the
     // current window is actually shown (revealIndex no-ops if it's in view).
-    if (moveToElement && addedIndex) {
+    if (moveToElementRef.current && addedIndex) {
       onReveal?.(addedIndex)
     }
     setValue('')

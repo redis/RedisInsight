@@ -50,6 +50,16 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
   const [end, setEnd] = useState<string>(DEFAULT_RANGE_END)
   const [showEmpty, setShowEmpty] = useState<boolean>(true)
 
+  // Latest-value refs so a stable revealIndex (held by the add form's captured
+  // success callback) reads the CURRENT bounds — the user may edit the range or
+  // toggle options while an add's POST is still in flight.
+  const startRef = useRef(start)
+  const endRef = useRef(end)
+  const showEmptyRef = useRef(showEmpty)
+  startRef.current = start
+  endRef.current = end
+  showEmptyRef.current = showEmpty
+
   // Manual + auto dispatches are gated on this so a quick click during a
   // key-switch can't fire ARGETRANGE/ARSCAN against a non-array key
   // (which the API rejects with WrongType).
@@ -159,11 +169,14 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
       const target = toBigIntOrNull(index)
       if (target === null) return
 
+      // Read the CURRENT bounds via refs, not closure values — this callback is
+      // captured by the add form when Add is pressed, but must reveal against
+      // the range the user has by the time the write resolves.
       // If the range fields are valid and already cover the index, leave the
       // window alone. When they can't be parsed, fall through and reveal — that
       // also replaces the unusable bounds with a valid window ending at `index`.
-      const lo = toBigIntOrNull(start)
-      const hi = toBigIntOrNull(end)
+      const lo = toBigIntOrNull(startRef.current)
+      const hi = toBigIntOrNull(endRef.current)
       const withinWindow =
         lo !== null &&
         hi !== null &&
@@ -175,9 +188,15 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
       const nextStart = (target > span ? target - span : BigInt(0)).toString()
       setStart(nextStart)
       setEnd(index)
-      dispatch(setArrayActiveQuery({ start: nextStart, end: index, showEmpty }))
+      dispatch(
+        setArrayActiveQuery({
+          start: nextStart,
+          end: index,
+          showEmpty: showEmptyRef.current,
+        }),
+      )
     },
-    [dispatch, start, end, showEmpty],
+    [dispatch],
   )
 
   return {

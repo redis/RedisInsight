@@ -124,6 +124,32 @@ describe('ArrayAddForm', () => {
     expect(onReveal).not.toHaveBeenCalled()
   })
 
+  it('honors a "move to element" toggle made while the write is in flight', async () => {
+    let resolvePost: (value: unknown) => void = () => {}
+    apiService.post = jest.fn().mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolvePost = resolve
+        }),
+    )
+    const onReveal = jest.fn()
+    renderForm(jest.fn(), onReveal)
+
+    fireEvent.change(screen.getByTestId('array-add-form-value'), {
+      target: { value: 'hello' },
+    })
+    fireEvent.click(screen.getByTestId('array-add-form-submit'))
+
+    // User unchecks the box before the POST resolves — the success handler must
+    // read the live flag, not the value captured when Add was confirmed.
+    fireEvent.click(screen.getByTestId('array-add-form-move-to-element'))
+    await act(async () => {
+      resolvePost({ status: 200, data: { index: '42' } })
+    })
+
+    expect(onReveal).not.toHaveBeenCalled()
+  })
+
   it('does not close the panel if the form unmounted before the write resolved', async () => {
     // Hold the write open so we can unmount (key switch + fresh panel) first.
     let resolvePost: (value: unknown) => void = () => {}
