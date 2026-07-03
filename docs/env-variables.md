@@ -5,7 +5,7 @@ an example value. RedisInsight is configured almost entirely through environment
 this is the single place that documents them.
 
 - **Source of truth** for defaults: [`redisinsight/api/config/default.ts`](../redisinsight/api/config/default.ts) (backend) and [`redisinsight/ui/src/config/default.ts`](../redisinsight/ui/src/config/default.ts) (frontend). If a value here ever disagrees with those files, the files win — please fix the doc.
-- Copy-paste templates live next to each app: `redisinsight/api/.env.example`, `redisinsight/ui/.env.example`, `redisinsight/desktop/.env.example`, and `tests/e2e-playwright/example.env`.
+- Copy-paste templates live next to each app that loads a `.env`: `redisinsight/api/.env.example`, `redisinsight/ui/.env.example`, and `tests/e2e-playwright/example.env`. The desktop app has no `.env` loader (see below) — set its variables in the environment.
 
 ## Contents
 
@@ -38,7 +38,7 @@ own directory:
 |-----|----------|-----------|
 | API (backend) | `redisinsight/api/.env` | `import 'dotenv/config'` in [`api/src/main.ts`](../redisinsight/api/src/main.ts) |
 | UI (frontend) | `redisinsight/ui/.env` | `dotenv/config` + Vite (`envPrefix: 'RI_'`) in [`ui/vite.config.mjs`](../redisinsight/ui/vite.config.mjs) |
-| Desktop (Electron) | `redisinsight/desktop/.env` | dotenv in the Electron main process |
+| Desktop (Electron) | _(none)_ | Read directly from the process environment — no dotenv/`.env` loader. Dev scripts inject them via `cross-env` (see root `package.json`); packaged builds inherit the launching environment. |
 | E2E tests | `tests/e2e-playwright/.env` (+ `.env.{ENV}`) | [`tests/e2e-playwright/config/env.ts`](../tests/e2e-playwright/config/env.ts) |
 
 Key points:
@@ -292,15 +292,20 @@ Redis Cloud integration and OAuth. Per-provider variables (`..._GOOGLE_...`, `..
 
 ## Desktop / Electron
 
+The desktop app has **no `.env` loader** — set these in the environment (see
+[How configuration is loaded](#how-configuration-is-loaded)). Flags marked _presence-only_
+are enabled by being **set to any value** (including `false`); to disable them, leave them
+**unset**.
+
 | Variable | Scope | Default | Description |
 |----------|-------|---------|-------------|
 | `RI_UPGRADES_LINK` | desktop | _(unset)_ | URL the auto-updater checks for upgrades. |
 | `RI_MANUAL_UPGRADES_LINK` | desktop | _(unset)_ | URL used for manual upgrade downloads. |
-| `RI_DISABLE_AUTO_UPGRADE` | desktop | `false` | Disable automatic upgrades. |
+| `RI_DISABLE_AUTO_UPGRADE` | desktop | `false` | Disable automatic upgrades (compared to `'true'`, so `false`/unset keeps upgrades on). |
 | `RI_AUTO_UPDATE_INTERVAL` | desktop | _(unset)_ | Interval between auto-update checks. |
-| `START_MINIMIZED` | desktop | `false` | Start the Electron window minimized. |
-| `UPGRADE_EXTENSIONS` | desktop | `false` | Install/upgrade dev browser extensions (development aid). |
-| `USE_TCP_CLOUD_AUTH` | desktop | `false` | Use TCP (instead of a custom protocol) for the cloud OAuth callback. |
+| `START_MINIMIZED` | desktop | _(unset)_ | **Presence-only.** Set to any value to start the Electron window minimized; leave unset to show it normally. |
+| `UPGRADE_EXTENSIONS` | desktop | _(unset)_ | **Presence-only.** Set to any value to force-install/upgrade dev browser extensions (dev only). Leave unset to disable. |
+| `USE_TCP_CLOUD_AUTH` | desktop | `false` | Use TCP (instead of a custom protocol) for the cloud OAuth callback (compared to `'true'`). |
 | `TCP_LOCAL_AUTH_PORT` | desktop | _(unset)_ | Local TCP port for the OAuth callback listener. |
 | `TCP_LOCAL_CLOUD_AUTH_PORT` | desktop | _(unset)_ | Local TCP port for the cloud OAuth callback listener. |
 
