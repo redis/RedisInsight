@@ -13,6 +13,23 @@ import { stringToBuffer } from 'uiSrc/utils'
 
 import { ArrayAddForm } from './ArrayAddForm'
 
+// Capture the confirmation callback so a test can defer/replay it (the real
+// modal outlives the panel). By default it fires immediately, matching the
+// non-production provider the other tests rely on.
+let capturedOnConfirm: (() => void) | undefined
+const mockRequestConfirmation = jest.fn(
+  ({ onConfirm }: { onConfirm: () => void }) => {
+    capturedOnConfirm = onConfirm
+    onConfirm()
+  },
+)
+jest.mock('uiSrc/components/production-write-confirmation', () => ({
+  ...jest.requireActual('uiSrc/components/production-write-confirmation'),
+  useProductionWriteConfirmation: () => ({
+    requestConfirmation: mockRequestConfirmation,
+  }),
+}))
+
 const keyBuffer = stringToBuffer('mykey')
 
 // The form reads the write key from the selected key's data (selectedKeyData),
@@ -195,6 +212,30 @@ describe('ArrayAddForm', () => {
 
     // The stale success callback must not close the now-current panel.
     expect(closePanel).not.toHaveBeenCalled()
+  })
+
+  it('does not write from a discarded panel when confirmed after unmount', async () => {
+    apiService.post = jest.fn().mockResolvedValue({ status: 200, data: {} })
+    // Capture the confirmation without firing it — the modal outlives the panel.
+    mockRequestConfirmation.mockImplementationOnce(
+      ({ onConfirm }: { onConfirm: () => void }) => {
+        capturedOnConfirm = onConfirm
+      },
+    )
+    const { unmount } = renderForm()
+
+    fireEvent.change(screen.getByTestId('array-add-form-value'), {
+      target: { value: 'hello' },
+    })
+    fireEvent.click(screen.getByTestId('array-add-form-submit'))
+
+    // The panel is discarded (key switch) before the user presses Confirm.
+    unmount()
+    await act(async () => {
+      capturedOnConfirm?.()
+    })
+
+    expect(findCall('array/append')).toBeUndefined()
   })
 
   it('sets at index (POST /array/set-element) when an index is provided', async () => {

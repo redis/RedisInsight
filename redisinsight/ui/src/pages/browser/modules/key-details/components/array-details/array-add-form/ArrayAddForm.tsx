@@ -127,7 +127,10 @@ export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
       commandId: BrowserConfirmationCommandId.AddArrayElements,
       disableConfirmationInput: true,
       onConfirm: () => {
-        if (!selectedKey) {
+        // The confirmation modal outlives this panel: the user can switch keys
+        // (ViewTab closes/unmounts the panel) and return before confirming.
+        // Don't write from a discarded panel even if the same key is reselected.
+        if (!isMounted.current || !selectedKey) {
           return
         }
         const serialized = stringToSerializedBufferFormat(viewFormat, value)
