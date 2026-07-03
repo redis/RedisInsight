@@ -34,6 +34,8 @@
   "api.error.code.11401.reviewLog": "Review the error log for details.",
   "api.error.code.11401.title": "Pipeline not deployed",
   "api.error.code.11404.title": "Validation error",
+  "notification.error.arrayBulkDeleteLimit.message": "You can delete up to {{max}} elements at once. Clear some of the selection and try again.",
+  "notification.error.arrayBulkDeleteLimit.title": "Too many elements selected",
   "notification.error.button.copied": "Copied",
   "notification.error.button.copy": "Copy",
   "notification.error.button.downloadFullLog": "Download full log",

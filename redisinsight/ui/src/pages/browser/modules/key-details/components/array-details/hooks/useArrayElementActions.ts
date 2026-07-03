@@ -1,11 +1,15 @@
+import { AxiosError } from 'axios'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useAppDispatch } from 'uiSrc/slices/hooks'
+import i18n from 'uiSrc/i18n'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { Nullable, isEqualBuffers } from 'uiSrc/utils'
 import { deleteArrayElements } from 'uiSrc/slices/browser/array'
+import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 
+import { ARRAY_BULK_DELETE_MAX } from '../constants'
 import { ArrayElementDeleteConfig } from '../array-details-table/components/RowActionsCell'
 import { ArrayBulkDeleteConfig } from '../array-details-table/components/BulkDeleteHeaderCell'
 import { ArrayElementSelectionConfig } from '../array-details-table/ArrayDetailsTable.types'
@@ -157,6 +161,24 @@ export const useArrayElementActions = (
   const bulkDeletingRef = useRef(false)
   const handleBulkDelete = useCallback(async () => {
     if (!keyProp || selectedIndexes.length === 0 || bulkDeletingRef.current) {
+      return
+    }
+    // The delete endpoint caps indexes per call; an unbounded Search can select
+    // more than that. Fail fast with a clear message instead of a raw 400.
+    if (selectedIndexes.length > ARRAY_BULK_DELETE_MAX) {
+      dispatch(
+        addErrorNotification({
+          response: {
+            data: {
+              title: i18n.t('notification.error.arrayBulkDeleteLimit.title'),
+              message: i18n.t(
+                'notification.error.arrayBulkDeleteLimit.message',
+                { max: ARRAY_BULK_DELETE_MAX.toLocaleString('en-US') },
+              ),
+            },
+          },
+        } as AxiosError),
+      )
       return
     }
     bulkDeletingRef.current = true

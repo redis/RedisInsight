@@ -11,8 +11,16 @@ import {
   arrayElementFactory,
   arrayElementWithValueFactory,
 } from 'uiSrc/mocks/factories/browser/array/arrayElement.factory'
+import { addErrorNotification } from 'uiSrc/slices/app/notifications'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 import { useArrayElementActions } from './useArrayElementActions'
+
+// Shrink the bulk-delete cap so the over-cap guard is testable without
+// building a million-element selection.
+jest.mock('../constants', () => ({
+  ...jest.requireActual('../constants'),
+  ARRAY_BULK_DELETE_MAX: 5,
+}))
 
 const KEY = 'readings'
 const keyBuffer = stringToBuffer(KEY)
@@ -200,6 +208,26 @@ describe('useArrayElementActions', () => {
     })
 
     expect(apiService.delete).toHaveBeenCalledTimes(1)
+  })
+
+  it('blocks a bulk delete over the endpoint cap with an error, no request', async () => {
+    // Cap is mocked to 5 at the top of this file; select 6.
+    const { result, store } = renderActions(
+      Array.from({ length: 6 }, (_, i) =>
+        arrayElementWithValueFactory.build({ index: String(i) }),
+      ),
+    )
+    selectAll(result, ['0', '1', '2', '3', '4', '5'])
+    expect(result.current.bulkDeleteConfig.selectedCount).toBe(6)
+
+    await act(async () => {
+      await result.current.bulkDeleteConfig.handleBulkDelete()
+    })
+
+    expect(apiService.delete).not.toHaveBeenCalled()
+    expect(
+      store.getActions().some((a) => a.type === addErrorNotification.type),
+    ).toBe(true)
   })
 
   it('excludes empty View slots from the selection', () => {
