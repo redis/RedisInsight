@@ -38,11 +38,27 @@ export const useArrayElementActions = (
     [],
   )
 
+  // Selection is keyed by element index (the table's `getRowId`). Declared
+  // before the single-delete handler so a per-row delete can drop the
+  // just-deleted row from any live multi-select.
+  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({})
+  const clearSelection = useCallback(() => setRowSelection({}), [])
+
   const handleDeleteElement = useCallback(
-    (index: string) => {
+    async (index: string) => {
       if (!keyProp) return
-      dispatch(deleteArrayElements(keyProp, [index]))
       closePopover()
+      const deleted = await dispatch(deleteArrayElements(keyProp, [index]))
+      // On success drop the deleted row from the multi-selection, so the bulk
+      // header can't re-delete it in the window before the refresh prunes it.
+      if (deleted) {
+        setRowSelection((prev) => {
+          if (!prev[index]) return prev
+          const next = { ...prev }
+          delete next[index]
+          return next
+        })
+      }
     },
     [dispatch, keyProp, closePopover],
   )
@@ -60,10 +76,6 @@ export const useArrayElementActions = (
   )
 
   // --- multi-select + bulk delete ---
-  // Selection is keyed by element index (the table's `getRowId`).
-  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({})
-  const clearSelection = useCallback(() => setRowSelection({}), [])
-
   // On a real key change (the tab stays mounted across key switches) drop both
   // the open confirm popover — a same-index row on the new key would otherwise
   // show a stale dialog that deletes the wrong key — and the selection, since a

@@ -150,6 +150,24 @@ describe('useArrayElementActions', () => {
     expect(result.current.bulkDeleteConfig.selectedCount).toBe(2)
   })
 
+  it('drops a per-row-deleted index from the multi-selection on success', async () => {
+    const { result } = renderActions([
+      arrayElementWithValueFactory.build({ index: '1' }),
+      arrayElementWithValueFactory.build({ index: '2' }),
+    ])
+
+    selectAll(result, ['1', '2'])
+    expect(result.current.bulkDeleteConfig.selectedCount).toBe(2)
+
+    // Deleting a still-selected row via its own trash removes it from the bulk
+    // selection, so the header can't re-delete it before the refresh prunes it.
+    await act(async () => {
+      await result.current.deleteConfig.handleDeleteElement('1')
+    })
+
+    expect(result.current.bulkDeleteConfig.selectedCount).toBe(1)
+  })
+
   it('never fires a bulk delete once every selected row is out of view', async () => {
     const { result, setElements } = renderActions([
       arrayElementWithValueFactory.build({ index: '1' }),
