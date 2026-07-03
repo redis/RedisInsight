@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import ConfirmationPopover from 'uiSrc/components/confirmation-popover'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { DestructiveButton } from 'uiSrc/components/base/forms/buttons'
@@ -17,6 +18,7 @@ import * as S from './BulkDeleteHeaderCell.styles'
 export const BulkDeleteHeaderCell = ({
   bulkDeleteConfig,
 }: BulkDeleteHeaderCellProps) => {
+  const { t } = useTranslation()
   const { selectedCount, handleBulkDelete } = bulkDeleteConfig
   const [isOpen, setIsOpen] = useState(false)
 
@@ -28,8 +30,6 @@ export const BulkDeleteHeaderCell = ({
 
   if (selectedCount === 0) return null
 
-  const plural = selectedCount === 1 ? '' : 's'
-
   return (
     <S.DangerAction>
       <ConfirmationPopover
@@ -38,13 +38,15 @@ export const BulkDeleteHeaderCell = ({
         isOpen={isOpen}
         closePopover={() => setIsOpen(false)}
         panelPaddingSize="m"
-        title="Delete elements"
-        message={`${selectedCount} selected element${plural} will be permanently removed from the array.`}
+        title={t('browser.array.delete.bulk.title')}
+        message={t('browser.array.delete.bulk.message', {
+          count: selectedCount,
+        })}
         button={
           <S.TriggerButton
             icon={DeleteIcon}
             size="small"
-            aria-label="Delete selected elements"
+            aria-label={t('browser.array.delete.bulk.aria')}
             onClick={() => setIsOpen((open) => !open)}
             data-testid="array-bulk-remove-btn-icon"
           />
@@ -59,7 +61,7 @@ export const BulkDeleteHeaderCell = ({
             }}
             data-testid="array-bulk-remove-btn"
           >
-            Remove
+            {t('browser.array.delete.bulk.button')}
           </DestructiveButton>
         }
       />

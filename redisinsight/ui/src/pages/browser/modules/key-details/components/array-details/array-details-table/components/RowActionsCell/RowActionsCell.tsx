@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
 
 import { RowActionsCellProps } from './RowActionsCell.types'
@@ -9,6 +10,7 @@ export const RowActionsCell = ({
   element,
   deleteConfig,
 }: RowActionsCellProps) => {
+  const { t } = useTranslation()
   const {
     deleting,
     suffix,
@@ -34,8 +36,8 @@ export const RowActionsCell = ({
       }
     >
       <PopoverDelete
-        header="Delete element"
-        text="This element will be permanently removed from the array."
+        header={t('browser.array.delete.row.title')}
+        text={t('browser.array.delete.row.message')}
         item={index}
         suffix={suffix}
         deleting={deleting}

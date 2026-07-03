@@ -25,7 +25,7 @@ describe('BulkDeleteHeaderCell', () => {
     fireEvent.click(screen.getByTestId('array-bulk-remove-btn-icon'))
     expect(
       await screen.findByText(
-        /2 selected elements will be permanently removed/,
+        /2 selected element\(s\) will be permanently removed/,
       ),
     ).toBeInTheDocument()
 
