@@ -542,4 +542,46 @@ describe('ArrayDetailsTable', () => {
       screen.queryByTestId('array-remove-btn-2-icon'),
     ).not.toBeInTheDocument()
   })
+
+  const selectionConfig = {
+    rowSelection: {},
+    onRowSelectionChange: jest.fn(),
+    getRowCanSelect: (element: ArrayDataElement) => element.value != null,
+  }
+
+  it('shows the header select-all when at least one row is selectable', () => {
+    render(
+      <ArrayDetailsTable
+        elements={[
+          arrayElementWithValueFactory.build({ index: '0' }),
+          arrayElementFactory.build({ index: '1' }),
+        ]}
+        loading={false}
+        isActive
+        selectionConfig={selectionConfig}
+      />,
+    )
+
+    expect(
+      screen.getByRole('checkbox', { name: /all rows/i }),
+    ).toBeInTheDocument()
+  })
+
+  it('hides the header select-all when no row is selectable (all-empty range)', () => {
+    render(
+      <ArrayDetailsTable
+        elements={[
+          arrayElementFactory.build({ index: '6' }),
+          arrayElementFactory.build({ index: '7' }),
+        ]}
+        loading={false}
+        isActive
+        selectionConfig={selectionConfig}
+      />,
+    )
+
+    expect(
+      screen.queryByRole('checkbox', { name: /all rows/i }),
+    ).not.toBeInTheDocument()
+  })
 })

@@ -58,14 +58,16 @@ const SearchTab = ({ keyProp, isActive }: SearchTabProps) => {
   // Every result is a real match — an index-only row (WITHVALUES off) has a
   // null value but is still deletable — so empty-slot hiding is off here. The
   // delete thunk refreshes all loaded views (incl. this search) afterwards.
-  const { deleteConfig } = useArrayElementActions(keyProp, {
-    hideEmptySlots: false,
-  })
+  const { deleteConfig, selectionConfig, bulkDeleteConfig, clearSelection } =
+    useArrayElementActions(keyProp, { elements, hideEmptySlots: false })
 
   // Context lives here, not in the query hook, so the form's reset must
   // restore it too — otherwise reset leaves rows expandable at the old count.
+  // Reset also drops the multi-select: clearing the results shouldn't leave a
+  // stale selection that a later search could partially restore.
   const handleReset = () => {
     setContext(DEFAULT_CONTEXT)
+    clearSelection()
     resetQuery()
   }
 
@@ -101,6 +103,8 @@ const SearchTab = ({ keyProp, isActive }: SearchTabProps) => {
               error={error}
               isActive={isActive}
               deleteConfig={deleteConfig}
+              selectionConfig={selectionConfig}
+              bulkDeleteConfig={bulkDeleteConfig}
               expandRowOnClick
               getIsRowExpandable={() => context.enabled && !!keyProp}
               renderExpandedRow={(row) =>

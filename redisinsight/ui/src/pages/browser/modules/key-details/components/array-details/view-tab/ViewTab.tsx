@@ -29,11 +29,19 @@ const ViewTab = ({ keyProp, isActive }: ViewTabProps) => {
     error: rangeError,
   } = useArrayRangeQuery(keyProp)
 
-  // Null values in the gap-preserving range are empty slots, so the delete
-  // affordance is hidden on them. The delete thunk refreshes all loaded views.
-  const { deleteConfig } = useArrayElementActions(keyProp, {
-    hideEmptySlots: true,
-  })
+  // Null values in the gap-preserving range are empty slots, so delete and
+  // selection are disabled on them. The delete thunk refreshes all loaded views.
+  const { deleteConfig, selectionConfig, bulkDeleteConfig, clearSelection } =
+    useArrayElementActions(keyProp, { elements, hideEmptySlots: true })
+
+  // Reset also drops the multi-select: resetQuery keeps the current elements
+  // (resetData: false) while the default range reloads, so without this a
+  // selection made in a custom range would survive reset and could be
+  // bulk-deleted.
+  const handleReset = () => {
+    clearSelection()
+    resetQuery()
+  }
 
   return (
     <>
@@ -47,7 +55,7 @@ const ViewTab = ({ keyProp, isActive }: ViewTabProps) => {
         onChangeEnd={setEnd}
         onToggleShowEmpty={setShowEmpty}
         onRun={runQuery}
-        onReset={resetQuery}
+        onReset={handleReset}
         disabled={!isArrayKeyReady || isRefreshDisabled}
       />
       <S.TabBody>
@@ -59,6 +67,8 @@ const ViewTab = ({ keyProp, isActive }: ViewTabProps) => {
               error={rangeError}
               isActive={isActive}
               deleteConfig={deleteConfig}
+              selectionConfig={selectionConfig}
+              bulkDeleteConfig={bulkDeleteConfig}
             />
           </S.TabTableWrapper>
         )}

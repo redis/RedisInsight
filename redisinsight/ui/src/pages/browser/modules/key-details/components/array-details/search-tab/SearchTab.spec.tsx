@@ -206,6 +206,30 @@ describe('SearchTab', () => {
     expect(screen.getByTestId('array-search-form-context')).toBeDisabled()
   })
 
+  it('drops the multi-select when the search is reset', async () => {
+    renderTab({
+      loaded: true,
+      loading: false,
+      error: '',
+      data: [
+        arrayElementWithValueFactory.build({ index: '7' }),
+        arrayElementWithValueFactory.build({ index: '8' }),
+      ],
+    })
+
+    // Select every match — the bulk trash appears in the header — then reset.
+    fireEvent.click(screen.getByRole('checkbox', { name: /all rows/i }))
+    expect(
+      await screen.findByTestId('array-bulk-remove-btn-icon'),
+    ).toBeInTheDocument()
+
+    fireEvent.click(screen.getByTestId('array-search-form-reset'))
+
+    expect(
+      screen.queryByTestId('array-bulk-remove-btn-icon'),
+    ).not.toBeInTheDocument()
+  })
+
   it('collapses the neighbour band when Context is toggled off', async () => {
     const user = userEvent.setup()
     apiService.post = jest.fn().mockResolvedValue({

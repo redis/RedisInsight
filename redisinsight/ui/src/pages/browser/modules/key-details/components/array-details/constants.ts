@@ -71,3 +71,11 @@ export const DEFAULT_CONTEXT = {
   enabled: DEFAULT_CONTEXT_ENABLED,
   count: DEFAULT_CONTEXT_COUNT,
 }
+
+/**
+ * Max indexes a single bulk delete can send, mirroring the backend
+ * `DeleteArrayElementsDto` cap (`ARRAY_RANGE_MAX_ELEMENTS`). An unbounded
+ * Search can select more than this, so fail fast with a clear message instead
+ * of a raw validation error.
+ */
+export const ARRAY_BULK_DELETE_MAX = 1_000_000
