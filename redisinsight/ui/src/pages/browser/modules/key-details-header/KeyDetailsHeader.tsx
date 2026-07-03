@@ -44,7 +44,9 @@ import {
 } from 'uiSrc/pages/vector-search/hooks/useIsKeyIndexed'
 import { ViewIndexDataButton } from 'uiSrc/pages/browser/components/view-index-data-button'
 import { MakeSearchableButton } from 'uiSrc/pages/browser/components/make-searchable-button'
-import { ConfigValueDecoderButton } from 'uiSrc/pages/browser/components/value-decoder'
+import {
+  ConfigValueDecoderButton,
+} from 'uiSrc/pages/browser/components/value-decoder'
 import { KeyDetailsHeaderName } from './components/key-details-header-name'
 import { KeyDetailsHeaderTTL } from './components/key-details-header-ttl'
 import { KeyDetailsHeaderDelete } from './components/key-details-header-delete'
@@ -164,34 +166,30 @@ const KeyDetailsHeader = ({
                 </FlexItem>
                 <KeyDetailsHeaderName onEditKey={handleEditKey} />
                 <FlexItem grow />
-                {(type === KeyTypes.Hash ||
-                  (isSearchableType &&
-                    keyIndexedStatus === UseIsKeyIndexedStatus.Ready)) && (
+                {isSearchableType &&
+                  keyIndexedStatus === UseIsKeyIndexedStatus.Ready && (
+                    <FeatureFlagComponent name={FeatureFlags.vectorSearchV2}>
+                      <FlexItem>
+                        {indexes.length > 0 ? (
+                          <ViewIndexDataButton
+                            indexes={indexes}
+                            instanceId={instanceId}
+                          />
+                        ) : (
+                          <S.MakeSearchableWrapper>
+                            <MakeSearchableButton
+                              keyName={keyBuffer!}
+                              keyNameString={keyName ?? ''}
+                              keyType={type as KeyTypes}
+                            />
+                          </S.MakeSearchableWrapper>
+                        )}
+                      </FlexItem>
+                    </FeatureFlagComponent>
+                  )}
+                {type === KeyTypes.Hash && (
                   <FlexItem>
-                    <S.MakeSearchableWrapper>
-                      <Row gap="s" align="center">
-                        {isSearchableType &&
-                          keyIndexedStatus === UseIsKeyIndexedStatus.Ready && (
-                            <FeatureFlagComponent
-                              name={FeatureFlags.vectorSearchV2}
-                            >
-                              {indexes.length > 0 ? (
-                                <ViewIndexDataButton
-                                  indexes={indexes}
-                                  instanceId={instanceId}
-                                />
-                              ) : (
-                                <MakeSearchableButton
-                                  keyName={keyBuffer!}
-                                  keyNameString={keyName ?? ''}
-                                  keyType={type as KeyTypes}
-                                />
-                              )}
-                            </FeatureFlagComponent>
-                          )}
-                          {type === KeyTypes.Hash && <ConfigValueDecoderButton />}
-                      </Row>
-                    </S.MakeSearchableWrapper>
+                    <ConfigValueDecoderButton />
                   </FlexItem>
                 )}
                 {!arePanelsCollapsed && (
