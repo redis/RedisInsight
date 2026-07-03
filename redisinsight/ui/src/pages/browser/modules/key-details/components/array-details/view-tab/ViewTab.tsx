@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
-import { useAppSelector } from 'uiSrc/slices/hooks'
+import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
+import { deleteArrayRange } from 'uiSrc/slices/browser/array'
 import { bufferToString, isEqualBuffers } from 'uiSrc/utils'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { AddItemsAction } from 'uiSrc/pages/browser/modules/key-details/components/key-details-actions'
@@ -24,6 +25,7 @@ const ViewTab = ({
   onOpenAddItemPanel,
   onCloseAddItemPanel,
 }: ViewTabProps) => {
+  const dispatch = useAppDispatch()
   const { loading, isRefreshDisabled } = useAppSelector(selectedKeySelector)
   const keyName = keyProp ? bufferToString(keyProp) : ''
   const [isAddPanelOpen, setIsAddPanelOpen] = useState(false)
@@ -82,6 +84,24 @@ const ViewTab = ({
     resetQuery()
   }
 
+  // Deletes the inclusive [start, end] window from the live inputs — not
+  // the last-run query — so a range can be deleted without loading it
+  // first. The confirm popover in the form states the exact window. Same
+  // contract as the bulk delete: guard against a double dispatch, drop the
+  // multi-select only on success (deleted rows must not linger armed behind
+  // the header trash), keep it on failure so the user can retry.
+  const deletingRangeRef = useRef(false)
+  const handleDeleteRange = async () => {
+    if (!keyProp || !isArrayKeyReady || deletingRangeRef.current) return
+    deletingRangeRef.current = true
+    try {
+      const deleted = await dispatch(deleteArrayRange(keyProp, start, end))
+      if (deleted) clearSelection()
+    } finally {
+      deletingRangeRef.current = false
+    }
+  }
+
   return (
     <>
       <ArrayRangeForm
@@ -95,6 +115,7 @@ const ViewTab = ({
         onToggleShowEmpty={setShowEmpty}
         onRun={runQuery}
         onReset={handleReset}
+        onDeleteRange={handleDeleteRange}
         disabled={!isArrayKeyReady || isRefreshDisabled}
       />
       {isArrayKeyReady && (

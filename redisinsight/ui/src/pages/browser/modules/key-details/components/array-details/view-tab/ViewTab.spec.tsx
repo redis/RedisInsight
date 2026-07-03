@@ -42,6 +42,9 @@ const buildState = (
     type: KeyTypes.Array,
     name: selectedKey,
   } as any
+  // The delete thunks' stale-selection guard reads the app-context selection;
+  // without it a completed delete reports not-applied and skips the UI updates.
+  next.app.context.browser.keyList.selectedKey = keyBuffer
   return next
 }
 
@@ -122,6 +125,64 @@ describe('ViewTab', () => {
           data: { keyName: keyBuffer, indexes: ['0', '5'] },
         }),
       ),
+    )
+  })
+
+  it('deletes the inclusive window via ARDELRANGE on confirm', async () => {
+    apiService.delete = jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { affected: '2' } })
+    apiService.post = jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { keyName: KEY, count: '3' } })
+
+    renderView(keyBuffer, {}, [
+      arrayElementWithValueFactory.build({ index: '7' }),
+    ])
+
+    fireEvent.click(screen.getByTestId('array-range-form-delete'))
+    fireEvent.click(
+      await screen.findByTestId('array-range-form-delete-confirm'),
+    )
+
+    // The form's default range is the live input value the delete targets.
+    await waitFor(() =>
+      expect(apiService.delete).toHaveBeenCalledWith(
+        expect.stringContaining('array/range'),
+        expect.objectContaining({
+          data: { keyName: keyBuffer, start: '0', end: '9' },
+        }),
+      ),
+    )
+  })
+
+  it('drops the multi-select when a range delete is confirmed', async () => {
+    apiService.delete = jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { affected: '2' } })
+    apiService.post = jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { keyName: KEY, count: '3' } })
+
+    renderView(keyBuffer, {}, [
+      arrayElementWithValueFactory.build({ index: '0' }),
+      arrayElementWithValueFactory.build({ index: '5' }),
+    ])
+
+    fireEvent.click(screen.getByRole('checkbox', { name: /all rows/i }))
+    expect(
+      await screen.findByTestId('array-bulk-remove-btn-icon'),
+    ).toBeInTheDocument()
+
+    fireEvent.click(screen.getByTestId('array-range-form-delete'))
+    fireEvent.click(
+      await screen.findByTestId('array-range-form-delete-confirm'),
+    )
+
+    await waitFor(() =>
+      expect(
+        screen.queryByTestId('array-bulk-remove-btn-icon'),
+      ).not.toBeInTheDocument(),
     )
   })
 
