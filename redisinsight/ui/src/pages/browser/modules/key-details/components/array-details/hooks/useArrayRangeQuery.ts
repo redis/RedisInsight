@@ -183,8 +183,12 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
 
       const span = BigInt(REVEAL_WINDOW_SIZE - 1)
       const nextStart = (target > span ? target - span : BigInt(0)).toString()
+      // Sync all three form controls to the query we just fetched — including
+      // showEmpty, so a toggled-but-unrun checkbox (and the command preview)
+      // can't be left showing a mode the reveal didn't actually use.
       setStart(nextStart)
       setEnd(index)
+      setShowEmpty(active.showEmpty)
       dispatch(
         setArrayActiveQuery({
           start: nextStart,

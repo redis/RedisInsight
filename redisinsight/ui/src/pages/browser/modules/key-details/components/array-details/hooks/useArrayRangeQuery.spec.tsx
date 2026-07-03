@@ -289,6 +289,30 @@ describe('useArrayRangeQuery', () => {
       )
     })
 
+    it('syncs showEmpty to the active query mode when revealing', () => {
+      const { result, store } = renderWithStore(
+        keyBuffer,
+        buildState({
+          selectedKeyName: keyBuffer,
+          activeQuery: { start: '0', end: '9', showEmpty: true },
+        }),
+      )
+
+      // Toggle the checkbox without running — the reveal fetches with the
+      // active mode, so the control must be reset to match it.
+      act(() => {
+        result.current.setShowEmpty(false)
+      })
+      act(() => {
+        result.current.revealIndex('100')
+      })
+
+      expect(result.current.showEmpty).toBe(true)
+      expect(store.getActions()).toContainEqual(
+        setArrayActiveQuery({ start: '91', end: '100', showEmpty: true }),
+      )
+    })
+
     it('reveals without throwing when the active bounds are non-numeric', () => {
       const { result } = renderWithStore(
         keyBuffer,
