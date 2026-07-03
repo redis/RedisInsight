@@ -1102,10 +1102,11 @@ describe('array slice', () => {
     })
 
     describe('appendArrayElement', () => {
-      it('posts keyName/value to array/append, calls onSuccess, and refreshes', async () => {
-        apiService.post = jest
-          .fn()
-          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+      it('posts keyName/value to array/append, calls onSuccess with the landed index, and refreshes', async () => {
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, index: '6' },
+        })
         const onSuccess = jest.fn()
         const local = storeWithSelectedKey()
 
@@ -1118,7 +1119,9 @@ describe('array slice', () => {
         )
         expect(appendCall).toBeTruthy()
         expect(appendCall[1]).toEqual({ keyName: mockKeyBuffer, value: 'v' })
-        expect(onSuccess).toHaveBeenCalled()
+        // The append response's index is passed through so the caller can
+        // reveal the new element in the View.
+        expect(onSuccess).toHaveBeenCalledWith('6')
         // refreshArray re-reads length/count after the add.
         const lengthCall = (apiService.post as jest.Mock).mock.calls.find(
           ([url]) => url.includes('array/get-length'),
@@ -1232,7 +1235,8 @@ describe('array slice', () => {
           index: '5',
           value: 'v',
         })
-        expect(onSuccess).toHaveBeenCalled()
+        // The chosen index is passed through so the View can reveal it.
+        expect(onSuccess).toHaveBeenCalledWith('5')
         const lengthCall = (apiService.post as jest.Mock).mock.calls.find(
           ([url]) => url.includes('array/get-length'),
         )

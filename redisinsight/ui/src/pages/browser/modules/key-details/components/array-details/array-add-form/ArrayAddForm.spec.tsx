@@ -45,8 +45,8 @@ const stateWithKeySelected = {
   },
 }
 
-const renderForm = (closePanel = jest.fn()) =>
-  render(<ArrayAddForm closePanel={closePanel} />, {
+const renderForm = (closePanel = jest.fn(), onReveal = jest.fn()) =>
+  render(<ArrayAddForm closePanel={closePanel} onReveal={onReveal} />, {
     store: mockStore(stateWithKeySelected),
   })
 
@@ -80,6 +80,38 @@ describe('ArrayAddForm', () => {
     })
     expect(findCall('array/set-element')).toBeFalsy()
     expect(closePanel).toHaveBeenCalled()
+  })
+
+  it('reveals the added element on success when "move to element" is checked', async () => {
+    apiService.post = jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { index: '42' } })
+    const onReveal = jest.fn()
+    renderForm(jest.fn(), onReveal)
+
+    fireEvent.change(screen.getByTestId('array-add-form-value'), {
+      target: { value: 'hello' },
+    })
+    fireEvent.click(screen.getByTestId('array-add-form-submit'))
+
+    await waitFor(() => expect(onReveal).toHaveBeenCalledWith('42'))
+  })
+
+  it('does not reveal when "move to element" is unchecked', async () => {
+    apiService.post = jest
+      .fn()
+      .mockResolvedValue({ status: 200, data: { index: '42' } })
+    const onReveal = jest.fn()
+    renderForm(jest.fn(), onReveal)
+
+    fireEvent.click(screen.getByTestId('array-add-form-move-to-element'))
+    fireEvent.change(screen.getByTestId('array-add-form-value'), {
+      target: { value: 'hello' },
+    })
+    fireEvent.click(screen.getByTestId('array-add-form-submit'))
+
+    await waitFor(() => expect(findCall('array/append')).toBeTruthy())
+    expect(onReveal).not.toHaveBeenCalled()
   })
 
   it('does not close the panel if the form unmounted before the write resolved', async () => {

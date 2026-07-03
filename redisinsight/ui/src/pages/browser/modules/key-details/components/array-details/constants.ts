@@ -19,6 +19,12 @@ export const DEFAULT_RANGE_START = '0'
  */
 export const DEFAULT_RANGE_END = '9'
 
+/**
+ * Size of the window the View jumps to when revealing a just-added element
+ * that fell outside the current range (matches the 10-element default span).
+ */
+export const REVEAL_WINDOW_SIZE = 10
+
 /** Criteria pre-selected for a new predicate row on the Search tab. */
 export const DEFAULT_SEARCH_CRITERIA = ArrayGrepCriteria.Exact
 

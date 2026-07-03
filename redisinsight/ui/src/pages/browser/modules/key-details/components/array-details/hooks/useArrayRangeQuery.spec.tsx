@@ -10,7 +10,10 @@ import {
 import { apiService } from 'uiSrc/services'
 import { KeyTypes } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
-import { initialState as initialStateArray } from 'uiSrc/slices/browser/array'
+import {
+  initialState as initialStateArray,
+  setArrayActiveQuery,
+} from 'uiSrc/slices/browser/array'
 import { useArrayRangeQuery } from './useArrayRangeQuery'
 
 const KEY = 'readings'
@@ -205,5 +208,53 @@ describe('useArrayRangeQuery', () => {
       url.includes('array/get-range'),
     )
     expect(call?.[1]).toEqual({ keyName: keyBuffer, start: '0', end: '9' })
+  })
+
+  describe('revealIndex', () => {
+    it('is a no-op when the index is already within the window', () => {
+      const { result, store } = renderWithStore(keyBuffer)
+      store.clearActions()
+
+      act(() => {
+        result.current.revealIndex('5') // default window is [0, 9]
+      })
+
+      expect(result.current.start).toBe('0')
+      expect(result.current.end).toBe('9')
+      expect(
+        store.getActions().some((a) => a.type === setArrayActiveQuery.type),
+      ).toBe(false)
+    })
+
+    it('moves the window to end at an index above the current range', () => {
+      const { result, store } = renderWithStore(keyBuffer)
+      store.clearActions()
+
+      act(() => {
+        result.current.revealIndex('100')
+      })
+
+      // A 10-element window ending at the added index.
+      expect(result.current.start).toBe('91')
+      expect(result.current.end).toBe('100')
+      expect(store.getActions()).toContainEqual(
+        setArrayActiveQuery({ start: '91', end: '100', showEmpty: true }),
+      )
+    })
+
+    it('clamps the window start to 0 near the beginning', () => {
+      const { result } = renderWithStore(keyBuffer)
+
+      act(() => {
+        result.current.setStart('50')
+        result.current.setEnd('60')
+      })
+      act(() => {
+        result.current.revealIndex('3') // below the moved window
+      })
+
+      expect(result.current.start).toBe('0')
+      expect(result.current.end).toBe('3')
+    })
   })
 })

@@ -14,6 +14,7 @@ import { stringToSerializedBufferFormat } from 'uiSrc/utils'
 import { parseArrayIndex } from 'uiSrc/utils/arrayIndex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextInput } from 'uiSrc/components/base/inputs'
+import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   PrimaryButton,
@@ -32,6 +33,7 @@ import {
   INDEX_LABEL,
   INDEX_PLACEHOLDER,
   INVALID_INDEX_MESSAGE,
+  MOVE_TO_ELEMENT_LABEL,
   VALUE_LABEL,
 } from './ArrayAddForm.constants'
 import { ArrayAddFormProps } from './ArrayAddForm.types'
@@ -43,7 +45,7 @@ import { ArrayAddFormProps } from './ArrayAddForm.types'
  * length); providing one sets at that index (POST /array/set-element).
  * `ARINSERT` is intentionally not used — see docs/array-modify-vertical-plan.md.
  */
-export const ArrayAddForm = ({ closePanel }: ArrayAddFormProps) => {
+export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
   const dispatch = useAppDispatch()
   const { viewFormat } = useAppSelector(selectedKeySelector)
   // Resolve the target key from the live selection (like the List/Hash add
@@ -56,6 +58,10 @@ export const ArrayAddForm = ({ closePanel }: ArrayAddFormProps) => {
 
   const [value, setValue] = useState('')
   const [index, setIndex] = useState('')
+  // Default on: an append lands past the current window, so without moving the
+  // View the new element would be invisible. Users who don't want the jump can
+  // opt out per add.
+  const [moveToElement, setMoveToElement] = useState(true)
 
   // A write resolves asynchronously and the slice still fires onSuccess while
   // its target key is selected. But the user may have closed this panel (key
@@ -76,9 +82,14 @@ export const ArrayAddForm = ({ closePanel }: ArrayAddFormProps) => {
   const indexInvalid =
     trimmedIndex.length > 0 && parseArrayIndex(trimmedIndex) !== trimmedIndex
 
-  const handleSuccess = () => {
+  const handleSuccess = (addedIndex?: string) => {
     if (!isMounted.current) {
       return
+    }
+    // Move the View to the new element before closing, so an append past the
+    // current window is actually shown (revealIndex no-ops if it's in view).
+    if (moveToElement && addedIndex) {
+      onReveal?.(addedIndex)
     }
     setValue('')
     setIndex('')
@@ -146,6 +157,19 @@ export const ArrayAddForm = ({ closePanel }: ArrayAddFormProps) => {
           </FlexItem>
         </Row>
       </EntryContent>
+
+      <Row gap="m" grow={false}>
+        <FlexItem grow={false}>
+          <Checkbox
+            id={`${TEST_ID}-move-to-element`}
+            name="move-to-element"
+            label={MOVE_TO_ELEMENT_LABEL}
+            checked={moveToElement}
+            onChange={(e) => setMoveToElement(e.target.checked)}
+            data-testid={`${TEST_ID}-move-to-element`}
+          />
+        </FlexItem>
+      </Row>
 
       <Row justify="end" gap="m" grow={false}>
         <FlexItem grow={false}>

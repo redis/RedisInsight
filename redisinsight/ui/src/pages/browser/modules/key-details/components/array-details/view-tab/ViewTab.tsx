@@ -61,6 +61,7 @@ const ViewTab = ({
     setShowEmpty,
     runQuery,
     resetQuery,
+    revealIndex,
     isArrayKeyReady,
     elements,
     loading: rangeLoading,
@@ -127,7 +128,7 @@ const ViewTab = ({
         )}
         {isAddPanelOpen && keyProp && (
           <AddKeysContainer>
-            <ArrayAddForm closePanel={closeAddPanel} />
+            <ArrayAddForm closePanel={closeAddPanel} onReveal={revealIndex} />
           </AddKeysContainer>
         )}
       </S.TabBody>

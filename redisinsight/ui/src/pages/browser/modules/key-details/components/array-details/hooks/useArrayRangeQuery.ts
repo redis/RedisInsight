@@ -6,13 +6,18 @@ import {
   arraySelector,
   fetchArrayRange,
   scanArrayRange,
+  setArrayActiveQuery,
   setArrayInitialState,
 } from 'uiSrc/slices/browser/array'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { isEqualBuffers } from 'uiSrc/utils'
 import { KeyTypes } from 'uiSrc/constants'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
-import { DEFAULT_RANGE_END, DEFAULT_RANGE_START } from '../constants'
+import {
+  DEFAULT_RANGE_END,
+  DEFAULT_RANGE_START,
+  REVEAL_WINDOW_SIZE,
+} from '../constants'
 
 /**
  * Owns the View / Browse tab query state for an array key: the inclusive
@@ -132,6 +137,29 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
     )
   }, [dispatch, isArrayKeyReady, keyProp])
 
+  // Move the window so `index` is visible — used after an add whose element
+  // lands outside the current range (e.g. an append at the new tail). No-op
+  // when it's already within the window. Sets the form bounds AND the slice's
+  // active query (without fetching) so the caller's refreshArray replays the
+  // new window and the form inputs stay in sync.
+  const revealIndex = useCallback(
+    (index: string) => {
+      const target = BigInt(index)
+      const lo = BigInt(start)
+      const hi = BigInt(end)
+      const withinWindow =
+        target >= (lo < hi ? lo : hi) && target <= (lo < hi ? hi : lo)
+      if (withinWindow) return
+
+      const span = BigInt(REVEAL_WINDOW_SIZE - 1)
+      const nextStart = (target > span ? target - span : BigInt(0)).toString()
+      setStart(nextStart)
+      setEnd(index)
+      dispatch(setArrayActiveQuery({ start: nextStart, end: index, showEmpty }))
+    },
+    [dispatch, start, end, showEmpty],
+  )
+
   return {
     start,
     end,
@@ -141,6 +169,7 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
     setShowEmpty,
     runQuery,
     resetQuery,
+    revealIndex,
     isArrayKeyReady,
     elements: data?.elements ?? [],
     loading,

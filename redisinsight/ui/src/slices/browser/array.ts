@@ -911,7 +911,8 @@ export function refreshArray(key: RedisString) {
 function applyArrayWriteResult(
   key: RedisResponseBuffer,
   startInstanceId: Maybe<string>,
-  onSuccessAction?: () => void,
+  index: Maybe<string>,
+  onSuccessAction?: (index?: string) => void,
 ) {
   return (dispatch: AppDispatch, stateInit: () => RootState) => {
     const latest = stateInit()
@@ -925,7 +926,10 @@ function applyArrayWriteResult(
     if (!sameInstance || !selectedKey || !isEqualBuffers(selectedKey, key)) {
       return
     }
-    onSuccessAction?.()
+    // Pass the landed index so the caller can reveal it: an append lands at the
+    // current length, which may be above the View's active upper bound. Runs
+    // before refreshArray so a range change here is what refreshArray replays.
+    onSuccessAction?.(index)
     dispatch<any>(refreshArray(key))
     dispatch<any>(refreshKeyInfoAction(key))
   }
@@ -945,14 +949,19 @@ export function appendArrayElement(
     try {
       const state = stateInit()
       const startInstanceId = state.connections.instances.connectedInstance?.id
-      const { status } = await apiService.post(
+      const { status, data } = await apiService.post<{ index: string }>(
         arrayUrl(state, ApiEndpoints.ARRAY_APPEND),
         { keyName: params.key, value: params.value },
         encodingParams(state),
       )
       if (isStatusSuccessful(status)) {
         dispatch<any>(
-          applyArrayWriteResult(params.key, startInstanceId, onSuccessAction),
+          applyArrayWriteResult(
+            params.key,
+            startInstanceId,
+            data?.index,
+            onSuccessAction,
+          ),
         )
       }
     } catch (error) {
@@ -983,7 +992,12 @@ export function addArrayElement(
       )
       if (isStatusSuccessful(status)) {
         dispatch<any>(
-          applyArrayWriteResult(params.key, startInstanceId, onSuccessAction),
+          applyArrayWriteResult(
+            params.key,
+            startInstanceId,
+            params.index,
+            onSuccessAction,
+          ),
         )
       }
     } catch (error) {

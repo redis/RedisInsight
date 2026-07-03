@@ -10,6 +10,7 @@ export const INVALID_INDEX_MESSAGE =
   'Index must be an integer string between 0 and 18446744073709551614'
 export const ADD_BUTTON_LABEL = 'Add'
 export const CANCEL_BUTTON_LABEL = 'Cancel'
+export const MOVE_TO_ELEMENT_LABEL = 'Move to the added element'
 
 export const CONFIRM_TITLE = 'Add element to a production database?'
 export const CONFIRM_DESCRIPTION =
