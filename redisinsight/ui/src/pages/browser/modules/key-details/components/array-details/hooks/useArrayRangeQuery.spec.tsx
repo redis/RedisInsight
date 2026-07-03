@@ -256,5 +256,38 @@ describe('useArrayRangeQuery', () => {
       expect(result.current.start).toBe('0')
       expect(result.current.end).toBe('3')
     })
+
+    it('reveals without throwing when the range fields are non-numeric', () => {
+      const { result } = renderWithStore(keyBuffer)
+
+      act(() => {
+        result.current.setStart('abc')
+        result.current.setEnd('')
+      })
+      // Must not throw (it runs in the post-add success path) and should move
+      // to a valid window ending at the index, replacing the unusable bounds.
+      expect(() =>
+        act(() => {
+          result.current.revealIndex('100')
+        }),
+      ).not.toThrow()
+      expect(result.current.start).toBe('91')
+      expect(result.current.end).toBe('100')
+    })
+
+    it('is a no-op for a non-numeric index', () => {
+      const { result, store } = renderWithStore(keyBuffer)
+      store.clearActions()
+
+      act(() => {
+        result.current.revealIndex('not-an-index')
+      })
+
+      expect(result.current.start).toBe('0')
+      expect(result.current.end).toBe('9')
+      expect(
+        store.getActions().some((a) => a.type === setArrayActiveQuery.type),
+      ).toBe(false)
+    })
   })
 })

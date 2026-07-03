@@ -19,6 +19,18 @@ import {
   REVEAL_WINDOW_SIZE,
 } from '../constants'
 
+// BigInt() throws on a non-numeric string. The range fields can hold a
+// half-typed / invalid value, so parse defensively — a throw here would run in
+// the post-add success path and abort the panel close + refresh after a write
+// that already succeeded.
+const toBigIntOrNull = (value: string): bigint | null => {
+  try {
+    return BigInt(value)
+  } catch {
+    return null
+  }
+}
+
 /**
  * Owns the View / Browse tab query state for an array key: the inclusive
  * `start`/`end` bounds and the "show empty indexes" toggle that switches
@@ -144,11 +156,19 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
   // new window and the form inputs stay in sync.
   const revealIndex = useCallback(
     (index: string) => {
-      const target = BigInt(index)
-      const lo = BigInt(start)
-      const hi = BigInt(end)
+      const target = toBigIntOrNull(index)
+      if (target === null) return
+
+      // If the range fields are valid and already cover the index, leave the
+      // window alone. When they can't be parsed, fall through and reveal — that
+      // also replaces the unusable bounds with a valid window ending at `index`.
+      const lo = toBigIntOrNull(start)
+      const hi = toBigIntOrNull(end)
       const withinWindow =
-        target >= (lo < hi ? lo : hi) && target <= (lo < hi ? hi : lo)
+        lo !== null &&
+        hi !== null &&
+        target >= (lo < hi ? lo : hi) &&
+        target <= (lo < hi ? hi : lo)
       if (withinWindow) return
 
       const span = BigInt(REVEAL_WINDOW_SIZE - 1)
