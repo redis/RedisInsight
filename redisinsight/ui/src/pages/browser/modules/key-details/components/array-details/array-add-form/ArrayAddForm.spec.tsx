@@ -66,6 +66,16 @@ describe('ArrayAddForm', () => {
     expect(screen.getByTestId('array-add-form-index')).toBeInTheDocument()
   })
 
+  it('renders the move-to-element checkbox with an info tooltip', () => {
+    renderForm()
+    expect(
+      screen.getByTestId('array-add-form-move-to-element'),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByTestId('array-add-form-move-to-element-info'),
+    ).toBeInTheDocument()
+  })
+
   it('appends (POST /array/append) when the index is left empty', async () => {
     const closePanel = jest.fn()
     renderForm(closePanel)

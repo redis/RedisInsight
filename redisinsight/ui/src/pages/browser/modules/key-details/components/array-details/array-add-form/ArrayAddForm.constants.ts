@@ -11,6 +11,10 @@ export const INVALID_INDEX_MESSAGE =
 export const ADD_BUTTON_LABEL = 'Add'
 export const CANCEL_BUTTON_LABEL = 'Cancel'
 export const MOVE_TO_ELEMENT_LABEL = 'Move to the added element'
+export const MOVE_TO_ELEMENT_HINT =
+  'When enabled, the View moves to show the element you just added. This is ' +
+  'useful for an append or a new index that lands outside the current range, ' +
+  'which would otherwise stay hidden.'
 
 export const CONFIRM_TITLE = 'Add element to a production database?'
 export const CONFIRM_DESCRIPTION =

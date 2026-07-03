@@ -15,6 +15,8 @@ import { parseArrayIndex } from 'uiSrc/utils/arrayIndex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
+import { RiTooltip } from 'uiSrc/components'
+import { RiIcon } from 'uiSrc/components/base/icons'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
   PrimaryButton,
@@ -33,6 +35,7 @@ import {
   INDEX_LABEL,
   INDEX_PLACEHOLDER,
   INVALID_INDEX_MESSAGE,
+  MOVE_TO_ELEMENT_HINT,
   MOVE_TO_ELEMENT_LABEL,
   VALUE_LABEL,
 } from './ArrayAddForm.constants'
@@ -131,16 +134,6 @@ export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
     <Col gap="m">
       <EntryContent gap="m" data-testid={TEST_ID}>
         <Row align="end" gap="m">
-          <FlexItem grow>
-            <FormField label={VALUE_LABEL}>
-              <TextInput
-                value={value}
-                onChange={setValue}
-                placeholder="Enter value"
-                data-testid={`${TEST_ID}-value`}
-              />
-            </FormField>
-          </FlexItem>
           <FlexItem>
             <FormField
               label={INDEX_LABEL}
@@ -155,10 +148,20 @@ export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
               />
             </FormField>
           </FlexItem>
+          <FlexItem grow>
+            <FormField label={VALUE_LABEL}>
+              <TextInput
+                value={value}
+                onChange={setValue}
+                placeholder="Enter value"
+                data-testid={`${TEST_ID}-value`}
+              />
+            </FormField>
+          </FlexItem>
         </Row>
       </EntryContent>
 
-      <Row gap="m" grow={false}>
+      <Row align="center" gap="s" grow={false}>
         <FlexItem grow={false}>
           <Checkbox
             id={`${TEST_ID}-move-to-element`}
@@ -168,6 +171,19 @@ export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
             onChange={(e) => setMoveToElement(e.target.checked)}
             data-testid={`${TEST_ID}-move-to-element`}
           />
+        </FlexItem>
+        <FlexItem grow={false}>
+          <RiTooltip
+            content={MOVE_TO_ELEMENT_HINT}
+            position="top"
+            anchorClassName="inline-flex"
+          >
+            <RiIcon
+              type="InfoIcon"
+              size="m"
+              data-testid={`${TEST_ID}-move-to-element-info`}
+            />
+          </RiTooltip>
         </FlexItem>
       </Row>
 
