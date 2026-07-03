@@ -66,16 +66,22 @@ describe('ArrayAddForm', () => {
     expect(screen.getByTestId('array-add-form-index')).toBeInTheDocument()
   })
 
-  it('disables the submit button while a write is in flight', () => {
-    const busyState = {
+  it('disables the submit button while refresh is locked (write in flight or a cell editor open)', () => {
+    const lockedState = {
       ...stateWithKeySelected,
       browser: {
         ...stateWithKeySelected.browser,
-        array: { ...stateWithKeySelected.browser.array, updating: true },
+        keys: {
+          ...stateWithKeySelected.browser.keys,
+          selectedKey: {
+            ...stateWithKeySelected.browser.keys.selectedKey,
+            isRefreshDisabled: true,
+          },
+        },
       },
     }
     render(<ArrayAddForm closePanel={jest.fn()} />, {
-      store: mockStore(busyState),
+      store: mockStore(lockedState),
     })
 
     expect(screen.getByTestId('array-add-form-submit')).toBeDisabled()

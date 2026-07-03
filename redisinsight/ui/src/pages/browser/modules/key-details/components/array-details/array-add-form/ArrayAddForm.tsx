@@ -56,16 +56,18 @@ import { ArrayAddFormProps } from './ArrayAddForm.types'
  */
 export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
   const dispatch = useAppDispatch()
-  const { viewFormat } = useAppSelector(selectedKeySelector)
+  const { viewFormat, isRefreshDisabled } = useAppSelector(selectedKeySelector)
   // Resolve the target key from the live selection (like the List/Hash add
   // panels), not a captured prop — so a confirm after switching keys writes to
   // the currently selected key rather than a stale one.
   const { name: selectedKey } = useAppSelector(selectedKeyDataSelector) ?? {
     name: undefined,
   }
-  // A write is in flight (this add or an inline edit). Disable submit so a
-  // second click can't dispatch a duplicate append/set when confirmations are
-  // bypassed (non-production db, or skipped for the session).
+  // `updating` drives the submit spinner (a write is genuinely in flight).
+  // isRefreshDisabled is the broader lock (an open cell editor OR updating): an
+  // add's reveal/refresh would move the loaded window and unmount an open
+  // editor, discarding its input — so block submit while it's set, which also
+  // stops a duplicate add when confirmations are bypassed.
   const { updating } = useAppSelector(arraySelector)
   // The instance/key active when Add is pressed. The thunk cancels the write if
   // the live connection no longer matches — a confirmation left pending across
@@ -226,7 +228,7 @@ export const ArrayAddForm = ({ closePanel, onReveal }: ArrayAddFormProps) => {
         <FlexItem grow={false}>
           <PrimaryButton
             onClick={handleAdd}
-            disabled={indexInvalid || updating}
+            disabled={indexInvalid || isRefreshDisabled}
             loading={updating}
             data-testid={`${TEST_ID}-submit`}
           >
