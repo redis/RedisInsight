@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { RiTooltip } from 'uiSrc/components'
 import ConfirmationPopover from 'uiSrc/components/confirmation-popover'
 import {
@@ -21,9 +22,6 @@ import { quoteRedisArgument } from '../utils'
 import {
   ARRAY_RANGE_FORM_TEST_ID as TEST_ID,
   ARRAY_RANGE_MAX_SPAN,
-  DELETE_RANGE_BUTTON_LABEL,
-  DELETE_RANGE_CONFIRM_LABEL,
-  DELETE_RANGE_TITLE,
   INVALID_INDEX_MESSAGE,
   INVALID_RANGE_TOO_LARGE_MESSAGE,
   PREVIEW_TOGGLE_ARIA_LABEL,
@@ -62,6 +60,7 @@ export const ArrayRangeForm = ({
   onDeleteRange,
   disabled = false,
 }: ArrayRangeFormProps) => {
+  const { t } = useTranslation()
   const [previewVisible, setPreviewVisible] = useState(false)
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
 
@@ -211,8 +210,8 @@ export const ArrayRangeForm = ({
               isOpen={deleteConfirmOpen}
               closePopover={() => setDeleteConfirmOpen(false)}
               panelPaddingSize="m"
-              title={DELETE_RANGE_TITLE}
-              message={`Elements in range ${start}-${end} will be permanently removed from the array.`}
+              title={t('browser.array.delete.range.title')}
+              message={t('browser.array.delete.range.message', { start, end })}
               button={
                 <DestructiveButton
                   icon={DeleteIcon}
@@ -220,7 +219,7 @@ export const ArrayRangeForm = ({
                   disabled={deleteDisabled}
                   data-testid={`${TEST_ID}-delete`}
                 >
-                  {DELETE_RANGE_BUTTON_LABEL}
+                  {t('browser.array.delete.range.trigger')}
                 </DestructiveButton>
               }
               confirmButton={
@@ -234,7 +233,7 @@ export const ArrayRangeForm = ({
                   }}
                   data-testid={`${TEST_ID}-delete-confirm`}
                 >
-                  {DELETE_RANGE_CONFIRM_LABEL}
+                  {t('browser.array.delete.range.button')}
                 </DestructiveButton>
               }
             />
