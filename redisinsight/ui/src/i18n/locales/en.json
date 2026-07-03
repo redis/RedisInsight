@@ -130,6 +130,8 @@
   "notification.success.noClaimedMessages.title": "No messages claimed",
   "notification.success.removedAllCapiKeys.message": "All API keys have been removed from Redis Insight.",
   "notification.success.removedAllCapiKeys.title": "API keys have been removed",
+  "notification.success.removedArrayRange.message": "<bold>{{total}}</bold> element(s) removed from <bold>{{name}}</bold>",
+  "notification.success.removedArrayRange.title": "Elements have been removed",
   "notification.success.removedCapiKey.message": "{{name}} has been removed from Redis Insight.",
   "notification.success.removedCapiKey.title": "API Key has been removed",
   "notification.success.removedKeyValue.message": "<bold>{{value}}</bold> has been removed from <bold>{{name}}</bold>",

@@ -130,6 +130,8 @@
   "notification.success.noClaimedMessages.title": "Няма заявени съобщения",
   "notification.success.removedAllCapiKeys.message": "Всички API ключове бяха премахнати от Redis Insight.",
   "notification.success.removedAllCapiKeys.title": "API ключовете бяха премахнати",
+  "notification.success.removedArrayRange.message": "<bold>{{total}}</bold> елемент(а) премахнати от <bold>{{name}}</bold>",
+  "notification.success.removedArrayRange.title": "Елементите бяха премахнати",
   "notification.success.removedCapiKey.message": "{{name}} беше премахнат от Redis Insight.",
   "notification.success.removedCapiKey.title": "API ключът беше премахнат",
   "notification.success.removedKeyValue.message": "<bold>{{value}}</bold> беше премахната от <bold>{{name}}</bold>",

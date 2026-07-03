@@ -197,17 +197,16 @@ export default {
   // elements actually removed — inside a sparse window it can be far smaller
   // than the window size, so it's the number worth surfacing.
   REMOVED_ARRAY_RANGE: (keyName: RedisResponseBuffer, affected: string) => ({
-    title: 'Elements have been removed',
+    title: i18n.t('notification.success.removedArrayRange.title'),
     message: (
-      <>
-        <Text variant="semiBold" component="span">
-          {affected}
-        </Text>{' '}
-        element(s) removed from{' '}
-        <Text variant="semiBold" component="span">
-          {formatNameShort(bufferToString(keyName))}
-        </Text>
-      </>
+      <Trans
+        i18nKey="notification.success.removedArrayRange.message"
+        values={{
+          total: affected,
+          name: escapeTrans(formatNameShort(bufferToString(keyName))),
+        }}
+        components={{ bold }}
+      />
     ),
   }),
   REMOVED_LIST_ELEMENTS: (
