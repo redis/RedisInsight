@@ -73,8 +73,8 @@ Key points:
 | `RI_BASE_API_URL` | ui | `http://localhost` (or `https://` if TLS certs set) | Base URL the UI uses to reach the API. |
 | `RI_REQUEST_TIMEOUT` | api | `25000` (ms) | Timeout for incoming HTTP requests. |
 | `RI_MAX_PAYLOAD_SIZE` | api | `512MB` | Maximum accepted request body size. |
-| `RI_CORS_ORIGIN` | api | `*` | Allowed CORS origin(s) for the HTTP API. |
-| `RI_CORS_CREDENTIALS` | api | `false` | Whether the HTTP API allows credentialed CORS requests. |
+| `RI_CORS_ORIGIN` | api | `*` | `Access-Control-Allow-Origin` header on the "payload too large" (413) error response only. Does **not** configure the API's global CORS — `enableCors()` is called without options. |
+| `RI_CORS_CREDENTIALS` | api | `false` | `Access-Control-Allow-Credentials` header on the "payload too large" (413) error response only. Does **not** configure the API's global CORS. |
 | `RI_DATABASE_MANAGEMENT` | api | `true` | When `false`, disables adding/editing/deleting database connections. |
 | `RI_ACCEPT_TERMS_AND_CONDITIONS` | api | `false` | Auto-accept EULA/telemetry agreements (headless/automated deployments). |
 | `RI_AUTO_BOOTSTRAP` | api | `true` | Run bootstrap (migrations, defaults) automatically on startup. |
