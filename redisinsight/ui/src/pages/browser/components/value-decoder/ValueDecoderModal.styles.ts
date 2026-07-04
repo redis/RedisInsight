@@ -2,7 +2,9 @@ import styled from 'styled-components'
 import { Modal } from 'uiSrc/components/base/display/modal'
 
 export const ModalContent = styled(Modal.Content.Compose)`
-  width: ${({ theme }) => `calc(${theme.core.space.space500} * 15)`};
+  width: ${({ theme }) =>
+    `calc(100vw - ${theme.core.space.space800} - ${theme.core.space.space150})`};
+  min-width: ${({ theme }) => `calc(${theme.core.space.space500} * 15)`};
   max-width: ${({ theme }) =>
     `calc(100vw - ${theme.core.space.space800} - ${theme.core.space.space150})`};
   max-height: ${({ theme }) =>
