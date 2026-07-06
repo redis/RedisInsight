@@ -31,9 +31,7 @@ const DateTimeFormatter = () => {
     <>
       <Title size="M">{t('settings.general.datetime.title')}</Title>
       <Spacer size="m" />
-      <Text color="primary">
-        {t('settings.general.datetime.formatLabel')}
-      </Text>
+      <Text color="primary">{t('settings.general.datetime.formatLabel')}</Text>
       <Spacer size="m" />
       <DatetimeForm onFormatChange={(newPreview) => setPreview(newPreview)} />
       <Spacer size="m" />
