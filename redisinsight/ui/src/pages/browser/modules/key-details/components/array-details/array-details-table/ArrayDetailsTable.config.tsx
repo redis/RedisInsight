@@ -20,7 +20,11 @@ const indexColumn: ColumnDef<ArrayDataElement> = {
   enableSorting: false,
   enableResizing: true,
   cell: ({ row }: CellContext<ArrayDataElement, unknown>) => (
-    <ArrayIndexCell index={row.original.index} />
+    <ArrayIndexCell
+      index={row.original.index}
+      canExpand={row.getCanExpand()}
+      isExpanded={row.getIsExpanded()}
+    />
   ),
 }
 
