@@ -581,6 +581,27 @@ describe('ArrayService', () => {
     });
   });
 
+  describe('getCount', () => {
+    it('should read ARCOUNT with the bigint opt-in and return the count as a string', async () => {
+      // 2^53 + 1 is odd, so a rounded number reply cannot produce this string.
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([BrowserToolArrayCommands.ArCount, mockKeyDto.keyName], {
+          integerReply: 'bigint',
+        })
+        .mockResolvedValue(BigInt('9007199254740993'));
+
+      const result = await service.getCount(
+        mockBrowserClientMetadata,
+        mockKeyDto,
+      );
+
+      expect(result).toEqual({
+        keyName: mockKeyDto.keyName,
+        count: '9007199254740993',
+      });
+    });
+  });
+
   describe('getElement', () => {
     beforeEach(() => {
       when(mockStandaloneRedisClient.sendCommand)
