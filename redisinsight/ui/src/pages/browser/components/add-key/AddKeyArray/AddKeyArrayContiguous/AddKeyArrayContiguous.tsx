@@ -39,7 +39,10 @@ const AddKeyArrayContiguous = (props: AddKeyArrayContiguousProps) => {
 
   return (
     <>
-      <FormField label={config.startIndex.label}>
+      <FormField
+        label={config.startIndex.label}
+        required={config.startIndex.isRequire}
+      >
         <TextInput
           id={config.startIndex.name}
           placeholder={config.startIndex.placeholder}

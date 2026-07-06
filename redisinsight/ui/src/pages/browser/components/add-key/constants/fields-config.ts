@@ -135,19 +135,19 @@ export const AddArrayFormConfig: IAddArrayFormConfig = {
   startIndex: {
     name: 'startIndex',
     isRequire: true,
-    label: 'Start Index*',
+    label: 'Start Index',
     placeholder: 'Enter Start Index',
   },
   index: {
     name: 'index',
     isRequire: true,
-    label: 'Index*',
+    label: 'Index',
     placeholder: 'Enter Index',
   },
   value: {
     name: 'value',
     isRequire: true,
-    label: 'Value*',
+    label: 'Value',
     placeholder: 'Enter Value',
   },
 }
