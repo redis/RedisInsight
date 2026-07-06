@@ -46,6 +46,7 @@ export interface Props {
   isEditMode: boolean
   isCloneMode: boolean
   isFromAzure?: boolean
+  isManaged?: boolean
   setIsCloneMode: (value: boolean) => void
   onSubmit: (values: DbConnectionInfo) => void
   onTestConnection: (values: DbConnectionInfo) => void
@@ -74,6 +75,7 @@ const ManualConnectionForm = (props: Props) => {
     isCloneMode,
     setIsCloneMode,
     isFromAzure = false,
+    isManaged = false,
   } = props
 
   const {
@@ -275,6 +277,7 @@ const ManualConnectionForm = (props: Props) => {
                     nameFromProvider={nameFromProvider}
                     nodes={nodes}
                     isFromCloud={isFromCloud}
+                    isManaged={isManaged}
                   />
                   <Spacer />
                 </>
@@ -288,6 +291,7 @@ const ManualConnectionForm = (props: Props) => {
                   isEditMode={isEditMode}
                   isFromCloud={isFromCloud}
                   isFromAzure={isFromAzure}
+                  isManaged={isManaged}
                   formik={formik}
                   onKeyDown={onKeyDown}
                   onHostNamePaste={onHostNamePaste}

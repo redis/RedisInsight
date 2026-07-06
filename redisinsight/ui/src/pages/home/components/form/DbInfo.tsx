@@ -26,6 +26,7 @@ export interface Props {
   db: Nullable<number>
   modules: AdditionalRedisModule[]
   isFromCloud: boolean
+  isManaged?: boolean
 }
 
 export const ListGroupItemLabelValue = ({
@@ -91,7 +92,13 @@ const DbInfo = (props: Props) => {
     db,
     modules,
     isFromCloud,
+    isManaged = false,
   } = props
+
+  // The endpoint is editable in the form for non-managed, non-cloud databases,
+  // so it is hidden from this read-only summary in that case and shown here
+  // otherwise (cloud/managed databases keep a read-only endpoint).
+  const isEndpointEditable = !isManaged && !isFromCloud
 
   const { server } = useAppSelector(appInfoSelector)
 
@@ -112,6 +119,7 @@ const DbInfo = (props: Props) => {
       label: 'Host:',
       value: host,
       dataTestId: 'db-info-host',
+      hide: isEndpointEditable && !nodes?.length,
       additionalContent: !!nodes?.length && (
         <AppendEndpoints nodes={nodes} host={host} port={port} />
       ),
@@ -120,7 +128,7 @@ const DbInfo = (props: Props) => {
       label: 'Port:',
       value: port,
       dataTestId: 'db-info-port',
-      hide: server?.buildType !== BuildType.RedisStack && !isFromCloud,
+      hide: server?.buildType !== BuildType.RedisStack && isEndpointEditable,
     },
     {
       label: 'Database Index:',

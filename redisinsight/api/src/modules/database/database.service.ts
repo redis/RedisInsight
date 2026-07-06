@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -83,6 +84,31 @@ export class DatabaseService {
     return Object.keys(omitBy(dto, isUndefined)).some((field) =>
       this.endpointFields.includes(field),
     );
+  }
+
+  /**
+   * Checks whether the endpoint (host/port) in the dto differs from the stored one.
+   * Unlike isEndpointAffected, this compares values so an unchanged host/port
+   * present in the payload is not treated as a change.
+   */
+  static isEndpointChanged(
+    dto: UpdateDatabaseDto,
+    database: Database,
+  ): boolean {
+    return (
+      (dto.host !== undefined && dto.host !== database.host) ||
+      (dto.port !== undefined && dto.port !== database.port)
+    );
+  }
+
+  /**
+   * A database is considered managed when its endpoint is owned by a cloud
+   * provider (Redis Cloud subscription or Azure). For such databases the
+   * host/port are tied to provider metadata (cloudDetails/providerDetails) that
+   * would become stale if the endpoint were edited manually.
+   */
+  static isManagedDatabase(database: Database): boolean {
+    return !!database.cloudDetails?.cloudId || !!database.providerDetails;
   }
 
   private async merge(
@@ -245,6 +271,15 @@ export class DatabaseService {
   ): Promise<Database> {
     this.logger.debug(`Updating database: ${id}`, sessionMetadata);
     const oldDatabase = await this.get(sessionMetadata, id, true);
+
+    if (
+      DatabaseService.isEndpointChanged(dto, oldDatabase) &&
+      DatabaseService.isManagedDatabase(oldDatabase)
+    ) {
+      throw new BadRequestException(
+        ERROR_MESSAGES.HOST_PORT_NOT_EDITABLE_FOR_MANAGED_DATABASE,
+      );
+    }
 
     let database: Database;
     try {

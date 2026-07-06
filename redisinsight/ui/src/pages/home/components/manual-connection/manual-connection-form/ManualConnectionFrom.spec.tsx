@@ -106,6 +106,32 @@ describe('InstanceForm', () => {
     ).toBeTruthy()
   })
 
+  it('should show the host input when editing a non-managed database', () => {
+    render(
+      <ManualConnectionForm
+        {...instance(mockedProps)}
+        isEditMode
+        isManaged={false}
+        formFields={formFields}
+      />,
+    )
+
+    expect(screen.getByTestId('host')).toBeInTheDocument()
+  })
+
+  it('should hide the host input when editing a managed database', () => {
+    render(
+      <ManualConnectionForm
+        {...instance(mockedProps)}
+        isEditMode
+        isManaged
+        formFields={formFields}
+      />,
+    )
+
+    expect(screen.queryByTestId('host')).not.toBeInTheDocument()
+  })
+
   it('should render DatabaseForm', () => {
     expect(
       render(
@@ -1328,12 +1354,13 @@ describe('InstanceForm', () => {
       }))
     })
 
-    it('should disable connection fields when editing Azure database', () => {
+    it('should hide the endpoint and disable credentials when editing Azure database', () => {
       render(
         <ManualConnectionForm
           {...instance(mockedProps)}
           isEditMode
           isFromAzure
+          isManaged
           formFields={{
             ...formFields,
             connectionType: ConnectionType.Standalone,
@@ -1341,10 +1368,11 @@ describe('InstanceForm', () => {
         />,
       )
 
-      // Host is not shown in edit mode (shown as info above form)
+      // Endpoint (host/port) is hidden for managed databases and shown as
+      // read-only info above the form
       expect(screen.queryByTestId('host')).not.toBeInTheDocument()
-      // Port, username, password should be disabled
-      expect(screen.getByTestId('port')).toBeDisabled()
+      expect(screen.queryByTestId('port')).not.toBeInTheDocument()
+      // Username and password remain visible but disabled for Azure
       expect(screen.getByTestId('username')).toBeDisabled()
       expect(screen.getByTestId('password')).toBeDisabled()
     })
@@ -1369,7 +1397,7 @@ describe('InstanceForm', () => {
       expect(screen.getByTestId('password')).toBeDisabled()
     })
 
-    it('should not disable connection fields for non-Azure database in edit mode', () => {
+    it('should show and enable the endpoint for a non-managed database in edit mode', () => {
       render(
         <ManualConnectionForm
           {...instance(mockedProps)}
@@ -1381,9 +1409,8 @@ describe('InstanceForm', () => {
         />,
       )
 
-      // Host is not shown in edit mode (shown as info above form)
-      expect(screen.queryByTestId('host')).not.toBeInTheDocument()
-      // Port, username, password should NOT be disabled for non-Azure databases
+      // Host and port are editable for non-managed databases in edit mode
+      expect(screen.getByTestId('host')).not.toBeDisabled()
       expect(screen.getByTestId('port')).not.toBeDisabled()
       expect(screen.getByTestId('username')).not.toBeDisabled()
       expect(screen.getByTestId('password')).not.toBeDisabled()

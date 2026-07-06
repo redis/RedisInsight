@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
@@ -360,6 +361,87 @@ describe('DatabaseService', () => {
           true,
         ),
       ).rejects.toThrow(NotFoundException);
+    });
+
+    describe('managed databases endpoint guard', () => {
+      it('should throw BadRequest when changing host of a cloud-managed database', async () => {
+        databaseRepository.get.mockResolvedValueOnce(
+          mockDatabaseWithCloudDetails,
+        );
+
+        await expect(
+          service.update(
+            mockSessionMetadata,
+            mockDatabase.id,
+            classToClass(UpdateDatabaseDto, { host: 'new-host' }),
+            true,
+          ),
+        ).rejects.toThrow(
+          new BadRequestException(
+            ERROR_MESSAGES.HOST_PORT_NOT_EDITABLE_FOR_MANAGED_DATABASE,
+          ),
+        );
+        expect(databaseRepository.update).not.toHaveBeenCalled();
+      });
+
+      it('should throw BadRequest when changing port of an Azure-managed database', async () => {
+        databaseRepository.get.mockResolvedValueOnce(
+          mockDatabaseWithProviderDetails,
+        );
+
+        await expect(
+          service.update(
+            mockSessionMetadata,
+            mockDatabase.id,
+            classToClass(UpdateDatabaseDto, { port: 6380 }),
+            true,
+          ),
+        ).rejects.toThrow(
+          new BadRequestException(
+            ERROR_MESSAGES.HOST_PORT_NOT_EDITABLE_FOR_MANAGED_DATABASE,
+          ),
+        );
+        expect(databaseRepository.update).not.toHaveBeenCalled();
+      });
+
+      it('should allow updating other fields of a managed database when the endpoint is unchanged', async () => {
+        databaseRepository.get.mockResolvedValueOnce(
+          mockDatabaseWithCloudDetails,
+        );
+        databaseRepository.update.mockReturnValue({
+          ...mockDatabaseWithCloudDetails,
+          name: 'new-name',
+        });
+
+        await service.update(
+          mockSessionMetadata,
+          mockDatabase.id,
+          classToClass(UpdateDatabaseDto, {
+            name: 'new-name',
+            host: mockDatabaseWithCloudDetails.host,
+            port: mockDatabaseWithCloudDetails.port,
+          }),
+          true,
+        );
+
+        expect(databaseRepository.update).toHaveBeenCalled();
+      });
+
+      it('should allow changing host of a non-managed database', async () => {
+        databaseRepository.update.mockReturnValue({
+          ...mockDatabase,
+          host: 'new-host',
+        });
+
+        await service.update(
+          mockSessionMetadata,
+          mockDatabase.id,
+          classToClass(UpdateDatabaseDto, { host: 'new-host' }),
+          true,
+        );
+
+        expect(databaseRepository.update).toHaveBeenCalled();
+      });
     });
   });
 
