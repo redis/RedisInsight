@@ -36,6 +36,11 @@ export const getFixedSize = (type: string): number | 'custom' => {
   return 'custom'
 }
 
+export const formatHexBytes = (bytes: Uint8Array | Iterable<number>): string =>
+  Array.from(bytes)
+    .map((byte) => byte.toString(16).padStart(2, '0').toUpperCase())
+    .join(' ')
+
 const REGEX_SPECIAL_CHARS = /[.+^${}()|[\]\\]/g
 
 const GLOB_ESCAPABLE_CHARS = new Set(['*', '?', '\\', '[', ']'])
@@ -330,9 +335,7 @@ const parseFieldNode = (
   if (field.dataType === 'string') {
     value = new TextDecoder('utf-8').decode(buffer.slice(offset, offset + size))
   } else if (field.dataType === 'hex') {
-    value = Array.from(buffer.slice(offset, offset + size))
-      .map((byte) => byte.toString(16).padStart(2, '0'))
-      .join('')
+    value = formatHexBytes(buffer.slice(offset, offset + size))
   } else {
     value = readNumericValue(view, offset, field.dataType as BinaryDataType)
   }

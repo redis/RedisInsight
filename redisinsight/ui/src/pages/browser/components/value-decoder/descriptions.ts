@@ -30,5 +30,5 @@ export const DATA_TYPE_DESCRIPTIONS: Record<BinaryDataType, string> = {
   doublele: '64-bit IEEE 754 double, little-endian (8 bytes).',
   doublebe: '64-bit IEEE 754 double, big-endian (8 bytes).',
   string: 'UTF-8 string with a custom byte length.',
-  hex: 'Raw bytes rendered as hexadecimal with a custom byte length.',
+  hex: 'Raw bytes rendered as uppercase hexadecimal bytes separated by spaces.',
 }

@@ -1,5 +1,6 @@
 import {
   findMatchingDecoderRule,
+  formatHexBytes,
   formatParsedFields,
   formatParsedFieldsInline,
   getDefaultKeyPattern,
@@ -124,7 +125,42 @@ describe('value-decoder utils', () => {
     })
   })
 
+  describe('formatHexBytes', () => {
+    it('formats bytes as uppercase hex pairs separated by spaces', () => {
+      expect(
+        formatHexBytes([
+          0xde, 0xad, 0xbe, 0xef, 0xca, 0xfe, 0xba, 0xbe,
+        ]),
+      ).toBe('DE AD BE EF CA FE BA BE')
+    })
+  })
+
   describe('parseBinaryBuffer', () => {
+    it('parses hex fields as spaced uppercase byte pairs', () => {
+      const buffer = new Uint8Array([
+        0xde, 0xad, 0xbe, 0xef, 0xca, 0xfe, 0xba, 0xbe,
+      ])
+
+      const parsed = parseBinaryBuffer(buffer, [
+        {
+          id: '1',
+          kind: 'field',
+          name: 'payload',
+          dataType: 'hex',
+          size: 8,
+        },
+      ])
+
+      expect(parsed).toEqual([
+        {
+          kind: 'field',
+          name: 'payload',
+          size: 8,
+          value: 'DE AD BE EF CA FE BA BE',
+        },
+      ])
+    })
+
     it('parses sequential binary fields', () => {
       const buffer = new Uint8Array([1, 0, 2, 0, 3, 4])
       const parsed = parseBinaryBuffer(buffer, [
