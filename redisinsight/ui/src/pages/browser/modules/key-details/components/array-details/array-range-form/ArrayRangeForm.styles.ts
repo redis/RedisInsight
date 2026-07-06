@@ -1,5 +1,5 @@
+import React from 'react'
 import styled from 'styled-components'
-import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 
 /**
@@ -25,7 +25,15 @@ export const FormContainer = styled(Col)`
     ${({ theme }) => theme.semantic.color.border.neutral500};
 `
 
-export const ActionRow = styled(Row)`
+// A plain div (not `Row`) so it can hold the ResizeObserver ref that drives
+// the responsive preview label — layout components don't forward refs.
+export const ActionRow = styled.div<{
+  children?: React.ReactNode
+  ref?: React.Ref<HTMLDivElement>
+}>`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.core.space.space100};
   min-height: ${ACTION_ROW_HEIGHT};
 `
 
@@ -35,9 +43,4 @@ export const ActionRow = styled(Row)`
 // passes `align="center"` as a prop rather than hardcoding it here.
 export const InputAlignedBox = styled(Row)`
   height: ${INPUT_HEIGHT};
-`
-
-export const PreviewToggleButton = styled(ToggleButton)`
-  ${({ theme, pressed }) =>
-    !pressed && `border-color: ${theme.semantic.color.border.neutral600};`}
 `

@@ -45,12 +45,6 @@ export const ARRAY_SEARCH_LIMIT_MAX = 1_000_000
 export const INVALID_LIMIT_MESSAGE =
   'Limit must be a whole number between 1 and 1,000,000'
 
-export const PREVIEW_TOGGLE_LABEL = 'Preview'
-export const PREVIEW_TOGGLE_ARIA_LABEL = 'Toggle command preview'
-export const PREVIEW_TOGGLE_SHOW_TOOLTIP =
-  'Show the Redis command that will run'
-export const PREVIEW_TOGGLE_HIDE_TOOLTIP = 'Hide the command preview'
-
 /** Criteria dropdown options, in ARGREP command-token order. */
 export const ARRAY_GREP_CRITERIA_OPTIONS: {
   value: ArrayGrepCriteria

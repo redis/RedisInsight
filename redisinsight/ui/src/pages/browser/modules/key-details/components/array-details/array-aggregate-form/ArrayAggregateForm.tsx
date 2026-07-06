@@ -3,15 +3,16 @@ import React, { useMemo, useState } from 'react'
 import { RiTooltip } from 'uiSrc/components'
 import { IconButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { ResetIcon, RiIcon } from 'uiSrc/components/base/icons'
+import { ResetIcon } from 'uiSrc/components/base/icons'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { TextInput } from 'uiSrc/components/base/inputs'
-import { Text } from 'uiSrc/components/base/text'
 import { defaultValueRender } from 'uiSrc/components/base/forms/select/RiSelect'
 import { parseArrayIndex } from 'uiSrc/utils/arrayIndex'
 import { ArrayAggregateOperation } from 'uiSrc/slices/interfaces/array'
 
 import { CommandPreview } from '../command-preview'
+import { PreviewToggle } from '../preview-toggle'
+import { useResponsivePreviewLabel } from '../hooks'
 import * as RangeStyles from '../array-range-form/ArrayRangeForm.styles'
 import * as S from './ArrayAggregateForm.styles'
 import {
@@ -24,11 +25,6 @@ import {
   RUN_BUTTON_LABEL,
 } from './ArrayAggregateForm.constants'
 import { ArrayAggregateFormProps } from './ArrayAggregateForm.types'
-
-const PREVIEW_TOGGLE_LABEL = 'Show preview'
-const PREVIEW_TOGGLE_ARIA_LABEL = 'Toggle command preview'
-const PREVIEW_TOGGLE_SHOW_TOOLTIP = 'Show the Redis command that will run'
-const PREVIEW_TOGGLE_HIDE_TOOLTIP = 'Hide the command preview'
 
 // Mirrors `ArrayRangeForm`'s helper — same redis-cli quoting rules so a
 // copied preview command stays runnable for binary-unsafe keys / values.
@@ -60,6 +56,7 @@ export const ArrayAggregateForm = ({
   disabled = false,
 }: ArrayAggregateFormProps) => {
   const [previewVisible, setPreviewVisible] = useState(false)
+  const { containerRef, isWide } = useResponsivePreviewLabel()
 
   const startInvalid = parseArrayIndex(start) !== start
   const endInvalid = parseArrayIndex(end) !== end
@@ -92,10 +89,6 @@ export const ArrayAggregateForm = ({
     }
     return base
   }, [keyName, start, end, operation, value])
-
-  const previewTooltip = previewVisible
-    ? PREVIEW_TOGGLE_HIDE_TOOLTIP
-    : PREVIEW_TOGGLE_SHOW_TOOLTIP
 
   return (
     <RangeStyles.FormContainer data-testid={TEST_ID} gap="m" grow={false}>
@@ -156,19 +149,14 @@ export const ArrayAggregateForm = ({
         )}
       </Row>
 
-      <RangeStyles.ActionRow align="center" gap="m">
+      <RangeStyles.ActionRow ref={containerRef}>
         <FlexItem grow={false}>
-          <RiTooltip content={previewTooltip} position="top">
-            <RangeStyles.PreviewToggleButton
-              pressed={previewVisible}
-              onPressedChange={setPreviewVisible}
-              aria-label={PREVIEW_TOGGLE_ARIA_LABEL}
-              data-testid={`${TEST_ID}-preview-toggle`}
-            >
-              <RiIcon size="m" type="CliIcon" />
-              <Text size="s">{PREVIEW_TOGGLE_LABEL}</Text>
-            </RangeStyles.PreviewToggleButton>
-          </RiTooltip>
+          <PreviewToggle
+            pressed={previewVisible}
+            onPressedChange={setPreviewVisible}
+            wide={isWide}
+            data-testid={`${TEST_ID}-preview-toggle`}
+          />
         </FlexItem>
         <FlexItem grow>
           {previewVisible && <CommandPreview command={command} />}
