@@ -186,13 +186,75 @@ export const getSizeUnit = (size: number | ''): string => {
   return numericSize === 1 ? 'byte' : 'bytes'
 }
 
+export const getKeyPatternSpecificity = (pattern: string): number => {
+  if (!pattern) {
+    return -1
+  }
+
+  let score = 0
+  let index = 0
+
+  while (index < pattern.length) {
+    const char = pattern[index]
+
+    if (char === '\\' && index + 1 < pattern.length) {
+      score += 4
+      index += 2
+      continue
+    }
+
+    if (char === '*') {
+      score += 1
+      index += 1
+      continue
+    }
+
+    if (char === '?') {
+      score += 2
+      index += 1
+      continue
+    }
+
+    if (char === '[') {
+      const characterClass = parseGlobCharacterClass(pattern, index)
+      if (characterClass) {
+        score += 3
+        index = characterClass.nextIndex
+        continue
+      }
+    }
+
+    score += 4
+    index += 1
+  }
+
+  return score
+}
+
 export const findMatchingDecoderRule = (
   rules: ValueDecoderRule[],
   keyName: string,
-): ValueDecoderRule | null =>
-  rules.find((rule) =>
-    rule.keyPatterns.some((pattern) => matchKeyPattern(pattern, keyName)),
-  ) ?? null
+): ValueDecoderRule | null => {
+  let bestRule: ValueDecoderRule | null = null
+  let bestScore = -1
+
+  rules.forEach((rule) => {
+    const ruleScore = rule.keyPatterns.reduce((maxScore, pattern) => {
+      if (!matchKeyPattern(pattern, keyName)) {
+        return maxScore
+      }
+
+      return Math.max(maxScore, getKeyPatternSpecificity(pattern))
+    }, -1)
+
+    if (ruleScore > bestScore) {
+      bestScore = ruleScore
+      bestRule = rule
+    }
+  })
+
+  return bestRule
+}
 
 const readNumericValue = (
   view: DataView,

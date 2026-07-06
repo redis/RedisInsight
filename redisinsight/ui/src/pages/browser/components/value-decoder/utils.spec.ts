@@ -5,6 +5,7 @@ import {
   formatParsedFieldsInline,
   getDefaultKeyPattern,
   getFixedSize,
+  getKeyPatternSpecificity,
   getSizeUnit,
   matchKeyPattern,
   parseBinaryBuffer,
@@ -107,9 +108,70 @@ describe('value-decoder utils', () => {
       },
     ]
 
-    it('returns the first matching rule', () => {
+    it('returns the matching rule when only one rule applies', () => {
       expect(findMatchingDecoderRule(rules, 'user:123')?.id).toBe('1')
       expect(findMatchingDecoderRule(rules, 'other:123')).toBeNull()
+    })
+
+    it('prefers the most specific matching rule over broader patterns', () => {
+      const overlappingRules: ValueDecoderRule[] = [
+        {
+          id: 'broad',
+          name: 'Broad',
+          keyPatterns: ['*'],
+          decoderType: DecoderType.Binary,
+          schema: [],
+        },
+        {
+          id: 'specific',
+          name: 'Specific',
+          keyPatterns: ['user:123'],
+          decoderType: DecoderType.Binary,
+          schema: [],
+        },
+      ]
+
+      expect(findMatchingDecoderRule(overlappingRules, 'user:123')?.id).toBe(
+        'specific',
+      )
+      expect(findMatchingDecoderRule(overlappingRules, 'other:key')?.id).toBe(
+        'broad',
+      )
+    })
+
+    it('prefers a longer literal prefix over a shorter wildcard pattern', () => {
+      const overlappingRules: ValueDecoderRule[] = [
+        {
+          id: 'user-wide',
+          name: 'User wide',
+          keyPatterns: ['user:*'],
+          decoderType: DecoderType.Binary,
+          schema: [],
+        },
+        {
+          id: 'user-items',
+          name: 'User items',
+          keyPatterns: ['user:items:*'],
+          decoderType: DecoderType.Binary,
+          schema: [],
+        },
+      ]
+
+      expect(findMatchingDecoderRule(overlappingRules, 'user:items:42')?.id).toBe(
+        'user-items',
+      )
+      expect(findMatchingDecoderRule(overlappingRules, 'user:profile:42')?.id).toBe(
+        'user-wide',
+      )
+    })
+
+    it('scores exact key patterns higher than wildcard patterns', () => {
+      expect(getKeyPatternSpecificity('*')).toBeLessThan(
+        getKeyPatternSpecificity('user:123'),
+      )
+      expect(getKeyPatternSpecificity('user:*')).toBeLessThan(
+        getKeyPatternSpecificity('user:123'),
+      )
     })
   })
 
