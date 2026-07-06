@@ -253,6 +253,77 @@ describe(`PATCH /databases/:id`, () => {
       },
     ].map(mainCheckFn);
   });
+  describe('Managed databases (cloud) endpoint guard', () => {
+    const managedHostPortMessage =
+      'Host and port cannot be changed for a database managed by a cloud provider.';
+
+    // Seed the main instance with cloudDetails so it is treated as managed.
+    // No connectivity is required: the guard rejects endpoint changes before
+    // any connection is attempted, and non-endpoint updates do not reconnect.
+    const seedCloudManagedDatabase = async () =>
+      localDb.createTestDbInstance(rte, server, {
+        cloudDetails: {
+          cloudId: constants.TEST_CLOUD_ID,
+          subscriptionType: 'fixed',
+        },
+      });
+
+    const managedName = constants.getRandomString();
+
+    [
+      {
+        name: 'Should reject host change for a cloud-managed database',
+        data: {
+          host: constants.getRandomString(),
+        },
+        statusCode: 400,
+        before: seedCloudManagedDatabase,
+        responseBody: {
+          statusCode: 400,
+          error: 'Bad Request',
+          message: managedHostPortMessage,
+        },
+        after: async () => {
+          // endpoint must remain unchanged
+          const db = await localDb.getInstanceById(constants.TEST_INSTANCE_ID);
+          expect(db.host).to.eq(constants.TEST_REDIS_HOST);
+          expect(db.port).to.eq(constants.TEST_REDIS_PORT);
+        },
+      },
+      {
+        name: 'Should reject port change for a cloud-managed database',
+        data: {
+          port: 1234,
+        },
+        statusCode: 400,
+        before: seedCloudManagedDatabase,
+        responseBody: {
+          statusCode: 400,
+          error: 'Bad Request',
+          message: managedHostPortMessage,
+        },
+        after: async () => {
+          const db = await localDb.getInstanceById(constants.TEST_INSTANCE_ID);
+          expect(db.port).to.eq(constants.TEST_REDIS_PORT);
+        },
+      },
+      {
+        name: 'Should allow non-endpoint change (name) for a cloud-managed database',
+        data: {
+          name: managedName,
+        },
+        responseSchema,
+        before: seedCloudManagedDatabase,
+        responseBody: {
+          name: managedName,
+        },
+        after: async () => {
+          const db = await localDb.getInstanceById(constants.TEST_INSTANCE_ID);
+          expect(db.name).to.eq(managedName);
+        },
+      },
+    ].map(mainCheckFn);
+  });
   describe('TAGS', () => {
     const newTagsDto1 = [
       {
