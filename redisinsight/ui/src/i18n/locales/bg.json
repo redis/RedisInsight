@@ -162,6 +162,7 @@
   "settings.advanced.keysToScan.summary": "Задава броя ключове, сканирани на една итерация. Филтрирането по шаблон при голям брой ключове може да намали производителността.",
   "settings.advanced.keysToScan.title": "Ключове за сканиране в изглед Списък",
   "settings.advancedWarning": "Разширените настройки трябва да се променят само ако разбирате тяхното въздействие.",
+  "settings.appVersion": "Redis Insight v{{version}}",
   "settings.cloud.button.removeAll": "Премахни всички API ключове",
   "settings.cloud.delete.header": "{{name}} <lineBreak/> ще бъде премахнат от Redis Insight.",
   "settings.cloud.delete.text": "За да изтриете този API ключ от Redis Cloud, <cloudLink>влезте в Redis Cloud</cloudLink> и го изтрийте ръчно.",

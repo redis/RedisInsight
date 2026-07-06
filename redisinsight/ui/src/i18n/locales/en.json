@@ -162,6 +162,7 @@
   "settings.advanced.keysToScan.summary": "Sets the amount of keys to scan per one iteration. Filtering by pattern per a large number of keys may decrease performance.",
   "settings.advanced.keysToScan.title": "Keys to Scan in List view",
   "settings.advancedWarning": "Advanced settings should only be changed if you understand their impact.",
+  "settings.appVersion": "Redis Insight v{{version}}",
   "settings.cloud.button.removeAll": "Remove all API keys",
   "settings.cloud.delete.header": "{{name}} <lineBreak/> will be removed from Redis Insight.",
   "settings.cloud.delete.text": "To delete this API key from Redis Cloud, <cloudLink>sign in to Redis Cloud</cloudLink> and delete it manually.",
