@@ -184,5 +184,10 @@
   "settings.section.general": "Общи",
   "settings.section.privacy": "Поверителност",
   "settings.section.workbench": "Работна среда",
-  "settings.title": "Настройки"
+  "settings.title": "Настройки",
+  "settings.workbench.cleanup.label": "Изчистване на редактора след изпълнение на команди",
+  "settings.workbench.cleanup.title": "Изчистване на редактора",
+  "settings.workbench.pipeline.label": "Команди в pipeline:",
+  "settings.workbench.pipeline.summary": "Задава размера на пакета от команди за <pipelineLink>pipeline</pipelineLink> режима в Работна среда. 0 или 1 изпраща всяка команда поотделно.",
+  "settings.workbench.pipeline.title": "Pipeline режим"
 }

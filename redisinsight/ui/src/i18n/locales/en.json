@@ -184,5 +184,10 @@
   "settings.section.general": "General",
   "settings.section.privacy": "Privacy",
   "settings.section.workbench": "Workbench",
-  "settings.title": "Settings"
+  "settings.title": "Settings",
+  "settings.workbench.cleanup.label": "Clear the Editor after running commands",
+  "settings.workbench.cleanup.title": "Editor Cleanup",
+  "settings.workbench.pipeline.label": "Commands in pipeline:",
+  "settings.workbench.pipeline.summary": "Sets the size of a command batch for the <pipelineLink>pipeline</pipelineLink> mode in Workbench. 0 or 1 pipelines every command.",
+  "settings.workbench.pipeline.title": "Pipeline Mode"
 }
