@@ -154,11 +154,8 @@ describe('SearchTab', () => {
       data: [arrayElementWithValueFactory.build({ index: '7' })],
     })
 
-    // Context is off by default, so the row isn't expandable yet — open the
-    // Options section and tick the Context toggle before clicking the match.
-    // fireEvent on the toggles sidesteps the redis-ui control's
-    // `pointer-events: none` wrapper that blocks userEvent's pointer guard.
-    fireEvent.click(screen.getByTestId('array-search-form-options-toggle'))
+    // Context is off by default — enable it so the row can expand. fireEvent
+    // sidesteps the redis-ui control's `pointer-events: none` wrapper.
     fireEvent.click(screen.getByTestId('array-search-form-context-toggle'))
 
     await user.click(screen.getByTestId('array-details-table-index-7'))
@@ -187,6 +184,57 @@ describe('SearchTab', () => {
     expect(post).not.toHaveBeenCalled()
   })
 
+  it('shows no disclosure chevron on match rows while context is off', () => {
+    renderTab({
+      loaded: true,
+      loading: false,
+      error: '',
+      data: [arrayElementWithValueFactory.build({ index: '7' })],
+    })
+
+    expect(
+      screen.queryByTestId('array-details-table-index-7-expander'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('shows a collapsed chevron on match rows once context is on', () => {
+    renderTab({
+      loaded: true,
+      loading: false,
+      error: '',
+      data: [arrayElementWithValueFactory.build({ index: '7' })],
+    })
+
+    fireEvent.click(screen.getByTestId('array-search-form-context-toggle'))
+
+    expect(
+      screen.getByTestId('array-details-table-index-7-expander'),
+    ).toHaveAttribute('aria-label', 'Chevron Right')
+  })
+
+  it('flips the chevron to expanded when a match row is opened', async () => {
+    const user = userEvent.setup()
+    apiService.post = jest.fn().mockResolvedValue({
+      status: 200,
+      data: { keyName: KEY, elements: ['v6', 'v7', 'v8'] },
+    })
+    renderTab({
+      loaded: true,
+      loading: false,
+      error: '',
+      data: [arrayElementWithValueFactory.build({ index: '7' })],
+    })
+
+    fireEvent.click(screen.getByTestId('array-search-form-context-toggle'))
+    await user.click(screen.getByTestId('array-details-table-index-7'))
+
+    await waitFor(() =>
+      expect(
+        screen.getByTestId('array-details-table-index-7-expander'),
+      ).toHaveAttribute('aria-label', 'Chevron Down'),
+    )
+  })
+
   it('resets context to its default when the form is reset', () => {
     renderTab({
       loaded: true,
@@ -197,7 +245,6 @@ describe('SearchTab', () => {
 
     // Enabling Context enables its count input; reset must turn it back off
     // (context state lives in SearchTab, not the query hook's resetQuery).
-    fireEvent.click(screen.getByTestId('array-search-form-options-toggle'))
     fireEvent.click(screen.getByTestId('array-search-form-context-toggle'))
     expect(screen.getByTestId('array-search-form-context')).toBeEnabled()
 
@@ -243,7 +290,6 @@ describe('SearchTab', () => {
       data: [arrayElementWithValueFactory.build({ index: '7' })],
     })
 
-    fireEvent.click(screen.getByTestId('array-search-form-options-toggle'))
     fireEvent.click(screen.getByTestId('array-search-form-context-toggle'))
     await user.click(screen.getByTestId('array-details-table-index-7'))
     expect(
@@ -269,7 +315,6 @@ describe('SearchTab', () => {
       data: [arrayElementWithValueFactory.build({ index: '7' })],
     })
 
-    fireEvent.click(screen.getByTestId('array-search-form-options-toggle'))
     fireEvent.click(screen.getByTestId('array-search-form-context-toggle'))
     expect(screen.getByRole('checkbox', { name: 'Context' })).toBeChecked()
 
