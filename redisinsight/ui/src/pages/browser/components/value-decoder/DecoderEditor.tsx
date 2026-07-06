@@ -7,11 +7,13 @@ import { Col } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import TextInput from 'uiSrc/components/base/inputs/TextInput'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
+import { CopyButton } from 'uiSrc/components/copy-button/CopyButton'
 
 import {
   DECODER_TYPE_OPTIONS,
   VALUE_DECODER_TEST_ID,
 } from './constants'
+import { serializeDecoderForClipboard } from './decoderClipboard'
 import {
   DECODER_TYPE_DESCRIPTIONS,
   KEY_PATTERN_FIELD_DESCRIPTION,
@@ -80,13 +82,21 @@ export const DecoderEditor = ({
             <S.DecoderMatchBadge $warning>Incomplete</S.DecoderMatchBadge>
           )}
         </S.DecoderSummaryButton>
-        <ActionIconButton
-          icon={DeleteIcon}
-          aria-label="Remove decoder"
-          onClick={onRemove}
-          disabled={!canRemove}
-          data-testid={`${VALUE_DECODER_TEST_ID}-remove-decoder-${decoder.id}`}
-        />
+        <S.RowActions>
+          <CopyButton
+            copy={serializeDecoderForClipboard(decoder)}
+            aria-label="Copy decoder"
+            tooltipConfig={{ content: 'Copy decoder' }}
+            data-testid={`${VALUE_DECODER_TEST_ID}-copy-decoder-${decoder.id}`}
+          />
+          <ActionIconButton
+            icon={DeleteIcon}
+            aria-label="Remove decoder"
+            onClick={onRemove}
+            disabled={!canRemove}
+            data-testid={`${VALUE_DECODER_TEST_ID}-remove-decoder-${decoder.id}`}
+          />
+        </S.RowActions>
       </S.DecoderHeader>
 
       {isExpanded && (

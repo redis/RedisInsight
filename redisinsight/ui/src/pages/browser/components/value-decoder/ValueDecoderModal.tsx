@@ -5,9 +5,14 @@ import { Text } from 'uiSrc/components/base/text'
 import { PrimaryButton, SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { CancelIcon } from 'uiSrc/components/base/icons'
 import { Row, Col } from 'uiSrc/components/base/layout/flex'
+import { CopyButton } from 'uiSrc/components/copy-button/CopyButton'
 
 import { createEmptyDecoder, VALUE_DECODER_TEST_ID } from './constants'
 import { DecoderEditor } from './DecoderEditor'
+import {
+  parseDecodersFromClipboard,
+  serializeDecodersForClipboard,
+} from './decoderClipboard'
 import {
   areDecodersValid,
   getDecoderLabel,
@@ -52,6 +57,7 @@ export const ValueDecoderModal = ({
     buildInitialDecoders(decoders, keyName),
   )
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [pasteMessage, setPasteMessage] = useState<string | null>(null)
 
   useEffect(() => {
     if (!isOpen) {
@@ -96,6 +102,74 @@ export const ValueDecoderModal = ({
     setExpandedId((current) => (current === decoderId ? null : current))
   }, [])
 
+  const importDecodersFromText = useCallback((text: string): boolean => {
+    const imported = parseDecodersFromClipboard(text)
+
+    if (!imported?.length) {
+      setPasteMessage('No decoder configuration found in clipboard')
+      return false
+    }
+
+    setLocalDecoders((current) => [...current, ...imported])
+    setExpandedId(imported[imported.length - 1].id)
+    setPasteMessage(
+      imported.length === 1
+        ? 'Pasted 1 decoder'
+        : `Pasted ${imported.length} decoders`,
+    )
+    return true
+  }, [])
+
+  const handlePasteFromClipboard = useCallback(async () => {
+    try {
+      const text = await navigator.clipboard.readText()
+      importDecodersFromText(text)
+    } catch {
+      setPasteMessage('Unable to read clipboard')
+    }
+  }, [importDecodersFromText])
+
+  useEffect(() => {
+    if (!pasteMessage) {
+      return undefined
+    }
+
+    const timeout = setTimeout(() => {
+      setPasteMessage(null)
+    }, 2500)
+
+    return () => clearTimeout(timeout)
+  }, [pasteMessage])
+
+  useEffect(() => {
+    if (!isOpen) {
+      return undefined
+    }
+
+    const handlePaste = (event: ClipboardEvent) => {
+      const target = event.target
+
+      if (
+        target instanceof HTMLElement &&
+        target.closest('input, textarea, [contenteditable="true"]')
+      ) {
+        return
+      }
+
+      const text = event.clipboardData?.getData('text/plain') ?? ''
+
+      if (importDecodersFromText(text)) {
+        event.preventDefault()
+      }
+    }
+
+    document.addEventListener('paste', handlePaste)
+
+    return () => {
+      document.removeEventListener('paste', handlePaste)
+    }
+  }, [importDecodersFromText, isOpen])
+
   const handleSave = useCallback(() => {
     if (!isValid) {
       return
@@ -127,20 +201,41 @@ export const ValueDecoderModal = ({
           content={
             <Col gap="l" data-testid={`${VALUE_DECODER_TEST_ID}-modal-form`}>
                 <Text color="secondary">
-                  Decoders are shared across all hash keys. Add multiple decoders
-                  and key patterns; matching hash values can be decoded in the
-                  Value Preview.
+                  Decoders are shared across all hash keys in this database. Add
+                  multiple decoders and key patterns; matching hash values can be
+                  decoded in the Value Preview. Copy decoders as JSON and paste
+                  them here or into another Redis Insight connection.
                 </Text>
 
-                <Row justify="between" align="center">
+                <Row justify="between" align="center" gap="m">
                   <Text variant="semiBold">Decoders</Text>
-                  <SecondaryButton
-                    size="s"
-                    onClick={handleAddDecoder}
-                    data-testid={`${VALUE_DECODER_TEST_ID}-add-decoder`}
-                  >
-                    Add Decoder
-                  </SecondaryButton>
+                  <Row gap="s" align="center">
+                    {pasteMessage && (
+                      <Text color="secondary" size="s">
+                        {pasteMessage}
+                      </Text>
+                    )}
+                    <CopyButton
+                      copy={serializeDecodersForClipboard(localDecoders)}
+                      aria-label="Copy all decoders"
+                      tooltipConfig={{ content: 'Copy all decoders' }}
+                      data-testid={`${VALUE_DECODER_TEST_ID}-copy-all`}
+                    />
+                    <SecondaryButton
+                      size="s"
+                      onClick={handlePasteFromClipboard}
+                      data-testid={`${VALUE_DECODER_TEST_ID}-paste-decoders`}
+                    >
+                      Paste
+                    </SecondaryButton>
+                    <SecondaryButton
+                      size="s"
+                      onClick={handleAddDecoder}
+                      data-testid={`${VALUE_DECODER_TEST_ID}-add-decoder`}
+                    >
+                      Add Decoder
+                    </SecondaryButton>
+                  </Row>
                 </Row>
 
                 <Col gap="m">
