@@ -1,5 +1,5 @@
+import React from 'react'
 import styled from 'styled-components'
-import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
@@ -20,7 +20,15 @@ export const FormContainer = styled(Col)`
     ${({ theme }) => theme.semantic.color.border.neutral500};
 `
 
-export const ActionRow = styled(Row)`
+// A plain div (not `Row`) so it can hold the ResizeObserver ref that drives
+// the responsive preview label — layout components don't forward refs.
+export const ActionRow = styled.div<{
+  children?: React.ReactNode
+  ref?: React.Ref<HTMLDivElement>
+}>`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.core.space.space100};
   min-height: ${ACTION_ROW_HEIGHT};
 `
 
@@ -64,9 +72,4 @@ export const InlineCheckbox = styled(Checkbox)`
  */
 export const ConnectiveRow = styled(Row)`
   padding-left: 48px;
-`
-
-export const PreviewToggleButton = styled(ToggleButton)`
-  ${({ theme, pressed }) =>
-    !pressed && `border-color: ${theme.semantic.color.border.neutral600};`}
 `

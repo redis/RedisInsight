@@ -23,6 +23,8 @@ import {
 } from 'uiSrc/slices/interfaces/array'
 
 import { CommandPreview } from '../command-preview'
+import { PreviewToggle } from '../preview-toggle'
+import { useResponsivePreviewLabel } from '../hooks'
 import {
   CONTEXT_COUNT_MAX,
   CONTEXT_COUNT_MIN,
@@ -50,10 +52,6 @@ import {
   NOCASE_LABEL,
   OPTIONS_HINT,
   OPTIONS_LABEL,
-  PREVIEW_TOGGLE_ARIA_LABEL,
-  PREVIEW_TOGGLE_HIDE_TOOLTIP,
-  PREVIEW_TOGGLE_LABEL,
-  PREVIEW_TOGGLE_SHOW_TOOLTIP,
   RANGE_HINT,
   RANGE_LABEL,
   RANGE_TO_LABEL,
@@ -98,6 +96,7 @@ export const ArraySearchForm = ({
 }: ArraySearchFormProps) => {
   const [previewVisible, setPreviewVisible] = useState(false)
   const [optionsOpen, setOptionsOpen] = useState(false)
+  const { containerRef, isWide } = useResponsivePreviewLabel()
 
   const multiPredicate = predicates.length > 1
   const startInvalid = isBoundInvalid(options.start)
@@ -441,26 +440,14 @@ export const ArraySearchForm = ({
         )}
       </Col>
 
-      <S.ActionRow align="center" gap="m">
+      <S.ActionRow ref={containerRef}>
         <FlexItem grow={false}>
-          <RiTooltip
-            content={
-              previewVisible
-                ? PREVIEW_TOGGLE_HIDE_TOOLTIP
-                : PREVIEW_TOGGLE_SHOW_TOOLTIP
-            }
-            position="top"
-          >
-            <S.PreviewToggleButton
-              pressed={previewVisible}
-              onPressedChange={setPreviewVisible}
-              aria-label={PREVIEW_TOGGLE_ARIA_LABEL}
-              data-testid={`${TEST_ID}-preview-toggle`}
-            >
-              <RiIcon size="m" type="CliIcon" />
-              <Text size="s">{PREVIEW_TOGGLE_LABEL}</Text>
-            </S.PreviewToggleButton>
-          </RiTooltip>
+          <PreviewToggle
+            pressed={previewVisible}
+            onPressedChange={setPreviewVisible}
+            wide={isWide}
+            data-testid={`${TEST_ID}-preview-toggle`}
+          />
         </FlexItem>
         <FlexItem grow>
           {previewVisible && <CommandPreview command={command} />}

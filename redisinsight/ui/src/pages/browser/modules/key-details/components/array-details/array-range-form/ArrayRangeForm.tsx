@@ -9,25 +9,22 @@ import {
   PrimaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { DeleteIcon, ResetIcon, RiIcon } from 'uiSrc/components/base/icons'
+import { DeleteIcon, ResetIcon } from 'uiSrc/components/base/icons'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { TextInput } from 'uiSrc/components/base/inputs'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
-import { Text } from 'uiSrc/components/base/text'
 import { parseArrayIndex } from 'uiSrc/utils/arrayIndex'
 import { DEFAULT_SCAN_LIMIT } from 'uiSrc/slices/browser/array'
 
 import { CommandPreview } from '../command-preview'
+import { PreviewToggle } from '../preview-toggle'
+import { useResponsivePreviewLabel } from '../hooks'
 import { quoteRedisArgument } from '../utils'
 import {
   ARRAY_RANGE_FORM_TEST_ID as TEST_ID,
   ARRAY_RANGE_MAX_SPAN,
   INVALID_INDEX_MESSAGE,
   INVALID_RANGE_TOO_LARGE_MESSAGE,
-  PREVIEW_TOGGLE_ARIA_LABEL,
-  PREVIEW_TOGGLE_HIDE_TOOLTIP,
-  PREVIEW_TOGGLE_LABEL,
-  PREVIEW_TOGGLE_SHOW_TOOLTIP,
   RESET_TOOLTIP,
   RUN_BUTTON_LABEL,
 } from './ArrayRangeForm.constants'
@@ -63,6 +60,7 @@ export const ArrayRangeForm = ({
   const { t } = useTranslation()
   const [previewVisible, setPreviewVisible] = useState(false)
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+  const { containerRef, isWide } = useResponsivePreviewLabel()
 
   // A delete confirm left open across a key switch (or while the newly
   // clicked key's type is still unconfirmed) must not carry over: the
@@ -125,10 +123,6 @@ export const ArrayRangeForm = ({
   // deleting 0..10M without loading it first is a supported flow.
   const deleteDisabled = startInvalid || endInvalid || loading || disabled
 
-  const previewTooltip = previewVisible
-    ? PREVIEW_TOGGLE_HIDE_TOOLTIP
-    : PREVIEW_TOGGLE_SHOW_TOOLTIP
-
   return (
     <S.FormContainer data-testid={TEST_ID} gap="m" grow={false}>
       <Row align="end" gap="m">
@@ -171,19 +165,14 @@ export const ArrayRangeForm = ({
         </FlexItem>
       </Row>
 
-      <S.ActionRow align="center" gap="m">
+      <S.ActionRow ref={containerRef}>
         <FlexItem grow={false}>
-          <RiTooltip content={previewTooltip} position="top">
-            <S.PreviewToggleButton
-              pressed={previewVisible}
-              onPressedChange={setPreviewVisible}
-              aria-label={PREVIEW_TOGGLE_ARIA_LABEL}
-              data-testid={`${TEST_ID}-preview-toggle`}
-            >
-              <RiIcon size="m" type="CliIcon" />
-              <Text size="s">{PREVIEW_TOGGLE_LABEL}</Text>
-            </S.PreviewToggleButton>
-          </RiTooltip>
+          <PreviewToggle
+            pressed={previewVisible}
+            onPressedChange={setPreviewVisible}
+            wide={isWide}
+            data-testid={`${TEST_ID}-preview-toggle`}
+          />
         </FlexItem>
         <FlexItem grow>
           {previewVisible && <CommandPreview command={command} />}
