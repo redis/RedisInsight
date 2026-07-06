@@ -434,6 +434,51 @@ describe('value-decoder utils', () => {
       ])
     })
 
+    it('stops parsing sibling fields when repeat decoding is capped', () => {
+      const repeatCount = MAX_REPEAT_DECODE_ITERATIONS + 1
+      const bufferParts = [
+        repeatCount & 0xff,
+        (repeatCount >> 8) & 0xff,
+        ...Array.from({ length: repeatCount }, () => 0xaa),
+        0xbb,
+      ]
+
+      const repeatBlock = createEmptyRepeatBlock()
+      repeatBlock.countFieldRef = 'count'
+      repeatBlock.fields = [
+        {
+          ...createEmptyField(),
+          id: 'item',
+          name: 'item',
+          dataType: 'uint8',
+          size: 1,
+        },
+      ]
+
+      const parsed = parseBinaryBuffer(new Uint8Array(bufferParts), [
+        {
+          id: 'count',
+          kind: 'field',
+          name: 'count',
+          dataType: 'uint16le',
+          size: 2,
+        },
+        repeatBlock,
+        {
+          id: 'tail',
+          kind: 'field',
+          name: 'tail',
+          dataType: 'uint8',
+          size: 1,
+        },
+      ])
+
+      expect(countGroupNodes(parsed)).toBe(MAX_REPEAT_DECODE_ITERATIONS)
+      expect(parsed.some((node) => node.kind === 'field' && node.name === 'tail')).toBe(
+        false,
+      )
+    })
+
     it('caps nested repeat decoding with a shared global budget', () => {
       const outerCount = 100
       const innerCount = 100

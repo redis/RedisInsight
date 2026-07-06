@@ -436,6 +436,21 @@ type DecodeBudget = {
   remainingGroupSlots: number
 }
 
+type ParseSchemaResult = {
+  results: ParsedBinaryNode[]
+  offset: number
+  truncated: boolean
+}
+
+const getFullRepeatCount = (rawCount: number | undefined): number => {
+  const normalized = rawCount ?? 0
+  if (!Number.isFinite(normalized)) {
+    return 0
+  }
+
+  return Math.max(0, Math.floor(normalized))
+}
+
 const parseSchemaNodes = (
   buffer: Uint8Array,
   view: DataView,
@@ -443,7 +458,7 @@ const parseSchemaNodes = (
   offset: number,
   parsedNumeric: Map<string, number>,
   decodeBudget: DecodeBudget,
-): { results: ParsedBinaryNode[]; offset: number } => {
+): ParseSchemaResult => {
   let currentOffset = offset
   const results: ParsedBinaryNode[] = []
 
@@ -460,18 +475,22 @@ const parseSchemaNodes = (
       if (result) {
         results.push(result)
         if (result.value === '<insufficient data>') {
-          return { results, offset: currentOffset }
+          return { results, offset: currentOffset, truncated: false }
         }
       }
       currentOffset = nextOffset
       continue
     }
 
+    const fullRepeatCount = getFullRepeatCount(
+      parsedNumeric.get(node.countFieldRef),
+    )
     const repeatCount = Math.min(
       resolveRepeatCount(parsedNumeric.get(node.countFieldRef)),
       decodeBudget.remainingGroupSlots,
     )
 
+    let decodedIterations = 0
     for (let index = 0; index < repeatCount; index += 1) {
       if (decodeBudget.remainingGroupSlots <= 0) {
         break
@@ -480,7 +499,7 @@ const parseSchemaNodes = (
       decodeBudget.remainingGroupSlots -= 1
 
       const iterationScope = new Map(parsedNumeric)
-      const { results: childResults, offset: nextOffset } = parseSchemaNodes(
+      const childParse = parseSchemaNodes(
         buffer,
         view,
         node.fields,
@@ -492,17 +511,26 @@ const parseSchemaNodes = (
       results.push({
         kind: 'group',
         label: String(index),
-        children: childResults,
+        children: childParse.results,
       })
-      currentOffset = nextOffset
+      currentOffset = childParse.offset
+      decodedIterations += 1
 
-      if (hasInsufficientData(childResults)) {
-        return { results, offset: currentOffset }
+      if (hasInsufficientData(childParse.results)) {
+        return { results, offset: currentOffset, truncated: false }
       }
+
+      if (childParse.truncated) {
+        return { results, offset: currentOffset, truncated: true }
+      }
+    }
+
+    if (decodedIterations < fullRepeatCount) {
+      return { results, offset: currentOffset, truncated: true }
     }
   }
 
-  return { results, offset: currentOffset }
+  return { results, offset: currentOffset, truncated: false }
 }
 
 export const formatParsedFieldLine = (field: ParsedBinaryField): string =>
