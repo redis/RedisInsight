@@ -25,7 +25,7 @@ import { Link } from 'uiSrc/components/base/link/Link'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { EXTERNAL_LINKS, UTM_MEDIUMS } from 'uiSrc/constants/links'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
-import { Trans, useTranslation } from 'uiSrc/i18n'
+import { escapeTrans, Trans, useTranslation } from 'uiSrc/i18n'
 import styles from './styles.module.scss'
 
 const clearKeysCloudLink = getUtmExternalLink(
@@ -179,7 +179,7 @@ const UserApiKeysTable = ({ items, loading }: Props) => {
             header={
               <Trans
                 i18nKey="settings.cloud.delete.header"
-                values={{ name: formatLongName(name) }}
+                values={{ name: escapeTrans(formatLongName(name)) }}
                 components={{ lineBreak: <br /> }}
               />
             }
