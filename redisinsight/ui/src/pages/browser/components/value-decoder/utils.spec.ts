@@ -12,7 +12,16 @@ import {
   resolveRepeatCount,
 } from './utils'
 import { createEmptyField, createEmptyRepeatBlock, MAX_REPEAT_DECODE_ITERATIONS } from './constants'
-import { DecoderType, ValueDecoderRule } from './types'
+import { DecoderType, ParsedBinaryNode, ValueDecoderRule } from './types'
+
+const countGroupNodes = (nodes: ParsedBinaryNode[]): number =>
+  nodes.reduce((count, node) => {
+    if (node.kind === 'group') {
+      return count + 1 + countGroupNodes(node.children)
+    }
+
+    return count
+  }, 0)
 
 describe('value-decoder utils', () => {
   describe('getFixedSize', () => {
@@ -388,6 +397,60 @@ describe('value-decoder utils', () => {
           ],
         },
       ])
+    })
+
+    it('caps nested repeat decoding with a shared global budget', () => {
+      const outerCount = 100
+      const innerCount = 100
+      const bufferParts = [outerCount & 0xff, (outerCount >> 8) & 0xff]
+
+      for (let outer = 0; outer < outerCount; outer += 1) {
+        bufferParts.push(innerCount)
+        for (let inner = 0; inner < innerCount; inner += 1) {
+          bufferParts.push(1)
+        }
+      }
+
+      const innerRepeat = createEmptyRepeatBlock()
+      innerRepeat.id = 'inner-repeat'
+      innerRepeat.countFieldRef = 'inner-count'
+      innerRepeat.fields = [
+        {
+          ...createEmptyField(),
+          id: 'inner-value',
+          name: 'value',
+          dataType: 'uint8',
+          size: 1,
+        },
+      ]
+
+      const outerRepeat = createEmptyRepeatBlock()
+      outerRepeat.id = 'outer-repeat'
+      outerRepeat.countFieldRef = 'outer-count'
+      outerRepeat.fields = [
+        {
+          id: 'inner-count',
+          kind: 'field',
+          name: 'inner_count',
+          dataType: 'uint8',
+          size: 1,
+        },
+        innerRepeat,
+      ]
+
+      const parsed = parseBinaryBuffer(new Uint8Array(bufferParts), [
+        {
+          id: 'outer-count',
+          kind: 'field',
+          name: 'outer_count',
+          dataType: 'uint16le',
+          size: 2,
+        },
+        outerRepeat,
+      ])
+
+      expect(countGroupNodes(parsed)).toBe(MAX_REPEAT_DECODE_ITERATIONS)
+      expect(countGroupNodes(parsed)).toBeLessThan(outerCount * innerCount)
     })
 
     it('reports insufficient data when repeat count exceeds available bytes', () => {

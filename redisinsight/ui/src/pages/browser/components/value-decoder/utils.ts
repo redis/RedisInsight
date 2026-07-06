@@ -421,12 +421,17 @@ const hasInsufficientData = (nodes: ParsedBinaryNode[]): boolean =>
     return hasInsufficientData(node.children)
   })
 
+type DecodeBudget = {
+  remainingGroupSlots: number
+}
+
 const parseSchemaNodes = (
   buffer: Uint8Array,
   view: DataView,
   nodes: SchemaNode[],
   offset: number,
   parsedNumeric: Map<string, number>,
+  decodeBudget: DecodeBudget,
 ): { results: ParsedBinaryNode[]; offset: number } => {
   let currentOffset = offset
   const results: ParsedBinaryNode[] = []
@@ -451,11 +456,18 @@ const parseSchemaNodes = (
       continue
     }
 
-    const repeatCount = resolveRepeatCount(
-      parsedNumeric.get(node.countFieldRef),
+    const repeatCount = Math.min(
+      resolveRepeatCount(parsedNumeric.get(node.countFieldRef)),
+      decodeBudget.remainingGroupSlots,
     )
 
     for (let index = 0; index < repeatCount; index += 1) {
+      if (decodeBudget.remainingGroupSlots <= 0) {
+        break
+      }
+
+      decodeBudget.remainingGroupSlots -= 1
+
       const iterationScope = new Map(parsedNumeric)
       const { results: childResults, offset: nextOffset } = parseSchemaNodes(
         buffer,
@@ -463,6 +475,7 @@ const parseSchemaNodes = (
         node.fields,
         currentOffset,
         iterationScope,
+        decodeBudget,
       )
 
       results.push({
@@ -532,6 +545,7 @@ export const parseBinaryBuffer = (
     schema,
     0,
     new Map(),
+    { remainingGroupSlots: MAX_REPEAT_DECODE_ITERATIONS },
   ).results
 
 export const parseBufferWithRule = (
