@@ -10,8 +10,10 @@ import { Text } from 'uiSrc/components/base/text'
 import TimezoneForm from './components/timezone-form/TimezoneForm'
 import DatetimeForm from './components/datetime-form/DatetimeForm'
 import { TextInput } from 'uiSrc/components/base/inputs'
+import { useTranslation } from 'uiSrc/i18n'
 
 const DateTimeFormatter = () => {
+  const { t } = useTranslation()
   const [preview, setPreview] = useState('')
   const config = useAppSelector(userSettingsConfigSelector)
 
@@ -27,16 +29,16 @@ const DateTimeFormatter = () => {
 
   return (
     <>
-      <Title size="M">Date and Time Format</Title>
+      <Title size="M">{t('settings.general.datetime.title')}</Title>
       <Spacer size="m" />
       <Text color="primary">
-        Specifies the date and time format to be used in Redis Insight:
+        {t('settings.general.datetime.formatLabel')}
       </Text>
       <Spacer size="m" />
       <DatetimeForm onFormatChange={(newPreview) => setPreview(newPreview)} />
       <Spacer size="m" />
       <Text color="primary">
-        Specifies the time zone to be used in Redis Insight:
+        {t('settings.general.datetime.timezoneLabel')}
       </Text>
       <Spacer size="s" />
       <Row align="center" justify="between" gap="m">
@@ -45,7 +47,7 @@ const DateTimeFormatter = () => {
         </FlexItem>
         <Row align="center" gap="m" grow={false}>
           <Text color="primary" size="m">
-            Preview:
+            {t('settings.general.datetime.preview')}
           </Text>
           <TextInput
             variant="outline"
