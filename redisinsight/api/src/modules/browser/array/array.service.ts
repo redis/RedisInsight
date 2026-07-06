@@ -564,10 +564,13 @@ export class ArrayService {
       // Append-to-end = ARSET at the current length. Read the length, then
       // write there. Not wrapped in a transaction (the client has no
       // MULTI/WATCH yet), so concurrent appends can race on the same length —
-      // acceptable for the desktop GUI. The index stays a string, so the write
-      // is precise once ioredis returns 64-bit integers losslessly (RI-8296).
+      // acceptable for the desktop GUI. ARLEN comes back as a RESP integer that
+      // can exceed 2^53; opt into bigint so it reaches toRequiredIndexString
+      // exact.
       const index = toRequiredIndexString(
-        await client.sendCommand([BrowserToolArrayCommands.ArLen, keyName]),
+        await client.sendCommand([BrowserToolArrayCommands.ArLen, keyName], {
+          integerReply: 'bigint',
+        }),
       );
 
       // A full array (top index already 2^64-2) reports length 2^64-1 — the

@@ -111,10 +111,9 @@ describe('POST /databases/:instanceId/array/get-next-index', () => {
     // whose semantics on Redis 8.8 are not documented well enough to keep
     // the assertion stable across patch releases.
     //
-    // The u64-cursor precision regression is already pinned by the skipped
-    // ARSCAN canary (Should preserve u64 precision when scanning at indexes
-    // above MAX_SAFE_INTEGER) — re-asserting it here would duplicate that
-    // coverage without adding a new wire path.
+    // The u64-cursor precision path is pinned by the ARSCAN test 'Should keep
+    // an index exact in the (2^53, 2^63) RESP-integer zone'; re-asserting it
+    // here would duplicate that coverage without adding a new wire path.
 
     [
       {
