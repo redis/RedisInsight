@@ -188,9 +188,11 @@ const KeyDetailsHeader = ({
                     </FeatureFlagComponent>
                   )}
                 {type === KeyTypes.Hash && (
-                  <FlexItem>
-                    <ConfigValueDecoderButton />
-                  </FlexItem>
+                  <FeatureFlagComponent name={FeatureFlags.valueDecoder}>
+                    <FlexItem>
+                      <ConfigValueDecoderButton />
+                    </FlexItem>
+                  </FeatureFlagComponent>
                 )}
                 {!arePanelsCollapsed && (
                   <FlexItem>

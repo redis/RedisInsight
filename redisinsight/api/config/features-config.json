@@ -1,5 +1,5 @@
 {
-  "version": 3.94,
+  "version": 3.95,
   "features": {
     "redisDataIntegration": {
       "flag": true,
@@ -149,6 +149,10 @@
     },
     "prodMode": {
       "flag": true,
+      "perc": [[0, 100]]
+    },
+    "valueDecoder": {
+      "flag": false,
       "perc": [[0, 100]]
     }
   }

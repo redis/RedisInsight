@@ -95,4 +95,8 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
     name: KnownFeatures.ProdMode,
     storage: FeatureStorage.Database,
   },
+  [KnownFeatures.ValueDecoder]: {
+    name: KnownFeatures.ValueDecoder,
+    storage: FeatureStorage.Database,
+  },
 };

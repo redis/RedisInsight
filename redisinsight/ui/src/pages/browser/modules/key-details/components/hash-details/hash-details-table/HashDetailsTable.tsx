@@ -75,6 +75,7 @@ import {
 import { stringToBuffer } from 'uiSrc/utils/formatters/bufferFormatters'
 import { decompressingBuffer } from 'uiSrc/utils/decompressors'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
+import { isValueDecoderEnabledSelector } from 'uiSrc/slices/app/features'
 import {
   DecodedValueDisplay,
   useValueDecoder,
@@ -151,6 +152,7 @@ const HashDetailsTable = (props: Props) => {
   const isInitialDecodeLayoutRef = useRef(true)
 
   const dispatch = useAppDispatch()
+  const isValueDecoderEnabled = useAppSelector(isValueDecoderEnabledSelector)
   const { isDecodeEnabled, matchedRule } = useValueDecoder()
 
   useEffect(() => {
@@ -158,6 +160,10 @@ const HashDetailsTable = (props: Props) => {
   }, [lastRefreshTime])
 
   useEffect(() => {
+    if (!isValueDecoderEnabled) {
+      return
+    }
+
     if (isInitialDecodeLayoutRef.current) {
       isInitialDecodeLayoutRef.current = false
       return
@@ -165,7 +171,7 @@ const HashDetailsTable = (props: Props) => {
 
     cellCache.clearAll()
     tableRef.current?.recomputeRowHeights()
-  }, [isDecodeEnabled, matchedRule])
+  }, [isDecodeEnabled, isValueDecoderEnabled, matchedRule])
 
   useEffect(() => {
     setFields(loadedFields)
@@ -427,7 +433,7 @@ const HashDetailsTable = (props: Props) => {
     },
     {
       id: 'value',
-      label: <ValueDecoderHeaderLabel />,
+      label: isValueDecoderEnabled ? <ValueDecoderHeaderLabel /> : 'Value',
       minWidth: 120,
       truncateText: true,
       alignment: TableCellAlignment.Left,
@@ -518,7 +524,7 @@ const HashDetailsTable = (props: Props) => {
             testIdPrefix="hash"
           >
             <div className="innerCellAsCell">
-              {!isTruncatedFieldOrValue ? (
+              {isValueDecoderEnabled && !isTruncatedFieldOrValue ? (
                 <DecodedValueDisplay
                   buffer={decompressedValueItem}
                   expanded={expanded}
