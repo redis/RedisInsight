@@ -154,11 +154,8 @@ describe('SearchTab', () => {
       data: [arrayElementWithValueFactory.build({ index: '7' })],
     })
 
-    // Context is off by default, so the row isn't expandable yet — open the
-    // Options section and tick the Context toggle before clicking the match.
-    // fireEvent on the toggles sidesteps the redis-ui control's
-    // `pointer-events: none` wrapper that blocks userEvent's pointer guard.
-    fireEvent.click(screen.getByTestId('array-search-form-options-toggle'))
+    // Context is off by default — enable it so the row can expand. fireEvent
+    // sidesteps the redis-ui control's `pointer-events: none` wrapper.
     fireEvent.click(screen.getByTestId('array-search-form-context-toggle'))
 
     await user.click(screen.getByTestId('array-details-table-index-7'))
@@ -197,7 +194,6 @@ describe('SearchTab', () => {
 
     // Enabling Context enables its count input; reset must turn it back off
     // (context state lives in SearchTab, not the query hook's resetQuery).
-    fireEvent.click(screen.getByTestId('array-search-form-options-toggle'))
     fireEvent.click(screen.getByTestId('array-search-form-context-toggle'))
     expect(screen.getByTestId('array-search-form-context')).toBeEnabled()
 
@@ -243,7 +239,6 @@ describe('SearchTab', () => {
       data: [arrayElementWithValueFactory.build({ index: '7' })],
     })
 
-    fireEvent.click(screen.getByTestId('array-search-form-options-toggle'))
     fireEvent.click(screen.getByTestId('array-search-form-context-toggle'))
     await user.click(screen.getByTestId('array-details-table-index-7'))
     expect(
@@ -269,7 +264,6 @@ describe('SearchTab', () => {
       data: [arrayElementWithValueFactory.build({ index: '7' })],
     })
 
-    fireEvent.click(screen.getByTestId('array-search-form-options-toggle'))
     fireEvent.click(screen.getByTestId('array-search-form-context-toggle'))
     expect(screen.getByRole('checkbox', { name: 'Context' })).toBeChecked()
 

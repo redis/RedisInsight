@@ -193,14 +193,9 @@ describe('ArraySearchForm', () => {
   })
 
   describe('context', () => {
-    // The context control lives inside the collapsed Options section, so each
-    // test must expand it before the controls exist in the DOM.
-    const openOptions = () =>
-      fireEvent.click(screen.getByTestId(`${TEST_ID}-options-toggle`))
-
+    // Context is always visible, so no need to expand Options first.
     it('keeps the context input disabled until the toggle is ticked', () => {
       const { rerender } = renderComponent()
-      openOptions()
       // Off by default → input present (so layout is stable) but disabled.
       expect(screen.getByTestId(`${TEST_ID}-context`)).toBeDisabled()
 
@@ -216,7 +211,6 @@ describe('ArraySearchForm', () => {
     it('enables context when the toggle is ticked', () => {
       const onChangeContext = jest.fn()
       renderComponent({ onChangeContext })
-      openOptions()
 
       fireEvent.click(screen.getByTestId(`${TEST_ID}-context-toggle`))
 
@@ -226,7 +220,6 @@ describe('ArraySearchForm', () => {
     it('shows the passed count and clamps a typed value above the max to 50', async () => {
       const user = userEvent.setup()
       renderComponent({ context: { enabled: true, count: 5 } })
-      openOptions()
 
       const input = screen.getByTestId(`${TEST_ID}-context`)
       // redis-ui NumericInput renders a text input, so the DOM value is a
@@ -251,7 +244,6 @@ describe('ArraySearchForm', () => {
         context: { enabled: true, count: 5 },
         onChangeContext,
       })
-      openOptions()
 
       fireEvent.change(screen.getByTestId(`${TEST_ID}-context`), {
         target: { value: '8' },

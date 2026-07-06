@@ -228,6 +228,49 @@ export const ArraySearchForm = ({
         ))}
       </Col>
 
+      <Row align="center" gap="s" grow={false}>
+        <FlexItem grow={false}>
+          <Row align="center" gap="xs" grow={false}>
+            <FlexItem grow={false}>
+              <S.InlineCheckbox
+                id={`${TEST_ID}-context-toggle`}
+                name="array-search-context-toggle"
+                label={CONTEXT_LABEL}
+                checked={context.enabled}
+                onChange={(e) => onChangeContext({ enabled: e.target.checked })}
+                disabled={disabled}
+                data-testid={`${TEST_ID}-context-toggle`}
+              />
+            </FlexItem>
+            <FlexItem grow={false}>
+              <InfoHint content={CONTEXT_HINT} />
+            </FlexItem>
+          </Row>
+        </FlexItem>
+        <FlexItem grow={false}>
+          <Text size="s">{CONTEXT_PREFIX}</Text>
+        </FlexItem>
+        {/* Always rendered so ticking Context doesn't shift the row; it just
+            becomes editable once the toggle is on. */}
+        <FlexItem grow={false}>
+          <S.NarrowInputBox>
+            <NumericInput
+              autoValidate
+              min={CONTEXT_COUNT_MIN}
+              max={CONTEXT_COUNT_MAX}
+              value={context.count}
+              onChange={(next) =>
+                onChangeContext({
+                  count: Math.round(Number(next ?? CONTEXT_COUNT_MIN)),
+                })
+              }
+              disabled={disabled || !context.enabled}
+              data-testid={`${TEST_ID}-context`}
+            />
+          </S.NarrowInputBox>
+        </FlexItem>
+      </Row>
+
       <Col gap="m" grow={false}>
         {/* Compact disclosure: chevron + "Options" on the left, the add-row
             "+" on the right, the option fields below once expanded. */}
@@ -308,54 +351,6 @@ export const ArraySearchForm = ({
                         error={endInvalid ? INVALID_INDEX_MESSAGE : undefined}
                         disabled={disabled}
                         data-testid={`${TEST_ID}-end`}
-                      />
-                    </S.NarrowInputBox>
-                  </FlexItem>
-                </Row>
-              </FlexItem>
-              <FlexItem grow={false}>
-                <Row align="center" gap="s" grow={false}>
-                  <FlexItem grow={false}>
-                    <Row align="center" gap="xs" grow={false}>
-                      <FlexItem grow={false}>
-                        <S.InlineCheckbox
-                          id={`${TEST_ID}-context-toggle`}
-                          name="array-search-context-toggle"
-                          label={CONTEXT_LABEL}
-                          checked={context.enabled}
-                          onChange={(e) =>
-                            onChangeContext({ enabled: e.target.checked })
-                          }
-                          disabled={disabled}
-                          data-testid={`${TEST_ID}-context-toggle`}
-                        />
-                      </FlexItem>
-                      <FlexItem grow={false}>
-                        <InfoHint content={CONTEXT_HINT} />
-                      </FlexItem>
-                    </Row>
-                  </FlexItem>
-                  <FlexItem grow={false}>
-                    <Text size="s">{CONTEXT_PREFIX}</Text>
-                  </FlexItem>
-                  {/* Always rendered so ticking Context doesn't shift the row;
-                      it just becomes editable once the toggle is on. */}
-                  <FlexItem grow={false}>
-                    <S.NarrowInputBox>
-                      <NumericInput
-                        autoValidate
-                        min={CONTEXT_COUNT_MIN}
-                        max={CONTEXT_COUNT_MAX}
-                        value={context.count}
-                        onChange={(next) =>
-                          onChangeContext({
-                            count: Math.round(
-                              Number(next ?? CONTEXT_COUNT_MIN),
-                            ),
-                          })
-                        }
-                        disabled={disabled || !context.enabled}
-                        data-testid={`${TEST_ID}-context`}
                       />
                     </S.NarrowInputBox>
                   </FlexItem>
