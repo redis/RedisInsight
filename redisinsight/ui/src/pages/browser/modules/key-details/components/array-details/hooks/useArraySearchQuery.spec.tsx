@@ -13,11 +13,20 @@ import {
   ArrayCombinator,
   ArrayGrepCriteria,
 } from 'uiSrc/slices/interfaces/array'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { useArraySearchQuery } from './useArraySearchQuery'
+
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
+}))
+
+const mockedSendEventTelemetry = jest.mocked(sendEventTelemetry)
 
 const KEY = 'readings'
 const keyBuffer = stringToBuffer(KEY)
 const otherKeyBuffer = stringToBuffer('other')
+const INSTANCE_ID = 'instance-1'
 
 const buildState = (
   overrides: {
@@ -27,6 +36,7 @@ const buildState = (
 ) => {
   const next = cloneDeep(initialStateDefault)
   next.browser.array = cloneDeep(initialStateArray)
+  next.connections.instances.connectedInstance.id = INSTANCE_ID
   next.browser.keys.selectedKey.data = overrides.selectedKeyName
     ? ({
         type: overrides.selectedKeyType ?? KeyTypes.Array,
@@ -56,6 +66,7 @@ const searchBody = () =>
 
 describe('useArraySearchQuery', () => {
   beforeEach(() => {
+    mockedSendEventTelemetry.mockClear()
     apiService.post = jest
       .fn()
       .mockResolvedValue({ status: 200, data: { keyName: KEY, elements: [] } })
@@ -237,5 +248,104 @@ describe('useArraySearchQuery', () => {
     expect(result.current.combinator).toBe(ArrayCombinator.Or)
     expect(result.current.options.nocase).toBe(false)
     expect(result.current.options.limitEnabled).toBe(false)
+  })
+
+  describe('telemetry', () => {
+    it('fires ARRAY_SEARCH_QUERY_RUN once with flags/counts for the default form', async () => {
+      const { result } = renderWithStore(keyBuffer)
+
+      await act(async () => {
+        result.current.runSearch()
+      })
+
+      expect(mockedSendEventTelemetry).toHaveBeenCalledTimes(1)
+      expect(mockedSendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.ARRAY_SEARCH_QUERY_RUN,
+        eventData: {
+          databaseId: INSTANCE_ID,
+          predicatesCount: 1,
+          criteria: [ArrayGrepCriteria.Exact],
+          combinator: ArrayCombinator.Or,
+          nocase: false,
+          withValues: true,
+          limitEnabled: false,
+          hasRange: false,
+        },
+      })
+    })
+
+    it('reports the criteria discriminators, connective, flags and range presence', async () => {
+      const { result } = renderWithStore(keyBuffer)
+
+      act(() => {
+        result.current.updatePredicate(0, {
+          criteria: ArrayGrepCriteria.Glob,
+          value: 'a*',
+        })
+        result.current.addPredicate()
+        result.current.updatePredicate(1, {
+          criteria: ArrayGrepCriteria.Re,
+          value: '^b',
+        })
+        result.current.setCombinator(ArrayCombinator.And)
+        result.current.updateOptions({
+          start: '0',
+          end: '99',
+          nocase: true,
+          withValues: false,
+          limitEnabled: true,
+          limit: '25',
+        })
+      })
+      mockedSendEventTelemetry.mockClear()
+
+      await act(async () => {
+        result.current.runSearch()
+      })
+
+      expect(mockedSendEventTelemetry).toHaveBeenCalledTimes(1)
+      expect(mockedSendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.ARRAY_SEARCH_QUERY_RUN,
+        eventData: {
+          databaseId: INSTANCE_ID,
+          predicatesCount: 2,
+          criteria: [ArrayGrepCriteria.Glob, ArrayGrepCriteria.Re],
+          combinator: ArrayCombinator.And,
+          nocase: true,
+          withValues: false,
+          limitEnabled: true,
+          hasRange: true,
+        },
+      })
+    })
+
+    it('does not fire on first render (search is user-initiated)', () => {
+      renderWithStore(keyBuffer)
+
+      expect(mockedSendEventTelemetry).not.toHaveBeenCalled()
+    })
+
+    it('does not fire on a dead click before the key is ready', async () => {
+      const { result } = renderWithStore(
+        keyBuffer,
+        buildState({ selectedKeyName: null }),
+      )
+      mockedSendEventTelemetry.mockClear()
+
+      await act(async () => {
+        result.current.runSearch()
+      })
+
+      expect(mockedSendEventTelemetry).not.toHaveBeenCalled()
+    })
+
+    it('does not fire on resetQuery', () => {
+      const { result } = renderWithStore(keyBuffer)
+      mockedSendEventTelemetry.mockClear()
+
+      act(() => result.current.resetQuery())
+
+      expect(mockedSendEventTelemetry).not.toHaveBeenCalled()
+    })
   })
 })
