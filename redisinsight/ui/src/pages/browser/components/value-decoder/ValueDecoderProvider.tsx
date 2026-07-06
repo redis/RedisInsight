@@ -7,14 +7,18 @@ import React, {
   useState,
 } from 'react'
 
-import BrowserStorageItem from 'uiSrc/constants/storage'
-import { localStorageService } from 'uiSrc/services'
+import { useAppSelector } from 'uiSrc/slices/hooks'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { bufferToString } from 'uiSrc/utils'
 
 import { ValueDecoderModal, ValueDecoderModalConfig } from './ValueDecoderModal'
 import { normalizeRule } from './schemaUtils'
 import { ValueDecoderRule } from './types'
+import {
+  getValueDecoderRules,
+  setValueDecoderRules,
+} from './valueDecoderStorage'
 import { findMatchingDecoderRule } from './utils'
 
 export interface ValueDecoderContextValue {
@@ -39,16 +43,6 @@ const NOOP_CONTEXT: ValueDecoderContextValue = {
   setDecodeEnabled: () => {},
 }
 
-const loadDecoders = (): ValueDecoderRule[] => {
-  const raw: ValueDecoderRule[] =
-    localStorageService?.get(BrowserStorageItem.valueDecoderRules) ?? []
-  return raw.map(normalizeRule)
-}
-
-const saveDecoders = (decoders: ValueDecoderRule[]) => {
-  localStorageService?.set(BrowserStorageItem.valueDecoderRules, decoders)
-}
-
 export const useValueDecoder = () => {
   const ctx = useContext(ValueDecoderContext)
   return ctx ?? NOOP_CONTEXT
@@ -61,7 +55,10 @@ export const ValueDecoderProvider = ({
   children: React.ReactNode
   keyProp: RedisResponseBuffer | null
 }) => {
-  const [decoders, setDecoders] = useState<ValueDecoderRule[]>(loadDecoders)
+  const { id: instanceId = '' } = useAppSelector(connectedInstanceSelector)
+  const [decoders, setDecoders] = useState<ValueDecoderRule[]>(() =>
+    getValueDecoderRules(instanceId),
+  )
   const [modalConfig, setModalConfig] =
     useState<ValueDecoderModalConfig | null>(null)
   const [isDecodeEnabled, setIsDecodeEnabled] = useState(false)
@@ -73,6 +70,12 @@ export const ValueDecoderProvider = ({
   )
 
   useEffect(() => {
+    setDecoders(getValueDecoderRules(instanceId))
+    setModalConfig(null)
+    setIsDecodeEnabled(false)
+  }, [instanceId])
+
+  useEffect(() => {
     setIsDecodeEnabled(false)
   }, [keyName, matchedRule?.id ?? null])
 
@@ -80,12 +83,15 @@ export const ValueDecoderProvider = ({
     setModalConfig({ keyName })
   }, [keyName])
 
-  const handleSaveDecoders = useCallback((nextDecoders: ValueDecoderRule[]) => {
-    const normalized = nextDecoders.map(normalizeRule)
-    setDecoders(normalized)
-    saveDecoders(normalized)
-    setModalConfig(null)
-  }, [])
+  const handleSaveDecoders = useCallback(
+    (nextDecoders: ValueDecoderRule[]) => {
+      const normalized = nextDecoders.map(normalizeRule)
+      setDecoders(normalized)
+      setValueDecoderRules(instanceId, normalized)
+      setModalConfig(null)
+    },
+    [instanceId],
+  )
 
   const handleCancelModal = useCallback(() => {
     setModalConfig(null)
