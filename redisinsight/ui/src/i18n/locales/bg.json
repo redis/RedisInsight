@@ -202,6 +202,8 @@
   "settings.general.theme.option.light": "Светла тема",
   "settings.general.theme.option.system": "Същата като системната",
   "settings.general.theme.title": "Цветова тема",
+  "settings.privacy.description": "За да оптимизира работата Ви, Redis Insight използва инструменти на трети страни.",
+  "settings.privacy.usageData.title": "Данни за употреба",
   "settings.section.advanced": "Разширени",
   "settings.section.cloud": "Redis Cloud",
   "settings.section.general": "Общи",

@@ -202,6 +202,8 @@
   "settings.general.theme.option.light": "Light Theme",
   "settings.general.theme.option.system": "Match System",
   "settings.general.theme.title": "Color Theme",
+  "settings.privacy.description": "To optimize your experience, Redis Insight uses third-party tools.",
+  "settings.privacy.usageData.title": "Usage Data",
   "settings.section.advanced": "Advanced",
   "settings.section.cloud": "Redis Cloud",
   "settings.section.general": "General",
