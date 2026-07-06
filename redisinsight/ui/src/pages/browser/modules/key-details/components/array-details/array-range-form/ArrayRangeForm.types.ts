@@ -19,6 +19,13 @@ export interface ArrayRangeFormProps {
    */
   onReset?: () => void
   /**
+   * Deletes the inclusive [start, end] window currently in the inputs
+   * (ARDELRANGE). Rendered as a destructive action behind its own confirm
+   * popover; hidden when the handler is absent. Unlike Run, it ignores the
+   * view-only span cap — the delete endpoint accepts any window size.
+   */
+  onDeleteRange?: () => void
+  /**
    * Disables the Run / Reset actions in addition to the form's internal
    * range validation. Container passes `true` while the selected key's
    * confirmed type/name has not caught up with the clicked key yet so a

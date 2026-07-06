@@ -7,7 +7,7 @@ import {
   GetArraySearchResponse,
   GetArrayScanResponse,
 } from 'apiClient'
-import { RedisString } from 'uiSrc/slices/interfaces/app'
+import { RedisResponseBuffer, RedisString } from 'uiSrc/slices/interfaces/app'
 
 /**
  * Mirror of the backend `ArrayAggregateOperation` enum (BE
@@ -145,6 +145,9 @@ export interface ArraySearchState {
 export interface StateArray {
   loading: boolean
   error: string
+  /** True while an inline ARSET edit is in flight, so the table can block
+   *  overlapping edits and keep the header refresh paused until it settles. */
+  updating: boolean
   query: ArrayActiveQuery
   data: ArrayData
   aggregate: ArrayAggregateState
@@ -156,6 +159,29 @@ export interface FetchArrayRangeParams {
   start: string
   end: string
   resetData?: boolean
+}
+
+/** Append a value to the end of the array (ARSET at the current length,
+ *  computed server-side). The key is always a buffer (the selected key), so
+ *  the stale-key guard can compare it byte-exactly with isEqualBuffers. */
+export interface AppendArrayElementParams {
+  key: RedisResponseBuffer
+  value: RedisString
+  /** Connected instance id when the add was requested. The write is cancelled
+   *  if the live connection no longer matches — a pending production-write
+   *  confirmation must not write into a database the user has since switched
+   *  to. */
+  expectedInstanceId?: string
+}
+
+/** Add a value at an explicit index (ARSET key index value). Index is a
+ *  numeric string per the unsigned-64-bit contract. */
+export interface AddArrayElementParams {
+  key: RedisResponseBuffer
+  index: string
+  value: RedisString
+  /** See AppendArrayElementParams.expectedInstanceId. */
+  expectedInstanceId?: string
 }
 
 export interface FetchArrayScanParams {
@@ -214,6 +240,18 @@ export interface ArraySearchOptions {
   withValues: boolean
   limitEnabled: boolean
   limit: string
+}
+
+/**
+ * ARSET single-element edit (Modify vertical). `index` addresses the slot to
+ * overwrite; `value` is the serialized-buffer payload the formatter pipeline
+ * expects (built via `stringToSerializedBufferFormat`). The key must already
+ * exist — this edits a loaded element, it never creates a key.
+ */
+export interface UpdateArrayElementParams {
+  key: RedisString
+  index: string
+  value: RedisString
 }
 
 /**

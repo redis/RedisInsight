@@ -1,0 +1,79 @@
+meta {
+  name: Update Language
+  type: http
+  seq: 1
+}
+
+patch {
+  url: {{API_URL}}/settings
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "language": "bg"
+  }
+}
+
+docs {
+  # Update Language
+
+  Sets the application display language via `PATCH /settings`. The value is
+  persisted in the agnostic user-settings config (the same JSON blob that
+  stores `theme`, `dateFormat`, and `timezone`) and is applied app-wide on the
+  next load by the UI.
+
+  The example above switches the UI to Bulgarian (`bg`). Send `"en"` to switch
+  back to English.
+
+  ## Request Body
+
+  All fields are optional — send only the ones you want to change.
+
+  | Field | Type | Description |
+  |-------|------|-------------|
+  | `language` | string | Locale code to apply. Currently supported: `en`, `bg`. Unknown codes fall back to `en` at render time. |
+  | `theme` | string (optional) | Color theme, e.g. `DARK`, `LIGHT`, `SYSTEM`. |
+  | `dateFormat` | string (optional) | Applied date format. |
+  | `timezone` | string (optional) | `local` or `UTC`. |
+  | `scanThreshold` | number (optional) | Scan threshold (min 500). |
+  | `batchSize` | number (optional) | Workbench pipeline batch size. |
+
+  ## Response
+
+  Returns `200 OK` with the full, updated settings object, including the new
+  `language`:
+
+  ```
+  {
+    "theme": "DARK",
+    "language": "bg",
+    "dateFormat": null,
+    "timezone": null,
+    "scanThreshold": 10000,
+    "batchSize": 5,
+    "acceptTermsAndConditionsOverwritten": false,
+    "agreements": { "version": "1.0.0", "eula": true, "analytics": true }
+  }
+  ```
+
+  ## Notes
+
+  - The language **picker** in Settings is gated behind the switchable
+    `dev-language` feature flag (off by default; overridable on via
+    `~/.redis-insight/config.json`). This API endpoint accepts `language`
+    regardless of the flag — the flag only controls UI visibility.
+  - `language` defaults to `null` for users who have never set it; the UI then
+    uses the default language (`en`) or the `?lang=` query-param override.
+
+  ## Error Responses
+
+  | Status | Condition |
+  |--------|-----------|
+  | `400` | Validation failed (e.g. `language` is not a string). |
+}
+
+settings {
+  encodeUrl: true
+}

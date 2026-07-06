@@ -52,7 +52,12 @@ export class RdiService {
     const rdi = await this.repository.get(id);
 
     if (!rdi) {
-      throw new RdiPipelineNotFoundException(`RDI with id ${id} was not found`);
+      throw new RdiPipelineNotFoundException(
+        `RDI with id ${id} was not found`,
+        {
+          resource: { id },
+        },
+      );
     }
 
     return rdi;

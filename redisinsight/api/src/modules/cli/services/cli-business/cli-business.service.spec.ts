@@ -516,6 +516,40 @@ describe('CliBusinessService', () => {
       );
       expect(recommendationService.check).toBeCalledTimes(1);
     });
+
+    it('requests AROP with exact u64 integer replies', async () => {
+      const dto: SendCommandDto = {
+        command: 'AROP key 0 5 OR',
+        outputFormat: CliOutputFormatterTypes.Raw,
+      };
+      when(standaloneClient.sendCommand)
+        .calledWith(['AROP', 'key', '0', '5', 'OR'], expect.anything())
+        .mockReturnValue('9007199254740993');
+
+      await service.sendCommand(mockCliClientMetadata, dto);
+
+      expect(standaloneClient.sendCommand).toHaveBeenCalledWith(
+        ['AROP', 'key', '0', '5', 'OR'],
+        expect.objectContaining({ integerReply: 'bigint' }),
+      );
+    });
+
+    it('requests ARINFO with exact u64 integer replies', async () => {
+      const dto: SendCommandDto = {
+        command: 'ARINFO key',
+        outputFormat: CliOutputFormatterTypes.Raw,
+      };
+      when(standaloneClient.sendCommand)
+        .calledWith(['ARINFO', 'key'], expect.anything())
+        .mockReturnValue(['length', '9007199254740993']);
+
+      await service.sendCommand(mockCliClientMetadata, dto);
+
+      expect(standaloneClient.sendCommand).toHaveBeenCalledWith(
+        ['ARINFO', 'key'],
+        expect.objectContaining({ integerReply: 'bigint' }),
+      );
+    });
   });
 
   describe('sendClusterCommand', () => {

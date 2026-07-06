@@ -38,4 +38,11 @@ export type RiPopoverProps = Omit<
   /** if true, the trigger will be standalone and will not be wrapped in a span */
   standalone?: boolean
   customOutsideDetector?: boolean
+  /**
+   * Radix hook fired when the panel is about to receive focus on open
+   * (forwarded through to the underlying `PopoverContent`). Call
+   * `event.preventDefault()` to keep focus from jumping to the first
+   * focusable element inside the panel.
+   */
+  onOpenAutoFocus?: (event: Event) => void
 }

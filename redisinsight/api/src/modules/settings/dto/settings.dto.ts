@@ -91,6 +91,15 @@ export class GetAppSettingsResponse {
   theme: string = null;
 
   @ApiProperty({
+    description: 'Applied application language.',
+    type: String,
+    example: 'en',
+  })
+  @Expose()
+  @Default(null)
+  language: string | null = null;
+
+  @ApiProperty({
     description: 'Applied application date format',
     type: String,
     example: 'yyyy-mm-dd',
@@ -161,6 +170,15 @@ export class UpdateSettingsDto {
   @IsOptional()
   @IsString()
   theme?: string;
+
+  @ApiPropertyOptional({
+    description: 'Application language.',
+    type: String,
+    example: 'en',
+  })
+  @IsOptional()
+  @IsString()
+  language?: string;
 
   @ApiPropertyOptional({
     description: 'Application date format.',

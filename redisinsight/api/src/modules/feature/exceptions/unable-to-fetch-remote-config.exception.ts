@@ -1,4 +1,5 @@
 import { HttpException } from '@nestjs/common';
+import { CustomErrorCodes } from 'src/constants';
 
 export class UnableToFetchRemoteConfigException extends HttpException {
   constructor(
@@ -6,6 +7,7 @@ export class UnableToFetchRemoteConfigException extends HttpException {
       message: 'Unable to fetch remote config',
       name: 'UnableToFetchRemoteConfigException',
       statusCode: 500,
+      errorCode: CustomErrorCodes.UnableToFetchRemoteConfig,
     },
     status = 500,
   ) {

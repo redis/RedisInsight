@@ -18,8 +18,7 @@ export const APPLIES_TO_ALL_LABEL = 'applies to all'
 
 export const OPTIONS_LABEL = 'Options'
 export const OPTIONS_HINT =
-  'Range limits the index window (blank = whole array). NOCASE matches ' +
-  'case-insensitively, WITHVALUES returns values, LIMIT caps the result count.'
+  'Refine which elements are searched and how matches are shown.'
 export const RANGE_LABEL = 'Range'
 export const RANGE_TO_LABEL = 'to'
 export const START_PLACEHOLDER = '-'
@@ -27,6 +26,17 @@ export const END_PLACEHOLDER = '+'
 export const NOCASE_LABEL = 'NOCASE'
 export const WITHVALUES_LABEL = 'WITHVALUES'
 export const LIMIT_LABEL = 'LIMIT'
+export const CONTEXT_LABEL = 'Context'
+export const CONTEXT_PREFIX = '±'
+
+/** Per-option (i) hints rendered next to each control. */
+export const RANGE_HINT =
+  'Limits the index window searched (blank = whole array).'
+export const NOCASE_HINT = 'Match case-insensitively.'
+export const WITHVALUES_HINT = "Return each match's value, not just its index."
+export const LIMIT_HINT = 'Cap the number of matches returned.'
+export const CONTEXT_HINT =
+  'When expanding a match, also show ±N neighbouring elements.'
 
 export const INVALID_INDEX_MESSAGE =
   'Index must be a valid 64-bit unsigned integer'
@@ -34,12 +44,6 @@ export const INVALID_INDEX_MESSAGE =
 export const ARRAY_SEARCH_LIMIT_MAX = 1_000_000
 export const INVALID_LIMIT_MESSAGE =
   'Limit must be a whole number between 1 and 1,000,000'
-
-export const PREVIEW_TOGGLE_LABEL = 'Preview'
-export const PREVIEW_TOGGLE_ARIA_LABEL = 'Toggle command preview'
-export const PREVIEW_TOGGLE_SHOW_TOOLTIP =
-  'Show the Redis command that will run'
-export const PREVIEW_TOGGLE_HIDE_TOOLTIP = 'Hide the command preview'
 
 /** Criteria dropdown options, in ARGREP command-token order. */
 export const ARRAY_GREP_CRITERIA_OPTIONS: {

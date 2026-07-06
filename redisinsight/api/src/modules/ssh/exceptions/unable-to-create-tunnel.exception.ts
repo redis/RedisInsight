@@ -1,5 +1,6 @@
 import { HttpException } from '@nestjs/common';
 import { sanitizeMessage } from '../utils';
+import { CustomErrorCodes } from 'src/constants';
 
 export class UnableToCreateTunnelException extends HttpException {
   constructor(message = '') {
@@ -10,6 +11,7 @@ export class UnableToCreateTunnelException extends HttpException {
         message: `${prepend} ${sanitizedMessage}`,
         name: 'UnableToCreateTunnelException',
         statusCode: 500,
+        errorCode: CustomErrorCodes.UnableToCreateTunnel,
       },
       500,
     );

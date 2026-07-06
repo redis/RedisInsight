@@ -1,0 +1,55 @@
+meta {
+  name: Delete Elements
+  type: http
+  seq: 13
+}
+
+delete {
+  url: {{API_URL}}/databases/{{DB_INSTANCE_ID}}/array/elements
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "keyName": "readings",
+    "indexes": ["0", "3", "5"]
+  }
+}
+
+docs {
+  # ARDEL (delete elements by index)
+
+  Delete one or more elements by index — `ARDEL key index [index …]`. Indexes
+  pointing at an empty slot contribute 0 to the deleted count. Deleting the
+  last element removes the key.
+
+  ## Request body
+
+  | Field     | Type     | Notes                                              |
+  |-----------|----------|----------------------------------------------------|
+  | `keyName` | string   | The Array key name.                                |
+  | `indexes` | string[] | One or more unsigned 64-bit integers as strings.   |
+
+  ## Response
+
+  `200 OK`
+
+  ```json
+  { "affected": "2" }
+  ```
+
+  `affected` is the count actually deleted (decimal string).
+
+  ## Errors
+
+  | Status | When |
+  |--------|------|
+  | `400`  | Key holds a non-array type, or an index is not a valid u64 string. |
+  | `403`  | User has no permission for `ARDEL`. |
+  | `404`  | Key does not exist. |
+}
+
+settings {
+  encodeUrl: true
+}

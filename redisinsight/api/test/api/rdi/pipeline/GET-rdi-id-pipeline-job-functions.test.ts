@@ -67,6 +67,7 @@ describe('GET /rdi/:id/pipeline/job-functions', () => {
           errorCode: 11402,
           message: 'Unauthorized',
           statusCode: 401,
+          resource: { detail: 'Unauthorized' },
         });
       },
       before: async () => {

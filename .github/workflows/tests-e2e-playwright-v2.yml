@@ -41,13 +41,14 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           HAS_E2E_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'e2e-tests') }}
           HAS_RUN_ALL_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'run-all-tests') }}
+          HAS_DEPENDENCIES_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'dependencies') }}
         run: |
           if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
             echo "should_run=true" >> $GITHUB_OUTPUT
           elif [[ "$EVENT_NAME" == "schedule" ]]; then
             echo "should_run=true" >> $GITHUB_OUTPUT
           elif [[ "$EVENT_NAME" == "pull_request" ]]; then
-            if [[ "$HAS_E2E_LABEL" == "true" || "$HAS_RUN_ALL_LABEL" == "true" ]]; then
+            if [[ "$HAS_E2E_LABEL" == "true" || "$HAS_RUN_ALL_LABEL" == "true" || "$HAS_DEPENDENCIES_LABEL" == "true" ]]; then
               echo "should_run=true" >> $GITHUB_OUTPUT
             else
               echo "should_run=false" >> $GITHUB_OUTPUT
@@ -115,7 +116,7 @@ jobs:
       environment: ${{ inputs.environment || 'staging' }}
       debug: ${{ inputs.debug || false }}
 
-  # Slack notification on nightly failures only
+  # Alert on any non-success nightly result (incl. 'cancelled' from a timeout).
   notify-slack:
     name: Notify Slack on nightly failure
     needs:
@@ -128,12 +129,12 @@ jobs:
     if: |
       always() &&
       github.event_name == 'schedule' &&
-      (needs.lint.result == 'failure' ||
-       needs.build-docker.result == 'failure' ||
-       needs.build-linux.result == 'failure' ||
-       needs.e2e-dev-chromium.result == 'failure' ||
-       needs.e2e-docker.result == 'failure' ||
-       needs.e2e-electron.result == 'failure')
+      (needs.lint.result != 'success' ||
+       needs.build-docker.result != 'success' ||
+       needs.build-linux.result != 'success' ||
+       needs.e2e-dev-chromium.result != 'success' ||
+       needs.e2e-docker.result != 'success' ||
+       needs.e2e-electron.result != 'success')
     runs-on: ubuntu-latest
     steps:
       - name: Post to Slack
@@ -143,7 +144,7 @@ jobs:
           token: ${{ secrets.SLACK_TEST_REPORT_KEY }}
           payload: |
             channel: "${{ secrets.SLACK_TEST_REPORT_CHANNEL }}"
-            text: "<!here> *Nightly E2E failure* — `${{ github.repository }}` on `${{ github.ref_name }}` @ `${{ github.sha }}`"
+            text: "<!here> *Nightly E2E did not succeed* — `${{ github.repository }}` on `${{ github.ref_name }}` @ `${{ github.sha }}`"
             attachments:
               - color: "#cc0000"
                 title: "${{ github.workflow }}"

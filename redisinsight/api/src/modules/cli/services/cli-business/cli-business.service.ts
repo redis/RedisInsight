@@ -38,6 +38,7 @@ import { OutputFormatterManager } from './output-formatter/output-formatter-mana
 import { CliOutputFormatterTypes } from './output-formatter/output-formatter.interface';
 import { TextFormatterStrategy } from './output-formatter/strategies/text-formatter.strategy';
 import { RawFormatterStrategy } from './output-formatter/strategies/raw-formatter.strategy';
+import { ARRAY_U64_INTEGER_REPLY_COMMANDS } from 'src/modules/browser/constants/browser-tool-commands';
 
 @Injectable()
 export class CliBusinessService {
@@ -223,8 +224,14 @@ export class CliBusinessService {
         command,
       );
 
+      const integerReply = ARRAY_U64_INTEGER_REPLY_COMMANDS.has(
+        command.toLowerCase(),
+      )
+        ? 'bigint'
+        : undefined;
       const reply = await client.sendCommand([command, ...args], {
         replyEncoding,
+        integerReply,
       });
 
       this.cliAnalyticsService.sendCommandExecutedEvent(

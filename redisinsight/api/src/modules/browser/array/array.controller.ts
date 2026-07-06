@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   HttpCode,
   Post,
   UseInterceptors,
@@ -20,6 +21,9 @@ import {
   AggregateArrayDto,
   AggregateArrayResponse,
   CreateArrayWithExpireDto,
+  DeleteArrayElementsDto,
+  DeleteArrayRangeDto,
+  DeleteArrayResponse,
   GetArrayCountResponse,
   GetArrayElementDto,
   GetArrayElementResponse,
@@ -34,6 +38,8 @@ import {
   GetArraySearchDto,
   GetArraySearchResponse,
   SetArrayElementDto,
+  AppendArrayElementDto,
+  AppendArrayElementResponse,
 } from 'src/modules/browser/array/dto';
 
 @ApiTags('Browser: Array')
@@ -73,6 +79,25 @@ export class ArrayController extends BrowserBaseController {
     @Body() dto: SetArrayElementDto,
   ): Promise<void> {
     return this.arrayService.setElement(clientMetadata, dto);
+  }
+
+  @Post('/append')
+  @HttpCode(200)
+  @ApiOperation({
+    description:
+      'Append a value to the end of the array. The end index is computed ' +
+      'server-side (current length); no index is supplied. Returns the index ' +
+      'written. The key must already exist.',
+  })
+  @ApiRedisParams()
+  @ApiBody({ type: AppendArrayElementDto })
+  @ApiOkResponse({ type: AppendArrayElementResponse })
+  @ApiQueryRedisStringEncoding()
+  async appendElement(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: AppendArrayElementDto,
+  ): Promise<AppendArrayElementResponse> {
+    return this.arrayService.appendElement(clientMetadata, dto);
   }
 
   @Post('/get-range')
@@ -224,5 +249,41 @@ export class ArrayController extends BrowserBaseController {
     @Body() dto: AggregateArrayDto,
   ): Promise<AggregateArrayResponse> {
     return this.arrayService.aggregate(clientMetadata, dto);
+  }
+
+  @Delete('/elements')
+  @ApiOperation({
+    description:
+      'Delete one or more elements by index (ARDEL key index [index …]). ' +
+      'Indexes pointing at an empty slot contribute 0 to the deleted count. ' +
+      'Deleting the last element removes the key.',
+  })
+  @ApiRedisParams()
+  @ApiBody({ type: DeleteArrayElementsDto })
+  @ApiOkResponse({ type: DeleteArrayResponse })
+  @ApiQueryRedisStringEncoding()
+  async deleteElements(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: DeleteArrayElementsDto,
+  ): Promise<DeleteArrayResponse> {
+    return this.arrayService.deleteElements(clientMetadata, dto);
+  }
+
+  @Delete('/range')
+  @ApiOperation({
+    description:
+      'Delete an inclusive range of elements (ARDELRANGE key start end). ' +
+      'A reversed range (start > end) deletes the same inclusive window. ' +
+      'Deleting the last element removes the key.',
+  })
+  @ApiRedisParams()
+  @ApiBody({ type: DeleteArrayRangeDto })
+  @ApiOkResponse({ type: DeleteArrayResponse })
+  @ApiQueryRedisStringEncoding()
+  async deleteRange(
+    @BrowserClientMetadata() clientMetadata: ClientMetadata,
+    @Body() dto: DeleteArrayRangeDto,
+  ): Promise<DeleteArrayResponse> {
+    return this.arrayService.deleteRange(clientMetadata, dto);
   }
 }

@@ -14,7 +14,6 @@ import {
 } from 'src/utils/catch-redis-errors';
 import { ReplyError } from 'src/models';
 import { CertificatesErrorCodes, RedisErrorCodes } from 'src/constants';
-import ERROR_MESSAGES from 'src/constants/error-messages';
 import {
   BadRequestException,
   ForbiddenException,
@@ -71,30 +70,22 @@ describe('catch-redis-errors', () => {
       },
       {
         error: new Error(RedisErrorCodes.ConnectionRefused),
-        output: new RedisConnectionUnavailableException(
-          ERROR_MESSAGES.INCORRECT_DATABASE_URL(urlPlaceholder),
-        ),
+        output: new RedisConnectionUnavailableException(urlPlaceholder),
       },
       {
         error: new Error(RedisErrorCodes.ConnectionNotFound),
-        output: new RedisConnectionUnavailableException(
-          ERROR_MESSAGES.INCORRECT_DATABASE_URL(urlPlaceholder),
-        ),
+        output: new RedisConnectionUnavailableException(urlPlaceholder),
       },
       {
         error: new Error(RedisErrorCodes.DNSTimeoutError),
-        output: new RedisConnectionUnavailableException(
-          ERROR_MESSAGES.INCORRECT_DATABASE_URL(urlPlaceholder),
-        ),
+        output: new RedisConnectionUnavailableException(urlPlaceholder),
       },
       {
         error: {
           message: 'some message',
           code: RedisErrorCodes.ConnectionReset,
         },
-        output: new RedisConnectionUnavailableException(
-          ERROR_MESSAGES.INCORRECT_DATABASE_URL(urlPlaceholder),
-        ),
+        output: new RedisConnectionUnavailableException(urlPlaceholder),
       },
       {
         error: {
@@ -102,7 +93,7 @@ describe('catch-redis-errors', () => {
           code: CertificatesErrorCodes.IncorrectCertificates,
         },
         output: new RedisConnectionIncorrectCertificateException(
-          ERROR_MESSAGES.INCORRECT_CERTIFICATES(urlPlaceholder),
+          urlPlaceholder,
         ),
       },
       {
@@ -111,7 +102,7 @@ describe('catch-redis-errors', () => {
           code: CertificatesErrorCodes.DepthZeroSelfSignedCert,
         },
         output: new RedisConnectionIncorrectCertificateException(
-          ERROR_MESSAGES.INCORRECT_CERTIFICATES(urlPlaceholder),
+          urlPlaceholder,
         ),
       },
       {
@@ -120,7 +111,7 @@ describe('catch-redis-errors', () => {
           code: CertificatesErrorCodes.SelfSignedCertInChain,
         },
         output: new RedisConnectionIncorrectCertificateException(
-          ERROR_MESSAGES.INCORRECT_CERTIFICATES(urlPlaceholder),
+          urlPlaceholder,
         ),
       },
       {
@@ -129,31 +120,31 @@ describe('catch-redis-errors', () => {
           code: CertificatesErrorCodes.OSSLError,
         },
         output: new RedisConnectionIncorrectCertificateException(
-          ERROR_MESSAGES.INCORRECT_CERTIFICATES(urlPlaceholder),
+          urlPlaceholder,
         ),
       },
       {
         error: new Error('SSL error'),
         output: new RedisConnectionIncorrectCertificateException(
-          ERROR_MESSAGES.INCORRECT_CERTIFICATES(urlPlaceholder),
+          urlPlaceholder,
         ),
       },
       {
         error: new Error(CertificatesErrorCodes.OSSLError),
         output: new RedisConnectionIncorrectCertificateException(
-          ERROR_MESSAGES.INCORRECT_CERTIFICATES(urlPlaceholder),
+          urlPlaceholder,
         ),
       },
       {
         error: new Error(CertificatesErrorCodes.IncorrectCertificates),
         output: new RedisConnectionIncorrectCertificateException(
-          ERROR_MESSAGES.INCORRECT_CERTIFICATES(urlPlaceholder),
+          urlPlaceholder,
         ),
       },
       {
         error: new Error('ERR unencrypted connection is prohibited'),
         output: new RedisConnectionIncorrectCertificateException(
-          ERROR_MESSAGES.INCORRECT_CERTIFICATES(urlPlaceholder),
+          urlPlaceholder,
         ),
       },
     ])('should handle %j', ({ error, output }) => {

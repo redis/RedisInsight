@@ -1,0 +1,60 @@
+meta {
+  name: Already Exists (resource)
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{API_URL}}/databases
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "errorcode-resource-demo",
+    "host": "localhost",
+    "port": 6379,
+    "cloudDetails": {
+      "cloudId": 1,
+      "subscriptionId": 1,
+      "subscriptionType": "fixed"
+    }
+  }
+}
+
+docs {
+  # DatabaseAlreadyExists — errorCode 11200 (with `resource`)
+
+  Creating a **cloud** database whose unique fields (host, port, username,
+  password, certs) match one that already exists returns `409`. The
+  `resource` block carries the structured context a client needs to both
+  translate the message and act on it — here, the existing database id.
+
+  **To trigger:** send this request twice (the first creates the database,
+  the second collides), or use cloud details that match a database you
+  already have.
+
+  ## Expected response (409)
+
+  ```
+  {
+    "message": "The database already exists.",
+    "statusCode": 409,
+    "error": "DatabaseAlreadyExists",
+    "errorCode": 11200,
+    "resource": {
+      "databaseId": "a1b2c3d4-0000-0000-0000-000000000000"
+    }
+  }
+  ```
+
+  This is the shape Task 4 standardises: a stable `errorCode` plus raw vars
+  in `resource`, with the English `message` kept as the fallback. The client
+  looks up the translated template by `errorCode` and fills it from
+  `resource`.
+}
+
+settings {
+  encodeUrl: true
+}

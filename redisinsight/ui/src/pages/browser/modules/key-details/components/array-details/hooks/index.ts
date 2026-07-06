@@ -1,3 +1,5 @@
 export { useArrayRangeQuery } from './useArrayRangeQuery'
 export { useArrayAggregateQuery } from './useArrayAggregateQuery'
 export { useArraySearchQuery } from './useArraySearchQuery'
+export { useArrayElementActions } from './useArrayElementActions'
+export { useResponsivePreviewLabel } from './useResponsivePreviewLabel'

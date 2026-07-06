@@ -6,13 +6,30 @@ import {
   arraySelector,
   fetchArrayRange,
   scanArrayRange,
+  setArrayActiveQuery,
   setArrayInitialState,
 } from 'uiSrc/slices/browser/array'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
 import { isEqualBuffers } from 'uiSrc/utils'
 import { KeyTypes } from 'uiSrc/constants'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
-import { DEFAULT_RANGE_END, DEFAULT_RANGE_START } from '../constants'
+import {
+  DEFAULT_RANGE_END,
+  DEFAULT_RANGE_START,
+  REVEAL_WINDOW_SIZE,
+} from '../constants'
+
+// BigInt() throws on a non-numeric string. The range fields can hold a
+// half-typed / invalid value, so parse defensively — a throw here would run in
+// the post-add success path and abort the panel close + refresh after a write
+// that already succeeded.
+const toBigIntOrNull = (value: string): bigint | null => {
+  try {
+    return BigInt(value)
+  } catch {
+    return null
+  }
+}
 
 /**
  * Owns the View / Browse tab query state for an array key: the inclusive
@@ -25,13 +42,20 @@ import { DEFAULT_RANGE_END, DEFAULT_RANGE_START } from '../constants'
  */
 export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
   const dispatch = useAppDispatch()
-  const { loading, error } = useAppSelector(arraySelector)
+  const { loading, error, query } = useAppSelector(arraySelector)
   const data = useAppSelector(arrayDataSelector)
   const selectedKeyData = useAppSelector(selectedKeyDataSelector)
 
   const [start, setStart] = useState<string>(DEFAULT_RANGE_START)
   const [end, setEnd] = useState<string>(DEFAULT_RANGE_END)
   const [showEmpty, setShowEmpty] = useState<boolean>(true)
+
+  // Latest-value ref for the *active* query (the one refreshArray replays after
+  // an add), so a stable revealIndex — held by the add form's captured success
+  // callback — decides visibility against what's actually displayed rather than
+  // the form inputs (which may hold an unrun / invalid range).
+  const activeQueryRef = useRef(query)
+  activeQueryRef.current = query
 
   // Manual + auto dispatches are gated on this so a quick click during a
   // key-switch can't fire ARGETRANGE/ARSCAN against a non-array key
@@ -132,6 +156,50 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
     )
   }, [dispatch, isArrayKeyReady, keyProp])
 
+  // Move the window so `index` is visible — used after an add whose element
+  // lands outside the current range (e.g. an append at the new tail). No-op
+  // when it's already within the window. Sets the form bounds AND the slice's
+  // active query (without fetching) so the caller's refreshArray replays the
+  // new window and the form inputs stay in sync.
+  const revealIndex = useCallback(
+    (index: string) => {
+      const target = toBigIntOrNull(index)
+      if (target === null) return
+
+      // Decide visibility against the ACTIVE query (what refreshArray replays),
+      // not the form inputs — those can hold a canonical-but-unrun/invalid range
+      // (e.g. a span over the cap with Run disabled), so the element would be
+      // "within" a range that is never actually fetched. Only skip when the
+      // index truly falls inside the displayed window.
+      const active = activeQueryRef.current
+      const lo = toBigIntOrNull(active.start)
+      const hi = toBigIntOrNull(active.end)
+      const withinWindow =
+        lo !== null &&
+        hi !== null &&
+        target >= (lo < hi ? lo : hi) &&
+        target <= (lo < hi ? hi : lo)
+      if (withinWindow) return
+
+      const span = BigInt(REVEAL_WINDOW_SIZE - 1)
+      const nextStart = (target > span ? target - span : BigInt(0)).toString()
+      // Sync all three form controls to the query we just fetched — including
+      // showEmpty, so a toggled-but-unrun checkbox (and the command preview)
+      // can't be left showing a mode the reveal didn't actually use.
+      setStart(nextStart)
+      setEnd(index)
+      setShowEmpty(active.showEmpty)
+      dispatch(
+        setArrayActiveQuery({
+          start: nextStart,
+          end: index,
+          showEmpty: active.showEmpty,
+        }),
+      )
+    },
+    [dispatch],
+  )
+
   return {
     start,
     end,
@@ -141,6 +209,7 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
     setShowEmpty,
     runQuery,
     resetQuery,
+    revealIndex,
     isArrayKeyReady,
     elements: data?.elements ?? [],
     loading,

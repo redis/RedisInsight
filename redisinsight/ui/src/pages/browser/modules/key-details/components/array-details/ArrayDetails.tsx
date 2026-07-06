@@ -15,10 +15,12 @@ import * as S from './ArrayDetails.styles'
 
 export interface Props extends KeyDetailsHeaderProps {
   keyProp: RedisResponseBuffer | null
+  onOpenAddItemPanel?: () => void
+  onCloseAddItemPanel?: () => void
 }
 
 const ArrayDetails = (props: Props) => {
-  const { keyProp } = props
+  const { keyProp, onOpenAddItemPanel, onCloseAddItemPanel } = props
 
   const [activeTab, setActiveTab] = useState<ArrayDetailsTab>(
     DEFAULT_ARRAY_DETAILS_TAB,
@@ -31,10 +33,18 @@ const ArrayDetails = (props: Props) => {
         <ArrayTabs value={activeTab} onChange={setActiveTab} />
       </S.TabsWrapper>
       <S.TabSlot $hidden={activeTab !== ArrayDetailsTab.View}>
-        <ViewTab keyProp={keyProp} />
+        <ViewTab
+          keyProp={keyProp}
+          isActive={activeTab === ArrayDetailsTab.View}
+          onOpenAddItemPanel={onOpenAddItemPanel}
+          onCloseAddItemPanel={onCloseAddItemPanel}
+        />
       </S.TabSlot>
       <S.TabSlot $hidden={activeTab !== ArrayDetailsTab.Search}>
-        <SearchTab keyProp={keyProp} />
+        <SearchTab
+          keyProp={keyProp}
+          isActive={activeTab === ArrayDetailsTab.Search}
+        />
       </S.TabSlot>
       <S.TabSlot $hidden={activeTab !== ArrayDetailsTab.Aggregate}>
         <AggregateTab keyProp={keyProp} />

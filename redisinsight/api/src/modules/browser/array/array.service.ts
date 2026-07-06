@@ -21,6 +21,7 @@ import {
 } from 'src/modules/browser/utils';
 import { KeyDto } from 'src/modules/browser/keys/dto';
 import { ARRAY_RANGE_MAX_ELEMENTS } from 'src/modules/browser/array/constants';
+import { isValidArrayIndex } from 'src/common/utils/array-index.helper';
 import {
   toIndexString,
   toRequiredIndexString,
@@ -33,6 +34,9 @@ import {
   ArrayElement,
   ArraySearchElement,
   CreateArrayWithExpireDto,
+  DeleteArrayElementsDto,
+  DeleteArrayRangeDto,
+  DeleteArrayResponse,
   GetArrayCountResponse,
   GetArrayElementDto,
   GetArrayElementResponse,
@@ -47,6 +51,8 @@ import {
   GetArraySearchDto,
   GetArraySearchResponse,
   SetArrayElementDto,
+  AppendArrayElementDto,
+  AppendArrayElementResponse,
 } from 'src/modules/browser/array/dto';
 
 @Injectable()
@@ -195,6 +201,7 @@ export class ArrayService {
       const hasLimit = typeof limit === 'number';
       const reply = (await client.sendCommand(
         hasLimit ? [...baseArgs, 'LIMIT', limit] : [...baseArgs],
+        { integerReply: 'bigint' },
       )) as unknown[];
 
       // ARSCAN wire shape varies by Redis version / client: Redis 8.8
@@ -274,7 +281,9 @@ export class ArrayService {
       if (withValues) args.push('WITHVALUES');
       if (typeof limit === 'number') args.push('LIMIT', limit);
 
-      const reply = (await client.sendCommand(args)) as unknown[];
+      const reply = (await client.sendCommand(args, {
+        integerReply: 'bigint',
+      })) as unknown[];
 
       // WITHVALUES wire shape varies: Redis 8.8 returns nested
       // [[index, value], ...] entries; some builds surface a flat
@@ -335,10 +344,10 @@ export class ArrayService {
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
       await checkIfKeyNotExists(keyName, client);
 
-      const reply = await client.sendCommand([
-        BrowserToolArrayCommands.ArLen,
-        keyName,
-      ]);
+      const reply = await client.sendCommand(
+        [BrowserToolArrayCommands.ArLen, keyName],
+        { integerReply: 'bigint' },
+      );
 
       this.logger.debug('Succeed to get array length.', clientMetadata);
       return plainToInstance(GetArrayLengthResponse, {
@@ -365,10 +374,10 @@ export class ArrayService {
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
       await checkIfKeyNotExists(keyName, client);
 
-      const reply = await client.sendCommand([
-        BrowserToolArrayCommands.ArCount,
-        keyName,
-      ]);
+      const reply = await client.sendCommand(
+        [BrowserToolArrayCommands.ArCount, keyName],
+        { integerReply: 'bigint' },
+      );
 
       this.logger.debug('Succeed to get array count.', clientMetadata);
       return plainToInstance(GetArrayCountResponse, {
@@ -395,10 +404,10 @@ export class ArrayService {
         await this.databaseClientFactory.getOrCreateClient(clientMetadata);
       await checkIfKeyNotExists(keyName, client);
 
-      const reply = await client.sendCommand([
-        BrowserToolArrayCommands.ArNext,
-        keyName,
-      ]);
+      const reply = await client.sendCommand(
+        [BrowserToolArrayCommands.ArNext, keyName],
+        { integerReply: 'bigint' },
+      );
 
       this.logger.debug('Succeed to get array next index.', clientMetadata);
       return plainToInstance(GetArrayNextIndexResponse, {
@@ -484,7 +493,9 @@ export class ArrayService {
       if (operation === ArrayAggregateOperation.Match) {
         args.push(value as RedisString);
       }
-      const reply = await client.sendCommand(args);
+      // AND/OR/XOR (and the MATCH/USED counts) come back as RESP integers that
+      // can exceed 2^53; opt into bigint so they reach toIndexString exact.
+      const reply = await client.sendCommand(args, { integerReply: 'bigint' });
 
       this.logger.debug('Succeed to aggregate array range.', clientMetadata);
       // AROP returns nil for numeric ops over a range with no numeric values
@@ -538,6 +549,60 @@ export class ArrayService {
     }
   }
 
+  public async appendElement(
+    clientMetadata: ClientMetadata,
+    dto: AppendArrayElementDto,
+  ): Promise<AppendArrayElementResponse> {
+    try {
+      this.logger.debug('Appending array element.', clientMetadata);
+      const { keyName, value } = dto;
+      const client =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+      // Append targets an existing array, so the key must already exist.
+      await checkIfKeyNotExists(keyName, client);
+
+      // Append-to-end = ARSET at the current length. Read the length, then
+      // write there. Not wrapped in a transaction (the client has no
+      // MULTI/WATCH yet), so concurrent appends can race on the same length —
+      // acceptable for the desktop GUI. The index stays a string, so the write
+      // is precise once ioredis returns 64-bit integers losslessly (RI-8296).
+      const index = toRequiredIndexString(
+        await client.sendCommand([BrowserToolArrayCommands.ArLen, keyName]),
+      );
+
+      // A full array (top index already 2^64-2) reports length 2^64-1 — the
+      // reserved index ARSET rejects with "invalid array index". Surface it as
+      // a clean 400 rather than letting it fall through as a 500.
+      if (!isValidArrayIndex(index)) {
+        throw new BadRequestException(ERROR_MESSAGES.ARRAY_IS_FULL);
+      }
+
+      await client.sendCommand([
+        BrowserToolArrayCommands.ArSet,
+        keyName,
+        index,
+        value,
+      ]);
+
+      this.logger.debug('Succeed to append array element.', clientMetadata);
+      return plainToInstance(AppendArrayElementResponse, {
+        keyName,
+        index,
+      });
+    } catch (error) {
+      this.logger.error(
+        'Failed to append array element.',
+        error,
+        clientMetadata,
+      );
+      if (error instanceof BadRequestException) throw error;
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
   public async getMultiElements(
     clientMetadata: ClientMetadata,
     dto: GetArrayMultiElementsDto,
@@ -566,6 +631,77 @@ export class ArrayService {
         error,
         clientMetadata,
       );
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
+  public async deleteElements(
+    clientMetadata: ClientMetadata,
+    dto: DeleteArrayElementsDto,
+  ): Promise<DeleteArrayResponse> {
+    try {
+      this.logger.debug('Deleting array elements.', clientMetadata);
+      const { keyName, indexes } = dto;
+      const client =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+      await checkIfKeyNotExists(keyName, client);
+
+      // ARDEL returns the count actually deleted; indexes at empty slots
+      // count 0. Deleting the last element removes the key server-side.
+      const reply = await client.sendCommand([
+        BrowserToolArrayCommands.ArDel,
+        keyName,
+        ...indexes,
+      ]);
+
+      this.logger.debug('Succeed to delete array elements.', clientMetadata);
+      return plainToInstance(DeleteArrayResponse, {
+        affected: toRequiredIndexString(reply),
+      });
+    } catch (error) {
+      this.logger.error(
+        'Failed to delete array elements.',
+        error,
+        clientMetadata,
+      );
+      if (error?.message?.includes(RedisErrorCodes.WrongType)) {
+        throw new BadRequestException(error.message);
+      }
+      throw catchAclError(error);
+    }
+  }
+
+  public async deleteRange(
+    clientMetadata: ClientMetadata,
+    dto: DeleteArrayRangeDto,
+  ): Promise<DeleteArrayResponse> {
+    try {
+      this.logger.debug('Deleting array range.', clientMetadata);
+      const { keyName, start, end } = dto;
+
+      // No |end - start| span cap here (unlike ARGETRANGE): ARDELRANGE deletes
+      // populated elements in the index window server-side and returns only a
+      // count. A reversed range (start > end) is valid and forwarded as-is.
+      const client =
+        await this.databaseClientFactory.getOrCreateClient(clientMetadata);
+      await checkIfKeyNotExists(keyName, client);
+
+      const reply = await client.sendCommand([
+        BrowserToolArrayCommands.ArDelRange,
+        keyName,
+        start,
+        end,
+      ]);
+
+      this.logger.debug('Succeed to delete array range.', clientMetadata);
+      return plainToInstance(DeleteArrayResponse, {
+        affected: toRequiredIndexString(reply),
+      });
+    } catch (error) {
+      this.logger.error('Failed to delete array range.', error, clientMetadata);
       if (error?.message?.includes(RedisErrorCodes.WrongType)) {
         throw new BadRequestException(error.message);
       }

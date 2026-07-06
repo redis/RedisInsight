@@ -57,6 +57,7 @@ export class LocalServerService extends ServerService {
         appVersion: SERVER_CONFIG.appVersion,
         buildCommitSha: SERVER_CONFIG.buildCommitSha,
         osPlatform: process.platform,
+        osArch: process.arch,
         buildType: SERVER_CONFIG.buildType,
         appType: ServerService.getAppType(SERVER_CONFIG.buildType),
         encryptionStrategies:

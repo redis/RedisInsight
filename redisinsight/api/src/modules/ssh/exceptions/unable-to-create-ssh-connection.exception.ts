@@ -1,4 +1,5 @@
 import { HttpException } from '@nestjs/common';
+import { CustomErrorCodes } from 'src/constants';
 import { sanitizeMessage } from '../utils';
 
 export class UnableToCreateSshConnectionException extends HttpException {
@@ -10,6 +11,7 @@ export class UnableToCreateSshConnectionException extends HttpException {
         message: `${prepend} ${sanitizedMessage}`,
         name: 'UnableToCreateSshConnectionException',
         statusCode: 503,
+        errorCode: CustomErrorCodes.UnableToCreateSshConnection,
       },
       503,
     );

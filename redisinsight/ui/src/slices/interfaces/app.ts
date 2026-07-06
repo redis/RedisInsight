@@ -22,6 +22,7 @@ export interface CustomError {
   statusCode: number
   errorCode?: number
   resourceId?: string
+  resource?: Record<string, unknown>
 }
 
 export interface ErrorOptions {

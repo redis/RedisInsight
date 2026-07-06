@@ -77,6 +77,7 @@ describe('GET /rdi/:id/pipeline/config/template/:pipelineType/:dbType', () => {
           errorCode: 11402,
           message: 'Unauthorized',
           statusCode: 401,
+          resource: { detail: 'Unauthorized' },
         });
       },
       before: async () => {

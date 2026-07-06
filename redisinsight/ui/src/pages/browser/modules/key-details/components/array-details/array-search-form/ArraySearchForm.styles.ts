@@ -1,5 +1,6 @@
+import React from 'react'
 import styled from 'styled-components'
-import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
+import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Col, Row } from 'uiSrc/components/base/layout/flex'
 
@@ -19,7 +20,15 @@ export const FormContainer = styled(Col)`
     ${({ theme }) => theme.semantic.color.border.neutral500};
 `
 
-export const ActionRow = styled(Row)`
+// A plain div (not `Row`) so it can hold the ResizeObserver ref that drives
+// the responsive preview label — layout components don't forward refs.
+export const ActionRow = styled.div<{
+  children?: React.ReactNode
+  ref?: React.Ref<HTMLDivElement>
+}>`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.core.space.space100};
   min-height: ${ACTION_ROW_HEIGHT};
 `
 
@@ -31,6 +40,11 @@ export const NarrowInputBox = styled(Row)`
   width: 110px;
 `
 
+/** Hairline rule between the index-window row and the flags row. */
+export const OptionsDivider = styled(Row)`
+  border-top: 1px solid ${({ theme }) => theme.semantic.color.border.neutral500};
+`
+
 /**
  * Fixed minimum width so the action row doesn't reflow when the selected
  * criteria label changes width (Exact / Match / Glob / Regex).
@@ -40,15 +54,22 @@ export const CriteriaSelect = styled(RiSelect)`
 `
 
 /**
+ * Option checkbox with its label's trailing padding removed so a following
+ * InfoHint hugs the text. That padding is on the inner `<label>`, not the
+ * className-bearing root, so it must be targeted as a descendant.
+ */
+export const InlineCheckbox = styled(Checkbox)`
+  & label {
+    padding-inline-end: 0;
+    padding-right: 0;
+  }
+`
+
+/**
  * The AND/OR connective sits in the gap between two predicate rows, indented
  * so it reads as joining the rows above and below rather than starting a new
  * field. Offset roughly tracks the criteria column width.
  */
 export const ConnectiveRow = styled(Row)`
   padding-left: 48px;
-`
-
-export const PreviewToggleButton = styled(ToggleButton)`
-  ${({ theme, pressed }) =>
-    !pressed && `border-color: ${theme.semantic.color.border.neutral600};`}
 `

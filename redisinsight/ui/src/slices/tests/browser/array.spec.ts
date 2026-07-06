@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { cloneDeep } from 'lodash'
 import { apiService } from 'uiSrc/services'
-import { DEFAULT_ERROR_MESSAGE } from 'uiSrc/utils'
+import { DEFAULT_ERROR_MESSAGE, stringToBuffer } from 'uiSrc/utils'
+import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { IAddInstanceErrorPayload } from 'uiSrc/slices/app/notifications'
 import {
   cleanup,
@@ -10,6 +11,7 @@ import {
   mockStore,
 } from 'uiSrc/utils/test-utils'
 import { MOCK_TIMESTAMP } from 'uiSrc/mocks/data/dateNow'
+import successMessages from 'uiSrc/components/notifications/success-messages'
 
 import reducer, {
   abortArrayRange,
@@ -27,6 +29,12 @@ import reducer, {
   loadArraySearchSuccess,
   loadArraySearchFailure,
   resetArraySearch,
+  updateArrayElement,
+  setArrayUpdating,
+  clearArrayAggregate,
+  loadArrayAggregateSuccess,
+  aggregateArray,
+  abortArrayAggregate,
   arraySelector,
   arrayDataSelector,
   arraySearchSelector,
@@ -35,11 +43,24 @@ import reducer, {
   fetchArrayLength,
   fetchArrayCount,
   refreshArray,
+  appendArrayElement,
+  addArrayElement,
   searchArray,
+  updateArrayElementAction,
+  fetchArrayNeighbours,
+  deleteArrayElements,
+  deleteArrayRange,
 } from '../../browser/array'
 import { arrayGrepPredicateFactory } from 'uiSrc/mocks/factories/browser/array/arrayGrepPredicate.factory'
-import { updateSelectedKeyRefreshTime } from '../../browser/keys'
-import { addErrorNotification } from '../../app/notifications'
+import {
+  refreshKeyInfo,
+  updateSelectedKeyRefreshTime,
+  deleteSelectedKeySuccess,
+} from '../../browser/keys'
+import {
+  addErrorNotification,
+  addMessageNotification,
+} from '../../app/notifications'
 import {
   ArrayAggregateOperation,
   ArrayCombinator,
@@ -53,6 +74,46 @@ jest.mock('uiSrc/services', () => ({
 // friction with the generated DTO types (which model the Buffer branch as
 // `{ type: 'Buffer'; data: number[] }`).
 const mockKey = 'readings'
+// Buffer form for the write thunks: the selected-key guard compares buffers
+// (isEqualBuffers), exactly as the UI passes them in production.
+const mockKeyBuffer = stringToBuffer(mockKey)
+// Connected instance id the add is requested against; the write is cancelled if
+// the live connection no longer matches `expectedInstanceId`.
+const mockInstanceId = 'instance-1'
+
+// A store whose live (browser-context) selected key is `name` and connected
+// instance is `instanceId` — array writes only proceed/apply while both still
+// match what they were when the add was requested.
+const storeWithSelectedKey = (
+  name = mockKeyBuffer,
+  instanceId = mockInstanceId,
+) =>
+  mockStore({
+    ...initialStateDefault,
+    connections: {
+      ...initialStateDefault.connections,
+      instances: {
+        ...initialStateDefault.connections.instances,
+        connectedInstance: {
+          ...initialStateDefault.connections.instances.connectedInstance,
+          id: instanceId,
+        },
+      },
+    },
+    app: {
+      ...initialStateDefault.app,
+      context: {
+        ...initialStateDefault.app.context,
+        browser: {
+          ...initialStateDefault.app.context.browser,
+          keyList: {
+            ...initialStateDefault.app.context.browser.keyList,
+            selectedKey: name,
+          },
+        },
+      },
+    },
+  })
 
 let store: typeof mockedStore
 let dateNow: jest.SpyInstance<number>
@@ -184,6 +245,94 @@ describe('array slice', () => {
         loadArrayCountSuccess({ keyName: mockKey, count: '7' }),
       )
       expect(next.data.count).toBe('7')
+    })
+
+    it('updateArrayElement replaces the value of the matching index only', () => {
+      const dirty = {
+        ...initialState,
+        data: {
+          ...initialState.data,
+          elements: [
+            { index: '0', value: 'a' },
+            { index: '5', value: 'b' },
+          ],
+        },
+      }
+      const next = reducer(
+        dirty,
+        updateArrayElement({ index: '5', value: 'B' }),
+      )
+      expect(next.data.elements).toEqual([
+        { index: '0', value: 'a' },
+        { index: '5', value: 'B' },
+      ])
+    })
+
+    it('updateArrayElement is a no-op when the index is not loaded', () => {
+      const dirty = {
+        ...initialState,
+        data: {
+          ...initialState.data,
+          elements: [{ index: '0', value: 'a' }],
+        },
+      }
+      const next = reducer(
+        dirty,
+        updateArrayElement({ index: '9', value: 'x' }),
+      )
+      expect(next.data.elements).toEqual([{ index: '0', value: 'a' }])
+    })
+
+    it('setArrayUpdating toggles the in-flight ARSET flag', () => {
+      const next = reducer(initialState, setArrayUpdating(true))
+      expect(next.updating).toBe(true)
+      expect(reducer(next, setArrayUpdating(false)).updating).toBe(false)
+    })
+
+    it('updateArrayElement patches the Search results too (shared table)', () => {
+      const dirty = {
+        ...initialState,
+        data: {
+          ...initialState.data,
+          elements: [{ index: '5', value: 'b' }],
+        },
+        search: {
+          ...initialState.search,
+          data: [{ index: '5', value: 'b' }],
+        },
+      }
+      const next = reducer(
+        dirty,
+        updateArrayElement({ index: '5', value: 'B' }),
+      )
+      expect(next.data.elements).toEqual([{ index: '5', value: 'B' }])
+      // The Search tab renders the same ArrayDetailsTable from search.data, so
+      // an edit issued there must reflect in the search results too.
+      expect(next.search.data).toEqual([{ index: '5', value: 'B' }])
+    })
+
+    it('leaves WITHVALUES=false search rows value-less on edit', () => {
+      const dirty = {
+        ...initialState,
+        data: {
+          ...initialState.data,
+          elements: [{ index: '5', value: 'b' }],
+        },
+        search: {
+          ...initialState.search,
+          data: [{ index: '5', value: null }],
+          query: { predicates: [], withValues: false } as any,
+        },
+      }
+      const next = reducer(
+        dirty,
+        updateArrayElement({ index: '5', value: 'B' }),
+      )
+      // The View tab reflects the edit…
+      expect(next.data.elements).toEqual([{ index: '5', value: 'B' }])
+      // …but an index-only search result stays value-less, since the active
+      // query explicitly asked not to load values.
+      expect(next.search.data).toEqual([{ index: '5', value: null }])
     })
 
     describe('search sub-state', () => {
@@ -604,6 +753,45 @@ describe('array slice', () => {
         })
       })
 
+      it('replays the AROP when one is still in flight (no result yet)', async () => {
+        // First AROP still loading (query stored, hasResult=false). A pre-add
+        // response would land stale, so refresh must abort + replay it.
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+        const local = mockStore({
+          ...initialStateDefault,
+          browser: {
+            ...initialStateDefault.browser,
+            array: {
+              ...initialState,
+              aggregate: {
+                ...initialState.aggregate,
+                loading: true,
+                hasResult: false,
+                query: {
+                  start: '5',
+                  end: '15',
+                  operation: ArrayAggregateOperation.Sum,
+                },
+              },
+            },
+          },
+        })
+
+        await local.dispatch<any>(refreshArray(mockKey))
+
+        const aggregateCall = (apiService.post as jest.Mock).mock.calls.find(
+          ([url]) => url.includes('array/aggregate'),
+        )
+        expect(aggregateCall?.[1]).toEqual({
+          keyName: mockKey,
+          start: '5',
+          end: '15',
+          operation: ArrayAggregateOperation.Sum,
+        })
+      })
+
       it('does not replay AROP when no aggregate has been run', async () => {
         apiService.post = jest
           .fn()
@@ -701,6 +889,514 @@ describe('array slice', () => {
         expect(store.getActions()).toEqual([
           loadArrayCountSuccess(response.data),
         ])
+      })
+    })
+
+    describe('updateArrayElementAction', () => {
+      // The optimistic patch only applies when the edited key is still the
+      // selected one, so these tests run against a store whose selected key
+      // matches `mockKey`. The guard reads the live app-context selection
+      // (updated synchronously on key click), not selectedKey.data.
+      const storeWithSelectedKey = (name: unknown) => {
+        const state = cloneDeep(initialStateDefault)
+        state.app.context.browser.keyList.selectedKey = name as any
+        const s = mockStore(state)
+        s.clearActions()
+        return s
+      }
+
+      it('posts keyName/index/value and optimistically updates the element', async () => {
+        apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
+        const keyedStore = storeWithSelectedKey(mockKey)
+
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction({ key: mockKey, index: '5', value: 'B' }),
+        )
+
+        const [url, body] = (apiService.post as jest.Mock).mock.calls[0]
+        expect(url).toContain('array/set-element')
+        expect(body).toEqual({ keyName: mockKey, index: '5', value: 'B' })
+        const actions = keyedStore.getActions()
+        expect(actions).toContainEqual(setArrayUpdating(true))
+        expect(actions).toContainEqual(
+          updateArrayElement({ index: '5', value: 'B' }),
+        )
+        expect(actions).toContainEqual(clearArrayAggregate())
+        // Refetch key info (not just stamp the time) so the header Key Size
+        // reflects a value edited to a different byte length.
+        expect(actions).toContainEqual(refreshKeyInfo())
+        expect(actions).toContainEqual(setArrayUpdating(false))
+      })
+
+      it('skips the patch and the success callback when the selected key changed mid-write', async () => {
+        apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
+        // User switched to another key before the POST resolved.
+        const keyedStore = storeWithSelectedKey('another-key')
+        const onSuccess = jest.fn()
+
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction(
+            { key: mockKey, index: '5', value: 'B' },
+            onSuccess,
+          ),
+        )
+
+        // No table patch / refresh for the now-current key, and onSuccess must
+        // NOT fire — closing the editor here would discard an edit the user has
+        // opened on the new key's same-index row.
+        expect(keyedStore.getActions()).toEqual([
+          setArrayUpdating(true),
+          setArrayUpdating(false),
+        ])
+        expect(onSuccess).not.toHaveBeenCalled()
+      })
+
+      it('skips the UI updates when selectedKey.data still lags on the old key after a switch', async () => {
+        apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
+        // The user switched to another key; the live app-context selection
+        // updated, but selectedKey.data still holds the edited key while its
+        // successor loads. Guarding on selectedKey.data would wrongly pass.
+        const state = cloneDeep(initialStateDefault)
+        state.app.context.browser.keyList.selectedKey =
+          stringToBuffer('another-key')
+        ;(state.browser.keys.selectedKey as any).data = { name: mockKey }
+        const keyedStore = mockStore(state)
+        keyedStore.clearActions()
+        const onSuccess = jest.fn()
+
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction(
+            { key: mockKey, index: '5', value: 'B' },
+            onSuccess,
+          ),
+        )
+
+        expect(keyedStore.getActions()).toEqual([
+          setArrayUpdating(true),
+          setArrayUpdating(false),
+        ])
+        expect(onSuccess).not.toHaveBeenCalled()
+      })
+
+      it('skips the UI updates when the database changed mid-write, even for a same-named key', async () => {
+        // The POST is sent using the connection captured before the await. If
+        // the user switches to another database whose selected key has the
+        // same name, the key-only guard would still pass — so the value
+        // written to the old database must not be applied to the new one.
+        const state = cloneDeep(initialStateDefault)
+        state.app.context.browser.keyList.selectedKey = mockKey as any
+        state.connections.instances.connectedInstance = { id: 'db-1' } as any
+        const keyedStore = mockStore(state)
+        keyedStore.clearActions()
+        const onSuccess = jest.fn()
+
+        apiService.post = jest.fn().mockImplementation(async () => {
+          // User switches to another database before the POST resolves.
+          state.connections.instances.connectedInstance = { id: 'db-2' } as any
+          return { status: 200, data: '' }
+        })
+
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction(
+            { key: mockKey, index: '5', value: 'B' },
+            onSuccess,
+          ),
+        )
+
+        const actions = keyedStore.getActions()
+        expect(actions).not.toContainEqual(
+          updateArrayElement({ index: '5', value: 'B' }),
+        )
+        expect(actions.some((a) => a.type === clearArrayAggregate.type)).toBe(
+          false,
+        )
+        expect(onSuccess).not.toHaveBeenCalled()
+        // The lock is still released for the current (latest) write.
+        expect(actions).toContainEqual(setArrayUpdating(false))
+      })
+
+      it('only the latest ARSET clears the update lock when two overlap', async () => {
+        const keyedStore = storeWithSelectedKey(mockKey)
+        let resolveFirst: () => void = () => {}
+        let resolveSecond: () => void = () => {}
+        apiService.post = jest
+          .fn()
+          .mockImplementationOnce(
+            () =>
+              new Promise((r) => {
+                resolveFirst = () => r({ status: 200, data: '' })
+              }),
+          )
+          .mockImplementationOnce(
+            () =>
+              new Promise((r) => {
+                resolveSecond = () => r({ status: 200, data: '' })
+              }),
+          )
+
+        const first = keyedStore.dispatch<any>(
+          updateArrayElementAction({ key: mockKey, index: '1', value: 'a' }),
+        )
+        const second = keyedStore.dispatch<any>(
+          updateArrayElementAction({ key: mockKey, index: '2', value: 'b' }),
+        )
+
+        const isSetUpdatingFalse = (a: { type: string; payload?: unknown }) =>
+          a.type === setArrayUpdating(false).type && a.payload === false
+
+        // The stale first completion must NOT release the lock — a second
+        // ARSET is still pending.
+        resolveFirst()
+        await first
+        expect(keyedStore.getActions().filter(isSetUpdatingFalse)).toHaveLength(
+          0,
+        )
+
+        // The latest one clears it.
+        resolveSecond()
+        await second
+        expect(keyedStore.getActions().filter(isSetUpdatingFalse)).toHaveLength(
+          1,
+        )
+      })
+
+      it('still patches when the selected key is the same bytes but a new buffer instance', async () => {
+        apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
+        // Redux can replace the name buffer with a fresh instance for the same
+        // key (e.g. a key-info refetch) while the POST is in flight.
+        const keyedStore = storeWithSelectedKey(stringToBuffer('readings'))
+
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction({
+            key: stringToBuffer('readings'),
+            index: '5',
+            value: 'B',
+          }),
+        )
+
+        expect(keyedStore.getActions()).toContainEqual(
+          updateArrayElement({ index: '5', value: 'B' }),
+        )
+      })
+
+      it('aborts an in-flight aggregate so a stale AROP cannot repopulate after the edit', async () => {
+        const keyedStore = storeWithSelectedKey(mockKey)
+        let resolveAgg: () => void = () => {}
+        apiService.post = jest
+          .fn()
+          .mockImplementationOnce(
+            () =>
+              new Promise((r) => {
+                resolveAgg = () =>
+                  r({
+                    status: 200,
+                    data: { keyName: mockKey, result: '104.7' },
+                  })
+              }),
+          )
+          .mockResolvedValue({ status: 200, data: '' })
+
+        // AROP in flight, then an edit lands and clears + aborts it.
+        const aggregate = keyedStore.dispatch<any>(
+          aggregateArray({
+            key: mockKey,
+            start: '0',
+            end: '6',
+            operation: ArrayAggregateOperation.Sum,
+          }),
+        )
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction({ key: mockKey, index: '1', value: 'x' }),
+        )
+
+        // The stale aggregate response resolves after the edit.
+        resolveAgg()
+        await aggregate
+
+        // It must not repopulate the (cleared) aggregate state.
+        const types = keyedStore.getActions().map((a) => a.type)
+        expect(types).not.toContain(loadArrayAggregateSuccess.type)
+        abortArrayAggregate()
+      })
+
+      it('calls onSuccessAction on success', async () => {
+        apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
+        const keyedStore = storeWithSelectedKey(mockKey)
+        const onSuccess = jest.fn()
+
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction(
+            { key: mockKey, index: '5', value: 'B' },
+            onSuccess,
+          ),
+        )
+
+        expect(onSuccess).toHaveBeenCalled()
+      })
+
+      it('notifies and calls onFailAction on error without touching the table', async () => {
+        const rejected = {
+          response: { status: 500, data: { message: 'boom' } },
+        }
+        apiService.post = jest.fn().mockRejectedValue(rejected)
+        const onFail = jest.fn()
+
+        await store.dispatch<any>(
+          updateArrayElementAction(
+            { key: mockKey, index: '5', value: 'B' },
+            undefined,
+            onFail,
+          ),
+        )
+
+        expect(onFail).toHaveBeenCalled()
+        expect(store.getActions()).toEqual([
+          setArrayUpdating(true),
+          addErrorNotification(rejected as IAddInstanceErrorPayload),
+          setArrayUpdating(false),
+        ])
+      })
+    })
+
+    describe('appendArrayElement', () => {
+      it('posts keyName/value to array/append, calls onSuccess with the landed index, and refreshes', async () => {
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, index: '6' },
+        })
+        const onSuccess = jest.fn()
+        const local = storeWithSelectedKey()
+
+        await local.dispatch<any>(
+          appendArrayElement(
+            {
+              key: mockKeyBuffer,
+              value: 'v',
+              expectedInstanceId: mockInstanceId,
+            },
+            onSuccess,
+          ),
+        )
+
+        const appendCall = (apiService.post as jest.Mock).mock.calls.find(
+          ([url]) => url.includes('array/append'),
+        )
+        expect(appendCall).toBeTruthy()
+        expect(appendCall[1]).toEqual({ keyName: mockKeyBuffer, value: 'v' })
+        // The append response's index is passed through so the caller can
+        // reveal the new element in the View.
+        expect(onSuccess).toHaveBeenCalledWith('6')
+        // refreshArray re-reads length/count after the add.
+        const lengthCall = (apiService.post as jest.Mock).mock.calls.find(
+          ([url]) => url.includes('array/get-length'),
+        )
+        expect(lengthCall).toBeTruthy()
+        // refreshKeyInfoAction re-reads the key header (Length/Count/Size).
+        const keyInfoCall = (apiService.post as jest.Mock).mock.calls.find(
+          ([url]) => url.includes('keys/get-info'),
+        )
+        expect(keyInfoCall).toBeTruthy()
+      })
+
+      it('brackets the write with the updating lock (pauses key refresh)', async () => {
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+        const local = storeWithSelectedKey()
+
+        await local.dispatch<any>(
+          appendArrayElement({
+            key: mockKeyBuffer,
+            value: 'v',
+            expectedInstanceId: mockInstanceId,
+          }),
+        )
+
+        const actions = local.getActions()
+        expect(actions).toContainEqual(setArrayUpdating(true))
+        expect(actions).toContainEqual(setArrayUpdating(false))
+      })
+
+      it('cancels the write (no POST) when the selected key changed before confirming', async () => {
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+        const onSuccess = jest.fn()
+        // Selection moved to another key before the confirmation resolved.
+        const local = storeWithSelectedKey(stringToBuffer('another-key'))
+
+        await local.dispatch<any>(
+          appendArrayElement(
+            {
+              key: mockKeyBuffer,
+              value: 'v',
+              expectedInstanceId: mockInstanceId,
+            },
+            onSuccess,
+          ),
+        )
+
+        // The stale confirmation must not write at all, and no side effects run.
+        expect(
+          (apiService.post as jest.Mock).mock.calls.find(([url]) =>
+            url.includes('array/append'),
+          ),
+        ).toBeUndefined()
+        expect(onSuccess).not.toHaveBeenCalled()
+      })
+
+      it('cancels the write (no POST) when the database changed before confirming', async () => {
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+        const onSuccess = jest.fn()
+        // Live connection is a different database than when Add was pressed.
+        const local = storeWithSelectedKey(mockKeyBuffer, 'db-2')
+
+        await local.dispatch<any>(
+          appendArrayElement(
+            { key: mockKeyBuffer, value: 'v', expectedInstanceId: 'db-1' },
+            onSuccess,
+          ),
+        )
+
+        expect(
+          (apiService.post as jest.Mock).mock.calls.find(([url]) =>
+            url.includes('array/append'),
+          ),
+        ).toBeUndefined()
+        expect(onSuccess).not.toHaveBeenCalled()
+      })
+
+      it('skips the success side effects when the database changed mid-write', async () => {
+        // Passes the pre-write check (same db at dispatch), then the connection
+        // switches while the POST is in flight — the write landed on the old
+        // database, so its result must not repaint the new one.
+        const local = storeWithSelectedKey(mockKeyBuffer, 'db-1')
+        const onSuccess = jest.fn()
+
+        apiService.post = jest.fn().mockImplementation(async (url: string) => {
+          if (url.includes('array/append')) {
+            local.getState().connections.instances.connectedInstance.id = 'db-2'
+          }
+          return { status: 200, data: { keyName: mockKey } }
+        })
+
+        await local.dispatch<any>(
+          appendArrayElement(
+            { key: mockKeyBuffer, value: 'v', expectedInstanceId: 'db-1' },
+            onSuccess,
+          ),
+        )
+
+        // The write went out (pre-check passed)…
+        expect(
+          (apiService.post as jest.Mock).mock.calls.find(([url]) =>
+            url.includes('array/append'),
+          ),
+        ).toBeTruthy()
+        // …but the post-write guard suppresses the refresh for the new db.
+        expect(onSuccess).not.toHaveBeenCalled()
+        expect(
+          (apiService.post as jest.Mock).mock.calls.find(([url]) =>
+            url.includes('array/get-length'),
+          ),
+        ).toBeUndefined()
+      })
+
+      it('notifies and calls onFail on error', async () => {
+        const rejected = {
+          response: { status: 500, data: { message: 'boom' } },
+        }
+        apiService.post = jest.fn().mockRejectedValue(rejected)
+        const onFail = jest.fn()
+        const local = storeWithSelectedKey()
+
+        await local.dispatch<any>(
+          appendArrayElement(
+            {
+              key: mockKeyBuffer,
+              value: 'v',
+              expectedInstanceId: mockInstanceId,
+            },
+            undefined,
+            onFail,
+          ),
+        )
+
+        expect(onFail).toHaveBeenCalled()
+        expect(local.getActions()).toContainEqual(
+          addErrorNotification(rejected as IAddInstanceErrorPayload),
+        )
+      })
+    })
+
+    describe('addArrayElement (set at index)', () => {
+      it('posts keyName/index/value to array/set-element, calls onSuccess, and refreshes', async () => {
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+        const onSuccess = jest.fn()
+        const local = storeWithSelectedKey()
+
+        await local.dispatch<any>(
+          addArrayElement(
+            {
+              key: mockKeyBuffer,
+              index: '5',
+              value: 'v',
+              expectedInstanceId: mockInstanceId,
+            },
+            onSuccess,
+          ),
+        )
+
+        const setCall = (apiService.post as jest.Mock).mock.calls.find(
+          ([url]) => url.includes('array/set-element'),
+        )
+        expect(setCall).toBeTruthy()
+        expect(setCall[1]).toEqual({
+          keyName: mockKeyBuffer,
+          index: '5',
+          value: 'v',
+        })
+        // The chosen index is passed through so the View can reveal it.
+        expect(onSuccess).toHaveBeenCalledWith('5')
+        const lengthCall = (apiService.post as jest.Mock).mock.calls.find(
+          ([url]) => url.includes('array/get-length'),
+        )
+        expect(lengthCall).toBeTruthy()
+        const keyInfoCall = (apiService.post as jest.Mock).mock.calls.find(
+          ([url]) => url.includes('keys/get-info'),
+        )
+        expect(keyInfoCall).toBeTruthy()
+      })
+
+      it('notifies and calls onFail on error', async () => {
+        const rejected = {
+          response: { status: 500, data: { message: 'boom' } },
+        }
+        apiService.post = jest.fn().mockRejectedValue(rejected)
+        const onFail = jest.fn()
+        const local = storeWithSelectedKey()
+
+        await local.dispatch<any>(
+          addArrayElement(
+            {
+              key: mockKeyBuffer,
+              index: '5',
+              value: 'v',
+              expectedInstanceId: mockInstanceId,
+            },
+            undefined,
+            onFail,
+          ),
+        )
+
+        expect(onFail).toHaveBeenCalled()
+        expect(local.getActions()).toContainEqual(
+          addErrorNotification(rejected as IAddInstanceErrorPayload),
+        )
       })
     })
 
@@ -843,6 +1539,372 @@ describe('array slice', () => {
         const [, , config] = (apiService.post as jest.Mock).mock.calls[0]
         expect(config?.signal).toBeInstanceOf(AbortSignal)
         expect(store.getActions()).toEqual([loadArraySearch({ predicates })])
+      })
+    })
+
+    describe('fetchArrayNeighbours', () => {
+      it('resolves normalized elements without dispatching slice actions', async () => {
+        const data = { keyName: mockKey, elements: ['a', null, 'c'] }
+        apiService.post = jest.fn().mockResolvedValue({ status: 200, data })
+
+        const result = await store.dispatch<any>(
+          fetchArrayNeighbours({ key: mockKey, start: '37', end: '39' }),
+        )
+
+        expect(result).toEqual([
+          { index: '37', value: 'a' },
+          { index: '38', value: null },
+          { index: '39', value: 'c' },
+        ])
+        // Writes nothing into the shared View-tab slice.
+        expect(store.getActions()).toEqual([])
+      })
+
+      it('sends the clamped range and the abort signal', async () => {
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, elements: [] },
+        })
+        const controller = new AbortController()
+
+        await store.dispatch<any>(
+          fetchArrayNeighbours(
+            { key: mockKey, start: '0', end: '5' },
+            controller.signal,
+          ),
+        )
+
+        const [, body, config] = (apiService.post as jest.Mock).mock.calls[0]
+        expect(body).toEqual({ keyName: mockKey, start: '0', end: '5' })
+        expect(config.signal).toBe(controller.signal)
+      })
+
+      it('throws on a non-success status', async () => {
+        apiService.post = jest
+          .fn()
+          .mockResolvedValue({ status: 304, data: null })
+
+        await expect(
+          store.dispatch<any>(
+            fetchArrayNeighbours({ key: mockKey, start: '0', end: '5' }),
+          ),
+        ).rejects.toThrow(DEFAULT_ERROR_MESSAGE)
+      })
+    })
+
+    describe('deleteArrayElements', () => {
+      // Array keys are binary; the guard compares them by bytes, so drive the
+      // tests with buffers. The thunk only touches the UI once it confirms the
+      // deleted key is still the selected one. The guard reads the app-context
+      // selection (updated synchronously on key click), not `selectedKey.data`
+      // (which lags a key switch while the new info loads), so seed that.
+      const keyBuffer = stringToBuffer(mockKey)
+      const storeWithSelectedKey = (
+        selected: RedisResponseBuffer = keyBuffer,
+      ) => {
+        const state = cloneDeep(initialStateDefault)
+        state.app.context.browser.keyList.selectedKey = selected
+        const next = mockStore(state)
+        next.clearActions()
+        return next
+      }
+
+      beforeEach(() => {
+        store = storeWithSelectedKey()
+      })
+
+      it('deletes by index, refreshes every loaded view, and toasts when the key survives', async () => {
+        apiService.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '1' } })
+        // ARCOUNT probe (key still exists) + refreshArray's follow-up fetches.
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, count: '4' },
+        })
+
+        await store.dispatch<any>(deleteArrayElements(keyBuffer, ['2']))
+
+        expect(apiService.delete).toHaveBeenCalledWith(
+          expect.stringContaining('array/elements'),
+          expect.objectContaining({
+            data: { keyName: keyBuffer, indexes: ['2'] },
+          }),
+        )
+        const actions = store.getActions()
+        // refreshArray replays the View range, so the loaded views update.
+        expect(actions.some((a) => a.type === loadArrayRangeSuccess.type)).toBe(
+          true,
+        )
+        expect(
+          actions.some((a) => a.type === addMessageNotification.type),
+        ).toBe(true)
+        // Survived ⇒ not treated as a deleted key, no error.
+        expect(
+          actions.some((a) => a.type === deleteSelectedKeySuccess.type),
+        ).toBe(false)
+        expect(actions.some((a) => a.type === addErrorNotification.type)).toBe(
+          false,
+        )
+      })
+
+      it('summarizes the toast for a bulk delete instead of joining every index', async () => {
+        const listToast = jest.spyOn(successMessages, 'REMOVED_LIST_ELEMENTS')
+        apiService.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '15' } })
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, count: '5' },
+        })
+        const indexes = Array.from({ length: 15 }, (_, i) => String(i))
+
+        await store.dispatch<any>(deleteArrayElements(keyBuffer, indexes))
+
+        // Count is the full selection, but only a capped sample is rendered so
+        // a large select-all can't build a giant notification string.
+        expect(listToast).toHaveBeenCalledTimes(1)
+        const [, count, sample] = listToast.mock.calls[0]
+        expect(count).toBe(15)
+        expect(sample).toHaveLength(10)
+        listToast.mockRestore()
+      })
+
+      it('treats a 404 on the ARCOUNT probe as a deleted key (last element)', async () => {
+        apiService.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '1' } })
+        apiService.post = jest
+          .fn()
+          .mockRejectedValue({ response: { status: 404 } })
+
+        await store.dispatch<any>(deleteArrayElements(keyBuffer, ['0']))
+
+        const actions = store.getActions()
+        expect(
+          actions.some((a) => a.type === deleteSelectedKeySuccess.type),
+        ).toBe(true)
+        expect(actions.some((a) => a.type === addErrorNotification.type)).toBe(
+          false,
+        )
+      })
+
+      it('still refreshes (not masks the delete) when the ARCOUNT probe fails non-404', async () => {
+        apiService.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '1' } })
+        // First POST is the ARCOUNT probe (fails with a non-404); the rest are
+        // refreshArray's follow-up fetches and succeed.
+        apiService.post = jest
+          .fn()
+          .mockRejectedValueOnce({ response: { status: 500 } })
+          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+
+        await store.dispatch<any>(deleteArrayElements(keyBuffer, ['2']))
+
+        const actions = store.getActions()
+        // The succeeded delete is acknowledged and the views refreshed — not
+        // reported as a failure, and not mistaken for a deleted key.
+        expect(actions.some((a) => a.type === loadArrayRangeSuccess.type)).toBe(
+          true,
+        )
+        expect(
+          actions.some((a) => a.type === addMessageNotification.type),
+        ).toBe(true)
+        expect(
+          actions.some((a) => a.type === deleteSelectedKeySuccess.type),
+        ).toBe(false)
+        expect(actions.some((a) => a.type === addErrorNotification.type)).toBe(
+          false,
+        )
+      })
+
+      it('shows an error notification when the delete itself fails', async () => {
+        const rejected = {
+          response: { status: 500, data: { message: 'boom' } },
+        }
+        apiService.delete = jest.fn().mockRejectedValue(rejected)
+
+        await store.dispatch<any>(deleteArrayElements(keyBuffer, ['1']))
+
+        expect(store.getActions()).toContainEqual(
+          addErrorNotification(rejected as IAddInstanceErrorPayload),
+        )
+      })
+
+      it('skips the UI updates when the selected key changed mid-flight', async () => {
+        // User switched to another key before the round-trip finished — the
+        // delete still applied server-side, but the shared slice/header now
+        // belong to the new key and must not be clobbered.
+        store = storeWithSelectedKey(stringToBuffer('another-key'))
+        apiService.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '1' } })
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, count: '4' },
+        })
+
+        await store.dispatch<any>(deleteArrayElements(keyBuffer, ['2']))
+
+        // The delete was issued, but none of the current key's view is touched.
+        expect(apiService.delete).toHaveBeenCalled()
+        const actions = store.getActions()
+        expect(actions.some((a) => a.type === loadArrayRangeSuccess.type)).toBe(
+          false,
+        )
+        expect(
+          actions.some((a) => a.type === addMessageNotification.type),
+        ).toBe(false)
+        expect(
+          actions.some((a) => a.type === deleteSelectedKeySuccess.type),
+        ).toBe(false)
+      })
+
+      it('refreshes using the live selection while selectedKey.data still lags on the old key', async () => {
+        // Mid key-switch the details reducer keeps the previous `data` in place
+        // until the new key info loads. The user is still on the deleted-from
+        // key in app context, so the guard must refresh — reading the stale
+        // `selectedKey.data.name` would wrongly bail and leave the view stale.
+        const state = cloneDeep(initialStateDefault)
+        state.app.context.browser.keyList.selectedKey = keyBuffer
+        ;(state.browser.keys.selectedKey as any).data = {
+          name: stringToBuffer('stale-loading-key'),
+        }
+        store = mockStore(state)
+        store.clearActions()
+        apiService.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '1' } })
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, count: '4' },
+        })
+
+        await store.dispatch<any>(deleteArrayElements(keyBuffer, ['2']))
+
+        const actions = store.getActions()
+        expect(actions.some((a) => a.type === loadArrayRangeSuccess.type)).toBe(
+          true,
+        )
+        expect(
+          actions.some((a) => a.type === addMessageNotification.type),
+        ).toBe(true)
+      })
+
+      it('bails byte-safely when a different binary key decodes to the same string', async () => {
+        // Two distinct binary keys whose invalid UTF-8 both render as the
+        // replacement char — a string compare would wrongly match them.
+        const deletedKey = {
+          type: 'Buffer',
+          data: [0xff],
+        } as RedisResponseBuffer
+        const currentKey = {
+          type: 'Buffer',
+          data: [0xfe],
+        } as RedisResponseBuffer
+        store = storeWithSelectedKey(currentKey)
+        apiService.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '1' } })
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, count: '4' },
+        })
+
+        await store.dispatch<any>(deleteArrayElements(deletedKey, ['0']))
+
+        const actions = store.getActions()
+        expect(actions.some((a) => a.type === loadArrayRangeSuccess.type)).toBe(
+          false,
+        )
+        expect(
+          actions.some((a) => a.type === deleteSelectedKeySuccess.type),
+        ).toBe(false)
+      })
+    })
+
+    // The ARCOUNT probe / stale-selection / key-deleted tail is shared with
+    // deleteArrayElements and exercised in depth there; these cover what is
+    // specific to the range flow.
+    describe('deleteArrayRange', () => {
+      const keyBuffer = stringToBuffer(mockKey)
+
+      beforeEach(() => {
+        const state = cloneDeep(initialStateDefault)
+        state.app.context.browser.keyList.selectedKey = keyBuffer
+        store = mockStore(state)
+        store.clearActions()
+      })
+
+      it('deletes the inclusive window, refreshes the views, and toasts the affected count', async () => {
+        apiService.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '3' } })
+        // ARCOUNT probe (key still exists) + refreshArray's follow-up fetches.
+        apiService.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, count: '4' },
+        })
+
+        await store.dispatch<any>(deleteArrayRange(keyBuffer, '0', '9'))
+
+        expect(apiService.delete).toHaveBeenCalledWith(
+          expect.stringContaining('array/range'),
+          expect.objectContaining({
+            data: { keyName: keyBuffer, start: '0', end: '9' },
+          }),
+        )
+        const actions = store.getActions()
+        expect(actions.some((a) => a.type === loadArrayRangeSuccess.type)).toBe(
+          true,
+        )
+        expect(actions).toContainEqual(
+          expect.objectContaining({
+            type: addMessageNotification.type,
+            payload: expect.objectContaining({
+              title: 'Elements have been removed',
+            }),
+          }),
+        )
+        expect(
+          actions.some((a) => a.type === deleteSelectedKeySuccess.type),
+        ).toBe(false)
+        expect(actions.some((a) => a.type === addErrorNotification.type)).toBe(
+          false,
+        )
+      })
+
+      it('treats a 404 on the ARCOUNT probe as a deleted key (range covered the last elements)', async () => {
+        apiService.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '4' } })
+        apiService.post = jest
+          .fn()
+          .mockRejectedValue({ response: { status: 404 } })
+
+        await store.dispatch<any>(deleteArrayRange(keyBuffer, '0', '9'))
+
+        const actions = store.getActions()
+        expect(
+          actions.some((a) => a.type === deleteSelectedKeySuccess.type),
+        ).toBe(true)
+        expect(actions.some((a) => a.type === addErrorNotification.type)).toBe(
+          false,
+        )
+      })
+
+      it('shows an error notification when the delete itself fails', async () => {
+        const rejected = {
+          response: { status: 500, data: { message: 'boom' } },
+        }
+        apiService.delete = jest.fn().mockRejectedValue(rejected)
+
+        await store.dispatch<any>(deleteArrayRange(keyBuffer, '0', '9'))
+
+        expect(store.getActions()).toContainEqual(
+          addErrorNotification(rejected as IAddInstanceErrorPayload),
+        )
       })
     })
   })

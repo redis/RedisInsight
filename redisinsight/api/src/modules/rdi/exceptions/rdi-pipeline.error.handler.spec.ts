@@ -37,6 +37,7 @@ describe('wrapRdiPipelineError', () => {
       statusCode: HttpStatus.UNAUTHORIZED,
       error: 'RdiUnauthorized',
       errorCode: CustomErrorCodes.RdiUnauthorized,
+      resource: { detail: result.message },
     });
   });
 
@@ -76,6 +77,7 @@ describe('wrapRdiPipelineError', () => {
       statusCode: HttpStatus.FORBIDDEN,
       error: 'RdiForbidden',
       errorCode: CustomErrorCodes.RdiForbidden,
+      resource: { detail: result.message },
     });
   });
 
@@ -157,6 +159,7 @@ describe('wrapRdiPipelineError', () => {
       message: errorMessages.INTERNAL_SERVER_ERROR,
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       error: 'RdiInternalServerError',
+      errorCode: CustomErrorCodes.RdiInternalServerError,
     });
   });
 });

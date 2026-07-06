@@ -1,5 +1,11 @@
 import React from 'react'
-import { fireEvent, render, screen, userEvent } from 'uiSrc/utils/test-utils'
+import {
+  fireEvent,
+  render,
+  screen,
+  userEvent,
+  waitFor,
+} from 'uiSrc/utils/test-utils'
 import {
   ArrayCombinator,
   ArrayGrepCriteria,
@@ -24,6 +30,8 @@ const defaultProps: ArraySearchFormProps = {
   onChangePredicate: jest.fn(),
   onChangeCombinator: jest.fn(),
   onChangeOptions: jest.fn(),
+  context: { enabled: false, count: 5 },
+  onChangeContext: jest.fn(),
   onRun: jest.fn(),
   onReset: jest.fn(),
 }
@@ -181,6 +189,67 @@ describe('ArraySearchForm', () => {
         />,
       )
       expect(screen.getByTestId(`${TEST_ID}-limit`)).toBeEnabled()
+    })
+  })
+
+  describe('context', () => {
+    // Context is always visible, so no need to expand Options first.
+    it('keeps the context input disabled until the toggle is ticked', () => {
+      const { rerender } = renderComponent()
+      // Off by default → input present (so layout is stable) but disabled.
+      expect(screen.getByTestId(`${TEST_ID}-context`)).toBeDisabled()
+
+      rerender(
+        <ArraySearchForm
+          {...defaultProps}
+          context={{ enabled: true, count: 5 }}
+        />,
+      )
+      expect(screen.getByTestId(`${TEST_ID}-context`)).toBeEnabled()
+    })
+
+    it('enables context when the toggle is ticked', () => {
+      const onChangeContext = jest.fn()
+      renderComponent({ onChangeContext })
+
+      fireEvent.click(screen.getByTestId(`${TEST_ID}-context-toggle`))
+
+      expect(onChangeContext).toHaveBeenCalledWith({ enabled: true })
+    })
+
+    it('shows the passed count and clamps a typed value above the max to 50', async () => {
+      const user = userEvent.setup()
+      renderComponent({ context: { enabled: true, count: 5 } })
+
+      const input = screen.getByTestId(`${TEST_ID}-context`)
+      // redis-ui NumericInput renders a text input, so the DOM value is a
+      // string.
+      expect(input).toHaveValue('5')
+
+      // redis-ui's `autoValidate` clamps onChange, but the field text only
+      // settles to the clamped value on blur — so '99' stays verbatim while
+      // typing and resolves to '50' once the input blurs.
+      await user.clear(input)
+      await user.type(input, '99')
+      await user.tab()
+
+      await waitFor(() => {
+        expect(input).toHaveValue('50')
+      })
+    })
+
+    it('reports a new count via onChangeContext', () => {
+      const onChangeContext = jest.fn()
+      renderComponent({
+        context: { enabled: true, count: 5 },
+        onChangeContext,
+      })
+
+      fireEvent.change(screen.getByTestId(`${TEST_ID}-context`), {
+        target: { value: '8' },
+      })
+
+      expect(onChangeContext).toHaveBeenCalledWith({ count: 8 })
     })
   })
 

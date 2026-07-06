@@ -24,6 +24,7 @@ describe('RdiPipelineForbiddenException', () => {
       message: customMessage,
       error: 'RdiForbidden',
       errorCode: CustomErrorCodes.RdiForbidden,
+      resource: { detail: customMessage },
     });
   });
 });

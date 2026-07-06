@@ -8,7 +8,6 @@ import {
   PrimaryButton,
 } from 'uiSrc/components/base/forms/buttons'
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
-import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import {
   DeleteIcon,
   PlusIcon,
@@ -16,7 +15,7 @@ import {
   RiIcon,
 } from 'uiSrc/components/base/icons'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { TextInput } from 'uiSrc/components/base/inputs'
+import { NumericInput, TextInput } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
 import {
   ArrayCombinator,
@@ -24,7 +23,13 @@ import {
 } from 'uiSrc/slices/interfaces/array'
 
 import { CommandPreview } from '../command-preview'
-import { DEFAULT_LIMIT } from '../constants'
+import { PreviewToggle } from '../preview-toggle'
+import { useResponsivePreviewLabel } from '../hooks'
+import {
+  CONTEXT_COUNT_MAX,
+  CONTEXT_COUNT_MIN,
+  DEFAULT_LIMIT,
+} from '../constants'
 import { quoteRedisArgument } from '../utils'
 import {
   ADD_PREDICATE_ARIA,
@@ -32,20 +37,22 @@ import {
   ARRAY_GREP_CRITERIA_OPTIONS,
   ARRAY_SEARCH_FORM_TEST_ID as TEST_ID,
   COMBINATOR_ARIA,
+  CONTEXT_HINT,
+  CONTEXT_LABEL,
+  CONTEXT_PREFIX,
   REMOVE_PREDICATE_ARIA,
   END_PLACEHOLDER,
   INVALID_INDEX_MESSAGE,
   INVALID_LIMIT_MESSAGE,
+  LIMIT_HINT,
   LIMIT_LABEL,
   MATCH_BY_HINT,
   MATCH_BY_LABEL,
+  NOCASE_HINT,
   NOCASE_LABEL,
   OPTIONS_HINT,
   OPTIONS_LABEL,
-  PREVIEW_TOGGLE_ARIA_LABEL,
-  PREVIEW_TOGGLE_HIDE_TOOLTIP,
-  PREVIEW_TOGGLE_LABEL,
-  PREVIEW_TOGGLE_SHOW_TOOLTIP,
+  RANGE_HINT,
   RANGE_LABEL,
   RANGE_TO_LABEL,
   RESET_ARIA_LABEL,
@@ -53,6 +60,7 @@ import {
   RUN_BUTTON_LABEL,
   START_PLACEHOLDER,
   VALUE_PLACEHOLDER,
+  WITHVALUES_HINT,
   WITHVALUES_LABEL,
 } from './ArraySearchForm.constants'
 import { ArraySearchFormProps } from './ArraySearchForm.types'
@@ -80,12 +88,15 @@ export const ArraySearchForm = ({
   onChangePredicate,
   onChangeCombinator,
   onChangeOptions,
+  context,
+  onChangeContext,
   onRun,
   onReset,
   disabled = false,
 }: ArraySearchFormProps) => {
   const [previewVisible, setPreviewVisible] = useState(false)
   const [optionsOpen, setOptionsOpen] = useState(false)
+  const { containerRef, isWide } = useResponsivePreviewLabel()
 
   const multiPredicate = predicates.length > 1
   const startInvalid = isBoundInvalid(options.start)
@@ -120,7 +131,7 @@ export const ArraySearchForm = ({
 
   return (
     <S.FormContainer data-testid={TEST_ID} gap="m" grow={false}>
-      <Row align="center" gap="s" grow={false}>
+      <Row align="center" gap="xs" grow={false}>
         <FlexItem grow={false}>
           <Text size="s">{MATCH_BY_LABEL}</Text>
         </FlexItem>
@@ -216,10 +227,53 @@ export const ArraySearchForm = ({
         ))}
       </Col>
 
+      <Row align="center" gap="s" grow={false}>
+        <FlexItem grow={false}>
+          <Row align="center" gap="xs" grow={false}>
+            <FlexItem grow={false}>
+              <S.InlineCheckbox
+                id={`${TEST_ID}-context-toggle`}
+                name="array-search-context-toggle"
+                label={CONTEXT_LABEL}
+                checked={context.enabled}
+                onChange={(e) => onChangeContext({ enabled: e.target.checked })}
+                disabled={disabled}
+                data-testid={`${TEST_ID}-context-toggle`}
+              />
+            </FlexItem>
+            <FlexItem grow={false}>
+              <InfoHint content={CONTEXT_HINT} />
+            </FlexItem>
+          </Row>
+        </FlexItem>
+        <FlexItem grow={false}>
+          <Text size="s">{CONTEXT_PREFIX}</Text>
+        </FlexItem>
+        {/* Always rendered so ticking Context doesn't shift the row; it just
+            becomes editable once the toggle is on. */}
+        <FlexItem grow={false}>
+          <S.NarrowInputBox>
+            <NumericInput
+              autoValidate
+              min={CONTEXT_COUNT_MIN}
+              max={CONTEXT_COUNT_MAX}
+              value={context.count}
+              onChange={(next) =>
+                onChangeContext({
+                  count: Math.round(Number(next ?? CONTEXT_COUNT_MIN)),
+                })
+              }
+              disabled={disabled || !context.enabled}
+              data-testid={`${TEST_ID}-context`}
+            />
+          </S.NarrowInputBox>
+        </FlexItem>
+      </Row>
+
       <Col gap="m" grow={false}>
         {/* Compact disclosure: chevron + "Options" on the left, the add-row
             "+" on the right, the option fields below once expanded. */}
-        <Row align="center" gap="s" grow={false}>
+        <Row align="center" gap="xs" grow={false}>
           <FlexItem grow={false}>
             <EmptyButton
               onClick={() => setOptionsOpen((open) => !open)}
@@ -259,78 +313,113 @@ export const ArraySearchForm = ({
 
         {optionsOpen && (
           <Col gap="m" grow={false}>
-            <Row align="center" gap="s">
+            <Row align="center" gap="xl">
               <FlexItem grow={false}>
-                <Text size="s">{RANGE_LABEL}</Text>
+                <Row align="center" gap="s" grow={false}>
+                  <FlexItem grow={false}>
+                    <Row align="center" gap="xs" grow={false}>
+                      <FlexItem grow={false}>
+                        <Text size="s">{RANGE_LABEL}</Text>
+                      </FlexItem>
+                      <FlexItem grow={false}>
+                        <InfoHint content={RANGE_HINT} />
+                      </FlexItem>
+                    </Row>
+                  </FlexItem>
+                  <FlexItem grow={false}>
+                    <S.NarrowInputBox>
+                      <TextInput
+                        value={options.start}
+                        onChange={(start) => onChangeOptions({ start })}
+                        placeholder={START_PLACEHOLDER}
+                        error={startInvalid ? INVALID_INDEX_MESSAGE : undefined}
+                        disabled={disabled}
+                        data-testid={`${TEST_ID}-start`}
+                      />
+                    </S.NarrowInputBox>
+                  </FlexItem>
+                  <FlexItem grow={false}>
+                    <Text size="s">{RANGE_TO_LABEL}</Text>
+                  </FlexItem>
+                  <FlexItem grow={false}>
+                    <S.NarrowInputBox>
+                      <TextInput
+                        value={options.end}
+                        onChange={(end) => onChangeOptions({ end })}
+                        placeholder={END_PLACEHOLDER}
+                        error={endInvalid ? INVALID_INDEX_MESSAGE : undefined}
+                        disabled={disabled}
+                        data-testid={`${TEST_ID}-end`}
+                      />
+                    </S.NarrowInputBox>
+                  </FlexItem>
+                </Row>
               </FlexItem>
-              <FlexItem grow={false}>
-                <S.NarrowInputBox>
-                  <TextInput
-                    value={options.start}
-                    onChange={(start) => onChangeOptions({ start })}
-                    placeholder={START_PLACEHOLDER}
-                    error={startInvalid ? INVALID_INDEX_MESSAGE : undefined}
-                    disabled={disabled}
-                    data-testid={`${TEST_ID}-start`}
-                  />
-                </S.NarrowInputBox>
-              </FlexItem>
-              <FlexItem grow={false}>
-                <Text size="s">{RANGE_TO_LABEL}</Text>
-              </FlexItem>
-              <FlexItem grow={false}>
-                <S.NarrowInputBox>
-                  <TextInput
-                    value={options.end}
-                    onChange={(end) => onChangeOptions({ end })}
-                    placeholder={END_PLACEHOLDER}
-                    error={endInvalid ? INVALID_INDEX_MESSAGE : undefined}
-                    disabled={disabled}
-                    data-testid={`${TEST_ID}-end`}
-                  />
-                </S.NarrowInputBox>
-              </FlexItem>
+              <FlexItem grow />
             </Row>
+
+            <S.OptionsDivider grow={false} />
 
             <Row align="center" gap="xl">
               <FlexItem grow={false}>
-                <Checkbox
-                  id={`${TEST_ID}-nocase`}
-                  name="array-search-nocase"
-                  label={NOCASE_LABEL}
-                  checked={options.nocase}
-                  onChange={(e) =>
-                    onChangeOptions({ nocase: e.target.checked })
-                  }
-                  disabled={disabled}
-                  data-testid={`${TEST_ID}-nocase`}
-                />
+                <Row align="center" gap="xs" grow={false}>
+                  <FlexItem grow={false}>
+                    <S.InlineCheckbox
+                      id={`${TEST_ID}-nocase`}
+                      name="array-search-nocase"
+                      label={NOCASE_LABEL}
+                      checked={options.nocase}
+                      onChange={(e) =>
+                        onChangeOptions({ nocase: e.target.checked })
+                      }
+                      disabled={disabled}
+                      data-testid={`${TEST_ID}-nocase`}
+                    />
+                  </FlexItem>
+                  <FlexItem grow={false}>
+                    <InfoHint content={NOCASE_HINT} />
+                  </FlexItem>
+                </Row>
               </FlexItem>
               <FlexItem grow={false}>
-                <Checkbox
-                  id={`${TEST_ID}-withvalues`}
-                  name="array-search-withvalues"
-                  label={WITHVALUES_LABEL}
-                  checked={options.withValues}
-                  onChange={(e) =>
-                    onChangeOptions({ withValues: e.target.checked })
-                  }
-                  disabled={disabled}
-                  data-testid={`${TEST_ID}-withvalues`}
-                />
+                <Row align="center" gap="xs" grow={false}>
+                  <FlexItem grow={false}>
+                    <S.InlineCheckbox
+                      id={`${TEST_ID}-withvalues`}
+                      name="array-search-withvalues"
+                      label={WITHVALUES_LABEL}
+                      checked={options.withValues}
+                      onChange={(e) =>
+                        onChangeOptions({ withValues: e.target.checked })
+                      }
+                      disabled={disabled}
+                      data-testid={`${TEST_ID}-withvalues`}
+                    />
+                  </FlexItem>
+                  <FlexItem grow={false}>
+                    <InfoHint content={WITHVALUES_HINT} />
+                  </FlexItem>
+                </Row>
               </FlexItem>
               <FlexItem grow={false}>
-                <Checkbox
-                  id={`${TEST_ID}-limit-toggle`}
-                  name="array-search-limit-toggle"
-                  label={LIMIT_LABEL}
-                  checked={options.limitEnabled}
-                  onChange={(e) =>
-                    onChangeOptions({ limitEnabled: e.target.checked })
-                  }
-                  disabled={disabled}
-                  data-testid={`${TEST_ID}-limit-toggle`}
-                />
+                <Row align="center" gap="xs" grow={false}>
+                  <FlexItem grow={false}>
+                    <S.InlineCheckbox
+                      id={`${TEST_ID}-limit-toggle`}
+                      name="array-search-limit-toggle"
+                      label={LIMIT_LABEL}
+                      checked={options.limitEnabled}
+                      onChange={(e) =>
+                        onChangeOptions({ limitEnabled: e.target.checked })
+                      }
+                      disabled={disabled}
+                      data-testid={`${TEST_ID}-limit-toggle`}
+                    />
+                  </FlexItem>
+                  <FlexItem grow={false}>
+                    <InfoHint content={LIMIT_HINT} />
+                  </FlexItem>
+                </Row>
               </FlexItem>
               {/* Always rendered so ticking LIMIT doesn't shift the row; the
                   pre-filled default just becomes editable once enabled. */}
@@ -351,26 +440,14 @@ export const ArraySearchForm = ({
         )}
       </Col>
 
-      <S.ActionRow align="center" gap="m">
+      <S.ActionRow ref={containerRef}>
         <FlexItem grow={false}>
-          <RiTooltip
-            content={
-              previewVisible
-                ? PREVIEW_TOGGLE_HIDE_TOOLTIP
-                : PREVIEW_TOGGLE_SHOW_TOOLTIP
-            }
-            position="top"
-          >
-            <S.PreviewToggleButton
-              pressed={previewVisible}
-              onPressedChange={setPreviewVisible}
-              aria-label={PREVIEW_TOGGLE_ARIA_LABEL}
-              data-testid={`${TEST_ID}-preview-toggle`}
-            >
-              <RiIcon size="m" type="CliIcon" />
-              <Text size="s">{PREVIEW_TOGGLE_LABEL}</Text>
-            </S.PreviewToggleButton>
-          </RiTooltip>
+          <PreviewToggle
+            pressed={previewVisible}
+            onPressedChange={setPreviewVisible}
+            wide={isWide}
+            data-testid={`${TEST_ID}-preview-toggle`}
+          />
         </FlexItem>
         <FlexItem grow>
           {previewVisible && <CommandPreview command={command} />}

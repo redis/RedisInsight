@@ -105,6 +105,7 @@ describe('PATCH /rdi/:id', () => {
           statusCode: 401,
           error: 'RdiUnauthorized',
           errorCode: 11402,
+          resource: { detail: 'Unauthorized' },
         },
         before: () => {
           loginNock.reply(401, {

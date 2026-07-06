@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import errorMessages from 'src/constants/error-messages';
+import { CustomErrorCodes } from 'src/constants';
 import { RdiPipelineTimeoutException } from './rdi-pipeline.timeout-error.exception';
 
 describe('RdiPipelineTimeoutException', () => {
@@ -8,6 +9,7 @@ describe('RdiPipelineTimeoutException', () => {
     expect(exception.getStatus()).toBe(HttpStatus.REQUEST_TIMEOUT);
     expect(exception.getResponse()).toEqual({
       statusCode: HttpStatus.REQUEST_TIMEOUT,
+      errorCode: CustomErrorCodes.RdiTimeout,
       message: errorMessages.RDI_TIMEOUT_ERROR,
       error: 'Timeout Error',
     });
@@ -19,6 +21,7 @@ describe('RdiPipelineTimeoutException', () => {
     expect(exception.getStatus()).toBe(HttpStatus.REQUEST_TIMEOUT);
     expect(exception.getResponse()).toEqual({
       statusCode: HttpStatus.REQUEST_TIMEOUT,
+      errorCode: CustomErrorCodes.RdiTimeout,
       message: customMessage,
       error: 'Timeout Error',
     });

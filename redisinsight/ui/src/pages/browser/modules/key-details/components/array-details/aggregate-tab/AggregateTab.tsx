@@ -1,6 +1,8 @@
 import React from 'react'
 import { noop } from 'lodash'
 
+import { useAppSelector } from 'uiSrc/slices/hooks'
+import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
 import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Loader } from 'uiSrc/components/base/display'
 import { CopyButton } from 'uiSrc/components/copy-button'
@@ -17,6 +19,11 @@ const NIL_RESULT_LABEL = '(nil)'
 
 const AggregateTab = ({ keyProp }: AggregateTabProps) => {
   const keyName = keyProp ? bufferToString(keyProp) : ''
+  // Same lock the View range form uses: while an inline edit is open or its
+  // ARSET is in flight, block a new AROP. Otherwise a user-initiated aggregate
+  // could be aborted+cleared by the edit's post-write cleanup, leaving the tab
+  // blank (updateArrayElementAction aborts any in-flight AROP on success).
+  const { isRefreshDisabled } = useAppSelector(selectedKeySelector)
 
   const {
     start,
@@ -67,7 +74,7 @@ const AggregateTab = ({ keyProp }: AggregateTabProps) => {
         onChangeValue={setValue}
         onRun={runQuery}
         onReset={resetQuery}
-        disabled={!isArrayKeyReady}
+        disabled={!isArrayKeyReady || isRefreshDisabled}
       />
       <S.TabBody data-testid={AGGREGATE_TAB_TEST_ID}>
         <L.ResultPanel>

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'uiSrc/i18n'
 import { ColorText } from 'uiSrc/components/base/text'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
@@ -13,6 +14,7 @@ export interface Props {
 
 const AzureTokenExpiredErrorContent = ({ text, onClose = () => {} }: Props) => {
   const { initiateLogin, loading } = useAzureAuth()
+  const { t } = useTranslation()
 
   const handleSignIn = () => {
     initiateLogin(AzureLoginSource.TokenRefresh)
@@ -31,7 +33,7 @@ const AzureTokenExpiredErrorContent = ({ text, onClose = () => {} }: Props) => {
             loading={loading}
             data-testid="azure-sign-in-btn"
           >
-            Sign in to Azure
+            {t('api.error.code.11024.button.signIn')}
           </Button>
         </FlexItem>
       </Row>

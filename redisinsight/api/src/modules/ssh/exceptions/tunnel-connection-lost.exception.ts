@@ -1,5 +1,6 @@
 import { HttpException } from '@nestjs/common';
 import { sanitizeMessage } from '../utils';
+import { CustomErrorCodes } from 'src/constants';
 
 export class TunnelConnectionLostException extends HttpException {
   constructor(message = '') {
@@ -10,6 +11,7 @@ export class TunnelConnectionLostException extends HttpException {
         message: `${prepend} ${sanitizedMessage}`,
         name: 'TunnelConnectionLostException',
         statusCode: 500,
+        errorCode: CustomErrorCodes.TunnelConnectionLost,
       },
       500,
     );

@@ -41,6 +41,7 @@ import { fetchDBSettings } from 'uiSrc/slices/app/db-settings'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { DatabaseSettingsData } from 'uiSrc/slices/interfaces'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
+import i18n from 'uiSrc/i18n'
 
 const SETTINGS_PAGE_PATH = '/settings'
 const Config = () => {
@@ -113,6 +114,7 @@ const Config = () => {
   useEffect(() => {
     if (config) {
       checkAndSetTheme()
+      checkAndSetLanguage()
     }
   }, [config])
 
@@ -217,6 +219,13 @@ const Config = () => {
     const theme = config?.theme
     if (theme && localStorageService.get(BrowserStorageItem.theme) !== theme)
       changeTheme(theme)
+  }
+
+  const checkAndSetLanguage = () => {
+    const language = config?.language
+    if (language && i18n.language !== language) {
+      i18n.changeLanguage(language)
+    }
   }
 
   return null

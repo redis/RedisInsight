@@ -40,6 +40,7 @@ export enum KnownFeatures {
   DevArray = 'dev-array',
   ProdMode = 'prodMode',
   ValueDecoder = 'valueDecoder',
+  DevLanguage = 'dev-language',
 }
 
 export interface IFeatureFlag {

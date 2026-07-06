@@ -24,9 +24,12 @@ import {
   aggregateArrayDtoFactory,
   createContiguousArrayDtoFactory,
   createSparseArrayDtoFactory,
+  deleteArrayElementsDtoFactory,
+  deleteArrayRangeDtoFactory,
   getArraySearchDtoFactory,
   getArraySearchResponseFactory,
   setArrayElementDtoFactory,
+  appendArrayElementDtoFactory,
 } from 'src/modules/browser/array/__tests__/array.factory';
 import {
   mockArrayCount,
@@ -287,12 +290,15 @@ describe('ArrayService', () => {
 
     beforeEach(() => {
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArScan,
-          mockGetArrayScanDto.keyName,
-          mockGetArrayScanDto.start,
-          mockGetArrayScanDto.end,
-        ])
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArScan,
+            mockGetArrayScanDto.keyName,
+            mockGetArrayScanDto.start,
+            mockGetArrayScanDto.end,
+          ],
+          { integerReply: 'bigint' },
+        )
         .mockResolvedValue(flatReply);
     });
 
@@ -306,12 +312,15 @@ describe('ArrayService', () => {
 
     it('should pair nested [[index, value], ...] reply (Redis 8.8 shape)', async () => {
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArScan,
-          mockGetArrayScanDto.keyName,
-          mockGetArrayScanDto.start,
-          mockGetArrayScanDto.end,
-        ])
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArScan,
+            mockGetArrayScanDto.keyName,
+            mockGetArrayScanDto.start,
+            mockGetArrayScanDto.end,
+          ],
+          { integerReply: 'bigint' },
+        )
         .mockResolvedValue([
           [Buffer.from('0'), mockArrayElement1],
           [Buffer.from('1'), Buffer.from('20.4')],
@@ -325,12 +334,15 @@ describe('ArrayService', () => {
 
     it('should drop nested entries with a nil half', async () => {
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArScan,
-          mockGetArrayScanDto.keyName,
-          mockGetArrayScanDto.start,
-          mockGetArrayScanDto.end,
-        ])
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArScan,
+            mockGetArrayScanDto.keyName,
+            mockGetArrayScanDto.start,
+            mockGetArrayScanDto.end,
+          ],
+          { integerReply: 'bigint' },
+        )
         .mockResolvedValue([
           [Buffer.from('0'), mockArrayElement1],
           [Buffer.from('1'), null],
@@ -346,14 +358,17 @@ describe('ArrayService', () => {
 
     it('should append LIMIT when provided', async () => {
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArScan,
-          mockGetArrayScanDto.keyName,
-          mockGetArrayScanDto.start,
-          mockGetArrayScanDto.end,
-          'LIMIT',
-          50,
-        ])
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArScan,
+            mockGetArrayScanDto.keyName,
+            mockGetArrayScanDto.start,
+            mockGetArrayScanDto.end,
+            'LIMIT',
+            50,
+          ],
+          { integerReply: 'bigint' },
+        )
         .mockResolvedValue([Buffer.from('0'), mockArrayElement1]);
 
       const result = await service.scan(mockBrowserClientMetadata, {
@@ -369,23 +384,29 @@ describe('ArrayService', () => {
         limit: null as unknown as number,
       });
 
-      expect(mockStandaloneRedisClient.sendCommand).toHaveBeenCalledWith([
-        BrowserToolArrayCommands.ArScan,
-        mockGetArrayScanDto.keyName,
-        mockGetArrayScanDto.start,
-        mockGetArrayScanDto.end,
-      ]);
+      expect(mockStandaloneRedisClient.sendCommand).toHaveBeenCalledWith(
+        [
+          BrowserToolArrayCommands.ArScan,
+          mockGetArrayScanDto.keyName,
+          mockGetArrayScanDto.start,
+          mockGetArrayScanDto.end,
+        ],
+        { integerReply: 'bigint' },
+      );
       expect(result).toEqual(mockGetArrayScanResponse);
     });
 
     it('should drop pairs whose value or index is null/undefined', async () => {
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArScan,
-          mockGetArrayScanDto.keyName,
-          mockGetArrayScanDto.start,
-          mockGetArrayScanDto.end,
-        ])
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArScan,
+            mockGetArrayScanDto.keyName,
+            mockGetArrayScanDto.start,
+            mockGetArrayScanDto.end,
+          ],
+          { integerReply: 'bigint' },
+        )
         .mockResolvedValue([
           Buffer.from('0'),
           mockArrayElement1,
@@ -419,12 +440,15 @@ describe('ArrayService', () => {
 
     it('should forward reversed ranges (start > end) to Redis as-is', async () => {
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArScan,
-          mockGetArrayScanDto.keyName,
-          '5',
-          '0',
-        ])
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArScan,
+            mockGetArrayScanDto.keyName,
+            '5',
+            '0',
+          ],
+          { integerReply: 'bigint' },
+        )
         .mockResolvedValue(flatReply);
 
       await service.scan(mockBrowserClientMetadata, {
@@ -433,12 +457,15 @@ describe('ArrayService', () => {
         end: '0',
       });
 
-      expect(mockStandaloneRedisClient.sendCommand).toHaveBeenCalledWith([
-        BrowserToolArrayCommands.ArScan,
-        mockGetArrayScanDto.keyName,
-        '5',
-        '0',
-      ]);
+      expect(mockStandaloneRedisClient.sendCommand).toHaveBeenCalledWith(
+        [
+          BrowserToolArrayCommands.ArScan,
+          mockGetArrayScanDto.keyName,
+          '5',
+          '0',
+        ],
+        { integerReply: 'bigint' },
+      );
     });
 
     it('should rethrow BadRequest on WrongType', async () => {
@@ -447,7 +474,10 @@ describe('ArrayService', () => {
         command: 'ARSCAN',
       };
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ArScan]))
+        .calledWith(
+          expect.arrayContaining([BrowserToolArrayCommands.ArScan]),
+          expect.anything(),
+        )
         .mockRejectedValue(replyError);
       await expect(
         service.scan(mockBrowserClientMetadata, mockGetArrayScanDto),
@@ -497,7 +527,7 @@ describe('ArrayService', () => {
   ])('$name', ({ command, reply, expected, call }) => {
     beforeEach(() => {
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([command, mockKeyDto.keyName])
+        .calledWith([command, mockKeyDto.keyName], { integerReply: 'bigint' })
         .mockResolvedValue(reply);
     });
 
@@ -519,7 +549,7 @@ describe('ArrayService', () => {
         command: command.toUpperCase(),
       };
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([command, mockKeyDto.keyName])
+        .calledWith([command, mockKeyDto.keyName], { integerReply: 'bigint' })
         .mockRejectedValue(replyError);
       await expect(call(service)).rejects.toThrow(BadRequestException);
     });
@@ -537,7 +567,9 @@ describe('ArrayService', () => {
   describe('getNextIndex (exhausted)', () => {
     it('should surface null index when ARNEXT returns nil', async () => {
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([BrowserToolArrayCommands.ArNext, mockKeyDto.keyName])
+        .calledWith([BrowserToolArrayCommands.ArNext, mockKeyDto.keyName], {
+          integerReply: 'bigint',
+        })
         .mockResolvedValue(null);
 
       const result = await service.getNextIndex(
@@ -681,7 +713,10 @@ describe('ArrayService', () => {
 
     it('runs ARGREP with WITHVALUES by default and parses index/value pairs', async () => {
       when(client.sendCommand)
-        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ArGrep]))
+        .calledWith(
+          expect.arrayContaining([BrowserToolArrayCommands.ArGrep]),
+          expect.anything(),
+        )
         .mockResolvedValue(mockArraySearchReplyWithValues);
 
       const result = await service.search(
@@ -690,15 +725,18 @@ describe('ArrayService', () => {
       );
 
       expect(result).toEqual(mockGetArraySearchResponse);
-      expect(client.sendCommand).toHaveBeenCalledWith([
-        BrowserToolArrayCommands.ArGrep,
-        mockGetArraySearchDto.keyName,
-        '-',
-        '+',
-        'MATCH',
-        '21.4',
-        'WITHVALUES',
-      ]);
+      expect(client.sendCommand).toHaveBeenCalledWith(
+        [
+          BrowserToolArrayCommands.ArGrep,
+          mockGetArraySearchDto.keyName,
+          '-',
+          '+',
+          'MATCH',
+          '21.4',
+          'WITHVALUES',
+        ],
+        { integerReply: 'bigint' },
+      );
     });
 
     it('appends the global connective only with 2+ predicates', async () => {
@@ -713,18 +751,21 @@ describe('ArrayService', () => {
         combinator: ArrayCombinator.Or,
       });
 
-      expect(client.sendCommand).toHaveBeenCalledWith([
-        BrowserToolArrayCommands.ArGrep,
-        mockGetArraySearchDto.keyName,
-        '-',
-        '+',
-        'GLOB',
-        '21.*',
-        'EXACT',
-        '99',
-        'OR',
-        'WITHVALUES',
-      ]);
+      expect(client.sendCommand).toHaveBeenCalledWith(
+        [
+          BrowserToolArrayCommands.ArGrep,
+          mockGetArraySearchDto.keyName,
+          '-',
+          '+',
+          'GLOB',
+          '21.*',
+          'EXACT',
+          '99',
+          'OR',
+          'WITHVALUES',
+        ],
+        { integerReply: 'bigint' },
+      );
     });
 
     it('sends no connective when omitted so the server applies its default', async () => {
@@ -738,22 +779,28 @@ describe('ArrayService', () => {
         ],
       });
 
-      expect(client.sendCommand).toHaveBeenCalledWith([
-        BrowserToolArrayCommands.ArGrep,
-        mockGetArraySearchDto.keyName,
-        '-',
-        '+',
-        'MATCH',
-        'a',
-        'MATCH',
-        'b',
-        'WITHVALUES',
-      ]);
+      expect(client.sendCommand).toHaveBeenCalledWith(
+        [
+          BrowserToolArrayCommands.ArGrep,
+          mockGetArraySearchDto.keyName,
+          '-',
+          '+',
+          'MATCH',
+          'a',
+          'MATCH',
+          'b',
+          'WITHVALUES',
+        ],
+        { integerReply: 'bigint' },
+      );
     });
 
     it('parses the nested [[index, value], ...] reply shape (Redis 8.8)', async () => {
       when(client.sendCommand)
-        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ArGrep]))
+        .calledWith(
+          expect.arrayContaining([BrowserToolArrayCommands.ArGrep]),
+          expect.anything(),
+        )
         .mockResolvedValue([
           ['5', '21.4'],
           ['6', '21.9'],
@@ -776,15 +823,18 @@ describe('ArrayService', () => {
         withValues: null as unknown as boolean,
       });
 
-      expect(client.sendCommand).toHaveBeenCalledWith([
-        BrowserToolArrayCommands.ArGrep,
-        mockGetArraySearchDto.keyName,
-        '-',
-        '+',
-        'MATCH',
-        'x',
-        'WITHVALUES',
-      ]);
+      expect(client.sendCommand).toHaveBeenCalledWith(
+        [
+          BrowserToolArrayCommands.ArGrep,
+          mockGetArraySearchDto.keyName,
+          '-',
+          '+',
+          'MATCH',
+          'x',
+          'WITHVALUES',
+        ],
+        { integerReply: 'bigint' },
+      );
     });
 
     it('passes range, NOCASE and LIMIT and omits WITHVALUES when withValues=false', async () => {
@@ -802,17 +852,20 @@ describe('ArrayService', () => {
         limit: 50,
       });
 
-      expect(client.sendCommand).toHaveBeenCalledWith([
-        BrowserToolArrayCommands.ArGrep,
-        mockGetArraySearchDto.keyName,
-        '10',
-        '20',
-        'MATCH',
-        'x',
-        'NOCASE',
-        'LIMIT',
-        50,
-      ]);
+      expect(client.sendCommand).toHaveBeenCalledWith(
+        [
+          BrowserToolArrayCommands.ArGrep,
+          mockGetArraySearchDto.keyName,
+          '10',
+          '20',
+          'MATCH',
+          'x',
+          'NOCASE',
+          'LIMIT',
+          50,
+        ],
+        { integerReply: 'bigint' },
+      );
       expect(result.elements).toEqual([
         { index: '5', value: null },
         { index: '6', value: null },
@@ -847,6 +900,87 @@ describe('ArrayService', () => {
       await expect(
         service.search(mockBrowserClientMetadata, mockGetArraySearchDto),
       ).rejects.toBeInstanceOf(ForbiddenException);
+    });
+  });
+
+  describe('appendElement', () => {
+    // keyName matches mockKeyDto so the shared key-existence stub resolves.
+    const dto = appendArrayElementDtoFactory.build({
+      keyName: mockKeyDto.keyName,
+    });
+
+    it('should append at the current length (ARLEN then ARSET) and return the index', async () => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolArrayCommands.ArLen, dto.keyName])
+        .mockResolvedValue(7);
+
+      const result = await service.appendElement(
+        mockBrowserClientMetadata,
+        dto,
+      );
+
+      expect(result).toEqual({ keyName: dto.keyName, index: '7' });
+      // Writes at the length read by ARLEN, passing the index as a string so
+      // the append stays precise once ioredis returns 64-bit integers
+      // losslessly (RI-8296).
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolArrayCommands.ArSet,
+        dto.keyName,
+        '7',
+        dto.value,
+      ]);
+    });
+
+    it('should reject when key does not exist', async () => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, dto.keyName])
+        .mockResolvedValue(0);
+      await expect(
+        service.appendElement(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should reject with BadRequest when the array is full (ARLEN === 2^64-1)', async () => {
+      // Top index already 2^64-2, so the next index is the reserved 2^64-1 —
+      // guard it before ARSET rather than letting Redis 500.
+      when(client.sendCommand)
+        .calledWith([BrowserToolArrayCommands.ArLen, dto.keyName])
+        .mockResolvedValue('18446744073709551615');
+
+      await expect(
+        service.appendElement(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(BadRequestException);
+      expect(client.sendCommand).not.toHaveBeenCalledWith(
+        expect.arrayContaining([
+          BrowserToolArrayCommands.ArSet,
+          dto.keyName,
+          '18446744073709551615',
+        ]),
+      );
+    });
+
+    it('should rethrow BadRequest on WrongType', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisWrongTypeError,
+        command: 'ARLEN',
+      };
+      when(client.sendCommand)
+        .calledWith([BrowserToolArrayCommands.ArLen, dto.keyName])
+        .mockRejectedValue(replyError);
+      await expect(
+        service.appendElement(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should map ACL error to Forbidden', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisNoPermError,
+        command: 'ARSET',
+      };
+      client.sendCommand.mockRejectedValue(replyError);
+      await expect(
+        service.appendElement(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(ForbiddenException);
     });
   });
 
@@ -912,6 +1046,161 @@ describe('ArrayService', () => {
     });
   });
 
+  describe('deleteElements', () => {
+    // keyName matches mockKeyDto so the shared key-existence stub resolves.
+    const dto = deleteArrayElementsDtoFactory.build({
+      keyName: mockKeyDto.keyName,
+      indexes: ['0', '1', '3'],
+    });
+
+    beforeEach(() => {
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolArrayCommands.ArDel,
+          dto.keyName,
+          ...dto.indexes,
+        ])
+        .mockResolvedValue('2');
+    });
+
+    it('should delete via ARDEL key index... and return the affected count', async () => {
+      const result = await service.deleteElements(
+        mockBrowserClientMetadata,
+        dto,
+      );
+      expect(result).toEqual({ affected: '2' });
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolArrayCommands.ArDel,
+        dto.keyName,
+        ...dto.indexes,
+      ]);
+    });
+
+    it('should reject when key does not exist', async () => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, mockKeyDto.keyName])
+        .mockResolvedValue(0);
+      await expect(
+        service.deleteElements(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should rethrow BadRequest on WrongType', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisWrongTypeError,
+        command: 'ARDEL',
+      };
+      when(client.sendCommand)
+        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ArDel]))
+        .mockRejectedValue(replyError);
+      await expect(
+        service.deleteElements(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should map ACL error to Forbidden', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisNoPermError,
+        command: 'ARDEL',
+      };
+      client.sendCommand.mockRejectedValue(replyError);
+      await expect(
+        service.deleteElements(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe('deleteRange', () => {
+    // keyName matches mockKeyDto so the shared key-existence stub resolves.
+    const dto = deleteArrayRangeDtoFactory.build({
+      keyName: mockKeyDto.keyName,
+      start: '0',
+      end: '3',
+    });
+
+    beforeEach(() => {
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolArrayCommands.ArDelRange,
+          dto.keyName,
+          dto.start,
+          dto.end,
+        ])
+        .mockResolvedValue('2');
+    });
+
+    it('should delete via ARDELRANGE key start end and return the affected count', async () => {
+      const result = await service.deleteRange(mockBrowserClientMetadata, dto);
+      expect(result).toEqual({ affected: '2' });
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolArrayCommands.ArDelRange,
+        dto.keyName,
+        dto.start,
+        dto.end,
+      ]);
+    });
+
+    it('should forward reversed ranges (start > end) to Redis as-is', async () => {
+      const reversed = deleteArrayRangeDtoFactory.build({
+        keyName: mockKeyDto.keyName,
+        start: '3',
+        end: '0',
+      });
+      when(client.sendCommand)
+        .calledWith([
+          BrowserToolArrayCommands.ArDelRange,
+          reversed.keyName,
+          reversed.start,
+          reversed.end,
+        ])
+        .mockResolvedValue('2');
+
+      await service.deleteRange(mockBrowserClientMetadata, reversed);
+
+      expect(client.sendCommand).toHaveBeenCalledWith([
+        BrowserToolArrayCommands.ArDelRange,
+        reversed.keyName,
+        '3',
+        '0',
+      ]);
+    });
+
+    it('should reject when key does not exist', async () => {
+      when(client.sendCommand)
+        .calledWith([BrowserToolKeysCommands.Exists, mockKeyDto.keyName])
+        .mockResolvedValue(0);
+      await expect(
+        service.deleteRange(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should rethrow BadRequest on WrongType', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisWrongTypeError,
+        command: 'ARDELRANGE',
+      };
+      when(client.sendCommand)
+        .calledWith(
+          expect.arrayContaining([BrowserToolArrayCommands.ArDelRange]),
+        )
+        .mockRejectedValue(replyError);
+      await expect(
+        service.deleteRange(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should map ACL error to Forbidden', async () => {
+      const replyError: ReplyError = {
+        ...mockRedisNoPermError,
+        command: 'ARDELRANGE',
+      };
+      client.sendCommand.mockRejectedValue(replyError);
+      await expect(
+        service.deleteRange(mockBrowserClientMetadata, dto),
+      ).rejects.toThrow(ForbiddenException);
+    });
+  });
+
   describe('aggregate', () => {
     const mockAggregateArrayDto = aggregateArrayDtoFactory.build();
     const mockArrayAggregateSumResult = '104.7';
@@ -929,13 +1218,16 @@ describe('ArrayService', () => {
         ])
         .mockResolvedValue(1);
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArOp,
-          mockAggregateArrayDto.keyName,
-          mockAggregateArrayDto.start,
-          mockAggregateArrayDto.end,
-          mockAggregateArrayDto.operation,
-        ])
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArOp,
+            mockAggregateArrayDto.keyName,
+            mockAggregateArrayDto.start,
+            mockAggregateArrayDto.end,
+            mockAggregateArrayDto.operation,
+          ],
+          { integerReply: 'bigint' },
+        )
         .mockResolvedValue(Buffer.from(mockArrayAggregateSumResult));
     });
 
@@ -954,14 +1246,17 @@ describe('ArrayService', () => {
         value: '20.4',
       };
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArOp,
-          dto.keyName,
-          dto.start,
-          dto.end,
-          dto.operation,
-          dto.value,
-        ])
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArOp,
+            dto.keyName,
+            dto.start,
+            dto.end,
+            dto.operation,
+            dto.value,
+          ],
+          { integerReply: 'bigint' },
+        )
         .mockResolvedValue(1);
 
       const result = await service.aggregate(mockBrowserClientMetadata, dto);
@@ -974,24 +1269,30 @@ describe('ArrayService', () => {
         // value intentionally set — should be ignored when operation !== MATCH.
         value: 'ignored',
       });
-      expect(mockStandaloneRedisClient.sendCommand).toHaveBeenCalledWith([
-        BrowserToolArrayCommands.ArOp,
-        mockAggregateArrayDto.keyName,
-        mockAggregateArrayDto.start,
-        mockAggregateArrayDto.end,
-        mockAggregateArrayDto.operation,
-      ]);
-    });
-
-    it('should normalize integer replies (USED) to a string', async () => {
-      when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
+      expect(mockStandaloneRedisClient.sendCommand).toHaveBeenCalledWith(
+        [
           BrowserToolArrayCommands.ArOp,
           mockAggregateArrayDto.keyName,
           mockAggregateArrayDto.start,
           mockAggregateArrayDto.end,
-          ArrayAggregateOperation.Used,
-        ])
+          mockAggregateArrayDto.operation,
+        ],
+        { integerReply: 'bigint' },
+      );
+    });
+
+    it('should normalize integer replies (USED) to a string', async () => {
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArOp,
+            mockAggregateArrayDto.keyName,
+            mockAggregateArrayDto.start,
+            mockAggregateArrayDto.end,
+            ArrayAggregateOperation.Used,
+          ],
+          { integerReply: 'bigint' },
+        )
         .mockResolvedValue(5);
 
       const result = await service.aggregate(mockBrowserClientMetadata, {
@@ -1005,13 +1306,16 @@ describe('ArrayService', () => {
       // SUM over an empty/non-numeric range returns nil; the API surfaces
       // that as `result: null` instead of throwing a 500.
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith([
-          BrowserToolArrayCommands.ArOp,
-          mockAggregateArrayDto.keyName,
-          mockAggregateArrayDto.start,
-          mockAggregateArrayDto.end,
-          mockAggregateArrayDto.operation,
-        ])
+        .calledWith(
+          [
+            BrowserToolArrayCommands.ArOp,
+            mockAggregateArrayDto.keyName,
+            mockAggregateArrayDto.start,
+            mockAggregateArrayDto.end,
+            mockAggregateArrayDto.operation,
+          ],
+          { integerReply: 'bigint' },
+        )
         .mockResolvedValue(null);
 
       const result = await service.aggregate(
@@ -1037,14 +1341,17 @@ describe('ArrayService', () => {
           value,
         };
         when(mockStandaloneRedisClient.sendCommand)
-          .calledWith([
-            BrowserToolArrayCommands.ArOp,
-            dto.keyName,
-            dto.start,
-            dto.end,
-            dto.operation,
-            dto.value,
-          ])
+          .calledWith(
+            [
+              BrowserToolArrayCommands.ArOp,
+              dto.keyName,
+              dto.start,
+              dto.end,
+              dto.operation,
+              dto.value,
+            ],
+            { integerReply: 'bigint' },
+          )
           .mockResolvedValue(2);
 
         const result = await service.aggregate(mockBrowserClientMetadata, dto);
@@ -1091,7 +1398,9 @@ describe('ArrayService', () => {
         command: 'AROP',
       };
       when(mockStandaloneRedisClient.sendCommand)
-        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ArOp]))
+        .calledWith(expect.arrayContaining([BrowserToolArrayCommands.ArOp]), {
+          integerReply: 'bigint',
+        })
         .mockRejectedValue(replyError);
       await expect(
         service.aggregate(mockBrowserClientMetadata, mockAggregateArrayDto),

@@ -22,11 +22,16 @@ export class RedisConnectionFailedException extends HttpException {
     let response: Record<string, any>;
 
     if (isString(message)) {
+      // Expose the underlying error as a structured detail so the UI can
+      // localize the framing and interpolate it.
+      const hasDetail =
+        message && message !== ERROR_MESSAGES.REDIS_CONNECTION_FAILED;
       response = {
         message,
         error: 'RedisConnectionFailedException',
         statusCode: RedisConnectionFailedStatusCode,
         errorCode: CustomErrorCodes.RedisConnectionFailed,
+        ...(hasDetail ? { resource: { detail: message } } : {}),
       };
     } else {
       response = message;

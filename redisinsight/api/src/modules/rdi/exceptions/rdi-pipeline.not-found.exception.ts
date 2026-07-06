@@ -9,7 +9,10 @@ import ERROR_MESSAGES from 'src/constants/error-messages';
 export class RdiPipelineNotFoundException extends HttpException {
   constructor(
     message = ERROR_MESSAGES.BAD_REQUEST,
-    options?: HttpExceptionOptions & { details?: unknown },
+    options?: HttpExceptionOptions & {
+      details?: unknown;
+      resource?: Record<string, unknown>;
+    },
   ) {
     const response = {
       message,
@@ -17,6 +20,7 @@ export class RdiPipelineNotFoundException extends HttpException {
       error: 'RdiNotFound',
       errorCode: CustomErrorCodes.RdiNotFound,
       details: options?.details,
+      ...(options?.resource ? { resource: options.resource } : {}),
     };
     super(response, response.statusCode, options);
   }

@@ -99,4 +99,8 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
     name: KnownFeatures.ValueDecoder,
     storage: FeatureStorage.Database,
   },
+  [KnownFeatures.DevLanguage]: {
+    name: KnownFeatures.DevLanguage,
+    storage: FeatureStorage.Database,
+  },
 };
