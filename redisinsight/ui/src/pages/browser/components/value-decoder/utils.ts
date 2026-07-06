@@ -312,7 +312,18 @@ const parseNumericForRef = (value: string, dataType: string): number => {
 
   if (dataType.includes('bigint') || dataType.includes('biguint')) {
     try {
-      return Number(BigInt(value))
+      const bigintValue = BigInt(value)
+
+      if (bigintValue < 0n) {
+        return 0
+      }
+
+      const maxSafeInteger = BigInt(Number.MAX_SAFE_INTEGER)
+      if (bigintValue > maxSafeInteger) {
+        return Number.MAX_SAFE_INTEGER
+      }
+
+      return Number(bigintValue)
     } catch {
       return 0
     }

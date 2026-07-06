@@ -399,6 +399,41 @@ describe('value-decoder utils', () => {
       ])
     })
 
+    it('uses safe integer limits for bigint dynamic field sizes', () => {
+      const buffer = new Uint8Array(10)
+      const view = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength)
+      view.setBigUint64(0, 9223372036854775807n, true)
+
+      const parsed = parseBinaryBuffer(buffer, [
+        {
+          id: '1',
+          kind: 'field',
+          name: 'len',
+          dataType: 'biguint64le',
+          size: 8,
+        },
+        {
+          id: '2',
+          kind: 'field',
+          name: 'text',
+          dataType: 'string',
+          size: '',
+          sizeSource: 'field',
+          sizeFieldRef: '1',
+        },
+      ])
+
+      expect(parsed).toEqual([
+        { kind: 'field', name: 'len', size: 8, value: '9223372036854775807' },
+        {
+          kind: 'field',
+          name: 'text',
+          size: Number.MAX_SAFE_INTEGER,
+          value: '<insufficient data>',
+        },
+      ])
+    })
+
     it('caps nested repeat decoding with a shared global budget', () => {
       const outerCount = 100
       const innerCount = 100
