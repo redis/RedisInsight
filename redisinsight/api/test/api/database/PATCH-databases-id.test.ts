@@ -286,8 +286,8 @@ describe(`PATCH /databases/:id`, () => {
         after: async () => {
           // endpoint must remain unchanged
           const db = await localDb.getInstanceById(constants.TEST_INSTANCE_ID);
-          expect(db.host).to.eq(constants.TEST_REDIS_HOST);
-          expect(db.port).to.eq(constants.TEST_REDIS_PORT);
+          expect(db?.host).to.eq(constants.TEST_REDIS_HOST);
+          expect(db?.port).to.eq(constants.TEST_REDIS_PORT);
         },
       },
       {
@@ -304,7 +304,7 @@ describe(`PATCH /databases/:id`, () => {
         },
         after: async () => {
           const db = await localDb.getInstanceById(constants.TEST_INSTANCE_ID);
-          expect(db.port).to.eq(constants.TEST_REDIS_PORT);
+          expect(db?.port).to.eq(constants.TEST_REDIS_PORT);
         },
       },
       {
@@ -319,7 +319,7 @@ describe(`PATCH /databases/:id`, () => {
         },
         after: async () => {
           const db = await localDb.getInstanceById(constants.TEST_INSTANCE_ID);
-          expect(db.name).to.eq(managedName);
+          expect(db?.name).to.eq(managedName);
         },
       },
     ].map(mainCheckFn);

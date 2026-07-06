@@ -443,6 +443,82 @@ describe('DatabaseService', () => {
         expect(databaseRepository.update).toHaveBeenCalled();
       });
     });
+
+    describe('endpoint name sync', () => {
+      const HOST = '127.0.100.1';
+      const PORT = 6379;
+
+      // Fresh object per call: merge mutates the returned database, and the
+      // shared mockDatabase can be mutated by other update tests.
+      const defaultNamedDatabase = () => ({
+        ...mockDatabase,
+        host: HOST,
+        port: PORT,
+        name: `${HOST}:${PORT}`,
+      });
+
+      it('should sync the name to the new endpoint when the name was the default host:port', async () => {
+        databaseRepository.get.mockResolvedValueOnce(defaultNamedDatabase());
+
+        await service.update(
+          mockSessionMetadata,
+          mockDatabase.id,
+          classToClass(UpdateDatabaseDto, { host: 'new-host' }),
+          true,
+        );
+
+        expect(databaseFactory.createDatabaseModel).toHaveBeenCalledWith(
+          mockSessionMetadata,
+          expect.objectContaining({
+            host: 'new-host',
+            name: `new-host:${PORT}`,
+          }),
+        );
+      });
+
+      it('should not override an explicit name provided in the update', async () => {
+        databaseRepository.get.mockResolvedValueOnce(defaultNamedDatabase());
+
+        await service.update(
+          mockSessionMetadata,
+          mockDatabase.id,
+          classToClass(UpdateDatabaseDto, {
+            host: 'new-host',
+            name: 'custom-name',
+          }),
+          true,
+        );
+
+        expect(databaseFactory.createDatabaseModel).toHaveBeenCalledWith(
+          mockSessionMetadata,
+          expect.objectContaining({ host: 'new-host', name: 'custom-name' }),
+        );
+      });
+
+      it('should not change a custom name when the endpoint changes', async () => {
+        databaseRepository.get.mockResolvedValueOnce({
+          ...mockDatabase,
+          host: HOST,
+          port: PORT,
+          name: 'my-custom-alias',
+        });
+
+        await service.update(
+          mockSessionMetadata,
+          mockDatabase.id,
+          classToClass(UpdateDatabaseDto, { host: 'new-host' }),
+          true,
+        );
+
+        expect(databaseFactory.createDatabaseModel).toHaveBeenCalledWith(
+          mockSessionMetadata,
+          expect.objectContaining({
+            host: 'new-host',
+            name: 'my-custom-alias',
+          }),
+        );
+      });
+    });
   });
 
   describe('test', () => {

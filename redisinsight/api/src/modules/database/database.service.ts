@@ -111,6 +111,14 @@ export class DatabaseService {
     return !!database.cloudDetails?.cloudId || !!database.providerDetails;
   }
 
+  /**
+   * Whether the database name is still the default "host:port" derived from its
+   * current endpoint (i.e. the user never set a custom alias).
+   */
+  static hasDefaultEndpointName(database: Database): boolean {
+    return database.name === `${database.host}:${database.port}`;
+  }
+
   private async merge(
     database: Database,
     dto: UpdateDatabaseDto,
@@ -281,9 +289,24 @@ export class DatabaseService {
       );
     }
 
+    // When the name is still the default "host:port" and the endpoint changes,
+    // keep the name in sync with the new endpoint. Computed before merge (which
+    // mutates oldDatabase) and skipped when the caller sets a name explicitly or
+    // the user has a custom alias.
+    const syncedName =
+      dto.name === undefined &&
+      DatabaseService.isEndpointChanged(dto, oldDatabase) &&
+      DatabaseService.hasDefaultEndpointName(oldDatabase)
+        ? `${dto.host ?? oldDatabase.host}:${dto.port ?? oldDatabase.port}`
+        : undefined;
+
     let database: Database;
     try {
       database = await this.merge(oldDatabase, dto);
+
+      if (syncedName !== undefined) {
+        database.name = syncedName;
+      }
 
       if (DatabaseService.isConnectionAffected(dto)) {
         if (DatabaseService.isEndpointAffected(dto)) {
