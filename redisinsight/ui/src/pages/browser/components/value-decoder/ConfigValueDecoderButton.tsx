@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 
-import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
+import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { RiTooltip } from 'uiSrc/components'
 
 import { useValueDecoder } from './ValueDecoderProvider'
@@ -18,13 +18,13 @@ export const ConfigValueDecoderButton = () => {
       position="top"
       content="Configure shared decoder rules for matching hash key patterns."
     >
-      <PrimaryButton
+      <EmptyButton
         size="small"
         onClick={handleOpen}
         data-testid={`${VALUE_DECODER_TEST_ID}-config-btn`}
       >
         Value Decoders
-      </PrimaryButton>
+      </EmptyButton>
     </RiTooltip>
   )
 }
