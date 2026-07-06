@@ -37,6 +37,14 @@ describe('AddKeyReJSON', () => {
     expect(render(<AddKeyReJSON {...instance(mockedProps)} />)).toBeTruthy()
   })
 
+  it('renders the Value label with the required asterisk in front', () => {
+    render(<AddKeyReJSON {...instance(mockedProps)} />)
+
+    const label = screen.getByText('Value').closest('label')
+    expect(label).toHaveTextContent('Value')
+    expect(label?.textContent?.trimStart().startsWith('*')).toBe(true)
+  })
+
   it('should set value properly', () => {
     render(<AddKeyReJSON {...instance(mockedProps)} />)
     const valueArea = screen.getByTestId('json-value')

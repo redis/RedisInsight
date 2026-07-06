@@ -99,7 +99,13 @@ describe('AddKey', () => {
       />,
     )
 
-    expect(screen.getByText(/Key Type\*/i)).toBeInTheDocument()
+    // Label text is clean; the required asterisk renders in front of it.
+    const keyType = screen.getByText('Key Type').closest('label')
+    expect(keyType).toHaveTextContent('Key Type')
+    expect(keyType?.textContent?.trimStart().startsWith('*')).toBe(true)
+
+    const keyName = screen.getByText('Key Name').closest('label')
+    expect(keyName?.textContent?.trimStart().startsWith('*')).toBe(true)
   })
 
   it('should have key type select with predefined first value from options', () => {

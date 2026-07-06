@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from 'uiSrc/utils/test-utils'
+import { render, screen } from 'uiSrc/utils/test-utils'
 
 import AddMultipleFields from './AddMultipleFields'
 
@@ -19,5 +19,26 @@ describe('AddMultipleFields', () => {
         </AddMultipleFields>,
       ),
     ).toBeTruthy()
+  })
+
+  it('renders column headers once, with the required asterisk in front', () => {
+    render(
+      <AddMultipleFields
+        items={testItems1}
+        isClearDisabled={() => true}
+        onClickAdd={jest.fn()}
+        onClickRemove={jest.fn()}
+        columnLabels={[{ label: 'Member' }, { label: 'Score', required: true }]}
+      >
+        {() => <div />}
+      </AddMultipleFields>,
+    )
+
+    const score = screen.getByText('Score').closest('label')
+    expect(score?.textContent?.trimStart().startsWith('*')).toBe(true)
+
+    // A non-required column shows no leading asterisk.
+    const member = screen.getByText('Member').closest('label')
+    expect(member?.textContent?.trimStart().startsWith('*')).toBe(false)
   })
 })
