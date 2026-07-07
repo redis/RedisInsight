@@ -157,6 +157,20 @@ describe('VectorSearchQueryPage', () => {
         eventData: { databaseId: mockInstanceId },
       })
     })
+
+    it('should send telemetry with query source when the index panel is toggled open', async () => {
+      await renderComponent()
+
+      fireEvent.click(screen.getByTestId('view-index-btn'))
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
+        eventData: {
+          databaseId: mockInstanceId,
+          source: SearchIndexDetailsSource.Query,
+        },
+      })
+    })
   })
 
   describe('index panel auto-open from key details', () => {
@@ -173,6 +187,12 @@ describe('VectorSearchQueryPage', () => {
 
       const panel = screen.queryByTestId('view-index-panel')
       expect(panel).not.toBeInTheDocument()
+      expect(mockReplace).not.toHaveBeenCalled()
+      expect(sendEventTelemetry).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
+        }),
+      )
     })
 
     it('should open the index panel when the open panel param is present', async () => {

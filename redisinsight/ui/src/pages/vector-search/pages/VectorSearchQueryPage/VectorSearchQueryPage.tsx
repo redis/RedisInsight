@@ -36,7 +36,6 @@ export const VectorSearchQueryPage = () => {
       return
     }
 
-    setIsIndexPanelOpen(true)
     sendEventTelemetry({
       event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
       eventData: {
