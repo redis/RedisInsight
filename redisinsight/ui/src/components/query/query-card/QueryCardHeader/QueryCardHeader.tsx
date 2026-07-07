@@ -306,6 +306,7 @@ const QueryCardHeader = (props: Props) => {
 
   return (
     <Row
+      grow={false}
       onClick={handleToggleOpen}
       tabIndex={0}
       onKeyDown={() => {}}
