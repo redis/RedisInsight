@@ -180,7 +180,7 @@ const HelpMenu = () => {
 
             <FeatureFlagComponent name={FeatureFlags.whatsNew}>
               <Row className={styles.helpMenuItemLink} align="center" gap="xs">
-                <RiIcon type="RiStarsIcon" size="l" />
+                <RiIcon type="StarsIcon" size="l" />
                 <Text
                   size="xs"
                   className={styles.helpMenuTextLink}
