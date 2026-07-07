@@ -48,7 +48,10 @@ export const useAzureAuth = () => {
   }, [])
 
   const initiateLogin = useCallback(
-    (source: AzureLoginSource = AzureLoginSource.Autodiscovery) => {
+    (
+      source: AzureLoginSource = AzureLoginSource.Autodiscovery,
+      tenantId?: string,
+    ) => {
       // In web mode, Azure OAuth only works when accessed via localhost
       // due to Azure's redirect URI restrictions for public client apps
       if (!isElectron && window.location.hostname !== 'localhost') {
@@ -74,6 +77,7 @@ export const useAzureAuth = () => {
           onSuccess: openAuthUrl,
           prompt: AzureOAuthPrompt.SelectAccount,
           redirectType,
+          tenantId,
         }),
       )
     },

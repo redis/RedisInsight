@@ -30,6 +30,11 @@ export interface StateAzureAuth {
   account: AzureAccount | null
   error: string
   source: AzureLoginSource | null
+  /**
+   * Tenant chosen at sign-in (GUID or domain), or null when signing in against
+   * the user's home tenant via the multi-tenant /common endpoint.
+   */
+  tenant: string | null
 }
 
 export enum AzureOAuthPrompt {
@@ -66,6 +71,7 @@ export const initialState: StateAzureAuth = {
   account: null,
   error: '',
   source: null,
+  tenant: null,
 }
 
 const clearOAuthTimeout = () => {
@@ -85,6 +91,9 @@ const azureAuthSlice = createSlice({
       { payload }: PayloadAction<AzureLoginSource | null>,
     ) => {
       state.source = payload
+    },
+    setAzureTenant: (state, { payload }: PayloadAction<string | null>) => {
+      state.tenant = payload
     },
     azureAuthLogin: (state) => {
       state.loading = true
@@ -117,6 +126,7 @@ const azureAuthSlice = createSlice({
       state.account = null
       state.error = ''
       state.source = null
+      state.tenant = null
     },
   },
 })
@@ -124,6 +134,7 @@ const azureAuthSlice = createSlice({
 export const {
   setAzureAuthInitialState,
   setAzureLoginSource,
+  setAzureTenant,
   azureAuthLogin,
   azureAuthLoginSuccess,
   azureAuthLoginFailure,
@@ -140,6 +151,8 @@ export const azureAuthLoadingSelector = (state: RootState) =>
   state.oauth.azure?.loading
 export const azureAuthSourceSelector = (state: RootState) =>
   state.oauth.azure?.source
+export const azureAuthTenantSelector = (state: RootState) =>
+  state.oauth.azure?.tenant
 
 // The reducer
 export default azureAuthSlice.reducer
@@ -148,16 +161,18 @@ export interface InitiateAzureLoginOptions {
   source: AzureLoginSource
   prompt?: AzureOAuthPrompt
   redirectType?: AzureOAuthRedirectType
+  tenantId?: string
   onSuccess?: (url: string) => void
   onFail?: () => void
 }
 
 // Thunk action to initiate Azure login
 export function initiateAzureLoginAction(options: InitiateAzureLoginOptions) {
-  const { source, prompt, redirectType, onSuccess, onFail } = options
+  const { source, prompt, redirectType, tenantId, onSuccess, onFail } = options
 
   return async (dispatch: AppDispatch) => {
     dispatch(setAzureLoginSource(source))
+    dispatch(setAzureTenant(tenantId ?? null))
     sendEventTelemetry({
       event: TelemetryEvent.AZURE_SIGN_IN_CLICKED,
     })
@@ -167,6 +182,7 @@ export function initiateAzureLoginAction(options: InitiateAzureLoginOptions) {
       const params: Record<string, string> = {}
       if (prompt) params.prompt = prompt
       if (redirectType) params.redirectType = redirectType
+      if (tenantId) params.tenantId = tenantId
 
       const { data, status } = await apiService.get<AzureAuthLoginResponse>(
         ApiEndpoints.AZURE_AUTH_LOGIN,

@@ -12,9 +12,11 @@ import reducer, {
   azureAuthLogout,
   setAzureAuthInitialState,
   setAzureLoginSource,
+  setAzureTenant,
   azureAuthSelector,
   azureAuthAccountSelector,
   azureAuthLoadingSelector,
+  azureAuthTenantSelector,
   initiateAzureLoginAction,
   cancelAzureLoginAction,
   handleAzureOAuthSuccess,
@@ -55,6 +57,37 @@ describe('azure auth slice', () => {
       }
       const result = reducer(modifiedState, setAzureAuthInitialState())
       expect(result).toEqual(initialState)
+    })
+  })
+
+  describe('setAzureTenant', () => {
+    it('should store the active tenant', () => {
+      const nextState = reducer(
+        initialState,
+        setAzureTenant('contoso.onmicrosoft.com'),
+      )
+      expect(nextState.tenant).toEqual('contoso.onmicrosoft.com')
+      expect(
+        azureAuthTenantSelector({
+          oauth: { azure: nextState },
+        } as any),
+      ).toEqual('contoso.onmicrosoft.com')
+    })
+
+    it('should clear the active tenant when set to null', () => {
+      const nextState = reducer(
+        { ...initialState, tenant: 'contoso.onmicrosoft.com' },
+        setAzureTenant(null),
+      )
+      expect(nextState.tenant).toBeNull()
+    })
+
+    it('should clear the tenant on logout', () => {
+      const nextState = reducer(
+        { ...initialState, tenant: 'contoso.onmicrosoft.com' },
+        azureAuthLogout(),
+      )
+      expect(nextState.tenant).toBeNull()
     })
   })
 
@@ -262,6 +295,7 @@ describe('azure auth slice', () => {
 
         const expectedActions = [
           setAzureLoginSource(AzureLoginSource.Autodiscovery),
+          setAzureTenant(null),
           azureAuthLogin(),
           azureAuthLoginSuccess(),
         ]
@@ -288,9 +322,10 @@ describe('azure auth slice', () => {
         expect(actions[0]).toEqual(
           setAzureLoginSource(AzureLoginSource.Autodiscovery),
         )
-        expect(actions[1]).toEqual(azureAuthLogin())
-        expect(actions[2]).toEqual(azureAuthLoginFailure(errorMessage))
-        expect(actions[3].type).toEqual(addErrorNotification({} as any).type)
+        expect(actions[1]).toEqual(setAzureTenant(null))
+        expect(actions[2]).toEqual(azureAuthLogin())
+        expect(actions[3]).toEqual(azureAuthLoginFailure(errorMessage))
+        expect(actions[4].type).toEqual(addErrorNotification({} as any).type)
       })
 
       it('should set source to token-refresh when initiated from error notification', async () => {
@@ -309,6 +344,7 @@ describe('azure auth slice', () => {
 
         const expectedActions = [
           setAzureLoginSource(AzureLoginSource.TokenRefresh),
+          setAzureTenant(null),
           azureAuthLogin(),
           azureAuthLoginSuccess(),
         ]
@@ -351,6 +387,26 @@ describe('azure auth slice', () => {
 
         expect(apiService.get).toHaveBeenCalledWith(expect.any(String), {
           params: undefined,
+        })
+      })
+
+      it('should pass tenantId parameter as query param to API', async () => {
+        const authUrl = faker.internet.url()
+        const responsePayload = { data: { url: authUrl }, status: 200 }
+        const tenantId = 'contoso.onmicrosoft.com'
+
+        apiService.get = jest.fn().mockResolvedValue(responsePayload)
+
+        await store.dispatch<any>(
+          initiateAzureLoginAction({
+            source: AzureLoginSource.Autodiscovery,
+            onSuccess: jest.fn(),
+            tenantId,
+          }),
+        )
+
+        expect(apiService.get).toHaveBeenCalledWith(expect.any(String), {
+          params: { tenantId },
         })
       })
     })
