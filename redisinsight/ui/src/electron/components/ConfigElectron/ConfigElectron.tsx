@@ -7,8 +7,6 @@ import {
   appServerInfoSelector,
   appElectronInfoSelector,
 } from 'uiSrc/slices/app/info'
-import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
-import { FeatureFlags } from 'uiSrc/constants'
 import {
   ipcAppRestart,
   ipcCheckUpdates,
@@ -23,9 +21,6 @@ const ConfigElectron = () => {
   let isCheckedUpdates = false
   const { isReleaseNotesViewed } = useAppSelector(appElectronInfoSelector)
   const serverInfo = useAppSelector(appServerInfoSelector)
-  const { [FeatureFlags.whatsNew]: whatsNewFeature } = useAppSelector(
-    appFeatureFlagsFeaturesSelector,
-  )
 
   const dispatch = useAppDispatch()
   const history = useHistory()
@@ -35,11 +30,9 @@ const ConfigElectron = () => {
     window.app?.updateAvailable?.(updateAvailableAction)
   }, [])
 
-  // Keyed on serverInfo only: must run once per load (consumes one-shot
-  // electron-store flags); the whatsNew flag already has its config default.
   useEffect(() => {
     if (serverInfo) {
-      ipcCheckUpdates(serverInfo, dispatch, !!whatsNewFeature?.flag)
+      ipcCheckUpdates(serverInfo, dispatch)
     }
   }, [serverInfo])
 

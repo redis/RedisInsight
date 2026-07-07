@@ -1,13 +1,9 @@
 import { Dispatch } from 'react'
 import { omit } from 'lodash'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { ReleaseNotesSource, WhatsNewSource } from 'uiSrc/constants/telemetry'
+import { ReleaseNotesSource } from 'uiSrc/constants/telemetry'
 import { setElectronInfo, setReleaseNotesViewed } from 'uiSrc/slices/app/info'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
-import { openWhatsNew } from 'uiSrc/slices/app/whatsNew'
-import { isWhatsNewEligible } from 'uiSrc/utils'
-import { localStorageService } from 'uiSrc/services'
-import { BrowserStorageItem } from 'uiSrc/constants'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { GetServerInfoResponse } from 'apiClient'
 import { ElectronStorageItem, IpcInvokeEvent } from '../constants'
@@ -15,7 +11,6 @@ import { ElectronStorageItem, IpcInvokeEvent } from '../constants'
 export const ipcCheckUpdates = async (
   serverInfo: GetServerInfoResponse,
   dispatch: Dispatch<any>,
-  isWhatsNewEnabled = false,
 ) => {
   const isUpdateDownloaded = await window.app.ipc.invoke(
     IpcInvokeEvent.getStoreValue,
@@ -32,42 +27,19 @@ export const ipcCheckUpdates = async (
 
   if (isUpdateDownloaded && !isUpdateAvailable) {
     if (serverInfo.appVersion === updateDownloadedVersion) {
-      const lastVersionSeen =
-        localStorageService?.get(BrowserStorageItem.whatsNewLastVersionSeen) ??
-        null
-
-      // The What's New modal replaces the update toast when eligible;
-      // otherwise fall back to the toast so the update is never silent.
-      if (
-        isWhatsNewEnabled &&
-        isWhatsNewEligible(updateDownloadedVersion, lastVersionSeen)
-      ) {
-        dispatch(openWhatsNew(updateDownloadedVersion))
-        sendEventTelemetry({
-          event: TelemetryEvent.WHATS_NEW_OPENED,
-          eventData: {
-            source: WhatsNewSource.autoUpdate,
-            version: updateDownloadedVersion,
-          },
-        })
-      } else {
-        dispatch(
-          addMessageNotification(
-            successMessages.INSTALLED_NEW_UPDATE(
-              updateDownloadedVersion,
-              () => {
-                dispatch(setReleaseNotesViewed(true))
-                sendEventTelemetry({
-                  event: TelemetryEvent.RELEASE_NOTES_LINK_CLICKED,
-                  eventData: {
-                    source: ReleaseNotesSource.updateNotification,
-                  },
-                })
+      dispatch(
+        addMessageNotification(
+          successMessages.INSTALLED_NEW_UPDATE(updateDownloadedVersion, () => {
+            dispatch(setReleaseNotesViewed(true))
+            sendEventTelemetry({
+              event: TelemetryEvent.RELEASE_NOTES_LINK_CLICKED,
+              eventData: {
+                source: ReleaseNotesSource.updateNotification,
               },
-            ),
-          ),
-        )
-      }
+            })
+          }),
+        ),
+      )
     }
 
     await window.app.ipc.invoke(
