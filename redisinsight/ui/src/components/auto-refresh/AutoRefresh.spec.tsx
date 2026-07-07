@@ -22,6 +22,32 @@ describe('AutoRefresh', () => {
     jest.clearAllMocks()
     jest.spyOn(localStorageService, 'get').mockImplementation(() => null)
   })
+
+  afterEach(() => {
+    jest.useRealTimers()
+  })
+
+  // The interval tests use fake timers so they don't spend real seconds
+  // waiting for setInterval ticks (they used to time out on slow CI runners).
+  // userEvent must be configured with advanceTimers to work under fake timers.
+  const setupUserWithFakeTimers = () => {
+    jest.useFakeTimers()
+    return userEvent.setup({ advanceTimers: jest.advanceTimersByTime })
+  }
+
+  const enableAutoRefreshWithOneSec = async (
+    user: ReturnType<typeof userEvent.setup>,
+  ) => {
+    await user.click(screen.getByTestId('auto-refresh-config-btn'))
+    await waitForRiPopoverVisible()
+    await user.click(screen.getByTestId('auto-refresh-switch'))
+    fireEvent.click(screen.getByTestId('refresh-rate'))
+    fireEvent.change(screen.getByTestId(INLINE_ITEM_EDITOR), {
+      target: { value: '1' },
+    })
+    expect(screen.getByTestId(INLINE_ITEM_EDITOR)).toHaveValue('1')
+    await user.click(screen.getByTestId(/apply-btn/))
+  }
   it('should render', () => {
     expect(render(<AutoRefresh {...instance(mockedProps)} />)).toBeTruthy()
   })
@@ -157,34 +183,24 @@ describe('AutoRefresh', () => {
     })
 
     it('should call onRefresh after enable auto-refresh and set 1 sec', async () => {
+      const user = setupUserWithFakeTimers()
       const onRefresh = jest.fn()
       render(<AutoRefresh {...instance(mockedProps)} onRefresh={onRefresh} />)
 
-      await userEvent.click(screen.getByTestId('auto-refresh-config-btn'))
-      await waitForRiPopoverVisible()
-      await userEvent.click(screen.getByTestId('auto-refresh-switch'))
-      fireEvent.click(screen.getByTestId('refresh-rate'))
+      await enableAutoRefreshWithOneSec(user)
 
-      fireEvent.change(screen.getByTestId(INLINE_ITEM_EDITOR), {
-        target: { value: '1' },
-      })
-      expect(screen.getByTestId(INLINE_ITEM_EDITOR)).toHaveValue('1')
-
-      await userEvent.click(screen.getByTestId(/apply-btn/))
-      // screen.getByTestId(/apply-btn/).click()
-
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 1300))
+      act(() => {
+        jest.advanceTimersByTime(1_000)
       })
       expect(onRefresh).toHaveBeenCalledTimes(1)
 
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 1300))
+      act(() => {
+        jest.advanceTimersByTime(1_000)
       })
       expect(onRefresh).toHaveBeenCalledTimes(2)
 
-      await act(async () => {
-        await new Promise((r) => setTimeout(r, 1300))
+      act(() => {
+        jest.advanceTimersByTime(1_000)
       })
       expect(onRefresh).toHaveBeenCalledTimes(3)
     })
@@ -263,55 +279,38 @@ describe('AutoRefresh', () => {
   })
 
   it('should NOT call onRefresh with disabled state', async () => {
+    const user = setupUserWithFakeTimers()
     const onRefresh = jest.fn()
     const { rerender } = render(
       <AutoRefresh {...instance(mockedProps)} onRefresh={onRefresh} />,
     )
 
-    await userEvent.click(screen.getByTestId('auto-refresh-config-btn'))
-    await waitForRiPopoverVisible()
-    await userEvent.click(screen.getByTestId('auto-refresh-switch'))
-    fireEvent.click(screen.getByTestId('refresh-rate'))
-    fireEvent.change(screen.getByTestId(INLINE_ITEM_EDITOR), {
-      target: { value: '1' },
-    })
+    await enableAutoRefreshWithOneSec(user)
 
-    expect(screen.getByTestId(INLINE_ITEM_EDITOR)).toHaveValue('1')
+    rerender(
+      <AutoRefresh {...instance(mockedProps)} onRefresh={onRefresh} disabled />,
+    )
 
-    screen.getByTestId(/apply-btn/).click()
-
-    await act(async () => {
-      rerender(
-        <AutoRefresh
-          {...instance(mockedProps)}
-          onRefresh={onRefresh}
-          disabled
-        />,
-      )
-    })
-
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 1300))
+    act(() => {
+      jest.advanceTimersByTime(1_000)
     })
     expect(onRefresh).toHaveBeenCalledTimes(0)
 
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 1300))
+    act(() => {
+      jest.advanceTimersByTime(1_000)
     })
     expect(onRefresh).toHaveBeenCalledTimes(0)
 
-    await act(async () => {
-      rerender(
-        <AutoRefresh
-          {...instance(mockedProps)}
-          onRefresh={onRefresh}
-          disabled={false}
-        />,
-      )
-    })
+    rerender(
+      <AutoRefresh
+        {...instance(mockedProps)}
+        onRefresh={onRefresh}
+        disabled={false}
+      />,
+    )
 
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 1300))
+    act(() => {
+      jest.advanceTimersByTime(1_000)
     })
     expect(onRefresh).toHaveBeenCalledTimes(1)
   })
