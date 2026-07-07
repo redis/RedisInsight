@@ -15,7 +15,7 @@ export const AddCommonFieldsFormConfig: IAddCommonFieldsFormConfig = {
   keyName: {
     name: 'keyName',
     isRequire: true,
-    label: 'Key Name*',
+    label: 'Key Name',
     placeholder: 'Enter Key Name',
   },
   keyTTL: {
@@ -55,8 +55,8 @@ export const AddZsetFormConfig: IAddZsetFormConfig = {
   score: {
     name: 'score',
     isRequire: true,
-    label: 'Score*',
-    placeholder: 'Enter Score*',
+    label: 'Score',
+    placeholder: 'Enter Score',
   },
   member: {
     name: 'member',
@@ -108,7 +108,7 @@ export const AddListFormConfig: IAddListFormConfig = {
     name: 'count',
     isRequire: true,
     label: 'Count',
-    placeholder: 'Enter Count*',
+    placeholder: 'Enter Count',
   },
 }
 
@@ -119,8 +119,8 @@ interface IAddJSONFormConfig {
 export const AddJSONFormConfig: IAddJSONFormConfig = {
   value: {
     name: 'value',
-    isRequire: false,
-    label: 'Value*',
+    isRequire: true,
+    label: 'Value',
     placeholder: 'Enter JSON',
   },
 }
@@ -163,7 +163,7 @@ export const AddStreamFormConfig: IAddStreamFormConfig = {
     id: 'entryId',
     name: 'Entry ID',
     isRequire: true,
-    label: 'Entry ID*',
+    label: 'Entry ID',
     placeholder: 'Enter Entry ID',
   },
   name: {

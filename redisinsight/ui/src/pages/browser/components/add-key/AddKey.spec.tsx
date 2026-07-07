@@ -99,7 +99,12 @@ describe('AddKey', () => {
       />,
     )
 
-    expect(screen.getByText(/Key Type\*/i)).toBeInTheDocument()
+    const keyType = screen.getByText('Key Type').closest('label')
+    expect(keyType).toHaveTextContent('Key Type')
+    expect(keyType?.textContent?.trimStart().startsWith('*')).toBe(true)
+
+    const keyName = screen.getByText('Key Name').closest('label')
+    expect(keyName?.textContent?.trimStart().startsWith('*')).toBe(true)
   })
 
   it('should have key type select with predefined first value from options', () => {

@@ -58,7 +58,7 @@ const AddKeyCommonFields = (props: Props) => {
           <FormFieldset
             legend={{ children: 'Select key type', display: 'hidden' }}
           >
-            <FormField label="Key Type*">
+            <FormField label="Key Type" required>
               <RiSelect
                 options={options}
                 valueRender={({ option }): JSX.Element =>
@@ -91,7 +91,10 @@ const AddKeyCommonFields = (props: Props) => {
         </FlexItem>
       </Row>
       <Spacer size="m" />
-      <FormField label={config.keyName.label}>
+      <FormField
+        label={config.keyName.label}
+        required={config.keyName.isRequire}
+      >
         <TextInput
           name={config.keyName.name}
           id={config.keyName.name}
