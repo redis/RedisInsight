@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Text } from 'uiSrc/components/base/text'
@@ -17,6 +18,7 @@ export interface Props {
 
 const FeatureCard = ({ card, onLinkClick }: Props) => {
   const { id, title, body, tag, icon, location, links } = card
+  const { t } = useTranslation()
 
   return (
     <S.CardContainer data-testid={`whats-new-card-${id}`}>
@@ -38,7 +40,7 @@ const FeatureCard = ({ card, onLinkClick }: Props) => {
         <>
           <Spacer size="s" />
           <S.Location size="xs" data-testid={`whats-new-card-location-${id}`}>
-            <strong>Where to find it:</strong> {location}
+            <strong>{t('whatsNew.card.locationLabel')}</strong> {location}
           </S.Location>
         </>
       )}

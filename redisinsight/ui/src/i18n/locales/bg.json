@@ -167,5 +167,13 @@
   "settings.section.general": "Общи",
   "settings.section.privacy": "Поверителност",
   "settings.section.workbench": "Работна среда",
-  "settings.title": "Настройки"
+  "settings.title": "Настройки",
+  "whatsNew.button.gotIt": "Разбрах",
+  "whatsNew.card.locationLabel": "Къде да го намерите:",
+  "whatsNew.menuItem": "Какво ново?",
+  "whatsNew.releaseDate": "Издадена на {{date}}",
+  "whatsNew.releaseNotes.link": "Вижте пълните бележки по изданието за {{version}}",
+  "whatsNew.title": "Какво ново",
+  "whatsNew.version.option": "v{{version}}",
+  "whatsNew.version.optionLatest": "v{{version}} (най-нова)"
 }

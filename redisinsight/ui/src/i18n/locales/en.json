@@ -167,5 +167,13 @@
   "settings.section.general": "General",
   "settings.section.privacy": "Privacy",
   "settings.section.workbench": "Workbench",
-  "settings.title": "Settings"
+  "settings.title": "Settings",
+  "whatsNew.button.gotIt": "Got it",
+  "whatsNew.card.locationLabel": "Where to find it:",
+  "whatsNew.menuItem": "What's new?",
+  "whatsNew.releaseDate": "Released {{date}}",
+  "whatsNew.releaseNotes.link": "See full release notes for {{version}}",
+  "whatsNew.title": "What's New",
+  "whatsNew.version.option": "v{{version}}",
+  "whatsNew.version.optionLatest": "v{{version}} (Latest)"
 }

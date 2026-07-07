@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import {
   closeWhatsNew,
@@ -25,11 +26,11 @@ import {
 import FeatureCard from './components/feature-card'
 import * as S from './WhatsNewModal.styles'
 
-const formatReleaseDate = (iso?: string): string => {
+const formatReleaseDate = (iso?: string, locale?: string): string => {
   if (!iso) return ''
   const date = new Date(iso)
   if (Number.isNaN(date.getTime())) return ''
-  return new Intl.DateTimeFormat('en', {
+  return new Intl.DateTimeFormat(locale || 'en', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
@@ -40,6 +41,7 @@ const WhatsNewModal = () => {
   const { isOpen, selectedVersion } = useAppSelector(whatsNewSelector)
   const features = useAppSelector(appFeatureFlagsFeaturesSelector)
   const dispatch = useAppDispatch()
+  const { t, i18n } = useTranslation()
 
   if (!isOpen) return null
 
@@ -51,7 +53,10 @@ const WhatsNewModal = () => {
 
   const versionOptions: RiSelectOption[] = whatsNewFeed.map((v, index) => ({
     value: v.version,
-    label: index === 0 ? `v${v.version} (Latest)` : `v${v.version}`,
+    label:
+      index === 0
+        ? t('whatsNew.version.optionLatest', { version: v.version })
+        : t('whatsNew.version.option', { version: v.version }),
   }))
 
   const releaseNotesUrl =
@@ -92,7 +97,7 @@ const WhatsNewModal = () => {
         <Modal.Content.Close icon={CancelIcon} onClick={onClose} />
         <Modal.Content.Header.Compose>
           <Modal.Content.Header.Title>
-            What&apos;s New
+            {t('whatsNew.title')}
           </Modal.Content.Header.Title>
         </Modal.Content.Header.Compose>
 
@@ -108,7 +113,12 @@ const WhatsNewModal = () => {
             </S.VersionSelectWrapper>
             {!!versionEntry.releaseDate && (
               <Text size="xs" color="secondary">
-                Released {formatReleaseDate(versionEntry.releaseDate)}
+                {t('whatsNew.releaseDate', {
+                  date: formatReleaseDate(
+                    versionEntry.releaseDate,
+                    i18n.language,
+                  ),
+                })}
               </Text>
             )}
           </Row>
@@ -132,10 +142,10 @@ const WhatsNewModal = () => {
             target="_blank"
             data-testid="whats-new-release-notes-link"
           >
-            See full release notes for {currentVersion}
+            {t('whatsNew.releaseNotes.link', { version: currentVersion })}
           </Link>
           <PrimaryButton onClick={onClose} data-testid="whats-new-got-it-btn">
-            Got it
+            {t('whatsNew.button.gotIt')}
           </PrimaryButton>
         </Modal.Content.Footer.Compose>
       </S.StyledContent>
