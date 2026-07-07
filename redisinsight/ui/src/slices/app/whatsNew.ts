@@ -5,19 +5,45 @@ import { localStorageService } from 'uiSrc/services'
 import { isVersionHigher } from 'uiSrc/utils'
 import whatsNewContent from 'uiSrc/constants/content/whatsNew.json'
 import {
+  WhatsNewCard,
   WhatsNewFeed,
   WhatsNewVersion,
 } from 'uiSrc/constants/content/whatsNew.types'
 import { StateWhatsNew } from 'uiSrc/slices/interfaces'
 import { RootState } from 'uiSrc/slices/store'
 
+const isValidCard = (card: unknown): card is WhatsNewCard => {
+  const c = card as Partial<WhatsNewCard>
+  return (
+    typeof c?.id === 'string' &&
+    typeof c?.title === 'string' &&
+    typeof c?.body === 'string'
+  )
+}
+
+const isValidVersion = (entry: unknown): entry is WhatsNewVersion => {
+  const v = entry as Partial<WhatsNewVersion>
+  const isValid =
+    typeof v?.version === 'string' &&
+    Array.isArray(v?.cards) &&
+    v.cards.every(isValidCard)
+
+  if (!isValid) {
+    console.warn('[whatsNew] Skipping malformed content entry:', entry)
+  }
+  return isValid
+}
+
 /**
- * Bundled "What's new" content. Static import — no network fetch. Sorted by
- * version descending so the latest release is always first.
+ * Bundled "What's new" content. Static import — no network fetch. Malformed
+ * entries are dropped with a warning so one bad block can't break the modal.
+ * Sorted by version descending so the latest release is always first.
  */
-export const whatsNewFeed: WhatsNewFeed = [
-  ...(whatsNewContent.versions as unknown as WhatsNewFeed),
-].sort((a, b) => (isVersionHigher(a.version, b.version) ? -1 : 1))
+export const whatsNewFeed: WhatsNewFeed = (
+  whatsNewContent.versions as unknown[]
+)
+  .filter(isValidVersion)
+  .sort((a, b) => (isVersionHigher(a.version, b.version) ? -1 : 1))
 
 export const getLatestWhatsNewVersion = (): WhatsNewVersion | undefined =>
   whatsNewFeed[0]

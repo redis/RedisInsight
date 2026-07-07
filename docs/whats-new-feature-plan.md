@@ -149,7 +149,7 @@ The schema is intentionally **content-agnostic** — a card is just presentation
         {
           "id": "vector-sets",            // stable id, used for telemetry & de-dup
           "tag": "Beta",                   // optional pill for non-default states ("Improved", "Beta"…) — NOT a blanket "New"
-          "icon": "VectorIcon",            // optional: RiIcon type name or an emoji
+          "icon": "VectorIcon",            // optional: a registered RiIcon type name
           "title": "Vector Sets",
           "body": "Short markdown-lite description of the feature and why it matters.",
           "location": "Browser — add a key of type Vector Set",  // optional "where to find it" hint

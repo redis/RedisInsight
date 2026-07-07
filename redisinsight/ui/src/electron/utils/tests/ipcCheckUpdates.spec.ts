@@ -3,6 +3,7 @@ import { cloneDeep } from 'lodash'
 import { GetServerInfoResponse } from 'apiClient'
 import { cleanup, mockedStore } from 'uiSrc/utils/test-utils'
 import { openWhatsNew, whatsNewFeed } from 'uiSrc/slices/app/whatsNew'
+import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { ipcCheckUpdates, ipcSendEvents } from '../ipcCheckUpdates'
 
 const serverInfoMock = (appVersion: string): GetServerInfoResponse =>
@@ -53,7 +54,23 @@ describe('ipcCheckUpdates', () => {
 
     await ipcCheckUpdates(serverInfoMock(version), store.dispatch, true)
 
-    expect(store.getActions()).not.toContainEqual(openWhatsNew(version))
+    const actionTypes = store.getActions().map((action) => action.type)
+    expect(actionTypes).not.toContain(openWhatsNew.type)
+    expect(actionTypes).toContain(addMessageNotification.type)
+  })
+
+  it('should fall back to the update toast when Whats New is disabled', async () => {
+    const version = whatsNewFeed[0].version
+    invokeMock
+      .mockReturnValueOnce(true)
+      .mockReturnValueOnce(false)
+      .mockReturnValueOnce(version)
+
+    await ipcCheckUpdates(serverInfoMock(version), store.dispatch, false)
+
+    const actionTypes = store.getActions().map((action) => action.type)
+    expect(actionTypes).not.toContain(openWhatsNew.type)
+    expect(actionTypes).toContain(addMessageNotification.type)
   })
 })
 describe('ipcSendEvents', () => {

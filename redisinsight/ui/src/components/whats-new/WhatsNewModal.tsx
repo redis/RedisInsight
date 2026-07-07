@@ -34,6 +34,9 @@ const formatReleaseDate = (iso?: string, locale?: string): string => {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
+    // releaseDate is a date-only ISO string parsed as UTC midnight; format in
+    // UTC so users west of UTC don't see the previous day.
+    timeZone: 'UTC',
   }).format(date)
 }
 
