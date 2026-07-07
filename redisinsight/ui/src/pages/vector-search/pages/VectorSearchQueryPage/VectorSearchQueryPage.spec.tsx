@@ -5,6 +5,8 @@ import { sendEventTelemetry } from 'uiSrc/telemetry'
 import { TelemetryEvent } from 'uiSrc/telemetry/events'
 import { commandExecutionUIFactory } from 'uiSrc/mocks/factories/workbench/commandExectution.factory'
 import { redisearchListSelector } from 'uiSrc/slices/browser/redisearch'
+import { SearchIndexDetailsSource } from 'uiSrc/pages/vector-search/telemetry.constants'
+import { OPEN_INDEX_PANEL_PARAM } from 'uiSrc/pages/vector-search/constants'
 
 const redisearchListSelectorMock = redisearchListSelector as jest.Mock
 import { VectorSearchQueryPage } from './VectorSearchQueryPage'
@@ -16,6 +18,7 @@ jest.mock('uiSrc/telemetry', () => ({
 
 const mockInstanceId = 'instanceId'
 const mockPush = jest.fn()
+const mockReplace = jest.fn()
 
 jest.mock('uiSrc/slices/browser/redisearch', () => ({
   ...jest.requireActual('uiSrc/slices/browser/redisearch'),
@@ -54,8 +57,13 @@ jest.mock('uiSrc/services/commands-history/commandsHistoryService', () => ({
 
 const mockHistoryItems = commandExecutionUIFactory.buildList(2)
 
-const setupRouterMocks = (indexName = 'test-index') => {
-  reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: mockPush })
+const setupRouterMocks = (indexName = 'test-index', search = '') => {
+  reactRouterDom.useHistory = jest
+    .fn()
+    .mockReturnValue({ push: mockPush, replace: mockReplace })
+  reactRouterDom.useLocation = jest
+    .fn()
+    .mockReturnValue({ pathname: 'pathname', search })
   reactRouterDom.useParams = jest
     .fn()
     .mockReturnValue({ instanceId: mockInstanceId, indexName })
@@ -147,6 +155,56 @@ describe('VectorSearchQueryPage', () => {
       expect(sendEventTelemetry).toHaveBeenCalledWith({
         event: TelemetryEvent.SEARCH_CLEAR_ALL_RESULTS_CLICKED,
         eventData: { databaseId: mockInstanceId },
+      })
+    })
+  })
+
+  describe('index panel auto-open from key details', () => {
+    beforeEach(() => {
+      redisearchListSelectorMock.mockReturnValue({
+        data: ['test-index'],
+        loading: false,
+        error: '',
+      })
+    })
+
+    it('should keep the index panel closed without the open panel param', async () => {
+      await renderComponent()
+
+      const panel = screen.queryByTestId('view-index-panel')
+      expect(panel).not.toBeInTheDocument()
+    })
+
+    it('should open the index panel when the open panel param is present', async () => {
+      setupRouterMocks('test-index', `?${OPEN_INDEX_PANEL_PARAM}=true`)
+
+      await renderComponent()
+
+      const panel = screen.getByTestId('view-index-panel')
+      expect(panel).toBeInTheDocument()
+    })
+
+    it('should strip the open panel param from the URL', async () => {
+      setupRouterMocks('test-index', `?${OPEN_INDEX_PANEL_PARAM}=true`)
+
+      await renderComponent()
+
+      expect(mockReplace).toHaveBeenCalledWith(
+        expect.objectContaining({ search: '' }),
+      )
+    })
+
+    it('should send SEARCH_INDEX_DETAILS_VIEWED telemetry with key details source', async () => {
+      setupRouterMocks('test-index', `?${OPEN_INDEX_PANEL_PARAM}=true`)
+
+      await renderComponent()
+
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
+        eventData: {
+          databaseId: mockInstanceId,
+          source: SearchIndexDetailsSource.KeyDetails,
+        },
       })
     })
   })

@@ -7,6 +7,8 @@ import { IndexSummary } from 'uiSrc/slices/interfaces/redisearch'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { SearchBrowserSource } from 'uiSrc/pages/vector-search/telemetry.constants'
 
+import { OPEN_INDEX_PANEL_PARAM } from 'uiSrc/pages/vector-search/constants'
+
 import { ViewIndexDataButton } from './ViewIndexDataButton'
 import { ViewIndexDataButtonProps } from './ViewIndexDataButton.types'
 
@@ -64,18 +66,19 @@ describe('ViewIndexDataButton', () => {
       expect(btn).not.toBeDisabled()
     })
 
-    it('should navigate to the index query page on click', async () => {
+    it('should navigate to the index query page with the open panel param on click', async () => {
       const index = buildIndex({ name: 'movies_index' })
       renderComponent({ indexes: [index] })
 
       await userEvent.click(screen.getByTestId('view-index-data-btn'))
 
-      expect(mockPush).toHaveBeenCalledWith(
-        Pages.vectorSearchQuery(
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: Pages.vectorSearchQuery(
           mockInstanceId,
           encodeURIComponent('movies_index'),
         ),
-      )
+        search: `${OPEN_INDEX_PANEL_PARAM}=true`,
+      })
     })
 
     it('should send SEARCH_VIEW_INDEX_CLICKED telemetry on click', async () => {
@@ -145,12 +148,13 @@ describe('ViewIndexDataButton', () => {
         screen.getByTestId('view-index-data-item-users_index'),
       )
 
-      expect(mockPush).toHaveBeenCalledWith(
-        Pages.vectorSearchQuery(
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: Pages.vectorSearchQuery(
           mockInstanceId,
           encodeURIComponent('users_index'),
         ),
-      )
+        search: `${OPEN_INDEX_PANEL_PARAM}=true`,
+      })
     })
 
     it('should send SEARCH_VIEW_INDEX_CLICKED telemetry with correct count when menu item is clicked', async () => {

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import { useHistory, useLocation, useParams } from 'react-router-dom'
 
 import { RiSelectOption } from 'uiSrc/components/base/forms/select/RiSelect'
 import { Pages } from 'uiSrc/constants'
@@ -13,6 +13,7 @@ import {
   decodeIndexNameFromUrl,
 } from '../../utils'
 import { useRedisearchListData } from '../../hooks'
+import { OPEN_INDEX_PANEL_PARAM } from '../../constants'
 import { VectorSearchQueryPageParams } from './VectorSearchQueryPage.types'
 import { PageHeader, PageContent } from './components'
 
@@ -21,8 +22,32 @@ import * as S from './VectorSearchQueryPage.styles'
 export const VectorSearchQueryPage = () => {
   const { instanceId, indexName } = useParams<VectorSearchQueryPageParams>()
   const history = useHistory()
+  const location = useLocation()
 
-  const [isIndexPanelOpen, setIsIndexPanelOpen] = useState(false)
+  const [isIndexPanelOpen, setIsIndexPanelOpen] = useState(
+    () =>
+      new URLSearchParams(location.search).get(OPEN_INDEX_PANEL_PARAM) ===
+      'true',
+  )
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    if (params.get(OPEN_INDEX_PANEL_PARAM) !== 'true') {
+      return
+    }
+
+    setIsIndexPanelOpen(true)
+    sendEventTelemetry({
+      event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
+      eventData: {
+        databaseId: instanceId,
+        source: SearchIndexDetailsSource.KeyDetails,
+      },
+    })
+
+    params.delete(OPEN_INDEX_PANEL_PARAM)
+    history.replace({ ...location, search: params.toString() })
+  }, [location.search])
 
   const { loading, error, stringData: indexes } = useRedisearchListData()
 
