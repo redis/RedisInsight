@@ -24,11 +24,7 @@ export const VectorSearchQueryPage = () => {
   const history = useHistory()
   const location = useLocation()
 
-  const [isIndexPanelOpen, setIsIndexPanelOpen] = useState(
-    () =>
-      new URLSearchParams(location.search).get(OPEN_INDEX_PANEL_PARAM) ===
-      'true',
-  )
+  const [isIndexPanelOpen, setIsIndexPanelOpen] = useState(false)
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
@@ -36,6 +32,7 @@ export const VectorSearchQueryPage = () => {
       return
     }
 
+    setIsIndexPanelOpen(true)
     sendEventTelemetry({
       event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
       eventData: {
