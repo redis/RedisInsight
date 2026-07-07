@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen } from 'uiSrc/utils/test-utils'
+import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { stringToBuffer } from 'uiSrc/utils'
 import { KeyValueFormat } from 'uiSrc/constants'
 
@@ -59,5 +59,104 @@ describe('ArrayValueCell — inline value rendering', () => {
     expect(
       screen.getByTestId('array-details-table-value-1'),
     ).toBeInTheDocument()
+  })
+})
+
+jest.mock('uiSrc/components/base/code-editor', () => {
+  const ReactMock = require('react')
+  return {
+    __esModule: true,
+    CodeEditor: (props: any) =>
+      ReactMock.createElement('textarea', {
+        'data-testid': 'array-value-code-editor',
+        value: props.value,
+        onChange: (e: any) => props.onChange?.(e.target.value),
+      }),
+  }
+})
+
+// Auto-confirm the production-write prompt so Save reaches onApply in tests.
+jest.mock('uiSrc/components/production-write-confirmation', () => ({
+  __esModule: true,
+  useProductionWriteConfirmation: () => ({
+    requestConfirmation: ({ onConfirm }: any) => onConfirm(),
+  }),
+  BrowserConfirmationCommandId: { EditValue: 'EditValue' },
+}))
+
+const TEST_ID_PREFIX = 'array-details-table'
+
+const baseProps = {
+  index: '0',
+  value: stringToBuffer('hello'),
+  compressor: null,
+  viewFormat: KeyValueFormat.Unicode,
+}
+
+describe('ArrayValueCell — expand trigger + modal', () => {
+  beforeEach(() => jest.clearAllMocks())
+
+  it('renders an expand trigger that opens the modal seeded with the value', () => {
+    render(
+      <ArrayValueCell {...baseProps} onEdit={jest.fn()} onApply={jest.fn()} />,
+    )
+
+    fireEvent.mouseEnter(
+      screen.getByTestId(`${TEST_ID_PREFIX}_content-value-0`),
+    )
+    fireEvent.click(screen.getByTestId(`${TEST_ID_PREFIX}_expand-btn-0`))
+
+    expect(screen.getByTestId('array-value-code-editor')).toHaveValue('hello')
+  })
+
+  it('Save calls onApply with the edited value', () => {
+    const onApply = jest.fn()
+    render(
+      <ArrayValueCell {...baseProps} onEdit={jest.fn()} onApply={onApply} />,
+    )
+
+    fireEvent.mouseEnter(
+      screen.getByTestId(`${TEST_ID_PREFIX}_content-value-0`),
+    )
+    fireEvent.click(screen.getByTestId(`${TEST_ID_PREFIX}_expand-btn-0`))
+    fireEvent.change(screen.getByTestId('array-value-code-editor'), {
+      target: { value: 'world' },
+    })
+    fireEvent.click(screen.getByTestId('array-value-editor-save-btn'))
+
+    expect(onApply).toHaveBeenCalledWith('world')
+  })
+
+  it('renders no expand trigger for an empty slot', () => {
+    render(
+      <ArrayValueCell
+        {...baseProps}
+        value={null as any}
+        onEdit={jest.fn()}
+        onApply={jest.fn()}
+      />,
+    )
+
+    expect(screen.getByTestId(`${TEST_ID_PREFIX}-empty-0`)).toBeInTheDocument()
+    expect(
+      screen.queryByTestId(`${TEST_ID_PREFIX}_expand-btn-0`),
+    ).not.toBeInTheDocument()
+  })
+
+  it('disables the expand trigger while a write is in flight', () => {
+    render(
+      <ArrayValueCell
+        {...baseProps}
+        updating
+        onEdit={jest.fn()}
+        onApply={jest.fn()}
+      />,
+    )
+
+    fireEvent.mouseEnter(
+      screen.getByTestId(`${TEST_ID_PREFIX}_content-value-0`),
+    )
+
+    expect(screen.getByTestId(`${TEST_ID_PREFIX}_expand-btn-0`)).toBeDisabled()
   })
 })
