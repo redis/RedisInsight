@@ -4,12 +4,32 @@ import {
   WhatsNewVersion,
   WhatsNewVersionType,
 } from 'uiSrc/constants/content/whats-new'
+import { FeatureFlags } from 'uiSrc/constants/featureFlags'
+import { FeatureFlagComponent } from 'uiSrc/slices/interfaces'
 import { isVersionHigher } from './comparisons'
+
+type FeatureFlagsMap = { [key in FeatureFlags]?: FeatureFlagComponent }
 
 /** Bundled release content, sorted latest-first. */
 export const whatsNewFeed: WhatsNewFeed = [...WHATS_NEW_VERSIONS].sort(
   (a, b) => (isVersionHigher(a.version, b.version) ? -1 : 1),
 )
+
+/**
+ * The feed with flag-gated cards resolved against the current feature flags:
+ * hidden cards are dropped, versions left with no cards are omitted.
+ */
+export const getVisibleWhatsNewVersions = (
+  features?: FeatureFlagsMap,
+): WhatsNewFeed =>
+  whatsNewFeed
+    .map((version) => ({
+      ...version,
+      cards: version.cards.filter(
+        (card) => !card.featureFlag || features?.[card.featureFlag]?.flag,
+      ),
+    }))
+    .filter((version) => version.cards.length > 0)
 
 export const getLatestWhatsNewVersion = (): WhatsNewVersion | undefined =>
   whatsNewFeed[0]

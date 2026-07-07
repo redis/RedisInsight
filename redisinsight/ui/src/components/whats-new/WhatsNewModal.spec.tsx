@@ -90,6 +90,18 @@ describe('WhatsNewModal', () => {
     ).not.toBeInTheDocument()
   })
 
+  it('should fall back to the first visible version when the selected one is hidden', () => {
+    // 3.2.0's only card is azure-gated, so the version is hidden by default
+    const state = set(getOpenState(), 'app.whatsNew.selectedVersion', '3.2.0')
+
+    render(<WhatsNewModal />, { store: mockStore(state) })
+
+    expect(screen.getByTestId('whats-new-release-notes-link')).toHaveAttribute(
+      'href',
+      expect.stringContaining(`/tag/${latestVersion}`),
+    )
+  })
+
   it('should show flag-gated cards when their flags are on', () => {
     render(<WhatsNewModal />, { store: mockStore(getOpenState(true)) })
 

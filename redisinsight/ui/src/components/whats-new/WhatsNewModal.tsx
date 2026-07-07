@@ -9,7 +9,7 @@ import {
 } from 'uiSrc/slices/app/whatsNew'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { whatsNewFeed } from 'uiSrc/utils'
+import { getVisibleWhatsNewVersions } from 'uiSrc/utils'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 
 import { Modal } from 'uiSrc/components/base/display'
@@ -35,13 +35,16 @@ const WhatsNewModal = () => {
 
   if (!isOpen) return null
 
-  const currentVersion = selectedVersion ?? whatsNewFeed[0]?.version ?? ''
+  const visibleVersions = getVisibleWhatsNewVersions(features)
   const versionEntry =
-    whatsNewFeed.find((v) => v.version === currentVersion) ?? whatsNewFeed[0]
+    visibleVersions.find((v) => v.version === selectedVersion) ??
+    visibleVersions[0]
 
   if (!versionEntry) return null
 
-  const versionOptions: RiSelectOption[] = whatsNewFeed.map((v, index) => ({
+  const currentVersion = versionEntry.version
+
+  const versionOptions: RiSelectOption[] = visibleVersions.map((v, index) => ({
     value: v.version,
     label:
       index === 0
@@ -52,10 +55,6 @@ const WhatsNewModal = () => {
   const releaseNotesUrl =
     versionEntry.releaseNotesUrl ??
     `${EXTERNAL_LINKS.releaseNotes}/tag/${currentVersion}`
-
-  const visibleCards = versionEntry.cards.filter(
-    (card) => !card.featureFlag || features?.[card.featureFlag]?.flag,
-  )
 
   const onClose = () => {
     sendEventTelemetry({
@@ -116,7 +115,7 @@ const WhatsNewModal = () => {
           <Spacer size="l" />
 
           <S.CardsList gap="l" data-testid="whats-new-cards">
-            {visibleCards.map((card) => (
+            {versionEntry.cards.map((card) => (
               <FeatureCard
                 key={card.id}
                 card={card}
