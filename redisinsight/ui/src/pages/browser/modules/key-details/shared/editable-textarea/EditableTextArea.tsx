@@ -28,6 +28,10 @@ export interface Props {
   disabledTooltipText?: { title: string; content: string }
   approveText?: { title: string; text: string }
   editToolTipContent?: React.ReactNode
+  /** Optional control rendered beside the hover edit pencil in the
+   *  non-editing state. Undefined for every consumer except the array value
+   *  cell, so all other consumers are unchanged. */
+  secondaryAction?: React.ReactNode
   approveByValidation?: (value: string) => boolean
   onEdit: (isEditing: boolean) => void
   onUpdateTextAreaHeight?: () => void
@@ -51,6 +55,7 @@ const EditableTextArea = (props: Props) => {
     disabledTooltipText,
     approveText,
     editToolTipContent,
+    secondaryAction,
     approveByValidation = () => true,
     onEdit,
     onUpdateTextAreaHeight,
@@ -106,24 +111,27 @@ const EditableTextArea = (props: Props) => {
           {children}
         </Text>
         {isHovering && (
-          <RiTooltip
-            content={editToolTipContent}
-            anchorClassName={styles.editBtnAnchor}
-            data-testid={`${testIdPrefix}_edit-tooltip-${field}`}
-          >
-            <IconButton
-              icon={EditIcon}
-              aria-label="Edit field"
-              className={cx('editFieldBtn', styles.editBtn)}
-              disabled={isEditDisabled}
-              onClick={(e: React.MouseEvent) => {
-                e.stopPropagation()
-                onEdit?.(true)
-                setIsHovering(false)
-              }}
-              data-testid={`${testIdPrefix}_edit-btn-${field}`}
-            />
-          </RiTooltip>
+          <>
+            {secondaryAction}
+            <RiTooltip
+              content={editToolTipContent}
+              anchorClassName={styles.editBtnAnchor}
+              data-testid={`${testIdPrefix}_edit-tooltip-${field}`}
+            >
+              <IconButton
+                icon={EditIcon}
+                aria-label="Edit field"
+                className={cx('editFieldBtn', styles.editBtn)}
+                disabled={isEditDisabled}
+                onClick={(e: React.MouseEvent) => {
+                  e.stopPropagation()
+                  onEdit?.(true)
+                  setIsHovering(false)
+                }}
+                data-testid={`${testIdPrefix}_edit-btn-${field}`}
+              />
+            </RiTooltip>
+          </>
         )}
       </div>
     )

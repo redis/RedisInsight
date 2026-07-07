@@ -80,4 +80,47 @@ describe('EditableTextArea', () => {
 
     expect(onDecline).toBeCalled()
   })
+
+  it('should render secondaryAction next to the edit pencil on hover', () => {
+    render(
+      <EditableTextArea
+        {...mockedProps}
+        isEditing={false}
+        field="field"
+        testIdPrefix="item"
+        onEdit={jest.fn()}
+        secondaryAction={
+          <button type="button" data-testid="secondary-action">
+            expand
+          </button>
+        }
+      >
+        <Text />
+      </EditableTextArea>,
+    )
+
+    fireEvent.mouseEnter(screen.getByTestId('item_content-value-field'))
+
+    expect(screen.getByTestId('secondary-action')).toBeInTheDocument()
+    expect(screen.getByTestId('item_edit-btn-field')).toBeInTheDocument()
+  })
+
+  it('should not render any secondary action when the prop is omitted', () => {
+    render(
+      <EditableTextArea
+        {...mockedProps}
+        isEditing={false}
+        field="field"
+        testIdPrefix="item"
+        onEdit={jest.fn()}
+      >
+        <Text />
+      </EditableTextArea>,
+    )
+
+    fireEvent.mouseEnter(screen.getByTestId('item_content-value-field'))
+
+    expect(screen.queryByTestId('secondary-action')).not.toBeInTheDocument()
+    expect(screen.getByTestId('item_edit-btn-field')).toBeInTheDocument()
+  })
 })
