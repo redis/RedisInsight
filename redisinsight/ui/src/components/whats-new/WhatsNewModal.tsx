@@ -51,7 +51,7 @@ const WhatsNewModal = () => {
 
   const versionOptions: RiSelectOption[] = whatsNewFeed.map((v, index) => ({
     value: v.version,
-    label: index === 0 ? `${v.version} (Latest)` : v.version,
+    label: index === 0 ? `v${v.version} (Latest)` : `v${v.version}`,
   }))
 
   const releaseNotesUrl =
@@ -92,15 +92,12 @@ const WhatsNewModal = () => {
         <Modal.Content.Close icon={CancelIcon} onClick={onClose} />
         <Modal.Content.Header.Compose>
           <Modal.Content.Header.Title>
-            What&apos;s new
+            What&apos;s New
           </Modal.Content.Header.Title>
         </Modal.Content.Header.Compose>
 
         <Modal.Content.Body.Compose>
           <Row align="center" gap="m">
-            <Text size="s" color="secondary">
-              Version
-            </Text>
             <S.VersionSelectWrapper>
               <RiSelect
                 options={versionOptions}
