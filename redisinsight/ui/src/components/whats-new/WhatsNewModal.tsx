@@ -91,7 +91,7 @@ const WhatsNewModal = () => {
           </Modal.Content.Header.Title>
         </Modal.Content.Header.Compose>
 
-        <Modal.Content.Body.Compose>
+        <S.StyledBody>
           <Row align="center" gap="m">
             <S.VersionSelectWrapper>
               <RiSelect
@@ -124,7 +124,7 @@ const WhatsNewModal = () => {
               />
             ))}
           </S.CardsList>
-        </Modal.Content.Body.Compose>
+        </S.StyledBody>
 
         <Modal.Content.Footer.Compose>
           <Link

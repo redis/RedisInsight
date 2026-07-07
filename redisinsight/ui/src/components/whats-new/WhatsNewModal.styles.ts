@@ -8,7 +8,16 @@ export const StyledContent = styled(Modal.Content.Compose)`
   max-height: calc(100vh - 120px);
 `
 
+// Keeps the version selector pinned while the cards scroll below it.
+export const StyledBody = styled(Modal.Content.Body.Compose)`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+`
+
 export const CardsList = styled(Col)`
+  min-height: 0;
   overflow-y: auto;
 `
 
