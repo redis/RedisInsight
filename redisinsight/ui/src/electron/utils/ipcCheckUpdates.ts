@@ -4,7 +4,8 @@ import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { ReleaseNotesSource, WhatsNewSource } from 'uiSrc/constants/telemetry'
 import { setElectronInfo, setReleaseNotesViewed } from 'uiSrc/slices/app/info'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
-import { openWhatsNew, isWhatsNewEligible } from 'uiSrc/slices/app/whatsNew'
+import { openWhatsNew } from 'uiSrc/slices/app/whatsNew'
+import { isWhatsNewEligible } from 'uiSrc/utils'
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem } from 'uiSrc/constants'
 import successMessages from 'uiSrc/components/notifications/success-messages'
@@ -35,9 +36,8 @@ export const ipcCheckUpdates = async (
         localStorageService?.get(BrowserStorageItem.whatsNewLastVersionSeen) ??
         null
 
-      // The "What's new" modal supersedes the update toast when it is enabled
-      // and the new version qualifies (has cards, not a patch, not yet seen).
-      // Otherwise fall back to the toast so the update is never silent.
+      // The What's New modal replaces the update toast when eligible;
+      // otherwise fall back to the toast so the update is never silent.
       if (
         isWhatsNewEnabled &&
         isWhatsNewEligible(updateDownloadedVersion, lastVersionSeen)

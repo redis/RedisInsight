@@ -1,13 +1,12 @@
 import { cloneDeep } from 'lodash'
 
 import { cleanup, mockedStore } from 'uiSrc/utils/test-utils'
+import { whatsNewFeed } from 'uiSrc/utils'
 import reducer, {
   initialState,
   openWhatsNew,
   setSelectedVersion,
   closeWhatsNew,
-  whatsNewFeed,
-  isWhatsNewEligible,
 } from 'uiSrc/slices/app/whatsNew'
 
 jest.mock('uiSrc/services')
@@ -62,20 +61,6 @@ describe('whatsNew slice', () => {
       const result = reducer(state, closeWhatsNew())
 
       expect(result.isOpen).toEqual(false)
-    })
-  })
-
-  describe('isWhatsNewEligible', () => {
-    it('should be eligible for a new version with cards that is not a patch', () => {
-      expect(isWhatsNewEligible(latestVersion, null)).toEqual(true)
-    })
-
-    it('should not be eligible when the version was already seen', () => {
-      expect(isWhatsNewEligible(latestVersion, latestVersion)).toEqual(false)
-    })
-
-    it('should not be eligible for an unknown version', () => {
-      expect(isWhatsNewEligible('99.0.0', null)).toEqual(false)
     })
   })
 })

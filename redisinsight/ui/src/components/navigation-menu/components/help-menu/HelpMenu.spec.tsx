@@ -10,10 +10,8 @@ import {
   mockStore,
 } from 'uiSrc/utils/test-utils'
 import { setOnboarding } from 'uiSrc/slices/app/features'
-import {
-  getLatestWhatsNewVersion,
-  openWhatsNew,
-} from 'uiSrc/slices/app/whatsNew'
+import { openWhatsNew } from 'uiSrc/slices/app/whatsNew'
+import { getLatestWhatsNewVersion } from 'uiSrc/utils'
 import { WhatsNewSource } from 'uiSrc/constants/telemetry'
 
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'

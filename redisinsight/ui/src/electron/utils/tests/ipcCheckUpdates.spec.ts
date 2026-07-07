@@ -2,7 +2,8 @@ import { cloneDeep } from 'lodash'
 
 import { GetServerInfoResponse } from 'apiClient'
 import { cleanup, mockedStore } from 'uiSrc/utils/test-utils'
-import { openWhatsNew, whatsNewFeed } from 'uiSrc/slices/app/whatsNew'
+import { whatsNewFeed } from 'uiSrc/utils'
+import { openWhatsNew } from 'uiSrc/slices/app/whatsNew'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { ipcCheckUpdates, ipcSendEvents } from '../ipcCheckUpdates'
 

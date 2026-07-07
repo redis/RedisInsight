@@ -10,10 +10,8 @@ import {
   setReleaseNotesViewed,
   setShortcutsFlyoutState,
 } from 'uiSrc/slices/app/info'
-import {
-  getLatestWhatsNewVersion,
-  openWhatsNew,
-} from 'uiSrc/slices/app/whatsNew'
+import { openWhatsNew } from 'uiSrc/slices/app/whatsNew'
+import { getLatestWhatsNewVersion } from 'uiSrc/utils'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { setOnboarding } from 'uiSrc/slices/app/features'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
