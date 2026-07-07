@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-import JsxParser from 'react-jsx-parser'
 import { unified } from 'unified'
 import type { Plugin } from 'unified'
 import remarkParse from 'remark-parse'
@@ -8,62 +7,30 @@ import remarkRehype from 'remark-rehype'
 import rehypeStringify from 'rehype-stringify'
 import DOMPurify from 'dompurify'
 
-import {
-  rehypeWrapSymbols,
-  remarkSanitize,
-} from 'uiSrc/utils/formatters/markdown'
+import { remarkSanitize } from 'uiSrc/utils/formatters/markdown'
 import { Nullable } from 'uiSrc/utils'
 
 import { MarkdownViewerProps } from './MarkdownViewer.types'
 import * as S from './MarkdownViewer.styles'
 
-const BLACKLISTED_TAGS = [
-  'script',
-  'iframe',
-  'link',
-  'object',
-  'embed',
-  'form',
-  'input',
-  'textarea',
-  'select',
-  'button',
-  'meta',
-  'base',
-  'style',
-  'svg',
-  'math',
-  'video',
-  'audio',
-  'source',
-  'applet',
-  'frame',
-  'frameset',
-]
+// DOMPurify drops script/iframe/on* by default; style is the one it keeps.
+const SANITIZE_CONFIG = { FORBID_ATTR: ['style'] }
 
-const BLACKLISTED_ATTRS = [/^on.*/i, /^style$/i]
-
-// ">" stays unwrapped: DOMPurify re-encodes it to "&gt;" and JsxParser decodes
-// it back, while a wrapped {">"} would render as the "&gt;" entity text.
-const JSX_WRAP_SYMBOLS = ['{', '}']
-
-// The custom plugins type their trees as DOM nodes, so they are cast to unist Plugin.
-const markdownToHtml = (value: string): string => {
+// The custom plugin types its tree as DOM nodes, so it is cast to unist Plugin.
+const markdownToSafeHtml = (value: string): string => {
   const html = String(
     unified()
       .use(remarkParse)
       .use(remarkSanitize as unknown as Plugin)
       .use(remarkGfm)
       .use(remarkRehype, { allowDangerousHtml: true })
-      .use(rehypeWrapSymbols as unknown as Plugin<[string[]]>, JSX_WRAP_SYMBOLS)
       .use(rehypeStringify, { allowDangerousHtml: true })
       .processSync(value),
   )
 
-  // Final-string sanitize covers what remarkSanitize never inspects (markdown-native
-  // links, raw HTML its mdast heuristics miss). Href hardening comes from the global
-  // DOMPurify hooks remarkSanitize registers at module load - it must stay imported.
-  return DOMPurify.sanitize(html)
+  // Absolute-only links, target=_blank and rel=noopener come from the global
+  // DOMPurify hooks remarkSanitize registers at import; it must stay imported.
+  return DOMPurify.sanitize(html, SANITIZE_CONFIG)
 }
 
 export const MarkdownViewer = ({
@@ -72,25 +39,24 @@ export const MarkdownViewer = ({
 }: MarkdownViewerProps) => {
   const html: Nullable<string> = useMemo(() => {
     try {
-      return markdownToHtml(value)
+      return markdownToSafeHtml(value)
     } catch {
       return null
     }
   }, [value])
 
+  if (html === null) {
+    return <S.Container data-testid={dataTestId}>{value}</S.Container>
+  }
+
+  // The value is untrusted, so it is rendered as DOMPurify-sanitized HTML rather
+  // than parsed as JSX: a JSX parser would evaluate `{...}` expressions embedded
+  // in raw HTML, which sanitization does not neutralize.
   return (
-    <S.Container data-testid={dataTestId}>
-      {html === null ? (
-        value
-      ) : (
-        <JsxParser
-          components={{}}
-          blacklistedTags={BLACKLISTED_TAGS}
-          blacklistedAttrs={BLACKLISTED_ATTRS}
-          autoCloseVoidElements
-          jsx={html}
-        />
-      )}
-    </S.Container>
+    <S.Container
+      data-testid={dataTestId}
+      // eslint-disable-next-line react/no-danger
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
   )
 }

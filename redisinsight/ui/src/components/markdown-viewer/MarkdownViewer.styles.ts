@@ -1,9 +1,11 @@
-import { PropsWithChildren } from 'react'
+import { HTMLAttributes } from 'react'
 import styled from 'styled-components'
 
 import { CommonProps } from 'uiSrc/components/base/theme/types'
 
-export const Container = styled.div<PropsWithChildren<CommonProps>>`
+export const Container = styled.div<
+  CommonProps & HTMLAttributes<HTMLDivElement>
+>`
   font-size: ${({ theme }) => theme.core.font.fontSize.s14};
   color: ${({ theme }) => theme.semantic.color.text.neutral800};
   line-height: 1.5;

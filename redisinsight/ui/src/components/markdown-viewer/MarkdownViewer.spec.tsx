@@ -7,18 +7,15 @@ import rehypeStringify from 'rehype-stringify'
 import { faker } from '@faker-js/faker'
 
 import { render, screen } from 'uiSrc/utils/test-utils'
-import {
-  rehypeWrapSymbols,
-  remarkSanitize,
-} from 'uiSrc/utils/formatters/markdown'
+import { remarkSanitize } from 'uiSrc/utils/formatters/markdown'
 
 import { MarkdownViewer } from './MarkdownViewer'
 import { MarkdownViewerProps } from './MarkdownViewer.types'
 
 // The unified pipeline is mocked via moduleNameMapper (shared jest.fn stubs), so
 // these tests control the serialized HTML the component would emit and cover how
-// that output is hardened and rendered: the real DOMPurify sanitize plus the real
-// JsxParser tag/attribute blacklists. Full markdown conversion is covered by e2e.
+// the real DOMPurify sanitize hardens it before it is rendered. Full markdown
+// conversion is covered by e2e.
 interface PipelineOptions {
   html?: string
   shouldThrow?: boolean
@@ -80,14 +77,12 @@ describe('MarkdownViewer', () => {
     renderComponent({ value })
 
     // remark-rehype's jest mock has no default export, so its slot asserts
-    // undefined plus the options object. rehypeWrapSymbols is given the symbol
-    // set to wrap ({ and } only; > is left for DOMPurify to encode).
+    // undefined plus the options object.
     expect(use.mock.calls).toEqual([
       [remarkParse],
       [remarkSanitize],
       [remarkGfm],
       [remarkRehype, { allowDangerousHtml: true }],
-      [rehypeWrapSymbols, ['{', '}']],
       [rehypeStringify, { allowDangerousHtml: true }],
     ])
     expect(processSync).toBeCalledWith(value)
@@ -129,14 +124,27 @@ describe('MarkdownViewer', () => {
   })
 
   it('should render {, } and > characters literally', () => {
-    // The pipeline wraps only { and } as {"$&"}; > stays a literal text char
-    // that DOMPurify re-encodes to &gt; and JsxParser decodes back to >.
-    setupPipeline({ html: '<p>values {"{"}a: 1{"}"} > threshold</p>' })
+    // Rendered as HTML, not parsed as JSX, so braces are literal text.
+    setupPipeline({ html: '<p>values {a: 1} &#x3E; threshold</p>' })
     renderComponent({ value: 'values {a: 1} > threshold' })
 
     expect(screen.getByTestId('markdown-viewer')).toHaveTextContent(
       'values {a: 1} > threshold',
     )
+  })
+
+  it('should not evaluate JSX expressions embedded in raw HTML', () => {
+    // DOMPurify keeps `{...}` as inert text; a JSX parser would execute it.
+    setupPipeline({
+      html: '<div>{"".constructor.constructor("window.__pwned = true")()}</div>',
+    })
+    renderComponent({ value: 'irrelevant' })
+
+    const container = screen.getByTestId('markdown-viewer')
+    expect(container).toHaveTextContent(
+      '{"".constructor.constructor("window.__pwned = true")()}',
+    )
+    expect(testWindow.__pwned).toBeUndefined()
   })
 
   it('should preserve target="_blank" on external links', () => {
@@ -234,8 +242,7 @@ describe('MarkdownViewer', () => {
     })
 
     it('should keep rendering surrounding content when a script is embedded', () => {
-      // DOMPurify normalizes the string, so a dangerous node does not poison
-      // the whole document into the empty-viewer JsxParser bail.
+      // DOMPurify strips the script and keeps the surrounding nodes.
       setupPipeline({
         html:
           '<h1>Title</h1>' +

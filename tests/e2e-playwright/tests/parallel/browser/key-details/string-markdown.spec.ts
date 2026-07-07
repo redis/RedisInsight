@@ -29,26 +29,25 @@ const RENDERED_MARKDOWN = [
 const LITERAL_SYMBOLS_TEXT = 'Config {a: 1} applies when value > 5.';
 
 // Untrusted value from Redis mixing safe markdown with the dangerous parts the
-// sanitizer must defuse: a script tag, an event-handler attribute and a
-// javascript: link. Blocks are contiguous (no blank lines) on purpose: this
-// payload would otherwise make the JSX parser drop the whole document into an
-// empty viewer. Sanitizing the final HTML normalizes it, so the safe heading
-// still renders while none of the dangerous parts survive or execute.
+// sanitizer must defuse: a script tag, an event-handler attribute, a javascript:
+// link, and a raw-HTML element carrying a JSX expression (inert as HTML text,
+// but a JSX parser would execute it). The safe heading must still render.
 const XSS_MARKDOWN = [
   '# Safe Heading',
   '<script>window.__xssPwned = true</script>',
   '<img src=x onerror="window.__xssPwned=true">',
   '[raw js link](javascript:alert(1))',
+  '<div>{"".constructor.constructor("window.__xssPwned = true")()}</div>',
 ].join('\n');
 
 /**
  * Browser > Key Details - String Markdown format
  *
  * The Markdown value format renders a String value through the real sanitized
- * markdown pipeline (unified + remark/rehype + DOMPurify) and a JSX parser with
- * tag/attribute blacklists. Jest globally mocks that pipeline, so this e2e is
- * the only coverage that runs it end to end - including the XSS sanitization,
- * which matters because Redis values are untrusted input.
+ * markdown pipeline (unified + remark/rehype + DOMPurify). Jest globally mocks
+ * that pipeline, so this e2e is the only coverage that runs it end to end -
+ * including the XSS sanitization, which matters because Redis values are
+ * untrusted input.
  */
 test.describe('Browser > Key Details - String Markdown format', () => {
   let database: DatabaseInstance;
@@ -129,8 +128,7 @@ test.describe('Browser > Key Details - String Markdown format', () => {
     await browserPage.keyDetails.waitForMarkdownViewer();
     const viewer = browserPage.keyDetails.markdownViewer;
 
-    // The safe heading still renders - sanitizing the final HTML normalizes the
-    // contiguous payload instead of dropping the whole document.
+    // The safe heading still renders alongside the defused payload.
     await expect(viewer.getByRole('heading', { level: 1, name: 'Safe Heading' })).toBeVisible();
 
     // No injected script executed.
