@@ -1,5 +1,5 @@
 import { FeatureFlags } from 'uiSrc/constants/featureFlags'
-import { WhatsNewVersion, WhatsNewVersionType } from './types'
+import { WhatsNewVersion, WhatsNewVersionType } from '../types'
 
 export const version360: WhatsNewVersion = {
   version: '3.6.0',
