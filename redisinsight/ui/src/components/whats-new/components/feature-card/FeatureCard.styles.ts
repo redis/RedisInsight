@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { Col } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 
 export const CardContainer = styled(Col)`
@@ -8,10 +8,6 @@ export const CardContainer = styled(Col)`
   border-radius: ${({ theme }) => theme.core.space.space100};
   background-color: ${({ theme }) =>
     theme.semantic.color.background.neutral100};
-`
-
-export const CardHeader = styled(Row)`
-  gap: ${({ theme }) => theme.core.space.space100};
 `
 
 export const Location = styled(Text)`

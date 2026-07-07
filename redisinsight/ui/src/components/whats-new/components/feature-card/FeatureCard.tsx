@@ -22,13 +22,13 @@ const FeatureCard = ({ card, onLinkClick }: Props) => {
 
   return (
     <S.CardContainer data-testid={`whats-new-card-${id}`}>
-      <S.CardHeader align="center">
+      <Row align="center" gap="m">
         {icon && <RiIcon type={icon as AllIconsType} size="l" />}
         <Text size="m">{title}</Text>
         {tag && (
           <RiBadge label={tag} data-testid={`whats-new-card-tag-${id}`} />
         )}
-      </S.CardHeader>
+      </Row>
 
       <Spacer size="s" />
 
