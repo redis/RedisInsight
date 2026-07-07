@@ -20,11 +20,18 @@ import { Link } from 'uiSrc/components/base/link/Link'
 import { RiPopover } from 'uiSrc/components/base'
 import { EXTERNAL_LINKS, UTM_MEDIUMS } from 'uiSrc/constants/links'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
+import { Trans, useTranslation } from 'uiSrc/i18n'
 import UserApiKeysTable from './components/user-api-keys-table'
 
 import styles from './styles.module.scss'
 
+const clearKeysCloudLink = getUtmExternalLink(
+  EXTERNAL_LINKS.redisEnterpriseCloud,
+  { medium: UTM_MEDIUMS.Settings, campaign: 'clear_keys' },
+)
+
 const CloudSettings = () => {
+  const { t } = useTranslation()
   const { loading, data } = useAppSelector(oauthCapiKeysSelector)
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
 
@@ -55,31 +62,31 @@ const CloudSettings = () => {
   return (
     <div className={styles.container}>
       <Title className={styles.title} size="XS">
-        API user keys
+        {t('settings.cloud.title')}
       </Title>
       <Spacer size="s" />
       <Row gap="m" responsive>
         <FlexItem grow>
           <Text size="m" className={styles.smallText} color="primary">
-            The list of API user keys that are stored locally in Redis Insight.
+            {t('settings.cloud.description.stored')}
           </Text>
           <Spacer size="xs" />
           <Text size="m" className={styles.smallText} color="primary">
-            API user keys grant programmatic access to Redis Cloud.
+            {t('settings.cloud.description.access')}
           </Text>
           <Text size="m" className={styles.smallText} color="primary">
-            To delete API keys from Redis Cloud,
-            <Link
-              color="primary"
-              target="_blank"
-              href={getUtmExternalLink(EXTERNAL_LINKS.redisEnterpriseCloud, {
-                medium: UTM_MEDIUMS.Settings,
-                campaign: 'clear_keys',
-              })}
-            >
-              sign in to Redis Cloud
-            </Link>
-            and delete them manually.
+            <Trans
+              i18nKey="settings.cloud.description.delete"
+              components={{
+                cloudLink: (
+                  <Link
+                    color="primary"
+                    target="_blank"
+                    href={clearKeysCloudLink}
+                  />
+                ),
+              }}
+            />
           </Text>
         </FlexItem>
         <FlexItem grow={false}>
@@ -97,24 +104,27 @@ const CloudSettings = () => {
                 disabled={loading || !data?.length}
                 data-testid="delete-key-btn"
               >
-                Remove all API keys
+                {t('settings.cloud.button.removeAll')}
               </PrimaryButton>
             }
           >
             <div className={styles.popoverDeleteContainer}>
               <Text size="m" component="div">
-                <h4>All API user keys will be removed from Redis Insight.</h4>
-                {'To delete API keys from Redis Cloud, '}
-                <Link
-                  target="_blank"
-                  variant="inline"
-                  color="text"
-                  tabIndex={-1}
-                  href="https://redis.io/redis-enterprise-cloud/overview/?utm_source=redisinsight&utm_medium=settings&utm_campaign=clear_keys"
-                >
-                  sign in to Redis Cloud
-                </Link>
-                {' and delete them manually.'}
+                <h4>{t('settings.cloud.removeAll.title')}</h4>
+                <Trans
+                  i18nKey="settings.cloud.description.delete"
+                  components={{
+                    cloudLink: (
+                      <Link
+                        target="_blank"
+                        variant="inline"
+                        color="text"
+                        tabIndex={-1}
+                        href={clearKeysCloudLink}
+                      />
+                    ),
+                  }}
+                />
               </Text>
               <Spacer />
               <div className={styles.popoverFooter}>
@@ -125,7 +135,7 @@ const CloudSettings = () => {
                   className={styles.popoverDeleteBtn}
                   data-testid="delete-key-confirm-btn"
                 >
-                  Remove all API keys
+                  {t('settings.cloud.button.removeAll')}
                 </DestructiveButton>
               </div>
             </div>

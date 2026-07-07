@@ -9,6 +9,7 @@ import i18n, {
   DEFAULT_LANGUAGE,
   LANGUAGE_NAMES,
   SUPPORTED_LANGUAGES,
+  useTranslation,
 } from 'uiSrc/i18n'
 import {
   defaultValueRender,
@@ -24,6 +25,7 @@ const options: RiSelectOption[] = SUPPORTED_LANGUAGES.map((language) => ({
 }))
 
 const LanguageSettings = () => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { config } = useAppSelector(userSettingsSelector)
   const [selectedLanguage, setSelectedLanguage] = useState<string>(
@@ -47,9 +49,9 @@ const LanguageSettings = () => {
 
   return (
     <form>
-      <Title size="XS">Language</Title>
+      <Title size="XS">{t('settings.general.language.title')}</Title>
       <Spacer size="m" />
-      <FormField label="Specifies the display language:">
+      <FormField label={t('settings.general.language.label')}>
         <Spacer size="m" />
         <RiSelect
           valueRender={defaultValueRender}

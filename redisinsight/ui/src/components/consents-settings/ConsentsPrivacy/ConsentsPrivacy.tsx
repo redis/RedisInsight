@@ -11,12 +11,14 @@ import {
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Title } from 'uiSrc/components/base/text/Title'
 import { Text } from 'uiSrc/components/base/text'
+import { useTranslation } from 'uiSrc/i18n'
 import ConsentOption from '../ConsentOption'
 import { ConsentCategories, IConsent } from '../ConsentsSettings'
 
 import styles from '../styles.module.scss'
 
 const ConsentsPrivacy = () => {
+  const { t } = useTranslation()
   const [consents, setConsents] = useState<IConsent[]>([])
   const [privacyConsents, setPrivacyConsents] = useState<IConsent[]>([])
   const [initialValues, setInitialValues] = useState<any>({})
@@ -81,10 +83,10 @@ const ConsentsPrivacy = () => {
     <form onSubmit={formik.handleSubmit} data-testid="consents-settings-form">
       <div className={styles.consentsWrapper}>
         <Text size="M" color="primary">
-          To optimize your experience, Redis Insight uses third-party tools.
+          {t('settings.privacy.description')}
         </Text>
         <Spacer size="m" />
-        <Title size="M">Usage Data</Title>
+        <Title size="M">{t('settings.privacy.usageData.title')}</Title>
         <Spacer size="m" />
         {privacyConsents.map((consent: IConsent) => (
           <ConsentOption
