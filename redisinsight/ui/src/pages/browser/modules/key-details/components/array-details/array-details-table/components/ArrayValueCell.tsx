@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { Text } from 'uiSrc/components/base/text'
 import {
   TEXT_DISABLED_COMPRESSED_VALUE,
   TEXT_DISABLED_FORMATTER_EDITING,
@@ -27,12 +26,13 @@ import {
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 import { ArrayValueCellProps } from './ArrayValueCell.types'
+import * as S from './ArrayValueCell.styles'
 
 const TEST_ID_PREFIX = 'array-details-table'
 
 /**
  * Renders a populated slot's value (formatted) wrapped in an inline editor for
- * in-place edits (ARSET). Empty slots render a muted "(empty)" marker and are
+ * in-place edits (ARSET). Empty slots render a muted "Empty" marker and are
  * not editable — filling a gap changes ARCOUNT/ARLEN and belongs to append /
  * set-at-index, not the value edit.
  */
@@ -52,9 +52,12 @@ export const ArrayValueCell = ({
   // slot arrived without a buffer payload.
   if (value == null) {
     return (
-      <Text color="subdued" data-testid={`${TEST_ID_PREFIX}-empty-${index}`}>
-        (empty)
-      </Text>
+      <S.EmptyValue
+        variant="italic"
+        data-testid={`${TEST_ID_PREFIX}-empty-${index}`}
+      >
+        Empty
+      </S.EmptyValue>
     )
   }
 
