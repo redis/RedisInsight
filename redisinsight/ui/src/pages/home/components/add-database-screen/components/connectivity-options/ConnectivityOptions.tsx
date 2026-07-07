@@ -17,8 +17,8 @@ import { Text } from 'uiSrc/components/base/text/Text'
 import { RiIcon } from 'uiSrc/components/base/icons'
 import { Loader } from 'uiSrc/components/base/display'
 import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import { AzureSignInDialog } from 'uiSrc/components/azure-sign-in-dialog'
 import { useConnectivityOptions } from '../../hooks/useConnectivityOptions'
-import { AzureSignInDialog } from '../azure-sign-in-dialog'
 
 import {
   StyledBadge,

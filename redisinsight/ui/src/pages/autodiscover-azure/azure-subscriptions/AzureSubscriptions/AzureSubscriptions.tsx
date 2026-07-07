@@ -142,7 +142,7 @@ const AzureSubscriptions = ({
                   onClick={onSwitchAccount}
                   data-testid="btn-switch-account"
                 >
-                  Switch account
+                  Switch account or tenant
                 </EmptyButton>
                 <IconButton
                   icon={RefreshIcon}

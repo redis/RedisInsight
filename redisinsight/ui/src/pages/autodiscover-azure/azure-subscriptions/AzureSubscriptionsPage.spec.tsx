@@ -17,6 +17,7 @@ import {
 } from 'uiSrc/slices/instances/azure'
 import { useAzureAuth } from 'uiSrc/components/hooks/useAzureAuth'
 import { azureAuthAccountSelector } from 'uiSrc/slices/oauth/azure'
+import { AzureLoginSource } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { AzureAccountFactory } from 'uiSrc/mocks/factories/cloud/AzureAccount.factory'
 
@@ -124,12 +125,27 @@ describe('AzureSubscriptionsPage', () => {
   })
 
   describe('switch account', () => {
-    it('should call initiateLogin when switch account button is clicked', () => {
+    it('should open the sign-in dialog when switch account is clicked', () => {
       render(<AzureSubscriptionsPage />, { store })
 
       fireEvent.click(screen.getByTestId('btn-switch-account'))
 
-      expect(mockInitiateLogin).toHaveBeenCalledTimes(1)
+      expect(
+        screen.getByTestId('azure-sign-in-dialog-sign-in'),
+      ).toBeInTheDocument()
+      expect(mockInitiateLogin).not.toHaveBeenCalled()
+    })
+
+    it('should call initiateLogin when signing in from the dialog', () => {
+      render(<AzureSubscriptionsPage />, { store })
+
+      fireEvent.click(screen.getByTestId('btn-switch-account'))
+      fireEvent.click(screen.getByTestId('azure-sign-in-dialog-sign-in'))
+
+      expect(mockInitiateLogin).toHaveBeenCalledWith(
+        AzureLoginSource.Autodiscovery,
+        undefined,
+      )
     })
 
     it('should send telemetry when switch account is clicked', () => {
