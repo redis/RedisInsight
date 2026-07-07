@@ -30,7 +30,7 @@ export interface WhatsNewCard {
   body: string
   /** Optional pill label for non-default states, e.g. "Improved", "Beta". */
   tag?: string
-  /** Optional RiIcon type name or emoji. */
+  /** Optional icon — must be a registered RiIcon type name. */
   icon?: string
   /** Optional short hint of where to find the feature in the app. */
   location?: string

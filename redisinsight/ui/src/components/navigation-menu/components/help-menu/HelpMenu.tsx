@@ -10,7 +10,10 @@ import {
   setReleaseNotesViewed,
   setShortcutsFlyoutState,
 } from 'uiSrc/slices/app/info'
-import { openWhatsNew } from 'uiSrc/slices/app/whatsNew'
+import {
+  getLatestWhatsNewVersion,
+  openWhatsNew,
+} from 'uiSrc/slices/app/whatsNew'
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
 import { setOnboarding } from 'uiSrc/slices/app/features'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -66,6 +69,7 @@ const HelpMenu = () => {
       event: TelemetryEvent.WHATS_NEW_OPENED,
       eventData: {
         source: WhatsNewSource.helpCenter,
+        version: getLatestWhatsNewVersion()?.version,
       },
     })
     dispatch(openWhatsNew())

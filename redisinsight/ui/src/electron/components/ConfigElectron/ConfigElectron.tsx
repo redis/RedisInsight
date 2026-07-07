@@ -35,6 +35,10 @@ const ConfigElectron = () => {
     window.app?.updateAvailable?.(updateAvailableAction)
   }, [])
 
+  // Deliberately keyed on serverInfo only: this must run once per app load
+  // (it consumes one-shot electron-store flags). The whatsNew flag has its
+  // config default before the async flags fetch resolves, so it is safe to
+  // read without re-running the effect.
   useEffect(() => {
     if (serverInfo) {
       ipcCheckUpdates(serverInfo, dispatch, !!whatsNewFeature?.flag)

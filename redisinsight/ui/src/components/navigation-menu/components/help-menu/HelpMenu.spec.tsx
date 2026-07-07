@@ -10,7 +10,10 @@ import {
   mockStore,
 } from 'uiSrc/utils/test-utils'
 import { setOnboarding } from 'uiSrc/slices/app/features'
-import { openWhatsNew } from 'uiSrc/slices/app/whatsNew'
+import {
+  getLatestWhatsNewVersion,
+  openWhatsNew,
+} from 'uiSrc/slices/app/whatsNew'
 import { WhatsNewSource } from 'uiSrc/constants/telemetry'
 
 import { ONBOARDING_FEATURES } from 'uiSrc/components/onboarding-features'
@@ -119,6 +122,7 @@ describe('HelpMenu', () => {
       event: TelemetryEvent.WHATS_NEW_OPENED,
       eventData: {
         source: WhatsNewSource.helpCenter,
+        version: getLatestWhatsNewVersion()?.version,
       },
     })
   })
