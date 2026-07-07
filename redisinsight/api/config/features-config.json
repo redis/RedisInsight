@@ -1,14 +1,24 @@
 {
-  "version": 5,
+  "version": 6,
   "features": {
     "dev-language": {
       "flag": true,
-      "perc": [[0, 0]],
+      "perc": [
+        [
+          0,
+          0
+        ]
+      ],
       "filters": []
     },
     "redisDataIntegration": {
       "flag": true,
-      "perc": [[0, 100]],
+      "perc": [
+        [
+          0,
+          100
+        ]
+      ],
       "filters": [
         {
           "name": "config.server.buildType",
@@ -19,15 +29,30 @@
     },
     "insightsRecommendations": {
       "flag": true,
-      "perc": [[0, 100]]
+      "perc": [
+        [
+          0,
+          100
+        ]
+      ]
     },
     "hashFieldExpiration": {
       "flag": true,
-      "perc": [[0, 100]]
+      "perc": [
+        [
+          0,
+          100
+        ]
+      ]
     },
     "documentationChat": {
       "flag": true,
-      "perc": [[0, 100]],
+      "perc": [
+        [
+          0,
+          100
+        ]
+      ],
       "filters": [
         {
           "name": "config.server.buildType",
@@ -38,7 +63,12 @@
     },
     "databaseChat": {
       "flag": true,
-      "perc": [[0, 100]],
+      "perc": [
+        [
+          0,
+          100
+        ]
+      ],
       "filters": [
         {
           "name": "config.server.buildType",
@@ -49,7 +79,12 @@
     },
     "cloudSso": {
       "flag": true,
-      "perc": [[0, 100]],
+      "perc": [
+        [
+          0,
+          100
+        ]
+      ],
       "filters": [
         {
           "name": "config.server.buildType",
@@ -83,7 +118,12 @@
     },
     "cloudSsoRecommendedSettings": {
       "flag": true,
-      "perc": [[0, 100]],
+      "perc": [
+        [
+          0,
+          100
+        ]
+      ],
       "filters": [
         {
           "name": "config.server.buildType",
@@ -94,7 +134,12 @@
     },
     "redisModuleFilter": {
       "flag": true,
-      "perc": [[0, 100]],
+      "perc": [
+        [
+          0,
+          100
+        ]
+      ],
       "data": {
         "hideByName": [
           {
@@ -114,47 +159,106 @@
     },
     "redisClient": {
       "flag": true,
-      "perc": [[0, 100]],
+      "perc": [
+        [
+          0,
+          100
+        ]
+      ],
       "data": {
         "strategy": "ioredis"
       }
     },
     "enhancedCloudUI": {
       "flag": true,
-      "perc": [[0, 100]]
+      "perc": [
+        [
+          0,
+          100
+        ]
+      ]
     },
     "vectorSearchV2": {
       "flag": true,
-      "perc": [[0, 100]],
+      "perc": [
+        [
+          0,
+          100
+        ]
+      ],
       "filters": []
     },
     "databasesListV2": {
       "flag": true,
-      "perc": [[0, 100]]
+      "perc": [
+        [
+          0,
+          100
+        ]
+      ]
     },
     "azureEntraId": {
       "flag": true,
-      "perc": [[0, 100]]
+      "perc": [
+        [
+          0,
+          100
+        ]
+      ]
     },
     "dev-azureEntraId": {
       "flag": false,
-      "perc": [[0, 100]]
+      "perc": [
+        [
+          0,
+          100
+        ]
+      ]
     },
     "dev-browser": {
       "flag": false,
-      "perc": [[0, 100]]
+      "perc": [
+        [
+          0,
+          100
+        ]
+      ]
     },
     "vectorSet": {
       "flag": true,
-      "perc": [[0, 100]]
+      "perc": [
+        [
+          0,
+          100
+        ]
+      ]
     },
     "dev-array": {
       "flag": true,
-      "perc": [[0, 0]]
+      "perc": [
+        [
+          0,
+          0
+        ]
+      ]
     },
     "prodMode": {
       "flag": true,
-      "perc": [[0, 100]]
+      "perc": [
+        [
+          0,
+          100
+        ]
+      ]
+    },
+    "whatsNew": {
+      "flag": true,
+      "perc": [
+        [
+          0,
+          100
+        ]
+      ]
     }
   }
 }
