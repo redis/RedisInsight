@@ -63,7 +63,7 @@ export const initialState: StateAppFeatures = {
         flag: riConfig.features.cloudAds.defaultFlag,
       },
       [FeatureFlags.whatsNew]: {
-        flag: riConfig.features.whatsNew.defaultFlag,
+        flag: false,
       },
       [FeatureFlags.vectorSearchV2]: {
         flag: false,
@@ -183,11 +183,6 @@ const appFeaturesSlice = createSlice({
       if (!payload.features[FeatureFlags.cloudAds]) {
         payload.features[FeatureFlags.cloudAds] = {
           flag: riConfig.features.cloudAds.defaultFlag,
-        }
-      }
-      if (!payload.features[FeatureFlags.whatsNew]) {
-        payload.features[FeatureFlags.whatsNew] = {
-          flag: riConfig.features.whatsNew.defaultFlag,
         }
       }
 

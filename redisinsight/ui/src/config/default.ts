@@ -109,9 +109,6 @@ export const defaultConfig = {
     cloudAds: {
       defaultFlag: booleanEnv('RI_FEATURES_CLOUD_ADS_DEFAULT_FLAG', true),
     },
-    whatsNew: {
-      defaultFlag: booleanEnv('RI_FEATURES_WHATS_NEW_DEFAULT_FLAG', true),
-    },
   },
   sentry: {
     dsn: process.env.RI_SENTRY_DSN ?? '',

@@ -110,12 +110,19 @@ describe('HelpMenu', () => {
   })
 
   it("should open What's new and send telemetry on click", () => {
-    render(sideBarWithHelpMenu)
+    const initialStoreState = set(
+      cloneDeep(initialStateDefault),
+      `app.features.featureFlags.features.${FeatureFlags.whatsNew}`,
+      { flag: true },
+    )
+    const localStore = mockStore(initialStoreState)
+
+    render(sideBarWithHelpMenu, { store: localStore })
 
     fireEvent.click(screen.getByTestId('help-menu-button'))
     fireEvent.click(screen.getByTestId('whats-new-btn'))
 
-    expect(store.getActions()).toEqual([openWhatsNew()])
+    expect(localStore.getActions()).toEqual([openWhatsNew()])
     expect(sendEventTelemetry).toBeCalledWith({
       event: TelemetryEvent.WHATS_NEW_OPENED,
       eventData: {
