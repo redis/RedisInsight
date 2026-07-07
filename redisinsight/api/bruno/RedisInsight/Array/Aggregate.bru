@@ -62,8 +62,8 @@ docs {
   `result` is a decimal string for numeric ops and an integer count as a
   string for `MATCH` / `USED`. It is `null` when AROP yields a nil reply
   (numeric ops over a range with no numeric values; bitwise ops over an empty
-  range). `SUM` / `MIN` / `MAX` preserve full precision; `AND` / `OR` / `XOR`
-  results above 2^53 may be rounded (see RI-8296).
+  range). All operations preserve full precision, including `AND` / `OR` /
+  `XOR` results above 2^53.
 
   ## Errors
 
@@ -118,8 +118,8 @@ docs {
 
   ### XOR — bitwise fold over integer elements
 
-  Bitwise ops require integer elements. Results above 2^53 may be rounded by
-  the client (see RI-8296); `SUM` / `MIN` / `MAX` are unaffected.
+  Bitwise ops require integer elements. Results keep full precision above
+  2^53, same as `SUM` / `MIN` / `MAX`.
 
   ```json
   { "keyName": "counters", "start": "0", "end": "9", "operation": "XOR" }

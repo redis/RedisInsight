@@ -105,16 +105,28 @@ describe('POST /databases/:instanceId/array/get-next-index', () => {
       });
     });
 
+    it('Should keep the cursor exact in the (2^53, 2^63) RESP-integer zone', async () => {
+      const keyName = constants.getRandomString();
+      // 2^53 + 1: below 2^63 so Redis replies with a bare RESP integer, and
+      // above 2^53 so a JS number would round it to 2^53. ARSEEK reaches the
+      // zone in one step, pinning ARNEXT's own bigint opt-in end to end.
+      const gapCursor = '9007199254740993';
+      await rte.client.call('ARINSERT', keyName, 'a');
+      await rte.client.call('ARSEEK', keyName, gapCursor);
+
+      await validateApiCall({
+        endpoint,
+        data: { keyName },
+        responseSchema,
+        responseBody: { keyName, index: gapCursor },
+      });
+    });
+
     // The "exhausted cursor returns null" path is verified end-to-end via
     // the toIndexString unit test (nil reply -> null); reproducing it here
     // would require driving ARSEEK / ARINSERT to the u64 sentinel boundary,
     // whose semantics on Redis 8.8 are not documented well enough to keep
     // the assertion stable across patch releases.
-    //
-    // The u64-cursor precision regression is already pinned by the skipped
-    // ARSCAN canary (Should preserve u64 precision when scanning at indexes
-    // above MAX_SAFE_INTEGER) — re-asserting it here would duplicate that
-    // coverage without adding a new wire path.
 
     [
       {

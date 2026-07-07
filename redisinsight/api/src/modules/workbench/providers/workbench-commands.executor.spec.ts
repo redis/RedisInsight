@@ -369,6 +369,34 @@ describe('WorkbenchCommandsExecutor', () => {
           },
         );
       });
+      it('requests ARLEN with exact u64 integer replies', async () => {
+        client.sendCommand.mockResolvedValueOnce('9007199254740993');
+
+        await service.sendCommand(client, {
+          command: 'ARLEN key',
+          mode: RunQueryMode.ASCII,
+          type: CommandExecutionType.Workbench,
+        });
+
+        expect(client.sendCommand).toHaveBeenCalledWith(
+          ['ARLEN', 'key'],
+          expect.objectContaining({ integerReply: 'bigint' }),
+        );
+      });
+      it('does not request exact u64 integer replies for non-array commands', async () => {
+        client.sendCommand.mockResolvedValueOnce('value');
+
+        await service.sendCommand(client, {
+          command: 'GET key',
+          mode: RunQueryMode.ASCII,
+          type: CommandExecutionType.Workbench,
+        });
+
+        expect(client.sendCommand).toHaveBeenCalledWith(
+          ['GET', 'key'],
+          expect.not.objectContaining({ integerReply: 'bigint' }),
+        );
+      });
     });
     describe('CommandParsingError', () => {
       it('should return response with [CLI_UNTERMINATED_QUOTES] error for sendCommandForNodes', async () => {

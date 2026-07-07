@@ -581,6 +581,27 @@ describe('ArrayService', () => {
     });
   });
 
+  describe('getCount', () => {
+    it('should read ARCOUNT with the bigint opt-in and return the count as a string', async () => {
+      // 2^53 + 1 is odd, so a rounded number reply cannot produce this string.
+      when(mockStandaloneRedisClient.sendCommand)
+        .calledWith([BrowserToolArrayCommands.ArCount, mockKeyDto.keyName], {
+          integerReply: 'bigint',
+        })
+        .mockResolvedValue(BigInt('9007199254740993'));
+
+      const result = await service.getCount(
+        mockBrowserClientMetadata,
+        mockKeyDto,
+      );
+
+      expect(result).toEqual({
+        keyName: mockKeyDto.keyName,
+        count: '9007199254740993',
+      });
+    });
+  });
+
   describe('getElement', () => {
     beforeEach(() => {
       when(mockStandaloneRedisClient.sendCommand)
@@ -910,23 +931,32 @@ describe('ArrayService', () => {
     });
 
     it('should append at the current length (ARLEN then ARSET) and return the index', async () => {
+      // ARLEN can exceed 2^53; the bigint opt-in keeps the derived index exact.
+      // 2^53 + 1 (9007199254740993) is odd and unrepresentable as a float64, so
+      // a rounded read would land on the wrong slot.
       when(client.sendCommand)
-        .calledWith([BrowserToolArrayCommands.ArLen, dto.keyName])
-        .mockResolvedValue(7);
+        .calledWith([BrowserToolArrayCommands.ArLen, dto.keyName], {
+          integerReply: 'bigint',
+        })
+        .mockResolvedValue(BigInt('9007199254740993'));
 
       const result = await service.appendElement(
         mockBrowserClientMetadata,
         dto,
       );
 
-      expect(result).toEqual({ keyName: dto.keyName, index: '7' });
-      // Writes at the length read by ARLEN, passing the index as a string so
-      // the append stays precise once ioredis returns 64-bit integers
-      // losslessly (RI-8296).
+      expect(result).toEqual({
+        keyName: dto.keyName,
+        index: '9007199254740993',
+      });
+      expect(client.sendCommand).toHaveBeenCalledWith(
+        [BrowserToolArrayCommands.ArLen, dto.keyName],
+        { integerReply: 'bigint' },
+      );
       expect(client.sendCommand).toHaveBeenCalledWith([
         BrowserToolArrayCommands.ArSet,
         dto.keyName,
-        '7',
+        '9007199254740993',
         dto.value,
       ]);
     });
@@ -944,7 +974,9 @@ describe('ArrayService', () => {
       // Top index already 2^64-2, so the next index is the reserved 2^64-1 —
       // guard it before ARSET rather than letting Redis 500.
       when(client.sendCommand)
-        .calledWith([BrowserToolArrayCommands.ArLen, dto.keyName])
+        .calledWith([BrowserToolArrayCommands.ArLen, dto.keyName], {
+          integerReply: 'bigint',
+        })
         .mockResolvedValue('18446744073709551615');
 
       await expect(
@@ -965,7 +997,9 @@ describe('ArrayService', () => {
         command: 'ARLEN',
       };
       when(client.sendCommand)
-        .calledWith([BrowserToolArrayCommands.ArLen, dto.keyName])
+        .calledWith([BrowserToolArrayCommands.ArLen, dto.keyName], {
+          integerReply: 'bigint',
+        })
         .mockRejectedValue(replyError);
       await expect(
         service.appendElement(mockBrowserClientMetadata, dto),
