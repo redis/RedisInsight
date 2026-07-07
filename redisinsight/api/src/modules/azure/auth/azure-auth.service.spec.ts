@@ -444,6 +444,40 @@ describe('AzureAuthService', () => {
       );
     });
 
+    it('should select the account matching the requested tenant when multiple realms are cached', async () => {
+      const homeAccountId = faker.string.uuid();
+      const tenantId = faker.string.uuid();
+      // Same user signed into two tenants → two records share homeAccountId
+      const homeRealmAccount = {
+        ...createMockAccount(),
+        homeAccountId,
+        tenantId: faker.string.uuid(),
+      };
+      const targetRealmAccount = {
+        ...createMockAccount(),
+        homeAccountId,
+        tenantId,
+      };
+      mockTokenCache.getAllAccounts.mockResolvedValue([
+        homeRealmAccount,
+        targetRealmAccount,
+      ]);
+      mockPca.acquireTokenSilent.mockResolvedValue({
+        accessToken: faker.string.alphanumeric(100),
+        expiresOn: new Date(),
+        account: targetRealmAccount,
+      } as any);
+
+      await service.getRedisTokenByAccountId(homeAccountId, tenantId);
+
+      expect(mockPca.acquireTokenSilent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          account: targetRealmAccount,
+          authority: `https://login.microsoftonline.com/${tenantId}`,
+        }),
+      );
+    });
+
     it('should not pass authority to silent acquisition when no tenantId', async () => {
       const mockAccount = createMockAccount();
       mockTokenCache.getAllAccounts.mockResolvedValue([mockAccount]);

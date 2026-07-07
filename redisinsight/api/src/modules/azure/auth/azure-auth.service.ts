@@ -373,7 +373,15 @@ export class AzureAuthService {
       const cache = pca.getTokenCache();
       const accounts = await cache.getAllAccounts();
 
-      const account = accounts.find((a) => a.homeAccountId === accountId);
+      // A user signed into multiple tenants has one cached record per realm,
+      // all sharing the same homeAccountId. When a tenant is requested, prefer
+      // the record for that realm so silent refresh targets the right tenant
+      // (falling back to any record for the account otherwise).
+      const forAccount = (a: AccountInfo) => a.homeAccountId === accountId;
+      const account =
+        (tenantId &&
+          accounts.find((a) => forAccount(a) && a.tenantId === tenantId)) ||
+        accounts.find(forAccount);
       if (!account) {
         this.logger.warn(`Account not found: ${accountId}`);
         return null;
