@@ -4,6 +4,8 @@
 
 To use the Azure integration, your Azure tenant administrator may need to grant admin consent for the RedisInsight application. This is a one-time setup per Azure tenant — once done, all users in your organization can use RedisInsight with Entra ID seamlessly.
 
+> **Which tenant?** The commands below must be run **in the home tenant of every user who signs in through RedisInsight** — this is not necessarily the tenant that owns the Azure Managed Redis resources. If your users belong to a different tenant than the one hosting the resources, see [Multi-tenant scenarios](#multi-tenant-scenarios).
+
 > **Why is this needed?** See [Why This Setup is Required](#why-this-setup-is-required) for details on the authentication flow.
 
 > **Running in Docker?** See [Azure Docker Setup](azure-docker-setup.md) for configuration when using custom ports or reverse proxies.
@@ -54,6 +56,24 @@ az ad app permission list-grants \
 
 You should see `AzureRedisCacheAadApp` and `Windows Azure Service Management API` (or `Azure Resource Manager`) in the output.
 
+## Multi-tenant scenarios
+
+By default, RedisInsight signs you in through the multi-tenant `/common` endpoint, which issues the access token against **your home tenant**. That works when your account and the Azure Managed Redis resources live in the same tenant. Two situations need extra attention:
+
+- **Your resources are in a different tenant than your account.** The setup commands above (`az ad sp create` / `az ad app permission grant`) must exist in **your home tenant** — the tenant your user account belongs to — because that is where the token is issued. Running them only in the resource tenant is not enough and results in `AADSTS650052`.
+- **You are a guest / external user of the resource tenant.** Sign in against that tenant explicitly (see [Picking a tenant](#picking-a-tenant)) so the token is issued there and its subscriptions become visible.
+
+### Picking a tenant
+
+When you click **Azure Managed Redis**, the sign-in dialog has an **Advanced options** section with an optional **Tenant ID** field. Enter a tenant GUID or domain (for example `contoso.onmicrosoft.com`) to authenticate against that specific tenant instead of your home tenant.
+
+Use it when:
+
+- Your home tenant differs from the tenant that owns the Azure Managed Redis resources, or
+- You are a guest in the resource tenant and its subscriptions don't appear by default.
+
+Leave the field blank to sign in against your home tenant (the default). The tenant you signed in with is shown on the subscriptions screen; to switch tenants, sign in again with a different tenant.
+
 ## Troubleshooting
 
 ### Error: AADSTS650057 - Invalid resource
@@ -97,6 +117,8 @@ az ad sp create --id acca5fbb-b7e4-4009-81f1-37e38fd66d78
 ```
 
 Then grant the permissions using the CLI commands above.
+
+> **Multi-tenant note:** This error most often means the service principals exist in the *resource* tenant but not in the tenant the token was issued for. The token is issued for your **home tenant** by default — so the commands must be run there. If your resources are in a different tenant, either run the setup in your home tenant, or sign in against the resource tenant using the **Tenant ID** field (see [Picking a tenant](#picking-a-tenant)).
 
 ## Why This Setup is Required
 
