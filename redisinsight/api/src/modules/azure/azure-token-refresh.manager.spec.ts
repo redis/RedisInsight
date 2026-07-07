@@ -23,12 +23,13 @@ const createMockTokenResult = () => {
   };
 };
 
-const createMockClient = (tokenExpiresOn?: Date) => ({
+const createMockClient = (tokenExpiresOn?: Date, tenantId?: string) => ({
   id: faker.string.uuid(),
   call: jest.fn().mockResolvedValue('OK'),
   database: {
     providerDetails: {
       azureAccountId: faker.string.uuid(),
+      tenantId,
       tokenExpiresOn,
     },
   },
@@ -387,7 +388,7 @@ describe('AzureTokenRefreshManager', () => {
 
       expect(
         mockAzureAuthService.getRedisTokenByAccountId,
-      ).toHaveBeenCalledWith(azureAccountId);
+      ).toHaveBeenCalledWith(azureAccountId, undefined);
       expect(
         mockRedisClientStorage.getClientsByDatabaseField,
       ).toHaveBeenCalledWith('providerDetails.azureAccountId', azureAccountId);
@@ -396,6 +397,37 @@ describe('AzureTokenRefreshManager', () => {
         tokenResult.account.localAccountId,
         tokenResult.token,
       ]);
+    });
+
+    it('should refresh against the tenant stored on the connected databases', async () => {
+      const azureAccountId = faker.string.uuid();
+      const tenantId = faker.string.uuid();
+      const tokenResult = createMockTokenResult();
+      const mockClient = createMockClient(undefined, tenantId);
+
+      mockAzureAuthService.getRedisTokenByAccountId.mockImplementation(
+        async () => {
+          await manager.handleTokenAcquired({
+            accountId: azureAccountId,
+            tokenResult,
+          });
+          return tokenResult;
+        },
+      );
+      mockRedisClientStorage.getClientsByDatabaseField.mockReturnValue([
+        mockClient,
+      ]);
+
+      const expiresOn = new Date(
+        Date.now() + TOKEN_REFRESH_BUFFER_MS + TEST_DELAY_MS,
+      );
+      manager.scheduleRefresh(azureAccountId, expiresOn);
+
+      await jest.advanceTimersByTimeAsync(TEST_DELAY_MS);
+
+      expect(
+        mockAzureAuthService.getRedisTokenByAccountId,
+      ).toHaveBeenCalledWith(azureAccountId, tenantId);
     });
 
     it('should not re-authenticate when token refresh fails', async () => {

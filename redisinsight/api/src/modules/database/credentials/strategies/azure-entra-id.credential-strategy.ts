@@ -45,6 +45,7 @@ export class AzureEntraIdCredentialStrategy implements ICredentialStrategy {
 
     const tokenResult = await this.azureAuthService.getRedisTokenByAccountId(
       providerDetails.azureAccountId,
+      providerDetails.tenantId,
     );
 
     if (!tokenResult) {

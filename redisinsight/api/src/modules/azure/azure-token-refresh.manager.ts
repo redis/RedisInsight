@@ -136,7 +136,14 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
       return;
     }
 
-    await this.azureAuthService.getRedisTokenByAccountId(azureAccountId);
+    // Refresh against the same tenant the databases were connected with, so
+    // multi-tenant sign-ins keep issuing tokens from the correct authority.
+    const tenantId = clients[0].database.providerDetails?.tenantId;
+
+    await this.azureAuthService.getRedisTokenByAccountId(
+      azureAccountId,
+      tenantId,
+    );
   }
 
   private async reAuthenticateClients(

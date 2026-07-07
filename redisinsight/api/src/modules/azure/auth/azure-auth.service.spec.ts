@@ -421,6 +421,46 @@ describe('AzureAuthService', () => {
 
       expect(mockEventEmitter.emit).not.toHaveBeenCalled();
     });
+
+    it('should acquire silently against the tenant authority when tenantId provided', async () => {
+      const mockAccount = createMockAccount();
+      const tenantId = faker.string.uuid();
+      mockTokenCache.getAllAccounts.mockResolvedValue([mockAccount]);
+      mockPca.acquireTokenSilent.mockResolvedValue({
+        accessToken: faker.string.alphanumeric(100),
+        expiresOn: new Date(),
+        account: mockAccount,
+      } as any);
+
+      await service.getRedisTokenByAccountId(
+        mockAccount.homeAccountId,
+        tenantId,
+      );
+
+      expect(mockPca.acquireTokenSilent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          authority: `https://login.microsoftonline.com/${tenantId}`,
+        }),
+      );
+    });
+
+    it('should not pass authority to silent acquisition when no tenantId', async () => {
+      const mockAccount = createMockAccount();
+      mockTokenCache.getAllAccounts.mockResolvedValue([mockAccount]);
+      mockPca.acquireTokenSilent.mockResolvedValue({
+        accessToken: faker.string.alphanumeric(100),
+        expiresOn: new Date(),
+        account: mockAccount,
+      } as any);
+
+      await service.getRedisTokenByAccountId(mockAccount.homeAccountId);
+
+      expect(mockPca.acquireTokenSilent).toHaveBeenCalledWith(
+        expect.not.objectContaining({
+          authority: expect.anything(),
+        }),
+      );
+    });
   });
 
   describe('getManagementTokenByAccountId', () => {
@@ -464,6 +504,28 @@ describe('AzureAuthService', () => {
         expiresOn: mockExpiresOn,
         account: mockAccount,
       });
+    });
+
+    it('should acquire silently against the tenant authority when tenantId provided', async () => {
+      const mockAccount = createMockAccount();
+      const tenantId = faker.string.uuid();
+      mockTokenCache.getAllAccounts.mockResolvedValue([mockAccount]);
+      mockPca.acquireTokenSilent.mockResolvedValue({
+        accessToken: faker.string.alphanumeric(100),
+        expiresOn: new Date(),
+        account: mockAccount,
+      } as any);
+
+      await service.getManagementTokenByAccountId(
+        mockAccount.homeAccountId,
+        tenantId,
+      );
+
+      expect(mockPca.acquireTokenSilent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          authority: `https://login.microsoftonline.com/${tenantId}`,
+        }),
+      );
     });
   });
 });

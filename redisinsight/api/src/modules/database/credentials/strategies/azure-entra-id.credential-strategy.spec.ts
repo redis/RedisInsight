@@ -186,7 +186,34 @@ describe('AzureEntraIdCredentialStrategy', () => {
       expect(result.password).toBe(tokenResult.token);
       expect(
         mockAzureAuthService.getRedisTokenByAccountId,
-      ).toHaveBeenCalledWith(database.providerDetails?.azureAccountId);
+      ).toHaveBeenCalledWith(
+        database.providerDetails?.azureAccountId,
+        database.providerDetails?.tenantId,
+      );
+    });
+
+    it('should acquire the token against the stored tenant', async () => {
+      const tenantId = faker.string.uuid();
+      const database = createMockAzureDatabase({
+        providerDetails: {
+          provider: CloudProvider.Azure,
+          authType: AzureAuthType.EntraId,
+          azureAccountId: faker.string.uuid(),
+          tenantId,
+        },
+      });
+      mockAzureAuthService.getRedisTokenByAccountId.mockResolvedValue(
+        createMockTokenResult(),
+      );
+
+      await strategy.resolve(database);
+
+      expect(
+        mockAzureAuthService.getRedisTokenByAccountId,
+      ).toHaveBeenCalledWith(
+        database.providerDetails?.azureAccountId,
+        tenantId,
+      );
     });
 
     it('should preserve other database properties', async () => {

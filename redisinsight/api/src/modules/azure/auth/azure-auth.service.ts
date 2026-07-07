@@ -315,10 +315,12 @@ export class AzureAuthService {
    */
   async getRedisTokenByAccountId(
     accountId: string,
+    tenantId?: string,
   ): Promise<AzureTokenResult | null> {
     const tokenResult = await this.getTokenByAccountId(
       accountId,
       AZURE_REDIS_SCOPE,
+      tenantId,
     );
 
     if (tokenResult) {
@@ -348,8 +350,13 @@ export class AzureAuthService {
    */
   async getManagementTokenByAccountId(
     accountId: string,
+    tenantId?: string,
   ): Promise<AzureTokenResult | null> {
-    return this.getTokenByAccountId(accountId, AZURE_MANAGEMENT_SCOPE);
+    return this.getTokenByAccountId(
+      accountId,
+      AZURE_MANAGEMENT_SCOPE,
+      tenantId,
+    );
   }
 
   /**
@@ -359,6 +366,7 @@ export class AzureAuthService {
   private async getTokenByAccountId(
     accountId: string,
     scope: string,
+    tenantId?: string,
   ): Promise<AzureTokenResult | null> {
     try {
       const pca = this.getMsalClient();
@@ -371,9 +379,14 @@ export class AzureAuthService {
         return null;
       }
 
+      // When a tenant was chosen at sign-in, refresh against that same tenant
+      // authority. Without it, MSAL resolves to the account's home tenant.
+      const authority = tenantId ? buildAzureAuthority(tenantId) : undefined;
+
       const result = await pca.acquireTokenSilent({
         account,
         scopes: [scope],
+        ...(authority && { authority }),
       });
 
       if (!result?.accessToken || !result?.expiresOn || !result?.account) {
