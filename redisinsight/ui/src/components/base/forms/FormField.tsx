@@ -23,6 +23,5 @@ export function FormField(props: RedisFormFieldProps) {
   return <RedisFormField {...props} />
 }
 
-// Standalone label (renders the required `*` in front of the text) for cases
-// like column headers that sit outside a `FormField`.
+// Standalone label for use outside a FormField (e.g. column headers).
 FormField.Label = RedisFormField.Label

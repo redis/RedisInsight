@@ -37,7 +37,6 @@ describe('AddMultipleFields', () => {
     const score = screen.getByText('Score').closest('label')
     expect(score?.textContent?.trimStart().startsWith('*')).toBe(true)
 
-    // A non-required column shows no leading asterisk.
     const member = screen.getByText('Member').closest('label')
     expect(member?.textContent?.trimStart().startsWith('*')).toBe(false)
   })

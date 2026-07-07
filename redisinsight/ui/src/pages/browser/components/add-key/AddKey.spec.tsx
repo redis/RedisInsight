@@ -99,7 +99,6 @@ describe('AddKey', () => {
       />,
     )
 
-    // Label text is clean; the required asterisk renders in front of it.
     const keyType = screen.getByText('Key Type').closest('label')
     expect(keyType).toHaveTextContent('Key Type')
     expect(keyType?.textContent?.trimStart().startsWith('*')).toBe(true)
