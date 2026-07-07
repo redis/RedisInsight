@@ -13,7 +13,7 @@ import {
   decodeIndexNameFromUrl,
 } from '../../utils'
 import { useRedisearchListData } from '../../hooks'
-import { OPEN_INDEX_PANEL_PARAM } from '../../constants'
+import { OPEN_INDEX_PANEL_PARAM } from './VectorSearchQueryPage.constants'
 import { VectorSearchQueryPageParams } from './VectorSearchQueryPage.types'
 import { PageHeader, PageContent } from './components'
 

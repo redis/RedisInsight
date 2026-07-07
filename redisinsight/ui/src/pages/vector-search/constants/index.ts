@@ -5,4 +5,3 @@ export {
   queryLibraryNotifications,
 } from './notifications'
 export { KEY_TYPE_MAP, REVERSE_KEY_TYPE_MAP } from './key-type-maps'
-export { OPEN_INDEX_PANEL_PARAM } from './query-params'

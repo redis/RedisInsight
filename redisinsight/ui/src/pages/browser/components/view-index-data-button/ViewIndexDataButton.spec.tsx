@@ -7,7 +7,7 @@ import { IndexSummary } from 'uiSrc/slices/interfaces/redisearch'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { SearchBrowserSource } from 'uiSrc/pages/vector-search/telemetry.constants'
 
-import { OPEN_INDEX_PANEL_PARAM } from 'uiSrc/pages/vector-search/constants'
+import { OPEN_INDEX_PANEL_PARAM } from 'uiSrc/pages/vector-search/pages/VectorSearchQueryPage/VectorSearchQueryPage.constants'
 
 import { ViewIndexDataButton } from './ViewIndexDataButton'
 import { ViewIndexDataButtonProps } from './ViewIndexDataButton.types'

@@ -6,7 +6,7 @@ import { TelemetryEvent } from 'uiSrc/telemetry/events'
 import { commandExecutionUIFactory } from 'uiSrc/mocks/factories/workbench/commandExectution.factory'
 import { redisearchListSelector } from 'uiSrc/slices/browser/redisearch'
 import { SearchIndexDetailsSource } from 'uiSrc/pages/vector-search/telemetry.constants'
-import { OPEN_INDEX_PANEL_PARAM } from 'uiSrc/pages/vector-search/constants'
+import { OPEN_INDEX_PANEL_PARAM } from './VectorSearchQueryPage.constants'
 
 const redisearchListSelectorMock = redisearchListSelector as jest.Mock
 import { VectorSearchQueryPage } from './VectorSearchQueryPage'
