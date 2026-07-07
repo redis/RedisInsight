@@ -29,6 +29,7 @@ interface Values {
 }
 
 export interface IConsent {
+  code?: string
   defaultValue: boolean
   displayInSetting: boolean
   required: boolean

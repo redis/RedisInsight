@@ -1,4 +1,5 @@
 export interface IAgreement {
+  code?: string;
   defaultValue?: boolean;
   displayInSetting?: boolean;
   required?: boolean;

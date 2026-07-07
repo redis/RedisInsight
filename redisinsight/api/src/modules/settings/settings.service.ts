@@ -6,7 +6,7 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
-import { difference, isEmpty, map, cloneDeep } from 'lodash';
+import { difference, isEmpty, map, cloneDeep, forEach } from 'lodash';
 import { readFile } from 'fs-extra';
 import { join } from 'path';
 import * as AGREEMENTS_SPEC from 'src/constants/agreements-spec.json';
@@ -20,7 +20,10 @@ import { classToClass } from 'src/utils';
 import { AgreementsRepository } from 'src/modules/settings/repositories/agreements.repository';
 import { FeatureServerEvents } from 'src/modules/feature/constants';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { IAgreementSpecFile } from 'src/modules/settings/models/agreements.interface';
+import {
+  IAgreement,
+  IAgreementSpecFile,
+} from 'src/modules/settings/models/agreements.interface';
 import { SessionMetadata } from 'src/common/models';
 
 import { DatabaseDiscoveryService } from 'src/modules/database-discovery/database-discovery.service';
@@ -228,9 +231,19 @@ export class SettingsService {
   private async getAgreementsSpecFromFile(): Promise<IAgreementSpecFile> {
     try {
       if (SERVER_CONFIG.agreementsPath) {
-        return JSON.parse(
+        const spec: IAgreementSpecFile = JSON.parse(
           await readFile(join(__dirname, SERVER_CONFIG.agreementsPath), 'utf8'),
         );
+
+        // A custom spec (RI_AGREEMENTS_PATH) owns its consent/legal copy. Drop
+        // the i18n `code` fields (even if copied from the bundled spec) so the
+        // UI renders that text verbatim instead of the built-in translation.
+        forEach(spec?.agreements, (agreement: IAgreement) => {
+          delete agreement.code;
+          forEach(agreement?.options, (option) => delete option.code);
+        });
+
+        return spec;
       }
     } catch (e) {
       // ignore error

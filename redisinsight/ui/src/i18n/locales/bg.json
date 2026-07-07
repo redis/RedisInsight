@@ -1,4 +1,8 @@
 {
+  "api.agreement.analytics.description": "Помогнете за подобряването на Redis Insight, като споделяте анонимни данни за употреба. Това ни помага да разберем използването на функциите и да направим приложението по-добро. Активирайки това, се съгласявате с нашата ",
+  "api.agreement.analytics.label": "Данни за употреба",
+  "api.agreement.notifications.description": "Изберете, за да се показват известия. В противен случай известията се показват в Центъра за известия.",
+  "api.agreement.notifications.label": "Показвай известия",
   "api.error.code.11000.message": "Опитайте да рестартирате Redis Insight.",
   "api.error.code.11000.title": "Сървърна грешка",
   "api.error.code.11001.message": "Влезте отново, за да продължите работа с Redis Cloud.",
@@ -44,6 +48,7 @@
   "browser.array.delete.range.trigger": "Изтриване на диапазон",
   "browser.array.delete.row.message": "Този елемент ще бъде премахнат за постоянно от масива.",
   "browser.array.delete.row.title": "Изтриване на елемент",
+  "common.privacyPolicy": "Политика за поверителност",
   "notification.error.arrayBulkDeleteLimit.message": "Можете да изтриете най-много {{max}} елемента наведнъж. Изчистете част от селекцията и опитайте отново.",
   "notification.error.arrayBulkDeleteLimit.title": "Избрани са твърде много елементи",
   "notification.error.button.copied": "Копирано",
