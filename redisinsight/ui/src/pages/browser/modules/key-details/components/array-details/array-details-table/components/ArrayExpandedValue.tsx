@@ -13,13 +13,8 @@ import * as S from './ArrayExpandedValue.styles'
 
 const TEST_ID_PREFIX = 'array-expanded-value'
 
-/**
- * Full formatted value for an expanded View-tab row. The collapsed cell shows a
- * truncated, compact value; this renders the format's rich, expanded surface —
- * MarkdownViewer for Markdown, an expanded JSON tree for JSON-like formats, and
- * the full wrapped text for the plain formats. Reads `compressor`/`viewFormat`
- * from the same selectors the table cells use, so it stays in sync with them.
- */
+// Reads compressor/viewFormat from the same selectors the table cells use,
+// so the expanded surface always matches the cells' format.
 export const ArrayExpandedValue = ({
   index,
   value,

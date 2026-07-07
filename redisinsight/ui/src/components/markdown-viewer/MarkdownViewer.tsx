@@ -17,8 +17,6 @@ import { Nullable } from 'uiSrc/utils'
 import { MarkdownViewerProps } from './MarkdownViewer.types'
 import * as S from './MarkdownViewer.styles'
 
-// Tags that can execute code, load external resources, submit data, or hijack
-// layout; none are legitimate output of value markdown.
 const BLACKLISTED_TAGS = [
   'script',
   'iframe',
@@ -45,33 +43,26 @@ const BLACKLISTED_TAGS = [
 
 const BLACKLISTED_ATTRS = [/^on.*/i, /^style$/i]
 
-// Symbols wrapped as {"$&"} string expressions so JsxParser renders them
-// literally. Only "{" and "}" are wrapped: DOMPurify leaves them untouched but
-// re-encodes ">" to "&gt;", which JsxParser decodes back to ">". Wrapping ">"
-// too would make DOMPurify turn {">"} into {"&gt;"}, which JsxParser renders
-// verbatim instead of as ">".
+// ">" stays unwrapped: DOMPurify re-encodes it to "&gt;" and JsxParser decodes
+// it back, while a wrapped {">"} would render as the "&gt;" entity text.
 const JSX_WRAP_SYMBOLS = ['{', '}']
 
-// remarkSanitize and rehypeWrapSymbols type their trees as DOM nodes while
-// unified expects unist plugins, so they are cast at the use site.
+// The custom plugins type their trees as DOM nodes, so they are cast to unist Plugin.
 const markdownToHtml = (value: string): string => {
   const html = String(
     unified()
       .use(remarkParse)
       .use(remarkSanitize as unknown as Plugin)
-      .use(remarkGfm) // support GitHub Flavored Markdown
-      .use(remarkRehype, { allowDangerousHtml: true }) // Pass raw HTML strings through.
-      .use(rehypeWrapSymbols as unknown as Plugin<[string[]]>, JSX_WRAP_SYMBOLS) // Wrap curly braces for JSX parse
-      .use(rehypeStringify, { allowDangerousHtml: true }) // Serialize the raw HTML strings
+      .use(remarkGfm)
+      .use(remarkRehype, { allowDangerousHtml: true })
+      .use(rehypeWrapSymbols as unknown as Plugin<[string[]]>, JSX_WRAP_SYMBOLS)
+      .use(rehypeStringify, { allowDangerousHtml: true })
       .processSync(value),
   )
 
-  // Sanitize the final serialized string so markdown-native links (which
-  // remarkSanitize never inspects) and any raw HTML the mdast heuristics miss
-  // are neutralized before JsxParser. Href hardening (absolute-only links,
-  // target="_blank" and rel="noopener noreferrer") comes from the global
-  // DOMPurify hooks that remarkSanitize registers at module load, so
-  // remarkSanitize must stay in the pipeline imports for this call to apply it.
+  // Final-string sanitize covers what remarkSanitize never inspects (markdown-native
+  // links, raw HTML its mdast heuristics miss). Href hardening comes from the global
+  // DOMPurify hooks remarkSanitize registers at module load - it must stay imported.
   return DOMPurify.sanitize(html)
 }
 
