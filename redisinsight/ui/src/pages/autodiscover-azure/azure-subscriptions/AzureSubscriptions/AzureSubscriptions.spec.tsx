@@ -3,6 +3,7 @@ import { faker } from '@faker-js/faker'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 
 import { AzureSubscription } from 'uiSrc/slices/interfaces'
+import { azureAuthTenantSelector } from 'uiSrc/slices/oauth/azure'
 import AzureSubscriptions, { Props } from './AzureSubscriptions'
 
 jest.mock('uiSrc/slices/oauth/azure', () => ({
@@ -12,7 +13,11 @@ jest.mock('uiSrc/slices/oauth/azure', () => ({
     username: 'test@example.com',
     name: 'Test User',
   }),
+  azureAuthTenantSelector: jest.fn().mockReturnValue(null),
 }))
+
+const mockedAzureAuthTenantSelector =
+  azureAuthTenantSelector as unknown as jest.Mock
 
 const mockSubscription = (): AzureSubscription => ({
   subscriptionId: faker.string.uuid(),
@@ -56,6 +61,20 @@ describe('AzureSubscriptions', () => {
     renderComponent()
     expect(screen.getByText('Signed in as')).toBeInTheDocument()
     expect(screen.getByText('test@example.com')).toBeInTheDocument()
+  })
+
+  it('should not render the active tenant when none is set', () => {
+    mockedAzureAuthTenantSelector.mockReturnValue(null)
+    renderComponent()
+    expect(screen.queryByTestId('azure-active-tenant')).not.toBeInTheDocument()
+  })
+
+  it('should render the active tenant when one is set', () => {
+    mockedAzureAuthTenantSelector.mockReturnValue('contoso.onmicrosoft.com')
+    renderComponent()
+    const tenant = screen.getByTestId('azure-active-tenant')
+    expect(tenant).toBeInTheDocument()
+    expect(tenant).toHaveTextContent('contoso.onmicrosoft.com')
   })
 
   it('should call onSwitchAccount when switch account button is clicked', () => {
