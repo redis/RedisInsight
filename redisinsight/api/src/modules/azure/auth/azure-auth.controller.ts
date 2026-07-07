@@ -58,6 +58,13 @@ export class AzureAuthController {
     description:
       'Redirect type: "deeplink" for Electron app, "web" for browser/Docker deployments',
   })
+  @ApiQuery({
+    name: 'tenantId',
+    required: false,
+    description:
+      'Azure tenant (GUID or domain) to authenticate against. Omit to use the ' +
+      'multi-tenant "common" endpoint (the user\'s home tenant).',
+  })
   @ApiResponse({
     status: 200,
     description: 'Authorization URL generated successfully',
@@ -69,6 +76,7 @@ export class AzureAuthController {
     const { url } = await this.azureAuthService.getAuthorizationUrl(
       dto.prompt,
       dto.redirectType,
+      dto.tenantId,
     );
     return { url };
   }

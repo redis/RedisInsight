@@ -6,10 +6,23 @@
 export const AZURE_OAUTH_STORAGE_KEY = 'ri_azure_oauth_result';
 
 /**
+ * Azure AD authority host. Per-tenant authorities are built as
+ * `${AZURE_AUTHORITY_HOST}/${tenantId}`; because they share this host with the
+ * `/common` default, AAD instance discovery trusts them without extra config.
+ */
+export const AZURE_AUTHORITY_HOST = 'https://login.microsoftonline.com';
+
+/**
  * Azure AD authority URL for multi-tenant authentication.
  * Uses 'common' endpoint to allow any Azure AD tenant.
  */
-export const AZURE_AUTHORITY = 'https://login.microsoftonline.com/common';
+export const AZURE_AUTHORITY = `${AZURE_AUTHORITY_HOST}/common`;
+
+/**
+ * Build a per-tenant Azure AD authority URL from a tenant id or domain.
+ */
+export const buildAzureAuthority = (tenantId: string): string =>
+  `${AZURE_AUTHORITY_HOST}/${tenantId}`;
 
 /**
  * Azure App Registration Client ID.
@@ -138,6 +151,11 @@ export const AUTODISCOVERY_MAX_CONCURRENT_REQUESTS = 20;
 // Azure subscription IDs are standard UUIDs (8-4-4-4-12 hex pattern)
 export const AZURE_SUBSCRIPTION_ID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// A tenant id is either a GUID or a domain (e.g. contoso.onmicrosoft.com).
+// MSAL accepts both as the authority path segment.
+export const AZURE_TENANT_ID_REGEX =
+  /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,})$/i;
 
 export const AzureApiUrls = {
   getSubscriptions: () =>

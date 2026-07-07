@@ -130,6 +130,28 @@ describe('AzureAuthService', () => {
         }),
       );
     });
+
+    it('should pass per-tenant authority to MSAL when tenantId provided', async () => {
+      const tenantId = faker.string.uuid();
+
+      await service.getAuthorizationUrl(undefined, undefined, tenantId);
+
+      expect(mockPca.getAuthCodeUrl).toHaveBeenCalledWith(
+        expect.objectContaining({
+          authority: `https://login.microsoftonline.com/${tenantId}`,
+        }),
+      );
+    });
+
+    it('should not include authority parameter when tenantId not provided', async () => {
+      await service.getAuthorizationUrl();
+
+      expect(mockPca.getAuthCodeUrl).toHaveBeenCalledWith(
+        expect.not.objectContaining({
+          authority: expect.anything(),
+        }),
+      );
+    });
   });
 
   describe('handleCallback', () => {
@@ -176,6 +198,43 @@ describe('AzureAuthService', () => {
       expect(result.status).toBe(AzureAuthStatus.Succeed);
       expect(result.account).toEqual(mockAccount);
       expect(result.error).toBeUndefined();
+    });
+
+    it('should exchange the code against the tenant authority used at sign-in', async () => {
+      const tenantId = faker.string.uuid();
+      mockPca.acquireTokenByCode.mockResolvedValue({
+        accessToken: faker.string.alphanumeric(100),
+        account: createMockAccount(),
+      } as any);
+
+      const { state } = await service.getAuthorizationUrl(
+        undefined,
+        undefined,
+        tenantId,
+      );
+      await service.handleCallback('auth-code', state);
+
+      expect(mockPca.acquireTokenByCode).toHaveBeenCalledWith(
+        expect.objectContaining({
+          authority: `https://login.microsoftonline.com/${tenantId}`,
+        }),
+      );
+    });
+
+    it('should not pass authority to code exchange when no tenant was chosen', async () => {
+      mockPca.acquireTokenByCode.mockResolvedValue({
+        accessToken: faker.string.alphanumeric(100),
+        account: createMockAccount(),
+      } as any);
+
+      const { state } = await service.getAuthorizationUrl();
+      await service.handleCallback('auth-code', state);
+
+      expect(mockPca.acquireTokenByCode).toHaveBeenCalledWith(
+        expect.not.objectContaining({
+          authority: expect.anything(),
+        }),
+      );
     });
   });
 

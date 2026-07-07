@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsOptional } from 'class-validator';
-import { AzureOAuthRedirectType } from '../../constants';
+import { IsEnum, IsOptional, Matches } from 'class-validator';
+import { AzureOAuthRedirectType, AZURE_TENANT_ID_REGEX } from '../../constants';
 
 /**
  * Valid OAuth prompt parameter values for Azure Entra ID.
@@ -52,4 +52,18 @@ export class AzureAuthLoginDto {
     message: `redirectType must be a valid value. Valid values: ${Object.values(AzureOAuthRedirectType).join(', ')}.`,
   })
   redirectType?: AzureOAuthRedirectType;
+
+  @ApiPropertyOptional({
+    description:
+      'Azure tenant to authenticate against, as a GUID or domain ' +
+      '(e.g. contoso.onmicrosoft.com). Use when the Azure resources live in a ' +
+      'different tenant than the signed-in user. Defaults to the multi-tenant ' +
+      '"common" endpoint (the user\'s home tenant) when omitted.',
+    example: 'contoso.onmicrosoft.com',
+  })
+  @IsOptional()
+  @Matches(AZURE_TENANT_ID_REGEX, {
+    message: 'tenantId must be a valid GUID or domain.',
+  })
+  tenantId?: string;
 }
