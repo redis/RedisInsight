@@ -7,6 +7,8 @@ import {
   searchArray,
 } from 'uiSrc/slices/browser/array'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { isEqualBuffers } from 'uiSrc/utils'
 import { KeyTypes } from 'uiSrc/constants'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
@@ -43,6 +45,7 @@ export const useArraySearchQuery = (keyProp: RedisResponseBuffer | null) => {
   const dispatch = useAppDispatch()
   const { loading, error, loaded, data } = useAppSelector(arraySearchSelector)
   const selectedKeyData = useAppSelector(selectedKeyDataSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
 
   const [predicates, setPredicates] = useState<ArrayGrepPredicate[]>([
     newPredicate(),
@@ -92,6 +95,20 @@ export const useArraySearchQuery = (keyProp: RedisResponseBuffer | null) => {
 
   const runSearch = useCallback(() => {
     if (!isArrayKeyReady || !keyProp) return
+    sendEventTelemetry({
+      event: TelemetryEvent.ARRAY_SEARCH_QUERY_RUN,
+      eventData: {
+        databaseId: instanceId,
+        predicatesCount: predicates.length,
+        // Discriminator only, never the predicate `value` text.
+        criteria: predicates.map((predicate) => predicate.criteria),
+        combinator,
+        nocase: options.nocase,
+        withValues: options.withValues,
+        limitEnabled: options.limitEnabled,
+        hasRange: options.start.trim() !== '' || options.end.trim() !== '',
+      },
+    })
     // An unticked LIMIT sends no limit at all, so the server returns every
     // match (uncapped); ticking it caps the result set. Values are sent
     // verbatim — arrays can hold empty strings, so `EXACT ""` is valid.
@@ -107,7 +124,15 @@ export const useArraySearchQuery = (keyProp: RedisResponseBuffer | null) => {
         limit: options.limitEnabled ? Number(options.limit) : undefined,
       }),
     )
-  }, [dispatch, isArrayKeyReady, keyProp, predicates, combinator, options])
+  }, [
+    dispatch,
+    isArrayKeyReady,
+    keyProp,
+    predicates,
+    combinator,
+    options,
+    instanceId,
+  ])
 
   // Restore the form to its defaults, abort any in-flight request, and drop
   // prior results. Shared by the key-switch effect and the form's "Reset to

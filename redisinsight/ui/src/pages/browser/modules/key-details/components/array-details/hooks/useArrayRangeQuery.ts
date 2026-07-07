@@ -10,6 +10,8 @@ import {
   setArrayInitialState,
 } from 'uiSrc/slices/browser/array'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { isEqualBuffers } from 'uiSrc/utils'
 import { KeyTypes } from 'uiSrc/constants'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
@@ -45,6 +47,7 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
   const { loading, error, query } = useAppSelector(arraySelector)
   const data = useAppSelector(arrayDataSelector)
   const selectedKeyData = useAppSelector(selectedKeyDataSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
 
   const [start, setStart] = useState<string>(DEFAULT_RANGE_START)
   const [end, setEnd] = useState<string>(DEFAULT_RANGE_END)
@@ -69,6 +72,10 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
   const runQuery = useCallback(
     (nextStart: string = start, nextEnd: string = end) => {
       if (!isArrayKeyReady || !keyProp) return
+      sendEventTelemetry({
+        event: TelemetryEvent.ARRAY_VIEW_QUERY_RUN,
+        eventData: { databaseId: instanceId, showEmpty },
+      })
       if (showEmpty) {
         dispatch(
           fetchArrayRange({
@@ -87,7 +94,7 @@ export const useArrayRangeQuery = (keyProp: RedisResponseBuffer | null) => {
         )
       }
     },
-    [dispatch, isArrayKeyReady, keyProp, showEmpty, start, end],
+    [dispatch, isArrayKeyReady, keyProp, showEmpty, start, end, instanceId],
   )
 
   // Switch detection and fetching are split across two effects so the

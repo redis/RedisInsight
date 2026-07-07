@@ -10,10 +10,19 @@ import { KeyTypes } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
 import { initialState as initialStateArray } from 'uiSrc/slices/browser/array'
 import { ArrayAggregateOperation } from 'uiSrc/slices/interfaces/array'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { useArrayAggregateQuery } from './useArrayAggregateQuery'
+
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
+}))
+
+const mockedSendEventTelemetry = jest.mocked(sendEventTelemetry)
 
 const KEY = 'sensors'
 const keyBuffer = stringToBuffer(KEY)
+const INSTANCE_ID = 'instance-1'
 
 const buildState = (
   overrides: {
@@ -23,6 +32,7 @@ const buildState = (
 ) => {
   const next = cloneDeep(initialStateDefault)
   next.browser.array = cloneDeep(initialStateArray)
+  next.connections.instances.connectedInstance.id = INSTANCE_ID
   next.browser.keys.selectedKey.data = overrides.selectedKeyName
     ? ({
         type: overrides.selectedKeyType ?? KeyTypes.Array,
@@ -44,6 +54,7 @@ const renderWithStore = (
 
 describe('useArrayAggregateQuery', () => {
   beforeEach(() => {
+    mockedSendEventTelemetry.mockClear()
     apiService.post = jest
       .fn()
       .mockResolvedValue({ status: 200, data: { result: '42' } })
@@ -197,5 +208,60 @@ describe('useArrayAggregateQuery', () => {
     expect(result.current.operation).toBe(ArrayAggregateOperation.Sum)
     expect(result.current.value).toBe('')
     expect(apiService.post as jest.Mock).not.toHaveBeenCalled()
+  })
+
+  describe('telemetry', () => {
+    it('fires ARRAY_AGGREGATE_QUERY_RUN once per explicit run with the operation', async () => {
+      const { result } = renderWithStore(keyBuffer)
+
+      act(() => {
+        result.current.setOperation(ArrayAggregateOperation.Xor)
+      })
+      mockedSendEventTelemetry.mockClear()
+
+      await act(async () => {
+        result.current.runQuery()
+      })
+
+      expect(mockedSendEventTelemetry).toHaveBeenCalledTimes(1)
+      expect(mockedSendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.ARRAY_AGGREGATE_QUERY_RUN,
+        eventData: {
+          databaseId: INSTANCE_ID,
+          operation: ArrayAggregateOperation.Xor,
+        },
+      })
+    })
+
+    it('does not fire on first render (no auto-run)', () => {
+      renderWithStore(keyBuffer)
+
+      expect(mockedSendEventTelemetry).not.toHaveBeenCalled()
+    })
+
+    it('does not fire on a dead click before the key is ready', async () => {
+      const { result } = renderWithStore(
+        keyBuffer,
+        buildState({ selectedKeyName: null }),
+      )
+      mockedSendEventTelemetry.mockClear()
+
+      await act(async () => {
+        result.current.runQuery()
+      })
+
+      expect(mockedSendEventTelemetry).not.toHaveBeenCalled()
+    })
+
+    it('does not fire on resetQuery', () => {
+      const { result } = renderWithStore(keyBuffer)
+      mockedSendEventTelemetry.mockClear()
+
+      act(() => {
+        result.current.resetQuery()
+      })
+
+      expect(mockedSendEventTelemetry).not.toHaveBeenCalled()
+    })
   })
 })
