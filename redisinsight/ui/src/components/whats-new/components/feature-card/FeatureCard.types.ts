@@ -1,4 +1,4 @@
-import { WhatsNewCard } from 'uiSrc/constants/content/whatsNew.types'
+import { WhatsNewCard } from 'uiSrc/constants/content/whats-new'
 
 export interface Props {
   card: WhatsNewCard
