@@ -4,7 +4,7 @@ import {
   WhatsNewCard,
   WhatsNewVersion,
   WhatsNewVersionType,
-} from 'uiSrc/constants/content/whatsNew.types'
+} from 'uiSrc/constants/content/whats-new'
 
 export const whatsNewCardFactory = Factory.define<WhatsNewCard>(() => ({
   id: faker.lorem.slug(2),

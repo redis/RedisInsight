@@ -1,40 +1,15 @@
-import whatsNewContent from 'uiSrc/constants/content/whatsNew.json'
 import {
-  WhatsNewCard,
+  WHATS_NEW_VERSIONS,
   WhatsNewFeed,
   WhatsNewVersion,
   WhatsNewVersionType,
-} from 'uiSrc/constants/content/whatsNew.types'
+} from 'uiSrc/constants/content/whats-new'
 import { isVersionHigher } from './comparisons'
 
-const isValidCard = (card: unknown): card is WhatsNewCard => {
-  const c = card as Partial<WhatsNewCard>
-  return (
-    typeof c?.id === 'string' &&
-    typeof c?.title === 'string' &&
-    typeof c?.body === 'string'
-  )
-}
-
-const isValidVersion = (entry: unknown): entry is WhatsNewVersion => {
-  const v = entry as Partial<WhatsNewVersion>
-  const isValid =
-    typeof v?.version === 'string' &&
-    Array.isArray(v?.cards) &&
-    v.cards.every(isValidCard)
-
-  if (!isValid) {
-    console.warn('[whatsNew] Skipping malformed content entry:', entry)
-  }
-  return isValid
-}
-
-/** Bundled content, malformed entries dropped, sorted latest-first. */
-export const whatsNewFeed: WhatsNewFeed = (
-  whatsNewContent.versions as unknown[]
+/** Bundled release content, sorted latest-first. */
+export const whatsNewFeed: WhatsNewFeed = [...WHATS_NEW_VERSIONS].sort(
+  (a, b) => (isVersionHigher(a.version, b.version) ? -1 : 1),
 )
-  .filter(isValidVersion)
-  .sort((a, b) => (isVersionHigher(a.version, b.version) ? -1 : 1))
 
 export const getLatestWhatsNewVersion = (): WhatsNewVersion | undefined =>
   whatsNewFeed[0]
