@@ -46,8 +46,6 @@ export interface WhatsNewVersion {
   version: string
   releaseDate: string
   type: WhatsNewVersionType
-  /** Optional heading shown above the cards. */
-  title?: string
   /** Optional override for the "full release notes" link (defaults to the GitHub tag). */
   releaseNotesUrl?: string
   cards: WhatsNewCard[]

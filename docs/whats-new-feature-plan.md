@@ -1,8 +1,8 @@
 # "What's New?" Feature — Plan & Design Document
 
-**Status:** Implemented on integration branch (Phase 1 + Phase 2) — pending design review & PR split
+**Status:** Implemented on integration branch (Phase 1 + Phase 2, post-review refinements, i18n) — pending PR split
 **Owner:** _TBD_
-**Last updated:** 2026-07-01
+**Last updated:** 2026-07-07
 
 ---
 
@@ -17,6 +17,13 @@ Phases 1 and 2 are built on this integration branch and are green (type-check: n
 - Help Center "What's new?" entry (manual open).
 - Desktop auto-open on first launch after an eligible update, with the "Application updated" toast kept as the fallback.
 - Telemetry events + unit tests (slice, modal, HelpMenu, `ipcCheckUpdates`).
+
+**Post-review refinements (manual testing round, 2026-07-07):**
+- Title cased "What's New"; version dropdown shows `v<version>`, newest marked `(Latest)`; standalone "Version" label dropped; release date shown next to the selector.
+- Blanket "New" badges removed from seed cards (`tag` reserved for non-default states like "Beta"/"Improved").
+- Footer link is version-specific ("See full release notes for {version}" → the GitHub tag; `releaseNotesUrl` can override per version).
+- Cards gained an optional `location` ("Where to find it:") hint; unused version-level `title` field removed from the schema.
+- UI strings localized with i18next under `whatsNew.*` (en + bg); card content stays English-first (see §8 Localization).
 
 **Two deviations from the plan below, both simplifications:**
 1. **Feature flag is UI-only** (mirrors `envDependent`/`cloudAds`: defaulted in UI config + merged in the features slice), so **no API `known-features.ts` change** was needed for a default-on flag. Disable per-build via `RI_FEATURES_WHATS_NEW_DEFAULT_FLAG=false`.
@@ -127,7 +134,7 @@ The goal is to close the discovery gap: users update but never learn what change
 
 ### 5.1 Generic card schema
 
-The schema is intentionally **content-agnostic** — a card is just presentational primitives (title, body, optional media, optional links, optional tag), with **no feature-specific fields**. Any future release describes its highlights by filling in the same shape; the modal never needs code changes to render a new feature.
+The schema is intentionally **content-agnostic** — a card is just presentational primitives (title, body, optional location/media/links/tag), with **no feature-specific fields**. Any future release describes its highlights by filling in the same shape; the modal never needs code changes to render a new feature.
 
 ```jsonc
 {
@@ -135,16 +142,17 @@ The schema is intentionally **content-agnostic** — a card is just presentation
   "versions": [
     {
       "version": "3.6.0",
-      "releaseDate": "2025-06-30",
+      "releaseDate": "2026-06-15",
       "type": "minor",              // "major" | "minor" | "patch" — drives auto-trigger only
-      "title": "What's new in 3.6.0",   // optional heading shown above the cards
+      "releaseNotesUrl": "https://…",   // optional override; defaults to the GitHub tag URL
       "cards": [
         {
           "id": "vector-sets",            // stable id, used for telemetry & de-dup
-          "tag": "New",                    // optional pill label ("New", "Improved", "Beta"…)
+          "tag": "Beta",                   // optional pill for non-default states ("Improved", "Beta"…) — NOT a blanket "New"
           "icon": "VectorIcon",            // optional: RiIcon type name or an emoji
           "title": "Vector Sets",
           "body": "Short markdown-lite description of the feature and why it matters.",
+          "location": "Browser — add a key of type Vector Set",  // optional "where to find it" hint
           "media": {                        // optional
             "type": "image",               // "image" | "gif"
             "src": "whats-new/3.6.0/vector-sets.png",
@@ -165,7 +173,8 @@ The schema is intentionally **content-agnostic** — a card is just presentation
 - Only `id`, `title`, and `body` are required per card; everything else is optional, so cards can be as plain or as rich as needed.
 - `type` on the version drives auto-trigger eligibility (minor/major only) — it does **not** affect manual browsing.
 - Per-card `featureFlag` keeps content honest across OEM/feature-flagged builds (hide a highlight the current build doesn't ship).
-- `versions` is the single source for the version dropdown; sort by semver descending at render time.
+- `versions` is the single source for the version dropdown; sort by semver descending at render time. The newest entry is labelled "(Latest)".
+- The footer "See full release notes for {version}" links to `releases/tag/<version>` unless `releaseNotesUrl` overrides it.
 - Keep `body` short — long-form lives in the GitHub release notes (footer link).
 - **Extensibility:** if a future release needs richer layouts, `body` can graduate to an ordered `blocks` array (`{ type: "text" | "image" | "list" | "link" }`). Not needed for v1; the flat shape covers the current releases.
 
@@ -181,28 +190,26 @@ Seed the initial file with the three 3.6.0 highlights so the feature ships with 
       "version": "3.6.0",
       "releaseDate": "2026-06-15",
       "type": "minor",
-      "title": "What's new in 3.6.0",
       "cards": [
         {
           "id": "vector-sets",
-          "tag": "New",
           "title": "Vector Sets support",
           "body": "Full support for Vector Sets, the Redis 8 vector-native data type: create them manually or from a bundled sample dataset, add elements, and run similarity search end-to-end.",
-          "links": [{ "label": "Release notes", "href": "https://github.com/redis/RedisInsight/releases/tag/3.6.0" }],
+          "location": "Browser — add a key of type Vector Set",
           "featureFlag": "vectorSet"
         },
         {
           "id": "dev-vs-prod-mode",
-          "tag": "New",
           "title": "Dev vs Production database mode",
           "body": "Classify databases by environment with clear visual indicators, and require type-to-confirm for destructive actions on production databases.",
+          "location": "Database list — edit a database's connection settings",
           "featureFlag": "prodMode"
         },
         {
           "id": "geodata-workbench",
-          "tag": "New",
           "title": "Geodata Workbench plugin",
-          "body": "Renders Redis GEO command results as an interactive map, density heatmap, or details card — auto-selected per command."
+          "body": "Renders Redis GEO command results as an interactive map, density heatmap, or details card — auto-selected per command.",
+          "location": "Workbench — run a GEO command (e.g. GEOSEARCH)"
         }
       ]
     }
@@ -295,7 +302,7 @@ Add a `WhatsNewSource` enum in `redisinsight/ui/src/constants/telemetry.ts`, mir
 - **Content references a feature the build lacks** (OEM/flagged): hide via per-card `featureFlag`.
 - **First-ever install (no previous version):** do **not** auto-open — only trigger on an actual update transition.
 - **Web vs desktop:** auto-trigger is desktop-only; manual entry everywhere.
-- **Localization:** schema is English-first in v1; copy lives in the content file so future localization can key off it.
+- **Localization:** UI chrome (title, menu item, version labels, buttons, "Where to find it:" label, release date formatting) is localized via i18next under `whatsNew.*` keys (en + bg). **Card content** (`whatsNew.json` titles/bodies/locations) stays English-first in v1 by design — it is per-release copy; localizing it would require translating every release block on every release. If that's ever wanted, move card strings to locale keys addressed by card id (e.g. `whatsNew.content.<id>.title`) — the schema doesn't change, only where strings live.
 - **A11y:** focus trap in modal, `Esc` to close, focus returns to the Help Center trigger, images use `media.alt`.
 - **Performance:** content is a static import (no runtime fetch); the modal mounts lazily on open.
 
@@ -371,9 +378,12 @@ Flip the flag on in PR 3 (or a tiny follow-up) once the stack is fully merged.
 7. **Media in v1:** text-only cards; images/GIFs deferred (schema already supports optional `media` when we add it).
 8. **Retention:** keep all historical versions in the dropdown (no cap).
 9. **Content workflow:** each release PR appends its version block to `whatsNew.json`; copy sourced from that release's GitHub notes and adjustable in the same PR.
+10. **Localization:** UI chrome via i18next (`whatsNew.*`, en + bg); card content English-first in v1 (see §8).
+11. **Card badges:** no blanket "New" tag; `tag` reserved for non-default states ("Beta", "Improved").
 
 **Still open:**
-1. **3.6.0 release date** — confirm `2026-06-15` against the published tag before merging the seed content.
+1. **3.6.0 release date** — seed says `2026-06-15` (matches the release notes); confirm against the published tag before merging.
+2. **Empty state** — if all of a version's cards are flag-gated off in a build, the list renders empty; decide whether to add a fallback message (small, Phase 3-able).
 
 ---
 
