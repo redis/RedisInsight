@@ -13,7 +13,13 @@ import {
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import { getBrackets, isRealArray, isRealObject, wrapPath } from '../utils'
+import {
+  getBrackets,
+  isRealArray,
+  isRealObject,
+  isScalar,
+  wrapPath,
+} from '../utils'
 import { BaseProps, ObjectTypes } from '../interfaces'
 import RejsonDynamicTypes from '../rejson-dynamic-types'
 import { AddItem, JsonValueActions } from '../components'
@@ -88,6 +94,9 @@ const RejsonDetails = (props: BaseProps) => {
 
   const isObject = isRealObject(data, dataType)
   const isArray = isRealArray(data, dataType)
+  // Scalar roots (e.g. a bare null/string/number/boolean document) have no
+  // inline edit affordance, so expose the text editor as the way to edit them.
+  const isScalarRoot = !isObject && !isArray && isScalar(data)
 
   return (
     <div className={styles.jsonData} id="jsonData" data-testid="json-data">
@@ -101,7 +110,9 @@ const RejsonDetails = (props: BaseProps) => {
               )}
           </span>
           <TopRowActions align="center" justify="end" grow={false}>
-            {(isObject || isArray) && <ChangeEditorTypeButton />}
+            {(isObject || isArray || isScalarRoot) && (
+              <ChangeEditorTypeButton />
+            )}
             <JsonValueActions
               data={data}
               selectedKey={selectedKey}
