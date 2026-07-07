@@ -204,16 +204,44 @@ describe('MarkdownViewer', () => {
 
     it('should strip on* attributes', () => {
       setupPipeline({
-        html: '<p><img src="x" onerror="window.__pwned = true"></p>',
+        html: '<p onclick="window.__pwned = true">text</p>',
       })
       renderComponent()
 
-      const img = screen
-        .getByTestId('markdown-viewer')
-        .querySelector('img') as HTMLImageElement
-      expect(img).not.toBeNull()
-      expect(img.hasAttribute('onerror')).toBe(false)
+      const paragraph = screen.getByText('text')
+      expect(paragraph.hasAttribute('onclick')).toBe(false)
       expect(testWindow.__pwned).toBeUndefined()
+    })
+
+    it('should not render images that could load remote resources', () => {
+      setupPipeline({
+        html:
+          '<p>before</p>' +
+          '<img src="https://evil.example/pixel.png" alt="tracker">' +
+          '<p>after</p>',
+      })
+      renderComponent()
+
+      const container = screen.getByTestId('markdown-viewer')
+      expect(container.querySelector('img')).toBeNull()
+      expect(container.querySelector('p')).toHaveTextContent('before')
+    })
+
+    it('should not render media or embedding elements', () => {
+      setupPipeline({
+        html:
+          '<video src="https://evil.example/v.mp4"></video>' +
+          '<audio src="https://evil.example/a.mp3"></audio>' +
+          '<svg><image href="https://evil.example/x"></image></svg>' +
+          '<p>safe</p>',
+      })
+      renderComponent()
+
+      const container = screen.getByTestId('markdown-viewer')
+      expect(container.querySelector('video')).toBeNull()
+      expect(container.querySelector('audio')).toBeNull()
+      expect(container.querySelector('svg')).toBeNull()
+      expect(container.querySelector('p')).toHaveTextContent('safe')
     })
 
     it('should strip style attributes', () => {

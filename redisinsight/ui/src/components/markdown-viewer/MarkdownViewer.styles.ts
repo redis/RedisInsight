@@ -130,8 +130,4 @@ export const Container = styled.div<
     border-top: 1px solid
       ${({ theme }) => theme.semantic.color.border.neutral500};
   }
-
-  img {
-    max-width: 100%;
-  }
 `

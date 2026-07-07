@@ -13,8 +13,30 @@ import { Nullable } from 'uiSrc/utils'
 import { MarkdownViewerProps } from './MarkdownViewer.types'
 import * as S from './MarkdownViewer.styles'
 
-// DOMPurify drops script/iframe/on* by default; style is the one it keeps.
-const SANITIZE_CONFIG = { FORBID_ATTR: ['style'] }
+// Untrusted values get no elements that load remote resources (img/media leak
+// the viewer's IP and enable tracking), embed/script content, or take input.
+// DOMPurify drops on* handlers by default; style is the attribute it keeps.
+const FORBIDDEN_TAGS = [
+  'img',
+  'video',
+  'audio',
+  'source',
+  'svg',
+  'math',
+  'iframe',
+  'object',
+  'embed',
+  'link',
+  'style',
+  'meta',
+  'base',
+  'form',
+  'input',
+  'textarea',
+  'select',
+  'button',
+]
+const SANITIZE_CONFIG = { FORBID_TAGS: FORBIDDEN_TAGS, FORBID_ATTR: ['style'] }
 
 // The custom plugin types its tree as DOM nodes, so it is cast to unist Plugin.
 const markdownToSafeHtml = (value: string): string => {

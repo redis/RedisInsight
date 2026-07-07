@@ -30,12 +30,14 @@ const LITERAL_SYMBOLS_TEXT = 'Config {a: 1} applies when value > 5.';
 
 // Untrusted value from Redis mixing safe markdown with the dangerous parts the
 // sanitizer must defuse: a script tag, an event-handler attribute, a javascript:
-// link, and a raw-HTML element carrying a JSX expression (inert as HTML text,
-// but a JSX parser would execute it). The safe heading must still render.
+// link, a remote image (tracking pixel / IP leak), and a raw-HTML element
+// carrying a JSX expression (inert as HTML text, but a JSX parser would execute
+// it). The safe heading must still render.
 const XSS_MARKDOWN = [
   '# Safe Heading',
   '<script>window.__xssPwned = true</script>',
   '<img src=x onerror="window.__xssPwned=true">',
+  '![tracker](https://evil.example/pixel.png)',
   '[raw js link](javascript:alert(1))',
   '<div>{"".constructor.constructor("window.__xssPwned = true")()}</div>',
 ].join('\n');
@@ -139,5 +141,6 @@ test.describe('Browser > Key Details - String Markdown format', () => {
     await expect(viewer.locator('script')).toHaveCount(0);
     await expect(viewer.locator('[onerror]')).toHaveCount(0);
     await expect(viewer.locator('a[href^="javascript:"]')).toHaveCount(0);
+    await expect(viewer.locator('img')).toHaveCount(0);
   });
 });
