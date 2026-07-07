@@ -1,5 +1,6 @@
 import cx from 'classnames'
 import React, { useState } from 'react'
+import { useTranslation } from 'uiSrc/i18n'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
@@ -40,6 +41,7 @@ const HelpMenu = () => {
   const [isHelpMenuActive, setIsHelpMenuActive] = useState(false)
 
   const dispatch = useAppDispatch()
+  const { t } = useTranslation()
 
   const onKeyboardShortcutClick = () => {
     setIsHelpMenuActive(false)
@@ -183,7 +185,7 @@ const HelpMenu = () => {
                   onClick={onWhatsNewClick}
                   data-testid="whats-new-btn"
                 >
-                  What&apos;s new?
+                  {t('whatsNew.menuItem')}
                 </Text>
               </Row>
             </FeatureFlagComponent>
