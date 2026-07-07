@@ -19,10 +19,12 @@ describe('AzureAuthLoginDto', () => {
     });
 
     it('should accept an onmicrosoft.com domain', async () => {
-      expect(await validateTenantId('contoso.onmicrosoft.com')).toHaveLength(0);
+      expect(
+        await validateTenantId('your-tenant.onmicrosoft.com'),
+      ).toHaveLength(0);
     });
 
-    it.each(['not a tenant', 'foo bar', 'http://contoso.com', ' ', 'a'])(
+    it.each(['not a tenant', 'foo bar', 'http://your-tenant.com', ' ', 'a'])(
       'should reject invalid tenant id %p',
       async (input) => {
         const errors = await validateTenantId(input);

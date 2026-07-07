@@ -70,11 +70,11 @@ describe('AzureSubscriptions', () => {
   })
 
   it('should render the active tenant when one is set', () => {
-    mockedAzureAuthTenantSelector.mockReturnValue('contoso.onmicrosoft.com')
+    mockedAzureAuthTenantSelector.mockReturnValue('your-tenant.onmicrosoft.com')
     renderComponent()
     const tenant = screen.getByTestId('azure-active-tenant')
     expect(tenant).toBeInTheDocument()
-    expect(tenant).toHaveTextContent('contoso.onmicrosoft.com')
+    expect(tenant).toHaveTextContent('your-tenant.onmicrosoft.com')
   })
 
   it('should call onSwitchAccount when switch account button is clicked', () => {

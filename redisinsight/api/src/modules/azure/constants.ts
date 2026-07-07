@@ -152,7 +152,7 @@ export const AUTODISCOVERY_MAX_CONCURRENT_REQUESTS = 20;
 export const AZURE_SUBSCRIPTION_ID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-// A tenant id is either a GUID or a domain (e.g. contoso.onmicrosoft.com).
+// A tenant id is either a GUID or a domain (e.g. your-tenant.onmicrosoft.com).
 // MSAL accepts both as the authority path segment.
 export const AZURE_TENANT_ID_REGEX =
   /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,})$/i;

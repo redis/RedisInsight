@@ -64,19 +64,19 @@ describe('azure auth slice', () => {
     it('should store the active tenant', () => {
       const nextState = reducer(
         initialState,
-        setAzureTenant('contoso.onmicrosoft.com'),
+        setAzureTenant('your-tenant.onmicrosoft.com'),
       )
-      expect(nextState.tenant).toEqual('contoso.onmicrosoft.com')
+      expect(nextState.tenant).toEqual('your-tenant.onmicrosoft.com')
       expect(
         azureAuthTenantSelector({
           oauth: { azure: nextState },
         } as any),
-      ).toEqual('contoso.onmicrosoft.com')
+      ).toEqual('your-tenant.onmicrosoft.com')
     })
 
     it('should clear the active tenant when set to null', () => {
       const nextState = reducer(
-        { ...initialState, tenant: 'contoso.onmicrosoft.com' },
+        { ...initialState, tenant: 'your-tenant.onmicrosoft.com' },
         setAzureTenant(null),
       )
       expect(nextState.tenant).toBeNull()
@@ -84,7 +84,7 @@ describe('azure auth slice', () => {
 
     it('should clear the tenant on logout', () => {
       const nextState = reducer(
-        { ...initialState, tenant: 'contoso.onmicrosoft.com' },
+        { ...initialState, tenant: 'your-tenant.onmicrosoft.com' },
         azureAuthLogout(),
       )
       expect(nextState.tenant).toBeNull()
@@ -393,7 +393,7 @@ describe('azure auth slice', () => {
       it('should pass tenantId parameter as query param to API', async () => {
         const authUrl = faker.internet.url()
         const responsePayload = { data: { url: authUrl }, status: 200 }
-        const tenantId = 'contoso.onmicrosoft.com'
+        const tenantId = 'your-tenant.onmicrosoft.com'
 
         apiService.get = jest.fn().mockResolvedValue(responsePayload)
 

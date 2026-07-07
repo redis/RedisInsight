@@ -56,10 +56,10 @@ export class AzureAuthLoginDto {
   @ApiPropertyOptional({
     description:
       'Azure tenant to authenticate against, as a GUID or domain ' +
-      '(e.g. contoso.onmicrosoft.com). Use when the Azure resources live in a ' +
+      '(e.g. your-tenant.onmicrosoft.com). Use when the Azure resources live in a ' +
       'different tenant than the signed-in user. Defaults to the multi-tenant ' +
       '"common" endpoint (the user\'s home tenant) when omitted.',
-    example: 'contoso.onmicrosoft.com',
+    example: 'your-tenant.onmicrosoft.com',
   })
   @IsOptional()
   @Matches(AZURE_TENANT_ID_REGEX, {

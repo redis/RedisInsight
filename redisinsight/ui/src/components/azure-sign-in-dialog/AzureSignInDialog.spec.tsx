@@ -61,11 +61,11 @@ describe('AzureSignInDialog', () => {
 
     fireEvent.click(screen.getByTestId(`${TEST_ID}-toggle-advanced`))
     fireEvent.change(screen.getByTestId(`${TEST_ID}-tenant-input`), {
-      target: { value: 'contoso.onmicrosoft.com' },
+      target: { value: 'your-tenant.onmicrosoft.com' },
     })
     fireEvent.click(screen.getByTestId(`${TEST_ID}-sign-in`))
 
-    expect(onSignIn).toHaveBeenCalledWith('contoso.onmicrosoft.com')
+    expect(onSignIn).toHaveBeenCalledWith('your-tenant.onmicrosoft.com')
   })
 
   it('should disable sign-in and not submit an invalid tenant', () => {
