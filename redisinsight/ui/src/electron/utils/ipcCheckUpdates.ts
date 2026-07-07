@@ -1,9 +1,17 @@
 import { Dispatch } from 'react'
 import { omit } from 'lodash'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { ReleaseNotesSource } from 'uiSrc/constants/telemetry'
+import { ReleaseNotesSource, WhatsNewSource } from 'uiSrc/constants/telemetry'
 import { setElectronInfo, setReleaseNotesViewed } from 'uiSrc/slices/app/info'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
+import { openWhatsNew } from 'uiSrc/slices/app/whatsNew'
+import {
+  FeatureFlagsMap,
+  getVisibleWhatsNewVersions,
+  isWhatsNewEligible,
+} from 'uiSrc/utils'
+import { localStorageService } from 'uiSrc/services'
+import { BrowserStorageItem, FeatureFlags } from 'uiSrc/constants'
 import successMessages from 'uiSrc/components/notifications/success-messages'
 import { GetServerInfoResponse } from 'apiClient'
 import { ElectronStorageItem, IpcInvokeEvent } from '../constants'
@@ -11,6 +19,7 @@ import { ElectronStorageItem, IpcInvokeEvent } from '../constants'
 export const ipcCheckUpdates = async (
   serverInfo: GetServerInfoResponse,
   dispatch: Dispatch<any>,
+  features?: FeatureFlagsMap,
 ) => {
   const isUpdateDownloaded = await window.app.ipc.invoke(
     IpcInvokeEvent.getStoreValue,
@@ -27,19 +36,47 @@ export const ipcCheckUpdates = async (
 
   if (isUpdateDownloaded && !isUpdateAvailable) {
     if (serverInfo.appVersion === updateDownloadedVersion) {
-      dispatch(
-        addMessageNotification(
-          successMessages.INSTALLED_NEW_UPDATE(updateDownloadedVersion, () => {
-            dispatch(setReleaseNotesViewed(true))
-            sendEventTelemetry({
-              event: TelemetryEvent.RELEASE_NOTES_LINK_CLICKED,
-              eventData: {
-                source: ReleaseNotesSource.updateNotification,
+      const lastVersionSeen =
+        localStorageService?.get(BrowserStorageItem.whatsNewLastVersionSeen) ??
+        null
+
+      // The What's New modal replaces the update toast when the new version
+      // is eligible and has cards visible under this build's feature flags;
+      // otherwise fall back to the toast so the update is never silent.
+      const shouldOpenWhatsNew =
+        !!features?.[FeatureFlags.whatsNew]?.flag &&
+        isWhatsNewEligible(updateDownloadedVersion, lastVersionSeen) &&
+        getVisibleWhatsNewVersions(features).some(
+          (v) => v.version === updateDownloadedVersion,
+        )
+
+      if (shouldOpenWhatsNew) {
+        dispatch(openWhatsNew(updateDownloadedVersion))
+        sendEventTelemetry({
+          event: TelemetryEvent.WHATS_NEW_OPENED,
+          eventData: {
+            source: WhatsNewSource.autoUpdate,
+            version: updateDownloadedVersion,
+          },
+        })
+      } else {
+        dispatch(
+          addMessageNotification(
+            successMessages.INSTALLED_NEW_UPDATE(
+              updateDownloadedVersion,
+              () => {
+                dispatch(setReleaseNotesViewed(true))
+                sendEventTelemetry({
+                  event: TelemetryEvent.RELEASE_NOTES_LINK_CLICKED,
+                  eventData: {
+                    source: ReleaseNotesSource.updateNotification,
+                  },
+                })
               },
-            })
-          }),
-        ),
-      )
+            ),
+          ),
+        )
+      }
     }
 
     await window.app.ipc.invoke(

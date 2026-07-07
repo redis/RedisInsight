@@ -5,4 +5,5 @@ export enum ReleaseNotesSource {
 
 export enum WhatsNewSource {
   helpCenter = 'Help Center',
+  autoUpdate = 'Auto update',
 }

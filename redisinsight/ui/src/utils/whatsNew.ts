@@ -8,7 +8,7 @@ import { FeatureFlags } from 'uiSrc/constants/featureFlags'
 import { FeatureFlagComponent } from 'uiSrc/slices/interfaces'
 import { isVersionHigher } from './comparisons'
 
-type FeatureFlagsMap = { [key in FeatureFlags]?: FeatureFlagComponent }
+export type FeatureFlagsMap = { [key in FeatureFlags]?: FeatureFlagComponent }
 
 /** Bundled release content, sorted latest-first. */
 export const whatsNewFeed: WhatsNewFeed = [...WHATS_NEW_VERSIONS].sort(
