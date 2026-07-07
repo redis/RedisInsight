@@ -117,7 +117,10 @@ describe('AzureSubscriptionsPage', () => {
 
     render(<AzureSubscriptionsPage />, { store })
 
-    expect(fetchSubscriptionsAzure).toHaveBeenCalledWith(mockAccount.id)
+    expect(fetchSubscriptionsAzure).toHaveBeenCalledWith(
+      mockAccount.id,
+      undefined,
+    )
   })
 
   describe('switch account', () => {
@@ -147,7 +150,10 @@ describe('AzureSubscriptionsPage', () => {
       fireEvent.click(screen.getByTestId('btn-refresh-subscriptions'))
 
       expect(clearSubscriptionsAzure).toHaveBeenCalled()
-      expect(fetchSubscriptionsAzure).toHaveBeenCalledWith(mockAccount.id)
+      expect(fetchSubscriptionsAzure).toHaveBeenCalledWith(
+        mockAccount.id,
+        undefined,
+      )
     })
   })
 })

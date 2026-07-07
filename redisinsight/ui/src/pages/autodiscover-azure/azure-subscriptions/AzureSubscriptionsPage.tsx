@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { Pages } from 'uiSrc/constants'
 import { setTitle } from 'uiSrc/utils'
 import { useAzureAuth } from 'uiSrc/components/hooks/useAzureAuth'
+import { azureAuthTenantSelector } from 'uiSrc/slices/oauth/azure'
 import { AzureSubscription } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import {
@@ -19,6 +20,7 @@ const AzureSubscriptionsPage = () => {
   const history = useHistory()
   const dispatch = useAppDispatch()
   const { initiateLogin, account } = useAzureAuth()
+  const tenant = useAppSelector(azureAuthTenantSelector)
   const { loading, error, subscriptions, loaded } =
     useAppSelector(azureSelector)
 
@@ -33,7 +35,7 @@ const AzureSubscriptionsPage = () => {
 
     // Only fetch if not already loaded or if account changed
     if (!loaded.subscriptions) {
-      dispatch(fetchSubscriptionsAzure(account.id))
+      dispatch(fetchSubscriptionsAzure(account.id, tenant ?? undefined))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account])
@@ -60,7 +62,7 @@ const AzureSubscriptionsPage = () => {
     })
     if (account?.id) {
       dispatch(clearSubscriptionsAzure())
-      dispatch(fetchSubscriptionsAzure(account.id))
+      dispatch(fetchSubscriptionsAzure(account.id, tenant ?? undefined))
     }
   }
 
