@@ -33,6 +33,8 @@ describe('ArrayValueEditorModal', () => {
   it('seeds the editor with initialValue when open', () => {
     renderComponent()
     expect(screen.getByTestId('array-value-code-editor')).toHaveValue('hello')
+    // Save is never validation-gated — no disabled state to satisfy first.
+    expect(screen.getByTestId('array-value-editor-save-btn')).not.toBeDisabled()
   })
 
   it('calls onSave with the edited value', () => {

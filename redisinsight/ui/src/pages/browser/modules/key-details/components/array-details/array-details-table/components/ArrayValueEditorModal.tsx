@@ -30,7 +30,10 @@ export const ArrayValueEditorModal = ({
   const [value, setValue] = useState(initialValue)
 
   // Re-seed from initialValue every time the modal opens, so reopening after
-  // a cancel discards the previous in-progress edit.
+  // a cancel discards the previous in-progress edit. The modal unmounts when
+  // closed and `initialValue` is stable while open, so this intentionally
+  // does not react to a live buffer while editing — don't add other reactive
+  // deps here, or an in-flight edit could be silently discarded.
   useEffect(() => {
     if (isOpen) setValue(initialValue)
   }, [isOpen, initialValue])

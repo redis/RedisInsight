@@ -151,16 +151,24 @@ export const ArrayValueCell = ({
         }
         editToolTipContent={!isEditable ? editToolTipContent : null}
         secondaryAction={
-          <IconButton
-            icon={ExtendIcon}
-            aria-label="Expand value editor"
-            disabled={!isEditable || updating || loading}
-            onClick={(e: React.MouseEvent) => {
-              e.stopPropagation()
-              openModal()
-            }}
-            data-testid={`${TEST_ID_PREFIX}_expand-btn-${index}`}
-          />
+          // The expand modal saves via its own internal state, independent of
+          // `onApply` — unlike the pencil trigger (whose onClick is a no-op
+          // when `onEdit` is unset), so it must not render in read-only
+          // contexts like the search neighbours band where `onApply` isn't
+          // wired, or Save would run the write-confirmation and then silently
+          // no-op.
+          onApply ? (
+            <IconButton
+              icon={ExtendIcon}
+              aria-label="Expand value editor"
+              disabled={!isEditable || updating || loading}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation()
+                openModal()
+              }}
+              data-testid={`${TEST_ID_PREFIX}_expand-btn-${index}`}
+            />
+          ) : undefined
         }
         onEdit={(editing) => onEdit?.(editing)}
         onDecline={() => onEdit?.(false)}

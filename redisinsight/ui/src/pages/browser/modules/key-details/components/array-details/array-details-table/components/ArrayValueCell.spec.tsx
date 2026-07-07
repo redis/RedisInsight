@@ -2,6 +2,7 @@ import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { stringToBuffer } from 'uiSrc/utils'
 import { KeyValueFormat } from 'uiSrc/constants'
+import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 import { ArrayValueCell } from './ArrayValueCell'
 
@@ -131,13 +132,25 @@ describe('ArrayValueCell — expand trigger + modal', () => {
     render(
       <ArrayValueCell
         {...baseProps}
-        value={null as any}
+        value={null as unknown as RedisResponseBuffer}
         onEdit={jest.fn()}
         onApply={jest.fn()}
       />,
     )
 
     expect(screen.getByTestId(`${TEST_ID_PREFIX}-empty-0`)).toBeInTheDocument()
+    expect(
+      screen.queryByTestId(`${TEST_ID_PREFIX}_expand-btn-0`),
+    ).not.toBeInTheDocument()
+  })
+
+  it('renders no expand trigger when onApply is not wired (read-only context, e.g. search neighbours band)', () => {
+    render(<ArrayValueCell {...baseProps} onEdit={jest.fn()} />)
+
+    fireEvent.mouseEnter(
+      screen.getByTestId(`${TEST_ID_PREFIX}_content-value-0`),
+    )
+
     expect(
       screen.queryByTestId(`${TEST_ID_PREFIX}_expand-btn-0`),
     ).not.toBeInTheDocument()

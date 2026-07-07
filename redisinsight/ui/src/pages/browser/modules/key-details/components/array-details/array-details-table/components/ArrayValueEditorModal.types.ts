@@ -3,7 +3,7 @@ import React from 'react'
 export interface ArrayValueEditorModalProps {
   /** Controls modal visibility. */
   isOpen: boolean
-  /** Index of the element being edited (used for stable test ids). */
+  /** Index of the element being edited (used in the Save button's aria-label). */
   index: string
   /** Serialized value the editor is seeded with each time it opens. */
   initialValue: string
