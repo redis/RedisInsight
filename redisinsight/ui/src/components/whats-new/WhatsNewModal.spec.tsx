@@ -10,7 +10,8 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FeatureFlags } from 'uiSrc/constants'
-import { closeWhatsNew, whatsNewFeed } from 'uiSrc/slices/app/whatsNew'
+import { closeWhatsNew } from 'uiSrc/slices/app/whatsNew'
+import { whatsNewFeed } from 'uiSrc/utils'
 import WhatsNewModal from './WhatsNewModal'
 
 jest.mock('uiSrc/telemetry', () => ({
@@ -78,11 +79,9 @@ describe('WhatsNewModal', () => {
   it('should hide cards whose feature flag is off', () => {
     render(<WhatsNewModal />, { store: mockStore(getOpenState(false)) })
 
-    // no-flag card always visible
     expect(
       screen.getByTestId('whats-new-card-geodata-workbench'),
     ).toBeInTheDocument()
-    // flag-gated cards hidden when their flags are off
     expect(
       screen.queryByTestId('whats-new-card-vector-sets'),
     ).not.toBeInTheDocument()

@@ -4,7 +4,11 @@ import { FeatureFlags } from 'uiSrc/constants/featureFlags'
  * Release "type" of a version entry. Drives whether the modal auto-opens after
  * an update: only `major`/`minor` auto-open, `patch` never does.
  */
-export type WhatsNewVersionType = 'major' | 'minor' | 'patch'
+export enum WhatsNewVersionType {
+  Major = 'major',
+  Minor = 'minor',
+  Patch = 'patch',
+}
 
 export interface WhatsNewLink {
   label: string

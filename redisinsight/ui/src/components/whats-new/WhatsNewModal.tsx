@@ -5,11 +5,11 @@ import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import {
   closeWhatsNew,
   setSelectedVersion,
-  whatsNewFeed,
   whatsNewSelector,
 } from 'uiSrc/slices/app/whatsNew'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { whatsNewFeed } from 'uiSrc/utils'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 
 import { Modal } from 'uiSrc/components/base/display'
@@ -24,21 +24,8 @@ import {
   RiSelectOption,
 } from 'uiSrc/components/base/forms/select/RiSelect'
 import FeatureCard from './components/feature-card'
+import { formatReleaseDate } from './WhatsNewModal.utils'
 import * as S from './WhatsNewModal.styles'
-
-const formatReleaseDate = (iso?: string, locale?: string): string => {
-  if (!iso) return ''
-  const date = new Date(iso)
-  if (Number.isNaN(date.getTime())) return ''
-  return new Intl.DateTimeFormat(locale || 'en', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    // releaseDate is a date-only ISO string parsed as UTC midnight; format in
-    // UTC so users west of UTC don't see the previous day.
-    timeZone: 'UTC',
-  }).format(date)
-}
 
 const WhatsNewModal = () => {
   const { isOpen, selectedVersion } = useAppSelector(whatsNewSelector)

@@ -8,13 +8,8 @@ import { Link } from 'uiSrc/components/base/link/Link'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import { RiIcon } from 'uiSrc/components/base/icons/RiIcon'
 import { AllIconsType } from 'uiSrc/components/base/icons'
-import { WhatsNewCard } from 'uiSrc/constants/content/whatsNew.types'
+import { Props } from './FeatureCard.types'
 import * as S from './FeatureCard.styles'
-
-export interface Props {
-  card: WhatsNewCard
-  onLinkClick: (cardId: string, href: string) => void
-}
 
 const FeatureCard = ({ card, onLinkClick }: Props) => {
   const { id, title, body, tag, icon, location, links } = card
