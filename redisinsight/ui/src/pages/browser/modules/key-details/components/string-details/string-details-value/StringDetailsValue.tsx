@@ -257,6 +257,7 @@ const StringDetailsValue = (props: Props) => {
   const renderValue = (value: string) => {
     const textEl = (
       <Text
+        component="div"
         color="secondary"
         className={styles.stringValue}
         onClick={() => isEditable && setIsEdit(true)}

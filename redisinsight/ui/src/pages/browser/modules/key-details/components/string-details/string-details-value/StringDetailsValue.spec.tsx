@@ -218,6 +218,24 @@ describe('StringDetailsValue', () => {
     )
   })
 
+  it('Should render the markdown viewer when viewFormat is Markdown', () => {
+    const stringDataSelectorMock = jest.fn().mockReturnValue({
+      value: fullValue,
+    })
+    const selectedKeySelectorMock = jest.fn().mockReturnValue({
+      viewFormat: KeyValueFormat.Markdown,
+    })
+    ;(selectedKeySelector as jest.Mock).mockImplementation(
+      selectedKeySelectorMock,
+    )
+    ;(stringDataSelector as jest.Mock).mockImplementation(
+      stringDataSelectorMock,
+    )
+
+    render(<StringDetailsValue {...instance(mockedProps)} />)
+    expect(screen.getByTestId('markdown-viewer')).toBeInTheDocument()
+  })
+
   it('Should not add "..." in the end of the full value', async () => {
     const stringDataSelectorMock = jest.fn().mockReturnValue({
       value: fullValue,

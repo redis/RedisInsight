@@ -16,6 +16,7 @@ DOMPurify.addHook('afterSanitizeAttributes', (node: Element) => {
     }
 
     node.setAttribute('target', '_blank')
+    node.setAttribute('rel', 'noopener noreferrer')
   }
 })
 

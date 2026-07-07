@@ -158,6 +158,7 @@ export enum KeyValueFormat {
   Vector32Bit = 'Vector 32-bit',
   Vector64Bit = 'Vector 64-bit',
   DateTime = 'DateTime',
+  Markdown = 'Markdown',
 }
 
 export const DATETIME_FORMATTER_DEFAULT = 'HH:mm:ss d MMM yyyy'

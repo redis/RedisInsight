@@ -38,3 +38,26 @@ describe('ArrayValueCell — open editor Save lock', () => {
     expect(screen.getByTestId('apply-btn')).toBeDisabled()
   })
 })
+
+describe('ArrayValueCell — inline value rendering', () => {
+  it('renders Markdown values as rich markdown directly in the cell', () => {
+    renderCell({
+      isEditing: false,
+      viewFormat: KeyValueFormat.Markdown,
+      value: stringToBuffer('# Title'),
+    })
+    expect(screen.getByTestId('markdown-viewer')).toBeInTheDocument()
+  })
+
+  it('keeps non-Markdown formats compact without a markdown viewer', () => {
+    renderCell({
+      isEditing: false,
+      viewFormat: KeyValueFormat.JSON,
+      value: stringToBuffer('{"a":1}'),
+    })
+    expect(screen.queryByTestId('markdown-viewer')).not.toBeInTheDocument()
+    expect(
+      screen.getByTestId('array-details-table-value-1'),
+    ).toBeInTheDocument()
+  })
+})

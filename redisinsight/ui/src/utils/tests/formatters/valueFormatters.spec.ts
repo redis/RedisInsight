@@ -1,7 +1,9 @@
+import React from 'react'
 import { format } from 'date-fns'
 import { encode } from 'msgpackr'
 import { serialize } from 'php-serialize'
 import { DATETIME_FORMATTER_DEFAULT, KeyValueFormat } from 'uiSrc/constants'
+import { MarkdownViewer } from 'uiSrc/components/markdown-viewer'
 import {
   anyToBuffer,
   bufferToSerializedFormat,
@@ -410,6 +412,39 @@ describe('formattingBuffer', () => {
           expected,
         )
       })
+    })
+  })
+
+  describe(KeyValueFormat.Markdown, () => {
+    const source = '# Title'
+    const input = stringToBuffer(source)
+
+    it('should render a MarkdownViewer element when expanded', () => {
+      const { value, isValid } = formattingBuffer(
+        input,
+        KeyValueFormat.Markdown,
+        { expanded: true },
+      )
+
+      expect(isValid).toEqual(true)
+      expect(React.isValidElement(value)).toEqual(true)
+      expect(React.isValidElement(value) && value.type).toEqual(MarkdownViewer)
+    })
+
+    it('should return the raw markdown source when not expanded', () => {
+      expect(formattingBuffer(input, KeyValueFormat.Markdown)).toEqual({
+        value: source,
+        isValid: true,
+      })
+    })
+
+    it('should return the raw markdown source when expanded inside a tooltip', () => {
+      expect(
+        formattingBuffer(input, KeyValueFormat.Markdown, {
+          expanded: true,
+          tooltip: true,
+        }),
+      ).toEqual({ value: source, isValid: true })
     })
   })
 })

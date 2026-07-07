@@ -1,6 +1,7 @@
 import React from 'react'
 
 import {
+  KeyValueFormat,
   TEXT_DISABLED_COMPRESSED_VALUE,
   TEXT_DISABLED_FORMATTER_EDITING,
   TEXT_FAILED_CONVENT_FORMATTER,
@@ -69,10 +70,14 @@ export const ArrayValueCell = ({
     compressor,
   )
   const decompressedBuffer = decompressed as RedisResponseBuffer
+  // Markdown renders its rich viewer inline in the cell so line-per-element
+  // documents read as formatted text without expanding each row. Other formats
+  // stay compact (truncated string) - their full value lives in the sub-row.
+  const isMarkdownFormat = viewFormat === KeyValueFormat.Markdown
   const { value: formatted, isValid } = formattingBuffer(
     decompressedBuffer,
     viewFormat,
-    { expanded: false },
+    { expanded: isMarkdownFormat },
   )
   const tooltipContent = createTooltipContent(
     formatted,
