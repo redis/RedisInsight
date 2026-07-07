@@ -9,7 +9,6 @@ export const StyledContent = styled(Modal.Content.Compose)`
 `
 
 export const CardsList = styled(Col)`
-  gap: ${({ theme }) => theme.core.space.space150};
   overflow-y: auto;
 `
 

@@ -128,7 +128,7 @@ const WhatsNewModal = () => {
 
           <Spacer size="l" />
 
-          <S.CardsList data-testid="whats-new-cards">
+          <S.CardsList gap="l" data-testid="whats-new-cards">
             {visibleCards.map((card) => (
               <FeatureCard
                 key={card.id}
