@@ -7,13 +7,12 @@ import { FlexItem } from 'uiSrc/components/base/layout/flex'
 // ArrayDetailsTable's StyledTable (they need the row ancestor). Staying in the
 // DOM at opacity 0 keeps it focusable for keyboard users.
 // `FlexItem` defaults to flex-direction: column, so set row explicitly to lay
-// the action icons out side by side.
+// the action icons out side by side, spread evenly across the cell width.
 export const ActionCell = styled(FlexItem)`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-end;
-  gap: 2px;
+  justify-content: space-evenly;
   opacity: 0;
   transition: opacity 0.1s ease-in;
 `
