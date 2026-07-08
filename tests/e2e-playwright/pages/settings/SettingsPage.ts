@@ -68,7 +68,7 @@ export class SettingsPage extends BasePage {
     this.themeDropdown = page.getByRole('combobox', { name: /color theme/i });
     this.notificationSwitch = page
       .locator('div')
-      .filter({ hasText: /^Show notification$/ })
+      .filter({ hasText: /^Show notifications$/ })
       .locator('..')
       .getByRole('switch');
     this.dateFormatRadioPreselected = page.getByRole('radio', { name: 'Pre-selected formats' });

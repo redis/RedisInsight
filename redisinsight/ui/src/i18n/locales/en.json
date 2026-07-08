@@ -1,4 +1,8 @@
 {
+  "api.agreement.analytics.description": "Help improve Redis Insight by sharing anonymous usage data. This helps us understand feature usage and make the app better. By enabling this, you agree to our ",
+  "api.agreement.analytics.label": "Usage Data",
+  "api.agreement.notifications.description": "Select to display notifications. Otherwise, notifications are shown in the Notification Center.",
+  "api.agreement.notifications.label": "Show notifications",
   "api.error.code.11000.message": "Try restarting Redis Insight.",
   "api.error.code.11000.title": "Server error",
   "api.error.code.11001.message": "Sign in again to continue working with Redis Cloud.",
@@ -44,6 +48,7 @@
   "browser.array.delete.range.trigger": "Delete range",
   "browser.array.delete.row.message": "This element will be permanently removed from the array.",
   "browser.array.delete.row.title": "Delete element",
+  "common.privacyPolicy": "Privacy Policy",
   "notification.error.arrayBulkDeleteLimit.message": "You can delete up to {{max}} elements at once. Clear some of the selection and try again.",
   "notification.error.arrayBulkDeleteLimit.title": "Too many elements selected",
   "notification.error.button.copied": "Copied",
