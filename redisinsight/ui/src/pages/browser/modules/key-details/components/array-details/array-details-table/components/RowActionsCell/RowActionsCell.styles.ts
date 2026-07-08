@@ -8,7 +8,9 @@ import { FlexItem } from 'uiSrc/components/base/layout/flex'
 // DOM at opacity 0 keeps it focusable for keyboard users.
 export const ActionCell = styled(FlexItem)`
   display: flex;
-  justify-content: center;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
   opacity: 0;
   transition: opacity 0.1s ease-in;
 `

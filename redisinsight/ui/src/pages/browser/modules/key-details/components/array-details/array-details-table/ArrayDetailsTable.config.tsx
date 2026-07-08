@@ -70,10 +70,11 @@ const valueColumn: ColumnDef<ArrayDataElement> = {
 }
 
 /**
- * Delete column, appended only when the consumer passes a `deleteConfig` (via
- * `meta`). The header hosts the bulk-delete trigger (shown only while rows are
- * selected); each cell hosts the per-row trash. The cell renders nothing for
- * empty slots.
+ * Row-actions column hosting the per-row edit, expand and delete affordances
+ * (revealed on hover). The header hosts the bulk-delete trigger (shown only
+ * while rows are selected). Editing wiring is always present in `meta`, so the
+ * cell derives an `editConfig` from it; `deleteConfig` is forwarded only when
+ * the consumer enables deletion.
  */
 export const actionsColumn: ColumnDef<ArrayDataElement> = {
   id: 'actions',
@@ -89,9 +90,31 @@ export const actionsColumn: ColumnDef<ArrayDataElement> = {
   size: ACTIONS_COLUMN_SIZE,
   sizeUnit: 'px',
   cell: ({ row, table }: CellContext<ArrayDataElement, unknown>) => {
-    const { deleteConfig } = table.options.meta as ArrayTableConfig
-    if (!deleteConfig) return null
-    return <RowActionsCell element={row.original} deleteConfig={deleteConfig} />
+    const {
+      compressor,
+      viewFormat,
+      editingIndex,
+      updating,
+      loading,
+      onEditElement,
+      onApplyEditElement,
+      deleteConfig,
+    } = table.options.meta as ArrayTableConfig
+    return (
+      <RowActionsCell
+        element={row.original}
+        editConfig={{
+          compressor,
+          viewFormat,
+          editingIndex,
+          updating,
+          loading,
+          onEditElement,
+          onApplyEditElement,
+        }}
+        deleteConfig={deleteConfig}
+      />
+    )
   },
 }
 

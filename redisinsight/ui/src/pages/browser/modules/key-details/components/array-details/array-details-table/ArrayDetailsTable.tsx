@@ -235,7 +235,10 @@ const ArrayDetailsTable = memo(
     // from `meta`, so rebuilding `columns` on every toggle would needlessly
     // reset table state (e.g. expanded Search context rows).
     const hasSelectionColumn = Boolean(selectionConfig)
-    const hasActionsColumn = Boolean(deleteConfig)
+    // The actions column hosts the per-row edit + expand triggers (editing is
+    // always wired on this table) alongside the optional delete trigger, so it
+    // is always present.
+    const hasActionsColumn = true
     const columns = useMemo(() => {
       const cols = hasSelectionColumn
         ? [selectionColumn, ...arrayColumns]

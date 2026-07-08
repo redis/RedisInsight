@@ -28,10 +28,11 @@ export interface Props {
   disabledTooltipText?: { title: string; content: string }
   approveText?: { title: string; text: string }
   editToolTipContent?: React.ReactNode
-  /** Optional control rendered beside the hover edit pencil in the
-   *  non-editing state. Undefined for every consumer except the array value
-   *  cell, so all other consumers are unchanged. */
-  secondaryAction?: React.ReactNode
+  /** Suppresses the built-in hover edit pencil (and the space reserved for
+   *  it) in the non-editing state. Used where the edit trigger lives outside
+   *  the cell (the array table drives editing from its actions column);
+   *  defaults to false, so all other consumers are unchanged. */
+  hideEditButton?: boolean
   approveByValidation?: (value: string) => boolean
   onEdit: (isEditing: boolean) => void
   onUpdateTextAreaHeight?: () => void
@@ -55,7 +56,7 @@ const EditableTextArea = (props: Props) => {
     disabledTooltipText,
     approveText,
     editToolTipContent,
-    secondaryAction,
+    hideEditButton = false,
     approveByValidation = () => true,
     onEdit,
     onUpdateTextAreaHeight,
@@ -98,7 +99,9 @@ const EditableTextArea = (props: Props) => {
   if (!isEditing) {
     return (
       <div
-        className={styles.contentWrapper}
+        className={cx(styles.contentWrapper, {
+          [styles.contentWrapperNoEditButton]: hideEditButton,
+        })}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         data-testid={`${testIdPrefix}_content-value-${field}`}
@@ -110,27 +113,25 @@ const EditableTextArea = (props: Props) => {
         >
           {children}
         </Text>
-        {isHovering && (
-          <div className={styles.editActions}>
-            {secondaryAction}
-            <RiTooltip
-              content={editToolTipContent}
-              data-testid={`${testIdPrefix}_edit-tooltip-${field}`}
-            >
-              <IconButton
-                icon={EditIcon}
-                aria-label="Edit field"
-                className={cx('editFieldBtn', styles.editBtn)}
-                disabled={isEditDisabled}
-                onClick={(e: React.MouseEvent) => {
-                  e.stopPropagation()
-                  onEdit?.(true)
-                  setIsHovering(false)
-                }}
-                data-testid={`${testIdPrefix}_edit-btn-${field}`}
-              />
-            </RiTooltip>
-          </div>
+        {!hideEditButton && isHovering && (
+          <RiTooltip
+            content={editToolTipContent}
+            anchorClassName={styles.editBtnAnchor}
+            data-testid={`${testIdPrefix}_edit-tooltip-${field}`}
+          >
+            <IconButton
+              icon={EditIcon}
+              aria-label="Edit field"
+              className={cx('editFieldBtn', styles.editBtn)}
+              disabled={isEditDisabled}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation()
+                onEdit?.(true)
+                setIsHovering(false)
+              }}
+              data-testid={`${testIdPrefix}_edit-btn-${field}`}
+            />
+          </RiTooltip>
         )}
       </div>
     )

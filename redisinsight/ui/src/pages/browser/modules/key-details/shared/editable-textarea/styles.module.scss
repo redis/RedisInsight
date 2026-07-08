@@ -9,11 +9,14 @@
   min-height: 42px;
   padding-right: 32px;
 
-  .editActions {
+  .editBtnAnchor {
     position: absolute;
     right: 4px;
-    display: flex;
-    align-items: center;
-    gap: 2px;
   }
+}
+
+// When the edit trigger lives outside the cell there's no hover icon to make
+// room for, so reclaim the reserved gutter for the value text.
+.contentWrapperNoEditButton {
+  padding-right: 0;
 }

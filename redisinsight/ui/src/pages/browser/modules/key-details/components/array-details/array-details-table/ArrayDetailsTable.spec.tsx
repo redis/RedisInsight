@@ -133,7 +133,7 @@ describe('ArrayDetailsTable', () => {
           screen.getByTestId('array-details-table_content-value-1'),
         )
       })
-      fireEvent.click(screen.getByTestId('array-details-table_edit-btn-1'))
+      fireEvent.click(screen.getByTestId('array-edit-btn-1'))
 
       expect(
         screen.getByTestId('array-details-table_value-editor-1'),
@@ -167,17 +167,13 @@ describe('ArrayDetailsTable', () => {
         )
       })
 
-      expect(
-        screen.getByTestId('array-details-table_edit-btn-1'),
-      ).toBeDisabled()
+      expect(screen.getByTestId('array-edit-btn-1')).toBeDisabled()
     })
 
     it('does not offer editing for an empty slot', () => {
       renderComponent([arrayElementFactory.build({ index: '3' })])
 
-      expect(
-        screen.queryByTestId('array-details-table_edit-btn-3'),
-      ).not.toBeInTheDocument()
+      expect(screen.queryByTestId('array-edit-btn-3')).not.toBeInTheDocument()
       expect(
         screen.getByTestId('array-details-table-empty-3'),
       ).toBeInTheDocument()
@@ -195,7 +191,7 @@ describe('ArrayDetailsTable', () => {
           screen.getByTestId('array-details-table_content-value-1'),
         )
       })
-      fireEvent.click(screen.getByTestId('array-details-table_edit-btn-1'))
+      fireEvent.click(screen.getByTestId('array-edit-btn-1'))
 
       fireEvent.change(
         screen.getByTestId('array-details-table_value-editor-1'),
@@ -234,7 +230,7 @@ describe('ArrayDetailsTable', () => {
           screen.getByTestId('array-details-table_content-value-1'),
         )
       })
-      fireEvent.click(screen.getByTestId('array-details-table_edit-btn-1'))
+      fireEvent.click(screen.getByTestId('array-edit-btn-1'))
       fireEvent.change(
         screen.getByTestId('array-details-table_value-editor-1'),
         { target: { value: 'updated' } },
@@ -288,7 +284,7 @@ describe('ArrayDetailsTable', () => {
           screen.getByTestId('array-details-table_content-value-1'),
         )
       })
-      fireEvent.click(screen.getByTestId('array-details-table_edit-btn-1'))
+      fireEvent.click(screen.getByTestId('array-edit-btn-1'))
       expect(
         screen.getByTestId('array-details-table_value-editor-1'),
       ).toBeInTheDocument()
@@ -333,7 +329,7 @@ describe('ArrayDetailsTable', () => {
           screen.getByTestId('array-details-table_content-value-1'),
         )
       })
-      fireEvent.click(screen.getByTestId('array-details-table_edit-btn-1'))
+      fireEvent.click(screen.getByTestId('array-edit-btn-1'))
       fireEvent.change(
         screen.getByTestId('array-details-table_value-editor-1'),
         { target: { value: 'first' } },
@@ -348,7 +344,7 @@ describe('ArrayDetailsTable', () => {
           screen.getByTestId('array-details-table_content-value-1'),
         )
       })
-      fireEvent.click(screen.getByTestId('array-details-table_edit-btn-1'))
+      fireEvent.click(screen.getByTestId('array-edit-btn-1'))
       expect(
         screen.getByTestId('array-details-table_value-editor-1'),
       ).toBeInTheDocument()
@@ -382,7 +378,7 @@ describe('ArrayDetailsTable', () => {
           screen.getByTestId('array-details-table_content-value-1'),
         )
       })
-      fireEvent.click(screen.getByTestId('array-details-table_edit-btn-1'))
+      fireEvent.click(screen.getByTestId('array-edit-btn-1'))
       expect(store.getActions()).toContainEqual(
         setSelectedKeyRefreshDisabled(true),
       )
@@ -414,7 +410,7 @@ describe('ArrayDetailsTable', () => {
           screen.getByTestId('array-details-table_content-value-1'),
         )
       })
-      fireEvent.click(screen.getByTestId('array-details-table_edit-btn-1'))
+      fireEvent.click(screen.getByTestId('array-edit-btn-1'))
       expect(
         screen.getByTestId('array-details-table_value-editor-1'),
       ).toBeInTheDocument()
@@ -464,9 +460,7 @@ describe('ArrayDetailsTable', () => {
           screen.getAllByTestId('array-details-table_content-value-1')[0],
         )
       })
-      fireEvent.click(
-        screen.getAllByTestId('array-details-table_edit-btn-1')[0],
-      )
+      fireEvent.click(screen.getAllByTestId('array-edit-btn-1')[0])
 
       // The hidden sibling must not re-enable refresh during the edit.
       const refreshActions = store

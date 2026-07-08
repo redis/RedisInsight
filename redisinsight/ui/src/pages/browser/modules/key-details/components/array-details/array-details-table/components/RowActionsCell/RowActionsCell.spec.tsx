@@ -1,12 +1,42 @@
 import React from 'react'
 import { render, screen, fireEvent } from 'uiSrc/utils/test-utils'
+import { KeyValueFormat } from 'uiSrc/constants'
+import { stringToBuffer } from 'uiSrc/utils'
+import { getConfig } from 'uiSrc/config'
 import {
   arrayElementFactory,
   arrayElementWithValueFactory,
 } from 'uiSrc/mocks/factories/browser/array/arrayElement.factory'
 
 import { RowActionsCell } from './RowActionsCell'
-import { ArrayElementDeleteConfig } from './RowActionsCell.types'
+import {
+  ArrayElementDeleteConfig,
+  ArrayElementEditConfig,
+} from './RowActionsCell.types'
+
+jest.mock('uiSrc/components/base/code-editor', () => {
+  const ReactMock = require('react')
+  return {
+    __esModule: true,
+    CodeEditor: (props: any) =>
+      ReactMock.createElement('textarea', {
+        'data-testid': 'array-value-code-editor',
+        value: props.value,
+        onChange: (e: any) => props.onChange?.(e.target.value),
+      }),
+  }
+})
+
+// Auto-confirm the production-write prompt so Save reaches onApplyEditElement.
+jest.mock('uiSrc/components/production-write-confirmation', () => ({
+  __esModule: true,
+  useProductionWriteConfirmation: () => ({
+    requestConfirmation: ({ onConfirm }: any) => onConfirm(),
+  }),
+  BrowserConfirmationCommandId: { EditValue: 'EditValue' },
+}))
+
+const { truncatedStringPrefix } = getConfig().app
 
 const SUFFIX = '-array-element'
 
@@ -19,6 +49,19 @@ const buildConfig = (
   closePopover: jest.fn(),
   showPopover: jest.fn(),
   handleDeleteElement: jest.fn(),
+  ...over,
+})
+
+const buildEditConfig = (
+  over: Partial<ArrayElementEditConfig> = {},
+): ArrayElementEditConfig => ({
+  compressor: null,
+  viewFormat: KeyValueFormat.Unicode,
+  editingIndex: null,
+  updating: false,
+  loading: false,
+  onEditElement: jest.fn(),
+  onApplyEditElement: jest.fn(),
   ...over,
 })
 
@@ -73,6 +116,125 @@ describe('RowActionsCell', () => {
       />,
     )
 
+    expect(screen.getByTestId('array-remove-btn-3-icon')).toBeInTheDocument()
+  })
+})
+
+describe('RowActionsCell — edit + expand', () => {
+  beforeEach(() => jest.clearAllMocks())
+
+  it('renders edit and expand triggers for a populated editable row', () => {
+    render(
+      <RowActionsCell
+        element={arrayElementWithValueFactory.build({ index: '5' })}
+        editConfig={buildEditConfig()}
+        deleteConfig={buildConfig()}
+      />,
+    )
+
+    expect(screen.getByTestId('array-edit-btn-5')).toBeInTheDocument()
+    expect(screen.getByTestId('array-expand-btn-5')).toBeInTheDocument()
+  })
+
+  it('opens inline edit via onEditElement when the pencil is clicked', () => {
+    const onEditElement = jest.fn()
+    render(
+      <RowActionsCell
+        element={arrayElementWithValueFactory.build({ index: '5' })}
+        editConfig={buildEditConfig({ onEditElement })}
+      />,
+    )
+
+    fireEvent.click(screen.getByTestId('array-edit-btn-5'))
+    expect(onEditElement).toHaveBeenCalledWith('5', true)
+  })
+
+  it('opens the expand modal seeded with the value and saves via onApplyEditElement', () => {
+    const onApplyEditElement = jest.fn()
+    // Assign the value rather than pass it to build(): the factory deep-merges
+    // a buffer override into its default buffer (concatenating the bytes).
+    const element = arrayElementWithValueFactory.build({ index: '5' })
+    element.value = stringToBuffer('hello') as typeof element.value
+    render(
+      <RowActionsCell
+        element={element}
+        editConfig={buildEditConfig({ onApplyEditElement })}
+      />,
+    )
+
+    fireEvent.click(screen.getByTestId('array-expand-btn-5'))
+    expect(screen.getByTestId('array-value-code-editor')).toHaveValue('hello')
+
+    fireEvent.change(screen.getByTestId('array-value-code-editor'), {
+      target: { value: 'world' },
+    })
+    fireEvent.click(screen.getByTestId('array-value-editor-save-btn'))
+
+    expect(onApplyEditElement).toHaveBeenCalledWith('5', 'world')
+  })
+
+  it('hides edit and expand while this row is being edited', () => {
+    render(
+      <RowActionsCell
+        element={arrayElementWithValueFactory.build({ index: '5' })}
+        editConfig={buildEditConfig({ editingIndex: '5' })}
+        deleteConfig={buildConfig()}
+      />,
+    )
+
+    expect(screen.queryByTestId('array-edit-btn-5')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('array-expand-btn-5')).not.toBeInTheDocument()
+    // Delete stays available while editing.
+    expect(screen.getByTestId('array-remove-btn-5-icon')).toBeInTheDocument()
+  })
+
+  it('disables edit and expand while a write is in flight', () => {
+    render(
+      <RowActionsCell
+        element={arrayElementWithValueFactory.build({ index: '5' })}
+        editConfig={buildEditConfig({ updating: true })}
+      />,
+    )
+
+    expect(screen.getByTestId('array-edit-btn-5')).toBeDisabled()
+    expect(screen.getByTestId('array-expand-btn-5')).toBeDisabled()
+  })
+
+  it('disables edit and expand for a backend-truncated value', () => {
+    const element = arrayElementWithValueFactory.build({ index: '5' })
+    element.value = stringToBuffer(
+      `${truncatedStringPrefix} big value…`,
+    ) as typeof element.value
+    render(<RowActionsCell element={element} editConfig={buildEditConfig()} />)
+
+    expect(screen.getByTestId('array-edit-btn-5')).toBeDisabled()
+    expect(screen.getByTestId('array-expand-btn-5')).toBeDisabled()
+  })
+
+  it('renders no edit or expand triggers when editConfig is omitted (read-only)', () => {
+    render(
+      <RowActionsCell
+        element={arrayElementWithValueFactory.build({ index: '5' })}
+        deleteConfig={buildConfig()}
+      />,
+    )
+
+    expect(screen.queryByTestId('array-edit-btn-5')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('array-expand-btn-5')).not.toBeInTheDocument()
+    expect(screen.getByTestId('array-remove-btn-5-icon')).toBeInTheDocument()
+  })
+
+  it('renders no edit or expand triggers for a null-value Search row but keeps delete', () => {
+    render(
+      <RowActionsCell
+        element={arrayElementFactory.build({ index: '3' })}
+        editConfig={buildEditConfig()}
+        deleteConfig={buildConfig({ hideEmptySlots: false })}
+      />,
+    )
+
+    expect(screen.queryByTestId('array-edit-btn-3')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('array-expand-btn-3')).not.toBeInTheDocument()
     expect(screen.getByTestId('array-remove-btn-3-icon')).toBeInTheDocument()
   })
 })
