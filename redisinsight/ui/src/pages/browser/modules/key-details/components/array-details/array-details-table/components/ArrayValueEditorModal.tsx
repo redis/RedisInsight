@@ -12,6 +12,9 @@ import {
 import { ArrayValueEditorModalProps } from './ArrayValueEditorModal.types'
 
 const EDITOR_HEIGHT = '60vh'
+// Wider than the default dialog so multi-line values have room to breathe;
+// capped to the viewport so it stays usable on narrow screens.
+const MODAL_WIDTH = 'min(900px, 90vw)'
 
 /**
  * Modal plaintext Monaco editor for a single array element value. A roomier
@@ -56,6 +59,7 @@ export const ArrayValueEditorModal = ({
         </Modal.Content.Header.Compose>
 
         <Modal.Content.Body
+          width={MODAL_WIDTH}
           content={
             <CodeEditor
               language="plaintext"
