@@ -1,9 +1,10 @@
 import { FeatureFlags } from 'uiSrc/constants'
 import {
-  getVisibleWhatsNewVersions,
+  isWhatsNewCardActive,
   isWhatsNewEligible,
   whatsNewFeed,
 } from 'uiSrc/utils'
+import { whatsNewCardFactory } from 'uiSrc/mocks/factories/whatsNew/WhatsNewCard.factory'
 
 const latestVersion = whatsNewFeed[0].version
 
@@ -21,22 +22,23 @@ describe('isWhatsNewEligible', () => {
   })
 })
 
-describe('getVisibleWhatsNewVersions', () => {
-  it('should drop flag-gated cards and omit versions left with none', () => {
-    const visible = getVisibleWhatsNewVersions({})
+describe('isWhatsNewCardActive', () => {
+  it('should be active for a card without a feature flag', () => {
+    const card = whatsNewCardFactory.build()
 
-    expect(visible.map((v) => v.version)).not.toContain('3.2.0')
-    visible.forEach((v) => {
-      expect(v.cards.length).toBeGreaterThan(0)
-      v.cards.forEach((card) => expect(card.featureFlag).toBeUndefined())
-    })
+    expect(isWhatsNewCardActive(card, {})).toEqual(true)
   })
 
-  it('should include gated cards when their flags are on', () => {
-    const visible = getVisibleWhatsNewVersions({
-      [FeatureFlags.azureEntraId]: { flag: true },
+  it('should follow the feature flag for gated cards', () => {
+    const card = whatsNewCardFactory.build({
+      featureFlag: FeatureFlags.azureEntraId,
     })
 
-    expect(visible.map((v) => v.version)).toContain('3.2.0')
+    expect(isWhatsNewCardActive(card, {})).toEqual(false)
+    expect(
+      isWhatsNewCardActive(card, {
+        [FeatureFlags.azureEntraId]: { flag: true },
+      }),
+    ).toEqual(true)
   })
 })

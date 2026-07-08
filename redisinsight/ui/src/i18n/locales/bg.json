@@ -376,6 +376,7 @@
   "settings.workbench.pipeline.summary": "Задава размера на пакета от команди за <pipelineLink>pipeline</pipelineLink> режима в Работна среда. 0 или 1 изпраща всяка команда поотделно.",
   "settings.workbench.pipeline.title": "Pipeline режим",
   "whatsNew.button.gotIt": "Разбрах",
+  "whatsNew.card.comingSoon": "Очаквайте скоро",
   "whatsNew.card.locationLabel": "Къде да го намерите:",
   "whatsNew.menuItem": "Какво ново?",
   "whatsNew.releaseDate": "Издадена на {{date}}",

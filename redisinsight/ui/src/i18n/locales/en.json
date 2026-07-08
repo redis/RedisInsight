@@ -376,6 +376,7 @@
   "settings.workbench.pipeline.summary": "Sets the size of a command batch for the <pipelineLink>pipeline</pipelineLink> mode in Workbench. 0 or 1 pipelines every command.",
   "settings.workbench.pipeline.title": "Pipeline Mode",
   "whatsNew.button.gotIt": "Got it",
+  "whatsNew.card.comingSoon": "Coming soon",
   "whatsNew.card.locationLabel": "Where to find it:",
   "whatsNew.menuItem": "What's new?",
   "whatsNew.releaseDate": "Released {{date}}",

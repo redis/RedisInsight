@@ -7,6 +7,7 @@ import {
   appServerInfoSelector,
   appElectronInfoSelector,
 } from 'uiSrc/slices/app/info'
+import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import {
   ipcAppRestart,
   ipcCheckUpdates,
@@ -21,6 +22,7 @@ const ConfigElectron = () => {
   let isCheckedUpdates = false
   const { isReleaseNotesViewed } = useAppSelector(appElectronInfoSelector)
   const serverInfo = useAppSelector(appServerInfoSelector)
+  const features = useAppSelector(appFeatureFlagsFeaturesSelector)
 
   const dispatch = useAppDispatch()
   const history = useHistory()
@@ -30,9 +32,12 @@ const ConfigElectron = () => {
     window.app?.updateAvailable?.(updateAvailableAction)
   }, [])
 
+  // Keyed on serverInfo only: must run once per load (consumes one-shot
+  // electron-store flags). Feature flags are already fetched — AppInit
+  // blocks rendering until they are.
   useEffect(() => {
     if (serverInfo) {
-      ipcCheckUpdates(serverInfo, dispatch)
+      ipcCheckUpdates(serverInfo, dispatch, features)
     }
   }, [serverInfo])
 
