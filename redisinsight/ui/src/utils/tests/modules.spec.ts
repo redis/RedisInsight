@@ -11,7 +11,7 @@ import {
 const modules1: IDatabaseModule[] = [
   { moduleName: 'JSON', abbreviation: 'RS' },
   { moduleName: 'My1Module', abbreviation: 'MD' },
-  { moduleName: 'Redis Query Engine', abbreviation: 'RS' },
+  { moduleName: 'Redis Search', abbreviation: 'RS' },
 ]
 const modules2: IDatabaseModule[] = [
   { moduleName: '', abbreviation: '' },
@@ -23,17 +23,17 @@ const modules2: IDatabaseModule[] = [
   { moduleName: 'My1Module', abbreviation: 'MD' },
   { moduleName: 'JSON', abbreviation: 'RS' },
   { moduleName: 'My2Modul2e', abbreviation: 'MX' },
-  { moduleName: 'Redis Query Engine', abbreviation: 'RS' },
+  { moduleName: 'Redis Search', abbreviation: 'RS' },
 ]
 
 const result1: IDatabaseModule[] = [
-  { moduleName: 'Redis Query Engine', abbreviation: 'RS' },
+  { moduleName: 'Redis Search', abbreviation: 'RS' },
   { moduleName: 'JSON', abbreviation: 'RS' },
   { moduleName: 'My1Module', abbreviation: 'MD' },
 ]
 
 const result2: IDatabaseModule[] = [
-  { moduleName: 'Redis Query Engine', abbreviation: 'RS' },
+  { moduleName: 'Redis Search', abbreviation: 'RS' },
   { moduleName: 'JSON', abbreviation: 'RS' },
   { moduleName: 'Probabilistic', abbreviation: 'RS' },
   { moduleName: 'MycvModule', abbreviation: 'MC' },
@@ -175,7 +175,7 @@ describe('getRedisearchVersion', () => {
     expect(result).toBe('2.8.0')
   })
 
-  it('should return undefined when no RQE module present', () => {
+  it('should return undefined when no Redis Search module present', () => {
     const result = getRedisearchVersion([
       { name: 'ReJSON', version: 20400 },
       { name: 'timeseries', version: 10800 },

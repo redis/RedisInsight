@@ -27,7 +27,7 @@ export const getTutorialCapability = (source: any = '') => {
     case getSourceTutorialByCapability(RedisDefaultModules.FTL):
       return getCapability(
         'searchAndQuery',
-        'Redis Query Engine',
+        'Redis Search',
         findMarkdownPath(store.getState()?.workbench?.tutorials?.items, {
           id: 'sq-intro',
         }),
