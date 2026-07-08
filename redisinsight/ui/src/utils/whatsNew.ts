@@ -1,5 +1,6 @@
 import {
   WHATS_NEW_VERSIONS,
+  WhatsNewCard,
   WhatsNewFeed,
   WhatsNewVersion,
   WhatsNewVersionType,
@@ -16,20 +17,13 @@ export const whatsNewFeed: WhatsNewFeed = [...WHATS_NEW_VERSIONS].sort(
 )
 
 /**
- * The feed with flag-gated cards resolved against the current feature flags:
- * hidden cards are dropped, versions left with no cards are omitted.
+ * Whether a card's feature is currently usable in this build: not flag-gated,
+ * or its flag is on. Cards are always shown; inactive ones are only marked.
  */
-export const getVisibleWhatsNewVersions = (
+export const isWhatsNewCardActive = (
+  card: WhatsNewCard,
   features?: FeatureFlagsMap,
-): WhatsNewFeed =>
-  whatsNewFeed
-    .map((version) => ({
-      ...version,
-      cards: version.cards.filter(
-        (card) => !card.featureFlag || features?.[card.featureFlag]?.flag,
-      ),
-    }))
-    .filter((version) => version.cards.length > 0)
+): boolean => !card.featureFlag || !!features?.[card.featureFlag]?.flag
 
 export const getLatestWhatsNewVersion = (): WhatsNewVersion | undefined =>
   whatsNewFeed[0]

@@ -11,17 +11,23 @@ import { AllIconsType } from 'uiSrc/components/base/icons'
 import { Props } from './FeatureCard.types'
 import * as S from './FeatureCard.styles'
 
-const FeatureCard = ({ card, onLinkClick }: Props) => {
+const FeatureCard = ({ card, isActive = true, onLinkClick }: Props) => {
   const { id, title, body, tag, icon, location, links } = card
   const { t } = useTranslation()
 
   return (
-    <S.CardContainer data-testid={`whats-new-card-${id}`}>
+    <S.CardContainer $inactive={!isActive} data-testid={`whats-new-card-${id}`}>
       <Row align="center" gap="m">
         {icon && <RiIcon type={icon as AllIconsType} size="l" />}
         <Text size="m">{title}</Text>
         {tag && (
           <RiBadge label={tag} data-testid={`whats-new-card-tag-${id}`} />
+        )}
+        {!isActive && (
+          <RiBadge
+            label={t('whatsNew.card.comingSoon')}
+            data-testid={`whats-new-card-inactive-${id}`}
+          />
         )}
       </Row>
 
@@ -31,7 +37,7 @@ const FeatureCard = ({ card, onLinkClick }: Props) => {
         {body}
       </Text>
 
-      {location && (
+      {isActive && location && (
         <>
           <Spacer size="s" />
           <S.Location size="xs" data-testid={`whats-new-card-location-${id}`}>

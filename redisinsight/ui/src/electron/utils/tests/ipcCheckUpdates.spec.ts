@@ -87,8 +87,9 @@ describe('ipcCheckUpdates', () => {
     expect(actionTypes).toContain(addMessageNotification.type)
   })
 
-  it('should fall back to the toast when all cards of the version are flag-hidden', async () => {
-    // 3.2.0's only card is gated behind azureEntraId, which is off here
+  it('should open Whats New even when the version cards are flag-gated off', async () => {
+    // 3.2.0's only card is gated behind azureEntraId (off here) — it renders
+    // as "coming soon" instead of blocking the auto-open
     const version = '3.2.0'
     invokeMock
       .mockReturnValueOnce(true)
@@ -100,23 +101,6 @@ describe('ipcCheckUpdates', () => {
       store.dispatch,
       whatsNewOnFeatures,
     )
-
-    const actionTypes = store.getActions().map((action) => action.type)
-    expect(actionTypes).not.toContain(openWhatsNew.type)
-    expect(actionTypes).toContain(addMessageNotification.type)
-  })
-
-  it('should open Whats New for a version whose gated cards are enabled', async () => {
-    const version = '3.2.0'
-    invokeMock
-      .mockReturnValueOnce(true)
-      .mockReturnValueOnce(false)
-      .mockReturnValueOnce(version)
-
-    await ipcCheckUpdates(serverInfoMock(version), store.dispatch, {
-      ...whatsNewOnFeatures,
-      [FeatureFlags.azureEntraId]: { flag: true },
-    })
 
     expect(store.getActions()).toContainEqual(openWhatsNew(version))
   })

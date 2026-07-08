@@ -5,11 +5,7 @@ import { ReleaseNotesSource, WhatsNewSource } from 'uiSrc/constants/telemetry'
 import { setElectronInfo, setReleaseNotesViewed } from 'uiSrc/slices/app/info'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
 import { openWhatsNew } from 'uiSrc/slices/app/whatsNew'
-import {
-  FeatureFlagsMap,
-  getVisibleWhatsNewVersions,
-  isWhatsNewEligible,
-} from 'uiSrc/utils'
+import { FeatureFlagsMap, isWhatsNewEligible } from 'uiSrc/utils'
 import { localStorageService } from 'uiSrc/services'
 import { BrowserStorageItem, FeatureFlags } from 'uiSrc/constants'
 import successMessages from 'uiSrc/components/notifications/success-messages'
@@ -41,14 +37,12 @@ export const ipcCheckUpdates = async (
         null
 
       // The What's New modal replaces the update toast when the new version
-      // is eligible and has cards visible under this build's feature flags;
-      // otherwise fall back to the toast so the update is never silent.
+      // is eligible; otherwise fall back to the toast so the update is never
+      // silent. Flag-gated cards render as "coming soon", so no visibility
+      // check is needed.
       const shouldOpenWhatsNew =
         !!features?.[FeatureFlags.whatsNew]?.flag &&
-        isWhatsNewEligible(updateDownloadedVersion, lastVersionSeen) &&
-        getVisibleWhatsNewVersions(features).some(
-          (v) => v.version === updateDownloadedVersion,
-        )
+        isWhatsNewEligible(updateDownloadedVersion, lastVersionSeen)
 
       if (shouldOpenWhatsNew) {
         dispatch(openWhatsNew(updateDownloadedVersion))

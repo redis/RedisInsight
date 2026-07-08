@@ -48,6 +48,37 @@ describe('FeatureCard', () => {
     ).not.toBeInTheDocument()
   })
 
+  it('should mark an inactive card as coming soon and hide its location', () => {
+    const card = whatsNewCardFactory.build({
+      location: 'Browser — somewhere',
+    })
+
+    render(
+      <FeatureCard
+        card={card}
+        isActive={false}
+        onLinkClick={onLinkClickMock}
+      />,
+    )
+
+    expect(
+      screen.getByTestId(`whats-new-card-inactive-${card.id}`),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByTestId(`whats-new-card-location-${card.id}`),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should not mark an active card', () => {
+    const card = whatsNewCardFactory.build()
+
+    render(<FeatureCard card={card} onLinkClick={onLinkClickMock} />)
+
+    expect(
+      screen.queryByTestId(`whats-new-card-inactive-${card.id}`),
+    ).not.toBeInTheDocument()
+  })
+
   it('should call onLinkClick with card id and href', () => {
     const link = { label: 'Learn more', href: 'https://redis.io/docs' }
     const card = whatsNewCardFactory.build({ links: [link] })
