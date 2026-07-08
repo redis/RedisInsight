@@ -2,9 +2,12 @@ import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 import { stringToBuffer } from 'uiSrc/utils'
 import { KeyValueFormat } from 'uiSrc/constants'
+import { getConfig } from 'uiSrc/config'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 import { ArrayValueCell } from './ArrayValueCell'
+
+const { truncatedStringPrefix } = getConfig().app
 
 const renderCell = (props: Record<string, unknown> = {}) =>
   render(
@@ -171,5 +174,23 @@ describe('ArrayValueCell — expand trigger + modal', () => {
     )
 
     expect(screen.getByTestId(`${TEST_ID_PREFIX}_expand-btn-0`)).toBeDisabled()
+  })
+
+  it('disables editing for a backend-truncated value so a truncated copy cannot be saved back', () => {
+    render(
+      <ArrayValueCell
+        {...baseProps}
+        value={stringToBuffer(`${truncatedStringPrefix} big value…`)}
+        onEdit={jest.fn()}
+        onApply={jest.fn()}
+      />,
+    )
+
+    fireEvent.mouseEnter(
+      screen.getByTestId(`${TEST_ID_PREFIX}_content-value-0`),
+    )
+
+    expect(screen.getByTestId(`${TEST_ID_PREFIX}_expand-btn-0`)).toBeDisabled()
+    expect(screen.getByTestId(`${TEST_ID_PREFIX}_edit-btn-0`)).toBeDisabled()
   })
 })

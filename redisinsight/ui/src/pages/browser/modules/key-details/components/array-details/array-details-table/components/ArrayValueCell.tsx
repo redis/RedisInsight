@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 
 import {
+  TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
   TEXT_DISABLED_COMPRESSED_VALUE,
   TEXT_DISABLED_FORMATTER_EDITING,
   TEXT_FAILED_CONVENT_FORMATTER,
@@ -15,6 +16,7 @@ import {
   isEqualBuffers,
   isFormatEditable,
   isNonUnicodeFormatter,
+  isTruncatedString,
   stringToBuffer,
   stringToSerializedBufferFormat,
 } from 'uiSrc/utils'
@@ -98,13 +100,21 @@ export const ArrayValueCell = ({
 
   // Compressed payloads and non-round-trippable formats can't be safely
   // edited; values with unprintable characters are disabled in the editor.
-  const isEditable = !isCompressed && isFormatEditable(viewFormat)
+  // A backend-truncated value (too large to process, prefixed by the
+  // truncation marker) must not be editable either — editing it would Save
+  // the truncated copy back over the real element and lose data. Matches the
+  // String details guard.
+  const isTruncatedValue = isTruncatedString(buffer)
+  const isEditable =
+    !isCompressed && !isTruncatedValue && isFormatEditable(viewFormat)
   const isUnprintable =
     !isNonUnicodeFormatter(viewFormat, isValid) &&
     !isEqualBuffers(decompressedBuffer, stringToBuffer(bufferToString(buffer)))
   const editToolTipContent = isCompressed
     ? TEXT_DISABLED_COMPRESSED_VALUE
-    : TEXT_DISABLED_FORMATTER_EDITING
+    : isTruncatedValue
+      ? TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA
+      : TEXT_DISABLED_FORMATTER_EDITING
   const serializedValue = isEditing
     ? bufferToSerializedFormat(viewFormat, decompressedBuffer, 4)
     : ''
