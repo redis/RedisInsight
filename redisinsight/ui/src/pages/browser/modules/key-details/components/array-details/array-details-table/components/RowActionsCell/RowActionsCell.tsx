@@ -95,20 +95,20 @@ export const RowActionsCell = ({
         <>
           <RiTooltip content={editState?.editDisabledReason ?? null}>
             <IconButton
-              icon={ExtendIcon}
-              aria-label="Expand value editor"
-              disabled={isEditActionDisabled}
-              onClick={openModal}
-              data-testid={`array-expand-btn-${index}`}
-            />
-          </RiTooltip>
-          <RiTooltip content={editState?.editDisabledReason ?? null}>
-            <IconButton
               icon={EditIcon}
               aria-label="Edit field"
               disabled={isEditActionDisabled}
               onClick={() => editConfig?.onEditElement(index, true)}
               data-testid={`array-edit-btn-${index}`}
+            />
+          </RiTooltip>
+          <RiTooltip content={editState?.editDisabledReason ?? null}>
+            <IconButton
+              icon={ExtendIcon}
+              aria-label="Expand value editor"
+              disabled={isEditActionDisabled}
+              onClick={openModal}
+              data-testid={`array-expand-btn-${index}`}
             />
           </RiTooltip>
         </>
