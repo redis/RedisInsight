@@ -175,6 +175,11 @@ export function initiateAzureLoginAction(options: InitiateAzureLoginOptions) {
     dispatch(setAzureTenant(tenantId ?? null))
     sendEventTelemetry({
       event: TelemetryEvent.AZURE_SIGN_IN_CLICKED,
+      eventData: {
+        // Whether the user signed in against a specific tenant (multi-tenant
+        // selector) vs. the default home tenant. Not the tenant value itself.
+        customTenant: Boolean(tenantId),
+      },
     })
     dispatch(azureAuthLogin())
 

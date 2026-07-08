@@ -28,9 +28,16 @@ import { apiService } from 'uiSrc/services'
 import {
   cleanup,
   initialStateDefault,
+  mockStore,
   mockedStore,
 } from 'uiSrc/utils/test-utils'
 import { AzureAccountFactory } from 'uiSrc/mocks/factories/cloud/AzureAccount.factory'
+import { TelemetryEvent } from 'uiSrc/telemetry'
+
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
+}))
 
 let store: typeof mockedStore
 beforeEach(() => {
@@ -407,6 +414,66 @@ describe('azure auth slice', () => {
 
         expect(apiService.get).toHaveBeenCalledWith(expect.any(String), {
           params: { tenantId },
+        })
+      })
+    })
+
+    // The slice binds to the real sendEventTelemetry at load time, so a
+    // module-level jest.mock can't intercept its thunks' calls. Reload the
+    // slice against the mock and read the spy from the same fresh module graph.
+    describe('sign-in telemetry', () => {
+      let telemetrySlice: typeof import('uiSrc/slices/oauth/azure')
+      let telemetryApi: typeof apiService
+      let sendEventTelemetryMock: jest.Mock
+
+      beforeEach(async () => {
+        jest.resetModules()
+        jest.unmock('uiSrc/services')
+        telemetrySlice = await import('uiSrc/slices/oauth/azure')
+        telemetryApi = (await import('uiSrc/services')).apiService
+        sendEventTelemetryMock = jest.mocked(
+          (await import('uiSrc/telemetry')).sendEventTelemetry,
+        )
+      })
+
+      it('should send customTenant=false when no tenant is provided', async () => {
+        telemetryApi.get = jest.fn().mockResolvedValue({
+          data: { url: faker.internet.url() },
+          status: 200,
+        })
+        const local = mockStore(initialStateDefault)
+
+        await local.dispatch<any>(
+          telemetrySlice.initiateAzureLoginAction({
+            source: AzureLoginSource.Autodiscovery,
+            onSuccess: jest.fn(),
+          }),
+        )
+
+        expect(sendEventTelemetryMock).toHaveBeenCalledWith({
+          event: TelemetryEvent.AZURE_SIGN_IN_CLICKED,
+          eventData: { customTenant: false },
+        })
+      })
+
+      it('should send customTenant=true when a tenant is provided', async () => {
+        telemetryApi.get = jest.fn().mockResolvedValue({
+          data: { url: faker.internet.url() },
+          status: 200,
+        })
+        const local = mockStore(initialStateDefault)
+
+        await local.dispatch<any>(
+          telemetrySlice.initiateAzureLoginAction({
+            source: AzureLoginSource.Autodiscovery,
+            onSuccess: jest.fn(),
+            tenantId: 'your-tenant.onmicrosoft.com',
+          }),
+        )
+
+        expect(sendEventTelemetryMock).toHaveBeenCalledWith({
+          event: TelemetryEvent.AZURE_SIGN_IN_CLICKED,
+          eventData: { customTenant: true },
         })
       })
     })
