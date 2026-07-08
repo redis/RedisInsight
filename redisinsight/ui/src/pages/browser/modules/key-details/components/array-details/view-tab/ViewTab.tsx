@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
@@ -6,12 +6,14 @@ import { deleteArrayRange } from 'uiSrc/slices/browser/array'
 import { KeyTypes } from 'uiSrc/constants'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { bufferToString, isEqualBuffers } from 'uiSrc/utils'
+import { Row } from 'uiSrc/components/base/layout/flex'
 import { AddItemsAction } from 'uiSrc/pages/browser/modules/key-details/components/key-details-actions'
 
 import { ArrayDetailsTable } from '../array-details-table'
 import { ArrayExpandedValue } from '../array-details-table/components'
 import { ArrayRangeForm } from '../array-range-form'
 import { ArrayAddForm } from '../array-add-form'
+import { DeleteRangeAction } from '../delete-range-action'
 import { KeyDetailsSubheader } from '../../key-details-subheader/KeyDetailsSubheader'
 import { AddKeysContainer } from '../../common/AddKeysContainer.styled'
 import { useArrayRangeQuery, useArrayElementActions } from '../hooks'
@@ -103,12 +105,42 @@ const ViewTab = ({
     }
   }
 
-  const Actions = ({ width }: { width: number }) => (
-    <AddItemsAction
-      title={ADD_ELEMENTS_TITLE}
-      width={width}
-      openAddItemPanel={openAddPanel}
-    />
+  // KeyDetailsSubheader renders the Actions render prop as <Actions />, so a
+  // fresh function each render is a new component type — React would remount the
+  // subtree and drop DeleteRangeAction's open confirm popover on any parent
+  // update (editing the range, a loading flip, a redux change). Keep Actions'
+  // identity stable and read live values through a ref so it stays dep-free.
+  const latest = {
+    keyName,
+    start,
+    end,
+    rangeLoading,
+    isRefreshDisabled,
+    handleDeleteRange,
+    openAddPanel,
+  }
+  const latestRef = useRef(latest)
+  latestRef.current = latest
+
+  const Actions = useCallback(
+    ({ width }: { width: number }) => (
+      <Row align="center" gap="m" grow={false}>
+        <DeleteRangeAction
+          keyName={latestRef.current.keyName}
+          start={latestRef.current.start}
+          end={latestRef.current.end}
+          loading={latestRef.current.rangeLoading}
+          disabled={latestRef.current.isRefreshDisabled}
+          onDeleteRange={latestRef.current.handleDeleteRange}
+        />
+        <AddItemsAction
+          title={ADD_ELEMENTS_TITLE}
+          width={width}
+          openAddItemPanel={latestRef.current.openAddPanel}
+        />
+      </Row>
+    ),
+    [],
   )
 
   return (
@@ -124,7 +156,6 @@ const ViewTab = ({
         onToggleShowEmpty={setShowEmpty}
         onRun={runQuery}
         onReset={handleReset}
-        onDeleteRange={handleDeleteRange}
         disabled={!isArrayKeyReady || isRefreshDisabled}
       />
       {isArrayKeyReady && (

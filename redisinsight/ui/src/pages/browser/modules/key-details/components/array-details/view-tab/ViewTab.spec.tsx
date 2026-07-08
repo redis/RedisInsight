@@ -192,10 +192,8 @@ describe('ViewTab', () => {
       arrayElementWithValueFactory.build({ index: '7' }),
     ])
 
-    fireEvent.click(screen.getByTestId('array-range-form-delete'))
-    fireEvent.click(
-      await screen.findByTestId('array-range-form-delete-confirm'),
-    )
+    fireEvent.click(screen.getByTestId('array-delete-range'))
+    fireEvent.click(await screen.findByTestId('array-delete-range-confirm'))
 
     // The form's default range is the live input value the delete targets.
     await waitFor(() =>
@@ -226,16 +224,35 @@ describe('ViewTab', () => {
       await screen.findByTestId('array-bulk-remove-btn-icon'),
     ).toBeInTheDocument()
 
-    fireEvent.click(screen.getByTestId('array-range-form-delete'))
-    fireEvent.click(
-      await screen.findByTestId('array-range-form-delete-confirm'),
-    )
+    fireEvent.click(screen.getByTestId('array-delete-range'))
+    fireEvent.click(await screen.findByTestId('array-delete-range-confirm'))
 
     await waitFor(() =>
       expect(
         screen.queryByTestId('array-bulk-remove-btn-icon'),
       ).not.toBeInTheDocument(),
     )
+  })
+
+  it('keeps the delete-range confirm open across a non-key re-render', async () => {
+    // The confirm lives in DeleteRangeAction local state, so it survives only
+    // while the Actions render prop keeps a stable identity. A fresh Actions
+    // each render would be a new component type, remounting DeleteRangeAction
+    // and silently dropping an open confirm on any parent update.
+    const { rerender } = renderView(keyBuffer, {}, [
+      arrayElementWithValueFactory.build({ index: '7' }),
+    ])
+
+    fireEvent.click(screen.getByTestId('array-delete-range'))
+    expect(
+      await screen.findByTestId('array-delete-range-confirm'),
+    ).toBeInTheDocument()
+
+    // Re-render that is not a key switch (same bytes, fresh buffer): the open
+    // confirm must not be torn down.
+    rerender(<ViewTab keyProp={stringToBuffer(KEY)} isActive />)
+
+    expect(screen.getByTestId('array-delete-range-confirm')).toBeInTheDocument()
   })
 
   it('drops the multi-select when the range is reset', async () => {
