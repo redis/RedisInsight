@@ -72,7 +72,9 @@ test.describe('Vector Search > Redis Search Not Available', () => {
     await apiHelper.deleteDatabase(databaseNoModules.id);
   });
 
-  test('should show Redis Search not available screen for Redis without search module', async ({ vectorSearchPage }) => {
+  test('should show Redis Search not available screen for Redis without search module', async ({
+    vectorSearchPage,
+  }) => {
     await vectorSearchPage.goto(databaseNoModules.id);
 
     await expect(vectorSearchPage.redisSearchNotAvailableWrapper).toBeVisible();
