@@ -31,6 +31,11 @@ export const isCluster = async (client: RedisClient): Promise<boolean> => {
 
 /**
  * Discover all cluster nodes for current connection
+ * Prefers each node's announced hostname (Redis 7+, `cluster-announce-hostname`)
+ * over its raw IP so that clusters behind per-node load balancers or NAT
+ * (where the raw IP is not routable to clients) remain reachable. Falls back
+ * to the IP when no hostname is announced, preserving behavior for standard
+ * clusters.
  * @param client
  */
 export const discoverClusterNodes = async (
@@ -43,7 +48,7 @@ export const discoverClusterNodes = async (
   ).filter((node) => node.linkState === RedisClusterNodeLinkState.Connected);
 
   return nodes.map((node) => ({
-    host: node.host,
+    host: node.hostname || node.host,
     port: node.port,
   }));
 };

@@ -1,6 +1,7 @@
 import {
   mockRedisClusterFailInfoResponse,
   mockRedisClusterNodesResponse,
+  mockRedisClusterNodesResponseWithHostname,
   mockRedisClusterOkInfoResponse,
   mockStandaloneRedisClient,
 } from 'src/__mocks__';
@@ -65,5 +66,27 @@ describe('discoverClusterNodes', () => {
     } catch (err) {
       expect(err).toEqual(replyError);
     }
+  });
+
+  it('should use the announced hostname instead of the raw ip when present (Redis 7+)', async () => {
+    // Reproduces https://github.com/redis/RedisInsight/issues/5393,
+    // https://github.com/redis/RedisInsight/issues/3416 and
+    // https://github.com/redis/RedisInsight/issues/3429: nodes behind
+    // per-node load balancers / NAT announce a client-facing hostname
+    // because their raw ip is not routable to RedisInsight.
+    mockStandaloneRedisClient.sendCommand.mockResolvedValue(
+      mockRedisClusterNodesResponseWithHostname,
+    );
+
+    expect(await discoverClusterNodes(mockStandaloneRedisClient)).toEqual([
+      {
+        host: 'node-1.redis.example.com',
+        port: 7379,
+      },
+      {
+        host: 'node-2.redis.example.com',
+        port: 7379,
+      },
+    ]);
   });
 });

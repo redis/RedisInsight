@@ -114,6 +114,14 @@ export const mockRedisClusterNodesResponseIPv6: string =
   '07c37dfeb235213a872192d90877d0cd55635b91 2001:db8::1:7001@17001 slave e7d1eecce10fd6bb5eb35b9f99a514335d9ba9ca 0 1426238317239 4 connected\n' +
   'e7d1eecce10fd6bb5eb35b9f99a514335d9ba9ca 2001:db8::2:7002@17002 myself,master - 0 0 1 connected 0-16383';
 
+// Redis 7+ nodes announcing a hostname via `cluster-announce-hostname`, e.g. behind
+// per-node load balancers/NAT (mirrors OCI Cache Sharded / AWS-style deployments,
+// see https://github.com/redis/RedisInsight/issues/5393)
+// eslint-disable-next-line max-len
+export const mockRedisClusterNodesResponseWithHostname: string =
+  '07c37dfeb235213a872192d90877d0cd55635b91 10.0.161.40:7379@16379,node-1.redis.example.com slave e7d1eecce10fd6bb5eb35b9f99a514335d9ba9ca 0 1426238317239 4 connected\n' +
+  'e7d1eecce10fd6bb5eb35b9f99a514335d9ba9ca 10.0.146.93:7379@16379,node-2.redis.example.com,shard-id=abc123 myself,master - 0 0 1 connected 0-16383';
+
 export const mockStandaloneRedisInfoReply: string = `${
   mockRedisServerInfoResponse
 }\r\n${mockRedisClientsInfoResponse}\r\n${mockRedisMemoryInfoResponse}\r\n${

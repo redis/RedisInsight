@@ -84,11 +84,18 @@ export const convertMultilineReplyToObject = (
 
 /**
  * Parse and return all endpoints from the nodes list returned by "cluster info" command
+ * Since Redis 7.0 the endpoint field may also carry a client-facing hostname
+ * (`ip:port@cport[,hostname[,aux_field=aux_value]*]`), announced via
+ * `cluster-announce-hostname`. Managed/hosted clusters commonly sit behind
+ * per-node load balancers or NAT where the raw IP is not routable to clients,
+ * so the hostname (when present) is parsed out separately and should be
+ * preferred over the raw IP when establishing connections.
  * @Input
  * ```
  * 08418e3514990489e48fa05d642efc33e205f5 172.31.100.211:6379@16379 myself,master - 0 1698694904000 1 connected 0-5460
  * d2dee846c715a917ec9a4963e8885b06130f9f 172.31.100.212:6379@16379 master - 0 1698694905285 2 connected 5461-10922
  * 3e92457ab813ad7a62dacf768ec7309210feaf [2001:db8::1]:7001@17001 master - 0 1698694906000 3 connected 10923-16383
+ * 41ae438fc3ba52a13f40ed67841d463f8bd1ec 10.0.161.40:7379@16379,node-1.example.com master - 0 1698694907000 4 connected 10923-16383
  * ```
  * @Output
  * ```
@@ -104,6 +111,11 @@ export const convertMultilineReplyToObject = (
  *   {
  *     host: "2001:db8::1",
  *     port: 7001
+ *   },
+ *   {
+ *     host: "10.0.161.40",
+ *     hostname: "node-1.example.com",
+ *     port: 7379
  *   }
  * ]
  * ```
@@ -121,7 +133,10 @@ export const parseNodesFromClusterInfoReply = (
         const fields = line.split(' ');
         const [id, endpoint, , master, , , , linkState, slot] = fields;
 
-        const hostAndPort = endpoint.split('@')[0];
+        // endpoint = "ip:port@cport[,hostname[,aux_field=aux_value]*]"
+        const [ipPortCport, hostname] = endpoint.split(',');
+
+        const hostAndPort = ipPortCport.split('@')[0];
         const lastColonIndex = hostAndPort.lastIndexOf(':');
 
         const host = hostAndPort.substring(0, lastColonIndex);
@@ -129,6 +144,7 @@ export const parseNodesFromClusterInfoReply = (
         nodes.push({
           id,
           host,
+          hostname: hostname || undefined,
           port: parseInt(port, 10),
           replicaOf: master !== '-' ? master : undefined,
           linkState,

@@ -1,6 +1,7 @@
 import {
   mockRedisClusterNodesResponse,
   mockRedisClusterNodesResponseIPv6,
+  mockRedisClusterNodesResponseWithHostname,
   mockRedisServerInfoResponse,
 } from 'src/__mocks__';
 import { flatMap } from 'lodash';
@@ -113,5 +114,39 @@ describe('parseNodesFromClusterInfoReply', () => {
     );
 
     expect(result).toEqual(mockRedisClusterNodesIPv6);
+  });
+  it('should parse announced hostname (Redis 7+) alongside the ip, ignoring trailing aux fields', async () => {
+    const result = parseNodesFromClusterInfoReply(
+      mockRedisClusterNodesResponseWithHostname,
+    );
+
+    expect(result).toEqual([
+      {
+        id: '07c37dfeb235213a872192d90877d0cd55635b91',
+        host: '10.0.161.40',
+        hostname: 'node-1.redis.example.com',
+        port: 7379,
+        replicaOf: 'e7d1eecce10fd6bb5eb35b9f99a514335d9ba9ca',
+        linkState: RedisClusterNodeLinkState.Connected,
+        slot: undefined,
+      },
+      {
+        id: 'e7d1eecce10fd6bb5eb35b9f99a514335d9ba9ca',
+        host: '10.0.146.93',
+        // hostname must still be parsed correctly when followed by aux fields (e.g. shard-id)
+        hostname: 'node-2.redis.example.com',
+        port: 7379,
+        replicaOf: undefined,
+        linkState: RedisClusterNodeLinkState.Connected,
+        slot: '0-16383',
+      },
+    ]);
+  });
+  it('should leave hostname undefined when the node has none announced', async () => {
+    const result = parseNodesFromClusterInfoReply(
+      mockRedisClusterNodesResponse,
+    );
+
+    expect(result.every((node) => node.hostname === undefined)).toEqual(true);
   });
 });
