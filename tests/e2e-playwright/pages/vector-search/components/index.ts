@@ -1,4 +1,4 @@
-export { RqeNotAvailable } from './RqeNotAvailable';
+export { RedisSearchNotAvailable } from './RedisSearchNotAvailable';
 export { WelcomeScreen } from './WelcomeScreen';
 export { IndexList } from './IndexList';
 export { CreateIndexForm } from './CreateIndexForm';

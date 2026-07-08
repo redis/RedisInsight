@@ -404,7 +404,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Search by index in Tree view |
 | 🔲 | main | View filter history for RediSearch queries |
 | 🔲 | main | Verify context persistence for RediSearch across navigation |
-| 🔲 | main | Display "No Redis Query Engine" message when module not available |
+| 🔲 | main | Display "No Redis Search" message when module not available |
 | 🔲 | main | Delete search index with FT.DROPINDEX |
 
 ### 2.14 Key Filtering Patterns
@@ -762,7 +762,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 
 ## 8. Vector Search
 
-### 8.1 Navigation and RQE Availability
+### 8.1 Navigation and Redis Search Availability
 
 > **Spec:** `tests/serial/vector-search/navigation/navigation.spec.ts`
 
@@ -770,7 +770,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 |--------|-------|-----------|
 | ✅ | main | should show welcome screen when no indexes exist |
 | ✅ | main | should show list screen when indexes exist |
-| ✅ | main | should show RQE not available screen for Redis without search module |
+| ✅ | main | should show Redis Search not available screen for Redis without search module |
 
 ### 8.2 Select Key Onboarding
 
@@ -899,7 +899,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | ✅ | main | should show "View index" dropdown for key indexed by multiple indexes |
 | ✅ | main | should show "Make searchable" button for non-indexed key and create index |
 | ✅ | main | should show "Index" button on folder node and create index |
-| ✅ | main | should show RQE not available when navigating to Search tab on Redis without search module |
+| ✅ | main | should show Redis Search not available when navigating to Search tab on Redis without search module |
 
 ---
 
@@ -1151,7 +1151,7 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | 🔲 | main | Display Redis Stack icon for databases with modules |
 | 🔲 | main | Show module list tooltip on Redis Stack icon hover |
 | 🔲 | main | Display Redis Stack logo in tooltip |
-| 🔲 | main | Verify all Redis Stack modules listed (Query Engine, Graph, Probabilistic, JSON, Time Series) |
+| 🔲 | main | Verify all Redis Stack modules listed (Redis Search, Graph, Probabilistic, JSON, Time Series) |
 
 ### 12.12 Feature Flags / Remote Config
 > ⚠️ Internal testing feature - remote config management

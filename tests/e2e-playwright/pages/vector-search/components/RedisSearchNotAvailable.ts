@@ -1,10 +1,10 @@
 import { Page, Locator } from '@playwright/test';
 
 /**
- * RQE Not Available component
+ * Redis Search Not Available component
  * Shown when Redis instance doesn't have the Search module
  */
-export class RqeNotAvailable {
+export class RedisSearchNotAvailable {
   readonly page: Page;
 
   readonly container: Locator;
@@ -18,8 +18,8 @@ export class RqeNotAvailable {
   constructor(page: Page) {
     this.page = page;
 
-    this.container = page.getByTestId('rqe-not-available');
-    this.title = page.getByText('Redis Query Engine is not available for this database');
+    this.container = page.getByTestId('redis-search-not-available');
+    this.title = page.getByText('Redis Search is not available for this database');
     this.description = page.getByTestId('rqe-description');
     this.featureList = page.getByTestId('rqe-feature-list');
     this.getStartedButton = page.getByRole('button', { name: 'Get started for free' });

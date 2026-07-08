@@ -167,7 +167,7 @@ test.describe('Vector Search > Browser Page Integration', () => {
   });
 });
 
-test.describe('Vector Search > Browser Page Integration > RQE Not Available', () => {
+test.describe('Vector Search > Browser Page Integration > Redis Search Not Available', () => {
   let databaseNoModules: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
@@ -178,12 +178,12 @@ test.describe('Vector Search > Browser Page Integration > RQE Not Available', ()
     await apiHelper.deleteDatabase(databaseNoModules.id);
   });
 
-  test('should show RQE not available when navigating to Search tab on Redis without search module', async ({
+  test('should show Redis Search not available when navigating to Search tab on Redis without search module', async ({
     vectorSearchPage,
   }) => {
     await vectorSearchPage.goto(databaseNoModules.id);
 
-    await expect(vectorSearchPage.rqeNotAvailableWrapper).toBeVisible();
-    await expect(vectorSearchPage.rqeNotAvailable.container).toBeVisible();
+    await expect(vectorSearchPage.redisSearchNotAvailableWrapper).toBeVisible();
+    await expect(vectorSearchPage.redisSearchNotAvailable.container).toBeVisible();
   });
 });
