@@ -20,10 +20,10 @@ export class RedisSearchNotAvailable {
 
     this.container = page.getByTestId('redis-search-not-available');
     this.title = page.getByText('Redis Search is not available for this database');
-    this.description = page.getByTestId('rqe-description');
-    this.featureList = page.getByTestId('rqe-feature-list');
+    this.description = page.getByTestId('redis-search-not-available-description');
+    this.featureList = page.getByTestId('redis-search-not-available-feature-list');
     this.getStartedButton = page.getByRole('button', { name: 'Get started for free' });
     this.learnMoreLink = page.getByRole('link', { name: 'Learn more' });
-    this.illustration = page.getByTestId('rqe-illustration');
+    this.illustration = page.getByTestId('redis-search-not-available-illustration');
   }
 }
