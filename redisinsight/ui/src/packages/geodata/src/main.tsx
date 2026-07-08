@@ -44,20 +44,20 @@ const renderGeoInspector = (props: PluginProps): void => {
   renderApp(props, GeodataMode.Inspector)
 }
 
-const renderRqeGeoMap = (props: PluginProps): void => {
-  renderApp(props, GeodataMode.RqeMarkers)
+const renderRedisSearchGeoMap = (props: PluginProps): void => {
+  renderApp(props, GeodataMode.RedisSearchMarkers)
 }
 
-const renderRqeGeoHeatmap = (props: PluginProps): void => {
-  renderApp(props, GeodataMode.RqeHeatmap)
+const renderRedisSearchGeoHeatmap = (props: PluginProps): void => {
+  renderApp(props, GeodataMode.RedisSearchHeatmap)
 }
 
-const renderRqeGeoInspector = (props: PluginProps): void => {
-  renderApp(props, GeodataMode.RqeInspector)
+const renderRedisSearchGeoInspector = (props: PluginProps): void => {
+  renderApp(props, GeodataMode.RedisSearchInspector)
 }
 
-const renderRqeGeoShape = (props: PluginProps): void => {
-  renderApp(props, GeodataMode.RqeShape)
+const renderRedisSearchGeoShape = (props: PluginProps): void => {
+  renderApp(props, GeodataMode.RedisSearchShape)
 }
 
 if (process.env.NODE_ENV === 'development') {
@@ -88,8 +88,8 @@ export default {
   renderGeoMapMarkers,
   renderGeoMapHeatmap,
   renderGeoInspector,
-  renderRqeGeoMap,
-  renderRqeGeoHeatmap,
-  renderRqeGeoInspector,
-  renderRqeGeoShape,
+  renderRedisSearchGeoMap,
+  renderRedisSearchGeoHeatmap,
+  renderRedisSearchGeoInspector,
+  renderRedisSearchGeoShape,
 }

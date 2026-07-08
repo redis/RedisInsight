@@ -163,11 +163,11 @@ describe('Geodata App', () => {
     ).toBeInTheDocument()
   })
 
-  it('renders Redis Query Engine GEO points on a map', () => {
+  it('renders Redis Search GEO points on a map', () => {
     renderComponent(
       'FT.SEARCH cities "@coords:[2.34 48.86 1000 km]" RETURN 1 coords',
       [1, 'city:1', ['name', 'Paris', 'coords', '2.34,48.86']],
-      GeodataMode.RqeMarkers,
+      GeodataMode.RedisSearchMarkers,
     )
 
     expect(screen.getByText('Search geospatial map')).toBeInTheDocument()
@@ -176,38 +176,38 @@ describe('Geodata App', () => {
     expect(screen.queryByText('Map tiles disabled')).not.toBeInTheDocument()
   })
 
-  it('renders Redis Query Engine GEO points on a heatmap', () => {
+  it('renders Redis Search GEO points on a heatmap', () => {
     renderComponent(
       'FT.SEARCH cities "@coords:[2.34 48.86 1000 km]" RETURN 1 coords',
       [1, 'city:1', ['name', 'Paris', 'coords', '2.34,48.86']],
-      GeodataMode.RqeHeatmap,
+      GeodataMode.RedisSearchHeatmap,
     )
 
     expect(screen.getByText('Search geospatial heatmap')).toBeInTheDocument()
     expect(screen.getByRole('cell', { name: 'Paris' })).toBeInTheDocument()
   })
 
-  it('renders Redis Query Engine command parse errors', () => {
+  it('renders Redis Search command parse errors', () => {
     renderComponent(
       'FT.SEARCH idx "*"',
       [0],
-      GeodataMode.RqeInspector,
+      GeodataMode.RedisSearchInspector,
     )
 
-    expect(screen.getByText('Cannot inspect RQE geo command')).toBeInTheDocument()
+    expect(screen.getByText('Cannot inspect Redis Search geo command')).toBeInTheDocument()
     expect(
-      screen.getByText('No Redis Query Engine geospatial predicate found.'),
+      screen.getByText('No Redis Search geospatial predicate found.'),
     ).toBeInTheDocument()
   })
 
-  it('renders returned-field guidance for RQE GEO maps', () => {
+  it('renders returned-field guidance for Redis Search GEO maps', () => {
     renderComponent(
       'FT.SEARCH idx "@coords:[2.34 48.86 1000 km]"',
       [1, 'city:1', ['name', 'Paris']],
-      GeodataMode.RqeMarkers,
+      GeodataMode.RedisSearchMarkers,
     )
 
-    expect(screen.getByText('Cannot render RQE geo map')).toBeInTheDocument()
+    expect(screen.getByText('Cannot render Redis Search geo map')).toBeInTheDocument()
     expect(
       screen.getByText(
         'No returned geospatial fields found. Add RETURN 1 coords to the FT.SEARCH command.',
@@ -215,11 +215,11 @@ describe('Geodata App', () => {
     ).toBeInTheDocument()
   })
 
-  it('renders Redis Query Engine GEO inspector summaries', () => {
+  it('renders Redis Search GEO inspector summaries', () => {
     renderComponent(
       'FT.AGGREGATE idx "@coords:[$lon $lat $radius km]" PARAMS 6 lon 2.34 lat 48.86 radius 1000 LOAD 1 @coords',
       [1, ['name', 'Paris', 'coords', '2.34,48.86']],
-      GeodataMode.RqeInspector,
+      GeodataMode.RedisSearchInspector,
     )
 
     expect(screen.getByText('Search geospatial details')).toBeInTheDocument()
@@ -228,11 +228,11 @@ describe('Geodata App', () => {
     expect(screen.getByText('1000 km')).toBeInTheDocument()
   })
 
-  it('renders Redis Query Engine GEOSHAPE results', () => {
+  it('renders Redis Search GEOSHAPE results', () => {
     renderComponent(
       'FT.SEARCH idx "@geom:[CONTAINS $shape]" PARAMS 2 shape "POINT (2 2)" RETURN 1 geom DIALECT 3',
       [1, 'shape:1', ['name', 'Zone', 'geom', 'POLYGON ((1 1, 1 3, 3 3, 1 1))']],
-      GeodataMode.RqeShape,
+      GeodataMode.RedisSearchShape,
     )
 
     expect(screen.getByText('Search geoshape map')).toBeInTheDocument()
@@ -242,7 +242,7 @@ describe('Geodata App', () => {
     const plot = screen.getByRole('img', {
       name: 'Leaflet geospatial shape plot',
     })
-    const summary = screen.getByLabelText('RQE command summary')
+    const summary = screen.getByLabelText('Redis Search command summary')
     expect(
       Boolean(
         plot.compareDocumentPosition(summary) &
@@ -251,14 +251,14 @@ describe('Geodata App', () => {
     ).toBe(true)
   })
 
-  it('renders returned-field guidance for RQE GEOSHAPE visualizations', () => {
+  it('renders returned-field guidance for Redis Search GEOSHAPE visualizations', () => {
     renderComponent(
       'FT.SEARCH idx "@geom:[CONTAINS $shape]" PARAMS 2 shape "POINT (2 2)" RETURN 1 geom DIALECT 3',
       [1, 'shape:1', ['name', 'Zone']],
-      GeodataMode.RqeShape,
+      GeodataMode.RedisSearchShape,
     )
 
-    expect(screen.getByText('Cannot render RQE geo shape')).toBeInTheDocument()
+    expect(screen.getByText('Cannot render Redis Search geo shape')).toBeInTheDocument()
     expect(
       screen.getByText(
         'No returned geospatial fields found. Add RETURN 1 geom to the FT.SEARCH command.',

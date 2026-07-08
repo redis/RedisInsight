@@ -2,10 +2,10 @@ export enum GeodataMode {
   Markers = 'markers',
   Heatmap = 'heatmap',
   Inspector = 'inspector',
-  RqeMarkers = 'rqe-markers',
-  RqeHeatmap = 'rqe-heatmap',
-  RqeInspector = 'rqe-inspector',
-  RqeShape = 'rqe-shape',
+  RedisSearchMarkers = 'rqe-markers',
+  RedisSearchHeatmap = 'rqe-heatmap',
+  RedisSearchInspector = 'rqe-inspector',
+  RedisSearchShape = 'rqe-shape',
 }
 
 export interface WorkbenchResult {

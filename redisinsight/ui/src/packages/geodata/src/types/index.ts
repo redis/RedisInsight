@@ -1,3 +1,3 @@
 export * from './geoCommand'
 export * from './plugin'
-export * from './rqeGeo'
+export * from './redisSearchGeo'
