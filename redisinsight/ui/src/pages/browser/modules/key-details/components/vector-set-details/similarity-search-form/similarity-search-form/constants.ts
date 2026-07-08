@@ -14,8 +14,3 @@ export const VECTOR_MODE_TOOLTIP = 'Search by raw vector values'
 export const ELEMENT_MODE_TOOLTIP = 'Search by an existing element.'
 
 export const QUERY_NOT_READY_TOOLTIP = 'Enter a vector or element to search'
-
-export const PREVIEW_TOGGLE_LABEL = 'Preview'
-export const PREVIEW_TOGGLE_ARIA_LABEL = 'Toggle command preview'
-export const PREVIEW_TOGGLE_HIDE_TOOLTIP = 'Hide command preview'
-export const PREVIEW_TOGGLE_SHOW_TOOLTIP = 'Show command preview'

@@ -21,10 +21,12 @@ import {
   ArrayCombinator,
   ArrayGrepCriteria,
 } from 'uiSrc/slices/interfaces/array'
-import { CommandPreview } from 'uiSrc/pages/browser/modules/key-details/shared'
+import {
+  CommandPreview,
+  PreviewToggle,
+  useResponsivePreviewLabel,
+} from 'uiSrc/pages/browser/modules/key-details/shared'
 
-import { PreviewToggle } from '../preview-toggle'
-import { useResponsivePreviewLabel } from '../hooks'
 import {
   ARRAY_COMMAND_PREVIEW_TEST_ID,
   CONTEXT_COUNT_MAX,

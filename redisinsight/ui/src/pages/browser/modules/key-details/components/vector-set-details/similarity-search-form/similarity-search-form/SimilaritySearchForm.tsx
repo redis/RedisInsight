@@ -5,14 +5,17 @@ import { RiTooltip } from 'uiSrc/components'
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
 import { IconButton, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
-import { InfoIcon, ResetIcon, RiIcon } from 'uiSrc/components/base/icons'
+import { InfoIcon, ResetIcon } from 'uiSrc/components/base/icons'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { TextInput, QuantityCounter } from 'uiSrc/components/base/inputs'
-import { Text } from 'uiSrc/components/base/text'
 import { vectorSetAttributeKeysSelector } from 'uiSrc/slices/browser/vectorSet'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { CommandPreview } from 'uiSrc/pages/browser/modules/key-details/shared'
+import {
+  CommandPreview,
+  PreviewToggle,
+  useResponsivePreviewLabel,
+} from 'uiSrc/pages/browser/modules/key-details/shared'
 
 import { VectorSetSimilarityInputMode } from '../../telemetry.constants'
 import { getVectorFieldInfo } from '../../vector-set-element-form/utils'
@@ -26,10 +29,6 @@ import {
   ELEMENT_MODE_TOOLTIP,
   ELEMENT_PLACEHOLDER,
   FILTER_PLACEHOLDER,
-  PREVIEW_TOGGLE_ARIA_LABEL,
-  PREVIEW_TOGGLE_HIDE_TOOLTIP,
-  PREVIEW_TOGGLE_LABEL,
-  PREVIEW_TOGGLE_SHOW_TOOLTIP,
   QUERY_NOT_READY_TOOLTIP,
   SIMILARITY_SEARCH_COUNT_DEFAULT,
   SIMILARITY_SEARCH_COUNT_MAX,
@@ -63,6 +62,7 @@ export const SimilaritySearchForm = ({
     useState<SimilaritySearchFormState>(initialFormState)
 
   const [previewVisible, setPreviewVisible] = useState(false)
+  const { containerRef, isWide } = useResponsivePreviewLabel()
 
   const { id: databaseId } = useAppSelector(connectedInstanceSelector)
   const attributeKeys = useAppSelector(vectorSetAttributeKeysSelector)
@@ -254,29 +254,16 @@ export const SimilaritySearchForm = ({
         </FlexItem>
       </Row>
 
-      <S.ActionRow align="center" gap="m">
+      <S.ActionRow ref={containerRef}>
         <FlexItem grow={false}>
-          <RiTooltip
-            content={
-              previewVisible
-                ? PREVIEW_TOGGLE_HIDE_TOOLTIP
-                : !queryReady
-                  ? QUERY_NOT_READY_TOOLTIP
-                  : PREVIEW_TOGGLE_SHOW_TOOLTIP
-            }
-            position="top"
-          >
-            <S.PreviewToggleButton
-              pressed={previewVisible}
-              onPressedChange={togglePreview}
-              disabled={!queryReady && !previewVisible}
-              aria-label={PREVIEW_TOGGLE_ARIA_LABEL}
-              data-testid={`${TEST_ID}-preview-toggle`}
-            >
-              <RiIcon size="m" type="CliIcon" />
-              <Text size="s">{PREVIEW_TOGGLE_LABEL}</Text>
-            </S.PreviewToggleButton>
-          </RiTooltip>
+          <PreviewToggle
+            pressed={previewVisible}
+            onPressedChange={togglePreview}
+            wide={isWide}
+            disabled={!queryReady && !previewVisible}
+            disabledTooltip={QUERY_NOT_READY_TOOLTIP}
+            data-testid={`${TEST_ID}-preview-toggle`}
+          />
         </FlexItem>
         <FlexItem grow>
           {previewVisible && (

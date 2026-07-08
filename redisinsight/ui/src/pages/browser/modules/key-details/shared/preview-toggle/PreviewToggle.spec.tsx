@@ -43,4 +43,20 @@ describe('PreviewToggle', () => {
 
     expect(onPressedChange).toHaveBeenCalledWith(true)
   })
+
+  it('blocks presses while disabled', () => {
+    const onPressedChange = jest.fn()
+    render(
+      <PreviewToggle
+        pressed={false}
+        onPressedChange={onPressedChange}
+        disabled
+        data-testid={TEST_ID}
+      />,
+    )
+
+    expect(screen.getByTestId(TEST_ID)).toBeDisabled()
+    fireEvent.click(screen.getByTestId(TEST_ID))
+    expect(onPressedChange).not.toHaveBeenCalled()
+  })
 })

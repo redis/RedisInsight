@@ -1,7 +1,6 @@
-import { HTMLAttributes } from 'react'
+import React, { HTMLAttributes } from 'react'
 import styled from 'styled-components'
-import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
-import { Col, Row } from 'uiSrc/components/base/layout/flex'
+import { Col } from 'uiSrc/components/base/layout/flex'
 import { MIDDLE_SCREEN_RESOLUTION } from 'uiSrc/constants'
 
 /**
@@ -60,11 +59,15 @@ export const FilterLabel = styled.span<HTMLAttributes<HTMLSpanElement>>`
   gap: ${({ theme }) => theme.core.space.space050};
 `
 
-export const ActionRow = styled(Row)`
+// A plain div (not `Row`) so it can hold the ResizeObserver ref that drives
+// the responsive preview label — layout components don't forward refs.
+// Mirrors the array forms' ActionRow.
+export const ActionRow = styled.div<{
+  children?: React.ReactNode
+  ref?: React.Ref<HTMLDivElement>
+}>`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.core.space.space100};
   min-height: ${ACTION_ROW_HEIGHT};
-`
-
-export const PreviewToggleButton = styled(ToggleButton)`
-  ${({ theme, pressed }) =>
-    !pressed && `border-color: ${theme.semantic.color.border.neutral600};`}
 `

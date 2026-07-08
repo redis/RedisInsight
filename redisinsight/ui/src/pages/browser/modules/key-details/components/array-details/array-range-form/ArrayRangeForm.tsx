@@ -15,10 +15,12 @@ import { TextInput } from 'uiSrc/components/base/inputs'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { parseArrayIndex } from 'uiSrc/utils/arrayIndex'
 import { DEFAULT_SCAN_LIMIT } from 'uiSrc/slices/browser/array'
-import { CommandPreview } from 'uiSrc/pages/browser/modules/key-details/shared'
+import {
+  CommandPreview,
+  PreviewToggle,
+  useResponsivePreviewLabel,
+} from 'uiSrc/pages/browser/modules/key-details/shared'
 
-import { PreviewToggle } from '../preview-toggle'
-import { useResponsivePreviewLabel } from '../hooks'
 import { quoteRedisArgument } from '../utils'
 import { ARRAY_COMMAND_PREVIEW_TEST_ID } from '../constants'
 import {

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { PREVIEW_LABEL_WIDE_MIN_WIDTH } from '../preview-toggle/PreviewToggle.constants'
+import { PREVIEW_LABEL_WIDE_MIN_WIDTH } from './PreviewToggle.constants'
 
 interface UseResponsivePreviewLabel {
   /** Attach to the element whose width decides the preview label. */

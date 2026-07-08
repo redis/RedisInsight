@@ -1,7 +1,7 @@
 import React from 'react'
 import { act, render, screen } from 'uiSrc/utils/test-utils'
 
-import { PREVIEW_LABEL_WIDE_MIN_WIDTH } from '../preview-toggle/PreviewToggle.constants'
+import { PREVIEW_LABEL_WIDE_MIN_WIDTH } from './PreviewToggle.constants'
 import { useResponsivePreviewLabel } from './useResponsivePreviewLabel'
 
 let resizeCallback: (entries: Array<{ contentRect: { width: number } }>) => void
