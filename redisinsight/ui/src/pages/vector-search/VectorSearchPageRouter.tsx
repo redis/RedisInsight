@@ -6,7 +6,7 @@ import { Loader } from 'uiSrc/components/base/display'
 import { VectorSearchPageRouterProps } from './VectorSearchPageRouter.types'
 import { VectorSearchProvider } from './context/vector-search'
 import { useRedisInstanceCompatibility, useLastViewedPage } from './hooks'
-import { RqeNotAvailable } from './components/rqe-not-available'
+import { RedisSearchNotAvailable } from './components/redis-search-not-available'
 import { VersionNotSupported } from './components/version-not-supported'
 import * as S from './pages/styles'
 
@@ -46,8 +46,8 @@ export const VectorSearchPageRouter = ({
 
   if (hasRedisearch === false) {
     return (
-      <S.PageWrapper data-testid="vector-search-page--rqe-not-available">
-        <RqeNotAvailable />
+      <S.PageWrapper data-testid="vector-search-page--redis-search-not-available">
+        <RedisSearchNotAvailable />
       </S.PageWrapper>
     )
   }

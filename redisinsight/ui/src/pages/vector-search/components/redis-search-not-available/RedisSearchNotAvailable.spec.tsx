@@ -7,7 +7,7 @@ import {
   screen,
 } from 'uiSrc/utils/test-utils'
 import { FeatureFlags } from 'uiSrc/constants'
-import { RqeNotAvailable } from './RqeNotAvailable'
+import { RedisSearchNotAvailable } from './RedisSearchNotAvailable'
 
 const createTestStore = () => {
   const state = cloneDeep(initialStateDefault)
@@ -22,11 +22,13 @@ const createTestStore = () => {
   return mockStore(state)
 }
 
-describe('RqeNotAvailable', () => {
-  it('should render with RQE not available content', () => {
-    render(<RqeNotAvailable />, { store: createTestStore() })
+describe('RedisSearchNotAvailable', () => {
+  it('should render with Redis Search not available content', () => {
+    render(<RedisSearchNotAvailable />, { store: createTestStore() })
 
-    expect(screen.getByTestId('rqe-not-available')).toBeInTheDocument()
-    expect(screen.getByTestId('rqe-not-available-title')).toBeInTheDocument()
+    expect(screen.getByTestId('redis-search-not-available')).toBeInTheDocument()
+    expect(
+      screen.getByTestId('redis-search-not-available-title'),
+    ).toBeInTheDocument()
   })
 })

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 
-import RqeIllustration from 'uiSrc/assets/img/vector-search/rqe-not-available.svg?react'
+import RedisSearchIllustration from 'uiSrc/assets/img/vector-search/redis-search-not-available.svg?react'
 import { FeatureFlags } from 'uiSrc/constants'
 import { EXTERNAL_LINKS, UTM_CAMPAINGS } from 'uiSrc/constants/links'
 import { OAuthSocialAction } from 'uiSrc/slices/interfaces'
@@ -112,7 +112,7 @@ export const SearchPageFallback = ({ content }: SearchPageFallbackProps) => {
           </S.ContentSection>
 
           <S.IllustrationSection data-testid={`${content.testId}-illustration`}>
-            <RqeIllustration />
+            <RedisSearchIllustration />
           </S.IllustrationSection>
         </S.StyledCardBody>
       </S.ScrollArea>

@@ -1,0 +1,1 @@
+export { RedisSearchNotAvailable } from './RedisSearchNotAvailable'

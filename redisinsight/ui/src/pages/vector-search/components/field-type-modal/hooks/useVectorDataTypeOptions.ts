@@ -5,7 +5,7 @@ import { REDISEARCH_MODULES } from 'uiSrc/slices/interfaces'
 import { isRedisVersionSupported } from 'uiSrc/utils/comparisons/compareVersions'
 
 import {
-  MIN_RQE_VERSION_FLOAT16,
+  MIN_REDIS_SEARCH_VERSION_FLOAT16,
   VECTOR_DATA_TYPE_BASE_OPTIONS,
   VECTOR_DATA_TYPE_FLOAT16_OPTIONS,
 } from '../FieldTypeModal.constants'
@@ -16,12 +16,17 @@ export const useVectorDataTypeOptions = () => {
   const { modules = [] } = useAppSelector(connectedInstanceSelector)
 
   return useMemo(() => {
-    const rqeModule = modules.find((m) => REDISEARCH_MODULE_SET.has(m.name))
-    const rqeVersion = rqeModule?.semanticVersion || ''
+    const redisSearchModule = modules.find((m) =>
+      REDISEARCH_MODULE_SET.has(m.name),
+    )
+    const redisSearchVersion = redisSearchModule?.semanticVersion || ''
 
     const supportsFloat16 =
-      !!rqeVersion &&
-      isRedisVersionSupported(rqeVersion, MIN_RQE_VERSION_FLOAT16)
+      !!redisSearchVersion &&
+      isRedisVersionSupported(
+        redisSearchVersion,
+        MIN_REDIS_SEARCH_VERSION_FLOAT16,
+      )
 
     return supportsFloat16
       ? [...VECTOR_DATA_TYPE_BASE_OPTIONS, ...VECTOR_DATA_TYPE_FLOAT16_OPTIONS]

@@ -32,7 +32,7 @@ export const VECTOR_DATA_TYPE_DEFAULT = VectorDataType.FLOAT32
 
 export const MAX_SAMPLE_VALUE_LENGTH = 500
 
-export const MIN_RQE_VERSION_FLOAT16 = '2.10.0'
+export const MIN_REDIS_SEARCH_VERSION_FLOAT16 = '2.10.0'
 
 export const VECTOR_DATA_TYPE_BASE_OPTIONS = [
   { value: VectorDataType.FLOAT32, label: 'FLOAT32' },
