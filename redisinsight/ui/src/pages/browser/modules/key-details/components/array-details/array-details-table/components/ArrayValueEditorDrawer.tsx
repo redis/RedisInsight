@@ -15,20 +15,14 @@ import {
 
 import { ArrayValueEditorDrawerProps } from './ArrayValueEditorDrawer.types'
 
-// The drawer is full viewport height; leave room for the header + footer so
-// the editor fills the rest — the point of the drawer over the inline edit is
-// the extra room for large values.
+// Fill the drawer height minus its header and footer.
 const EDITOR_HEIGHT = 'calc(100vh - 140px)'
 
 /**
- * Right-side drawer hosting a plaintext Monaco editor for a single array
- * element value. Preferred over the inline editor for large values thanks to
- * the extra space. Save funnels through the same ARSET apply path (behind the
- * production-write confirmation) as the inline editor; the editor is plaintext
- * and Save is never validation-gated.
- *
- * Rendered per row and only while open (returns null when closed) so a Monaco
- * instance is never mounted for every row of the table.
+ * Right-side drawer with a plaintext Monaco editor for a single array element
+ * value — more room for large values than the inline editor. Rendered per row
+ * and only while open (returns null when closed) so a Monaco instance is never
+ * mounted for every row of the table.
  */
 export const ArrayValueEditorDrawer = ({
   isOpen,
@@ -40,10 +34,8 @@ export const ArrayValueEditorDrawer = ({
 }: ArrayValueEditorDrawerProps) => {
   const [value, setValue] = useState(initialValue)
 
-  // Re-seed from initialValue every time the drawer opens, so reopening after
-  // a cancel discards the previous in-progress edit. Only reacts to open /
-  // initialValue — don't add other reactive deps, or an in-flight edit could
-  // be silently discarded.
+  // Re-seed on open so reopening after a cancel discards the previous edit.
+  // Don't add other deps, or an in-flight edit could be silently discarded.
   useEffect(() => {
     if (isOpen) setValue(initialValue)
   }, [isOpen, initialValue])

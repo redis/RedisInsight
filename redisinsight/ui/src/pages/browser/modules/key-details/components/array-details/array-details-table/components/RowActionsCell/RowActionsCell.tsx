@@ -17,12 +17,11 @@ import { RowActionsCellProps } from './RowActionsCell.types'
 import * as S from './RowActionsCell.styles'
 
 /**
- * Right-column row actions: edit (opens the inline editor), expand (opens the
- * Monaco popup) and delete, grouped together and revealed on row hover. The
- * edit/expand triggers live here rather than over the value so long values
- * aren't hidden behind icons. Editing is driven through the table-level
- * `editingIndex` (via `editConfig`); the expand popup saves via the same
- * ARSET path, behind the production-write confirmation.
+ * Right-column row actions — edit (inline editor), expand (Monaco drawer) and
+ * delete, revealed on row hover. The triggers live here, not over the value,
+ * so long values aren't hidden behind icons. Editing is driven via the
+ * table-level `editingIndex`; the drawer saves via the same ARSET path, behind
+ * the production-write confirmation.
  */
 export const RowActionsCell = ({
   element,
@@ -43,7 +42,6 @@ export const RowActionsCell = ({
   // element — so the consumer disables this guard there.
   if (deleteConfig?.hideEmptySlots && value == null) return null
 
-  // Edit/expand only apply to a populated slot with editing wired.
   const editState =
     editConfig && value != null
       ? getArrayElementEditState(

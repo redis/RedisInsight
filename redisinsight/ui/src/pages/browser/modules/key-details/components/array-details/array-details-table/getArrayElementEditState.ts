@@ -22,35 +22,25 @@ import { decompressingBuffer } from 'uiSrc/utils/decompressors'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 export interface ArrayElementEditState {
-  /** The value after decompression — what both display and editing operate on. */
   decompressedBuffer: RedisResponseBuffer
-  /** Formatter output for the current view format, and whether it round-trips. */
   formatted: JSX.Element | string
   isValid: boolean
-  /** True when the payload is compressed (can't be edited safely). */
   isCompressed: boolean
-  /** True when the backend truncated the value (editing would save the
-   *  truncated copy back over the real element). */
+  /** Editing a truncated value would save the truncated copy over the real one. */
   isTruncated: boolean
-  /** True when the value contains non-printable characters — the editor stays
-   *  open but its input is disabled to avoid silent data loss. */
+  /** Editor stays open but its input is disabled, to avoid silent data loss. */
   isUnprintable: boolean
-  /** True when the value can be opened for editing at all. */
   isEditable: boolean
-  /** Why editing is disabled, for the trigger tooltip; null when editable. */
+  /** Trigger-tooltip text; null when editable. */
   editDisabledReason: Nullable<ReactNode>
-  /** Serialized editor seed for the current format (indent 4). */
   serialize: () => string
 }
 
 /**
- * Derives the shared display + edit state for a single populated array element
- * from its raw buffer. Centralises the compression / truncation / format
- * checks so the value cell (display + inline editor) and the actions cell
- * (edit / expand triggers + modal seed) can't drift apart.
- *
- * Callers must guard empty slots (`value == null`) before calling — an empty
- * slot has nothing to format or edit.
+ * Shared display + edit state for one populated array element. Centralised so
+ * the value cell (display + inline editor) and the actions cell (edit/expand
+ * triggers + drawer seed) can't drift apart. Callers must guard empty slots
+ * (`value == null`) — an empty slot has nothing to format or edit.
  */
 export const getArrayElementEditState = (
   value: RedisResponseBuffer,
