@@ -1,4 +1,5 @@
 export const SIMILARITY_SEARCH_FORM_TEST_ID = 'similarity-search-form'
+export const COMMAND_PREVIEW_TEST_ID = 'similarity-search-command-preview'
 
 export const SIMILARITY_SEARCH_COUNT_DEFAULT = 10
 export const SIMILARITY_SEARCH_COUNT_MIN = 1
@@ -18,5 +19,3 @@ export const PREVIEW_TOGGLE_LABEL = 'Preview'
 export const PREVIEW_TOGGLE_ARIA_LABEL = 'Toggle command preview'
 export const PREVIEW_TOGGLE_HIDE_TOOLTIP = 'Hide command preview'
 export const PREVIEW_TOGGLE_SHOW_TOOLTIP = 'Show command preview'
-
-export const COMMAND_PREVIEW_LOADING_PLACEHOLDER = 'command is loading...'

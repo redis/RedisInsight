@@ -15,11 +15,12 @@ import { TextInput } from 'uiSrc/components/base/inputs'
 import { Checkbox } from 'uiSrc/components/base/forms/checkbox/Checkbox'
 import { parseArrayIndex } from 'uiSrc/utils/arrayIndex'
 import { DEFAULT_SCAN_LIMIT } from 'uiSrc/slices/browser/array'
+import { CommandPreview } from 'uiSrc/pages/browser/modules/key-details/shared'
 
-import { CommandPreview } from '../command-preview'
 import { PreviewToggle } from '../preview-toggle'
 import { useResponsivePreviewLabel } from '../hooks'
 import { quoteRedisArgument } from '../utils'
+import { ARRAY_COMMAND_PREVIEW_TEST_ID } from '../constants'
 import {
   ARRAY_RANGE_FORM_TEST_ID as TEST_ID,
   ARRAY_RANGE_MAX_SPAN,
@@ -175,7 +176,12 @@ export const ArrayRangeForm = ({
           />
         </FlexItem>
         <FlexItem grow>
-          {previewVisible && <CommandPreview command={command} />}
+          {previewVisible && (
+            <CommandPreview
+              command={command}
+              data-testid={ARRAY_COMMAND_PREVIEW_TEST_ID}
+            />
+          )}
         </FlexItem>
         {onReset && (
           <FlexItem grow={false}>

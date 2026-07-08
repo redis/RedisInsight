@@ -9,10 +9,11 @@ import { TextInput } from 'uiSrc/components/base/inputs'
 import { defaultValueRender } from 'uiSrc/components/base/forms/select/RiSelect'
 import { parseArrayIndex } from 'uiSrc/utils/arrayIndex'
 import { ArrayAggregateOperation } from 'uiSrc/slices/interfaces/array'
+import { CommandPreview } from 'uiSrc/pages/browser/modules/key-details/shared'
 
-import { CommandPreview } from '../command-preview'
 import { PreviewToggle } from '../preview-toggle'
 import { useResponsivePreviewLabel } from '../hooks'
+import { ARRAY_COMMAND_PREVIEW_TEST_ID } from '../constants'
 import * as RangeStyles from '../array-range-form/ArrayRangeForm.styles'
 import * as S from './ArrayAggregateForm.styles'
 import {
@@ -159,7 +160,12 @@ export const ArrayAggregateForm = ({
           />
         </FlexItem>
         <FlexItem grow>
-          {previewVisible && <CommandPreview command={command} />}
+          {previewVisible && (
+            <CommandPreview
+              command={command}
+              data-testid={ARRAY_COMMAND_PREVIEW_TEST_ID}
+            />
+          )}
         </FlexItem>
         {onReset && (
           <FlexItem grow={false}>

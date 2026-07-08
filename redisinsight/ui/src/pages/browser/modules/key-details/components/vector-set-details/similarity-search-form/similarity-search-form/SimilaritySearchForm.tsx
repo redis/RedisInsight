@@ -12,16 +12,17 @@ import { Text } from 'uiSrc/components/base/text'
 import { vectorSetAttributeKeysSelector } from 'uiSrc/slices/browser/vectorSet'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
+import { CommandPreview } from 'uiSrc/pages/browser/modules/key-details/shared'
 
 import { VectorSetSimilarityInputMode } from '../../telemetry.constants'
 import { getVectorFieldInfo } from '../../vector-set-element-form/utils'
 import { useSimilaritySearch } from '../../hooks/useSimilaritySearch'
 
-import { CommandPreview } from '../command-preview'
 import { FilterInputWithSuggestions } from '../filter-input-with-suggestions'
 import { FilterSyntaxHelpPopover } from '../filter-syntax-help-popover'
 import * as S from './SimilaritySearchForm.styles'
 import {
+  COMMAND_PREVIEW_TEST_ID,
   ELEMENT_MODE_TOOLTIP,
   ELEMENT_PLACEHOLDER,
   FILTER_PLACEHOLDER,
@@ -279,7 +280,11 @@ export const SimilaritySearchForm = ({
         </FlexItem>
         <FlexItem grow>
           {previewVisible && (
-            <CommandPreview command={preview ?? ''} loading={previewLoading} />
+            <CommandPreview
+              command={preview ?? ''}
+              loading={previewLoading}
+              data-testid={COMMAND_PREVIEW_TEST_ID}
+            />
           )}
         </FlexItem>
         <FlexItem grow={false}>
