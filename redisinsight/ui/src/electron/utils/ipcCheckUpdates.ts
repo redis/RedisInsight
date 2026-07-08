@@ -12,6 +12,24 @@ import successMessages from 'uiSrc/components/notifications/success-messages'
 import { GetServerInfoResponse } from 'apiClient'
 import { ElectronStorageItem, IpcInvokeEvent } from '../constants'
 
+/**
+ * Whether the What's New modal should replace the update toast for the just
+ * installed version. Flag-gated cards render as "Coming soon", so no card
+ * visibility check is needed.
+ */
+const shouldOpenWhatsNew = (
+  version: string,
+  features?: FeatureFlagsMap,
+): boolean => {
+  const lastVersionSeen =
+    localStorageService?.get(BrowserStorageItem.whatsNewLastVersionSeen) ?? null
+
+  return (
+    !!features?.[FeatureFlags.whatsNew]?.flag &&
+    isWhatsNewEligible(version, lastVersionSeen)
+  )
+}
+
 export const ipcCheckUpdates = async (
   serverInfo: GetServerInfoResponse,
   dispatch: Dispatch<any>,
@@ -31,46 +49,32 @@ export const ipcCheckUpdates = async (
   )
 
   if (isUpdateDownloaded && !isUpdateAvailable) {
-    if (serverInfo.appVersion === updateDownloadedVersion) {
-      const lastVersionSeen =
-        localStorageService?.get(BrowserStorageItem.whatsNewLastVersionSeen) ??
-        null
-
-      // The What's New modal replaces the update toast when the new version
-      // is eligible; otherwise fall back to the toast so the update is never
-      // silent. Flag-gated cards render as "coming soon", so no visibility
-      // check is needed.
-      const shouldOpenWhatsNew =
-        !!features?.[FeatureFlags.whatsNew]?.flag &&
-        isWhatsNewEligible(updateDownloadedVersion, lastVersionSeen)
-
-      if (shouldOpenWhatsNew) {
-        dispatch(openWhatsNew(updateDownloadedVersion))
-        sendEventTelemetry({
-          event: TelemetryEvent.WHATS_NEW_OPENED,
-          eventData: {
-            source: WhatsNewSource.autoUpdate,
-            version: updateDownloadedVersion,
-          },
-        })
-      } else {
-        dispatch(
-          addMessageNotification(
-            successMessages.INSTALLED_NEW_UPDATE(
-              updateDownloadedVersion,
-              () => {
-                dispatch(setReleaseNotesViewed(true))
-                sendEventTelemetry({
-                  event: TelemetryEvent.RELEASE_NOTES_LINK_CLICKED,
-                  eventData: {
-                    source: ReleaseNotesSource.updateNotification,
-                  },
-                })
+    if (
+      serverInfo.appVersion === updateDownloadedVersion &&
+      shouldOpenWhatsNew(updateDownloadedVersion, features)
+    ) {
+      dispatch(openWhatsNew(updateDownloadedVersion))
+      sendEventTelemetry({
+        event: TelemetryEvent.WHATS_NEW_OPENED,
+        eventData: {
+          source: WhatsNewSource.autoUpdate,
+          version: updateDownloadedVersion,
+        },
+      })
+    } else if (serverInfo.appVersion === updateDownloadedVersion) {
+      dispatch(
+        addMessageNotification(
+          successMessages.INSTALLED_NEW_UPDATE(updateDownloadedVersion, () => {
+            dispatch(setReleaseNotesViewed(true))
+            sendEventTelemetry({
+              event: TelemetryEvent.RELEASE_NOTES_LINK_CLICKED,
+              eventData: {
+                source: ReleaseNotesSource.updateNotification,
               },
-            ),
-          ),
-        )
-      }
+            })
+          }),
+        ),
+      )
     }
 
     await window.app.ipc.invoke(
