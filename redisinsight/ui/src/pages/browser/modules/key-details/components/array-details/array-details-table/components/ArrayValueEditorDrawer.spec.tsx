@@ -1,7 +1,7 @@
 import React from 'react'
 import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 
-import { ArrayValueEditorModal } from './ArrayValueEditorModal'
+import { ArrayValueEditorDrawer } from './ArrayValueEditorDrawer'
 
 jest.mock('uiSrc/components/base/code-editor', () => {
   const ReactMock = require('react')
@@ -25,10 +25,17 @@ const defaultProps = {
 }
 
 const renderComponent = (props = {}) =>
-  render(<ArrayValueEditorModal {...defaultProps} {...props} />)
+  render(<ArrayValueEditorDrawer {...defaultProps} {...props} />)
 
-describe('ArrayValueEditorModal', () => {
+describe('ArrayValueEditorDrawer', () => {
   beforeEach(() => jest.clearAllMocks())
+
+  it('renders nothing while closed (no Monaco instance per row)', () => {
+    renderComponent({ isOpen: false })
+    expect(
+      screen.queryByTestId('array-value-code-editor'),
+    ).not.toBeInTheDocument()
+  })
 
   it('seeds the editor with initialValue when open', () => {
     renderComponent()
@@ -67,14 +74,14 @@ describe('ArrayValueEditorModal', () => {
     })
 
     rerender(
-      <ArrayValueEditorModal
+      <ArrayValueEditorDrawer
         {...defaultProps}
         isOpen={false}
         initialValue="first"
       />,
     )
     rerender(
-      <ArrayValueEditorModal {...defaultProps} isOpen initialValue="second" />,
+      <ArrayValueEditorDrawer {...defaultProps} isOpen initialValue="second" />,
     )
 
     expect(screen.getByTestId('array-value-code-editor')).toHaveValue('second')

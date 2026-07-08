@@ -12,7 +12,7 @@ import {
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 import { getArrayElementEditState } from '../../getArrayElementEditState'
-import { ArrayValueEditorModal } from '../ArrayValueEditorModal'
+import { ArrayValueEditorDrawer } from '../ArrayValueEditorDrawer'
 import { RowActionsCellProps } from './RowActionsCell.types'
 import * as S from './RowActionsCell.styles'
 
@@ -31,9 +31,9 @@ export const RowActionsCell = ({
 }: RowActionsCellProps) => {
   const { t } = useTranslation()
   const { requestConfirmation } = useProductionWriteConfirmation()
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   // Seeded lazily on open so we don't serialize every row's buffer on render.
-  const [modalSeed, setModalSeed] = useState('')
+  const [drawerSeed, setDrawerSeed] = useState('')
 
   const { index, value } = element
 
@@ -59,13 +59,13 @@ export const RowActionsCell = ({
   const isEditActionDisabled =
     !editState?.isEditable || !!editConfig?.updating || !!editConfig?.loading
 
-  const openModal = () => {
+  const openDrawer = () => {
     if (!editState) return
-    setModalSeed(editState.serialize())
-    setIsModalOpen(true)
+    setDrawerSeed(editState.serialize())
+    setIsDrawerOpen(true)
   }
 
-  const handleModalSave = (editedValue: string) => {
+  const handleDrawerSave = (editedValue: string) => {
     requestConfirmation({
       title: 'Edit value on production database?',
       actionDescription:
@@ -75,7 +75,7 @@ export const RowActionsCell = ({
       disableConfirmationInput: true,
       onConfirm: () => {
         editConfig?.onApplyEditElement(index, editedValue)
-        setIsModalOpen(false)
+        setIsDrawerOpen(false)
       },
     })
   }
@@ -107,7 +107,7 @@ export const RowActionsCell = ({
               icon={ExtendIcon}
               aria-label="Expand value editor"
               disabled={isEditActionDisabled}
-              onClick={openModal}
+              onClick={openDrawer}
               data-testid={`array-expand-btn-${index}`}
             />
           </RiTooltip>
@@ -130,12 +130,12 @@ export const RowActionsCell = ({
       )}
 
       {!!editState && (
-        <ArrayValueEditorModal
-          isOpen={isModalOpen}
+        <ArrayValueEditorDrawer
+          isOpen={isDrawerOpen}
           index={index}
-          initialValue={modalSeed}
-          onSave={handleModalSave}
-          onClose={() => setIsModalOpen(false)}
+          initialValue={drawerSeed}
+          onSave={handleDrawerSave}
+          onClose={() => setIsDrawerOpen(false)}
         />
       )}
     </S.ActionCell>
