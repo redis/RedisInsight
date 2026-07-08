@@ -34,6 +34,7 @@ import appRedisCommandsReducer from './app/redis-commands'
 import appPluginsReducer from './app/plugins'
 import appsSocketConnectionReducer from './app/socket-connection'
 import appFeaturesReducer from './app/features'
+import appWhatsNewReducer from './app/whatsNew'
 import appUrlHandlingReducer from './app/url-handling'
 import appOauthReducer from './oauth/cloud'
 import azureAuthReducer from './oauth/azure'
@@ -71,6 +72,7 @@ export const rootReducer = combineReducers({
     plugins: appPluginsReducer,
     socketConnection: appsSocketConnectionReducer,
     features: appFeaturesReducer,
+    whatsNew: appWhatsNewReducer,
     urlHandling: appUrlHandlingReducer,
     csrf: appCsrfReducer,
     init: appInitReducer,

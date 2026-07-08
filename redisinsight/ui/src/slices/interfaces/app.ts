@@ -218,6 +218,12 @@ export interface FeatureFlagComponent {
   data?: any
 }
 
+export interface StateWhatsNew {
+  isOpen: boolean
+  selectedVersion: string | null
+  lastVersionSeen: string | null
+}
+
 export interface StateAppFeatures {
   highlighting: {
     version: string

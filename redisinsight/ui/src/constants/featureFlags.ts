@@ -18,4 +18,5 @@ export enum FeatureFlags {
   devBrowser = 'dev-browser',
   prodMode = 'prodMode',
   devLanguage = 'dev-language',
+  whatsNew = 'whatsNew',
 }
