@@ -11,6 +11,7 @@ import {
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { FeatureFlags } from 'uiSrc/constants'
 import { closeWhatsNew } from 'uiSrc/slices/app/whatsNew'
+import { setReleaseNotesViewed } from 'uiSrc/slices/app/info'
 import { whatsNewFeed } from 'uiSrc/utils'
 import WhatsNewModal from './WhatsNewModal'
 
@@ -127,5 +128,23 @@ describe('WhatsNewModal', () => {
       event: TelemetryEvent.WHATS_NEW_CLOSED,
       eventData: { version: latestVersion },
     })
+  })
+
+  it('should acknowledge a pending update for the running version on close', () => {
+    // set by ipcCheckUpdates only after the updated version is running
+    const state = set(
+      getOpenState(),
+      'app.info.electron.isReleaseNotesViewed',
+      false,
+    )
+    const store = mockStore(state)
+    render(<WhatsNewModal />, { store })
+
+    fireEvent.click(screen.getByTestId('whats-new-got-it-btn'))
+
+    expect(store.getActions()).toEqual([
+      setReleaseNotesViewed(true),
+      closeWhatsNew(),
+    ])
   })
 })

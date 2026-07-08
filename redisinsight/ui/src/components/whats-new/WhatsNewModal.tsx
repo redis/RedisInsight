@@ -7,6 +7,10 @@ import {
   setSelectedVersion,
   whatsNewSelector,
 } from 'uiSrc/slices/app/whatsNew'
+import {
+  appElectronInfoSelector,
+  setReleaseNotesViewed,
+} from 'uiSrc/slices/app/info'
 import { appFeatureFlagsFeaturesSelector } from 'uiSrc/slices/app/features'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { isWhatsNewCardActive, whatsNewFeed } from 'uiSrc/utils'
@@ -30,6 +34,7 @@ import * as S from './WhatsNewModal.styles'
 const WhatsNewModal = () => {
   const { isOpen, selectedVersion } = useAppSelector(whatsNewSelector)
   const features = useAppSelector(appFeatureFlagsFeaturesSelector)
+  const { isReleaseNotesViewed } = useAppSelector(appElectronInfoSelector)
   const dispatch = useAppDispatch()
   const { t, i18n } = useTranslation()
 
@@ -59,6 +64,13 @@ const WhatsNewModal = () => {
       event: TelemetryEvent.WHATS_NEW_CLOSED,
       eventData: { version: currentVersion },
     })
+    // Acknowledge a pending update like closing the legacy toast did, so the
+    // Release Notes indicator clears and the stored version is cleaned up.
+    // `false` is only set once the updated version is running — a pre-restart
+    // open must not acknowledge, or the post-restart flow would be skipped.
+    if (isReleaseNotesViewed === false) {
+      dispatch(setReleaseNotesViewed(true))
+    }
     dispatch(closeWhatsNew())
   }
 
