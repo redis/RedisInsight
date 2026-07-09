@@ -125,9 +125,11 @@ const ArrayDetailsTable = memo(
     }, [connectedInstanceId])
     // Database connected when the inline editor opened. Its Save confirmation
     // (in EditableTextArea) can be confirmed after a database switch, so the
-    // write is guarded with this id to avoid saving into the new database —
-    // the drawer guards its own save the same way.
+    // write is guarded with this id to avoid saving into the new database.
     const inlineEditInstanceIdRef = useRef<string | undefined>(undefined)
+    // Same guard for the drawer, captured when it opens (not at Save) so a
+    // switch before the save still skips the write.
+    const drawerEditInstanceIdRef = useRef<string | undefined>(undefined)
 
     // Only the visible tab's table drives the editor-driven refresh pause, so
     // a hidden table can't re-enable refresh while the active one has an editor
@@ -259,6 +261,8 @@ const ArrayDetailsTable = memo(
           viewFormat,
         )
         setDrawerSeed(serialize())
+        // Capture the connected database to guard a save confirmed later.
+        drawerEditInstanceIdRef.current = connectedInstanceIdRef.current
         // Inline and drawer are one mutually-exclusive edit session — opening
         // the drawer closes any open inline edit, so a later drawer save can't
         // clear a still-open inline editor on another row.
@@ -271,7 +275,7 @@ const ArrayDetailsTable = memo(
     const handleDrawerSave = useCallback(
       (value: string) => {
         const savedIndex = drawerIndex
-        const savedInstanceId = connectedInstanceId
+        const savedInstanceId = drawerEditInstanceIdRef.current
         if (savedIndex === null) return
         requestConfirmation({
           title: 'Edit value on production database?',
@@ -295,12 +299,7 @@ const ArrayDetailsTable = memo(
           },
         })
       },
-      [
-        drawerIndex,
-        connectedInstanceId,
-        requestConfirmation,
-        handleApplyEditElement,
-      ],
+      [drawerIndex, requestConfirmation, handleApplyEditElement],
     )
 
     // Pass shared per-cell config via the table's `meta` so the static

@@ -17,6 +17,9 @@ import keysReducer, {
   setSelectedKeyRefreshDisabled,
   setViewFormat,
 } from 'uiSrc/slices/browser/keys'
+import instancesReducer, {
+  setConnectedInstanceId,
+} from 'uiSrc/slices/instances/instances'
 import { KeyValueFormat } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
@@ -718,6 +721,70 @@ describe('ArrayDetailsTable', () => {
           screen.queryByTestId('array-value-code-editor'),
         ).not.toBeInTheDocument()
       })
+
+      postSpy.mockRestore()
+    })
+
+    it('skips the drawer ARSET when the database changed since the drawer opened', async () => {
+      const postSpy = jest
+        .spyOn(apiService, 'post')
+        .mockResolvedValue({ status: 200, data: '' })
+      // A real instances reducer so switching the connected database re-renders
+      // the table — the drawer must guard its save with the database captured
+      // when it *opened*, not when Save was clicked.
+      const keys = cloneDeep(initialStateDefault.browser.keys)
+      keys.selectedKey.data = { name: stringToBuffer('mykey') } as any
+      const store = configureStore({
+        reducer: combineReducers({
+          app: (s = initialStateDefault.app) => s,
+          browser: combineReducers({
+            keys: (s = keys) => s,
+            array: (s = initialStateDefault.browser.array) => s,
+          }),
+          connections: combineReducers({ instances: instancesReducer }),
+        }),
+        preloadedState: {
+          connections: {
+            instances: {
+              ...initialStateDefault.connections.instances,
+              connectedInstance: {
+                ...initialStateDefault.connections.instances.connectedInstance,
+                id: 'db-1',
+              },
+            },
+          },
+        },
+        middleware: (getDefault) =>
+          getDefault({ serializableCheck: false, immutableCheck: false }),
+      })
+
+      render(
+        <ArrayDetailsTable
+          elements={[withValue('1', 'hello')]}
+          loading={false}
+          isActive
+        />,
+        { store },
+      )
+
+      fireEvent.click(screen.getByTestId('array-expand-btn-1'))
+      fireEvent.change(screen.getByTestId('array-value-code-editor'), {
+        target: { value: 'updated' },
+      })
+
+      // Connection switches before Save is confirmed.
+      act(() => {
+        store.dispatch(setConnectedInstanceId('db-2'))
+      })
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('array-value-editor-save-btn'))
+      })
+
+      const setCall = postSpy.mock.calls.find(([url]) =>
+        (url as string).includes('array/set-element'),
+      )
+      expect(setCall).toBeFalsy()
 
       postSpy.mockRestore()
     })
