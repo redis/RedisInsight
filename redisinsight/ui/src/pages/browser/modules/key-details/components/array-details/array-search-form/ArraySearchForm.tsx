@@ -68,7 +68,7 @@ import {
 } from './ArraySearchForm.constants'
 import { ArraySearchFormProps } from './ArraySearchForm.types'
 import { isBoundInvalid, isLimitInvalid } from './ArraySearchForm.utils'
-import { InfoHint } from './components/InfoHint'
+import { InfoHint } from '../components/InfoHint'
 import * as S from './ArraySearchForm.styles'
 
 /**
