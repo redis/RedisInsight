@@ -27,6 +27,8 @@ import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 import {
   ARRAY_TABLE_EMPTY_MESSAGE,
   ARRAY_TABLE_LOADING_MESSAGE,
+  SELECTION_COLUMN_CELL_CLASS,
+  SELECTION_COLUMN_WIDTH_REM,
 } from './constants'
 import {
   actionsColumn,
@@ -215,6 +217,14 @@ const ArrayDetailsTable = memo(
       () =>
         buildSelectionColumn<ArrayDataElement>({
           disableSelectAll: !hasSelectableRows,
+          // Override redis-ui's default 4.2rem so the column hugs the checkbox;
+          // the class trims the cell's side padding (see ArrayDetailsTable.styles).
+          size: SELECTION_COLUMN_WIDTH_REM,
+          sizeUnit: 'rem',
+          getCellProps: () => ({ className: SELECTION_COLUMN_CELL_CLASS }),
+          getHeaderCellProps: () => ({
+            className: SELECTION_COLUMN_CELL_CLASS,
+          }),
         }),
       [buildSelectionColumn, hasSelectableRows],
     )

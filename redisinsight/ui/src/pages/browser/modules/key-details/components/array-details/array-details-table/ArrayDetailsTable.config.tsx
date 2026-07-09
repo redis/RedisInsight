@@ -8,10 +8,18 @@ import { ArrayValueCell } from './components/ArrayValueCell'
 import { RowActionsCell } from './components/RowActionsCell'
 import { BulkDeleteHeaderCell } from './components/BulkDeleteHeaderCell'
 import { ArrayTableConfig } from './ArrayDetailsTable.types'
+// Index values are usually small numbers, so the index column takes a modest
+// share and the value column (which can hold much larger content) gets the
+// majority — instead of an even split. Both stay resizable, and the index cell
+// truncates oversized indexes into a copyable tooltip, so large indexes are
+// still fully accessible rather than hard-clamped.
+import {
+  ACTIONS_COLUMN_SIZE,
+  INDEX_COLUMN_SIZE,
+  VALUE_COLUMN_SIZE,
+} from './constants'
 
 export const TEST_ID = 'array-details-table'
-
-const ACTIONS_COLUMN_SIZE = 48
 
 const indexColumn: ColumnDef<ArrayDataElement> = {
   id: 'index',
@@ -19,6 +27,8 @@ const indexColumn: ColumnDef<ArrayDataElement> = {
   header: 'Index',
   enableSorting: false,
   enableResizing: true,
+  size: INDEX_COLUMN_SIZE,
+  sizeUnit: 'px',
   cell: ({ row }: CellContext<ArrayDataElement, unknown>) => (
     <ArrayIndexCell
       index={row.original.index}
@@ -34,6 +44,8 @@ const valueColumn: ColumnDef<ArrayDataElement> = {
   header: 'Value',
   enableSorting: false,
   enableResizing: true,
+  size: VALUE_COLUMN_SIZE,
+  sizeUnit: 'px',
   cell: ({ row, table }: CellContext<ArrayDataElement, unknown>) => {
     const {
       compressor,
@@ -97,5 +109,6 @@ export const arrayColumns: ColumnDef<ArrayDataElement>[] = [
   valueColumn,
 ]
 
-const MIN_COLUMN_WIDTH = 160
-export const TABLE_MIN_WIDTH = `${arrayColumns.length * MIN_COLUMN_WIDTH}px`
+// Keep the index/value ratio intact until the panel is narrow enough to
+// trigger horizontal scroll, rather than letting the value column collapse.
+export const TABLE_MIN_WIDTH = `${INDEX_COLUMN_SIZE + VALUE_COLUMN_SIZE}px`

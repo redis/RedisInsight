@@ -106,13 +106,21 @@ export const NeighbourBand = ({
                 : `${TEST_ID_PREFIX}-row-${el.index}`
             }
           >
-            <ArrayIndexCell index={el.index} />
-            <ArrayValueCell
-              index={el.index}
-              value={el.value}
-              compressor={compressor}
-              viewFormat={viewFormat}
-            />
+            {/* Spacer aligning with the parent's leading selection column. */}
+            <span />
+            <S.BandCell>
+              <ArrayIndexCell index={el.index} />
+            </S.BandCell>
+            <S.BandCell>
+              <ArrayValueCell
+                index={el.index}
+                value={el.value}
+                compressor={compressor}
+                viewFormat={viewFormat}
+              />
+            </S.BandCell>
+            {/* Spacer aligning with the parent's trailing actions column. */}
+            <span />
           </S.BandRow>
         )
       })}
