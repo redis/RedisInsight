@@ -934,6 +934,28 @@ describe('array slice', () => {
         expect(actions).toContainEqual(setArrayUpdating(false))
       })
 
+      it('skips the write entirely when the connected database changed since the edit began', async () => {
+        apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
+        const keyedStore = storeWithSelectedKey(mockKey)
+
+        await keyedStore.dispatch<any>(
+          updateArrayElementAction({
+            key: mockKey,
+            index: '5',
+            value: 'B',
+            startInstanceId: 'instance-no-longer-connected',
+          }),
+        )
+
+        // No ARSET, and the updating lock is never acquired — the value must
+        // not be written into a different database (e.g. a production-write
+        // confirmation confirmed after switching connections).
+        expect(apiService.post).not.toHaveBeenCalled()
+        expect(keyedStore.getActions()).not.toContainEqual(
+          setArrayUpdating(true),
+        )
+      })
+
       it('skips the patch and the success callback when the selected key changed mid-write', async () => {
         apiService.post = jest.fn().mockResolvedValue({ status: 200, data: '' })
         // User switched to another key before the POST resolved.

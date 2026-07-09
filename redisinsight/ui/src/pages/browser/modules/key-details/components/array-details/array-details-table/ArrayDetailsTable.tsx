@@ -70,9 +70,12 @@ const ArrayDetailsTable = memo(
     bulkDeleteConfig,
   }: ArrayDetailsTableProps) => {
     const dispatch = useAppDispatch()
-    const { compressor = null } = useAppSelector(
+    const { compressor = null, id: connectedInstanceId } = useAppSelector(
       connectedInstanceSelector,
-    ) as unknown as { compressor: Nullable<KeyValueCompressor> }
+    ) as unknown as {
+      compressor: Nullable<KeyValueCompressor>
+      id?: string
+    }
     const { viewFormat } = useAppSelector(selectedKeySelector)
     const {
       updating,
@@ -192,7 +195,7 @@ const ArrayDetailsTable = memo(
     )
 
     const handleApplyEditElement = useCallback(
-      (index: string, value: string) => {
+      (index: string, value: string, startInstanceId?: string) => {
         const editSession = editSessionRef.current
         dispatch(
           updateArrayElementAction(
@@ -200,6 +203,7 @@ const ArrayDetailsTable = memo(
               key: keyName,
               index,
               value: stringToSerializedBufferFormat(viewFormat, value),
+              startInstanceId,
             },
             () => {
               // Ignore a completion whose editor the user has since closed and
@@ -247,12 +251,19 @@ const ArrayDetailsTable = memo(
           commandId: BrowserConfirmationCommandId.EditValue,
           disableConfirmationInput: true,
           onConfirm: () => {
-            handleApplyEditElement(drawerIndex, value)
+            // Capture the instance at Save time — if the connection changed by
+            // the time the confirmation is confirmed, the write is skipped.
+            handleApplyEditElement(drawerIndex, value, connectedInstanceId)
             setDrawerIndex(null)
           },
         })
       },
-      [drawerIndex, requestConfirmation, handleApplyEditElement],
+      [
+        drawerIndex,
+        connectedInstanceId,
+        requestConfirmation,
+        handleApplyEditElement,
+      ],
     )
 
     // Pass shared per-cell config via the table's `meta` so the static
