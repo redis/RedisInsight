@@ -377,6 +377,7 @@
   "settings.workbench.pipeline.title": "Pipeline режим",
   "whatsNew.button.gotIt": "Разбрах",
   "whatsNew.card.comingSoon": "Очаквайте скоро",
+  "whatsNew.card.tooltip": "Функцията се въвежда поетапно.",
   "whatsNew.card.locationLabel": "Къде да го намерите:",
   "whatsNew.menuItem": "Какво ново?",
   "whatsNew.releaseDate": "Издадена на {{date}}",

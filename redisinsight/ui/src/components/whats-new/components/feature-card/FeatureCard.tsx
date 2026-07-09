@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { useTranslation } from 'uiSrc/i18n'
+import { RiTooltip } from 'uiSrc/components'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { Text } from 'uiSrc/components/base/text'
@@ -24,10 +25,12 @@ const FeatureCard = ({ card, isActive = true, onLinkClick }: Props) => {
           <RiBadge label={tag} data-testid={`whats-new-card-tag-${id}`} />
         )}
         {!isActive && (
-          <RiBadge
-            label={t('whatsNew.card.comingSoon')}
-            data-testid={`whats-new-card-inactive-${id}`}
-          />
+          <RiTooltip content={t('whatsNew.card.tooltip')}>
+            <RiBadge
+              label={t('whatsNew.card.comingSoon')}
+              data-testid={`whats-new-card-inactive-${id}`}
+            />
+          </RiTooltip>
         )}
       </Row>
 
