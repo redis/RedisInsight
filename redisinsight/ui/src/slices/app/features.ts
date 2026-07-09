@@ -83,10 +83,10 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.prodMode]: {
         flag: false,
       },
-      [FeatureFlags.valueDecoder]: {
+      [FeatureFlags.devLanguage]: {
         flag: false,
       },
-      [FeatureFlags.devLanguage]: {
+      [FeatureFlags.valueDecoder]: {
         flag: false,
       },
     },

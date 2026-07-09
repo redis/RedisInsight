@@ -39,9 +39,9 @@ export enum KnownFeatures {
   VectorSet = 'vectorSet',
   DevArray = 'dev-array',
   ProdMode = 'prodMode',
-  ValueDecoder = 'valueDecoder',
   DevLanguage = 'dev-language',
   WhatsNew = 'whatsNew',
+  ValueDecoder = 'valueDecoder',
 }
 
 export interface IFeatureFlag {

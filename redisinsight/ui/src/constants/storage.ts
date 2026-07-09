@@ -45,10 +45,10 @@ enum BrowserStorageItem {
   vectorSearchQueryOnboarding = 'vectorSearchQueryOnboarding',
   vectorSearchSelectKeyOnboarding = 'vectorSearchSelectKeyOnboarding',
   vectorSearchCreateIndexOnboarding = 'vectorSearchCreateIndexOnboarding',
-  valueDecoderRules = 'valueDecoderRules_',
   wbTsResultPreferences = 'wbTsResultPreferences_',
   prodModeCtaActioned = 'prodModeCtaActioned',
   whatsNewLastVersionSeen = 'whatsNewLastVersionSeen',
+  valueDecoderRules = 'valueDecoderRules_',
 }
 
 export default BrowserStorageItem
