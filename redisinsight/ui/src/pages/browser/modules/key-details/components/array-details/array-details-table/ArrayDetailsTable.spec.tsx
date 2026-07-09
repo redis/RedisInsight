@@ -544,6 +544,53 @@ describe('ArrayDetailsTable', () => {
       ).not.toBeInTheDocument()
     })
 
+    it('closes an inline edit on another row when the drawer opens', () => {
+      render(
+        <ArrayDetailsTable
+          elements={[withValue('0', 'aaa'), withValue('1', 'bbb')]}
+          loading={false}
+          isActive
+        />,
+      )
+
+      // Open inline edit on row 0.
+      fireEvent.click(screen.getByTestId('array-edit-btn-0'))
+      expect(
+        screen.getByTestId('array-details-table_value-editor-0'),
+      ).toBeInTheDocument()
+
+      // Open the drawer on row 1 — the inline editor on row 0 must close, so a
+      // later drawer save can't clear it and drop its unsaved text.
+      fireEvent.click(screen.getByTestId('array-expand-btn-1'))
+
+      expect(
+        screen.queryByTestId('array-details-table_value-editor-0'),
+      ).not.toBeInTheDocument()
+      expect(screen.getByTestId('array-value-code-editor')).toBeInTheDocument()
+    })
+
+    it('closes the drawer when an inline edit opens', () => {
+      render(
+        <ArrayDetailsTable
+          elements={[withValue('0', 'aaa'), withValue('1', 'bbb')]}
+          loading={false}
+          isActive
+        />,
+      )
+
+      fireEvent.click(screen.getByTestId('array-expand-btn-1'))
+      expect(screen.getByTestId('array-value-code-editor')).toBeInTheDocument()
+
+      fireEvent.click(screen.getByTestId('array-edit-btn-0'))
+
+      expect(
+        screen.queryByTestId('array-value-code-editor'),
+      ).not.toBeInTheDocument()
+      expect(
+        screen.getByTestId('array-details-table_value-editor-0'),
+      ).toBeInTheDocument()
+    })
+
     it('dispatches ARSET when the drawer value is saved', async () => {
       const postSpy = jest
         .spyOn(apiService, 'post')

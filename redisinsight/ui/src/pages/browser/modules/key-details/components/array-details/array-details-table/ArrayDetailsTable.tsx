@@ -167,7 +167,12 @@ const ArrayDetailsTable = memo(
       (index: string, isEditing: boolean) => {
         // Opening an editor starts a new session; a stale save's callback that
         // compares against its captured session id will then no-op.
-        if (isEditing) editSessionRef.current += 1
+        if (isEditing) {
+          editSessionRef.current += 1
+          // Inline and drawer are one mutually-exclusive edit session — opening
+          // inline closes any open drawer.
+          setDrawerIndex(null)
+        }
         setEditingIndex(isEditing ? index : null)
       },
       [],
@@ -209,6 +214,10 @@ const ArrayDetailsTable = memo(
           viewFormat,
         )
         setDrawerSeed(serialize())
+        // Inline and drawer are one mutually-exclusive edit session — opening
+        // the drawer closes any open inline edit, so a later drawer save can't
+        // clear a still-open inline editor on another row.
+        setEditingIndex(null)
         setDrawerIndex(index)
       },
       [elements, compressor, viewFormat],
