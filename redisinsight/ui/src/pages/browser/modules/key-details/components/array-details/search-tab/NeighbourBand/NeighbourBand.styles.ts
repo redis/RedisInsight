@@ -9,14 +9,9 @@ import {
   VALUE_COLUMN_SIZE,
 } from '../../array-details-table/constants'
 
-// The expanded cell spans the full row and starts flush at the table's left
-// edge, so mirror the parent table's column layout: a spacer for the leading
-// selection column, the index and value columns, and a spacer for the trailing
-// actions column. redis-ui's Table (table-layout: fixed) hands out slack
-// proportionally to each column, so a grid with the same proportions stays
-// aligned at any width. The selection width is rem; at the app's 62.5% root it
-// resolves to the same px scale as the other columns, so `* 10` puts all four
-// tracks on one proportional scale.
+// Mirror the parent table's columns (selection + index + value + actions
+// spacers) so expanded rows line up under them at any width. `* 10` scales the
+// rem selection width to the px columns' scale (app's 62.5% root).
 const SELECTION_COLUMN_FR = SELECTION_COLUMN_WIDTH_REM * 10
 
 export const Band = styled(Col)`
@@ -40,8 +35,8 @@ export const BandRow = styled.div<
     $match ? theme.semantic.color.background.neutral200 : 'transparent'};
 `
 
-// Match the parent table body cell padding (0.4rem 1.2rem) and overflow so the
-// index/value content lines up under — and clips like — the parent columns.
+// Match the parent body cell's padding and overflow so content lines up under —
+// and clips like — the parent columns.
 export const BandCell = styled.div`
   min-width: 0;
   overflow: hidden;

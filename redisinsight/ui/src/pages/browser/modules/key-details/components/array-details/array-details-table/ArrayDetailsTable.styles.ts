@@ -34,11 +34,8 @@ export const StyledTable = styled(Table)`
     opacity: 1;
   }
 
-  /* Trim the row-selection column's default (wide) side padding so it hugs the
-     checkbox, and center the checkbox in the column (it renders in a full-width
-     flex wrapper that defaults to flex-start, and the column can stretch a touch
-     wider than its base). The element+class selector outranks the base cell
-     padding without needing !important. */
+  /* Trim the selection column's wide side padding and center the checkbox in it.
+     The element+class selector outranks the base cell padding (no !important). */
   th.${SELECTION_COLUMN_CELL_CLASS}, td.${SELECTION_COLUMN_CELL_CLASS} {
     padding-left: ${({ theme }) => theme.core.space.space050};
     padding-right: ${({ theme }) => theme.core.space.space050};

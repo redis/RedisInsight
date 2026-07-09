@@ -8,11 +8,6 @@ import { ArrayValueCell } from './components/ArrayValueCell'
 import { RowActionsCell } from './components/RowActionsCell'
 import { BulkDeleteHeaderCell } from './components/BulkDeleteHeaderCell'
 import { ArrayTableConfig } from './ArrayDetailsTable.types'
-// Index values are usually small numbers, so the index column takes a modest
-// share and the value column (which can hold much larger content) gets the
-// majority — instead of an even split. Both stay resizable, and the index cell
-// truncates oversized indexes into a copyable tooltip, so large indexes are
-// still fully accessible rather than hard-clamped.
 import {
   ACTIONS_COLUMN_SIZE,
   INDEX_COLUMN_SIZE,
