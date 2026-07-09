@@ -21,11 +21,14 @@ import {
   ArrayCombinator,
   ArrayGrepCriteria,
 } from 'uiSrc/slices/interfaces/array'
-
-import { CommandPreview } from '../command-preview'
-import { PreviewToggle } from '../preview-toggle'
-import { useResponsivePreviewLabel } from '../hooks'
 import {
+  CommandPreview,
+  PreviewToggle,
+  useResponsivePreviewLabel,
+} from 'uiSrc/pages/browser/modules/key-details/shared'
+
+import {
+  ARRAY_COMMAND_PREVIEW_TEST_ID,
   CONTEXT_COUNT_MAX,
   CONTEXT_COUNT_MIN,
   DEFAULT_LIMIT,
@@ -450,7 +453,12 @@ export const ArraySearchForm = ({
           />
         </FlexItem>
         <FlexItem grow>
-          {previewVisible && <CommandPreview command={command} />}
+          {previewVisible && (
+            <CommandPreview
+              command={command}
+              data-testid={ARRAY_COMMAND_PREVIEW_TEST_ID}
+            />
+          )}
         </FlexItem>
         {onReset && (
           <FlexItem grow={false}>

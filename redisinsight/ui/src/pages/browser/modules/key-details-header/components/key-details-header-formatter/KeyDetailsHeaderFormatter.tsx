@@ -45,7 +45,6 @@ const KeyDetailsHeaderFormatter = (props: Props) => {
   const { value: keyValue } = useAppSelector(stringDataSelector)
 
   const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false)
-  const [typeSelected, setTypeSelected] = useState<KeyValueFormat>(viewFormat)
   const [options, setOptions] = useState<any[]>([])
 
   const dispatch = useAppDispatch()
@@ -66,7 +65,7 @@ const KeyDetailsHeaderFormatter = (props: Props) => {
             content={
               !isStringFormattingEnabled
                 ? TEXT_DISABLED_STRING_FORMATTING
-                : typeSelected
+                : viewFormat
             }
             position="top"
             anchorClassName="flex-row"
@@ -114,7 +113,6 @@ const KeyDetailsHeaderFormatter = (props: Props) => {
       },
     })
 
-    setTypeSelected(value)
     setIsSelectOpen(false)
     dispatch(setViewFormat(value))
   }
@@ -137,7 +135,7 @@ const KeyDetailsHeaderFormatter = (props: Props) => {
             }
             return option.inputDisplay as JSX.Element
           }}
-          value={typeSelected}
+          value={viewFormat}
           onChange={(value: any) => onChangeType(value)}
           data-testid="select-format-key-value"
         />

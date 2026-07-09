@@ -214,10 +214,10 @@ export const DATABASE_LIST_MODULES_TEXT = Object.freeze({
   [RedisDefaultModules.TimeSeries]: 'Time Series',
   [RedisCustomModulesName.Proto]: 'redis-protobuf',
   [RedisCustomModulesName.IpTables]: 'RedisPushIpTables',
-  [RedisDefaultModules.Search]: 'Redis Query Engine',
-  [RedisDefaultModules.SearchLight]: 'Redis Query Engine',
-  [RedisDefaultModules.FT]: 'Redis Query Engine',
-  [RedisDefaultModules.FTL]: 'Redis Query Engine',
+  [RedisDefaultModules.Search]: 'Redis Search',
+  [RedisDefaultModules.SearchLight]: 'Redis Search',
+  [RedisDefaultModules.FT]: 'Redis Search',
+  [RedisDefaultModules.FTL]: 'Redis Search',
   [RedisDefaultModules.VectorSet]: 'Vector Set',
 })
 

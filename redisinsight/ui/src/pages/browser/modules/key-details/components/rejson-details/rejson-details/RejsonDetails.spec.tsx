@@ -268,6 +268,31 @@ describe('RejsonDetails', () => {
     })
   })
 
+  describe('change editor type button for scalar root values', () => {
+    it.each([
+      ['null', mockedJSONNull],
+      ['string', mockedJSONString],
+      ['boolean', mockedJSONBoolean],
+      ['number', mockedJSONNumber],
+    ])(
+      'should render the change editor type button for a %s root',
+      (dataType, data) => {
+        render(
+          <RejsonDetails
+            {...instance(mockedProps)}
+            data={data}
+            dataType={dataType}
+            parentPath="$"
+            selectedKey={mockedSelectedKey}
+            isDownloaded
+          />,
+        )
+
+        expect(screen.getByTestId('change-editor-type')).toBeInTheDocument()
+      },
+    )
+  })
+
   it('should open inline editor to add JSON key value for object', () => {
     render(
       <RejsonDetails

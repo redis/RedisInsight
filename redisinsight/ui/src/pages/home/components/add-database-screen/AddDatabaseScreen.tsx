@@ -154,6 +154,7 @@ const AddDatabaseScreen = (props: Props) => {
                   <PrimaryButton
                     type="submit"
                     disabled={!!isInvalid}
+                    loading={isLoading}
                     icon={isInvalid ? InfoIcon : undefined}
                     data-testid="btn-submit"
                   >

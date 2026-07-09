@@ -103,4 +103,8 @@ export const knownFeatures: Record<KnownFeatures, IFeatureFlag> = {
     name: KnownFeatures.DevLanguage,
     storage: FeatureStorage.Database,
   },
+  [KnownFeatures.WhatsNew]: {
+    name: KnownFeatures.WhatsNew,
+    storage: FeatureStorage.Database,
+  },
 };

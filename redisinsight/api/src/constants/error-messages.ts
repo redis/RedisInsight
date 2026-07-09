@@ -27,6 +27,8 @@ export default {
   UNDEFINED_INSTANCE_ID: 'Undefined redis database instance id.',
   NO_CONNECTION_TO_REDIS_DB: 'No connection to the Redis Database.',
   WRONG_DATABASE_TYPE: 'Wrong database type.',
+  HOST_PORT_NOT_EDITABLE_FOR_MANAGED_DATABASE:
+    'Host and port cannot be changed for a database managed by a cloud provider.',
   CONNECTION_TIMEOUT:
     'The connection has timed out, please check the connection details.',
   DB_CONNECTION_TIMEOUT:

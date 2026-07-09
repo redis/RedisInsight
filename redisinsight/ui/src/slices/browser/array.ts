@@ -578,6 +578,13 @@ export function updateArrayElementAction(
         encodingParams(state),
       )
       if (isStatusSuccessful(status)) {
+        sendEventTelemetry({
+          event: TelemetryEvent.ARRAY_ELEMENT_EDITED,
+          eventData: {
+            databaseId: state.connections.instances.connectedInstance?.id,
+          },
+        })
+
         // The user may have switched database or key while the POST was in
         // flight. Only patch the table when the edit still belongs to the
         // current selection, so a late success can't overwrite a same-index
@@ -1059,6 +1066,14 @@ export function appendArrayElement(
         encodingParams(state),
       )
       if (isStatusSuccessful(status)) {
+        sendEventTelemetry({
+          event: TelemetryEvent.ARRAY_ELEMENT_ADDED,
+          eventData: {
+            databaseId: state.connections.instances.connectedInstance?.id,
+            mode: 'append',
+          },
+        })
+
         dispatch<any>(
           applyArrayWriteResult(
             params.key,
@@ -1111,6 +1126,14 @@ export function addArrayElement(
         encodingParams(state),
       )
       if (isStatusSuccessful(status)) {
+        sendEventTelemetry({
+          event: TelemetryEvent.ARRAY_ELEMENT_ADDED,
+          eventData: {
+            databaseId: state.connections.instances.connectedInstance?.id,
+            mode: 'at_index',
+          },
+        })
+
         dispatch<any>(
           applyArrayWriteResult(
             params.key,

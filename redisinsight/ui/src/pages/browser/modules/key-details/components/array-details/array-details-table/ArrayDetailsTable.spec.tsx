@@ -69,15 +69,15 @@ describe('ArrayDetailsTable', () => {
     ).toHaveTextContent('18446744073709551610')
   })
 
-  it('shows "(empty)" for null values (gap-preserving range)', () => {
+  it('shows "Empty" for null values (gap-preserving range)', () => {
     renderComponent([arrayElementFactory.build({ index: '3' })])
 
     expect(screen.getByTestId('array-details-table-empty-3')).toHaveTextContent(
-      '(empty)',
+      'Empty',
     )
   })
 
-  it('shows "(empty)" when value is undefined (JSON-dropped key edge case)', () => {
+  it('shows "Empty" when value is undefined (JSON-dropped key edge case)', () => {
     renderComponent([
       arrayElementFactory.build({
         index: '4',
@@ -86,7 +86,7 @@ describe('ArrayDetailsTable', () => {
     ])
 
     expect(screen.getByTestId('array-details-table-empty-4')).toHaveTextContent(
-      '(empty)',
+      'Empty',
     )
   })
 

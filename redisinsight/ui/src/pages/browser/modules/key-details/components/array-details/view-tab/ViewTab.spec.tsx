@@ -8,7 +8,7 @@ import {
   screen,
   waitFor,
 } from 'uiSrc/utils/test-utils'
-import { KeyTypes } from 'uiSrc/constants'
+import { KeyTypes, KeyValueFormat } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
 import { apiService } from 'uiSrc/services'
 import { initialState as initialStateArray } from 'uiSrc/slices/browser/array'
@@ -59,6 +59,33 @@ const renderView = (
 }
 
 describe('ViewTab', () => {
+  it('renders the value-format selector alongside Add Elements', () => {
+    renderView(keyBuffer, {}, [
+      arrayElementWithValueFactory.build({ index: '7' }),
+    ])
+
+    expect(screen.getByTestId('select-format-key-value')).toBeInTheDocument()
+    expect(screen.getByTestId(ADD_BTN)).toBeInTheDocument()
+  })
+
+  it('renders Markdown values inline in the row without expansion', () => {
+    const state = buildState([
+      arrayElementWithValueFactory.build({
+        index: '7',
+        value: stringToBuffer('# Heading'),
+      }),
+    ])
+    state.browser.keys.selectedKey.viewFormat = KeyValueFormat.Markdown
+    const store = mockStore(state)
+    store.clearActions()
+    render(<ViewTab keyProp={keyBuffer} isActive />, { store })
+
+    expect(screen.getByTestId('markdown-viewer')).toBeInTheDocument()
+    expect(
+      screen.queryByTestId('array-expanded-value-7'),
+    ).not.toBeInTheDocument()
+  })
+
   it('renders a per-row delete affordance for a populated element', () => {
     renderView(keyBuffer, {}, [
       arrayElementWithValueFactory.build({ index: '7' }),
@@ -140,10 +167,8 @@ describe('ViewTab', () => {
       arrayElementWithValueFactory.build({ index: '7' }),
     ])
 
-    fireEvent.click(screen.getByTestId('array-range-form-delete'))
-    fireEvent.click(
-      await screen.findByTestId('array-range-form-delete-confirm'),
-    )
+    fireEvent.click(screen.getByTestId('array-delete-range'))
+    fireEvent.click(await screen.findByTestId('array-delete-range-confirm'))
 
     // The form's default range is the live input value the delete targets.
     await waitFor(() =>
@@ -174,16 +199,35 @@ describe('ViewTab', () => {
       await screen.findByTestId('array-bulk-remove-btn-icon'),
     ).toBeInTheDocument()
 
-    fireEvent.click(screen.getByTestId('array-range-form-delete'))
-    fireEvent.click(
-      await screen.findByTestId('array-range-form-delete-confirm'),
-    )
+    fireEvent.click(screen.getByTestId('array-delete-range'))
+    fireEvent.click(await screen.findByTestId('array-delete-range-confirm'))
 
     await waitFor(() =>
       expect(
         screen.queryByTestId('array-bulk-remove-btn-icon'),
       ).not.toBeInTheDocument(),
     )
+  })
+
+  it('keeps the delete-range confirm open across a non-key re-render', async () => {
+    // The confirm lives in DeleteRangeAction local state, so it survives only
+    // while the Actions render prop keeps a stable identity. A fresh Actions
+    // each render would be a new component type, remounting DeleteRangeAction
+    // and silently dropping an open confirm on any parent update.
+    const { rerender } = renderView(keyBuffer, {}, [
+      arrayElementWithValueFactory.build({ index: '7' }),
+    ])
+
+    fireEvent.click(screen.getByTestId('array-delete-range'))
+    expect(
+      await screen.findByTestId('array-delete-range-confirm'),
+    ).toBeInTheDocument()
+
+    // Re-render that is not a key switch (same bytes, fresh buffer): the open
+    // confirm must not be torn down.
+    rerender(<ViewTab keyProp={stringToBuffer(KEY)} isActive />)
+
+    expect(screen.getByTestId('array-delete-range-confirm')).toBeInTheDocument()
   })
 
   it('drops the multi-select when the range is reset', async () => {

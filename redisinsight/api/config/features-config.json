@@ -1,5 +1,5 @@
 {
-  "version": 5.1,
+  "version": 6.1,
   "features": {
     "dev-language": {
       "flag": true,
@@ -153,6 +153,10 @@
       "perc": [[0, 0]]
     },
     "prodMode": {
+      "flag": true,
+      "perc": [[0, 100]]
+    },
+    "whatsNew": {
       "flag": true,
       "perc": [[0, 100]]
     },

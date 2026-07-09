@@ -22,3 +22,6 @@ export function FormField(props: RedisFormFieldProps) {
   }
   return <RedisFormField {...props} />
 }
+
+// Standalone label for use outside a FormField (e.g. column headers).
+FormField.Label = RedisFormField.Label

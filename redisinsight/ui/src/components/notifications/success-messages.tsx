@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import i18n, { Trans } from 'uiSrc/i18n'
+import i18n, { escapeTrans, Trans } from 'uiSrc/i18n'
 import { EXTERNAL_LINKS } from 'uiSrc/constants/links'
 import {
   IBulkActionOverview,
@@ -34,12 +34,6 @@ const bold = (
     {''}
   </Text>
 )
-
-// <Trans> parses interpolated values as markup (escapeValue is off), so a
-// user-provided name containing e.g. "<br/>" would be rendered as a tag.
-// Escape such values before passing them to <Trans>.
-const escapeTrans = (value: string) =>
-  value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
 export default {
   ADDED_NEW_INSTANCE: (instanceName: string) => ({

@@ -15,25 +15,32 @@ import { PreviewToggleProps } from './PreviewToggle.types'
 import * as S from './PreviewToggle.styles'
 
 /**
- * Toggle that shows/hides the inline command preview across the array forms.
- * The label reads "Preview command" when there's room and collapses to
- * "Preview" on narrow layouts — the caller decides via `wide`.
+ * Toggle that shows/hides the inline command preview. The label reads
+ * "Preview command" when there's room and collapses to "Preview" on narrow
+ * layouts — the caller decides via `wide`.
  */
 export const PreviewToggle = ({
   pressed,
   onPressedChange,
   wide = false,
+  disabled = false,
+  disabledTooltip,
   'data-testid': dataTestId,
 }: PreviewToggleProps) => (
   <RiTooltip
     content={
-      pressed ? PREVIEW_TOGGLE_HIDE_TOOLTIP : PREVIEW_TOGGLE_SHOW_TOOLTIP
+      pressed
+        ? PREVIEW_TOGGLE_HIDE_TOOLTIP
+        : disabled && disabledTooltip
+          ? disabledTooltip
+          : PREVIEW_TOGGLE_SHOW_TOOLTIP
     }
     position="top"
   >
     <S.PreviewToggleButton
       pressed={pressed}
       onPressedChange={onPressedChange}
+      disabled={disabled}
       aria-label={PREVIEW_TOGGLE_ARIA_LABEL}
       data-testid={dataTestId}
     >

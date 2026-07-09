@@ -8,10 +8,14 @@ import { ArrayValueCell } from './components/ArrayValueCell'
 import { RowActionsCell } from './components/RowActionsCell'
 import { BulkDeleteHeaderCell } from './components/BulkDeleteHeaderCell'
 import { ArrayTableConfig } from './ArrayDetailsTable.types'
+import {
+  ACTIONS_COLUMN_SIZE,
+  INDEX_COLUMN_SIZE,
+  SELECTION_COLUMN_WIDTH_REM,
+  VALUE_COLUMN_SIZE,
+} from './constants'
 
 export const TEST_ID = 'array-details-table'
-
-const ACTIONS_COLUMN_SIZE = 48
 
 const indexColumn: ColumnDef<ArrayDataElement> = {
   id: 'index',
@@ -19,6 +23,8 @@ const indexColumn: ColumnDef<ArrayDataElement> = {
   header: 'Index',
   enableSorting: false,
   enableResizing: true,
+  size: INDEX_COLUMN_SIZE,
+  sizeUnit: 'px',
   cell: ({ row }: CellContext<ArrayDataElement, unknown>) => (
     <ArrayIndexCell
       index={row.original.index}
@@ -34,6 +40,8 @@ const valueColumn: ColumnDef<ArrayDataElement> = {
   header: 'Value',
   enableSorting: false,
   enableResizing: true,
+  size: VALUE_COLUMN_SIZE,
+  sizeUnit: 'px',
   cell: ({ row, table }: CellContext<ArrayDataElement, unknown>) => {
     const {
       compressor,
@@ -97,5 +105,21 @@ export const arrayColumns: ColumnDef<ArrayDataElement>[] = [
   valueColumn,
 ]
 
-const MIN_COLUMN_WIDTH = 160
-export const TABLE_MIN_WIDTH = `${arrayColumns.length * MIN_COLUMN_WIDTH}px`
+// Width below which the table scrolls horizontally instead of squeezing the
+// index/value columns. Sums every column present — including the optional
+// selection (rem) and actions (px) columns, hence the calc.
+export const getTableMinWidth = ({
+  hasSelectionColumn,
+  hasActionsColumn,
+}: {
+  hasSelectionColumn: boolean
+  hasActionsColumn: boolean
+}): string => {
+  const pxColumns =
+    INDEX_COLUMN_SIZE +
+    VALUE_COLUMN_SIZE +
+    (hasActionsColumn ? ACTIONS_COLUMN_SIZE : 0)
+  return hasSelectionColumn
+    ? `calc(${pxColumns}px + ${SELECTION_COLUMN_WIDTH_REM}rem)`
+    : `${pxColumns}px`
+}

@@ -12,12 +12,14 @@ import {
   defaultValueRender,
   RiSelect,
 } from 'uiSrc/components/base/forms/select/RiSelect'
+import { useTranslation } from 'uiSrc/i18n'
 
 interface InitialValuesType {
   timezone: TimezoneOption
 }
 
 const TimezoneForm = () => {
+  const { t } = useTranslation()
   const config = useAppSelector(userSettingsConfigSelector)
   const dispatch = useAppDispatch()
 
@@ -66,6 +68,10 @@ const TimezoneForm = () => {
         style={{ width: 240 }}
         options={timezoneOptions.map((option) => ({
           ...option,
+          inputDisplay:
+            option.value === TimezoneOption.Local
+              ? t('settings.general.datetime.timezone.local')
+              : option.inputDisplay,
           'data-test-subj': `zone-option-${option.value}`,
         }))}
         value={formik.values.timezone}

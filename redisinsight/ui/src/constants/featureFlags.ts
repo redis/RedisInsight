@@ -19,4 +19,5 @@ export enum FeatureFlags {
   prodMode = 'prodMode',
   valueDecoder = 'valueDecoder',
   devLanguage = 'dev-language',
+  whatsNew = 'whatsNew',
 }

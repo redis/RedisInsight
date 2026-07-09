@@ -14,6 +14,7 @@ import {
 } from 'uiSrc/slices/browser/keys'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { addMessageNotification } from 'uiSrc/slices/app/notifications'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { ApiEndpoints, KeyTypes } from 'uiSrc/constants'
 import { useLoadData } from 'uiSrc/services/hooks'
 import { ActionFooter } from 'uiSrc/pages/browser/components/action-footer'
@@ -42,6 +43,7 @@ import LoadSampleDataset, {
 } from './LoadSampleDataset'
 import {
   ArrayCreationMode,
+  ArrayCreationSource,
   CONTIGUOUS_MODE,
   CREATION_MODE_OPTIONS,
   DEFAULT_START_INDEX,
@@ -177,6 +179,22 @@ const AddKeyArray = (props: Props) => {
           keyType: KeyTypes.Array,
         }),
       )
+      sendEventTelemetry({
+        event: TelemetryEvent.ARRAY_SAMPLE_DATASET_LOADED,
+        eventData: {
+          databaseId: instanceId,
+          collectionName: dataset.collectionName,
+        },
+      })
+      // Sample datasets carry no contiguous/sparse dimension, so ARRAY_CREATED
+      // omits the mode discriminator here.
+      sendEventTelemetry({
+        event: TelemetryEvent.ARRAY_CREATED,
+        eventData: {
+          databaseId: instanceId,
+          source: ArrayCreationSource.SampleDataset,
+        },
+      })
       dispatch(
         addMessageNotification(
           ttlApplied
@@ -205,7 +223,19 @@ const AddKeyArray = (props: Props) => {
     if (keyTTL !== undefined && keyTTL !== null) {
       data.expire = keyTTL
     }
-    dispatch(addArrayKey(data, onCancel))
+    dispatch(
+      addArrayKey(data, () => {
+        sendEventTelemetry({
+          event: TelemetryEvent.ARRAY_CREATED,
+          eventData: {
+            databaseId: instanceId,
+            source: ArrayCreationSource.Scratch,
+            mode,
+          },
+        })
+        onCancel()
+      }),
+    )
   }
 
   const onClickAction = () => {

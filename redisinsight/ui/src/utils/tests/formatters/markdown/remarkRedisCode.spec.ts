@@ -1,8 +1,6 @@
 import { visit } from 'unist-util-visit'
 import { remarkCode } from 'uiSrc/utils/formatters/markdown'
 
-jest.mock('unist-util-visit')
-
 const visitMock = visit as jest.Mock
 
 const setupVisitMock = (node: Record<string, unknown>) => {

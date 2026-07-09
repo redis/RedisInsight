@@ -14,10 +14,19 @@ import {
   initialState as initialStateArray,
   setArrayActiveQuery,
 } from 'uiSrc/slices/browser/array'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { useArrayRangeQuery } from './useArrayRangeQuery'
+
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
+}))
+
+const mockedSendEventTelemetry = jest.mocked(sendEventTelemetry)
 
 const KEY = 'readings'
 const keyBuffer = stringToBuffer(KEY)
+const INSTANCE_ID = 'instance-1'
 
 const buildState = (
   overrides: {
@@ -28,6 +37,7 @@ const buildState = (
 ) => {
   const next = cloneDeep(initialStateDefault)
   next.browser.array = cloneDeep(initialStateArray)
+  next.connections.instances.connectedInstance.id = INSTANCE_ID
   if (overrides.activeQuery) {
     next.browser.array.query = overrides.activeQuery
   }
@@ -52,6 +62,7 @@ const renderWithStore = (
 
 describe('useArrayRangeQuery', () => {
   beforeEach(() => {
+    mockedSendEventTelemetry.mockClear()
     apiService.post = jest
       .fn()
       .mockResolvedValue({ status: 200, data: { keyName: KEY, elements: [] } })
@@ -212,6 +223,76 @@ describe('useArrayRangeQuery', () => {
       url.includes('array/get-range'),
     )
     expect(call?.[1]).toEqual({ keyName: keyBuffer, start: '0', end: '9' })
+  })
+
+  describe('telemetry', () => {
+    it('fires ARRAY_VIEW_QUERY_RUN once per explicit run with the current mode', async () => {
+      const { result } = renderWithStore(keyBuffer)
+      mockedSendEventTelemetry.mockClear()
+
+      await act(async () => {
+        result.current.runQuery('2', '8')
+      })
+
+      expect(mockedSendEventTelemetry).toHaveBeenCalledTimes(1)
+      expect(mockedSendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.ARRAY_VIEW_QUERY_RUN,
+        eventData: { databaseId: INSTANCE_ID, showEmpty: true },
+      })
+    })
+
+    it('reports showEmpty=false when running in ARSCAN mode', async () => {
+      const { result } = renderWithStore(keyBuffer)
+
+      act(() => {
+        result.current.setShowEmpty(false)
+      })
+      mockedSendEventTelemetry.mockClear()
+
+      await act(async () => {
+        result.current.runQuery('0', '99')
+      })
+
+      expect(mockedSendEventTelemetry).toHaveBeenCalledTimes(1)
+      expect(mockedSendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.ARRAY_VIEW_QUERY_RUN,
+        eventData: { databaseId: INSTANCE_ID, showEmpty: false },
+      })
+    })
+
+    it('does not fire on the auto-fetch triggered by a key switch', () => {
+      renderWithStore(keyBuffer)
+
+      expect(mockedSendEventTelemetry).not.toHaveBeenCalled()
+    })
+
+    it('does not fire on a dead click before the key is ready', async () => {
+      const { result } = renderWithStore(
+        keyBuffer,
+        buildState({ selectedKeyName: null }),
+      )
+      mockedSendEventTelemetry.mockClear()
+
+      await act(async () => {
+        result.current.runQuery('0', '9')
+      })
+
+      expect(mockedSendEventTelemetry).not.toHaveBeenCalled()
+    })
+
+    it('does not fire on resetQuery or revealIndex', async () => {
+      const { result } = renderWithStore(keyBuffer)
+      mockedSendEventTelemetry.mockClear()
+
+      await act(async () => {
+        result.current.resetQuery()
+      })
+      act(() => {
+        result.current.revealIndex('100')
+      })
+
+      expect(mockedSendEventTelemetry).not.toHaveBeenCalled()
+    })
   })
 
   describe('revealIndex', () => {

@@ -18,6 +18,7 @@ import {
   transformQueryParamsObject,
   getDiffKeysOfObjectValues,
   isAzureDatabase,
+  isManagedDatabase,
 } from 'uiSrc/utils'
 import { BuildType } from 'uiSrc/constants/env'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
@@ -313,6 +314,7 @@ const ManualConnectionWrapper = (props: Props) => {
     )
 
   const isFromAzure = isAzureDatabase(editedInstance)
+  const isManaged = isManagedDatabase(editedInstance)
 
   return (
     <ManualConnectionForm
@@ -331,6 +333,7 @@ const ManualConnectionWrapper = (props: Props) => {
       onAliasEdited={onAliasEdited}
       onClickBack={onClickBack}
       isFromAzure={isFromAzure}
+      isManaged={isManaged}
     />
   )
 }

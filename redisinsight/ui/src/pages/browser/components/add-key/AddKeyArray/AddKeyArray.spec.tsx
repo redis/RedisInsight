@@ -10,6 +10,7 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { addArrayKey, addKeyIntoList } from 'uiSrc/slices/browser/keys'
 import { stringToBuffer } from 'uiSrc/utils'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { Environment } from 'apiClient'
 import {
   bulkActionOverviewFactory,
@@ -36,6 +37,14 @@ jest.mock('uiSrc/slices/browser/keys', () => ({
   addArrayKey: jest.fn(() => ({ type: 'keys/addArrayKey' })),
 }))
 
+// A stable object keeps the memoized selector happy; a fresh one per call
+// floods the test output with reselect identity warnings.
+const mockConnectedInstance = { id: 'instanceId' }
+jest.mock('uiSrc/slices/instances/instances', () => ({
+  ...jest.requireActual('uiSrc/slices/instances/instances'),
+  connectedInstanceSelector: () => mockConnectedInstance,
+}))
+
 const mockLoad = jest.fn()
 jest.mock('uiSrc/services/hooks', () => ({
   ...jest.requireActual('uiSrc/services/hooks'),
@@ -58,6 +67,11 @@ jest.mock('./LoadSampleDataset', () => ({
 const mockUseDatabaseEnvironment = jest.fn()
 jest.mock('uiSrc/components/hooks/useDatabaseEnvironment', () => ({
   useDatabaseEnvironment: () => mockUseDatabaseEnvironment(),
+}))
+
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
 }))
 
 // A bulk-import overview that reports a single succeeded command (one
@@ -259,6 +273,50 @@ describe('AddKeyArray', () => {
         expect.any(Function),
       )
     })
+
+    it('should send ARRAY_CREATED with the contiguous mode on a manual submit', () => {
+      renderComponent({ keyName: 'name', onCancel: jest.fn() })
+
+      fireEvent.click(screen.getByTestId('add-key-array-btn'))
+
+      // ARRAY_CREATED rides the addArrayKey success callback, which the mocked
+      // thunk never invokes, so drive it directly.
+      const onSuccess = (addArrayKey as jest.Mock).mock.calls[0][1]
+      onSuccess()
+
+      expect(sendEventTelemetry).toHaveBeenCalledTimes(1)
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.ARRAY_CREATED,
+        eventData: {
+          databaseId: 'instanceId',
+          source: 'scratch',
+          mode: CONTIGUOUS_MODE,
+        },
+      })
+    })
+
+    it('should send ARRAY_CREATED with the sparse mode on a manual submit', async () => {
+      renderComponent({ keyName: 'name', onCancel: jest.fn() })
+
+      await selectSparseMode()
+      fireEvent.change(screen.getByTestId('sparse-index-0'), {
+        target: { value: '5' },
+      })
+      fireEvent.click(screen.getByTestId('add-key-array-btn'))
+
+      const onSuccess = (addArrayKey as jest.Mock).mock.calls[0][1]
+      onSuccess()
+
+      expect(sendEventTelemetry).toHaveBeenCalledTimes(1)
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.ARRAY_CREATED,
+        eventData: {
+          databaseId: 'instanceId',
+          source: 'scratch',
+          mode: SPARSE_MODE,
+        },
+      })
+    })
   })
 
   describe('sample data mode', () => {
@@ -336,6 +394,79 @@ describe('AddKeyArray', () => {
       )
       expectMessageDispatched('Sample array added')
       expect(onCancel).toHaveBeenCalled()
+    })
+
+    it('should send both sample telemetry events on a successful submit', async () => {
+      renderComponent()
+
+      selectSampleMode()
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('add-key-array-btn'))
+      })
+
+      await waitFor(() =>
+        expect(sendEventTelemetry).toHaveBeenCalledWith({
+          event: TelemetryEvent.ARRAY_SAMPLE_DATASET_LOADED,
+          eventData: {
+            databaseId: 'instanceId',
+            collectionName: DEFAULT_SAMPLE_DATASET.collectionName,
+          },
+        }),
+      )
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.ARRAY_CREATED,
+        eventData: {
+          databaseId: 'instanceId',
+          source: 'sample_dataset',
+        },
+      })
+      // The dataset-loaded event leads so funnels read load -> created.
+      expect(sendEventTelemetry).toHaveBeenCalledTimes(2)
+      expect(
+        (sendEventTelemetry as jest.Mock).mock.calls.map(
+          ([call]) => call.event,
+        ),
+      ).toEqual([
+        TelemetryEvent.ARRAY_SAMPLE_DATASET_LOADED,
+        TelemetryEvent.ARRAY_CREATED,
+      ])
+    })
+
+    it('should send no telemetry when the sample key already exists', async () => {
+      mockCheckArrayKeyExists.mockResolvedValue(true)
+      renderComponent()
+
+      selectSampleMode()
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('add-key-array-btn'))
+      })
+
+      await waitFor(() => expectMessageDispatched('Key already exists'))
+      expect(sendEventTelemetry).not.toHaveBeenCalled()
+    })
+
+    it('should send no telemetry when the sample import fails', async () => {
+      mockLoad.mockResolvedValue(
+        bulkActionOverviewFactory.build({
+          summary: bulkActionSummaryOverviewFactory.build({
+            processed: 1,
+            succeed: 0,
+            failed: 1,
+          }),
+        }),
+      )
+      renderComponent()
+
+      selectSampleMode()
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('add-key-array-btn'))
+      })
+
+      await waitFor(() => expectMessageDispatched('Failed to create array'))
+      expect(sendEventTelemetry).not.toHaveBeenCalled()
     })
 
     it('should load the selected collection slug after switching datasets', async () => {

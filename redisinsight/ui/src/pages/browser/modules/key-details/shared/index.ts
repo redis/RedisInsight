@@ -3,3 +3,7 @@ import EditableInput from './editable-input'
 import FormattedValue from './formatted-value'
 
 export { EditableTextArea, EditableInput, FormattedValue }
+export { CommandPreview } from './command-preview'
+export type { CommandPreviewProps } from './command-preview'
+export { PreviewToggle, useResponsivePreviewLabel } from './preview-toggle'
+export type { PreviewToggleProps } from './preview-toggle'

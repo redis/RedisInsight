@@ -2,12 +2,14 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import { useAppSelector } from 'uiSrc/slices/hooks'
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
+import { KeyTypes } from 'uiSrc/constants'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { bufferToString, isEqualBuffers } from 'uiSrc/utils'
 
 import { ArrayDetailsTable } from '../array-details-table'
 import { ArraySearchForm } from '../array-search-form'
 import { ContextOption } from '../array-search-form/ArraySearchForm.types'
+import { KeyDetailsSubheader } from '../../key-details-subheader/KeyDetailsSubheader'
 import { useArraySearchQuery, useArrayElementActions } from '../hooks'
 import { DEFAULT_CONTEXT } from '../constants'
 import * as S from '../tabs.styles'
@@ -90,6 +92,7 @@ const SearchTab = ({ keyProp, isActive }: SearchTabProps) => {
         onReset={handleReset}
         disabled={!isArrayKeyReady || isRefreshDisabled}
       />
+      {isArrayKeyReady && <KeyDetailsSubheader keyType={KeyTypes.Array} />}
       <S.TabBody>
         {/* Keep the tab blank until the user runs a search, then let
             ArrayDetailsTable own the loading / error / empty states. Gate on

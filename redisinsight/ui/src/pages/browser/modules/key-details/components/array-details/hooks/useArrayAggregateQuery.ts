@@ -7,6 +7,8 @@ import {
   clearArrayAggregate,
 } from 'uiSrc/slices/browser/array'
 import { selectedKeyDataSelector } from 'uiSrc/slices/browser/keys'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { isEqualBuffers } from 'uiSrc/utils'
 import { KeyTypes } from 'uiSrc/constants'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
@@ -29,6 +31,7 @@ export const useArrayAggregateQuery = (keyProp: RedisResponseBuffer | null) => {
     arrayAggregateSelector,
   )
   const selectedKeyData = useAppSelector(selectedKeyDataSelector)
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
 
   const [start, setStart] = useState<string>(DEFAULT_RANGE_START)
   const [end, setEnd] = useState<string>(DEFAULT_RANGE_END)
@@ -46,6 +49,10 @@ export const useArrayAggregateQuery = (keyProp: RedisResponseBuffer | null) => {
 
   const runQuery = useCallback(() => {
     if (!isArrayKeyReady || !keyProp) return
+    sendEventTelemetry({
+      event: TelemetryEvent.ARRAY_AGGREGATE_QUERY_RUN,
+      eventData: { databaseId: instanceId, operation },
+    })
     dispatch(
       aggregateArray({
         key: keyProp,
@@ -55,7 +62,16 @@ export const useArrayAggregateQuery = (keyProp: RedisResponseBuffer | null) => {
         ...(operation === ArrayAggregateOperation.Match ? { value } : {}),
       }),
     )
-  }, [dispatch, isArrayKeyReady, keyProp, start, end, operation, value])
+  }, [
+    dispatch,
+    isArrayKeyReady,
+    keyProp,
+    start,
+    end,
+    operation,
+    value,
+    instanceId,
+  ])
 
   // Reset form + aggregate slice when the selected key changes. Buffer-byte
   // equality (via refs) avoids refire on referentially fresh buffers for

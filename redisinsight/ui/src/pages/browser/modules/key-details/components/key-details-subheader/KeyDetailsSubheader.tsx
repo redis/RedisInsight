@@ -24,7 +24,9 @@ export const KeyDetailsSubheader = ({ keyType, Actions }: Props) => (
                 <FlexItem className={styles.keyFormatterItem}>
                   <KeyDetailsHeaderFormatter width={width} />
                 </FlexItem>
-                <Divider className={styles.divider} orientation="vertical" />
+                {!isUndefined(Actions) && (
+                  <Divider className={styles.divider} orientation="vertical" />
+                )}
               </>
             )}
             {!isUndefined(Actions) && <Actions width={width} />}

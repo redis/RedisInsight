@@ -34,5 +34,6 @@ export * from './capability'
 export * from './rdi'
 export * from './bigString'
 export * from './vectorSet'
+export * from './whatsNew'
 
 export { Maybe, Nullable, RouterWithSubRoutes, getLetterByIndex }

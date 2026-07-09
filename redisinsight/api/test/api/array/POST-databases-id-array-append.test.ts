@@ -104,12 +104,9 @@ describe('POST /databases/:instanceId/array/append', () => {
       expect(await arget(keyName, '6')).to.eql('20.5');
     });
 
-    // Above 2^53 ioredis parses the ARLEN reply as a JS number and drops the
-    // low bit, so append derives the wrong end index. This is purely the
-    // integer-transport limitation tracked by RI-8296 (ioredis
-    // `stringNumbers`); the service keeps the index as a string, so it flips
-    // green once the client returns 64-bit integers losslessly. Skipped until.
-    it.skip('Should append precisely above 2^53 (needs ioredis 64-bit int fix — RI-8296)', async () => {
+    // The service reads ARLEN with the bigint opt-in, so the derived end index
+    // stays exact above 2^53.
+    it('Should append precisely above 2^53', async () => {
       const keyName = constants.getRandomString();
       // Length becomes 2^53 + 1 (9007199254740993) — odd, not representable as
       // a JS double, so a rounded read would collide with the seeded element.

@@ -48,6 +48,7 @@ enum BrowserStorageItem {
   valueDecoderRules = 'valueDecoderRules_',
   wbTsResultPreferences = 'wbTsResultPreferences_',
   prodModeCtaActioned = 'prodModeCtaActioned',
+  whatsNewLastVersionSeen = 'whatsNewLastVersionSeen',
 }
 
 export default BrowserStorageItem

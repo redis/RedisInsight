@@ -12,6 +12,7 @@ import {
 } from 'uiSrc/utils/test-utils'
 import { MOCK_TIMESTAMP } from 'uiSrc/mocks/data/dateNow'
 import successMessages from 'uiSrc/components/notifications/success-messages'
+import { TelemetryEvent } from 'uiSrc/telemetry'
 
 import reducer, {
   abortArrayRange,
@@ -68,6 +69,11 @@ import {
 
 jest.mock('uiSrc/services', () => ({
   ...jest.requireActual('uiSrc/services'),
+}))
+
+jest.mock('uiSrc/telemetry', () => ({
+  ...jest.requireActual('uiSrc/telemetry'),
+  sendEventTelemetry: jest.fn(),
 }))
 
 // A plain `string` is a valid RedisString, and avoids enum-vs-literal
@@ -1905,6 +1911,255 @@ describe('array slice', () => {
         expect(store.getActions()).toContainEqual(
           addErrorNotification(rejected as IAddInstanceErrorPayload),
         )
+      })
+    })
+
+    // The array slice is loaded during test setup and binds to the real
+    // sendEventTelemetry, so a module-level jest.mock cannot intercept the
+    // calls its thunks make. Reload the slice against the mock (resetModules
+    // plus a fresh import) and read the spy and apiService back from the same
+    // fresh module graph, so assertions observe the calls the reloaded thunks
+    // actually make. Mirrors how the ReJSON write-action spec mocks slice
+    // telemetry.
+    describe('CRUD telemetry events', () => {
+      let telemetrySlice: typeof import('../../browser/array')
+      let telemetryApi: typeof apiService
+      let sendEventTelemetryMock: jest.Mock
+
+      // Selection and connected instance both match the write's target, so the
+      // write applies and its event carries the connected databaseId.
+      const telemetryStore = (
+        instanceId = mockInstanceId,
+        selectedKey: unknown = mockKeyBuffer,
+      ) => {
+        const state = cloneDeep(initialStateDefault)
+        state.connections.instances.connectedInstance = {
+          ...state.connections.instances.connectedInstance,
+          id: instanceId,
+        }
+        state.app.context.browser.keyList.selectedKey = selectedKey as any
+        const next = mockStore(state)
+        next.clearActions()
+        return next
+      }
+
+      beforeEach(async () => {
+        jest.resetModules()
+        // The reloaded slice pulls a fresh service module; unmock it first so the
+        // passthrough spread does not re-evaluate the services barrel's circular
+        // exports (which throw mid-reload) while resolving `apiService`.
+        jest.unmock('uiSrc/services')
+        telemetrySlice = await import('../../browser/array')
+        telemetryApi = (await import('uiSrc/services')).apiService
+        sendEventTelemetryMock = jest.mocked(
+          (await import('uiSrc/telemetry')).sendEventTelemetry,
+        )
+      })
+
+      it('appendArrayElement fires ARRAY_ELEMENT_ADDED (append) once on success', async () => {
+        telemetryApi.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, index: '6' },
+        })
+        const local = telemetryStore()
+
+        await local.dispatch<any>(
+          telemetrySlice.appendArrayElement({
+            key: mockKeyBuffer,
+            value: 'v',
+            expectedInstanceId: mockInstanceId,
+          }),
+        )
+
+        expect(sendEventTelemetryMock).toHaveBeenCalledTimes(1)
+        expect(sendEventTelemetryMock).toHaveBeenCalledWith({
+          event: TelemetryEvent.ARRAY_ELEMENT_ADDED,
+          eventData: { databaseId: mockInstanceId, mode: 'append' },
+        })
+      })
+
+      it('addArrayElement fires ARRAY_ELEMENT_ADDED (at_index) once on success', async () => {
+        telemetryApi.post = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { keyName: mockKey } })
+        const local = telemetryStore()
+
+        await local.dispatch<any>(
+          telemetrySlice.addArrayElement({
+            key: mockKeyBuffer,
+            index: '5',
+            value: 'v',
+            expectedInstanceId: mockInstanceId,
+          }),
+        )
+
+        expect(sendEventTelemetryMock).toHaveBeenCalledTimes(1)
+        expect(sendEventTelemetryMock).toHaveBeenCalledWith({
+          event: TelemetryEvent.ARRAY_ELEMENT_ADDED,
+          eventData: { databaseId: mockInstanceId, mode: 'at_index' },
+        })
+      })
+
+      it('updateArrayElementAction fires ARRAY_ELEMENT_EDITED once on success', async () => {
+        telemetryApi.post = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: '' })
+        const local = telemetryStore()
+
+        await local.dispatch<any>(
+          telemetrySlice.updateArrayElementAction({
+            key: mockKeyBuffer,
+            index: '5',
+            value: 'B',
+          }),
+        )
+
+        expect(sendEventTelemetryMock).toHaveBeenCalledTimes(1)
+        expect(sendEventTelemetryMock).toHaveBeenCalledWith({
+          event: TelemetryEvent.ARRAY_ELEMENT_EDITED,
+          eventData: { databaseId: mockInstanceId },
+        })
+      })
+
+      it('updateArrayElementAction still fires the edit event when the selection changed mid-write', async () => {
+        telemetryApi.post = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: '' })
+        // The write already succeeded server-side; the event fires from the
+        // status check, before the stale-selection guard skips the UI patch.
+        const local = telemetryStore(
+          mockInstanceId,
+          stringToBuffer('another-key'),
+        )
+
+        await local.dispatch<any>(
+          telemetrySlice.updateArrayElementAction({
+            key: mockKeyBuffer,
+            index: '5',
+            value: 'B',
+          }),
+        )
+
+        expect(sendEventTelemetryMock).toHaveBeenCalledTimes(1)
+        expect(sendEventTelemetryMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            event: TelemetryEvent.ARRAY_ELEMENT_EDITED,
+          }),
+        )
+      })
+
+      it('deleteArrayElements fires ARRAY_ELEMENT_DELETED once on success', async () => {
+        telemetryApi.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '1' } })
+        telemetryApi.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, count: '4' },
+        })
+        const local = telemetryStore()
+
+        await local.dispatch<any>(
+          telemetrySlice.deleteArrayElements(mockKeyBuffer, ['2']),
+        )
+
+        expect(sendEventTelemetryMock).toHaveBeenCalledTimes(1)
+        expect(sendEventTelemetryMock).toHaveBeenCalledWith({
+          event: TelemetryEvent.ARRAY_ELEMENT_DELETED,
+          eventData: { databaseId: mockInstanceId },
+        })
+      })
+
+      it('deleteArrayRange fires ARRAY_RANGE_DELETED once on success', async () => {
+        telemetryApi.delete = jest
+          .fn()
+          .mockResolvedValue({ status: 200, data: { affected: '3' } })
+        telemetryApi.post = jest.fn().mockResolvedValue({
+          status: 200,
+          data: { keyName: mockKey, count: '4' },
+        })
+        const local = telemetryStore()
+
+        await local.dispatch<any>(
+          telemetrySlice.deleteArrayRange(mockKeyBuffer, '0', '9'),
+        )
+
+        expect(sendEventTelemetryMock).toHaveBeenCalledTimes(1)
+        expect(sendEventTelemetryMock).toHaveBeenCalledWith({
+          event: TelemetryEvent.ARRAY_RANGE_DELETED,
+          eventData: { databaseId: mockInstanceId },
+        })
+      })
+
+      it('fires no telemetry when a write returns a non-success status', async () => {
+        telemetryApi.post = jest
+          .fn()
+          .mockResolvedValue({ status: 304, data: null })
+        const local = telemetryStore()
+
+        await local.dispatch<any>(
+          telemetrySlice.appendArrayElement({
+            key: mockKeyBuffer,
+            value: 'v',
+            expectedInstanceId: mockInstanceId,
+          }),
+        )
+        await local.dispatch<any>(
+          telemetrySlice.addArrayElement({
+            key: mockKeyBuffer,
+            index: '5',
+            value: 'v',
+            expectedInstanceId: mockInstanceId,
+          }),
+        )
+        await local.dispatch<any>(
+          telemetrySlice.updateArrayElementAction({
+            key: mockKeyBuffer,
+            index: '5',
+            value: 'B',
+          }),
+        )
+
+        expect(sendEventTelemetryMock).not.toHaveBeenCalled()
+      })
+
+      it('fires no telemetry when a write request is rejected', async () => {
+        const rejected = {
+          response: { status: 500, data: { message: 'boom' } },
+        }
+        telemetryApi.post = jest.fn().mockRejectedValue(rejected)
+        telemetryApi.delete = jest.fn().mockRejectedValue(rejected)
+        const local = telemetryStore()
+
+        await local.dispatch<any>(
+          telemetrySlice.appendArrayElement({
+            key: mockKeyBuffer,
+            value: 'v',
+            expectedInstanceId: mockInstanceId,
+          }),
+        )
+        await local.dispatch<any>(
+          telemetrySlice.addArrayElement({
+            key: mockKeyBuffer,
+            index: '5',
+            value: 'v',
+            expectedInstanceId: mockInstanceId,
+          }),
+        )
+        await local.dispatch<any>(
+          telemetrySlice.updateArrayElementAction({
+            key: mockKeyBuffer,
+            index: '5',
+            value: 'B',
+          }),
+        )
+        await local.dispatch<any>(
+          telemetrySlice.deleteArrayElements(mockKeyBuffer, ['2']),
+        )
+        await local.dispatch<any>(
+          telemetrySlice.deleteArrayRange(mockKeyBuffer, '0', '9'),
+        )
+
+        expect(sendEventTelemetryMock).not.toHaveBeenCalled()
       })
     })
   })

@@ -22,6 +22,11 @@ export const CREATION_MODE_OPTIONS = [
 
 export const DEFAULT_START_INDEX = '0'
 
+export enum ArrayCreationSource {
+  Scratch = 'scratch',
+  SampleDataset = 'sample_dataset',
+}
+
 export enum PopulateMode {
   Sample = 'sample',
   Manual = 'manual',

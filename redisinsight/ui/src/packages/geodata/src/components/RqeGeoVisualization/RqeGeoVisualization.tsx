@@ -42,22 +42,22 @@ const getResultsErrorTitle = (
   mode: RqeGeoVisualizationProps['mode'],
 ): string => {
   if (mode === 'shape') {
-    return 'Cannot render RQE geo shape'
+    return 'Cannot render Redis Search geo shape'
   }
   if (mode === 'heatmap') {
-    return 'Cannot render RQE geo heatmap'
+    return 'Cannot render Redis Search geo heatmap'
   }
   if (mode === 'inspector') {
-    return 'Cannot inspect RQE geo results'
+    return 'Cannot inspect Redis Search geo results'
   }
-  return 'Cannot render RQE geo map'
+  return 'Cannot render Redis Search geo map'
 }
 
 const getCommandErrorTitle = (
   mode: RqeGeoVisualizationProps['mode'],
 ): string => {
   if (mode === 'inspector') {
-    return 'Cannot inspect RQE geo command'
+    return 'Cannot inspect Redis Search geo command'
   }
   return getResultsErrorTitle(mode)
 }
@@ -107,7 +107,7 @@ const renderSummary = (command: ParsedRqeGeoCommand, rowCount: number) => {
 
   return (
     <GeoSummary
-      ariaLabel="RQE command summary"
+      ariaLabel="Redis Search command summary"
       items={[
         { label: 'Command', value: command.command },
         { label: 'Index', value: command.index },
