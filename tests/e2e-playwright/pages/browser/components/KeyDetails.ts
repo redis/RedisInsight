@@ -67,6 +67,9 @@ export class KeyDetails {
   readonly addJsonFieldButton: Locator;
   readonly changeEditorTypeButton: Locator;
 
+  // Markdown-specific
+  readonly markdownViewer: Locator;
+
   constructor(page: Page) {
     this.page = page;
 
@@ -135,6 +138,9 @@ export class KeyDetails {
     this.jsonContent = page.getByTestId('json-details');
     this.addJsonFieldButton = page.getByRole('button', { name: 'Add field' });
     this.changeEditorTypeButton = page.getByRole('button', { name: 'Change editor type' });
+
+    // Markdown-specific - the rendered (sanitized) markdown output
+    this.markdownViewer = page.getByTestId('markdown-viewer');
   }
 
   async isVisible(): Promise<boolean> {
@@ -882,5 +888,10 @@ export class KeyDetails {
     const scalarValues = this.page.getByTestId('json-scalar-value');
     const targetValue = scalarValues.nth(fieldIndex);
     return await targetValue.innerText();
+  }
+
+  // Markdown methods
+  async waitForMarkdownViewer(): Promise<void> {
+    await this.markdownViewer.waitFor({ state: 'visible' });
   }
 }

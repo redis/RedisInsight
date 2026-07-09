@@ -1,5 +1,6 @@
 import React from 'react'
 import { cloneDeep } from 'lodash'
+import userEvent from '@testing-library/user-event'
 import {
   fireEvent,
   initialStateDefault,
@@ -8,12 +9,15 @@ import {
   screen,
   waitFor,
 } from 'uiSrc/utils/test-utils'
-import { KeyTypes } from 'uiSrc/constants'
+import { KeyTypes, KeyValueFormat } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
 import { apiService } from 'uiSrc/services'
 import { initialState as initialStateArray } from 'uiSrc/slices/browser/array'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
-import { arrayElementWithValueFactory } from 'uiSrc/mocks/factories/browser/array/arrayElement.factory'
+import {
+  arrayElementFactory,
+  arrayElementWithValueFactory,
+} from 'uiSrc/mocks/factories/browser/array/arrayElement.factory'
 import ViewTab from './ViewTab'
 
 jest.mock('uiSrc/services', () => ({
@@ -59,6 +63,54 @@ const renderView = (
 }
 
 describe('ViewTab', () => {
+  it('renders the value-format selector alongside Add Elements', () => {
+    renderView(keyBuffer, {}, [
+      arrayElementWithValueFactory.build({ index: '7' }),
+    ])
+
+    expect(screen.getByTestId('select-format-key-value')).toBeInTheDocument()
+    expect(screen.getByTestId(ADD_BTN)).toBeInTheDocument()
+  })
+
+  it('expands a populated row into the full formatted value', async () => {
+    const user = userEvent.setup()
+    const state = buildState([
+      arrayElementWithValueFactory.build({
+        index: '7',
+        value: stringToBuffer('# Heading'),
+      }),
+    ])
+    state.browser.keys.selectedKey.viewFormat = KeyValueFormat.Markdown
+    const store = mockStore(state)
+    store.clearActions()
+    render(<ViewTab keyProp={keyBuffer} isActive />, { store })
+
+    // Collapsed rows already render the Markdown viewer inline; the expanded
+    // sub-row surface is not mounted yet.
+    expect(screen.getAllByTestId('markdown-viewer')).toHaveLength(1)
+    expect(
+      screen.queryByTestId('array-expanded-value-7'),
+    ).not.toBeInTheDocument()
+
+    await user.click(screen.getByTestId('array-details-table-index-7'))
+
+    expect(
+      await screen.findByTestId('array-expanded-value-7'),
+    ).toBeInTheDocument()
+    expect(screen.getAllByTestId('markdown-viewer')).toHaveLength(2)
+  })
+
+  it('does not expand an empty slot', async () => {
+    const user = userEvent.setup()
+    renderView(keyBuffer, {}, [arrayElementFactory.build({ index: '3' })])
+
+    await user.click(screen.getByTestId('array-details-table-index-3'))
+
+    expect(
+      screen.queryByTestId('array-expanded-value-3'),
+    ).not.toBeInTheDocument()
+  })
+
   it('renders a per-row delete affordance for a populated element', () => {
     renderView(keyBuffer, {}, [
       arrayElementWithValueFactory.build({ index: '7' }),

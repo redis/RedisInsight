@@ -1,20 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react'
-import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
 import { deleteArrayRange } from 'uiSrc/slices/browser/array'
+import { KeyTypes } from 'uiSrc/constants'
+import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { bufferToString, isEqualBuffers } from 'uiSrc/utils'
-import { Row } from 'uiSrc/components/base/layout/flex'
 import { AddItemsAction } from 'uiSrc/pages/browser/modules/key-details/components/key-details-actions'
 
 import { ArrayDetailsTable } from '../array-details-table'
+import { ArrayExpandedValue } from '../array-details-table/components'
 import { ArrayRangeForm } from '../array-range-form'
 import { ArrayAddForm } from '../array-add-form'
+import { KeyDetailsSubheader } from '../../key-details-subheader/KeyDetailsSubheader'
 import { AddKeysContainer } from '../../common/AddKeysContainer.styled'
 import { useArrayRangeQuery, useArrayElementActions } from '../hooks'
 import * as S from '../tabs.styles'
-import * as LS from './ViewTab.styles'
 import { ViewTabProps } from './ViewTab.types'
 
 const ADD_ELEMENTS_TITLE = 'Add Elements'
@@ -102,6 +103,14 @@ const ViewTab = ({
     }
   }
 
+  const Actions = ({ width }: { width: number }) => (
+    <AddItemsAction
+      title={ADD_ELEMENTS_TITLE}
+      width={width}
+      openAddItemPanel={openAddPanel}
+    />
+  )
+
   return (
     <>
       <ArrayRangeForm
@@ -119,19 +128,7 @@ const ViewTab = ({
         disabled={!isArrayKeyReady || isRefreshDisabled}
       />
       {isArrayKeyReady && (
-        <LS.SubheaderContainer grow={false}>
-          <AutoSizer disableHeight>
-            {({ width = 0 }) => (
-              <Row style={{ width }} justify="end" align="center">
-                <AddItemsAction
-                  title={ADD_ELEMENTS_TITLE}
-                  width={width}
-                  openAddItemPanel={openAddPanel}
-                />
-              </Row>
-            )}
-          </AutoSizer>
-        </LS.SubheaderContainer>
+        <KeyDetailsSubheader keyType={KeyTypes.Array} Actions={Actions} />
       )}
       <S.TabBody>
         {!loading && (
@@ -144,6 +141,15 @@ const ViewTab = ({
               deleteConfig={deleteConfig}
               selectionConfig={selectionConfig}
               bulkDeleteConfig={bulkDeleteConfig}
+              expandRowOnClick
+              getIsRowExpandable={(element) => element.value != null}
+              renderExpandedRow={(row) => (
+                <ArrayExpandedValue
+                  index={row.original.index}
+                  // Non-null by getIsRowExpandable; values arrive as buffers.
+                  value={row.original.value as RedisResponseBuffer}
+                />
+              )}
             />
           </S.TabTableWrapper>
         )}

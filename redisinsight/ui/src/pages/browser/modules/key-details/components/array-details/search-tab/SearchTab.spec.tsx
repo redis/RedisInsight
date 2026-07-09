@@ -55,6 +55,12 @@ describe('SearchTab', () => {
     expect(screen.getByTestId('array-search-form')).toBeInTheDocument()
   })
 
+  it('renders the value-format selector', () => {
+    renderTab()
+
+    expect(screen.getByTestId('select-format-key-value')).toBeInTheDocument()
+  })
+
   it('disables the search form while the key is locked for editing', () => {
     // isRefreshDisabled is set by the active table while a value editor is open
     // or an ARSET is in flight; the query form must not reload the table then.
