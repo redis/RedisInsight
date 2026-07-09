@@ -15,11 +15,9 @@ import { PreviewToggleProps } from './PreviewToggle.types'
 import * as S from './PreviewToggle.styles'
 
 /**
- * Toggle that shows/hides the inline command preview across the key-details
- * forms (Array range / search / aggregate, Vector Set similarity search).
- * The label reads "Preview command" when there's room and collapses to
- * "Preview" on narrow layouts — the caller decides via `wide` (typically fed
- * by `useResponsivePreviewLabel`).
+ * Toggle that shows/hides the inline command preview. The label reads
+ * "Preview command" when there's room and collapses to "Preview" on narrow
+ * layouts — the caller decides via `wide`.
  */
 export const PreviewToggle = ({
   pressed,

@@ -86,9 +86,5 @@ export const DEFAULT_CONTEXT = {
  */
 export const ARRAY_BULK_DELETE_MAX = 1_000_000
 
-/**
- * Test id shared by the command preview in all three array forms. The
- * "range-form" prefix is historical — it predates the Search and Aggregate
- * tabs adopting the preview.
- */
+/** Shared by all three array forms; the "range-form" prefix is historical. */
 export const ARRAY_COMMAND_PREVIEW_TEST_ID = 'array-range-form-command-preview'

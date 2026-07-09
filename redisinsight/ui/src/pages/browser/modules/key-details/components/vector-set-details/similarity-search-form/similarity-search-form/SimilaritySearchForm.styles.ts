@@ -61,7 +61,6 @@ export const FilterLabel = styled.span<HTMLAttributes<HTMLSpanElement>>`
 
 // A plain div (not `Row`) so it can hold the ResizeObserver ref that drives
 // the responsive preview label — layout components don't forward refs.
-// Mirrors the array forms' ActionRow.
 export const ActionRow = styled.div<{
   children?: React.ReactNode
   ref?: React.Ref<HTMLDivElement>

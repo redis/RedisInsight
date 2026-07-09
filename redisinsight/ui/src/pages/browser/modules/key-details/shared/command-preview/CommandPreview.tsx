@@ -10,8 +10,7 @@ const LOADING_PLACEHOLDER = 'Building command…'
 
 /**
  * Inline single-line preview of the Redis command that the current form
- * state will dispatch. Shared across key-details verticals (Array range /
- * search / aggregate forms, Vector Set similarity search).
+ * state will dispatch.
  */
 export const CommandPreview = ({
   command,
