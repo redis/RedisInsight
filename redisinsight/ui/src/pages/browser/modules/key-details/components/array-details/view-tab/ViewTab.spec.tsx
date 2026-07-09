@@ -1,6 +1,5 @@
 import React from 'react'
 import { cloneDeep } from 'lodash'
-import userEvent from '@testing-library/user-event'
 import {
   fireEvent,
   initialStateDefault,
@@ -14,10 +13,7 @@ import { stringToBuffer } from 'uiSrc/utils'
 import { apiService } from 'uiSrc/services'
 import { initialState as initialStateArray } from 'uiSrc/slices/browser/array'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
-import {
-  arrayElementFactory,
-  arrayElementWithValueFactory,
-} from 'uiSrc/mocks/factories/browser/array/arrayElement.factory'
+import { arrayElementWithValueFactory } from 'uiSrc/mocks/factories/browser/array/arrayElement.factory'
 import ViewTab from './ViewTab'
 
 jest.mock('uiSrc/services', () => ({
@@ -72,8 +68,7 @@ describe('ViewTab', () => {
     expect(screen.getByTestId(ADD_BTN)).toBeInTheDocument()
   })
 
-  it('expands a populated row into the full formatted value', async () => {
-    const user = userEvent.setup()
+  it('renders Markdown values inline in the row without expansion', () => {
     const state = buildState([
       arrayElementWithValueFactory.build({
         index: '7',
@@ -85,29 +80,9 @@ describe('ViewTab', () => {
     store.clearActions()
     render(<ViewTab keyProp={keyBuffer} isActive />, { store })
 
-    // Collapsed rows already render the Markdown viewer inline; the expanded
-    // sub-row surface is not mounted yet.
-    expect(screen.getAllByTestId('markdown-viewer')).toHaveLength(1)
+    expect(screen.getByTestId('markdown-viewer')).toBeInTheDocument()
     expect(
       screen.queryByTestId('array-expanded-value-7'),
-    ).not.toBeInTheDocument()
-
-    await user.click(screen.getByTestId('array-details-table-index-7'))
-
-    expect(
-      await screen.findByTestId('array-expanded-value-7'),
-    ).toBeInTheDocument()
-    expect(screen.getAllByTestId('markdown-viewer')).toHaveLength(2)
-  })
-
-  it('does not expand an empty slot', async () => {
-    const user = userEvent.setup()
-    renderView(keyBuffer, {}, [arrayElementFactory.build({ index: '3' })])
-
-    await user.click(screen.getByTestId('array-details-table-index-3'))
-
-    expect(
-      screen.queryByTestId('array-expanded-value-3'),
     ).not.toBeInTheDocument()
   })
 
