@@ -16,58 +16,53 @@ import { ContextControlProps } from './ContextControl.types'
 import * as S from './ContextControl.styles'
 
 /**
- * Search-tab Context control: a display-only toggle + ±N neighbour count that
- * governs how a matched row expands. Rendered as a subheader strip directly
- * above the results table (not inside the search form) since it never enters
- * the ARGREP command.
+ * Toggle + ±N neighbour count that controls how a matched row expands. Lives
+ * in the subheader, not the search form, as it never enters the ARGREP command.
  */
 export const ContextControl = ({
   context,
   onChange,
   disabled = false,
 }: ContextControlProps) => (
-  <S.SubheaderContainer grow={false} data-testid={TEST_ID}>
-    <Row align="center" gap="s" grow={false}>
-      <FlexItem grow={false}>
-        <Row align="center" gap="xs" grow={false}>
-          <FlexItem grow={false}>
-            <S.InlineCheckbox
-              id={`${TEST_ID}-toggle`}
-              name="array-search-context-toggle"
-              label={CONTEXT_LABEL}
-              checked={context.enabled}
-              onChange={(e) => onChange({ enabled: e.target.checked })}
-              disabled={disabled}
-              data-testid={`${TEST_ID}-toggle`}
-            />
-          </FlexItem>
-          <FlexItem grow={false}>
-            <InfoHint content={CONTEXT_HINT} />
-          </FlexItem>
-        </Row>
-      </FlexItem>
-      <FlexItem grow={false}>
-        <Text size="s">{CONTEXT_PREFIX}</Text>
-      </FlexItem>
-      {/* Always rendered so ticking Context doesn't shift the row; it just
-          becomes editable once the toggle is on. */}
-      <FlexItem grow={false}>
-        <S.NarrowInputBox>
-          <NumericInput
-            autoValidate
-            min={CONTEXT_COUNT_MIN}
-            max={CONTEXT_COUNT_MAX}
-            value={context.count}
-            onChange={(next) =>
-              onChange({
-                count: Math.round(Number(next ?? CONTEXT_COUNT_MIN)),
-              })
-            }
-            disabled={disabled || !context.enabled}
-            data-testid={`${TEST_ID}-count`}
+  <Row align="center" gap="s" grow={false} data-testid={TEST_ID}>
+    <FlexItem grow={false}>
+      <Row align="center" gap="xs" grow={false}>
+        <FlexItem grow={false}>
+          <S.InlineCheckbox
+            id={`${TEST_ID}-toggle`}
+            name="array-search-context-toggle"
+            label={CONTEXT_LABEL}
+            checked={context.enabled}
+            onChange={(e) => onChange({ enabled: e.target.checked })}
+            disabled={disabled}
+            data-testid={`${TEST_ID}-toggle`}
           />
-        </S.NarrowInputBox>
-      </FlexItem>
-    </Row>
-  </S.SubheaderContainer>
+        </FlexItem>
+        <FlexItem grow={false}>
+          <InfoHint content={CONTEXT_HINT} />
+        </FlexItem>
+      </Row>
+    </FlexItem>
+    <FlexItem grow={false}>
+      <Text size="s">{CONTEXT_PREFIX}</Text>
+    </FlexItem>
+    {/* Always shown so the row doesn't shift; just disabled while Context is off. */}
+    <FlexItem grow={false}>
+      <S.NarrowInputBox>
+        <NumericInput
+          autoValidate
+          min={CONTEXT_COUNT_MIN}
+          max={CONTEXT_COUNT_MAX}
+          value={context.count}
+          onChange={(next) =>
+            onChange({
+              count: Math.round(Number(next ?? CONTEXT_COUNT_MIN)),
+            })
+          }
+          disabled={disabled || !context.enabled}
+          data-testid={`${TEST_ID}-count`}
+        />
+      </S.NarrowInputBox>
+    </FlexItem>
+  </Row>
 )

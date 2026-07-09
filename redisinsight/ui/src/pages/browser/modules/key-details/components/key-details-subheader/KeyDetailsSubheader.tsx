@@ -11,14 +11,20 @@ import styles from './styles.module.scss'
 export interface Props {
   keyType: KeyTypes | ModulesKeyTypes
   Actions?: (props: { width: number }) => ReactElement
+  /** Rendered at the start (left) of the row, opposite the formatter and Actions. */
+  StartActions?: (props: { width: number }) => ReactElement
 }
 
-export const KeyDetailsSubheader = ({ keyType, Actions }: Props) => (
+export const KeyDetailsSubheader = ({
+  keyType,
+  Actions,
+  StartActions,
+}: Props) => (
   <FlexItem className={styles.subheaderContainer}>
     <AutoSizer disableHeight>
-      {({ width = 0 }) => (
-        <div style={{ width }}>
-          <Row justify="end" align="center">
+      {({ width = 0 }) => {
+        const formatterGroup = (
+          <>
             {Object.values(KeyTypes).includes(keyType as KeyTypes) && (
               <>
                 <FlexItem className={styles.keyFormatterItem}>
@@ -30,9 +36,26 @@ export const KeyDetailsSubheader = ({ keyType, Actions }: Props) => (
               </>
             )}
             {!isUndefined(Actions) && <Actions width={width} />}
-          </Row>
-        </div>
-      )}
+          </>
+        )
+
+        return (
+          <div style={{ width }}>
+            {isUndefined(StartActions) ? (
+              <Row justify="end" align="center">
+                {formatterGroup}
+              </Row>
+            ) : (
+              <Row justify="between" align="center">
+                <StartActions width={width} />
+                <Row justify="end" align="center" grow={false}>
+                  {formatterGroup}
+                </Row>
+              </Row>
+            )}
+          </div>
+        )
+      }}
     </AutoSizer>
   </FlexItem>
 )

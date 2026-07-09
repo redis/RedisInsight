@@ -7,6 +7,7 @@ import { KeyDetailsSubheader, Props } from './KeyDetailsSubheader'
 const mockedProps = mock<Props>()
 
 const MockActions = () => <div data-testid="mock-actions" />
+const MockStartActions = () => <div data-testid="mock-start-actions" />
 
 describe('KeyDetailsSubheader', () => {
   it('should render', () => {
@@ -33,5 +34,16 @@ describe('KeyDetailsSubheader', () => {
     expect(screen.getByTestId('select-format-key-value')).toBeInTheDocument()
     expect(screen.getByTestId('mock-actions')).toBeInTheDocument()
     expect(screen.getByRole('separator')).toBeInTheDocument()
+  })
+
+  it('renders StartActions at the start alongside the formatter', () => {
+    render(
+      <KeyDetailsSubheader
+        keyType={KeyTypes.Hash}
+        StartActions={MockStartActions}
+      />,
+    )
+    expect(screen.getByTestId('mock-start-actions')).toBeInTheDocument()
+    expect(screen.getByTestId('select-format-key-value')).toBeInTheDocument()
   })
 })

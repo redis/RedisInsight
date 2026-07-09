@@ -314,11 +314,18 @@ describe('SearchTab', () => {
   })
 
   it('resets Context to off when the selected key changes', () => {
-    const { rerender } = renderTab({
+    // Context lives in the subheader (gated on isArrayKeyReady), so move the
+    // prop and the store's selected key together to keep it visible to assert.
+    const state = buildState({
       loaded: true,
       loading: false,
       error: '',
       data: [arrayElementWithValueFactory.build({ index: '7' })],
+    })
+    const store = mockStore(state)
+    store.clearActions()
+    const { rerender } = render(<SearchTab keyProp={keyBuffer} isActive />, {
+      store,
     })
 
     fireEvent.click(screen.getByTestId('array-context-control-toggle'))
@@ -326,7 +333,9 @@ describe('SearchTab', () => {
 
     // The tab stays mounted across key switches; selecting another key resets
     // Context to its default rather than inheriting the previous key's.
-    rerender(<SearchTab keyProp={stringToBuffer('other-key')} isActive />)
+    const otherKey = stringToBuffer('other-key')
+    state.browser.keys.selectedKey.data!.name = otherKey
+    rerender(<SearchTab keyProp={otherKey} isActive />)
 
     expect(screen.getByRole('checkbox', { name: 'Context' })).not.toBeChecked()
   })

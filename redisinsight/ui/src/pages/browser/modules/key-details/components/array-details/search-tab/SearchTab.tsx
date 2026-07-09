@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useAppSelector } from 'uiSrc/slices/hooks'
 import { selectedKeySelector } from 'uiSrc/slices/browser/keys'
@@ -21,15 +21,12 @@ const SearchTab = ({ keyProp, isActive }: SearchTabProps) => {
     useAppSelector(selectedKeySelector)
   const keyName = keyProp ? bufferToString(keyProp) : ''
 
-  // Context is a display concern (±N neighbours on expand), off by default so
-  // result rows aren't expandable until the user opts in.
+  // Display-only ±N neighbours shown when a row expands; off by default.
   const [context, setContext] = useState<ContextOption>(DEFAULT_CONTEXT)
   const onChangeContext = (patch: Partial<ContextOption>) =>
     setContext((c) => ({ ...c, ...patch }))
 
-  // Context is SearchTab-owned and the tab stays mounted across key switches,
-  // so reset it on a real key change — otherwise a new key inherits the
-  // previous key's toggle/count (the query hook resets only its own state).
+  // The tab stays mounted across key switches, so reset Context on a new key.
   const lastKeyRef = useRef<RedisResponseBuffer | null>(null)
   useEffect(() => {
     if (!keyProp) return
@@ -57,21 +54,40 @@ const SearchTab = ({ keyProp, isActive }: SearchTabProps) => {
     loaded,
   } = useArraySearchQuery(keyProp)
 
-  // Every result is a real match — an index-only row (WITHVALUES off) has a
-  // null value but is still deletable — so empty-slot hiding is off here. The
-  // delete thunk refreshes all loaded views (incl. this search) afterwards.
+  // Every result is a real match (index-only rows still delete), so keep empty slots.
   const { deleteConfig, selectionConfig, bulkDeleteConfig, clearSelection } =
     useArrayElementActions(keyProp, { elements, hideEmptySlots: false })
 
-  // Context lives here, not in the query hook, so the form's reset must
-  // restore it too — otherwise reset leaves rows expandable at the old count.
-  // Reset also drops the multi-select: clearing the results shouldn't leave a
-  // stale selection that a later search could partially restore.
+  // Reset the state the query hook doesn't own: Context and the selection.
   const handleReset = () => {
     setContext(DEFAULT_CONTEXT)
     clearSelection()
     resetQuery()
   }
+
+  // Show Context and the table only after a search; the !keyLoading guard
+  // avoids flashing the previous key's matches during a switch.
+  const showResults = !keyLoading && (loaded || loading)
+
+  // Stable identity via ref so the subheader doesn't remount the control and
+  // steal focus from the count input while typing.
+  const contextActionsRef = useRef({
+    context,
+    onChangeContext,
+    isRefreshDisabled,
+  })
+  contextActionsRef.current = { context, onChangeContext, isRefreshDisabled }
+
+  const ContextStartActions = useCallback(
+    () => (
+      <ContextControl
+        context={contextActionsRef.current.context}
+        onChange={contextActionsRef.current.onChangeContext}
+        disabled={contextActionsRef.current.isRefreshDisabled}
+      />
+    ),
+    [],
+  )
 
   return (
     <>
@@ -90,42 +106,36 @@ const SearchTab = ({ keyProp, isActive }: SearchTabProps) => {
         onReset={handleReset}
         disabled={!isArrayKeyReady || isRefreshDisabled}
       />
-      {isArrayKeyReady && <KeyDetailsSubheader keyType={KeyTypes.Array} />}
+      {isArrayKeyReady && (
+        <KeyDetailsSubheader
+          keyType={KeyTypes.Array}
+          StartActions={showResults ? ContextStartActions : undefined}
+        />
+      )}
       <S.TabBody>
-        {/* Keep the tab blank until the user runs a search, then let
-            ArrayDetailsTable own the loading / error / empty states. Gate on
-            the key not loading too, so a key switch can't flash the previous
-            key's matches before the hook's reset effect runs. */}
-        {!keyLoading && (loaded || loading) && (
-          <>
-            <ContextControl
-              context={context}
-              onChange={onChangeContext}
-              disabled={isRefreshDisabled}
+        {showResults && (
+          <S.TabTableWrapper>
+            <ArrayDetailsTable
+              elements={elements}
+              loading={loading}
+              error={error}
+              isActive={isActive}
+              deleteConfig={deleteConfig}
+              selectionConfig={selectionConfig}
+              bulkDeleteConfig={bulkDeleteConfig}
+              expandRowOnClick
+              getIsRowExpandable={() => context.enabled && !!keyProp}
+              renderExpandedRow={(row) =>
+                context.enabled && keyProp ? (
+                  <NeighbourBand
+                    keyProp={keyProp}
+                    matchIndex={row.original.index}
+                    count={context.count}
+                  />
+                ) : null
+              }
             />
-            <S.TabTableWrapper>
-              <ArrayDetailsTable
-                elements={elements}
-                loading={loading}
-                error={error}
-                isActive={isActive}
-                deleteConfig={deleteConfig}
-                selectionConfig={selectionConfig}
-                bulkDeleteConfig={bulkDeleteConfig}
-                expandRowOnClick
-                getIsRowExpandable={() => context.enabled && !!keyProp}
-                renderExpandedRow={(row) =>
-                  context.enabled && keyProp ? (
-                    <NeighbourBand
-                      keyProp={keyProp}
-                      matchIndex={row.original.index}
-                      count={context.count}
-                    />
-                  ) : null
-                }
-              />
-            </S.TabTableWrapper>
-          </>
+          </S.TabTableWrapper>
         )}
       </S.TabBody>
     </>
