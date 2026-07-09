@@ -42,9 +42,11 @@ export const RowActionsCell = ({
         )
       : null
   const isEditingThisRow = editConfig?.editingIndex === index
-  // While this row is being edited the inline editor (with its own controls)
-  // is open in the value column, so the triggers would be redundant.
-  const showEditActions = !!editState && !isEditingThisRow
+  // Hide the triggers while this row is being inline-edited (its editor already
+  // has controls) and while the drawer is open on any row — otherwise a second
+  // expand would silently re-seed the open drawer and drop unsaved text.
+  const showEditActions =
+    !!editState && !isEditingThisRow && !editConfig?.isValueDrawerOpen
   const isEditActionDisabled =
     !editState?.isEditable || !!editConfig?.updating || !!editConfig?.loading
 
@@ -66,7 +68,12 @@ export const RowActionsCell = ({
               icon={EditIcon}
               aria-label="Edit field"
               disabled={isEditActionDisabled}
-              onClick={() => editConfig?.onEditElement(index, true)}
+              onClick={(e: React.MouseEvent) => {
+                // Search renders this table with expandRowOnClick — don't let
+                // the action click also toggle the neighbour band.
+                e.stopPropagation()
+                editConfig?.onEditElement(index, true)
+              }}
               data-testid={`array-edit-btn-${index}`}
             />
           </RiTooltip>
@@ -75,7 +82,10 @@ export const RowActionsCell = ({
               icon={ExtendIcon}
               aria-label="Expand value editor"
               disabled={isEditActionDisabled}
-              onClick={() => editConfig?.onOpenValueEditor(index)}
+              onClick={(e: React.MouseEvent) => {
+                e.stopPropagation()
+                editConfig?.onOpenValueEditor(index)
+              }}
               data-testid={`array-expand-btn-${index}`}
             />
           </RiTooltip>

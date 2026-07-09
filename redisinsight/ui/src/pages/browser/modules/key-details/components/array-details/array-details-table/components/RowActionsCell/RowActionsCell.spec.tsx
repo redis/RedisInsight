@@ -36,6 +36,7 @@ const buildEditConfig = (
   compressor: null,
   viewFormat: KeyValueFormat.Unicode,
   editingIndex: null,
+  isValueDrawerOpen: false,
   updating: false,
   loading: false,
   onEditElement: jest.fn(),
@@ -153,6 +154,38 @@ describe('RowActionsCell — edit + expand', () => {
     expect(screen.queryByTestId('array-expand-btn-5')).not.toBeInTheDocument()
     // Delete stays available while editing.
     expect(screen.getByTestId('array-remove-btn-5-icon')).toBeInTheDocument()
+  })
+
+  it('hides edit and expand while the drawer is open on any row', () => {
+    render(
+      <RowActionsCell
+        element={arrayElementWithValueFactory.build({ index: '5' })}
+        editConfig={buildEditConfig({ isValueDrawerOpen: true })}
+        deleteConfig={buildConfig()}
+      />,
+    )
+
+    expect(screen.queryByTestId('array-edit-btn-5')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('array-expand-btn-5')).not.toBeInTheDocument()
+    expect(screen.getByTestId('array-remove-btn-5-icon')).toBeInTheDocument()
+  })
+
+  it('stops trigger clicks from bubbling to a row click handler', () => {
+    const onRowClick = jest.fn()
+    render(
+      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+      <div onClick={onRowClick}>
+        <RowActionsCell
+          element={arrayElementWithValueFactory.build({ index: '5' })}
+          editConfig={buildEditConfig()}
+        />
+      </div>,
+    )
+
+    fireEvent.click(screen.getByTestId('array-expand-btn-5'))
+    fireEvent.click(screen.getByTestId('array-edit-btn-5'))
+
+    expect(onRowClick).not.toHaveBeenCalled()
   })
 
   it('disables edit and expand while a write is in flight', () => {

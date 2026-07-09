@@ -60,6 +60,8 @@ export interface ArrayTableConfig {
   onApplyEditElement: (index: string, value: string) => void
   /** Open the Monaco drawer editor for a row's value. */
   onOpenValueEditor: (index: string) => void
+  /** True while the drawer is open, so the actions cell can hide its triggers. */
+  isValueDrawerOpen: boolean
   /** True while an ARSET write is in flight — keeps the editor in its loading
    *  state and blocks a second edit from overlapping the request. */
   updating: boolean

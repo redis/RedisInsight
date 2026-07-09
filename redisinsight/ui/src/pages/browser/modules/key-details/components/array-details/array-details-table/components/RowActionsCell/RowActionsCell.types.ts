@@ -12,6 +12,9 @@ export interface ArrayElementEditConfig {
   compressor: Nullable<KeyValueCompressor>
   viewFormat: KeyValueFormat
   editingIndex: Nullable<string>
+  /** True while the drawer is open on any row — hides the triggers so a second
+   *  expand can't re-seed the open drawer over unsaved text. */
+  isValueDrawerOpen: boolean
   updating: boolean
   /** Blocks opening an edit so a late read can't overwrite the optimistic patch. */
   loading: boolean

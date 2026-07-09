@@ -569,7 +569,7 @@ describe('ArrayDetailsTable', () => {
       expect(screen.getByTestId('array-value-code-editor')).toBeInTheDocument()
     })
 
-    it('closes the drawer when an inline edit opens', () => {
+    it('hides all row edit/expand triggers while the drawer is open', () => {
       render(
         <ArrayDetailsTable
           elements={[withValue('0', 'aaa'), withValue('1', 'bbb')]}
@@ -581,14 +581,11 @@ describe('ArrayDetailsTable', () => {
       fireEvent.click(screen.getByTestId('array-expand-btn-1'))
       expect(screen.getByTestId('array-value-code-editor')).toBeInTheDocument()
 
-      fireEvent.click(screen.getByTestId('array-edit-btn-0'))
-
-      expect(
-        screen.queryByTestId('array-value-code-editor'),
-      ).not.toBeInTheDocument()
-      expect(
-        screen.getByTestId('array-details-table_value-editor-0'),
-      ).toBeInTheDocument()
+      // No second editor can be opened while the drawer is up — a re-open would
+      // otherwise re-seed the drawer and drop unsaved text.
+      expect(screen.queryByTestId('array-edit-btn-0')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('array-expand-btn-0')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('array-expand-btn-1')).not.toBeInTheDocument()
     })
 
     it('dispatches ARSET when the drawer value is saved', async () => {
