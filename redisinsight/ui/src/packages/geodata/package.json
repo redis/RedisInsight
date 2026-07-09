@@ -122,7 +122,7 @@
     {
       "id": "ri-geodata-rqe-map",
       "name": "Search geospatial map",
-      "activationMethod": "renderRedisSearchGeoMap",
+      "activationMethod": "renderRqeGeoMap",
       "matchCommands": [
         "FT.SEARCH",
         "FT.AGGREGATE",
@@ -142,7 +142,7 @@
     {
       "id": "ri-geodata-rqe-heatmap",
       "name": "Search geospatial heatmap",
-      "activationMethod": "renderRedisSearchGeoHeatmap",
+      "activationMethod": "renderRqeGeoHeatmap",
       "matchCommands": [
         "FT.SEARCH",
         "FT.AGGREGATE",
@@ -162,7 +162,7 @@
     {
       "id": "ri-geodata-rqe-inspector",
       "name": "Search geospatial details",
-      "activationMethod": "renderRedisSearchGeoInspector",
+      "activationMethod": "renderRqeGeoInspector",
       "matchCommands": [
         "FT.SEARCH",
         "FT.AGGREGATE",
@@ -183,7 +183,7 @@
     {
       "id": "ri-geodata-rqe-shape",
       "name": "Search geoshape map",
-      "activationMethod": "renderRedisSearchGeoShape",
+      "activationMethod": "renderRqeGeoShape",
       "matchCommands": [
         "FT.SEARCH",
         "FT.AGGREGATE",

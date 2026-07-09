@@ -4,7 +4,7 @@ import {
   GeoInspector,
   GeoSearchVisualization,
   Message,
-  RedisSearchGeoVisualization,
+  RqeGeoVisualization,
   Shell,
 } from './components'
 import { GeodataMode, PluginProps, WorkbenchResult } from './types'
@@ -52,9 +52,9 @@ const App = ({ command = '', data = [], mode }: AppProps) => {
     )
   }
 
-  if (mode === GeodataMode.RedisSearchMarkers) {
+  if (mode === GeodataMode.RqeMarkers) {
     return (
-      <RedisSearchGeoVisualization
+      <RqeGeoVisualization
         command={command}
         response={response}
         status={status}
@@ -63,9 +63,9 @@ const App = ({ command = '', data = [], mode }: AppProps) => {
     )
   }
 
-  if (mode === GeodataMode.RedisSearchHeatmap) {
+  if (mode === GeodataMode.RqeHeatmap) {
     return (
-      <RedisSearchGeoVisualization
+      <RqeGeoVisualization
         command={command}
         response={response}
         status={status}
@@ -74,9 +74,9 @@ const App = ({ command = '', data = [], mode }: AppProps) => {
     )
   }
 
-  if (mode === GeodataMode.RedisSearchInspector) {
+  if (mode === GeodataMode.RqeInspector) {
     return (
-      <RedisSearchGeoVisualization
+      <RqeGeoVisualization
         command={command}
         response={response}
         status={status}
@@ -85,9 +85,9 @@ const App = ({ command = '', data = [], mode }: AppProps) => {
     )
   }
 
-  if (mode === GeodataMode.RedisSearchShape) {
+  if (mode === GeodataMode.RqeShape) {
     return (
-      <RedisSearchGeoVisualization
+      <RqeGeoVisualization
         command={command}
         response={response}
         status={status}

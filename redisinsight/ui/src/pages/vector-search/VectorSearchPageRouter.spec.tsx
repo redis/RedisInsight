@@ -55,7 +55,7 @@ describe('VectorSearchPageRouter', () => {
     renderComponent()
 
     expect(
-      screen.queryByTestId('vector-search-page--redis-search-not-available'),
+      screen.queryByTestId('vector-search-page--rqe-not-available'),
     ).not.toBeInTheDocument()
     expect(screen.queryByTestId('vector-search-loader')).not.toBeInTheDocument()
   })
@@ -116,11 +116,11 @@ describe('VectorSearchPageRouter', () => {
       screen.getByTestId('vector-search-page--version-not-supported'),
     ).toBeInTheDocument()
     expect(
-      screen.queryByTestId('vector-search-page--redis-search-not-available'),
+      screen.queryByTestId('vector-search-page--rqe-not-available'),
     ).not.toBeInTheDocument()
   })
 
-  it('should render Redis Search not available when RediSearch module is missing but version is supported', () => {
+  it('should render RQE not available when RediSearch module is missing but version is supported', () => {
     mockUseRedisInstanceCompatibility.mockReturnValue({
       loading: false,
       hasRedisearch: false,
@@ -131,8 +131,8 @@ describe('VectorSearchPageRouter', () => {
     renderComponent()
 
     expect(
-      screen.getByTestId('vector-search-page--redis-search-not-available'),
+      screen.getByTestId('vector-search-page--rqe-not-available'),
     ).toBeInTheDocument()
-    expect(screen.getByTestId('redis-search-not-available')).toBeInTheDocument()
+    expect(screen.getByTestId('rqe-not-available')).toBeInTheDocument()
   })
 })

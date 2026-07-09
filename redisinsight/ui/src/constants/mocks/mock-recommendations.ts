@@ -908,7 +908,7 @@ export const MOCK_RECOMMENDATIONS: IRecommendationsStatic = {
         type: 'link',
         value: {
           href: 'https://redis.io/docs/latest/develop/ai/search-and-query/',
-          name: 'Redis Search',
+          name: 'Redis Query Engine',
         },
       },
       {

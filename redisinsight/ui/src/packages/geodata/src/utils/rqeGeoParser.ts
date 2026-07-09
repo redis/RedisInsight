@@ -5,20 +5,20 @@ import {
   GeoShapeOperation,
   GeoShapeResult,
   ParseResult,
-  ParsedRedisSearchGeoCommand,
-  RedisSearchGeoCommand,
-  RedisSearchGeoDataset,
+  ParsedRqeGeoCommand,
+  RqeGeoCommand,
+  RqeGeoDataset,
 } from '../types'
 import { convertToKm } from './distance'
 import { tokenizeRedisCommand } from './geoParser'
 
-const REDIS_SEARCH_GEO_COMMANDS = new Set<RedisSearchGeoCommand>([
+const RQE_GEO_COMMANDS = new Set<RqeGeoCommand>([
   'FT.SEARCH',
   'FT.AGGREGATE',
   'FT.HYBRID',
 ])
 
-const REDIS_SEARCH_UNITS = new Set(['m', 'km', 'mi', 'ft'])
+const RQE_UNITS = new Set(['m', 'km', 'mi', 'ft'])
 const SHAPE_OPERATIONS = new Set<GeoShapeOperation>([
   'WITHIN',
   'CONTAINS',
@@ -99,7 +99,7 @@ const getParamsRange = (tokens: string[]): { start: number; end: number } | null
 }
 
 const getSearchExpressions = (
-  command: RedisSearchGeoCommand,
+  command: RqeGeoCommand,
   tokens: string[],
 ): string[] => {
   if (command === 'FT.SEARCH' || command === 'FT.AGGREGATE') {
@@ -136,7 +136,7 @@ const parseRadiusOverlay = (
   source: 'query' | 'geofilter',
 ): ParseResult<GeoQueryOverlay> => {
   const unit = unitValue.toLowerCase()
-  if (!REDIS_SEARCH_UNITS.has(unit)) {
+  if (!RQE_UNITS.has(unit)) {
     return { ok: false, error: `Unsupported GEO unit: ${unitValue}.` }
   }
 
@@ -301,15 +301,15 @@ const parseQueryOverlay = (
   return null
 }
 
-export const parseRedisSearchGeoCommand = (
+export const parseRqeGeoCommand = (
   command: string,
-): ParseResult<ParsedRedisSearchGeoCommand> => {
+): ParseResult<ParsedRqeGeoCommand> => {
   const tokens = tokenizeRedisCommand(command)
-  const commandToken = tokens[0]?.toUpperCase() as RedisSearchGeoCommand | undefined
+  const commandToken = tokens[0]?.toUpperCase() as RqeGeoCommand | undefined
   if (!commandToken) {
     return { ok: false, error: 'Missing Redis Search command.' }
   }
-  if (!REDIS_SEARCH_GEO_COMMANDS.has(commandToken)) {
+  if (!RQE_GEO_COMMANDS.has(commandToken)) {
     return { ok: false, error: `Unsupported Redis Search command: ${tokens[0]}.` }
   }
   if (!tokens[1]) {
@@ -354,7 +354,7 @@ export const parseRedisSearchGeoCommand = (
   }
 }
 
-interface RedisSearchRow {
+interface RqeRow {
   id: string
   fields: Record<string, unknown>
 }
@@ -394,7 +394,7 @@ const getSearchReplyLayout = (tokens: string[]): SearchReplyLayout => {
   }
 }
 
-const parseSearchRows = (response: unknown[], tokens: string[] = []): RedisSearchRow[] => {
+const parseSearchRows = (response: unknown[], tokens: string[] = []): RqeRow[] => {
   const { metadataCount, noContent } = getSearchReplyLayout(tokens)
   // NOCONTENT omits the field arrays entirely, so there is nothing to map.
   if (noContent) {
@@ -403,7 +403,7 @@ const parseSearchRows = (response: unknown[], tokens: string[] = []): RedisSearc
 
   // Each document block is: id, [score], [payload], [sortkey], fields.
   const stride = 2 + metadataCount
-  const rows: RedisSearchRow[] = []
+  const rows: RqeRow[] = []
   for (let index = 1; index < response.length; index += stride) {
     const id = String(response[index])
     const fields = fieldPairsToRecord(response[index + 1 + metadataCount])
@@ -414,11 +414,11 @@ const parseSearchRows = (response: unknown[], tokens: string[] = []): RedisSearc
   return rows
 }
 
-const parseAggregateRows = (response: unknown[]): RedisSearchRow[] => {
+const parseAggregateRows = (response: unknown[]): RqeRow[] => {
   const source = Array.isArray(response[0]) ? response[0] : response
   return source
     .slice(1)
-    .map((fields, index): RedisSearchRow | null => {
+    .map((fields, index): RqeRow | null => {
       const parsedFields = fieldPairsToRecord(fields)
       if (!parsedFields) {
         return null
@@ -428,12 +428,12 @@ const parseAggregateRows = (response: unknown[]): RedisSearchRow[] => {
         fields: parsedFields,
       }
     })
-    .filter((row): row is RedisSearchRow => row !== null)
+    .filter((row): row is RqeRow => row !== null)
 }
 
-const parseHybridResultRows = (results: unknown[]): RedisSearchRow[] =>
+const parseHybridResultRows = (results: unknown[]): RqeRow[] =>
   results
-    .map((result, index): RedisSearchRow | null => {
+    .map((result, index): RqeRow | null => {
       if (Array.isArray(result)) {
         const directFields = fieldPairsToRecord(result)
         if (directFields) {
@@ -474,7 +474,7 @@ const parseHybridResultRows = (results: unknown[]): RedisSearchRow[] =>
 
       return null
     })
-    .filter((row): row is RedisSearchRow => row !== null)
+    .filter((row): row is RqeRow => row !== null)
 
 const getHybridResults = (response: unknown): unknown[] | null => {
   if (Array.isArray(response)) {
@@ -497,7 +497,7 @@ const getHybridResults = (response: unknown): unknown[] | null => {
   return null
 }
 
-const parseHybridRows = (response: unknown): ParseResult<RedisSearchRow[]> => {
+const parseHybridRows = (response: unknown): ParseResult<RqeRow[]> => {
   const results = getHybridResults(response)
   if (results) {
     return { ok: true, value: parseHybridResultRows(results) }
@@ -513,10 +513,10 @@ const parseHybridRows = (response: unknown): ParseResult<RedisSearchRow[]> => {
   return { ok: true, value: rows }
 }
 
-const parseRedisSearchRows = (
+const parseRqeRows = (
   response: unknown,
-  command: ParsedRedisSearchGeoCommand,
-): ParseResult<RedisSearchRow[]> => {
+  command: ParsedRqeGeoCommand,
+): ParseResult<RqeRow[]> => {
   if (command.command === 'FT.HYBRID') {
     return parseHybridRows(response)
   }
@@ -540,7 +540,7 @@ const parseRedisSearchRows = (
 
 const hasNoResultRows = (
   response: unknown,
-  command: ParsedRedisSearchGeoCommand,
+  command: ParsedRqeGeoCommand,
 ): boolean => {
   if (command.command === 'FT.HYBRID') {
     const hybridResults = getHybridResults(response)
@@ -622,12 +622,12 @@ const getFallbackFieldValue = (
   return entry ? { field: normalizeFieldName(entry[0]), value: entry[1] } : null
 }
 
-const getRowName = (row: RedisSearchRow): string =>
+const getRowName = (row: RqeRow): string =>
   typeof row.fields.name === 'string' ? row.fields.name : row.id
 
 const parsePointRows = (
-  rows: RedisSearchRow[],
-  command: ParsedRedisSearchGeoCommand,
+  rows: RqeRow[],
+  command: ParsedRqeGeoCommand,
 ): GeoPointResult[] => {
   const points: GeoPointResult[] = []
   rows.forEach((row) => {
@@ -660,8 +660,8 @@ const tryParseWkt = (value: unknown): { wkt: string; geometry: GeoShapeGeometry 
 }
 
 const parseShapeRows = (
-  rows: RedisSearchRow[],
-  command: ParsedRedisSearchGeoCommand,
+  rows: RqeRow[],
+  command: ParsedRqeGeoCommand,
 ): GeoShapeResult[] => {
   const shapes: GeoShapeResult[] = []
   rows.forEach((row) => {
@@ -688,7 +688,7 @@ const parseShapeRows = (
   return shapes
 }
 
-const getMissingGeoFieldMessage = (command: ParsedRedisSearchGeoCommand): string => {
+const getMissingGeoFieldMessage = (command: ParsedRqeGeoCommand): string => {
   if (command.command === 'FT.AGGREGATE') {
     return `No returned geospatial fields found. Add LOAD 1 @${command.geoField} to the FT.AGGREGATE command.`
   }
@@ -698,11 +698,11 @@ const getMissingGeoFieldMessage = (command: ParsedRedisSearchGeoCommand): string
   return `No returned geospatial fields found. Add RETURN 1 ${command.geoField} to the FT.SEARCH command.`
 }
 
-export const parseRedisSearchGeoResults = (
+export const parseRqeGeoResults = (
   response: unknown,
-  command: ParsedRedisSearchGeoCommand,
-): ParseResult<RedisSearchGeoDataset> => {
-  const parsedRows = parseRedisSearchRows(response, command)
+  command: ParsedRqeGeoCommand,
+): ParseResult<RqeGeoDataset> => {
+  const parsedRows = parseRqeRows(response, command)
   if (!parsedRows.ok) {
     return parsedRows
   }

@@ -11,21 +11,21 @@ import {
   GeoPointResult,
   GeoShapeResult,
   ParsedGeoCommand,
-  ParsedRedisSearchGeoCommand,
+  ParsedRqeGeoCommand,
 } from '../../types'
 import {
-  parseRedisSearchGeoCommand,
-  parseRedisSearchGeoResults,
-} from '../../utils/redisSearchGeoParser'
+  parseRqeGeoCommand,
+  parseRqeGeoResults,
+} from '../../utils/rqeGeoParser'
 
-interface RedisSearchGeoVisualizationProps {
+interface RqeGeoVisualizationProps {
   command: string
   response: unknown
   status: string
   mode: 'markers' | 'heatmap' | 'inspector' | 'shape'
 }
 
-const getTitle = (mode: RedisSearchGeoVisualizationProps['mode']): string => {
+const getTitle = (mode: RqeGeoVisualizationProps['mode']): string => {
   if (mode === 'markers') {
     return 'Search geospatial map'
   }
@@ -39,7 +39,7 @@ const getTitle = (mode: RedisSearchGeoVisualizationProps['mode']): string => {
 }
 
 const getResultsErrorTitle = (
-  mode: RedisSearchGeoVisualizationProps['mode'],
+  mode: RqeGeoVisualizationProps['mode'],
 ): string => {
   if (mode === 'shape') {
     return 'Cannot render Redis Search geo shape'
@@ -54,7 +54,7 @@ const getResultsErrorTitle = (
 }
 
 const getCommandErrorTitle = (
-  mode: RedisSearchGeoVisualizationProps['mode'],
+  mode: RqeGeoVisualizationProps['mode'],
 ): string => {
   if (mode === 'inspector') {
     return 'Cannot inspect Redis Search geo command'
@@ -62,9 +62,7 @@ const getCommandErrorTitle = (
   return getResultsErrorTitle(mode)
 }
 
-const toNativeGeoCommand = (
-  command: ParsedRedisSearchGeoCommand,
-): ParsedGeoCommand => {
+const toNativeGeoCommand = (command: ParsedRqeGeoCommand): ParsedGeoCommand => {
   if (command.overlay.type !== 'radius') {
     return {
       command: 'GEOSEARCH',
@@ -101,10 +99,7 @@ const getPointRows = (points: GeoPointResult[]) =>
 const getShapeRows = (shapes: GeoShapeResult[]) =>
   shapes.map((shape) => [shape.name, shape.id, shape.field, shape.wkt])
 
-const renderSummary = (
-  command: ParsedRedisSearchGeoCommand,
-  rowCount: number,
-) => {
+const renderSummary = (command: ParsedRqeGeoCommand, rowCount: number) => {
   const overlayValue =
     command.overlay.type === 'radius'
       ? `${command.overlay.radius} ${command.overlay.unit}`
@@ -127,21 +122,18 @@ const renderSummary = (
   )
 }
 
-export const RedisSearchGeoVisualization = ({
+export const RqeGeoVisualization = ({
   command,
   response,
   status,
   mode,
-}: RedisSearchGeoVisualizationProps) => {
+}: RqeGeoVisualizationProps) => {
   const title = getTitle(mode)
-  const parsedCommand = useMemo(
-    () => parseRedisSearchGeoCommand(command),
-    [command],
-  )
+  const parsedCommand = useMemo(() => parseRqeGeoCommand(command), [command])
   const parsedResults = useMemo(
     () =>
       parsedCommand.ok
-        ? parseRedisSearchGeoResults(response, parsedCommand.value)
+        ? parseRqeGeoResults(response, parsedCommand.value)
         : { ok: false as const, error: parsedCommand.error },
     [parsedCommand, response],
   )

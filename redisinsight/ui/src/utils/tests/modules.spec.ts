@@ -175,7 +175,7 @@ describe('getRedisearchVersion', () => {
     expect(result).toBe('2.8.0')
   })
 
-  it('should return undefined when no Redis Search module present', () => {
+  it('should return undefined when no RQE module present', () => {
     const result = getRedisearchVersion([
       { name: 'ReJSON', version: 20400 },
       { name: 'timeseries', version: 10800 },

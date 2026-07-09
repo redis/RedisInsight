@@ -1,8 +1,8 @@
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { SearchPageFallbackContent } from './SearchPageFallback.types'
 
-export const REDIS_SEARCH_NOT_AVAILABLE_CONTENT: SearchPageFallbackContent = {
-  testId: 'redis-search-not-available',
+export const RQE_NOT_AVAILABLE_CONTENT: SearchPageFallbackContent = {
+  testId: 'rqe-not-available',
   title: 'Redis Search is not available for this database',
   subtitle: 'Redis Search allows to:',
   features: ['Query', 'Secondary index', 'Full-text search'],

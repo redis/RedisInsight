@@ -1,7 +1,7 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { InstancePage } from '../InstancePage';
 import {
-  RedisSearchNotAvailable,
+  RqeNotAvailable,
   WelcomeScreen,
   IndexList,
   CreateIndexForm,
@@ -26,7 +26,7 @@ import {
  * - bottomPanel: CLI, Command Helper, Profiler buttons
  */
 export class VectorSearchPage extends InstancePage {
-  readonly redisSearchNotAvailableWrapper: Locator;
+  readonly rqeNotAvailableWrapper: Locator;
   readonly loadingWrapper: Locator;
   readonly welcomeWrapper: Locator;
   readonly listWrapper: Locator;
@@ -36,7 +36,7 @@ export class VectorSearchPage extends InstancePage {
   readonly indexDeletedToast: Locator;
   readonly sampleDataToast: Locator;
 
-  readonly redisSearchNotAvailable: RedisSearchNotAvailable;
+  readonly rqeNotAvailable: RqeNotAvailable;
   readonly welcomeScreen: WelcomeScreen;
   readonly indexList: IndexList;
   readonly createIndexForm: CreateIndexForm;
@@ -53,7 +53,7 @@ export class VectorSearchPage extends InstancePage {
   constructor(page: Page) {
     super(page);
 
-    this.redisSearchNotAvailableWrapper = page.getByTestId('vector-search-page--redis-search-not-available');
+    this.rqeNotAvailableWrapper = page.getByTestId('vector-search-page--rqe-not-available');
     this.loadingWrapper = page.getByTestId('vector-search-page--loading');
     this.welcomeWrapper = page.getByTestId('vector-search-page--welcome');
     this.listWrapper = page.getByTestId('vector-search-page--list');
@@ -63,7 +63,7 @@ export class VectorSearchPage extends InstancePage {
     this.indexDeletedToast = page.getByRole('alert').getByText('Index has been deleted');
     this.sampleDataToast = page.getByRole('alert').getByText('Your sample data is now searchable.');
 
-    this.redisSearchNotAvailable = new RedisSearchNotAvailable(page);
+    this.rqeNotAvailable = new RqeNotAvailable(page);
     this.welcomeScreen = new WelcomeScreen(page);
     this.indexList = new IndexList(page);
     this.createIndexForm = new CreateIndexForm(page);

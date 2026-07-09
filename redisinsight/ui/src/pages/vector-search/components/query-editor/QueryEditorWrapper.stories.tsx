@@ -64,12 +64,12 @@ const meta: Meta<typeof QueryEditorWrapper> = {
     docs: {
       description: {
         component: `Vector Search Query Editor with Editor/Library toggle, Monaco editor
-with Redis Search autocomplete, and Run action button.
+with RQE autocomplete, and Run action button.
 
 ### Onboarding suggestions
 
 When the editor is **empty** and receives **focus**, a suggestions panel
-is shown with a predefined list of Redis Search query templates:
+is shown with a predefined list of RQE query templates:
 
 | Command | Description |
 |---------|-------------|

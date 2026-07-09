@@ -6,7 +6,7 @@ import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { OnboardingTemplate } from './QueryEditor.types'
 
 /**
- * Predefined Redis Search query templates for the Vector Search onboarding panel.
+ * Predefined RQE query templates for the Vector Search onboarding panel.
  * Shown when the editor is empty and receives focus.
  *
  * List per RI-7928 ticket (exact list TBD with Product).
@@ -122,7 +122,7 @@ const getInsertText = (
 }
 
 /**
- * Builds the predefined Redis Search query-template suggestions shown when the
+ * Builds the predefined RQE query-template suggestions shown when the
  * Vector Search editor is empty and receives focus ("onboarding").
  *
  * - Shows query details first (via `detail`).

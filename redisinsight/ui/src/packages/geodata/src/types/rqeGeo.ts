@@ -1,6 +1,6 @@
-export type RedisSearchGeoCommand = 'FT.SEARCH' | 'FT.AGGREGATE' | 'FT.HYBRID'
+export type RqeGeoCommand = 'FT.SEARCH' | 'FT.AGGREGATE' | 'FT.HYBRID'
 
-export type RedisSearchGeoKind = 'pointRadius' | 'shape'
+export type RqeGeoKind = 'pointRadius' | 'shape'
 
 export type GeoShapeOperation =
   | 'WITHIN'
@@ -59,9 +59,9 @@ export type GeoQueryOverlay =
     geometry: GeoShapeGeometry
   }
 
-export interface ParsedRedisSearchGeoCommand {
-  command: RedisSearchGeoCommand
-  kind: RedisSearchGeoKind
+export interface ParsedRqeGeoCommand {
+  command: RqeGeoCommand
+  kind: RqeGeoKind
   rawTokens: string[]
   index: string
   query: string
@@ -70,8 +70,8 @@ export interface ParsedRedisSearchGeoCommand {
   overlay: GeoQueryOverlay
 }
 
-export interface RedisSearchGeoDataset {
-  command: ParsedRedisSearchGeoCommand
+export interface RqeGeoDataset {
+  command: ParsedRqeGeoCommand
   points: GeoPointResult[]
   shapes: GeoShapeResult[]
 }

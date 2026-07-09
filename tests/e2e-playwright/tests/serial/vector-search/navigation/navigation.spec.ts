@@ -15,7 +15,7 @@ const TEST_INDEX_NAME = `test-vs-nav-${uniqueId}-idx`;
 test.use({ featureFlags: { vectorSearchV2: true } });
 
 /**
- * Vector Search > Navigation and Redis Search Availability
+ * Vector Search > Navigation and RQE Availability
  *
  * Tests for navigating to Vector Search and verifying the
  * correct screen is shown based on Redis capabilities.
@@ -23,7 +23,7 @@ test.use({ featureFlags: { vectorSearchV2: true } });
  * Each test creates its own database to avoid interfering
  * with parallel tests' FT indexes.
  */
-test.describe('Vector Search > Navigation and Redis Search Availability', () => {
+test.describe('Vector Search > Navigation and RQE Availability', () => {
   let database: DatabaseInstance;
 
   test.afterEach(async ({ apiHelper }) => {
@@ -61,7 +61,7 @@ test.describe('Vector Search > Navigation and Redis Search Availability', () => 
   });
 });
 
-test.describe('Vector Search > Redis Search Not Available', () => {
+test.describe('Vector Search > RQE Not Available', () => {
   let databaseNoModules: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
@@ -72,13 +72,11 @@ test.describe('Vector Search > Redis Search Not Available', () => {
     await apiHelper.deleteDatabase(databaseNoModules.id);
   });
 
-  test('should show Redis Search not available screen for Redis without search module', async ({
-    vectorSearchPage,
-  }) => {
+  test('should show RQE not available screen for Redis without search module', async ({ vectorSearchPage }) => {
     await vectorSearchPage.goto(databaseNoModules.id);
 
-    await expect(vectorSearchPage.redisSearchNotAvailableWrapper).toBeVisible();
-    await expect(vectorSearchPage.redisSearchNotAvailable.container).toBeVisible();
-    await expect(vectorSearchPage.redisSearchNotAvailable.title).toBeVisible();
+    await expect(vectorSearchPage.rqeNotAvailableWrapper).toBeVisible();
+    await expect(vectorSearchPage.rqeNotAvailable.container).toBeVisible();
+    await expect(vectorSearchPage.rqeNotAvailable.title).toBeVisible();
   });
 });

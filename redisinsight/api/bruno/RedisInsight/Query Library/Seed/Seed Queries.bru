@@ -14,13 +14,13 @@ body:json {
   {
     "items": [
       {
-        "indexName": "{{REDIS_SEARCH_INDEX_NAME}}",
+        "indexName": "{{RQE_INDEX_NAME}}",
         "name": "Vector Search - Bikes",
         "description": "Retrieve all bikes in the database",
         "query": "FT.SEARCH idx:bikes_vss \"*\""
       },
       {
-        "indexName": "{{REDIS_SEARCH_INDEX_NAME}}",
+        "indexName": "{{RQE_INDEX_NAME}}",
         "name": "Vector Search - Cheapest Bikes",
         "description": "Retrieve all bikes which price is between 1200 and 1500",
         "query": "FT.SEARCH idx:bikes_vss \"@price [1200 1500]\""

@@ -37,7 +37,7 @@ import {
 
 /**
  * Manages the entire autocomplete, suggestion, and signature help system
- * for the Redis and Redis Search query editor.
+ * for the Redis/RQE query editor.
  */
 export const useRedisCompletions = ({
   monacoObjects,

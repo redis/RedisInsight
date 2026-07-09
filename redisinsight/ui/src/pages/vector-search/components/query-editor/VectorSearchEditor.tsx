@@ -40,7 +40,7 @@ const triggerEmptySuggestions = (
  * **Onboarding flow** (Vector Search–specific):
  *
  * When the editor is empty and receives focus, a suggestions panel is
- * shown with a predefined list of Redis Search query templates (FT.SEARCH,
+ * shown with a predefined list of RQE query templates (FT.SEARCH,
  * FT.AGGREGATE, FT.SUGGET, FT.SPELLCHECK, FT.EXPLAIN, FT.PROFILE,
  * FT._LIST).  Each template shows its description first; full
  * documentation is expandable via the Monaco details panel.

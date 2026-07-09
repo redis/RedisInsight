@@ -1,21 +1,21 @@
 import {
-  parseRedisSearchGeoCommand,
-  parseRedisSearchGeoResults,
+  parseRqeGeoCommand,
+  parseRqeGeoResults,
   parseWktGeometry,
-} from './redisSearchGeoParser'
+} from './rqeGeoParser'
 
 const unwrapCommand = (command: string) => {
-  const parsed = parseRedisSearchGeoCommand(command)
+  const parsed = parseRqeGeoCommand(command)
   if (!parsed.ok) {
     throw new Error(parsed.error)
   }
   return parsed.value
 }
 
-describe('redisSearchGeoParser', () => {
+describe('rqeGeoParser', () => {
   it('parses FT.SEARCH GEO radius filters', () => {
     expect(
-      parseRedisSearchGeoCommand(
+      parseRqeGeoCommand(
         'FT.SEARCH cities "@coords:[2.34 48.86 1000 km]" RETURN 1 coords',
       ),
     ).toMatchObject({
@@ -38,7 +38,7 @@ describe('redisSearchGeoParser', () => {
 
   it('falls back to the in-query predicate when GEOFILTER is malformed', () => {
     expect(
-      parseRedisSearchGeoCommand(
+      parseRqeGeoCommand(
         'FT.SEARCH idx "@coords:[2.34 48.86 1000 km]" GEOFILTER coords 2.34 48.86 1000 yd',
       ),
     ).toMatchObject({
@@ -61,7 +61,7 @@ describe('redisSearchGeoParser', () => {
 
   it('parses legacy FT.SEARCH GEOFILTER options', () => {
     expect(
-      parseRedisSearchGeoCommand(
+      parseRqeGeoCommand(
         'FT.SEARCH idx * GEOFILTER coords 2.34 48.86 1000 km',
       ),
     ).toMatchObject({
@@ -107,7 +107,7 @@ describe('redisSearchGeoParser', () => {
 
   it('substitutes PARAMS in FT.AGGREGATE GEO filters', () => {
     expect(
-      parseRedisSearchGeoCommand(
+      parseRqeGeoCommand(
         'FT.AGGREGATE idx "@coords:[$lon $lat $radius km]" PARAMS 6 lon 2.34 lat 48.86 radius 1000 LOAD 1 @coords',
       ),
     ).toMatchObject({
@@ -129,7 +129,7 @@ describe('redisSearchGeoParser', () => {
 
   it('parses FT.HYBRID SEARCH geo filters', () => {
     expect(
-      parseRedisSearchGeoCommand(
+      parseRqeGeoCommand(
         'FT.HYBRID idx SEARCH "@coords:[2.34 48.86 1000 km]" VSIM @embedding $vec LOAD 1 coords PARAMS 2 vec blob',
       ),
     ).toMatchObject({
@@ -145,7 +145,7 @@ describe('redisSearchGeoParser', () => {
 
   it('parses FT.HYBRID FILTER geo filters', () => {
     expect(
-      parseRedisSearchGeoCommand(
+      parseRqeGeoCommand(
         'FT.HYBRID idx VSIM @embedding $vec FILTER "@coords:[2.34 48.86 1000 km]" LOAD 1 coords PARAMS 2 vec blob',
       ),
     ).toMatchObject({
@@ -161,7 +161,7 @@ describe('redisSearchGeoParser', () => {
 
   it('ignores FT.HYBRID SEARCH and FILTER names inside PARAMS', () => {
     expect(
-      parseRedisSearchGeoCommand(
+      parseRqeGeoCommand(
         'FT.HYBRID idx VSIM @embedding $vec LOAD 1 coords PARAMS 4 search "@coords:[2.34 48.86 1000 km]" filter "@coords:[2.34 48.86 1000 km]"',
       ),
     ).toEqual({
@@ -172,7 +172,7 @@ describe('redisSearchGeoParser', () => {
 
   it('ignores FT.HYBRID index names that match SEARCH and FILTER keywords', () => {
     expect(
-      parseRedisSearchGeoCommand(
+      parseRqeGeoCommand(
         'FT.HYBRID SEARCH "@coords:[2.34 48.86 1000 km]" VSIM @embedding $vec PARAMS 2 vec blob',
       ),
     ).toEqual({
@@ -181,7 +181,7 @@ describe('redisSearchGeoParser', () => {
     })
 
     expect(
-      parseRedisSearchGeoCommand(
+      parseRqeGeoCommand(
         'FT.HYBRID FILTER "@coords:[2.34 48.86 1000 km]" VSIM @embedding $vec PARAMS 2 vec blob',
       ),
     ).toEqual({
@@ -192,7 +192,7 @@ describe('redisSearchGeoParser', () => {
 
   it('parses FT.HYBRID geo filters when the index is named PARAMS', () => {
     expect(
-      parseRedisSearchGeoCommand(
+      parseRqeGeoCommand(
         'FT.HYBRID PARAMS SEARCH "@coords:[2.34 48.86 1000 km]" VSIM @embedding $vec PARAMS 2 vec blob',
       ),
     ).toMatchObject({
@@ -208,7 +208,7 @@ describe('redisSearchGeoParser', () => {
 
   it('parses GEOSHAPE point and polygon predicates', () => {
     expect(
-      parseRedisSearchGeoCommand(
+      parseRqeGeoCommand(
         'FT.SEARCH idx "@geom:[CONTAINS $shape]" PARAMS 2 shape "POINT (2 2)" DIALECT 3',
       ),
     ).toMatchObject({
@@ -226,7 +226,7 @@ describe('redisSearchGeoParser', () => {
     })
 
     expect(
-      parseRedisSearchGeoCommand(
+      parseRqeGeoCommand(
         'FT.SEARCH idx "@geom:[WITHIN $shape]" PARAMS 2 shape "POLYGON ((1 1, 1 3, 3 3, 1 1))" DIALECT 3',
       ),
     ).toMatchObject({
@@ -279,21 +279,21 @@ describe('redisSearchGeoParser', () => {
     })
   })
 
-  it('rejects malformed Redis Search geo predicates', () => {
-    expect(parseRedisSearchGeoCommand('')).toEqual({
+  it('rejects malformed RQE geo predicates', () => {
+    expect(parseRqeGeoCommand('')).toEqual({
       ok: false,
       error: 'Missing Redis Search command.',
     })
-    expect(parseRedisSearchGeoCommand('FT.INFO idx')).toEqual({
+    expect(parseRqeGeoCommand('FT.INFO idx')).toEqual({
       ok: false,
       error: 'Unsupported Redis Search command: FT.INFO.',
     })
-    expect(parseRedisSearchGeoCommand('FT.SEARCH')).toEqual({
+    expect(parseRqeGeoCommand('FT.SEARCH')).toEqual({
       ok: false,
       error: 'FT.SEARCH requires an index.',
     })
     expect(
-      parseRedisSearchGeoCommand(
+      parseRqeGeoCommand(
         'FT.SEARCH idx "@coords:[$lon 48.86 1000 km]" PARAMS bad lon 2.34',
       ),
     ).toEqual({
@@ -301,25 +301,25 @@ describe('redisSearchGeoParser', () => {
       error: 'Invalid longitude: $lon.',
     })
     expect(
-      parseRedisSearchGeoCommand('FT.SEARCH idx "@coords:[2.34 nope 1000 km]"'),
+      parseRqeGeoCommand('FT.SEARCH idx "@coords:[2.34 nope 1000 km]"'),
     ).toEqual({
       ok: false,
       error: 'Invalid latitude: nope.',
     })
     expect(
-      parseRedisSearchGeoCommand('FT.SEARCH idx "@coords:[2.34 48.86 wide km]"'),
+      parseRqeGeoCommand('FT.SEARCH idx "@coords:[2.34 48.86 wide km]"'),
     ).toEqual({
       ok: false,
       error: 'Invalid radius: wide.',
     })
     expect(
-      parseRedisSearchGeoCommand('FT.SEARCH idx * GEOFILTER coords 2.34 48.86 1000 yd'),
+      parseRqeGeoCommand('FT.SEARCH idx * GEOFILTER coords 2.34 48.86 1000 yd'),
     ).toEqual({
       ok: false,
       error: 'Unsupported GEO unit: yd.',
     })
     expect(
-      parseRedisSearchGeoCommand('FT.SEARCH idx * GEOFILTER coords 2.34 48.86'),
+      parseRqeGeoCommand('FT.SEARCH idx * GEOFILTER coords 2.34 48.86'),
     ).toEqual({
       ok: false,
       error: 'GEOFILTER requires field longitude latitude radius unit.',
@@ -343,7 +343,7 @@ describe('redisSearchGeoParser', () => {
     )
 
     expect(
-      parseRedisSearchGeoResults(
+      parseRqeGeoResults(
         [2, 'city:1', ['name', 'Paris', 'coords', '2.34,48.86'], 'city:2', ['coords', '3.1,49.2']],
         command,
       ),
@@ -365,7 +365,7 @@ describe('redisSearchGeoParser', () => {
     )
 
     expect(
-      parseRedisSearchGeoResults(
+      parseRqeGeoResults(
         [
           2,
           'city:1',
@@ -391,7 +391,7 @@ describe('redisSearchGeoParser', () => {
     })
   })
 
-  it('returns an empty dataset for valid Redis Search queries without matches', () => {
+  it('returns an empty dataset for valid RQE queries without matches', () => {
     const searchCommand = unwrapCommand(
       'FT.SEARCH cities "@coords:[2.34 48.86 1000 km]" RETURN 1 coords',
     )
@@ -402,7 +402,7 @@ describe('redisSearchGeoParser', () => {
       'FT.HYBRID idx SEARCH "@coords:[2.34 48.86 1000 km]" VSIM @embedding $vec LOAD 1 coords PARAMS 2 vec blob',
     )
 
-    expect(parseRedisSearchGeoResults([0], searchCommand)).toEqual({
+    expect(parseRqeGeoResults([0], searchCommand)).toEqual({
       ok: true,
       value: {
         command: searchCommand,
@@ -410,7 +410,7 @@ describe('redisSearchGeoParser', () => {
         shapes: [],
       },
     })
-    expect(parseRedisSearchGeoResults([0], aggregateCommand)).toEqual({
+    expect(parseRqeGeoResults([0], aggregateCommand)).toEqual({
       ok: true,
       value: {
         command: aggregateCommand,
@@ -418,7 +418,7 @@ describe('redisSearchGeoParser', () => {
         shapes: [],
       },
     })
-    expect(parseRedisSearchGeoResults({ total_results: 0, results: [] }, hybridCommand)).toEqual({
+    expect(parseRqeGeoResults({ total_results: 0, results: [] }, hybridCommand)).toEqual({
       ok: true,
       value: {
         command: hybridCommand,
@@ -434,7 +434,7 @@ describe('redisSearchGeoParser', () => {
     )
 
     expect(
-      parseRedisSearchGeoResults([[1, ['name', 'Paris', 'coords', '2.34,48.86']], 0], command),
+      parseRqeGeoResults([[1, ['name', 'Paris', 'coords', '2.34,48.86']], 0], command),
     ).toMatchObject({
       ok: true,
       value: {
@@ -451,7 +451,7 @@ describe('redisSearchGeoParser', () => {
     )
 
     expect(
-      parseRedisSearchGeoResults([1, 'city:1', ['coords', '["2.34,48.86","3.1,49.2"]']], command),
+      parseRqeGeoResults([1, 'city:1', ['coords', '["2.34,48.86","3.1,49.2"]']], command),
     ).toMatchObject({
       ok: true,
       value: {
@@ -469,7 +469,7 @@ describe('redisSearchGeoParser', () => {
     )
 
     expect(
-      parseRedisSearchGeoResults(
+      parseRqeGeoResults(
         [
           4,
           'city:1',
@@ -499,7 +499,7 @@ describe('redisSearchGeoParser', () => {
     )
 
     expect(
-      parseRedisSearchGeoResults(
+      parseRqeGeoResults(
         [
           2,
           'city:1',
@@ -527,7 +527,7 @@ describe('redisSearchGeoParser', () => {
     )
 
     expect(
-      parseRedisSearchGeoResults([1, 'city:1', ['other', '2.34,48.86']], command),
+      parseRqeGeoResults([1, 'city:1', ['other', '2.34,48.86']], command),
     ).toMatchObject({
       ok: true,
       value: {
@@ -544,7 +544,7 @@ describe('redisSearchGeoParser', () => {
     )
 
     expect(
-      parseRedisSearchGeoResults([1, 'city:1', ['coords', '2.34,48.86']], command),
+      parseRqeGeoResults([1, 'city:1', ['coords', '2.34,48.86']], command),
     ).toMatchObject({
       ok: true,
       value: {
@@ -554,7 +554,7 @@ describe('redisSearchGeoParser', () => {
       },
     })
     expect(
-      parseRedisSearchGeoResults([1, ['coords', '3.1,49.2']], command),
+      parseRqeGeoResults([1, ['coords', '3.1,49.2']], command),
     ).toMatchObject({
       ok: true,
       value: {
@@ -564,7 +564,7 @@ describe('redisSearchGeoParser', () => {
       },
     })
     expect(
-      parseRedisSearchGeoResults(
+      parseRqeGeoResults(
         [
           2,
           ['coords', '3.1,49.2'],
@@ -589,7 +589,7 @@ describe('redisSearchGeoParser', () => {
     )
 
     expect(
-      parseRedisSearchGeoResults(
+      parseRqeGeoResults(
         [
           'total_results',
           3,
@@ -616,7 +616,7 @@ describe('redisSearchGeoParser', () => {
     })
 
     expect(
-      parseRedisSearchGeoResults(
+      parseRqeGeoResults(
         {
           total_results: 1,
           results: [
@@ -649,7 +649,7 @@ describe('redisSearchGeoParser', () => {
     }
     response.results = [['coords', '2.34,48.86']]
 
-    expect(parseRedisSearchGeoResults(response, command)).toEqual({
+    expect(parseRqeGeoResults(response, command)).toEqual({
       ok: false,
       error:
         'No returned geospatial fields found. Add LOAD 1 coords to the FT.HYBRID command.',
@@ -662,7 +662,7 @@ describe('redisSearchGeoParser', () => {
     )
 
     expect(
-      parseRedisSearchGeoResults(
+      parseRqeGeoResults(
         [1, 'shape:1', ['name', 'Zone', 'geom', 'POLYGON ((1 1, 1 3, 3 3, 1 1))']],
         command,
       ),
@@ -688,7 +688,7 @@ describe('redisSearchGeoParser', () => {
     )
 
     expect(
-      parseRedisSearchGeoResults(
+      parseRqeGeoResults(
         [1, 'shape:1', ['other', 'POINT (4 5)']],
         command,
       ),
@@ -714,17 +714,17 @@ describe('redisSearchGeoParser', () => {
       'FT.SEARCH idx "@geom:[CONTAINS $shape]" PARAMS 2 shape "POINT (2 2)" DIALECT 3',
     )
 
-    expect(parseRedisSearchGeoResults([1, 'city:1', ['coords', 42]], pointCommand)).toEqual({
+    expect(parseRqeGeoResults([1, 'city:1', ['coords', 42]], pointCommand)).toEqual({
       ok: false,
       error:
         'No returned geospatial fields found. Add RETURN 1 coords to the FT.SEARCH command.',
     })
-    expect(parseRedisSearchGeoResults([1, 'shape:1', ['other', 42]], shapeCommand)).toEqual({
+    expect(parseRqeGeoResults([1, 'shape:1', ['other', 42]], shapeCommand)).toEqual({
       ok: false,
       error:
         'No returned geospatial fields found. Add RETURN 1 geom to the FT.SEARCH command.',
     })
-    expect(parseRedisSearchGeoResults([1, 'shape:1', ['geom', 42]], shapeCommand)).toEqual({
+    expect(parseRqeGeoResults([1, 'shape:1', ['geom', 42]], shapeCommand)).toEqual({
       ok: false,
       error:
         'No returned geospatial fields found. Add RETURN 1 geom to the FT.SEARCH command.',
@@ -742,24 +742,24 @@ describe('redisSearchGeoParser', () => {
       'FT.HYBRID idx SEARCH "@coords:[2.34 48.86 1000 km]" VSIM @embedding $vec LOAD 1 coords PARAMS 2 vec blob',
     )
 
-    expect(parseRedisSearchGeoResults([1, 'city:1', ['name', 'Paris']], searchCommand)).toEqual({
+    expect(parseRqeGeoResults([1, 'city:1', ['name', 'Paris']], searchCommand)).toEqual({
       ok: false,
       error:
         'No returned geospatial fields found. Add RETURN 1 coords to the FT.SEARCH command.',
     })
-    expect(parseRedisSearchGeoResults([1, ['name', 'Paris']], aggregateCommand)).toEqual({
+    expect(parseRqeGeoResults([1, ['name', 'Paris']], aggregateCommand)).toEqual({
       ok: false,
       error:
         'No returned geospatial fields found. Add LOAD 1 @coords to the FT.AGGREGATE command.',
     })
-    expect(parseRedisSearchGeoResults([1, ['name', 'Paris']], hybridCommand)).toEqual({
+    expect(parseRqeGeoResults([1, ['name', 'Paris']], hybridCommand)).toEqual({
       ok: false,
       error:
         'No returned geospatial fields found. Add LOAD 1 coords to the FT.HYBRID command.',
     })
   })
 
-  it('rejects malformed Redis Search responses and field rows', () => {
+  it('rejects malformed RQE responses and field rows', () => {
     const searchCommand = unwrapCommand(
       'FT.SEARCH idx "@coords:[2.34 48.86 1000 km]"',
     )
@@ -767,34 +767,34 @@ describe('redisSearchGeoParser', () => {
       'FT.AGGREGATE idx "@coords:[2.34 48.86 1000 km]"',
     )
 
-    expect(parseRedisSearchGeoResults('not-array', searchCommand)).toEqual({
+    expect(parseRqeGeoResults('not-array', searchCommand)).toEqual({
       ok: false,
       error: 'FT.SEARCH response must be an array.',
     })
-    expect(parseRedisSearchGeoResults([1, 'city:1', 'not-fields'], searchCommand)).toEqual({
+    expect(parseRqeGeoResults([1, 'city:1', 'not-fields'], searchCommand)).toEqual({
       ok: false,
       error:
         'No returned geospatial fields found. Add RETURN 1 coords to the FT.SEARCH command.',
     })
-    expect(parseRedisSearchGeoResults([1, 'city:1', ['coords']], searchCommand)).toEqual({
+    expect(parseRqeGeoResults([1, 'city:1', ['coords']], searchCommand)).toEqual({
       ok: false,
       error:
         'No returned geospatial fields found. Add RETURN 1 coords to the FT.SEARCH command.',
     })
-    expect(parseRedisSearchGeoResults([1, ['coords']], aggregateCommand)).toEqual({
+    expect(parseRqeGeoResults([1, ['coords']], aggregateCommand)).toEqual({
       ok: false,
       error:
         'No returned geospatial fields found. Add LOAD 1 @coords to the FT.AGGREGATE command.',
     })
   })
 
-  it('rejects unsupported Redis Search geo commands and malformed shapes', () => {
-    expect(parseRedisSearchGeoCommand('FT.SEARCH idx "*"')).toEqual({
+  it('rejects unsupported RQE geo commands and malformed shapes', () => {
+    expect(parseRqeGeoCommand('FT.SEARCH idx "*"')).toEqual({
       ok: false,
       error: 'No Redis Search geospatial predicate found.',
     })
     expect(
-      parseRedisSearchGeoCommand(
+      parseRqeGeoCommand(
         'FT.SEARCH idx "@geom:[WITHIN $shape]" PARAMS 2 shape "LINESTRING (0 0, 1 1)" DIALECT 3',
       ),
     ).toEqual({

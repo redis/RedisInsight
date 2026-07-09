@@ -1,9 +1,9 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 
-import { RedisSearchGeoVisualization } from './RedisSearchGeoVisualization'
-import { ParsedRedisSearchGeoCommand } from '../../types'
-import * as redisSearchGeoParser from '../../utils/redisSearchGeoParser'
+import { RqeGeoVisualization } from './RqeGeoVisualization'
+import { ParsedRqeGeoCommand } from '../../types'
+import * as rqeGeoParser from '../../utils/rqeGeoParser'
 
 function mockGeoHeader() {
   return <div data-testid="geo-header" />
@@ -34,7 +34,7 @@ jest.mock('../GeoTable', () => ({
   GeoTable: mockGeoTable,
 }))
 
-const parsedCommand: ParsedRedisSearchGeoCommand = {
+const parsedCommand: ParsedRqeGeoCommand = {
   command: 'FT.SEARCH',
   kind: 'pointRadius',
   rawTokens: ['FT.SEARCH', 'cities', '@coords:[2.34 48.86 1000 km]'],
@@ -54,18 +54,18 @@ const parsedCommand: ParsedRedisSearchGeoCommand = {
   },
 }
 
-describe('RedisSearchGeoVisualization', () => {
+describe('RqeGeoVisualization', () => {
   afterEach(() => {
     jest.restoreAllMocks()
   })
 
   it('memoizes parsed command and results for stable inputs', () => {
     const response = [1, 'city:1', ['name', 'Paris', 'coords', '2.34,48.86']]
-    const parseRedisSearchGeoCommand = jest
-      .spyOn(redisSearchGeoParser, 'parseRedisSearchGeoCommand')
+    const parseRqeGeoCommand = jest
+      .spyOn(rqeGeoParser, 'parseRqeGeoCommand')
       .mockReturnValue({ ok: true, value: parsedCommand })
-    const parseRedisSearchGeoResults = jest
-      .spyOn(redisSearchGeoParser, 'parseRedisSearchGeoResults')
+    const parseRqeGeoResults = jest
+      .spyOn(rqeGeoParser, 'parseRqeGeoResults')
       .mockReturnValue({
         ok: true,
         value: {
@@ -84,7 +84,7 @@ describe('RedisSearchGeoVisualization', () => {
       })
 
     const { rerender } = render(
-      <RedisSearchGeoVisualization
+      <RqeGeoVisualization
         command='FT.SEARCH cities "@coords:[2.34 48.86 1000 km]" RETURN 1 coords'
         response={response}
         status="success"
@@ -93,7 +93,7 @@ describe('RedisSearchGeoVisualization', () => {
     )
 
     rerender(
-      <RedisSearchGeoVisualization
+      <RqeGeoVisualization
         command='FT.SEARCH cities "@coords:[2.34 48.86 1000 km]" RETURN 1 coords'
         response={response}
         status="success"
@@ -101,21 +101,21 @@ describe('RedisSearchGeoVisualization', () => {
       />,
     )
 
-    expect(parseRedisSearchGeoCommand).toHaveBeenCalledTimes(1)
-    expect(parseRedisSearchGeoResults).toHaveBeenCalledTimes(1)
+    expect(parseRqeGeoCommand).toHaveBeenCalledTimes(1)
+    expect(parseRqeGeoResults).toHaveBeenCalledTimes(1)
   })
 
   it('shows an inspector-specific error title when inspector results cannot be parsed', () => {
     jest
-      .spyOn(redisSearchGeoParser, 'parseRedisSearchGeoCommand')
+      .spyOn(rqeGeoParser, 'parseRqeGeoCommand')
       .mockReturnValue({ ok: true, value: parsedCommand })
-    jest.spyOn(redisSearchGeoParser, 'parseRedisSearchGeoResults').mockReturnValue({
+    jest.spyOn(rqeGeoParser, 'parseRqeGeoResults').mockReturnValue({
       ok: false,
       error: 'Add RETURN 1 coords to the FT.SEARCH command.',
     })
 
     render(
-      <RedisSearchGeoVisualization
+      <RqeGeoVisualization
         command='FT.SEARCH cities "@coords:[2.34 48.86 1000 km]" RETURN 1 name'
         response={[1, 'city:1', ['name', 'Paris']]}
         status="success"
@@ -132,13 +132,13 @@ describe('RedisSearchGeoVisualization', () => {
   })
 
   it('shows a heatmap-specific error title when heatmap command parsing fails', () => {
-    jest.spyOn(redisSearchGeoParser, 'parseRedisSearchGeoCommand').mockReturnValue({
+    jest.spyOn(rqeGeoParser, 'parseRqeGeoCommand').mockReturnValue({
       ok: false,
       error: 'No Redis Search geospatial predicate found.',
     })
 
     render(
-      <RedisSearchGeoVisualization
+      <RqeGeoVisualization
         command='FT.SEARCH cities "*"'
         response={[0]}
         status="success"
@@ -154,15 +154,15 @@ describe('RedisSearchGeoVisualization', () => {
 
   it('shows a heatmap-specific error title when heatmap results cannot be parsed', () => {
     jest
-      .spyOn(redisSearchGeoParser, 'parseRedisSearchGeoCommand')
+      .spyOn(rqeGeoParser, 'parseRqeGeoCommand')
       .mockReturnValue({ ok: true, value: parsedCommand })
-    jest.spyOn(redisSearchGeoParser, 'parseRedisSearchGeoResults').mockReturnValue({
+    jest.spyOn(rqeGeoParser, 'parseRqeGeoResults').mockReturnValue({
       ok: false,
       error: 'Add RETURN 1 coords to the FT.SEARCH command.',
     })
 
     render(
-      <RedisSearchGeoVisualization
+      <RqeGeoVisualization
         command='FT.SEARCH cities "@coords:[2.34 48.86 1000 km]" RETURN 1 name'
         response={[1, 'city:1', ['name', 'Paris']]}
         status="success"
