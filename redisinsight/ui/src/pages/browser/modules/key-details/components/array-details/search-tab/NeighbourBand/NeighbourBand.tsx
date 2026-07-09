@@ -106,7 +106,6 @@ export const NeighbourBand = ({
                 : `${TEST_ID_PREFIX}-row-${el.index}`
             }
           >
-            {/* Spacer aligning with the parent's leading selection column. */}
             <span />
             <S.BandCell>
               <ArrayIndexCell index={el.index} />
@@ -119,7 +118,6 @@ export const NeighbourBand = ({
                 viewFormat={viewFormat}
               />
             </S.BandCell>
-            {/* Spacer aligning with the parent's trailing actions column. */}
             <span />
           </S.BandRow>
         )
