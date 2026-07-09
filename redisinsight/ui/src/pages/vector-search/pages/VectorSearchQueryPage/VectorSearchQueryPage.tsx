@@ -40,9 +40,6 @@ export const VectorSearchQueryPage = () => {
         source: SearchIndexDetailsSource.KeyDetails,
       },
     })
-
-    params.delete(OPEN_INDEX_PANEL_PARAM)
-    history.replace({ ...location, search: params.toString() })
   }, [location.search])
 
   const { loading, error, stringData: indexes } = useRedisearchListData()
