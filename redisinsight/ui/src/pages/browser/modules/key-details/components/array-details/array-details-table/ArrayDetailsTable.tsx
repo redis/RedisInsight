@@ -9,6 +9,7 @@ import React, {
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
+import { appContextSelectedKey } from 'uiSrc/slices/app/context'
 import {
   selectedKeyDataSelector,
   selectedKeySelector,
@@ -95,6 +96,9 @@ const ArrayDetailsTable = memo(
     const { name: keyName } = useAppSelector(selectedKeyDataSelector) ?? {
       name: '',
     }
+    // The live selection — updated on key click, before fetchKeyInfo. Unlike
+    // `keyName` (from selectedKeyData) it doesn't lag a switch.
+    const liveSelectedKey = useAppSelector(appContextSelectedKey)
 
     const { requestConfirmation } = useProductionWriteConfirmation()
 
@@ -165,18 +169,17 @@ const ArrayDetailsTable = memo(
       }
     }, [isActive])
 
-    // Abandon an open editor only on a *real* key change. `keyName` is the
-    // selected key's name buffer, and the post-ARSET `refreshKeyInfoAction`
-    // swaps in a new buffer instance for the same key — comparing by value
-    // (not reference) stops that refresh from closing an editor the user has
-    // meanwhile reopened on another row.
-    const prevKeyRef = useRef(keyName)
+    // Abandon an open editor on a real key change, keyed off the live
+    // selection — `keyName` lags a switch during fetchKeyInfo, which would let
+    // a pending drawer save ARSET the old key. Compare by value so a same-key
+    // info refresh (a fresh buffer for the same key) doesn't close the editor.
+    const prevKeyRef = useRef(liveSelectedKey)
     useEffect(() => {
-      if (isSameKey(prevKeyRef.current, keyName)) return
-      prevKeyRef.current = keyName
+      if (isSameKey(prevKeyRef.current, liveSelectedKey)) return
+      prevKeyRef.current = liveSelectedKey
       setEditingIndex(null)
       setDrawerIndex(null)
-    }, [keyName])
+    }, [liveSelectedKey])
 
     // Abandon an open editor when the value formatter changes. The editor seed
     // was serialized under the previous format, but a save re-serializes with

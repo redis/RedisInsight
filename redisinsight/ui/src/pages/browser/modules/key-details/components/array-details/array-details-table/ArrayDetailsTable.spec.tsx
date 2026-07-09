@@ -20,6 +20,7 @@ import keysReducer, {
 import instancesReducer, {
   setConnectedInstanceId,
 } from 'uiSrc/slices/instances/instances'
+import contextReducer, { setBrowserSelectedKey } from 'uiSrc/slices/app/context'
 import { KeyValueFormat } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
@@ -342,6 +343,7 @@ describe('ArrayDetailsTable', () => {
       keys.selectedKey.data = { name: stringToBuffer('mykey') } as any
       const store = configureStore({
         reducer: combineReducers({
+          app: (s = initialStateDefault.app) => s,
           browser: combineReducers({
             keys: keysReducer,
             array: (s = initialStateDefault.browser.array) => s,
@@ -668,6 +670,7 @@ describe('ArrayDetailsTable', () => {
       keys.selectedKey.viewFormat = KeyValueFormat.Unicode
       const store = configureStore({
         reducer: combineReducers({
+          app: (s = initialStateDefault.app) => s,
           browser: combineReducers({
             keys: keysReducer,
             array: (s = initialStateDefault.browser.array) => s,
@@ -934,6 +937,50 @@ describe('ArrayDetailsTable', () => {
       expect(setCall).toBeFalsy()
 
       postSpy.mockRestore()
+    })
+
+    it('abandons the drawer when the live selection changes while selectedKeyData lags', () => {
+      // keyName (from selectedKeyData) lags a key switch during fetchKeyInfo,
+      // so the abandon guard keys off the live app-context selection instead.
+      // Hold selectedKeyData on 'mykey' and move only the live selection.
+      const keys = cloneDeep(initialStateDefault.browser.keys)
+      keys.selectedKey.data = { name: stringToBuffer('mykey') } as any
+      const store = configureStore({
+        reducer: combineReducers({
+          app: combineReducers({ context: contextReducer }),
+          browser: combineReducers({
+            keys: (s = keys) => s,
+            array: (s = initialStateDefault.browser.array) => s,
+          }),
+          connections: combineReducers({
+            instances: (s = initialStateDefault.connections.instances) => s,
+          }),
+        }),
+        middleware: (getDefault) =>
+          getDefault({ serializableCheck: false, immutableCheck: false }),
+      })
+      store.dispatch(setBrowserSelectedKey(stringToBuffer('mykey')))
+
+      render(
+        <ArrayDetailsTable
+          elements={[withValue('1', 'hello')]}
+          loading={false}
+          isActive
+        />,
+        { store },
+      )
+
+      fireEvent.click(screen.getByTestId('array-expand-btn-1'))
+      expect(screen.getByTestId('array-value-code-editor')).toBeInTheDocument()
+
+      // Live selection moves on while selectedKeyData still points at 'mykey'.
+      act(() => {
+        store.dispatch(setBrowserSelectedKey(stringToBuffer('otherkey')))
+      })
+
+      expect(
+        screen.queryByTestId('array-value-code-editor'),
+      ).not.toBeInTheDocument()
     })
   })
 
