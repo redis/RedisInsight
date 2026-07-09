@@ -35,15 +35,19 @@ const BLACKLISTED_TAGS = [
   'input',
 ]
 
-// Strip event handlers (default) plus `style`, which can beacon out via
-// CSS `background-image: url(https://attacker/...)`.
-const BLACKLISTED_ATTRS: Array<string | RegExp> = [/^on.+/i, /^style$/i]
+// Strip event handlers (default) plus attributes that can trigger an outbound
+// request on render: `style` (CSS `background-image: url(...)`) and the legacy
+// `background` image URL supported on `<table>`/`<td>` in some browsers.
+const BLACKLISTED_ATTRS: Array<string | RegExp> = [
+  /^on.+/i,
+  /^style$/i,
+  /^background$/i,
+]
 
-// Case-sensitive strip of raw HTML <link> elements to prevent external
-// resource loading while preserving the PascalCase <Link> component emitted by
-// the markdown formatter. JsxParser's blacklistedTags is case-insensitive, so
-// blacklisting `link` would also drop legitimate <Link> — handle it here.
-const LOWERCASE_LINK_TAG = /<link\b[^>]*\/?>|<\/link\s*>/g
+// Note: raw HTML `<link>` elements never reach the parser — `remarkSanitize`
+// (DOMPurify) strips them during formatting. We must NOT blacklist the `link`
+// tag here: JsxParser's blacklistedTags is case-insensitive, so it would also
+// drop the legitimate PascalCase <Link> component emitted by the formatter.
 
 export interface Props {
   onRunCommand?: (query: string) => void
@@ -103,7 +107,7 @@ const MarkdownMessage = (props: Props) => {
       blacklistedTags={BLACKLISTED_TAGS}
       blacklistedAttrs={BLACKLISTED_ATTRS}
       autoCloseVoidElements
-      jsx={content.replace(LOWERCASE_LINK_TAG, '')}
+      jsx={content}
       onError={() => setParseAsIs(true)}
     />
   )

