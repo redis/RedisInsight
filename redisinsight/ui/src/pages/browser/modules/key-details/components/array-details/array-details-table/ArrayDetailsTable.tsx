@@ -117,6 +117,17 @@ const ArrayDetailsTable = memo(
     // a still-in-flight save from a previous session can't close an editor the
     // user has since reopened (which would discard the new input).
     const editSessionRef = useRef(0)
+    // Live mirror of the connected database id, so the stable open/apply
+    // callbacks can read it without a stale closure.
+    const connectedInstanceIdRef = useRef(connectedInstanceId)
+    useEffect(() => {
+      connectedInstanceIdRef.current = connectedInstanceId
+    }, [connectedInstanceId])
+    // Database connected when the inline editor opened. Its Save confirmation
+    // (in EditableTextArea) can be confirmed after a database switch, so the
+    // write is guarded with this id to avoid saving into the new database —
+    // the drawer guards its own save the same way.
+    const inlineEditInstanceIdRef = useRef<string | undefined>(undefined)
 
     // Only the visible tab's table drives the editor-driven refresh pause, so
     // a hidden table can't re-enable refresh while the active one has an editor
@@ -192,6 +203,8 @@ const ArrayDetailsTable = memo(
         // compares against its captured session id will then no-op.
         if (isEditing) {
           editSessionRef.current += 1
+          // Capture the connected database to guard a save confirmed later.
+          inlineEditInstanceIdRef.current = connectedInstanceIdRef.current
           // Inline and drawer are one mutually-exclusive edit session — opening
           // inline closes any open drawer.
           setDrawerIndex(null)
@@ -214,7 +227,10 @@ const ArrayDetailsTable = memo(
               key: keyName,
               index,
               value: stringToSerializedBufferFormat(viewFormat, value),
-              startInstanceId: options?.startInstanceId,
+              // Inline saves fall back to the open-time id; the drawer passes
+              // its own save-time id.
+              startInstanceId:
+                options?.startInstanceId ?? inlineEditInstanceIdRef.current,
             },
             options?.onSuccess ??
               (() => {

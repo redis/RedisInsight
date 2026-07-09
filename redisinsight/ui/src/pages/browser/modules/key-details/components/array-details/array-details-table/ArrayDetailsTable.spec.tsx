@@ -225,6 +225,53 @@ describe('ArrayDetailsTable', () => {
       postSpy.mockRestore()
     })
 
+    it('skips the inline ARSET when the database changed since the editor opened', async () => {
+      const postSpy = jest
+        .spyOn(apiService, 'post')
+        .mockResolvedValue({ status: 200, data: '' })
+      const state = cloneDeep(initialStateDefault)
+      state.browser.keys.selectedKey.data = {
+        name: stringToBuffer('mykey'),
+      } as any
+      state.connections.instances.connectedInstance = { id: 'db-1' } as any
+      const store = mockStore(state)
+
+      render(
+        <ArrayDetailsTable
+          elements={[arrayElementWithValueFactory.build({ index: '1' })]}
+          loading={false}
+          isActive
+        />,
+        { store },
+      )
+
+      // Open the editor while connected to db-1 (captured as the write guard).
+      act(() => {
+        fireEvent.mouseEnter(
+          screen.getByTestId('array-details-table_content-value-1'),
+        )
+      })
+      fireEvent.click(screen.getByTestId('array-edit-btn-1'))
+      fireEvent.change(
+        screen.getByTestId('array-details-table_value-editor-1'),
+        { target: { value: 'updated' } },
+      )
+
+      // The connection switches to another database before Save is confirmed.
+      state.connections.instances.connectedInstance = { id: 'db-2' } as any
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('apply-btn'))
+      })
+
+      const setCall = postSpy.mock.calls.find(([url]) =>
+        (url as string).includes('array/set-element'),
+      )
+      expect(setCall).toBeFalsy()
+
+      postSpy.mockRestore()
+    })
+
     it('uses the selected key name for ARSET even when the View range has not loaded', async () => {
       const postSpy = jest
         .spyOn(apiService, 'post')
