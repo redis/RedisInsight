@@ -15,18 +15,3 @@ export interface IRedisClusterNodeAddress {
   host: string;
   port: number;
 }
-
-export interface IRedisClusterNode extends IRedisClusterNodeAddress {
-  id: string;
-  replicaOf: string;
-  linkState: RedisClusterNodeLinkState;
-  slot: string;
-  // Client-facing hostname announced by the node (Redis 7+, `cluster-announce-hostname`).
-  // Undefined when the node has no hostname configured.
-  hostname?: string;
-}
-
-export enum RedisClusterNodeLinkState {
-  Connected = 'connected',
-  Disconnected = 'disconnected',
-}

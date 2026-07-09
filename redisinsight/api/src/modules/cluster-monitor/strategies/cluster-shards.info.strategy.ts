@@ -4,7 +4,10 @@ import {
   ClusterNodeDetails,
   NodeRole,
 } from 'src/modules/cluster-monitor/models';
-import { convertArrayReplyToObject } from 'src/modules/redis/utils';
+import {
+  convertArrayReplyToObject,
+  resolvePreferredEndpoint,
+} from 'src/modules/redis/utils';
 import { RedisClient } from 'src/modules/redis/client';
 
 export class ClusterShardsInfoStrategy extends AbstractInfoStrategy {
@@ -17,7 +20,11 @@ export class ClusterShardsInfoStrategy extends AbstractInfoStrategy {
       ...resp.map((shardArray) => {
         const shard = convertArrayReplyToObject(shardArray);
         const slots = ClusterShardsInfoStrategy.calculateSlots(shard.slots);
-        return ClusterShardsInfoStrategy.processShardNodes(shard.nodes, slots);
+        return ClusterShardsInfoStrategy.processShardNodes(
+          shard.nodes,
+          slots,
+          client.options?.host,
+        );
       }),
     );
   }
@@ -35,13 +42,21 @@ export class ClusterShardsInfoStrategy extends AbstractInfoStrategy {
   static processShardNodes(
     shardNodes: any[],
     slots: string[],
+    fallbackHost?: string,
   ): Partial<ClusterNodeDetails>[] {
     let primary;
     const nodes = shardNodes.map((nodeArray) => {
       const nodeObj = convertArrayReplyToObject(nodeArray);
       const node = {
         id: nodeObj.id,
-        host: nodeObj.hostname || nodeObj.ip,
+        // `endpoint` is CLUSTER SHARDS' server-resolved preferred address
+        // (respects `cluster-preferred-endpoint-type`) - `hostname` alone is
+        // only supplementary metadata and must not drive this on its own.
+        // Fall back to `ip` for an unknown/misconfigured endpoint since this
+        // is a display-only value, not a connection target.
+        host:
+          resolvePreferredEndpoint(nodeObj.endpoint, fallbackHost) ||
+          nodeObj.ip,
         ip: nodeObj.ip,
         port: nodeObj.port || nodeObj['tls-port'],
         tlsPort: nodeObj['tls-port'],
