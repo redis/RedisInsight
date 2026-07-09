@@ -106,13 +106,19 @@ export const NeighbourBand = ({
                 : `${TEST_ID_PREFIX}-row-${el.index}`
             }
           >
-            <ArrayIndexCell index={el.index} />
-            <ArrayValueCell
-              index={el.index}
-              value={el.value}
-              compressor={compressor}
-              viewFormat={viewFormat}
-            />
+            <span />
+            <S.BandCell>
+              <ArrayIndexCell index={el.index} />
+            </S.BandCell>
+            <S.BandCell>
+              <ArrayValueCell
+                index={el.index}
+                value={el.value}
+                compressor={compressor}
+                viewFormat={viewFormat}
+              />
+            </S.BandCell>
+            <span />
           </S.BandRow>
         )
       })}
