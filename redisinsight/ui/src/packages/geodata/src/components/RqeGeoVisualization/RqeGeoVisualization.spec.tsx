@@ -124,17 +124,17 @@ describe('RqeGeoVisualization', () => {
     )
 
     expect(
-      screen.getByText('Cannot inspect RQE geo results'),
+      screen.getByText('Cannot inspect Redis Search geo results'),
     ).toBeInTheDocument()
     expect(
-      screen.queryByText('Cannot render RQE geo map'),
+      screen.queryByText('Cannot render Redis Search geo map'),
     ).not.toBeInTheDocument()
   })
 
   it('shows a heatmap-specific error title when heatmap command parsing fails', () => {
     jest.spyOn(rqeGeoParser, 'parseRqeGeoCommand').mockReturnValue({
       ok: false,
-      error: 'No Redis Query Engine geospatial predicate found.',
+      error: 'No Redis Search geospatial predicate found.',
     })
 
     render(
@@ -146,9 +146,9 @@ describe('RqeGeoVisualization', () => {
       />,
     )
 
-    expect(screen.getByText('Cannot render RQE geo heatmap')).toBeInTheDocument()
+    expect(screen.getByText('Cannot render Redis Search geo heatmap')).toBeInTheDocument()
     expect(
-      screen.queryByText('Cannot inspect RQE geo command'),
+      screen.queryByText('Cannot inspect Redis Search geo command'),
     ).not.toBeInTheDocument()
   })
 
@@ -170,9 +170,9 @@ describe('RqeGeoVisualization', () => {
       />,
     )
 
-    expect(screen.getByText('Cannot render RQE geo heatmap')).toBeInTheDocument()
+    expect(screen.getByText('Cannot render Redis Search geo heatmap')).toBeInTheDocument()
     expect(
-      screen.queryByText('Cannot render RQE geo map'),
+      screen.queryByText('Cannot render Redis Search geo map'),
     ).not.toBeInTheDocument()
   })
 })

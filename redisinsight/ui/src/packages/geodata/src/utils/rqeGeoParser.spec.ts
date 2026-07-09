@@ -166,7 +166,7 @@ describe('rqeGeoParser', () => {
       ),
     ).toEqual({
       ok: false,
-      error: 'No Redis Query Engine geospatial predicate found.',
+      error: 'No Redis Search geospatial predicate found.',
     })
   })
 
@@ -177,7 +177,7 @@ describe('rqeGeoParser', () => {
       ),
     ).toEqual({
       ok: false,
-      error: 'No Redis Query Engine geospatial predicate found.',
+      error: 'No Redis Search geospatial predicate found.',
     })
 
     expect(
@@ -186,7 +186,7 @@ describe('rqeGeoParser', () => {
       ),
     ).toEqual({
       ok: false,
-      error: 'No Redis Query Engine geospatial predicate found.',
+      error: 'No Redis Search geospatial predicate found.',
     })
   })
 
@@ -282,11 +282,11 @@ describe('rqeGeoParser', () => {
   it('rejects malformed RQE geo predicates', () => {
     expect(parseRqeGeoCommand('')).toEqual({
       ok: false,
-      error: 'Missing Redis Query Engine command.',
+      error: 'Missing Redis Search command.',
     })
     expect(parseRqeGeoCommand('FT.INFO idx')).toEqual({
       ok: false,
-      error: 'Unsupported Redis Query Engine command: FT.INFO.',
+      error: 'Unsupported Redis Search command: FT.INFO.',
     })
     expect(parseRqeGeoCommand('FT.SEARCH')).toEqual({
       ok: false,
@@ -791,7 +791,7 @@ describe('rqeGeoParser', () => {
   it('rejects unsupported RQE geo commands and malformed shapes', () => {
     expect(parseRqeGeoCommand('FT.SEARCH idx "*"')).toEqual({
       ok: false,
-      error: 'No Redis Query Engine geospatial predicate found.',
+      error: 'No Redis Search geospatial predicate found.',
     })
     expect(
       parseRqeGeoCommand(
