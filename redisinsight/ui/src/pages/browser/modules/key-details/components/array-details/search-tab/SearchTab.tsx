@@ -8,7 +8,7 @@ import { bufferToString, isEqualBuffers } from 'uiSrc/utils'
 
 import { ArrayDetailsTable } from '../array-details-table'
 import { ArraySearchForm } from '../array-search-form'
-import { ContextOption } from '../array-search-form/ArraySearchForm.types'
+import { ContextControl, ContextOption } from './ContextControl'
 import { KeyDetailsSubheader } from '../../key-details-subheader/KeyDetailsSubheader'
 import { useArraySearchQuery, useArrayElementActions } from '../hooks'
 import { DEFAULT_CONTEXT } from '../constants'
@@ -86,8 +86,6 @@ const SearchTab = ({ keyProp, isActive }: SearchTabProps) => {
         onChangePredicate={updatePredicate}
         onChangeCombinator={setCombinator}
         onChangeOptions={updateOptions}
-        context={context}
-        onChangeContext={onChangeContext}
         onRun={runSearch}
         onReset={handleReset}
         disabled={!isArrayKeyReady || isRefreshDisabled}
@@ -99,28 +97,35 @@ const SearchTab = ({ keyProp, isActive }: SearchTabProps) => {
             the key not loading too, so a key switch can't flash the previous
             key's matches before the hook's reset effect runs. */}
         {!keyLoading && (loaded || loading) && (
-          <S.TabTableWrapper>
-            <ArrayDetailsTable
-              elements={elements}
-              loading={loading}
-              error={error}
-              isActive={isActive}
-              deleteConfig={deleteConfig}
-              selectionConfig={selectionConfig}
-              bulkDeleteConfig={bulkDeleteConfig}
-              expandRowOnClick
-              getIsRowExpandable={() => context.enabled && !!keyProp}
-              renderExpandedRow={(row) =>
-                context.enabled && keyProp ? (
-                  <NeighbourBand
-                    keyProp={keyProp}
-                    matchIndex={row.original.index}
-                    count={context.count}
-                  />
-                ) : null
-              }
+          <>
+            <ContextControl
+              context={context}
+              onChange={onChangeContext}
+              disabled={isRefreshDisabled}
             />
-          </S.TabTableWrapper>
+            <S.TabTableWrapper>
+              <ArrayDetailsTable
+                elements={elements}
+                loading={loading}
+                error={error}
+                isActive={isActive}
+                deleteConfig={deleteConfig}
+                selectionConfig={selectionConfig}
+                bulkDeleteConfig={bulkDeleteConfig}
+                expandRowOnClick
+                getIsRowExpandable={() => context.enabled && !!keyProp}
+                renderExpandedRow={(row) =>
+                  context.enabled && keyProp ? (
+                    <NeighbourBand
+                      keyProp={keyProp}
+                      matchIndex={row.original.index}
+                      count={context.count}
+                    />
+                  ) : null
+                }
+              />
+            </S.TabTableWrapper>
+          </>
         )}
       </S.TabBody>
     </>

@@ -26,8 +26,6 @@ export const END_PLACEHOLDER = '+'
 export const NOCASE_LABEL = 'NOCASE'
 export const WITHVALUES_LABEL = 'WITHVALUES'
 export const LIMIT_LABEL = 'LIMIT'
-export const CONTEXT_LABEL = 'Context'
-export const CONTEXT_PREFIX = '±'
 
 /** Per-option (i) hints rendered next to each control. */
 export const RANGE_HINT =
@@ -35,8 +33,6 @@ export const RANGE_HINT =
 export const NOCASE_HINT = 'Match case-insensitively.'
 export const WITHVALUES_HINT = "Return each match's value, not just its index."
 export const LIMIT_HINT = 'Cap the number of matches returned.'
-export const CONTEXT_HINT =
-  'When expanding a match, also show ±N neighbouring elements.'
 
 export const INVALID_INDEX_MESSAGE =
   'Index must be a valid 64-bit unsigned integer'

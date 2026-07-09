@@ -15,7 +15,7 @@ import {
   RiIcon,
 } from 'uiSrc/components/base/icons'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
-import { NumericInput, TextInput } from 'uiSrc/components/base/inputs'
+import { TextInput } from 'uiSrc/components/base/inputs'
 import { Text } from 'uiSrc/components/base/text'
 import {
   ArrayCombinator,
@@ -27,12 +27,7 @@ import {
   useResponsivePreviewLabel,
 } from 'uiSrc/pages/browser/modules/key-details/shared'
 
-import {
-  ARRAY_COMMAND_PREVIEW_TEST_ID,
-  CONTEXT_COUNT_MAX,
-  CONTEXT_COUNT_MIN,
-  DEFAULT_LIMIT,
-} from '../constants'
+import { ARRAY_COMMAND_PREVIEW_TEST_ID, DEFAULT_LIMIT } from '../constants'
 import { quoteRedisArgument } from '../utils'
 import {
   ADD_PREDICATE_ARIA,
@@ -40,9 +35,6 @@ import {
   ARRAY_GREP_CRITERIA_OPTIONS,
   ARRAY_SEARCH_FORM_TEST_ID as TEST_ID,
   COMBINATOR_ARIA,
-  CONTEXT_HINT,
-  CONTEXT_LABEL,
-  CONTEXT_PREFIX,
   REMOVE_PREDICATE_ARIA,
   END_PLACEHOLDER,
   INVALID_INDEX_MESSAGE,
@@ -91,8 +83,6 @@ export const ArraySearchForm = ({
   onChangePredicate,
   onChangeCombinator,
   onChangeOptions,
-  context,
-  onChangeContext,
   onRun,
   onReset,
   disabled = false,
@@ -229,49 +219,6 @@ export const ArraySearchForm = ({
           </React.Fragment>
         ))}
       </Col>
-
-      <Row align="center" gap="s" grow={false}>
-        <FlexItem grow={false}>
-          <Row align="center" gap="xs" grow={false}>
-            <FlexItem grow={false}>
-              <S.InlineCheckbox
-                id={`${TEST_ID}-context-toggle`}
-                name="array-search-context-toggle"
-                label={CONTEXT_LABEL}
-                checked={context.enabled}
-                onChange={(e) => onChangeContext({ enabled: e.target.checked })}
-                disabled={disabled}
-                data-testid={`${TEST_ID}-context-toggle`}
-              />
-            </FlexItem>
-            <FlexItem grow={false}>
-              <InfoHint content={CONTEXT_HINT} />
-            </FlexItem>
-          </Row>
-        </FlexItem>
-        <FlexItem grow={false}>
-          <Text size="s">{CONTEXT_PREFIX}</Text>
-        </FlexItem>
-        {/* Always rendered so ticking Context doesn't shift the row; it just
-            becomes editable once the toggle is on. */}
-        <FlexItem grow={false}>
-          <S.NarrowInputBox>
-            <NumericInput
-              autoValidate
-              min={CONTEXT_COUNT_MIN}
-              max={CONTEXT_COUNT_MAX}
-              value={context.count}
-              onChange={(next) =>
-                onChangeContext({
-                  count: Math.round(Number(next ?? CONTEXT_COUNT_MIN)),
-                })
-              }
-              disabled={disabled || !context.enabled}
-              data-testid={`${TEST_ID}-context`}
-            />
-          </S.NarrowInputBox>
-        </FlexItem>
-      </Row>
 
       <Col gap="m" grow={false}>
         {/* Compact disclosure: chevron + "Options" on the left, the add-row
