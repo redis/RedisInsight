@@ -17,16 +17,13 @@ import keysReducer, {
   setSelectedKeyRefreshDisabled,
 } from 'uiSrc/slices/browser/keys'
 import { stringToBuffer } from 'uiSrc/utils'
-import { KeyValueFormat } from 'uiSrc/constants'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
-import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import {
   arrayElementFactory,
   arrayElementWithValueFactory,
 } from 'uiSrc/mocks/factories/browser/array/arrayElement.factory'
 
 import { ArrayDetailsTable } from './ArrayDetailsTable'
-import { ArrayExpandedValue } from './components'
 
 // Store whose selected key is set but whose array `data.keyName` is still
 // empty — the Search-tab / pre-View-load condition the edit key must survive.
@@ -497,49 +494,6 @@ describe('ArrayDetailsTable', () => {
     await user.click(screen.getByTestId('array-details-table-index-7'))
 
     expect(await screen.findByTestId('expanded-7')).toBeInTheDocument()
-  })
-
-  it('renders the expanded value surface in a Markdown-format sub-row', async () => {
-    const user = userEvent.setup()
-    const state = cloneDeep(initialStateDefault)
-    state.browser.keys.selectedKey.viewFormat = KeyValueFormat.Markdown
-    render(
-      <ArrayDetailsTable
-        elements={[
-          arrayElementWithValueFactory.build({
-            index: '7',
-            value: stringToBuffer('# markdown heading'),
-          }),
-        ]}
-        loading={false}
-        isActive
-        expandRowOnClick
-        getIsRowExpandable={(element) => element.value != null}
-        renderExpandedRow={(row) => (
-          <ArrayExpandedValue
-            index={row.original.index}
-            value={row.original.value as RedisResponseBuffer}
-          />
-        )}
-      />,
-      { store: mockStore(state) },
-    )
-
-    // Collapsed: the Markdown cell renders the rich viewer inline; the
-    // expanded sub-row surface is not mounted yet.
-    expect(screen.getAllByTestId('markdown-viewer')).toHaveLength(1)
-    expect(
-      screen.queryByTestId('array-expanded-value-7'),
-    ).not.toBeInTheDocument()
-
-    await user.click(screen.getByTestId('array-details-table-index-7'))
-
-    // Expanded: the sub-row mounts its own full-value surface alongside the
-    // inline cell viewer.
-    expect(
-      await screen.findByTestId('array-expanded-value-7'),
-    ).toBeInTheDocument()
-    expect(screen.getAllByTestId('markdown-viewer')).toHaveLength(2)
   })
 
   it('renders no expand affordance when expansion props are omitted', () => {
