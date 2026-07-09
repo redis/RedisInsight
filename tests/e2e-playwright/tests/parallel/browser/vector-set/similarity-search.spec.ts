@@ -44,7 +44,9 @@ test.describe('Browser > Vector Set > Similarity search', () => {
     apiHelper,
   }) => {
     const keyData = VectorSetKeyFactory.build();
-    await seedVectorSet(apiHelper, database.id, keyData.keyName, keyData.elements);
+    await seedVectorSet(apiHelper, database.id, keyData.keyName, keyData.elements, {
+      noquant: true,
+    });
     await browserPage.goto(database.id);
 
     await browserPage.keyList.searchKeys(keyData.keyName);
