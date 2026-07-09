@@ -191,10 +191,13 @@ const ArrayDetailsTable = memo(
       setDrawerIndex(null)
     }, [viewFormat])
 
-    // Re-enable refresh when the table unmounts entirely (panel close).
+    // Re-enable refresh when the table unmounts (panel close), and abandon a
+    // pending drawer save — otherwise Confirm could ARSET the old key after a
+    // key switch unmounts the table.
     useEffect(
       () => () => {
         dispatch(setSelectedKeyRefreshDisabled(false))
+        drawerIndexRef.current = null
       },
       [dispatch],
     )
@@ -263,6 +266,10 @@ const ArrayDetailsTable = memo(
         setDrawerSeed(serialize())
         // Capture the connected database to guard a save confirmed later.
         drawerEditInstanceIdRef.current = connectedInstanceIdRef.current
+        // Opening the drawer starts a new edit session (like inline) so a
+        // stale save's onSuccess can't close a drawer the user has since
+        // reopened.
+        editSessionRef.current += 1
         // Inline and drawer are one mutually-exclusive edit session — opening
         // the drawer closes any open inline edit, so a later drawer save can't
         // clear a still-open inline editor on another row.
@@ -288,13 +295,16 @@ const ArrayDetailsTable = memo(
             // Skip if the drawer was abandoned (Cancel, key/format change, tab
             // switch) while the confirmation was pending.
             if (drawerIndexRef.current !== savedIndex) return
+            const editSession = editSessionRef.current
             handleApplyEditElement(savedIndex, value, {
               // Skip the write if the database changed since Save.
               startInstanceId: savedInstanceId,
-              // Close the drawer only on a successful, current-selection write
-              // — never optimistically, so a skipped/failed save keeps the
-              // edit instead of silently discarding it.
-              onSuccess: () => setDrawerIndex(null),
+              // Close the drawer only on a successful write for the current
+              // session — a skipped, failed or superseded save leaves the edit
+              // in place.
+              onSuccess: () => {
+                if (editSessionRef.current === editSession) setDrawerIndex(null)
+              },
             })
           },
         })

@@ -43,6 +43,26 @@ jest.mock('uiSrc/components/base/code-editor', () => {
   }
 })
 
+// Production-write confirmation: auto-confirm by default (matching the no-op
+// context), but a test can flip `mockAutoConfirm` off to hold the confirmation
+// pending and fire `mockPendingConfirm()` itself.
+let mockAutoConfirm = true
+let mockPendingConfirm: (() => void) | null = null
+jest.mock('uiSrc/components/production-write-confirmation', () => ({
+  ...jest.requireActual('uiSrc/components/production-write-confirmation'),
+  useProductionWriteConfirmation: () => ({
+    requestConfirmation: ({ onConfirm }: { onConfirm: () => void }) => {
+      mockPendingConfirm = onConfirm
+      if (mockAutoConfirm) onConfirm()
+    },
+  }),
+}))
+
+afterEach(() => {
+  mockAutoConfirm = true
+  mockPendingConfirm = null
+})
+
 // Store whose selected key is set but whose array `data.keyName` is still
 // empty — the Search-tab / pre-View-load condition the edit key must survive.
 const storeWithSelectedKey = (name: string) => {
@@ -817,6 +837,101 @@ describe('ArrayDetailsTable', () => {
         expect(setCall).toBeTruthy()
         expect((setCall?.[1] as { index: string }).index).toBe('1')
       })
+
+      postSpy.mockRestore()
+    })
+
+    it('does not close a reopened drawer when a stale save from the previous session succeeds', async () => {
+      const state = cloneDeep(initialStateDefault)
+      state.browser.keys.selectedKey.data = {
+        name: stringToBuffer('mykey'),
+      } as any
+      state.app.context.browser.keyList.selectedKey = stringToBuffer(
+        'mykey',
+      ) as any
+      state.connections.instances.connectedInstance = { id: 'db-1' } as any
+      const store = mockStore(state)
+
+      let resolvePost: () => void = () => {}
+      const postSpy = jest.spyOn(apiService, 'post').mockImplementation(
+        () =>
+          new Promise((r) => {
+            resolvePost = () => r({ status: 200, data: '' } as any)
+          }),
+      )
+
+      render(
+        <ArrayDetailsTable
+          elements={[withValue('1', 'a'), withValue('2', 'b')]}
+          loading={false}
+          isActive
+        />,
+        { store },
+      )
+
+      // Session 1: expand row 1, save — the ARSET stays in flight.
+      fireEvent.click(screen.getByTestId('array-expand-btn-1'))
+      fireEvent.change(screen.getByTestId('array-value-code-editor'), {
+        target: { value: 'updated' },
+      })
+      fireEvent.click(screen.getByTestId('array-value-editor-save-btn'))
+
+      // Abandon and reopen on row 2 — a new session.
+      fireEvent.click(screen.getByTestId('array-value-editor-cancel-btn'))
+      fireEvent.click(screen.getByTestId('array-expand-btn-2'))
+
+      // Row 1's late success must not close row 2's freshly opened drawer.
+      await act(async () => {
+        resolvePost()
+      })
+      expect(
+        screen.getByLabelText('Save value for index 2'),
+      ).toBeInTheDocument()
+
+      postSpy.mockRestore()
+    })
+
+    it('abandons a pending drawer save when the table unmounts before Confirm', async () => {
+      mockAutoConfirm = false
+      const postSpy = jest
+        .spyOn(apiService, 'post')
+        .mockResolvedValue({ status: 200, data: '' })
+      const state = cloneDeep(initialStateDefault)
+      state.browser.keys.selectedKey.data = {
+        name: stringToBuffer('mykey'),
+      } as any
+      state.app.context.browser.keyList.selectedKey = stringToBuffer(
+        'mykey',
+      ) as any
+      state.connections.instances.connectedInstance = { id: 'db-1' } as any
+      const store = mockStore(state)
+
+      const { unmount } = render(
+        <ArrayDetailsTable
+          elements={[withValue('1', 'hello')]}
+          loading={false}
+          isActive
+        />,
+        { store },
+      )
+
+      fireEvent.click(screen.getByTestId('array-expand-btn-1'))
+      fireEvent.change(screen.getByTestId('array-value-code-editor'), {
+        target: { value: 'updated' },
+      })
+      // Save opens the confirmation but leaves it pending.
+      fireEvent.click(screen.getByTestId('array-value-editor-save-btn'))
+
+      // A key switch tears the table down before the user confirms.
+      unmount()
+      await act(async () => {
+        mockPendingConfirm?.()
+      })
+
+      const setCall = postSpy.mock.calls.find(([url]) =>
+        (url as string).includes('array/set-element'),
+      )
+      expect(setCall).toBeFalsy()
 
       postSpy.mockRestore()
     })
