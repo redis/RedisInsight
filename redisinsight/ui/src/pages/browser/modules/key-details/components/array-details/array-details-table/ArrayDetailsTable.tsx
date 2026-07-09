@@ -33,7 +33,7 @@ import {
 import {
   actionsColumn,
   arrayColumns,
-  TABLE_MIN_WIDTH,
+  getTableMinWidth,
   TEST_ID,
 } from './ArrayDetailsTable.config'
 import {
@@ -272,7 +272,7 @@ const ArrayDetailsTable = memo(
           data={elements}
           meta={meta}
           stripedRows
-          minWidth={TABLE_MIN_WIDTH}
+          minWidth={getTableMinWidth({ hasSelectionColumn, hasActionsColumn })}
           emptyState={emptyState}
           renderExpandedRow={renderExpandedRow}
           getIsRowExpandable={getIsRowExpandable}

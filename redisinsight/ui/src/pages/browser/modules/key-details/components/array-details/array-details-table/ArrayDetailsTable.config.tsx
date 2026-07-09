@@ -11,6 +11,7 @@ import { ArrayTableConfig } from './ArrayDetailsTable.types'
 import {
   ACTIONS_COLUMN_SIZE,
   INDEX_COLUMN_SIZE,
+  SELECTION_COLUMN_WIDTH_REM,
   VALUE_COLUMN_SIZE,
 } from './constants'
 
@@ -104,6 +105,21 @@ export const arrayColumns: ColumnDef<ArrayDataElement>[] = [
   valueColumn,
 ]
 
-// Keep the index/value ratio intact until the panel is narrow enough to
-// trigger horizontal scroll, rather than letting the value column collapse.
-export const TABLE_MIN_WIDTH = `${INDEX_COLUMN_SIZE + VALUE_COLUMN_SIZE}px`
+// Width below which the table scrolls horizontally instead of squeezing the
+// index/value columns. Sums every column present — including the optional
+// selection (rem) and actions (px) columns, hence the calc.
+export const getTableMinWidth = ({
+  hasSelectionColumn,
+  hasActionsColumn,
+}: {
+  hasSelectionColumn: boolean
+  hasActionsColumn: boolean
+}): string => {
+  const pxColumns =
+    INDEX_COLUMN_SIZE +
+    VALUE_COLUMN_SIZE +
+    (hasActionsColumn ? ACTIONS_COLUMN_SIZE : 0)
+  return hasSelectionColumn
+    ? `calc(${pxColumns}px + ${SELECTION_COLUMN_WIDTH_REM}rem)`
+    : `${pxColumns}px`
+}
