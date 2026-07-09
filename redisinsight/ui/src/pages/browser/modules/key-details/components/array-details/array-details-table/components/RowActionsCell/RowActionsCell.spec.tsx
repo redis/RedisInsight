@@ -156,7 +156,7 @@ describe('RowActionsCell — edit + expand', () => {
     expect(screen.getByTestId('array-remove-btn-5-icon')).toBeInTheDocument()
   })
 
-  it('hides edit and expand while the drawer is open on any row', () => {
+  it('hides all row actions (edit, expand, delete) while the drawer is open', () => {
     render(
       <RowActionsCell
         element={arrayElementWithValueFactory.build({ index: '5' })}
@@ -165,9 +165,13 @@ describe('RowActionsCell — edit + expand', () => {
       />,
     )
 
+    // Freezing deletes too: deleting the edited element would let a later
+    // drawer Save resurrect it via ARSET.
     expect(screen.queryByTestId('array-edit-btn-5')).not.toBeInTheDocument()
     expect(screen.queryByTestId('array-expand-btn-5')).not.toBeInTheDocument()
-    expect(screen.getByTestId('array-remove-btn-5-icon')).toBeInTheDocument()
+    expect(
+      screen.queryByTestId('array-remove-btn-5-icon'),
+    ).not.toBeInTheDocument()
   })
 
   it('stops trigger clicks from bubbling to a row click handler', () => {
