@@ -162,6 +162,34 @@ describe('parseNodesFromClusterSlotsReply', () => {
     ]);
   });
 
+  it('should still discover nodes from a pre-4.0.0 cluster reply with no node id ([ip, port] only)', () => {
+    // Regression test for https://github.com/redis/RedisInsight/pull/6180#discussion_r3551046293:
+    // node ids were only added to CLUSTER SLOTS in Redis 4.0.0 - older
+    // clusters return just [ip, port] per node, so `id` is undefined and
+    // must not cause every node to be dropped.
+    const slots = [
+      [0, 5460, ['127.0.0.1', 30001]],
+      [5461, 10922, ['127.0.0.1', 30002]],
+    ] as unknown as RedisClusterSlotsReply;
+
+    expect(parseNodesFromClusterSlotsReply(slots)).toEqual([
+      { host: '127.0.0.1', port: 30001 },
+      { host: '127.0.0.1', port: 30002 },
+    ]);
+  });
+
+  it('should deduplicate pre-4.0.0 nodes without an id by host:port across non-contiguous slot ranges', () => {
+    const slots = [
+      [0, 400, ['127.0.0.1', 30001]],
+      [900, 900, ['127.0.0.1', 30001]],
+      [1800, 6000, ['127.0.0.1', 30001]],
+    ] as unknown as RedisClusterSlotsReply;
+
+    expect(parseNodesFromClusterSlotsReply(slots)).toEqual([
+      { host: '127.0.0.1', port: 30001 },
+    ]);
+  });
+
   it('should include replica nodes in addition to the master for each slot range', () => {
     const slots: RedisClusterSlotsReply = [
       [

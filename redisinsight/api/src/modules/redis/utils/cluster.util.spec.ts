@@ -112,6 +112,20 @@ describe('discoverClusterNodes', () => {
     ]);
   });
 
+  it('should still discover nodes from a pre-4.0.0 cluster reply with no node id', async () => {
+    // Regression test for https://github.com/redis/RedisInsight/pull/6180#discussion_r3551046293
+    const slots = [
+      [0, 5460, ['127.0.0.1', 30001]],
+      [5461, 16383, ['127.0.0.1', 30002]],
+    ] as unknown as RedisClusterSlotsReply;
+    mockStandaloneRedisClient.sendCommand.mockResolvedValue(slots);
+
+    expect(await discoverClusterNodes(mockStandaloneRedisClient)).toEqual([
+      { host: '127.0.0.1', port: 30001 },
+      { host: '127.0.0.1', port: 30002 },
+    ]);
+  });
+
   it('should skip a node whose endpoint is the "?" misconfigured marker', async () => {
     const slots: RedisClusterSlotsReply = [
       [

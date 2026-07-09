@@ -126,9 +126,12 @@ export const resolvePreferredEndpoint = (
 
 /**
  * A single node entry within a "CLUSTER SLOTS" slot range:
- * `[preferredEndpoint, port, nodeId, metadata?]`.
+ * `[preferredEndpoint, port, nodeId?, metadata?]`. `nodeId` was only added
+ * in Redis 4.0.0 (see the "Behavior change history" on
+ * https://redis.io/docs/latest/commands/cluster-slots/) - pre-4.0 clusters
+ * return just `[ip, port]`.
  */
-export type RedisClusterSlotsNode = [string | null, number, string, unknown?];
+export type RedisClusterSlotsNode = [string | null, number, string?, unknown?];
 
 /**
  * Raw "CLUSTER SLOTS" reply shape once decoded from RESP into JS values:
@@ -141,8 +144,9 @@ export type RedisClusterSlotsReply = Array<
 
 /**
  * Parse the reply of "CLUSTER SLOTS" into a deduplicated list of node
- * addresses (one entry per unique node id across all slot ranges), using
- * each node's server-resolved preferred endpoint (see
+ * addresses (one entry per unique node across all slot ranges, keyed by
+ * node id when present or by "host:port" on pre-4.0.0 clusters that don't
+ * return one), using each node's server-resolved preferred endpoint (see
  * `resolvePreferredEndpoint`) rather than any raw ip/hostname field.
  *
  * CLUSTER SLOTS is used over the newer CLUSTER SHARDS here for broader
@@ -180,9 +184,6 @@ export const parseNodesFromClusterSlotsReply = (
         const [endpoint, port, id] = slotRange[
           i
         ] as unknown as RedisClusterSlotsNode;
-        if (!id || nodeById.has(id)) {
-          continue;
-        }
 
         const host = resolvePreferredEndpoint(endpoint, fallbackHost);
         if (!host) {
@@ -191,7 +192,15 @@ export const parseNodesFromClusterSlotsReply = (
           continue;
         }
 
-        nodeById.set(id, { host, port });
+        // Pre-4.0.0 clusters have no node id (just [ip, port]); fall back to
+        // "host:port" as a stable dedup key so those nodes are still
+        // discovered instead of being silently dropped.
+        const dedupeKey = id || `${host}:${port}`;
+        if (nodeById.has(dedupeKey)) {
+          continue;
+        }
+
+        nodeById.set(dedupeKey, { host, port });
       }
     });
 
