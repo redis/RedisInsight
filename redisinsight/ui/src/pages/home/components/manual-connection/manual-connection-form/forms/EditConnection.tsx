@@ -24,6 +24,7 @@ export interface Props {
   isCloneMode: boolean
   isFromCloud: boolean
   isFromAzure?: boolean
+  isManaged?: boolean
   formik: FormikProps<DbConnectionInfo>
   onKeyDown: (event: React.KeyboardEvent<HTMLFormElement>) => void
   onHostNamePaste: (content: string) => boolean
@@ -39,6 +40,7 @@ const EditConnection = (props: Props) => {
     isEditMode,
     isFromCloud,
     isFromAzure = false,
+    isManaged = false,
     formik,
     onKeyDown,
     onHostNamePaste,
@@ -49,6 +51,12 @@ const EditConnection = (props: Props) => {
 
   // For Azure databases in edit/clone mode, disable connection fields
   const readOnlyFields = isFromAzure && isEditMode ? AZURE_READONLY_FIELDS : []
+
+  // The endpoint (host/port) is editable when adding, cloning, or editing a
+  // non-managed database. For cloud-managed databases it stays read-only since
+  // the endpoint is tied to provider metadata (see isManagedDatabase).
+  const showEndpointFields =
+    (!isEditMode || isCloneMode || !isManaged) && !isFromCloud
 
   return (
     <form
@@ -63,8 +71,8 @@ const EditConnection = (props: Props) => {
             formik={formik}
             showFields={{
               alias: true,
-              host: (!isEditMode || isCloneMode) && !isFromCloud,
-              port: !isFromCloud,
+              host: showEndpointFields,
+              port: showEndpointFields,
               timeout: true,
             }}
             autoFocus={!isCloneMode && isEditMode}

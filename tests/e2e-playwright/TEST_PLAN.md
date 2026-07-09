@@ -144,6 +144,12 @@ The test plan is organized by feature area. Tests are grouped for parallel execu
 | ✅ | main | Development DB > should show DEV label in databases list and instance header |
 | ✅ | main | Unspecified DB > should not render an environment badge in list or header |
 
+### 1.2.1 Edit Database
+| Status | Group | Test Case |
+|--------|-------|-----------|
+| ✅ | main | Host field is editable when editing a non-managed database |
+| ✅ | main | Host field is read-only when editing a cloud-managed database |
+
 ### 1.3 Clone Database
 | Status | Group | Test Case |
 |--------|-------|-----------|
