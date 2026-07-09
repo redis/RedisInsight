@@ -22,7 +22,12 @@ import {
 import { KeyValueCompressor } from 'uiSrc/constants'
 import { Nullable, stringToSerializedBufferFormat } from 'uiSrc/utils'
 import { Row, Table } from 'uiSrc/components/base/layout/table'
+import {
+  BrowserConfirmationCommandId,
+  useProductionWriteConfirmation,
+} from 'uiSrc/components/production-write-confirmation'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
+import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 import {
   ARRAY_TABLE_EMPTY_MESSAGE,
@@ -30,6 +35,8 @@ import {
   SELECTION_COLUMN_CELL_CLASS,
   SELECTION_COLUMN_WIDTH_REM,
 } from './constants'
+import { getArrayElementEditState } from './getArrayElementEditState'
+import { ArrayValueEditorDrawer } from './components/ArrayValueEditorDrawer'
 import {
   actionsColumn,
   arrayColumns,
@@ -86,8 +93,16 @@ const ArrayDetailsTable = memo(
       name: '',
     }
 
+    const { requestConfirmation } = useProductionWriteConfirmation()
+
     // Index of the row currently being edited; only one row edits at a time.
     const [editingIndex, setEditingIndex] = useState<Nullable<string>>(null)
+    // Index whose value is open in the Monaco drawer, plus its seed captured at
+    // open time. Held at the table level (not per-row) so the drawer shares the
+    // inline editor's refresh-pause, tab-switch / key-change abandon and
+    // in-flight-write guards.
+    const [drawerIndex, setDrawerIndex] = useState<Nullable<string>>(null)
+    const [drawerSeed, setDrawerSeed] = useState('')
     // Identifies the current edit session. Bumped whenever an editor opens, so
     // a still-in-flight save from a previous session can't close an editor the
     // user has since reopened (which would discard the new input).
@@ -101,8 +116,12 @@ const ArrayDetailsTable = memo(
     // active table reacts to it.)
     useEffect(() => {
       if (!isActive) return
-      dispatch(setSelectedKeyRefreshDisabled(editingIndex !== null || updating))
-    }, [isActive, editingIndex, updating, dispatch])
+      dispatch(
+        setSelectedKeyRefreshDisabled(
+          editingIndex !== null || drawerIndex !== null || updating,
+        ),
+      )
+    }, [isActive, editingIndex, drawerIndex, updating, dispatch])
 
     // When a table is hidden (tab switch) or unmounts, it releases the shared
     // flag but still respects an in-flight write (global), so switching to a
@@ -112,11 +131,15 @@ const ArrayDetailsTable = memo(
       dispatch(setSelectedKeyRefreshDisabled(updating))
     }, [isActive, updating, dispatch])
 
-    // Abandon an open editor when this table is hidden (tab switch) or the key
-    // changes, so a background editor can't keep refresh disabled and a stale
-    // editing state can't carry over.
+    // Abandon an open editor (inline or drawer) when this table is hidden (tab
+    // switch) or the key changes, so a background editor can't keep refresh
+    // disabled, leave a portaled drawer visible over the other tab, or carry
+    // stale editing state across keys.
     useEffect(() => {
-      if (!isActive) setEditingIndex(null)
+      if (!isActive) {
+        setEditingIndex(null)
+        setDrawerIndex(null)
+      }
     }, [isActive])
 
     // Abandon an open editor only on a *real* key change. `keyName` is the
@@ -129,6 +152,7 @@ const ArrayDetailsTable = memo(
       if (isSameKey(prevKeyRef.current, keyName)) return
       prevKeyRef.current = keyName
       setEditingIndex(null)
+      setDrawerIndex(null)
     }, [keyName])
 
     // Re-enable refresh when the table unmounts entirely (panel close).
@@ -173,6 +197,42 @@ const ArrayDetailsTable = memo(
       [dispatch, keyName, viewFormat, handleEditElement],
     )
 
+    // Open the Monaco drawer for a row, capturing its serialized value as the
+    // seed. Guarded like the inline editor: refresh pauses while it's open.
+    const handleOpenValueEditor = useCallback(
+      (index: string) => {
+        const element = elements.find((el) => el.index === index)
+        if (!element?.value) return
+        const { serialize } = getArrayElementEditState(
+          element.value as RedisResponseBuffer,
+          compressor,
+          viewFormat,
+        )
+        setDrawerSeed(serialize())
+        setDrawerIndex(index)
+      },
+      [elements, compressor, viewFormat],
+    )
+
+    const handleDrawerSave = useCallback(
+      (value: string) => {
+        if (drawerIndex === null) return
+        requestConfirmation({
+          title: 'Edit value on production database?',
+          actionDescription:
+            'You are about to modify a value on a production database.',
+          confirmButtonText: 'Save',
+          commandId: BrowserConfirmationCommandId.EditValue,
+          disableConfirmationInput: true,
+          onConfirm: () => {
+            handleApplyEditElement(drawerIndex, value)
+            setDrawerIndex(null)
+          },
+        })
+      },
+      [drawerIndex, requestConfirmation, handleApplyEditElement],
+    )
+
     // Pass shared per-cell config via the table's `meta` so the static
     // column defs in `ArrayDetailsTable.config` don't need to close over
     // them and can be rebuilt only when their inputs change.
@@ -183,6 +243,7 @@ const ArrayDetailsTable = memo(
         editingIndex,
         onEditElement: handleEditElement,
         onApplyEditElement: handleApplyEditElement,
+        onOpenValueEditor: handleOpenValueEditor,
         updating,
         loading: readLoading,
         deleteConfig,
@@ -194,6 +255,7 @@ const ArrayDetailsTable = memo(
         editingIndex,
         handleEditElement,
         handleApplyEditElement,
+        handleOpenValueEditor,
         updating,
         readLoading,
         deleteConfig,
@@ -282,6 +344,14 @@ const ArrayDetailsTable = memo(
           expandRowOnClick={expandRowOnClick}
           {...selectionProps}
           data-testid={`${TEST_ID}-table`}
+        />
+        <ArrayValueEditorDrawer
+          isOpen={drawerIndex !== null}
+          index={drawerIndex ?? ''}
+          initialValue={drawerSeed}
+          isSaveDisabled={updating || readLoading}
+          onSave={handleDrawerSave}
+          onClose={() => setDrawerIndex(null)}
         />
       </S.Container>
     )

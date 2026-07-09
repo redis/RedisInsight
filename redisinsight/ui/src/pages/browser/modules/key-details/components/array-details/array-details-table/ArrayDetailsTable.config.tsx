@@ -97,7 +97,7 @@ export const actionsColumn: ColumnDef<ArrayDataElement> = {
       updating,
       loading,
       onEditElement,
-      onApplyEditElement,
+      onOpenValueEditor,
       deleteConfig,
     } = table.options.meta as ArrayTableConfig
     return (
@@ -110,7 +110,7 @@ export const actionsColumn: ColumnDef<ArrayDataElement> = {
           updating,
           loading,
           onEditElement,
-          onApplyEditElement,
+          onOpenValueEditor,
         }}
         deleteConfig={deleteConfig}
       />

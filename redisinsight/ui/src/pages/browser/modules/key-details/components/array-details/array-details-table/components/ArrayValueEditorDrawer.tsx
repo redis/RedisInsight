@@ -20,15 +20,16 @@ const EDITOR_HEIGHT = 'calc(100vh - 140px)'
 
 /**
  * Right-side drawer with a plaintext Monaco editor for a single array element
- * value — more room for large values than the inline editor. Rendered per row
- * and only while open (returns null when closed) so a Monaco instance is never
- * mounted for every row of the table.
+ * value — more room for large values than the inline editor. A single
+ * instance lives at the table level; it renders only while open (returns null
+ * when closed) so no Monaco instance is mounted when nothing is being edited.
  */
 export const ArrayValueEditorDrawer = ({
   isOpen,
   index,
   initialValue,
   title = 'Edit value',
+  isSaveDisabled = false,
   onSave,
   onClose,
 }: ArrayValueEditorDrawerProps) => {
@@ -76,6 +77,7 @@ export const ArrayValueEditorDrawer = ({
           </SecondaryButton>
           <PrimaryButton
             size="l"
+            disabled={isSaveDisabled}
             onClick={() => onSave(value)}
             data-testid="array-value-editor-save-btn"
             aria-label={`Save value for index ${index}`}

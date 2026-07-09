@@ -25,6 +25,19 @@ import {
 
 import { ArrayDetailsTable } from './ArrayDetailsTable'
 
+jest.mock('uiSrc/components/base/code-editor', () => {
+  const ReactMock = require('react')
+  return {
+    __esModule: true,
+    CodeEditor: (props: any) =>
+      ReactMock.createElement('textarea', {
+        'data-testid': 'array-value-code-editor',
+        value: props.value,
+        onChange: (e: any) => props.onChange?.(e.target.value),
+      }),
+  }
+})
+
 // Store whose selected key is set but whose array `data.keyName` is still
 // empty — the Search-tab / pre-View-load condition the edit key must survive.
 const storeWithSelectedKey = (name: string) => {
@@ -467,6 +480,100 @@ describe('ArrayDetailsTable', () => {
         .getActions()
         .filter((a) => a.type === setSelectedKeyRefreshDisabled(false).type)
       expect(refreshActions.at(-1)).toEqual(setSelectedKeyRefreshDisabled(true))
+    })
+  })
+
+  describe('Monaco drawer (expand)', () => {
+    const withValue = (index: string, text: string) => {
+      const element = arrayElementWithValueFactory.build({ index })
+      element.value = stringToBuffer(text) as typeof element.value
+      return element
+    }
+
+    it('opens the drawer seeded with the value on expand', () => {
+      render(
+        <ArrayDetailsTable
+          elements={[withValue('1', 'hello')]}
+          loading={false}
+          isActive
+        />,
+      )
+
+      fireEvent.click(screen.getByTestId('array-expand-btn-1'))
+
+      expect(screen.getByTestId('array-value-code-editor')).toHaveValue('hello')
+    })
+
+    it('pauses the key-header refresh while the drawer is open', () => {
+      const store = mockStore(cloneDeep(initialStateDefault))
+      render(
+        <ArrayDetailsTable
+          elements={[withValue('1', 'hello')]}
+          loading={false}
+          isActive
+        />,
+        { store },
+      )
+
+      fireEvent.click(screen.getByTestId('array-expand-btn-1'))
+
+      expect(store.getActions()).toContainEqual(
+        setSelectedKeyRefreshDisabled(true),
+      )
+    })
+
+    it('abandons the open drawer when the tab is hidden', () => {
+      const element = withValue('1', 'hello')
+      const { rerender } = render(
+        <ArrayDetailsTable elements={[element]} loading={false} isActive />,
+      )
+
+      fireEvent.click(screen.getByTestId('array-expand-btn-1'))
+      expect(screen.getByTestId('array-value-code-editor')).toBeInTheDocument()
+
+      rerender(
+        <ArrayDetailsTable
+          elements={[element]}
+          loading={false}
+          isActive={false}
+        />,
+      )
+
+      expect(
+        screen.queryByTestId('array-value-code-editor'),
+      ).not.toBeInTheDocument()
+    })
+
+    it('dispatches ARSET when the drawer value is saved', async () => {
+      const postSpy = jest
+        .spyOn(apiService, 'post')
+        .mockResolvedValue({ status: 200, data: '' })
+      const store = storeWithSelectedKey('mykey')
+
+      render(
+        <ArrayDetailsTable
+          elements={[withValue('1', 'hello')]}
+          loading={false}
+          isActive
+        />,
+        { store },
+      )
+
+      fireEvent.click(screen.getByTestId('array-expand-btn-1'))
+      fireEvent.change(screen.getByTestId('array-value-code-editor'), {
+        target: { value: 'updated' },
+      })
+      fireEvent.click(screen.getByTestId('array-value-editor-save-btn'))
+
+      await waitFor(() => {
+        const setCall = postSpy.mock.calls.find(([url]) =>
+          (url as string).includes('array/set-element'),
+        )
+        expect(setCall).toBeTruthy()
+        expect((setCall?.[1] as { index: string }).index).toBe('1')
+      })
+
+      postSpy.mockRestore()
     })
   })
 

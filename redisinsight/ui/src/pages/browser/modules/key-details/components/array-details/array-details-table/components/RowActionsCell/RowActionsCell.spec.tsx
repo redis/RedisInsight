@@ -14,28 +14,6 @@ import {
   ArrayElementEditConfig,
 } from './RowActionsCell.types'
 
-jest.mock('uiSrc/components/base/code-editor', () => {
-  const ReactMock = require('react')
-  return {
-    __esModule: true,
-    CodeEditor: (props: any) =>
-      ReactMock.createElement('textarea', {
-        'data-testid': 'array-value-code-editor',
-        value: props.value,
-        onChange: (e: any) => props.onChange?.(e.target.value),
-      }),
-  }
-})
-
-// Auto-confirm the production-write prompt so Save reaches onApplyEditElement.
-jest.mock('uiSrc/components/production-write-confirmation', () => ({
-  __esModule: true,
-  useProductionWriteConfirmation: () => ({
-    requestConfirmation: ({ onConfirm }: any) => onConfirm(),
-  }),
-  BrowserConfirmationCommandId: { EditValue: 'EditValue' },
-}))
-
 const { truncatedStringPrefix } = getConfig().app
 
 const SUFFIX = '-array-element'
@@ -61,7 +39,7 @@ const buildEditConfig = (
   updating: false,
   loading: false,
   onEditElement: jest.fn(),
-  onApplyEditElement: jest.fn(),
+  onOpenValueEditor: jest.fn(),
   ...over,
 })
 
@@ -149,28 +127,17 @@ describe('RowActionsCell — edit + expand', () => {
     expect(onEditElement).toHaveBeenCalledWith('5', true)
   })
 
-  it('opens the expand modal seeded with the value and saves via onApplyEditElement', () => {
-    const onApplyEditElement = jest.fn()
-    // Assign the value rather than pass it to build(): the factory deep-merges
-    // a buffer override into its default buffer (concatenating the bytes).
-    const element = arrayElementWithValueFactory.build({ index: '5' })
-    element.value = stringToBuffer('hello') as typeof element.value
+  it('opens the value drawer via onOpenValueEditor when expand is clicked', () => {
+    const onOpenValueEditor = jest.fn()
     render(
       <RowActionsCell
-        element={element}
-        editConfig={buildEditConfig({ onApplyEditElement })}
+        element={arrayElementWithValueFactory.build({ index: '5' })}
+        editConfig={buildEditConfig({ onOpenValueEditor })}
       />,
     )
 
     fireEvent.click(screen.getByTestId('array-expand-btn-5'))
-    expect(screen.getByTestId('array-value-code-editor')).toHaveValue('hello')
-
-    fireEvent.change(screen.getByTestId('array-value-code-editor'), {
-      target: { value: 'world' },
-    })
-    fireEvent.click(screen.getByTestId('array-value-editor-save-btn'))
-
-    expect(onApplyEditElement).toHaveBeenCalledWith('5', 'world')
+    expect(onOpenValueEditor).toHaveBeenCalledWith('5')
   })
 
   it('hides edit and expand while this row is being edited', () => {

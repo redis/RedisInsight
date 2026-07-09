@@ -4,9 +4,9 @@ import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 
 /**
  * Per-row edit wiring the actions cell reads from the table `meta` to render
- * the edit (inline) and expand (Monaco drawer) triggers next to delete. The
- * editing state lives in `ArrayDetailsTable` (`editingIndex`); these callbacks
- * open it and persist the result via ARSET.
+ * the edit (inline) and expand (Monaco drawer) triggers next to delete. Both
+ * the editing state and the drawer live in `ArrayDetailsTable`; these
+ * callbacks open them.
  */
 export interface ArrayElementEditConfig {
   compressor: Nullable<KeyValueCompressor>
@@ -16,7 +16,7 @@ export interface ArrayElementEditConfig {
   /** Blocks opening an edit so a late read can't overwrite the optimistic patch. */
   loading: boolean
   onEditElement: (index: string, isEditing: boolean) => void
-  onApplyEditElement: (index: string, value: string) => void
+  onOpenValueEditor: (index: string) => void
 }
 
 /**

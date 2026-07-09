@@ -1,27 +1,22 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import { useTranslation } from 'uiSrc/i18n'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
 import { RiTooltip } from 'uiSrc/components'
 import { EditIcon, ExtendIcon } from 'uiSrc/components/base/icons'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
-import {
-  BrowserConfirmationCommandId,
-  useProductionWriteConfirmation,
-} from 'uiSrc/components/production-write-confirmation'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
 import { getArrayElementEditState } from '../../getArrayElementEditState'
-import { ArrayValueEditorDrawer } from '../ArrayValueEditorDrawer'
 import { RowActionsCellProps } from './RowActionsCell.types'
 import * as S from './RowActionsCell.styles'
 
 /**
  * Right-column row actions — edit (inline editor), expand (Monaco drawer) and
  * delete, revealed on row hover. The triggers live here, not over the value,
- * so long values aren't hidden behind icons. Editing is driven via the
- * table-level `editingIndex`; the drawer saves via the same ARSET path, behind
- * the production-write confirmation.
+ * so long values aren't hidden behind icons. Editing and the drawer are both
+ * driven from `ArrayDetailsTable` (via `editConfig`), so they share its
+ * refresh-pause and abandon-on-tab/key guards.
  */
 export const RowActionsCell = ({
   element,
@@ -29,10 +24,6 @@ export const RowActionsCell = ({
   deleteConfig,
 }: RowActionsCellProps) => {
   const { t } = useTranslation()
-  const { requestConfirmation } = useProductionWriteConfirmation()
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  // Seeded lazily on open so we don't serialize every row's buffer on render.
-  const [drawerSeed, setDrawerSeed] = useState('')
 
   const { index, value } = element
 
@@ -56,27 +47,6 @@ export const RowActionsCell = ({
   const showEditActions = !!editState && !isEditingThisRow
   const isEditActionDisabled =
     !editState?.isEditable || !!editConfig?.updating || !!editConfig?.loading
-
-  const openDrawer = () => {
-    if (!editState) return
-    setDrawerSeed(editState.serialize())
-    setIsDrawerOpen(true)
-  }
-
-  const handleDrawerSave = (editedValue: string) => {
-    requestConfirmation({
-      title: 'Edit value on production database?',
-      actionDescription:
-        'You are about to modify a value on a production database.',
-      confirmButtonText: 'Save',
-      commandId: BrowserConfirmationCommandId.EditValue,
-      disableConfirmationInput: true,
-      onConfirm: () => {
-        editConfig?.onApplyEditElement(index, editedValue)
-        setIsDrawerOpen(false)
-      },
-    })
-  }
 
   const isDeletePopoverOpen =
     !!deleteConfig && deleteConfig.deleting === `${index}${deleteConfig.suffix}`
@@ -105,7 +75,7 @@ export const RowActionsCell = ({
               icon={ExtendIcon}
               aria-label="Expand value editor"
               disabled={isEditActionDisabled}
-              onClick={openDrawer}
+              onClick={() => editConfig?.onOpenValueEditor(index)}
               data-testid={`array-expand-btn-${index}`}
             />
           </RiTooltip>
@@ -124,16 +94,6 @@ export const RowActionsCell = ({
           updateLoading={false}
           handleDeleteItem={() => deleteConfig.handleDeleteElement(index)}
           testid={`array-remove-btn-${index}`}
-        />
-      )}
-
-      {!!editState && (
-        <ArrayValueEditorDrawer
-          isOpen={isDrawerOpen}
-          index={index}
-          initialValue={drawerSeed}
-          onSave={handleDrawerSave}
-          onClose={() => setIsDrawerOpen(false)}
         />
       )}
     </S.ActionCell>

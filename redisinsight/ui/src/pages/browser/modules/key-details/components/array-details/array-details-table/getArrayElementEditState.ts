@@ -6,6 +6,7 @@ import {
   TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA,
   TEXT_DISABLED_COMPRESSED_VALUE,
   TEXT_DISABLED_FORMATTER_EDITING,
+  TEXT_UNPRINTABLE_CHARACTERS,
 } from 'uiSrc/constants'
 import {
   bufferToSerializedFormat,
@@ -60,10 +61,13 @@ export const getArrayElementEditState = (
 
   const isTruncated = isTruncatedString(value)
   const isFormatEditableValue = isFormatEditable(viewFormat)
-  const isEditable = !isCompressed && !isTruncated && isFormatEditableValue
   const isUnprintable =
     !isNonUnicodeFormatter(viewFormat, isValid) &&
     !isEqualBuffers(decompressedBuffer, stringToBuffer(bufferToString(value)))
+  // Unprintable is part of editability: the drawer's Monaco field is fully
+  // editable, so a Save would re-encode and overwrite the original bytes.
+  const isEditable =
+    !isCompressed && !isTruncated && isFormatEditableValue && !isUnprintable
 
   let editDisabledReason: Nullable<ReactNode> = null
   if (isCompressed) {
@@ -72,6 +76,8 @@ export const getArrayElementEditState = (
     editDisabledReason = TEXT_DISABLED_ACTION_WITH_TRUNCATED_DATA
   } else if (!isFormatEditableValue) {
     editDisabledReason = TEXT_DISABLED_FORMATTER_EDITING
+  } else if (isUnprintable) {
+    editDisabledReason = TEXT_UNPRINTABLE_CHARACTERS.content
   }
 
   return {

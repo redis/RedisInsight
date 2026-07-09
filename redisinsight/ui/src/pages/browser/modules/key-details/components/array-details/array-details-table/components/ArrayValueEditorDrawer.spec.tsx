@@ -56,6 +56,11 @@ describe('ArrayValueEditorDrawer', () => {
     expect(onSave).toHaveBeenCalledWith('edited value')
   })
 
+  it('disables Save when isSaveDisabled is set', () => {
+    renderComponent({ isSaveDisabled: true })
+    expect(screen.getByTestId('array-value-editor-save-btn')).toBeDisabled()
+  })
+
   it('calls onClose and not onSave when cancelled', () => {
     const onSave = jest.fn()
     const onClose = jest.fn()
