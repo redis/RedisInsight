@@ -1,6 +1,6 @@
 import { test, expect } from 'e2eSrc/fixtures/base';
 import { StandaloneConfigFactory } from 'e2eSrc/test-data/databases';
-import { StringKeyFactory, TEST_KEY_PREFIX } from 'e2eSrc/test-data/browser';
+import { StringKeyFactory, ListKeyFactory, HashKeyFactory, TEST_KEY_PREFIX } from 'e2eSrc/test-data/browser';
 import { DatabaseInstance } from 'e2eSrc/types';
 
 const MARKDOWN_FORMAT = 'Markdown';
@@ -43,15 +43,16 @@ const XSS_MARKDOWN = [
 ].join('\n');
 
 /**
- * Browser > Key Details - String Markdown format
+ * Browser > Key Details - Markdown value format
  *
- * The Markdown value format renders a String value through the real sanitized
- * markdown pipeline (unified + remark/rehype + DOMPurify). Jest globally mocks
- * that pipeline, so this e2e is the only coverage that runs it end to end -
- * including the XSS sanitization, which matters because Redis values are
- * untrusted input.
+ * The Markdown value format renders a value through the real sanitized markdown
+ * pipeline (unified + remark/rehype + DOMPurify). Jest globally mocks that
+ * pipeline, so this e2e is the only coverage that runs it end to end - including
+ * the XSS sanitization, which matters because Redis values are untrusted input.
+ * Selecting Markdown renders inline for every key type (String, List, Hash, ...)
+ * without expanding a row.
  */
-test.describe('Browser > Key Details - String Markdown format', () => {
+test.describe('Browser > Key Details - Markdown value format', () => {
   let database: DatabaseInstance;
 
   test.beforeAll(async ({ apiHelper }) => {
@@ -116,6 +117,41 @@ test.describe('Browser > Key Details - String Markdown format', () => {
     // Raw markdown syntax is not shown verbatim.
     await expect(viewer).not.toContainText('# Heading');
     await expect(viewer).not.toContainText('**bold text**');
+  });
+
+  test('should render markdown inline in List element cells on selection', async ({ apiHelper, browserPage, page }) => {
+    const keyData = ListKeyFactory.build({
+      elements: [RENDERED_MARKDOWN, '## Second **element**'],
+    });
+    await apiHelper.createListKey(database.id, keyData.keyName, keyData.elements);
+
+    await browserPage.keyList.searchKeys(keyData.keyName);
+    await browserPage.keyList.clickKey(keyData.keyName);
+    await browserPage.keyDetails.waitForKeyDetails();
+    await browserPage.keyDetails.changeValueFormat(MARKDOWN_FORMAT);
+
+    // Each element cell renders its value as markdown inline, with no row
+    // expansion (the heading appears only when the value is rendered, not raw).
+    await expect(browserPage.keyDetails.markdownViewer.first()).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: 'Heading Markdown Test' })).toBeVisible();
+    await expect(page.locator('strong', { hasText: 'bold text' })).toBeVisible();
+  });
+
+  test('should render markdown inline in Hash value cells on selection', async ({ apiHelper, browserPage, page }) => {
+    const keyData = HashKeyFactory.build({
+      fields: [{ field: 'readme', value: RENDERED_MARKDOWN }],
+    });
+    await apiHelper.createHashKey(database.id, keyData.keyName, keyData.fields);
+
+    await browserPage.keyList.searchKeys(keyData.keyName);
+    await browserPage.keyList.clickKey(keyData.keyName);
+    await browserPage.keyDetails.waitForKeyDetails();
+    await browserPage.keyDetails.changeValueFormat(MARKDOWN_FORMAT);
+
+    // The value cell renders as markdown inline, with no row expansion.
+    await expect(browserPage.keyDetails.markdownViewer.first()).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: 'Heading Markdown Test' })).toBeVisible();
+    await expect(page.locator('strong', { hasText: 'bold text' })).toBeVisible();
   });
 
   test('should render markdown but keep an XSS payload inert', async ({ apiHelper, browserPage, page }) => {

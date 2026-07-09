@@ -431,19 +431,19 @@ describe('formattingBuffer', () => {
       expect(React.isValidElement(value) && value.type).toEqual(MarkdownViewer)
     })
 
-    it('should return the raw markdown source when not expanded', () => {
-      expect(formattingBuffer(input, KeyValueFormat.Markdown)).toEqual({
-        value: source,
-        isValid: true,
-      })
+    it('should render a MarkdownViewer element even when not expanded', () => {
+      const { value, isValid } = formattingBuffer(
+        input,
+        KeyValueFormat.Markdown,
+      )
+
+      expect(isValid).toEqual(true)
+      expect(React.isValidElement(value) && value.type).toEqual(MarkdownViewer)
     })
 
-    it('should return the raw markdown source when expanded inside a tooltip', () => {
+    it('should return the raw markdown source inside a tooltip', () => {
       expect(
-        formattingBuffer(input, KeyValueFormat.Markdown, {
-          expanded: true,
-          tooltip: true,
-        }),
+        formattingBuffer(input, KeyValueFormat.Markdown, { tooltip: true }),
       ).toEqual({ value: source, isValid: true })
     })
   })

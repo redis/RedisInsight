@@ -1,7 +1,6 @@
 import React from 'react'
 
 import {
-  KeyValueFormat,
   TEXT_DISABLED_COMPRESSED_VALUE,
   TEXT_DISABLED_FORMATTER_EDITING,
   TEXT_FAILED_CONVENT_FORMATTER,
@@ -70,13 +69,10 @@ export const ArrayValueCell = ({
     compressor,
   )
   const decompressedBuffer = decompressed as RedisResponseBuffer
-  // Only Markdown renders rich inline; other formats stay compact, with the
-  // full value in the expanded sub-row.
-  const isMarkdownFormat = viewFormat === KeyValueFormat.Markdown
   const { value: formatted, isValid } = formattingBuffer(
     decompressedBuffer,
     viewFormat,
-    { expanded: isMarkdownFormat },
+    { expanded: false },
   )
   const tooltipContent = createTooltipContent(
     formatted,

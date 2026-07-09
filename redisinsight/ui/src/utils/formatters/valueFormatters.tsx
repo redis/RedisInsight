@@ -242,10 +242,12 @@ const formattingBuffer = (
     }
     case KeyValueFormat.Markdown: {
       const value = bufferToUTF8(reply)
-      if (props?.expanded && !props?.tooltip) {
-        return { value: <MarkdownViewer value={value} />, isValid: true }
+      // Selecting Markdown renders it wherever a value is shown, so it does not
+      // depend on a row being expanded. Tooltips still get the raw source.
+      if (props?.tooltip) {
+        return { value, isValid: true }
       }
-      return { value, isValid: true }
+      return { value: <MarkdownViewer value={value} />, isValid: true }
     }
     default:
       return { value: bufferToUnicode(reply), isValid: true }
