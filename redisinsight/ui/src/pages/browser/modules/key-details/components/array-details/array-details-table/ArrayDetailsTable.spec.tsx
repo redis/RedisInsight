@@ -632,6 +632,49 @@ describe('ArrayDetailsTable', () => {
       ).not.toBeInTheDocument()
     })
 
+    it('closes the drawer only after the save succeeds (not optimistically)', async () => {
+      const postSpy = jest
+        .spyOn(apiService, 'post')
+        .mockResolvedValue({ status: 200, data: '' })
+      const state = cloneDeep(initialStateDefault)
+      state.browser.keys.selectedKey.data = {
+        name: stringToBuffer('mykey'),
+      } as any
+      // Live selection + instance must match for the thunk's success callback
+      // (which closes the drawer) to fire.
+      state.app.context.browser.keyList.selectedKey = stringToBuffer(
+        'mykey',
+      ) as any
+      state.connections.instances.connectedInstance = { id: 'db-1' } as any
+      const store = mockStore(state)
+
+      render(
+        <ArrayDetailsTable
+          elements={[withValue('1', 'hello')]}
+          loading={false}
+          isActive
+        />,
+        { store },
+      )
+
+      fireEvent.click(screen.getByTestId('array-expand-btn-1'))
+      fireEvent.change(screen.getByTestId('array-value-code-editor'), {
+        target: { value: 'updated' },
+      })
+      fireEvent.click(screen.getByTestId('array-value-editor-save-btn'))
+
+      // Still open synchronously after Save — closes only when the ARSET
+      // success callback runs.
+      expect(screen.getByTestId('array-value-code-editor')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId('array-value-code-editor'),
+        ).not.toBeInTheDocument()
+      })
+
+      postSpy.mockRestore()
+    })
+
     it('dispatches ARSET when the drawer value is saved', async () => {
       const postSpy = jest
         .spyOn(apiService, 'post')

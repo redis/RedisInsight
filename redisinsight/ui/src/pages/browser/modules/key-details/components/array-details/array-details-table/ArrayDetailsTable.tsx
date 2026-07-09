@@ -106,6 +106,13 @@ const ArrayDetailsTable = memo(
     // in-flight-write guards.
     const [drawerIndex, setDrawerIndex] = useState<Nullable<string>>(null)
     const [drawerSeed, setDrawerSeed] = useState('')
+    // Mirrors `drawerIndex` for reads inside the async production-write
+    // confirmation callback, so a pending save can tell whether the drawer was
+    // abandoned (closed, or moved to another row) while the dialog was open.
+    const drawerIndexRef = useRef<Nullable<string>>(null)
+    useEffect(() => {
+      drawerIndexRef.current = drawerIndex
+    }, [drawerIndex])
     // Identifies the current edit session. Bumped whenever an editor opens, so
     // a still-in-flight save from a previous session can't close an editor the
     // user has since reopened (which would discard the new input).
@@ -195,7 +202,11 @@ const ArrayDetailsTable = memo(
     )
 
     const handleApplyEditElement = useCallback(
-      (index: string, value: string, startInstanceId?: string) => {
+      (
+        index: string,
+        value: string,
+        options?: { startInstanceId?: string; onSuccess?: () => void },
+      ) => {
         const editSession = editSessionRef.current
         dispatch(
           updateArrayElementAction(
@@ -203,16 +214,17 @@ const ArrayDetailsTable = memo(
               key: keyName,
               index,
               value: stringToSerializedBufferFormat(viewFormat, value),
-              startInstanceId,
+              startInstanceId: options?.startInstanceId,
             },
-            () => {
-              // Ignore a completion whose editor the user has since closed and
-              // reopened (a newer session) — closing it would discard the new
-              // input. handleEditElement's own guard runs for the live session.
-              if (editSessionRef.current === editSession) {
-                handleEditElement(index, false)
-              }
-            },
+            options?.onSuccess ??
+              (() => {
+                // Ignore a completion whose editor the user has since closed
+                // and reopened (a newer session) — closing it would discard the
+                // new input. handleEditElement's guard runs for the live session.
+                if (editSessionRef.current === editSession) {
+                  handleEditElement(index, false)
+                }
+              }),
           ),
         )
       },
@@ -242,7 +254,9 @@ const ArrayDetailsTable = memo(
 
     const handleDrawerSave = useCallback(
       (value: string) => {
-        if (drawerIndex === null) return
+        const savedIndex = drawerIndex
+        const savedInstanceId = connectedInstanceId
+        if (savedIndex === null) return
         requestConfirmation({
           title: 'Edit value on production database?',
           actionDescription:
@@ -251,10 +265,17 @@ const ArrayDetailsTable = memo(
           commandId: BrowserConfirmationCommandId.EditValue,
           disableConfirmationInput: true,
           onConfirm: () => {
-            // Capture the instance at Save time — if the connection changed by
-            // the time the confirmation is confirmed, the write is skipped.
-            handleApplyEditElement(drawerIndex, value, connectedInstanceId)
-            setDrawerIndex(null)
+            // Skip if the drawer was abandoned (Cancel, key/format change, tab
+            // switch) while the confirmation was pending.
+            if (drawerIndexRef.current !== savedIndex) return
+            handleApplyEditElement(savedIndex, value, {
+              // Skip the write if the database changed since Save.
+              startInstanceId: savedInstanceId,
+              // Close the drawer only on a successful, current-selection write
+              // — never optimistically, so a skipped/failed save keeps the
+              // edit instead of silently discarding it.
+              onSuccess: () => setDrawerIndex(null),
+            })
           },
         })
       },
