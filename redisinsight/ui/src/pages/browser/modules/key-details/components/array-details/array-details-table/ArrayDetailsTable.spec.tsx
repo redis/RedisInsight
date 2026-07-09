@@ -15,7 +15,9 @@ import { apiService } from 'uiSrc/services'
 import keysReducer, {
   refreshKeyInfoSuccess,
   setSelectedKeyRefreshDisabled,
+  setViewFormat,
 } from 'uiSrc/slices/browser/keys'
+import { KeyValueFormat } from 'uiSrc/constants'
 import { stringToBuffer } from 'uiSrc/utils'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 import {
@@ -586,6 +588,48 @@ describe('ArrayDetailsTable', () => {
       expect(screen.queryByTestId('array-edit-btn-0')).not.toBeInTheDocument()
       expect(screen.queryByTestId('array-expand-btn-0')).not.toBeInTheDocument()
       expect(screen.queryByTestId('array-expand-btn-1')).not.toBeInTheDocument()
+    })
+
+    it('closes the drawer when the value formatter changes', () => {
+      // The seed was serialized under the previous format; re-serializing it
+      // under a new one on Save would write different bytes.
+      const keys = cloneDeep(initialStateDefault.browser.keys)
+      keys.selectedKey.data = { name: stringToBuffer('mykey') } as any
+      keys.selectedKey.viewFormat = KeyValueFormat.Unicode
+      const store = configureStore({
+        reducer: combineReducers({
+          browser: combineReducers({
+            keys: keysReducer,
+            array: (s = initialStateDefault.browser.array) => s,
+          }),
+          connections: combineReducers({
+            instances: (s = initialStateDefault.connections.instances) => s,
+          }),
+        }),
+        preloadedState: { browser: { keys } },
+        middleware: (getDefault) =>
+          getDefault({ serializableCheck: false, immutableCheck: false }),
+      })
+
+      render(
+        <ArrayDetailsTable
+          elements={[withValue('1', 'hello')]}
+          loading={false}
+          isActive
+        />,
+        { store },
+      )
+
+      fireEvent.click(screen.getByTestId('array-expand-btn-1'))
+      expect(screen.getByTestId('array-value-code-editor')).toBeInTheDocument()
+
+      act(() => {
+        store.dispatch(setViewFormat(KeyValueFormat.HEX))
+      })
+
+      expect(
+        screen.queryByTestId('array-value-code-editor'),
+      ).not.toBeInTheDocument()
     })
 
     it('dispatches ARSET when the drawer value is saved', async () => {

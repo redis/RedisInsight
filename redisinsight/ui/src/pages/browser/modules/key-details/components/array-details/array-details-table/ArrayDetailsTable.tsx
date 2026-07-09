@@ -155,6 +155,19 @@ const ArrayDetailsTable = memo(
       setDrawerIndex(null)
     }, [keyName])
 
+    // Abandon an open editor when the value formatter changes. The editor seed
+    // was serialized under the previous format, but a save re-serializes with
+    // the current `viewFormat` — saving the unchanged seed under a new format
+    // would write different bytes (e.g. "41" as Unicode vs the byte 0x41 as
+    // HEX).
+    const prevFormatRef = useRef(viewFormat)
+    useEffect(() => {
+      if (prevFormatRef.current === viewFormat) return
+      prevFormatRef.current = viewFormat
+      setEditingIndex(null)
+      setDrawerIndex(null)
+    }, [viewFormat])
+
     // Re-enable refresh when the table unmounts entirely (panel close).
     useEffect(
       () => () => {
