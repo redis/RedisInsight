@@ -85,3 +85,6 @@ export const DEFAULT_CONTEXT = {
  * of a raw validation error.
  */
 export const ARRAY_BULK_DELETE_MAX = 1_000_000
+
+/** Shared by all three array forms; the "range-form" prefix is historical. */
+export const ARRAY_COMMAND_PREVIEW_TEST_ID = 'array-range-form-command-preview'
