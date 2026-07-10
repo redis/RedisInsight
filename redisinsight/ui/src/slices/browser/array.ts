@@ -566,12 +566,21 @@ export function updateArrayElementAction(
   onFailAction?: () => void,
 ) {
   return async (dispatch: AppDispatch, stateInit: () => RootState) => {
+    const state = stateInit()
+    const startInstanceId = state.connections.instances.connectedInstance?.id
+    // Skip the write if the connected database changed since the edit was
+    // initiated — e.g. a production-write confirmation confirmed after the
+    // connection switched. Never write this value into a different database.
+    if (
+      params.startInstanceId != null &&
+      params.startInstanceId !== startInstanceId
+    ) {
+      return
+    }
     latestEditRequestToken += 1
     const requestToken = latestEditRequestToken
     dispatch(setArrayUpdating(true))
     try {
-      const state = stateInit()
-      const startInstanceId = state.connections.instances.connectedInstance?.id
       const { status } = await apiService.post(
         arrayUrl(state, ApiEndpoints.ARRAY_SET_ELEMENT),
         { keyName: params.key, index: params.index, value: params.value },

@@ -70,18 +70,28 @@ const valueColumn: ColumnDef<ArrayDataElement> = {
 }
 
 /**
- * Delete column, appended only when the consumer passes a `deleteConfig` (via
- * `meta`). The header hosts the bulk-delete trigger (shown only while rows are
- * selected); each cell hosts the per-row trash. The cell renders nothing for
- * empty slots.
+ * Row-actions column hosting the per-row edit, expand and delete affordances
+ * (revealed on hover). The header hosts the bulk-delete trigger (shown only
+ * while rows are selected). Editing wiring is always present in `meta`, so the
+ * cell derives an `editConfig` from it; `deleteConfig` is forwarded only when
+ * the consumer enables deletion.
  */
 export const actionsColumn: ColumnDef<ArrayDataElement> = {
   id: 'actions',
   // Custom so the header renders the bulk trigger raw, not as a column title.
   isHeaderCustom: true,
   header: ({ table }) => {
-    const { bulkDeleteConfig } = table.options.meta as ArrayTableConfig
-    if (!bulkDeleteConfig) return null
+    const { bulkDeleteConfig, isValueDrawerOpen, editingIndex, updating } =
+      table.options.meta as ArrayTableConfig
+    // Freeze bulk delete during any edit or in-flight write — the selection may
+    // include the edited element, whose pending ARSET would resurrect it.
+    if (
+      !bulkDeleteConfig ||
+      isValueDrawerOpen ||
+      editingIndex !== null ||
+      updating
+    )
+      return null
     return <BulkDeleteHeaderCell bulkDeleteConfig={bulkDeleteConfig} />
   },
   enableSorting: false,
@@ -89,9 +99,33 @@ export const actionsColumn: ColumnDef<ArrayDataElement> = {
   size: ACTIONS_COLUMN_SIZE,
   sizeUnit: 'px',
   cell: ({ row, table }: CellContext<ArrayDataElement, unknown>) => {
-    const { deleteConfig } = table.options.meta as ArrayTableConfig
-    if (!deleteConfig) return null
-    return <RowActionsCell element={row.original} deleteConfig={deleteConfig} />
+    const {
+      compressor,
+      viewFormat,
+      editingIndex,
+      isValueDrawerOpen,
+      updating,
+      loading,
+      onEditElement,
+      onOpenValueEditor,
+      deleteConfig,
+    } = table.options.meta as ArrayTableConfig
+    return (
+      <RowActionsCell
+        element={row.original}
+        editConfig={{
+          compressor,
+          viewFormat,
+          editingIndex,
+          isValueDrawerOpen,
+          updating,
+          loading,
+          onEditElement,
+          onOpenValueEditor,
+        }}
+        deleteConfig={deleteConfig}
+      />
+    )
   },
 }
 

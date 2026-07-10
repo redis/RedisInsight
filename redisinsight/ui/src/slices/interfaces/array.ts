@@ -252,6 +252,10 @@ export interface UpdateArrayElementParams {
   key: RedisString
   index: string
   value: RedisString
+  /** Connected instance id when the edit was initiated. When set, the write is
+   *  skipped if the connected database has since changed (e.g. a production-
+   *  write confirmation confirmed after switching connections). */
+  startInstanceId?: string
 }
 
 /**

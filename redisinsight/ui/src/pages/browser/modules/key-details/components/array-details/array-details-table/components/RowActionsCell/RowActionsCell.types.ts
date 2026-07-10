@@ -1,4 +1,26 @@
+import { KeyValueCompressor, KeyValueFormat } from 'uiSrc/constants'
+import { Nullable } from 'uiSrc/utils'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
+
+/**
+ * Per-row edit wiring the actions cell reads from the table `meta` to render
+ * the edit (inline) and expand (Monaco drawer) triggers next to delete. Both
+ * the editing state and the drawer live in `ArrayDetailsTable`; these
+ * callbacks open them.
+ */
+export interface ArrayElementEditConfig {
+  compressor: Nullable<KeyValueCompressor>
+  viewFormat: KeyValueFormat
+  editingIndex: Nullable<string>
+  /** True while the drawer is open on any row — hides the triggers so a second
+   *  expand can't re-seed the open drawer over unsaved text. */
+  isValueDrawerOpen: boolean
+  updating: boolean
+  /** Blocks opening an edit so a late read can't overwrite the optimistic patch. */
+  loading: boolean
+  onEditElement: (index: string, isEditing: boolean) => void
+  onOpenValueEditor: (index: string) => void
+}
 
 /**
  * Per-row delete state shared with the table's actions cell via the table
@@ -21,5 +43,8 @@ export interface ArrayElementDeleteConfig {
 
 export interface RowActionsCellProps {
   element: ArrayDataElement
-  deleteConfig: ArrayElementDeleteConfig
+  /** Enables the edit + expand triggers. Omitted in read-only contexts. */
+  editConfig?: ArrayElementEditConfig
+  /** Enables the delete trigger. Omitted when deletion isn't offered. */
+  deleteConfig?: ArrayElementDeleteConfig
 }
