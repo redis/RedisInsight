@@ -11,7 +11,10 @@ import {
   MenuItem,
 } from 'uiSrc/components/base/layout/menu'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { SearchBrowserSource } from 'uiSrc/pages/vector-search/telemetry.constants'
+import {
+  SearchBrowserSource,
+  SearchIndexDetailsSource,
+} from 'uiSrc/pages/vector-search/telemetry.constants'
 import { OPEN_INDEX_PANEL_PARAM } from 'uiSrc/pages/vector-search/pages/VectorSearchQueryPage/VectorSearchQueryPage.constants'
 
 import { ViewIndexDataButtonProps } from './ViewIndexDataButton.types'
@@ -34,6 +37,13 @@ export const ViewIndexDataButton = ({
           databaseId: instanceId,
           numberOfIndexes: indexes.length,
           source: SearchBrowserSource.KeyDetails,
+        },
+      })
+      sendEventTelemetry({
+        event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
+        eventData: {
+          databaseId: instanceId,
+          source: SearchIndexDetailsSource.KeyDetails,
         },
       })
       if (onNavigate) {

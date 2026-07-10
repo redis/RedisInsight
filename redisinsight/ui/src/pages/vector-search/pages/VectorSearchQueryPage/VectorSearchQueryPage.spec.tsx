@@ -18,7 +18,6 @@ jest.mock('uiSrc/telemetry', () => ({
 
 const mockInstanceId = 'instanceId'
 const mockPush = jest.fn()
-const mockReplace = jest.fn()
 
 jest.mock('uiSrc/slices/browser/redisearch', () => ({
   ...jest.requireActual('uiSrc/slices/browser/redisearch'),
@@ -58,9 +57,7 @@ jest.mock('uiSrc/services/commands-history/commandsHistoryService', () => ({
 const mockHistoryItems = commandExecutionUIFactory.buildList(2)
 
 const setupRouterMocks = (indexName = 'test-index', search = '') => {
-  reactRouterDom.useHistory = jest
-    .fn()
-    .mockReturnValue({ push: mockPush, replace: mockReplace })
+  reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: mockPush })
   reactRouterDom.useLocation = jest
     .fn()
     .mockReturnValue({ pathname: 'pathname', search })
@@ -187,7 +184,6 @@ describe('VectorSearchQueryPage', () => {
 
       const panel = screen.queryByTestId('view-index-panel')
       expect(panel).not.toBeInTheDocument()
-      expect(mockReplace).not.toHaveBeenCalled()
       expect(sendEventTelemetry).not.toHaveBeenCalledWith(
         expect.objectContaining({
           event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
@@ -202,30 +198,6 @@ describe('VectorSearchQueryPage', () => {
 
       const panel = screen.getByTestId('view-index-panel')
       expect(panel).toBeInTheDocument()
-    })
-
-    it('should strip the open panel param from the URL', async () => {
-      setupRouterMocks('test-index', `?${OPEN_INDEX_PANEL_PARAM}=true`)
-
-      await renderComponent()
-
-      expect(mockReplace).toHaveBeenCalledWith(
-        expect.objectContaining({ search: '' }),
-      )
-    })
-
-    it('should send SEARCH_INDEX_DETAILS_VIEWED telemetry with key details source', async () => {
-      setupRouterMocks('test-index', `?${OPEN_INDEX_PANEL_PARAM}=true`)
-
-      await renderComponent()
-
-      expect(sendEventTelemetry).toHaveBeenCalledWith({
-        event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
-        eventData: {
-          databaseId: mockInstanceId,
-          source: SearchIndexDetailsSource.KeyDetails,
-        },
-      })
     })
   })
 

@@ -5,7 +5,10 @@ import { cleanup, render, screen, userEvent } from 'uiSrc/utils/test-utils'
 import { Pages } from 'uiSrc/constants'
 import { IndexSummary } from 'uiSrc/slices/interfaces/redisearch'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
-import { SearchBrowserSource } from 'uiSrc/pages/vector-search/telemetry.constants'
+import {
+  SearchBrowserSource,
+  SearchIndexDetailsSource,
+} from 'uiSrc/pages/vector-search/telemetry.constants'
 
 import { OPEN_INDEX_PANEL_PARAM } from 'uiSrc/pages/vector-search/pages/VectorSearchQueryPage/VectorSearchQueryPage.constants'
 
@@ -94,6 +97,13 @@ describe('ViewIndexDataButton', () => {
           databaseId: mockInstanceId,
           numberOfIndexes: 1,
           source: SearchBrowserSource.KeyDetails,
+        },
+      })
+      expect(sendEventTelemetry).toHaveBeenCalledWith({
+        event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
+        eventData: {
+          databaseId: mockInstanceId,
+          source: SearchIndexDetailsSource.KeyDetails,
         },
       })
     })

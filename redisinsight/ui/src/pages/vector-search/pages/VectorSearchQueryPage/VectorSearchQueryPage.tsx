@@ -26,23 +26,12 @@ export const VectorSearchQueryPage = () => {
 
   const [isIndexPanelOpen, setIsIndexPanelOpen] = useState(false)
 
+  // Param intentionally kept in the URL; telemetry is sent at click time.
   useEffect(() => {
     const params = new URLSearchParams(location.search)
-    if (params.get(OPEN_INDEX_PANEL_PARAM) !== 'true') {
-      return
+    if (params.get(OPEN_INDEX_PANEL_PARAM) === 'true') {
+      setIsIndexPanelOpen(true)
     }
-
-    setIsIndexPanelOpen(true)
-    sendEventTelemetry({
-      event: TelemetryEvent.SEARCH_INDEX_DETAILS_VIEWED,
-      eventData: {
-        databaseId: instanceId,
-        source: SearchIndexDetailsSource.KeyDetails,
-      },
-    })
-
-    params.delete(OPEN_INDEX_PANEL_PARAM)
-    history.replace({ ...location, search: params.toString() })
   }, [location.search])
 
   const { loading, error, stringData: indexes } = useRedisearchListData()
