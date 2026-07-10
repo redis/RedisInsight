@@ -1,5 +1,6 @@
 import { merge } from 'lodash'
 import { defaultMonacoOptions, TutorialsIds } from 'uiSrc/constants'
+import i18n from 'uiSrc/i18n'
 
 export const aroundQuotesRegExp = /(^["']|["']$)/g
 
@@ -16,14 +17,14 @@ export const options = merge({}, defaultMonacoOptions, {
 export const TUTORIALS = [
   {
     id: TutorialsIds.IntroToSearch,
-    title: 'Intro to search',
+    title: i18n.t('workbench.tutorials.introToSearch'),
   },
   {
     id: TutorialsIds.BasicRedisUseCases,
-    title: 'Basic use cases',
+    title: i18n.t('workbench.tutorials.basicUseCases'),
   },
   {
     id: TutorialsIds.IntroVectorSearch,
-    title: 'Intro to vector search',
+    title: i18n.t('workbench.tutorials.introToVectorSearch'),
   },
 ]

@@ -1,4 +1,5 @@
 import { AllIconsType } from 'uiSrc/components/base/icons/RiIcon'
+import i18n from 'uiSrc/i18n'
 
 export const WORKBENCH_HISTORY_WRAPPER_NAME = 'WORKBENCH'
 export const WORKBENCH_HISTORY_MAX_LENGTH = 30
@@ -10,7 +11,7 @@ export enum WBQueryType {
 
 export const DEFAULT_TEXT_VIEW_TYPE = {
   id: 'default__Text',
-  text: 'Text',
+  text: i18n.t('workbench.viewType.text'),
   name: 'default__Text',
   value: WBQueryType.Text,
   iconDark: 'TextViewIconDarkIcon' as AllIconsType,
@@ -38,13 +39,13 @@ export enum ProfileQueryType {
 const PROFILE_VIEW_TYPE_OPTIONS = [
   {
     id: ProfileQueryType.Profile,
-    text: 'Profile the command',
+    text: i18n.t('workbench.viewType.profile'),
     name: 'Profile',
     value: WBQueryType.Text,
   },
   {
     id: ProfileQueryType.Explain,
-    text: 'Explain the command',
+    text: i18n.t('workbench.viewType.explain'),
     name: 'Explain',
     value: WBQueryType.Text,
   },

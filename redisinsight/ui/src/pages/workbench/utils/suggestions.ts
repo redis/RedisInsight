@@ -19,6 +19,7 @@ import {
 } from 'uiSrc/pages/workbench/constants'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
 import { IRedisCommand } from 'uiSrc/constants'
+import i18n from 'uiSrc/i18n'
 import { generateDetail } from './query'
 import { buildSuggestion } from './monaco'
 
@@ -39,15 +40,17 @@ const NO_INDEXES_DOC_LINK = getUtmExternalLink(
 export const getNoIndexesSuggestion = (range: monaco.IRange) => [
   {
     id: EmptySuggestionsIds.NoIndexes,
-    label: 'No indexes to display',
+    label: i18n.t('workbench.suggestions.noIndexes.label'),
     kind: monacoEditor.languages.CompletionItemKind.Issue,
     insertText: '',
     insertTextRules:
       monacoEditor.languages.CompletionItemInsertTextRule.InsertAsSnippet,
     range,
-    detail: 'Create an index',
+    detail: i18n.t('workbench.suggestions.noIndexes.detail'),
     documentation: {
-      value: `See the [documentation](${NO_INDEXES_DOC_LINK}) for detailed instructions on how to create an index.`,
+      value: i18n.t('workbench.suggestions.noIndexes.documentation', {
+        link: NO_INDEXES_DOC_LINK,
+      }),
     },
   },
 ]
