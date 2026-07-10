@@ -21,6 +21,11 @@ jest.mock('uiSrc/slices/hooks', () => ({
       app: {
         info: { encoding: 'utf-8' },
       },
+      user: {
+        settings: {
+          config: { scanThreshold: 10_000 },
+        },
+      },
     }
     return selector(state)
   }),
@@ -51,6 +56,23 @@ describe('useHasExistingKeys', () => {
 
     expect(result.current.hasKeys).toBe(true)
     expect(result.current.loading).toBe(false)
+  })
+
+  it('should scan with the configured scan threshold', async () => {
+    mockApiPost.mockResolvedValue({
+      status: 200,
+      data: [{ keys: [], total: 0 }],
+    })
+
+    const { waitForNextUpdate } = renderHook(() => useHasExistingKeys())
+
+    await waitForNextUpdate()
+
+    expect(mockApiPost).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ count: 1, scanThreshold: 10_000 }),
+      expect.any(Object),
+    )
   })
 
   it('should return hasKeys=false when no keys exist', async () => {

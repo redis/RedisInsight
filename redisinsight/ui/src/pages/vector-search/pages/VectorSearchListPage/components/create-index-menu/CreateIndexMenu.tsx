@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback } from 'react'
 
 import { useTranslation } from 'uiSrc/i18n'
 import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
@@ -9,33 +9,14 @@ import {
   MenuTrigger,
   MenuDropdownArrow,
 } from 'uiSrc/components/base/layout/menu'
-import { RiTooltip } from 'uiSrc/components/base/tooltip'
 
 import { useVectorSearch } from '../../../../context/vector-search'
 import { SearchTelemetrySource } from '../../../../telemetry.constants'
 
 export const CreateIndexMenu = () => {
   const { t } = useTranslation()
-  const {
-    openPickSampleDataModal,
-    navigateToExistingDataFlow,
-    hasExistingKeys,
-    hasExistingKeysLoading,
-  } = useVectorSearch()
-
-  const isExistingDataDisabled = hasExistingKeysLoading || !hasExistingKeys
-
-  const existingDataTooltip = useMemo(() => {
-    if (hasExistingKeysLoading) {
-      return t('vectorSearch.list.createMenu.checkingKeys')
-    }
-
-    if (!hasExistingKeys) {
-      return t('vectorSearch.list.createMenu.noKeys')
-    }
-
-    return null
-  }, [hasExistingKeysLoading, hasExistingKeys, t])
+  const { openPickSampleDataModal, navigateToExistingDataFlow } =
+    useVectorSearch()
 
   const handleSampleData = useCallback(
     () => openPickSampleDataModal(SearchTelemetrySource.List),
@@ -60,16 +41,11 @@ export const CreateIndexMenu = () => {
           onClick={handleSampleData}
           data-testid="vector-search--list--create-index--sample-data"
         />
-        <RiTooltip
-          content={isExistingDataDisabled ? existingDataTooltip : null}
-        >
-          <MenuItem
-            text={t('vectorSearch.list.createMenu.existingData')}
-            disabled={isExistingDataDisabled}
-            onClick={handleExistingData}
-            data-testid="vector-search--list--create-index--existing-data"
-          />
-        </RiTooltip>
+        <MenuItem
+          text={t('vectorSearch.list.createMenu.existingData')}
+          onClick={handleExistingData}
+          data-testid="vector-search--list--create-index--existing-data"
+        />
         <MenuDropdownArrow />
       </MenuContent>
     </Menu>

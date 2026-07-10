@@ -4,9 +4,11 @@ import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { apiService } from 'uiSrc/services'
 import { ApiEndpoints, KeyTypes } from 'uiSrc/constants'
+import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { getUrl, isStatusSuccessful } from 'uiSrc/utils'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
+import { userSettingsConfigSelector } from 'uiSrc/slices/user/user-settings'
 
 interface ScanResponse {
   keys: unknown[]
@@ -25,6 +27,7 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
   const { pathname } = useLocation()
   const { id: instanceId } = useAppSelector(connectedInstanceSelector)
   const { encoding } = useAppSelector(appInfoSelector)
+  const { scanThreshold } = useAppSelector(userSettingsConfigSelector) ?? {}
 
   const checkForKeys = useCallback(
     async (signal?: AbortSignal) => {
@@ -38,6 +41,8 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
       try {
         const types = [KeyTypes.Hash, KeyTypes.ReJSON]
 
+        // count: 1 stops the scan at the first matching key; the threshold
+        // caps how many keys are scanned when no key of the type exists.
         const results = await Promise.all(
           types.map((type) =>
             apiService.post<ScanResponse[]>(
@@ -48,7 +53,7 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
                 type,
                 match: '*',
                 keysInfo: false,
-                scanThreshold: 1,
+                scanThreshold: scanThreshold ?? SCAN_COUNT_DEFAULT,
               },
               { params: { encoding }, signal },
             ),
@@ -76,7 +81,7 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
         }
       }
     },
-    [instanceId, encoding],
+    [instanceId, encoding, scanThreshold],
   )
 
   useEffect(() => {
