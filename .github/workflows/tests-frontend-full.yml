@@ -1,0 +1,37 @@
+name: Frontend Full Test Suite
+
+# The safety net behind the affected-only run on PRs.
+on:
+  schedule:
+    - cron: 0 0 * * 1
+  workflow_dispatch:
+
+jobs:
+  frontend-tests-full:
+    uses: ./.github/workflows/tests-frontend.yml
+    secrets: inherit
+    with:
+      full: true
+
+  notify-slack:
+    name: Report FE full-suite result to Slack
+    needs: frontend-tests-full
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post to Slack
+        uses: slackapi/slack-github-action@v3.0.3
+        with:
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_TEST_REPORT_KEY }}
+          payload: |
+            channel: "${{ secrets.SLACK_TEST_REPORT_CHANNEL }}"
+            text: "${{ needs.frontend-tests-full.result == 'success' && ':white_check_mark:' || ':x: <!here>' }} *FE full suite: ${{ needs.frontend-tests-full.result }}* — `${{ github.repository }}` @ `${{ github.sha }}`"
+            attachments:
+              - color: "${{ needs.frontend-tests-full.result == 'success' && '#2eb886' || '#cc0000' }}"
+                title: "${{ github.workflow }}"
+                title_link: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                fields:
+                  - title: "Frontend full suite"
+                    value: "${{ needs.frontend-tests-full.result }}"
+                    short: true

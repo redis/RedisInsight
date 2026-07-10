@@ -1,6 +1,11 @@
 name: Tests UI
 on:
   workflow_call:
+    inputs:
+      full:
+        description: Run the full suite with coverage instead of only affected tests
+        type: boolean
+        default: false
 
 env:
   SLACK_AUDIT_REPORT_CHANNEL: ${{ secrets.SLACK_AUDIT_REPORT_CHANNEL }}
@@ -13,6 +18,9 @@ jobs:
     name: Frontend tests
     steps:
       - uses: actions/checkout@v7.0.0
+        with:
+          # Full history so jest's --changedSince can find the merge-base with main.
+          fetch-depth: 0
 
       - name: Install all libs and dependencies
         uses: ./.github/actions/install-all-build-libs
@@ -35,9 +43,16 @@ jobs:
           FILENAME=$FILENAME DEPS="UI dev" node .github/deps-audit-report.js &&
           curl -H "Content-type: application/json" --data @slack.$FILENAME -H "Authorization: Bearer $SLACK_AUDIT_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
 
+      # Affected runs skip coverage — a subset would trip the coverageThreshold.
       - name: Unit tests UI
         timeout-minutes: 30
-        run: yarn test:cov --ci --silent
+        run: |
+          if [ "${{ inputs.full }}" = "true" ]; then
+            yarn test:cov --ci --silent
+          else
+            git fetch --no-tags origin main
+            yarn test:affected --ci --silent
+          fi
 
       - name: Upload Test Report
         uses: actions/upload-artifact@v7

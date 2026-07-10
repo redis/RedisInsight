@@ -51,6 +51,7 @@
     "test:api": "yarn --cwd redisinsight/api test",
     "test:api:integration": "yarn --cwd redisinsight/api test:api",
     "test:watch": "jest --watch -w 1",
+    "test:affected": "jest --changedSince=origin/main --passWithNoTests -w 3",
     "test:cov": "cross-env NODE_OPTIONS='' jest --testLocationInResults --json --outputFile=\"report/coverage/report.json\" --silent --coverage --no-cache --forceExit -w 3",
     "test:cov:unit": "jest --group=-component --coverage -w 1",
     "test:cov:component": "jest --group=component --coverage -w 1",

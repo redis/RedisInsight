@@ -109,6 +109,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       ui: ${{ steps.eval.outputs.ui }}
+      # Full FE suite with coverage, vs only affected tests.
+      ui_full: ${{ steps.eval.outputs.ui_full }}
       api: ${{ steps.eval.outputs.api }}
       desktop: ${{ steps.eval.outputs.desktop }}
       integration: ${{ steps.eval.outputs.integration }}
@@ -150,6 +152,7 @@ jobs:
 
           {
             echo "ui=$ui"
+            echo "ui_full=$ALL"
             echo "api=$api"
             echo "desktop=$desktop"
             echo "integration=$integration"
@@ -179,10 +182,13 @@ jobs:
     if: needs.should-run.outputs.ui == 'true'
     uses: ./.github/workflows/tests-frontend.yml
     secrets: inherit
+    with:
+      full: ${{ needs.should-run.outputs.ui_full == 'true' }}
 
+  # Coverage only exists on full runs — affected PR runs don't collect it.
   frontend-tests-coverage:
-    needs: frontend-tests
-    if: ${{ github.actor != 'dependabot[bot]' }}
+    needs: [should-run, frontend-tests]
+    if: ${{ needs.should-run.outputs.ui_full == 'true' && github.actor != 'dependabot[bot]' }}
     uses: ./.github/workflows/code-coverage.yml
     secrets: inherit
     with:
