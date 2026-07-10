@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
 import {
   Menu,
@@ -14,6 +15,7 @@ import { useVectorSearch } from '../../../../context/vector-search'
 import { SearchTelemetrySource } from '../../../../telemetry.constants'
 
 export const CreateIndexMenu = () => {
+  const { t } = useTranslation()
   const {
     openPickSampleDataModal,
     navigateToExistingDataFlow,
@@ -25,15 +27,15 @@ export const CreateIndexMenu = () => {
 
   const existingDataTooltip = useMemo(() => {
     if (hasExistingKeysLoading) {
-      return 'Checking for existing keys…'
+      return t('vectorSearch.list.createMenu.checkingKeys')
     }
 
     if (!hasExistingKeys) {
-      return 'No Hash or JSON keys found in your database'
+      return t('vectorSearch.list.createMenu.noKeys')
     }
 
     return null
-  }, [hasExistingKeysLoading, hasExistingKeys])
+  }, [hasExistingKeysLoading, hasExistingKeys, t])
 
   const handleSampleData = useCallback(
     () => openPickSampleDataModal(SearchTelemetrySource.List),
@@ -49,12 +51,12 @@ export const CreateIndexMenu = () => {
     <Menu>
       <MenuTrigger>
         <ToggleButton data-testid="vector-search--list--create-index-btn">
-          + Create search index
+          {t('vectorSearch.list.createMenu.create')}
         </ToggleButton>
       </MenuTrigger>
       <MenuContent align="end">
         <MenuItem
-          text="Use sample data"
+          text={t('vectorSearch.list.createMenu.sampleData')}
           onClick={handleSampleData}
           data-testid="vector-search--list--create-index--sample-data"
         />
@@ -62,7 +64,7 @@ export const CreateIndexMenu = () => {
           content={isExistingDataDisabled ? existingDataTooltip : null}
         >
           <MenuItem
-            text="Use existing data"
+            text={t('vectorSearch.list.createMenu.existingData')}
             disabled={isExistingDataDisabled}
             onClick={handleExistingData}
             data-testid="vector-search--list--create-index--existing-data"

@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 import { IconButton } from '@redis-ui/components'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { Button } from 'uiSrc/components/base/forms/buttons'
 
 import { ActionsCellProps } from '../../IndexList.types'
@@ -19,6 +20,7 @@ export const ActionsCell = ({
   onQueryClick,
   actions = [],
 }: ActionsCellProps) => {
+  const { t } = useTranslation()
   const { id, name } = row
 
   const handleQueryClick = useCallback(
@@ -45,7 +47,7 @@ export const ActionsCell = ({
           onClick={handleQueryClick}
           data-testid={`index-query-btn-${id}`}
         >
-          Query
+          {t('vectorSearch.list.action.query')}
         </Button>
       )}
       {actions.length > 0 && (
@@ -68,7 +70,7 @@ export const ActionsCell = ({
                   key={action.name}
                   icon={action.icon}
                   variant={action.variant}
-                  text={action.name}
+                  text={action.label ?? action.name}
                   onClick={handleActionClick}
                   data-testid={`index-actions-${action.name.toLowerCase()}-btn-${id}`}
                 />
