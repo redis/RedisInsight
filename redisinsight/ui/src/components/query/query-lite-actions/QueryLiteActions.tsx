@@ -3,6 +3,7 @@ import React from 'react'
 import { useTranslation } from 'uiSrc/i18n'
 import { KEYBOARD_SHORTCUTS } from 'uiSrc/constants'
 import { KeyboardShortcut, RiTooltip } from 'uiSrc/components'
+import { isMacOs } from 'uiSrc/utils/dom'
 
 import { Spacer } from 'uiSrc/components/base/layout/spacer'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
@@ -20,7 +21,14 @@ const QueryLiteActions = (props: Props) => {
   const { isLoading, onSubmit, onClear } = props
   const KeyBoardTooltipContent = KEYBOARD_SHORTCUTS?.workbench?.runQuery && (
     <>
-      <Text size="s">{t('query.runShortcut.label')}:</Text>
+      <Text size="s">
+        {t(
+          isMacOs()
+            ? 'query.runShortcut.label'
+            : 'query.runShortcut.labelNonMac',
+        )}
+        :
+      </Text>
       <Spacer size="s" />
       <KeyboardShortcut
         separator={KEYBOARD_SHORTCUTS?._separator}

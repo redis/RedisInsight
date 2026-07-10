@@ -348,6 +348,7 @@
   "query.runButton.aria": "Run query",
   "query.runButton.label": "Run",
   "query.runShortcut.label": "Run commands",
+  "query.runShortcut.labelNonMac": "Run",
   "query.tutorials.title": "Tutorials:",
   "settings.advanced.keysToScan.label": "Keys to Scan:",
   "settings.advanced.keysToScan.summary": "Sets the amount of keys to scan per one iteration. Filtering by pattern per a large number of keys may decrease performance.",

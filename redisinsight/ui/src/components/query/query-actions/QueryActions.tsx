@@ -5,6 +5,7 @@ import { ResultsMode, RunQueryMode } from 'uiSrc/slices/interfaces'
 import { KEYBOARD_SHORTCUTS } from 'uiSrc/constants'
 import { KeyboardShortcut, RiTooltip } from 'uiSrc/components'
 import { isGroupMode } from 'uiSrc/utils'
+import { isMacOs } from 'uiSrc/utils/dom'
 
 import { RiIcon } from 'uiSrc/components/base/icons'
 
@@ -36,7 +37,14 @@ const QueryActions = (props: Props) => {
   } = props
   const KeyBoardTooltipContent = KEYBOARD_SHORTCUTS?.workbench?.runQuery && (
     <>
-      <Text size="s">{t('query.runShortcut.label')}:</Text>
+      <Text size="s">
+        {t(
+          isMacOs()
+            ? 'query.runShortcut.label'
+            : 'query.runShortcut.labelNonMac',
+        )}
+        :
+      </Text>
       <Spacer size="s" />
       <KeyboardShortcut
         separator={KEYBOARD_SHORTCUTS?._separator}
