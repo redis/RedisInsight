@@ -4,12 +4,14 @@ import { AutoRefresh } from 'uiSrc/components'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import { Title } from 'uiSrc/components/base/text'
 import { KeyTreeSettings } from 'uiSrc/pages/browser/components/key-tree'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { SelectKeyOnboardingPopover } from '../../select-key-onboarding-popover'
 import { useKeysBrowser } from '../hooks/useKeysBrowser'
 import * as S from '../KeysBrowser.styles'
 
 const Header = () => {
+  const { t } = useTranslation()
   const {
     loading,
     keysState,
@@ -24,7 +26,7 @@ const Header = () => {
         <SelectKeyOnboardingPopover>
           <FlexItem grow={false}>
             <Title size="S" variant="semiBold" color="primary">
-              Select key
+              {t('vectorSearch.keysBrowser.selectKey')}
             </Title>
           </FlexItem>
         </SelectKeyOnboardingPopover>

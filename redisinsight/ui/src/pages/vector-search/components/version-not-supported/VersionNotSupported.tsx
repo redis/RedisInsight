@@ -2,9 +2,9 @@ import React from 'react'
 
 import {
   SearchPageFallback,
-  VERSION_NOT_SUPPORTED_CONTENT,
+  getVersionNotSupportedContent,
 } from '../search-page-fallback'
 
 export const VersionNotSupported = () => (
-  <SearchPageFallback content={VERSION_NOT_SUPPORTED_CONTENT} />
+  <SearchPageFallback content={getVersionNotSupportedContent()} />
 )

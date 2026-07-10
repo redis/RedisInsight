@@ -5,11 +5,13 @@ import ScanMore from 'uiSrc/components/scan-more'
 import { numberWithSpaces, nullableNumberWithSpaces } from 'uiSrc/utils/numbers'
 import { ColorText } from 'uiSrc/components/base/text'
 import { FlexItem, Row } from 'uiSrc/components/base/layout/flex'
+import { Trans, useTranslation } from 'uiSrc/i18n'
 import * as S from '../KeysBrowser.styles'
 
 import { useKeysBrowser } from '../hooks/useKeysBrowser'
 
 const Footer = () => {
+  const { t } = useTranslation()
   const { keysState, headerLoading, isSearched, isFiltered, handleScanMore } =
     useKeysBrowser()
 
@@ -38,36 +40,45 @@ const Footer = () => {
               color="secondary"
               data-testid="vs-scanning-text"
             >
-              Scanning...
+              {t('vectorSearch.keysBrowser.scanning')}
             </ColorText>
           )}
           {!!footerScanned && (
             <>
               <ColorText size="xs" color="secondary" component="span">
-                {'Results: '}
-                <span data-testid="vs-keys-number-of-results">
-                  {numberWithSpaces(keysState.keys.length)}
-                </span>
-                {' keys'}
+                <Trans
+                  i18nKey="vectorSearch.keysBrowser.results"
+                  values={{ count: numberWithSpaces(keysState.keys.length) }}
+                  components={{
+                    resultCount: (
+                      <span data-testid="vs-keys-number-of-results" />
+                    ),
+                  }}
+                />
               </ColorText>
               <S.Separator />
               <ColorText size="xs" color="secondary" component="span">
-                {'Scanned '}
-                <span data-testid="vs-keys-number-of-scanned">
-                  {footerNotAccurateScanned}
-                  {numberWithSpaces(footerScannedDisplay)}
-                </span>
-                {'/'}
-                <span data-testid="vs-keys-total">
-                  {nullableNumberWithSpaces(keysState.total)}
-                </span>
+                <Trans
+                  i18nKey="vectorSearch.keysBrowser.scanned"
+                  values={{
+                    scanned: `${footerNotAccurateScanned}${numberWithSpaces(footerScannedDisplay)}`,
+                    total: nullableNumberWithSpaces(keysState.total),
+                  }}
+                  components={{
+                    scannedCount: (
+                      <span data-testid="vs-keys-number-of-scanned" />
+                    ),
+                    totalCount: <span data-testid="vs-keys-total" />,
+                  }}
+                />
               </ColorText>
             </>
           )}
           {!footerScanned && (!!keysState.total || isNull(keysState.total)) && (
             <ColorText size="xs" color="secondary" component="span">
-              {'Total: '}
-              {nullableNumberWithSpaces(keysState.total)}
+              {t('vectorSearch.keysBrowser.total', {
+                total: nullableNumberWithSpaces(keysState.total),
+              })}
             </ColorText>
           )}
         </Row>

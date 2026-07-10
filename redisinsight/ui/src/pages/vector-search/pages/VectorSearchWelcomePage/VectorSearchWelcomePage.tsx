@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
+
 import { WelcomeScreen } from '../../components/welcome-screen'
 import { useVectorSearch } from '../../context/vector-search'
 import { SearchTelemetrySource } from '../../telemetry.constants'
@@ -10,6 +12,7 @@ import { SearchTelemetrySource } from '../../telemetry.constants'
  * context, providing callbacks and configuration.
  */
 export const VectorSearchWelcomePage = () => {
+  const { t } = useTranslation()
   const {
     openPickSampleDataModal,
     navigateToExistingDataFlow,
@@ -18,9 +21,9 @@ export const VectorSearchWelcomePage = () => {
   } = useVectorSearch()
 
   const useMyDatabaseDisabled = hasExistingKeysLoading
-    ? { tooltip: 'Checking for existing keys…' }
+    ? { tooltip: t('vectorSearch.welcome.checkingKeys') }
     : !hasExistingKeys
-      ? { tooltip: 'No Hash or JSON keys found in your database' }
+      ? { tooltip: t('vectorSearch.welcome.noKeysFound') }
       : undefined
 
   const handleTrySampleData = useCallback(

@@ -7,9 +7,10 @@ import {
   waitForRiTooltipVisible,
 } from 'uiSrc/utils/test-utils'
 
+import i18n from 'uiSrc/i18n'
 import { WelcomeScreen } from './WelcomeScreen'
 import type { WelcomeScreenProps } from './WelcomeScreen.types'
-import { TITLE, SUBTITLE, FEATURES } from './WelcomeScreen.constants'
+import { getFeatures } from './WelcomeScreen.constants'
 
 const defaultProps: WelcomeScreenProps = {
   onTrySampleDataClick: jest.fn(),
@@ -31,15 +32,15 @@ describe('WelcomeScreen', () => {
     expect(welcomeScreen).toBeInTheDocument()
 
     const title = screen.getByTestId('welcome-screen--title')
-    expect(title).toHaveTextContent(TITLE)
+    expect(title).toHaveTextContent(i18n.t('vectorSearch.welcome.title'))
 
     const subtitle = screen.getByTestId('welcome-screen--subtitle')
-    expect(subtitle).toHaveTextContent(SUBTITLE)
+    expect(subtitle).toHaveTextContent(i18n.t('vectorSearch.welcome.subtitle'))
 
     const features = screen.getByTestId('welcome-screen--features')
     expect(features).toBeInTheDocument()
 
-    FEATURES.forEach((feature) => {
+    getFeatures().forEach((feature) => {
       const featureTitle = screen.getByText(feature.title)
       expect(featureTitle).toBeInTheDocument()
     })
