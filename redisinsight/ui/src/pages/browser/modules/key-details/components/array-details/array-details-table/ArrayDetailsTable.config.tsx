@@ -9,6 +9,7 @@ import { RowActionsCell } from './components/RowActionsCell'
 import { BulkDeleteHeaderCell } from './components/BulkDeleteHeaderCell'
 import { ArrayTableConfig } from './ArrayDetailsTable.types'
 import {
+  ACTIONS_COLUMN_CELL_CLASS,
   ACTIONS_COLUMN_SIZE,
   INDEX_COLUMN_SIZE,
   SELECTION_COLUMN_WIDTH_REM,
@@ -98,6 +99,8 @@ export const actionsColumn: ColumnDef<ArrayDataElement> = {
   enableResizing: false,
   size: ACTIONS_COLUMN_SIZE,
   sizeUnit: 'px',
+  // Center the bulk trigger in the header cell (see ArrayDetailsTable.styles).
+  getHeaderCellProps: () => ({ className: ACTIONS_COLUMN_CELL_CLASS }),
   cell: ({ row, table }: CellContext<ArrayDataElement, unknown>) => {
     const {
       compressor,

@@ -3,7 +3,10 @@ import { FlexItem } from 'uiSrc/components/base/layout/flex'
 import { Table, TableProps } from 'uiSrc/components/base/layout/table'
 import { ArrayDataElement } from 'uiSrc/slices/interfaces/array'
 
-import { SELECTION_COLUMN_CELL_CLASS } from './constants'
+import {
+  ACTIONS_COLUMN_CELL_CLASS,
+  SELECTION_COLUMN_CELL_CLASS,
+} from './constants'
 
 export const Container = styled(FlexItem)`
   display: flex;
@@ -42,6 +45,17 @@ export const StyledTable = styled(Table)`
   }
   th.${SELECTION_COLUMN_CELL_CLASS} > *,
   td.${SELECTION_COLUMN_CELL_CLASS} > * {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Actions column header: trim the side padding so the bulk trigger centers
+     in the column instead of hugging the padding. */
+  th.${ACTIONS_COLUMN_CELL_CLASS} {
+    padding-left: ${({ theme }) => theme.core.space.space050};
+    padding-right: ${({ theme }) => theme.core.space.space050};
+  }
+  th.${ACTIONS_COLUMN_CELL_CLASS} > * {
     width: 100%;
     justify-content: center;
   }

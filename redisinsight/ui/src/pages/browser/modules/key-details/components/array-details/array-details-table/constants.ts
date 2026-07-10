@@ -10,3 +10,4 @@ export const ACTIONS_COLUMN_SIZE = 120
 // Snug around the 1.8rem checkbox, not redis-ui's default 4.2rem.
 export const SELECTION_COLUMN_WIDTH_REM = 2.6
 export const SELECTION_COLUMN_CELL_CLASS = 'array-selection-cell'
+export const ACTIONS_COLUMN_CELL_CLASS = 'array-actions-cell'
