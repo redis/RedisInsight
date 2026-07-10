@@ -1092,4 +1092,25 @@ describe('ArrayDetailsTable', () => {
       screen.queryByRole('checkbox', { name: /all rows/i }),
     ).not.toBeInTheDocument()
   })
+
+  it('freezes the bulk-delete trigger while a row is being inline-edited', () => {
+    render(
+      <ArrayDetailsTable
+        elements={[arrayElementWithValueFactory.build({ index: '0' })]}
+        loading={false}
+        isActive
+        bulkDeleteConfig={{ selectedCount: 2, handleBulkDelete: jest.fn() }}
+      />,
+    )
+
+    expect(screen.getByTestId('array-bulk-remove-btn-icon')).toBeInTheDocument()
+
+    // A selection may include the edited row, whose pending ARSET would
+    // resurrect it, so bulk delete is frozen while an edit is open.
+    fireEvent.click(screen.getByTestId('array-edit-btn-0'))
+
+    expect(
+      screen.queryByTestId('array-bulk-remove-btn-icon'),
+    ).not.toBeInTheDocument()
+  })
 })

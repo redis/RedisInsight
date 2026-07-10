@@ -63,6 +63,9 @@ export const ArrayValueEditorDrawer = ({
             wordWrap: 'on',
             automaticLayout: true,
             minimap: { enabled: false },
+            // Read-only while a save is in flight — the drawer closes on
+            // success, so later keystrokes would be silently lost.
+            readOnly: isSaveDisabled,
           }}
         />
       </DrawerBody>

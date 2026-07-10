@@ -81,11 +81,17 @@ export const actionsColumn: ColumnDef<ArrayDataElement> = {
   // Custom so the header renders the bulk trigger raw, not as a column title.
   isHeaderCustom: true,
   header: ({ table }) => {
-    const { bulkDeleteConfig, isValueDrawerOpen } = table.options
-      .meta as ArrayTableConfig
-    // Freeze deletes while the drawer is open — deleting the edited element
-    // would let a later drawer Save resurrect it via ARSET.
-    if (!bulkDeleteConfig || isValueDrawerOpen) return null
+    const { bulkDeleteConfig, isValueDrawerOpen, editingIndex, updating } =
+      table.options.meta as ArrayTableConfig
+    // Freeze bulk delete during any edit or in-flight write — the selection may
+    // include the edited element, whose pending ARSET would resurrect it.
+    if (
+      !bulkDeleteConfig ||
+      isValueDrawerOpen ||
+      editingIndex !== null ||
+      updating
+    )
+      return null
     return <BulkDeleteHeaderCell bulkDeleteConfig={bulkDeleteConfig} />
   },
   enableSorting: false,

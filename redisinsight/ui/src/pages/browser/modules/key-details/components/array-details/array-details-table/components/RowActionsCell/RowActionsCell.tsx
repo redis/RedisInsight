@@ -50,6 +50,14 @@ export const RowActionsCell = ({
   const isEditActionDisabled =
     !editState?.isEditable || !!editConfig?.updating || !!editConfig?.loading
 
+  // `updating` too: an inline Save closes the editor before its ARSET settles,
+  // so a delete in that window would race the write and resurrect the element.
+  const showDelete =
+    !!deleteConfig &&
+    !editConfig?.isValueDrawerOpen &&
+    !isEditingThisRow &&
+    !editConfig?.updating
+
   const isDeletePopoverOpen =
     !!deleteConfig && deleteConfig.deleting === `${index}${deleteConfig.suffix}`
 
@@ -92,7 +100,7 @@ export const RowActionsCell = ({
         </>
       )}
 
-      {deleteConfig && !editConfig?.isValueDrawerOpen && !isEditingThisRow && (
+      {showDelete && (
         <PopoverDelete
           header={t('browser.array.delete.row.title')}
           text={t('browser.array.delete.row.message')}

@@ -11,6 +11,7 @@ jest.mock('uiSrc/components/base/code-editor', () => {
       ReactMock.createElement('textarea', {
         'data-testid': 'array-value-code-editor',
         value: props.value,
+        readOnly: props.options?.readOnly,
         onChange: (e: any) => props.onChange?.(e.target.value),
       }),
   }
@@ -59,6 +60,13 @@ describe('ArrayValueEditorDrawer', () => {
   it('disables Save when isSaveDisabled is set', () => {
     renderComponent({ isSaveDisabled: true })
     expect(screen.getByTestId('array-value-editor-save-btn')).toBeDisabled()
+  })
+
+  it('makes the editor read-only while a save is in flight', () => {
+    renderComponent({ isSaveDisabled: true })
+    expect(screen.getByTestId('array-value-code-editor')).toHaveAttribute(
+      'readonly',
+    )
   })
 
   it('calls onClose and not onSave when cancelled', () => {

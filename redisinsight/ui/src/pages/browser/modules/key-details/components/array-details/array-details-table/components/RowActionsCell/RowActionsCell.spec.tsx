@@ -172,6 +172,22 @@ describe('RowActionsCell — edit + expand', () => {
     expect(screen.getByTestId('array-remove-btn-5-icon')).toBeInTheDocument()
   })
 
+  it('hides delete while an ARSET is in flight, even on a non-edited row', () => {
+    render(
+      <RowActionsCell
+        element={arrayElementWithValueFactory.build({ index: '5' })}
+        editConfig={buildEditConfig({ editingIndex: null, updating: true })}
+        deleteConfig={buildConfig()}
+      />,
+    )
+
+    // Inline Save closes the editor before its write settles, so `updating`
+    // covers the window where a delete would race the pending ARSET.
+    expect(
+      screen.queryByTestId('array-remove-btn-5-icon'),
+    ).not.toBeInTheDocument()
+  })
+
   it('hides all row actions (edit, expand, delete) while the drawer is open', () => {
     render(
       <RowActionsCell
