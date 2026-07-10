@@ -4,16 +4,6 @@ import {
   ArraySearchOptions,
 } from 'uiSrc/slices/interfaces/array'
 
-/**
- * Per-match context window shown when a result row is expanded: a toggle plus
- * the ±N neighbour count. A display concern, kept separate from `options` so
- * it never enters the ARGREP command.
- */
-export type ContextOption = {
-  enabled: boolean
-  count: number
-}
-
 export interface ArraySearchFormProps {
   /**
    * Key name rendered in the preview command. Optional so the form can be
@@ -32,8 +22,6 @@ export interface ArraySearchFormProps {
   onChangePredicate: (index: number, patch: Partial<ArrayGrepPredicate>) => void
   onChangeCombinator: (combinator: ArrayCombinator) => void
   onChangeOptions: (patch: Partial<ArraySearchOptions>) => void
-  context: ContextOption
-  onChangeContext: (patch: Partial<ContextOption>) => void
   onRun: () => void
   /**
    * Optional reset hook — restores form defaults and clears prior results.
