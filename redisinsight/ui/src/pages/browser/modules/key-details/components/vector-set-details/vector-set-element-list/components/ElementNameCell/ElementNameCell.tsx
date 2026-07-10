@@ -1,7 +1,11 @@
 import React from 'react'
 
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
-import { createTooltipContent, formattingBuffer } from 'uiSrc/utils'
+import {
+  bufferToString,
+  createTooltipContent,
+  formattingBuffer,
+} from 'uiSrc/utils'
 import { TEXT_FAILED_CONVENT_FORMATTER } from 'uiSrc/constants'
 import { decompressingBuffer } from 'uiSrc/utils/decompressors'
 import { FormattedValue } from 'uiSrc/pages/browser/modules/key-details/shared'
@@ -31,8 +35,11 @@ export const ElementNameCell = ({
     viewFormat,
   )
 
-  const testIdSuffix =
-    typeof value === 'string' ? value?.substring(0, 200) : value
+  // Test ids must not depend on the view format: rich formats (Markdown,
+  // JSON) return JSX from formattingBuffer, not a string.
+  const testIdSuffix = bufferToString(
+    decompressedItem as RedisResponseBuffer,
+  ).substring(0, 200)
 
   return (
     <Row data-testid={`vector-set-element-value-${testIdSuffix}`}>
