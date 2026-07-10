@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { useAppDispatch } from 'uiSrc/slices/hooks'
 import { useHistory, useParams } from 'react-router-dom'
 import styled from 'styled-components'
@@ -47,6 +48,7 @@ const QueryTutorialsButton = styled(EmptyButton)`
 `
 
 const QueryTutorials = ({ tutorials, source }: Props) => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const history = useHistory()
   const { instanceId } = useParams<{ instanceId: string }>()
@@ -67,7 +69,7 @@ const QueryTutorials = ({ tutorials, source }: Props) => {
 
   return (
     <div className={styles.container}>
-      <Text className={styles.title}>Tutorials:</Text>
+      <Text className={styles.title}>{t('query.tutorials.title')}</Text>
       {tutorials.map(({ id, title }) => (
         <QueryTutorialsButton
           role="button"

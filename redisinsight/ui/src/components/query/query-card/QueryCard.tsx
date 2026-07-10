@@ -3,6 +3,7 @@ import { useAppSelector } from 'uiSrc/slices/hooks'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { isNull } from 'lodash'
+import i18n from 'uiSrc/i18n'
 import { KeyboardKeys as keys } from 'uiSrc/constants/keys'
 
 import { LoadingContent } from 'uiSrc/components/base/layout'
@@ -112,9 +113,12 @@ export const getSummaryText = (
 ) => {
   if (summary) {
     const { total, success, fail } = summary
-    const summaryText = `${total} Command(s) - ${success} success`
+    const summaryText = i18n.t('query.card.summary.commands', {
+      count: total,
+      success,
+    })
     if (!isSilentModeWithoutError(mode, summary?.fail)) {
-      return `${summaryText}, ${fail} error(s)`
+      return `${summaryText}${i18n.t('query.card.summary.errors', { count: fail })}`
     }
     return summaryText
   }

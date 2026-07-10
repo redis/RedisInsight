@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { KEYBOARD_SHORTCUTS } from 'uiSrc/constants'
 import { KeyboardShortcut, RiTooltip } from 'uiSrc/components'
 
@@ -15,10 +16,11 @@ export interface Props {
 }
 
 const QueryLiteActions = (props: Props) => {
+  const { t } = useTranslation()
   const { isLoading, onSubmit, onClear } = props
   const KeyBoardTooltipContent = KEYBOARD_SHORTCUTS?.workbench?.runQuery && (
     <>
-      <Text size="s">{KEYBOARD_SHORTCUTS.workbench.runQuery?.label}:</Text>
+      <Text size="s">{t('query.runShortcut.label')}:</Text>
       <Spacer size="s" />
       <KeyboardShortcut
         separator={KEYBOARD_SHORTCUTS?._separator}
@@ -33,8 +35,8 @@ const QueryLiteActions = (props: Props) => {
         position="right"
         content={
           isLoading
-            ? 'Please wait while the commands are being executed…'
-            : 'Clear query'
+            ? t('query.executing')
+            : t('query.liteActions.clear.tooltip')
         }
         data-testid="clear-query-tooltip"
       >
@@ -42,20 +44,16 @@ const QueryLiteActions = (props: Props) => {
           onClick={onClear}
           loading={isLoading}
           disabled={isLoading}
-          aria-label="clear"
+          aria-label={t('query.liteActions.clear.aria')}
           data-testid="btn-clear"
         >
-          Clear
+          {t('query.liteActions.clear.label')}
         </EmptyButton>
       </RiTooltip>
 
       <RiTooltip
         position="left"
-        content={
-          isLoading
-            ? 'Please wait while the commands are being executed…'
-            : KeyBoardTooltipContent
-        }
+        content={isLoading ? t('query.executing') : KeyBoardTooltipContent}
         data-testid="run-query-tooltip"
       >
         <RunButton onSubmit={onSubmit} isLoading={isLoading} />

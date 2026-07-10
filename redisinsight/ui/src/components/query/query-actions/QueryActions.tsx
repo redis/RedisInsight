@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { Trans, useTranslation } from 'uiSrc/i18n'
 import { ResultsMode, RunQueryMode } from 'uiSrc/slices/interfaces'
 import { KEYBOARD_SHORTCUTS } from 'uiSrc/constants'
 import { KeyboardShortcut, RiTooltip } from 'uiSrc/components'
@@ -24,6 +25,7 @@ export interface Props {
 }
 
 const QueryActions = (props: Props) => {
+  const { t } = useTranslation()
   const {
     isLoading,
     activeMode,
@@ -34,7 +36,7 @@ const QueryActions = (props: Props) => {
   } = props
   const KeyBoardTooltipContent = KEYBOARD_SHORTCUTS?.workbench?.runQuery && (
     <>
-      <Text size="s">{KEYBOARD_SHORTCUTS.workbench.runQuery?.label}:</Text>
+      <Text size="s">{t('query.runShortcut.label')}:</Text>
       <Spacer size="s" />
       <KeyboardShortcut
         separator={KEYBOARD_SHORTCUTS?._separator}
@@ -48,7 +50,7 @@ const QueryActions = (props: Props) => {
       {onChangeMode && (
         <RiTooltip
           position="left"
-          content="Enables the raw output mode"
+          content={t('query.actions.rawMode.tooltip')}
           data-testid="change-mode-tooltip"
         >
           <ToggleButton
@@ -58,7 +60,7 @@ const QueryActions = (props: Props) => {
             data-testid="btn-change-mode"
           >
             <RiIcon size="m" type="RawModeIcon" />
-            <Text size="s">Raw mode</Text>
+            <Text size="s">{t('query.actions.rawMode.label')}</Text>
           </ToggleButton>
         </RiTooltip>
       )}
@@ -66,12 +68,10 @@ const QueryActions = (props: Props) => {
         <RiTooltip
           position="left"
           content={
-            <>
-              Groups the command results into a single window.
-              <br />
-              When grouped, the results can be visualized only in the text
-              format.
-            </>
+            <Trans
+              i18nKey="query.actions.groupMode.tooltip"
+              components={{ lineBreak: <br /> }}
+            />
           }
           data-testid="group-results-tooltip"
         >
@@ -82,18 +82,14 @@ const QueryActions = (props: Props) => {
             data-testid="btn-change-group-mode"
           >
             <RiIcon size="m" type="GroupModeIcon" />
-            <Text size="s">Group results</Text>
+            <Text size="s">{t('query.actions.groupMode.label')}</Text>
           </ToggleButton>
         </RiTooltip>
       )}
       <QADivider orientation="vertical" colorVariable="separatorColor" />
       <RiTooltip
         position="left"
-        content={
-          isLoading
-            ? 'Please wait while the commands are being executed…'
-            : KeyBoardTooltipContent
-        }
+        content={isLoading ? t('query.executing') : KeyBoardTooltipContent}
         data-testid="run-query-tooltip"
       >
         <RunButton isLoading={isLoading} onSubmit={onSubmit} />
