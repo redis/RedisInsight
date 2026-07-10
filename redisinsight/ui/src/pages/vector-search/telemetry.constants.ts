@@ -33,6 +33,7 @@ export enum SearchOnboardingAction {
 export enum SearchIndexDetailsSource {
   IndexList = 'index_list',
   Query = 'query',
+  KeyDetails = 'key_details',
 }
 
 export enum SearchCommandType {
