@@ -2,6 +2,10 @@ require('dotenv').config({ path: './redisinsight/ui/.env.test' });
 
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
+  // Scope test/haste discovery to the UI workspace (plus shared manual mocks)
+  // via `roots` rather than a positional path arg, so `--watch` idles on a
+  // clean tree and jest doesn't crawl redisinsight/api/dist.
+  roots: ['<rootDir>/redisinsight/ui', '<rootDir>/redisinsight/__mocks__'],
   testEnvironmentOptions: {
     url: 'http://localhost/',
     customExportConditions: [''],
