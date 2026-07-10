@@ -74,6 +74,16 @@ test.describe('Browser > Key Details - Markdown value format', () => {
     await apiHelper.deleteKeysByPattern(database.id, `${TEST_KEY_PREFIX}*`);
   });
 
+  // The format choice persists (localStorage + in-memory store) and Electron
+  // runs the whole suite in one app instance, so reset it before it can leak
+  // into later specs. Registered after the hook above => runs before it,
+  // while the key details panel is still open.
+  test.afterEach(async ({ browserPage }) => {
+    if (await browserPage.keyDetails.formatDropdown.isVisible()) {
+      await browserPage.keyDetails.changeValueFormat('Unicode');
+    }
+  });
+
   test('should render a markdown String value through the sanitized pipeline', async ({ apiHelper, browserPage }) => {
     const keyData = StringKeyFactory.build({ value: RENDERED_MARKDOWN });
     await apiHelper.createStringKey(database.id, keyData.keyName, keyData.value);

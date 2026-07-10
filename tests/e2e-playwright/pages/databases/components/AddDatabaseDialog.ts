@@ -75,7 +75,7 @@ export class AddDatabaseDialog {
     this.page = page;
 
     // Dialog controls
-    this.dialog = page.getByRole('dialog', { name: /add database|connection settings/i });
+    this.dialog = page.getByRole('dialog', { name: /add database|edit database|connection settings/i });
     this.connectionUrlInput = page.getByPlaceholder(/redis:\/\//i);
     this.connectionSettingsButton = page.getByTestId('btn-connection-settings');
     this.addDatabaseButton = page.getByRole('button', {
