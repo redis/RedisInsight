@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { MonacoLanguage } from 'uiSrc/constants'
 import { CodeEditor } from 'uiSrc/components/base/code-editor'
 import { useQueryEditorContext, useQueryEditor } from 'uiSrc/components/query'
 import { UseRedisCompletionsReturn } from 'uiSrc/components/query/hooks/useRedisCompletions.types'
 
-import { EDITOR_OPTIONS, EDITOR_PLACEHOLDER } from './QueryEditor.constants'
+import { EDITOR_OPTIONS } from './QueryEditor.constants'
 import { getOnboardingSuggestions } from './onboardingSuggestions'
 import * as S from './QueryEditor.styles'
 
@@ -52,6 +53,7 @@ const triggerEmptySuggestions = (
  * autocomplete behaviour takes over with all Redis commands available.
  */
 export const VectorSearchEditor = () => {
+  const { t } = useTranslation()
   const { query, onSubmit, indexes, activeIndexName } = useQueryEditorContext()
   // Start as true because useMonacoRedisEditor auto-focuses the editor on mount
   const [focused, setFocused] = useState(true)
@@ -141,7 +143,7 @@ export const VectorSearchEditor = () => {
           $contentLeft={contentLeft}
           data-testid="editor-placeholder"
         >
-          {EDITOR_PLACEHOLDER}
+          {t('vectorSearch.query.editor.placeholder')}
         </S.EditorPlaceholder>
       )}
       <CodeEditor

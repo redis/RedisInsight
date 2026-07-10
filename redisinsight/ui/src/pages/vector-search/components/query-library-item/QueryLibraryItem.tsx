@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { RiBadge } from 'uiSrc/components/base/display/badge/RiBadge'
 import { RiTooltip } from 'uiSrc/components/base/tooltip'
 import { CopyButton } from 'uiSrc/components/copy-button'
@@ -31,6 +32,7 @@ export const QueryLibraryItem = ({
   onDelete,
   dataTestId = 'query-library-item',
 }: QueryLibraryItemProps) => {
+  const { t } = useTranslation()
   const badgeConfig = QUERY_TYPE_BADGE_MAP[type]
 
   const handleToggle = useCallback(() => {
@@ -80,7 +82,7 @@ export const QueryLibraryItem = ({
             <S.CopyButtonWrapper>
               <CopyButton
                 copy={name || ''}
-                aria-label="Copy query name"
+                aria-label={t('vectorSearch.queryLibrary.item.copyNameAria')}
                 data-testid={`${dataTestId}-copy`}
                 withTooltip={false}
               />
@@ -102,7 +104,7 @@ export const QueryLibraryItem = ({
           )}
           <S.BadgeWrapper>
             <RiBadge
-              label={badgeConfig.label}
+              label={t(badgeConfig.labelKey)}
               variant={badgeConfig.variant}
               data-testid={`${dataTestId}-type-badge`}
             />
@@ -114,27 +116,27 @@ export const QueryLibraryItem = ({
             <IconButton
               icon={DeleteIcon}
               onClick={handleDelete}
-              aria-label="Delete query"
+              aria-label={t('vectorSearch.queryLibrary.item.deleteAria')}
               data-testid={`${dataTestId}-delete-btn`}
             />
           )}
           {onLoad && (
             <EmptyButton
               onClick={handleLoad}
-              aria-label="Load query"
+              aria-label={t('vectorSearch.queryLibrary.item.loadAria')}
               data-testid={`${dataTestId}-load-btn`}
             >
-              Load
+              {t('vectorSearch.queryLibrary.item.load')}
             </EmptyButton>
           )}
           {onRun && (
             <EmptyButton
               icon={PlayFilledIcon}
               onClick={handleRun}
-              aria-label="Run query"
+              aria-label={t('vectorSearch.queryLibrary.item.runAria')}
               data-testid={`${dataTestId}-run-btn`}
             >
-              Run
+              {t('vectorSearch.queryLibrary.item.run')}
             </EmptyButton>
           )}
         </Row>

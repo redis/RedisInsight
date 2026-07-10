@@ -1,3 +1,4 @@
+import i18n from 'uiSrc/i18n'
 import {
   RiToastType,
   ToastVariant,
@@ -17,9 +18,10 @@ interface NotificationMessage {
 export const createIndexNotifications = {
   /** Shown after a new index is successfully created from sample data. */
   sampleDataCreated: (): NotificationMessage => ({
-    title: 'Your sample data is now searchable.',
-    message:
-      'Start building queries or explore sample ones under Query library.',
+    title: i18n.t('notification.success.vectorSearchSampleDataCreated.title'),
+    message: i18n.t(
+      'notification.success.vectorSearchSampleDataCreated.message',
+    ),
     showCloseButton: false,
     actions: {},
   }),
@@ -29,9 +31,10 @@ export const createIndexNotifications = {
    * Variant: notice – the data is usable but nothing new was created.
    */
   sampleDataAlreadyExists: (): NotificationMessage => ({
-    title: 'Your sample data is already searchable using an existing index.',
-    message:
-      'You can start building new queries or explore existing ones in the Query Library.',
+    title: i18n.t('notification.success.vectorSearchSampleDataExists.title'),
+    message: i18n.t(
+      'notification.success.vectorSearchSampleDataExists.message',
+    ),
     variant: 'notice' as ToastVariant,
     showCloseButton: false,
     actions: {},
@@ -39,18 +42,18 @@ export const createIndexNotifications = {
 
   /** Shown when the index creation request fails. */
   createFailed: (details?: string): NotificationMessage => ({
-    title: 'Failed to create index',
+    title: i18n.t('notification.error.vectorSearchCreateIndexFailed.title'),
     message:
       details ||
-      'An error occurred while creating the index. Please try again.',
+      i18n.t('notification.error.vectorSearchCreateIndexFailed.message'),
     variant: 'danger' as ToastVariant,
   }),
 
   // TODO: Use when creating an index from existing database keys (not sample data).
   /** Shown after a new index is successfully created from database data. */
   indexCreated: (): NotificationMessage => ({
-    title: 'Index created successfully.',
-    message: 'Your data is now searchable. You can start running queries.',
+    title: i18n.t('notification.success.vectorSearchIndexCreated.title'),
+    message: i18n.t('notification.success.vectorSearchIndexCreated.message'),
     showCloseButton: false,
     actions: {},
   }),
@@ -58,12 +61,12 @@ export const createIndexNotifications = {
 
 export const queryLibraryNotifications = {
   querySaved: (onGoToLibrary?: VoidFunction): NotificationMessage => ({
-    title: 'Query saved to your library.',
-    message: 'You can find it anytime in the Query Library.',
+    title: i18n.t('notification.success.queryLibrarySaved.title'),
+    message: i18n.t('notification.success.queryLibrarySaved.message'),
     showCloseButton: false,
     actions: {
       primary: {
-        label: 'Go to Query Library',
+        label: i18n.t('notification.success.queryLibrarySaved.action'),
         onClick: onGoToLibrary ?? (() => {}),
         closes: true,
       },
@@ -71,20 +74,19 @@ export const queryLibraryNotifications = {
   }),
 
   saveFailed: (): NotificationMessage => ({
-    title: 'Failed to save query',
-    message: 'An error occurred while saving the query. Please try again.',
+    title: i18n.t('notification.error.queryLibrarySaveFailed.title'),
+    message: i18n.t('notification.error.queryLibrarySaveFailed.message'),
     variant: 'error' as ToastVariant,
   }),
 
   queryDeleted: (): NotificationMessage => ({
-    title: 'Query has been deleted.',
+    title: i18n.t('notification.success.queryLibraryDeleted.title'),
     message: '',
   }),
 
   cleanupFailed: (): NotificationMessage => ({
-    title: 'Failed to clean up query library',
-    message:
-      'An error occurred while removing saved queries for the deleted index.',
+    title: i18n.t('notification.error.queryLibraryCleanupFailed.title'),
+    message: i18n.t('notification.error.queryLibraryCleanupFailed.message'),
     variant: 'error' as ToastVariant,
   }),
 }

@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { FormikErrors } from 'formik'
+import { useTranslation } from 'uiSrc/i18n'
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 
 import {
@@ -9,7 +10,7 @@ import {
 import {
   VECTOR_CONSTRAINTS,
   TEXT_CONSTRAINTS,
-  VALIDATION_MESSAGES,
+  getValidationMessages,
 } from '../FieldTypeModal.constants'
 import {
   FieldTypeFormValues,
@@ -27,10 +28,13 @@ export const useFieldTypeValidation = (
   mode: FieldTypeModalMode,
   fields: IndexField[],
   _editingField?: IndexField,
-) =>
-  useCallback(
+) => {
+  const { t } = useTranslation()
+
+  return useCallback(
     (values: FieldTypeFormValues): FormikErrors<AllFieldTypeFormFields> => {
       const errors: FormikErrors<AllFieldTypeFormFields> = {}
+      const VALIDATION_MESSAGES = getValidationMessages()
 
       if (mode === FieldTypeModalMode.Create) {
         if (!values.fieldName?.trim()) {
@@ -107,5 +111,6 @@ export const useFieldTypeValidation = (
 
       return errors
     },
-    [mode, fields, _editingField],
+    [mode, fields, _editingField, t],
   )
+}

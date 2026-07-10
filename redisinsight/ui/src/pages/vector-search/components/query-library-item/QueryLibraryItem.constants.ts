@@ -8,11 +8,11 @@ export const QUERY_TYPE_BADGE_MAP: Record<
   QueryTypeBadgeConfig
 > = {
   [QueryLibraryItemType.Sample]: {
-    label: 'Sample query',
+    labelKey: 'vectorSearch.queryLibrary.badge.sample',
     variant: 'default',
   },
   [QueryLibraryItemType.Saved]: {
-    label: 'Saved query',
+    labelKey: 'vectorSearch.queryLibrary.badge.saved',
     variant: 'white',
   },
 }

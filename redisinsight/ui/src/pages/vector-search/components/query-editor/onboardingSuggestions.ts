@@ -1,5 +1,6 @@
 import * as monacoEditor from 'monaco-editor'
 
+import i18n from 'uiSrc/i18n'
 import { bufferToString, formatLongName } from 'uiSrc/utils'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import { getUtmExternalLink } from 'uiSrc/utils/links'
@@ -14,37 +15,37 @@ import { OnboardingTemplate } from './QueryEditor.types'
 export const ONBOARDING_TEMPLATES: OnboardingTemplate[] = [
   {
     command: 'FT.SEARCH',
-    detail: 'Find documents by text or filters',
+    detailKey: 'vectorSearch.query.editor.onboarding.detail.ftSearch',
     usesIndex: true,
   },
   {
     command: 'FT.AGGREGATE',
-    detail: 'Group and summarize results',
+    detailKey: 'vectorSearch.query.editor.onboarding.detail.ftAggregate',
     usesIndex: true,
   },
   {
     command: 'FT.SUGGET',
-    detail: 'Retrieve autocomplete suggestions',
+    detailKey: 'vectorSearch.query.editor.onboarding.detail.ftSugget',
     usesIndex: false,
   },
   {
     command: 'FT.SPELLCHECK',
-    detail: 'Suggest corrections for typos',
+    detailKey: 'vectorSearch.query.editor.onboarding.detail.ftSpellcheck',
     usesIndex: true,
   },
   {
     command: 'FT.EXPLAIN',
-    detail: 'See execution plan',
+    detailKey: 'vectorSearch.query.editor.onboarding.detail.ftExplain',
     usesIndex: true,
   },
   {
     command: 'FT.PROFILE',
-    detail: 'Analyze performance',
+    detailKey: 'vectorSearch.query.editor.onboarding.detail.ftProfile',
     usesIndex: true,
   },
   {
     command: 'FT._LIST',
-    detail: 'View index schema and stats',
+    detailKey: 'vectorSearch.query.editor.onboarding.detail.ftList',
     usesIndex: false,
   },
 ]
@@ -137,22 +138,29 @@ export const getOnboardingSuggestions = (
   activeIndexName?: string,
 ): monacoEditor.languages.CompletionItem[] => {
   const { snippet, isFixed } = getIndexSnippet(indexes, activeIndexName)
+  const documentationLabel = i18n.t(
+    'vectorSearch.query.editor.onboarding.documentation',
+  )
 
-  return ONBOARDING_TEMPLATES.map((t, i) => ({
-    label: t.command,
-    kind: monacoEditor.languages.CompletionItemKind.Snippet,
-    detail: t.detail,
-    documentation: {
-      value: `**${t.command}** — ${t.detail}\n\n[Documentation](${getDocUrl(t.command)})`,
-    },
-    insertText: getInsertText(
-      t.command,
-      t.usesIndex ? snippet : '',
-      t.usesIndex && isFixed,
-    ),
-    insertTextRules:
-      monacoEditor.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-    range: EMPTY_EDITOR_RANGE,
-    sortText: `!${String(i).padStart(2, '0')}`,
-  })) as monacoEditor.languages.CompletionItem[]
+  return ONBOARDING_TEMPLATES.map((template, i) => {
+    const detail = i18n.t(template.detailKey)
+
+    return {
+      label: template.command,
+      kind: monacoEditor.languages.CompletionItemKind.Snippet,
+      detail,
+      documentation: {
+        value: `**${template.command}** — ${detail}\n\n[${documentationLabel}](${getDocUrl(template.command)})`,
+      },
+      insertText: getInsertText(
+        template.command,
+        template.usesIndex ? snippet : '',
+        template.usesIndex && isFixed,
+      ),
+      insertTextRules:
+        monacoEditor.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+      range: EMPTY_EDITOR_RANGE,
+      sortText: `!${String(i).padStart(2, '0')}`,
+    }
+  }) as monacoEditor.languages.CompletionItem[]
 }

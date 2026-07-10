@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { chunk } from 'lodash'
+import { useTranslation } from 'uiSrc/i18n'
 import {
   Nullable,
   getCommandsForExecution,
@@ -28,6 +29,7 @@ import {
 } from './useQuery.utils'
 
 export const useQuery = () => {
+  const { t } = useTranslation()
   const { instanceId } = useParams<{ instanceId: string }>()
   const scrollDivRef = useRef<HTMLDivElement>(null)
 
@@ -85,26 +87,31 @@ export const useQuery = () => {
     [resultsMode],
   )
 
-  const handleApiError = useCallback((error: unknown) => {
-    const message =
-      error instanceof Error ? error.message : 'Failed to execute command'
+  const handleApiError = useCallback(
+    (error: unknown) => {
+      const message =
+        error instanceof Error
+          ? error.message
+          : t('vectorSearch.query.error.executeCommand')
 
-    setItems((prevItems) =>
-      prevItems.map((item) => {
-        if (item.loading) {
-          return {
-            ...item,
-            loading: false,
-            error: message,
-            result: createErrorResult(message),
-            isOpen: true,
+      setItems((prevItems) =>
+        prevItems.map((item) => {
+          if (item.loading) {
+            return {
+              ...item,
+              loading: false,
+              error: message,
+              result: createErrorResult(message),
+              isOpen: true,
+            }
           }
-        }
-        return item
-      }),
-    )
-    setProcessing(false)
-  }, [])
+          return item
+        }),
+      )
+      setProcessing(false)
+    },
+    [t],
+  )
 
   const executeCommandBatch = useCallback(
     async (
@@ -257,7 +264,7 @@ export const useQuery = () => {
                   ? {
                       ...i,
                       loading: false,
-                      error: 'Failed to load command details',
+                      error: t('vectorSearch.query.error.loadCommandDetails'),
                     }
                   : i,
               ),
@@ -269,7 +276,7 @@ export const useQuery = () => {
 
       setItems((prev) => prev.map((i) => (i.id === id ? { ...i, isOpen } : i)))
     },
-    [items, instanceId],
+    [items, instanceId, t],
   )
 
   return {

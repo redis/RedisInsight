@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { ToggleButton } from 'uiSrc/components/base/forms/buttons'
 
 export interface ViewIndexButtonProps {
@@ -10,12 +11,16 @@ export interface ViewIndexButtonProps {
 export const ViewIndexButton = ({
   isActive,
   onClick,
-}: ViewIndexButtonProps) => (
-  <ToggleButton
-    pressed={isActive}
-    onPressedChange={onClick}
-    data-testid="view-index-btn"
-  >
-    View index
-  </ToggleButton>
-)
+}: ViewIndexButtonProps) => {
+  const { t } = useTranslation()
+
+  return (
+    <ToggleButton
+      pressed={isActive}
+      onPressedChange={onClick}
+      data-testid="view-index-btn"
+    >
+      {t('vectorSearch.query.viewIndexButton')}
+    </ToggleButton>
+  )
+}

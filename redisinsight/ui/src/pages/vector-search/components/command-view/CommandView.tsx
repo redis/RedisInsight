@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 import { merge } from 'lodash'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { MonacoLanguage } from 'uiSrc/constants'
 import { defaultMonacoOptions } from 'uiSrc/constants/monaco/monaco'
 import { CopyButton } from 'uiSrc/components/copy-button'
@@ -18,6 +19,7 @@ export const CommandView = ({
   onCopy,
   showLineNumbers = false,
 }: CommandViewProps) => {
+  const { t } = useTranslation()
   const editorOptions = useMemo(
     () =>
       merge({}, defaultMonacoOptions, COMMAND_VIEW_EDITOR_OPTIONS, {
@@ -37,10 +39,10 @@ export const CommandView = ({
       <S.CopyButtonWrapper>
         <CopyButton
           copy={command}
-          successLabel="Copied"
+          successLabel={t('vectorSearch.commandView.copied')}
           onCopy={onCopy}
           data-testid={`${dataTestId ?? 'command-view'}--copy-button`}
-          aria-label="Copy command"
+          aria-label={t('vectorSearch.commandView.copyAria')}
         />
       </S.CopyButtonWrapper>
     </S.EditorWrapper>

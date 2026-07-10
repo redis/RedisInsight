@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { Text } from 'uiSrc/components/base/text'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import { FieldTag } from 'uiSrc/pages/vector-search/components/field-tag/FieldTag'
@@ -7,36 +8,42 @@ import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-ind
 
 import * as S from './FieldTypeList.styles'
 
-const FIELD_TYPE_DESCRIPTIONS: { type: FieldTypes; description: string }[] = [
+const FIELD_TYPE_DESCRIPTION_KEYS: {
+  type: FieldTypes
+  descriptionKey: string
+}[] = [
+  { type: FieldTypes.TEXT, descriptionKey: 'vectorSearch.fieldType.list.text' },
+  { type: FieldTypes.TAG, descriptionKey: 'vectorSearch.fieldType.list.tag' },
   {
-    type: FieldTypes.TEXT,
-    description: 'Full-text search and relevance scoring',
+    type: FieldTypes.NUMERIC,
+    descriptionKey: 'vectorSearch.fieldType.list.numeric',
   },
-  { type: FieldTypes.TAG, description: 'Exact matching and filtering' },
-  { type: FieldTypes.NUMERIC, description: 'Range queries and sorting' },
+  { type: FieldTypes.GEO, descriptionKey: 'vectorSearch.fieldType.list.geo' },
   {
-    type: FieldTypes.GEO,
-    description: 'Geographic distance and radius queries',
+    type: FieldTypes.VECTOR,
+    descriptionKey: 'vectorSearch.fieldType.list.vector',
   },
-  { type: FieldTypes.VECTOR, description: 'Similarity and semantic search' },
 ]
 
-export const IndexingTypeContent = () => (
-  <Col gap="m" data-testid="create-index-onboarding-indexing-types">
-    <Text size="m" color="secondary">
-      Defines how Redis searches this field and how it behaves at query time.
-      Available indexing types:
-    </Text>
+export const IndexingTypeContent = () => {
+  const { t } = useTranslation()
 
-    {FIELD_TYPE_DESCRIPTIONS.map(({ type, description }) => (
-      <S.FieldTypeRow key={type} gap="s">
-        <FieldTag tag={type} />
-        <Text>{description}</Text>
-      </S.FieldTypeRow>
-    ))}
+  return (
+    <Col gap="m" data-testid="create-index-onboarding-indexing-types">
+      <Text size="m" color="secondary">
+        {t('vectorSearch.fieldType.list.intro')}
+      </Text>
 
-    <Text size="m" color="secondary">
-      Optional settings may affect performance, storage, or ranking.
-    </Text>
-  </Col>
-)
+      {FIELD_TYPE_DESCRIPTION_KEYS.map(({ type, descriptionKey }) => (
+        <S.FieldTypeRow key={type} gap="s">
+          <FieldTag tag={type} />
+          <Text>{t(descriptionKey as never)}</Text>
+        </S.FieldTypeRow>
+      ))}
+
+      <Text size="m" color="secondary">
+        {t('vectorSearch.fieldType.list.optionalSettings')}
+      </Text>
+    </Col>
+  )
+}

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { RiPopover } from 'uiSrc/components/base'
 import { Button, IconButton } from 'uiSrc/components/base/forms/buttons'
 import { CancelSlimIcon } from 'uiSrc/components/base/icons'
@@ -22,6 +23,7 @@ interface PopoverContentProps {
 }
 
 const PopoverContent = ({ children, onDismiss }: PopoverContentProps) => {
+  const { t } = useTranslation()
   const selectedKey = useAppSelector(selectedKeyDataSelector)
 
   useEffect(() => {
@@ -44,22 +46,20 @@ const PopoverContent = ({ children, onDismiss }: PopoverContentProps) => {
               icon={CancelSlimIcon}
               onClick={onDismiss}
               size="S"
-              aria-label="close-onboarding"
+              aria-label={t('vectorSearch.selectKeyOnboarding.close')}
               data-testid="select-key-onboarding-close"
             />
           </Row>
           <Text size="L" variant="semiBold" color="primary">
-            Select a key to get started
+            {t('vectorSearch.selectKeyOnboarding.title')}
           </Text>
         </Col>
         <Col gap="m">
           <Text size="m" color="secondary">
-            We&apos;ll use the selected key to generate a suggested indexing
-            schema. Redis will index all keys with the same prefix, not just
-            this single key.
+            {t('vectorSearch.selectKeyOnboarding.body1')}
           </Text>
           <Text size="m" color="secondary">
-            Indexing available for Hash and JSON data structures.
+            {t('vectorSearch.selectKeyOnboarding.body2')}
           </Text>
         </Col>
         <Row justify="end">
@@ -68,7 +68,7 @@ const PopoverContent = ({ children, onDismiss }: PopoverContentProps) => {
             onClick={onDismiss}
             data-testid="select-key-onboarding-dismiss"
           >
-            Got it
+            {t('vectorSearch.selectKeyOnboarding.gotIt')}
           </Button>
         </Row>
       </S.Content>
