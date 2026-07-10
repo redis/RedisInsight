@@ -62,6 +62,7 @@ export const CreateIndexPageProvider = ({
   sampleData,
   mode: modeProp,
   showBrowser: showBrowserProp = true,
+  isManualCreation: isManualCreationProp = false,
   initialKey: initialKeyProp,
   initialKeyType: initialKeyTypeProp,
   initialPrefix: initialPrefixProp,
@@ -70,6 +71,7 @@ export const CreateIndexPageProvider = ({
   const { t } = useTranslation()
   const mode = modeProp ?? CreateIndexMode.SampleData
   const isSampleData = mode === CreateIndexMode.SampleData
+  const isManualCreation = !isSampleData && isManualCreationProp
 
   const [activeTab, setActiveTab] = useState<CreateIndexTab>(
     CreateIndexTab.Table,
@@ -205,10 +207,12 @@ export const CreateIndexPageProvider = ({
   const createDisabledReason = useMemo((): string | null => {
     if (isSampleData) return null
     if (selectedFields.length === 0)
-      return t('vectorSearch.createIndex.createDisabledReason')
+      return isManualCreation
+        ? t('vectorSearch.createIndex.createDisabledReasonManual')
+        : t('vectorSearch.createIndex.createDisabledReason')
     if (indexNameError !== null) return indexNameError
     return null
-  }, [isSampleData, indexNameError, selectedFields, t])
+  }, [isSampleData, isManualCreation, indexNameError, selectedFields, t])
 
   const isCreateDisabled = createDisabledReason !== null
 
@@ -426,6 +430,7 @@ export const CreateIndexPageProvider = ({
       setActiveTab: changeActiveTab,
       isReadonly,
       showBrowser,
+      isManualCreation,
       initialKey: initialKeyProp,
       initialKeyType: initialKeyTypeProp,
       displayName,
@@ -461,6 +466,7 @@ export const CreateIndexPageProvider = ({
       changeActiveTab,
       isReadonly,
       showBrowser,
+      isManualCreation,
       initialKeyProp,
       initialKeyTypeProp,
       displayName,

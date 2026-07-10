@@ -25,17 +25,6 @@ export const Default: Story = {
     // eslint-disable-next-line no-alert
     onTrySampleDataClick: () => alert('Try with sample data clicked!'),
     // eslint-disable-next-line no-alert
-    onUseMyDatabaseClick: () => alert('Use data from my database clicked!'),
-  },
-}
-
-export const UseMyDatabaseDisabled: Story = {
-  name: '"Use data from my database" disabled',
-  args: {
-    // eslint-disable-next-line no-alert
-    onTrySampleDataClick: () => alert('Try with sample data clicked!'),
-    useMyDatabaseDisabled: {
-      tooltip: "You don't have any data in your database yet",
-    },
+    onUseMyDatabaseClick: () => alert('Create index clicked!'),
   },
 }

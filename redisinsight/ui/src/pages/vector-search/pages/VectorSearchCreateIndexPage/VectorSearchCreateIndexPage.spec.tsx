@@ -3,6 +3,11 @@ import reactRouterDom from 'react-router-dom'
 import { cleanup, render, screen, fireEvent } from 'uiSrc/utils/test-utils'
 
 import { VectorSearchCreateIndexPage } from './VectorSearchCreateIndexPage'
+import { useVectorSearch } from '../../context/vector-search'
+
+jest.mock('../../context/vector-search', () => ({
+  useVectorSearch: jest.fn(),
+}))
 
 jest.mock('../../components/index-details', () => {
   const MockReact = require('react')
@@ -30,15 +35,27 @@ jest.mock('../../components/command-view', () => {
 
 const mockPush = jest.fn()
 
-const setupRouterMocks = (sampleData?: string) => {
+const setupRouterMocks = (search: string) => {
   reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: mockPush })
   reactRouterDom.useParams = jest
     .fn()
     .mockReturnValue({ instanceId: 'test-instance' })
   reactRouterDom.useLocation = jest.fn().mockReturnValue({
     pathname: '/test-instance/vector-search/create-index',
-    search: sampleData ? `?sampleData=${sampleData}` : '',
+    search,
     hash: '',
+  })
+}
+
+const mockUseVectorSearch = (
+  overrides: Partial<ReturnType<typeof useVectorSearch>> = {},
+) => {
+  ;(useVectorSearch as jest.Mock).mockReturnValue({
+    openPickSampleDataModal: jest.fn(),
+    navigateToExistingDataFlow: jest.fn(),
+    hasExistingKeys: true,
+    hasExistingKeysLoading: false,
+    ...overrides,
   })
 }
 
@@ -46,10 +63,11 @@ describe('VectorSearchCreateIndexPage', () => {
   beforeEach(() => {
     cleanup()
     jest.clearAllMocks()
+    mockUseVectorSearch()
   })
 
   it('should render all page elements', () => {
-    setupRouterMocks('e-commerce-discovery')
+    setupRouterMocks('?sampleData=e-commerce-discovery')
 
     render(<VectorSearchCreateIndexPage />)
 
@@ -96,7 +114,7 @@ describe('VectorSearchCreateIndexPage', () => {
   })
 
   it('should switch to command view when clicking Command view button', () => {
-    setupRouterMocks('e-commerce-discovery')
+    setupRouterMocks('?sampleData=e-commerce-discovery')
 
     render(<VectorSearchCreateIndexPage />)
 
@@ -116,7 +134,7 @@ describe('VectorSearchCreateIndexPage', () => {
   })
 
   it('should navigate back on cancel', () => {
-    setupRouterMocks('e-commerce-discovery')
+    setupRouterMocks('?sampleData=e-commerce-discovery')
 
     render(<VectorSearchCreateIndexPage />)
 
@@ -129,5 +147,55 @@ describe('VectorSearchCreateIndexPage', () => {
     expect(mockPush).toHaveBeenCalledWith(
       expect.stringContaining('vector-search'),
     )
+  })
+
+  describe('existing data mode with no keys in the database', () => {
+    it('should show a loader while checking for existing keys', () => {
+      setupRouterMocks('?mode=existingData')
+      mockUseVectorSearch({
+        hasExistingKeys: false,
+        hasExistingKeysLoading: true,
+      })
+
+      render(<VectorSearchCreateIndexPage />)
+
+      expect(
+        screen.getByTestId('vector-search--create-index--loading'),
+      ).toBeInTheDocument()
+    })
+
+    it('should hide the key browser and render the manual creation empty state', () => {
+      setupRouterMocks('?mode=existingData')
+      mockUseVectorSearch({ hasExistingKeys: false })
+
+      render(<VectorSearchCreateIndexPage />)
+
+      const browserPanel = screen.queryByTestId(
+        'vector-search--create-index--browser-panel',
+      )
+      expect(browserPanel).not.toBeInTheDocument()
+
+      const emptyState = screen.getByTestId(
+        'vector-search--create-index--empty-state',
+      )
+      expect(emptyState).toHaveTextContent(
+        'Build your search index by manually adding the fields you want to index.',
+      )
+
+      const addFieldBtn = screen.getByTestId(
+        'vector-search--create-index--add-field-btn',
+      )
+      expect(addFieldBtn).toBeEnabled()
+
+      const prefixInput = screen.getByTestId(
+        'vector-search--create-index--prefix-input',
+      )
+      expect(prefixInput).toBeInTheDocument()
+
+      const submitBtn = screen.getByTestId(
+        'vector-search--create-index--submit-btn',
+      )
+      expect(submitBtn).toBeDisabled()
+    })
   })
 })

@@ -1,11 +1,5 @@
 import React from 'react'
-import { act } from '@testing-library/react'
-import {
-  fireEvent,
-  render,
-  screen,
-  waitForRiTooltipVisible,
-} from 'uiSrc/utils/test-utils'
+import { fireEvent, render, screen } from 'uiSrc/utils/test-utils'
 
 import i18n from 'uiSrc/i18n'
 import { WelcomeScreen } from './WelcomeScreen'
@@ -54,6 +48,10 @@ describe('WelcomeScreen', () => {
       'welcome-screen--use-my-database-btn',
     )
     expect(useMyDatabaseBtn).toBeInTheDocument()
+    expect(useMyDatabaseBtn).toHaveTextContent(
+      i18n.t('vectorSearch.welcome.useMyDatabase'),
+    )
+    expect(useMyDatabaseBtn).toBeEnabled()
 
     const background = screen.getByTestId('welcome-screen--background')
     expect(background).toBeInTheDocument()
@@ -81,27 +79,5 @@ describe('WelcomeScreen', () => {
     fireEvent.click(useMyDatabaseBtn)
 
     expect(onUseMyDatabaseClick).toHaveBeenCalledTimes(1)
-  })
-
-  it('should disable secondary button when useMyDatabaseDisabled is provided', async () => {
-    const onUseMyDatabaseClick = jest.fn()
-    renderComponent({
-      onUseMyDatabaseClick,
-      useMyDatabaseDisabled: { tooltip: 'Feature disabled' },
-    })
-
-    const button = screen.getByTestId('welcome-screen--use-my-database-btn')
-    expect(button).toBeDisabled()
-
-    fireEvent.click(button)
-    expect(onUseMyDatabaseClick).not.toHaveBeenCalled()
-
-    await act(async () => {
-      fireEvent.focus(button)
-    })
-    await waitForRiTooltipVisible()
-
-    const tooltipText = screen.getAllByText('Feature disabled')[0]
-    expect(tooltipText).toBeInTheDocument()
   })
 })

@@ -2,6 +2,7 @@ import React from 'react'
 import { useLocation, useParams, Redirect } from 'react-router-dom'
 
 import { Pages } from 'uiSrc/constants'
+import { Loader } from 'uiSrc/components/base/display'
 
 import { CreateIndexMode } from './VectorSearchCreateIndexPage.types'
 import {
@@ -10,6 +11,7 @@ import {
   hasPreselectedKey,
   parseCreateIndexSearchParams,
 } from '../../utils'
+import { useVectorSearch } from '../../context/vector-search'
 import { CreateIndexPageProvider } from '../../context/create-index-page'
 import { CreateIndexOnboardingProvider } from '../../context/create-index-onboarding'
 import { CreateIndexHeader } from './components/CreateIndexHeader'
@@ -20,6 +22,7 @@ import * as S from './VectorSearchCreateIndexPage.styles'
 export const VectorSearchCreateIndexPage = () => {
   const { search } = useLocation()
   const { instanceId } = useParams<{ instanceId: string }>()
+  const { hasExistingKeys, hasExistingKeysLoading } = useVectorSearch()
 
   const state = parseCreateIndexSearchParams(search)
   const mode = isExistingDataState(state)
@@ -34,7 +37,24 @@ export const VectorSearchCreateIndexPage = () => {
 
   const existingState = isExistingDataState(state) ? state : undefined
   const preselected = hasPreselectedKey(state)
-  const showBrowser = mode === CreateIndexMode.ExistingData && !preselected
+  const isBrowseFlow = mode === CreateIndexMode.ExistingData && !preselected
+
+  if (isBrowseFlow && hasExistingKeysLoading) {
+    return (
+      <S.PageWrapper
+        align="center"
+        justify="center"
+        data-testid="vector-search--create-index--loading"
+      >
+        <Loader size="xl" />
+      </S.PageWrapper>
+    )
+  }
+
+  // With no keys in the database the browser panel is useless — switch to
+  // manual creation, where the user defines the index fields themselves.
+  const isManualCreation = isBrowseFlow && !hasExistingKeys
+  const showBrowser = isBrowseFlow && hasExistingKeys
 
   return (
     <CreateIndexPageProvider
@@ -42,6 +62,7 @@ export const VectorSearchCreateIndexPage = () => {
       mode={mode}
       sampleData={sampleData}
       showBrowser={showBrowser}
+      isManualCreation={isManualCreation}
       initialKey={preselected ? existingState?.initialKey : undefined}
       initialKeyType={preselected ? existingState?.initialKeyType : undefined}
       initialPrefix={preselected ? existingState?.initialPrefix : undefined}
