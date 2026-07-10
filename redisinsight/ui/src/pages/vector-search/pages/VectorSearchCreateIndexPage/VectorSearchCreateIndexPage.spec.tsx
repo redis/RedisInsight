@@ -1,6 +1,12 @@
 import React from 'react'
 import reactRouterDom from 'react-router-dom'
-import { cleanup, render, screen, fireEvent } from 'uiSrc/utils/test-utils'
+import {
+  cleanup,
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+} from 'uiSrc/utils/test-utils'
 
 import { VectorSearchCreateIndexPage } from './VectorSearchCreateIndexPage'
 import { useVectorSearch } from '../../context/vector-search'
@@ -196,6 +202,31 @@ describe('VectorSearchCreateIndexPage', () => {
         'vector-search--create-index--submit-btn',
       )
       expect(submitBtn).toBeDisabled()
+    })
+
+    it('should enable the create button once a field is added manually', async () => {
+      setupRouterMocks('?mode=existingData')
+      mockUseVectorSearch({ hasExistingKeys: false })
+
+      render(<VectorSearchCreateIndexPage />)
+
+      fireEvent.click(
+        screen.getByTestId('vector-search--create-index--add-field-btn'),
+      )
+
+      fireEvent.change(screen.getByTestId('field-type-modal-field-name'), {
+        target: { value: 'title' },
+      })
+      await waitFor(() => {
+        expect(screen.getByTestId('field-type-modal-save')).toBeEnabled()
+      })
+      fireEvent.click(screen.getByTestId('field-type-modal-save'))
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('vector-search--create-index--submit-btn'),
+        ).toBeEnabled()
+      })
     })
   })
 })
