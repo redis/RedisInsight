@@ -292,7 +292,7 @@ const WBViewWrapper = () => {
             i18nKey="workbench.runConfirm.body"
             count={dangerousCommands.length}
             values={{
-              commands: dangerousCommands.join(', '),
+              commands: escapeTrans(dangerousCommands.join(', ')),
               db: escapeTrans(confirmationText),
             }}
             components={{ bold: <strong /> }}
