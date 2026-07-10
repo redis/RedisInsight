@@ -102,12 +102,9 @@ const ArrayDetailsTable = memo(
 
     const { requestConfirmation } = useProductionWriteConfirmation()
 
-    // Index of the row currently being edited; only one row edits at a time.
     const [editingIndex, setEditingIndex] = useState<Nullable<string>>(null)
-    // Index whose value is open in the Monaco drawer, plus its seed captured at
-    // open time. Held at the table level (not per-row) so the drawer shares the
-    // inline editor's refresh-pause, tab-switch / key-change abandon and
-    // in-flight-write guards.
+    // Row open in the Monaco drawer, plus its open-time seed. Held table-level
+    // (not per-row) so the drawer shares the inline editor's guards.
     const [drawerIndex, setDrawerIndex] = useState<Nullable<string>>(null)
     const [drawerSeed, setDrawerSeed] = useState('')
     // Mirrors `drawerIndex` for reads inside the async production-write

@@ -141,7 +141,7 @@ describe('RowActionsCell — edit + expand', () => {
     expect(onOpenValueEditor).toHaveBeenCalledWith('5')
   })
 
-  it('hides edit and expand while this row is being edited', () => {
+  it('hides edit, expand and delete while this row is being edited', () => {
     render(
       <RowActionsCell
         element={arrayElementWithValueFactory.build({ index: '5' })}
@@ -152,7 +152,23 @@ describe('RowActionsCell — edit + expand', () => {
 
     expect(screen.queryByTestId('array-edit-btn-5')).not.toBeInTheDocument()
     expect(screen.queryByTestId('array-expand-btn-5')).not.toBeInTheDocument()
-    // Delete stays available while editing.
+    // Delete is hidden too: deleting this row would race its pending ARSET.
+    expect(
+      screen.queryByTestId('array-remove-btn-5-icon'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('keeps delete for other rows while a different row is inline-edited', () => {
+    render(
+      <RowActionsCell
+        element={arrayElementWithValueFactory.build({ index: '5' })}
+        editConfig={buildEditConfig({ editingIndex: '7' })}
+        deleteConfig={buildConfig()}
+      />,
+    )
+
+    // Only the edited row's delete is frozen; ARDEL leaves a gap without
+    // shifting indexes, so deleting a different row can't race the edit.
     expect(screen.getByTestId('array-remove-btn-5-icon')).toBeInTheDocument()
   })
 

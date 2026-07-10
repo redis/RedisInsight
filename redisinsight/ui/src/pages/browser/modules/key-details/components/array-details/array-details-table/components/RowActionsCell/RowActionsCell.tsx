@@ -92,7 +92,7 @@ export const RowActionsCell = ({
         </>
       )}
 
-      {deleteConfig && !editConfig?.isValueDrawerOpen && (
+      {deleteConfig && !editConfig?.isValueDrawerOpen && !isEditingThisRow && (
         <PopoverDelete
           header={t('browser.array.delete.row.title')}
           text={t('browser.array.delete.row.message')}
