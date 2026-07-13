@@ -52,7 +52,7 @@ export class AzureEntraIdCredentialStrategy implements ICredentialStrategy {
       this.logger.warn(
         `Failed to acquire token for database ${database.id} - re-authentication needed`,
       );
-      throw new AzureEntraIdTokenExpiredException();
+      throw new AzureEntraIdTokenExpiredException(providerDetails.tenantId);
     }
 
     // Use plainToInstance to ensure the result is a proper Database class instance

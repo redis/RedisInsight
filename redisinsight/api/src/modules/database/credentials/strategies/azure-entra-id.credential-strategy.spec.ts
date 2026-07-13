@@ -173,6 +173,17 @@ describe('AzureEntraIdCredentialStrategy', () => {
       );
     });
 
+    it('should carry the connection tenant on the expired exception for recovery', async () => {
+      const database = createMockAzureDatabase();
+      mockAzureAuthService.getRedisTokenByAccountId.mockResolvedValue(null);
+
+      await expect(strategy.resolve(database)).rejects.toMatchObject({
+        response: {
+          additionalInfo: { tenantId: database.providerDetails?.tenantId },
+        },
+      });
+    });
+
     it('should return database with credentials from token result', async () => {
       const database = createMockAzureDatabase();
       const tokenResult = createMockTokenResult();

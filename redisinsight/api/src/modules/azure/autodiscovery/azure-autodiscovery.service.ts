@@ -373,6 +373,7 @@ export class AzureAutodiscoveryService {
 
     if (!client) {
       throw new AzureEntraIdTokenExpiredException(
+        undefined,
         'Azure session expired. Please re-authenticate with Azure to access this database.',
       );
     }
