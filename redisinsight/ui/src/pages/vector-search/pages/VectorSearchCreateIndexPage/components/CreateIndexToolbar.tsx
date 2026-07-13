@@ -28,7 +28,6 @@ export const CreateIndexToolbar = () => {
     isManualCreation,
     keyType,
     setKeyType,
-    fields,
     openAddFieldModal,
   } = useCreateIndexPage()
 
@@ -46,8 +45,6 @@ export const CreateIndexToolbar = () => {
   }, [currentStep, isActive])
 
   const isExistingData = mode === CreateIndexMode.ExistingData
-  // There is nothing to preview until the first field is added manually
-  const isViewToggleDisabled = isManualCreation && fields.length === 0
 
   return (
     <S.ToolbarRow
@@ -62,7 +59,6 @@ export const CreateIndexToolbar = () => {
         <ButtonGroup data-testid="vector-search--create-index--view-toggle">
           <ButtonGroup.Button
             isSelected={activeTab === CreateIndexTab.Table}
-            disabled={isViewToggleDisabled}
             onClick={() => setActiveTab(CreateIndexTab.Table)}
             data-testid="vector-search--create-index--table-view-btn"
           >
@@ -70,7 +66,6 @@ export const CreateIndexToolbar = () => {
           </ButtonGroup.Button>
           <ButtonGroup.Button
             isSelected={activeTab === CreateIndexTab.Command}
-            disabled={isViewToggleDisabled}
             onClick={() => setActiveTab(CreateIndexTab.Command)}
             data-testid="vector-search--create-index--command-view-btn"
           >

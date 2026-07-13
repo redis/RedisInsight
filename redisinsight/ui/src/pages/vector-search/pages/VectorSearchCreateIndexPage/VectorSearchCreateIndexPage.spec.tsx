@@ -216,15 +216,6 @@ describe('VectorSearchCreateIndexPage', () => {
       )
       expect(addFieldBtn).toBeEnabled()
 
-      const tableViewBtn = screen.getByTestId(
-        'vector-search--create-index--table-view-btn',
-      )
-      const commandViewBtn = screen.getByTestId(
-        'vector-search--create-index--command-view-btn',
-      )
-      expect(tableViewBtn).toBeDisabled()
-      expect(commandViewBtn).toBeDisabled()
-
       const prefixInput = screen.getByTestId(
         'vector-search--create-index--prefix-input',
       )
@@ -234,6 +225,33 @@ describe('VectorSearchCreateIndexPage', () => {
         'vector-search--create-index--submit-btn',
       )
       expect(submitBtn).toBeDisabled()
+    })
+
+    it('should show the command view before any fields are added', () => {
+      setupRouterMocks('?mode=existingData')
+      mockUseVectorSearch({ hasExistingKeys: false })
+
+      render(<VectorSearchCreateIndexPage />)
+
+      fireEvent.click(
+        screen.getByTestId('vector-search--create-index--command-view-btn'),
+      )
+
+      const commandView = screen.getByTestId(
+        'vector-search--create-index--command-view',
+      )
+      expect(commandView).toBeInTheDocument()
+      expect(
+        screen.queryByTestId('vector-search--create-index--empty-state'),
+      ).not.toBeInTheDocument()
+
+      fireEvent.click(
+        screen.getByTestId('vector-search--create-index--table-view-btn'),
+      )
+
+      expect(
+        screen.getByTestId('vector-search--create-index--empty-state'),
+      ).toBeInTheDocument()
     })
 
     it('should build the command with the chosen key type', async () => {

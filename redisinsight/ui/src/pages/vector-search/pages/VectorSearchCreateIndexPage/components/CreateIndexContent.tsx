@@ -43,23 +43,33 @@ export const CreateIndexContent = () => {
   const EmptyStateImg = theme === Theme.Dark ? SelectDataImgDark : SelectDataImg
 
   if (isExistingData && fields.length === 0) {
+    const showCommandView =
+      isManualCreation && activeTab === CreateIndexTab.Command
+
     return (
       <S.CardContainer data-testid="vector-search--create-index--card">
         {isManualCreation && <CreateIndexToolbar />}
 
         <S.ContentArea data-testid="vector-search--create-index--content">
-          <S.EmptyState
-            align="center"
-            justify="center"
-            data-testid="vector-search--create-index--empty-state"
-          >
-            <EmptyStateImg />
-            <Text size="M" color="secondary">
-              {isManualCreation
-                ? t('vectorSearch.createIndex.content.emptyStateManual')
-                : t('vectorSearch.createIndex.content.emptyState')}
-            </Text>
-          </S.EmptyState>
+          {showCommandView ? (
+            <CommandView
+              command={command}
+              dataTestId="vector-search--create-index--command-view"
+            />
+          ) : (
+            <S.EmptyState
+              align="center"
+              justify="center"
+              data-testid="vector-search--create-index--empty-state"
+            >
+              <EmptyStateImg />
+              <Text size="M" color="secondary">
+                {isManualCreation
+                  ? t('vectorSearch.createIndex.content.emptyStateManual')
+                  : t('vectorSearch.createIndex.content.emptyState')}
+              </Text>
+            </S.EmptyState>
+          )}
 
           {isManualCreation && (
             <FieldTypeModal
