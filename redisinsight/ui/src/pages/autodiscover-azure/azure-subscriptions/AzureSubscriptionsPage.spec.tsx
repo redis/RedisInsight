@@ -16,7 +16,10 @@ import {
   clearSubscriptionsAzure,
 } from 'uiSrc/slices/instances/azure'
 import { useAzureAuth } from 'uiSrc/components/hooks/useAzureAuth'
-import { azureAuthAccountSelector } from 'uiSrc/slices/oauth/azure'
+import {
+  azureAuthAccountSelector,
+  azureAuthTenantSelector,
+} from 'uiSrc/slices/oauth/azure'
 import { AzureLoginSource } from 'uiSrc/slices/interfaces'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { AzureAccountFactory } from 'uiSrc/mocks/factories/cloud/AzureAccount.factory'
@@ -41,6 +44,7 @@ jest.mock('uiSrc/components/hooks/useAzureAuth', () => ({
 jest.mock('uiSrc/slices/oauth/azure', () => ({
   ...jest.requireActual('uiSrc/slices/oauth/azure'),
   azureAuthAccountSelector: jest.fn(),
+  azureAuthTenantSelector: jest.fn(),
 }))
 
 jest.mock('uiSrc/telemetry', () => ({
@@ -75,6 +79,8 @@ let store: typeof mockedStore
 
 const mockedAzureSelector = azureSelector as jest.Mock
 const mockedAzureAuthAccountSelector = azureAuthAccountSelector as jest.Mock
+const mockedAzureAuthTenantSelector = azureAuthTenantSelector as jest.Mock
+const mockedFetchSubscriptionsAzure = fetchSubscriptionsAzure as jest.Mock
 const mockedUseAzureAuth = useAzureAuth as jest.Mock
 const mockedSendEventTelemetry = sendEventTelemetry as jest.Mock
 
@@ -87,6 +93,8 @@ describe('AzureSubscriptionsPage', () => {
     store.clearActions()
     mockedAzureSelector.mockReturnValue(defaultAzureState)
     mockedAzureAuthAccountSelector.mockReturnValue(mockAccount)
+    mockedAzureAuthTenantSelector.mockReturnValue(undefined)
+    mockedFetchSubscriptionsAzure.mockClear()
     mockedUseAzureAuth.mockReturnValue({
       initiateLogin: mockInitiateLogin,
       account: mockAccount,
@@ -122,6 +130,19 @@ describe('AzureSubscriptionsPage', () => {
       mockAccount.id,
       undefined,
     )
+  })
+
+  it('should fetch subscriptions for the active tenant', () => {
+    const tenant = '11111111-1111-1111-1111-111111111111'
+    mockedAzureSelector.mockReturnValue({
+      ...defaultAzureState,
+      loaded: { ...defaultAzureState.loaded, subscriptions: false },
+    })
+    mockedAzureAuthTenantSelector.mockReturnValue(tenant)
+
+    render(<AzureSubscriptionsPage />, { store })
+
+    expect(fetchSubscriptionsAzure).toHaveBeenCalledWith(mockAccount.id, tenant)
   })
 
   describe('switch account', () => {

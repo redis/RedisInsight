@@ -399,12 +399,17 @@ describe('AzureAuthService', () => {
         account: mockAccount,
       } as any);
 
-      await service.getRedisTokenByAccountId(mockAccount.homeAccountId);
+      const tenantId = faker.string.uuid();
+      await service.getRedisTokenByAccountId(
+        mockAccount.homeAccountId,
+        tenantId,
+      );
 
       expect(mockEventEmitter.emit).toHaveBeenCalledWith(
         AzureRedisTokenEvents.Acquired,
         {
           accountId: mockAccount.homeAccountId,
+          tenantId,
           tokenResult: {
             token: mockAccessToken,
             expiresOn: mockExpiresOn,

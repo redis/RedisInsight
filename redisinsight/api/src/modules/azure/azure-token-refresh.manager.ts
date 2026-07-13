@@ -12,17 +12,17 @@ import { AzureTokenResult } from './auth/models';
 /**
  * Manages automatic token refresh for Azure Entra ID authenticated Redis clients.
  *
- * When a token is acquired, the AzureRedisTokenEvents.Acquired event triggers:
- * 1. Schedule a timer to refresh before expiry
- * 2. Re-authenticate active Redis clients with the new token
- *
- * When the timer fires, it acquires a fresh token which emits the event again,
- * continuing the cycle. The cycle stops when no clients are using the account.
+ * Refresh cycles are tracked per (account, tenant): one user can be signed into
+ * multiple tenants, each with its own token, and a client must only ever be
+ * re-authenticated with the token for its own tenant.
  */
 interface ScheduledTimer {
   timeout: NodeJS.Timeout;
   expiresOn: Date;
 }
+
+const refreshKey = (accountId: string, tenantId?: string): string =>
+  `${accountId}::${tenantId ?? ''}`;
 
 @Injectable()
 export class AzureTokenRefreshManager implements OnModuleDestroy {
@@ -42,23 +42,31 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
   @OnEvent(AzureRedisTokenEvents.Acquired)
   async handleTokenAcquired({
     accountId,
+    tenantId,
     tokenResult,
   }: {
     accountId: string;
+    tenantId?: string;
     tokenResult: AzureTokenResult;
   }): Promise<void> {
     try {
-      this.scheduleRefresh(accountId, tokenResult.expiresOn);
-      await this.reAuthenticateClients(accountId, tokenResult);
+      this.scheduleRefresh(accountId, tenantId, tokenResult.expiresOn);
+      await this.reAuthenticateClients(accountId, tenantId, tokenResult);
     } catch (error) {
       this.logger.error(
-        `Failed to handle token acquired event for account ${accountId}: ${error.message}`,
+        `Failed to handle token acquired event for account ${accountId} ` +
+          `(tenant=${tenantId || 'home'}): ${error.message}`,
       );
     }
   }
 
-  scheduleRefresh(azureAccountId: string, expiresOn: Date): void {
-    const existing = this.timers.get(azureAccountId);
+  scheduleRefresh(
+    azureAccountId: string,
+    tenantId: string | undefined,
+    expiresOn: Date,
+  ): void {
+    const key = refreshKey(azureAccountId, tenantId);
+    const existing = this.timers.get(key);
 
     // Skip if already scheduled for the same expiry time (race condition protection)
     if (existing?.expiresOn?.getTime() === expiresOn.getTime()) {
@@ -82,31 +90,30 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
 
     if (calculatedDelay < MIN_REFRESH_DELAY_MS) {
       this.logger.warn(
-        `Token for account ${azureAccountId} expires soon (${Math.round(calculatedDelay / 1000)}s), ` +
+        `Token for ${key} expires soon (${Math.round(calculatedDelay / 1000)}s), ` +
           `using minimum delay of ${MIN_REFRESH_DELAY_MS / 1000}s`,
       );
     }
 
     this.logger.debug(
-      `Scheduling token refresh for account ${azureAccountId} in ${Math.round(delay / 1000)}s (expires: ${expiresOn.toISOString()})`,
+      `Scheduling token refresh for ${key} in ${Math.round(delay / 1000)}s (expires: ${expiresOn.toISOString()})`,
     );
 
     const timeout = setTimeout(() => {
-      this.refreshToken(azureAccountId).catch((error) => {
-        this.logger.error(
-          `Token refresh failed for account ${azureAccountId}: ${error.message}`,
-        );
+      this.refreshToken(azureAccountId, tenantId).catch((error) => {
+        this.logger.error(`Token refresh failed for ${key}: ${error.message}`);
       });
     }, delay);
 
-    this.timers.set(azureAccountId, { timeout, expiresOn });
+    this.timers.set(key, { timeout, expiresOn });
   }
 
-  clearTimer(azureAccountId: string): void {
-    const existing = this.timers.get(azureAccountId);
+  clearTimer(azureAccountId: string, tenantId?: string): void {
+    const key = refreshKey(azureAccountId, tenantId);
+    const existing = this.timers.get(key);
     if (existing) {
       clearTimeout(existing.timeout);
-      this.timers.delete(azureAccountId);
+      this.timers.delete(key);
     }
   }
 
@@ -115,30 +122,37 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
     this.timers.clear();
   }
 
-  private async refreshToken(azureAccountId: string): Promise<void> {
-    this.logger.debug(`Refreshing token for account ${azureAccountId}`);
+  /** Active clients for a given account and tenant. */
+  private getClientsForTenant(azureAccountId: string, tenantId?: string) {
+    return this.redisClientStorage
+      .getClientsByDatabaseField(
+        'providerDetails.azureAccountId',
+        azureAccountId,
+      )
+      .filter(
+        (client) => client.database.providerDetails?.tenantId === tenantId,
+      );
+  }
+
+  private async refreshToken(
+    azureAccountId: string,
+    tenantId?: string,
+  ): Promise<void> {
+    const key = refreshKey(azureAccountId, tenantId);
+    this.logger.debug(`Refreshing token for ${key}`);
 
     // Clear the stale timer entry - the timer has fired, so the entry is no longer valid.
     // This ensures that when getRedisTokenByAccountId emits the Acquired event,
     // scheduleRefresh won't skip due to matching expiresOn (e.g., MSAL cached token).
-    this.clearTimer(azureAccountId);
+    this.clearTimer(azureAccountId, tenantId);
 
-    // Stop the refresh cycle if no clients are using this account
-    const clients = this.redisClientStorage.getClientsByDatabaseField(
-      'providerDetails.azureAccountId',
-      azureAccountId,
-    );
+    // Stop the refresh cycle if no clients are using this account+tenant
+    const clients = this.getClientsForTenant(azureAccountId, tenantId);
 
     if (clients.length === 0) {
-      this.logger.debug(
-        `No active clients for account ${azureAccountId}, stopping refresh cycle`,
-      );
+      this.logger.debug(`No active clients for ${key}, stopping refresh cycle`);
       return;
     }
-
-    // Refresh against the same tenant the databases were connected with, so
-    // multi-tenant sign-ins keep issuing tokens from the correct authority.
-    const tenantId = clients[0].database.providerDetails?.tenantId;
 
     await this.azureAuthService.getRedisTokenByAccountId(
       azureAccountId,
@@ -148,12 +162,10 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
 
   private async reAuthenticateClients(
     azureAccountId: string,
+    tenantId: string | undefined,
     tokenResult: AzureTokenResult,
   ): Promise<void> {
-    const clients = this.redisClientStorage.getClientsByDatabaseField(
-      'providerDetails.azureAccountId',
-      azureAccountId,
-    );
+    const clients = this.getClientsForTenant(azureAccountId, tenantId);
 
     if (clients.length === 0) {
       return;
@@ -168,13 +180,13 @@ export class AzureTokenRefreshManager implements OnModuleDestroy {
 
     if (clientsToReauth.length === 0) {
       this.logger.debug(
-        `All clients for account ${azureAccountId} already have current token`,
+        `All clients for ${refreshKey(azureAccountId, tenantId)} already have current token`,
       );
       return;
     }
 
     this.logger.debug(
-      `Re-authenticating ${clientsToReauth.length} of ${clients.length} client(s) for account ${azureAccountId}`,
+      `Re-authenticating ${clientsToReauth.length} of ${clients.length} client(s) for ${refreshKey(azureAccountId, tenantId)}`,
     );
 
     await Promise.all(

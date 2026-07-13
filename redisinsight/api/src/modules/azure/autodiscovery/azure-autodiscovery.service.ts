@@ -452,7 +452,9 @@ export class AzureAutodiscoveryService {
       tls: true,
       authType: AzureAuthType.EntraId,
       azureAccountId: accountId,
-      tenantId: tenantId ?? tokenResult.account.tenantId,
+      // Store the realm GUID the token was issued for, not a user-entered
+      // domain, so silent-refresh account selection can match it.
+      tenantId: tokenResult.account.tenantId,
       subscriptionId: database.subscriptionId,
       resourceGroup: database.resourceGroup,
       resourceId: database.id,

@@ -326,6 +326,7 @@ export class AzureAuthService {
     if (tokenResult) {
       this.eventEmitter.emit(AzureRedisTokenEvents.Acquired, {
         accountId,
+        tenantId,
         tokenResult,
       });
     }

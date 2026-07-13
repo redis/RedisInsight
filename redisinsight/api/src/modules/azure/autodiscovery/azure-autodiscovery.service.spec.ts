@@ -507,6 +507,43 @@ describe('AzureAutodiscoveryService', () => {
       );
     });
 
+    it('should persist the token realm GUID as tenantId even when a domain is entered', async () => {
+      const database = createMockDatabase(AzureRedisType.Standard);
+      const mockAccount = createMockAccount();
+      const apiResponse = createStandardRedisApiResponse(database);
+
+      mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
+        token: 'mock-token',
+        expiresOn: new Date(),
+        account: mockAccount,
+      });
+      mockAxiosInstance.get
+        .mockResolvedValueOnce({ data: { value: [apiResponse] } })
+        .mockResolvedValueOnce({ data: { value: [] } });
+      mockAuthService.getRedisTokenByAccountId.mockResolvedValue({
+        token: 'redis-token',
+        expiresOn: new Date(),
+        account: mockAccount,
+      });
+      mockDatabaseService.create.mockResolvedValue({ id: 'new-db-id' });
+
+      await service.addDatabases(
+        sessionMetadata,
+        accountId,
+        [{ id: database.id }],
+        'contoso.onmicrosoft.com',
+      );
+
+      expect(mockDatabaseService.create).toHaveBeenCalledWith(
+        sessionMetadata,
+        expect.objectContaining({
+          providerDetails: expect.objectContaining({
+            tenantId: mockAccount.tenantId,
+          }),
+        }),
+      );
+    });
+
     it('should successfully add an enterprise Redis database', async () => {
       const subscriptionId = faker.string.uuid();
       const mockCluster = createMockEnterpriseCluster(subscriptionId);

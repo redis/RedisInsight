@@ -39,8 +39,10 @@ const AzureSubscriptionsPage = () => {
     if (!loaded.subscriptions) {
       dispatch(fetchSubscriptionsAzure(account.id, tenant ?? undefined))
     }
+    // Re-run on tenant change too: switching tenant keeps the same account, so
+    // account alone wouldn't retrigger the fetch for the new tenant.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account])
+  }, [account, tenant])
 
   const handleBack = () => {
     history.push(Pages.home)
