@@ -8,7 +8,6 @@ import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { getUrl, isStatusSuccessful } from 'uiSrc/utils'
 import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
-import { userSettingsConfigSelector } from 'uiSrc/slices/user/user-settings'
 
 interface ScanResponse {
   keys: unknown[]
@@ -27,7 +26,6 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
   const { pathname } = useLocation()
   const { id: instanceId } = useAppSelector(connectedInstanceSelector)
   const { encoding } = useAppSelector(appInfoSelector)
-  const { scanThreshold } = useAppSelector(userSettingsConfigSelector) ?? {}
 
   const checkForKeys = useCallback(
     async (signal?: AbortSignal) => {
@@ -41,19 +39,19 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
       try {
         const types = [KeyTypes.Hash, KeyTypes.ReJSON]
 
-        // count: 1 stops the scan at the first matching key; the threshold
-        // caps how many keys are scanned when no key of the type exists.
+        // The backend scans COUNT=min(2000, count) keys per SCAN iteration
+        // and stops once `count` keys are found, the keyspace is exhausted,
+        // or its default scanThreshold worth of keys has been scanned.
         const results = await Promise.all(
           types.map((type) =>
             apiService.post<ScanResponse[]>(
               getUrl(instanceId, ApiEndpoints.KEYS),
               {
                 cursor: '0',
-                count: 1,
+                count: SCAN_COUNT_DEFAULT,
                 type,
                 match: '*',
                 keysInfo: false,
-                scanThreshold: scanThreshold ?? SCAN_COUNT_DEFAULT,
               },
               { params: { encoding }, signal },
             ),
@@ -81,7 +79,7 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
         }
       }
     },
-    [instanceId, encoding, scanThreshold],
+    [instanceId, encoding],
   )
 
   useEffect(() => {

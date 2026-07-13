@@ -56,7 +56,7 @@ const setupRouterMocks = (search: string) => {
 const mockUseVectorSearch = (
   overrides: Partial<ReturnType<typeof useVectorSearch>> = {},
 ) => {
-  ;(useVectorSearch as jest.Mock).mockReturnValue({
+  jest.mocked(useVectorSearch).mockReturnValue({
     openPickSampleDataModal: jest.fn(),
     navigateToExistingDataFlow: jest.fn(),
     hasExistingKeys: true,

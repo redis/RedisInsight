@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks'
 
 import { apiService } from 'uiSrc/services'
+import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 
 import { useHasExistingKeys } from './useHasExistingKeys'
 
@@ -20,11 +21,6 @@ jest.mock('uiSrc/slices/hooks', () => ({
       },
       app: {
         info: { encoding: 'utf-8' },
-      },
-      user: {
-        settings: {
-          config: { scanThreshold: 10_000 },
-        },
       },
     }
     return selector(state)
@@ -58,7 +54,7 @@ describe('useHasExistingKeys', () => {
     expect(result.current.loading).toBe(false)
   })
 
-  it('should scan with the configured scan threshold', async () => {
+  it('should scan with the default scan count', async () => {
     mockApiPost.mockResolvedValue({
       status: 200,
       data: [{ keys: [], total: 0 }],
@@ -70,7 +66,7 @@ describe('useHasExistingKeys', () => {
 
     expect(mockApiPost).toHaveBeenCalledWith(
       expect.any(String),
-      expect.objectContaining({ count: 1, scanThreshold: 10_000 }),
+      expect.objectContaining({ count: SCAN_COUNT_DEFAULT }),
       expect.any(Object),
     )
   })
