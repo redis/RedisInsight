@@ -11,6 +11,7 @@ import {
 import { buildIndexInfoRaw } from 'src/__mocks__/redisearch';
 import { DatabaseClientFactory } from 'src/modules/database/providers/database.client.factory';
 import { KeyIndexesService } from 'src/modules/browser/redisearch/key-indexes.service';
+import { RedisDataType } from 'src/modules/browser/keys/dto';
 
 const mockMovieInfoRaw = buildIndexInfoRaw({
   indexName: 'idx:movie',
@@ -43,6 +44,15 @@ describe('KeyIndexesService', () => {
   const clusterClient = mockClusterRedisClient;
   let service: KeyIndexesService;
 
+  const mockKeyType = (
+    key: string | Buffer,
+    type: string = RedisDataType.Hash,
+  ) => {
+    when(standaloneClient.sendCommand)
+      .calledWith(['TYPE', key], expect.anything())
+      .mockResolvedValue(type);
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -66,6 +76,7 @@ describe('KeyIndexesService', () => {
 
   describe('getKeyIndexes', () => {
     it('should return matching index when key matches a prefix', async () => {
+      mockKeyType('movie:1');
       when(standaloneClient.sendCommand)
         .calledWith(['FT._LIST'])
         .mockResolvedValue([Buffer.from('idx:movie')]);
@@ -84,6 +95,7 @@ describe('KeyIndexesService', () => {
     });
 
     it('should return empty array when key matches no prefix', async () => {
+      mockKeyType('session:abc');
       when(standaloneClient.sendCommand)
         .calledWith(['FT._LIST'])
         .mockResolvedValue([Buffer.from('idx:movie')]);
@@ -99,6 +111,7 @@ describe('KeyIndexesService', () => {
     });
 
     it('should return multiple indexes when key matches several', async () => {
+      mockKeyType('user:42');
       when(standaloneClient.sendCommand)
         .calledWith(['FT._LIST'])
         .mockResolvedValue([
@@ -123,6 +136,7 @@ describe('KeyIndexesService', () => {
     });
 
     it('should match index with empty prefixes to any key', async () => {
+      mockKeyType('anything:here');
       when(standaloneClient.sendCommand)
         .calledWith(['FT._LIST'])
         .mockResolvedValue([Buffer.from('idx:global')]);
@@ -139,6 +153,7 @@ describe('KeyIndexesService', () => {
     });
 
     it('should match key against index with multiple prefixes', async () => {
+      mockKeyType('item:99', RedisDataType.JSON);
       when(standaloneClient.sendCommand)
         .calledWith(['FT._LIST'])
         .mockResolvedValue([Buffer.from('idx:multi')]);
@@ -156,6 +171,7 @@ describe('KeyIndexesService', () => {
     });
 
     it('should return empty when no indexes exist', async () => {
+      mockKeyType('movie:1');
       when(standaloneClient.sendCommand)
         .calledWith(['FT._LIST'])
         .mockResolvedValue([]);
@@ -168,6 +184,7 @@ describe('KeyIndexesService', () => {
     });
 
     it('should skip indexes whose FT.INFO fails', async () => {
+      mockKeyType('movie:1');
       when(standaloneClient.sendCommand)
         .calledWith(['FT._LIST'])
         .mockResolvedValue([
@@ -190,13 +207,14 @@ describe('KeyIndexesService', () => {
     });
 
     it('should deduplicate index names from cluster shards', async () => {
+      mockKeyType('movie:1');
       when(clusterClient.sendCommand)
         .calledWith(['FT._LIST'])
         .mockResolvedValue([Buffer.from('idx:movie')]);
       when(standaloneClient.sendCommand)
         .calledWith(['FT._LIST'])
         .mockResolvedValue([Buffer.from('idx:movie')]);
-      when(clusterClient.sendCommand)
+      when(standaloneClient.sendCommand)
         .calledWith(['FT.INFO', 'idx:movie'], expect.anything())
         .mockResolvedValue(mockMovieInfoRaw);
 
@@ -216,6 +234,7 @@ describe('KeyIndexesService', () => {
     });
 
     it('should handle Buffer keys', async () => {
+      mockKeyType(Buffer.from('movie:1'));
       when(standaloneClient.sendCommand)
         .calledWith(['FT._LIST'])
         .mockResolvedValue([Buffer.from('idx:movie')]);
@@ -229,6 +248,51 @@ describe('KeyIndexesService', () => {
 
       expect(result.indexes).toHaveLength(1);
       expect(result.indexes[0].name).toBe('idx:movie');
+    });
+
+    it('should not match an index of a different key type', async () => {
+      mockKeyType('movie:1', RedisDataType.JSON);
+      when(standaloneClient.sendCommand)
+        .calledWith(['FT._LIST'])
+        .mockResolvedValue([Buffer.from('idx:movie')]);
+      when(standaloneClient.sendCommand)
+        .calledWith(['FT.INFO', 'idx:movie'], expect.anything())
+        .mockResolvedValue(mockMovieInfoRaw);
+
+      const result = await service.getKeyIndexes(mockBrowserClientMetadata, {
+        key: 'movie:1',
+      });
+
+      expect(result.indexes).toHaveLength(0);
+    });
+
+    it('should respect key type for indexes with empty prefixes', async () => {
+      mockKeyType('anything:here', RedisDataType.JSON);
+      when(standaloneClient.sendCommand)
+        .calledWith(['FT._LIST'])
+        .mockResolvedValue([Buffer.from('idx:global')]);
+      when(standaloneClient.sendCommand)
+        .calledWith(['FT.INFO', 'idx:global'], expect.anything())
+        .mockResolvedValue(mockGlobalInfoRaw);
+
+      const result = await service.getKeyIndexes(mockBrowserClientMetadata, {
+        key: 'anything:here',
+      });
+
+      expect(result.indexes).toHaveLength(0);
+    });
+
+    it('should return empty for unsupported key types without listing indexes', async () => {
+      mockKeyType('mylist', RedisDataType.List);
+
+      const result = await service.getKeyIndexes(mockBrowserClientMetadata, {
+        key: 'mylist',
+      });
+
+      expect(result.indexes).toHaveLength(0);
+      expect(standaloneClient.sendCommand).not.toHaveBeenCalledWith([
+        'FT._LIST',
+      ]);
     });
   });
 });
