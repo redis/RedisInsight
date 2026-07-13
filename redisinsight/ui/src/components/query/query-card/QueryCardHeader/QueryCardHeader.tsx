@@ -1,4 +1,6 @@
 import React, { useContext } from 'react'
+
+import { useTranslation } from 'uiSrc/i18n'
 import cx from 'classnames'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
@@ -99,6 +101,7 @@ const getTruncatedExecutionTimeString = (value: number): string => {
 }
 
 const QueryCardHeader = (props: Props) => {
+  const { t } = useTranslation()
   const {
     isOpen,
     toggleOpen,
@@ -339,7 +342,7 @@ const QueryCardHeader = (props: Props) => {
             <CopyButton
               copy={query || ''}
               onCopy={handleCopy}
-              aria-label="Copy query"
+              aria-label={t('query.card.copyQuery.aria')}
               disabled={emptyCommand}
               withTooltip={false}
               className={cx('copy-btn', styles.copyBtn)}
@@ -372,7 +375,7 @@ const QueryCardHeader = (props: Props) => {
             >
               {isNumber(executionTime) && (
                 <RiTooltip
-                  title="Processing Time"
+                  title={t('query.card.processingTime')}
                   content={getExecutionTimeString(executionTime)}
                   position="left"
                   anchorClassName={styles.executionTime}
@@ -452,11 +455,14 @@ const QueryCardHeader = (props: Props) => {
                 )}
               </FlexItem>
               <FlexItem className={styles.buttonIcon}>
-                <RiTooltip content="Clear result" position="left">
+                <RiTooltip
+                  content={t('query.card.clearResult.tooltip')}
+                  position="left"
+                >
                   <IconButton
                     disabled={loading || clearing}
                     icon={DeleteIcon}
-                    aria-label="Delete command"
+                    aria-label={t('query.card.delete.aria')}
                     data-testid="delete-command"
                     onClick={handleQueryDelete}
                   />
@@ -465,14 +471,14 @@ const QueryCardHeader = (props: Props) => {
               {!isFullScreen && (
                 <FlexItem className={cx(styles.buttonIcon, styles.playIcon)}>
                   <RiTooltip
-                    content="Run again"
+                    content={t('query.card.rerun.tooltip')}
                     position="left"
                     anchorClassName={cx(styles.buttonIcon, styles.playIcon)}
                   >
                     <IconButton
                       disabled={emptyCommand}
                       icon={PlayIcon}
-                      aria-label="Re-run command"
+                      aria-label={t('query.card.rerun.aria')}
                       data-testid="re-run-command"
                       onClick={handleQueryReRun}
                     />
@@ -484,7 +490,7 @@ const QueryCardHeader = (props: Props) => {
                   {!isSilentModeWithoutError(resultsMode, summary?.fail) && (
                     <IconButton
                       icon={isOpen ? ChevronUpIcon : ChevronDownIcon}
-                      aria-label="toggle collapse"
+                      aria-label={t('query.card.toggleCollapse.aria')}
                       data-testid="toggle-collapse"
                     />
                   )}
@@ -500,19 +506,19 @@ const QueryCardHeader = (props: Props) => {
                         {isGroupMode(resultsMode) && (
                           <ModeLabel data-testid="group-mode-tooltip">
                             <RiIcon type="GroupModeIcon" />
-                            Group mode
+                            {t('query.card.mode.group')}
                           </ModeLabel>
                         )}
                         {isSilentMode(resultsMode) && (
                           <ModeLabel data-testid="silent-mode-tooltip">
                             <RiIcon type="SilentModeIcon" />
-                            Silent mode
+                            {t('query.card.mode.silent')}
                           </ModeLabel>
                         )}
                         {isRawMode(mode) && (
                           <ModeLabel data-testid="raw-mode-tooltip">
                             <RiIcon type="RawModeIcon" />
-                            Raw mode
+                            {t('query.card.mode.raw')}
                           </ModeLabel>
                         )}
                       </>
@@ -522,7 +528,7 @@ const QueryCardHeader = (props: Props) => {
                   >
                     <IconButton
                       icon="MoreactionsIcon"
-                      aria-label="Query parameters"
+                      aria-label={t('query.card.queryParameters.aria')}
                       data-testid="parameters-anchor"
                     />
                   </RiTooltip>

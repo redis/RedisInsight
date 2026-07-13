@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useTranslation } from 'uiSrc/i18n'
 import { PlayFilledIcon } from 'uiSrc/components/base/icons'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 
@@ -24,6 +25,7 @@ export const RunButton = ({
   isLoading?: boolean
   onSubmit: () => void
 }) => {
+  const { t } = useTranslation()
   return (
     <StyledEmptyButton
       onClick={() => {
@@ -32,10 +34,10 @@ export const RunButton = ({
       loading={isLoading}
       disabled={isLoading}
       icon={PlayFilledIcon}
-      aria-label="submit"
+      aria-label={t('query.runButton.aria')}
       data-testid="btn-submit"
     >
-      Run
+      {t('query.runButton.label')}
     </StyledEmptyButton>
   )
 }
