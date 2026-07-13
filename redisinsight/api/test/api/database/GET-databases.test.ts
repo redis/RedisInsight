@@ -60,6 +60,7 @@ const responseSchema = Joi.array()
         'production',
         'development',
       ),
+      family: Joi.string().valid('auto', 'ipv4', 'ipv6').allow(null),
     }),
   )
   .required()

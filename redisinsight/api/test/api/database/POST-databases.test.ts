@@ -53,6 +53,7 @@ const dataSchema = Joi.object({
   environment: Joi.string()
     .valid('unspecified', 'production', 'development')
     .allow(null),
+  family: Joi.string().valid('auto', 'ipv4', 'ipv6').allow(null),
 })
   .messages({
     'any.required': '{#label} should not be empty',
@@ -286,6 +287,80 @@ describe('POST /databases', () => {
             name: dbName,
             environment: 'unspecified',
           },
+        });
+      });
+      it('Create standalone forcing IPv4 (connects over IPv4)', async () => {
+        const dbName = constants.getRandomString();
+
+        await validateApiCall({
+          endpoint,
+          statusCode: 201,
+          data: {
+            name: dbName,
+            host: constants.TEST_REDIS_HOST,
+            port: constants.TEST_REDIS_PORT,
+            family: 'ipv4',
+          },
+          responseSchema,
+          responseBody: {
+            name: dbName,
+            family: 'ipv4',
+          },
+        });
+      });
+      it('Create standalone defaults family to auto when omitted', async () => {
+        const dbName = constants.getRandomString();
+
+        await validateApiCall({
+          endpoint,
+          statusCode: 201,
+          data: {
+            name: dbName,
+            host: constants.TEST_REDIS_HOST,
+            port: constants.TEST_REDIS_PORT,
+          },
+          responseSchema,
+          responseBody: {
+            name: dbName,
+            family: 'auto',
+          },
+        });
+      });
+      it('Should throw an error with an invalid family', async () => {
+        await validateApiCall({
+          endpoint,
+          statusCode: 400,
+          data: {
+            name: constants.getRandomString(),
+            host: constants.TEST_REDIS_HOST,
+            port: constants.TEST_REDIS_PORT,
+            family: 'ipv5',
+          },
+        });
+      });
+      // Runs only when an IPv6-reachable Redis endpoint is provided via
+      // TEST_REDIS_IPV6_HOST; skipped otherwise so it never flakes on
+      // IPv4-only environments.
+      describe('IPv6', function () {
+        requirements(() => !!constants.TEST_REDIS_IPV6_HOST);
+        it('Create standalone forcing IPv6 (connects over IPv6)', async () => {
+          const dbName = constants.getRandomString();
+
+          await validateApiCall({
+            endpoint,
+            statusCode: 201,
+            data: {
+              name: dbName,
+              host: constants.TEST_REDIS_IPV6_HOST,
+              port: constants.TEST_REDIS_PORT,
+              family: 'ipv6',
+            },
+            responseSchema,
+            responseBody: {
+              name: dbName,
+              family: 'ipv6',
+            },
+          });
         });
       });
       describe('Enterprise', () => {
