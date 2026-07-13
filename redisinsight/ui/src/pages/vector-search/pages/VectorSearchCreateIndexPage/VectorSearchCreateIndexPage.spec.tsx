@@ -216,6 +216,15 @@ describe('VectorSearchCreateIndexPage', () => {
       )
       expect(addFieldBtn).toBeEnabled()
 
+      const tableViewBtn = screen.getByTestId(
+        'vector-search--create-index--table-view-btn',
+      )
+      const commandViewBtn = screen.getByTestId(
+        'vector-search--create-index--command-view-btn',
+      )
+      expect(tableViewBtn).toBeDisabled()
+      expect(commandViewBtn).toBeDisabled()
+
       const prefixInput = screen.getByTestId(
         'vector-search--create-index--prefix-input',
       )
