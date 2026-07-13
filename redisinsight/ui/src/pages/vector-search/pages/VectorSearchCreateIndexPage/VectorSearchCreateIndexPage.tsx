@@ -11,7 +11,7 @@ import {
   hasPreselectedKey,
   parseCreateIndexSearchParams,
 } from '../../utils'
-import { useVectorSearch } from '../../context/vector-search'
+import { useHasExistingKeys } from '../../hooks'
 import { CreateIndexPageProvider } from '../../context/create-index-page'
 import { CreateIndexOnboardingProvider } from '../../context/create-index-onboarding'
 import { CreateIndexHeader } from './components/CreateIndexHeader'
@@ -22,8 +22,11 @@ import * as S from './VectorSearchCreateIndexPage.styles'
 export const VectorSearchCreateIndexPage = () => {
   const { search } = useLocation()
   const { instanceId } = useParams<{ instanceId: string }>()
-  const { hasExistingKeys, hasExistingKeysLoading, hasExistingKeysError } =
-    useVectorSearch()
+  const {
+    hasKeys: hasExistingKeys,
+    loading: hasExistingKeysLoading,
+    error: hasExistingKeysError,
+  } = useHasExistingKeys()
 
   const state = parseCreateIndexSearchParams(search)
   const mode = isExistingDataState(state)

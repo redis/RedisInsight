@@ -9,10 +9,10 @@ import {
 } from 'uiSrc/utils/test-utils'
 
 import { VectorSearchCreateIndexPage } from './VectorSearchCreateIndexPage'
-import { useVectorSearch } from '../../context/vector-search'
+import { useHasExistingKeys } from '../../hooks/useHasExistingKeys'
 
-jest.mock('../../context/vector-search', () => ({
-  useVectorSearch: jest.fn(),
+jest.mock('../../hooks/useHasExistingKeys', () => ({
+  useHasExistingKeys: jest.fn(),
 }))
 
 jest.mock('../../components/index-details', () => {
@@ -53,15 +53,13 @@ const setupRouterMocks = (search: string) => {
   })
 }
 
-const mockUseVectorSearch = (
-  overrides: Partial<ReturnType<typeof useVectorSearch>> = {},
+const mockUseHasExistingKeys = (
+  overrides: Partial<ReturnType<typeof useHasExistingKeys>> = {},
 ) => {
-  jest.mocked(useVectorSearch).mockReturnValue({
-    openPickSampleDataModal: jest.fn(),
-    navigateToExistingDataFlow: jest.fn(),
-    hasExistingKeys: true,
-    hasExistingKeysLoading: false,
-    hasExistingKeysError: false,
+  jest.mocked(useHasExistingKeys).mockReturnValue({
+    hasKeys: true,
+    loading: false,
+    error: false,
     ...overrides,
   })
 }
@@ -70,7 +68,7 @@ describe('VectorSearchCreateIndexPage', () => {
   beforeEach(() => {
     cleanup()
     jest.clearAllMocks()
-    mockUseVectorSearch()
+    mockUseHasExistingKeys()
   })
 
   it('should render all page elements', () => {
@@ -159,10 +157,7 @@ describe('VectorSearchCreateIndexPage', () => {
   describe('existing data mode with no keys in the database', () => {
     it('should show a loader while checking for existing keys', () => {
       setupRouterMocks('?mode=existingData')
-      mockUseVectorSearch({
-        hasExistingKeys: false,
-        hasExistingKeysLoading: true,
-      })
+      mockUseHasExistingKeys({ hasKeys: false, loading: true })
 
       render(<VectorSearchCreateIndexPage />)
 
@@ -173,10 +168,7 @@ describe('VectorSearchCreateIndexPage', () => {
 
     it('should keep the key browser when the keys check fails', () => {
       setupRouterMocks('?mode=existingData')
-      mockUseVectorSearch({
-        hasExistingKeys: false,
-        hasExistingKeysError: true,
-      })
+      mockUseHasExistingKeys({ hasKeys: false, error: true })
 
       render(<VectorSearchCreateIndexPage />)
 
@@ -195,7 +187,7 @@ describe('VectorSearchCreateIndexPage', () => {
 
     it('should hide the key browser and render the manual creation empty state', () => {
       setupRouterMocks('?mode=existingData')
-      mockUseVectorSearch({ hasExistingKeys: false })
+      mockUseHasExistingKeys({ hasKeys: false })
 
       render(<VectorSearchCreateIndexPage />)
 
@@ -229,7 +221,7 @@ describe('VectorSearchCreateIndexPage', () => {
 
     it('should show the command view before any fields are added', () => {
       setupRouterMocks('?mode=existingData')
-      mockUseVectorSearch({ hasExistingKeys: false })
+      mockUseHasExistingKeys({ hasKeys: false })
 
       render(<VectorSearchCreateIndexPage />)
 
@@ -256,7 +248,7 @@ describe('VectorSearchCreateIndexPage', () => {
 
     it('should build the command with the chosen key type', async () => {
       setupRouterMocks('?mode=existingData')
-      mockUseVectorSearch({ hasExistingKeys: false })
+      mockUseHasExistingKeys({ hasKeys: false })
 
       render(<VectorSearchCreateIndexPage />)
 
@@ -296,7 +288,7 @@ describe('VectorSearchCreateIndexPage', () => {
 
     it('should enable the create button once a field is added manually', async () => {
       setupRouterMocks('?mode=existingData')
-      mockUseVectorSearch({ hasExistingKeys: false })
+      mockUseHasExistingKeys({ hasKeys: false })
 
       render(<VectorSearchCreateIndexPage />)
 
