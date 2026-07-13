@@ -35,12 +35,10 @@ const AzureSubscriptionsPage = () => {
 
     setTitle('Azure Subscriptions')
 
-    // Only fetch if not already loaded or if account changed
     if (!loaded.subscriptions) {
       dispatch(fetchSubscriptionsAzure(account.id, tenant ?? undefined))
     }
-    // Re-run on tenant change too: switching tenant keeps the same account, so
-    // account alone wouldn't retrigger the fetch for the new tenant.
+    // tenant is a dep so account and the fetched tenant never read out of sync.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, tenant])
 

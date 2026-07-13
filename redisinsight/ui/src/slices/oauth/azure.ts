@@ -19,6 +19,8 @@ export interface AzureAccount {
   id: string
   username: string
   name?: string
+  /** Realm (tenant) GUID the token was issued for. */
+  tenantId?: string
 }
 
 export interface AzureAuthLoginResponse {
@@ -31,8 +33,8 @@ export interface StateAzureAuth {
   error: string
   source: AzureLoginSource | null
   /**
-   * Tenant chosen at sign-in (GUID or domain), or null when signing in against
-   * the user's home tenant via the multi-tenant /common endpoint.
+   * Realm (tenant) GUID of the signed-in account; autodiscovery fetches
+   * target it. Null until a sign-in succeeds.
    */
   tenant: string | null
 }
@@ -92,9 +94,6 @@ const azureAuthSlice = createSlice({
     ) => {
       state.source = payload
     },
-    setAzureTenant: (state, { payload }: PayloadAction<string | null>) => {
-      state.tenant = payload
-    },
     azureAuthLogin: (state) => {
       state.loading = true
       state.error = ''
@@ -115,6 +114,9 @@ const azureAuthSlice = createSlice({
     ) => {
       state.loading = false
       state.account = payload
+      // Set only on success so a failed sign-in can't leave a tenant the
+      // user never signed into.
+      state.tenant = payload.tenantId ?? null
       state.error = ''
     },
     azureOAuthCallbackFailure: (state, { payload }: PayloadAction<string>) => {
@@ -134,7 +136,6 @@ const azureAuthSlice = createSlice({
 export const {
   setAzureAuthInitialState,
   setAzureLoginSource,
-  setAzureTenant,
   azureAuthLogin,
   azureAuthLoginSuccess,
   azureAuthLoginFailure,
@@ -172,7 +173,6 @@ export function initiateAzureLoginAction(options: InitiateAzureLoginOptions) {
 
   return async (dispatch: AppDispatch) => {
     dispatch(setAzureLoginSource(source))
-    dispatch(setAzureTenant(tenantId ?? null))
     sendEventTelemetry({
       event: TelemetryEvent.AZURE_SIGN_IN_CLICKED,
       eventData: {

@@ -46,12 +46,14 @@ describe('ConfigAzureAuth', () => {
     homeAccountId: faker.string.uuid(),
     username: faker.internet.email(),
     name: faker.person.fullName(),
+    tenantId: faker.string.uuid(),
   }
 
   const expectedAccount = {
     id: mockMsalAccount.homeAccountId,
     username: mockMsalAccount.username,
     name: mockMsalAccount.name,
+    tenantId: mockMsalAccount.tenantId,
   }
 
   it('should call proper actions on success', () => {

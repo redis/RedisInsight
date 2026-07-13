@@ -183,6 +183,7 @@ export class AzureAuthController {
                 id: result.account.homeAccountId,
                 username: result.account.username,
                 name: result.account.name,
+                tenantId: result.account.tenantId,
               }
             : undefined,
           error: result.error,

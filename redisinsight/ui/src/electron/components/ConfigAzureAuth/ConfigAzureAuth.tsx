@@ -19,6 +19,7 @@ interface MsalAccountInfo {
   homeAccountId: string
   username: string
   name?: string
+  tenantId?: string
 }
 
 interface AzureAuthCallbackResponse {
@@ -47,6 +48,7 @@ const ConfigAzureAuth = () => {
         id: account.homeAccountId,
         username: account.username,
         name: account.name,
+        tenantId: account.tenantId,
       }
       const currentSource = sourceRef.current
       dispatch(handleAzureOAuthSuccess(azureAccount))

@@ -28,6 +28,7 @@ interface AzureOAuthCallbackPayload {
     id: string
     username: string
     name?: string
+    tenantId?: string
   }
   error?: string
 }
@@ -56,6 +57,7 @@ const GlobalAzureAuth = () => {
         id: account.id,
         username: account.username,
         name: account.name,
+        tenantId: account.tenantId,
       }
       const currentSource = sourceRef.current
       dispatch(handleAzureOAuthSuccess(azureAccount))

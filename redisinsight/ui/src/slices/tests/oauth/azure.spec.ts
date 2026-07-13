@@ -12,11 +12,9 @@ import reducer, {
   azureAuthLogout,
   setAzureAuthInitialState,
   setAzureLoginSource,
-  setAzureTenant,
   azureAuthSelector,
   azureAuthAccountSelector,
   azureAuthLoadingSelector,
-  azureAuthTenantSelector,
   initiateAzureLoginAction,
   cancelAzureLoginAction,
   handleAzureOAuthSuccess,
@@ -64,37 +62,6 @@ describe('azure auth slice', () => {
       }
       const result = reducer(modifiedState, setAzureAuthInitialState())
       expect(result).toEqual(initialState)
-    })
-  })
-
-  describe('setAzureTenant', () => {
-    it('should store the active tenant', () => {
-      const nextState = reducer(
-        initialState,
-        setAzureTenant('your-tenant.onmicrosoft.com'),
-      )
-      expect(nextState.tenant).toEqual('your-tenant.onmicrosoft.com')
-      expect(
-        azureAuthTenantSelector({
-          oauth: { azure: nextState },
-        } as any),
-      ).toEqual('your-tenant.onmicrosoft.com')
-    })
-
-    it('should clear the active tenant when set to null', () => {
-      const nextState = reducer(
-        { ...initialState, tenant: 'your-tenant.onmicrosoft.com' },
-        setAzureTenant(null),
-      )
-      expect(nextState.tenant).toBeNull()
-    })
-
-    it('should clear the tenant on logout', () => {
-      const nextState = reducer(
-        { ...initialState, tenant: 'your-tenant.onmicrosoft.com' },
-        azureAuthLogout(),
-      )
-      expect(nextState.tenant).toBeNull()
     })
   })
 
@@ -186,6 +153,7 @@ describe('azure auth slice', () => {
         ...initialState,
         loading: false,
         account: mockAccount,
+        tenant: mockAccount.tenantId,
         error: '',
       }
 
@@ -198,6 +166,28 @@ describe('azure auth slice', () => {
         oauth: { azure: nextState },
       })
       expect(azureAuthSelector(rootState)).toEqual(state)
+    })
+
+    it('should set the tenant to the signed-in account realm', () => {
+      const account = AzureAccountFactory.build({ tenantId: 'realm-guid' })
+
+      const nextState = reducer(
+        initialState,
+        azureOAuthCallbackSuccess(account),
+      )
+
+      expect(nextState.tenant).toEqual('realm-guid')
+    })
+
+    it('should null the tenant when the account has no realm', () => {
+      const account = AzureAccountFactory.build({ tenantId: undefined })
+
+      const nextState = reducer(
+        { ...initialState, tenant: 'stale-realm' },
+        azureOAuthCallbackSuccess(account),
+      )
+
+      expect(nextState.tenant).toBeNull()
     })
 
     it('should not reset source (ConfigAzureAuth needs it for redirect decision)', () => {
@@ -236,19 +226,30 @@ describe('azure auth slice', () => {
       })
       expect(azureAuthSelector(rootState)).toEqual(state)
     })
+
+    it('should keep the current tenant so a failed sign-in cannot change it', () => {
+      const nextState = reducer(
+        { ...initialState, loading: true, tenant: 'active-realm' },
+        azureOAuthCallbackFailure(faker.lorem.sentence()),
+      )
+
+      expect(nextState.tenant).toEqual('active-realm')
+    })
   })
 
   describe('azureAuthLogout', () => {
-    it('should clear account and error', () => {
+    it('should clear account, error and tenant', () => {
       const prevState = {
         ...initialState,
         account: mockAccount,
         error: 'error',
+        tenant: 'active-realm',
       }
       const state = {
         ...initialState,
         account: null,
         error: '',
+        tenant: null,
       }
 
       const nextState = reducer(prevState, azureAuthLogout())
@@ -302,7 +303,6 @@ describe('azure auth slice', () => {
 
         const expectedActions = [
           setAzureLoginSource(AzureLoginSource.Autodiscovery),
-          setAzureTenant(null),
           azureAuthLogin(),
           azureAuthLoginSuccess(),
         ]
@@ -329,10 +329,9 @@ describe('azure auth slice', () => {
         expect(actions[0]).toEqual(
           setAzureLoginSource(AzureLoginSource.Autodiscovery),
         )
-        expect(actions[1]).toEqual(setAzureTenant(null))
-        expect(actions[2]).toEqual(azureAuthLogin())
-        expect(actions[3]).toEqual(azureAuthLoginFailure(errorMessage))
-        expect(actions[4].type).toEqual(addErrorNotification({} as any).type)
+        expect(actions[1]).toEqual(azureAuthLogin())
+        expect(actions[2]).toEqual(azureAuthLoginFailure(errorMessage))
+        expect(actions[3].type).toEqual(addErrorNotification({} as any).type)
       })
 
       it('should set source to token-refresh when initiated from error notification', async () => {
@@ -351,7 +350,6 @@ describe('azure auth slice', () => {
 
         const expectedActions = [
           setAzureLoginSource(AzureLoginSource.TokenRefresh),
-          setAzureTenant(null),
           azureAuthLogin(),
           azureAuthLoginSuccess(),
         ]
