@@ -61,12 +61,13 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
 
         if (signal?.aborted) return
 
+        // The endpoint returns one entry per cluster node — check them all
         const foundAny = results.some(({ data, status }) => {
           if (!isStatusSuccessful(status)) return false
-          const keys = Array.isArray(data)
-            ? data[0]?.keys
-            : (data as unknown as ScanResponse)?.keys
-          return keys && keys.length > 0
+          const nodes = Array.isArray(data)
+            ? data
+            : [data as unknown as ScanResponse]
+          return nodes.some((node) => !!node?.keys?.length)
         })
 
         setHasKeys(foundAny)

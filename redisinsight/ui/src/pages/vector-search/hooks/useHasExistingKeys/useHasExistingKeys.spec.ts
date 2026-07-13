@@ -56,6 +56,22 @@ describe('useHasExistingKeys', () => {
     expect(result.current.error).toBe(false)
   })
 
+  it('should detect keys held by any cluster node', async () => {
+    mockApiPost.mockResolvedValue({
+      status: 200,
+      data: [
+        { keys: [], total: 0 },
+        { keys: [{ name: 'key:1' }], total: 1 },
+      ],
+    })
+
+    const { result, waitForNextUpdate } = renderHook(() => useHasExistingKeys())
+
+    await waitForNextUpdate()
+
+    expect(result.current.hasKeys).toBe(true)
+  })
+
   it('should scan with the default scan count', async () => {
     mockApiPost.mockResolvedValue({
       status: 200,
