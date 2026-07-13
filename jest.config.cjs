@@ -2,6 +2,18 @@ require('dotenv').config({ path: './redisinsight/ui/.env.test' });
 
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
+  // Limit discovery to UI sources and the api-client they import, so watch
+  // only reruns on relevant changes.
+  roots: [
+    '<rootDir>/redisinsight/ui',
+    '<rootDir>/redisinsight/__mocks__',
+    '<rootDir>/redisinsight/api-client',
+  ],
+  // Fuzzy filename / test-name filtering in --watch (the `p` and `t` prompts).
+  watchPlugins: [
+    'jest-watch-typeahead/filename',
+    'jest-watch-typeahead/testname',
+  ],
   testEnvironmentOptions: {
     url: 'http://localhost/',
     customExportConditions: [''],
