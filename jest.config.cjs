@@ -6,6 +6,11 @@ module.exports = {
   // via `roots` rather than a positional path arg, so `--watch` idles on a
   // clean tree and jest doesn't crawl redisinsight/api/dist.
   roots: ['<rootDir>/redisinsight/ui', '<rootDir>/redisinsight/__mocks__'],
+  // Fuzzy filename / test-name filtering in --watch (the `p` and `t` prompts).
+  watchPlugins: [
+    'jest-watch-typeahead/filename',
+    'jest-watch-typeahead/testname',
+  ],
   testEnvironmentOptions: {
     url: 'http://localhost/',
     customExportConditions: [''],
