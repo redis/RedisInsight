@@ -78,7 +78,7 @@ Without the invitation and role (steps 1–2), sign-in may succeed but you'll se
 
 ### Picking a tenant
 
-When you click **Azure Managed Redis**, the sign-in dialog has an **Advanced options** section with an optional **Tenant ID** field. Enter a tenant GUID or domain (for example `your-tenant.onmicrosoft.com`) to authenticate against that specific tenant instead of your home tenant.
+When you click **Azure Managed Redis**, the sign-in dialog has an optional **Tenant ID** field. Enter a tenant GUID or domain (for example `your-tenant.onmicrosoft.com`) to authenticate against that specific tenant instead of your home tenant.
 
 Use it when:
 

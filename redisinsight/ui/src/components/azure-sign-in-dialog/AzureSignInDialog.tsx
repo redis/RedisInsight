@@ -8,7 +8,6 @@ import { Text } from 'uiSrc/components/base/text'
 import TextInput from 'uiSrc/components/base/inputs/TextInput'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import {
-  EmptyButton,
   PrimaryButton,
   SecondaryButton,
 } from 'uiSrc/components/base/forms/buttons'
@@ -25,6 +24,17 @@ const AZURE_TENANT_ID_REGEX =
 
 const TENANT_ID_ERROR = 'Enter a valid tenant GUID or domain.'
 
+const TENANT_ID_HINT =
+  'Only needed if your resources and your account are in different tenants.'
+
+// Explains the cross-tenant case: authenticate against the tenant that OWNS the
+// resources, not the user's home tenant.
+const TENANT_ID_INFO =
+  "Leave blank to use your account's default (home) tenant. " +
+  'If your Azure Managed Redis resources are in a different tenant than your ' +
+  'account, enter the tenant that owns the resources (you need guest access ' +
+  'to it) — not your own home tenant.'
+
 export const AzureSignInDialog = ({
   isOpen,
   loading,
@@ -32,12 +42,10 @@ export const AzureSignInDialog = ({
   onSignIn,
 }: AzureSignInDialogProps) => {
   const [tenantId, setTenantId] = useState('')
-  const [showAdvanced, setShowAdvanced] = useState(false)
 
   useEffect(() => {
     if (isOpen) {
       setTenantId('')
-      setShowAdvanced(false)
     }
   }, [isOpen])
 
@@ -73,53 +81,43 @@ export const AzureSignInDialog = ({
             Managed Redis databases.
           </Text>
 
-          {showAdvanced && (
-            <FormField label="Tenant ID (optional)">
-              <TextInput
-                value={tenantId}
-                onChange={setTenantId}
-                placeholder="your-tenant.onmicrosoft.com or GUID"
-                name="tenantId"
-                data-testid={`${TEST_ID}-tenant-input`}
-              />
-              <Spacer size="s" />
-              <Text size="S" color={isTenantInvalid ? 'danger' : 'secondary'}>
-                {isTenantInvalid
-                  ? TENANT_ID_ERROR
-                  : 'Use this if your Azure resources live in a different tenant than your account.'}
-              </Text>
-            </FormField>
-          )}
+          <FormField
+            label="Tenant ID (optional)"
+            infoIconProps={{ content: TENANT_ID_INFO }}
+          >
+            <TextInput
+              value={tenantId}
+              onChange={setTenantId}
+              placeholder="your-tenant.onmicrosoft.com or GUID"
+              name="tenantId"
+              data-testid={`${TEST_ID}-tenant-input`}
+            />
+            <Spacer size="s" />
+            <Text size="S" color={isTenantInvalid ? 'danger' : 'secondary'}>
+              {isTenantInvalid ? TENANT_ID_ERROR : TENANT_ID_HINT}
+            </Text>
+          </FormField>
         </Col>
 
         <Spacer size="l" />
 
-        <Row justify="between" align="center" gap="m">
-          <EmptyButton
-            variant="primary-inline"
-            onClick={() => setShowAdvanced((v) => !v)}
-            data-testid={`${TEST_ID}-toggle-advanced`}
+        <Row justify="end" gap="m">
+          <SecondaryButton
+            size="large"
+            onClick={onClose}
+            data-testid={`${TEST_ID}-cancel`}
           >
-            {showAdvanced ? 'Hide advanced options' : 'Advanced options'}
-          </EmptyButton>
-          <Row justify="end" gap="m">
-            <SecondaryButton
-              size="large"
-              onClick={onClose}
-              data-testid={`${TEST_ID}-cancel`}
-            >
-              Cancel
-            </SecondaryButton>
-            <PrimaryButton
-              size="large"
-              loading={loading}
-              disabled={loading || isTenantInvalid}
-              onClick={handleSignIn}
-              data-testid={`${TEST_ID}-sign-in`}
-            >
-              Sign in with Microsoft
-            </PrimaryButton>
-          </Row>
+            Cancel
+          </SecondaryButton>
+          <PrimaryButton
+            size="large"
+            loading={loading}
+            disabled={loading || isTenantInvalid}
+            onClick={handleSignIn}
+            data-testid={`${TEST_ID}-sign-in`}
+          >
+            Sign in with Microsoft
+          </PrimaryButton>
         </Row>
       </S.ModalContent>
     </Modal.Compose>

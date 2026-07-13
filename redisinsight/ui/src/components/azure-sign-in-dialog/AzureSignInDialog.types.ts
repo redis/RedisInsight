@@ -4,8 +4,8 @@ export interface AzureSignInDialogProps {
   onClose: () => void
   /**
    * Called when the user confirms sign-in. `tenantId` is the optional tenant
-   * (GUID or domain) entered under Advanced options, or undefined for the
-   * default home-tenant sign-in.
+   * (GUID or domain) from the Tenant ID field, or undefined for the default
+   * home-tenant sign-in.
    */
   onSignIn: (tenantId?: string) => void
 }

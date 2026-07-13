@@ -34,14 +34,8 @@ describe('AzureSignInDialog', () => {
     expect(screen.getByTestId(`${TEST_ID}-cancel`)).toBeInTheDocument()
   })
 
-  it('should keep the tenant field hidden until advanced options are opened', () => {
+  it('should show the tenant field by default', () => {
     renderComponent()
-
-    expect(
-      screen.queryByTestId(`${TEST_ID}-tenant-input`),
-    ).not.toBeInTheDocument()
-
-    fireEvent.click(screen.getByTestId(`${TEST_ID}-toggle-advanced`))
 
     expect(screen.getByTestId(`${TEST_ID}-tenant-input`)).toBeInTheDocument()
   })
@@ -59,7 +53,6 @@ describe('AzureSignInDialog', () => {
     const onSignIn = jest.fn()
     renderComponent({ onSignIn })
 
-    fireEvent.click(screen.getByTestId(`${TEST_ID}-toggle-advanced`))
     fireEvent.change(screen.getByTestId(`${TEST_ID}-tenant-input`), {
       target: { value: 'your-tenant.onmicrosoft.com' },
     })
@@ -72,7 +65,6 @@ describe('AzureSignInDialog', () => {
     const onSignIn = jest.fn()
     renderComponent({ onSignIn })
 
-    fireEvent.click(screen.getByTestId(`${TEST_ID}-toggle-advanced`))
     fireEvent.change(screen.getByTestId(`${TEST_ID}-tenant-input`), {
       target: { value: 'not a tenant' },
     })
