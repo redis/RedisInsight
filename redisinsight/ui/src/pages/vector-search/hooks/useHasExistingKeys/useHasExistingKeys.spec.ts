@@ -129,4 +129,12 @@ describe('useHasExistingKeys', () => {
 
     expect(result.current.loading).toBe(true)
   })
+
+  it('should not scan when disabled', () => {
+    const { result } = renderHook(() => useHasExistingKeys(false))
+
+    expect(mockApiPost).not.toHaveBeenCalled()
+    expect(result.current.loading).toBe(false)
+    expect(result.current.hasKeys).toBe(false)
+  })
 })

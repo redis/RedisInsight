@@ -116,6 +116,7 @@ describe('VectorSearchCreateIndexPage', () => {
     expect(indexDetails).toBeInTheDocument()
     expect(submitBtn).toBeInTheDocument()
     expect(cancelBtn).toBeInTheDocument()
+    expect(useHasExistingKeys).toHaveBeenCalledWith(false)
   })
 
   it('should switch to command view when clicking Command view button', () => {

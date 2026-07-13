@@ -22,11 +22,6 @@ import * as S from './VectorSearchCreateIndexPage.styles'
 export const VectorSearchCreateIndexPage = () => {
   const { search } = useLocation()
   const { instanceId } = useParams<{ instanceId: string }>()
-  const {
-    hasKeys: hasExistingKeys,
-    loading: hasExistingKeysLoading,
-    error: hasExistingKeysError,
-  } = useHasExistingKeys()
 
   const state = parseCreateIndexSearchParams(search)
   const mode = isExistingDataState(state)
@@ -34,14 +29,19 @@ export const VectorSearchCreateIndexPage = () => {
     : CreateIndexMode.SampleData
 
   const sampleData = isSampleDataState(state) ? state.sampleData : undefined
+  const existingState = isExistingDataState(state) ? state : undefined
+  const preselected = hasPreselectedKey(state)
+  const isBrowseFlow = mode === CreateIndexMode.ExistingData && !preselected
+
+  const {
+    hasKeys: hasExistingKeys,
+    loading: hasExistingKeysLoading,
+    error: hasExistingKeysError,
+  } = useHasExistingKeys(isBrowseFlow)
 
   if (mode === CreateIndexMode.SampleData && !sampleData) {
     return <Redirect to={Pages.vectorSearch(instanceId)} />
   }
-
-  const existingState = isExistingDataState(state) ? state : undefined
-  const preselected = hasPreselectedKey(state)
-  const isBrowseFlow = mode === CreateIndexMode.ExistingData && !preselected
 
   if (isBrowseFlow && hasExistingKeysLoading) {
     return (

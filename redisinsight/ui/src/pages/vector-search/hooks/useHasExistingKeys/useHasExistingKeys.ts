@@ -20,9 +20,11 @@ export interface UseHasExistingKeysResult {
   error: boolean
 }
 
-export const useHasExistingKeys = (): UseHasExistingKeysResult => {
+export const useHasExistingKeys = (
+  enabled: boolean = true,
+): UseHasExistingKeysResult => {
   const [hasKeys, setHasKeys] = useState(false)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(enabled)
   const [error, setError] = useState(false)
 
   const { id: instanceId } = useAppSelector(connectedInstanceSelector)
@@ -88,6 +90,8 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
   )
 
   useEffect(() => {
+    if (!enabled) return undefined
+
     // Abort in-flight requests on unmount to prevent state updates after cleanup
     const controller = new AbortController()
     checkForKeys(controller.signal)
@@ -95,7 +99,7 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
     return () => {
       controller.abort()
     }
-  }, [checkForKeys])
+  }, [enabled, checkForKeys])
 
   return { hasKeys, loading, error }
 }
