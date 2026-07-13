@@ -1,35 +1,28 @@
+import i18n from 'uiSrc/i18n'
+
 import type { Feature } from './WelcomeScreen.types'
 
-export const FEATURES: Feature[] = [
+// Built at call time (not module scope) so titles/descriptions resolve in the
+// active language when the welcome screen renders.
+export const getFeatures = (): Feature[] => [
   {
     icon: 'VectorSearchIcon',
-    title: 'Full-text search',
-    description:
-      'Find and filter your data instantly using powerful keyword and field-based queries.',
+    title: i18n.t('vectorSearch.welcome.feature.fullText.title'),
+    description: i18n.t('vectorSearch.welcome.feature.fullText.description'),
   },
   {
     icon: 'WorkbenchIcon',
-    title: 'Vector search',
-    description:
-      'Retrieve results by meaning, not just words. Ideal for AI, semantic, and recommendation apps.',
+    title: i18n.t('vectorSearch.welcome.feature.vector.title'),
+    description: i18n.t('vectorSearch.welcome.feature.vector.description'),
   },
   {
     icon: 'MindmapIcon',
-    title: 'Hybrid search',
-    description:
-      'Combine vector and keyword search for higher accuracy and more relevant results.',
+    title: i18n.t('vectorSearch.welcome.feature.hybrid.title'),
+    description: i18n.t('vectorSearch.welcome.feature.hybrid.description'),
   },
   {
     icon: 'RocketIcon',
-    title: 'High performance, low effort',
-    description:
-      'Built-in quantization and compression deliver blazing speed and efficiency at any scale.',
+    title: i18n.t('vectorSearch.welcome.feature.performance.title'),
+    description: i18n.t('vectorSearch.welcome.feature.performance.description'),
   },
 ]
-
-export const TITLE = 'Search your data at in-memory speed'
-export const SUBTITLE =
-  'Discover how Redis enables full-text and vector search. Fast, simple, and production-ready.'
-
-export const TRY_SAMPLE_DATA_LABEL = 'Try with sample data'
-export const USE_MY_DATABASE_LABEL = 'Create index'
