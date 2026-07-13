@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { LoadingContent } from 'uiSrc/components'
 import { Text } from 'uiSrc/components/base/text'
 
@@ -12,6 +13,8 @@ interface ClusterNodesEmptyStateProps {
 export const ClusterNodesEmptyState = ({
   loading,
 }: ClusterNodesEmptyStateProps) => {
+  const { t } = useTranslation()
+
   if (loading) {
     return (
       <S.EmptyStateWrapper data-testid="primary-nodes-table-loading">
@@ -22,9 +25,7 @@ export const ClusterNodesEmptyState = ({
 
   return (
     <S.EmptyStateContent data-testid="primary-nodes-table-empty">
-      <Text>
-        Primary node details are not available for this cluster configuration.
-      </Text>
+      <Text>{t('analytics.clusterDetails.table.emptyState')}</Text>
     </S.EmptyStateContent>
   )
 }
