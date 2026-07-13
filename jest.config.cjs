@@ -1,25 +1,14 @@
-const fs = require('fs');
-const path = require('path');
-
 require('dotenv').config({ path: './redisinsight/ui/.env.test' });
-
-// Scope test discovery to the UI workspace and its shared mocks so watch
-// reacts only to UI changes.
-const roots = [
-  '<rootDir>/redisinsight/ui',
-  '<rootDir>/redisinsight/__mocks__',
-];
-
-// Also watch the generated API client so watch reruns dependent tests when it
-// changes. It can be missing (generation skipped or failed), and jest aborts
-// on a missing root, so add it only when present.
-if (fs.existsSync(path.join(__dirname, 'redisinsight/api-client'))) {
-  roots.push('<rootDir>/redisinsight/api-client');
-}
 
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
-  roots,
+  // Limit discovery to UI sources and the api-client they import, so watch
+  // only reruns on relevant changes.
+  roots: [
+    '<rootDir>/redisinsight/ui',
+    '<rootDir>/redisinsight/__mocks__',
+    '<rootDir>/redisinsight/api-client',
+  ],
   // Fuzzy filename / test-name filtering in --watch (the `p` and `t` prompts).
   watchPlugins: [
     'jest-watch-typeahead/filename',
