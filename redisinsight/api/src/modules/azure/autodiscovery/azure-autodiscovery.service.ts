@@ -359,6 +359,7 @@ export class AzureAutodiscoveryService {
    * @param resourceName - Redis cache name
    * @param resourceType - Standard or Enterprise Redis
    * @param clusterName - Required for Enterprise Redis databases
+   * @param tenantId - Realm the resource lives in, for cross-tenant ARM access
    * @returns The primary access key
    */
   async getAccessKey(
@@ -368,12 +369,13 @@ export class AzureAutodiscoveryService {
     resourceName: string,
     resourceType: AzureRedisType,
     clusterName?: string,
+    tenantId?: string,
   ): Promise<string> {
-    const client = await this.getAuthenticatedClient(accountId);
+    const client = await this.getAuthenticatedClient(accountId, tenantId);
 
     if (!client) {
       throw new AzureEntraIdTokenExpiredException(
-        undefined,
+        tenantId,
         'Azure session expired. Please re-authenticate with Azure to access this database.',
       );
     }

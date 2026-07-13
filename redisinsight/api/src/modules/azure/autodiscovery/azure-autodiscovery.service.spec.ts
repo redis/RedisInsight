@@ -704,4 +704,32 @@ describe('AzureAutodiscoveryService', () => {
       expect(result[1].message).toBe(ERROR_MESSAGES.AZURE_DATABASE_NOT_FOUND);
     });
   });
+
+  describe('getAccessKey', () => {
+    it('should acquire the ARM token against the resource tenant', async () => {
+      const accountId = 'test-account-id';
+      const tenantId = 'resource-realm-guid';
+      mockAuthService.getManagementTokenByAccountId.mockResolvedValue({
+        token: 'mock-token',
+      } as any);
+      mockAxiosInstance.post.mockResolvedValue({
+        data: { primaryKey: 'primary-key' },
+      });
+
+      const result = await service.getAccessKey(
+        accountId,
+        'sub',
+        'rg',
+        'cache',
+        AzureRedisType.Standard,
+        undefined,
+        tenantId,
+      );
+
+      expect(result).toBe('primary-key');
+      expect(
+        mockAuthService.getManagementTokenByAccountId,
+      ).toHaveBeenCalledWith(accountId, tenantId);
+    });
+  });
 });
