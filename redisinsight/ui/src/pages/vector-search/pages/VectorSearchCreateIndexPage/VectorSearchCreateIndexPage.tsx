@@ -51,8 +51,6 @@ export const VectorSearchCreateIndexPage = () => {
     )
   }
 
-  // With no keys in the database the browser panel is useless — switch to
-  // manual creation, where the user defines the index fields themselves.
   const isManualCreation = isBrowseFlow && !hasExistingKeys
   const showBrowser = isBrowseFlow && hasExistingKeys
 
