@@ -75,11 +75,15 @@ export const AzureSignInDialog = ({
           </Modal.Content.Header.Title>
         </Modal.Content.Header.Compose>
 
+        <Spacer size="l" />
+
         <Col gap="l" data-testid={`${TEST_ID}-body`}>
           <Text color="secondary">
             Sign in with your Microsoft account to discover and add Azure
             Managed Redis databases.
           </Text>
+
+          <Spacer size="xxl" />
 
           <FormField
             label="Tenant ID (optional)"
