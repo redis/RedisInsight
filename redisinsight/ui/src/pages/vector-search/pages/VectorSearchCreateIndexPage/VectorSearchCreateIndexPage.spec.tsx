@@ -34,7 +34,7 @@ jest.mock('../../components/command-view', () => {
       MockReact.createElement(
         'div',
         { 'data-testid': props.dataTestId },
-        'CommandView',
+        props.command ?? 'CommandView',
       ),
   }
 })
@@ -225,6 +225,46 @@ describe('VectorSearchCreateIndexPage', () => {
         'vector-search--create-index--submit-btn',
       )
       expect(submitBtn).toBeDisabled()
+    })
+
+    it('should build the command with the chosen key type', async () => {
+      setupRouterMocks('?mode=existingData')
+      mockUseVectorSearch({ hasExistingKeys: false })
+
+      render(<VectorSearchCreateIndexPage />)
+
+      const keyTypeToggle = screen.getByTestId(
+        'vector-search--create-index--key-type-toggle',
+      )
+      expect(keyTypeToggle).toBeInTheDocument()
+
+      fireEvent.click(
+        screen.getByTestId('vector-search--create-index--add-field-btn'),
+      )
+      fireEvent.change(screen.getByTestId('field-type-modal-field-name'), {
+        target: { value: 'title' },
+      })
+      await waitFor(() => {
+        expect(screen.getByTestId('field-type-modal-save')).toBeEnabled()
+      })
+      fireEvent.click(screen.getByTestId('field-type-modal-save'))
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('vector-search--create-index--submit-btn'),
+        ).toBeEnabled()
+      })
+
+      fireEvent.click(
+        screen.getByTestId('vector-search--create-index--key-type-json-btn'),
+      )
+      fireEvent.click(
+        screen.getByTestId('vector-search--create-index--command-view-btn'),
+      )
+
+      const commandView = screen.getByTestId(
+        'vector-search--create-index--command-view',
+      )
+      expect(commandView).toHaveTextContent('ON JSON')
     })
 
     it('should enable the create button once a field is added manually', async () => {

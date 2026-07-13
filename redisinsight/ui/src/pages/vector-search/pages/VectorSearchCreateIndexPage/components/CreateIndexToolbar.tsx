@@ -4,6 +4,7 @@ import { useTranslation } from 'uiSrc/i18n'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
+import { RedisearchIndexKeyType } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
 
 import {
   CreateIndexTab,
@@ -24,6 +25,9 @@ export const CreateIndexToolbar = () => {
     indexPrefix,
     setIndexPrefix,
     isReadonly,
+    isManualCreation,
+    keyType,
+    setKeyType,
     openAddFieldModal,
   } = useCreateIndexPage()
 
@@ -74,6 +78,34 @@ export const CreateIndexToolbar = () => {
         align="center"
         data-testid="vector-search--create-index--toolbar-right"
       >
+        {isManualCreation && (
+          <>
+            <S.IndexPrefixRow align="center">
+              <Text size="S" color="secondary">
+                {t('vectorSearch.createIndex.toolbar.keyType')}
+              </Text>
+              <ButtonGroup data-testid="vector-search--create-index--key-type-toggle">
+                <ButtonGroup.Button
+                  isSelected={keyType === RedisearchIndexKeyType.HASH}
+                  onClick={() => setKeyType(RedisearchIndexKeyType.HASH)}
+                  data-testid="vector-search--create-index--key-type-hash-btn"
+                >
+                  HASH
+                </ButtonGroup.Button>
+                <ButtonGroup.Button
+                  isSelected={keyType === RedisearchIndexKeyType.JSON}
+                  onClick={() => setKeyType(RedisearchIndexKeyType.JSON)}
+                  data-testid="vector-search--create-index--key-type-json-btn"
+                >
+                  JSON
+                </ButtonGroup.Button>
+              </ButtonGroup>
+            </S.IndexPrefixRow>
+
+            <S.VerticalSeparator />
+          </>
+        )}
+
         <EmptyButton
           disabled={isReadonly}
           onClick={openAddFieldModal}

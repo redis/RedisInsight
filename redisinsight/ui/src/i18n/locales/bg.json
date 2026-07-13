@@ -449,6 +449,7 @@
   "vectorSearch.createIndex.toolbar.addField": "+ Добави поле",
   "vectorSearch.createIndex.toolbar.commandView": "Изглед за напреднали",
   "vectorSearch.createIndex.toolbar.indexPrefix": "Префикс на индекса:",
+  "vectorSearch.createIndex.toolbar.keyType": "Тип на ключа:",
   "vectorSearch.createIndex.toolbar.tableView": "Табличен изглед",
   "vectorSearch.fallback.getStarted": "Започнете безплатно",
   "vectorSearch.fallback.learnMore": "Научете повече",

@@ -449,6 +449,7 @@
   "vectorSearch.createIndex.toolbar.addField": "+ Add field",
   "vectorSearch.createIndex.toolbar.commandView": "Command view",
   "vectorSearch.createIndex.toolbar.indexPrefix": "Index prefix:",
+  "vectorSearch.createIndex.toolbar.keyType": "Key type:",
   "vectorSearch.createIndex.toolbar.tableView": "Table view",
   "vectorSearch.fallback.getStarted": "Get started for free",
   "vectorSearch.fallback.learnMore": "Learn more",
