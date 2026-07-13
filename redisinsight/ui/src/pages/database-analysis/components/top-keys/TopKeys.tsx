@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'uiSrc/i18n'
 import { TableView } from 'uiSrc/pages/database-analysis/constants'
 import { Nullable } from 'uiSrc/utils'
 import TableLoader from 'uiSrc/pages/database-analysis/components/table-loader'
@@ -20,6 +21,7 @@ export interface Props {
 
 const MAX_TOP_KEYS = 15
 const TopKeys = ({ data, loading }: Props) => {
+  const { t } = useTranslation()
   const { topKeysLength = [], topKeysMemory = [], delimiter } = data || {}
   const [tableView, setTableView] = useState<TableView>(TableView.MEMORY)
 
@@ -37,8 +39,10 @@ const TopKeys = ({ data, loading }: Props) => {
         <SectionTitle size="M" data-testid="top-keys-title">
           {topKeysLength.length < MAX_TOP_KEYS &&
           topKeysMemory?.length < MAX_TOP_KEYS
-            ? 'TOP KEYS'
-            : `TOP ${MAX_TOP_KEYS} KEYS`}
+            ? t('analytics.databaseAnalysis.topKeys.title')
+            : t('analytics.databaseAnalysis.topKeys.titleMax', {
+                max: MAX_TOP_KEYS,
+              })}
         </SectionTitle>
         <TextBtn
           $active={tableView === TableView.MEMORY}
@@ -47,7 +51,7 @@ const TopKeys = ({ data, loading }: Props) => {
           disabled={tableView === TableView.MEMORY}
           data-testid="btn-change-table-memory"
         >
-          by Memory
+          {t('analytics.databaseAnalysis.topKeys.byMemory')}
         </TextBtn>
         <TextBtn
           $active={tableView === TableView.KEYS}
@@ -56,7 +60,7 @@ const TopKeys = ({ data, loading }: Props) => {
           disabled={tableView === TableView.KEYS}
           data-testid="btn-change-table-keys"
         >
-          by Length
+          {t('analytics.databaseAnalysis.topKeys.byLength')}
         </TextBtn>
       </SectionTitleWrapper>
       <SectionContent>
