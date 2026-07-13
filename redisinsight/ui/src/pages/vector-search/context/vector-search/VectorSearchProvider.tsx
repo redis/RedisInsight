@@ -31,8 +31,11 @@ export const VectorSearchProvider = ({
 
   const { run: createIndexFlow, loading: createIndexLoading } =
     useCreateIndexFlow()
-  const { hasKeys: hasExistingKeys, loading: hasExistingKeysLoading } =
-    useHasExistingKeys()
+  const {
+    hasKeys: hasExistingKeys,
+    loading: hasExistingKeysLoading,
+    error: hasExistingKeysError,
+  } = useHasExistingKeys()
 
   const openPickSampleDataModal = useCallback(
     (source: SearchTelemetrySource) => {
@@ -168,12 +171,14 @@ export const VectorSearchProvider = ({
       navigateToExistingDataFlow,
       hasExistingKeys,
       hasExistingKeysLoading,
+      hasExistingKeysError,
     }),
     [
       openPickSampleDataModal,
       navigateToExistingDataFlow,
       hasExistingKeys,
       hasExistingKeysLoading,
+      hasExistingKeysError,
     ],
   )
 

@@ -5,6 +5,7 @@ export interface VectorSearchContextValue {
   navigateToExistingDataFlow: (source: SearchTelemetrySource) => void
   hasExistingKeys: boolean
   hasExistingKeysLoading: boolean
+  hasExistingKeysError: boolean
 }
 
 export interface VectorSearchProviderProps {

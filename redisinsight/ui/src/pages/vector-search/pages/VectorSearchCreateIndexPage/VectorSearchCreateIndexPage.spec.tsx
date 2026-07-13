@@ -61,6 +61,7 @@ const mockUseVectorSearch = (
     navigateToExistingDataFlow: jest.fn(),
     hasExistingKeys: true,
     hasExistingKeysLoading: false,
+    hasExistingKeysError: false,
     ...overrides,
   })
 }
@@ -168,6 +169,28 @@ describe('VectorSearchCreateIndexPage', () => {
       expect(
         screen.getByTestId('vector-search--create-index--loading'),
       ).toBeInTheDocument()
+    })
+
+    it('should keep the key browser when the keys check fails', () => {
+      setupRouterMocks('?mode=existingData')
+      mockUseVectorSearch({
+        hasExistingKeys: false,
+        hasExistingKeysError: true,
+      })
+
+      render(<VectorSearchCreateIndexPage />)
+
+      const browserPanel = screen.getByTestId(
+        'vector-search--create-index--browser-panel',
+      )
+      expect(browserPanel).toBeInTheDocument()
+
+      const emptyState = screen.getByTestId(
+        'vector-search--create-index--empty-state',
+      )
+      expect(emptyState).toHaveTextContent(
+        'select a key from the browser on the left',
+      )
     })
 
     it('should hide the key browser and render the manual creation empty state', () => {

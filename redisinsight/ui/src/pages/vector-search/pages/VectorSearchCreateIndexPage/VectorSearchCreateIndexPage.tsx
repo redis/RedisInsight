@@ -22,7 +22,8 @@ import * as S from './VectorSearchCreateIndexPage.styles'
 export const VectorSearchCreateIndexPage = () => {
   const { search } = useLocation()
   const { instanceId } = useParams<{ instanceId: string }>()
-  const { hasExistingKeys, hasExistingKeysLoading } = useVectorSearch()
+  const { hasExistingKeys, hasExistingKeysLoading, hasExistingKeysError } =
+    useVectorSearch()
 
   const state = parseCreateIndexSearchParams(search)
   const mode = isExistingDataState(state)
@@ -51,8 +52,10 @@ export const VectorSearchCreateIndexPage = () => {
     )
   }
 
-  const isManualCreation = isBrowseFlow && !hasExistingKeys
-  const showBrowser = isBrowseFlow && hasExistingKeys
+  // If the keys check failed, fall back to browse mode rather than hiding the browser
+  const isManualCreation =
+    isBrowseFlow && !hasExistingKeys && !hasExistingKeysError
+  const showBrowser = isBrowseFlow && !isManualCreation
 
   return (
     <CreateIndexPageProvider

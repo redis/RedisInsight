@@ -17,11 +17,13 @@ interface ScanResponse {
 export interface UseHasExistingKeysResult {
   hasKeys: boolean
   loading: boolean
+  error: boolean
 }
 
 export const useHasExistingKeys = (): UseHasExistingKeysResult => {
   const [hasKeys, setHasKeys] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   const { pathname } = useLocation()
   const { id: instanceId } = useAppSelector(connectedInstanceSelector)
@@ -35,6 +37,7 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
       }
 
       setLoading(true)
+      setError(false)
 
       try {
         const types = [KeyTypes.Hash, KeyTypes.ReJSON]
@@ -66,10 +69,12 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
         })
 
         setHasKeys(foundAny)
-      } catch (error) {
+        setError(results.some(({ status }) => !isStatusSuccessful(status)))
+      } catch (err) {
         if (signal?.aborted) return
-        console.error('Failed to check for existing keys', error)
+        console.error('Failed to check for existing keys', err)
         setHasKeys(false)
+        setError(true)
       } finally {
         if (!signal?.aborted) {
           setLoading(false)
@@ -89,5 +94,5 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
     }
   }, [checkForKeys, pathname])
 
-  return { hasKeys, loading }
+  return { hasKeys, loading, error }
 }
