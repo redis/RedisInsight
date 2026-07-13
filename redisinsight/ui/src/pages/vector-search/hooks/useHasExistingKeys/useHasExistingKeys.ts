@@ -36,10 +36,9 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
         return
       }
 
-      // Only the initial check reports loading; re-checks refresh silently
-      // so consumers are not unmounted mid-flow.
-      setError(false)
-
+      // Only the initial check reports loading, and the previous result is
+      // kept until the new one lands — re-checks refresh silently so
+      // consumers are not unmounted or flipped mid-flow.
       try {
         const types = [KeyTypes.Hash, KeyTypes.ReJSON]
 

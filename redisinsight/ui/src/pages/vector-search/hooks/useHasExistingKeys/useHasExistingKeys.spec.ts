@@ -152,4 +152,25 @@ describe('useHasExistingKeys', () => {
     expect(result.current.hasKeys).toBe(true)
     expect(result.current.loading).toBe(false)
   })
+
+  it('should keep the previous error while a re-check is in flight', async () => {
+    reactRouterDom.useLocation = jest
+      .fn()
+      .mockReturnValue({ pathname: '/initial' })
+    mockApiPost.mockRejectedValue(new Error('Network error'))
+
+    const { result, rerender, waitForNextUpdate } = renderHook(() =>
+      useHasExistingKeys(),
+    )
+    await waitForNextUpdate()
+    expect(result.current.error).toBe(true)
+
+    mockApiPost.mockReturnValue(new Promise(() => {}))
+    reactRouterDom.useLocation = jest
+      .fn()
+      .mockReturnValue({ pathname: '/recheck' })
+    rerender()
+
+    expect(result.current.error).toBe(true)
+  })
 })
