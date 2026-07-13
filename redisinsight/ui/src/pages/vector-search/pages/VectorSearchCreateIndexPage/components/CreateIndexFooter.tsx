@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import {
   PrimaryButton,
   SecondaryButton,
@@ -13,6 +14,7 @@ import { useCreateIndexPage } from '../../../context/create-index-page'
 import * as S from '../VectorSearchCreateIndexPage.styles'
 
 export const CreateIndexFooter = () => {
+  const { t } = useTranslation()
   const {
     loading,
     isCreateDisabled,
@@ -36,9 +38,11 @@ export const CreateIndexFooter = () => {
           <Row align="center" gap="s">
             <RiIcon type="InfoIcon" size="s" />
             <span>
-              {skippedFields.length === 1
-                ? `Field "${skippedFields[0]}" was removed — nested objects and arrays cannot be indexed directly.`
-                : `${skippedFields.length} fields were removed (${skippedFields.join(', ')}) — nested objects and arrays cannot be indexed directly.`}
+              {t('vectorSearch.createIndex.footer.skippedFields', {
+                count: skippedFields.length,
+                name: skippedFields[0],
+                list: skippedFields.join(', '),
+              })}
             </span>
           </Row>
         </CallOut>
@@ -51,7 +55,7 @@ export const CreateIndexFooter = () => {
           onClick={handleCancel}
           data-testid="vector-search--create-index--cancel-btn"
         >
-          Cancel
+          {t('vectorSearch.createIndex.footer.cancel')}
         </SecondaryButton>
 
         <RiTooltip
@@ -64,7 +68,7 @@ export const CreateIndexFooter = () => {
             onClick={handleCreateIndex}
             data-testid="vector-search--create-index--submit-btn"
           >
-            Create index
+            {t('vectorSearch.createIndex.footer.createIndex')}
           </PrimaryButton>
         </RiTooltip>
       </Row>

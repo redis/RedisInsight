@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { Modal } from 'uiSrc/components/base/display'
 import { CancelIcon } from 'uiSrc/components/base/icons'
 import {
@@ -19,15 +20,7 @@ import {
   PickSampleDataModalProps,
   SampleDataContent,
 } from './PickSampleDataModal.types'
-import {
-  SAMPLE_DATA_OPTIONS,
-  MODAL_TITLE,
-  MODAL_SUBTITLE_LINE_1,
-  MODAL_SUBTITLE_LINE_2,
-  CANCEL_BUTTON_TEXT,
-  SEE_INDEX_DEFINITION_BUTTON_TEXT,
-  START_QUERYING_BUTTON_TEXT,
-} from './PickSampleDataModal.constants'
+import { getSampleDataOptions } from './PickSampleDataModal.constants'
 import * as S from './PickSampleDataModal.styles'
 
 const PickSampleDataModal = ({
@@ -39,14 +32,19 @@ const PickSampleDataModal = ({
   onSeeIndexDefinition,
   onStartQuerying,
 }: PickSampleDataModalProps) => {
+  const { t } = useTranslation()
+
   if (!isOpen) return null
 
   const hasSelection = selectedDataset !== null
+  const sampleDataOptions = getSampleDataOptions()
 
   return (
     <Modal.Compose open={isOpen}>
       <S.ModalContent persistent onCancel={onCancel}>
-        <S.VisuallyHiddenTitle>{MODAL_TITLE}</S.VisuallyHiddenTitle>
+        <S.VisuallyHiddenTitle>
+          {t('vectorSearch.sampleData.title')}
+        </S.VisuallyHiddenTitle>
         <Modal.Content.Close
           icon={CancelIcon}
           onClick={onCancel}
@@ -63,7 +61,7 @@ const PickSampleDataModal = ({
               color="primary"
               data-testid="pick-sample-data-modal--heading"
             >
-              {MODAL_TITLE}
+              {t('vectorSearch.sampleData.title')}
             </S.Heading>
 
             <S.DatasetSection gap="l">
@@ -72,9 +70,9 @@ const PickSampleDataModal = ({
                 color="primary"
                 data-testid="pick-sample-data-modal--subtitle"
               >
-                {MODAL_SUBTITLE_LINE_1}
+                {t('vectorSearch.sampleData.subtitle1')}
                 <br />
-                {MODAL_SUBTITLE_LINE_2}
+                {t('vectorSearch.sampleData.subtitle2')}
               </S.Subtitle>
 
               <RiRadioGroupRoot
@@ -85,7 +83,7 @@ const PickSampleDataModal = ({
                 data-testid="pick-sample-data-modal--radio-group"
               >
                 <S.RadioCardList gap="m">
-                  {SAMPLE_DATA_OPTIONS.map((option) => (
+                  {sampleDataOptions.map((option) => (
                     <S.RadioCard
                       key={option.value}
                       $selected={selectedDataset === option.value}
@@ -115,7 +113,7 @@ const PickSampleDataModal = ({
             onClick={onCancel}
             data-testid="pick-sample-data-modal--cancel"
           >
-            {CANCEL_BUTTON_TEXT}
+            {t('vectorSearch.sampleData.cancel')}
           </EmptyButton>
 
           <S.FooterActions align="center" gap="m" justify="end" grow={false}>
@@ -127,7 +125,7 @@ const PickSampleDataModal = ({
               }
               data-testid="pick-sample-data-modal--see-index-definition"
             >
-              {SEE_INDEX_DEFINITION_BUTTON_TEXT}
+              {t('vectorSearch.sampleData.seeIndexDefinition')}
             </SecondaryButton>
 
             <PrimaryButton
@@ -137,7 +135,7 @@ const PickSampleDataModal = ({
               onClick={() => hasSelection && onStartQuerying(selectedDataset)}
               data-testid="pick-sample-data-modal--start-querying"
             >
-              {START_QUERYING_BUTTON_TEXT}
+              {t('vectorSearch.sampleData.startQuerying')}
             </PrimaryButton>
           </S.FooterActions>
         </S.Footer>

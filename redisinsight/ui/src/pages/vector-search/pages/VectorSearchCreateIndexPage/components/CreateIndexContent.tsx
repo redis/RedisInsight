@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { Text } from 'uiSrc/components/base/text'
 import { ThemeContext } from 'uiSrc/contexts/themeContext'
 import { Theme } from 'uiSrc/constants'
@@ -21,6 +22,7 @@ import { CreateIndexFooter } from './CreateIndexFooter'
 import * as S from '../VectorSearchCreateIndexPage.styles'
 
 export const CreateIndexContent = () => {
+  const { t } = useTranslation()
   const { theme } = useContext(ThemeContext)
   const {
     mode,
@@ -50,8 +52,7 @@ export const CreateIndexContent = () => {
           >
             <EmptyStateImg />
             <Text size="M" color="secondary">
-              The indexing schema will appear here once you{'\n'}
-              select a key from the browser on the left.
+              {t('vectorSearch.createIndex.content.emptyState')}
             </Text>
           </S.EmptyState>
         </S.ContentArea>

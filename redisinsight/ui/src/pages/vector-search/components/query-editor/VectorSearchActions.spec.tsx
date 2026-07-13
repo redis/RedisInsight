@@ -7,14 +7,18 @@ import {
   waitForRiTooltipVisible,
 } from 'uiSrc/utils/test-utils'
 
+import i18n from 'uiSrc/i18n'
 import { QueryEditorContextProvider } from 'uiSrc/components/query'
-import {
-  TOOLTIP_EXPLAIN,
-  TOOLTIP_PROFILE,
-  TOOLTIP_DISABLED_NO_QUERY,
-  TOOLTIP_DISABLED_LOADING,
-} from './QueryEditor.constants'
 import { VectorSearchActions } from './VectorSearchActions'
+
+const TOOLTIP_EXPLAIN = i18n.t('vectorSearch.query.editor.tooltip.explain')
+const TOOLTIP_PROFILE = i18n.t('vectorSearch.query.editor.tooltip.profile')
+const TOOLTIP_DISABLED_NO_QUERY = i18n.t(
+  'vectorSearch.query.editor.tooltip.disabledNoQuery',
+)
+const TOOLTIP_DISABLED_LOADING = i18n.t(
+  'vectorSearch.query.editor.tooltip.disabledLoading',
+)
 
 const mockOnSubmit = jest.fn()
 const mockOnSaveClick = jest.fn()

@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { Modal } from 'uiSrc/components/base/display'
 import { Button, PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { CancelIcon } from 'uiSrc/components/base/icons'
@@ -13,44 +14,49 @@ import * as S from './ConfirmKeyChangeModal.styles'
 export const ConfirmKeyChangeModal = ({
   onConfirm,
   onCancel,
-}: ConfirmKeyChangeModalProps) => (
-  <Modal.Compose open>
-    <S.ConfirmModalContent persistent onCancel={onCancel}>
-      <Modal.Content.Close
-        icon={CancelIcon}
-        onClick={onCancel}
-        data-testid="change-key-modal-close"
-      />
+}: ConfirmKeyChangeModalProps) => {
+  const { t } = useTranslation()
 
-      <Modal.Content.Header.Compose>
-        <Modal.Content.Header.Title>Unsaved changes</Modal.Content.Header.Title>
-      </Modal.Content.Header.Compose>
-
-      <Col gap="m">
-        <Text color="secondary" data-testid="change-key-modal-message">
-          You have modified the index types. Selecting a different key will
-          discard your changes and load fields from the new key.
-        </Text>
-        <Spacer size="xl" />
-      </Col>
-
-      <Row justify="end" gap="m">
-        <Button
-          size="large"
-          variant="secondary-ghost"
+  return (
+    <Modal.Compose open>
+      <S.ConfirmModalContent persistent onCancel={onCancel}>
+        <Modal.Content.Close
+          icon={CancelIcon}
           onClick={onCancel}
-          data-testid="change-key-modal-cancel"
-        >
-          Keep editing
-        </Button>
-        <PrimaryButton
-          size="large"
-          onClick={onConfirm}
-          data-testid="change-key-modal-confirm"
-        >
-          Discard and load
-        </PrimaryButton>
-      </Row>
-    </S.ConfirmModalContent>
-  </Modal.Compose>
-)
+          data-testid="change-key-modal-close"
+        />
+
+        <Modal.Content.Header.Compose>
+          <Modal.Content.Header.Title>
+            {t('vectorSearch.createIndex.confirmKeyChange.title')}
+          </Modal.Content.Header.Title>
+        </Modal.Content.Header.Compose>
+
+        <Col gap="m">
+          <Text color="secondary" data-testid="change-key-modal-message">
+            {t('vectorSearch.createIndex.confirmKeyChange.body')}
+          </Text>
+          <Spacer size="xl" />
+        </Col>
+
+        <Row justify="end" gap="m">
+          <Button
+            size="large"
+            variant="secondary-ghost"
+            onClick={onCancel}
+            data-testid="change-key-modal-cancel"
+          >
+            {t('vectorSearch.createIndex.confirmKeyChange.keepEditing')}
+          </Button>
+          <PrimaryButton
+            size="large"
+            onClick={onConfirm}
+            data-testid="change-key-modal-confirm"
+          >
+            {t('vectorSearch.createIndex.confirmKeyChange.discardAndLoad')}
+          </PrimaryButton>
+        </Row>
+      </S.ConfirmModalContent>
+    </Modal.Compose>
+  )
+}

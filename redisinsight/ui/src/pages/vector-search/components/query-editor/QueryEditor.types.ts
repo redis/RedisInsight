@@ -1,3 +1,5 @@
+import { ParseKeys } from 'i18next'
+
 import { EXPLAINABLE_COMMANDS } from './QueryEditor.constants'
 
 export type ExplainableCommand = (typeof EXPLAINABLE_COMMANDS)[number]
@@ -5,8 +7,8 @@ export type ExplainableCommand = (typeof EXPLAINABLE_COMMANDS)[number]
 export interface OnboardingTemplate {
   /** The Redis command name (used as the suggestion label). */
   command: string
-  /** Short description shown as the suggestion detail. */
-  detail: string
+  /** i18n key for the short description shown as the suggestion detail. */
+  detailKey: ParseKeys
   /** Whether the template includes an index argument placeholder. */
   usesIndex: boolean
 }

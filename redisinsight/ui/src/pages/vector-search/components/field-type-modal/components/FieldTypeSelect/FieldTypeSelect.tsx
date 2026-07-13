@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react'
+import { useTranslation } from 'uiSrc/i18n'
 import {
   FieldTypes,
   FIELD_TYPE_OPTIONS,
@@ -18,8 +19,8 @@ export interface FieldTypeSelectProps {
   dataTestId?: string
 }
 
-const fieldTypeDescriptions: Record<FieldTypes, string> = Object.fromEntries(
-  FIELD_TYPE_OPTIONS.map((option) => [option.value, option.description]),
+const fieldTypeDescriptionKeys: Record<FieldTypes, string> = Object.fromEntries(
+  FIELD_TYPE_OPTIONS.map((option) => [option.value, option.descriptionKey]),
 ) as Record<FieldTypes, string>
 
 const fieldTypeSelectOptions = FIELD_TYPE_OPTIONS.map((option) => ({
@@ -32,6 +33,8 @@ export const FieldTypeSelect = ({
   onChange,
   dataTestId = 'field-type-select',
 }: FieldTypeSelectProps) => {
+  const { t } = useTranslation()
+
   const valueRender = useCallback(
     ({ option, isOptionValue }: SelectValueRenderParams) => {
       const fieldType = option.value as FieldTypes
@@ -40,14 +43,16 @@ export const FieldTypeSelect = ({
         return (
           <S.DropdownOption align="center" gap="m">
             <FieldTag tag={fieldType} />
-            <Text color="ghost">{fieldTypeDescriptions[fieldType]}</Text>
+            <Text color="ghost">
+              {t(fieldTypeDescriptionKeys[fieldType] as never)}
+            </Text>
           </S.DropdownOption>
         )
       }
 
       return <FieldTag tag={fieldType} />
     },
-    [],
+    [t],
   )
 
   const handleChange = useCallback(

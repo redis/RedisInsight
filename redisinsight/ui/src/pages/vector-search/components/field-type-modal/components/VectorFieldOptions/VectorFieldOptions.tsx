@@ -1,5 +1,6 @@
 import React from 'react'
 import { FormikErrors, FormikProps } from 'formik'
+import { useTranslation } from 'uiSrc/i18n'
 import { Row, Col, FlexItem } from 'uiSrc/components/base/layout/flex'
 import { FormField } from 'uiSrc/components/base/forms/FormField'
 import NumericInput from 'uiSrc/components/base/inputs/NumericInput'
@@ -26,6 +27,7 @@ export interface VectorFieldOptionsProps {
 }
 
 export const VectorFieldOptions = ({ formik }: VectorFieldOptionsProps) => {
+  const { t } = useTranslation()
   const { values, setFieldValue } = formik
   const errors = formik.errors as FormikErrors<AllFieldTypeFormFields>
   const isHnsw = values.algorithm === VectorAlgorithm.HNSW
@@ -36,10 +38,9 @@ export const VectorFieldOptions = ({ formik }: VectorFieldOptionsProps) => {
       <Row gap="l">
         <FlexItem grow>
           <FormField
-            label="Algorithm"
+            label={t('vectorSearch.fieldType.vector.algorithm')}
             infoIconProps={{
-              content:
-                'Use FLAT for small datasets or when exact accuracy matters. Use HNSW for larger datasets or when fast search is important.',
+              content: t('vectorSearch.fieldType.vector.algorithmTooltip'),
             }}
           >
             <RiSelect
@@ -54,7 +55,7 @@ export const VectorFieldOptions = ({ formik }: VectorFieldOptionsProps) => {
         </FlexItem>
 
         <FlexItem grow>
-          <FormField label="Vector type">
+          <FormField label={t('vectorSearch.fieldType.vector.vectorType')}>
             <RiSelect
               options={vectorDataTypeOptions}
               value={values.dataType}
@@ -70,10 +71,9 @@ export const VectorFieldOptions = ({ formik }: VectorFieldOptionsProps) => {
       <Row gap="l">
         <FlexItem grow>
           <FormField
-            label="Dimensions"
+            label={t('vectorSearch.fieldType.vector.dimensions')}
             infoIconProps={{
-              content:
-                'Number of dimensions in each vector. Query vectors must match this size.',
+              content: t('vectorSearch.fieldType.vector.dimensionsTooltip'),
             }}
           >
             <NumericInput
@@ -91,9 +91,9 @@ export const VectorFieldOptions = ({ formik }: VectorFieldOptionsProps) => {
 
         <FlexItem grow>
           <FormField
-            label="Distance metric"
+            label={t('vectorSearch.fieldType.vector.distanceMetric')}
             infoIconProps={{
-              content: 'Distance metric for vector comparison.',
+              content: t('vectorSearch.fieldType.vector.distanceMetricTooltip'),
             }}
           >
             <RiSelect
@@ -113,10 +113,9 @@ export const VectorFieldOptions = ({ formik }: VectorFieldOptionsProps) => {
           <Row gap="l">
             <FlexItem grow>
               <FormField
-                label="Max Edges"
+                label={t('vectorSearch.fieldType.vector.maxEdges')}
                 infoIconProps={{
-                  content:
-                    'Maximum outgoing edges per node. Higher values improve accuracy but increase memory.',
+                  content: t('vectorSearch.fieldType.vector.maxEdgesTooltip'),
                 }}
               >
                 <NumericInput
@@ -134,10 +133,11 @@ export const VectorFieldOptions = ({ formik }: VectorFieldOptionsProps) => {
 
             <FlexItem grow>
               <FormField
-                label="Max Neighbors"
+                label={t('vectorSearch.fieldType.vector.maxNeighbors')}
                 infoIconProps={{
-                  content:
-                    'Maximum neighbors considered during graph build. Higher values improve accuracy but slow indexing.',
+                  content: t(
+                    'vectorSearch.fieldType.vector.maxNeighborsTooltip',
+                  ),
                 }}
               >
                 <NumericInput
@@ -157,10 +157,11 @@ export const VectorFieldOptions = ({ formik }: VectorFieldOptionsProps) => {
           <Row gap="l">
             <FlexItem grow>
               <FormField
-                label="Candidate Limit"
+                label={t('vectorSearch.fieldType.vector.candidateLimit')}
                 infoIconProps={{
-                  content:
-                    'Max top candidates considered during KNN search. Higher values improve accuracy but increase latency.',
+                  content: t(
+                    'vectorSearch.fieldType.vector.candidateLimitTooltip',
+                  ),
                 }}
               >
                 <NumericInput
@@ -178,10 +179,9 @@ export const VectorFieldOptions = ({ formik }: VectorFieldOptionsProps) => {
 
             <FlexItem grow>
               <FormField
-                label="Epsilon"
+                label={t('vectorSearch.fieldType.vector.epsilon')}
                 infoIconProps={{
-                  content:
-                    'Relative factor for range query boundaries. Higher values widen the search.',
+                  content: t('vectorSearch.fieldType.vector.epsilonTooltip'),
                 }}
               >
                 <NumericInput

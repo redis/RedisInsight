@@ -86,7 +86,7 @@ describe('useQuery.utils', () => {
       const result = createGroupItem(5, commandId)
 
       expect(result).toEqual({
-        command: '5 - Command(s)',
+        command: '5 - Commands',
         id: commandId,
         loading: true,
         isOpen: true,

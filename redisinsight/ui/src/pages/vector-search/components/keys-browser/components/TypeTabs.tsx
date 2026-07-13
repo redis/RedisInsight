@@ -4,6 +4,7 @@ import { KeyTypes } from 'uiSrc/constants'
 import Tabs from 'uiSrc/components/base/layout/tabs'
 import { RiTooltip } from 'uiSrc/components/base'
 import { RiIcon } from 'uiSrc/components/base/icons'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { useKeysBrowser } from '../hooks/useKeysBrowser'
 import * as S from '../KeysBrowser.styles'
@@ -14,6 +15,7 @@ const TABS = [
 ]
 
 const TypeTabs = () => {
+  const { t } = useTranslation()
   const { activeTab, handleTabChange } = useKeysBrowser()
 
   return (
@@ -30,7 +32,7 @@ const TypeTabs = () => {
         ))}
         <S.InfoIconWrapper>
           <RiTooltip
-            content="Only HASH and JSON key types are supported for index creation."
+            content={t('vectorSearch.keysBrowser.supportedTypesInfo')}
             position="top"
             anchorClassName="flex-row"
           >

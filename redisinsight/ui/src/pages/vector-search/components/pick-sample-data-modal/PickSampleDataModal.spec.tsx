@@ -6,7 +6,7 @@ import {
   PickSampleDataModalProps,
   SampleDataContent,
 } from './PickSampleDataModal.types'
-import { SAMPLE_DATA_OPTIONS } from './PickSampleDataModal.constants'
+import { getSampleDataOptions } from './PickSampleDataModal.constants'
 
 const mockedOnSelectDataset = jest.fn()
 const mockedOnCancel = jest.fn()
@@ -56,7 +56,7 @@ describe('PickSampleDataModal', () => {
   it('should render all sample data option cards', () => {
     renderComponent()
 
-    SAMPLE_DATA_OPTIONS.forEach((option) => {
+    getSampleDataOptions().forEach((option) => {
       expect(
         screen.getByTestId(`pick-sample-data-modal--option-${option.value}`),
       ).toBeInTheDocument()

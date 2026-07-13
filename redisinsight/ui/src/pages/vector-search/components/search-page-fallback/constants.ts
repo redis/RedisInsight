@@ -1,26 +1,27 @@
+import i18n from 'uiSrc/i18n'
 import { OAuthSocialSource } from 'uiSrc/slices/interfaces'
 import { SearchPageFallbackContent } from './SearchPageFallback.types'
 
-export const RQE_NOT_AVAILABLE_CONTENT: SearchPageFallbackContent = {
+// Built at call time (not module scope) so copy resolves in the active
+// language when the fallback renders.
+export const getRqeNotAvailableContent = (): SearchPageFallbackContent => ({
   testId: 'rqe-not-available',
-  title: 'Redis Search is not available for this database',
-  subtitle: 'Redis Search allows to:',
-  features: ['Query', 'Secondary index', 'Full-text search'],
-  description:
-    'These features enable multi-field queries, aggregation, exact phrase matching, numeric filtering, ' +
-    'geo filtering and vector similarity semantic search on top of text queries.',
-  ctaText:
-    'Use your free trial all-in-one Redis Cloud database to start exploring these capabilities',
+  title: i18n.t('vectorSearch.notAvailable.title'),
+  subtitle: i18n.t('vectorSearch.notAvailable.subtitle'),
+  features: [
+    i18n.t('vectorSearch.notAvailable.feature.query'),
+    i18n.t('vectorSearch.notAvailable.feature.secondaryIndex'),
+    i18n.t('vectorSearch.notAvailable.feature.fullTextSearch'),
+  ],
+  description: i18n.t('vectorSearch.notAvailable.description'),
+  ctaText: i18n.t('vectorSearch.notAvailable.ctaText'),
   oauthSource: OAuthSocialSource.BrowserSearch,
-}
+})
 
-export const VERSION_NOT_SUPPORTED_CONTENT: SearchPageFallbackContent = {
+export const getVersionNotSupportedContent = (): SearchPageFallbackContent => ({
   testId: 'version-not-supported',
-  title: 'Redis Search 2.0+ required',
-  description:
-    'This page requires Redis Search 2.0 or later (included with Redis 6+). ' +
-    'Older versions of Redis Search are not compatible with the commands used here.',
-  ctaText:
-    'Create a free Redis Cloud database to start exploring these capabilities.',
+  title: i18n.t('vectorSearch.versionNotSupported.title'),
+  description: i18n.t('vectorSearch.versionNotSupported.description'),
+  ctaText: i18n.t('vectorSearch.versionNotSupported.ctaText'),
   oauthSource: OAuthSocialSource.BrowserFiltering,
-}
+})

@@ -30,26 +30,26 @@ export const FIELD_TYPE_OPTIONS = [
   {
     text: 'TEXT',
     value: FieldTypes.TEXT,
-    description: 'Use TEXT for full-text search and indexing free-form text.',
+    descriptionKey: 'vectorSearch.fieldType.desc.text',
   },
   {
     text: 'TAG',
     value: FieldTypes.TAG,
-    description: 'Use TAG for filtering by exact match values.',
+    descriptionKey: 'vectorSearch.fieldType.desc.tag',
   },
   {
     text: 'NUMERIC',
     value: FieldTypes.NUMERIC,
-    description: 'Use NUMERIC for storing and querying numbers.',
+    descriptionKey: 'vectorSearch.fieldType.desc.numeric',
   },
   {
     text: 'GEO',
     value: FieldTypes.GEO,
-    description: 'Use GEO for geographic coordinates (latitude and longitude).',
+    descriptionKey: 'vectorSearch.fieldType.desc.geo',
   },
   {
     text: 'VECTOR',
     value: FieldTypes.VECTOR,
-    description: 'Use VECTOR for semantic search using vector embeddings.',
+    descriptionKey: 'vectorSearch.fieldType.desc.vector',
   },
 ]

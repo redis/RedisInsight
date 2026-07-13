@@ -5,9 +5,10 @@ import { Loader } from 'uiSrc/components/base/display'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { GroupBadge } from 'uiSrc/components'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { IndexInfoProps } from './IndexInfo.types'
-import { TABLE_COLUMNS } from './IndexInfo.constants'
+import { getTableColumns } from './IndexInfo.constants'
 import {
   parseIndexAttributes,
   formatOptions,
@@ -17,6 +18,8 @@ import { IndexInfoContainer } from './IndexInfo.styles'
 import { formatPrefixes } from 'uiSrc/pages/vector-search/utils'
 
 export const IndexInfo = ({ indexInfo, dataTestId }: IndexInfoProps) => {
+  const { t } = useTranslation()
+
   if (!indexInfo) {
     return (
       <Loader size="xl" data-testid={`${dataTestId ?? 'index-info'}--loader`} />
@@ -37,11 +40,13 @@ export const IndexInfo = ({ indexInfo, dataTestId }: IndexInfoProps) => {
         data-testid={`${dataTestId ?? 'index-info'}--definition`}
       >
         <Text size="s" color="secondary">
-          Indexing
+          {t('vectorSearch.indexInfo.indexing')}
         </Text>
         <GroupBadge type={keyType} />
         <Text size="s" color="secondary">
-          documents{prefixes && ` prefixed by ${prefixes}`}.
+          {prefixes
+            ? t('vectorSearch.indexInfo.documentsPrefixed', { prefixes })
+            : t('vectorSearch.indexInfo.documents')}
         </Text>
       </Row>
 
@@ -51,13 +56,16 @@ export const IndexInfo = ({ indexInfo, dataTestId }: IndexInfoProps) => {
         color="secondary"
         data-testid={`${dataTestId ?? 'index-info'}--options`}
       >
-        Options:{' '}
-        {showOptions ? formatOptions(indexOptions!) : 'no options found'}
+        {t('vectorSearch.indexInfo.options', {
+          options: showOptions
+            ? formatOptions(indexOptions!)
+            : t('vectorSearch.indexInfo.noOptionsFound'),
+        })}
       </Text>
 
       {/* Attributes Table */}
       <Table
-        columns={TABLE_COLUMNS}
+        columns={getTableColumns()}
         data={parseIndexAttributes(indexInfo)}
         enableColumnResizing
       />
@@ -68,9 +76,12 @@ export const IndexInfo = ({ indexInfo, dataTestId }: IndexInfoProps) => {
         color="secondary"
         data-testid={`${dataTestId ?? 'index-info'}--summary`}
       >
-        Number of docs: {indexInfo.numDocs} (max {indexInfo.maxDocId}) | Number
-        of records: {indexInfo.numRecords} | Number of terms:{' '}
-        {indexInfo.numTerms}
+        {t('vectorSearch.indexInfo.summary', {
+          numDocs: indexInfo.numDocs,
+          maxDocId: indexInfo.maxDocId,
+          numRecords: indexInfo.numRecords,
+          numTerms: indexInfo.numTerms,
+        })}
       </Text>
     </IndexInfoContainer>
   )

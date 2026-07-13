@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { Title } from 'uiSrc/components/base/text'
 import { IconButton } from 'uiSrc/components/base/forms/buttons'
 import {
@@ -19,6 +20,7 @@ export const IndexNameEditor = ({
   onNameChange,
   validationError,
 }: IndexNameEditorProps) => {
+  const { t } = useTranslation()
   const [isEditing, setIsEditing] = useState(false)
   const [draft, setDraft] = useState(indexName)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -85,7 +87,7 @@ export const IndexNameEditor = ({
         <IconButton
           icon={CancelSlimIcon}
           size="S"
-          aria-label="Cancel editing"
+          aria-label={t('vectorSearch.createIndex.indexName.cancelEditing')}
           onClick={cancelEditing}
           data-testid="index-name-cancel-btn"
         />
@@ -93,7 +95,7 @@ export const IndexNameEditor = ({
           icon={CheckThinIcon}
           size="S"
           color="primary"
-          aria-label="Confirm index name"
+          aria-label={t('vectorSearch.createIndex.indexName.confirmName')}
           onClick={confirmEditing}
           disabled={hasError}
           data-testid="index-name-confirm-btn"
@@ -126,7 +128,7 @@ export const IndexNameEditor = ({
       <IconButton
         icon={PencilIcon}
         size="S"
-        aria-label="Edit index name"
+        aria-label={t('vectorSearch.createIndex.indexName.editName')}
         data-testid="index-name-edit-btn"
       />
     </S.DisplayRow>

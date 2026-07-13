@@ -12,6 +12,7 @@ import { Title } from 'uiSrc/components/base/text/Title'
 import { ColorText } from 'uiSrc/components/base/text'
 import { PrimaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Link } from 'uiSrc/components/base/link/Link'
+import { useTranslation } from 'uiSrc/i18n'
 
 import { SearchPageFallbackContent } from './SearchPageFallback.types'
 import * as S from './SearchPageFallback.styles'
@@ -21,6 +22,7 @@ interface SearchPageFallbackProps {
 }
 
 export const SearchPageFallback = ({ content }: SearchPageFallbackProps) => {
+  const { t } = useTranslation()
   const { [FeatureFlags.envDependent]: envDependentFeature } = useAppSelector(
     appFeatureFlagsFeaturesSelector,
   )
@@ -90,7 +92,7 @@ export const SearchPageFallback = ({ content }: SearchPageFallbackProps) => {
                         data-testid={`${content.testId}-get-started-button`}
                       >
                         <PrimaryButton size="m">
-                          Get started for free
+                          {t('vectorSearch.fallback.getStarted')}
                         </PrimaryButton>
                       </Link>
                     )}
@@ -105,7 +107,7 @@ export const SearchPageFallback = ({ content }: SearchPageFallbackProps) => {
                   })}
                   data-testid={`${content.testId}-learn-more-link`}
                 >
-                  Learn more
+                  {t('vectorSearch.fallback.learnMore')}
                 </Link>
               </S.ButtonWrapper>
             )}

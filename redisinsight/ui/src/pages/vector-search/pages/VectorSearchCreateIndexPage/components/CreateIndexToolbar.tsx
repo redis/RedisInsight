@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { EmptyButton } from 'uiSrc/components/base/forms/buttons'
 import { Text } from 'uiSrc/components/base/text'
 import { ButtonGroup } from 'uiSrc/components/base/forms/button-group/ButtonGroup'
@@ -15,6 +16,7 @@ import { CreateIndexOnboardingStep } from '../../../components/create-index-onbo
 import * as S from '../VectorSearchCreateIndexPage.styles'
 
 export const CreateIndexToolbar = () => {
+  const { t } = useTranslation()
   const {
     mode,
     activeTab,
@@ -56,14 +58,14 @@ export const CreateIndexToolbar = () => {
             onClick={() => setActiveTab(CreateIndexTab.Table)}
             data-testid="vector-search--create-index--table-view-btn"
           >
-            Table view
+            {t('vectorSearch.createIndex.toolbar.tableView')}
           </ButtonGroup.Button>
           <ButtonGroup.Button
             isSelected={activeTab === CreateIndexTab.Command}
             onClick={() => setActiveTab(CreateIndexTab.Command)}
             data-testid="vector-search--create-index--command-view-btn"
           >
-            Command view
+            {t('vectorSearch.createIndex.toolbar.commandView')}
           </ButtonGroup.Button>
         </ButtonGroup>
       </CreateIndexOnboardingPopover>
@@ -77,7 +79,7 @@ export const CreateIndexToolbar = () => {
           onClick={openAddFieldModal}
           data-testid="vector-search--create-index--add-field-btn"
         >
-          + Add field
+          {t('vectorSearch.createIndex.toolbar.addField')}
         </EmptyButton>
 
         <S.VerticalSeparator />
@@ -88,7 +90,7 @@ export const CreateIndexToolbar = () => {
         >
           <S.IndexPrefixRow align="center">
             <Text size="S" color="secondary">
-              Index prefix:
+              {t('vectorSearch.createIndex.toolbar.indexPrefix')}
             </Text>
             {isExistingData ? (
               <S.IndexPrefixInput

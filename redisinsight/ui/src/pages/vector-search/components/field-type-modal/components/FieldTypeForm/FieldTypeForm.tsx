@@ -1,5 +1,6 @@
 import React from 'react'
 import { FormikProps } from 'formik'
+import { useTranslation } from 'uiSrc/i18n'
 import { Col } from 'uiSrc/components/base/layout/flex'
 import { Text } from 'uiSrc/components/base/text'
 import { FieldTypes } from 'uiSrc/pages/browser/components/create-redisearch-index/constants'
@@ -12,16 +13,21 @@ export interface FieldTypeFormProps {
   formik: FormikProps<FieldTypeFormValues>
 }
 
-const SECTION_LABELS: Partial<Record<FieldTypes, string>> = {
-  [FieldTypes.VECTOR]: 'VECTOR options',
-  [FieldTypes.TEXT]: 'TEXT options',
+const SECTION_LABEL_TOKENS: Partial<Record<FieldTypes, string>> = {
+  [FieldTypes.VECTOR]: 'VECTOR',
+  [FieldTypes.TEXT]: 'TEXT',
 }
 
 export const FieldTypeForm = ({ formik }: FieldTypeFormProps) => {
+  const { t } = useTranslation()
   const { fieldType } = formik.values
-  const sectionLabel = SECTION_LABELS[fieldType]
+  const sectionToken = SECTION_LABEL_TOKENS[fieldType]
 
-  if (!sectionLabel) return null
+  if (!sectionToken) return null
+
+  const sectionLabel = t('vectorSearch.fieldType.sectionOptions', {
+    type: sectionToken,
+  })
 
   return (
     <Col gap="l">
