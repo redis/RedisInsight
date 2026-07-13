@@ -1,3 +1,4 @@
+import { RedisConnectionFamily } from 'apiClient'
 import { Instance } from 'uiSrc/slices/interfaces'
 import { ADD_NEW_CA_CERT, NO_CA_CERT } from 'uiSrc/pages/home/constants'
 import { KeyValueFormat } from 'uiSrc/constants'
@@ -5,6 +6,7 @@ import { KeyValueFormat } from 'uiSrc/constants'
 export interface DbConnectionInfo extends Instance {
   id?: string
   port: string
+  family?: RedisConnectionFamily
   tlsClientAuthRequired?: boolean
   certificates?: { id: number; name: string }[]
   selectedTlsClientCertId?: string | 'ADD_NEW' | undefined

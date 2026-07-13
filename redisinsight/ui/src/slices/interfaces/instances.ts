@@ -13,6 +13,7 @@ import {
   GetListElementsResponse,
   Database as DatabaseInstanceResponse,
   Environment,
+  RedisConnectionFamily,
   SearchZSetMembersResponse,
   SentinelMaster,
   CreateSentinelDatabaseDto,
@@ -58,6 +59,7 @@ export interface Instance extends Partial<DatabaseInstanceResponse> {
   loading?: boolean
   isFreeDb?: boolean
   environment: Environment
+  family?: RedisConnectionFamily
   tags?: Tag[]
 }
 
