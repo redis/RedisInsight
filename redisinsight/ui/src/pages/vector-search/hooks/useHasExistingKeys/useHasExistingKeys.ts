@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { apiService } from 'uiSrc/services'
@@ -25,7 +24,6 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
-  const { pathname } = useLocation()
   const { id: instanceId } = useAppSelector(connectedInstanceSelector)
   const { encoding } = useAppSelector(appInfoSelector)
 
@@ -36,9 +34,8 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
         return
       }
 
-      // Only the initial check reports loading, and the previous result is
-      // kept until the new one lands — re-checks refresh silently so
-      // consumers are not unmounted or flipped mid-flow.
+      setLoading(true)
+
       try {
         const types = [KeyTypes.Hash, KeyTypes.ReJSON]
 
@@ -93,7 +90,7 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
     return () => {
       controller.abort()
     }
-  }, [checkForKeys, pathname])
+  }, [checkForKeys])
 
   return { hasKeys, loading, error }
 }

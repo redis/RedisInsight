@@ -1,15 +1,9 @@
 import { renderHook } from '@testing-library/react-hooks'
-import reactRouterDom from 'react-router-dom'
 
 import { apiService } from 'uiSrc/services'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 
 import { useHasExistingKeys } from './useHasExistingKeys'
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: jest.fn(() => ({ pathname: '/test' })),
-}))
 
 jest.mock('uiSrc/slices/hooks', () => ({
   ...jest.requireActual('uiSrc/slices/hooks'),
@@ -121,56 +115,5 @@ describe('useHasExistingKeys', () => {
     const { result } = renderHook(() => useHasExistingKeys())
 
     expect(result.current.loading).toBe(true)
-  })
-
-  it('should not report loading again on re-checks', async () => {
-    mockApiPost.mockResolvedValue({
-      status: 200,
-      data: [{ keys: [], total: 0 }],
-    })
-
-    const { result, rerender, waitForNextUpdate } = renderHook(() =>
-      useHasExistingKeys(),
-    )
-    await waitForNextUpdate()
-    expect(result.current.loading).toBe(false)
-
-    const callsBeforeRecheck = mockApiPost.mock.calls.length
-    mockApiPost.mockResolvedValue({
-      status: 200,
-      data: [{ keys: [{ name: 'key:1' }], total: 1 }],
-    })
-    reactRouterDom.useLocation = jest
-      .fn()
-      .mockReturnValue({ pathname: '/other' })
-    rerender()
-
-    expect(mockApiPost.mock.calls.length).toBeGreaterThan(callsBeforeRecheck)
-    expect(result.current.loading).toBe(false)
-
-    await waitForNextUpdate()
-    expect(result.current.hasKeys).toBe(true)
-    expect(result.current.loading).toBe(false)
-  })
-
-  it('should keep the previous error while a re-check is in flight', async () => {
-    reactRouterDom.useLocation = jest
-      .fn()
-      .mockReturnValue({ pathname: '/initial' })
-    mockApiPost.mockRejectedValue(new Error('Network error'))
-
-    const { result, rerender, waitForNextUpdate } = renderHook(() =>
-      useHasExistingKeys(),
-    )
-    await waitForNextUpdate()
-    expect(result.current.error).toBe(true)
-
-    mockApiPost.mockReturnValue(new Promise(() => {}))
-    reactRouterDom.useLocation = jest
-      .fn()
-      .mockReturnValue({ pathname: '/recheck' })
-    rerender()
-
-    expect(result.current.error).toBe(true)
   })
 })
