@@ -39,7 +39,6 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
       try {
         const types = [KeyTypes.Hash, KeyTypes.ReJSON]
 
-        // The backend derives its per-iteration SCAN COUNT from `count`
         const results = await Promise.all(
           types.map((type) =>
             apiService.post<ScanResponse[]>(
