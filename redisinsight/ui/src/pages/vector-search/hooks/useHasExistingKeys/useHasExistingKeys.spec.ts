@@ -38,7 +38,7 @@ describe('useHasExistingKeys', () => {
   it('should return hasKeys=true when Hash keys exist', async () => {
     mockApiPost.mockResolvedValue({
       status: 200,
-      data: [{ keys: [{ name: 'key:1' }], total: 1 }],
+      data: [{ keys: [{ name: 'key:1' }], total: 1, cursor: 0 }],
     })
 
     const { result, waitForNextUpdate } = renderHook(() => useHasExistingKeys())
@@ -54,8 +54,8 @@ describe('useHasExistingKeys', () => {
     mockApiPost.mockResolvedValue({
       status: 200,
       data: [
-        { keys: [], total: 0 },
-        { keys: [{ name: 'key:1' }], total: 1 },
+        { keys: [], total: 0, cursor: 0 },
+        { keys: [{ name: 'key:1' }], total: 1, cursor: 0 },
       ],
     })
 
@@ -69,7 +69,7 @@ describe('useHasExistingKeys', () => {
   it('should scan with the default scan count', async () => {
     mockApiPost.mockResolvedValue({
       status: 200,
-      data: [{ keys: [], total: 0 }],
+      data: [{ keys: [], total: 0, cursor: 0 }],
     })
 
     const { waitForNextUpdate } = renderHook(() => useHasExistingKeys())
@@ -83,10 +83,23 @@ describe('useHasExistingKeys', () => {
     )
   })
 
+  it('should treat an incomplete scan as having keys', async () => {
+    mockApiPost.mockResolvedValue({
+      status: 200,
+      data: [{ keys: [], total: 50000, cursor: 12345 }],
+    })
+
+    const { result, waitForNextUpdate } = renderHook(() => useHasExistingKeys())
+
+    await waitForNextUpdate()
+
+    expect(result.current.hasKeys).toBe(true)
+  })
+
   it('should return hasKeys=false when no keys exist', async () => {
     mockApiPost.mockResolvedValue({
       status: 200,
-      data: [{ keys: [], total: 0 }],
+      data: [{ keys: [], total: 0, cursor: 0 }],
     })
 
     const { result, waitForNextUpdate } = renderHook(() => useHasExistingKeys())

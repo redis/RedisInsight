@@ -11,6 +11,7 @@ import { appInfoSelector } from 'uiSrc/slices/app/info'
 interface ScanResponse {
   keys: unknown[]
   total: number
+  cursor: number
 }
 
 export interface UseHasExistingKeysResult {
@@ -57,13 +58,17 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
 
         if (signal?.aborted) return
 
-        // The endpoint returns one entry per cluster node — check them all
+        // The endpoint returns one entry per cluster node — check them all.
+        // A scan stopped at the threshold (cursor !== 0) is inconclusive,
+        // not an empty database, so it counts as having keys.
         const foundAny = results.some(({ data, status }) => {
           if (!isStatusSuccessful(status)) return false
           const nodes = Array.isArray(data)
             ? data
             : [data as unknown as ScanResponse]
-          return nodes.some((node) => !!node?.keys?.length)
+          return nodes.some(
+            (node) => !!node?.keys?.length || node?.cursor !== 0,
+          )
         })
 
         setHasKeys(foundAny)
