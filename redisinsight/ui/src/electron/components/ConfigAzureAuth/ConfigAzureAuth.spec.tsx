@@ -135,6 +135,7 @@ describe('ConfigAzureAuth', () => {
           account: null,
           error: '',
           source: AzureLoginSource.TokenRefresh,
+          tenant: null,
         },
       },
     }
@@ -166,6 +167,7 @@ describe('ConfigAzureAuth', () => {
           account: null,
           error: '',
           source: AzureLoginSource.Autodiscovery,
+          tenant: null,
         },
       },
     }
