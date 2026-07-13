@@ -36,7 +36,8 @@ export const useHasExistingKeys = (): UseHasExistingKeysResult => {
         return
       }
 
-      setLoading(true)
+      // Only the initial check reports loading; re-checks refresh silently
+      // so consumers are not unmounted mid-flow.
       setError(false)
 
       try {

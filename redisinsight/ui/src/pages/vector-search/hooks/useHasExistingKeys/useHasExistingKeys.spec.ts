@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks'
+import reactRouterDom from 'react-router-dom'
 
 import { apiService } from 'uiSrc/services'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
@@ -104,5 +105,35 @@ describe('useHasExistingKeys', () => {
     const { result } = renderHook(() => useHasExistingKeys())
 
     expect(result.current.loading).toBe(true)
+  })
+
+  it('should not report loading again on re-checks', async () => {
+    mockApiPost.mockResolvedValue({
+      status: 200,
+      data: [{ keys: [], total: 0 }],
+    })
+
+    const { result, rerender, waitForNextUpdate } = renderHook(() =>
+      useHasExistingKeys(),
+    )
+    await waitForNextUpdate()
+    expect(result.current.loading).toBe(false)
+
+    const callsBeforeRecheck = mockApiPost.mock.calls.length
+    mockApiPost.mockResolvedValue({
+      status: 200,
+      data: [{ keys: [{ name: 'key:1' }], total: 1 }],
+    })
+    reactRouterDom.useLocation = jest
+      .fn()
+      .mockReturnValue({ pathname: '/other' })
+    rerender()
+
+    expect(mockApiPost.mock.calls.length).toBeGreaterThan(callsBeforeRecheck)
+    expect(result.current.loading).toBe(false)
+
+    await waitForNextUpdate()
+    expect(result.current.hasKeys).toBe(true)
+    expect(result.current.loading).toBe(false)
   })
 })
