@@ -67,6 +67,12 @@ export class AzureAutodiscoveryController {
     name: 'accountId',
     description: 'Azure account ID (homeAccountId)',
   })
+  @ApiQuery({
+    name: 'tenantId',
+    required: false,
+    description:
+      'Azure tenant (GUID or domain) to query. Omit to use the home tenant.',
+  })
   @ApiResponse({
     status: 200,
     description: 'Returns list of subscriptions',
@@ -77,11 +83,14 @@ export class AzureAutodiscoveryController {
   async listSubscriptions(
     @RequestSessionMetadata() sessionMetadata: SessionMetadata,
     @Query('accountId') accountId: string,
+    @Query('tenantId') tenantId?: string,
   ): Promise<AzureSubscription[]> {
     try {
       await this.ensureAuthenticated(accountId);
-      const subscriptions =
-        await this.autodiscoveryService.listSubscriptions(accountId);
+      const subscriptions = await this.autodiscoveryService.listSubscriptions(
+        accountId,
+        tenantId,
+      );
       this.analytics.sendAzureSubscriptionsDiscoverySucceeded(
         sessionMetadata,
         subscriptions,
@@ -102,6 +111,12 @@ export class AzureAutodiscoveryController {
     name: 'accountId',
     description: 'Azure account ID (homeAccountId)',
   })
+  @ApiQuery({
+    name: 'tenantId',
+    required: false,
+    description:
+      'Azure tenant (GUID or domain) to query. Omit to use the home tenant.',
+  })
   @ApiResponse({
     status: 200,
     description: 'Returns list of databases in subscription',
@@ -114,6 +129,7 @@ export class AzureAutodiscoveryController {
     @RequestSessionMetadata() sessionMetadata: SessionMetadata,
     @Query('accountId') accountId: string,
     @Param('subscriptionId') subscriptionId: string,
+    @Query('tenantId') tenantId?: string,
   ): Promise<AzureRedisDatabase[]> {
     try {
       this.validateSubscriptionId(subscriptionId);
@@ -122,6 +138,7 @@ export class AzureAutodiscoveryController {
         await this.autodiscoveryService.listDatabasesInSubscription(
           accountId,
           subscriptionId,
+          tenantId,
         );
       this.analytics.sendAzureDatabasesDiscoverySucceeded(
         sessionMetadata,
@@ -157,6 +174,7 @@ export class AzureAutodiscoveryController {
       sessionMetadata,
       dto.accountId,
       dto.databases,
+      dto.tenantId,
     );
 
     const hasSuccessResult = result.some(

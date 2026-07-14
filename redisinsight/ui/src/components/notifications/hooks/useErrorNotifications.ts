@@ -88,7 +88,7 @@ export const useErrorNotifications = () => {
           // Only show toast if not already visible
           if (!riToast.isActive(AZURE_TOKEN_EXPIRED_TOAST_ID)) {
             errorMessage = errorMessages.AZURE_TOKEN_EXPIRED(
-              { message },
+              { message, tenantId: additionalInfo?.tenantId },
               removeAzureToast,
             )
             riToast(errorMessage, {

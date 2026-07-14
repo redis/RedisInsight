@@ -168,6 +168,12 @@ export class AzureConnectionDetails {
   })
   azureAccountId?: string;
 
+  @ApiPropertyOptional({
+    description: 'Azure tenant the token was issued against',
+    type: String,
+  })
+  tenantId?: string;
+
   @ApiProperty({
     description: 'Azure subscription ID',
     type: String,
