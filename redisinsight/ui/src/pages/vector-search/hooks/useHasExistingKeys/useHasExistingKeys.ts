@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { apiService } from 'uiSrc/services'
@@ -89,17 +89,24 @@ export const useHasExistingKeys = (
     [instanceId, encoding],
   )
 
+  // The probe runs once per mount — a different database or encoding
+  // always remounts the page, so there is nothing to re-check.
+  const controllerRef = useRef<AbortController | null>(null)
+
   useEffect(() => {
-    if (!enabled) return undefined
+    if (!enabled || !instanceId || controllerRef.current) return
 
-    // Abort in-flight requests on unmount to prevent state updates after cleanup
-    const controller = new AbortController()
-    checkForKeys(controller.signal)
+    controllerRef.current = new AbortController()
+    checkForKeys(controllerRef.current.signal)
+  }, [enabled, instanceId, checkForKeys])
 
-    return () => {
-      controller.abort()
-    }
-  }, [enabled, checkForKeys])
+  useEffect(
+    // Abort the in-flight request on unmount to prevent late state updates
+    () => () => {
+      controllerRef.current?.abort()
+    },
+    [],
+  )
 
   return { hasKeys, loading, error }
 }
