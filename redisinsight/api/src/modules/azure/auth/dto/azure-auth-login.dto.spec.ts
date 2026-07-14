@@ -2,7 +2,7 @@ import { validate } from 'class-validator';
 import { faker } from '@faker-js/faker';
 import { AzureAuthLoginDto } from './azure-auth-login.dto';
 
-const validateTenantId = async (tenantId: any) => {
+const validateTenantId = async (tenantId: string | undefined) => {
   const dto = new AzureAuthLoginDto();
   dto.tenantId = tenantId;
   return validate(dto);
