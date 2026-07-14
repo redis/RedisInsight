@@ -53,7 +53,7 @@ const dataSchema = Joi.object({
   environment: Joi.string()
     .valid('unspecified', 'production', 'development')
     .allow(null),
-  family: Joi.string().valid('auto', 'ipv4', 'ipv6').allow(null),
+  connectionFamily: Joi.string().valid('auto', 'ipv4', 'ipv6').allow(null),
 })
   .messages({
     'any.required': '{#label} should not be empty',
@@ -299,16 +299,16 @@ describe('POST /databases', () => {
             name: dbName,
             host: constants.TEST_REDIS_HOST,
             port: constants.TEST_REDIS_PORT,
-            family: 'ipv4',
+            connectionFamily: 'ipv4',
           },
           responseSchema,
           responseBody: {
             name: dbName,
-            family: 'ipv4',
+            connectionFamily: 'ipv4',
           },
         });
       });
-      it('Create standalone defaults family to auto when omitted', async () => {
+      it('Create standalone defaults connectionFamily to auto when omitted', async () => {
         const dbName = constants.getRandomString();
 
         await validateApiCall({
@@ -322,11 +322,11 @@ describe('POST /databases', () => {
           responseSchema,
           responseBody: {
             name: dbName,
-            family: 'auto',
+            connectionFamily: 'auto',
           },
         });
       });
-      it('Should throw an error with an invalid family', async () => {
+      it('Should throw an error with an invalid connectionFamily', async () => {
         await validateApiCall({
           endpoint,
           statusCode: 400,
@@ -334,7 +334,7 @@ describe('POST /databases', () => {
             name: constants.getRandomString(),
             host: constants.TEST_REDIS_HOST,
             port: constants.TEST_REDIS_PORT,
-            family: 'ipv5',
+            connectionFamily: 'ipv5',
           },
         });
       });
@@ -353,12 +353,12 @@ describe('POST /databases', () => {
               name: dbName,
               host: constants.TEST_REDIS_IPV6_HOST,
               port: constants.TEST_REDIS_PORT,
-              family: 'ipv6',
+              connectionFamily: 'ipv6',
             },
             responseSchema,
             responseBody: {
               name: dbName,
-              family: 'ipv6',
+              connectionFamily: 'ipv6',
             },
           });
         });

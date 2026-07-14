@@ -56,7 +56,7 @@ const dataSchema = Joi.object({
   environment: Joi.string()
     .valid('unspecified', 'production', 'development')
     .allow(null),
-  family: Joi.string().valid('auto', 'ipv4', 'ipv6').allow(null),
+  connectionFamily: Joi.string().valid('auto', 'ipv4', 'ipv6').allow(null),
 })
   .messages({
     'any.required': '{#label} should not be empty',
