@@ -65,9 +65,10 @@ export class QueryResults {
 
   /**
    * Get the expand/collapse toggle on the first result card.
+   * exact: true prevents matching the outer div[role="button"] card header.
    */
   get firstCardToggleCollapseButton(): Locator {
-    return this.container.getByTestId('toggle-collapse').first();
+    return this.container.getByRole('button', { name: 'Toggle result', exact: true }).first();
   }
 
   /**
