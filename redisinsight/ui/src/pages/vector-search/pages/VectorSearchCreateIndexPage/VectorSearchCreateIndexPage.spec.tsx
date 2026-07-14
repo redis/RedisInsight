@@ -59,6 +59,7 @@ const mockUseHasExistingKeys = (
   jest.mocked(useHasExistingKeys).mockReturnValue({
     hasKeys: true,
     loading: false,
+    error: false,
     ...overrides,
   })
 }
@@ -180,6 +181,19 @@ describe('VectorSearchCreateIndexPage', () => {
       expect(
         screen.getByTestId('vector-search--create-index--loading'),
       ).toBeInTheDocument()
+    })
+
+    it('should keep the key browser when the keys check fails', () => {
+      mockUseHasExistingKeys({ hasKeys: false, error: true })
+
+      render(<VectorSearchCreateIndexPage />)
+
+      expect(
+        screen.getByTestId('vector-search--create-index--browser-panel'),
+      ).toBeInTheDocument()
+      expect(
+        screen.queryByTestId('vector-search--create-index--empty-state'),
+      ).toHaveTextContent('select a key from the browser on the left')
     })
 
     it('should hide the key browser and render the manual creation empty state', () => {

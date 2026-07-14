@@ -33,8 +33,11 @@ export const VectorSearchCreateIndexPage = () => {
   const preselected = hasPreselectedKey(state)
   const isBrowseFlow = mode === CreateIndexMode.ExistingData && !preselected
 
-  const { hasKeys: hasExistingKeys, loading: hasExistingKeysLoading } =
-    useHasExistingKeys()
+  const {
+    hasKeys: hasExistingKeys,
+    loading: hasExistingKeysLoading,
+    error: hasExistingKeysError,
+  } = useHasExistingKeys(isBrowseFlow)
 
   if (mode === CreateIndexMode.SampleData && !sampleData) {
     return <Redirect to={Pages.vectorSearch(instanceId)} />
@@ -52,7 +55,9 @@ export const VectorSearchCreateIndexPage = () => {
     )
   }
 
-  const isManualCreation = isBrowseFlow && !hasExistingKeys
+  // A failed/inconclusive probe keeps browse mode rather than hiding the browser
+  const isManualCreation =
+    isBrowseFlow && !hasExistingKeys && !hasExistingKeysError
 
   return (
     <CreateIndexPageProvider

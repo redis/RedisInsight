@@ -114,7 +114,7 @@ describe('useHasExistingKeys', () => {
     expect(result.current.loading).toBe(false)
   })
 
-  it('should return hasKeys=false on API error', async () => {
+  it('should report an error on API failure', async () => {
     mockApiPost.mockRejectedValue(new Error('Network error'))
 
     const { result, waitForNextUpdate } = renderHook(() => useHasExistingKeys())
@@ -123,6 +123,7 @@ describe('useHasExistingKeys', () => {
 
     expect(result.current.hasKeys).toBe(false)
     expect(result.current.loading).toBe(false)
+    expect(result.current.error).toBe(true)
   })
 
   it('should be loading initially', () => {
@@ -131,5 +132,12 @@ describe('useHasExistingKeys', () => {
     const { result } = renderHook(() => useHasExistingKeys())
 
     expect(result.current.loading).toBe(true)
+  })
+
+  it('should not scan when disabled', () => {
+    const { result } = renderHook(() => useHasExistingKeys(false))
+
+    expect(mockApiPost).not.toHaveBeenCalled()
+    expect(result.current.loading).toBe(false)
   })
 })
