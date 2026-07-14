@@ -63,6 +63,19 @@ const mockUseHasExistingKeys = (
   })
 }
 
+const addField = async (name: string) => {
+  fireEvent.click(
+    screen.getByTestId('vector-search--create-index--add-field-btn'),
+  )
+  fireEvent.change(screen.getByTestId('field-type-modal-field-name'), {
+    target: { value: name },
+  })
+  await waitFor(() =>
+    expect(screen.getByTestId('field-type-modal-save')).toBeEnabled(),
+  )
+  fireEvent.click(screen.getByTestId('field-type-modal-save'))
+}
+
 describe('VectorSearchCreateIndexPage', () => {
   beforeEach(() => {
     cleanup()
@@ -154,8 +167,12 @@ describe('VectorSearchCreateIndexPage', () => {
   })
 
   describe('existing data mode with no keys in the database', () => {
-    it('should show a loader while checking for existing keys', () => {
+    beforeEach(() => {
       setupRouterMocks('?mode=existingData')
+      mockUseHasExistingKeys({ hasKeys: false })
+    })
+
+    it('should show a loader while checking for existing keys', () => {
       mockUseHasExistingKeys({ hasKeys: false, loading: true })
 
       render(<VectorSearchCreateIndexPage />)
@@ -166,53 +183,38 @@ describe('VectorSearchCreateIndexPage', () => {
     })
 
     it('should hide the key browser and render the manual creation empty state', () => {
-      setupRouterMocks('?mode=existingData')
-      mockUseHasExistingKeys({ hasKeys: false })
-
       render(<VectorSearchCreateIndexPage />)
 
-      const browserPanel = screen.queryByTestId(
-        'vector-search--create-index--browser-panel',
-      )
-      expect(browserPanel).not.toBeInTheDocument()
+      expect(
+        screen.queryByTestId('vector-search--create-index--browser-panel'),
+      ).not.toBeInTheDocument()
 
-      const emptyState = screen.getByTestId(
-        'vector-search--create-index--empty-state',
-      )
-      expect(emptyState).toHaveTextContent(
+      expect(
+        screen.getByTestId('vector-search--create-index--empty-state'),
+      ).toHaveTextContent(
         'Build your search index by manually adding the fields you want to index.',
       )
-
-      const addFieldBtn = screen.getByTestId(
-        'vector-search--create-index--add-field-btn',
-      )
-      expect(addFieldBtn).toBeEnabled()
-
-      const prefixInput = screen.getByTestId(
-        'vector-search--create-index--prefix-input',
-      )
-      expect(prefixInput).toBeInTheDocument()
-
-      const submitBtn = screen.getByTestId(
-        'vector-search--create-index--submit-btn',
-      )
-      expect(submitBtn).toBeDisabled()
+      expect(
+        screen.getByTestId('vector-search--create-index--add-field-btn'),
+      ).toBeEnabled()
+      expect(
+        screen.getByTestId('vector-search--create-index--prefix-input'),
+      ).toBeInTheDocument()
+      expect(
+        screen.getByTestId('vector-search--create-index--submit-btn'),
+      ).toBeDisabled()
     })
 
     it('should show the command view before any fields are added', () => {
-      setupRouterMocks('?mode=existingData')
-      mockUseHasExistingKeys({ hasKeys: false })
-
       render(<VectorSearchCreateIndexPage />)
 
       fireEvent.click(
         screen.getByTestId('vector-search--create-index--command-view-btn'),
       )
 
-      const commandView = screen.getByTestId(
-        'vector-search--create-index--command-view',
-      )
-      expect(commandView).toBeInTheDocument()
+      expect(
+        screen.getByTestId('vector-search--create-index--command-view'),
+      ).toBeInTheDocument()
       expect(
         screen.queryByTestId('vector-search--create-index--empty-state'),
       ).not.toBeInTheDocument()
@@ -227,31 +229,14 @@ describe('VectorSearchCreateIndexPage', () => {
     })
 
     it('should build the command with the chosen key type', async () => {
-      setupRouterMocks('?mode=existingData')
-      mockUseHasExistingKeys({ hasKeys: false })
-
       render(<VectorSearchCreateIndexPage />)
 
-      const keyTypeToggle = screen.getByTestId(
-        'vector-search--create-index--key-type-toggle',
-      )
-      expect(keyTypeToggle).toBeInTheDocument()
-
-      fireEvent.click(
-        screen.getByTestId('vector-search--create-index--add-field-btn'),
-      )
-      fireEvent.change(screen.getByTestId('field-type-modal-field-name'), {
-        target: { value: 'title' },
-      })
-      await waitFor(() => {
-        expect(screen.getByTestId('field-type-modal-save')).toBeEnabled()
-      })
-      fireEvent.click(screen.getByTestId('field-type-modal-save'))
-      await waitFor(() => {
+      await addField('title')
+      await waitFor(() =>
         expect(
           screen.getByTestId('vector-search--create-index--submit-btn'),
-        ).toBeEnabled()
-      })
+        ).toBeEnabled(),
+      )
 
       fireEvent.click(
         screen.getByTestId('vector-search--create-index--key-type-json-btn'),
@@ -260,35 +245,21 @@ describe('VectorSearchCreateIndexPage', () => {
         screen.getByTestId('vector-search--create-index--command-view-btn'),
       )
 
-      const commandView = screen.getByTestId(
-        'vector-search--create-index--command-view',
-      )
-      expect(commandView).toHaveTextContent('ON JSON')
+      expect(
+        screen.getByTestId('vector-search--create-index--command-view'),
+      ).toHaveTextContent('ON JSON')
     })
 
     it('should enable the create button once a field is added manually', async () => {
-      setupRouterMocks('?mode=existingData')
-      mockUseHasExistingKeys({ hasKeys: false })
-
       render(<VectorSearchCreateIndexPage />)
 
-      fireEvent.click(
-        screen.getByTestId('vector-search--create-index--add-field-btn'),
-      )
+      await addField('title')
 
-      fireEvent.change(screen.getByTestId('field-type-modal-field-name'), {
-        target: { value: 'title' },
-      })
-      await waitFor(() => {
-        expect(screen.getByTestId('field-type-modal-save')).toBeEnabled()
-      })
-      fireEvent.click(screen.getByTestId('field-type-modal-save'))
-
-      await waitFor(() => {
+      await waitFor(() =>
         expect(
           screen.getByTestId('vector-search--create-index--submit-btn'),
-        ).toBeEnabled()
-      })
+        ).toBeEnabled(),
+      )
     })
   })
 })
