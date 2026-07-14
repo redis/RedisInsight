@@ -37,7 +37,7 @@ export const VectorSearchCreateIndexPage = () => {
     hasKeys: hasExistingKeys,
     loading: hasExistingKeysLoading,
     error: hasExistingKeysError,
-  } = useHasExistingKeys(isBrowseFlow)
+  } = useHasExistingKeys(instanceId, isBrowseFlow)
 
   if (mode === CreateIndexMode.SampleData && !sampleData) {
     return <Redirect to={Pages.vectorSearch(instanceId)} />

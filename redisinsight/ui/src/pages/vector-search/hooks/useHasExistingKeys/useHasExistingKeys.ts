@@ -5,7 +5,6 @@ import { apiService } from 'uiSrc/services'
 import { ApiEndpoints, KeyTypes } from 'uiSrc/constants'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { getUrl, isStatusSuccessful } from 'uiSrc/utils'
-import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
 
 interface ScanResponse {
@@ -21,13 +20,13 @@ export interface UseHasExistingKeysResult {
 }
 
 export const useHasExistingKeys = (
+  instanceId: string,
   enabled: boolean = true,
 ): UseHasExistingKeysResult => {
   const [hasKeys, setHasKeys] = useState(false)
   const [loading, setLoading] = useState(enabled)
   const [error, setError] = useState(false)
 
-  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
   const { encoding } = useAppSelector(appInfoSelector)
 
   const checkForKeys = useCallback(
@@ -84,8 +83,7 @@ export const useHasExistingKeys = (
     [instanceId, encoding],
   )
 
-  // One scan per (database, encoding) — the guard re-arms when either
-  // changes, e.g. when the connected instance settles after a switch.
+  // One scan per (database, encoding) — the guard re-arms when either changes
   const scannedForRef = useRef<string | null>(null)
   const controllerRef = useRef<AbortController | null>(null)
 
