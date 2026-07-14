@@ -1,3 +1,4 @@
+import i18n from 'uiSrc/i18n'
 import { ColumnDef, SortingState } from 'uiSrc/components/base/layout/table'
 
 import { ModifiedClusterNodes } from '../../ClusterDetailsPage'
@@ -14,7 +15,10 @@ export const DEFAULT_SORTING: SortingState = [
 export const DEFAULT_CLUSTER_NODES_COLUMNS: ColumnDef<ModifiedClusterNodes>[] =
   [
     {
-      header: ({ table }) => `${table.options.data.length} Primary nodes`,
+      header: ({ table }) =>
+        i18n.t('analytics.clusterDetails.table.primaryNodes', {
+          count: table.options.data.length,
+        }),
       isHeaderCustom: true,
       id: 'host',
       accessorKey: 'host',
@@ -22,42 +26,42 @@ export const DEFAULT_CLUSTER_NODES_COLUMNS: ColumnDef<ModifiedClusterNodes>[] =
       cell: ClusterNodesHostCell,
     },
     {
-      header: 'Commands/s',
+      header: () => i18n.t('analytics.clusterDetails.table.commandsPerSec'),
       id: 'opsPerSecond',
       accessorKey: 'opsPerSecond',
       enableSorting: true,
       cell: ClusterNodesNumericCell,
     },
     {
-      header: 'Network Input',
+      header: () => i18n.t('analytics.clusterDetails.table.networkInput'),
       id: 'networkInKbps',
       accessorKey: 'networkInKbps',
       enableSorting: true,
       cell: ClusterNodesNumericCell,
     },
     {
-      header: 'Network Output',
+      header: () => i18n.t('analytics.clusterDetails.table.networkOutput'),
       id: 'networkOutKbps',
       accessorKey: 'networkOutKbps',
       enableSorting: true,
       cell: ClusterNodesNumericCell,
     },
     {
-      header: 'Total Memory',
+      header: () => i18n.t('analytics.clusterDetails.table.totalMemory'),
       id: 'usedMemory',
       accessorKey: 'usedMemory',
       enableSorting: true,
       cell: ClusterNodesNumericCell,
     },
     {
-      header: 'Total Keys',
+      header: () => i18n.t('analytics.clusterDetails.table.totalKeys'),
       id: 'totalKeys',
       accessorKey: 'totalKeys',
       enableSorting: true,
       cell: ClusterNodesNumericCell,
     },
     {
-      header: 'Clients',
+      header: () => i18n.t('analytics.clusterDetails.table.clients'),
       id: 'connectedClients',
       accessorKey: 'connectedClients',
       enableSorting: true,
