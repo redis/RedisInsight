@@ -8,7 +8,7 @@ import {
 import { KeyDetailsHeaderProps } from 'uiSrc/pages/browser/modules'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import {
-  isDevArrayEnabledSelector,
+  isArrayEnabledSelector,
   isValueDecoderEnabledSelector,
   isVectorSetEnabledSelector,
 } from 'uiSrc/slices/app/features'
@@ -37,7 +37,7 @@ export interface Props extends KeyDetailsHeaderProps {
 const DynamicTypeDetails = (props: Props) => {
   const { keyType: selectedKeyType, keyProp } = props
   const isVectorSet = useAppSelector(isVectorSetEnabledSelector)
-  const isArray = useAppSelector(isDevArrayEnabledSelector)
+  const isArray = useAppSelector(isArrayEnabledSelector)
   const isValueDecoderEnabled = useAppSelector(isValueDecoderEnabledSelector)
 
   const hashDetails = isValueDecoderEnabled ? (
