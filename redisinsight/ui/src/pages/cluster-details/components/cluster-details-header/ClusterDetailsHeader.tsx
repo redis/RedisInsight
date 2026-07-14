@@ -1,6 +1,7 @@
 import React from 'react'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { LoadingContent } from 'uiSrc/components/base/layout'
 import {
   truncateNumberToFirstUnit,
@@ -26,56 +27,64 @@ import {
 } from './ClusterDetailsHeader.styles'
 
 interface IMetrics {
+  id: string
   label: string
   value: any
   border?: 'left'
 }
 
 const MAX_NAME_LENGTH = 30
-const DEFAULT_USERNAME = 'Default'
 
 const ClusterDetailsHeader = () => {
-  const {
-    username = DEFAULT_USERNAME,
-    connectionType = ConnectionType.Cluster,
-  } = useAppSelector(connectedInstanceSelector)
+  const { t } = useTranslation()
+  const { username, connectionType = ConnectionType.Cluster } = useAppSelector(
+    connectedInstanceSelector,
+  )
 
   const { data, loading } = useAppSelector(clusterDetailsSelector)
 
+  const defaultUsername = t('analytics.clusterDetails.header.defaultUsername')
+
   const metrics: IMetrics[] = [
     {
-      label: 'Type',
+      id: 'Type',
+      label: t('analytics.clusterDetails.header.type'),
       value: CONNECTION_TYPE_DISPLAY[connectionType],
     },
     {
-      label: 'Version',
+      id: 'Version',
+      label: t('analytics.clusterDetails.header.version'),
       value: data?.version || '',
     },
     {
-      label: 'User',
+      id: 'User',
+      label: t('analytics.clusterDetails.header.user'),
       value:
-        (username || DEFAULT_USERNAME)?.length < MAX_NAME_LENGTH ? (
-          username || DEFAULT_USERNAME
+        (username || defaultUsername)?.length < MAX_NAME_LENGTH ? (
+          username || defaultUsername
         ) : (
           <RiTooltip
             anchorClassName="truncateText"
             position="bottom"
-            content={<>{formatLongName(username || DEFAULT_USERNAME)}</>}
+            content={<>{formatLongName(username || defaultUsername)}</>}
           >
             <div data-testid="cluster-details-username">
-              {formatLongName(username || DEFAULT_USERNAME, MAX_NAME_LENGTH, 5)}
+              {formatLongName(username || defaultUsername, MAX_NAME_LENGTH, 5)}
             </div>
           </RiTooltip>
         ),
     },
     {
-      label: 'Uptime',
+      id: 'Uptime',
+      label: t('analytics.clusterDetails.header.uptime'),
       border: 'left',
       value: (
         <RiTooltip
           position="top"
           content={
             <>
+              {/* seconds suffix kept literal to match the untranslated
+                  duration from truncateNumberToDuration below */}
               {`${nullableNumberWithSpaces(data?.uptimeSec) || 0} s`}
               <br />
               {`(${truncateNumberToDuration(data?.uptimeSec || 0)})`}
@@ -100,11 +109,11 @@ const ClusterDetailsHeader = () => {
       )}
       {data && (
         <Content data-testid="cluster-details-content">
-          {metrics.map(({ value, label, border }) => (
+          {metrics.map(({ id, value, label, border }) => (
             <Item
-              key={label}
+              key={id}
               $borderLeft={border === 'left'}
-              data-testid={`cluster-details-item-${label}`}
+              data-testid={`cluster-details-item-${id}`}
             >
               <Text color="subdued">{value}</Text>
               <Text>{label}</Text>
