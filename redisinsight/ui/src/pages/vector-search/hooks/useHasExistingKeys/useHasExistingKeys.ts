@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { apiService } from 'uiSrc/services'
@@ -29,8 +29,20 @@ export const useHasExistingKeys = (
 
   const { encoding } = useAppSelector(appInfoSelector)
 
-  const checkForKeys = useCallback(
-    async (signal?: AbortSignal) => {
+  useEffect(() => {
+    if (!enabled) return undefined
+
+    if (!instanceId) {
+      // Nothing to scan against — fall back to browse mode like any
+      // other inconclusive check
+      setLoading(false)
+      setError(true)
+      return undefined
+    }
+
+    let cancelled = false
+
+    const checkForKeys = async () => {
       setLoading(true)
 
       try {
@@ -47,12 +59,12 @@ export const useHasExistingKeys = (
                 match: '*',
                 keysInfo: false,
               },
-              { params: { encoding }, signal },
+              { params: { encoding } },
             ),
           ),
         )
 
-        if (signal?.aborted) return
+        if (cancelled) return
 
         // The endpoint returns one entry per cluster node — check them all.
         // A scan stopped at the threshold (cursor !== 0) is inconclusive,
@@ -70,50 +82,23 @@ export const useHasExistingKeys = (
         setHasKeys(foundAny)
         setError(results.some(({ status }) => !isStatusSuccessful(status)))
       } catch (err) {
-        if (signal?.aborted) return
+        if (cancelled) return
         console.error('Failed to check for existing keys', err)
         setHasKeys(false)
         setError(true)
       } finally {
-        if (!signal?.aborted) {
+        if (!cancelled) {
           setLoading(false)
         }
       }
-    },
-    [instanceId, encoding],
-  )
-
-  // One scan per (database, encoding) — the guard re-arms when either changes
-  const scannedForRef = useRef<string | null>(null)
-  const controllerRef = useRef<AbortController | null>(null)
-
-  useEffect(() => {
-    if (!enabled) return
-
-    if (!instanceId) {
-      // Nothing to scan against — fall back to browse mode like any
-      // other inconclusive check
-      setLoading(false)
-      setError(true)
-      return
     }
 
-    const scanKey = `${instanceId}:${encoding}`
-    if (scannedForRef.current === scanKey) return
+    checkForKeys()
 
-    scannedForRef.current = scanKey
-    controllerRef.current?.abort()
-    controllerRef.current = new AbortController()
-    checkForKeys(controllerRef.current.signal)
-  }, [enabled, instanceId, encoding, checkForKeys])
-
-  useEffect(
-    // Abort the in-flight request on unmount to prevent late state updates
-    () => () => {
-      controllerRef.current?.abort()
-    },
-    [],
-  )
+    return () => {
+      cancelled = true
+    }
+  }, [enabled, instanceId, encoding])
 
   return { hasKeys, loading, error }
 }
