@@ -89,16 +89,22 @@ export const useHasExistingKeys = (
     [instanceId, encoding],
   )
 
-  // The probe runs once per mount — a different database or encoding
-  // always remounts the page, so there is nothing to re-check.
+  // One scan per (database, encoding) — the guard re-arms when either
+  // changes, e.g. when the connected instance settles after a switch.
+  const scannedForRef = useRef<string | null>(null)
   const controllerRef = useRef<AbortController | null>(null)
 
   useEffect(() => {
-    if (!enabled || !instanceId || controllerRef.current) return
+    if (!enabled || !instanceId) return
 
+    const scanKey = `${instanceId}:${encoding}`
+    if (scannedForRef.current === scanKey) return
+
+    scannedForRef.current = scanKey
+    controllerRef.current?.abort()
     controllerRef.current = new AbortController()
     checkForKeys(controllerRef.current.signal)
-  }, [enabled, instanceId, checkForKeys])
+  }, [enabled, instanceId, encoding, checkForKeys])
 
   useEffect(
     // Abort the in-flight request on unmount to prevent late state updates

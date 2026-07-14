@@ -5,13 +5,14 @@ import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 
 import { useHasExistingKeys } from './useHasExistingKeys'
 
+let mockInstanceId = 'test-instance'
 jest.mock('uiSrc/slices/hooks', () => ({
   ...jest.requireActual('uiSrc/slices/hooks'),
   useAppSelector: jest.fn((selector) => {
     const state = {
       connections: {
         instances: {
-          connectedInstance: { id: 'test-instance' },
+          connectedInstance: { id: mockInstanceId },
         },
       },
       app: {
@@ -33,6 +34,7 @@ const mockApiPost = apiService.post as jest.Mock
 describe('useHasExistingKeys', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockInstanceId = 'test-instance'
   })
 
   it('should return hasKeys=true when Hash keys exist', async () => {
@@ -136,5 +138,26 @@ describe('useHasExistingKeys', () => {
     expect(mockApiPost).not.toHaveBeenCalled()
     expect(result.current.loading).toBe(false)
     expect(result.current.hasKeys).toBe(false)
+  })
+
+  it('should re-scan when the connected database changes', async () => {
+    mockApiPost.mockResolvedValue({
+      status: 200,
+      data: [{ keys: [], total: 0, cursor: 0 }],
+    })
+
+    const { result, rerender, waitForNextUpdate } = renderHook(() =>
+      useHasExistingKeys(),
+    )
+    await waitForNextUpdate()
+    const callsForFirstInstance = mockApiPost.mock.calls.length
+
+    mockInstanceId = 'other-instance'
+    rerender()
+
+    expect(mockApiPost.mock.calls.length).toBeGreaterThan(callsForFirstInstance)
+
+    await waitForNextUpdate()
+    expect(result.current.loading).toBe(false)
   })
 })
