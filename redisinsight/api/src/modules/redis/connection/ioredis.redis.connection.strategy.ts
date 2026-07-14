@@ -46,14 +46,22 @@ export class IoredisRedisConnectionStrategy extends RedisConnectionStrategy {
     database: Database,
     options: IRedisConnectionOptions,
   ): Promise<RedisOptions> {
-    const { host, port, password, username, tls, db, timeout, family } =
-      database;
+    const {
+      host,
+      port,
+      password,
+      username,
+      tls,
+      db,
+      timeout,
+      connectionFamily,
+    } = database;
     const redisOptions: RedisOptions = {
       host,
       port,
       username,
       password,
-      family: getIpFamily(family),
+      family: getIpFamily(connectionFamily),
       connectTimeout: timeout,
       db: isNumber(clientMetadata.db) ? clientMetadata.db : db,
       connectionName:

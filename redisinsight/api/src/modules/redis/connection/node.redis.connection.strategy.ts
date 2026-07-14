@@ -43,8 +43,16 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
     database: Database,
     options: IRedisConnectionOptions,
   ): Promise<RedisClientOptions> {
-    const { host, port, password, username, tls, db, timeout, family } =
-      database;
+    const {
+      host,
+      port,
+      password,
+      username,
+      tls,
+      db,
+      timeout,
+      connectionFamily,
+    } = database;
 
     let tlsOptions = {};
     if (tls) {
@@ -58,7 +66,7 @@ export class NodeRedisConnectionStrategy extends RedisConnectionStrategy {
       socket: {
         host,
         port,
-        family: getIpFamily(family),
+        family: getIpFamily(connectionFamily),
         connectTimeout: timeout,
         ...tlsOptions,
         reconnectStrategy: options?.useRetry

@@ -310,5 +310,5 @@ export class DatabaseEntity {
 
   @Expose()
   @Column({ nullable: false, default: RedisConnectionFamily.Auto })
-  family: RedisConnectionFamily;
+  connectionFamily: RedisConnectionFamily;
 }

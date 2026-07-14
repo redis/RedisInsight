@@ -64,7 +64,7 @@ describe('DatabaseForm', () => {
     expect(screen.getByTestId('username')).toBeInTheDocument()
     expect(screen.getByTestId('password')).toBeInTheDocument()
     expect(screen.getByTestId('timeout')).toBeInTheDocument()
-    expect(screen.getByTestId('family')).toBeInTheDocument()
+    expect(screen.getByTestId('connectionFamily')).toBeInTheDocument()
   })
 
   it('should hide fields when showFields is false', () => {
@@ -77,7 +77,7 @@ describe('DatabaseForm', () => {
     expect(screen.queryByTestId('port')).not.toBeInTheDocument()
     expect(screen.queryByTestId('timeout')).not.toBeInTheDocument()
     // the IP protocol selector follows the host field
-    expect(screen.queryByTestId('family')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('connectionFamily')).not.toBeInTheDocument()
     // username and password always show
     expect(screen.getByTestId('username')).toBeInTheDocument()
     expect(screen.getByTestId('password')).toBeInTheDocument()
@@ -87,7 +87,7 @@ describe('DatabaseForm', () => {
     renderComponent()
 
     expect(screen.getByText('IP protocol')).toBeInTheDocument()
-    expect(screen.getByTestId('family')).toBeInTheDocument()
+    expect(screen.getByTestId('connectionFamily')).toBeInTheDocument()
     expect(screen.getByText('Auto (IPv4 & IPv6)')).toBeInTheDocument()
   })
 

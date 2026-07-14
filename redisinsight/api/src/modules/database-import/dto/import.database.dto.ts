@@ -43,7 +43,7 @@ export class ImportDatabaseDto extends PickType(Database, [
   'forceStandalone',
   'tags',
   'environment',
-  'family',
+  'connectionFamily',
 ] as const) {
   @Expose()
   @IsNotEmpty()

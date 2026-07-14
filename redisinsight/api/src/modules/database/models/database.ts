@@ -395,10 +395,10 @@ export class Database {
   })
   @Expose()
   @IsEnum(RedisConnectionFamily, {
-    message: `family must be a valid enum value. Valid values: ${Object.values(
+    message: `connectionFamily must be a valid enum value. Valid values: ${Object.values(
       RedisConnectionFamily,
     )}.`,
   })
   @IsOptional()
-  family?: RedisConnectionFamily = RedisConnectionFamily.Auto;
+  connectionFamily?: RedisConnectionFamily = RedisConnectionFamily.Auto;
 }

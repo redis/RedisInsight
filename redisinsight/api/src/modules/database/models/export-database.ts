@@ -27,5 +27,5 @@ export class ExportDatabase extends PickType(Database, [
   'tags',
   'providerDetails',
   'environment',
-  'family',
+  'connectionFamily',
 ] as const) {}

@@ -296,7 +296,7 @@ export const getFormValues = (instance?: Nullable<Record<string, any>>) => ({
   db: instance?.db,
   compressor: instance?.compressor ?? NONE,
   environment: instance?.environment ?? Environment.Unspecified,
-  family: instance?.family ?? RedisConnectionFamily.Auto,
+  connectionFamily: instance?.connectionFamily ?? RedisConnectionFamily.Auto,
   modules: instance?.modules,
   showDb: !!instance?.db,
   forceStandalone: instance?.forceStandalone ?? false,

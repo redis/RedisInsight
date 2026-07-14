@@ -59,7 +59,7 @@ export interface Instance extends Partial<DatabaseInstanceResponse> {
   loading?: boolean
   isFreeDb?: boolean
   environment: Environment
-  family?: RedisConnectionFamily
+  connectionFamily?: RedisConnectionFamily
   tags?: Tag[]
 }
 

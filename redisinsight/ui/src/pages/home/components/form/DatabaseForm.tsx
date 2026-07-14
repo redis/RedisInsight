@@ -46,7 +46,7 @@ const CONNECTION_FAMILY_OPTIONS = [
   { value: RedisConnectionFamily.Ipv6, label: 'IPv6' },
 ]
 
-const familyInfo: RiInfoIconProps = {
+const connectionFamilyInfo: RiInfoIconProps = {
   content:
     'Choose which IP protocol to use when connecting. Use IPv4 or IPv6 if the host does not resolve correctly over the other protocol.',
   placement: 'right',
@@ -148,14 +148,18 @@ const DatabaseForm = (props: Props) => {
       {showFields.host && (
         <Row gap="m">
           <FlexItem grow>
-            <FormField label="IP protocol" infoIconProps={familyInfo}>
+            <FormField label="IP protocol" infoIconProps={connectionFamilyInfo}>
               <RiSelect
-                name="family"
-                data-testid="family"
-                value={formik.values.family ?? RedisConnectionFamily.Auto}
+                name="connectionFamily"
+                data-testid="connectionFamily"
+                value={
+                  formik.values.connectionFamily ?? RedisConnectionFamily.Auto
+                }
                 options={CONNECTION_FAMILY_OPTIONS}
-                onChange={(value) => formik.setFieldValue('family', value)}
-                disabled={isFieldDisabled('family')}
+                onChange={(value) =>
+                  formik.setFieldValue('connectionFamily', value)
+                }
+                disabled={isFieldDisabled('connectionFamily')}
               />
             </FormField>
           </FlexItem>

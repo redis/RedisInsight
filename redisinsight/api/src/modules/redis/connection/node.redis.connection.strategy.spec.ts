@@ -72,7 +72,7 @@ describe('NodeRedisConnectionStrategy', () => {
 
       await service.createStandaloneClient(
         mockClientMetadata,
-        { ...mockDatabase, family: RedisConnectionFamily.IPv4 },
+        { ...mockDatabase, connectionFamily: RedisConnectionFamily.IPv4 },
         {},
       );
 
@@ -88,7 +88,7 @@ describe('NodeRedisConnectionStrategy', () => {
 
       await service.createStandaloneClient(
         mockClientMetadata,
-        { ...mockDatabase, family: RedisConnectionFamily.IPv6 },
+        { ...mockDatabase, connectionFamily: RedisConnectionFamily.IPv6 },
         {},
       );
 

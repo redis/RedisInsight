@@ -6,7 +6,7 @@ import { KeyValueFormat } from 'uiSrc/constants'
 export interface DbConnectionInfo extends Instance {
   id?: string
   port: string
-  family?: RedisConnectionFamily
+  connectionFamily?: RedisConnectionFamily
   tlsClientAuthRequired?: boolean
   certificates?: { id: number; name: string }[]
   selectedTlsClientCertId?: string | 'ADD_NEW' | undefined

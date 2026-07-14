@@ -48,7 +48,7 @@ export class DatabaseService {
   static connectionFields: string[] = [
     'host',
     'port',
-    'family',
+    'connectionFamily',
     'db',
     'username',
     'password',
