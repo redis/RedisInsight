@@ -3,7 +3,7 @@ import React, { Ref, useCallback, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { CellMeasurerCache } from 'react-virtualized'
 
-import { isNumber, toNumber } from 'lodash'
+import { isNumber, isString, toNumber } from 'lodash'
 import { Text } from 'uiSrc/components/base/text'
 import { getColumnWidth } from 'uiSrc/components/virtual-grid'
 import { StopPropagation } from 'uiSrc/components/virtual-table'
@@ -488,9 +488,7 @@ const HashDetailsTable = (props: Props) => {
             value={formattedValue}
             expanded={expanded}
             title={
-              isValid
-                ? 'Value'
-                : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
+              isValid ? 'Value' : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
             }
             tooltipContent={tooltipContent}
           />
@@ -524,7 +522,9 @@ const HashDetailsTable = (props: Props) => {
             testIdPrefix="hash"
           >
             <div className="innerCellAsCell">
-              {isValueDecoderEnabled && !isTruncatedFieldOrValue ? (
+              {isValueDecoderEnabled &&
+              !isTruncatedFieldOrValue &&
+              !isString(decompressedValueItem) ? (
                 <DecodedValueDisplay
                   buffer={decompressedValueItem}
                   expanded={expanded}

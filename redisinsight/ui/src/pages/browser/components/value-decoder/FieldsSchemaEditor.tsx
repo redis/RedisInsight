@@ -1,6 +1,9 @@
 import React, { useCallback } from 'react'
 
-import { ActionIconButton, SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import {
+  ActionIconButton,
+  SecondaryButton,
+} from 'uiSrc/components/base/forms/buttons'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import { Row } from 'uiSrc/components/base/layout/flex'
 import TextInput from 'uiSrc/components/base/inputs/TextInput'
@@ -129,7 +132,7 @@ const FieldRow = ({
             {sizeSource === 'field' ? (
               <RiSelect
                 options={sizeRefs}
-                value={field.sizeFieldRef || null}
+                value={field.sizeFieldRef || undefined}
                 onChange={(value) =>
                   onFieldChange(field.id, { sizeFieldRef: value ?? '' })
                 }
@@ -142,8 +145,7 @@ const FieldRow = ({
                   value={field.size === '' ? null : Number(field.size)}
                   onChange={(value) =>
                     onFieldChange(field.id, {
-                      size:
-                        value == null || Number.isNaN(value) ? '' : value,
+                      size: value == null || Number.isNaN(value) ? '' : value,
                     })
                   }
                   min={1}
@@ -222,7 +224,7 @@ const RepeatBlockEditor = ({
         <S.RepeatLabel>Repeat</S.RepeatLabel>
         <RiSelect
           options={toNumericOptions(repeatScopeNumeric)}
-          value={repeat.countFieldRef || null}
+          value={repeat.countFieldRef || undefined}
           onChange={(value) =>
             onRepeatChange(repeat.id, { countFieldRef: value ?? '' })
           }

@@ -1,6 +1,9 @@
 import React, { useCallback } from 'react'
 
-import { ActionIconButton, SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import {
+  ActionIconButton,
+  SecondaryButton,
+} from 'uiSrc/components/base/forms/buttons'
 import { DeleteIcon } from 'uiSrc/components/base/icons'
 import TextInput from 'uiSrc/components/base/inputs/TextInput'
 
