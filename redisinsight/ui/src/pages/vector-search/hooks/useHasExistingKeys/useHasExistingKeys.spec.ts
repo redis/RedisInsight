@@ -140,6 +140,16 @@ describe('useHasExistingKeys', () => {
     expect(result.current.hasKeys).toBe(false)
   })
 
+  it('should report an inconclusive check when no instance is connected', () => {
+    mockInstanceId = ''
+
+    const { result } = renderHook(() => useHasExistingKeys())
+
+    expect(mockApiPost).not.toHaveBeenCalled()
+    expect(result.current.loading).toBe(false)
+    expect(result.current.error).toBe(true)
+  })
+
   it('should re-scan when the connected database changes', async () => {
     mockApiPost.mockResolvedValue({
       status: 200,

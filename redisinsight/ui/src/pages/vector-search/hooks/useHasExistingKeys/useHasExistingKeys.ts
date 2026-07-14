@@ -32,11 +32,6 @@ export const useHasExistingKeys = (
 
   const checkForKeys = useCallback(
     async (signal?: AbortSignal) => {
-      if (!instanceId) {
-        setLoading(false)
-        return
-      }
-
       setLoading(true)
 
       try {
@@ -95,7 +90,15 @@ export const useHasExistingKeys = (
   const controllerRef = useRef<AbortController | null>(null)
 
   useEffect(() => {
-    if (!enabled || !instanceId) return
+    if (!enabled) return
+
+    if (!instanceId) {
+      // Nothing to scan against — fall back to browse mode like any
+      // other inconclusive check
+      setLoading(false)
+      setError(true)
+      return
+    }
 
     const scanKey = `${instanceId}:${encoding}`
     if (scannedForRef.current === scanKey) return
