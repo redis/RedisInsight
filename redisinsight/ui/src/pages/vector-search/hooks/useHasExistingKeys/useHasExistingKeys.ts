@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 
 import { apiService } from 'uiSrc/services'
 import { ApiEndpoints, KeyTypes } from 'uiSrc/constants'
 import { SCAN_COUNT_DEFAULT } from 'uiSrc/constants/api'
 import { getUrl, isStatusSuccessful } from 'uiSrc/utils'
+import { connectedInstanceSelector } from 'uiSrc/slices/instances/instances'
 import { appInfoSelector } from 'uiSrc/slices/app/info'
 
 interface ScanResponse {
@@ -16,33 +18,23 @@ interface ScanResponse {
 export interface UseHasExistingKeysResult {
   hasKeys: boolean
   loading: boolean
-  error: boolean
 }
 
-export const useHasExistingKeys = (
-  instanceId: string,
-  enabled: boolean = true,
-): UseHasExistingKeysResult => {
+export const useHasExistingKeys = (): UseHasExistingKeysResult => {
   const [hasKeys, setHasKeys] = useState(false)
-  const [loading, setLoading] = useState(enabled)
-  const [error, setError] = useState(false)
+  const [loading, setLoading] = useState(true)
 
+  const { pathname } = useLocation()
+  const { id: instanceId } = useAppSelector(connectedInstanceSelector)
   const { encoding } = useAppSelector(appInfoSelector)
 
-  useEffect(() => {
-    if (!enabled) return undefined
+  const checkForKeys = useCallback(
+    async (signal?: AbortSignal) => {
+      if (!instanceId) {
+        setLoading(false)
+        return
+      }
 
-    if (!instanceId) {
-      // Nothing to scan against — fall back to browse mode like any
-      // other inconclusive check
-      setLoading(false)
-      setError(true)
-      return undefined
-    }
-
-    let cancelled = false
-
-    const checkForKeys = async () => {
       setLoading(true)
 
       try {
@@ -59,12 +51,12 @@ export const useHasExistingKeys = (
                 match: '*',
                 keysInfo: false,
               },
-              { params: { encoding } },
+              { params: { encoding }, signal },
             ),
           ),
         )
 
-        if (cancelled) return
+        if (signal?.aborted) return
 
         // The endpoint returns one entry per cluster node — check them all.
         // A scan stopped at the threshold (cursor !== 0) is inconclusive,
@@ -80,25 +72,28 @@ export const useHasExistingKeys = (
         })
 
         setHasKeys(foundAny)
-        setError(results.some(({ status }) => !isStatusSuccessful(status)))
-      } catch (err) {
-        if (cancelled) return
-        console.error('Failed to check for existing keys', err)
+      } catch (error) {
+        if (signal?.aborted) return
+        console.error('Failed to check for existing keys', error)
         setHasKeys(false)
-        setError(true)
       } finally {
-        if (!cancelled) {
+        if (!signal?.aborted) {
           setLoading(false)
         }
       }
-    }
+    },
+    [instanceId, encoding],
+  )
 
-    checkForKeys()
+  useEffect(() => {
+    // Abort in-flight requests on unmount to prevent state updates after cleanup
+    const controller = new AbortController()
+    checkForKeys(controller.signal)
 
     return () => {
-      cancelled = true
+      controller.abort()
     }
-  }, [enabled, instanceId, encoding])
+  }, [checkForKeys, pathname])
 
-  return { hasKeys, loading, error }
+  return { hasKeys, loading }
 }
