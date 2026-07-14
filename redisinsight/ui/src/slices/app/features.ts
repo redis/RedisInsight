@@ -86,6 +86,9 @@ export const initialState: StateAppFeatures = {
       [FeatureFlags.devLanguage]: {
         flag: false,
       },
+      [FeatureFlags.valueDecoder]: {
+        flag: false,
+      },
     },
   },
 }
@@ -221,6 +224,10 @@ export const appFeatureFlagsFeaturesSelector = (state: RootState) =>
   state.app.features.featureFlags.features
 export const appFeatureFlagProdModeSelector = (state: RootState): boolean =>
   state.app.features.featureFlags.features[FeatureFlags.prodMode]?.flag ?? false
+
+export const isValueDecoderEnabledSelector = (state: RootState): boolean =>
+  state.app.features.featureFlags.features[FeatureFlags.valueDecoder]?.flag ??
+  false
 
 export const isDevelopment = riConfig.app.env === 'development'
 

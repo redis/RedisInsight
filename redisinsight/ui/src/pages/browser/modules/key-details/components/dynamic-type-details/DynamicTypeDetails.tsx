@@ -9,9 +9,11 @@ import { KeyDetailsHeaderProps } from 'uiSrc/pages/browser/modules'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 import {
   isDevArrayEnabledSelector,
+  isValueDecoderEnabledSelector,
   isVectorSetEnabledSelector,
 } from 'uiSrc/slices/app/features'
 import { isTruncatedString } from 'uiSrc/utils'
+import { ValueDecoderProvider } from 'uiSrc/pages/browser/components/value-decoder'
 import TooLongKeyNameDetails from 'uiSrc/pages/browser/modules/key-details/components/too-long-key-name-details/TooLongKeyNameDetails'
 import ModulesTypeDetails from '../modules-type-details/ModulesTypeDetails'
 import UnsupportedTypeDetails from '../unsupported-type-details/UnsupportedTypeDetails'
@@ -36,12 +38,21 @@ const DynamicTypeDetails = (props: Props) => {
   const { keyType: selectedKeyType, keyProp } = props
   const isVectorSet = useAppSelector(isVectorSetEnabledSelector)
   const isArray = useAppSelector(isDevArrayEnabledSelector)
+  const isValueDecoderEnabled = useAppSelector(isValueDecoderEnabledSelector)
+
+  const hashDetails = isValueDecoderEnabled ? (
+    <ValueDecoderProvider keyProp={keyProp}>
+      <HashDetails {...props} />
+    </ValueDecoderProvider>
+  ) : (
+    <HashDetails {...props} />
+  )
 
   const TypeDetails: any = {
     [KeyTypes.ZSet]: <ZSetDetails {...props} />,
     [KeyTypes.Set]: <SetDetails {...props} />,
     [KeyTypes.String]: <StringDetails {...props} />,
-    [KeyTypes.Hash]: <HashDetails {...props} />,
+    [KeyTypes.Hash]: hashDetails,
     [KeyTypes.List]: <ListDetails {...props} />,
     [KeyTypes.ReJSON]: <RejsonDetailsWrapper {...props} />,
     [KeyTypes.Stream]: <StreamDetails {...props} />,

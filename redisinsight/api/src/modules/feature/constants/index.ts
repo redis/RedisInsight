@@ -41,6 +41,7 @@ export enum KnownFeatures {
   ProdMode = 'prodMode',
   DevLanguage = 'dev-language',
   WhatsNew = 'whatsNew',
+  ValueDecoder = 'valueDecoder',
 }
 
 export interface IFeatureFlag {

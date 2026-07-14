@@ -75,6 +75,12 @@ import {
 import { stringToBuffer } from 'uiSrc/utils/formatters/bufferFormatters'
 import { decompressingBuffer } from 'uiSrc/utils/decompressors'
 import PopoverDelete from 'uiSrc/pages/browser/components/popover-delete/PopoverDelete'
+import { isValueDecoderEnabledSelector } from 'uiSrc/slices/app/features'
+import {
+  DecodedValueDisplay,
+  useValueDecoder,
+  ValueDecoderHeaderLabel,
+} from 'uiSrc/pages/browser/components/value-decoder'
 import {
   EditableInput,
   EditableTextArea,
@@ -143,12 +149,29 @@ const HashDetailsTable = (props: Props) => {
 
   const formattedLastIndexRef = useRef(OVER_RENDER_BUFFER_COUNT)
   const tableRef: Ref<any> = useRef(null)
+  const isInitialDecodeLayoutRef = useRef(true)
 
   const dispatch = useAppDispatch()
+  const isValueDecoderEnabled = useAppSelector(isValueDecoderEnabledSelector)
+  const { isDecodeEnabled, matchedRule } = useValueDecoder()
 
   useEffect(() => {
     resetState()
   }, [lastRefreshTime])
+
+  useEffect(() => {
+    if (!isValueDecoderEnabled) {
+      return
+    }
+
+    if (isInitialDecodeLayoutRef.current) {
+      isInitialDecodeLayoutRef.current = false
+      return
+    }
+
+    cellCache.clearAll()
+    tableRef.current?.recomputeRowHeights()
+  }, [isDecodeEnabled, isValueDecoderEnabled, matchedRule])
 
   useEffect(() => {
     setFields(loadedFields)
@@ -410,7 +433,7 @@ const HashDetailsTable = (props: Props) => {
     },
     {
       id: 'value',
-      label: 'Value',
+      label: isValueDecoderEnabled ? <ValueDecoderHeaderLabel /> : 'Value',
       minWidth: 120,
       truncateText: true,
       alignment: TableCellAlignment.Left,
@@ -460,6 +483,19 @@ const HashDetailsTable = (props: Props) => {
           ? bufferToSerializedFormat(viewFormat, valueItem, 4)
           : ''
 
+        const formattedValueDisplay = (
+          <FormattedValue
+            value={formattedValue}
+            expanded={expanded}
+            title={
+              isValid
+                ? 'Value'
+                : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
+            }
+            tooltipContent={tooltipContent}
+          />
+        )
+
         return (
           <EditableTextArea
             initialValue={serializedValue}
@@ -488,16 +524,15 @@ const HashDetailsTable = (props: Props) => {
             testIdPrefix="hash"
           >
             <div className="innerCellAsCell">
-              <FormattedValue
-                value={formattedValue}
-                expanded={expanded}
-                title={
-                  isValid
-                    ? 'Value'
-                    : TEXT_FAILED_CONVENT_FORMATTER(viewFormatProp)
-                }
-                tooltipContent={tooltipContent}
-              />
+              {isValueDecoderEnabled && !isTruncatedFieldOrValue ? (
+                <DecodedValueDisplay
+                  buffer={decompressedValueItem}
+                  expanded={expanded}
+                  fallback={formattedValueDisplay}
+                />
+              ) : (
+                formattedValueDisplay
+              )}
             </div>
           </EditableTextArea>
         )

@@ -8,12 +8,14 @@ import {
 import { BrowserStorageItem } from 'uiSrc/constants'
 import { dispatch } from 'uiSrc/slices/store'
 import { localStorageService } from 'uiSrc/services'
+import { removeValueDecoderRules } from 'uiSrc/pages/browser/components/value-decoder/valueDecoderStorage'
 
 const onDeleteInstances = (instances: Instance[]) => {
   dispatch(setEditedInstance(null))
 
   instances.forEach((instance) => {
     localStorageService.remove(BrowserStorageItem.dbConfig + instance.id)
+    removeValueDecoderRules(instance.id)
   })
 }
 

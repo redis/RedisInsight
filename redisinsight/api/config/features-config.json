@@ -1,5 +1,5 @@
 {
-  "version": 6,
+  "version": 6.1,
   "features": {
     "dev-language": {
       "flag": true,
@@ -158,6 +158,10 @@
     },
     "whatsNew": {
       "flag": true,
+      "perc": [[0, 100]]
+    },
+    "valueDecoder": {
+      "flag": false,
       "perc": [[0, 100]]
     }
   }
