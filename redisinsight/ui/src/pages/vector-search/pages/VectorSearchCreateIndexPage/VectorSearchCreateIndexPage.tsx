@@ -58,14 +58,12 @@ export const VectorSearchCreateIndexPage = () => {
   // If the keys check failed, fall back to browse mode rather than hiding the browser
   const isManualCreation =
     isBrowseFlow && !hasExistingKeys && !hasExistingKeysError
-  const showBrowser = isBrowseFlow && !isManualCreation
 
   return (
     <CreateIndexPageProvider
       instanceId={instanceId}
       mode={mode}
       sampleData={sampleData}
-      showBrowser={showBrowser}
       isManualCreation={isManualCreation}
       initialKey={preselected ? existingState?.initialKey : undefined}
       initialKeyType={preselected ? existingState?.initialKeyType : undefined}

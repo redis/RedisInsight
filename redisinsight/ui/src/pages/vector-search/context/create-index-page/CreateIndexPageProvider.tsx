@@ -61,7 +61,6 @@ export const CreateIndexPageProvider = ({
   instanceId,
   sampleData,
   mode: modeProp,
-  showBrowser: showBrowserProp = true,
   isManualCreation: isManualCreationProp = false,
   initialKey: initialKeyProp,
   initialKeyType: initialKeyTypeProp,
@@ -179,7 +178,7 @@ export const CreateIndexPageProvider = ({
     return t('vectorSearch.createIndex.displayNameFallback')
   }, [isSampleData, sampleData, t])
 
-  const showBrowser = !isSampleData && showBrowserProp
+  const showBrowser = !isSampleData && !initialKeyProp && !isManualCreation
 
   const selectedFields = useMemo(() => {
     if (isSampleData) return fields
