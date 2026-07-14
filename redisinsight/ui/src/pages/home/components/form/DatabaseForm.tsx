@@ -12,6 +12,7 @@ import {
   selectOnFocus,
   validateField,
 } from 'uiSrc/utils'
+import { RedisConnectionFamily } from 'apiClient'
 import { DbConnectionInfo } from 'uiSrc/pages/home/interfaces'
 import { Col, FlexItem, Row } from 'uiSrc/components/base/layout/flex'
 import {
@@ -23,6 +24,7 @@ import {
   PasswordInput,
   TextInput,
 } from 'uiSrc/components/base/inputs'
+import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { HostInfoTooltipContent } from '../host-info-tooltip-content/HostInfoTooltipContent'
 
 interface IShowFields {
@@ -34,6 +36,19 @@ interface IShowFields {
 
 const hostInfo: RiInfoIconProps = {
   content: HostInfoTooltipContent({ includeAutofillInfo: true }),
+  placement: 'right',
+  maxWidth: '100%',
+}
+
+const CONNECTION_FAMILY_OPTIONS = [
+  { value: RedisConnectionFamily.Auto, label: 'Auto (IPv4 & IPv6)' },
+  { value: RedisConnectionFamily.Ipv4, label: 'IPv4' },
+  { value: RedisConnectionFamily.Ipv6, label: 'IPv6' },
+]
+
+const connectionFamilyInfo: RiInfoIconProps = {
+  content:
+    'Choose which IP protocol to use when connecting. Use IPv4 or IPv6 if the host does not resolve correctly over the other protocol.',
   placement: 'right',
   maxWidth: '100%',
 }
@@ -127,6 +142,28 @@ const DatabaseForm = (props: Props) => {
               </FormField>
             </FlexItem>
           )}
+        </Row>
+      )}
+
+      {showFields.host && (
+        <Row gap="m">
+          <FlexItem grow>
+            <FormField label="IP protocol" infoIconProps={connectionFamilyInfo}>
+              <RiSelect
+                name="connectionFamily"
+                data-testid="connectionFamily"
+                value={
+                  formik.values.connectionFamily ?? RedisConnectionFamily.Auto
+                }
+                options={CONNECTION_FAMILY_OPTIONS}
+                onChange={(value) =>
+                  formik.setFieldValue('connectionFamily', value)
+                }
+                disabled={isFieldDisabled('connectionFamily')}
+              />
+            </FormField>
+          </FlexItem>
+          <FlexItem grow />
         </Row>
       )}
 

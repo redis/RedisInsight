@@ -214,6 +214,7 @@ const ManualConnectionWrapper = (props: Props) => {
       forceStandalone,
       keyNameFormat,
       environment,
+      connectionFamily,
     } = values
 
     const database: any = {
@@ -231,6 +232,7 @@ const ManualConnectionWrapper = (props: Props) => {
       forceStandalone,
       keyNameFormat,
       environment,
+      connectionFamily,
     }
 
     // add tls & ssh for database (modifies database object)

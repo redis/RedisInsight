@@ -9,6 +9,7 @@ import {
   Encoding,
   Environment,
   HostingProvider,
+  RedisConnectionFamily,
 } from 'src/modules/database/entities/database.entity';
 import {
   IsBoolean,
@@ -384,4 +385,20 @@ export class Database {
   })
   @IsOptional()
   environment?: Environment = Environment.Unspecified;
+
+  @ApiPropertyOptional({
+    description:
+      'IP protocol family to use when connecting. "auto" resolves both IPv4 and IPv6 (dual-stack), "ipv4" forces IPv4, "ipv6" forces IPv6.',
+    default: RedisConnectionFamily.Auto,
+    enum: RedisConnectionFamily,
+    enumName: 'RedisConnectionFamily',
+  })
+  @Expose()
+  @IsEnum(RedisConnectionFamily, {
+    message: `connectionFamily must be a valid enum value. Valid values: ${Object.values(
+      RedisConnectionFamily,
+    )}.`,
+  })
+  @IsOptional()
+  connectionFamily?: RedisConnectionFamily = RedisConnectionFamily.Auto;
 }

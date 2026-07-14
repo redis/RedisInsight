@@ -39,6 +39,7 @@ import ERROR_MESSAGES from 'src/constants/error-messages';
 import {
   Compressor,
   Environment,
+  RedisConnectionFamily,
 } from 'src/modules/database/entities/database.entity';
 import { RedisClientFactory } from 'src/modules/redis/redis.client.factory';
 import { RedisClientStorage } from 'src/modules/redis/redis.client.storage';
@@ -61,6 +62,7 @@ const updateDatabaseTests = [
   { input: { sentinelMaster: 'master' }, expected: 1 },
   { input: { caCert: mockCaCertificate }, expected: 1 },
   { input: { clientCert: mockClientCertificate }, expected: 1 },
+  { input: { connectionFamily: RedisConnectionFamily.IPv4 }, expected: 1 },
   { input: { compressor: Compressor.NONE }, expected: 0 },
   { input: { timeout: 45_000 }, expected: 0 },
   { input: { port: 6379, timeout: 45_000 }, expected: 1 },
@@ -270,6 +272,7 @@ describe('DatabaseService', () => {
           timeout: 30000,
           compressor: Compressor.NONE,
           environment: Environment.Unspecified,
+          connectionFamily: RedisConnectionFamily.Auto,
           id: 'a77b23c1-7816-4ea4-b61f-d37795a0f805-db-id',
           name: 'database-name',
           host: '127.0.100.1',
@@ -317,6 +320,7 @@ describe('DatabaseService', () => {
           timeout: 30000,
           compressor: Compressor.NONE,
           environment: Environment.Unspecified,
+          connectionFamily: RedisConnectionFamily.Auto,
           name: 'database-name',
           id: 'a77b23c1-7816-4ea4-b61f-d37795a0f805-db-id',
           host: '127.0.100.1',
