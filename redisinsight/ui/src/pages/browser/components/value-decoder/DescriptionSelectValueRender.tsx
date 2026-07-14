@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { RiTooltip } from 'uiSrc/components'
 
 import {
@@ -10,7 +12,7 @@ import * as S from './ValueDecoderModal.styles'
 export const createDescriptionSelectValueRender = (
   descriptions: Record<string, string>,
 ): SelectValueRender => {
-  const render = ({ option, isOptionValue }: SelectValueRenderParams) => {
+  return ({ option, isOptionValue }: SelectValueRenderParams) => {
     const description = descriptions[String(option.value)] ?? ''
     const label = option.label ?? option.value
 
@@ -26,6 +28,4 @@ export const createDescriptionSelectValueRender = (
       </RiTooltip>
     )
   }
-
-  return render
 }

@@ -3,7 +3,12 @@ import {
   createEmptyField,
   createEmptyRepeatBlock,
 } from './constants'
-import { isDecoderValid, isSchemaValid, areDecodersValid, normalizeRule } from './schemaUtils'
+import {
+  isDecoderValid,
+  isSchemaValid,
+  areDecodersValid,
+  normalizeRule,
+} from './schemaUtils'
 import { BinaryFieldDefinition } from './types'
 
 describe('schemaUtils validation', () => {
@@ -34,9 +39,9 @@ describe('schemaUtils validation', () => {
         name: 'text',
         dataType: 'string',
         size: '',
-        sizeSource: 'field' as const,
+        sizeSource: 'field',
         sizeFieldRef: 'len',
-      }
+      } satisfies BinaryFieldDefinition
 
       const normalized = normalizeRule({
         ...createEmptyDecoder(),

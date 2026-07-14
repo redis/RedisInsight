@@ -42,10 +42,7 @@ export const setValueDecoderRules = (
     return
   }
 
-  localStorageService?.set(
-    getValueDecoderRulesStorageKey(instanceId),
-    decoders,
-  )
+  localStorageService?.set(getValueDecoderRulesStorageKey(instanceId), decoders)
 }
 
 export const removeValueDecoderRules = (instanceId: string): void => {

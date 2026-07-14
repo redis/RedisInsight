@@ -46,7 +46,7 @@ const remapSchemaIds = (
         id: idMap.get(node.id) ?? node.id,
         kind: 'field',
         sizeFieldRef: node.sizeFieldRef
-          ? idMap.get(node.sizeFieldRef) ?? node.sizeFieldRef
+          ? (idMap.get(node.sizeFieldRef) ?? node.sizeFieldRef)
           : undefined,
       }
     }
@@ -88,11 +88,15 @@ export const serializeDecodersForClipboard = (
   return JSON.stringify(payload, null, 2)
 }
 
-export const serializeDecoderForClipboard = (decoder: ValueDecoderRule): string =>
-  serializeDecodersForClipboard([decoder])
+export const serializeDecoderForClipboard = (
+  decoder: ValueDecoderRule,
+): string => serializeDecodersForClipboard([decoder])
+
+const isRecordLike = (value: unknown): value is Record<string, unknown> =>
+  isObjectLike(value)
 
 const isDecoderLike = (value: unknown): value is Record<string, unknown> => {
-  if (!isObjectLike(value)) {
+  if (!isRecordLike(value)) {
     return false
   }
 
@@ -109,7 +113,7 @@ const parseDecoderCandidates = (parsed: unknown): unknown[] => {
     return parsed
   }
 
-  if (!isObjectLike(parsed)) {
+  if (!isRecordLike(parsed)) {
     return []
   }
 
@@ -146,7 +150,9 @@ export const parseDecodersFromClipboard = (
 
     const decoders = candidates
       .filter(isDecoderLike)
-      .map((candidate) => cloneDecoderRule(candidate as ValueDecoderRule))
+      .map((candidate) =>
+        cloneDecoderRule(candidate as unknown as ValueDecoderRule),
+      )
 
     return decoders.length > 0 ? decoders : null
   } catch {

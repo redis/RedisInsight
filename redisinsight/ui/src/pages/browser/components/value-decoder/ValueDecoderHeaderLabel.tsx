@@ -38,7 +38,7 @@ export const ValueDecoderHeaderLabel = ({
   }
 
   return (
-    <Row gap="xs" align="center" inline>
+    <Row gap="xs" align="center">
       <Text size="m" variant="semiBold" component="span">
         {label}
       </Text>
@@ -51,9 +51,7 @@ export const ValueDecoderHeaderLabel = ({
         position="top"
       >
         <ToggleButton
-          aria-label={
-            isDecodeEnabled ? 'Show raw value' : 'Show decoded value'
-          }
+          aria-label={isDecodeEnabled ? 'Show raw value' : 'Show decoded value'}
           aria-pressed={isDecodeEnabled}
           $active={isDecodeEnabled}
           onClick={toggleDecodeEnabled}

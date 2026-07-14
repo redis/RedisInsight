@@ -19,7 +19,9 @@ export interface NumericFieldRef {
 }
 
 export const isNumericCountType = (dataType: string): boolean =>
-  NUMERIC_COUNT_DATA_TYPES.includes(dataType as (typeof NUMERIC_COUNT_DATA_TYPES)[number])
+  NUMERIC_COUNT_DATA_TYPES.includes(
+    dataType as (typeof NUMERIC_COUNT_DATA_TYPES)[number],
+  )
 
 export const normalizeFieldNode = (
   field: Partial<BinaryFieldDefinition> & { id: string },
@@ -144,11 +146,7 @@ const normalizeSchemaRefs = (
   priorFields: NumericFieldRef[] = [],
 ): SchemaNode[] =>
   nodes.map((node, index) => {
-    const scopeNumeric = getPriorNumericFieldsInScope(
-      priorFields,
-      nodes,
-      index,
-    )
+    const scopeNumeric = getPriorNumericFieldsInScope(priorFields, nodes, index)
 
     if (isFieldNode(node)) {
       if (node.sizeSource !== 'field') {
@@ -178,7 +176,10 @@ export const normalizeRule = (rule: ValueDecoderRule): ValueDecoderRule => {
     (rule.schema?.length ?? 0) > 0
       ? rule.schema!.map(normalizeSchemaNode)
       : (rule.fields ?? []).map((field) =>
-          normalizeFieldNode({ ...field, id: field.id ?? `field-legacy-${field.name}` }),
+          normalizeFieldNode({
+            ...field,
+            id: field.id ?? `field-legacy-${field.name}`,
+          }),
         )
   const schema = normalizeSchemaRefs(schemaNodes)
 
@@ -274,9 +275,7 @@ export const isSchemaValid = (schema: SchemaNode[]): boolean =>
 
 export const isDecoderValid = (decoder: ValueDecoderRule): boolean => {
   const normalized = normalizeRule(decoder)
-  return (
-    normalized.keyPatterns.length > 0 && isSchemaValid(normalized.schema)
-  )
+  return normalized.keyPatterns.length > 0 && isSchemaValid(normalized.schema)
 }
 
 export const areDecodersValid = (decoders: ValueDecoderRule[]): boolean =>
@@ -335,4 +334,4 @@ export const isCustomSizeType = (dataType: string): boolean =>
 export const resolveSizeSource = (
   field: BinaryFieldDefinition,
 ): FieldSizeSource =>
-  isCustomSizeType(field.dataType) ? field.sizeSource ?? 'fixed' : 'fixed'
+  isCustomSizeType(field.dataType) ? (field.sizeSource ?? 'fixed') : 'fixed'

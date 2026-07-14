@@ -9,10 +9,7 @@ import TextInput from 'uiSrc/components/base/inputs/TextInput'
 import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 import { CopyButton } from 'uiSrc/components/copy-button/CopyButton'
 
-import {
-  DECODER_TYPE_OPTIONS,
-  VALUE_DECODER_TEST_ID,
-} from './constants'
+import { DECODER_TYPE_OPTIONS, VALUE_DECODER_TEST_ID } from './constants'
 import { serializeDecoderForClipboard } from './decoderClipboard'
 import {
   DECODER_TYPE_DESCRIPTIONS,
@@ -65,7 +62,10 @@ export const DecoderEditor = ({
   const isValid = isDecoderValid(decoder)
 
   return (
-    <S.DecoderSection $expanded={isExpanded} data-testid={`${VALUE_DECODER_TEST_ID}-decoder-${decoder.id}`}>
+    <S.DecoderSection
+      $expanded={isExpanded}
+      data-testid={`${VALUE_DECODER_TEST_ID}-decoder-${decoder.id}`}
+    >
       <S.DecoderHeader>
         <S.DecoderSummaryButton
           type="button"
@@ -101,7 +101,10 @@ export const DecoderEditor = ({
 
       {isExpanded && (
         <S.DecoderBody>
-          <FormField label="Name" additionalText="Optional label for this decoder.">
+          <FormField
+            label="Name"
+            additionalText="Optional label for this decoder."
+          >
             <TextInput
               value={decoder.name}
               onChange={(value) => handleFieldChange('name', value)}
@@ -120,7 +123,9 @@ export const DecoderEditor = ({
               patterns={
                 decoder.keyPatterns.length > 0 ? decoder.keyPatterns : ['']
               }
-              onChange={(keyPatterns) => handleFieldChange('keyPatterns', keyPatterns)}
+              onChange={(keyPatterns) =>
+                handleFieldChange('keyPatterns', keyPatterns)
+              }
             />
           </FormField>
 
@@ -141,7 +146,9 @@ export const DecoderEditor = ({
             <FieldsSchemaEditor
               sortListId={`decoder-${decoder.id}-schema`}
               nodes={decoder.schema}
-              onChange={(schema: SchemaNode[]) => handleFieldChange('schema', schema)}
+              onChange={(schema: SchemaNode[]) =>
+                handleFieldChange('schema', schema)
+              }
             />
           </Col>
         </S.DecoderBody>

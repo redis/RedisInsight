@@ -15,7 +15,7 @@ import reducer, {
   getFeatureFlagsFailure,
   fetchFeatureFlags,
   isAzureEntraIdEnabledSelector,
-  isDevArrayEnabledSelector,
+  isArrayEnabledSelector,
 } from 'uiSrc/slices/app/features'
 import { FeatureFlags } from 'uiSrc/constants'
 import {
@@ -611,7 +611,7 @@ describe('slices', () => {
     })
   })
 
-  describe('isDevArrayEnabledSelector', () => {
+  describe('isArrayEnabledSelector', () => {
     const createRootState = (features: Record<string, { flag: boolean }>) => ({
       ...initialStateDefault,
       app: {
@@ -626,26 +626,26 @@ describe('slices', () => {
       },
     })
 
-    it('should return true when devArray flag is enabled', () => {
+    it('should return true when array flag is enabled', () => {
       const rootState = createRootState({
-        [FeatureFlags.devArray]: { flag: true },
+        [FeatureFlags.array]: { flag: true },
       })
 
-      expect(isDevArrayEnabledSelector(rootState)).toBe(true)
+      expect(isArrayEnabledSelector(rootState)).toBe(true)
     })
 
-    it('should return false when devArray flag is disabled', () => {
+    it('should return false when array flag is disabled', () => {
       const rootState = createRootState({
-        [FeatureFlags.devArray]: { flag: false },
+        [FeatureFlags.array]: { flag: false },
       })
 
-      expect(isDevArrayEnabledSelector(rootState)).toBe(false)
+      expect(isArrayEnabledSelector(rootState)).toBe(false)
     })
 
-    it('should return false when devArray flag is missing', () => {
+    it('should return false when array flag is missing', () => {
       const rootState = createRootState({})
 
-      expect(isDevArrayEnabledSelector(rootState)).toBe(false)
+      expect(isArrayEnabledSelector(rootState)).toBe(false)
     })
   })
 })

@@ -1,5 +1,5 @@
 {
-  "version": 6.1,
+  "version": 7,
   "features": {
     "dev-language": {
       "flag": true,
@@ -148,9 +148,9 @@
       "flag": true,
       "perc": [[0, 100]]
     },
-    "dev-array": {
+    "array": {
       "flag": true,
-      "perc": [[0, 0]]
+      "perc": [[0, 100]]
     },
     "prodMode": {
       "flag": true,

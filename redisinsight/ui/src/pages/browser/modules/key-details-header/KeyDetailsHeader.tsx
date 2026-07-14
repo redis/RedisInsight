@@ -44,9 +44,7 @@ import {
 } from 'uiSrc/pages/vector-search/hooks/useIsKeyIndexed'
 import { ViewIndexDataButton } from 'uiSrc/pages/browser/components/view-index-data-button'
 import { MakeSearchableButton } from 'uiSrc/pages/browser/components/make-searchable-button'
-import {
-  ConfigValueDecoderButton,
-} from 'uiSrc/pages/browser/components/value-decoder'
+import { ConfigValueDecoderButton } from 'uiSrc/pages/browser/components/value-decoder'
 import { KeyDetailsHeaderName } from './components/key-details-header-name'
 import { KeyDetailsHeaderTTL } from './components/key-details-header-ttl'
 import { KeyDetailsHeaderDelete } from './components/key-details-header-delete'

@@ -11,7 +11,11 @@ import {
   parseBinaryBuffer,
   resolveRepeatCount,
 } from './utils'
-import { createEmptyField, createEmptyRepeatBlock, MAX_REPEAT_DECODE_ITERATIONS } from './constants'
+import {
+  createEmptyField,
+  createEmptyRepeatBlock,
+  MAX_REPEAT_DECODE_ITERATIONS,
+} from './constants'
 import { DecoderType, ParsedBinaryNode, ValueDecoderRule } from './types'
 
 const countGroupNodes = (nodes: ParsedBinaryNode[]): number =>
@@ -22,6 +26,11 @@ const countGroupNodes = (nodes: ParsedBinaryNode[]): number =>
 
     return count
   }, 0)
+
+const toUint16leBytes = (value: number) => [
+  value % 256,
+  Math.floor(value / 256),
+]
 
 describe('value-decoder utils', () => {
   describe('getFixedSize', () => {
@@ -36,9 +45,9 @@ describe('value-decoder utils', () => {
 
   describe('getDefaultKeyPattern', () => {
     it('returns the actual key name', () => {
-      expect(getDefaultKeyPattern('room:chunk-state:678729695330336:1:36')).toBe(
-        'room:chunk-state:678729695330336:1:36',
-      )
+      expect(
+        getDefaultKeyPattern('room:chunk-state:678729695330336:1:36'),
+      ).toBe('room:chunk-state:678729695330336:1:36')
     })
 
     it('escapes glob metacharacters for exact-key matching', () => {
@@ -102,7 +111,7 @@ describe('value-decoder utils', () => {
       expect(matchKeyPattern('user:\\[0-9\\]', 'user:3')).toBe(false)
       expect(matchKeyPattern('key:[A-Z\\-_]*', 'key:ABC')).toBe(true)
       expect(matchKeyPattern('key:[A-Z\\-_]*', 'key:A-B_')).toBe(true)
-      expect(matchKeyPattern('key:[A-Z\\-_]*', 'key:A0B')).toBe(false)
+      expect(matchKeyPattern('key:[A-Z\\-_]*', 'key:0AB')).toBe(false)
     })
   })
 
@@ -166,12 +175,12 @@ describe('value-decoder utils', () => {
         },
       ]
 
-      expect(findMatchingDecoderRule(overlappingRules, 'user:items:42')?.id).toBe(
-        'user-items',
-      )
-      expect(findMatchingDecoderRule(overlappingRules, 'user:profile:42')?.id).toBe(
-        'user-wide',
-      )
+      expect(
+        findMatchingDecoderRule(overlappingRules, 'user:items:42')?.id,
+      ).toBe('user-items')
+      expect(
+        findMatchingDecoderRule(overlappingRules, 'user:profile:42')?.id,
+      ).toBe('user-wide')
     })
 
     it('scores exact key patterns higher than wildcard patterns', () => {
@@ -199,9 +208,7 @@ describe('value-decoder utils', () => {
   describe('formatHexBytes', () => {
     it('formats bytes as uppercase hex pairs separated by spaces', () => {
       expect(
-        formatHexBytes([
-          0xde, 0xad, 0xbe, 0xef, 0xca, 0xfe, 0xba, 0xbe,
-        ]),
+        formatHexBytes([0xde, 0xad, 0xbe, 0xef, 0xca, 0xfe, 0xba, 0xbe]),
       ).toBe('DE AD BE EF CA FE BA BE')
     })
   })
@@ -233,11 +240,23 @@ describe('value-decoder utils', () => {
     })
 
     it('parses sequential binary fields', () => {
-      const buffer = new Uint8Array([1, 0, 2, 0, 3, 4])
+      const buffer = new Uint8Array([1, 2, 0, 3, 4])
       const parsed = parseBinaryBuffer(buffer, [
         { id: '1', kind: 'field', name: 'flag', dataType: 'uint8', size: 1 },
-        { id: '2', kind: 'field', name: 'count', dataType: 'uint16le', size: 2 },
-        { id: '3', kind: 'field', name: 'value', dataType: 'uint16be', size: 2 },
+        {
+          id: '2',
+          kind: 'field',
+          name: 'count',
+          dataType: 'uint16le',
+          size: 2,
+        },
+        {
+          id: '3',
+          kind: 'field',
+          name: 'value',
+          dataType: 'uint16be',
+          size: 2,
+        },
       ])
 
       expect(parsed).toEqual([
@@ -248,9 +267,7 @@ describe('value-decoder utils', () => {
     })
 
     it('uses a prior numeric field as string size', () => {
-      const buffer = new Uint8Array([
-        3, 0, 97, 98, 99,
-      ])
+      const buffer = new Uint8Array([3, 0, 97, 98, 99])
       const parsed = parseBinaryBuffer(buffer, [
         {
           id: '1',
@@ -277,7 +294,9 @@ describe('value-decoder utils', () => {
     })
 
     it('resolves dynamic size by field id when numeric names duplicate', () => {
-      const buffer = new Uint8Array([3, 0, 5, 97, 98, 99, 104, 101, 108, 108, 111])
+      const buffer = new Uint8Array([
+        3, 0, 5, 97, 98, 99, 104, 101, 108, 108, 111,
+      ])
       const parsed = parseBinaryBuffer(buffer, [
         {
           id: 'len-a',
@@ -357,13 +376,16 @@ describe('value-decoder utils', () => {
     })
 
     it('parses repeat blocks using a count field', () => {
-      const buffer = new Uint8Array([
-        2, 0, 1, 0, 2, 0, 3, 0, 4, 0,
-      ])
+      const buffer = new Uint8Array([2, 0, 1, 0, 2, 0, 3, 0, 4, 0])
       const repeatBlock = createEmptyRepeatBlock()
       repeatBlock.countFieldRef = '1'
       repeatBlock.fields = [
-        { ...createEmptyField(), name: 'anchor', dataType: 'uint16le', size: 2 },
+        {
+          ...createEmptyField(),
+          name: 'anchor',
+          dataType: 'uint16le',
+          size: 2,
+        },
         { ...createEmptyField(), name: 'focus', dataType: 'uint16le', size: 2 },
       ]
 
@@ -401,7 +423,11 @@ describe('value-decoder utils', () => {
 
     it('uses safe integer limits for bigint dynamic field sizes', () => {
       const buffer = new Uint8Array(10)
-      const view = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength)
+      const view = new DataView(
+        buffer.buffer,
+        buffer.byteOffset,
+        buffer.byteLength,
+      )
       view.setBigUint64(0, 9223372036854775807n, true)
 
       const parsed = parseBinaryBuffer(buffer, [
@@ -437,8 +463,7 @@ describe('value-decoder utils', () => {
     it('stops parsing sibling fields when repeat decoding is capped', () => {
       const repeatCount = MAX_REPEAT_DECODE_ITERATIONS + 1
       const bufferParts = [
-        repeatCount & 0xff,
-        (repeatCount >> 8) & 0xff,
+        ...toUint16leBytes(repeatCount),
         ...Array.from({ length: repeatCount }, () => 0xaa),
         0xbb,
       ]
@@ -474,15 +499,15 @@ describe('value-decoder utils', () => {
       ])
 
       expect(countGroupNodes(parsed)).toBe(MAX_REPEAT_DECODE_ITERATIONS)
-      expect(parsed.some((node) => node.kind === 'field' && node.name === 'tail')).toBe(
-        false,
-      )
+      expect(
+        parsed.some((node) => node.kind === 'field' && node.name === 'tail'),
+      ).toBe(false)
     })
 
     it('caps nested repeat decoding with a shared global budget', () => {
       const outerCount = 100
       const innerCount = 100
-      const bufferParts = [outerCount & 0xff, (outerCount >> 8) & 0xff]
+      const bufferParts = [...toUint16leBytes(outerCount)]
 
       for (let outer = 0; outer < outerCount; outer += 1) {
         bufferParts.push(innerCount)
@@ -538,7 +563,12 @@ describe('value-decoder utils', () => {
       const repeatBlock = createEmptyRepeatBlock()
       repeatBlock.countFieldRef = '1'
       repeatBlock.fields = [
-        { ...createEmptyField(), name: 'anchor', dataType: 'uint16le', size: 2 },
+        {
+          ...createEmptyField(),
+          name: 'anchor',
+          dataType: 'uint16le',
+          size: 2,
+        },
         { ...createEmptyField(), name: 'focus', dataType: 'uint16le', size: 2 },
       ]
 
@@ -602,7 +632,9 @@ describe('value-decoder utils', () => {
 
     it('formats flat parsed rows', () => {
       expect(
-        formatParsedFields([{ kind: 'field', name: 'id', size: 1, value: '7' }]),
+        formatParsedFields([
+          { kind: 'field', name: 'id', size: 1, value: '7' },
+        ]),
       ).toBe('[id] [1] [7]')
     })
 

@@ -47,7 +47,7 @@ describe('DynamicTypeDetails', () => {
     expect(queryByTestId('too-long-key-name-details')).toBeInTheDocument()
   })
 
-  it('does not render array-details when dev-array flag is disabled', () => {
+  it('does not render array-details when array flag is disabled', () => {
     const { queryByTestId } = render(
       <DynamicTypeDetails
         {...instance(mockedProps)}
@@ -58,10 +58,10 @@ describe('DynamicTypeDetails', () => {
     expect(queryByTestId('unsupported-type-details')).toBeInTheDocument()
   })
 
-  it('renders array-details when dev-array flag is enabled', () => {
+  it('renders array-details when array flag is enabled', () => {
     const stateWithFlag = set(
       cloneDeep(initialStateDefault),
-      `app.features.featureFlags.features.${FeatureFlags.devArray}`,
+      `app.features.featureFlags.features.${FeatureFlags.array}`,
       { flag: true },
     )
     const { queryByTestId } = render(

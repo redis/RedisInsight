@@ -3,8 +3,8 @@ import {
   RepeatBlockDefinition,
   SchemaNode,
   ValueDecoderRule,
+  DecoderType,
 } from './types'
-import { DecoderType } from './types'
 
 export const VALUE_DECODER_TEST_ID = 'value-decoder'
 

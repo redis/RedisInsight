@@ -2,7 +2,10 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Modal } from 'uiSrc/components/base/display'
 import { Text } from 'uiSrc/components/base/text'
-import { PrimaryButton, SecondaryButton } from 'uiSrc/components/base/forms/buttons'
+import {
+  PrimaryButton,
+  SecondaryButton,
+} from 'uiSrc/components/base/forms/buttons'
 import { CancelIcon } from 'uiSrc/components/base/icons'
 import { Row, Col } from 'uiSrc/components/base/layout/flex'
 import { CopyButton } from 'uiSrc/components/copy-button/CopyButton'
@@ -13,13 +16,13 @@ import {
   parseDecodersFromClipboard,
   serializeDecodersForClipboard,
 } from './decoderClipboard'
-import {
-  areDecodersValid,
-  getDecoderLabel,
-  normalizeRule,
-} from './schemaUtils'
+import { areDecodersValid, getDecoderLabel, normalizeRule } from './schemaUtils'
 import { ValueDecoderRule } from './types'
-import { findMatchingDecoderRule, getDefaultKeyPattern, matchKeyPattern } from './utils'
+import {
+  findMatchingDecoderRule,
+  getDefaultKeyPattern,
+  matchKeyPattern,
+} from './utils'
 import * as S from './ValueDecoderModal.styles'
 
 export interface ValueDecoderModalConfig {
@@ -200,77 +203,77 @@ export const ValueDecoderModal = ({
         <S.ModalBody
           content={
             <Col gap="l" data-testid={`${VALUE_DECODER_TEST_ID}-modal-form`}>
-                <Text color="secondary">
-                  Decoders are shared across all hash keys in this database. Add
-                  multiple decoders and key patterns; matching hash values can be
-                  decoded in the Value Preview. Copy decoders as JSON and paste
-                  them here or into another Redis Insight connection.
-                </Text>
+              <Text color="secondary">
+                Decoders are shared across all hash keys in this database. Add
+                multiple decoders and key patterns; matching hash values can be
+                decoded in the Value Preview. Copy decoders as JSON and paste
+                them here or into another Redis Insight connection.
+              </Text>
 
-                <Row justify="between" align="center" gap="m">
-                  <Text variant="semiBold">Decoders</Text>
-                  <Row gap="s" align="center">
-                    {pasteMessage && (
-                      <Text color="secondary" size="s">
-                        {pasteMessage}
-                      </Text>
-                    )}
-                    <CopyButton
-                      copy={serializeDecodersForClipboard(localDecoders)}
-                      aria-label="Copy all decoders"
-                      tooltipConfig={{ content: 'Copy all decoders' }}
-                      data-testid={`${VALUE_DECODER_TEST_ID}-copy-all`}
-                    />
-                    <SecondaryButton
-                      size="s"
-                      onClick={handlePasteFromClipboard}
-                      data-testid={`${VALUE_DECODER_TEST_ID}-paste-decoders`}
-                    >
-                      Paste
-                    </SecondaryButton>
-                    <SecondaryButton
-                      size="s"
-                      onClick={handleAddDecoder}
-                      data-testid={`${VALUE_DECODER_TEST_ID}-add-decoder`}
-                    >
-                      Add Decoder
-                    </SecondaryButton>
-                  </Row>
+              <Row justify="between" align="center" gap="m">
+                <Text variant="semiBold">Decoders</Text>
+                <Row gap="s" align="center">
+                  {pasteMessage && (
+                    <Text color="secondary" size="s">
+                      {pasteMessage}
+                    </Text>
+                  )}
+                  <CopyButton
+                    copy={serializeDecodersForClipboard(localDecoders)}
+                    aria-label="Copy all decoders"
+                    tooltipConfig={{ content: 'Copy all decoders' }}
+                    data-testid={`${VALUE_DECODER_TEST_ID}-copy-all`}
+                  />
+                  <SecondaryButton
+                    size="s"
+                    onClick={handlePasteFromClipboard}
+                    data-testid={`${VALUE_DECODER_TEST_ID}-paste-decoders`}
+                  >
+                    Paste
+                  </SecondaryButton>
+                  <SecondaryButton
+                    size="s"
+                    onClick={handleAddDecoder}
+                    data-testid={`${VALUE_DECODER_TEST_ID}-add-decoder`}
+                  >
+                    Add Decoder
+                  </SecondaryButton>
                 </Row>
+              </Row>
 
-                <Col gap="m">
-                  {localDecoders.map((decoder) => {
-                    const normalized = normalizeRule(decoder)
-                    const patternCount = normalized.keyPatterns.length
-                    const summary = `${getDecoderLabel(decoder)} · ${patternCount} pattern${patternCount === 1 ? '' : 's'}`
+              <Col gap="m">
+                {localDecoders.map((decoder) => {
+                  const normalized = normalizeRule(decoder)
+                  const patternCount = normalized.keyPatterns.length
+                  const summary = `${getDecoderLabel(decoder)} · ${patternCount} pattern${patternCount === 1 ? '' : 's'}`
 
-                    return (
-                      <DecoderEditor
-                        key={decoder.id}
-                        decoder={decoder}
-                        isExpanded={expandedId === decoder.id}
-                        onToggle={() =>
-                          setExpandedId((current) =>
-                            current === decoder.id ? null : decoder.id,
-                          )
-                        }
-                        onChange={(nextDecoder) =>
-                          handleUpdateDecoder(decoder.id, nextDecoder)
-                        }
-                        onRemove={() => handleRemoveDecoder(decoder.id)}
-                        canRemove
-                        summary={summary}
-                        matchesCurrentKey={Boolean(
-                          keyName &&
-                            normalized.keyPatterns.some((pattern) =>
-                              matchKeyPattern(pattern, keyName),
-                            ),
-                        )}
-                      />
-                    )
-                  })}
-                </Col>
+                  return (
+                    <DecoderEditor
+                      key={decoder.id}
+                      decoder={decoder}
+                      isExpanded={expandedId === decoder.id}
+                      onToggle={() =>
+                        setExpandedId((current) =>
+                          current === decoder.id ? null : decoder.id,
+                        )
+                      }
+                      onChange={(nextDecoder) =>
+                        handleUpdateDecoder(decoder.id, nextDecoder)
+                      }
+                      onRemove={() => handleRemoveDecoder(decoder.id)}
+                      canRemove
+                      summary={summary}
+                      matchesCurrentKey={Boolean(
+                        keyName &&
+                          normalized.keyPatterns.some((pattern) =>
+                            matchKeyPattern(pattern, keyName),
+                          ),
+                      )}
+                    />
+                  )
+                })}
               </Col>
+            </Col>
           }
         />
 

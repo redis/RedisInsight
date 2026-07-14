@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import { Modal } from 'uiSrc/components/base/display/modal'
 
@@ -39,7 +40,11 @@ export const FieldRowGrid = styled.div`
   min-width: 0;
 `
 
-export const DragHandle = styled.div`
+export const DragHandle = styled.div<{
+  children?: React.ReactNode
+  draggable?: boolean
+  onDragStart?: React.DragEventHandler<HTMLDivElement>
+}>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -54,13 +59,16 @@ export const DragHandle = styled.div`
   }
 `
 
-export const SortableRow = styled.div`
+export const SortableRow = styled.div<{
+  children?: React.ReactNode
+  onDragOver?: React.DragEventHandler<HTMLDivElement>
+  onDrop?: React.DragEventHandler<HTMLDivElement>
+}>`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.core.space.space050};
   padding: ${({ theme }) => theme.core.space.space100};
-  border-top: 1px solid
-    ${({ theme }) => theme.semantic.color.border.neutral400};
+  border-top: 1px solid ${({ theme }) => theme.semantic.color.border.neutral400};
 
   &:hover ${DragHandle} {
     opacity: 1;
@@ -91,7 +99,9 @@ export const KeyPatternRow = styled.div`
   min-width: 0;
 `
 
-export const KeyPatternLastRow = styled.div`
+export const KeyPatternLastRow = styled.div<{
+  children?: React.ReactNode
+}>`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.core.space.space100};
@@ -116,13 +126,16 @@ export const SizeSourceWrapper = styled.div`
   min-width: 180px;
 `
 
-export const SizeUnit = styled.span`
+export const SizeUnit = styled.span<{ children?: React.ReactNode }>`
   color: ${({ theme }) => theme.components.typography.colors.secondary};
   font-size: ${({ theme }) => theme.core.font.fontSize.s12};
   white-space: nowrap;
 `
 
-export const RepeatBlock = styled.div<{ $depth: number }>`
+export const RepeatBlock = styled.div<{
+  $depth: number
+  children?: React.ReactNode
+}>`
   margin-top: ${({ theme }) => theme.core.space.space100};
   margin-bottom: ${({ theme }) => theme.core.space.space100};
   padding: ${({ theme }) => theme.core.space.space100};
@@ -162,13 +175,19 @@ export const RepeatLabel = styled.span`
   white-space: nowrap;
 `
 
-export const SelectOptionAnchor = styled.span<{ $fullWidth?: boolean }>`
+export const SelectOptionAnchor = styled.span<{
+  $fullWidth?: boolean
+  children?: React.ReactNode
+}>`
   display: inline-flex;
   align-items: center;
   width: ${({ $fullWidth }) => ($fullWidth ? '100%' : 'auto')};
 `
 
-export const DecoderSection = styled.div<{ $expanded: boolean }>`
+export const DecoderSection = styled.div<{
+  $expanded: boolean
+  children?: React.ReactNode
+}>`
   border: 1px solid ${({ theme }) => theme.semantic.color.border.neutral400};
   border-radius: ${({ theme }) => theme.core.space.space100};
   background: ${({ theme, $expanded }) =>
@@ -185,7 +204,11 @@ export const DecoderHeader = styled.div`
   padding: ${({ theme }) => theme.core.space.space100};
 `
 
-export const DecoderSummaryButton = styled.button`
+export const DecoderSummaryButton = styled.button<{
+  children?: React.ReactNode
+  type?: 'button' | 'submit' | 'reset'
+  onClick?: React.MouseEventHandler<HTMLButtonElement>
+}>`
   display: inline-flex;
   align-items: center;
   gap: ${({ theme }) => theme.core.space.space100};
@@ -207,7 +230,10 @@ export const DecoderBody = styled.div`
     ${({ theme }) => theme.core.space.space100};
 `
 
-export const DecoderMatchBadge = styled.span<{ $warning?: boolean }>`
+export const DecoderMatchBadge = styled.span<{
+  $warning?: boolean
+  children?: React.ReactNode
+}>`
   color: ${({ theme, $warning }) =>
     $warning
       ? theme.components.typography.colors.attention

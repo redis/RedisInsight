@@ -1,7 +1,11 @@
 import { bufferToUint8Array } from 'uiSrc/utils/formatters/bufferFormatters'
 import { RedisResponseBuffer } from 'uiSrc/slices/interfaces'
 
-import { BinaryDataType, isRepeatNode, MAX_REPEAT_DECODE_ITERATIONS } from './constants'
+import {
+  BinaryDataType,
+  isRepeatNode,
+  MAX_REPEAT_DECODE_ITERATIONS,
+} from './constants'
 import { isNumericCountType } from './schemaUtils'
 import {
   BinaryFieldDefinition,
@@ -15,9 +19,14 @@ export const getFixedSize = (type: string): number | 'custom' => {
   if (['uint8', 'int8', 'boolean'].includes(type)) return 1
   if (['uint16le', 'uint16be', 'int16le', 'int16be'].includes(type)) return 2
   if (
-    ['uint32le', 'uint32be', 'int32le', 'int32be', 'floatle', 'floatbe'].includes(
-      type,
-    )
+    [
+      'uint32le',
+      'uint32be',
+      'int32le',
+      'int32be',
+      'floatle',
+      'floatbe',
+    ].includes(type)
   ) {
     return 4
   }
@@ -41,7 +50,7 @@ export const formatHexBytes = (bytes: Uint8Array | Iterable<number>): string =>
     .map((byte) => byte.toString(16).padStart(2, '0').toUpperCase())
     .join(' ')
 
-const REGEX_SPECIAL_CHARS = /[.+^${}()|[\]\\]/g
+const REGEX_SPECIAL_CHARS = /[.*+?^${}()|[\]\\]/g
 
 const GLOB_ESCAPABLE_CHARS = new Set(['*', '?', '\\', '[', ']'])
 
@@ -590,5 +599,4 @@ export const parseBinaryBuffer = (
 export const parseBufferWithRule = (
   buffer: RedisResponseBuffer,
   schema: SchemaNode[],
-): ParsedBinaryNode[] =>
-  parseBinaryBuffer(bufferToUint8Array(buffer), schema)
+): ParsedBinaryNode[] => parseBinaryBuffer(bufferToUint8Array(buffer), schema)

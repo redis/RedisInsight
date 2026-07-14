@@ -6,7 +6,7 @@ import {
 } from 'uiSrc/constants'
 import { CommandsVersions } from 'uiSrc/constants/commandsVersions'
 import {
-  isDevArrayEnabledSelector,
+  isArrayEnabledSelector,
   isVectorSetEnabledSelector,
 } from 'uiSrc/slices/app/features'
 import { RedisDefaultModules } from 'uiSrc/slices/interfaces'
@@ -28,7 +28,7 @@ export const FILTER_KEY_TYPE_OPTIONS: FilterKeyTypeOption[] = [
     value: KeyTypes.Array,
     color: GROUP_TYPES_COLORS[KeyTypes.Array],
     minVersion: CommandsVersions.ARRAY.since,
-    isEnabledSelector: isDevArrayEnabledSelector,
+    isEnabledSelector: isArrayEnabledSelector,
   },
   {
     text: 'Set',
