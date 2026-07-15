@@ -1820,7 +1820,7 @@
   },
   "test/api/redisearch/POST-databases-id-redisearch-key-indexes.test.ts": {
     "TS18047": 3,
-    "TS7006": 1,
+    "TS7006": 2,
     "TS7031": 3
   },
   "test/api/redisearch/POST-databases-id-redisearch-search.test.ts": {

@@ -17,19 +17,32 @@ const endpoint = (instanceId = constants.TEST_INSTANCE_ID) =>
     `/${constants.API.DATABASES}/${instanceId}/redisearch/key-indexes`,
   );
 
+// A hash key, a JSON key and a string key that all share one prefix, with a
+// hash index and a json index scoped to that prefix. This lets us assert that
+// an index only covers a key whose TYPE matches the index definition - not
+// merely its prefix (RI-8316).
+const TYPE_MATCH_PREFIX = `${constants.TEST_RUN_ID}_ki:`;
+const HASH_KEY = `${TYPE_MATCH_PREFIX}hash`;
+const JSON_KEY = `${TYPE_MATCH_PREFIX}json`;
+const STRING_KEY = `${TYPE_MATCH_PREFIX}string`;
+const HASH_INDEX = `${constants.TEST_RUN_ID}_ki_hash_idx`;
+const JSON_INDEX = `${constants.TEST_RUN_ID}_ki_json_idx`;
+
 const dataSchema = Joi.object({
   key: Joi.string().required(),
 }).strict();
 
 const validInputData = {
-  key: `${constants.TEST_SEARCH_HASH_KEY_PREFIX_1}1`,
+  key: HASH_KEY,
 };
 
+// Not `.required()`: the endpoint returns an empty `indexes` array for a key
+// no index covers, and `array().items(X.required())` would reject that.
 const INDEX_SUMMARY_SCHEMA = Joi.object({
   name: Joi.string().required(),
   prefixes: Joi.array().items(Joi.string().allow('')).required(),
   key_type: Joi.string().required(),
-}).required();
+});
 
 const RESPONSE_SCHEMA = Joi.object({
   indexes: Joi.array().items(INDEX_SUMMARY_SCHEMA).required(),
@@ -42,12 +55,49 @@ const mainCheckFn = getMainCheckFn(endpoint);
 describe('POST /databases/:id/redisearch/key-indexes', () => {
   requirements('!rte.bigData', 'rte.modules.search');
   before(async () => {
-    await rte.data.generateRedisearchIndexes(true);
+    const data = rte.data;
+
+    await data.generateRedisearchIndexes(true);
     await localDb.createTestDbInstance(
       rte,
       {},
       { id: constants.TEST_INSTANCE_ID_2 },
     );
+
+    // Three keys of different types under one shared prefix.
+    await data.sendCommand('hset', [HASH_KEY, 'field', 'value']);
+    await data.sendCommand('set', [STRING_KEY, 'value']);
+    await data.sendCommand('json.set', [
+      JSON_KEY,
+      '.',
+      JSON.stringify({ field: 'value' }),
+    ]);
+
+    // One index per type, both scoped to the shared prefix.
+    await data.sendCommand('ft.create', [
+      HASH_INDEX,
+      'on',
+      'hash',
+      'prefix',
+      '1',
+      TYPE_MATCH_PREFIX,
+      'schema',
+      'field',
+      'text',
+    ]);
+    await data.sendCommand('ft.create', [
+      JSON_INDEX,
+      'on',
+      'json',
+      'prefix',
+      '1',
+      TYPE_MATCH_PREFIX,
+      'schema',
+      '$.field',
+      'as',
+      'field',
+      'text',
+    ]);
   });
 
   describe('Validation', () => {
@@ -59,37 +109,37 @@ describe('POST /databases/:id/redisearch/key-indexes', () => {
   describe('Common', () => {
     [
       {
-        name: 'Should return matching indexes for a key that matches a prefix',
-        data: validInputData,
+        name: 'Should match a hash key to the hash index by prefix and type, not the same-prefix json index',
+        data: { key: HASH_KEY },
         responseSchema: RESPONSE_SCHEMA,
         checkFn: async ({ body }) => {
-          expect(body.indexes.length).to.be.gte(1);
           const names = body.indexes.map((idx) => idx.name);
-          expect(names).to.include(constants.TEST_SEARCH_HASH_INDEX_1);
+          // Prefix and type both match.
+          expect(names).to.include(HASH_INDEX);
+          // Same prefix, different type - must not match.
+          expect(names).to.not.include(JSON_INDEX);
         },
       },
       {
-        name: 'Should still return indexes with no prefix for an unrelated key',
-        data: {
-          key: 'nonexistent_prefix_zzz:1',
-        },
+        name: 'Should match a json key to the json index by prefix and type, not the same-prefix hash index',
+        data: { key: JSON_KEY },
         responseSchema: RESPONSE_SCHEMA,
         checkFn: async ({ body }) => {
-          expect(body.indexes).to.be.an('array');
+          const names = body.indexes.map((idx) => idx.name);
+          // Prefix and type both match.
+          expect(names).to.include(JSON_INDEX);
+          // Same prefix, different type - must not match (RI-8316).
+          expect(names).to.not.include(HASH_INDEX);
         },
       },
       {
-        name: 'Should return indexes array with correct structure',
-        data: validInputData,
+        name: 'Should not match any index for a key whose type is neither hash nor json',
+        data: { key: STRING_KEY },
         responseSchema: RESPONSE_SCHEMA,
         checkFn: async ({ body }) => {
-          if (body.indexes.length > 0) {
-            const idx = body.indexes[0];
-            expect(idx).to.have.property('name');
-            expect(idx).to.have.property('prefixes');
-            expect(idx).to.have.property('key_type');
-            expect(idx.prefixes).to.be.an('array');
-          }
+          // The string key shares the prefix of both indexes, but its type
+          // matches neither, so nothing covers it.
+          expect(body.indexes).to.eql([]);
         },
       },
     ].forEach(mainCheckFn);
