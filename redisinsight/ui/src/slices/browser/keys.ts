@@ -42,7 +42,6 @@ import {
   resetBrowserTree,
   setBrowserSelectedKey,
 } from 'uiSrc/slices/app/context'
-import { NamespaceSearchableResult } from 'uiSrc/slices/interfaces/keys'
 
 import { CreateVectorSetWithExpireDto } from 'uiSrc/slices/interfaces/vectorSet'
 
@@ -1318,43 +1317,6 @@ export function fetchKeysMetadataTree(
         onFailAction?.()
         console.error(error)
       }
-    }
-  }
-}
-
-export function fetchNamespaceSearchable(
-  prefixes: [string, string][],
-  signal?: AbortSignal,
-  onSuccessAction?: (data: NamespaceSearchableResult[]) => void,
-  onFailAction?: () => void,
-) {
-  return async (_dispatch: AppDispatch, stateInit: () => RootState) => {
-    const state = stateInit()
-
-    try {
-      const { data, status } = await apiService.post<
-        NamespaceSearchableResult[]
-      >(
-        getUrl(
-          state.connections.instances.connectedInstance?.id,
-          ApiEndpoints.KEYS_NAMESPACE_SEARCHABLE,
-        ),
-        { prefixes: prefixes.map(([, prefix]) => prefix) },
-        { signal },
-      )
-
-      if (isStatusSuccessful(status)) {
-        const results = data.map((item, i) => ({
-          ...item,
-          path: prefixes[i][0],
-        }))
-
-        onSuccessAction?.(results)
-      }
-    } catch (_err) {
-      if (axios.isCancel(_err)) return
-
-      onFailAction?.()
     }
   }
 }

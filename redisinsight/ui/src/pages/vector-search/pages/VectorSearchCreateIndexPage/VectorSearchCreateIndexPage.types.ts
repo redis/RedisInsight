@@ -11,6 +11,7 @@ export enum CreateIndexTab {
 export enum CreateIndexMode {
   SampleData = 'sampleData',
   ExistingData = 'existingData',
+  Manual = 'manual',
 }
 
 export interface SampleDataLocationState {
@@ -25,6 +26,12 @@ export interface ExistingDataLocationState {
   initialPrefix?: string
 }
 
+export interface ManualLocationState {
+  mode: CreateIndexMode.Manual
+  initialPrefix?: string
+}
+
 export type CreateIndexLocationState =
   | SampleDataLocationState
   | ExistingDataLocationState
+  | ManualLocationState

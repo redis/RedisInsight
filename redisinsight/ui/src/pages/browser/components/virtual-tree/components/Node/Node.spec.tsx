@@ -584,41 +584,16 @@ describe('Node', () => {
       showFolderMetadata: true,
     }
 
-    it('should render Index button when hasSearchableKeys is true and feature flag is on', () => {
+    it('should render Index button for any folder when feature flag is on', () => {
       const spy = mockFeatureFlags({
         [FeatureFlags.vectorSearchV2]: { flag: true },
       })
 
-      const mockData: TreeData = {
-        ...baseFolderData,
-        hasSearchableKeys: true,
-        firstSearchableKey: mockFirstSearchableKey,
-      }
-
-      renderNode({ data: mockData })
+      renderNode({ data: baseFolderData })
 
       expect(
         screen.getByTestId(`index-folder-btn-${mockFolderName}`),
       ).toBeInTheDocument()
-
-      spy.mockRestore()
-    })
-
-    it('should not render Index button when hasSearchableKeys is false', () => {
-      const spy = mockFeatureFlags({
-        [FeatureFlags.vectorSearchV2]: { flag: true },
-      })
-
-      const mockData: TreeData = {
-        ...baseFolderData,
-        hasSearchableKeys: false,
-      }
-
-      renderNode({ data: mockData })
-
-      expect(
-        screen.queryByTestId(`index-folder-btn-${mockFolderName}`),
-      ).not.toBeInTheDocument()
 
       spy.mockRestore()
     })
@@ -628,13 +603,7 @@ describe('Node', () => {
         [FeatureFlags.vectorSearchV2]: { flag: false },
       })
 
-      const mockData: TreeData = {
-        ...baseFolderData,
-        hasSearchableKeys: true,
-        firstSearchableKey: mockFirstSearchableKey,
-      }
-
-      renderNode({ data: mockData })
+      renderNode({ data: baseFolderData })
 
       expect(
         screen.queryByTestId(`index-folder-btn-${mockFolderName}`),
@@ -650,16 +619,12 @@ describe('Node', () => {
 
       const mockData: TreeData = {
         ...baseFolderData,
-        hasSearchableKeys: true,
         firstSearchableKey: mockFirstSearchableKey,
       }
 
       renderNode({ data: mockData })
 
-      const indexFolderBtn = screen.getByTestId(
-        `index-folder-btn-${mockFolderName}`,
-      )
-      fireEvent.click(indexFolderBtn)
+      fireEvent.click(screen.getByTestId(`index-folder-btn-${mockFolderName}`))
 
       expect(sendEventTelemetry).toHaveBeenCalledWith({
         event: TelemetryEvent.SEARCH_MAKE_SEARCHABLE_CLICKED,
@@ -673,79 +638,105 @@ describe('Node', () => {
       spy.mockRestore()
     })
 
-    it('should open modal on Index button click', () => {
-      const spy = mockFeatureFlags({
-        [FeatureFlags.vectorSearchV2]: { flag: true },
+    // Case 1: namespace has JSON/HASH keys — opens the make-searchable modal
+    describe('when the namespace has JSON/HASH keys', () => {
+      it('should open the make-searchable modal on Index button click', () => {
+        const spy = mockFeatureFlags({
+          [FeatureFlags.vectorSearchV2]: { flag: true },
+        })
+
+        const mockData: TreeData = {
+          ...baseFolderData,
+          firstSearchableKey: mockFirstSearchableKey,
+        }
+
+        renderNode({ data: mockData })
+
+        fireEvent.click(
+          screen.getByTestId(`index-folder-btn-${mockFolderName}`),
+        )
+
+        expect(
+          screen.getByTestId('make-searchable-modal-body'),
+        ).toBeInTheDocument()
+
+        spy.mockRestore()
       })
 
-      const mockData: TreeData = {
-        ...baseFolderData,
-        hasSearchableKeys: true,
-        firstSearchableKey: mockFirstSearchableKey,
-      }
+      it('should navigate to create index page with the preselected key on confirm', () => {
+        const spy = mockFeatureFlags({
+          [FeatureFlags.vectorSearchV2]: { flag: true },
+        })
 
-      renderNode({ data: mockData })
+        const mockData: TreeData = {
+          ...baseFolderData,
+          firstSearchableKey: mockFirstSearchableKey,
+        }
 
-      fireEvent.click(screen.getByTestId(`index-folder-btn-${mockFolderName}`))
+        renderNode({ data: mockData })
 
-      expect(
-        screen.getByTestId('make-searchable-modal-body'),
-      ).toBeInTheDocument()
+        fireEvent.click(
+          screen.getByTestId(`index-folder-btn-${mockFolderName}`),
+        )
+        fireEvent.click(screen.getByTestId('make-searchable-modal-confirm'))
 
-      spy.mockRestore()
+        expect(mockPush).toHaveBeenCalledWith({
+          pathname: Pages.vectorSearchCreateIndex(mockInstanceId),
+          search:
+            `mode=${CreateIndexMode.ExistingData}&initialKey=users%3A1` +
+            `&initialKeyType=${RedisearchIndexKeyType.HASH}&initialPrefix=users%3A`,
+        })
+
+        spy.mockRestore()
+      })
     })
 
-    it('should navigate to create index page with correct query params on confirm', () => {
+    // Case 2: namespace has keys but none are JSON/HASH — opens the keys browser
+    it('should navigate to the create index keys browser when the namespace has no JSON/HASH keys', () => {
       const spy = mockFeatureFlags({
         [FeatureFlags.vectorSearchV2]: { flag: true },
       })
 
       const mockData: TreeData = {
         ...baseFolderData,
-        hasSearchableKeys: true,
-        firstSearchableKey: mockFirstSearchableKey,
+        keyCount: 10,
+        firstSearchableKey: undefined,
       }
 
       renderNode({ data: mockData })
 
       fireEvent.click(screen.getByTestId(`index-folder-btn-${mockFolderName}`))
-      fireEvent.click(screen.getByTestId('make-searchable-modal-confirm'))
 
       expect(mockPush).toHaveBeenCalledWith({
         pathname: Pages.vectorSearchCreateIndex(mockInstanceId),
-        search:
-          `mode=${CreateIndexMode.ExistingData}&initialKey=users%3A1` +
-          `&initialKeyType=${RedisearchIndexKeyType.HASH}&initialPrefix=users%3A`,
+        search: `mode=${CreateIndexMode.ExistingData}&initialPrefix=users%3A`,
       })
 
       spy.mockRestore()
     })
 
-    it('should call checkSearchable on mount when prop is provided', () => {
-      const mockCheckSearchable = jest.fn()
+    // Case 3: namespace has no keys — opens the manual creation form
+    it('should navigate to the manual creation form when the namespace has no keys', () => {
+      const spy = mockFeatureFlags({
+        [FeatureFlags.vectorSearchV2]: { flag: true },
+      })
+
       const mockData: TreeData = {
         ...baseFolderData,
-        checkSearchable: mockCheckSearchable,
+        keyCount: 0,
+        firstSearchableKey: undefined,
       }
 
       renderNode({ data: mockData })
 
-      expect(mockCheckSearchable).toHaveBeenCalledWith(
-        `${mockFolderName}:`,
-        mockData.path,
-      )
-    })
+      fireEvent.click(screen.getByTestId(`index-folder-btn-${mockFolderName}`))
 
-    it('should not call checkSearchable when prop is not provided', () => {
-      const mockData: TreeData = {
-        ...baseFolderData,
-      }
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: Pages.vectorSearchCreateIndex(mockInstanceId),
+        search: `mode=${CreateIndexMode.Manual}&initialPrefix=users%3A`,
+      })
 
-      renderNode({ data: mockData })
-
-      expect(
-        screen.getByTestId(`node-item_${mockFolderName}`),
-      ).toBeInTheDocument()
+      spy.mockRestore()
     })
   })
 })

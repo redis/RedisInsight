@@ -6,6 +6,7 @@ import {
   CreateIndexLocationState,
   CreateIndexMode,
   ExistingDataLocationState,
+  ManualLocationState,
   SampleDataLocationState,
 } from '../pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
 
@@ -33,6 +34,13 @@ export const parseCreateIndexSearchParams = (
     }
   }
 
+  if (mode === CreateIndexMode.Manual) {
+    return {
+      mode: CreateIndexMode.Manual,
+      initialPrefix: params.get('initialPrefix') ?? undefined,
+    }
+  }
+
   return undefined
 }
 
@@ -42,11 +50,16 @@ export const isExistingDataState = (
 ): state is ExistingDataLocationState =>
   state?.mode === CreateIndexMode.ExistingData
 
+/** Narrows location state to Manual mode (build an index by hand, no data). */
+export const isManualState = (
+  state: CreateIndexLocationState | undefined,
+): state is ManualLocationState => state?.mode === CreateIndexMode.Manual
+
 /** Narrows location state to SampleData mode (pre-built dataset). */
 export const isSampleDataState = (
   state: CreateIndexLocationState | undefined,
 ): state is SampleDataLocationState =>
-  state != null && !isExistingDataState(state)
+  state != null && !isExistingDataState(state) && !isManualState(state)
 
 /** Returns true when the ExistingData state already carries a pre-selected key. */
 export const hasPreselectedKey = (

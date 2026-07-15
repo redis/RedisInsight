@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import { NodeComponentProps, NodePublicState } from 'react-vtree/dist/es/Tree'
 import { useAppSelector } from 'uiSrc/slices/hooks'
 
@@ -9,10 +10,12 @@ import {
   FeatureFlags,
   KeyTypes,
   ModulesKeyTypes,
+  Pages,
   TEXT_BULK_DELETE_DISABLED_MULTIPLE_DELIMITERS,
   TEXT_BULK_DELETE_DISABLED_UNPRINTABLE,
   TEXT_BULK_DELETE_TOOLTIP,
 } from 'uiSrc/constants'
+import { CreateIndexMode } from 'uiSrc/pages/vector-search/pages/VectorSearchCreateIndexPage/VectorSearchCreateIndexPage.types'
 import KeyRowTTL from 'uiSrc/pages/browser/components/key-row-ttl'
 import KeyRowSize from 'uiSrc/pages/browser/components/key-row-size'
 import KeyRowName from 'uiSrc/pages/browser/components/key-row-name'
@@ -66,9 +69,7 @@ const Node = ({ data, isOpen, index, style, setOpen }: NodeProps) => {
     keyApproximate,
     isSelected,
     delimiters = [],
-    hasSearchableKeys,
     firstSearchableKey,
-    checkSearchable,
     getMetadata,
     onDelete,
     onDeleteClicked,
@@ -91,6 +92,7 @@ const Node = ({ data, isOpen, index, style, setOpen }: NodeProps) => {
 
   const { openMakeSearchableModal } = useMakeSearchableModal()
   const { id: instanceId } = useAppSelector(connectedInstanceSelector)
+  const history = useHistory()
 
   const [deletePopoverId, setDeletePopoverId] =
     useState<Maybe<string>>(undefined)
@@ -112,12 +114,6 @@ const Node = ({ data, isOpen, index, style, setOpen }: NodeProps) => {
     prevIncludeSize.current = includeSize
     prevIncludeTTL.current = includeTTL
   }, [includeSize, includeTTL, isLeaf, nameBuffer, size, ttl])
-
-  useEffect(() => {
-    if (checkSearchable) {
-      checkSearchable(folderPrefix, path)
-    }
-  }, [checkSearchable, folderPrefix, path])
 
   const handleClick = () => {
     if (isLeaf) {
@@ -165,6 +161,16 @@ const Node = ({ data, isOpen, index, style, setOpen }: NodeProps) => {
     [delimiterView, folderPrefix],
   )
 
+  const goToCreateIndex = (mode: CreateIndexMode) => {
+    const search = new URLSearchParams()
+    search.set('mode', mode)
+    search.set('initialPrefix', folderPrefix)
+    history.push({
+      pathname: Pages.vectorSearchCreateIndex(instanceId),
+      search: search.toString(),
+    })
+  }
+
   const handleIndexClick = (e: React.MouseEvent) => {
     e.stopPropagation()
     const source = SearchBrowserSource.TreeView
@@ -179,16 +185,32 @@ const Node = ({ data, isOpen, index, style, setOpen }: NodeProps) => {
         source,
       },
     })
-    const initialPrefix = firstSearchableKey?.nameString
-      ? getKeyPrefix(firstSearchableKey.nameString)
-      : folderPrefix
-    openMakeSearchableModal({
-      prefix: folderPrefix,
-      initialKey: firstSearchableKey?.nameBuffer,
-      initialKeyType: keyType,
-      initialPrefix,
-      source,
-    })
+
+    // Case 1: namespace has JSON/HASH keys — keep the current implementation
+    // (make-searchable modal pre-filled with the first searchable key).
+    if (firstSearchableKey) {
+      const initialPrefix = firstSearchableKey.nameString
+        ? getKeyPrefix(firstSearchableKey.nameString)
+        : folderPrefix
+      openMakeSearchableModal({
+        prefix: folderPrefix,
+        initialKey: firstSearchableKey.nameBuffer,
+        initialKeyType: keyType,
+        initialPrefix,
+        source,
+      })
+      return
+    }
+
+    // Case 3: namespace has no keys — open the manual creation form.
+    if (!keyCount) {
+      goToCreateIndex(CreateIndexMode.Manual)
+      return
+    }
+
+    // Case 2: namespace has keys but none are JSON/HASH — open the create
+    // index page with the keys browser.
+    goToCreateIndex(CreateIndexMode.ExistingData)
   }
 
   const hasUnprintableChars =
@@ -251,27 +273,25 @@ const Node = ({ data, isOpen, index, style, setOpen }: NodeProps) => {
             <S.FolderKeyCount data-testid={`count_${fullName}`}>
               <ColorText color="secondary">{keyCount ?? ''}</ColorText>
             </S.FolderKeyCount>
-            {hasSearchableKeys && (
-              <FeatureFlagComponent name={FeatureFlags.vectorSearchV2}>
-                <RiTooltip
-                  position="top"
-                  content={
-                    <span>
-                      Index data with the "<strong>{folderPrefix}</strong>"{' '}
-                      prefix so you can query it using full-text, vector, exact
-                      matching, and geospatial search.
-                    </span>
-                  }
+            <FeatureFlagComponent name={FeatureFlags.vectorSearchV2}>
+              <RiTooltip
+                position="top"
+                content={
+                  <span>
+                    Index data with the "<strong>{folderPrefix}</strong>" prefix
+                    so you can query it using full-text, vector, exact matching,
+                    and geospatial search.
+                  </span>
+                }
+              >
+                <S.IndexButton
+                  onClick={handleIndexClick}
+                  data-testid={`index-folder-btn-${fullName}`}
                 >
-                  <S.IndexButton
-                    onClick={handleIndexClick}
-                    data-testid={`index-folder-btn-${fullName}`}
-                  >
-                    Index
-                  </S.IndexButton>
-                </RiTooltip>
-              </FeatureFlagComponent>
-            )}
+                  Index
+                </S.IndexButton>
+              </RiTooltip>
+            </FeatureFlagComponent>
             <FeatureFlagComponent name={FeatureFlags.envDependent}>
               <RiTooltip content={deleteTooltip} position="left">
                 <IconButton

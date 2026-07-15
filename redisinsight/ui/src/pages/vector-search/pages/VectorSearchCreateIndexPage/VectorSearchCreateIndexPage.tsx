@@ -6,6 +6,7 @@ import { Pages } from 'uiSrc/constants'
 import { CreateIndexMode } from './VectorSearchCreateIndexPage.types'
 import {
   isExistingDataState,
+  isManualState,
   isSampleDataState,
   hasPreselectedKey,
   parseCreateIndexSearchParams,
@@ -24,7 +25,9 @@ export const VectorSearchCreateIndexPage = () => {
   const state = parseCreateIndexSearchParams(search)
   const mode = isExistingDataState(state)
     ? CreateIndexMode.ExistingData
-    : CreateIndexMode.SampleData
+    : isManualState(state)
+      ? CreateIndexMode.Manual
+      : CreateIndexMode.SampleData
 
   const sampleData = isSampleDataState(state) ? state.sampleData : undefined
 
@@ -33,6 +36,7 @@ export const VectorSearchCreateIndexPage = () => {
   }
 
   const existingState = isExistingDataState(state) ? state : undefined
+  const manualState = isManualState(state) ? state : undefined
   const preselected = hasPreselectedKey(state)
   const showBrowser = mode === CreateIndexMode.ExistingData && !preselected
 
@@ -44,7 +48,9 @@ export const VectorSearchCreateIndexPage = () => {
       showBrowser={showBrowser}
       initialKey={preselected ? existingState?.initialKey : undefined}
       initialKeyType={preselected ? existingState?.initialKeyType : undefined}
-      initialPrefix={preselected ? existingState?.initialPrefix : undefined}
+      initialPrefix={
+        preselected ? existingState?.initialPrefix : manualState?.initialPrefix
+      }
     >
       <CreateIndexOnboardingProvider instanceId={instanceId}>
         <S.PageWrapper data-testid="vector-search--create-index--page">

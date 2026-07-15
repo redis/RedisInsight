@@ -65,7 +65,6 @@ export interface TreeData extends FixedSizeNodeData {
   children?: TreeData[]
   hasSearchableKeys?: boolean
   firstSearchableKey?: FirstSearchableKey
-  checkSearchable?: (prefix: string, path: string) => void
   updateStatusOpen: (fullName: string, value: boolean) => void
   updateStatusSelected: (key: RedisString) => void
   getMetadata: (key: RedisString, path: string) => void
