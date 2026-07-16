@@ -1,6 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { DURATION_UNITS, DurationUnits, SortOrder } from 'uiSrc/constants'
+import { useTranslation } from 'uiSrc/i18n'
+import { DurationUnits, SortOrder } from 'uiSrc/constants'
 import { convertNumberByUnits } from 'uiSrc/pages/slow-log/utils'
 import { sendEventTelemetry, TelemetryEvent } from 'uiSrc/telemetry'
 import { numberWithSpaces } from 'uiSrc/utils/numbers'
@@ -27,12 +28,18 @@ export interface Props {
 const SlowLogTable = (props: Props) => {
   const { items = [], durationUnit } = props
 
+  const { t } = useTranslation()
   const { instanceId } = useParams<{ instanceId: string }>()
+
+  const durationUnitLabel =
+    durationUnit === DurationUnits.milliSeconds
+      ? t('analytics.units.msec')
+      : t('analytics.units.microseconds')
 
   const columns: ColumnDef<SlowLog>[] = [
     {
       id: 'time',
-      header: 'Timestamp',
+      header: t('analytics.slowLog.table.timestamp'),
       accessorKey: 'time',
       size: 200,
       cell: ({ getValue }) => {
@@ -43,7 +50,9 @@ const SlowLogTable = (props: Props) => {
     },
     {
       id: 'durationUs',
-      header: `Duration, ${DURATION_UNITS.find(({ value }) => value === durationUnit)?.inputDisplay}`,
+      header: t('analytics.slowLog.table.duration', {
+        unit: durationUnitLabel,
+      }),
       accessorKey: 'durationUs',
       size: 150,
       cell: ({ getValue }) => {
@@ -58,7 +67,7 @@ const SlowLogTable = (props: Props) => {
     },
     {
       id: 'args',
-      header: 'Command',
+      header: t('analytics.slowLog.table.command'),
       accessorKey: 'args',
       size: 850,
       cell: ({ getValue }) => {

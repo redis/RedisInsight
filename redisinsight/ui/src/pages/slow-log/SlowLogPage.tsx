@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from 'uiSrc/slices/hooks'
 import { useParams } from 'react-router-dom'
 import { AutoSizer } from 'react-virtualized'
 
+import { useTranslation } from 'uiSrc/i18n'
 import { DEFAULT_SLOWLOG_MAX_LEN, DurationUnits } from 'uiSrc/constants'
 import { convertNumberByUnits } from 'uiSrc/pages/slow-log/utils'
 import { appContextDbConfig } from 'uiSrc/slices/app/context'
@@ -46,15 +47,9 @@ import { Container } from '../database-analysis/components/header/Header.styles'
 const HIDE_TIMESTAMP_FROM_WIDTH = 850
 const DEFAULT_COUNT_VALUE = '50'
 const MAX_COUNT_VALUE = '-1'
-const countOptions = [
-  { value: '10', inputDisplay: '10' },
-  { value: '25', inputDisplay: '25' },
-  { value: '50', inputDisplay: '50' },
-  { value: '100', inputDisplay: '100' },
-  { value: MAX_COUNT_VALUE, inputDisplay: 'Max available' },
-]
 
 const SlowLogPage = () => {
+  const { t } = useTranslation()
   const {
     connectionType,
     name: connectedInstanceName,
@@ -74,9 +69,20 @@ const SlowLogPage = () => {
 
   const dispatch = useAppDispatch()
 
+  const countOptions = [
+    { value: '10', inputDisplay: '10' },
+    { value: '25', inputDisplay: '25' },
+    { value: '50', inputDisplay: '50' },
+    { value: '100', inputDisplay: '100' },
+    {
+      value: MAX_COUNT_VALUE,
+      inputDisplay: t('analytics.slowLog.page.maxAvailable'),
+    },
+  ]
+
   const lastTimestamp = minBy(data, 'time')?.time
   const dbName = `${formatLongName(connectedInstanceName, 33, 0, '...')} ${getDbIndex(db)}`
-  setTitle(`${dbName} - Slow Log`)
+  setTitle(t('analytics.slowLog.page.pageTitle', { dbName }))
 
   useEffect(() => {
     getConfig()
@@ -153,18 +159,19 @@ const SlowLogPage = () => {
                 <Container align="center" gap="xl">
                   {connectionType !== ConnectionType.Cluster && config && (
                     <Text size="s" color="secondary" data-testid="config-info">
-                      Execution time:{' '}
-                      {numberWithSpaces(
-                        convertNumberByUnits(
-                          slowlogLogSlowerThan,
-                          durationUnit,
+                      {t('analytics.slowLog.page.executionInfo', {
+                        time: numberWithSpaces(
+                          convertNumberByUnits(
+                            slowlogLogSlowerThan,
+                            durationUnit,
+                          ),
                         ),
-                      )}
-                      &nbsp;
-                      {durationUnit === DurationUnits.milliSeconds
-                        ? DurationUnits.mSeconds
-                        : DurationUnits.microSeconds}
-                      , Max length: {numberWithSpaces(slowlogMaxLen)}
+                        unit:
+                          durationUnit === DurationUnits.milliSeconds
+                            ? t('analytics.units.msec')
+                            : t('analytics.units.microseconds'),
+                        maxLen: numberWithSpaces(slowlogMaxLen),
+                      })}
                     </Text>
                   )}
 
@@ -188,7 +195,7 @@ const SlowLogPage = () => {
               <Row align="center" justify="between">
                 <FlexItem>
                   <Title size="L" color="primary">
-                    Slow Log
+                    {t('analytics.slowLog.page.title')}
                   </Title>
                 </FlexItem>
                 <FlexItem>
@@ -196,8 +203,8 @@ const SlowLogPage = () => {
                     <FlexItem>
                       <Text size="s" color="primary">
                         {connectionType === ConnectionType.Cluster
-                          ? 'Display per node:'
-                          : 'Display up to:'}
+                          ? t('analytics.slowLog.page.displayPerNode')
+                          : t('analytics.slowLog.page.displayUpTo')}
                       </Text>
                     </FlexItem>
                     <FlexItem>
@@ -216,10 +223,16 @@ const SlowLogPage = () => {
                           color="secondary"
                           data-testid="entries-from-timestamp"
                         >
-                          ({data.length} entries
+                          (
+                          {t('analytics.slowLog.page.entries', {
+                            count: data.length,
+                          })}
                           {lastTimestamp && (
                             <>
-                              <span>&nbsp;from &nbsp;</span>
+                              <span>
+                                &nbsp;{t('analytics.slowLog.page.entriesFrom')}
+                                &nbsp;
+                              </span>
                               <FormatedDate date={lastTimestamp * 1000} />
                             </>
                           )}
