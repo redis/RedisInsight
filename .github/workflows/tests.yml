@@ -46,14 +46,6 @@ concurrency:
 
 jobs:
   changes:
-    # Skip same-repo PRs whose head is a release branch: release-stage.yml
-    # (release/**) and release-prod.yml (latest) already run this suite via
-    # workflow_call, so running here too would start a second, non-cancelling
-    # run. Those only trigger on base-repo pushes, so fork heads are exempt.
-    if: >-
-      github.event_name != 'pull_request' ||
-      github.event.pull_request.head.repo.fork ||
-      (!startsWith(github.head_ref, 'release/') && github.head_ref != 'latest')
     permissions:
       contents: read
       pull-requests: read
@@ -111,10 +103,15 @@ jobs:
       desktop: ${{ steps.eval.outputs.desktop }}
       integration: ${{ steps.eval.outputs.integration }}
       docker: ${{ steps.eval.outputs.docker }}
+      short_rte: ${{ steps.eval.outputs.short_rte }}
     steps:
       - id: eval
         env:
           IS_FORK: ${{ github.event.pull_request.head.repo.fork == true }}
+          # Release-branch PRs (head or target release/** or latest) get the
+          # full suite + full RTE list.
+          IS_RELEASE: ${{ startsWith(github.head_ref, 'release/') || github.head_ref == 'latest' || startsWith(github.base_ref, 'release/') || github.base_ref == 'latest' }}
+          INPUT_SHORT_RTE: ${{ inputs.short_rte_list }}
           PRE_RELEASE: ${{ inputs.pre_release == true }}
           DISPATCH: ${{ github.event_name == 'workflow_dispatch' }}
           LABEL_ALL: ${{ contains(github.event.pull_request.labels.*.name, 'run-all-tests') }}
@@ -127,12 +124,19 @@ jobs:
           CHG_DOCKER: ${{ needs.changes.outputs.docker }}
           CHG_INFRA: ${{ needs.changes.outputs.infra }}
         run: |
-          # "Run everything" — pre-release builds, manual dispatch, the
-          # run-all-tests label, or shared toolchain/CI changes.
-          if [[ "$PRE_RELEASE" == "true" || "$DISPATCH" == "true" || "$LABEL_ALL" == "true" || "$CHG_INFRA" == "true" ]]; then
+          # "Run everything" — pre-release builds, release-branch PRs, manual
+          # dispatch, the run-all-tests label, or shared toolchain/CI changes.
+          if [[ "$PRE_RELEASE" == "true" || "$IS_RELEASE" == "true" || "$DISPATCH" == "true" || "$LABEL_ALL" == "true" || "$CHG_INFRA" == "true" ]]; then
             ALL=true
           else
             ALL=false
+          fi
+
+          # Full RTE list for release testing; short list otherwise, unless a
+          # caller overrides it.
+          short_rte=true
+          if [[ "$PRE_RELEASE" == "true" || "$IS_RELEASE" == "true" || "$INPUT_SHORT_RTE" == "false" ]]; then
+            short_rte=false
           fi
 
           ui=$ALL
@@ -160,14 +164,10 @@ jobs:
             echo "desktop=$desktop"
             echo "integration=$integration"
             echo "docker=$docker"
+            echo "short_rte=$short_rte"
           } >> "$GITHUB_OUTPUT"
 
   lint:
-    # See `changes`: skip release-branch PRs (covered via workflow_call).
-    if: >-
-      github.event_name != 'pull_request' ||
-      github.event.pull_request.head.repo.fork ||
-      (!startsWith(github.head_ref, 'release/') && github.head_ref != 'latest')
     uses: ./.github/workflows/lint.yml
     secrets: inherit
 
@@ -225,7 +225,7 @@ jobs:
       contents: read
       checks: write
     with:
-      short_rte_list: ${{ inputs.short_rte_list || true }}
+      short_rte_list: ${{ needs.should-run.outputs.short_rte == 'true' }}
       redis_client: ${{ inputs.redis_client || '' }}
       debug: ${{ inputs.debug || false }}
 

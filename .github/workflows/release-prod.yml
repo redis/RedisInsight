@@ -6,18 +6,11 @@ on:
       - "latest"
 
 jobs:
-  tests-prod:
-    name: Run all tests
-    uses: ./.github/workflows/tests.yml
-    secrets: inherit
-    with:
-      short_rte_list: false
-      pre_release: true
-
+  # Tests run on the release PR (tests.yml), not here — the build is gated by
+  # that PR's run.
   builds-prod:
     name: Create all builds for release
     uses: ./.github/workflows/build.yml
-    needs: tests-prod
     secrets: inherit
     with:
       environment: "production"
