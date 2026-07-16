@@ -88,14 +88,17 @@ const KeyDetailsHeader = ({
   const { viewType } = useAppSelector(keysSelector)
 
   const isSearchableType = SEARCHABLE_KEY_TYPES.includes(type as KeyTypes)
-  const { indexes, status: keyIndexedStatus } = useIsKeyIndexed(
-    isSearchableType ? keyName || '' : '',
-  )
+  const {
+    indexes,
+    status: keyIndexedStatus,
+    refresh: refreshKeyIndexes,
+  } = useIsKeyIndexed(isSearchableType ? keyName || '' : '')
 
   const dispatch = useAppDispatch()
 
   const handleRefreshKey = () => {
     dispatch(refreshKey(keyBuffer!, type, undefined, length))
+    refreshKeyIndexes()
   }
 
   const handleEditTTL = (key: RedisResponseBuffer, ttl: number) => {
