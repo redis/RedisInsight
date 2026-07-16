@@ -22,6 +22,7 @@ export {
   useMonacoRedisEditor,
   useRedisCompletions,
   useQueryDecorations,
+  useVectorEmbeddingMarks,
   useCommandHistory,
   useDslSyntax,
   useQueryEditor,

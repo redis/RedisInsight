@@ -5,6 +5,7 @@ import { useQueryEditorContext } from '../context/query-editor.context'
 import { useRedisCompletions } from './useRedisCompletions'
 import { useMonacoRedisEditor } from './useMonacoRedisEditor'
 import { useQueryDecorations } from './useQueryDecorations'
+import { useVectorEmbeddingMarks } from './useVectorEmbeddingMarks'
 import {
   UseQueryEditorOptions,
   UseQueryEditorReturn,
@@ -128,6 +129,9 @@ export const useQueryEditor = (
   // Decorations
   useQueryDecorations({ monacoObjects, query })
 
+  // Vector embedding marks (data only; consumed by the collapse-rendering layer)
+  const { marks } = useVectorEmbeddingMarks({ query })
+
   // Cleanup on unmount
   useEffect(
     () => () => {
@@ -148,5 +152,6 @@ export const useQueryEditor = (
     completions,
     onExitSnippetMode,
     triggerUpdateCursorPosition,
+    marks,
   }
 }

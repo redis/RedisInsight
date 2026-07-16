@@ -1,6 +1,6 @@
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
-import { IMonacoQuery, Nullable } from 'uiSrc/utils'
+import { IMonacoQuery, Nullable, VectorEmbeddingMark } from 'uiSrc/utils'
 import { UseRedisCompletionsReturn } from './useRedisCompletions.types'
 
 export interface UseQueryEditorOptions {
@@ -76,4 +76,6 @@ export interface UseQueryEditorReturn {
   triggerUpdateCursorPosition: (
     editor: monacoEditor.editor.IStandaloneCodeEditor,
   ) => void
+  /** Large vector embeddings detected in the current query (data only). */
+  marks: VectorEmbeddingMark[]
 }
