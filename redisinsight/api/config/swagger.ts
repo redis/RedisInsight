@@ -5,7 +5,7 @@ const SWAGGER_CONFIG: Omit<OpenAPIObject, 'paths'> = {
   info: {
     title: 'Redis Insight Backend API',
     description: 'Redis Insight Backend API',
-    version: '3.6.0',
+    version: '3.8.0',
   },
   tags: [],
 };
