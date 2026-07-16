@@ -1,25 +1,16 @@
 import React, { useCallback } from 'react'
 
-import {
-  ActionIconButton,
-  SecondaryButton,
-} from 'uiSrc/components/base/forms/buttons'
-import { DeleteIcon } from 'uiSrc/components/base/icons'
+import { SecondaryButton } from 'uiSrc/components/base/forms/buttons'
 import { Row } from 'uiSrc/components/base/layout/flex'
-import TextInput from 'uiSrc/components/base/inputs/TextInput'
-import NumericInput from 'uiSrc/components/base/inputs/NumericInput'
-import { RiSelect } from 'uiSrc/components/base/forms/select/RiSelect'
 
 import {
-  BINARY_DATA_TYPES,
   createEmptyField,
   createEmptyRepeatBlock,
   isRepeatNode,
-  SIZE_SOURCE_OPTIONS,
   VALUE_DECODER_TEST_ID,
 } from './constants'
-import { DATA_TYPE_DESCRIPTIONS } from './descriptions'
-import { createDescriptionSelectValueRender } from './DescriptionSelectValueRender'
+import { FieldRow } from './FieldRow'
+import { RepeatBlockEditor } from './RepeatBlockEditor'
 import {
   getPriorNumericFieldsInScope,
   isCustomSizeType,
@@ -29,43 +20,9 @@ import {
 } from './schemaUtils'
 import { reorderList } from './reorderList'
 import { SortableItem } from './SortableItem'
-import {
-  BinaryFieldDefinition,
-  FieldSizeSource,
-  RepeatBlockDefinition,
-  SchemaNode,
-} from './types'
-import { getFixedSize, getSizeUnit } from './utils'
+import { BinaryFieldDefinition, SchemaNode } from './types'
+import { getFixedSize } from './utils'
 import * as S from './ValueDecoderModal.styles'
-
-const dataTypeOptions = BINARY_DATA_TYPES.map((type) => ({
-  value: type,
-  label: type,
-}))
-
-const sizeSourceOptions = SIZE_SOURCE_OPTIONS.map((option) => ({
-  value: option.value,
-  label: option.label,
-}))
-
-const dataTypeValueRender = createDescriptionSelectValueRender(
-  DATA_TYPE_DESCRIPTIONS,
-)
-
-const toNumericOptions = (fields: NumericFieldRef[]) => {
-  const nameCounts = fields.reduce<Record<string, number>>((counts, item) => {
-    counts[item.name] = (counts[item.name] ?? 0) + 1
-    return counts
-  }, {})
-
-  return fields.map((item) => ({
-    value: item.id,
-    label:
-      nameCounts[item.name] > 1
-        ? `${item.name} (${item.dataType}) · ${item.id}`
-        : `${item.name} (${item.dataType})`,
-  }))
-}
 
 export interface FieldsSchemaEditorProps {
   sortListId: string
@@ -73,181 +30,6 @@ export interface FieldsSchemaEditorProps {
   onChange: (nodes: SchemaNode[]) => void
   priorNumericFields?: NumericFieldRef[]
   depth?: number
-}
-
-interface FieldRowProps {
-  field: BinaryFieldDefinition
-  index: number
-  nodes: SchemaNode[]
-  priorNumericFields: NumericFieldRef[]
-  onFieldChange: (id: string, patch: Partial<BinaryFieldDefinition>) => void
-  onRemove: (id: string) => void
-}
-
-const FieldRow = ({
-  field,
-  index,
-  nodes,
-  priorNumericFields,
-  onFieldChange,
-  onRemove,
-}: FieldRowProps) => {
-  const fixedSize = getFixedSize(field.dataType)
-  const isCustomSize = fixedSize === 'custom'
-  const sizeSource = field.sizeSource ?? 'fixed'
-  const sizeRefs = toNumericOptions(
-    getPriorNumericFieldsInScope(priorNumericFields, nodes, index),
-  )
-
-  return (
-    <S.FieldRowGrid>
-      <TextInput
-        value={field.name}
-        onChange={(value) => onFieldChange(field.id, { name: value })}
-        placeholder="fieldName"
-        data-testid={`${VALUE_DECODER_TEST_ID}-field-name-${field.id}`}
-      />
-      <RiSelect
-        options={dataTypeOptions}
-        value={field.dataType}
-        onChange={(value) => onFieldChange(field.id, { dataType: value })}
-        valueRender={dataTypeValueRender}
-        data-testid={`${VALUE_DECODER_TEST_ID}-field-type-${field.id}`}
-      />
-      <div>
-        {isCustomSize ? (
-          <S.SizeSourceWrapper>
-            <RiSelect
-              options={sizeSourceOptions}
-              value={sizeSource}
-              onChange={(value) =>
-                onFieldChange(field.id, {
-                  sizeSource: value as FieldSizeSource,
-                  sizeFieldRef:
-                    value === 'field' ? field.sizeFieldRef : undefined,
-                })
-              }
-              data-testid={`${VALUE_DECODER_TEST_ID}-field-size-source-${field.id}`}
-            />
-            {sizeSource === 'field' ? (
-              <RiSelect
-                options={sizeRefs}
-                value={field.sizeFieldRef || undefined}
-                onChange={(value) =>
-                  onFieldChange(field.id, { sizeFieldRef: value ?? '' })
-                }
-                placeholder="Select size field"
-                data-testid={`${VALUE_DECODER_TEST_ID}-field-size-ref-${field.id}`}
-              />
-            ) : (
-              <S.SizeInputWrapper>
-                <NumericInput
-                  value={field.size === '' ? null : Number(field.size)}
-                  onChange={(value) =>
-                    onFieldChange(field.id, {
-                      size: value == null || Number.isNaN(value) ? '' : value,
-                    })
-                  }
-                  min={1}
-                  data-testid={`${VALUE_DECODER_TEST_ID}-field-size-${field.id}`}
-                />
-                <S.SizeUnit
-                  data-testid={`${VALUE_DECODER_TEST_ID}-field-size-unit-${field.id}`}
-                >
-                  {getSizeUnit(field.size)}
-                </S.SizeUnit>
-              </S.SizeInputWrapper>
-            )}
-          </S.SizeSourceWrapper>
-        ) : (
-          <S.SizeInputWrapper>
-            <NumericInput
-              value={field.size === '' ? null : Number(field.size)}
-              onChange={() => {}}
-              disabled
-              data-testid={`${VALUE_DECODER_TEST_ID}-field-size-${field.id}`}
-            />
-            <S.SizeUnit
-              data-testid={`${VALUE_DECODER_TEST_ID}-field-size-unit-${field.id}`}
-            >
-              {getSizeUnit(field.size)}
-            </S.SizeUnit>
-          </S.SizeInputWrapper>
-        )}
-      </div>
-      <ActionIconButton
-        icon={DeleteIcon}
-        aria-label="Remove field"
-        onClick={() => onRemove(field.id)}
-        data-testid={`${VALUE_DECODER_TEST_ID}-remove-field-${field.id}`}
-      />
-    </S.FieldRowGrid>
-  )
-}
-
-interface RepeatBlockEditorProps {
-  repeat: RepeatBlockDefinition
-  index: number
-  nodes: SchemaNode[]
-  priorNumericFields: NumericFieldRef[]
-  depth: number
-  onRepeatChange: (
-    id: string,
-    patch: Partial<{ countFieldRef: string }>,
-  ) => void
-  onRepeatFieldsChange: (repeatId: string, fields: SchemaNode[]) => void
-  onRemove: (id: string) => void
-}
-
-const RepeatBlockEditor = ({
-  repeat,
-  index,
-  nodes,
-  priorNumericFields,
-  depth,
-  onRepeatChange,
-  onRepeatFieldsChange,
-  onRemove,
-}: RepeatBlockEditorProps) => {
-  const repeatScopeNumeric = getPriorNumericFieldsInScope(
-    priorNumericFields,
-    nodes,
-    index,
-  )
-
-  return (
-    <S.RepeatBlock
-      $depth={depth}
-      data-testid={`${VALUE_DECODER_TEST_ID}-repeat-${repeat.id}`}
-    >
-      <S.RepeatHeader>
-        <S.RepeatLabel>Repeat</S.RepeatLabel>
-        <RiSelect
-          options={toNumericOptions(repeatScopeNumeric)}
-          value={repeat.countFieldRef || undefined}
-          onChange={(value) =>
-            onRepeatChange(repeat.id, { countFieldRef: value ?? '' })
-          }
-          placeholder="Select count field"
-          data-testid={`${VALUE_DECODER_TEST_ID}-repeat-count-${repeat.id}`}
-        />
-        <ActionIconButton
-          icon={DeleteIcon}
-          aria-label="Remove repeat block"
-          onClick={() => onRemove(repeat.id)}
-          data-testid={`${VALUE_DECODER_TEST_ID}-remove-repeat-${repeat.id}`}
-        />
-      </S.RepeatHeader>
-
-      <FieldsSchemaEditor
-        sortListId={`repeat-${repeat.id}`}
-        nodes={repeat.fields}
-        onChange={(fields) => onRepeatFieldsChange(repeat.id, fields)}
-        priorNumericFields={repeatScopeNumeric}
-        depth={depth + 1}
-      />
-    </S.RepeatBlock>
-  )
 }
 
 export const FieldsSchemaEditor = ({
@@ -332,6 +114,12 @@ export const FieldsSchemaEditor = ({
   }, [nodes, onChange])
 
   const renderNode = (node: SchemaNode, index: number) => {
+    const repeatScopeNumeric = getPriorNumericFieldsInScope(
+      priorNumericFields,
+      nodes,
+      index,
+    )
+
     const content = isRepeatNode(node) ? (
       <RepeatBlockEditor
         repeat={node}
@@ -340,9 +128,16 @@ export const FieldsSchemaEditor = ({
         priorNumericFields={priorNumericFields}
         depth={depth}
         onRepeatChange={handleRepeatChange}
-        onRepeatFieldsChange={handleRepeatFieldsChange}
         onRemove={handleRemoveNode}
-      />
+      >
+        <FieldsSchemaEditor
+          sortListId={`repeat-${node.id}`}
+          nodes={node.fields}
+          onChange={(fields) => handleRepeatFieldsChange(node.id, fields)}
+          priorNumericFields={repeatScopeNumeric}
+          depth={depth + 1}
+        />
+      </RepeatBlockEditor>
     ) : (
       <FieldRow
         field={node}
