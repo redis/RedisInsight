@@ -45,7 +45,7 @@ TypeScript config is split across the repo rather than centralised in a single r
 
 ESLint's root config uses `parserOptions.project: true`, so each linted file picks up its nearest tsconfig automatically. When you add a new top-level TS area, drop a tsconfig in it.
 
-There is intentionally no root `tsconfig.json`. Running bare `tsc` from the repo root will fail — use `yarn type-check:ui` or pass `--project <path>` explicitly.
+There is intentionally no root `tsconfig.json`. Running bare `tsc` from the repo root will fail — use `npm run type-check:ui` or pass `--project <path>` explicitly.
 
 ### Type-error baselines
 
@@ -53,9 +53,9 @@ Per-project type-check runs in CI and fails if any new TS error is introduced. F
 
 Common flows:
 
-- **Check locally** (all projects): `yarn type-check`.
-- **Check one project**: `yarn --cwd redisinsight/{ui,api,desktop} type-check`.
-- **You fixed errors**: CI will say "baseline is outdated". Run `yarn --cwd redisinsight/{ui,api,desktop} tscheck` locally to refresh the matching `.tscheck.rec.json` and commit it.
+- **Check locally** (all projects): `npm run type-check`.
+- **Check one project**: `npm run type-check --prefix redisinsight/{ui,api,desktop}`.
+- **You fixed errors**: CI will say "baseline is outdated". Run `npm run tscheck --prefix redisinsight/{ui,api,desktop}` locally to refresh the matching `.tscheck.rec.json` and commit it.
 - **You introduced new errors**: fix them. Do not use `tscheck:force` in any workspace to overwrite the baseline upward — error counts must only decrease. Reviewers should reject PRs that bump baselines without a corresponding fix.
 
 ## Pull Requests

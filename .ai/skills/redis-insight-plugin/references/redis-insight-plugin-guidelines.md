@@ -78,7 +78,7 @@ export default { renderExampleView };
 
 ## Testing & Verification
 
-- `yarn build` produces `dist/index.js` and `dist/styles.css`.
+- `npm run build` produces `dist/index.js` and `dist/styles.css`.
 - `templates/verify-plugin.sh` confirms file presence, no `process.env`, and that activation method names appear in the bundle.
 - Deploy with `templates/deploy-external.sh` (folder install) or `templates/deploy-internal-docker.sh` (Docker container).
 - After deploy, `curl http://localhost:5540/api/plugins` and grep for the plugin name.

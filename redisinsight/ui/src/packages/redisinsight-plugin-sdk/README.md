@@ -8,7 +8,7 @@ plugin and Redis Insight application.
 ```
 npm install redisinsight-plugin-sdk
 or
-yarn add redisinsight-plugin-sdk
+npm install redisinsight-plugin-sdk
 ```
 
 ## Available methods

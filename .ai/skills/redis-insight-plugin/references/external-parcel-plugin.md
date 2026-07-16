@@ -41,7 +41,7 @@ Recommended scripts (see [../templates/external-parcel-package.json](../template
 ```json
 "scripts": {
   "start":   "parcel src/index.html",
-  "build":   "concurrently \"yarn build:js\" \"yarn build:css\"",
+  "build":   "concurrently \"npm run build:js\" \"npm run build:css\"",
   "build:js":"parcel build src/main.tsx --no-source-maps --dist-dir dist --target module",
   "build:css":"parcel build src/styles/styles.scss --no-source-maps --dist-dir dist",
   "minify:js":"terser dist/index.js -o dist/index.js -c -m",
@@ -95,7 +95,7 @@ Strip the rest before copying into `~/.redis-insight/plugins/<name>/`. The deplo
 
 ## Outputs
 
-After `yarn build`:
+After `npm run build`:
 
 - `dist/index.js` — single bundled module.
 - `dist/styles.css` — single stylesheet.
@@ -107,8 +107,8 @@ For RedisInsight product UI fidelity, copy `templates/external-styles.scss` to `
 ## Verification
 
 ```bash
-yarn build
-yarn verify     # runs templates/verify-plugin.sh
+npm run build
+npm run verify     # runs templates/verify-plugin.sh
 ```
 
 `verify` should report:

@@ -182,7 +182,7 @@ standards with good test coverage.
 1. **Code Style** (Style)
    - File: Multiple files
    - Issue: Inconsistent import ordering
-   - Recommendation: Run `yarn prettier:fix`
+   - Recommendation: Run `npm run prettier:fix`
 
 ## Risk Assessment
 

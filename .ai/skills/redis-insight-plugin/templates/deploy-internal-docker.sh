@@ -24,7 +24,7 @@ DEST="$INSIGHT_PLUGINS_DIR/$PLUGIN_NAME"
 echo "deploy(docker): plugin=$PLUGIN_NAME container=$CONTAINER dest=$DEST"
 
 # 1. Build
-yarn build
+npm run build
 
 # 2. Verify
 bash "$PLUGIN_ROOT/templates/verify-plugin.sh" \

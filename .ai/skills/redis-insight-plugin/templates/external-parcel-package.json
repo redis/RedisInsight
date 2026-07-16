@@ -7,7 +7,7 @@
   "styles": "./dist/styles.css",
   "scripts": {
     "start": "parcel src/index.html",
-    "build": "concurrently \"yarn build:js\" \"yarn build:css\"",
+    "build": "concurrently \"npm run build:js\" \"npm run build:css\"",
     "build:js": "parcel build src/main.tsx --no-source-maps --dist-dir dist --target module",
     "build:css": "parcel build src/styles/styles.scss --no-source-maps --dist-dir dist",
     "minify:js": "terser dist/index.js -o dist/index.js -c -m",

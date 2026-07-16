@@ -46,7 +46,7 @@ That's it. Nothing else is required at deploy time.
 External (host install):
 
 ```bash
-yarn build
+npm run build
 bash templates/verify-plugin.sh
 bash templates/deploy-external.sh
 ```
@@ -54,7 +54,7 @@ bash templates/deploy-external.sh
 Inside Docker RedisInsight:
 
 ```bash
-yarn build
+npm run build
 bash templates/verify-plugin.sh
 bash templates/deploy-internal-docker.sh
 ```

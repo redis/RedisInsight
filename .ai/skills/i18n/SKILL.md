@@ -153,13 +153,13 @@ The backend ships a stable `errorCode` on every user-facing error (see
 1. Add the key + English value to `en.json` **and** the same key to `bg.json` (translated, or empty to defer). Keep both sorted and in parity.
 2. Reference it: `t('my.key')` / `i18n.t('my.key')` / `<Trans i18nKey="my.key" …/>`.
 3. For dynamic values, pass `values` (interpolation) or `resource` (backend errors).
-4. Run `yarn i18n:extract` to sync/sort, and `yarn i18n:check` to catch duplicate keys.
-5. `yarn type-check` (new literal keys must resolve) and `yarn lint:ui`.
+4. Run `npm run i18n:extract` to sync/sort, and `npm run i18n:check` to catch duplicate keys.
+5. `npm run type-check` (new literal keys must resolve) and `npm run lint:ui`.
 
 ## Tooling
 
-- `yarn i18n:extract` — scans `t()`/`<Trans>` usages and syncs `en.json`/`bg.json` (alphabetical; does **not** prune unused keys). Note: dynamic (`as never`) keys aren't discovered by extraction — keep them in the locale files manually.
-- `yarn i18n:check` — fails if a locale file has a **duplicate key** (JSON silently keeps the last, so a dup would shadow a value). Runs in CI on PRs touching `locales/**`.
+- `npm run i18n:extract` — scans `t()`/`<Trans>` usages and syncs `en.json`/`bg.json` (alphabetical; does **not** prune unused keys). Note: dynamic (`as never`) keys aren't discovered by extraction — keep them in the locale files manually.
+- `npm run i18n:check` — fails if a locale file has a **duplicate key** (JSON silently keeps the last, so a dup would shadow a value). Runs in CI on PRs touching `locales/**`.
 - Dev override: append `?lang=bg` to the URL to preview Bulgarian.
 
 ## Do / Don't
