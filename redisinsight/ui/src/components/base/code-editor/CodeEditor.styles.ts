@@ -45,6 +45,8 @@ const monacoStyle = (theme: Theme) => {
     --monaco-color-submit: ${colors.icon.success500};
     --monaco-color-bg: ${bgColor};
     --monaco-color-params: ${colors.text.discovery200};
+    --monaco-embedding-bg: ${colors.background.informative200};
+    --monaco-embedding-border: ${colors.border.informative400};
     
     /* Font sizes */
     --monaco-font-size-s: ${fontSize.s13};
@@ -126,6 +128,13 @@ export const MonacoGlobalStyles = createGlobalStyle<{ theme: Theme }>`
   /* Params line decoration */
   .monaco-params-line {
     color: var(--monaco-color-params) !important;
+  }
+
+  /* Detected vector embedding highlight */
+  .monaco-vector-embedding {
+    background-color: var(--monaco-embedding-bg);
+    border-bottom: 1px solid var(--monaco-embedding-border);
+    border-radius: var(--monaco-size-xs);
   }
 
   /* Run command glyph margin icon */

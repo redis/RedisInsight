@@ -6,6 +6,7 @@ import { useRedisCompletions } from './useRedisCompletions'
 import { useMonacoRedisEditor } from './useMonacoRedisEditor'
 import { useQueryDecorations } from './useQueryDecorations'
 import { useVectorEmbeddingMarks } from './useVectorEmbeddingMarks'
+import { useVectorEmbeddingDecorations } from './useVectorEmbeddingDecorations'
 import {
   UseQueryEditorOptions,
   UseQueryEditorReturn,
@@ -129,8 +130,9 @@ export const useQueryEditor = (
   // Decorations
   useQueryDecorations({ monacoObjects, query })
 
-  // Vector embedding marks (data only; consumed by the collapse-rendering layer)
+  // Vector embedding marks + inline highlight in the editor
   const { marks } = useVectorEmbeddingMarks({ query })
+  useVectorEmbeddingDecorations({ monacoObjects, marks })
 
   // Cleanup on unmount
   useEffect(

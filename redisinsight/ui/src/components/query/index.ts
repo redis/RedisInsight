@@ -23,6 +23,7 @@ export {
   useRedisCompletions,
   useQueryDecorations,
   useVectorEmbeddingMarks,
+  useVectorEmbeddingDecorations,
   useCommandHistory,
   useDslSyntax,
   useQueryEditor,
