@@ -1,8 +1,19 @@
 import React from 'react'
 import reactRouterDom from 'react-router-dom'
-import { cleanup, render, screen, fireEvent } from 'uiSrc/utils/test-utils'
+import {
+  cleanup,
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+} from 'uiSrc/utils/test-utils'
 
 import { VectorSearchCreateIndexPage } from './VectorSearchCreateIndexPage'
+import { useHasExistingKeys } from '../../hooks/useHasExistingKeys'
+
+jest.mock('../../hooks/useHasExistingKeys', () => ({
+  useHasExistingKeys: jest.fn(),
+}))
 
 jest.mock('../../components/index-details', () => {
   const MockReact = require('react')
@@ -23,33 +34,58 @@ jest.mock('../../components/command-view', () => {
       MockReact.createElement(
         'div',
         { 'data-testid': props.dataTestId },
-        'CommandView',
+        props.command ?? 'CommandView',
       ),
   }
 })
 
 const mockPush = jest.fn()
 
-const setupRouterMocks = (sampleData?: string) => {
+const setupRouterMocks = (search: string) => {
   reactRouterDom.useHistory = jest.fn().mockReturnValue({ push: mockPush })
   reactRouterDom.useParams = jest
     .fn()
     .mockReturnValue({ instanceId: 'test-instance' })
   reactRouterDom.useLocation = jest.fn().mockReturnValue({
     pathname: '/test-instance/vector-search/create-index',
-    search: sampleData ? `?sampleData=${sampleData}` : '',
+    search,
     hash: '',
   })
+}
+
+const mockUseHasExistingKeys = (
+  overrides: Partial<ReturnType<typeof useHasExistingKeys>> = {},
+) => {
+  jest.mocked(useHasExistingKeys).mockReturnValue({
+    hasKeys: true,
+    loading: false,
+    error: false,
+    ...overrides,
+  })
+}
+
+const addField = async (name: string) => {
+  fireEvent.click(
+    screen.getByTestId('vector-search--create-index--add-field-btn'),
+  )
+  fireEvent.change(screen.getByTestId('field-type-modal-field-name'), {
+    target: { value: name },
+  })
+  await waitFor(() =>
+    expect(screen.getByTestId('field-type-modal-save')).toBeEnabled(),
+  )
+  fireEvent.click(screen.getByTestId('field-type-modal-save'))
 }
 
 describe('VectorSearchCreateIndexPage', () => {
   beforeEach(() => {
     cleanup()
     jest.clearAllMocks()
+    mockUseHasExistingKeys()
   })
 
   it('should render all page elements', () => {
-    setupRouterMocks('e-commerce-discovery')
+    setupRouterMocks('?sampleData=e-commerce-discovery')
 
     render(<VectorSearchCreateIndexPage />)
 
@@ -96,7 +132,7 @@ describe('VectorSearchCreateIndexPage', () => {
   })
 
   it('should switch to command view when clicking Command view button', () => {
-    setupRouterMocks('e-commerce-discovery')
+    setupRouterMocks('?sampleData=e-commerce-discovery')
 
     render(<VectorSearchCreateIndexPage />)
 
@@ -116,7 +152,7 @@ describe('VectorSearchCreateIndexPage', () => {
   })
 
   it('should navigate back on cancel', () => {
-    setupRouterMocks('e-commerce-discovery')
+    setupRouterMocks('?sampleData=e-commerce-discovery')
 
     render(<VectorSearchCreateIndexPage />)
 
@@ -129,5 +165,115 @@ describe('VectorSearchCreateIndexPage', () => {
     expect(mockPush).toHaveBeenCalledWith(
       expect.stringContaining('vector-search'),
     )
+  })
+
+  describe('existing data mode with no keys in the database', () => {
+    beforeEach(() => {
+      setupRouterMocks('?mode=existingData')
+      mockUseHasExistingKeys({ hasKeys: false })
+    })
+
+    it('should show a loader while checking for existing keys', () => {
+      mockUseHasExistingKeys({ hasKeys: false, loading: true })
+
+      render(<VectorSearchCreateIndexPage />)
+
+      expect(
+        screen.getByTestId('vector-search--create-index--loading'),
+      ).toBeInTheDocument()
+    })
+
+    it('should keep the key browser when the keys check fails', () => {
+      mockUseHasExistingKeys({ hasKeys: false, error: true })
+
+      render(<VectorSearchCreateIndexPage />)
+
+      expect(
+        screen.getByTestId('vector-search--create-index--browser-panel'),
+      ).toBeInTheDocument()
+      expect(
+        screen.queryByTestId('vector-search--create-index--empty-state'),
+      ).toHaveTextContent('select a key from the browser on the left')
+    })
+
+    it('should hide the key browser and render the manual creation empty state', () => {
+      render(<VectorSearchCreateIndexPage />)
+
+      expect(
+        screen.queryByTestId('vector-search--create-index--browser-panel'),
+      ).not.toBeInTheDocument()
+
+      expect(
+        screen.getByTestId('vector-search--create-index--empty-state'),
+      ).toHaveTextContent(
+        'Build your search index by manually adding the fields you want to index.',
+      )
+      expect(
+        screen.getByTestId('vector-search--create-index--add-field-btn'),
+      ).toBeEnabled()
+      expect(
+        screen.getByTestId('vector-search--create-index--prefix-input'),
+      ).toBeInTheDocument()
+      expect(
+        screen.getByTestId('vector-search--create-index--submit-btn'),
+      ).toBeDisabled()
+    })
+
+    it('should show the command view before any fields are added', () => {
+      render(<VectorSearchCreateIndexPage />)
+
+      fireEvent.click(
+        screen.getByTestId('vector-search--create-index--command-view-btn'),
+      )
+
+      expect(
+        screen.getByTestId('vector-search--create-index--command-view'),
+      ).toBeInTheDocument()
+      expect(
+        screen.queryByTestId('vector-search--create-index--empty-state'),
+      ).not.toBeInTheDocument()
+
+      fireEvent.click(
+        screen.getByTestId('vector-search--create-index--table-view-btn'),
+      )
+
+      expect(
+        screen.getByTestId('vector-search--create-index--empty-state'),
+      ).toBeInTheDocument()
+    })
+
+    it('should build the command with the chosen key type', async () => {
+      render(<VectorSearchCreateIndexPage />)
+
+      await addField('title')
+      await waitFor(() =>
+        expect(
+          screen.getByTestId('vector-search--create-index--submit-btn'),
+        ).toBeEnabled(),
+      )
+
+      fireEvent.click(
+        screen.getByTestId('vector-search--create-index--key-type-json-btn'),
+      )
+      fireEvent.click(
+        screen.getByTestId('vector-search--create-index--command-view-btn'),
+      )
+
+      expect(
+        screen.getByTestId('vector-search--create-index--command-view'),
+      ).toHaveTextContent('ON JSON')
+    })
+
+    it('should enable the create button once a field is added manually', async () => {
+      render(<VectorSearchCreateIndexPage />)
+
+      await addField('title')
+
+      await waitFor(() =>
+        expect(
+          screen.getByTestId('vector-search--create-index--submit-btn'),
+        ).toBeEnabled(),
+      )
+    })
   })
 })

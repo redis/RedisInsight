@@ -16,8 +16,15 @@ import * as S from '../VectorSearchCreateIndexPage.styles'
 
 export const CreateIndexHeader = () => {
   const { t } = useTranslation()
-  const { mode, displayName, indexName, setIndexName, indexNameError, fields } =
-    useCreateIndexPage()
+  const {
+    mode,
+    displayName,
+    indexName,
+    setIndexName,
+    indexNameError,
+    fields,
+    isManualCreation,
+  } = useCreateIndexPage()
   const { startOnboarding } = useCreateIndexOnboarding()
   const onboardingTriggeredRef = useRef(false)
 
@@ -51,7 +58,7 @@ export const CreateIndexHeader = () => {
               : t('vectorSearch.createIndex.header.defineTitle')}
           </Title>
 
-          {!isSampleData && !hasFields && (
+          {!isSampleData && !hasFields && !isManualCreation && (
             <RiTooltip
               position="bottom"
               content={t('vectorSearch.createIndex.header.infoTooltip')}
@@ -69,7 +76,7 @@ export const CreateIndexHeader = () => {
         </Row>
       </CreateIndexOnboardingPopover>
 
-      {!isSampleData && hasFields && (
+      {!isSampleData && (hasFields || isManualCreation) && (
         <IndexNameEditor
           indexName={indexName}
           onNameChange={setIndexName}

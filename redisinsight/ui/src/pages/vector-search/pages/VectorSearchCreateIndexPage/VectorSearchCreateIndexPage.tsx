@@ -2,6 +2,7 @@ import React from 'react'
 import { useLocation, useParams, Redirect } from 'react-router-dom'
 
 import { Pages } from 'uiSrc/constants'
+import { Loader } from 'uiSrc/components/base/display'
 
 import { CreateIndexMode } from './VectorSearchCreateIndexPage.types'
 import {
@@ -10,6 +11,7 @@ import {
   hasPreselectedKey,
   parseCreateIndexSearchParams,
 } from '../../utils'
+import { useHasExistingKeys } from '../../hooks'
 import { CreateIndexPageProvider } from '../../context/create-index-page'
 import { CreateIndexOnboardingProvider } from '../../context/create-index-onboarding'
 import { CreateIndexHeader } from './components/CreateIndexHeader'
@@ -27,21 +29,42 @@ export const VectorSearchCreateIndexPage = () => {
     : CreateIndexMode.SampleData
 
   const sampleData = isSampleDataState(state) ? state.sampleData : undefined
+  const existingState = isExistingDataState(state) ? state : undefined
+  const preselected = hasPreselectedKey(state)
+  const isBrowseFlow = mode === CreateIndexMode.ExistingData && !preselected
+
+  const {
+    hasKeys: hasExistingKeys,
+    loading: hasExistingKeysLoading,
+    error: hasExistingKeysError,
+  } = useHasExistingKeys(isBrowseFlow)
 
   if (mode === CreateIndexMode.SampleData && !sampleData) {
     return <Redirect to={Pages.vectorSearch(instanceId)} />
   }
 
-  const existingState = isExistingDataState(state) ? state : undefined
-  const preselected = hasPreselectedKey(state)
-  const showBrowser = mode === CreateIndexMode.ExistingData && !preselected
+  if (isBrowseFlow && hasExistingKeysLoading) {
+    return (
+      <S.PageWrapper
+        align="center"
+        justify="center"
+        data-testid="vector-search--create-index--loading"
+      >
+        <Loader size="xl" />
+      </S.PageWrapper>
+    )
+  }
+
+  // A failed/inconclusive probe keeps browse mode rather than hiding the browser
+  const isManualCreation =
+    isBrowseFlow && !hasExistingKeys && !hasExistingKeysError
 
   return (
     <CreateIndexPageProvider
       instanceId={instanceId}
       mode={mode}
       sampleData={sampleData}
-      showBrowser={showBrowser}
+      isManualCreation={isManualCreation}
       initialKey={preselected ? existingState?.initialKey : undefined}
       initialKeyType={preselected ? existingState?.initialKeyType : undefined}
       initialPrefix={preselected ? existingState?.initialPrefix : undefined}
