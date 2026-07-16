@@ -9,8 +9,6 @@ on:
         required: false
 
 env:
-  SLACK_AUDIT_REPORT_CHANNEL: ${{ secrets.SLACK_AUDIT_REPORT_CHANNEL }}
-  SLACK_AUDIT_REPORT_KEY: ${{ secrets.SLACK_AUDIT_REPORT_KEY }}
   REPORT_NAME: 'report-be'
 
 jobs:
@@ -25,21 +23,12 @@ jobs:
         with:
           skip-system-deps: '1'
 
-      - name: API PROD dependencies scan
-        run: |
-          FILENAME=api.prod.deps.audit.json
+      - name: Install osv-scanner
+        uses: ./.github/actions/install-osv-scanner
 
-          yarn --cwd redisinsight/api audit --groups dependencies --json > $FILENAME || true &&
-          FILENAME=$FILENAME DEPS="API prod" node .github/deps-audit-report.js &&
-          curl -H "Content-type: application/json" --data @slack.$FILENAME -H "Authorization: Bearer $SLACK_AUDIT_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
-
-      - name: API DEV dependencies scan
-        run: |
-          FILENAME=api.dev.deps.audit.json
-
-          yarn --cwd redisinsight/api audit --groups devDependencies --json > $FILENAME || true &&
-          FILENAME=$FILENAME DEPS="API dev" node .github/deps-audit-report.js &&
-          curl -H "Content-type: application/json" --data @slack.$FILENAME -H "Authorization: Bearer $SLACK_AUDIT_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
+      - name: API dependencies scan
+        # Informational; only a failed scan blocks CI (see deps-audit.sh).
+        run: .github/deps-audit.sh redisinsight/api/yarn.lock "API"
 
       - name: Unit tests API
         timeout-minutes: 20

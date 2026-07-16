@@ -1,0 +1,32 @@
+name: Install osv-scanner
+description: Download a pinned osv-scanner binary (checksum-verified) onto PATH for dependency audits
+
+inputs:
+  version:
+    description: osv-scanner release version to install
+    default: '2.4.0'
+    required: false
+  sha256:
+    description: Expected SHA-256 checksum of the linux/amd64 binary for the pinned version
+    default: '15314940c10d26af9c6649f150b8a47c1262e8fc7e17b1d1029b0e479e8ed8a0'
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Download and verify osv-scanner
+      shell: bash
+      env:
+        OSV_VERSION: ${{ inputs.version }}
+        OSV_SHA256: ${{ inputs.sha256 }}
+      run: |
+        set -euo pipefail
+        url="https://github.com/google/osv-scanner/releases/download/v${OSV_VERSION}/osv-scanner_linux_amd64"
+        dest="/usr/local/bin/osv-scanner"
+
+        curl -sSL --retry 3 -o osv-scanner "$url"
+        echo "${OSV_SHA256}  osv-scanner" | sha256sum --check --status
+
+        chmod +x osv-scanner
+        sudo mv osv-scanner "$dest"
+        osv-scanner --version

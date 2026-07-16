@@ -3,8 +3,6 @@ on:
   workflow_call:
 
 env:
-  SLACK_AUDIT_REPORT_CHANNEL: ${{ secrets.SLACK_AUDIT_REPORT_CHANNEL }}
-  SLACK_AUDIT_REPORT_KEY: ${{ secrets.SLACK_AUDIT_REPORT_KEY }}
   REPORT_NAME: 'report-fe'
 
 jobs:
@@ -19,21 +17,12 @@ jobs:
         with:
           skip-system-deps: '1'
 
-      - name: UI PROD dependencies audit
-        run: |
-          FILENAME=ui.prod.deps.audit.json
+      - name: Install osv-scanner
+        uses: ./.github/actions/install-osv-scanner
 
-          yarn audit --groups dependencies --json > $FILENAME || true &&
-          FILENAME=$FILENAME DEPS="UI prod" node .github/deps-audit-report.js &&
-          curl -H "Content-type: application/json" --data @slack.$FILENAME -H "Authorization: Bearer $SLACK_AUDIT_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
-
-      - name: UI DEV dependencies audit
-        run: |
-          FILENAME=ui.dev.deps.audit.json
-
-          yarn audit --groups devDependencies --json > $FILENAME || true &&
-          FILENAME=$FILENAME DEPS="UI dev" node .github/deps-audit-report.js &&
-          curl -H "Content-type: application/json" --data @slack.$FILENAME -H "Authorization: Bearer $SLACK_AUDIT_REPORT_KEY" -X POST https://slack.com/api/chat.postMessage
+      - name: UI dependencies audit
+        # Informational; only a failed scan blocks CI (see deps-audit.sh).
+        run: .github/deps-audit.sh yarn.lock "UI"
 
       - name: Unit tests UI
         timeout-minutes: 30
