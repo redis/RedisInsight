@@ -12,4 +12,3 @@ export * from './rename.key.response';
 export * from './scan-data-type.dto';
 export * from './update.key-ttl.dto';
 export * from './update.key-ttl.response';
-export * from './get.namespace-searchable.dto';
