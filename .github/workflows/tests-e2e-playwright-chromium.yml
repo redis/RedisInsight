@@ -54,19 +54,19 @@ jobs:
           working-directory: ${{ env.E2E_DIR }}
 
       - name: Build statics
-        run: yarn build:statics
+        run: npm run build:statics
 
       - name: Build UI (production web bundle)
-        run: yarn build:ui
+        run: npm run build:ui
 
       - name: Build API
-        run: yarn --cwd redisinsight/api build
+        run: npm run build --prefix redisinsight/api
 
       - name: Start application (production mode)
         env:
           RI_SERVE_STATICS: 'true'
         run: |
-          yarn --cwd redisinsight/api start:prod &
+          npm run start:prod --prefix redisinsight/api &
           npx wait-on http://localhost:5540/api/health --timeout 120000
 
       - name: Ensure host.docker.internal resolves on the host

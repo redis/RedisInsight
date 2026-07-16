@@ -36,12 +36,11 @@ runs:
           node_modules
           redisinsight/node_modules
           redisinsight/api/node_modules
-        # Hash both package.json and yarn.lock for every workspace so a
-        # change to either invalidates the cache. Hashing only yarn.lock
-        # let package.json edits without `yarn install` cache-hit, which
-        # skipped `yarn install --frozen-lockfile` and hid the resulting
-        # package.json / yarn.lock mismatch.
-        key: node-modules-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package.json', 'yarn.lock', 'redisinsight/package.json', 'redisinsight/yarn.lock', 'redisinsight/api/package.json', 'redisinsight/api/yarn.lock') }}
+        # Hash both package.json and package-lock.json for every workspace so a
+        # change to either invalidates the cache. Hashing only package-lock.json
+        # would let package.json edits without `npm ci` cache-hit, which would
+        # skip `npm ci` and hide the resulting package.json / lockfile mismatch.
+        key: node-modules-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package.json', 'package-lock.json', 'redisinsight/package.json', 'redisinsight/package-lock.json', 'redisinsight/api/package.json', 'redisinsight/api/package-lock.json') }}
         restore-keys: |
           node-modules-${{ runner.os }}-${{ runner.arch }}-
 
@@ -95,7 +94,7 @@ runs:
       shell: bash
       run: |
         if [ ! -f redisinsight/api-client/index.ts ]; then
-          yarn --cwd redisinsight/api generate:api-client
+          npm run generate:api-client --prefix redisinsight/api
         fi
 
     # When install ran (cache miss), its postinstall executed

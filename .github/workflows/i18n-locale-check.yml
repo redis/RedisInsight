@@ -19,4 +19,4 @@ jobs:
           node-version-file: '.nvmrc'
 
       - name: Check i18n locale files for duplicate keys
-        run: yarn i18n:check
+        run: npm run i18n:check
