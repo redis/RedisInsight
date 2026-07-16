@@ -14,6 +14,7 @@ import {
   QueryActions,
   QueryTutorials,
   QueryLiteActions,
+  VectorEmbeddingHighlight,
   useQueryEditorContext,
   useCommandHistory,
   useDslSyntax,
@@ -128,6 +129,10 @@ const Query = (props: Props) => {
             className={`${MonacoLanguage.Redis}-editor`}
             onChange={onChange}
             editorDidMount={editorDidMount}
+          />
+          <VectorEmbeddingHighlight
+            monacoObjects={monacoObjects}
+            query={query}
           />
         </S.InputContainer>
         <S.QueryFooter>

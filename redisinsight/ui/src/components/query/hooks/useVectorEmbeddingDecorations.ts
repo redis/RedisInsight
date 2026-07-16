@@ -1,31 +1,23 @@
 import { useEffect, useRef } from 'react'
 import { monaco as monacoEditor } from 'react-monaco-editor'
 
-import { Nullable } from 'uiSrc/utils'
+import { Nullable, VectorEmbeddingMark } from 'uiSrc/utils'
 
 import { UseVectorEmbeddingDecorationsProps } from './useVectorEmbeddingDecorations.types'
 
 const EMBEDDING_INLINE_CLASS = 'monaco-vector-embedding'
 
-/** Human-readable summary shown on hover over a detected embedding. */
 const hoverMessage = ({
   format,
   dimensions,
   byteSize,
-}: {
-  format: string
-  dimensions: number
-  byteSize: number
-}) => ({
+}: VectorEmbeddingMark) => ({
   value: `Vector embedding (${format}) — ${dimensions} dims, ${byteSize} bytes`,
 })
 
 /**
- * Renders a subtle inline highlight behind every detected vector embedding in
- * the editor. Mirrors {@link useQueryDecorations}: it lazily creates the
- * decoration collection after mount and recomputes whenever the marks change
- * (which happens on query change). Maps each mark's character range to a Monaco
- * range via the model, so it works across multi-line queries.
+ * Applies an inline highlight behind every detected embedding. Lazily creates
+ * the decoration collection after mount and recomputes when the marks change.
  */
 export const useVectorEmbeddingDecorations = ({
   monacoObjects,
