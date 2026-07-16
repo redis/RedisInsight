@@ -5,7 +5,7 @@ RUN dbus-uuidgen > /var/lib/dbus/machine-id
 
 WORKDIR /usr/src/app
 
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json .npmrc ./
 # patch-package (postinstall) reads these, so they must exist before install —
 # otherwise patches silently don't apply (e.g. the ioredis bigint parser).
 COPY patches ./patches

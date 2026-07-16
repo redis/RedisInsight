@@ -21,7 +21,9 @@ RUN apk update && apk add --no-cache --virtual .gyp \
 WORKDIR /usr/src/app
 
 # restore node_modules for front-end
-COPY package.json package-lock.json ./
+# .npmrc carries legacy-peer-deps=true, required for `npm ci` to accept
+# @elastic/eui@34.6.0's legacy react@^16 peer against React 18.
+COPY package.json package-lock.json .npmrc ./
 COPY patches ./patches
 COPY redisinsight/ui/vite.config.mjs ./redisinsight/ui/
 COPY redisinsight/ui/src/config ./redisinsight/ui/src/config
