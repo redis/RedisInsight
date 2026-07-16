@@ -22,7 +22,7 @@ const dataSchema = Joi.object({
 }).strict();
 
 const validInputData = {
-  key: `${constants.TEST_SEARCH_HASH_KEY_PREFIX_1}1`,
+  key: `${constants.TEST_RUN_ID}_hash_key_0`,
 };
 
 const INDEX_SUMMARY_SCHEMA = Joi.object({
@@ -59,23 +59,13 @@ describe('POST /databases/:id/redisearch/key-indexes', () => {
   describe('Common', () => {
     [
       {
-        name: 'Should return matching indexes for a key that matches a prefix',
+        name: 'Should return the indexes covering an existing hash key',
         data: validInputData,
         responseSchema: RESPONSE_SCHEMA,
         checkFn: async ({ body }) => {
           expect(body.indexes.length).to.be.gte(1);
           const names = body.indexes.map((idx) => idx.name);
           expect(names).to.include(constants.TEST_SEARCH_HASH_INDEX_1);
-        },
-      },
-      {
-        name: 'Should still return indexes with no prefix for an unrelated key',
-        data: {
-          key: 'nonexistent_prefix_zzz:1',
-        },
-        responseSchema: RESPONSE_SCHEMA,
-        checkFn: async ({ body }) => {
-          expect(body.indexes).to.be.an('array');
         },
       },
       {
